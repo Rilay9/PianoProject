@@ -1,0 +1,22 @@
+# restored 10:52 from the step logs and the monitor's events after run2.sh truncated this file (the rerun template kept the preamble's truncation; fixed in run2.sh and the note)
+== map-tests  10:40:31
+map-tests exit=0
+== map-min  10:40:33
+map-min exit=0
+== tsc  10:40:33
+tsc exit=0
+== lint  10:40:43
+lint exit=0
+== vitest-all  10:41:28
+vitest-all exit=1
+== build-app  10:44:50
+build-app exit=0
+SPECS: tests/e2e/doors.spec.ts tests/e2e/finder.spec.ts tests/e2e/library.spec.ts tests/e2e/modes-rhythm-only.spec.ts
+== specs-exist  10:47:06
+specs-exist exit=0
+== e2e-targeted  10:47:07
+e2e-targeted exit=1
+CHAIN DONE 10:48:27
+== e2e-rerun  10:49:29
+e2e-rerun exit=0
+CHAIN DONE 10:50:20

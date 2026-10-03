@@ -13,6 +13,7 @@
  */
 import type { Router } from '../../router';
 import { allItems, loadCurriculum, fetchMarkdown } from '../../curriculum/load';
+import { admittedForTeaching } from '../../curriculum/eligibility';
 import { findLesson, masteryCriteriaFor } from '../../curriculum/selectors';
 import { lessonShortfall } from '../../curriculum/needs';
 import type { CatalogItem, Curriculum, Lesson, LessonTool } from '../../curriculum/types';
@@ -22,7 +23,9 @@ import { recordPlacement, recordRungWord } from '../../data/planStore';
 import { loadRungStates } from '../../data/rungStates';
 import type { RungReading, RungStates } from '../../evidence/rungState';
 import { VOCABULARY_V0 } from '../../evidence/vocabulary';
-import { RUNG_TEXT, requirementState, requirementWords, rungBadge } from '../help';
+import { PROJECT_TEXT, RUNG_TEXT, requirementState, requirementWords, rungBadge } from '../help';
+import { PROJECT_STAGES, allProjects, projectIn, type ProjectRow } from '../../data/projectStore';
+import { materialOfItem } from '../../curriculum/material';
 import type { ProgressRow } from '../../data/db';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { badge, button, el, handsLabel, levelLabel, listRow, openSheet } from '../widgets';
@@ -31,6 +34,7 @@ import { screenFrame, statusLine } from './screenFrame';
 import { openFinderSheet } from '../finderSheet';
 import { confirmMessage, lockState, type LockState } from '../../curriculum/prerequisites';
 import { openPieceSheet } from './ShelfScreen';
+import { measuresARun } from './DrillScreen';
 import { allBooks, addBook, allShelfPieces, type BookRow, type ShelfPiece } from '../../data/booksStore';
 import { plural } from '../../util/plural';
 import { simonForStage } from '../../engine/drills/simon';
@@ -70,7 +74,11 @@ export function noSongsSentence(lesson: Pick<Lesson, 'songOptional' | 'optionsEx
 }
 
 export function LessonScreen(router: Router, lessonId: string): HTMLElement {
-  const { section, header, body } = screenFrame('lesson', `Lesson ${lessonId}`);
+  // The heading is the lesson's title once the curriculum has loaded and says whose page this is; until then
+  // it says the one thing known without it. Never the id, which is the route's and the learner has no use for
+  // (`00` §1: no internal identifier on screen; T20 — it read *Lesson classical.3* for as long as the
+  // curriculum took). A word, not an empty heading: the frame keeps its one line and a screen reader its `h1`.
+  const { section, header, body } = screenFrame('lesson', 'Lesson');
   const status = statusLine('lesson-status');
   const back = button('← Plan', () => router.navigate('plan'), { variant: 'quiet', id: 'lesson-back' });
   header.prepend(back);
@@ -94,6 +102,11 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
    * says how far the rung is.
    */
   const counts = el('details.lesson-counts', { id: 'lesson-counts' });
+  /**
+   * A project stage's line (G1b item 7; L86): Stage 9 says "Nothing here is a rung to pass", so its
+   * page says so in place of *What the app counts*, and shows its songs as projects.
+   */
+  const projectLine = el('p.lesson-project', { id: 'lesson-project', text: PROJECT_TEXT.stageNine, hidden: true });
   /**
    * The modes this rung recommends, as controls (`04` §3d).
    *
@@ -159,6 +172,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     startBlock,
     actions,
     counts,
+    projectLine,
     lockLine,
     toolsBlock,
     el('section.block', {}, el('h2', { text: 'Exercise options' }), exercises),
@@ -184,11 +198,25 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   let lock: LockState = { locked: false, missing: [], reason: '' };
   /** Where the learner is, from the evidence (C5): every rung's state, this one's among them. */
   let states: RungStates | null = null;
+  /** The learner's projects (G1b): what a project stage's song rows show. */
+  let projects: ProjectRow[] = [];
+
+  /**
+   * Whether this rung is a project stage's (Stage 9, `PROJECT_STAGES`): its page reads the projects
+   * store for its songs and presents no requirement met or unmet, no count and no completion. The
+   * rung's `requirements` stay in the data and the rung state reads them as before (`rungState`,
+   * unchanged); this page stops presenting them.
+   */
+  function isProjectRung(rung: Lesson): boolean {
+    const stage = curriculum?.stages.find((one) => one.units.some((unit) => unit.lessons.some((entry) => entry.id === rung.id)));
+    return stage !== undefined && PROJECT_STAGES.has(stage.number);
+  }
 
   /** Reads the rung state again after the learner's word or a pass changed it. */
   async function refresh(): Promise<void> {
     progress = new Map((await allProgress()).map((row) => [row.itemId, row]));
     if (curriculum) states = await loadRungStates(curriculum);
+    projects = await allProjects();
   }
 
   /**
@@ -209,14 +237,44 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     void openItem(router, target, { from: lessonId });
   };
 
-  function optionRow(id: string): HTMLElement {
+  /**
+   * The first of these rung options that passes `valid` and the teaching-use admission, in the
+   * rung's own order; null where none does (D3c; the reviewer's required change on D3b).
+   *
+   * *Start*, *Climb the ladder*, *Quick check* and the duet and blind tools' piece each choose an
+   * item for the learner, so each is an offer (`04` §3e): a rung listing an item is its authored
+   * placement, not a decision that the item is fit to teach. `admittedForTeaching` is the gate's own
+   * reading, exported once from `eligibility.ts`; this page never reads the promise fact or the
+   * teaching bit itself. `valid` is the control's own question about the item, asked of `openItem`'s
+   * helpers, which stay questions about the item rather than offers. A control with nothing to take
+   * is not drawn, or says so — never kept by skipping the admission.
+   *
+   * The option rows are not picks: they are the learner's own choice, like the Library, and every
+   * authored option stays listed and tappable there.
+   */
+  function firstOffered(ids: readonly string[], valid: (item: CatalogItem) => boolean): CatalogItem | null {
+    for (const id of ids) {
+      const item = items.get(id);
+      if (item !== undefined && valid(item) && admittedForTeaching(item)) return item;
+    }
+    return null;
+  }
+
+  function optionRow(id: string, asProject = false): HTMLElement {
     const item = items.get(id);
     if (!item) {
       return listRow({ title: id, meta: 'Not in the catalog', badges: [badge('missing', 'warn')] });
     }
     const row = progress.get(id);
     const badges: HTMLElement[] = [];
-    if (row && row.status !== 'new') {
+    // A project stage's song (G1b item 7): the learner's project state, or *not started* — never a
+    // pass or a requirement. Anywhere else, the item's own progress, as before. In the neutral style
+    // whatever the state (G87 item 3): the pass style's tick made a paused or put-away piece read
+    // "✓ Paused", an achievement mark on a stated intention.
+    const project = asProject ? projectIn(projects, { itemId: id, material: materialOfItem(item) }) : undefined;
+    if (asProject) {
+      badges.push(badge(project ? PROJECT_TEXT.states[project.state] : PROJECT_TEXT.notStarted, 'neutral'));
+    } else if (row && row.status !== 'new') {
       badges.push(badge(row.selfPassed && row.status === 'passed' ? 'you said you know it' : row.status, row.status));
     }
     const importNeeded = !isPlayable(item);
@@ -258,7 +316,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
             button('Know it', () => void markKnown(item.id), { variant: 'quiet' }),
           ],
       onClick: importNeeded ? undefined : () => open(item),
-      dataset: { 'data-item': item.id },
+      dataset: { 'data-item': item.id, ...(asProject ? { 'data-project-state': project?.state ?? 'none' } : {}) },
     });
   }
 
@@ -373,7 +431,10 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         entry.piece.itemId && items.has(entry.piece.itemId) ? entry.piece.itemId : undefined;
       if (twin) badges.push(badge('has a twin', 'passed'));
       const actions = [
-        button('Practise', () => router.navigatePaper(entry.book.id, entry.piece.id), {
+        // The rung rides along to the paper screen, which hands it to the twin
+        // (CL04, L79): the twin's run is then judged by this rung and counts for
+        // the piece this page lists.
+        button('Practise', () => router.navigatePaper(entry.book.id, entry.piece.id, { from: current.id }), {
           variant: 'primary',
         }),
       ];
@@ -509,6 +570,12 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
    * this rung's material as a duet" is the instruction and any of its songs
    * satisfies it. Where the rung has no playable song at all the button is not
    * drawn — a duet with nothing to duet against is a dead control.
+   *
+   * Either way the piece is an offer and passes the teaching-use admission
+   * (D3c, `firstOffered`): the first playable song is the first *admitted*
+   * one, and a named item without it draws no button, exactly as a named item
+   * that is not the rung's own does — never the song instead, because the rung
+   * said which piece it meant and that piece is not on offer.
    */
   function toolButton(tool: LessonTool, rung: Lesson, sameKindBefore = 0): HTMLElement | null {
     const scorePiece = (): string | null => {
@@ -525,15 +592,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         const offered =
           rung.songOptions.includes(tool.item) || rung.exerciseOptions.includes(tool.item);
         if (!offered) return null;
-        const named = items.get(tool.item);
-        return named !== undefined && targetFor(named) === 'score' ? tool.item : null;
+        return firstOffered([tool.item], (named) => targetFor(named) === 'score')?.id ?? null;
       }
-      return (
-        rung.songOptions.find((id) => {
-          const item = items.get(id);
-          return item !== undefined && isPlayable(item) && item.type === 'song';
-        }) ?? null
-      );
+      return firstOffered(rung.songOptions, (item) => isPlayable(item) && item.type === 'song')?.id ?? null;
     };
     /**
      * What *Play it as a duet* does, and why it writes a setting first (T17).
@@ -623,12 +684,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         // is skipped — `4.3` leads with `drill.chord.inversions`, which has no
         // file — and where a rung offers nothing that opens as a score the
         // button is not drawn, the way a duet with nothing to duet against is
-        // not drawn.
-        const id =
-          rung.exerciseOptions.find((option) => {
-            const found = items.get(option);
-            return found !== undefined && targetFor(found) === 'score';
-          }) ?? null;
+        // not drawn. The exercise is an offer (D3c): the first that opens as a
+        // score *and* passes the teaching-use admission (`firstOffered`).
+        const id = firstOffered(rung.exerciseOptions, (found) => targetFor(found) === 'score')?.id ?? null;
         if (id === null) return null;
         const node = make('Climb the ladder', () => {
           router.navigateScore(id, { mode: 'tempo', ladder: true, from: rung.id });
@@ -685,13 +743,12 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
    * — so "the first one that is playable" is the recommendation, not a guess
    * made here. An import placeholder is skipped because pressing Start on one
    * would open a sheet about a missing file.
+   *
+   * And Start is an offer (D3c): an option without the teaching-use admission
+   * is skipped too, for the next one in the rung's order (`firstOffered`).
    */
   function startItem(rung: Lesson): CatalogItem | null {
-    for (const id of [...rung.exerciseOptions, ...rung.songOptions]) {
-      const item = items.get(id);
-      if (item && isPlayable(item)) return item;
-    }
-    return null;
+    return firstOffered([...rung.exerciseOptions, ...rung.songOptions], isPlayable);
   }
 
   function drawStart(rung: Lesson): void {
@@ -699,12 +756,25 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     startBlock.replaceChildren();
     if (!target) {
       // `04` §0 R4: no furniture. A rung whose options are all waiting on an
-      // import has nothing for this button to open, and the rows below say so
-      // one at a time.
+      // import, or none of them offered, has nothing for this button to open,
+      // and the rows below are still there to choose from.
       startBlock.hidden = true;
       return;
     }
-    startWhat.textContent = `Opens “${target.title}”, the first thing on this rung.`;
+    // "The first thing on this rung" only when it is (D3c): where Start passes
+    // over the rung's first option, the list below begins with that option, and
+    // the line would be false about the row right under it. It names what it
+    // opens and says no more — no "waiting for review", which is the content
+    // pipeline's business and not a thing to practise. And never on a project
+    // stage's page (G87): that page says there is no rung to pass, and a line
+    // calling its first option "the first thing on this rung" under it said the
+    // opposite. `isProjectRung` reads the `PROJECT_STAGES` the page's other
+    // presentation reads (and Plan's, G1c).
+    const first = [...rung.exerciseOptions, ...rung.songOptions][0];
+    startWhat.textContent =
+      target.id === first && !isProjectRung(rung)
+        ? `Opens “${target.title}”, the first thing on this rung.`
+        : `Opens “${target.title}”.`;
     startBlock.append(
       button('Start', () => open(target), { id: 'lesson-start', variant: 'primary' }),
       startWhat,
@@ -723,7 +793,10 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       masterAccuracy: 0.97,
       masterTempoPct: 100,
     });
-    const titleOf = (id: string): string => items.get(id)?.title ?? id;
+    // A book piece is no catalog item: since its twin's run can count for it
+    // (L79), the *Counted* line names it by the title the shelf keeps.
+    const titleOf = (id: string): string =>
+      items.get(id)?.title ?? shelf.find((entry) => entry.itemId === id)?.piece.title ?? id;
     const context = {
       accuracy: criteria.passAccuracy,
       tempoPct: criteria.passTempoPct,
@@ -781,10 +854,11 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       .filter((node): node is HTMLElement => node !== null);
     toolRow.replaceChildren(...tools);
     toolsBlock.hidden = tools.length === 0;
-    exercises.replaceChildren(...lesson.exerciseOptions.map(optionRow));
+    const asProjects = isProjectRung(rung);
+    exercises.replaceChildren(...lesson.exerciseOptions.map((id) => optionRow(id)));
     songs.replaceChildren(
       ...(lesson.songOptions.length > 0
-        ? lesson.songOptions.map(optionRow)
+        ? lesson.songOptions.map((id) => optionRow(id, asProjects))
         : [el('p.muted', { text: noSongsSentence(lesson) })]),
     );
 
@@ -793,7 +867,12 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     drawLock();
 
     const reading = states?.byRung.get(lesson.id);
-    drawCounts(lesson, reading);
+    // A project stage: no count, no state badge, no learner's word about a rung to pass (G1b item
+    // 7). The sentence says what the page is instead; Quick check stays, a run like any other.
+    projectLine.hidden = !asProjects;
+    counts.hidden = asProjects;
+    if (asProjects) counts.replaceChildren();
+    else drawCounts(lesson, reading);
     // Met by the evidence its requirements name (C5), where it was the items
     // marked passed, counted over the rung's lists.
     const done = reading?.status === 'met';
@@ -826,11 +905,16 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         'Quick check',
         () => {
           // A 2–3 minute measured test: the lesson's first playable drill,
-          // opened for a real run rather than self-assessed.
-          const drill = (lesson?.exerciseOptions ?? [])
-            .map((id) => items.get(id))
-            .find((item) => item && (item.drill || item.file));
+          // opened for a real run rather than self-assessed. An offer, so the
+          // first that passes the teaching-use admission (D3c, `firstOffered`);
+          // with none, the sentence below, which stays true. A drill whose run
+          // measures nothing (a backing track, a checklist, the tour) is no
+          // measured test (G62, X1): *Quick check* takes the first that does,
+          // and where the lesson has only those it says so and opens nothing.
+          const drill = firstOffered(lesson?.exerciseOptions ?? [], measuresARun);
           if (drill) open(drill);
+          else if (firstOffered(lesson?.exerciseOptions ?? [], (item) => Boolean(item.drill || item.file)))
+            status.textContent = 'This lesson has no drill that measures a run yet.';
           else status.textContent = 'This lesson has no drill to check against yet.';
         },
         { id: 'lesson-check' },
@@ -853,6 +937,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         { id: 'lesson-done', variant: 'quiet' },
       ),
     );
+    // A project stage (G1b item 7): no state badge, which could say *complete*, and no learner's word
+    // about a rung, which would be a word about passing a rung the page says is not there.
+    if (asProjects) for (const node of actions.querySelectorAll('#lesson-state, #lesson-know, #lesson-done')) node.remove();
 
     // docs/02 Stage 0.4: the placement test's answer sets where the plan starts.
     if (lessonId === '0.4') {
@@ -871,12 +958,14 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   }
 
   void (async () => {
-    const [loaded, loadedItems, rows, pieces] = await Promise.all([
+    const [loaded, loadedItems, rows, pieces, projectList] = await Promise.all([
       loadCurriculum(),
       allItems(),
       allProgress(),
       allShelfPieces(),
+      allProjects(),
     ]);
+    projects = projectList;
     shelf = pieces;
     curriculum = loaded;
     items = new Map(loadedItems.map((item) => [item.id, item]));

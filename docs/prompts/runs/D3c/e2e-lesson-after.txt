@@ -1,0 +1,74 @@
+﻿node.exe : [WebServer] (node:65076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:6136) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 21 tests using 2 workers
+
+(node:16136) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67992) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\lesson-tools.spec.ts:33:1 › the lab tool opens the lab already in the rung’s preset (1.6s)
+  ok  2 tests\e2e\lesson-tools.spec.ts:55:1 › the duet tool opens a piece from the rung with one hand chosen (1.7s)
+  ok  4 tests\e2e\lesson-tools.spec.ts:91:1 › a rung that names no tool draws no block (645ms)
+  ok  3 tests\e2e\lesson-tools.spec.ts:76:1 › a rung that names its Simon opens that one, not the stage’s (944ms)
+  ok  5 tests\e2e\modes-duet.spec.ts:60:1 › the button opens one of the rung’s own pieces, with a hand chosen (1.4s)
+  ok  6 tests\e2e\modes-duet.spec.ts:80:1 › the button still means it after the Duet row has been switched off once (2.3s)
+  x   7 tests\e2e\modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise (1.8s)
+  ok  8 tests\e2e\modes-duet.spec.ts:128:1 › Back from a run opened by the rung’s button returns to the rung (1.3s)
+(node:65404) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  9 tests\e2e\modes-ladder.spec.ts:91:1 › the rung’s button opens its exercise, looping, with the ladder armed (1.6s)
+  ok 10 tests\e2e\modes-duet.spec.ts:141:1 › sideways the Duet row survives, and it still names the hand (1.5s)
+  ok 12 tests\e2e\modes-ladder.spec.ts:158:1 › sideways the ladder is still on and the controls are still reachable (1.5s)
+  ok 13 tests\e2e\modes-ladder.spec.ts:176:1 › Back leaves it off — the same exercise opened plainly is not still armed (2.0s)
+  ok 14 tests\e2e\start-and-return.spec.ts:49:3 › opening a lesson › says where you are, and gives one thing to press (701ms)
+  ok 15 tests\e2e\start-and-return.spec.ts:78:3 › opening a lesson › Start opens the first thing on the rung, and says which (782ms)
+  ok 16 tests\e2e\start-and-return.spec.ts:93:3 › opening a lesson › Start is an offer: it passes over a listed groove no one has approved for teaching, and says what it opens instead (1.1s)
+  ok 17 tests\e2e\start-and-return.spec.ts:120:3 › starting a mode › says what to do before a note has been judged, in every mode (910ms)
+  ok 11 tests\e2e\modes-ladder.spec.ts:132:1 › the keys play into it — the run moves, so the ladder has something to judge (7.5s)
+  ok 18 tests\e2e\start-and-return.spec.ts:130:3 › starting a mode › marks the first note it is waiting for before the run starts (828ms)
+  ok 19 tests\e2e\start-and-return.spec.ts:140:3 › coming back to a run left half way › says where it was left and offers both ways on (11.5s)
+  ok 21 tests\e2e\start-and-return.spec.ts:188:3 › coming back to a run left half way › a piece never left half way is not asked about (961ms)
+  ok 20 tests\e2e\start-and-return.spec.ts:166:3 › coming back to a run left half way › starting from the beginning takes the offer away and leaves bar 1 (12.1s)
+
+
+  1) tests\e2e\modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise ───
+
+    Error: technique.7’s duet opened something the rung does not offer: #/score/exercise.independence.c.2v3?mode=tempo&hands=R&from=technique.7
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      114 |     offered.some((id) => id !== '' && hash.includes(encodeURIComponent(id))),
+      115 |     `technique.7’s duet opened something the rung does not offer: ${hash}`,
+    > 116 |   ).toBe(true);
+          |     ^
+      117 | });
+      118 |
+      119 | /**
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a465c0bc54863c9b3\app\tests\e2e\modes-duet.spec.ts:116:5
+
+    Error Context: test-results-d3c-lesson\modes-duet-a-rung-whose-du-9c9b7-exercise-opens-the-exercise\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-d3c-lesson\modes-duet-a-rung-whose-du-9c9b7-exercise-opens-the-exercise\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-d3c-lesson\modes-duet-a-rung-whose-du-9c9b7-exercise-opens-the-exercise\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise ────
+  20 passed (31.3s)
+exit 1

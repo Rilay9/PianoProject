@@ -1,0 +1,58 @@
+build: after; 3429 sentences, 1669 not whole in the row at 342 x 740 (text column 192.9 px, as measured in this run)
+by natural lines: 1: 183, 2: 1577, 3: 1513, 4: 151, 5: 5
+
+row heights per shape (as measured in this run, this machine and face):
+  plain, 1-line title:
+    natural 1 line(s) -> drawn 1, title 1, row 70.1 px
+    natural 2 line(s) -> drawn 2, title 1, row 87.1 px
+    natural 3 line(s) -> drawn 2, title 1, row 87.1 px
+    natural 4 line(s) -> drawn 2, title 1, row 87.1 px
+    natural 5 line(s) -> drawn 2, title 1, row 87.1 px
+  plain, 2-line title:
+    natural 1 line(s) -> drawn 1, title 2, row 90.9 px
+    natural 2 line(s) -> drawn 2, title 2, row 107.9 px
+    natural 3 line(s) -> drawn 2, title 2, row 107.9 px
+    natural 4 line(s) -> drawn 2, title 2, row 107.9 px
+    natural 5 line(s) -> drawn 2, title 2, row 107.9 px
+  badged, 1-line title:
+    natural 1 line(s) -> drawn 1, title 1, row 75.6 px
+    natural 2 line(s) -> drawn 2, title 1, row 87.1 px
+    natural 3 line(s) -> drawn 2, title 1, row 87.1 px
+    natural 4 line(s) -> drawn 2, title 1, row 87.1 px
+    natural 5 line(s) -> drawn 2, title 1, row 87.1 px
+  badged, 2-line title:
+    natural 1 line(s) -> drawn 1, title 2, row 90.9 px
+    natural 2 line(s) -> drawn 2, title 2, row 107.9 px
+    natural 3 line(s) -> drawn 2, title 2, row 107.9 px
+    natural 4 line(s) -> drawn 2, title 2, row 107.9 px
+    natural 5 line(s) -> drawn 2, title 2, row 107.9 px
+
+per claim kind: sentences composed, whole in the row, not whole; the longest whole and the shortest not whole (characters):
+  reader:back         792  114  678  longest whole: 64 “This one with triplets — the tied notes went wrong in 12 phrases”  shortest cut: 58 “This one in 6/8 — the syncopation went wrong in 12 phrases” (3 lines)
+  exposure            656  401  255  longest whole: 60 “Keeping your walking bass lines warm — last played yesterday”  shortest cut: 55 “Keeping your turnarounds warm — last played on Thursday” (3 lines)
+  prerequisite        218   12  206  longest whole: 63 “From Carols you can play this year, which this lesson builds on”  shortest cut: 59 “From Clave, tumbao and montuno, which this lesson builds on” (3 lines)
+  reader:forward      308  131  177  longest whole: 63 “Now without ledger lines — 64 of 64 right and in time on 12 Jul”  shortest cut: 60 “Now beyond C position — 64 of 64 right and in time yesterday” (3 lines)
+  jam                 218  123   95  longest whole: 63 “Chords, form and feel: from The twelve-bar form and the shuffle”  shortest cut: 56 “Chords, form and feel: from Comping behind somebody else” (3 lines)
+  asked               720  640   80  longest whole: 67 “Classical’s next lesson asks for it — finished, nothing left undone”  shortest cut: 54 “Chords & pop: 11 of 12 counted, played with Perform on” (3 lines)
+  reader:hold          67   17   50  longest whole: 63 “Another like it — the bass-staff notes went wrong in 12 phrases”  shortest cut: 58 “Another like it — the syncopation went wrong in 12 phrases” (3 lines)
+  rung:held            32    1   31  longest whole: 60 “Jazz waits on pieces you paused or put away — more from Jazz”  shortest cut: 62 “Latin waits on pieces you paused or put away — more from Latin” (3 lines)
+  reader:unsure        45   17   28  longest whole: 60 “An easy one: without triplets — not sure yet what went wrong”  shortest cut: 59 “An easy one: with both hands — not sure yet what went wrong” (3 lines)
+  reader:kept          18    0   18  longest whole: -  shortest cut: 81 “Another like it — steps went wrong in 12 phrases, and they can’t be left out here” (3 lines)
+  skill                32   16   16  longest whole: 57 “Trains playing hands together, which this lesson asks for”  shortest cut: 64 “Nothing due for review — trains ties, which this lesson asks for” (3 lines)
+  demand               36   20   16  longest whole: 62 “Nothing due for review — has steps, which this lesson asks for”  shortest cut: 62 “Has notes beyond the hand position, which this lesson asks for” (3 lines)
+  piece-retention      14    7    7  longest whole: 53 “Keeping this piece playable — last played on Thursday”  shortest cut: 70 “A piece you know — keeping this piece playable — last played yesterday” (3 lines)
+  reader:stay           7    0    7  longest whole: -  shortest cut: 77 “The next step waits for a later lesson — 64 of 64 right and in time yesterday” (3 lines)
+  rung                 80   78    2  longest whole: 52 “Nothing due for review — more from Jam with a friend”  shortest cut: 62 “Nothing due for review — more from Improvisation & composition” (3 lines)
+  ready                18   16    2  longest whole: 60 “A piece with notes outside the key — your reads support them”  shortest cut: 58 “A piece with both hands together — your reads support them” (3 lines)
+  candidate:held        2    1    1  longest whole: 40 “This lesson is waiting on a paused piece”  shortest cut: 64 “This lesson is waiting on a paused piece — more from this lesson” (3 lines)
+  skill-retention      80   80    0  longest whole: 46 “Playing hands together: not shown since 12 Jul”  shortest cut: -
+  transfer             16   16    0  longest whole: 37 “Playing hands together: something new”  shortest cut: -
+  reader:rung           1    1    0  longest whole: 48 “Read something you have never seen, once, slowly”  shortest cut: -
+  reader:met            2    2    0  longest whole: 51 “Heard before it was read — tomorrow’s phrase is new”  shortest cut: -
+  reader:lesson        18   18    0  longest whole: 56 “This lesson’s phrases can have the notes outside the key”  shortest cut: -
+  reader:easy          44   44    0  longest whole: 58 “An easy one, for fluency: with held notes in the left hand”  shortest cut: -
+  swap:lesson           1    1    0  longest whole: 41 “You chose this one — from the same lesson”  shortest cut: -
+  swap:alternative      1    1    0  longest whole: 51 “You chose this one — a stand-in for the one offered”  shortest cut: -
+  swap:skill            1    1    0  longest whole: 50 “You chose this one — it also trains the same skill”  shortest cut: -
+  swap:demand           1    1    0  longest whole: 54 “You chose this one — it also practises the same demand”  shortest cut: -
+  swap:kind             1    1    0  longest whole: 60 “You chose this one — the same kind, from your lessons so far”  shortest cut: -

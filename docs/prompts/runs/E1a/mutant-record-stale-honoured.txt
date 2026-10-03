@@ -1,0 +1,33 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a72714772c690261e/app
+
+ ❯ tests/unit/eligibility.test.ts (36 tests | 1 failed) 102ms
+   ❯ an excerpt reaches an automatic offer only with a current teaching-use yes on its cut (E1a) (6)
+     × a yes recorded on an older cut of the same definition admits nothing: the current cut resolves no decision, its bit null, the admission false, the verdict not approved 5ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 35 passed (36)
+   Start at  20:39:40
+   Duration  1.64s (environment 44%, transform 31%, import 18%, tests 7%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/eligibility.test.ts > an excerpt reaches an automatic offer only with a current teaching-use yes on its cut (E1a) > a yes recorded on an older cut of the same definition admits nothing: the current cut resolves no decision, its bit null, the admission false, the verdict not approved
+AssertionError: expected 'current' to be 'stale' // Object.is equality
+
+Expected: "stale"
+Received: "current"
+
+ ❯ tests/unit/eligibility.test.ts:619:50
+    617|
+    618|     const stale = built([yes('ev-e1a-older-cut', OLDER)]);
+    619|     expect(stale.status.get('ev-e1a-older-cut')).toBe('stale');
+       |                                                  ^
+    620|     expect(stale.row.provenance.review.teaching).toBeNull();
+    621|     expect(admittedForTeaching(stale.row)).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit 1

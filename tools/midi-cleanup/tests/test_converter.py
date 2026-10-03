@@ -11,10 +11,12 @@ Two kinds of input, and the difference matters:
   * **rendered** — a committed `.mxl` fixture written out as MIDI, optionally
     with each onset and release nudged. Every note's written duration is known,
     so the round trip can be asserted exactly. Always available.
-  * **real** — the three Disklavier performances in `build/midi-real/`. `build/`
-    is in `.gitignore`, so those files are *not* in the repository and these
-    tests skip when they are absent. They are named in the skip message rather
-    than silently passing.
+  * **real** — the three Disklavier performances in `build/midi-real/`, from
+    the MAESTRO dataset. `build/` is in `.gitignore`, so those files are *not*
+    in the repository: `fetch_maestro.py` fetches them, and CI runs it in the
+    step "Fetch the MAESTRO test recordings" (Q47). Without them these tests
+    skip on a developer's checkout and fail in CI, naming the script and the
+    step, rather than silently passing.
 
 Run from the repository root:
 
@@ -22,12 +24,14 @@ Run from the repository root:
 """
 from __future__ import annotations
 
+import os
 import random
 import sys
 import tempfile
 import unittest
 from fractions import Fraction
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -56,8 +60,11 @@ REAL_FILES = (
 
 have_real = all((REAL_DIR / name).exists() for name in REAL_FILES)
 real_reason = (
-    f"{REAL_DIR} is under .gitignore; fetch the three MAESTRO performances named in "
-    f"its SOURCE.md to run these: {', '.join(REAL_FILES)}"
+    f"{REAL_DIR} lacks the three MAESTRO performances these tests read "
+    f"({', '.join(REAL_FILES)}): run `python tools/midi-cleanup/tests/fetch_maestro.py` "
+    "(CI: the step 'Fetch the MAESTRO test recordings', before 'MIDI converter harness'). "
+    "They are test input from the MAESTRO v3.0.0 MIDI zip, under CC BY-NC-SA 4.0, and this "
+    "project never commits or bundles them; the fetch writes their provenance to SOURCE.md"
 )
 
 
@@ -400,7 +407,10 @@ class TestRenderedInput(unittest.TestCase):
 
     def setUp(self) -> None:
         if not self.fixture.exists():
-            self.skipTest(f"{self.fixture} is missing")
+            self.fail(
+                f"{self.fixture} is missing, and it is committed: the round trip has no "
+                "input (CI has it from the checkout)"
+            )
 
     def round_trip(self, jitter_ms: float) -> tuple[list, list, dict]:
         with tempfile.TemporaryDirectory() as tmp:
@@ -431,9 +441,92 @@ class TestRenderedInput(unittest.TestCase):
         self.assertEqual([(m, d) for _, m, d in after], [(m, d) for _, m, d in before])
 
 
-@unittest.skipUnless(have_real, real_reason)
+class TestTheConverterNamesItsVersion(unittest.TestCase):
+    """E26: the converter owns a version, and every file it writes carries it.
+
+    The app's import of this converter's output reads the stamp back into the score's provenance
+    (`importStore.converterStampOf`, `importMeasuredTruth.test.ts` on the committed fixture
+    `app/tests/fixtures/imports/stamped-by-the-converter.musicxml`), so a later reader can tell
+    which rules inferred the hands and the key. MusicXML has a place for it: `<software>` in the
+    `<encoding>` block, which may repeat, beside music21's own.
+    """
+
+    fixture = FIXTURES / "exercise.five-finger.c-major.both.mxl"
+
+    def test_the_version_is_a_positive_whole_number(self) -> None:
+        from midi_to_musicxml import CONVERTER_VERSION
+
+        self.assertIsInstance(CONVERTER_VERSION, int)
+        self.assertGreaterEqual(CONVERTER_VERSION, 1)
+
+    def test_the_written_file_says_which_converter_and_version_wrote_it(self) -> None:
+        import xml.etree.ElementTree as ET
+
+        from midi_to_musicxml import CONVERTER_NAME, CONVERTER_VERSION
+
+        with tempfile.TemporaryDirectory() as tmp:
+            midi = Path(tmp) / "rendered.mid"
+            out = Path(tmp) / "rendered.musicxml"
+            render_midi(self.fixture, midi)
+            convert(midi, out, divisors=(4, 3), respell=False, force=True, hands="keep")
+            root = ET.parse(out).getroot()
+        encoding = root.find("identification/encoding")
+        self.assertIsNotNone(encoding, "no <encoding> block in the written file")
+        software = [element.text for element in encoding.findall("software")]  # type: ignore[union-attr]
+        self.assertIn(f"{CONVERTER_NAME} v.{CONVERTER_VERSION}", software)
+        # music21's own stamp stays: the two say different things.
+        self.assertTrue(any((text or "").startswith("music21 v.") for text in software), software)
+        self.assertEqual(CONVERTER_NAME, "tools/midi-cleanup/midi_to_musicxml.py")
+
+
+class TestTheRealRecordingsGate(unittest.TestCase):
+    """Q47: without the three performances the class below skips on a developer's
+    checkout and fails in CI, naming the step that fetches them.
+
+    A gate that skips is open (Q24). CI fetches the recordings, so their absence there
+    means the fetch did not happen, and nine tests passing by skipping would hide it. The
+    rule is run on the class itself with the files made absent, so it holds whether or not
+    this checkout has them.
+    """
+
+    def run_one(self, ci: str | None) -> unittest.TestResult:
+        env = {key: value for key, value in os.environ.items() if key != "CI"}
+        if ci is not None:
+            env["CI"] = ci
+        result = unittest.TestResult()
+        with mock.patch.object(sys.modules[__name__], "have_real", False), \
+                mock.patch.dict(os.environ, env, clear=True):
+            TestRealRecordings("test_the_notes_are_in_the_second_track").run(result)
+        return result
+
+    def test_in_ci_their_absence_fails_naming_the_fetch_step(self) -> None:
+        result = self.run_one("true")
+        self.assertEqual(
+            (len(result.failures), len(result.skipped)), (1, 0),
+            "CI=true with build/midi-real/ empty must fail, not skip",
+        )
+        message = result.failures[0][1]
+        self.assertIn("'Fetch the MAESTRO test recordings'", message)
+        self.assertIn("tools/midi-cleanup/tests/fetch_maestro.py", message)
+
+    def test_on_a_developer_checkout_their_absence_skips_naming_the_script(self) -> None:
+        result = self.run_one(None)
+        self.assertEqual((len(result.failures), len(result.skipped)), (0, 1))
+        self.assertIn("tools/midi-cleanup/tests/fetch_maestro.py", result.skipped[0][1])
+
+
 class TestRealRecordings(unittest.TestCase):
     """The three Disklavier performances, one test method per file."""
+
+    def setUp(self) -> None:
+        # A skip on a developer's checkout, a failure in CI (Q47): CI fetches these, so
+        # their absence there is a failed or missing fetch, not an absent input. Read at
+        # run time, not import time, so `TestTheRealRecordingsGate` can hold the rule.
+        if have_real:
+            return
+        if os.environ.get("CI"):
+            self.fail(real_reason)
+        self.skipTest(real_reason)
 
     def one(self, name: str) -> dict:
         with tempfile.TemporaryDirectory() as tmp:

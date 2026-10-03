@@ -18,10 +18,23 @@
  * nothing else reads. One dependency-free file that a text editor can open is
  * worth the third.
  */
-import { openDatabase, STORE_NAMES, type ImportRow, type ProgressRow, type StoreName } from './db';
+import {
+  openDatabase,
+  STORE_NAMES,
+  withPerformanceMark,
+  type ContactSummaryRow,
+  type ImportRow,
+  type ProgressRow,
+  type ProjectRow,
+  type SessionRow,
+  type StoreName,
+} from './db';
 import { importsChanged } from './importStore';
-import { forgetCachedProgress } from './progressStore';
+import { coerceSettings, getSettings, updateSettings } from './settingsStore';
+import { forgetCachedProgress, mergeSummaries } from './progressStore';
 import { forgetCachedPlan } from './planStore';
+import { forgetCachedEncounters } from './encounterStore';
+import { forgetCachedProjects, mergeProjects } from './projectStore';
 
 export const BACKUP_VERSION = 1;
 
@@ -189,10 +202,21 @@ export async function* streamBackup(
 export async function writeBackup(
   now = new Date(),
   onProgress?: (progress: BackupProgress) => void,
-): Promise<'file' | 'share' | 'download'> {
+): Promise<BackupDelivery> {
+  return deliverBackup(() => streamBackup(now, onProgress), now);
+}
+
+export type BackupDelivery = 'file' | 'share' | 'download' | 'cancelled';
+
+/** File close and share resolution prove delivery; a download proves only handoff. */
+async function deliverBackup(chunks: () => AsyncIterable<string> | Iterable<string>, now: Date): Promise<BackupDelivery> {
   const name = backupFilename(now);
   const picker = (window as { showSaveFilePicker?: (o: unknown) => Promise<FileSystemFileHandle> })
     .showSaveFilePicker;
+  const completed = (how: Exclude<BackupDelivery, 'cancelled'>): BackupDelivery => {
+    updateSettings({ lastBackupAt: Date.now() });
+    return how;
+  };
   if (typeof picker === 'function') {
     try {
       const handle = await picker({
@@ -201,34 +225,39 @@ export async function writeBackup(
       });
       const writable = await handle.createWritable();
       try {
-        for await (const chunk of streamBackup(now, onProgress)) await writable.write(chunk);
+        for await (const chunk of chunks()) await writable.write(chunk);
       } finally {
         await writable.close();
       }
-      return 'file';
+      return completed('file');
     } catch (cause) {
-      if (cause instanceof DOMException && cause.name === 'AbortError') return 'file';
-      // Anything else falls through: the learner must still end up with a file.
+      if (cause instanceof DOMException && cause.name === 'AbortError') return 'cancelled';
     }
   }
-
-  const chunks: string[] = [];
-  for await (const chunk of streamBackup(now, onProgress)) chunks.push(chunk);
-  const blob = new Blob(chunks, { type: 'application/json' });
+  const parts: string[] = [];
+  for await (const chunk of chunks()) parts.push(chunk);
+  const blob = new Blob(parts, { type: 'application/json' });
   const shareFile = new File([blob], name, { type: 'application/json' });
   const nav = navigator as Navigator & { canShare?: (data: unknown) => boolean };
   if (typeof navigator.share === 'function' && nav.canShare?.({ files: [shareFile] })) {
-    await navigator.share({ files: [shareFile], title: name });
-    return 'share';
+    try {
+      await navigator.share({ files: [shareFile], title: name });
+    } catch (cause) {
+      if (cause instanceof DOMException && cause.name === 'AbortError') return 'cancelled';
+      throw cause;
+    }
+    return completed('share');
   }
-
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
   link.download = name;
-  link.click();
-  URL.revokeObjectURL(url);
-  return 'download';
+  try {
+    link.click();
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+  return completed('download');
 }
 
 export interface ImportReport {
@@ -273,6 +302,8 @@ export async function importAll(
   const report: ImportReport = { written: {}, keptLocal: 0 };
   if (!db) throw new Error('This browser is not storing data, so there is nothing to restore into.');
 
+  const storedSettings = await db.get('settings', 'pianopath.settings');
+  const deviceBackupAt = getSettings().lastBackupAt ?? backupTimeIn(storedSettings);
   for (const store of STORE_NAMES) {
     const rows = raw.stores[store];
     if (!Array.isArray(rows)) continue;
@@ -296,17 +327,42 @@ export async function importAll(
       } else if (store === 'sessions') {
         // Autoincrement keys collide across devices, so a merged session gets
         // a fresh one rather than overwriting a run that already happened.
-        const session = { ...(row as Record<string, unknown>) };
+        // A performance written before version 10 has no marker, and nothing
+        // here runs that version's upgrade: marked on the way in, or the
+        // performances' index would never find it (CL23, L53).
+        const session = withPerformanceMark({ ...(row as SessionRow) }) as unknown as Record<string, unknown>;
         if (!options.replace) delete session.id;
         await db.put('sessions', session as never);
+      } else if (store === 'contacts' && !options.replace) {
+        // A pruned run's summary (G1) joins the device's summary of the same
+        // material rather than replacing it: the device may have pruned runs
+        // since the export, and a join restored twice changes nothing.
+        const incoming = row as ContactSummaryRow;
+        await db.put('contacts', mergeSummaries(await db.get('contacts', incoming.key), incoming));
+      } else if (store === 'projects' && !options.replace) {
+        // A project (G1b) joins the device's project of the same piece: the
+        // history is the learner's actions, appended on either side since the
+        // export, and a join restored twice changes nothing — a plain put would
+        // take away what the learner chose on this device since.
+        const incoming = row as ProjectRow;
+        await db.put('projects', mergeProjects(await db.get('projects', incoming.id), incoming));
       } else if (OUT_OF_LINE.includes(store)) {
         const key = raw.keys?.[store]?.[index];
         if (key === undefined) continue;
-        await db.put(store as 'settings', row, key);
+        await db.put(store as 'settings',
+          store === 'settings' && key === 'pianopath.settings'
+            ? restoredSettings(row, deviceBackupAt)
+            : row,
+          key,
+        );
       } else {
         await db.put(store as 'plan', row as never);
       }
       written += 1;
+    }
+    if (store === 'settings' && options.replace && deviceBackupAt !== undefined
+      && !raw.keys?.settings?.includes('pianopath.settings')) {
+      await db.put('settings', JSON.stringify({ lastBackupAt: deviceBackupAt }), 'pianopath.settings');
     }
     report.written[store] = written;
   }
@@ -319,8 +375,33 @@ export async function importAll(
   // no copy in memory since C7: it is read where it is shown.)
   forgetCachedProgress();
   forgetCachedPlan();
+  // The encounters written for the session with no database are not the
+  // restored history (G1): what is on the device now is.
+  forgetCachedEncounters();
+  forgetCachedProjects();
   if (Array.isArray(raw.stores.imports)) importsChanged();
   return report;
+}
+
+function backupTimeIn(raw: unknown): number | undefined {
+  try {
+    return coerceSettings(typeof raw === 'string' ? JSON.parse(raw) as unknown : raw).lastBackupAt;
+  } catch {
+    return undefined;
+  }
+}
+
+function restoredSettings(raw: unknown, lastBackupAt: number | undefined): unknown {
+  try {
+    const value: unknown = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) return raw;
+    const settings = { ...value } as Record<string, unknown>;
+    delete settings.lastBackupAt;
+    if (lastBackupAt !== undefined) settings.lastBackupAt = lastBackupAt;
+    return typeof raw === 'string' ? JSON.stringify(settings) : settings;
+  } catch {
+    return raw;
+  }
 }
 
 export function backupFilename(now = new Date()): string {
@@ -335,42 +416,7 @@ export function backupFilename(now = new Date()): string {
  * phone this is the APK's WebView, where the first two are the ones that give
  * a file you can find again.
  */
-export async function saveBackupFile(file: BackupFile, now = new Date()): Promise<'file' | 'share' | 'download'> {
-  const text = JSON.stringify(file);
-  const name = backupFilename(now);
-
-  const picker = (window as { showSaveFilePicker?: (o: unknown) => Promise<FileSystemFileHandle> })
-    .showSaveFilePicker;
-  if (typeof picker === 'function') {
-    try {
-      const handle = await picker({
-        suggestedName: name,
-        types: [{ description: 'PianoPath backup', accept: { 'application/json': ['.json'] } }],
-      });
-      const writable = await handle.createWritable();
-      await writable.write(text);
-      await writable.close();
-      return 'file';
-    } catch (cause) {
-      // A cancelled picker is not a failure worth falling through loudly for,
-      // but any other error should still leave the learner with a file.
-      if (cause instanceof DOMException && cause.name === 'AbortError') return 'file';
-    }
-  }
-
-  const blob = new Blob([text], { type: 'application/json' });
-  const shareFile = new File([blob], name, { type: 'application/json' });
-  const nav = navigator as Navigator & { canShare?: (data: unknown) => boolean };
-  if (typeof navigator.share === 'function' && nav.canShare?.({ files: [shareFile] })) {
-    await navigator.share({ files: [shareFile], title: name });
-    return 'share';
-  }
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = name;
-  link.click();
-  URL.revokeObjectURL(url);
-  return 'download';
+export async function saveBackupFile(file: BackupFile, now = new Date()): Promise<BackupDelivery> {
+  // One chunk: the file is already in memory, so a plain iterable serves.
+  return deliverBackup(() => [JSON.stringify(file)], now);
 }

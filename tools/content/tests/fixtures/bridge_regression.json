@@ -1,0 +1,71 @@
+{
+  "_comment": [
+    "The bridge regression (D0): generated items whose demand ids were read from their notation by hand and",
+    "pinned here. tools/content/tests/test_measured_demands.py builds each item with the generator, writes it,",
+    "and sends it through tools/content/demands.py; app/tests/unit/demandsOfFiles.test.ts reads the same item",
+    "from the content build's output directly with the detectors. Both are held to these ids, so the build's way",
+    "in returns exactly what app/src/demands/detect.ts produces, and nothing else decides a demand.",
+    "Ids are in the vocabulary's order (measuredDemands). `read` says what the page holds that decides them.",
+    "Two items pin a detector's reading that is not a musical fact, on purpose: the clave's quarter-note pulse,",
+    "written on the second, one-line staff, is read as the bass staff (clef.bass, pitch.ledger) and as a walking",
+    "bass; the stride left hand (bass, chord, tenth, chord, the tenth the chord's own bottom note) is read as a",
+    "walking bass. Those are findings for E, whose detectors they are; a regression pins what the detectors say."
+  ],
+  "items": [
+    {
+      "id": "exercise.interval-reading.c-position.right.01",
+      "demands": ["interval.step", "interval.skip"],
+      "read": "RH G4 E4 F4 D4 F4 D4 F4 D4 F4 D4 D4 C4 in halves and quarters (since CL15 the first note is any degree of the position, here G): two steps (E-F, D-C), eight skips, one unison; C4 to G4, inside a position; no key signature, no ledger line beyond middle C; the left hand rests."
+    },
+    {
+      "id": "exercise.coordination.c.hold",
+      "demands": ["clef.bass", "interval.step", "texture.hands-together"],
+      "read": "RH C4-D4-E4-F4-G4-F4-E4-D4 in quarters and a whole-note C4 over LH whole-note C3s: steps only, a fifth of range, the left hand struck under the right three times."
+    },
+    {
+      "id": "exercise.rhythm.syncopated.4bar",
+      "demands": ["rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.syncopation"],
+      "read": "One line, B4, each bar an eighth, three quarters on the and of 1, 2 and 3, and an eighth: twelve quarters off the beat, eight eighths."
+    },
+    {
+      "id": "exercise.syncopation.tied-across-bar",
+      "demands": ["clef.bass", "interval.step", "rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.ties", "range.beyond-position", "texture.hands-together"],
+      "read": "RH C4 up to G5 by step, two ties across the bar (since CL15): F4 on beat four tied into the next bar (a quarter and an eighth), G4 an eighth off the beat, and E5 on beat three held through the barline to beat two (a half and a quarter); G5 the highest note, on the space above the staff, so no ledger line; whole-note C-E-G chords under it; no key signature. Both ties start on the beat, so no syncopation."
+    },
+    {
+      "id": "exercise.tumbao.c",
+      "demands": ["clef.bass", "pitch.ledger", "interval.step", "interval.leap", "rhythm.dotted-quarter", "rhythm.ties", "rhythm.syncopation", "key.signature", "range.beyond-position"],
+      "read": "LH alone in C minor (three flats, none of them sounding): the bar opens on a rest, a quarter on the and of two, and beat four tied through the barline (a quarter and a dotted quarter); C2 on a ledger line; C2 to C3."
+    },
+    {
+      "id": "exercise.boogie.c.root-fifth",
+      "demands": ["clef.bass", "pitch.ledger", "interval.leap", "rhythm.eighths", "rhythm.shorter-than-quarter", "pitch.chromatic", "range.beyond-position", "texture.hands-together", "texture.left-hand-pattern"],
+      "read": "LH C2-G2 in eighths (C2 on a ledger line) under RH whole-note C4-E4-B-flat4 (B-flat outside C major; the chord spans a seventh); eight left-hand strikes a bar under the right."
+    },
+    {
+      "id": "exercise.open-voicing.c.quartal",
+      "demands": ["clef.bass", "pitch.ledger", "interval.step", "interval.leap", "key.signature", "range.beyond-position", "texture.hands-together"],
+      "read": "Version 2: RH F4-B-flat4-E-flat5, B-flat4-E-flat5-A-flat5, C5-F5-B-flat5, F4-B-flat4-E-flat5 over LH C2 F2 G2 C2 in C minor; A-flat5 and B-flat5 above the staff, C2 below; F2-G2 and A-flat5-B-flat5 are steps."
+    },
+    {
+      "id": "exercise.five-finger.b-major.right",
+      "demands": ["interval.step", "key.signature"],
+      "read": "Version 2: B4 C-sharp5 D-sharp5 E5 F-sharp5 and back, in B major's five sharps: steps only, no accidental beyond the signature (it was B C-sharp E-flat E F-sharp, which read as a skip and a chromatic note)."
+    },
+    {
+      "id": "exercise.clave.son-3-2.pulse",
+      "demands": ["clef.bass", "pitch.ledger", "rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.syncopation", "texture.hands-together", "texture.left-hand-pattern", "texture.walking-bass"],
+      "read": "The son clave in eighths on one line over a quarter-note pulse on a second line (both B4); every second bar opens on a rest. The pulse staff is staff 2, so the detectors read it as the bass staff and its quarters as a walking bass (see the comment)."
+    },
+    {
+      "id": "exercise.stride.c",
+      "demands": ["clef.bass", "pitch.ledger", "interval.leap", "range.beyond-position", "texture.hands-together", "texture.left-hand-pattern", "texture.walking-bass"],
+      "read": "LH C2, E3-G3, E3, E3-G3 (and on G, C, F) under RH whole-note chords; C2 below and F4 above the bass staff; no steps in either line. The left hand's lowest notes never turn back within a bar, so walkingBass reads a walk (see the comment)."
+    },
+    {
+      "id": "exercise.study.interval-reading.c-major.4-4.8bar.sustained.01",
+      "demands": ["clef.bass", "interval.step", "interval.skip", "interval.leap", "texture.hands-together"],
+      "read": "D3's canonical study, read from its notation: RH C4 D4 C4 | E4 G4 F4 | F4 D4 E4 | D4 C4 D4, bars 5-6 restating 1-2, then D4 E4 D4 | C4 (whole), in quarters and halves (the halves on beats 2 and 3), every note on its beat, no rest; steps (C-D, F-E, D-C), skips (C-E, E-G, F-D) and no leap in the tune, and the left hand's held roots C3 F3 G3 moving by leaps (C-F, G-C); C4 to G4 and C3 to G3, a fifth in each hand, so no note beyond the position; middle C and nothing beyond it on a ledger line; no key signature, no accidental; the left hand one note a bar under the tune: hands together, no pattern, no walk"
+    }
+  ]
+}

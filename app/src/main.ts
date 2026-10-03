@@ -75,6 +75,12 @@ function mount(): void {
   void import('./data/evidenceJob')
     .then(({ startEvidenceJob }) => startEvidenceJob())
     .catch(() => undefined);
+  // The stored imports (E2; E25): every score imported before the app measured demands, or
+  // converted by an older converter, measured once through the store, the same way — after the
+  // first screen, one row per idle slice (`data/importStore.ts`, `measureStoredImports`).
+  void import('./data/importStore')
+    .then(({ startImportMeasurement }) => startImportMeasurement())
+    .catch(() => undefined);
 }
 
 // The owner's own difficulty numbers (replan §1.4). Not awaited: every screen

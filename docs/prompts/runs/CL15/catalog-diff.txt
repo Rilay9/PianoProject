@@ -1,0 +1,550 @@
+65 rows moved; by field: {"concepts": 2, "demands": 7, "drill.generator": 64, "measurement.bars": 23, "measurement.contract": 7, "measurement.established": 12, "measurement.located": 50, "measurement.notes": 28, "measurement.span": 18, "measurement.steps": 27, "notation.bars": 23, "notation.chordCount": 20, "notation.finalBass": 22, "provenance.facts": 39, "provenance.formerGeneratorIdentities": 12, "provenance.generator": 64, "provenance.identity": 64, "role": 1, "title": 1}
+- exercise.interval-reading.c-position.left.01
+    drill.generator: {"family": "interval_reading", "seed": 1, "version": 1} -> {"family": "interval_reading", "seed": 1, "version": 2}
+    measurement.contract: ["interval.skip", "interval.step"] -> ["interval.step"]
+    measurement.located: {"clef.bass": 9, "interval.skip": 5, "interval.step": 2} -> {"clef.bass": 12, "interval.skip": 8, "interval.step": 2}
+    measurement.notes: 9 -> 12
+    measurement.span: {"L": [48, 53]} -> {"L": [48, 55]}
+    measurement.steps: 9 -> 12
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 1, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 1, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 1}, "seed": 1, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 1}, "seed": 1, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.left.02
+    drill.generator: {"family": "interval_reading", "seed": 2, "version": 1} -> {"family": "interval_reading", "seed": 2, "version": 2}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 2, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 2, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 2}, "seed": 2, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 2}, "seed": 2, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.left.03
+    drill.generator: {"family": "interval_reading", "seed": 3, "version": 1} -> {"family": "interval_reading", "seed": 3, "version": 2}
+    measurement.contract: ["interval.step"] -> ["interval.skip", "interval.step"]
+    measurement.located: {"clef.bass": 13, "interval.skip": 7, "interval.step": 5} -> {"clef.bass": 10, "interval.skip": 4, "interval.step": 4}
+    measurement.notes: 13 -> 10
+    measurement.steps: 13 -> 10
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 3, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 3, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 3}, "seed": 3, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 3}, "seed": 3, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.left.04
+    drill.generator: {"family": "interval_reading", "seed": 4, "version": 1} -> {"family": "interval_reading", "seed": 4, "version": 2}
+    measurement.located: {"clef.bass": 12, "interval.skip": 7, "interval.step": 3} -> {"clef.bass": 12, "interval.skip": 7, "interval.step": 4}
+    measurement.span: {"L": [48, 53]} -> {"L": [48, 55]}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 4, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 4, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 4}, "seed": 4, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 4}, "seed": 4, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.left.05
+    drill.generator: {"family": "interval_reading", "seed": 5, "version": 1} -> {"family": "interval_reading", "seed": 5, "version": 2}
+    measurement.located: {"clef.bass": 13, "interval.skip": 7, "interval.step": 5} -> {"clef.bass": 13, "interval.skip": 8, "interval.step": 4}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 5, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 5, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 5}, "seed": 5, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 5}, "seed": 5, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.left.06
+    drill.generator: {"family": "interval_reading", "seed": 6, "version": 1} -> {"family": "interval_reading", "seed": 6, "version": 2}
+    measurement.contract: null -> ["interval.step"]
+    measurement.located: {"clef.bass": 15, "interval.skip": 6, "interval.step": 8} -> {"clef.bass": 15, "interval.skip": 6, "interval.step": 7}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 6, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 6, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 6}, "seed": 6, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 6}, "seed": 6, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.left.07
+    drill.generator: {"family": "interval_reading", "seed": 7, "version": 1} -> {"family": "interval_reading", "seed": 7, "version": 2}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.formerGeneratorIdentities: null -> [{"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 7}, "seed": 7, "tempoBpm": 66, "version": 1}]
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 7, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 7, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 7}, "seed": 7, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 7}, "seed": 7, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.left.08
+    drill.generator: {"family": "interval_reading", "seed": 8, "version": 1} -> {"family": "interval_reading", "seed": 8, "version": 2}
+    measurement.located: {"clef.bass": 11, "interval.skip": 5, "interval.step": 5} -> {"clef.bass": 11, "interval.skip": 5, "interval.step": 4}
+    measurement.span: {"L": [48, 53]} -> {"L": [48, 55]}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 8, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 8, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 8}, "seed": 8, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "left", "key": "C", "maxInterval": 3, "seed": 8}, "seed": 8, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.right.01
+    drill.generator: {"family": "interval_reading", "seed": 1, "version": 1} -> {"family": "interval_reading", "seed": 1, "version": 2}
+    measurement.contract: ["interval.skip", "interval.step"] -> ["interval.step"]
+    measurement.located: {"interval.skip": 5, "interval.step": 2} -> {"interval.skip": 8, "interval.step": 2}
+    measurement.notes: 9 -> 12
+    measurement.span: {"R": [60, 65]} -> {"R": [60, 67]}
+    measurement.steps: 9 -> 12
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 1, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 1, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 1}, "seed": 1, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 1}, "seed": 1, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.right.02
+    drill.generator: {"family": "interval_reading", "seed": 2, "version": 1} -> {"family": "interval_reading", "seed": 2, "version": 2}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 2, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 2, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 2}, "seed": 2, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 2}, "seed": 2, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.right.03
+    drill.generator: {"family": "interval_reading", "seed": 3, "version": 1} -> {"family": "interval_reading", "seed": 3, "version": 2}
+    measurement.contract: ["interval.step"] -> ["interval.skip", "interval.step"]
+    measurement.located: {"interval.skip": 7, "interval.step": 5} -> {"interval.skip": 4, "interval.step": 4}
+    measurement.notes: 13 -> 10
+    measurement.steps: 13 -> 10
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 3, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 3, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 3}, "seed": 3, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 3}, "seed": 3, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.right.04
+    drill.generator: {"family": "interval_reading", "seed": 4, "version": 1} -> {"family": "interval_reading", "seed": 4, "version": 2}
+    measurement.located: {"interval.skip": 7, "interval.step": 3} -> {"interval.skip": 7, "interval.step": 4}
+    measurement.span: {"R": [60, 65]} -> {"R": [60, 67]}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 4, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 4, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 4}, "seed": 4, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 4}, "seed": 4, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.right.05
+    drill.generator: {"family": "interval_reading", "seed": 5, "version": 1} -> {"family": "interval_reading", "seed": 5, "version": 2}
+    measurement.located: {"interval.skip": 7, "interval.step": 5} -> {"interval.skip": 8, "interval.step": 4}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 5, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 5, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 5}, "seed": 5, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 5}, "seed": 5, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.right.06
+    drill.generator: {"family": "interval_reading", "seed": 6, "version": 1} -> {"family": "interval_reading", "seed": 6, "version": 2}
+    measurement.contract: null -> ["interval.step"]
+    measurement.located: {"interval.skip": 6, "interval.step": 8} -> {"interval.skip": 6, "interval.step": 7}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 6, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 6, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 6}, "seed": 6, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 6}, "seed": 6, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.right.07
+    drill.generator: {"family": "interval_reading", "seed": 7, "version": 1} -> {"family": "interval_reading", "seed": 7, "version": 2}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.formerGeneratorIdentities: null -> [{"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 7}, "seed": 7, "tempoBpm": 66, "version": 1}]
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 7, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 7, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 7}, "seed": 7, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 7}, "seed": 7, "tempoBpm": 66, "version": 2}
+- exercise.interval-reading.c-position.right.08
+    drill.generator: {"family": "interval_reading", "seed": 8, "version": 1} -> {"family": "interval_reading", "seed": 8, "version": 2}
+    measurement.located: {"interval.skip": 5, "interval.step": 5} -> {"interval.skip": 5, "interval.step": 4}
+    measurement.span: {"R": [60, 65]} -> {"R": [60, 67]}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 8, "version": 1} -> {"family": "interval_reading", "name": "tools/content/generate_exercises.py", "seed": 8, "version": 2}
+    provenance.identity: {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 8}, "seed": 8, "tempoBpm": 66, "version": 1} -> {"family": "interval_reading", "kind": "generator", "recipe": {"hands": "right", "key": "C", "maxInterval": 3, "seed": 8}, "seed": 8, "tempoBpm": 66, "version": 2}
+- exercise.pentatonic.a.blues
+    drill.generator: {"family": "pentatonic", "seed": null, "version": 1} -> {"family": "pentatonic", "seed": null, "version": 2}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.formerGeneratorIdentities: null -> [{"family": "pentatonic", "kind": "generator", "recipe": {"form": "blues", "hands": "right", "key": "A"}, "seed": null, "tempoBpm": 72, "version": 1}]
+    provenance.generator: {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "pentatonic", "kind": "generator", "recipe": {"form": "blues", "hands": "right", "key": "A"}, "seed": null, "tempoBpm": 72, "version": 1} -> {"family": "pentatonic", "kind": "generator", "recipe": {"form": "blues", "hands": "right", "key": "A"}, "seed": null, "tempoBpm": 72, "version": 2}
+- exercise.pentatonic.a.pentatonic
+    drill.generator: {"family": "pentatonic", "seed": null, "version": 1} -> {"family": "pentatonic", "seed": null, "version": 2}
+    measurement.bars: 2 -> 3
+    measurement.established: ["rhythm.eighths", "rhythm.shorter-than-quarter", "range.beyond-position"] -> ["interval.step", "interval.skip", "rhythm.eighths", "rhythm.shorter-than-quarter", "range.beyond-position"]
+    measurement.located: {"interval.skip": 4, "interval.step": 6, "pitch.ledger": 1, "range.beyond-position": 2, "rhythm.eighths": 11, "rhythm.shorter-than-quarter": 11} -> {"interval.skip": 8, "interval.step": 12, "pitch.ledger": 2, "range.beyond-position": 2, "rhythm.eighths": 21, "rhythm.shorter-than-quarter": 21}
+    measurement.notes: 11 -> 21
+    measurement.steps: 13 -> 22
+    notation.bars: 2 -> 3
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "pentatonic", "kind": "generator", "recipe": {"form": "pentatonic", "hands": "right", "key": "A"}, "seed": null, "tempoBpm": 72, "version": 1} -> {"family": "pentatonic", "kind": "generator", "recipe": {"form": "pentatonic", "hands": "right", "key": "A"}, "seed": null, "tempoBpm": 72, "version": 2}
+- exercise.pentatonic.d.blues
+    drill.generator: {"family": "pentatonic", "seed": null, "version": 1} -> {"family": "pentatonic", "seed": null, "version": 2}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.formerGeneratorIdentities: null -> [{"family": "pentatonic", "kind": "generator", "recipe": {"form": "blues", "hands": "right", "key": "D"}, "seed": null, "tempoBpm": 72, "version": 1}]
+    provenance.generator: {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "pentatonic", "kind": "generator", "recipe": {"form": "blues", "hands": "right", "key": "D"}, "seed": null, "tempoBpm": 72, "version": 1} -> {"family": "pentatonic", "kind": "generator", "recipe": {"form": "blues", "hands": "right", "key": "D"}, "seed": null, "tempoBpm": 72, "version": 2}
+- exercise.pentatonic.d.pentatonic
+    drill.generator: {"family": "pentatonic", "seed": null, "version": 1} -> {"family": "pentatonic", "seed": null, "version": 2}
+    measurement.bars: 2 -> 3
+    measurement.established: ["rhythm.eighths", "rhythm.shorter-than-quarter", "range.beyond-position"] -> ["interval.step", "interval.skip", "rhythm.eighths", "rhythm.shorter-than-quarter", "range.beyond-position"]
+    measurement.located: {"interval.skip": 4, "interval.step": 6, "range.beyond-position": 2, "rhythm.eighths": 11, "rhythm.shorter-than-quarter": 11} -> {"interval.skip": 8, "interval.step": 12, "range.beyond-position": 2, "rhythm.eighths": 21, "rhythm.shorter-than-quarter": 21}
+    measurement.notes: 11 -> 21
+    measurement.steps: 13 -> 22
+    notation.bars: 2 -> 3
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "pentatonic", "kind": "generator", "recipe": {"form": "pentatonic", "hands": "right", "key": "D"}, "seed": null, "tempoBpm": 72, "version": 1} -> {"family": "pentatonic", "kind": "generator", "recipe": {"form": "pentatonic", "hands": "right", "key": "D"}, "seed": null, "tempoBpm": 72, "version": 2}
+- exercise.pentatonic.e.blues
+    drill.generator: {"family": "pentatonic", "seed": null, "version": 1} -> {"family": "pentatonic", "seed": null, "version": 2}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.formerGeneratorIdentities: null -> [{"family": "pentatonic", "kind": "generator", "recipe": {"form": "blues", "hands": "right", "key": "E"}, "seed": null, "tempoBpm": 72, "version": 1}]
+    provenance.generator: {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "pentatonic", "kind": "generator", "recipe": {"form": "blues", "hands": "right", "key": "E"}, "seed": null, "tempoBpm": 72, "version": 1} -> {"family": "pentatonic", "kind": "generator", "recipe": {"form": "blues", "hands": "right", "key": "E"}, "seed": null, "tempoBpm": 72, "version": 2}
+- exercise.pentatonic.e.pentatonic
+    drill.generator: {"family": "pentatonic", "seed": null, "version": 1} -> {"family": "pentatonic", "seed": null, "version": 2}
+    measurement.bars: 2 -> 3
+    measurement.established: ["rhythm.eighths", "rhythm.shorter-than-quarter", "range.beyond-position"] -> ["interval.step", "interval.skip", "rhythm.eighths", "rhythm.shorter-than-quarter", "range.beyond-position"]
+    measurement.located: {"interval.skip": 4, "interval.step": 6, "range.beyond-position": 2, "rhythm.eighths": 11, "rhythm.shorter-than-quarter": 11} -> {"interval.skip": 8, "interval.step": 12, "range.beyond-position": 2, "rhythm.eighths": 21, "rhythm.shorter-than-quarter": 21}
+    measurement.notes: 11 -> 21
+    measurement.steps: 13 -> 22
+    notation.bars: 2 -> 3
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "pentatonic", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "pentatonic", "kind": "generator", "recipe": {"form": "pentatonic", "hands": "right", "key": "E"}, "seed": null, "tempoBpm": 72, "version": 1} -> {"family": "pentatonic", "kind": "generator", "recipe": {"form": "pentatonic", "hands": "right", "key": "E"}, "seed": null, "tempoBpm": 72, "version": 2}
+- exercise.power-chord.a
+    role: "variable" -> "canonical"
+- exercise.syncopation.sixteenth
+    concepts: ["rhythm", "syncopation", "sixteenth"] -> ["rhythm", "sixteenth"]
+    drill.generator: {"family": "syncopation", "seed": null, "version": 1} -> {"family": "syncopation", "seed": null, "version": 2}
+    provenance.formerGeneratorIdentities: null -> [{"family": "syncopation", "kind": "generator", "recipe": {"hands": "both", "timeSig": "4/4", "variant": "sixteenth"}, "seed": null, "tempoBpm": 76, "version": 1}]
+    provenance.generator: {"family": "syncopation", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "syncopation", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "syncopation", "kind": "generator", "recipe": {"hands": "both", "timeSig": "4/4", "variant": "sixteenth"}, "seed": null, "tempoBpm": 76, "version": 1} -> {"family": "syncopation", "kind": "generator", "recipe": {"hands": "both", "timeSig": "4/4", "variant": "sixteenth"}, "seed": null, "tempoBpm": 76, "version": 2}
+    title: "Sixteenth-note syncopation" -> "Sixteenth-note rhythm over held chords"
+- exercise.syncopation.tied-across-bar
+    concepts: ["rhythm", "syncopation", "tied-across-bar"] -> ["rhythm", "tied-across-bar"]
+    demands: ["clef.bass", "pitch.ledger", "interval.step", "rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.ties", "range.beyond-position", "texture.hands-together"] -> ["clef.bass", "interval.step", "rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.ties", "range.beyond-position", "texture.hands-together"]
+    drill.generator: {"family": "syncopation", "seed": null, "version": 1} -> {"family": "syncopation", "seed": null, "version": 2}
+    measurement.contract: null -> ["rhythm.ties"]
+    measurement.established: ["clef.bass", "interval.step", "range.beyond-position", "texture.hands-together"] -> ["clef.bass", "interval.step", "rhythm.ties", "range.beyond-position", "texture.hands-together"]
+    measurement.located: {"clef.bass": 12, "interval.step": 12, "pitch.ledger": 1, "range.beyond-position": 8, "rhythm.eighths": 2, "rhythm.shorter-than-quarter": 2, "rhythm.ties": 1, "texture.hands-together": 15} -> {"clef.bass": 12, "interval.step": 11, "range.beyond-position": 7, "rhythm.eighths": 2, "rhythm.shorter-than-quarter": 2, "rhythm.ties": 2, "texture.hands-together": 14}
+    measurement.notes: 25 -> 24
+    measurement.span: {"L": [48, 55], "R": [60, 81]} -> {"L": [48, 55], "R": [60, 79]}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "syncopation", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "syncopation", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "syncopation", "kind": "generator", "recipe": {"hands": "both", "timeSig": "4/4", "variant": "tied-across-bar"}, "seed": null, "tempoBpm": 76, "version": 1} -> {"family": "syncopation", "kind": "generator", "recipe": {"hands": "both", "timeSig": "4/4", "variant": "tied-across-bar"}, "seed": null, "tempoBpm": 76, "version": 2}
+- exercise.tremolo-third.c.left
+    demands: ["clef.bass", "pitch.ledger", "interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "pitch.chromatic", "range.beyond-position"] -> ["clef.bass", "pitch.ledger", "interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "range.beyond-position"]
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    measurement.established: ["clef.bass", "pitch.ledger", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "pitch.chromatic", "range.beyond-position"] -> ["clef.bass", "pitch.ledger", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths"]
+    measurement.located: {"clef.bass": 32, "interval.skip": 28, "interval.step": 3, "pitch.chromatic": 8, "pitch.ledger": 16, "range.beyond-position": 2, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32} -> {"clef.bass": 32, "interval.skip": 28, "interval.step": 3, "pitch.ledger": 16, "range.beyond-position": 1, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32}
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "C", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "C", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.tremolo-third.c.right
+    demands: ["interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "pitch.chromatic", "range.beyond-position"] -> ["interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "range.beyond-position"]
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    measurement.established: ["interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "pitch.chromatic", "range.beyond-position"] -> ["interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths"]
+    measurement.located: {"interval.skip": 28, "interval.step": 3, "pitch.chromatic": 8, "range.beyond-position": 2, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32} -> {"interval.skip": 28, "interval.step": 3, "range.beyond-position": 1, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32}
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "C", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "C", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.tremolo-third.f.left
+    demands: ["clef.bass", "interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "key.signature", "pitch.chromatic", "range.beyond-position"] -> ["clef.bass", "interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "key.signature", "range.beyond-position"]
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    measurement.established: ["clef.bass", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "pitch.chromatic", "range.beyond-position"] -> ["clef.bass", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "key.signature"]
+    measurement.located: {"clef.bass": 32, "interval.skip": 28, "interval.step": 3, "key.signature": 4, "pitch.chromatic": 8, "range.beyond-position": 2, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32} -> {"clef.bass": 32, "interval.skip": 28, "interval.step": 3, "key.signature": 8, "range.beyond-position": 1, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32}
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "F", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "F", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.tremolo-third.f.right
+    demands: ["interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "key.signature", "pitch.chromatic", "range.beyond-position"] -> ["interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "key.signature", "range.beyond-position"]
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    measurement.established: ["interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "pitch.chromatic", "range.beyond-position"] -> ["interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "key.signature"]
+    measurement.located: {"interval.skip": 28, "interval.step": 3, "key.signature": 4, "pitch.chromatic": 8, "range.beyond-position": 2, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32} -> {"interval.skip": 28, "interval.step": 3, "key.signature": 8, "range.beyond-position": 1, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32}
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "F", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "F", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.tremolo-third.g.left
+    demands: ["clef.bass", "interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "key.signature", "pitch.chromatic", "range.beyond-position"] -> ["clef.bass", "interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "key.signature", "range.beyond-position"]
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    measurement.established: ["clef.bass", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "pitch.chromatic", "range.beyond-position"] -> ["clef.bass", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths"]
+    measurement.located: {"clef.bass": 32, "interval.skip": 28, "interval.step": 3, "pitch.chromatic": 8, "range.beyond-position": 2, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32} -> {"clef.bass": 32, "interval.skip": 28, "interval.step": 3, "range.beyond-position": 1, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32}
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "G", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "G", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.tremolo-third.g.right
+    demands: ["interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "key.signature", "pitch.chromatic", "range.beyond-position"] -> ["interval.step", "interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "key.signature", "range.beyond-position"]
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    measurement.established: ["interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "pitch.chromatic", "range.beyond-position"] -> ["interval.skip", "rhythm.shorter-than-quarter", "rhythm.sixteenths"]
+    measurement.located: {"interval.skip": 28, "interval.step": 3, "pitch.chromatic": 8, "range.beyond-position": 2, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32} -> {"interval.skip": 28, "interval.step": 3, "range.beyond-position": 1, "rhythm.shorter-than-quarter": 32, "rhythm.sixteenths": 32}
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "G", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "G", "shape": "third"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.tremolo.c.left
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    provenance.formerGeneratorIdentities: null -> [{"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "C", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1}]
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "C", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "C", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.tremolo.c.right
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    provenance.formerGeneratorIdentities: null -> [{"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "C", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1}]
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "C", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "C", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.tremolo.f.left
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    provenance.formerGeneratorIdentities: null -> [{"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "F", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1}]
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "F", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "F", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.tremolo.f.right
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    provenance.formerGeneratorIdentities: null -> [{"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "F", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1}]
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "F", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "F", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.tremolo.g.left
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    provenance.formerGeneratorIdentities: null -> [{"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "G", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1}]
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "G", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "left", "key": "G", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.tremolo.g.right
+    drill.generator: {"family": "tremolo_octaves", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "seed": null, "version": 2}
+    provenance.formerGeneratorIdentities: null -> [{"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "G", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1}]
+    provenance.generator: {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 1} -> {"family": "tremolo_octaves", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2}
+    provenance.identity: {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "G", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 1} -> {"family": "tremolo_octaves", "kind": "generator", "recipe": {"fingeringVerified": false, "hands": "right", "key": "G", "shape": "octave"}, "seed": null, "tempoBpm": 60, "version": 2}
+- exercise.walking-bass.a.blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 14, "interval.skip": 25, "interval.step": 14, "key.signature": 34, "pitch.chromatic": 12, "pitch.ledger": 10, "range.beyond-position": 4, "texture.hands-together": 84, "texture.left-hand-pattern": 48} -> {"clef.bass": 52, "interval.leap": 16, "interval.skip": 27, "interval.step": 15, "key.signature": 36, "pitch.chromatic": 13, "pitch.ledger": 10, "range.beyond-position": 5, "texture.hands-together": 91, "texture.left-hand-pattern": 52}
+    measurement.notes: 84 -> 91
+    measurement.span: {"L": [37, 52], "R": [62, 79]} -> {"L": [37, 57], "R": [62, 79]}
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 4 -> 9
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "A", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "A", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.a.blues.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 9, "interval.skip": 25, "interval.step": 13, "key.signature": 22, "pitch.chromatic": 2, "pitch.ledger": 10, "range.beyond-position": 2} -> {"clef.bass": 52, "interval.leap": 10, "interval.skip": 27, "interval.step": 14, "key.signature": 23, "pitch.chromatic": 2, "pitch.ledger": 10, "range.beyond-position": 3}
+    measurement.notes: 48 -> 52
+    measurement.span: {"L": [37, 52]} -> {"L": [37, 57]}
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 4 -> 9
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "A", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "A", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}
+- exercise.walking-bass.b-flat.blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 14, "interval.skip": 25, "interval.step": 14, "key.signature": 25, "pitch.chromatic": 12, "pitch.ledger": 15, "range.beyond-position": 4, "texture.hands-together": 84, "texture.left-hand-pattern": 48} -> {"clef.bass": 52, "interval.leap": 16, "interval.skip": 27, "interval.step": 15, "key.signature": 28, "pitch.chromatic": 13, "pitch.ledger": 16, "range.beyond-position": 5, "texture.hands-together": 91, "texture.left-hand-pattern": 52}
+    measurement.notes: 84 -> 91
+    measurement.span: {"L": [38, 53], "R": [63, 80]} -> {"L": [38, 58], "R": [63, 80]}
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 5 -> 10
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "B-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "B-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.b-flat.blues.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 9, "interval.skip": 25, "interval.step": 13, "key.signature": 13, "pitch.chromatic": 2, "pitch.ledger": 8, "range.beyond-position": 2} -> {"clef.bass": 52, "interval.leap": 10, "interval.skip": 27, "interval.step": 14, "key.signature": 15, "pitch.chromatic": 2, "pitch.ledger": 8, "range.beyond-position": 3}
+    measurement.notes: 48 -> 52
+    measurement.span: {"L": [38, 53]} -> {"L": [38, 58]}
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 5 -> 10
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "B-", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "B-", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}
+- exercise.walking-bass.b-flat.ii-v-i
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.located: {"clef.bass": 16, "interval.leap": 4, "interval.skip": 10, "interval.step": 3, "key.signature": 8, "pitch.chromatic": 2, "pitch.ledger": 6, "range.beyond-position": 8, "texture.hands-together": 28, "texture.left-hand-pattern": 16} -> {"clef.bass": 16, "interval.leap": 4, "interval.skip": 10, "interval.step": 3, "key.signature": 9, "pitch.chromatic": 1, "pitch.ledger": 5, "range.beyond-position": 8, "texture.hands-together": 28, "texture.left-hand-pattern": 16}
+    measurement.span: {"L": [35, 53], "R": [60, 81]} -> {"L": [36, 58], "R": [60, 81]}
+    notation.finalBass: 11 -> 10
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "both", "key": "B-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "both", "key": "B-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.b-flat.ii-v-i.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.established: ["clef.bass", "pitch.ledger", "interval.skip", "range.beyond-position"] -> ["clef.bass", "interval.skip", "range.beyond-position"]
+    measurement.located: {"clef.bass": 16, "interval.leap": 2, "interval.skip": 10, "interval.step": 3, "key.signature": 3, "pitch.chromatic": 2, "pitch.ledger": 4, "range.beyond-position": 5} -> {"clef.bass": 16, "interval.leap": 2, "interval.skip": 10, "interval.step": 3, "key.signature": 4, "pitch.chromatic": 1, "pitch.ledger": 3, "range.beyond-position": 5}
+    measurement.span: {"L": [35, 53]} -> {"L": [36, 58]}
+    notation.finalBass: 11 -> 10
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "left", "key": "B-", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "left", "key": "B-", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}
+- exercise.walking-bass.b-flat.minor-blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 13, "interval.skip": 27, "interval.step": 13, "key.signature": 54, "pitch.chromatic": 16, "pitch.ledger": 13, "range.beyond-position": 4, "texture.hands-together": 84, "texture.left-hand-pattern": 48} -> {"clef.bass": 52, "interval.leap": 15, "interval.skip": 29, "interval.step": 14, "key.signature": 60, "pitch.chromatic": 16, "pitch.ledger": 14, "range.beyond-position": 5, "texture.hands-together": 91, "texture.left-hand-pattern": 52}
+    measurement.notes: 84 -> 91
+    measurement.span: {"L": [38, 53], "R": [63, 80]} -> {"L": [38, 58], "R": [63, 80]}
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 5 -> 10
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "minor-blues", "hands": "both", "key": "B-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "minor-blues", "hands": "both", "key": "B-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.c.blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 14, "interval.skip": 25, "interval.step": 14, "pitch.chromatic": 12, "pitch.ledger": 24, "range.beyond-position": 7, "texture.hands-together": 84, "texture.left-hand-pattern": 48} -> {"clef.bass": 52, "interval.leap": 16, "interval.skip": 27, "interval.step": 15, "pitch.chromatic": 13, "pitch.ledger": 26, "range.beyond-position": 7, "texture.hands-together": 91, "texture.left-hand-pattern": 52}
+    measurement.notes: 84 -> 91
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 11 -> 0
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "C", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "C", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.c.blues.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 9, "interval.skip": 25, "interval.step": 13, "pitch.chromatic": 2, "pitch.ledger": 24, "range.beyond-position": 4} -> {"clef.bass": 52, "interval.leap": 10, "interval.skip": 27, "interval.step": 14, "pitch.chromatic": 2, "pitch.ledger": 26, "range.beyond-position": 4}
+    measurement.notes: 48 -> 52
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 11 -> 0
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "C", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "C", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}
+- exercise.walking-bass.c.ii-v-i
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.located: {"clef.bass": 16, "interval.leap": 5, "interval.skip": 9, "interval.step": 3, "pitch.chromatic": 2, "pitch.ledger": 8, "range.beyond-position": 6, "texture.hands-together": 28, "texture.left-hand-pattern": 16, "texture.walking-bass": 16} -> {"clef.bass": 16, "interval.leap": 5, "interval.skip": 9, "interval.step": 3, "pitch.chromatic": 1, "pitch.ledger": 7, "range.beyond-position": 6, "texture.hands-together": 28, "texture.left-hand-pattern": 16, "texture.walking-bass": 16}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "both", "key": "C", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "both", "key": "C", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.c.ii-v-i.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.located: {"clef.bass": 16, "interval.leap": 3, "interval.skip": 9, "interval.step": 3, "pitch.chromatic": 2, "pitch.ledger": 8, "range.beyond-position": 3} -> {"clef.bass": 16, "interval.leap": 3, "interval.skip": 9, "interval.step": 3, "pitch.chromatic": 1, "pitch.ledger": 7, "range.beyond-position": 3}
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "left", "key": "C", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "left", "key": "C", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}
+- exercise.walking-bass.c.minor-blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 14, "interval.skip": 25, "interval.step": 13, "key.signature": 30, "pitch.chromatic": 16, "pitch.ledger": 23, "range.beyond-position": 7, "texture.hands-together": 84, "texture.left-hand-pattern": 48, "texture.walking-bass": 48} -> {"clef.bass": 52, "interval.leap": 16, "interval.skip": 27, "interval.step": 14, "key.signature": 33, "pitch.chromatic": 16, "pitch.ledger": 25, "range.beyond-position": 7, "texture.hands-together": 91, "texture.left-hand-pattern": 52, "texture.walking-bass": 52}
+    measurement.notes: 84 -> 91
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 11 -> 0
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "minor-blues", "hands": "both", "key": "C", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "minor-blues", "hands": "both", "key": "C", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.d.blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 14, "interval.skip": 25, "interval.step": 14, "key.signature": 28, "pitch.chromatic": 12, "pitch.ledger": 14, "range.beyond-position": 7, "texture.hands-together": 84, "texture.left-hand-pattern": 48} -> {"clef.bass": 52, "interval.leap": 16, "interval.skip": 27, "interval.step": 15, "key.signature": 30, "pitch.chromatic": 13, "pitch.ledger": 15, "range.beyond-position": 7, "texture.hands-together": 91, "texture.left-hand-pattern": 52}
+    measurement.notes: 84 -> 91
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 1 -> 2
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "D", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "D", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.d.blues.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 9, "interval.skip": 25, "interval.step": 13, "key.signature": 19, "pitch.chromatic": 2, "pitch.ledger": 14, "range.beyond-position": 4} -> {"clef.bass": 52, "interval.leap": 10, "interval.skip": 27, "interval.step": 14, "key.signature": 20, "pitch.chromatic": 2, "pitch.ledger": 15, "range.beyond-position": 4}
+    measurement.notes: 48 -> 52
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 1 -> 2
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "D", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "D", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}
+- exercise.walking-bass.e-flat.blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 14, "interval.skip": 25, "interval.step": 14, "key.signature": 36, "pitch.chromatic": 12, "pitch.ledger": 16, "range.beyond-position": 7, "texture.hands-together": 84, "texture.left-hand-pattern": 48} -> {"clef.bass": 52, "interval.leap": 16, "interval.skip": 27, "interval.step": 15, "key.signature": 40, "pitch.chromatic": 13, "pitch.ledger": 17, "range.beyond-position": 7, "texture.hands-together": 91, "texture.left-hand-pattern": 52}
+    measurement.notes: 84 -> 91
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 2 -> 3
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "E-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "E-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.e-flat.blues.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 9, "interval.skip": 25, "interval.step": 13, "key.signature": 22, "pitch.chromatic": 2, "pitch.ledger": 14, "range.beyond-position": 4} -> {"clef.bass": 52, "interval.leap": 10, "interval.skip": 27, "interval.step": 14, "key.signature": 25, "pitch.chromatic": 2, "pitch.ledger": 15, "range.beyond-position": 4}
+    measurement.notes: 48 -> 52
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 2 -> 3
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "E-", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "E-", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}
+- exercise.walking-bass.e-flat.ii-v-i
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.located: {"clef.bass": 16, "interval.leap": 5, "interval.skip": 9, "interval.step": 3, "key.signature": 12, "pitch.chromatic": 2, "pitch.ledger": 6, "range.beyond-position": 6, "texture.hands-together": 28, "texture.left-hand-pattern": 16, "texture.walking-bass": 16} -> {"clef.bass": 16, "interval.leap": 5, "interval.skip": 9, "interval.step": 3, "key.signature": 13, "pitch.chromatic": 1, "pitch.ledger": 5, "range.beyond-position": 6, "texture.hands-together": 28, "texture.left-hand-pattern": 16, "texture.walking-bass": 16}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "both", "key": "E-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "both", "key": "E-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.e-flat.ii-v-i.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.located: {"clef.bass": 16, "interval.leap": 3, "interval.skip": 9, "interval.step": 3, "key.signature": 6, "pitch.chromatic": 2, "pitch.ledger": 5, "range.beyond-position": 3} -> {"clef.bass": 16, "interval.leap": 3, "interval.skip": 9, "interval.step": 3, "key.signature": 7, "pitch.chromatic": 1, "pitch.ledger": 4, "range.beyond-position": 3}
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "left", "key": "E-", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "left", "key": "E-", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}
+- exercise.walking-bass.e-flat.minor-blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 14, "interval.skip": 25, "interval.step": 13, "key.signature": 60, "pitch.chromatic": 22, "pitch.ledger": 17, "range.beyond-position": 7, "texture.hands-together": 84, "texture.left-hand-pattern": 48, "texture.walking-bass": 48} -> {"clef.bass": 52, "interval.leap": 16, "interval.skip": 27, "interval.step": 14, "key.signature": 67, "pitch.chromatic": 22, "pitch.ledger": 18, "range.beyond-position": 7, "texture.hands-together": 91, "texture.left-hand-pattern": 52, "texture.walking-bass": 52}
+    measurement.notes: 84 -> 91
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 2 -> 3
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "minor-blues", "hands": "both", "key": "E-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "minor-blues", "hands": "both", "key": "E-", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.e.blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 14, "interval.skip": 25, "interval.step": 14, "key.signature": 36, "pitch.chromatic": 12, "pitch.ledger": 16, "range.beyond-position": 7, "texture.hands-together": 84, "texture.left-hand-pattern": 48} -> {"clef.bass": 52, "interval.leap": 16, "interval.skip": 27, "interval.step": 15, "key.signature": 38, "pitch.chromatic": 13, "pitch.ledger": 17, "range.beyond-position": 7, "texture.hands-together": 91, "texture.left-hand-pattern": 52}
+    measurement.notes: 84 -> 91
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 3 -> 4
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "E", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "E", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.e.blues.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 9, "interval.skip": 25, "interval.step": 13, "key.signature": 24, "pitch.chromatic": 2, "pitch.ledger": 14, "range.beyond-position": 4} -> {"clef.bass": 52, "interval.leap": 10, "interval.skip": 27, "interval.step": 14, "key.signature": 25, "pitch.chromatic": 2, "pitch.ledger": 15, "range.beyond-position": 4}
+    measurement.notes: 48 -> 52
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 3 -> 4
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "E", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "E", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}
+- exercise.walking-bass.f.blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 15, "interval.skip": 26, "interval.step": 12, "key.signature": 8, "pitch.chromatic": 12, "pitch.ledger": 16, "range.beyond-position": 7, "texture.hands-together": 84, "texture.left-hand-pattern": 48} -> {"clef.bass": 52, "interval.leap": 17, "interval.skip": 28, "interval.step": 13, "key.signature": 8, "pitch.chromatic": 13, "pitch.ledger": 16, "range.beyond-position": 7, "texture.hands-together": 91, "texture.left-hand-pattern": 52}
+    measurement.notes: 84 -> 91
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 0 -> 5
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "F", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "F", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.f.blues.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 9, "interval.skip": 26, "interval.step": 12, "key.signature": 3, "pitch.chromatic": 2, "pitch.ledger": 13, "range.beyond-position": 4} -> {"clef.bass": 52, "interval.leap": 10, "interval.skip": 28, "interval.step": 13, "key.signature": 3, "pitch.chromatic": 2, "pitch.ledger": 13, "range.beyond-position": 4}
+    measurement.notes: 48 -> 52
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 0 -> 5
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "F", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "F", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}
+- exercise.walking-bass.f.ii-v-i
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.located: {"clef.bass": 16, "interval.leap": 5, "interval.skip": 9, "interval.step": 3, "key.signature": 3, "pitch.chromatic": 2, "pitch.ledger": 5, "range.beyond-position": 3, "texture.hands-together": 28, "texture.left-hand-pattern": 16} -> {"clef.bass": 16, "interval.leap": 5, "interval.skip": 9, "interval.step": 3, "key.signature": 3, "pitch.chromatic": 1, "pitch.ledger": 5, "range.beyond-position": 4, "texture.hands-together": 28, "texture.left-hand-pattern": 16}
+    measurement.span: {"L": [35, 50], "R": [60, 77]} -> {"L": [35, 53], "R": [60, 77]}
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "both", "key": "F", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "both", "key": "F", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.f.ii-v-i.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.established: ["clef.bass", "pitch.ledger", "interval.skip"] -> ["clef.bass", "pitch.ledger", "interval.skip", "range.beyond-position"]
+    measurement.located: {"clef.bass": 16, "interval.leap": 3, "interval.skip": 9, "interval.step": 3, "key.signature": 1, "pitch.chromatic": 2, "pitch.ledger": 5, "range.beyond-position": 1} -> {"clef.bass": 16, "interval.leap": 3, "interval.skip": 9, "interval.step": 3, "key.signature": 1, "pitch.chromatic": 1, "pitch.ledger": 5, "range.beyond-position": 2}
+    measurement.span: {"L": [35, 50]} -> {"L": [35, 53]}
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "left", "key": "F", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "ii-V-I", "hands": "left", "key": "F", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}
+- exercise.walking-bass.f.minor-blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 13, "interval.skip": 28, "interval.step": 12, "key.signature": 36, "pitch.chromatic": 16, "pitch.ledger": 17, "range.beyond-position": 9, "texture.hands-together": 84, "texture.left-hand-pattern": 48} -> {"clef.bass": 52, "interval.leap": 15, "interval.skip": 30, "interval.step": 13, "key.signature": 39, "pitch.chromatic": 16, "pitch.ledger": 17, "range.beyond-position": 9, "texture.hands-together": 91, "texture.left-hand-pattern": 52}
+    measurement.notes: 84 -> 91
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 0 -> 5
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "minor-blues", "hands": "both", "key": "F", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "minor-blues", "hands": "both", "key": "F", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.g.blues
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 14, "interval.skip": 25, "interval.step": 14, "key.signature": 11, "pitch.chromatic": 12, "pitch.ledger": 13, "range.beyond-position": 4, "texture.hands-together": 84, "texture.left-hand-pattern": 48} -> {"clef.bass": 52, "interval.leap": 16, "interval.skip": 27, "interval.step": 15, "key.signature": 11, "pitch.chromatic": 13, "pitch.ledger": 13, "range.beyond-position": 5, "texture.hands-together": 91, "texture.left-hand-pattern": 52}
+    measurement.notes: 84 -> 91
+    measurement.span: {"L": [35, 50], "R": [60, 77]} -> {"L": [35, 55], "R": [60, 77]}
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 2 -> 7
+    provenance.facts: {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":… -> {"demands": {"definitions": 5, "detectors": "321e06edfda4", "kind": "measured", "via": "app/src/demands/detect.ts"}, "hands": {"kind": "authored", "via": "the recipe"}, "key": {"kind": "authored", "via": "the recipe"}, "level": {"kind": "authored", "via": "judged for this item"}, "promise": {"kind":…
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "G", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "both", "key": "G", "notesPerBar": 4, "tier": "standard"}, "seed": null, "tempoBpm": 92, "version": 3}
+- exercise.walking-bass.g.blues.intro
+    drill.generator: {"family": "walking_bass", "seed": null, "version": 2} -> {"family": "walking_bass", "seed": null, "version": 3}
+    measurement.bars: 12 -> 13
+    measurement.located: {"clef.bass": 48, "interval.leap": 9, "interval.skip": 25, "interval.step": 13, "key.signature": 9, "pitch.chromatic": 2, "pitch.ledger": 13, "range.beyond-position": 2} -> {"clef.bass": 52, "interval.leap": 10, "interval.skip": 27, "interval.step": 14, "key.signature": 9, "pitch.chromatic": 2, "pitch.ledger": 13, "range.beyond-position": 3}
+    measurement.notes: 48 -> 52
+    measurement.span: {"L": [35, 50]} -> {"L": [35, 55]}
+    measurement.steps: 48 -> 52
+    notation.bars: 12 -> 13
+    notation.chordCount: 12 -> 13
+    notation.finalBass: 2 -> 7
+    provenance.generator: {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 2} -> {"family": "walking_bass", "name": "tools/content/generate_exercises.py", "seed": null, "version": 3}
+    provenance.identity: {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "G", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 2} -> {"family": "walking_bass", "kind": "generator", "recipe": {"form": "blues", "hands": "left", "key": "G", "notesPerBar": 4, "tier": "intro"}, "seed": null, "tempoBpm": 72, "version": 3}

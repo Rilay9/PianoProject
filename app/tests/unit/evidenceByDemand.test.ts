@@ -351,10 +351,24 @@ describe('the evidence is keyed by musical demand, never by a reader’s control
       // rung judges a run at (`curriculum/types`, `curriculum/selectors`). Every
       // other file here reads none of it, and none reads the reader, the
       // generator or its controls: the evidence stays keyed by demand.
+      // Revised (G2): the transfer policy (`transferPolicy.ts`, which the brief places here) and the
+      // ladder that consumes it read D4's relationship facts about the material — the relationship's
+      // type (`curriculum/transfer`, a type-only import, also on the evidence context in
+      // `evidence.ts`) and the one material identity (`curriculum/material`) — and speak of the
+      // relationship's dimensions (family, source, key, hands, texture, rhythm), which are facts about
+      // two pieces of material, not the reader's controls. Those two imports, and in the two policy
+      // readers that word, are allowed; the reader, the generator and its controls stay banned
+      // everywhere, and no other curriculum module may be read.
+      const facts = source
+        .replace(/import type \{[^}]*\} from ['"][./]*curriculum\/transfer['"];?/g, '')
+        .replace(/import \{ knownMaterial \} from ['"][./]*curriculum\/material['"];?/g, '');
       if (file !== 'rungState.ts') {
-        expect(source, `${file} reads the curriculum`).not.toMatch(/from ['"][./]*curriculum\//);
+        expect(facts, `${file} reads the curriculum`).not.toMatch(/from ['"][./]*curriculum\//);
       }
-      expect(source, `${file} speaks in the reader's dimensions`).not.toMatch(/READING_DIMENSIONS|ReadingMoves|ReadingRecipe|SightReadingOptions|\bdimensions?\b/);
+      const policyReader = file === 'transferPolicy.ts' || file === 'ladder.ts';
+      expect(source, `${file} speaks in the reader's dimensions`).not.toMatch(
+        policyReader ? /READING_DIMENSIONS|ReadingMoves|ReadingRecipe|SightReadingOptions/ : /READING_DIMENSIONS|ReadingMoves|ReadingRecipe|SightReadingOptions|\bdimensions?\b/,
+      );
     }
   });
 });

@@ -9,6 +9,7 @@
  */
 import type { CatalogItem, Curriculum } from './types';
 import { indexCatalog, type CatalogIndex } from './selectors';
+import { learnFormerIdentities } from './material';
 import { importedCatalogItems, onImportsChange } from '../data/importStore';
 import { allShelfPieces, type ShelfPiece } from '../data/booksStore';
 import { getSettings, onSettingsChange } from '../data/settingsStore';
@@ -126,12 +127,19 @@ export async function fetchMarkdown(path: string): Promise<string> {
 }
 
 export function loadCatalog(): Promise<CatalogItem[]> {
-  catalogPromise ??= fetchJson<CatalogItem[]>('catalog.json').catch((cause: unknown) => {
-    // Allow a retry: a failure here is almost always a first launch that lost
-    // the network mid-precache, and it is fixed by trying again.
-    catalogPromise = null;
-    throw cause;
-  });
+  catalogPromise ??= fetchJson<CatalogItem[]>('catalog.json')
+    .then((items) => {
+      // E50a: the one place the catalogue arrives, so every learner-material comparison after it
+      // resolves a stored dated file through the rows' former identities (`material.ts`).
+      learnFormerIdentities(items);
+      return items;
+    })
+    .catch((cause: unknown) => {
+      // Allow a retry: a failure here is almost always a first launch that lost
+      // the network mid-precache, and it is fixed by trying again.
+      catalogPromise = null;
+      throw cause;
+    });
   return catalogPromise;
 }
 
@@ -206,10 +214,18 @@ export function overlayImports(curriculum: Curriculum, imports: CatalogItem[]): 
  * them apart for that reason. A paper run is the learner's own answer, so it
  * counts for no requirement (C5: `rungState` reads measured runs only); the
  * piece is still the rung's, and the page lists it.
+ *
+ * A piece's twin rides along (`paperTwins`, CL04, L79): the piece's score, whose
+ * measured run judged by the rung counts toward it as the piece. The twin's id is
+ * recorded as the piece carries it; whether the catalog still has it is the
+ * doors' question (`PaperScreen`, the lesson page), since a stored run of a
+ * twin since removed was still measured.
  */
 export function overlayShelf(curriculum: Curriculum, pieces: ShelfPiece[]): Curriculum {
   const byLesson = new Map<string, string[]>();
+  const twinOf = new Map<string, string>();
   for (const entry of pieces) {
+    if (entry.piece.itemId) twinOf.set(entry.itemId, entry.piece.itemId);
     for (const lessonId of entry.piece.lessonIds) {
       const list = byLesson.get(lessonId);
       if (list) list.push(entry.itemId);
@@ -230,7 +246,16 @@ export function overlayShelf(curriculum: Curriculum, pieces: ShelfPiece[]): Curr
           const existing = new Set(lesson.paperOptions ?? []);
           const added = extra.filter((id) => !existing.has(id));
           if (added.length === 0) return lesson;
-          return { ...lesson, paperOptions: [...(lesson.paperOptions ?? []), ...added] };
+          const paperTwins = { ...(lesson.paperTwins ?? {}) };
+          for (const id of added) {
+            const twin = twinOf.get(id);
+            if (twin !== undefined) paperTwins[id] = twin;
+          }
+          return {
+            ...lesson,
+            paperOptions: [...(lesson.paperOptions ?? []), ...added],
+            ...(Object.keys(paperTwins).length > 0 ? { paperTwins } : {}),
+          };
         }),
       })),
     })),

@@ -1,0 +1,114 @@
+# the whole unit suite on the fixed tree: summary, then every FAIL line by its first error
+ Test Files  78 failed | 244 passed (322)
+      Tests  34 failed | 3688 passed | 1 skipped (3723)
+exit 1
+
+## 78 × ENOENT: app/public/content (no content build in this worktree)
+  FAIL  tests/unit/alternativesShareASkill.test.ts [ tests/unit/alternativesShareASkill.test.ts ]
+  FAIL  tests/unit/carryOver.test.ts [ tests/unit/carryOver.test.ts ]
+  FAIL  tests/unit/chartDoor.test.ts [ tests/unit/chartDoor.test.ts ]
+  FAIL  tests/unit/composedContract.test.ts [ tests/unit/composedContract.test.ts ]
+  FAIL  tests/unit/copingQuestion.test.ts [ tests/unit/copingQuestion.test.ts ]
+  FAIL  tests/unit/demandReadings.test.ts [ tests/unit/demandReadings.test.ts ]
+  FAIL  tests/unit/drillFromCatalog.test.ts [ tests/unit/drillFromCatalog.test.ts ]
+  FAIL  tests/unit/drillParamsRead.test.ts [ tests/unit/drillParamsRead.test.ts ]
+  FAIL  tests/unit/drillPrompts.test.ts [ tests/unit/drillPrompts.test.ts ]
+  FAIL  tests/unit/drillStaffPolicy.test.ts [ tests/unit/drillStaffPolicy.test.ts ]
+  FAIL  tests/unit/eligibility.test.ts [ tests/unit/eligibility.test.ts ]
+  FAIL  tests/unit/everyOptionOpens.test.ts [ tests/unit/everyOptionOpens.test.ts ]
+  FAIL  tests/unit/evidenceJobRecomputes.test.ts [ tests/unit/evidenceJobRecomputes.test.ts ]
+  FAIL  tests/unit/evidenceOnlyMeasured.test.ts [ tests/unit/evidenceOnlyMeasured.test.ts ]
+  FAIL  tests/unit/firstOpenReadsTheCarriedPlan.test.ts [ tests/unit/firstOpenReadsTheCarriedPlan.test.ts ]
+  FAIL  tests/unit/firstThirtyDays.test.ts [ tests/unit/firstThirtyDays.test.ts ]
+  FAIL  tests/unit/firstThirtyDaysOnTheLadder.test.ts [ tests/unit/firstThirtyDaysOnTheLadder.test.ts ]
+  FAIL  tests/unit/gateAtTheConsumers.test.ts [ tests/unit/gateAtTheConsumers.test.ts ]
+  FAIL  tests/unit/generatorContract.test.ts [ tests/unit/generatorContract.test.ts ]
+  FAIL  tests/unit/ladderTool.test.ts [ tests/unit/ladderTool.test.ts ]
+  FAIL  tests/unit/legacyStorage.test.ts [ tests/unit/legacyStorage.test.ts ]
+  FAIL  tests/unit/lessonClaimsAboutApp.test.ts [ tests/unit/lessonClaimsAboutApp.test.ts ]
+  FAIL  tests/unit/lessonClaimsAboutMusic.test.ts [ tests/unit/lessonClaimsAboutMusic.test.ts ]
+  FAIL  tests/unit/lessonClaimsNeverTeachWrong.test.ts [ tests/unit/lessonClaimsNeverTeachWrong.test.ts ]
+  FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts [ tests/unit/lessonPagePicksPassTheAdmission.test.ts ]
+  FAIL  tests/unit/lessonSongEmpty.test.ts [ tests/unit/lessonSongEmpty.test.ts ]
+  FAIL  tests/unit/materialIdentity.test.ts [ tests/unit/materialIdentity.test.ts ]
+  FAIL  tests/unit/materialLayer.test.ts [ tests/unit/materialLayer.test.ts ]
+  FAIL  tests/unit/materialOnTheRecord.test.ts [ tests/unit/materialOnTheRecord.test.ts ]
+  FAIL  tests/unit/noCompletionBesideTheEvidence.test.ts [ tests/unit/noCompletionBesideTheEvidence.test.ts ]
+  FAIL  tests/unit/oneGateBoundary.test.ts [ tests/unit/oneGateBoundary.test.ts ]
+  FAIL  tests/unit/parallelStrands.test.ts [ tests/unit/parallelStrands.test.ts ]
+  FAIL  tests/unit/perfectDrills.test.ts [ tests/unit/perfectDrills.test.ts ]
+  FAIL  tests/unit/perfectPerformance.1.test.ts [ tests/unit/perfectPerformance.1.test.ts ]
+  FAIL  tests/unit/perfectPerformance.2.test.ts [ tests/unit/perfectPerformance.2.test.ts ]
+  FAIL  tests/unit/perfectPerformance.3.test.ts [ tests/unit/perfectPerformance.3.test.ts ]
+  FAIL  tests/unit/perfectPerformance.4.test.ts [ tests/unit/perfectPerformance.4.test.ts ]
+  FAIL  tests/unit/perfectPerformance.5.test.ts [ tests/unit/perfectPerformance.5.test.ts ]
+  FAIL  tests/unit/perfectPerformance.6.test.ts [ tests/unit/perfectPerformance.6.test.ts ]
+  FAIL  tests/unit/perfectPerformance.7.test.ts [ tests/unit/perfectPerformance.7.test.ts ]
+  FAIL  tests/unit/perfectPerformance.test.ts [ tests/unit/perfectPerformance.test.ts ]
+  FAIL  tests/unit/planNoUnobtainableRungs.test.ts [ tests/unit/planNoUnobtainableRungs.test.ts ]
+  FAIL  tests/unit/readerAdversarial.test.ts [ tests/unit/readerAdversarial.test.ts ]
+  FAIL  tests/unit/readerMovesTheDemand.test.ts [ tests/unit/readerMovesTheDemand.test.ts ]
+  FAIL  tests/unit/readingState.test.ts [ tests/unit/readingState.test.ts ]
+  FAIL  tests/unit/recommendRespondsToEvidence.test.ts [ tests/unit/recommendRespondsToEvidence.test.ts ]
+  FAIL  tests/unit/requirementsCanBeShown.test.ts [ tests/unit/requirementsCanBeShown.test.ts ]
+  FAIL  tests/unit/rungStateFromEvidence.test.ts [ tests/unit/rungStateFromEvidence.test.ts ]
+  FAIL  tests/unit/sessionProtocol.test.ts [ tests/unit/sessionProtocol.test.ts ]
+  FAIL  tests/unit/sessionRunNeverEvidence.test.ts [ tests/unit/sessionRunNeverEvidence.test.ts ]
+  FAIL  tests/unit/sightReadingDistribution.test.ts [ tests/unit/sightReadingDistribution.test.ts ]
+  FAIL  tests/unit/sightReadingFromReadingState.test.ts [ tests/unit/sightReadingFromReadingState.test.ts ]
+  FAIL  tests/unit/sightReadingPromises.test.ts [ tests/unit/sightReadingPromises.test.ts ]
+  FAIL  tests/unit/sightReadingScore.test.ts [ tests/unit/sightReadingScore.test.ts ]
+  FAIL  tests/unit/sightReadingSlot.test.ts [ tests/unit/sightReadingSlot.test.ts ]
+  FAIL  tests/unit/simonDrill.test.ts [ tests/unit/simonDrill.test.ts ]
+  FAIL  tests/unit/skillActivationBoundary.test.ts [ tests/unit/skillActivationBoundary.test.ts ]
+  FAIL  tests/unit/slotsFromEvidence.test.ts [ tests/unit/slotsFromEvidence.test.ts ]
+  FAIL  tests/unit/taughtByAncestry.test.ts [ tests/unit/taughtByAncestry.test.ts ]
+  FAIL  tests/unit/transferFactsOnTheAttempt.test.ts [ tests/unit/transferFactsOnTheAttempt.test.ts ]
+  FAIL  tests/unit/transferOffer.test.ts [ tests/unit/transferOffer.test.ts ]
+  FAIL  tests/unit/transferOfferOnTheRun.test.ts [ tests/unit/transferOfferOnTheRun.test.ts ]
+  FAIL  tests/unit/transferRelationship.test.ts [ tests/unit/transferRelationship.test.ts ]
+  FAIL  tests/unit/unmeasuredConceptsSaySo.test.ts [ tests/unit/unmeasuredConceptsSaySo.test.ts ]
+  FAIL  tests/unit/vocabulary.test.ts [ tests/unit/vocabulary.test.ts ]
+  FAIL  tests/unit/curriculumIntegrity.test.ts > the curriculum points at things that exist > reads both files, so a silent miss cannot pass as success
+  FAIL  tests/unit/curriculumIntegrity.test.ts > the curriculum points at things that exist > has the text file every lesson names
+  FAIL  tests/unit/curriculumIntegrity.test.ts > the curriculum points at things that exist > resolves every option a lesson offers
+  FAIL  tests/unit/curriculumIntegrity.test.ts > the curriculum points at things that exist > has each lesson claiming the unit that points at it
+  FAIL  tests/unit/curriculumIntegrity.test.ts > the curriculum points at things that exist > gives the practice module its five lessons, with something to apply them to
+  FAIL  tests/unit/excerptItems.test.ts > the Library and exploration, whatever the teaching-use bit (E1a) > on the built catalogue, every excerpt is undecided, listed by the Library’s excerpt filter and open to exploration, and admitted to no automatic offer
+  FAIL  tests/unit/lessonClaims.test.ts > a lesson promises only what its rung has > names no piece the rung does not offer, unless it says where else to look
+  FAIL  tests/unit/lessonClaims.test.ts > a lesson promises only what its rung has > gives every song on a genre rung the track the Library filters it by
+  FAIL  tests/unit/lessonVideos.test.ts > lesson videos > names the rung in the title YouTube gives back, on every video
+  FAIL  tests/unit/placementTargets.test.ts > the placement test names real units > resolves every fail unit against the curriculum
+  FAIL  tests/unit/placementTargets.test.ts > the placement test names real units > resolves the pass unit too
+  FAIL  tests/unit/reviewRecord.test.ts > held to the build on the built catalogue > every item’s review bits are what this module resolves from the record
+  FAIL  tests/unit/techniqueMeasures.test.ts > whether the rung makes it binding > is false where the rung requires no measure, which is every rung in the built curriculum
+
+## 4 × curriculum.json: 404 (no built content to serve)
+  FAIL  tests/unit/assignmentIsNotEvidence.test.ts > assigning an imported piece to a rung > tells the learner it becomes one of the rung’s practice options, and nothing about finishing the rung
+  FAIL  tests/unit/assignmentIsNotEvidence.test.ts > assigning an imported piece to a rung > gives no evidence and moves no rung; a run built to the rung’s songs requirement and judged by it meets that requirement
+  FAIL  tests/unit/assignmentIsNotEvidence.test.ts > the other places the learner reads what assigning does > the score folder names the rung by its title after Save, and says the piece is one of its options
+  FAIL  tests/unit/assignmentIsNotEvidence.test.ts > a piece on no rung and Today > passed and then unplayed past the window, it comes back in the review to keep it playable, and is never a lesson’s work
+
+## 15 × the test's own message: run the content build first
+  FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.interval-reading.c-position.right.01: the detectors find exactly the pinned demands
+  FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.coordination.c.hold: the detectors find exactly the pinned demands
+  FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.rhythm.syncopated.4bar: the detectors find exactly the pinned demands
+  FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.syncopation.tied-across-bar: the detectors find exactly the pinned demands
+  FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.tumbao.c: the detectors find exactly the pinned demands
+  FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.boogie.c.root-fifth: the detectors find exactly the pinned demands
+  FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.open-voicing.c.quartal: the detectors find exactly the pinned demands
+  FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.five-finger.b-major.right: the detectors find exactly the pinned demands
+  FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.clave.son-3-2.pulse: the detectors find exactly the pinned demands
+  FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.stride.c: the detectors find exactly the pinned demands
+  FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.study.interval-reading.c-major.4-4.8bar.sustained.01: the detectors find exactly the pinned demands
+  FAIL  tests/unit/scoreModelTempo.test.ts > the score model’s tempo map is the file’s, in quarter notes a minute (X3d) > two bundled pieces whose mark counts another note (X3c’s probe-bundled-tempo.txt) > authored/song.folk.row-row-row-your-boat.mxl (a dotted quarter = 54 with <sound tempo="81">) opens, labels, plays and counts in at 81
+  FAIL  tests/unit/scoreModelTempo.test.ts > the score model’s tempo map is the file’s, in quarter notes a minute (X3d) > two bundled pieces whose mark counts another note (X3c’s probe-bundled-tempo.txt) > imported/song.classical.pachelbel-canon-d.easy.mxl (a half note = 50 with <sound tempo="100">) opens, labels, plays and counts in at 100
+  FAIL  tests/unit/tempoSoundAgainstMark.test.ts > the built MuseTrainer and kern scores > reads every MuseTrainer and kern row that has a built file, Maple Leaf’s among them
+  FAIL  tests/unit/tempoSoundAgainstMark.test.ts > the built MuseTrainer and kern scores > finds exactly the pinned contradictions, no new one and none gone
+
+## 1 × no MIDI parity reference under build/ (a Python step the test names)
+  FAIL  tests/unit/midiParity.test.ts > the port agrees with the Python converter > has a reference to compare against
+
+## 1 × timed out (reads public/content through a fetch stub; fails the same alone and on the base source)
+  FAIL  tests/unit/skillsCountFirst.test.ts > a Skills row’s detail line leads with the count > every concept row reads "N to practise · Stage … · track…", and N is the number of items under it
+

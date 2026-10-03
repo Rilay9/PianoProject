@@ -1,0 +1,43 @@
+[WebServer] (node:64012) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:67928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:67700) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\midi-import.spec.ts:131:3 › a MIDI file imported from the app › an import stored before the app measured demands shows them on the assign sheet after the next launch (E2; E25) (30.9s)
+
+
+  1) tests\e2e\midi-import.spec.ts:131:3 › a MIDI file imported from the app › an import stored before the app measured demands shows them on the assign sheet after the next launch (E2; E25) 
+
+    Error: expect(received).not.toBeNull()
+
+    Received: null
+
+    Call Log:
+    - Test timeout of 30000ms exceeded
+
+      141 |     // The next launch measures it once, in the background, through the store.
+      142 |     await page.reload();
+    > 143 |     await expect.poll(() => storedDemands(page, ITEM), { timeout: 30_000 }).not.toBeNull();
+          |                                                                                 ^
+      144 |
+      145 |     // And the sheet reads the measured truth off the stored row.
+      146 |     const row = page.locator(`.list-row[data-item="${ITEM}"]`);
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ab0ca07b13a3644b6\app\tests\e2e\midi-import.spec.ts:143:81
+
+    Error Context: test-results-e2\midi-import-a-MIDI-file-im-c07a8-ter-the-next-launch-E2-E25-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-e2\midi-import-a-MIDI-file-im-c07a8-ter-the-next-launch-E2-E25-\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-e2\midi-import-a-MIDI-file-im-c07a8-ter-the-next-launch-E2-E25-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\midi-import.spec.ts:131:3 › a MIDI file imported from the app › an import stored before the app measured demands shows them on the assign sheet after the next launch (E2; E25) 
+exit 1

@@ -1,0 +1,12 @@
+{
+  "phase": "before",
+  "round": "2",
+  "loadNone": 122.80000001192093,
+  "drawNone": 1.800000011920929,
+  "seededOne": 1,
+  "loadOne": 124.70000004768372,
+  "drawOne": 1.800000011920929,
+  "seededForty": 40,
+  "loadForty": 124.39999997615814,
+  "drawForty": 1.699999988079071
+}

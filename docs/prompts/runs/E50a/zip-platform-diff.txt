@@ -1,0 +1,4 @@
+lengths: win32 309, linux 309
+differing byte offsets: [164, 232]
+each is byte 5 of a central-directory header ("version made by", its high byte the creating system): True
+values: win32 [0, 0], linux [3, 3]

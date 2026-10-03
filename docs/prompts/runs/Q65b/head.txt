@@ -1,0 +1,3 @@
+$ (cwd .) git log --oneline -1
+76d557ac Four fix-forward briefs handed to the reviewer for information (handoffs/bcad0c9.md): F2b, Q65b, U80, X3a
+exit=0

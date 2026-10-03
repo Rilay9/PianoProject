@@ -1,0 +1,45 @@
+L120b after class 1 (the material reading: 3/8 is simple triple at the detector; a key signature located at no
+sounding note is not asked on the coping question; the two 3/8 doubts removed from the table), against L120a's table.
+
+The base. The table at this worktree's base (f6d36ee9), built offline before any change, is byte-identical to
+docs/prompts/runs/L120a/untaught-options.txt (line endings aside), and the L120a probe re-run there gives 389
+`untaught` lines identical to docs/prompts/runs/L120a/probe-head-refusals.txt. So every difference below is class 1's.
+
+Files here:
+- content-build.txt: the offline build with an absolute --out (detect.ts in the fingerprint: every file re-measured; exit 0).
+- probe-refusals.txt, probe-uncoped.txt, probe.txt: L120a's kept probe, unchanged, from app/.probe with its config copy.
+- untaught-options.txt, untaught-options-run.txt: the table.
+- table-difference.txt: pair by pair against the base table (scripts-table-diff.py), and the tool against this probe.
+- catalog-diff.txt: the catalogue by item and demand against the base build (scripts-catalog-diff.py).
+- report-*.diff, restore.txt: the three files the build rewrites, against the snapshot, then restored.
+
+The new summary: 386 options (was 388), 632 pairs (was 641): A 3 (was 14), B-claim 42 (43), B-mapping 67 (67),
+C-later 246 (246), C-elsewhere 134 (134), C-nowhere 140 (137). By option: reading 1 (4), ownership 76 (76),
+placement 309 (308). Runtime reading rows not read: 15 (15).
+
+The 14 A pairs, where each went (table-difference.txt has each line):
+- key.signature, located at no note, 6 pairs: left the table (the gate no longer asks it) — 1.1 G five-finger right,
+  1.3 G five-finger left, practice.5 G five-finger both, 2.1 coordination in G (hold), 2.2 and hymns.2 Swing Low.
+- metre.compound on the 3/8 Für Elise (beginner), 2 pairs (3.4, 4.2): left (3/8 is no longer compound).
+- rhythm.sixteenths on the 3/8 Für Elise (beginner, 3.4 and 4.2; the full piece at classical.6), 3 pairs: stay,
+  now C-nowhere (no rung teaches sixteenths; L120c's).
+- pitch.ledger on 1.3's three left-hand arrangements (the clef assumption), 3 pairs: stay A (no ruling).
+
+Every pair that appeared or left, by demand and rung: 9 left (key.signature 6 as above; metre.compound 3 — the two
+above and classical.4.shelf Mariage d'Amour, B-claim, incidental, located 7, a row whose timeSig says 4/4 and whose
+notation holds a 3/8 bar); none appeared; 3 changed class (the sixteenths, A -> C-nowhere). No pair of any other
+demand moved. Of the pairs that moved on a row without `timeSig` 3/8: 1 (Mariage d'Amour's metre.compound); no
+syncopation or dotted-quarter pair moved in the table, though the catalogue moved both on 3/8 rows (below).
+
+The app's probe: 387 `untaught` (was 389). Two options leave the refusals entirely — 1.1
+exercise.five-finger.g-major.right and 2.1 exercise.coordination.g.hold (key.signature was their only untaught
+demand); seven others lose one demand (key.signature or metre.compound). The tool reads 386: the one line only the
+probe has is 2.2's runtime reading row, as before; no option read with different demands.
+
+The catalogue (catalog-diff.txt): 23 rows carry a 3/8 bar (4 with timeSig 3/8); all 23 moved and no other row
+did. metre.compound left all 23 (established on 20 before); rhythm.dotted-quarter entered 15 and its count moved
+on 5 more (established on 7 more); rhythm.syncopation left 2 and its count moved on 11 (established on 4 fewer).
+
+D0's record: the build's rung-claims report now finds 83 generated untaught combinations against the record's 87;
+the four gone are key.signature on coordination at 2.1 and on five_finger at 1.1, 1.3 and practice.5. The record
+is corrected once, after class 2 (after-gate/difference.txt).

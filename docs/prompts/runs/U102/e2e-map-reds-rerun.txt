@@ -1,0 +1,57 @@
+$ (cd app) npx playwright test -c ../build/u102/playwright.u102-4593.config.ts --workers=1 tests/e2e/score.screen.spec.ts:808 tests/e2e/projects.spec.ts:135   [U102_DIST=app/dist U102_PHASE=]
+exists: tests/e2e/score.screen.spec.ts
+exists: tests/e2e/projects.spec.ts
+
+Running 2 tests using 1 worker
+
+  x  1 tests\e2e\projects.spec.ts:135:1 › a Stage 9 unit’s page shows its songs as projects and no count; one project’s state shows on its row alone (2.5s)
+  x  2 tests\e2e\score.screen.spec.ts:808:3 › the fit says when it has settled (T41) › a stage that loses height is unsettled until the fit at the new engraving has landed (1.0m)
+
+
+  1) tests\e2e\projects.spec.ts:135:1 › a Stage 9 unit’s page shows its songs as projects and no count; one project’s state shows on its row alone 
+
+    Error: page.evaluate: Error: song.classical.chopin-ballade-1 has no file identity
+        at eval (eval at evaluate (:311:30), <anonymous>:5:128)
+        at async <anonymous>:337:30
+        at eval (eval at evaluate (:311:30), <anonymous>:5:128)
+        at async <anonymous>:337:30
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a46fbdac26027e48f\app\tests\e2e\projects.spec.ts:149:14
+
+    Error Context: ..\build\u102\test-output\projects-a-Stage-9-unit’s--fcc0b-tate-shows-on-its-row-alone\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\build\u102\test-output\projects-a-Stage-9-unit’s--fcc0b-tate-shows-on-its-row-alone\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\build\u102\test-output\projects-a-Stage-9-unit’s--fcc0b-tate-shows-on-its-row-alone\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\score.screen.spec.ts:808:3 › the fit says when it has settled (T41) › a stage that loses height is unsettled until the fit at the new engraving has landed 
+
+    TimeoutError: page.waitForFunction: Timeout 60000ms exceeded.
+
+      29 |   // pre-rendered next window, which is hidden and therefore zero-height. Wait
+      30 |   // on the front buffer specifically or this races with the pre-render.
+    > 31 |   await page.waitForFunction(
+         |              ^
+      32 |     () => {
+      33 |       const svg = document.querySelector('#score-stage .is-front svg');
+      34 |       return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+        at openScore (C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a46fbdac26027e48f\app\tests\e2e\score.screen.spec.ts:31:14)
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a46fbdac26027e48f\app\tests\e2e\score.screen.spec.ts:842:5
+
+    Error Context: ..\build\u102\test-output\score.screen-the-fit-says--51397-he-new-engraving-has-landed\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\build\u102\test-output\score.screen-the-fit-says--51397-he-new-engraving-has-landed\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\build\u102\test-output\score.screen-the-fit-says--51397-he-new-engraving-has-landed\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\e2e\projects.spec.ts:135:1 › a Stage 9 unit’s page shows its songs as projects and no count; one project’s state shows on its row alone 
+    tests\e2e\score.screen.spec.ts:808:3 › the fit says when it has settled (T41) › a stage that loses height is unsettled until the fit at the new engraving has landed 
+exit=1

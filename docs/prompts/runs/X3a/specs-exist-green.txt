@@ -1,0 +1,6 @@
+ls tests/e2e/import-experience.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/converted-import.spec.ts tests/e2e/finder.spec.ts (in app)
+tests/e2e/converted-import.spec.ts
+tests/e2e/finder.spec.ts
+tests/e2e/import-experience.spec.ts
+tests/e2e/midi-import.spec.ts
+exit=0

@@ -1,0 +1,61 @@
+$ (app/) npx playwright test --config playwright.u92-4423.config.ts --workers=2  tests/e2e/competence.spec.ts tests/e2e/finder.spec.ts tests/e2e/help-strip.spec.ts tests/e2e/first-day.spec.ts tests/e2e/landscape.spec.ts tests/e2e/offline.spec.ts
+exists: tests/e2e/competence.spec.ts
+exists: tests/e2e/finder.spec.ts
+exists: tests/e2e/help-strip.spec.ts
+exists: tests/e2e/first-day.spec.ts
+exists: tests/e2e/landscape.spec.ts
+exists: tests/e2e/offline.spec.ts
+
+Running 43 tests using 2 workers
+
+  ok  2 tests\e2e\competence.spec.ts:154:3 › one skill state on Skills and Progress › Progress says which skills moved in the last four weeks, and how (1.2s)
+  ok  1 tests\e2e\competence.spec.ts:122:3 › one skill state on Skills and Progress › Skills opens on what the evidence has not shown lately, and says what the app cannot judge (1.8s)
+  ok  3 tests\e2e\finder.spec.ts:27:3 › the finder on a rung › says what the rung needs and hands over a search and a prompt (955ms)
+  ok  4 tests\e2e\finder.spec.ts:59:3 › the finder on a rung › marks an example as already bundled or as still missing (687ms)
+  ok  5 tests\e2e\finder.spec.ts:67:3 › the finder on a rung › copies the prompt to the clipboard (777ms)
+  ok  6 tests\e2e\finder.spec.ts:80:3 › the finder on a concept › is reachable from the Skills screen, under a readable name (699ms)
+  ok  7 tests\e2e\finder.spec.ts:116:3 › two taps from a share to a rung › the assign sheet opens by itself with the rung already chosen (1.1s)
+  ok  8 tests\e2e\finder.spec.ts:131:3 › two taps from a share to a rung › Save is the second and last action, and the piece lands on the rung (1.4s)
+  ok  9 tests\e2e\finder.spec.ts:144:3 › two taps from a share to a rung › the needs line counts the piece he just added (C3) (1.9s)
+  ok 10 tests\e2e\finder.spec.ts:161:3 › two taps from a share to a rung › the rung survives a reload, because it is stored and not just routed (1.4s)
+  ok 12 tests\e2e\finder.spec.ts:188:3 › two taps from a share to a rung › "Import for this rung" on the lesson page opens the picker on that rung (934ms)
+  ok 11 tests\e2e\finder.spec.ts:168:3 › two taps from a share to a rung › an import with no rung still works and belongs to none (1.7s)
+first day: the rung offers 18 options, 17 of them with a file; opening exercise.inversions.c-major.both (2 printed bars)
+first day: the rung offers 18 options, 17 of them with a file; opening exercise.inversions.c-major.both (2 printed bars)
+first day: Plan and Today say stage 4; Skills opened on 3, 4
+  ok 13 tests\e2e\first-day.spec.ts:589:5 › a first day › from nothing to a recorded pass, phone upright (19.2s)
+first day: Plan and Today say stage 4; Skills opened on 3, 4
+  ok 14 tests\e2e\first-day.spec.ts:589:5 › a first day › from nothing to a recorded pass, phone sideways (19.2s)
+  ok 15 tests\e2e\help-strip.spec.ts:65:3 › the Score screen says which mode this is › names the mode and what to do, above the notation, without scrolling (1.1s)
+  ok 16 tests\e2e\help-strip.spec.ts:85:3 › the Score screen says which mode this is › the line follows the mode, and the ? says what the controls do (1.3s)
+  ok 18 tests\e2e\help-strip.spec.ts:128:3 › a drill says what kind of thing it is › names the kind above the card, and the card says how to answer (860ms)
+  ok 17 tests\e2e\help-strip.spec.ts:107:3 › the Score screen says which mode this is › the card that explains the mode comes up once, on the first meeting (1.9s)
+  ok 19 tests\e2e\help-strip.spec.ts:143:3 › a drill says what kind of thing it is › the ? names the controls and where the drill sits (871ms)
+  ok 20 tests\e2e\help-strip.spec.ts:157:3 › a drill says what kind of thing it is › the first card of a kind explains it before it asks anything (757ms)
+  ok 22 tests\e2e\help-strip.spec.ts:202:3 › the guide holds the whole list › lists every mode, drill kind and tool on one page (332ms)
+  ok 21 tests\e2e\help-strip.spec.ts:167:3 › the tools say what they are › the lab, the chord chart and free play each carry the strip (855ms)
+  ok 23 tests\e2e\help-strip.spec.ts:215:3 › the guide holds the whole list › Skills review and a lesson both offer the way in (1.3s)
+  ok 24 tests\e2e\landscape.spec.ts:41:3 › Today sideways: no title, content near the top (958ms)
+  ok 25 tests\e2e\landscape.spec.ts:41:3 › Plan sideways: no title, content near the top (931ms)
+  ok 26 tests\e2e\landscape.spec.ts:41:3 › Library sideways: no title, content near the top (1.3s)
+  ok 27 tests\e2e\landscape.spec.ts:41:3 › Progress sideways: no title, content near the top (861ms)
+  ok 28 tests\e2e\landscape.spec.ts:41:3 › Settings sideways: no title, content near the top (1.3s)
+  ok 29 tests\e2e\landscape.spec.ts:63:3 › Skills sideways: no h1 at heading size, content near the top (1.1s)
+  ok 30 tests\e2e\landscape.spec.ts:63:3 › Shelf sideways: no h1 at heading size, content near the top (1.1s)
+  ok 31 tests\e2e\landscape.spec.ts:63:3 › a lesson sideways: no h1 at heading size, content near the top (1.4s)
+  ok 32 tests\e2e\landscape.spec.ts:63:3 › a drill sideways: no h1 at heading size, content near the top (1.1s)
+  ok 33 tests\e2e\landscape.spec.ts:113:1 › a sub-screen puts Back and its title on one line (611ms)
+  ok 34 tests\e2e\landscape.spec.ts:130:1 › a sub-screen card uses the width sideways (291ms)
+settings sideways: 8 rows on the first screenful
+  ok 35 tests\e2e\landscape.spec.ts:145:1 › Settings sideways shows twice as many rows (B5) (1.3s)
+  ok 37 tests\e2e\offline.spec.ts:224:3 › offline › every file the catalog names is in the precache manifest (39ms)
+  ok 38 tests\e2e\offline.spec.ts:274:3 › offline › the engraver is not in the entry bundle (P19) (2ms)
+  ok 39 tests\e2e\offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) (20ms)
+  ok 40 tests\e2e\offline.spec.ts:324:3 › offline › and the builder-only dev/ root is served and never precached (D2a) (2ms)
+  ok 41 tests\e2e\offline.spec.ts:348:3 › the error boundary (docs/04 §8) › an uncaught error shows a banner with copyable details (654ms)
+  ok 42 tests\e2e\offline.spec.ts:377:3 › the error boundary (docs/04 §8) › an unhandled rejection is caught too, and counted (560ms)
+  ok 43 tests\e2e\offline.spec.ts:387:3 › the error boundary (docs/04 §8) › dismissing it leaves the app usable (741ms)
+  ok 36 tests\e2e\offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch (19.1s)
+
+  43 passed (59.4s)
+exit=0

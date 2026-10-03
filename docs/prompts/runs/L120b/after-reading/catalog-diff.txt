@@ -1,0 +1,36 @@
+# Catalogue diff: build/l120b-before/catalog.json -> build/l120b-after-reading/catalog.json
+
+- rows in both: 2092; rows with a 3/8 bar (timeSig or notation.times): 23 (4 of them with timeSig 3/8)
+- rows whose demands, located counts or established set moved: 23; of them without a 3/8 bar: 0
+- rows carrying measurement.span after: 0
+- moves by kind and demand: enters rhythm.dotted-quarter 15, established+ rhythm.dotted-quarter 7, established- metre.compound 20, established- rhythm.syncopation 4, leaves metre.compound 23, leaves rhythm.syncopation 2, located rhythm.dotted-quarter 5, located rhythm.syncopation 11
+
+## Rows with a 3/8 bar
+
+song.beautiful.mariage-damour [timeSig 4/4; times 4/4, 5/4, 3/4, 3/8]: -metre.compound (was located 7); rhythm.dotted-quarter located 14 -> 15
+song.beautiful.mariage-damour.alt [timeSig 4/4; times 4/4, 5/4, 3/4, 3/8, 6/4]: -metre.compound (was located 7); rhythm.dotted-quarter located 10 -> 11
+song.beautiful.mariage-damour.alt2 [timeSig 4/4; times 4/4, 5/4, 3/4, 3/8]: +rhythm.dotted-quarter (located 1); -metre.compound (was located 7)
+song.classical.bach-invention-no-3-in-d-major-bwv-774.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 6); -metre.compound (was located 543); rhythm.syncopation located 16 -> 9; established -metre.compound; established -rhythm.syncopation
+song.classical.bach-invention-no-4-in-d-minor-bwv-775.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 2); -metre.compound (was located 538); rhythm.syncopation located 4 -> 1; established -metre.compound
+song.classical.bach-invention-no-6-in-e-major-bwv-777.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 2); -metre.compound (was located 1094); rhythm.syncopation located 64 -> 62; established -metre.compound
+song.classical.bach-little-prelude-in-d-minor-bwv-935.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 8); -metre.compound (was located 898); rhythm.syncopation located 8 -> 4; established -metre.compound
+song.classical.beethoven-bagatelle-in-d-major-op-119-no-3.pdmx [timeSig None; times 3/8, 1/4, 1/8]: +rhythm.dotted-quarter (located 46); -metre.compound (was located 870); rhythm.syncopation located 30 -> 2; established +rhythm.dotted-quarter; established -metre.compound
+song.classical.beethoven-fur-elise [timeSig 3/8; times 3/8]: +rhythm.dotted-quarter (located 15); -metre.compound (was located 1037); established -metre.compound
+song.classical.beethoven-fur-elise.beginner [timeSig 3/8; times 3/8]: -metre.compound (was located 199); established -metre.compound
+song.classical.chopin-bolero.nifc [timeSig 3/8; times 3/8, 3/4]: -metre.compound (was located 856); rhythm.dotted-quarter located 33 -> 52; rhythm.syncopation located 108 -> 84; established +rhythm.dotted-quarter; established -metre.compound
+song.classical.chopin-prelude-op28-5.nifc [timeSig 3/8; times 3/8]: -metre.compound (was located 484); established -metre.compound
+song.classical.clementi-sonatina-no1-2-muzio-clementi.pdmx [timeSig None; times 3/8]: -metre.compound (was located 473); established -metre.compound
+song.classical.haydn-sonata-in-g-major-hob-xvi-8.pdmx [timeSig None; times 2/4, 3/4, 4/4, 3/8]: -metre.compound (was located 400); rhythm.dotted-quarter located 8 -> 18; established -metre.compound
+song.classical.lemoine-etude-op-37-no-26.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 61); -metre.compound (was located 539); rhythm.syncopation located 3 -> 1; established +rhythm.dotted-quarter; established -metre.compound
+song.classical.lemoine-etude-op-37-no-38.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 39); -metre.compound (was located 405); rhythm.syncopation located 19 -> 4; established +rhythm.dotted-quarter; established -metre.compound; established -rhythm.syncopation
+song.classical.lemoine-etude-op-37-no-42.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 10); -metre.compound (was located 632); rhythm.syncopation located 14 -> 4; established -metre.compound; established -rhythm.syncopation
+song.classical.lemoine-etude-op-37-no-6.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 55); -metre.compound (was located 625); -rhythm.syncopation (was located 20); established +rhythm.dotted-quarter; established -metre.compound; established -rhythm.syncopation
+song.classical.mozart-andante-in-g-minor-k-15r.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 164); -metre.compound (was located 956); established +rhythm.dotted-quarter; established -metre.compound
+song.classical.mozart-rondo-in-f-major-k-15hh.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 12); -metre.compound (was located 360); established -metre.compound
+song.classical.scarlatti-d-scarlatti-sonata-d-major-k-346.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 32); -metre.compound (was located 1536); rhythm.syncopation located 44 -> 34; established -metre.compound
+song.classical.scarlatti-sonata-in-d-minor-k-32.pdmx [timeSig None; times 3/8]: +rhythm.dotted-quarter (located 82); -metre.compound (was located 334); -rhythm.syncopation (was located 2); established +rhythm.dotted-quarter; established -metre.compound
+song.folk.3-variations-on-happy-birthday.pdmx [timeSig None; times 3/4, 4/4, 2/4, 3/8]: -metre.compound (was located 691); rhythm.dotted-quarter located 4 -> 22; rhythm.syncopation located 61 -> 40; established -metre.compound
+
+## Rows without a 3/8 bar that moved
+
+none

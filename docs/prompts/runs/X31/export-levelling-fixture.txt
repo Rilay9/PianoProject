@@ -1,0 +1,2 @@
+﻿43 score(s) -> C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ad68f7e71fb77280b\app\tests\fixtures\levelling.json
+exit=0

@@ -1,0 +1,65 @@
+(cd app) npx vitest run tests/unit/transferPolicy.test.ts tests/unit/transferFactsOnTheAttempt.test.ts tests/unit/transferOffer.test.ts tests/unit/masteryLadder.test.ts   # mutant declared-read-as-evidence in app/src/evidence/transferPolicy.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6d274c20b3e170c9/app
+
+ ❯ tests/unit/transferPolicy.test.ts (23 tests | 1 failed) 17ms
+   ❯ declared and measured apart; unknown never guessed (9)
+     × a dimension declared to differ and measured the same credits nothing, and the reading says so (D4’s pentatonic, rhythm) 5ms
+ ❯ tests/unit/transferFactsOnTheAttempt.test.ts (15 tests | 1 failed) 105ms
+   ❯ 3–5. the ladder reads the policy over each attempt’s own facts, calling itself once (5)
+     × a transfer-offer success: demonstrated on the offer’s measured dimensions, its `differsOn` ignored 5ms
+
+ Test Files  2 failed | 2 passed (4)
+      Tests  2 failed | 71 passed (73)
+   Start at  04:54:12
+   Duration  792ms (transform 66%, import 23%, tests 11%, worker 1%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 3–5. the ladder reads the policy over each attempt’s own facts, calling itself once > a transfer-offer success: demonstrated on the offer’s measured dimensions, its `differsOn` ignored
+AssertionError: expected [ { …(2) } ] to deeply equal [ { on: [ 'key' ], …(1) } ]
+
+- Expected
++ Received
+
+  [
+    {
+      "on": [
+        "key",
++       "hands",
++       "texture",
+      ],
+      "since": "2026-09-05T16:00:00.000Z",
+    },
+  ]
+
+ ❯ tests/unit/transferFactsOnTheAttempt.test.ts:253:35
+    251|     const run = record(5, { material: piece('d'.repeat(64)), intent: '…
+    252|     const reading = read([...SHOWN, run]);
+    253|     expect(reading.transferScope).toEqual([{ on: ['key'], since: at(5)…
+       |                                   ^
+    254|   });
+    255|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/transferPolicy.test.ts > declared and measured apart; unknown never guessed > a dimension declared to differ and measured the same credits nothing, and the reading says so (D4’s pentatonic, rhythm)
+AssertionError: expected 'demonstrated' to be 'not-transfer' // Object.is equality
+
+Expected: "not-transfer"
+Received: "demonstrated"
+
+ ❯ tests/unit/transferPolicy.test.ts:253:29
+    251|     const run = attempt({ material: pentatonic, firstContact: true, re…
+    252|     const reading = transferReading(SUBDIVISION, ESTABLISHED, run);
+    253|     expect(reading.verdict).toBe('not-transfer');
+       |                             ^
+    254|     expect(reading.on).toEqual([]);
+    255|     expect(reading.why).toMatch(/rhythm: declared to differ, measured …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+exit=1

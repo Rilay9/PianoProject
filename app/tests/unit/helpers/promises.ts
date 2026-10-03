@@ -31,7 +31,7 @@ export async function modelOf(musicXml: string, id: string): Promise<ScoreModel>
   try {
     const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
     await osmd.load(musicXml);
-    return extractScoreModel(osmd, { id });
+    return extractScoreModel(osmd, { id, musicXml });
   } finally {
     container.remove();
   }
@@ -275,42 +275,49 @@ export const PROMISED_BY_RUNG: Record<string, Check[]> = {
     ...(CLAIMED_BY_CONCEPT.triplets ?? []),
     ...(CLAIMED_BY_CONCEPT.syncopation ?? []),
   ],
-  // theory.9: "The sight-reading generator at level 7 makes music … in keys
-  // with four accidentals, with triplets and a walking bass". The rung also
-  // lists level 6, whose left hand is a broken chord in quarters: the walking
-  // bass is the level-7 row's, which is what the sentence says. (The helper
-  // this used to call counted any four left-hand quarters as a walk, so level
-  // 6 passed it on a broken chord.)
+  // theory.9: "The sight-reading generator at level 6 makes music … in keys up
+  // to four sharps or flats, with triplets and a left hand in broken chords".
+  // Revised (F2 item 4): the sentence named level 7 and "a walking bass", which
+  // theory.9's path never teaches, so every phrase there held it out; level 7
+  // left the rung and the sentence names the level-6 row it lists.
   'theory.9': [
-    some('a key with four accidentals', (p) => Math.abs(keyFifths(p.model)) === 4, ['key.signature']),
+    some('a key with four sharps or flats', (p) => Math.abs(keyFifths(p.model)) === 4, ['key.signature']),
     ...(CLAIMED_BY_CONCEPT.triplets ?? []),
-    every('a walking bass, at the level the lesson names (7)', (p) => p.level !== 7 || has('walkingBass')(p), ['texture.walking-bass']),
+    ...(CLAIMED_BY_CONCEPT['accompaniment-patterns'] ?? []),
   ],
 };
 
 /**
  * Every demand a rung has not taught, as checks a phrase must pass (C2's
- * `unintended()`): each demand whose `taughtAt` comes after the rung in the
- * curriculum's order, and every demand no rung teaches (`taughtAt: null`,
- * S23: "never teach wrong" — a demand nothing teaches is not written); and 4/4
- * only before 4.5. `skip` names demands a caller knows arrive early.
+ * `unintended()`): each demand every rung of whose `taughtAt` comes after the
+ * rung in the curriculum's order, and every demand no rung teaches (`taughtAt:
+ * []`, S23: "never teach wrong" — a demand nothing teaches is not written); and
+ * 4/4 only before 4.5. `skip` names demands a caller knows arrive early.
+ * `taught`, where given, is what the rung has taught (`session.taughtAtRung`,
+ * its ancestry: E0a) and stands in for the order, which is only right on one
+ * line of rungs — on a track, the file's order credits what a sibling track
+ * taught, and since E0b a demand can be taught on a track stored before a core
+ * rung (syncopation at `latin.3`, stored before 4.1), so every caller walking
+ * the shipped curriculum passes it.
  */
 export function untaughtChecks(
   rung: string,
   order: readonly string[],
   demands: readonly Demand[],
   skip: (demand: string) => boolean = () => false,
+  taught?: (demand: string) => boolean,
 ): Check[] {
   const at = (id: string): number => order.indexOf(id);
   const before = (other: string): boolean => at(rung) < at(other);
+  const untaught = (d: Demand): boolean => d.taughtAt.length === 0 || (taught ? !taught(d.id) : d.taughtAt.every(before));
   return [
     ...demands
-      .filter((d) => d.taughtAt === null || before(d.taughtAt))
+      .filter(untaught)
       .filter((d) => !skip(d.id))
       .map((d) =>
-        every(`no ${d.id} (taught at ${String(d.taughtAt)})`, (p) => !has(d.detector)(p), [d.id]),
+        every(`no ${d.id} (taught at ${d.taughtAt.join(', ') || 'no rung'})`, (p) => !has(d.detector)(p), [d.id]),
       ),
-    ...(before('4.5')
+    ...((taught ? !taught('metre.compound') : before('4.5'))
       ? [every('4/4 only (before 4.5)', (p) => p.model.timeSigMap.every((t) => t.beats === 4 && t.beatType === 4), ['metre.compound'])]
       : []),
   ];

@@ -62,6 +62,10 @@ piece rows** join the exception for the reason it was written — a piece carrie
 up to four ways in (*Practise*, *With the score*, *Open the PDF*, *Edit*), which
 upright left the words about a third of the row, `No. 12 — Stud…` over
 `page 14 · for Right h`.
+And **Skills** (U90, 2026-09-29): a skill's name and an exercise's title wrap rather
+than being cut, whatever the font (§3a).
+
+And the **Library's titles are never cut, upright** (G101, 2026-09-30; the ruling's three lines were measured against the catalogue and set aside, `docs/prompts/entry-177.md`). A catalogue row keeps its words beside *Details* and `⋯`, about half of a 342 px row, and a title there is the piece's identity. Many titles differ from a sibling only in their endings: *Twinkle, Twinkle, Little Star* with *(hands together)* or *(in F major)*, and *K. 545, I. Allegro* with *(alternative edition)*. Two lines cut those endings at 115 % text. Any fixed count is sized to one face at one text size: four lines at 115 % on the development machine's face, six on a wider one. So the title wraps to the lines it needs, and a word longer than the room breaks, as on Skills (U90). A row grows only where its title needs the room; the longest catalogue title takes eight lines at 115 % on that face. The score folder keeps two.
 
 The 100 is measured on a 360 px screen and it is a floor, not a preference: the control sets the
 height of the first line (40 px for a tick box, 48 for a button — both of them a thumb) and two
@@ -135,6 +139,16 @@ pictures:
   both invisible and unreachable to a screen reader for as long as the sheet stayed open. Added
   2026-09-11.
 
+**R7 — Three designs: phone upright, phone sideways, tablet** (the owner, 2026-10-01). Every
+screen is planned for each on its own terms, not one layout squeezed or stretched across them.
+The phone has far more restrictions and two modes, and each needs careful thought: what the
+moment needs, what can wait a tap, what the small height or width cannot afford. The tablet is
+good too and uses the room it has rather than inheriting the phone's compromises. A rule tuned
+for one device is carried to another only with its own reason. A brief for any screen names
+its design and acceptance cells for each (phone: 568 x 320 and 780 x 360 sideways, 342 x 740 and
+360 x 780 upright; tablet: 1024 x 768 and 1366 x 1024 both ways), with a picture of every state
+it changes on each.
+
 ## 1. Navigation
 
 Bottom tab bar (portrait) / left rail (landscape): **Today · Plan · Library · Progress · Settings**.
@@ -156,7 +170,7 @@ Score screen is a full-screen route pushed on top (back gesture returns).
 
 - **Start session moves above the card.** It was under five rows of it: 679 px down a 740 px phone upright and off the bottom entirely sideways, which is a strange place for the one filled box on the screen the app opens on. The card still starts inside the first screenful — the button is one row of 40 px and the card was starting at 198.
 - **The slot kind leaves its badge and leads the detail line** (`Warm-up · 8 min · L0.1`). A badge is left for what that line does *not* say: that you have started or passed this, or that it needs importing.
-- **A row's title takes a second line** rather than an ellipsis, paid for by the badge line — **except where the row carries a badge**, and then it is one. A Today row is four lines deep (title, reason, detail, badges) and 96 px is one title line plus the other three; both at once is 116. Where there is a badge it is the news and the title is a name already on the card.
+- **A row's title takes a second line** rather than an ellipsis, paid for by the badge line — **except where the row carries a badge**, and then it is one. A Today row is four lines deep (title, reason, detail, badges) and 96 px is one title line plus the other three; both at once is 116. Where there is a badge it is the news and the title is a name already on the card. Since U63 (Entry 170) the badge sits above *Swap* and ▶ on the session card rather than on a line under the words, so the title keeps its two lines with it, and the reason takes up to two. A row whose title and reason both take two lines is taller than 96 px (107.9 at 342 × 740 in U63's run), an exception brought back to R2's owner (Entry 170, Question 1).
 - **Free play is a prompt, not a row.** It was a `listRow` — same border, surface and height as the four tappable cards above it — with no click handler, no actions and nothing to press. Every word it carried is still there; the costume is gone.
 - *Shuffle options* was the last of the three day-changing actions still drawn as a box; all three are text now, under the card.
 - The "Working on…" line names the rung rather than printing `lesson 0.1` beside a unit title that is the same words.
@@ -224,6 +238,28 @@ fallback until C6 and are deleted.
 - **New** is a strand's next unmet requirement's item, in the order its lesson states them; a
   requirement the warm-up is serving gives way to the next. When what is left on the rung is
   its reads, the next lesson's first, said as such.
+- **The transfer offer (D4, 2026-09-28)** takes the new slot after the rungs' own new work and
+  before the next lesson's first ask: only where no strand's rung asks anything the new slot
+  serves (offered or not), so it never stands in for an unmet requirement of the learner's rung;
+  at most one a card, and none on a day a run already came from one. For a skill the ladder
+  reads as *proficient* and not beyond, it offers material this learner has not met by its exact
+  identity (`progressStore.contactIn`: never a run of the same material under any id, never an
+  item met only by id on a run that stored no material): an item whose role is `transfer` for the
+  skill that passes the one gate, or an excerpt a reached rung lists that the gate passes for one
+  of the skill's demands (a study or an excerpt only with a current teaching-use `yes`, through the
+  gate); differing from what the skill was shown on in at least one dimension measured or declared,
+  and never of the family that established it (`curriculum/transfer.ts`). Its line says what it is
+  for — *Shifting position: something new, for a skill you have shown — it should feel different* —
+  and never that it will prove or has proved anything. Opened, it carries `?intent=transfer&skill=&offer=` and no rung (it is no rung's ask, so no rung judges it or is credited by listing it). Before it opens, Today keeps the offer as shown — the item, the skill, its material, the relationship and the contact the session chose it on, the card's day — under the card's offer token (D4a; `data/offerSnapshot.ts`, one `settings` row); composing the card again, or swapping the offer's row away, supersedes it. It opens only once it is kept: a write that fails opens nothing, and Today says *This offer could not be kept on this phone, so it was not opened. Try again.* (U73, X1). The Score screen reads it before ▶ is enabled — until it answers the screen is still loading, and nothing can start or be stored. Where it names this route's token, this item, this skill and today, the run keeps its material, role, the intent and that relationship, byte for byte, never a recomputation; where it does not (missing, superseded, another item, skill or day, unreadable), one line under the header says *This offer is no longer on today's card; opened as practice.* (or, where what was kept could not be read, *This offer could not be read back; opened as practice.*), and the run is ordinary practice with neither intent nor relationship. The ladder's state for a
+  transfer is *transfer demonstrated* (`LADDER_STATES`), which the Skills screen, Progress and a
+  lesson page's requirement lines say in C7's words, *shown on different material*
+  (`SKILL_TEXT.transfer`, §3a); the transfer policy decides it from the facts each run carries
+  (G2), and the offer gives it one of them — the offer's relationship for the offer's skill, as the
+  offer made it (`recordRun`), read like any run's — so opening the offer credits nothing by
+  itself. (Q81: this said the ladder's *v0 state* kept C7's words and nothing tied it to the offer;
+  since G2 the state is the policy's reading, and an offer run carries the offer's relationship.)
+  A swap drops the claim,
+  and with it the intent.
 - **Review has two reasons, and the line says which** (the reviewer's correction): *skill
   retention* — a skill the reads have not shown for the ladder's 21 days (`RETENTION_DAYS`), a
   skill not yet retained first, offered as a fresh phrase of a reading row it was shown on,
@@ -244,7 +280,8 @@ fallback until C6 and are deleted.
   used to take the row ahead of the ladder, until the same correction). It no longer offers a
   mastered piece every session (L17): keeping a piece playable is the review's.
 - **Jam** is an option of a rung on a jam track (chords & pop, blues, jazz, jam) the learner
-  has reached, played least lately; before any is reached there is no jam row.
+  has reached, chord-and-feel material first (a score with chord symbols, a backing-track groove;
+  G61, X1), played least lately; before any is reached there is no jam row.
 - **The fallback ladder** (L14), when a slot's own claim finds nothing, in one order
   (`FALLBACK_ORDER`): the rung's own option; an item declaring the same target skill; an item
   carrying the same demand; a prerequisite rung's option; the exposure rule. Each step is tried
@@ -266,9 +303,29 @@ fallback until C6 and are deleted.
   retention, a demand-ready piece — and only then the fallbacks, so a fallback never takes what a
   claim asked for; a review with nothing due chooses last. No slot offers an item a
   requirement has counted while something the rung asks for waits.
+- **An automatic row is an offer, and passes the teaching-use admission (D3b, 2026-09-28).** A
+  rung listing an item is its authored placement, not a decision that the item is fit to teach
+  (the reviewer's ruling on D3a). So every slot that takes an item straight from a rung's list
+  without asking the gate — a rung's `runs`, `done` and `measure` asks, the fallback ladder's rung
+  and prerequisite steps, the jam slot and the exposure rule — chooses only among items that pass
+  the same admission the gate applies (`eligibility.admittedForTeaching`, read once, in
+  `session.usable`): a generated item whose family promises music (the studies, the grooves, the
+  12/8 blues) is on no row until a person's `goodTeachingUse: yes` on its current identity is
+  built, and since E1a (2026-09-28) neither is an excerpt a rung lists, until the `yes` is on the
+  cut's current identity (its file's sha256, so a decision on an earlier cut admits nothing):
+  measured notes and a boundary approved by the rules establish no teaching use. Where that leaves a rung's ask with nothing to offer, the ask stays unmet in the rung
+  state and the slot takes the next step of the fallback ladder that passes (a prerequisite rung's
+  option, the exposure rule), or the row is dropped; no row says the ask is met or offers the next
+  lesson as though it were, and no row says anything waits for review, which is the content
+  pipeline's business and not a thing to practise. On the current build, `latin.3`'s and
+  `latin.6`'s exercise asks have only grooves to count and stay unmet until a decision exists; for
+  a fresh learner placed at any rung, every groove's row was filled by an admitted item, through
+  the slot's own rule or the ladder's next step, and no row was dropped (Entry 103's probe). The
+  Library and exploration never ask. The rung page's own picks — *Start*, *Climb the ladder*,
+  *Quick check*, the duet and blind tools' piece — are offers too and read the same predicate
+  (§3e, D3c).
 
-The line is the session row's second line and is cut at the owner's width, so the claim comes
-in its first words and the detail after the dash:
+The line is the session row's second line and takes up to two compact lines at the owner's width, then an ellipsis (U63, Entry 170); the claim still comes in its first words and the detail after the dash, so a sentence longer than two lines keeps its claim:
 
 | claim | the line |
 |---|---|
@@ -284,6 +341,7 @@ in its first words and the detail after the dash:
 | repertoire retention | Keeping this piece playable — last played on 10 Sep |
 | a piece the reads are ready for | A piece with dotted quarters — your reads support them |
 | the rung's own option | From this lesson · More from this lesson · More music from this lesson · Nothing due for review — more from this lesson |
+| the rung's own option, where every piece the rung asks for is one the learner paused or put away (G1e, the reviewer's ruling: none is revived and the rung is not passed over; said once) | This lesson waits on pieces you paused or put away — more from this lesson |
 | the same target skill | Trains subdivision, which this lesson asks for |
 | the same demand | Has eighth notes, which this lesson asks for |
 | a prerequisite rung | From Hands together: the left hand holds, which this lesson builds on |
@@ -291,6 +349,8 @@ in its first words and the detail after the dash:
 | exposure, songs (the ladder's last step) | For variety: a Classical piece — none played since 4 Oct · none played yet |
 | a mastered piece in the repertoire row | A piece you know — more music from this lesson |
 | jam | Chords, form and feel: from Playing from chord symbols |
+| jam, the option not chord-and-feel material (the rung has none, or Shuffle reached past them) | From Playing from chord symbols |
+| the transfer offer (D4) | the card: *Shifting position: something new*; the whole line (*… something new, for a skill you have shown — it should feel different*) on the session's transition (U71) |
 | after a swap | You chose this one — from the same lesson |
 
 The fixed pieces: `SLOT_TEXT.thisLesson` "This lesson", `nextLesson` "The next lesson",
@@ -300,30 +360,109 @@ with Perform on", `nextUp` "Next lesson", `waitsForReads` "this one waits for yo
 `keepPlayable` "Keeping this piece playable", `lastPlayed` "last played", `readyWith` "A piece
 with", `readySupported` "your reads support them", `nothingDue` "Nothing due for review",
 `fromThisLesson` "From this lesson", `moreFromThisLesson` "more from this lesson", `moreMusic`
-"More music from this lesson", `trains` "Trains", `has` "Has", `whichAsked` "which this lesson
+"More music from this lesson", `heldByPause` "waits on pieces you paused or put away" (G1e), `trains` "Trains", `has` "Has", `whichAsked` "which this lesson
 asks for", `whichBuildsOn` "which this lesson builds on", `forVariety` "For variety",
 `fromLessonsSoFar` "from your lessons", `notPlayedYet` "not played yet", `nonePlayedYet` "none
 played yet", `nonePlayedSince` "none played since", `earlierSong` "a song from an earlier
 lesson", `pieceYouKnow` "A piece you know", `jam` "Chords, form and feel", `free` "Play anything
-you like — no scoring, no cursor", `chose` "You chose this one".
+you like — no scoring, no cursor", `chose` "You chose this one", `somethingNew` "something new,
+for a skill you have shown", `feelDifferent` "it should feel different", `somethingNewHead` "something new" (the card's head;
+U71, X1).
 - **"Swap this"** on every row — not just the whole-card "shuffle" — offers the alternatives
   for that slot (`00` D21), in tiers that are claims (C6; L12's third reader, L36;
   `selectors.tieredAlternatives`): the other options of the lesson the row came from (*From the
-  same lesson*); the item's own `alternatives[]` (*Named as a stand-in for it*); items sharing
-  a target skill (*Trains the same skill: subdivision*); items carrying a measured demand it
-  carries (*Carries the same demand: dotted quarters*) — within a tier the nearest level first,
-  an order and not a window. A shared concept tag matches nothing: the `repertoire` tag on every
-  quarried piece made the old third tier a level window over the quarry. Given the learner's
+  same lesson*); the item's own `alternatives[]` (*Named as a stand-in for it*); items that
+  declare the row's target skill and whose measured notes provide its opportunity (*Also trains
+  subdivision, with the other demands you have met*); items whose measured notes provide, at a
+  useful density, the demand the row's rung teaches (*Also practises skips, with the other
+  demands you have met*) — within a tier the nearest level first, an order and not a window.
+  Every tier goes through the one gate (E0, `curriculum/eligibility.ts`): given the learner's
   rung, nothing is offered that carries a demand no lesson up to it has taught (a reading row by
-  what C4b's map says it may write). Each tier's words are printed once over its options, and a
-  row keeps `data-tier`; a chosen option's line is *You chose this one — from the same lesson*
-  (or its tier). A **"not a song"** filter is on the sheet, because half the point of the
+  what C4b's map says it may write); nothing unmeasured is offered as an equivalent, the lesson's
+  own options and the named stand-ins included; a declared large-hand voicing is not offered
+  until its alternative reaches the learner; and a generated item whose family promises music
+  (the studies, the grooves, the 12/8 blues) is not offered in any tier, the lesson's own options
+  and the named stand-ins included, until a person's `goodTeachingUse: yes` on its current
+  identity is in D2's record and built (D3a: the gate's reason is *not approved for teaching use*,
+  never "not yet reviewed", because a `no` or a `fix` is a reviewed decision too); since E1a the
+  same holds for an excerpt, on its cut's identity, and an unplaced excerpt is in no tier that
+  searches the whole catalogue whatever its bit (E1: placement and admission are different
+  questions). The Library still lists every one of them, and opening one from there is
+  exploration, which no gate refuses; since D3b a groove a rung lists is not the card's own row for that rung either (the
+  card's rows pass the same admission, above), though nothing is removed from a rung. A shared concept tag or a step every tune has
+  matches nothing: the `repertoire` tag on every quarried piece made the old third tier a level
+  window over the quarry. The words state the strongest fact known, never "similar difficulty".
+  Each tier's words are printed once over its options, and a row keeps `data-tier`. A piece the learner paused or put away can be listed — the sheet is their own menu — and wears its state beside it in the project sheet's words, *Paused* or *Put away*; choosing it is a swap like any other and changes no project (G94; the reviewer's ruling, `responses/9fce3792.md`). A chosen
+  option's line is *You chose this one — from the same lesson* (or its tier: *it also trains the
+  same skill*, *it also practises the same demand*). A **"not a song"** filter is on the sheet, because half the point of the
   exercise breadth is that a skill can be practised without a tune attached.
 - **An import-only item always shows what to play instead.** A rock-module song you have not
   imported yet is not a dead row: it offers the public-domain vehicle its technique brief
   names ("play Moonlight I — same texture"), taken from the item's `alternatives[]`.
 - "Shuffle options" swaps every row at once, as before.
-- "Start session" runs the rows in order with a between-item summary.
+- **"Start session" runs today's session** (X1, 2026-09-29; Part 18; `data/sessionRun.ts`,
+  `ui/sessionRunner.ts`). It writes one record of the card as composed at that moment — swaps
+  included — under one `settings` key (`pianopath.sessionRun`): each activity's slot, the route
+  that opens it, the composition's own words, its contact assumption and what becomes of it. The
+  free prompt and anything whose screen owns no honest finish (a PDF, a placeholder, the guided
+  tour) stay outside the cursor. It then opens the first activity with its token (`?session=`).
+  While a session is open today the card is the session's, never a card composed since: a row
+  whose run counted (completed with a measured pass, `passed-full`) says *✓ done*; a row completed
+  by a run that counted nothing, or tried and moved on from, *played*, with no ✓; a skipped one
+  *skipped*; and the current one *next*, with a blue edge (X46: an exercise played in Wait for me
+  wore the pass's ✓). A row behind the learner (completed, or moved on from) no longer shows the
+  composition's words: they were the reason before the item and are frozen with the card, so after
+  it they could only be stale — the passed piece read "not counted yet" — and the mark says what
+  became of it; a row ahead keeps them. The one filled box is **Continue**, under *Continue
+  today's session · N of M min · next: …* (visible time on the activities' screens, never wall
+  time), beside a quiet *End today's session*. A row tapped out of order becomes current; a
+  running row's *Swap* replaces that activity with a new token. A length chip or *Shuffle*
+  recomposes the card and closes the running session. An early end says what waits — *Today's
+  session ended · N min*, *… — left for another day: Review, New* — and marks nothing failed.
+  After the last activity the finish line says *Today's session done · N min* over what each
+  came to (*Warm-up done · Review played · …*, in the same words), above *Start session*, and a
+  card composed after it marks *done today* the rows whose run counted; one completed without
+  counting shows its item's own state (*started*). **A piece the learner pauses or puts away after
+  *Start session* leaves the running session at its turn** (G90, the reviewer's ruling
+  `responses/d59f2ef8.md` question 2): the snapshot stays — the card is still the session's and the
+  piece still waits on it, pending, until its turn, and nothing is recomposed — but where the
+  session is about to offer an activity (the transition after the one before, *Start* on it,
+  Today read for *Continue*), a pending activity whose piece is paused or put away *now* — **one
+  the composition chose**, or (G90a, below) one the learner swapped in before they said it — is
+  skipped, said as *{title} is skipped — you paused it* (*… you put it away*) in
+  the transition's own note, and the one after is offered. **Its row says why too** (G90a, the
+  reviewer's required change on G90, `responses/1c75de8d.md`): the transition is transient and Today
+  is the durable view of what happened, so the row reads *skipped* with, in place of the
+  composition's words (the reason it was ahead, which the learner has withdrawn the piece for),
+  **Skipped — you paused it** or **Skipped — you put it away** — one short line, shorter than the
+  words it replaces; every other skipped row (an easy success's) keeps the composition's words.
+  The record holds it as its own adaptation kind, `withdrawn`, with the state the learner left the
+  piece in; `skipped-redundant` stays what it was — practice that became redundant — so no reader
+  takes "the learner withdrew this piece" for it. The piece is read as the card's composer reads it
+  (`session.heldWordOf`, with `heldStateOf` its state: its material's project, else the id's,
+  `paused` or `retired` and no other state, and the moment the learner said it, the project's
+  `since`). An activity already underway is not interrupted. **A swap and a pause or put-away are
+  ordered by when each happened** (G90a): the swap records when it was made (`swappedAt`), and
+  the learner's latest word holds — a pause from before the swap is overridden by that deliberate
+  choice (the swap sheet marks a paused piece, G94, and the learner chose it anyway), one from after
+  it steps past the piece at its turn, and at the very same moment the swap stands. A row the learner
+  taps open is theirs whatever its project says; a row tapped back to life no longer announces a
+  skip, and no record of its withdrawal is left on it. A Score-screen run Today chose for its rung
+  (`?rung=`, a session activity or a card row) opens where it can count: Keep tempo at the rung's
+  tempo or faster, where the learner's defaults (Wait for me at 70 %) could not meet the rung's
+  standard, with a Rhythm only preference off for that run; the select stays theirs (X46, `responses/43045ffb.md` §4: the item is composed as what
+  the rung asks for, so it is a criterion attempt). A run its own settings could not count (Wait,
+  rhythm only) does not complete the activity: the sheet's *Start* moves on from it, said as
+  *played*, and a run that counts completes it. Another day's open session is closed as not
+  finished, without a word. Nothing about a session is evidence.
+- **An automatic row from a rung's own list asks the one gate** (L113, X1;
+  `eligibility.automaticFromList`): an unmeasured option, or a learner's assignment of an import
+  the app has not measured, or a PDF, is on no row; a measured option keeps its placement. The
+  Library still lists and opens every one, the missing measurement said.
+- **The practice row's place** (X1, a stated teaching policy): the new piece is the learner's
+  own rung's new material first, and How to practise's row second (the next slot that takes a
+  strand's own option). At 1.2 on the 30-minute card, New is 1.2's song and the practice row is
+  `practice.1`'s song in the repertoire slot.
 - **A row the builder cannot fill is dropped, not shown empty** (P7). An empty row is a hole
   the learner has to fill by hand, which is what this card exists to avoid; free play is the
   exception, because it is a prompt and never has an item. On a fresh Stage 0 profile that is
@@ -458,7 +597,7 @@ than guessing. The words (`READING_TEXT`, `DEMAND_WORDS` in `help.ts`):
 | a taught demand on | Now with dotted quarters — *n* of *m* right and in time yesterday |
 | the key signature on | A key signature to read: G major, one sharp — *n* of *m* … |
 | a demand singled out, its control off | This one by step only — skips went wrong in 3 phrases |
-| a demand singled out, nothing here keeps it out | Another like it — steps went wrong in 2 phrases, and every phrase here has them |
+| a demand singled out, nothing here keeps it out | Another like it — steps went wrong in 2 phrases, and they can’t be left out here |
 | two reads against it, nothing singled out | An easy one: in C position — not sure yet what went wrong |
 | the same, no easy read below | Another like it — not sure yet what went wrong |
 | the rung moved on | This lesson’s phrases can reach beyond C position |
@@ -472,8 +611,8 @@ and the rest of `DEMAND_WORDS`; a move reads "by step only", "without eighth not
 dotted quarters", "with tied notes", "with a leap", "with a note outside the key", "with both
 hands", "right hand only", "in C position", "beyond C position", "in C major", "in 6/8". The
 fixed pieces: `READING_TEXT.easy` "An easy one, for fluency", `easyUnsure` "An easy one",
-`hold` "Another like it", `unsure` "not sure yet what went wrong", `kept` "and every phrase
-here has them", `keySignature` "A key signature to read", `lesson` "This lesson’s phrases",
+`hold` "Another like it", `unsure` "not sure yet what went wrong", `kept` "and they can’t be
+left out here" (X1's voice pass, U57: it said "and every phrase here has them", true only where the recipe promises the demand in every phrase, U58), `keySignature` "A key signature to read", `lesson` "This lesson’s phrases",
 `stayTaught` "The next step waits for a later lesson", `rightInTime` "right and in time",
 `wentWrong` "went wrong in".
 - With no reading exercises in the build there is no card at all, rather than an empty one
@@ -554,12 +693,13 @@ promise — the app is not marking you — and the name is the owner's word for 
 
 **§0:** a hand screen (R2). Its one filled box (R3) is the stage being worked on; *Placement test*, *Review a skill* and *Tracks…* are text or chips. Ordering tracks is rare and lives in the **Tracks…** sheet, not on the screen (R3). A lesson card never repeats its unit's title (D26).
 
-- Stage list (0–9) with completion rings; expand → units → lessons.
+- Stage list (0–9) with completion rings — none on Stage 9, a project stage, whose line says
+  what it is (§3f) — expand → units → lessons.
 - Every lesson is openable regardless of status. Lesson page has **"I already know this"**
   (the learner's word about the rung, kept apart from the evidence and badged *you said you
   know it*; it sets the rung aside and marks no item passed — §3f, C5) and **"Quick check"**
-  (a 2–3 minute measured test built from the lesson's drills) so the owner can move on fast or
-  confirm.
+  (a 2–3 minute measured test: the lesson's first drill that passes the teaching-use admission,
+  §3e) so the owner can move on fast or confirm.
 - Lesson page, **in the order it is drawn** (`LessonScreen.ts`, `body.append`): the status
   line, the rung's own actions, *Ways to play this* (§3d, hidden where the rung names no
   tool), **Exercise options** and **Song options** as cards (title, composer, level, hands,
@@ -594,10 +734,13 @@ promise — the app is not marking you — and the name is the owner's word for 
   nothing in it or those rungs get the free teacher their track already names in `02` Part D.
   Not decided here.
 - **What this rung still needs** (P15, replan §4.2). One line above the options: "This rung
-  wants one more song to reach the floor of 3. Find one, or play what is here." The numbers
-  are `needs`, written into the built curriculum by `validate.py` — the lesson page reads
-  them rather than recounting, so the counting rules (the floor; a song-optional rung
-  counting both lists together) live in one place.
+  wants one more song to reach the floor of 3. Find one, or play what is here." The floor
+  is `needs.floor`, written into the built curriculum by `validate.py` (`write_needs`); the
+  lesson page recounts the options it holds, imports overlaid (`needs.lessonShortfall`,
+  review C3), by the same counting rules, which `needs.test.ts` holds in step with
+  `write_needs`: the floor; a song-optional rung counting both lists together; a rung whose
+  requirements ask for no song run short of no song (R23, the gate the build's own
+  three-alternatives check already reads).
 - **Find more** opens the finder sheet (`02` terminology): the search line and the chat
   prompt, each with Copy; what the piece must have and what makes one wrong; the examples,
   badged *already yours* or *not found yet*; and the formats line. Both prompts are generated
@@ -647,6 +790,12 @@ The first screenful now answers all three, in this order:
   stage, and the unit. The unit is dropped when it is the rung's own title said again (a unit
   of one rung takes its name), because `00-invariants` §1 forbids saying the same thing
   twice more than it wants the third fact.
+  **The title itself is the rung's title** once the curriculum has loaded, and until then the one
+  word *Lesson* (T20, G90): the page used to head itself *Lesson classical.3* from the moment the
+  route resolved, an internal id on screen for as long as the curriculum took, and in the same
+  states where it has no rung to name (the fetch failing, an id the curriculum does not have) it
+  still says the word. A word, not an empty heading: the frame keeps its line and its `h1`. The
+  id stays on the screen's own `data-lesson`, set when the rung is found.
 - **What do I do first** — `#lesson-start`, the screen's one filled box (§0 R3), labelled
   **Start**. The option rows' own `▶` stay secondary, which is the decision that left the
   page with no primary action at all: nine exercises meant nine blue buttons and therefore
@@ -655,7 +804,35 @@ The first screenful now answers all three, in this order:
   thing on this rung.* The rung's own order is the teaching order (`02` builds
   `exerciseOptions` before `songOptions`, each in the order it means), so "the first playable
   option" is the recommendation and not a judgement made in the screen. A rung whose options
-  are all waiting on an import draws no Start at all (§0 R4).
+  are all waiting on an import draws no Start at all (§0 R4). Since D3c Start is the first
+  playable option **that passes the teaching-use admission** (next bullet), and the line says
+  *the first thing on this rung* only when it is: where Start passes over the rung's first
+  option it reads *Opens "X".*, because the option list right under it begins with the one
+  passed over and the longer line would be false about that row.
+- **Every pick this page makes for the learner is an offer, and passes the teaching-use
+  admission (D3c, 2026-09-28; the reviewer's ruling on D3b, `responses/4478793.md`).** Four
+  controls choose an item from the rung's lists: *Start* (the first playable exercise, then
+  song), *Climb the ladder* (§3d: the first exercise that opens as a score), *Quick check* (the
+  first exercise with a drill or a file) and the duet and blind tools' piece (§3d: the named
+  `item`, or the first playable song). Each takes the next option in the rung's order that
+  passes its own condition **and** `eligibility.admittedForTeaching`, the same exported
+  predicate the gate and the session card read (§2), called once per pick through one helper in
+  `LessonScreen.ts` (`firstOffered`); the page reads neither the promise fact nor the teaching
+  bit itself, and `openItem.ts`'s helpers stay questions about the item. Where no option passes,
+  Start is not drawn, the ladder, duet and blind buttons are not drawn (a named `item` without
+  the admission draws no button, exactly as a named item that is not the rung's own — never the
+  first song instead), and *Quick check* says *This lesson has no drill to check against yet.*
+  Nothing says an item waits for review. **The option rows are not picks**: they are the
+  learner's own choice, like the Library, and every authored option stays listed with its `▶`.
+  On the current build (Entry 104's probe, every rung) this moves Start on the eleven rungs that
+  listed a groove first, and Quick check on nine of them — `holiday.5` now opens the E major
+  arpeggio, `latin.3` *Cielito Lindo* — and leaves four controls with nothing to offer: the duets of `latin` and
+  `latin.3`, which name a groove, and *Quick check* on `latin.3` and `latin.6`, whose exercises
+  are all grooves (their asks stay unmet, §2). No ladder rung changes.
+  *Quick check* takes the first option whose run is measured — notation, or a drill of a kind
+  that judges (`DrillScreen.measuresARun`, the list `drillOutcome` reads) — and where a lesson
+  has only unmeasured drills it says *This lesson has no drill that measures a run yet* (G62,
+  X1).
 
 R1 still holds with all three added: measured at 342 px, the first option row of `1.1` and of
 `2.1` — the rung with a *Ways to play this* block above its options — both end inside the
@@ -677,7 +854,7 @@ own finished, or the lesson's rule the app cannot measure.
 phrase counts for 1.5's requirement that names it. The decision that a run meets **this
 rung's** requirement is this rung's: only runs whose record names the rung as the one that
 opened them count, each judged again under the rung's standard from what it measured (Keep
-tempo at the rung's tempo; a Wait run meets only a rung that asks for no tempo; nothing heard,
+tempo at the rung's tempo; a Wait run meets no rung, every rung asking a tempo (CL11a); nothing heard,
 rhythm only, a phrase met before and the learner's own answer are not runs). An item three
 rungs list meets at most the one that opened it.
 
@@ -739,10 +916,28 @@ of their own — lighter and broken — then the rungs the evidence met, solid. 
 never the measured fill. A legend over the stage list names the two fills (*done before* ·
 *counted since*), and is drawn only where something was carried.
 
+**A project stage on Plan (G1c; G83, L86).** Stage 9 says "Nothing here is a rung to pass", and
+its page says so (*A project: there is no rung to pass here.*, below). Plan reads the same
+constant (`projectStore.PROJECT_STAGES`): a project stage's line is that sentence
+(`PROJECT_TEXT.stageNine`) — no *x of y*, no *by your word*, no *done before* — with no bar
+under it and no *complete*; its rows wear no rung badge, no learner's word and no carry-over. A
+unit there lists several pieces, so its row wears none of their project states either; the page
+it opens shows each piece's. The rungs keep their state in the evidence (`rungState.ts`,
+unchanged); Plan stops presenting it. The legend names the bar's two fills only where a stage
+that draws a bar carried rungs.
+
 **The lock line (T26).** With strict prerequisites on, *Usually comes after Right hand C
 position.* — the rung's name, never `1.1 Right hand C position` — and the button beside it is
 *Open that lesson*, not *Go to 1.1*. A prerequisite is satisfied when it is met, set aside by
 the learner's word, or carried over.
+
+**A project stage's page (G1b; L86).** Stage 9 says "Nothing here is a rung to pass", so a unit
+whose stage is a project stage (`projectStore.PROJECT_STAGES`) draws no *What the app counts*,
+no state badge, no *I already know this* and no *Mark done*: under *Quick check* one line, *A
+project: there is no rung to pass here.*, and each song option a badge of the learner's project
+state (`PROJECT_TEXT.states`) or *not started*. The unit's `requirements` stay in the data and
+the rung state reads them as before (`rungState.ts`, unchanged; the session never advances into
+the stage); this page stops presenting them. Changing one project changes that row alone.
 
 **The evidence job's line on the storage report** (Settings → Content, `#settings-evidence`):
 *Evidence from your runs: checking after the screen is up.* until the job has run once after
@@ -759,6 +954,15 @@ the app opens.* rather than reading like a finished job.
 
 **§0:** opens on what needs attention (R1): the skills the evidence has not shown lately if there are any (*Not shown lately*, pressed), otherwise the current stage and the one below, with *Show all* revealing the rest in pages. *Drill it* is the box; *Find more* is text (R3).
 
+**A name is never cut (U90, 2026-09-29).** A skill's name, and an exercise's title under it,
+wraps to the lines it needs beside *Drill it* and *Find more* and never ends in an ellipsis. The
+row grows with the name, and the actions keep their place, because the words keep their 5rem
+basis. One line with an ellipsis cut "Leaps: a fourth or fifth" on CI's runner, and here under a
+face wider than Segoe UI (Verdana) and at 115 % text. On Segoe UI itself it cut "Finger numbers"
+to "Finger num…", and both coordination exercises in A to "Hands together in A — left ha…". This
+is Skills' exception to R2's one title line. A long name beside both buttons takes three or four
+short lines, and such a row can stand past 96 px.
+
 A grid of every concept in the curriculum (from `concepts[]` across lessons), each with what
 the app knows about it and a "Drill it" button that launches the concept's drill or a matching
 short exercise. Filters by stage and track, and *Not shown lately*. This is how "go back and
@@ -769,8 +973,10 @@ observable shows the ladder's reading of the learner's evidence (`evidence/ladde
 current-stamp record whichever rung judged the run, in these words: *not shown yet* (not
 introduced), *introduced* (met — a carried rung, or a row the retired skills store wrote — and
 nothing shown), *tried, not yet shown* (practised), *familiar*, *proficient*, *shown on different
-material* (the ladder's *transfer demonstrated*, said as what v0 measured — a different item —
-and never "transferred", Part 26), *retained*, *mastered*. Beside it, where the evidence has not
+material* (the ladder's *transfer demonstrated*: a first reading at the full standard that the
+transfer policy reads as measurably different on one of the skill's own dimensions — never a new
+seed of what established it, never another cut of a piece already played (G2, G2a) — and never
+"transferred", Part 26), *retained*, *mastered*. Beside it, where the evidence has not
 supported the skill within the ladder's retention span (`RETENTION_DAYS`, 21 days, a hypothesis)
 and did before, a warning badge in Today's words: *not shown in 4 weeks*. That is what "rusty"
 means now — the ladder's `notShownRecently`, never the days since a page was drawn — and the state
@@ -798,6 +1004,10 @@ are where the learner is by the derived rung state, as Plan and Today say it. Th
 | notShownFilter / notShownCount | Not shown lately · not shown lately |
 | notIntroduced / introduced / practised / transfer | not shown yet · introduced · tried, not yet shown · shown on different material |
 | heading / nothingMoved / review / shownAgain | Skills · No skill the app measures has moved in the last four weeks. · Review a skill · shown again |
+
+No screen shows the transfer policy's reading of a run (its `why` is for a reader of the
+record): the Skills screen and Progress show the ladder state's words alone, and those words did
+not change with G2 or G2a.
 
 **Named, and findable** (P15). Each row shows the concept's *display name* from
 `content/curriculum/concepts.json` — the screen used to derive a label from the id, which
@@ -946,7 +1156,11 @@ play this*.
 - **A Score-screen mode needs a piece.** A rung may name one with `item`; otherwise the
   button takes the rung's **first playable song**, because "play this rung's material as a
   duet" is the instruction and any of its songs satisfies it. Where the rung has no playable
-  song the button is not drawn at all.
+  song the button is not drawn at all. Either piece is an offer (§3e, D3c): the song is the
+  first playable one that passes the teaching-use admission, and a named `item` without it
+  draws no button rather than falling back to a song — the rung said which piece it meant.
+  The lesson's prose still names the button where that happens (`latin`, `latin.3`, whose
+  duets name a groove).
 - **`validate.py` refuses two ways of pointing at nothing**: a lab preset the lab does not
   have, and an `item` that is not among this rung's own options — a lesson sending the
   learner to a piece it does not offer is the `blues.3` fault wearing a control. *Song*
@@ -985,7 +1199,9 @@ Four things keep it that way rather than clever:
   exception is the fault `05` §6 describes.
 - **It takes no `item`.** It opens the rung's **first exercise that is notation** — `4.3` leads
   with `drill.chord.inversions`, which has no file and opens as a drill, so the button skips it
-  — and where a rung offers no such exercise the button is not drawn. `validate.py` **refuses
+  — and where a rung offers no such exercise the button is not drawn. Since D3c the exercise
+  must also pass the teaching-use admission (§3e); on the current build no ladder rung lists a
+  refused one, so none of the seven changes. `validate.py` **refuses
   an `item` on a `ladder` outright**, and says so in those words (2026-09-22 review). It used
   to be refused as a side effect: an `item` had to be one of the rung's *song* options and a
   ladder's exercise is never one, so widening that rule to songs or exercises the same day
@@ -1345,6 +1561,13 @@ out.
   `.midi`** and **`.pdf`**, plus share-target intents when installed and drag-and-drop on
   desktop. The list of imported items shows the kind, and offers edit (title, level, tags) and
   delete. A bad file fails with one sentence from the parser, not a stack trace (§9).
+  An import's detail line names where its notes came from (*read from the file*, *converted from
+  MIDI*) in place of the type every import shares, and a state line under it says whose the hands
+  are, whether it is measured, and whether the tempo is the app's guess (X3).
+  A PDF's line names no type: its badge, *PDF · pages, not notes*, says what it is (G96).
+  A MusicXML file in the timewise form is kept as its partwise twin (X3e): its sheet, its
+  measurement, its swap, a stated tempo and the Score screen read it as the same file written
+  partwise.
 - **A MIDI file is converted on the device** (2026-09-23; the owner: *"ideally I could select a
   file from the app"*). Nothing here runs on a server, so the whole of
   `tools/midi-cleanup/midi_to_musicxml.py` is ported to `app/src/import/midi/` and runs in the
@@ -1359,9 +1582,16 @@ out.
   Score screen, and its card says "pages, not notes" so it is obvious why Wait mode is not
   offered. Anything you want judged has to arrive as MusicXML.
 - Item detail sheet: metadata, sections, practice tips, media, "Open".
+  A placeholder's detail sheet (a piece the catalogue wants and does not bundle) has no *Tracks*
+  and no *What it trains*: the piece's `importHint`, what the app reads, and *Import a score*;
+  any detail sheet names a track by its title and leaves out an id with none (U75; X3).
+  A PDF's detail sheet reads *Type: PDF*, and under its estimated level *Estimated level —
+  change it if it feels wrong.*: the app reads no notes from a PDF, so it never says the level
+  was guessed from the music. Any other estimated level keeps *The app guessed this level from
+  the music itself — change it if it feels wrong.* (G96a).
 - **The assign sheet** (P15, replan §4.3). After an import that arrived with a rung in mind —
-  an Android share, or **Import for this rung** on a lesson page — a sheet opens by itself
-  asking where the piece goes: the rung (pre-selected from `?for=`), the level (the runtime
+  an Android share, or **Import for this rung** on a lesson page — the **import sheet** opens by
+  itself (below), which ends in the assign sheet's body asking where the piece goes: the rung (pre-selected from `?for=`), the level (the runtime
   estimate from §4.4, shown as `≈` and editable), and the concepts (the rung's). One tap on
   **Save**. From a share that is **two actions in total**, against the eight the old path
   took, and the e2e suite counts them rather than taking the claim on trust.
@@ -1369,10 +1599,19 @@ out.
     not answering; a sheet over the list would be covering the list he came to look at. The
     row carries an **Assign** button beside **Edit**, so the sheet is one tap away when he
     does want it — and it is the way back to the sheet for anything already imported.
-  - **A file that arrived as MIDI is the exception, wherever it was imported from** (T29).
-    That is the one import where the app decided things on his behalf — the metre, the key,
-    the grid, which hand played what — so the sheet opens by itself and says so *before* he
-    agrees to any of it, in three lines: the self-check's own answer ("all N notes the reader
+  - **Wherever the app guessed is the exception** (T29; X3): a file that arrived as MIDI from any
+    door, or a score whose stored provenance says its hands or key were inferred (the command-line
+    converter's MusicXML).
+    In either case the app decided things on his behalf — for a MIDI file the metre, the key,
+    the grid and, where it split them, the hands; for the converter's MusicXML the hands or the key its
+    provenance calls inferred — so the import sheet (below) opens by itself and says so *before*
+    he agrees to any of it, and it writes only what he does on it (*Swap the hands*, *Use this
+    tempo*, *Save*). (Q81: this said "the one import where the app decided things", written when
+    MIDI was the only case; X3 added the converter's MusicXML.) For the converter's MusicXML the
+    line of each fact inferred, the hands or the key, says the command-line converter wrote the
+    score and the file does not say how it chose. For a MIDI file converted in this visit it is
+    three lines, the first under *What the app read* and the other two under *What the app
+    guessed*: the self-check's own answer ("all N notes the reader
     found are in the score, and every bar adds up", or what it found instead, in red), what
     happened to the hands — and that sentence has to be the true one of the two: either the
     file's own two tracks were **kept as recorded**, in which case the app decided nothing
@@ -1381,7 +1620,17 @@ out.
     than two) and a crossing is where that is most often wrong — and which of the decisions
     were guesses (the metre, the key and the grid — the
     notes and their timing are not). The note lives in memory for the visit, not on the row:
-    it is a fact about this moment, not about the score.
+    it is a fact about this moment, not about the score. Its hands sentence is derived from the row at
+    render (U72): once the learner has corrected the hands it says they are the learner's (X3).
+  - **What the notes ask** (E2): under the conversion note, one line reads the stored row's
+    measured demands in the swap sheet's words — *Measured in the notes: the bass-staff notes,
+    steps, skips and both hands together.* — measured on the score as it is stored, the learner's
+    corrected one where the hands were corrected; or why none were read: *A PDF: the app reads no
+    notes from it, so nothing is measured.*, *The app could not measure its notes (…)*, and for a
+    score imported before the app measured demands, *Not measured yet: the app measures it in the
+    background.* — which the next launch does (`03` §4a, `facts.measuredUnder`). A reading the app
+    knows it gets wrong on the file (the detectors' clef assumption) is left out, and the line says
+    so. A description of the notes, never a judgement of the piece and never a claim about the rung.
   - Assigning is optional: "No rung — just put it in my library" is the first choice, and is
     what an import used to be.
   - Typing over the estimate makes the level *judged* rather than *estimated*, so the app
@@ -1396,6 +1645,46 @@ out.
     *… is now one of the practice options for <rung title>.* (2026-09-26, T52: both said the
     piece counted towards finishing the rung, which C5 made false; the folder's line also
     printed the rung's id.) It is in the backup.
+- **The import sheet** (X3, 2026-09-29). Opened by the UI that received the stored row — the
+  picker and drop target, the share path, *Import for this rung*, the row's *Assign* — never by
+  the store. The sheet's heading is the title. *What the app read*: composer, length in bars,
+  key signature as printed (the key named only where the file states its mode), and this visit's
+  self-check. *What the app guessed*: hands, tempo, and the key where estimated, each with whose
+  it is (the app's guess, from the file, yours) as the store holds it. **Swap the hands**
+  exchanges the two staves' notes, keeps each staff's clef, and saves through
+  `correctImportHands`, which measures the corrected score again. The tempo line and its control
+  are the next two bullets (X3a–X3d); there is no key control (E49). *What the notes ask* is
+  E2's line. *Where does it belong?* is the assign sheet's body (above), T52's sentence first.
+  Nothing on it is evidence; the piece is played by opening it.
+- **Use this tempo** (X3a, X3b): on the tempo line of every MusicXML import — the app's guess,
+  the file's, or one the learner already stated — "♩ =" and a number, and *Use this tempo*,
+  which saves through `importStore.stateImportTempo` (E48): the score opens at the stated tempo
+  and is measured again, the tempo fact names the learner, and an estimated level is estimated
+  again. The line then says "You stated ♩ = N" (*yours*), N read from the tempo the stored score
+  opens at, and the Library row's state says *tempo yours*. The control stays after a statement,
+  its number starting again at the tempo the score now opens at, so a slip is put right on the
+  sheet and every later statement goes through the same store operation. A tempo outside 20–400
+  is refused in the store's words and never clamped by the sheet; the field keeps what was
+  typed. No control on a PDF; the tempo and the hands are changed one at a time.
+- **The tempo line** (X3c, X3d): one number, the tempo the score opens at in quarter notes a
+  minute, read by the Score screen's own reader (`tempoFromXml`, X3d), so the number the line
+  names is the number the Score screen opens at — for the learner's line ("You stated ♩ = N"),
+  the file's and the number *Use this tempo* starts at. The file's line adds the printed mark at
+  the opening in its own note where it counts another note ("The file says 𝅗𝅥 = 60 (120 quarter
+  notes a minute)."), and a mark with no `<sound tempo>` is said with the quarter notes it means
+  in the same words, the field at that number (X3d); a quarter-note mark that agrees says one
+  number ("The file says ♩ = 96."); a mark and a playback tempo that disagree are said apart,
+  never as a conversion ("The file prints 𝅗𝅥 = 60; its playback tempo is 100 quarter notes a
+  minute."); a mark the door read from the file's text (E32) is said as printed and as read
+  ("The file’s mark says “= 60”, with no note; the app reads it as a half note, the metre’s
+  beat: 120 quarter notes a minute."); a tempo written only after the opening is never said as
+  the opening ("The file writes no tempo at its opening, only later in the piece."). The line
+  says what the file states, which since X3d is what the Score screen plays. **Fractional
+  tempos:** kept as the file wrote them (the sheet writes nothing); said as the score carries
+  them to three places (72.5), or "about" the whole beat where the file carries more
+  (90.00009000009 → "about 90"); the field starts at the number the line names, so a press keeps
+  a three-place tempo and states the whole beat for a finer one — the learner's act. A learner's
+  statement is stored to three places and said as stored.
 
 ## 4b. Score folder (browsing files that live on the phone)
 
@@ -1582,7 +1871,7 @@ and never will; what it holds is a register.
 
 ## 5. Score screen (the core)
 
-**§0:** a stand screen (R2) — it stays large. The control bar reserves its own height rather than floating over the notation, so the space below the last stave belongs to the layout, and it hides itself only where the fit had used every pixel of the stage anyway (decision 5). It holds six controls and a `⋯`; the settings you change once live in the sheet behind it. **Blind mode hides the notation** — `visibility: hidden` on the stage is defeated by `visibility: visible` on the front buffer, so the buffer rule must not be unconditional. **And hides nothing else (2026-09-12):** the visible count-in, the beat dot and the corner readout are children of that stage, and `visibility` inherits, so they went with it. Every one of them exists *because* the notation might not be there — the dot is the one thing that must be visible while the clock runs, the corner says which bar when the chrome has folded, and the count-in was built because the sound is usually turned down on a music stand. A blind run in Tempo mode counted itself in invisibly, on a screen with nothing else on it at all. The notation is the buffers; hiding those is all blind mode ever meant to do.
+**§0:** a stand screen (R2) — it stays large. The control bar reserves its own height rather than floating over the notation, so the space below the last stave belongs to the layout, and it hides itself only where the fit had used every pixel of the stage anyway (decision 5). It holds six controls and a `⋯`; the settings you change once live in the sheet behind it. **Blind mode hides the notation** — `visibility: hidden` on the stage is defeated by `visibility: visible` on the front buffer, so the buffer rule must not be unconditional. **And hides nothing else (2026-09-12):** the visible count-in, the beat dot and the corner readout were children of that stage, and `visibility` inherits, so they went with it. Every one of them exists *because* the notation might not be there — the dot is the one thing that must be visible while the clock runs, the location says which bar, and the count-in was built because the sound is usually turned down on a music stand. A blind run in Tempo mode counted itself in invisibly, on a screen with nothing else on it at all. The notation is the buffers; hiding those is all blind mode ever meant to do. Since U122c none of the three is on the stage (the count beside `⏸` in the bar, the dot beside `bar n / m`, the corner chip gone), so the stage's rule cannot reach them.
 
 **How a run starts, and what happens if you leave one (2026-09-23).** Three changes, all
 from the owner's *"it should be intuitive"*:
@@ -1591,9 +1880,10 @@ from the owner's *"it should be intuitive"*:
   `#score-waiting`, which is the same element `drawWaitingFor` has always written from the
   engine's signals. What is new is that it is never blank — where the run has nothing
   specific to say it holds the mode's own standing line, so a piece that has just opened says
-  *The count-in clicks, then play along* instead of nothing. The bar's sideways mirror and
-  the stage's corner ask the strip whether the line is the run's or the standing one, so a
-  status message still wins sideways exactly as before.
+  *The count-in clicks, then play along* instead of nothing. Sideways, the top line asks the
+  strip whether the line is the run's or the standing one (U122c; the bar's mirror and the
+  stage's corner asked it before), and the standing line is not drawn while the hands are on
+  the keys.
 - **The first note is marked before anything is judged.** The keys guide marks what the run
   is waiting for, and there was no run until play was pressed — so a piece sat open under a
   blank keyboard. `ScoreSession.previewFirst` prepares the first step for the mode and hand
@@ -1608,7 +1898,7 @@ from the owner's *"it should be intuitive"*:
   letting the learner find out. Where it was left is kept in `localStorage`
   (`data/unfinishedRun.ts`), written when the screen is torn down with a run going and
   dropped when a run reaches its summary; bar 1 is never remembered, because "carry on from
-  bar 1" is what opening the piece already does. The offer lives in the header, which folds
+  bar 1" is what opening the piece already does. The offer lives in the header and is taken
   away when a run starts, so it is never furniture during practice (§0 R4).
 
 Layout: a **header row** across the top — `← Back`, the piece's name, then the app's own
@@ -1617,31 +1907,103 @@ and the keyboard strip under that. The header is a row in the column, not a line
 the notation: three absolutely-positioned lines cost the stage a constant 3 rem upright and
 printed the title across bar 1 sideways.
 
-The control bar **auto-hides after 3 s during a run, and only when it is taking room from the
-notation** (decision 5, 2026-09-07) — and after 0.7 s at the run's start, because sideways the
-three seconds were the lower staff of the first bar hidden behind it, every run. Outside a run the stage reserves the bar's height rather
-than being covered by it. **During a run the stage takes the bar's row** (P21d A6, built in
-P21e): the sheet is fitted once, at the run's start, to the height without the bar, and when a
-tap brings the bar back it overlays the foot of the sheet for three seconds rather than pushing
-the music up and down on every tap. What "in the way" means is that the fit used the whole
-stage: held sideways it does and the bar goes; held upright the sheet is fitted to the width
-and leaves the bottom third of the stage empty, so hiding the controls would buy nothing and
-cost a hunt for them. One measurement, when the timer fires — never per frame.
+**Each moment shows what it needs (U122c, Entry 216, 2026-10-02;
+`docs/design/score-bar-layout.md` §10).** Information earns screen space from the learner's
+current task (the owner's direction, `responses/911f8c82-correction-1.md`). One rule on every
+device (`scoreChrome.ts`, `chromeFor`), read from the run as it is:
 
-**Sideways on a phone the header row is not drawn** (`04` §0 R5, P21d A6): `← Back`, the
-title and the status line sit at the bar's left end instead, mirrored from the header, and the
-keyboard strip is 56 px rather than 72. With the bar's row going to the stage during a run, the
-music has about 300 of 360 px where it had 194.
+- **While the hands are on the keys** — the count-in, holding for the first note, playing, a
+  demonstration — the controls fold to one direct control in its own place: `⏸` (▶'s button),
+  or *Stop* (`Hear it`'s) during a demonstration. The fold happens the moment a run starts or
+  carries on, not on a timer. Nothing judges whether the controls cover anything (the owner's
+  *just always fade it*). A tap on the music shows every control for 3 s (one tap always brings
+  them back, `08` §9.34); a tap while they show folds them again.
+- **Paused, refused, at rest, finished**: nothing folds. A pause used to fold three seconds
+  after `⏸`, because the fold asked whether a run existed and a paused run does: the line said
+  *▶ to carry on* with no `▶` on the glass (walk finding 5).
+- **The count-in is beside `⏸`, in the row the folded controls leave**, at the row's height,
+  never over the notation: no wash, no numerals on the notes the learner reads to come in (walk
+  finding 8).
+- **The finished view** keeps X46's sheet and its order; the outcome and the primary next action
+  are in its first view on every device (the end-of-run summary sheet, below, for the phone
+  held sideways).
+
+Each device keeps its own surfaces (R7):
+
+- **Phone held sideways (c6)**: the header row is not drawn (§0 R5). A thin **top line** holds
+  the piece's name and `bar n / m`, as tall at rest as the band a run keeps for it; from a run's
+  start it lies over that band and the sliding sheet sits below it, so ▶, a pause and the fold
+  move nothing. A sound refusal, the refused start, the first-note cue and the paused notes that
+  carry a cause (an option's restart, the return from a demonstration, the time away, said as
+  *Paused — you were away N s. ▶ to carry on.*) take the name's place while they stand; a
+  refusal is bold in the accent colour, and `bar n / m` yields, whole, only to a refusal that
+  cannot fit beside it. A pause the learner made with `⏸` says nothing there or on the row: the
+  stopped music, the open row and `▶` say it. While the hands are on the keys the name is not
+  drawn and the run's own line is. The bottom **row** holds `← Back` and the ordinary status
+  line, then `▶`, `Hear it`, the mode, Hands, the tempo and `⋯`, painted no further than its
+  controls; a refusal never grows it (U120). The row's chooser gives the tempo's percentage, then
+  the mode's sentence, then Hands, then `Hear it`; the mode is priced at its widest label in the
+  form chosen, so the selected mode is always whole (U121). The keyboard strip is 56 px rather
+  than 72. **During a run the stage takes the bar's row** (P21d A6): the sheet is fitted once, at
+  the run's start, and the row, flush to its controls, overlays the foot of the sheet. The beat
+  dot is in the top line's left corner.
+- **Phone upright**: the header (`← Back`, the name, `bar n / m`, the status, the help strip),
+  the bar at the bottom, as before. **The header keeps its box through a run**: while the hands
+  are on the keys its Back, its name, the mode's name and `?` are not drawn and `bar n / m`, the
+  app's status line and the run's own line stay; it used to leave the flow, and the music jumped
+  up by its height at every fold and down at every reveal. While a refusal stands it takes the
+  mode's name's line, so the header's height holds. The beat dot is beside `bar n / m`. The row
+  is the sideways chooser's (the mode whole, Hands at the tap floor) wherever that keeps the
+  controls today's row kept, and today's row where it would not: on the narrowest rows
+  (342 × 740, 360 × 780) whole words and the floor would send Hands behind `⋯`, an open product
+  trade (`docs/design/score-bar-layout.md` §10.7), so there the mode is cut and Hands is narrow,
+  as before.
+- **Tablet** (and 1024 × 768, 768 × 1024, which the app lays out as upright): the header, the
+  side panel and the bar, as before; the header as upright. **Upright and on a tablet the stage
+  keeps the bar's row through a run**: where the height decides the size the music grew at ▶
+  and the bar, reopened on a pause, covered its foot; upright the row bought nothing.
+
+Every control a sentence names meets the tap floor, `max(2.5rem, 40px)` in both dimensions:
+`▶`, `⋯`, `← Back`, `Hear it` (at the wider of *Hear it* and *Stop*), and each of `R`, `L` and
+`Both` wherever Hands keeps its place on the row with it (U124, widened by U122b; where only
+the floor would send Hands behind `⋯` it keeps today's width, the open trade above).
 
 **One size for the run** (P21e A2). The fit measures the *piece* — a third, never-shown
 engraver draws the whole score once per zoom and the tallest system in it sets the scale — so
 a bar with a ledger line is not engraved smaller than a bar without one, and the staves of both
 slots sit at the same height in every window — anchored on the stave *lines* from the
 engraver's model, not on the drawn group, whose top is wherever the highest fingering landed.
-Until that measurement has run (one frame after the first draw) the tallest window seen so far
+Until that measurement has run (before the first draw, for a piece within the probe's reach of 48 bars; on idle after it for a longer one, before any sheet past its first two is made; U74, U32a) the tallest window seen so far
 stands in, held and never released. A run keeps the scale it started at: ink up to a tenth
 taller than the fit runs into the margin rather than shrinking the sheet; only ink taller than
 that still shrinks it, once.
+
+**The first window is the measured one (U74, 2026-09-29).** A piece within the probe's reach
+has its probe loaded with the slots and measured before the first window is priced, so the
+first frame that draws the music draws the shape and size it settles on. Before, the chooser
+had nothing to price with, drew the whole window as one system, and re-planned when the
+measurement landed on idle, after the first paint — the one small system at the top of an empty
+stage in D4's pictures of the two-bar scale, on every path in (the two paths settled alike; the
+pictures were taken before they settled). Before the first note, the piece is measured again at
+each engraving zoom the fit settles on, never at a zoom the engraving search only tries, and
+the search re-engraves the shape on the glass. A longer piece keeps the idle load and its
+first-window re-plan. `data-settled` is said a frame after the fit, once the stage has held
+still through that frame; any stage change takes it back. The observer refits every stage
+change (a height alone off a run; a width always, releasing and retaking a run's size), as it
+did.
+
+**On a tablet the first draw waits for the side panel (U80, 2026-09-29).** The lesson panel's
+320 px column is part of the stage's width, so the Score screen hands the renderer its stage
+only once the panel is decided: filled (`data-side="text"`) or left out (`data-side="empty"`: a
+piece on no rung, a lesson that will not read). `data-side` is absent until then and set once
+per opening; a phone has no panel and is `empty` from the start. The panel's two reads (the
+curriculum and the lesson file, both precached) start when the item is found, beside the score's
+own, and the first draw waits for them no longer than `SIDE_PANEL_WAIT_MS` past the score being
+ready; past it the score draws with the column's track kept, so a panel that then arrives with
+text moves nothing and one left out gives the width back as a resize. Before, the panel arrived
+after the first draw on every piece `side-panel-prose.spec.ts` sweeps, at every tablet size
+measured, and where the column takes width from the stage the music was drawn across the whole
+width and then refitted narrower beside it.
 
 **Sideways, the sheet is engraved in chunks** (P21e A3): the window, two bars behind it and
 two ahead, so the bar being played always has neighbours on both sides to slide against. The
@@ -1653,13 +2015,22 @@ Control bar, in this order and **nothing else**: `▶`/`⏸` · **`Hear it`** ·
 tempo label (tap opens a sheet with the % slider, 30–130 %, and a typed bpm field) · `⋯`.
 These are the things that change during a practice; one row in every form factor, on a phone
 either way up and on a tablet.
+The bpm is the score model's tempo at the cursor, in quarter notes a minute from the file's own
+tempo (X3d): a half note = 60 with its `<sound tempo="120">` says 120 bpm at 100 %, *Row, Row,
+Row Your Boat* (dotted quarter = 54) 81; the count-in clicks at the same number.
 
 **`Hear it`** plays the piece — or the loop, if one is set — with both hands through the
 current Sound destination, cursor moving, nothing judged; a second tap stops it. It is Listen
 mode without having to know Listen mode exists, and it does **not** move the mode selector:
 what it interrupts is put back when it ends, and `▶` during one ends it and starts the run
 you chose. The screen carries `data-hearing` so the run's mode and the selected mode stay two
-facts rather than one.
+facts rather than one. **It sounds from the first tap**, a reload or a link straight to the piece
+included (U67, 2026-09-27): the tap starts the app's audio, and the session plays through the
+context and master gain the app has then, not the ones it had when the piece loaded, which
+before any tap were none. The session asks for the pair at every start, frame and resume, so
+`▶` and a held bar play through it too. The tap waits for the audio through `▶`'s gate (G86a):
+where it has not started within `PLAY_SOUND_WAIT_MS`, no demonstration starts and the state line
+says so (*`▶` starts the sound as well as the run*, below).
 
 **`Hear it` during a run keeps the run** (decided 2026-09-23, built by T33 — the state-machine
 document's C1). It used to end the run: the middle of a good pass thrown away, silently, by
@@ -1745,9 +2116,51 @@ sideways there is one slot for the two, so only one of them was ever drawn. It u
 because a performance has no *Start again* row (§5e). A pause the learner did not make with
 `⏸` says what made it instead (T33): *Paused at bar 12 — ▶ to carry on* when a demonstration
 has given the run back, *Restarted at bar 1 with the left hand — ▶ when ready* when an option
-changed while paused restarted it. The chrome folds three seconds into a pause as it does
-into any run (the owner's *just always fade it*); one tap on the sheet brings back the `▶` the
-line names, and the line itself is in the stage's corner while the chrome is folded.
+changed while paused restarted it. Since U122c a pause folds nothing: the `▶` the line names
+and the setup controls are on the glass. Sideways the generic paused line is not drawn (the
+row's `▶` says it), and the notes that carry a cause take the top line's name's place, the
+time away without its pointer to *Start again*, which is one tap away in `⋯`.
+
+**`▶` starts the sound as well as the run** (U69, 2026-09-29). A phone suspends the app's
+audio when the screen locks or a call comes in, and the app's own first-tap start is spent on
+the visit's first tap, so `▶` after a lock carried the run on silent. Now `▶` — a new run, a
+paused run carried on, the run asked for over *Hear it* — and `Space`'s start ask the audio to
+start inside the tap where it is not running, wait for it at most a second
+(`PLAY_SOUND_WAIT_MS`, chosen: long for a device starting its output, short for the button
+pressed most), with `▶` dimmed and `aria-busy` meanwhile, then start or carry on only if the
+sound is running (G86a, the reviewer's ruling on U69, which went on whether or not
+it answered and so showed ⏸ over a run nobody could hear). Where the wait ends with the sound
+still off — no answer by the bound, a refusal, or an answer with the audio still suspended —
+nothing starts, carries on or ends: a paused run stays paused, *Hear it* under `▶` goes on,
+`▶` reads `▶` again, and the state line says *Sound did not start — tap ▶ again* (§5f). The
+next tap asks again; nothing records the sound as unavailable, and nothing navigates or
+resets. A start that answers after that starts nothing by itself; the sentence goes, because
+it is no longer true. `Hear it`'s own wait (U67) is the same gate, bounded: refused, it starts
+no demonstration and says *Sound did not start — tap Hear it again*. With no Web Audio at all
+both act at once, silent, as before, because no tap could ever start that sound. A second tap
+in the wait does nothing, and `⏸` never waits. Not on the page coming back into view, which is
+not a tap: Android ignores a start made outside one. Scheduling and the context's state
+are tested in Chromium; *unverified on a device*.
+
+**Every tap that can start the sound goes through that gate** (U105, 2026-09-30): *Carry on
+from bar N*, *Start again*, a hand chosen after *Nothing for the … hand*, a bar held down,
+*Try again*, and the summary's *Again*, *Slower*, *Faster* and *Loop the weak bars*, each with
+its whole action. So a refused tap changes nothing it would have changed: the offer to carry on
+and its record stay, no loop is set, the tempo does not move (a retry would otherwise move it
+twice), the hand stays, the summary stays up, a demonstration under *Start again* goes on; and
+the state line names the control (§5f). Only `▶`'s own tap dims while it waits. A bar held
+down asks from the press's timer, before a touch lifts; whether a platform counts that as the
+tap is inferred, and the line says what happened either way. A key on a connected piano is a
+MIDI message, not a tap, so it cannot be what lets the sound start: with the sound running it
+starts the run as it always did (T8); with the sound suspended it asks nothing, starts nothing,
+is not kept to be played later, and the line says *Sound did not start — tap ▶*. A key on the
+screen is a tap and asks like one; where the answer comes after the key's own moment, the run
+starts without that key as its first note, because the key's time is from before the run began,
+and waits for the first note as after `▶`. A start that makes `▶` read `⏸` lets a standing
+refusal go; a restart held paused keeps it, still true, with `▶` reading `▶`. Sideways, with the summary up, the sheet covers the bar that carries the state line, so the
+summary says it itself: a refused tap on the sheet puts the same sentence first on the sheet,
+painted where the header is not drawn, so the learner reads it once in every orientation (U105a,
+the reviewer's required change, `responses/f51e8010.md`).
 
 **The note waited for is named as the score writes it** (added 2026-09-25, T41). With *Name the
 note I am waiting for* on, a Wait for me run says *Waiting for E♭5*, or the chord low to high
@@ -1845,8 +2258,8 @@ MIDI piano connected, `#score-waiting` says so on the ready screen, in the words
 setting calls for (*Play the first note to start* / *Press any key to count in*); it says
 nothing for the other inputs, deliberately — that line's weight was a question put to the
 owner. A Keep tempo run the learner leads **holds on its first note** after the count-in
-(`05` §3b), and the same line says so; the count-in's wash is cleared as it starts to hold, so
-it never sits over the notes the first one is read from. *Pedal-to-start is not built*: it
+(`05` §3b), and the same line says so; the count-in is cleared as it starts to hold, and since
+U122c it is never over the notes at all (it is beside `⏸`). *Pedal-to-start is not built*: it
 wants a setting, off by default, because a pedal put down in preparation would start the run.
 
 With `R` or `L` chosen and `playbackHands: non-focused`, the status line says `Playing the
@@ -1987,7 +2400,17 @@ without distortion and being able to look ahead are paramount."* So:
    in `pending-review` has the table).
 2. **Always look ahead.** In every state before and during a run, the next bar after the
    window's last is on the stage, drawn as the following system — unless keeping it would
-   break 1, which is the one-system case `08` §4.1 and invariant 7 already allow.
+   break 1, which is the one-system case `08` §4.1 and invariant 7 already allow. **Once a
+   run has begun, its arrangement is kept** (U32, the reviewer's order of 2026-09-30: no
+   distortion, then the frozen run, then the look-ahead, then the count): before a run the
+   look-ahead is added as soon as the renderer can draw it; once the run starts, what it
+   started with stays until the run ends and the next one begins. A piece past the probe's
+   48 bars draws its first window from two sheets and, once it is measured, gets the sheets
+   its settled shape needs (U32a, `08` §4.1): at rest the next row appears when its sheet
+   lands; a change made while stopped — the count, Size, a turn, a new start bar — that
+   needs another sheet loads it then, before the next run, and so does a row the taller
+   stage of a run has room for, once one run has been played; and a run started before
+   then plays without it, rather than wait for a load or reshape under the learner's hands.
 3. **Then the count.** *Bars in window* is honoured exactly when 1 and 2 allow it. When they
    do not, the window holds as many of the asked bars as fit at the readable size and **the
    row says so in words** — *Bars in window — 4 asked, 2 shown: 4 would be too small here* —
@@ -2004,8 +2427,10 @@ without distortion and being able to look ahead are paramount."* So:
    after any number of presses.
 
 The layout that follows: the asked bars are laid over as many systems as the stage holds, at
-the largest size where every asked bar and the next bar are on the stage. The size is frozen
-for the run; a rotation re-fits under the same rule.
+the largest size where every asked bar is on the stage; the next bar is shown from the room
+left over and never enters the sizing (T38, next paragraph; `chooseWindowShape` is the rule
+the gallery was judged on, and this sentence once claimed more — U74's E30 reading, U77).
+The size is frozen for the run; a rotation re-fits under the same rule.
 
 **The next row never sizes the window (T38).** The window's size comes from its own rows. The
 greyed next row below is drawn at that size, and when it is wider than the stage there — a
@@ -2015,7 +2440,10 @@ whole with the stage's edge cutting it like the edge of a page, and the row says
 window — the next bar continues past the edge*; or **compact**, cut inside the stage between
 two notes with a short fade, and the row says *Bars in window — only the start of the next bar
 fits*. Run-off was chosen from the pictures: compact's cut fell inside beamed groups on the
-Nocturne and left a stub of beam that reads as a fault.
+Nocturne and left a stub of beam that reads as a fault. **And it is drawn only below the
+window's rows, never into them (U110):** where the stage has no row's height left under the
+window at its size, there is no greyed row, and no row's chord symbols or fingering reach the
+row above (`08-score-render-states.md` invariant 40).
 
 **Two things this settles.** In **`Scroll`** the row is *gone*, not greyed — the whole piece
 is one sheet there and a window has no meaning (`§0` R4) — and the Layout row says where the
@@ -2025,6 +2453,11 @@ window: the window is the asked bars, and the count is honoured up to as many as
 the stage at the size the height gives, with the next bar's first note after them (T38: this
 said a bar's room, and the row said *1 shown* while two bars and the start of the third were
 on the glass).
+Since U74 that count is priced from the piece's measurement from the first draw. Before, the
+window said the count asked until the measurement landed on idle, after the first paint, over
+the same picture — on the dev piece `tempo-change` at 880 × 412 "two shown" with the second bar
+past the right edge — and `score.slide.spec`'s sideways case asserted that word; it asserts the
+rule on the glass now (U82, 2026-09-29).
 
 **Both steppers say where they are and where they stop (2026-09-12).** `Bars in window` always
 read `2 bars` between its buttons; `Size` said nothing at all, so it could be pressed a dozen
@@ -2035,7 +2468,11 @@ cannot change anything now does nothing at all: it used to write the setting, re
 renderer and, since a re-engraving invalidates a run's judgements, **restart the run** — so a
 tap that changed nothing threw away the pass you were in the middle of.
 The controls are moved into the sheet and back, not rebuilt, so each keeps its state and its
-id.
+id. **The sheet goes with the screen** (G86, 2026-09-29): leaving the Score screen — `← Back`,
+a tab, the browser's back — closes an open `⋯` or tempo sheet, puts its rows back, and gives
+the page back. It used to stay: a sheet sits on `body`, outside what a route change clears,
+and holds the rest of the page inert until it closes, so Back left the Controls sheet over
+the Library with the Library out of reach beneath it.
 
 Notation area:
 - **Window layout, upright — two slots.** The stage holds two systems and they are two
@@ -2106,6 +2543,18 @@ Notation area:
 - End-of-run summary sheet: accuracy, timing (early/late histogram), tempo achieved, wrong-note
   hot spots (bars), pass/master badge, buttons "Again", "Slower (−10 %)", "Faster (+10 %)",
   "Loop the weak bars", "Done". Without MIDI: "How did it go?" (Rough / OK / Clean) self-report.
+  A tap on the sheet whose sound did not start is said once where the learner can read it
+  (U105a). Where the header is drawn (upright, a tablet), its state line says it just above
+  the sheet. Sideways, where the header is not drawn and the bar that mirrors its line is
+  under the sheet, the sheet's first line says it: whole, wrapping rather than cut, held at
+  the sheet's top when the sheet scrolls. The sheet holds the sentence in every orientation
+  as a status a screen reader is told of, painted only sideways. Only for a control on the
+  sheet.
+  **Sideways the sheet is two columns (U122c):** its 72 % ended above the actions, so the
+  learner met the outcome and the figures and not the step they point to. X46's sheet in its
+  own order: the outcome and the figures on the left, the actions on the right from the top, the
+  recommended one first as X46 puts it, held at the top of the sheet's view while the figures
+  scroll. Nothing reordered or reworded. Upright and on a tablet it is one column, as before.
   A rhythm run is headed **Rhythm run** and carries a `Judged` line saying what was and was
   not measured; a run with the ladder on carries a `Ladder` line saying where it ended. The
   ±10 % buttons are one rung of that same ladder, which is where its notch came from.
@@ -2147,15 +2596,45 @@ Notation area:
   The side panel's prose is that same rung's, and the first rung listing the piece where
   nothing names one.
 
+  **What next with this piece? (G1b).** On a song's summary, before *Done*, an outlined *What
+  next with this piece?* opens the project sheet over it (never on a generated phrase or a
+  drill). The sheet: the piece's title; its state and since (*Learning since 2026-09-29*) or
+  *Not a project yet*; the history's last line (*You performed it on …*, else *Before this: Put
+  away, from …*); what the encounter history says (*You last played it on …*, *…part of it…*,
+  *You have listened to it and not played it yet.*, *You have opened it and not played it yet.*,
+  *You have never opened it.*); the choices the state offers, as quiet text (*Save for later ·
+  Learn this · Prepare it for performance · It is ready · I performed it* with a date · *Keep it
+  playable · Bring it back · Pause · Put it away*, the table in Entry 138); and once there is a
+  project, *This week's goal*, *The problem right now* and *Sections* (*Bars [ ] to [ ]*,
+  *Name*, *Add section*; *Bars run from 1 to N.* where a section falls outside the piece).
+  From no project, *Keep it playable* is offered only for a piece the learner has passed — its
+  progress row passed or mastered, *I already know this* included — and the store refuses it
+  otherwise; *Save for later*, *Learn this* and *Prepare it for performance* are offered before
+  any run. The offers are drawn once the sheet has read the record, and a pass stored while the
+  sheet is open brings *Keep it playable* in (G96).
+  Opening it writes nothing; every change is the learner's choice; messages sit inside the sheet
+  (R6); leaving the screen that opened it closes it. Closing a sheet gives focus back to the
+  control that opened it, or, where the screen drew its list again behind the sheet, to that
+  piece's row as the list shows it now (the opener names it; the sheet searches nothing; G96).
+  The words are `help.ts`'s `PROJECT_TEXT`.
+
   **The sheet says only what the run measured (2026-09-25, T37).** The rule is the
   reviewer's: never display or record evidence the engine did not measure.
   - **A Wait for me run** carries no tempo: the page waited for every note, so the slider's
-    value is a setting nobody played to. Its Tempo line reads *Not judged in Wait for me —
-    to pass, play it in Keep tempo* (`help.ts` `SUMMARY_TEXT`, the same fact *Wait for me*'s
-    own help card states before the run), and it cannot pass a criterion with a tempo floor
-    or be master-eligible. A Wait run whose notes met the rung's accuracy is headed **Notes
+    value is a setting nobody played to. Its Tempo line reads *Not judged in Wait for me*
+    (`help.ts` `SUMMARY_TEXT`), and it cannot pass a criterion with a tempo floor or be
+    master-eligible. A Wait run whose notes met the rung's accuracy is headed **Notes
     ready**, not *Run finished*, which read as a failure over a run that had every note it
     needed, and not *Passed*, which would claim the half nobody measured.
+  - **To pass** (X46, `responses/9e14839e.md` §2 points 2 and 5): a judged run (Wait or Keep
+    tempo, not rhythm only, not a sight-read) that did not meet its standard says the standard
+    that judged it, in *What the app counts*' words (`keepTempoAt`): *90 % of the notes, in Keep
+    tempo at 80 % of the written tempo or faster* — the rung's numbers, or the Settings pair where
+    no rung judged it. Where the run's own mode or tempo could not count (Wait, or Keep tempo below
+    the floor), the first control on the sheet is **Keep tempo at 80 %**: a fresh Keep tempo run at
+    the standard, nothing stamped as changed. The Wait line used to say "— to pass, play it in Keep
+    tempo", naming no number, and no control did it; a clean Keep tempo run at 70 % on a rung that
+    counts 80 % was headed *Run finished* with no reason.
   - **The Timing line** appears only where timing was measured (`timing.n > 0`). Wait keeps
     none, and the line used to print *0 ms off the beat on average* over every clean Wait
     run.
@@ -2200,6 +2679,35 @@ Notation area:
   not refused during a performance (the reviewer chose "not an undemonstrated performance",
   not "refused"), and one heard *before* the take began leaves it a performance.
 
+  **What the screen writes of what the learner met, and reads back (G1, 2026-09-29).** A hearing
+  used to be remembered for the visit only: a phrase played to the learner, the screen left and
+  the phrase opened again later, its run went on the record as the first reading. Now the screen
+  writes encounters (`data/encounterStore.ts`, `DB_VERSION` 8): **one viewing a visit**, where the
+  notation is first drawn (never in Blind, which draws none); **a demonstration** for `Hear it`
+  and a bar held down; **a hearing** for *Play it to me* — one row a playback, of the kind the
+  learner's action was, never both, over the loop's bars or the whole. Each names what opened the
+  screen and the **visit**, one opening of the screen minted when it opens: a reload, Back and a
+  return, a second tab are each another visit. Before ▶ is live the screen reads what the learner
+  had met of the material (its runs, playbacks and viewings, the passages around it, the summaries
+  of runs the cap deleted); a run's first contact (`firstContact`, G1a) is the relation — no
+  run of it, no playback of it on any visit, no viewing of it on another visit (looking at it on
+  this visit, before playing, is what reading it needs) — read again before the run is stored,
+  in case another tab met it meanwhile. A sight-read's run carries sight-reading's condition
+  beside it (`unseen`, the generated phrase's field since C1), derived from that relation and
+  the visit rule and equal to it today; `unseen: false` is what keeps a phrase met before from
+  passing (§2, §6). A sight-read refused for a viewing alone says *Sight-reading counts only on
+  music you have not seen before — this run is kept as practice.* A piece, an excerpt and an
+  import carry the relation alone (`firstContact` over the bars the run covered, no `unseen`),
+  an audit fact that refuses them nothing;
+  an import is its stored bytes (their sha256), so a duplicate under a new id is the same
+  material. The Library's text row is not a viewing.
+  Runs G1's app stored between its landing and G1a's carry the fact as `unseen` on a piece's run
+  too, and no `firstContact`: they read as they did (`db.isPhraseRun`), and their relation is
+  unknown, never inferred. A consumer of general contact never reads `unseen` for it: the
+  transfer policy reads the attempt's `firstContact` (G2), the session and the project sheet the
+  encounter history (`session.contactOf`, `encounterStore.familiarity`; X1, G1b) (G1a; the
+  reviewer's required change on G1, `responses/b48342f.md`).
+
   **The sheet names what changed during the run** (decided 2026-09-23, built by T33 — C5),
   in one line labelled **Changed**, first, before the numbers it qualifies: *hands changed
   to R at bar 3; metronome on at bar 1; heard it played at bar 5*. A mode, a hand, a tempo, a
@@ -2215,6 +2723,23 @@ Notation area:
   or tempo sheet, which stays live above the summary — are added to the same line, *after the
   run* in place of a bar: the sheet stays the record of the run that produced it (§7's own
   case in the state-machine document), and *Again* then runs with what the line says.
+
+  **In today's session** (X1): where the run is a session's activity (`?session=`), the sheet's
+  closing action is the next step. The heading stands first; directly under it is one bordered
+  block with *Next: {title}, N min — {the composition's own words}*, *N of M min so far*, a
+  filled **Start** (the next activity opened straight away, never through Today) and **Skip or
+  change** (the next skipped by the learner, back to Today). After a measured failure the block
+  says *Still unstable, so we're not moving on* with *Try again* and *Move on anyway*. After
+  easy first-attempt success it says *Easier than expected — {the skipped practice} is skipped*.
+  Where the learner paused or put away the piece that would have come next, it says *{title} is
+  skipped — you paused it* (*— you put it away*) above *Next*, which is then the one after (G90;
+  §2); for a piece the learner swapped in, only where the pause or put-away came after the swap
+  (G90a: the learner's latest word holds). A first contact met since the card was composed says *You heard this one earlier today, so it
+  is practice now, not a first read* (*played* or *saw* where that is how it was met). After the
+  last activity it says *That was the last one — today's session is done* and **Done**. *Done*
+  gives way to the block. The Score screen reports opened, attempted and completed (the stored
+  run's measured outcome, never a self-report) and its visible time, and reads nothing else of
+  the session.
 
 **The screen's own stylesheet** is `src/ui/screens/ScoreScreen.css`, imported by
 `ScoreScreen.ts`. `src/style.css` stays the app's shared sheet with one owner; what belongs
@@ -2242,9 +2767,10 @@ neither — a mark on a note nobody is going to reach yet tells a beginner to hu
 band refuses the nearest-note fallback the cursor uses: a coming step that is not drawn hides
 rather than marking a note that is not next.
 
-**You can see the beat.** During the count-in the bar's beats are drawn large over the
-notation with the current one lit, counted from the piece's own time signature; during a run a
-dot in the header pulses on every beat and brighter on beat 1. Both are off in Wait and Free.
+**You can see the beat.** During the count-in the bar's beats are drawn large beside `⏸`, in
+the row, with the current one lit, counted from the piece's own time signature (over the
+notation, under a wash, until U122c); during a run a dot beside `bar n / m` pulses on every beat
+and brighter on beat 1. Both are off in Wait and Free.
 Clicks alone leave the first note unannounced on a phone with the sound low, which is the one
 moment a beginner most needs to know when to start.
 
@@ -2332,6 +2858,7 @@ accuracy.**
 - **The three-button self-report** (Rough / OK / Clean) from §5. "Clean" writes a pass, marked
   `selfPassed` and badged the way "I already know this" is. It is never master-eligible:
   mastery needs two measured passes and nothing here was measured.
+- *Practise with the score* opens the twin judged by the rung whose page opened the paper screen (`#/paper/<book>/<piece>?from=<rung>`), so its run counts for the book piece that rung lists; from the Shelf it opens with no rung (CL04, L79).
 - The `sessions` row is `mode: 'paper'` with `notesHeard`, `steadinessMs` and `bpm`, and an
   accuracy of 0 that the Progress screen deliberately never prints as a percentage — a zero
   there would read as a verdict instead of an absence.
@@ -2578,6 +3105,10 @@ learner looks at.
   five chains right out of six, which as a percentage says the same thing as breaking at the
   twelfth, so the sheet says the longest chain and the best chain this item has seen, and the
   pass is a chain rather than a share of the cards (`engine/drills/simon.ts`).
+  In today's session the end sheet's closing action is the same transition (X1); *Back to the
+  plan* gives way to it and *Again* is outlined. A set that ran out completes the activity with
+  its judged result, or none where the drill judges nothing. A stopped set completes nothing,
+  and *Start* moves on.
 - **Sight-reading is not here.** It is generated notation and opens on the Score screen in
   Tempo mode (`05` §8), scored on the first attempt only — after that the material has been
   seen and a second run measures something else. From Today it opens the phrase the reader
@@ -2784,9 +3315,9 @@ for §3c's ten.
 not for *something is happening that the fallback contradicts*: a paused run, a `Hear it`
 demonstration and a run holding for its first note each have something to say and say it, and
 the mode's sentence is what is left when none of them applies. The whole order —
-paused, holding, demonstrating, the note names, the ready line, the standing line — is
-`drawWaitingFor` in `ScoreScreen.ts`, and the machine it serves is written out in
-`docs/decisions/2026-09-23-score-state-machine.md`.
+a tap (or key) whose sound did not start (G86a, U105), paused, holding, demonstrating, the note names, the
+ready line, the standing line — is `drawWaitingFor` in `ScoreScreen.ts`, and the machine it
+serves is written out in `docs/decisions/2026-09-23-score-state-machine.md`.
 
 **The run's own sentences** (T31, and T33 for the five choices that document's §7 left open,
 decided 2026-09-23). They are `STATE_TEXT`, `RESTARTED_WITH`, `ROW_TEXT` and the *Changed*
@@ -2808,6 +3339,28 @@ about forty characters and cuts the rest with an ellipsis:
   microphone*, *with nothing listening*, *judging the rhythm only* / *judging the notes as
   well*, *with the app playing the left hand* / *with nothing played under you*, *with 3 bars
   in the window*, *in the Scroll layout* / *in the Window layout*.
+- **A tap whose sound did not start** (G86a): *Sound did not start — tap ▶ again* after `▶`
+  or `Space`, and *Sound did not start — tap Hear it again* after `Hear it`, whose tap wanted
+  the demonstration and not a run. First in the order while it stands, over the paused line
+  and over *Playing it to you*; gone once the sound runs, however it came on. What happened
+  first and the control that asks again second, inside the forty-odd characters; *did not
+  start*, because it is about this tap, not a verdict that there is no sound (§5, *`▶`
+  starts the sound as well as the run*). *Unverified as copy.*
+  Every other control whose tap can start the sound names itself the same way (U105):
+  *Sound did not start — tap Carry on again*, *Sound did not start — tap Start again*,
+  *Sound did not start — tap L again* (`R` and `Both` the same), *Sound did not start — hold
+  bar N again* after a bar held down, *Sound did not start — tap Try again*, and on the
+  summary *Sound did not start — tap Again*, *Sound did not start — tap Slower again*, *Sound
+  did not start — tap Faster again* and *Sound did not start — tap Loop again*. A label that
+  already ends in *again* takes no second one; a label past the forty-odd characters is named
+  by its first words (*Carry on*, *Slower*, *Loop*). After a key that would start a run, on a
+  connected piano or on the screen: *Sound did not start — tap ▶*, without *again*, because
+  `▶` was not what was used and its tap can start the sound. The tapped control carries
+  `data-sound-refused` while the sentence stands (`▶` after a key). *Unverified as copy.*
+  On the summary the sentence is also the sheet's first line (`#summary-refusal`, U105a):
+  painted sideways, where the header is not drawn and the bar's mirror is under the sheet,
+  and there it wraps rather than cutting; elsewhere kept for a screen reader only, because
+  the header's line says it just above.
 
 A refused `⋯` row says why **on its label**, not in its hint, because sideways the sheet hides
 every hint (§5):
@@ -2826,7 +3379,11 @@ at bar 2*, *duet off at bar 2*, *metronome on at bar 1*, *heard it played at bar
 change made while the sheet is up, *after the run* in place of the bar. A sight-read the
 phrase was played to — part way through, or before the run began (T40) — is kept as practice
 (C1), and says: *Sight-reading counts only on music you have not heard — this run is kept as
-practice.*
+practice.* Since G1 the hearing can be on an earlier visit — a playback is a stored encounter,
+read back when the phrase is opened again — and a sight-read of a phrase looked at on an earlier
+visit and never played or heard says: *Sight-reading counts only on music you have not seen
+before — this run is kept as practice.* Looking at the phrase on this visit, before ▶, is what
+sight-reading is and costs nothing.
 
 **What the sheet says a run is, under its heading** (T40, 2026-09-25). One line of sentences,
 `#summary-note`, where the header's status line used to carry the second of them: the sheet
@@ -2881,10 +3438,12 @@ mode's **name** and takes `#score-waiting` — the line `drawWaitingFor` already
 the engine's signals, and which the bar mirrors sideways — as its state line, with the
 sentence in the card and behind the ?. A drill shows the sentence but not a state line,
 because `#drill-how` says what to do with *this card* under the prompt it belongs to (R6).
-The lab and the chord chart, which had neither, carry both lines. The strip folds away with
-the Score screen's header during a run (`data-chrome='folded'`), which is the decision §5
-already made about that header: while the run is going the state line continues in the
-stage's own corner.
+The lab and the chord chart, which had neither, carry both lines. On the Score screen the
+strip stays in the header's box during a run (U122c, §5 *Each moment shows what it needs*):
+while the hands are on the keys the mode's name and `?` are not drawn, nor the standing line;
+what the run says stays where it is. It used to fold away with the header and continue in the
+stage's corner. While a refusal stands it takes the mode's name's line, so the strip's two
+lines keep their height.
 
 **The Score screen's two lines are two lines, and each of them is one line tall.** That
 header is above the notation in the same column, so its height is taken off the stage the
@@ -2947,7 +3506,7 @@ back. A browser that refuses storage shows it every time, which is the safe way 
 - *What do I do now?* The count-in clicks, then play along.
 - *What can I do here?* **Tempo** — A share of the written speed. Slower is how a hard bar becomes an easy one. **▶** — Starts the run. With a piano connected your own first note starts it instead, and the clock waits for it. **Loop** — Repeats a few bars until they are yours. Double-tap two bars on the sheet to mark them. **Metronome** — The click, on or off. Turn it off to play against silence. **⋯** — Rhythm only, Ladder, Duet, Blind and Perform, and the settings you change once.
 - *What else is there?* This is the mode a pass is measured in. Wait for me is where a piece is learned first; Play it to me is where you hear what you are aiming at.
-- *What counts?* A pass needs both the accuracy and the share of the written tempo set in Settings, in one run.
+- *What counts?* A pass needs both the accuracy and the share of the written tempo, in one run: the lesson’s numbers where it states them, otherwise the ones set in Settings. Accuracy is the written notes you play right in time; each wrong note costs as much as a note you miss.
 
 **Play it to me** (`listen`)
 
@@ -3212,6 +3771,27 @@ the drills themselves, so a measurement added and not named fails.
 
 ## 6. Progress
 
+**Backup export time (SG05 Part 1).** In *Your data*, immediately above the action row,
+one quiet wrapping line says *No backup exported on this device yet.* or
+*Last backup exported: <local date and time, to the minute>.* (The action's own status line keeps *check where you put it*; the standing line does not repeat it. The orchestrator's change at landing, 2026-10-02.) The time is
+this device's export completion/handoff, not proof that a download reached disk.
+File writes count after close; share counts after resolution; a download counts
+after the link click. Cancelled or failed delivery leaves the previous time.
+Restoring a backup cannot adopt its date or another device's export time.
+
+- **Phone upright:** the line occupies its own full-width paragraph, above the wrapping
+  action row; the date can wrap without squeezing the buttons.
+- **Phone sideways:** the same quiet paragraph stays in the data block; the actions
+  can share a row, and the line creates no floating notice or fixed height.
+- **Tablet:** the line belongs to the data block within the existing content column,
+  rather than filling unused screen width or becoming a dashboard statistic.
+
+No reminder or repeated Settings line: the time answers the question where the backup
+is made. Export status distinguishes *Backup saved*, *Backup shared*, *Backup download
+requested*, and *Backup cancelled*. Successful statuses retain *check where you put it*.
+Screenshots are requested on the three representative layouts; appearance is unverified
+until those browser captures are inspected.
+
 **§0:** a hand screen (R2) — rows ≤ 96 px. The heat map is *Minutes a day, last 13 weeks* and carries a one-line key for its five levels (`0 · <10 · <25 · <45 · 45+ min`). **No filled box** (R3): nothing on this screen is done on most visits. The week's figure is the subject and is the first thing on the screen (R1).
 
 **Ranked, 2026-09-12** (the pass the four tab screens had; see `ProgressScreen.ts`). Four of the Plan screen's six faults were here:
@@ -3234,6 +3814,16 @@ the drills themselves, so a measurement added and not named fails.
   competence, and is not listed. Steps up first, then down, then the unshown. With nothing moved:
   *No skill the app measures has moved in the last four weeks.* Always a quiet *Review a skill*
   to the Skills screen. Never a stage number: the strands move separately (L85).
+- **Projects (G1b).** What the learner says they are doing with each piece, newest change first:
+  the title, *State since day* on the second line, *Goal: …* on the third where one is typed; a
+  row opens the project sheet (§5). Under them, *Pieces you have passed, not yet projects* —
+  songs the app measured passed, or mastered, with no project (the learner's own word, *I already
+  know this* or a Clean self-report, is shown as theirs on the lesson page and in the Library, and is
+  neither counted in the totals line's *N passed* nor offered here, CL11a), *Last played day*, and a quiet *Make it a project*
+  that opens the same sheet and makes nothing until a choice there; capped at 20 with *Show N
+  more*. With no project, *No projects yet. At the end of a run, "What next with this piece?"
+  makes one.*, and with no passed song either, *Pick a piece*. A pass is never made a project by
+  the app.
 - Per-stage completion; per-track completion.
 - **Repertoire list (mastered)** with "last played", the row itself opening the piece, capped at 20 rows (same
   shape as Skills' concept grid) with a *Show N more* link — the history and the performances are
@@ -3247,8 +3837,16 @@ the drills themselves, so a measurement added and not named fails.
   me run: *88% · tempo not judged · 3 min* — it printed "at 70%", the slider as if kept. A run
   the app heard nothing of: *Not measured · you said Clean · 3 min* — it printed "0%". A run
   nothing judged, a jam over a backing track: *Not judged · 42 notes played · 3 min* — it
-  printed "0%" too. Before the minutes, a sight-read met before says *not first sight*, a run the
+  printed "0%" too. A drill set in which nothing was answered: *Not measured · 3 min*, as its
+  sheet heads it — it printed "0%" (U102); an older such row reads so only where its kind proves it
+  (note-flash), and any other kind's old 0 % stays *0%*. Before the minutes, a sight-read met before says *not first sight*, a run the
   piece was played to part way through *heard part way*, and a rhythm-only run *rhythm only*.
+  *Not first sight* is a phrase's alone (G1, G1a): the line reads sight-reading's `unseen`,
+  which only a phrase's run carries; a piece's run carries the relation as `firstContact`, which
+  the line does not print — every repeat of a piece is not news — and a piece's run G1's app
+  stored with `unseen: false` says nothing either. A phrase is *not first sight* when it was read, heard or
+  demonstrated before on any visit, or looked at on another visit — a phrase played to the
+  learner at noon and read in the evening among them.
   A drill's tempo is a placeholder and is not printed. Rows written before C1 are read by what
   they can say: a Wait row's mode, a row's self-report, a backing track's kind.
 - Export / Import all data (JSON). "Copy debug report".
@@ -3517,6 +4115,9 @@ two-column. Everything else identical.
 **Ships as of P18:** all of it. The two-column breakpoint (P7), and now the bars-per-window
 default of 4 and a collapsible side panel on the Score screen carrying the lesson text of the
 rung the piece belongs to.
+Since U80 the Score screen's first draw on a tablet waits for the panel's decision (§5), so the
+notation is never drawn at the width it has without the panel and then narrowed when the panel
+arrives.
 
 Two details worth stating. The test is on the **shortest side**, both dimensions: a phone in
 landscape is 915 × 412 and would pass a width-only check while having 412 px of height to put a

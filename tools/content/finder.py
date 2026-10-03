@@ -27,7 +27,14 @@ than quietly broken by it.
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
+from functools import lru_cache
 from pathlib import Path
+
+#: The seed list of teaching repertoire (E28; E2 item 5): public-domain works a teacher reaches for
+#: first, per concept. A proposal source only — reputation, never a claim: the chat prompt names the
+#: works it knows for the concepts asked as examples of the right kind, and nothing else reads it here.
+SEED = Path(__file__).resolve().parents[2] / "content" / "sources" / "teaching-repertoire.json"
 
 #: Hard ceiling on a generated chat prompt. Long enough for six constraints and
 #: five things to avoid; short enough to paste into anything.
@@ -123,11 +130,56 @@ def chat_prompt(finder: dict, *, what: str) -> str:
     return " ".join(lines)
 
 
-def generate(finder: dict, *, what: str) -> dict:
-    """The finder block as the app receives it: the author's fields plus both prompts."""
+@lru_cache(maxsize=1)
+def _seed(path: Path = SEED) -> tuple[dict, ...]:
+    if not path.is_file():
+        return ()
+    return tuple(json.loads(path.read_text(encoding="utf-8")).get("works", []))
+
+
+def seed_works_all() -> list[dict]:
+    """Every work in the seed list, in the file's order."""
+    return list(_seed())
+
+
+def seed_works(concepts: Iterable[str]) -> list[dict]:
+    """The seed list's works known for any of `concepts`, in the file's order (E28)."""
+    wanted = set(concepts)
+    return [work for work in _seed() if wanted & set(work.get("concepts", []))]
+
+
+def with_seed_examples(finder: dict, concepts: Iterable[str], *, what: str) -> dict:
+    """
+    The finder block with the seed's works for `concepts` added to its examples of the right kind:
+    each work not already named, in the seed's order, while the chat prompt stays within
+    `MAX_CHAT_PROMPT`. The composer is named without the seed's attribution note, as the authored
+    examples name theirs.
+    """
+    works = seed_works(concepts)
+    if not works:
+        return finder
+    block = dict(finder, examples=list(finder.get("examples") or []))
+    named = {example["title"] for example in block["examples"]}
+    for work in works:
+        if work["work"] in named:
+            continue
+        trial = dict(block, examples=[*block["examples"], {"title": work["work"], "composer": work["composer"].split(" (")[0]}])
+        if len(chat_prompt(trial, what=what)) > MAX_CHAT_PROMPT:
+            break
+        block = trial
+        named.add(work["work"])
+    return block
+
+
+def generate(finder: dict, *, what: str, concepts: Iterable[str] = ()) -> dict:
+    """
+    The finder block as the app receives it: the author's fields plus both prompts. With
+    `concepts`, the chat prompt also names the seed list's works for them (E28); the search query
+    is keywords about the rung and is left alone.
+    """
     out = dict(finder)
     out["searchQuery"] = search_query(finder)
-    out["chatPrompt"] = chat_prompt(finder, what=what)
+    out["chatPrompt"] = chat_prompt(with_seed_examples(finder, concepts, what=what), what=what)
     return out
 
 

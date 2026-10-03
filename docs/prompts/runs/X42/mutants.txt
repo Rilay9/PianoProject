@@ -1,0 +1,101 @@
+=== mutant a-first-sound-always: the pre-amendment rule: the first sound at a position, whatever the mark says
+exit 1
+Tests  9 failed | 308 passed (317)
+failing:
+  FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+  FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+  FAIL  tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > ragtime.7: Sugar Cane is likened to Maple Leaf at no pace, while the catalogue and the app's tempo map both give the two one tempo
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > Maple Leaf’s shape: a words-only 120 beside the printed quarter = 100 and its own 100 plays 100, either way round
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > Satie’s shape: “Lent et douloureux” with quarter = ca. 76 sounding 60, then an empty text sounding 76.0002, plays the file’s 76.0002
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > the writers’ noise elsewhere in the corpus agrees too, after the mark is read in quarters: 79.9998 beside 80, 64.0002 beside half = 32, 100.49999999999999 beside dotted quarter = 67
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > Brahms HD5’s shape: two marks each with its own agreeing sound — the first mark decides, whatever order the sounds stand in
+  FAIL  tests/unit/tempoSoundAgainstMark.test.ts > the rule: a sound the reader plays against the printed mark at its position > two sounds at one position: the one the reader keeps is judged against the mark (Maple Leaf’s shape)
+  FAIL  tests/unit/tempoSoundAgainstMark.test.ts > the built MuseTrainer and kern scores > finds exactly the pinned contradictions, no new one and none gone
+diff lines (expected -, received +):
+  - true
+  + false
+  - true
+  + false
+  -     100,
+  +     120,
+  -   "bpm": 76.0002,
+  +   "bpm": 60,
+  -   "bpm": 79.9998,
+  +   "bpm": 90,
+  -   "bpm": 40,
+  +   "bpm": 50,
+  - []
+  + [
+  +   [
+  +     120,
+  +     100,
+  +   ],
+  + ]
+  -   "new": [],
+  +   "new": [
+  +     "song.classical.satie-gymnopedie-1 @0:0 sound 60 against mark 76",
+  +     "song.ragtime.joplin-maple-leaf-rag @1:0.25 sound 120 against mark 100",
+  +     "song.ragtime.joplin-maple-leaf-rag @51:0 sound 120 against mark 100",
+  +   ],
+
+=== mutant b-ratio-1.1: X40's evidence threshold as the reader's agreement: a ratio of at most 1.1
+exit 1
+Tests  3 failed | 26 passed (29)
+failing:
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > the writers’ noise elsewhere in the corpus agrees too, after the mark is read in quarters: 79.9998 beside 80, 64.0002 beside half = 32, 100.49999999999999 beside dotted quarter = 67
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > 95 is not 100: first sound 120, a later sibling 95, mark 100 keeps 120 (X40’s R = 1.1 would take 95)
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > 100.1 is not 100: the smallest difference a file writes as a different tempo does not agree, so the first sound stays
+diff lines (expected -, received +):
+  -   "bpm": 64.0002,
+  +   "bpm": 70,
+  -   "bpm": 120,
+  +   "bpm": 95,
+  -   "bpm": 120,
+  +   "bpm": 100.1,
+
+=== mutant c-any-mark: the tie-break's marks[:1] dropped: a sound agreeing with any mark at the position
+exit 1
+Tests  1 failed | 28 passed (29)
+failing:
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > Brahms HD5’s shape: two marks each with its own agreeing sound — the first mark decides, whatever order the sounds stand in
+diff lines (expected -, received +):
+  -   "bpm": 40,
+  +   "bpm": 50,
+
+=== mutant d-tolerance-x10: the tolerance an order of magnitude too wide (0.1)
+exit 1
+Tests  2 failed | 27 passed (29)
+failing:
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > 100.1 is not 100: the smallest difference a file writes as a different tempo does not agree, so the first sound stays
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > the tolerance is a writer’s noise, not a tempo: an order of magnitude over the noise bound and under the smallest different tempo
+diff lines (expected -, received +):
+  -   "bpm": 120,
+  +   "bpm": 100.1,
+
+=== mutant e-tolerance-under-noise: the tolerance under the corpus's own noise (0.0001, below MuseScore's 0.0002)
+exit 1
+Tests  4 failed | 25 passed (29)
+failing:
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > Satie’s shape: “Lent et douloureux” with quarter = ca. 76 sounding 60, then an empty text sounding 76.0002, plays the file’s 76.0002
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > the writers’ noise elsewhere in the corpus agrees too, after the mark is read in quarters: 79.9998 beside 80, 64.0002 beside half = 32, 100.49999999999999 beside dotted quarter = 67
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > the tolerance is a writer’s noise, not a tempo: an order of magnitude over the noise bound and under the smallest different tempo
+  FAIL  tests/unit/tempoSoundAgainstMark.test.ts > the built MuseTrainer and kern scores > finds exactly the pinned contradictions, no new one and none gone
+diff lines (expected -, received +):
+  -   "bpm": 76.0002,
+  +   "bpm": 60,
+  -   "bpm": 79.9998,
+  +   "bpm": 90,
+  -   "new": [],
+  +   "new": [
+  +     "song.classical.satie-gymnopedie-1 @0:0 sound 60 against mark 76",
+  +   ],
+
+=== mutant f-per-minute-not-quarters: agreement judged against the printed per-minute, not the mark normalised to quarter notes
+exit 1
+Tests  1 failed | 28 passed (29)
+failing:
+  FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > the writers’ noise elsewhere in the corpus agrees too, after the mark is read in quarters: 79.9998 beside 80, 64.0002 beside half = 32, 100.49999999999999 beside dotted quarter = 67
+diff lines (expected -, received +):
+  -   "bpm": 64.0002,
+  +   "bpm": 70,
+

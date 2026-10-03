@@ -1,0 +1,25 @@
+﻿convert.py under test: build/e57/base-tools
+test_e57_an_undated_old_file_is_named_by_its_restore_lines_alone (tests.test_convert_cache.TestRepairedIdentities.test_e57_an_undated_old_file_is_named_by_its_restore_lines_alone) ... FAIL
+test_a_repaired_file_names_the_old_file_it_rebuilds (tests.test_convert_cache.TestRepairedIdentities.test_a_repaired_file_names_the_old_file_it_rebuilds) ... ok
+test_nothing_is_named_that_does_not_rebuild_or_that_the_table_did_not_record (tests.test_convert_cache.TestRepairedIdentities.test_nothing_is_named_that_does_not_rebuild_or_that_the_table_did_not_record) ... ok
+
+======================================================================
+FAIL: test_e57_an_undated_old_file_is_named_by_its_restore_lines_alone (tests.test_convert_cache.TestRepairedIdentities.test_e57_an_undated_old_file_is_named_by_its_restore_lines_alone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert_cache.py", line 553, in test_e57_an_undated_old_file_is_named_by_its_restore_lines_alone
+    self.assertEqual(convert.former_identities(new, [entry], [undated]), [entry["undated"]])
+AssertionError: Lists differ: [] != ['f14c43bca9f0caaa5fbad5b813c4b19343691ac592b904d436bc304895d31b78']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'f14c43bca9f0caaa5fbad5b813c4b19343691ac592b904d436bc304895d31b78'
+
+- []
++ ['f14c43bca9f0caaa5fbad5b813c4b19343691ac592b904d436bc304895d31b78']
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.027s
+
+FAILED (failures=1)
+exit 1

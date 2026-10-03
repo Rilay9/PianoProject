@@ -1,0 +1,36 @@
+exercise.arpeggio7.f-half-diminished7.2oct.both: gone ['interval.leap'] came [] counts (before, after) {'interval.leap': (8, 0), 'interval.skip': (8, 24), 'interval.step': (16, 8), 'pitch.chromatic': (16, 24)}
+exercise.arpeggio7.b-flat-half-diminished7.2oct.both: gone ['interval.leap'] came [] counts (before, after) {'interval.leap': (8, 0), 'interval.skip': (8, 24), 'interval.step': (16, 8), 'pitch.chromatic': (26, 34)}
+exercise.arpeggio7.a-flat-minor7.2oct.both: gone ['interval.leap'] came [] counts (before, after) {'interval.leap': (8, 0), 'interval.skip': (8, 24), 'interval.step': (16, 8), 'pitch.chromatic': (26, 34)}
+exercise.arpeggio7.a-flat-half-diminished7.2oct.both: gone [] came [] counts (before, after) {'pitch.chromatic': (18, 26)}
+exercise.arpeggio7.d-flat-dominant7.2oct.both: gone [] came [] counts (before, after) {'pitch.chromatic': (18, 26)}
+exercise.arpeggio7.d-flat-minor7.2oct.both: gone ['interval.leap'] came [] counts (before, after) {'interval.leap': (8, 0), 'interval.skip': (8, 24), 'interval.step': (16, 8), 'pitch.chromatic': (18, 34)}
+exercise.arpeggio7.d-flat-half-diminished7.2oct.both: gone [] came ['interval.leap'] counts (before, after) {'interval.leap': (0, 8), 'interval.skip': (24, 8), 'interval.step': (8, 16), 'pitch.chromatic': (10, 26)}
+exercise.arpeggio7.g-flat-dominant7.2oct.both: gone [] came [] counts (before, after) {'pitch.chromatic': (26, 34)}
+exercise.arpeggio7.g-flat-minor7.2oct.both: gone [] came [] counts (before, after) {'pitch.chromatic': (18, 26)}
+exercise.arpeggio7.g-flat-half-diminished7.2oct.both: gone [] came ['interval.leap'] counts (before, after) {'interval.leap': (0, 8), 'interval.skip': (24, 8), 'interval.step': (8, 16), 'pitch.chromatic': (10, 18)}
+exercise.arpeggio7.d-diminished7.2oct.both: gone [] came [] counts (before, after) {'pitch.chromatic': (8, 16)}
+exercise.arpeggio7.g-diminished7.2oct.both: gone [] came [] counts (before, after) {'pitch.chromatic': (16, 24)}
+exercise.arpeggio7.f-diminished7.2oct.both: gone [] came [] counts (before, after) {'pitch.chromatic': (8, 16)}
+exercise.arpeggio7.b-flat-diminished7.2oct.both: gone [] came [] counts (before, after) {'pitch.chromatic': (18, 26)}
+exercise.broken7.a-flat-minor7.both: gone [] came [] counts (before, after) {'interval.leap': (22, 6), 'interval.skip': (16, 40), 'interval.step': (24, 16), 'pitch.chromatic': (48, 64), 'pitch.ledger': (18, 14)}
+exercise.broken7.d-flat-dominant7.both: gone [] came [] counts (before, after) {'pitch.chromatic': (32, 48), 'pitch.ledger': (18, 14)}
+exercise.broken7.d-flat-minor7.both: gone [] came [] counts (before, after) {'interval.leap': (22, 6), 'interval.skip': (16, 40), 'interval.step': (24, 16), 'pitch.chromatic': (32, 64), 'pitch.ledger': (22, 14)}
+exercise.broken7.g-flat-dominant7.both: gone [] came [] counts (before, after) {'pitch.chromatic': (48, 64)}
+exercise.broken7.g-flat-minor7.both: gone [] came [] counts (before, after) {'pitch.chromatic': (32, 48)}
+exercise.voicing7.f-sharp.close: gone ['pitch.chromatic'] came [] counts (before, after) {'key.signature': (11, 13), 'pitch.chromatic': (2, 0)}
+exercise.voicing7.f-sharp.shell: gone ['pitch.chromatic'] came [] counts (before, after) {'key.signature': (8, 10), 'pitch.chromatic': (2, 0)}
+exercise.voicing7.f-sharp.rootless-a: gone ['pitch.chromatic'] came [] counts (before, after) {'key.signature': (11, 13), 'pitch.chromatic': (2, 0)}
+exercise.voicing7.f-sharp.rootless-b: gone ['pitch.chromatic'] came [] counts (before, after) {'key.signature': (11, 13), 'pitch.chromatic': (2, 0)}
+exercise.ii-v-i.f-sharp.shells: gone ['pitch.chromatic'] came [] counts (before, after) {'key.signature': (4, 5), 'pitch.chromatic': (1, 0)}
+exercise.ii-v-i.f-sharp: gone ['pitch.chromatic'] came [] counts (before, after) {'key.signature': (5, 7), 'pitch.chromatic': (2, 0)}
+exercise.ii-v-i.f-sharp.rootless: gone ['pitch.chromatic'] came [] counts (before, after) {'key.signature': (8, 10), 'pitch.chromatic': (2, 0)}
+exercise.loop4.f-sharp.root: gone ['pitch.chromatic'] came [] counts (before, after) {'key.signature': (13, 14), 'pitch.chromatic': (1, 0)}
+exercise.loop4.f-sharp.inversions: gone ['pitch.chromatic'] came [] counts (before, after) {'key.signature': (13, 14), 'pitch.chromatic': (1, 0)}
+exercise.tritone-sub.c: gone [] came [] counts (before, after) {'pitch.chromatic': (2, 3)}
+exercise.tritone-sub.f: gone [] came [] counts (before, after) {'pitch.chromatic': (2, 3)}
+exercise.open-voicing.e-flat.quartal: gone ['interval.skip', 'pitch.chromatic'] came [] counts (before, after) {'interval.leap': (3, 4), 'interval.skip': (2, 0), 'interval.step': (1, 2), 'key.signature': (15, 16), 'pitch.chromatic': (1, 0)}
+exercise.walking-bass.f.minor-blues: gone [] came [] counts (before, after) {'interval.leap': (14, 13), 'interval.skip': (27, 28), 'interval.step': (11, 12)}
+exercise.walking-bass.b-flat.minor-blues: gone [] came [] counts (before, after) {'interval.leap': (14, 13), 'interval.skip': (26, 27), 'interval.step': (12, 13)}
+exercise.walking-bass.e-flat.minor-blues: gone [] came [] counts (before, after) {'interval.leap': (16, 14), 'interval.skip': (21, 25), 'interval.step': (15, 13), 'key.signature': (56, 60), 'pitch.chromatic': (26, 22)}
+exercise.passing-chord.f: gone [] came [] counts (before, after) {'interval.step': (3, 4)}
+35 of 35 changed items measure differently

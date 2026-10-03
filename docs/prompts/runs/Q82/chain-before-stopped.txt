@@ -1,0 +1,6 @@
+﻿
+15:20:37 phase before
+15:20:37 aside: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\content\scores\imported\kern\joplin -> C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\q82-aside-before\kern\joplin (gone from the worktree: True)
+15:20:37 start build-kern-personal-before (--offline, out=C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\build\q82-kern-personal-before\content, strict=0; caches copied from the main checkout)
+joplin moved back after the first chain launch was stopped (the tool's background shell ends at its timeout; relaunched detached)
+stale lock of the stopped build (pid 80772) removed

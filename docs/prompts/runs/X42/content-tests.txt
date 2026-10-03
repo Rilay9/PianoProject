@@ -1,0 +1,20 @@
+X42 content checks.
+
+--- python -m unittest ... -p test_measured_demands.py:
+........
+----------------------------------------------------------------------
+Ran 8 tests in 218.858s
+
+OK
+
+--- python -m unittest ... -p test_measured_truth.py (after copying build/score-checks.json read-only):
+..............................................................
+----------------------------------------------------------------------
+Ran 62 tests in 10.755s
+
+OK
+
+--- python tools/content/validate.py (tail):
+  WARNING (rung claims, F2): blues.8 claims walking-bass (texture.walking-bass) and none of its 6 checked options establishes it; deferred: its walking-bass exercise in E flat walks in 11 of its 12 bars by the detector's own reading of each bar; the whole-piece rule refuses it for one bar that returns to a pitch (E22)
+  views (docs/prompts/views): regenerated 47 file(s) from the audit file and the matrix; 6 had been stale
+content validation OK: <worktree>\app\public\content (2092 catalog items)

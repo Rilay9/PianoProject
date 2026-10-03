@@ -1,0 +1,220 @@
+﻿
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/contactNovelty.test.ts (11 tests | 3 failed) 19ms
+   ❯ contactIn: the facts, by material across every item id, and by id for rows that know none (10)
+     × met: a row carries the same material under the same id 7ms
+     × met through the material index: the same identity under a renamed id (adversaries 3 and 10) 1ms
+   ❯ contact: the store’s every row, not one item’s index (1)
+     × finds the material under a renamed id, and the legacy row by its id 8ms
+ ❯ tests/unit/encounterRetention.test.ts (0 test)
+ ❯ tests/unit/encounterModel.test.ts (0 test)
+ ❯ tests/unit/backup.test.ts (12 tests | 1 failed) 98ms
+   ❯ a backup of a phone that has been used (P19 §C3) (1)
+     × round-trips every store it covers, and leaves out the one it does not 3ms
+ ❯ tests/unit/firstContactOnTheScore.test.ts (0 test)
+ ❯ tests/unit/observationsFromRun.test.ts (10 tests | 1 failed) 1324ms
+   ❯ what the learner had heard (3)
+     × a demonstrated take stores demonstrated: true and no performance flag 128ms
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+⎯⎯⎯⎯⎯⎯ Failed Suites 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/encounterModel.test.ts [ tests/unit/encounterModel.test.ts ]
+Error: Cannot find module '../../src/data/encounterStore' imported from <worktree, wrapped>
+<worktree>/app/tests/unit/encounterModel.test.ts
+ ❯ tests/unit/encounterModel.test.ts:41:1
+     39|   type RunResult,
+     40| } from '../../src/data/progressStore';
+     41| import {
+       | ^
+     42|   familiarityIn,
+     43|   firstContactIn,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/unit/encounterRetention.test.ts [ tests/unit/encounterRetention.test.ts ]
+Error: Cannot find module '../../src/data/encounterStore' imported from <worktree, wrapped>
+<worktree>/app/tests/unit/encounterRetention.test.ts
+ ❯ tests/unit/encounterRetention.test.ts:35:1
+     33|   type RunResult,
+     34| } from '../../src/data/progressStore';
+     35| import { familiarity, resetEncountersForTest } from '../../src/data/en…
+       | ^
+     36| import { exportAll, importAll } from '../../src/data/backup';
+     37| import type { CatalogItem } from '../../src/curriculum/types';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts [ tests/unit/firstContactOnTheScore.test.ts ]
+Error: Failed to resolve import "../../src/data/encounterStore" from "tests/unit/firstContactOnTheScore.test.ts". Does 
+the file exist?
+  Plugin: vite:import-analysis
+  File: <worktree, wrapped>
+<worktree>/app/tests/unit/firstContactOnTheScore.test.ts:180:32
+  183 |  const { recentSessions, recordRun, resetProgressForTest, contact, getProgress } = await 
+import("../../src/data/progre...
+  184 |  const { openDatabase, resetDatabaseForTest } = await import("../../src/data/db");
+  185 |  const encounters = await import("../../src/data/encounterStore");
+      |                                  ^
+  186 |  const { textIdentity } = await import("../../src/curriculum/material");
+  187 |  const { historyDetail } = await import("../../src/ui/screens/ProgressScreen");
+ ❯ TransformPluginContext._formatLog <worktree>
+6ff3/app/node_modules/vite/dist/node/chunks/node.js:31147:39
+ ❯ TransformPluginContext.error <worktree>/
+app/node_modules/vite/dist/node/chunks/node.js:31144:14
+ ❯ normalizeUrl <worktree>/app/node_modules
+/vite/dist/node/chunks/node.js:28083:18
+ ❯ <worktree>/app/node_modules/vite/dist/no
+de/chunks/node.js:28153:30
+ ❯ TransformPluginContext.transform <worktree>
+ff3/app/node_modules/vite/dist/node/chunks/node.js:28119:4
+ ❯ EnvironmentPluginContainer.transform <worktree>
+fd56ff3/app/node_modules/vite/dist/node/chunks/node.js:30932:14
+ ❯ loadAndTransform <worktree>/app/node_mod
+ules/vite/dist/node/chunks/node.js:20671:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/backup.test.ts > a backup of a phone that has been used (P19 §C3) > round-trips every store it 
+covers, and leaves out the one it does not
+NotFoundError: No objectStore named encounters in this database
+ ❯ new NotFoundError <worktree>/app/node_mo
+dules/fake-indexeddb/build/esm/lib/errors.js:59:5
+ ❯ FDBDatabase.transaction <worktree>/app/n
+ode_modules/fake-indexeddb/build/esm/FDBDatabase.js:146:15
+ ❯ Proxy.<anonymous> <worktree>/app/node_mo
+dules/idb/build/index.js:125:26
+ ❯ Proxy.method <worktree>/app/node_modules
+/idb/build/index.js:228:25
+ ❯ fillEveryStore tests/unit/backup.test.ts:292:15
+    290|     // G1: what the learner met beside the runs, and the summary of ru…
+    291|     // cap deleted — learner history, so the backup carries both.
+    292|     await db?.put('encounters', {
+       |               ^
+    293|       id: 'visit-1:1',
+    294|       key: `file:${'a'.repeat(64)}`,
+ ❯ tests/unit/backup.test.ts:320:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows 
+that know none > met: a row carries the same material under the same id
+AssertionError: expected { contact: 'met', metById: true, …(1) } to deeply equal { contact: 'met', metById: true, …(2) 
+}
+
+- Expected
++ Received
+
+  {
+    "contact": "met",
+-   "how": [
+-     "played",
+-   ],
+    "metAs": [
+      "song.a",
+    ],
+    "metById": true,
+  }
+
+ ❯ tests/unit/contactNovelty.test.ts:56:72
+     54| describe('contactIn: the facts, by material across every item id, and …
+     55|   it('met: a row carries the same material under the same id', () => {
+     56|     expect(contactIn([row('song.a', file('a'))], 'song.a', file('a')))…
+       |                                                                        ^
+     57|   });
+     58|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows 
+that know none > met through the material index: the same identity under a renamed id (adversaries 3 and 10)
+AssertionError: expected { Object (contact, metById, ...) } to deeply equal { Object (contact, metById, ...) }
+
+- Expected
++ Received
+
+  {
+    "contact": "met",
+-   "how": [
+-     "played",
+-   ],
+    "metAs": [
+      "song.old-name",
+    ],
+    "metById": false,
+  }
+
+ ❯ tests/unit/contactNovelty.test.ts:60:86
+     58|
+     59|   it('met through the material index: the same identity under a rename…
+     60|     expect(contactIn([row('song.old-name', file('a'))], 'song.new-name…
+       |                                                                                      ^
+     61|     // A duplicate edition with the same bytes under a third id: met, …
+     62|     expect(contactIn([row('song.old-name', file('a')), row('song.copy'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contact: the store’s every row, not one item’s index > finds the material 
+under a renamed id, and the legacy row by its id
+AssertionError: expected { Object (contact, metById, ...) } to deeply equal { Object (contact, metById, ...) }
+
+- Expected
++ Received
+
+  {
+    "contact": "met",
+-   "how": [
+
+-     "played",
+-   ],
+ Test Files  6 failed (6)
+      Tests  5 failed | 28 passed (33)
+   Start at  00:46:19
+   Duration  3.29s (environment 32%, tests 26%, transform 25%, import 17%, worker 1%)
+
+    "metAs": [
+      "song.old-name",
+    ],
+    "metById": false,
+  }
+
+ ❯ tests/unit/contactNovelty.test.ts:132:55
+    130|     await recordRun(run('song.old-name', file('a')), new Date(2026, 9,…
+    131|     await recordRun(run('song.legacy'), new Date(2026, 9, 2, 12));
+    132|     expect(await contact('song.new-name', file('a'))).toEqual({ contac…
+       |                                                       ^
+    133|     expect(await contact('song.legacy', file('z'))).toEqual({ contact:…
+    134|     expect(await contact('song.never', file('y'))).toEqual({ contact: …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/unit/observationsFromRun.test.ts > what the learner had heard > a demonstrated take stores demonstrated: 
+true and no performance flag
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ tests/unit/observationsFromRun.test.ts:440:24
+    438|     // included — an audit fact, never a gate on its pass. This take h…
+    439|     // piece played to the learner inside it, so it was not a first co…
+    440|     expect(row.unseen).toBe(false);
+       |                        ^
+    441|   });
+    442| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+exit 1

@@ -1,0 +1,12 @@
+$ (cwd .) python docs/prompts/runs/Q-tooling/scripts/map_unmatched.py .
+3582 path(s) in the tree; 9 under no pattern (they take the fallback):
+  .github/workflows/pages.yml
+  .github/workflows/render-full.yml
+  .gitignore
+  app/.vitest/json/output.json
+  packaging/.gitignore
+  packaging/assetlinks.sh
+  packaging/build-apk.sh
+  packaging/twa-manifest.template.json
+  tools/contact_sheet.py
+exit 0

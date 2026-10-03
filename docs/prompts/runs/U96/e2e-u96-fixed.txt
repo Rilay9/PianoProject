@@ -1,0 +1,10 @@
+$ (cd app) npx playwright test -c playwright.u96-4453.config.ts --workers=2 -g U96 tests/e2e/session-run.spec.ts
+exists: tests/e2e/session-run.spec.ts
+
+Running 2 tests using 2 workers
+
+  ok 1 tests\e2e\session-run.spec.ts:236:1 › the placement test ended in a session: the transition’s Start is the one filled box, Start here outlined (U96) (1.9s)
+  ok 2 tests\e2e\session-run.spec.ts:212:1 › a drill ended before any answer: Not measured with the reason, no Accuracy, and the transition under it (U96) (2.0s)
+
+  2 passed (5.0s)
+exit=0

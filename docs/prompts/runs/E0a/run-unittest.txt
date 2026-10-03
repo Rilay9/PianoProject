@@ -1,0 +1,79 @@
+.............................................E.............................C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5103: MusicXMLWarning: Cannot put in an element with a missing voice tag when no previous voice tag was given.  Assuming voice 1... 
+  thisVoice = self.findM21VoiceFromXmlVoice(mxVoice)
+............................................................ssC:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 1 in part Pianois overfull: 721/480 > 1.5,assuming 1.5 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+.......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................note: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-afd1b1d84e0d04c46\build\.content-lock is 2.0 hours old (a crashed run (pid 1)) — assuming a crashed run and taking it over
+...............18 row(s) have no decision in C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-ksslf1gi\run\review-empty\review.csv. Nothing is committed that a person has not marked keep, drop or later (replan §2.5). Run review.py --check to list them.
+....C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-afd1b1d84e0d04c46\tools\content\tests\test_pdmx.py:567: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:\\Users\\yalir\\AppData\\Local\\Temp\\pdmx-e2e-ksslf1gi\\run\\review-decided\\review.csv' mode='r' encoding='utf-8'>
+  decided = list(csv.DictReader(sheet.open(encoding="utf-8", newline="")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+................................................................s...........................................................................s....................................  127.0.0.1  code 404, message File not found
+  127.0.0.1  "GET /nope.js HTTP/1.1" 404 -
+.  127.0.0.1  "GET /score.mxl HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+.  127.0.0.1  "GET /manifest.webmanifest HTTP/1.1" 200 -
+.  127.0.0.1  "GET /sw.js HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /sw.js HTTP/1.1" 200 -
+  127.0.0.1  "GET /assets/app-abc123.js HTTP/1.1" 200 -
+.C:\Users\yalir\AppData\Local\Temp\tmpnkq3dr5t has no index.html. Build first:
+  py -3.11 tools/content/build.py --offline --personal
+  cd app && set VITE_BASE=/ && npm run build:app
+.No certificate at C:\Users\yalir\AppData\Local\Temp\tmpv34hot06\none.pem / C:\Users\yalir\AppData\Local\Temp\tmpv34hot06\none.key.
+Make one once, for this laptop's address (docs/OWNER-GUIDE.md §1):
+  mkcert -cert-file C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-afd1b1d84e0d04c46\packaging\lan\cert.pem -key-file C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-afd1b1d84e0d04c46\packaging\lan\key.pem <this laptop's IP> localhost
+...................................................................................................................................
+======================================================================
+ERROR: test_the_rag_is_as_long_as_its_source (tests.test_bar_splits.TestCleopha.test_the_rag_is_as_long_as_its_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-afd1b1d84e0d04c46\tools\content\tests\test_bar_splits.py", line 238, in test_the_rag_is_as_long_as_its_source
+    source, written = self.round_trip(CLEOPHA)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-afd1b1d84e0d04c46\tools\content\tests\test_bar_splits.py", line 130, in round_trip
+    convert_file(path, dest)
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-afd1b1d84e0d04c46\tools\content\convert.py", line 1866, in convert_file
+    write_mxl(normalised, dest)
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-afd1b1d84e0d04c46\tools\content\convert.py", line 1636, in write_mxl
+    written = score.write("musicxml", fp=str(out_path))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\stream\base.py", line 402, in write
+    return super().write(fmt=fmt, fp=fp, **keywords)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\base.py", line 2921, in write
+    return formatWriter.write(self,
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\converter\subConverters.py", line 981, in write
+    xmlFp: pathlib.Path = self.writeDataStream(writeDataStreamFp, dataBytes)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\converter\subConverters.py", line 924, in writeDataStream
+    with open(fpPath, writeFlags) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\yalir\\AppData\\Local\\Temp\\tmpbj5cq083\\cleopha.musicxml'
+
+----------------------------------------------------------------------
+Ran 1087 tests in 1713.449s
+
+FAILED (errors=1, skipped=4)
+wrote C:\Users\yalir\AppData\Local\Temp\tmp55fgimx0\out.md (3 occurrences in 1 lessons)
+committed 15 file(s) to C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-ksslf1gi\run\scores
+  skipped 3 row(s) marked drop or later
+  table   C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-ksslf1gi\run\pdmx.json
+  Zenodo record: unknown — the CSV matches neither published record's size.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmpyontcuj4\library\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+2 file(s), 0 MB -> C:\Users\yalir\AppData\Local\Temp\tmpyontcuj4\library.zip (0 MB)
+Copy that one file to the phone and unzip it. Then: Library -> Browse a score folder -> pick pianopath-library.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmpfo1s49k_\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+Copy the whole folder to the phone, then: Library -> Score folder -> pick it.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmp7kz2c7id\library\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+2 file(s), 0 MB -> C:\Users\yalir\AppData\Local\Temp\tmp7kz2c7id\library.zip (0 MB)
+Copy that one file to the phone and unzip it. Then: Library -> Browse a score folder -> pick pianopath-library.
+wrote measured durations into C:\Users\yalir\AppData\Local\Temp\tmp59mugtgz\catalog.json
+wrote measured durations into C:\Users\yalir\AppData\Local\Temp\tmp93gchtc6\catalog.json
+exit 1

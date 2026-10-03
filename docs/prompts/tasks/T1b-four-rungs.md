@@ -64,3 +64,7 @@ For each rung, in this order:
 `python3 tools/content/rung_audit.py --rung <each>`, `npx vitest run`. One entry in
 `docs/pending-review.md` with every evidence line, and **the list of what is unverified**
 — which includes whether the lessons teach, since no check can decide that.
+
+## Record
+
+lane: T1b · closes: — · entry: — · role: history

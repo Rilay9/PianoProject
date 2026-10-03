@@ -8,7 +8,7 @@
 import { halfPedalScore } from '../Scoring';
 import { makeRng } from '../sightReading';
 import { systemClock, type Clock, type EngineInput } from '../types';
-import type { Drill, DrillAnswer, DrillPrompt, DrillResult } from './types';
+import { pastHidden, type Drill, type DrillAnswer, type DrillPrompt, type DrillResult } from './types';
 
 // --- rhythm ----------------------------------------------------------------
 
@@ -128,6 +128,29 @@ export class RhythmDrill implements Drill {
   /** When the first tap set the start, or `null` until one has. */
   get firstTapAt(): number | null {
     return this.firstTapMs;
+  }
+
+  /**
+   * Moves the grid past a hidden span (X15; CL05a), through `startAt`: the
+   * pattern resumes from the same point in it, judged against the same grid,
+   * instead of its onsets falling due while nobody could see or hear them.
+   * The whole span, not `pastHidden`'s clamp: the start can lie ahead of the
+   * moment the page hid (a downbeat the count-in has named), and it is a
+   * grid, not a moment something happened. The first tap moves with it.
+   *
+   * Before the count-in has named a downbeat, and before any tap, the start
+   * is only the moment the card appeared. Nothing is judged against it, and
+   * `startAt` would end the wait that keeps a hand finding its place during
+   * the count from being read as the first onset, so it is left alone: the
+   * screen counts in again.
+   */
+  excludeHidden(hiddenAtMs: number, visibleAtMs: number): void {
+    const span = visibleAtMs - hiddenAtMs;
+    const start = this.startedAtMs;
+    if (!(span > 0) || start === null) return;
+    if (this.plannedStartMs === null && this.firstTapMs === null) return;
+    this.startAt(start + span);
+    if (this.firstTapMs !== null) this.firstTapMs += span;
   }
 
   feed(input: EngineInput): void {
@@ -288,6 +311,19 @@ export class PedalDrill implements Drill {
     if (input.kind !== 'noteOn') return;
     // The first Note-On of the chord is the reference for the whole change.
     if (this.chordAtMs === null) this.chordAtMs = input.tMs;
+  }
+
+  /**
+   * A lift is timed from its chord: the chord, and a lift or a press already
+   * made, move past the hidden span, so a change the page hid in the middle of
+   * is judged on the time the learner could see (X15).
+   */
+  excludeHidden(hiddenAtMs: number, visibleAtMs: number): void {
+    const past = (tMs: number | null): number | null =>
+      tMs === null ? null : pastHidden(tMs, hiddenAtMs, visibleAtMs);
+    this.chordAtMs = past(this.chordAtMs);
+    this.liftedAtMs = past(this.liftedAtMs);
+    this.downAtMs = past(this.downAtMs);
   }
 
   /** The first chord is pedalled into; there is no change to score before it. */

@@ -1,0 +1,47 @@
+$ python -m unittest discover -s tools/midi-cleanup/tests -v
+# cwd: /c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693
+# CI=<unset>
+
+test_a_hand_is_not_asked_to_span_more_than_its_reach (test_converter.TestHandSplit.test_a_hand_is_not_asked_to_span_more_than_its_reach)
+A five-note chord two hands can reach is cut where they can reach it. ... ok
+test_crossing_lines_keep_their_hand_until_they_meet (test_converter.TestHandSplit.test_crossing_lines_keep_their_hand_until_they_meet) ... ok
+test_every_note_lands_in_exactly_one_hand (test_converter.TestHandSplit.test_every_note_lands_in_exactly_one_hand) ... ok
+test_the_boundary_moves (test_converter.TestHandSplit.test_the_boundary_moves)
+Both hands climb an octave: a fixed middle C would put the whole ... ok
+test_where_it_fails_a_simultaneous_crossing_takes_the_lower_as_the_left (test_converter.TestHandSplit.test_where_it_fails_a_simultaneous_crossing_takes_the_lower_as_the_left)
+The known failure, pinned rather than only described: when the two ... ok
+test_where_it_fails_the_two_lines_swap_hands_at_the_crossing (test_converter.TestHandSplit.test_where_it_fails_the_two_lines_swap_hands_at_the_crossing)
+Measured, not predicted, and wrong: from the note where the two ... ok
+test_a_dotted_eighth_and_a_triplet_eighth_are_notatable (test_converter.TestNotatableDurations.test_a_dotted_eighth_and_a_triplet_eighth_are_notatable) ... ok
+test_an_unnotatable_length_is_split_into_notatable_pieces (test_converter.TestNotatableDurations.test_an_unnotatable_length_is_split_into_notatable_pieces) ... ok
+test_five_twelfths_and_five_sixteenths_are_not (test_converter.TestNotatableDurations.test_five_twelfths_and_five_sixteenths_are_not) ... ok
+test_a_note_shorter_than_the_grid_keeps_one_unit (test_converter.TestQuantisePolicy.test_a_note_shorter_than_the_grid_keeps_one_unit) ... ok
+test_a_straight_run_is_not_called_swung (test_converter.TestQuantisePolicy.test_a_straight_run_is_not_called_swung) ... ok
+test_one_grid_per_bar_not_one_per_note_and_not_one_per_piece (test_converter.TestQuantisePolicy.test_one_grid_per_bar_not_one_per_note_and_not_one_per_piece)
+A bar of triplets takes the triplet unit for all of it, and the bar of ... ok
+test_swung_eighths_are_detected_and_written_straight (test_converter.TestQuantisePolicy.test_swung_eighths_are_detected_and_written_straight) ... ok
+test_a_rubato_recording_is_not_called_swung (test_converter.TestRealRecordings.test_a_rubato_recording_is_not_called_swung)
+None of the three is jazz, and the windows are what decides it. ... skipped 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-a3f3005a49d448693\\build\\midi-real is under .gitignore; fetch the three MAESTRO performances named in its SOURCE.md to run these: bach-bwv885-prelude-2011.mid, grieg-op38-7-waltz-2014.mid, scarlatti-k525-2008.mid. They come from the MAESTRO v3.0.0 MIDI zip as test input only, not redistributable, so they are not committed and no CI step fetches them'
+test_bach_converts_with_nothing_lost_and_every_bar_adding_up (test_converter.TestRealRecordings.test_bach_converts_with_nothing_lost_and_every_bar_adding_up) ... skipped 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-a3f3005a49d448693\\build\\midi-real is under .gitignore; fetch the three MAESTRO performances named in its SOURCE.md to run these: bach-bwv885-prelude-2011.mid, grieg-op38-7-waltz-2014.mid, scarlatti-k525-2008.mid. They come from the MAESTRO v3.0.0 MIDI zip as test input only, not redistributable, so they are not committed and no CI step fetches them'
+test_grieg_converts_with_nothing_lost_and_every_bar_adding_up (test_converter.TestRealRecordings.test_grieg_converts_with_nothing_lost_and_every_bar_adding_up) ... skipped 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-a3f3005a49d448693\\build\\midi-real is under .gitignore; fetch the three MAESTRO performances named in its SOURCE.md to run these: bach-bwv885-prelude-2011.mid, grieg-op38-7-waltz-2014.mid, scarlatti-k525-2008.mid. They come from the MAESTRO v3.0.0 MIDI zip as test input only, not redistributable, so they are not committed and no CI step fetches them'
+test_no_note_is_lost_or_invented_between_the_file_and_the_score (test_converter.TestRealRecordings.test_no_note_is_lost_or_invented_between_the_file_and_the_score)
+The score holds exactly as many struck notes as the file holds Note-Ons. ... skipped 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-a3f3005a49d448693\\build\\midi-real is under .gitignore; fetch the three MAESTRO performances named in its SOURCE.md to run these: bach-bwv885-prelude-2011.mid, grieg-op38-7-waltz-2014.mid, scarlatti-k525-2008.mid. They come from the MAESTRO v3.0.0 MIDI zip as test input only, not redistributable, so they are not committed and no CI step fetches them'
+test_scarlatti_converts_with_nothing_lost_and_every_bar_adding_up (test_converter.TestRealRecordings.test_scarlatti_converts_with_nothing_lost_and_every_bar_adding_up) ... skipped 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-a3f3005a49d448693\\build\\midi-real is under .gitignore; fetch the three MAESTRO performances named in its SOURCE.md to run these: bach-bwv885-prelude-2011.mid, grieg-op38-7-waltz-2014.mid, scarlatti-k525-2008.mid. They come from the MAESTRO v3.0.0 MIDI zip as test input only, not redistributable, so they are not committed and no CI step fetches them'
+test_the_independent_count_agrees_with_the_reader_it_checks (test_converter.TestRealRecordings.test_the_independent_count_agrees_with_the_reader_it_checks)
+A reader that disagreed with the bytes would make the test above a lie. ... skipped 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-a3f3005a49d448693\\build\\midi-real is under .gitignore; fetch the three MAESTRO performances named in its SOURCE.md to run these: bach-bwv885-prelude-2011.mid, grieg-op38-7-waltz-2014.mid, scarlatti-k525-2008.mid. They come from the MAESTRO v3.0.0 MIDI zip as test input only, not redistributable, so they are not committed and no CI step fetches them'
+test_the_left_hand_sits_below_the_right (test_converter.TestRealRecordings.test_the_left_hand_sits_below_the_right) ... skipped 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-a3f3005a49d448693\\build\\midi-real is under .gitignore; fetch the three MAESTRO performances named in its SOURCE.md to run these: bach-bwv885-prelude-2011.mid, grieg-op38-7-waltz-2014.mid, scarlatti-k525-2008.mid. They come from the MAESTRO v3.0.0 MIDI zip as test input only, not redistributable, so they are not committed and no CI step fetches them'
+test_the_notes_are_in_the_second_track (test_converter.TestRealRecordings.test_the_notes_are_in_the_second_track) ... skipped 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-a3f3005a49d448693\\build\\midi-real is under .gitignore; fetch the three MAESTRO performances named in its SOURCE.md to run these: bach-bwv885-prelude-2011.mid, grieg-op38-7-waltz-2014.mid, scarlatti-k525-2008.mid. They come from the MAESTRO v3.0.0 MIDI zip as test input only, not redistributable, so they are not committed and no CI step fetches them'
+test_the_two_hands_are_written_as_one_braced_grand_staff (test_converter.TestRealRecordings.test_the_two_hands_are_written_as_one_braced_grand_staff)
+Two `<part>` elements would be two instruments, and the app reads the ... skipped 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-a3f3005a49d448693\\build\\midi-real is under .gitignore; fetch the three MAESTRO performances named in its SOURCE.md to run these: bach-bwv885-prelude-2011.mid, grieg-op38-7-waltz-2014.mid, scarlatti-k525-2008.mid. They come from the MAESTRO v3.0.0 MIDI zip as test input only, not redistributable, so they are not committed and no CI step fetches them'
+test_a_clean_rendering_keeps_every_duration (test_converter.TestRenderedInput.test_a_clean_rendering_keeps_every_duration) ... ok
+test_a_jittered_rendering_round_trips_to_the_same_durations (test_converter.TestRenderedInput.test_a_jittered_rendering_round_trips_to_the_same_durations) ... ok
+test_a_held_note_on_a_triplet_grid_is_cut_into_rhythms_and_tied (test_converter.TestSlicing.test_a_held_note_on_a_triplet_grid_is_cut_into_rhythms_and_tied) ... ok
+test_the_version_is_a_positive_whole_number (test_converter.TestTheConverterNamesItsVersion.test_the_version_is_a_positive_whole_number) ... ok
+test_the_written_file_says_which_converter_and_version_wrote_it (test_converter.TestTheConverterNamesItsVersion.test_the_written_file_says_which_converter_and_version_wrote_it) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.451s
+
+OK (skipped=9)
+
+# exit code: 0

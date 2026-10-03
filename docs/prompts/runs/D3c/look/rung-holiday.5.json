@@ -1,0 +1,62 @@
+{
+  "rung": "holiday.5",
+  "title": "A carol as a piano piece",
+  "where": "Holiday · Stage 5 · Holiday: a carol as a piano piece",
+  "start": {
+    "drawn": true,
+    "said": "Opens “E major arpeggio — 2 oct, both”."
+  },
+  "toolsBlockHidden": true,
+  "tools": [],
+  "actions": [
+    "I already know this",
+    "Quick check",
+    "Mark done"
+  ],
+  "exercises": [
+    {
+      "item": "exercise.ostinato.a.arpeggio",
+      "title": "Ostinato over a pedal bass in A minor — broken minor triad",
+      "open": true
+    },
+    {
+      "item": "exercise.arpeggio.e-major.2oct.both",
+      "title": "E major arpeggio — 2 oct, both",
+      "open": true
+    },
+    {
+      "item": "exercise.independence.c.2v1",
+      "title": "Hand independence 2:1 in C",
+      "open": true
+    }
+  ],
+  "songs": [
+    {
+      "item": "song.holiday.carol-of-the-bells.easy",
+      "title": "Carol of the Bells (easy)",
+      "open": true
+    },
+    {
+      "item": "song.folk.auld-lang-syne-anonymous-traditional.pdmx",
+      "title": "Auld Lang Syne",
+      "open": true
+    },
+    {
+      "item": "song.pop.misc-christmas-mary-did-you-know.pdmx",
+      "title": "Mary Did You Know?",
+      "open": true
+    },
+    {
+      "item": "song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx",
+      "title": "We Wish You a Merry Christmas (piano)",
+      "open": true
+    }
+  ],
+  "lands": {
+    "Start": "→ #/score/exercise.arpeggio.e-major.2oct.both?from=holiday.5",
+    "Climb the ladder": null,
+    "Quick check": "→ #/score/exercise.arpeggio.e-major.2oct.both?from=holiday.5",
+    "Play it as a duet": null,
+    "Play it blind": null
+  }
+}

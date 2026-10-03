@@ -1,0 +1,21 @@
+== map-tests  15:49:53
+map-tests exit=0
+== map-min  15:49:56
+map-min exit=0
+== tsc  15:49:56
+tsc exit=0
+== lint  15:50:10
+lint exit=0
+== vitest-all  15:51:17
+vitest-all exit=1
+== build-app  15:56:30
+build-app exit=0
+SPECS: tests/e2e/competence.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/progress.spec.ts tests/e2e/score.ladder-route.spec.ts tests/e2e/today.spec.ts
+== specs-exist  15:57:14
+specs-exist exit=0
+== e2e-targeted  15:57:14
+e2e-targeted exit=0
+CHAIN DONE 15:58:13
+== vitest-timeouts-rerun  15:58:21
+vitest-timeouts-rerun exit=0
+CHAIN DONE 15:58:28

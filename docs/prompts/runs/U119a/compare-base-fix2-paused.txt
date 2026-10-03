@@ -1,0 +1,62 @@
+cells compared: 64
+
+Title moved (width or visible text): 0
+
+Controls sent behind the more button by the change: 4
+  568x320-t115-stack-moon: behind ⋯ after: Hands
+  568x320-t115-wider-hcb: behind ⋯ after: Hands
+  568x320-t115-wider-moon: behind ⋯ after: Hands
+  640x360-t115-wider-moon: behind ⋯ after: Hands
+
+Controls moved with the same set on the bar: 0
+
+Back, bar n / m or the widest bar m / m cut after: 0
+
+Status cut flush after: 0
+
+Status visible text changed: 45
+  568x320-t100-stack-hcb: [flush] 'Paused — ▶ to[ ]' -> [ellipsis] 'Paused — ▶ …'
+  568x320-t100-stack-moon: [flush] 'Paused — [▶]' -> [ellipsis] 'Paused —…'
+  568x320-t100-wider-hcb: [flush] 'Pause[d]' -> [ellipsis] 'Paus…'
+  568x320-t100-wider-moon: [flush] 'Pa[u]' -> [ellipsis] 'P…'
+  568x320-t115-stack-hcb: [flush] 'Pa[u]' -> [ellipsis] '…'
+  568x320-t115-stack-moon: [nothing drawn] '' -> [ellipsis] 'Paused — …'
+  568x320-t115-wider-hcb: [nothing drawn] '' -> [ellipsis] 'Paused…'
+  568x320-t115-wider-moon: [nothing drawn] '' -> [ellipsis] 'Pau…'
+  640x360-t100-stack-hcb: [flush] 'Paused — ▶ to carry on, or [S]' -> [ellipsis] 'Paused — ▶ to carry on, o…'
+  640x360-t100-stack-moon: [flush] 'Paused — ▶ to carry on[,]' -> [ellipsis] 'Paused — ▶ to carry o…'
+  640x360-t100-wider-hcb: [flush] 'Paused — ▶ to ca' -> [ellipsis] 'Paused — ▶ to …'
+  640x360-t100-wider-moon: [flush] 'Paused — ▶ t[o]' -> [ellipsis] 'Paused — ▶…'
+  640x360-t115-stack-hcb: [flush] 'Paused — ▶ [t]' -> [ellipsis] 'Paused — …'
+  640x360-t115-stack-moon: [flush] 'Paused [—]' -> [ellipsis] 'Paused …'
+  640x360-t115-wider-hcb: [flush] 'Paus[e]' -> [ellipsis] 'Pa…'
+  640x360-t115-wider-moon: [flush] 'P[a]' -> [ellipsis] 'Paused — ▶ …'
+  667x375-t100-stack-hcb: [flush] 'Paused — ▶ to carry on, or Start[ ]' -> [ellipsis] 'Paused — ▶ to carry on, or Sta…'
+  667x375-t100-stack-moon: [flush] 'Paused — ▶ to carry on, or S[t]' -> [ellipsis] 'Paused — ▶ to carry on, or…'
+  667x375-t100-wider-hcb: [flush] 'Paused — ▶ to carry [o]' -> [ellipsis] 'Paused — ▶ to carr…'
+  667x375-t100-wider-moon: [flush] 'Paused — ▶ to ca[r]' -> [ellipsis] 'Paused — ▶ to c…'
+  667x375-t115-stack-hcb: [flush] 'Paused — ▶ to c[a]' -> [ellipsis] 'Paused — ▶ to …'
+  667x375-t115-stack-moon: [flush] 'Paused — ▶ t[o]' -> [ellipsis] 'Paused — …'
+  667x375-t115-wider-hcb: [flush] 'Paused [—]' -> [ellipsis] 'Paused…'
+  667x375-t115-wider-moon: [flush] 'Paus[e]' -> [ellipsis] 'Pa…'
+  700x350-t100-wider-hcb: [flush] 'Paused — ▶ to carry on, o[r]' -> [ellipsis] 'Paused — ▶ to carry on, …'
+  700x350-t100-wider-moon: [flush] 'Paused — ▶ to carry o[n]' -> [ellipsis] 'Paused — ▶ to carry …'
+  700x350-t115-stack-hcb: [flush] 'Paused — ▶ to carry o[n]' -> [ellipsis] 'Paused — ▶ to carry…'
+  700x350-t115-stack-moon: [flush] 'Paused — ▶ to car[r]' -> [ellipsis] 'Paused — ▶ to c…'
+  700x350-t115-wider-hcb: [flush] 'Paused — ▶ [t]' -> [ellipsis] 'Paused — …'
+  700x350-t115-wider-moon: [flush] 'Paused [—]' -> [ellipsis] 'Paused …'
+  720x360-t100-wider-hcb: [flush] 'Paused — ▶ to carry on, or St[a]' -> [ellipsis] 'Paused — ▶ to carry on, or …'
+  720x360-t100-wider-moon: [flush] 'Paused — ▶ to carry on, o' -> [ellipsis] 'Paused — ▶ to carry on,…'
+  720x360-t115-stack-hcb: [flush] 'Paused — ▶ to carry on, [o]' -> [ellipsis] 'Paused — ▶ to carry on…'
+  720x360-t115-stack-moon: [flush] 'Paused — ▶ to carry [o]' -> [ellipsis] 'Paused — ▶ to carr…'
+  720x360-t115-wider-hcb: [flush] 'Paused — ▶ to [c]' -> [ellipsis] 'Paused — ▶ t…'
+  720x360-t115-wider-moon: [flush] 'Paused — [▶]' -> [ellipsis] 'Paused — …'
+  740x342-t100-wider-moon: [flush] 'Paused — ▶ to carry on, or S[t]' -> [ellipsis] 'Paused — ▶ to carry on, or…'
+  740x342-t115-stack-hcb: [flush] 'Paused — ▶ to carry on, or S' -> [ellipsis] 'Paused — ▶ to carry on, or…'
+  740x342-t115-stack-moon: [flush] 'Paused — ▶ to carry on, [o]' -> [ellipsis] 'Paused — ▶ to carry o…'
+  740x342-t115-wider-hcb: [flush] 'Paused — ▶ to ca[r]' -> [ellipsis] 'Paused — ▶ to c…'
+  740x342-t115-wider-moon: [flush] 'Paused — ▶ t[o]' -> [ellipsis] 'Paused — ▶ …'
+  780x360-t115-stack-moon: [flush] 'Paused — ▶ to carry on, or Sta[r]' -> [ellipsis] 'Paused — ▶ to carry on, or St…'
+  780x360-t115-wider-hcb: [flush] 'Paused — ▶ to carry on[,]' -> [ellipsis] 'Paused — ▶ to carry …'
+  780x360-t115-wider-moon: [flush] 'Paused — ▶ to carr[y]' -> [ellipsis] 'Paused — ▶ to ca…'
+  844x390-t115-wider-moon: [flush] 'Paused — ▶ to carry on, or [S]' -> [ellipsis] 'Paused — ▶ to carry on, o…'

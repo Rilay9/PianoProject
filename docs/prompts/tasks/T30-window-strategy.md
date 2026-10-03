@@ -78,3 +78,7 @@ and 58 record some) and nobody has looked at the whole grid.
 The cell count and where the sheets are; the fault table's counts per group with the three
 worst cells named; the strategies with the recommendation and its measured reason; what is
 unverified.
+
+## Record
+
+lane: T30 · closes: — · entry: — · role: history

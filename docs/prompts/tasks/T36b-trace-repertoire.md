@@ -122,3 +122,7 @@ tests. What cannot be judged without hearing the piece is said in those words, o
 Judgement first: in five lines, how many difficulties this piece has today and which one
 a teacher would trust. Then the trace, the six questions, the findings, what is
 unverified, files read.
+
+## Record
+
+lane: T36b · closes: — · entry: — · role: history

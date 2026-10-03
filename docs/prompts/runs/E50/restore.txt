@@ -1,0 +1,18 @@
+The four files the builds rewrite, snapshotted before the first build (scripts-setup.ps1, build/e50/snapshot/) and
+compared with the tree at the end (cmp):
+
+- content/scores/imported/SOURCES.md: restored from the snapshot (copied back), as snapshotted. What the builds wrote
+  into it: the fetched time of ten sources set to the offline build's day and their revision to "n/a" (the offline
+  builds fetch nothing); no row added or removed; nothing of E50's.
+- docs/prompts/rung-claims.md: never written by a --out build ("docs/prompts left alone"); as snapshotted. Rendered
+  from each build by the build's renderer (reports.txt): the after build's render equals the before build's, which
+  equals the committed file.
+- docs/prompts/inventory.md: NOT restored; written from the after build by the build's renderer
+  (scripts-write-inventory.py) and committed with E50, because test_measured_truth.TestTheReports holds the committed
+  file to the catalogue and failed on it in the first whole content-suite run (content-suite-first.txt). E50's three
+  lines: 240 -> 232 items at a tempo the converter supplied; the excerpt row's untrusted count 4 -> 3; the pdmx row's
+  176 -> 169 (reports.txt).
+- docs/generated/ladder.md: NOT restored; written from the after build by `python tools/content/ladder_report.py
+  --content build/e50/after` and committed with E50, because the after build's validator failed on it ("ladder.md is
+  stale", build-after.txt, exit 1). E50's five lines: the seven's levels on blues.3, jam.7, jazz.4, jazz.5 and jazz.6
+  (and those rungs' option order and level range where a level moved past a neighbour).

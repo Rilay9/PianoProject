@@ -1,0 +1,43 @@
+# checks for 36 path(s): 36 matched, 0 unmatched
+# docs/03-content-pipeline.md: docs/03-content-pipeline.md, docs/**
+# docs/prompts/rung-claims.md: docs/prompts/rung-claims.md, docs/**
+# docs/prompts/runs/Q75/ENTRY.md: docs/**
+# docs/prompts/runs/Q75/build-after-personal.txt: docs/**
+# docs/prompts/runs/Q75/build-app.txt: docs/**
+# docs/prompts/runs/Q75/build-baseline-personal.txt: docs/**
+# docs/prompts/runs/Q75/build-strict-committed.txt: docs/**
+# docs/prompts/runs/Q75/checks-for-paths.txt: docs/**
+# docs/prompts/runs/Q75/compare-validator-personal.txt: docs/**
+# docs/prompts/runs/Q75/compare-validator-strict.txt: docs/**
+# docs/prompts/runs/Q75/content-tests-all.txt: docs/**
+# docs/prompts/runs/Q75/copy.txt: docs/**
+# docs/prompts/runs/Q75/green-test_validate_claims.txt: docs/**
+# docs/prompts/runs/Q75/npm-ci.txt: docs/**
+# docs/prompts/runs/Q75/parity.txt: docs/**
+# docs/prompts/runs/Q75/red-test_validate_claims.txt: docs/**
+# docs/prompts/runs/Q75/report-diff.txt: docs/**
+# docs/prompts/runs/Q75/review-check.txt: docs/**
+# docs/prompts/runs/Q75/runner-pages-36552375999-failed.log: docs/**
+# docs/prompts/runs/Q75/scripts-compare-validator.py: docs/**
+# docs/prompts/runs/Q75/scripts-strict-claims.py: docs/**
+# docs/prompts/runs/Q75/scripts-strict-report.py: docs/**
+# docs/prompts/runs/Q75/scripts-who-establishes.py: docs/**
+# docs/prompts/runs/Q75/step-ci.txt: docs/**
+# docs/prompts/runs/Q75/step-diff.txt: docs/**
+# docs/prompts/runs/Q75/step-pages.txt: docs/**
+# docs/prompts/runs/Q75/strict-claims-three-rules.txt: docs/**
+# docs/prompts/runs/Q75/strict-report-after.txt: docs/**
+# docs/prompts/runs/Q75/targeted-tests.txt: docs/**
+# docs/prompts/runs/Q75/validate-personal-after.txt: docs/**
+# docs/prompts/runs/Q75/validate-strict-after.txt: docs/**
+# docs/prompts/runs/Q75/vitest-all.txt: docs/**
+# docs/prompts/runs/Q75/who-establishes-main-personal.txt: docs/**
+# tools/content/claims.py: tools/content/*.py
+# tools/content/tests/test_validate_claims.py: tools/content/tests/test_*.py
+# tools/content/validate.py: tools/content/*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app

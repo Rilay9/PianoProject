@@ -1,0 +1,38 @@
+test_a_failure_keeps_them_too_and_its_detail_is_the_whole_output (tools.content.tests.test_runner_log.TestTheValidateStepKeepsTheValidatorsWarnings.test_a_failure_keeps_them_too_and_its_detail_is_the_whole_output) ... FAIL
+test_a_pass_keeps_both_warning_lines_verbatim (tools.content.tests.test_runner_log.TestTheValidateStepKeepsTheValidatorsWarnings.test_a_pass_keeps_both_warning_lines_verbatim) ... FAIL
+test_a_pass_without_warnings_has_none (tools.content.tests.test_runner_log.TestTheValidateStepKeepsTheValidatorsWarnings.test_a_pass_without_warnings_has_none) ... ok
+test_the_detail_is_still_the_summary_line (tools.content.tests.test_runner_log.TestTheValidateStepKeepsTheValidatorsWarnings.test_the_detail_is_still_the_summary_line) ... ok
+
+======================================================================
+FAIL: test_a_failure_keeps_them_too_and_its_detail_is_the_whole_output (tools.content.tests.test_runner_log.TestTheValidateStepKeepsTheValidatorsWarnings.test_a_failure_keeps_them_too_and_its_detail_is_the_whole_output)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-afba154b2e72a57f9\tools\content\tests\test_runner_log.py", line 86, in test_a_failure_keeps_them_too_and_its_detail_is_the_whole_output
+    self.assertEqual(step.warnings, [Q75_LINE, Q80_LINE])
+AssertionError: Lists differ: [] != ['WARNING (rung claims, Q75): ragtime.8 cl[587 chars]gue"]
+
+Second list contains 2 additional elements.
+First extra element 0:
+'WARNING (rung claims, Q75): ragtime.8 claims stride-bass (texture.left-hand-pattern), not judged on this build: 6 of its options unmeasured here (a placeholder, or a file the app could not load) and none of its 6 checked options establishes it; an unmeasured option establishes nothing and refutes nothing'
+
+Diff is 693 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_a_pass_keeps_both_warning_lines_verbatim (tools.content.tests.test_runner_log.TestTheValidateStepKeepsTheValidatorsWarnings.test_a_pass_keeps_both_warning_lines_verbatim)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-afba154b2e72a57f9\tools\content\tests\test_runner_log.py", line 71, in test_a_pass_keeps_both_warning_lines_verbatim
+    self.assertEqual(step.warnings, [Q75_LINE, Q80_LINE])
+AssertionError: Lists differ: [] != ['WARNING (rung claims, Q75): ragtime.8 cl[587 chars]gue"]
+
+Second list contains 2 additional elements.
+First extra element 0:
+'WARNING (rung claims, Q75): ragtime.8 claims stride-bass (texture.left-hand-pattern), not judged on this build: 6 of its options unmeasured here (a placeholder, or a file the app could not load) and none of its 6 checked options establishes it; an unmeasured option establishes nothing and refutes nothing'
+
+Diff is 693 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+FAILED (failures=2)
+exit 1

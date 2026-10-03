@@ -1,0 +1,36 @@
+1.1 (core): 1 of 13 options not admitted: exercise.riff.c.falling
+1.5 (core): 1 of 12 options not admitted: exercise.riff.a.falling
+2.1 (core): 1 of 11 options not admitted: exercise.ostinato.a.fifths
+3.3 (core): 2 of 10 options not admitted: exercise.ostinato.a.arpeggio, exercise.modal-vamp.a
+3.6 (core): 1 of 10 options not admitted: exercise.tresillo.c
+latin.3 (latin): 5 of 8 options not admitted: exercise.clave.son-2-3, exercise.clave.rumba-3-2, exercise.clave.bossa, exercise.clave.son-3-2.pulse, exercise.tresillo.c
+4.5 (core): 2 of 13 options not admitted: exercise.clave.rumba-3-2, exercise.clave.son-3-2.pulse
+4.7 (core): 1 of 6 options not admitted: exercise.walking-bass.d.blues.intro
+jazz.4 (jazz): 3 of 7 options not admitted: exercise.comping.f.charleston.intro, exercise.comping.f.off-beats.intro, exercise.comping.f.four-on-the-floor.intro
+jam (jam): 1 of 9 options not admitted: exercise.comping.c.anticipated.intro
+rock.4 (rock-metal): 3 of 5 options not admitted: exercise.ostinato.e.fifths, exercise.ostinato.d.arpeggio, exercise.modal-vamp.e
+blues.5 (blues-boogie): 1 of 13 options not admitted: exercise.walking-bass.c.blues.intro
+jazz.5 (jazz): 1 of 9 options not admitted: exercise.comping.c.anticipated.intro
+holiday.5 (holiday): 1 of 7 options not admitted: exercise.ostinato.a.arpeggio
+latin (latin): 8 of 18 options not admitted: exercise.comping.c.off-beats, exercise.walking-bass.c.ii-v-i, exercise.clave.son-3-2, exercise.clave.son-2-3, exercise.tumbao.c, exercise.montuno.c.2note.son-3-2, exercise.montuno.c.3note.son-3-2, exercise.latin-groove.c.son-3-2
+jam.5 (jam): 4 of 5 options not admitted: exercise.comping.e.charleston.intro, exercise.comping.a.charleston.intro, exercise.comping.g.off-beats.intro, exercise.comping.d.anticipated.intro
+jazz.6 (jazz): 4 of 13 options not admitted: exercise.comping.c.charleston, exercise.comping.f.off-beats, exercise.walking-bass.c.blues, exercise.walking-bass.f.ii-v-i
+blues.6 (blues-boogie): 4 of 8 options not admitted: exercise.boogie.c.pinetop, exercise.boogie.f.walking-eighths, exercise.walking-bass.c.blues, exercise.boogie.c.root-fifth
+improv.6 (improv-compose): 1 of 5 options not admitted: exercise.comping.c.charleston
+rock.6 (rock-metal): 1 of 7 options not admitted: exercise.ostinato.a.arpeggio
+jam.6 (jam): 4 of 5 options not admitted: exercise.walking-bass.e.blues.intro, exercise.walking-bass.a.blues.intro, exercise.walking-bass.d.blues.intro, exercise.walking-bass.a.blues
+latin.6 (latin): 3 of 6 options not admitted: exercise.tumbao.g, exercise.montuno.d.3note.son-3-2, exercise.latin-groove.d.son-3-2
+jazz.7 (jazz): 1 of 13 options not admitted: exercise.stride.c
+holiday.7 (holiday): 1 of 6 options not admitted: exercise.stride.c
+blues.7 (blues-boogie): 3 of 8 options not admitted: exercise.stride.f, exercise.boogie.e-flat.pinetop, exercise.walking-bass.f.blues
+blues.8 (blues-boogie): 3 of 8 options not admitted: exercise.walking-bass.e-flat.blues, exercise.boogie.b-flat.walking-eighths, exercise.comping.b-flat.four-on-the-floor
+jazz.9 (jazz): 3 of 11 options not admitted: exercise.comping.e-flat.anticipated, exercise.walking-bass.b-flat.ii-v-i, exercise.stride.e-flat
+blues.9 (blues-boogie): 4 of 8 options not admitted: exercise.walking-bass.f.blues, exercise.boogie.c.walking-eighths, exercise.stride.b-flat, exercise.comping.c.anticipated
+chords-pop.9 (chords-pop): 1 of 12 options not admitted: exercise.comping.c.anticipated
+ragtime.9 (ragtime): 2 of 8 options not admitted: exercise.secondary-rag.c.4bar, exercise.stride.c
+
+rungs listing one: 30; such options: 71
+requirements whose every candidate is not admitted (unfillable by the card until a decision exists): 2
+  latin.3: {"kind": "runs", "from": "exercises", "count": 1} — every candidate not admitted: exercise.clave.son-2-3, exercise.clave.rumba-3-2, exercise.clave.bossa, exercise.clave.son-3-2.pulse, exercise.tresillo.c
+  latin.6: {"kind": "runs", "from": "exercises", "count": 1} — every candidate not admitted: exercise.tumbao.g, exercise.montuno.d.3note.son-3-2, exercise.latin-groove.d.son-3-2
+exit 0

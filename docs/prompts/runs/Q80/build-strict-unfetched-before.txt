@@ -1,0 +1,19 @@
+
+--- content build ---
+  ok    fetch            fetched 10 source(s), skipped 5
+  ok    import [MT]      imported 64 score(s), excluded 4, normalised 8 (8 cached, 1 converted)
+  ok    import [KERN]    imported 116 score(s), 47 placeholder(s), excluded 73 (116 cached, 0 converted)
+  ok    import [PDMX]    imported 367 score(s), 175 placeholder(s)
+  ok    import [MUTO]    imported 0 score(s), 1 placeholder(s) (0 cached, 0 converted)
+          placeholder song.ragtime.joplin-pine-apple-rag.mutopia: the edition's .ly file was not fetched
+  ok    generate [GEN]   wrote 1200 items to build\q80-strict-unfetched\content\scores\generated; catalog C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\build\catalog.generated.json
+  ok    author [AUTH]    authored 39 item(s) (33 cached, 0 converted)
+  ok    merge catalog    2091 items, 22 with named sections, 4 excerpt(s) cut (1 not: the parent is not bundled here), 100 given a track by their rung, 1784 read from the score, 417 keySig corrected, demands measured on 1784 (236 unmeasured, 71 made at runtime)
+  ok    score checks     score-checks gate: 32 high row(s), 32 allowed by content\score-checks.allow.json
+  ok    curriculum       11 file(s), 10 stage(s), 105 finder(s), 285 concept(s)
+  ok    reports          480 checkable claims on 1017 options: 272 not established, 6 kept by no option; 786 works, 815 arrangements (docs/prompts left alone)
+  ok    lessons          109 file(s)
+  ok    tips             20 kind(s), 7 variant(s)
+  FAIL  validate         content validation FAILED (1 error(s)):
+  - docs\generated\ladder.md is stale — the catalog has changed since it was written. Run `python3 tools/content/ladder_report.py` and commit it (replan §2.6).
+  179.8s → build\q80-strict-unfetched\content

@@ -1,0 +1,11 @@
+$ (cd app) npx vitest run tests/unit/expectedNote.test.ts   # alone, after the whole-suite run timed it out at 5000 ms
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-afcfb0e95fe66221d/app
+
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  20:34:54
+   Duration  17.44s (environment 92%, tests 7%, import 1%, transform 1%)
+
+exit=0

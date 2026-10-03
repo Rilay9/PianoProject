@@ -1,0 +1,14 @@
+content: build\q75-strict\content
+catalogue items: 2089
+claims not passing under at least one rule:
+  2.4 tie (tie): established 0, checked 7, unmeasured 1 -> F2 fail, brief-literal fail, built warn
+  ragtime.8 stride-bass (texture.left-hand-pattern): established 0, checked 6, unmeasured 5 -> F2 fail, brief-literal fail, built warn
+verdict triples (F2, brief-literal, built): ('fail', 'fail', 'warn'): 2, ('pass', 'pass', 'pass'): 40
+
+unmeasured items: 235
+   175  source=pdmx tag=personal-build  reason=no notation is bundled: it arrives when the learner imports the piece
+    46  source=kern tag=import-only repo=joplin reason=no notation is bundled: it arrives when the learner imports the piece
+     7  source=placeholder tag=import-only repo=rock-metal-module reason=no notation is bundled: it arrives when the learner imports the piece
+     6  source=musetrainer tag=personal-build  reason=no notation is bundled: it arrives when the learner imports the piece
+     1  source=kern tag=import-only repo=chopin-first-editions reason=no notation is bundled: it arrives when the learner imports the piece
+exit=0

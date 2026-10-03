@@ -1,0 +1,81 @@
+1200×360 100% stack hcb        atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ' ' (0 px); bar 52 px, top 252
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ''; bar 52 px, top 252
+1200×360 100% stack hcb        paused                TODAY ⋯ —; mode 'Wait for me' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go back to… ' (336 px); bar 52 px, top 252
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go back to…'; bar 52 px, top 252
+1200×360 100% stack saints     atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands alternating)'; status ' ' (0 px); bar 52 px, top 252
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands alternating)'; status ''; bar 52 px, top 252
+1200×360 100% stack saints     paused                TODAY ⋯ —; mode 'Wait for me' CUT 64/103; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands alternating)'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go back to… ' (336 px); bar 52 px, top 252
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands a…'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go back to…'; bar 52 px, top 252
+1200×360 100% wider hcb        atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ' ' (0 px); bar 52 px, top 252
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ''; bar 52 px, top 252
+1200×360 100% wider hcb        paused                TODAY ⋯ —; mode 'Wait for me' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go… ' (336 px); bar 52 px, top 252
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go…'; bar 52 px, top 252
+1200×360 100% wider saints     atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands alternating)'; status ' ' (0 px); bar 52 px, top 252
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands alternating)'; status ''; bar 52 px, top 252
+1200×360 100% wider saints     paused                TODAY ⋯ —; mode 'Wait for me' CUT 44/112; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (ha…'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go… ' (336 px); bar 52 px, top 252
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marc…'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go…'; bar 52 px, top 252
+1200×360 115% stack hcb        atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ' ' (0 px); bar 60 px, top 244
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ''; bar 60 px, top 244
+1200×360 115% stack hcb        paused                TODAY ⋯ —; mode 'Wait for me' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go… ' (336 px); bar 60 px, top 244
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go…'; bar 60 px, top 244
+1200×360 115% stack saints     atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands alternating)'; status ' ' (0 px); bar 60 px, top 244
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands alternating)'; status ''; bar 60 px, top 244
+1200×360 115% stack saints     paused                TODAY ⋯ —; mode 'Wait for me' CUT 51/114; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (ha…'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go… ' (336 px); bar 60 px, top 244
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Mar…'; status 'Paused — ▶ to carry on, or Start again in ⋯ to go…'; bar 60 px, top 244
+1200×360 115% wider hcb        atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ' ' (0 px); bar 60 px, top 244
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ''; bar 60 px, top 244
+1200×360 115% wider hcb        paused                TODAY ⋯ —; mode 'Wait for me' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status 'Paused — ▶ to carry on, or Start again in … ' (336 px); bar 60 px, top 244
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status 'Paused — ▶ to carry on, or Start again in …'; bar 60 px, top 244
+1200×360 115% wider saints     atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands alternating)'; status ' ' (0 px); bar 60 px, top 244
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands alterna…'; status ''; bar 60 px, top 244
+1200×360 115% wider saints     paused                TODAY ⋯ —; mode 'Wait for me' CUT 51/125; tempo '70% · 67 bpm'; name 'Oh When the Saints Go M…'; status 'Paused — ▶ to carry on, or Start again in … ' (336 px); bar 60 px, top 244
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 67 bpm'; name 'Oh When the S…'; status 'Paused — ▶ to carry on, or Start again in …'; bar 60 px, top 244
+880×412 100% stack hcb         atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ' ' (0 px); bar 52 px, top 304
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ''; bar 52 px, top 304
+880×412 100% stack hcb         paused                TODAY ⋯ —; mode 'Wait for me' CUT 97/103; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status 'Paused — ▶ to carry on, or Start again in … ' (246 px); bar 52 px, top 304
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 50 bpm'; name 'Hot Cross …'; status 'Paused — ▶ to carry on, or Start again in …'; bar 52 px, top 304
+880×412 100% stack saints      atRest                TODAY ⋯ —; mode 'Keep tempo' CUT 80/106; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands alternating)'; status ' ' (0 px); bar 52 px, top 304
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (hands alte…'; status ''; bar 52 px, top 304
+880×412 100% stack saints      paused                TODAY ⋯ —; mode 'Wait for me' CUT 44/103; tempo '70% · 67 bpm'; name 'Oh When the Saints …'; status 'Paused — ▶ to carry on, or Start again in … ' (246 px); bar 52 px, top 304
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 67 bpm'; name 'Oh When…'; status 'Paused — ▶ to carry on, or Start again in …'; bar 52 px, top 304
+880×412 100% wider hcb         atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ' ' (0 px); bar 52 px, top 304
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ''; bar 52 px, top 304
+880×412 100% wider hcb         paused                TODAY ⋯ —; mode 'Wait for me' CUT 47/112; tempo '70% · 50 bpm'; name 'Hot Cross …'; status 'Paused — ▶ to carry on, or Start ag… ' (246 px); bar 52 px, top 304
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 50 bpm'; name ''; status 'Paused — ▶ to carry on, or Start ag…'; bar 52 px, top 304
+880×412 100% wider saints      atRest                TODAY ⋯ —; mode 'Keep tempo' CUT 44/114; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (han…'; status ' ' (0 px); bar 52 px, top 304
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marchi…'; status ''; bar 52 px, top 304
+880×412 100% wider saints      paused                TODAY ⋯ —; mode 'Wait for me' CUT 44/112; tempo '70% · 67 bpm'; name 'Oh When t…'; status 'Paused — ▶ to carry on, or Start ag… ' (246 px); bar 52 px, top 304
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 67 bpm'; name ''; status 'Paused — ▶ to carry on, or Start ag…'; bar 52 px, top 304
+880×412 115% stack hcb         atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ' ' (0 px); bar 60 px, top 296
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ''; bar 60 px, top 296
+880×412 115% stack hcb         paused                TODAY ⋯ —; mode 'Wait for me' CUT 52/114; tempo '70% · 50 bpm'; name 'Hot Cros…'; status 'Paused — ▶ to carry on, or Start ag… ' (246 px); bar 60 px, top 296
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '70% · 50 bpm'; name ''; status 'Paused — ▶ to carry on, or Start ag…'; bar 60 px, top 296
+880×412 115% stack saints      atRest                TODAY ⋯ —; mode 'Keep tempo' CUT 51/118; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Marching In (han…'; status ' ' (0 px); bar 60 px, top 296
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '67 bpm'; name 'Oh When the Saints Go Marching In …'; status ''; bar 60 px, top 296
+880×412 115% stack saints      paused                TODAY ⋯ —; mode 'Wait for me' CUT 51/114; tempo '70% · 67 bpm'; name 'Oh Whe…'; status 'Paused — ▶ to carry on, or Start ag… ' (246 px); bar 60 px, top 296
+                                                     MODEL ⋯ —; mode long 'Wait for me'; tempo '67 bpm'; name 'Oh …'; status 'Paused — ▶ to carry on, or Start ag…'; bar 60 px, top 296
+880×412 115% wider hcb         atRest                TODAY ⋯ —; mode 'Keep tempo' whole; tempo '70% · 50 bpm'; name 'Hot Cross Buns'; status ' ' (0 px); bar 60 px, top 296
+                                                     MODEL ⋯ —; mode short 'Tempo'; tempo '50 bpm'; name 'Hot Cross Buns'; status ''; bar 60 px, top 296
+880×412 115% wider hcb         paused                TODAY ⋯ —; mode 'Wait for me' CUT 51/125; tempo '70% · 50 bpm'; name '…'; status 'Paused — ▶ to carry on, or Sta… ' (246 px); bar 60 px, top 296
+                                                     MODEL ⋯ —; mode short 'Wait'; tempo '50 bpm'; name 'Ho…'; status 'Paused — ▶ to carry on, or Sta…'; bar 60 px, top 296
+880×412 115% wider saints      atRest                TODAY ⋯ —; mode 'Keep tempo' CUT 51/128; tempo '70% · 67 bpm'; name 'Oh When the Saints Go Mar…'; status ' ' (0 px); bar 60 px, top 296
+                                                     MODEL ⋯ —; mode short 'Tempo'; tempo '67 bpm'; name 'Oh When the Saints Go Marc…'; status ''; bar 60 px, top 296
+880×412 115% wider saints      paused                TODAY ⋯ —; mode 'Wait for me' CUT 51/125; tempo '70% · 67 bpm'; name '…'; status 'Paused — ▶ to carry on, or Sta… ' (246 px); bar 60 px, top 296
+                                                     MODEL ⋯ —; mode short 'Wait'; tempo '67 bpm'; name 'O…'; status 'Paused — ▶ to carry on, or Sta…'; bar 60 px, top 296
+
+32 states, 16 cells.
+Configuration differs between states of one cell: 0
+
+Today, invariant failures (measured):
+  mode label cut: 16 — 1200×360 100% stack saints paused; 1200×360 100% wider saints paused; 1200×360 115% stack saints paused; 1200×360 115% wider saints paused; 880×412 100% stack hcb paused; 880×412 100% stack saints atRest; 880×412 100% stack saints paused; 880×412 100% wider hcb paused; 880×412 100% wider saints atRest; 880×412 100% wider saints paused; 880×412 115% stack hcb paused; 880×412 115% stack saints atRest; 880×412 115% stack saints paused; 880×412 115% wider hcb paused; 880×412 115% wider saints atRest; 880×412 115% wider saints paused
+
+Model, invariant failures (applied, measured):
+  none
+
+Where the model changes an outcome:
+  mode label cut today (long) → long, whole: 13 — 1200×360 100% stack saints paused; 1200×360 100% wider saints paused; 1200×360 115% stack saints paused; 1200×360 115% wider saints paused; 880×412 100% stack hcb paused; 880×412 100% stack saints atRest; 880×412 100% stack saints paused; 880×412 100% wider hcb paused; 880×412 100% wider saints atRest; 880×412 100% wider saints paused; 880×412 115% stack hcb paused; 880×412 115% stack saints atRest; 880×412 115% stack saints paused
+  mode label cut today (long) → short, whole: 3 — 880×412 115% wider hcb paused; 880×412 115% wider saints atRest; 880×412 115% wider saints paused
+  mode label whole today (long) → short, whole: 1 — 880×412 115% wider hcb atRest
+  name: fewer characters shown: 14 — 1200×360 100% stack saints paused (53 → 42); 1200×360 100% wider saints paused (37 → 26); 1200×360 115% stack saints paused (37 → 25); 1200×360 115% wider saints atRest (53 → 48); 1200×360 115% wider saints paused (23 → 13); 880×412 100% stack hcb paused (14 → 10); 880×412 100% stack saints atRest (53 → 45); 880×412 100% stack saints paused (19 → 7); 880×412 100% wider hcb paused (10 → 0); 880×412 100% wider saints atRest (38 → 28); 880×412 100% wider saints paused (9 → 0); 880×412 115% stack hcb paused (8 → 0); 880×412 115% stack saints atRest (38 → 34); 880×412 115% stack saints paused (6 → 3)
+  name: more characters shown: 3 — 880×412 115% wider hcb paused (0 → 2); 880×412 115% wider saints atRest (25 → 26); 880×412 115% wider saints paused (0 → 1)
+  tempo label with % today → without %: 6 — 880×412 115% stack saints atRest; 880×412 115% stack saints paused; 880×412 115% wider hcb atRest; 880×412 115% wider hcb paused; 880×412 115% wider saints atRest; 880×412 115% wider saints paused

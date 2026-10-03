@@ -9,7 +9,9 @@
  * The list is built by hand rather than virtualised. 570 rows of three
  * elements each is about 15 ms on the S25, and it only rebuilds when a filter
  * changes — a virtual list would cost more in scroll-position bugs than it
- * saves.
+ * saves. The learner's projects (G85) keep that budget: the store is read with
+ * the catalogue and again when a project changes, never on a filter change,
+ * and indexed by song once per read, so a draw pays one map lookup a row.
  *
  * ## What this screen is for, in order
  *
@@ -17,9 +19,12 @@
  *    is a door out of it.
  * 2. **A row's name, and whose it is.** The title, then the composer.
  * 3. **What it is** — level, hands where hands are news, type — and its state,
- *    as badges that only appear when there is something to say.
- * 4. **The doors: import, Shelf, score folder, the six filters.** Text in the
- *    header and one chip, never boxes (`04` §0 R3).
+ *    as badges that only appear when there is something to say: its progress,
+ *    and the learner's project on it where there is one (G85).
+ * 4. **The doors: import, Shelf, score folder, the seven filters.** Text in the
+ *    header and one chip, never boxes (`04` §0 R3). This screen reads the
+ *    learner's projects and moves none: the project sheet is the one actor,
+ *    and a piece's Details is the Library's door to it (G85a), not the row.
  *
  * The pass that produced this ranking found two things worth naming. The
  * detail line said `Hands together` on nearly every row of 1,533 — see
@@ -30,6 +35,7 @@
 import { createAlphaRail, letterFor } from '../alphaRail';
 import type { Router } from '../../router';
 import { allItems } from '../../curriculum/load';
+import { excerptLine } from '../../curriculum/excerpt';
 import type { CatalogItem } from '../../curriculum/types';
 import {
   IMPORT_ACCEPT,
@@ -43,7 +49,7 @@ import {
   takeSharedFiles,
   updateImport,
 } from '../../data/importStore';
-import { allProgress } from '../../data/progressStore';
+import { allProgress, dayKey } from '../../data/progressStore';
 import { clearLevelOverride, levelOverrideFor, setLevelOverride } from '../../data/levelOverrides';
 import type { ImportRow, ProgressRow } from '../../data/db';
 import { onScreenDispose } from '../screenLifecycle';
@@ -61,17 +67,36 @@ import {
 import { isPlayable, openItem, targetFor } from '../openItem';
 import { getSettings, updateSettings } from '../../data/settingsStore';
 import { screenFrame, statusLine } from './screenFrame';
-import { openAssignSheet } from '../assignSheet';
+import { openImportSheetFor } from '../importSheet';
+import { openProjectSheet } from '../projectSheet';
 import { loadCurriculum } from '../../curriculum/load';
-import { estimateLevelFor } from '../../score/estimateImport';
+import { materialOfItem } from '../../curriculum/material';
+import {
+  PROJECT_STATES,
+  allProjects,
+  isProjectable,
+  onProjectsChange,
+  projectIn,
+  type ProjectRow,
+  type ProjectState,
+} from '../../data/projectStore';
+import { IMPORT_TEXT, PROJECT_TEXT, importSourceWords, importStateWords, projectSince } from '../help';
 
 type SortKey = 'level' | 'title' | 'recent';
 
+/** What the Project filter asks (G85): every piece, a piece with a project in any state, or one state. */
+type ProjectFilter = 'all' | 'any' | ProjectState;
+
 interface Filters {
   query: string;
-  type: 'all' | 'song' | 'exercise' | 'drill';
+  type: 'all' | 'song' | 'exercise' | 'drill' | 'excerpt';
   track: string;
   status: 'all' | 'new' | 'started' | 'passed' | 'mastered';
+  /**
+   * The learner's project on the piece (G85), read as `status` is. Absent is `all`: the filters built
+   * outside this screen (the tests of `matches` that browse the catalogue) name no project.
+   */
+  project?: ProjectFilter;
   hands: 'all' | 'both' | 'right' | 'left';
   minLevel: number;
   maxLevel: number;
@@ -84,6 +109,7 @@ const DEFAULT_FILTERS: Filters = {
   type: 'all',
   track: 'all',
   status: 'all',
+  project: 'all',
   hands: 'all',
   minLevel: 0,
   maxLevel: 10,
@@ -100,7 +126,33 @@ function statusBadge(row: ProgressRow | undefined): HTMLElement | null {
   return badge(label, row.status);
 }
 
-export function matches(item: CatalogItem, filters: Filters, progress: Map<string, ProgressRow>): boolean {
+/**
+ * The learner's project on a song row (G85): the state in the sheet's words, a badge as the Stage 9
+ * page's rows wear it (`LessonScreen`'s option rows), but plain rather than that page's `passed` kind:
+ * `passed` draws a ✓, and *✓ Paused* or *✓ Put away* beside a status badge's own ✓ would say the
+ * learner achieved something where they said what they intend. None where there is no project —
+ * exploring is the absence of a row, and fifteen hundred *not started* badges would say nothing.
+ */
+function projectBadge(project: ProjectRow | undefined): HTMLElement | null {
+  if (!project) return null;
+  const node = badge(PROJECT_TEXT.states[project.state], 'project');
+  node.dataset.project = project.state;
+  return node;
+}
+
+const NO_PROJECTS: ReadonlyMap<string, ProjectRow> = new Map();
+
+/**
+ * Whether an item passes the filters. `projects` is the screen's index of the learner's projects by
+ * item id (built from one read of the store, G85), handed in as `progress` is: this never reads the
+ * store. A piece absent from it has no project.
+ */
+export function matches(
+  item: CatalogItem,
+  filters: Filters,
+  progress: Map<string, ProgressRow>,
+  projects: ReadonlyMap<string, ProjectRow> = NO_PROJECTS,
+): boolean {
   if (filters.importedOnly && !item.imported) return false;
   if (filters.type !== 'all' && item.type !== filters.type) return false;
   if (filters.hands !== 'all' && item.hands !== filters.hands) return false;
@@ -109,6 +161,11 @@ export function matches(item: CatalogItem, filters: Filters, progress: Map<strin
   if (filters.status !== 'all') {
     const status = progress.get(item.id)?.status ?? 'new';
     if (status !== filters.status) return false;
+  }
+  const project = filters.project ?? 'all';
+  if (project !== 'all') {
+    const state = projects.get(item.id)?.state;
+    if (state === undefined || (project !== 'any' && state !== project)) return false;
   }
   const query = filters.query.trim().toLowerCase();
   if (query) {
@@ -273,6 +330,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
    */
   let trackTitles = new Map<string, string>();
   let progress = new Map<string, ProgressRow>();
+  /** Every project, as the store last answered (G85): read with the catalogue and again on a change. */
+  let projectRows: ProjectRow[] = [];
+  /** Song id → its project, built once per read of the store (`indexProjects`): one lookup a row. */
+  let projectOf: ReadonlyMap<string, ProjectRow> = NO_PROJECTS;
   let shown = PAGE_SIZE;
   /** What `draw` last put on the screen, which is what the rail moves through. */
   let drawn: CatalogItem[] = [];
@@ -360,27 +421,34 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     // asks. A plain Library import is not — he is filing something, and a
     // sheet over the list would be in the way of the list he came to see. It
     // is one tap away on the row's Assign button when he does want it.
-    // ...and for a file that came in as MIDI, whatever it was imported from.
-    // That is the one import where the app decided things on the learner's
-    // behalf - the metre, the key, the grid, which hand played what - and the
-    // sheet is where it says so, before the score is trusted (T29).
-    const wasConverted = lastRow !== undefined && conversionFor(lastRow.id) !== undefined;
-    if (lastRow && (assign || wasConverted)) await openAssignFor(lastRow);
+    // ...and wherever the app guessed on the learner's behalf (T29; X3): a
+    // file that came in as MIDI, whatever it was imported from — the metre,
+    // the key, the grid, which hand played what — or a score whose stored
+    // provenance says its hands or its key were inferred (the command-line
+    // converter's MusicXML). The sheet is where the guesses are said and the
+    // hands can be corrected, before the score is trusted. Opened here, by the
+    // UI that received the row `addImport` returned; the store opens nothing
+    // (`responses/ef80e86.md`).
+    if (lastRow && (assign || guessedFor(lastRow))) await openImportFor(lastRow);
+  }
+
+  /** Whether the app guessed anything about this import's notation that the sheet should say first. */
+  function guessedFor(row: ImportRow): boolean {
+    if (conversionFor(row.id) !== undefined) return true;
+    const facts = row.provenance?.facts;
+    return facts?.hands?.kind === 'inferred' || facts?.key?.kind === 'inferred';
   }
 
   /**
-   * The assign sheet, with everything it can know already filled in.
-   *
-   * The level is estimated here rather than in the sheet because estimating
-   * means parsing the score, which is the one slow thing in the path; doing it
-   * before the sheet opens means the number is there when it appears.
+   * The import sheet (X3), with everything it can know already filled in:
+   * what the app read and guessed, the hands' correction, what the notes ask,
+   * and where the piece belongs — the assign sheet's body, with the rung from
+   * the route and the level estimated before the sheet opens (the one slow
+   * step, so the number is there when it appears).
    */
-  async function openAssignFor(row: ImportRow): Promise<void> {
-    const curriculum = await loadCurriculum();
-    const estimated = row.kind === 'musicxml' ? await estimateLevelFor(row) : undefined;
-    openAssignSheet(row, curriculum, {
+  async function openImportFor(row: ImportRow): Promise<void> {
+    await openImportSheetFor(row, {
       ...(options.importFor === undefined ? {} : { preselect: options.importFor }),
-      ...(estimated === undefined ? {} : { estimated }),
       onSaved: () => {
         void refresh().catch(sayLoadFailed);
         status.textContent = `${row.title} is in your library.`;
@@ -479,6 +547,8 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         { value: 'song', label: 'Songs' },
         { value: 'exercise', label: 'Exercises' },
         { value: 'drill', label: 'Drills' },
+        // E1: a passage of a piece, cut into its own item; listed under its own title, the piece named.
+        { value: 'excerpt', label: 'Excerpts' },
       ],
       (value) => {
         filters.type = value as Filters['type'];
@@ -497,6 +567,20 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       ],
       (value) => {
         filters.status = value as Filters['status'];
+      },
+    ),
+    // The learner's project on the piece (G85), read as the status is and in the project sheet's
+    // words: every piece, the pieces with a project, then each state in the order a piece meets them.
+    selectRow(
+      'library-project',
+      PROJECT_TEXT.filter,
+      [
+        { value: 'all', label: PROJECT_TEXT.filterAll },
+        { value: 'any', label: PROJECT_TEXT.filterAny },
+        ...PROJECT_STATES.map((state) => ({ value: state, label: PROJECT_TEXT.states[state] })),
+      ],
+      (value) => {
+        filters.project = value as ProjectFilter;
       },
     ),
     selectRow(
@@ -526,7 +610,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     ),
   );
 
-  // The six selects live behind one chip (`04` §0 R1). They pushed the first
+  // The selects live behind one chip (`04` §0 R1). They pushed the first
   // item to about 640 px down a 780 px screen — the list is what the screen is
   // for, and it began below the fold on every visit.
   //
@@ -640,14 +724,27 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
 
   function showDetail(item: CatalogItem): void {
     const sheet = openSheet(item.title, { id: 'library-detail' });
+    // A piece the catalogue wants and does not bundle (a placeholder) is on no track a learner can
+    // follow and trains nothing until it is imported, so its sheet says neither: it said "Tracks:
+    // film-game" and "What it trains: import-only" — a label's id and a marker (U75; `00` §1, no
+    // ids on screen). Any sheet names a track by its title only, and leaves out an id with none.
+    const placeholder = !isPlayable(item);
+    const tracks = item.tracks.map((track) => trackTitles.get(track)).filter((title): title is string => title !== undefined);
+    const trains = item.concepts.filter((concept) => concept !== 'import-only');
     const facts: [string, string][] = [
+      // An excerpt names the piece it was cut from first (E1); its Source and Licence below are
+      // the parent's, carried whole into its catalogue row, since the cut's file carries no credits.
+      ...(excerptLine(item, byIdForExcerpts()) === undefined ? [] : [['From', (excerptLine(item, byIdForExcerpts()) ?? '').replace(/^From /, '')] as [string, string]]),
       ['Level', levelLabel(item.level, item.levelSource)],
       ['Hands', handsLabel(item.hands)],
-      ['Type', item.type],
-      ['Tracks', item.tracks.map((track) => trackTitles.get(track) ?? track).join(', ') || '—'],
+      // A PDF's type is PDF (G96a; the reviewer's required change on G96, `responses/48bfc167.md`): every
+      // import's catalogue row carries `type: 'song'` (`importToCatalogItem`), and a PDF has pages, not
+      // notes, to be a song of. The row's badge says *PDF · pages, not notes*; *Source* says who imported it.
+      ['Type', item.kind === 'pdf' ? 'PDF' : item.type],
+      ...(placeholder || tracks.length === 0 ? [] : [['Tracks', tracks.join(', ')] as [string, string]]),
       // The assign sheet and the lesson page both call this *What it trains*;
       // *Concepts* is the catalog's field name (`04` §3a).
-      ['What it trains', item.concepts.join(', ') || '—'],
+      ...(placeholder ? [] : [['What it trains', trains.join(', ') || '—'] as [string, string]]),
       ['Source', item.source?.name ?? '—'],
       ['Licence', item.source?.license ?? '—'],
     ];
@@ -674,7 +771,14 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
           // "the opus or its features" was the code describing its own inputs
           // — an opus number is not a word a first-week learner has met, and
           // "features" is what the estimator calls the things it counted.
-          text: 'The app guessed this level from the music itself — change it if it feels wrong.',
+          // A PDF's estimate is none of the music's (G96a; `responses/48bfc167.md`): the app reads no
+          // notes from a PDF and never estimates its level (`estimateLevelFor` reads MusicXML only), so
+          // its `estimated` is the default every import with no level gets (`importToCatalogItem`), or the
+          // number a score folder's manifest supplied — estimated, and not guessed from the music.
+          text:
+            item.kind === 'pdf'
+              ? 'Estimated level — change it if it feels wrong.'
+              : 'The app guessed this level from the music itself — change it if it feels wrong.',
         }),
       );
     }
@@ -686,13 +790,23 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       sheet.body.append(el('p', {}, link, el('span.muted', { text: ' — needs internet' })));
     }
 
-    if (!isPlayable(item)) {
+    const door = projectDoor(item, sheet);
+    if (placeholder) {
+      // What a learner can do (U75): the piece's own words where the catalogue has them
+      // (`importHint`, the source of the words), what the app reads, and the control that imports
+      // — the sentence and the control that does what it suggests (`04` §0 R4), since the header's
+      // *Import a score* is under this sheet.
+      sheet.body.append(el('p.notice', { id: 'library-detail-wanted', text: item.importHint ?? IMPORT_TEXT.wanted }));
+      if (item.importHint) sheet.body.append(el('p.muted', { text: IMPORT_TEXT.formats }));
       sheet.body.append(
-        el('p.notice', {
-          text:
-            item.importHint ??
-            'This one is not bundled — import your own copy from Library, or play one of the alternatives.',
-        }),
+        button(
+          IMPORT_TEXT.importButton,
+          () => {
+            sheet.close();
+            picker.click();
+          },
+          { id: 'library-detail-import' },
+        ),
       );
       for (const altId of item.alternatives ?? []) {
         const alt = items.find((candidate) => candidate.id === altId);
@@ -708,7 +822,11 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
           }),
         );
       }
+      // A placeholder's door is there only where its project already exists (`projectDoor`): at the end.
+      if (door) sheet.body.append(door);
     } else {
+      // With the sheet's actions, directly above *Open*, which stays last and the only filled box.
+      if (door) sheet.body.append(door);
       sheet.body.append(
         button(
           'Open',
@@ -720,6 +838,57 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         ),
       );
     }
+  }
+
+  /**
+   * The Library's door to the one project sheet (G85a; the reviewer's required change on G85,
+   * `docs/review/responses/ba4c6fea.md`): one row inside a piece's Details, never on the list row,
+   * whose title column is the room the piece's name needs at 342 px (Entry 147). The finish sheet's
+   * words for the same door, over the sheet's own state line — the project's state and since where
+   * one exists, *Not a project yet* where none does — so the door never implies a project that is not
+   * there. The words come from the index built at the last read (`projectOf`): opening Details reads
+   * nothing. Tapped, Details closes and the sheet opens on the target the index resolved the row with,
+   * so its own read finds the same project; the sheet is the one actor, and its writes reach the
+   * Library through `onProjectsChange` (`projectsChanged`), which redraws the badge, the filter's
+   * result and the count once — so no `onChange` here, which would draw a second time. That redraw
+   * replaces the row whose *Details* the sheet would give focus back to, so the sheet is told where the
+   * row is now (`refocus`, `rowFocusFor`; G96): after *Close*, focus is on the piece's row again.
+   *
+   * Where it appears (the honest-door rule): wherever a project exists, whatever the item; with none,
+   * on a song that opens on the Score screen, where the sheet's offers from no project are the
+   * learner's intentions, allowed before any run — *Keep it playable* among them only for a piece the
+   * record says is passed (`projectStore.actionsFor`, G96) — and its line of what the learner has
+   * played reads the history that screen writes. Not, without a project, on a PDF (its
+   * viewer writes no history, so the sheet would say *never opened* of a PDF read every day), on a
+   * placeholder (a project made here would stay on its id when the file arrives under its own), or on
+   * anything not a song (none is ever in the index).
+   */
+  function projectDoor(item: CatalogItem, sheet: { close: () => void }): HTMLElement | null {
+    const project = projectOf.get(item.id);
+    if (project === undefined && !(isProjectable(item) && targetFor(item) === 'score')) return null;
+    return listRow({
+      title: PROJECT_TEXT.door,
+      subtitle: project ? projectSince(project.state, project.since, dayKey) : PROJECT_TEXT.none,
+      dataset: { id: 'library-detail-project' },
+      onClick: () => {
+        sheet.close();
+        // The piece's length in printed bars, as Progress passes it: it bounds the sheet's sections.
+        const bars = item.measurement?.status === 'measured' ? item.measurement.bars : undefined;
+        openProjectSheet({ item, material: materialOfItem(item), ...(bars === undefined ? {} : { bars }), owner: section, refocus: () => rowFocusFor(item.id) });
+      },
+    });
+  }
+
+  /**
+   * Where focus goes back to when the project sheet closes after the list was drawn again behind it
+   * (G96): the piece's row as the list shows it now, on its *Details*, else the row itself. Nothing
+   * where the list no longer shows the piece, or has left the page with its screen: the next screen's
+   * rows are never searched.
+   */
+  function rowFocusFor(itemId: string): HTMLElement | null {
+    if (!list.isConnected) return null;
+    const row = [...list.children].find((one): one is HTMLElement => one instanceof HTMLElement && one.dataset.item === itemId);
+    return row?.querySelector<HTMLElement>('.library-details') ?? row ?? null;
   }
 
   /**
@@ -870,30 +1039,48 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     sheet.body.append(list);
   }
 
+  /** The catalogue by id, for naming an excerpt's parent (built once per list of items). */
+  let excerptIndex: { from: CatalogItem[]; byId: Map<string, CatalogItem> } | null = null;
+  function byIdForExcerpts(): Map<string, CatalogItem> {
+    if (excerptIndex?.from !== items) excerptIndex = { from: items, byId: new Map(items.map((one) => [one.id, one])) };
+    return excerptIndex.byId;
+  }
+
   function rowFor(item: CatalogItem): HTMLElement {
     const badges: HTMLElement[] = [];
     const progressBadge = statusBadge(progress.get(item.id));
     if (progressBadge) badges.push(progressBadge);
+    // Beside the status: the learner's project, where there is one (G85).
+    const project = projectOf.get(item.id);
+    const projectMark = projectBadge(project);
+    if (projectMark) badges.push(projectMark);
     if (item.imported) badges.push(badge(item.kind === 'pdf' ? 'PDF · pages, not notes' : 'yours', 'imported'));
     if (!isPlayable(item)) badges.push(badge('import needed', 'warn'));
 
     const actions: HTMLElement[] = [];
     if (item.imported) {
       actions.push(button('Edit', () => showEditor(item.id), { variant: 'quiet' }));
-      // The way to reach the assign sheet for a file already in the library.
+      // The way back to the import sheet for a file already in the library:
+      // what the app read and guessed, the hands' correction, and where it
+      // belongs (X3). Still called *Assign*: the sheet ends in that decision.
       actions.push(
         button(
           'Assign',
           () => {
             void getImport(item.id).then((row) => {
-              if (row) void openAssignFor(row);
+              if (row) void openImportFor(row);
             });
           },
           { variant: 'quiet' },
         ),
       );
     }
-    actions.push(button('Details', () => showDetail(item), { variant: 'quiet' }));
+    // Named by a class so the row can be found again after a redraw, for focus (`rowFocusFor`, G96).
+    actions.push(button('Details', () => showDetail(item), { variant: 'quiet', className: 'library-details' }));
+    // No project door on the row (G85, the brief's "When to deviate"): a word beside *Details* and `⋯`,
+    // tried at 342 px, took about two fifths of a song title's width — one-line titles wrapped, the
+    // rows grew, two-line titles were cut — the room the title needs (R2; the reason `⋯` is a glyph).
+    // The row wears the project's state, and *Details* is the door to the sheet (G85a, `projectDoor`).
     // Last, where the Score screen's own `⋯` is, and only where the modes mean
     // something: a PDF has pages and not notes, a drill is a prompt loop, and
     // an import placeholder has nothing to open at all (`04` §0 R4). A glyph
@@ -911,16 +1098,20 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       );
     }
 
-    return listRow({
+    const drawnRow = listRow({
       title: item.title,
-      subtitle: item.composer ?? undefined,
+      // An excerpt is listed under its own title with the piece it was cut from named (E1).
+      subtitle: excerptLine(item, byIdForExcerpts()) ?? item.composer ?? undefined,
       // `Hands together` was on very nearly every one of 1,533 rows — three
       // words that never distinguish one row from another, in the middle of
       // the line that is supposed to tell them apart, pushing the type off the
       // end. It is the same fact `shortHandsLabel` exists for on Today: silent
       // for both hands, `RH`/`LH` where it is actually news. The full sentence
       // is still on the item's detail sheet, where it is read once.
-      meta: [levelLabel(item.level, item.levelSource), shortHandsLabel(item.hands), item.type]
+      // An import's type is "song" on every one of them; where its notes came from is news (X3). A
+      // PDF's line names no type (G96): it has no notes to be a song of, and its badge beside the line,
+      // *PDF · pages, not notes*, already says what it is.
+      meta: [levelLabel(item.level, item.levelSource), shortHandsLabel(item.hands), (item.imported ? importSourceWords(item) : '') || (item.kind === 'pdf' ? '' : item.type)]
         .filter(Boolean)
         .join(' · '),
       badges,
@@ -936,8 +1127,24 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         // was written for the rows carrying archive titles *and* a strip of
         // actions, which is the imports; said here, it cannot drift again.
         ...(item.imported ? { 'data-tall': 'true' } : {}),
+        // The learner's project state, where there is one (G85); none is exploring.
+        ...(project ? { 'data-project-state': project.state } : {}),
       },
     });
+    // An import's state, one line in the learner's words (X3): whose the hands are, whether the app
+    // has measured it, the tempo where the file states none — the facts the import sheet renders,
+    // from the same provenance; where its notes came from is on the detail line above, in place of
+    // "song", because the four together cut mid-word at 342 px. Above the badges; an import row is
+    // a tall row already (`data-tall`).
+    const state = item.imported ? importStateWords(item) : '';
+    if (state) {
+      const line = el('div.list-row__sub.library-import-state', { text: state });
+      const text = drawnRow.querySelector('.list-row__text');
+      const badgeLine = text?.querySelector('.list-row__badges');
+      if (badgeLine) badgeLine.before(line);
+      else text?.append(line);
+    }
+    return drawnRow;
   }
 
   /**
@@ -965,7 +1172,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     letters: () => presentLetters,
     onMissing: (letter) => {
       const ordered = sortItems(
-        items.filter((item) => matches(item, filters, progress)),
+        items.filter((item) => matches(item, filters, progress, projectOf)),
         filters.sort,
       );
       const at = ordered.findIndex((item) => letterFor(item.title) === letter);
@@ -991,7 +1198,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
 
   function draw(): void {
     const filtered = sortItems(
-      items.filter((item) => matches(item, filters, progress)),
+      items.filter((item) => matches(item, filters, progress, projectOf)),
       filters.sort,
     );
     // The count names whatever is set, because the selects can be closed and a
@@ -1007,6 +1214,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       chosen('library-type'),
       chosen('library-track'),
       chosen('library-status-filter'),
+      chosen('library-project'),
       chosen('library-hands'),
       filters.importedOnly ? 'Only mine' : '',
     ].filter(Boolean);
@@ -1048,7 +1256,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       // and the only way to act on it was to guess that the Filter chip hid it.
       //
       // One button, not two, and it says what it will do rather than which
-      // control it will touch: a search box and four selects can each empty the
+      // control it will touch: a search box and five selects can each empty the
       // list and the sentence has to work whichever one did it.
       const query = filters.query.trim();
       const narrowedBy = [query ? `“${query}”` : '', ...active].filter(Boolean);
@@ -1082,12 +1290,13 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     filters.type = DEFAULT_FILTERS.type;
     filters.track = DEFAULT_FILTERS.track;
     filters.status = DEFAULT_FILTERS.status;
+    filters.project = DEFAULT_FILTERS.project;
     filters.hands = DEFAULT_FILTERS.hands;
     filters.minLevel = DEFAULT_FILTERS.minLevel;
     filters.maxLevel = DEFAULT_FILTERS.maxLevel;
     filters.importedOnly = DEFAULT_FILTERS.importedOnly;
     search.value = '';
-    for (const id of ['library-type', 'library-track', 'library-status-filter', 'library-hands']) {
+    for (const id of ['library-type', 'library-track', 'library-status-filter', 'library-project', 'library-hands']) {
       const select = document.getElementById(id);
       if (select instanceof HTMLSelectElement) select.value = 'all';
     }
@@ -1132,21 +1341,74 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   /** True until the list has been drawn once, which is when the wait ends. */
   let stillLoading = true;
 
+  /**
+   * The learner's projects, read (G85). A read overtaken by a later one gives way to it (`null`), so
+   * rows the store has since moved past are never drawn. A store that cannot be read gives none, as
+   * Today's read does: the list stands, without project badges.
+   */
+  let projectReads = 0;
+  async function readProjects(): Promise<ProjectRow[] | null> {
+    const read = ++projectReads;
+    const rows = await allProjects().catch((): ProjectRow[] => []);
+    return read === projectReads ? rows : null;
+  }
+
+  /**
+   * Which song has which project, once per read of the store: `projectIn` over the catalogue row's
+   * material, the store's own rule — the same file under another id finds it, an import (whose row
+   * names no material) is found by its id, another id's id-only row never is. Songs only
+   * (`isProjectable`): a row under an exercise's id is not the Library's to show.
+   */
+  function indexProjects(): void {
+    const next = new Map<string, ProjectRow>();
+    if (projectRows.length > 0) {
+      for (const item of items) {
+        if (!isProjectable(item)) continue;
+        const project = projectIn(projectRows, { itemId: item.id, material: materialOfItem(item) });
+        if (project) next.set(item.id, project);
+      }
+    }
+    projectOf = next;
+  }
+
+  /**
+   * A project changed while the list is on the screen (`onProjectsChange`): one read, a task later so
+   * a burst of writes is answered once, then the index and one draw. Before the first draw there is
+   * nothing to redraw — `refresh` reads the projects with the catalogue.
+   */
+  let projectsPending: ReturnType<typeof setTimeout> | undefined;
+  function projectsChanged(): void {
+    if (projectsPending !== undefined) return;
+    projectsPending = setTimeout(() => {
+      projectsPending = undefined;
+      void readProjects().then((rows) => {
+        if (rows === null) return;
+        projectRows = rows;
+        if (stillLoading) return;
+        indexProjects();
+        draw();
+      });
+    }, 0);
+  }
+
   async function refresh(): Promise<void> {
     // The track names come with the rows, so the filter is never drawn with
     // ids in it — but a curriculum that will not read costs the list its
     // names, not its rows, which is why this one failure is swallowed where
-    // the other two are not.
-    const [loaded, rows, curriculum] = await Promise.all([
+    // the other two are not. The projects (G85) are read with them, once.
+    const [loaded, rows, curriculum, projects] = await Promise.all([
       allItems(),
       allProgress(),
       loadCurriculum().catch(() => null),
+      readProjects(),
     ]);
     if (curriculum) {
       trackTitles = new Map(curriculum.tracks.map((track) => [track.id, track.title]));
     }
     items = loaded;
     progress = new Map(rows.map((row) => [row.itemId, row]));
+    if (projects !== null) projectRows = projects;
+    indexProjects();
     if (stillLoading) {
       stillLoading = false;
       surfaceJustAdded();
@@ -1198,11 +1460,12 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   }
 
   void takeSharedFiles().then(({ added, errors }) => {
-    // A shared file goes straight to the assign sheet: a share is the path
+    // A shared file goes straight to the import sheet: a share is the path
     // this phase exists to shorten, and it is the one where the owner is
-    // furthest from the Library row he would otherwise have to find.
+    // furthest from the Library row he would otherwise have to find. Opened
+    // here, from the rows the store returned; the store opens nothing.
     const last = added[added.length - 1];
-    if (last) void openAssignFor(last);
+    if (last) void openImportFor(last);
     if (added.length === 0 && errors.length === 0) return;
     status.textContent = [
       added.length ? `Shared in: ${added.map((row) => row.title).join(', ')}.` : '',
@@ -1214,8 +1477,12 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   });
 
   const stopWatchingImports = onImportsChange(() => void refresh().catch(sayLoadFailed));
+  // A write to the projects store while the list is on the screen redraws the badges (G85).
+  const stopWatchingProjects = onProjectsChange(projectsChanged);
   onScreenDispose(section, () => {
     stopWatchingImports();
+    stopWatchingProjects();
+    if (projectsPending !== undefined) clearTimeout(projectsPending);
     dropZone.removeEventListener('dragover', onDragOver);
     dropZone.removeEventListener('dragleave', onDragLeave);
     dropZone.removeEventListener('drop', onDrop);

@@ -1,0 +1,5 @@
+(cd app) PYTHONIOENCODING=utf-8 python ../docs/prompts/runs/G1a/scripts-mutants.py - r8-evidenceJob-mark
+r8-evidenceJob-mark (src/data/evidenceJob.ts, 41 files): CAUGHT / verdict changed; exit 1; Tests  1 failed | 646 passed | 1 todo (648)
+    × a piece’s run of a gone item carrying the relation, or G1’s flag, is not the job’s; a phrase row of a gone reading row carrying only the flag is 24ms
+    restored: sha256 37a41ce912db1777 matches
+exit=0

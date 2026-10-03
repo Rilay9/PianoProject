@@ -1,0 +1,6 @@
+app/tests/e2e/score.hearbar.spec.ts
+app/tests/e2e/score.latch.spec.ts
+app/tests/e2e/score.run.spec.ts
+app/tests/e2e/score.screen.spec.ts
+app/tests/e2e/score.states.spec.ts
+exit 0

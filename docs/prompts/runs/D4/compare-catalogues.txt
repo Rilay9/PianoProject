@@ -1,0 +1,7 @@
+items 2090 2090 same ids True
+items differing beyond the D4 fields and fetch stamps: 0 []
+identity kinds {'none': 79, 'file': 811, 'generator': 1200}
+none reasons {'made when it opens: no file the build keys': 71, 'no notation is bundled': 8}
+transferOf on ['exercise.pentatonic.a.blues', 'exercise.pentatonic.a.pentatonic', 'exercise.pentatonic.d.blues', 'exercise.pentatonic.d.pentatonic', 'exercise.pentatonic.e.blues', 'exercise.pentatonic.e.pentatonic', 'exercise.study.interval-reading.g-major.4-4.8bar.blocked.01', 'exercise.study.metre-compound.e-flat-major.6-8.12bar.blocked.01', 'exercise.study.position-shift.b-flat-major.4-4.12bar.broken.01', 'exercise.study.subdivision.f-major.3-4.8bar.waltz.01', 'exercise.study.syncopation.d-minor.4-4.8bar.broken.01', 'exercise.study.texture-hands-together.b-flat-major.4-4.8bar.broken.01']
+catalogue text 1.068 of the committed build's
+curriculum.json byte-identical: True

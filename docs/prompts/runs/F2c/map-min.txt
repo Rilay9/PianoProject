@@ -1,0 +1,65 @@
+# checks for 58 path(s): 58 matched, 0 unmatched
+# docs/02-curriculum.md: docs/02-curriculum.md, docs/**
+# docs/prompts/rung-claims.md: docs/prompts/rung-claims.md, docs/**
+# docs/prompts/runs/F2c/ENTRY.md: docs/**
+# docs/prompts/runs/F2c/candidate_diff.py: docs/**
+# docs/prompts/runs/F2c/cap.sh: docs/**
+# docs/prompts/runs/F2c/census-after.txt: docs/**
+# docs/prompts/runs/F2c/census-before.txt: docs/**
+# docs/prompts/runs/F2c/census-compared.txt: docs/**
+# docs/prompts/runs/F2c/census.py: docs/**
+# docs/prompts/runs/F2c/compare_census.py: docs/**
+# docs/prompts/runs/F2c/compare_diaries.py: docs/**
+# docs/prompts/runs/F2c/consumers-content-2.txt: docs/**
+# docs/prompts/runs/F2c/consumers-content.txt: docs/**
+# docs/prompts/runs/F2c/consumers.py: docs/**
+# docs/prompts/runs/F2c/consumers.txt: docs/**
+# docs/prompts/runs/F2c/content-build-after.txt: docs/**
+# docs/prompts/runs/F2c/content-build-before.txt: docs/**
+# docs/prompts/runs/F2c/content_manifest.py: docs/**
+# docs/prompts/runs/F2c/copy.ps1: docs/**
+# docs/prompts/runs/F2c/copy.txt: docs/**
+# docs/prompts/runs/F2c/diaries-after.txt: docs/**
+# docs/prompts/runs/F2c/diaries-after/c4c/ambiguity-a.txt: docs/**
+# docs/prompts/runs/F2c/diaries-after/c4c/ambiguity-b.txt: docs/**
+# docs/prompts/runs/F2c/diaries-after/c4c/skip.txt: docs/**
+# docs/prompts/runs/F2c/diaries-after/c6/intermediate.txt: docs/**
+# docs/prompts/runs/F2c/diaries-after/c6/musician.txt: docs/**
+# docs/prompts/runs/F2c/diaries-compared.txt: docs/**
+# docs/prompts/runs/F2c/excerpt-candidate-rungs-before.md: docs/**
+# docs/prompts/runs/F2c/excerpt-candidate-rungs.md: docs/**
+# docs/prompts/runs/F2c/excerpt-candidates-after.txt: docs/**
+# docs/prompts/runs/F2c/excerpt-candidates-before.txt: docs/**
+# docs/prompts/runs/F2c/excerpt-candidates-diff.txt: docs/**
+# docs/prompts/runs/F2c/green-content-final.txt: docs/**
+# docs/prompts/runs/F2c/green-content.txt: docs/**
+# docs/prompts/runs/F2c/inventory-diff.txt: docs/**
+# docs/prompts/runs/F2c/manifest-after.txt: docs/**
+# docs/prompts/runs/F2c/manifest-before.txt: docs/**
+# docs/prompts/runs/F2c/manifest-compared.txt: docs/**
+# docs/prompts/runs/F2c/npm-ci.txt: docs/**
+# docs/prompts/runs/F2c/parity.txt: docs/**
+# docs/prompts/runs/F2c/red-measured-truth.txt: docs/**
+# docs/prompts/runs/F2c/red-study.txt: docs/**
+# docs/prompts/runs/F2c/red-taught-at.txt: docs/**
+# docs/prompts/runs/F2c/review-check-final.txt: docs/**
+# docs/prompts/runs/F2c/review-check.txt: docs/**
+# docs/prompts/runs/F2c/rung-claims-diff.txt: docs/**
+# docs/prompts/runs/F2c/study-candidate-rungs-before.md: docs/**
+# docs/prompts/runs/F2c/study-candidate-rungs.md: docs/**
+# docs/prompts/runs/F2c/study-candidates-after.txt: docs/**
+# docs/prompts/runs/F2c/study-candidates-before.txt: docs/**
+# docs/prompts/runs/F2c/study-candidates-diff.txt: docs/**
+# docs/prompts/runs/F2c/unit-named.txt: docs/**
+# docs/prompts/runs/F2c/validate-final.txt: docs/**
+# docs/prompts/runs/F2c/validate.txt: docs/**
+# tools/content/claims.py: tools/content/*.py
+# tools/content/tests/test_measured_truth.py: tools/content/tests/test_*.py
+# tools/content/tests/test_study.py: tools/content/tests/test_*.py
+# tools/content/tests/test_taught_at.py: tools/content/tests/test_*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app

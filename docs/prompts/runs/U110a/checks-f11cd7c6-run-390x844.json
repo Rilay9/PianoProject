@@ -1,0 +1,369 @@
+[
+ {
+  "at": "rest",
+  "slots": 2,
+  "overlapPx": -36,
+  "rows": [
+   {
+    "slot": 0,
+    "bars": "0-0",
+    "ahead": false,
+    "top": 0,
+    "height": 306,
+    "inkTop": 7,
+    "inkBottom": 301
+   },
+   {
+    "slot": 1,
+    "bars": "1-1",
+    "ahead": false,
+    "top": 330,
+    "height": 306,
+    "inkTop": 337,
+    "inkBottom": 631
+   }
+  ]
+ },
+ {
+  "at": "bar 0",
+  "slots": 2,
+  "frozen": {
+   "scale": 0.88058,
+   "piece": {
+    "above": 78.56022266229229,
+    "below": 35.70005492739347,
+    "height": 351.8602790847326,
+    "width": 417.70000018688086,
+    "staff": 79.20000049834891,
+    "bar": 213.48519326330947
+   },
+   "zoom": 1.98
+  },
+  "chrome": "folded",
+  "overlapPx": -35,
+  "rows": [
+   {
+    "slot": 0,
+    "bars": "0-0",
+    "ahead": false,
+    "top": 37,
+    "height": 322,
+    "inkTop": 44,
+    "inkBottom": 355
+   },
+   {
+    "slot": 1,
+    "bars": "1-1",
+    "ahead": false,
+    "top": 383,
+    "height": 322,
+    "inkTop": 390,
+    "inkBottom": 701
+   }
+  ]
+ },
+ {
+  "at": "bar 1",
+  "slots": 2,
+  "frozen": {
+   "scale": 0.88058,
+   "piece": {
+    "above": 78.56022266229229,
+    "below": 35.70005492739347,
+    "height": 351.8602790847326,
+    "width": 417.70000018688086,
+    "staff": 79.20000049834891,
+    "bar": 213.48519326330947
+   },
+   "zoom": 1.98
+  },
+  "chrome": "folded",
+  "overlapPx": -35,
+  "rows": [
+   {
+    "slot": 1,
+    "bars": "1-1",
+    "ahead": false,
+    "top": 37,
+    "height": 322,
+    "inkTop": 44,
+    "inkBottom": 355
+   },
+   {
+    "slot": 0,
+    "bars": "2-2",
+    "ahead": true,
+    "top": 383,
+    "height": 323,
+    "inkTop": 390,
+    "inkBottom": 701
+   }
+  ]
+ },
+ {
+  "at": "bar 2",
+  "slots": 2,
+  "frozen": {
+   "scale": 0.88058,
+   "piece": {
+    "above": 78.56022266229229,
+    "below": 35.70005492739347,
+    "height": 351.8602790847326,
+    "width": 417.70000018688086,
+    "staff": 79.20000049834891,
+    "bar": 213.48519326330947
+   },
+   "zoom": 1.98
+  },
+  "chrome": "folded",
+  "overlapPx": -35,
+  "rows": [
+   {
+    "slot": 0,
+    "bars": "2-2",
+    "ahead": false,
+    "top": 37,
+    "height": 322,
+    "inkTop": 44,
+    "inkBottom": 355
+   },
+   {
+    "slot": 1,
+    "bars": "3-3",
+    "ahead": false,
+    "top": 383,
+    "height": 323,
+    "inkTop": 390,
+    "inkBottom": 701
+   }
+  ]
+ },
+ {
+  "at": "bar 3",
+  "slots": 2,
+  "frozen": {
+   "scale": 0.88058,
+   "piece": {
+    "above": 78.56022266229229,
+    "below": 35.70005492739347,
+    "height": 351.8602790847326,
+    "width": 417.70000018688086,
+    "staff": 79.20000049834891,
+    "bar": 213.48519326330947
+   },
+   "zoom": 1.98
+  },
+  "chrome": "folded",
+  "overlapPx": -35,
+  "rows": [
+   {
+    "slot": 1,
+    "bars": "3-3",
+    "ahead": false,
+    "top": 37,
+    "height": 322,
+    "inkTop": 44,
+    "inkBottom": 355
+   },
+   {
+    "slot": 0,
+    "bars": "4-4",
+    "ahead": true,
+    "top": 383,
+    "height": 323,
+    "inkTop": 390,
+    "inkBottom": 701
+   }
+  ]
+ },
+ {
+  "at": "bar 4",
+  "slots": 2,
+  "frozen": {
+   "scale": 0.88058,
+   "piece": {
+    "above": 78.56022266229229,
+    "below": 35.70005492739347,
+    "height": 351.8602790847326,
+    "width": 417.70000018688086,
+    "staff": 79.20000049834891,
+    "bar": 213.48519326330947
+   },
+   "zoom": 1.98
+  },
+  "chrome": "folded",
+  "overlapPx": -35,
+  "rows": [
+   {
+    "slot": 0,
+    "bars": "4-4",
+    "ahead": false,
+    "top": 37,
+    "height": 322,
+    "inkTop": 44,
+    "inkBottom": 355
+   },
+   {
+    "slot": 1,
+    "bars": "5-5",
+    "ahead": false,
+    "top": 383,
+    "height": 323,
+    "inkTop": 390,
+    "inkBottom": 701
+   }
+  ]
+ },
+ {
+  "at": "bar 5",
+  "slots": 2,
+  "frozen": {
+   "scale": 0.88058,
+   "piece": {
+    "above": 78.56022266229229,
+    "below": 35.70005492739347,
+    "height": 351.8602790847326,
+    "width": 417.70000018688086,
+    "staff": 79.20000049834891,
+    "bar": 213.48519326330947
+   },
+   "zoom": 1.98
+  },
+  "chrome": "folded",
+  "overlapPx": -35,
+  "rows": [
+   {
+    "slot": 1,
+    "bars": "5-5",
+    "ahead": false,
+    "top": 37,
+    "height": 322,
+    "inkTop": 44,
+    "inkBottom": 355
+   },
+   {
+    "slot": 0,
+    "bars": "6-6",
+    "ahead": true,
+    "top": 383,
+    "height": 323,
+    "inkTop": 390,
+    "inkBottom": 701
+   }
+  ]
+ },
+ {
+  "at": "bar 5 folded",
+  "slots": 2,
+  "frozen": {
+   "scale": 0.88058,
+   "piece": {
+    "above": 78.56022266229229,
+    "below": 35.70005492739347,
+    "height": 351.8602790847326,
+    "width": 417.70000018688086,
+    "staff": 79.20000049834891,
+    "bar": 213.48519326330947
+   },
+   "zoom": 1.98
+  },
+  "chrome": "folded",
+  "overlapPx": -35,
+  "rows": [
+   {
+    "slot": 1,
+    "bars": "5-5",
+    "ahead": false,
+    "top": 37,
+    "height": 322,
+    "inkTop": 44,
+    "inkBottom": 355
+   },
+   {
+    "slot": 0,
+    "bars": "6-6",
+    "ahead": true,
+    "top": 383,
+    "height": 323,
+    "inkTop": 390,
+    "inkBottom": 701
+   }
+  ]
+ },
+ {
+  "at": "bar 6",
+  "slots": 2,
+  "frozen": {
+   "scale": 0.88058,
+   "piece": {
+    "above": 78.56022266229229,
+    "below": 35.70005492739347,
+    "height": 351.8602790847326,
+    "width": 417.70000018688086,
+    "staff": 79.20000049834891,
+    "bar": 213.48519326330947
+   },
+   "zoom": 1.98
+  },
+  "chrome": "folded",
+  "overlapPx": -35,
+  "rows": [
+   {
+    "slot": 0,
+    "bars": "6-6",
+    "ahead": false,
+    "top": 37,
+    "height": 322,
+    "inkTop": 44,
+    "inkBottom": 355
+   },
+   {
+    "slot": 1,
+    "bars": "7-7",
+    "ahead": false,
+    "top": 383,
+    "height": 323,
+    "inkTop": 390,
+    "inkBottom": 701
+   }
+  ]
+ },
+ {
+  "at": "bar 7",
+  "slots": 2,
+  "frozen": {
+   "scale": 0.88058,
+   "piece": {
+    "above": 78.56022266229229,
+    "below": 35.70005492739347,
+    "height": 351.8602790847326,
+    "width": 417.70000018688086,
+    "staff": 79.20000049834891,
+    "bar": 213.48519326330947
+   },
+   "zoom": 1.98
+  },
+  "chrome": "folded",
+  "overlapPx": -35,
+  "rows": [
+   {
+    "slot": 0,
+    "bars": "6-6",
+    "ahead": false,
+    "top": 37,
+    "height": 322,
+    "inkTop": 44,
+    "inkBottom": 355
+   },
+   {
+    "slot": 1,
+    "bars": "7-7",
+    "ahead": false,
+    "top": 383,
+    "height": 323,
+    "inkTop": 390,
+    "inkBottom": 701
+   }
+  ]
+ }
+]

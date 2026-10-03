@@ -1,0 +1,27 @@
+test_every_note_is_spelled_as_the_edition_spells_it (tests.test_import_mutopia.TestTheConversion.test_every_note_is_spelled_as_the_edition_spells_it) ... ok
+test_every_note_the_midi_holds_is_written_and_every_bar_adds_up (tests.test_import_mutopia.TestTheConversion.test_every_note_the_midi_holds_is_written_and_every_bar_adds_up) ... ok
+test_the_detectors_find_the_left_hand_pattern_in_every_bar (tests.test_import_mutopia.TestTheConversion.test_the_detectors_find_the_left_hand_pattern_in_every_bar) ... ok
+test_the_trio_carries_the_editions_key_change (tests.test_import_mutopia.TestTheConversion.test_the_trio_carries_the_editions_key_change) ... ok
+test_a_file_that_is_not_the_pinned_one_is_refused (tests.test_import_mutopia.TestTheEntry.test_a_file_that_is_not_the_pinned_one_is_refused) ... ok
+test_the_row_says_what_happened (tests.test_import_mutopia.TestTheEntry.test_the_row_says_what_happened) ... ok
+test_a_non_commercial_edition_is_refused (tests.test_import_mutopia.TestTheLicence.test_a_non_commercial_edition_is_refused) ... ok
+test_it_is_read_from_the_header (tests.test_import_mutopia.TestTheLicence.test_it_is_read_from_the_header) ... ok
+test_on_the_strict_flavour_ragtime_8s_stride_bass_is_established_by_it (tests.test_import_mutopia.TestThePlacement.test_on_the_strict_flavour_ragtime_8s_stride_bass_is_established_by_it) ... ok
+test_ragtime_8_lists_the_public_edition (tests.test_import_mutopia.TestThePlacement.test_ragtime_8_lists_the_public_edition) ... ok
+test_every_row_has_what_the_import_reads (tests.test_import_mutopia.TestTheSourceList.test_every_row_has_what_the_import_reads) ... ok
+test_the_fixtures_are_the_pinned_files (tests.test_import_mutopia.TestTheSourceList.test_the_fixtures_are_the_pinned_files) ... ok
+test_it_is_complete_and_public_domain (tests.test_public_tie_option.TestTheHeader.test_it_is_complete_and_public_domain) ... ok
+test_its_level_sits_in_the_rungs_band (tests.test_public_tie_option.TestTheHeader.test_its_level_sits_in_the_rungs_band) ... ok
+test_2_4_lists_the_tie_piece (tests.test_public_tie_option.TestThePlacement.test_2_4_lists_the_tie_piece) ... ok
+test_on_the_strict_flavour_2_4s_tie_is_established_by_it (tests.test_public_tie_option.TestTheStrictCatalogue.test_on_the_strict_flavour_2_4s_tie_is_established_by_it) ... ok
+test_the_level_model_puts_it_in_the_rungs_band (tests.test_public_tie_option.TestTheStrictCatalogue.test_the_level_model_puts_it_in_the_rungs_band) ... ok
+test_the_piece_is_bundled_in_both_builds_and_measured (tests.test_public_tie_option.TestTheStrictCatalogue.test_the_piece_is_bundled_in_both_builds_and_measured) ... ok
+test_the_left_hand_ties_nothing (tests.test_public_tie_option.TestTheTiesAreTheTunes.test_the_left_hand_ties_nothing) ... ok
+test_the_right_hand_holds_the_references_thirteen_ties (tests.test_public_tie_option.TestTheTiesAreTheTunes.test_the_right_hand_holds_the_references_thirteen_ties) ... ok
+test_the_right_hand_is_the_reference_note_for_note_and_tie_for_tie (tests.test_public_tie_option.TestTheTiesAreTheTunes.test_the_right_hand_is_the_reference_note_for_note_and_tie_for_tie) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 18.532s
+
+OK
+exit=0

@@ -1,0 +1,29 @@
+﻿
+  WARNING (taught at, E0b): demand interval.leap is taught at '1.5', whose concepts name none of leaps; its 
+taughtAtNote reads the lesson by hand, until F reads it
+  WARNING (taught at, E0b): demand pitch.chromatic is taught at '3.1', whose concepts name none of accidentals, 
+chromatic; its taughtAtNote reads the lesson by hand, until F reads it
+  WARNING (rung claims, E0): 314 of 546 checkable claims on rung options are not established by the options' measured 
+demands; 7 rung claims no option establishes; 467 concept claims no detector can measure, with 0 human teaching-use 
+reviews. Nothing is removed from a rung: docs/prompts/rung-claims.md.
+  WARNING (rung claims, F2): ragtime.5 claims oom-pah-bass (texture.left-hand-pattern) and none of its 9 checked 
+options establishes it; deferred: the Joplin pieces carry a left-hand pattern in 87 of 92, 80 of 85, 87 of 94 and 109 
+of 148 bars and the waltz-bass Greensleeves in 15 of 16, by the detector's own reading of each bar; the whole-piece 
+every-bar rule refuses a piece for its introduction and closing bars
+  WARNING (rung claims, F2): jazz.6 claims walking-bass (texture.walking-bass) and none of its 12 checked options 
+establishes it; deferred: its walking-bass exercises walk in 11 of 12 bars (C blues) and 3 of 4 (ii-V-I in F) by the 
+detector's own reading of each bar; the whole-piece rule refuses each for a bar that returns to a pitch (E22)
+  WARNING (rung claims, F2): blues.6 claims walking-bass (texture.walking-bass) and none of its 8 checked options 
+establishes it; deferred: its walking-bass exercise walks in 11 of its 12 bars under a right hand by the detector's 
+own reading of each bar; the whole-piece every-bar rule refuses it for the bar that returns to its third (C E G E), 
+E22's recorded misreading
+  WARNING (rung claims, F2): jam.6 claims walking-bass (texture.walking-bass) and none of its 5 checked options 
+establishes it; deferred: its two-hand walking-bass exercise in A walks in 11 of its 12 bars by the detector's own 
+reading of each bar (E22); its three intro exercises are the line alone, which is not the demand
+  WARNING (rung claims, F2): blues.8 claims walking-bass (texture.walking-bass) and none of its 6 checked options 
+establishes it; deferred: its walking-bass exercise in E flat walks in 11 of its 12 bars by the detector's own reading 
+of each bar; the whole-piece rule refuses it for one bar that returns to a pitch (E22)
+content validation OK: C:\Users\yalir\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-ac73b3099fb819fef\app\public\content (2090 catalog items)
+
+

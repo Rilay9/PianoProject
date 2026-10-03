@@ -24,3 +24,8 @@ Judgement first: what a learner now sees on the B♭ harmonic minor two-octave s
 
 **Delivered 2026-09-27**, Entry 85, in an isolated worktree: the B♭ minor join with the sources checked first and no other family moved; one seventh helper for both makers; the sevenths' fingering sourced (McLain 1974) rather than removed; G45 diagnosed, not fixed (outside the owned parts); the G♯ minor left thumb on F♯ found and pinned (G48); the broken sevenths' own unsourced printed fingering recorded (G49).
 
+## Record
+
+lane: T53b · closes: — · entry: 85
+index: Fingering truth, continued: the B♭ minor scale join with a sourced table (G43), the broken sevenths spelled from the shared seventh contract (G44), the seventh arpeggios' fingering sourced or not printed (G47) | build | **done 2026-09-27**, Entry 85; **accepted by the reviewer** (responses/ef4a441.md); T53c required before D0 |
+state: closed: the T53 chain closed (T53c's row)

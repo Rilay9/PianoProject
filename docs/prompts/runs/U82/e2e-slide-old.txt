@@ -1,0 +1,10 @@
+npx playwright test --config playwright.u82-4333.config.ts --workers=2 tests/e2e/score.slide.spec.ts   # the tree before U74, 85bd683, in build/u82-old/app
+
+Running 3 tests using 2 workers
+
+  ok 1 tests\e2e\score.slide.spec.ts:54:3 › sideways › draws more bars than the window, so there is something to read into (669ms)
+  ok 2 tests\e2e\score.slide.spec.ts:31:3 › sideways › holds the cursor a third across once the piece is under way (820ms)
+  ok 3 tests\e2e\score.slide.spec.ts:74:3 › upright › does not slide: the two slots do the reading ahead (643ms)
+
+  3 passed (4.1s)
+exit=0

@@ -1,0 +1,2 @@
+$ (cd app) npx tsc -b --noEmit
+exit=0

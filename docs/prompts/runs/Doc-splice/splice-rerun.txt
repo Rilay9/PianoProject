@@ -1,0 +1,37 @@
+$ python docs/prompts/runs/Doc-splice/scripts/splice.py
+already present  docs/08-test-map.md: **What the learner met, and first contact from it**
+already present  docs/08-test-map.md: | **E-tail**:
+already present  docs/08-test-map.md: **The MIDI converter on real recordings, and the port's hand split, in
+already present  docs/08-test-map.md: **The first window at open, on every path in**
+already present  docs/08-test-map.md: **CI** (`.github/workflows/ci.yml`)
+already present  docs/08-test-map.md: - `score-fit-paths.spec.ts` —
+already present  docs/08-test-map.md: since U74 said a frame after the fit, once the stage has held still, a
+already present  docs/08-test-map.md: Since G1, today's phrase demonstrated at noon
+already present  docs/08-test-map.md: the encounters and the summaries of pruned runs (G1)
+already present  docs/08-test-map.md: since G1 a `met` says how
+already present  docs/08-test-map.md: - `encounterModel.test.ts` —
+already present  docs/08-test-map.md: - `firstContactOnTheScore.test.ts` —
+already present  docs/08-test-map.md: and G1's *seen before* sentence
+already present  docs/08-test-map.md: `unseen` true and false, and on a piece since G1
+already present  docs/08-test-map.md: `tools/midi-cleanup/tests/fixtures/one-track-two-hands.mid`, the last 
+already present  docs/08-test-map.md: The hand split and its boundary are compared on the one-track fixture 
+already present  docs/08-test-map.md: - `windowRendererStage.test.ts` —
+already present  docs/08-test-map.md: - `test_checks_for_paths.py` —
+already present  docs/08-test-map.md: - `test_evidence_manifest.py` —
+already present  docs/08-test-map.md: - `test_matrix_edit.py` —
+already present  docs/08-test-map.md: - `test_prompt_views.py` —
+already present  docs/08-test-map.md: from any working directory (Q46)
+already present  docs/08-test-map.md: whose reference must hold a hand split. It fails on a missing committe
+already present  docs/08-test-map.md: skip on a developer's checkout and fail under CI, naming `fetch_maestr
+already present  docs/08-test-map.md: - `fetch_maestro.py` — not a test
+already present  docs/08-test-map.md: - `test_fetch_maestro.py` —
+already present  docs/04-ui-spec.md: (before the first draw, for a piece within the probe's reach of 48 bar
+already present  docs/04-ui-spec.md: **The first window is the measured one (U74, 2026-09-29).**
+already present  docs/03-content-pipeline.md: `CONVERTER_STAMPS` lists each recognised converter's stamp
+already present  docs/03-content-pipeline.md: `importStore.stateImportTempo` (E48)
+already present  docs/03-content-pipeline.md: `approvedCutVersion` (the cutter the approval was merged under
+already present  docs/03-content-pipeline.md: **An import's identity** (G1)
+already present  docs/03-content-pipeline.md: `cutVersion` is recorded by the merge (E33)
+already present  docs/03-content-pipeline.md: each listed in `dropped` (E33, cut version 2)
+34 operations; files written: docs/03-content-pipeline.md, docs/04-ui-spec.md, docs/08-test-map.md
+exit=0

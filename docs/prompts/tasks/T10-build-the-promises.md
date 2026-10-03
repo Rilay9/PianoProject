@@ -125,3 +125,7 @@ in their own briefs, and share screens with this work.
 Per item: built / not built and why; the test that proves it and the line that made it red;
 the lessons restored. Then: `tsc`, lint and unit counts; the Playwright specs to run; what
 is unverified.
+
+## Record
+
+lane: T10 · closes: — · entry: — · role: history

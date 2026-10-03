@@ -9,13 +9,13 @@ videos:
 readingTime: 3
 ---
 
-Every texture on this track so far has been something to hold steady. This rung
+Every texture so far has been something to hold steady. This rung
 is about the opposite: making a passage grow. It is the last of the four things
 the overview named, and it is the one people get wrong most reliably, because
 the obvious way to build is to play louder and the obvious way is the weakest
 one available.
 
-**There are three ways to grow and volume is the least of them.** *Register* —
+**There are three ways to make the sound grow without changing tempo, and volume is the least of them.** *Register* —
 the same idea moved down an octave, or opened out so the hands are further
 apart. *Density* — more notes in the same bar: a single line becomes octaves,
 octaves become chords, a held bass becomes a repeated one. *Volume* — actually
@@ -45,9 +45,9 @@ without the wrist locking up.
 Rachmaninoff is a personal-library score, so the public build shows its row and
 where to get it. Grieg's *In the Hall of the Mountain King* is the most literal — one
 sixteen-bar idea repeated while the register widens under a crescendo marked
-again and again (this copy asks for no speeding up, and the app keeps one
-tempo), and it
-teaches restraint better than anything else here because the first half must
+again and again; this copy also changes tempo: it opens at quarter = 138, drops
+to 80, then rises toward 200, and the app follows those written changes. The
+piece teaches restraint better than anything else here because the first half must
 stay small. The *Rachmaninoff* concerto opening is a build made almost entirely
 of density: the chords thicken bar by bar and the dynamic follows rather than
 leads. *Moonlight*'s finale is the one where the build is inside the writing
@@ -58,9 +58,9 @@ memory: with the page gone you shape what you hear instead of what is printed,
 and a crescendo you cannot see coming is usually a more honest one. Take eight
 bars, not a page.
 
-**Common mistake.** Speeding up to build. Tempo and volume are separate controls
-and tying them together means you cannot use either one on its own, which is a
-problem the moment the music asks you to get louder and hold the pulse.
+**Common mistake.** Speeding up just because the passage gets louder. Tempo and
+volume are separate controls: follow an accelerando when the score writes one,
+and otherwise keep the pulse.
 
 **How you'll know you've got it.** You can play a passage twice — once building
 with register and density and once with volume alone — and hear which of the two

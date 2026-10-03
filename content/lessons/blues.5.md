@@ -39,11 +39,15 @@ nothing, and count through the nothing.
 bass shape transposes exactly; the fingering does not, because of the black
 keys.
 
-**Walking bass.** Instead of the boogie pattern, one note per beat — in the
-exercise here, the chord's root, third and fifth, then the note a half step
-below the next root — arriving on the root of the next chord on beat one. This is the bridge into the jazz track.
+**Walking bass**, introduced here. Instead of the boogie pattern, one note per
+beat — in the exercise here, the chord's root, third and fifth, then the note a
+half step below the next root — arriving on the root of the next chord on beat
+one. The exercise is the line alone, left hand only; none of this rung's pieces
+has one yet, and the next rung puts a right hand over it. This is the bridge
+into the jazz track.
 
-**Common mistake.** Filling every bar. The blues is mostly space.
+**Common mistake.** Filling every bar. Leave the space the call and response
+above asks for.
 
 **Tools for this rung.** Four bars of nothing are the hard ones. The
 accompaniment lab's *Jam it* takes the twelve bars in F, plays the changes

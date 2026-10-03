@@ -1,0 +1,8 @@
+
+Running 2 tests using 2 workers
+
+  ok 2 build\u105d\probe\probe.spec.ts:151:7 › narrow667rest rest wider-face base (4.7s)
+  ok 1 build\u105d\probe\probe.spec.ts:151:7 › narrow667rest rest wider-face h2 (4.7s)
+
+  2 passed (7.5s)
+exit 0

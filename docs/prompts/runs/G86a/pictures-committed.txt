@@ -1,0 +1,44 @@
+
+Running 3 tests using 2 workers
+
+  ok 1 build\g86a\probe\g86a-pictures.spec.ts:104:3 › upright, 342 x 740 › a fresh start whose sound did not start (2.6s)
+  ok 2 build\g86a\probe\g86a-pictures.spec.ts:115:3 › upright, 342 x 740 › a paused run whose sound did not start, then the chrome folded (4.5s)
+  x  3 build\g86a\probe\g86a-pictures.spec.ts:139:3 › sideways, 740 x 342 › a fresh start whose sound did not start, sideways (5.7s)
+
+
+  1) build\g86a\probe\g86a-pictures.spec.ts:139:3 › sideways, 740 x 342 › a fresh start whose sound did not start, sideways 
+
+    TimeoutError: locator.click: Timeout 5000ms exceeded.
+    Call log:
+      - waiting for locator('#score-title')
+        - locator resolved to <h1 id="score-title" class="score-head__title">Hot Cross Buns</h1>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not visible
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not visible
+        - retrying click action
+          - waiting 100ms
+        10 × waiting for element to be visible, enabled and stable
+           - element is not visible
+         - retrying click action
+           - waiting 500ms
+
+
+      39 |     page.evaluate(() => (window as Captured).__contexts?.[0]?.state ?? 'none');
+      40 |   await expect.poll(state).not.toBe('none');
+    > 41 |   await page.locator('#score-title').click({ timeout: 5_000 });
+         |                                      ^
+      42 |   await expect.poll(state).toBe('running');
+      43 |   return state;
+      44 | }
+        at openWithCapturedContext (C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0033f8fd2796c83d\app\build\g86a\probe\g86a-pictures.spec.ts:41:38)
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0033f8fd2796c83d\app\build\g86a\probe\g86a-pictures.spec.ts:140:19
+
+    Error Context: build\g86a\test-results\g86a-pictures-sideways-740-1d55d-ound-did-not-start-sideways\error-context.md
+
+  1 failed
+    build\g86a\probe\g86a-pictures.spec.ts:139:3 › sideways, 740 x 342 › a fresh start whose sound did not start, sideways 
+  2 passed (11.1s)

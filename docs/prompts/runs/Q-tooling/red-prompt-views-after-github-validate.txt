@@ -1,0 +1,22 @@
+$ (cwd .) python -m unittest discover -s tools/content/tests -t tools/content -p test_prompt_views.py
+..F
+======================================================================
+FAIL: test_views_match_the_canonical_files (tests.test_prompt_views.PromptViewsAreFresh.test_views_match_the_canonical_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a1787d8a95fb5d777\tools\content\tests\test_prompt_views.py", line 36, in test_views_match_the_canonical_files
+    self.assertEqual(problems, [], "\n".join(problems))
+AssertionError: Lists differ: ["stale views (the canonical file changed; regenerate): ['backlog/Q.md']"] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+"stale views (the canonical file changed; regenerate): ['backlog/Q.md']"
+
+- ["stale views (the canonical file changed; regenerate): ['backlog/Q.md']"]
++ [] : stale views (the canonical file changed; regenerate): ['backlog/Q.md']
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.019s
+
+FAILED (failures=1)
+exit 1

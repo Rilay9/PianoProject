@@ -1,0 +1,13 @@
+test_a_line_naming_a_parent_the_catalogue_lacks_or_malformed_is_refused (tools.content.tests.test_excerpts.TheMerge.test_a_line_naming_a_parent_the_catalogue_lacks_or_malformed_is_refused) ... ok
+test_a_rejection_is_kept_with_its_reason_and_needs_one (tools.content.tests.test_excerpts.TheMerge.test_a_rejection_is_kept_with_its_reason_and_needs_one) ... ok
+test_an_approval_becomes_a_row_and_a_rerun_appends_nothing (tools.content.tests.test_excerpts.TheMerge.test_an_approval_becomes_a_row_and_a_rerun_appends_nothing) ... ok
+test_an_approval_of_a_range_already_present_is_refused_with_the_row_named (tools.content.tests.test_excerpts.TheMerge.test_an_approval_of_a_range_already_present_is_refused_with_the_row_named) ... ok
+test_the_committed_file_is_the_merges_own_serialisation (tools.content.tests.test_excerpts.TheMerge.test_the_committed_file_is_the_merges_own_serialisation)
+A round-trip through the merge's one serialiser is byte-identical to the file (no re-serialising hazard). ... skipped 'no excerpts.json yet'
+test_the_same_event_with_other_content_is_refused (tools.content.tests.test_excerpts.TheMerge.test_the_same_event_with_other_content_is_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+OK (skipped=1)
+exit 0

@@ -479,7 +479,9 @@ test.describe('Simon', () => {
     await expect(chainLine).toHaveAttribute('data-chain', String(chains.length));
     await expect(chainLine).toHaveAttribute('data-best', String(chains.length));
     await expect(chainLine).toContainText('Longest chain');
-    await expect(page.locator('[data-stat="answered"]')).toContainText(String(chains.length));
+    // *Answered* is the cards answered (U96a): the three chains played back and the note that broke the
+    // fourth. It printed the chain here, the right answers under *Answered*; the chain is `data-chain` above.
+    await expect(page.locator('[data-stat="answered"]')).toHaveText(new RegExp(`^${String(chains.length + 1)} of \\d+$`));
   });
 
   /** Plays back whatever the card is waiting for, correctly. */

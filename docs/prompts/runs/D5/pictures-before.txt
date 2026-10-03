@@ -1,0 +1,7 @@
+
+Running 1 test using 1 worker
+
+  ok 1 .probe\d5-pictures.spec.ts:21:1 › the three lines at a study, a groove and a drill (time omitted)
+
+  1 passed (time omitted)
+exit 0

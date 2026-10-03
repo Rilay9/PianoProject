@@ -1,0 +1,14 @@
+python docs/prompts/runs/X1/scripts-swap_head.py swap <scratch>/x1-head-swap-2
+HEAD  app/src/router.ts
+HEAD  app/src/curriculum/session.ts
+HEAD  app/src/curriculum/eligibility.ts
+HEAD  app/src/ui/help.ts
+HEAD  app/src/ui/screens/TodayScreen.ts
+HEAD  app/src/ui/screens/ScoreScreen.ts
+HEAD  app/src/ui/screens/DrillScreen.ts
+HEAD  app/src/ui/screens/LessonScreen.ts
+HEAD  app/src/style.css
+HEAD  docs/04-ui-spec.md
+gone  app/src/data/sessionRun.ts
+gone  app/src/ui/sessionRunner.ts
+exit=0

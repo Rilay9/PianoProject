@@ -1,0 +1,12 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-aaa20169ef5952602/app
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+
+ Test Files  4 passed (4)
+      Tests  77 passed (77)
+   Start at  18:18:00
+   Duration  2.07s (transform 31%, tests 31%, environment 26%, import 12%)
+
+exit 0

@@ -1,0 +1,31 @@
+﻿(cd app) npx playwright test --config playwright.g2-4293.config.ts --workers=2 tests/e2e/transfer-offer.spec.ts tests/e2e/competence.spec.ts tests/e2e/progress.spec.ts
+[WebServer] (node:76344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:69432) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 16 tests using 2 workers
+
+(node:15840) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:75024) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\competence.spec.ts:154:3 ΓÇ║ one skill state on Skills and Progress ΓÇ║ Progress says which skills moved in the last four weeks, and how (1.5s)
+  ok  2 tests\e2e\competence.spec.ts:122:3 ΓÇ║ one skill state on Skills and Progress ΓÇ║ Skills opens on what the evidence has not shown lately, and says what the app cannot judge (1.8s)
+  ok  3 tests\e2e\progress.spec.ts:61:3 ΓÇ║ Progress ΓÇ║ shows the week, the heat-map and an empty repertoire on a fresh phone (722ms)
+  ok  4 tests\e2e\progress.spec.ts:69:3 ΓÇ║ Progress ΓÇ║ records a run and shows it in the history and the heat-map (790ms)
+  ok  5 tests\e2e\progress.spec.ts:88:3 ΓÇ║ Progress ΓÇ║ a piece passed and not played for two weeks comes back for review, in its own words (785ms)
+  ok  7 tests\e2e\progress.spec.ts:129:3 ΓÇ║ Progress ΓÇ║ refuses a file that is not a backup, with a sentence (696ms)
+  ok  6 tests\e2e\progress.spec.ts:99:3 ΓÇ║ Progress ΓÇ║ exports everything and restores it onto a wiped phone (1.2s)
+  ok  8 tests\e2e\progress.spec.ts:141:3 ΓÇ║ Settings ΓÇ║ groups every setting and persists a change across a reload (1.2s)
+  ok  9 tests\e2e\progress.spec.ts:154:3 ΓÇ║ Settings ΓÇ║ the offline-only switch persists (1.1s)
+  ok 10 tests\e2e\progress.spec.ts:162:3 ΓÇ║ Settings ΓÇ║ reports the storage in use (714ms)
+  ok 11 tests\e2e\progress.spec.ts:170:3 ΓÇ║ Diagnostics ΓÇ║ reports the precache, the content counts and the errors (777ms)
+  ok 12 tests\e2e\progress.spec.ts:184:3 ΓÇ║ Diagnostics ΓÇ║ the debug report carries the new blocks (769ms)
+  ok 13 tests\e2e\progress.spec.ts:198:3 ΓÇ║ the settings mirror (docs/01 ┬º4.5) ΓÇ║ a setting survives localStorage being cleared, because IndexedDB has it (1.9s)
+  ok 15 tests\e2e\transfer-offer.spec.ts:232:3 ΓÇ║ the transfer offer (D4) ΓÇ║ a piece heard yesterday is not offered as new (G2) (2.9s)
+  ok 14 tests\e2e\transfer-offer.spec.ts:165:3 ΓÇ║ the transfer offer (D4) ΓÇ║ a learner proficient at shifting position is offered transfer material on Today, and its run keeps what was played and why (6.3s)
+  ok 16 tests\e2e\transfer-offer.spec.ts:301:3 ΓÇ║ the transfer offer (D4) ΓÇ║ the run stores the relationship the card offered, beside the intent, through the offer Today kept (D4a) (4.0s)
+
+  16 passed (17.7s)
+exit=0

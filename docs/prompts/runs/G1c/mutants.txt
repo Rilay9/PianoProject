@@ -1,0 +1,16 @@
+row-badge-back: CAUGHT (vitest exit 1); red: × with a Stage 9 rung met in the evidence, the stage line counts nothing and says what the stage is, and no row wears a rung’s word 79ms | × with the evidence alone meeting one Stage 9 rung: no "1 of N", no bar and no complete on its row (the brief’s red) 68ms
+  app/src/ui/screens/PlanScreen.ts restored, sha256 284965f43d1567cd1eda0e54b7a7f3d991554bfddab72aab4c1e43b5b9cc077e
+stage-line-counts: CAUGHT (vitest exit 1); red: × with a Stage 9 rung met in the evidence, the stage line counts nothing and says what the stage is, and no row wears a rung’s word 73ms | × with the evidence alone meeting one Stage 9 rung: no "1 of N", no bar and no complete on its row (the brief’s red) 64ms | × with every Stage 9 rung met, the stage wears no complete and says no count 56ms
+  app/src/ui/screens/PlanScreen.ts restored, sha256 284965f43d1567cd1eda0e54b7a7f3d991554bfddab72aab4c1e43b5b9cc077e
+stage-wears-complete: CAUGHT (vitest exit 1); red: × with every Stage 9 rung met, the stage wears no complete and says no count 65ms
+  app/src/ui/screens/PlanScreen.ts restored, sha256 284965f43d1567cd1eda0e54b7a7f3d991554bfddab72aab4c1e43b5b9cc077e
+stage-draws-bar: CAUGHT (vitest exit 1); red: × with a Stage 9 rung met in the evidence, the stage line counts nothing and says what the stage is, and no row wears a rung’s word 80ms | × with the evidence alone meeting one Stage 9 rung: no "1 of N", no bar and no complete on its row (the brief’s red) 62ms | × with every Stage 9 rung met, the stage wears no complete and says no count 58ms | × the legend names only the fills on screen: rungs carried over in Stage 9 alone draw none 127ms
+  app/src/ui/screens/PlanScreen.ts restored, sha256 284965f43d1567cd1eda0e54b7a7f3d991554bfddab72aab4c1e43b5b9cc077e
+legend-counts-stage-9: CAUGHT (vitest exit 1); red: × the legend names only the fills on screen: rungs carried over in Stage 9 alone draw none 66ms
+  app/src/ui/screens/PlanScreen.ts restored, sha256 284965f43d1567cd1eda0e54b7a7f3d991554bfddab72aab4c1e43b5b9cc077e
+no-project-stage: CAUGHT (vitest exit 1); red: × with a Stage 9 rung met in the evidence, the stage line counts nothing and says what the stage is, and no row wears a rung’s word 72ms | × with the evidence alone meeting one Stage 9 rung: no "1 of N", no bar and no complete on its row (the brief’s red) 66ms | × with every Stage 9 rung met, the stage wears no complete and says no count 54ms | × the legend names only the fills on screen: rungs carried over in Stage 9 alone draw none 62ms
+  app/src/ui/screens/PlanScreen.ts restored, sha256 284965f43d1567cd1eda0e54b7a7f3d991554bfddab72aab4c1e43b5b9cc077e
+session-own-constant: CAUGHT (vitest exit 1); red: × only the project sheet acts, and no evidence, skill, eligibility, session or Library code reads a project 34ms | × only projectStore declares PROJECT_STAGES; the session and Plan import it 22ms
+  app/src/curriculum/session.ts restored, sha256 a2b2fcb44414161b8fddc8b07eecaeeb85ec9228a4205d8d563c84fc3b410a23
+session-reads-a-project: CAUGHT (vitest exit 1); red: × only the project sheet acts, and no evidence, skill, eligibility, session or Library code reads a project 35ms
+  app/src/curriculum/session.ts restored, sha256 a2b2fcb44414161b8fddc8b07eecaeeb85ec9228a4205d8d563c84fc3b410a23

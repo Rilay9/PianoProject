@@ -1,0 +1,117 @@
+$ (cd app) npx vitest run tests/unit/drillSheetsSayWhatWasMeasured.test.ts -t own numbers
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a217e9f7b4bcda352/app
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts (7 tests | 2 failed | 5 skipped) 177ms
+   ❯ a kind’s own numbers, on a set ended before any answer (2)
+     × dynamics: Not measured, and no ratio or velocity of notes nobody played 117ms
+     × Simon: Not measured, and no chain line 59ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a kind’s own numbers, on a set ended before any answer > dynamics: Not measured, and no ratio or velocity of notes nobody played
+AssertionError: expected 'Not passed yet' to be 'Not measured' // Object.is equality
+
+Expected: "Not measured"
+Received: "Not passed yet"
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:250:28
+    248|     document.querySelector<HTMLButtonElement>('#drill-end')?.click();
+    249|     expect(section.dataset.drill).toBe('finished');
+    250|     expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
+       |                            ^
+    251|     expect.soft(stats(), 'numbers for a set nobody answered').toEqual(…
+    252|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a kind’s own numbers, on a set ended before any answer > dynamics: Not measured, and no ratio or velocity of notes nobody played
+AssertionError: numbers for a set nobody answered: expected [ 'accuracy', 'answered', …(5) ] to deeply equal [ 'answered' ]
+
+- Expected
++ Received
+
+  [
++   "accuracy",
+    "answered",
++   "how-hard-the-soft-notes-were-played",
++   "how-hard-the-loud-notes-were-played",
++   "loud-against-soft",
++   "loud-against-soft,-asked-for",
++   "every-note-the-same-volume",
+  ]
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:251:63
+    249|     expect(section.dataset.drill).toBe('finished');
+    250|     expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
+    251|     expect.soft(stats(), 'numbers for a set nobody answered').toEqual(…
+       |                                                               ^
+    252|   });
+    253|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a kind’s own numbers, on a set ended before any answer > Simon: Not measured, and no chain line
+AssertionError: expected 'Not passed yet' to be 'Not measured' // Object.is equality
+
+Expected: "Not measured"
+Received: "Not passed yet"
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:258:28
+    256|     document.querySelector<HTMLButtonElement>('#drill-end')?.click();
+    257|     expect(section.dataset.drill).toBe('finished');
+    258|     expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
+       |                            ^
+    259|     expect.soft(document.querySelector('#drill-chain')?.textContent, '…
+    260|     expect.soft(stats(), 'numbers for a set nobody answered').toEqual(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a kind’s own numbers, on a set ended before any answer > Simon: Not measured, and no chain line
+AssertionError: a chain nobody played: expected 'Longest chain: 0 notes. Your best her…' to be undefined
+
+- Expected:
+undefined
+
++ Received:
+"Longest chain: 0 notes. Your best here is 0."
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:259:95
+    257|     expect(section.dataset.drill).toBe('finished');
+    258|     expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
+    259|     expect.soft(document.querySelector('#drill-chain')?.textContent, '…
+       |                                                                                               ^
+    260|     expect.soft(stats(), 'numbers for a set nobody answered').toEqual(…
+    261|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a kind’s own numbers, on a set ended before any answer > Simon: Not measured, and no chain line
+AssertionError: numbers for a set nobody answered: expected [ 'accuracy', 'answered', …(1) ] to deeply equal [ 'answered' ]
+
+- Expected
++ Received
+
+  [
++   "accuracy",
+    "answered",
++   "longest-chain",
+  ]
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:260:63
+    258|     expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
+    259|     expect.soft(document.querySelector('#drill-chain')?.textContent, '…
+    260|     expect.soft(stats(), 'numbers for a set nobody answered').toEqual(…
+       |                                                               ^
+    261|   });
+    262| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 5 skipped (7)
+   Start at  17:32:27
+   Duration  10.56s (environment 83%, transform 10%, import 6%, tests 2%)
+
+exit=1

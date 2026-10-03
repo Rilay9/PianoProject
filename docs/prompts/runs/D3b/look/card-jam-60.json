@@ -1,0 +1,55 @@
+{
+ "rung": "jam",
+ "minutes": 60,
+ "lesson": "jam",
+ "rows": [
+  {
+   "slot": "technique",
+   "item": "exercise.arpeggio.e-major.2oct.both",
+   "claim": "asked",
+   "title": "E major arpeggio — 2 oct, both",
+   "reason": "Holiday asks for it — not counted yet",
+   "detail": "Warm-up · 8 min · L5.1"
+  },
+  {
+   "slot": "review",
+   "item": "exercise.arpeggio7.c-dominant7.2oct.both",
+   "claim": "rung",
+   "title": "C dominant 7th arpeggio — 2 oct, both",
+   "reason": "Nothing due for review — more from Chords & pop",
+   "detail": "Review · 8 min · L5.2"
+  },
+  {
+   "slot": "new",
+   "item": "exercise.cadence.g.voice-led",
+   "claim": "asked",
+   "title": "I-IV-V7-I in G — smooth voicing",
+   "reason": "Hymns & gospel asks for it — not counted yet",
+   "detail": "New · 20 min · L3.2 · LH"
+  },
+  {
+   "slot": "repertoire",
+   "item": "song.classical.clementi-sonatina-no-1-muzio-clementi.pdmx",
+   "claim": "rung",
+   "title": "Sonatina in C major, Op. 36 No. 1 (first movement, short edition)",
+   "reason": "More music from Classical",
+   "detail": "Repertoire · 9 min · ≈ L5.7"
+  },
+  {
+   "slot": "sightreading",
+   "item": "drill.reading.sight-reading-3",
+   "claim": "reader",
+   "title": "Sight-reading generator, level 3",
+   "reason": "Read something you have never seen, once, slowly",
+   "detail": "Sight-reading · 3 min · L4.5"
+  },
+  {
+   "slot": "jam",
+   "item": "drill.improv.blues-backing",
+   "claim": "jam",
+   "title": "Twelve-bar blues backing track",
+   "reason": "Chords, form and feel: from Turnarounds, blue notes and walking bass",
+   "detail": "Jam · 8 min · L5.1"
+  }
+ ]
+}

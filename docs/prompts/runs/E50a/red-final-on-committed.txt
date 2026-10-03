@@ -1,0 +1,42 @@
+## -m unittest discover -s tools/content/tests -t tools/content -p test_convert_cache.py with tools/content/convert.py at 2da6b8ef: exit 1
+   ERROR: test_a_dated_file_a_musescore_file_and_a_file_with_no_encoding_give_none (tests.test_convert_cache.TestFormerIdentities.test_a_dated_file_a_musescore_file_and_a_file_with_no_encoding_give_none)
+   AttributeError: <module 'convert' from 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-aa53a621e81c2cb8c\\tools\\content\\convert.py'> does not have the attribute 'without_encoding_date'
+   ERROR: test_a_musical_change_is_new_material (tests.test_convert_cache.TestFormerIdentities.test_a_musical_change_is_new_material)
+   AttributeError: <module 'convert' from 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-aa53a621e81c2cb8c\\tools\\content\\convert.py'> does not have the attribute 'without_encoding_date'
+   ERROR: test_a_recorded_dated_file_of_the_same_music_is_re_proved_and_named (tests.test_convert_cache.TestFormerIdentities.test_a_recorded_dated_file_of_the_same_music_is_re_proved_and_named)
+   AttributeError: <module 'convert' from 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-aa53a621e81c2cb8c\\tools\\content\\convert.py'> does not have the attribute 'without_encoding_date'
+   ERROR: test_dated_form_records_a_dated_music21_file_and_nothing_else (tests.test_convert_cache.TestFormerIdentities.test_dated_form_records_a_dated_music21_file_and_nothing_else)
+   AttributeError: <module 'convert' from 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-aa53a621e81c2cb8c\\tools\\content\\convert.py'> does not have the attribute 'without_encoding_date'
+   ERROR: test_removing_and_restoring_the_date_is_a_round_trip (tests.test_convert_cache.TestFormerIdentities.test_removing_and_restoring_the_date_is_a_round_trip)
+   AttributeError: module 'convert' has no attribute 'with_encoding_date'
+   ERROR: test_the_committed_table_is_historical_and_bounded (tests.test_convert_cache.TestFormerIdentities.test_the_committed_table_is_historical_and_bounded)
+   AttributeError: module 'convert' has no attribute 'FORMER_IDENTITIES_FILE'
+   ERROR: test_the_encoding_date_goes_with_its_line_and_nothing_else_moves (tests.test_convert_cache.TestReproducible.test_the_encoding_date_goes_with_its_line_and_nothing_else_moves)
+   AttributeError: module 'convert' has no attribute 'without_encoding_date'
+   FAIL: test_converting_on_two_dates_gives_identical_bytes (tests.test_convert_cache.TestReproducible.test_converting_on_two_dates_gives_identical_bytes)
+   AssertionError: Lists differ: ['-      <encoding-date>2026-09-16</encodi[57 chars]te>'] != []
+   FAIL: test_converting_on_two_dates_gives_identical_bytes_as_plain_musicxml (tests.test_convert_cache.TestReproducible.test_converting_on_two_dates_gives_identical_bytes_as_plain_musicxml)
+   AssertionError: Lists differ: ['-      <encoding-date>2026-09-16</encodi[57 chars]te>'] != []
+   Ran 21 tests in 1.345s
+   FAILED (failures=2, errors=7)
+## vitest run tests/unit/formerIdentity.test.ts with app/src/curriculum/material.ts, app/src/curriculum/load.ts, app/src/curriculum/types.ts, app/src/data/encounterStore.ts, app/src/data/progressStore.ts at 2da6b8ef: exit 1
+   × A1: a run of the item stored against the dated file is met, played 12ms
+   × A2: the same run under another item id is met, naming that id 1ms
+   × A6: an encounter of the parent under its dated file counts toward the excerpt’s passage, as one under the current file does 2ms
+   × the equality key agrees with the resolved equality: equal exactly where sameMaterial says the same material 1ms
+   × A1 over the store: a recorded run of the dated file is met 12ms
+   × A3: a heard encounter keyed by the dated file under another id is found through the former key, and familiarity says heard 4ms
+   × A4: a pruned run’s summary keyed by the dated file is met, played; familiarity over the keyed summaries says practised 4ms
+   × A5: a project keyed by the dated file is the piece’s project; an action appends to that row, whose id stays the dated key 2ms
+   × the resolution’s own API: a former file resolves to the current row’s identity; a current, a generator, none and an unknown file are returned as they are 1ms
+   Tests  9 failed | 7 passed (16)
+   ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+   AssertionError: expected { contact: 'unmet', metById: true } to deeply equal { contact: 'met', metById: true, …(2) }
+   AssertionError: expected { contact: 'unmet', metById: false } to deeply equal { Object (contact, metById, ...) }
+   AssertionError: expected null to be '2026-09-29T12:00:00.000Z' // Object.is equality
+   TypeError: learnerMaterialKey is not a function
+   AssertionError: expected { contact: 'unmet', metById: true } to deeply equal { contact: 'met', metById: true, …(2) }
+   AssertionError: expected { contact: 'unmet', metById: false } to deeply equal { Object (contact, metById, ...) }
+   AssertionError: expected { contact: 'unmet', metById: true } to deeply equal { contact: 'met', metById: true, …(2) }
+   AssertionError: expected undefined to deeply equal { …(6) }
+   TypeError: learnerMaterial is not a function

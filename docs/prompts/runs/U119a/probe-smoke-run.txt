@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ok 1 build\u119a\probe\probe.spec.ts:157:9 › smoke paused 667x375 t100 wider hcb (2.2s)
+
+  1 passed (6.6s)

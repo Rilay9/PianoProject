@@ -1,0 +1,13 @@
+U32a: perf.spec.ts whole, one worker, base (827289d0) and final interleaved: base, final, base, final.
+Each line is what the spec printed; all four runs 6 passed, exit 0. This machine, CPU x4 where the spec throttles.
+
+longest score (780 bars, the Scherzo no. 2), first window:   base 18783 ms, 27803 ms   final 23967 ms, 24749 ms
+2-bar window render (a short piece), median of five:         base 16.3 ms, 33.1 ms     final 30.4 ms, 33.6 ms
+pre-rendered swap, median of 19:                             base 0.40 ms, 0.40 ms     final 0.40 ms, 0.40 ms
+input-to-colour case:                                        passed in all four
+
+Read as relationships: the final's first window on the Scherzo sits inside the base's spread; the base's own
+2-bar median moved by a factor of two between its two passes, and both of the final's sit inside that. The
+first window's path is unchanged by construction (create makes the same two sheets; the first paint is
+pixel-identical, first-paint-compare.txt). The earlier two-worker run on the final: 26013 ms for the Scherzo's
+first window, green (e2e-targeted-final.txt).

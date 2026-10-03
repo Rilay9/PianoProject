@@ -17,14 +17,13 @@
  */
 import { describe, expect, it } from 'vitest';
 import { waitingForLine } from '../../src/ui/expectedNote';
-import { extractScoreModel } from '../../src/score/extractScoreModel';
-import { allFixtures, edgeFixtures, loadFixture } from './helpers/fixtures';
+import { allFixtures, edgeFixtures, fixtureModel } from './helpers/fixtures';
 import type { ScoreModel } from '../../src/score/types';
 
 async function edgeModel(name: string): Promise<ScoreModel> {
   const fixture = edgeFixtures().find((f) => f.name === name);
   if (!fixture) throw new Error(`no edge fixture named "${name}"`);
-  return extractScoreModel(await loadFixture(fixture.path), { id: fixture.name });
+  return fixtureModel(fixture.path, { id: fixture.name });
 }
 
 describe('waitingForLine', () => {
@@ -116,7 +115,7 @@ describe('the spelling comes from the notation (T41)', () => {
     // MIDI number, which is the sharps table this replaced.
     const unspelled: string[] = [];
     for (const fixture of allFixtures()) {
-      const model = extractScoreModel(await loadFixture(fixture.path), { id: fixture.name });
+      const model = await fixtureModel(fixture.path, { id: fixture.name });
       for (const step of model.steps) {
         for (const note of step.notes) {
           const black = [1, 3, 6, 8, 10].includes(((note.midi % 12) + 12) % 12);

@@ -1,0 +1,3 @@
+$ (docs/prompts/runs/U92) diff vitest-failing-names-committed-src.txt vitest-failing-names-fixed.txt
+exit=0
+(no diff output above: the 65 failing names are identical; files: vitest-failing-names-committed-src.txt from vitest-failing-files-committed-src.txt, the ten failing files on the committed SkillsScreen.ts and style.css; vitest-failing-names-fixed.txt from vitest-all.txt)

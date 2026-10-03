@@ -1,0 +1,36 @@
+[WebServer] (node:105332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 18 tests using 4 workers
+
+(node:105068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:108756) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:97384) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:111532) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  3 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c1 667x375 t100 stack moon (9.8s)
+  ok  4 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c4 667x375 t100 stack moon (9.9s)
+  ok  1 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c2 667x375 t100 stack moon (10.0s)
+  ok  2 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c3 667x375 t100 stack moon (10.6s)
+  ok  5 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c5 667x375 t100 stack moon (9.4s)
+  ok  7 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c1 700x350 t100 wider moon (9.4s)
+  ok  6 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c6 667x375 t100 stack moon (9.6s)
+  ok  8 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c2 700x350 t100 wider moon (9.8s)
+  ok  9 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c3 700x350 t100 wider moon (10.4s)
+  ok 11 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c5 700x350 t100 wider moon (10.1s)
+  ok 10 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c4 700x350 t100 wider moon (10.4s)
+  ok 12 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c6 700x350 t100 wider moon (10.2s)
+  ok 13 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c1 780x360 t100 stack moon (9.1s)
+  ok 14 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c2 780x360 t100 stack moon (9.3s)
+  ok 15 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c3 780x360 t100 stack moon (9.8s)
+  ok 16 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c4 780x360 t100 stack moon (9.3s)
+  ok 17 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c5 780x360 t100 stack moon (8.1s)
+  ok 18 build\u122a\probe6\premise.spec.ts:725:11 › v3 sideways c6 780x360 t100 stack moon (8.0s)
+
+  18 passed (50.9s)
+exit 0

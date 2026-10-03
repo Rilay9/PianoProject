@@ -1,0 +1,5 @@
+$ git diff --numstat
+34	0	docs/03-content-pipeline.md
+15	1	docs/04-ui-spec.md
+51	10	docs/08-test-map.md
+exit=0

@@ -1,0 +1,13 @@
+﻿
+> pianopath@0.1.0 lint
+> eslint . --max-warnings=0
+
+
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa9e0c26b0f85f0c7\app\tests\unit\oneGateBoundary.test.ts
+   38:69  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  243:39  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+âœ– 2 problems (2 errors, 0 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+
+exit 1

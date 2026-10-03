@@ -1,0 +1,285 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/evidenceNumbersInTheVocabulary.test.ts (9 tests | 9 failed) 76ms
+   ❯ the shipped numbers are unchanged (2)
+     × the support share is 0.9; every skill reads it, and none names its own 3ms
+     × the precisions are the table they replace: triplets 1/12, subdivision 1/6, 6/8 1/4, the dotted quarter, syncopation and ties 1/2; the default 1/2 0ms
+   ❯ each reader reads the share from the vocabulary it is handed (a constructed share of 0.95) (5)
+     × the ladder: 23 of 25 at the practice standard is familiar at 0.9 and only practised at 0.95 4ms
+     × a skill may name its own share, and only that skill reads it 0ms
+     × the transfer policy: full-standard support at the share it is handed, never a copy of its own 0ms
+     × the demand readings: a demand at 23 of 25 holds at 0.9 and is below at 0.95 2ms
+     × the reader (`session.ts`, the held-back demands): skips at 18 of 20 in proving reads let the next demand on at 0.9 and hold it at 0.95 58ms
+   ❯ the evidence function reads the precisions from the vocabulary it is handed (2)
+     × a rhythm skill’s own: triplets at an eighth instead of a twelfth of a beat resolve inside the default window 4ms
+     × the default, for a skill whose rhythm is the phrase’s where no rhythm demand is located: an eighth, or what the vocabulary says 2ms
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ ❯ tests/unit/namesOnIsPractice.test.ts (8 tests | 5 failed) 114ms
+   ❯ the five skills a Wait read reaches at the full standard (re-derived at this tree) (2)
+     × every full standard that lists the guide off lists the names off, and no other standard does 4ms
+   ❯ a read with a name on the screen is practice (L58) (5)
+     × a Wait first reading, the guide off, *Name the note I am waiting for* on: practice for each of the five 5ms
+     × the same reading with the names off: full for each, and the record says the names were off 2ms
+     × a row that does not record the names is not shown to have had them off: practice 1ms
+   ❯ evidence definitions 6, one recompute: named Wait reads drop to practice, independent reads stay full (1)
+     × three learners, two first readings each on two days: only the one who read with the names on moves, proficient to familiar 96ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/evidenceNumbersInTheVocabulary.test.ts > the shipped numbers are unchanged > the support share is 0.9; every skill reads it, and none names its own
+TypeError: Cannot read properties of undefined (reading 'share')
+ ❯ tests/unit/evidenceNumbersInTheVocabulary.test.ts:52:34
+     50| describe('the shipped numbers are unchanged', () => {
+     51|   it('the support share is 0.9; every skill reads it, and none names i…
+     52|     expect(VOCABULARY_V0.support.share).toBe(0.9);
+       |                                  ^
+     53|     for (const skill of VOCABULARY_V0.skills) {
+     54|       expect(skill.support, skill.id).toBeUndefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/unit/evidenceNumbersInTheVocabulary.test.ts > the shipped numbers are unchanged > the precisions are the table they replace: triplets 1/12, subdivision 1/6, 6/8 1/4, the dotted quarter, syncopation and ties 1/2; the default 1/2
+TypeError: precisionQuartersOf is not a function
+ ❯ tests/unit/evidenceNumbersInTheVocabulary.test.ts:60:12
+     58|
+     59|   it('the precisions are the table they replace: triplets 1/12, subdiv…
+     60|     expect(precisionQuartersOf('triplets')).toBe(1 / 12);
+       |            ^
+     61|     expect(precisionQuartersOf('subdivision')).toBe(1 / 6);
+     62|     expect(precisionQuartersOf('6/8')).toBe(1 / 4);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/unit/evidenceNumbersInTheVocabulary.test.ts > each reader reads the share from the vocabulary it is handed (a constructed share of 0.95) > the ladder: 23 of 25 at the practice standard is familiar at 0.9 and only practised at 0.95
+AssertionError: expected 'familiar' to be 'practised' // Object.is equality
+
+Expected: "practised"
+Received: "familiar"
+
+ ❯ tests/unit/evidenceNumbersInTheVocabulary.test.ts:86:79
+     84|     const evidence = [record('interval-reading', AT, 25, 23)];
+     85|     expect(ladderState({ evidence, today: TODAY }).state).toBe('famili…
+     86|     expect(ladderState({ evidence, today: TODAY, vocabulary: STRICT })…
+       |                                                                               ^
+     87|   });
+     88|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  tests/unit/evidenceNumbersInTheVocabulary.test.ts > each reader reads the share from the vocabulary it is handed (a constructed share of 0.95) > a skill may name its own share, and only that skill reads it
+TypeError: supportShareOf is not a function
+ ❯ tests/unit/evidenceNumbersInTheVocabulary.test.ts:96:12
+     94|       ),
+     95|     };
+     96|     expect(supportShareOf('interval-reading', own)).toBe(0.95);
+       |            ^
+     97|     expect(supportShareOf('bass-clef', own)).toBe(0.9);
+     98|     expect(ladderState({ evidence: [record('interval-reading', AT, 25,…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/unit/evidenceNumbersInTheVocabulary.test.ts > each reader reads the share from the vocabulary it is handed (a constructed share of 0.95) > the transfer policy: full-standard support at the share it is handed, never a copy of its own
+TypeError: supportShareOf is not a function
+ ❯ tests/unit/evidenceNumbersInTheVocabulary.test.ts:104:33
+    102|   it('the transfer policy: full-standard support at the share it is ha…
+    103|     const run = { standard: 'full' as const, n: 25, right: 23 };
+    104|     expect(supportedAtFull(run, supportShareOf('interval-reading'))).t…
+       |                                 ^
+    105|     expect(supportedAtFull(run, supportShareOf('interval-reading', STR…
+    106|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/unit/evidenceNumbersInTheVocabulary.test.ts > each reader reads the share from the vocabulary it is handed (a constructed share of 0.95) > the demand readings: a demand at 23 of 25 holds at 0.9 and is below at 0.95
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/evidenceNumbersInTheVocabulary.test.ts:158:33
+    156|     const step = (vocabulary: Vocabulary) => demandReadings([row], voc…
+    157|     expect(step(VOCABULARY_V0)?.below).toBe(false);
+    158|     expect(step(STRICT)?.below).toBe(true);
+       |                                 ^
+    159|   });
+    160|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/unit/evidenceNumbersInTheVocabulary.test.ts > each reader reads the share from the vocabulary it is handed (a constructed share of 0.95) > the reader (`session.ts`, the held-back demands): skips at 18 of 20 in proving reads let the next demand on at 0.9 and hold it at 0.95
+AssertionError: expected 'forward' to be 'hold' // Object.is equality
+
+Expected: "hold"
+Received: "forward"
+
+ ❯ tests/unit/evidenceNumbersInTheVocabulary.test.ts:202:26
+    200|     expect(offer(VOCABULARY_V0)?.why.kind).toBe('forward');
+    201|     const strict = offer(STRICT)?.why;
+    202|     expect(strict?.kind).toBe('hold');
+       |                          ^
+    203|     expect(strict?.kind === 'hold' ? strict.wrong?.demand : undefined)…
+    204|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  tests/unit/evidenceNumbersInTheVocabulary.test.ts > the evidence function reads the precisions from the vocabulary it is handed > a rhythm skill’s own: triplets at an eighth instead of a twelfth of a beat resolve inside the default window
+AssertionError: expected { kind: 'refusal', …(4) } to match object { kind: 'measured', n: 9, right: 9 }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "measured",
+-   "n": 9,
+-   "right": 9,
++   "kind": "refusal",
+  }
+
+ ❯ tests/unit/evidenceNumbersInTheVocabulary.test.ts:228:56
+    226|     expect(shipped.find((r) => r.skill === 'sight-reading')).toMatchOb…
+    227|     const coarse = run(withPrecision('triplets', [1, 2]));
+    228|     expect(coarse.find((r) => r.skill === 'triplets')).toMatchObject({…
+       |                                                        ^
+    229|     expect(coarse.find((r) => r.skill === 'sight-reading')).toMatchObj…
+    230|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  tests/unit/evidenceNumbersInTheVocabulary.test.ts > the evidence function reads the precisions from the vocabulary it is handed > the default, for a skill whose rhythm is the phrase’s where no rhythm demand is located: an eighth, or what the vocabulary says
+AssertionError: expected { kind: 'measured', …(8) } to match object { Object (kind, reason) }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "refusal",
+-   "reason": "precision",
++   "kind": "measured",
+  }
+
+ ❯ tests/unit/evidenceNumbersInTheVocabulary.test.ts:238:101
+    236|     // At ♩ = 72 an eighth of a beat is 417 ms, wider than the ±150 ms…
+    237|     expect(read(VOCABULARY_V0)).toMatchObject({ kind: 'measured', n: 8…
+    238|     expect(read({ ...VOCABULARY_V0, precision: { ...VOCABULARY_V0.prec…
+       |                                                                                                     ^
+    239|   });
+    240| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  tests/unit/namesOnIsPractice.test.ts > the five skills a Wait read reaches at the full standard (re-derived at this tree) > every full standard that lists the guide off lists the names off, and no other standard does
+AssertionError: sight-reading full: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/namesOnIsPractice.test.ts:88:78
+     86|   it('every full standard that lists the guide off lists the names off…
+     87|     for (const skill of VOCABULARY_V0.skills) {
+     88|       expect(skill.standards.full.includes('names-off'), `${skill.id} …
+       |                                                                              ^
+     89|       expect(skill.standards.practice, `${skill.id} practice`).not.toC…
+     90|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  tests/unit/namesOnIsPractice.test.ts > a read with a name on the screen is practice (L58) > a Wait first reading, the guide off, *Name the note I am waiting for* on: practice for each of the five
+AssertionError: bass-clef: expected 'full' to be 'practice' // Object.is equality
+
+Expected: "practice"
+Received: "full"
+
+ ❯ tests/unit/namesOnIsPractice.test.ts:99:35
+     97|     for (const skill of WAIT_REACHABLE) {
+     98|       const one = measured(results, skill);
+     99|       expect(one.standard, skill).toBe('practice');
+       |                                   ^
+    100|       expect(one.context.met, skill).not.toContain('names-off');
+    101|       expect(one.n, `${skill} had no opportunity in the phrase`).toBeG…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+ FAIL  tests/unit/namesOnIsPractice.test.ts > a read with a name on the screen is practice (L58) > the same reading with the names off: full for each, and the record says the names were off
+AssertionError: bass-clef: expected [ 'unseen', 'guide-off' ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
++ [
+    "unseen",
+    "guide-off",
+-   "names-off",
+  ]
+
+ ❯ tests/unit/namesOnIsPractice.test.ts:110:38
+    108|       const one = measured(results, skill);
+    109|       expect(one.standard, skill).toBe('full');
+    110|       expect(one.context.met, skill).toEqual(expect.arrayContaining(['…
+       |                                      ^
+    111|     }
+    112|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+ FAIL  tests/unit/namesOnIsPractice.test.ts > a read with a name on the screen is practice (L58) > a row that does not record the names is not shown to have had them off: practice
+AssertionError: bass-clef: expected 'full' to be 'practice' // Object.is equality
+
+Expected: "practice"
+Received: "full"
+
+ ❯ tests/unit/namesOnIsPractice.test.ts:118:105
+    116|     const { names: _names, ...withoutNames } = recorded.keys as NonNul…
+    117|     const unrecorded = { ...recorded, keys: withoutNames } as Observed;
+    118|     for (const skill of WAIT_REACHABLE) expect(measured(evidenceOf(unr…
+       |                                                                                                         ^
+    119|   });
+    120|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯
+
+ FAIL  tests/unit/namesOnIsPractice.test.ts > evidence definitions 6, one recompute: named Wait reads drop to practice, independent reads stay full > three learners, two first readings each on two days: only the one who read with the names on moves, proficient to familiar
+AssertionError: expected { state: 'done', current: 6, …(5) } to match object { state: 'done', recomputed: 6, …(1) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "excluded": {},
+-   "recomputed": 6,
++   "recomputed": 0,
+    "state": "done",
+  }
+
+ ❯ tests/unit/namesOnIsPractice.test.ts:219:20
+    217|     const all = [...learners.named, ...learners.unaided, ...learners.t…
+    218|     const status = await runEvidenceJob(deps(all));
+    219|     expect(status).toMatchObject({ state: 'done', recomputed: 6, exclu…
+       |                    ^
+    220|     for (const row of all) expect(row.evidenceDefinitions, `row ${Stri…
+    221|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/14]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  14 failed | 3 passed (17)
+   Start at  02:17:37
+   Duration  1.78s (environment 43%, transform 35%, import 13%, tests 8%)
+
+EXIT 1

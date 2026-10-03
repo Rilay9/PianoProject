@@ -1,0 +1,37 @@
+# checks for 28 path(s): 28 matched, 0 unmatched
+# docs/02-curriculum.md: docs/02-curriculum.md, docs/**
+# docs/prompts/runs/D3/candidate-rungs.md: docs/prompts/runs/D3/candidate-rungs.md, docs/**
+# docs/prompts/runs/L120e/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/L120e/candidate-rungs-diff.txt: docs/**
+# docs/prompts/runs/L120e/checks-for-paths.txt: docs/**
+# docs/prompts/runs/L120e/checks/content-tests-summary.txt: docs/**
+# docs/prompts/runs/L120e/checks/content-validate.txt: docs/**
+# docs/prompts/runs/L120e/checks/record-mirrors.txt: docs/**
+# docs/prompts/runs/L120e/checks/review-check.txt: docs/**
+# docs/prompts/runs/L120e/checks/test_taught_at.txt: docs/**
+# docs/prompts/runs/L120e/checks/test_untaught_options.txt: docs/**
+# docs/prompts/runs/L120e/checks/test_validate_claims.txt: docs/**
+# docs/prompts/runs/L120e/excerpt-coping.txt: docs/**
+# docs/prompts/runs/L120e/mutants.txt: docs/**
+# docs/prompts/runs/L120e/red-green/green-test_excerpts-flag.txt: docs/**
+# docs/prompts/runs/L120e/red-green/green-test_excerpts.txt: docs/**
+# docs/prompts/runs/L120e/red-green/green-test_study.txt: docs/**
+# docs/prompts/runs/L120e/red-green/red-test_excerpts-flag.txt: docs/**
+# docs/prompts/runs/L120e/red-green/red-test_study.txt: docs/**
+# docs/prompts/runs/L120e/report-SOURCES.md.diff: docs/**
+# docs/prompts/runs/L120e/scripts-candidate-rungs-diff.py: docs/**
+# docs/prompts/runs/L120e/scripts-excerpt-coping.py: docs/**
+# docs/prompts/runs/L120e/scripts-mutants.py: docs/**
+# tools/content/claims.py: tools/content/*.py
+# tools/content/excerpts.py: tools/content/*.py, tools/content/excerpts.py
+# tools/content/study.py: tools/content/*.py
+# tools/content/tests/test_excerpts.py: tools/content/tests/test_*.py
+# tools/content/tests/test_study.py: tools/content/tests/test_*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/excerpts.spec.ts --workers=4

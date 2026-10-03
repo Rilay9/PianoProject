@@ -21,7 +21,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { runEvidenceJob, candidatePhrases, phraseMatches, needsRecompute, type EvidenceJobDeps } from '../../src/data/evidenceJob';
 import { evidenceJobLine } from '../../src/ui/help';
 import { readingOptions, taughtAtRung } from '../../src/curriculum/session';
-import { generateSightReading } from '../../src/engine/sightReading';
+import { generateSightReading, SIGHT_READING_IN_FORCE, type SightReadingOptions, type SightReadingVersion } from '../../src/engine/sightReading';
 import { EVIDENCE_DEFINITIONS, isRefusal } from '../../src/evidence/evidence';
 import { storedEvidence } from '../../src/evidence/readingState';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
@@ -34,9 +34,10 @@ const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) 
 const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
 const ROW = catalog.find((item) => item.id === 'drill.reading.sight-reading-2-right') as CatalogItem;
 
-/** A first reading of 2.2's row opened from 2.2, as the Score screen stores it today. */
-async function readOn22(seed: number, id: number, at: string): Promise<SessionRow> {
-  const options = readingOptions(ROW, undefined, seed, taughtAtRung(curriculum, '2.2'));
+/** A first reading of 2.2's row opened from 2.2, as the Score screen stores it today (or as a version named, D1a). */
+async function readOn22(seed: number, id: number, at: string, version?: SightReadingVersion): Promise<SessionRow> {
+  const held = readingOptions(ROW, undefined, seed, taughtAtRung(curriculum, '2.2'));
+  const options = version === undefined ? held : { ...held, version };
   const { row } = await readPhrase({
     item: ROW,
     options,
@@ -135,6 +136,47 @@ describe('a row whose phrase cannot be written again stays out, and says why', (
   }, 60_000);
 });
 
+// Added (D1a; the reviewer's finding 2 on D1): the run's record names the
+// generator version beside the seed, and a stored run is written again by the
+// version that wrote it — absent meaning version 1, the only version in force
+// before D1a — so a run from before the flip is never checked against version
+// 2's phrase of its seed (G21).
+describe('a stored run is written again by the version that wrote it', () => {
+  it('no generator on the row means version 1; a row that names its version is written by that version; an unknown one is kept out', async () => {
+    const read = await readOn22(606, 70, '2026-09-26T08:00:00.000Z');
+    expect(read.generator, 'the reader helper records the identity as the Score screen does').toEqual({
+      family: 'sight-reading',
+      version: SIGHT_READING_IN_FORCE,
+      seed: 606,
+    });
+    const { generator: _g, ...beforeD1a } = read;
+    const versions = (row: SessionRow): (number | undefined)[] => (candidatePhrases(row, ROW, curriculum) as SightReadingOptions[]).map((o) => o.version);
+    expect(versions(beforeD1a).length).toBeGreaterThan(0);
+    expect(new Set(versions(beforeD1a)), 'a run with no version was written again by another version than 1').toEqual(new Set([1]));
+    expect(new Set(versions({ ...read, generator: { family: 'sight-reading', version: 2, seed: 606 } }))).toEqual(new Set([2]));
+    // A version this build cannot write: never written by another one in its place.
+    expect(candidatePhrases({ ...read, generator: { family: 'sight-reading', version: 3, seed: 606 } }, ROW, curriculum)).toBe('phrase-differs');
+  }, 60_000);
+
+  it('a run recorded before D1a regenerates its version-1 phrase exactly and is brought up to date; claimed by version 2 it would not match', async () => {
+    const v1 = await readOn22(707, 71, '2026-09-26T09:00:00.000Z', 1);
+    const options = readingOptions(ROW, undefined, 707, taughtAtRung(curriculum, '2.2'));
+    expect(
+      generateSightReading({ ...options, version: 1 }).musicXml,
+      'seed 707 writes the same notes at both versions, so the case would prove nothing',
+    ).not.toBe(generateSightReading({ ...options, version: 2 }).musicXml);
+    const { generator: _g, ...stored } = { ...v1, evidenceDefinitions: 2 };
+    const claimed: SessionRow = { ...stored, id: 72, generator: { family: 'sight-reading', version: 2, seed: 707 } };
+    const rows: SessionRow[] = [stored, claimed];
+    const writes = new Map<number, Partial<SessionRow>>();
+    const status = await runEvidenceJob(deps(rows, writes));
+    expect(status.recomputed, 'the run from before D1a was not brought up to date').toBe(1);
+    expect(stored.evidenceDefinitions).toBe(EVIDENCE_DEFINITIONS);
+    expect(storedEvidence(stored).length).toBeGreaterThan(0);
+    expect(writes.get(72)).toEqual({ evidenceRecompute: { definitions: EVIDENCE_DEFINITIONS, excluded: 'phrase-differs' } });
+  }, 60_000);
+});
+
 // Added (C5, the reviewer's boundary defect 2): the job found its rows by
 // walking the catalog's evidence-bearing items and asking for each one's runs,
 // so a run of an item the catalog no longer has was never found — the job's
@@ -176,6 +218,40 @@ describe('the job finds stale rows in the store, not through the catalog', () =>
     const status = await runEvidenceJob(deps([song, goneSong], writes));
     expect(writes.size).toBe(0);
     expect(status.excluded).toEqual({});
+  });
+
+  // Added (G1a): the first-contact relation every Score-screen run carries is no mark of a phrase,
+  // and neither is the `unseen: false` G1's app wrote on a piece's run; the flag alone marks a
+  // phrase from before the recipe and the seed were stored. No case held that reading until this
+  // one: moving it to the relation changed no verdict in the suite (`runs/G1a/reader-moves.txt`, r8).
+  it('a piece’s run of a gone item carrying the relation, or G1’s flag, is not the job’s; a phrase row of a gone reading row carrying only the flag is', async () => {
+    const piece: SessionRow = {
+      id: 62,
+      itemId: 'song.folk.no-longer-here',
+      mode: 'tempo',
+      tempoPct: 100,
+      accuracy: 1,
+      accuracyEstimated: false,
+      wrongNotes: 0,
+      missed: 0,
+      durationMs: 30_000,
+      at: '2026-09-29T10:00:00.000Z',
+      material: { kind: 'file', sha256: 'f'.repeat(64) },
+    };
+    const asG1aStoresIt: SessionRow = { ...piece, firstContact: false };
+    const asG1aStoresTheFirst: SessionRow = { ...piece, id: 63, firstContact: true };
+    const asG1StoredIt: SessionRow = { ...piece, id: 64, unseen: false };
+    const writes = new Map<number, Partial<SessionRow>>();
+    const status = await runEvidenceJob(deps([asG1aStoresIt, asG1aStoresTheFirst, asG1StoredIt], writes));
+    expect(writes.size, 'a piece that never bore evidence was reported as kept out').toBe(0);
+    expect(status.excluded).toEqual({});
+
+    const { material: _m, ...unknownMaterial } = piece;
+    const oldPhrase: SessionRow = { ...unknownMaterial, id: 65, itemId: 'drill.reading.sight-reading-retired', unseen: true };
+    const phraseWrites = new Map<number, Partial<SessionRow>>();
+    const phraseStatus = await runEvidenceJob(deps([oldPhrase], phraseWrites));
+    expect(phraseWrites.get(65)?.evidenceRecompute).toEqual({ definitions: EVIDENCE_DEFINITIONS, excluded: 'item-gone' });
+    expect(phraseStatus.excluded['item-gone']).toBe(1);
   });
 });
 

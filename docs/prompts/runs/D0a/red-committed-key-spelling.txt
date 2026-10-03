@@ -1,0 +1,377 @@
+test_every_item_with_symbols (tests.test_key_spelling.TestEveryChordToneIsItsChordsOwn.test_every_item_with_symbols) ... FAIL
+test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) ... 
+  test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.voicing7.f-sharp.close') ... FAIL
+  test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.voicing7.f-sharp.shell') ... FAIL
+  test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.voicing7.f-sharp.rootless-a') ... FAIL
+  test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.voicing7.f-sharp.rootless-b') ... FAIL
+  test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.ii-v-i.f-sharp.shells') ... FAIL
+  test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.ii-v-i.f-sharp') ... FAIL
+  test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.ii-v-i.f-sharp.rootless') ... FAIL
+  test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.loop4.f-sharp.root') ... FAIL
+  test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.loop4.f-sharp.inversions') ... FAIL
+test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) ... FAIL
+test_no_double_accidental_anywhere_in_the_plan (tests.test_key_spelling.TestTheControls.test_no_double_accidental_anywhere_in_the_plan) ... FAIL
+test_the_minor_blues_flat_six_seven_in_e_flat_minor_is_c_flat_7 (tests.test_key_spelling.TestTheControls.test_the_minor_blues_flat_six_seven_in_e_flat_minor_is_c_flat_7) ... FAIL
+test_the_tritone_substitute_in_b_flat_is_b7_and_in_e_flat_e7 (tests.test_key_spelling.TestTheControls.test_the_tritone_substitute_in_b_flat_is_b7_and_in_e_flat_e7) ... ok
+test_the_committed_policy_fails_the_f_sharp_check (tests.test_key_spelling.TestTheMutation.test_the_committed_policy_fails_the_f_sharp_check) ... ok
+test_every_shipped_item_under_six_accidentals_writes_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_every_shipped_item_under_six_accidentals_writes_the_key_s_own_notes) ... FAIL
+test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) ... 
+  test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.voicing7.g-flat.close') ... FAIL
+  test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.voicing7.g-flat.shell') ... FAIL
+  test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.voicing7.g-flat.rootless-a') ... FAIL
+  test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.voicing7.g-flat.rootless-b') ... FAIL
+  test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.ii-v-i.g-flat.shells') ... FAIL
+  test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.ii-v-i.g-flat') ... FAIL
+  test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.ii-v-i.g-flat.rootless') ... FAIL
+  test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.loop4.g-flat.root') ... FAIL
+  test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.loop4.g-flat.inversions') ... FAIL
+test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) ... FAIL
+test_the_six_flat_items_that_carry_c_flat_carry_it (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_six_flat_items_that_carry_c_flat_carry_it) ... 
+  test_the_six_flat_items_that_carry_c_flat_carry_it (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_six_flat_items_that_carry_c_flat_carry_it) (item='exercise.open-voicing.e-flat.quartal') ... FAIL
+  test_the_six_flat_items_that_carry_c_flat_carry_it (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_six_flat_items_that_carry_c_flat_carry_it) (item='exercise.walking-bass.e-flat.minor-blues') ... FAIL
+
+======================================================================
+FAIL: test_every_item_with_symbols (tests.test_key_spelling.TestEveryChordToneIsItsChordsOwn.test_every_item_with_symbols)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 274, in test_every_item_with_symbols
+    self.assertEqual(faults, [], "\n".join(faults[:20]) + f"\n{len(faults)} in all")
+AssertionError: Lists differ: ['exercise.voicing7.f-sharp.close: bar 2, [2440 chars] is'] != []
+
+First list contains 32 additional elements.
+First extra element 0:
+'exercise.voicing7.f-sharp.close: bar 2, RH F4 under C#7, whose E# it is'
+
+Diff is 2648 characters long. Set self.maxDiff to None to see it. : exercise.voicing7.f-sharp.close: bar 2, RH F4 under C#7, whose E# it is
+exercise.voicing7.f-sharp.close: bar 3, RH F5 under F#maj7, whose E# it is
+exercise.voicing7.f-sharp.shell: bar 2, RH F4 under C#7, whose E# it is
+exercise.voicing7.f-sharp.shell: bar 3, RH F5 under F#maj7, whose E# it is
+exercise.voicing7.f-sharp.rootless-a: bar 2, RH F5 under C#7, whose E# it is
+exercise.voicing7.f-sharp.rootless-a: bar 3, RH F5 under F#maj7, whose E# it is
+exercise.voicing7.f-sharp.rootless-b: bar 2, RH F4 under C#7, whose E# it is
+exercise.voicing7.f-sharp.rootless-b: bar 3, RH F4 under F#maj7, whose E# it is
+exercise.ii-v-i.f-sharp.shells: bar 3, LH F4 under F#maj7, whose E# it is
+exercise.ii-v-i.f-sharp.shells: bar 4, LH F4 under F#maj7, whose E# it is
+exercise.ii-v-i.f-sharp: bar 2, RH F4 under C#7, whose E# it is
+exercise.ii-v-i.f-sharp: bar 3, RH F4 under F#maj7, whose E# it is
+exercise.ii-v-i.f-sharp: bar 4, RH F4 under F#maj7, whose E# it is
+exercise.ii-v-i.f-sharp.rootless: bar 2, RH F5 under C#7, whose E# it is
+exercise.ii-v-i.f-sharp.rootless: bar 3, RH F5 under F#maj7, whose E# it is
+exercise.ii-v-i.f-sharp.rootless: bar 4, RH F5 under F#maj7, whose E# it is
+exercise.loop4.f-sharp.root: bar 2, RH F4 under C#, whose E# it is
+exercise.loop4.f-sharp.inversions: bar 2, RH F4 under C#, whose E# it is
+exercise.tritone-sub.c: bar 2, RH B4 under D-7, whose C- it is
+exercise.tritone-sub.f: bar 2, RH E5 under G-7, whose F- it is
+32 in all
+
+======================================================================
+FAIL: test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.voicing7.f-sharp.close')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 220, in test_every_f_sharp_harmony_item_writes_the_key_s_own_notes
+    self.assertIn("E#", {n.pitch.name for n in score.notes},
+AssertionError: 'E#' not found in {'F', 'A#', 'G#', 'F#', 'B', 'C#', 'D#'} : exercise.voicing7.f-sharp.close: the key's seventh is in its chords and is not written
+
+======================================================================
+FAIL: test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.voicing7.f-sharp.shell')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 220, in test_every_f_sharp_harmony_item_writes_the_key_s_own_notes
+    self.assertIn("E#", {n.pitch.name for n in score.notes},
+AssertionError: 'E#' not found in {'F', 'A#', 'G#', 'F#', 'B', 'C#'} : exercise.voicing7.f-sharp.shell: the key's seventh is in its chords and is not written
+
+======================================================================
+FAIL: test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.voicing7.f-sharp.rootless-a')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 220, in test_every_f_sharp_harmony_item_writes_the_key_s_own_notes
+    self.assertIn("E#", {n.pitch.name for n in score.notes},
+AssertionError: 'E#' not found in {'F', 'A#', 'G#', 'F#', 'B', 'C#', 'D#'} : exercise.voicing7.f-sharp.rootless-a: the key's seventh is in its chords and is not written
+
+======================================================================
+FAIL: test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.voicing7.f-sharp.rootless-b')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 220, in test_every_f_sharp_harmony_item_writes_the_key_s_own_notes
+    self.assertIn("E#", {n.pitch.name for n in score.notes},
+AssertionError: 'E#' not found in {'F', 'A#', 'G#', 'F#', 'B', 'C#', 'D#'} : exercise.voicing7.f-sharp.rootless-b: the key's seventh is in its chords and is not written
+
+======================================================================
+FAIL: test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.ii-v-i.f-sharp.shells')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 220, in test_every_f_sharp_harmony_item_writes_the_key_s_own_notes
+    self.assertIn("E#", {n.pitch.name for n in score.notes},
+AssertionError: 'E#' not found in {'F', 'G#', 'F#', 'B', 'C#'} : exercise.ii-v-i.f-sharp.shells: the key's seventh is in its chords and is not written
+
+======================================================================
+FAIL: test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.ii-v-i.f-sharp')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 220, in test_every_f_sharp_harmony_item_writes_the_key_s_own_notes
+    self.assertIn("E#", {n.pitch.name for n in score.notes},
+AssertionError: 'E#' not found in {'F', 'A#', 'G#', 'F#', 'B', 'C#'} : exercise.ii-v-i.f-sharp: the key's seventh is in its chords and is not written
+
+======================================================================
+FAIL: test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.ii-v-i.f-sharp.rootless')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 220, in test_every_f_sharp_harmony_item_writes_the_key_s_own_notes
+    self.assertIn("E#", {n.pitch.name for n in score.notes},
+AssertionError: 'E#' not found in {'F', 'A#', 'G#', 'F#', 'B', 'C#', 'D#'} : exercise.ii-v-i.f-sharp.rootless: the key's seventh is in its chords and is not written
+
+======================================================================
+FAIL: test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.loop4.f-sharp.root')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 220, in test_every_f_sharp_harmony_item_writes_the_key_s_own_notes
+    self.assertIn("E#", {n.pitch.name for n in score.notes},
+AssertionError: 'E#' not found in {'F', 'A#', 'G#', 'F#', 'B', 'C#', 'D#'} : exercise.loop4.f-sharp.root: the key's seventh is in its chords and is not written
+
+======================================================================
+FAIL: test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes) (item='exercise.loop4.f-sharp.inversions')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 220, in test_every_f_sharp_harmony_item_writes_the_key_s_own_notes
+    self.assertIn("E#", {n.pitch.name for n in score.notes},
+AssertionError: 'E#' not found in {'F', 'A#', 'G#', 'F#', 'B', 'C#', 'D#'} : exercise.loop4.f-sharp.inversions: the key's seventh is in its chords and is not written
+
+======================================================================
+FAIL: test_every_f_sharp_harmony_item_writes_the_key_s_own_notes (tests.test_key_spelling.TestFSharpMajorWritesItsOwnSeventh.test_every_f_sharp_harmony_item_writes_the_key_s_own_notes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 223, in test_every_f_sharp_harmony_item_writes_the_key_s_own_notes
+    self.assertEqual(faults, [], "\n".join(faults[:20]) + f"\n{len(faults)} in all")
+AssertionError: Lists differ: ["exercise.voicing7.f-sharp.close: bar 2, [1712 chars] E#"] != []
+
+First list contains 18 additional elements.
+First extra element 0:
+"exercise.voicing7.f-sharp.close: bar 2, staff 1: F4 is written where F# major's own note is E#"
+
+Diff is 1926 characters long. Set self.maxDiff to None to see it. : exercise.voicing7.f-sharp.close: bar 2, staff 1: F4 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.close: bar 3, staff 1: F5 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.shell: bar 2, staff 1: F4 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.shell: bar 3, staff 1: F5 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.rootless-a: bar 2, staff 1: F5 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.rootless-a: bar 3, staff 1: F5 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.rootless-b: bar 2, staff 1: F4 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.rootless-b: bar 3, staff 1: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp.shells: bar 3, staff 2: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp.shells: bar 4, staff 2: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp: bar 2, staff 1: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp: bar 3, staff 1: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp: bar 4, staff 1: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp.rootless: bar 2, staff 1: F5 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp.rootless: bar 3, staff 1: F5 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp.rootless: bar 4, staff 1: F5 is written where F# major's own note is E#
+exercise.loop4.f-sharp.root: bar 2, staff 1: F4 is written where F# major's own note is E#
+exercise.loop4.f-sharp.inversions: bar 2, staff 1: F4 is written where F# major's own note is E#
+18 in all
+
+======================================================================
+FAIL: test_no_double_accidental_anywhere_in_the_plan (tests.test_key_spelling.TestTheControls.test_no_double_accidental_anywhere_in_the_plan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 314, in test_no_double_accidental_anywhere_in_the_plan
+    self.assertEqual(doubles, [], "\n".join(doubles[:20]))
+AssertionError: Lists differ: ['exercise.scale.g-sharp-harmonic-minor.1o[1290 chars]##6'] != []
+
+First list contains 20 additional elements.
+First extra element 0:
+'exercise.scale.g-sharp-harmonic-minor.1oct.contrary.both.2: F##4'
+
+Diff is 1402 characters long. Set self.maxDiff to None to see it. : exercise.scale.g-sharp-harmonic-minor.1oct.contrary.both.2: F##4
+exercise.scale.g-sharp-harmonic-minor.1oct.contrary.both.2: F##5
+exercise.scale.g-sharp-harmonic-minor.1oct.similar.both.2: F##4
+exercise.scale.g-sharp-harmonic-minor.1oct.similar.both.2: F##5
+exercise.scale.g-sharp-harmonic-minor.1oct.similar.left.2: F##4
+exercise.scale.g-sharp-harmonic-minor.1oct.similar.right.2: F##5
+exercise.scale.g-sharp-harmonic-minor.2oct.similar.both.2: F##4
+exercise.scale.g-sharp-harmonic-minor.2oct.similar.both.2: F##5
+exercise.scale.g-sharp-harmonic-minor.2oct.similar.both.2: F##6
+exercise.scale.g-sharp-harmonic-minor.3oct.similar.both.2: F##4
+exercise.scale.g-sharp-harmonic-minor.3oct.similar.both.2: F##5
+exercise.scale.g-sharp-harmonic-minor.3oct.similar.both.2: F##6
+exercise.scale.g-sharp-harmonic-minor.3oct.similar.both.2: F##7
+exercise.scale.g-sharp-melodic-minor.1oct.similar.both.2: F##4
+exercise.scale.g-sharp-melodic-minor.1oct.similar.both.2: F##5
+exercise.scale.g-sharp-melodic-minor.1oct.similar.left.2: F##4
+exercise.scale.g-sharp-melodic-minor.1oct.similar.right.2: F##5
+exercise.scale.g-sharp-melodic-minor.2oct.similar.both.2: F##4
+exercise.scale.g-sharp-melodic-minor.2oct.similar.both.2: F##5
+exercise.scale.g-sharp-melodic-minor.2oct.similar.both.2: F##6
+
+======================================================================
+FAIL: test_the_minor_blues_flat_six_seven_in_e_flat_minor_is_c_flat_7 (tests.test_key_spelling.TestTheControls.test_the_minor_blues_flat_six_seven_in_e_flat_minor_is_c_flat_7)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 304, in test_the_minor_blues_flat_six_seven_in_e_flat_minor_is_c_flat_7
+    self.assertEqual([(s[1], s[2]) for s in score.symbols if s[0] == "9"], [("C-", "dominant")])
+AssertionError: Lists differ: [('B', 'dominant')] != [('C-', 'dominant')]
+
+First differing element 0:
+('B', 'dominant')
+('C-', 'dominant')
+
+- [('B', 'dominant')]
+?    ^
+
++ [('C-', 'dominant')]
+?    ^^
+
+
+======================================================================
+FAIL: test_every_shipped_item_under_six_accidentals_writes_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_every_shipped_item_under_six_accidentals_writes_the_key_s_own_notes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 250, in test_every_shipped_item_under_six_accidentals_writes_the_key_s_own_notes
+    self.assertEqual(faults, [], "\n".join(faults[:20]) + f"\n{len(faults)} in all")
+AssertionError: Lists differ: ["exercise.voicing7.f-sharp.close: bar 2, [2889 chars] G-"] != []
+
+First list contains 29 additional elements.
+First extra element 0:
+"exercise.voicing7.f-sharp.close: bar 2, staff 1: F4 is written where F# major's own note is E#"
+
+Diff is 3202 characters long. Set self.maxDiff to None to see it. : exercise.voicing7.f-sharp.close: bar 2, staff 1: F4 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.close: bar 3, staff 1: F5 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.shell: bar 2, staff 1: F4 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.shell: bar 3, staff 1: F5 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.rootless-a: bar 2, staff 1: F5 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.rootless-a: bar 3, staff 1: F5 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.rootless-b: bar 2, staff 1: F4 is written where F# major's own note is E#
+exercise.voicing7.f-sharp.rootless-b: bar 3, staff 1: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp.shells: bar 3, staff 2: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp.shells: bar 4, staff 2: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp: bar 2, staff 1: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp: bar 3, staff 1: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp: bar 4, staff 1: F4 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp.rootless: bar 2, staff 1: F5 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp.rootless: bar 3, staff 1: F5 is written where F# major's own note is E#
+exercise.ii-v-i.f-sharp.rootless: bar 4, staff 1: F5 is written where F# major's own note is E#
+exercise.loop4.f-sharp.root: bar 2, staff 1: F4 is written where F# major's own note is E#
+exercise.loop4.f-sharp.inversions: bar 2, staff 1: F4 is written where F# major's own note is E#
+exercise.open-voicing.e-flat.quartal: bar 2, staff 1: B5 is written where E- minor's own note is C-
+exercise.walking-bass.e-flat.minor-blues: bar 5, staff 1: B4 is written where E- minor's own note is C-
+29 in all
+
+======================================================================
+FAIL: test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.voicing7.g-flat.close')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 235, in test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes
+    self.assertIn("C-", {n.pitch.name for n in score.notes}, item_id)
+AssertionError: 'C-' not found in {'F', 'B-', 'E-', 'D-', 'A-', 'B', 'G-'} : exercise.voicing7.g-flat.close
+
+======================================================================
+FAIL: test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.voicing7.g-flat.shell')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 235, in test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes
+    self.assertIn("C-", {n.pitch.name for n in score.notes}, item_id)
+AssertionError: 'C-' not found in {'F', 'B-', 'D-', 'A-', 'B', 'G-'} : exercise.voicing7.g-flat.shell
+
+======================================================================
+FAIL: test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.voicing7.g-flat.rootless-a')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 235, in test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes
+    self.assertIn("C-", {n.pitch.name for n in score.notes}, item_id)
+AssertionError: 'C-' not found in {'F', 'B-', 'E-', 'D-', 'A-', 'B', 'G-'} : exercise.voicing7.g-flat.rootless-a
+
+======================================================================
+FAIL: test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.voicing7.g-flat.rootless-b')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 235, in test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes
+    self.assertIn("C-", {n.pitch.name for n in score.notes}, item_id)
+AssertionError: 'C-' not found in {'F', 'B-', 'E-', 'D-', 'A-', 'B', 'G-'} : exercise.voicing7.g-flat.rootless-b
+
+======================================================================
+FAIL: test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.ii-v-i.g-flat.shells')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 235, in test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes
+    self.assertIn("C-", {n.pitch.name for n in score.notes}, item_id)
+AssertionError: 'C-' not found in {'F', 'D-', 'A-', 'B', 'G-'} : exercise.ii-v-i.g-flat.shells
+
+======================================================================
+FAIL: test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.ii-v-i.g-flat')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 235, in test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes
+    self.assertIn("C-", {n.pitch.name for n in score.notes}, item_id)
+AssertionError: 'C-' not found in {'F', 'B-', 'D-', 'A-', 'B', 'G-'} : exercise.ii-v-i.g-flat
+
+======================================================================
+FAIL: test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.ii-v-i.g-flat.rootless')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 235, in test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes
+    self.assertIn("C-", {n.pitch.name for n in score.notes}, item_id)
+AssertionError: 'C-' not found in {'F', 'B-', 'E-', 'D-', 'A-', 'B', 'G-'} : exercise.ii-v-i.g-flat.rootless
+
+======================================================================
+FAIL: test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.loop4.g-flat.root')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 236, in test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes
+    self.assertNotIn("B", {n.pitch.name for n in score.notes}, item_id)
+AssertionError: 'B' unexpectedly found in {'F', 'B-', 'E-', 'D-', 'A-', 'B', 'C-', 'G-'} : exercise.loop4.g-flat.root
+
+======================================================================
+FAIL: test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes) (item='exercise.loop4.g-flat.inversions')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 236, in test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes
+    self.assertNotIn("B", {n.pitch.name for n in score.notes}, item_id)
+AssertionError: 'B' unexpectedly found in {'F', 'B-', 'E-', 'D-', 'A-', 'B', 'C-', 'G-'} : exercise.loop4.g-flat.inversions
+
+======================================================================
+FAIL: test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 237, in test_the_harmony_makers_in_g_flat_write_the_key_s_own_notes
+    self.assertEqual(faults, [], "\n".join(faults[:20]) + f"\n{len(faults)} in all")
+AssertionError: Lists differ: ["exercise.voicing7.g-flat.close: bar 1, s[1411 chars] C-"] != []
+
+First list contains 15 additional elements.
+First extra element 0:
+"exercise.voicing7.g-flat.close: bar 1, staff 1: B4 is written where G- major's own note is C-"
+
+Diff is 1598 characters long. Set self.maxDiff to None to see it. : exercise.voicing7.g-flat.close: bar 1, staff 1: B4 is written where G- major's own note is C-
+exercise.voicing7.g-flat.close: bar 2, staff 1: B4 is written where G- major's own note is C-
+exercise.voicing7.g-flat.shell: bar 1, staff 1: B4 is written where G- major's own note is C-
+exercise.voicing7.g-flat.shell: bar 2, staff 1: B4 is written where G- major's own note is C-
+exercise.voicing7.g-flat.rootless-a: bar 1, staff 1: B4 is written where G- major's own note is C-
+exercise.voicing7.g-flat.rootless-a: bar 2, staff 1: B4 is written where G- major's own note is C-
+exercise.voicing7.g-flat.rootless-b: bar 1, staff 1: B4 is written where G- major's own note is C-
+exercise.voicing7.g-flat.rootless-b: bar 2, staff 1: B4 is written where G- major's own note is C-
+exercise.ii-v-i.g-flat.shells: bar 2, staff 2: B3 is written where G- major's own note is C-
+exercise.ii-v-i.g-flat: bar 1, staff 1: B4 is written where G- major's own note is C-
+exercise.ii-v-i.g-flat: bar 2, staff 1: B4 is written where G- major's own note is C-
+exercise.ii-v-i.g-flat.rootless: bar 1, staff 1: B4 is written where G- major's own note is C-
+exercise.ii-v-i.g-flat.rootless: bar 2, staff 1: B4 is written where G- major's own note is C-
+exercise.loop4.g-flat.root: bar 4, staff 1: B3 is written where G- major's own note is C-
+exercise.loop4.g-flat.inversions: bar 4, staff 1: B4 is written where G- major's own note is C-
+15 in all
+
+======================================================================
+FAIL: test_the_six_flat_items_that_carry_c_flat_carry_it (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_six_flat_items_that_carry_c_flat_carry_it) (item='exercise.open-voicing.e-flat.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 260, in test_the_six_flat_items_that_carry_c_flat_carry_it
+    self.assertIn("C-", {n.pitch.name for n in score.notes}, item_id)
+AssertionError: 'C-' not found in {'B-', 'E-', 'D-', 'A-', 'B', 'G-'} : exercise.open-voicing.e-flat.quartal
+
+======================================================================
+FAIL: test_the_six_flat_items_that_carry_c_flat_carry_it (tests.test_key_spelling.TestTheSixFlatsWriteCFlat.test_the_six_flat_items_that_carry_c_flat_carry_it) (item='exercise.walking-bass.e-flat.minor-blues')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_key_spelling.py", line 260, in test_the_six_flat_items_that_carry_c_flat_carry_it
+    self.assertIn("C-", {n.pitch.name for n in score.notes}, item_id)
+AssertionError: 'C-' not found in {'F', 'A#', 'B-', 'E-', 'D-', 'A-', 'B', 'F#', 'D', 'G-', 'A', 'G', 'D#'} : exercise.walking-bass.e-flat.minor-blues
+
+----------------------------------------------------------------------
+Ran 9 tests in 132.232s
+
+FAILED (failures=26)

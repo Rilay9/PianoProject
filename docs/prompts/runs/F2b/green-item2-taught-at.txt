@@ -1,0 +1,7 @@
+(in tools/content) python -m unittest tests.test_taught_at
+..............................
+----------------------------------------------------------------------
+Ran 30 tests in 0.183s
+
+OK
+exit=0

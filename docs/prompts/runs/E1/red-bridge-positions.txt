@@ -1,0 +1,48 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a28dd830f451d14cd/app
+
+ ❯ tests/unit/demandsOfFiles.test.ts (16 tests | 2 failed | 14 skipped) 44ms
+   ❯ the positions the bridge writes, by printed bar (E1) (2)
+     × are detect.ts’s located places, by printed bar, each printed note once 35ms
+     × reads an every-bar detector bar by bar, and each hand’s range per bar 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/demandsOfFiles.test.ts > the positions the bridge writes, by printed bar (E1) > are detect.ts’s located places, by printed bar, each printed note once
+AssertionError: expected undefined to be 5 // Object.is equality
+
+- Expected:
+5
+
++ Received:
+undefined
+
+ ❯ tests/unit/demandsOfFiles.test.ts:193:29
+    191|     expect(model.measureCount).toBe(7);
+    192|     const row = measure(model);
+    193|     expect(row.printedBars).toBe(5);
+       |                             ^
+    194|     // Read independently from `at`: the printed bar of each located n…
+    195|     const notes = new Map(model.steps.flatMap((step) => step.notes).ma…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/demandsOfFiles.test.ts > the positions the bridge writes, by printed bar (E1) > reads an every-bar detector bar by bar, and each hand’s range per bar
+TypeError: Cannot read properties of undefined (reading 'texture.walking-bass')
+ ❯ tests/unit/demandsOfFiles.test.ts:227:16
+    225|     expect(row.opportunities['texture.walking-bass']).toBe(0);
+    226|     // Bar by bar: bars 1 and 3 walk, and a pattern (more than one lef…
+    227|     expect(row.everyBar['texture.walking-bass']).toEqual([1, 3]);
+       |                ^
+    228|     expect(row.everyBar['texture.left-hand-pattern']).toEqual([1, 3]);
+    229|     expect(row.hands['1']).toEqual({ R: [72, 72], L: [48, 53] });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 14 skipped (16)
+   Start at  16:27:37
+   Duration  37.00s (environment 99%)
+
+exit 1

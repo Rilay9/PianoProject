@@ -1,0 +1,32 @@
+
+Running 4 tests using 4 workers
+
+  ok 2 build\u118\disc\folded-chip.spec.ts:220:1 › a tablet: no chip, no reserve, the scale held through the fold timer (check 5) (7.1s)
+  ok 4 build\u118\disc\folded-chip.spec.ts:178:1 › folded on a phone, the paused run: the five checks (7.1s)
+  ok 3 build\u118\disc\folded-chip.spec.ts:198:1 › folded on a phone after a crossing into the third bar: checks 1 to 4 (9.2s)
+  x  1 build\u118\disc\folded-chip.spec.ts:239:1 › turned and turned back while folded: the music on the stage, the chip clear (11.2s)
+
+
+  1) build\u118\disc\folded-chip.spec.ts:239:1 › turned and turned back while folded: the music on the stage, the chip clear 
+
+    Error: turned back: every mark on the stage {"chrome":"folded","chipShown":true,"chipBottom":36.69,"stageH":666,"zoom":1.63,"scale":0.862306,"placed":[{"top":36.72,"from":0,"ahead":false,"cursor":true},{"top":267.72,"from":1,"ahead":false,"cursor":false},{"top":497.72,"from":2,"ahead":false,"cursor":false}],"firstTop":36.72,"firstInkTop":42.69,"inkBottom":698.37,"under":[]}
+
+    expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 667
+    Received:    698.37
+
+      273 |   expect(turned.chrome, 'still folded after the turns').toBe('folded');
+      274 |   expect.soft(turned.under, `turned back: nothing under the chip ${JSON.stringify(turned)}`).toEqual([]);
+    > 275 |   expect.soft(turned.inkBottom ?? Infinity, `turned back: every mark on the stage ${JSON.stringify(turned)}`).toBeLessThanOrEqual(turned.stageH + 1);
+          |                                                                                                               ^
+      276 | });
+      277 |
+        at <worktree>\app\build\u118\disc\folded-chip.spec.ts:275:111
+
+    Error Context: build\u118\test-results\folded-chip-turned-and-tur-f3721-on-the-stage-the-chip-clear\error-context.md
+
+  1 failed
+    build\u118\disc\folded-chip.spec.ts:239:1 › turned and turned back while folded: the music on the stage, the chip clear 
+  3 passed (14.7s)
+exit 1

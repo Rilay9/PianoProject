@@ -1,0 +1,25 @@
+10.5.0
+number 96 None 96.0 None <music21.duration.Duration 1.0>
+<direction>
+        <direction-type>
+          <metronome parentheses="no">
+            <beat-unit>quarter</beat-unit>
+            <per-minute>96</per-minute>
+          </metronome>
+        </direction-type>
+        <sound tempo="96" />
+      </direction>
+numberSounding kw None 96 96.0 None <music21.duration.Duration 1.0>
+<direction>
+        <direction-type>
+          <words />
+        </direction-type>
+        <sound tempo="96" />
+      </direction>
+attr None 96 96.0 None <music21.duration.Duration 1.0>
+<direction>
+        <direction-type>
+          <words />
+        </direction-type>
+        <sound tempo="96" />
+      </direction>

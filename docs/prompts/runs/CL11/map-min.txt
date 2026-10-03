@@ -1,0 +1,5 @@
+# checks for 2 path(s): 2 matched, 0 unmatched
+# docs/design/evidence-truth.md: docs/**
+# docs/prompts/runs/CL11/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py

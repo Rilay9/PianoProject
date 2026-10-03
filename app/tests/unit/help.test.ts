@@ -128,6 +128,19 @@ describe('every mode, drill and tool says what it is', () => {
     expect(help('mode:nope' as Parameters<typeof help>[0])).toBeUndefined();
   });
 
+  // CL11a (Entry 219; `responses/1afa30d3.md` §2): before the run, the learner knows what the accuracy is and that
+  // a key that is not in the music costs credit. The card is where what counts is told ahead of playing (X46).
+  it('Keep tempo says before the run what its accuracy counts: the notes played right in time, and a wrong note costing what a missed one costs', () => {
+    const counts = MODE_HELP.tempo.counts;
+    expect(counts).toMatch(/notes you play right in time/);
+    expect(counts).toMatch(/each wrong note costs as much as a note you miss/);
+    // The pass still names both halves and whose numbers judge a lesson's run.
+    expect(counts).toMatch(/share of the written tempo/);
+    expect(counts).toMatch(/the lesson’s numbers where it states them/);
+    // Wait for me, which passes nothing, does not claim a count it does not make.
+    expect(MODE_HELP.wait.counts).not.toMatch(/wrong note/);
+  });
+
   it('says on the screen exactly what `04` §5f says it says', () => {
     const section = sectionFiveF();
     const drifted: string[] = [];
@@ -161,6 +174,20 @@ describe('the Score screen’s run sentences are the ones `04` §5f prints', () 
       STATE_TEXT.hearingOverRun('N'),
       STATE_TEXT.pausedAt('N'),
       STATE_TEXT.restarted('N', RESTARTED_WITH.hands('L')),
+      // G86a: a tap whose sound did not start, named by the control that asks again.
+      STATE_TEXT.soundOff('▶'),
+      STATE_TEXT.soundOff('Hear it'),
+      // U105: every other control whose tap can start the sound, and a key, which names ▶.
+      STATE_TEXT.soundOff('Carry on'),
+      STATE_TEXT.soundOff('Start again'),
+      STATE_TEXT.soundOff('L'),
+      STATE_TEXT.soundOff('bar N', { verb: 'hold' }),
+      STATE_TEXT.soundOff('Try again'),
+      STATE_TEXT.soundOff('Again'),
+      STATE_TEXT.soundOff('Slower'),
+      STATE_TEXT.soundOff('Faster'),
+      STATE_TEXT.soundOff('Loop'),
+      STATE_TEXT.soundOff('▶', { again: false }),
       RESTARTED_WITH.mode('Keep tempo'),
       RESTARTED_WITH.hands('both'),
       RESTARTED_WITH.tempo(80),
@@ -194,6 +221,8 @@ describe('the Score screen’s run sentences are the ones `04` §5f prints', () 
       SUMMARY_TEXT.heard([2]),
       SUMMARY_TEXT.afterTheRun,
       SUMMARY_TEXT.sightReadHeard,
+      // G1: a phrase looked at on an earlier visit.
+      SUMMARY_TEXT.sightReadSeen,
       // T40: the sheet of a run the app heard nothing of, the repeat sentence
       // moved onto the sheet from the header, and a performance helped part way.
       SUMMARY_TEXT.notMeasuredHeading,
@@ -304,8 +333,11 @@ describe('the slot sentences are the ones `04` §2 prints', () => {
       ...Object.values(SLOT_TEXT),
       swapTierWords('lesson'),
       swapTierWords('alternative'),
-      'Trains the same skill',
-      'Carries the same demand',
+      // Revised (E0): the tiers the gate turned on state what the option also practises; old words
+      // "Trains the same skill" and "Carries the same demand" said only that something was shared.
+      'Also trains',
+      'Also practises',
+      'with the other demands you have met',
       swapTierWords('kind'),
     ];
     const missing = said.filter((line) => !section.includes(flat(line)));
@@ -336,7 +368,8 @@ describe('the skill words are the ones `04` §3a and §6 print', () => {
     const section = flat(between('## 6. Progress', '\n## 7.'));
     const today = new Date('2026-10-29T12:00:00');
     const reading = (state: 'practised' | 'familiar', notShownRecently = false) =>
-      ({ state, transfer: false, retained: false, notShownRecently, selfAssessed: [] });
+      // G2: a reading also carries its scope and what established it; none here.
+      ({ state, transfer: false, retained: false, notShownRecently, selfAssessed: [], transferScope: [], established: [], establishing: [] });
     const said = [
       skillMoveWords({ kind: 'up', then: reading('practised'), now: reading('familiar') }, today),
       skillMoveWords({ kind: 'unshown', then: reading('familiar'), now: reading('familiar', true), lastSupport: '2026-10-01T12:00:00' }, today),

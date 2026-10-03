@@ -1,0 +1,3010 @@
+[
+  {
+    "rung": "0.1",
+    "tools": [],
+    "start": {
+      "id": "drill.setup.posture-checklist",
+      "title": "Posture and hand-shape checklist",
+      "admitted": true
+    },
+    "startSaid": "Opens “Posture and hand-shape checklist”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.setup.posture-checklist",
+      "title": "Posture and hand-shape checklist",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 2,
+    "rowsDrawn": 2
+  },
+  {
+    "rung": "0.2",
+    "tools": [],
+    "start": {
+      "id": "drill.reading.find-key",
+      "title": "Find the key",
+      "admitted": true
+    },
+    "startSaid": "Opens “Find the key”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.reading.find-key",
+      "title": "Find the key",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 2,
+    "rowsDrawn": 2
+  },
+  {
+    "rung": "0.3",
+    "tools": [],
+    "start": {
+      "id": "drill.tour.app-basics",
+      "title": "Guided tour of the practice modes",
+      "admitted": true
+    },
+    "startSaid": "Opens “Guided tour of the practice modes”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.tour.app-basics",
+      "title": "Guided tour of the practice modes",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 2,
+    "rowsDrawn": 2
+  },
+  {
+    "rung": "0.4",
+    "tools": [],
+    "start": {
+      "id": "drill.placement.stage-0",
+      "title": "Placement test",
+      "admitted": true
+    },
+    "startSaid": "Opens “Placement test”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.placement.stage-0",
+      "title": "Placement test",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 1,
+    "rowsDrawn": 1
+  },
+  {
+    "rung": "1.1",
+    "tools": [],
+    "start": {
+      "id": "drill.technique.five-finger-rh",
+      "title": "Right-hand five-finger walk",
+      "admitted": true
+    },
+    "startSaid": "Opens “Right-hand five-finger walk”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.technique.five-finger-rh",
+      "title": "Right-hand five-finger walk",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 13,
+    "rowsDrawn": 13
+  },
+  {
+    "rung": "1.2",
+    "tools": [],
+    "start": {
+      "id": "drill.rhythm.mixed-values",
+      "title": "Rhythm reading — quarters, halves, wholes",
+      "admitted": true
+    },
+    "startSaid": "Opens “Rhythm reading — quarters, halves, wholes”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.rhythm.mixed-values",
+      "title": "Rhythm reading — quarters, halves, wholes",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 9,
+    "rowsDrawn": 9
+  },
+  {
+    "rung": "1.3",
+    "tools": [],
+    "start": {
+      "id": "drill.reading.sight-reading-1-left",
+      "title": "Sight-reading generator, level 1, left hand",
+      "admitted": true
+    },
+    "startSaid": "Opens “Sight-reading generator, level 1, left hand”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.reading.sight-reading-1-left",
+      "title": "Sight-reading generator, level 1, left hand",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 9,
+    "rowsDrawn": 9
+  },
+  {
+    "rung": "1.4",
+    "tools": [],
+    "start": {
+      "id": "drill.reading.sight-reading-1-left",
+      "title": "Sight-reading generator, level 1, left hand",
+      "admitted": true
+    },
+    "startSaid": "Opens “Sight-reading generator, level 1, left hand”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.reading.sight-reading-1-left",
+      "title": "Sight-reading generator, level 1, left hand",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 9,
+    "rowsDrawn": 9
+  },
+  {
+    "rung": "1.5",
+    "tools": [],
+    "start": {
+      "id": "drill.reading.sight-reading-1",
+      "title": "Sight-reading generator, level 1",
+      "admitted": true
+    },
+    "startSaid": "Opens “Sight-reading generator, level 1”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.reading.sight-reading-1",
+      "title": "Sight-reading generator, level 1",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 12,
+    "rowsDrawn": 12
+  },
+  {
+    "rung": "practice.1",
+    "tools": [],
+    "start": {
+      "id": "exercise.hanon.01.both",
+      "title": "Hanon No. 1 (C major) — both",
+      "admitted": true
+    },
+    "startSaid": "Opens “Hanon No. 1 (C major) — both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.hanon.01.both",
+      "title": "Hanon No. 1 (C major) — both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 5,
+    "rowsDrawn": 5
+  },
+  {
+    "rung": "practice.2",
+    "tools": [],
+    "start": {
+      "id": "exercise.hanon.01.both",
+      "title": "Hanon No. 1 (C major) — both",
+      "admitted": true
+    },
+    "startSaid": "Opens “Hanon No. 1 (C major) — both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.hanon.01.both",
+      "title": "Hanon No. 1 (C major) — both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 4,
+    "rowsDrawn": 4
+  },
+  {
+    "rung": "practice.3",
+    "tools": [],
+    "start": {
+      "id": "drill.rhythm.eighths",
+      "title": "Rhythm reading with eighth notes",
+      "admitted": true
+    },
+    "startSaid": "Opens “Rhythm reading with eighth notes”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.rhythm.eighths",
+      "title": "Rhythm reading with eighth notes",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 5,
+    "rowsDrawn": 5
+  },
+  {
+    "rung": "practice.4",
+    "tools": [],
+    "start": {
+      "id": "exercise.five-finger.c-major.both",
+      "title": "C major five-finger pattern — both",
+      "admitted": true
+    },
+    "startSaid": "Opens “C major five-finger pattern — both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.five-finger.c-major.both",
+      "title": "C major five-finger pattern — both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 4,
+    "rowsDrawn": 4
+  },
+  {
+    "rung": "practice.5",
+    "tools": [],
+    "start": {
+      "id": "exercise.five-finger.g-major.both",
+      "title": "G major five-finger pattern — both",
+      "admitted": true
+    },
+    "startSaid": "Opens “G major five-finger pattern — both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.five-finger.g-major.both",
+      "title": "G major five-finger pattern — both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 4,
+    "rowsDrawn": 4
+  },
+  {
+    "rung": "2.1",
+    "tools": [
+      "duet"
+    ],
+    "start": {
+      "id": "drill.technique.ht-holds",
+      "title": "Hands-together pattern drill",
+      "admitted": true
+    },
+    "startSaid": "Opens “Hands-together pattern drill”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.technique.ht-holds",
+      "title": "Hands-together pattern drill",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.classical.ode-to-joy.ht",
+      "title": "Ode to Joy (hands together)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 11,
+    "rowsDrawn": 11
+  },
+  {
+    "rung": "2.2",
+    "tools": [],
+    "start": {
+      "id": "drill.reading.sight-reading-2-right",
+      "title": "Sight-reading generator, level 2, right hand",
+      "admitted": true
+    },
+    "startSaid": "Opens “Sight-reading generator, level 2, right hand”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.reading.sight-reading-2-right",
+      "title": "Sight-reading generator, level 2, right hand",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 14,
+    "rowsDrawn": 14
+  },
+  {
+    "rung": "2.3",
+    "tools": [
+      "play",
+      "lab"
+    ],
+    "start": {
+      "id": "drill.chord.c-f-g",
+      "title": "Chord drill — C, F and G",
+      "admitted": true
+    },
+    "startSaid": "Opens “Chord drill — C, F and G”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.chord.c-f-g",
+      "title": "Chord drill — C, F and G",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 11,
+    "rowsDrawn": 11
+  },
+  {
+    "rung": "2.4",
+    "tools": [],
+    "start": {
+      "id": "drill.rhythm.dotted",
+      "title": "Rhythm reading — dotted quarter and eighth",
+      "admitted": true
+    },
+    "startSaid": "Opens “Rhythm reading — dotted quarter and eighth”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.rhythm.dotted",
+      "title": "Rhythm reading — dotted quarter and eighth",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 10,
+    "rowsDrawn": 10
+  },
+  {
+    "rung": "2.5",
+    "tools": [],
+    "start": {
+      "id": "drill.reading.sight-reading-2-right",
+      "title": "Sight-reading generator, level 2, right hand",
+      "admitted": true
+    },
+    "startSaid": "Opens “Sight-reading generator, level 2, right hand”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.reading.sight-reading-2-right",
+      "title": "Sight-reading generator, level 2, right hand",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 10,
+    "rowsDrawn": 10
+  },
+  {
+    "rung": "holiday",
+    "tools": [
+      "lab",
+      "play"
+    ],
+    "start": {
+      "id": "exercise.coordination.c.hold",
+      "title": "Hands together in C — left hand holds",
+      "admitted": true
+    },
+    "startSaid": "Opens “Hands together in C — left hand holds”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.coordination.c.hold",
+      "title": "Hands together in C — left hand holds",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 9,
+    "rowsDrawn": 9
+  },
+  {
+    "rung": "hymns.2",
+    "tools": [
+      "play"
+    ],
+    "start": {
+      "id": "drill.chord.c-f-g",
+      "title": "Chord drill — C, F and G",
+      "admitted": true
+    },
+    "startSaid": "Opens “Chord drill — C, F and G”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.chord.c-f-g",
+      "title": "Chord drill — C, F and G",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 7,
+    "rowsDrawn": 7
+  },
+  {
+    "rung": "3.1",
+    "tools": [],
+    "start": {
+      "id": "exercise.scale.g-major.1oct.similar.right.2",
+      "title": "G major scale — 1 oct, similar, right",
+      "admitted": true
+    },
+    "startSaid": "Opens “G major scale — 1 oct, similar, right”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.scale.g-major.1oct.similar.right.2",
+      "title": "G major scale — 1 oct, similar, right",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 13,
+    "rowsDrawn": 13
+  },
+  {
+    "rung": "3.2",
+    "tools": [
+      "lab",
+      "play"
+    ],
+    "start": {
+      "id": "drill.chord.primary-c-g-f",
+      "title": "I-IV-V7 in C, G and F",
+      "admitted": true
+    },
+    "startSaid": "Opens “I-IV-V7 in C, G and F”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.chord.primary-c-g-f",
+      "title": "I-IV-V7 in C, G and F",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 11,
+    "rowsDrawn": 11
+  },
+  {
+    "rung": "3.3",
+    "tools": [
+      "lab",
+      "play"
+    ],
+    "start": {
+      "id": "exercise.scale.a-harmonic-minor.1oct.similar.both.2",
+      "title": "A harmonic minor scale — 1 oct, similar, both",
+      "admitted": true
+    },
+    "startSaid": "Opens “A harmonic minor scale — 1 oct, similar, both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.scale.a-harmonic-minor.1oct.similar.both.2",
+      "title": "A harmonic minor scale — 1 oct, similar, both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 10,
+    "rowsDrawn": 10
+  },
+  {
+    "rung": "3.4",
+    "tools": [],
+    "start": {
+      "id": "drill.reading.note-flash-extended",
+      "title": "Note flash — C2 to C6",
+      "admitted": true
+    },
+    "startSaid": "Opens “Note flash — C2 to C6”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.reading.note-flash-extended",
+      "title": "Note flash — C2 to C6",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 7,
+    "rowsDrawn": 7
+  },
+  {
+    "rung": "3.5",
+    "tools": [
+      "duet"
+    ],
+    "start": {
+      "id": "drill.pedal.changes",
+      "title": "Pedal-change drill on I-IV-V7-I",
+      "admitted": true
+    },
+    "startSaid": "Opens “Pedal-change drill on I-IV-V7-I”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.pedal.changes",
+      "title": "Pedal-change drill on I-IV-V7-I",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.classical.pachelbel-canon-d.easy",
+      "title": "Canon in D (easy)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 8,
+    "rowsDrawn": 8
+  },
+  {
+    "rung": "3.6",
+    "tools": [
+      "duet"
+    ],
+    "start": {
+      "id": "drill.pattern.lh-accompaniment",
+      "title": "Left-hand accompaniment patterns",
+      "admitted": true
+    },
+    "startSaid": "Opens “Left-hand accompaniment patterns”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.pattern.lh-accompaniment",
+      "title": "Left-hand accompaniment patterns",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.folk.greensleeves.waltz",
+      "title": "Greensleeves (waltz bass)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 10,
+    "rowsDrawn": 10
+  },
+  {
+    "rung": "classical.3",
+    "tools": [],
+    "start": {
+      "id": "exercise.scale.g-major.1oct.similar.both.2",
+      "title": "G major scale — 1 oct, similar, both",
+      "admitted": true
+    },
+    "startSaid": "Opens “G major scale — 1 oct, similar, both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.scale.g-major.1oct.similar.both.2",
+      "title": "G major scale — 1 oct, similar, both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 9,
+    "rowsDrawn": 9
+  },
+  {
+    "rung": "chords-pop.3",
+    "tools": [
+      "lab",
+      "play"
+    ],
+    "start": {
+      "id": "drill.chord.primary-c-g-f",
+      "title": "I-IV-V7 in C, G and F",
+      "admitted": true
+    },
+    "startSaid": "Opens “I-IV-V7 in C, G and F”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.chord.primary-c-g-f",
+      "title": "I-IV-V7 in C, G and F",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 11,
+    "rowsDrawn": 11
+  },
+  {
+    "rung": "blues.3",
+    "tools": [
+      "lab",
+      "simon:drill.ear.simon-blues-c"
+    ],
+    "start": {
+      "id": "drill.chord.symbol-flash",
+      "title": "Chord-symbol flash",
+      "admitted": true
+    },
+    "startSaid": "Opens “Chord-symbol flash”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.chord.symbol-flash",
+      "title": "Chord-symbol flash",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 12,
+    "rowsDrawn": 12
+  },
+  {
+    "rung": "theory.3",
+    "tools": [
+      "simon"
+    ],
+    "start": {
+      "id": "drill.ear.rhythm-dictation",
+      "title": "Rhythm dictation",
+      "admitted": true
+    },
+    "startSaid": "Opens “Rhythm dictation”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.ear.rhythm-dictation",
+      "title": "Rhythm dictation",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 4,
+    "rowsDrawn": 4
+  },
+  {
+    "rung": "improv.3",
+    "tools": [],
+    "start": {
+      "id": "drill.improv.loop-i-iv-v",
+      "title": "Improvise over a I-IV-V loop",
+      "admitted": true
+    },
+    "startSaid": "Opens “Improvise over a I-IV-V loop”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.improv.loop-i-iv-v",
+      "title": "Improvise over a I-IV-V loop",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 3,
+    "rowsDrawn": 3
+  },
+  {
+    "rung": "hymns",
+    "tools": [
+      "duet",
+      "lab"
+    ],
+    "start": {
+      "id": "drill.chord.primary-c-g-f",
+      "title": "I-IV-V7 in C, G and F",
+      "admitted": true
+    },
+    "startSaid": "Opens “I-IV-V7 in C, G and F”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.chord.primary-c-g-f",
+      "title": "I-IV-V7 in C, G and F",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.folk.when-the-saints.f",
+      "title": "Oh When the Saints Go Marching In (in F major)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 17,
+    "rowsDrawn": 17
+  },
+  {
+    "rung": "rock.overview",
+    "tools": [
+      "lab",
+      "duet"
+    ],
+    "start": {
+      "id": "drill.pattern.lh-accompaniment",
+      "title": "Left-hand accompaniment patterns",
+      "admitted": true
+    },
+    "startSaid": "Opens “Left-hand accompaniment patterns”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.pattern.lh-accompaniment",
+      "title": "Left-hand accompaniment patterns",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.classical.pachelbel-canon-d.easy",
+      "title": "Canon in D (easy)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 7,
+    "rowsDrawn": 7
+  },
+  {
+    "rung": "latin.3",
+    "tools": [
+      "duet:exercise.clave.son-3-2.pulse"
+    ],
+    "start": {
+      "id": "exercise.clave.son-2-3",
+      "title": "Clave — son 2-3",
+      "admitted": false
+    },
+    "startSaid": "Opens “Clave — son 2-3”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.clave.son-2-3",
+      "title": "Clave — son 2-3",
+      "admitted": false
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "exercise.clave.son-3-2.pulse",
+      "title": "Clave — son 3-2 over a quarter-note pulse",
+      "admitted": false
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 8,
+    "rowsDrawn": 8
+  },
+  {
+    "rung": "holiday.3",
+    "tools": [
+      "play"
+    ],
+    "start": {
+      "id": "exercise.cadence.c.root",
+      "title": "I-IV-V7-I in C — root position",
+      "admitted": true
+    },
+    "startSaid": "Opens “I-IV-V7-I in C — root position”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.cadence.c.root",
+      "title": "I-IV-V7-I in C — root position",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 12,
+    "rowsDrawn": 12
+  },
+  {
+    "rung": "jazz.3",
+    "tools": [],
+    "start": {
+      "id": "exercise.swing-pair.c",
+      "title": "Straight, then swung — the same four bars in C",
+      "admitted": true
+    },
+    "startSaid": "Opens “Straight, then swung — the same four bars in C”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.swing-pair.c",
+      "title": "Straight, then swung — the same four bars in C",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 9,
+    "rowsDrawn": 9
+  },
+  {
+    "rung": "4.1",
+    "tools": [
+      "ladder"
+    ],
+    "start": {
+      "id": "exercise.scale.c-major.2oct.similar.both.2",
+      "title": "C major scale — 2 oct, similar, both",
+      "admitted": true
+    },
+    "startSaid": "Opens “C major scale — 2 oct, similar, both”, the first thing on this rung.",
+    "ladder": {
+      "id": "exercise.scale.c-major.2oct.similar.both.2",
+      "title": "C major scale — 2 oct, similar, both",
+      "admitted": true
+    },
+    "ladderDrawn": true,
+    "check": {
+      "id": "exercise.scale.c-major.2oct.similar.both.2",
+      "title": "C major scale — 2 oct, similar, both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 9,
+    "rowsDrawn": 9
+  },
+  {
+    "rung": "4.2",
+    "tools": [
+      "ladder"
+    ],
+    "start": {
+      "id": "exercise.scale.f-major.2oct.similar.both.2",
+      "title": "F major scale — 2 oct, similar, both",
+      "admitted": true
+    },
+    "startSaid": "Opens “F major scale — 2 oct, similar, both”, the first thing on this rung.",
+    "ladder": {
+      "id": "exercise.scale.f-major.2oct.similar.both.2",
+      "title": "F major scale — 2 oct, similar, both",
+      "admitted": true
+    },
+    "ladderDrawn": true,
+    "check": {
+      "id": "exercise.scale.f-major.2oct.similar.both.2",
+      "title": "F major scale — 2 oct, similar, both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 13,
+    "rowsDrawn": 13
+  },
+  {
+    "rung": "4.3",
+    "tools": [
+      "ladder"
+    ],
+    "start": {
+      "id": "drill.chord.inversions",
+      "title": "Inversion drill",
+      "admitted": true
+    },
+    "startSaid": "Opens “Inversion drill”, the first thing on this rung.",
+    "ladder": {
+      "id": "exercise.inversions.c-major.both",
+      "title": "C major triad inversions — both",
+      "admitted": true
+    },
+    "ladderDrawn": true,
+    "check": {
+      "id": "drill.chord.inversions",
+      "title": "Inversion drill",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 20,
+    "rowsDrawn": 20
+  },
+  {
+    "rung": "4.4",
+    "tools": [
+      "ladder"
+    ],
+    "start": {
+      "id": "exercise.hanon.01.both",
+      "title": "Hanon No. 1 (C major) — both",
+      "admitted": true
+    },
+    "startSaid": "Opens “Hanon No. 1 (C major) — both”, the first thing on this rung.",
+    "ladder": {
+      "id": "exercise.hanon.01.both",
+      "title": "Hanon No. 1 (C major) — both",
+      "admitted": true
+    },
+    "ladderDrawn": true,
+    "check": {
+      "id": "exercise.hanon.01.both",
+      "title": "Hanon No. 1 (C major) — both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 8,
+    "rowsDrawn": 8
+  },
+  {
+    "rung": "4.5",
+    "tools": [],
+    "start": {
+      "id": "drill.rhythm.six-eight",
+      "title": "Rhythm reading in 6/8",
+      "admitted": true
+    },
+    "startSaid": "Opens “Rhythm reading in 6/8”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.rhythm.six-eight",
+      "title": "Rhythm reading in 6/8",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 13,
+    "rowsDrawn": 13
+  },
+  {
+    "rung": "4.6",
+    "tools": [
+      "blind"
+    ],
+    "start": {
+      "id": "drill.reading.sight-reading-3",
+      "title": "Sight-reading generator, level 3",
+      "admitted": true
+    },
+    "startSaid": "Opens “Sight-reading generator, level 3”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.reading.sight-reading-3",
+      "title": "Sight-reading generator, level 3",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.classical.beethoven-fur-elise.easy",
+      "title": "Für Elise (easy)",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 10,
+    "rowsDrawn": 10
+  },
+  {
+    "rung": "4.7",
+    "tools": [
+      "blind"
+    ],
+    "start": {
+      "id": "exercise.blues.twelve-bar-shuffle.d",
+      "title": "Twelve-bar blues shuffle in D",
+      "admitted": true
+    },
+    "startSaid": "Opens “Twelve-bar blues shuffle in D”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.blues.twelve-bar-shuffle.d",
+      "title": "Twelve-bar blues shuffle in D",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.classical.beethoven-fur-elise.easy",
+      "title": "Für Elise (easy)",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 6,
+    "rowsDrawn": 6
+  },
+  {
+    "rung": "classical.4",
+    "tools": [
+      "duet"
+    ],
+    "start": {
+      "id": "exercise.hanon.01.both",
+      "title": "Hanon No. 1 (C major) — both",
+      "admitted": true
+    },
+    "startSaid": "Opens “Hanon No. 1 (C major) — both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.hanon.01.both",
+      "title": "Hanon No. 1 (C major) — both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.pop.sonatina-in-g.pdmx",
+      "title": "Sonatina in G major",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 8,
+    "rowsDrawn": 8
+  },
+  {
+    "rung": "classical.4.shelf",
+    "tools": [],
+    "start": {
+      "id": "drill.pedal.changes",
+      "title": "Pedal-change drill on I-IV-V7-I",
+      "admitted": true
+    },
+    "startSaid": "Opens “Pedal-change drill on I-IV-V7-I”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.pedal.changes",
+      "title": "Pedal-change drill on I-IV-V7-I",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 52,
+    "rowsDrawn": 52
+  },
+  {
+    "rung": "chords-pop.4",
+    "tools": [
+      "lab",
+      "play"
+    ],
+    "start": {
+      "id": "drill.chord.inversions",
+      "title": "Inversion drill",
+      "admitted": true
+    },
+    "startSaid": "Opens “Inversion drill”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.chord.inversions",
+      "title": "Inversion drill",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 11,
+    "rowsDrawn": 11
+  },
+  {
+    "rung": "blues.4",
+    "tools": [
+      "lab",
+      "duet"
+    ],
+    "start": {
+      "id": "drill.blues.lh-patterns",
+      "title": "Twelve-bar left-hand patterns",
+      "admitted": true
+    },
+    "startSaid": "Opens “Twelve-bar left-hand patterns”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.blues.lh-patterns",
+      "title": "Twelve-bar left-hand patterns",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.pop.careless-love-blues.pdmx",
+      "title": "Careless Love",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 12,
+    "rowsDrawn": 12
+  },
+  {
+    "rung": "jazz.4",
+    "tools": [
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.comping.f.charleston.intro",
+      "title": "Comping — charleston on triads in F",
+      "admitted": false
+    },
+    "startSaid": "Opens “Comping — charleston on triads in F”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.comping.f.charleston.intro",
+      "title": "Comping — charleston on triads in F",
+      "admitted": false
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 7,
+    "rowsDrawn": 7
+  },
+  {
+    "rung": "holiday.4",
+    "tools": [
+      "lab",
+      "play"
+    ],
+    "start": {
+      "id": "exercise.accompaniment.broken.c-major.both",
+      "title": "Broken chord in C major — hands together",
+      "admitted": true
+    },
+    "startSaid": "Opens “Broken chord in C major — hands together”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.accompaniment.broken.c-major.both",
+      "title": "Broken chord in C major — hands together",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 7,
+    "rowsDrawn": 7
+  },
+  {
+    "rung": "theory.4",
+    "tools": [
+      "simon"
+    ],
+    "start": {
+      "id": "drill.ear.cadences",
+      "title": "Ear drill — cadences",
+      "admitted": true
+    },
+    "startSaid": "Opens “Ear drill — cadences”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.ear.cadences",
+      "title": "Ear drill — cadences",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 4,
+    "rowsDrawn": 4
+  },
+  {
+    "rung": "improv.4",
+    "tools": [
+      "lab"
+    ],
+    "start": {
+      "id": "drill.improv.call-response",
+      "title": "Answer the phrase",
+      "admitted": true
+    },
+    "startSaid": "Opens “Answer the phrase”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.improv.call-response",
+      "title": "Answer the phrase",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 4,
+    "rowsDrawn": 4
+  },
+  {
+    "rung": "jam",
+    "tools": [
+      "lab"
+    ],
+    "start": {
+      "id": "drill.jam.form-tracker",
+      "title": "Play the form with the chart",
+      "admitted": true
+    },
+    "startSaid": "Opens “Play the form with the chart”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.jam.form-tracker",
+      "title": "Play the form with the chart",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 9,
+    "rowsDrawn": 9
+  },
+  {
+    "rung": "technique.4",
+    "tools": [
+      "ladder"
+    ],
+    "start": {
+      "id": "exercise.articulation.c.legato.right",
+      "title": "Legato phrase in C — right",
+      "admitted": true
+    },
+    "startSaid": "Opens “Legato phrase in C — right”, the first thing on this rung.",
+    "ladder": {
+      "id": "exercise.articulation.c.legato.right",
+      "title": "Legato phrase in C — right",
+      "admitted": true
+    },
+    "ladderDrawn": true,
+    "check": {
+      "id": "exercise.articulation.c.legato.right",
+      "title": "Legato phrase in C — right",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 16,
+    "rowsDrawn": 16
+  },
+  {
+    "rung": "rock.4",
+    "tools": [
+      "lab",
+      "duet"
+    ],
+    "start": {
+      "id": "exercise.power-chord.d",
+      "title": "Power chords in D minor — root, fifth, octave",
+      "admitted": true
+    },
+    "startSaid": "Opens “Power chords in D minor — root, fifth, octave”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.power-chord.d",
+      "title": "Power chords in D minor — root, fifth, octave",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.folk.greensleeves.chords",
+      "title": "Greensleeves (with chords)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 5,
+    "rowsDrawn": 5
+  },
+  {
+    "rung": "hymns.4",
+    "tools": [
+      "duet:song.folk.amazing-grace-satb.pdmx"
+    ],
+    "start": {
+      "id": "exercise.cadence.g.voice-led",
+      "title": "I-IV-V7-I in G — smooth voicing",
+      "admitted": true
+    },
+    "startSaid": "Opens “I-IV-V7-I in G — smooth voicing”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.cadence.g.voice-led",
+      "title": "I-IV-V7-I in G — smooth voicing",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.folk.amazing-grace-satb.pdmx",
+      "title": "Amazing Grace (four parts)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 8,
+    "rowsDrawn": 8
+  },
+  {
+    "rung": "classical.5",
+    "tools": [
+      "duet"
+    ],
+    "start": {
+      "id": "exercise.hanon.06.both",
+      "title": "Hanon No. 6 (C major) — both",
+      "admitted": true
+    },
+    "startSaid": "Opens “Hanon No. 6 (C major) — both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.hanon.06.both",
+      "title": "Hanon No. 6 (C major) — both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.classical.clementi-sonatina-no-1-muzio-clementi.pdmx",
+      "title": "Sonatina in C major, Op. 36 No. 1 (first movement, short edition)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 10,
+    "rowsDrawn": 10
+  },
+  {
+    "rung": "chords-pop.5",
+    "tools": [
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.arpeggio7.c-dominant7.2oct.both",
+      "title": "C dominant 7th arpeggio — 2 oct, both",
+      "admitted": true
+    },
+    "startSaid": "Opens “C dominant 7th arpeggio — 2 oct, both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.arpeggio7.c-dominant7.2oct.both",
+      "title": "C dominant 7th arpeggio — 2 oct, both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 9,
+    "rowsDrawn": 9
+  },
+  {
+    "rung": "blues.5",
+    "tools": [
+      "lab",
+      "blind"
+    ],
+    "start": {
+      "id": "drill.improv.blues-backing",
+      "title": "Twelve-bar blues backing track",
+      "admitted": true
+    },
+    "startSaid": "Opens “Twelve-bar blues backing track”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.improv.blues-backing",
+      "title": "Twelve-bar blues backing track",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.classical.1919-blues-my-naughty-sweetie-gives-to-me.pdmx",
+      "title": "Blues My Naughty Sweetie Gives to Me (1919)",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 13,
+    "rowsDrawn": 13
+  },
+  {
+    "rung": "jazz.5",
+    "tools": [
+      "lab"
+    ],
+    "start": {
+      "id": "drill.jazz.ii-v-i-shells",
+      "title": "ii-V-I with shell voicings",
+      "admitted": true
+    },
+    "startSaid": "Opens “ii-V-I with shell voicings”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.jazz.ii-v-i-shells",
+      "title": "ii-V-I with shell voicings",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 9,
+    "rowsDrawn": 9
+  },
+  {
+    "rung": "holiday.5",
+    "tools": [],
+    "start": {
+      "id": "exercise.ostinato.a.arpeggio",
+      "title": "Ostinato over a pedal bass in A minor — broken minor triad",
+      "admitted": false
+    },
+    "startSaid": "Opens “Ostinato over a pedal bass in A minor — broken minor triad”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.ostinato.a.arpeggio",
+      "title": "Ostinato over a pedal bass in A minor — broken minor triad",
+      "admitted": false
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 7,
+    "rowsDrawn": 7
+  },
+  {
+    "rung": "ragtime.5",
+    "tools": [
+      "duet"
+    ],
+    "start": {
+      "id": "exercise.rhythm.syncopated.4bar",
+      "title": "Rhythm: syncopated — 4 bars",
+      "admitted": true
+    },
+    "startSaid": "Opens “Rhythm: syncopated — 4 bars”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.rhythm.syncopated.4bar",
+      "title": "Rhythm: syncopated — 4 bars",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.folk.greensleeves.waltz",
+      "title": "Greensleeves (waltz bass)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 10,
+    "rowsDrawn": 10
+  },
+  {
+    "rung": "theory.5",
+    "tools": [
+      "simon"
+    ],
+    "start": {
+      "id": "drill.ear.seventh-qualities",
+      "title": "Ear drill — seventh-chord qualities",
+      "admitted": true
+    },
+    "startSaid": "Opens “Ear drill — seventh-chord qualities”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.ear.seventh-qualities",
+      "title": "Ear drill — seventh-chord qualities",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 4,
+    "rowsDrawn": 4
+  },
+  {
+    "rung": "improv.5",
+    "tools": [
+      "lab",
+      "simon:drill.ear.simon-blues-c"
+    ],
+    "start": {
+      "id": "drill.improv.blues-backing",
+      "title": "Twelve-bar blues backing track",
+      "admitted": true
+    },
+    "startSaid": "Opens “Twelve-bar blues backing track”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.improv.blues-backing",
+      "title": "Twelve-bar blues backing track",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 8,
+    "rowsDrawn": 8
+  },
+  {
+    "rung": "latin",
+    "tools": [
+      "duet:exercise.latin-groove.c.son-3-2"
+    ],
+    "start": {
+      "id": "exercise.rhythm.syncopated.4bar",
+      "title": "Rhythm: syncopated — 4 bars",
+      "admitted": true
+    },
+    "startSaid": "Opens “Rhythm: syncopated — 4 bars”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.rhythm.syncopated.4bar",
+      "title": "Rhythm: syncopated — 4 bars",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "exercise.latin-groove.c.son-3-2",
+      "title": "Latin groove — tumbao and montuno on son 3 2 in C minor",
+      "admitted": false
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 18,
+    "rowsDrawn": 18
+  },
+  {
+    "rung": "technique.5",
+    "tools": [
+      "duet:exercise.independence.c.2v1"
+    ],
+    "start": {
+      "id": "drill.reading.sight-reading-4",
+      "title": "Sight-reading generator, level 4",
+      "admitted": true
+    },
+    "startSaid": "Opens “Sight-reading generator, level 4”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.reading.sight-reading-4",
+      "title": "Sight-reading generator, level 4",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "exercise.independence.c.2v1",
+      "title": "Hand independence 2:1 in C",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 16,
+    "rowsDrawn": 16
+  },
+  {
+    "rung": "rock.5",
+    "tools": [
+      "play",
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.open-voicing.c.sus2",
+      "title": "sus2 voicings in C",
+      "admitted": true
+    },
+    "startSaid": "Opens “sus2 voicings in C”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.open-voicing.c.sus2",
+      "title": "sus2 voicings in C",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 6,
+    "rowsDrawn": 6
+  },
+  {
+    "rung": "jam.5",
+    "tools": [
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.comping.e.charleston.intro",
+      "title": "Comping — charleston on triads in E",
+      "admitted": false
+    },
+    "startSaid": "Opens “Comping — charleston on triads in E”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.comping.e.charleston.intro",
+      "title": "Comping — charleston on triads in E",
+      "admitted": false
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 5,
+    "rowsDrawn": 5
+  },
+  {
+    "rung": "hymns.5",
+    "tools": [
+      "play"
+    ],
+    "start": {
+      "id": "exercise.walkup.c",
+      "title": "Walk-ups in C — diatonic, then chromatic",
+      "admitted": true
+    },
+    "startSaid": "Opens “Walk-ups in C — diatonic, then chromatic”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.walkup.c",
+      "title": "Walk-ups in C — diatonic, then chromatic",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 8,
+    "rowsDrawn": 8
+  },
+  {
+    "rung": "classical.6",
+    "tools": [
+      "duet"
+    ],
+    "start": {
+      "id": "exercise.hanon.12.both",
+      "title": "Hanon No. 12 (C major) — both",
+      "admitted": true
+    },
+    "startSaid": "Opens “Hanon No. 12 (C major) — both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.hanon.12.both",
+      "title": "Hanon No. 12 (C major) — both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.classical.bach-wtc1-prelude-1",
+      "title": "Prelude No. 1 in C major, BWV 846",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 15,
+    "rowsDrawn": 15
+  },
+  {
+    "rung": "ragtime.6",
+    "tools": [
+      "duet"
+    ],
+    "start": {
+      "id": "drill.pattern.lh-accompaniment",
+      "title": "Left-hand accompaniment patterns",
+      "admitted": true
+    },
+    "startSaid": "Opens “Left-hand accompaniment patterns”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.pattern.lh-accompaniment",
+      "title": "Left-hand accompaniment patterns",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.ragtime.joplin-school-of-ragtime",
+      "title": "School of Ragtime",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 12,
+    "rowsDrawn": 12
+  },
+  {
+    "rung": "technique.6",
+    "tools": [
+      "ladder"
+    ],
+    "start": {
+      "id": "exercise.arpeggio.a-flat-major.4oct.both",
+      "title": "A♭ major arpeggio — 4 oct, both",
+      "admitted": true
+    },
+    "startSaid": "Opens “A♭ major arpeggio — 4 oct, both”, the first thing on this rung.",
+    "ladder": {
+      "id": "exercise.arpeggio.a-flat-major.4oct.both",
+      "title": "A♭ major arpeggio — 4 oct, both",
+      "admitted": true
+    },
+    "ladderDrawn": true,
+    "check": {
+      "id": "exercise.arpeggio.a-flat-major.4oct.both",
+      "title": "A♭ major arpeggio — 4 oct, both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 18,
+    "rowsDrawn": 18
+  },
+  {
+    "rung": "jazz.6",
+    "tools": [
+      "lab",
+      "duet"
+    ],
+    "start": {
+      "id": "exercise.comping.c.charleston",
+      "title": "Comping — charleston in C",
+      "admitted": false
+    },
+    "startSaid": "Opens “Comping — charleston in C”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.comping.c.charleston",
+      "title": "Comping — charleston in C",
+      "admitted": false
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.pop.ray-henderson-bye-bye-blackbird.pdmx",
+      "title": "Bye Bye Blackbird (1926)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 13,
+    "rowsDrawn": 13
+  },
+  {
+    "rung": "holiday.6",
+    "tools": [
+      "blind"
+    ],
+    "start": {
+      "id": "exercise.voicing.d",
+      "title": "Voicing the top note in D",
+      "admitted": true
+    },
+    "startSaid": "Opens “Voicing the top note in D”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.voicing.d",
+      "title": "Voicing the top note in D",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.holiday.carol-of-the-bells",
+      "title": "Carol of the Bells (Shchedryk)",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 7,
+    "rowsDrawn": 7
+  },
+  {
+    "rung": "blues.6",
+    "tools": [
+      "duet",
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.boogie.c.pinetop",
+      "title": "Boogie — pinetop in C, both hands",
+      "admitted": false
+    },
+    "startSaid": "Opens “Boogie — pinetop in C, both hands”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.boogie.c.pinetop",
+      "title": "Boogie — pinetop in C, both hands",
+      "admitted": false
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.pop.boogie-easy-for-beginners.pdmx",
+      "title": "Boogie (easy, for beginners)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 8,
+    "rowsDrawn": 8
+  },
+  {
+    "rung": "chords-pop.6",
+    "tools": [
+      "lab",
+      "play"
+    ],
+    "start": {
+      "id": "exercise.loop4.d.inversions",
+      "title": "I-V-vi-IV in D — with inversions",
+      "admitted": true
+    },
+    "startSaid": "Opens “I-V-vi-IV in D — with inversions”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.loop4.d.inversions",
+      "title": "I-V-vi-IV in D — with inversions",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 11,
+    "rowsDrawn": 11
+  },
+  {
+    "rung": "theory.6",
+    "tools": [
+      "simon"
+    ],
+    "start": {
+      "id": "drill.theory.roman-numerals",
+      "title": "Roman numerals — read and play",
+      "admitted": true
+    },
+    "startSaid": "Opens “Roman numerals — read and play”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.theory.roman-numerals",
+      "title": "Roman numerals — read and play",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 6,
+    "rowsDrawn": 6
+  },
+  {
+    "rung": "improv.6",
+    "tools": [
+      "lab"
+    ],
+    "start": {
+      "id": "drill.theory.modes",
+      "title": "Modes — the five you will meet first",
+      "admitted": true
+    },
+    "startSaid": "Opens “Modes — the five you will meet first”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.theory.modes",
+      "title": "Modes — the five you will meet first",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 5,
+    "rowsDrawn": 5
+  },
+  {
+    "rung": "rock.6",
+    "tools": [
+      "duet",
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.ostinato.a.arpeggio",
+      "title": "Ostinato over a pedal bass in A minor — broken minor triad",
+      "admitted": false
+    },
+    "startSaid": "Opens “Ostinato over a pedal bass in A minor — broken minor triad”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.ostinato.a.arpeggio",
+      "title": "Ostinato over a pedal bass in A minor — broken minor triad",
+      "admitted": false
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.classical.satie-erik-satie-gnossienne-n1.pdmx",
+      "title": "Gnossienne No. 1",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 7,
+    "rowsDrawn": 7
+  },
+  {
+    "rung": "jam.6",
+    "tools": [
+      "lab",
+      "play"
+    ],
+    "start": {
+      "id": "exercise.walking-bass.e.blues.intro",
+      "title": "Walking bass over a 12-bar blues in E",
+      "admitted": false
+    },
+    "startSaid": "Opens “Walking bass over a 12-bar blues in E”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.walking-bass.e.blues.intro",
+      "title": "Walking bass over a 12-bar blues in E",
+      "admitted": false
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 5,
+    "rowsDrawn": 5
+  },
+  {
+    "rung": "hymns.6",
+    "tools": [
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.voicing.g",
+      "title": "Voicing the top note in G",
+      "admitted": true
+    },
+    "startSaid": "Opens “Voicing the top note in G”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.voicing.g",
+      "title": "Voicing the top note in G",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 7,
+    "rowsDrawn": 7
+  },
+  {
+    "rung": "latin.6",
+    "tools": [],
+    "start": {
+      "id": "exercise.tumbao.g",
+      "title": "Tumbao — latin bass in G minor",
+      "admitted": false
+    },
+    "startSaid": "Opens “Tumbao — latin bass in G minor”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.tumbao.g",
+      "title": "Tumbao — latin bass in G minor",
+      "admitted": false
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 6,
+    "rowsDrawn": 6
+  },
+  {
+    "rung": "classical.7",
+    "tools": [
+      "duet:song.classical.bach-invention-no-1-in-c-major-bwv-772.pdmx",
+      "blind"
+    ],
+    "start": {
+      "id": "exercise.hanon.18.both",
+      "title": "Hanon No. 18 (C major) — both",
+      "admitted": true
+    },
+    "startSaid": "Opens “Hanon No. 18 (C major) — both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.hanon.18.both",
+      "title": "Hanon No. 18 (C major) — both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.classical.bach-invention-no-1-in-c-major-bwv-772.pdmx",
+      "title": "Invention No. 1 in C major, BWV 772",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": {
+      "id": "song.classical.mozart-k545-i",
+      "title": "Piano Sonata No. 16 in C, K. 545, I. Allegro",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 14,
+    "rowsDrawn": 14
+  },
+  {
+    "rung": "ragtime.7",
+    "tools": [
+      "duet",
+      "blind"
+    ],
+    "start": {
+      "id": "drill.pattern.lh-accompaniment",
+      "title": "Left-hand accompaniment patterns",
+      "admitted": true
+    },
+    "startSaid": "Opens “Left-hand accompaniment patterns”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.pattern.lh-accompaniment",
+      "title": "Left-hand accompaniment patterns",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.ragtime.joplin-maple-leaf-rag",
+      "title": "Maple Leaf Rag",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": {
+      "id": "song.ragtime.joplin-maple-leaf-rag",
+      "title": "Maple Leaf Rag",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 12,
+    "rowsDrawn": 12
+  },
+  {
+    "rung": "technique.7",
+    "tools": [
+      "ladder",
+      "duet:exercise.independence.c.2v3"
+    ],
+    "start": {
+      "id": "exercise.broken-octaves.a.1oct.left",
+      "title": "A broken octaves — 1 oct, left",
+      "admitted": true
+    },
+    "startSaid": "Opens “A broken octaves — 1 oct, left”, the first thing on this rung.",
+    "ladder": {
+      "id": "exercise.broken-octaves.a.1oct.left",
+      "title": "A broken octaves — 1 oct, left",
+      "admitted": true
+    },
+    "ladderDrawn": true,
+    "check": {
+      "id": "exercise.broken-octaves.a.1oct.left",
+      "title": "A broken octaves — 1 oct, left",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "exercise.independence.c.2v3",
+      "title": "Hand independence 2:3 in C",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 16,
+    "rowsDrawn": 16
+  },
+  {
+    "rung": "jazz.7",
+    "tools": [
+      "play",
+      "duet",
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.voicing7.c.rootless-a",
+      "title": "ii-V-I in C — rootless A",
+      "admitted": true
+    },
+    "startSaid": "Opens “ii-V-I in C — rootless A”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.voicing7.c.rootless-a",
+      "title": "ii-V-I in C — rootless A",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx",
+      "title": "Jingle Bells (jazz piano)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 13,
+    "rowsDrawn": 13
+  },
+  {
+    "rung": "holiday.7",
+    "tools": [],
+    "start": {
+      "id": "exercise.rotation.c.left",
+      "title": "Wrist rotation (Alberti at speed) in C — left",
+      "admitted": true
+    },
+    "startSaid": "Opens “Wrist rotation (Alberti at speed) in C — left”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.rotation.c.left",
+      "title": "Wrist rotation (Alberti at speed) in C — left",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 6,
+    "rowsDrawn": 6
+  },
+  {
+    "rung": "blues.7",
+    "tools": [
+      "lab",
+      "duet",
+      "blind"
+    ],
+    "start": {
+      "id": "exercise.stride.f",
+      "title": "Stride in F, both hands",
+      "admitted": false
+    },
+    "startSaid": "Opens “Stride in F, both hands”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.stride.f",
+      "title": "Stride in F, both hands",
+      "admitted": false
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.pop.boogie-easy-for-beginners.pdmx",
+      "title": "Boogie (easy, for beginners)",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": {
+      "id": "song.pop.boogie-easy-for-beginners.pdmx",
+      "title": "Boogie (easy, for beginners)",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 8,
+    "rowsDrawn": 8
+  },
+  {
+    "rung": "chords-pop.7",
+    "tools": [
+      "play",
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.open-voicing.c.sus4",
+      "title": "sus4 voicings in C",
+      "admitted": true
+    },
+    "startSaid": "Opens “sus4 voicings in C”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.open-voicing.c.sus4",
+      "title": "sus4 voicings in C",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 12,
+    "rowsDrawn": 12
+  },
+  {
+    "rung": "theory.7",
+    "tools": [
+      "simon",
+      "lab"
+    ],
+    "start": {
+      "id": "drill.theory.secondary-dominants",
+      "title": "Secondary dominants by ear",
+      "admitted": true
+    },
+    "startSaid": "Opens “Secondary dominants by ear”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.theory.secondary-dominants",
+      "title": "Secondary dominants by ear",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 5,
+    "rowsDrawn": 5
+  },
+  {
+    "rung": "improv.7",
+    "tools": [
+      "play"
+    ],
+    "start": {
+      "id": "drill.jazz.chord-scale",
+      "title": "Chord–scale — play what fits the symbol",
+      "admitted": true
+    },
+    "startSaid": "Opens “Chord–scale — play what fits the symbol”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.jazz.chord-scale",
+      "title": "Chord–scale — play what fits the symbol",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 5,
+    "rowsDrawn": 5
+  },
+  {
+    "rung": "rock.7",
+    "tools": [
+      "blind"
+    ],
+    "start": {
+      "id": "exercise.shaping.a.crescendo",
+      "title": "Crescendo over a scale in A",
+      "admitted": true
+    },
+    "startSaid": "Opens “Crescendo over a scale in A”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.shaping.a.crescendo",
+      "title": "Crescendo over a scale in A",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx",
+      "title": "In the Hall of the Mountain King (Peer Gynt)",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 7,
+    "rowsDrawn": 7
+  },
+  {
+    "rung": "latin.7",
+    "tools": [],
+    "start": {
+      "id": "exercise.repeated-notes.g.4x.right",
+      "title": "Repeated notes 4-to-a-note in G — right",
+      "admitted": true
+    },
+    "startSaid": "Opens “Repeated notes 4-to-a-note in G — right”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.repeated-notes.g.4x.right",
+      "title": "Repeated notes 4-to-a-note in G — right",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 6,
+    "rowsDrawn": 6
+  },
+  {
+    "rung": "jam.7",
+    "tools": [
+      "lab"
+    ],
+    "start": {
+      "id": "drill.jam.form-tracker",
+      "title": "Play the form with the chart",
+      "admitted": true
+    },
+    "startSaid": "Opens “Play the form with the chart”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.jam.form-tracker",
+      "title": "Play the form with the chart",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 10,
+    "rowsDrawn": 10
+  },
+  {
+    "rung": "classical.8",
+    "tools": [
+      "blind",
+      "duet"
+    ],
+    "start": {
+      "id": "exercise.hanon.19.both",
+      "title": "Hanon No. 19 (C major) — both",
+      "admitted": true
+    },
+    "startSaid": "Opens “Hanon No. 19 (C major) — both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.hanon.19.both",
+      "title": "Hanon No. 19 (C major) — both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": {
+      "id": "song.classical.mozart-rondo-alla-turca",
+      "title": "Piano Sonata No. 11, K. 331, III. Rondo alla Turca",
+      "admitted": true
+    },
+    "duetDrawn": true,
+    "blind": {
+      "id": "song.classical.mozart-rondo-alla-turca",
+      "title": "Piano Sonata No. 11, K. 331, III. Rondo alla Turca",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 14,
+    "rowsDrawn": 14
+  },
+  {
+    "rung": "ragtime.8",
+    "tools": [
+      "blind"
+    ],
+    "start": {
+      "id": "drill.pattern.lh-accompaniment",
+      "title": "Left-hand accompaniment patterns",
+      "admitted": true
+    },
+    "startSaid": "Opens “Left-hand accompaniment patterns”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.pattern.lh-accompaniment",
+      "title": "Left-hand accompaniment patterns",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.ragtime.joplin-pine-apple-rag",
+      "title": "Pine Apple Rag",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 12,
+    "rowsDrawn": 12
+  },
+  {
+    "rung": "technique.8",
+    "tools": [],
+    "start": {
+      "id": "exercise.scale.a-flat-major.4oct.similar.both.1",
+      "title": "A♭ major scale — 4 oct, similar, both",
+      "admitted": true
+    },
+    "startSaid": "Opens “A♭ major scale — 4 oct, similar, both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.scale.a-flat-major.4oct.similar.both.1",
+      "title": "A♭ major scale — 4 oct, similar, both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 12,
+    "rowsDrawn": 12
+  },
+  {
+    "rung": "jazz.8",
+    "tools": [
+      "play",
+      "lab"
+    ],
+    "start": {
+      "id": "drill.jazz.extended-chords-13",
+      "title": "Elevenths and thirteenths",
+      "admitted": true
+    },
+    "startSaid": "Opens “Elevenths and thirteenths”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.jazz.extended-chords-13",
+      "title": "Elevenths and thirteenths",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 9,
+    "rowsDrawn": 9
+  },
+  {
+    "rung": "blues.8",
+    "tools": [
+      "blind",
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.walking-bass.e-flat.blues",
+      "title": "Walking bass over a 12-bar blues in E♭",
+      "admitted": false
+    },
+    "startSaid": "Opens “Walking bass over a 12-bar blues in E♭”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.walking-bass.e-flat.blues",
+      "title": "Walking bass over a 12-bar blues in E♭",
+      "admitted": false
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.folk.boogie-woogie.pdmx",
+      "title": "Pinetop's Boogie Woogie (1928)",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 8,
+    "rowsDrawn": 8
+  },
+  {
+    "rung": "chords-pop.8",
+    "tools": [
+      "lab",
+      "blind"
+    ],
+    "start": {
+      "id": "drill.reading.transposition-hard",
+      "title": "Transposition — a harder page, further away",
+      "admitted": true
+    },
+    "startSaid": "Opens “Transposition — a harder page, further away”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.reading.transposition-hard",
+      "title": "Transposition — a harder page, further away",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.pop.takihiro-obata-isabella-s-lullaby-the-promised-neverland-emotional-anime-on-piano-vol-2.pdmx",
+      "title": "Isabella's Lullaby, from The Promised Neverland",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 11,
+    "rowsDrawn": 11
+  },
+  {
+    "rung": "theory.8",
+    "tools": [
+      "simon"
+    ],
+    "start": {
+      "id": "drill.theory.harmonic-dictation-modulation",
+      "title": "Harmonic dictation — music that changes key",
+      "admitted": true
+    },
+    "startSaid": "Opens “Harmonic dictation — music that changes key”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.theory.harmonic-dictation-modulation",
+      "title": "Harmonic dictation — music that changes key",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 5,
+    "rowsDrawn": 5
+  },
+  {
+    "rung": "improv.8",
+    "tools": [
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.tritone-sub.c",
+      "title": "Tritone substitution in C — ii-sub V-I",
+      "admitted": true
+    },
+    "startSaid": "Opens “Tritone substitution in C — ii-sub V-I”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.tritone-sub.c",
+      "title": "Tritone substitution in C — ii-sub V-I",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 5,
+    "rowsDrawn": 5
+  },
+  {
+    "rung": "classical.9",
+    "tools": [
+      "blind"
+    ],
+    "start": {
+      "id": "exercise.hanon.20.both",
+      "title": "Hanon No. 20 (C major) — both",
+      "admitted": true
+    },
+    "startSaid": "Opens “Hanon No. 20 (C major) — both”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.hanon.20.both",
+      "title": "Hanon No. 20 (C major) — both",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.classical.chopin-ballade-1",
+      "title": "Ballade No. 1 in G minor, Op. 23",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 12,
+    "rowsDrawn": 12
+  },
+  {
+    "rung": "jazz.9",
+    "tools": [
+      "lab",
+      "blind"
+    ],
+    "start": {
+      "id": "drill.theory.roman-numerals-secondary",
+      "title": "Roman numerals — the ones from outside the key",
+      "admitted": true
+    },
+    "startSaid": "Opens “Roman numerals — the ones from outside the key”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.theory.roman-numerals-secondary",
+      "title": "Roman numerals — the ones from outside the key",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.jazz.the-dave-brubeck-quartet-take-five.pdmx",
+      "title": "Take Five",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 11,
+    "rowsDrawn": 11
+  },
+  {
+    "rung": "blues.9",
+    "tools": [
+      "lab",
+      "blind"
+    ],
+    "start": {
+      "id": "drill.ear.tune-long",
+      "title": "Play back a tune — eight bars",
+      "admitted": true
+    },
+    "startSaid": "Opens “Play back a tune — eight bars”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.ear.tune-long",
+      "title": "Play back a tune — eight bars",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.jazz.stumbling",
+      "title": "Stumbling",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 8,
+    "rowsDrawn": 8
+  },
+  {
+    "rung": "chords-pop.9",
+    "tools": [
+      "blind",
+      "lab"
+    ],
+    "start": {
+      "id": "exercise.slash-bass.e-flat",
+      "title": "Slash chords — a walking bass under held harmony in E♭",
+      "admitted": true
+    },
+    "startSaid": "Opens “Slash chords — a walking bass under held harmony in E♭”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.slash-bass.e-flat",
+      "title": "Slash chords — a walking bass under held harmony in E♭",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.pop.camille-le-festin-piano-arr-kno.pdmx",
+      "title": "Le Festin",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 12,
+    "rowsDrawn": 12
+  },
+  {
+    "rung": "theory.9",
+    "tools": [
+      "simon"
+    ],
+    "start": {
+      "id": "drill.ear.tune-long",
+      "title": "Play back a tune — eight bars",
+      "admitted": true
+    },
+    "startSaid": "Opens “Play back a tune — eight bars”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.ear.tune-long",
+      "title": "Play back a tune — eight bars",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 5,
+    "rowsDrawn": 5
+  },
+  {
+    "rung": "improv.9",
+    "tools": [
+      "play"
+    ],
+    "start": {
+      "id": "drill.ear.tune-long",
+      "title": "Play back a tune — eight bars",
+      "admitted": true
+    },
+    "startSaid": "Opens “Play back a tune — eight bars”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "drill.ear.tune-long",
+      "title": "Play back a tune — eight bars",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": null,
+    "blindDrawn": false,
+    "listed": 6,
+    "rowsDrawn": 6
+  },
+  {
+    "rung": "ragtime.9",
+    "tools": [
+      "blind"
+    ],
+    "start": {
+      "id": "exercise.oompah.c.tenth",
+      "title": "Oom-pah bass in C — the chord at the tenth",
+      "admitted": true
+    },
+    "startSaid": "Opens “Oom-pah bass in C — the chord at the tenth”, the first thing on this rung.",
+    "ladder": null,
+    "ladderDrawn": false,
+    "check": {
+      "id": "exercise.oompah.c.tenth",
+      "title": "Oom-pah bass in C — the chord at the tenth",
+      "admitted": true
+    },
+    "checkSaid": null,
+    "duet": null,
+    "duetDrawn": false,
+    "blind": {
+      "id": "song.ragtime.joplin-original-rags",
+      "title": "Original Rags",
+      "admitted": true
+    },
+    "blindDrawn": true,
+    "listed": 8,
+    "rowsDrawn": 8
+  }
+]

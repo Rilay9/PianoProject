@@ -1,0 +1,42 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a1a6623478c1a2198/app
+
+ ❯ tests/unit/libraryImportWords.test.ts (8 tests | 2 failed) 2980ms
+   ❯ the UI opens the import sheet from the row addImport returned (2)
+     × the picker’s import of a MIDI file opens it, the store having opened nothing 1088ms
+     × a score whose staves and signature are the file’s files quietly; its row’s Assign opens the same sheet 1271ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 21 passed (23)
+   Start at  02:14:46
+   Duration  7.34s (environment 42%, tests 30%, transform 20%, import 8%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/libraryImportWords.test.ts > the UI opens the import sheet from the row addImport returned > the picker’s import of a MIDI file opens it, the store having opened nothing
+AssertionError: expected null not to be null
+ ❯ tests/unit/libraryImportWords.test.ts:168:25
+    166|     const sheet = await vi.waitFor(() => {
+    167|       const found = document.querySelector('#assign-sheet[data-sheet="…
+    168|       expect(found).not.toBeNull();
+       |                         ^
+    169|       return found as HTMLElement;
+    170|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/libraryImportWords.test.ts > the UI opens the import sheet from the row addImport returned > a score whose staves and signature are the file’s files quietly; its row’s Assign opens the same sheet
+AssertionError: expected null not to be null
+ ❯ tests/unit/libraryImportWords.test.ts:193:25
+    191|     const sheet = await vi.waitFor(() => {
+    192|       const found = document.querySelector('#assign-sheet[data-sheet="…
+    193|       expect(found).not.toBeNull();
+       |                         ^
+    194|       return found as HTMLElement;
+    195|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+exit 1

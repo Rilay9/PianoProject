@@ -16,9 +16,9 @@ Stage 4 was about getting the notes under the hand. This rung is about what they
 sound like once they are.
 
 **Repeated notes** are the first exercise here that feels pointless and is not.
-Changing finger on each strike is one way to keep a fast repeated note even;
-the printed 3-2-1 for three strikes here, 4-3-2-1 for four on the next technique
-rung, is a common choice, not the only one.
+Changing finger on each strike is one way to keep a fast repeated note even,
+and it is what these drills practise. No fingers are printed, and the order
+is yours to choose.
 
 **Two hands at different speeds.** Start with 2:1, eighths over quarters, and do
 not move on until it is boring. The trap is counting the fast hand and fitting

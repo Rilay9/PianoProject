@@ -1,0 +1,57 @@
+# The table after this class: build/l120b-before/untaught-options.json -> build/l120b-after-reading/untaught-options.json
+
+## Summaries
+
+- before: 388 options, 641 pairs; by class A 14, B-claim 43, B-mapping 67, C-later 246, C-elsewhere 134, C-nowhere 137; by resolution reading 4, ownership 76, placement 308; unread 15
+- after: 386 options, 632 pairs; by class A 3, B-claim 42, B-mapping 67, C-later 246, C-elsewhere 134, C-nowhere 140; by resolution reading 1, ownership 76, placement 309; unread 15
+
+- pairs that left: 9 (key.signature 6, metre.compound 3)
+- pairs that appeared: 0 (none)
+- pairs that stayed and changed class: 3 (A->C-nowhere rhythm.sixteenths, A->C-nowhere rhythm.sixteenths, A->C-nowhere rhythm.sixteenths)
+
+## The class-A pairs before, and where each went
+
+1.1 exercise.five-finger.g-major.right key.signature — was A (doubt: present with nowhere to point: the detector places it on no note (for a key signature, no letter it alters sounds), so the learner has nothing of it to play) — left the table (the gate no longer refuses it) [no 3/8 bar; timeSig 4/4]
+1.3 exercise.five-finger.g-major.left key.signature — was A (doubt: present with nowhere to point: the detector places it on no note (for a key signature, no letter it alters sounds), so the learner has nothing of it to play) — left the table (the gate no longer refuses it) [no 3/8 bar; timeSig 4/4]
+1.3 song.classical.ode-to-joy.lh pitch.ledger — was A (doubt: clef assumption: an upper staff in the bass clef is read as treble (detect.ts)) — stays, now A (doubt: clef assumption: an upper staff in the bass clef is read as treble (detect.ts)) [no 3/8 bar; timeSig 4/4]
+1.3 song.folk.hot-cross-buns.lh pitch.ledger — was A (doubt: clef assumption: an upper staff in the bass clef is read as treble (detect.ts)) — stays, now A (doubt: clef assumption: an upper staff in the bass clef is read as treble (detect.ts)) [no 3/8 bar; timeSig 4/4]
+1.3 song.folk.mary-had-a-little-lamb.lh pitch.ledger — was A (doubt: clef assumption: an upper staff in the bass clef is read as treble (detect.ts)) — stays, now A (doubt: clef assumption: an upper staff in the bass clef is read as treble (detect.ts)) [no 3/8 bar; timeSig 4/4]
+2.1 exercise.coordination.g.hold key.signature — was A (doubt: present with nowhere to point: the detector places it on no note (for a key signature, no letter it alters sounds), so the learner has nothing of it to play) — left the table (the gate no longer refuses it) [no 3/8 bar; timeSig 4/4]
+2.2 song.folk.anonymous-swing-low-sweet-chariot.pdmx key.signature — was A (doubt: present with nowhere to point: the detector places it on no note (for a key signature, no letter it alters sounds), so the learner has nothing of it to play) — left the table (the gate no longer refuses it) [no 3/8 bar; timeSig none]
+3.4 song.classical.beethoven-fur-elise.beginner metre.compound — was A (doubt: 3/8 is read as compound time by the 6/8 rule (detect.ts, compoundMetre); a 3/8 piece is commonly counted as simple triple, three eighths to the bar) — left the table (the gate no longer refuses it) [3/8 bar; timeSig 3/8]
+3.4 song.classical.beethoven-fur-elise.beginner rhythm.sixteenths — was A (doubt: in 3/8 counted in eighths, a written sixteenth is half a beat: the subdivision eighths are in 3/4, which 2.2 teaches; the demand reads the written value) — stays, now C-nowhere [3/8 bar; timeSig 3/8]
+4.2 song.classical.beethoven-fur-elise.beginner metre.compound — was A (doubt: 3/8 is read as compound time by the 6/8 rule (detect.ts, compoundMetre); a 3/8 piece is commonly counted as simple triple, three eighths to the bar) — left the table (the gate no longer refuses it) [3/8 bar; timeSig 3/8]
+4.2 song.classical.beethoven-fur-elise.beginner rhythm.sixteenths — was A (doubt: in 3/8 counted in eighths, a written sixteenth is half a beat: the subdivision eighths are in 3/4, which 2.2 teaches; the demand reads the written value) — stays, now C-nowhere [3/8 bar; timeSig 3/8]
+classical.6 song.classical.beethoven-fur-elise rhythm.sixteenths — was A (doubt: in 3/8 counted in eighths, a written sixteenth is half a beat: the subdivision eighths are in 3/4, which 2.2 teaches; the demand reads the written value) — stays, now C-nowhere [3/8 bar; timeSig 3/8]
+hymns.2 song.folk.anonymous-swing-low-sweet-chariot.pdmx key.signature — was A (doubt: present with nowhere to point: the detector places it on no note (for a key signature, no letter it alters sounds), so the learner has nothing of it to play) — left the table (the gate no longer refuses it) [no 3/8 bar; timeSig none]
+practice.5 exercise.five-finger.g-major.both key.signature — was A (doubt: present with nowhere to point: the detector places it on no note (for a key signature, no letter it alters sounds), so the learner has nothing of it to play) — left the table (the gate no longer refuses it) [no 3/8 bar; timeSig 4/4]
+
+## Pairs that left the table
+
+1.1 exercise.five-finger.g-major.right key.signature — was A (incidental, located 0) [no 3/8 bar; timeSig 4/4]
+1.3 exercise.five-finger.g-major.left key.signature — was A (incidental, located 0) [no 3/8 bar; timeSig 4/4]
+2.1 exercise.coordination.g.hold key.signature — was A (incidental, located 0) [no 3/8 bar; timeSig 4/4]
+2.2 song.folk.anonymous-swing-low-sweet-chariot.pdmx key.signature — was A (incidental, located 0) [no 3/8 bar; timeSig none]
+3.4 song.classical.beethoven-fur-elise.beginner metre.compound — was A (established, located 199) [3/8 bar; timeSig 3/8]
+4.2 song.classical.beethoven-fur-elise.beginner metre.compound — was A (established, located 199) [3/8 bar; timeSig 3/8]
+classical.4.shelf song.beautiful.mariage-damour metre.compound — was B-claim (incidental, located 7) [3/8 bar; timeSig 4/4]
+hymns.2 song.folk.anonymous-swing-low-sweet-chariot.pdmx key.signature — was A (incidental, located 0) [no 3/8 bar; timeSig none]
+practice.5 exercise.five-finger.g-major.both key.signature — was A (incidental, located 0) [no 3/8 bar; timeSig 4/4]
+
+## Pairs that appeared
+
+none
+
+## Pairs that stayed and changed class
+
+3.4 song.classical.beethoven-fur-elise.beginner rhythm.sixteenths — A -> C-nowhere [3/8 bar; timeSig 3/8]
+4.2 song.classical.beethoven-fur-elise.beginner rhythm.sixteenths — A -> C-nowhere [3/8 bar; timeSig 3/8]
+classical.6 song.classical.beethoven-fur-elise rhythm.sixteenths — A -> C-nowhere [3/8 bar; timeSig 3/8]
+
+## The tool against the app's probe at this head
+
+- probe `untaught` lines: 387; tool lines: 386
+- only the probe has: 1
+  - 2.2 drill.reading.sight-reading-2-right ['range.beyond-position']
+- only the tool has: 0
+- the same option read with different demands: 0

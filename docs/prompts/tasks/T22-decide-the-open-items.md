@@ -53,3 +53,7 @@ the reasonable ones are done in the same run.
 ## Final message
 
 Per item: decision, evidence, done or not; tests and red lines; counts; what is unverified.
+
+## Record
+
+lane: T22 · closes: — · entry: — · role: history

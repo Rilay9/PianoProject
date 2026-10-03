@@ -1,0 +1,7 @@
+﻿python -m unittest discover -s tools/content/tests -t tools/content -p test_untaught_options.py (the after build; PROBE = runs/L120d/after/probe-refusals.txt, 216)
+.......................
+----------------------------------------------------------------------
+Ran 23 tests in 1.269s
+
+OK
+exit=0

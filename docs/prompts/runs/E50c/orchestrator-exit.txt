@@ -1,0 +1,21 @@
+== map-tests  16:26:49
+map-tests exit=0
+== map-min  16:26:51
+map-min exit=0
+== tsc  16:26:51
+tsc exit=0
+== lint  16:27:12
+lint exit=0
+== vitest-all  16:29:32
+vitest-all exit=1
+== build-app  16:33:50
+build-app exit=0
+SPECS: tests/e2e/converted-import.spec.ts tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/modes-chart-from-the-score.spec.ts tests/e2e/modes-duet.spec.ts tests/e2e/modes-engraving.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/modes-rhythm-only.spec.ts tests/e2e/modes-technique-measure.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.spec.ts tests/e2e/projects.spec.ts tests/e2e/score.arrange-race.spec.ts tests/e2e/score.bar-targets.spec.ts tests/e2e/score.blind.spec.ts tests/e2e/score.countin.spec.ts tests/e2e/score.fill.spec.ts tests/e2e/score.fuzz.spec.ts tests/e2e/score.head-height.spec.ts tests/e2e/score.hearIt.spec.ts tests/e2e/score.hearbar.spec.ts tests/e2e/score.ladder-route.spec.ts tests/e2e/score.latch.spec.ts tests/e2e/score.layout.spec.ts tests/e2e/score.pickup-numbers.spec.ts tests/e2e/score.readahead.spec.ts tests/e2e/score.rhythm-ladder.spec.ts tests/e2e/score.rotate.spec.ts tests/e2e/score.run.spec.ts tests/e2e/score.screen.spec.ts tests/e2e/score.sheet-rows.spec.ts tests/e2e/score.states.spec.ts tests/e2e/score.stepper-limits.spec.ts tests/e2e/score.strip-span.spec.ts tests/e2e/score.window-rule.spec.ts tests/e2e/session-run.spec.ts tests/e2e/side-panel-prose.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/tour-practice-modes.spec.ts tests/e2e/transfer-offer.spec.ts
+== specs-exist  16:34:25
+specs-exist exit=0
+== e2e-targeted  16:34:25
+e2e-targeted exit=1
+CHAIN DONE 16:45:12
+== e2e-rerun 16:45:45
+e2e-rerun exit=0
+RERUN DONE 16:47:20

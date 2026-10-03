@@ -1,0 +1,38 @@
+mutant no-accrual-cap in app/src/data/sessionRun.ts; npx vitest run tests/unit/sessionRun.test.ts tests/unit/sessionTransition.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app
+
+ ❯ tests/unit/sessionRun.test.ts (23 tests | 1 failed) 24ms
+   ❯ the state machine (12)
+     × time: only accrued events count, each capped, on the run and on the activity 4ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 31 passed (32)
+   Start at  09:56:39
+   Duration  1.65s (environment 36%, transform 35%, tests 18%, import 11%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/sessionRun.test.ts > the state machine > time: only accrued events count, each capped, on the run and on the activity
+AssertionError: expected 612000 to be 72000 // Object.is equality
+
+- Expected
++ Received
+
+- 72000
++ 612000
+
+ ❯ tests/unit/sessionRun.test.ts:172:25
+    170|     r = ok(apply(r, as(r, 0), { kind: 'accrue', ms: 12_000 }, NOW));
+    171|     r = ok(apply(r, as(r, 0), { kind: 'accrue', ms: 10 * 60_000 }, NOW…
+    172|     expect(r.elapsedMs).toBe(72_000);
+       |                         ^
+    173|     expect(r.activities[0]?.elapsedMs).toBe(72_000);
+    174|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit=1

@@ -1,0 +1,16 @@
+U74 probe traces on the changed build (the page recorded every stage box and every frame itself; times are this machine’s and only relative)
+== probe-link-0.json settled: stage 342 x 531.1 at 84.9, systems 2, slots 2, shown 2, staff 43.2, zoom 1.65
+   frames (t ms: systems/staff/settled): 107:0/null/null  517:2/43.2/null  610:2/43.2/true
+   stage trace: 87:stage appeared:znull:sysnull/null | 109:resize{"width":342,"height":658}:znull:sysnull/null | 554:resize{"width":340,"height":529}:z1:sys2/2 | 609:settled=true:z1.65:sys2/2
+== probe-plain-exercise.five-finger.c-major.right-0.json settled: stage 342 x 531.1 at 84.9, systems 2, slots 2, shown 2, staff 62.1, zoom 2
+   frames (t ms: systems/staff/settled): 290:0/null/null  976:2/62.1/null  1041:2/62.1/true
+   stage trace: 290:stage appeared:znull:sysnull/null | 309:resize{"width":342,"height":658}:znull:sysnull/null | 1012:resize{"width":340,"height":529}:z2:sys2/2 | 1041:settled=true:z2:sys2/2
+== probe-plain-song.classical.chopin-nocturne-op48-1.nifc-0.json settled: stage 342 x 531.1 at 84.9, systems 2, slots 2, shown 2, staff 35.7, zoom 1
+   frames (t ms: systems/staff/settled): 313:0/null/null  2532:2/25.1/null  3776:2/35.7/null  3853:2/35.7/true
+   stage trace: 313:stage appeared:znull:sysnull/null | 331:resize{"width":342,"height":658}:znull:sysnull/null | 2824:resize{"width":340,"height":529}:z1:sys1/2 | 3852:settled=true:z1:sys2/2
+== probe-plain-song.folk.twinkle.ht-0.json settled: stage 342 x 531.1 at 84.9, systems 2, slots 2, shown 2, staff 53.0, zoom 1.53
+   frames (t ms: systems/staff/settled): 300:0/null/null  940:2/60.9/null  1030:2/54.3/null  1095:2/53/null  1102:2/53/true
+   stage trace: 299:stage appeared:znull:sysnull/null | 317:resize{"width":342,"height":658}:znull:sysnull/null | 1009:resize{"width":340,"height":529}:z1.68:sys2/2 | 1102:settled=true:z1.53:sys2/2
+== probe-today-0.json settled: stage 342 x 531.1 at 84.9, systems 2, slots 2, shown 2, staff 43.2, zoom 1.65
+   frames (t ms: systems/staff/settled): 975:0/null/null  1171:2/43.2/null  1337:2/43.2/true
+   stage trace: 973:stage appeared:znull:sysnull/null | 988:resize{"width":342,"height":658}:znull:sysnull/null | 1218:resize{"width":340,"height":529}:z1:sys2/2 | 1286:settled=true:z1.65:sys2/2

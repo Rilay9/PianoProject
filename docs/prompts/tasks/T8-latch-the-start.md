@@ -289,3 +289,7 @@ latch, loops not re-arming, the start key not being scored or latching, keys not
 from the summary, and the microphone not starting a run by itself — never a duration measured on this machine (`00-invariants`
 §1). One entry in `docs/pending-review.md` that **reports against every row of Part 3 and both tables of Part 5**,
 saying which now latch, which deliberately do not, and which were not touched.
+
+## Record
+
+lane: T8 · closes: — · entry: — · role: history

@@ -1,0 +1,7 @@
+$ (cwd .) git diff --stat
+ app/src/evidence/ladder.ts | 19 +++++++++++++------
+ docs/01-architecture.md    | 13 ++++++++-----
+ docs/04-ui-spec.md         | 24 +++++++++++++++++++-----
+ docs/08-test-map.md        | 10 ++++++++--
+ 4 files changed, 48 insertions(+), 18 deletions(-)
+exit=0

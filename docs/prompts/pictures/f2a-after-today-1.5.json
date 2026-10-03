@@ -1,0 +1,105 @@
+{
+  "rung": "1.5",
+  "status": "Working on Stage 1 · Steps and skips, and the sight-reading habit",
+  "rows": [
+    {
+      "item": "drill.ear.interval-2nd-3rd",
+      "text": "Ear drill — 2nd or 3rd This lesson: 0 of 2 counted Warm-up · 5 min · L1.5 Swap ▶",
+      "sheet": {
+        "tiers": [
+          "From the same lesson"
+        ],
+        "options": [
+          "lesson Steps and skips in C position — no. 1 L1.5 · Right hand · exercise",
+          "lesson Steps and skips in C position — no. 2 L1.5 · Right hand · exercise",
+          "lesson Steps and skips in C position — no. 3 L1.5 · Right hand · exercise",
+          "lesson Simon — the white keys around middle C L2.0 · Hands together · drill"
+        ],
+        "empty": false
+      }
+    },
+    {
+      "item": "exercise.reading.steps-and-skips-c",
+      "text": "Steps and Skips in C (study) Nothing due for review — more from this lesson Review · 5 min · L1.5 · RH Swap ▶",
+      "sheet": {
+        "tiers": [
+          "From the same lesson",
+          "Also practises skips, with the other demands you have met"
+        ],
+        "options": [
+          "lesson Steps and skips in C position — no. 1 L1.5 · Right hand · exercise",
+          "lesson Steps and skips in C position — no. 2 L1.5 · Right hand · exercise",
+          "lesson Steps and skips in C position — no. 3 L1.5 · Right hand · exercise",
+          "lesson Simon — the white keys around middle C L2.0 · Hands together · drill",
+          "lesson Lightly Row L1.2 · Right hand · song",
+          "lesson Ode to Joy (theme) L1.1 · Right hand · song",
+          "demand Steps and skips in C position — no. 1 L1.5 · Left hand · exercise",
+          "demand Steps and skips in C position — no. 2 L1.5 · Left hand · exercise",
+          "demand Steps and skips in C position — no. 3 L1.5 · Left hand · exercise",
+          "demand Steps and skips in C position — no. 4 L1.5 · Left hand · exercise",
+          "demand Steps and skips in C position — no. 5 L1.5 · Left hand · exercise",
+          "demand Steps and skips in C position — no. 6 L1.5 · Left hand · exercise"
+        ],
+        "empty": false
+      }
+    },
+    {
+      "item": "exercise.five-finger.c-major.right",
+      "text": "C major five-finger pattern — right How to practise asks for it — not counted yet New · 10 min · L1.1 · RH Swap ▶",
+      "sheet": {
+        "tiers": [
+          "From the same lesson"
+        ],
+        "options": [
+          "lesson Rhythm reading — quarters, halves, wholes L1.2 · Hands together · drill",
+          "lesson Ode to Joy (theme) L1.1 · Right hand · song"
+        ],
+        "empty": false
+      }
+    },
+    {
+      "item": "song.folk.old-macdonald",
+      "text": "Old MacDonald Had a Farm More music from this lesson Repertoire · 7 min · L2.2 · RH Swap ▶",
+      "sheet": {
+        "tiers": [
+          "From the same lesson"
+        ],
+        "options": [
+          "lesson Steps and skips in C position — no. 1 L1.5 · Right hand · exercise",
+          "lesson Steps and skips in C position — no. 2 L1.5 · Right hand · exercise",
+          "lesson Steps and skips in C position — no. 3 L1.5 · Right hand · exercise",
+          "lesson Simon — the white keys around middle C L2.0 · Hands together · drill",
+          "lesson Lightly Row L1.2 · Right hand · song",
+          "lesson Ode to Joy (theme) L1.1 · Right hand · song"
+        ],
+        "empty": false
+      }
+    },
+    {
+      "item": "drill.reading.sight-reading-1",
+      "text": "Sight-reading generator, level 1 Read something you have never seen, once, slowly Sight-reading · 3 min · L1.5 · RH Swap ▶",
+      "sheet": {
+        "tiers": [
+          "From the same lesson",
+          "Also trains sight-reading, with the other demands you have met",
+          "Also trains reading by interval, with the other demands you have met"
+        ],
+        "options": [
+          "lesson Steps and skips in C position — no. 1 L1.5 · Right hand · exercise",
+          "lesson Steps and skips in C position — no. 2 L1.5 · Right hand · exercise",
+          "lesson Steps and skips in C position — no. 3 L1.5 · Right hand · exercise",
+          "lesson Simon — the white keys around middle C L2.0 · Hands together · drill",
+          "lesson Lightly Row L1.2 · Right hand · song",
+          "lesson Ode to Joy (theme) L1.1 · Right hand · song",
+          "skill Sight-reading generator, level 1, left hand L1.6 · Left hand · drill",
+          "skill Steps and skips in C position — no. 1 L1.5 · Left hand · exercise",
+          "skill Steps and skips in C position — no. 2 L1.5 · Left hand · exercise",
+          "skill Steps and skips in C position — no. 3 L1.5 · Left hand · exercise",
+          "skill Steps and skips in C position — no. 4 L1.5 · Left hand · exercise",
+          "skill Steps and skips in C position — no. 5 L1.5 · Left hand · exercise"
+        ],
+        "empty": false
+      }
+    }
+  ]
+}

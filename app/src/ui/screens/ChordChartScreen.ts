@@ -48,7 +48,7 @@ import type { Piano } from '../../audio/Piano';
 import { toMusicXml } from '../../score/mxl';
 import { chartBars, chordMatch, parseHarmony, type ChordSymbol } from '../../score/harmony';
 import { KeyboardStrip } from '../KeyboardStrip';
-import { onScreenDispose } from '../screenLifecycle';
+import { onScreenDispose, onScreenSuspend, pageHidden } from '../screenLifecycle';
 import { button, chip, el } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
 import { TOOL_HELP } from '../help';
@@ -160,6 +160,21 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   let metronome: Metronome | null = null;
   let kit: DrumKit | null = null;
   let running = false;
+  /**
+   * Hidden mid-run (X15): silent, with the bar held. `running` stays true —
+   * the run is not over, and *Stop* still ends it.
+   */
+  let suspended = false;
+  /**
+   * The bar of the run (0-based, from the top) that the metronome's bar 1
+   * lands on: 0 from *Count off ▶*, the held bar after a hidden page.
+   * The metronome numbers from bar 1 on every `start()`.
+   */
+  let barOffset = 0;
+  /** Bumped by every start, stop and suspension, so a slow resume cannot land late. */
+  let resumeSeq = 0;
+  /** The piano the comp plays on, so hiding can silence a chord still ringing. */
+  let compPiano: Piano | null = null;
   const held = new Set<number>();
   let disposed = false;
 
@@ -204,7 +219,7 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
 
   function onBeat(beat: MetronomeBeat): void {
     if (disposed || beat.isCountIn) return;
-    const { bar: nextBar, chorus: nextChorus } = barAt(beat.bar, bars.length);
+    const { bar: nextBar, chorus: nextChorus } = barAt(beat.bar + barOffset, bars.length);
     if (!barStarted || nextBar !== bar || nextChorus !== chorus) {
       barStarted = true;
       bar = nextBar;
@@ -222,7 +237,8 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     // harmony, quiet enough to play over.
     const midis = symbol.pitchClasses.map((pitchClass) => 48 + pitchClass);
     void getPiano().then((piano) => {
-      if (!disposed) piano.playChord(midis, (60 / bpm) * 3);
+      compPiano = piano;
+      if (!disposed && !suspended) piano.playChord(midis, (60 / bpm) * 3);
     });
     scheduleBacking(symbol.pitchClasses);
   }
@@ -264,15 +280,60 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     kit.setVolume(getMidiSettings().metronomeVolume);
     metronome.start();
     running = true;
+    suspended = false;
+    resumeSeq += 1;
+    barOffset = 0;
     bar = 0;
     chorus = 1;
     barStarted = false;
     drawForm();
     section.dataset.running = 'true';
     status.textContent = swing ? 'Swing the eighths.' : '';
+    // The page hid while the audio was starting: held from the top, as if it
+    // had hidden a moment later (X15).
+    if (pageHidden()) suspend();
+  }
+
+  /**
+   * The page went hidden mid-run (X15, Part 19): the click, the bass and drums
+   * and the comp go silent, and the chart keeps the bar that was sounding.
+   * Not `stop()`: that ends the run.
+   */
+  function suspend(): void {
+    if (!running || suspended) return;
+    suspended = true;
+    resumeSeq += 1;
+    // Before the first downbeat the offset already says where it was to begin.
+    if (barStarted) barOffset = (chorus - 1) * Math.max(1, bars.length) + bar;
+    metronome?.stop();
+    kit?.dispose();
+    kit = null;
+    compPiano?.stop();
+  }
+
+  /**
+   * The page is back: count in again, as *Count off ▶* does, and carry on from
+   * the downbeat of the bar that was sounding — not ahead of it, which would
+   * count time nobody heard, and not from bar 1, which is what calling
+   * `start()` here would do (it resets `bar`, `chorus` and `barStarted`).
+   */
+  async function resume(): Promise<void> {
+    if (!suspended || disposed) return;
+    const seq = resumeSeq;
+    // The platform suspends the audio context on a locked phone.
+    const context = await audioEngine.ensureStarted();
+    if (disposed || !suspended || seq !== resumeSeq || pageHidden()) return;
+    suspended = false;
+    kit = new DrumKit(context, audioEngine.masterGain ?? undefined);
+    kit.setVolume(getMidiSettings().metronomeVolume);
+    // So the resumed bar's first beat draws and comps, as bar 1's does.
+    barStarted = false;
+    metronome?.start();
   }
 
   function stop(): void {
+    suspended = false;
+    resumeSeq += 1;
     metronome?.stop();
     // Scheduled drum hits outlive the transport otherwise: everything is
     // queued a bar ahead on the audio clock, so leaving the screen with the
@@ -548,6 +609,14 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       status.classList.add('status--error');
     }
   })();
+
+  onScreenSuspend(section, {
+    onHidden: suspend,
+    onVisible: () => {
+      // No audio on return is a reason to stay held, not to throw: *Count off ▶* is still there.
+      void resume().catch(() => undefined);
+    },
+  });
 
   onScreenDispose(section, () => {
     disposed = true;

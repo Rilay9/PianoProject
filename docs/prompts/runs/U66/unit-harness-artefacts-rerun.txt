@@ -1,0 +1,10 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+
+ Test Files  2 passed (2)
+      Tests  80 passed | 4 skipped (84)
+   Start at  13:37:50
+   Duration  730ms (transform 69%, import 21%, tests 9%, worker 1%)
+
+exit=0

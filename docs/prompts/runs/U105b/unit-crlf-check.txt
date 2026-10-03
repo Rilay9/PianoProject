@@ -1,0 +1,2 @@
+4.7 LF form in style.css: False | CRLF form: True
+blues.3 LF form in ScoreScreen.ts: False | CRLF form: True

@@ -1,0 +1,70 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a465c0bc54863c9b3/app
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts (30 tests | 4 failed) 8601ms
+   ❯ each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) (26)
+     × the duet’s and blind’s first playable song, teaching null: a refused song is passed over for the next until approved 71ms
+     × the duet’s and blind’s first playable song, teaching false: a refused song is passed over for the next until approved 54ms
+     × the duet’s and blind’s first playable song, teaching null: with no admitted song neither button is drawn 65ms
+     × the duet’s and blind’s first playable song, teaching false: with no admitted song neither button is drawn 60ms
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 26 passed (30)
+   Start at  20:35:25
+   Duration  9.96s (tests 87%, environment 7%, transform 4%, import 2%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > the duet’s and blind’s first playable song, teaching null: a refused song is passed over for the next until approved
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > the duet’s and blind’s first playable song, teaching false: a refused song is passed over for the next until approved
+AssertionError: expected [ 'song.refused', 'song.refused' ] to deeply equal [ 'song.b', 'song.b' ]
+
+- Expected
++ Received
+
+  [
+-   "song.b",
+-   "song.b",
++   "song.refused",
++   "song.refused",
+  ]
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:233:35
+    231|     const section = await mount(rung({ songOptions: ['song.refused', '…
+    232|     const now = picks(section);
+    233|     expect([now.duet, now.blind]).toEqual(teaching === true ? ['song.r…
+       |                                   ^
+    234|   });
+    235|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > the duet’s and blind’s first playable song, teaching null: with no admitted song neither button is drawn
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > the duet’s and blind’s first playable song, teaching false: with no admitted song neither button is drawn
+AssertionError: expected <button type="button" …(2)></button> to be null
+
+- Expected:
+null
+
++ Received:
+<button
+  class="link-button"
+  id="lesson-tool-duet"
+  type="button"
+>
+  Play it as a duet
+</button>
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:238:56
+    236|   it.each(REFUSED)('the duet’s and blind’s first playable song, teachi…
+    237|     const section = await mount(rung({ songOptions: ['song.refused'], …
+    238|     expect(section.querySelector('#lesson-tool-duet')).toBeNull();
+       |                                                        ^
+    239|     expect(section.querySelector('#lesson-tool-blind')).toBeNull();
+    240|     expect(section.querySelector<HTMLElement>('#lesson-tools-block')?.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+exit 1

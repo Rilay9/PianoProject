@@ -80,3 +80,7 @@ For every row not marked FALSE POSITIVE in the list, in severity order (high fir
 
 Rows confirmed / false positive / applied per check; ids dropped, retitled, replaced;
 the build gate's red proof; what is unverified.
+
+## Record
+
+lane: T15 · closes: — · entry: — · role: history

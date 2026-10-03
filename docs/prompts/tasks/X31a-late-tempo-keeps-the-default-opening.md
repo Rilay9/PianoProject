@@ -1,0 +1,35 @@
+# X31a — The build's opening tempo keeps the default where a note has sounded before the first readable mark, as the app's rule says; rests before the mark keep the mark (the X31 review's required change; `responses/aa16c702.md`)
+
+**Read first:** `docs/prompts/operating-procedure.md` §1–§5 and §11–§13; `docs/review/responses/aa16c702.md` (the X31 review: approve with one required change — *preserve X3d's already-approved opening rule for late tempo marks*: if the first tempo appears only after rests it may define the opening; if notes have already sounded before the first tempo event, the opening remains the default and that tempo is a later change; fix it in Python from the parsed music21 score, never by parsing the XML; adversaries for both cases; regenerate the corpus comparison and the parity fixture; the Satie and same-direction `<sound tempo>` gap stays named); `docs/prompts/entry-144.md` (X31: `opening_quarter_bpm()` takes the earliest readable mark anywhere; the four late-tempo files — Bach WTC I Prelude 2, the *Carol of the Bells* medley, *Le Festin*, the *Fallout 4* trailer — are four of the five remaining corpus mismatches; `runs/X31/corpus-table.txt`, `corpus-bpm.jsonl`, `scripts-corpus-bpm.py`, `scripts-corpus-table.py`); `app/src/score/tempoFromXml.ts` header (the app's opening rule: the event at the first measure's start, or the first tempo where nothing sounds before it — rests only); `tools/content/difficulty.py` at `opening_quarter_bpm`, `_quarter_bpm`, `DEFAULT_BPM`; `tools/content/tests/test_difficulty.py` at `TestTheOpeningTempo` and `TestTheAppsTempoShapes`; `tools/content/export_levelling_fixture.py` and `app/tests/fixtures/levelling.json`.
+
+## What is decided
+
+1. **The rule, from the parsed score.** `opening_quarter_bpm()` finds the earliest readable mark as now; then asks the parsed music21 score whether any sounding note (a Note or Chord, not a Rest, in any part) begins at an offset in the hierarchy strictly before the mark's offset. If one does, the opening is `DEFAULT_BPM` (the mark is a later change); if only rests precede it, the mark is the opening. Grace notes and chord symbols are not sounding notes for this purpose (say what music21 gives you and choose the reading the app's rule implies). No reading of the XML text.
+2. **Red first, unit** (in `TestTheOpeningTempo`): (a) a bar of rests then a mark in bar 2 → the mark's quarter-note value; (b) a note in bar 1 then a mark in bar 2 → 100; (c) the mark at the first measure's start with a note under it → the mark (unchanged); (d) a note in the lower staff before a mark in the upper staff's bar 1 offset later → 100 (the parts together decide). The shapes table gains the two cases, and the seven gaps become five or fewer — say which closed.
+3. **The corpus and the fixture regenerated** (`scripts-corpus-bpm.py`, `scripts-corpus-table.py`, `export_levelling_fixture.py`, `npx vitest run tests/unit/difficulty.test.ts`): the four late-tempo files now agree with the app, the count of differing scores falls from 5 to the Satie case alone (or say what else remains and why); no catalogue level moves (before and after builds, `level-diff` as X31 did); the fit report for information only, no refit.
+4. **Not X31a's:** the Satie and same-direction `<sound tempo>` gap (named, bounded, a later wave); the model; `app/src/**`; the quarry's placements (X37, ruled: never widen bands mechanically).
+
+## Verification layers
+
+Unit red first; `python -m unittest tools.content.tests.test_difficulty tools.content.tests.test_levels`; the fixture and `difficulty.test.ts`; the builds before and after (offline, absolute `--out`) with the level diff; `validate.py --allow-nc --personal`; `review.py --check`; the whole content suite; the map and what it names (`npx vitest run`, `npm run build:app`, the browser specs for `app/tests/fixtures/**` if the map names them — run them at two workers on port 4473 through a config copy not for the commit). No port 4173.
+
+## Rules and files
+
+You own `tools/content/difficulty.py` at `opening_quarter_bpm` only, `tools/content/tests/test_difficulty.py`, the regenerated fixture and corpus files under `docs/prompts/runs/X31a/`; `docs/03` rows in the entry's `## Doc rows`. Never name an AI model. Never assert a number measured on this machine. No commits. Temp state under the worktree's own `build/`. Fresh-worktree setup as X31's (Q24; copy caches read-only from the main checkout; snapshot and restore the three files the build rewrites).
+
+## Report
+
+Judgement first: the corpus counts before and after, the four files' values; Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table. Entry 154; `docs/prompts/runs/X31a/ENTRY.md` starting `### Entry 154 — X31a`.
+
+**Brief approved 2026-09-29** (`responses/questions-b11e4f89.md`): a faithful fix-forward of the X31 required change; the music21 information-loss gap stays separate.
+
+**Landed 2026-09-29** (Entry 154; dd9aea36, merged ecd5b07e); handoff `handoffs/dd9aea36.md`.
+
+**Accepted 2026-09-30** (`responses/dd9aea36.md`, APPROVE). The rule at the correct boundary: the first readable mark opens the piece only while nothing sounding has begun before it, derived from the parsed score with no second MusicXML reader; the four blocking X31 mismatches closed, Satie's the accepted information-loss gap. Grace notes: the implementation's reading kept — a non-cue grace note sounds, as the app counts it; never a Python-only exception. The two newly exposed music21 gaps (a cue note promoted to an ordinary note, a direction relocated by a visual offset) kept named and bounded beside Satie's for the later ingestion and shared normalised-tempo seam; closing them by rereading XML in `difficulty.py` would break the one definition. No refit; X37 governs any placement consequence. X31's required change closed.
+
+## Record
+
+lane: X31a · closes: — · entry: 154
+index: The build's opening tempo keeps the default where a note has sounded before the first readable mark, as the app's rule says (the X31 review's required change) | content | **done 2026-09-29**, Entry 154; merged ecd5b07e; handoff `handoffs/dd9aea36.md`; **accepted 2026-09-30** (`responses/dd9aea36.md`, APPROVE); closed |
+in-flight: brief drafted 2026-09-29 (`X31a-late-tempo-keeps-the-default-opening.md`): the X31 review's required change — the default opening where a note sounded before the first readable mark, from the parsed score, never the XML; adversaries for rests-before and note-before; the corpus and fixture regenerated. Building (Entry 154). **Brief approved** 2026-09-29 (`responses/questions-b11e4f89.md`). **Landed** 2026-09-29 (merged ecd5b07e, chain green); handoff `handoffs/dd9aea36.md`, with the reviewer. **Closed** 2026-09-30 (`responses/dd9aea36.md`, APPROVE): the rule at the correct boundary; grace notes sounding as the app counts them, never a Python-only exception; the two music21 gaps named beside Satie's for the later shared-tempo seam; no refit, X37 governs placements; X31's required change closed.
+state: closed 2026-09-30: APPROVE (`responses/dd9aea36.md`)

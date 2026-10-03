@@ -1,0 +1,68 @@
+[
+  {
+    "item": "song.classical.chopin-ballade-1",
+    "state": "polishing",
+    "badges": [
+      "Preparing for performance (passed)"
+    ],
+    "actions": [
+      "Open Ballade No. 1 in G minor, Op. 23",
+      "Know it"
+    ]
+  },
+  {
+    "item": "song.classical.liszt-la-campanella",
+    "state": "none",
+    "badges": [
+      "not started (neutral)"
+    ],
+    "actions": [
+      "Open La Campanella (Grandes études de Paganini No. 3)",
+      "Know it"
+    ]
+  },
+  {
+    "item": "song.classical.chopin-fantaisie-impromptu.nifc",
+    "state": "none",
+    "badges": [
+      "not started (neutral)"
+    ],
+    "actions": [
+      "Open Fantaisie-impromptu in C-sharp minor, Op. 66",
+      "Know it"
+    ]
+  },
+  {
+    "item": "song.classical.chopin-polonaise-op53.nifc",
+    "state": "none",
+    "badges": [
+      "not started (neutral)"
+    ],
+    "actions": [
+      "Open Polonaise in A-flat major, Op. 53 (“Heroic”)",
+      "Know it"
+    ]
+  },
+  {
+    "item": "song.classical.chopin-etude-op10-4.nifc",
+    "state": "none",
+    "badges": [
+      "not started (neutral)"
+    ],
+    "actions": [
+      "Open Étude in C-sharp minor, Op. 10 No. 4",
+      "Know it"
+    ]
+  },
+  {
+    "item": "song.classical.chopin-sonata-2-3.nifc",
+    "state": "none",
+    "badges": [
+      "not started (neutral)"
+    ],
+    "actions": [
+      "Open Piano Sonata No. 2, Op. 35 — Marche funèbre",
+      "Know it"
+    ]
+  }
+]

@@ -1,0 +1,17 @@
+﻿the three files the build rewrites, each diffed against build\l120c-snapshot (line endings ignored), then restored
+--- content\scores\imported\SOURCES.md: exit=1, diff in report-SOURCES.md.diff
+--- docs\prompts\inventory.md: exit=1, diff in report-inventory.md.diff
+--- docs\prompts\rung-claims.md: exit=1, diff in report-rung-claims.md.diff
+ M app/tests/unit/lessonClaimsAboutApp.test.ts
+ M content/curriculum/concepts.json
+ M content/curriculum/stage-4.json
+ M content/curriculum/stage-5.json
+ M content/curriculum/stage-6.json
+ M content/curriculum/vocabulary/demands.json
+ M content/lessons/4.4.md
+ M tools/content/claims.py
+ M tools/content/tests/fixtures/untaught_on_rung.json
+ M tools/content/tests/test_measured_truth.py
+ M tools/content/tests/test_taught_at.py
+?? docs/prompts/runs/L120c/
+?? tools/content/tests/test_sixteenths_owner.py

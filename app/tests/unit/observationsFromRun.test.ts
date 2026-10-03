@@ -94,6 +94,7 @@ vi.mock('../../src/score/WindowRenderer', async (importOriginal) => {
       setBarsPerWindow(): void {}
       setLoopRange(): void {}
       setRunning(): void {}
+      placeSlots(): void {}
       fitToStage(): void {}
       refit(): void {}
       dispose(): void {}
@@ -396,7 +397,9 @@ describe('the conditions it was played under', () => {
     expect(row.graceNotes).toBe(false);
     expect(row.input).toEqual({ source: 'keys', toleranceMs: 150, latencyMs: 0 });
     expect(row.range).toEqual({ fromMeasure: 0, toMeasure: 1 });
-    expect(row.definitions).toBe(1);
+    // 2 since CL11a (Entry 219; class: replace): the stamp names the accuracy definitions, and Keep tempo's now
+    // charges a wrong key. The literal is the point: a row says which rules judged it.
+    expect(row.definitions).toBe(2);
   });
 });
 
@@ -411,6 +414,8 @@ describe('what the learner had heard', () => {
     finish(tempoRun(TWO_BARS));
     const row = await storedRow();
     expect(row.unseen).toBe(false);
+    // G1a: the encounter relation beside sight-reading's condition, the same value today.
+    expect(row.firstContact).toBe(false);
     expect(row.demonstrated).toBe(false);
   });
 
@@ -422,6 +427,7 @@ describe('what the learner had heard', () => {
     finish(tempoRun(TWO_BARS));
     const row = await storedRow();
     expect(row.unseen).toBe(true);
+    expect(row.firstContact).toBe(true);
   });
 
   it('a demonstrated take stores demonstrated: true and no performance flag', async () => {
@@ -434,7 +440,12 @@ describe('what the learner had heard', () => {
     const row = await storedRow();
     expect(row.demonstrated).toBe(true);
     expect(row.performance).toBeUndefined();
-    // A piece is not a generated phrase: first sight is not a claim it makes.
-    expect(row.unseen).toBeUndefined();
+    // Revised (G1): first contact is written on every run since G1, a piece's
+    // included — an audit fact, never a gate on its pass. This take had the
+    // piece played to the learner inside it, so it was not a first contact.
+    // Revised (G1a): under its own name, `firstContact`; `unseen` is the
+    // generated phrase's field again, and a piece's run carries none.
+    expect(row.firstContact).toBe(false);
+    expect('unseen' in row, 'a piece’s run carries sight-reading’s field').toBe(false);
   });
 });

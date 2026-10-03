@@ -1,0 +1,24 @@
+# eval-arrival: tools\content\musical_evaluator.py swapped, restored byte for byte after the run
+F..F............
+======================================================================
+FAIL: test_the_adversaries (tools.content.tests.test_musical_evaluator.TestEachPartOnItsAdversary.test_the_adversaries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_musical_evaluator.py", line 290, in test_the_adversaries
+    self.assertLess(self.parts(stops)["arrival"], 1.0)
+AssertionError: 1.0 not less than 1.0
+
+======================================================================
+FAIL: test_each_phrase_arrives_and_the_close_counts_twice (tools.content.tests.test_musical_evaluator.TestMultiPhraseSemantics.test_each_phrase_arrives_and_the_close_counts_twice)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_musical_evaluator.py", line 147, in test_each_phrase_arrives_and_the_close_counts_twice
+    self.assertAlmostEqual(ME.study_arrival(short), (first + 2 * 1.0) / 3)
+AssertionError: 1.0 != 0.7666666666666666 within 7 places (0.2333333333333334 difference)
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.012s
+
+FAILED (failures=2)
+
+exit 1

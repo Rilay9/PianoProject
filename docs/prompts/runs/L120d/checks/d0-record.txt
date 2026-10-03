@@ -1,0 +1,7 @@
+﻿python -m unittest tests.test_measured_demands (from tools/content; D0's record, untaught_on_rung.json, unedited)
+........
+----------------------------------------------------------------------
+Ran 8 tests in 270.189s
+
+OK
+exit=0

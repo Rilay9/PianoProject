@@ -1,0 +1,34 @@
+name: docs-integrity
+
+# The documentation that tests read is a machine contract: the reviewer's views of the audit
+# and the matrix (`test_prompt_views`), and, as Q-tooling lands them, the checks map and the
+# test map's consistency. A push that touches only such files starts no full CI run
+# (ci.yml's paths-ignore), so this small workflow checks them on every push without the app,
+# Playwright, rendering or the recordings (2026-09-29, Q63, the outside reviewer's correction).
+on:
+  push:
+    branches: [claude/piano-teaching-app-bo19td, 'chatgpt/**']
+    # The outside builder pushes only to its own `chatgpt/<lane>` branches (2026-10-01); they are
+    # checked here so its builds carry the runner's evidence. `concurrency` keys on the ref, so its
+    # runs never take this branch's slot; pages.yml names only this branch, so it never deploys.
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: The prompt views are fresh
+        run: python3 -m unittest tools.content.tests.test_prompt_views -v
+      # T58: the task index and in-flight are generated from the briefs' `## Record` blocks and
+      # checked against the entries and the responses; a push touching only in-flight.md, the
+      # entries or the review stream starts no ci.yml run, so this is the one runner that sees it.
+      - name: The record's mirrors are generated
+        run: python3 -m unittest tools.content.tests.test_record_mirrors -v

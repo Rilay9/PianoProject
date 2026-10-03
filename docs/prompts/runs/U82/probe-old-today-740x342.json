@@ -1,0 +1,291 @@
+{
+  "tree": "old",
+  "opened": "#/score/song.classical.petzold-minuet-g-bwv-anh114?rung=3.4&slot=new",
+  "tried": [
+    {
+      "row": 0,
+      "title": "Note flash — C2 to C6",
+      "hash": "#/drill/drill.reading.note-flash-extended?rung=3.4"
+    },
+    {
+      "row": 1,
+      "title": "Steps and skips in C position — no. 5",
+      "hash": "#/score/exercise.interval-reading.c-position.right.05?rung=3.4&slot=review"
+    },
+    {
+      "row": 2,
+      "title": "Minuet in G major, BWV Anh. 114",
+      "hash": "#/score/song.classical.petzold-minuet-g-bwv-anh114?rung=3.4&slot=new"
+    }
+  ],
+  "settled": true,
+  "read": {
+    "stage": {
+      "left": 0,
+      "top": 0,
+      "width": 740,
+      "height": 234
+    },
+    "attrs": {
+      "windowBars": "2",
+      "windowAsked": "2",
+      "windowWhy": null,
+      "fit": "height",
+      "measured": "1.26",
+      "settled": "true",
+      "readAhead": "single",
+      "slots": "1"
+    },
+    "scale": 0.907103,
+    "stretch": "natural",
+    "staff": 45.7,
+    "bars": [
+      {
+        "measure": "1",
+        "left": 23.1,
+        "right": 292.1,
+        "onStage": true,
+        "notesX": [
+          134.3,
+          176.1,
+          207.3,
+          238.4,
+          269.6
+        ]
+      },
+      {
+        "measure": "2",
+        "left": 292.1,
+        "right": 415.8,
+        "onStage": true,
+        "notesX": [
+          318.4,
+          357.7,
+          392.2
+        ]
+      },
+      {
+        "measure": "3",
+        "left": 415.8,
+        "right": 574.3,
+        "onStage": true,
+        "notesX": [
+          442.1,
+          479.8,
+          505.5,
+          531.2,
+          556.9
+        ]
+      },
+      {
+        "measure": "4",
+        "left": 574.3,
+        "right": 698,
+        "onStage": true,
+        "notesX": [
+          600.6,
+          639.9,
+          674.4
+        ]
+      },
+      {
+        "measure": "1",
+        "left": 23.1,
+        "right": 292.1,
+        "onStage": true,
+        "notesX": [
+          134.3,
+          134.3,
+          134.3,
+          238.4
+        ]
+      },
+      {
+        "measure": "2",
+        "left": 292.1,
+        "right": 415.8,
+        "onStage": true,
+        "notesX": [
+          318.4
+        ]
+      },
+      {
+        "measure": "3",
+        "left": 415.8,
+        "right": 574.3,
+        "onStage": true,
+        "notesX": [
+          442.1
+        ]
+      },
+      {
+        "measure": "4",
+        "left": 574.3,
+        "right": 698,
+        "onStage": true,
+        "notesX": [
+          600.6
+        ]
+      }
+    ],
+    "inkRight": 699.1
+  },
+  "words": "Bars in windowHow much music is on the screen at once. Fewer bars means bigger notes. If the number you ask for would make the notes too small to read, the app shows fewer and says so.−2 bars+",
+  "settled8": true,
+  "read8": {
+    "stage": {
+      "left": 0,
+      "top": 0,
+      "width": 740,
+      "height": 234
+    },
+    "attrs": {
+      "windowBars": "4",
+      "windowAsked": "8",
+      "windowWhy": "across",
+      "fit": "height",
+      "measured": "1.26",
+      "settled": "true",
+      "readAhead": "single",
+      "slots": "1"
+    },
+    "scale": 0.907103,
+    "stretch": "natural",
+    "staff": 45.7,
+    "bars": [
+      {
+        "measure": "1",
+        "left": 23.1,
+        "right": 292.1,
+        "onStage": true,
+        "notesX": [
+          134.3,
+          176.1,
+          207.3,
+          238.5,
+          269.6
+        ]
+      },
+      {
+        "measure": "2",
+        "left": 292.1,
+        "right": 415.8,
+        "onStage": true,
+        "notesX": [
+          318.4,
+          357.7,
+          392.3
+        ]
+      },
+      {
+        "measure": "3",
+        "left": 415.8,
+        "right": 574.3,
+        "onStage": true,
+        "notesX": [
+          442.1,
+          479.8,
+          505.5,
+          531.3,
+          557
+        ]
+      },
+      {
+        "measure": "4",
+        "left": 574.3,
+        "right": 698,
+        "onStage": true,
+        "notesX": [
+          600.6,
+          639.9,
+          674.5
+        ]
+      },
+      {
+        "measure": "5",
+        "left": 698,
+        "right": 856.5,
+        "onStage": false,
+        "notesX": [
+          724.3,
+          762,
+          787.7,
+          813.5,
+          839.2
+        ]
+      },
+      {
+        "measure": "6",
+        "left": 856.5,
+        "right": 1015,
+        "onStage": false,
+        "notesX": [
+          882.8,
+          920.5,
+          946.2,
+          971.9,
+          997.7
+        ]
+      },
+      {
+        "measure": "1",
+        "left": 23.1,
+        "right": 292.1,
+        "onStage": true,
+        "notesX": [
+          134.3,
+          134.3,
+          134.3,
+          238.5
+        ]
+      },
+      {
+        "measure": "2",
+        "left": 292.1,
+        "right": 415.8,
+        "onStage": true,
+        "notesX": [
+          318.4
+        ]
+      },
+      {
+        "measure": "3",
+        "left": 415.8,
+        "right": 574.3,
+        "onStage": true,
+        "notesX": [
+          442.1
+        ]
+      },
+      {
+        "measure": "4",
+        "left": 574.3,
+        "right": 698,
+        "onStage": true,
+        "notesX": [
+          600.6
+        ]
+      },
+      {
+        "measure": "5",
+        "left": 698,
+        "right": 856.5,
+        "onStage": false,
+        "notesX": [
+          724.3
+        ]
+      },
+      {
+        "measure": "6",
+        "left": 856.5,
+        "right": 1015,
+        "onStage": false,
+        "notesX": [
+          882.8
+        ]
+      }
+    ],
+    "inkRight": 1016.1
+  },
+  "words8": "Bars — 8 asked, 4 shown: fits acrossHow much music is on the screen at once. Fewer bars means bigger notes. If the number you ask for would make the notes too small to read, the app shows fewer and says so.−8 bars+"
+}

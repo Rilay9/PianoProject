@@ -1,0 +1,17 @@
+ok      ode-to-joy.ht-360x780            bars 2 open   slots 2 systems 2 shown 2 ladder 1 overlap -24 W0-0@0:7..269 W1-1@286:293..555
+ok      ode-to-joy.ht-360x780            bars 2 reload slots 2 systems 2 shown 2 ladder 1 overlap -24 W0-0@0:7..269 W1-1@286:293..555
+ok      ode-to-joy.ht-360x780            bars 3 open   slots 2 systems 2 shown 3 ladder 2 overlap -37 W0-1@0:8..191 W2-2@220:228..411
+ok      ode-to-joy.ht-360x780            bars 3 reload slots 2 systems 2 shown 3 ladder 2 overlap -37 W0-1@0:8..191 W2-2@220:228..411
+ok      ode-to-joy.ht-360x780            bars 4 open   slots 2 systems 2 shown 4 ladder 2 overlap -37 W0-1@0:8..191 W2-3@220:228..411
+ok      ode-to-joy.ht-360x780            bars 4 reload slots 2 systems 2 shown 4 ladder 2 overlap -37 W0-1@0:8..191 W2-3@220:228..411
+ok      ode-to-joy.ht-360x780            bars 8 open   slots 3 systems 3 shown 8 ladder 3 overlap -36 W0-2@0:10..146 W3-5@172:182..318 W6-7@345:355..491
+ok      ode-to-joy.ht-360x780            bars 8 reload slots 3 systems 3 shown 8 ladder 3 overlap -36 W0-2@0:10..146 W3-5@172:182..318 W6-7@345:355..491
+ok      twinkle.ht-360x780               bars 2 open   slots 2 systems 2 shown 2 ladder 1 overlap -35 W0-0@0:7..263 W1-1@291:298..554
+ok      twinkle.ht-360x780               bars 2 reload slots 2 systems 2 shown 2 ladder 1 overlap -35 W0-0@0:7..263 W1-1@291:298..554
+ok      twinkle.ht-360x780               bars 3 open   slots 2 systems 2 shown 3 ladder 3 overlap -35 W0-1@0:7..205 W2-2@233:240..438
+ok      twinkle.ht-360x780               bars 3 reload slots 2 systems 2 shown 3 ladder 3 overlap -35 W0-1@0:7..205 W2-2@233:240..438
+ok      twinkle.ht-360x780               bars 4 open   slots 2 systems 2 shown 4 ladder 3 overlap -35 W0-1@0:7..205 W2-3@233:240..438
+ok      twinkle.ht-360x780               bars 4 reload slots 2 systems 2 shown 4 ladder 3 overlap -35 W0-1@0:7..205 W2-3@233:240..438
+ok      twinkle.ht-360x780               bars 8 open   slots 3 systems 3 shown 8 ladder 1 overlap -33 W0-2@0:8..152 W3-5@181:185..333 W6-7@366:370..518
+ok      twinkle.ht-360x780               bars 8 reload slots 3 systems 3 shown 8 ladder 1 overlap -33 W0-2@0:8..152 W3-5@181:185..333 W6-7@366:370..518
+0 of 16 loads overlap

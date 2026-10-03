@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_a_demand_the_judging_rung_has_not_taught_refuses_the_window (tools.content.tests.test_excerpt_proposer.TheGates.test_a_demand_the_judging_rung_has_not_taught_refuses_the_window)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_excerpt_proposer.py", line 294, in test_a_demand_the_judging_rung_has_not_taught_refuses_the_window
+    self.assertIn("texture.hands-together", both.untaught, "hands together is taught at 2.1")
+AssertionError: 'texture.hands-together' not found in [] : hands together is taught at 2.1
+
+----------------------------------------------------------------------
+Ran 1 test in 0.029s
+
+FAILED (failures=1)
+exit 1

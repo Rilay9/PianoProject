@@ -1,0 +1,22 @@
+
+Running 16 tests using 4 workers
+
+  ok  3 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, at rest: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (13.0s)
+  ok  1 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, paused: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (13.8s)
+  ok  2 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, at rest: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (15.2s)
+  ok  4 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, paused: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (15.6s)
+  ok  5 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, at rest: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (6.7s)
+  ok  7 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, at rest: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (7.8s)
+  ok  6 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, paused: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (9.8s)
+  ok  8 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, paused: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (9.5s)
+  ok 10 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, at rest: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (6.3s)
+  ok  9 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, paused: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (7.2s)
+  ok 12 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, at rest: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (6.8s)
+  ok 11 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, paused: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (8.0s)
+  ok 13 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, at rest: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (6.0s)
+  ok 14 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, paused: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (7.2s)
+  ok 15 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, at rest: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (7.0s)
+  ok 16 tests\e2e\score.screen.spec.ts:1835:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, paused: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (8.4s)
+
+  16 passed (1.1m)
+exit 0

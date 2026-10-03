@@ -1,0 +1,425 @@
+$ (cwd .) npx vitest run tests/unit/materialOnTheRecord.test.ts tests/unit/materialIdentity.test.ts tests/unit/contactNovelty.test.ts tests/unit/transferOffer.test.ts tests/unit/transferRelationship.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a64cf9b42ff36e1ca/app
+
+ ❯ tests/unit/transferRelationship.test.ts (0 test)
+ ❯ tests/unit/materialIdentity.test.ts (0 test)
+ ❯ tests/unit/transferOffer.test.ts (17 tests | 5 failed) 32ms
+   ❯ a proficient skill is offered transfer material, deliberately, in the new slot (4)
+     × the pentatonic in A: role transfer for shifting position, gate-passed, unmet, differing — its own claim and its words 7ms
+     × at most one on any card, at every length; none on a day a run already came from one 4ms
+   ❯ not offered (the adversaries held at the selection layer) (7)
+     × the gate refuses: the pentatonic in D brings a key signature, the blues scale notes outside the key, neither taught (adversary 2) 2ms
+     × an unreviewed study is refused by the gate as not approved for teaching use; approved, it may be offered (adversary 5) 2ms
+   ❯ an excerpt: a current teaching-use yes on its cut, placed on a reached rung, and the gate (adversary 9) (5)
+     × the same cut with a current teaching: true may enter, subject to the gate and the relationship 1ms
+ ❯ tests/unit/contactNovelty.test.ts (11 tests | 11 failed) 13ms
+   ❯ contactIn: the facts, by material across every item id, and by id for rows that know none (10)
+     × met: a row carries the same material under the same id 3ms
+     × met through the material index: the same identity under a renamed id (adversaries 3 and 10) 0ms
+     × met-by-id: only a legacy row shares the id — prior contact proven, the material unknown, never unmet (adversary 8) 0ms
+     × met-by-id: a row whose item had no identity (none) shares the id 0ms
+     × met-by-id wins over a known other material under the same id: the legacy row may have been this one 0ms
+     × unmet with metById: a regenerated item under a new version, or a new seed, is new material (adversary 4) 0ms
+     × unmet only where no row of either kind exists 0ms
+     × a runtime phrase: the same version, seed and recipe is met; a new version of the same seed is not (adversary 11) 0ms
+     × an excerpt of a piece played whole: unmet as material — the whole is other bytes; met only where the cut itself was played (adversary 6) 0ms
+     × no material to compare (a placeholder, a drill made when it opens): by id alone, and said so; none never meets none 0ms
+   ❯ contact: the store’s every row, not one item’s index (1)
+     × finds the material under a renamed id, and the legacy row by its id 7ms
+ ❯ tests/unit/materialOnTheRecord.test.ts (11 tests | 5 failed) 29ms
+   ❯ every built row carries the build’s material identity (D4 item 1) (3)
+     × a generated row’s is the app’s own reading of its generator; a notated row’s is its built file’s sha256; a runtime drill’s is none 6ms
+     × the nine reading rows are made when they open: none on the row, so a run’s material is its phrase’s 1ms
+     × a transfer role carries its contract’s relationship, and no other row does 1ms
+   ❯ the evidence context carries the material and the intent (D4 item 2) (3)
+     × a measured record: material and intent beside itemId and seed, first contact as before 2ms
+     × the learner’s own word keeps the same pick: itemId, seed, material, intent 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/materialIdentity.test.ts [ tests/unit/materialIdentity.test.ts ]
+Error: Cannot find module '../../src/curriculum/material' imported from C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a64cf9b42ff36e1ca/app/tests/unit/materialIdentity.test.ts
+ ❯ tests/unit/materialIdentity.test.ts:23:1
+     21| import { join } from 'node:path';
+     22| import { describe, expect, it } from 'vitest';
+     23| import { knownMaterial, phraseMaterial, runFacts, sameMaterial } from …
+       | ^
+     24| import { readingOptions } from '../../src/curriculum/session';
+     25| import type { CatalogItem } from '../../src/curriculum/types';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/23]⎯
+
+ FAIL  tests/unit/transferRelationship.test.ts [ tests/unit/transferRelationship.test.ts ]
+Error: Cannot find module '../../src/curriculum/transfer' imported from C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a64cf9b42ff36e1ca/app/tests/unit/transferRelationship.test.ts
+ ❯ tests/unit/transferRelationship.test.ts:22:1
+     20| import { join } from 'node:path';
+     21| import { describe, expect, it } from 'vitest';
+     22| import { establishedOn, relationshipOf } from '../../src/curriculum/tr…
+       | ^
+     23| import { buildSession } from '../../src/curriculum/session';
+     24| import { indexCatalog } from '../../src/curriculum/selectors';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/23]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 21 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows that know none > met: a row carries the same material under the same id
+TypeError: contactIn is not a function
+ ❯ tests/unit/contactNovelty.test.ts:56:12
+     54| describe('contactIn: the facts, by material across every item id, and …
+     55|   it('met: a row carries the same material under the same id', () => {
+     56|     expect(contactIn([row('song.a', file('a'))], 'song.a', file('a')))…
+       |            ^
+     57|   });
+     58|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/23]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows that know none > met through the material index: the same identity under a renamed id (adversaries 3 and 10)
+TypeError: contactIn is not a function
+ ❯ tests/unit/contactNovelty.test.ts:60:12
+     58|
+     59|   it('met through the material index: the same identity under a rename…
+     60|     expect(contactIn([row('song.old-name', file('a'))], 'song.new-name…
+       |            ^
+     61|     // A duplicate edition with the same bytes under a third id: met, …
+     62|     expect(contactIn([row('song.old-name', file('a')), row('song.copy'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/23]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows that know none > met-by-id: only a legacy row shares the id — prior contact proven, the material unknown, never unmet (adversary 8)
+TypeError: contactIn is not a function
+ ❯ tests/unit/contactNovelty.test.ts:66:12
+     64|
+     65|   it('met-by-id: only a legacy row shares the id — prior contact prove…
+     66|     expect(contactIn([row('song.a')], 'song.a', file('a'))).toEqual({ …
+       |            ^
+     67|   });
+     68|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/23]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows that know none > met-by-id: a row whose item had no identity (none) shares the id
+TypeError: contactIn is not a function
+ ❯ tests/unit/contactNovelty.test.ts:70:12
+     68|
+     69|   it('met-by-id: a row whose item had no identity (none) shares the id…
+     70|     expect(contactIn([row('drill.x', { kind: 'none', why: 'made when i…
+       |            ^
+     71|   });
+     72|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/23]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows that know none > met-by-id wins over a known other material under the same id: the legacy row may have been this one
+TypeError: contactIn is not a function
+ ❯ tests/unit/contactNovelty.test.ts:74:12
+     72|
+     73|   it('met-by-id wins over a known other material under the same id: th…
+     74|     expect(contactIn([row('exercise.s', study(1, 1)), row('exercise.s'…
+       |            ^
+     75|   });
+     76|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/23]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows that know none > unmet with metById: a regenerated item under a new version, or a new seed, is new material (adversary 4)
+TypeError: contactIn is not a function
+ ❯ tests/unit/contactNovelty.test.ts:78:12
+     76|
+     77|   it('unmet with metById: a regenerated item under a new version, or a…
+     78|     expect(contactIn([row('exercise.s', study(1, 1))], 'exercise.s', s…
+       |            ^
+     79|     expect(contactIn([row('exercise.s', study(1, 1))], 'exercise.s', s…
+     80|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/23]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows that know none > unmet only where no row of either kind exists
+TypeError: contactIn is not a function
+ ❯ tests/unit/contactNovelty.test.ts:83:12
+     81|
+     82|   it('unmet only where no row of either kind exists', () => {
+     83|     expect(contactIn([], 'song.a', file('a'))).toEqual({ contact: 'unm…
+       |            ^
+     84|     expect(contactIn([row('song.b', file('b')), row('song.c')], 'song.…
+     85|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/23]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows that know none > a runtime phrase: the same version, seed and recipe is met; a new version of the same seed is not (adversary 11)
+TypeError: contactIn is not a function
+ ❯ tests/unit/contactNovelty.test.ts:89:12
+     87|   it('a runtime phrase: the same version, seed and recipe is met; a ne…
+     88|     const rows = [row('drill.reading.sight-reading-2-right', phrase(2,…
+     89|     expect(contactIn(rows, 'drill.reading.sight-reading-2-right', phra…
+       |            ^
+     90|     expect(contactIn(rows, 'drill.reading.sight-reading-2-right', phra…
+     91|     expect(contactIn(rows, 'drill.reading.sight-reading-2-right', phra…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/23]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows that know none > an excerpt of a piece played whole: unmet as material — the whole is other bytes; met only where the cut itself was played (adversary 6)
+TypeError: contactIn is not a function
+ ❯ tests/unit/contactNovelty.test.ts:96:12
+     94|   it('an excerpt of a piece played whole: unmet as material — the whol…
+     95|     const whole = row('song.minuet', file('p'));
+     96|     expect(contactIn([whole], 'excerpt.minuet.b25-32', file('c'))).toE…
+       |            ^
+     97|     expect(contactIn([whole, row('excerpt.minuet.b25-32', file('c'))],…
+     98|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/23]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contactIn: the facts, by material across every item id, and by id for rows that know none > no material to compare (a placeholder, a drill made when it opens): by id alone, and said so; none never meets none
+TypeError: contactIn is not a function
+ ❯ tests/unit/contactNovelty.test.ts:102:12
+    100|   it('no material to compare (a placeholder, a drill made when it open…
+    101|     const none: Identity = { kind: 'none', why: 'no notation is bundle…
+    102|     expect(contactIn([row('song.other', none)], 'song.placeholder', no…
+       |            ^
+    103|     expect(contactIn([row('song.placeholder', none)], 'song.placeholde…
+    104|     expect(contactIn([row('song.placeholder')], 'song.placeholder', un…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/23]⎯
+
+ FAIL  tests/unit/contactNovelty.test.ts > contact: the store’s every row, not one item’s index > finds the material under a renamed id, and the legacy row by its id
+TypeError: contact is not a function
+ ❯ tests/unit/contactNovelty.test.ts:132:18
+    130|     await recordRun(run('song.old-name', file('a')), new Date(2026, 9,…
+    131|     await recordRun(run('song.legacy'), new Date(2026, 9, 2, 12));
+    132|     expect(await contact('song.new-name', file('a'))).toEqual({ contac…
+       |                  ^
+    133|     expect(await contact('song.legacy', file('z'))).toEqual({ contact:…
+    134|     expect(await contact('song.never', file('y'))).toEqual({ contact: …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/23]⎯
+
+ FAIL  tests/unit/materialOnTheRecord.test.ts > every built row carries the build’s material identity (D4 item 1) > a generated row’s is the app’s own reading of its generator; a notated row’s is its built file’s sha256; a runtime drill’s is none
+AssertionError: 2090 rows: expected [ …(10) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "drill.blues.lh-patterns: no provenance.identity",
++   "drill.chord.c-f-g: no provenance.identity",
++   "drill.chord.inversions: no provenance.identity",
++   "drill.chord.minor-changes: no provenance.identity",
++   "drill.chord.primary-c-g-f: no provenance.identity",
++   "drill.chord.symbol-flash: no provenance.identity",
++   "drill.dynamics.p-f: no provenance.identity",
++   "drill.ear.cadences: no provenance.identity",
++   "drill.ear.interval-2nd-3rd: no provenance.identity",
++   "drill.ear.intervals-within-octave: no provenance.identity",
++ ]
+
+ ❯ tests/unit/materialOnTheRecord.test.ts:76:66
+     74|       }
+     75|     }
+     76|     expect(faults.slice(0, 10), `${String(faults.length)} rows`).toEqu…
+       |                                                                  ^
+     77|     expect(generated).toBeGreaterThan(1000);
+     78|     expect(files).toBeGreaterThan(700);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/23]⎯
+
+ FAIL  tests/unit/materialOnTheRecord.test.ts > every built row carries the build’s material identity (D4 item 1) > the nine reading rows are made when they open: none on the row, so a run’s material is its phrase’s
+AssertionError: drill.reading.sight-reading-1: expected undefined to deeply equal { kind: 'none', …(1) }
+
+- Expected:
+{
+  "kind": "none",
+  "why": "made when it opens: no file the build keys",
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/materialOnTheRecord.test.ts:84:76
+     82|     const readers = catalog.filter((item) => item.drill?.kind === 'sig…
+     83|     expect(readers).toHaveLength(9);
+     84|     for (const item of readers) expect(item.provenance?.identity, item…
+       |                                                                            ^
+     85|   });
+     86|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/23]⎯
+
+ FAIL  tests/unit/materialOnTheRecord.test.ts > every built row carries the build’s material identity (D4 item 1) > a transfer role carries its contract’s relationship, and no other row does
+AssertionError: exercise.pentatonic.a.blues: expected undefined to be truthy
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ tests/unit/materialOnTheRecord.test.ts:90:86
+     88|     const transfer = catalog.filter((item) => item.role === 'transfer'…
+     89|     expect(transfer).toHaveLength(12);
+     90|     for (const item of transfer) expect(item.provenance?.transferOf?.s…
+       |                                                                                      ^
+     91|     expect(byId.get('exercise.pentatonic.a.pentatonic')?.provenance?.t…
+     92|       skill: 'position-shift',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/23]⎯
+
+ FAIL  tests/unit/materialOnTheRecord.test.ts > the evidence context carries the material and the intent (D4 item 2) > a measured record: material and intent beside itemId and seed, first contact as before
+AssertionError: expected { …(7) } to match object { …(5) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,8 +1,7 @@
+  {
+    "firstContact": true,
+-   "intent": "transfer",
+    "itemId": "drill.reading.sight-reading-2-right",
+    "material": {
+      "family": "sight-reading",
+      "kind": "generator",
+      "recipe": {
+
+ ❯ tests/unit/materialOnTheRecord.test.ts:107:28
+    105|     const results = evidenceFor({ observation, played: SHIFT, targetSk…
+    106|     const shift = results.find((result): result is MeasuredEvidence =>…
+    107|     expect(shift?.context).toMatchObject({ itemId: READING_ROW, seed: …
+       |                            ^
+    108|   });
+    109|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/23]⎯
+
+ FAIL  tests/unit/materialOnTheRecord.test.ts > the evidence context carries the material and the intent (D4 item 2) > the learner’s own word keeps the same pick: itemId, seed, material, intent
+AssertionError: expected { …(3) } to deeply equal { …(4) }
+
+- Expected
++ Received
+
+@@ -1,7 +1,6 @@
+  {
+-   "intent": "transfer",
+    "itemId": "drill.reading.sight-reading-2-right",
+    "material": {
+      "family": "sight-reading",
+      "kind": "generator",
+      "recipe": {
+
+ ❯ tests/unit/materialOnTheRecord.test.ts:113:71
+    111|     const silent = { ...observe(SHIFT, { mode: 'tempo', itemId: READIN…
+    112|     const told = evidenceFor({ observation: silent, played: SHIFT, tar…
+    113|     expect(told?.kind === 'self-assessed' ? told.context : undefined).…
+       |                                                                       ^
+    114|   });
+    115|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/23]⎯
+
+ FAIL  tests/unit/transferOffer.test.ts > a proficient skill is offered transfer material, deliberately, in the new slot > the pentatonic in A: role transfer for shifting position, gate-passed, unmet, differing — its own claim and its words
+AssertionError: expected undefined to be 'new' // Object.is equality
+
+- Expected:
+"new"
+
++ Received:
+undefined
+
+ ❯ tests/unit/transferOffer.test.ts:177:25
+    175|     const slots = card();
+    176|     const offer = offerOf(slots);
+    177|     expect(offer?.kind).toBe('new');
+       |                         ^
+    178|     expect(offer?.item?.id).toBe(PENT_A.id);
+    179|     expect(offer?.claim).toMatchObject({ kind: 'transfer', skill: 'pos…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/23]⎯
+
+ FAIL  tests/unit/transferOffer.test.ts > a proficient skill is offered transfer material, deliberately, in the new slot > at most one on any card, at every length; none on a day a run already came from one
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/transferOffer.test.ts:193:44
+    191|   it('at most one on any card, at every length; none on a day a run al…
+    192|     for (const minutes of [15, 30, 60, 120]) expect(offers(card({ minu…
+    193|     expect(offers(card({ minutes: 120 }))).toHaveLength(1);
+       |                                            ^
+    194|     // This morning's transfer run was of another item: the pentatonic…
+    195|     const other = built('exercise.pentatonic.e.pentatonic');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/23]⎯
+
+ FAIL  tests/unit/transferOffer.test.ts > not offered (the adversaries held at the selection layer) > the gate refuses: the pentatonic in D brings a key signature, the blues scale notes outside the key, neither taught (adversary 2)
+AssertionError: expected undefined to be 'exercise.pentatonic.d.pentatonic' // Object.is equality
+
+- Expected:
+"exercise.pentatonic.d.pentatonic"
+
++ Received:
+undefined
+
+ ❯ tests/unit/transferOffer.test.ts:229:108
+    227|     expect(eligibleFor(BLUES_A, learner, { for: 'skill', skill: 'posit…
+    228|     // Taught, the pentatonic in D is what comes next.
+    229|     expect(offerOf(card({ rows: [...SHOWN, met], vocabulary: taughtAtA…
+       |                                                                                                            ^
+    230|   });
+    231|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/23]⎯
+
+ FAIL  tests/unit/transferOffer.test.ts > not offered (the adversaries held at the selection layer) > an unreviewed study is refused by the gate as not approved for teaching use; approved, it may be offered (adversary 5)
+AssertionError: expected undefined to be 'exercise.study.position-shift.b-flat-…' // Object.is equality
+
+- Expected:
+"exercise.study.position-shift.b-flat-major.4-4.12bar.broken.01"
+
++ Received:
+undefined
+
+ ❯ tests/unit/transferOffer.test.ts:246:132
+    244|     expect(offers(card({ rows, vocabulary: everything }))).toEqual([]);
+    245|     const approved: CatalogItem = { ...STUDY, provenance: { ...(STUDY.…
+    246|     expect(offerOf(card({ rows, vocabulary: everything }, [...ITEMS.fi…
+       |                                                                                                                                    ^
+    247|   });
+    248|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/23]⎯
+
+ FAIL  tests/unit/transferOffer.test.ts > an excerpt: a current teaching-use yes on its cut, placed on a reached rung, and the gate (adversary 9) > the same cut with a current teaching: true may enter, subject to the gate and the relationship
+AssertionError: expected undefined to be 'excerpt.classical.bach-menuet-bwv-anh…' // Object.is equality
+
+- Expected:
+"excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32"
+
++ Received:
+undefined
+
+ ❯ tests/unit/transferOffer.test.ts:284:29
+    282|   it('the same cut with a current teaching: true may enter, subject to…
+    283|     const offer = offerOf(card({ rows: READER, curriculum: placed, voc…
+    284|     expect(offer?.item?.id).toBe(CUT.id);
+       |                             ^
+    285|     expect(offer?.claim).toMatchObject({ kind: 'transfer', skill: 'int…
+    286|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/23]⎯
+
+
+ Test Files  5 failed (5)
+      Tests  21 failed | 18 passed (39)
+   Start at  21:41:52
+   Duration  1.36s (transform 60%, import 34%, tests 4%, worker 1%)
+
+
+exit 1

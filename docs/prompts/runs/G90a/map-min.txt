@@ -1,0 +1,42 @@
+# checks for 34 path(s): 34 matched, 0 unmatched
+# app/src/curriculum/session.ts: app/src/**, app/src/curriculum/session.ts, app/src/curriculum/**
+# app/src/data/sessionRun.ts: app/src/**, app/src/data/**, app/src/data/sessionRun.ts
+# app/src/ui/help.ts: app/src/**, app/src/ui/*.ts, app/src/ui/help*.ts
+# app/src/ui/screens/TodayScreen.ts: app/src/**, app/src/ui/screens/TodayScreen.ts
+# app/src/ui/sessionRunner.ts: app/src/**, app/src/ui/*.ts, app/src/ui/sessionRunner.ts
+# app/tests/e2e/session-held-skip.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/projectLifecycle.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sessionHeldPiece.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sessionHeldSkip.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/todayHeldPiece.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/todayHeldSkip.test.ts: app/tests/unit/*.test.ts
+# docs/04-ui-spec.md: docs/04-ui-spec.md, docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/pictures/g90a/today-skipped-row-paused-phone-sideways-780x360.png: docs/**
+# docs/prompts/pictures/g90a/today-skipped-row-paused-phone-upright-360x780.png: docs/**
+# docs/prompts/pictures/g90a/today-skipped-row-paused-tablet-1024x768.png: docs/**
+# docs/prompts/pictures/g90a/today-skipped-row-retired-phone-sideways-780x360.png: docs/**
+# docs/prompts/pictures/g90a/today-skipped-row-retired-phone-upright-360x780.png: docs/**
+# docs/prompts/pictures/g90a/today-skipped-row-retired-tablet-1024x768.png: docs/**
+# docs/prompts/runs/G90a/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/G90a/e2e-green-restored.txt: docs/**
+# docs/prompts/runs/G90a/e2e-green.txt: docs/**
+# docs/prompts/runs/G90a/e2e-m23.txt: docs/**
+# docs/prompts/runs/G90a/e2e-red-base.txt: docs/**
+# docs/prompts/runs/G90a/map-min.txt: docs/**
+# docs/prompts/runs/G90a/mutants.txt: docs/**
+# docs/prompts/runs/G90a/red-unit-base.txt: docs/**
+# docs/prompts/runs/G90a/scripts/css-mutant.cjs: docs/**
+# docs/prompts/runs/G90a/scripts/make-evidence.cjs: docs/**
+# docs/prompts/runs/G90a/scripts/mutant-map.cjs: docs/**
+# docs/prompts/runs/G90a/scripts/mutants.cjs: docs/**
+# docs/prompts/runs/G90a/scripts/playwright.g90a.config.ts: docs/**
+# docs/prompts/runs/G90a/scripts/run-e2e.sh: docs/**
+# docs/prompts/runs/G90a/unit-summary.txt: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/app-shell.spec.ts tests/e2e/doors.spec.ts tests/e2e/empty-states.spec.ts tests/e2e/feedback-placement.spec.ts tests/e2e/first-day.spec.ts tests/e2e/help-strip.spec.ts tests/e2e/lab.spec.ts tests/e2e/landscape.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/modes-free-play.spec.ts tests/e2e/modes-placement.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.hierarchy.spec.ts tests/e2e/progress.spec.ts tests/e2e/session-held-skip.spec.ts tests/e2e/session-run.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts tests/e2e/wide.spec.ts --workers=4

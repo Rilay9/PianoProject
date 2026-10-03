@@ -1,0 +1,188 @@
+[
+ {
+  "load": "fresh",
+  "events": [
+   {
+    "t": 198,
+    "kind": "stage-found",
+    "slots": null,
+    "stageH": 658.4,
+    "rowsDrawn": 0,
+    "aheadDrawn": 0,
+    "settled": null
+   },
+   {
+    "t": 861,
+    "kind": "data-slots",
+    "slots": "3",
+    "stageH": 586.4,
+    "rowsDrawn": 3,
+    "aheadDrawn": 1,
+    "settled": null
+   },
+   {
+    "t": 1646,
+    "kind": "data-slots",
+    "slots": "2",
+    "stageH": 531.1,
+    "rowsDrawn": 2,
+    "aheadDrawn": 0,
+    "settled": null
+   },
+   {
+    "t": 1647,
+    "kind": "stage-size",
+    "slots": "2",
+    "stageH": 531.1,
+    "rowsDrawn": 2,
+    "aheadDrawn": 0,
+    "settled": null
+   },
+   {
+    "t": 1684,
+    "kind": "data-settled",
+    "slots": "2",
+    "stageH": 531.1,
+    "rowsDrawn": 2,
+    "aheadDrawn": 0,
+    "settled": "true"
+   }
+  ]
+ },
+ {
+  "load": "reload 1",
+  "events": [
+   {
+    "t": 69,
+    "kind": "stage-found",
+    "slots": null,
+    "stageH": 658.4,
+    "rowsDrawn": 0,
+    "aheadDrawn": 0,
+    "settled": null
+   },
+   {
+    "t": 85,
+    "kind": "stage-size",
+    "slots": null,
+    "stageH": 658.4,
+    "rowsDrawn": 0,
+    "aheadDrawn": 0,
+    "settled": null
+   },
+   {
+    "t": 425,
+    "kind": "data-slots",
+    "slots": "3",
+    "stageH": 586.4,
+    "rowsDrawn": 3,
+    "aheadDrawn": 1,
+    "settled": null
+   },
+   {
+    "t": 426,
+    "kind": "stage-size",
+    "slots": "3",
+    "stageH": 586.4,
+    "rowsDrawn": 3,
+    "aheadDrawn": 1,
+    "settled": null
+   },
+   {
+    "t": 500,
+    "kind": "data-slots",
+    "slots": "2",
+    "stageH": 531.1,
+    "rowsDrawn": 2,
+    "aheadDrawn": 0,
+    "settled": null
+   },
+   {
+    "t": 501,
+    "kind": "stage-size",
+    "slots": "2",
+    "stageH": 531.1,
+    "rowsDrawn": 2,
+    "aheadDrawn": 0,
+    "settled": null
+   },
+   {
+    "t": 632,
+    "kind": "data-settled",
+    "slots": "2",
+    "stageH": 531.1,
+    "rowsDrawn": 2,
+    "aheadDrawn": 0,
+    "settled": "true"
+   }
+  ]
+ },
+ {
+  "load": "reload 2",
+  "events": [
+   {
+    "t": 63,
+    "kind": "stage-found",
+    "slots": null,
+    "stageH": 658.4,
+    "rowsDrawn": 0,
+    "aheadDrawn": 0,
+    "settled": null
+   },
+   {
+    "t": 83,
+    "kind": "stage-size",
+    "slots": null,
+    "stageH": 658.4,
+    "rowsDrawn": 0,
+    "aheadDrawn": 0,
+    "settled": null
+   },
+   {
+    "t": 412,
+    "kind": "data-slots",
+    "slots": "3",
+    "stageH": 586.4,
+    "rowsDrawn": 3,
+    "aheadDrawn": 1,
+    "settled": null
+   },
+   {
+    "t": 414,
+    "kind": "stage-size",
+    "slots": "3",
+    "stageH": 586.4,
+    "rowsDrawn": 3,
+    "aheadDrawn": 1,
+    "settled": null
+   },
+   {
+    "t": 484,
+    "kind": "data-slots",
+    "slots": "2",
+    "stageH": 531.1,
+    "rowsDrawn": 2,
+    "aheadDrawn": 0,
+    "settled": null
+   },
+   {
+    "t": 484,
+    "kind": "stage-size",
+    "slots": "2",
+    "stageH": 531.1,
+    "rowsDrawn": 2,
+    "aheadDrawn": 0,
+    "settled": null
+   },
+   {
+    "t": 583,
+    "kind": "data-settled",
+    "slots": "2",
+    "stageH": 531.1,
+    "rowsDrawn": 2,
+    "aheadDrawn": 0,
+    "settled": "true"
+   }
+  ]
+ }
+]

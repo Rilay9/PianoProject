@@ -1,0 +1,1835 @@
+{
+ "rule": [
+  "Two titles are siblings when, compared on their words (lower case, punctuation dropped), one",
+  "shares with the other a prefix of at least two words that is at least half of the shorter title's",
+  "words, and the two are not the same words. The words after the shared prefix are the ending that",
+  "tells them apart. Identical titles are not siblings: nothing in the title tells them apart (their"
+ ],
+ "titles": 1288,
+ "groups": [
+  [
+   "12th Street Rag",
+   "12th Street Rag (1914)"
+  ],
+  [
+   "A blues scale — 1 oct, both",
+   "A blues scale — 1 oct, right",
+   "A blues scale — one octave, thumb under"
+  ],
+  [
+   "A broken octaves — 1 oct, left",
+   "A broken octaves — 1 oct, right"
+  ],
+  [
+   "A harmonic minor scale — 1 oct, contrary, both",
+   "A harmonic minor scale — 1 oct, similar, both",
+   "A harmonic minor scale — 1 oct, similar, left",
+   "A harmonic minor scale — 1 oct, similar, right",
+   "A harmonic minor scale — 2 oct, similar, both",
+   "A harmonic minor scale — 3 oct, similar, both"
+  ],
+  [
+   "A melodic minor scale — 1 oct, similar, both",
+   "A melodic minor scale — 1 oct, similar, left",
+   "A melodic minor scale — 1 oct, similar, right",
+   "A melodic minor scale — 2 oct, similar, both"
+  ],
+  [
+   "A minor arpeggio — 2 oct, both",
+   "A minor arpeggio — 2 oct, left",
+   "A minor arpeggio — 2 oct, right",
+   "A minor arpeggio — 4 oct, both"
+  ],
+  [
+   "A natural minor scale — 1 oct, similar, both",
+   "A natural minor scale — 2 oct, similar, both"
+  ],
+  [
+   "A octave scale — 1 oct, both",
+   "A octave scale — 1 oct, left",
+   "A octave scale — 1 oct, right"
+  ],
+  [
+   "Alberti bass in A minor — hands together",
+   "Alberti bass in A minor — left hand"
+  ],
+  [
+   "Alberti bass in C major — hands together",
+   "Alberti bass in C major — left hand"
+  ],
+  [
+   "Alberti bass in D minor — hands together",
+   "Alberti bass in D minor — left hand"
+  ],
+  [
+   "Alberti bass in F major — hands together",
+   "Alberti bass in F major — left hand"
+  ],
+  [
+   "Alberti bass in G major — hands together",
+   "Alberti bass in G major — left hand"
+  ],
+  [
+   "Album for the Young, Op. 68 No. 11 \"Sicilienne\"",
+   "Album for the Young, Op. 68 No. 16 \"First Loss\"",
+   "Album for the Young, Op. 68 No. 18 \"The Reaper's Song\"",
+   "Album for the Young, Op. 68 No. 4 \"Chorale\"",
+   "Album for the Young, Op. 68 No. 6 \"The Poor Orphan\""
+  ],
+  [
+   "Amazing Grace (easy piano)",
+   "Amazing Grace (in G major)",
+   "Amazing Grace (four parts)"
+  ],
+  [
+   "A♭ major arpeggio — 2 oct, both",
+   "A♭ major arpeggio — 4 oct, both",
+   "A major arpeggio — 2 oct, both",
+   "A major arpeggio — 4 oct, both"
+  ],
+  [
+   "A♭ major five-finger pattern — both",
+   "A♭ major five-finger pattern — left",
+   "A♭ major five-finger pattern — right",
+   "A major five-finger pattern — both",
+   "A major five-finger pattern — left",
+   "A major five-finger pattern — right"
+  ],
+  [
+   "A♭ major scale — 1 oct, contrary, both",
+   "A♭ major scale — 1 oct, similar, both",
+   "A♭ major scale — 1 oct, similar, left",
+   "A♭ major scale — 1 oct, similar, right",
+   "A major scale — 1 oct, contrary, both",
+   "A major scale — 1 oct, similar, both",
+   "A major scale — 1 oct, similar, left",
+   "A major scale — 1 oct, similar, right"
+  ],
+  [
+   "A♭ major scale — 2 oct, contrary, both",
+   "A♭ major scale — 2 oct, similar, both",
+   "A major scale — 2 oct, contrary, both",
+   "A major scale — 2 oct, similar, both"
+  ],
+  [
+   "Boogie — pinetop in A, both hands",
+   "Boogie — pinetop in B♭, both hands",
+   "Boogie — pinetop in C, both hands",
+   "Boogie — pinetop in D, both hands",
+   "Boogie — pinetop in E♭, both hands",
+   "Boogie — pinetop in E, both hands",
+   "Boogie — pinetop in F, both hands",
+   "Boogie — pinetop in G, both hands"
+  ],
+  [
+   "Boogie — root fifth in A, both hands",
+   "Boogie — root fifth in B♭, both hands",
+   "Boogie — root fifth in C, both hands",
+   "Boogie — root fifth in D, both hands",
+   "Boogie — root fifth in E♭, both hands",
+   "Boogie — root fifth in E, both hands",
+   "Boogie — root fifth in F, both hands",
+   "Boogie — root fifth in G, both hands"
+  ],
+  [
+   "Boogie — walking eighths in A, both hands",
+   "Boogie — walking eighths in B♭, both hands",
+   "Boogie — walking eighths in C, both hands",
+   "Boogie — walking eighths in D, both hands",
+   "Boogie — walking eighths in E♭, both hands",
+   "Boogie — walking eighths in E, both hands",
+   "Boogie — walking eighths in F, both hands",
+   "Boogie — walking eighths in G, both hands"
+  ],
+  [
+   "Broken chord in A minor — hands together",
+   "Broken chord in A minor — left hand"
+  ],
+  [
+   "Broken chord in C major — hands together",
+   "Broken chord in C major — left hand"
+  ],
+  [
+   "Broken chord in D minor — hands together",
+   "Broken chord in D minor — left hand"
+  ],
+  [
+   "Broken chord in F major — hands together",
+   "Broken chord in F major — left hand"
+  ],
+  [
+   "Broken chord in G major — hands together",
+   "Broken chord in G major — left hand"
+  ],
+  [
+   "B♭ blues scale — 1 oct, both",
+   "B♭ blues scale — 1 oct, right"
+  ],
+  [
+   "B♭ harmonic minor scale — 1 oct, contrary, both",
+   "B♭ harmonic minor scale — 1 oct, similar, both",
+   "B♭ harmonic minor scale — 1 oct, similar, left",
+   "B♭ harmonic minor scale — 1 oct, similar, right",
+   "B♭ harmonic minor scale — 2 oct, similar, both",
+   "B♭ harmonic minor scale — 3 oct, similar, both",
+   "B harmonic minor scale — 1 oct, contrary, both",
+   "B harmonic minor scale — 1 oct, similar, both",
+   "B harmonic minor scale — 1 oct, similar, left",
+   "B harmonic minor scale — 1 oct, similar, right",
+   "B harmonic minor scale — 2 oct, similar, both",
+   "B harmonic minor scale — 3 oct, similar, both"
+  ],
+  [
+   "B♭ major arpeggio — 2 oct, both",
+   "B♭ major arpeggio — 4 oct, both",
+   "B major arpeggio — 2 oct, both",
+   "B major arpeggio — 4 oct, both"
+  ],
+  [
+   "B♭ major five-finger pattern — both",
+   "B♭ major five-finger pattern — left",
+   "B♭ major five-finger pattern — right",
+   "B major five-finger pattern — both",
+   "B major five-finger pattern — left",
+   "B major five-finger pattern — right"
+  ],
+  [
+   "B♭ major scale — 1 oct, contrary, both",
+   "B♭ major scale — 1 oct, similar, both",
+   "B♭ major scale — 1 oct, similar, left",
+   "B♭ major scale — 1 oct, similar, right",
+   "B major scale — 1 oct, contrary, both",
+   "B major scale — 1 oct, similar, both",
+   "B major scale — 1 oct, similar, left",
+   "B major scale — 1 oct, similar, right"
+  ],
+  [
+   "B♭ major scale — 2 oct, contrary, both",
+   "B♭ major scale — 2 oct, similar, both",
+   "B major scale — 2 oct, contrary, both",
+   "B major scale — 2 oct, similar, both"
+  ],
+  [
+   "B♭ melodic minor scale — 1 oct, similar, both",
+   "B♭ melodic minor scale — 1 oct, similar, left",
+   "B♭ melodic minor scale — 1 oct, similar, right",
+   "B♭ melodic minor scale — 2 oct, similar, both",
+   "B melodic minor scale — 1 oct, similar, both",
+   "B melodic minor scale — 1 oct, similar, left",
+   "B melodic minor scale — 1 oct, similar, right",
+   "B melodic minor scale — 2 oct, similar, both"
+  ],
+  [
+   "B♭ minor arpeggio — 2 oct, both",
+   "B♭ minor arpeggio — 4 oct, both",
+   "B minor arpeggio — 2 oct, both",
+   "B minor arpeggio — 4 oct, both"
+  ],
+  [
+   "B♭ natural minor scale — 1 oct, similar, both",
+   "B♭ natural minor scale — 2 oct, similar, both",
+   "B natural minor scale — 1 oct, similar, both",
+   "B natural minor scale — 2 oct, similar, both"
+  ],
+  [
+   "C blues scale — 1 oct, both",
+   "C blues scale — 1 oct, right"
+  ],
+  [
+   "C broken octaves — 1 oct, left",
+   "C broken octaves — 1 oct, right"
+  ],
+  [
+   "C harmonic minor scale — 1 oct, contrary, both",
+   "C harmonic minor scale — 1 oct, similar, both",
+   "C harmonic minor scale — 1 oct, similar, left",
+   "C harmonic minor scale — 1 oct, similar, right",
+   "C harmonic minor scale — 2 oct, similar, both",
+   "C harmonic minor scale — 3 oct, similar, both",
+   "C♯ harmonic minor scale — 1 oct, contrary, both",
+   "C♯ harmonic minor scale — 1 oct, similar, both",
+   "C♯ harmonic minor scale — 1 oct, similar, left",
+   "C♯ harmonic minor scale — 1 oct, similar, right",
+   "C♯ harmonic minor scale — 2 oct, similar, both",
+   "C♯ harmonic minor scale — 3 oct, similar, both"
+  ],
+  [
+   "C major arpeggio — 2 oct, both",
+   "C major arpeggio — 2 oct, left",
+   "C major arpeggio — 2 oct, right",
+   "C major arpeggio — 4 oct, both"
+  ],
+  [
+   "C major five-finger pattern — both",
+   "C major five-finger pattern — left",
+   "C major five-finger pattern — right"
+  ],
+  [
+   "C major scale in 6ths — 1 oct, left",
+   "C major scale in 6ths — 1 oct, right",
+   "C major scale in 3rds — 1 oct, left",
+   "C major scale in 3rds — 1 oct, right"
+  ],
+  [
+   "C major scale — 1 oct, contrary, both",
+   "C major scale — 1 oct, similar, both",
+   "C major scale — 1 oct, similar, left",
+   "C major scale — 1 oct, similar, right"
+  ],
+  [
+   "C major scale — 2 oct, contrary, both",
+   "C major scale — 2 oct, similar, both"
+  ],
+  [
+   "C melodic minor scale — 1 oct, similar, both",
+   "C melodic minor scale — 1 oct, similar, left",
+   "C melodic minor scale — 1 oct, similar, right",
+   "C melodic minor scale — 2 oct, similar, both",
+   "C♯ melodic minor scale — 1 oct, similar, both",
+   "C♯ melodic minor scale — 1 oct, similar, left",
+   "C♯ melodic minor scale — 1 oct, similar, right",
+   "C♯ melodic minor scale — 2 oct, similar, both"
+  ],
+  [
+   "C minor arpeggio — 2 oct, both",
+   "C minor arpeggio — 4 oct, both",
+   "C♯ minor arpeggio — 2 oct, both",
+   "C♯ minor arpeggio — 4 oct, both"
+  ],
+  [
+   "C natural minor scale — 1 oct, similar, both",
+   "C natural minor scale — 2 oct, similar, both",
+   "C♯ natural minor scale — 1 oct, similar, both",
+   "C♯ natural minor scale — 2 oct, similar, both"
+  ],
+  [
+   "C octave scale — 1 oct, both",
+   "C octave scale — 1 oct, left",
+   "C octave scale — 1 oct, right"
+  ],
+  [
+   "Canon in D",
+   "Canon in D (easy)"
+  ],
+  [
+   "Carol of the Bells (Christmas medley)",
+   "Carol of the Bells (Shchedryk)",
+   "Carol of the Bells (easy)"
+  ],
+  [
+   "Children's Corner - Doctor Gradus ad Parnassum",
+   "Children's Corner - Jimbo's Lullaby",
+   "Children's Corner - The Little Shepherd"
+  ],
+  [
+   "Chromatic scale from C — 1 oct, both",
+   "Chromatic scale from C — 1 oct, left",
+   "Chromatic scale from C — 1 oct, right",
+   "Chromatic scale from C — 2 oct, both"
+  ],
+  [
+   "Chromatic scale from D — 1 oct, both",
+   "Chromatic scale from D — 1 oct, left",
+   "Chromatic scale from D — 1 oct, right",
+   "Chromatic scale from D — 2 oct, both"
+  ],
+  [
+   "Chromatic scale from E — 1 oct, both",
+   "Chromatic scale from E — 1 oct, left",
+   "Chromatic scale from E — 1 oct, right",
+   "Chromatic scale from E — 2 oct, both"
+  ],
+  [
+   "Chromatic scale from G — 1 oct, both",
+   "Chromatic scale from G — 1 oct, left",
+   "Chromatic scale from G — 1 oct, right",
+   "Chromatic scale from G — 2 oct, both"
+  ],
+  [
+   "Cielito Lindo (simple)",
+   "Cielito Lindo"
+  ],
+  [
+   "Clair de Lune (Suite bergamasque, L. 75 No. 3)",
+   "clair de lune beginner version",
+   "Clair de Lune (easy)",
+   "Clair de Lune (alternative edition)"
+  ],
+  [
+   "Clave — bossa",
+   "Clave — bossa over a quarter-note pulse"
+  ],
+  [
+   "Clave — rumba 2-3",
+   "Clave — rumba 2-3 over a quarter-note pulse",
+   "Clave — rumba 3-2",
+   "Clave — rumba 3-2 over a quarter-note pulse"
+  ],
+  [
+   "Clave — son 2-3",
+   "Clave — son 2-3 over a quarter-note pulse",
+   "Clave — son 3-2",
+   "Clave — son 3-2 over a quarter-note pulse"
+  ],
+  [
+   "Comping — anticipated on triads in A",
+   "Comping — anticipated in B♭",
+   "Comping — anticipated on triads in B♭",
+   "Comping — anticipated in C",
+   "Comping — anticipated on triads in C",
+   "Comping — anticipated on triads in D",
+   "Comping — anticipated in E♭",
+   "Comping — anticipated on triads in E♭",
+   "Comping — anticipated on triads in E",
+   "Comping — anticipated in F",
+   "Comping — anticipated on triads in F",
+   "Comping — anticipated on triads in G"
+  ],
+  [
+   "Comping — bossa in A minor",
+   "Comping — bossa in C minor",
+   "Comping — bossa in D minor",
+   "Comping — bossa in F minor",
+   "Comping — bossa in G minor"
+  ],
+  [
+   "Comping — bossa on triads in A minor",
+   "Comping — bossa on triads in C minor",
+   "Comping — bossa on triads in D minor",
+   "Comping — bossa on triads in F minor",
+   "Comping — bossa on triads in G minor"
+  ],
+  [
+   "Comping — charleston on triads in A",
+   "Comping — charleston in B♭",
+   "Comping — charleston on triads in B♭",
+   "Comping — charleston in C",
+   "Comping — charleston on triads in C",
+   "Comping — charleston on triads in D",
+   "Comping — charleston in E♭",
+   "Comping — charleston on triads in E♭",
+   "Comping — charleston on triads in E",
+   "Comping — charleston in F",
+   "Comping — charleston on triads in F",
+   "Comping — charleston on triads in G"
+  ],
+  [
+   "Comping — four on the floor on triads in A",
+   "Comping — four on the floor in B♭",
+   "Comping — four on the floor on triads in B♭",
+   "Comping — four on the floor in C",
+   "Comping — four on the floor on triads in C",
+   "Comping — four on the floor on triads in D",
+   "Comping — four on the floor in E♭",
+   "Comping — four on the floor on triads in E♭",
+   "Comping — four on the floor on triads in E",
+   "Comping — four on the floor in F",
+   "Comping — four on the floor on triads in F",
+   "Comping — four on the floor on triads in G"
+  ],
+  [
+   "Comping — off beats on triads in A",
+   "Comping — off beats in B♭",
+   "Comping — off beats on triads in B♭",
+   "Comping — off beats in C",
+   "Comping — off beats on triads in C",
+   "Comping — off beats on triads in D",
+   "Comping — off beats in E♭",
+   "Comping — off beats on triads in E♭",
+   "Comping — off beats on triads in E",
+   "Comping — off beats in F",
+   "Comping — off beats on triads in F",
+   "Comping — off beats on triads in G"
+  ],
+  [
+   "Crescendo over a scale in A",
+   "Crescendo over a scale in C",
+   "Crescendo over a scale in D",
+   "Crescendo over a scale in F",
+   "Crescendo over a scale in G"
+  ],
+  [
+   "D blues scale — 1 oct, both",
+   "D blues scale — 1 oct, right",
+   "D blues scale — one octave, thumb under"
+  ],
+  [
+   "D broken octaves — 1 oct, left",
+   "D broken octaves — 1 oct, right"
+  ],
+  [
+   "D harmonic minor scale — 1 oct, contrary, both",
+   "D harmonic minor scale — 1 oct, similar, both",
+   "D harmonic minor scale — 1 oct, similar, left",
+   "D harmonic minor scale — 1 oct, similar, right",
+   "D harmonic minor scale — 2 oct, similar, both",
+   "D harmonic minor scale — 3 oct, similar, both"
+  ],
+  [
+   "D melodic minor scale — 1 oct, similar, both",
+   "D melodic minor scale — 1 oct, similar, left",
+   "D melodic minor scale — 1 oct, similar, right",
+   "D melodic minor scale — 2 oct, similar, both"
+  ],
+  [
+   "D minor arpeggio — 2 oct, both",
+   "D minor arpeggio — 2 oct, left",
+   "D minor arpeggio — 2 oct, right",
+   "D minor arpeggio — 4 oct, both"
+  ],
+  [
+   "D natural minor scale — 1 oct, similar, both",
+   "D natural minor scale — 2 oct, similar, both"
+  ],
+  [
+   "D octave scale — 1 oct, both",
+   "D octave scale — 1 oct, left",
+   "D octave scale — 1 oct, right"
+  ],
+  [
+   "Diminuendo over a scale in A",
+   "Diminuendo over a scale in C",
+   "Diminuendo over a scale in D",
+   "Diminuendo over a scale in F",
+   "Diminuendo over a scale in G"
+  ],
+  [
+   "D♭ major arpeggio — 2 oct, both",
+   "D♭ major arpeggio — 4 oct, both",
+   "D major arpeggio — 2 oct, both",
+   "D major arpeggio — 4 oct, both"
+  ],
+  [
+   "D♭ major five-finger pattern — both",
+   "D♭ major five-finger pattern — left",
+   "D♭ major five-finger pattern — right",
+   "D major five-finger pattern — both",
+   "D major five-finger pattern — left",
+   "D major five-finger pattern — right"
+  ],
+  [
+   "D♭ major scale — 1 oct, contrary, both",
+   "D♭ major scale — 1 oct, similar, both",
+   "D♭ major scale — 1 oct, similar, left",
+   "D♭ major scale — 1 oct, similar, right",
+   "D major scale — 1 oct, contrary, both",
+   "D major scale — 1 oct, similar, both",
+   "D major scale — 1 oct, similar, left",
+   "D major scale — 1 oct, similar, right"
+  ],
+  [
+   "D♭ major scale — 2 oct, contrary, both",
+   "D♭ major scale — 2 oct, similar, both",
+   "D major scale — 2 oct, contrary, both",
+   "D major scale — 2 oct, similar, both"
+  ],
+  [
+   "Ear drill — cadences",
+   "Ear drill — 2nd or 3rd",
+   "Ear drill — every interval within the octave",
+   "Ear drill — major or minor",
+   "Ear drill — chord progressions",
+   "Ear drill — seventh-chord qualities"
+  ],
+  [
+   "E♭ blues scale — 1 oct, both",
+   "E♭ blues scale — 1 oct, right",
+   "E blues scale — 1 oct, both",
+   "E blues scale — 1 oct, right",
+   "E blues scale — one octave, thumb under"
+  ],
+  [
+   "E♭ harmonic minor scale — 1 oct, contrary, both",
+   "E♭ harmonic minor scale — 1 oct, similar, both",
+   "E♭ harmonic minor scale — 1 oct, similar, left",
+   "E♭ harmonic minor scale — 1 oct, similar, right",
+   "E♭ harmonic minor scale — 2 oct, similar, both",
+   "E♭ harmonic minor scale — 3 oct, similar, both",
+   "E harmonic minor scale — 1 oct, contrary, both",
+   "E harmonic minor scale — 1 oct, similar, both",
+   "E harmonic minor scale — 1 oct, similar, left",
+   "E harmonic minor scale — 1 oct, similar, right",
+   "E harmonic minor scale — 2 oct, similar, both",
+   "E harmonic minor scale — 3 oct, similar, both"
+  ],
+  [
+   "E♭ major arpeggio — 2 oct, both",
+   "E♭ major arpeggio — 4 oct, both",
+   "E major arpeggio — 2 oct, both",
+   "E major arpeggio — 4 oct, both"
+  ],
+  [
+   "E♭ major five-finger pattern — both",
+   "E♭ major five-finger pattern — left",
+   "E♭ major five-finger pattern — right",
+   "E major five-finger pattern — both",
+   "E major five-finger pattern — left",
+   "E major five-finger pattern — right"
+  ],
+  [
+   "E♭ major scale — 1 oct, contrary, both",
+   "E♭ major scale — 1 oct, similar, both",
+   "E♭ major scale — 1 oct, similar, left",
+   "E♭ major scale — 1 oct, similar, right",
+   "E major scale — 1 oct, contrary, both",
+   "E major scale — 1 oct, similar, both",
+   "E major scale — 1 oct, similar, left",
+   "E major scale — 1 oct, similar, right"
+  ],
+  [
+   "E♭ major scale — 2 oct, contrary, both",
+   "E♭ major scale — 2 oct, similar, both",
+   "E major scale — 2 oct, contrary, both",
+   "E major scale — 2 oct, similar, both"
+  ],
+  [
+   "E♭ melodic minor scale — 1 oct, similar, both",
+   "E♭ melodic minor scale — 1 oct, similar, left",
+   "E♭ melodic minor scale — 1 oct, similar, right",
+   "E♭ melodic minor scale — 2 oct, similar, both",
+   "E melodic minor scale — 1 oct, similar, both",
+   "E melodic minor scale — 1 oct, similar, left",
+   "E melodic minor scale — 1 oct, similar, right",
+   "E melodic minor scale — 2 oct, similar, both"
+  ],
+  [
+   "E♭ minor arpeggio — 2 oct, both",
+   "E♭ minor arpeggio — 4 oct, both",
+   "E minor arpeggio — 2 oct, both",
+   "E minor arpeggio — 2 oct, left",
+   "E minor arpeggio — 2 oct, right",
+   "E minor arpeggio — 4 oct, both"
+  ],
+  [
+   "E♭ natural minor scale — 1 oct, similar, both",
+   "E♭ natural minor scale — 2 oct, similar, both",
+   "E natural minor scale — 1 oct, similar, both",
+   "E natural minor scale — 2 oct, similar, both"
+  ],
+  [
+   "F blues scale — 1 oct, both",
+   "F blues scale — 1 oct, right"
+  ],
+  [
+   "F broken octaves — 1 oct, left",
+   "F broken octaves — 1 oct, right"
+  ],
+  [
+   "F harmonic minor scale — 1 oct, contrary, both",
+   "F harmonic minor scale — 1 oct, similar, both",
+   "F harmonic minor scale — 1 oct, similar, left",
+   "F harmonic minor scale — 1 oct, similar, right",
+   "F harmonic minor scale — 2 oct, similar, both",
+   "F harmonic minor scale — 3 oct, similar, both",
+   "F♯ harmonic minor scale — 1 oct, contrary, both",
+   "F♯ harmonic minor scale — 1 oct, similar, both",
+   "F♯ harmonic minor scale — 1 oct, similar, left",
+   "F♯ harmonic minor scale — 1 oct, similar, right",
+   "F♯ harmonic minor scale — 2 oct, similar, both",
+   "F♯ harmonic minor scale — 3 oct, similar, both"
+  ],
+  [
+   "F major arpeggio — 2 oct, both",
+   "F major arpeggio — 2 oct, left",
+   "F major arpeggio — 2 oct, right",
+   "F major arpeggio — 4 oct, both"
+  ],
+  [
+   "F major five-finger pattern — both",
+   "F major five-finger pattern — left",
+   "F major five-finger pattern — right"
+  ],
+  [
+   "F major scale — 1 oct, contrary, both",
+   "F major scale — 1 oct, similar, both",
+   "F major scale — 1 oct, similar, left",
+   "F major scale — 1 oct, similar, right"
+  ],
+  [
+   "F major scale — 2 oct, contrary, both",
+   "F major scale — 2 oct, similar, both"
+  ],
+  [
+   "F melodic minor scale — 1 oct, similar, both",
+   "F melodic minor scale — 1 oct, similar, left",
+   "F melodic minor scale — 1 oct, similar, right",
+   "F melodic minor scale — 2 oct, similar, both",
+   "F♯ melodic minor scale — 1 oct, similar, both",
+   "F♯ melodic minor scale — 1 oct, similar, left",
+   "F♯ melodic minor scale — 1 oct, similar, right",
+   "F♯ melodic minor scale — 2 oct, similar, both"
+  ],
+  [
+   "F minor arpeggio — 2 oct, both",
+   "F minor arpeggio — 4 oct, both",
+   "F♯ minor arpeggio — 2 oct, both",
+   "F♯ minor arpeggio — 4 oct, both"
+  ],
+  [
+   "F natural minor scale — 1 oct, similar, both",
+   "F natural minor scale — 2 oct, similar, both",
+   "F♯ natural minor scale — 1 oct, similar, both",
+   "F♯ natural minor scale — 2 oct, similar, both"
+  ],
+  [
+   "F octave scale — 1 oct, both",
+   "F octave scale — 1 oct, left",
+   "F octave scale — 1 oct, right"
+  ],
+  [
+   "Fugue in G minor, BWV 542 (piano transcription)",
+   "Fugue in G minor, BWV 578 (piano transcription)"
+  ],
+  [
+   "Für Elise, WoO 59",
+   "Für Elise (beginner)",
+   "Für Elise (easy)"
+  ],
+  [
+   "G Minor Bach (Luo Ni)",
+   "G Minor Bach — second edition"
+  ],
+  [
+   "G blues scale — 1 oct, both",
+   "G blues scale — 1 oct, right"
+  ],
+  [
+   "G broken octaves — 1 oct, left",
+   "G broken octaves — 1 oct, right"
+  ],
+  [
+   "G harmonic minor scale — 1 oct, contrary, both",
+   "G harmonic minor scale — 1 oct, similar, both",
+   "G harmonic minor scale — 1 oct, similar, left",
+   "G harmonic minor scale — 1 oct, similar, right",
+   "G harmonic minor scale — 2 oct, similar, both",
+   "G harmonic minor scale — 3 oct, similar, both",
+   "G♯ harmonic minor scale — 1 oct, contrary, both",
+   "G♯ harmonic minor scale — 1 oct, similar, both",
+   "G♯ harmonic minor scale — 1 oct, similar, left",
+   "G♯ harmonic minor scale — 1 oct, similar, right",
+   "G♯ harmonic minor scale — 2 oct, similar, both",
+   "G♯ harmonic minor scale — 3 oct, similar, both"
+  ],
+  [
+   "G major scale in 6ths — 1 oct, left",
+   "G major scale in 6ths — 1 oct, right",
+   "G major scale in 3rds — 1 oct, left",
+   "G major scale in 3rds — 1 oct, right"
+  ],
+  [
+   "G melodic minor scale — 1 oct, similar, both",
+   "G melodic minor scale — 1 oct, similar, left",
+   "G melodic minor scale — 1 oct, similar, right",
+   "G melodic minor scale — 2 oct, similar, both",
+   "G♯ melodic minor scale — 1 oct, similar, both",
+   "G♯ melodic minor scale — 1 oct, similar, left",
+   "G♯ melodic minor scale — 1 oct, similar, right",
+   "G♯ melodic minor scale — 2 oct, similar, both"
+  ],
+  [
+   "G minor arpeggio — 2 oct, both",
+   "G minor arpeggio — 4 oct, both",
+   "G♯ minor arpeggio — 2 oct, both",
+   "G♯ minor arpeggio — 4 oct, both"
+  ],
+  [
+   "G natural minor scale — 1 oct, similar, both",
+   "G natural minor scale — 2 oct, similar, both",
+   "G♯ natural minor scale — 1 oct, similar, both",
+   "G♯ natural minor scale — 2 oct, similar, both"
+  ],
+  [
+   "G octave scale — 1 oct, both",
+   "G octave scale — 1 oct, left",
+   "G octave scale — 1 oct, right"
+  ],
+  [
+   "German Dance No. 2 in A major",
+   "German Dance No. 1, D. 841"
+  ],
+  [
+   "German Dance in F major, K. 15oo",
+   "German Dance in A-flat major"
+  ],
+  [
+   "Gnossienne No. 1",
+   "Gnossienne No. 3",
+   "Gnossienne No. 1"
+  ],
+  [
+   "Gymnopédie No. 1",
+   "Gymnopédie No. 1 (alternative edition)"
+  ],
+  [
+   "G♭ major arpeggio — 2 oct, both",
+   "G♭ major arpeggio — 4 oct, both",
+   "G major arpeggio — 2 oct, both",
+   "G major arpeggio — 2 oct, left",
+   "G major arpeggio — 2 oct, right",
+   "G major arpeggio — 4 oct, both"
+  ],
+  [
+   "G♭ major five-finger pattern — both",
+   "G♭ major five-finger pattern — left",
+   "G♭ major five-finger pattern — right",
+   "G major five-finger pattern — both",
+   "G major five-finger pattern — left",
+   "G major five-finger pattern — right"
+  ],
+  [
+   "G♭ major scale — 1 oct, contrary, both",
+   "G♭ major scale — 1 oct, similar, both",
+   "G♭ major scale — 1 oct, similar, left",
+   "G♭ major scale — 1 oct, similar, right",
+   "G major scale — 1 oct, contrary, both",
+   "G major scale — 1 oct, similar, both",
+   "G major scale — 1 oct, similar, left",
+   "G major scale — 1 oct, similar, right"
+  ],
+  [
+   "G♭ major scale — 2 oct, contrary, both",
+   "G♭ major scale — 2 oct, similar, both",
+   "G major scale — 2 oct, contrary, both",
+   "G major scale — 2 oct, similar, both"
+  ],
+  [
+   "Half pedal — the damper part-way down in A",
+   "Half pedal — the damper part-way down in C",
+   "Half pedal — the damper part-way down in F",
+   "Half pedal — the damper part-way down in G"
+  ],
+  [
+   "Hand independence 2:1 in C",
+   "Hand independence 2:3 in C",
+   "Hand independence 2:1 in F",
+   "Hand independence 2:3 in F",
+   "Hand independence 2:1 in G",
+   "Hand independence 2:3 in G"
+  ],
+  [
+   "Hand independence 3:1 in C",
+   "Hand independence 3:2 in C",
+   "Hand independence 3:1 in F",
+   "Hand independence 3:2 in F",
+   "Hand independence 3:1 in G",
+   "Hand independence 3:2 in G"
+  ],
+  [
+   "Hands-together pattern drill",
+   "Hands together in A — left hand changes",
+   "Hands together in A — left hand holds",
+   "Hands together in C — left hand changes",
+   "Hands together in C — left hand holds",
+   "Hands together in D — left hand changes",
+   "Hands together in D — left hand holds",
+   "Hands together in F — left hand changes",
+   "Hands together in F — left hand holds",
+   "Hands together in G — left hand changes",
+   "Hands together in G — left hand holds"
+  ],
+  [
+   "Hanon No. 1 (C major) — both",
+   "Hanon No. 1 (C major) — left",
+   "Hanon No. 1 (C major) — right"
+  ],
+  [
+   "Hanon No. 10 (C major) — both",
+   "Hanon No. 10 (C major) — left",
+   "Hanon No. 10 (C major) — right"
+  ],
+  [
+   "Hanon No. 11 (C major) — both",
+   "Hanon No. 11 (C major) — left",
+   "Hanon No. 11 (C major) — right"
+  ],
+  [
+   "Hanon No. 12 (C major) — both",
+   "Hanon No. 12 (C major) — left",
+   "Hanon No. 12 (C major) — right"
+  ],
+  [
+   "Hanon No. 13 (C major) — both",
+   "Hanon No. 13 (C major) — left",
+   "Hanon No. 13 (C major) — right"
+  ],
+  [
+   "Hanon No. 14 (C major) — both",
+   "Hanon No. 14 (C major) — left",
+   "Hanon No. 14 (C major) — right"
+  ],
+  [
+   "Hanon No. 15 (C major) — both",
+   "Hanon No. 15 (C major) — left",
+   "Hanon No. 15 (C major) — right"
+  ],
+  [
+   "Hanon No. 16 (C major) — both",
+   "Hanon No. 16 (C major) — left",
+   "Hanon No. 16 (C major) — right"
+  ],
+  [
+   "Hanon No. 17 (C major) — both",
+   "Hanon No. 17 (C major) — left",
+   "Hanon No. 17 (C major) — right"
+  ],
+  [
+   "Hanon No. 18 (C major) — both",
+   "Hanon No. 18 (C major) — left",
+   "Hanon No. 18 (C major) — right"
+  ],
+  [
+   "Hanon No. 19 (C major) — both",
+   "Hanon No. 19 (C major) — left",
+   "Hanon No. 19 (C major) — right"
+  ],
+  [
+   "Hanon No. 2 (C major) — both",
+   "Hanon No. 2 (C major) — left",
+   "Hanon No. 2 (C major) — right"
+  ],
+  [
+   "Hanon No. 20 (C major) — both",
+   "Hanon No. 20 (C major) — left",
+   "Hanon No. 20 (C major) — right"
+  ],
+  [
+   "Hanon No. 3 (C major) — both",
+   "Hanon No. 3 (C major) — left",
+   "Hanon No. 3 (C major) — right"
+  ],
+  [
+   "Hanon No. 4 (C major) — both",
+   "Hanon No. 4 (C major) — left",
+   "Hanon No. 4 (C major) — right"
+  ],
+  [
+   "Hanon No. 5 (C major) — both",
+   "Hanon No. 5 (C major) — left",
+   "Hanon No. 5 (C major) — right"
+  ],
+  [
+   "Hanon No. 6 (C major) — both",
+   "Hanon No. 6 (C major) — left",
+   "Hanon No. 6 (C major) — right"
+  ],
+  [
+   "Hanon No. 7 (C major) — both",
+   "Hanon No. 7 (C major) — left",
+   "Hanon No. 7 (C major) — right"
+  ],
+  [
+   "Hanon No. 8 (C major) — both",
+   "Hanon No. 8 (C major) — left",
+   "Hanon No. 8 (C major) — right"
+  ],
+  [
+   "Hanon No. 9 (C major) — both",
+   "Hanon No. 9 (C major) — left",
+   "Hanon No. 9 (C major) — right"
+  ],
+  [
+   "Happy Birthday to You",
+   "HAPPY BIRTHDAY - Piano",
+   "Happy Birthday to You (alternative arrangement)",
+   "Happy Birthday to You"
+  ],
+  [
+   "Hark! The Herald Angels Sing (jazz lead sheet), bars 25–28",
+   "Hark! The Herald Angels Sing",
+   "Hark! The Herald Angels Sing (jazz lead sheet)"
+  ],
+  [
+   "Held melody over changing harmony in A",
+   "Held melody over changing harmony in C",
+   "Held melody over changing harmony in F",
+   "Held melody over changing harmony in G"
+  ],
+  [
+   "Holy holy holy Lord God of hosts (Hugg) - Geo. C. Hugg",
+   "Holy, Holy, Holy"
+  ],
+  [
+   "Home on the Range (Secondary Dominants)",
+   "Home on the Range"
+  ],
+  [
+   "Hot Cross Buns",
+   "Hot Cross Buns (left hand)"
+  ],
+  [
+   "Hunting Song, Op. 19 No. 3",
+   "Hunting Song, Op. 68 No. 7"
+  ],
+  [
+   "I Got Rhythm, bars 15–18",
+   "I Got Rhythm"
+  ],
+  [
+   "I-IV-I in A♭ — the amen cadence",
+   "I-IV-I in A — the amen cadence",
+   "I-IV-I in B♭ — the amen cadence",
+   "I-IV-I in B — the amen cadence",
+   "I-IV-I in C — the amen cadence",
+   "I-IV-I in D♭ — the amen cadence",
+   "I-IV-I in D — the amen cadence",
+   "I-IV-I in E♭ — the amen cadence",
+   "I-IV-I in E — the amen cadence",
+   "I-IV-I in F — the amen cadence",
+   "I-IV-I in G♭ — the amen cadence",
+   "I-IV-I in G — the amen cadence"
+  ],
+  [
+   "I-IV-V7-I in A♭ — root position",
+   "I-IV-V7-I in A♭ — smooth voicing",
+   "I-IV-V7-I in A — root position",
+   "I-IV-V7-I in A — smooth voicing",
+   "I-IV-V7-I in B♭ — root position",
+   "I-IV-V7-I in B♭ — smooth voicing",
+   "I-IV-V7-I in B — root position",
+   "I-IV-V7-I in B — smooth voicing",
+   "I-IV-V7-I in C — root position",
+   "I-IV-V7-I in C — smooth voicing",
+   "I-IV-V7-I in D♭ — root position",
+   "I-IV-V7-I in D♭ — smooth voicing",
+   "I-IV-V7-I in D — root position",
+   "I-IV-V7-I in D — smooth voicing",
+   "I-IV-V7-I in E♭ — root position",
+   "I-IV-V7-I in E♭ — smooth voicing",
+   "I-IV-V7-I in E — root position",
+   "I-IV-V7-I in E — smooth voicing",
+   "I-IV-V7-I in F — root position",
+   "I-IV-V7-I in F — smooth voicing",
+   "I-IV-V7-I in G♭ — root position",
+   "I-IV-V7-I in G♭ — smooth voicing",
+   "I-IV-V7-I in G — root position",
+   "I-IV-V7-I in G — smooth voicing"
+  ],
+  [
+   "I-V-vi-IV in A♭ — with inversions",
+   "I-V-vi-IV in A♭ — root position",
+   "I-V-vi-IV in A — with inversions",
+   "I-V-vi-IV in A — root position",
+   "I-V-vi-IV in B♭ — with inversions",
+   "I-V-vi-IV in B♭ — root position",
+   "I-V-vi-IV in B — with inversions",
+   "I-V-vi-IV in B — root position",
+   "I-V-vi-IV in C — with inversions",
+   "I-V-vi-IV in C — root position",
+   "I-V-vi-IV in D♭ — with inversions",
+   "I-V-vi-IV in D♭ — root position",
+   "I-V-vi-IV in D — with inversions",
+   "I-V-vi-IV in D — root position",
+   "I-V-vi-IV in E♭ — with inversions",
+   "I-V-vi-IV in E♭ — root position",
+   "I-V-vi-IV in E — with inversions",
+   "I-V-vi-IV in E — root position",
+   "I-V-vi-IV in F♯ — with inversions",
+   "I-V-vi-IV in F♯ — root position",
+   "I-V-vi-IV in F — with inversions",
+   "I-V-vi-IV in F — root position",
+   "I-V-vi-IV in G — with inversions",
+   "I-V-vi-IV in G — root position"
+  ],
+  [
+   "Improvise over a four-chord loop",
+   "Improvise over a I-IV-V loop"
+  ],
+  [
+   "In the Hall of the Mountain King (Peer Gynt)",
+   "In the summertime"
+  ],
+  [
+   "Jingle Bells (chorus, in G major with block chords)",
+   "Jingle Bells (chorus, hands together)",
+   "Jingle Bells (chorus)",
+   "Jingle Bells (jazz piano)"
+  ],
+  [
+   "Joy to the World",
+   "Joy to the World (piano solo)",
+   "Joy to the World",
+   "Joy to the World"
+  ],
+  [
+   "La cumparsita",
+   "La Cumparsita (part A)"
+  ],
+  [
+   "Latin groove — tumbao and montuno on son 3 2 in A minor",
+   "Latin groove — tumbao and montuno on son 3 2 in C minor",
+   "Latin groove — tumbao and montuno on son 3 2 in D minor",
+   "Latin groove — tumbao and montuno on son 3 2 in F minor",
+   "Latin groove — tumbao and montuno on son 3 2 in G minor"
+  ],
+  [
+   "Left-hand accompaniment patterns",
+   "Left-hand five-finger walk"
+  ],
+  [
+   "Legato phrase in C — right",
+   "Legato phrase in D — right",
+   "Legato phrase in F — right",
+   "Legato phrase in G — right"
+  ],
+  [
+   "Little Prelude in C major, BWV 924",
+   "Little Prelude in C major, BWV 933",
+   "Little Prelude in C minor, BWV 934"
+  ],
+  [
+   "Little Prelude in D major, BWV 936",
+   "Little Prelude in D minor, BWV 935"
+  ],
+  [
+   "March in D major, BWV Anh. 122",
+   "March in D minor"
+  ],
+  [
+   "Mariage d’Amour (“Spring Waltz”)",
+   "Mariage d’Amour (“Spring Waltz”) — second edition",
+   "Mariage d’Amour — third edition"
+  ],
+  [
+   "Mary Had a Little Lamb",
+   "Mary Had a Little Lamb (hands together)",
+   "Mary Had a Little Lamb (left hand)"
+  ],
+  [
+   "Mazurka in A minor, Op. 17 No. 4",
+   "Mazurka in A minor, Op. 7 No. 2"
+  ],
+  [
+   "Mazurka in A-flat major, Op. 17 No. 3",
+   "Mazurka in A-flat major, Op. 24 No. 3",
+   "Mazurka in A-flat major, Op. 41 No. 4",
+   "Mazurka in A-flat major, Op. 50 No. 2",
+   "Mazurka in A-flat major, Op. 59 No. 2",
+   "Mazurka in A-flat major, Op. 68 No. 4",
+   "Mazurka in A-flat major, Op. 7 No. 4"
+  ],
+  [
+   "Mazurka in B minor, Op. 30 No. 2",
+   "Mazurka in B minor, Op. 33 No. 4"
+  ],
+  [
+   "Mazurka in C major, Op. 24 No. 2",
+   "Mazurka in C major, Op. 33 No. 3",
+   "Mazurka in C major, Op. 56 No. 2",
+   "Mazurka in C major, Op. 67 No. 3",
+   "Mazurka in C major, Op. 67 No. 4",
+   "Mazurka in C major, Op. 68 No. 1",
+   "Mazurka in C major, Op. 68 No. 2",
+   "Mazurka in C major, Op. 7 No. 5"
+  ],
+  [
+   "Mazurka in C-sharp minor, Op. 30 No. 4",
+   "Mazurka in C-sharp minor, Op. 6 No. 2",
+   "Mazurka in C-sharp minor, Op. 63 No. 3"
+  ],
+  [
+   "Mazurka in F minor, Op. 63 No. 2",
+   "Mazurka in F minor, Op. 7 No. 3"
+  ],
+  [
+   "Mazurka in F-sharp minor, Op. 59 No. 3",
+   "Mazurka in F-sharp minor, Op. 6 No. 1"
+  ],
+  [
+   "Mazurka in G major, Op. 50 No. 1",
+   "Mazurka in G major, Op. 67 No. 1"
+  ],
+  [
+   "Measured trill in C — 4 per beat, left",
+   "Measured trill in C — 4 per beat, right"
+  ],
+  [
+   "Measured trill in F — 4 per beat, left",
+   "Measured trill in F — 4 per beat, right"
+  ],
+  [
+   "Measured trill in G — 4 per beat, left",
+   "Measured trill in G — 4 per beat, right"
+  ],
+  [
+   "Minor-blues boogie — pinetop in B♭ minor, both hands",
+   "Minor-blues boogie — pinetop in C minor, both hands",
+   "Minor-blues boogie — pinetop in E♭ minor, both hands",
+   "Minor-blues boogie — pinetop in F minor, both hands"
+  ],
+  [
+   "Minor-blues boogie — root fifth in B♭ minor, both hands",
+   "Minor-blues boogie — root fifth in C minor, both hands",
+   "Minor-blues boogie — root fifth in E♭ minor, both hands",
+   "Minor-blues boogie — root fifth in F minor, both hands"
+  ],
+  [
+   "Minor-blues boogie — walking eighths in B♭ minor, both hands",
+   "Minor-blues boogie — walking eighths in C minor, both hands",
+   "Minor-blues boogie — walking eighths in E♭ minor, both hands",
+   "Minor-blues boogie — walking eighths in F minor, both hands"
+  ],
+  [
+   "Minuet in A-flat major, K. 15ff",
+   "Minuet in A major, K. 15i"
+  ],
+  [
+   "Minuet in C major (fragment), K. 15rr",
+   "Minuet in C major, K. 1f"
+  ],
+  [
+   "Minuet in F major, BWV Anh. 113, bars 25–32",
+   "Minuet in F major, BWV Anh. 113",
+   "Minuet in F major, K. 15m",
+   "Minuet in F major, K. 1d",
+   "Minuet in F major, K. 4",
+   "Minuet in F major, K. 5"
+  ],
+  [
+   "Minuet in G minor, HWV 434",
+   "Minuet in G major, K. 15c",
+   "Minuet in G major, BWV Anh. 114",
+   "Minuet in G major, BWV Anh. 114 (alternative edition)",
+   "Minuet in G minor, BWV Anh. 115",
+   "Minuet in G minor, BWV Anh. 115 (first 16 bars)"
+  ],
+  [
+   "Montuno — 2 notes on bossa in A minor",
+   "Montuno — 2 notes on son 3 2 in A minor",
+   "Montuno — 2 notes on bossa in C minor",
+   "Montuno — 2 notes on son 3 2 in C minor",
+   "Montuno — 2 notes on bossa in D minor",
+   "Montuno — 2 notes on son 3 2 in D minor",
+   "Montuno — 2 notes on bossa in F minor",
+   "Montuno — 2 notes on son 3 2 in F minor",
+   "Montuno — 2 notes on bossa in G minor",
+   "Montuno — 2 notes on son 3 2 in G minor"
+  ],
+  [
+   "Montuno — 3 notes on son 3 2 in A minor",
+   "Montuno — 3 notes on son 3 2 in C minor",
+   "Montuno — 3 notes on son 3 2 in D minor",
+   "Montuno — 3 notes on son 3 2 in F minor",
+   "Montuno — 3 notes on son 3 2 in G minor"
+  ],
+  [
+   "Mordents in C — 2 per beat, left",
+   "Mordents in C — 2 per beat, right"
+  ],
+  [
+   "Mordents in F — 2 per beat, left",
+   "Mordents in F — 2 per beat, right"
+  ],
+  [
+   "Mordents in G — 2 per beat, left",
+   "Mordents in G — 2 per beat, right"
+  ],
+  [
+   "Nocturne No. 20 in C-sharp minor, Op. posth.",
+   "Nocturne No. 20 in C-sharp minor (alternative edition)"
+  ],
+  [
+   "Nocturne in E-flat major, Op. 9 No. 2",
+   "Nocturne in E-flat major, Op. 55 No. 2",
+   "Nocturne in E-flat major, Op. 9 No. 2",
+   "Nocturne in E-flat major, Op. 9 No. 2 (easy)"
+  ],
+  [
+   "Nocturne in G minor, Op. 15 No. 3",
+   "Nocturne in G minor, Op. 37 No. 1"
+  ],
+  [
+   "Note flash — grand staff",
+   "Note flash with sharps and flats",
+   "Note flash — bass F2 to C4",
+   "Note flash — C2 to C6",
+   "Note flash — treble C4 to G4"
+  ],
+  [
+   "O Holy Night",
+   "O Holy Night (piano solo)"
+  ],
+  [
+   "Octave tremolo in C — left",
+   "Octave tremolo in C — right",
+   "Octave tremolo in F — left",
+   "Octave tremolo in F — right",
+   "Octave tremolo in G — left",
+   "Octave tremolo in G — right"
+  ],
+  [
+   "Ode to Joy (easy variation), bars 9–12",
+   "Ode to Joy (easy variation)",
+   "Ode to Joy (hands alternating)",
+   "Ode to Joy (full theme)",
+   "Ode to Joy (in G major)",
+   "Ode to Joy (hands together)",
+   "Ode to Joy (left hand)",
+   "Ode to Joy (theme)"
+  ],
+  [
+   "Oh When the Saints Go Marching In (hands alternating)",
+   "Oh When the Saints Go Marching In (in F major)"
+  ],
+  [
+   "Oh! Susanna (Simple Lead Sheet)",
+   "Oh! Susanna"
+  ],
+  [
+   "Oom-pah bass in B♭ — the chord at the octave",
+   "Oom-pah bass in B♭ — the chord at the tenth"
+  ],
+  [
+   "Oom-pah bass in C — the chord at the octave",
+   "Oom-pah bass in C — the chord at the tenth"
+  ],
+  [
+   "Oom-pah bass in E♭ — the chord at the octave",
+   "Oom-pah bass in E♭ — the chord at the tenth"
+  ],
+  [
+   "Oom-pah bass in F — the chord at the octave",
+   "Oom-pah bass in F — the chord at the tenth"
+  ],
+  [
+   "Ostinato over a pedal bass in A minor — broken minor triad",
+   "Ostinato over a pedal bass in A minor — root and fifth",
+   "Ostinato over a pedal bass in D minor — broken minor triad",
+   "Ostinato over a pedal bass in D minor — root and fifth",
+   "Ostinato over a pedal bass in E minor — broken minor triad",
+   "Ostinato over a pedal bass in E minor — root and fifth"
+  ],
+  [
+   "Passacaglia (Handel–Halvorsen)",
+   "Passacaglia - Handel/Halvorsen (Piano Solo)"
+  ],
+  [
+   "Pedal changes on I-IV-V7-I in A",
+   "Pedal changes on I-IV-V7-I in B♭",
+   "Pedal changes on I-IV-V7-I in C",
+   "Pedal changes on I-IV-V7-I in D",
+   "Pedal changes on I-IV-V7-I in F",
+   "Pedal changes on I-IV-V7-I in G"
+  ],
+  [
+   "Piano Sonata No. 14 “Moonlight”, I. Adagio sostenuto",
+   "Piano Sonata No. 14 “Moonlight”, III. Presto agitato"
+  ],
+  [
+   "Piano Sonata No. 16 in C, K. 545, I. Allegro",
+   "Piano Sonata No. 16 in C, K. 545, I. Allegro (alternative edition)"
+  ],
+  [
+   "Piano Sonata No. 2 in B-flat minor, Op. 35 — mvt 1 (B-flat minor)",
+   "Piano Sonata No. 2, Op. 35 — mvt 2 in E-flat minor",
+   "Piano Sonata No. 2, Op. 35 — Marche funèbre",
+   "Piano Sonata No. 2 in B-flat minor, Op. 35 — mvt 4 (B-flat minor)"
+  ],
+  [
+   "Pine Apple Rag",
+   "Pine Apple Rag (repeats written out)"
+  ],
+  [
+   "Play back a tune — four bars, phrase by phrase",
+   "Play back a tune — eight bars"
+  ],
+  [
+   "Position-shift drill",
+   "Position shift in A — left",
+   "Position shift in A — right",
+   "Position shift in C — left",
+   "Position shift in C — right",
+   "Position shift in D — left",
+   "Position shift in D — right",
+   "Position shift in F — left",
+   "Position shift in F — right",
+   "Position shift in G — left",
+   "Position shift in G — right"
+  ],
+  [
+   "Prelude No. 1 in C major, BWV 846",
+   "Prelude No. 1 in C major, Op. 28"
+  ],
+  [
+   "Prelude No. 2 in C minor, BWV 847",
+   "Prelude No. 2 in A minor, Op. 28"
+  ],
+  [
+   "Prélude in E minor, Op. 28 No. 4",
+   "Prélude in E minor, Op. 28 No. 4 (alternative edition)"
+  ],
+  [
+   "Repeated notes 3-to-a-note in C — left",
+   "Repeated notes 3-to-a-note in C — right",
+   "Repeated notes 3-to-a-note in F — left",
+   "Repeated notes 3-to-a-note in F — right",
+   "Repeated notes 3-to-a-note in G — left",
+   "Repeated notes 3-to-a-note in G — right"
+  ],
+  [
+   "Repeated notes 4-to-a-note in C — left",
+   "Repeated notes 4-to-a-note in C — right",
+   "Repeated notes 4-to-a-note in F — left",
+   "Repeated notes 4-to-a-note in F — right",
+   "Repeated notes 4-to-a-note in G — left",
+   "Repeated notes 4-to-a-note in G — right"
+  ],
+  [
+   "Rhythm reading in 6/8",
+   "Rhythm reading in 3/4"
+  ],
+  [
+   "Rhythm: six eight dotted quarters — 4 bars",
+   "Rhythm: six eight eighths — 4 bars",
+   "Rhythm: six eight long short — 4 bars",
+   "Rhythm: six eight mixed — 4 bars"
+  ],
+  [
+   "Scarborough Fair Canticle",
+   "Scarborough Fair (piano solo)",
+   "Scarborough Fair",
+   "Scarborough Fair"
+  ],
+  [
+   "Sight-reading generator, level 1",
+   "Sight-reading generator, level 1, left hand",
+   "Sight-reading generator, level 2",
+   "Sight-reading generator, level 2, right hand",
+   "Sight-reading generator, level 3",
+   "Sight-reading generator, level 4",
+   "Sight-reading generator, level 5",
+   "Sight-reading generator, level 6",
+   "Sight-reading generator, level 7"
+  ],
+  [
+   "Silent Night (melody)",
+   "Silent Night (Ondruš setting)",
+   "Silent Night Trombone Duet",
+   "Silent Night"
+  ],
+  [
+   "Simple Gifts (2-Part Round)",
+   "Simple Gifts"
+  ],
+  [
+   "Slash chords — a walking bass under held harmony in B♭",
+   "Slash chords — a walking bass under held harmony in C",
+   "Slash chords — a walking bass under held harmony in E♭",
+   "Slash chords — a walking bass under held harmony in F"
+  ],
+  [
+   "Sonata in D major, K. 346",
+   "Sonata in D minor, K. 32"
+  ],
+  [
+   "Sonatina in F major, Anh. 5 No. 2",
+   "Sonatina in G major, Anh. 5 No. 1",
+   "Sonatina in C major, Op. 36 No. 1 (first movement, short edition)",
+   "Sonatina in C major, Op. 36 No. 1 (third movement)",
+   "Sonatina in F major, Op. 168 No. 1 (first movement)",
+   "Sonatina in C major, Op. 20 No. 1, Allegro",
+   "Sonatina in C major, Op. 36 No. 1 (first movement)",
+   "Sonatina in G major"
+  ],
+  [
+   "Song Without Words, Op. 19 No. 1",
+   "Song Without Words, Op. 30 No. 1"
+  ],
+  [
+   "Staccato phrase in C — right",
+   "Staccato phrase in D — right",
+   "Staccato phrase in F — right",
+   "Staccato phrase in G — right"
+  ],
+  [
+   "Steps and skips in C position — no. 1",
+   "Steps and skips in C position — no. 2",
+   "Steps and skips in C position — no. 3",
+   "Steps and skips in C position — no. 4",
+   "Steps and skips in C position — no. 5",
+   "Steps and skips in C position — no. 6",
+   "Steps and skips in C position — no. 7",
+   "Steps and skips in C position — no. 8",
+   "Steps and skips in C position — no. 1",
+   "Steps and skips in C position — no. 2",
+   "Steps and skips in C position — no. 3",
+   "Steps and skips in C position — no. 4",
+   "Steps and skips in C position — no. 5",
+   "Steps and skips in C position — no. 6",
+   "Steps and skips in C position — no. 7",
+   "Steps and skips in C position — no. 8",
+   "Steps and Skips in C (study)"
+  ],
+  [
+   "Straight, then swung — the same four bars in C",
+   "Straight, then swung — the same four bars in F",
+   "Straight, then swung — the same four bars in G"
+  ],
+  [
+   "Study in C major in 3/4 — steps and skips, held bass",
+   "Study in C major — steps and skips, held bass",
+   "Study in C major — steps and skips, held bass",
+   "Study in C major — in six-eight, broken chords",
+   "Study in C major in 3/4 — moving the hand, held bass",
+   "Study in C major — moving the hand, blocked chords",
+   "Study in C major — moving the hand, blocked chords",
+   "Study in C major in 2/4 — eighth notes, held bass",
+   "Study in C major in 3/4 — eighth notes, held bass",
+   "Study in C major — eighth notes, held bass",
+   "Study in C major — off-beat notes, broken chords",
+   "Study in C major in 2/4 — the hands changing together, held bass",
+   "Study in C major — the hands changing together, held bass",
+   "Study in C major — the hands changing together, held bass"
+  ],
+  [
+   "Study, Op. 139 No. 1",
+   "Study, Op. 139 No. 2",
+   "Study, Op. 599 No. 63",
+   "Study, Op. 82"
+  ],
+  [
+   "Swan Lake (theme)",
+   "Swan Lake"
+  ],
+  [
+   "The Art of Preluding, Op. 300 No. 10",
+   "The Art of Preluding, Op. 300 No. 24",
+   "The Art of Preluding, Op. 300 No. 8"
+  ],
+  [
+   "The Entertainer",
+   "The Entertainer (alternative edition)",
+   "The Entertainer"
+  ],
+  [
+   "The School of Velocity, Op. 299 No. 1",
+   "The School of Velocity, Op. 299 No. 10",
+   "The School of Velocity, Op. 299 No. 2",
+   "The School of Velocity, Op. 299 No. 22",
+   "The School of Velocity, Op. 299 No. 3",
+   "The School of Velocity, Op. 299 No. 4",
+   "The School of Velocity, Op. 299 No. 5",
+   "The School of Velocity, Op. 299 No. 6",
+   "The School of Velocity, Op. 299 No. 7",
+   "The School of Velocity, Op. 299 No. 8",
+   "The School of Velocity, Op. 299 No. 9"
+  ],
+  [
+   "Tremolo in 3rds in C — left",
+   "Tremolo in 3rds in C — right",
+   "Tremolo in 3rds in F — left",
+   "Tremolo in 3rds in F — right",
+   "Tremolo in 3rds in G — left",
+   "Tremolo in 3rds in G — right"
+  ],
+  [
+   "Tumbao — latin bass in A minor",
+   "Tumbao — latin bass in C minor",
+   "Tumbao — latin bass in D minor",
+   "Tumbao — latin bass in F minor",
+   "Tumbao — latin bass in G minor"
+  ],
+  [
+   "Twelve-bar blues backing track",
+   "Twelve-bar blues shuffle in A",
+   "Twelve-bar blues shuffle in C",
+   "Twelve-bar blues shuffle in D",
+   "Twelve-bar blues shuffle in E",
+   "Twelve-bar blues shuffle in F",
+   "Twelve-bar blues shuffle in G"
+  ],
+  [
+   "Twinkle, Twinkle, Little Star (in F major)",
+   "Twinkle, Twinkle, Little Star (hands together)",
+   "Twinkle, Twinkle, Little Star",
+   "Twinkle Twinkle Little Star (Easy)"
+  ],
+  [
+   "Voicing the top note in A",
+   "Voicing the top note in C",
+   "Voicing the top note in D",
+   "Voicing the top note in F",
+   "Voicing the top note in G"
+  ],
+  [
+   "Wabash Blues, bars 1–4",
+   "Wabash Blues"
+  ],
+  [
+   "Waiting For You — Jay Chou",
+   "Waiting for the End"
+  ],
+  [
+   "Walking bass over a 12-bar blues in A",
+   "Walking bass over a 12-bar blues in A",
+   "Walking bass over a 12-bar blues in B♭",
+   "Walking bass over a 12-bar blues in B♭",
+   "Walking bass over a 12-bar blues in C",
+   "Walking bass over a 12-bar blues in C",
+   "Walking bass over a 12-bar blues in D",
+   "Walking bass over a 12-bar blues in D",
+   "Walking bass over a 12-bar blues in E♭",
+   "Walking bass over a 12-bar blues in E♭",
+   "Walking bass over a 12-bar blues in E",
+   "Walking bass over a 12-bar blues in E",
+   "Walking bass over a 12-bar blues in F",
+   "Walking bass over a 12-bar blues in F",
+   "Walking bass over a 12-bar blues in G",
+   "Walking bass over a 12-bar blues in G"
+  ],
+  [
+   "Walking bass over a minor 12-bar blues in B♭ minor",
+   "Walking bass over a minor 12-bar blues in C minor",
+   "Walking bass over a minor 12-bar blues in E♭ minor",
+   "Walking bass over a minor 12-bar blues in F minor"
+  ],
+  [
+   "Walking bass over ii-V-I in B♭",
+   "Walking bass over ii-V-I in B♭",
+   "Walking bass over ii-V-I in C",
+   "Walking bass over ii-V-I in C",
+   "Walking bass over ii-V-I in E♭",
+   "Walking bass over ii-V-I in E♭",
+   "Walking bass over ii-V-I in F",
+   "Walking bass over ii-V-I in F"
+  ],
+  [
+   "Waltz bass in A minor — hands together",
+   "Waltz bass in A minor — left hand"
+  ],
+  [
+   "Waltz bass in C major — hands together",
+   "Waltz bass in C major — left hand"
+  ],
+  [
+   "Waltz bass in D minor — hands together",
+   "Waltz bass in D minor — left hand"
+  ],
+  [
+   "Waltz bass in F major — hands together",
+   "Waltz bass in F major — left hand"
+  ],
+  [
+   "Waltz bass in G major — hands together",
+   "Waltz bass in G major — left hand"
+  ],
+  [
+   "Waltz in A minor, B. 150",
+   "Waltz in A-flat major, Op. 34 No. 1",
+   "Waltz in A minor, Op. 34 No. 2",
+   "Waltz in A-flat major, Op. 70 No. 2"
+  ],
+  [
+   "Waltz, Op. 32 No. 1",
+   "Waltz, Op. 32 No. 2"
+  ],
+  [
+   "We Wish You a Merry Christmas (piano)",
+   "We Wish You a Merry Christmas",
+   "We Wish You a Merry Christmas"
+  ],
+  [
+   "Wrist rotation (Alberti at speed) in C — left",
+   "Wrist rotation (Alberti at speed) in C — right",
+   "Wrist rotation (Alberti at speed) in F — left",
+   "Wrist rotation (Alberti at speed) in F — right",
+   "Wrist rotation (Alberti at speed) in G — left",
+   "Wrist rotation (Alberti at speed) in G — right"
+  ],
+  [
+   "add9 voicings in B♭",
+   "add9 voicings in C",
+   "add9 voicings in E♭",
+   "add9 voicings in F"
+  ],
+  [
+   "ii-V-I with shell voicings",
+   "ii-V-I in A — guide tones",
+   "ii-V-I in A♭ — guide tones",
+   "ii-V-I in A♭ — rootless voicings",
+   "ii-V-I in A♭ — shells",
+   "ii-V-I in A — rootless voicings",
+   "ii-V-I in A — shells",
+   "ii-V-I in B — guide tones",
+   "ii-V-I in B♭ — guide tones",
+   "ii-V-I in B♭ — rootless voicings",
+   "ii-V-I in B♭ — shells",
+   "ii-V-I in B — rootless voicings",
+   "ii-V-I in B — shells",
+   "ii-V-I in C — guide tones",
+   "ii-V-I in C — rootless voicings",
+   "ii-V-I in C — shells",
+   "ii-V-I in D — guide tones",
+   "ii-V-I in D♭ — guide tones",
+   "ii-V-I in D♭ — rootless voicings",
+   "ii-V-I in D♭ — shells",
+   "ii-V-I in D — rootless voicings",
+   "ii-V-I in D — shells",
+   "ii-V-I in E — guide tones",
+   "ii-V-I in E♭ — guide tones",
+   "ii-V-I in E♭ — rootless voicings",
+   "ii-V-I in E♭ — shells",
+   "ii-V-I in E — rootless voicings",
+   "ii-V-I in E — shells",
+   "ii-V-I in F — guide tones",
+   "ii-V-I in F♯ — guide tones",
+   "ii-V-I in F♯ — rootless voicings",
+   "ii-V-I in F♯ — shells",
+   "ii-V-I in F — rootless voicings",
+   "ii-V-I in F — shells",
+   "ii-V-I in G — guide tones",
+   "ii-V-I in G — rootless voicings",
+   "ii-V-I in G — shells",
+   "ii-V-I in A♭ — close position",
+   "ii-V-I in A♭ — rootless A",
+   "ii-V-I in A♭ — rootless B",
+   "ii-V-I in A♭ — shell (root, 3rd, 7th)",
+   "ii-V-I in A — close position",
+   "ii-V-I in A — rootless A",
+   "ii-V-I in A — rootless B",
+   "ii-V-I in A — shell (root, 3rd, 7th)",
+   "ii-V-I in B♭ — close position",
+   "ii-V-I in B♭ — rootless A",
+   "ii-V-I in B♭ — rootless B",
+   "ii-V-I in B♭ — shell (root, 3rd, 7th)",
+   "ii-V-I in B — close position",
+   "ii-V-I in B — rootless A",
+   "ii-V-I in B — rootless B",
+   "ii-V-I in B — shell (root, 3rd, 7th)",
+   "ii-V-I in C — close position",
+   "ii-V-I in C — rootless A",
+   "ii-V-I in C — rootless B",
+   "ii-V-I in C — shell (root, 3rd, 7th)",
+   "ii-V-I in D♭ — close position",
+   "ii-V-I in D♭ — rootless A",
+   "ii-V-I in D♭ — rootless B",
+   "ii-V-I in D♭ — shell (root, 3rd, 7th)",
+   "ii-V-I in D — close position",
+   "ii-V-I in D — rootless A",
+   "ii-V-I in D — rootless B",
+   "ii-V-I in D — shell (root, 3rd, 7th)",
+   "ii-V-I in E♭ — close position",
+   "ii-V-I in E♭ — rootless A",
+   "ii-V-I in E♭ — rootless B",
+   "ii-V-I in E♭ — shell (root, 3rd, 7th)",
+   "ii-V-I in E — close position",
+   "ii-V-I in E — rootless A",
+   "ii-V-I in E — rootless B",
+   "ii-V-I in E — shell (root, 3rd, 7th)",
+   "ii-V-I in F♯ — close position",
+   "ii-V-I in F♯ — rootless A",
+   "ii-V-I in F♯ — rootless B",
+   "ii-V-I in F♯ — shell (root, 3rd, 7th)",
+   "ii-V-I in F — close position",
+   "ii-V-I in F — rootless A",
+   "ii-V-I in F — rootless B",
+   "ii-V-I in F — shell (root, 3rd, 7th)",
+   "ii-V-I in G — close position",
+   "ii-V-I in G — rootless A",
+   "ii-V-I in G — rootless B",
+   "ii-V-I in G — shell (root, 3rd, 7th)"
+  ],
+  [
+   "quartal (stacked 4ths) voicings in B♭",
+   "quartal (stacked 4ths) voicings in C",
+   "quartal (stacked 4ths) voicings in E♭",
+   "quartal (stacked 4ths) voicings in F"
+  ],
+  [
+   "sus2 voicings in B♭",
+   "sus2 voicings in C",
+   "sus2 voicings in E♭",
+   "sus2 voicings in F"
+  ],
+  [
+   "sus4 voicings in B♭",
+   "sus4 voicings in C",
+   "sus4 voicings in E♭",
+   "sus4 voicings in F"
+  ],
+  [
+   "Étude in A minor, Op. 10 No. 2",
+   "Étude in A minor, Op. 25 No. 11",
+   "Étude in A minor, Op. 25 No. 4"
+  ],
+  [
+   "Étude in A-flat major, Op. 10 No. 10",
+   "Étude in A-flat major, Op. 25 No. 1"
+  ],
+  [
+   "Étude in C major, Op. 29 No. 1",
+   "Étude in C major, Op. 10 No. 1",
+   "Étude in C major, Op. 10 No. 7"
+  ],
+  [
+   "Étude in C minor, Op. 10 No. 11",
+   "Étude in C minor, Op. 10 No. 12",
+   "Étude in C minor, Op. 25 No. 12"
+  ],
+  [
+   "Étude in C-sharp minor, Op. 10 No. 4",
+   "Étude in C-sharp minor, Op. 25 No. 7"
+  ],
+  [
+   "Étude in F minor, Op. 10 No. 9",
+   "Étude in F minor, Op. 25 No. 2"
+  ],
+  [
+   "Étude in G-flat major, Op. 10 No. 5",
+   "Étude in G-flat major, Op. 25 No. 9"
+  ],
+  [
+   "Étude, Op. 335",
+   "Étude, Op. 176 No. 1",
+   "Étude, Op. 176 No. 10",
+   "Étude, Op. 176 No. 11",
+   "Étude, Op. 176 No. 13",
+   "Étude, Op. 176 No. 15",
+   "Étude, Op. 176 No. 16",
+   "Étude, Op. 176 No. 18",
+   "Étude, Op. 176 No. 19",
+   "Étude, Op. 176 No. 2",
+   "Étude, Op. 176 No. 3",
+   "Étude, Op. 176 No. 4",
+   "Étude, Op. 176 No. 5",
+   "Étude, Op. 176 No. 6",
+   "Étude, Op. 176 No. 7",
+   "Étude, Op. 176 No. 8",
+   "Étude, Op. 176 No. 9",
+   "Étude, Op. 37 No. 1",
+   "Étude, Op. 37 No. 12",
+   "Étude, Op. 37 No. 14",
+   "Étude, Op. 37 No. 15",
+   "Étude, Op. 37 No. 16",
+   "Étude, Op. 37 No. 17",
+   "Étude, Op. 37 No. 18",
+   "Étude, Op. 37 No. 19",
+   "Étude, Op. 37 No. 2",
+   "Étude, Op. 37 No. 21",
+   "Étude, Op. 37 No. 22",
+   "Étude, Op. 37 No. 25",
+   "Étude, Op. 37 No. 26",
+   "Étude, Op. 37 No. 27",
+   "Étude, Op. 37 No. 28",
+   "Étude, Op. 37 No. 29",
+   "Étude, Op. 37 No. 30",
+   "Étude, Op. 37 No. 32",
+   "Étude, Op. 37 No. 33",
+   "Étude, Op. 37 No. 35",
+   "Étude, Op. 37 No. 36",
+   "Étude, Op. 37 No. 38",
+   "Étude, Op. 37 No. 39",
+   "Étude, Op. 37 No. 4",
+   "Étude, Op. 37 No. 40",
+   "Étude, Op. 37 No. 42",
+   "Étude, Op. 37 No. 43",
+   "Étude, Op. 37 No. 44",
+   "Étude, Op. 37 No. 45",
+   "Étude, Op. 37 No. 49",
+   "Étude, Op. 37 No. 5",
+   "Étude, Op. 37 No. 50",
+   "Étude, Op. 37 No. 6",
+   "Étude, Op. 37 No. 7"
+  ]
+ ]
+}

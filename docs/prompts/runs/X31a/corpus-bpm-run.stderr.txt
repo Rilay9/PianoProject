@@ -1,0 +1,84 @@
+  200/2013
+  400/2013
+  600/2013
+  800/2013
+  1000/2013
+  1200/2013
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import wedge: Error in getting DynamicWedges
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import pedal: Error in getting PedalMark
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import wedge: Error in getting DynamicWedges
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import wedge: Error in getting DynamicWedges
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import pedal: Error in getting PedalMark
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import pedal: Error in getting PedalMark
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 253 in part Pianois overfull: 973/240 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 157 in part Pianois overfull: 481/160 > 3.0,assuming 3.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5103: MusicXMLWarning: Cannot put in an element with a missing voice tag when no previous voice tag was given.  Assuming voice 1... 
+  thisVoice = self.findM21VoiceFromXmlVoice(mxVoice)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5103: MusicXMLWarning: Cannot put in an element with a missing voice tag when no previous voice tag was given.  Assuming voice 1... 
+  thisVoice = self.findM21VoiceFromXmlVoice(mxVoice)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5103: MusicXMLWarning: Cannot put in an element with a missing voice tag when no previous voice tag was given.  Assuming voice 1... 
+  thisVoice = self.findM21VoiceFromXmlVoice(mxVoice)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 59 in part Pianois overfull: 193/48 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 60 in part Pianois overfull: 481/120 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 61 in part Pianois overfull: 961/240 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import wedge: Error in getting DynamicWedges
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+  1400/2013
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 5 in part Pianois overfull: 641/160 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 24 in part Pianois overfull: 641/160 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 315 in part Pianois overfull: 7657/2520 > 3.0,assuming 3.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 8 in part Pianois overfull: 6721/1680 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 12 in part Pianois overfull: 20161/5040 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 22 in part Pianois overfull: 6721/1680 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5103: MusicXMLWarning: Cannot put in an element with a missing voice tag when no previous voice tag was given.  Assuming voice 1... 
+  thisVoice = self.findM21VoiceFromXmlVoice(mxVoice)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 46 in part Pianois overfull: 30241/10080 > 3.0,assuming 3.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 78 in part Pianois overfull: 30241/10080 > 3.0,assuming 3.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 168 in part Pianois overfull: 30241/10080 > 3.0,assuming 3.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import pedal: Error in getting PedalMark
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 26 in part Pianois overfull: 2161/480 > 4.5,assuming 4.5 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 119 in part Pianois overfull: 241/80 > 3.0,assuming 3.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5593: MusicXMLWarning: Line <bracket> stop without start
+  spannerList = self.xmlDirectionTypeToSpanners(
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5593: MusicXMLWarning: Line <bracket> stop without start
+  spannerList = self.xmlDirectionTypeToSpanners(
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5593: MusicXMLWarning: Line <bracket> stop without start
+  spannerList = self.xmlDirectionTypeToSpanners(
+  1600/2013
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 51 in part Pianois overfull: 481/160 > 3.0,assuming 3.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 52 in part Pianois overfull: 481/160 > 3.0,assuming 3.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+  1800/2013
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import octave-shift: Error in getting Ottava
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 12 in part Pianois overfull: 5053/1260 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 13 in part Pianois overfull: 385/96 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 24 in part Pianois overfull: 643/160 > 4.0,assuming 4.0 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+  2000/2013

@@ -277,6 +277,18 @@ describe('overlayShelf', () => {
     expect(source.stages[0]?.units[0]?.lessons[0]?.paperOptions).toBeUndefined();
   });
 
+  // Added (CL04, L79): the overlay listed the book piece and dropped its twin,
+  // so nothing on the rung could say which score run is that piece's.
+  it('carries each listed piece’s twin on the rung, and none for a piece without one', () => {
+    const twinned = { ...piece('book.x/p', ['2.1']), piece: { ...piece('book.x/p', ['2.1']).piece, itemId: 'import.t' } };
+    const plain = { ...piece('book.x/q', ['2.1']), piece: { ...piece('book.x/q', ['2.1']).piece, id: 'q' } };
+    const out = overlayShelf(curriculum([lesson()]), [twinned, plain]).stages[0]?.units[0]?.lessons[0];
+    expect(out?.paperOptions).toEqual(['book.x/p', 'book.x/q']);
+    expect(out?.paperTwins).toEqual({ 'book.x/p': 'import.t' });
+    // A rung the shelf gives no twin carries no map.
+    expect(overlayShelf(curriculum([lesson()]), [plain]).stages[0]?.units[0]?.lessons[0]?.paperTwins).toBeUndefined();
+  });
+
   it('is a no-op when nothing is registered against a rung', () => {
     const source = curriculum([lesson()]);
     expect(overlayShelf(source, [piece('book.x/p', [])])).toBe(source);

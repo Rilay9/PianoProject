@@ -1,0 +1,17 @@
+
+--- content build ---
+  ok    fetch            fetched 10 source(s), skipped 5
+  ok    import [MT]      imported 64 score(s), excluded 4, normalised 8 (8 cached, 1 converted)
+  ok    import [KERN]    imported 116 score(s), 47 placeholder(s), excluded 73 (116 cached, 0 converted)
+  ok    import [PDMX]    imported 367 score(s), 175 placeholder(s)
+  ok    generate [GEN]   wrote 1200 items to build\q76-strict-before\content\scores\generated; catalog C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ae7088107d2f9f1ea\build\catalog.generated.json
+  ok    author [AUTH]    authored 38 item(s) (32 cached, 0 converted)
+  ok    merge catalog    2089 items, 22 with named sections, 4 excerpt(s) cut (1 not: the parent is not bundled here), 100 given a track by their rung, 1783 read from the score, 417 keySig corrected, demands measured on 1783 (235 unmeasured, 71 made at runtime)
+  ok    score checks     score-checks gate: 32 high row(s), 32 allowed by content\score-checks.allow.json
+  ok    curriculum       11 file(s), 10 stage(s), 105 finder(s), 285 concept(s)
+  ok    reports          476 checkable claims on 1015 options: 270 not established, 8 kept by no option; 784 works, 813 arrangements (docs/prompts left alone)
+  ok    lessons          109 file(s)
+  ok    tips             20 kind(s), 7 variant(s)
+  ok    validate         content validation OK: build\q76-strict-before\content (2089 catalog items)
+  240.2s → build\q76-strict-before\content
+exit=0

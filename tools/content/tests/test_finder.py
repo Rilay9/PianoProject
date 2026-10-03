@@ -9,12 +9,15 @@ from __future__ import annotations
 
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
 
+import build  # noqa: E402
 import finder  # noqa: E402
 import validate  # noqa: E402
 
@@ -81,6 +84,88 @@ class TestChatPrompt(unittest.TestCase):
         self.assertIn("It must have", finder.chat_prompt(block, what="x"))
 
 
+class TestTheSeedList(unittest.TestCase):
+    """E28 (E2 item 5): the seed list of teaching repertoire as a proposal source for the prompts.
+
+    Asked with a concept, the chat prompt names the works the seed knows it for among its examples
+    of the right kind — reputation, for the owner's search, admitting nothing. Asked without one,
+    the prompt is what it was. The search query is keywords about the rung and stays so.
+    """
+
+    def test_a_concept_the_seed_knows_names_its_works_as_examples(self) -> None:
+        block = finder.generate(SAMPLE, what="x", concepts=["alberti-bass"])
+        self.assertIn("Piano Sonata in C major, K. 545, first movement (Wolfgang Amadeus Mozart)", block["chatPrompt"])
+        self.assertIn("Ode to Joy (Beethoven)", block["chatPrompt"])
+        self.assertLessEqual(len(block["chatPrompt"]), finder.MAX_CHAT_PROMPT)
+        self.assertEqual(block["searchQuery"], finder.search_query(SAMPLE))
+
+    def test_without_a_concept_or_with_one_the_seed_does_not_know_the_prompt_is_unchanged(self) -> None:
+        plain = finder.chat_prompt(SAMPLE, what="x")
+        self.assertEqual(finder.generate(SAMPLE, what="x")["chatPrompt"], plain)
+        self.assertEqual(finder.generate(SAMPLE, what="x", concepts=["wait-mode"])["chatPrompt"], plain)
+
+    def test_the_seed_works_are_read_in_the_files_order_by_concept(self) -> None:
+        titles = [work["work"] for work in finder.seed_works(["syncopation"])]
+        self.assertEqual(titles, ["The Entertainer", "Maple Leaf Rag"])
+        self.assertEqual(finder.seed_works([]), [])
+
+    def test_the_prompt_stays_under_the_limit_however_many_works_the_seed_has(self) -> None:
+        concepts = sorted({c for work in finder.seed_works_all() for c in work["concepts"]})
+        block = finder.generate(SAMPLE, what='Stage 2, "Hands together"', concepts=concepts)
+        self.assertLessEqual(len(block["chatPrompt"]), finder.MAX_CHAT_PROMPT)
+        self.assertEqual(validate.finder_errors({"stages": [{"units": [{"lessons": [{"id": "x", "finder": block}]}]}], "concepts": []}), [])
+
+
+class TestTheBuildPassesTheSeedConcepts(unittest.TestCase):
+    """E2a (the E2 review's required change): the build's concept call site passes the entry's own id,
+    so the seed list reaches the concept prompts where it knows the concept — a proposal for the
+    owner's search, never an admission. The lesson call site passes none, deliberately (Entry 111): a
+    rung's finder states a key, a metre, a genre and a level the seed's works carry none of, and on the
+    built curriculum most seeded lesson examples contradicted the rung's own "must" or "avoid". Read at
+    the call site: `build.copy_curriculum` on a fixture curriculum, its written `curriculum.json` read back.
+    """
+
+    def build_with(self, lessons: list[dict], concepts: list[dict]) -> dict:
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "content"
+            (src / "curriculum").mkdir(parents=True)
+            stage = {"number": 9, "title": "Nine", "units": [{"id": "u", "title": "U", "track": "core", "lessons": lessons}]}
+            (src / "curriculum" / "stage-9.json").write_text(json.dumps({"tracks": [], "stages": [stage]}), encoding="utf-8")
+            (src / "curriculum" / "concepts.json").write_text(json.dumps({"concepts": concepts}), encoding="utf-8")
+            out = Path(tmp) / "out"
+            out.mkdir()
+            with mock.patch.object(build, "CONTENT_SRC", src):
+                step = build.copy_curriculum(out)
+            self.assertTrue(step.ok, step.detail)
+            return json.loads((out / "curriculum.json").read_text(encoding="utf-8"))
+
+    def test_a_lesson_keeps_the_prompt_it_had_byte_for_byte_whatever_its_concepts_name(self) -> None:
+        # Held: a seeded concept on a lesson does not reach its prompt (the rung's constraints are not the seed's to overrule).
+        lessons = [
+            {"id": "9.1", "title": "Syncopation", "concepts": ["syncopation"], "finder": SAMPLE},
+            {"id": "9.2", "title": "Hands together", "concepts": [], "finder": SAMPLE},
+            {"id": "9.3", "title": "Waiting", "concepts": ["wait-mode"], "finder": SAMPLE},
+            {"id": "9.4", "title": "No concepts field", "finder": SAMPLE},
+        ]
+        built = self.build_with(lessons, [])
+        for lesson in built["stages"][0]["units"][0]["lessons"]:
+            self.assertEqual(lesson["finder"], finder.generate(SAMPLE, what=finder.lesson_what(9, lesson["title"])), lesson["id"])
+        self.assertNotIn("The Entertainer", built["stages"][0]["units"][0]["lessons"][0]["finder"]["chatPrompt"])
+        self.assertEqual(validate.finder_errors(built), [])
+
+    def test_a_concept_entry_passes_its_own_id(self) -> None:
+        concepts = [
+            {"id": "alberti-bass", "display": "Alberti bass", "finder": SAMPLE},
+            {"id": "a-concept-the-seed-does-not-know", "display": "Something else", "finder": SAMPLE},
+        ]
+        built = self.build_with([], concepts)
+        alberti, other = built["concepts"]
+        self.assertIn("Piano Sonata in C major, K. 545, first movement (Wolfgang Amadeus Mozart)", alberti["finder"]["chatPrompt"])
+        self.assertLessEqual(len(alberti["finder"]["chatPrompt"]), finder.MAX_CHAT_PROMPT)
+        self.assertEqual(other["finder"], finder.generate(SAMPLE, what=finder.concept_what("something else")))
+        self.assertEqual(validate.finder_errors(built), [])
+
+
 class TestValidatorRules(unittest.TestCase):
     """The four rules from §4.1, each proved by something that breaks it."""
 
@@ -143,14 +228,24 @@ class TestValidatorRules(unittest.TestCase):
 
 
 class TestNeeds(unittest.TestCase):
-    """replan §4.2: the lesson page reads this rather than recounting."""
+    """
+    replan §4.2: the shortfall the lesson page prints. Since review C3 the page recounts it
+    (`needs.lessonShortfall`, overlays included) by these rules; `needs.test.ts` is the pair.
+    """
 
     def lesson(self, **over) -> dict:
+        # The requirements every built lesson carries (C5): a rung that asks for a run of
+        # one of its songs, as the fixture's song count assumes (R23: the song shortfall
+        # is written only where the rung asks for a song).
         base = {
             "id": "x",
             "exerciseOptions": ["e1", "e2", "e3"],
             "songOptions": ["s1", "s2"],
             "levelBand": [1.0, 3.0],
+            "requirements": [
+                {"kind": "runs", "from": "exercises", "count": 1},
+                {"kind": "runs", "from": "songs", "count": 1},
+            ],
         }
         base.update(over)
         return base
@@ -182,6 +277,22 @@ class TestNeeds(unittest.TestCase):
         # matter which list they arrive in.
         self.assertEqual(needs["songs"], 0)
         self.assertEqual(needs["exercises"], 2)
+
+    def test_a_rung_that_asks_for_no_song_is_short_of_no_song(self) -> None:
+        # R23 (Premise 2): `thin_lesson_errors` and the app's `thinLessons` exempt a rung
+        # whose requirements ask for no song run from the song count; the shortfall the
+        # lesson page prints must agree, not ask for two songs nothing requires.
+        import tempfile
+
+        lesson = self.lesson(
+            songOptions=["s1"],
+            requirements=[{"kind": "runs", "from": "exercises", "count": 1}],
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            needs = self.run_needs(lesson, [], Path(tmp))
+        self.assertEqual(needs["songs"], 0)
+        self.assertEqual(needs["exercises"], 0)
+        self.assertEqual(validate.thin_lesson_errors(lesson, lesson["exerciseOptions"], lesson["songOptions"], 3), [])
 
     def test_it_counts_the_options_inside_the_level_band(self) -> None:
         import tempfile
@@ -243,7 +354,11 @@ class TestShippedContent(unittest.TestCase):
 
     def test_the_built_curriculum_carries_both_prompts_everywhere(self) -> None:
         if not BUILT.is_file():
-            self.skipTest("no build in this tree")
+            self.fail(
+                f"{BUILT} is missing, and this test reads the built curriculum: run "
+                "`python tools/content/build.py` first (CI: the step 'Build content', "
+                "before 'Content pipeline tests')"
+            )
         built = json.loads(BUILT.read_text(encoding="utf-8"))
         self.assertEqual(validate.finder_errors(built), [])
         self.assertEqual(validate.unknown_concepts(built), [])

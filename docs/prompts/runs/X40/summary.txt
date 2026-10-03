@@ -1,0 +1,164 @@
+R = 1.1
+rows: 226 (Counter({'kern': 162, 'MT': 64}))
+verdicts by source: {"MT/agrees": 50, "MT/no tempo (defaulted)": 6, "MT/sound contradicts the mark beyond R": 4, "MT/two sounds at one position": 4, "kern/agrees": 102, "kern/no tempo (defaulted)": 60}
+shapes by source: {"MT/mark+sound": 32, "MT/mark+sound / sound": 6, "MT/sound": 26, "kern/mark+sound": 162}
+source vs built: {"MT/converted": 9, "MT/verbatim copy": 55, "kern/drops the later *MM": 3, "kern/plays every *MM": 99, "kern/the .krn states no *MM; convert.py wrote its default": 60}
+  song.beautiful.g-minor-bach: converted (2 separate parts): sounds 1->1, marks 1->1
+  song.classical.schubert-liszt-standchen: converted (2 separate parts): sounds 1->1, marks 1->1
+  song.ragtime.joplin-entertainer: converted (2 separate parts): sounds 1->1, marks 0->0
+  song.classical.chopin-rondo-op16.nifc: drops the later *MM: *MM152@line 271, *MM96@line 872 (convert.py keeps the first tempo mark only)
+  song.classical.chopin-waltz-op70-1.nifc: drops the later *MM: *MM96@line 351, *MM264@line 796 (convert.py keeps the first tempo mark only)
+  song.ragtime.joplin-combination-march: drops the later *MM: *MM120@line 45 (convert.py keeps the first tempo mark only)
+catalogue vs opening: {"MT/False": 1, "MT/True": 63, "kern/None": 60, "kern/True": 102}
+every unequal sound/mark pair the reader resolved (any ratio above 1):
+  song.beautiful.g-minor-bach.alt @0:0: sound 79.9998 vs mark 80 (ratio 1.0)
+  song.beautiful.g-minor-bach.alt @0:0.5: sound 94.9998 vs mark 95 (ratio 1.0)
+  song.beautiful.g-minor-bach.alt @15:3: sound 90 vs mark 80 (ratio 1.125)
+  song.beautiful.g-minor-bach.alt @27:2: sound 85.0002 vs mark 80 (ratio 1.0625)
+  song.beautiful.g-minor-bach.alt @28:0: sound 90 vs mark 80 (ratio 1.125)
+  song.beautiful.g-minor-bach.alt @44:0: sound 85.0002 vs mark 80 (ratio 1.0625)
+  song.beautiful.g-minor-bach.alt @45:0: sound 90 vs mark 80 (ratio 1.125)
+  song.beautiful.g-minor-bach.alt @60:2: sound 85.9998 vs mark 80 (ratio 1.075)
+  song.beautiful.g-minor-bach.alt @61:0: sound 90 vs mark 80 (ratio 1.125)
+  song.beautiful.g-minor-bach.alt @63:0: sound 85.0002 vs mark 80 (ratio 1.0625)
+  song.beautiful.g-minor-bach.alt @64:1: sound 94.9998 vs mark 80 (ratio 1.1875)
+  song.beautiful.g-minor-bach.alt @64:2: sound 75 vs mark 80 (ratio 1.0667)
+  song.beautiful.hungarian-sonata @0:0: sound 64.9998 vs mark 65 (ratio 1.0)
+  song.beautiful.mariage-damour.alt @0:0: sound 79.9998 vs mark 80 (ratio 1.0)
+  song.beautiful.mariage-damour.alt @10:0.75: sound 70.0002 vs mark 70 (ratio 1.0)
+  song.beautiful.mariage-damour.alt @10:1.25: sound 64.9998 vs mark 65 (ratio 1.0)
+  song.beautiful.mariage-damour.alt @11:0: sound 79.9998 vs mark 80 (ratio 1.0)
+  song.beautiful.mariage-damour.alt @35:2.5: sound 70.0002 vs mark 70 (ratio 1.0)
+  song.beautiful.mariage-damour.alt @35:3.5: sound 64.9998 vs mark 65 (ratio 1.0)
+  song.beautiful.mariage-damour.alt @37:0: sound 79.9998 vs mark 80 (ratio 1.0)
+  song.beautiful.mariage-damour.alt @80:2: sound 70.0002 vs mark 70 (ratio 1.0)
+  song.beautiful.mariage-damour.alt @80:2.75: sound 64.9998 vs mark 65 (ratio 1.0)
+  song.beautiful.mariage-damour.alt2 @27:2: sound 85.0002 vs mark 85 (ratio 1.0)
+  song.classical.bach-toccata-fugue-bwv565 @0:0.25: sound 20 vs mark 10 (ratio 2.0)
+  song.classical.bach-toccata-fugue-bwv565 @0:1.125: sound 36 vs mark 10 (ratio 3.6)
+  song.classical.bach-toccata-fugue-bwv565 @0:2.375: sound 20 vs mark 10 (ratio 2.0)
+  song.classical.bach-toccata-fugue-bwv565 @0:3.5: sound 36 vs mark 10 (ratio 3.6)
+  song.classical.bach-toccata-fugue-bwv565 @1:0.25: sound 20 vs mark 10 (ratio 2.0)
+  song.classical.bach-toccata-fugue-bwv565 @1:1.125: sound 36 vs mark 10 (ratio 3.6)
+  song.classical.bach-toccata-fugue-bwv565 @2:4: sound 20 vs mark 10 (ratio 2.0)
+  song.classical.bach-wtc1-prelude-2 @37:2.5: sound 70.0002 vs mark 70 (ratio 1.0)
+  song.classical.brahms-hungarian-dance-5 @40:1: sound 79.9998 vs mark 80 (ratio 1.0)
+  song.classical.brahms-hungarian-dance-5 @93:0: sound 79.9998 vs mark 80 (ratio 1.0)
+  song.classical.brahms-hungarian-dance-5 @93:1.5: sound 70.0002 vs mark 70 (ratio 1.0)
+  song.classical.chopin-nocturne-20.alt @0:0: sound 64.9998 vs mark 65 (ratio 1.0)
+  song.classical.chopin-nocturne-20.alt @33:0: sound 67.9998 vs mark 68 (ratio 1.0)
+  song.classical.chopin-nocturne-20.alt @34:0: sound 73.9998 vs mark 74 (ratio 1.0)
+  song.classical.chopin-nocturne-20.alt @35:1: sound 79.0002 vs mark 79 (ratio 1.0)
+  song.classical.chopin-nocturne-20.alt @36:0: sound 85.9998 vs mark 86 (ratio 1.0)
+  song.classical.chopin-nocturne-20.alt @37:3: sound 94.0002 vs mark 94 (ratio 1.0)
+  song.classical.chopin-nocturne-20.alt @46:0: sound 64.9998 vs mark 65 (ratio 1.0)
+  song.classical.chopin-nocturne-20.alt @52:2: sound 76.9998 vs mark 77 (ratio 1.0)
+  song.classical.chopin-nocturne-20.alt @52:2.5: sound 79.9998 vs mark 80 (ratio 1.0)
+  song.classical.chopin-nocturne-20.alt @52:3.16667: sound 85.0002 vs mark 85 (ratio 1.0)
+  song.classical.chopin-nocturne-op9-2 @33:2: sound 70.0002 vs mark 70 (ratio 1.0)
+  song.classical.chopin-nocturne-op9-2 @34:0.5: sound 79.9998 vs mark 80 (ratio 1.0)
+  song.classical.liszt-la-campanella @62:0: sound 88 vs mark 91 (ratio 1.0341)
+  song.classical.liszt-la-campanella @64:0: sound 88 vs mark 91 (ratio 1.0341)
+  song.classical.liszt-la-campanella @66:0: sound 88 vs mark 91 (ratio 1.0341)
+  song.classical.liszt-la-campanella @91:0: sound 70 vs mark 73 (ratio 1.0429)
+  song.classical.liszt-la-campanella @95:1.5: sound 61 vs mark 64 (ratio 1.0492)
+  song.classical.liszt-la-campanella @96:0: sound 58 vs mark 61 (ratio 1.0517)
+  song.classical.mozart-lacrimosa @0:0: sound 64.0002 vs mark 64 (ratio 1.0)
+  song.classical.mozart-twinkle-variations-k265 @265:0: sound 79.9998 vs mark 80 (ratio 1.0)
+  song.classical.satie-gymnopedie-1 @0:0: sound 60 vs mark 76 (ratio 1.2667)
+  song.classical.tchaikovsky-sugar-plum @0:0: sound 70.0002 vs mark 70 (ratio 1.0)
+  song.ragtime.joplin-maple-leaf-rag @1:0.25: sound 120 vs mark 100 (ratio 1.2)
+  song.ragtime.joplin-maple-leaf-rag @51:0: sound 120 vs mark 100 (ratio 1.2)
+two or more sounds at one position:
+  song.classical.brahms-hungarian-dance-5 @65:0: [40.0, 50.0] DIFFER
+  song.classical.brahms-hungarian-dance-5 @67:1: [20.0, 40.0] DIFFER
+  song.classical.chopin-prelude-op28-4.alt @16:4: [48.0, 50.0] DIFFER
+  song.classical.debussy-arabesque-1 @4:4: [116.0, 97.9998] DIFFER
+  song.classical.debussy-arabesque-1 @74:4: [116.0, 97.9998] DIFFER
+  song.classical.debussy-clair-de-lune @25:4.50208: [57.0, 42.0, 24.0, 18.0] DIFFER
+  song.classical.debussy-clair-de-lune @65:4.5: [93.0, 90.0] DIFFER
+  song.classical.debussy-clair-de-lune @67:4.5: [75.0, 72.0] DIFFER
+  song.classical.debussy-clair-de-lune @70:3: [45.0, 48.0] DIFFER
+  song.classical.satie-gymnopedie-1 @0:0: [60.0, 76.0002] DIFFER
+  song.classical.satie-gymnopedie-1 @0:1: [61.9998, 69.0, 72.0, 76.0002] DIFFER
+  song.ragtime.joplin-maple-leaf-rag @1:0.25: [120.0, 100.0] DIFFER
+  song.ragtime.joplin-maple-leaf-rag @51:0: [120.0, 100.0, 100.0] DIFFER
+raw mark/sound disagreements beyond R at one position:
+  song.beautiful.g-minor-bach.alt @15:3: sound 90 vs marks [80.0]
+  song.beautiful.g-minor-bach.alt @28:0: sound 90 vs marks [80.0]
+  song.beautiful.g-minor-bach.alt @45:0: sound 90 vs marks [80.0]
+  song.beautiful.g-minor-bach.alt @61:0: sound 90 vs marks [80.0]
+  song.beautiful.g-minor-bach.alt @64:1: sound 94.9998 vs marks [80.0]
+  song.classical.bach-toccata-fugue-bwv565 @0:0.25: sound 20 vs marks [10.0]
+  song.classical.bach-toccata-fugue-bwv565 @0:1.125: sound 36 vs marks [10.0]
+  song.classical.bach-toccata-fugue-bwv565 @0:2.375: sound 20 vs marks [10.0]
+  song.classical.bach-toccata-fugue-bwv565 @0:3.5: sound 36 vs marks [10.0]
+  song.classical.bach-toccata-fugue-bwv565 @1:0.25: sound 20 vs marks [10.0]
+  song.classical.bach-toccata-fugue-bwv565 @1:1.125: sound 36 vs marks [10.0]
+  song.classical.bach-toccata-fugue-bwv565 @2:4: sound 20 vs marks [10.0]
+  song.classical.satie-gymnopedie-1 @0:0: sound 60 vs marks [76.0]
+  song.ragtime.joplin-maple-leaf-rag @1:0.25: sound 120 vs marks [100.0]
+  song.ragtime.joplin-maple-leaf-rag @51:0: sound 120 vs marks [100.0, 100.0]
+catalogue differs from the opening:
+  song.classical.bach-wtc1-prelude-2: catalogue 145 vs opening plays 100 (reader opening None)
+catalogue has no tempo:
+  song.classical.chopin-ballade-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-ballade-3.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-ballade-4.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-berceuse.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-bolero.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-ecossaise-op72-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-ecossaise-op72-3.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-fantaisie-impromptu.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-marche-funebre-op72.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op30-1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op30-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op30-3.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op30-4.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op33-3.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op33-4.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op41-3.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op41-4.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op50-1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op50-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op56-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op59-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op63-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op63-3.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op67-1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op68-3.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-mazurka-op68-4.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-nocturne-op37-1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-nocturne-op48-1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-nocturne-op55-1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-nocturne-op55-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-polonaise-fantaisie.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-polonaise-g-minor.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-polonaise-g-sharp-minor.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-polonaise-op26-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-polonaise-op40-1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-polonaise-op40-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-polonaise-op44.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-polonaise-op53.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-polonaise-op71-1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-prelude-op28-11.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-prelude-op28-19.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-prelude-op28-20.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-prelude-op28-5.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-rondo-op1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-scherzo-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-sonata-2-1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-sonata-2-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-sonata-2-3.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-sonata-2-4.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-sonata-3-4.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-tarantelle.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-variations-op12.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-waltz-e-minor.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-waltz-op18.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-waltz-op34-1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-waltz-op34-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-waltz-op34-3.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-waltz-op64-1.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-waltz-op64-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)
+  song.classical.chopin-waltz-op69-2.nifc: opening plays 96 (reader opening 96); no tempo (defaulted)

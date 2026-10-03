@@ -1,0 +1,26 @@
+[WebServer] (node:91780) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:93932) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 4 workers
+
+(node:91764) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:96840) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:108088) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:111360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 4 build\u122a\probe6\premise.spec.ts:725:11 › q-tab tablet c4 1024x768 t100 stack hcb (7.0s)
+  ok 3 build\u122a\probe6\premise.spec.ts:725:11 › q-tab tablet c1 1024x768 t100 stack hcb (7.0s)
+  ok 1 build\u122a\probe6\premise.spec.ts:725:11 › q-tab tablet c1 1024x768 t100 stack moon (10.6s)
+  ok 2 build\u122a\probe6\premise.spec.ts:725:11 › q-tab tablet c4 1024x768 t100 stack moon (10.6s)
+  ok 5 build\u122a\probe6\premise.spec.ts:725:11 › q-tab tablet c1 1366x1024 t100 stack hcb (6.4s)
+  ok 6 build\u122a\probe6\premise.spec.ts:725:11 › q-tab tablet c4 1366x1024 t100 stack hcb (6.5s)
+  ok 8 build\u122a\probe6\premise.spec.ts:725:11 › q-tab tablet c4 1366x1024 t100 stack moon (9.8s)
+  ok 7 build\u122a\probe6\premise.spec.ts:725:11 › q-tab tablet c1 1366x1024 t100 stack moon (9.9s)
+
+  8 passed (24.4s)
+exit 0

@@ -1,0 +1,30 @@
+﻿(cd app) npm run lint
+
+> pianopath@0.1.0 lint
+> eslint . --max-warnings=0
+
+
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a6d274c20b3e170c9\app\src\data\progressStore.ts
+  291:10  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  296:80  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  345:14  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a6d274c20b3e170c9\app\tests\unit\competenceSurvivesPruning.test.ts
+  76:10  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  82:14  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a6d274c20b3e170c9\app\tests\unit\masteryLadder.test.ts
+  83:10  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a6d274c20b3e170c9\app\tests\unit\materialOnTheRecord.test.ts
+  176:12  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  186:12  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a6d274c20b3e170c9\app\tests\unit\transferFactsOnTheAttempt.test.ts
+   69:53  error  This assertion is unnecessary since it does not change the type of the expression             @typescript-eslint/no-unnecessary-type-assertion
+  277:32  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+✖ 10 problems (10 errors, 0 warnings)
+  10 errors and 0 warnings potentially fixable with the `--fix` option.
+
+exit=1

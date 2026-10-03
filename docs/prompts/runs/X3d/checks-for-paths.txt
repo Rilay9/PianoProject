@@ -1,0 +1,48 @@
+# checks for 32 path(s): 32 matched, 0 unmatched
+# app/src/score/tempoFromXml.ts: app/src/**, app/src/score/**, app/src/score/tempoFromXml.ts
+# app/src/score/extractScoreModel.ts: app/src/**, app/src/score/**, app/src/score/extractScoreModel.ts
+# app/src/score/OsmdView.ts: app/src/**, app/src/score/**, app/src/score/OsmdView.ts
+# app/src/score/estimateImport.ts: app/src/**, app/src/score/**, app/src/score/estimateImport.ts
+# app/src/data/evidenceJob.ts: app/src/**, app/src/data/**
+# app/src/data/importStore.ts: app/src/**, app/src/data/**, app/src/data/importStore.ts
+# app/src/ui/importSheet.ts: app/src/**, app/src/ui/*.ts
+# app/tests/e2e/import-experience.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/scoreModelTempo.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/tempoFromXml.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/importSheet.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/importMeasuredTruth.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/lessonClaimsAboutApp.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/helpers/fixtures.ts: app/tests/unit/helpers/**
+# app/tests/unit/helpers/promises.ts: app/tests/unit/helpers/**
+# app/tests/unit/helpers/reader.ts: app/tests/unit/helpers/**
+# app/tests/unit/helpers/scoreCatalog.ts: app/tests/unit/helpers/**
+# app/tests/unit/accents.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/accompanimentLab.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/demandsOfFiles.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/difficulty.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/engineScoring.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/expectedNote.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/labBothWays.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/scoreModel.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/scoreModelKnownIssues.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/scoreModelWrittenValues.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/scoreSmoke.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sightReading.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sightReadingOptions.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/slots.test.ts: app/tests/unit/*.test.ts
+# docs/prompts/checks.json: docs/prompts/checks.json, docs/**
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_checks_for_paths.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_ci_order.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_demands_tool.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_measured_demands.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_measured_truth.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/app-shell.spec.ts tests/e2e/competence.spec.ts tests/e2e/converted-import.spec.ts tests/e2e/dark-ink.spec.ts tests/e2e/drills-review.spec.ts tests/e2e/drills.spec.ts tests/e2e/empty-states.spec.ts tests/e2e/engine.spec.ts tests/e2e/excerpts.spec.ts tests/e2e/feedback-placement.spec.ts tests/e2e/folder.add.spec.ts tests/e2e/import-experience.spec.ts tests/e2e/landscape.spec.ts tests/e2e/library.spec.ts tests/e2e/microscope.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/modes-engraving.spec.ts tests/e2e/progress.spec.ts tests/e2e/score-fit-paths.spec.ts tests/e2e/score.arrange-race.spec.ts tests/e2e/score.countin.spec.ts tests/e2e/score.density.spec.ts tests/e2e/score.fill.spec.ts tests/e2e/score.fuzz.spec.ts tests/e2e/score.head-height.spec.ts tests/e2e/score.hearIt.spec.ts tests/e2e/score.hearbar.spec.ts tests/e2e/score.latch.spec.ts tests/e2e/score.layout.spec.ts tests/e2e/score.pickup-numbers.spec.ts tests/e2e/score.readahead.spec.ts tests/e2e/score.renderer.fuzz.spec.ts tests/e2e/score.rotate.spec.ts tests/e2e/score.screen.spec.ts tests/e2e/score.slide.spec.ts tests/e2e/score.slots.spec.ts tests/e2e/score.spec.ts tests/e2e/score.states.spec.ts tests/e2e/score.window-rule.spec.ts tests/e2e/setup.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts tests/e2e/wide.spec.ts --workers=4
+states	app	npm run states
+exit=0

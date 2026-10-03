@@ -1,0 +1,30 @@
+
+Running 10 tests using 2 workers
+
+(node:52596) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\h0-probe-redgreen.spec.ts:83:3 › revised › MIDI: an unsupported browser says so and keeps the on-screen keyboard (12.6s)
+(node:52964) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  2 tests\e2e\h0-probe-redgreen.spec.ts:92:3 › revised › MIDI: the pinned input survives a reload (27.2s)
+(node:45752) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  3 tests\e2e\h0-probe-redgreen.spec.ts:83:3 › revised › MIDI: an unsupported browser says so and keeps the on-screen keyboard (13.3s)
+(node:44796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  5 tests\e2e\h0-probe-redgreen.spec.ts:83:3 › revised › MIDI: an unsupported browser says so and keeps the on-screen keyboard (12.3s)
+  ok  4 tests\e2e\h0-probe-redgreen.spec.ts:92:3 › revised › MIDI: the pinned input survives a reload (26.7s)
+(node:52452) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  7 tests\e2e\h0-probe-redgreen.spec.ts:83:3 › revised › MIDI: an unsupported browser says so and keeps the on-screen keyboard (12.3s)
+  ok  6 tests\e2e\h0-probe-redgreen.spec.ts:92:3 › revised › MIDI: the pinned input survives a reload (27.2s)
+(node:50560) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  9 tests\e2e\h0-probe-redgreen.spec.ts:83:3 › revised › MIDI: an unsupported browser says so and keeps the on-screen keyboard (11.9s)
+  ok  8 tests\e2e\h0-probe-redgreen.spec.ts:92:3 › revised › MIDI: the pinned input survives a reload (26.2s)
+  ok 10 tests\e2e\h0-probe-redgreen.spec.ts:92:3 › revised › MIDI: the pinned input survives a reload (45.1s)
+
+  10 passed (2.2m)
+exit=0

@@ -1,0 +1,91 @@
+test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) ... 
+  test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.pop.margie.pdmx] ... FAIL
+  test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.jazz.django-reinhardt-limehouse-blues.pdmx] ... FAIL
+  test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.blues.singin-the-blues] ... FAIL
+  test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.blues.weary-blues] ... FAIL
+  test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.blues.storyville-blues] ... FAIL
+  test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.blues.wabash-blues] ... FAIL
+  test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.blues.tishomingo-blues] ... FAIL
+test_former_identities_are_the_recorded_history_of_undated_files_and_never_a_current_one (tests.test_measured_truth.TestTheMaterialIdentity.test_former_identities_are_the_recorded_history_of_undated_files_and_never_a_current_one) ... ok
+
+======================================================================
+FAIL: test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.pop.margie.pdmx]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_measured_truth.py", line 452, in test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it
+    self.assertEqual(item["provenance"]["identity"], {"kind": "file", "sha256": repair["to"]})
+AssertionError: {'kin[18 chars]6': 'd14cbac25ca07647e94f9ea04d6f316450fcbc419[20 chars]6ba'} != {'kin[18 chars]6': 'a009b402d731e7fbcfb48eaa7628d5d5c706ecec9[20 chars]142'}
+  {'kind': 'file',
+-  'sha256': 'd14cbac25ca07647e94f9ea04d6f316450fcbc4196197a66d3f8269cca78d6ba'}
++  'sha256': 'a009b402d731e7fbcfb48eaa7628d5d5c706ecec92c9a19e93fd1aba3cbd6142'}
+
+======================================================================
+FAIL: test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.jazz.django-reinhardt-limehouse-blues.pdmx]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_measured_truth.py", line 452, in test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it
+    self.assertEqual(item["provenance"]["identity"], {"kind": "file", "sha256": repair["to"]})
+AssertionError: {'kin[18 chars]6': 'b1b5da84429465d98ab2adda92617d7b30864ef51[20 chars]06f'} != {'kin[18 chars]6': 'e7ee98fa3e09182cd9a68b1d9c58a0b47c7291e22[20 chars]077'}
+  {'kind': 'file',
+-  'sha256': 'b1b5da84429465d98ab2adda92617d7b30864ef51cc355f46193af4e2eb8106f'}
++  'sha256': 'e7ee98fa3e09182cd9a68b1d9c58a0b47c7291e22b80b7c7e4365b8f5ba77077'}
+
+======================================================================
+FAIL: test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.blues.singin-the-blues]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_measured_truth.py", line 452, in test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it
+    self.assertEqual(item["provenance"]["identity"], {"kind": "file", "sha256": repair["to"]})
+AssertionError: {'kin[18 chars]6': 'fc4e8b90f6737fb950b9e915e960f40d4709988be[20 chars]3f9'} != {'kin[18 chars]6': '2cbc202e52696ca6083e4366cc5c20dc6a6776d69[20 chars]aec'}
+  {'kind': 'file',
+-  'sha256': 'fc4e8b90f6737fb950b9e915e960f40d4709988bed475da78599f3709e93a3f9'}
++  'sha256': '2cbc202e52696ca6083e4366cc5c20dc6a6776d694c50dab93e9602f3863baec'}
+
+======================================================================
+FAIL: test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.blues.weary-blues]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_measured_truth.py", line 452, in test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it
+    self.assertEqual(item["provenance"]["identity"], {"kind": "file", "sha256": repair["to"]})
+AssertionError: {'kin[18 chars]6': 'cee0d8d29e95e5b6249da08b3f18b63eef6218e7f[20 chars]f0b'} != {'kin[18 chars]6': 'a4fef9c8aebbdc267fd4b286aa0684dd8e936ec71[20 chars]129'}
+  {'kind': 'file',
+-  'sha256': 'cee0d8d29e95e5b6249da08b3f18b63eef6218e7f0612be6b1e917b26c98ff0b'}
++  'sha256': 'a4fef9c8aebbdc267fd4b286aa0684dd8e936ec7190fe6bd5e0ddbcc2e032129'}
+
+======================================================================
+FAIL: test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.blues.storyville-blues]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_measured_truth.py", line 452, in test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it
+    self.assertEqual(item["provenance"]["identity"], {"kind": "file", "sha256": repair["to"]})
+AssertionError: {'kin[18 chars]6': 'd31d167ee2267a7b39c34c35e60f27ff067555027[20 chars]8e7'} != {'kin[18 chars]6': '0b79765024437abb31f229c22ce0861654ae3a398[20 chars]463'}
+  {'kind': 'file',
+-  'sha256': 'd31d167ee2267a7b39c34c35e60f27ff067555027fd442adf8dc4151e4ba78e7'}
++  'sha256': '0b79765024437abb31f229c22ce0861654ae3a39807ead27ad8ec41008dfb463'}
+
+======================================================================
+FAIL: test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.blues.wabash-blues]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_measured_truth.py", line 452, in test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it
+    self.assertEqual(item["provenance"]["identity"], {"kind": "file", "sha256": repair["to"]})
+AssertionError: {'kin[18 chars]6': '60f8d018899c70b1dd3c09e0d48e7e24d61efedb6[20 chars]208'} != {'kin[18 chars]6': 'b896827d97beb8a30aad9a9fcc4ab49244959bdd6[20 chars]c13'}
+  {'kind': 'file',
+-  'sha256': '60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208'}
++  'sha256': 'b896827d97beb8a30aad9a9fcc4ab49244959bdd663857a8a506833c2e115c13'}
+
+======================================================================
+FAIL: test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it (tests.test_measured_truth.TestTheMaterialIdentity.test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it) [song.blues.tishomingo-blues]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_measured_truth.py", line 452, in test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it
+    self.assertEqual(item["provenance"]["identity"], {"kind": "file", "sha256": repair["to"]})
+AssertionError: {'kin[18 chars]6': 'afa635593b2772f7d202792e0657a39990299ddef[20 chars]4f2'} != {'kin[18 chars]6': 'bf01005d2a878228580970663b4f84921387cb48e[20 chars]870'}
+  {'kind': 'file',
+-  'sha256': 'afa635593b2772f7d202792e0657a39990299ddef25ee7196ba5ad92a42a04f2'}
++  'sha256': 'bf01005d2a878228580970663b4f84921387cb48e996d15aadc706588dc22870'}
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.783s
+
+FAILED (failures=7)

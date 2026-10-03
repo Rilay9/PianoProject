@@ -7,6 +7,7 @@ staves, treble on top, fingering and chord symbols intact.
 """
 from __future__ import annotations
 
+import re
 import sys
 import tempfile
 import unittest
@@ -136,6 +137,9 @@ class TestLilyPond(ConvertCase):
         self.assertTrue(result.added_tempo)
         self.assertEqual(result.tempo_bpm, 96)
         self.assertIn(96.0, written.tempos)
+        # E59: the default is playback truth only, a `<sound tempo>`, never a printed metronome mark the edition
+        # does not state.
+        self.assertEqual(written.xml.count("<metronome"), 0)
 
 
 class TestMusicXml(ConvertCase):
@@ -190,6 +194,415 @@ class TestTempoMarks(ConvertCase):
     def test_a_kern_source_keeps_its_single_mark(self) -> None:
         _, written = self.convert("two-spines.krn")
         self.assertEqual(written.xml.count("<metronome"), 1)
+
+
+def kern_with_marks(bars: list[tuple[str | None, str | None]], *, time: tuple[int, int] = (4, 4)) -> str:
+    """
+    A grand-staff kern file (E57), one bar per entry: each bar opens with the `*MM` records given for the bass and
+    the treble spine (None writes a null interpretation), then one note filling the bar in each spine. Kern repeats a
+    tempo in every spine, so `("*MM48", "*MM48")` is one statement arriving twice at one position.
+    """
+    beats, beat_type = time
+    note = {(4, 4): "1", (3, 4): "2."}[time]
+    lines = ["!!!OTL: E57 tempo marks", "**kern\t**kern", "*staff2\t*staff1", "*clefF4\t*clefG2", "*k[]\t*k[]",
+             f"*M{beats}/{beat_type}\t*M{beats}/{beat_type}"]
+    for number, (bass, treble) in enumerate(bars, start=1):
+        if bass or treble:
+            lines.append(f"{bass or '*'}\t{treble or '*'}")
+        lines += [f"{note}C\t{note}c", f"={number}\t={number}"]
+    return "\n".join(lines + ["*-\t*-"]) + "\n"
+
+
+PRINTED = ('<direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit>'
+           '<per-minute>{0}</per-minute></metronome></direction-type><sound tempo="{0}"/></direction>')
+SOUND_ONLY = '<direction><sound tempo="{0}"/></direction>'
+#: A mark with no readable per-minute: music21 gives a `MetronomeMark` whose `getQuarterBPM()` is None.
+NO_TEMPO = ('<direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit>'
+            '<per-minute>c. 100</per-minute></metronome></direction-type></direction>')
+
+
+def directions_score(*directions: str) -> str:
+    """A two-bar, one-staff MusicXML file (E57) whose bar 1 opens with `directions`, all at its first beat."""
+    bars = []
+    for number in (1, 2):
+        attributes = ("<attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats>"
+                      "<beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes>") if number == 1 else ""
+        opening = "".join(directions) if number == 1 else ""
+        bars.append(f'<measure number="{number}">{attributes}{opening}<note><pitch><step>C</step><octave>5</octave></pitch>'
+                    '<duration>4</duration><voice>1</voice><type>whole</type></note></measure>')
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n<score-partwise version="3.1"><part-list>'
+            '<score-part id="P1"><part-name>Piano</part-name></score-part></part-list>'
+            f'<part id="P1">{"".join(bars)}</part></score-partwise>\n')
+
+
+class TestALaterTempoMarkSurvives(ConvertCase):
+    """
+    E57: `normalise` removed every metronome mark after the first it found, wherever it stood, so a kern score's later
+    `*MM` (Chopin's Rondo op. 16, the Waltz op. 70 no. 1, Joplin's *Combination March*) played the opening tempo
+    throughout. Now only a copy of one statement goes — the same position in the score and the same quarter-note tempo
+    within X42's `SERIALIZATION_TOLERANCE` — and of a statement's copies a printed mark is kept over a sound-only one.
+    `TestTempoMarks` above holds the copies that still collapse to one (the ABC voices, the kern spines). The
+    three shapes, the conflicts and the printed-over-sound case are red on the committed converter; the printed-first
+    case is green before and after, by design.
+    """
+
+    def convert_text(self, text: str, suffix: str, name: str = "marks"):
+        src = self.out / f"{name}{suffix}"
+        src.write_text(text, encoding="utf-8")
+        dest = self.out / f"{name}.mxl"
+        result = convert_file(src, dest)
+        return result, read_mxl(dest)
+
+    def tempo_by_bar(self, written) -> list[tuple[str, float]]:
+        """Every `<sound tempo>` with the bar it stands in, in the file's order."""
+        import re
+
+        out = []
+        for number, body in re.findall(r'<measure\b[^>]*\bnumber="([^"]+)"[^>]*>(.*?)</measure>', written.xml, re.S):
+            out += [(number, float(value)) for value in re.findall(r'<sound tempo="([0-9.]+)"', body)]
+        return out
+
+    def per_minute(self, written) -> list[str]:
+        import re
+
+        return re.findall(r"<per-minute>([^<]*)</per-minute>", written.xml)
+
+    # --- (b) two distinct positions survive: the three kern rows' shapes -----------------------------------
+
+    def test_b_the_rondo_shape_keeps_its_two_later_changes(self) -> None:
+        # Op. 16: *MM48 (Andante), *MM152 (Piu mosso), *MM96 (Allo. vivace), each in both spines.
+        result, written = self.convert_text(kern_with_marks([("*MM48", "*MM48"), ("*MM152", "*MM152"), ("*MM96", "*MM96")]), ".krn")
+        self.assertEqual(self.tempo_by_bar(written), [("1", 48.0), ("2", 152.0), ("3", 96.0)])
+        self.assertEqual(written.xml.count("<metronome"), 3)
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (48.0, False))
+
+    def test_b_the_waltz_shape_keeps_a_return_to_the_first_tempo(self) -> None:
+        # Op. 70 no. 1: *MM264, *MM96 (Meno mosso), *MM264 (tempo I): the same number at two places is two statements.
+        _, written = self.convert_text(kern_with_marks([("*MM264", "*MM264"), ("*MM96", "*MM96"), ("*MM264", "*MM264")], time=(3, 4)), ".krn")
+        self.assertEqual(self.tempo_by_bar(written), [("1", 264.0), ("2", 96.0), ("3", 264.0)])
+
+    def test_b_the_march_shape_reaches_its_tempo_di_marcia(self) -> None:
+        # Combination March: *MM100 (Andante), *MM120 (Tempo di Marcia).
+        _, written = self.convert_text(kern_with_marks([("*MM100", "*MM100"), ("*MM120", "*MM120")]), ".krn")
+        self.assertEqual(self.tempo_by_bar(written), [("1", 100.0), ("2", 120.0)])
+
+    # --- (c) the same position, a different tempo: a conflict, kept for the reader ----------------------------
+
+    def test_c_a_different_tempo_in_the_other_spine_at_one_place_survives(self) -> None:
+        _, written = self.convert_text(kern_with_marks([("*MM100", "*MM120"), (None, None)]), ".krn")
+        self.assertEqual(sorted(self.tempo_by_bar(written)), [("1", 100.0), ("1", 120.0)])
+        self.assertEqual(written.xml.count("<metronome"), 2)
+
+    def test_c_a_different_tempo_on_one_staff_at_one_place_survives(self) -> None:
+        _, written = self.convert_text(directions_score(PRINTED.format(100), PRINTED.format(120)), ".musicxml")
+        self.assertEqual(sorted(self.tempo_by_bar(written)), [("1", 100.0), ("1", 120.0)])
+        self.assertEqual(sorted(self.per_minute(written)), ["100", "120"])
+
+    # --- (d) one statement, printed and sound-only: the printed mark stays; the tolerance; a mark with no tempo ---
+
+    def test_d_a_sound_only_copy_gives_way_to_the_printed_mark(self) -> None:
+        # Satie's shape (X42): MuseScore's 76.0002 beside the printed 76, here with the sound first.
+        _, written = self.convert_text(directions_score(SOUND_ONLY.format("76.0002"), PRINTED.format(76)), ".musicxml")
+        self.assertEqual(self.per_minute(written), ["76"])
+        self.assertEqual(self.tempo_by_bar(written), [("1", 76.0)])
+
+    def test_d_the_printed_mark_first_is_kept_as_before(self) -> None:
+        _, written = self.convert_text(directions_score(PRINTED.format(76), SOUND_ONLY.format("76.0002")), ".musicxml")
+        self.assertEqual(self.per_minute(written), ["76"])
+        self.assertEqual(self.tempo_by_bar(written), [("1", 76.0)])
+
+    def test_d_a_tempo_beyond_the_tolerance_is_another_statement(self) -> None:
+        # 68.1 beside a printed 68: the nearest non-noise difference X42 found in any file here.
+        _, written = self.convert_text(directions_score(PRINTED.format(68), SOUND_ONLY.format("68.1")), ".musicxml")
+        self.assertEqual(sorted(self.tempo_by_bar(written)), [("1", 68.0), ("1", 68.1)])
+
+    def test_d_a_mark_with_no_tempo_is_never_a_duplicate(self) -> None:
+        # Beside a printed 100, and beside another like it: neither `c. 100` mark is anyone's copy. (music21 writes
+        # such a mark as an empty `<words/>` direction whether or not it is kept, so the stream is what is read.)
+        from music21 import converter, tempo
+
+        import convert
+
+        for number, directions in enumerate(((PRINTED.format(100), NO_TEMPO), (NO_TEMPO, PRINTED.format(100)), (NO_TEMPO, NO_TEMPO))):
+            src = self.out / f"no-tempo-{number}.musicxml"
+            src.write_text(directions_score(*directions), encoding="utf-8")
+            score = converter.parse(src)
+            marks = list(score.recurse().getElementsByClass(tempo.MetronomeMark))
+            self.assertEqual(len(marks), 2)
+            self.assertEqual(convert.duplicate_tempo_marks(score, marks), [], directions)
+
+    def test_the_tolerance_is_x42s(self) -> None:
+        # One value, stated in the app's reader and in the converter: the two must never drift apart.
+        import re
+
+        import convert
+
+        reader = (Path(__file__).resolve().parents[3] / "app/src/score/tempoFromXml.ts").read_text(encoding="utf-8")
+        stated = re.search(r"export const SERIALIZATION_TOLERANCE = ([0-9.]+);", reader)
+        self.assertIsNotNone(stated)
+        self.assertEqual(convert.SERIALIZATION_TOLERANCE, float(stated.group(1)))  # type: ignore[union-attr]
+
+
+def text_mark_score(words: str | None, *, time: tuple[int, int] = (4, 4), mark_bar: int = 1,
+                    bar_one_rests: bool = False, metronome: int | None = None) -> str:
+    """
+    A three-bar grand-staff MusicXML file (E50) whose `mark_bar` prints `words` as a `<words>` direction before
+    its first note, as MuseScore 3.6.2 exported the seven bundled PDMX scores (*Wabash Blues*: a boxed
+    `= 120` in MuseJazz, the note glyph dropped), with no tempo anywhere unless `metronome` adds a
+    `<metronome>` of the file's own. Bar 1 holds rests only where `bar_one_rests` says so.
+    """
+    beats, beat_type = time
+    divisions = 2
+    length = beats * divisions * 4 // beat_type
+    kind = {8: "whole", 6: "half", 4: "half", 12: "whole"}.get(length, "whole")
+    dot = "<dot/>" if length == 6 else ""
+    direction = ""
+    if words is not None:
+        direction += ('<direction placement="above"><direction-type><words enclosure="rectangle" '
+                      f'font-family="MuseJazz" font-style="italic">{words}</words></direction-type></direction>')
+    measures = []
+    for number in (1, 2, 3):
+        attributes = ""
+        if number == 1:
+            attributes = (f"<attributes><divisions>{divisions}</divisions><key><fifths>0</fifths></key>"
+                          f"<time><beats>{beats}</beats><beat-type>{beat_type}</beat-type></time><staves>2</staves>"
+                          '<clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef></attributes>')
+        own = ""
+        if metronome is not None and number == 1:
+            own = ('<direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit>'
+                   f'<per-minute>{metronome}</per-minute></metronome></direction-type><sound tempo="{metronome}"/></direction>')
+        printed = direction if number == mark_bar else ""
+        if number == 1 and bar_one_rests:
+            body = (f'<note><rest measure="yes"/><duration>{length}</duration><voice>1</voice><staff>1</staff></note>'
+                    f"<backup><duration>{length}</duration></backup>"
+                    f'<note><rest measure="yes"/><duration>{length}</duration><voice>5</voice><staff>2</staff></note>')
+        else:
+            body = (f"<note><pitch><step>C</step><octave>5</octave></pitch><duration>{length}</duration><voice>1</voice>"
+                    f"<type>{kind}</type>{dot}<staff>1</staff></note>"
+                    f"<backup><duration>{length}</duration></backup>"
+                    f"<note><pitch><step>C</step><octave>3</octave></pitch><duration>{length}</duration><voice>5</voice>"
+                    f"<type>{kind}</type>{dot}<staff>2</staff></note>")
+        measures.append(f'<measure number="{number}">{attributes}{own}{printed}{body}</measure>')
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n<score-partwise version="3.1"><part-list>'
+            '<score-part id="P1"><part-name>Piano</part-name></score-part></part-list>'
+            f'<part id="P1">{"".join(measures)}</part></score-partwise>\n')
+
+
+class TestTheTempoPrintedAsText(ConvertCase):
+    """
+    E50: an opening metronome mark printed only as text is read before the default is inserted (E32's rule,
+    the import door's `textTempoOf`, `app/src/data/importStore.ts`, ported to `convert.py`). The seven bundled
+    PDMX scores print `= N` over bar 1 as `<words>`, the note glyph dropped by MuseScore's export; music21
+    hands the converter a `TextExpression` and no `MetronomeMark`, so the converter inserted 96. The mark now
+    becomes the score's `<metronome>`, its note the glyph's or, where the glyph is missing, the metre's beat in
+    x/4 or x/2, and the words go. (a), (b) and (c) are red on the committed converter; (d) and (e) hold
+    today's path and are green before and after, by design. Since E59 (d)'s default is a `<sound tempo>` alone,
+    no printed mark (`assert_today`).
+    """
+
+    def convert_text(self, xml: str, name: str = "text-mark", **kwargs):
+        src = self.out / f"{name}.musicxml"
+        src.write_text(xml, encoding="utf-8")
+        dest = self.out / f"{name}.mxl"
+        result = convert_file(src, dest, **kwargs)
+        return result, read_mxl(dest)
+
+    def printed_words(self, written) -> list[str]:
+        import re
+
+        return [text.strip() for text in re.findall(r"<words\b[^>]*>([^<]*)</words>", written.xml)]
+
+    def metronome(self, written) -> tuple[str, bool, str] | None:
+        import re
+
+        found = re.findall(r"<metronome\b[^>]*>\s*<beat-unit>([^<]*)</beat-unit>\s*(<beat-unit-dot\s*/>)?\s*<per-minute>([^<]*)</per-minute>", written.xml)
+        self.assertLessEqual(len(found), 1, found)
+        return (found[0][0], bool(found[0][1]), found[0][2]) if found else None
+
+    # --- (a) the Wabash shape ------------------------------------------------------------------------
+
+    def test_a_the_wabash_shape_reads_as_a_quarter_the_metres_beat(self) -> None:
+        result, written = self.convert_text(text_mark_score(" = 120"))
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (120.0, False))
+        self.assertEqual(written.xml.count("<metronome"), 1)
+        self.assertEqual(self.metronome(written), ("quarter", False, "120"))
+        self.assertIn('<sound tempo="120"', written.xml)
+        self.assertEqual(written.tempos, [120.0])
+        self.assertNotIn("= 120", self.printed_words(written))
+        said = [w for w in result.warnings if "= 120" in w]
+        self.assertEqual(len(said), 1, result.warnings)
+        self.assertIn("read as a quarter (the metre's beat)", said[0])
+        self.assertFalse(any("no tempo in source" in w for w in result.warnings), result.warnings)
+
+    # --- (b) a glyph given: the door's four numbers (importMeasuredTruth.test.ts) ------------------------
+
+    def test_b_a_quarter_glyph(self) -> None:
+        result, written = self.convert_text(text_mark_score(" = 132"))
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (132.0, False))
+        self.assertEqual(self.metronome(written), ("quarter", False, "132"))
+        self.assertEqual(written.tempos, [132.0])
+        self.assertEqual([w for w in self.printed_words(written) if "=" in w], [])
+        self.assertFalse(any("the metre's beat" in w for w in result.warnings), result.warnings)
+
+    def test_b_an_eighth_glyph_sounds_at_half_its_number(self) -> None:
+        # music21 writes the eighth with its per-minute number and a `<sound tempo>` in quarters (60),
+        # which `tempoFromXml` lets win: the player plays 60 quarters a minute, as the mark means.
+        result, written = self.convert_text(text_mark_score(" = 120"))
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (60.0, False))
+        self.assertEqual(self.metronome(written), ("eighth", False, "120"))
+        self.assertEqual(written.tempos, [60.0])
+
+    def test_b_a_dotted_quarter_glyph(self) -> None:
+        result, written = self.convert_text(text_mark_score(" = 80"))
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (120.0, False))
+        self.assertEqual(self.metronome(written), ("quarter", True, "80"))
+        self.assertEqual(written.tempos, [120.0])
+
+    def test_b_no_glyph_in_cut_time_reads_as_a_half(self) -> None:
+        result, written = self.convert_text(text_mark_score("= 60", time=(2, 2)))
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (120.0, False))
+        self.assertEqual(self.metronome(written), ("half", False, "60"))
+        self.assertEqual(written.tempos, [120.0])
+        self.assertTrue(any("read as a half (the metre's beat)" in w for w in result.warnings), result.warnings)
+
+    # --- (c) after rests only: X31a's opening rule ----------------------------------------------------
+
+    def test_c_a_mark_after_a_bar_of_rests_opens_the_piece(self) -> None:
+        result, written = self.convert_text(text_mark_score("= 120", mark_bar=2, bar_one_rests=True))
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (120.0, False))
+        self.assertEqual(self.metronome(written), ("quarter", False, "120"))
+        self.assertEqual(written.tempos, [120.0])
+        self.assertNotIn("= 120", self.printed_words(written))
+
+    # --- (d) not read: today's path, the default and the words kept -------------------------------------
+
+    def assert_today(self, xml: str, words: str) -> None:
+        result, written = self.convert_text(xml)
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (96.0, True))
+        self.assertEqual(written.tempos, [96.0])
+        # Revised by E59 (Entry 184): this asserted a printed quarter = 96, the converter's default written as
+        # though the edition stated it. The default is now playback truth only, its `<sound tempo>`, and nothing
+        # is printed (`TestADefaultedTempoIsPlaybackOnly`).
+        self.assertIsNone(self.metronome(written))
+        self.assertIn(words, self.printed_words(written))
+
+    def test_d_a_missing_glyph_in_a_compound_metre_is_not_read(self) -> None:
+        self.assert_today(text_mark_score("= 120", time=(6, 8)), "= 120")
+
+    def test_d_a_tempo_word_is_not_a_mark(self) -> None:
+        self.assert_today(text_mark_score("Allegro"), "Allegro")
+
+    def test_d_text_that_is_not_a_mark_alone(self) -> None:
+        self.assert_today(text_mark_score("bars 1 = 12"), "bars 1 = 12")
+
+    def test_d_a_mark_after_a_note_has_sounded_is_a_later_change_and_not_read(self) -> None:
+        self.assert_today(text_mark_score("= 140", mark_bar=2), "= 140")
+
+    def test_the_warnings_name_a_later_mark_as_not_read(self) -> None:
+        # New with the reader (red on the committed converter): the mark it leaves is said, with its bar.
+        result, _ = self.convert_text(text_mark_score("= 140", mark_bar=2))
+        said = [w for w in result.warnings if "= 140" in w]
+        self.assertEqual(len(said), 1, result.warnings)
+        self.assertIn("not read", said[0])
+        self.assertIn("bar 2", said[0])
+
+    def test_d_a_file_with_a_metronome_of_its_own_keeps_it_and_the_words(self) -> None:
+        result, written = self.convert_text(text_mark_score("= 120", metronome=100))
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (100.0, False))
+        self.assertEqual(written.tempos, [100.0])
+        self.assertEqual(self.metronome(written), ("quarter", False, "100"))
+        self.assertIn("= 120", self.printed_words(written))
+
+    # --- (e) a forced tempo still replaces every tempo -------------------------------------------------
+
+    def test_e_a_forced_tempo_replaces_the_printed_one(self) -> None:
+        result, written = self.convert_text(text_mark_score(" = 120"), tempo_bpm=60)
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (60.0, True))
+        self.assertEqual(set(written.tempos), {60.0})
+
+
+def pdmx_shaped_score(staves: int) -> str:
+    """
+    A MuseScore-style upload with no tempo of its own (E59): one part, two bars of 4/4, on one staff or on a grand staff
+    (`<staves>2</staves>`, a clef and a note per staff), no `<metronome>`, no `<sound tempo>`, no tempo words: the shape
+    of PDMX's 169 rows tagged `tempoDefaulted`, single-staff and grand-staff.
+    """
+    clefs = ('<clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef>'
+             if staves == 2 else "<clef><sign>G</sign><line>2</line></clef>")
+    measures = []
+    for number in (1, 2):
+        attributes = (f"<attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats>"
+                      f"<beat-type>4</beat-type></time>{'<staves>2</staves>' if staves == 2 else ''}{clefs}</attributes>"
+                      if number == 1 else "")
+        upper = ('<note><pitch><step>C</step><octave>5</octave></pitch><duration>4</duration><voice>1</voice>'
+                 f"<type>whole</type>{'<staff>1</staff>' if staves == 2 else ''}</note>")
+        lower = ('<backup><duration>4</duration></backup><note><pitch><step>C</step><octave>3</octave></pitch>'
+                 '<duration>4</duration><voice>5</voice><type>whole</type><staff>2</staff></note>') if staves == 2 else ""
+        measures.append(f'<measure number="{number}">{attributes}{upper}{lower}</measure>')
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n<score-partwise version="3.1"><part-list>'
+            '<score-part id="P1"><part-name>Piano</part-name></score-part></part-list>'
+            f'<part id="P1">{"".join(measures)}</part></score-partwise>\n')
+
+
+#: The default as the converter now writes it (E59): a sound-only direction, music21's own form for a
+#: `MetronomeMark` with only `numberSounding` (an empty `<words />`, then the sound), with the `<staff>` music21 adds
+#: on a grand staff. PDMX's committed defaulted files carry exactly this block with the four metronome lines where
+#: `<words />` stands.
+SOUND_ONLY_DEFAULT = re.compile(
+    r'(?P<i>[ ]*)<direction>\n(?P=i)  <direction-type>\n(?P=i)    <words />\n(?P=i)  </direction-type>\n'
+    r'(?:(?P=i)  <staff>(?P<staff>\d+)</staff>\n)?(?P=i)  <sound tempo="96" />\n(?P=i)</direction>\n'
+)
+
+
+class TestADefaultedTempoIsPlaybackOnly(ConvertCase):
+    """
+    E59: where a source states no tempo (no metronome mark, no override, none printed as text), the converter
+    supplies 96 so the player has a tempo, and wrote it as `MetronomeMark(number=96)`, which music21 exports as a
+    printed `<metronome>` quarter = 96 beside the `<sound tempo="96">`: a number the edition never states, written as
+    though it did. The default is now `numberSounding=96` (music21's own field for a tempo that sounds and is not
+    printed): the same `<sound tempo>`, the same `tempo_bpm` and `added_tempo`, and no `<metronome>`. Red on the
+    committed converter, green after; a real mark (`test_d_a_file_with_a_metronome_of_its_own_keeps_it_and_the_words`)
+    and a forced tempo (`test_e_…`) are other branches and print as before.
+    """
+
+    def convert_xml(self, xml: str, name: str, **kwargs):
+        src = self.out / f"{name}.musicxml"
+        src.write_text(xml, encoding="utf-8")
+        dest = self.out / f"{name}.mxl"
+        return convert_file(src, dest, **kwargs), read_mxl(dest), dest
+
+    def assert_sound_only_default(self, result, written, staff: str | None) -> None:
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (96.0, True))
+        self.assertTrue(any("no tempo in source" in w for w in result.warnings), result.warnings)
+        self.assertEqual(written.tempos, [96.0])
+        self.assertEqual(written.xml.count("<metronome"), 0)
+        found = list(SOUND_ONLY_DEFAULT.finditer(written.xml))
+        self.assertEqual(len(found), 1, written.xml[:2000])
+        self.assertEqual(found[0].group("staff"), staff)
+
+    def test_a_single_staff_upload_gets_a_sound_and_no_printed_mark(self) -> None:
+        # PDMX's first shape (74 of the 169 rows): one staff, no `<staff>` in the direction.
+        result, written, _ = self.convert_xml(pdmx_shaped_score(1), "one-staff")
+        self.assertEqual(written.staves, 1)
+        self.assert_sound_only_default(result, written, None)
+
+    def test_a_grand_staff_upload_gets_a_sound_and_no_printed_mark(self) -> None:
+        # PDMX's second shape (95 of the 169 rows): a grand staff, the direction on staff 1.
+        result, written, _ = self.convert_xml(pdmx_shaped_score(2), "grand-staff")
+        self.assertEqual(written.staves, 2)
+        self.assert_sound_only_default(result, written, "1")
+
+    def test_a_converted_default_converted_again_stays_sound_only(self) -> None:
+        # A cut's second pass through `normalise` (`excerpts.py`), and any re-conversion of a built file: the
+        # sound-only mark is read back as the file's tempo and written as it was, never printed and never doubled.
+        _, _, first = self.convert_xml(pdmx_shaped_score(2), "first")
+        again = self.out / "again.mxl"
+        result = convert_file(first, again)
+        written = read_mxl(again)
+        self.assertEqual(result.tempo_bpm, 96.0)
+        self.assertEqual(written.tempos, [96.0])
+        self.assertEqual(written.xml.count("<metronome"), 0)
+        self.assertEqual(len(SOUND_ONLY_DEFAULT.findall(written.xml)), 1)
 
 
 class TestSilentStaff(ConvertCase):

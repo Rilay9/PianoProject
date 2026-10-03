@@ -1,0 +1,71 @@
+$ (cwd .) python docs/prompts/runs/Q65a/scripts/docs08_specs.py .
+docs/08:15	row	renderer,engine	**Session** (`ScoreSession`): start, stop, restart, pause, resume, finish, lap, set aside 	score.hearIt.spec.ts
+docs/08:16	row	engine	**Engine** (`PracticeEngine`): Wait, Tempo, Listen, loops, count-in, pedal, mic	-
+docs/08:17	row	engine	**Rhythm first** (`EngineOptions.rhythmOnly`, `findRhythmSlot`, `SessionScore.rhythmOnly`)	score.rhythm-ladder.spec.ts
+docs/08:19	row	score-screen	**The duet row** (`playbackHands`, bound at the Score screen)	score.rhythm-ladder.spec.ts
+docs/08:20	row	renderer	**Slot plan** (`slots.ts`): which bars each slot holds	-
+docs/08:23	row	renderer	**Named as written, claimed only where measured, settled when done** (T41): the Wait statu	drills.spec.ts score.screen.spec.ts
+docs/08:24	row	engine	**What a run leaves behind** (C1): the session row as the run's observation � per-step out	lab.spec.ts score.screen.spec.ts
+docs/08:28	row	session,today	**"Taught by this rung" from the rung's ancestry** (E0a; the reviewer's finding 1 on E0): 	-
+docs/08:29	row	renderer,score-screen	**The microscope and the human review record** (D2): `#/dev/microscope/<item id>` (`DevMic	microscope.spec.ts offline.spec.ts
+docs/08:31	row	store	**A demand taught at more than one rung** (E0b; the reviewer's finding 2 on E0a): `taughtA	-
+docs/08:35	row	session	**The session card's automatic rows pass the same teaching-use admission** (D3b; the revie	-
+docs/08:37	row	renderer	**The excerpt as a first-class content object** (E1; Part 24, R5, R7, R15, R35, R40, R42, 	excerpts.spec.ts
+docs/08:38	row	session	**An excerpt reaches an automatic offer only with a current teaching-use yes on its cut** 	-
+docs/08:39	row	score-screen,session	**Transfer-aware selection: one material identity, contact novelty, the offer and its fact	transfer-offer.spec.ts
+docs/08:40	row	score-screen,session,today	**The transfer offer's relationship persisted before play** (D4a; the reviewer's required 	transfer-offer.spec.ts
+docs/08:45	row	today	**Evidence from observations, and the ladder** (C3): nothing judged when nothing listens (	score.screen.spec.ts
+docs/08:48	row	engine	**The curriculum�generator contract** (C4b; S25, S22, S16, S23, G36): a control for every 	-
+docs/08:49	row	score-screen	**The demand-sensitive reader** (C4c; L64's reader half, S25's reader half, U52, S16's app	today.spec.ts
+docs/08:52	row	score-screen,store	**Version 2 fails closed, the run's record names its generator, and version 2 goes live** 	-
+docs/08:53	row	session,today	**Today's slots from the evidence** (C6; L12's other readers, L14, L17, L26, L35, L36, L65	lesson-flow.spec.ts progress.spec.ts today.spec.ts
+docs/08:54	row	today	**One path from evidence to rung state** (C5; L8, L9, S8, L78, T2, T26): a rung's `require	-
+docs/08:56	row	renderer	**Renderer** (`WindowRenderer`): steps forward, back, jumps; rotation; bars per window; ha	score.renderer.fuzz.spec.ts
+docs/08:57	row	score-screen	**Score screen** (`ScoreScreen`): everything a learner can do during a run	score.fuzz.spec.ts score.states.spec.ts
+docs/08:62	row	score-screen	**The guided tour of the practice modes** (`drill.tour.app-basics`, `04` �5c-1): three ste	tour-practice-modes.spec.ts
+docs/08:75	row	renderer	**Rotation** (`stageChanged`, `updateReadAhead`, the freeze): a turn mid-run, paused, twic	score.rotate.spec.ts
+docs/08:77	row	renderer	**Where a song may sit** (`core_reach_errors`)	-
+docs/08:78	row	renderer	**Wide screens** (`04` �7a: `--page-max`, `--column-max`, `--stage-max`, the laptop clause	wide.spec.ts
+docs/08:83	row	renderer	**A key signature Humdrum writes between two bars** (`convert.py`: `place_loose_attributes	-
+docs/08:90	row	today	**The accompaniment lab and Today's daily card, end to end** (`04` �2, �3c)	lab.spec.ts
+docs/08:91	row	score-screen,today,engine	**The doors** (`04` �2, �2b, �4): Today's tools row, the Library's *Open as�*, and free pl	doors.spec.ts
+docs/08:93	row	engine	**What happens after a miss** (`engine/drills/feedback.ts`)	drills-review.spec.ts
+docs/08:94	row	engine	**Going over the ones you missed** (`engine/drills/review.ts`, `PromptDrill.revealed`)	drills-review.spec.ts
+docs/08:95	row	engine	**Simon** (`engine/drills/simon.ts`): the chain grows, breaks, and is scored	drills-review.spec.ts
+docs/08:97	row	renderer	**Simon's chain on a staff** (`04` �5c-2, `simonChainSteps`): the notes appearing as they 	drills-review.spec.ts
+docs/08:107	row	store	**What a screen load reads out of the `imports` store**	-
+docs/08:111	row	today	**Today's input chip against a piano that connects late**	-
+docs/08:122	row	engine	**A perfect performance through every catalog item, and the expected answer through every 	-
+docs/08:124	row	score-screen	**Never teach wrong** (F0; T28�T41, T51, M11): the lessons' note-value arithmetic, the hal	-
+docs/08:184	file	today	`app-shell.spec.ts`	app-shell.spec.ts
+docs/08:191	file	score-screen	`converted-import.spec.ts`	converted-import.spec.ts
+docs/08:192	file	renderer	`dark-ink.spec.ts` (the score case waits on `data-settled` and reads the front buffer, 202	dark-ink.spec.ts
+docs/08:193	file	renderer,score-screen	`midi-import.spec.ts`	midi-import.spec.ts
+docs/08:196	file	today	`doors.spec.ts`	doors.spec.ts
+docs/08:199	file	renderer,engine	`engine.spec.ts`	engine.spec.ts
+docs/08:203	file	score-screen,today	`first-day.spec.ts`	first-day.spec.ts
+docs/08:209	file	renderer	`generate-audio-fixtures.spec.ts`	generate-audio-fixtures.spec.ts
+docs/08:216	file	today	`lab.spec.ts`	lab.spec.ts
+docs/08:218	file	today	`lesson-flow.spec.ts`	lesson-flow.spec.ts
+docs/08:221	file	store	`microscope.spec.ts`	microscope.spec.ts
+docs/08:234	file	score-screen	`modes-chart-from-the-score.spec.ts`	modes-chart-from-the-score.spec.ts
+docs/08:236	file	score-screen	`modes-duet.spec.ts`	modes-duet.spec.ts
+docs/08:237	file	renderer	`modes-engraving.spec.ts`	modes-engraving.spec.ts
+docs/08:238	file	today	`modes-free-play.spec.ts`	modes-free-play.spec.ts
+docs/08:242	file	today	`modes-placement.spec.ts`	modes-placement.spec.ts
+docs/08:248	file	score-screen	`mounted-once.spec.ts`	mounted-once.spec.ts
+docs/08:257	file	session,today	`progress.hierarchy.spec.ts`	progress.hierarchy.spec.ts
+docs/08:258	file	store	`progress.spec.ts`	progress.spec.ts
+docs/08:263	file	renderer	`score.density.spec.ts`	score.density.spec.ts
+docs/08:265	file	renderer	`score.window-rule.spec.ts`	score.window-rule.spec.ts
+docs/08:276	file	score-screen	`score.fuzz.spec.ts`	score.fuzz.spec.ts
+docs/08:277	file	renderer,score-screen	`score.head-height.spec.ts`	score.head-height.spec.ts
+docs/08:285	file	renderer	`score.renderer.fuzz.spec.ts`	score.renderer.fuzz.spec.ts
+docs/08:288	file	renderer	`score.rotate.spec.ts`	score.rotate.spec.ts
+docs/08:290	file	renderer,score-screen	`score.screen.spec.ts`	score.screen.spec.ts
+docs/08:293	file	renderer	`score.slots.spec.ts`	score.slots.spec.ts
+docs/08:294	file	renderer	`score.spec.ts`	score.spec.ts
+docs/08:305	file	session,today	`today.spec.ts`	today.spec.ts
+docs/08:306	file	session,today	`transfer-offer.spec.ts`	transfer-offer.spec.ts
+docs/08:307	file	score-screen	`tour-practice-modes.spec.ts`	tour-practice-modes.spec.ts
+exit=0

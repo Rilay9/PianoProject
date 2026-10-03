@@ -1,0 +1,17 @@
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import wedge: Error in getting DynamicWedges
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+pitch.chromatic@3.1: 725 parent(s), 334616 window(s) (19223 across a repeat, never proposed), 203982 with the target; 40 candidate(s), 37 meeting every signal; 74 parent(s) skipped
+   11.38  song.jazz.bart-howard-fly-me-to-the-moon.pdmx bars 17–21 right  (every signal met)
+   11.20  song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx bars 51–54 right  (every signal met)
+   11.20  song.pop.misc-cartoons-resonance-soul-eater-opening-1.pdmx bars 90–97 right  (every signal met)
+   11.00  song.blues.wabash-blues bars 1–4 both  (every signal met)
+   11.00  song.classical.chopin-mazurka-op63-2.nifc bars 9–16 right  (every signal met)
+   11.00  song.classical.chopin-mazurka-op63-2.nifc bars 49–56 right  (every signal met)
+   10.80  song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx bars 9–16 right  (every signal met)
+   10.80  song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx bars 25–32 right  (every signal met)
+   10.80  song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx bars 41–48 right  (every signal met)
+   10.60  song.classical.chopin-nocturne-op15-3.nifc bars 138–141 right  (every signal met)
+   10.60  song.classical.chopin-sonata-2-2.nifc bars 148–155 right  (every signal met)
+   10.58  song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx bars 32–36 both  (every signal met)
+wrote C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\build\excerpts\candidates.json and C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\app\public\dev\review\excerpts.json
+exit 0

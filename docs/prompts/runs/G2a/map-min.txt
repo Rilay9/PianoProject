@@ -1,0 +1,38 @@
+# checks for 32 path(s): 32 matched, 0 unmatched
+# app/src/evidence/ladder.ts: app/src/**, app/src/evidence/**
+# app/src/evidence/transferPolicy.ts: app/src/**, app/src/evidence/**
+# app/tests/unit/masteryLadder.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/transferPolicy.test.ts: app/tests/unit/*.test.ts
+# docs/prompts/runs/G2a/ENTRY.md: docs/**
+# docs/prompts/runs/G2a/build-app.txt: docs/**
+# docs/prompts/runs/G2a/checks-for-paths.txt: docs/**
+# docs/prompts/runs/G2a/composition-reach.txt: docs/**
+# docs/prompts/runs/G2a/content-build.txt: docs/**
+# docs/prompts/runs/G2a/copy-content.txt: docs/**
+# docs/prompts/runs/G2a/green-policy-and-ladder.txt: docs/**
+# docs/prompts/runs/G2a/lint-final.txt: docs/**
+# docs/prompts/runs/G2a/lint.txt: docs/**
+# docs/prompts/runs/G2a/mutants.txt: docs/**
+# docs/prompts/runs/G2a/npm-ci.txt: docs/**
+# docs/prompts/runs/G2a/parity-reference.txt: docs/**
+# docs/prompts/runs/G2a/red-mutant-cap-demonstrated-only.txt: docs/**
+# docs/prompts/runs/G2a/red-mutant-composition-before-contact.txt: docs/**
+# docs/prompts/runs/G2a/red-mutant-composition-field-alone.txt: docs/**
+# docs/prompts/runs/G2a/red-policy-and-ladder.txt: docs/**
+# docs/prompts/runs/G2a/restore-reports.txt: docs/**
+# docs/prompts/runs/G2a/scripts-composition-reach.py: docs/**
+# docs/prompts/runs/G2a/scripts-ladder-null-composition.py: docs/**
+# docs/prompts/runs/G2a/scripts-mutants.py: docs/**
+# docs/prompts/runs/G2a/scripts-restore-reports.py: docs/**
+# docs/prompts/runs/G2a/scripts-run.sh: docs/**
+# docs/prompts/runs/G2a/scripts-vitest-full-summary.py: docs/**
+# docs/prompts/runs/G2a/tsc-final.txt: docs/**
+# docs/prompts/runs/G2a/tsc.txt: docs/**
+# docs/prompts/runs/G2a/vitest-brief-four-final.txt: docs/**
+# docs/prompts/runs/G2a/vitest-brief-four.txt: docs/**
+# docs/prompts/runs/G2a/vitest-full-summary.txt: docs/**
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/competence.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/progress.spec.ts tests/e2e/score.ladder-route.spec.ts tests/e2e/today.spec.ts --workers=4

@@ -1,0 +1,75 @@
+# Songs the gate admits at 3.5 (Stage 3, level <= 5): 73
+
+- 1.1 song.classical.ode-to-joy.rh (Ode to Joy (theme)): times ['4/4'], staves 1, bars 8, pedal marks 0; on 1.1, 1.5, practice.1, practice.2, practice.5
+- 1.1 song.folk.au-clair-de-la-lune (Au Clair de la Lune): times ['4/4'], staves 1, bars 8, pedal marks 0; on 1.1
+- 1.1 song.folk.hot-cross-buns (Hot Cross Buns): times ['4/4'], staves 1, bars 4, pedal marks 0; on 0.3, 1.1, practice.1, practice.3, practice.4
+- 1.1 song.folk.mary-had-a-little-lamb (Mary Had a Little Lamb): times ['4/4'], staves 1, bars 8, pedal marks 0; on 1.1, practice.3
+- 1.1 song.folk.merrily-we-roll-along (Merrily We Roll Along): times ['4/4'], staves 1, bars 8, pedal marks 0; on 1.1, 2.2
+- 1.2 song.folk.frere-jacques (Frère Jacques): times ['4/4'], staves 1, bars 8, pedal marks 0; on 1.2
+- 1.2 song.folk.lightly-row (Lightly Row): times ['4/4'], staves 1, bars 8, pedal marks 0; on 1.2, 1.4, 1.5
+- 1.2 song.folk.twinkle.rh (Twinkle, Twinkle, Little Star): times ['4/4'], staves 1, bars 12, pedal marks 0; on 1.2
+- 1.2 song.holiday.jingle-bells.rh (Jingle Bells (chorus)): times ['4/4'], staves 1, bars 8, pedal marks 0; on 1.2, holiday
+- 1.3 song.classical.ode-to-joy.lh (Ode to Joy (left hand)): times ['4/4'], staves 1, bars 8, pedal marks 0; on 1.3
+- 1.3 song.folk.hot-cross-buns.lh (Hot Cross Buns (left hand)): times ['4/4'], staves 1, bars 4, pedal marks 0; on 1.3
+- 1.3 song.folk.mary-had-a-little-lamb.lh (Mary Had a Little Lamb (left hand)): times ['4/4'], staves 1, bars 8, pedal marks 0; on 1.3
+- 1.4 song.classical.ode-to-joy.alternating (Ode to Joy (hands alternating)): times ['4/4'], staves 2, bars 8, pedal marks 0; on 1.4
+- 1.58 song.folk.kum-ba-yah.pdmx (Kum Ba Yah): times ['4/4'], staves 1, bars 8, pedal marks 0; on 1.1
+- 1.93 song.classical.ah-vous-dirais-je-maman.pdmx (Ah! vous dirai-je, Maman): times ['2/4'], staves 1, bars 16, pedal marks 0; on 1.2
+- 2.05 song.pop.misc-christmas-good-king-wenceslas.pdmx (Good King Wenceslas): times ['4/4'], staves 1, bars 13, pedal marks 0; on holiday
+- 2.08 song.folk.simple-gifts.pdmx (Simple Gifts): times ['4/4'], staves 1, bars 16, pedal marks 0; on 2.1
+- 2.1 song.classical.ode-to-joy.ht (Ode to Joy (hands together)): times ['4/4'], staves 2, bars 8, pedal marks 0; on 2.1
+- 2.1 song.folk.korobeiniki.pdmx (Korobeiniki): times ['2/4'], staves 1, bars 16, pedal marks 0; on 3.1
+- 2.1 song.folk.mary-had-a-little-lamb.ht (Mary Had a Little Lamb (hands together)): times ['4/4'], staves 2, bars 8, pedal marks 0; on 2.1
+- 2.1 song.folk.twinkle.ht (Twinkle, Twinkle, Little Star (hands together)): times ['4/4'], staves 2, bars 12, pedal marks 0; on 2.1
+- 2.1 song.holiday.jingle-bells.ht (Jingle Bells (chorus, hands together)): times ['4/4'], staves 2, bars 8, pedal marks 0; on 2.1, holiday
+- 2.12 song.pop.misc-christmas-traditional-music-up-on-the-housetop-gw.pdmx (Up on the Housetop): times ['4/4'], staves 1, bars 16, pedal marks 0; on no rung
+- 2.2 song.folk.london-bridge (London Bridge Is Falling Down): times ['4/4'], staves 2, bars 8, pedal marks 0; on 2.2, 4.5
+- 2.2 song.folk.old-macdonald (Old MacDonald Had a Farm): times ['4/4'], staves 1, bars 8, pedal marks 0; on 1.5, 2.2
+- 2.23 song.folk.sakura.pdmx (Sakura): times ['4/4'], staves 1, bars 15, pedal marks 0; on 2.2
+- 2.44 song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx (Jolly Old Saint Nicholas): times ['2/4'], staves 1, bars 16, pedal marks 0; on holiday
+- 2.45 song.classical.mozart-theme-du-1er-mouvement-de-la-sonate-k-331.pdmx (Thème du 1er mouvement de la sonate K.331): times ['3/4'], staves 2, bars 16, pedal marks 0; on classical.3
+- 2.49 song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx (Joyful, Joyful, We Adore Thee): times ['4/4'], staves 1, bars 16, pedal marks 0; on hymns.2
+- 2.5 song.classical.ode-to-joy.full (Ode to Joy (full theme)): times ['4/4'], staves 2, bars 17, pedal marks 0; on 2.5, 3.5, rock.overview
+- 2.5 song.folk.skip-to-my-lou.pdmx (Skip to My Lou): times ['4/4'], staves 1, bars 8, pedal marks 0; on 2.3
+- 2.6 song.folk.what-a-friend-we-have-in-jesus.pdmx (What a Friend We Have in Jesus): times ['4/4'], staves 1, bars 16, pedal marks 0; on hymns, hymns.5
+- 2.63 song.pop.careless-love-blues.pdmx (Careless Love): times ['4/4'], staves 1, bars 8, pedal marks 0; on 2.4, blues.3, blues.4
+- 2.67 song.classical.beyer-exercise-no-38.pdmx (Exercise No. 38): times ['4/4'], staves 2, bars 16, pedal marks 0; on no rung
+- 2.74 song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx (Hark! The Herald Angels Sing): times ['4/4'], staves 1, bars 20, pedal marks 0; on holiday.3
+- 2.83 song.folk.exercise-cielito-lindo.pdmx (Cielito Lindo): times ['3/4'], staves 1, bars 32, pedal marks 0; on latin.3, latin
+- 2.85 song.classical.12-bar-blues.pdmx (12 Bar Blues): times ['4/4'], staves 1, bars 11, pedal marks 0; on blues.4
+- 2.88 song.pop.whispering.pdmx (Whispering (1920)): times ['4/4'], staves 1, bars 48, pedal marks 0; on jazz.4
+- 2.9 song.classical.mason-lowell-mason-handel-joy-to-the-world.pdmx (Joy to the World): times ['4/4'], staves 1, bars 20, pedal marks 0; on holiday.3
+- 2.97 song.pop.bill-bailey.pdmx (Bill Bailey, Won't You Please Come Home (1902)): times ['4/4'], staves 1, bars 56, pedal marks 0; on jazz.5
+- 3 song.folk.cielito-lindo.simple (Cielito Lindo (simple)): times ['3/4'], staves 2, bars 32, pedal marks 0; on 2.4
+- 3.1 song.classical.ode-to-joy.g (Ode to Joy (in G major)): times ['4/4'], staves 2, bars 17, pedal marks 0; on 3.1, 4.1
+- 3.1 song.folk.twinkle.f (Twinkle, Twinkle, Little Star (in F major)): times ['4/4'], staves 2, bars 12, pedal marks 0; on 3.1, 4.2
+- 3.15 song.classical.gurlitt-sonatina.pdmx (Sonatina): times ['4/4'], staves 2, bars 16, pedal marks 0; on no rung
+- 3.19 song.classical.czerny-study-op-139-no-2.pdmx (Study, Op. 139 No. 2): times ['4/4'], staves 2, bars 16, pedal marks 0; on no rung
+- 3.2 song.holiday.jingle-bells.g (Jingle Bells (chorus, in G major with block chords)): times ['4/4'], staves 2, bars 8, pedal marks 0; on 2.3, 3.2, chords-pop.3, holiday.3
+- 3.24 song.classical.beethoven-inno-alla-gioia.pdmx (Inno alla Gioia): times ['4/4'], staves 2, bars 28, pedal marks 0; on no rung
+- 3.47 song.classical.tchaikovsky-swan-lake.pdmx (Swan Lake): times ['4/4'], staves 1, bars 25, pedal marks 0; on no rung
+- 3.5 song.classical.czerny-study-op-139-no-1.pdmx (Study, Op. 139 No. 1): times ['4/4'], staves 2, bars 16, pedal marks 0; on no rung
+- 3.53 song.classical.beethoven-ode-a-alegria-nona-sinfonia.pdmx (Ode à Alegria (Nona Sinfonia)): times ['4/4'], staves 2, bars 17, pedal marks 0; on no rung
+- 3.55 song.pop.bear-mccreary-the-skye-boat-song-outlander-theme-song.pdmx (The Skye Boat Song (Outlander theme)): times ['3/4'], staves 2, bars 48, pedal marks 0; on chords-pop.4
+- 3.81 song.classical.streabbog-karussell-walzer.pdmx (Karussell-Walzer): times ['3/4'], staves 2, bars 32, pedal marks 0; on no rung
+- 3.86 song.pop.misc-christmas-silent-night.pdmx (Silent Night): times ['3/4'], staves 2, bars 24, pedal marks 0; on holiday.4
+- 3.96 song.pop.misc-tunes-yankee-doodle.pdmx (Yankee Doodle): times ['4/4'], staves 2, bars 16, pedal marks 0; on 3.2
+- 3.97 song.pop.louisf365-boogie-woogie-and-blues-piano-exersices.pdmx (Boogie-woogie and blues piano exercises): times ['4/4'], staves 1, bars 31, pedal marks 0; on blues.6
+- 4.1 song.classical.beethoven-ode-to-joy.easy (Ode to Joy (easy variation)): times ['4/4'], staves 2, bars 17, pedal marks 0; on 2.5, 4.1, 4.4
+- 4.1 song.folk.happy-birthday (Happy Birthday to You): times ['3/4'], staves 2, bars 8, pedal marks 0; on 2.3
+- 4.13 song.blues.boogie-and-blues-bass-lines (Boogie and Blues Bass Lines): times ['4/4'], staves 1, bars 54, pedal marks 0; on no rung
+- 4.38 song.classical.duvernoy-etude-op-176-no-3.pdmx (Étude, Op. 176 No. 3): times ['4/4'], staves 2, bars 24, pedal marks 0; on no rung
+- 4.42 song.pop.minuet-in-g-minor-bach-piano.pdmx (Minuet in G minor, BWV Anh. 115 (first 16 bars)): times ['3/4'], staves 2, bars 16, pedal marks 0; on classical.3
+- 4.44 song.classical.duvernoy-etude-op-176-no-8.pdmx (Étude, Op. 176 No. 8): times ['4/4'], staves 2, bars 24, pedal marks 0; on no rung
+- 4.49 song.folk.john-denver-annie-s-song.pdmx (Annie's Song): times ['3/4'], staves 2, bars 57, pedal marks 62; on rock.5, chords-pop.6
+- 4.59 song.pop.misc-soundtrack-lavender-s-blue.pdmx (Lavender's Blue): times ['3/4'], staves 2, bars 20, pedal marks 2; on chords-pop.5
+- 4.69 song.classical.duvernoy-etude-op-176-no-13.pdmx (Étude, Op. 176 No. 13): times ['4/4'], staves 2, bars 24, pedal marks 0; on no rung
+- 4.75 song.classical.lemoine-etude-op-37-no-2.pdmx (Étude, Op. 37 No. 2): times ['2/2'], staves 2, bars 16, pedal marks 0; on technique.4
+- 4.76 song.classical.schubert-ecossaise.pdmx (Écossaise): times ['2/4'], staves 2, bars 16, pedal marks 0; on no rung
+- 4.79 song.classical.oh-canada.pdmx (Oh Canada): times ['4/4'], staves 2, bars 28, pedal marks 0; on no rung
+- 4.81 song.pop.banjo-paterson-waltzing-matilda.pdmx (Waltzing Matilda): times ['4/4'], staves 2, bars 16, pedal marks 0; on no rung
+- 4.84 song.classical.duvernoy-etude-op-176-no-1.pdmx (Étude, Op. 176 No. 1): times ['4/4'], staves 2, bars 33, pedal marks 0; on no rung
+- 4.84 song.classical.duvernoy-etude-op-176-no-5.pdmx (Étude, Op. 176 No. 5): times ['4/4'], staves 2, bars 22, pedal marks 0; on technique.5
+- 4.96 song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx (Album for the Young, Op. 68 No. 4 "Chorale"): times ['4/4'], staves 2, bars 32, pedal marks 0; on classical.4
+- 4.98 song.classical.duvernoy-etude-op-176-no-4.pdmx (Étude, Op. 176 No. 4): times ['4/4'], staves 2, bars 31, pedal marks 0; on technique.5
+- 4.98 song.pop.misc-christmas-joy-to-the-world.pdmx (Joy to the World): times ['4/4'], staves 2, bars 61, pedal marks 0; on no rung

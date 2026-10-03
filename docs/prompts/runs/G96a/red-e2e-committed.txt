@@ -1,0 +1,92 @@
+$ (cd app) npx playwright test -c build/g96a/playwright.g96a-4591.config.ts --workers=1 -g G96a tests/e2e/library.spec.ts   [G96A_DIST=build/g96a/dist-before G96A_PHASE=]
+exists: tests/e2e/library.spec.ts
+
+Running 1 test using 1 worker
+
+  x  1 tests\e2e\library.spec.ts:101:3 › Library › a PDF’s Details says an estimated level and PDF, never a guessed level or a song (G96a) (18.5s)
+
+
+  1) tests\e2e\library.spec.ts:101:3 › Library › a PDF’s Details says an estimated level and PDF, never a guessed level or a song (G96a) 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator:  locator('#library-detail').locator('dt').filter({ hasText: /^Type$/ }).locator('xpath=following-sibling::dd[1]')
+    Expected: "PDF"
+    Received: "song"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "soft toHaveText" locator('#library-detail').locator('dt').filter({ hasText: /^Type$/ }).locator('xpath=following-sibling::dd[1]') with timeout 5000ms
+      - waiting for locator('#library-detail').locator('dt').filter({ hasText: /^Type$/ }).locator('xpath=following-sibling::dd[1]')
+        14 × locator resolved to <dd>song</dd>
+           - unexpected value "song"
+
+
+      110 |     await expect(sheet).toBeVisible();
+      111 |     const fact = (term: string) => sheet.locator('dt', { hasText: new RegExp(`^${term}$`) }).locator('xpath=following-sibling::dd[1]');
+    > 112 |     await expect.soft(fact('Type')).toHaveText('PDF');
+          |                                     ^
+      113 |     await expect.soft(sheet).not.toContainText('The app guessed this level');
+      114 |     await expect(sheet).toContainText('Estimated level — change it if it feels wrong.');
+      115 |     await expect(fact('Level')).toHaveText(/^≈ L\d+\.\d$/);
+        at <worktree>\app\tests\e2e\library.spec.ts:112:37
+
+    Error: expect(locator).not.toContainText(expected) failed
+
+    Locator: locator('#library-detail')
+    Expected substring: not "The app guessed this level"
+    Received string: "two-systemsCloseLevel≈ L5.0HandsHands togetherTypesongWhat it trains—SourceImported by youLicenceuser-importedThe app guessed this level from the music itself — change it if it feels wrong.Your levelRe-levelOpen"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "soft not toContainText" locator('#library-detail') with timeout 5000ms
+      - waiting for locator('#library-detail')
+        14 × locator resolved to <div class="sheet" id="library-detail">…</div>
+           - unexpected value "two-systemsCloseLevel≈ L5.0HandsHands togetherTypesongWhat it trains—SourceImported by youLicenceuser-importedThe app guessed this level from the music itself — change it if it feels wrong.Your levelRe-levelOpen"
+
+
+      111 |     const fact = (term: string) => sheet.locator('dt', { hasText: new RegExp(`^${term}$`) }).locator('xpath=following-sibling::dd[1]');
+      112 |     await expect.soft(fact('Type')).toHaveText('PDF');
+    > 113 |     await expect.soft(sheet).not.toContainText('The app guessed this level');
+          |                                  ^
+      114 |     await expect(sheet).toContainText('Estimated level — change it if it feels wrong.');
+      115 |     await expect(fact('Level')).toHaveText(/^≈ L\d+\.\d$/);
+      116 |   });
+        at <worktree>\app\tests\e2e\library.spec.ts:113:34
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#library-detail')
+    Expected substring: "Estimated level — change it if it feels wrong."
+    Received string:    "two-systemsCloseLevel≈ L5.0HandsHands togetherTypesongWhat it trains—SourceImported by youLicenceuser-importedThe app guessed this level from the music itself — change it if it feels wrong.Your levelRe-levelOpen"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('#library-detail') with timeout 5000ms
+      - waiting for locator('#library-detail')
+        14 × locator resolved to <div class="sheet" id="library-detail">…</div>
+           - unexpected value "two-systemsCloseLevel≈ L5.0HandsHands togetherTypesongWhat it trains—SourceImported by youLicenceuser-importedThe app guessed this level from the music itself — change it if it feels wrong.Your levelRe-levelOpen"
+
+
+      112 |     await expect.soft(fact('Type')).toHaveText('PDF');
+      113 |     await expect.soft(sheet).not.toContainText('The app guessed this level');
+    > 114 |     await expect(sheet).toContainText('Estimated level — change it if it feels wrong.');
+          |                         ^
+      115 |     await expect(fact('Level')).toHaveText(/^≈ L\d+\.\d$/);
+      116 |   });
+      117 |
+        at <worktree>\app\tests\e2e\library.spec.ts:114:25
+
+    Error Context: build\g96a\test-results\library-Library-a-PDF’s-De-86286-essed-level-or-a-song-G96a-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\g96a\test-results\library-Library-a-PDF’s-De-86286-essed-level-or-a-song-G96a-\trace.zip
+    Usage:
+
+        npx playwright show-trace build\g96a\test-results\library-Library-a-PDF’s-De-86286-essed-level-or-a-song-G96a-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\library.spec.ts:101:3 › Library › a PDF’s Details says an estimated level and PDF, never a guessed level or a song (G96a) 
+exit=1

@@ -1,0 +1,4 @@
+L120c base (origin head cd1429b3, nothing changed, the setup build) against L120b final (runs/L120b/after-gate), line endings normalised (the checkout writes CRLF, core.autocrlf):
+- probe-refusals.txt: identical=True (454 lines)
+- probe-uncoped.txt: identical=True (390 lines)
+- untaught-options.txt: identical=True (1724 lines)

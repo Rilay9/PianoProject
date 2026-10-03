@@ -1,0 +1,42 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a72714772c690261e/app
+
+ ❯ tests/unit/excerptItems.test.ts (17 tests | 2 failed) 69ms
+   ❯ the swap sheet (selectors.tieredAlternatives) (2)
+     × offers an unplaced excerpt from no tier that searches the whole catalogue, even one with a teaching-use yes 4ms
+     × leaves an excerpt out where it leaves songs out, even one a rung lists and a yes admits 1ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 29 passed (31)
+   Start at  20:39:42
+   Duration  876ms (transform 73%, import 20%, tests 6%, worker 1%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/excerptItems.test.ts > the swap sheet (selectors.tieredAlternatives) > offers an unplaced excerpt from no tier that searches the whole catalogue, even one with a teaching-use yes
+AssertionError: expected [ 'exercise.study', …(2) ] to not include 'excerpt.minuet.b25-32'
+ ❯ tests/unit/excerptItems.test.ts:128:25
+    126|     const catalog = indexCatalog([PARENT, APPROVED, EXERCISE, OTHER_SO…
+    127|     const offered = tieredAlternatives({ itemId: OTHER_SONG.id, lesson…
+    128|     expect(offered).not.toContain(APPROVED.id);
+       |                         ^
+    129|     // The same catalogue offers the parent through the demand tier: t…
+    130|     expect(offered).toContain(PARENT.id);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/excerptItems.test.ts > the swap sheet (selectors.tieredAlternatives) > leaves an excerpt out where it leaves songs out, even one a rung lists and a yes admits
+AssertionError: expected [ 'exercise.two', …(1) ] to not include 'excerpt.minuet.b25-32'
+ ❯ tests/unit/excerptItems.test.ts:138:25
+    136|     const offered = tieredAlternatives({ itemId: EXERCISE.id, lessonId…
+    137|     expect(offered).toContain('exercise.two');
+    138|     expect(offered).not.toContain(APPROVED.id);
+       |                         ^
+    139|   });
+    140| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+exit 1

@@ -1,0 +1,14 @@
+...F...................
+======================================================================
+FAIL: test_8_catalogue_metadata_leaves_the_key_and_the_cut_alone (tools.content.tests.test_excerpts.TheAdversariesOfIdentity.test_8_catalogue_metadata_leaves_the_key_and_the_cut_alone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_excerpts.py", line 237, in test_8_catalogue_metadata_leaves_the_key_and_the_cut_alone
+    self.assertEqual(parent.cut(2, 4, eid=eid, name="second.mxl").path.read_bytes(), first)
+AssertionError: b'PK\[81 chars]00\x0f\x00\x00\x00second.musicxml\xedX\xddo\xd[3358 chars]\x00' != b'PK\[81 chars]00\x0e\x00\x00\x00first.musicxml\xedX\xddo\xda[3350 chars]\x00'
+
+----------------------------------------------------------------------
+Ran 23 tests in 5.925s
+
+FAILED (failures=1)
+exit 1

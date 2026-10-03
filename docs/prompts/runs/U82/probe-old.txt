@@ -1,0 +1,14 @@
+U82_TREE=old U82_OUT=docs/prompts/runs/U82 U82_PICTURES=docs/prompts/pictures/u82 npx playwright test --config playwright.u82-4333.config.ts --workers=2 tests/e2e/zz-u82-probe.spec.ts   # the tree before U74, 85bd683, in build/u82-old/app
+
+Running 3 tests using 2 workers
+
+U82 old 880x412: spec read window {"fromMeasure":0,"toMeasure":1} bars 2 measured null; settled(true) window {"fromMeasure":0,"toMeasure":0} bars 1 why across staff 138.3
+U82 old 740x342: spec read window {"fromMeasure":0,"toMeasure":1} bars 2 measured null; settled(true) window {"fromMeasure":0,"toMeasure":0} bars 1 why across staff 138.3
+  ok 1 tests\e2e\zz-u82-probe.spec.ts:174:3 › dev tempo-change, two bars asked, sideways 880x412 (3.0s)
+  ok 2 tests\e2e\zz-u82-probe.spec.ts:174:3 › dev tempo-change, two bars asked, sideways 740x342 (3.0s)
+U82 old today #/score/song.classical.petzold-minuet-g-bwv-anh114?rung=3.4&slot=new 2 asked: bars 2/2 why null staff 45.7 words "Bars in windowHow much music is on the screen at once. Fewer bars means bigger notes. If the number you ask for would make the notes too small to read, the app shows fewer and says so.−2 bars+"
+U82 old today #/score/song.classical.petzold-minuet-g-bwv-anh114?rung=3.4&slot=new 8 asked: bars 4/8 why across staff 45.7 words "Bars — 8 asked, 4 shown: fits acrossHow much music is on the screen at once. Fewer bars means bigger notes. If the number you ask for would make the notes too small to read, the app shows fewer and says so.−8 bars+"
+  ok 3 tests\e2e\zz-u82-probe.spec.ts:204:1 › one real piece from Today, sideways 740x342 (15.9s)
+
+  3 passed (22.1s)
+exit=0

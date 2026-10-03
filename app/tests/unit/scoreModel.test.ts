@@ -3,12 +3,12 @@ import { describe, expect, it } from 'vitest';
 import {
   allFixtures,
   edgeFixtures,
+  fixtureModel,
   generatedFixtures,
   loadFixture,
   type Fixture,
 } from './helpers/fixtures';
 import { expectMatchesGolden, UPDATING } from './helpers/golden';
-import { extractScoreModel } from '../../src/score/extractScoreModel';
 import { toScoreModelData, type ScoreModel } from '../../src/score/types';
 
 /** Cache: parsing 41 fixtures once is much cheaper than once per assertion. */
@@ -17,8 +17,7 @@ const models = new Map<string, ScoreModel>();
 async function modelFor(fixture: Fixture): Promise<ScoreModel> {
   const cached = models.get(fixture.name);
   if (cached) return cached;
-  const osmd = await loadFixture(fixture.path);
-  const model = extractScoreModel(osmd, { id: fixture.name });
+  const model = await fixtureModel(fixture.path, { id: fixture.name });
   models.set(fixture.name, model);
   return model;
 }

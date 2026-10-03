@@ -22,6 +22,9 @@
                 "major-scale-formula",
                 "key-signature"
               ],
+              "introduces": [
+                "accidentals"
+              ],
               "textFile": "lessons/3.1.md",
               "exerciseOptions": [
                 "exercise.scale.g-major.1oct.similar.right.2",
@@ -192,14 +195,14 @@
                 "relative-minor",
                 "harmonic-minor",
                 "minor-triads",
-                "E7"
+                "E7",
+                "accidentals"
               ],
               "textFile": "lessons/3.3.md",
               "exerciseOptions": [
                 "exercise.scale.a-harmonic-minor.1oct.similar.both.2",
                 "drill.chord.minor-changes",
                 "drill.ear.major-minor",
-                "exercise.arpeggio.a-minor.2oct.both",
                 "exercise.ostinato.a.arpeggio",
                 "exercise.power-chord.a",
                 "exercise.modal-vamp.a"
@@ -297,7 +300,7 @@
               "songOptions": [
                 "song.classical.petzold-minuet-g-bwv-anh114",
                 "song.classical.petzold-minuet-g-bwv-anh114.alt",
-                "song.classical.beethoven-fur-elise.beginner"
+                "song.classical.beethoven-fur-elise.easy"
               ],
               "mastery": {
                 "minAccuracy": 0.85,
@@ -378,7 +381,7 @@
                 "exercise.pedal.f"
               ],
               "songOptions": [
-                "song.classical.pachelbel-canon-d.easy",
+                "song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx",
                 "song.folk.greensleeves.waltz",
                 "song.classical.ode-to-joy.full"
               ],
@@ -470,8 +473,7 @@
                 "exercise.tresillo.c"
               ],
               "songOptions": [
-                "song.folk.greensleeves.waltz",
-                "song.classical.pachelbel-canon-d.easy"
+                "song.folk.greensleeves.waltz"
               ],
               "mastery": {
                 "minAccuracy": 0.9,
@@ -964,7 +966,6 @@
                 "song.classical.jesus-loves-me.pdmx",
                 "song.pop.martin-j-nystrom-as-the-deer-piano.pdmx",
                 "song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx",
-                "song.folk.10000-reasons-matt-redman.pdmx",
                 "song.classical.simple-gifts-2-part-round.pdmx"
               ],
               "mastery": {
@@ -1138,12 +1139,6 @@
                 }
               ],
               "estimatedDays": 12,
-              "tools": [
-                {
-                  "kind": "duet",
-                  "item": "exercise.clave.son-3-2.pulse"
-                }
-              ],
               "levelBand": [
                 1.9,
                 3.6

@@ -1,0 +1,19 @@
+== map-tests  06:21:06
+map-tests exit=0
+== map-min  06:21:07
+map-min exit=0
+== tsc  06:21:07
+tsc exit=0
+== lint  06:21:16
+lint exit=0
+== vitest-all  06:21:43
+vitest-all exit=1
+== build-app  06:24:52
+build-app exit=0
+pw-lock taken 06:25:08
+SPECS: tests/e2e/score.window-rule.spec.ts
+== specs-exist  06:25:09
+specs-exist exit=0
+== e2e-targeted  06:25:09
+e2e-targeted exit=0
+CHAIN DONE 06:28:27

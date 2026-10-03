@@ -1,0 +1,110 @@
+* sideways 640 × 360, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    the bar’s left end draws over a control
+    a point inside a control hits something else
+      + score-status-side over score-play
+      + score-play at (0.25, 0.5) hits score-status-side
+* sideways 640 × 360 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    the bar’s left end draws over a control
+    a point inside a control hits something else
+    locator.click: Timeout 3000ms exceeded.
+    TimeoutError: locator.click: Timeout 3000ms exceeded.
+    intercepted by: #score-status-side
+      + score-status-side over score-play
+      + score-status-side over score-hear
+      + score-play at (0.5, 0.5) hits score-status-side
+      + score-play at (0.25, 0.5) hits score-status-side
+      + score-play at (0.75, 0.5) hits score-status-side
+      + score-hear at (0.5, 0.5) hits score-status-side
+      + score-hear at (0.25, 0.5) hits score-status-side
+* sideways 640 × 360 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    the bar’s left end draws over a control
+    a point inside a control hits something else
+    locator.click: Timeout 3000ms exceeded.
+    TimeoutError: locator.click: Timeout 3000ms exceeded.
+    intercepted by: #score-status-side
+      + score-status-side over score-play
+      + score-status-side over score-hear
+      + score-play at (0.5, 0.5) hits score-status-side
+      + score-play at (0.25, 0.5) hits score-status-side
+      + score-play at (0.75, 0.5) hits score-status-side
+      + score-hear at (0.25, 0.5) hits score-status-side
+* sideways 640 × 360 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    the bar’s left end draws over a control
+    a point inside a control hits something else
+    locator.click: Timeout 3000ms exceeded.
+    TimeoutError: locator.click: Timeout 3000ms exceeded.
+    intercepted by: #score-status-side
+      + score-status-side over score-play
+      + score-status-side over score-hear
+      + score-status-side over score-mode
+      + score-play at (0.5, 0.5) hits score-status-side
+      + score-play at (0.25, 0.5) hits score-status-side
+      + score-play at (0.75, 0.5) hits score-status-side
+      + score-hear at (0.5, 0.5) hits score-status-side
+      + score-hear at (0.25, 0.5) hits score-status-side
+      + score-hear at (0.75, 0.5) hits score-status-side
+      + score-mode at (0.25, 0.5) hits score-status-side
+* sideways 667 × 375 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    the bar’s left end draws over a control
+    a point inside a control hits something else
+    locator.click: Timeout 3000ms exceeded.
+    TimeoutError: locator.click: Timeout 3000ms exceeded.
+    intercepted by: #score-status-side
+      + score-status-side over score-play
+      + score-status-side over score-hear
+      + score-play at (0.5, 0.5) hits score-status-side
+      + score-play at (0.25, 0.5) hits score-status-side
+      + score-play at (0.75, 0.5) hits score-status-side
+      + score-hear at (0.25, 0.5) hits score-status-side
+* sideways 667 × 375 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    the bar’s left end draws over a control
+    a point inside a control hits something else
+    locator.click: Timeout 3000ms exceeded.
+    TimeoutError: locator.click: Timeout 3000ms exceeded.
+    intercepted by: #score-status-side
+      + score-status-side over score-play
+      + score-play at (0.5, 0.5) hits score-status-side
+      + score-play at (0.25, 0.5) hits score-status-side
+      + score-play at (0.75, 0.5) hits score-status-side
+* sideways 667 × 375 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    the bar’s left end draws over a control
+    a point inside a control hits something else
+    locator.click: Timeout 3000ms exceeded.
+    TimeoutError: locator.click: Timeout 3000ms exceeded.
+    intercepted by: #score-status-side
+      + score-status-side over score-play
+      + score-status-side over score-hear
+      + score-status-side over score-mode
+      + score-play at (0.5, 0.5) hits score-status-side
+      + score-play at (0.25, 0.5) hits score-status-side
+      + score-play at (0.75, 0.5) hits score-status-side
+      + score-hear at (0.5, 0.5) hits score-status-side
+      + score-hear at (0.25, 0.5) hits score-status-side
+      + score-hear at (0.75, 0.5) hits score-status-side
+* sideways 740 × 342 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    the bar’s left end draws over a control
+    a point inside a control hits something else
+      + score-status-side over score-play
+      + score-play at (0.25, 0.5) hits score-status-side
+* sideways 740 × 342 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    the bar’s left end draws over a control
+    a point inside a control hits something else
+    locator.click: Timeout 3000ms exceeded.
+    TimeoutError: locator.click: Timeout 3000ms exceeded.
+    intercepted by: #score-status-side
+      + score-status-side over score-play
+      + score-status-side over score-hear
+      + score-play at (0.5, 0.5) hits score-status-side
+      + score-play at (0.25, 0.5) hits score-status-side
+      + score-play at (0.75, 0.5) hits score-status-side
+      + score-hear at (0.25, 0.5) hits score-status-side
+* sideways 780 × 360 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    the bar’s left end draws over a control
+    a point inside a control hits something else
+    locator.click: Timeout 3000ms exceeded.
+    TimeoutError: locator.click: Timeout 3000ms exceeded.
+    intercepted by: #score-status-side
+      + score-status-side over score-play
+      + score-play at (0.5, 0.5) hits score-status-side
+      + score-play at (0.25, 0.5) hits score-status-side
+      + score-play at (0.75, 0.5) hits score-status-side

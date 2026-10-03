@@ -1,0 +1,71 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ab0ca07b13a3644b6/app
+
+ ❯ tests/unit/materialLayer.test.ts (36 tests | 2 failed) 1861ms
+   ❯ material requirements as data; a Want is the simplest of them (item 2) (2)
+     × keeps every verdict the one gate gives, except the one case the reviewer’s rule moves, and moves every instance of that case 1800ms
+   ❯ the thirteen adversaries at the material layer (Part 25, Q8; the reviewer’s thirteenth) (12)
+     × 13. the reviewer’s: the same PDF or external candidate is refused under an automatic constrained requirement, the unknown forbidden demands named, and open under an explicitly chosen exploration or project, the missing fact named — the two contracts told apart by the requirements object 2ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 34 passed (36)
+   Start at  23:11:39
+   Duration  3.26s (tests 59%, environment 22%, transform 12%, import 7%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/materialLayer.test.ts > material requirements as data; a Want is the simplest of them (item 2) > keeps every verdict the one gate gives, except the one case the reviewer’s rule moves, and moves every instance of that case
+AssertionError: 36 verdicts moved that the rule does not move: expected [ …(10) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "song.classical.chopin-etude-op25-7.nifc {\"for\":\"exploration\"} steps and skips: {\"verdict\":\"eligible\",\"for\":\"exploration\",\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"} → {\"verdict\":\"ineligible\",\"why\":\"unknown-forbidden\",\"demands\":[\"clef.bass\",\"pitch.ledger\",\"interval.leap\",\"rhythm.eighths\",\"rhythm.shorter-than-quarter\",\"rhythm.sixteenths\",\"rhythm.dotted-quarter\",\"rhythm.ties\",\"rhythm.syncopation\",\"rhythm.triplets\",\"metre.compound\",\"key.signature\",\"pitch.chromatic\",\"range.beyond-position\",\"texture.hands-together\",\"texture.left-hand-pattern\",\"texture.walking-bass\"],\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"}",
++   "song.classical.chopin-etude-op25-7.nifc {\"for\":\"exploration\"} ladder: {\"verdict\":\"eligible\",\"for\":\"exploration\",\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"} → {\"verdict\":\"ineligible\",\"why\":\"unknown-forbidden\",\"demands\":[\"pitch.ledger\",\"rhythm.eighths\",\"rhythm.shorter-than-quarter\",\"rhythm.sixteenths\",\"rhythm.dotted-quarter\",\"rhythm.ties\",\"rhythm.syncopation\",\"rhythm.triplets\",\"metre.compound\",\"key.signature\",\"pitch.chromatic\",\"range.beyond-position\",\"texture.hands-together\",\"texture.left-hand-pattern\",\"texture.walking-bass\"],\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"}",
++   "song.classical.chopin-etude-op25-7.nifc {\"for\":\"exploration\"} ladder at introduced: {\"verdict\":\"eligible\",\"for\":\"exploration\",\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"} → {\"verdict\":\"ineligible\",\"why\":\"unknown-forbidden\",\"demands\":[\"pitch.ledger\",\"rhythm.dotted-quarter\",\"rhythm.ties\",\"rhythm.syncopation\",\"rhythm.triplets\",\"metre.compound\",\"key.signature\",\"pitch.chromatic\",\"range.beyond-position\",\"texture.hands-together\",\"texture.left-hand-pattern\",\"texture.walking-bass\"],\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"}",
++   "song.rock.a7x-dear-god {\"for\":\"exploration\"} steps and skips: {\"verdict\":\"eligible\",\"for\":\"exploration\",\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"} → {\"verdict\":\"ineligible\",\"why\":\"unknown-forbidden\",\"demands\":[\"clef.bass\",\"pitch.ledger\",\"interval.leap\",\"rhythm.eighths\",\"rhythm.shorter-than-quarter\",\"rhythm.sixteenths\",\"rhythm.dotted-quarter\",\"rhythm.ties\",\"rhythm.syncopation\",\"rhythm.triplets\",\"metre.compound\",\"key.signature\",\"pitch.chromatic\",\"range.beyond-position\",\"texture.hands-together\",\"texture.left-hand-pattern\",\"texture.walking-bass\"],\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"}",
++   "song.rock.a7x-dear-god {\"for\":\"exploration\"} ladder: {\"verdict\":\"eligible\",\"for\":\"exploration\",\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"} → {\"verdict\":\"ineligible\",\"why\":\"unknown-forbidden\",\"demands\":[\"pitch.ledger\",\"rhythm.eighths\",\"rhythm.shorter-than-quarter\",\"rhythm.sixteenths\",\"rhythm.dotted-quarter\",\"rhythm.ties\",\"rhythm.syncopation\",\"rhythm.triplets\",\"metre.compound\",\"key.signature\",\"pitch.chromatic\",\"range.beyond-position\",\"texture.hands-together\",\"texture.left-hand-pattern\",\"texture.walking-bass\"],\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"}",
++   "song.rock.a7x-dear-god {\"for\":\"exploration\"} ladder at introduced: {\"verdict\":\"eligible\",\"for\":\"exploration\",\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"} → {\"verdict\":\"ineligible\",\"why\":\"unknown-forbidden\",\"demands\":[\"pitch.ledger\",\"rhythm.dotted-quarter\",\"rhythm.ties\",\"rhythm.syncopation\",\"rhythm.triplets\",\"metre.compound\",\"key.signature\",\"pitch.chromatic\",\"range.beyond-position\",\"texture.hands-together\",\"texture.left-hand-pattern\",\"texture.walking-bass\"],\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"}",
++   "song.rock.a7x-fiction {\"for\":\"exploration\"} steps and skips: {\"verdict\":\"eligible\",\"for\":\"exploration\",\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"} → {\"verdict\":\"ineligible\",\"why\":\"unknown-forbidden\",\"demands\":[\"clef.bass\",\"pitch.ledger\",\"interval.leap\",\"rhythm.eighths\",\"rhythm.shorter-than-quarter\",\"rhythm.sixteenths\",\"rhythm.dotted-quarter\",\"rhythm.ties\",\"rhythm.syncopation\",\"rhythm.triplets\",\"metre.compound\",\"key.signature\",\"pitch.chromatic\",\"range.beyond-position\",\"texture.hands-together\",\"texture.left-hand-pattern\",\"texture.walking-bass\"],\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"}",
++   "song.rock.a7x-fiction {\"for\":\"exploration\"} ladder: {\"verdict\":\"eligible\",\"for\":\"exploration\",\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"} → {\"verdict\":\"ineligible\",\"why\":\"unknown-forbidden\",\"demands\":[\"pitch.ledger\",\"rhythm.eighths\",\"rhythm.shorter-than-quarter\",\"rhythm.sixteenths\",\"rhythm.dotted-quarter\",\"rhythm.ties\",\"rhythm.syncopation\",\"rhythm.triplets\",\"metre.compound\",\"key.signature\",\"pitch.chromatic\",\"range.beyond-position\",\"texture.hands-together\",\"texture.left-hand-pattern\",\"texture.walking-bass\"],\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"}",
++   "song.rock.a7x-fiction {\"for\":\"exploration\"} ladder at introduced: {\"verdict\":\"eligible\",\"for\":\"exploration\",\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"} → {\"verdict\":\"ineligible\",\"why\":\"unknown-forbidden\",\"demands\":[\"pitch.ledger\",\"rhythm.dotted-quarter\",\"rhythm.ties\",\"rhythm.syncopation\",\"rhythm.triplets\",\"metre.compound\",\"key.signature\",\"pitch.chromatic\",\"range.beyond-position\",\"texture.hands-together\",\"texture.left-hand-pattern\",\"texture.walking-bass\"],\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"}",
++   "song.rock.a7x-seize-the-day {\"for\":\"exploration\"} steps and skips: {\"verdict\":\"eligible\",\"for\":\"exploration\",\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"} → {\"verdict\":\"ineligible\",\"why\":\"unknown-forbidden\",\"demands\":[\"clef.bass\",\"pitch.ledger\",\"interval.leap\",\"rhythm.eighths\",\"rhythm.shorter-than-quarter\",\"rhythm.sixteenths\",\"rhythm.dotted-quarter\",\"rhythm.ties\",\"rhythm.syncopation\",\"rhythm.triplets\",\"metre.compound\",\"key.signature\",\"pitch.chromatic\",\"range.beyond-position\",\"texture.hands-together\",\"texture.left-hand-pattern\",\"texture.walking-bass\"],\"missing\":\"no notation is bundled: it arrives when the learner imports the piece\"}",
++ ]
+
+ ❯ tests/unit/materialLayer.test.ts:241:112
+    239|       }
+    240|     }
+    241|     expect(unexpected.slice(0, 10), `${String(unexpected.length)} verd…
+       |                                                                                                                ^
+    242|     expect(notMoved.slice(0, 10), `${String(notMoved.length)} instance…
+    243|     expect(moved, 'the rule’s case occurs on the build and among the c…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/materialLayer.test.ts > the thirteen adversaries at the material layer (Part 25, Q8; the reviewer’s thirteenth) > 13. the reviewer’s: the same PDF or external candidate is refused under an automatic constrained requirement, the unknown forbidden demands named, and open under an explicitly chosen exploration or project, the missing fact named — the two contracts told apart by the requirements object
+AssertionError: import.pages: expected { verdict: 'ineligible', …(3) } to match object { verdict: 'exploration-only' }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "verdict": "exploration-only",
++   "verdict": "ineligible",
+  }
+
+ ❯ tests/unit/materialLayer.test.ts:617:37
+    615|       expect(automatic, candidate.id).toMatchObject({ verdict: 'inelig…
+    616|       expect(automatic.verdict === 'ineligible' && automatic.why === '…
+    617|       expect(project, candidate.id).toMatchObject({ verdict: 'explorat…
+       |                                     ^
+    618|       expect(project.verdict === 'exploration-only' ? project.missing …
+    619|       expect(exploring, candidate.id).toMatchObject({ verdict: 'eligib…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+exit 1

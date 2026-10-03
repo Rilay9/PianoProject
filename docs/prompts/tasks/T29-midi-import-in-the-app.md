@@ -58,3 +58,7 @@ browser.
 
 What was ported and what differs; the parity result per fixture; the merge rule; the
 sheet's new path; bundle delta; tests and red lines; counts; what is unverified.
+
+## Record
+
+lane: T29 · closes: — · entry: — · role: history

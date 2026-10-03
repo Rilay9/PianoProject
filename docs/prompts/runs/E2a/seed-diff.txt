@@ -1,0 +1,7 @@
+﻿lessons with a finder: 105; lessons whose prompt changed: 0
+concept entries with a finder: 273; concept entries whose prompt changed: 25
+only chatPrompt changed in each: True; every other lesson field unchanged: True
+top-level keys and stages otherwise equal: True
+changed lessons: 
+changed concepts: 6/8, alberti-bass, baroque-dance, broken-chord-accompaniment, broken-chords, chromatic, chromatic-harmony, counterpoint, finger-independence, hand-independence, hands-together, hanon, key-signatures, left-hand, motif, oom-pah-bass, ornamentation, pedalling, rubato, sonatina-form, staccato, syncopation, two-voice-texture, velocity, voice-leading
+the longest built lesson prompt is within the limit: True

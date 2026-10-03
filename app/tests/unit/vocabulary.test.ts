@@ -92,9 +92,11 @@ describe('every demand', () => {
       const skill = skills.find((s) => s.id === demand.copedWithBy);
       expect(skill?.opportunity === 'every-step' || skill?.opportunity.includes(demand.id)).toBe(true);
     });
-    it(`${demand.id}: is taught at a rung the curriculum has, or says why none`, () => {
-      if (demand.taughtAt === null) expect(demand.taughtAtNote?.length ?? 0).toBeGreaterThan(0);
-      else expect(rungs, `${demand.id} → ${demand.taughtAt}`).toContain(demand.taughtAt);
+    // Revised (E0b): `taughtAt` is every rung that teaches the demand, one per path; old assumption one rung or null.
+    it(`${demand.id}: is taught at rungs the curriculum has, or says why none`, () => {
+      expect(Array.isArray(demand.taughtAt), `${demand.id}: taughtAt is a list`).toBe(true);
+      if (demand.taughtAt.length === 0) expect(demand.taughtAtNote?.length ?? 0).toBeGreaterThan(0);
+      for (const rung of demand.taughtAt) expect(rungs, `${demand.id} → ${rung}`).toContain(rung);
     });
   }
   it('every detector the app runs belongs to exactly one demand', () => {
@@ -133,7 +135,9 @@ describe('the rungs name skills in their own requirements (C5)', () => {
     }
     expect(rungs.size).toBe(lessons.length);
   });
+  // Revised (CL11b, L57): the file gained the support share and the default
+  // precision beside the conditions; it still keeps no bridge and no waiver.
   it('the skills file keeps no interim bridge and no waiver', () => {
-    expect(Object.keys(skillsFile).sort()).toEqual(['_comment', 'conditions', 'skills']);
+    expect(Object.keys(skillsFile).sort()).toEqual(['_comment', 'conditions', 'precision', 'skills', 'support']);
   });
 });

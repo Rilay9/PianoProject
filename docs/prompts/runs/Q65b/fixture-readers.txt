@@ -1,0 +1,26 @@
+$ (cwd .) python docs/prompts/runs/Q65b/scripts-fixture-readers.py .
+spec | read by the wider forms | the guard sees it | the row names it
+chart.spec.ts | yes | no | NO
+converted-import.spec.ts | yes | yes | yes
+doors.spec.ts | yes | no | NO
+engine.spec.ts | yes | yes | yes
+finder.spec.ts | yes | no | NO
+import-experience.spec.ts | yes | yes | NO
+library.spec.ts | yes | no | NO
+mic.spec.ts | yes | yes | yes
+midi-import.spec.ts | yes | yes | yes
+pdf-paper.spec.ts | yes | yes | yes
+pdf.spec.ts | yes | no | NO
+perf.spec.ts | yes | yes | yes
+score.density.spec.ts | yes | yes | yes
+score.renderer.fuzz.spec.ts | yes | yes | yes
+score.slide.spec.ts | yes | yes | yes
+score.slots.spec.ts | yes | yes | yes
+score.spec.ts | yes | yes | yes
+shelf.spec.ts | yes | no | NO
+sweeps.spec.ts | yes | yes | yes
+wide.spec.ts | yes | no | NO
+
+unnamed and seen by the guard (red today): import-experience.spec.ts
+unnamed and not seen by the guard (silent): chart.spec.ts doors.spec.ts finder.spec.ts library.spec.ts pdf.spec.ts shelf.spec.ts wide.spec.ts
+exit=0

@@ -1,0 +1,39 @@
+npx playwright test --config playwright.u82-4333.config.ts --workers=2 tests/e2e/score.slide.spec.ts   # committed tree 93210a89
+
+Running 3 tests using 2 workers
+
+  ok 1 tests\e2e\score.slide.spec.ts:31:3 › sideways › holds the cursor a third across once the piece is under way (1.0s)
+  ok 3 tests\e2e\score.slide.spec.ts:74:3 › upright › does not slide: the two slots do the reading ahead (618ms)
+  x  2 tests\e2e\score.slide.spec.ts:54:3 › sideways › draws more bars than the window, so there is something to read into (2.4s)
+
+
+  1) tests\e2e\score.slide.spec.ts:54:3 › sideways › draws more bars than the window, so there is something to read into 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+      65 |     const window_ = await dev.currentWindow();
+      66 |     const inWindow = (window_?.toMeasure ?? 0) - (window_?.fromMeasure ?? 0) + 1;
+    > 67 |     expect(inWindow).toBe(2);
+         |                      ^
+      68 |     // Two bars of window plus the bars to read into.
+      69 |     expect(measures).toBeGreaterThan(inWindow);
+      70 |   });
+        at <worktree>\app\tests\e2e\score.slide.spec.ts:67:22
+
+    Error Context: test-results-u82\score.slide-sideways-draws-5c55d-e-is-something-to-read-into\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-u82\score.slide-sideways-draws-5c55d-e-is-something-to-read-into\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-u82\score.slide-sideways-draws-5c55d-e-is-something-to-read-into\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\score.slide.spec.ts:54:3 › sideways › draws more bars than the window, so there is something to read into 
+  2 passed (5.4s)
+exit=1

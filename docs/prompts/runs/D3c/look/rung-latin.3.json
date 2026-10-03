@@ -1,0 +1,67 @@
+{
+  "rung": "latin.3",
+  "title": "The clave, and a tune to hear it under",
+  "where": "Latin · Stage 3 · Latin: the clave, and a tune to hear it under",
+  "start": {
+    "drawn": true,
+    "said": "Opens “Cielito Lindo”."
+  },
+  "toolsBlockHidden": true,
+  "tools": [],
+  "actions": [
+    "I already know this",
+    "Quick check",
+    "Mark done"
+  ],
+  "exercises": [
+    {
+      "item": "exercise.clave.son-2-3",
+      "title": "Clave — son 2-3",
+      "open": true
+    },
+    {
+      "item": "exercise.clave.rumba-3-2",
+      "title": "Clave — rumba 3-2",
+      "open": true
+    },
+    {
+      "item": "exercise.clave.bossa",
+      "title": "Clave — bossa",
+      "open": true
+    },
+    {
+      "item": "exercise.clave.son-3-2.pulse",
+      "title": "Clave — son 3-2 over a quarter-note pulse",
+      "open": true
+    },
+    {
+      "item": "exercise.tresillo.c",
+      "title": "Tresillo bass in C — three, three, two",
+      "open": true
+    }
+  ],
+  "songs": [
+    {
+      "item": "song.folk.exercise-cielito-lindo.pdmx",
+      "title": "Cielito Lindo",
+      "open": true
+    },
+    {
+      "item": "song.pop.guantanamera.pdmx",
+      "title": "Guantanamera",
+      "open": true
+    },
+    {
+      "item": "song.folk.so-danco-samba.pdmx",
+      "title": "Só Danço Samba",
+      "open": true
+    }
+  ],
+  "lands": {
+    "Start": "→ #/score/song.folk.exercise-cielito-lindo.pdmx?from=latin.3",
+    "Climb the ladder": null,
+    "Quick check": "status: This lesson has no drill to check against yet.",
+    "Play it as a duet": null,
+    "Play it blind": null
+  }
+}

@@ -1,0 +1,121 @@
+FFFFF....EF
+======================================================================
+ERROR: test_the_selection_is_valid_for_the_parents_staves (tools.content.tests.test_validate_excerpts.TheExcerptCheck.test_the_selection_is_valid_for_the_parents_staves)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_validate_excerpts.py", line 78, in test_the_selection_is_valid_for_the_parents_staves
+    errors, _ = self.check([self.row(selection="middle")])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_validate_excerpts.py", line 44, in check
+    eid = X.excerpt_id(row["of"], row["fromBar"], row["toBar"], row.get("selection") or "both")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\excerpts.py", line 96, in excerpt_id
+    raise ValueError(f"selection {selection!r} is not one of {', '.join(SELECTIONS)}")
+ValueError: selection 'middle' is not one of both, right, left
+
+======================================================================
+FAIL: test_a_clean_row_passes (tools.content.tests.test_validate_excerpts.TheExcerptCheck.test_a_clean_row_passes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_validate_excerpts.py", line 56, in test_a_clean_row_passes
+    self.assertEqual(self.check([self.row()]), ([], []))
+AssertionError: Tuples differ: (["excerpts.json row 1 (excerpt.test.pickup[79 chars], []) != ([], [])
+
+First differing element 0:
+["excerpts.json row 1 (excerpt.test.pickup[74 chars]and"]
+[]
+
++ ([], [])
+- (['excerpts.json row 1 (excerpt.test.pickup-and-repeat.b4-5): target '
+-   "'interval.leap' is not a vocabulary skill or demand"],
+-  [])
+
+======================================================================
+FAIL: test_a_parent_this_build_does_not_bundle_is_a_warning_not_an_error (tools.content.tests.test_validate_excerpts.TheExcerptCheck.test_a_parent_this_build_does_not_bundle_is_a_warning_not_an_error)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_validate_excerpts.py", line 70, in test_a_parent_this_build_does_not_bundle_is_a_warning_not_an_error
+    self.assertEqual(errors, [])
+AssertionError: Lists differ: ["excerpts.json row 1 (excerpt.test.pickup[74 chars]and"] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+"excerpts.json row 1 (excerpt.test.pickup-and-repeat.b4-5): target 'interval.leap' is not a vocabulary skill or demand"
+
++ []
+- ['excerpts.json row 1 (excerpt.test.pickup-and-repeat.b4-5): target '
+-  "'interval.leap' is not a vocabulary skill or demand"]
+
+======================================================================
+FAIL: test_a_range_across_a_repeat_sign_is_refused_with_the_bars_named (tools.content.tests.test_validate_excerpts.TheExcerptCheck.test_a_range_across_a_repeat_sign_is_refused_with_the_bars_named)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_validate_excerpts.py", line 101, in test_a_range_across_a_repeat_sign_is_refused_with_the_bars_named
+    self.assertEqual(self.check([self.row(fromBar=2, toBar=3)])[0], [])
+AssertionError: Lists differ: ["excerpts.json row 1 (excerpt.test.pickup[74 chars]and"] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+"excerpts.json row 1 (excerpt.test.pickup-and-repeat.b2-3): target 'interval.leap' is not a vocabulary skill or demand"
+
++ []
+- ['excerpts.json row 1 (excerpt.test.pickup-and-repeat.b2-3): target '
+-  "'interval.leap' is not a vocabulary skill or demand"]
+
+======================================================================
+FAIL: test_a_row_approved_on_other_parent_bytes_is_warned_stale (tools.content.tests.test_validate_excerpts.TheExcerptCheck.test_a_row_approved_on_other_parent_bytes_is_warned_stale)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_validate_excerpts.py", line 105, in test_a_row_approved_on_other_parent_bytes_is_warned_stale
+    self.assertEqual(errors, [])
+AssertionError: Lists differ: ["excerpts.json row 1 (excerpt.test.pickup[74 chars]and"] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+"excerpts.json row 1 (excerpt.test.pickup-and-repeat.b4-5): target 'interval.leap' is not a vocabulary skill or demand"
+
++ []
+- ['excerpts.json row 1 (excerpt.test.pickup-and-repeat.b4-5): target '
+-  "'interval.leap' is not a vocabulary skill or demand"]
+
+======================================================================
+FAIL: test_no_two_rows_share_parent_range_and_selection (tools.content.tests.test_validate_excerpts.TheExcerptCheck.test_no_two_rows_share_parent_range_and_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_validate_excerpts.py", line 95, in test_no_two_rows_share_parent_range_and_selection
+    self.assertEqual(self.check([self.row(), self.row(event="ex-test-2", selection="left")])[0], [])
+AssertionError: Lists differ: ["excerpts.json row 1 (excerpt.test.pickup[198 chars]and"] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+"excerpts.json row 1 (excerpt.test.pickup-and-repeat.b4-5): target 'interval.leap' is not a vocabulary skill or demand"
+
++ []
+- ['excerpts.json row 1 (excerpt.test.pickup-and-repeat.b4-5): target '
+-  "'interval.leap' is not a vocabulary skill or demand",
+-  'excerpts.json row 2 (excerpt.test.pickup-and-repeat.b4-5.lh): target '
+-  "'interval.leap' is not a vocabulary skill or demand"]
+
+======================================================================
+FAIL: test_the_targets_exist (tools.content.tests.test_validate_excerpts.TheExcerptCheck.test_the_targets_exist)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_validate_excerpts.py", line 89, in test_the_targets_exist
+    self.assertEqual(self.check([self.row(targets=["syncopation", "rhythm.eighths"])])[0], [])
+AssertionError: Lists differ: ["excerpts.json row 1 (excerpt.test.pickup[194 chars]and"] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+"excerpts.json row 1 (excerpt.test.pickup-and-repeat.b4-5): target 'syncopation' is not a vocabulary skill or demand"
+
++ []
+- ['excerpts.json row 1 (excerpt.test.pickup-and-repeat.b4-5): target '
+-  "'syncopation' is not a vocabulary skill or demand",
+-  'excerpts.json row 1 (excerpt.test.pickup-and-repeat.b4-5): target '
+-  "'rhythm.eighths' is not a vocabulary skill or demand"]
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.738s
+
+FAILED (failures=6, errors=1)
+exit 1

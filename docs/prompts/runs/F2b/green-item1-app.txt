@@ -1,0 +1,11 @@
+(in app) npx vitest run tests/unit/taughtByAncestry.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a0b4282eb6ab6fcc3/app
+
+
+ Test Files  1 passed (1)
+      Tests  31 passed (31)
+   Start at  03:42:02
+   Duration  654ms (transform 66%, import 24%, tests 10%, worker 1%)
+
+exit=0

@@ -63,7 +63,14 @@ function isTodaySlot(value: string | null | undefined): value is TodaySlot {
   return value !== null && value !== undefined && (TODAY_SLOTS as readonly string[]).includes(value);
 }
 
-export const DEV_IDS = ['score'] as const;
+/**
+ * `score` is the renderer harness (P2). `microscope` is the review workbench (D2): a queue
+ * of content items, each rendered and played by the app's own renderer and audio beside its
+ * contract and measured facts, with per-dimension decisions kept on the device and exported
+ * for `tools/content/review.py --merge`. It alone takes an item, `#/dev/microscope/<id>`,
+ * so a link in an entry opens that item.
+ */
+export const DEV_IDS = ['score', 'microscope'] as const;
 export type DevId = (typeof DEV_IDS)[number];
 
 /**
@@ -99,12 +106,23 @@ function looksLikeLessonId(id: string): boolean {
   return LESSON_ID_PATTERN.test(id) && !id.includes('..');
 }
 
+/** A vocabulary skill id (`sight-reading`, `position-shift`, `6/8`): letters, digits, `-` and `/`. */
+const SKILL_ID_PATTERN = /^[0-9a-z][0-9a-z/-]{0,39}$/;
+
+/** A transfer offer's instance token (D4a, `data/offerSnapshot.newOfferToken`): lower-case letters and digits. */
+const OFFER_TOKEN_PATTERN = /^[0-9a-z]{6,32}$/;
+
+/** A session activity's token (X1, `ui/sessionRunner.newActivityToken`): the offer token's form. */
+const SESSION_TOKEN_PATTERN = OFFER_TOKEN_PATTERN;
+
 export const DEFAULT_TAB: TabId = 'today';
 
 export interface Route {
   tab: TabId;
   sub?: SubId;
   dev?: DevId;
+  /** The catalogue item open in the microscope (`#/dev/microscope/<id>`, D2). */
+  devItem?: string;
   /** Catalog id of the piece open on the Score screen. */
   score?: string;
   /** Import id of the PDF open in the PDF viewer (docs/04 §5b). */
@@ -166,6 +184,15 @@ export interface Route {
    * apart in the router is clearer than doing it in the screen.
    */
   paper?: { bookId: string; pieceId: string };
+  /**
+   * `#/paper/<bookId>/<pieceId>?from=<lesson id>` — the rung whose page opened
+   * the paper screen (CL04, L79). The paper screen hands it to the twin's Score
+   * screen (`navigateScore(twin, { from })`), which judges the run by that rung,
+   * so the run counts for the book piece the rung lists. The same `from=` and
+   * parser as `scoreFrom` and `chartFrom`, a field of its own for their reason.
+   * None from the Shelf, which is no rung (C1).
+   */
+  paperFrom?: string;
   /**
    * `#/score/<id>?blind=1` — play it with the score hidden (replan §8).
    *
@@ -257,6 +284,15 @@ export interface Route {
   /** `#/score/<id>?slot=new` — the Today slot that opened this run (L50), for the record. */
   scoreSlot?: TodaySlot;
   /**
+   * `#/score/<id>?intent=transfer&skill=position-shift&offer=<token>` — the run was opened from
+   * Today's transfer offer for that skill (D4), and `offer` names that offer's instance (D4a): the
+   * Score screen reads the snapshot Today kept of it, and the run keeps the intent and the offer's
+   * relationship only where the snapshot is that offer's. Intent and skill both or neither: an intent
+   * with no skill, or a skill with no intent, is dropped. A malformed or absent token is dropped and
+   * the intent kept, so the screen refuses the offer out loud rather than guessing it.
+   */
+  scoreIntent?: { intent: 'transfer'; skill: string; offer?: string };
+  /**
    * `#/score/<id>?recipe=hands:both,easy:1` — the phrase's recipe, as Today's
    * reader chose it (C4): what it moved from the row's own params, and whether
    * it is the easy one on purpose. Only a generated item reads it. It rides the
@@ -325,6 +361,14 @@ export interface Route {
   labBed?: LabBed;
   /** Free play (`04` §2b), addressed as `#/play`. */
   play?: boolean;
+  /**
+   * `#/score/<id>?session=<token>`, `#/drill/<id>?session=<token>` — X1: the activity instance of today's session this
+   * screen runs (`data/sessionRun.ts`): the screen reports its lifecycle to the runner under this token, and
+   * its closing action becomes the transition to the next activity. In the hash so a reload, a back gesture
+   * or a closed app reopens the same activity; a malformed token is dropped and the screen is an ordinary
+   * one. The runner refuses every write whose token is not the current activity's.
+   */
+  session?: string;
 }
 
 /**
@@ -469,9 +513,10 @@ export function parseHash(hash: string): Route {
       : undefined;
   const wantedFrom = params?.get('from');
   // Dropped rather than carried, for the reason `tour` above is: it is only
-  // ever a navigation target. One parser for both screens that take a `from=`
-  // — the Score screen and the chord chart — because one spelling of "the rung
-  // that opened this" is what keeps the two Backs the same idea.
+  // ever a navigation target. One parser for the screens that take a `from=`
+  // — the Score screen and the chord chart, and the paper screen, which hands
+  // it to its twin (L79) — because one spelling of "the rung that opened this"
+  // is what keeps the two Backs the same idea.
   const fromLesson =
     wantedFrom !== null && wantedFrom !== undefined && looksLikeLessonId(wantedFrom)
       ? wantedFrom
@@ -485,6 +530,20 @@ export function parseHash(hash: string): Route {
   const wantedSlot = params?.get('slot');
   const scoreSlot = isTodaySlot(wantedSlot) ? wantedSlot : undefined;
   const scoreRecipe = parseRecipeParam(params?.get('recipe'));
+  // The transfer offer's intent and its skill (D4), both or neither; and the offer's token (D4a).
+  const wantedSkill = params?.get('skill');
+  const wantedOffer = params?.get('offer');
+  const scoreIntent =
+    params?.get('intent') === 'transfer' && wantedSkill !== null && wantedSkill !== undefined && SKILL_ID_PATTERN.test(wantedSkill)
+      ? {
+          intent: 'transfer' as const,
+          skill: wantedSkill,
+          ...(wantedOffer !== null && wantedOffer !== undefined && OFFER_TOKEN_PATTERN.test(wantedOffer) ? { offer: wantedOffer } : {}),
+        }
+      : undefined;
+  // The session activity's token (X1): the offer token's form, or nothing.
+  const wantedSession = params?.get('session');
+  const session = wantedSession !== null && wantedSession !== undefined && SESSION_TOKEN_PATTERN.test(wantedSession) ? wantedSession : undefined;
   if (query) {
     const value = new URLSearchParams(query).get('for');
     // A lesson id, or nothing. An unrecognised one is dropped rather than
@@ -517,7 +576,9 @@ export function parseHash(hash: string): Route {
       ...(scoreRung === undefined ? {} : { scoreRung }),
       ...(scoreSlot === undefined ? {} : { scoreSlot }),
       ...(scoreRecipe === undefined ? {} : { scoreRecipe }),
+      ...(scoreIntent === undefined ? {} : { scoreIntent }),
       ...(seed === undefined ? {} : { seed }),
+      ...(session === undefined ? {} : { session }),
     };
   }
   // The accompaniment lab (`04` §3c). Not a tab and not a sub-screen of one:
@@ -559,7 +620,7 @@ export function parseHash(hash: string): Route {
       return { tab: DEFAULT_TAB };
     }
     if (!looksLikeCatalogId(bookId) || !looksLikeCatalogId(pieceId)) return { tab: DEFAULT_TAB };
-    return { tab: 'library', paper: { bookId, pieceId } };
+    return { tab: 'library', paper: { bookId, pieceId }, ...(fromLesson === undefined ? {} : { paperFrom: fromLesson }) };
   }
   if (tab === 'library' && importFor) {
     return { tab: 'library', importFor };
@@ -588,7 +649,7 @@ export function parseHash(hash: string): Route {
       return { tab: DEFAULT_TAB };
     }
     if (!looksLikeCatalogId(id)) return { tab: DEFAULT_TAB };
-    return { tab: DEFAULT_TAB, drill: id, ...(scoreRung === undefined ? {} : { drillRung: scoreRung }) };
+    return { tab: DEFAULT_TAB, drill: id, ...(scoreRung === undefined ? {} : { drillRung: scoreRung }), ...(session === undefined ? {} : { session }) };
   }
   if (tab === 'chart') {
     let id: string;
@@ -614,7 +675,16 @@ export function parseHash(hash: string): Route {
     return looksLikeLessonId(id) ? { tab: 'plan', lesson: id } : { tab: DEFAULT_TAB };
   }
   if (tab === 'dev') {
-    return isDevId(sub) ? { tab: DEFAULT_TAB, dev: sub } : { tab: DEFAULT_TAB };
+    if (!isDevId(sub)) return { tab: DEFAULT_TAB };
+    if (sub !== 'microscope') return { tab: DEFAULT_TAB, dev: sub };
+    // The item, when one is named and is a catalogue id; the queue otherwise.
+    let item: string;
+    try {
+      item = decodeURIComponent(cleaned.split('/')[2] ?? '');
+    } catch {
+      item = '';
+    }
+    return looksLikeCatalogId(item) ? { tab: DEFAULT_TAB, dev: sub, devItem: item } : { tab: DEFAULT_TAB, dev: sub };
   }
   if (!isTabId(tab)) return { tab: DEFAULT_TAB };
   // An unknown sub-route degrades to the tab itself rather than to Today: the
@@ -637,7 +707,8 @@ export function routeToHash(route: Route): string {
   }
   if (route.play) return '#/play';
   if (route.paper) {
-    return `#/paper/${encodeURIComponent(route.paper.bookId)}/${encodeURIComponent(route.paper.pieceId)}`;
+    const base = `#/paper/${encodeURIComponent(route.paper.bookId)}/${encodeURIComponent(route.paper.pieceId)}`;
+    return route.paperFrom === undefined ? base : `${base}?from=${encodeURIComponent(route.paperFrom)}`;
   }
   if (route.importFor) return `#/library?for=${encodeURIComponent(route.importFor)}`;
   if (route.score) {
@@ -655,7 +726,15 @@ export function routeToHash(route: Route): string {
       ...(route.scoreRung === undefined ? [] : [`rung=${encodeURIComponent(route.scoreRung)}`]),
       ...(route.scoreSlot === undefined ? [] : [`slot=${route.scoreSlot}`]),
       ...(route.scoreRecipe === undefined ? [] : [`recipe=${encodeURIComponent(recipeParam(route.scoreRecipe))}`]),
+      ...(route.scoreIntent === undefined
+        ? []
+        : [
+            `intent=${route.scoreIntent.intent}`,
+            `skill=${encodeURIComponent(route.scoreIntent.skill)}`,
+            ...(route.scoreIntent.offer === undefined ? [] : [`offer=${route.scoreIntent.offer}`]),
+          ]),
       ...(route.seed === undefined ? [] : [`seed=${String(route.seed >>> 0)}`]),
+      ...(route.session === undefined ? [] : [`session=${route.session}`]),
     ];
     const base = `#/score/${encodeURIComponent(route.score)}`;
     return flags.length ? `${base}?${flags.join('&')}` : base;
@@ -671,9 +750,17 @@ export function routeToHash(route: Route): string {
   }
   if (route.drill) {
     const base = `#/drill/${encodeURIComponent(route.drill)}`;
-    return route.drillRung === undefined ? base : `${base}?rung=${encodeURIComponent(route.drillRung)}`;
+    const drillFlags = [
+      ...(route.drillRung === undefined ? [] : [`rung=${encodeURIComponent(route.drillRung)}`]),
+      ...(route.session === undefined ? [] : [`session=${route.session}`]),
+    ];
+    return drillFlags.length > 0 ? `${base}?${drillFlags.join('&')}` : base;
   }
-  if (route.dev) return `#/dev/${route.dev}`;
+  if (route.dev) {
+    return route.dev === 'microscope' && route.devItem !== undefined
+      ? `#/dev/microscope/${encodeURIComponent(route.devItem)}`
+      : `#/dev/${route.dev}`;
+  }
   return route.sub ? `#/${route.tab}/${route.sub}` : `#/${route.tab}`;
 }
 
@@ -720,9 +807,17 @@ export class Router {
     this.setRoute(route);
   }
 
-  /** Opens the paper-practice screen for one book piece (replan §5.3). */
-  navigatePaper(bookId: string, pieceId: string): void {
-    const route: Route = { tab: 'library', paper: { bookId, pieceId } };
+  /**
+   * Opens the paper-practice screen for one book piece (replan §5.3). `from` is
+   * the rung whose page opened it, handed on to the twin's Score screen (L79);
+   * only the lesson page passes it.
+   */
+  navigatePaper(bookId: string, pieceId: string, options: { from?: string } = {}): void {
+    const route: Route = {
+      tab: 'library',
+      paper: { bookId, pieceId },
+      ...(options.from === undefined ? {} : { paperFrom: options.from }),
+    };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
   }
@@ -753,6 +848,10 @@ export class Router {
       seed?: number;
       /** The phrase's recipe, as Today's reader chose it (C4). */
       recipe?: RouteRecipe;
+      /** Opened from Today's transfer offer for this skill (D4), naming that offer's instance (D4a). */
+      intent?: { intent: 'transfer'; skill: string; offer?: string };
+      /** The session activity this run is (X1): its token. */
+      session?: string;
     } = {},
   ): void {
     const route: Route = {
@@ -769,7 +868,9 @@ export class Router {
       ...(options.rung === undefined ? {} : { scoreRung: options.rung }),
       ...(options.slot === undefined ? {} : { scoreSlot: options.slot }),
       ...(options.recipe === undefined || recipeParam(options.recipe) === '' ? {} : { scoreRecipe: options.recipe }),
+      ...(options.intent === undefined ? {} : { scoreIntent: options.intent }),
       ...(options.seed === undefined ? {} : { seed: options.seed }),
+      ...(options.session === undefined ? {} : { session: options.session }),
     };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
@@ -793,11 +894,12 @@ export class Router {
   }
 
   /** Runs a drill (`#/drill/<itemId>`), judged by the rung that opened it, if one did (C5). */
-  navigateDrill(itemId: string, options: { rung?: string } = {}): void {
+  navigateDrill(itemId: string, options: { rung?: string; session?: string } = {}): void {
     const route: Route = {
       tab: this.current.tab,
       drill: itemId,
       ...(options.rung === undefined ? {} : { drillRung: options.rung }),
+      ...(options.session === undefined ? {} : { session: options.session }),
     };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
@@ -848,9 +950,9 @@ export class Router {
     this.setRoute(route);
   }
 
-  /** Navigates to a builder-only route (`#/dev/<id>`). */
-  navigateDev(dev: DevId): void {
-    const route: Route = { tab: DEFAULT_TAB, dev };
+  /** Navigates to a builder-only route (`#/dev/<id>`, or `#/dev/microscope/<item>`). */
+  navigateDev(dev: DevId, item?: string): void {
+    const route: Route = { tab: DEFAULT_TAB, dev, ...(dev === 'microscope' && item !== undefined ? { devItem: item } : {}) };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
   }
@@ -900,6 +1002,7 @@ export class Router {
       route.tab === this.current.tab &&
       route.sub === this.current.sub &&
       route.dev === this.current.dev &&
+      route.devItem === this.current.devItem &&
       route.score === this.current.score &&
       route.pdf === this.current.pdf &&
       route.pdfPage === this.current.pdfPage &&
@@ -917,6 +1020,9 @@ export class Router {
       // run this is, for the reason `from` is (L50).
       route.scoreRung === this.current.scoreRung &&
       route.scoreSlot === this.current.scoreSlot &&
+      // By value: the same offer's intent is the same run (D4), and another offer's is another (D4a).
+      route.scoreIntent?.skill === this.current.scoreIntent?.skill &&
+      route.scoreIntent?.offer === this.current.scoreIntent?.offer &&
       // By value, as the loop is: the same recipe is the same phrase (C4).
       (route.scoreRecipe === undefined ? '' : recipeParam(route.scoreRecipe)) ===
         (this.current.scoreRecipe === undefined ? '' : recipeParam(this.current.scoreRecipe)) &&
@@ -943,6 +1049,8 @@ export class Router {
       // opened the picker on the rung before it.
       route.paper?.bookId === this.current.paper?.bookId &&
       route.paper?.pieceId === this.current.paper?.pieceId &&
+      // The rung a paper piece was opened from is which run its twin will be (L79), as `scoreFrom` is.
+      route.paperFrom === this.current.paperFrom &&
       route.lesson === this.current.lesson &&
       route.chart === this.current.chart &&
       // Where Back goes is part of which screen this is, exactly as
@@ -952,7 +1060,9 @@ export class Router {
       route.chartFrom === this.current.chartFrom &&
       route.drill === this.current.drill &&
       // The rung that judges the drill is part of which run it is (C5).
-      route.drillRung === this.current.drillRung
+      route.drillRung === this.current.drillRung &&
+      // The session activity a run is, for the same reason (X1).
+      route.session === this.current.session
     ) {
       return;
     }

@@ -1,0 +1,17 @@
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import wedge: Error in getting DynamicWedges
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+texture.left-hand-pattern@ragtime.5: 799 parent(s), 612211 window(s) (21164 across a repeat, never proposed), 191266 with the target; 40 candidate(s), 40 meeting every signal; 0 parent(s) skipped
+   12.00  song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx bars 1–4 both  (every signal met)
+   12.00  song.classical.beethoven-ode-to-joy.easy bars 9–12 both  (every signal met)
+   12.00  song.classical.beyer-exercise-no-38.pdmx bars 1–4 both  (every signal met)
+   12.00  song.classical.brahms-hungarian-dance-5 bars 61–68 both  (every signal met)
+   12.00  song.classical.burgmuller-pastorale-op-100-no-3.pdmx bars 3–10 both  (every signal met)
+   12.00  song.classical.chopin-mazurka-op24-4.nifc bars 55–62 both  (every signal met)
+   12.00  song.classical.chopin-mazurka-op6-2.nifc bars 1–8 both  (every signal met)
+   12.00  song.classical.chopin-sonata-2-3.nifc bars 31–34 both  (every signal met)
+   12.00  song.classical.czerny-etude-op-335.pdmx bars 1–8 both  (every signal met)
+   12.00  song.classical.czerny-study-op-139-no-1.pdmx bars 1–8 both  (every signal met)
+   12.00  song.classical.czerny-study-op-599-no-63.pdmx bars 1–8 both  (every signal met)
+   12.00  song.classical.czerny-study-op-599-no-63.pdmx bars 9–16 both  (every signal met)
+wrote C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\build\excerpts\candidates.json and C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\app\public\dev\review\excerpts.json
+exit 0

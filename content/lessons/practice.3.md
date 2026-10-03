@@ -9,17 +9,17 @@ videos:
 readingTime: 2
 ---
 
-Practising one thing for forty minutes feels productive and is one of the least
-efficient ways to use the time. Within a session, performance on the thing you
-are drilling climbs steadily — and most of that climb is gone by tomorrow.
+Practising one thing for forty minutes feels productive, but it may not be the
+best use of the time. Within a session, performance on the thing you are
+drilling can climb steadily — and some of that climb can be gone by tomorrow.
 
 **Interleaving** is switching between several things in one session. It feels
 worse while you are doing it: you make more mistakes, and progress feels
-slower. It also produces markedly better retention a week later, which is the
-only timescale that matters.
+slower. It can still help what you keep a week later, and what carries over to
+other music.
 
-**What a session looks like.** Warm up — five minutes, slow, something you
-know. Then two or three different things in short blocks rather than one thing
+**One way to shape a session.** Warm up for a few minutes, slowly, on something
+you know. Then two or three different things in short blocks rather than one thing
 for the whole time: a technical item, a piece you are learning, and something
 you already play.
 

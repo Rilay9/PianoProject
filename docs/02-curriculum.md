@@ -253,7 +253,7 @@ play a swung 12-bar blues LH). The first failure sets the starting stage/unit. A
 
 **1.1 Right hand C position (C-D-E-F-G, fingers 1–5).** Concepts: hand position, one finger
 per key, quarter note = 1 beat, the staff (5 lines, 4 spaces), treble clef, Middle C on a ledger
-line, D–G stepping up, bar lines, 4/4, counting "1 2 3 4". Exercises: `[GEN]` RH 5-finger
+line, D–G stepping up (each a step: the rung names `steps`, F2), bar lines, 4/4, counting "1 2 3 4". Exercises: `[GEN]` RH 5-finger
 walk up/down (quarter notes, 60 bpm), `[GEN]` "note-name flash" (treble C4–G4), rhythm clap
 drill (quarters/rests; learner taps any key). Songs: *Hot Cross Buns* `[AUTH]`, *Mary Had a Little Lamb* `[AUTH]`, *Merrily We Roll Along* `[AUTH]`, *Au Clair de la Lune* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`, *Kum Ba Yah* `[PDMX]`. Videos: Bill Hilton (right-hand first tune), Hoffman Unit 1,
 Lypur lesson 2. Mastery: one song, Wait mode ≥ 95 %, then Tempo mode ≥ 90 % at 60 bpm.
@@ -277,7 +277,15 @@ one song HT-alternating at 70 bpm ≥ 90 %.
 
 **1.5 Steps and skips; the first "sight-reading" habit.** Concepts: steps (2nd) vs skips (3rd)
 on the staff (line→space vs line→line), reading by interval not by name, looking ahead one
-beat. Exercises: `[GEN]` **Sight-reading generator level 1** (random 4-bar RH melodies in C
+beat. The leap (a 4th or wider) is introduced here and not taught: no option on the rung
+establishes one (two songs carry the odd leap), so it sits under the rung's `introduces` list and
+2.1 teaches it (F2a, 2026-09-29; the reviewer's required change on F2). The concept is `leap`,
+"Leaps: a fourth or fifth" (F2b, 2026-09-29; the reviewer on F2a, `responses/fc91e5a.md`): the
+beginner's reading leap, apart from the advanced `leaps`, "Wide leaps" (an octave or more, Grades
+5–6), which only `blues.7` and `ragtime.9` name. The leap detector finds a fourth or wider, so it
+can establish the beginner's leap and cannot tell a fourth from an octave: since F2c (the reviewer on F2b,
+`responses/ddba53e9.md`) `leaps` maps to no demand, and on those two rungs the octave-or-more leap
+is a claim no detector measures yet. Exercises: `[GEN]` **Sight-reading generator level 1** (random 4-bar RH melodies in C
 position, quarters/halves; new one each time — this is the app's killer practice feature),
 `[GEN]` interval ear drill (2nd vs 3rd; learner plays back), `[GEN]` **Simon** on the
 white keys around middle C (hear a chain, play it back, one note longer each round). Songs: *Old MacDonald Had a Farm* `[AUTH]`, *Lightly Row* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`, *The Water Is Wide* `[PDMX]`. Mastery: 5 generated melodies at ≥ 90 % first
@@ -286,7 +294,11 @@ attempt.
 ### Stage 2 — Two hands
 
 **2.1 Hands together: LH holds, RH moves.** Concepts: LH whole/half notes under RH melody;
-vertical alignment; "LH is the floor". Exercises: `[GEN]` HT pattern drills (LH C hold, RH
+vertical alignment; "LH is the floor"; leaps — the left hand's moves from C to F and from C to G,
+a fourth and a fifth (the rung names the leap since F2a: 6 of its 10 checked options establish the
+leap, and the derivation makes 2.1 the core's one teaching rung for it; since F2b the concept is
+`leap`, a fourth or fifth, so the Skills entry a learner here opens describes this leap and not the
+advanced jump of an octave or more, which keeps its own `leaps` entry). Exercises: `[GEN]` HT pattern drills (LH C hold, RH
 5-finger), `[GEN]` HT with LH changing every bar (C / G). Songs: *Ode to Joy (hands together)* `[AUTH]`, *Twinkle, Twinkle, Little Star (hands together)* `[AUTH]`, *Jingle Bells (chorus, hands together)* `[AUTH]`, *Mary Had a Little Lamb (hands together)* `[AUTH]`, *Simple Gifts* `[PDMX]`. Videos: Bill Hilton (hands together), Hoffman Unit 3–4. Mastery: HT ≥ 90 % at
 60 bpm Tempo mode.
 
@@ -306,7 +318,7 @@ Songs (as on the rung 2026-09-16): *Happy Birthday to You* `[AUTH]` and its full
 **2.4 Ties, dotted quarter, dynamics, tempo words.** Concepts: tie vs slur, dotted quarter +
 eighth, p/mp/mf/f, crescendo/diminuendo, Andante/Moderato/Allegro, ritardando. Exercises:
 `[GEN]` dotted-rhythm reading, dynamics drill (MIDI velocity: app shows a meter; play a
-phrase p then f). Songs: *Greensleeves (simple)* `[AUTH]`, *Greensleeves* `[MT]`, *Greensleeves (with chords)* `[AUTH]`, *Ga je mee op zoek naar het Koningskind* `[PDMX]`, *Streets of Laredo* `[PDMX]`. Mastery: one song; dynamics drill ≥ 80 % contrast (avg velocity f ≥ 1.6× p).
+phrase p then f). Songs: *Greensleeves (simple)* `[AUTH]`, *Greensleeves* `[MT]`, *Greensleeves (with chords)* `[AUTH]`, *Ga je mee op zoek naar het Koningskind* `[PDMX]`, *Streets of Laredo* `[PDMX]`, *Careless Love* `[PDMX]`, *Cielito Lindo (simple)* `[AUTH]`. *Cielito Lindo* is the rung's public-domain tie (Q76): its long notes carried over the bar line are written as ties by independent PDMX editions (the verse by two, the chorus by three), so the ties are the tune's, and the right hand is one of those editions note for note; *Ga je mee*, the other option that practises ties, is a placeholder on the public build (its composition is not public domain). Mastery: one song; dynamics drill ≥ 80 % contrast (avg velocity f ≥ 1.6× p).
 
 **2.5 Moving out of C position: thumb-under and finger-crossing preview; the octave leap.**
 Concepts: extending the hand, shifting positions marked by fingering numbers, reading
@@ -317,7 +329,9 @@ C major scale HS at 60 bpm in eighths, ≥ 95 %.
 ### Stage 3 — Keys, chords, reading
 
 **3.1 Sharps, flats, half/whole steps, the major scale formula.** Concepts: W-W-H-W-W-W-H;
-G major (F#) and F major (Bb); key signatures; accidentals last for the bar. Exercises: `[GEN]`
+G major (F#) and F major (Bb); key signatures; accidentals last for the bar — introduced, not
+taught: no song on the rung has a note outside its key signature, so `accidentals` sits under the
+rung's `introduces` list and 3.3 teaches them (F2a). Exercises: `[GEN]`
 G & F major scales HS, `[GEN]` "build a major scale from any note" ear+key drill, `[GEN]`
 note-flash with sharps/flats. Songs: *Ode to Joy (in G major)* `[AUTH]`, *Twinkle, Twinkle, Little Star (in F major)* `[AUTH]`, *Oh When the Saints Go Marching In (in F major)* `[AUTH]`, *Korobeiniki* `[PDMX]`, *Loch Lomond* `[PDMX]`, *Scarborough Fair* `[PDMX]`. Videos: Bill Hilton
 (sharps/flats & keys), Lypur theory 1–3, Open Music Theory "Scales". Mastery: both scales HS.
@@ -329,7 +343,10 @@ C/G/F (root position and smooth versions), `[GEN]` chord-symbol flash. Songs: *J
 Hoffman "V7". Mastery: chord-chart song at 80 bpm HT.
 
 **3.3 A minor & the relative minor; natural/harmonic minor; minor chords.** Concepts:
-relative minor shares key sig; raised 7th; Am, Dm, Em, E7. Exercises: `[GEN]` A harmonic minor
+relative minor shares key sig; raised 7th; Am, Dm, Em, E7; accidentals — the raised seventh
+written as one every time it is used (the rung names `accidentals` since F2a: 4 of its 7 checked
+options establish a note outside the key, and 3.3 is the core's one teaching rung for it).
+Exercises: `[GEN]` A harmonic minor
 scale HS, `[GEN]` Am–Dm–E7 changes, `[GEN]` major-vs-minor chord ear drill. Songs: *Greensleeves (with chords)* `[AUTH]`, *Greensleeves* `[MT]`, *Greensleeves (simple)* `[AUTH]`. Videos: Bill Hilton (minor chords), Lypur "minor scales". Mastery: one song HT.
 
 **3.4 Reading ledger lines and wider ranges; 8va; both hands away from Middle C.** Concepts:
@@ -412,7 +429,7 @@ generated exercises rather than repertoire — this is the material that has no 
 ### The "how to practise" module (`practice.1`–`practice.5`)
 
 *Added in P17; described here in P19.* Five short lessons that are about practising rather than
-about the piano, on their own track and open from Stage 1. They exist because the owner
+about the piano, on their own track and open from the second rung of Stage 1 (F2b; D8a). They exist because the owner
 plateaued once after a few lessons, and the coaching rules link into them: three flat runs in a
 row on the same piece points at `practice.5`.
 
@@ -423,6 +440,13 @@ row on the same piece points at `practice.5`.
 4. **When to stop** — warm-up, tension, pain, and the difference between tired and hurt.
 5. **The plateau, and the three things to change** — the rung the app sends you to when
    nothing has improved for three runs.
+
+Each rung after the first names the one before as its prerequisite (F2a, 2026-09-29; L109's
+data half), which is the order the app walks the track in, so an option two of its rungs list is
+read where the track first meets it. `practice.1` names 1.1 (F2b, 2026-09-29; the reviewer on
+F2a, `responses/fc91e5a.md`): a track rung opens only once its prerequisites are met, set aside or
+behind the placement, so the track opens from the second rung of Stage 1, and the floor's
+five-finger and *Ode to Joy* material stands on the rung that teaches it.
 
 ---
 
@@ -493,9 +517,9 @@ Music Theory "Pop/Rock" chapters.
 |------:|-------|------------|
 | 3 | The blue notes before the form: flat third, flat seventh and the crushed fourth; the published blues as melody with chord symbols, right hand on the tune and left hand holding the symbol; one of them in the minor | *12 Bar Blues* `[PDMX]`; *Careless Love* `[PDMX]`; *Handy — St. Louis Blues (1914)* `[PDMX]`; *St. James Infirmary (traditional, minor)* `[PDMX]`; *Ringle & Meinken — Wabash Blues (1921)* `[PDMX]`; *Williams — Tishomingo Blues (1917)* `[PDMX]` |
 | 4 | 12-bar blues form in C (I7 IV7 V7), shuffle feel, LH "boogie" bass (root-5-6-b7), simple RH riffs, blues scale | *Twelve-bar blues shuffle in C* `[GEN]`; *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Careless Love* `[PDMX]`; *12 Bar Blues* `[PDMX]`; *Handy — St. Louis Blues (1914)* `[PDMX]` |
-| 5 | Turnarounds, RH "tremolo" 3rds, blue notes, call-and-response phrases, blues in F & G, walking bass | *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Twelve-bar blues shuffle in C* `[GEN]`; *Swanstone — Blues My Naughty Sweetie Gives to Me (1919)* `[PDMX]`; *Handy — The Memphis Blues (1912)* `[PDMX]`; *Williams — Royal Garden Blues (1919)* `[PDMX]` |
-| 6 | Boogie-woogie LH patterns (Pinetop, Yancey, "Honky Tonk Train" style), RH chorus building, slow blues 12/8, minor blues | *Boogie (easy, for beginners)* `[PDMX]`; *Boogie-woogie and blues piano exercises* `[PDMX]`; *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]` |
-| 7 | Improvising full choruses, tritone subs in blues, gospel-blues, New Orleans style (Professor Longhair rumba-boogie *concepts*, no copyrighted tunes) | *Boogie (easy, for beginners)* `[PDMX]`; *Rhythm and Boogie* `[PDMX]`; *Boogie-Boogie en Sol* `[PDMX]` (the rung is song-optional; *Pinetop's Boogie Woogie* stays on Stage 6) |
+| 5 | Turnarounds, RH "tremolo" 3rds, blue notes, call-and-response phrases, blues in F & G, the walking bass introduced (the line alone, left hand; F2) | *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Twelve-bar blues shuffle in C* `[GEN]`; *Swanstone — Blues My Naughty Sweetie Gives to Me (1919)* `[PDMX]`; *Handy — The Memphis Blues (1912)* `[PDMX]`; *Williams — Royal Garden Blues (1919)* `[PDMX]` |
+| 6 | Boogie-woogie LH patterns (Pinetop, Yancey, "Honky Tonk Train" style), RH chorus building, slow blues 12/8, minor blues, the walking line under a right hand (the track's teaching rung for the walking bass since F2) | *Boogie (easy, for beginners)* `[PDMX]`; *Boogie-woogie and blues piano exercises* `[PDMX]`; *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]` |
+| 7 | Improvising full choruses, tritone subs in blues, gospel-blues, New Orleans style (Professor Longhair rumba-boogie *concepts*, no copyrighted tunes); the leaping left hand, whose octave-or-more leap (`leaps`) is a claim no detector measures yet (F2c: the leap detector finds a fourth or wider) | *Boogie (easy, for beginners)* `[PDMX]`; *Rhythm and Boogie* `[PDMX]`; *Boogie-Boogie en Sol* `[PDMX]` (the rung is song-optional; *Pinetop's Boogie Woogie* stays on Stage 6) |
 | 8 | The form in twelve keys, ninths on every dominant, comping over your own walking bass | song-optional — the piece is the learner's own written chorus in two keys, and these are what to read while writing it: *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]`; *Blake — The Chevy Chase (1914)* `[PDMX]`; *Morton — Black Bottom Stomp (1926)* `[PDMX]` |
 | 9 | Improvising over the form and making it yours; fast boogie, stride-blues hybrids, transcription projects | song-optional — yours first, then three written choruses: *Confrey — Stumbling (1922)* `[PDMX]`; *Morton — Black Bottom Stomp (1926)* `[PDMX]`; *Waller — Handful of Keys (1929)* `[PDMX]` |
 
@@ -533,10 +557,19 @@ Stage 5: *The Entertainer* (easy arr.) `[MT]`; Stage 6: *The Entertainer* (origi
 James Scott *Frog Legs Rag*, Joseph Lamb *Ragtime Nightingale*. All Joplin via the
 `craigsapp/joplin` kern repository (verified reachable). Concepts: oom-pah LH with leaps,
 syncopated RH, "not fast" (Joplin's own instruction), stride precursor.
+*(Q76, 2026-09-29: the Sapp editions are CC BY-NC-SA, so on the public, licence-strict build — the
+one the phone runs — every one of them is a placeholder. `ragtime.8` therefore also lists *Pine Apple
+Rag* in the Mutopia Project's public-domain edition `[MUTO]`, bundled by both builds: taken from the
+MIDI file Mutopia publishes for it, because python-ly cannot convert Mutopia's LilyPond rags faithfully,
+with every note spelled and the trio's key change placed as the edition's `.ly` has them. Its notes and
+times are the edition's and its page is the converter's: the repeats written out, two voices in one
+hand merged into chords (`docs/03` §2 on `[MUTO]`). It is the option that keeps the rung's stride bass
+on the phone.)*
 
 *(Extended 2026-09-22: the track now runs Stage 5 to Stage 9. `ragtime.9` is the memory and
 performance rung — four long multi-strain Joplin rags nothing else offers, played without
-the page. `ragtime.4`, the cakewalk before the syncopation, was **not built**: see Part A
+the page; its octave-or-more leap (`leaps`) is a claim no detector measures yet (F2c: the leap
+detector finds a fourth or wider). `ragtime.4`, the cakewalk before the syncopation, was **not built**: see Part A
 item 5 and `pending-review.md` Entry 37 for the searches that came back empty. The Stage 8
 line above wants *Euphonic Sounds* and Lamb's *Ragtime Nightingale* and neither is in any
 reachable source, which is the same hole Entry 37 found one stage higher.)*
@@ -592,12 +625,18 @@ shows piano-roll; notation export is a later feature). Stage 6: modal vamps, LH 
 motif development. Stage 7+: reharmonising melodies, arranging a PD song, composing in a form.
 Teachers: Bill Hilton (improvisation videos), Nahre Sol, Aimee Nolte, Open Studio.
 
-### D8a. How to practise (P17, from Stage 1)
+### D8a. How to practise (P17, from the second rung of Stage 1)
 
 A five-lesson mini-module on the *method* rather than the music, on its own
 `practice` track, active by default and running alongside everything else from
-Stage 1. The comprehensiveness check (replan §8) found practising efficiently,
+the second rung of Stage 1 (F2b: `practice.1` stands on 1.1; it said "from Stage 1"
+while the track named no core rung). The comprehensiveness check (replan §8) found practising efficiently,
 plateaus and injury covered once in lesson 0.3 and nowhere after.
+
+On Today, How to practise's row comes after the learner's own rung's new
+material, never in its place (X1, a stated teaching policy,
+`session.METHOD_TRACKS`): the track is how to practise beside the core, not
+instead of it.
 
 1. **Chunking, and the loop** — the smallest unit that still makes sense, the
    bar before the one you stumbled on, and five correct in a row.
@@ -615,6 +654,41 @@ plateaus and injury covered once in lesson 0.3 and nowhere after.
 Each is a real rung with three options from existing material, not a reading
 list: `optionsExempt` would have been the easy way to ship five essays, and the
 point of the module is that the method gets applied to something.
+
+**The floor (F2, 2026-09-29; L104).** The track is on by default, and its rung's
+`runs` ask takes the first admitted exercise in list order, so `practice.1`'s
+first exercise is the day's new row for a learner still on it. That was Hanon
+No. 1 hands together — level 4.4, sixteenths, ledger lines and both hands
+beyond a five-finger position — given to a learner placed at 1.5. `practice.1`
+and `practice.2` now list what a Stage 1 hand plays, from the Stage 1 core rungs'
+own lists: the right-hand five-finger pattern, the steps-and-skips study, and
+the rhythm drill (`practice.1`) or the right-hand five-finger walk
+(`practice.2`). Hanon stays on 4.4, `technique.4` and `classical.4`, which
+listed it besides; no rung teaches its sixteenths yet (L101). `practice.2`'s
+one-octave hands-together scale (level 4.1) left the rung and is on no other.
+
+**The track's ancestry (F2a, 2026-09-29; L109's data half; the reviewer on F2,
+`responses/b41e19e.md`).** `practice.2` to `practice.5` each name the rung before as their
+prerequisite, as the app walks the line, and no rung off the track names a practice rung, so no
+other track's ancestry changed. The floor's shared options are now read at `practice.1`, where
+the track first meets them. There they still read as untaught — the five-finger pattern's and
+*Ode to Joy*'s steps (1.1) and the steps-and-skips study's skips (1.5) — because `practice.1`'s
+path is Stage 0: a Stage 1 track rung stands on the core path before its stage. A core
+prerequisite would say what the floor depends on, and would also close the track until that rung
+is met: 1.1 until the first rung is passed (the study's skips still untaught), 1.5 for all of
+Stage 1. That is a product choice against this section's "from Stage 1", left open in Entry 117.
+
+**The floor on 1.1 (F2b, 2026-09-29; the reviewer on F2a, `responses/fc91e5a.md`).**
+`practice.1` names 1.1 as its core prerequisite, the choice Entry 117 measured and recommended:
+1.5 would close the track for all of Stage 1, and no prerequisite kept a Stage-0 ancestry the
+floor does not have. The track now opens from the second rung of Stage 1 — a learner placed at 1.1
+has no practice row until 1.1 is behind them, one placed at 1.2 to 1.5 has it (placed from 2.1 on,
+the placement puts the track behind them, as before) — and every
+practice rung's path holds 1.1, so the five-finger pattern, *Hot Cross Buns* and *Ode to Joy* are
+read at 1.1, which teaches their steps. The one row the floor still reads as untaught is the
+steps-and-skips study's skips, which 1.5 teaches: true for a learner at 1.2–1.4. `practice.2`–`.5`
+stay chained through the practice rung before; the core rungs `practice.3`–`.5`'s material assumes
+(2.1 and 3.6) are not named, since they would close those rungs until Stage 2 or 3.
 
 ### D8. Mini-modules (optional; `holiday` and `hymns-gospel` open at Stage 2, `rock-metal` and `latin` at Stage 3, `jam` at Stage 4)
 
@@ -637,14 +711,16 @@ Stages 3, 5, 6 and 7.)*
   lyrics are copyrighted), Auld Lang Syne, Hanukkah: Ma'oz Tzur, Sevivon, Hanerot Halalu.
 - **Latin** `[AUTH]`: La Cucaracha, Cielito Lindo, La Paloma, El Choclo, La Cumparsita,
   Tico-Tico; concepts: clave, tumbao LH, montuno RH.
-- **Rock & metal piano** (owner's bands: Avenged Sevenfold, Linkin Park, Sleep Token; all
-  songs `[IMPORT]`, techniques taught on PD material `[AUTH]`/`[GEN]`). **Owner's target
-  songs, in this order:** Avenged Sevenfold — *Seize the Day*, *Dear God*, *So Far Away*,
-  *Fiction*; Linkin Park — *Final Masquerade*, *Waiting for the End*, *Shadow of the Day*.
-  These are copyrighted and are **never bundled**; the module's lesson for each song is a
-  *technique brief* (what textures the piano part needs, which PD vehicle trains them, what
-  to listen for), plus the import screen where the owner adds the MusicXML he obtains
-  himself (he has a source for the Avenged Sevenfold transcriptions). Builders must not
+- **Rock & metal piano** — rock as technique on public-domain material (`00` D18): the
+  textures band piano parts use, taught with `[AUTH]`/`[GEN]` material, and an import path
+  for the songs themselves. **The owner's songs are not the track's reason (the owner,
+  2026-09-28; I4; unwound in F2):** Avenged Sevenfold's *Seize the Day*, *Dear God*, *So Far
+  Away* and *Fiction* and Linkin Park's *Final Masquerade*, *Waiting for the End* and *Shadow
+  of the Day* are not forced onto rungs and no rung lists them. A learner finds them in the
+  Library, where each has a placeholder row with no file behind it (`file: null`), badged
+  *import needed*, whose sheet says how to get the MusicXML in and offers public-domain pieces
+  with the same textures to play instead; that is why the seven rows stay (F2 looked at them in
+  the Library on the build). They are copyrighted and **never bundled**, and builders must not
   fetch or embed transcriptions of these songs from any website. Textures to cover: minor-key ostinatos
   and riffs (Linkin Park-style 8th-note piano figures over a pedal bass); octave and
   power-chord (root–5th–octave) LH; suspended and add9 chords, open voicings, "ambient" pedal
@@ -715,9 +791,13 @@ Stages 3, 5, 6 and 7.)*
 | 8 | all scales 4 oct at ♩=120 in 16ths; scales in 3rds/6ths all keys | — | Hanon 44–60; Czerny op.740; Clementi Gradus; Chopin op.10/25 (projects) |
 
 Every scale/arpeggio drill is generated per key, hands (R/L/both), octaves (1–4), motion
-(similar/contrary), rhythm (quarters/8ths/16ths), and target bpm, with correct standard
-fingerings encoded in the MusicXML `<fingering>` elements. Hanon 1–20 are generated from
-their pattern definitions (each is a 8-note cell transposed stepwise up two octaves and back).
+(similar/contrary), rhythm (quarters/8ths/16ths), and target bpm. Fingering is printed in the
+MusicXML `<fingering>` elements where a published table covers the shape — Clementi and Kelley
+for the scales, Kelley for the triad arpeggios, McLain for the white-root sevenths and the
+chromatic scale — and each family's contract says whether it prints fingering and on what
+source (D0; entries 84–86). A family whose convention no source gives prints none (G30,
+`docs/review/responses/questions-53670d2a.md` §3). Hanon 1–20 are generated from the Mutopia edition's own data, its
+printed fingers included.
 
 **Amendments 2026-09-06 (replan, §3):**
 
@@ -742,30 +822,379 @@ their pattern definitions (each is a 8-note cell transposed stepwise up two octa
   chords, extended chords, chord-scale, transposition, Roman-numeral reading and
   learn-a-tune-by-ear; sight-reading levels 5–7.
 
+**Amendment 2026-09-27 (D3): generated studies.** The "Studies" column above names published
+études, which stay repertoire. Beside them the generator now writes a *study* of its own: eight to
+sixteen bars in four-bar phrases around one target, harmony first from a small grammar, a cadence
+closing every phrase, the left hand an accompaniment texture, judged by the musical gate (Part E2's
+note below). The first set is in the Library and on no rung: placement is F's, on a stated gate
+that needs no owner — a candidate-rungs line established on the combined build and a current
+`goodTeachingUse: yes` in D2's record by a named reviewer — and no owner review or placement is
+required (corrected 2026-09-28, D3a: this said the decision was "F's and the owner's"). Until
+that decision exists a study reaches the learner only through the Library (Part E2's note).
+
 **Amendment 2026-09-25 (T39):** five-finger patterns are levelled by key from rows 1 and 2 above (`five_finger_level`, beside `scale_level`): C and G one hand 1.1; the rest of C G F D A, major and minor, at stage 2, a step above 2.0 for each of both hands, a black key under the hand and the minor third (2.1–2.3); every other key at its own one-octave scale's level (E and B one hand 3.2, the flat keys 4.2, hands together 4.1–5.2), never above that scale. Until then every one-hand pattern was 1.1 and every hands-together one 2.1, whatever the key.
 
 ### Part E2 — the non-scale exercise families (`00` D21; **built in P5b**)
 
+> **The family contracts (D0, 2026-09-27).** What each family is *for* is data now, not the
+> "Trains" column below and not a docstring: `tools/content/family_contracts.json`, one row per
+> maker in `generate_exercises.py` (56), read by the generator, the build and the tests through
+> `tools/content/family_contracts.py`. The table below is kept as the record of why each family
+> was built; where it and a contract row disagree, the row is right.
+>
+> - **Each row states** the family's name for what it writes (a I–V–vi–IV loop, son clave, a
+>   tumbao pattern — never a genre universal, G11); its promise, `drill` or `music`, with the
+>   reason (the groove and style families are `music` and marked unheard until a person hears
+>   them); its primary target skill from vocabulary v0, or "not judged by the app" with the
+>   candidate recorded for the vocabulary review (no skill was added: the six conditions, D0's
+>   entry); legitimate secondary skills; the demands it assumes, requires at a family-specific
+>   density, and forbids; its physical constraints (the widest chord one hand strikes, declared
+>   leaps, a repeated-note solution, the fastest rate at the stated tempo, and whether fingering
+>   is printed and on what source — `fingeringVerified` is never true without one); the roles it
+>   can honestly provide (canonical and variable within a family; transfer only across families,
+>   named, with the surface dimensions that differ; a new seed is never transfer); what the app
+>   judges of it, from which input, at what precision, and what stays unjudged (G8); what it
+>   cannot prove, in words; and its version.
+> - **Four gates.** Structural is the invariant suite, unchanged. Pedagogical reads the demands
+>   the app's own detectors measure on every generated file (`tools/content/demands.py` →
+>   `demandsOfFiles.test.ts`; one definition of each demand) against the row, and every item a
+>   rung lists against what that rung has taught — D0 changes no placement, so what the rung
+>   check finds is recorded in `tools/content/tests/fixtures/untaught_on_rung.json` for E.
+>   Physical reads the score, and the build refuses an item that fails it (`confirm_physical`);
+>   the two open voicings were its first refusals (G38). Musical was a hook only in D0; since D3
+>   it evaluates the study (phrase shape from the notation, the note below) and stays "not
+>   evaluated" for every other `music` family, whose idiom needs hearing (D2).
+> - **Identity (G21).** `drill.generator` holds family, version and seed; the recipe is
+>   `drill.params`. A family's version changes when its music does, and a test pins each
+>   family's music to its version. Version 2 so far: `five_finger` and `triad_inversions`
+>   (spelled by interval, D0) and `open_voicing` (the quartal stack arranged over the bass).
+> - **`genre`** is gone from the generated rows and the static drills: "technique" and "drill"
+>   are types (G33).
+>
+> **Who reads the contract's target skills (item 9).** The catalog carries them on the generated
+> items, and every runtime reader asks one module before acting on them:
+> `app/src/curriculum/skillActivation.ts` (`skillsInForce`). As shipped it acts on the reading
+> rows' skills only, which is exactly what C6's swap tier, the session's skill step and the
+> Score screen's evidence acted on before D0, so writing the families' skills changes nothing a
+> learner is offered or credited with (`skillActivationBoundary.test.ts`). Activating a family is
+> a deliberate change to that module, with a test beside it. **E extends this one boundary** with
+> its needs-versus-taught and measured-demand checks, and D4 with roles in the ladder; nobody
+> writes a second readiness check beside it.
+>
+> **E0 extended it (2026-09-27): the one gate.** `app/src/curriculum/eligibility.ts`'s
+> `eligibleFor(candidate, learner, want)` answers two questions from the facts a candidate has:
+> *can the learner cope* — every demand the build measured on it is supported by the learner's
+> evidence (`familiar` or above on the demand's `copedWithBy` skill) or taught at or below the
+> rung judging it — and *does it provide the opportunity claimed* — the wanted demand, or the
+> wanted skill's opportunity, is in `measurement.established` (a useful density:
+> `content/sources/opportunity-density.json`, or the family contract's own density where it
+> states one; a presence-only rule, like the tie drill's one tie, establishes nothing). The swap
+> sheet's four tiers and its last resort, the session's skill requirement, its skill and demand
+> steps and the repertoire claim call it and nothing else. It reads declared skills only through
+> this module (`declaredSkills`): selection acts on a declared skill beyond the reading rows only
+> where the notes establish its opportunity; a rung's skill requirement is served only by what
+> the evidence readers act on, because only those runs can meet it; and the evidence readers keep
+> `skillsInForce` at the shipped activation, so no new run earns credit (D4 changes that). An
+> item whose demands are `unmeasured` is eligible for exploration only, never as an equivalent,
+> on every path — same-lesson options and `alternatives[]` included. A declared large-hand voicing
+> (the add9) is recommended by no selector until its smaller-hand alternative reaches the learner
+> (D0 finding 5). A generated item that promises music is offered by no automatic path without an
+> affirmative teaching-use decision (D3a; the study note below). Level orders eligible candidates
+> and rescues nothing. The readiness floor is
+> `familiar`, the rule the repertoire slot already used; the brief's comparison with `introduced`
+> is in Entry 92. **"Taught at or below the rung" is the rung's ancestry (E0a, 2026-09-27), never
+> the file's order:** a demand is taught at a rung when a rung its `taughtAt` lists is the rung itself,
+> a rung it builds on through `prerequisites` followed back, or — the core path being walked in
+> order and a track opening once the spine reaches its stage — a core rung before it in
+> stage-and-unit order, for a track rung every core rung of an earlier stage
+> (`session.rungAncestry`; `claims.rung_ancestry` for the report); where the gate has a learner
+> (the session, the swap sheet) a demand taught by any rung they have reached counts too, so the
+> walking bass `blues.6` teaches (`blues.5` introduces it, F2) is not taught at `jazz.5` except to
+> a learner who did the blues;
+> and `taughtAt` lists every rung whose lesson teaches the demand, one per path (E0b: no listed
+> rung on another's path, derived from the lessons' concepts and held to them by `validate.py`),
+> so the walking bass is also `jazz.6`'s and `jam.6`'s and is taught at `jazz.8`, never at
+> `theory.9`, whose path reaches none of them.
+>
+> **The reading and the gate corrected (L120b, 2026-09-29; L120d and L120e, 2026-09-30).** Two
+> faults that were not the curriculum's are corrected where they live, under the reviewer's order
+> *material reading → teaching ownership → placement* (`responses/0bcd3be0.md`), with the table of
+> rung-own options the gate refuses `untaught` (`tools/content/untaught_options.py`) re-run after each.
+>
+> The material reading:
+> - 3/8 is simple triple at the detector (`detect.ts`'s `isCompound`: more than one beat of three
+>   eighths), so compound time, syncopation and the dotted quarter read a 3/8 bar as three
+>   eighth-note beats. The evidence version moved to 4.
+> - A key signature that alters no sounding note is not asked on the coping question
+>   (`eligibilityCore.demandsAsked`, `claims.asked_of`). The notation fact stays on the row.
+> - A written sixteenth in 3/8 is a sixteenth.
+>
+> The gate's support model, a skip or a leap inside a taught fixed position: *can the learner cope*
+> has a third route beside *supported* and *taught*. A skip or a leap the rung's path has not taught
+> that lies wholly inside a fixed five-finger position whose note reading is taught on the path (or
+> on a rung the learner has reached) is coped with by that note reading — right-hand C position,
+> C4–G4, which 1.1 teaches by note name (`C-position`), and the left hand's, C3–G3, which 1.3 teaches
+> (`LH-C-position`) (`eligibilityCore.inTaughtPosition`; `claims.untaught_on` with the curriculum,
+> the build's twin). The two positions are `demands.json`'s `fixedPositions`, the same two on
+> `interval.skip` and on `interval.leap` (the leap's since L120d, on the reviewer's Question 1 on
+> L120b, `responses/c8680b70.md`), pinned equal by a test in each language. Every sounding hand of
+> the row must lie inside its own hand's taught position over the whole piece (the row's range,
+> `measurement.span`), and where each position is taught comes from the lessons' `concepts` under
+> the ancestry (`session.positionTaughtAtRung`, `taughtForLearner`); material outside the position
+> still refuses. The route changes the gate only: the row keeps the demand as measured, `taughtAt`
+> stays 1.5 for the skip and 2.1 for the leap, `copedWithBy` stays interval reading, and the
+> predicate names no skill, so no evidence reader sees the route and a correct run of such an item
+> is never interval-reading evidence. The candidate-rungs reports, the studies' and the excerpts',
+> keep a rung the route alone opens and flag it on its line — *eligible by taught-position coping;
+> does not establish interval-reading evidence* — naming the item's target where it is read by
+> interval (L120e, the reviewer's required change on L120d, `responses/4e76c768.md`). Clef never supplies hand
+> identity: a one-staff bass-clef part the model reads as the right hand (1.3's left-hand *Hot
+> Cross Buns* and *Mary*) gets no position route until the source carries an independent hand
+> assignment. Among the options the route admits are the three *Jingle Bells* options, not refused
+> at 1.2 and on `holiday` for a leap that stays inside C position (G down to C, D up to G, and the
+> left hand's held C, F and G); both *When the Saints* options, whose leap it copes with, keep their
+> syncopation refused.
+>
+> The table stood at 388 rung-own options (641 pairs, A 14) before these corrections, 386 (632, A 3)
+> after the reading and 378 (618, A 3) after the skip's route; after L120c's sixteenths it read 218
+> (453), and the leap's route took it to 215 (448). The validator warns with its count and never
+> fails.
+
+> **What the notes establish of each rung's claims (E0, 2026-09-27).** Every bundled score now
+> carries the demands the app's detectors measured on it (`docs/03` §4), and the build writes the
+> **rung-claims report**, `docs/prompts/rung-claims.md`: for every option of every rung, each
+> claim the rung makes — the skills its requirements name, the vocabulary skills and notated facts
+> its concepts name, the demands the vocabulary says it teaches — as established, incidental,
+> absent or unmeasured, and every concept no detector can measure (rootless voicings, a montuno,
+> four-part texture, wrist rotation) as a claim needing a person's judgement, with the review bit
+> (none, today). The rungs Part 12 named first are in it in full: `jazz.7`, `jazz.8`, `hymns` and
+> `technique.7` make no claim the vocabulary can measure at all, so nothing on them is established
+> by the notes; `jazz.9`'s walking bass is established only by the stride exercise, which is the
+> detector's recorded misreading (E22); `latin`'s syncopation is established on most of its
+> options and its clave, tumbao and montuno are unmeasurable; `technique.4`'s one measurable
+> claim (notes outside the key) is established by its two chromatic-scale drills and one of its
+> three Lemoine études, `technique.5`'s syncopation by none of its options, `technique.6`'s moving
+> left hand only by the two 3:1 independence drills and by none of the Czerny studies, and
+> `technique.7` claims nothing the vocabulary can measure. **Nothing is removed from a rung**: the
+> authored lists stay authoritative, the report is what F and G rewrite from (no owner review or
+> placement is required; corrected 2026-09-28, D3a), and
+> `validate.py` warns with its count. The same report carries the untaught-on-rung demands of
+> every option, D0's 71 generated combinations among them.
+
+> **The rungs reconciled with the report (F2, 2026-09-29; Entry 108).** A rung claims only what
+> its options establish, or it says it introduces the concept:
+>
+> - **`introduces`**, beside `concepts` in the stage files: a measurable concept the lesson
+>   introduces while no piece on the rung practises it yet. It is no claim the notes must keep
+>   (the report lists it as *introduced*), never a teaching rung (`claims.teaching_rungs` reads
+>   `concepts` alone, so `taughtAt` never names it; `validate.py` refuses a listed rung that only
+>   introduces the demand, whatever its note), and never a requirement met (the evidence gate reads
+>   `targetSkills`); for a learner carried over from before C5 it is an exposure, as the rung's concepts are — *introduced* on the ladder, never an encounter, familiarity or requirement (CL04, G70) — and it is never written into an imported piece's *What it trains* (the reviewer's ruling, `responses/questions-eebafb5e.md`). `blues.5` introduces the walking bass: its exercise is the line alone, left
+>   hand only, and the demand is a walk under a right hand, so `blues.6`, whose exercise puts a
+>   right hand over the same line, is the blues path's teaching rung.
+> - **The rule the validator holds:** a rung's `concepts` naming a measurable skill or demand that
+>   no checkable option establishes fails the build; the same concept under `introduces` passes; an
+>   option establishing an introduced concept is warned back to `concepts`. Where the claim's
+>   failure is a detector's reading known to be wrong — the walking bass on `blues.6`, `blues.8`,
+>   `jazz.6` and `jam.6`, whose exercises walk in all but one bar by the detector's own reading of
+>   each bar, and the oom-pah on `ragtime.5`, whose Joplin pieces carry it in all but their opening
+>   and closing bars — `validate.py` names the claim in `DEFERRED_CONCEPT_CLAIMS` with that reason
+>   and warns; the report still lists it, and a deferral that stops describing the build fails.
+>   This proves the rungs agree with the report, not that either is true (Part 10's rule).
+> - **Concepts where taught:** 1.1 names `steps`; `latin` no longer names the walking bass (its
+>   bass is the tumbao); `technique.5` no longer names syncopation (its lesson teaches ties across
+>   the bar line, which `tied-across-bar` claims). 1.5's leap and 3.1's accidentals stayed hand
+>   readings at F2, warned (the entry's question 1). Revised (F2a, 2026-09-29; the reviewer's
+>   required change): 1.5 introduces the leap and 2.1, whose options establish it, teaches it; 3.1
+>   introduces accidentals and 3.3, whose options establish them, teaches them. No hand reading is
+>   left, and no option was added to 1.5 or 3.1.
+> - **Options moved** only by leaving the rung their notes are untaught at, where a later rung on
+>   the same track already lists them and teaches everything they carry, so nothing that needs a
+>   teaching-use decision is added to any rung (the practice floor lists items the Stage 1 core
+>   rungs already list, none of them held by the admission): the both-hands five-finger pattern off 1.1 and 1.3 (2.1
+>   keeps it), the inversions off 2.3 (4.3), the two-octave A minor arpeggio off 3.3 (3.6), *10,000
+>   Reasons* off `hymns` (`hymns.6`), Hanon No. 1 off `practice.1` and `practice.2` (Part C's
+>   floor), and row 7 off `theory.9`, whose lesson now names the level-6 row it lists. Every other
+>   option with an untaught demand stays with the report's warning and its reason in the entry.
+> - **The Latin rungs** (`latin.3`, `latin`) carry no duet tool while the grooves it named have no
+>   teaching-use decision; their exercise asks stay unmet (Q57, the reviewer's ruling), no song is
+>   put in their place, and their lessons say how to open the two-staff exercise from its own row.
+
+> **The generated study (D3, 2026-09-27): the middle between a drill and a piece.** A drill
+> repeats a pattern and says so; repertoire is somebody's music; the study is eight to sixteen bars
+> written around one target with only what its rung has taught, promised as music and judged as
+> music — by phrase shape from the notation, never by ear. `tools/content/study.py` owns the recipe,
+> the grammar and the realiser; `generate_exercises.make_study` is its maker; the `study` row in
+> `family_contracts.json` says what it is for.
+>
+> - **The recipe.** A target — a vocabulary skill (`interval-reading`, `position-shift`,
+>   `subdivision`, `syncopation`) or a vocabulary demand the study provides as an opportunity
+>   (`metre.compound`, whose coping skill is `6/8`; `texture.hands-together`, whose coping skill is
+>   `hands-together`), never a skill invented to label a recipe — a key and mode, a metre, a length
+>   of 8, 12 or 16 bars, a left-hand texture (a held root, blocked chords, broken chords, Alberti, a
+>   waltz bass), **the rung whose taught set bounds every demand** (its ancestry, the reading
+>   `claims.py` and the app share), a seed and a tempo. The recipe is `drill.params`; with family,
+>   version and seed it is the identity (G21). A recipe asking for what its rung has not taught (a
+>   minor key before accidentals, 6/8 before 4.5, a pattern in the left hand before 3.6, blocked
+>   chords before the hand may leave its position, a syncopation study over a left hand that holds
+>   through the beat it is felt against) is refused with the reason before a note is drawn.
+> - **The grammar, harmony first.** Phrases of four bars. Eight bars are an antecedent closing on the
+>   dominant and a consequent restating its first two bars and closing on an authentic cadence;
+>   twelve put a contrasting phrase between them; sixteen are antecedent, consequent, contrast and
+>   the consequent again. The antecedent is `I x y V` (`x y` one of `IV I`, `vi IV`, `I IV`, `V I`,
+>   `ii IV`); the consequent keeps its first two chords and closes `V I`, `V7 I`, `IV V | I` or
+>   `ii V | I`; the contrasting phrase is `IV I IV V`, `vi IV I V`, `IV V I V` or `ii IV I V`. The
+>   minor forms use `i`, `iv`, `VI` and the dominant with its leading tone (`i x y V`; closing `V i`,
+>   `V7 i`, `iv V | i`). The hands-together target moves the opening bars of each phrase through two
+>   chords a bar. A chord whose root the left hand cannot reach at the rung (at 2.1, `vi` lies
+>   outside the five-note position the hand keeps) is not drawn. A grammar and a distribution, not
+>   a template: the distribution suite measures what it writes over seeds.
+> - **The realiser.** The left hand is the texture over the progression, every chord spelled by
+>   interval from a root spelled by the key, off ledger lines. The melody is drawn: a rhythmic cell
+>   for the first bar (the motif) restated or varied, a cadence cell holding each phrase's last note
+>   a beat or more, pitches by a walk guided toward a contour chosen per phrase, strong beats on the
+>   chord's tones, a leap recovered by a step back, no melodic tritone or augmented second, the
+>   consequent restating the antecedent's opening and the contrasting phrase carrying the motif's
+>   shape to its own chord. **Valid first, then scored** (D1's rule): a draw breaking the hard layer —
+>   the rung's taught set, the leap cap, the target at the recipe's density, every cadence on its
+>   chord's tone, no bar repeated exactly beyond the grammar's restatement — is never scored; the
+>   valid draws are scored by the musical evaluator and the earliest within a tolerance of the best,
+>   at the valid draws' own density, is kept if it clears the floor. **Fail closed**: a recipe whose
+>   budget yields nothing that does is refused at build time with the reason, and the build stops.
+> - **The musical gate** (`family_contracts.musical_gate`, `musical_evaluator.py`): D1's parts ported
+>   to Python and held equal to the TypeScript scorer on a shared fixture of constructed phrases,
+>   with the study's semantics stated — an arrival and a cadence per phrase, the authentic cadence at
+>   the close, the harmony read from the declared progression rather than from the left hand, degrees
+>   read in the minor, the grammar's restatement never counted as repetition. It refuses an item
+>   below the row's floor or with any cadence on a note outside its chord. The groove and style
+>   families stay "not evaluated": the evaluator judges phrase shape, not idiom, and idiom needs
+>   hearing.
+> - **No placement.** The first set — each target canonical, in two variable realisations and in
+>   transfer (a key, texture and register the drill family that teaches the same skill never writes,
+>   measured item against item) — is in the Library and the contract and on no rung, `heard: false`.
+>   A study can meet every detector and still read to a teacher as an exercise with an accompaniment;
+>   the candidate-rungs report beside D3's entry lists, for each study, the rungs whose coping
+>   question leaves nothing it carries untaught and whose claims its notes establish, each line
+>   saying whether the rung teaches every demand or admits a skip or leap only by a taught fixed
+>   position (L120e) — the material a later placement decision reads beside a resolved teaching-use
+>   review in D2's record.
+> - **Out of every automatic offer until a teaching use is approved (D3a, 2026-09-28).** A study
+>   promises music, and so do the grooves and the 12/8 blues; nobody has heard one. The build
+>   writes each generated item's promise for its recipe as an authored provenance fact
+>   (`docs/03` §4a), and the one gate refuses a music-promising item whose
+>   `provenance.review.teaching` is not `true` for a skill, a requirement, a demand and an
+>   equivalent — the swap sheet's four tiers and its last resort, a lesson's own option and an
+>   authored alternative included, since authorship establishes the relationship and not that
+>   unheard generated music is fit to teach — as *not approved for teaching use*: undecided and a
+>   `no` or a `fix` on record alike, the stored bit kept. The Library lists every study, and
+>   exploration passes. The route in needs no owner: a named reviewer's `goodTeachingUse: yes` on
+>   the item's current identity, through the microscope's export and `review.py --merge`, built
+>   into `provenance.review.teaching === true`, admits it to the same gates as everything else; a
+>   stale decision (a changed identity) does not. Before D3a the demand and skill tiers offered the
+>   2.1 studies as *Also practises both hands together* on 2.1's rows. Since D3b (2026-09-28) the
+>   session card's rows that take an item straight from a rung's list — its asks, the fallback's
+>   rung and prerequisite steps, the jam slot, the exposure rule — pass the same admission
+>   (`eligibility.admittedForTeaching`), because a rung listing a groove is placement, not a
+>   decision to teach it; a rung's ask whose every candidate is refused (`latin.3`'s and
+>   `latin.6`'s exercises, all grooves) stays unmet, and the card takes the next valid step.
+>
+> **The excerpt (E1, 2026-09-28): the passage where a whole piece is the wrong unit.** Nine rung
+> claims were kept by no whole piece; the four bars where the leaps are, or the phrase in the
+> Minuet a Stage 3 learner could read while the whole Minuet is beyond them, are what an excerpt
+> is for (`03` §4c). The gate's two questions need no excerpt branch: they read the cut's measured
+> demands, so the whole Anh. 113 is refused at `classical.3` (sixteenths, taught nowhere, and
+> triplets) and its excerpt of bars 25–32 is not refused for its demands. An excerpt is **on no rung**: it is placed by F only where the
+> candidate-rungs report establishes the rung's claim on the combined build with nothing untaught
+> **and** D2's record holds a current `goodTeachingUse: yes` on the cut's identity by a named
+> reviewer stating their basis; until then it is a Library item, its boundary by rule and unheard.
+> No automatic offer reaches an unplaced one (the swap sheet's tiers, the session's slots), a
+> slot or swap that leaves songs out leaves excerpts out, the repertoire lifecycle and retention
+> keep to songs, and a run of an excerpt marks the parent neither passed nor performed. **Since
+> E1a (2026-09-28) the one teaching-use admission covers the excerpt** (the reviewer's required
+> change on E1, Q59): an excerpt is music whose teaching suitability is not established until a
+> person says so, like a study, so the gate refuses one for every automatic offer as *not approved
+> for teaching use*, and the card's rows and the swap sheet's tiers with it, until a
+> `goodTeachingUse: yes` is on the cut's current identity — the cut file's sha256, so a decision on
+> an earlier cut of the same definition (a moved endpoint, a changed parent) admits nothing. "Not
+> placed" is only why today's five happen not to surface; a rung that lists one offers it only
+> once that `yes` exists. The Library lists every excerpt and exploration opens one, whatever its
+> bit. Today the five are on no rung and undecided, so nothing a learner sees changes.
+>
+> **Transfer, selected and recorded as facts (D4, 2026-09-28; Part 26).** A skill the ladder reads
+> as proficient used to be left to whatever first read of another reading row came along. Now:
+>
+> - **One material identity, the build's.** Every catalogue row carries `provenance.identity`, D2's
+>   identity as the review record binds to it (a generated item's generator family, version and
+>   seed with its recipe and tempo; a notated item's built file by its sha256, an excerpt's cut
+>   included; `none` for a drill made when it opens), and every run stores the exact material it
+>   played as `material`: the row's, or, for a sight-reading phrase, the phrase's complete generator
+>   identity (the options it was written from — the row's params with the reader's moves and the
+>   rung's hold — never the stored triple alone). A transfer role carries its contract's
+>   `transferOf` for its recipe (`provenance.transferOf`: the skill, the families it was written
+>   against, the dimensions declared to differ, what stays unmeasured). A stored identity resolves
+>   through a row's former identities (E50a, `provenance.formerIdentities`: the dated forms a
+>   converted file had while music21 wrote the day it ran into it), so a run, an encounter, a pruned
+>   run's summary or a project stored against a dated file names the same material after the date
+>   was removed; nothing stored is rewritten, and D2's record stays exact bytes. Since E50 the list
+>   also carries the old identity of a reviewed musical repair (`tools/content/repaired_identities.json`:
+>   the seven PDMX scores whose printed "= N" became their tempo), so a learner who met the old file
+>   has met the piece; the old run stays a run at its recorded tempo, and no standard reads the list.
+>   Since E50b the Wabash cut, re-cut from its repaired parent, carries its old cut the same way (the
+>   table's `cuts`: the one derived repair the build produced, proved the same bars and staves differing
+>   only by the parent's repair; the approval stays stale), and each repair's old identity is also
+>   listed as tempo-changed (`provenance.tempoRepairedFrom`): a run of it, or a run of the row's id
+>   that stored no material or no base tempo, measured its percentage of the old tempo, so no
+>   tempo-dependent standard reads it against the repaired one (`rungState.meetsStandard`, below).
+> - **Contact novelty from identities, conservatively** (`progressStore.contactIn`): met where any
+>   run under any item id carries the material; *met by id* where only a run that stored no material
+>   shares the id (prior contact proven, the material unknown — never read as unmet); unmet only
+>   where neither exists, with the id's contact beside it (a new seed or version is new material).
+>   Since G1 (`progressStore.contact`) contact reads the encounters that are not runs and the
+>   summaries of runs the retention cap deleted as well: material viewed, heard or demonstrated
+>   and never played is *met*, a pruned run's material is still *met*, and a *met* says how
+>   (`how`: `played`, `heard`, `demonstrated`, `viewed`). Since G2 the session's offer reads the
+>   same contact (`session.contactOf` over `BuildInput.contact`, which Today loads), so a piece
+>   heard once or practised and pruned is never offered as new (G1, G2).
+> - **The offer** (`session.ts`, the `transfer` claim; the words `04` §2): for a skill proficient and
+>   not beyond, the `new` slot — after the rung's own new work, never in place of an unmet
+>   requirement of a strand's rung, at most one a day — offers an item whose role is `transfer` for
+>   the skill that passes the one gate, or an excerpt a reached rung lists that the gate passes for
+>   one of the skill's demands; unmet by its exact material; differing in a dimension measured or
+>   declared, and never of the family that established the skill. Studies and excerpts need a current
+>   teaching-use `yes` through the gate, as everywhere else. On the shipped catalogue the only
+>   candidates are the six pentatonic and blues scales for *shifting position*; nothing is offered for
+>   any other skill until a study or an excerpt is approved and (an excerpt) placed.
+> - **The relationship, as facts** (`curriculum/transfer.ts`): what the skill was shown on — the
+>   ladder's own `shownOn`, asked of the ladder, with each supporting record's material, a run that
+>   stored none an unknown historical reference — and, per dimension (family, generated or notated,
+>   key signature, hands, texture, rhythm), the candidate's value, every reference's, and whether it
+>   differs; the declaration carried as declared. No distance and no verdict. A transfer-intended run
+>   stores its `intent` and this relationship; the evidence context carries `material` and `intent`.
+> - **Nothing says a run demonstrated transfer.** The ladder is unchanged: its v0 state still turns on
+>   a first read of another item, the screens still call it *shown on different material*, and the
+>   offer never reads it. Replacing v0 with a policy over these facts is the post-E evidence task's.
+
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
 what a learner practises, and a skill with no generated exercise ends up either untested or
 propped up by a song that only half tests it. Every family below is generated notation, per
-key and per hand where that means anything, with fingering:
+key and per hand where that means anything. Fingering is printed only where the family's contract
+names a source, which in this table is the `contrary` scales alone; the others print none (G30):
 
 | Family | Trains | Stage | Notes |
 |--------|--------|------:|-------|
 | `five-finger` **hands separately** | 1.1 RH position, 1.3 LH position | 1 | The generator already takes a `hands` argument; the build plan only ever asked for `both`. |
 | `coordination` | 2.1 "LH holds, RH moves" | 2 | LH whole/half note under an RH five-finger walk; a variant where the LH changes C→G each bar. |
 | `interval-reading` | 1.5 steps and skips | 1 | Four bars, fixed hand position, intervals restricted to 2nds and 3rds. Deterministic per seed so a lesson can name one. |
-| `position-shift` | 2.5 leaving C position | 2 | A melody with one marked shift per line, fingering printed at the move. |
+| `position-shift` | 2.5 leaving C position | 2 | A melody with one shift per line. The finger at the move is no longer printed (G30: no source), so the shift is read from the notes leaving the position. |
 | `cadence` | 3.2 I–IV–V7, voice leading | 3 | Per key, twice: root position, then the smooth voicing keeping common tones. The most useful chord exercise there is. |
 | `accompaniment` | **3.6, which currently has no generated exercise at all** | 3 | Broken chord, Alberti, waltz bass over a chord sequence; LH alone and hands-together with an RH scale over the top. |
 | `pedal` | 3.5 legato pedalling | 3 | A chord sequence with pedal marks, for the CC64 change-timing score. |
 | `rhythm` in other meters | 1.4 (3/4), 4.5 (6/8) | 1–4 | `make_rhythm` currently hardcodes 4/4; the meter becomes a parameter. |
 | `shuffle` | 4.5, blues track | 4 | Straight eighths written, swung played; the notation carries the "shuffle" instruction. |
 | `contrary` 2-octave, minors | 4.1, 4.2 | 4 | Contrary motion exists at one octave in majors only. |
-| the **guitar keys** for `boogie`, `blues-scale`, `walking-bass`, `comping` | D3 blues, and the whole `jam` module | 4–6 | `JAM_KEYS` is E, A, G and D — what a guitarist calls — and the default harmony set is C, F, B♭, E♭, which is what a horn section reads. So `jam`, whose lesson asks for "a boogie bass in E", offered a boogie in C. Four families in four keys, not `--full`'s four hundred items. |
-| `walking-bass` and `boogie` over a **minor blues** | D3 Stage 6's "minor blues" | 6 | `TWELVE_BAR_MINOR`: minor sevenths on the i and the iv, and the ♭VI7–V7 at bars nine and ten. A band above the major form, because that pair is the only place the form leaves the key. The boogie figure's third flattens; its sixth does not — a minor blues is Dorian. |
-| `meter` in **12/8** | D3 Stage 6's "slow blues 12/8" | 6 | `ODD_METERS` held 5/4 and 7/8. 12/8 is compound rather than odd and is in that table because it is the same problem — a bar `make_rhythm` cannot write — so the row carries its own concepts and is not filed under "odd meter". It is a **blues**, not a scale in a new signature: twelve bars of `TWELVE_BAR`, the shuffle bass long-short in the left hand (which is what 12/8 *does* to the music), the shell twice a bar in the right. A learner sent to "slow blues 12/8" and handed a C major walk has been told something untrue by the catalog. |
+| the **guitar keys** for `boogie`, `blues-scale`, `walking-bass`, `comping` | D3 blues, and the whole `jam` module | 4–6 | `JAM_KEYS` is E, A, G and D, the keys the `jam` lesson names for its band, and the default harmony set is C, F, B♭, E♭. So `jam`, whose lesson asks for "a boogie bass in E", offered a boogie in C. Four families in four keys, not `--full`'s four hundred items. |
+| `walking-bass` and `boogie` over a **minor blues** | D3 Stage 6's "minor blues" | 6 | `TWELVE_BAR_MINOR`: minor sevenths on the i and the iv, and the ♭VI7–V7 at bars nine and ten. A band above the major form, because that pair is the only place the form leaves the key. The boogie figure's third flattens; its sixth stays major over the minor chord (a Dorian colour), and which sixth a given minor blues uses is the lessons' to say (F, G). |
+| `meter` in **12/8** | D3 Stage 6's "slow blues 12/8" | 6 | `ODD_METERS` held 5/4 and 7/8. 12/8 is compound rather than odd and is in that table because it is the same problem — a bar `make_rhythm` cannot write — so the row carries its own concepts and is not filed under "odd meter". It is a **blues**, not a scale in a new signature: twelve bars of `TWELVE_BAR`, the bass long-short in the left hand (two eighths of each beat and then one, written in the metre), the shell twice a bar in the right. A learner sent to "slow blues 12/8" and handed a C major walk has been told something untrue by the catalog. |
 | `oompah` | D5 ragtime, on every one of its rungs | 4–5 | Bass on 1 and 3, chord on 2 and 4, I–IV–V–I in 2/4. Two spans: the chord an octave above the bass, and a tenth above it. The span is the whole difficulty. Ragtime had **no generated family at all** — its rung's four exercises were borrowed accompaniment and syncopation rows. |
 | `secondary-rag` | `ragtime.8`; the `secondary-rag` concept id | 6 | A three-sixteenth cell — short, long — over a beat of four, tied across the barline, with an oom-pah underneath so the beat it slips against is audible. Levelled with `syncopation`'s sixteenth variant: three-against-four at the sixteenth is the hardest rhythm the generator writes, and a level that puts an item on rungs it cannot be played on is worse than none. `concepts.json` has carried the id since it was written with nothing behind it. |
 | `cadence` in a **plagal** voicing | `hymns`' plagal cadence | 3 | IV–I in every major key, a third voicing on an existing family. Same level as the other two: the hand shapes are unit 3.2's either way, and what is being learnt is the sound. |
@@ -853,6 +1282,7 @@ marked a `full` LH (broken chords/waltz/Alberti). Stage tag gives the *simple* v
 | The Ash Grove | Welsh trad. | G/F | 3.5 | |
 | Beautiful Dreamer | Foster 1864 | C/F | 3.6 | waltz |
 | Streets of Laredo | US trad. | G | 2.4 | waltz; `[PDMX]` quarried 2026-09-16, level 2.2; on 2.4 |
+| Cielito Lindo | Mendoza y Cortés 1882 | C | 2.4 | 3/4; `[AUTH]` simple, 2026-09-29 (Q76), the right hand as the PDMX *Exercise* edition writes it; on 2.4 for the public build's tie. Measured against PDMX editions first: *Silent Night* and *Auld Lang Syne*, the wishes above, write almost no ties |
 | Simple Gifts | Shaker 1848 | C/G/F | 2.1 | `[PDMX]` quarried 2026-09-16, level 2.1; on 2.1 |
 | Morning Has Broken (Bunessan) | Scottish trad. | C/D | 4.3 | 3/4 |
 | Loch Lomond | Scottish trad. | F/G | 4.3 | |
@@ -900,9 +1330,11 @@ marked a `full` LH (broken chords/waltz/Alberti). Stage tag gives the *simple* v
 | Jingle Bells; Deck the Halls; We Wish You; Joy to the World; Hark the Herald; O Holy Night; God Rest Ye; Carol of the Bells (melody) ; Ma'oz Tzur; Sevivon | trad./19th c. | var. | 2–5 (holiday) | |
 | Ode to Joy (full); Canon in D (easy); Air on G; Jesu Joy (easy); Habanera (Carmen); In the Hall of the Mountain King; Morning Mood; Blue Danube (easy); Swan Lake theme; Dance of the Sugar Plum Fairy (easy); Spring (Vivaldi, easy); William Tell (easy); Hungarian Dance 5 (easy); Eine kleine Nachtmusik (easy); Radetzky March (easy) | classical themes | var. | 2–5 | "famous themes" easy arrangements — high motivation value; several already in `[MT]` |
 
-**Owner's import list (copyright, never bundled; catalog entries with `file: null` and an
-`importHint`):** Avenged Sevenfold — Seize the Day, Dear God, So Far Away, Fiction; Linkin
-Park — Final Masquerade, Waiting for the End, Shadow of the Day; Sleep Token — owner to pick.
+**Import placeholders in the Library (copyright, never bundled; catalog entries with
+`file: null` and an `importHint`, on no rung — the owner, 2026-09-28; F2):** Avenged Sevenfold —
+Seize the Day, Dear God, So Far Away, Fiction; Linkin Park — Final Masquerade, Waiting for the
+End, Shadow of the Day. A learner finds each in the Library, which says how to import it; the
+rock track teaches the textures on public-domain material (`00` D18) and does not wait for them.
 
 **Explicitly excluded from bundling (copyright):** anything by living or post-1955 composers
 and any song published after 1930 (e.g. Over the Rainbow 1939, You Are My Sunshine 1940,
@@ -916,11 +1348,31 @@ suggestions** with a note on where to buy/obtain MusicXML.
   the learner self-reports after a Tempo-mode run — the app shows a "How did it go?" 3-button
   prompt and records it as self-assessed).
 - `master` = accuracy ≥ 97 % at 100 % tempo, twice on different days.
+- **What accuracy is (2026-10-02, CL11a).** The written notes played right, with nothing
+  extra. In Keep tempo the unit is the note: the notes struck in their window, less one for
+  each wrong key, of the notes written, never below nought. A right note played at the wrong
+  time costs once — a miss, or an early note — and never also as a wrong key; at most one late
+  strike stands for each missed note (`05` §3). A chord with one pitch missed keeps two thirds of
+  its credit. In *Wait for me* the unit is the step, and a wrong key makes its step unclean, so
+  a single-line piece gives the same figure in both modes for the same playing. A rhythm-only
+  run keeps its rhythm figure (`05` §3a). Each rung keeps its own authored number, and the
+  master standard is unchanged; only what the number counts moved. A stored row says which
+  rules judged it (`definitions`, `OBSERVATION_DEFINITIONS`, 2 from this change): rows written
+  before it keep the accuracy they were judged with and are never re-judged, because they
+  cannot tell a wrong key from a late right note. Unverified as teaching: whether 90 % net of
+  wrong keys is the right bar is a teaching standard, and the authored number is the rung's.
+- **Who counts as having passed (2026-10-02, CL11a).** A pass the learner asserted — *I already
+  know this*, a Clean self-report, a paper Clean — is their word: stored `selfPassed`, shown as
+  theirs (*you said you know it*, *known*), never counted toward a rung, a skill or Progress's
+  *N passed* or its pieces passed, not yet projects. A measured pass later clears the flag and
+  counts. A microphone run counts as a MIDI run does, its accuracy labelled estimated: Today's
+  row reads it done. An estimated failure keeps the session's caution (`05` §11.4).
 - **What a run is evidence of (2026-09-25, T37).** The pass above is played in Tempo mode
   because only Tempo mode measures a tempo. A *Wait for me* run is evidence of the notes
   and none of the pulse: it is stored as not having measured tempo (`tempoMeasured: false`
-  on the session row), meets a criterion only where the criterion asks for no tempo, is
-  never master-eligible, and its sheet is headed *Notes ready* with *to pass, play it in
+  on the session row), meets no rung's criterion (every rung asks for a tempo: the rungs that
+  state `minTempoPct: 0` — 11 of the 109 — take the Settings pair, which is never below 30 %),
+  is never master-eligible, and its sheet is headed *Notes ready* with *to pass, play it in
   Keep tempo* where the tempo used to be. `master` counts the days the master standard
   itself was met (`ProgressRow.masteredOn`), not pass days, so a pass on Monday and one
   97 %-at-full-tempo run on Tuesday is *Mastery run 1 of 2*. Without MIDI the *How did it
@@ -942,7 +1394,15 @@ suggestions** with a note on where to buy/obtain MusicXML.
   run or during it — is not a first reading, the same rule as a repeat, and is recorded
   only as practice (C1, below);
   the sheet offers *New phrase*, a fresh phrase of the same row, which is. So hearing today's
-  phrase first means the day is not ticked by it. *A performance the piece was played to the
+  phrase first means the day is not ticked by it. A phrase heard on any visit since G1 is not a
+  first reading either — a playback is a stored encounter (`encounterStore`), read back when
+  the phrase is opened again — and neither is a phrase looked at on another visit; looking at
+  it on this visit, before playing, is what sight-reading is. A visit is one opening of the
+  Score screen: a reload, Back and a return, a second tab are each another. A notated piece, an
+  excerpt or an import carries the first-contact relation on its run (`firstContact`, over the
+  bars the run covered; since G1a, never `unseen`) as an audit fact that refuses it nothing: a
+  piece played again passes and meets its rung as before (the first-reading rules read
+  `unseen`, a phrase's field; G1, G1a). *A performance the piece was played to the
   learner in the middle of* is recorded as practice, not as a performance (`04` §5e); heard
   before the take began, it is still a performance.
 - **What a run leaves behind (2026-09-26, C1; the reviewer's decisions 3 and 5).** Every run
@@ -977,8 +1437,12 @@ suggestions** with a note on where to buy/obtain MusicXML.
   not started from the stored runs, and Plan, Today, the lesson page and Skills read it
   (`04` §3f). The kinds: **`runs`** — distinct items of the rung's exercises, songs (paper
   pieces included) or either, or items it names, each with a run *judged by this rung* at its
-  standard (`mastery.minAccuracy`, and `minTempoPct` in Keep tempo; a Wait run meets only a
-  rung that asks no tempo); **`reads`** — phrases of its reading row read at sight, judged by
+  standard (`mastery.minAccuracy`, and `minTempoPct` in Keep tempo; a Wait run meets no rung,
+  every rung asking a tempo, and since E50b neither does a Keep tempo run whose percentage is of a
+  tempo a reviewed repair has since corrected — the code keeps its `passTempoPct <= 0` branches for a constructed
+  criterion that asks none — a run of an old file `provenance.tempoRepairedFrom`
+  lists, or a run of such a row that stored no material or no base tempo: never rescaled, never
+  rewritten, its contact and its evidence read as before); **`reads`** — phrases of its reading row read at sight, judged by
   it, whose evidence for a skill is at the practice or full standard with a share right;
   **`skill`** — a vocabulary skill's ladder state (familiar or proficient) over **every**
   evidence record, whichever rung judged the run; **`done`** — an item of this rung's alone
@@ -1059,6 +1523,25 @@ suggestions** with a note on where to buy/obtain MusicXML.
 - The placement test sets where the plan starts (a floor): rungs behind it are held back and
   come back when nothing is left in front. It meets no requirement — its answers are the
   learner's own account, not runs of each rung's material (C5 keeps placement a floor).
+- **Placing an item on a rung (F2, 2026-09-29), as the reviewer stated it.** A measured claim is
+  not a teaching-use judgement: "A measured opportunity is a valid demand fact, but it is not a
+  teaching-use decision" (`docs/review/responses/ee70b43.md`), and "rung placement, measured
+  demand, or the need to fill a card is not approval" (`4478793.md`). An item goes onto a rung
+  for a claim only where the candidate-rungs report lists the rung on the combined build **and**
+  the review record holds a current `goodTeachingUse: yes` on the item's identity by a named
+  reviewer (`bf2666a.md`, `2c80472.md`: "a later placement decision can use that report together
+  with a resolved human teaching-use record"); an excerpt needs its `yes` on its own cut
+  (`4f7227d.md`). Nothing is added as filler ("Do not add or admit material merely as filler",
+  `4478793.md`), and where a decision "genuinely requires expertise beyond substantiated rules,
+  keep it undecided and out of learner assignments until an appropriate reviewer is available"
+  (`bf2666a.md`). A rung that introduces a concept no piece there practises grants no taught
+  status: "an introduction without a real teaching opportunity cannot satisfy the gate's
+  preparation/teaching claim" (`12af708.md`). On F2's build no item had a `yes`, so no item was
+  placed for a claim; options moved only by leaving a rung whose path had not taught what they
+  carry, where a later rung on the same track already listed them; and the practice track's first
+  two rungs list items the Stage 1 core rungs already list — a generated five-finger drill, two
+  runtime drills and the authored steps-and-skips study — none of which D3a's admission holds for
+  a teaching-use decision (Part C, *The floor*).
 
 ## Part H — Vocabulary v0: what a skill is and what a demand is (2026-09-26, C2)
 
@@ -1071,17 +1554,29 @@ grown only when a reader needs it and its observable exists).
   clef*. `content/curriculum/vocabulary/skills.json` gives each its kind, its **opportunity**
   (the demands whose steps exercise it), its **observable** (pitch, timing, or `none`, with
   the parts no run measures listed) and the run conditions for its **practice** and **full**
-  standards: Keep tempo for anything timed; unseen and the key guide off for reading at the
-  full standard. Sixteen skills: what the nine sight-reading rows and the rungs 1.3, 1.4,
+  standards: Keep tempo for anything timed; unseen, the key guide off and no note's name on
+  the screen for reading at the full standard (`names-off` beside every `guide-off` since
+  CL11b, L58: a read with a name shown, Wait's *Name the note I am waiting for*, is supported
+  practice, never unaided reading; met only where the run records the names off). Sixteen skills: what the nine sight-reading rows and the rungs 1.3, 1.4,
   1.5, 2.2, 2.5, 3.4, 4.5 and 4.6 practise, plus `tie` and `dotted-quarter`, which the
   taught-at table below needs a coper for. Ids are today's concept ids wherever they read as
   abilities; `accidentals` is the one new id. `reading-ahead` (4.6) is `observable: none`:
   continuity is not measured, and neither is the "straight through" part of sight-reading.
+- **The numbers that decide what counts live with the skills** (CL11b, L57; the ruling
+  `questions-53670d2a.md` §3). `skills.json` holds the **support share** (0.9: a record supports
+  a skill where that share of its counted steps or more was right), which a skill may override
+  with its own and none does, and the **timing precision** of each rhythm skill (the error its
+  timing must see, in quarter-note beats: triplets 1/12, subdivision 1/6, six-eight 1/4, the
+  dotted quarter, syncopation and ties 1/2), with a default (an eighth) for a skill whose rhythm
+  is the phrase's; each with its reason beside it. They were Part G's default pass share and a
+  code table, so a change to the rungs' pass would have re-read every skill's history; the
+  values did not change when they moved. `validate.py` refuses a rhythm skill without its
+  precision and an untimed skill with one.
 - **A demand** is something the notation contains, found by a detector and located in steps:
   an eighth, a skip, a note on a ledger line beyond middle C. `demands.json` gives each its
   detector (a function in `app/src/demands/detect.ts`, reading the score model the engine
-  plays), the skill that copes with it (`copedWithBy`), and the rung that teaches it
-  (`taughtAt`). Nineteen demands. `steps`, `skips` and `eighth-notes` stay concepts but are
+  plays), the skill that copes with it (`copedWithBy`), and the rungs that teach it
+  (`taughtAt`: since E0b a list, one rung per path, `[]` where none does). Nineteen demands. `steps`, `skips` and `eighth-notes` stay concepts but are
   demands here; C position is a range (`range.beyond-position` absent).
 - **Items.** `targetSkills` (declared, never evidence) is on the nine sight-reading rows only.
   `demands` (measured by the build, E) and `role` (D) exist in the schema and nothing writes
@@ -1101,7 +1596,7 @@ grown only when a reader needs it and its observable exists).
   skill requirement is shown by a reading of the rung's own row from its page.
 - **Taught at.** `sightReadingPromises.test.ts` holds every sight-reading row to *nothing the
   earliest rung listing it has not taught*, read from `taughtAt` — and, since C4b, to nothing
-  no rung teaches (`taughtAt: null`): row 7 stopped writing sixteenths (S23; below). One known
+  no rung teaches (`taughtAt: []`, `null` before E0b): row 7 stopped writing sixteenths (S23; below). One known
   exception: `sight-reading-2-right` reaches C5 on 2.2, three rungs before 2.5 teaches leaving
   C position (S16). C4b proved the generator side: held to 2.2 (`heldToRung`) the row stays in
   C position and keeps 2.2's promises; the app asks for that shape once the reader's one writer
@@ -1119,10 +1614,10 @@ grown only when a reader needs it and its observable exists).
   rung's promises and adding nothing untaught — or the reason it cannot is declared
   (`UNREALISABLE_AT`, printed in `05` §8, held to exactly the undoable set by
   `generatorContract.test.ts`). The declared gaps a teacher would notice: at 2.1, which
-  teaches hands together, the reader's row is 1.5's level-1 row, which writes one hand; on
-  1.5's row a leap breaks its drill's "only steps and skips", though 1.5's song has one.
+  teaches hands together and (since F2a) the leap, the reader's row is 1.5's level-1 row, which
+  writes one hand and whose drill promises "only steps and skips", so neither can be asked there.
 - **Sixteenths (S23, C4b).** No rung teaches reading sixteenths: the core track never does,
   and the rungs that touch them (ragtime.5's short–long–short, technique.6's page of
   sixteenths) are on tracks a jazz or theory learner need not take before jazz.8 or theory.9,
   where row 7 sits. So row 7 asks `sixteenths: false` and no longer claims the concept, until
-  F gives a rung on that path the teaching; `taughtAt` stays `null`, not guessed.
+  F gives a rung on that path the teaching; `taughtAt` stays empty, not guessed.

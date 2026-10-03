@@ -27,6 +27,7 @@ import {
   type ScoreNote,
 } from './types';
 import { measureRender } from '../util/renderTiming';
+import { mapTextGlyphs } from './textGlyphs';
 
 export interface MeasureRange {
   /** 0-based *printed* measure index, inclusive. */
@@ -154,6 +155,8 @@ export class OsmdView {
   private readonly timingLabel: string;
   private range: MeasureRange | null = null;
   private loaded = false;
+  /** The MusicXML the engraver was handed: the score model reads its tempo from it (X3d). */
+  private musicXml = '';
   /** The engraver's own cap on stretching a last system, kept to restore it. */
   private readonly lastSystemStretchCap: number;
 
@@ -197,8 +200,16 @@ export class OsmdView {
     return this.osmd.Sheet?.SourceMeasures.length ?? 0;
   }
 
+  /**
+   * Loads a score. The edition's private-use accidentals and metronome notes (SMuFL's code points, which
+   * MuseScore's text fonts write into a chord symbol or a tempo mark) are handed to the engraver as the
+   * Unicode characters they stand for, so a chord symbol prints its flat rather than a box (E31,
+   * `textGlyphs.ts`). Every drawing path goes through here; the file itself is not changed.
+   */
   async load(musicXml: string): Promise<void> {
-    await this.osmd.load(musicXml);
+    const text = mapTextGlyphs(musicXml);
+    await this.osmd.load(text);
+    this.musicXml = text;
     this.loaded = true;
     this.range = null;
   }
@@ -209,8 +220,9 @@ export class OsmdView {
    * Must be called before any draw range is set: OSMD's cursor iterator is
    * clamped to the drawn range, so a windowed instance yields a model of just
    * that window. Throws rather than returning a quietly truncated model.
+   * The tempo map is read from the text this view loaded (X3d, `tempoFromXml`).
    */
-  extractModel(options: ExtractOptions = {}): ScoreModel {
+  extractModel(options: Omit<ExtractOptions, 'musicXml'> = {}): ScoreModel {
     if (!this.loaded) throw new Error('OsmdView.extractModel: nothing loaded');
     if (this.range) {
       throw new Error(
@@ -218,7 +230,7 @@ export class OsmdView {
           'extract the model before windowing (or call clearRange() first)',
       );
     }
-    return extractScoreModel(this.osmd, options);
+    return extractScoreModel(this.osmd, { ...options, musicXml: this.musicXml });
   }
 
   /**

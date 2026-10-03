@@ -385,9 +385,36 @@ def validate_curriculum(curriculum: dict, catalog: list, min_options: int = MIN_
     return errors
 
 
-def stale_ladder_report(catalog: list, curriculum: dict) -> list[str]:
+#: Q80: the reasons an import step writes on a placeholder that is *this build's*, not the catalogue's: the
+#: source's files were not fetched, or what was fetched is not the pinned file. Read from the placeholder's
+#: `importHint`, where the step says why: `import_mutopia.build_entry`'s two, and since Q82 the one the kern and
+#: MuseTrainer steps write for a file their clone does not have (`import_kern.UNFETCHED_REASON`,
+#: `import_musetrainer.UNFETCHED_REASON`; before Q82 they left such a file out of the catalogue, and every id that
+#: named it pointed at nothing). `tests/test_validate_ladder.py` builds these placeholders with the import steps
+#: themselves, so a change to their wording turns that test red rather than this check quiet.
+UNFETCHED_REASONS = (
+    re.compile(r"the edition's \.(?:ly|mid) file was not fetched"),
+    re.compile(r"\S+ is not the pinned file \(sha256 [^)]*\)"),
+    re.compile(r"\S+ was not fetched: the (?:kern clone|MuseTrainer library) is not on this build"),
+)
+
+
+def unfetched_placeholders(catalog: list) -> list[tuple[str, str]]:
+    """Each placeholder whose reason is this build's fetch, with the reason as the step wrote it (Q80)."""
+    found: list[tuple[str, str]] = []
+    for item in catalog:
+        if item.get("file"):
+            continue
+        hint = " ".join((item.get("importHint") or "").split())
+        match = next((m for m in (pattern.search(hint) for pattern in UNFETCHED_REASONS) if m), None)
+        if match:
+            found.append((item["id"], match.group(0)))
+    return found
+
+
+def ladder_report_findings(catalog: list, curriculum: dict) -> tuple[list[str], list[str]]:
     """
-    replan §2.6: the committed ladder report has to match the catalog.
+    replan §2.6: the committed ladder report has to match the catalog. Errors, and warnings (Q80).
 
     Part D is a *report* of what is on each rung, and a generated report that
     nobody regenerates is exactly the hand-written table it replaced. So the
@@ -399,18 +426,66 @@ def stale_ladder_report(catalog: list, curriculum: dict) -> list[str]:
     though — see `ladder_report_note` — because a rule that disappears in
     silence when its input is missing is a rule that stops working the day
     somebody deletes the file, and nobody finds out.
+
+    **A build's own placeholder is not a change to the catalogue (Q80).** A build that could not
+    fetch a source (Mutopia's site or the GitHub mirror unreachable, a fetched file that is not the
+    pinned one) carries a placeholder the committed report, written on a build that fetched it,
+    does not (in Q76's first landing chain the difference was the "may not be shipped" count and
+    nothing that named the item), and validation failed for a reason that says nothing about the
+    content; on the runner, a network hiccup would have failed CI and the Pages deploy. So
+    where the reports differ and this build holds such placeholders (`unfetched_placeholders`), the
+    report is rendered again with those items bundled, as a build that fetched them has them, and
+    compared once more. Equal, and the difference was the fetch alone: **warned**, naming each item
+    and its reason, never failed, as Q75 treats a claim this build could not measure. Still
+    different, and the error stands, naming what it set aside, since a report regenerated on this
+    build would list those items as not bundled.
+
+    The render is untouched: what `ladder_report.py` writes is always this catalogue's truth,
+    placeholders and all (its module note). Only this comparison takes a fetching build's view, and
+    only of placeholders whose reason is a fetch. A licence placeholder is the catalogue's own state
+    on that flavour and is compared as it is; the strict build's already compare equal to the
+    owner's build's bundled files, because `ladder_report.shippable` reads a personal-only tag as
+    not shipped.
     """
     from ladder_report import DEFAULT_OUT, render
 
     if not DEFAULT_OUT.is_file():
-        return []
-    if DEFAULT_OUT.read_text(encoding="utf-8") == render(catalog, curriculum):
-        return []
-    return [
-        f"{DEFAULT_OUT.relative_to(CONTENT_SRC.parent)} is stale — the catalog has changed "
+        return [], []
+    committed = DEFAULT_OUT.read_text(encoding="utf-8")
+    if committed == render(catalog, curriculum):
+        return [], []
+    report = DEFAULT_OUT.relative_to(CONTENT_SRC.parent)
+    unfetched = unfetched_placeholders(catalog)
+    count = f"{len(unfetched)} item{'' if len(unfetched) == 1 else 's'}"
+    named = "; ".join(f"{item_id} ({reason})" for item_id, reason in unfetched)
+    if unfetched:
+        ids = {item_id for item_id, _ in unfetched}
+        # The render reads only whether a file is there; the path is the one the import step writes.
+        as_fetched = [
+            dict(item, file=f"scores/imported/{item['id']}.mxl") if item["id"] in ids else item for item in catalog
+        ]
+        if committed == render(as_fetched, curriculum):
+            return [], [
+                f"WARNING (ladder report, Q80): {report} compared without the {count} this build could not "
+                f"fetch (read as bundled, as the committed report has them): {named}; a placeholder made for "
+                "want of a fetch is not a change to the catalogue"
+            ]
+    error = (
+        f"{report} is stale — the catalog has changed "
         "since it was written. Run `python3 tools/content/ladder_report.py` and commit it "
         "(replan §2.6)."
-    ]
+    )
+    if unfetched:
+        error += (
+            f" The comparison already set aside the {count} this build could not fetch ({named}): "
+            "regenerate the report on a build that fetched them, or it will list them as not bundled."
+        )
+    return [error], []
+
+
+def stale_ladder_report(catalog: list, curriculum: dict) -> list[str]:
+    """The errors of `ladder_report_findings`: the committed ladder report differs beyond this build's own placeholders."""
+    return ladder_report_findings(catalog, curriculum)[0]
 
 
 def ladder_report_note() -> str:
@@ -483,8 +558,6 @@ CORE_REACH_PLAN: frozenset[tuple[str, str]] = frozenset({
     ("2.5", "song.classical.beethoven-ode-to-joy.easy"),
     ("3.4", "song.classical.petzold-minuet-g-bwv-anh114"),
     ("3.4", "song.classical.petzold-minuet-g-bwv-anh114.alt"),
-    ("3.5", "song.classical.pachelbel-canon-d.easy"),
-    ("3.6", "song.classical.pachelbel-canon-d.easy"),
 })
 
 
@@ -555,6 +628,16 @@ def core_reach_errors(curriculum: dict, catalog: list) -> list[str]:
     return out
 
 
+def asks_for_songs(lesson: dict) -> bool:
+    """
+    Whether the rung asks for a run of one of its songs (C5's requirement that replaced
+    `songsRequired`): the app's `selectors.asksForSongs`. Read by `thin_lesson_errors`
+    and `write_needs`, so the build gate and the shortfall the lesson page prints agree
+    on which rungs a song count applies to (R23).
+    """
+    return any(r.get("kind") == "runs" and r.get("from") == "songs" for r in lesson.get("requirements") or [])
+
+
 def thin_lesson_errors(lesson: dict, exercises: list, songs: list, min_options: int) -> list[str]:
     """
     docs/00 D21: three alternatives per rung, checked rather than trusted.
@@ -568,11 +651,7 @@ def thin_lesson_errors(lesson: dict, exercises: list, songs: list, min_options: 
         # Orientation lessons: there is one placement test and one guided tour, and
         # inventing two more to satisfy a counter would be worse than the counter.
         return []
-    # Whether the rung asks for a run of one of its songs (C5's requirement that
-    # replaced `songsRequired`).
-    required_songs = any(
-        r.get("kind") == "runs" and r.get("from") == "songs" for r in lesson.get("requirements") or []
-    )
+    required_songs = asks_for_songs(lesson)
     out: list[str] = []
     if len(exercises) < min_options:
         out.append(
@@ -823,11 +902,11 @@ def printed_bars(path: Path) -> int | None:
         return None
 
 
-def section_errors(
+def section_findings(
     catalog: list, content_dir: Path, report_path: Path = RENDER_REPORT
-) -> list[str]:
+) -> tuple[list[str], list[str]]:
     """
-    replan/`04` §5: a named section has to name bars the piece actually has.
+    replan/`04` §5: a named section has to name bars the piece actually has. Errors, and warnings (Q82).
 
     Bars are 1-based positions in the printed score, so the bound is the
     *printed* count. Checking against the unrolled count instead would pass a
@@ -840,13 +919,23 @@ def section_errors(
     to hold on a fresh checkout: an ordering between two build steps is not a
     thing to hang a correctness check on, and the first thing a clean CI runner
     does is prove it.
+
+    **A placeholder this build could not fetch is warned, not failed (Q82).** `build.attach_sections`
+    puts the sections on every item by id, a placeholder too. A fetch placeholder (`unfetched_placeholders`:
+    the kern or MuseTrainer clone, or Mutopia's files, did not arrive) has no file, and a fresh runner has no
+    render report when it validates, so there its count cannot be established for a reason that says nothing
+    about the sections: the check says it did not look, naming the item and the fetch, as Q75 treats a claim
+    this build could not measure. Only that case moves. A licence placeholder, a bundled file whose bars cannot
+    be counted, and a fetch placeholder the render report does count are checked as before.
     """
     errors: list[str] = []
+    warnings: list[str] = []
     with_sections = [
         item for item in catalog if (item.get("teaching") or {}).get("sections")
     ]
     if not with_sections:
-        return errors
+        return errors, warnings
+    unfetched = dict(unfetched_placeholders(with_sections))
     printed: dict[str, int | None] = {}
     if report_path.is_file():
         report = json.loads(report_path.read_text(encoding="utf-8"))
@@ -860,6 +949,9 @@ def section_errors(
         sections = (item.get("teaching") or {})["sections"]
         if bars is None and item.get("file"):
             bars = printed_bars(content_dir / item["file"])
+        if bars is None and item["id"] in unfetched and not item.get("file"):
+            warnings.append(f"{item['id']}: named sections not checked on this build: {unfetched[item['id']]}")
+            continue
         if bars is None:
             errors.append(
                 f"{item['id']}: has named sections but its printed bar count could not be "
@@ -879,7 +971,172 @@ def section_errors(
                     f"{item['id']}: section {label!r} runs to bar {high} but the piece has "
                     f"{bars} printed bar(s)"
                 )
-    return errors
+    return errors, warnings
+
+
+def section_errors(
+    catalog: list, content_dir: Path, report_path: Path = RENDER_REPORT
+) -> list[str]:
+    """The errors of `section_findings`: a named section that names bars the piece does not have (replan/`04` §5)."""
+    return section_findings(catalog, content_dir, report_path)[0]
+
+
+#: The approved excerpts (E1): each row checked beside the sections, against the built catalogue.
+EXCERPTS_FILE = CONTENT_SRC / "sources" / "excerpts.json"
+
+
+def excerpt_findings(catalog: list, content_dir: Path, path: Path = EXCERPTS_FILE) -> tuple[list[str], list[str]]:
+    """
+    E1 item 2: every approved row of `content/sources/excerpts.json`, checked beside the sections.
+
+    Errors: the parent is not in the catalogue, or is not a notated item with a built file (a
+    parent this build does not bundle — a licence placeholder — is a warning: the cut is refused
+    where the parent is); the range is not inside the parent's printed bars (1-based, the pickup
+    as bar 1); the selection is not one of both/right/left, or names a hand a one-staff parent
+    does not have; a target is not a vocabulary skill or demand; two rows share parent, range and
+    selection, or the derived id is another item's; the range crosses a repeat sign, a first-or-
+    second ending or a jump (the bars named); the build has no item for a row it should have cut.
+
+    Warnings: a row approved against parent bytes the parent no longer has — stale by provenance; a row
+    merged under an older cutter — stale by cut version (E33: nothing carries the approval to the new
+    cut); a built cut that does not establish a target its approval names, with the count (E29,
+    `excerpt_target_warnings`).
+    """
+    import excerpts as X
+
+    errors: list[str] = []
+    warnings: list[str] = []
+    if not path.is_file():
+        return errors, warnings
+    rows = X.read_definitions(path).get("excerpts") or []
+    by_id = {item["id"]: item for item in catalog}
+    skills_file, demands_file = load_vocabulary()
+    skills_by_id = {s["id"]: s for s in skills_file.get("skills", [])}
+    targets_known = set(skills_by_id) | {d["id"] for d in demands_file.get("demands", [])}
+    seen: dict[tuple, int] = {}
+    for number, row in enumerate(rows, start=1):
+        where = f"excerpts.json row {number}"
+        parent_id = row.get("of")
+        selection = row.get("selection") or "both"
+        try:
+            low, high = int(row["fromBar"]), int(row["toBar"])
+        except (KeyError, TypeError, ValueError):
+            errors.append(f"{where}: fromBar and toBar must be printed bar numbers")
+            continue
+        if selection not in X.SELECTIONS:
+            errors.append(f"{where}: selection {selection!r} is not one of {', '.join(X.SELECTIONS)}")
+            continue
+        eid = X.excerpt_id(str(parent_id), low, high, selection)
+        where = f"{where} ({eid})"
+        signature = (parent_id, low, high, selection)
+        if signature in seen:
+            errors.append(f"{where}: the same parent, bars and selection as row {seen[signature]}")
+            continue
+        seen[signature] = number
+        clash = by_id.get(eid)
+        if clash is not None and clash.get("type") != "excerpt":
+            errors.append(f"{where}: its id is already another item's")
+        targets = row.get("targets") or []
+        if not targets:
+            errors.append(f"{where}: no target: an approval names what the passage was approved for")
+        for target in targets:
+            if target not in targets_known:
+                errors.append(f"{where}: target {target!r} is not a vocabulary skill or demand")
+        parent = by_id.get(parent_id)
+        if parent is None:
+            errors.append(f"{where}: its parent {parent_id!r} is not in the catalogue")
+            continue
+        rel = parent.get("file")
+        if not rel:
+            if parent.get("importHint") or set(parent.get("tags") or []) & {PERSONAL_BUILD_TAG, NC_PERSONAL_TAG}:
+                warnings.append(f"{where}: not cut in this build: its parent is not bundled here, so neither is the passage")
+            else:
+                errors.append(f"{where}: its parent {parent_id} is not a notated item with a built file")
+            continue
+        parent_path = content_dir / rel
+        if not parent_path.is_file() or parent_path.suffix.lower() not in (".mxl", ".musicxml", ".xml"):
+            errors.append(f"{where}: its parent {parent_id} is not a notated item with a built file ({rel})")
+            continue
+        printed = (parent.get("notation") or {}).get("bars") or printed_bars(parent_path)
+        if printed is None:
+            errors.append(f"{where}: the parent's printed bar count could not be read, so the range cannot be checked")
+        elif not (1 <= low <= high <= printed):
+            errors.append(f"{where}: bars {low}–{high} are not inside the parent's {printed} printed bar(s)")
+            continue
+        staves = (parent.get("notation") or {}).get("staves")
+        if selection != "both" and staves is not None and staves < 2:
+            errors.append(f"{where}: selection {selection} on a parent with {staves} staff: it has no second hand to leave out")
+        try:
+            from music21 import converter  # noqa: PLC0415 — slow import, only needed here
+
+            faults = X.crossings(converter.parse(str(parent_path)), low, high)
+        except ImportError:
+            faults = []
+        if faults:
+            errors.append(f"{where}: bars {low}–{high}: " + "; ".join(faults) + " — unrolled, the cut would mean something else")
+        built = by_id.get(eid)
+        if built is None:
+            errors.append(f"{where}: the build made no item for it")
+            continue
+        approved = row.get("parentSha256")
+        current = X.sha256_of(parent_path)
+        if approved and approved != current:
+            warnings.append(f"{where}: stale by provenance — approved against the parent's bytes {approved[:12]}…, "
+                            f"the parent is now {current[:12]}…: its boundary review predates the parent's change")
+        under = X.approved_cut_version(row)
+        if under != X.CUT_VERSION:
+            warnings.append(f"{where}: stale by cut version — approved when the cutter was version {under}, the cutter "
+                            f"is now version {X.CUT_VERSION}: nothing carries the approval to this cut; a person re-decides it")
+        warnings += excerpt_target_warnings(where, [str(t) for t in targets if t in targets_known], built, skills_by_id)
+    rows_ids = {X.excerpt_id(str(r.get("of")), int(r["fromBar"]), int(r["toBar"]), r.get("selection") or "both")
+                for r in rows if "fromBar" in r and "toBar" in r and (r.get("selection") or "both") in X.SELECTIONS}
+    for item in catalog:
+        if item.get("type") != "excerpt":
+            continue
+        if item["id"] not in rows_ids:
+            errors.append(f"{item['id']}: an excerpt with no approved row in excerpts.json")
+        if item.get("excerptOf") not in by_id:
+            errors.append(f"{item['id']}: excerptOf {item.get('excerptOf')!r} is not in the catalogue")
+    return errors, warnings
+
+
+def excerpt_target_warnings(where: str, targets: list[str], built: dict, skills: dict[str, dict]) -> list[str]:
+    """
+    E29: the targets an approval names that the built cut does not establish, each warned with the cut, the
+    target and the count — the approval's claim is not what the passage carries. "Establishes" is the
+    rung-claims report's one reading (`claims.status_of`): a demand target by itself, a skill target by the
+    demands its opportunity names (the window rule included, as the build writes `established`). A skill
+    whose opportunity is every step no detector establishes, so an approval naming one is warned too; an
+    unmeasured cut is warned that its targets cannot be checked. A warning, never an error: a person
+    decides what a passage was approved for, and the proposer's estimate from positions can exceed the
+    cut's count at the edges (Hark! 25–28: 7 syncopations by position, 5 on the cut).
+    """
+    import claims
+
+    if not targets:
+        return []
+    measurement = built.get("measurement") or {}
+    if measurement.get("status") != "measured":
+        return [f"{where}: the cut is not measured ({measurement.get('reason') or measurement.get('status') or 'no measurement'}), "
+                f"so whether it establishes {', '.join(targets)} is not known"]
+    located = measurement.get("located") or {}
+    bars = measurement.get("bars")
+    out: list[str] = []
+    for target in targets:
+        skill = skills.get(target)
+        if skill is not None and not isinstance(skill.get("opportunity"), list):
+            out.append(f"{where}: approved for {target}, whose opportunity is {skill.get('opportunity')!r}: no detector "
+                       f"establishes it, so the cut does not establish it")
+            continue
+        claim = {"kind": "skill" if skill is not None else "demand", "id": target}
+        if claims.status_of(claim, built, skills) == "established":
+            continue
+        demands = list(skill["opportunity"]) if skill is not None else [target]
+        counts = "; ".join(f"{d}: {int(located.get(d, 0))} located in {bars} bar(s)" for d in demands)
+        named = f"{target} ({counts})" if skill is not None else f"{target}: {counts.split(': ', 1)[1]}"
+        out.append(f"{where}: approved for {named}, and the built cut does not establish it (E29): the approval "
+                   f"names a target the passage does not carry at a useful density")
+    return out
 
 
 def orphan_sections(catalog: list, path: Path) -> list[str]:
@@ -926,13 +1183,13 @@ def paper_hint_errors(curriculum: dict) -> list[str]:
 
 
 def unknown_concepts(curriculum: dict) -> list[str]:
-    """Every concept a lesson names has to have a display name and a finder."""
+    """Every concept a lesson names, in `concepts` or `introduces` (F2), has to have a display name and a finder."""
     known = {c["id"] for c in curriculum.get("concepts", [])}
     missing: set[str] = set()
     for stage in curriculum.get("stages", []):
         for unit in stage.get("units", []):
             for lesson in unit.get("lessons", []):
-                for concept in lesson.get("concepts", []):
+                for concept in list(lesson.get("concepts", [])) + list(lesson.get("introduces") or []):
                     if concept not in known:
                         missing.add(concept)
     return [
@@ -1040,6 +1297,25 @@ def load_vocabulary(directory: Path = VOCABULARY_DIR) -> tuple[dict, dict]:
     return skills, demands
 
 
+#: Where the relationship's dimensions are declared (D4, `curriculum/transfer.ts`). Read, never
+#: copied: a skill's `transfer.dimensions` (G2) must name entries of that list, which the app's
+#: transfer policy compares against the relationship's measured facts.
+TRANSFER_FILE = CONTENT_SRC.parent / "app" / "src" / "curriculum" / "transfer.ts"
+
+
+def transfer_dimensions(path: Path = TRANSFER_FILE) -> list[str]:
+    """The `DIMENSIONS` array, parsed out of the TypeScript (as `runtime_drill_kinds` reads its list)."""
+    if not path.is_file():
+        return []
+    match = re.search(r"export const DIMENSIONS\s*=\s*\[(.*?)\]", path.read_text(encoding="utf-8"), re.S)
+    return re.findall(r"'([^']+)'", match.group(1)) if match else []
+
+
+def skills_without_transfer(skills_file: dict) -> list[str]:
+    """G2: the skills with no `transfer` block, which the app credits no transfer: listed on every build."""
+    return [skill["id"] for skill in skills_file.get("skills", []) if not skill.get("transfer")]
+
+
 def _rungs(curriculum: dict) -> list[dict]:
     return [
         lesson
@@ -1061,8 +1337,11 @@ def vocabulary_errors(
 
     The schemas answer the shape; this answers the references: a skill's
     opportunity names demands that exist and its standards name declared
-    conditions, a demand is coped with by a skill whose opportunity names it and
-    is taught at a rung the curriculum has, and every `targetSkills` and
+    conditions, a full standard with the guide off has the names off too (L58),
+    a rhythm skill states its precision and no untimed skill has one (L57),
+    a demand is coped with by a skill whose opportunity names it and
+    is taught at rungs the curriculum has, one per path, whose concepts name it
+    (E0b, `taught_at_findings`, whose warnings `main` prints), and every `targetSkills` and
     `demands` id on a catalog row is in the vocabulary. Whether each demand's
     detector exists is the app's to say: `app/tests/unit/vocabulary.test.ts`
     imports the module.
@@ -1084,7 +1363,6 @@ def vocabulary_errors(
     skills = {s["id"]: s for s in skills_file.get("skills", [])}
     demands = {d["id"]: d for d in demands_file.get("demands", [])}
     conditions = {c["id"] for c in skills_file.get("conditions", [])}
-    rungs = {lesson.get("id") for lesson in _rungs(curriculum)}
 
     for skill in skills.values():
         opportunity = skill["opportunity"]
@@ -1101,6 +1379,39 @@ def vocabulary_errors(
                         f"vocabulary: skill {skill['id']} {standard} names condition {condition!r}, "
                         f"which is not declared"
                     )
+        # CL11b, L58: a note's name on the screen is supported reading, so a full standard that asks
+        # for the guide off asks for the names off too (the evidence contract's fourth line).
+        full = skill["standards"]["full"]
+        if "guide-off" in full and "names-off" not in full:
+            errors.append(
+                f"vocabulary: skill {skill['id']} full standard lists guide-off without names-off: "
+                f"a read with a note's name on the screen would count as unaided reading (L58)"
+            )
+        # CL11b, L57: a rhythm skill states the error its timing must see; a skill no run times states none.
+        timed = skill["observable"] != "none" and "timing" in skill["observable"]
+        if skill.get("precision") is not None and not timed:
+            errors.append(
+                f"vocabulary: skill {skill['id']} has a precision, but no run times it "
+                f"(observable {skill['observable']!r})"
+            )
+        if skill["kind"] == "rhythm" and timed and skill.get("precision") is None:
+            errors.append(
+                f"vocabulary: rhythm skill {skill['id']} names no precision: the error its timing "
+                f"must see is not stated, and its demands would not be read as rhythm demands"
+            )
+    # G2: a skill's transfer dimensions are the relationship's, read out of transfer.ts.
+    if any(skill.get("transfer") for skill in skills.values()):
+        known_dimensions = transfer_dimensions()
+        if not known_dimensions:
+            errors.append("could not read DIMENSIONS from transfer.ts — the skills' transfer check cannot run")
+        else:
+            for skill in skills.values():
+                for dimension in (skill.get("transfer") or {}).get("dimensions", []):
+                    if dimension not in known_dimensions:
+                        errors.append(
+                            f"vocabulary: skill {skill['id']} names transfer dimension {dimension!r}, "
+                            f"which transfer.ts's DIMENSIONS lacks"
+                        )
     for demand in demands.values():
         coper = skills.get(demand["copedWithBy"])
         if coper is None:
@@ -1113,22 +1424,267 @@ def vocabulary_errors(
                 f"vocabulary: demand {demand['id']} is coped with by {coper['id']}, "
                 f"whose opportunity does not name it"
             )
-        if demand["taughtAt"] is not None and demand["taughtAt"] not in rungs:
-            errors.append(
-                f"vocabulary: demand {demand['id']} is taught at {demand['taughtAt']!r}, which is not a rung"
-            )
+    # E0b: every rung `taughtAt` lists exists, one per path, and names the demand in its concepts.
+    errors += taught_at_findings(skills_file, demands_file, curriculum)[0]
     for item in catalog:
         for skill_id in item.get("targetSkills") or []:
             if skill_id not in skills:
                 errors.append(
                     f"{item.get('id')}: targetSkills names {skill_id!r}, which vocabulary v0 does not define"
                 )
-        for demand_id in item.get("demands") or []:
+        # `"unmeasured"` is the one string `demands` may be (E0): a notated item the
+        # detectors could not read, never an empty list; its reason is required.
+        measured = item.get("demands")
+        if measured == "unmeasured":
+            if not ((item.get("measurement") or {}).get("reason")):
+                errors.append(f"{item.get('id')}: demands unmeasured with no reason in measurement.reason")
+            continue
+        for demand_id in measured or []:
             if demand_id not in demands:
                 errors.append(
                     f"{item.get('id')}: demands names {demand_id!r}, which vocabulary v0 does not define"
                 )
+        for demand_id in (item.get("measurement") or {}).get("established") or []:
+            if demand_id not in (measured or []):
+                errors.append(
+                    f"{item.get('id')}: measurement establishes {demand_id!r}, which its measured demands lack"
+                )
     return errors
+
+
+def _names_rung(note: str, rung: str) -> bool:
+    """Whether a note names the rung by its id (`3.1`, not `3.10` or `13.1`)."""
+    return re.search(rf"(?<![\w.]){re.escape(rung)}(?!\w)", note) is not None
+
+
+def taught_at_findings(skills_file: dict, demands_file: dict, curriculum: dict) -> tuple[list[str], list[str]]:
+    """
+    Where each demand is taught (E0b; the reviewer's finding 2 on E0a): `taughtAt` is every rung
+    that teaches the demand, one per path — a rung whose ancestry (`claims.rung_ancestry`) already
+    holds a listed rung of the same demand is not a second teaching rung. Returns `(errors,
+    warnings)`.
+
+    Errors: a listed rung the curriculum lacks; a listed rung on another listed rung's path; a
+    listed rung whose concepts name none of the concepts that name the demand
+    (`claims.concepts_naming`), unless `taughtAtNote` names that rung — a hand reading of its
+    lesson, which is a warning until F reads the lesson. Warnings: those hand readings, and every
+    rung the derivation from the lessons' concepts gives (`claims.teaching_rungs`) with no listed
+    rung on its path — a teaching rung the list omits, or a lesson naming a concept in passing
+    (`latin`'s walking-bass, whose lesson teaches a tumbao). Printed on every build; never silent.
+    """
+    import claims
+
+    skills = {s["id"]: s for s in skills_file.get("skills", [])}
+    demands = {d["id"]: d for d in demands_file.get("demands", [])}
+    lessons = {lesson.get("id"): lesson for lesson in _rungs(curriculum)}
+    ancestry = claims.rung_ancestry(curriculum)
+    naming = claims.concepts_naming(skills, demands)
+    derived = claims.teaching_rungs(curriculum, skills, demands, ancestry)
+    errors: list[str] = []
+    warnings: list[str] = []
+    for demand in demands.values():
+        ident = demand["id"]
+        listed = claims.taught_at(demand)
+        note = demand.get("taughtAtNote") or ""
+        concepts = naming.get(ident, set())
+        for rung in listed:
+            if rung not in lessons:
+                errors.append(f"vocabulary: demand {ident} is taught at {rung!r}, which is not a rung")
+                continue
+            # F2 item 7 (the reviewer's required change): a rung that only introduces the demand is never
+            # a teaching rung, whatever a note reads by hand.
+            introduced = sorted(concepts & set(lessons[rung].get("introduces") or []))
+            if introduced:
+                errors.append(
+                    f"vocabulary: demand {ident} is taught at {rung!r}, which only introduces it "
+                    f"({', '.join(introduced)} under introduces): an introduction is never a teaching rung"
+                )
+                continue
+            for other in listed:
+                if other != rung and other in ancestry.get(rung, set()):
+                    errors.append(
+                        f"vocabulary: demand {ident} is taught at {rung!r} and at {other!r}, which is on "
+                        f"{rung}'s path: one teaching rung per path"
+                    )
+            if concepts and not concepts & set(lessons[rung].get("concepts") or []):
+                words = f"demand {ident} is taught at {rung!r}, whose concepts name none of {', '.join(sorted(concepts))}"
+                if _names_rung(note, rung):
+                    warnings.append(f"WARNING (taught at, E0b): {words}; its taughtAtNote reads the lesson by hand, until F reads it")
+                else:
+                    errors.append(f"vocabulary: {words}, and its taughtAtNote does not name {rung} with the reading")
+        for rung in derived.get(ident, []):
+            if not any(at in ancestry.get(rung, set()) for at in listed):
+                named = sorted(concepts & set(lessons.get(rung, {}).get("concepts") or []))
+                warnings.append(
+                    f"WARNING (taught at, E0b): demand {ident} is taught at no rung on the path to {rung!r}, whose "
+                    f"concepts name {', '.join(named)}: a teaching rung taughtAt omits, or a concept named in passing"
+                )
+    return errors, warnings
+
+
+#: Rung claims no option establishes, where the non-establishment is a detector's reading known to be
+#: wrong, not the notes' (F2, Entry 108; the entry's question 2). Each warns on every build with its
+#: reason instead of failing; `concept_claim_findings` fails once one no longer describes the build.
+#: The claims stay taught as they were (`taughtAt` unchanged) and stay listed among the claims no
+#: option keeps in `docs/prompts/rung-claims.md`: a deferral passes the build, never the report.
+#: The counts are each option's own per-bar readings (the bridge's every-bar places, E1), against
+#: the whole-piece every-bar rule the density file keeps for these two demands.
+#: CQ1 (`docs/prompts/runs/CQ1/decision.md`): empty. The five deferrals (the walking bass at `blues.6`,
+#: `blues.8`, `jazz.6` and `jam.6`; the oom-pah bass at `ragtime.5`) excused a named-style concept claim that
+#: the broad `walkingBass` / `leftHandPattern` readings could not keep. Those concepts no longer map to a
+#: demand (`claims.NAMED_FIGURES_AWAITING_A_SOURCED_CHECK`), so the claims are not made and a deferral of
+#: them would be stale; `concept_claim_findings` itself fails a stale deferral. Their per-bar readings are
+#: in git history (738e23e) for the figure slice that returns each style.
+DEFERRED_CONCEPT_CLAIMS: dict[tuple[str, str], str] = {}
+
+
+def concept_claim_findings(
+    catalog: list, curriculum: dict, deferred: dict[tuple[str, str], str] | None = None
+) -> tuple[list[str], list[str]]:
+    """
+    A rung claims only what its options establish, or says it introduces it (F2 item 7; the reviewer's
+    required change on the F2 brief, `docs/review/responses/12af708.md`). Returns `(errors, warnings)`.
+
+    Read from the rung-claims report (`claims.rung_claims`), the one reading of "establishes":
+
+    - **fails** where a rung's `concepts` name a measurable skill or demand (a vocabulary skill with an
+      opportunity, or a notated fact `claims.CONCEPT_DEMANDS` maps) that no checkable option of the rung
+      establishes. A rung whose options no detector can check (runtime drills only) is not judged, as
+      the report counts such a claim unchecked. The same concept under the rung's `introduces` list
+      passes: the lesson says the rung introduces it and no piece there practises it yet;
+    - judges only the options this build measured (Q75). An `unmeasured` option (a strict build's
+      licence placeholder, a file the app could not load) establishes nothing and refutes nothing
+      (E0), so it is not a checked option (`claims.CHECKED`), and where one sits on a rung whose
+      checked options do not establish the claim, the claim is **warned** as not judged on this build,
+      naming how many options were unmeasured, never failed: the option this build could not read may
+      be the one that keeps it. The Pages deploy is the strict build, which placeholders the one
+      option establishing 2.4's tie and the five Joplin rags among ragtime.8's options. A claim fails
+      only where every option the rung holds was checked or is a runtime drill, and the failing message
+      says so ("0 unmeasured on this build"), so the runner's log tells a placeholder from a wrong claim;
+    - **fails** where a concept is in both lists, and where a deferral no longer describes the build (the
+      claim established, or no longer made): a deferral never outlives its reason. A deferral whose
+      options this build could not measure is not stale: the build did not look (Q75);
+    - **warns** for each deferral (`DEFERRED_CONCEPT_CLAIMS`, with its reason), and where an option
+      establishes a concept the rung only introduces: it belongs in `concepts`.
+
+    What `introduces` never does is checked where it would: `taught_at_findings` refuses a listed rung
+    that only introduces the demand, `teaching_rungs` reads `concepts` alone, and the evidence gate's
+    requirement check reads `targetSkills`, never a lesson's lists. The concept claims no detector can
+    measure are warned by `rung_claims_warning`, never failed. This proves the rungs agree with the
+    report, not that the report or the lessons are true (Part 10's permanent rule).
+    """
+    import claims
+
+    deferred = DEFERRED_CONCEPT_CLAIMS if deferred is None else deferred
+    skills, _demands = claims.load_vocabulary()
+    report = claims.rung_claims(catalog, curriculum)
+    lessons = {lesson.get("id"): lesson for lesson in _rungs(curriculum)}
+
+    def claim_of(concept: str) -> tuple[str, str] | None:
+        if concept in skills:
+            return ("skill", concept) if skills[concept]["opportunity"] != "every-step" else None
+        if concept in claims.CONCEPT_DEMANDS:
+            return ("demand", claims.CONCEPT_DEMANDS[concept])
+        return None
+
+    errors: list[str] = []
+    warnings: list[str] = []
+    used: set[tuple[str, str]] = set()
+    for row in report["rungs"]:
+        rung_id = row["rung"]
+        lesson = lessons.get(rung_id, {})
+        concepts = list(lesson.get("concepts") or [])
+        introduced = list(lesson.get("introduces") or [])
+        for both in sorted(set(concepts) & set(introduced)):
+            errors.append(f"{rung_id}: {both} is in both concepts and introduces: a rung teaches a concept or introduces it")
+        counts = {(c["kind"], c["id"]): c for c in row["claims"]}
+        for concept in concepts:
+            key = claim_of(concept)
+            claim = counts.get(key) if key else None
+            if claim is None or claim["established"] > 0:
+                continue
+            checked, unmeasured = claim["measurable"], claim.get("unmeasured", 0)
+            if checked == 0 and unmeasured == 0:
+                continue  # runtime drills or missing ids only: no build checks the claim (F2)
+            looked = (f"none of its {checked} checked options establishes it" if checked
+                      else "none of its options was checked")
+            reason = deferred.get((rung_id, concept))
+            if reason is not None:
+                used.add((rung_id, concept))
+                here = f" ({unmeasured} unmeasured on this build)" if unmeasured else ""
+                warnings.append(f"WARNING (rung claims, F2): {rung_id} claims {concept} ({key[1]}) and {looked}{here}; "
+                                f"deferred: {reason}")
+                continue
+            if unmeasured:
+                warnings.append(
+                    f"WARNING (rung claims, Q75): {rung_id} claims {concept} ({key[1]}), not judged on this build: "
+                    f"{unmeasured} of its options unmeasured here (a placeholder, or a file the app could not load) and "
+                    f"{looked}; an unmeasured option establishes nothing and refutes nothing"
+                )
+                continue
+            errors.append(
+                f"{rung_id}: its concepts name {concept} ({key[1]}) and {looked} (0 unmeasured on this build): "
+                f"move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), "
+                f"or keep an option that establishes it"
+            )
+        for item in row.get("introduced") or []:
+            if item["kind"] is not None and item["established"] > 0:
+                warnings.append(f"WARNING (rung claims, F2): {rung_id} introduces {item['from'].split(' ', 1)[1]} "
+                                f"({item['id']}) and {item['established']} of its options establish it: it belongs in concepts")
+    for rung_id, concept in sorted(set(deferred) - used):
+        errors.append(f"{rung_id}: the deferral of {concept} no longer describes the build (the claim is kept, or "
+                      f"no longer made): remove it from DEFERRED_CONCEPT_CLAIMS")
+    return errors, warnings
+
+
+def rung_claims_warning(catalog: list, curriculum: dict) -> str:
+    """
+    The rung-claims check as a warning, never a failure, until the reviewer says
+    otherwise (E0 item 5): how many of the claims rungs make about their options the
+    options' measured demands do not establish, and how many rung claims no option
+    keeps. The report itself is `docs/prompts/rung-claims.md` (`claims.py`).
+    """
+    import claims
+
+    s = claims.rung_claims(catalog, curriculum)["summary"]
+    return (
+        f"WARNING (rung claims, E0): {s['unestablished']} of {s['measurable']} checkable claims on rung options "
+        f"are not established by the options' measured demands ({s['unmeasured']} unmeasured on this build, "
+        f"neither established nor refuted, Q75); {s['rungClaimsKeptByNoOption']} rung claims "
+        f"no option establishes; {s['unmeasurableConcepts']} concept claims no detector can measure, with "
+        f"{s['humanReviewed']} human teaching-use reviews. Nothing is removed from a rung: "
+        f"docs/prompts/rung-claims.md."
+    )
+
+
+def untaught_options_warnings(catalog: list, curriculum: dict) -> list[str]:
+    """
+    The rung-own options the one gate refuses `untaught` at their own rung, as a warning, never a failure
+    (L120b item 7; the L120 brief's Ruled section: the validator's warning is L120b's). The count is
+    `untaught_options.table`'s — the build's reading of the app's coping question, held equal to the app's
+    probe by `tests/test_untaught_options.py` but for its recorded differences. The runtime reading rows on
+    rungs are listed apart as not read: the demands they ask are the reading controls' (`readingControls.ts`,
+    app code), which the build does not have — the recorded exception L124 asks for, the one the app's probe
+    refuses named in `test_untaught_options.RECORDED_DIFFERENCES`. It becomes an error only when the count is
+    zero or every line has a recorded reason, which no lane has decided yet.
+    """
+    import untaught_options
+
+    report = untaught_options.table(catalog, curriculum)
+    s = report["summary"]
+    out = [
+        f"WARNING (untaught rung-own options, L120b): {s['options']} rung-own options on {s['rungs']} rungs are refused "
+        f"`untaught` at their own rung ({s['pairs']} option-demand pairs: "
+        + ", ".join(f"{kind} {n}" for kind, n in s["pairsByClass"].items())
+        + "); `python tools/content/untaught_options.py` lists and classifies them (A reading, B ownership, C placement)."
+    ]
+    if report["unread"]:
+        out.append(
+            f"WARNING (untaught rung-own options, L120b): {len(report['unread'])} runtime reading row(s) on rungs not read "
+            "(the demands they ask are the reading controls', app code; the app's probe refusal among them is recorded in "
+            "tests/test_untaught_options.py): " + ", ".join(f"{row['rung']} {row['item']}" for row in report["unread"])
+        )
+    return out
 
 
 #: The ladder state a `skill` requirement names, and the standard its evidence
@@ -1444,7 +2000,10 @@ def write_needs(curriculum: dict, catalog: list, out_dir: Path, min_options: int
                     together = max(0, min_options - (len(exercises) + len(songs)))
                     need_songs, need_exercises = 0, together
                 else:
-                    need_songs = max(0, min_options - len(songs))
+                    # A rung that asks for no song run is short of no song (R23):
+                    # `thin_lesson_errors` exempts it from the song count, so the
+                    # page must not ask for songs the build does not require.
+                    need_songs = max(0, min_options - len(songs)) if asks_for_songs(lesson) else 0
                     need_exercises = max(0, min_options - len(exercises))
                 lesson["needs"] = {
                     "songs": need_songs,
@@ -1490,6 +2049,7 @@ def main() -> None:
     args = parser.parse_args()
 
     errors: list[str] = []
+    section_warnings: list[str] = []
     errors += validate_schema(
         "catalog.json", args.dir / "catalog.json", CONTENT_SRC / "catalog.schema.json"
     )
@@ -1517,8 +2077,13 @@ def main() -> None:
         errors += paper_hint_errors(curriculum)
         errors += tip_errors(catalog, CONTENT_SRC / "tips")
         errors += video_index_errors()
-        errors += section_errors(catalog, args.dir)
+        # Q82: once, since the fallback parses each sectioned file; its warnings are printed with the others below.
+        found_section_errors, section_warnings = section_findings(catalog, args.dir)
+        errors += found_section_errors
         errors += orphan_sections(catalog, CONTENT_SRC / "sources" / "sections.json")
+        errors += excerpt_findings(catalog, args.dir)[0]
+        # F2: a rung's concepts claim only what its options establish, or it introduces the concept.
+        errors += concept_claim_findings(catalog, curriculum)[0]
         errors += stale_ladder_report(catalog, curriculum)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
         # replan §7.5: reported by P11, an error from P12a.
@@ -1640,6 +2205,47 @@ def main() -> None:
     )
     if gate_unjudged:
         print(f"    unjudged: {', '.join(gate_unjudged)}")
+    # G2: the skills the data has not given transfer dimensions, credited no transfer, said on every run.
+    unstated = skills_without_transfer(skills_file)
+    print(
+        f"  transfer (G2): {len(skills_file.get('skills', [])) - len(unstated)} skill(s) name their transfer dimensions; "
+        f"{len(unstated)} without the block, credited no transfer"
+        + (f": {', '.join(unstated)}" if unstated else "")
+    )
+    # E0b: where the vocabulary's teaching rungs differ from the lessons' concepts, said on every run.
+    for warning in taught_at_findings(skills_file, load_vocabulary()[1], curriculum)[1]:
+        print(f"  {warning}")
+    # E1: an excerpt approved on parent bytes the parent no longer has, or not cut in this build.
+    excerpt_rows = sum(1 for item in catalog if item.get("type") == "excerpt")
+    print(f"  excerpts (E1): {excerpt_rows} cut, on no rung")
+    for warning in excerpt_findings(catalog, args.dir)[1]:
+        print(f"  WARNING (excerpt, E1): {warning}")
+    print(f"  {rung_claims_warning(catalog, curriculum)}")
+    # L120b: the rung-own options the gate refuses `untaught`, warned (never failed), the unread reading rows apart.
+    for warning in untaught_options_warnings(catalog, curriculum):
+        print(f"  {warning}")
+    # F2: each deferred claim with its reason, and any introduced concept an option now establishes.
+    for warning in concept_claim_findings(catalog, curriculum)[1]:
+        print(f"  {warning}")
+    # Q80: the ladder report compared without the placeholders this build made for want of a fetch, said.
+    for warning in ladder_report_findings(catalog, curriculum)[1]:
+        print(f"  {warning}")
+    # Q82: the named sections of a placeholder this build could not fetch, not checked, said.
+    for warning in section_warnings:
+        print(f"  WARNING (sections, Q82): {warning}")
+
+    # Q-tooling (2026-09-29): the reviewer's views of the audit file and the matrix regenerated
+    # and then compared, so a built tree never carries stale views (six record commits did on
+    # 2026-09-29). On GitHub's runner they are compared, not written, so test_prompt_views still
+    # sees the views as pushed. Here rather than in build.py, which another builder held this wave.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools" / "docs"))
+    import split_prompt_views  # noqa: E402
+
+    views_ok, views_line = split_prompt_views.refresh_for_validator()
+    print(f"  {views_line}")
+    if not views_ok:
+        print(f"content validation FAILED: {views_line}", file=sys.stderr)
+        sys.exit(1)
 
     # Last, so the build's one-line summary of this step is the verdict and the
     # item count rather than whichever detail happened to print last — the same

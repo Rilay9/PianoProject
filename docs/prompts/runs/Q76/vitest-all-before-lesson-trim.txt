@@ -1,0 +1,86 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ae7088107d2f9f1ea/app
+
+ ❯ tests/unit/lessonShape.test.ts (21 tests | 2 failed) 176ms
+   ❯ every lesson keeps its shape (7)
+     × states a reading time that matches the text 28ms
+     × keeps a lesson to the three minutes `03` §6 asks for 17ms
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (284 tests | 2 failed) 288ms
+   ❯ the 2026-09-19 lesson corrections, second-read and under test: the app (80)
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 13ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2119:23
+    2117|   for (const [lesson, says, holds] of T12_APP) {
+    2118|     it(`${lesson}: ${says}`, () => {
+    2119|       expect(holds()).toBe(true);
+       |                       ^
+    2120|     });
+    2121|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/lessonShape.test.ts > every lesson keeps its shape > states a reading time that matches the text
+AssertionError: reading times that do not match the text: ragtime.8.md says 3 min for 639 words (4): expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "ragtime.8.md says 3 min for 639 words (4)",
++ ]
+
+ ❯ tests/unit/lessonShape.test.ts:239:84
+    237|       }
+    238|     }
+    239|     expect(wrong, `reading times that do not match the text: ${wrong.j…
+       |                                                                                    ^
+    240|   });
+    241|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/lessonShape.test.ts > every lesson keeps its shape > keeps a lesson to the three minutes `03` §6 asks for
+AssertionError: lessons over 3 minutes and not on the list: ragtime.8.md reads in 4 min: expected [ 'ragtime.8.md reads in 4 min' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "ragtime.8.md reads in 4 min",
++ ]
+
+ ❯ tests/unit/lessonShape.test.ts:270:101
+    268|       .filter(({ name, minutes }) => minutes > MINUTES && !KNOWN_LONG.…
+    269|       .map(({ name, minutes }) => `${name} reads in ${String(minutes)}…
+    270|     expect(over, `lessons over ${String(MINUTES)} minutes and not on t…
+       |                                                                                                     ^
+    271|       [],
+    272|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  2 failed | 295 passed (297)
+      Tests  4 failed | 7001 passed | 5 skipped | 1 todo (7011)
+   Start at  12:01:46
+   Duration  192.16s (tests 76%, environment 18%, import 5%, transform 1%)
+
+    Isolate  297 workers spawned · ~1.19s startup each (spawn + environment, per file)
+             at least ~17.46s faster with isolate: false — reuses workers across files instead of one per file
+
+exit=1

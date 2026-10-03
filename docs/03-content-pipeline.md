@@ -65,12 +65,12 @@ degrade gracefully: skip unreachable sources with a warning and continue.
 | Tag | Source | Format | How | Notes |
 |-----|--------|--------|-----|-------|
 | `[FOUND]` | **The owner himself, through a finder** (P15). Not fetched by anything: every rung and every concept carries a `finder` block, `tools/content/finder.py` turns it into a search line and a chat prompt at build time, and he goes and gets the file. | MusicXML / MXL / PDF | The app's import path — share sheet, file picker, or the lesson page's "Import for this rung" — then the assign sheet (`04` §4), which attaches it to the rung, levels it with the runtime port of `difficulty.py` (`app/src/score/difficulty.ts`) and stores it in IndexedDB. | **Never enters this repository.** It is the owner's own copy of music he found or bought, held on his phone and in his backup, and `curriculum/load.ts` overlays it onto the rung's `songOptions` at runtime — so it is one of the rung's practice options, and a qualifying run of it, judged by that rung, can count toward the rung's requirements, without the file ever being committed (2026-09-26, T52: this said it "counts towards finishing a rung"; since C5 the assignment itself is no evidence). This is the answer to `00` D10 and D18: copyrighted repertoire is reachable, and it arrives by import rather than by the pipeline downloading it. `validate.py` refuses any generated prompt that asks for a copyrighted transcription to be downloaded. |
-| `[MIDI]` | **The owner's own playing** — and, since 2026-09-23, any MIDI file he picks. Two implementations of one converter: `tools/midi-cleanup/midi_to_musicxml.py` (a personal utility outside this pipeline, which `build.py` neither runs nor knows about) and `app/src/import/midi/`, its port, which runs **in the browser** because nothing here runs on a server. | `.mid` in, MusicXML out | On the command line: `python tools/midi-cleanup/midi_to_musicxml.py take.mid`. In the app: the ordinary import picker takes `.mid` and `.midi` (`04` §4) and converts on the device. Both quantise to one grid per bar, write a swung performance straight with the marking, split a two-hand recording into a braced grand staff, and read back what they wrote — refusing to report a file as good if a note was lost or a bar does not add up. **Which hand a note is in is decided by the same rule in both**, and the rule is that the file is believed when it says: one note track is a recording of two hands and is split by voice-leading; **exactly two note tracks are an arrangement a person already gave hands to, and are kept as recorded — first track the upper staff, second the lower**; three or more are a voice per track, and the port merges them and splits, where the tool writes a part per track (its one difference, and it is forced: music21 writes an ensemble and this writer writes a piano). The port merged *everything* until 2026-09-23, which threw the arranger's hands away on exactly the files the owner downloads. | **Never enters this repository either.** The output arrives by the same `[FOUND]` door above. Three tests, three claims: `tests/e2e/converted-import.spec.ts` proves the door reads what the *command line* writes, `tests/e2e/midi-import.spec.ts` proves a `.mid` picked in the app converts, lands in the Library and walks the same number of steps as a real cursor, and `tests/unit/midiParity.test.ts` proves the port decides what the tool decides — note for note, duration for duration, hand for hand, on the three Disklavier recordings, two renderings of a committed exercise, and the two committed MIDI fixtures converted the way the app converts (`hands=auto`), which is what puts the hands rule itself under comparison. The reference for that last one is written by `tools/midi-cleanup/tests/parity_reference.py` into `build/midi-parity/`; `build/` is gitignored, so those tests skip with a message naming the script rather than passing quietly. **Parity proves the port, not the music** — nothing in any of it is heard. |
+| `[MIDI]` | **The owner's own playing** — and, since 2026-09-23, any MIDI file he picks. Two implementations of one converter: `tools/midi-cleanup/midi_to_musicxml.py` (a personal utility outside this pipeline, which `build.py` runs for one step only: since Q76 the `[MUTO]` import converts Mutopia's published MIDI files with it) and `app/src/import/midi/`, its port, which runs **in the browser** because nothing here runs on a server. | `.mid` in, MusicXML out | On the command line: `python tools/midi-cleanup/midi_to_musicxml.py take.mid`. In the app: the ordinary import picker takes `.mid` and `.midi` (`04` §4) and converts on the device. Both quantise to one grid per bar, write a swung performance straight with the marking, split a two-hand recording into a braced grand staff, and read back what they wrote — refusing to report a file as good if a note was lost or a bar does not add up. **Which hand a note is in is decided by the same rule in both**, and the rule is that the file is believed when it says: one note track is a recording of two hands and is split by voice-leading; **exactly two note tracks are an arrangement a person already gave hands to, and are kept as recorded — first track the upper staff, second the lower**; three or more are a voice per track, and the port merges them and splits, where the tool writes a part per track (its one difference, and it is forced: music21 writes an ensemble and this writer writes a piano). The port merged *everything* until 2026-09-23, which threw the arranger's hands away on exactly the files the owner downloads. | **Never enters this repository either.** The output arrives by the same `[FOUND]` door above. Three tests, three claims: `tests/e2e/converted-import.spec.ts` proves the door reads what the *command line* writes, `tests/e2e/midi-import.spec.ts` proves a `.mid` picked in the app converts, lands in the Library and walks the same number of steps as a real cursor, and `tests/unit/midiParity.test.ts` proves the port decides what the tool decides — note for note, duration for duration, hand for hand, on the three Disklavier recordings, two renderings of a committed exercise, and the two committed MIDI fixtures converted the way the app converts (`hands=auto`), which is what puts the hands rule itself under comparison. The reference for that last one is written by `tools/midi-cleanup/tests/parity_reference.py` into `build/midi-parity/`; `build/` is gitignored, so those tests skip with a message naming the script rather than passing quietly. **Parity proves the port, not the music** — nothing in any of it is heard. |
 | `[MT]` | **GitHub** `musetrainer/library` (`scores/*.mxl`, 69 files) | MXL | `git clone --depth 1` | Public-domain MusicXML library used by the MuseTrainer app; contains Bach Minuet Anh 114, Musette-like pieces, Für Elise (3 editions), Canon in D (3), Gymnopédie 1 (2), Gnossienne 1, Clair de Lune (2), Moonlight 1 & 3, Pathétique 2, K.545, K.331 Rondo, WTC I Prelude 1 & 2, Chopin Preludes 4 & 20, Nocturnes 9/1, 9/2 (+easy), 20, Waltzes 64/2 & A minor, Ballade 1, Joplin Entertainer (2) & Maple Leaf Rag, Greensleeves (easy), Happy Birthday, Ode to Joy (easy variation), Carol of the Bells (2), Twinkle variations (Mozart K.265), Air on G, Ave Maria, Lacrimosa, Swan Lake, Sugar Plum Fairy, Waltz of the Flowers, Hungarian Dance 5, Liebestraum 3, La Campanella, Flight of the Bumblebee, Arabesque 1, Bella Ciao. **Check the repo's stated license per file** (`index.html`/README list) before use; treat as verified-PD arrangements from MuseScore contributors, and record each in SOURCES.md. |
 | `[KERN]` | **GitHub** `craigsapp/*` Humdrum repos: `mozart-piano-sonatas`, `beethoven-piano-sonatas`, `chopin-preludes`, `chopin-mazurkas`, `scarlatti-keyboard-sonatas`, `joplin`, `bach-370-chorales`, `haydn-piano-sonatas` (all eight verified reachable; `bach-wtc` and `bach-inventions` do not exist under `craigsapp/`) | `**kern` | `tools/content/import_kern.py`, per-file table in `content/sources/kern.json` | **Measured, not assumed** (2026-09-05): five carry a `LICENSE.txt` stating CC BY-NC-SA 4.0 and every file repeats it in a `!!!YEM` record — bundled only under `--allow-nc` (`00` D10a). `beethoven-piano-sonatas`, `chopin-mazurkas` and `chopin-preludes` state **no licence at all**; the Chopin preludes carry a bare `!!!YEC` copyright line, which is a claim rather than a grant. Those three stay excluded whatever the flag says, and `import_kern.assert_excluded()` re-proves it on every build. |
 | `[NIFC]` | **GitHub** `pl-wnifc/humdrum-chopin-first-editions` (512 files) and `pl-wnifc/humdrum-polish-scores` (8,918 files) | `**kern` | `tools/content/import_kern.py`, groups in `content/sources/kern.json` | The Fryderyk Chopin Institute's *Chopin Heritage in Open Access* encodings of the 19th-century first editions, **CC BY 4.0** — redistributable, so no `--allow-nc`, attribution carried in each item's `source` block. 191 solo-piano works after choosing one publisher per piece. This is what fills the Chopin rungs `craigsapp/chopin-preludes` and `chopin-mazurkas` cannot. The Polish-scores repository is the same licence and is opt-in in `fetch.py`; nothing in `02` asks for it yet. |
-| `[PDMX]` | **Zenodo, on the owner's machine only** — `PDMX.csv` (254,077 rows) and `mxl.tar.gz`; `data.tar.gz`, `pdf.tar.gz` and `subset_paths` are not needed. Never fetched by CI, never committed. | MXL | `tools/content/pdmx/` — `shortlist.py` (CSV → shortlist; it was named `select` until that shadowed the standard library's module of the same name, P14), `extract.py` (streams the tar once), `quarry.py` (convert, round-trip, features, level estimate, render), `review.py` (a static page + `review.csv` the owner fills), `commit.py` (the `keep` rows → `content/scores/pdmx/*.mxl` + `content/sources/pdmx.json`; at most `MAX_EDITIONS` — two — editions of one work, the Zenodo record written into the table's header, and `convertedSha256` re-hashed *after* the copy into the repository, since that is the file the build verifies); the build's `import_pdmx.py` reads only the committed files and verifies their checksums; a row may carry its own `genre` and `tracks`, which win over the bucket's guess (2026-09-16 — the archive filed a Petzold minuet under pop) | **Measured 2026-09-05:** the CSV's `license` column is the uploader's claim about the *edition* (every row is `publicdomain` or `cc-zero`, including Yiruma and Billie Eilish arrangements). The composition test runs on `composer_name` against `content/sources/composers.json` and finds about 4,200 public-domain compositions among 36,150 deduplicated solo-piano rows (2,764 traditional, 191 Bach, 138 Beethoven, 135 Mozart, 91 Chopin, 37 Czerny, 13 Clementi, 4 Burgmüller, 1 *Frog Legs Rag*, 0 *Euphonic Sounds*). **Under `00` D23 the result is a label, not a gate**: the personal build takes any PDMX row the dataset marks public domain and the strict build takes only `compositionStatus: pd`. Ranking by rating and the per-band, per-genre quotas in the replan decision §2.2 do the selecting; the machine quality gates in §2.3 and a human review decide admission, and nothing is committed without a `keep`. Its best uses for this owner: the *reference* against which Part F folk tunes are authored (the verification P5 lacked), small-form classical at Stages 3–5, the well-rated easy pop and film arrangements, and the rock-module and *Beautiful* wish-list songs by title. **Measured for real 2026-09-06 (P14):** 254,077 rows in, 37,499 past the gates. The dataset's own deduplication flag removes 142,078 of them — 56 % of the archive — and its licence-conflict flag another 19,582; most of the remainder are files with more than two tracks or a non-piano program. What survives is not the classical library the ladder was written around: the unmatched-composer list is dominated by the Scottish and Irish fiddle corpus (Marshall 353, Alexander Walker 170, the Gows, Skinner, O'Carolan) and by Densmore's ethnographic transcriptions. `composer_name` is `NA` for 59 of the 306 rows the quotas chose and every one of those has an `artist_name`, so the composition label falls back to it. Titles and composer strings in the archive can be mojibake — one row's composer is 坂本龍一 encoded twice. |
-| `[MUTO]` | Mutopia Project (mutopiaproject.org; GitHub mirror `MutopiaProject/MutopiaProject`) | LilyPond (+PDF/MIDI) | `ly musicxml file.ly > out.xml` (python-ly) for simple pieces; else `lilypond --midi` → music21 from MIDI (lossy: loses articulation; acceptable for exercises only) | Has Anna Magdalena Notebook, Burgmüller op.100, Czerny, Clementi sonatinas, Beyer, Hanon, many Bach/Mozart/Beethoven. |
+| `[PDMX]` | **Zenodo, on the owner's machine only** — `PDMX.csv` (254,077 rows) and `mxl.tar.gz`; `data.tar.gz`, `pdf.tar.gz` and `subset_paths` are not needed. Never fetched by CI, never committed. | MXL | `tools/content/pdmx/` — `shortlist.py` (CSV → shortlist; it was named `select` until that shadowed the standard library's module of the same name, P14), `extract.py` (streams the tar once), `quarry.py` (convert, round-trip, features, level estimate, render), `review.py` (a static page + `review.csv` the owner fills), `commit.py` (the `keep` rows → `content/scores/pdmx/*.mxl` + `content/sources/pdmx.json`; at most `MAX_EDITIONS` — two — editions of one work, the Zenodo record written into the table's header, and `convertedSha256` re-hashed *after* the copy into the repository, since that is the file the build verifies); the build's `import_pdmx.py` reads only the committed files and verifies their checksums; a row may carry its own `genre` and `tracks`, which win over the bucket's guess (2026-09-16 — the archive filed a Petzold minuet under pop) | **Measured 2026-09-05:** the CSV's `license` column is the uploader's claim about the *edition* (every row is `publicdomain` or `cc-zero`, including Yiruma and Billie Eilish arrangements). The composition test runs on `composer_name` against `content/sources/composers.json` and finds about 4,200 public-domain compositions among 36,150 deduplicated solo-piano rows (2,764 traditional, 191 Bach, 138 Beethoven, 135 Mozart, 91 Chopin, 37 Czerny, 13 Clementi, 4 Burgmüller, 1 *Frog Legs Rag*, 0 *Euphonic Sounds*). **Under `00` D23 the result is a label, not a gate**: the personal build takes any PDMX row the dataset marks public domain and the strict build takes only `compositionStatus: pd`. Ranking by rating and the per-band, per-genre quotas in the replan decision §2.2 do the selecting; the machine quality gates in §2.3 and a human review decide admission, and nothing is committed without a `keep`. Its best uses for this owner: the *reference* against which Part F folk tunes are authored (the verification P5 lacked), small-form classical at Stages 3–5, the well-rated easy pop and film arrangements, and the pieces wanted by name (the owner's requests and the *Beautiful* suggestions) by title. **Measured for real 2026-09-06 (P14):** 254,077 rows in, 37,499 past the gates. The dataset's own deduplication flag removes 142,078 of them — 56 % of the archive — and its licence-conflict flag another 19,582; most of the remainder are files with more than two tracks or a non-piano program. What survives is not the classical library the ladder was written around: the unmatched-composer list is dominated by the Scottish and Irish fiddle corpus (Marshall 353, Alexander Walker 170, the Gows, Skinner, O'Carolan) and by Densmore's ethnographic transcriptions. `composer_name` is `NA` for 59 of the 306 rows the quotas chose and every one of those has an `artist_name`, so the composition label falls back to it. Titles and composer strings in the archive can be mojibake — one row's composer is 坂本龍一 encoded twice. |
+| `[MUTO]` | Mutopia Project (mutopiaproject.org; GitHub mirror `MutopiaProject/MutopiaProject`) | LilyPond (+PDF/MIDI) | `ly musicxml file.ly > out.xml` (python-ly) for simple pieces; else `lilypond --midi` → music21 from MIDI (lossy: loses articulation; acceptable for exercises only) | Has Anna Magdalena Notebook, Burgmüller op.100, Czerny, Clementi sonatinas, Beyer, Hanon, many Bach/Mozart/Beethoven. **Since Q76 (2026-09-29) an import step: `tools/content/import_mutopia.py`, the rows in `content/sources/mutopia.json`.** Measured on the Joplin folder, python-ly cannot convert a rag faithfully, so a row is taken from the MIDI file Mutopia publishes for the edition, through `tools/midi-cleanup/midi_to_musicxml.py`, with every note's spelling and the key changes read from the edition's `.ly`; the licence is the `.ly` header's (`license`, else `copyright`). One row today, *Pine Apple Rag*, on `ragtime.8`. See the paragraph on `[MUTO]` below. |
 | `[IMSLP]` | imslp.org | PDF, some MusicXML/MIDI | manual: only take files explicitly tagged MusicXML with a CC/PD edition license | Slow and manual — last resort. |
 | `[AUTH]` | our own | ABC (`content/scores/authored/*.abc`) or music21 tinyNotation in `authored/*.py` | `music21.converter.parse(abcText)` → MusicXML; add fingering/lyrics/chord symbols in ABC (`"C"` chord symbols, `!1!` fingering) | For folk/hymn/holiday/lead sheets (Part F of the curriculum). ABC is 1–10 lines per tune; an agent can author 60–100 of these in one session. |
 | `[GEN]` | `tools/content/generate_exercises.py` | music21 streams | run at build time | scales, arpeggios, chords/inversions, Hanon 1–20, five-finger patterns, rhythm drills (4/4, 3/4, 6/8, 5/4, 7/8 and 12/8), the Part E2 lesson skills, the harmony families (voicings, ii–V–I, loops, walking bass, comping, stride, turnarounds, boogie, blues scale), latin (clave with or without a pulse, tumbao, montuno, groove), and the genre families added 2026-09-16 — oom-pah, secondary rag, walk-up, passing chord, four-bar introduction, power chord, ostinato — plus sight-reading generator *seeds* (the app also has a runtime sight-reading generator in TS that emits MusicXML directly — see 05 §8) |
@@ -91,6 +91,62 @@ the grace-16th truncation scan.
 Finding more: `humdrum-tools/humdrum-data` is an index of 75 Humdrum collections and is the fastest way to see what exists. Checked from it and **refused**, with reasons recorded in `content/sources/kern.json` under `checkedAndRefused`: `humdrum-tools/bach-wtc` and `humdrum-tools/inventions` (they exist — this answers the "verify names" note above — but every file says *"Rights to all derivative electronic formats reserved"*), `craigsapp/hummel-preludes` and `craigsapp/art-of-the-fugue` (bare copyright, no grant).
 
 Also worth knowing about `[MUTO]`: its Joplin folder holds 18 rags and each `.ly` header states `license = "Public Domain"` — a stronger licence than the CC BY-NC-SA `craigsapp` edition the ragtime tier currently uses. The clone in `content/scores/imported/mutopia` is a **sparse checkout** limited to Hanon and Clementi; `git sparse-checkout` opens the other 322 composer directories.
+
+**The `[MUTO]` import (Q76, 2026-09-29), and why it reads MIDI.** The owner asked for the public
+build's rags from Mutopia (public domain first): on the licence-strict build every craigsapp Joplin
+edition is a placeholder, and `ragtime.8`'s stride bass was practised by no bundled piece. The Joplin
+folder at revision `2144afd6` holds 16 single-file editions and two multi-file ones (*Bethena*,
+*Solace*, `\include`d part files); every header states "Public Domain" in `license` or `copyright`.
+The raw files were fetched at that pinned revision (not a clone: the folder is 38 small files, and a
+pinned revision is what a checksum can hold) into `content/scores/imported/mutopia/ftp/JoplinS/`
+(the measurement's copy). Through python-ly 0.9.10 — the `convert.parse_lilypond` path this row
+names, and the newest python-ly on PyPI — **none converts to a score that is right**:
+
+- every one of the 16 uses `\repeat volta … \alternative`, and python-ly's writer does not implement
+  `\alternative`: it writes both endings one after the other, with no `<ending>` and with the repeat
+  marks doubled, so a converted rag plays both endings on every pass (*Maple Leaf Rag*: every bar of the
+  source written, 85, where the piece has 145 played bars);
+- 10 of the 16 are refused outright, by python-ly itself (*Eugenia*, *Peacherine*; *Elite
+  Syncopations* comes out with no notes) or by music21, because a voice overflows its bar (*Pine Apple
+  Rag*, *Magnetic Rag*, *Wall Street Rag*, *Something Doing*, *Sun Flower Slow Drag*, *The Strenuous
+  Life*, *The Easy Winners*);
+- with python-ly's own `rel2abs` and `rhythm_explicit` run first and every repeat unfolded, *Maple
+  Leaf Rag* comes out at its played length, but the two `ragtime.8` rags still fail: on *Pine Apple Rag*
+  the writer closes the left hand's first bar after a quarter, pushes the notes of a chord that ends a
+  bar into the next bar, and writes the bar after a two-voice block into the same measure
+  (`docs/prompts/runs/Q76/pyly-mechanisms.txt`). No converted rag keeps the left-hand pattern in every
+  bar except *Maple Leaf Rag* as python-ly writes it unaltered, which is the wrong score above.
+
+`lilypond` is not on this machine, so no LilyPond-backed conversion was run. What was run is the
+reviewer's first fallback (`docs/review/responses/questions-400e69c8.md` §2): **the MIDI file Mutopia
+publishes for the same edition** (the piece page links it beside the `.ly`; the published `.ly` is
+byte-identical to the mirror's, line endings aside), converted by `tools/midi-cleanup/midi_to_musicxml.py`
+— the converter the `[MIDI]` row describes, which `build.py` runs for this step only. A MIDI file
+carries notes and times and no spelling, voices or repeat signs, so `import_mutopia.py`:
+
+- refuses a conversion the converter's own read-back refuses (a note lost or gained, a bar that does not
+  add up), or whose note tracks are not one per staff, or whose metre is not the table's;
+- spells every note as the edition spells it: the edition's pitches per staff (python-ly's `rel2abs`,
+  `rhythm_explicit` and every repeat unfolded, so they come in the order the MIDI plays them) aligned
+  with the converted notes by pitch class, each note taking the edition's letter and accidental; a note
+  left unspelled, or spelled in a way the edition never spells its pitch class, refuses the row — the
+  converter's own key-based guess wrote D flat for the edition's C sharp in *Pine Apple Rag*'s first bar;
+- inserts the key changes the MIDI's key-signature events place, at the bar they fall on.
+
+What stays the converter's is said on the catalogue row: the repeats are written out and, where the edition
+writes two voices in one hand, they are merged into chords. The row's provenance (`source: mutopia`) names
+the edition, the published MIDI by URL and sha256, the `.ly` its spelling came from, and the converter by
+name and version; its tempo is the edition's `\tempo` where the edition has one (*Pine Apple Rag*'s "Slow
+March tempo", 4 = 100), and otherwise marked inferred. Both files are fetched by the step itself — only the
+files the table names, the `.ly` from the GitHub mirror at the pinned revision, the `.mid` from
+mutopiaproject.org — into `content/scores/imported/mutopia/published/`, verified against their pinned
+sha256, and cached by bytes under `build/cache/mutopia/`; an offline build uses what is there, and a row
+whose files are missing or not the pinned ones is a placeholder that says so. The runner fetches the two
+files of each row on its first build. *Magnetic Rag* was tried by the same route and is not taken: the
+import refuses it, because notes of its upper staff are left that the edition's spelling cannot be found
+for; with the converter's own spelling its left hand leaves the pattern in the closing bars, and its MIDI
+tempo is LilyPond's default (`notTaken` in the table). The findings, per edition, are `docs/prompts/runs/Q76/muto-verdicts.txt`; the MIDI route's,
+`docs/prompts/runs/Q76/midi-route.txt`.
 
 ## 3. Pipeline steps (`tools/content/build.py` orchestrates)
 
@@ -118,14 +174,41 @@ caught by the merge rather than by whichever wrote last:
    quarry writes and made the field unwritable — a level a person had judged could be spliced
    onto a pdmx row and the built catalog would still call it an estimate. `estimated` when the
    row is silent, and anything that is neither word fails the build in `catalog_item`.
+4a. **import [MUTO]** (`import_mutopia.py`, Q76) — the rows of `content/sources/mutopia.json`: each
+   edition's published MIDI and its `.ly`, fetched at pinned places unless the build is offline or
+   `--skip-fetch`, checked against their sha256, converted by the MIDI converter and spelled and keyed
+   from the `.ly` (§2 on `[MUTO]`). Public domain, so both flavours bundle the same file; a row whose
+   files are missing or not the pinned ones is a placeholder that says why. Its level is the level
+   model's estimate for the written file (`estimated`). Lettered, as 7a is, so the step numbers other
+   documents cite stay true.
 5. **generate [GEN]** (`generate_exercises.py`) — scales, arpeggios, Hanon-style cells, harmony
    families, rhythm rows, levelled from one table (`02` Part E amendment); how many there are
-   is in `docs/generated/ladder.md`.
+   is in `docs/generated/ladder.md`. Since D3 also the generated studies (`study.py`, `02` Part
+   E2): each composed from its recipe and refused, stopping the build with the reason, where no
+   candidate keeps the hard layer and clears the musical floor. Every item passes two gates as
+   it is written — the physical (`confirm_physical`, D0) and, for a family whose contract names
+   an evaluator, the musical (`confirm_musical`, D3), which reads the written page again. The
+   studies are measured by step 7's attach step like every generated item and listed on no rung;
+   `python tools/content/study.py --candidate-rungs <catalog.json> <curriculum.json>` writes the
+   candidate-rungs report from a build's output (the rungs whose coping question leaves nothing
+   a study carries untaught — taught on the path, or since L120b coped with inside a taught
+   fixed position, which since L120e its *Admitted by* column names — and whose claims its notes
+   establish), for the placement decision that is F's.
 6. **author [AUTH]** (`author.py`) — the hand-written ABC and music21 sources, with metadata
    from each file's YAML front-matter.
 7. **merge catalog** — the fragments into one `catalog.json`, with `content/sources/sections.json`
    attached as `teaching.sections`. This is also where `settle_key_signatures()` decides what
-   the Library prints over "Key" for a score that states a signature and no mode.
+   the Library prints over "Key" for a score that states a signature and no mode, where
+   `attach_demands()` writes every bundled score's measured demands (E0, §4 below) and
+   `attach_provenance()` writes every row's provenance (E0, §4a), its two review bits and
+   `reviewed` facts read from the human review record (D2, §4b). Since E1, after the parents'
+   files exist and before the notation, demands and provenance steps, `excerpts.attach_excerpts()`
+   cuts every approved row of `content/sources/excerpts.json` out of its parent's built file into
+   `scores/excerpts/<id>.mxl` and adds the excerpt's catalogue row (§4c), which those steps then
+   treat as any other file; a row the cutter refuses (a range across a repeat sign, a first-or-
+   second ending or a jump; a parent that is gone) stops the build with the bars named, and a
+   parent this build does not bundle gives no cut. `attach_demands` keeps the bridge's positions
+   per printed bar in `build/positions-cache.json`, beside the counts' cache, for the proposer.
 7a. **score checks** (`score_checks.py --gate`, added 2026-09-22) — the seven checks of
    `08-test-map.md`'s own row (key consistency, grace density, truncation, bar duration,
    containment, title structure, repeat structure) over the catalog this build just wrote,
@@ -138,6 +221,18 @@ caught by the merge rather than by whichever wrote last:
    and `copy_curriculum`.)
 8. **curriculum, lessons, tips** — copied through from `content/`, with the schemas and the
    level model.
+8a. **reports** (`step_reports`, E0) — the rung-claims report and the inventory, from the catalog
+   and curriculum this build just wrote (`tools/content/claims.py`): as JSON in `build/`, and as
+   `docs/prompts/rung-claims.md` and `docs/prompts/inventory.md` for the default build only, so a
+   `--out` or `--quick` build never rewrites what the reviewer reads. `validate.py` prints the
+   report's count as a warning, never a failure, until the reviewer says otherwise. Since D2 the
+   priority rungs' tables carry a teaching-review column (the current teaching-use decision and
+   its basis), and the same step writes the builder's microscope data (§4b) — the queue, each
+   item's contract verdicts and rung claims, and the record's events — to
+   `app/public/dev/review/microscope.json`: a builder-only `dev/` root beside the built content,
+   not inside it (D2a), gitignored and left out of the precache (`vite.config.ts` `globIgnores`),
+   so no learner downloads it and every file under `content/` stays precached (`offline.spec.ts`,
+   P19). A `--out DIR` build writes it under `dev/` beside `DIR`.
 9. **validate** (`validate.py`) — everything in §4 and more: schemas, every referenced file
    present, every curriculum option in the catalog, the three-alternative floor, finders, tips
    files, section bar numbers, track definitions, orphan exercises, licences, the committed
@@ -157,8 +252,15 @@ Output is `app/public/content/`: `catalog.json`, `curriculum.json`, `scores/**.m
 
 Two flavours come out of the same table (`00` D10a, D23): the personal build — the default
 since 2026-09-12, §1 — is the owner's and carries everything; `--strict-license` is what CI
-and the Pages deploy run and turns the rest into placeholders. They differ in four fields —
-`file`, `importHint`, `tags` and `source.checksum` — and in nothing else, which is checked.
+and the Pages deploy run and turns the rest into placeholders. They differ in the rows the
+strict build does not bundle — each a placeholder, with no `file` and an `importHint` — and in
+what a missing file makes of those rows: `demands` and `measurement` unmeasured (*no notation
+is bundled*), the provenance's demands fact saying so, and no excerpt cut from such a parent
+(the public build's placeholders, below). (Q77, Doc-splice-2: this said they differ "in four
+fields — `file`, `importHint`, `tags` and `source.checksum` — and in nothing else, which is
+checked"; since E0 a bundled score is measured and a placeholder is not, and the one check
+found, `test_pdmx.py`, holds a PDMX placeholder's file, hint and tag, not that nothing else
+differs.)
 
 **The rest of `tools/content/`**, which the steps above do not name, one line each so nothing
 in the directory is a mystery:
@@ -222,8 +324,18 @@ in the directory is a mystery:
   it whenever `difficulty.py` or `level-model.json` changes: after the 2026-09-22 refit and
   before the 2026-09-23 port, 18 of its 49 comparisons were failing.
 - `finder.py` — turns a lesson's `finder` block into the search line and chat prompt (`04` §3).
+  Since E2a the build (`copy_curriculum`) passes a concept entry its own id, so the seed list of
+  teaching repertoire (`content/sources/teaching-repertoire.json`) names its works among the concept
+  prompt's examples where it knows the concept, within the prompt's limit — a proposal for the
+  owner's search, never an admission. A lesson's `concepts` are deliberately not passed: a rung's
+  finder states a key, a metre, a genre and a level the seed's works carry none of, and wired, most
+  of the seeded lesson examples contradicted the rung's own constraints (Entry 111). Held by
+  `test_finder.TestTheBuildPassesTheSeedConcepts`.
 - `ladder_report.py` — writes `docs/generated/ladder.md`; `validate.py` fails a build whose
   committed copy is stale.
+- `deploy_guard.py` — the Pages deploy's guard (Q88): refuses to publish a catalogue holding a
+  placeholder whose reason is this build's fetch (`validate.unfetched_placeholders`), naming
+  each; exit 0 publishes, 1 refuses, 2 cannot read the catalogue. Run by `pages.yml` only.
 - `add_technique_units.py` — the one-off that gave the technique track a rung per stage (P12a);
   not part of the build.
 - `truncation_scan.py` — the grace-16th truncation scan over every converted file (P2 §8).
@@ -269,7 +381,13 @@ one another's score). Each entry is the `.mxl` plus a JSON sidecar holding the
 through a temporary name and renamed, so a run killed mid-write leaves a miss rather than a
 truncated file the next run would trust. A cache that cannot be written is not an error.
 `--no-cache` on `build.py` (or any of the three importers) forces every source back through
-music21.
+music21. The written file carries no encoding date (E50a): music21 writes the day it ran as
+`<encoding-date>`, unconditionally, so until the converter removed it (`convert.without_encoding_date`,
+beside the minted ids and the zip times in `normalise_archive`) a miss on another day wrote other
+bytes than a hit, and the claim above was false for every converted file. Nor does it carry the
+machine it was written on: `zipfile` records a creating system in every entry (0 on Windows, 3
+elsewhere), so the laptop and CI's runner wrote two files for one score until `normalise_archive`
+pinned it to 3 (`convert.ZIP_SYSTEM`, E50a's second part, on the reviewer's required correction).
 
 **The render manifest** — `build/render-manifest.json`, written by
 `app/tests/e2e/content-render.spec.ts`. One entry per *output file* sha256, holding what
@@ -290,6 +408,49 @@ or through `.github/workflows/render-full.yml`, which is dispatched by hand.
 `build.py --if-missing` used to skip the whole content build whenever a catalog already
 existed. It is gone: it made an edited source silently stale in `npm run build`, and with
 the cache the build is cheap enough to always run.
+
+**The public build's placeholders, which no cache changes (Q75, 2026-09-29).** The Pages
+deploy builds the content strict (`PIANOPATH_STRICT_LICENSE=1`, §1); CI's content build is
+the personal one. The strict build writes a placeholder — the id, the title, an
+`importHint`, no file, `measurement.status: "unmeasured"` — for every Sapp Joplin rag
+(`craigsapp/joplin`, CC BY-NC-SA; the other Kern rows are the Chopin Institute's CC BY first
+editions, bundled), every PDMX row whose composition is not public domain (`personal-build`),
+and the MuseTrainer rows likewise (six *Beautiful* pieces), and it cuts no excerpt from a
+parent it does not bundle. The eight
+rows that are placeholders in every build stay so (the seven rock import rows and the
+Op. 25 no. 7 étude, `importHint` in the table). The runners' logs of 2026-09-29 show the
+split: the Pages run (strict, no cache) reads KERN 116 imported, 47 placeholders, excluded 73,
+and PDMX 367 imported, 175 placeholders, 2,089 items with demands measured on 1,783 and 235
+unmeasured; CI's run (personal, cache restored) reads KERN 162 imported, 1 placeholder,
+excluded 73, and PDMX 542 imported, 175 personal-build, 2,090 items with 2,011 measured and 8
+unmeasured. None of that difference is the cache's: the Pages run converted its 116 Kern
+files cold with CI's 73 exclusions, a strict build with every conversion cached writes the
+same counts, and every source is one any runner fetches (the Sapp and Chopin Institute
+repositories, MuseTrainer) or one the repository commits (the PDMX slice); the cache is
+written only on runners (CI's job, and `render-full.yml` when dispatched), never seeded from
+the owner's machine. The owner's phone runs the Pages
+build, so it shows those placeholders for as long as the deploy is strict (§1: until the
+repository is private). `pages.yml` restores CI's cache without saving one, for speed only.
+The claim rule counts a placeholder neither as an option that keeps a claim nor as one that
+refutes it (`validate.concept_claim_findings`, `claims.CHECKED`): on the strict build 2.4's
+tie and ragtime.8's stride bass, each established on the personal build only by an option the
+strict build placeholders, are warned as not judged there, not failed.
+
+**The public build is not published without what it could not fetch (Q88, 2026-09-29; the
+reviewer's Q86 ruling).** The validator warns a build's own fetch placeholder and passes (§3
+step 9, Q80); the deploy does not. `pages.yml`'s step *Guard the deploy*, after the build and
+before `configure-pages` and the upload, runs
+`tools/content/deploy_guard.py --dir app/dist/content`, which asks
+`validate.unfetched_placeholders` of the catalogue the artifact publishes. A row whose
+`importHint` carries this build's fetch reason (today `import_mutopia`'s *file was not
+fetched* and *is not the pinned file*; any reason Q82 or a later step adds to
+`UNFETCHED_REASONS`) fails the build job, naming each id and reason, so nothing is uploaded,
+`deploy-pages` does not run and the previous deployment stays live. Licence placeholders,
+import-only rows and runtime drills pass; a catalogue it cannot read is refused. A deliberate
+removal is judged by the catalogue and the ladder report, not here. While a fetch keeps
+failing, every push's deploy is refused, whatever else it carries.
+`tools/content/tests/test_deploy_guard.py` holds the guard and the step's place; the runner's
+refusal is unverified until a Pages run with a failed fetch is read.
 
 ### 3b. The note-loss gate (step 2, inside `convert.py`)
 
@@ -497,9 +658,324 @@ catalog schema gained three optional item fields: `targetSkills`, `demands` and 
 (`app/src/demands/detect.ts`) and read the score model OSMD makes of a file, so the build
 does not keep a Python copy: `tools/content/demands.py` hands score files to
 `app/tests/unit/demandsOfFiles.test.ts` through Vitest, the way `render_check.py` hands them
-to Playwright, and reads back the demand ids per file. Nothing in `build.py` calls it yet;
-E does, over the catalog, with a per-file cache like `attach_notation`'s. The cost of the
-alternative choices was measured on the built catalog (`pending-review` Entry 71).
+to Playwright, and reads back the demand ids per file. The cost of the alternative choices
+was measured on the built catalog (`pending-review` Entry 71).
+
+**Every bundled score carries its measured demands (E0, 2026-09-27).** `build.attach_demands`
+sends every score file the build ships — authored, PDMX, Kern, MuseTrainer and generated —
+through `demands.measure_each` and writes on the row `demands` (the ids, in the vocabulary's
+order) and `measurement`: the located count of each demand, the bars, steps and notes, the
+definitions it was measured under (`EVIDENCE_DEFINITIONS` and a fingerprint of the files that
+decide a measurement, `demands.DEFINITION_FILES`), and `established` — the demands the item
+provides at a useful density, which is what the app's one gate reads
+(`app/src/curriculum/eligibility.ts`). The density rule is one file,
+`content/sources/opportunity-density.json`: a per-demand minimum count and count per bar, each
+a hypothesis with its reason, never one universal percentage; a generated item may also
+establish a demand by its family contract where the contract states a density for it (a
+presence-only rule establishes nothing — the tie drill). It is cached in
+`build/demands-cache.json` on each file's sha256 and on the fingerprint, so a detector change
+measures everything again and a changed score measures only itself. A file the app cannot
+load, a non-notation file, or a piece whose notation is not bundled carries `demands:
+"unmeasured"` with the reason in `measurement.reason` — never an empty list that reads as "no
+demands"; a runtime drill has no `demands` and `measurement.status: "runtime"`. A reader that
+fails on more than a tenth of the files stops the build (a broken bridge, not a library). An
+imported score is measured the same way in the app, by `importStore.measureImport`, at import
+and again whenever the learner corrects its hands (`correctImportHands`).
+
+### 4a. Provenance on every content object (E0; R35, R15, R11, Part 21 §B)
+
+`build.attach_provenance` writes `provenance` on every catalog row, and the import path on every
+imported score (`importStore.importProvenance`):
+
+- **`source`**: `authored`, `pdmx`, `kern`, `musetrainer`, `generated` (with D0's identity in
+  `generator`: family, version, seed), `runtime` (a drill the app makes when it opens),
+  `placeholder` (not bundled), or `imported-midi` / `imported-musicxml` / `imported-pdf`.
+- **Identity** (R15): `edition` (the PDMX upload's CID, or the source file's sha256),
+  `arrangement` (the item; a PDMX duplicate edition shares the arrangement of the upload it
+  duplicates) and `composition` (an authored variant names its tune by `variantOf`; otherwise
+  `work_key` of the title and composer, the PDMX identity function — conservative, so it is
+  labelled `inferred`). A generated item or runtime drill is identified by its `generator`
+  and names no composition: an exercise is not a work (the inventory counts none).
+- **`converter`**: `convert.py` by its tool fingerprint, `author.py`, or the app's MIDI converter
+  by `MIDI_CONVERTER_VERSION` — owned since E2 by the converter itself (`app/src/import/midi/convert.ts`,
+  re-exported by `importStore.ts`; E26). The command-line converter (`tools/midi-cleanup/midi_to_musicxml.py`)
+  keeps its own `CONVERTER_VERSION` and writes it into every file it emits as
+  `<software>tools/midi-cleanup/midi_to_musicxml.py v.N</software>` in the MusicXML `<encoding>` block,
+  beside music21's own (the element may repeat there, so no comment is needed); an import of such a
+  file names that converter and version in `converter`, and its `hands` and `key` facts are
+  `inferred` — the staves and the key are that converter's decisions, and the file does not say
+  whether it kept the tracks or split one line. The two converters are separate programs and
+  their versions move separately.
+  `CONVERTER_STAMPS` lists each recognised converter's stamp and what it converted from; any other
+  MusicXML keeps its staves and signature authored, and the `via` names what the encoding block
+  names and says the door does not know whether an edition or a converter from MIDI wrote them.
+  MuseScore's name is not a stamp: its exports carry it however the score was made (E42).
+- **`facts`**: each fact with how it is known — `measured` (the detectors, with their
+  definitions; the key a song's signature and final bass give), `inferred` (the converter's
+  default tempo, a level estimate, a hand split, a key guess, an identity key), `authored`
+  (written by the edition, the generator's recipe, this repository, or the learner's
+  correction), `reviewed` (a person's decision), `unmeasured`, `runtime`. Where the tempo is
+  inferred, the tempo-sensitive demands (the density file's `tempoSensitive`: notes shorter
+  than the beat) are listed `untrusted` beside the measured ones: measured in the notation,
+  their difficulty resting on a tempo the converter supplied. Never flattened into one field.
+  (The import path wrote no `untrusted` list until E2, so an import whose file states no tempo was
+  the one notated candidate whose inferred tempo the gate could not see; it writes the build's
+  rule now, at import, at a hand correction and at the launch's measurement below.)
+- **`facts.measuredUnder`** (an import, E2; E25): `value` is the app's converter version in force
+  when the row's notes were measured — an unmeasurable verdict included — and absent on a row
+  measured before E2, which reads as version 1, the only one there was. It is not the converter
+  that wrote the notes; that stays `converter`. On each launch (`main.ts`, after the first screen,
+  one row per idle slice) `importStore.measureStoredImports` measures once, through the store,
+  every stored import that is due (`measurementDue`): never measured (imported before E0), measured
+  where there was no document to parse it in, unmeasurable under an older version than the one in
+  force, or converted by an older version of the app's converter and not measured since. A PDF is
+  never handed to the detectors, and its verdict is written with the version, so it is tried again
+  only when the version moves. The MIDI file is not stored, so an older converter's score is
+  measured again, never converted again. Each row is written in one transaction onto the row as it
+  is then, only if its score is still the one measured: the learner's corrected score, its
+  correction provenance, its level and its rungs are never overwritten. A row imported before E0
+  gets the provenance its stored file shows, with no `hands` or `key` fact unless a converter's
+  stamp says whose they are, because a converted MIDI file is stored as MusicXML too and the door
+  it came through is not on the row.
+  For a score the detectors measured, `value` is `"<converter version>;<measuring fingerprint>"`
+  (E40); the fingerprint is `app/src/data/measuringFingerprint.ts`'s (the detectors, the model, the
+  vocabulary, the density file, the engraver's release), never compared with the build's. The
+  launch also measures a measured row under other definitions or none (`definitions`), and one
+  whose tempo is inferred with a tempo-sensitive demand and no untrusted list (`untrusted`, E41); a
+  PDF or an unreadable file follows the version alone.
+- **An import's tempo** (E32, E48): where the file writes no `<sound tempo>` or `<metronome>`, a
+  words direction that is only a metronome mark is read at import (E32; the glyph mapped from
+  SMuFL's code point, the metre's beat in x/4 or x/2 where the glyph is missing) and written as a
+  measure-level `<sound tempo>` beside it; `facts.tempo` authored, quoting the mark. The learner
+  states a tempo through `importStore.stateImportTempo` (E48), which writes it into the first bar,
+  measures again, names the learner in `facts.tempo`, clears only the untrusted entries the tempo
+  resolves and never loses to a launch measurement.
+- **The build's tempo printed as text** (E50): the content converter reads the same mark before it
+  inserts its default (`convert.tempo_printed_as_text`, in `normalise`'s default branch, E32's rule
+  ported: `TEXT_MARK` verbatim, SMuFL's metronome glyphs, the metre's beat in x/4 or x/2 where the
+  glyph is missing, 20–400) where it stands before any note sounds (X31a's opening rule), and writes it
+  as the score's `<metronome>` with a `<sound tempo>` in quarters, the words removed; a mark after a
+  note has sounded stays as words and the conversion's warnings name it. The seven bundled PDMX
+  scores that printed `= N` were re-converted with it and their `pdmx.json` rows respliced
+  (`tempoDefaulted: false`), so their tempo fact is authored, via the upload. One rule, two
+  definitions (the door's TypeScript, the converter's Python); one shared definition is the later
+  ingestion seam.
+- **`facts.promise`** (D3a, 2026-09-28): on every generated item, its family's promise for its
+  recipe — `{kind: "authored", via: "family_contracts.json (the rule matching the recipe)",
+  value: "music" | "drill"}` — resolved by `review.promise_of`, the microscope's reading: the
+  first of the row's rules whose `when` the recipe matches (`family_contracts.selected`), never the
+  row's first rule, so the `meter` family's 5/4 walk is `drill` and its 12/8 blues `music`. The
+  app's one gate reads it beside `review.teaching` and refuses a `music` item for every automatic
+  offer until that bit is `true` (`docs/02` Part E2's study note); nothing at runtime reads the
+  contract table. A runtime drill (the nine reading rows among them) and a notated item carry no
+  promise fact. `test_measured_truth.TestThePromiseFact` holds it on the built catalogue.
+- **`review`**: R42's two decisions as separate bits, `score` (usable, faithful) and `teaching`
+  (a good teaching use for its claimed role), filled since D2 from the human review record (§4b):
+  each dimension's current decision on the item's current identity, `yes` true, `no` and `fix`
+  false, `null` where no person has decided — with, per current decision, a `reviewed` fact
+  (`reviewedScore`, `reviewedTeaching`) carrying the value, the basis (`inspected`, `notation`,
+  `heard`), the date and the event id. A PDMX row's quarry `keep` is recorded as `quarryKeep` (the
+  decision; the reviewer's note, working prose with no source, stays in `pdmx.json`) and is
+  neither bit (Part 12 §14).
+- **`physical`**: a generated item's declared large-hand voicing, with its prerequisite and
+  alternative (D0 finding 5); the gate recommends no such item until the alternative reaches
+  the learner.
+- **`excerpt`** (E1, with `source: excerpt`): the definition the item was cut from (`of`,
+  `fromBar`, `toBar`, `selection`, its `targets` and approving `event`), `cutVersion`,
+  `parentSha256` (the parent's built file at cut time), `parentEdition` and `key` (sha256 over the
+  parent's bytes, the range, the selection and the cut version); `stale` where the row was
+  approved on parent bytes the parent no longer has. The parent's `composition` and
+  `arrangement` are carried down; the `edition` is the parent's; the `converter` is
+  `tools/content/excerpts.py` by its cut version; the facts say the demands were measured on the
+  cut, the level estimated on the cut, the hands and the boundary authored by the approved row.
+  `approvedCutVersion` (the cutter the approval was merged under; below `cutVersion`, stale by cut
+  version, carried to nothing) and `dropped` (the edition's texts the cutter left out) are in the
+  block too (E33).
+  §4c has the rest.
+- **An import's identity** (G1): the build keys none, and the catalogue row an import becomes
+  carries no bytes, so `material.materialOfItem` answers `none` for it; where the Score screen
+  loads the stored score it hashes the text (`material.textIdentity`: the sha256 of its UTF-8
+  bytes) and the import's runs and encounters carry `{kind: 'file', sha256}` — a duplicate import
+  under a new id is the same material. An excerpt's `fromBar`/`toBar` also scope what the learner
+  met: the encounter query normalises an excerpt's bars into its parent's by them
+  (`encounterStore.familiarityIn`).
+- **The one gate over these facts, and the contact it reads** (E2a; the E2 review's required
+  change, `docs/review/responses/2532022.md`). Every automatic offer asks `eligibility.eligibleFor`,
+  which since E2a is the material gate (`candidates.eligibleForMaterial`) asked of the want as the
+  simplest requirements over the candidate contract; the established questions — the teaching-use
+  admission over `facts.promise` and `review.teaching`, the coping and opportunity questions over
+  the measurement, the `untrusted` marker — are one private core (`eligibilityCore.ts`) that only
+  the material gate asks and that imports neither gate. A row whose demands are unmeasured (a
+  placeholder, a score imported before E0 until the launch measures it, a PDF) is refused for an
+  automatic want as `unknown-forbidden`, naming the demands it cannot rule out, wherever the learner
+  is not prepared for every demand, and stays open to exploration; every other verdict is the one
+  it was. A row the card takes straight from a rung's own list (an authored placement, or the
+  learner's assignment of an import) asks the teaching-use admission alone, as before. Novelty,
+  where a requirement asks it, reads the row's material identity (`provenance.identity` through
+  D4's `material.materialOfItem`: an excerpt's cut, never its parent; an import `none`, read by its
+  id, and the verdict says so) against D4's contact reading (`progressStore.contactIn`) over the
+  stored runs the caller passes (`candidates.contactFromRuns`): the gate reads no store, and no
+  caller asks for novelty yet. A row whose file the converter wrote without a date also carries
+  `provenance.formerIdentities` (E50a): the historical dated identities of that file's music while
+  music21's `<encoding-date>` was written. They come from `tools/content/former_identities.json`,
+  historical compatibility data and never a rolling window: every dated music21 file identity in the
+  catalogues able to store a learner's material, from D4's (the first to carry `provenance.identity`)
+  to the laptop's last deployable one before E50a, generated by
+  the former-identities generator kept beside Entry 166 (`docs/prompts/runs/E50a/`) and never edited by hand; a dated identity an
+  installed catalogue shows outside it is added deliberately (its `--check` and `--add`). Each entry
+  keeps the creating system its machine's `zipfile` wrote (the laptop's 0), because the history is
+  what that machine wrote; the converter now writes one system everywhere. The build records an entry
+  for a row only where removing the entry's date gives the row's file and putting it back, zipped
+  under the entry's system, gives the entry's bytes (`convert.former_identities`), so a musical change
+  drops them. Beside them, since E50, the old identity each reviewed musical repair names
+  (`tools/content/repaired_identities.json`, generated by the repaired-identities generator kept beside
+  Entry 163, `docs/prompts/runs/E50/`, never edited by hand): an entry of the table above, related to the
+  repaired file, recorded for a row only where the row's file with the repair's restore lines put back,
+  then the old date, zipped under the old system, is the old file's bytes. Since E50b the same table
+  holds, under `cuts`, the one derived repair relationship the build produced — the approved Wabash
+  cut re-cut from its repaired parent, never a rule for other descendants — recorded for the cut's
+  row only where the cut's definition and cutter are the relation's, the parent's repair still
+  re-proves on the parent, the cut zipped under the relation's creating system is the new cut it
+  recorded (the cutter's zip writer stamps the platform's system, E55), and the cut with the parent
+  repair's restore lines put back, zipped under that system, is the old cut the laptop served
+  (`excerpts.former_cut_identities`; written by the repaired-cut generator kept beside Entry 181,
+  `docs/prompts/runs/E50b/`, which re-cuts the rebuilt old parent to prove it, never by hand). Every relation says `tempoChanged`, and the build lists
+  those old identities again as `provenance.tempoRepairedFrom`: a run of one measured its percentage
+  of the old tempo, so the app's rung reading refuses its tempo channel (`material.tempoNotComparable`,
+  `rungState.meetsStandard`). A stored
+  run, encounter, pruned run's summary or project that names one names this row's material; the app
+  resolves it at read (`material.learnerMaterial`) and rewrites nothing. Learner continuity only: D2's
+  record, an excerpt's `parentSha256`, the committed-file checks and the render, cache and checksum keys
+  read exact bytes and never this list.
+
+### 4b. The human review record and the merge (D2; R42, G28, G29, E16)
+
+`content/review/decisions.jsonl` is what a person decided about an item: one JSON event per
+line, append-only, never re-serialised; `content/review/README.md` lists the fields. The short
+form:
+
+- **One dimension per event** — `usableScore` or `goodTeachingUse` — each with its own `value`
+  (`yes`, `no`, `fix`), `reason`, `category`, `basis`, reviewer, time and a stable event id.
+  `basis` is `inspected` (the facts), `notation` (the page read) or `heard` (complete playback,
+  both hands sounding, at the item's intended tempo; hand-alone or partial playback stays
+  `notation`).
+- **Bound to the item's identity**: a generated item's `drill.generator` triple and its recipe
+  (`drill.params` with the hands, and the tempo — the seed is `null` on every deterministic
+  family, so the triple alone does not name an item); a notated item's built file (its sha256,
+  `attach_demands`' cache key); `none` for an item with no file, shown as weaker. A moved version,
+  a changed recipe or a changed file makes every earlier event on the item stale.
+- **Current values per item and dimension**: triage lines (`by: "triage"`) and stale events never
+  participate; the latest valid human event (`at`, then the later line) supersedes the earlier;
+  an event on one dimension never touches the other.
+
+Decisions are made on the builder's microscope (`#/dev/microscope/<item id>`, which reads
+`app/public/dev/review/microscope.json`, written by §3's reports step — builder-only, never
+precached, and outside `content/` since D2a) and leave the device as an exported file, merged by
+`python tools/content/review.py --merge <file>`: a line that is malformed, names an item the
+built catalogue does not have, or names an identity it does not have is refused with its line
+number; an event id already in the record is skipped when identical and refused when not, so a
+rerun appends nothing. No server writes the record (the reviewer's decision, `docs/review/
+responses/7ab175a.md`). `review.py --check` lists the queue — the music families' canonical items,
+then the not-judged families', then the options a rung lists for a claim no detector checks, then
+the rest — with what is decided, and exits 1 only for a fault in the record.
+
+**What the microscope prints of the gate and the contract** (D5, 2026-09-29; G55, G56, G60). `review.microscope_data` carries, per generated item, the musical gate's answer (`musical`, from `review.musical_verdict`). A drill has `applies: false`. A music family whose row names no evaluator gets the gate's "not evaluated" words. The study gets the evaluator's verdict — `passes`, `total`, `floor`, `wrong`, `parts` and the gate's `why` — with `evaluator`, the evaluator's contract `version` and a `source`. The version is `musical_evaluator.VERSION`, bumped in the same change as anything that can move a total or a wrong cadence; it is provenance for the displayed assessment, never part of the material identity and never a hearing. The `source` is `carried` when the item holds a verdict the build persisted (`drill.study.verdict`; no build step writes one yet) and `recomputed` when the projection ran the same gate on the built file, which is every study today, at a cost within the build's noise. The data's top-level `evaluator` names the version the projection recomputes with, and the screen says so when a carried verdict was written under another. Each generated item also carries `requires` (the rules `family_contracts.selected` picks for its recipe) and `missing` (those its measured demands lack). The screen prints `missing` as "Contract requires but the notes lack" and reads no rule's `when` itself. The screen's provenance list prints each fact's `value` beside its kind and `via`, as the record holds it (a promise's `music` or `drill`; a decision's `yes`, `no` or `fix`, with its basis, date and event), and "no decision" for a review dimension nobody has decided, each on its own line. The browser computes no verdict, and "unheard" follows every musical promise.
+
+`family_contracts.json`'s `heard` stays a hand-maintained declaration; `test_family_contracts.py`
+holds that a family marked `heard: true` has at least one `heard` decision on a current item.
+`review.py` and `app/src/review/record.ts` implement the contract; `tests/fixtures/
+review_cases.json` holds both to it.
+
+### 4c. The excerpt (E1; Part 24, R5, R7, R15, R35, R40, R42)
+
+An excerpt is a catalogue item of its own type (`type: 'excerpt'`), never a bar range on its
+parent: a passage cut by the build from the parent's **built** file into a file of its own, so the
+measurement (§4), the provenance (§4a), the review record's identity (§4b), the one gate and the
+screens all read the passage and nothing of the piece around it. A named section
+(`sections.json`, `teaching.sections`) is a different thing — a loop over bars of a whole item —
+and nothing here touches one.
+
+- **The definition** is a row of `content/sources/excerpts.json`: `of`, `fromBar`/`toBar` (printed
+  bars, 1-based, the pickup counted as bar 1, as `sections.json` counts), `selection` (`both`,
+  `right`, `left`), `targets` (vocabulary skill or demand ids), `label`, `note`, `parentSha256`
+  (the parent's built bytes the approval was made on) and the approving `event`, `by`, `at`;
+  rejections beside them in `rejected`, with their reasons. `validate.py` checks every row beside
+  the sections: a parent that exists and is a notated item with a built file, a range inside its
+  printed bars, a selection its staves allow, targets the vocabulary has, a derived id no other
+  row or item shares, no repeat sign, ending or jump inside the range; a row approved on other
+  parent bytes is warned as stale.
+  `cutVersion` is recorded by the merge (E33); `validate.py` also warns a row merged under an older
+  cutter and a target the built cut does not establish (E29), naming the count.
+- **The id and the key.** `excerpt.<parent id without its leading "song.">.b<from>-<to>`, with
+  `.rh` or `.lh` for one hand: the definition and nothing else, never a title. The key (above)
+  makes a moved endpoint or the other hand another excerpt, leaves a renamed one or a parent
+  whose catalogue metadata changed the same, and makes a parent whose file changed detectable.
+  The cut file's own sha256 is the item's identity in the review record, and what a run of it
+  writes into its evidence context as `material`.
+- **The cut** (`excerpts.cut`): music21 by printed position; the clef, key, time and tempo in
+  force at the cut carried into its first bar; a pickup kept where the row starts at bar 1; a tie
+  into the first bar severed to a plain note, a tie out of the last dropped; a repeat sign at
+  either edge neutralised (the passage is presented once); layout and severed slurs dropped; the
+  unselected staff of a one-hand cut silenced and left out by `convert.drop_silent_staves` through
+  `convert.normalise`; the header normalised — the excerpt's id as the work title, no credits, no
+  encoding date, the archive's entry named after the excerpt — so the bytes depend on the notes
+  and the definition alone. The parent's attribution is in the excerpt's catalogue `source`
+  (the parent's, whole), which the Library's Source and Licence rows and the lesson row show.
+  The edition's texts that are not the music are left out — a copyright or licence line, a swing
+  the app does not play, a direction to other players — each listed in `dropped` (E33, cut version
+  2). The renderer draws SMuFL's private-use accidentals and metronome notes in an edition's text
+  as their Unicode characters, in a cut and in every other score it loads (`OsmdView.load`, E31);
+  the file is unchanged.
+- **The row.** `excerptOf`, `hands` (the selection), `level` estimated by `difficulty.py` on the
+  cut, `tracks` and `source` the parent's, the licence tags the parent's (a cut of a personal-build
+  or CC BY-NC edition is one too; a build that does not bundle the parent gives no cut),
+  `concepts` the targets' where the vocabulary names them once (the left-hand pattern, one
+  detector for seven concepts, names none), `keySig` the parent's where the parent has one key and
+  the cut prints it (settled once the notation is read). An excerpt establishes a demand by the
+  **window rule** — the density file's `perBar` and `minInWindow` in place of the whole-piece
+  `min` — written as `measurement.window`.
+- **Proposed, never created.** `python tools/content/excerpts.py propose --for <skill or demand>
+  [--rung R] [--of ID] [--bars 4..8]` (`excerpt_proposer.py`) scores every window of every
+  measured song from the bridge's positions and the parent's notation: the target at the window
+  rule's density and recurring through the bars, a phrase start, an ending that resolves or leads
+  onward, the pickup included, the hands as the parent has them, a useful length — each a pure
+  function with its weight — and three gates: nothing the judging rung has not taught, nothing a
+  family contract forbids, D0's physical limits. Nothing reads a level. Left-hand windows are not
+  offered while the detectors read a one-staff bass-clef part as treble. It writes
+  `build/excerpts/candidates.json` and the builder-only `app/public/dev/review/excerpts.json`,
+  which the microscope's excerpt view (`#/dev/microscope/excerpts`) reads: the parent drawn with
+  the cut marked, played from two bars before the cut to two after, the boundaries moved a bar at a
+  time and re-scored from the proposer's own table, and a decision — approve, adjust and approve,
+  reject with a reason — exported and merged by `python tools/content/excerpts.py --merge <file>`,
+  idempotently by event id (a range approved twice is refused with the row named). A rejection of
+  an approved range withdraws the approval, current or stale, so the build stops cutting it; both
+  decisions are kept, the approval whole in the file's `superseded` list with the rejection as the
+  event that replaced it, the rejection in `rejected` with its reason, and a later approval of the
+  range, with its own event, is a new decision (E54, Entry 174). For the PDMX
+  workflow this is the step after `commit.py` and before the build (`tools/content/pdmx/README.md`).
+- **Unplaced.** An approved excerpt is in the Library and on no rung. `python
+  tools/content/excerpts.py --candidate-rungs` writes, from a built catalogue, the rungs whose coping
+  question leaves nothing each excerpt carries untaught — taught on the path, or since L120b coped
+  with inside a taught fixed position, which since L120e its *Admitted by* column names — and whose
+  claims its notes establish, a claim one detector answers for several concepts marked † with the
+  concepts named. Placement is
+  F's, on a stated gate: that line established on the combined build **and** a current
+  `goodTeachingUse: yes` on the cut's identity in D2's record by a named reviewer stating their
+  basis. No automatic offer in the app reaches an unplaced excerpt; its runs mark the parent
+  neither passed nor performed, and the repertoire lifecycle keeps to songs.
+- **The teaching-use bit is the cut's (E1a, 2026-09-28).** `review.fill_reviewed` fills an
+  excerpt's `provenance.review.teaching` only from a decision on its current identity, the cut
+  file's sha256 (§4b): a `yes` recorded on an earlier cut of the same definition — the parent's
+  file changed and the cut rebuilt under the same id — is stale, and the bit stays `null`
+  (`test_review_record.py` › `TestAStaleDecisionOnAnOlderCutAdmitsNothing`). The app's one
+  admission (`eligibility.admittedForTeaching`) reads that bit for an excerpt as it reads it for a
+  music-promising generated item: without `true`, no automatic offer takes the cut, whatever a
+  rung lists; the Library and exploration do not ask. A moved endpoint or the other hand is
+  another id, so a decision on the old range names an item the catalogue no longer has.
+- **An import later** (E2 with X): nothing here assumes a bundled parent except where it reads the
+  parent's built file; an import's excerpt would need its stored score's bytes as the parent's,
+  its own measurement of the cut at import (`importStore.measureImport`), and a definition kept on
+  the device rather than in `excerpts.json`.
 
 ## 5. Authoring conventions for `[AUTH]` ABC files
 

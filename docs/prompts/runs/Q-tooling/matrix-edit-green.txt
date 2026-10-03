@@ -1,0 +1,22 @@
+$ (cwd .) python -m unittest discover -s tools/content/tests -t tools/content -p test_matrix_edit.py -v
+test_a_row_of_another_width_is_refused (tests.test_matrix_edit.AddAfter.test_a_row_of_another_width_is_refused) ... ok
+test_an_id_already_in_the_table_is_refused (tests.test_matrix_edit.AddAfter.test_an_id_already_in_the_table_is_refused) ... ok
+test_the_row_goes_straight_after_its_anchor (tests.test_matrix_edit.AddAfter.test_the_row_goes_straight_after_its_anchor) ... ok
+test_a_stale_old_text_is_refused (tests.test_matrix_edit.Edit.test_a_stale_old_text_is_refused) ... ok
+test_an_edit_that_loses_the_id_is_refused (tests.test_matrix_edit.Edit.test_an_edit_that_loses_the_id_is_refused) ... ok
+test_an_id_with_no_row_or_two_rows_is_refused (tests.test_matrix_edit.Edit.test_an_id_with_no_row_or_two_rows_is_refused) ... ok
+test_decorated_ids_are_found_by_the_bare_id (tests.test_matrix_edit.Edit.test_decorated_ids_are_found_by_the_bare_id) ... ok
+test_edit_changes_the_row_and_nothing_else (tests.test_matrix_edit.Edit.test_edit_changes_the_row_and_nothing_else) ... ok
+test_new_equal_to_old_is_refused (tests.test_matrix_edit.Edit.test_new_equal_to_old_is_refused) ... ok
+test_old_twice_in_the_row_is_refused (tests.test_matrix_edit.Edit.test_old_twice_in_the_row_is_refused) ... ok
+test_replace_takes_the_whole_row_and_keeps_its_id (tests.test_matrix_edit.Edit.test_replace_takes_the_whole_row_and_keeps_its_id) ... ok
+test_a_step_written_against_the_old_text_is_refused (tests.test_matrix_edit.TheBatch.test_a_step_written_against_the_old_text_is_refused) ... ok
+test_each_step_searches_the_text_the_last_one_left (tests.test_matrix_edit.TheBatch.test_each_step_searches_the_text_the_last_one_left) ... ok
+test_a_refused_batch_leaves_the_file_as_it_was (tests.test_matrix_edit.TheCommandLine.test_a_refused_batch_leaves_the_file_as_it_was) ... ok
+test_writing_the_matrix_regenerates_the_views_and_keeps_its_line_endings (tests.test_matrix_edit.TheCommandLine.test_writing_the_matrix_regenerates_the_views_and_keeps_its_line_endings) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.106s
+
+OK
+exit 0

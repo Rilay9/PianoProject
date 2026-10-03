@@ -1,0 +1,88 @@
+wrote icon-192.png (987 bytes)
+wrote icon-512.png (4963 bytes)
+wrote icon-maskable-192.png (851 bytes)
+wrote icon-maskable-512.png (3982 bytes)
+[36mvite v8.2.2 [32mbuilding client environment for production...[36m[39m
+transforming...
+✓ 266 modules transformed.
+rendering chunks...
+computing gzip size...
+../build/dist-head/assets/loopbackProcessor-D81naZuY.js              0.96 kB
+../build/dist-head/manifest.webmanifest                              1.14 kB
+../build/dist-head/assets/folderWalk.worker-CRdej3Tl.js              1.68 kB
+../build/dist-head/index.html                                        3.30 kB │ gzip:   0.87 kB
+../build/dist-head/assets/pitchProcessor-DR8nSQKv.js                13.39 kB
+../build/dist-head/assets/pdf.worker.min-Cpi8b8z3.mjs            1,050.95 kB
+../build/dist-head/assets/ScoreScreen-BxJCtwv2.css                   0.28 kB │ gzip:   0.19 kB
+../build/dist-head/assets/index-Cjr7hNt2.css                        63.59 kB │ gzip:  12.70 kB
+../build/dist-head/assets/stats-1YMUVmc5.js                          0.39 kB │ gzip:   0.27 kB
+../build/dist-head/assets/types-Do_XH_Wx.js                          0.41 kB │ gzip:   0.30 kB
+../build/dist-head/assets/textGlyphs-B71KmlMp.js                     0.48 kB │ gzip:   0.30 kB
+../build/dist-head/assets/persist-oIpJXVK5.js                        0.66 kB │ gzip:   0.37 kB
+../build/dist-head/assets/rolldown-runtime-hePW80VL.js               0.71 kB │ gzip:   0.42 kB
+../build/dist-head/assets/types-C34qHO0-.js                          0.83 kB │ gzip:   0.44 kB
+../build/dist-head/assets/virtual_pwa-register-DORYMSU1.js           1.17 kB │ gzip:   0.61 kB
+../build/dist-head/assets/preload-helper-BvvryuwW.js                 1.20 kB │ gzip:   0.68 kB
+../build/dist-head/assets/cross-staff-Bcseb-Ng.js                    1.66 kB │ gzip:   0.54 kB
+../build/dist-head/assets/pickup-grace-DHnxYflD.js                   1.73 kB │ gzip:   0.61 kB
+../build/dist-head/assets/repeat-endings-22trKdIW.js                 1.78 kB │ gzip:   0.60 kB
+../build/dist-head/assets/tempo-change-Bj-oOOuB.js                   1.86 kB │ gzip:   0.59 kB
+../build/dist-head/assets/fingering-rests-BosCio-g.js                1.90 kB │ gzip:   0.59 kB
+../build/dist-head/assets/two-voices-BnRZDAEb.js                     2.19 kB │ gzip:   0.57 kB
+../build/dist-head/assets/selectors-Cf6jQ4Ey.js                      2.19 kB │ gzip:   1.05 kB
+../build/dist-head/assets/stripRange-8RgmFDbo.js                     2.34 kB │ gzip:   1.10 kB
+../build/dist-head/assets/tuplets-68-B9S7qQD0.js                     2.70 kB │ gzip:   0.68 kB
+../build/dist-head/assets/chords-ties-DzAV7kf4.js                    2.75 kB │ gzip:   0.71 kB
+../build/dist-head/assets/spelling-BVUCJhKM.js                       2.94 kB │ gzip:   0.67 kB
+../build/dist-head/assets/difficulty-jeXy3H89.js                     3.28 kB │ gzip:   1.63 kB
+../build/dist-head/assets/accents-NSaP0NhI.js                        3.84 kB │ gzip:   0.91 kB
+../build/dist-head/assets/settingsStore-DKE1X3uu.js                  3.90 kB │ gzip:   1.40 kB
+../build/dist-head/assets/transfer-DjmDI6Sy.js                       3.92 kB │ gzip:   1.67 kB
+../build/dist-head/assets/OsmdView-DsYmMOcI.js                       4.45 kB │ gzip:   1.87 kB
+../build/dist-head/assets/ladder-B9iCEHLB.js                         4.98 kB │ gzip:   2.20 kB
+../build/dist-head/assets/musicXmlWriter-PqzL-UsH.js                 5.27 kB │ gzip:   1.98 kB
+../build/dist-head/assets/load-CtWhlI6p.js                           5.59 kB │ gzip:   2.17 kB
+../build/dist-head/assets/workbox-window.prod.es5-Bd17z0YL.js        5.65 kB │ gzip:   2.20 kB
+../build/dist-head/assets/db--Ivb2UOc.js                             5.89 kB │ gzip:   2.27 kB
+../build/dist-head/assets/mxl-a91ZkhOt.js                            5.96 kB │ gzip:   3.06 kB
+../build/dist-head/assets/detect-DfOa6BPz.js                         6.32 kB │ gzip:   2.44 kB
+../build/dist-head/assets/demands-CFsM-5y5.js                        6.33 kB │ gzip:   2.39 kB
+../build/dist-head/assets/opportunity-density-Cnu4Hc1e.js            8.02 kB │ gzip:   2.90 kB
+../build/dist-head/assets/extractScoreModel-CkAJNub1.js              8.64 kB │ gzip:   3.85 kB
+../build/dist-head/assets/evidence-D2N8Pcux.js                       8.65 kB │ gzip:   3.30 kB
+../build/dist-head/assets/Scoring-CYrivDuy.js                        9.90 kB │ gzip:   3.76 kB
+../build/dist-head/assets/vocabulary-CN0tRLFB.js                    12.52 kB │ gzip:   4.12 kB
+../build/dist-head/assets/ScoreSession-D6ETfizA.js                  15.33 kB │ gzip:   5.08 kB
+../build/dist-head/assets/SetupScreen-nnFEBZaK.js                   21.28 kB │ gzip:   8.26 kB
+../build/dist-head/assets/progressStore-D6ubryxy.js                 21.48 kB │ gzip:   8.09 kB
+../build/dist-head/assets/PracticeEngine-CpY3e--g.js                21.56 kB │ gzip:   5.97 kB
+../build/dist-head/assets/eligibility-CHDUti1j.js                   21.71 kB │ gzip:   7.11 kB
+../build/dist-head/assets/importStore-CLyc9Ejv.js                   39.96 kB │ gzip:  15.83 kB
+../build/dist-head/assets/DevMicroscopeScreen-8q0pFU88.js           44.32 kB │ gzip:  14.72 kB
+../build/dist-head/assets/sightReading-CEXJz0Vc.js                  45.37 kB │ gzip:  16.45 kB
+../build/dist-head/assets/WindowRenderer-CR2D0OhW.js                50.15 kB │ gzip:  14.91 kB
+../build/dist-head/assets/ScoreScreen-CXENi9ul.js                   50.95 kB │ gzip:  18.74 kB
+../build/dist-head/assets/measuringFingerprint-DJ7zkLmp.js          68.95 kB │ gzip:  21.42 kB
+../build/dist-head/assets/DevScoreScreen-BSHTHblA.js               104.60 kB │ gzip:  63.33 kB
+../build/dist-head/assets/PdfScreen-q3Oun-W2.js                    413.33 kB │ gzip: 122.13 kB
+../build/dist-head/assets/index-B0tMOLJf.js                        555.18 kB │ gzip: 187.10 kB
+../build/dist-head/assets/opensheetmusicdisplay.min-BVAvtNEi.js  1,303.91 kB │ gzip: 335.26 kB
+
+[33m[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[39m
+[33m[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[33m[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[39m
+[32m✓ built in 2.94s[39m
+
+PWA v1.3.0
+mode      generateSW
+precache  2242 entries (28703.94 KiB)
+files generated
+  ../build/dist-head/sw.js
+  ../build/dist-head/workbox-9c191d2f.js
+exit=0

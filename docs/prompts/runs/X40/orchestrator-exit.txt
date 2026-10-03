@@ -1,0 +1,15 @@
+== map-tests  05:44:03
+map-tests exit=0
+== map-min  05:44:05
+map-min exit=0
+== tsc  05:44:05
+tsc exit=0
+== lint  05:44:15
+lint exit=0
+== vitest-all  05:45:00
+vitest-all exit=1
+== build-app  05:48:34
+build-app exit=0
+SPECS: 
+e2e: none — the map names no browser spec for the merged paths
+CHAIN DONE 05:48:57

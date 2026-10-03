@@ -1,0 +1,69 @@
+# checks for 63 path(s): 63 matched, 0 unmatched
+# app/src/curriculum/session.ts: app/src/**, app/src/curriculum/session.ts, app/src/curriculum/**
+# app/src/data/projectStore.ts: app/src/**, app/src/data/**, app/src/data/projectStore.ts
+# app/src/ui/screens/TodayScreen.ts: app/src/**, app/src/ui/screens/TodayScreen.ts
+# app/tests/e2e/projects.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/projectLifecycle.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/repertoireRetention.test.ts: app/tests/unit/*.test.ts
+# docs/prompts/pictures/g1d/after-facts-running-session.json: docs/**
+# docs/prompts/pictures/g1d/after-facts.json: docs/**
+# docs/prompts/pictures/g1d/after-today-paused-342x740.png: docs/**
+# docs/prompts/pictures/g1d/after-today-paused-review-row-342x740.png: docs/**
+# docs/prompts/pictures/g1d/after-today-running-session-paused-342x740.png: docs/**
+# docs/prompts/pictures/g1d/after-today-unpaused-342x740.png: docs/**
+# docs/prompts/pictures/g1d/after-today-unpaused-review-row-342x740.png: docs/**
+# docs/prompts/pictures/g1d/before-facts-running-session.json: docs/**
+# docs/prompts/pictures/g1d/before-facts.json: docs/**
+# docs/prompts/pictures/g1d/before-today-paused-342x740.png: docs/**
+# docs/prompts/pictures/g1d/before-today-paused-review-row-342x740.png: docs/**
+# docs/prompts/pictures/g1d/before-today-running-session-paused-342x740.png: docs/**
+# docs/prompts/pictures/g1d/before-today-unpaused-342x740.png: docs/**
+# docs/prompts/pictures/g1d/before-today-unpaused-review-row-342x740.png: docs/**
+# docs/prompts/runs/G1d/ENTRY.md: docs/**
+# docs/prompts/runs/G1d/build-app-head.txt: docs/**
+# docs/prompts/runs/G1d/build-app.txt: docs/**
+# docs/prompts/runs/G1d/checks-for-paths-code-only.txt: docs/**
+# docs/prompts/runs/G1d/checks-for-paths.txt: docs/**
+# docs/prompts/runs/G1d/content-build.log: docs/**
+# docs/prompts/runs/G1d/copy-content.txt: docs/**
+# docs/prompts/runs/G1d/copy-pictures.txt: docs/**
+# docs/prompts/runs/G1d/copy.txt: docs/**
+# docs/prompts/runs/G1d/e2e-map-min-4413.txt: docs/**
+# docs/prompts/runs/G1d/e2e-projects-g1d-case.txt: docs/**
+# docs/prompts/runs/G1d/e2e-projects-today-4413.txt: docs/**
+# docs/prompts/runs/G1d/fallback-content-tests.txt: docs/**
+# docs/prompts/runs/G1d/fallback-content-validate.txt: docs/**
+# docs/prompts/runs/G1d/fallback-converter-harness.txt: docs/**
+# docs/prompts/runs/G1d/fallback-review-check.txt: docs/**
+# docs/prompts/runs/G1d/green-1.txt: docs/**
+# docs/prompts/runs/G1d/lint-without-lane-config.txt: docs/**
+# docs/prompts/runs/G1d/lint.txt: docs/**
+# docs/prompts/runs/G1d/mutants-run.log: docs/**
+# docs/prompts/runs/G1d/mutants.txt: docs/**
+# docs/prompts/runs/G1d/npm-ci.log: docs/**
+# docs/prompts/runs/G1d/parity.log: docs/**
+# docs/prompts/runs/G1d/pictures-after.txt: docs/**
+# docs/prompts/runs/G1d/pictures-before.txt: docs/**
+# docs/prompts/runs/G1d/probe-a-piece-you-know.txt: docs/**
+# docs/prompts/runs/G1d/red/red-e2e-projects-committed-app.txt: docs/**
+# docs/prompts/runs/G1d/red/red-vitest-guard-committed-code.txt: docs/**
+# docs/prompts/runs/G1d/red/red-vitest-retention-committed-code.txt: docs/**
+# docs/prompts/runs/G1d/restore-reports.txt: docs/**
+# docs/prompts/runs/G1d/scripts-build_app.sh: docs/**
+# docs/prompts/runs/G1d/scripts-copy-content.sh: docs/**
+# docs/prompts/runs/G1d/scripts-copy.sh: docs/**
+# docs/prompts/runs/G1d/scripts-copy_pictures.py: docs/**
+# docs/prompts/runs/G1d/scripts-fallback-checks.sh: docs/**
+# docs/prompts/runs/G1d/scripts-mutants.py: docs/**
+# docs/prompts/runs/G1d/scripts-playwright.sh: docs/**
+# docs/prompts/runs/G1d/scripts-restore_reports.py: docs/**
+# docs/prompts/runs/G1d/scripts-sanitise.py: docs/**
+# docs/prompts/runs/G1d/scripts-zz-g1d-pictures.spec.ts: docs/**
+# docs/prompts/runs/G1d/tsc.txt: docs/**
+# docs/prompts/runs/G1d/vitest-full.txt: docs/**
+# docs/prompts/runs/G1d/vitest-targeted.txt: docs/**
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/app-shell.spec.ts tests/e2e/doors.spec.ts tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/modes-free-play.spec.ts tests/e2e/modes-placement.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.hierarchy.spec.ts tests/e2e/progress.spec.ts tests/e2e/projects.spec.ts tests/e2e/session-run.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4

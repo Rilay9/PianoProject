@@ -155,7 +155,12 @@ class TestOrphansAreNowErrors(unittest.TestCase):
     def test_the_shipped_curriculum_has_no_orphans(self) -> None:
         content = REPO_ROOT / "app" / "public" / "content"
         if not (content / "catalog.json").exists():
-            self.skipTest("no built content; run tools/content/build.py")
+            self.fail(
+                f"{content / 'catalog.json'} is missing, and this test reads the built "
+                "catalogue and curriculum: run `python tools/content/build.py` first (CI: the "
+                "step 'Build content', "
+                "before 'Content pipeline tests')"
+            )
         catalog = json.loads((content / "catalog.json").read_text(encoding="utf-8"))
         curriculum = json.loads((content / "curriculum.json").read_text(encoding="utf-8"))
         self.assertEqual(orphan_exercises(catalog, curriculum), [])

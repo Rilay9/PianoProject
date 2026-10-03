@@ -1,0 +1,53 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a8afa8b653d73a23a/app
+
+ ❯ tests/unit/help.test.ts (13 tests | 1 failed) 22ms
+   ❯ the Score screen’s run sentences are the ones `04` §5f prints (1)
+     × lists every sentence the state line, the rows and the summary say about a run 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/help.test.ts > the Score screen’s run sentences are the ones `04` §5f prints > lists every sentence the state line, the rows and the summary say about a run
+AssertionError: run sentences §5f does not print:
+Sound did not start — tap Carry on again
+Sound did not start — tap Start again
+Sound did not start — tap L again
+Sound did not start — hold bar N again
+Sound did not start — tap Try again
+Sound did not start — tap Again
+Sound did not start — tap Slower again
+Sound did not start — tap Faster again
+Sound did not start — tap Loop again: expected [ …(9) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "Sound did not start — tap Carry on again",
++   "Sound did not start — tap Start again",
++   "Sound did not start — tap L again",
++   "Sound did not start — hold bar N again",
++   "Sound did not start — tap Try again",
++   "Sound did not start — tap Again",
++   "Sound did not start — tap Slower again",
++   "Sound did not start — tap Faster again",
++   "Sound did not start — tap Loop again",
++ ]
+
+ ❯ tests/unit/help.test.ts:237:81
+    235|     ];
+    236|     const missing = said.filter((line) => !section.includes(flat(line)…
+    237|     expect(missing, `run sentences §5f does not print:\n${missing.join…
+       |                                                                                 ^
+    238|   });
+    239| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  01:35:36
+   Duration  253ms (transform 63%, import 17%, tests 17%, worker 3%)
+

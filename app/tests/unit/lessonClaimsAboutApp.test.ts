@@ -46,8 +46,7 @@ import {
 import { drillFromCatalog } from '../../src/engine/drills/fromCatalog';
 import { masteryCriteriaFor } from '../../src/curriculum/selectors';
 import { DEFAULT_MASTERY } from '../../src/engine/Scoring';
-import { nextRecommended, readingMoves, readingOffer } from '../../src/curriculum/session';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { nextRecommended, readingMoves, readingOffer, taughtAtRung } from '../../src/curriculum/session';
 import { hasChordSymbols } from '../../src/ui/openItem';
 import type { CatalogItem, Curriculum, Lesson, LessonTool } from '../../src/curriculum/types';
 
@@ -1439,12 +1438,9 @@ const T12_APP: [string, string, () => boolean][] = [
     () => {
       const position = nextRecommended(curriculum, NO_RUNS, ['core'], { startAt: '3.4' });
       const offer = readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows: [], today: new Date(2026, 9, 1), purpose: 'daily' });
-      // What the curriculum has taught by 3.4 (the vocabulary's `taughtAt`, in the curriculum's own order).
-      const order = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
-      const taught = (demand: string): boolean => {
-        const rung = VOCABULARY_V0.demands.find((d) => d.id === demand)?.taughtAt;
-        return rung !== null && rung !== undefined && order.indexOf(rung) >= 0 && order.indexOf(rung) <= order.indexOf('3.4');
-      };
+      // What the curriculum has taught by 3.4: `taughtAtRung`, 3.4's ancestry. Revised (E0b): it was one
+      // `taughtAt` rung in the curriculum's own order; `taughtAt` is a list now, one rung per path.
+      const taught = (demand: string): boolean => taughtAtRung(curriculum, '3.4')?.(demand) ?? false;
       const row = item('drill.reading.sight-reading-2');
       const moves = readingMoves({ curriculum, item: row, recipe: { row: row.id }, rung: '3.4' });
       const on = moves.filter((move) => move.direction === 'on');
@@ -1771,15 +1767,20 @@ const T12_APP: [string, string, () => boolean][] = [
   [
     '4.7',
     'blind hides the score and the cursor and leaves the count-in and the beat dot',
+    // Revised by U122c (class: replace): the count-in and the beat dot left the stage — the count
+    // into the bar beside ⏸, the dot beside `bar n / m` — so the stage the blind rule hides no longer
+    // holds them, and the rule that showed them on it again went. The claim is the same; the check
+    // reads where they are. Line endings normalised, so a Windows checkout reads what CI reads.
     () => {
-      const css = t12Repo('app/src/style.css');
-      const shown = /\.score-stage--blind \.score-countin,[\s\S]*?\{/.exec(css)?.[0] ?? '';
+      const css = t12Repo('app/src/style.css').replace(/\r\n/g, '\n');
+      const screen = source('ui/screens/ScoreScreen.ts').replace(/\r\n/g, '\n');
       return (
         css.includes('.score-stage--blind {\n  visibility: hidden;\n}') &&
         css.includes('.score-stage--blind .score-buffer') &&
-        shown.includes('.score-countin') &&
-        shown.includes('.score-beat') &&
-        !shown.includes('.score-cursor')
+        screen.includes('bar.appendChild(countIn)') &&
+        screen.includes('headRow.insertBefore(beatDot, where)') &&
+        screen.includes('topLine.prepend(beatDot)') &&
+        !/stage\.appendChild\((countIn|beatDot)\)/.test(screen)
       );
     },
   ],
@@ -2326,10 +2327,14 @@ const T12B_APP: [string, string, () => boolean][] = [
     'ragtime.6',
     "the score's tempo comes from the file, and the app's own default is used only when the file states none",
     () => {
+      // Revised in X3d: the map is placed from the file's own tempo events (`tempoFromXml`), no longer from
+      // the engraver's `CurrentBpm`, which misread a metronome mark's note; the default still fills only a
+      // map that is empty or starts after beat 0 (the claim holds, and more exactly than before).
       const extract = source('score/extractScoreModel.ts');
       return (
-        extract.includes('const bpm = it.CurrentBpm;') &&
-        extract.includes('tempoMap.push({ atBeat: onset, bpm })') &&
+        extract.includes('tempoEvents(options.musicXml)') &&
+        extract.includes('placeTempo(') &&
+        !extract.includes('CurrentBpm') &&
         extract.includes('tempoMap.length === 0') &&
         extract.includes('options.defaultBpm ?? DEFAULT_BPM')
       );
@@ -2752,15 +2757,23 @@ const T12B_APP: [string, string, () => boolean][] = [
   ],
   [
     'ragtime.8',
-    'Euphonic Sounds is in no catalog row, and the rung\'s five Joplin rags all come from the same non-public-domain edition',
+    // Q76: the rung gained Pine Apple Rag's public-domain Mutopia edition, so "five Joplin rags, all from the
+    // same non-public-domain edition" became five from that edition and Pine Apple Rag again from Mutopia, and
+    // Euphonic Sounds is in neither source.
+    'Euphonic Sounds is in no catalog row, and the rung\'s five Joplin rags come from one non-public-domain edition, with Pine Apple Rag also in a public-domain one',
     () => {
       const songs = rung('ragtime.8').songOptions ?? [];
       const joplin = songs.filter((id) => id.includes('joplin-'));
+      const nc = joplin.filter((id) => t12bFields(id).tags.includes('nc-personal-build'));
+      const publicDomain = joplin.filter((id) => !t12bFields(id).tags.includes('nc-personal-build'));
       return (
         catalog.filter((row) => /euphonic/i.test(`${row.id} ${row.title ?? ''}`)).length === 0 &&
         t12Repo('content/sources/kern.json').includes('joplin/euphonic') &&
-        joplin.length === 5 &&
-        joplin.every((id) => t12bFields(id).tags.includes('nc-personal-build'))
+        !/euphonic/i.test(t12Repo('content/sources/mutopia.json')) &&
+        nc.length === 5 &&
+        publicDomain.length === 1 &&
+        publicDomain[0] === 'song.ragtime.joplin-pine-apple-rag.mutopia' &&
+        t12bFields(publicDomain[0]).tags.includes('mutopia')
       );
     },
   ],
@@ -3117,10 +3130,13 @@ const T19_APP: [string, string, () => boolean][] = [
     'the duet opens a hands-together tune',
     () => t19FirstSong('2.1') === 'song.classical.ode-to-joy.ht',
   ],
+  // Revised (L120c item 8). Old assumption: the duet opens the easy Canon in D, 3.5's first song. The Canon's
+  // sixteenths (bars 37-44) need 4.4, which teaches them, so it left 3.5 (4.6 and 4.7 list it) and Schumann's
+  // Chorale took its place: four voices in half notes, the chord changes legato pedalling is about.
   [
     '3.5',
-    'the duet opens the easy Canon in D',
-    () => t19FirstSong('3.5') === 'song.classical.pachelbel-canon-d.easy',
+    'the duet opens Schumann’s Chorale from the Album for the Young',
+    () => t19FirstSong('3.5') === 'song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx',
   ],
   [
     '3.6',
@@ -3208,11 +3224,13 @@ const T19_APP: [string, string, () => boolean][] = [
   ],
   [
     'ragtime.8',
-    'the one button is blind, and it opens Pine Apple Rag — first of the rung’s six',
+    // Q76: seven since Pine Apple Rag's public-domain edition joined the rung, second, after its other edition.
+    'the one button is blind, and it opens Pine Apple Rag — first of the rung’s seven',
     () =>
       t19Kinds('ragtime.8').join(',') === 'blind' &&
       t19FirstSong('ragtime.8') === 'song.ragtime.joplin-pine-apple-rag' &&
-      rung('ragtime.8').songOptions.length === 6,
+      rung('ragtime.8').songOptions[1] === 'song.ragtime.joplin-pine-apple-rag.mutopia' &&
+      rung('ragtime.8').songOptions.length === 7,
   ],
   [
     'blues.5',
@@ -3290,16 +3308,23 @@ const T19_APP: [string, string, () => boolean][] = [
   ],
 
   // --- three duets that now name an exercise, because the songs cannot ------
+  // Revised (F2 item 5, L111): the two Latin rows. Old assumption: the rung carries a duet tool naming its
+  // two-staff groove, and the lesson says *Play it as a duet* opens it. The groove is generated music with
+  // no teaching-use decision, so the page draws no button for it (D3c); the tool and the sentence went
+  // together, and the rows now hold that no duet is claimed while the one two-staff option is still the
+  // rung's and still undecided. The songs are printed on one staff, as before.
   [
     'latin.3',
-    'the duet names the son clave over a quarter-note pulse — the one option here with two staves — because all three of the rung’s songs are printed on one',
+    'no duet: the son clave over a pulse, the one option here with two staves, has no teaching-use decision, so the rung carries no duet tool and the lesson names none; the songs are printed on one staff each',
     () => {
-      const named = t19Item('latin.3', 'duet');
+      const pulse = item('exercise.clave.son-3-2.pulse');
       const songs = rung('latin.3').songOptions;
       return (
-        named === 'exercise.clave.son-3-2.pulse' &&
-        rung('latin.3').exerciseOptions.includes(named) &&
-        t19Staves(named) === 2 &&
+        !t19Kinds('latin.3').includes('duet') &&
+        rung('latin.3').exerciseOptions.includes(pulse.id) &&
+        t19Staves(pulse.id) === 2 &&
+        pulse.provenance?.facts.promise?.value === 'music' &&
+        pulse.provenance.review.teaching !== true &&
         songs.length === 3 &&
         songs.every((id) => t19Staves(id) === 1)
       );
@@ -3307,14 +3332,16 @@ const T19_APP: [string, string, () => boolean][] = [
   ],
   [
     'latin',
-    'the duet names the tumbao-and-montuno exercise, because five of the rung’s six songs are printed on one staff',
+    'no duet: the tumbao-and-montuno groove, the rung’s two-staff exercise, has no teaching-use decision, so the rung carries no duet tool and the lesson names none; five of its six songs are printed on one staff',
     () => {
-      const named = t19Item('latin', 'duet');
+      const groove = item('exercise.latin-groove.c.son-3-2');
       const songs = rung('latin').songOptions;
       return (
-        named === 'exercise.latin-groove.c.son-3-2' &&
-        rung('latin').exerciseOptions.includes(named) &&
-        t19Staves(named) === 2 &&
+        !t19Kinds('latin').includes('duet') &&
+        rung('latin').exerciseOptions.includes(groove.id) &&
+        t19Staves(groove.id) === 2 &&
+        groove.provenance?.facts.promise?.value === 'music' &&
+        groove.provenance.review.teaching !== true &&
         songs.filter((id) => t19Staves(id) === 1).length === 5
       );
     },
@@ -3569,6 +3596,8 @@ import { SWING_OFFBEAT } from '../../src/audio/backingLoop';
 import { swungOnset } from '../../src/engine/prepareSession';
 import { CHORD_BOUNDARY_MS, chordScaleDrill } from '../../src/engine/drills/harmony';
 import { harness as f0Harness, makeModel as f0Model, note as f0Note } from './helpers/engineHarness';
+import { mxlToMusicXml } from '../../src/score/mxl';
+import { tempoEvents } from '../../src/score/tempoFromXml';
 
 const F0_LESSONS = resolve('..', 'content', 'lessons');
 
@@ -3754,6 +3783,107 @@ const F0_APP: [string, string, () => boolean][] = [
         f0Bars(id) === 40 &&
         text.includes('written in straight eighths with no swing or shuffle marking') &&
         !text.includes('forty bars of shuffle')
+      );
+    },
+  ],
+  // F3a (T52, Entry 157): the three sentences F0 found contradicting the app,
+  // each joined to the app's own fact, so the row fails if the fact moves
+  // under the sentence. A pace or effort word in these sentences would need
+  // an ear or a measure the app does not carry; the sentence says what the
+  // app does or what the page shows instead.
+  [
+    '1.5',
+    "The Water Is Wide is named with no pace, while the app plays it at convert.py's default because the upload has no tempo of its own",
+    () => {
+      const id = 'song.folk.the-water-is-wide.pdmx';
+      const text = f0Text('1.5');
+      const sentence = text.split(/(?<=[.!?])\s+/).find((s) => s.includes('The Water Is Wide')) ?? '';
+      return (
+        rung('1.5').songOptions.includes(id) &&
+        (item(id).tags ?? []).includes('tempo-defaulted') &&
+        sentence !== '' &&
+        !/\b(?:slow|slower|fast|faster|quick|brisk|gentle|gentler|lively|stately)\b/i.test(sentence) &&
+        text.includes('The Water Is Wide is the tune: a Scottish air whose melody is mostly steps')
+      );
+    },
+  ],
+  [
+    'ragtime.6',
+    'The Easy Winners is ranked by no effort the three levels do not carry, and is named for the flats its file has most of',
+    () => {
+      const winners = item('song.ragtime.joplin-easy-winners');
+      const peacherine = item('song.ragtime.joplin-peacherine-rag');
+      const entertainer = item('song.ragtime.joplin-entertainer');
+      const flattest = (row: CatalogItem): number => Math.min(...(row.notation?.keys ?? []).map((k) => k.fifths));
+      const text = f0Text('ragtime.6');
+      const entry = text.slice(text.indexOf('The Easy Winners (1901)'), text.indexOf('Two more sit behind them'));
+      const ranksByEffort = /most work|most rewarding|hardest|most demanding|most difficult/i.test(entry);
+      const levelsCarryIt = winners.level > peacherine.level && winners.level > entertainer.level;
+      return (
+        [winners, peacherine, entertainer].every((row) => rung('ragtime.6').songOptions.includes(row.id)) &&
+        (!ranksByEffort || levelsCarryIt) &&
+        (winners.notation?.keys ?? []).map((k) => k.fifths).join(',') === '-4,-5' &&
+        flattest(winners) < flattest(peacherine) &&
+        flattest(winners) < flattest(entertainer) &&
+        entry.includes('A flat, four strains, and the most flats of the three: four, then five in the trio.')
+      );
+    },
+  ],
+  [
+    // The brief's premise was that the app plays the two at one tempo. Until
+    // X42 it did only at the catalogue's figure and at the opening: Maple
+    // Leaf's file writes a words-only <sound tempo="120"> beside its printed
+    // quarter = 100 (with its own 100) at two places, and the one tempo reader
+    // (`tempoFromXml`, which the engine's map is placed from) took the first
+    // sound. Since X42 (Entry 185) the sound that agrees with the printed mark
+    // wins there, so the reader plays Maple Leaf at 100 at every position it
+    // states a tempo, as the catalogue says and as it plays Sugar Cane: the two
+    // surfaces now agree. The sentence still makes no pace comparison (whether
+    // it should now make one is put to the reviewer, X42's report); the row
+    // holds both facts so that either moving sends a reader back to it.
+    'ragtime.7',
+    "Sugar Cane is likened to Maple Leaf at no pace, while the catalogue and the app's tempo map both give the two one tempo",
+    () => {
+      const sugar = item('song.ragtime.joplin-sugar-cane');
+      const maple = item('song.ragtime.joplin-maple-leaf-rag');
+      const bpms = (row: CatalogItem): number[] =>
+        tempoEvents(mxlToMusicXml(new Uint8Array(readFileSync(join(CONTENT, row.file ?? ''))))).map((e) => e.bpm);
+      const text = f0Text('ragtime.7');
+      const sentence = text.split(/(?<=[.!?])\s+/).find((s) => s.includes('Sugar Cane')) ?? '';
+      return (
+        rung('ragtime.7').songOptions.includes(sugar.id) &&
+        rung('ragtime.7').songOptions.includes(maple.id) &&
+        typeof sugar.tempoBpm === 'number' &&
+        sugar.tempoBpm === maple.tempoBpm &&
+        bpms(sugar).join(',') === '100' &&
+        bpms(maple).join(',') === '100,100,100' &&
+        sentence !== '' &&
+        !/\b(?:pace|tempo|slow|slower|fast|faster|gentle|gentler|quick|quicker|brisk)\b/i.test(sentence) &&
+        text.includes('Beyond the five above there is Sugar Cane, a rag in the Maple Leaf mould.')
+      );
+    },
+  ],
+  [
+    // L120c (the reviewer's Question 3 on L120a): 4.4 teaches the Hanon page's sixteenths as four even notes to the
+    // quarter-note beat, "four even notes per metronome click". That holds only while Hanon 1-5 are written in 2/4
+    // and the Score screen's metronome clicks once per quarter-note beat: `prepareSession` counts beats in quarter
+    // notes (2/4 is two), and the session's metronome takes its tempo from that beat and its bar from that count.
+    // The page's own values (every note a sixteenth but the last, beamed in fours on the beat) are held by
+    // `tools/content/tests/test_sixteenths_owner.py` against the built files.
+    '4.4',
+    'Hanon 1 to 5 are in 2/4, and the metronome clicks once per quarter-note beat, so four sixteenths go to each click',
+    () => {
+      const hanon = [1, 2, 3, 4, 5].map((n) => item(`exercise.hanon.0${String(n)}.both`));
+      const session = source('score/ScoreSession.ts');
+      const prepare = source('engine/prepareSession.ts');
+      return (
+        hanon.every((row) => rung('4.4').exerciseOptions.includes(row.id)) &&
+        hanon.every((row) => ((row.notation as { times?: string[] } | undefined)?.times ?? []).join(',') === '2/4') &&
+        prepare.includes('const beatsPerBar = timeSig ? (timeSig.beats * 4) / timeSig.beatType : 4;') &&
+        prepare.includes('model.beatToMs(startBeat + 1, tempoScale) - model.beatToMs(startBeat, tempoScale)') &&
+        session.includes('bpm: prepared ? 60_000 / prepared.msPerBeat : 80,') &&
+        session.includes('beatsPerBar: prepared?.options.beatsPerBar ?? 4,') &&
+        f0Text('4.4').includes('four even notes per metronome click')
       );
     },
   ],

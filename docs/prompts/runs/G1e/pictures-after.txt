@@ -1,0 +1,8 @@
+spec present: tests/e2e/zz-g1e-pictures.spec.ts
+
+Running 1 test using 1 worker
+
+  ok 1 tests\e2e\zz-g1e-pictures.spec.ts:77:1 › the thin card with Hot Cross Buns mastered, then paused; then placed where the rung asks for it (4.3s)
+
+  1 passed (7.4s)
+exit=0

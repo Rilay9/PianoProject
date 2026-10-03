@@ -465,7 +465,11 @@ async function firstDay(page: Page, size: { width: number; height: number }): Pr
     'Notes ready',
   );
   await expect(sheet.locator('[data-stat="accuracy"]')).toHaveText('100%');
-  await expect(sheet.locator('[data-stat="tempo"]')).toContainText('play it in Keep tempo');
+  // Revised (X46; class: replace): where a pass is played moved from the tempo line to *To pass*, with the
+  // rung's numbers, and the control that does it is on the sheet.
+  await expect(sheet.locator('[data-stat="tempo"]')).toHaveText('Not judged in Wait for me');
+  await expect(sheet.locator('[data-stat="to-pass"]')).toContainText('in Keep tempo at');
+  await expect(page.locator('#summary-standard')).toBeVisible();
   // A judging input was connected, so there is nothing to self-report.
   await expect(page.locator('#summary-selfreport')).toHaveCount(0);
   await page.locator('#summary-done').click();

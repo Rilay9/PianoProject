@@ -1,0 +1,4 @@
+$ (cwd .) python docs/prompts/runs/Q-tooling/scripts/restore_reports.py .
+docs/prompts/inventory.md: same content as HEAD; HEAD's bytes put back with CRLF
+docs/prompts/rung-claims.md: same content as HEAD; HEAD's bytes put back with CRLF
+exit 0

@@ -1,0 +1,51 @@
+npx vitest run tests/unit/scoreModelTempo.test.ts (in app)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6cb245891137756b/app
+
+ ❯ tests/unit/scoreModelTempo.test.ts (13 tests | 1 failed) 291ms
+   ❯ the score model’s tempo map is the file’s, in quarter notes a minute (X3d) (13)
+     × (5) a bar repeated on its own plays its changes again: its opening tempo, then its change two quarters in, on each pass 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/scoreModelTempo.test.ts > the score model’s tempo map is the file’s, in quarter notes a minute (X3d) > (5) a bar repeated on its own plays its changes again: its opening tempo, then its change two quarters in, on each pass
+AssertionError: expected { steps: 16, map: [ { …(2) }, …(2) ] } to deeply equal { steps: 16, map: [ { …(2) }, …(4) ] }
+
+- Expected
++ Received
+
+@@ -10,16 +10,8 @@
+      },
+      {
+        "atBeat": 6,
+        "bpm": 120,
+      },
+-     {
+-       "atBeat": 8,
+-       "bpm": 90,
+-     },
+-     {
+-       "atBeat": 10,
+-       "bpm": 120,
+-     },
+    ],
+    "steps": 16,
+  }
+
+ ❯ tests/unit/scoreModelTempo.test.ts:224:64
+    222|     const once = score([direction(metronome('quarter', '60'), sound(60…
+    223|     const model = await modelOf(once);
+    224|     expect({ steps: model.steps.length, map: model.tempoMap }).toEqual…
+       |                                                                ^
+    225|       steps: 16,
+    226|       map: [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  08:41:08
+   Duration  1.40s (environment 50%, tests 23%, transform 18%, import 9%)
+
+exit=1

@@ -1,0 +1,10 @@
+# checks for 4 path(s): 4 matched, 0 unmatched
+# app/src/ui/help.ts: app/src/**, app/src/ui/*.ts, app/src/ui/help*.ts
+# app/src/ui/importSheet.ts: app/src/**, app/src/ui/*.ts
+# app/tests/e2e/import-experience.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/importSheet.test.ts: app/tests/unit/*.test.ts
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/app-shell.spec.ts tests/e2e/empty-states.spec.ts tests/e2e/feedback-placement.spec.ts tests/e2e/help-strip.spec.ts tests/e2e/import-experience.spec.ts tests/e2e/landscape.spec.ts tests/e2e/wide.spec.ts --workers=4

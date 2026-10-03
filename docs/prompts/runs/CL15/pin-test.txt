@@ -1,0 +1,8 @@
+test_a_family_s_music_changes_only_with_its_version (tests.test_family_contracts.TestIdentity.test_a_family_s_music_changes_only_with_its_version) ... ok
+test_one_identity_is_one_piece_of_music (tests.test_family_contracts.TestIdentity.test_one_identity_is_one_piece_of_music) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 85.232s
+
+OK
+exit 0

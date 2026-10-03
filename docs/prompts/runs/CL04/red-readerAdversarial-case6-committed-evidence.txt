@@ -1,0 +1,31 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/readerAdversarial.test.ts (10 tests | 1 failed | 9 skipped) 25ms
+   ❯ the next offer changes only where the evidence justifies it (10)
+     × 6. a demand present with no measurable opportunity (eighths at the phrase’s full tempo, two reads): at full tempo the window cannot time the eighths, so their timing is not judged and their pitch is: the two misread eighths count against sight-reading, 6 of 8 on each of two days, two reads against the recipe; the step and the skip they carry each went wrong only beside an eighth, which the overlap keeps, so nothing is singled out and nothing moves forward; no reading of the eighths exists, so the rhythm control does not move and the line does not name them (a limit of the measurement, reported); nothing sits below 2.2’s own recipe for an easy read 24ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/readerAdversarial.test.ts > the next offer changes only where the evidence justifies it > 6. a demand present with no measurable opportunity (eighths at the phrase’s full tempo, two reads): at full tempo the window cannot time the eighths, so their timing is not judged and their pitch is: the two misread eighths count against sight-reading, 6 of 8 on each of two days, two reads against the recipe; the step and the skip they carry each went wrong only beside an eighth, which the overlap keeps, so nothing is singled out and nothing moves forward; no reading of the eighths exists, so the rhythm control does not move and the line does not name them (a limit of the measurement, reported); nothing sits below 2.2’s own recipe for an easy read
+AssertionError: Now with both hands — 6 of 6 right and in time yesterday: expected 'forward' to be 'unsure' // Object.is equality
+
+Expected: "unsure"
+Received: "forward"
+
+ ❯ tests/unit/readerAdversarial.test.ts:257:35
+    255|       const next = offer(rows, one.rung, today);
+    256|       const line = readingReason(next.why, 'daily', today);
+    257|       expect(next.why.kind, line).toBe(one.expect.why);
+       |                                   ^
+    258|       expect(next.recipe, line).toEqual(one.expect.recipe);
+    259|       const move = 'move' in next.why ? next.why.move : undefined;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 skipped (10)
+   Start at  12:52:32
+   Duration  1.76s (environment 64%, transform 25%, import 8%, tests 2%, worker 1%)
+

@@ -256,7 +256,29 @@ export interface Drill {
    * reveal leave this out.
    */
   reveal?(): void;
+  /**
+   * The page was hidden from `hiddenAtMs` until `visibleAtMs`, both on the
+   * input timeline (X15; CL05a, the reviewer's required change). Hidden time
+   * is not practice, so the drill moves the moments it holds for the card in
+   * flight past the span, and nothing measured across it counts it: a time to
+   * answer, a pedal lift, the grid a rhythm is judged on. Only the drill knows
+   * which moments those are; the screen says when. Kinds that hold no time
+   * leave this out.
+   */
+  excludeHidden?(hiddenAtMs: number, visibleAtMs: number): void;
   result(): DrillResult;
+}
+
+/**
+ * Where a moment recorded on the input timeline lands once a hidden span is
+ * taken out (`Drill.excludeHidden`): one from before the span moves on by all
+ * of it; one from inside it — a card that opened while the page was hidden —
+ * moves to the span's end, where the learner first saw it; one after it stays.
+ */
+export function pastHidden(tMs: number, hiddenAtMs: number, visibleAtMs: number): number {
+  if (!(visibleAtMs > hiddenAtMs)) return tMs;
+  if (tMs < hiddenAtMs) return tMs + (visibleAtMs - hiddenAtMs);
+  return tMs <= visibleAtMs ? visibleAtMs : tMs;
 }
 
 /** Options every drill accepts. */

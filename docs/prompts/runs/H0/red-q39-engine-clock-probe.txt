@@ -1,0 +1,52 @@
+﻿
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a0a8975fbed466f62/app
+
+stdout | tests/unit/h0-probe-q39.test.ts > Q39 probe: the browser case’s assertions on the engine clock > delivered on time: passes
+on time: {"hits":2,"n":2,"missed":0,"wrong":0,"meanMs":99.88461538461536,"notes":[{"midi":60,"stepIndex":0,"ok":true,"deltaMs":100},{"midi":62,"stepIndex":1,"ok":true,"deltaMs":99.76923076923072}]}
+
+stdout | tests/unit/h0-probe-q39.test.ts > Q39 probe: the browser case’s assertions on the engine clock > the page stalled from 90 ms to 400 ms, the tick first: fails as CI did
+stalled 90->400: {"hits":1,"n":1,"missed":1,"wrong":1,"meanMs":99.76923076923072,"notes":[{"midi":60,"stepIndex":null,"ok":false},{"midi":62,"stepIndex":1,"ok":true,"deltaMs":99.76923076923072}]}
+
+stdout | tests/unit/h0-probe-q39.test.ts > Q39 probe: the browser case’s assertions on the engine clock > the page stalled from 90 ms to 140 ms, the window still open: passes
+stalled 90->140: {"hits":2,"n":2,"missed":0,"wrong":0,"meanMs":99.88461538461536,"notes":[{"midi":60,"stepIndex":0,"ok":true,"deltaMs":100},{"midi":62,"stepIndex":1,"ok":true,"deltaMs":99.76923076923072}]}
+
+ ✓ tests/unit/h0-probe-q39.test.ts > Q39 probe: the browser case’s assertions on the engine clock > delivered on time: passes 3ms
+ × tests/unit/h0-probe-q39.test.ts > Q39 probe: the browser case’s assertions on the engine clock > the page stalled from 90 ms to 400 ms, the tick first: fails as CI did 4ms
+   → expected 1 to be 2 // Object.is equality
+ ✓ tests/unit/h0-probe-q39.test.ts > Q39 probe: the browser case’s assertions on the engine clock > the page stalled from 90 ms to 140 ms, the window still open: passes 0ms
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/h0-probe-q39.test.ts > Q39 probe: the browser case’s assertions on the engine clock > the page 
+stalled from 90 ms to 400 ms, the tick first: fails as CI did
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ tests/unit/h0-probe-q39.test.ts:107:24
+    105|     const score = lateRun({ at: 90, to: 400 });
+    106|     console.log(`stalled 90->400: ${summary(score)}`);
+    107|     expect(score.hits).toBe(2);
+       |                        ^
+    108|   });
+    109|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  03:27:17
+   Duration  1.88s (transform 85%, import 10%, worker 4%, tests 1%)
+
+exit=1

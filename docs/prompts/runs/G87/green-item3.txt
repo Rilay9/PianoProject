@@ -1,0 +1,15 @@
+files: tests/unit/stage9ProjectsPage.test.ts tests/unit/projectSheet.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  18:07:36
+   Duration  4.31s (environment 35%, tests 30%, transform 28%, import 7%)
+
+  Transform  transforming modules took 2.18s · 28% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+
+exit=0

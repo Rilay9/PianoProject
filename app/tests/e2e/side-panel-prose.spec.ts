@@ -69,12 +69,26 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
+/**
+ * The screen's own word that the panel is decided (U80): `data-side` is absent
+ * until then, and `text` or `empty` after. The panel is filled after the screen
+ * is shown — the curriculum, the rung, the lesson file — so a read taken when
+ * the screen appears reads whatever the race gave it: the sweep below did, and
+ * on a loaded runner found every panel still hidden.
+ */
+async function panelDecided(page: Page): Promise<string> {
+  const screen = page.locator('[data-screen="score"]');
+  await expect(screen).toHaveAttribute('data-side', /^(text|empty)$/, { timeout: 60_000 });
+  return (await screen.getAttribute('data-side')) ?? '';
+}
+
 async function openPiece(page: Page): Promise<void> {
   await page.goto(`/#/score/${PIECE}`);
   await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
   await page.waitForFunction(() => document.querySelector('#score-stage .is-front svg') !== null, undefined, {
     timeout: 60_000,
   });
+  await panelDecided(page);
 }
 
 test.describe('on a phone', () => {
@@ -179,6 +193,9 @@ test.describe('on a tablet, where the panel is drawn', () => {
   });
 
   test('one lesson from every track fits the panel', async ({ page }) => {
+    // A sweep of one lesson per track, each a score load with its panel: its budget is by its size,
+    // not the default thirty seconds, which it overran on both attempts of CI's run on 3d87a2f5 (U91).
+    test.setTimeout(180_000);
     expect(PER_TRACK.length, 'no track offered a playable piece').toBeGreaterThan(1);
     const bad: string[] = [];
     /** How many of them actually drew a panel, so this cannot pass vacuously. */
@@ -186,10 +203,10 @@ test.describe('on a tablet, where the panel is drawn', () => {
     for (const entry of PER_TRACK) {
       await page.goto(`/#/score/${entry.piece}`);
       await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
-      const panel = page.locator('#score-side');
       // A piece on no rung, or a lesson whose file will not read, leaves the
-      // panel out on purpose — that is not this test's business.
-      if ((await panel.count()) === 0 || (await panel.isHidden())) continue;
+      // panel out on purpose (`empty`) — that is not this test's business.
+      if ((await panelDecided(page)) !== 'text') continue;
+      await expect(page.locator('#score-side')).toBeVisible();
       drawn += 1;
       await expect(page.locator('#score-side-body')).not.toBeEmpty({ timeout: 60_000 });
       const out = await page.evaluate(() => {

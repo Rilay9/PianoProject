@@ -1,0 +1,12 @@
+$ (cd app) npx playwright test -c build/g96/playwright.g96-4573.config.ts --workers=2 -g G96|a PDF is marked tests/e2e/library.spec.ts tests/e2e/projects.spec.ts   [G96_DIST=app/dist G96_PHASE=]
+exists: tests/e2e/library.spec.ts
+exists: tests/e2e/projects.spec.ts
+
+Running 3 tests using 2 workers
+
+  ok 2 tests\e2e\library.spec.ts:82:3 › Library › a PDF is marked "pages, not notes" and opens in the viewer, not the Score screen (946ms)
+  ok 1 tests\e2e\library.spec.ts:466:3 › the learner’s project in the Library (G85) › a song never played: Details’ door offers three ways in, no Keep it playable; after Learn this and Close, focus is on its row (G96) (1.0s)
+  ok 3 tests\e2e\projects.spec.ts:373:1 › Make it a project on a passed piece offers Keep it playable; after it and Close, focus is on the piece’s new project row (G96) (987ms)
+
+  3 passed (5.2s)
+exit=0

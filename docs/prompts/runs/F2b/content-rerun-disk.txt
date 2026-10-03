@@ -1,0 +1,7 @@
+(in tools/content) python -m unittest tests.test_finder tests.test_family_contracts.TestTheMutationCensus
+...............................
+----------------------------------------------------------------------
+Ran 31 tests in 128.757s
+
+OK
+exit=0

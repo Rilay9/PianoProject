@@ -1,0 +1,3 @@
+$ python tools/content/deploy_guard.py --dir build/q88-strict/content
+deploy guard: publishing — build\q88-strict\content\catalog.json holds no fetch placeholder (2091 catalogue items)
+exit 0

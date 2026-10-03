@@ -1,0 +1,9 @@
+$ (cwd .) git diff --stat -- docs/
+ docs/01-architecture.md        |  13 ++-
+ docs/02-curriculum.md          |  21 +++-
+ docs/03-content-pipeline.md    |  11 +-
+ docs/04-ui-spec.md             | 237 +++++++++++++++++++++++++++++++++++++----
+ docs/05-score-follow-engine.md |  62 ++++++++++-
+ docs/08-test-map.md            |  94 ++++++++++++----
+ 6 files changed, 384 insertions(+), 54 deletions(-)
+exit=0

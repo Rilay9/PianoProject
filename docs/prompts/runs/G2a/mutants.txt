@@ -1,0 +1,7 @@
+python docs/prompts/runs/G2a/scripts-mutants.py (in .)
+policy sha256 before: ec90f872fb9d47dcd6a98012984e1bf0620d1783ae95bbeffa6ff277ac623916
+composition-field-alone: exit=1 (caught)
+cap-demonstrated-only: exit=1 (caught)
+composition-before-contact: exit=1 (caught)
+policy sha256 after: ec90f872fb9d47dcd6a98012984e1bf0620d1783ae95bbeffa6ff277ac623916
+exit=0

@@ -1,0 +1,97 @@
+﻿node.exe : [WebServer] (node:71148) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:67104) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 3 workers
+
+(node:58932) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:71104) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:70468) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\score-fit-paths.spec.ts:266:3 › the score fills the stage on every path in (U74) › the two-bar scale settles the same from Today and by a link after a fresh load (6.1s)
+  x  2 tests\e2e\score-fit-paths.spec.ts:291:3 › the score fills the stage on every path in (U74) › opened from Today, the first frame that draws the scale draws it as it settles (5.5s)
+  x  3 tests\e2e\score-fit-paths.spec.ts:305:3 › the score fills the stage on every path in (U74) › opened by a link after a fresh load, the first frame that draws the scale draws it as it settles (7.2s)
+
+
+  1) tests\e2e\score-fit-paths.spec.ts:291:3 › the score fills the stage on every path in (U74) › opened from Today, the first frame that draws the scale draws it as it settles 
+
+    Error: settled: stage 342.0 x 531.1 at 84.9, 2 system(s), bars 0/1 (2 shown), staff 43.2 px; frames that showed something else first:
+    1 system(s), staff 26.9 px: 28 frame(s), 577 ms
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "1 system(s), staff 26.9 px: 28 frame(s), 577 ms",
+    + ]
+
+      300 |       shown,
+      301 |       `settled: ${describeGlass(settled)}; frames that showed something else first:\n${shown.join('\n')}`,
+    > 302 |     ).toEqual([]);
+          |       ^
+      303 |   });
+      304 |
+      305 |   test('opened by a link after a fresh load, the first frame that draws the scale draws it as it settles', async ({ page }) => {
+        at <worktree>\app\tests\e2e\score-fit-paths.spec.ts:302:7
+
+    Error Context: test-results-u74\score-fit-paths-the-score--64b54-cale-draws-it-as-it-settles\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-u74\score-fit-paths-the-score--64b54-cale-draws-it-as-it-settles\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-u74\score-fit-paths-the-score--64b54-cale-draws-it-as-it-settles\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\score-fit-paths.spec.ts:305:3 › the score fills the stage on every path in (U74) › opened by a link after a fresh load, the first frame that draws the scale draws it as it settles 
+
+    Error: settled: stage 342.0 x 531.1 at 84.9, 2 system(s), bars 0/1 (2 shown), staff 43.2 px; frames that showed something else first:
+    1 system(s), staff 26.9 px: 30 frame(s), 506 ms
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "1 system(s), staff 26.9 px: 30 frame(s), 506 ms",
+    + ]
+
+      316 |       shown,
+      317 |       `settled: ${describeGlass(settled)}; frames that showed something else first:\n${shown.join('\n')}`,
+    > 318 |     ).toEqual([]);
+          |       ^
+      319 |   });
+      320 | });
+      321 |
+        at <worktree>\app\tests\e2e\score-fit-paths.spec.ts:318:7
+
+    Error Context: test-results-u74\score-fit-paths-the-score--a4287-cale-draws-it-as-it-settles\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-u74\score-fit-paths-the-score--a4287-cale-draws-it-as-it-settles\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-u74\score-fit-paths-the-score--a4287-cale-draws-it-as-it-settles\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\e2e\score-fit-paths.spec.ts:291:3 › the score fills the stage on every path in (U74) › opened from Today, the first frame that draws the scale draws it as it settles 
+    tests\e2e\score-fit-paths.spec.ts:305:3 › the score fills the stage on every path in (U74) › opened by a link after a fresh load, the first frame that draws the scale draws it as it settles 
+  1 passed (10.8s)
+e2e exit 1

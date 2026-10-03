@@ -1,0 +1,51 @@
+﻿copied build\positions-cache.json
+copied build\demands-cache.json
+copied build\notation-cache.json
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         0         0         0         0
+   Files :      7070      7070         0         0         0         0
+   Bytes :   45.01 m   45.01 m         0         0         0         0
+   Times :   0:00:06   0:00:06                       0:00:00   0:00:00
+
+
+   Speed :           7,142,809 Bytes/sec.
+   Speed :             408.715 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 12:42:45 AM
+
+convert exit 1
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :       170       170         0         0         0         0
+   Files :      2511      2511         0         0         0         0
+   Bytes :  678.77 m  678.77 m         0         0         0         0
+   Times :   0:00:03   0:00:03                       0:00:00   0:00:00
+
+
+   Speed :           198,368,445 Bytes/sec.
+   Speed :            11,350.733 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 12:42:49 AM
+
+kern exit 1
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        20        20         0         0         0         0
+   Files :       107       107         0         0         0         0
+   Bytes :    2.85 m    2.85 m         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           28,765,865 Bytes/sec.
+   Speed :            1,645.996 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 12:42:49 AM
+
+musetrainer exit 1

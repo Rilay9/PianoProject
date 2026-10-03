@@ -1,0 +1,136 @@
+{
+  "phase": "after",
+  "size": 100,
+  "face": "stack",
+  "viewport": "342x740",
+  "twinkle": [
+    {
+      "id": "song.folk.twinkle.rh",
+      "lines": [
+        "Twinkle, Twinkle, Little",
+        "Star"
+      ],
+      "linesNeeded": 2,
+      "linesShown": 2,
+      "clamp": "none",
+      "clipped": false,
+      "client": "164x42",
+      "scroll": "164x42",
+      "row": "310.0x92.3",
+      "titleColumn": "164.0",
+      "actions": "108.0",
+      "rootFont": "16px"
+    },
+    {
+      "id": "song.folk.twinkle.ht",
+      "lines": [
+        "Twinkle, Twinkle, Little",
+        "Star (hands together)"
+      ],
+      "linesNeeded": 2,
+      "linesShown": 2,
+      "clamp": "none",
+      "clipped": false,
+      "client": "164x42",
+      "scroll": "164x42",
+      "row": "310.0x92.3",
+      "titleColumn": "164.0",
+      "actions": "108.0",
+      "rootFont": "16px"
+    },
+    {
+      "id": "song.folk.twinkle.f",
+      "lines": [
+        "Twinkle, Twinkle, Little",
+        "Star (in F major)"
+      ],
+      "linesNeeded": 2,
+      "linesShown": 2,
+      "clamp": "none",
+      "clipped": false,
+      "client": "164x42",
+      "scroll": "164x42",
+      "row": "310.0x92.3",
+      "titleColumn": "164.0",
+      "actions": "108.0",
+      "rootFont": "16px"
+    },
+    {
+      "id": "song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx",
+      "lines": [
+        "Twinkle Twinkle Little",
+        "Star (Easy)"
+      ],
+      "linesNeeded": 2,
+      "linesShown": 2,
+      "clamp": "none",
+      "clipped": false,
+      "client": "164x42",
+      "scroll": "164x42",
+      "row": "310.0x92.3",
+      "titleColumn": "164.0",
+      "actions": "108.0",
+      "rootFont": "16px"
+    }
+  ],
+  "all": {
+    "count": "2092 of 2092 items",
+    "rows": 2092,
+    "byLines": {
+      "1": 396,
+      "2": 1402,
+      "3": 287,
+      "4": 6,
+      "7": 1
+    },
+    "titleWidths": {
+      "164": 2022,
+      "208": 70
+    },
+    "cut": 0,
+    "beyondThree": [
+      "4 lines at 164 px: Study in B♭ major — the hands changing together, broken chords",
+      "4 lines at 164 px: Beethoven Symphony 7 2nd Movement (Allegretto) Simple Piano arrangement",
+      "4 lines at 164 px: Sonatina in C major, Op. 36 No. 1 (first movement, short edition)",
+      "4 lines at 164 px: O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler",
+      "7 lines at 164 px: This Country of Mine (Extended Mix of Negaraku Malaysia's National Anthem) ((featuring Britain Japan Singapore and Brunei)",
+      "4 lines at 164 px: Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2",
+      "4 lines at 164 px: Summer, from The Four Seasons (third movement, piano transcription)"
+    ],
+    "sideways": [],
+    "siblings": {
+      "count": 1288,
+      "drawn": 1288,
+      "byLines": {
+        "1": 166,
+        "2": 944,
+        "3": 177,
+        "4": 1
+      },
+      "beyondThree": [
+        "4: Sonatina in C major, Op. 36 No. 1 (first movement, short edition)"
+      ]
+    },
+    "longest": [
+      "7 lines, row 196 px: This Country of Mine (Extended Mix of Negaraku Malaysia's National Anthem) ((featuring Britain Japan Singapore and Brunei)",
+      "4 lines, row 134 px: Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2",
+      "4 lines, row 134 px: Beethoven Symphony 7 2nd Movement (Allegretto) Simple Piano arrangement",
+      "4 lines, row 134 px: O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler",
+      "4 lines, row 134 px: Summer, from The Four Seasons (third movement, piano transcription)",
+      "3 lines, row 113 px: Piano Sonata No. 16 in C, K. 545, I. Allegro (alternative edition)",
+      "4 lines, row 134 px: Sonatina in C major, Op. 36 No. 1 (first movement, short edition)",
+      "3 lines, row 113 px: Piano Sonata No. 2 in B-flat minor, Op. 35 — mvt 1 (B-flat minor)",
+      "3 lines, row 113 px: Piano Sonata No. 2 in B-flat minor, Op. 35 — mvt 4 (B-flat minor)",
+      "3 lines, row 95 px: Study in C major in 2/4 — the hands changing together, held bass",
+      "4 lines, row 116 px: Study in B♭ major — the hands changing together, broken chords",
+      "3 lines, row 95 px: Minor-blues boogie — walking eighths in B♭ minor, both hands"
+    ],
+    "tallest": [
+      "row 196 px, 7 lines: This Country of Mine (Extended Mix of Negaraku Malaysia's National Anthem) ((featuring Britain Japan Singapore and Brunei)",
+      "row 134 px, 4 lines: Beethoven Symphony 7 2nd Movement (Allegretto) Simple Piano arrangement",
+      "row 134 px, 4 lines: Sonatina in C major, Op. 36 No. 1 (first movement, short edition)",
+      "row 134 px, 4 lines: O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler",
+      "row 134 px, 4 lines: Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+$ python tools/midi-cleanup/tests/parity_reference.py
+# cwd: /c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693
+# CI=1
+
+wrote 4 reference file(s) to C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\build\midi-parity: rendered-clean.json, rendered-jitter35.json, crossed-hands.json, two-hands.json
+  skipped, missing: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\build\midi-real\bach-bwv885-prelude-2011.mid
+  skipped, missing: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\build\midi-real\grieg-op38-7-waltz-2014.mid
+  skipped, missing: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\build\midi-real\scarlatti-k525-2008.mid
+
+# exit code: 0

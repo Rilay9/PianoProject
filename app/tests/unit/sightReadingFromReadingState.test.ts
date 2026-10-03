@@ -30,7 +30,7 @@ import {
   taughtAtRung,
   type ReadingOffer,
 } from '../../src/curriculum/session';
-import { dailySeed, unrealisable } from '../../src/engine/sightReading';
+import { dailySeed, SIGHT_READING_IN_FORCE, unrealisable } from '../../src/engine/sightReading';
 import { UNREALISABLE_AT } from '../../src/engine/readingControls';
 import { demandReadings } from '../../src/evidence/demandReadings';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
@@ -217,6 +217,35 @@ describe('unseen is guaranteed: no phrase the learner has been recorded playing 
 
   it('the daily seed is the day’s, so the day is ticked as it always was', () => {
     expect(offer(cleanEighths).seed).toBe(dailySeed(dayKey(TODAY)));
+  });
+
+  // Added (D1a; the reviewer's finding 2 on D1, G21): today's phrase is the
+  // day's seed under the version in force. A run of the day's seed under
+  // another version — or with no version on it, which is version 1's, recorded
+  // before D1a — read another phrase, so the card still offers today's as a read.
+  it('today’s seed read under another version is not today’s phrase: the card offers it as a read, not as met', () => {
+    const seed = dailySeed(dayKey(TODAY));
+    const other = SIGHT_READING_IN_FORCE === 1 ? 2 : 1;
+    const inForce = { ...(cleanEighths[4] as SessionRow), id: 6, seed, at: day(6, 8), generator: { family: 'sight-reading' as const, version: SIGHT_READING_IN_FORCE, seed } };
+    expect(offer([...cleanEighths, inForce]).why.kind).toBe('met');
+    const otherVersion = { ...inForce, generator: { family: 'sight-reading' as const, version: other, seed } };
+    expect(offer([...cleanEighths, otherVersion]).why.kind, `a version-${String(other)} run met today’s version-${String(SIGHT_READING_IN_FORCE)} phrase`).not.toBe('met');
+  });
+
+  it('a run of today’s seed with no version on it was version 1’s: with version 2 in force, today’s phrase is still to be read', () => {
+    const seed = dailySeed(dayKey(TODAY));
+    const helperRow = { ...(cleanEighths[4] as SessionRow), id: 6, seed, at: day(6, 8) };
+    expect(helperRow.generator?.version, 'the reader helper records the version as the Score screen does').toBe(SIGHT_READING_IN_FORCE);
+    expect(SIGHT_READING_IN_FORCE, 'the case is about version 2 in force').toBe(2);
+    const { generator: _g, ...unversioned } = helperRow;
+    expect(offer([...cleanEighths, unversioned]).why.kind, 'a run recorded before D1a met today’s version-2 phrase').not.toBe('met');
+  });
+
+  it('a slot seed on the record under any version is not offered again (a seed can write the same notes at both versions)', () => {
+    const first = offer(cleanEighths, '2.2', TODAY, 'slot');
+    const { generator: _g, ...unversioned } = { ...(cleanEighths[4] as SessionRow), id: 6, seed: first.seed, at: day(6, 8) };
+    const next = offer([...cleanEighths, unversioned], '2.2', TODAY, 'slot');
+    expect(next.seed, 'a seed read under version 1 was offered again as unseen').not.toBe(first.seed);
   });
 });
 

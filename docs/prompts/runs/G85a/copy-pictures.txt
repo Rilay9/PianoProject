@@ -1,0 +1,33 @@
+copied before/before-details-learning-end-342x740.png
+copied before/before-details-learning-top-342x740.png
+copied before/before-details-no-project-end-342x740.png
+copied before/before-details-no-project-top-342x740.png
+copied before/before-details-pdf-end-342x740.png
+copied before/before-details-pdf-top-342x740.png
+copied before/before-details-placeholder-end-342x740.png
+copied before/before-details-placeholder-top-342x740.png
+copied before/before-facts.json
+copied before/before-library-search-twinkle-learning-342x740.png
+copied before/before-row-twinkle-ht-learning-342x740.png
+copied before/before-row-twinkle-ht-no-project-342x740.png
+copied after/after-details-learning-end-342x740.png
+copied after/after-details-learning-top-342x740.png
+copied after/after-details-no-project-end-342x740.png
+copied after/after-details-no-project-top-342x740.png
+copied after/after-details-pdf-end-342x740.png
+copied after/after-details-pdf-top-342x740.png
+copied after/after-details-placeholder-end-342x740.png
+copied after/after-details-placeholder-top-342x740.png
+copied after/after-facts.json
+copied after/after-item8-letter-m-after-342x740.png
+copied after/after-item8-letter-m-before-342x740.png
+copied after/after-library-after-pause-close-342x740.png
+copied after/after-library-search-twinkle-learning-342x740.png
+copied after/after-row-twinkle-ht-learning-342x740.png
+copied after/after-row-twinkle-ht-no-project-342x740.png
+copied after/after-row-twinkle-ht-paused-342x740.png
+copied after/after-sheet-from-details-learning-342x740.png
+copied after/after-sheet-from-details-no-project-342x740.png
+copied after/after-sheet-paused-342x740.png
+31 files into docs/prompts/pictures/g85a/
+exit=0

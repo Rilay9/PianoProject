@@ -1,0 +1,20 @@
+E
+======================================================================
+ERROR: test_excerpts (unittest.loader._FailedTest.test_excerpts)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_excerpts
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\unittest\loader.py", line 162, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_excerpts.py", line 32, in <module>
+    import excerpts as X  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'excerpts'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+exit 1

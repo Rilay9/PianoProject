@@ -57,3 +57,7 @@ judge:
 
 The continuity list, the voice list, the on-screen sentences missing, the genre story per
 track, the stale document sentences fixed, the test-map lines added, what is unverified.
+
+## Record
+
+lane: T20 · closes: — · entry: — · role: history

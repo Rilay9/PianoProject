@@ -127,6 +127,12 @@ export function summarise(input: {
 
 export function PaperScreen(router: Router, bookId: string, pieceId: string): HTMLElement {
   const { section, header, body } = screenFrame('paper', 'Practice');
+  /**
+   * The rung whose page opened this screen (`?from=`, CL04, L79), or none from
+   * the Shelf. Handed on to the twin's Score screen, which judges its run by it,
+   * so that run counts for the book piece the rung lists.
+   */
+  const fromRung = router.route.paperFrom;
   const status = statusLine('paper-status');
   header.prepend(
     button('← Shelf', () => router.navigate('library', 'shelf'), {
@@ -397,9 +403,14 @@ export function PaperScreen(router: Router, bookId: string, pieceId: string): HT
     const twinId = entry.piece.itemId && (await findItem(entry.piece.itemId)) ? entry.piece.itemId : undefined;
     if (twinId) {
       controls.prepend(
-        button('Practise with the score', () => router.navigateScore(twinId), {
-          id: 'paper-with-score',
-        }),
+        button(
+          'Practise with the score',
+          () => {
+            if (fromRung === undefined) router.navigateScore(twinId);
+            else router.navigateScore(twinId, { from: fromRung });
+          },
+          { id: 'paper-with-score' },
+        ),
       );
     }
   })();

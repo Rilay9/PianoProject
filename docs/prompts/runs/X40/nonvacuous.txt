@@ -1,0 +1,40 @@
+=== probe: missing (PIANOPATH_TEMPO_CHECK_CONTENT=build/x40/probes/does-not-exist)
+     × reads every MuseTrainer and kern row that has a built file, Maple Leaf’s among them 4ms
+     × finds exactly the pinned contradictions, no new one and none gone 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ab13702e64ec8c091\build\x40\probes\does-not-exist\catalog.json — run the content build first (python tools/content/build.py --offline): expected false to be true // Object.is equality
+AssertionError: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ab13702e64ec8c091\build\x40\probes\does-not-exist\catalog.json — run the content build first (python tools/content/build.py --offline): expected false to be true // Object.is equality
+      Tests  2 failed | 4 passed (6)
+exit 1
+=== probe: no-maple (PIANOPATH_TEMPO_CHECK_CONTENT=build/x40/probes/no-maple)
+     × reads every MuseTrainer and kern row that has a built file, Maple Leaf’s among them 946ms
+     × finds exactly the pinned contradictions, no new one and none gone 2ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: song.ragtime.joplin-maple-leaf-rag's file was not read: expected false to be true // Object.is equality
+AssertionError: expected { new: [], stale: [ …(2) ] } to deeply equal { new: [], stale: [] }
+-   "stale": [],
++   "stale": [
++     "song.ragtime.joplin-maple-leaf-rag @1:0.25 sound 120 against mark 100",
++     "song.ragtime.joplin-maple-leaf-rag @51:0 sound 120 against mark 100",
+      Tests  2 failed | 4 passed (6)
+exit 1
+=== probe: one-short (PIANOPATH_TEMPO_CHECK_CONTENT=build/x40/probes/one-short)
+     × reads every MuseTrainer and kern row that has a built file, Maple Leaf’s among them 940ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected [ Array(1) ] to deeply equal []
++   "song.ragtime.joplin-maple-leaf-rag.kern: C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-ab13702e64ec8c091\\build\\x40\\probes\\one-short\\scores\\imported\\song.ragtime.joplin-maple-leaf-rag.kern.mxl",
+      Tests  1 failed | 5 passed (6)
+exit 1
+=== probe: personal-gap (PIANOPATH_TEMPO_CHECK_CONTENT=build/x40/probes/personal-gap)
+     × finds exactly the pinned contradictions, no new one and none gone 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected { new: [], stale: [ …(5) ] } to deeply equal { new: [], stale: [] }
+-   "stale": [],
++   "stale": [
++     "song.beautiful.g-minor-bach.alt @15:3 sound 90 against mark 80",
++     "song.beautiful.g-minor-bach.alt @28:0 sound 90 against mark 80",
++     "song.beautiful.g-minor-bach.alt @45:0 sound 90 against mark 80",
++     "song.beautiful.g-minor-bach.alt @61:0 sound 90 against mark 80",
++     "song.beautiful.g-minor-bach.alt @64:1 sound 94.9998 against mark 80",
+      Tests  1 failed | 5 passed (6)
+exit 1

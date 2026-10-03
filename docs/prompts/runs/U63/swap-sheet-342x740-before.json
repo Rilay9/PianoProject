@@ -1,0 +1,77 @@
+{
+ "row": "song.folk.hot-cross-buns",
+ "options": [
+  {
+   "swap": "drill.rhythm.quarters-rests",
+   "tier": "lesson",
+   "title": "Rhythm clap — quarters and rests",
+   "badges": []
+  },
+  {
+   "swap": "exercise.five-finger.c-major.right",
+   "tier": "lesson",
+   "title": "C major five-finger pattern — right",
+   "badges": []
+  },
+  {
+   "swap": "exercise.five-finger.g-major.right",
+   "tier": "lesson",
+   "title": "G major five-finger pattern — right",
+   "badges": []
+  },
+  {
+   "swap": "song.folk.merrily-we-roll-along",
+   "tier": "lesson",
+   "title": "Merrily We Roll Along",
+   "badges": []
+  },
+  {
+   "swap": "song.folk.au-clair-de-la-lune",
+   "tier": "lesson",
+   "title": "Au Clair de la Lune",
+   "badges": []
+  },
+  {
+   "swap": "song.classical.ode-to-joy.rh",
+   "tier": "lesson",
+   "title": "Ode to Joy (theme)",
+   "badges": []
+  },
+  {
+   "swap": "song.folk.lightly-row",
+   "tier": "demand",
+   "title": "Lightly Row",
+   "badges": []
+  },
+  {
+   "swap": "exercise.interval-reading.c-position.right.01",
+   "tier": "demand",
+   "title": "Steps and skips in C position — no. 1",
+   "badges": []
+  },
+  {
+   "swap": "exercise.interval-reading.c-position.right.02",
+   "tier": "demand",
+   "title": "Steps and skips in C position — no. 2",
+   "badges": []
+  },
+  {
+   "swap": "exercise.interval-reading.c-position.right.03",
+   "tier": "demand",
+   "title": "Steps and skips in C position — no. 3",
+   "badges": []
+  },
+  {
+   "swap": "exercise.interval-reading.c-position.right.04",
+   "tier": "demand",
+   "title": "Steps and skips in C position — no. 4",
+   "badges": []
+  },
+  {
+   "swap": "exercise.interval-reading.c-position.right.05",
+   "tier": "demand",
+   "title": "Steps and skips in C position — no. 5",
+   "badges": []
+  }
+ ]
+}

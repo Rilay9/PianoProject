@@ -1,0 +1,41 @@
+npx playwright test --config playwright.u82-4333.config.ts --workers=2 tests/e2e/score.slide.spec.ts   # the revised sideways case against the tree before U74 (85bd683, build/u82-old)
+
+Running 3 tests using 2 workers
+
+  ok 2 tests\e2e\score.slide.spec.ts:69:3 › sideways › holds the cursor a third across once the piece is under way (1.7s)
+  x  1 tests\e2e\score.slide.spec.ts:102:3 › sideways › draws more bars than the window, so there is something to read into (1.8s)
+  ok 3 tests\e2e\score.slide.spec.ts:151:3 › upright › does not slide: the two slots do the reading ahead (893ms)
+
+
+  1) tests\e2e\score.slide.spec.ts:102:3 › sideways › draws more bars than the window, so there is something to read into 
+
+    Error: at once: window 0-1 of 2 asked, stage 714 wide, bars {"0":{"all":true,"first":true},"1":{"all":false,"first":true},"2":{"all":false,"first":false}}: bar 1 is in the window and not wholly on the stage
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      125 |       // The window said is the window on the glass: every note of every bar in it.
+      126 |       for (let bar = from; bar <= to; bar += 1) {
+    > 127 |         expect(glass.bars[bar]?.all, `${said}: bar ${String(bar)} is in the window and not wholly on the stage`).toBe(true);
+          |                                                                                                                  ^
+      128 |       }
+      129 |       // The next bar's first note after them, while the piece goes on.
+      130 |       if (to < last) {
+        at <worktree>\build\u82-old\app\tests\e2e\score.slide.spec.ts:127:114
+
+    Error Context: test-results-u82\score.slide-sideways-draws-5c55d-e-is-something-to-read-into\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-u82\score.slide-sideways-draws-5c55d-e-is-something-to-read-into\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-u82\score.slide-sideways-draws-5c55d-e-is-something-to-read-into\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\score.slide.spec.ts:102:3 › sideways › draws more bars than the window, so there is something to read into 
+  2 passed (11.8s)
+exit=1

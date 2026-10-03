@@ -1,0 +1,9 @@
+$ (cwd .) python tools/docs/checks_for_paths.py app/src/ui/screens/subScreen.ts
+# checks for 1 path(s): 1 matched, 0 unmatched
+# app/src/ui/screens/subScreen.ts: app/src/**, app/src/ui/screens/subScreen.ts
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/competence.spec.ts tests/e2e/engine.spec.ts tests/e2e/excerpts.spec.ts tests/e2e/first-day.spec.ts tests/e2e/folder.add.spec.ts tests/e2e/folder.manifest.spec.ts tests/e2e/folder.rail-cost.spec.ts tests/e2e/folder.readable.spec.ts tests/e2e/folder.spec.ts tests/e2e/guide.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/metronome.spec.ts tests/e2e/mic.spec.ts tests/e2e/microscope.spec.ts tests/e2e/midi.spec.ts tests/e2e/midi.unplug.spec.ts tests/e2e/offline.report.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.spec.ts tests/e2e/score.renderer.fuzz.spec.ts tests/e2e/score.spec.ts tests/e2e/setup-layout.spec.ts tests/e2e/setup.spec.ts tests/e2e/shelf.spec.ts tests/e2e/start-and-return.spec.ts --workers=4
+exit=0

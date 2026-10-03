@@ -1,0 +1,43 @@
+(cd app) PYTHONIOENCODING=utf-8 python ../docs/prompts/runs/G1a/scripts-mutants.py - m1-recheck-reads-unseen m2-unseen-on-every-run m3-no-relation-on-a-phrase m4-recheck-leaves-the-relation m5-rung-rows-infer-the-relation m6-isPhraseRun-flag-alone m7-isPhraseRun-reads-the-relation
+m1-recheck-reads-unseen (src/ui/screens/ScoreScreen.ts, 3 files): CAUGHT / verdict changed; exit 1; Tests  1 failed | 62 passed (63)
+    × a notated piece, two tabs: a viewing another tab wrote after this one opened is read before the run is stored (G1a) 130ms
+    restored: sha256 e2041b38cf536d59 matches
+m2-unseen-on-every-run (src/ui/screens/ScoreScreen.ts, 3 files): CAUGHT / verdict changed; exit 1; Tests  7 failed | 56 passed (63)
+    × a demonstrated take stores demonstrated: true and no performance flag 129ms
+    × a notated piece, two tabs: a viewing another tab wrote after this one opened is read before the run is stored (G1a) 134ms
+    × a notated piece: its first run is first contact, the second is not, and both pass 125ms
+    × an excerpt of other bars played before leaves this excerpt a first contact 125ms
+    × the piece played whole before: its excerpt is not a first contact 125ms
+    × an import is its stored bytes: a duplicate under a new id is the same material, met and not first contact 125ms
+    × over phrase runs, piece runs, a row G1’s app wrote and rows from before G1: the relation where it was written, unknown where it was not 376ms
+    restored: sha256 e2041b38cf536d59 matches
+m3-no-relation-on-a-phrase (src/ui/screens/ScoreScreen.ts, 3 files): CAUGHT / verdict changed; exit 1; Tests  9 failed | 54 passed (63)
+    × a sight-read heard before its first run is recorded, flagged unseen: false 144ms
+    × a first reading of a phrase nobody played is unseen: true 137ms
+    × heard, left, returned later, read: not first contact, and the history says so 191ms
+    × viewed on an earlier visit and never played or heard: not first contact, and the sheet says seen 183ms
+    × viewed only on this visit: first contact, and the ladder sees it 125ms
+    × a reload is another visit: the viewing before it is an earlier one 189ms
+    × two tabs: a viewing another tab wrote before this one opened, or after it opened and before the run was stored, is another visit’s 191ms
+    × a run of the phrase on record under another row id: not first contact 189ms
+    × over phrase runs, piece runs, a row G1’s app wrote and rows from before G1: the relation where it was written, unknown where it was not 379ms
+    restored: sha256 e2041b38cf536d59 matches
+m4-recheck-leaves-the-relation (src/ui/screens/ScoreScreen.ts, 3 files): CAUGHT / verdict changed; exit 1; Tests  1 failed | 62 passed (63)
+    × two tabs: a viewing another tab wrote before this one opened, or after it opened and before the run was stored, is another visit’s 318ms
+    restored: sha256 e2041b38cf536d59 matches
+m5-rung-rows-infer-the-relation (src/data/progressStore.ts, 3 files): CAUGHT / verdict changed; exit 1; Tests  1 failed | 62 passed (63)
+    × over phrase runs, piece runs, a row G1’s app wrote and rows from before G1: the relation where it was written, unknown where it was not 382ms
+    restored: sha256 8c447dcc32954c97 matches
+m6-isPhraseRun-flag-alone (src/data/db.ts, 3 files): CAUGHT / verdict changed; exit 1; Tests  3 failed | 60 passed (63)
+    × which runs are generated phrases: the recipe, or the flag on a run whose material is none but a phrase’s 5ms
+    × a piece played again (unseen: false) still passes, and the rung state still reads it 2ms
+    × over phrase runs, piece runs, a row G1’s app wrote and rows from before G1: the relation where it was written, unknown where it was not 382ms
+    restored: sha256 6ddc80fd34b2cf22 matches
+m7-isPhraseRun-reads-the-relation (src/data/db.ts, 3 files): CAUGHT / verdict changed; exit 1; Tests  5 failed | 58 passed (63)
+    × which runs are generated phrases: the recipe, or the flag on a run whose material is none but a phrase’s 5ms
+    × a piece played again as G1a stores it (firstContact: false, no unseen) passes, meets its rung and is flagged nothing 3ms
+    × a notated piece, two tabs: a viewing another tab wrote after this one opened is read before the run is stored (G1a) 1139ms
+    × a notated piece: its first run is first contact, the second is not, and both pass 1191ms
+    × over phrase runs, piece runs, a row G1’s app wrote and rows from before G1: the relation where it was written, unknown where it was not 380ms
+    restored: sha256 6ddc80fd34b2cf22 matches
+exit=0

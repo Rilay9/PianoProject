@@ -28,21 +28,25 @@
  *   does not jump it (the reviewer's correction, 2026-09-26).
  *
  * And a constructed case for the warm-up's first claim, which no shipped
- * exercise can reach yet (only the nine reading rows declare `targetSkills`):
- * the exercise training the unmet skill the evidence has shown least.
+ * exercise can reach yet (the generated families declare `targetSkills` since
+ * D0, and the shipped activation acts on the reading rows' only): the exercise
+ * training the unmet skill the evidence has shown least, with the constructed
+ * exercises' skills activated explicitly (`EVERY_DECLARED_SKILL`).
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { buildSession, readingOptions, taughtAtRung, type BuildInput, type SessionSlot } from '../../src/curriculum/session';
 import { indexCatalog } from '../../src/curriculum/selectors';
+import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import type { SessionRow } from '../../src/data/db';
 import type { LearnedPiece } from '../../src/data/progressStore';
 import { EVIDENCE_DEFINITIONS, type MeasuredEvidence } from '../../src/evidence/evidence';
 import { rungState } from '../../src/evidence/rungState';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { VOCABULARY_V0, type Vocabulary } from '../../src/evidence/vocabulary';
 import { readPhrase } from './helpers/reader';
+import { measured } from './helpers/measured';
 import { slotReason } from '../../src/ui/help';
 
 const CONTENT = join(process.cwd(), 'public', 'content');
@@ -365,7 +369,19 @@ describe('the warm-up trains the unmet skill the evidence has shown least', () =
     file: `scores/${id}.mxl`,
     ...over,
   });
-  const ITEMS = [item('ex.subdivision', { targetSkills: ['subdivision'] }), item('ex.ties', { targetSkills: ['tie'] }), item('ex.plain')];
+  // Revised (E0): each exercise's notes provide its skill's opportunity at a useful density
+  // (`helpers/measured`), and the vocabulary handed to the session says the constructed rung
+  // R teaches eighth notes and ties — the one gate asks both. Old assumption: a declared skill
+  // was enough for the requirement's pool.
+  const ITEMS = [
+    item('ex.subdivision', { targetSkills: ['subdivision'], ...measured(['rhythm.eighths']) }),
+    item('ex.ties', { targetSkills: ['tie'], ...measured(['rhythm.ties']) }),
+    item('ex.plain', measured([])),
+  ];
+  const VOCABULARY: Vocabulary = {
+    ...VOCABULARY_V0,
+    demands: VOCABULARY_V0.demands.map((demand) => (demand.id === 'rhythm.eighths' || demand.id === 'rhythm.ties' ? { ...demand, taughtAt: ['R'] } : demand)),
+  };
   const R: Lesson = {
     id: 'R',
     title: 'A rung asking for two skills',
@@ -421,6 +437,8 @@ describe('the warm-up trains the unmet skill the evidence has shown least', () =
       activeTracks: ['core'],
       minutes: 15,
       today: TODAY,
+      skillActivation: EVERY_DECLARED_SKILL,
+      vocabulary: VOCABULARY,
     }).slots;
     const warmup = slot(slots, 'technique');
     expect(warmup?.item?.id).toBe('ex.ties');

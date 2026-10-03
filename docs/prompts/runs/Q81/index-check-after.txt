@@ -1,0 +1,20 @@
+$ (cwd .) python docs/prompts/runs/Q81/scripts-index_check.py
+app/tests/e2e: 114 files, 114 with a line
+no file line: app/tests/unit/perfectPerformance.1.test.ts
+no file line: app/tests/unit/perfectPerformance.2.test.ts
+no file line: app/tests/unit/perfectPerformance.3.test.ts
+no file line: app/tests/unit/perfectPerformance.4.test.ts
+no file line: app/tests/unit/perfectPerformance.5.test.ts
+no file line: app/tests/unit/perfectPerformance.6.test.ts
+no file line: app/tests/unit/perfectPerformance.7.test.ts
+2 lines beginning with `autoFit.test.ts` in app/tests/unit
+2 lines beginning with `sightReadingPromises.test.ts` in app/tests/unit
+2 lines beginning with `sightReadingUnchanged.test.ts` in app/tests/unit
+app/tests/unit: 312 files, 305 with a line
+app/tests/states: 1 files, 1 with a line
+app/tests/tour: 7 files, 7 with a line
+no file line: tools/content/tests/test_validate_ladder.py
+tools/content/tests: 67 files, 66 with a line
+tools/midi-cleanup/tests: 3 files, 3 with a line
+missing: 8
+exit=0

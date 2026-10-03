@@ -1,0 +1,15 @@
+app/test-results/g96-pictures/before/before-sheet-library-never-played-342x740.png -> docs/prompts/pictures/g96/before-sheet-library-never-played-342x740.png (27030 bytes)
+app/test-results/g96-pictures/before/before-library-after-close-342x740.png -> docs/prompts/pictures/g96/before-library-after-close-342x740.png (23855 bytes)
+app/test-results/g96-pictures/before/before-progress-after-close-342x740.png -> docs/prompts/pictures/g96/before-progress-after-close-342x740.png (25297 bytes)
+app/test-results/g96-pictures/before/before-pdf-row-342x740.png -> docs/prompts/pictures/g96/before-pdf-row-342x740.png (5179 bytes)
+app/test-results/g96-pictures/before/before-row-twinkle-ht-learning-342x740.png -> docs/prompts/pictures/g96/before-row-twinkle-ht-learning-342x740.png (6788 bytes)
+app/test-results/g96-pictures/before/before-facts.json -> docs/prompts/runs/G96/pictures-facts-before.json
+app/test-results/g96-pictures/after/after-sheet-library-never-played-342x740.png -> docs/prompts/pictures/g96/after-sheet-library-never-played-342x740.png (26259 bytes)
+app/test-results/g96-pictures/after/after-library-after-close-342x740.png -> docs/prompts/pictures/g96/after-library-after-close-342x740.png (23855 bytes)
+app/test-results/g96-pictures/after/after-sheet-progress-passed-342x740.png -> docs/prompts/pictures/g96/after-sheet-progress-passed-342x740.png (25457 bytes)
+app/test-results/g96-pictures/after/after-progress-after-close-342x740.png -> docs/prompts/pictures/g96/after-progress-after-close-342x740.png (25297 bytes)
+app/test-results/g96-pictures/after/after-pdf-row-342x740.png -> docs/prompts/pictures/g96/after-pdf-row-342x740.png (4839 bytes)
+app/test-results/g96-pictures/after/after-pdf-details-342x740.png -> docs/prompts/pictures/g96/after-pdf-details-342x740.png (28118 bytes)
+app/test-results/g96-pictures/after/after-row-twinkle-ht-learning-342x740.png -> docs/prompts/pictures/g96/after-row-twinkle-ht-learning-342x740.png (6788 bytes)
+app/test-results/g96-pictures/after/after-sheet-library-self-passed-342x740.png -> docs/prompts/pictures/g96/after-sheet-library-self-passed-342x740.png (31468 bytes)
+app/test-results/g96-pictures/after/after-facts.json -> docs/prompts/runs/G96/pictures-facts-after.json

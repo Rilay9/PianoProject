@@ -1,0 +1,31 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/namesOnIsPractice.test.ts (8 tests | 1 failed | 7 skipped) 18ms
+   ❯ a read with a name on the screen is practice (L58) (5)
+     × a Wait first reading, the guide off, *Name the note I am waiting for* on: practice for each of the five 16ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  02:37:41
+   Duration  2.56s (environment 55%, transform 31%, import 13%, tests 1%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/namesOnIsPractice.test.ts > a read with a name on the screen is practice (L58) > a Wait first reading, the guide off, *Name the note I am waiting for* on: practice for each of the five
+AssertionError: interval-reading: expected 'full' to be 'practice' // Object.is equality
+
+Expected: "practice"
+Received: "full"
+
+ ❯ tests/unit/namesOnIsPractice.test.ts:100:35
+     98|     for (const skill of WAIT_REACHABLE) {
+     99|       const one = measured(results, skill);
+    100|       expect(one.standard, skill).toBe('practice');
+       |                                   ^
+    101|       expect(one.context.met, skill).not.toContain('names-off');
+    102|       expect(one.n, `${skill} had no opportunity in the phrase`).toBeG…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

@@ -1,0 +1,20 @@
+E
+======================================================================
+ERROR: test_validate_excerpts (unittest.loader._FailedTest.test_validate_excerpts)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_validate_excerpts
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\unittest\loader.py", line 162, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_validate_excerpts.py", line 22, in <module>
+    from validate import excerpt_findings  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: cannot import name 'excerpt_findings' from 'validate' (C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\validate.py)
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+exit 1

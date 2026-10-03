@@ -5,69 +5,126 @@
     "A demand is something the notation contains, found by a detector and located in steps",
     "and staves; a person never types one. Each says which function in",
     "app/src/demands/detect.ts finds it (`detector`), which skill copes with it",
-    "(`copedWithBy`: the one reviewed table needsSkills will be derived from), and which rung",
-    "teaches it (`taughtAt`), which is what the sight-reading promises test holds every row to:",
-    "nothing the earliest rung listing it has not taught. That table lived in the test until",
+    "(`copedWithBy`: the one reviewed table needsSkills will be derived from), and which rungs",
+    "teach it (`taughtAt`), which is what the sight-reading promises test holds every row to:",
+    "nothing a rung listing it has not taught. That table lived in the test until",
     "C2 (`unintended()`); these are its six rows and the rest of what the rows write.",
+    "",
+    "`taughtAt` is every rung whose lesson teaches the demand, one per path (E0b): no listed rung",
+    "is on another listed rung's path (claims.rung_ancestry), and a demand is taught at a rung when",
+    "any listed rung is on the rung's path, or among the rungs the learner has reached. [] is taught",
+    "nowhere, with `taughtAtNote` saying why. validate.py derives the list from the rungs' concepts",
+    "(claims.teaching_rungs) and warns where it differs; `taughtAtNote` naming a listed rung whose",
+    "concepts do not name the demand is a hand reading of that lesson, warned until F reads it.",
     "",
     "Each also names its musical `dimension` (C4b), from the schema's closed list: what kind",
     "of musical fact it is. Which generator option writes or removes it is not here: that map",
     "is app code (app/src/engine/readingControls.ts), so a generator can change without the",
     "vocabulary, or the evidence that names these ids, moving.",
     "",
+    "`fixedPositions` (L120b; the reviewer's Question 1 on L120a, docs/review/responses/0bcd3be0.md)",
+    "is on interval.skip and, since L120d (the reviewer's Question 1 on L120b, responses/c8680b70.md),",
+    "on interval.leap: the same two positions on both, pinned equal by a test in each language. They are",
+    "the fixed five-finger positions whose note reading copes with a skip before 1.5, and a leap before",
+    "2.1, teaches reading by interval — right-hand C position, C4-G4 (MIDI 60-67), which 1.1",
+    "teaches by note name, and the left hand's, C3-G3 (48-55), which 1.3 teaches. Each names its lesson",
+    "concept; where it is taught is read from the lessons' own concepts under the rung's ancestry",
+    "(session.positionTaughtAtRung, claims.untaught_on), never listed here. The coping question alone",
+    "reads it (eligibilityCore.uncoped): a skip or a leap is coped with where every sounding hand of the",
+    "row lies inside its own taught position. taughtAt, copedWithBy and the detectors do not move (the",
+    "leap stays a measured leap, taught at 2.1), and no evidence reader sees it.",
+    "",
     "v0 is what the nine sight-reading rows' promises name and what the taught-at table",
     "needs. validate.py checks this file against demands.schema.json and its references;",
     "vocabulary.test.ts checks every detector exists in the app."
   ],
   "demands": [
-    { "id": "clef.bass", "display": "Notes on the bass staff", "dimension": "clef", "detector": "bassClef", "copedWithBy": "bass-clef", "taughtAt": "1.3" },
-    { "id": "pitch.ledger", "display": "A note on a ledger line beyond middle C", "dimension": "range", "detector": "ledgerLines", "copedWithBy": "ledger-lines", "taughtAt": "3.4" },
+    { "id": "clef.bass", "display": "Notes on the bass staff", "dimension": "clef", "detector": "bassClef", "copedWithBy": "bass-clef", "taughtAt": ["1.3"] },
+    { "id": "pitch.ledger", "display": "A note on a ledger line beyond middle C", "dimension": "range", "detector": "ledgerLines", "copedWithBy": "ledger-lines", "taughtAt": ["3.4"] },
     {
       "id": "interval.step",
       "display": "A step",
       "dimension": "interval",
       "detector": "steps",
       "copedWithBy": "interval-reading",
-      "taughtAt": "1.1",
-      "taughtAtNote": "The five-finger walks of the first rung are steps; 1.5 teaches reading them as steps."
+      "taughtAt": ["1.1"],
+      "taughtAtNote": "1.1 names steps in its concepts (F2): its five-finger walks are steps; 1.5 teaches reading them as steps."
     },
-    { "id": "interval.skip", "display": "A skip (a third)", "dimension": "interval", "detector": "skips", "copedWithBy": "interval-reading", "taughtAt": "1.5" },
+    {
+      "id": "interval.skip",
+      "display": "A skip (a third)",
+      "dimension": "interval",
+      "detector": "skips",
+      "copedWithBy": "interval-reading",
+      "taughtAt": ["1.5"],
+      "fixedPositions": [
+        { "concept": "C-position", "hand": "R", "low": 60, "high": 67 },
+        { "concept": "LH-C-position", "hand": "L", "low": 48, "high": 55 }
+      ]
+    },
     {
       "id": "interval.leap",
       "display": "A leap (a fourth or wider)",
       "dimension": "interval",
       "detector": "leaps",
       "copedWithBy": "interval-reading",
-      "taughtAt": "1.5",
-      "taughtAtNote": "1.5's song has a leap of a fourth, D up to G, read with the same habit; its video is 'Steps, Skips & Leaps'. Its drill promises steps and skips only."
+      "taughtAt": ["2.1"],
+      "fixedPositions": [
+        { "concept": "C-position", "hand": "R", "low": 60, "high": 67 },
+        { "concept": "LH-C-position", "hand": "L", "low": 48, "high": 55 }
+      ]
     },
-    { "id": "rhythm.eighths", "display": "Eighth notes", "dimension": "rhythm", "detector": "eighths", "copedWithBy": "subdivision", "taughtAt": "2.2" },
-    { "id": "rhythm.shorter-than-quarter", "display": "Notes shorter than a quarter", "dimension": "rhythm", "detector": "shorterThanQuarter", "copedWithBy": "subdivision", "taughtAt": "2.2" },
+    { "id": "rhythm.eighths", "display": "Eighth notes", "dimension": "rhythm", "detector": "eighths", "copedWithBy": "subdivision", "taughtAt": ["2.2"] },
+    { "id": "rhythm.shorter-than-quarter", "display": "Notes shorter than a quarter", "dimension": "rhythm", "detector": "shorterThanQuarter", "copedWithBy": "subdivision", "taughtAt": ["2.2"] },
     {
       "id": "rhythm.sixteenths",
       "display": "Sixteenth notes",
       "dimension": "rhythm",
       "detector": "sixteenths",
       "copedWithBy": "subdivision",
-      "taughtAt": null,
-      "taughtAtNote": "No rung's concepts name sixteenths and no core lesson teaches reading them; the level-7 row writes them on jazz.8 and theory.9. A gap for D and F to settle, not a rung to guess."
+      "taughtAt": ["4.4"],
+      "taughtAtNote": "4.4 teaches written sixteenths as four even subdivisions of the quarter-note beat, over Hanon Nos. 1-5 in 2/4 at the metronome (L120c; the reviewer's Question 3 on L120a, docs/review/responses/0bcd3be0.md). ragtime.5 and technique.6 name sixteenth-notes too and stand on 4.4, so they record the ownership their lessons teach and are not second teaching rungs; latin.7 and holiday.7 inherit it through 4.4. A track whose path does not reach 4.4 (a Stage 1-4 track: classical.4, technique.4 and classical.4.shelf among them) is not taught it."
     },
-    { "id": "rhythm.dotted-quarter", "display": "Dotted quarter notes", "dimension": "rhythm", "detector": "dottedQuarters", "copedWithBy": "dotted-quarter", "taughtAt": "2.4" },
-    { "id": "rhythm.ties", "display": "Tied notes", "dimension": "rhythm", "detector": "ties", "copedWithBy": "tie", "taughtAt": "2.4" },
-    { "id": "rhythm.syncopation", "display": "Syncopation", "dimension": "rhythm", "detector": "syncopation", "copedWithBy": "syncopation", "taughtAt": "4.5" },
-    { "id": "rhythm.triplets", "display": "Triplets", "dimension": "rhythm", "detector": "triplets", "copedWithBy": "triplets", "taughtAt": "4.5" },
-    { "id": "metre.compound", "display": "Compound time", "dimension": "metre", "detector": "compoundMetre", "copedWithBy": "6/8", "taughtAt": "4.5" },
-    { "id": "key.signature", "display": "A key signature", "dimension": "key", "detector": "keySignature", "copedWithBy": "key-signature", "taughtAt": "3.1" },
-    { "id": "pitch.chromatic", "display": "A note outside the key", "dimension": "accidental", "detector": "chromatic", "copedWithBy": "accidentals", "taughtAt": "3.1" },
-    { "id": "range.beyond-position", "display": "One hand wider than a five-finger position", "dimension": "range", "detector": "beyondPosition", "copedWithBy": "position-shift", "taughtAt": "2.5" },
-    { "id": "texture.hands-together", "display": "Both hands at once: struck together, or the left hand moving under the right", "dimension": "texture", "detector": "handsTogether", "copedWithBy": "hands-together", "taughtAt": "2.1" },
+    { "id": "rhythm.dotted-quarter", "display": "Dotted quarter notes", "dimension": "rhythm", "detector": "dottedQuarters", "copedWithBy": "dotted-quarter", "taughtAt": ["2.4"] },
+    { "id": "rhythm.ties", "display": "Tied notes", "dimension": "rhythm", "detector": "ties", "copedWithBy": "tie", "taughtAt": ["2.4"] },
+    {
+      "id": "rhythm.syncopation",
+      "display": "Syncopation",
+      "dimension": "rhythm",
+      "detector": "syncopation",
+      "copedWithBy": "syncopation",
+      "taughtAt": ["4.5", "latin.3", "jazz.4"],
+      "taughtAtNote": "4.5 on the core path. latin.3, whose path leaves the core at 2.5, teaches the clave, a syncopated two-bar rhythm clapped and then played over a quarter-note pulse, one hand syncopated against one that is not. jazz.4, whose path leaves the core at 3.6 through chords-pop.3 and chords-pop.4, teaches comping in the gaps over a bass that keeps the time: the Charleston (beat one and the and of two) and chords only on the ands, which its off-beats exercise establishes (L120c). The later rungs naming syncopation (ragtime, latin) stand on 4.5."
+    },
+    { "id": "rhythm.triplets", "display": "Triplets", "dimension": "rhythm", "detector": "triplets", "copedWithBy": "triplets", "taughtAt": ["4.5"] },
+    { "id": "metre.compound", "display": "Compound time", "dimension": "metre", "detector": "compoundMetre", "copedWithBy": "6/8", "taughtAt": ["4.5"] },
+    {
+      "id": "key.signature",
+      "display": "A key signature",
+      "dimension": "key",
+      "detector": "keySignature",
+      "copedWithBy": "key-signature",
+      "taughtAt": ["3.1", "theory.3"],
+      "taughtAtNote": "3.1 on the core path. theory.3, whose path leaves the core at 2.5, teaches key signatures to three sharps and flats, the order they arrive in and the rules that name the key, and asks for one named without pausing."
+    },
+    { "id": "pitch.chromatic", "display": "A note outside the key", "dimension": "accidental", "detector": "chromatic", "copedWithBy": "accidentals", "taughtAt": ["3.3"] },
+    { "id": "range.beyond-position", "display": "One hand wider than a five-finger position", "dimension": "range", "detector": "beyondPosition", "copedWithBy": "position-shift", "taughtAt": ["2.5"] },
+    {
+      "id": "texture.hands-together",
+      "display": "Both hands at once: struck together, or the left hand moving under the right",
+      "dimension": "texture",
+      "detector": "handsTogether",
+      "copedWithBy": "hands-together",
+      "taughtAt": ["2.1", "holiday"],
+      "taughtAtNote": "2.1 on the core path. holiday, a Stage 2 rung whose path leaves the core at 1.5, teaches a carol hands together: the tune in the right hand over the left holding C, F and G."
+    },
     {
       "id": "texture.left-hand-pattern",
       "display": "A moving left-hand pattern",
       "dimension": "texture",
       "detector": "leftHandPattern",
       "copedWithBy": "hand-independence",
-      "taughtAt": "3.6",
+      "taughtAt": ["3.6"],
       "taughtAtNote": "3.6 teaches the broken-chord and Alberti accompaniments the level-5 and level-6 rows write."
     },
     {
@@ -76,8 +133,8 @@
       "dimension": "texture",
       "detector": "walkingBass",
       "copedWithBy": "hand-independence",
-      "taughtAt": "blues.5",
-      "taughtAtNote": "The first rung whose concepts name walking-bass."
+      "taughtAt": ["jazz.6", "blues.6", "jam.6"],
+      "taughtAtNote": "Three paths teach it: jazz.6 ('Comping, walking bass, and hearing the changes': four notes to the bar with a semitone approach to the next root, a walking line hands separately and then together under shells); blues.6 ('a line that walks', the walking-bass exercise with a right hand over the line; blues.5 introduces the line alone, left hand only, under its introduces list, F2); and jam.6 ('Walking bass, when there is no bass player'). latin no longer names it (its bass is the tumbao, F2). theory.9's path reaches none of the three."
     }
   ]
 }

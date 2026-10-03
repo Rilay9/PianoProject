@@ -32,9 +32,8 @@ throughout, in the key you started in.
 
 **Repertoire for this rung.** The piece is still your own chorus, written down —
 twelve bars, in two keys — and the rung is finished on its exercises. What is on
-it now is what to read while you write that. *Pinetop's Boogie Woogie* is the
-1928 original, the record every boogie bass since is a copy of, and it is the
-same file you met at Stage 6. *The Chevy Chase* is Eubie Blake in 1914, a
+it now is what to read while you write that. *Pinetop's Boogie Woogie* (1928)
+is the same file you met at Stage 6. *The Chevy Chase* is Eubie Blake in 1914, a
 left hand that strides rather than walks. *Black Bottom Stomp* is Jelly Roll
 Morton in 1926 and is the hardest page here: it changes key inside the form,
 which is the exact thing this rung is asking you to be able to do.

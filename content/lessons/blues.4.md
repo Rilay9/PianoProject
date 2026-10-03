@@ -20,9 +20,9 @@ sends you back to the top).
 | C7 | C7 | C7 | C7 | F7 | F7 | C7 | C7 | G7 | F7 | C7 | G7 |
 ```
 
-**All three chords are dominant sevenths**, including the I. In every other
-style that would be a chord demanding resolution; in the blues it is just the
-colour, and the tension never resolves, which is the point.
+**All three chords are dominant sevenths**, including the I. Here the seventh
+on the I is part of its colour rather than a pull towards another chord: listen
+to it as home.
 
 **Shuffle feel.** Written eighth notes are played long-short — the first note
 takes roughly two thirds of the beat, the second one third, as if they were the outer
@@ -41,9 +41,9 @@ cannot bend, you get the effect by grinding a blue note together with the key
 above it, or sliding off the flat onto the natural.
 
 It is the same key whether you call it F sharp or G flat, and you will see both.
-The app writes it as a sharp, because the flat spelling runs out: the flattened
-fifth of F is C flat, of B flat is F flat, of E flat is B double flat — and no
-edition prints those. A raised fourth works in every key.
+The app spells it as a raised fourth, because the flat spelling gets awkward:
+the flattened fifth of F is C flat, of B flat is F flat, of E flat is B double
+flat. A raised fourth can be written in every key, a few with a double sharp.
 
 **What to practise.** The generated twelve-bar shuffles in C, F and G; the shuffle exercise; then the same form with a simple right-hand
 riff on top.

@@ -1,0 +1,90 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-acd6e29192cd7c002/app
+
+ ✓ tests/unit/scoreMidRunSettings.test.ts > the click, reached for mid-piece > starts without throwing the run away 119ms
+ ✓ tests/unit/scoreMidRunSettings.test.ts > the click, reached for mid-piece > and stops the same way 61ms
+ ✓ tests/unit/scoreSheetRows.test.ts > the Duet row > gives back the value it switched off, not the default 120ms
+ ✓ tests/unit/scoreSheetRows.test.ts > the Duet row > still switches a never-set duet on as the other hand 59ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a mode in the hash > is the mode the screen opens in, over the learner’s default 118ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a mode in the hash > and without one the default still decides 71ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > the Score screen’s sheets go with it (G86) > leaving with ⋯ open takes the sheet, gives the page back, and parks its rows 119ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > the Score screen’s sheets go with it (G86) > and the same with the tempo sheet open 77ms
+ ✓ tests/unit/scoreSheetRows.test.ts > the Ladder row > goes off with the loop it was climbing 63ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > the Score screen’s sheets go with it (G86) > a sheet closed by Close leaves no closer behind; the one open at the time is the one closed 67ms
+ ✓ tests/unit/scoreMidRunSettings.test.ts > the click, reached for mid-piece > and is still what the next run is started with 61ms
+ ✓ tests/unit/scoreMidRunSettings.test.ts > the tempo slider, moved mid-run > re-times the run once the finger comes off, not on every step of the drag 65ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a mode in the hash > leaves the select live, so the learner can still change it 65ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a loop in the hash > opens with those printed bars already looping 60ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > what the screen writes > one viewing per visit, where the notation is drawn, with its source and the visit 179ms
+ ✓ tests/unit/scoreMidRunSettings.test.ts > coming back to a run the phone interrupted > names a control that is on the screen 63ms
+ ✓ tests/unit/scoreMidRunSettings.test.ts > the end of a Free play run > says the piece has ended, because nothing else on the screen does 59ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > the Score screen’s sheets go with it (G86) > Close and then leaving in the same moment throws nothing and closes nothing twice 74ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > on a paused run: the start is asked for in the tap, and the run carries on once it has answered 63ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > what the screen writes > Blind draws no notation, so it writes no viewing 92ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > what the screen writes > Hear it writes one demonstration and no hearing 73ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a loop in the hash > is absent when the hash does not ask for one 62ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a loop in the hash > is refused in a performance, which is one pass by definition 64ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > a start that never answers: ▶ is held and busy until the bound, then the run carries on 64ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > a start that fails still carries the run on 62ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a loop in the hash > loops the bars the hash names on a piece that opens with a pickup 64ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a loop in the hash > and still names them on a piece that does not 63ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > what the screen writes > Play it to me writes one hearing and no demonstration 72ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > with the sound running, or no Web Audio at all, ▶ acts at once and asks nothing 64ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > the pause never waits 62ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a loop in the hash > is dropped when the piece has no such bars 62ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the ladder in the hash > opens with the whole item looping and the Ladder switched on 63ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > a fresh start the same: asked in the tap, started once it has answered 61ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > Space’s start the same 61ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the ladder in the hash > brings the mode that has a clock to move with it 61ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the ladder in the hash > leaves both alone when the hash does not ask 64ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > ▶ during Hear it the same: the demonstration gives way once the start has answered 64ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > leaving in the wait cancels: nothing starts on a screen that has gone 60ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the ladder in the hash > fails closed in a mode the hash asked for that has no tempo to move 61ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the ladder in the hash > fails closed in a performance, which is one pass and never repeats 64ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the ladder in the hash > fails closed when the whole item is not a range the piece can loop 63ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the ladder in the hash > goes off with the loop, like one set by hand 65ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > what the screen writes > a bar held down writes a demonstration of that bar 516ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the ladder in the hash > is not carried by Blind, which rebuilds the screen from the hash 62ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the way back out > Back returns to the tour that opened it 62ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > heard, left, returned later, read: not first contact, and the history says so 187ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the way back out > so does the copy of Back the phone shows sideways 63ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the way back out > and so does Done on the summary sheet at the end of a run 65ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the way back out > goes to the tab it came from when no tour opened it 60ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the way back out > does not strand the learner on a tour id that is not a catalog id 63ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > viewed on an earlier visit and never played or heard: not first contact, and the sheet says seen 189ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rhythm run says so while it is running > says it once, at the start of the run, not only in the sheet 64ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rhythm run says so while it is running > and says nothing in a mode that has no rhythm run in it 63ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > viewed only on this visit: first contact, and the ladder sees it 124ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rhythm run says so while it is running > and nothing at all when the setting is off 62ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rhythm run says so while it is running > says it once, not at every restart the ladder makes 65ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > a reload is another visit: the viewing before it is an earlier one 189ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rhythm run says so while it is running > and is worth saying again once the row itself has been touched 63ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rung in the hash > Back returns to the rung that opened it, not to the tab 58ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rung in the hash > so does the copy of Back the phone shows sideways 64ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rung in the hash > and so does Done on the summary sheet at the end of a run 62ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rung in the hash > a track rung is a lesson id too, and is carried 62ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rung in the hash > the tour wins when both are in the hash 63ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > two tabs: a viewing another tab wrote before this one opened, or after it opened and before the run was stored, is another visit’s 313ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rung in the hash > does not strand the learner on a from that is not a lesson id 64ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rung in the hash > rides on into the chord chart, whose Back had the same fault 63ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > a notated piece, two tabs: a viewing another tab wrote after this one opened is read before the run is stored (G1a) 126ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rung in the hash > and opens the chart bare where no rung opened the run 63ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a rung in the hash > rides along with Blind, which rebuilds the screen from the hash 62ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > a run of the phrase on record under another row id: not first contact 189ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the controls that are routes keep the tour > Blind carries the mode, the loop and the way back 63ms
+ ✓ tests/unit/scoreTourRoute.test.ts > the controls that are routes keep the tour > Perform does too 62ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a sight-read opens in the mode docs/05 §8 says > opens in Tempo for a learner who has not changed the setting 61ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a sight-read opens in the mode docs/05 §8 says > opens in Tempo even where the learner has chosen Wait as their default 62ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > a notated piece: its first run is first contact, the second is not, and both pass 188ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a sight-read opens in the mode docs/05 §8 says > still lets an explicit ?mode= win, the way the tour needs it to 62ms
+ ✓ tests/unit/scoreTourRoute.test.ts > a sight-read opens in the mode docs/05 §8 says > leaves an ordinary piece on the default the learner chose 63ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > an excerpt of other bars played before leaves this excerpt a first contact 123ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > the piece played whole before: its excerpt is not a first contact 127ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > an import is its stored bytes: a duplicate under a new id is the same material, met and not first contact 252ms
+ ✓ tests/unit/firstContactOnTheScore.test.ts > a consumer of general contact reads firstContact alone (G1a) > over phrase runs, piece runs, a row G1’s app wrote and rows from before G1: the relation where it was written, unknown where it was not 377ms
+
+ Test Files  5 passed (5)
+      Tests  81 passed (81)
+   Start at  20:49:53
+   Duration  5.45s (tests 44%, environment 23%, transform 22%, import 10%)
+

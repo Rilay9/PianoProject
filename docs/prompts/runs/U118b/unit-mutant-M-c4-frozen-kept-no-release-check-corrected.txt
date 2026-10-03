@@ -1,0 +1,28 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/windowRendererStage.test.ts (34 tests | 1 failed | 33 skipped) 699ms
+   ❯ the renderer against a stage that changes after it is made (U74) (7)
+     × (c) a width change during a run releases the held size, takes a new one and keeps the step 697ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 33 skipped (34)
+   Start at  11:37:53
+   Duration  7.14s (environment 70%, transform 16%, tests 11%, import 2%, worker 1%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the renderer against a stage that changes after it is made (U74) > (c) a width change during a run releases the held size, takes a new one and keeps the step
+AssertionError: held on the new stage, against a run turned there from 300 x 480: size 1.2711 against 1.1368: expected 0.11805555555555584 to be less than 0.01
+ ❯ expectSamePicture tests/unit/windowRendererStage.test.ts:357:113
+    355| function expectSamePicture(a: Drawn, b: Drawn, said: string): void {
+    356|   expect(a.rows, said).toEqual(b.rows);
+    357|   expect(Math.abs(a.size - b.size) / b.size, `${said}: size ${a.size.t…
+       |                                                                                                                 ^
+    358| }
+    359|
+ ❯ tests/unit/windowRendererStage.test.ts:517:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

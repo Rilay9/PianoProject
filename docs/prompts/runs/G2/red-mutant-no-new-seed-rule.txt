@@ -1,0 +1,74 @@
+(cd app) npx vitest run tests/unit/transferPolicy.test.ts tests/unit/transferFactsOnTheAttempt.test.ts tests/unit/transferOffer.test.ts tests/unit/masteryLadder.test.ts   # mutant no-new-seed-rule in app/src/evidence/transferPolicy.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6d274c20b3e170c9/app
+
+ ❯ tests/unit/transferPolicy.test.ts (23 tests | 1 failed) 20ms
+   ❯ Part 26’s fourteen adversaries, each on the facts the attempt carries (14)
+     × 1. a new seed of one family is not transfer, even where the seed happened to measure another rhythm 9ms
+ ❯ tests/unit/masteryLadder.test.ts (13 tests | 1 failed) 61ms
+   ❯ transfer needs unfamiliar material; retained needs a later day (3)
+     × another phrase of the same row is not transfer, even measured different; a first reading of another row is, where its facts say so 10ms
+
+ Test Files  2 failed | 2 passed (4)
+      Tests  2 failed | 71 passed (73)
+   Start at  04:54:14
+   Duration  851ms (transform 63%, import 24%, tests 12%, worker 1%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/masteryLadder.test.ts > transfer needs unfamiliar material; retained needs a later day > another phrase of the same row is not transfer, even measured different; a first reading of another row is, where its facts say so
+AssertionError: a new seed of the row: expected 'transfer demonstrated' to be 'proficient' // Object.is equality
+
+Expected: "proficient"
+Received: "transfer demonstrated"
+
+ ❯ tests/unit/masteryLadder.test.ts:181:100
+    179|     expect(ladderState({ evidence: [...shown(), read(day(2), { seed: 9…
+    180|     const newSeed = withFacts(read(day(2), { seed: 99 }), { seed: 99, …
+    181|     expect(ladderState({ evidence: [...shown(), newSeed], today }).sta…
+       |                                                                                                    ^
+    182|     const other = transferRead(day(2));
+    183|     const reading = ladderState({ evidence: [...shown(), other], today…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/transferPolicy.test.ts > Part 26’s fourteen adversaries, each on the facts the attempt carries > 1. a new seed of one family is not transfer, even where the seed happened to measure another rhythm
+AssertionError: expected { verdict: 'demonstrated', …(4) } to match object { verdict: 'not-transfer', …(3) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "differs": [],
+-   "newDemands": [],
+-   "on": [],
+-   "verdict": "not-transfer",
++   "differs": [
++     "rhythm",
++     "texture",
++   ],
++   "newDemands": [
++     "rhythm.dotted-quarter",
++   ],
++   "on": [
++     "rhythm",
++     "texture",
++   ],
++   "verdict": "demonstrated",
+  }
+
+ ❯ tests/unit/transferPolicy.test.ts:121:21
+    119|     });
+    120|     const reading = transferReading(SUBDIVISION, ESTABLISHED, run);
+    121|     expect(reading).toMatchObject({ verdict: 'not-transfer', on: [], d…
+       |                     ^
+    122|     expect(reading.why).toMatch(/new seed/);
+    123|     // …and failing it counts against the skill: the material the skil…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+exit=1

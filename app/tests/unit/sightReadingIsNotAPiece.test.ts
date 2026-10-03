@@ -27,6 +27,7 @@ import { indexCatalog } from '../../src/curriculum/selectors';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 import type { ProgressRow } from '../../src/data/db';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
+import { measured } from './helpers/measured';
 
 const PHRASE: RunResult = {
   itemId: 'drill.reading.sight-reading-2-right',
@@ -112,8 +113,10 @@ describe('a reading row is not passed, mastered or put on the calendar', () => {
 });
 
 describe('“A piece you know” is said only of a piece the learner knows (L18, with S8)', () => {
+  // Revised (X1, L113): measured, as every bundled song is. An unmeasured song on a rung's list is refused as
+  // any automatic offer of it is (`oneGateBoundary.test.ts`), which is not what these cases are about.
   const song = (id: string): CatalogItem =>
-    ({ id, type: 'song', title: id, level: 1, tracks: ['core'], concepts: [], tags: [], file: `${id}.mxl` }) as unknown as CatalogItem;
+    ({ id, type: 'song', title: id, level: 1, tracks: ['core'], concepts: [], tags: [], file: `${id}.mxl`, ...measured([]) }) as unknown as CatalogItem;
   const items = [song('song.a'), song('song.b')];
   // Revised (C6): the songs sit on a rung, because nothing is offered from no rung any more (the
   // level windows are gone); the line is the rung's, and never "a piece you know".

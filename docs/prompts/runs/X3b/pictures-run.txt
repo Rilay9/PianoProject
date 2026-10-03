@@ -1,0 +1,8 @@
+npx playwright test --config playwright.x3b-4347.config.ts tests/e2e/x3b-pictures.spec.ts --workers=1 (in app)
+
+Running 1 test using 1 worker
+
+  ok 1 tests\e2e\x3b-pictures.spec.ts:50:1 › the tempo line after a first statement and after a second (2.1s)
+
+  1 passed (4.8s)
+exit=0

@@ -1,0 +1,8 @@
+wrote app\tests\fixtures\imports\stamped-by-the-converter.musicxml
+parts: Right hand, Left hand (2 as recorded)
+key: C major (estimated from the notes)
+time signature: 4/4
+grid: 1/4 quarter, chosen per bar; largest onset moved 0.000 quarters
+respelled 0 note(s) to the key
+checked: all 16 notes the reader found are in the score, every bar adds up
+exit 0

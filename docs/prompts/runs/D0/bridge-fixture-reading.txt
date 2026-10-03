@@ -1,0 +1,49 @@
+==================== exercise.interval-reading.c-position.right.01 | key C major | time 4/4
+   bridge: ['interval.step', 'interval.skip']
+   counts: {'interval.step': 2, 'interval.skip': 5}
+   RH 0:E4/2 2:F4/1 3:D4/1 4:F4/2 6:D4/2 8:C4/2 10:E4/2 12:E4/2 14:C4/2
+   LH 0:r/4 0:r/4 8:r/4 12:r/4
+==================== exercise.coordination.c.hold | key C major | time 4/4
+   bridge: ['clef.bass', 'interval.step', 'texture.hands-together']
+   counts: {'clef.bass': 3, 'interval.step': 8, 'texture.hands-together': 6}
+   RH 0:C4/1 1:D4/1 2:E4/1 3:F4/1 4:G4/1 5:F4/1 6:E4/1 7:D4/1 8:C4/4
+   LH 0:C3/4 4:C3/4 8:C3/4
+==================== exercise.rhythm.syncopated.4bar | key None | time 4/4
+   bridge: ['rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.syncopation']
+   counts: {'rhythm.eighths': 8, 'rhythm.shorter-than-quarter': 8, 'rhythm.syncopation': 12}
+   Rhythm 0:B4/0.5 0.5:B4/1 1.5:B4/1 2.5:B4/1 3.5:B4/0.5 4:B4/0.5 4.5:B4/1 5.5:B4/1 6.5:B4/1 7.5:B4/0.5 8:B4/0.5 8.5:B4/1 9.5:B4/1 10.5:B4/1 11.5:B4/0.5 12:B4/0.5 12.5:B4/1 13.5:B4/1 14.5:B4/1 15.5:B4/0.5
+==================== exercise.syncopation.tied-across-bar | key None | time 4/4
+   bridge: ['clef.bass', 'pitch.ledger', 'interval.step', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.ties', 'range.beyond-position', 'texture.hands-together']
+   counts: {'clef.bass': 12, 'pitch.ledger': 1, 'interval.step': 12, 'rhythm.eighths': 2, 'rhythm.shorter-than-quarter': 2, 'rhythm.ties': 1, 'range.beyond-position': 8, 'texture.hands-together': 15}
+   RH 0:C4/1 1:D4/1 2:E4/1 3:F4/1~start 3:F4/0.5~stop 4.5:G4/0.5 5:A4/1 6:B4/2 8:C5/1 9:D5/1 10:E5/1 11:F5/1 12:G5/1 13:A5/3
+   LH 0:C3+E3+G3/4 4:C3+E3+G3/4 8:C3+E3+G3/4 12:C3+E3+G3/4
+==================== exercise.tumbao.c | key c minor | time 4/4
+   bridge: ['clef.bass', 'pitch.ledger', 'interval.step', 'interval.leap', 'rhythm.dotted-quarter', 'rhythm.ties', 'rhythm.syncopation', 'key.signature', 'range.beyond-position']
+   counts: {'clef.bass': 16, 'pitch.ledger': 4, 'interval.step': 4, 'interval.leap': 11, 'rhythm.dotted-quarter': 7, 'rhythm.ties': 7, 'rhythm.syncopation': 8, 'range.beyond-position': 1}
+   RH 0:r/4 0:r/4 8:r/4 12:r/4 16:r/4 20:r/4 24:r/4 28:r/4
+   LH 0:r/1.5 1.5:G2/1 2.5:r/0.5 3:F2/1~start 3:F2/1.5~stop 5.5:C3/1 6.5:r/0.5 7:C2/1~start 7:C2/1.5~stop 9.5:G2/1 10.5:r/0.5 11:F2/1~start 11:F2/1.5~stop 13.5:C3/1 14.5:r/0.5 15:C2/1~start 15:C2/1.5~stop 17.5:G2/1 18.5:r/0.5 19:F2/1~start 19:F2/1.5~stop 21.5:C3/1 22.5:r/0.5 23:C2/1~start 23:C2/1.5~stop 25.5:G2/1 26.5:r/0.5 27:F2/1~start 27:F2/1.5~stop 29.5:C3/1 30.5:r/0.5 31:C2/1
+==================== exercise.boogie.c.root-fifth | key C major | time 4/4
+   bridge: ['clef.bass', 'pitch.ledger', 'interval.leap', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'pitch.chromatic', 'range.beyond-position', 'texture.hands-together', 'texture.left-hand-pattern']
+   counts: {'clef.bass': 32, 'pitch.ledger': 16, 'interval.leap': 31, 'rhythm.eighths': 32, 'rhythm.shorter-than-quarter': 32, 'pitch.chromatic': 4, 'range.beyond-position': 1, 'texture.hands-together': 44, 'texture.left-hand-pattern': 32}
+   RH 0:C4+E4+B-4/4 4:C4+E4+B-4/4 8:C4+E4+B-4/4 12:C4+E4+B-4/4
+   LH 0:C2/0.5 0.5:G2/0.5 1:C2/0.5 1.5:G2/0.5 2:C2/0.5 2.5:G2/0.5 3:C2/0.5 3.5:G2/0.5 4:C2/0.5 4.5:G2/0.5 5:C2/0.5 5.5:G2/0.5 6:C2/0.5 6.5:G2/0.5 7:C2/0.5 7.5:G2/0.5 8:C2/0.5 8.5:G2/0.5 9:C2/0.5 9.5:G2/0.5 10:C2/0.5 10.5:G2/0.5 11:C2/0.5 11.5:G2/0.5 12:C2/0.5 12.5:G2/0.5 13:C2/0.5 13.5:G2/0.5 14:C2/0.5 14.5:G2/0.5 15:C2/0.5 15.5:G2/0.5
+==================== exercise.open-voicing.c.quartal | key c minor | time 4/4
+   bridge: ['clef.bass', 'pitch.ledger', 'interval.step', 'interval.leap', 'key.signature', 'range.beyond-position', 'texture.hands-together']
+   counts: {'clef.bass': 4, 'pitch.ledger': 4, 'interval.step': 2, 'interval.leap': 4, 'key.signature': 8, 'range.beyond-position': 3, 'texture.hands-together': 16}
+   RH 0:F4+B-4+E-5/4 4:B-4+E-5+A-5/4 8:C5+F5+B-5/4 12:F4+B-4+E-5/4
+   LH 0:C2/4 4:F2/4 8:G2/4 12:C2/4
+==================== exercise.five-finger.b-major.right | key B major | time 4/4
+   bridge: ['interval.step', 'key.signature']
+   counts: {'interval.step': 8, 'key.signature': 5}
+   RH 0:B4/1 1:C#5/1 2:D#5/1 3:E5/1 4:F#5/1 5:E5/1 6:D#5/1 7:C#5/1 8:B4/1 9:r/3
+   LH 0:r/4 0:r/4 8:r/4
+==================== exercise.clave.son-3-2.pulse | key None | time 4/4
+   bridge: ['clef.bass', 'pitch.ledger', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.syncopation', 'texture.hands-together', 'texture.left-hand-pattern', 'texture.walking-bass']
+   counts: {'clef.bass': 32, 'pitch.ledger': 32, 'rhythm.eighths': 20, 'rhythm.shorter-than-quarter': 20, 'rhythm.syncopation': 4, 'texture.hands-together': 32, 'texture.left-hand-pattern': 32, 'texture.walking-bass': 32}
+   RH 0:B4/0.5 0.5:r/1 1.5:B4/0.5 2:r/1 3:B4/0.5 3.5:r/0.5 4:r/1 5:B4/0.5 5.5:r/0.5 6:B4/0.5 6.5:r/1.5 8:B4/0.5 8.5:r/1 9.5:B4/0.5 10:r/1 11:B4/0.5 11.5:r/0.5 12:r/1 13:B4/0.5 13.5:r/0.5 14:B4/0.5 14.5:r/1.5 16:B4/0.5 16.5:r/1 17.5:B4/0.5 18:r/1 19:B4/0.5 19.5:r/0.5 20:r/1 21:B4/0.5 21.5:r/0.5 22:B4/0.5 22.5:r/1.5 24:B4/0.5 24.5:r/1 25.5:B4/0.5 26:r/1 27:B4/0.5 27.5:r/0.5 28:r/1 29:B4/0.5 29.5:r/0.5 30:B4/0.5 30.5:r/1.5
+   LH 0:B4/1 1:B4/1 2:B4/1 3:B4/1 4:B4/1 5:B4/1 6:B4/1 7:B4/1 8:B4/1 9:B4/1 10:B4/1 11:B4/1 12:B4/1 13:B4/1 14:B4/1 15:B4/1 16:B4/1 17:B4/1 18:B4/1 19:B4/1 20:B4/1 21:B4/1 22:B4/1 23:B4/1 24:B4/1 25:B4/1 26:B4/1 27:B4/1 28:B4/1 29:B4/1 30:B4/1 31:B4/1
+==================== exercise.stride.c | key C major | time 4/4
+   bridge: ['clef.bass', 'pitch.ledger', 'interval.leap', 'range.beyond-position', 'texture.hands-together', 'texture.left-hand-pattern', 'texture.walking-bass']
+   counts: {'clef.bass': 24, 'pitch.ledger': 4, 'interval.leap': 10, 'range.beyond-position': 7, 'texture.hands-together': 37, 'texture.left-hand-pattern': 24, 'texture.walking-bass': 16}
+   RH 0:C4+E4+G4/4 4:G4+B4+D5+F5/4 8:C4+E4+G4/4 12:F4+A4+C5/4
+   LH 0:C2/1 1:E3+G3/1 2:E3/1 3:E3+G3/1 4:G2/1 5:B3+F4/1 6:B3/1 7:B3+F4/1 8:C2/1 9:E3+G3/1 10:E3/1 11:E3+G3/1 12:F2/1 13:A3+C4/1 14:A3/1 15:A3+C4/1

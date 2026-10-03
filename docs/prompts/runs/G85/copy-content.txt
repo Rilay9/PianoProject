@@ -1,0 +1,33 @@
+robocopy <main checkout>\app\public\content app\public\content /MIR 
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, September 29, 2026 4:21:10 PM
+   Source : <main checkout>\app\public\content\
+     Dest : <worktree>\app\public\content\
+
+    Files : *.*
+	    
+  Options : *.* /NDL /NFL /S /E /DCOPY:DA /COPY:DAT /PURGE /MIR /NP /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        11         1        10         0         0         0
+   Files :      2157      2157         0         0         0         0
+   Bytes :   23.68 m   23.68 m         0         0         0         0
+   Times :   0:00:04   0:00:04                       0:00:00   0:00:00
+
+
+   Speed :           5,495,967 Bytes/sec.
+   Speed :             314.482 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 4:21:14 PM
+
+robocopy exit 1 (0-7 is success) 
+catalog items 2092
+exit 0 

@@ -1,0 +1,17 @@
+
+--- content build ---
+  ok    fetch            fetched 9 source(s), skipped 6
+  ok    import [MT]      imported 0 score(s), excluded 4, normalised 0, 64 not fetched (placeheld) (0 cached, 0 converted)
+  ok    import [KERN]    imported 116 score(s), 47 placeholder(s), excluded 73 (116 cached, 0 converted)
+  ok    import [PDMX]    imported 367 score(s), 175 placeholder(s)
+  ok    import [MUTO]    imported 1 score(s), 0 placeholder(s) (1 cached, 0 converted)
+  ok    generate [GEN]   wrote 1200 items to C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\build\q82-mtlib-strict-after\content\scores\generated; catalog C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\build\catalog.generated.json
+  ok    author [AUTH]    authored 39 item(s) (33 cached, 0 converted)
+  ok    merge catalog    2090 items, 22 with named sections, 3 excerpt(s) cut (2 not: the parent is not bundled here), 100 given a track by their rung, 1726 read from the score, 387 keySig corrected, demands measured on 1726 (293 unmeasured, 71 made at runtime)
+  ok    score checks     score-checks gate: 25 high row(s), 25 allowed by content\score-checks.allow.json
+  ok    curriculum       11 file(s), 10 stage(s), 105 finder(s), 285 concept(s)
+  ok    reports          461 checkable claims on 1017 options: 266 not established, 8 kept by no option; 786 works, 815 arrangements (docs/prompts left alone)
+  ok    lessons          109 file(s)
+  ok    tips             20 kind(s), 7 variant(s)
+  ok    validate         content validation OK: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\build\q82-mtlib-strict-after\content (2090 catalog items)
+  340.1s → build\q82-mtlib-strict-after\content

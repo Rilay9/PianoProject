@@ -1,0 +1,34 @@
+test_heard_is_held_to_the_record (tests.test_family_contracts.TestTheRowsAreWellFormed.test_heard_is_held_to_the_record)
+D2 item 4 (revised from D0's "every music family is marked unheard", whose assumption was ... FAIL
+
+======================================================================
+FAIL: test_heard_is_held_to_the_record (tests.test_family_contracts.TestTheRowsAreWellFormed.test_heard_is_held_to_the_record)
+D2 item 4 (revised from D0's "every music family is marked unheard", whose assumption was
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a7d183981b546b17f\tools\content\tests\test_family_contracts.py", line 158, in test_heard_is_held_to_the_record
+    self.assertEqual(review.heard_faults(FC.contracts(), events, current, family_of), [])
+AssertionError: Lists differ: ['tumbao is marked heard with no heard decision on a current item of it'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'tumbao is marked heard with no heard decision on a current item of it'
+
+- ['tumbao is marked heard with no heard decision on a current item of it']
++ []
+
+----------------------------------------------------------------------
+Ran 1 test in 121.045s
+
+FAILED (failures=1)
+== tumbao marked heard, no heard decision in the record: RED
+
+test_heard_is_held_to_the_record (tests.test_family_contracts.TestTheRowsAreWellFormed.test_heard_is_held_to_the_record)
+D2 item 4 (revised from D0's "every music family is marked unheard", whose assumption was ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.006s
+
+OK
+== the table as committed: green
+

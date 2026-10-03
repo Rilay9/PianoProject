@@ -75,3 +75,7 @@ learner's expectation are three things that have drifted apart one fix at a time
 The table's size and the counts of undefined, surprising, inconsistent and lossy cells;
 the fixes with their red lines; the design choices listed for the owner; exit codes; what
 is unverified.
+
+## Record
+
+lane: T31 · closes: — · entry: — · role: history

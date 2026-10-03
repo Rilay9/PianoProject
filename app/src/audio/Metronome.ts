@@ -9,6 +9,7 @@
 // may fire late; the clicks still land where they should.
 
 import { BeatScheduler, type MetronomeBeat } from './BeatScheduler';
+import { countAudioStart } from './audioStarts';
 
 export type MetronomeSound = 'wood' | 'beep' | 'high';
 
@@ -218,6 +219,7 @@ export class Metronome {
   }
 
   private click(whenSec: number, accent: boolean): void {
+    countAudioStart('metronome');
     if (this.sound === 'wood') return this.woodClick(whenSec, accent);
     if (this.sound === 'high') return this.highClick(whenSec, accent);
     return this.beepClick(whenSec, accent);

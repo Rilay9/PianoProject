@@ -1,0 +1,18 @@
+# checks for 10 path(s): 10 matched, 0 unmatched
+# app/src/data/backup.ts: app/src/**, app/src/data/**
+# app/src/data/settingsStore.ts: app/src/**, app/src/data/**
+# app/src/ui/screens/ProgressScreen.ts: app/src/**, app/src/ui/screens/ProgressScreen.ts
+# app/tests/e2e/progress.backup-time.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/backupCompletion.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/progressBackupTime.test.ts: app/tests/unit/*.test.ts
+# docs/04-ui-spec.md: docs/04-ui-spec.md, docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/runs/SG05/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/SG05/check-request.md: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/progress.backup-time.spec.ts tests/e2e/progress.hierarchy.spec.ts tests/e2e/progress.spec.ts tests/e2e/projects.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4

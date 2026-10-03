@@ -1,0 +1,11 @@
+npx vitest run tests/unit/importSheet.test.ts (in app)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ac2ac291c6ad0a550/app
+
+
+ Test Files  1 passed (1)
+      Tests  28 passed (28)
+   Start at  05:11:55
+   Duration  2.68s (tests 52%, environment 25%, transform 16%, import 7%)
+
+exit=0

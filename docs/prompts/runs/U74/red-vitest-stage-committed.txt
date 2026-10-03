@@ -1,0 +1,96 @@
+﻿
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/windowRendererStage.test.ts (12 tests | 3 failed) 1092ms
+   ❯ the renderer against a stage that changes after it is made (U74) (7)
+     × (d) the first window drawn is the window the fit settles on, not one priced before the piece was measured 49ms
+   ❯ the measurement taken before the first window is priced (U74) (5)
+     × the engraving search re-engraves the window it is sizing, never a default of another shape 17ms
+     × a fit finished in the task that drew the window is not said settled until a frame has passed, and a stage change in that frame takes it back 2ms
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the renderer against a stage that changes after it is made (U74) > (d) 
+the first window drawn is the window the fit settles on, not one priced before the piece was measured
+AssertionError: first draw against the settled one: expected [ '0-1' ] to deeply equal [ '0-0', '1-1' ]
+
+- Expected
++ Received
+
+  [
+-   "0-0",
+-   "1-1",
++   "0-1",
+  ]
+
+ ❯ expectSamePicture tests/unit/windowRendererStage.test.ts:350:24
+    348| /** Two drawn states are the same picture: the same rows, and sizes wi…
+    349| function expectSamePicture(a: Drawn, b: Drawn, said: string): void {
+    350|   expect(a.rows, said).toEqual(b.rows);
+       |                        ^
+    351|   expect(Math.abs(a.size - b.size) / b.size, `${said}: size ${a.size.t…
+    352| }
+ ❯ tests/unit/windowRendererStage.test.ts:363:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the measurement taken before the first window is priced (U74) > the 
+engraving search re-engraves the window it is sizing, never a default of another shape
+AssertionError: the window drawn first was 0-1: expected [ '0-0', '0-1', '1-1' ] to deeply equal [ '0-1' ]
+
+- Expected
++ Received
+
+  [
++   "0-0",
+    "0-1",
++   "1-1",
+  ]
+
+ ❯ tests/unit/windowRendererStage.test.ts:555:84
+    553|     FakeOsmdView.onRender = null;
+    554|     expect(renderer.zoom, 'the search never moved the zoom, so this pr…
+    555|     expect([...engraved].sort(), `the window drawn first was ${first.j…
+       |                                                                                    ^
+    556|     renderer.dispose();
+    557|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the measurement taken before the first window is priced (U74) > a fit 
+finished in the task that drew the window is not said settled until a frame has passed, and a stage change in that 
+frame takes it back
+AssertionError: the window this case is about: expected [ '0-1' ] to deeply equal [ '0-0', '1-1' ]
+
+- Expected
++ Received
+
+  [
+-   "0-0",
+-   "1-1",
++   "0-1",
+  ]
+
+ ❯ tests/unit/windowRendererStage.test.ts:583:74
+    581|     flushFrames();
+    582|     await tick();
+    583|     expect(drawn(stage, renderer).rows, 'the window this case is about…
+       |                                                                          ^
+    584|     expect(stage.el.dataset.settled, 'a frame passed with nothing movi…
+    585|     // The screen's bar measures itself in a later frame and the stage…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 9 passed (12)
+   Start at  01:19:47
+   Duration  2.16s (tests 53%, environment 33%, transform 11%, import 2%)
+
+vitest exit 1

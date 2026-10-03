@@ -1,0 +1,35 @@
+command: npx vitest run --reporter=dot (the final tree; the full log was 950 KB of jsdom canvas notices, trimmed to its failure list and summary)
+ FAIL  tests/unit/evidenceVersion.test.ts > the record call stamps the evidence with the evidence’s own version > a recorded sight-read: the row carries the evidence and its own stamp, beside the observation’s
+ FAIL  tests/unit/expectedNote.test.ts > the spelling comes from the notation (T41) > every black key in every fixture carries its written spelling
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > heard, left, returned later, read: not first contact, and the history says so
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > viewed on an earlier visit and never played or heard: not first contact, and the sheet says seen
+ FAIL  tests/unit/folderScreenAtScale.test.ts > the letter rail over a folder of thousands > marks a letter empty once a search has filtered it away
+ FAIL  tests/unit/importSheet.test.ts > the learner states the tempo (X3a; E48’s stateImportTempo) > stated twice without closing the sheet: the line, the stored score, the measurement, the fact and the tempo the player reads carry the se
+ FAIL  tests/unit/legacyStorage.test.ts > a storage snapshot from before this week, booted by this week’s code > keeps the level override and the shelf piece the old build wrote
+ FAIL  tests/unit/legacyStorage.test.ts > a storage snapshot from before this week, booted by this week’s code > the screens that read these rows > Today draws its card and says which rung it is working on
+ FAIL  tests/unit/legacyStorage.test.ts > a storage snapshot from before this week, booted by this week’s code > the screens that read these rows > Skills draws the old rows as exposures: introduced where the app measures the skill, not j
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+ FAIL  tests/unit/libraryImportWords.test.ts > an import’s row says its state in words > on the row itself, for the score just imported: the source on the detail line, the state under it
+ FAIL  tests/unit/libraryImportWords.test.ts > the UI opens the import sheet from the row addImport returned > the picker’s import of a MIDI file opens it, the store having opened nothing
+ FAIL  tests/unit/libraryImportWords.test.ts > the UI opens the import sheet from the row addImport returned > a score whose staves and signature are the file’s files quietly; its row’s Assign opens the same sheet
+ FAIL  tests/unit/materialOnTheRecord.test.ts > every built row carries the build’s material identity (D4 item 1) > a generated row’s is the app’s own reading of its generator; a notated row’s is its built file’s sha256; a runtime
+ FAIL  tests/unit/midiParity.test.ts > the port agrees with the Python converter > has a reference to compare against
+ FAIL  tests/unit/oneSkillState.test.ts > the store’s writers are gone, not bypassed > only the retired rows’ migration writes the skills store
+ FAIL  tests/unit/sessionProtocol.test.ts > every guided slot the composition makes has a screen with an honest finish > every rung, every length: each slot with an item opens as a Score-screen run or a drill; the free slot has none
+ FAIL  tests/unit/skillsCountFirst.test.ts > a Skills row’s detail line leads with the count > every concept row reads "N to practise · Stage … · track…", and N is the number of items under it
+ FAIL  tests/unit/taughtByAncestry.test.ts > the shipped curriculum > the build reads the same ancestry: the rung-claims report’s "untaught here" and the gate read one thing
+ FAIL  tests/unit/tempoSoundAgainstMark.test.ts > the built MuseTrainer and kern scores > reads every MuseTrainer and kern row that has a built file, Maple Leaf’s among them
+ FAIL  tests/unit/unmeasuredConceptsSaySo.test.ts > every concept the app cannot measure says so, with the lesson that teaches it > the Skills screen shows every concept: the measurable ones on the ladder, the rest "not judged by the app" a
+ FAIL  tests/unit/unmeasuredConceptsSaySo.test.ts > every concept the app cannot measure says so, with the lesson that teaches it > the learner’s word about a lesson is shown apart, and is never a state
+
+     10 Error: Test timed out in 5000ms.
+ Test Files  16 failed | 306 passed (322)
+      Tests  23 failed | 7381 passed | 1 skipped | 1 todo (7406)
+   Start at  11:04:40
+   Duration  432.60s (tests 61%, environment 30%, import 6%, transform 2%)
+
+    Isolate  322 workers spawned · ~6.13s startup each (spawn + environment, per file)
+             at least ~97.80s faster with isolate: false — reuses workers across files instead of one per file
+
+exit=1

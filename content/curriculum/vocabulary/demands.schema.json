@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "pianopath/vocabulary/demands.schema.json",
   "title": "Vocabulary v0: demands",
-  "description": "The material demands (C2). The shape only: validate.py checks every copedWithBy is a skill and every taughtAt a rung; app/tests/unit/vocabulary.test.ts checks every detector is a function in app/src/demands/detect.ts.",
+  "description": "The material demands (C2). The shape only: validate.py checks every copedWithBy is a skill, every rung a taughtAt lists is a rung, one per path, whose concepts name the demand (E0b); app/tests/unit/vocabulary.test.ts checks every detector is a function in app/src/demands/detect.ts.",
   "type": "object",
   "required": ["demands"],
   "additionalProperties": false,
@@ -23,10 +23,30 @@
           },
           "detector": { "type": "string", "pattern": "^[a-z][A-Za-z]+$" },
           "copedWithBy": { "type": "string" },
-          "taughtAt": { "type": ["string", "null"] },
-          "taughtAtNote": { "type": "string", "minLength": 10 }
+          "taughtAt": {
+            "description": "Every rung that teaches the demand, one per path (E0b): no listed rung is on another's path. [] where no rung does, with taughtAtNote saying why. It was one rung or null, the first rung in the curriculum file whose concepts named the demand.",
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "taughtAtNote": { "type": "string", "minLength": 10 },
+          "fixedPositions": {
+            "description": "L120b: the fixed five-finger positions whose note reading copes with the demand where a lesson on the rung's path, or on a rung the learner has reached, names the position's concept in its own concepts (interval.skip and, since L120d, interval.leap, the same two positions on both: a skip inside C position is read by note name before 1.5 teaches reading by interval, a leap inside it before 2.1 does). Each is the concept, the hand (R or L, the bridge's hands) and the position's lowest and highest MIDI. Read by the coping question only (eligibilityCore.uncoped, claims.untaught_on).",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["concept", "hand", "low", "high"],
+              "additionalProperties": false,
+              "properties": {
+                "concept": { "type": "string", "minLength": 1 },
+                "hand": { "enum": ["R", "L"] },
+                "low": { "type": "integer", "minimum": 0, "maximum": 127 },
+                "high": { "type": "integer", "minimum": 0, "maximum": 127 }
+              }
+            }
+          }
         },
-        "if": { "properties": { "taughtAt": { "const": null } } },
+        "if": { "properties": { "taughtAt": { "type": "array", "maxItems": 0 } }, "required": ["taughtAt"] },
         "then": { "required": ["taughtAtNote"] }
       }
     }

@@ -1,0 +1,14 @@
+# checks for 6 path(s): 6 matched, 0 unmatched
+# tools/content/validate.py: tools/content/*.py
+# tools/content/tests/test_validate_ladder.py: tools/content/tests/test_*.py
+# docs/prompts/runs/Q80/ENTRY.md: docs/**
+# docs/prompts/runs/Q80/scripts-placeholder-reasons.py: docs/**
+# docs/prompts/runs/Q80/scripts-run-build.ps1: docs/**
+# docs/prompts/runs/Q80/red-test_validate_ladder.txt: docs/**
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app
+exit 0

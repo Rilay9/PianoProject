@@ -1,0 +1,22 @@
+U32a: the JS heap once each cell has settled, after two forced collections (CDP HeapProfiler.collectGarbage, Runtime.getHeapUsage), unthrottled, one worker, this machine; base 827289d0 and final.
+
+nocturne_342x740_4
+   base   open 1: 90.7 MB, sheets {"made":4,"loaded":4,"pending":0}, slots 3, 4 bars on 2 rows
+   base   open 2: 90.7 MB, sheets {"made":4,"loaded":4,"pending":0}, slots 3, 4 bars on 2 rows
+   final  open 1: 77.4 MB, sheets {"made":3,"loaded":3,"pending":0}, slots 3, 4 bars on 2 rows
+   final  open 2: 77 MB, sheets {"made":3,"loaded":3,"pending":0}, slots 3, 4 bars on 2 rows
+nocturne_342x740_8
+   base   open 1: 92.9 MB, sheets {"made":4,"loaded":4,"pending":0}, slots 3, 6 bars on 3 rows
+   base   open 2: 92.9 MB, sheets {"made":4,"loaded":4,"pending":0}, slots 3, 6 bars on 3 rows
+   final  open 1: 77.2 MB, sheets {"made":3,"loaded":3,"pending":0}, slots 3, 6 bars on 3 rows
+   final  open 2: 77.2 MB, sheets {"made":3,"loaded":3,"pending":0}, slots 3, 6 bars on 3 rows
+scherzo_342x740_4
+   base   open 1: 217.5 MB, sheets {"made":4,"loaded":4,"pending":0}, slots 2, 4 bars on 2 rows
+   base   open 2: 217.5 MB, sheets {"made":4,"loaded":4,"pending":0}, slots 2, 4 bars on 2 rows
+   final  open 1: 122.9 MB, sheets {"made":2,"loaded":2,"pending":0}, slots 2, 4 bars on 2 rows
+   final  open 2: 123.7 MB, sheets {"made":2,"loaded":2,"pending":0}, slots 2, 4 bars on 2 rows
+scherzo_390x844_2
+   base   open 1: 210.2 MB, sheets {"made":4,"loaded":4,"pending":0}, slots 2, 2 bars on 2 rows
+   base   open 2: 210.1 MB, sheets {"made":4,"loaded":4,"pending":0}, slots 2, 2 bars on 2 rows
+   final  open 1: 122.9 MB, sheets {"made":2,"loaded":2,"pending":0}, slots 2, 2 bars on 2 rows
+   final  open 2: 123 MB, sheets {"made":2,"loaded":2,"pending":0}, slots 2, 2 bars on 2 rows

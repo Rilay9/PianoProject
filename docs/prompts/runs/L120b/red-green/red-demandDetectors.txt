@@ -1,0 +1,90 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a0a8cdf3dae958f4a/app
+
+ ❯ tests/unit/demandDetectors.test.ts (85 tests | 4 failed) 20ms
+   ❯ metre.compound — beats of three eighths (5)
+     × M1: a phrase all in 3/8 is simple triple — not compound, located nowhere 6ms
+     × M3: 3/8 with one 6/8 bar is compound, located at that bar’s notes alone 2ms
+   ❯ 3/8 read as three eighth-note beats by every detector that reads a beat (L120b) (4)
+     × M4: in 3/8 a quarter entering on the second eighth is on a beat — no syncopation there 0ms
+     × M5: in 3/8 a written dotted quarter is a dotted quarter 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/demandDetectors.test.ts > metre.compound — beats of three eighths > M1: a phrase all in 3/8 is simple triple — not compound, located nowhere
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/demandDetectors.test.ts:203:27
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/demandDetectors.test.ts > metre.compound — beats of three eighths > M3: 3/8 with one 6/8 bar is compound, located at that bar’s notes alone
+AssertionError: expected [ +0, +0, 1, 2, 2 ] to deeply equal [ 2, 2 ]
+
+- Expected
++ Received
+
+  [
++   0,
++   0,
++   1,
+    2,
+    2,
+  ]
+
+ ❯ tests/unit/demandDetectors.test.ts:227:44
+    225|     const found = detect(mixed, 'compoundMetre');
+    226|     expect(found.present).toBe(true);
+    227|     expect(found.at.map((a) => a.measure)).toEqual([2, 2]);
+       |                                            ^
+    228|   });
+    229| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/demandDetectors.test.ts > 3/8 read as three eighth-note beats by every detector that reads a beat (L120b) > M4: in 3/8 a quarter entering on the second eighth is on a beat — no syncopation there
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/demandDetectors.test.ts:233:151
+    231| describe('3/8 read as three eighth-note beats by every detector that r…
+    232|   it('M4: in 3/8 a quarter entering on the second eighth is on a beat …
+    233|     expect(present('syncopation', [[{ at: 0, dur: 0.5, pitch: 'C4' }, …
+       |                                                                                                                                                       ^
+    234|   });
+    235|   it('M4 (guard): in 3/8 a quarter entering a sixteenth after a beat i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/demandDetectors.test.ts > 3/8 read as three eighth-note beats by every detector that reads a beat (L120b) > M5: in 3/8 a written dotted quarter is a dotted quarter
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/demandDetectors.test.ts:242:27
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 81 passed (85)
+   Start at  19:24:15
+   Duration  227ms (transform 63%, tests 17%, import 17%, worker 3%)
+

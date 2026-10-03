@@ -1,0 +1,30 @@
+
+Running 24 tests using 2 workers
+
+  ok  2 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t90 stack moon (24.5s)
+  ok  1 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t90 stack hcb (43.4s)
+  ok  3 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t90 wider hcb (42.4s)
+  ok  4 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t90 wider moon (23.7s)
+  ok  6 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t100 stack moon (23.4s)
+  ok  5 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t100 stack hcb (42.0s)
+  ok  7 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t100 wider hcb (42.0s)
+  ok  8 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t100 wider moon (25.8s)
+  ok 10 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t115 stack moon (27.3s)
+  ok  9 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t115 stack hcb (42.9s)
+  ok 12 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t115 wider moon (25.7s)
+  ok 11 build\u122b\probe\states.spec.ts:1079:9 › f c6 568x320 t115 wider hcb (42.4s)
+  ok 14 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t90 stack moon (26.8s)
+  ok 13 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t90 stack hcb (43.1s)
+  ok 16 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t90 wider moon (25.2s)
+  ok 15 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t90 wider hcb (42.6s)
+  ok 18 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t100 stack moon (25.9s)
+  ok 17 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t100 stack hcb (42.8s)
+  ok 20 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t100 wider moon (25.5s)
+  ok 19 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t100 wider hcb (42.4s)
+  ok 22 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t115 stack moon (26.1s)
+  ok 21 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t115 stack hcb (42.5s)
+  ok 24 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t115 wider moon (27.1s)
+  ok 23 build\u122b\probe\states.spec.ts:1079:9 › f c6 780x360 t115 wider hcb (42.6s)
+
+  24 passed (6.9m)
+exit 0

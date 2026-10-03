@@ -1,0 +1,2 @@
+tar app/public/content from the main checkout exit=0
+catalogue items: 2092

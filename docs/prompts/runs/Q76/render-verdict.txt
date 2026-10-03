@@ -1,0 +1,8 @@
+{"id": "song.folk.cielito-lindo.simple", "ok": true, "cached": false, "error": null, "measures": 32, "steps": 74, "modelSteps": null, "cursorSteps": 74, "durationSec": 51.4, "tempoBpm": 112, "hands": "both", "consoleErrors": []}
+{"id": "song.ragtime.joplin-pine-apple-rag.mutopia", "ok": true, "cached": false, "error": null, "measures": 148, "steps": 1004, "modelSteps": null, "cursorSteps": 1004, "durationSec": 177.3, "tempoBpm": 100, "hands": "both", "consoleErrors": []}
+parity mismatches: []
+pace outside 0.5-12 s per bar: []
+hands disagree: []
+implausible durations: []
+console: []
+exit=0

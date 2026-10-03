@@ -26,8 +26,8 @@ help is worth trying, though tiredness can have other causes too.
 staff and the notation matches it exactly. "As fast as you can" is not a target
 and cannot be practised evenly; four notes to the beat can. Notice where it
 begins and ends: on the note *above* the main one, and on the main note last.
-That is the Classical convention rather than a house rule, and having it in the
-fingers saves working it out over a sonatina later.
+That is one common way to play a trill in Classical-period music, not the only
+one, and having it in the fingers saves working it out over a sonatina later.
 
 **Voicing** is the skill this whole track exists to reach — a chord under one
 hand where the top note is the melody and the rest is accompaniment, and the

@@ -42,3 +42,9 @@ If a rung's requirement cannot be stated over evidence the app can measure, the 
 ## Report
 
 Judgement first: what a learner on rung 2.2 with the owner's real history now sees on Plan and the lesson page, and why; the sixth verification answered with the tests. Then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes from unpiped runs; unverified beside what passes.
+
+## Record
+
+lane: C5 · closes: — · entry: 79
+index: One path from evidence to rung state: requirements as predicates, `rungState`, a run counts toward the rung it was judged by, sight-reading without piece semantics, the recompute job, the other two learners; the old pass-and-count machinery retired | build, browser | done 2026-09-26 (Entry 79); closed by the reviewer |
+state: closed: closed by the reviewer (the index row)

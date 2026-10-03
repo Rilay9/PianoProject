@@ -1,0 +1,25 @@
+F.
+======================================================================
+FAIL: test_a_lowest_difficulty_ranking_is_red (tools.content.tests.test_excerpt_proposer.NothingRanksByLowestDifficulty.test_a_lowest_difficulty_ranking_is_red)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_excerpt_proposer.py", line 361, in test_a_lowest_difficulty_ranking_is_red
+    self.assertEqual((ranked[0].parent, ranked[0].low, ranked[0].high), ("song.test.harder", 5, 8))
+AssertionError: Tuples differ: ('song.test.easier', 3, 6) != ('song.test.harder', 5, 8)
+
+First differing element 0:
+'song.test.easier'
+'song.test.harder'
+
+- ('song.test.easier', 3, 6)
+?             ^ ^^     ^  ^
+
++ ('song.test.harder', 5, 8)
+?             ^ ^^     ^  ^
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.020s
+
+FAILED (failures=1)
+exit 1

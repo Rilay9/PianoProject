@@ -1,0 +1,913 @@
+# The music per cell: at rest and at a run's freeze (stage px, five-line stave px, the fit's term, bars shown/asked, next music in view)
+
+## sideways 568x320 t100 stack hcb
+  c1 rest: stage  212 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c2 rest: stage  189 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c3 rest: stage  212 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c4 rest: stage  172 stave  81.3 read-ahead bars 1/2 next y | run: stage  224 stave  81.3 read-ahead bars 1/2 next y
+  c5 rest: stage  193 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c6 rest: stage  193 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+
+## sideways 568x320 t100 stack moon
+  c1 rest: stage  212 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c2 rest: stage  189 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c3 rest: stage  212 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c4 rest: stage  172 stave  22.9 height     bars 2/2 next y | run: stage  224 stave  22.9 read-ahead bars 1/2 next y
+  c5 rest: stage  193 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c6 rest: stage  193 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+
+## sideways 568x320 t100 wider hcb
+  c1 rest: stage  212 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c2 rest: stage  192 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c3 rest: stage  212 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c4 rest: stage  172 stave  81.3 read-ahead bars 1/2 next y | run: stage  224 stave  81.3 read-ahead bars 1/2 next y
+  c5 rest: stage  193 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c6 rest: stage  193 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+
+## sideways 568x320 t100 wider moon
+  c1 rest: stage  212 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c2 rest: stage  192 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c3 rest: stage  212 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c4 rest: stage  172 stave  22.9 height     bars 2/2 next y | run: stage  224 stave  22.9 read-ahead bars 1/2 next y
+  c5 rest: stage  193 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c6 rest: stage  193 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+
+## sideways 568x320 t115 stack hcb
+  c1 rest: stage  204 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c2 rest: stage  179 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c3 rest: stage  204 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c4 rest: stage  158 stave  80.3 height     bars 1/2 next y | run: stage  218 stave  81.3 read-ahead bars 1/2 next y
+  c5 rest: stage  182 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c6 rest: stage  182 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+
+## sideways 568x320 t115 stack moon
+  c1 rest: stage  204 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c2 rest: stage  179 stave  22.9 height     bars 2/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c3 rest: stage  204 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c4 rest: stage  158 stave  22.1 height     bars 2/2 next y | run: stage  218 stave  22.9 read-ahead bars 1/2 next y
+  c5 rest: stage  182 stave  22.9 height     bars 2/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c6 rest: stage  182 stave  22.9 height     bars 2/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+
+## sideways 568x320 t115 wider hcb
+  c1 rest: stage  204 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c2 rest: stage  181 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c3 rest: stage  204 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c4 rest: stage  158 stave  78.7 height     bars 1/2 next y | run: stage  218 stave  81.3 read-ahead bars 1/2 next y
+  c5 rest: stage  182 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c6 rest: stage  182 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+
+## sideways 568x320 t115 wider moon
+  c1 rest: stage  204 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c2 rest: stage  181 stave  22.9 height     bars 2/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c3 rest: stage  204 stave  22.9 read-ahead bars 1/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c4 rest: stage  158 stave  22.1 height     bars 2/2 next y | run: stage  218 stave  22.9 read-ahead bars 1/2 next y
+  c5 rest: stage  182 stave  22.9 height     bars 2/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+  c6 rest: stage  182 stave  22.9 height     bars 2/2 next y | run: stage  264 stave  22.9 read-ahead bars 1/2 next y
+
+## sideways 568x320 t90 stack hcb
+  c1 rest: stage  217 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c2 rest: stage  198 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c3 rest: stage  217 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c4 rest: stage  181 stave  81.3 read-ahead bars 1/2 next y | run: stage  228 stave  81.3 read-ahead bars 1/2 next y
+  c5 rest: stage  199 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c6 rest: stage  199 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+
+## sideways 568x320 t90 wider hcb
+  c1 rest: stage  217 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c2 rest: stage  199 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c3 rest: stage  217 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c4 rest: stage  181 stave  81.3 read-ahead bars 1/2 next y | run: stage  228 stave  81.3 read-ahead bars 1/2 next y
+  c5 rest: stage  199 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+  c6 rest: stage  199 stave  81.3 read-ahead bars 1/2 next y | run: stage  264 stave  81.3 read-ahead bars 1/2 next y
+
+## sideways 640x360 t100 stack hcb
+  c1 rest: stage  252 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c2 rest: stage  229 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave  91.8 read-ahead bars 1/2 next y | run: stage  264 stave  91.8 read-ahead bars 1/2 next y
+  c5 rest: stage  233 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+
+## sideways 640x360 t100 stack moon
+  c1 rest: stage  252 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c2 rest: stage  229 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave  25.9 read-ahead bars 1/2 next y | run: stage  264 stave  25.9 read-ahead bars 1/2 next y
+  c5 rest: stage  233 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+
+## sideways 640x360 t100 wider hcb
+  c1 rest: stage  252 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c2 rest: stage  232 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave  91.8 read-ahead bars 1/2 next y | run: stage  264 stave  91.8 read-ahead bars 1/2 next y
+  c5 rest: stage  233 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+
+## sideways 640x360 t100 wider moon
+  c1 rest: stage  252 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c2 rest: stage  232 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave  25.9 read-ahead bars 1/2 next y | run: stage  264 stave  25.9 read-ahead bars 1/2 next y
+  c5 rest: stage  233 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+
+## sideways 640x360 t115 stack hcb
+  c1 rest: stage  244 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c2 rest: stage  219 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave  91.8 read-ahead bars 1/2 next y | run: stage  258 stave  91.8 read-ahead bars 1/2 next y
+  c5 rest: stage  222 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+
+## sideways 640x360 t115 stack moon
+  c1 rest: stage  244 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c2 rest: stage  219 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave  25.9 height     bars 2/2 next y | run: stage  258 stave  25.9 read-ahead bars 1/2 next y
+  c5 rest: stage  222 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+
+## sideways 640x360 t115 wider hcb
+  c1 rest: stage  244 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c2 rest: stage  221 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave  91.8 read-ahead bars 1/2 next y | run: stage  258 stave  91.8 read-ahead bars 1/2 next y
+  c5 rest: stage  222 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave  91.8 read-ahead bars 1/2 next y | run: stage  304 stave  91.8 read-ahead bars 1/2 next y
+
+## sideways 640x360 t115 wider moon
+  c1 rest: stage  244 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c2 rest: stage  221 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave  25.9 height     bars 2/2 next y | run: stage  258 stave  25.9 read-ahead bars 1/2 next y
+  c5 rest: stage  222 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave  25.9 read-ahead bars 1/2 next y | run: stage  304 stave  25.9 read-ahead bars 1/2 next y
+
+## sideways 667x375 t100 stack hcb
+  c1 rest: stage  267 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c2 rest: stage  244 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c3 rest: stage  267 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c4 rest: stage  227 stave  95.7 read-ahead bars 1/2 next y | run: stage  279 stave  95.7 read-ahead bars 1/2 next y
+  c5 rest: stage  248 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c6 rest: stage  248 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+
+## sideways 667x375 t100 stack moon
+  c1 rest: stage  267 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c2 rest: stage  244 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c3 rest: stage  267 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  22.5 read-ahead bars 1/2 next y
+  c4 rest: stage  227 stave  27.0 read-ahead bars 1/2 next y | run: stage  279 stave  27.0 read-ahead bars 1/2 next y
+  c5 rest: stage  248 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c6 rest: stage  248 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+
+## sideways 667x375 t100 wider hcb
+  c1 rest: stage  267 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c2 rest: stage  247 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c3 rest: stage  267 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c4 rest: stage  227 stave  95.7 read-ahead bars 1/2 next y | run: stage  279 stave  95.7 read-ahead bars 1/2 next y
+  c5 rest: stage  248 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c6 rest: stage  248 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+
+## sideways 667x375 t100 wider moon
+  c1 rest: stage  267 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c2 rest: stage  247 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c3 rest: stage  267 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c4 rest: stage  227 stave  27.0 read-ahead bars 1/2 next y | run: stage  279 stave  27.0 read-ahead bars 1/2 next y
+  c5 rest: stage  248 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c6 rest: stage  248 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+
+## sideways 667x375 t115 stack hcb
+  c1 rest: stage  259 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c2 rest: stage  234 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c3 rest: stage  259 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c4 rest: stage  213 stave  95.7 read-ahead bars 1/2 next y | run: stage  273 stave  95.7 read-ahead bars 1/2 next y
+  c5 rest: stage  237 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c6 rest: stage  237 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+
+## sideways 667x375 t115 stack moon
+  c1 rest: stage  259 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c2 rest: stage  234 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c3 rest: stage  259 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c4 rest: stage  213 stave  27.0 height     bars 2/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c5 rest: stage  237 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c6 rest: stage  237 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+
+## sideways 667x375 t115 wider hcb
+  c1 rest: stage  259 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c2 rest: stage  236 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c3 rest: stage  259 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c4 rest: stage  213 stave  95.7 read-ahead bars 1/2 next y | run: stage  273 stave  95.7 read-ahead bars 1/2 next y
+  c5 rest: stage  237 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+  c6 rest: stage  237 stave  95.7 read-ahead bars 1/2 next y | run: stage  319 stave  95.7 read-ahead bars 1/2 next y
+
+## sideways 667x375 t115 wider moon
+  c1 rest: stage  259 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c2 rest: stage  236 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c3 rest: stage  259 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c4 rest: stage  213 stave  27.0 height     bars 2/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c5 rest: stage  237 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+  c6 rest: stage  237 stave  27.0 read-ahead bars 1/2 next y | run: stage  319 stave  27.0 read-ahead bars 1/2 next y
+
+## sideways 700x350 t100 stack hcb
+  c1 rest: stage  242 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c2 rest: stage  219 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c3 rest: stage  242 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c4 rest: stage  202 stave 100.5 read-ahead bars 1/2 next y | run: stage  254 stave 100.5 read-ahead bars 1/2 next y
+  c5 rest: stage  223 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c6 rest: stage  223 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+
+## sideways 700x350 t100 stack moon
+  c1 rest: stage  242 stave  28.3 read-ahead bars 1/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c2 rest: stage  219 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c3 rest: stage  242 stave  28.3 read-ahead bars 1/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c4 rest: stage  202 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c5 rest: stage  223 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c6 rest: stage  223 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+
+## sideways 700x350 t100 wider hcb
+  c1 rest: stage  242 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c2 rest: stage  222 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c3 rest: stage  242 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c4 rest: stage  202 stave 100.5 read-ahead bars 1/2 next y | run: stage  254 stave 100.5 read-ahead bars 1/2 next y
+  c5 rest: stage  223 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c6 rest: stage  223 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+
+## sideways 700x350 t100 wider moon
+  c1 rest: stage  242 stave  28.3 read-ahead bars 1/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c2 rest: stage  222 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c3 rest: stage  242 stave  28.3 read-ahead bars 1/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c4 rest: stage  202 stave  28.3 height     bars 2/2 next y | run: stage  254 stave  28.3 read-ahead bars 1/2 next y
+  c5 rest: stage  223 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c6 rest: stage  223 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+
+## sideways 700x350 t115 stack hcb
+  c1 rest: stage  234 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c2 rest: stage  209 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c3 rest: stage  234 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c4 rest: stage  188 stave  96.8 height     bars 1/2 next y | run: stage  248 stave 100.5 read-ahead bars 1/2 next y
+  c5 rest: stage  212 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c6 rest: stage  212 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+
+## sideways 700x350 t115 stack moon
+  c1 rest: stage  234 stave  28.3 read-ahead bars 1/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c2 rest: stage  209 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c3 rest: stage  234 stave  28.3 read-ahead bars 1/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c4 rest: stage  188 stave  26.7 height     bars 2/2 next y | run: stage  248 stave  28.3 read-ahead bars 2/2 next y
+  c5 rest: stage  212 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c6 rest: stage  212 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+
+## sideways 700x350 t115 wider hcb
+  c1 rest: stage  234 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c2 rest: stage  211 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c3 rest: stage  234 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c4 rest: stage  188 stave  94.8 height     bars 1/2 next y | run: stage  248 stave 100.5 read-ahead bars 1/2 next y
+  c5 rest: stage  212 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+  c6 rest: stage  212 stave 100.5 read-ahead bars 1/2 next y | run: stage  294 stave 100.5 read-ahead bars 1/2 next y
+
+## sideways 700x350 t115 wider moon
+  c1 rest: stage  234 stave  28.3 read-ahead bars 1/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c2 rest: stage  211 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c3 rest: stage  234 stave  28.3 read-ahead bars 1/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c4 rest: stage  188 stave  26.7 height     bars 2/2 next y | run: stage  248 stave  28.3 read-ahead bars 2/2 next y
+  c5 rest: stage  212 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+  c6 rest: stage  212 stave  28.3 height     bars 2/2 next y | run: stage  294 stave  28.3 read-ahead bars 1/2 next y
+
+## sideways 720x360 t100 stack hcb
+  c1 rest: stage  252 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c2 rest: stage  229 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave 103.4 read-ahead bars 1/2 next y | run: stage  264 stave 103.4 read-ahead bars 1/2 next y
+  c5 rest: stage  233 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+
+## sideways 720x360 t100 stack moon
+  c1 rest: stage  252 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c2 rest: stage  229 stave  29.1 height     bars 2/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave  29.1 height     bars 2/2 next y | run: stage  264 stave  29.1 read-ahead bars 1/2 next y
+  c5 rest: stage  233 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+
+## sideways 720x360 t100 wider hcb
+  c1 rest: stage  252 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c2 rest: stage  232 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave 103.4 read-ahead bars 1/2 next y | run: stage  264 stave 103.4 read-ahead bars 1/2 next y
+  c5 rest: stage  233 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+
+## sideways 720x360 t100 wider moon
+  c1 rest: stage  252 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c2 rest: stage  232 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave  29.1 height     bars 2/2 next y | run: stage  264 stave  29.1 read-ahead bars 1/2 next y
+  c5 rest: stage  233 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+
+## sideways 720x360 t115 stack hcb
+  c1 rest: stage  244 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c2 rest: stage  219 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave 102.3 height     bars 1/2 next y | run: stage  258 stave 103.4 read-ahead bars 1/2 next y
+  c5 rest: stage  222 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+
+## sideways 720x360 t115 stack moon
+  c1 rest: stage  244 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c2 rest: stage  219 stave  29.1 height     bars 2/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave  28.2 height     bars 2/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c5 rest: stage  222 stave  29.1 height     bars 2/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave  29.1 height     bars 2/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+
+## sideways 720x360 t115 wider hcb
+  c1 rest: stage  244 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c2 rest: stage  221 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave 100.2 height     bars 1/2 next y | run: stage  258 stave 103.4 read-ahead bars 1/2 next y
+  c5 rest: stage  222 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave 103.4 read-ahead bars 1/2 next y | run: stage  304 stave 103.4 read-ahead bars 1/2 next y
+
+## sideways 720x360 t115 wider moon
+  c1 rest: stage  244 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c2 rest: stage  221 stave  29.1 height     bars 2/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave  29.1 read-ahead bars 1/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave  28.2 height     bars 2/2 next y | run: stage  258 stave  29.1 read-ahead bars 1/2 next y
+  c5 rest: stage  222 stave  29.1 height     bars 2/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave  29.1 height     bars 2/2 next y | run: stage  304 stave  29.1 read-ahead bars 1/2 next y
+
+## sideways 740x342 t100 stack hcb
+  c1 rest: stage  234 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c2 rest: stage  211 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c3 rest: stage  234 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c4 rest: stage  194 stave 100.1 height     bars 1/2 next y | run: stage  246 stave 106.3 read-ahead bars 1/2 next y
+  c5 rest: stage  215 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c6 rest: stage  215 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+
+## sideways 740x342 t100 stack moon
+  c1 rest: stage  234 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c2 rest: stage  211 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c3 rest: stage  234 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c4 rest: stage  194 stave  26.6 height     bars 2/2 next y | run: stage  246 stave  30.0 height     bars 2/2 next y
+  c5 rest: stage  215 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c6 rest: stage  215 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+
+## sideways 740x342 t100 wider hcb
+  c1 rest: stage  234 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c2 rest: stage  214 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c3 rest: stage  234 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c4 rest: stage  194 stave  98.0 height     bars 2/2 next y | run: stage  246 stave 106.3 read-ahead bars 1/2 next y
+  c5 rest: stage  215 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c6 rest: stage  215 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+
+## sideways 740x342 t100 wider moon
+  c1 rest: stage  234 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c2 rest: stage  214 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c3 rest: stage  234 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c4 rest: stage  194 stave  26.6 height     bars 2/2 next y | run: stage  246 stave  30.0 height     bars 2/2 next y
+  c5 rest: stage  215 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c6 rest: stage  215 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+
+## sideways 740x342 t115 stack hcb
+  c1 rest: stage  226 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c2 rest: stage  201 stave 103.9 height     bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c3 rest: stage  226 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c4 rest: stage  180 stave  92.4 height     bars 2/2 next y | run: stage  240 stave 106.3 read-ahead bars 1/2 next y
+  c5 rest: stage  204 stave 105.8 height     bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c6 rest: stage  204 stave 105.8 height     bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+
+## sideways 740x342 t115 stack moon
+  c1 rest: stage  226 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c2 rest: stage  201 stave  28.6 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c3 rest: stage  226 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c4 rest: stage  180 stave  25.5 height     bars 2/2 next y | run: stage  240 stave  30.0 height     bars 2/2 next y
+  c5 rest: stage  204 stave  29.2 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c6 rest: stage  204 stave  29.2 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+
+## sideways 740x342 t115 wider hcb
+  c1 rest: stage  226 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c2 rest: stage  203 stave 102.9 height     bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c3 rest: stage  226 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c4 rest: stage  180 stave  90.5 height     bars 2/2 next y | run: stage  240 stave 106.3 read-ahead bars 1/2 next y
+  c5 rest: stage  204 stave 103.6 height     bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c6 rest: stage  204 stave 103.6 height     bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+
+## sideways 740x342 t115 wider moon
+  c1 rest: stage  226 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c2 rest: stage  203 stave  29.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c3 rest: stage  226 stave  30.0 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c4 rest: stage  180 stave  25.5 height     bars 2/2 next y | run: stage  240 stave  30.0 height     bars 2/2 next y
+  c5 rest: stage  204 stave  29.2 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+  c6 rest: stage  204 stave  29.2 height     bars 2/2 next y | run: stage  286 stave  30.0 read-ahead bars 1/2 next y
+
+## sideways 740x342 t90 stack hcb
+  c1 rest: stage  239 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c2 rest: stage  220 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c3 rest: stage  239 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c4 rest: stage  203 stave 105.0 height     bars 1/2 next y | run: stage  250 stave 106.3 read-ahead bars 1/2 next y
+  c5 rest: stage  221 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c6 rest: stage  221 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+
+## sideways 740x342 t90 wider hcb
+  c1 rest: stage  239 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c2 rest: stage  221 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c3 rest: stage  239 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c4 rest: stage  203 stave 102.9 height     bars 1/2 next y | run: stage  250 stave 106.3 read-ahead bars 1/2 next y
+  c5 rest: stage  221 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+  c6 rest: stage  221 stave 106.3 read-ahead bars 1/2 next y | run: stage  286 stave 106.3 read-ahead bars 1/2 next y
+
+## sideways 780x360 t100 stack hcb
+  c1 rest: stage  252 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c2 rest: stage  229 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave 110.0 height     bars 1/2 next y | run: stage  264 stave 112.1 read-ahead bars 1/2 next y
+  c5 rest: stage  233 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+
+## sideways 780x360 t100 stack moon
+  c1 rest: stage  252 stave  31.6 read-ahead bars 2/2 next y | run: stage  304 stave  26.4 read-ahead bars 1/2 next y
+  c2 rest: stage  229 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave  31.6 read-ahead bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave  30.3 height     bars 2/2 next y | run: stage  264 stave  31.6 height     bars 2/2 next y
+  c5 rest: stage  233 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+
+## sideways 780x360 t100 wider hcb
+  c1 rest: stage  252 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c2 rest: stage  232 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave 107.7 height     bars 1/2 next y | run: stage  264 stave 112.1 read-ahead bars 1/2 next y
+  c5 rest: stage  233 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+
+## sideways 780x360 t100 wider moon
+  c1 rest: stage  252 stave  31.6 read-ahead bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c2 rest: stage  232 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c3 rest: stage  252 stave  31.6 read-ahead bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c4 rest: stage  212 stave  30.3 height     bars 2/2 next y | run: stage  264 stave  31.6 height     bars 2/2 next y
+  c5 rest: stage  233 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c6 rest: stage  233 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+
+## sideways 780x360 t115 stack hcb
+  c1 rest: stage  244 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c2 rest: stage  219 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave 102.3 height     bars 2/2 next y | run: stage  258 stave 112.1 read-ahead bars 1/2 next y
+  c5 rest: stage  222 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+
+## sideways 780x360 t115 stack moon
+  c1 rest: stage  244 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c2 rest: stage  219 stave  31.4 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave  28.2 height     bars 2/2 next y | run: stage  258 stave  31.6 height     bars 2/2 next y
+  c5 rest: stage  222 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+
+## sideways 780x360 t115 wider hcb
+  c1 rest: stage  244 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c2 rest: stage  221 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave 100.2 height     bars 2/2 next y | run: stage  258 stave 112.1 read-ahead bars 1/2 next y
+  c5 rest: stage  222 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+
+## sideways 780x360 t115 wider moon
+  c1 rest: stage  244 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c2 rest: stage  221 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c3 rest: stage  244 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c4 rest: stage  198 stave  28.2 height     bars 2/2 next y | run: stage  258 stave  31.6 height     bars 2/2 next y
+  c5 rest: stage  222 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+  c6 rest: stage  222 stave  31.6 height     bars 2/2 next y | run: stage  304 stave  31.6 read-ahead bars 1/2 next y
+
+## sideways 780x360 t90 stack hcb
+  c1 rest: stage  257 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c2 rest: stage  238 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c3 rest: stage  257 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c4 rest: stage  221 stave 112.1 read-ahead bars 1/2 next y | run: stage  268 stave 112.1 read-ahead bars 1/2 next y
+  c5 rest: stage  239 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c6 rest: stage  239 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+
+## sideways 780x360 t90 wider hcb
+  c1 rest: stage  257 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c2 rest: stage  239 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c3 rest: stage  257 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c4 rest: stage  221 stave 112.1 read-ahead bars 1/2 next y | run: stage  268 stave 112.1 read-ahead bars 1/2 next y
+  c5 rest: stage  239 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+  c6 rest: stage  239 stave 112.1 read-ahead bars 1/2 next y | run: stage  304 stave 112.1 read-ahead bars 1/2 next y
+
+## sideways 844x390 t100 stack hcb
+  c1 rest: stage  282 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c2 rest: stage  259 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c3 rest: stage  282 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c4 rest: stage  242 stave 121.4 read-ahead bars 1/2 next y | run: stage  294 stave 121.4 read-ahead bars 1/2 next y
+  c5 rest: stage  263 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c6 rest: stage  263 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+
+## sideways 844x390 t100 stack moon
+  c1 rest: stage  282 stave  34.2 read-ahead bars 1/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c2 rest: stage  259 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c3 rest: stage  282 stave  34.2 read-ahead bars 1/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c4 rest: stage  242 stave  34.2 height     bars 2/2 next y | run: stage  294 stave  34.2 read-ahead bars 2/2 next y
+  c5 rest: stage  263 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c6 rest: stage  263 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+
+## sideways 844x390 t100 wider hcb
+  c1 rest: stage  282 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c2 rest: stage  262 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c3 rest: stage  282 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c4 rest: stage  242 stave 121.4 read-ahead bars 1/2 next y | run: stage  294 stave 121.4 read-ahead bars 1/2 next y
+  c5 rest: stage  263 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c6 rest: stage  263 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+
+## sideways 844x390 t100 wider moon
+  c1 rest: stage  282 stave  34.2 read-ahead bars 1/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c2 rest: stage  262 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c3 rest: stage  282 stave  34.2 read-ahead bars 1/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c4 rest: stage  242 stave  34.2 height     bars 2/2 next y | run: stage  294 stave  34.2 read-ahead bars 2/2 next y
+  c5 rest: stage  263 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c6 rest: stage  263 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+
+## sideways 844x390 t115 stack hcb
+  c1 rest: stage  274 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c2 rest: stage  249 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c3 rest: stage  274 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c4 rest: stage  228 stave 118.8 height     bars 1/2 next y | run: stage  288 stave 121.4 read-ahead bars 1/2 next y
+  c5 rest: stage  252 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c6 rest: stage  252 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+
+## sideways 844x390 t115 stack moon
+  c1 rest: stage  274 stave  34.2 read-ahead bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c2 rest: stage  249 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c3 rest: stage  274 stave  34.2 read-ahead bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c4 rest: stage  228 stave  32.8 height     bars 2/2 next y | run: stage  288 stave  34.2 height     bars 2/2 next y
+  c5 rest: stage  252 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c6 rest: stage  252 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+
+## sideways 844x390 t115 wider hcb
+  c1 rest: stage  274 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c2 rest: stage  251 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c3 rest: stage  274 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c4 rest: stage  228 stave 116.4 height     bars 1/2 next y | run: stage  288 stave 121.4 read-ahead bars 1/2 next y
+  c5 rest: stage  252 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+  c6 rest: stage  252 stave 121.4 read-ahead bars 1/2 next y | run: stage  334 stave 121.4 read-ahead bars 1/2 next y
+
+## sideways 844x390 t115 wider moon
+  c1 rest: stage  274 stave  34.2 read-ahead bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c2 rest: stage  251 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c3 rest: stage  274 stave  34.2 read-ahead bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c4 rest: stage  228 stave  32.8 height     bars 2/2 next y | run: stage  288 stave  34.2 height     bars 2/2 next y
+  c5 rest: stage  252 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+  c6 rest: stage  252 stave  34.2 height     bars 2/2 next y | run: stage  334 stave  34.2 read-ahead bars 1/2 next y
+
+## sideways 880x412 t100 stack hcb
+  c1 rest: stage  304 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c2 rest: stage  281 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c3 rest: stage  304 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c4 rest: stage  264 stave 126.7 read-ahead bars 1/2 next y | run: stage  316 stave 126.7 read-ahead bars 1/2 next y
+  c5 rest: stage  285 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c6 rest: stage  285 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+
+## sideways 880x412 t100 stack saints
+  c1 rest: stage  304 stave  70.8 height     bars 2/2 next y | run: stage  356 stave  78.1 height     bars 2/2 next y
+  c2 rest: stage  281 stave  65.2 height     bars 2/2 next y | run: stage  356 stave  78.1 height     bars 2/2 next y
+  c3 rest: stage  304 stave  70.8 height     bars 2/2 next y | run: stage  356 stave  78.1 height     bars 2/2 next y
+  c4 rest: stage  264 stave  61.1 height     bars 2/2 next y | run: stage  316 stave  68.4 height     bars 2/2 next y
+  c5 rest: stage  285 stave  65.9 height     bars 2/2 next y | run: stage  356 stave  78.1 height     bars 2/2 next y
+  c6 rest: stage  285 stave  65.9 height     bars 2/2 next y | run: stage  356 stave  78.1 height     bars 2/2 next y
+
+## sideways 880x412 t100 wider hcb
+  c1 rest: stage  304 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c2 rest: stage  284 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c3 rest: stage  304 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c4 rest: stage  264 stave 126.7 read-ahead bars 1/2 next y | run: stage  316 stave 126.7 read-ahead bars 1/2 next y
+  c5 rest: stage  285 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c6 rest: stage  285 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+
+## sideways 880x412 t100 wider saints
+  c1 rest: stage  304 stave  70.2 height     bars 2/2 next y | run: stage  356 stave  77.4 height     bars 2/2 next y
+  c2 rest: stage  284 stave  65.0 height     bars 2/2 next y | run: stage  356 stave  77.4 height     bars 2/2 next y
+  c3 rest: stage  304 stave  70.2 height     bars 2/2 next y | run: stage  356 stave  77.4 height     bars 2/2 next y
+  c4 rest: stage  264 stave  60.4 height     bars 2/2 next y | run: stage  316 stave  67.6 height     bars 2/2 next y
+  c5 rest: stage  285 stave  65.2 height     bars 2/2 next y | run: stage  356 stave  77.4 height     bars 2/2 next y
+  c6 rest: stage  285 stave  65.2 height     bars 2/2 next y | run: stage  356 stave  77.4 height     bars 2/2 next y
+
+## sideways 880x412 t115 stack hcb
+  c1 rest: stage  296 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c2 rest: stage  271 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c3 rest: stage  296 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c4 rest: stage  250 stave 126.7 read-ahead bars 1/2 next y | run: stage  310 stave 126.7 read-ahead bars 1/2 next y
+  c5 rest: stage  274 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c6 rest: stage  274 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+
+## sideways 880x412 t115 stack saints
+  c1 rest: stage  296 stave  68.8 height     bars 2/2 next y | run: stage  356 stave  78.1 height     bars 2/2 next y
+  c2 rest: stage  271 stave  63.0 height     bars 2/2 next y | run: stage  356 stave  78.1 height     bars 2/2 next y
+  c3 rest: stage  296 stave  68.8 height     bars 2/2 next y | run: stage  356 stave  78.1 height     bars 2/2 next y
+  c4 rest: stage  250 stave  57.6 height     bars 2/2 next y | run: stage  310 stave  66.8 height     bars 2/2 next y
+  c5 rest: stage  274 stave  63.4 height     bars 2/2 next y | run: stage  356 stave  78.1 height     bars 2/2 next y
+  c6 rest: stage  274 stave  63.4 height     bars 2/2 next y | run: stage  356 stave  78.1 height     bars 2/2 next y
+
+## sideways 880x412 t115 wider hcb
+  c1 rest: stage  296 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c2 rest: stage  273 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c3 rest: stage  296 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c4 rest: stage  250 stave 126.7 read-ahead bars 1/2 next y | run: stage  310 stave 126.7 read-ahead bars 1/2 next y
+  c5 rest: stage  274 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+  c6 rest: stage  274 stave 126.7 read-ahead bars 1/2 next y | run: stage  356 stave 126.7 read-ahead bars 1/2 next y
+
+## sideways 880x412 t115 wider saints
+  c1 rest: stage  296 stave  68.2 height     bars 2/2 next y | run: stage  356 stave  77.4 height     bars 2/2 next y
+  c2 rest: stage  273 stave  62.6 height     bars 2/2 next y | run: stage  356 stave  77.4 height     bars 2/2 next y
+  c3 rest: stage  296 stave  68.2 height     bars 2/2 next y | run: stage  356 stave  77.4 height     bars 2/2 next y
+  c4 rest: stage  250 stave  57.1 height     bars 2/2 next y | run: stage  310 stave  66.3 height     bars 2/2 next y
+  c5 rest: stage  274 stave  62.9 height     bars 2/2 next y | run: stage  356 stave  77.4 height     bars 2/2 next y
+  c6 rest: stage  274 stave  62.9 height     bars 2/2 next y | run: stage  356 stave  77.4 height     bars 2/2 next y
+
+## sideways 1200x360 t100 stack hcb
+  c1 rest: stage  252 stave 132.0 height     bars 2/2 next y | run: stage  304 stave 148.4 height     bars 1/2 next y
+  c2 rest: stage  229 stave 119.3 height     bars 2/2 next y | run: stage  304 stave 148.4 height     bars 1/2 next y
+  c3 rest: stage  252 stave 132.0 height     bars 2/2 next y | run: stage  304 stave 148.4 height     bars 1/2 next y
+  c4 rest: stage  212 stave 110.0 height     bars 2/2 next y | run: stage  264 stave 126.5 height     bars 2/2 next y
+  c5 rest: stage  233 stave 121.3 height     bars 2/2 next y | run: stage  304 stave 148.4 height     bars 1/2 next y
+  c6 rest: stage  233 stave 121.3 height     bars 2/2 next y | run: stage  304 stave 148.4 height     bars 1/2 next y
+
+## sideways 1200x360 t100 stack saints
+  c1 rest: stage  252 stave  58.4 height     bars 2/2 next y | run: stage  304 stave  65.7 height     bars 2/2 next y
+  c2 rest: stage  229 stave  52.5 height     bars 2/2 next y | run: stage  304 stave  65.3 height     bars 2/2 next y
+  c3 rest: stage  252 stave  58.4 height     bars 2/2 next y | run: stage  304 stave  65.7 height     bars 2/2 next y
+  c4 rest: stage  212 stave  48.6 height     bars 2/2 next y | run: stage  264 stave  55.9 height     bars 2/2 next y
+  c5 rest: stage  233 stave  53.7 height     bars 2/2 next y | run: stage  304 stave  65.7 height     bars 2/2 next y
+  c6 rest: stage  233 stave  53.7 height     bars 2/2 next y | run: stage  304 stave  65.7 height     bars 2/2 next y
+
+## sideways 1200x360 t100 wider hcb
+  c1 rest: stage  252 stave 129.3 height     bars 2/2 next y | run: stage  304 stave 145.4 height     bars 1/2 next y
+  c2 rest: stage  232 stave 118.5 height     bars 2/2 next y | run: stage  304 stave 145.4 height     bars 1/2 next y
+  c3 rest: stage  252 stave 129.3 height     bars 2/2 next y | run: stage  304 stave 145.4 height     bars 1/2 next y
+  c4 rest: stage  212 stave 107.7 height     bars 2/2 next y | run: stage  264 stave 123.9 height     bars 2/2 next y
+  c5 rest: stage  233 stave 118.9 height     bars 2/2 next y | run: stage  304 stave 145.4 height     bars 1/2 next y
+  c6 rest: stage  233 stave 118.9 height     bars 2/2 next y | run: stage  304 stave 145.4 height     bars 1/2 next y
+
+## sideways 1200x360 t100 wider saints
+  c1 rest: stage  252 stave  57.7 height     bars 2/2 next y | run: stage  304 stave  64.9 height     bars 2/2 next y
+  c2 rest: stage  232 stave  52.6 height     bars 2/2 next y | run: stage  304 stave  64.6 height     bars 2/2 next y
+  c3 rest: stage  252 stave  57.7 height     bars 2/2 next y | run: stage  304 stave  64.9 height     bars 2/2 next y
+  c4 rest: stage  212 stave  48.0 height     bars 2/2 next y | run: stage  264 stave  55.3 height     bars 2/2 next y
+  c5 rest: stage  233 stave  53.0 height     bars 2/2 next y | run: stage  304 stave  64.9 height     bars 2/2 next y
+  c6 rest: stage  233 stave  53.0 height     bars 2/2 next y | run: stage  304 stave  64.9 height     bars 2/2 next y
+
+## sideways 1200x360 t115 stack hcb
+  c1 rest: stage  244 stave 127.6 height     bars 2/2 next y | run: stage  304 stave 148.4 height     bars 1/2 next y
+  c2 rest: stage  219 stave 113.8 height     bars 2/2 next y | run: stage  304 stave 148.4 height     bars 1/2 next y
+  c3 rest: stage  244 stave 127.6 height     bars 2/2 next y | run: stage  304 stave 148.4 height     bars 1/2 next y
+  c4 rest: stage  198 stave 102.3 height     bars 2/2 next y | run: stage  258 stave 123.2 height     bars 2/2 next y
+  c5 rest: stage  222 stave 115.7 height     bars 2/2 next y | run: stage  304 stave 148.4 height     bars 1/2 next y
+  c6 rest: stage  222 stave 115.7 height     bars 2/2 next y | run: stage  304 stave 148.4 height     bars 1/2 next y
+
+## sideways 1200x360 t115 stack saints
+  c1 rest: stage  244 stave  56.4 height     bars 2/2 next y | run: stage  304 stave  65.7 height     bars 2/2 next y
+  c2 rest: stage  219 stave  50.3 height     bars 2/2 next y | run: stage  304 stave  65.6 height     bars 2/2 next y
+  c3 rest: stage  244 stave  56.4 height     bars 2/2 next y | run: stage  304 stave  65.7 height     bars 2/2 next y
+  c4 rest: stage  198 stave  45.2 height     bars 2/2 next y | run: stage  258 stave  54.4 height     bars 2/2 next y
+  c5 rest: stage  222 stave  51.2 height     bars 2/2 next y | run: stage  304 stave  65.7 height     bars 2/2 next y
+  c6 rest: stage  222 stave  51.2 height     bars 2/2 next y | run: stage  304 stave  65.7 height     bars 2/2 next y
+
+## sideways 1200x360 t115 wider hcb
+  c1 rest: stage  244 stave 125.0 height     bars 2/2 next y | run: stage  304 stave 145.4 height     bars 1/2 next y
+  c2 rest: stage  221 stave 112.6 height     bars 2/2 next y | run: stage  304 stave 145.4 height     bars 1/2 next y
+  c3 rest: stage  244 stave 125.0 height     bars 2/2 next y | run: stage  304 stave 145.4 height     bars 1/2 next y
+  c4 rest: stage  198 stave 100.2 height     bars 2/2 next y | run: stage  258 stave 120.7 height     bars 2/2 next y
+  c5 rest: stage  222 stave 113.3 height     bars 2/2 next y | run: stage  304 stave 145.4 height     bars 1/2 next y
+  c6 rest: stage  222 stave 113.3 height     bars 2/2 next y | run: stage  304 stave 145.4 height     bars 1/2 next y
+
+## sideways 1200x360 t115 wider saints
+  c1 rest: stage  244 stave  55.7 height     bars 2/2 next y | run: stage  304 stave  64.9 height     bars 2/2 next y
+  c2 rest: stage  221 stave  50.1 height     bars 2/2 next y | run: stage  304 stave  64.8 height     bars 2/2 next y
+  c3 rest: stage  244 stave  55.7 height     bars 2/2 next y | run: stage  304 stave  64.9 height     bars 2/2 next y
+  c4 rest: stage  198 stave  44.7 height     bars 2/2 next y | run: stage  258 stave  53.8 height     bars 2/2 next y
+  c5 rest: stage  222 stave  50.5 height     bars 2/2 next y | run: stage  304 stave  64.8 height     bars 2/2 next y
+  c6 rest: stage  222 stave  50.5 height     bars 2/2 next y | run: stage  304 stave  64.8 height     bars 2/2 next y
+
+## upright 280x740 t100 stack hcb
+  c1 rest: stage  531 stave  59.6 width      bars 2/2 next y | run: stage  583 stave  59.6 width      bars 2/2 next y
+  c4 rest: stage  531 stave  59.6 width      bars 2/2 next y | run: stage  583 stave  59.6 width      bars 2/2 next y
+
+## upright 280x740 t100 stack moon
+  c1 rest: stage  531 stave  22.2 width      bars 2/2 next y | run: stage  583 stave  22.2 width      bars 2/2 next y
+  c4 rest: stage  531 stave  22.2 width      bars 2/2 next y | run: stage  583 stave  22.2 width      bars 2/2 next y
+
+## upright 280x740 t100 wider hcb
+  c1 rest: stage  531 stave  59.6 width      bars 2/2 next y | run: stage  583 stave  59.6 width      bars 2/2 next y
+  c4 rest: stage  531 stave  59.6 width      bars 2/2 next y | run: stage  583 stave  59.6 width      bars 2/2 next y
+
+## upright 280x740 t100 wider moon
+  c1 rest: stage  531 stave  22.2 width      bars 2/2 next y | run: stage  583 stave  22.2 width      bars 2/2 next y
+  c4 rest: stage  531 stave  22.2 width      bars 2/2 next y | run: stage  668 stave  22.2 width      bars 2/2 next y
+
+## upright 280x740 t115 stack hcb
+  c1 rest: stage  500 stave  59.6 width      bars 2/2 next y | run: stage  560 stave  59.6 width      bars 2/2 next y
+  c4 rest: stage  500 stave  59.6 width      bars 2/2 next y | run: stage  560 stave  59.6 width      bars 2/2 next y
+
+## upright 280x740 t115 stack moon
+  c1 rest: stage  500 stave  22.2 width      bars 2/2 next y | run: stage  560 stave  22.2 width      bars 2/2 next y
+  c4 rest: stage  500 stave  22.2 width      bars 2/2 next y | run: stage  560 stave  22.2 width      bars 2/2 next y
+
+## upright 280x740 t115 wider hcb
+  c1 rest: stage  500 stave  59.6 width      bars 2/2 next y | run: stage  560 stave  59.6 width      bars 2/2 next y
+  c4 rest: stage  500 stave  59.6 width      bars 2/2 next y | run: stage  560 stave  59.6 width      bars 2/2 next y
+
+## upright 280x740 t115 wider moon
+  c1 rest: stage  500 stave  22.2 width      bars 2/2 next y | run: stage  560 stave  22.2 width      bars 2/2 next y
+  c4 rest: stage  500 stave  22.2 width      bars 2/2 next y | run: stage  560 stave  22.2 width      bars 2/2 next y
+
+## upright 320x740 t100 stack hcb
+  c1 rest: stage  531 stave  68.5 width      bars 2/2 next y | run: stage  583 stave  68.5 width      bars 2/2 next y
+  c4 rest: stage  531 stave  68.5 width      bars 2/2 next y | run: stage  583 stave  68.5 width      bars 2/2 next y
+
+## upright 320x740 t100 stack moon
+  c1 rest: stage  531 stave  25.6 width      bars 2/2 next n | run: stage  668 stave  25.6 width      bars 2/2 next y
+  c4 rest: stage  531 stave  25.6 width      bars 2/2 next n | run: stage  668 stave  25.6 width      bars 2/2 next y
+
+## upright 320x740 t100 wider hcb
+  c1 rest: stage  531 stave  68.5 width      bars 2/2 next y | run: stage  583 stave  68.5 width      bars 2/2 next y
+  c4 rest: stage  531 stave  68.5 width      bars 2/2 next y | run: stage  583 stave  68.5 width      bars 2/2 next y
+
+## upright 320x740 t100 wider moon
+  c1 rest: stage  531 stave  25.6 width      bars 2/2 next n | run: stage  668 stave  25.6 width      bars 2/2 next y
+  c4 rest: stage  531 stave  25.6 width      bars 2/2 next n | run: stage  668 stave  25.6 width      bars 2/2 next y
+
+## upright 320x740 t115 stack hcb
+  c1 rest: stage  500 stave  68.5 width      bars 2/2 next y | run: stage  560 stave  68.5 width      bars 2/2 next y
+  c4 rest: stage  500 stave  68.5 width      bars 2/2 next y | run: stage  560 stave  68.5 width      bars 2/2 next y
+
+## upright 320x740 t115 stack moon
+  c1 rest: stage  500 stave  25.6 width      bars 2/2 next n | run: stage  560 stave  25.6 width      bars 2/2 next n
+  c4 rest: stage  500 stave  25.6 width      bars 2/2 next n | run: stage  560 stave  25.6 width      bars 2/2 next n
+
+## upright 320x740 t115 wider hcb
+  c1 rest: stage  500 stave  68.5 width      bars 2/2 next y | run: stage  560 stave  68.5 width      bars 2/2 next y
+  c4 rest: stage  500 stave  68.5 width      bars 2/2 next y | run: stage  560 stave  68.5 width      bars 2/2 next y
+
+## upright 320x740 t115 wider moon
+  c1 rest: stage  500 stave  25.6 width      bars 2/2 next n | run: stage  560 stave  25.6 width      bars 2/2 next n
+  c4 rest: stage  500 stave  25.6 width      bars 2/2 next n | run: stage  560 stave  25.6 width      bars 2/2 next n
+
+## upright 342x740 t100 stack hcb
+  c1 rest: stage  531 stave  73.4 width      bars 2/2 next y | run: stage  583 stave  73.4 width      bars 2/2 next y
+  c4 rest: stage  531 stave  73.4 width      bars 2/2 next y | run: stage  583 stave  73.4 width      bars 2/2 next y
+
+## upright 342x740 t100 stack moon
+  c1 rest: stage  531 stave  27.4 width      bars 2/2 next n | run: stage  583 stave  27.4 width      bars 2/2 next n
+  c4 rest: stage  531 stave  27.4 width      bars 2/2 next n | run: stage  583 stave  27.4 width      bars 2/2 next n
+
+## upright 342x740 t100 wider hcb
+  c1 rest: stage  531 stave  73.4 width      bars 2/2 next y | run: stage  583 stave  73.4 width      bars 2/2 next y
+  c4 rest: stage  531 stave  73.4 width      bars 2/2 next y | run: stage  583 stave  73.4 width      bars 2/2 next y
+
+## upright 342x740 t100 wider moon
+  c1 rest: stage  531 stave  27.4 width      bars 2/2 next n | run: stage  583 stave  27.4 width      bars 2/2 next n
+  c4 rest: stage  531 stave  27.4 width      bars 2/2 next n | run: stage  583 stave  27.4 width      bars 2/2 next n
+
+## upright 342x740 t115 stack hcb
+  c1 rest: stage  500 stave  73.4 width      bars 2/2 next y | run: stage  560 stave  73.4 width      bars 2/2 next y
+  c4 rest: stage  500 stave  73.4 width      bars 2/2 next y | run: stage  560 stave  73.4 width      bars 2/2 next y
+
+## upright 342x740 t115 stack moon
+  c1 rest: stage  500 stave  27.4 width      bars 2/2 next n | run: stage  560 stave  27.4 width      bars 2/2 next n
+  c4 rest: stage  500 stave  27.4 width      bars 2/2 next n | run: stage  560 stave  27.4 width      bars 2/2 next n
+
+## upright 342x740 t115 wider hcb
+  c1 rest: stage  500 stave  73.4 width      bars 2/2 next y | run: stage  560 stave  73.4 width      bars 2/2 next y
+  c4 rest: stage  500 stave  73.4 width      bars 2/2 next y | run: stage  560 stave  73.4 width      bars 2/2 next y
+
+## upright 342x740 t115 wider moon
+  c1 rest: stage  500 stave  27.4 width      bars 2/2 next n | run: stage  560 stave  27.4 width      bars 2/2 next n
+  c4 rest: stage  500 stave  27.4 width      bars 2/2 next n | run: stage  560 stave  27.4 width      bars 2/2 next n
+
+## upright 360x780 t100 stack hcb
+  c1 rest: stage  571 stave  77.4 width      bars 2/2 next y | run: stage  623 stave  77.4 width      bars 2/2 next y
+  c4 rest: stage  571 stave  77.4 width      bars 2/2 next y | run: stage  623 stave  77.4 width      bars 2/2 next y
+
+## upright 360x780 t100 stack moon
+  c1 rest: stage  571 stave  28.9 width      bars 2/2 next n | run: stage  623 stave  28.9 width      bars 2/2 next n
+  c4 rest: stage  571 stave  28.9 width      bars 2/2 next n | run: stage  623 stave  28.9 width      bars 2/2 next n
+
+## upright 360x780 t100 wider hcb
+  c1 rest: stage  571 stave  77.4 width      bars 2/2 next y | run: stage  623 stave  77.4 width      bars 2/2 next y
+  c4 rest: stage  571 stave  77.4 width      bars 2/2 next y | run: stage  623 stave  77.4 width      bars 2/2 next y
+
+## upright 360x780 t100 wider moon
+  c1 rest: stage  571 stave  28.9 width      bars 2/2 next n | run: stage  623 stave  28.9 width      bars 2/2 next n
+  c4 rest: stage  571 stave  28.9 width      bars 2/2 next n | run: stage  623 stave  28.9 width      bars 2/2 next n
+
+## upright 360x780 t115 stack hcb
+  c1 rest: stage  540 stave  77.4 width      bars 2/2 next y | run: stage  600 stave  77.4 width      bars 2/2 next y
+  c4 rest: stage  540 stave  77.4 width      bars 2/2 next y | run: stage  600 stave  77.4 width      bars 2/2 next y
+
+## upright 360x780 t115 stack moon
+  c1 rest: stage  540 stave  28.9 width      bars 2/2 next n | run: stage  697 stave  28.9 width      bars 2/2 next n
+  c4 rest: stage  540 stave  28.9 width      bars 2/2 next n | run: stage  697 stave  28.9 width      bars 2/2 next n
+
+## upright 360x780 t115 wider hcb
+  c1 rest: stage  540 stave  77.4 width      bars 2/2 next y | run: stage  600 stave  77.4 width      bars 2/2 next y
+  c4 rest: stage  540 stave  77.4 width      bars 2/2 next y | run: stage  600 stave  77.4 width      bars 2/2 next y
+
+## upright 360x780 t115 wider moon
+  c1 rest: stage  540 stave  28.9 width      bars 2/2 next n | run: stage  697 stave  28.9 width      bars 2/2 next n
+  c4 rest: stage  540 stave  28.9 width      bars 2/2 next n | run: stage  697 stave  28.9 width      bars 2/2 next n
+
+## upright 360x780 t90 stack hcb
+  c1 rest: stage  592 stave  77.4 width      bars 2/2 next y | run: stage  639 stave  77.4 width      bars 2/2 next y
+  c4 rest: stage  592 stave  77.4 width      bars 2/2 next y | run: stage  639 stave  77.4 width      bars 2/2 next y
+
+## upright 360x780 t90 wider hcb
+  c1 rest: stage  592 stave  77.4 width      bars 2/2 next y | run: stage  639 stave  77.4 width      bars 2/2 next y
+  c4 rest: stage  592 stave  77.4 width      bars 2/2 next y | run: stage  639 stave  77.4 width      bars 2/2 next y
+
+## upright 390x844 t100 stack hcb
+  c1 rest: stage  635 stave  84.0 width      bars 2/2 next y | run: stage  687 stave  84.0 width      bars 2/2 next y
+  c4 rest: stage  635 stave  84.0 width      bars 2/2 next y | run: stage  687 stave  84.0 width      bars 2/2 next y
+
+## upright 390x844 t100 stack moon
+  c1 rest: stage  635 stave  31.4 width      bars 2/2 next n | run: stage  772 stave  31.4 width      bars 2/2 next y
+  c4 rest: stage  635 stave  31.4 width      bars 2/2 next n | run: stage  772 stave  31.4 width      bars 2/2 next y
+
+## upright 390x844 t100 wider hcb
+  c1 rest: stage  635 stave  84.0 width      bars 2/2 next y | run: stage  687 stave  84.0 width      bars 2/2 next y
+  c4 rest: stage  635 stave  84.0 width      bars 2/2 next y | run: stage  687 stave  84.0 width      bars 2/2 next y
+
+## upright 390x844 t100 wider moon
+  c1 rest: stage  635 stave  31.4 width      bars 2/2 next n | run: stage  772 stave  31.4 width      bars 2/2 next y
+  c4 rest: stage  635 stave  31.4 width      bars 2/2 next n | run: stage  772 stave  31.4 width      bars 2/2 next y
+
+## upright 390x844 t115 stack hcb
+  c1 rest: stage  604 stave  84.0 width      bars 2/2 next y | run: stage  664 stave  84.0 width      bars 2/2 next y
+  c4 rest: stage  604 stave  84.0 width      bars 2/2 next y | run: stage  664 stave  84.0 width      bars 2/2 next y
+
+## upright 390x844 t115 stack moon
+  c1 rest: stage  604 stave  31.4 width      bars 2/2 next n | run: stage  761 stave  31.4 width      bars 2/2 next n
+  c4 rest: stage  604 stave  31.4 width      bars 2/2 next n | run: stage  761 stave  31.4 width      bars 2/2 next n
+
+## upright 390x844 t115 wider hcb
+  c1 rest: stage  604 stave  84.0 width      bars 2/2 next y | run: stage  664 stave  84.0 width      bars 2/2 next y
+  c4 rest: stage  604 stave  84.0 width      bars 2/2 next y | run: stage  664 stave  84.0 width      bars 2/2 next y
+
+## upright 390x844 t115 wider moon
+  c1 rest: stage  604 stave  31.4 width      bars 2/2 next n | run: stage  761 stave  31.4 width      bars 2/2 next n
+  c4 rest: stage  604 stave  31.4 width      bars 2/2 next n | run: stage  761 stave  31.4 width      bars 2/2 next n
+
+## upright 390x844 t90 stack hcb
+  c1 rest: stage  656 stave  84.0 width      bars 2/2 next y | run: stage  703 stave  84.0 width      bars 2/2 next y
+  c4 rest: stage  656 stave  84.0 width      bars 2/2 next y | run: stage  703 stave  84.0 width      bars 2/2 next y
+
+## upright 390x844 t90 wider hcb
+  c1 rest: stage  656 stave  84.0 width      bars 2/2 next y | run: stage  703 stave  84.0 width      bars 2/2 next y
+  c4 rest: stage  656 stave  84.0 width      bars 2/2 next y | run: stage  703 stave  84.0 width      bars 2/2 next y
+
+## upright 412x915 t100 stack hcb
+  c1 rest: stage  706 stave  88.9 width      bars 2/2 next y | run: stage  758 stave  88.9 width      bars 2/2 next y
+  c4 rest: stage  706 stave  88.9 width      bars 2/2 next y | run: stage  758 stave  88.9 width      bars 2/2 next y
+
+## upright 412x915 t100 stack moon
+  c1 rest: stage  706 stave  33.2 width      bars 2/2 next y | run: stage  758 stave  33.2 width      bars 2/2 next y
+  c4 rest: stage  706 stave  33.2 width      bars 2/2 next y | run: stage  758 stave  33.2 width      bars 2/2 next y
+
+## upright 412x915 t100 wider hcb
+  c1 rest: stage  706 stave  88.9 width      bars 2/2 next y | run: stage  758 stave  88.9 width      bars 2/2 next y
+  c4 rest: stage  706 stave  88.9 width      bars 2/2 next y | run: stage  758 stave  88.9 width      bars 2/2 next y
+
+## upright 412x915 t100 wider moon
+  c1 rest: stage  706 stave  33.2 width      bars 2/2 next y | run: stage  758 stave  33.2 width      bars 2/2 next y
+  c4 rest: stage  706 stave  33.2 width      bars 2/2 next y | run: stage  758 stave  33.2 width      bars 2/2 next y
+
+## upright 412x915 t115 stack hcb
+  c1 rest: stage  675 stave  88.9 width      bars 2/2 next y | run: stage  735 stave  88.9 width      bars 2/2 next y
+  c4 rest: stage  675 stave  88.9 width      bars 2/2 next y | run: stage  735 stave  88.9 width      bars 2/2 next y
+
+## upright 412x915 t115 stack moon
+  c1 rest: stage  675 stave  33.2 width      bars 2/2 next y | run: stage  735 stave  33.2 width      bars 2/2 next y
+  c4 rest: stage  675 stave  33.2 width      bars 2/2 next y | run: stage  735 stave  33.2 width      bars 2/2 next y
+
+## upright 412x915 t115 wider hcb
+  c1 rest: stage  675 stave  88.9 width      bars 2/2 next y | run: stage  735 stave  88.9 width      bars 2/2 next y
+  c4 rest: stage  675 stave  88.9 width      bars 2/2 next y | run: stage  735 stave  88.9 width      bars 2/2 next y
+
+## upright 412x915 t115 wider moon
+  c1 rest: stage  675 stave  33.2 width      bars 2/2 next y | run: stage  735 stave  33.2 width      bars 2/2 next y
+  c4 rest: stage  675 stave  33.2 width      bars 2/2 next y | run: stage  735 stave  33.2 width      bars 2/2 next y
+
+## tablet 1024x768 t100 stack hcb
+  c1 rest: stage  559 stave 146.2 width      bars 2/2 next n | run: stage  611 stave 154.8 height     bars 2/2 next n
+  c4 rest: stage  559 stave 146.2 width      bars 2/2 next n | run: stage  611 stave 154.8 height     bars 2/2 next n
+
+## tablet 1024x768 t100 stack moon
+  c1 rest: stage  559 stave  49.6 width      bars 2/2 next n | run: stage  696 stave  48.4 height     bars 2/2 next n
+  c4 rest: stage  559 stave  49.6 width      bars 2/2 next n | run: stage  611 stave  49.6 width      bars 2/2 next n
+
+## tablet 1366x1024 t100 stack hcb
+  c1 rest: stage  815 stave 210.9 height     bars 2/2 next n | run: stage  867 stave 225.2 height     bars 2/2 next n
+  c4 rest: stage  815 stave 210.9 height     bars 2/2 next n | run: stage  867 stave 225.2 height     bars 2/2 next n
+
+## tablet 1366x1024 t100 stack moon
+  c1 rest: stage  815 stave  58.6 height     bars 2/2 next n | run: stage  867 stave  62.6 height     bars 2/2 next n
+  c4 rest: stage  815 stave  58.6 height     bars 2/2 next n | run: stage  867 stave  62.6 height     bars 2/2 next n

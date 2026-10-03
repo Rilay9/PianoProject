@@ -1,0 +1,138 @@
+{
+  "phase": "before",
+  "size": 100,
+  "face": "stack",
+  "viewport": "342x740",
+  "twinkle": [
+    {
+      "id": "song.folk.twinkle.rh",
+      "lines": [
+        "Twinkle, Twinkle, Little",
+        "Star"
+      ],
+      "linesNeeded": 2,
+      "linesShown": 2,
+      "clamp": "2",
+      "clipped": false,
+      "client": "164x42",
+      "scroll": "164x42",
+      "row": "310.0x92.3",
+      "titleColumn": "164.0",
+      "actions": "108.0",
+      "rootFont": "16px"
+    },
+    {
+      "id": "song.folk.twinkle.ht",
+      "lines": [
+        "Twinkle, Twinkle, Little",
+        "Star (hands together)"
+      ],
+      "linesNeeded": 2,
+      "linesShown": 2,
+      "clamp": "2",
+      "clipped": false,
+      "client": "164x42",
+      "scroll": "164x42",
+      "row": "310.0x92.3",
+      "titleColumn": "164.0",
+      "actions": "108.0",
+      "rootFont": "16px"
+    },
+    {
+      "id": "song.folk.twinkle.f",
+      "lines": [
+        "Twinkle, Twinkle, Little",
+        "Star (in F major)"
+      ],
+      "linesNeeded": 2,
+      "linesShown": 2,
+      "clamp": "2",
+      "clipped": false,
+      "client": "164x42",
+      "scroll": "164x42",
+      "row": "310.0x92.3",
+      "titleColumn": "164.0",
+      "actions": "108.0",
+      "rootFont": "16px"
+    },
+    {
+      "id": "song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx",
+      "lines": [
+        "Twinkle Twinkle Little",
+        "Star (Easy)"
+      ],
+      "linesNeeded": 2,
+      "linesShown": 2,
+      "clamp": "2",
+      "clipped": false,
+      "client": "164x42",
+      "scroll": "164x42",
+      "row": "310.0x92.3",
+      "titleColumn": "164.0",
+      "actions": "108.0",
+      "rootFont": "16px"
+    }
+  ],
+  "all": {
+    "count": "2092 of 2092 items",
+    "rows": 2092,
+    "byLines": {
+      "1": 397,
+      "2": 1401,
+      "3": 287,
+      "4": 6,
+      "7": 1
+    },
+    "titleWidths": {
+      "164": 2022,
+      "208": 70
+    },
+    "cut": 295,
+    "beyondThree": [
+      "4 lines at 164 px: Study in B♭ major — the hands changing together, broken chords",
+      "4 lines at 164 px: Beethoven Symphony 7 2nd Movement (Allegretto) Simple Piano arrangement",
+      "4 lines at 164 px: Sonatina in C major, Op. 36 No. 1 (first movement, short edition)",
+      "4 lines at 164 px: O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler",
+      "7 lines at 164 px: This Country of Mine (Extended Mix of Negaraku Malaysia's National Anthem) ((featuring Britain Japan Singapore and Brunei)",
+      "4 lines at 164 px: Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2",
+      "4 lines at 164 px: Summer, from The Four Seasons (third movement, piano transcription)"
+    ],
+    "sideways": [
+      "198 px of words in 164: Go_Tell_It_On_the_Mountain"
+    ],
+    "siblings": {
+      "count": 1288,
+      "drawn": 1288,
+      "byLines": {
+        "1": 166,
+        "2": 944,
+        "3": 177,
+        "4": 1
+      },
+      "beyondThree": [
+        "4: Sonatina in C major, Op. 36 No. 1 (first movement, short edition)"
+      ]
+    },
+    "longest": [
+      "7 lines, row 92 px: This Country of Mine (Extended Mix of Negaraku Malaysia's National Anthem) ((featuring Britain Japan Singapore and Brunei)",
+      "4 lines, row 92 px: Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2",
+      "4 lines, row 92 px: Beethoven Symphony 7 2nd Movement (Allegretto) Simple Piano arrangement",
+      "4 lines, row 92 px: O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler",
+      "4 lines, row 92 px: Summer, from The Four Seasons (third movement, piano transcription)",
+      "3 lines, row 92 px: Piano Sonata No. 16 in C, K. 545, I. Allegro (alternative edition)",
+      "4 lines, row 92 px: Sonatina in C major, Op. 36 No. 1 (first movement, short edition)",
+      "3 lines, row 92 px: Piano Sonata No. 2 in B-flat minor, Op. 35 — mvt 1 (B-flat minor)",
+      "3 lines, row 92 px: Piano Sonata No. 2 in B-flat minor, Op. 35 — mvt 4 (B-flat minor)",
+      "3 lines, row 74 px: Study in C major in 2/4 — the hands changing together, held bass",
+      "4 lines, row 74 px: Study in B♭ major — the hands changing together, broken chords",
+      "3 lines, row 74 px: Minor-blues boogie — walking eighths in B♭ minor, both hands"
+    ],
+    "tallest": [
+      "row 116 px, 2 lines: Étude in C-sharp minor, Op. 25 No. 7",
+      "row 95 px, 1 lines: Dear God",
+      "row 95 px, 1 lines: Final Masquerade",
+      "row 95 px, 1 lines: Shadow of the Day",
+      "row 95 px, 1 lines: Seize the Day"
+    ]
+  }
+}

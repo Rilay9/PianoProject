@@ -22,8 +22,8 @@
 import { describe, expect, it } from 'vitest';
 import { phrase, type HandNote } from './helpers/phrase';
 import { observe, play } from './helpers/observed';
-import { evidenceFor, TIMING_PRECISION_QUARTERS, msPerQuarterAt } from '../../src/evidence/evidence';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { evidenceFor, msPerQuarterAt } from '../../src/evidence/evidence';
+import { precisionQuartersOf, VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { ENGINE_DEFAULTS } from '../../src/engine/types';
 import { withBeatToMs } from '../../src/score/types';
 import { MIN_TEMPO_PCT } from '../../src/engine/prepareSession';
@@ -46,6 +46,12 @@ const TRIPLETS = {
 };
 
 const quarterMs = 60_000 / (BPM * (RUNG_FLOOR_PCT / 100));
+/**
+ * The triplet skill's precision, in quarter-note beats: the vocabulary's since CL11b (L57).
+ * Revised: it was read from the code table `TIMING_PRECISION_QUARTERS`, which the vocabulary
+ * replaced with the same value.
+ */
+const TRIPLET_ERROR = precisionQuartersOf('triplets') as number;
 /** The rushed rhythm: each triplet's second note a twelfth of a beat early, its third a sixth. */
 const rushed = (step: number): number => {
   const place = step % 3;
@@ -70,8 +76,8 @@ const evidence = (toleranceMs: number, offsetMs?: (step: number) => number) =>
 describe('the triplet case: the window must be narrower than the error the skill is about', () => {
   it('the arithmetic: at the rung’s tempo the rushed notes fall inside the default window', () => {
     expect(msPerQuarterAt(TRIPLETS, 0, RUNG_FLOOR_PCT)).toBeCloseTo(quarterMs, 9);
-    expect(TIMING_PRECISION_QUARTERS.triplets).toBe(1 / 12);
-    const error = TIMING_PRECISION_QUARTERS.triplets * quarterMs;
+    expect(TRIPLET_ERROR).toBe(1 / 12);
+    const error = TRIPLET_ERROR * quarterMs;
     // Both displacements are inside ±150 ms: the measurement cannot see them.
     expect(quarterMs / 12).toBeLessThan(ENGINE_DEFAULTS.toleranceMs);
     expect(quarterMs / 6).toBeLessThan(ENGINE_DEFAULTS.toleranceMs);
@@ -92,8 +98,8 @@ describe('the triplet case: the window must be narrower than the error the skill
   });
 
   it('with a window narrower than the error, it gets evidence, and the evidence tells the two apart', () => {
-    const narrow = Math.floor(TIMING_PRECISION_QUARTERS.triplets * quarterMs) - 1;
-    expect(narrow).toBeLessThan(TIMING_PRECISION_QUARTERS.triplets * quarterMs);
+    const narrow = Math.floor(TRIPLET_ERROR * quarterMs) - 1;
+    expect(narrow).toBeLessThan(TRIPLET_ERROR * quarterMs);
     const even = evidence(narrow);
     expect(even).toMatchObject({ kind: 'measured', standard: 'full', n: 9, right: 9 });
     const hurried = evidence(narrow, rushed);
@@ -108,7 +114,7 @@ describe('the triplet case: the window must be narrower than the error the skill
   it('slower, the same default window can see it: precision is a relation, not a verdict on triplets', () => {
     // At the slider's slowest the error grows past the default window.
     const slow = MIN_TEMPO_PCT;
-    expect(TIMING_PRECISION_QUARTERS.triplets * msPerQuarterAt(TRIPLETS, 0, slow)).toBeGreaterThan(ENGINE_DEFAULTS.toleranceMs);
+    expect(TRIPLET_ERROR * msPerQuarterAt(TRIPLETS, 0, slow)).toBeGreaterThan(ENGINE_DEFAULTS.toleranceMs);
     const result = evidenceFor({
       observation: observe(TRIPLETS, { mode: 'tempo', tempoPct: slow, unseen: true, guide: 'off' }),
       played: TRIPLETS,

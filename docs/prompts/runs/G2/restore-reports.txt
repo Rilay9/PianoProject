@@ -1,0 +1,5 @@
+﻿(cd .) python docs/prompts/runs/G2/scripts-restore_reports.py
+content/scores/imported/SOURCES.md: HEAD's blob written CRLF, sha256 9d787e18111de9cbd1633ffbb8b3d6e4da0202ef9725fe4de36c94cbc9e3fd91; git status: clean
+docs/prompts/inventory.md: HEAD's blob written CRLF, sha256 1c2a9680587412a09a6850fb4aa1ecf0d36db2d1b97f5970fe527d95345ebe31; git status: clean
+docs/prompts/rung-claims.md: HEAD's blob written CRLF, sha256 41e51f649af5a156dd1ea5e84f9c4b1949fa6a68d80c8e1026a16488888dca7c; git status: clean
+exit=0

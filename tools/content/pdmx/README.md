@@ -245,6 +245,29 @@ fills the id in. **This machine's archive is 14648209.**
 `--record` still overrides it, and if you give one that disagrees with the CSV
 the table says so rather than quietly believing you.
 
+## 6. Excerpts — optional, before the build (E1)
+
+A whole piece is not always the unit a rung wants: the four bars where the leaps are, the phrase a
+learner can read while the whole piece is beyond them. Once `commit.py` has written the catalogue's
+rows, a build measures them, and then:
+
+```powershell
+py -3.11 tools\content\excerpts.py propose --for pitch.chromatic --rung 3.1
+```
+
+scores every window of every measured song for that target (`docs/03` §4c) and writes the
+candidates for the builder's excerpt view, `#/dev/microscope/excerpts` in the running app. The
+view shows each candidate on its parent with the bars around it, plays from before the cut to
+after it, moves a boundary a bar at a time, and exports your decisions:
+
+```powershell
+py -3.11 tools\content\excerpts.py --merge excerpt-decisions-<stamp>.jsonl
+```
+
+merges them into `content/sources/excerpts.json` the way a quarry keep lands in `pdmx.json`; the
+next build cuts each approved passage into its own item. Mining proposes and creates nothing: an
+approved excerpt is in the Library, on no rung.
+
 ## Then the ordinary build
 
 ```powershell

@@ -1,0 +1,22 @@
+== map-tests  02:26:07
+map-tests exit=1
+== map-min  02:26:21
+map-min exit=0
+== tsc  02:26:21
+tsc exit=0
+== lint  02:26:39
+lint exit=0
+== vitest-all  02:27:32
+vitest-all exit=1
+== build-app  02:36:13
+build-app exit=0
+SPECS: tests/e2e/app-shell.spec.ts tests/e2e/doors.spec.ts tests/e2e/empty-states.spec.ts tests/e2e/feedback-placement.spec.ts tests/e2e/first-day.spec.ts tests/e2e/help-strip.spec.ts tests/e2e/lab.spec.ts tests/e2e/landscape.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/modes-free-play.spec.ts tests/e2e/modes-placement.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.hierarchy.spec.ts tests/e2e/progress.spec.ts tests/e2e/projects.spec.ts tests/e2e/session-held-piece.spec.ts tests/e2e/session-run.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/sweeps.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts tests/e2e/wide.spec.ts
+== specs-exist  02:36:58
+specs-exist exit=0
+== e2e-targeted  02:36:58
+e2e-targeted exit=0
+CHAIN DONE 02:55:20
+== map-tests rerun after adding session-held-piece.spec.ts to two helpers' reader lists in docs/prompts/checks.json (this record)
+map-tests exit=0
+== vitest-timeouts-rerun: expectedNote, sessionProtocol, skillsCountFirst, tempoSoundAgainstMark alone: 25 passed, exit 0
+vitest-timeouts-rerun exit=0

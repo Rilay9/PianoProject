@@ -1,0 +1,5 @@
+python docs/prompts/runs/U82/scripts-mutant.py apply ; (vitest, build, e2e under the mutant: mutant-vitest-stage.txt, mutant-build-app.txt, mutant-e2e-slide.txt, mutant-e2e-slide-head.txt) ; python docs/prompts/runs/U82/scripts-mutant.py restore ; git diff --stat -- app/src/score/WindowRenderer.ts
+applied: the sideways count starts from the count asked
+restored byte for byte: True
+(git diff --stat on the renderer after restore: empty)
+exit=0

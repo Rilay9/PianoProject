@@ -1,0 +1,244 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-aa53a621e81c2cb8c/app
+
+ ❯ tests/unit/formerIdentity.test.ts (16 tests | 9 failed) 32ms
+   ❯ the learner’s material equality resolves a former identity to the row’s current one (A1, A2, A6) (5)
+     × A1: a run of the item stored against the dated file is met, played 8ms
+     × A2: the same run under another item id is met, naming that id 1ms
+     × A6: an encounter of the parent under its dated file counts toward the excerpt’s passage, as one under the current file does 1ms
+     × the equality key agrees with the resolved equality: equal exactly where sameMaterial says the same material 1ms
+   ❯ the lookups ask the current key and every former key of the material (A3, A4, A5) (6)
+     × A1 over the store: a recorded run of the dated file is met 8ms
+     × A3: a heard encounter keyed by the dated file under another id is found through the former key, and familiarity says heard 2ms
+     × A4: a pruned run’s summary keyed by the dated file is met, played; familiarity over the keyed summaries says practised 2ms
+     × A5: a project keyed by the dated file is the piece’s project; an action appends to that row, whose id stays the dated key 1ms
+   ❯ guards: what the resolution must not do (G1, G2, G3, G5) (5)
+     × the resolution’s own API: a former file resolves to the current row’s identity; a current, a generator, none and an unknown file are returned as they are 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/formerIdentity.test.ts > the learner’s material equality resolves a former identity to the row’s current one (A1, A2, A6) > A1: a run of the item stored against the dated file is met, played
+AssertionError: expected { contact: 'unmet', metById: true } to deeply equal { contact: 'met', metById: true, …(2) }
+
+- Expected
++ Received
+
+  {
+-   "contact": "met",
+-   "how": [
+-     "played",
+-   ],
+-   "metAs": [
+-     "song.margie",
+-   ],
++   "contact": "unmet",
+    "metById": true,
+  }
+
+ ❯ tests/unit/formerIdentity.test.ts:161:41
+    159|   it('A1: a run of the item stored against the dated file is met, play…
+    160|     const rows = [run(PIECE, OLD)];
+    161|     expect(contactIn(rows, PIECE, NEW)).toEqual({ contact: 'met', metB…
+       |                                         ^
+    162|     // Every day of the window's dated forms is the same material, and…
+    163|     expect(contactIn([run(PIECE, OLD_2)], PIECE, NEW).contact).toBe('m…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/unit/formerIdentity.test.ts > the learner’s material equality resolves a former identity to the row’s current one (A1, A2, A6) > A2: the same run under another item id is met, naming that id
+AssertionError: expected { contact: 'unmet', metById: false } to deeply equal { Object (contact, metById, ...) }
+
+- Expected
++ Received
+
+  {
+-   "contact": "met",
+-   "how": [
+-     "played",
+-   ],
+-   "metAs": [
+-     "song.margie-under-an-old-id",
+-   ],
++   "contact": "unmet",
+    "metById": false,
+  }
+
+ ❯ tests/unit/formerIdentity.test.ts:167:56
+    165|
+    166|   it('A2: the same run under another item id is met, naming that id', …
+    167|     expect(contactIn([run(RENAMED, OLD)], PIECE, NEW)).toEqual({ conta…
+       |                                                        ^
+    168|   });
+    169|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/unit/formerIdentity.test.ts > the learner’s material equality resolves a former identity to the row’s current one (A1, A2, A6) > A6: an encounter of the parent under its dated file counts toward the excerpt’s passage, as one under the current file does
+AssertionError: expected null to be '2026-09-29T12:00:00.000Z' // Object.is equality
+
+- Expected:
+"2026-09-29T12:00:00.000Z"
+
++ Received:
+null
+
+ ❯ tests/unit/formerIdentity.test.ts:175:28
+    173|     const underOld = familiarityIn(target, history({ encounters: [hear…
+    174|     expect(underNew.heard).toBe(AT);
+    175|     expect(underOld.heard).toBe(AT);
+       |                            ^
+    176|     expect(underOld).toEqual(underNew);
+    177|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/unit/formerIdentity.test.ts > the learner’s material equality resolves a former identity to the row’s current one (A1, A2, A6) > the equality key agrees with the resolved equality: equal exactly where sameMaterial says the same material
+TypeError: learnerMaterialKey is not a function
+ ❯ tests/unit/formerIdentity.test.ts:183:25
+    181|     for (const a of all) {
+    182|       for (const b of all) {
+    183|         expect(material.learnerMaterialKey(a, 'x') === material.learne…
+       |                         ^
+    184|       }
+    185|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/unit/formerIdentity.test.ts > the lookups ask the current key and every former key of the material (A3, A4, A5) > A1 over the store: a recorded run of the dated file is met
+AssertionError: expected { contact: 'unmet', metById: true } to deeply equal { contact: 'met', metById: true, …(2) }
+
+- Expected
++ Received
+
+  {
+-   "contact": "met",
+-   "how": [
+-     "played",
+-   ],
+-   "metAs": [
+-     "song.margie",
+-   ],
++   "contact": "unmet",
+    "metById": true,
+  }
+
+ ❯ tests/unit/formerIdentity.test.ts:205:39
+    203|   it('A1 over the store: a recorded run of the dated file is met', asy…
+    204|     await recordRun(result(PIECE, OLD), new Date(2026, 8, 29, 12));
+    205|     expect(await contact(PIECE, NEW)).toEqual({ contact: 'met', metByI…
+       |                                       ^
+    206|   });
+    207|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/unit/formerIdentity.test.ts > the lookups ask the current key and every former key of the material (A3, A4, A5) > A3: a heard encounter keyed by the dated file under another id is found through the former key, and familiarity says heard
+AssertionError: expected { contact: 'unmet', metById: false } to deeply equal { Object (contact, metById, ...) }
+
+- Expected
++ Received
+
+  {
+-   "contact": "met",
+-   "how": [
+-     "heard",
+-   ],
+-   "metAs": [
+-     "song.margie-under-an-old-id",
+-   ],
++   "contact": "unmet",
+    "metById": false,
+  }
+
+ ❯ tests/unit/formerIdentity.test.ts:211:39
+    209|     const db = await openDatabase();
+    210|     await db!.put('encounters', heardRow(RENAMED, OLD));
+    211|     expect(await contact(PIECE, NEW)).toEqual({ contact: 'met', metByI…
+       |                                       ^
+    212|     const target = { itemId: PIECE, material: NEW };
+    213|     const facts = familiarityIn(target, await historyFor(target, { byI…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/unit/formerIdentity.test.ts > the lookups ask the current key and every former key of the material (A3, A4, A5) > A4: a pruned run’s summary keyed by the dated file is met, played; familiarity over the keyed summaries says practised
+AssertionError: expected { contact: 'unmet', metById: true } to deeply equal { contact: 'met', metById: true, …(2) }
+
+- Expected
++ Received
+
+  {
+-   "contact": "met",
+-   "how": [
+-     "played",
+-   ],
+-   "metAs": [
+-     "song.margie",
+-   ],
++   "contact": "unmet",
+    "metById": true,
+  }
+
+ ❯ tests/unit/formerIdentity.test.ts:222:39
+    220|     const db = await openDatabase();
+    221|     await db!.put('contacts', summary);
+    222|     expect(await contact(PIECE, NEW)).toEqual({ contact: 'met', metByI…
+       |                                       ^
+    223|     const target = { itemId: PIECE, material: NEW };
+    224|     const found = await historyFor(target, { byId: BY_ID });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/unit/formerIdentity.test.ts > the lookups ask the current key and every former key of the material (A3, A4, A5) > A5: a project keyed by the dated file is the piece’s project; an action appends to that row, whose id stays the dated key
+AssertionError: expected undefined to deeply equal { …(6) }
+
+- Expected:
+{
+  "history": [
+    {
+      "at": "2026-09-29T12:00:00.000Z",
+      "state": "learning",
+      "why": "learn",
+    },
+  ],
+  "id": "file:0000000000000000000000000000000000000000000000000000000000000000",
+  "itemId": "song.margie-under-an-old-id",
+  "material": {
+    "kind": "file",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  },
+  "since": "2026-09-29T12:00:00.000Z",
+  "state": "learning",
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/formerIdentity.test.ts:231:67
+    229|   it('A5: a project keyed by the dated file is the piece’s project; an…
+    230|     const stored = projectRow(RENAMED, OLD);
+    231|     expect(projectIn([stored], { itemId: PIECE, material: NEW })).toEq…
+       |                                                                   ^
+    232|     const db = await openDatabase();
+    233|     await db!.put('projects', stored);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/unit/formerIdentity.test.ts > guards: what the resolution must not do (G1, G2, G3, G5) > the resolution’s own API: a former file resolves to the current row’s identity; a current, a generator, none and an unknown file are returned as they are
+TypeError: learnerMaterial is not a function
+ ❯ tests/unit/formerIdentity.test.ts:302:21
+    300|     const scale: Identity = { kind: 'generator', family: 'pentatonic',…
+    301|     const none: Identity = { kind: 'none', why: 'made when it opens: n…
+    302|     expect(material.learnerMaterial(OLD)).toEqual(NEW);
+       |                     ^
+    303|     expect(material.learnerMaterial(OLD_2)).toEqual(NEW);
+    304|     expect(material.learnerMaterial(NEW)).toEqual(NEW);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 7 passed (16)
+   Start at  23:27:05
+   Duration  1.79s (import 57%, transform 38%, tests 3%, worker 3%)
+
+exit 1

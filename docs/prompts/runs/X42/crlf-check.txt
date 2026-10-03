@@ -1,0 +1,2 @@
+blues.3 ScoreScreen.ts: LF needle found False; CRLF needle found True
+4.7 style.css: LF needle found False; CRLF needle found True

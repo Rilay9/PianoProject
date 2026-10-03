@@ -40,3 +40,8 @@ If a composed recipe cannot be made reliable within the promises by any honest c
 ## Report
 
 Judgement first: the two-hand skip learner's diary days around the move, before and after, and the composed contract's table (rung × reachable recipe: reliable, or declared unavailable with the reason). Then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes from unpiped runs (`tsc -b`, lint, vitest, and `today` if the rows changed); unverified beside what passes.
+
+## Record
+
+lane: C4d · closes: — · entry: 78 · role: history
+index: The contract over composed recipes the reader can reach, unreliable compositions declared; the hands-together opportunity as coordination; the four reruns (the C4.5 review's two P1s) | build | done 2026-09-27 (Entry 78) |

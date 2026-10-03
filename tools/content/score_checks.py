@@ -1617,13 +1617,15 @@ def run(rows: list[dict], *, only: set[str], analysis: bool, verbose: bool,
         # the other copy of it holds sixteen bars of thirty-two.
         by_work: dict[str, list[str]] = defaultdict(list)
         for row in rows:
-            if row["id"] in scores:
+            # An excerpt (E1) is a passage of its parent by definition: short against every copy of
+            # the work and inside its parent. It is neither a copy to compare with nor a truncation.
+            if row["id"] in scores and row.get("type") != "excerpt":
                 key = work_key(row.get("title") or "")
                 if len(key) >= ARCHIVE_KEY_MIN_CHARS:
                     by_work[key].append(row["id"])
         for row in rows:
             score = scores.get(row["id"])
-            if score is None:
+            if score is None or row.get("type") == "excerpt":
                 continue
             rel = row.get("file") or ""
             mine = prints.get(row["id"], [])
@@ -1655,6 +1657,8 @@ def run(rows: list[dict], *, only: set[str], analysis: bool, verbose: bool,
             for row in rows
             if row.get("variantOf") and row["id"] in prints
         }
+        # An excerpt's bars inside its parent's are declared by `excerptOf` (E1), as a variant's are.
+        variants.update({row["id"]: row["excerptOf"] for row in rows if row.get("excerptOf") and row["id"] in prints})
         flags.extend(containment_flags(prints, titles, variants))
 
     if analysis and fresh:

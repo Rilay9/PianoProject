@@ -118,9 +118,18 @@ function metreAt(model: ScoreModelData, measure: number): { beats: number; beatT
   return timeSignatureAt(model.timeSigMap, measure) ?? { beats: 4, beatType: 4 };
 }
 
-/** Beats of three eighths: the generator's own rule (`sightReading.ts`), 3/8 included. */
+/**
+ * Compound time: more than one beat of three eighths — 6/8, 9/8, 12/8, and the rarer 15/8 and 18/8.
+ * 3/8 is one group of three eighths, commonly counted as simple triple, three eighth-note beats, and
+ * is read so (L120b; the reviewer's ruling on L120a, `docs/review/responses/0bcd3be0.md`: 3/8 read
+ * as compound was this rule's error). The model carries no grouping fact (`TimeSignatureEntry`), so
+ * none is read here. The one reading of a bar's beat: `beatLength`, and with it `syncopation` and
+ * `dottedQuarters`, read 3/8 by it too. The generator's and the MIDI importer's own copies of the
+ * older rule (`sightReading.ts`, `readingControls.ts`, `readMidi.ts`) include 3/8; nothing the app
+ * generates is in 3/8.
+ */
 function isCompound(metre: { beats: number; beatType: number }): boolean {
-  return metre.beatType === 8 && metre.beats % 3 === 0;
+  return metre.beatType === 8 && metre.beats > 3 && metre.beats % 3 === 0;
 }
 
 /** The felt beat, in quarter-note beats: a dotted quarter in compound time. */
@@ -390,7 +399,11 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
   /** A note written in a triplet. A tuplet of another number is not one. */
   triplets: (m) => found('triplets', placed(m).filter((p) => p.note.tuplet === 3).map(locate)),
 
-  /** Compound time: beats of three eighths (6/8, 9/8, 12/8; 3/8 by the same rule). Located at every note in it. */
+  /**
+   * Compound time: more than one beat of three eighths (6/8, 9/8, 12/8; never 3/8, which is simple
+   * triple, `isCompound`). Located at every note in a compound bar, so a 3/8 piece with one 6/8 bar
+   * is located at that bar's notes alone.
+   */
   compoundMetre: (m) => {
     const present = m.timeSigMap.some((t) => isCompound(t));
     return found(

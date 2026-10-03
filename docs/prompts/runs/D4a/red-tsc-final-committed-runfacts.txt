@@ -1,0 +1,6 @@
+$ npx.cmd tsc -b
+tests/unit/transferOfferOnTheRun.test.ts(485,5): error TS2578: Unused '@ts-expect-error' directive.
+tests/unit/transferOfferOnTheRun.test.ts(487,5): error TS2578: Unused '@ts-expect-error' directive.
+tests/unit/transferOfferOnTheRun.test.ts(489,5): error TS2578: Unused '@ts-expect-error' directive.
+
+exit 2

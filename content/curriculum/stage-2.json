@@ -19,7 +19,8 @@
               "concepts": [
                 "hands-together",
                 "held-LH",
-                "vertical-alignment"
+                "vertical-alignment",
+                "leap"
               ],
               "textFile": "lessons/2.1.md",
               "exerciseOptions": [
@@ -203,7 +204,6 @@
               "textFile": "lessons/2.3.md",
               "exerciseOptions": [
                 "drill.chord.c-f-g",
-                "exercise.inversions.c-major.both",
                 "exercise.cadence.c.root",
                 "exercise.cadence.c.voice-led"
               ],
@@ -321,7 +321,8 @@
                 "song.folk.greensleeves.chords",
                 "song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx",
                 "song.folk.streets-of-laredo.pdmx",
-                "song.pop.careless-love-blues.pdmx"
+                "song.pop.careless-love-blues.pdmx",
+                "song.folk.cielito-lindo.simple"
               ],
               "mastery": {
                 "minAccuracy": 0.9,

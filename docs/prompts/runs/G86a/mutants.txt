@@ -1,0 +1,47 @@
+## the state check removed
+exit 1
+Tests  12 failed | 13 passed (25)
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+× (a) a start that never answers: ▶ busy until the bound, then nothing carries on, ▶ reads ▶ and the line says so; the next tap asks again 69ms
+× (b) a fresh start the same: no run starts, ▶ reads ▶, the line says so; the next tap starts it 58ms
+× (b) and Space’s start the same, Space asking again the next time 63ms
+× (c) ▶ over Hear it, refused: the demonstration goes on, nothing is started, and the line says so over it 63ms
+× (d) a start that fails: refused the same, with the sentence 62ms
+× (e) a start that answers with the sound still not running: refused the same 64ms
+× (f) a start that answers after the bound refused: the sentence goes, and nothing starts by itself 64ms
+× (f) and the same where the sound starts some other way while the sentence stands 61ms
+× (g) the sentence reaches the bar’s left end and the stage’s corner, where the header is not drawn 62ms
+× Hear it with a start that never answers: no demonstration, the line says so, and ▶ is not left dead 62ms
+× Hear it whose start fails, then answers with the sound still off: no demonstration either time, the line says so 63ms
+× Hear it answered after the bound: the sentence goes, and the demonstration does not start by itself 64ms
+
+## the sentence not set
+exit 1
+Tests  12 failed | 13 passed (25)
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+× (a) a start that never answers: ▶ busy until the bound, then nothing carries on, ▶ reads ▶ and the line says so; the next tap asks again 71ms
+× (b) a fresh start the same: no run starts, ▶ reads ▶, the line says so; the next tap starts it 55ms
+× (b) and Space’s start the same, Space asking again the next time 64ms
+× (c) ▶ over Hear it, refused: the demonstration goes on, nothing is started, and the line says so over it 63ms
+× (d) a start that fails: refused the same, with the sentence 65ms
+× (e) a start that answers with the sound still not running: refused the same 63ms
+× (f) a start that answers after the bound refused: the sentence goes, and nothing starts by itself 62ms
+× (f) and the same where the sound starts some other way while the sentence stands 62ms
+× (g) the sentence reaches the bar’s left end and the stage’s corner, where the header is not drawn 63ms
+× Hear it with a start that never answers: no demonstration, the line says so, and ▶ is not left dead 61ms
+× Hear it whose start fails, then answers with the sound still off: no demonstration either time, the line says so 62ms
+× Hear it answered after the bound: the sentence goes, and the demonstration does not start by itself 63ms
+
+## the waiting flags left set on a refusal
+exit 1
+Tests  9 failed | 16 passed (25)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+× (a) a start that never answers: ▶ busy until the bound, then nothing carries on, ▶ reads ▶ and the line says so; the next tap asks again 72ms
+× (b) a fresh start the same: no run starts, ▶ reads ▶, the line says so; the next tap starts it 57ms
+× (b) and Space’s start the same, Space asking again the next time 62ms
+× (c) ▶ over Hear it, refused: the demonstration goes on, nothing is started, and the line says so over it 63ms
+× (d) a start that fails: refused the same, with the sentence 62ms
+× (e) a start that answers with the sound still not running: refused the same 64ms
+× (f) a start that answers after the bound refused: the sentence goes, and nothing starts by itself 61ms
+× Hear it with a start that never answers: no demonstration, the line says so, and ▶ is not left dead 63ms
+× Hear it whose start fails, then answers with the sound still off: no demonstration either time, the line says so 62ms

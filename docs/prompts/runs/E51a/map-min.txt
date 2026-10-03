@@ -1,0 +1,23 @@
+# checks for 15 path(s): 15 matched, 0 unmatched
+# content/sources/excerpts.json: content/**, content/sources/**, content/sources/excerpts.json
+# docs/prompts/checks.json: docs/prompts/checks.json, docs/**
+# docs/prompts/runs/E51a/ENTRY.md: docs/**
+# docs/prompts/runs/E51a/chain.txt: docs/**
+# docs/prompts/runs/E51a/e2e.txt: docs/**
+# docs/prompts/runs/E51a/green-unit.txt: docs/**
+# docs/prompts/runs/E51a/identity.py: docs/**
+# docs/prompts/runs/E51a/mutants.py: docs/**
+# docs/prompts/runs/E51a/mutants.txt: docs/**
+# docs/prompts/runs/E51a/red-on-committed.txt: docs/**
+# docs/prompts/runs/E51a/restore.txt: docs/**
+# docs/prompts/runs/E51a/splice.py: docs/**
+# docs/prompts/runs/E51a/vitest.txt: docs/**
+# tools/content/tests/test_checks_for_paths.py: tools/content/tests/test_*.py
+# tools/content/tests/test_excerpts.py: tools/content/tests/test_*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/excerpts.spec.ts tests/e2e/library.spec.ts --workers=4

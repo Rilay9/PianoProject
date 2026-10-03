@@ -1,0 +1,7 @@
+﻿python -m unittest discover -s tools/content/tests -t tools/content -p test_untaught_options.py
+.......................
+----------------------------------------------------------------------
+Ran 23 tests in 0.595s
+
+OK
+exit=0

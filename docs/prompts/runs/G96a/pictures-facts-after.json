@@ -1,0 +1,34 @@
+{
+  "phase": "after",
+  "facts": [
+    [
+      "Level",
+      "≈ L5.0"
+    ],
+    [
+      "Hands",
+      "Hands together"
+    ],
+    [
+      "Type",
+      "PDF"
+    ],
+    [
+      "What it trains",
+      "—"
+    ],
+    [
+      "Source",
+      "Imported by you"
+    ],
+    [
+      "Licence",
+      "user-imported"
+    ]
+  ],
+  "paragraphs": [
+    "Estimated level — change it if it feels wrong."
+  ],
+  "panelFitsViewport": true,
+  "panelScrolls": false
+}

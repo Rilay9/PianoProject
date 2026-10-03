@@ -1,0 +1,4 @@
+the fixture's parent sha256 c64c189e8d78…, a fresh run's 9b24851973be…, the built catalogue's identity for song.classical.bach-menuet-bwv-anh-113.pdmx 9b24851973be…; the first candidate's differences: 2 (2 the parent's sha256, 0 run-local, 0 other)
+   runs[0].candidates[0].parent.sha256: "c64c189e8d78cfae168e6b978fbbbec28582229f6d13377aa540f09eb5c7c514" -> "9b24851973be44d51b23296f41010bf755eb007b26b3b2e5f47c7588dd4b03c2"
+   runs[0].candidates[0].parent.source.checksum: "c64c189e8d78cfae168e6b978fbbbec28582229f6d13377aa540f09eb5c7c514" -> "9b24851973be44d51b23296f41010bf755eb007b26b3b2e5f47c7588dd4b03c2"
+wrote app/tests/e2e/fixtures/excerpt-candidates.json: 2 occurrence(s) of the parent's sha256 spliced, nothing else

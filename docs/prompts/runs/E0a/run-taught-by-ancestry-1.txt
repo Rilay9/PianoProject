@@ -1,0 +1,31 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-afd1b1d84e0d04c46/app
+
+ ❯ tests/unit/taughtByAncestry.test.ts (13 tests | 1 failed) 16ms
+   ❯ the gate’s consumers read the learner’s own path (2)
+     × the session on B.6: the skill step offers the walking-bass drill only to a learner whose path went through A.5 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > the gate’s consumers read the learner’s own path > the session on B.6: the skill step offers the walking-bass drill only to a learner whose path went through A.5
+AssertionError: the prerequisite step on B.6, never the skill step: the file’s order credited A.5: expected 'exposure' to be 'prerequisite' // Object.is equality
+
+Expected: "prerequisite"
+Received: "exposure"
+
+ ❯ tests/unit/taughtByAncestry.test.ts:265:120
+    263|     const withoutA = warmup(['core', 'B']);
+    264|     expect(withoutA?.item?.id).toBe('ex.walks');
+    265|     expect(withoutA?.claim?.kind, 'the prerequisite step on B.6, never…
+       |                                                                                                                        ^
+    266|   });
+    267| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  17:16:09
+   Duration  433ms (transform 77%, import 17%, tests 5%, worker 1%)
+

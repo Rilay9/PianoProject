@@ -1,0 +1,7 @@
+
+Running 1 test using 1 worker
+
+  ok 1 tests\e2e\content-render.spec.ts:221:3 › content render check › every catalog item renders and yields at least one step (2.4s)
+
+  1 passed (5.2s)
+exit=0

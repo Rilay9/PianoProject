@@ -1,0 +1,37 @@
+$ python docs/prompts/runs/Doc-splice/scripts/splice.py
+inserted docs/08-test-map.md: 1 line(s) after line 40 ("| **The transfer offer's relationship persisted be"); now lines 41-41
+inserted docs/08-test-map.md: 1 line(s) after line 44 ('| **One public gate; novelty bound to D4; the seed'); now lines 45-45
+inserted docs/08-test-map.md: 1 line(s) after line 85 ('| **A key signature Humdrum writes between two bar'); now lines 86-86
+inserted docs/08-test-map.md: 1 line(s) after line 120 ('| **How many systems the stage holds, and who deci'); now lines 121-121
+inserted docs/08-test-map.md: 22 line(s) after line 148 ('`playwright.states.config.ts`.'); now lines 149-170
+inserted docs/08-test-map.md: 1 line(s) after line 301 ("  breakpoint (B's remainder, a sweep)."); now lines 302-302
+replaced docs/08-test-map.md: line 317, 40 chars -> 145 chars ('and never on a shape that then changes);')
+appended docs/08-test-map.md: line 242 gains 221 chars ('- `lab.spec.ts` — the accompaniment lab from the L')
+replaced docs/08-test-map.md: line 359, 29 chars -> 83 chars ('*not measured* included (C1).')
+replaced docs/08-test-map.md: line 403, 49 chars -> 278 chars ("and the store's every row read through `contact`.")
+inserted docs/08-test-map.md: 2 line(s) after line 393 ('- `el.test.ts` —'); now lines 394-395
+inserted docs/08-test-map.md: 1 line(s) after line 409 ('- `fallbackOrder.test.ts` —'); now lines 410-410
+replaced docs/08-test-map.md: line 437, 32 chars -> 64 chars ("and C3's *Not judged* sentences;")
+replaced docs/08-test-map.md: line 556, 61 chars -> 86 chars ('the input and range, `unseen` true and false, `dem')
+replaced docs/08-test-map.md: line 452, 149 chars -> 206 chars ('and the two committed MIDI fixtures converted with')
+replaced docs/08-test-map.md: line 452, 154 chars -> 320 chars ("read back off each side's written file. Skips with")
+inserted docs/08-test-map.md: 1 line(s) after line 622 ('- `wavEncode.test.ts` —'); now lines 623-623
+inserted docs/08-test-map.md: 2 line(s) after line 653 ('- `test_bar_splits.py` —'); now lines 654-655
+inserted docs/08-test-map.md: 1 line(s) after line 661 ('- `test_evidence_gate.py` —'); now lines 662-662
+inserted docs/08-test-map.md: 1 line(s) after line 678 ('- `test_licensing.py` —'); now lines 679-679
+inserted docs/08-test-map.md: 2 line(s) after line 688 ('- `test_physical_gate.py` —'); now lines 689-690
+replaced docs/08-test-map.md: line 701, 69 chars -> 165 chars ('- `test_technique_units.py` — `add_technique_units')
+replaced docs/08-test-map.md: line 720, 100 chars -> 308 chars ("and the app's own `crossed-hands.mid` and `two-han")
+replaced docs/08-test-map.md: line 721, 140 chars -> 260 chars ('The cases that need the three real Disklavier reco')
+inserted docs/08-test-map.md: 1 line(s) before line 720 ('- `parity_reference.py` — not a test: it writes wh'); now lines 720-720
+inserted docs/08-test-map.md: 3 line(s) after line 722 ('- `test_converter.py` — the committed harness for '); now lines 723-725
+replaced docs/04-ui-spec.md: line 1733, 32 chars -> 112 chars ('(one frame after the first draw)')
+inserted docs/04-ui-spec.md: 14 line(s) after line 1736 ('that still shrinks it, once.'); now lines 1737-1750
+inserted docs/03-content-pipeline.md: 4 line(s) after line 584 ('  their versions move separately.'); now lines 585-588
+inserted docs/03-content-pipeline.md: 13 line(s) after line 615 ('  it came through is not on the row.'); now lines 616-628
+inserted docs/03-content-pipeline.md: 3 line(s) after line 656 ('  cut, the level estimated on the cut, the hands a'); now lines 657-659
+inserted docs/03-content-pipeline.md: 7 line(s) after line 660 ('  §4c has the rest.'); now lines 661-667
+inserted docs/03-content-pipeline.md: 2 line(s) after line 741 ('  parent bytes is warned as stale.'); now lines 742-743
+inserted docs/03-content-pipeline.md: 5 line(s) after line 758 ("  (the parent's, whole), which the Library's Sourc"); now lines 759-763
+34 operations; files written: docs/03-content-pipeline.md, docs/04-ui-spec.md, docs/08-test-map.md
+exit=0

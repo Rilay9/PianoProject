@@ -33,15 +33,16 @@
 import type { DrillKind } from '../engine/drills/types';
 import type { Refusal } from '../evidence/evidence';
 import type { Skill } from '../demands/vocabulary';
-import type { ExposureFamily, ReadingMove, ReadingWhy, SlotClaim, SlotKind } from '../curriculum/session';
+import type { ExposureFamily, HeldState, ReadingMove, ReadingWhy, SlotClaim, SlotKind } from '../curriculum/session';
 import type { AlternativeTier } from '../curriculum/selectors';
 import { VOCABULARY_V0 } from '../evidence/vocabulary';
-import type { ReadingRecipe } from '../data/db';
+import type { ProjectAction, ProjectState, ReadingRecipe } from '../data/db';
 import type { RequirementReading, RungReading } from '../evidence/rungState';
 import type { LadderState } from '../evidence/ladder';
 import type { EvidenceJobStatus } from '../data/evidenceJob';
 import type { SkillMove } from '../data/skillsStore';
 import type { EvidenceExclusion } from '../data/db';
+import type { Measurement, Provenance } from '../curriculum/types';
 
 /** One control, and what it says back. */
 export interface HelpControl {
@@ -112,7 +113,10 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
     title: 'Keep tempo',
     what: 'A click and a moving cursor that carry on whether you keep up or not, and mark what you miss.',
     now: 'The count-in clicks, then play along.',
-    counts: 'A pass needs both the accuracy and the share of the written tempo set in Settings, in one run.',
+    // The lesson's own numbers judge a run opened for a lesson (`masteryCriteriaFor`); Settings only where it
+    // states none or no lesson opened the run (X46: "set in Settings" was false on every rung with its own).
+    // CL11a: before the run, the learner knows what the accuracy counts, and that a key not in the music costs credit.
+    counts: 'A pass needs both the accuracy and the share of the written tempo, in one run: the lesson’s numbers where it states them, otherwise the ones set in Settings. Accuracy is the written notes you play right in time; each wrong note costs as much as a note you miss.',
     controls: [
       { name: 'Tempo', does: 'A share of the written speed. Slower is how a hard bar becomes an easy one.' },
       { name: '▶', does: 'Starts the run. With a piano connected your own first note starts it instead, and the clock waits for it.' },
@@ -186,15 +190,29 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
  *
  * Here beside `MODE_HELP` because they are the same facts told at the other
  * end of the run: *Wait for me* says before a run that a pass is measured in
- * Keep tempo, and the sheet says it again after one, in the same words, so
- * the two cannot drift apart.
+ * Keep tempo, and the sheet says after one what a pass needs, in the lesson
+ * page's words (`keepTempoAt`), so the two cannot drift apart.
  */
 export const SUMMARY_TEXT = {
   /**
    * The Tempo line of a Wait for me run. The slider's value is a setting
-   * nobody played to, so it is not printed as a share of anything.
+   * nobody played to, so it is not printed as a share of anything. Where a
+   * pass is played is the *To pass* line's (X46): it names the numbers, which
+   * this line did not.
    */
-  waitTempo: 'Not judged in Wait for me — to pass, play it in Keep tempo',
+  waitTempo: 'Not judged in Wait for me',
+  /**
+   * What a pass of this run needed, on a judged run that did not meet it (X46,
+   * `responses/9e14839e.md` §2 points 2 and 5): the run's own standard — the
+   * lesson's numbers, or the Settings pair where none judged it — in the words
+   * the lesson page's *What the app counts* uses. A Keep tempo run at 70 % read
+   * *Run finished* with no sentence naming the 80 % it needed.
+   */
+  toPassLabel: 'To pass',
+  toPass: (accuracy: number, tempoPct: number, suggested = false): string =>
+    tempoPct > 0 ? `${percent(accuracy)} of the notes, ${keepTempoAt(tempoPct, suggested)}` : `${percent(accuracy)} of the notes`,
+  /** The sheet's control that does what *To pass* says, where the run's own mode or tempo could not count (X46). */
+  toTheStandard: (tempoPct: number): string => `Keep tempo at ${String(Math.round(tempoPct))} %`,
   /**
    * The heading of a Wait for me run whose notes met the pass. "Run finished"
    * read as a failure over a run that had every note it needed, and "Passed"
@@ -221,6 +239,14 @@ export const SUMMARY_TEXT = {
   /** …and where nothing was listening, how to be heard next time. */
   notMeasuredNoInput: 'To be marked, connect a piano or choose Screen keys in ⋯.',
   /**
+   * The line under the same heading on a drill's end sheet when the set ended with no card answered (U96):
+   * *End drill* before the first answer, or, on a kind the learner closes card by card (loud and soft, a
+   * rhythm), *Next* or *Done* with nothing played. (A skipped card is not this: it counts as answered, wrong,
+   * `PromptDrill.next`.) Its sheet printed *Not passed yet* over *Accuracy 0%*, a verdict and a share of
+   * nothing. No answers rather than no notes, so a sentence of its own.
+   */
+  notAnswered: 'Nothing was answered, so there is nothing to mark.',
+  /**
    * A sight-read of a phrase already on the record, or run again (T37): the
    * material has been seen, so the run is not a first reading (`05` §7). It is
    * kept as practice (C1): its minutes and its attempt count, and it is
@@ -234,6 +260,14 @@ export const SUMMARY_TEXT = {
    * above (C1; the reviewer's decision 3).
    */
   sightReadHeard: 'Sight-reading counts only on music you have not heard — this run is kept as practice.',
+  /**
+   * A sight-read of a phrase the learner looked at on an earlier visit and
+   * never played or heard (G1): the notation has been read before, so the
+   * run is not a first reading of it. The viewing is a stored encounter now,
+   * read back when the phrase is opened again; looking at it on this visit,
+   * before playing, is what sight-reading is and costs nothing.
+   */
+  sightReadSeen: 'Sight-reading counts only on music you have not seen before — this run is kept as practice.',
   /**
    * The second half of a performance's heading when the piece was played to
    * the learner part way through it (T40): the take is kept as practice, not
@@ -394,7 +428,7 @@ export function notJudgedLines(
 export const HISTORY_TEXT = {
   /** After a Wait run's accuracy, in place of "at 70%": the slider is not a tempo anyone kept. */
   tempoNotJudged: 'tempo not judged',
-  /** A run the app heard nothing of — the sheet's own heading for it. */
+  /** A run the app heard nothing of, or a drill set nobody answered (U102) — the sheet's own heading for each. */
   notMeasured: 'Not measured',
   /** …and the answer the learner gave, which is the whole of its record. */
   youSaid: (report: 'rough' | 'ok' | 'clean'): string =>
@@ -464,6 +498,28 @@ export const STATE_TEXT = {
    */
   restarted: (bar: number | string, what: string): string =>
     `Restarted at bar ${String(bar)} ${what} — ▶ when ready`,
+  /**
+   * The tap asked the sound to start and it had not started when the wait
+   * ended — no answer inside `PLAY_SOUND_WAIT_MS`, a refusal, or an answer
+   * with the audio still off — so nothing started (G86a, the reviewer's ruling
+   * in `responses/970fd770.md`). What happened first, then what to do; both
+   * inside the forty-odd characters the line shows at 342 px. It names the
+   * control that was tapped, because that tap is the one that asks again: ▶
+   * (or Space, its keyboard twin), or `Hear it`, which after its own refusal
+   * wants the demonstration, not a run. *Did not start*, not *is off*: it is
+   * about this tap, not a verdict that the phone has no sound.
+   *
+   * Every other control whose tap can start the sound names itself the same
+   * way (U105): by its label, or its first word where the label would pass the
+   * forty-odd characters (*Slower*, not *Slower (−10%)*). A label that already
+   * ends in *again* (*Start again*, *Try again*, the summary's *Again*) takes
+   * no second one. A bar held down is a hold (`verb: 'hold'`). After a key, on a
+   * connected piano or on the screen, it names ▶ with no *again*
+   * (`again: false`): ▶ was not what the learner used, and its tap can start
+   * the sound.
+   */
+  soundOff: (control: string, how: { verb?: 'tap' | 'hold'; again?: boolean } = {}): string =>
+    `Sound did not start — ${how.verb ?? 'tap'} ${control}${(how.again ?? !/\bagain$/i.test(control)) ? ' again' : ''}`,
 } as const;
 
 /**
@@ -526,6 +582,18 @@ export const ROW_TEXT = {
 } as const;
 
 /**
+ * A transfer offer the Score screen could not find (D4a; `data/offerSnapshot.ts`), on a line of its own
+ * under the header, which folds away when the run starts: the item opens as ordinary practice, and the
+ * run records no intent and no relationship. `gone` for an offer no longer on today's card — the card
+ * recomposed, the row swapped, another day's or another item's link; `unreadable` where what was kept
+ * could not be read, which is not the learner's doing and is not said to be.
+ */
+export const OFFER_TEXT = {
+  gone: 'This offer is no longer on today’s card; opened as practice.',
+  unreadable: 'This offer could not be read back; opened as practice.',
+} as const;
+
+/**
  * Why Today offers this sight-reading phrase, in one line (C4, C4c; `04` §2,
  * design §11 item 4, backlog I1).
  *
@@ -560,8 +628,13 @@ export const READING_TEXT = {
   hold: 'Another like it',
   /** Two reads against the recipe, and the reads single nothing out (C4c). */
   unsure: 'not sure yet what went wrong',
-  /** A demand singled out, and no control here keeps it out (C4c). */
-  kept: 'and every phrase here has them',
+  /**
+   * A demand singled out, and no control here keeps it out (C4c). X1's voice pass (U57): it said "and every
+   * phrase here has them", which is the reader's reason in the reader's terms — and true only where the recipe
+   * promises the demand in every phrase (U58). What the learner needs is what the app can do about it: it
+   * cannot take them out on this row, so the next phrase has them too.
+   */
+  kept: 'and they can’t be left out here',
   /** The key signature's control, on: a key to read, not a harder one (C4c, U52). */
   keySignature: 'A key signature to read',
   /** The rung that holds the row has moved on, and its phrases may hold more (C4c). */
@@ -573,6 +646,120 @@ export const READING_TEXT = {
   /** A singled-out demand's words: "skips went wrong in 3 phrases". */
   wentWrong: 'went wrong in',
 } as const;
+
+/**
+ * What the project sheet, Progress and Stage 9's page say about a project (G1b; `04` §5, §6, §3f
+ * rows in Entry 138). The actions are the learner's words for what they are doing with the piece;
+ * the states are the same facts said as where the piece is now. Nothing here says the app decided,
+ * judged or scheduled anything: every change is the learner's.
+ */
+export const PROJECT_TEXT = {
+  /** The finish sheet's door, and the empty Progress list's pointer to it. */
+  door: 'What next with this piece?',
+  /** A piece with no project: the sheet's state line. */
+  none: 'Not a project yet',
+  /** A Stage 9 song option with no project. */
+  notStarted: 'not started',
+  /** Stage 9's page, in place of *What the app counts*. */
+  stageNine: 'A project: there is no rung to pass here.',
+  actions: {
+    save: 'Save for later',
+    learn: 'Learn this',
+    polish: 'Prepare it for performance',
+    ready: 'It is ready',
+    performed: 'I performed it',
+    keep: 'Keep it playable',
+    'bring-back': 'Bring it back',
+    pause: 'Pause',
+    retire: 'Put it away',
+  } satisfies Record<ProjectAction, string>,
+  states: {
+    saved: 'Saved for later',
+    learning: 'Learning',
+    polishing: 'Preparing for performance',
+    'performance-ready': 'Ready to perform',
+    maintaining: 'Keeping it playable',
+    refreshing: 'Bringing it back',
+    paused: 'Paused',
+    retired: 'Put away',
+  } satisfies Record<ProjectState, string>,
+  /** The date field beside *I performed it*. */
+  performedWhen: 'When',
+  /** What the encounter history says of the piece (`encounterStore.familiarity`). */
+  checking: 'Looking at what you have played…',
+  heardOnly: 'You have listened to it and not played it yet.',
+  viewedOnly: 'You have opened it and not played it yet.',
+  never: 'You have never opened it.',
+  /** R18's three facts. */
+  goal: 'This week’s goal',
+  problem: 'The problem right now',
+  sections: 'Sections',
+  sectionFrom: 'Bars',
+  sectionTo: 'to',
+  /** The two bar boxes' names for a screen reader, where the visible words are short. */
+  sectionFirst: 'First bar',
+  sectionLast: 'Last bar',
+  sectionName: 'Name',
+  addSection: 'Add section',
+  removeSection: 'Remove',
+  noSections: 'No sections yet.',
+  /** Progress. */
+  heading: 'Projects',
+  makeProject: 'Make it a project',
+  learnedHeading: 'Pieces you have passed, not yet projects',
+  empty: 'No projects yet. At the end of a run, “What next with this piece?” makes one.',
+  /** Said after the learner's action, beside the actions. */
+  saved: 'Saved.',
+  /**
+   * The Library's Project filter (G85): its name, every piece whatever its project, and every piece
+   * with a project in any state; each state is `states`. Not *Any project* for the second: the status
+   * filter beside it says *Any status* for no filter at all, and the same shape would read the same.
+   */
+  filter: 'Project',
+  filterAll: 'Project or not',
+  filterAny: 'Your projects',
+} as const;
+
+/** "Learning since 2026-09-29": a project's state and the local day it was entered. */
+export function projectSince(state: ProjectState, sinceIso: string, day: (at: Date) => string): string {
+  return `${PROJECT_TEXT.states[state]} since ${day(new Date(sinceIso))}`;
+}
+
+/** The history's last line: *I performed it*'s day, or the state before this one and its day. */
+export function projectHistoryLine(
+  history: readonly { state: ProjectState; at: string; performedOn?: string }[],
+  day: (at: Date) => string,
+): string | null {
+  const last = history[history.length - 1];
+  if (last?.performedOn !== undefined) return `You performed it on ${last.performedOn}.`;
+  const before = history[history.length - 2];
+  return before ? `Before this: ${PROJECT_TEXT.states[before.state]}, from ${day(new Date(before.at))}.` : null;
+}
+
+/** "You last played it on 2026-09-28." — or part of it, where a run covered only some of its bars. */
+export function playedLine(dayPlayed: string, part: boolean): string {
+  return part ? `You last played part of it on ${dayPlayed}.` : `You last played it on ${dayPlayed}.`;
+}
+
+/** A project's goal on its Progress row. */
+export function goalWords(goal: string): string {
+  return `Goal: ${goal}`;
+}
+
+/**
+ * A passed piece offered as a project on Progress: "Last played 2026-09-28". The list's own line says
+ * the pieces are passed, so the row does not say it again (`04` §0 R2), and at 342 px beside *Make it
+ * a project* the date is what the line has room for.
+ */
+export function lastPlayedLine(lastPlayed: string): string {
+  return `Last played ${lastPlayed}`;
+}
+
+/** Where a section is: "Bars 1–8 · The tune". */
+export function sectionWords(section: { from: number; to: number; label: string }): string {
+  const bars = section.from === section.to ? `Bar ${String(section.from)}` : `Bars ${String(section.from)}–${String(section.to)}`;
+  return section.label === '' ? bars : `${bars} · ${section.label}`;
+}
 
 /**
  * What a rung asks and what the evidence shows, in the learner's words (C5):
@@ -727,6 +914,15 @@ function percent(share: number): string {
   return `${String(Math.round(share * 100))} %`;
 }
 
+/**
+ * "in Keep tempo at 80 % of the written tempo or faster": the tempo half of a pass, in one set of words for
+ * the lesson page's *What the app counts* and the summary sheet's *To pass* (X46), so the two say one thing.
+ * `suggested`: a piece whose tempo the converter made up (`tempo-defaulted`), whose 100 % is a suggestion.
+ */
+export function keepTempoAt(tempoPct: number, suggested = false): string {
+  return `in Keep tempo at ${String(Math.round(tempoPct))} % of the ${suggested ? 'suggested' : 'written'} tempo or faster`;
+}
+
 /** A ladder state as a person says it (C3's ladder, `evidence/ladder.ts`). */
 export function ladderWords(state: LadderState): string {
   if (state === 'not introduced' || state === 'introduced') return 'not shown yet';
@@ -771,10 +967,7 @@ export function requirementWords(
         what = `${countWord(r.count)} ${noun}${r.count === 1 ? '' : 's'} from this page`;
       }
       const share = `at ${percent(r.accuracy ?? context.accuracy)} of the notes`;
-      const tempo =
-        context.tempoPct > 0 && !context.drillsOnly(pool)
-          ? `, in Keep tempo at ${String(Math.round(context.tempoPct))} % of the written tempo or faster`
-          : '';
+      const tempo = context.tempoPct > 0 && !context.drillsOnly(pool) ? `, ${keepTempoAt(context.tempoPct)}` : '';
       const perform = r.performance === true ? ', played with Perform on' : '';
       return `${what} ${share}${tempo}${perform}.`;
     }
@@ -993,6 +1186,12 @@ export const SLOT_TEXT = {
   fromThisLesson: 'From this lesson',
   moreFromThisLesson: 'more from this lesson',
   moreMusic: 'More music from this lesson',
+  /**
+   * A rung whose every piece for an ask is one the learner paused or put away (G1e, the reviewer's ruling):
+   * "This lesson waits on pieces you paused or put away — more from this lesson", on the row that brings
+   * the rung's other material. Said once; the paused pieces are never offered in its place.
+   */
+  heldByPause: 'waits on pieces you paused or put away',
   trains: 'Trains',
   has: 'Has',
   whichAsked: 'which this lesson asks for',
@@ -1010,7 +1209,96 @@ export const SLOT_TEXT = {
   free: 'Play anything you like — no scoring, no cursor',
   /** After a swap: the learner's choice, and the tier it came from. */
   chose: 'You chose this one',
+  /**
+   * The transfer offer (D4): "Shifting position: something new, for a skill you have shown — it should
+   * feel different". What it is for, as an invitation; never that it will prove, test or has shown
+   * anything (the ladder's words for its v0 state stay C7's, `SKILL_TEXT.transfer`).
+   */
+  somethingNew: 'something new, for a skill you have shown',
+  feelDifferent: 'it should feel different',
+  /** The same line's head, which is all the card's one line holds at 342 px (U71; the invitation is on the transition sheet). */
+  somethingNewHead: 'something new',
 } as const;
+
+/**
+ * A row's line on Today's card (U71). The composition's own words (`slotReason`), whole, except the transfer
+ * offer's: its line is the skill and "something new", cut at the clause rather than by an ellipsis, because at
+ * 342 px the card kept "Shifting position: something n…" and lost the words that make it an invitation. The
+ * whole line is what the transition sheet says when the offer is next (the composition's words, unchanged).
+ */
+export function cardLine(reason: string, claim: { kind: string; skill?: string } | undefined): string {
+  if (claim?.kind !== 'transfer' || claim.skill === undefined) return reason;
+  return `${bareSkill(claim.skill)}: ${SLOT_TEXT.somethingNewHead}`;
+}
+
+/**
+ * Today's session as it is run (X1; Part 18; `04` §2 and §5): the transition after each activity, the resume
+ * line, the finish line and the runner's adaptations — the one voice between activities. The transition's
+ * reason is never here: it is the composition's own words for the slot (`slotReason`, the reader's line), the
+ * reviewer's ruling, so nothing on this sheet adds a relationship the composition did not claim. None of it
+ * judges the learner or claims a competence; ending early marks nothing failed and says what waits, without
+ * guilt.
+ */
+export const SESSION_TEXT = {
+  /** Today, while a session is running: its one filled box. */
+  continue: 'Continue',
+  /** "Continue today's session · 18 of 30 min · next: Minuet excerpt". */
+  continueLine: (elapsedMin: number, plannedMin: number, next: string | undefined): string =>
+    `Continue today’s session · ${String(elapsedMin)} of ${String(plannedMin)} min${next === undefined ? '' : ` · next: ${next}`}`,
+  /** The quiet way out, beside it. */
+  endSession: 'End today’s session',
+  /** The transition's line: "Next: Minuet excerpt, 4 min — <the composition's words>". */
+  nextLine: (title: string, minutes: number, reason: string): string => `Next: ${title}, ${String(minutes)} min — ${reason}`,
+  /** Elapsed of planned, from the visible-time clock (never wall time since *Start session*). */
+  timeLine: (elapsedMin: number, plannedMin: number): string => `${String(elapsedMin)} of ${String(plannedMin)} min so far`,
+  start: 'Start',
+  skipOrChange: 'Skip or change',
+  tryAgain: 'Try again',
+  moveOn: 'Move on anyway',
+  /** Failure keeps the learner here (the reviewer's bounded rule). */
+  keptHere: 'Still unstable, so we’re not moving on',
+  /** Easy first-attempt success skipped the controlled practice after it (the reviewer's bounded rule). */
+  easier: (skipped: string): string => `Easier than expected — ${skipped} is skipped`,
+  /**
+   * The learner paused a piece, or put it away, after *Start session*; its turn came and the runner stepped
+   * past it (G90): "Ode to Joy is skipped — you paused it". The learner's own word, in the learner's own
+   * verb as the project sheet says it (*Pause*, *Put it away*).
+   */
+  withheld: (title: string, state: HeldState): string => `${title} is skipped — ${youHeld(state)}`,
+  /**
+   * The same, on Today's skipped row (G90a): "Skipped — you paused it". The row's title is the piece, so the
+   * sentence leaves it out; the verb is the transition's, from the one place (`youHeld`).
+   */
+  withheldRow: (state: HeldState): string => `Skipped — ${youHeld(state)}`,
+  /** A first-contact activity whose material was met after the card was composed (G2's adapter at its start). */
+  repurposed: (how: string): string =>
+    `You ${how === 'played' ? 'played' : how === 'viewed' ? 'saw' : 'heard'} this one earlier today, so it is practice now, not a first read`,
+  /** After the last activity. */
+  lastOne: 'That was the last one — today’s session is done',
+  done: 'Done',
+  /** The finish line on Today: the head, then what each activity came to. */
+  finishedHead: (minutes: number): string => `Today’s session done · ${String(minutes)} min`,
+  endedHead: (minutes: number): string => `Today’s session ended · ${String(minutes)} min`,
+  /** What each activity came to, in the finish line and on the running card: done, played (tried and moved on), skipped. */
+  stateDone: 'done',
+  statePlayed: 'played',
+  stateSkipped: 'skipped',
+  /** The running card's current row. */
+  stateNext: 'next',
+  /** A row of a card composed after today's session, done in it. */
+  doneToday: 'done today',
+  /** An early end: what waits, and no more than that. */
+  deferred: 'left for another day',
+  /** A write the runner refused (a stale tab, an older screen): the view is reloaded, and says so. */
+  moved: 'Today’s session moved on elsewhere; this is where it is now',
+  /** The transfer offer could not be kept before opening (U73): nothing opened, said on Today. */
+  offerNotKept: 'This offer could not be kept on this phone, so it was not opened. Try again.',
+} as const;
+
+/** What the learner did with a piece, in the project sheet's own verbs (*Pause*, *Put it away*): the clause both skipped-piece sentences end on. */
+function youHeld(state: HeldState): string {
+  return state === 'paused' ? 'you paused it' : 'you put it away';
+}
 
 function lowerFirst(text: string): string {
   return text.charAt(0).toLowerCase() + text.slice(1);
@@ -1184,6 +1472,12 @@ export function slotReason(kind: SlotKind, claim: SlotClaim | undefined, today: 
       case 'ready':
         return `${SLOT_TEXT.readyWith} ${demandName(claim.demand)} — ${SLOT_TEXT.readySupported}`;
       case 'rung': {
+        // The rung waits on the learner's pause (G1e): said as such, whatever the slot, with where the row is from.
+        if (claim.held === true) {
+          return claim.strand === undefined
+            ? `${SLOT_TEXT.thisLesson} ${SLOT_TEXT.heldByPause} — ${SLOT_TEXT.moreFromThisLesson}`
+            : `${claim.strand} ${SLOT_TEXT.heldByPause} — more from ${claim.strand}`;
+        }
         // "this lesson" is the core path's; a track's own rung is named by its track.
         if (claim.strand !== undefined) {
           if (kind === 'review') return `${SLOT_TEXT.nothingDue} — more from ${claim.strand}`;
@@ -1212,13 +1506,25 @@ export function slotReason(kind: SlotKind, claim: SlotClaim | undefined, today: 
         return `Keeping ${yours} warm — ${SLOT_TEXT.lastPlayed} ${readDay(claim.lastPlayed, today)}`;
       }
       case 'jam':
-        return `${SLOT_TEXT.jam}: from ${claim.rung.title}`;
+        // Only chord-and-feel material is promised as such (G61); anything else says where it is from.
+        return claim.plain === true ? `From ${claim.rung.title}` : `${SLOT_TEXT.jam}: from ${claim.rung.title}`;
+      case 'transfer':
+        // The skill first, where the line is cut; an invitation, never a test (D4).
+        return `${bareSkill(claim.skill)}: ${SLOT_TEXT.somethingNew} — ${SLOT_TEXT.feelDifferent}`;
     }
   })();
   return kind === 'repertoire' && options.known === true ? `${SLOT_TEXT.pieceYouKnow} — ${lowerFirst(line)}` : line;
 }
 
-/** The swap sheet's words for a tier (C6 item 6): printed once over the options that came from it. */
+/**
+ * The swap sheet's words for a tier (C6 item 6): printed once over the options
+ * that came from it, stating the strongest fact known (Part 23; E0). The skill and
+ * demand tiers passed the one gate (`eligibility.ts`): the option provides the
+ * skill's or the demand's opportunity at a useful density, and every other demand
+ * it measures is one the learner has met — in the lessons up to their rung, or in
+ * their own evidence. Never "similar difficulty" from a level, never "practises X"
+ * because X occurs somewhere in the file.
+ */
 export function swapTierWords(tier: AlternativeTier | 'kind', shared?: string): string {
   switch (tier) {
     case 'lesson':
@@ -1226,9 +1532,10 @@ export function swapTierWords(tier: AlternativeTier | 'kind', shared?: string): 
     case 'alternative':
       return 'Named as a stand-in for it';
     case 'skill':
-      return `Trains the same skill: ${shared === undefined ? 'the same' : lowerFirst(skillName(shared))}`;
+      return `Also trains ${shared === undefined ? 'the same skill' : lowerFirst(skillName(shared))}, with the other demands you have met`;
     case 'demand':
-      return `Carries the same demand: ${shared === undefined ? 'the same' : demandName(shared)}`;
+      // The demand's name with its article ("the key signature", "the moving left hand", "skips").
+      return `Also practises ${shared === undefined ? 'the same demand' : (DEMAND_WORDS[shared]?.name ?? shared)}, with the other demands you have met`;
     case 'kind':
       return 'The same kind, from your lessons so far';
   }
@@ -1239,8 +1546,8 @@ export function swapChoiceWords(tier: AlternativeTier | 'kind'): string {
   const why: Record<AlternativeTier | 'kind', string> = {
     lesson: 'from the same lesson',
     alternative: 'a stand-in for the one offered',
-    skill: 'it trains the same skill',
-    demand: 'it carries the same demand',
+    skill: 'it also trains the same skill',
+    demand: 'it also practises the same demand',
     kind: 'the same kind, from your lessons so far',
   };
   return `${SLOT_TEXT.chose} — ${why[tier]}`;
@@ -1631,4 +1938,195 @@ export const DRILL_DETAIL_LABEL: Readonly<Record<string, string>> = {
 /** The words for one of a drill's extra measurements. */
 export function drillDetailLabel(key: string): string {
   return DRILL_DETAIL_LABEL[key] ?? key.replace(/([A-Z])/g, ' $1').toLowerCase();
+}
+
+// --- an import, in the learner's words (X3; E21, U72, U75) ------------------------------------
+
+/**
+ * Whose a fact about an import is, as the store holds it (`Provenance.facts`): `inferred` is the
+ * app's guess, `authored` is the file's — or the learner's, where the provenance names the learner
+ * as its source (the store's own reading, `importStore.withMeasurement`; the reviewer's rule for a
+ * stated tempo, `responses/ef80e86.md`: `authored`, with the learner in `via`). A fact the row does
+ * not carry is not recorded. Never promoted: a guess is never said as the file's.
+ */
+export type Whose = 'guess' | 'file' | 'yours' | 'unknown';
+
+export function whoseFact(fact: Provenance['facts'][string] | undefined): Whose {
+  if (!fact) return 'unknown';
+  if (fact.kind === 'inferred') return 'guess';
+  if (fact.kind === 'authored') return /learner/.test(fact.via ?? '') ? 'yours' : 'file';
+  return 'unknown';
+}
+
+const MAJOR_BY_FIFTHS = ['C♭', 'G♭', 'D♭', 'A♭', 'E♭', 'B♭', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F♯', 'C♯'];
+const MINOR_BY_FIFTHS = ['A♭', 'E♭', 'B♭', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F♯', 'C♯', 'G♯', 'D♯', 'A♯'];
+const SIGNATURE_COUNTS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven'];
+
+/**
+ * The key signature a score printed: "one sharp", "no sharps or flats" — and the key's name only
+ * where the file states its mode ("E minor: one sharp"). A signature alone does not say whether a
+ * piece is in G major or E minor, so the name is never guessed from it (nothing taught wrong).
+ */
+export function signatureWords(fifths: number, mode?: string): string {
+  const count = Math.abs(fifths);
+  const signature =
+    count === 0 ? 'no sharps or flats' : `${SIGNATURE_COUNTS[count] ?? String(count)} ${fifths > 0 ? 'sharp' : 'flat'}${count === 1 ? '' : 's'}`;
+  const names = mode === 'major' ? MAJOR_BY_FIFTHS : mode === 'minor' ? MINOR_BY_FIFTHS : undefined;
+  const name = names?.[fifths + 7];
+  return name && mode ? `${name} ${mode}: ${signature}` : signature;
+}
+
+/**
+ * A tempo as the score carries it (X3c; the fractional policy the X3b review asked for,
+ * `responses/f9d36867.md`): to the store's own three places (`importStore.round3`), so 72.5 is 72.5, and
+ * where the file carries more than that — a MIDI file's microseconds a beat, 90.00009000009 — the whole
+ * beat, marked as not exact. Never a whole number the score does not carry. `exact` false marks the
+ * second; `figure` is the number said, and the one the tempo field starts at.
+ */
+export function tempoFigure(bpm: number): { figure: number; exact: boolean } {
+  const three = Math.round(bpm * 1000) / 1000;
+  return Math.abs(three - bpm) < 1e-9 ? { figure: three, exact: true } : { figure: Math.round(bpm), exact: false };
+}
+
+/** A tempo in words (`tempoFigure`): "72.5", or "about 90" where the file carries more than three places. */
+export function tempoNumber(bpm: number): string {
+  const { figure, exact } = tempoFigure(bpm);
+  return exact ? String(figure) : `about ${String(figure)}`;
+}
+
+/**
+ * The import sheet's words and the Library's for an import (X3; E21, U72, U75): one table, so the
+ * sheet, the row and `04` §4 say one thing. What the app read from the file, what it guessed, whose
+ * each fact is (`whoseFact`), and what a learner can do about a piece the catalogue wants and does
+ * not bundle. Nothing here says "approved" or "counts": an import is the learner's own material,
+ * measured, and it goes where they put it (T52's sentence on the assign sheet's body says what a
+ * rung does with it).
+ */
+export const IMPORT_TEXT = {
+  read: 'What the app read',
+  guessed: 'What the app guessed',
+  notes: 'What the notes ask',
+  belongs: 'Where does it belong?',
+  /** The sheet's lead line: the learner's own material, measured, never graded or placed for them. */
+  own: 'Your own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.',
+  ownPdf: 'Your own PDF. The app shows its pages and reads no notes from it; where it belongs is yours to choose.',
+  composer: 'Composer',
+  length: 'Length',
+  signature: 'Key signature',
+  bars: (count: number): string => (count === 1 ? '1 bar' : `${String(count)} bars`),
+  pdfRead: 'A PDF: pages, not notes — the app reads no notes from it.',
+  pdfGuessed: 'Nothing about the notes: the app reads none from a PDF.',
+  /** Whose a fact is, beside it. */
+  whose: { guess: 'the app’s guess', file: 'from the file', yours: 'yours', unknown: 'not recorded' } satisfies Record<Whose, string>,
+  hands: 'Hands',
+  handsSplit: 'Split by the shape of the lines, not at a fixed middle C.',
+  handsTracks: 'The file’s own two tracks, kept as recorded: the first is the upper staff.',
+  handsStaves: 'The file’s own staves.',
+  handsStamped: 'Written by the command-line converter from a MIDI file, which does not say whether it kept the tracks or split one line.',
+  handsYours: 'You corrected them, and the notes were measured again on your score.',
+  handsUnknown: 'Not recorded: imported before the app kept track of whose the hands are.',
+  tempo: 'Tempo',
+  /*
+   * The tempo line's words. Every number is a tempo as the score carries it (`tempoNumber`), in quarter
+   * notes a minute — "♩ =" — unless a printed mark's own note is named beside it (X3c).
+   */
+  tempoFile: (bpm: number): string => `The file says ♩ = ${tempoNumber(bpm)}.`,
+  /** The first bar's printed mark counts another note (X3c): the mark as printed, then the tempo the score opens at. */
+  tempoFileMark: (mark: string, bpm: number): string => `The file says ${mark} (${tempoNumber(bpm)} quarter notes a minute).`,
+  /** The printed mark and the tempo the file plays at disagree (X3c): each said apart, never as a conversion. */
+  tempoFileApart: (mark: string, bpm: number): string => `The file prints ${mark}; its playback tempo is ${tempoNumber(bpm)} quarter notes a minute.`,
+  /** A printed mark in the first bar with no playback tempo there (X3c): the mark alone. */
+  tempoFileMarkOnly: (mark: string): string => `The file says ${mark}.`,
+  /** A tempo the file writes only after its first bar (X3c): never said as the opening. */
+  tempoFileLater: 'The file writes no tempo at its opening, only later in the piece.',
+  /** A metronome mark the door read from the file's text (E32): as the file printed it, then as the app read it. */
+  tempoTextMark: (text: string, bpm: number): string => `The file’s mark says “${text}”; the app reads it as ${tempoNumber(bpm)} quarter notes a minute.`,
+  /** The same, where the mark printed no note and the app read the metre's beat (E32). */
+  tempoTextMarkNoNote: (text: string, unit: string, bpm: number): string =>
+    `The file’s mark says “${text}”, with no note; the app reads it as a ${unit} note, the metre’s beat: ${tempoNumber(bpm)} quarter notes a minute.`,
+  tempoChosen: (bpm: number): string => `The file states no tempo, so the app chose ♩ = ${tempoNumber(bpm)}.`,
+  tempoYours: (bpm: number | undefined): string => (bpm === undefined ? 'You stated it.' : `You stated ♩ = ${tempoNumber(bpm)}.`),
+  /** A printed metronome mark (X3c): its note, a dot for each dot, "=", its number — a half note "= 60", "♩. = 60". */
+  tempoMark: (note: string, dots: number, perMinute: number): string => `${note}${'.'.repeat(dots)} = ${tempoNumber(perMinute)}`,
+  /**
+   * The note symbol for each `<beat-unit>` the sheet prints (X3c): the Unicode symbols `textGlyphs.ts` maps
+   * SMuFL's metronome notes to, so a mark from a `<metronome>` and a mark read from text look alike.
+   */
+  noteSymbols: { whole: '\u{1D15D}', half: '\u{1D15E}', quarter: '♩', eighth: '♪', '16th': '\u{1D161}' },
+  /**
+   * The learner's tempo, on the tempo line of every MusicXML import — the app's guess, the file's, or one
+   * the learner already stated (X3a, X3b; E48): the field's label, in the line's own notation, and the
+   * button. A tempo the store refuses is said in the store's words (`stateImportTempo`); `tempoFailed`
+   * only where the store saved nothing and said no reason.
+   */
+  tempoField: '♩ =',
+  tempoUse: 'Use this tempo',
+  tempoFailed: 'The tempo could not be saved; the score is as it was.',
+  key: 'Key',
+  keyEstimated: (signature: string): string => `Estimated from the notes; the app printed ${signature}.`,
+  keyStamped: 'The command-line converter may have estimated it from the notes; the file does not say.',
+  swap: 'Swap the hands',
+  swapHint: 'If the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.',
+  swapping: 'Swapping…',
+  swapped: 'Swapped: the hands are yours now, and the notes were measured again.',
+  swapFailed: 'The hands could not be swapped; the score is as it was.',
+  swapOneStaff: 'One staff: there is no other hand to swap with.',
+  swapParts: 'The file writes its hands as separate parts; the app swaps only a piano’s two staves.',
+  swapUnmarked: 'The file does not say which staff every note is on, so the app cannot swap them.',
+  /** U72: the conversion note once the learner has corrected the hands. */
+  conversionHandsYours: 'You corrected the hands after the conversion, so what the converter decided about them no longer stands: the hands are yours.',
+  /** Where an import's notes came from, on its Library row's detail line (`importSourceWords`). */
+  source: { file: 'read from the file', midi: 'converted from MIDI' },
+  /**
+   * The Library row's state, a token each (`importStateWords`). *Tempo guessed*, not "tempo not
+   * stated": the sheet's word for the same fact (`whose.guess`), and short enough that the line is
+   * whole at 342 px.
+   */
+  state: {
+    handsCorrected: 'hands corrected',
+    handsGuessed: 'hands guessed',
+    measured: 'measured',
+    notYet: 'not measured yet',
+    notMeasurable: 'could not be measured',
+    tempoGuessed: 'tempo guessed',
+    tempoYours: 'tempo yours',
+  },
+  /** The placeholder sheet for a piece the catalogue wants and does not bundle (U75). */
+  wanted: 'Import your own copy; the app reads MusicXML, MXL and MIDI.',
+  formats: 'The app reads MusicXML, MXL and MIDI; a PDF opens as pages.',
+  importButton: 'Import a score',
+} as const;
+
+/**
+ * Where an import's notes came from, for its Library row's detail line in place of the type every
+ * import shares ("song"): converted from MIDI — by the app, or by the command-line converter whose
+ * stamp the file carries — or read from the file. `''` where the row does not say (a PDF, whose
+ * badge does; a row imported before the app kept provenance).
+ */
+export function importSourceWords(row: { kind?: string; provenance?: Provenance }): string {
+  if (row.kind === 'pdf' || !row.provenance) return '';
+  const converted = row.provenance.source === 'imported-midi' || row.provenance.converter !== undefined;
+  return converted ? IMPORT_TEXT.source.midi : IMPORT_TEXT.source.file;
+}
+
+/**
+ * One line of an import's state for its Library row, in the words above: whose the hands are where
+ * they are not the file's, whether the app has measured it, and the tempo where the file states
+ * none. From the row's provenance, the facts the import sheet renders; `''` for a PDF, whose badge
+ * already says what it is.
+ */
+export function importStateWords(row: { kind?: string; demands?: unknown; measurement?: Measurement; provenance?: Provenance }): string {
+  if (row.kind === 'pdf') return '';
+  const words = IMPORT_TEXT.state;
+  const facts = row.provenance?.facts;
+  const tokens: string[] = [];
+  const hands = whoseFact(facts?.hands);
+  if (hands === 'yours') tokens.push(words.handsCorrected);
+  else if (hands === 'guess') tokens.push(words.handsGuessed);
+  if (row.measurement === undefined || row.demands === undefined) tokens.push(words.notYet);
+  else tokens.push(row.measurement.status === 'measured' && Array.isArray(row.demands) ? words.measured : words.notMeasurable);
+  const tempo = whoseFact(facts?.tempo);
+  if (tempo === 'yours') tokens.push(words.tempoYours);
+  else if (tempo === 'guess') tokens.push(words.tempoGuessed);
+  return tokens.join(' · ');
 }

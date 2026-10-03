@@ -1,0 +1,11 @@
+m1: fixed 0535260357e418ee -> mutant 1b872b6ae03ee30d
+m1 vite build exit 0
+m1 whole score.screen.spec.ts exit 1
+  10 failed
+  58 passed (1.5m)
+m2: fixed 0535260357e418ee -> mutant 70fa41bdf3f108a5
+m2 vite build exit 0
+m2 new cases exit 1
+  10 failed
+  7 passed (25.6s)
+restored 0535260357e418ee == saved 0535260357e418ee: True

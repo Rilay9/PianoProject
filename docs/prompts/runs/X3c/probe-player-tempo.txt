@@ -1,0 +1,178 @@
+npx vitest run tests/unit/x3cProbePlayerTempo.test.ts (in app)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ac2ac291c6ad0a550/app
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+stdout | tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > half = 60 with <sound tempo="120"> (MuseScore’s export shape, cut time)
+half = 60 with <sound tempo="120"> (MuseScore’s export shape, cut time)
+  first <sound tempo>: 120
+  tempo map: [{"atBeat":0,"bpm":60}]
+
+stdout | tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > half = 60, no <sound tempo>
+half = 60, no <sound tempo>
+  first <sound tempo>: none
+  tempo map: [{"atBeat":0,"bpm":60}]
+
+stdout | tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > dotted quarter = 60 with <sound tempo="90"> (6/8)
+dotted quarter = 60 with <sound tempo="90"> (6/8)
+  first <sound tempo>: 90
+  tempo map: [{"atBeat":0,"bpm":60}]
+
+stdout | tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > <sound tempo="100"> at the opening, quarter = 132 only in bar 2
+<sound tempo="100"> at the opening, quarter = 132 only in bar 2
+  first <sound tempo>: 100
+  tempo map: [{"atBeat":0,"bpm":132}]
+
+stdout | tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > E48 on half = 60 / <sound 120>: withOpeningTempo(…, 100)
+E48 on half = 60 / <sound 120>: withOpeningTempo(…, 100)
+  first <sound tempo>: 100
+  tempo map: [{"atBeat":0,"bpm":50}]
+
+stdout | tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > E48 on a mark only in bar 2 (quarter = 132): withOpeningTempo(…, 72)
+E48 on a mark only in bar 2 (quarter = 132): withOpeningTempo(…, 72)
+  first <sound tempo>: 72
+  tempo map: [{"atBeat":0,"bpm":132}]
+
+ ❯ tests/unit/x3cProbePlayerTempo.test.ts (12 tests | 6 failed) 171ms
+   ❯ X3c probe: the player’s tempo against the first <sound tempo> (12)
+     × half = 60 with <sound tempo="120"> (MuseScore’s export shape, cut time) 9ms
+     × half = 60, no <sound tempo> 5ms
+     × dotted quarter = 60 with <sound tempo="90"> (6/8) 5ms
+     × <sound tempo="100"> at the opening, quarter = 132 only in bar 2 9ms
+     × E48 on half = 60 / <sound 120>: withOpeningTempo(…, 100) 4ms
+     × E48 on a mark only in bar 2 (quarter = 132): withOpeningTempo(…, 72) 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > half = 60 with <sound tempo="120"> (MuseScore’s export shape, cut time)
+AssertionError: half = 60 with <sound tempo="120"> (MuseScore’s export shape, cut time): expected 60 to be 120 // Object.is equality
+
+- Expected
++ Received
+
+- 120
++ 60
+
+ ❯ tests/unit/x3cProbePlayerTempo.test.ts:56:33
+     54|       const map = await tempoMap(xml);
+     55|       console.log(`${name}\n  first <sound tempo>: ${/<sound\b[^>]*\bt…
+     56|       expect(map[0]?.bpm, name).toBe(predicted);
+       |                                 ^
+     57|     });
+     58|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > half = 60, no <sound tempo>
+AssertionError: half = 60, no <sound tempo>: expected 60 to be 120 // Object.is equality
+
+- Expected
++ Received
+
+- 120
++ 60
+
+ ❯ tests/unit/x3cProbePlayerTempo.test.ts:56:33
+     54|       const map = await tempoMap(xml);
+     55|       console.log(`${name}\n  first <sound tempo>: ${/<sound\b[^>]*\bt…
+     56|       expect(map[0]?.bpm, name).toBe(predicted);
+       |                                 ^
+     57|     });
+     58|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > dotted quarter = 60 with <sound tempo="90"> (6/8)
+AssertionError: dotted quarter = 60 with <sound tempo="90"> (6/8): expected 60 to be 90 // Object.is equality
+
+- Expected
++ Received
+
+- 90
++ 60
+
+ ❯ tests/unit/x3cProbePlayerTempo.test.ts:56:33
+     54|       const map = await tempoMap(xml);
+     55|       console.log(`${name}\n  first <sound tempo>: ${/<sound\b[^>]*\bt…
+     56|       expect(map[0]?.bpm, name).toBe(predicted);
+       |                                 ^
+     57|     });
+     58|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > <sound tempo="100"> at the opening, quarter = 132 only in bar 2
+AssertionError: <sound tempo="100"> at the opening, quarter = 132 only in bar 2: expected 132 to be 100 // Object.is equality
+
+- Expected
++ Received
+
+- 100
++ 132
+
+ ❯ tests/unit/x3cProbePlayerTempo.test.ts:56:33
+     54|       const map = await tempoMap(xml);
+     55|       console.log(`${name}\n  first <sound tempo>: ${/<sound\b[^>]*\bt…
+     56|       expect(map[0]?.bpm, name).toBe(predicted);
+       |                                 ^
+     57|     });
+     58|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > E48 on half = 60 / <sound 120>: withOpeningTempo(…, 100)
+AssertionError: E48 on half = 60 / <sound 120>: withOpeningTempo(…, 100): expected 50 to be 100 // Object.is equality
+
+- Expected
++ Received
+
+- 100
++ 50
+
+ ❯ tests/unit/x3cProbePlayerTempo.test.ts:56:33
+     54|       const map = await tempoMap(xml);
+     55|       console.log(`${name}\n  first <sound tempo>: ${/<sound\b[^>]*\bt…
+     56|       expect(map[0]?.bpm, name).toBe(predicted);
+       |                                 ^
+     57|     });
+     58|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/x3cProbePlayerTempo.test.ts > X3c probe: the player’s tempo against the first <sound tempo> > E48 on a mark only in bar 2 (quarter = 132): withOpeningTempo(…, 72)
+AssertionError: E48 on a mark only in bar 2 (quarter = 132): withOpeningTempo(…, 72): expected 132 to be 72 // Object.is equality
+
+- Expected
++ Received
+
+- 72
++ 132
+
+ ❯ tests/unit/x3cProbePlayerTempo.test.ts:56:33
+     54|       const map = await tempoMap(xml);
+     55|       console.log(`${name}\n  first <sound tempo>: ${/<sound\b[^>]*\bt…
+     56|       expect(map[0]?.bpm, name).toBe(predicted);
+       |                                 ^
+     57|     });
+     58|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 6 passed (12)
+   Start at  05:00:47
+   Duration  1.10s (environment 67%, tests 17%, transform 12%, import 3%)
+
+exit=1

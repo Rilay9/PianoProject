@@ -28,6 +28,8 @@ import { EVIDENCE_DEFINITIONS } from '../../src/evidence/evidence';
 import { sightReadingOptionsFor } from '../../src/engine/sightReading';
 import type { CatalogItem, Curriculum, Lesson, Requirement } from '../../src/curriculum/types';
 import type { SessionRow } from '../../src/data/db';
+import { overlayShelf } from '../../src/curriculum/load';
+import type { ShelfPiece } from '../../src/data/booksStore';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { readPhrase } from './helpers/reader';
@@ -216,6 +218,59 @@ describe('a done requirement is the judging rung’s, like the other kinds', () 
     expect(doneOf([finished({ lessonId: 'M', accuracy: 0.5 })], 'M')?.requirements[0]?.holds).toBe(false);
     expect(doneOf([finished({ lessonId: 'M', accuracy: 0.95 })], 'M')?.requirements[0]?.holds).toBe(true);
     expect(doneOf([finished({ lessonId: 'M' })], 'M')?.requirements[0]?.holds, 'a completion that measured nothing').toBe(true);
+  });
+});
+
+// Added (CL04, L79): a shelf twin's run counted only where the twin was itself
+// one of the rung's songs (`poolOf` read the listed ids), so a book piece the
+// rung lists, practised with its score from the rung, met nothing. The twin
+// inherits the rung's listing of its book piece: one run, one item, the rung's
+// judgement, and nothing for a run no rung or another rung judged.
+describe('a shelf twin’s run counts as the book piece the rung lists (L79)', () => {
+  const L = rung('L', {
+    songOptions: ['song.l'],
+    requirements: [{ kind: 'runs', from: 'songs', count: 1 }],
+  });
+  const L2 = rung('L2', {
+    songOptions: ['song.l'],
+    requirements: [{ kind: 'runs', from: 'songs', count: 2 }],
+  });
+  /** Another rung, which does not list the book piece. */
+  const K = rung('K', { songOptions: ['song.k'], requirements: [{ kind: 'runs', from: 'songs', count: 1 }] });
+  const shelfPiece = (twin: string | undefined, lessonIds: string[]): ShelfPiece => ({
+    book: { id: 'book.b', title: 'Method Book', kind: 'method', pieces: [], addedAt: '' },
+    piece: { id: 'p', title: 'Study No. 3', lessonIds, concepts: [], levelSource: 'estimated', ...(twin === undefined ? {} : { itemId: twin }) },
+    itemId: 'book.b/p',
+  });
+  const stateWith = (twin: string, rows: SessionRow[], lessons: Lesson[] = [L, K], on = ['L']): RungStates =>
+    rungState(rows, overlayShelf(curriculumOf(lessons), [shelfPiece(twin, on)]), VOCABULARY_V0, TODAY);
+
+  it('a measured run of the twin judged by the rung meets its songs requirement, as the book piece', () => {
+    const state = stateWith('import.t', [run('import.t', { lessonId: 'L' })]).byRung.get('L');
+    expect(state?.requirements[0]).toMatchObject({ holds: true, have: 1, items: ['book.b/p'] });
+    expect(state?.status).toBe('met');
+  });
+
+  it('judged by no rung, or by a rung that does not list the book piece, it meets nothing', () => {
+    const nowhere = stateWith('import.t', [run('import.t')]);
+    expect(nowhere.byRung.get('L')?.requirements[0]).toMatchObject({ holds: false, have: 0, items: [] });
+    const elsewhere = stateWith('import.t', [run('import.t', { lessonId: 'K' })]);
+    expect(elsewhere.byRung.get('L')?.requirements[0]).toMatchObject({ holds: false, have: 0 });
+    expect(elsewhere.byRung.get('K')?.requirements[0]).toMatchObject({ holds: false, have: 0 });
+  });
+
+  it('a twin that is itself one of the rung’s songs is one item: counted under its own id only', () => {
+    const state = stateWith('song.l', [run('song.l', { lessonId: 'L2' })], [L2], ['L2']).byRung.get('L2');
+    expect(state?.requirements[0]).toMatchObject({ holds: false, have: 1, need: 2, items: ['song.l'] });
+  });
+
+  it('under the rung’s own standard, like any run: 80 % does not meet 90 %', () => {
+    expect(stateWith('import.t', [run('import.t', { lessonId: 'L', accuracy: 0.8 })]).byRung.get('L')?.requirements[0]?.holds).toBe(false);
+  });
+
+  it('the paper run itself, the learner’s own answer, still meets nothing', () => {
+    const paper = run('book.b/p', { lessonId: 'L', mode: 'paper', tempoPct: 1, accuracy: 0, accuracyEstimated: true, selfReport: 'clean' });
+    expect(stateWith('import.t', [paper]).byRung.get('L')?.requirements[0]).toMatchObject({ holds: false, have: 0 });
   });
 });
 

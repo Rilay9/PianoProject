@@ -1,0 +1,14 @@
+npx vitest run --config ../docs/prompts/runs/X3b/scripts-vitest.x3b.config.ts tests/unit/importSheet.test.ts (in app)
+[33m(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (../docs/prompts/runs/X3b/scripts-vitest.x3b.config.ts:10:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.[39m
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a20bd5674e425dc2c/app
+
+
+ Test Files  1 passed (1)
+      Tests  22 passed (22)
+   Start at  04:16:18
+   Duration  2.63s (tests 46%, environment 29%, transform 18%, import 8%)
+
+exit=0

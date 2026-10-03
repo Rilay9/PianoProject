@@ -9,7 +9,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -36,7 +36,9 @@ test.beforeEach(async ({ page }) => {
  * evidence nor a rung can fill is dropped, where it used to be filled from a
  * level window over the whole catalog. The tests about the card's shape, the
  * swap sheet and Shuffle need a rung with more on it, so they place the learner
- * at 1.1 (its exercises and songs, and How to practise beside it).
+ * at 1.1 (its exercises and songs). Revised (F2b): How to practise is no longer
+ * beside it there — `practice.1` stands on 1.1 and opens once 1.1 is behind the
+ * learner, so the track's row comes from 1.2 (`taughtByAncestry.test.ts`).
  */
 async function placeAt(page: Page, rung: string, stores: Record<string, unknown[]> = {}): Promise<void> {
   await page.goto('/');
@@ -69,18 +71,25 @@ test.describe('Today', () => {
 
   // Revised (C6): placed at 1.1 (`placeAt`); on a fresh phone 0.1 asks for two things and nothing
   // else fills a row now, so every length is the same two rows.
+  // Revised (G2's landing): the length button is pressed at once and the card is rebuilt after the
+  // stores are read (the plan, the rung states, the runs and, since G2, the contact history), so a
+  // count taken right after the click read the card from before the click. Each count waits for a
+  // mark only that length's card carries (docs/02 §8, verbatim in `SESSION_TEMPLATES`): the
+  // fifteen-minute card's first slot is the only four-minute one, and only the two-hour card has
+  // the break.
   test('the four session lengths build different cards', async ({ page }) => {
     await placeAt(page, '1.1');
     await expect(page.locator('#today-length-15')).toBeVisible();
     await page.locator('#today-length-15').click();
     await expect(page.locator('#today-length-15')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#today-card .list-row').first()).toContainText('4 min');
     const short = await page.locator('#today-card .list-row').count();
 
     await page.locator('#today-length-120').click();
-    const long = await page.locator('#today-card .list-row').count();
-    expect(long).toBeGreaterThan(short);
     // docs/02 §8: the two-hour session is two halves with a break between.
     await expect(page.locator('#today-break')).toBeVisible();
+    const long = await page.locator('#today-card .list-row').count();
+    expect(long).toBeGreaterThan(short);
   });
 
   test('remembers the session length across a reload', async ({ page }) => {
@@ -244,8 +253,18 @@ test.describe('Today', () => {
     // No old fixed sentence anywhere on the card.
     await expect(page.locator('#today-card')).not.toContainText('Warm-up in the keys you are working in');
     await expect(page.locator('#today-card')).not.toContainText('Nothing due — keeping something warm');
-    // The swap sheet names each tier it offers from.
+    // Revised (E0): this opened the warm-up's sheet and found "From the same lesson" first, because
+    // any option of the row's lesson was an equivalent. The warm-up is 2.3's chord drill, and 2.3's
+    // other exercises (the cadences and the inversions) measure notes beyond the hand position,
+    // taught at 2.5: the one gate refuses them for a learner on 2.2 (Part 23: a same-lesson option
+    // has no immunity), and the sheet says there is nothing else rather than offering them.
     await warmup.getByRole('button', { name: 'Swap' }).click();
+    const sheet = page.locator('#today-swap');
+    await expect(sheet).toContainText('Nothing else trains the same thing yet.');
+    await expect(sheet.locator('.list-row')).toHaveCount(0);
+    await sheet.getByRole('button', { name: 'Close' }).click();
+    // The swap sheet names each tier it offers from: the new row's, from 2.2's own options first.
+    await page.locator('#today-card .list-row[data-slot="new"]').first().getByRole('button', { name: 'Swap' }).click();
     await expect(page.locator('#today-swap .today-swap-tier').first()).toHaveText('From the same lesson');
     await expect(page.locator('#today-swap .list-row').first()).toHaveAttribute('data-tier', 'lesson');
   });
@@ -257,6 +276,68 @@ test.describe('Today', () => {
     // own; a bundled exercise is notation and opens the Score screen.
     await expect(page).toHaveURL(/#\/(score|drill)\//);
     await expect(page.locator('[data-screen="drill"], [data-screen="score"]')).toBeVisible();
+  });
+});
+
+/**
+ * The demand tier live through the one gate (E0), on the glass at the owner's width.
+ *
+ * Every bundled score now carries the demands the app's detectors measured on it, and the
+ * swap sheet's demand tier offers what provides, at a useful density, the demand the row's
+ * rung teaches, with nothing else the learner's lessons have not reached. Placed at 1.5 (steps
+ * and skips), the card carries the rung's steps-and-skips exercise (found by its item: the practice
+ * track, on by default, may put its own row first); its sheet offers the lesson's other options
+ * first and then, under their own heading, items that also practise skips — and says so in those
+ * words, never "similar difficulty".
+ */
+test.describe('the swap sheet’s demand tier (E0)', () => {
+  test.use({ viewport: { width: 342, height: 740 } });
+
+  test('placed at 1.5, the steps-and-skips row’s sheet names the demand tier: also practises skips, with the other demands met', async ({ page }) => {
+    await placeAt(page, '1.5');
+    const row = page.locator('#today-card .list-row[data-item="exercise.reading.steps-and-skips-c"]');
+    await expect(row).toHaveCount(1);
+    await row.getByRole('button', { name: 'Swap' }).click();
+    const sheet = page.locator('#today-swap');
+    await expect(sheet).toBeVisible();
+    await expect(sheet.locator('.today-swap-tier').first()).toHaveText('From the same lesson');
+    const demand = sheet.locator('.today-swap-tier[data-tier="demand"]');
+    await expect(demand).toHaveText('Also practises skips, with the other demands you have met');
+    await demand.scrollIntoViewIfNeeded();
+    await expect(demand).toBeInViewport();
+    await expect(sheet.locator('.list-row[data-tier="demand"]').first()).toBeVisible();
+    await expect(sheet).not.toContainText(/similar difficulty/i);
+  });
+});
+
+/**
+ * The practice track's floor (F2, L104), on the glass at the owner's width.
+ *
+ * The practice track is on by default, and its first rung's `runs` ask takes the rung's first
+ * admitted exercise, in list order. `practice.1` listed Hanon No. 1 hands together first — level
+ * 4.4, sixteenths, ledger lines and both hands beyond a five-finger position — so a learner placed
+ * at 1.5 was handed it as the day's new row. `practice.1` now lists what a Stage 1 hand plays, the
+ * three kinds the brief names (the right-hand five-finger pattern, the steps-and-skips study, the
+ * rhythm drill), and Hanon stays on the rungs that listed it besides (4.4, `classical.4`,
+ * `technique.4`).
+ */
+test.describe('the practice track’s floor (F2)', () => {
+  test.use({ viewport: { width: 342, height: 740 } });
+
+  // Revised (X1 item 7, the practice row's place as a stated policy): the new piece is 1.5's own new material,
+  // and How to practise's row comes after it — on the thirty-minute card, practice.1's song in the repertoire
+  // slot. Old assumption: the practice row was the new slot's five-finger exercise. What the case guards is
+  // unchanged: practice.1's own Stage 1 material, never Hanon.
+  test('placed at 1.5, the practice row is practice.1’s own Stage 1 material, never Hanon, and after the rung’s new piece', async ({ page }) => {
+    await placeAt(page, '1.5');
+    const card = page.locator('#today-card');
+    await expect(card.locator('.list-row').first()).toBeVisible();
+    await expect(card.locator('.list-row[data-item^="exercise.hanon."]')).toHaveCount(0);
+    const practice = card.locator('.list-row', { hasText: 'How to practise' });
+    await expect(practice).toHaveCount(1);
+    await expect(practice).toHaveAttribute('data-item', 'song.folk.hot-cross-buns');
+    await expect(practice).toHaveAttribute('data-slot', 'repertoire');
+    await expect(card.locator('.list-row[data-slot="new"]')).toHaveAttribute('data-item', 'exercise.reading.steps-and-skips-c');
   });
 });
 
@@ -281,7 +362,7 @@ test.describe('Today obeys 04 §0', () => {
     expect(box?.y ?? 0).toBeLessThan(300);
   });
 
-  test('a row is one line of detail and no taller than 96 px (R2)', async ({ page }) => {
+  test('a row is one line of detail and no taller than 96 px, or than its two title lines and two reason lines (R2, U63)', async ({ page }) => {
     await page.goto('/');
     const rows = page.locator('#today-card .list-row');
     await expect(rows.first()).toBeVisible();
@@ -295,10 +376,26 @@ test.describe('Today obeys 04 §0', () => {
       });
       expect(wrapped, `meta wrapped: ${(await meta.textContent()) ?? ''}`).toBe(false);
     }
-    // One title line and one detail line, plus padding and a badge row.
+    // Revised (U63; the reviewer's ruling on the row budget, `responses/questions-71bd6cee.md`): every row
+    // inside 96 px, except one whose title and reason both take two lines, which is that stack — padding and
+    // border, two title lines, two reason lines, the detail — and nothing more. The ruling's order is the
+    // title, the reason, the controls, the badge, then 96 px; such rows are measured in U63's record for R2's
+    // owner rather than cut to meet the number. Old assumption: every row ≤ 96 px, its reason one line, cut.
     for (const row of await rows.all()) {
-      const box = await row.boundingBox();
-      expect(box?.height ?? 0).toBeLessThanOrEqual(96);
+      const shape = await row.evaluate((el) => {
+        const lh = (node: Element | null): number => (node ? Number.parseFloat(getComputedStyle(node).lineHeight) : 0);
+        const lines = (node: Element | null): number => (node ? Math.round(node.getBoundingClientRect().height / lh(node)) : 0);
+        const title = el.querySelector('.list-row__title');
+        const sub = el.querySelector('.list-row__sub');
+        const style = getComputedStyle(el);
+        const chrome = ['paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth'].reduce((sum, key) => sum + Number.parseFloat(style[key as 'paddingTop']), 0);
+        return {
+          height: el.getBoundingClientRect().height,
+          twoAndTwo: lines(title) === 2 && lines(sub) === 2,
+          stack: chrome + 2 * lh(title) + 2 * lh(sub) + lh(el.querySelector('.list-row__meta')),
+        };
+      });
+      expect(shape.height).toBeLessThanOrEqual(shape.twoAndTwo ? shape.stack + 1 : 96);
     }
   });
 
@@ -421,5 +518,226 @@ test.describe('the daily read says why this phrase (C4, C4c)', () => {
     const hash = await openDaily(page);
     expect(hash).toContain('recipe=position:1,easy:1');
     expect(hash).toContain('rung=2.5');
+  });
+});
+
+/**
+ * A session row's reason keeps the clause that decides it (U63, Entry 170; the C6 review's finding 6; the
+ * reviewer's ruling on the row budget, `responses/questions-71bd6cee.md`), on the glass at the owner's width.
+ *
+ * Added (U63): at 342 px the reason was one line cut after about thirty characters, and the cut fell on the
+ * clause after the dash — *Keeping this piece playable —…*, *Next lesson — this one waits f…*. Now each row's
+ * reason reads its composed sentence in at most two lines, whole where the sentence fits them; the badge
+ * sits above Swap and ▶ rather than on a line of its own under the words; and a row is inside `04` §0 R2's
+ * 96 px unless its title and its reason both take two lines, when it is that stack and nothing more — the
+ * ruling's order is the title, the reason, the controls, the badge, then 96 px, and those rows are measured
+ * in U63's record for R2's owner rather than cut to meet the number.
+ *
+ * Three learners, restored through the backup import: C6's (the warm-up and the review above), the held
+ * line (`projects.spec.ts`'s: 1.1 with every one of its songs paused), and one waiting for its reads on 3.4
+ * (C6's intermediate: an exercise and a song counted for 3.4 yesterday, the core path alone).
+ */
+test.describe('the reason keeps its deciding clause at 342 × 740 (U63)', () => {
+  test.use({ viewport: { width: 342, height: 740 } });
+
+  const DAY = 86_400_000;
+  const placed = (unitId: string, stage: number, trackOrder = ['core']) => ({ id: 'current', stage, unitId, trackOrder, placement: { unitId, at: new Date().toISOString() } });
+
+  interface Measured {
+    lineRatio: number;
+    whole: boolean;
+    shown: string;
+    titleLines: number;
+    reasonLines: number;
+    height: number;
+    /** The row's chrome, two title lines, two reason lines and the detail line, from the computed line heights. */
+    twoAndTwo: number;
+    badgeUnderWords: boolean;
+    badgeBesideControls: boolean;
+  }
+
+  /** A session row as drawn: the reason's box against its computed line height, what of it shows, the row's height. */
+  async function measure(row: Locator): Promise<Measured> {
+    return row.evaluate((el) => {
+      const sub = el.querySelector('.list-row__sub') as HTMLElement;
+      const title = el.querySelector('.list-row__title') as HTMLElement;
+      const meta = el.querySelector('.list-row__meta') as HTMLElement;
+      const lh = (node: HTMLElement): number => Number.parseFloat(getComputedStyle(node).lineHeight);
+      const style = getComputedStyle(el);
+      const chrome = ['paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth'].reduce((sum, key) => sum + Number.parseFloat(style[key as 'paddingTop']), 0);
+      const box = sub.getBoundingClientRect();
+      // The characters inside the reason's box: what a learner can read of it.
+      const node = sub.firstChild as Text;
+      const range = document.createRange();
+      let last = -1;
+      for (let i = 0; i < (node.textContent ?? '').length; i += 1) {
+        range.setStart(node, i);
+        range.setEnd(node, i + 1);
+        const rects = [...range.getClientRects()];
+        const r = rects[rects.length - 1];
+        if (r && r.bottom <= box.bottom + 0.5 && r.right <= box.right + 0.5) last = i;
+      }
+      return {
+        lineRatio: box.height / lh(sub),
+        whole: !(sub.scrollWidth > sub.clientWidth + 1 || sub.scrollHeight > sub.clientHeight + 1),
+        shown: (node.textContent ?? '').slice(0, last + 1),
+        titleLines: Math.round(title.getBoundingClientRect().height / lh(title)),
+        reasonLines: Math.round(box.height / lh(sub)),
+        height: el.getBoundingClientRect().height,
+        twoAndTwo: chrome + 2 * lh(title) + 2 * lh(sub) + lh(meta),
+        badgeUnderWords: el.querySelector('.list-row__text .list-row__badges') !== null,
+        badgeBesideControls: el.querySelector('.today-row__side .list-row__badges') !== null,
+      };
+    });
+  }
+
+  /** Every session row on the card: two lines at most, no badge line under the words, and R2 as the ruling reads it. */
+  async function everyRow(page: Page, when: string): Promise<void> {
+    const rows = await page.locator('#today-card .list-row[data-item]').all();
+    expect(rows.length, `${when}: no session rows`).toBeGreaterThan(0);
+    for (const row of rows) {
+      const m = await measure(row);
+      const name = `${when}, ${(await row.getAttribute('data-slot')) ?? ''} row`;
+      expect(m.lineRatio, `${name}: the reason takes more than two lines`).toBeLessThanOrEqual(2.05);
+      expect(m.badgeUnderWords, `${name}: a badge line under the words`).toBe(false);
+      if (m.titleLines === 2 && m.reasonLines === 2) {
+        // Over 96 px only by the second reason line, and never more than the stack (the ruling; U63's record).
+        test.info().annotations.push({ type: 'U63 over 96', description: `${name}: ${String(Math.round(m.height))} px (two title lines, two reason lines)` });
+        expect(m.height, `${name}: taller than two title lines, two reason lines and the detail`).toBeLessThanOrEqual(m.twoAndTwo + 1);
+      } else {
+        expect(m.height, `${name}: over R2's 96 px`).toBeLessThanOrEqual(96);
+      }
+    }
+  }
+
+  /** The reason reads its sentence, in at most two lines, and all of it shows. */
+  async function wholeReason(row: Locator, text: string | RegExp): Promise<void> {
+    const sub = row.locator('.list-row__sub');
+    await expect(sub).toHaveText(text, { timeout: 30_000 });
+    const m = await measure(row);
+    expect(m.lineRatio, 'the reason takes more than two lines').toBeLessThanOrEqual(2.05);
+    expect(m.whole, `the reason is cut on the glass: "${m.shown}"`).toBe(true);
+  }
+
+  async function restore(page: Page, rung: string, stores: Record<string, unknown[]>): Promise<void> {
+    await placeAt(page, rung, stores);
+    await expect(page.locator('#today-card .list-row[data-item]').first()).toBeVisible({ timeout: 30_000 });
+  }
+
+  test('C6’s learner: the warm-up’s and the review’s reasons whole, the passed badge beside the controls; the running card the same, Next beside them', async ({ page }) => {
+    const yesterday = new Date(Date.now() - DAY).toISOString();
+    const long = new Date(Date.now() - 20 * DAY).toISOString();
+    await restore(page, '2.2', {
+      plan: [placed('2.2', 1)],
+      sessions: [
+        { itemId: 'drill.rhythm.eighths', lessonId: '2.2', mode: 'drill:rhythm', tempoPct: 100, tempoMeasured: false, accuracy: 0.97, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 120_000, at: yesterday },
+        { itemId: 'song.classical.ode-to-joy.ht', lessonId: '2.1', mode: 'tempo', tempoPct: 100, tempoMeasured: true, accuracy: 0.95, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 120_000, at: long },
+      ],
+      progress: [
+        { itemId: 'drill.rhythm.eighths', status: 'passed', bestAccuracy: 0.97, bestTempoPct: 0, attempts: 1, lastPracticedAt: yesterday, minutes: 2, passedOn: [yesterday.slice(0, 10)] },
+        { itemId: 'song.classical.ode-to-joy.ht', status: 'passed', bestAccuracy: 0.95, bestTempoPct: 100, attempts: 1, lastPracticedAt: long, minutes: 2, passedOn: [long.slice(0, 10)] },
+      ],
+    });
+    const warmup = page.locator('#today-card .list-row[data-slot="technique"]');
+    await expect(warmup).toHaveAttribute('data-claim', 'asked', { timeout: 30_000 });
+    await wholeReason(warmup, 'The next lesson asks for it — not counted yet');
+    const review = page.locator('#today-card .list-row[data-slot="review"]');
+    await expect(review).toHaveAttribute('data-claim', 'piece-retention');
+    await wholeReason(review, /^Keeping this piece playable — last played on \d+ \w+$/);
+    const passed = await measure(review);
+    expect(passed.badgeBesideControls, 'the review’s ✓ passed is not beside Swap and ▶').toBe(true);
+    await expect(review.locator('.today-row__side .badge')).toHaveText('passed');
+    await everyRow(page, 'the card');
+
+    // The running card: Start, then back to Today (`session-run.spec.ts`), its current row wearing Next.
+    await page.locator('#today-start').click();
+    await expect(page).toHaveURL(/#\/(drill|score)\/.+session=/, { timeout: 30_000 });
+    await page.goto('/#/today');
+    await page.reload();
+    await expect(page.locator('#today-continue')).toBeVisible({ timeout: 30_000 });
+    const current = page.locator('#today-card .list-row.today-row--current');
+    await expect(current).toHaveCount(1);
+    await expect(current.locator('.today-row__side .badge')).toHaveText('next');
+    await wholeReason(page.locator('#today-card .list-row[data-slot="technique"]'), 'The next lesson asks for it — not counted yet');
+    await wholeReason(page.locator('#today-card .list-row[data-slot="review"]'), /^Keeping this piece playable — last played on \d+ \w+$/);
+    await everyRow(page, 'the running card');
+  });
+
+  // The held line is longer than two lines at 342 px on this machine's face (74 characters; U63's record, the
+  // refuting test): its claim shows whole in its two lines and its last clause, *more from this lesson*, is cut.
+  // The sentence is its words' owner's (`help.ts`); the reviewer's short form is recorded for them. What this
+  // case holds is the two lines and the claim, never a third line or a taller row.
+  test('the held line: the rung’s wait said in two lines, its claim whole', async ({ page }) => {
+    const long = new Date(Date.now() - 20 * DAY).toISOString();
+    const at = new Date().toISOString();
+    const songs = ['song.folk.hot-cross-buns', 'song.folk.mary-had-a-little-lamb', 'song.folk.merrily-we-roll-along', 'song.folk.au-clair-de-la-lune', 'song.classical.ode-to-joy.rh', 'song.folk.kum-ba-yah.pdmx'];
+    await restore(page, '1.1', {
+      plan: [placed('1.1', 0)],
+      sessions: [{ itemId: songs[0], lessonId: '0.3', mode: 'tempo', tempoPct: 100, tempoMeasured: true, accuracy: 0.98, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 120_000, at: long }],
+      progress: [{ itemId: songs[0], status: 'mastered', bestAccuracy: 0.98, bestTempoPct: 100, attempts: 3, lastPracticedAt: long, minutes: 6, passedOn: [long.slice(0, 10)] }],
+      projects: songs.map((itemId) => ({ id: `id:${itemId}`, material: { kind: 'id', itemId }, itemId, state: 'paused', since: at, history: [{ state: 'paused', at, why: 'pause' }] })),
+    });
+    await page.locator('#today-length-30').click();
+    await expect(page.locator('#today-length-30')).toHaveAttribute('aria-pressed', 'true');
+    const waits = page.locator('#today-card .list-row[data-slot="new"]');
+    await expect(waits).toHaveAttribute('data-claim', 'rung', { timeout: 30_000 });
+    const sentence = 'This lesson waits on pieces you paused or put away — more from this lesson';
+    await expect(waits.locator('.list-row__sub')).toHaveText(sentence);
+    const m = await measure(waits);
+    expect(m.lineRatio, 'the held line takes more than two lines').toBeLessThanOrEqual(2.05);
+    expect(m.shown.startsWith('This lesson waits on pieces you paused or put away'), `the claim is cut: "${m.shown}"`).toBe(true);
+    if (!m.whole) test.info().annotations.push({ type: 'U63 refuting test', description: `the held line shows "${m.shown}…" in two lines` });
+    await everyRow(page, 'the held card');
+  });
+
+  test('waiting for its reads on 3.4: “Next lesson — this one waits for your reads”, whole', async ({ page }) => {
+    const yesterday = new Date(Date.now() - DAY).toISOString();
+    const run = (itemId: string) => ({ itemId, lessonId: '3.4', mode: 'tempo', tempoPct: 100, tempoMeasured: true, accuracy: 0.97, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 120_000, at: yesterday });
+    // Revised (U63's fix-forward after L120c, Entry 156): the learner counted `…fur-elise.beginner` for 3.4's song, and
+    // L120c moved 3.4's song option to `…fur-elise.easy`, so the run counted for nothing, 3.4's song ask was unmet and
+    // the new row read *This lesson asks for it — not counted yet*. The counted exercise and song are now 3.4's own
+    // options as the built curriculum lists them today (its first score exercise and first song), so only the reads are
+    // left on the rung, whatever the options become.
+    await page.goto('/');
+    const counted = await page.evaluate(async () => {
+      const curriculum = (await (await fetch('content/curriculum.json')).json()) as {
+        stages: { units: { lessons: { id: string; exerciseOptions?: string[]; songOptions?: string[] }[] }[] }[];
+      };
+      const rung = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons)).find((lesson) => lesson.id === '3.4');
+      const exercise = rung?.exerciseOptions?.find((id) => id.startsWith('exercise.'));
+      const song = rung?.songOptions?.find((id) => id.startsWith('song.'));
+      if (!exercise || !song) throw new Error('3.4 lists no score exercise or no song');
+      return [exercise, song];
+    });
+    await restore(page, '3.4', {
+      // The core path (and ragtime, not reached at 3.4), as `transfer-offer.spec.ts` places its learner: the tracks
+      // on by default would give the new row to a track's rung.
+      plan: [placed('3.4', 3, ['core', 'ragtime'])],
+      sessions: counted.map(run),
+      progress: counted.map((itemId) => ({ itemId, status: 'passed', bestAccuracy: 0.97, bestTempoPct: 100, attempts: 1, lastPracticedAt: yesterday, minutes: 2, passedOn: [yesterday.slice(0, 10)] })),
+    });
+    const next = page.locator('#today-card .list-row[data-slot="new"]');
+    await expect(next).toHaveAttribute('data-claim', 'asked', { timeout: 30_000 });
+    await wholeReason(next, 'Next lesson — this one waits for your reads');
+    await everyRow(page, 'the waiting card');
+  });
+
+  // G94 (the reviewer's ruling, `responses/9fce3792.md`:29–31): the swap sheet is the learner's own menu and may
+  // list a piece they paused, but beside it, its state. 1.1's new row offers the rung's other songs.
+  test('the swap sheet wears Paused beside a song the learner paused (G94)', async ({ page }) => {
+    const at = new Date().toISOString();
+    const paused = 'song.folk.merrily-we-roll-along';
+    await restore(page, '1.1', {
+      plan: [placed('1.1', 0)],
+      projects: [{ id: `id:${paused}`, material: { kind: 'id', itemId: paused }, itemId: paused, state: 'paused', since: at, history: [{ state: 'paused', at, why: 'pause' }] }],
+    });
+    const row = page.locator('#today-card .list-row[data-slot="new"]').first();
+    await row.getByRole('button', { name: 'Swap' }).click();
+    const option = page.locator(`#today-swap [data-swap="${paused}"]`);
+    await expect(option).toHaveCount(1);
+    await expect(option.locator('.badge')).toHaveText('Paused');
+    await expect(option.locator('.badge')).toHaveAttribute('data-project', 'paused');
+    // No other option is marked.
+    await expect(page.locator('#today-swap [data-swap] .badge[data-project]')).toHaveCount(1);
   });
 });

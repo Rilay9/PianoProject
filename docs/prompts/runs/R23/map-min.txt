@@ -1,0 +1,29 @@
+# checks for 18 path(s): 18 matched, 0 unmatched
+# app/src/curriculum/needs.ts: app/src/**, app/src/curriculum/**
+# app/tests/unit/needs.test.ts: app/tests/unit/*.test.ts
+# docs/04-ui-spec.md: docs/04-ui-spec.md, docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/runs/R23/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/R23/application-report-run.txt: docs/**
+# docs/prompts/runs/R23/application-report.md: docs/**
+# docs/prompts/runs/R23/mutants.txt: docs/**
+# docs/prompts/runs/R23/scripts-admission.probe.test.ts: docs/**
+# docs/prompts/runs/R23/scripts-application-report.py: docs/**
+# docs/prompts/runs/R23/scripts-mutants.py: docs/**
+# docs/prompts/runs/R23/scripts-vitest.r23.config.ts: docs/**
+# docs/prompts/runs/R23/unit-all-summary.txt: docs/**
+# docs/prompts/runs/R23/unit-crlf-discriminator.txt: docs/**
+# docs/prompts/runs/R23/unit-py-red-committed.txt: docs/**
+# docs/prompts/runs/R23/unit-ts-red-committed.txt: docs/**
+# tools/content/tests/test_finder.py: tools/content/tests/test_*.py
+# tools/content/validate.py: tools/content/*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4

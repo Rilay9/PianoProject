@@ -1,0 +1,6 @@
+== map-tests 23:20:58
+map-tests exit=0
+== map-min 23:21:17
+map-min exit=0
+e2e: none — documents and a probe script under docs/prompts/runs, no app or tool code
+CHAIN DONE 23:21:17

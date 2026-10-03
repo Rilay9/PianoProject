@@ -1,0 +1,18 @@
+== map-tests  22:13:48
+map-tests exit=0
+== map-min  22:13:50
+map-min exit=0
+== tsc  22:13:50
+tsc exit=0
+== lint  22:14:01
+lint exit=0
+== vitest-all  22:14:50
+vitest-all exit=1
+== build-app  22:18:59
+build-app exit=0
+SPECS: tests/e2e/converted-import.spec.ts tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/library.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/progress.spec.ts tests/e2e/projects.spec.ts tests/e2e/score.screen.spec.ts tests/e2e/score.states.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts
+== specs-exist  22:19:37
+specs-exist exit=0
+== e2e-targeted  22:19:37
+e2e-targeted exit=0
+CHAIN DONE 22:23:36

@@ -133,6 +133,9 @@ export const MIN_STAFF_PX = 22;
  */
 const SPLIT_TIE = 0.02;
 
+/** Why the window holds fewer bars than asked: `data-window-why` on the stage (`windowWhy`). */
+type WindowWhy = 'across' | 'floor' | 'size';
+
 /** How far the look-ahead row is greyed: readable, and plainly not the window. */
 const AHEAD_OPACITY = 0.45;
 
@@ -272,11 +275,30 @@ const FROZEN_HEIGHT_HOLD = 0.8;
  * phone — and the height that is left over buys more systems rather than
  * bigger ones: four on the owner's phone, where two used 42 % of the stage
  * and left the rest black. Each slot is an engraver of its own, loaded with
- * the piece, so the count is bounded; and a piece longer than the probe's
- * cap keeps two, because loading a 780-bar score four times is seconds a
- * throttled phone does not have.
+ * the piece, so the count is bounded.
+ *
+ * **A short piece gets all of them; a long one gets what its shape needs,
+ * later (U32, U32a).** Each sheet is a whole-document load, and loading a
+ * 780-bar score four times before the first window is seconds a throttled
+ * phone does not have, so a piece longer than the probe's reach is drawn first
+ * from the two sheets `create` makes (`FIRST_PAINT_SHEETS`); once it is
+ * measured, the sheets its settled shape needs past those are priced
+ * (`sheetsNeeded`) and made on idle, one load at a time, never while a run is
+ * on (`scheduleSheet`). They used to be never made at all: a cost guard on the
+ * first paint had become a cap on the look-ahead, and upright a window laid
+ * over two systems had no third sheet for the greyed next row, with half the
+ * phone empty below it (T38). Then U32 made every one up to this number, and a
+ * two-system window held two engravers it never drew from.
  */
 const MAX_SLOTS = 4;
+
+/**
+ * The sheets a piece longer than the probe's reach is first drawn from, all
+ * `create` loads before the first window (U32). Two, because that window is
+ * priced before the piece is measured, and unmeasured the chooser asks for two
+ * slots at most (`chooseWindowShape`); sideways draws one and keeps a spare.
+ */
+const FIRST_PAINT_SHEETS = 2;
 
 /**
  * Between the two systems when they are packed (`08` §4.1).
@@ -464,6 +486,19 @@ export interface WindowRendererOptions {
    * screen's fit. Default 1.
    */
   miniature?: number;
+  /**
+   * The band at the stage's top the folded chrome's `bar n / m` chip owns, in
+   * layout pixels, or 0 while the chip is not drawn (U118). The Score screen
+   * owns the chip, its sentences and when it is drawn, so it answers; the
+   * renderer asks whenever it places the stacked slots or takes a size, and
+   * places the first of them below the band.
+   *
+   * The answer is the chip's tallest legitimate state at the stage's width and
+   * the chip's type, held for that geometry: a change of sentence never moves
+   * it, and so never moves or re-prices the slots (rule 4 of the reviewer's
+   * ruling, `responses/questions-e9aa51ae.md`).
+   */
+  foldedReserve?: () => number;
 }
 
 interface Buffer {
@@ -693,6 +728,10 @@ export class WindowRenderer {
   private systemsPerWindow = 1;
   private shownBars: number;
   private readonly onWindow: ((shown: number, asked: number) => void) | undefined;
+  /** The folded chip's band, asked of the Score screen (U118; `WindowRendererOptions.foldedReserve`). */
+  private readonly foldedReserveOf: (() => number) | undefined;
+  /** The stacked slots' heights at the last pack, so the fold can place them again without a fit (U118). */
+  private lastPack: { slot: Buffer; height: number }[] = [];
   private handsFocus: HandsFocus;
   private zoomLevel: number;
   /** What the owner asked for; the drawn zoom is this times the fit. */
@@ -748,6 +787,32 @@ export class WindowRenderer {
   private probeLoading = false;
   /** The probe's load in flight, so two callers share one rather than racing two. */
   private probeLoad: Promise<boolean> | null = null;
+  /** What `create` was given, so the sheets a long piece is owed are made as the first ones were (U32). */
+  private readonly sheetOptions: WindowRendererOptions;
+  /** The idle callback (or its timer) that makes and loads the next sheet a long piece is owed (U32). */
+  private sheetHandle: { kind: 'idle' | 'timer'; id: number } | null = null;
+  /**
+   * The sheet being loaded and its load, so a second caller shares it, and
+   * `dispose` can reach a sheet that is not in `buffers` yet: a sheet joins
+   * them only once it has loaded, so nothing is priced or drawn on a sheet
+   * that cannot draw (U32).
+   */
+  private sheetLoad: { buffer: Buffer; done: Promise<void> } | null = null;
+  /** A sheet that could not load: the renderer keeps the sheets it has and makes no more (U32). */
+  private sheetsRefused = false;
+  /**
+   * The sheets the settled shape needs, as last priced while no run was on
+   * (`sheetsNeeded`, U32a); zero before the first pricing. Kept through a run,
+   * so what is owed while it plays is what the shape before it needed.
+   */
+  private sheetsWanted = 0;
+  /**
+   * The stage the last run was fitted to, as the fit last saw it while the run
+   * was on (U32a): the shape a run is re-planned to before its first note is
+   * priced on this stage too, so the sheets it needs are made while no run
+   * is on (`sheetsNeeded`). Null before the first run.
+   */
+  private runStage: { width: number; height: number } | null = null;
   /**
    * The most systems the *drawn* stave has proved readable, for one zoom and
    * one stage width; `chooseWindowShape` predicts the stave from the probe and
@@ -827,6 +892,14 @@ export class WindowRenderer {
   private priced: unknown = null;
   /** The tallest row the last fit drew, in stage pixels with its margin: what a look-ahead row is priced at. */
   private drawnRowPx = 0;
+  /**
+   * The engraving zoom the slots were last fitted at (U110): the units the
+   * drawn scale (`currentScale`) is in. A slot's transform is a scale of the
+   * engraving it holds, and the engraving search moves the zoom and re-engraves
+   * before the fit that follows it, so in between the transform on the glass
+   * is a scale of an engraving at another zoom.
+   */
+  private drawnAtZoom = -1;
   /** What the probe measured, at `pieceInkZoom`; null until it has run. */
   private pieceInk: PieceInk | null = null;
   private pieceInkZoom = -1;
@@ -889,6 +962,8 @@ export class WindowRenderer {
   private prerenderHandle: number | null = null;
   /** Watches the stage, because its height settles after the first draw. */
   private stageObserver: ResizeObserver | null = null;
+  /** `data-settled`, on its way: a frame later, once the stage has held still (`publishSettled`). */
+  private settledCheck: { frame: number | null; timer: number | null } | null = null;
   private disposed = false;
 
   private constructor(options: WindowRendererOptions, buffers: Buffer[]) {
@@ -898,10 +973,12 @@ export class WindowRenderer {
       for (const note of step.notes) this.notesById.set(note.id, note);
     }
     this.buffers = buffers;
+    this.sheetOptions = options;
     this.layout = options.layout ?? 'window';
     this.barsPerWindow = clampBars(options.barsPerWindow ?? 2);
     this.shownBars = this.barsPerWindow;
     this.onWindow = options.onWindow;
+    this.foldedReserveOf = options.foldedReserve;
     this.orientation = options.orientation ?? null;
     this.miniature = options.miniature !== undefined && options.miniature > 0 ? options.miniature : 1;
     this.handsFocus = options.handsFocus ?? 'both';
@@ -946,6 +1023,10 @@ export class WindowRenderer {
     if (typeof ResizeObserver !== 'undefined') {
       this.stageObserver = new ResizeObserver(() => {
         if (this.disposed || this.fitting) return;
+        // The stage moved, so whatever was said about the fit was about the
+        // stage before; it is said again a frame after the refit (U74).
+        this.cancelSettledCheck();
+        delete this.el.dataset.settled;
         this.stageHeight = -1;
         // The drawn scale first, and always: it is a CSS transform, it costs
         // nothing, and without it the sheet keeps the size it was fitted to
@@ -962,32 +1043,41 @@ export class WindowRenderer {
     }
   }
 
+  /**
+   * One sheet: its wrapper on the stage (before the probe's, so the stage's
+   * children stay in slot order) and an engraver with the options `create` was
+   * given. Not loaded: the caller loads it.
+   */
+  private static makeSheet(options: WindowRendererOptions, index: number, before: Element | null): Buffer {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'score-buffer';
+    wrapper.dataset.buffer = String(index);
+    options.container.insertBefore(wrapper, before);
+    const view = new OsmdView(wrapper, {
+      timingLabel: index === 0 ? 'osmd.render.front' : 'osmd.render.back',
+      ...(options.drawFingerings === undefined
+        ? {}
+        : { drawFingerings: options.drawFingerings }),
+      ...(options.drawMetronomeMarks === undefined
+        ? {}
+        : { drawMetronomeMarks: options.drawMetronomeMarks, drawFirstTempoExpression: options.drawMetronomeMarks }),
+      ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
+      ...(options.drawChordSymbols === undefined ? {} : { drawChordSymbols: options.drawChordSymbols }),
+    });
+    return { view, wrapper, range: null, elements: new Map() };
+  }
+
   static async create(options: WindowRendererOptions): Promise<WindowRenderer> {
     const buffers: Buffer[] = [];
-    const views = options.model.sourceMeasureCount > PROBE_MAX_BARS ? 2 : MAX_SLOTS;
+    // A long piece's first window waits for two whole-document loads, not four;
+    // the sheets past those are made after it (`scheduleSheet`, U32).
+    const views = options.model.sourceMeasureCount > PROBE_MAX_BARS ? FIRST_PAINT_SHEETS : MAX_SLOTS;
     for (let index = 0; index < views; index += 1) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'score-buffer';
-      wrapper.dataset.buffer = String(index);
-      options.container.appendChild(wrapper);
-      const view = new OsmdView(wrapper, {
-        timingLabel: index === 0 ? 'osmd.render.front' : 'osmd.render.back',
-        ...(options.drawFingerings === undefined
-          ? {}
-          : { drawFingerings: options.drawFingerings }),
-        ...(options.drawMetronomeMarks === undefined
-          ? {}
-          : { drawMetronomeMarks: options.drawMetronomeMarks, drawFirstTempoExpression: options.drawMetronomeMarks }),
-        ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
-        ...(options.drawChordSymbols === undefined ? {} : { drawChordSymbols: options.drawChordSymbols }),
-      });
-      await view.load(options.musicXml);
-      view.zoom = options.zoom ?? 1;
-      buffers.push({ view, wrapper, range: null, elements: new Map() });
+      const buffer = WindowRenderer.makeSheet(options, index, null);
+      await buffer.view.load(options.musicXml);
+      buffer.view.zoom = options.zoom ?? 1;
+      buffers.push(buffer);
     }
-    const renderer = new WindowRenderer(options, buffers);
-    renderer.slotRanges = buffers.map(() => null);
-    renderer.updateSlotClasses();
     // The probe. Loaded like the slots, drawn only when the zoom changes, and
     // never visible: `.score-buffer` without `is-front` is `visibility:
     // hidden`, which is what the second slot was for years.
@@ -995,16 +1085,7 @@ export class WindowRenderer {
     probeWrapper.className = 'score-buffer score-probe';
     probeWrapper.setAttribute('aria-hidden', 'true');
     options.container.appendChild(probeWrapper);
-    // Not loaded here: loading a 780-bar score into OSMD a third time is
-    // seconds on a throttled phone, and the first window must not wait for a
-    // measurement that only refines it. Loaded on idle, after the first paint.
-    // And loaded from the first `PROBE_MAX_BARS` only (`measurePiece`): the
-    // probe draws no more than that, but the engraver loads the whole
-    // document to draw any of it, and on the Scherzo that load was five
-    // seconds of the first window's budget. Without a probe at all the
-    // Scherzo's run shrank 13 % and its stave jumped 45 px at bar 16 — the
-    // corpus measured both — so the measurement stays; the document is cut.
-    renderer.probe = new OsmdView(probeWrapper, {
+    let probe: OsmdView | null = new OsmdView(probeWrapper, {
       timingLabel: 'osmd.render.probe',
       ...(options.drawFingerings === undefined ? {} : { drawFingerings: options.drawFingerings }),
       ...(options.drawMetronomeMarks === undefined
@@ -1013,6 +1094,51 @@ export class WindowRenderer {
       ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
       ...(options.drawChordSymbols === undefined ? {} : { drawChordSymbols: options.drawChordSymbols }),
     });
+    // A long piece's probe is not loaded here: loading a 780-bar score into
+    // OSMD a third time is seconds on a throttled phone, and the first window
+    // must not wait for it. It is loaded on idle, after the first paint, and
+    // from the first `PROBE_MAX_BARS` only (`loadProbe`): the probe draws no
+    // more than that, but the engraver loads the whole document to draw any of
+    // it, and on the Scherzo that load was five seconds of the first window's
+    // budget. Without a probe at all the Scherzo's run shrank 13 % and its
+    // stave jumped 45 px at bar 16 — the corpus measured both — so the
+    // measurement stays; the document is cut.
+    //
+    // **Before any sheet past `create`'s two (U32a).** A long piece's first
+    // window is drawn from two sheets; the probe loads and measures on idle,
+    // the measurement re-plans the window with the sheets there are, and only
+    // then are the sheets that shape is short of priced and made
+    // (`scheduleSheet`) — the measurement is what says how many it needs. U32
+    // loaded every sheet up to `MAX_SLOTS` before the probe, so that one
+    // re-plan brought both; the window a learner reads then waited for sheets
+    // most shapes never used.
+    //
+    // **A piece within the probe's reach is loaded here (U74).** Its four slots
+    // have each just loaded the whole document, so this is one load more of
+    // the same — and without it the first window was priced with nothing
+    // measured: `chooseWindowShape` fell back to one system for the whole
+    // window, and the measurement that corrected it landed on idle, half a
+    // second or more after the sheet appeared. D4's pictures of the two-bar
+    // blues scale were taken in that half second: one small system at the top
+    // of an empty stage, on every path in, until the re-plan drew two systems
+    // each larger than the one had been (the matrix's U42 and U74). Loaded here,
+    // the piece is measured before the first window is priced
+    // (`measureBeforePricing`). Before the renderer exists, so that nothing
+    // its stage observer is told can arrive while this is in flight.
+    if (options.model.sourceMeasureCount <= PROBE_MAX_BARS) {
+      try {
+        await probe.load(options.musicXml);
+      } catch {
+        // Measured the slow way, window by window, as a probe that cannot load always was.
+        probeWrapper.remove();
+        probe.dispose();
+        probe = null;
+      }
+    }
+    const renderer = new WindowRenderer(options, buffers);
+    renderer.slotRanges = buffers.map(() => null);
+    renderer.updateSlotClasses();
+    renderer.probe = probe;
     renderer.probeSource = options.musicXml;
     return renderer;
   }
@@ -1161,6 +1287,9 @@ export class WindowRenderer {
     if (this.readAhead === 'slots') this.showStepInSlots(stepIndex);
     else this.showStepInOneSystem(step);
     this.positionBand(step);
+    // A step taken while stopped — a new start bar, a seek — is priced at its
+    // own window, and a window drawn warm has no fit to ask at its end (U32a).
+    this.scheduleSheet();
   }
 
   /**
@@ -1595,6 +1724,7 @@ export class WindowRenderer {
   private dropDrawnSheets(): void {
     this.slotRanges = this.buffers.map(() => null);
     this.cursorSlot = 0;
+    this.lastPack = [];
     for (const slot of this.buffers) {
       // The classes too: a buffer hidden by the new arrangement kept its old
       // `is-current`, and the next time it came forward showed a stale one
@@ -1636,14 +1766,14 @@ export class WindowRenderer {
    * more than it can. Where the prediction is wrong anyway the drawn stave
    * corrects it (`slotCeiling`, in `fitSlots`).
    */
-  private chooseWindowShape(arrangement: 'slots' | 'single' = this.readAhead): {
+  private chooseWindowShape(
+    arrangement: 'slots' | 'single' = this.readAhead,
+    rowsOverflow = false,
+  ): {
     slots: number;
     systems: number;
     shown: number;
   } {
-    const asked = Math.max(1, this.barsPerWindow);
-    const pieceBars = Math.max(1, this.model.sourceMeasureCount);
-    const wanted = Math.min(asked, pieceBars);
     // A run keeps the arrangement it started with, whatever it was — including
     // one system. Forcing a second back on during a run over a dense piece is
     // the size change P1 forbids.
@@ -1660,8 +1790,48 @@ export class WindowRenderer {
         shown: Math.max(1, this.shownBars),
       };
     }
+    // Priced from the piece's measurement, taken now if it can be (U74).
+    this.measureBeforePricing();
     const stage = this.measure(this.el);
-    const mostSlots = Math.max(1, Math.min(this.buffers.length, arrangement === 'slots' ? MAX_SLOTS : 1));
+    // The sheets that exist and have loaded: a long piece's later ones count
+    // from the moment they join `buffers`, never before (U32).
+    const priced = this.priceWindowShape(arrangement, stage, this.buffers.length);
+    if (priced.why !== undefined) this.windowWhy(priced.why);
+    if (priced.sizeTargetAbs !== undefined) this.sizeTargetAbs = priced.sizeTargetAbs;
+    if (priced.priced !== undefined) this.priced = priced.priced;
+    return priced.settle
+      ? this.settleShape(stage.width, priced.slots, priced.systems, priced.shown, rowsOverflow)
+      : { slots: priced.slots, systems: priced.systems, shown: priced.shown };
+  }
+
+  /**
+   * The chooser's pricing, **with no effect on the renderer or the stage**
+   * (U32a): the shape `chooseWindowShape` would choose if `sheets` sheets
+   * could draw rows, and what applying it would tell the stage — the reason
+   * for a count that yields (`why`), the Size setting's target, the debug
+   * account — handed back rather than written. `chooseWindowShape` prices with
+   * the sheets that exist and applies the answer; `sheetsNeeded` prices with
+   * more sheets than exist, to find how many the settled shape needs before
+   * any of them is made. `settle`: the answer goes through `settleShape` (the
+   * ladder's bound) when it is applied.
+   */
+  private priceWindowShape(
+    arrangement: 'slots' | 'single',
+    stage: { width: number; height: number },
+    sheets: number,
+  ): {
+    slots: number;
+    systems: number;
+    shown: number;
+    settle: boolean;
+    why?: WindowWhy | null;
+    sizeTargetAbs?: number;
+    priced?: unknown;
+  } {
+    const asked = Math.max(1, this.barsPerWindow);
+    const pieceBars = Math.max(1, this.model.sourceMeasureCount);
+    const wanted = Math.min(asked, pieceBars);
+    const mostSlots = Math.max(1, Math.min(sheets, arrangement === 'slots' ? MAX_SLOTS : 1));
     // **The piece's own measurement, never the held one**, and this is the
     // second time that distinction has decided a fault (`expectedSlotScale`
     // has the first). `held` is the tallest *ink* drawn at this zoom, and a
@@ -1679,8 +1849,21 @@ export class WindowRenderer {
     // Two systems is the old default, the window is what was asked for, and
     // the fit is redone the moment the measurement lands.
     if (!(height > 0) || !(staff > 0) || !(bar > 0) || stage.height <= 0 || stage.width <= 0) {
-      this.windowWhy(null);
-      return { slots: Math.max(1, Math.min(2, mostSlots)), systems: 1, shown: wanted };
+      // **Except inside the engraving search (U74).** Each zoom it tries is a
+      // zoom nothing has measured, and falling back here engraved the default
+      // at every one of them: the search then sized a sheet of another shape
+      // from the one on the glass before it and after it, and settled on a zoom
+      // for that sheet. The shape it started from is the one it is sizing; the
+      // fit after the search measures at the zoom it chose and prices again.
+      if (this.fitting) {
+        return {
+          slots: Math.max(1, Math.min(sheets, this.slotCount)),
+          systems: Math.max(1, this.systemsPerWindow),
+          shown: Math.max(1, this.shownBars),
+          settle: false,
+        };
+      }
+      return { slots: Math.max(1, Math.min(2, mostSlots)), systems: 1, shown: wanted, settle: false, why: null };
     }
     // **T34 rule 1 — one scale, as large as the stage allows.** The
     // rows are engraved at their bars' natural widths (`drawInto`), so a row
@@ -1727,8 +1910,8 @@ export class WindowRenderer {
       );
       const base = byHeight;
       const scale = u <= 1 ? u * base : byHeight;
-      this.sizeTargetAbs = u > 1 ? u * base * z : 0;
-      if (!(scale > 0)) return { slots: 1, systems: 1, shown: wanted };
+      const sizeTargetAbs = u > 1 ? u * base * z : 0;
+      if (!(scale > 0)) return { slots: 1, systems: 1, shown: wanted, settle: false, sizeTargetAbs };
       const room = (stage.width - FIT_MARGIN_PX) / scale;
       const peek = staff * NEXT_NOTE_AFTER_BARLINE_STAVES;
       let fits = 1;
@@ -1740,11 +1923,24 @@ export class WindowRenderer {
           break;
         }
       }
-      this.windowWhy(fits < wanted ? 'across' : null);
-      this.priced = { arrangement: 'single', scale, room: Math.round(room), shown: fits, staffPx: Math.round(staff * scale * 10) / 10 };
-      return this.settleShape(stage.width, 1, 1, fits);
+      return {
+        slots: 1,
+        systems: 1,
+        shown: fits,
+        settle: true,
+        why: fits < wanted ? 'across' : null,
+        sizeTargetAbs,
+        priced: { arrangement: 'single', scale, room: Math.round(room), shown: fits, staffPx: Math.round(staff * scale * 10) / 10 },
+      };
     }
 
+    // **The height the slots are stacked in (U118).** Below the folded chip's
+    // band when the chip is drawn as this size is taken — a size taken while
+    // already folded, after a turn — and the whole stage otherwise. A run that
+    // starts unfolded is priced on the whole stage, and the fold that comes
+    // later gives back the header's row, more than the band takes; the shape a
+    // frozen run holds is never priced again here (`chooseWindowShape`).
+    const slotsHeight = stage.height - this.foldedReserve();
     /** The window of `shown` bars the cursor is in, split over `systems` rows as `slots.rangeAt` splits it. */
     const rowsFor = (shown: number, systems: number): { window: MeasureRange; rows: MeasureRange[] } => {
       const w = windowAt(cursorBar, shown, pieceBars, pickup);
@@ -1763,7 +1959,7 @@ export class WindowRenderer {
      * stage's width.
      */
     const fitFor = (shown: number, systems: number): number => {
-      const perRow = (stage.height - SLOT_GAP_PX * (systems - 1)) / systems;
+      const perRow = (slotsHeight - SLOT_GAP_PX * (systems - 1)) / systems;
       const byHeight = (perRow - FIT_MARGIN_PX) / height;
       const widest = Math.max(...rowsFor(shown, systems).rows.map(row), 1);
       const byWidth = (stage.width - FIT_MARGIN_PX) / widest;
@@ -1792,7 +1988,7 @@ export class WindowRenderer {
       if (windowAt(cursorBar, shown, pieceBars, pickup).toMeasure >= pieceBars - 1) return true;
       if (systems + 1 > maxSlots) return false;
       const rowHeight = height * (u <= 1 ? u * fit : fit) + FIT_MARGIN_PX;
-      return systems * rowHeight + rowHeight + SLOT_GAP_PX * systems <= stage.height;
+      return systems * rowHeight + rowHeight + SLOT_GAP_PX * systems <= slotsHeight;
     };
     const bestFor = (shown: number, maxSlots: number): { systems: number; fit: number } | null => {
       const splits: { systems: number; fit: number }[] = [];
@@ -1812,7 +2008,7 @@ export class WindowRenderer {
     // sixth to a quarter below the scale drawn, so 110 % could not reach even
     // the 100 % size.
     const base = askedBest?.fit ?? 0;
-    this.sizeTargetAbs = u > 1 ? u * base * z : 0;
+    const sizeTargetAbs = u > 1 ? u * base * z : 0;
     // **T34 rule 4 — the count yields to readability, and says so.** One bar
     // fewer at a time, from the asked count down, until the window's staff
     // clears the floor. Over 100 % Size (T38): the largest count that reaches
@@ -1843,10 +2039,9 @@ export class WindowRenderer {
     // Nothing clears the floor, so the floor wins and the window is one bar on
     // one system: `MIN_STAFF_PX` is what everything gives way to.
     if (choice === null) {
-      this.windowWhy(wanted > 1 ? 'floor' : null);
-      return this.settleShape(stage.width, 1, 1, 1);
+      return { slots: 1, systems: 1, shown: 1, settle: true, why: wanted > 1 ? 'floor' : null, sizeTargetAbs };
     }
-    this.windowWhy(choice.shown < wanted ? (u > 1 ? 'size' : 'floor') : null);
+    const why: WindowWhy | null = choice.shown < wanted ? (u > 1 ? 'size' : 'floor') : null;
     // **T34 rule 2 — the next bar is in view whenever it can be.** One more
     // row below, at the window's own scale, when the stage has the height
     // for it; otherwise none, and the window keeps its size. Whether that row
@@ -1856,65 +2051,130 @@ export class WindowRenderer {
     // glass: the prediction prices a row at the piece's tallest system, and
     // the Nocturne's eight bars on a tablet upright were drawn smaller than
     // predicted, which left a row's height empty below and no next bar.
-    const { window: chosen, rows } = rowsFor(choice.shown, choice.systems);
-    const drawnNow =
-      this.systemsPerWindow === choice.systems && this.shownBars === choice.shown ? this.currentScale() : 0;
-    const rowHeight = height * (drawnNow > 0 ? Math.min(choice.drawn, drawnNow) : choice.drawn) + FIT_MARGIN_PX;
-    // The window's rows keep the reserve of the piece's tallest system (one
-    // size for the whole run); the look-ahead row is priced at the rows
-    // actually drawn, since it is a greyed preview and costs the window
-    // nothing. Priced at the reserve, the Nocturne's one row on a tablet
-    // sideways left two thirds of the stage empty and no next bar.
-    const aheadHeight = drawnNow > 0 && this.drawnRowPx > 0 ? Math.min(rowHeight, this.drawnRowPx) : rowHeight;
-    const ahead =
-      chosen.toMeasure < pieceBars - 1 &&
-      choice.systems + 1 <= choice.maxSlots &&
-      choice.systems * rowHeight + aheadHeight + SLOT_GAP_PX * choice.systems <= stage.height;
-    // Every count's best shape and the five-line staff it would draw, so the
-    // floor's number can be judged from one pass (`debugFit`, T38 item 5).
-    const candidates: { shown: number; systems: number; staffPx: number }[] = [];
+    const { rows } = rowsFor(choice.shown, choice.systems);
+    // **The drawn scale is read only at the zoom it was drawn at (U110).**
+    // `height` is the piece's measurement at this zoom; a slot's transform is
+    // a scale of the engraving it was last fitted with, and after the
+    // engraving search's last re-engraving that is still the zoom the search
+    // tried before it. Priced with one in the other's units on Ode to Joy at
+    // 360 x 780, the window's rows came out at a little over half the height
+    // they draw, a look-ahead row was granted on a stage the two rows already
+    // fill, and the reshape ladder then ran out holding it. Until the fit at
+    // this zoom the rows are priced as predicted; that fit prices them again
+    // from what it drew.
+    const drawnHere = this.drawnAtZoom === this.zoomLevel;
+    /**
+     * Whether `shown` bars over `systems` rows drawn at `drawn` leave the
+     * stage a row's height for the next bar below them. The shape chosen is
+     * reserved its look-ahead row by this; every other count priced in the
+     * same pass is read out by it (`candidates`, U113), each from its own
+     * window, rows and scale, so one bar fewer can be compared with the count
+     * drawn without asking for a different count.
+     */
+    const aheadFor = (shown: number, systems: number, drawn: number, maxSlots: number): boolean => {
+      const drawnNow = drawnHere && this.systemsPerWindow === systems && this.shownBars === shown ? this.currentScale() : 0;
+      const rowHeight = height * (drawnNow > 0 ? Math.min(drawn, drawnNow) : drawn) + FIT_MARGIN_PX;
+      // The window's rows keep the reserve of the piece's tallest system (one
+      // size for the whole run); the look-ahead row is priced at the rows
+      // actually drawn, since it is a greyed preview and costs the window
+      // nothing. Priced at the reserve, the Nocturne's one row on a tablet
+      // sideways left two thirds of the stage empty and no next bar.
+      const aheadHeight = drawnNow > 0 && this.drawnRowPx > 0 ? Math.min(rowHeight, this.drawnRowPx) : rowHeight;
+      return (
+        windowAt(cursorBar, shown, pieceBars, pickup).toMeasure < pieceBars - 1 &&
+        systems + 1 <= maxSlots &&
+        systems * rowHeight + aheadHeight + SLOT_GAP_PX * systems <= slotsHeight
+      );
+    };
+    const ahead = aheadFor(choice.shown, choice.systems, choice.drawn, choice.maxSlots);
+    // Every count's best shape, the five-line staff it would draw and whether
+    // it would keep a look-ahead row below, so the floor's number and what one
+    // bar fewer buys can be judged from one pass (`debugFit`, T38 item 5,
+    // U113). A read-out only: nothing here changes the choice above.
+    const candidates: { shown: number; systems: number; staffPx: number; ahead: boolean }[] = [];
     for (let shown = wanted; shown >= 1; shown -= 1) {
-      const best = bestFor(shown, Math.max(1, Math.min(mostSlots, this.slotCeilingNow(stage.width, shown))));
+      const maxSlots = Math.max(1, Math.min(mostSlots, this.slotCeilingNow(stage.width, shown)));
+      const best = bestFor(shown, maxSlots);
       if (!best) continue;
       const drawn = u <= 1 ? u * best.fit : Math.min(best.fit, u * base);
-      candidates.push({ shown, systems: best.systems, staffPx: Math.round(staff * drawn * 10) / 10 });
+      candidates.push({
+        shown,
+        systems: best.systems,
+        staffPx: Math.round(staff * drawn * 10) / 10,
+        ahead: aheadFor(shown, best.systems, drawn, maxSlots),
+      });
     }
-    this.priced = {
-      arrangement: 'slots',
-      candidates,
-      shown: choice.shown,
+    return {
+      slots: ahead ? choice.systems + 1 : choice.systems,
       systems: choice.systems,
-      fit: Math.round(choice.fit * 10000) / 10000,
-      drawn: Math.round(choice.drawn * 10000) / 10000,
-      base: Math.round(base * 10000) / 10000,
-      rows: rows.map((r) => ({ from: r.fromMeasure, to: r.toMeasure, px: Math.round(row(r)) })),
+      shown: choice.shown,
+      settle: true,
+      why,
+      sizeTargetAbs,
+      priced: {
+        arrangement: 'slots',
+        candidates,
+        shown: choice.shown,
+        systems: choice.systems,
+        fit: Math.round(choice.fit * 10000) / 10000,
+        drawn: Math.round(choice.drawn * 10000) / 10000,
+        base: Math.round(base * 10000) / 10000,
+        rows: rows.map((r) => ({ from: r.fromMeasure, to: r.toMeasure, px: Math.round(row(r)) })),
+      },
     };
-    return this.settleShape(stage.width, ahead ? choice.systems + 1 : choice.systems, choice.systems, choice.shown);
   }
 
   /**
    * How far down the stage the one sliding sheet starts, in layout pixels: the
-   * stylesheet moves it below the `bar n / m` chip when a phone's chrome folds
-   * (`.score-buffer { top: var(--score-corner-h) }`), and the fit has to fit
-   * the box the sheet is actually in (T38). It sized to the stage's whole
-   * height, and the reserve's old overshoot — the ink above the stave, counted
-   * twice (`staffLineBoxes`) — was all that kept the bottom of a phone held
-   * sideways on the glass; measured once the reserve was exact, the bass
+   * stylesheet moves it below the top line's band from a phone's run start
+   * (U122c; before it, below the `bar n / m` chip at the fold), and the fit has
+   * to fit the box the sheet is actually in (T38). It sized to the stage's
+   * whole height, and the reserve's old overshoot — the ink above the stave,
+   * counted twice (`staffLineBoxes`) — was all that kept the bottom of a phone
+   * held sideways on the glass; measured once the reserve was exact, the bass
    * staff's fingerings on Twinkle ran 18 px past the stage's bottom mid-run.
-   * The slots set their own `top`, so this is the sliding sheet's alone.
+   * The slots set their own `top`, so the stylesheet's shift is the sliding
+   * sheet's alone; the stacked slots' is the band the Score screen asks for
+   * (U118, below; none since U122c).
    *
-   * **A run is fitted for the folded box from its start.** The stage takes
-   * the bar's row when a run starts (`data-running`), the size is frozen a
-   * moment later, and the chrome folds a few seconds after that — moving the
-   * sheet down without changing the stage's box, so nothing refits. So while
-   * a run is on, on a phone, the chip's height is kept from the start: one
-   * size for the whole run, with the room the fold will take already given.
+   * **A run is fitted for its box from its start.** The stage takes the bar's
+   * row when a run starts (`data-running`, sideways) and the band from the
+   * same moment, and the size is frozen a moment later; nothing moves the
+   * sheet after that, so nothing refits.
+   *
+   * **The stacked slots are not kept the room from the start (U118, the
+   * reviewer's ruling `responses/questions-e9aa51ae.md`).** Upright the fold
+   * also takes the header away, and the stage grows by more than the chip's
+   * band: priced from a run's start the band cost six of 112 measured shapes
+   * and shrank 27 more for room the fold gives back anyway. So the slots fit
+   * below the band only while the chip is drawn — the band the slots are
+   * placed under (`packSlots`) — and a run frozen before the fold keeps its
+   * size through it (`scaleFor`'s hold), the header's row paying for the band.
    */
   private sheetShift(): number {
+    if (this.readAhead === 'slots') return this.foldedReserve();
     if (this.readAhead !== 'single' || this.layout !== 'window' || typeof getComputedStyle !== 'function') return 0;
+    // Since U122c the stylesheet moves the sheet from a run's start, not at
+    // the fold, so what it says is what the fit prices: on a phone held
+    // sideways the top line's band (`.score-buffer { top: var(--score-top-band) }`
+    // under `[data-running='true']`), and nothing anywhere else. The 22 px this
+    // used to assume before the fold had happened was the chip's band, and the
+    // chip is not drawn any more.
     const top = Number.parseFloat(getComputedStyle(this.buffers[this.cursorSlot]!.wrapper).top);
-    if (Number.isFinite(top) && top > 0) return top;
-    return this.running && this.el.closest('[data-tablet="true"]') === null ? FOLDED_SHEET_SHIFT_PX : 0;
+    return Number.isFinite(top) && top > 0 ? top : 0;
+  }
+
+  /**
+   * The band the folded chip owns at the stage's top, in layout pixels, while
+   * it is drawn; 0 otherwise, and always outside the window layout (U118).
+   * The Score screen answers (`WindowRendererOptions.foldedReserve`): the
+   * chip's tallest legitimate state at this width and type, not the sentence
+   * it shows now, so the answer holds until the geometry changes.
+   */
+  private foldedReserve(): number {
+    if (this.layout !== 'window' || !this.foldedReserveOf) return 0;
+    const px = this.foldedReserveOf();
+    return Number.isFinite(px) && px > 0 ? px : 0;
   }
 
   /** The piece's widest bar at natural spacing, px at the engraving zoom, or the widest drawn; 0 if neither. */
@@ -1949,20 +2209,42 @@ export class WindowRenderer {
    * is the reason and nothing would be drawn smaller; `floor` upright, where
    * more bars would put the staff under `MIN_STAFF_PX`; `size` over 100 %.
    */
-  private windowWhy(why: 'across' | 'floor' | 'size' | null): void {
+  private windowWhy(why: WindowWhy | null): void {
     if (why === null) delete this.el.dataset.windowWhy;
     else this.el.dataset.windowWhy = why;
   }
 
-  /** The chosen shape, or the one already drawn when the ladder is spent. */
+  /**
+   * The chosen shape, or the one already drawn when the reshape ladder is spent.
+   *
+   * **A spent ladder holds what is drawn, a look-ahead row included, unless the
+   * rows drawn no longer fit the stage (U110a).** A refusal from `aheadFor` is
+   * not proof the rows on the glass overflow the stage: it prices the window's
+   * rows at the piece's tallest system and the look-ahead row at its own drawn
+   * ink, so a stage a few pixels short of that sum refuses a row that drawn rows
+   * fit in. An exception that took the row away on such a refusal stood here
+   * from U110 to U110a, keyed on the row having been measured; it took away
+   * read-ahead the stage held. What a spent ladder does take away is a
+   * look-ahead row whose rows, each at its own drawn height with the gaps
+   * between, are no longer under the stage's height (`rowsFitStage`,
+   * `packSlots`' own test, from the fit that has just drawn them: `rowsOverflow`).
+   * Past that test `packSlots` gives every row an even share and the ink runs
+   * into the next row, which a stage shortened by height alone does to rows
+   * drawn while it was taller. It only ever removes the look-ahead row, so the
+   * ladder still ends. U110's zoom gate in `aheadFor` stays.
+   */
   private settleShape(
     stageWidth: number,
     slots: number,
     systems: number,
     shown: number,
+    rowsOverflow = false,
   ): { slots: number; systems: number; shown: number } {
     const same = slots === this.slotCount && systems === this.systemsPerWindow && shown === this.shownBars;
     if (same || this.mayReshape(stageWidth)) return { slots, systems, shown };
+    if (rowsOverflow && systems === this.systemsPerWindow && shown === this.shownBars && slots < this.slotCount) {
+      return { slots, systems, shown };
+    }
     return { slots: this.slotCount, systems: this.systemsPerWindow, shown: this.shownBars };
   }
 
@@ -1984,6 +2266,18 @@ export class WindowRenderer {
     if (c.n >= MAX_SLOTS + 2) return false;
     c.n += 1;
     return true;
+  }
+
+  /** What `mayReshape` would answer, without spending a rung (`sheetsNeeded`, U32a). */
+  private canReshape(stageWidth: number): boolean {
+    const c = this.shapeChanges;
+    return (
+      !c ||
+      c.zoom !== this.zoomLevel ||
+      c.width !== Math.round(stageWidth) ||
+      c.asked !== this.barsPerWindow ||
+      c.n < MAX_SLOTS + 2
+    );
   }
 
   /** Writes a chosen shape onto the renderer and the element the sheet reads. */
@@ -2311,7 +2605,19 @@ export class WindowRenderer {
       piece: this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null,
       pieceInkZoom: this.pieceInkZoom,
       probeLoaded: this.probe?.isLoaded ?? false,
+      // The sheets rows are drawn into (U32): `made` counts one whose load is
+      // in flight, `loaded` the ones that can draw (`slots` below has one
+      // entry each), `pending` the ones the settled shape still needs (U32a,
+      // `sheetsNeeded`) — in flight, queued, or waiting for a run to end.
+      sheets: {
+        made: this.buffers.length + (this.sheetLoad ? 1 : 0),
+        loaded: this.buffers.length,
+        pending: this.sheetsOwed(),
+      },
       frozen: this.frozen,
+      // The folded chip's band the stacked slots are placed under, 0 while it
+      // is not drawn (U118).
+      foldedReserve: this.foldedReserve(),
       readAhead: this.readAhead,
       slotCount: this.slotCount,
       systemsPerWindow: this.systemsPerWindow,
@@ -2480,6 +2786,14 @@ export class WindowRenderer {
       this.freezeHandle = null;
     }
     this.cancelSettle();
+    this.cancelSettledCheck();
+    // A sheet queued is never made; one being loaded is let go now, and its load
+    // lands on a renderer that is gone and touches nothing (`loadNextSheet`).
+    this.cancelSheet();
+    if (this.sheetLoad) {
+      this.sheetLoad.buffer.view.dispose();
+      this.sheetLoad.buffer.wrapper.remove();
+    }
     if (this.measureHandle !== null) {
       const w = window as Window & { cancelIdleCallback?: (id: number) => void };
       if (typeof w.cancelIdleCallback === 'function') w.cancelIdleCallback(this.measureHandle);
@@ -2686,7 +3000,13 @@ export class WindowRenderer {
     if (slots.length === 0) return;
     const available = this.measure(this.el);
     if (available.width <= 0 || available.height <= 0) return;
+    // The scale below is priced from the piece's measurement as well as the
+    // shape: the first fit after an engraving search has none at the new zoom
+    // until this takes it (U74).
+    this.measureBeforePricing();
     this.stageHeight = Math.round(available.height);
+    // The stage a run is played on, for the sheets the next one needs (U32a, `sheetsNeeded`).
+    if (this.running) this.runStage = { width: Math.round(available.width), height: Math.round(available.height) };
 
     const boxes: { slot: Buffer; box: { x: number; y: number; width: number; height: number; bar: number } }[] =
       [];
@@ -2754,6 +3074,7 @@ export class WindowRenderer {
     // applied once and never multiplies a fit that already fills the stage.
     const drawn = scale;
     this.drawnRowPx = Math.max(...boxes.map((entry) => entry.box.height * drawn), 0) + FIT_MARGIN_PX;
+    this.drawnAtZoom = this.zoomLevel;
     // One offset for every slot, for the same reason there is one scale: the
     // slots are engraved separately, so their ink boxes differ — a bar of
     // semiquavers is wider than a bar of minims — and centring each in its own
@@ -2768,7 +3089,12 @@ export class WindowRenderer {
       slot.fittedFor = { height: Math.round(perSlot), scale };
       if (slot === this.buffers[this.cursorSlot]!) this.baseTransform = transform;
     }
-    this.packSlots(boxes.map((entry) => ({ slot: entry.slot, height: entry.box.height * drawn + FIT_MARGIN_PX })));
+    const packedRows = boxes.map((entry) => ({ slot: entry.slot, height: entry.box.height * drawn + FIT_MARGIN_PX }));
+    this.packSlots(packedRows);
+    // Whether the rows just drawn, each at its own height, are over the stage:
+    // what a spent reshape ladder reads to decide a look-ahead row goes
+    // (`settleShape`, U110a). Read here, from this fit's own rows and stage.
+    const rowsOverflow = !this.rowsFitStage(packedRows);
     this.treatLookAhead(boxes, drawn, available.width);
     // The first fit is what tells the count: the widest and tallest window
     // are known now. A different answer redraws once, from the current step.
@@ -2844,7 +3170,7 @@ export class WindowRenderer {
           };
         }
       }
-      const shape = this.chooseWindowShape('slots');
+      const shape = this.chooseWindowShape('slots', rowsOverflow);
       const count = shape.slots;
       const reshaped = shape.systems !== this.systemsPerWindow || shape.shown !== this.shownBars;
       // The page a slot was engraved on, against the page it should be on now.
@@ -2948,7 +3274,10 @@ export class WindowRenderer {
     this.repositionBands();
     // The one place a fit and its re-plan complete: every path that changes
     // the shape — the measurement landing, the engraving search, a turn, a
-    // setting — ends here (T41).
+    // setting — ends here (T41). So it is also where the shape just drawn is
+    // priced against the sheets it would need, and any it is short of are
+    // queued (U32a); a queued sheet keeps `data-settled` unsaid.
+    this.scheduleSheet();
     this.publishSettled();
   }
 
@@ -2977,21 +3306,61 @@ export class WindowRenderer {
       !this.fitting &&
       this.measureHandle === null &&
       !this.probeLoading &&
+      // A sheet queued or loading is a re-plan still to come (U32), as the probe is.
+      this.sheetHandle === null &&
+      this.sheetLoad === null &&
       (this.probe === null || this.pieceInkZoom === this.zoomLevel) &&
       this.freezeHandle === null
     );
   }
 
   /**
-   * `data-settled` on the stage, while `fitSettled` holds. Written at the end
+   * `data-settled` on the stage, while `fitSettled` holds. Asked for at the end
    * of every fit, and where fit work is queued outside one (the engraving
    * search, a run's freeze) or ends without one (a measurement that could not
    * be taken, a run stopped before it froze), so it is never left claiming a
-   * fit that has work still queued.
+   * fit that has work still queued. Taken back at once; said a frame later,
+   * once the stage has held still through that frame (U74, below).
    */
   private publishSettled(): void {
-    if (this.fitSettled()) this.el.dataset.settled = 'true';
-    else delete this.el.dataset.settled;
+    if (!this.fitSettled()) {
+      this.cancelSettledCheck();
+      delete this.el.dataset.settled;
+      return;
+    }
+    if (this.el.dataset.settled === 'true' || this.settledCheck !== null) return;
+    // **Said a frame later, once that frame's resize observations are in
+    // (U74).** The fit can now finish in the task that drew the first window —
+    // the piece is measured before it is priced — and the Score screen's
+    // header and bar measure themselves a frame after that, taking height off
+    // the stage. Said at once, the word was true for a frame about a stage
+    // that was about to change, and a test reading on it read the stage before
+    // the screen had laid itself out. The idle measurement used to cover that
+    // frame by accident. Observations are delivered after a frame's animation
+    // callbacks, so the word waits for the task after the next frame; a stage
+    // change before then takes it back and starts the wait again (the
+    // observer), and whatever is queued by then keeps it unsaid.
+    const check: { frame: number | null; timer: number | null } = { frame: null, timer: null };
+    this.settledCheck = check;
+    check.frame = requestAnimationFrame(() => {
+      check.frame = null;
+      check.timer = window.setTimeout(() => {
+        check.timer = null;
+        if (this.settledCheck !== check) return;
+        this.settledCheck = null;
+        if (this.fitSettled()) this.el.dataset.settled = 'true';
+        else delete this.el.dataset.settled;
+      }, 0);
+    });
+  }
+
+  /** Takes back a word about the fit that has not been said yet. */
+  private cancelSettledCheck(): void {
+    const check = this.settledCheck;
+    if (!check) return;
+    this.settledCheck = null;
+    if (check.frame !== null) cancelAnimationFrame(check.frame);
+    if (check.timer !== null) window.clearTimeout(check.timer);
   }
 
   /** The last bar of the window the cursor is in, at the shown count. */
@@ -3112,6 +3481,33 @@ export class WindowRenderer {
   }
 
   /**
+   * The stacked slots placed again where they were last fitted, for the folded
+   * chip's band coming or going (U118). Placement only: no fit, no price, no
+   * engraving. The Score screen calls it when its chrome folds or unfolds, so
+   * the first slot is below the chip from the frame the chip is drawn in,
+   * whether or not the fold also changes the stage's box (upright it does, and
+   * the stage observer's fit places them again a moment later to the same tops).
+   */
+  placeSlots(): void {
+    if (this.disposed || this.layout !== 'window' || this.readAhead !== 'slots' || this.lastPack.length === 0) return;
+    this.packSlots(this.lastPack);
+  }
+
+  /**
+   * Whether rows at their own heights, with the gaps between them, are under
+   * the height the stacked slots share (the stage's, less the folded chip's
+   * band): `packSlots`' test for stacking them from the top. Where it says no,
+   * every row is given an even share of the stage instead, and a row taller
+   * than its share runs into the next one (U110a: a spent reshape ladder reads
+   * it to drop a look-ahead row, `settleShape`).
+   */
+  private rowsFitStage(entries: { height: number }[]): boolean {
+    const stageHeight = this.measure(this.el).height - Math.ceil(this.foldedReserve());
+    const total = entries.reduce((sum, entry) => sum + entry.height, 0) + SLOT_GAP_PX * (entries.length - 1);
+    return total < stageHeight;
+  }
+
+  /**
    * Stacks the two slots from the top when their music is shorter than half
    * the stage each; otherwise the stylesheet's halves stand. The scale was
    * fitted against the halves, so a packed pair never overflows.
@@ -3128,13 +3524,19 @@ export class WindowRenderer {
       }
       return;
     }
-    const stageHeight = this.measure(this.el).height;
+    this.lastPack = entries;
+    // **Below the folded chip's band while the chip is drawn (U118).** The
+    // first slot in reading order starts under the band, never inside it, and
+    // the rest stack from there within what is left of the stage. Upright the
+    // fold that draws the chip also takes the header away, so a run frozen
+    // before it has more than the band to spare below its last system.
+    const origin = Math.ceil(this.foldedReserve());
+    const stageHeight = this.measure(this.el).height - origin;
     const perSlot = stageHeight / this.slotCount;
-    const total = entries.reduce((sum, entry) => sum + entry.height, 0) + SLOT_GAP_PX * (entries.length - 1);
-    const packed = entries.length >= 2 && total < stageHeight;
+    const packed = entries.length >= 2 && this.rowsFitStage(entries);
     // Every slot in use gets its box: packed from the top when the music is
     // shorter than its share, otherwise an even share each.
-    let top = 0;
+    let top = origin;
     const order = this.buffers
       .slice(0, this.slotCount)
       .map((slot, index) => ({ slot, index }))
@@ -3146,7 +3548,7 @@ export class WindowRenderer {
     for (const [position, { slot }] of order.entries()) {
       const entry = entries.find((candidate) => candidate.slot === slot);
       const height = packed && entry ? entry.height : perSlot;
-      slot.wrapper.style.top = `${String(Math.round(packed ? top : position * perSlot))}px`;
+      slot.wrapper.style.top = `${String(Math.round(packed ? top : origin + position * perSlot))}px`;
       slot.wrapper.style.height = `${String(Math.round(height))}px`;
       if (entry) top += height + SLOT_GAP_PX;
     }
@@ -3549,6 +3951,7 @@ export class WindowRenderer {
     }
     if (!this.frozen) {
       // Stopped before the freeze was taken: nothing is waiting on it now.
+      this.scheduleSheet();
       this.publishSettled();
       return;
     }
@@ -3568,6 +3971,8 @@ export class WindowRenderer {
     // for. `fitSlots` already gives the room back as a CSS scale, and the next
     // real change of the stage searches with no run to hold it.
     this.fitSlots();
+    // The sheets a long piece is owed, held back while the run was on (U32).
+    if (this.scheduleSheet()) this.publishSettled();
   }
 
   /**
@@ -3598,6 +4003,12 @@ export class WindowRenderer {
       // The measurement is asked for directly rather than left to idle —
       // a run is not idle — and applied by `fitSlots` when it lands, which
       // may re-plan the systems once, before the first note.
+      //
+      // **Not for the sheets a long piece is still owed (U32).** A run that
+      // starts before they land keeps the ones it has: waiting for them here
+      // would put whole-document loads under the learner's first notes, and
+      // this bound is for the measurement, not a load barrier on Play. They
+      // load once the run stops, and the next run has them.
       const unmeasured = this.probe !== null && this.pieceInkZoom !== this.zoomLevel;
       if (unmeasured && performance.now() - startedAt < FREEZE_WAIT_FOR_MEASURE_MS) {
         void this.measurePiece().then(() => {
@@ -3850,6 +4261,211 @@ export class WindowRenderer {
   }
 
   /**
+   * How many sheets the renderer still owes the piece (U32, U32a): the sheets
+   * its settled shape needs, as last priced while no run was on
+   * (`sheetsNeeded`), less the ones it has — a sheet being loaded counted as
+   * owed until it has loaded. Nothing once a sheet has refused to load, or
+   * once the renderer is gone.
+   */
+  private sheetsOwed(): number {
+    if (this.disposed || this.sheetsRefused) return 0;
+    return Math.max(0, Math.min(MAX_SLOTS, this.sheetsWanted) - this.buffers.length);
+  }
+
+  /**
+   * The sheets the settled shape needs (U32a): the fewest with which the
+   * chooser draws what it would draw with every sheet a stage can hold
+   * (`MAX_SLOTS`), found by pricing (`priceWindowShape`) before any sheet is
+   * made. It used to be every sheet up to `MAX_SLOTS`, whether or not the
+   * shape could use them: two whole-document engravers more than the Scherzo's
+   * two-system window draws from, held for as long as the page lived, and a
+   * Play press that took longer for them (U32's pictures probe, the
+   * reviewer's required change in `responses/2f67b047.md`).
+   *
+   * The sheets it has where no more could be drawn: a piece that already has
+   * them all (every piece of `PROBE_MAX_BARS` or fewer), sideways and scroll
+   * (two sheets and one). Null where the answer cannot be priced now: before
+   * the first window, a run on or frozen, an engraving search queued or
+   * running, the piece not yet measured at this zoom (unmeasured, the chooser
+   * asks for two sheets at most, which `create` made), a stage with no box.
+   *
+   * **And the stage the last run was played on (`runStage`).** A run takes a
+   * taller stage than the one at rest — on the owner's phone upright the
+   * chrome folds and the Scherzo's stage grows by about a quarter — and its
+   * shape is re-planned there before the first note, so the greyed row a run
+   * can draw may need a sheet the shape at rest does not. No sheet loads in a
+   * run, so without this the Scherzo at four bars played every run without
+   * the row U32 had given it; priced here, the first run keeps what it has
+   * (the reviewer's answer to U32's question 3) and the runs after it have
+   * the row.
+   */
+  private sheetsNeeded(): number | null {
+    const have = this.buffers.length;
+    if (this.disposed || this.sheetsRefused || have >= MAX_SLOTS) return have;
+    if (this.layout !== 'window' || this.readAhead !== 'slots') return have;
+    if (this.currentStep < 0 || this.running || this.frozen || this.fitting || this.fitHandle !== null) return null;
+    if (this.pieceInkZoom !== this.zoomLevel || this.pieceInk === null) return null;
+    const stage = this.measure(this.el);
+    if (!(stage.width > 0) || !(stage.height > 0)) return null;
+    // The shape ladder spent for this stage and count: nothing will be drawn differently.
+    const atRest = this.priceWindowShape('slots', stage, MAX_SLOTS);
+    const drawn = atRest.slots === this.slotCount && atRest.systems === this.systemsPerWindow && atRest.shown === this.shownBars;
+    if (!drawn && !this.canReshape(stage.width)) return have;
+    const needAt = (box: { width: number; height: number }): number => {
+      const settled = this.priceWindowShape('slots', box, MAX_SLOTS);
+      for (let sheets = have; sheets < MAX_SLOTS; sheets += 1) {
+        const p = this.priceWindowShape('slots', box, sheets);
+        if (p.slots === settled.slots && p.systems === settled.systems && p.shown === settled.shown) return sheets;
+      }
+      return MAX_SLOTS;
+    };
+    const run = this.runStage;
+    const alsoRun = run !== null && run.width === Math.round(stage.width) && run.height !== Math.round(stage.height);
+    return Math.max(needAt(stage), alsoRun ? needAt(run) : have);
+  }
+
+  /**
+   * Queues the next sheet the piece's settled shape needs for an idle moment,
+   * one whole-document load a callback (U32, U32a). Asked at the end of every
+   * fit, and when a run stops; true while a sheet is queued or loading, which
+   * withholds `data-settled` (`fitSettled`): the sheet brings a re-plan.
+   *
+   * **Only the sheets the shape needs, priced first (U32a).** The piece is
+   * measured before any sheet past `create`'s two is made (`scheduleMeasure`),
+   * the measurement's re-plan draws what the sheets that exist can draw, and
+   * the sheets that shape is short of — the greyed next row, for the Nocturne
+   * on the owner's phone — load after it and re-plan once more. The window
+   * a learner reads comes first, as early as it did before the sheets were
+   * made at all; the next row joins it below. A later stepper press or turn
+   * that needs another sheet loads it then, before the next run.
+   */
+  private scheduleSheet(): boolean {
+    if (this.sheetLoad !== null || this.sheetHandle !== null) return true;
+    if (this.disposed || this.sheetsRefused) return false;
+    // After the first window, never before it: the screen tells the renderer
+    // whether a run is on at every render (`setRunning`), and the first of
+    // those can come before the first `showStep`.
+    if (this.currentStep < 0) return false;
+    // **No sheet load starts once a run is on (U32, item 4h).** Each is a
+    // whole-document load, one long task of seconds on a throttled phone, and a
+    // key played while it runs is coloured only when it ends; a run keeps the
+    // arrangement it started with (`08` §9.6), so a sheet made during it could
+    // not be drawn before it ends anyway. The loads resume when the run stops
+    // (`setRunning`), and the measurement does not wait for them.
+    if (this.running || this.frozen) return false;
+    const need = this.sheetsNeeded();
+    if (need === null) return false;
+    this.sheetsWanted = need;
+    if (this.sheetsOwed() <= 0) return false;
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+    };
+    let handle: { kind: 'idle' | 'timer'; id: number } | null = null;
+    const run = (): void => {
+      // Cancelled (`dispose`), or superseded by a later queueing.
+      if (this.sheetHandle !== handle) return;
+      this.sheetHandle = null;
+      if (this.disposed) return;
+      if (this.running || this.frozen) {
+        // A run started since it was queued: the loads resume when it stops.
+        this.publishSettled();
+        return;
+      }
+      // Priced again: a stepper press or a turn since it was queued may need
+      // fewer. Not priceable now (a search queued): its fit asks again.
+      const now = this.sheetsNeeded();
+      if (now !== null) this.sheetsWanted = now;
+      if (now === null || this.sheetsOwed() <= 0) {
+        this.publishSettled();
+        return;
+      }
+      void this.loadNextSheet().then(() => this.sheetLanded());
+    };
+    handle =
+      typeof w.requestIdleCallback === 'function'
+        ? { kind: 'idle', id: w.requestIdleCallback(run, { timeout: MEASURE_IDLE_TIMEOUT_MS }) }
+        : { kind: 'timer', id: window.setTimeout(run, MEASURE_IDLE_TIMEOUT_MS) };
+    this.sheetHandle = handle;
+    // A re-plan is still to come, so the fit is not settled (`fitSettled`).
+    delete this.el.dataset.settled;
+    return true;
+  }
+
+  private cancelSheet(): void {
+    const handle = this.sheetHandle;
+    if (handle === null) return;
+    this.sheetHandle = null;
+    if (handle.kind === 'timer') {
+      window.clearTimeout(handle.id);
+      return;
+    }
+    const w = window as Window & { cancelIdleCallback?: (id: number) => void };
+    w.cancelIdleCallback?.(handle.id);
+  }
+
+  /**
+   * Makes and loads one more sheet, and wires it in as `create` wires the first
+   * ones: its wrapper before the probe's, hidden until a plan draws it, its
+   * slot empty, engraved at the current zoom. It joins `buffers` only once it
+   * has loaded, so the chooser never prices a sheet that cannot draw. One load
+   * at a time: a second caller while one is in flight is handed that one.
+   */
+  private loadNextSheet(): Promise<void> {
+    if (this.sheetLoad) return this.sheetLoad.done;
+    if (this.sheetsOwed() <= 0) return Promise.resolve();
+    const index = this.buffers.length;
+    const buffer = WindowRenderer.makeSheet(this.sheetOptions, index, this.probe?.container ?? null);
+    const started = performance.now();
+    const done = (async (): Promise<void> => {
+      try {
+        await buffer.view.load(this.sheetOptions.musicXml);
+      } catch {
+        // A sheet that cannot load is not made; the renderer draws from the
+        // sheets it has, as it did before U32.
+        this.sheetLoad = null;
+        this.sheetsRefused = true;
+        buffer.view.dispose();
+        buffer.wrapper.remove();
+        return;
+      }
+      this.sheetLoad = null;
+      // Let go by `dispose` while it loaded: nothing of it is left to touch.
+      if (this.disposed) return;
+      recordRenderTiming('osmd.sheet.load', performance.now() - started);
+      buffer.view.zoom = this.zoomLevel;
+      this.buffers.push(buffer);
+      this.slotRanges.push(null);
+      this.updateSlotClasses();
+    })();
+    this.sheetLoad = { buffer, done };
+    return done;
+  }
+
+  /**
+   * A sheet has landed (or refused): the shape is priced again with the
+   * sheets that exist now and re-planned if it changed, as a turn or a setting
+   * re-plans (`updateReadAhead`), wherever the cursor is — the learner is not
+   * playing, and the next run is the one the sheet is for. The fit that
+   * follows queues any further sheet the shape needs and says settled.
+   *
+   * A load is one task, so no run can start while one is in flight; a
+   * renderer told of a run anyway keeps its arrangement, and the sheet waits
+   * for the next one.
+   */
+  private sheetLanded(): void {
+    if (this.disposed) return;
+    if (this.running || this.frozen) {
+      this.publishSettled();
+      return;
+    }
+    if (this.layout === 'window' && this.currentStep >= 0 && this.updateReadAhead()) {
+      this.showStep(this.currentStep);
+      return;
+    }
+    this.fitSlots();
+  }
+
+  /**
    * Measures the piece, a frame after it is first asked for.
    *
    * A frame after, because a full render of a long piece is hundreds of
@@ -3858,6 +4474,9 @@ export class WindowRenderer {
    * size change, downward, one frame after the first draw.
    */
   private scheduleMeasure(): void {
+    // **Before any sheet a long piece is owed (U32a).** The measurement is what
+    // prices the shape, and so what says how many sheets it needs
+    // (`sheetsNeeded`); the sheets load after its re-plan (`scheduleSheet`).
     if (!this.probe || this.pieceInkZoom === this.zoomLevel || this.measureHandle !== null) return;
     if (this.fitting || this.probeLoading) return;
     // Idle time, not the next frame: the pre-render of the next window is
@@ -3907,33 +4526,64 @@ export class WindowRenderer {
     const probe = this.probe;
     if (!probe || this.pieceInkZoom === this.zoomLevel) return;
     if (!probe.isLoaded) {
-      if (!this.probeSource) return;
-      // One load, shared: the idle path and a run's freeze can both ask
-      // while it is in flight, and two `load`s on one engraver is a race.
-      this.probeLoad ??= (async (): Promise<boolean> => {
-        this.probeLoading = true;
-        try {
-          const started = performance.now();
-          const source =
-            this.model.sourceMeasureCount > PROBE_MAX_BARS
-              ? trimMusicXml(this.probeSource, PROBE_MAX_BARS)
-              : this.probeSource;
-          recordRenderTiming('osmd.probe.trim', performance.now() - started);
-          await probe.load(source);
-          return true;
-        } catch {
-          // A piece the probe cannot load is measured the slow way, window by
-          // window, held and never released.
-          this.probe = null;
-          return false;
-        } finally {
-          this.probeLoading = false;
-        }
-      })();
-      const loaded = await this.probeLoad;
+      const loaded = await this.loadProbe();
       if (!loaded || this.disposed) return;
     }
     this.measureLoaded();
+  }
+
+  /**
+   * Loads the probe's document, once: the first `PROBE_MAX_BARS` of the piece.
+   * False when there is no probe or it cannot load.
+   */
+  private loadProbe(): Promise<boolean> {
+    const probe = this.probe;
+    if (!probe || !this.probeSource) return Promise.resolve(false);
+    if (probe.isLoaded) return Promise.resolve(true);
+    // One load, shared: the idle path, a run's freeze and `create` can all
+    // ask while it is in flight, and two `load`s on one engraver is a race.
+    this.probeLoad ??= (async (): Promise<boolean> => {
+      this.probeLoading = true;
+      try {
+        const started = performance.now();
+        const source =
+          this.model.sourceMeasureCount > PROBE_MAX_BARS
+            ? trimMusicXml(this.probeSource, PROBE_MAX_BARS)
+            : this.probeSource;
+        recordRenderTiming('osmd.probe.trim', performance.now() - started);
+        await probe.load(source);
+        return true;
+      } catch {
+        // A piece the probe cannot load is measured the slow way, window by
+        // window, held and never released.
+        this.probe = null;
+        return false;
+      } finally {
+        this.probeLoading = false;
+      }
+    })();
+    return this.probeLoad;
+  }
+
+  /**
+   * Measures the piece now, at the zoom the sheet is engraved at, when the
+   * probe is loaded and the measurement is missing — before anything is priced
+   * from it (U74).
+   *
+   * Only before the learner has played anything and outside the engraving
+   * search. Before the first note is the one moment `08` §9.6 lets the shape be
+   * re-planned, and without the measurement the chooser has nothing to price
+   * with and answers one system for the whole window: the first window of
+   * every piece was drawn that way, and so was the first window after every
+   * engraving search, because a new zoom is a measurement the idle path has not
+   * taken yet. The search's own intermediate engravings are never painted, so
+   * the probe is not drawn for them; the fit after the search measures at the
+   * zoom it settled on. During a run the idle path and the freeze are
+   * unchanged: a measurement that lands then is for the next run.
+   */
+  private measureBeforePricing(): void {
+    if (this.disposed || this.fitting || this.running || this.layout !== 'window' || this.currentStep > 0) return;
+    if (this.probe?.isLoaded && this.pieceInkZoom !== this.zoomLevel) this.measureLoaded();
   }
 
   /** The synchronous half: the probe is loaded, draw and measure it. */
@@ -4432,14 +5082,6 @@ function widestBarOf(view: OsmdView): number {
  * never spread (`OsmdView.naturalLastSystem`).
  */
 const NATURAL_PAGE_SLACK = 1.25;
-
-/**
- * How far a phone's folded chrome moves the sliding sheet down, below the
- * `bar n / m` chip: the stylesheet's `var(--score-corner-h, 22px)` on
- * `.score-buffer` while `data-chrome='folded'` (`style.css`). Mirrored, not
- * read, because a run is fitted before the fold has happened (`sheetShift`).
- */
-const FOLDED_SHEET_SHIFT_PX = 22;
 
 /**
  * What a draw asked to be natural came out as (T38): `natural` when it is one

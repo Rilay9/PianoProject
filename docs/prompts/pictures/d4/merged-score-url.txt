@@ -1,0 +1,1 @@
+http://localhost:4173/PianoProject/#/score/exercise.pentatonic.a.blues?slot=new&intent=transfer&skill=position-shift

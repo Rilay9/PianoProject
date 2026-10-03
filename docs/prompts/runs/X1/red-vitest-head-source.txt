@@ -1,0 +1,331 @@
+npx vitest run tests/unit/sessionRun.test.ts tests/unit/sessionAdaptation.test.ts tests/unit/sessionRecheck.test.ts tests/unit/sessionRunNeverEvidence.test.ts tests/unit/todaySessionRun.test.ts tests/unit/sessionTransition.test.ts tests/unit/sessionClock.test.ts tests/unit/sessionProtocol.test.ts tests/unit/oneGateBoundary.test.ts tests/unit/taughtByAncestry.test.ts tests/unit/lessonPagePicksPassTheAdmission.test.ts tests/unit/todayOpensWithItsRung.test.ts tests/unit/fallbackOrder.test.ts tests/unit/sightReadingIsNotAPiece.test.ts tests/unit/parallelStrands.test.ts   (on HEAD's sources)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app
+
+ ❯ tests/unit/sessionAdaptation.test.ts (0 test)
+ ❯ tests/unit/sessionRunNeverEvidence.test.ts (0 test)
+ ❯ tests/unit/sessionRecheck.test.ts (0 test)
+ ❯ tests/unit/sessionRun.test.ts (0 test)
+ ❯ tests/unit/taughtByAncestry.test.ts (32 tests | 2 failed) 73ms
+   ❯ the practice floor stands on 1.1 (F2b) (3)
+     × Today’s practice row: absent for a learner placed at 1.1, there from 1.2, and the floor case at 1.5 unchanged 29ms
+     × the new piece at 1.2 and 1.5 is the rung’s own new material, never the practice row (X1 item 7) 6ms
+ ❯ tests/unit/oneGateBoundary.test.ts (8 tests | 1 failed) 33ms
+   ❯ a rung’s own list asks the one gate too (X1, L113) (3)
+     × an unmeasured song the rung lists, and an import assigned to it before the app measured it: on no row at any length, each asked and refused unknown-forbidden, and the ask stays unmet 6ms
+ ❯ tests/unit/todaySessionRun.test.ts (0 test)
+ ❯ tests/unit/sessionTransition.test.ts (0 test)
+ ❯ tests/unit/sessionClock.test.ts (0 test)
+ ❯ tests/unit/sessionProtocol.test.ts (6 tests | 4 failed) 525ms
+   ❯ the route carries the activity token (1)
+     × on the Score and drill routes, round trip; a malformed token is dropped 6ms
+   ❯ G61: the jam slot’s own condition (2)
+     × with nothing chord-and-feel on the rung, it offers what there is and names only where it is from 2ms
+   ❯ U71 and U57, in the learner’s words (2)
+     × the transfer offer’s card line is its skill and “something new”; every other line is the composition’s, whole 0ms
+     × the reader’s kept line says what the app can do about the demand, not what every phrase has 1ms
+ ❯ tests/unit/todayOpensWithItsRung.test.ts (8 tests | 1 failed) 319ms
+   ❯ Today opens a card with its rung and its slot (L50) (5)
+     × Start session opens the first card the same way 65ms
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts (31 tests | 3 failed) 8559ms
+   ❯ every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) (5)
+     × every rung: each control opens the rung’s next admitted option for it, and is gone only where the rung has none 4ms
+     × the controls that change are those whose first choice the admission refuses; the ones gone are named 0ms
+     × Quick check takes a drill that measures a run (G62, X1): the rungs whose check moved, and where to 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/sessionAdaptation.test.ts [ tests/unit/sessionAdaptation.test.ts ]
+Error: Cannot find module '../../src/data/sessionRun' imported from C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/tests/unit/sessionAdaptation.test.ts
+ ❯ tests/unit/sessionAdaptation.test.ts:15:1
+     13|  */
+     14| import { describe, expect, it } from 'vitest';
+     15| import { apply, drillOutcomeOf, newRun, scoreOutcome, type ActivityEnt…
+       | ^
+     16| import { dayKey } from '../../src/data/progressStore';
+     17| import { SESSION_TEXT } from '../../src/ui/help';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  tests/unit/sessionClock.test.ts [ tests/unit/sessionClock.test.ts ]
+Error: Failed to resolve import "../../src/data/sessionRun" from "tests/unit/sessionClock.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/tests/unit/sessionClock.test.ts:11:80
+  9  |  import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+  10 |  import { clearFakeIndexedDb, useFakeIndexedDb } from "./helpers/idb";
+  11 |  import { newRun, readSessionRun, resetSessionRunForTest, startSessionRun } from "../../src/data/sessionRun";
+     |                                                                                   ^
+  12 |  import { dayKey } from "../../src/data/progressStore";
+  13 |  import { CLOCK_FLUSH_MS, sessionHandle } from "../../src/ui/sessionRunner";
+ ❯ TransformPluginContext._formatLog ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:31147:39
+ ❯ TransformPluginContext.error ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:31144:14
+ ❯ normalizeUrl ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:28083:18
+ ❯ ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:28153:30
+ ❯ TransformPluginContext.transform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:28119:4
+ ❯ EnvironmentPluginContainer.transform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:30932:14
+ ❯ loadAndTransform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:20671:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  tests/unit/sessionRecheck.test.ts [ tests/unit/sessionRecheck.test.ts ]
+Error: Cannot find module '../../src/data/sessionRun' imported from C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/tests/unit/sessionRecheck.test.ts
+ ❯ tests/unit/sessionRecheck.test.ts:17:1
+     15| import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+     16| import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
+     17| import { newRun, readSessionRun, resetSessionRunForTest, startSessionR…
+       | ^
+     18| import { recordEncounter, resetEncountersForTest } from '../../src/dat…
+     19| import { dayKey, resetProgressForTest } from '../../src/data/progressS…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  tests/unit/sessionRun.test.ts [ tests/unit/sessionRun.test.ts ]
+Error: Cannot find module '../../src/data/sessionRun' imported from C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/tests/unit/sessionRun.test.ts
+ ❯ tests/unit/sessionRun.test.ts:14:1
+     12| import { afterEach, beforeEach, describe, expect, it, vi } from 'vites…
+     13| import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
+     14| import {
+       | ^
+     15|   SESSION_RUN_KEY,
+     16|   apply,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  tests/unit/sessionRunNeverEvidence.test.ts [ tests/unit/sessionRunNeverEvidence.test.ts ]
+Error: Cannot find module '../../src/data/sessionRun' imported from C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/tests/unit/sessionRunNeverEvidence.test.ts
+ ❯ tests/unit/sessionRunNeverEvidence.test.ts:18:1
+     16| import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+     17| import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
+     18| import { applySessionEvent, newRun, resetSessionRunForTest, startSessi…
+       | ^
+     19| import { allProgress, dayKey, recordRun, resetProgressForTest, rungRow…
+     20| import { rungState } from '../../src/evidence/rungState';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  tests/unit/sessionTransition.test.ts [ tests/unit/sessionTransition.test.ts ]
+Error: Failed to resolve import "../../src/ui/sessionRunner" from "tests/unit/sessionTransition.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/tests/unit/sessionTransition.test.ts:24:67
+  21 |  import { applySessionEvent, newRun, readSessionRun, resetSessionRunForTest, startSessionRun } from "../../src/data/se...
+  22 |  import { dayKey } from "../../src/data/progressStore";
+  23 |  import { drawTransition, sessionHandle } from "../../src/ui/sessionRunner";
+     |                                                 ^
+  24 |  import { SESSION_TEXT } from "../../src/ui/help";
+  25 |  let router;
+ ❯ TransformPluginContext._formatLog ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:31147:39
+ ❯ TransformPluginContext.error ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:31144:14
+ ❯ normalizeUrl ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:28083:18
+ ❯ ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:28153:30
+ ❯ TransformPluginContext.transform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:28119:4
+ ❯ EnvironmentPluginContainer.transform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:30932:14
+ ❯ loadAndTransform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:20671:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  tests/unit/todaySessionRun.test.ts [ tests/unit/todaySessionRun.test.ts ]
+Error: Failed to resolve import "../../src/data/sessionRun" from "tests/unit/todaySessionRun.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/tests/unit/todaySessionRun.test.ts:89:27
+  176 |  const { TodayScreen } = await import("../../src/ui/screens/TodayScreen");
+  177 |  const { SESSION_TEMPLATES } = await import("../../src/curriculum/session");
+  178 |  const store = await import("../../src/data/sessionRun");
+      |                             ^
+  179 |  const { dayKey } = await import("../../src/data/progressStore");
+  180 |  const { SESSION_TEXT } = await import("../../src/ui/help");
+ ❯ TransformPluginContext._formatLog ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:31147:39
+ ❯ TransformPluginContext.error ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:31144:14
+ ❯ normalizeUrl ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:28083:18
+ ❯ ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:28153:30
+ ❯ TransformPluginContext.transform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:28119:4
+ ❯ EnvironmentPluginContainer.transform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:30932:14
+ ❯ loadAndTransform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app/node_modules/vite/dist/node/chunks/node.js:20671:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) > every rung: each control opens the rung’s next admitted option for it, and is gone only where the rung has none
+TypeError: valid is not a function
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:287:72
+    285|   /** The first of `ids` passing `valid` and, where `admit`, the admis…
+    286|   const nextOf = (ids: readonly string[], valid: (item: CatalogItem) =…
+    287|     ids.map((id) => byId.get(id)).find((item) => item !== undefined &&…
+       |                                                                        ^
+    288|   /**
+    289|    * What each control's own conditions choose from the rung's lists, …
+ ❯ nextOf tests/unit/lessonPagePicksPassTheAdmission.test.ts:287:35
+ ❯ chosen tests/unit/lessonPagePicksPassTheAdmission.test.ts:306:14
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:344:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) > the controls that change are those whose first choice the admission refuses; the ones gone are named
+TypeError: valid is not a function
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:287:72
+    285|   /** The first of `ids` passing `valid` and, where `admit`, the admis…
+    286|   const nextOf = (ids: readonly string[], valid: (item: CatalogItem) =…
+    287|     ids.map((id) => byId.get(id)).find((item) => item !== undefined &&…
+       |                                                                        ^
+    288|   /**
+    289|    * What each control's own conditions choose from the rung's lists, …
+ ❯ nextOf tests/unit/lessonPagePicksPassTheAdmission.test.ts:287:35
+ ❯ chosen tests/unit/lessonPagePicksPassTheAdmission.test.ts:306:14
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:355:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) > Quick check takes a drill that measures a run (G62, X1): the rungs whose check moved, and where to
+TypeError: measuresARun is not a function
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:374:32
+    372|       const now = (drawn.get(lesson.id) as Picks).check;
+    373|       if (was !== now) moved.push(`${lesson.id} check: ${String(was)} …
+    374|       if (now !== null) expect(measuresARun(byId.get(now) as CatalogIt…
+       |                                ^
+    375|     }
+    376|     expect(moved.sort()).toEqual([...G62_MOVES].sort());
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+ FAIL  tests/unit/oneGateBoundary.test.ts > a rung’s own list asks the one gate too (X1, L113) > an unmeasured song the rung lists, and an import assigned to it before the app measured it: on no row at any length, each asked and refused unknown-forbidden, and the ask stays unmet
+AssertionError: 15 min: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "import.e2a.from-before (rung)",
++   "song.e2a.unread (asked)",
++ ]
+
+ ❯ tests/unit/oneGateBoundary.test.ts:280:114
+    278|     for (const minutes of [15, 30, 60, 120]) {
+    279|       const held = card([...BASE, SONG_UNREAD, OLD_IMPORT], minutes, r…
+    280|       expect(held.map((slot) => `${slot.item?.id ?? ''} (${slot.claim?…
+       |                                                                                                                  ^
+    281|     }
+    282|     const { automatic, otherwise } = asked([SONG_UNREAD.id, OLD_IMPORT…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/18]⎯
+
+ FAIL  tests/unit/sessionProtocol.test.ts > the route carries the activity token > on the Score and drill routes, round trip; a malformed token is dropped
+AssertionError: expected { tab: 'today', …(3) } to match object { Object (score, scoreRung, ...) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "score": "song.folk.lightly-row",
+    "scoreRung": "1.2",
+    "scoreSlot": "new",
+-   "session": "abc123def",
+  }
+
+ ❯ tests/unit/sessionProtocol.test.ts:83:19
+     81|   it('on the Score and drill routes, round trip; a malformed token is …
+     82|     const score = parseHash('#/score/song.folk.lightly-row?rung=1.2&sl…
+     83|     expect(score).toMatchObject({ score: 'song.folk.lightly-row', scor…
+       |                   ^
+     84|     expect(parseHash(routeToHash(score))).toEqual(score);
+     85|     const drill = parseHash('#/drill/drill.rhythm.mixed-values?rung=1.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/18]⎯
+
+ FAIL  tests/unit/sessionProtocol.test.ts > G61: the jam slot’s own condition > with nothing chord-and-feel on the rung, it offers what there is and names only where it is from
+AssertionError: expected 'Chords, form and feel: from Rung jam.1' to be 'From Rung jam.1' // Object.is equality
+
+Expected: "From Rung jam.1"
+Received: "Chords, form and feel: from Rung jam.1"
+
+ ❯ tests/unit/sessionProtocol.test.ts:133:22
+    131|     const jam = jamOf(pages);
+    132|     expect(pages.map((one) => one.id)).toContain(jam.item);
+    133|     expect(jam.line).toBe('From Rung jam.1');
+       |                      ^
+    134|     expect(slotReason('jam', { kind: 'jam', rung: lesson('x', {}), pla…
+    135|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/18]⎯
+
+ FAIL  tests/unit/sessionProtocol.test.ts > U71 and U57, in the learner’s words > the transfer offer’s card line is its skill and “something new”; every other line is the composition’s, whole
+TypeError: cardLine is not a function
+ ❯ tests/unit/sessionProtocol.test.ts:142:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/18]⎯
+
+ FAIL  tests/unit/sessionProtocol.test.ts > U71 and U57, in the learner’s words > the reader’s kept line says what the app can do about the demand, not what every phrase has
+AssertionError: expected 'and every phrase here has them' to be 'and they can’t be left out here' // Object.is equality
+
+Expected: "and they can’t be left out here"
+Received: "and every phrase here has them"
+
+ ❯ tests/unit/sessionProtocol.test.ts:149:31
+    147|
+    148|   it('the reader’s kept line says what the app can do about the demand…
+    149|     expect(READING_TEXT.kept).toBe('and they can’t be left out here');
+       |                               ^
+    150|   });
+    151| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/18]⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > the practice floor stands on 1.1 (F2b) > Today’s practice row: absent for a learner placed at 1.1, there from 1.2, and the floor case at 1.5 unchanged
+AssertionError: placed at 1.2: 1.1 is behind the placement, so the track is open: expected [ Array(1) ] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+  [
+-   "repertoire song.folk.hot-cross-buns (practice.1)",
++   "new exercise.five-finger.c-major.right (practice.1)",
+  ]
+
+ ❯ tests/unit/taughtByAncestry.test.ts:615:101
+    613|     // the repertoire slot takes practice.1's song. Old assumption: th…
+    614|     // new slot to the newly opened practice rung because the warm-up …
+    615|     expect(practiceRows('1.2'), 'placed at 1.2: 1.1 is behind the plac…
+       |                                                                                                     ^
+    616|       'repertoire song.folk.hot-cross-buns (practice.1)',
+    617|     ]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/18]⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > the practice floor stands on 1.1 (F2b) > the new piece at 1.2 and 1.5 is the rung’s own new material, never the practice row (X1 item 7)
+AssertionError: expected 'exercise.five-finger.c-major.right (a…' to be 'song.folk.lightly-row (asked 1.2)' // Object.is equality
+
+Expected: "song.folk.lightly-row (asked 1.2)"
+Received: "exercise.five-finger.c-major.right (asked practice.1)"
+
+ ❯ tests/unit/taughtByAncestry.test.ts:643:27
+    641|       return `${slot?.item?.id ?? '-'} (${claim?.kind ?? '-'} ${claim …
+    642|     };
+    643|     expect(newRow('1.2')).toBe('song.folk.lightly-row (asked 1.2)');
+       |                           ^
+    644|     expect(newRow('1.5')).toBe('exercise.reading.steps-and-skips-c (as…
+    645|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/18]⎯
+
+ FAIL  tests/unit/todayOpensWithItsRung.test.ts > Today opens a card with its rung and its slot (L50) > Start session opens the first card the same way
+TypeError: .toMatch() expects to receive a string, but got undefined
+ ❯ tests/unit/todayOpensWithItsRung.test.ts:186:30
+    184|     const options = navigateScore.mock.calls[0]?.[1] as { rung?: strin…
+    185|     expect(options).toMatchObject({ rung: '1.2', slot: 'technique' });
+    186|     expect(options?.session).toMatch(/^[0-9a-z]{6,32}$/);
+       |                              ^
+    187|   });
+    188|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/18]⎯
+
+
+ Test Files  12 failed | 3 passed (15)
+      Tests  11 failed | 106 passed (117)
+   Start at  09:54:08
+   Duration  10.44s (tests 49%, environment 24%, transform 19%, import 7%)
+
+exit=1

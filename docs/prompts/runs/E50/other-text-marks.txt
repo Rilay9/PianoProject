@@ -1,0 +1,3 @@
+song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx (QmYTv8PgK28ApeTjxQjvznsckcvXCVW2w8VkfiShnwm8xc.mxl): printed ['\\u266a=114', '\\u266a=114', '\\u266a=112', '\\u266a=95']; <metronome> []; <sound tempo> ['114']; first time 4/4; row tempoBpm 114.0, tempoDefaulted False
+song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx (QmUkCd5kX3tLNtrCNzmMgNSLJ7GGFsjfGbMBsNgq7612ox.mxl): printed ['= 54']; <metronome> []; <sound tempo> ['40']; first time 6/8; row tempoBpm 40.0, tempoDefaulted False
+542 committed PDMX files scanned; 2 print a text mark

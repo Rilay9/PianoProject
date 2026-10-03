@@ -1,0 +1,37 @@
+E57a lesson check against 13e1b1a8; approved wording from docs/review/responses/ca8508ed.md §1 and docs/review/responses/questions-13e1b1a8.md
+
+chords-pop.9: the front matter is the base's and nothing else: True
+chords-pop.9: the approved text stands verbatim (docs/review/responses/ca8508ed.md §1): True
+chords-pop.9: its replacement stands whole: True
+chords-pop.9: the replaced sentence is gone: True
+chords-pop.9: the replaced sentence stood once at the base: True
+chords-pop.9: the rendered text is the base's with these sentences swapped and nothing else: True
+chords-pop.9: the built copy is the worktree's file: True
+rock.7: the front matter is the base's with [('readingTime: 3\n', 'readingTime: 4\n')] and nothing else: True
+rock.7: the approved text stands verbatim (docs/review/responses/questions-13e1b1a8.md): True
+rock.7: its replacement stands whole: True
+rock.7: the replaced sentence is gone: True
+rock.7: the replaced sentence stood once at the base: True
+rock.7: the approved text stands verbatim (docs/review/responses/questions-13e1b1a8.md (replacing docs/review/responses/ca8508ed.md §1's first wording)): True
+rock.7: its replacement stands whole: True
+rock.7: the replaced sentence is gone: True
+rock.7: the replaced sentence stood once at the base: True
+rock.7: the approved text stands verbatim (docs/review/second-reads/cc45b3a8.md item 4 (relayed by the orchestrator)): True
+rock.7: its replacement stands whole: True
+rock.7: the replaced sentence is gone: True
+rock.7: the replaced sentence stood once at the base: True
+rock.7: the approved text stands verbatim (docs/review/responses/ca8508ed.md §1): True
+rock.7: its replacement stands whole: True
+rock.7: the replaced sentence is gone: True
+rock.7: the replaced sentence stood once at the base: True
+rock.7: the rendered text is the base's with these sentences swapped and nothing else: True
+rock.7: the built copy is the worktree's file: True
+
+scoped grep (content/lessons, app/tests/unit) for a printed-tempo ranking of Mr. Blue Sky or Le Festin: 5 hit(s)
+   app/tests/unit/lessonClaimsAboutMusic.test.ts: * Notes struck per second at the first printed tempo, both hands, chord
+   app/tests/unit/lessonClaimsAboutMusic.test.ts: 'If I Had a Chicken has more notes to play each second at its printed tempo than any of the rung’s other five songs',
+   app/tests/unit/lessonClaimsAboutMusic.test.ts: 'the Moonlight finale has more notes to play each second at its printed tempo than any of the rung’s other five pieces, as the lesson says',
+   app/tests/unit/recordTruth.test.ts: it('an old day at 100 % of the defaulted 96 and one new day at the printed tempo is not mastery', async () => {
+   app/tests/unit/recordTruth.test.ts: it('two days at the printed tempo still are (control)', async () => {
+
+0 fault(s)

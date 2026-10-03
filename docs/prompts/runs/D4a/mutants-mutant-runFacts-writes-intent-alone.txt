@@ -1,0 +1,40 @@
+$ npx.cmd vitest run tests/unit/transferOfferOnTheRun.test.ts -t 6. the type
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/transferOfferOnTheRun.test.ts (18 tests | 1 failed | 16 skipped) 9ms
+   ❯ 6. the type and the function reject an intent-only run fact (2)
+     × runFacts: the pair or nothing; an intent without its relationship gives no transfer fact at all 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/transferOfferOnTheRun.test.ts > 6. the type and the function reject an intent-only run fact > runFacts: the pair or nothing; an intent without its relationship gives no transfer fact at all
+AssertionError: expected [ 'intent' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "intent",
++ ]
+
+ ❯ tests/unit/transferOfferOnTheRun.test.ts:479:93
+    477|     // What no typed caller can write, forced past the type: nothing o…
+    478|     const forced = runFacts(OFFERED, { intent: 'transfer' } as unknown…
+    479|     expect(Object.keys(forced).filter((key) => key === 'intent' || key…
+       |                                                                                             ^
+    480|     const halfForced = runFacts(OFFERED, { relationship: OFFER_RELATIO…
+    481|     expect(Object.keys(halfForced).filter((key) => key === 'intent' ||…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 16 skipped (18)
+   Start at  00:03:44
+   Duration  1.74s (transform 44%, environment 42%, import 13%, tests 1%)
+
+
+exit 1
+runFacts-writes-intent-alone: caught; src/curriculum/material.ts restored by sha256

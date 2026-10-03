@@ -1,0 +1,17 @@
+﻿(cd app) npx vitest run
+FAIL  tests/unit/competenceSurvivesPruning.test.ts > pruning to the cap keeps what the learner established > (1) pruning erased no established evidence: every skill and every rung reads as before
+FAIL  tests/unit/competenceSurvivesPruning.test.ts > pruning to the cap keeps what the learner established > (4) "not shown recently" still says what is uncertain now, and time alone lowers nothing
+FAIL  tests/unit/evidenceByDemand.test.ts > the evidence is keyed by musical demand, never by a readerΓÇÖs control (item 4b) > nothing in the evidence module knows the readerΓÇÖs dimensions or the generatorΓÇÖs options
+FAIL  tests/unit/evidenceVersion.test.ts > only evidence with the current evidence stamp reaches the reading state > a row as C4 stored it ΓÇö the observationΓÇÖs stamp only ΓÇö contributes nothing until recomputed
+FAIL  tests/unit/evidenceVersion.test.ts > the record call stamps the evidence with the evidenceΓÇÖs own version > recomputeEvidence gives exactly what the record call stored
+FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+FAIL  tests/unit/masteryLadder.test.ts > transfer needs unfamiliar material; retained needs a later day > another phrase of the same row is not transfer; a first reading of another row is
+FAIL  tests/unit/masteryLadder.test.ts > transfer needs unfamiliar material; retained needs a later day > mastered needs no full-standard attempt against it among the last 2
+FAIL  tests/unit/masteryLadder.test.ts > transfer needs unfamiliar material; retained needs a later day > retained is a first attempt of a day, supporting, 21 days or more after the last support
+FAIL  tests/unit/masteryLadder.test.ts > two histories a teacher can read > the steady reader: five first readings on five days, then a harder row first time ΓÇö transfer demonstrated
+FAIL  tests/unit/masteryLadder.test.ts > two histories a teacher can read > the stretch: proficient at level 2, then two first readings of level 4 that go badly ΓÇö still proficient
+FAIL  tests/unit/readerMovesTheDemand.test.ts > the e2e learners are the real pathΓÇÖs rows (C4c item 0) > tests/e2e/fixtures/reader-learners.json holds exactly what this path makes
+Test Files  6 failed | 288 passed (294)
+Tests  13 failed | 6962 passed | 5 skipped | 1 todo (6981)
+exit=1

@@ -195,8 +195,56 @@ describe('metre.compound — beats of three eighths', () => {
     expect(present('compoundMetre', [bar], '3/4')).toBe(false);
     expect(present('compoundMetre', [bar], '2/4')).toBe(false);
   });
-  it('boundary: 3/8 counts as one compound beat, the generator’s own rule', () =>
-    expect(present('compoundMetre', [bar], '3/8')).toBe(true));
+  // Replaced (L120b; the reviewer's ruling on L120a, `responses/0bcd3be0.md`, class: an assertion of the
+  // reading being corrected). It said "3/8 counts as one compound beat, the generator's own rule"; 3/8 is
+  // one group of three eighths, counted as simple triple, and compound time needs more than one such beat.
+  it('M1: a phrase all in 3/8 is simple triple — not compound, located nowhere', () => {
+    const found = detect(phrase({ bars: [[{ at: 0, dur: 0.5, pitch: 'C4' }, { at: 0.5, dur: 0.5, pitch: 'D4' }, { at: 1, dur: 0.5, pitch: 'E4' }], [{ at: 0, dur: 1.5, pitch: 'F4' }]], time: '3/8' }), 'compoundMetre');
+    expect(found.present).toBe(false);
+    expect(found.at).toEqual([]);
+  });
+  it('M2 (guard): 6/8, 9/8 and 12/8 are located at every note, as before', () => {
+    for (const time of ['6/8', '9/8', '12/8']) {
+      const model = phrase({ bars: [[{ at: 0, dur: 0.5, pitch: 'C4' }, { at: 0.5, dur: 0.5, pitch: 'D4' }, { at: 1, dur: 0.5, pitch: 'E4' }, { at: 1.5, dur: 1.5, pitch: 'F4' }]], time });
+      const found = detect(model, 'compoundMetre');
+      expect(found.present, time).toBe(true);
+      expect(found.at.map((a) => a.noteId), time).toEqual(model.steps.flatMap((step) => step.notes.map((note) => note.id)));
+    }
+  });
+  it('M3: 3/8 with one 6/8 bar is compound, located at that bar’s notes alone', () => {
+    // Two bars of 3/8, then a bar of 6/8: the third bar starts where two 3/8 bars end, as the model would place it.
+    const model = phrase({
+      bars: [
+        [{ at: 0, dur: 0.5, pitch: 'C4' }, { at: 0.5, dur: 1, pitch: 'D4' }],
+        [{ at: 0, dur: 1.5, pitch: 'E4' }],
+        [{ at: 0, dur: 1.5, pitch: 'F4' }, { at: 1.5, dur: 1.5, pitch: 'G4' }],
+      ],
+      time: '3/8',
+    });
+    const mixed = { ...model, timeSigMap: [{ atMeasure: 0, beats: 3, beatType: 8 }, { atMeasure: 2, beats: 6, beatType: 8 }] };
+    const found = detect(mixed, 'compoundMetre');
+    expect(found.present).toBe(true);
+    expect(found.at.map((a) => a.measure)).toEqual([2, 2]);
+  });
+});
+
+describe('3/8 read as three eighth-note beats by every detector that reads a beat (L120b)', () => {
+  it('M4: in 3/8 a quarter entering on the second eighth is on a beat — no syncopation there', () => {
+    expect(present('syncopation', [[{ at: 0, dur: 0.5, pitch: 'C4' }, { at: 0.5, dur: 1, pitch: 'D4' }], [{ at: 0, dur: 1.5, pitch: 'E4' }]], '3/8')).toBe(false);
+  });
+  it('M4 (guard): in 3/8 a quarter entering a sixteenth after a beat is syncopation', () => {
+    expect(
+      present('syncopation', [[{ at: 0, dur: 0.25, pitch: 'C4' }, { at: 0.25, dur: 1, pitch: 'D4' }, { at: 1.25, dur: 0.25, pitch: 'E4' }], [{ at: 0, dur: 1.5, pitch: 'F4' }]], '3/8'),
+    ).toBe(true);
+  });
+  it('M5: in 3/8 a written dotted quarter is a dotted quarter', () => {
+    const found = detect(phrase({ bars: [[{ at: 0, dur: 0.5, pitch: 'C4' }, { at: 0.5, dur: 0.5, pitch: 'D4' }, { at: 1, dur: 0.5, pitch: 'E4' }], [{ at: 0, dur: 1.5, pitch: 'F4' }]], time: '3/8' }), 'dottedQuarters');
+    expect(found.present).toBe(true);
+    expect(found.at.map((a) => a.measure)).toEqual([1]);
+  });
+  it('M5 (guard): in 6/8 a written dotted quarter is the beat, not the demand', () => {
+    expect(present('dottedQuarters', [[{ at: 0, dur: 1.5, pitch: 'C4' }, { at: 1.5, dur: 0.5, pitch: 'D4' }, { at: 2, dur: 0.5, pitch: 'E4' }, { at: 2.5, dur: 0.5, pitch: 'F4' }]], '6/8')).toBe(false);
+  });
 });
 
 describe('key.signature — sharps or flats at the start of the line', () => {

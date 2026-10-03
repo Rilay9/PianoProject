@@ -1,0 +1,48 @@
+# Q80 — The validator's stale-ladder check stops failing a build over material the build could not fetch: a build's own placeholders (a source unreachable, a file not fetched) make the ladder report differ from the committed one, and that difference is warned, never a validation error — as Q75 already made the claim rule do
+
+**Read first:** `docs/prompts/operating-procedure.md` §1–§5 and §11–§13; `docs/prompts/entry-131.md` (Q75: the claim rule judges only what a build measured; an unmeasured option refutes nothing; the runner's strict build and its placeholders) and `docs/review/responses/56a4b9b7.md` (the reviewer: the warning is evidence of an unresolved claim, never proof); `docs/prompts/entry-136.md` (Q76: the chain's first attempt — the offline build without the fetched Mutopia files made the rag a placeholder and the committed `docs/generated/ladder.md` read stale, failing validation outright; the row Q80 in `docs/prompts/backlog-2026-09-25.md`); `tools/content/validate.py` at `stale_ladder_report` (renders the ladder from this build's catalogue and compares it with the committed file; the error text "is stale — the catalog has changed since it was written") and `ladder_report_note`; `tools/content/ladder_report.py` (`render`, `shippable` — false for a placeholder — and `why_not_shipped`; the "wanted" list of songs not shipped; the module note: the catalogue is the truth about what shipped); `tools/content/import_mutopia.py` and `import_kern.py` at their placeholder reasons (a file not fetched, a checksum mismatch, a refusal); `tools/content/tests/test_validate.py` and any test of the ladder report; `.github/workflows/pages.yml` and `ci.yml` (both build online: the runner fetches Mutopia's two files and the kern clones on every build).
+
+## The goal, in the orchestrator's words
+
+Q75 made the validator honest about material a build could not measure: a claim is *not judged on this build*, warned, never failed. One check still fails the whole build over the same thing. `docs/generated/ladder.md` is rendered from the catalogue and committed, and the validator compares the committed file with what this build renders; a build in which any fetched source is unreachable — Mutopia's site, the GitHub mirror, a kern repository — carries a placeholder the committed report does not, so the comparison fails and validation errors out. Q76's landing chain showed it here (the offline build without the fetched files), and on the runner a network hiccup at fetch time would now break CI and the Pages deploy for a reason that says nothing about the content. The ladder report's job is to say what shipped; a placeholder that this build made for want of a fetch is not a fact about the catalogue.
+
+## What is decided
+
+1. **The check tells a build's placeholder from the catalogue's.** A placeholder whose reason is this build's (a file not fetched, a source unreachable, a checksum the build could not read — the reasons the import steps write) is not a change to the catalogue; a placeholder that is the catalogue's (a licence the strict build refuses, a file no build has, a refusal recorded in a source list) is. `stale_ladder_report` renders the committed report and this build's report with the build's own placeholders treated as the committed report treats those items (say how: the render takes the committed catalogue's shippability for items whose placeholder reason is a fetch failure, or the comparison ignores those items' lines — choose the one that keeps `ladder_report.py`'s module note true and say why). Where the reports then differ, the error stands as today.
+2. **The build's placeholders are said.** Where the check tolerated any, the validator prints a warning naming the items and their reasons (*ladder report compared without N items this build could not fetch: …*), in the voice of Q75's warning, so a runner's log shows a fetch failure as what it is and never as a stale report.
+3. **The strict build's placeholders are unchanged.** A licence placeholder on the public build is the catalogue's own state on that flavour; Q75's builder found the strict report differs from the personal one and both are truthful. Do not widen tolerance to licence placeholders; the strict build's committed report stays whichever flavour it is today — say which, and whether the check compares against the right flavour (if the committed report is the personal build's and the strict build already fails or already passes the comparison, say what happens today on the Pages run and keep it so).
+4. **Red first.** A test in `tools/content/tests/test_validate.py` (or a new file beside it): a catalogue equal to the committed one but for one item made a placeholder with a fetch-failure reason → today an error, after the change a warning naming the item and no error; the same with a licence-placeholder reason → the error as today; a catalogue whose ladder genuinely changed (a song added to a rung) → the error as today.
+5. **Not Q80's:** the ladder report's content or format; the claim rule (Q75); the import steps' reasons (read, not changed — if a step writes no reason for a fetch failure, say so and stop at that finding).
+
+## Verification layers
+
+- Unit, red first: the cases above; `python -m unittest tools.content.tests.test_validate` and the ladder report's tests green; `python -m unittest discover -s tools/content/tests -t tools/content` once at the end.
+- The builds: `python tools/content/build.py --offline` here (the offline build's Mutopia step uses the fetched files copied read-only from the main checkout — `content/scores/imported/mutopia/` and `build/cache/mutopia/` — as the brief's rules say; then the same build with those files removed from your worktree's copy to make the rag a fetch-failure placeholder, which today fails validation and after the change warns), `python tools/content/validate.py` on each, `python tools/content/review.py --check`; the reports the build rewrites restored to HEAD's bytes and said so.
+- The map: `python tools/docs/checks_for_paths.py <changed paths>`.
+
+## Rules and files
+
+You own `tools/content/validate.py` at `stale_ladder_report` and its note, `tools/content/ladder_report.py` only if the render must know a build's placeholders, the tests named, `docs/03` rows in the entry's `## Doc rows`. Not the import steps, not the claim rule, not the workflows. Never name an AI model. Never assert a number measured on this machine. Every change red first. No commits, pushes, stashes or checkouts. Content edits go through `build.py`; in a fresh worktree run `python tools/midi-cleanup/tests/parity_reference.py` first and copy `build/cache` (including `build/cache/mutopia`), the `build/*-cache.json` files, `build/midi-real`, and `content/scores/imported/kern`, `musetrainer` and `mutopia` read-only from the main checkout at `C:\Users\yalir\repos\Piano Stuff\PianoProject`; never touch the main checkout's copies. No browser layer; nothing on port 4173. A committed test never writes under `docs/`. Another builder is splicing `docs/02`–`docs/08` now: do not edit those files; your rows go in the entry.
+
+## Sequencing
+
+A narrow fix-forward under Q75's accepted rule (`responses/56a4b9b7.md`, 788427c): dispatched now with a for-information line to the reviewer; the post-build review is the gate.
+
+## When to deviate
+
+If the import steps write no distinguishable reason for a fetch failure, stop at that finding and say which step. If the committed ladder report is the personal build's and the strict build's comparison already behaves differently from what item 3 assumes, say what happens today and keep it.
+
+## Report
+
+Judgement first: what the runner's log says on a build with an unreachable source, before and after; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Landed 2026-09-29** (Entry 141; 2d9e7e2c, merged 589a7860); handoff `handoffs/2d9e7e2c.md`. The kern and MuseTrainer steps write no placeholder for a missing clone (the stop line; Q82); the deploy question is Q86.
+
+**Accepted 2026-09-29** (`responses/2d9e7e2c.md`, APPROVE). Q86 ruled: guard the deploy, not the validator (Q88).
+
+## Record
+
+lane: Q80 · closes: Q80 · entry: 141
+index: The validator's stale-ladder check tolerates a build's own placeholders (a source unreachable, a file not fetched) with a warning naming them, never a validation error; licence placeholders and genuine catalogue changes unchanged | tooling | **done 2026-09-29**, Entry 141; merged 589a7860; handoff `handoffs/2d9e7e2c.md`; **accepted 2026-09-29** (`responses/2d9e7e2c.md`, APPROVE); closed; Q86 ruled: guard the deploy (Q88) |
+in-flight: brief drafted 2026-09-29 (`Q80-ladder-check-tolerates-placeholders.md`): the stale-ladder check fails a build over material it could not fetch (Q76's first chain attempt; a network hiccup on the runner would break the deploy); it tolerates a build's own placeholders with a warning, as Q75's claim rule does. Building, for information. **Landed** 2026-09-29 (merged 589a7860, chain green); handoff `handoffs/2d9e7e2c.md`, with the reviewer; the deploy question Q86. **Q80 accepted** 2026-09-29 (`responses/2d9e7e2c.md`, APPROVE); Q86 ruled: guard the deploy (Q88). Closed.
+state: closed 2026-09-29: APPROVE (`responses/2d9e7e2c.md`)

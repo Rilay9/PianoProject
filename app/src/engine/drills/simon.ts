@@ -29,7 +29,7 @@
  */
 import { systemClock, type Clock, type EngineInput } from '../types';
 import { FEEDBACK_MS } from './feedback';
-import { noteLabel, type Drill, type DrillAnswer, type DrillPrompt, type DrillResult } from './types';
+import { noteLabel, pastHidden, type Drill, type DrillAnswer, type DrillPrompt, type DrillResult } from './types';
 
 /** Semitones above the tonic of each degree of a major scale, 1 to 7. */
 export const MAJOR_DEGREE_SEMITONES = [0, 2, 4, 5, 7, 9, 11] as const;
@@ -570,6 +570,11 @@ export class SimonDrill implements Drill {
       return;
     }
     if (this.heard.length === prompt.expected.length) this.settle(true, input.tMs);
+  }
+
+  /** The chain's time to answer counts from when it was given, less the hidden span (X15). */
+  excludeHidden(hiddenAtMs: number, visibleAtMs: number): void {
+    this.promptAtMs = pastHidden(this.promptAtMs, hiddenAtMs, visibleAtMs);
   }
 
   private settle(correct: boolean, tMs: number): void {

@@ -2,12 +2,41 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "pianopath/vocabulary/skills.schema.json",
   "title": "Vocabulary v0: skills",
-  "description": "The reading skills (C2). The shape only: validate.py checks the references (every opportunity a demand id, every condition declared) and app/tests/unit/vocabulary.test.ts checks the ids against concepts.json.",
+  "description": "The reading skills (C2). The shape only: validate.py checks the references (every opportunity a demand id, every condition declared, names-off beside every guide-off of a full standard, a precision on every rhythm skill and on no untimed one) and app/tests/unit/vocabulary.test.ts checks the ids against concepts.json.",
   "type": "object",
-  "required": ["conditions", "skills"],
+  "required": ["conditions", "support", "precision", "skills"],
   "additionalProperties": false,
+  "$defs": {
+    "support": {
+      "type": "object",
+      "description": "L57: the share of a skill's counted steps that must be right for a record to support it (the ladder's supporting, the transfer policy's full-standard support, the demand readings' below and held, the reader's held-back demands).",
+      "required": ["share", "why"],
+      "additionalProperties": false,
+      "properties": {
+        "share": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+        "why": { "type": "string", "minLength": 20 }
+      }
+    },
+    "precision": {
+      "type": "object",
+      "description": "L57 (reviewer decision 6): the error a timing skill is about, as [numerator, denominator] of a quarter-note beat; the evidence function's window must be narrower than it at the run's tempo.",
+      "required": ["quarters", "why"],
+      "additionalProperties": false,
+      "properties": {
+        "quarters": {
+          "type": "array",
+          "prefixItems": [{ "type": "integer", "minimum": 1 }, { "type": "integer", "minimum": 1 }],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "why": { "type": "string", "minLength": 20 }
+      }
+    }
+  },
   "properties": {
     "_comment": { "type": "array", "items": { "type": "string" } },
+    "support": { "$ref": "#/$defs/support", "description": "The support share every skill reads unless it names its own." },
+    "precision": { "$ref": "#/$defs/precision", "description": "The precision a skill whose rhythm is the phrase's falls back to, where no rhythm demand is located at the step." },
     "conditions": {
       "type": "array",
       "items": {
@@ -15,7 +44,7 @@
         "required": ["id", "meaning", "recordedBy"],
         "additionalProperties": false,
         "properties": {
-          "id": { "enum": ["keep-tempo", "unseen", "guide-off", "both-hands"] },
+          "id": { "enum": ["keep-tempo", "unseen", "guide-off", "both-hands", "names-off"] },
           "meaning": { "type": "string", "minLength": 10 },
           "recordedBy": {
             "type": ["string", "null"],
@@ -58,7 +87,19 @@
               "full": { "type": "array", "items": { "type": "string" } }
             }
           },
-          "note": { "type": "string" }
+          "note": { "type": "string" },
+          "support": { "$ref": "#/$defs/support", "description": "The skill's own support share, where its ability needs another than the vocabulary's (none does in v0)." },
+          "precision": { "$ref": "#/$defs/precision", "description": "The skill's own precision: a rhythm skill's. Its demands are then the rhythm demands, which only timing can tell." },
+          "transfer": {
+            "type": "object",
+            "description": "G2: the dimensions on which a change of material is transfer for this skill, each an entry of app/src/curriculum/transfer.ts DIMENSIONS (validate.py reads that list), and why. A skill without the block is credited no transfer, and the build lists it.",
+            "required": ["dimensions", "why"],
+            "additionalProperties": false,
+            "properties": {
+              "dimensions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+              "why": { "type": "string", "minLength": 20 }
+            }
+          }
         },
         "if": { "properties": { "observable": { "const": "none" } } },
         "then": { "required": ["unobserved"] }

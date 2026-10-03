@@ -14,15 +14,16 @@ import './ScoreScreen.css';
 import { audioEngine } from '../../audio/AudioEngine';
 import { metronomeSoundFor } from '../../audio/inputPolicy';
 import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
-import { findItem, contentUrl, loadCurriculum } from '../../curriculum/load';
+import { catalogIndex, findItem, contentUrl, loadCurriculum } from '../../curriculum/load';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { barsPerWindowFor, isTablet, sidePanelProse } from '../tablet';
 import { getImport } from '../../data/importStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
-import { generateSightReading } from '../../engine/sightReading';
+import { generateSightReading, SightReadingRefusal, type SightReadingOptions } from '../../engine/sightReading';
 import { readingOptions, taughtAtRung } from '../../curriculum/session';
 import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
 import { findLesson, masteryCriteriaFor, proseRungFor } from '../../curriculum/selectors';
+import { skillsInForce } from '../../curriculum/skillActivation';
 import { getMidiSettings } from '../../data/midiSettings';
 import {
   DEFAULT_SETTINGS,
@@ -37,14 +38,24 @@ import {
   demandsTechniqueMeasure,
   evaluateOutcome,
   measuresOf,
+  openingThatCounts,
   techniqueMeasureFor,
+  tempoCanCount,
   velocityIsFlat,
+  type MasteryCriteria,
 } from '../../engine/Scoring';
 import { evidenceFor, isRefusal, stampedEvidence, type EvidenceResult } from '../../evidence/evidence';
 import { VOCABULARY_V0 } from '../../evidence/vocabulary';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
-import { MASTER_DAYS, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
-import { OBSERVATION_DEFINITIONS, type ReadingRecipe, type RunHeader, type SessionRow } from '../../data/db';
+import { MASTER_DAYS, dayKey, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
+import {
+  OBSERVATION_DEFINITIONS,
+  phraseVersionOf,
+  type PhraseGenerator,
+  type ReadingRecipe,
+  type RunHeader,
+  type SessionRow,
+} from '../../data/db';
 import { NOT_MEASURED, type Mode, type SessionScore } from '../../engine/types';
 import type { InputNoteEvent } from '../../midi/types';
 import { toMusicXml } from '../../score/mxl';
@@ -68,8 +79,11 @@ import {
   LADDER_TEXT,
   MODE_HELP,
   NOT_JUDGED_TEXT,
+  OFFER_TEXT,
+  PROJECT_TEXT,
   RESTARTED_WITH,
   ROW_TEXT,
+  SESSION_TEXT,
   STATE_TEXT,
   SUMMARY_TEXT,
   notJudgedLines,
@@ -80,7 +94,25 @@ import {
 import { forgetUnfinished, rememberUnfinished, unfinishedFor } from '../../data/unfinishedRun';
 import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from '../helpStrip';
 import { openSheet } from '../widgets';
+import { openProjectSheet } from '../projectSheet';
+import { isProjectable } from '../../data/projectStore';
 import { hasChordSymbols } from '../openItem';
+import { playedMaterial, runFacts, textIdentity } from '../../curriculum/material';
+import {
+  familiarityIn,
+  firstContactIn,
+  historyFor,
+  newVisitId,
+  recordEncounter,
+  type EncounterHistory,
+  type EncounterTarget,
+} from '../../data/encounterStore';
+import type { EncounterKind, EncounterSource } from '../../data/db';
+import type { Relationship } from '../../curriculum/transfer';
+import { loadOffer, type OfferRead, type OfferRefusal } from '../../data/offerSnapshot';
+import { scoreOutcome } from '../../data/sessionRun';
+import { drawTransition, sessionHandle } from '../sessionRunner';
+import { chromeFor, type ChromePlan } from './scoreChrome';
 
 /**
  * What the four modes are called on the screen (P21c B2).
@@ -129,12 +161,6 @@ const ZOOM_MIN = 0.5;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.1;
 
-/** Below this the bar cannot hold the sentences. Measured, not chosen. */
-// 440, not 400: at 412 px — the other common phone width — the long mode
-// labels fitted the row but not the select, which clipped "Wait for me" to
-// "Wait for m" (the state gallery, size 412).
-const NARROW_BAR_PX = 440;
-
 /** The smallest a finger can reliably hit (`04` §0 R4: "about forty"). */
 const TAP_MIN_PX = 40;
 
@@ -153,15 +179,76 @@ const HANDS: { id: HandsFocus; label: string; spoken: string }[] = [
   { id: 'both', label: 'Both', spoken: 'Both hands' },
 ];
 
-/** The control bar hides after this long without a tap (docs/04 §5). */
-export const CONTROL_BAR_HIDE_MS = 3_000;
 /**
- * …and sooner at the start of a run. Sideways the bar overlays the bottom of
- * the music once the stage has taken its row, and three seconds of it over
- * the lower staff is the first bar of every piece hidden (the Twinkle
- * pictures). Long enough to see ▶ become ⏸; not long enough to matter.
+ * A peek at the controls while the hands are on the keys lasts this long
+ * without a tap (docs/04 §5). The fold itself has no timer since U122c: the
+ * controls fold the moment a run starts or carries on, ⏸ staying in ▶'s place,
+ * and come back the moment it pauses (`scoreChrome.ts`). It used to wait 0.7 s
+ * after ▶ and 3 s after any tap, whatever the run was doing, and so folded a
+ * paused run's ▶ away three seconds after ⏸.
  */
-export const CONTROL_BAR_START_HIDE_MS = 700;
+export const CONTROL_BAR_HIDE_MS = 3_000;
+
+/**
+ * The longest the first draw waits for the tablet side panel's decision once
+ * the score is ready to draw (U80). The panel's two reads started when the
+ * item was found, beside the score's own, so this is time past the score's
+ * load, spent on "Loading…": long enough for a precached lesson file on a
+ * slow tablet, short enough that a read that has stalled costs the learner a
+ * moment rather than the score. Past it the score draws and the panel, if it
+ * ever comes, arrives as a resize.
+ */
+export const SIDE_PANEL_WAIT_MS = 1_500;
+
+/**
+ * The longest ▶ (or Space, or `Hear it`, or any tap U105 gated) waits for the
+ * sound to start (U69, G86a). Chosen, not measured. A resume is the device's audio output
+ * starting, not a download, so a context the platform is willing to start
+ * should answer well inside it; one that has not answered by then is being
+ * refused — a phone in a call keeps the audio for the call — and the button a
+ * beginner presses most must not sit doing nothing for longer than about a
+ * second, where a tap that has not answered starts to read as broken. Past it,
+ * with the sound still not running, the tap starts nothing and the state line
+ * says the sound did not start and to tap again (G86a); the next tap asks
+ * again. The bound ends the wait, not the chance of sound: it is never taken
+ * as proof that there is none.
+ */
+export const PLAY_SOUND_WAIT_MS = 1_000;
+
+/**
+ * A control whose tap can start the sound, as it asks `withSound` (U105): the
+ * element that carries `data-sound-refused` while its refusal stands, and how
+ * `STATE_TEXT.soundOff` names it — the label, or its first word where the
+ * label would pass the forty-odd characters the state line shows at 342 px
+ * (`04` §5f).
+ */
+interface SoundTap {
+  /** The control's id. */
+  id: string;
+  control: string;
+  verb?: 'tap' | 'hold';
+  again?: boolean;
+}
+
+/** ▶, and Space, its keyboard twin (G86a): the one tap whose wait shows on its button (U69). */
+const PLAY_TAP: SoundTap = { id: 'score-play', control: '▶' };
+const HEAR_TAP: SoundTap = { id: 'score-hear', control: 'Hear it' };
+/**
+ * A key that would start a run, on a connected piano or on the screen (U105).
+ * The sentence names ▶, whose tap can start the sound, without *again*,
+ * because ▶ was not what was used; ▶ carries the mark.
+ */
+const KEY_TAP: SoundTap = { id: 'score-play', control: '▶', again: false };
+const CARRY_ON_TAP: SoundTap = { id: 'score-resume-go', control: 'Carry on' };
+const RESTART_TAP: SoundTap = { id: 'score-restart', control: 'Start again' };
+const TRY_AGAIN_TAP: SoundTap = { id: 'session-try-again', control: SESSION_TEXT.tryAgain };
+const AGAIN_TAP: SoundTap = { id: 'summary-again', control: 'Again' };
+const SLOWER_TAP: SoundTap = { id: 'summary-slower', control: 'Slower' };
+const FASTER_TAP: SoundTap = { id: 'summary-faster', control: 'Faster' };
+/** *Loop the weak bars*: 50 characters in full, so its first word. */
+const LOOP_WEAK_TAP: SoundTap = { id: 'summary-loop', control: 'Loop' };
+/** *Keep tempo at 80 %* (X46): the run *To pass* names, by its first words. */
+const STANDARD_TAP: SoundTap = { id: 'summary-standard', control: 'Keep tempo' };
 
 /**
  * Sight-reading is the one drill kind that is notation (docs/05 §7–§8), so it
@@ -187,15 +274,23 @@ export const CONTROL_BAR_START_HIDE_MS = 700;
  * the rung that opened it (C4c): the row held to what that rung has taught
  * (`taught`), so 2.2's row stays inside C position until 2.5 teaches leaving
  * it; opened from nowhere, the row as it stands.
+ *
+ * And the phrase's identity (D1a): the generator's family, the version that
+ * wrote it and the seed, which the run keeps (`generator`) so the history can
+ * tell version 2's phrase of a seed from version 1's; with the options it was
+ * written from and its tempo, the complete identity the run keeps as its
+ * `material` (D4, `material.phraseMaterial`). A phrase the generator cannot
+ * write throws `SightReadingRefusal`, which the load below shows.
  */
 function generateSightReadingFor(
   item: CatalogItem,
   seed: number,
   recipe?: RouteRecipe,
   taught?: (demand: string) => boolean,
-): { musicXml: string; seed: number } {
-  const phrase = generateSightReading(readingOptions(item, recipe, seed, taught));
-  return { musicXml: phrase.musicXml, seed: phrase.seed };
+): { musicXml: string; seed: number; generator: PhraseGenerator; options: SightReadingOptions; bpm: number } {
+  const options = readingOptions(item, recipe, seed, taught);
+  const phrase = generateSightReading(options);
+  return { musicXml: phrase.musicXml, seed: phrase.seed, generator: phrase.generator, options, bpm: phrase.bpm };
 }
 
 /**
@@ -276,6 +371,15 @@ export function ScoreScreen(router: Router): HTMLElement {
   /** The phrase's recipe, where Today's reader named one (C4, `?recipe=`). */
   const routeRecipe = router.route.scoreRecipe;
   /**
+   * Today's session activity this run is, where the runner opened it (X1, `?session=`): the screen reports
+   * its lifecycle through the handle — opened, attempted, completed, visible time — and the summary's closing
+   * action becomes the transition to the next activity. It reads no encounter history and chooses no next
+   * activity itself. None: an ordinary screen.
+   */
+  const sessionRun = sessionHandle(router.route.session);
+  /** Visible time on this screen, for the session (X1): a hidden page accrues nothing; stopped when the screen goes. */
+  const stopSessionClock = sessionRun?.startClock();
+  /**
    * The tour's parameters, for a navigation that has to keep them.
    *
    * Blind and Perform are routes, so pressing either rebuilds the screen from
@@ -297,6 +401,10 @@ export function ScoreScreen(router: Router): HTMLElement {
     ...(todaySlot === undefined ? {} : { slot: todaySlot }),
     // And the same kind of phrase (C4): *New phrase* and Blind keep the recipe.
     ...(routeRecipe === undefined ? {} : { recipe: routeRecipe }),
+    // A transfer offer's run toggled into Blind is still that offer's run (D4).
+    ...(router.route.scoreIntent === undefined ? {} : { intent: router.route.scoreIntent }),
+    // And a session's activity is still that activity (X1): Blind, Perform and *New phrase* keep its token.
+    ...(router.route.session === undefined ? {} : { session: router.route.session }),
   };
   /**
    * Where Back goes: the tour that opened this, the rung that opened it, or
@@ -350,6 +458,28 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   let hearing = false;
   /**
+   * A tap is waiting for the sound to start — ▶'s or Space's (U69), or
+   * `Hear it`'s (U67), or any other U105 put through the gate — so a second
+   * tap in that moment starts nothing, and no control starts anything while
+   * another's tap is waiting. Always
+   * cleared when the wait ends, however it ends (G86a): a `Hear it` start that
+   * never answered used to leave it set, and every later ▶ returned before
+   * asking.
+   */
+  let startingSound = false;
+  /** ▶'s own tap is the one waiting (U69): what `drawPlayHold` shows on the button. */
+  let playWaiting = false;
+  /**
+   * The tap whose wait ended with the sound still not running (G86a), or the
+   * key refused at once (U105): nothing started, and the state line says so
+   * and names that tap's control. Cleared by the next tap that asks, by a
+   * start that makes ▶ read ⏸ (`startRun`, U105), and by the sound starting by
+   * any path — `soundOffLine` reads the engine too, so a line that has stopped
+   * being true is never drawn. Nothing records the engine as unavailable:
+   * every tap asks.
+   */
+  let soundRefusedBy: SoundTap | null = null;
+  /**
    * Whether this run has already said the app is playing a hand (P21c B3).
    *
    * `playbackHands` defaults to `non-focused`, so choosing `R` means the app
@@ -388,6 +518,20 @@ export function ScoreScreen(router: Router): HTMLElement {
   let endedSinceLastStart = false;
   /** True once the screen is being torn down; see `showSummary`. */
   let leaving = false;
+  /**
+   * The late answer (G86a): a start that answers after its tap was refused
+   * starts nothing — a run beginning by itself after the learner was told it
+   * had not would be a surprise of its own — but the sentence goes, because it
+   * is no longer true. The same where the sound starts some other way while
+   * the sentence stands. The engine publishes here both a start's answer and
+   * the context's own state changes. Unsubscribed by the disposer, not through
+   * `unsubscribers`, which `attachInput` empties.
+   */
+  const stopWatchingSound = audioEngine.onStateChange((state) => {
+    if (state !== 'running' || soundRefusedBy === null || leaving) return;
+    soundRefusedBy = null;
+    render();
+  });
   /** The pending long-press, if a finger is down on the stage. */
   let pressHold: number | null = null;
   /** Where that finger went down, so a wobble can be told from a drag. */
@@ -396,19 +540,72 @@ export function ScoreScreen(router: Router): HTMLElement {
   let sightReadAttempts = 0;
   /** The generated phrase's seed, on a sight-reading item (T37). */
   let phraseSeed: number | undefined;
+  /** The generated phrase's identity — family, version, seed — which the run keeps (D1a). */
+  let phraseGenerator: PhraseGenerator | undefined;
   /**
-   * A stored run already carries this phrase's seed (T37).
+   * The options the phrase was written from and its tempo: with the generator, the phrase's complete
+   * identity, which the run keeps as its `material` (D4; `material.runFacts`). Any other item's run keeps
+   * its catalogue row's `provenance.identity` — an excerpt's is its cut's (E1 item 7), the build's hash
+   * of the bytes this screen plays.
+   */
+  let phraseWritten: { options: SightReadingOptions; bpm: number } | undefined;
+  /**
+   * Opened from Today's transfer offer (D4, `?intent=transfer&skill=&offer=`): the run keeps the intent
+   * and the relationship the offer was made on, together, or neither (D4a; the reviewer's required
+   * change on D4, `docs/review/responses/9193261.md`).
+   *
+   * D4 computed the relationship here, from the stored runs, in a read nothing waited for: a run
+   * finished before it landed was stored with the intent and no relationship, and one after it with a
+   * relationship recomputed at opening rather than the card's. Now Today keeps the offer it showed
+   * (`data/offerSnapshot.ts`) and this screen reads it as it opens, before play:
+   *
+   * - `pending`: the read is out. ▶ is disabled, no run can start (`startRun`), and a finish that
+   *   somehow came would store nothing — a pending read is never a completed practice run;
+   * - `kept`: the snapshot is this route's offer (its token, this item, this skill, today): the run's
+   *   facts carry `intent` and the snapshot's relationship, byte for byte, and nothing recomputes it;
+   * - `refused`: missing, superseded, another item, skill or day, corrupt or unreadable: the item opens
+   *   as practice, one line under the header says so (`OFFER_TEXT`), and the run carries neither.
+   *
+   * No transfer route, no read: `none`.
+   */
+  type OfferState =
+    | { kind: 'none' }
+    | { kind: 'pending' }
+    | { kind: 'kept'; relationship: Relationship }
+    | { kind: 'refused'; why: OfferRefusal };
+  const transferIntent = router.route.scoreIntent;
+  let offer: OfferState = transferIntent === undefined ? { kind: 'none' } : { kind: 'pending' };
+  /** Started as the screen is built, beside the score's own fetch, and awaited before play. */
+  const offerRead: Promise<OfferRead> | undefined =
+    transferIntent === undefined
+      ? undefined
+      : loadOffer({ token: transferIntent.offer, itemId, skill: transferIntent.skill, today: dayKey(new Date()) });
+  /** The read has not answered: nothing may start and nothing may be stored. */
+  function offerPending(): boolean {
+    return offer.kind === 'pending';
+  }
+  /**
+   * A stored run already carries this phrase's seed (T37), under the version
+   * that wrote this phrase (D1a).
    *
    * "First attempt" was a counter that started at nought on every visit, so
    * re-opening today's read regenerated the identical phrase and recorded its
    * first run as a first attempt again. The seed is on the session row now, so
-   * a retry on the same music is told from a new phrase across visits too.
+   * a retry on the same music is told from a new phrase across visits too. A
+   * seed names one phrase per generator version (G21): a run of the same seed
+   * under another version — or with no version on it, version 1's — read
+   * other music, so it does not make this phrase met.
    */
   let phraseSeen = false;
   /**
    * Every seed a stored run of this item carries (C4 item 2), so a phrase the
    * screen draws for itself — a fresh open, *New phrase* — is never one the
    * learner has played or heard. Filled as the item's rows are read.
+   *
+   * Every seed, whatever version wrote its phrase (D1a): the question here is
+   * which seed may be drawn, and avoiding one read under another version costs
+   * nothing in a 32-bit space, while drawing it again could hand back the very
+   * notes read before — many seeds write the same phrase at both versions.
    */
   const seedsOnRecord = new Set<number>();
   /**
@@ -419,8 +616,41 @@ export function ScoreScreen(router: Router): HTMLElement {
    * which every fresh start empties; played before ▶, the run that followed
    * went on the record as the first reading. One phrase per visit, so it is
    * never cleared.
+   *
+   * Since G1 it is the fast path within the visit, for any item: the hearing
+   * is also written as an encounter (`recordEncounter`), which is what
+   * survives the visit, and a later visit reads it back (`history`).
    */
   let phraseHeard = false;
+  /**
+   * This opening of the screen (G1; the reviewer's constraint,
+   * `docs/review/responses/7863bee.md`): every encounter written here names
+   * it, and first contact compares visits, never times. The viewing the
+   * reading needs is this visit's and does not count against it; one from any
+   * other visit — before a reload, before Back and a return, in another tab —
+   * is prior contact.
+   */
+  const visit = newVisitId();
+  /**
+   * What this visit is about once the score is loaded (G1): the item, the
+   * material a run of it plays (`playedMaterial` — the phrase's identity, an
+   * import's loaded bytes, else the row's), and its length in bars.
+   */
+  let encounterTarget: EncounterTarget | null = null;
+  /**
+   * What the learner had met of it when the screen opened (G1 item 4): its
+   * encounters, the passages around it, the runs and the summaries of pruned
+   * runs, read before play (`historyFor`) — so nothing can start before it has
+   * answered — and read again before a run claiming first contact is stored,
+   * in case another tab met it meanwhile. Null where it could not be read: the
+   * visit's own flags then decide, as they did before G1.
+   */
+  let history: EncounterHistory | null = null;
+  let historyRead: Promise<EncounterHistory | null> | null = null;
+  /** The notation has been drawn for the learner on this visit and the viewing written (G1). */
+  let viewingWritten = false;
+  /** An import's file identity: the sha256 of the text this screen loaded (G1), which its runs carry. */
+  let loadedIdentity: Awaited<ReturnType<typeof textIdentity>>;
   /**
    * The run waiting for its *How did it go?* answer (T37).
    *
@@ -592,13 +822,20 @@ export function ScoreScreen(router: Router): HTMLElement {
    * It was clicks only. On a phone on a stand with the sound low the first
    * note therefore arrives unannounced, which is the one moment a beginner
    * most needs to know when to start. The drill screen already counts down in
-   * words; this is the same idea over the notation.
+   * words; this is the same idea.
+   *
+   * **Beside ⏸, in the row, never over the notes (U122c).** It was drawn over
+   * the stage under a wash, and the numerals sat on the very notes the learner
+   * reads to come in (walk finding 8; in Moonlight on a dozen note heads). The
+   * controls fold to ⏸ the moment a run starts, which leaves the row's room
+   * empty, so the count is drawn there, right of ⏸, at the row's own height.
+   * Put into the bar once the bar exists (below).
    */
   const countIn = document.createElement('div');
   countIn.className = 'score-countin';
   countIn.id = 'score-countin';
   countIn.hidden = true;
-  stage.appendChild(countIn);
+  countIn.setAttribute('aria-hidden', 'true');
   if (blind) {
     // Hidden, not unmounted: the renderer still needs a box to lay out into,
     // and the cursor still tracks — it is simply not drawn where he can see
@@ -619,23 +856,38 @@ export function ScoreScreen(router: Router): HTMLElement {
    * have to leave the score to read.
    *
    * Only built on a tablet. On a phone it would be a panel with nowhere to go.
+   *
+   * **When it is decided is marked (U80).** `data-side` is absent until the
+   * panel is decided, then `text` (the lesson's words are in it) or `empty`
+   * (left out: a piece on no rung, a lesson that will not read), once per
+   * opening — every opening builds a new screen, so the next piece starts
+   * undecided. It read `empty` from the moment the screen was built, which is
+   * also what a panel left out reads, so nothing could tell "not decided yet"
+   * from "no panel" and a test reading the panel as the screen appeared read
+   * whichever the race gave it. On a phone there is no panel, so it is decided
+   * here and nothing waits for it. The word is `empty` because the
+   * stylesheet's one-column rule is keyed on it.
    */
   const sidePanel = document.createElement('details');
   sidePanel.className = 'score-side';
   sidePanel.id = 'score-side';
   sidePanel.open = true;
   sidePanel.hidden = true;
-  section.dataset.side = 'empty';
+  // Held here rather than found by id when the lesson lands: a lesson that
+  // lands after the learner has opened another piece belongs to this screen's
+  // panel, and the other piece's panel has the same ids.
+  const sideSummary = document.createElement('summary');
+  const sideBody = document.createElement('div');
   if (tablet) {
-    const summary = document.createElement('summary');
-    summary.textContent = 'Lesson notes';
-    summary.id = 'score-side-summary';
-    sidePanel.appendChild(summary);
-    const body = document.createElement('div');
-    body.className = 'score-side__body';
-    body.id = 'score-side-body';
-    sidePanel.appendChild(body);
+    sideSummary.textContent = 'Lesson notes';
+    sideSummary.id = 'score-side-summary';
+    sidePanel.appendChild(sideSummary);
+    sideBody.className = 'score-side__body';
+    sideBody.id = 'score-side-body';
+    sidePanel.appendChild(sideBody);
     section.appendChild(sidePanel);
+  } else {
+    section.dataset.side = 'empty';
   }
 
   // Both of these are put into the header row further down; they are built
@@ -651,6 +903,11 @@ export function ScoreScreen(router: Router): HTMLElement {
    * on a stand next to a piano is most of the time. Brighter on beat 1 so the
    * bar is readable and not just the pulse. Off in Wait and Free, which have
    * no clock to show.
+   *
+   * **Beside `bar n / m`, not on the music (U122c).** It sat in the stage's
+   * top-left corner, on the first system's clef upright. It is drawn in the
+   * surface that names the bar: the header row upright and on a tablet, the
+   * top line sideways (`placeBeatDot`). Neither folds away during a run.
    */
   const beatDot = document.createElement('span');
   beatDot.className = 'score-beat';
@@ -671,13 +928,10 @@ export function ScoreScreen(router: Router): HTMLElement {
   waitingLine.id = 'score-waiting';
   waitingLine.hidden = true;
 
-  // Where you are, in the stage's top-right corner, for when the chrome has
-  // folded away — the header upright, the bar's left end sideways — and
-  // nothing else on the screen says it.
-  const corner = document.createElement('span');
-  corner.className = 'score-stage__corner';
-  corner.id = 'score-corner';
-  corner.setAttribute('aria-hidden', 'true');
+  // The stage's corner chip (`bar n / m` over the music while the chrome was
+  // folded) is gone (U122c): upright and on a tablet the header keeps its box
+  // through a run and says `bar n / m` where it said it at rest; sideways the
+  // top line does (`topLine`, below). Nothing else said where you were, then.
 
   const bar = document.createElement('div');
   bar.className = 'score-bar';
@@ -694,6 +948,28 @@ export function ScoreScreen(router: Router): HTMLElement {
   sheet.id = 'score-summary';
   sheet.hidden = true;
   section.appendChild(sheet);
+
+  /**
+   * The summary's own line for a tap on it whose sound did not start (U105a,
+   * the reviewer's required change on U105, `responses/f51e8010.md`).
+   *
+   * The state line that says so lives in the header, and sideways the header
+   * is not drawn: the line is mirrored into the bar, and the summary sheet is
+   * over the bar. So a refused *Again* sideways showed nothing, and the
+   * control looked dead. The bar is not lifted over the sheet — it would bring
+   * back six controls meant to be out of reach while the summary is up — and
+   * the header is not either: the sheet says it itself, first on the sheet, in
+   * the sentence the state line says (`soundOffLine`, drawn in
+   * `drawWaitingFor`). Painted only where the header is not drawn (sideways;
+   * `style.css` decides, by the query that hides the header), so the learner
+   * reads it once; where the header's line shows it above the sheet, this copy
+   * is not painted and stays a status a screen reader is told of, which the
+   * inert head behind the sheet never allows. Empty otherwise.
+   */
+  const summaryRefusal = document.createElement('p');
+  summaryRefusal.className = 'summary-refusal';
+  summaryRefusal.id = 'summary-refusal';
+  summaryRefusal.setAttribute('role', 'status');
 
   // --- header --------------------------------------------------------------
 
@@ -788,6 +1064,17 @@ export function ScoreScreen(router: Router): HTMLElement {
   resumeRow.hidden = true;
   head.append(resumeRow);
 
+  /**
+   * "This offer is no longer on today's card; opened as practice" (D4a): a transfer route whose offer
+   * the snapshot does not name, said once, in the header that folds away when a run starts — so the
+   * learner knows the run is practice before playing it, and it is never furniture during one.
+   */
+  const offerNote = document.createElement('p');
+  offerNote.className = 'score-offer-note';
+  offerNote.id = 'score-offer-note';
+  offerNote.hidden = true;
+  head.append(offerNote);
+
   /** A span of plain words inside the offer. */
   function said(className: string, text: string, id?: string): HTMLElement {
     const node = document.createElement('span');
@@ -811,16 +1098,22 @@ export function ScoreScreen(router: Router): HTMLElement {
     const carryOn = button(
       `Carry on from bar ${String(from)}`,
       () => {
-        // A loop from there to the end: the engine starts a run at the loop's
-        // first bar, which is the only way this screen can begin anywhere but
-        // bar 1. It comes round again at the end rather than stopping, which
-        // is what the line beside it says out loud.
-        loopBars = { from, to: lastBar };
-        loopSection = null;
-        if (itemId !== undefined) forgetUnfinished(itemId);
-        resumeRow.hidden = true;
-        startRun();
-        render();
+        // Through the sound's gate, the whole of it (U105): refused, the offer
+        // and the record stay and no loop is set, so the tap can be made again.
+        withSound(() => {
+          // The offer may have gone while the sound was asked for.
+          if (session?.running === true || resumeRow.hidden) return;
+          // A loop from there to the end: the engine starts a run at the loop's
+          // first bar, which is the only way this screen can begin anywhere but
+          // bar 1. It comes round again at the end rather than stopping, which
+          // is what the line beside it says out loud.
+          loopBars = { from, to: lastBar };
+          loopSection = null;
+          if (itemId !== undefined) forgetUnfinished(itemId);
+          resumeRow.hidden = true;
+          startRun();
+          render();
+        }, CARRY_ON_TAP);
       },
       'score-resume-go',
     );
@@ -843,6 +1136,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       said('score-resume__note', 'Carrying on plays from there to the end, then round again.'),
     );
     resumeRow.hidden = false;
+    // The row is drawn again on every render, after ▶'s hold: a refused
+    // *Carry on* keeps its mark on the button drawn now (U105).
+    markRefused();
   }
 
   /**
@@ -859,52 +1155,139 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (rhythmOnly && mode === 'tempo') return 'rhythm';
     return mode;
   }
-  // On the stage, not in the header: the header is not drawn sideways and
-  // the bar hides itself during a run, and the dot is the one thing that must
-  // be visible while the clock runs (`08` §5.3).
-  stage.appendChild(beatDot);
-  stage.appendChild(corner);
+  /**
+   * The phone held sideways (`04` §0 R5), the same query the stylesheet keys
+   * the sideways Score on. Read where the script has to place a node the
+   * stylesheet cannot: the beat dot, which belongs to whichever surface names
+   * the bar.
+   */
+  // Absent where there is no layout to ask (the unit tests' document): the header then holds the dot.
+  const sidewaysQuery =
+    typeof window.matchMedia === 'function' ? window.matchMedia('(orientation: landscape) and (max-height: 500px)') : null;
 
   /**
-   * The same three things at the bar's left end, for a phone held sideways
-   * (P21d A6).
+   * The top line, for a phone held sideways (U122c; c6, `docs/design/score-bar-layout.md` §8.7,
+   * §9.1, §10.3): the piece's name on the left and `bar n / m` on the right, in one thin line above
+   * the music.
    *
-   * Sideways the header row is 40 of 360 px and carries nothing you need
-   * while playing, while the bar's left third is empty. So the header goes
-   * and Back, the title and the status line move into that third. Mirrored
-   * rather than moved: the header is still the right place upright, where the
-   * bar is full, and a node can only be in one place. Two elements, kept in
-   * step by watching the originals.
+   * Sideways the header is not drawn (R5), and the name and `bar n / m` used to share the bottom row
+   * with Back, the status line and every control, where neither had room: the name was cut to its
+   * first letters at rest and not drawn at all while paused, and a refusal's sentence, squeezed in
+   * beside them, grew the row past the top of the window (U120). At the top they cost the music
+   * nothing during a run: the line lies over the band at the stage's top that a run keeps for it,
+   * and the sliding sheet sits below that band from the run's start (`style.css`), so starting,
+   * pausing and the fold move nothing. At rest the line is as tall as that band, so ▶ moves nothing
+   * either.
+   *
+   * **The moment's sentence takes the name's place while it stands** (`topLineSays`): a sound
+   * refusal, the refused start, the first-note cue, the paused notes that carry a cause, and while
+   * the hands are on the keys the run's own line. `bar n / m` stays beside it, and yields, whole,
+   * only when a refusal cannot fit beside it (`responses/e070d238.md`: "`bar n / m` may yield before
+   * the message"). The chip that used to say `bar n / m` over the music while the chrome was folded
+   * is this line's folded form: the same box, with the name not drawn.
+   *
+   * Upright and on a tablet the header says all of this, and this line is not drawn.
+   */
+  const topLine = document.createElement('div');
+  topLine.className = 'score-top';
+  topLine.id = 'score-top';
+  const titleSide = document.createElement('span');
+  titleSide.className = 'score-top__title';
+  titleSide.id = 'score-title-side';
+  const topSay = document.createElement('span');
+  topSay.className = 'score-top__say';
+  topSay.id = 'score-top-say';
+  const whereSide = document.createElement('span');
+  whereSide.className = 'score-top__where';
+  whereSide.id = 'score-where-side';
+  topLine.append(titleSide, topSay, whereSide);
+  section.insertBefore(topLine, stage);
+
+  /** The beat dot where the bar is named: the top line sideways, the header row otherwise. */
+  function placeBeatDot(): void {
+    if (sidewaysQuery?.matches === true) {
+      if (beatDot.parentElement !== topLine) topLine.prepend(beatDot);
+    } else if (beatDot.parentElement !== headRow) {
+      headRow.insertBefore(beatDot, where);
+    }
+  }
+  placeBeatDot();
+  sidewaysQuery?.addEventListener('change', placeBeatDot);
+  unsubscribers.push(() => sidewaysQuery?.removeEventListener('change', placeBeatDot));
+
+  /**
+   * Back and the ordinary status line at the bottom row's left end, for a phone held sideways
+   * (P21d A6; since U122c the name and `bar n / m` are in the top line).
+   *
+   * Mirrored rather than moved: the header is still the right place upright, where the bar is
+   * full, and a node can only be in one place. Kept in step by watching the originals.
    */
   const barLeft = document.createElement('div');
   barLeft.className = 'score-bar__left';
   barLeft.id = 'score-bar-left';
   const backSide = button('← Back', () => leaveScore(), 'score-back-side');
-  const titleSide = document.createElement('span');
-  titleSide.className = 'score-bar__title';
-  titleSide.id = 'score-title-side';
   const statusSide = document.createElement('span');
   statusSide.className = 'score-bar__status';
   statusSide.id = 'score-status-side';
-  const whereSide = document.createElement('span');
-  whereSide.className = 'score-bar__where';
-  whereSide.id = 'score-where-side';
-  barLeft.append(backSide, titleSide, whereSide, statusSide);
+  barLeft.append(backSide, statusSide);
   bar.prepend(barLeft);
-  const syncBarLeft = (): void => {
+
+  /**
+   * What the top line says in the name's place, and what kind of sentence it is; empty for the name.
+   *
+   * From the signals that make each sentence, never from its words (`responses/e070d238.md`: "Keep
+   * this boundary semantic, not string-based"):
+   * - a tap whose sound did not start (`soundOffLine`, G86a, U105), whatever the run is doing;
+   * - the refused start, a hand with nothing to play (`handRefused`, R19), which the status line says;
+   * - paused, only a pause that carries a cause: an option restarted the run or a demonstration
+   *   handed it back (`pauseNote`, T33 C1/C2), or the page went away (`awaySeconds`, said without
+   *   the pointer to *Start again*, which is one tap away in `⋯`). A pause the learner made with ⏸
+   *   says nothing here: the stopped music, the open row and ▶ already say it;
+   * - while the hands are on the keys, the run's own line, as the folded chip said it: the
+   *   first-note cue, a demonstration's line, the note Wait for me waits for.
+   */
+  function topLineSays(): { text: string; kind: 'refusal' | 'note' | 'run' | '' } {
+    // The summary up: its own first line says a refusal of a tap on it (U105a), and the sentence twice
+    // on one screen reads as a glitch. The top line keeps the name.
+    if (!sheet.hidden) return { text: '', kind: '' };
+    const refused = soundOffLine();
+    if (refused !== '') return { text: refused, kind: 'refusal' };
+    if (handRefused && (status.textContent ?? '') !== '') return { text: status.textContent ?? '', kind: 'refusal' };
+    if (session?.running === true && session.paused) {
+      if (pauseNote !== null) return { text: pauseNote, kind: 'note' };
+      if (awaySeconds !== null) return { text: STATE_TEXT.away(awaySeconds, true), kind: 'note' };
+      return { text: '', kind: '' };
+    }
+    if (session?.running === true && !helpStrip.isDefaultNow()) return { text: waitingLine.textContent ?? '', kind: 'run' };
+    return { text: '', kind: '' };
+  }
+
+  const syncSideways = (): void => {
     titleSide.textContent = title.textContent;
     whereSide.textContent = where.textContent;
-    // The waiting line is the more useful of the two when the *run* wrote it.
-    // Since the help strip gave it a standing default (`04` §5f) "it has
-    // something in it" stopped being the same question as "the run said
-    // something", so the strip is asked which it is holding.
-    const saidByTheRun = !helpStrip.isDefaultNow();
-    statusSide.textContent = saidByTheRun ? waitingLine.textContent : status.textContent;
-    corner.textContent = [where.textContent, saidByTheRun ? waitingLine.textContent : '']
-      .filter((text) => text !== null && text !== '')
-      .join(' · ');
+    const says = topLineSays();
+    topSay.textContent = says.text;
+    if (says.kind === '') delete topLine.dataset.says;
+    else topLine.dataset.says = says.kind;
+    // The row's status slot: what the app says (a loop being marked, the ladder's verdict, *Played
+    // to the end*), and at rest what the run is waiting for. Never the refusal or the refused start,
+    // which the top line says, and never a pause's line, which the row's own ▶ says.
+    const atRest = session?.running !== true;
+    statusSide.textContent = handRefused
+      ? ''
+      : (status.textContent ?? '') !== ''
+        ? status.textContent
+        : atRest && says.kind === '' && !helpStrip.isDefaultNow()
+          ? waitingLine.textContent
+          : '';
+    // `bar n / m` yields to a refusal that cannot fit beside it, whole: never a cut number that reads
+    // as another bar (U119a).
+    delete topLine.dataset.whereYields;
+    if (says.kind === 'refusal' && topLine.getClientRects().length > 0 && topSay.scrollWidth > topSay.clientWidth + 0.5) {
+      topLine.dataset.whereYields = 'true';
+    }
   };
-  const mirror = new MutationObserver(syncBarLeft);
+  const mirror = new MutationObserver(syncSideways);
   for (const node of [title, where, status, waitingLine]) {
     mirror.observe(node, { childList: true, characterData: true, subtree: true, attributes: true });
   }
@@ -952,23 +1335,28 @@ export function ScoreScreen(router: Router): HTMLElement {
   // 390 px bar and wrapped it onto a second row, taking 40 px off the music.
   const restart = button(
     'Start again',
-    () => {
-      // During a demonstration it is the learner's run that is asked for
-      // again, from the top — not the demonstration, which is what it used to
-      // restart (the decision document's §3, R15 + *Start again*), and not a
-      // run set aside under it, which *again* means starting over (T33).
-      if (hearing) {
-        hearing = false;
-        restartAfterDemo = null;
-        clearBeat();
-      }
-      startRun();
-    },
+    () =>
+      // Through the sound's gate, the whole of it (U105): refused, a
+      // demonstration playing goes on and nothing restarts.
+      withSound(() => {
+        // During a demonstration it is the learner's run that is asked for
+        // again, from the top — not the demonstration, which is what it used to
+        // restart (the decision document's §3, R15 + *Start again*), and not a
+        // run set aside under it, which *again* means starting over (T33).
+        if (hearing) {
+          hearing = false;
+          restartAfterDemo = null;
+          clearBeat();
+        }
+        startRun();
+      }, RESTART_TAP),
     'score-restart',
   );
 
   const playPause = button('▶', () => togglePlay(), 'score-play');
   playPause.setAttribute('aria-label', 'Play');
+  // Held while a transfer offer's snapshot is unread (D4a): `render` keeps it in step.
+  playPause.disabled = offerPending();
   bar.appendChild(playPause);
 
   // Words, not a glyph: there is no symbol for "play it to me rather than
@@ -1039,90 +1427,271 @@ export function ScoreScreen(router: Router): HTMLElement {
     overflowed.delete(el);
   }
 
-  /** The bar is on more than one line, or a control that stays is too small. */
+  /**
+   * The bar is on more than one line, or a control that stays is too small.
+   *
+   * The lines are the controls' (U119a): the left group, sideways, is not
+   * counted. A second line is a control that starts below another's foot, not
+   * one whose top differs: under `align-items: center` a shorter control's top
+   * is lower on the same line, and at 90 % text the tempo label (36 px) read as
+   * a line of its own beside 40-px buttons, sending Hands and `Hear it` behind
+   * `⋯` on every screen, a tablet's included (U122c's matrix). The tap minimum
+   * is read in the pixels it is drawn in (U124): `TAP_MIN_PX` against a floor
+   * written `max(2.5rem, 40px)` in both dimensions.
+   */
   function barIsOverfull(): boolean {
-    const rows = new Set(
-      [...bar.children]
-        .filter((k) => k.getBoundingClientRect().height > 0)
-        .map((k) => Math.round(k.getBoundingClientRect().top)),
-    );
-    if (rows.size > 1) return true;
+    const boxes = [...bar.children]
+      .filter((k) => k !== barLeft && k !== countIn && k.getBoundingClientRect().height > 0)
+      .map((k) => k.getBoundingClientRect());
+    const firstFoot = Math.min(...boxes.map((b) => b.bottom));
+    if (boxes.some((b) => b.top >= firstFoot - 1)) return true;
     for (const el of [playPause, moreButton]) {
       const r = el.getBoundingClientRect();
-      if (r.width > 0 && (r.width < TAP_MIN_PX || r.height < TAP_MIN_PX)) return true;
+      if (r.width > 0 && (r.width < TAP_MIN_PX - 0.5 || r.height < TAP_MIN_PX - 0.5)) return true;
     }
     return false;
   }
 
   /**
-   * Puts as much on the bar as it can hold, and the rest in the sheet.
+   * Sideways, Back does not fit in the room the controls leave the left group
+   * (U119a, `responses/fa4563d1.md`: a control goes behind `⋯` "before Back
+   * ... is clipped"). Since U122c `bar n / m` is on the top line, where it
+   * never yields to a control, so Back is the group's one fixed text; the
+   * status line gives its room first and ends at its own ellipsis. Upright the
+   * group is not drawn, and nothing is cut.
+   */
+  function leftGroupIsCut(): boolean {
+    if (barLeft.getClientRects().length === 0) return false;
+    return backSide.getBoundingClientRect().right > barLeft.getBoundingClientRect().right + 0.5;
+  }
+
+  /**
+   * The words the row draws: the mode's sentence or its word, the tempo with
+   * or without its percentage (U122 §3.1–3.3, the chooser U122c builds).
+   */
+  let labels: { mode: 'long' | 'short'; tempo: 'long' | 'short' } = { mode: 'long', tempo: 'long' };
+
+  /**
+   * The width an item takes at its widest content, laid out unseen in the
+   * bar under the bar's own rules, so its price never depends on what it says
+   * now: a mode chosen or a tempo changed never moves the row.
+   */
+  function widestIn(el: HTMLElement, texts: readonly string[]): number {
+    const copy = el.cloneNode(false) as HTMLElement;
+    copy.removeAttribute('id');
+    Object.assign(copy.style, { position: 'absolute', visibility: 'hidden', width: 'auto', minWidth: '0', maxWidth: 'none', flex: 'none' });
+    bar.appendChild(copy);
+    let widest = 0;
+    for (const text of texts) {
+      if (copy instanceof HTMLSelectElement) {
+        const option = document.createElement('option');
+        option.textContent = text;
+        copy.replaceChildren(option);
+      } else {
+        copy.textContent = text;
+      }
+      widest = Math.max(widest, copy.getBoundingClientRect().width);
+    }
+    copy.remove();
+    return Math.ceil(widest);
+  }
+
+  /**
+   * The mode select in the form chosen, at the widest of its four labels in
+   * that form (U121: the selected mode is whole; U122 S14). It had a floor
+   * under every label and an id that outranked the sideways `flex: none`, so
+   * it was the item that gave silently: *Wa* for *Wait*, *Ke* for *Keep
+   * tempo*, upright *Tempo* cut too.
+   */
+  function applyModeLabels(): void {
+    const words = MODES.map((m) => (labels.mode === 'short' ? SHORT_MODES[m.id] : m.label));
+    for (const option of [...modeSelect.options]) {
+      const id = option.value as Mode;
+      option.textContent = labels.mode === 'short' ? SHORT_MODES[id] : (MODES.find((m) => m.id === id)?.label ?? id);
+    }
+    Object.assign(modeSelect.style, { flex: '0 0 auto', minWidth: '0', maxWidth: 'none', width: `${String(widestIn(modeSelect, words))}px` });
+  }
+
+  /** The tempo label's words in the form chosen: the bpm is what is read while playing (`04` §5). */
+  function tempoText(): string {
+    const bpm = String(Math.round(bpmNow()));
+    return labels.tempo === 'short' ? `${bpm} bpm` : `${String(tempoPct)}% · ${bpm} bpm`;
+  }
+
+  /** The tempo label at the widest it can read in this form: the slider's top, as many digits as the piece's bpm there. */
+  function applyTempoLabel(): void {
+    const top = Number(tempo.max);
+    const eights = '8'.repeat(String(Math.round((bpmNow() / Math.max(1, tempoPct)) * top)).length);
+    const widest = labels.tempo === 'short' ? `${eights} bpm` : `${String(top)}% · ${eights} bpm`;
+    tempoLabel.textContent = tempoText();
+    Object.assign(tempoLabel.style, { flex: '0 0 auto', width: `${String(widestIn(tempoLabel, [widest, tempoLabel.textContent]))}px` });
+    // `Hear it` at the wider of its two words: during a demonstration it reads *Stop* and is the one
+    // control drawn, at the floor, and the row does not move when it changes (U122 §3.1).
+    hearButton.style.minWidth = `max(2.5rem, 40px, ${String(widestIn(hearButton, ['Hear it', 'Stop']))}px)`;
+  }
+
+  /**
+   * The control a standing sentence names, which must not be the one sent
+   * behind `⋯` while the sentence stands (`responses/759596b4.md` 3(b): "a
+   * visible recovery/refusal instruction must never direct the learner to a
+   * control that the same layout has just hidden"): `Hear it` refused, or a
+   * hand, refused or named by the refused start (*choose L or Both*).
+   */
+  function namedByASentence(): HTMLElement | null {
+    const refused = refusedNow();
+    if (refused?.id === 'score-hear') return hearButton;
+    if (refused?.id.startsWith('score-hands-') === true || handRefused) return handsGroup;
+    return null;
+  }
+
+  /**
+   * **Hands at the tap floor, where it keeps its place (U122c).** Each of `R`, `L` and `Both` meets the
+   * floor a sentence's control must meet (U124, widened by U122b), which makes the three about half as
+   * wide again. On a narrow upright row (342 × 740, 360 × 780) that width sends Hands behind `⋯` where
+   * it sat on the row: a control leaving the screen, which is a product trade, not this lane's to choose
+   * (`responses/adb0873a.md` §1). So the floor is given wherever Hands keeps its place with it, and where
+   * only the floor would send it away it keeps today's width (`data-floor='false'`) and the trade goes to
+   * the reviewer. Sideways and on a tablet, in every cell measured, it keeps its place at the floor.
+   */
+  /** What the last fit was for, so a render that changes none of it measures nothing. */
+  let fittedFor = '';
+
+  /**
+   * Today's row (before U122c), as a fallback upright: the mode's sentence or word by the window's width
+   * (440 px), the select and the tempo label free to give their room, Hands and `Hear it` at their own
+   * widths, a control leaving only when the row wraps. Returns what it keeps on the row.
    *
-   * Everything comes back first and then leaves one at a time, so a phone
-   * turned sideways gets its controls back rather than keeping whatever the
-   * narrower way up decided. Skipped while the sheet is open, because the
-   * stash's children are inside it then and moving them would empty it under
-   * the owner's finger.
+   * **Upright the chooser's whole words cost a control** (U122c's matrix): the mode priced at its widest
+   * label and the bpm never cut leave a 342 or 360 px row no room for Hands where today's row, its mode
+   * cut, kept it. U122 put *a whole mode label before Hands* to the reviewer as a choice (§5.4) and it was
+   * never ruled; a control leaving the screen is a product trade (`responses/adb0873a.md` §1), so upright
+   * today's row stands wherever the chooser would keep less of it (`data-row='today'`), and the trade is
+   * reported. Sideways the chooser governs (U121 is settled there, and Hands keeps its place in every
+   * cell measured); on a tablet there is room for both.
+   */
+  function fitToday(): Set<HTMLElement> {
+    for (const entry of OVERFLOW_ORDER) bringBackToBar(entry.el);
+    handsGroup.dataset.floor = 'false';
+    const narrow = window.innerWidth < 440;
+    labels = { mode: narrow ? 'short' : 'long', tempo: narrow ? 'short' : 'long' };
+    for (const option of [...modeSelect.options]) {
+      const id = option.value as Mode;
+      option.textContent = labels.mode === 'short' ? SHORT_MODES[id] : (MODES.find((m) => m.id === id)?.label ?? id);
+    }
+    Object.assign(modeSelect.style, { flex: '', minWidth: '', maxWidth: '', width: '' });
+    tempoLabel.textContent = tempoText();
+    Object.assign(tempoLabel.style, { flex: '0 1 auto', width: '' });
+    hearButton.style.minWidth = '';
+    for (const entry of OVERFLOW_ORDER) {
+      if (!barIsOverfull() && !leftGroupIsCut()) break;
+      sendToSheet(entry);
+    }
+    return new Set(OVERFLOW_ORDER.map((entry) => entry.el).filter((el) => el.parentElement === bar));
+  }
+
+  /**
+   * Puts as much on the bar as it can hold, and the rest in the sheet: U122's
+   * chooser (`docs/design/score-bar-layout.md` §3.3), smaller since U122c
+   * (§8.7): the first configuration that fits, in the order things give —
+   * the tempo's percentage, then the mode's sentence, then Hands behind `⋯`,
+   * then `Hear it`. ▶, `⋯`, the mode's word, the bpm and Back never give.
+   * A control a standing sentence names is the last to leave.
+   *
+   * Everything comes back first, so a phone turned sideways gets its controls
+   * back rather than keeping whatever the narrower way up decided. Skipped
+   * while the sheet is open, because the stash's children are inside it then
+   * and moving them would empty it under the owner's finger.
    */
   function fitBarControls(): void {
     if (document.getElementById('score-more-sheet')) return;
-    for (const entry of OVERFLOW_ORDER) bringBackToBar(entry.el);
-    for (const entry of OVERFLOW_ORDER) {
-      if (!barIsOverfull()) return;
-      sendToSheet(entry);
+    const named = namedByASentence();
+    const key = [
+      window.innerWidth,
+      window.innerHeight,
+      getComputedStyle(document.documentElement).fontSize,
+      getComputedStyle(bar).fontFamily,
+      String(Math.round(bpmNow())).length,
+      named?.className ?? '',
+      bar.clientWidth,
+    ].join('|');
+    if (key === fittedFor) {
+      tempoLabel.textContent = tempoText();
+      return;
     }
+    const today = sidewaysQuery?.matches === true ? null : fitToday();
+    for (const entry of OVERFLOW_ORDER) bringBackToBar(entry.el);
+    const order = [...OVERFLOW_ORDER].sort((a, b) => Number(a.el === named) - Number(b.el === named));
+    const forms: ['long' | 'short', 'long' | 'short'][] = [
+      ['long', 'long'],
+      ['long', 'short'],
+      ['short', 'long'],
+      ['short', 'short'],
+    ];
+    fit: for (let leave = 0; leave <= order.length; leave += 1) {
+      if (leave > 0) sendToSheet(order[leave - 1]!);
+      // Hands at the tap floor first; at its own width only where the floor alone would send it
+      // behind `⋯` (the trade described above `fittedFor`, left as it was until it is decided).
+      for (const floor of handsGroup.parentElement === bar ? [true, false] : [true]) {
+        handsGroup.dataset.floor = String(floor);
+        for (const [mode, tempoForm] of forms) {
+          labels = { mode, tempo: tempoForm };
+          applyModeLabels();
+          applyTempoLabel();
+          if (!barIsOverfull() && !leftGroupIsCut()) break fit;
+        }
+      }
+    }
+    if (handsGroup.parentElement !== bar) handsGroup.dataset.floor = 'true';
+    delete bar.dataset.row;
+    if (today !== null && [...today].some((el) => el.parentElement !== bar)) {
+      fitToday();
+      bar.dataset.row = 'today';
+    }
+    fittedFor = key;
+    // The row's height is the stage's reserve; it changes only with what is on it.
+    measureBar();
   }
 
-  function applyModeLabels(): void {
-    const narrow = window.innerWidth < NARROW_BAR_PX;
-    for (const option of [...modeSelect.options]) {
-      const id = option.value as Mode;
-      const long = MODES.find((m) => m.id === id)?.label ?? option.textContent ?? id;
-      option.textContent = narrow ? SHORT_MODES[id] : long;
-    }
-  }
-  applyModeLabels();
-  // Re-rendered on resize too: the tempo label's width depends on it.
   window.addEventListener('resize', () => render());
-  window.addEventListener('resize', applyModeLabels);
   window.addEventListener('resize', fitBarControls);
   unsubscribers.push(() => window.removeEventListener('resize', fitBarControls));
-  unsubscribers.push(() => window.removeEventListener('resize', applyModeLabels));
 
   const handsGroup = document.createElement('div');
   handsGroup.className = 'score-group';
   // One control made of three segments, and it says so.
   //
-  // `R`, `L` and `Both` are about 23 px wide each, and judged one at a time
-  // they read as three tap targets far under `04` §0 R4's forty — 118 gallery
-  // cells said so. They are not three targets: they are one 92 x 40 segmented
-  // control, adjacent, and a slip between neighbouring segments costs a tap to
-  // undo rather than doing something unexpected. Marking the group lets the
-  // sweep judge what is really there, so what it still reports is real.
+  // `R`, `L` and `Both` were about 20 px wide each, defended as one 92 x 40
+  // segmented control where a slip costs a tap to undo. A sentence names each
+  // of them on its own — *choose L or Both*, *tap R again* — so each is a
+  // target the learner is told to hit, and since U122c each meets the floor
+  // (U124, widened by U122b, `responses/e070d238.md`: every control a
+  // learner-facing sentence names), `style.css`. The group mark stays for the
+  // sweep, which reads the three as one control.
   handsGroup.dataset.tapGroup = '';
   for (const hand of HANDS) {
     handsGroup.appendChild(
       button(
         hand.label,
         () => {
-          const was = hands;
           // The hand already chosen, pressed again: nothing changes, so nothing
           // is restarted (T33). It used to start the run again from bar 1 —
           // the pass under the learner thrown away by a tap that asked for
           // nothing, the fault `setBars` closed for its own `−` at one bar.
-          if (was === hand.id && !handRefused) {
+          if (hands === hand.id && !handRefused) {
             render();
             return;
           }
-          hands = hand.id;
-          forgetPlayingHand();
-          renderer?.setHandsFocus(hand.id);
-          // The sentence named the hand that was refused, and the hand has
-          // just changed, so it is about nothing now.
-          if (handRefused) status.textContent = '';
-          noteChange('hands', was === 'both' ? 'Both' : was, hand.label);
-          if (handRefused && session?.running !== true) startRun();
-          else restartForOption(RESTARTED_WITH.hands(hand.id));
-          render();
+          // After *Nothing for the … hand* no run is going and this tap starts
+          // one: through the sound's gate, the whole of it (U105), so a refusal
+          // leaves the hand as it was. Any other change of hand restarts a run
+          // already going, or none, and asks for nothing.
+          if (handRefused && session?.running !== true) {
+            withSound(() => {
+              if (handRefused && session?.running !== true) chooseHand(hand);
+            }, { id: `score-hands-${hand.id}`, control: hand.label });
+            return;
+          }
+          chooseHand(hand);
         },
         `score-hands-${hand.id}`,
       ),
@@ -1130,6 +1699,21 @@ export function ScoreScreen(router: Router): HTMLElement {
     handsGroup.lastElementChild?.setAttribute('aria-label', hand.spoken);
   }
   bar.appendChild(handsGroup);
+
+  /** A different hand chosen: the run restarts with it, or after a refusal a run starts (T33). */
+  function chooseHand(hand: (typeof HANDS)[number]): void {
+    const was = hands;
+    hands = hand.id;
+    forgetPlayingHand();
+    renderer?.setHandsFocus(hand.id);
+    // The sentence named the hand that was refused, and the hand has
+    // just changed, so it is about nothing now.
+    if (handRefused) status.textContent = '';
+    noteChange('hands', was === 'both' ? 'Both' : was, hand.label);
+    if (handRefused && session?.running !== true) startRun();
+    else restartForOption(RESTARTED_WITH.hands(hand.id));
+    render();
+  }
 
   const tempoLabel = document.createElement('span');
   tempoLabel.className = 'score-tempo-label';
@@ -1157,6 +1741,8 @@ export function ScoreScreen(router: Router): HTMLElement {
   moreButton.title = 'More controls';
   moreButton.setAttribute('aria-label', 'More controls');
   bar.appendChild(moreButton);
+  // The count-in, in the row beside ⏸ (U122c): placed by `drawChrome` once ⏸ is where it stays.
+  bar.appendChild(countIn);
 
   OVERFLOW_ORDER.push(
     {
@@ -1737,23 +2323,36 @@ export function ScoreScreen(router: Router): HTMLElement {
    * `openSheet` closes on the Close button, on the backdrop and on Escape and
    * does not say which, so the restore watches for the sheet leaving the
    * document instead of hooking each of the three.
+   *
+   * None of the three is leaving the screen (G86). The sheet sits on `body`,
+   * outside the `main` the app shell empties on a route change, and it puts
+   * everything else on `body` out of reach until it closes, so Back with it
+   * open left it over the next screen and that screen inert beneath it. Its
+   * closer goes on `openSheets`, which the screen's disposer drains, and comes
+   * off again when the sheet goes by any of its own three paths, so the list
+   * holds the open sheets and nothing else.
    */
   function openStashedSheet(heading: string, id: string, stash: HTMLElement): void {
     if (document.getElementById(id)) return;
     const sheet = openSheet(heading, { id });
     sheet.body.append(...Array.from(stash.children));
     render();
+    const restore = (): void => {
+      observer.disconnect();
+      stash.append(...Array.from(sheet.body.children));
+      const at = openSheets.indexOf(closer);
+      if (at >= 0) openSheets.splice(at, 1);
+    };
     const observer = new MutationObserver(() => {
       if (sheet.el.isConnected) return;
-      observer.disconnect();
-      stash.append(...Array.from(sheet.body.children));
+      restore();
     });
     observer.observe(document.body, { childList: true });
-    openSheets.push(() => {
-      observer.disconnect();
-      stash.append(...Array.from(sheet.body.children));
-      sheet.close();
-    });
+    const closer = (): void => {
+      restore();
+      if (sheet.el.isConnected) sheet.close();
+    };
+    openSheets.push(closer);
   }
 
   function setBpm(wanted: number): void {
@@ -1813,6 +2412,8 @@ export function ScoreScreen(router: Router): HTMLElement {
         startFromKey(event);
         return;
       }
+      // A note into a judging run (Wait for me has no count-in to pass): the activity is attempted (X1).
+      if (session?.running === true && (session.mode === 'wait' || session.mode === 'tempo')) sessionRun?.attempted();
       session?.feed(event.midi, event.velocity, event.tMs, event.confidence ?? 1);
     } else {
       session?.feedOff(event.midi, event.tMs);
@@ -1832,26 +2433,63 @@ export function ScoreScreen(router: Router): HTMLElement {
    * carry on playing after the last bar, and that would restart the run under
    * them — with or without a summary on screen. Not from the microphone, which
    * hears the room. Not while `Hear it` is playing, nor under an open sheet.
+   *
+   * **Where the sound is not running (U105; the reviewer's correction in
+   * `responses/questions-bd7d303e.md`).** With it running, or with no Web
+   * Audio, the key starts the run at once, exactly as before. Otherwise the two
+   * keys are different events:
+   *
+   * - A key on a **connected piano** is a Web MIDI message, not a user
+   *   activation, so it cannot be what lets the sound start. It asks nothing,
+   *   starts nothing, is not kept to be played later, and the state line says
+   *   to tap ▶, whose tap can.
+   * - A key on the **screen** is a tap, so it asks through `withSound` like any
+   *   other. Where the answer comes after the key's own moment — the wait is up
+   *   to `PLAY_SOUND_WAIT_MS` — the run starts and the key is not played into
+   *   it: its time is from before the run began, and a first note timed then
+   *   would set the run's clock back (a Keep tempo run holding for it takes
+   *   its clock from it). The run then waits for the first note, as after ▶.
    */
   /** A sheet (the ⋯ controls, the tempo) is open over the score. */
   function sheetOpen(): boolean {
     return document.querySelector('.sheet__panel[role="dialog"]') !== null;
   }
 
+  /** Whether a key may start a run now (T8): checked at the key, and again when the sound has started. */
+  function keyMayStart(): boolean {
+    if (!session || session.running || !sheet.hidden || hearing || sheetOpen()) return false;
+    if (endedSinceLastStart) return false;
+    return input === 'midi' || input === 'keys';
+  }
+
   function startFromKey(event: InputNoteEvent): void {
-    if (!session || session.running || !sheet.hidden || hearing || sheetOpen()) return;
-    if (endedSinceLastStart) return;
-    if (input !== 'midi' && input !== 'keys') return;
-    startRun();
-    if (!session.running) return;
-    // The key is the first note only where the learner plays first: Wait and
-    // Free, or a Keep tempo run holding for them. When the app leads, the key
-    // only starts it — played in, it was marked a wrong note before anything
-    // had been played (T8 review 2).
-    const learnerFirst = mode === 'wait' || mode === 'free' || session.armed;
-    if ((session.prepared?.countInMs ?? 0) === 0 && learnerFirst) {
-      session.feed(event.midi, event.velocity, event.tMs, event.confidence ?? 1);
+    if (!keyMayStart()) return;
+    // Another tap is already waiting for the sound: this key adds nothing.
+    if (startingSound) return;
+    if (event.source !== 'screen' && audioEngine.supported && audioEngine.state !== 'running') {
+      soundRefusedBy = KEY_TAP;
+      render();
+      return;
     }
+    // True for as long as this key's own event is being handled: `withSound`
+    // runs its act inside it where the sound is already running.
+    let inTheKeysMoment = true;
+    withSound(() => {
+      if (!keyMayStart() || !session) return;
+      startRun();
+      if (!session.running) return;
+      // Started after the key's moment: not played in, never back-dated.
+      if (!inTheKeysMoment) return;
+      // The key is the first note only where the learner plays first: Wait and
+      // Free, or a Keep tempo run holding for them. When the app leads, the key
+      // only starts it — played in, it was marked a wrong note before anything
+      // had been played (T8 review 2).
+      const learnerFirst = mode === 'wait' || mode === 'free' || session.armed;
+      if ((session.prepared?.countInMs ?? 0) === 0 && learnerFirst) {
+        session.feed(event.midi, event.velocity, event.tMs, event.confidence ?? 1);
+      }
+    }, KEY_TAP);
+    inTheKeysMoment = false;
   }
 
   function attachInput(): void {
@@ -1928,6 +2566,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     } = {},
   ): void {
     if (!session || !model) return;
+    // A transfer route whose offer is not yet read starts nothing (D4a): every start comes here — ▶,
+    // a key, a restart, the ladder, a demonstration — so this is the one gate.
+    if (offerPending()) return;
     // The last run's question, if it was never answered: let go (T37, T40).
     flushPendingRecord();
     if (options.fresh !== false) resetChanges();
@@ -2027,9 +2668,21 @@ export function ScoreScreen(router: Router): HTMLElement {
       render();
       return;
     }
+    // The standing refusal (U105): its sentence never stands while ▶ reads ⏸.
+    // A start that makes ▶ read ⏸ lets it go, here, where every start passes;
+    // one held paused, or a demonstration, where ▶ still reads ▶, keeps it,
+    // still true. A tap through the gate has already cleared it as it asked.
+    if (playReadsPause()) soundRefusedBy = null;
     // The app is about to play the music to the learner (T40): a sight-read
     // of it is no longer a first reading, whatever run comes next.
-    if (runMode === 'listen') phraseHeard = true;
+    if (runMode === 'listen') {
+      phraseHeard = true;
+      // …and it is written down (G1), as the learner asked for it: `Hear it`
+      // and a bar held down are the app demonstrating, *Play it to me* is a
+      // hearing — one playback, one row, one kind — over the bars the loop
+      // confines it to, or the whole.
+      noteHearing(hearing || hearingBar ? 'demonstrated' : 'heard', loop === undefined || loopBars === null ? undefined : [loopBars.from, loopBars.to]);
+    }
     sayWhatThisRunIs(runMode);
     // **After the refusal above, and it has to stay there.** `attachInput`
     // detaches the old source and subscribes a new one, and `WebMidiSource`
@@ -2044,9 +2697,20 @@ export function ScoreScreen(router: Router): HTMLElement {
     // budget with the page unable to answer a `page.evaluate` (T31).
     attachInput();
     void requestWakeLock();
-    // Starting a run is what arms the auto-hide.
-    showBar(CONTROL_BAR_START_HIDE_MS);
+    // A run's start is a moment of its own: whatever peek was open closes, and
+    // `render` folds the controls to ⏸ in ▶'s place (U122c).
+    endPeek();
     render();
+  }
+
+  /**
+   * ▶ reads ⏸: a run going and not paused. Not during a demonstration (T33):
+   * ▶ then ends it and starts or carries on the learner's own run, which is
+   * not playing, so the button says ▶. It said ⏸, and pressing it did not
+   * pause anything. Also what lets a standing refusal go (`startRun`, U105).
+   */
+  function playReadsPause(): boolean {
+    return session?.running === true && !session.paused && !hearing;
   }
 
   /**
@@ -2243,8 +2907,35 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (parts.length > 0) status.textContent = parts.join(' · ');
   }
 
-  /** `Hear it`: start a Listen run, or stop the one this button started. */
+  /**
+   * `Hear it`, pressed: the sound started inside the tap, then the toggle (U67).
+   *
+   * Where the context is not running yet (the first tap after a reload on a
+   * phone, which will not start audio without one) the tap awaits the engine's
+   * start before anything is scheduled, as the microscope does, so the piece is
+   * not timed on a clock that has not begun. Where it is running, or there is
+   * no Web Audio to start, the toggle runs at once as it always did. A stop
+   * needs no sound and never waits.
+   *
+   * Through ▶'s gate (G86a, the reviewer's word in
+   * `responses/questions-ecccffb7.md`): its own wait was unbounded and shared
+   * `startingSound`, so a start that never answered left every later ▶
+   * returning before it asked. Bounded now, and a wait that ends with the
+   * sound still off starts no demonstration and says so. With no Web Audio at
+   * all, where no tap could ever start a sound, the demonstration still
+   * moves, silent, as it did before.
+   */
   function toggleHear(): void {
+    if (!session) return;
+    if (hearing) {
+      toggleHearNow();
+      return;
+    }
+    withSound(toggleHearNow, HEAR_TAP);
+  }
+
+  /** `Hear it`: start a Listen run, or stop the one this button started. */
+  function toggleHearNow(): void {
     if (!session) return;
     // `Hear it` stops the session outright, and a stop is not a finish the
     // screen hears back, so a preview left running under it would never end.
@@ -2487,9 +3178,12 @@ export function ScoreScreen(router: Router): HTMLElement {
           return dot;
         }),
       );
+      placeCount();
     } else {
       countIn.hidden = true;
       countIn.replaceChildren();
+      // The count-in is over and a judging run is on: the session's activity is attempted (X1).
+      if (runMode === 'wait' || runMode === 'tempo') sessionRun?.attempted();
     }
 
     beatDot.hidden = !clocked;
@@ -2507,7 +3201,29 @@ export function ScoreScreen(router: Router): HTMLElement {
     beatDot.classList.remove('is-beat', 'is-downbeat');
   }
 
+  /**
+   * ▶: a pause at once, and anything that makes a sound through `withSound`
+   * (U69) — a new run, a paused run carried on, the run asked for over a
+   * demonstration.
+   */
   function togglePlay(): void {
+    if (!session) return;
+    // A pause needs no sound and never waits.
+    if (!hearing && session.running && !session.paused) {
+      session.pause();
+      render();
+      return;
+    }
+    withSound(playNow);
+  }
+
+  /**
+   * ▶'s branches that make a sound, against the screen as it is when they run
+   * — at once, or when `withSound`'s wait is over, by which time a key may
+   * have started a run or the demonstration have played to its end. Never a
+   * pause: the tap asked for the music.
+   */
+  function playNow(): void {
     if (!session) return;
     // Pressing Play during a `Hear it` run is asking for the run you chose,
     // not for the demonstration to carry on — and where a run was set aside
@@ -2521,8 +3237,127 @@ export function ScoreScreen(router: Router): HTMLElement {
       awaySeconds = null;
       pauseNote = null;
       session.resume();
-    } else session.pause();
+    }
     render();
+  }
+
+  /**
+   * Runs `act` with the sound asked to start inside the tap (U69), and only
+   * once it has started (G86a).
+   *
+   * The engine's first-gesture start (`startOnFirstGesture`) is one-shot: it
+   * went with the visit's first tap. When the platform suspends the context
+   * later — the screen locked, a call — nothing on ▶'s path started it again,
+   * and the run went on against a suspended context, silent. `ensureStarted()`
+   * is only honoured inside a user activation (`AudioEngine.ts`, Android), so
+   * it is called here, in the tap, rather than on the page coming back into
+   * view, which is not one. The tap then waits for it, at most
+   * `PLAY_SOUND_WAIT_MS`, with ▶ held and saying it is busy when the tap was
+   * ▶'s.
+   *
+   * **One check where the wait ends** (G86a, the reviewer's ruling in
+   * `responses/970fd770.md`). Whichever comes first — the bound, the start
+   * answering, the start failing — `act` runs only where the engine then reads
+   * `running`. U69 ran it however the wait ended, so a start that never
+   * answered, failed, or answered with the context still suspended started or
+   * carried on a run nobody could hear, with ▶ reading ⏸: the failure this
+   * wait exists to prevent, made quieter. The engine's state is the one fact
+   * those three share (`AudioEngine.state` reads anything but a running
+   * context as `suspended`). Otherwise nothing starts, carries on or ends — no
+   * run, no resume, no demonstration ended or begun, no stop, no navigation —
+   * the flags clear so the next tap asks again inside itself, and the state
+   * line says the sound did not start and names the control to tap
+   * (`soundOffLine`). A start answering later starts nothing either; its
+   * answer only takes the sentence away (`stopWatchingSound`).
+   *
+   * A second tap in the wait does nothing; leaving the screen or a new session
+   * cancels. Where the sound is running, or there is no Web Audio to start —
+   * no tap could ever start that sound, so a sentence asking for one would be
+   * false — `act` runs at once, exactly as before.
+   *
+   * **Every tap that can start the sound comes here (U105)**, each with its
+   * whole handler as `act`, so a refusal leaves everything the tap would have
+   * changed as it was: *Carry on*, *Start again*, a hand after *Nothing for
+   * the … hand*, a bar held down, *Try again*, the summary's *Again*, *Slower*,
+   * *Faster* and *Loop the weak bars*, and a key on the screen. Each act checks
+   * again, when it runs, that its tap still applies. `tap` names the control
+   * for the sentence and its mark; only ▶'s own tap shows that it waits.
+   */
+  function withSound(act: () => void, tap: SoundTap = PLAY_TAP): void {
+    if (!audioEngine.supported || audioEngine.state === 'running') {
+      soundRefusedBy = null;
+      act();
+      return;
+    }
+    if (startingSound) return;
+    startingSound = true;
+    playWaiting = tap === PLAY_TAP;
+    // This tap asks again: the last refusal's sentence goes while it waits.
+    const wasRefused = soundRefusedBy !== null;
+    soundRefusedBy = null;
+    if (wasRefused) drawWaitingFor();
+    drawPlayHold();
+    const tapped = session;
+    let settled = false;
+    const settle = (): void => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(bound);
+      startingSound = false;
+      playWaiting = false;
+      if (leaving || session !== tapped) {
+        drawPlayHold();
+        return;
+      }
+      if (audioEngine.state !== 'running') {
+        soundRefusedBy = tap;
+        render();
+        return;
+      }
+      drawPlayHold();
+      act();
+    };
+    const bound = window.setTimeout(settle, PLAY_SOUND_WAIT_MS);
+    // A failure is an answer like any other: the check above decides.
+    void audioEngine.ensureStarted().then(settle, settle);
+  }
+
+  /**
+   * ▶ held: while a transfer offer's snapshot is unread (D4a), and while its
+   * tap waits for the sound (U69), when it also says it is busy. And the tap
+   * whose sound did not start, marked on its own control while the state line
+   * says so (G86a, U105), for a spec that meets a refusal to say so.
+   */
+  function drawPlayHold(): void {
+    playPause.disabled = offerPending() || playWaiting;
+    if (playWaiting) {
+      playPause.setAttribute('aria-busy', 'true');
+      playPause.dataset.startingSound = 'true';
+    } else {
+      playPause.removeAttribute('aria-busy');
+      delete playPause.dataset.startingSound;
+    }
+    markRefused();
+  }
+
+  /**
+   * `data-sound-refused` on the control whose tap did not start the sound, and
+   * on nothing else, while that is still true (G86a, U105). By id, because
+   * some of those controls are drawn again while the refusal stands (the
+   * offer to carry on, on every render) and some live in a sheet on `body`.
+   */
+  function markRefused(): void {
+    const refused = refusedNow();
+    for (const marked of document.querySelectorAll<HTMLElement>('[data-sound-refused]')) {
+      if (marked.id !== refused?.id) delete marked.dataset.soundRefused;
+    }
+    const control = refused === null ? null : document.getElementById(refused.id);
+    if (control) control.dataset.soundRefused = 'true';
+  }
+
+  /** The tap whose sound did not start (G86a), while that is still true. */
+  function refusedNow(): SoundTap | null {
+    return soundRefusedBy !== null && audioEngine.state !== 'running' ? soundRefusedBy : null;
   }
 
   /** Choosing a different hand makes the sentence worth saying again. */
@@ -2621,8 +3456,28 @@ export function ScoreScreen(router: Router): HTMLElement {
     pressFrom = null;
   }
 
-  /** Plays one bar, both hands, once, and puts the run back afterwards. */
+  /**
+   * A bar held down asks for the sound through the gate, the whole preview its
+   * act (U105), so a refusal sets no loop and says to hold the bar again. The
+   * ask comes from the press's timer, 400 ms after `pointerdown` and before a
+   * touch lifts: whether a platform takes that as the tap is inferred, and the
+   * gate reads the engine at the end, so what it says is true either way.
+   * Nothing is asked where the preview would not play.
+   */
   function hearBar(measure: number): void {
+    if (!session || !model || hearingBar) return;
+    if (!session.loopForPrintedBars(measure, measure)) return;
+    withSound(
+      () => {
+        if (session?.running === true) return;
+        hearBarNow(measure);
+      },
+      { id: 'score-stage', control: `bar ${String(shownBar(measure))}`, verb: 'hold' },
+    );
+  }
+
+  /** Plays one bar, both hands, once, and puts the run back afterwards. */
+  function hearBarNow(measure: number): void {
     if (!session || !model || hearingBar) return;
     const loop = session.loopForPrintedBars(measure, measure);
     if (!loop) return;
@@ -2717,16 +3572,35 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   /**
+   * What this run is held to: the rung's own pass, where this piece is on one
+   * (`02` Part G, built 2026-09-21). `masteryCriteriaFor` falls back to exactly
+   * the Settings pair for a piece on no rung and for a rung that states no
+   * number of its own, so the Settings pair still decides every run the
+   * curriculum is silent about. One reading for the summary that judges a run
+   * and the opening that decides whether one can count (X46).
+   */
+  function judgingCriteria(): MasteryCriteria {
+    return masteryCriteriaFor(rung, {
+      passAccuracy: settings.passAccuracyPct / 100,
+      passTempoPct: settings.passTempoPct,
+      masterAccuracy: 0.97,
+      masterTempoPct: 100,
+    });
+  }
+
+  /**
    * Fills the side panel with the lesson text of the rung the run is judged
    * by, so the prose beside the piece and the numbers it is held to are one
    * rung's. Opened from nowhere there is no such rung (C1), and the panel
    * shows the first rung listing the piece as reading, as it always did.
    * Failure is silent and leaves the panel out: a score screen must open with
    * or without its prose.
+   *
+   * Every way out decides the panel, once (`decideSidePanel`): `text` with the
+   * words in it, `empty` for a piece on no rung or a lesson that will not
+   * read. It used to mark only `text`, so a panel left out was never decided.
    */
   async function fillSidePanel(target: CatalogItem): Promise<void> {
-    const body = document.getElementById('score-side-body');
-    if (!body) return;
     try {
       const curriculum = await loadCurriculum();
       // The prose beside the piece: the rung that judges the run, whole, and
@@ -2735,20 +3609,28 @@ export function ScoreScreen(router: Router): HTMLElement {
       // pass this run is held to: that is the Settings pair (C1; C4 item 6).
       const judging = judgingRung(curriculum);
       const found = judging ?? proseRungFor(curriculum, target.id);
-      if (!found) return;
-      const summary = document.getElementById('score-side-summary');
+      if (!found) {
+        decideSidePanel('empty');
+        return;
+      }
       // The rung's title alone. This is the heading over its text beside the
       // score, where the id said nothing and cost the words their room.
-      if (summary) summary.textContent = found.title;
+      sideSummary.textContent = found.title;
       const response = await fetch(contentUrl(found.textFile));
       if (!response.ok) throw new Error(String(response.status));
       const { body: markdown } = parseFrontMatter(await response.text());
-      sidePanel.hidden = false;
-      section.dataset.side = 'text';
-      body.replaceChildren(renderMarkdown(sidePanelProse(markdown, judging !== undefined)));
+      sideBody.replaceChildren(renderMarkdown(sidePanelProse(markdown, judging !== undefined)));
+      decideSidePanel('text');
     } catch {
-      sidePanel.hidden = true;
+      decideSidePanel('empty');
     }
+  }
+
+  /** The panel shown or left out, and `data-side` saying which: once per opening. */
+  function decideSidePanel(side: 'text' | 'empty'): void {
+    if (section.dataset.side !== undefined) return;
+    sidePanel.hidden = side !== 'text';
+    section.dataset.side = side;
   }
 
   /**
@@ -2774,78 +3656,118 @@ export function ScoreScreen(router: Router): HTMLElement {
     return from === undefined ? null : from + 1;
   }
 
-  let hideTimer: number | null = null;
+  /** The timer that ends a peek (`peek`). */
+  let peekTimer: number | null = null;
+  /** A tap asked to see the controls while the hands are on the keys, and its few seconds are not over. */
+  let peeking = false;
+  /** What the chrome showed at the last draw (`chromeFor`). */
+  let chrome: ChromePlan = { handsOnKeys: false, folded: false, direct: null };
 
-  /**
-   * Shows the control bar, and hides it again three seconds later — but only
-   * while a run is going.
-   *
-   * `04` §5 says the bar auto-hides after 3 s. It means *while you are
-   * playing*, which is when the notation needs the room. Hiding it while the
-   * learner is still choosing a mode and a tempo makes every control a
-   * two-tap affair, and hidden controls are `pointer-events: none`, so the
-   * taps land on the score instead.
-   */
   /**
    * Tells the stage how much room the bar is taking.
    *
    * Measured, not assumed: the bar wraps to two rows on a narrow screen, and
    * a constant would be wrong on exactly the screen where the notation cannot
-   * spare the pixels.
+   * spare the pixels. **The row's own height, folded or not (U122c):** folded,
+   * its controls are hidden in their places and the row keeps its box, so the
+   * stage's reserve does not change with the moment, and upright and on a
+   * tablet, where the stage keeps that reserve through a run, the music never
+   * moves (`docs/design/score-bar-layout.md` §10.4–10.5).
    */
   function measureBar(): void {
-    const height = bar.dataset.visible === 'true' ? bar.getBoundingClientRect().height : 0;
+    const height = bar.hidden ? 0 : bar.getBoundingClientRect().height;
     section.style.setProperty('--score-bar-h', `${String(Math.round(height))}px`);
   }
 
   /**
-   * The fade has no condition on it any more.
+   * The chrome as the moment asks (U122c, `scoreChrome.ts`): while the hands
+   * are on the keys the controls fold to the one direct control in its own
+   * place — ⏸, or *Stop* under a demonstration — and paused, refused, at rest
+   * or finished nothing folds. A pause used to fold three seconds after ⏸,
+   * because the fold asked whether a run existed and a paused run does: the
+   * screen said *▶ to carry on* with no ▶ on it (walk finding 5). While the
+   * hands are on the keys the fold is still unconditional, as the owner asked
+   * after looking at it on the phone ("just always fade it"): nothing judges
+   * whether the controls cover anything (`08` §13 keeps the measurement that
+   * used to).
    *
-   * It used to ask `barCostsMusicRoom()` first — is the music actually reaching
-   * the bar's row — and stay put when the answer was no, on the reasoning that
-   * hiding controls buys nothing over an empty third of the stage and costs a
-   * hunt for them. The owner's instruction, after looking at it on the phone:
-   * just always fade it. Judging "is it covering anything" from inside the app
-   * kept getting the answer wrong, and a rule whose exception nobody can
-   * predict is worse than a rule. One tap on the sheet brings it back, always
-   * (`08` §9.34), which is what makes it safe to be unconditional.
-   *
-   * The measurement that used to gate it is not lost: `08` §13 records it —
-   * sideways, Hot Cross Buns' music stops 67 px above the stage's bottom, which
-   * is why the bar used to stay there and nowhere else.
+   * Folded, the hidden controls are gone, not merely invisible (`08` §9.20):
+   * `inert` takes each out of the tab order and the accessibility tree, all
+   * but the direct one. Where each device draws the rest — the header's Back
+   * and name upright, the top line's name sideways — is the stylesheet's,
+   * keyed on `data-chrome`.
    */
+  function drawChrome(): void {
+    chrome = chromeFor({
+      running: session?.running === true,
+      paused: session?.paused === true,
+      hearing,
+      hearOnRow: hearButton.parentElement === bar,
+      finished: !sheet.hidden,
+      peeking,
+    });
+    bar.dataset.visible = String(!chrome.folded);
+    section.dataset.chrome = chrome.folded ? 'folded' : 'open';
+    if (chrome.direct === null) delete bar.dataset.direct;
+    else bar.dataset.direct = chrome.direct;
+    for (const child of bar.children) {
+      if (child instanceof HTMLElement) child.inert = chrome.folded && child.id !== chrome.direct;
+    }
+    // Upright, at rest, the status line wins the header over `bar n / m`: with both, the name was
+    // squeezed to "Hot Cr…" (the gallery's blind cell), and before a run the bar is bar 1. During a run
+    // the bar is what the learner needs to find their place, and since the corner chip went (U122c) the
+    // header is the one place that says it: a standing status (a blind run's, the duet's) would hide it
+    // for the whole run. So during a run `bar n / m` stays, and the name gives its room (folded it is
+    // not drawn at all).
+    where.hidden = (status.textContent ?? '') !== '' && window.innerHeight > window.innerWidth && session?.running !== true;
+    placeCount();
+  }
 
   /**
-   * The chrome folds away as one: the bar, and upright the header row with
-   * it — the stage takes both rows, and `bar 4 / 8` moves to the stage's
-   * corner. Back is a tap on the sheet, or the tab at the foot of it.
+   * The count-in right of the direct control, in the room the folded row
+   * leaves (U122c): placed from where ⏸ is, which the fold never moves.
    */
-  function foldChrome(folded: boolean): void {
-    bar.dataset.visible = String(!folded);
-    section.dataset.chrome = folded ? 'folded' : 'open';
-    // Gone, not merely invisible (`08` §9.20).
-    //
-    // The rule was `opacity: 0; pointer-events: none`, which stops a finger
-    // and stops nothing else: every control kept its tab stop and its
-    // accessible name, and because the shared button wrapper calls `showBar()`
-    // before running a handler, Tab and then Enter into a bar nobody can see
-    // unfolded the chrome *and* fired the button. `inert` takes the whole
-    // subtree out of the tab order and out of the accessibility tree, which is
-    // what "hidden" is supposed to mean here.
-    bar.inert = folded;
-    requestAnimationFrame(measureBar);
+  function placeCount(): void {
+    if (countIn.hidden) return;
+    const direct = chrome.direct === 'score-hear' ? hearButton : playPause;
+    countIn.style.left = `${String(Math.round(direct.offsetLeft + direct.offsetWidth))}px`;
   }
-  function showBar(hideAfterMs = CONTROL_BAR_HIDE_MS): void {
-    foldChrome(false);
-    if (hideTimer !== null) window.clearTimeout(hideTimer);
-    if (session?.running !== true) return;
-    hideTimer = window.setTimeout(() => {
-      if (session?.running === true) foldChrome(true);
-    }, hideAfterMs);
+
+  /** A peek: every control for a few seconds, while the hands are on the keys (`08` §9.34). */
+  function peek(): void {
+    peeking = true;
+    if (peekTimer !== null) window.clearTimeout(peekTimer);
+    peekTimer = window.setTimeout(() => {
+      peekTimer = null;
+      peeking = false;
+      drawChrome();
+    }, CONTROL_BAR_HIDE_MS);
   }
+
+  /** The peek is over: a run started, or the moment changed under it. */
+  function endPeek(): void {
+    if (peekTimer !== null) window.clearTimeout(peekTimer);
+    peekTimer = null;
+    peeking = false;
+  }
+
+  /**
+   * The learner is using the controls: while the hands are on the keys that
+   * keeps them shown for a few seconds more (a peek), and otherwise they are
+   * shown anyway. Called by every control on the bar before it acts, and by
+   * the moments that hand the run back to the learner.
+   */
+  function showBar(): void {
+    if (chromeFor({ running: session?.running === true, paused: session?.paused === true, hearing, hearOnRow: true, finished: !sheet.hidden, peeking: false }).handsOnKeys) peek();
+    drawChrome();
+  }
+
+  /** A tap on the music: folded, a peek; peeking, the fold again. Nothing folds in any other moment. */
   function toggleBar(): void {
-    if (bar.dataset.visible === 'true') foldChrome(true);
-    else showBar();
+    if (!chrome.handsOnKeys) return;
+    if (chrome.folded) peek();
+    else endPeek();
+    drawChrome();
   }
 
   // --- wake lock and orientation (docs/01 §8) ------------------------------
@@ -2889,7 +3811,7 @@ export function ScoreScreen(router: Router): HTMLElement {
    * where the route carries none (only a Today card names one, L50), and
    * anything the engine did not report.
    */
-  function runHeader(score: SessionScore, first: { unseen?: boolean; recipe?: ReadingRecipe }, demonstrated: boolean): RunHeader {
+  function runHeader(score: SessionScore, first: { firstContact: boolean; unseen?: boolean; recipe?: ReadingRecipe }, demonstrated: boolean): RunHeader {
     const under = score.judgedUnder;
     const base = model?.tempoMap[0];
     const judgedBy = judgingRungId();
@@ -2947,10 +3869,77 @@ export function ScoreScreen(router: Router): HTMLElement {
    * Whether the run about to be summarised is a sight-read of a phrase met
    * before — read already, on the record or this visit, or played to the
    * learner (T37, T33, T40). Read before `sightReadAttempts` counts this run.
+   *
+   * Since G1 the record includes what no run left: a hearing or a
+   * demonstration on any visit, a viewing on another visit, a run of the same
+   * phrase under another row (`historyFirstContact`). The phrase is judged
+   * whole: a bar of it heard is the phrase heard, as within the visit.
    */
   function firstReadingRefused(): boolean {
     if (item === undefined || !isSightReading(item)) return false;
-    return sightReadAttempts > 0 || phraseSeen || phraseHeard;
+    return sightReadAttempts > 0 || phraseSeen || phraseHeard || !historyFirstContact(undefined);
+  }
+
+  /**
+   * First contact by the history read when the screen opened (G1 item 4), over
+   * `bars` of the item (printed positions; absent, the whole). True where no
+   * history could be read: the visit's own flags then decide, as before G1.
+   */
+  function historyFirstContact(bars: readonly [number, number] | undefined, from: EncounterHistory | null = history): boolean {
+    if (!encounterTarget || !from) return true;
+    return firstContactIn({ ...encounterTarget, ...(bars === undefined ? {} : { bars }) }, from, visit);
+  }
+
+  /**
+   * First contact for a run of anything but a phrase (G1 item 4; the
+   * reviewer's answer 3): no run of it on this visit before this one, no
+   * playback of it this visit, and nothing in the history over the bars the
+   * run covered. An audit fact, written on the run, gating nothing: a piece
+   * played again passes as it always did.
+   */
+  function firstContactOfRun(bars: readonly [number, number] | undefined): boolean {
+    return sightReadAttempts === 0 && !phraseHeard && historyFirstContact(bars);
+  }
+
+  /** The printed bars a run covered (1-based positions), from what the engine judged under. */
+  function barsOfRun(range: { fromMeasure: number; toMeasure: number } | undefined): [number, number] | undefined {
+    return range === undefined ? undefined : [range.fromMeasure + 1, range.toMeasure + 1];
+  }
+
+  /** What opened this screen, as an encounter keeps it (G1): the run header's `opened`, in its own shape. */
+  function encounterSource(): EncounterSource {
+    const rungId = judgingRungId();
+    return {
+      tab: router.route.tab,
+      ...(todaySlot === undefined ? {} : { slot: todaySlot }),
+      ...(rungId === undefined ? {} : { rung: rungId }),
+      ...(tourId === undefined ? {} : { tour: tourId }),
+      ...(transferIntent === undefined ? {} : { intent: 'transfer' as const }),
+    };
+  }
+
+  /**
+   * The notation has been drawn for the learner: one viewing, once a visit
+   * (G1). Never in Blind, where the engraving is hidden — toggling Blind off
+   * opens the screen again, a new visit that draws it.
+   */
+  function noteViewing(): void {
+    if (viewingWritten || blind || !item || !encounterTarget) return;
+    viewingWritten = true;
+    void recordEncounter({ kind: 'viewed', itemId: item.id, material: encounterTarget.material, source: encounterSource(), visit });
+  }
+
+  /** A playback to the learner, by the kind their action was (G1). */
+  function noteHearing(kind: Exclude<EncounterKind, 'viewed'>, bars: readonly [number, number] | undefined): void {
+    if (!item || !encounterTarget) return;
+    void recordEncounter({
+      kind,
+      itemId: item.id,
+      material: encounterTarget.material,
+      source: encounterSource(),
+      visit,
+      ...(bars === undefined ? {} : { bars }),
+    });
   }
 
   function showSummary(score: SessionScore): void {
@@ -2965,7 +3954,31 @@ export function ScoreScreen(router: Router): HTMLElement {
     // "Playing the left hand for you" must not stand over a finished run
     // (`08` §6.3).
     status.textContent = '';
-    sheet.replaceChildren();
+    // First on the sheet: why a tap on it did not start, when one did not (U105a).
+    sheet.replaceChildren(summaryRefusal);
+    /**
+     * The sheet in two parts, in its own order: the outcome and the figures, then what to do next
+     * (U122c). Drawn as one column everywhere (`display: contents`) but on a phone held sideways, where
+     * the sheet's 72 % ends above the actions and the learner met the figures and not the next step
+     * (U122b, `responses/e070d238.md`): there the two parts stand side by side, so the outcome and the
+     * recommended action are both in the first view. Nothing is reordered or reworded (X46).
+     */
+    const sheetMain = document.createElement('div');
+    sheetMain.className = 'summary-main';
+    const sheetNext = document.createElement('div');
+    sheetNext.className = 'summary-side';
+    sheet.append(sheetMain, sheetNext);
+    /** Where the session's transition is drawn (X1, `drawNext`); on the sheet only where the run is a session's activity. */
+    const nextHost = document.createElement('div');
+    nextHost.className = 'session-next';
+    nextHost.id = 'session-next';
+    nextHost.hidden = true;
+    /** The sheet's closing action where no session step replaces it. */
+    const doneButton = button('Done', () => {
+      flushPendingRecord();
+      summaryUp(false);
+      leaveScore();
+    }, 'summary-done');
     /**
      * A rhythm run is not a run of the piece (`05` §3a).
      *
@@ -2978,17 +3991,8 @@ export function ScoreScreen(router: Router): HTMLElement {
      * out of the history, because the practice is real and the minutes count.
      */
     const rhythmRun = score.rhythmOnly === true;
-    // The rung's own pass, where this piece is on one (`02` Part G, built
-    // 2026-09-21). `masteryCriteriaFor` falls back to exactly this pair for a
-    // piece on no rung and for a rung that states no number of its own, so
-    // the Settings pair still decides every run the curriculum is silent
-    // about.
-    const criteria = masteryCriteriaFor(rung, {
-      passAccuracy: settings.passAccuracyPct / 100,
-      passTempoPct: settings.passTempoPct,
-      masterAccuracy: 0.97,
-      masterTempoPct: 100,
-    });
+    // The rung's own pass, where this piece is on one (`judgingCriteria`).
+    const criteria = judgingCriteria();
     const measured = evaluateOutcome(score, criteria);
     /**
      * The number this exercise is actually about (P12a, wired 2026-09-21).
@@ -3045,10 +4049,26 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Nor one the phrase was played to the learner *before* (T40): the reason
     // is the same, and `phraseHeard` holds it for the phrase, not the run.
     const sightReading = item !== undefined && isSightReading(item);
-    const alreadyMet = sightReadAttempts > 0 || phraseSeen;
+    // What the history holds of the phrase (G1), for the sentence that says
+    // why a reading is refused: a run of it, a playback, or a viewing on
+    // another visit.
+    const metBefore = sightReading && encounterTarget && history ? familiarityIn(encounterTarget, history, { visit }) : null;
+    const ranBefore = metBefore !== null && (metBefore.attempted !== null || metBefore.partly.attempted !== null);
+    const heardBefore = phraseHeard || (metBefore !== null && (metBefore.heard !== null || metBefore.partly.heard !== null));
+    const alreadyMet = sightReadAttempts > 0 || phraseSeen || ranBefore;
     // One rule, read once more before this run is counted: `judged` above
     // asked the same question.
     const sightReadRepeat = firstReadingRefused();
+    // First contact (G1 item 4; G1a item 1): the encounter relation of what
+    // this run played — a phrase whole, anything else over the bars the run
+    // covered — read before this run is counted, and written on every run as
+    // `firstContact`.
+    const firstContact = sightReading ? !sightReadRepeat : firstContactOfRun(barsOfRun(score.judgedUnder));
+    // Sight-reading's condition, a phrase's only (G1a item 2): derived from
+    // that relation and the visit rule, which today give the same value — one
+    // derivation with two names, so a change to the visit rule moves `unseen`
+    // here and leaves the fact alone.
+    const unseen = firstContact;
     if (item !== undefined) sightReadAttempts += 1;
     // Such a run is recorded (C1, reviewer decision 3): it is practice, and
     // its minutes, its attempt and its row are kept. It is not a reading, so
@@ -3079,6 +4099,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     // What the run measured, by the record's one definition (C1), read once:
     // the record keeps it, and the sheet's *Accents* line reads the same value
     // so the two cannot disagree (U46).
+    /** The generated phrase the run played, for its material (D4), where it was one; an import's loaded bytes (G1). */
+    const playedPhrase = {
+      ...(phraseGenerator !== undefined && phraseWritten !== undefined ? { phrase: { generator: phraseGenerator, ...phraseWritten } } : {}),
+      ...(loadedIdentity === undefined ? {} : { loaded: loadedIdentity }),
+    };
     const measures = measuresOf(score, {
       heard,
       technique,
@@ -3093,8 +4118,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Every run of a judging mode leaves a record (C1): a sight-read met before
     // is kept as practice, flagged `unseen: false`, where T37 and T40 dropped
     // it with its minutes. Listen and Free judge nothing and record nothing.
+    // Nor does a run on a transfer route whose offer is still unread (D4a):
+    // none can start (`startRun`), and should one finish anyway it is not
+    // written as practice in the offer's place.
     const run: RunResult | null =
-      item && mode !== 'listen' && mode !== 'free'
+      item && mode !== 'listen' && mode !== 'free' && !offerPending()
         ? {
             itemId: item.id,
             // Which rung judged it: the one that opened the screen, where one
@@ -3104,6 +4132,14 @@ export function ScoreScreen(router: Router): HTMLElement {
             // (the run carrying the day's seed, `04` §2) from any other run,
             // and a retry on the same music from a new phrase (T37).
             ...(phraseSeed === undefined ? {} : { seed: phraseSeed }),
+            // And which generator wrote it (D1a): a seed names one phrase per
+            // version, so the history compares the version beside the seed.
+            ...(phraseGenerator === undefined ? {} : { generator: phraseGenerator }),
+            // What was played and why (D4): the exact material — the phrase's complete identity, or the
+            // row's (an excerpt's cut, never the parent: E1 item 7) — the item's role, and, where the
+            // run came from a transfer offer whose snapshot this route named, the intent and that
+            // offer's relationship as one fact (D4a): never one without the other.
+            ...runFacts(item, offer.kind === 'kept' ? { ...playedPhrase, intent: 'transfer', relationship: offer.relationship } : playedPhrase),
             mode,
             tempoPct: score.tempoPct,
             // Nothing heard, nothing measured (T40, C1): not a zero.
@@ -3126,7 +4162,11 @@ export function ScoreScreen(router: Router): HTMLElement {
             ...(rhythmRun ? { rhythmOnly: true } : {}),
             // What the run was and what it measured, by its own definitions,
             // with every channel it did not measure marked so (C1).
-            ...runHeader(score, sightReading ? { unseen: !sightReadRepeat, recipe: phraseRecipe(item.id) } : {}, demonstrated),
+            // First contact on every run (G1, G1a): the relation as
+            // `firstContact`; a phrase's run carries sight-reading's `unseen`
+            // and its recipe beside it, a piece's, an excerpt's or an import's
+            // the relation alone.
+            ...runHeader(score, sightReading ? { firstContact, unseen, recipe: phraseRecipe(item.id) } : { firstContact }, demonstrated),
             ...measures,
           }
         : null;
@@ -3135,12 +4175,13 @@ export function ScoreScreen(router: Router): HTMLElement {
      * What a run is evidence of, and what it is not (C3's function; C4 item 0):
      * computed here, where the played model is in hand, and kept on the row,
      * because nothing later has the phrase to compute it from. The sheet's *Not
-     * judged* lines read the same results. None for an item that declares no
-     * skill.
+     * judged* lines read the same results. None for an item whose declared skills
+     * are not in force (`skillActivation.ts`, D0): as shipped, the reading rows.
      */
+    const skills = skillsInForce(item);
     const evidenceOf = (observation: RunResult): EvidenceResult[] | undefined =>
-      model && (item?.targetSkills?.length ?? 0) > 0
-        ? evidenceFor({ observation, played: model, targetSkills: item?.targetSkills ?? [], vocabulary: VOCABULARY_V0 })
+      model && skills.length > 0
+        ? evidenceFor({ observation, played: model, targetSkills: skills, vocabulary: VOCABULARY_V0 })
         : undefined;
     const runEvidence = run ? evidenceOf(run) : undefined;
 
@@ -3150,18 +4191,28 @@ export function ScoreScreen(router: Router): HTMLElement {
     // rather than swallowed — practice history is the one thing here that
     // cannot be regenerated.
     function save(result: RunResult, then?: () => void): void {
-      // The run as answered is another observation (a self-report): its
-      // evidence is its own.
-      const evidence = result === run ? runEvidence : evidenceOf(result);
       if (phraseSeed !== undefined) seedsOnRecord.add(phraseSeed);
-      // Stamped with the evidence's own version (C4a, L66), not the observation's.
-      void recordRun(evidence === undefined ? result : { ...result, ...stampedEvidence(evidence) })
+      /** The run as stored, after the recheck: what the session's completion reads (X1). */
+      let stored: RunResult = result;
+      void confirmFirstContact(result)
+        .then((checked) => {
+          stored = checked;
+          // The run as answered is another observation (a self-report): its
+          // evidence is its own — and so is a run another tab's encounter
+          // turned from a first contact (G1).
+          const evidence = checked === run ? runEvidence : evidenceOf(checked);
+          // Stamped with the evidence's own version (C4a, L66), not the observation's.
+          return recordRun(evidence === undefined ? checked : { ...checked, ...stampedEvidence(evidence) });
+        })
         .then((row) => {
           // The heading follows the store (T37): a master-standard run reads
           // *Passed* until the row it was written into says what it came to,
-          // so the sheet can never say *Mastered* before the store does.
+          // so the sheet can never say *Mastered* before the store does. Nor a
+          // count past it (E50c): a row the store did not make mastered holds
+          // fewer than MASTER_DAYS days that count, though `masteredOn` keeps
+          // every date — an old day a tempo repair made incomparable among them.
           if (result.masterEligible && !rhythmRun) {
-            const days = Math.min(MASTER_DAYS, row.masteredOn?.length ?? 1);
+            const days = Math.min(MASTER_DAYS - 1, row.masteredOn?.length ?? 1);
             setHeading(
               row.status === 'mastered'
                 ? 'Mastered'
@@ -3169,10 +4220,98 @@ export function ScoreScreen(router: Router): HTMLElement {
             );
           }
           then?.();
+          // Stored: the session's activity completes with what the stored run measured (X1: the protocol's
+          // `completed`, never self-report as a measured pass), and the closing action is drawn from the record
+          // the completion wrote.
+          if (sessionRun) {
+            const sessionOutcome = scoreOutcome(stored);
+            // Except a run its own settings could not count, on an activity whose rung asks for one that can
+            // (X46, `responses/9e14839e.md` §2 points 4 and 5): a Wait for me or a rhythm run the learner chose
+            // is practice on the way to the attempt. It completed the activity, the card marked it done and
+            // the session moved on before the learner chose anything, and a pass played next on this screen
+            // was refused as another activity's. The activity stays where it is: *Start* moves on from it,
+            // said as played, and a run that can count completes it.
+            const practice =
+              sessionOutcome === 'unknown' &&
+              todayRung !== undefined &&
+              rung !== undefined &&
+              !sightReading &&
+              heard &&
+              (rhythmRun || !tempoCanCount(score.mode, score.tempoPct, criteria));
+            if (practice) drawNext();
+            else void sessionRun.completed(sessionOutcome).then(drawNext, drawNext);
+          }
         })
         .catch((cause: unknown) => {
           status.textContent = `Could not save this run: ${String(cause)}`;
+          // Nothing stored, nothing completed: the transition still offers the way on, from the record.
+          drawNext();
         });
+    }
+
+    /**
+     * The transition (X1; `04` §5): where the run is a session's activity, the sheet's closing action becomes
+     * the next step — *Start* and *Skip or change*, or *Try again* and *Move on anyway* after a measured
+     * failure, or *Done* after the last — drawn from the stored record, with the composition's own words for
+     * the next slot. Done gives way to it; where the record says nothing (another session's token, a closed
+     * one) Done stays.
+     */
+    function drawNext(): void {
+      if (!sessionRun) return;
+      void drawTransition(nextHost, {
+        router,
+        handle: sessionRun,
+        button: (label, onClick, id, primary) => {
+          const made = button(label, onClick, id);
+          if (primary) made.classList.add('score-button--primary');
+          return made;
+        },
+        tryAgain: () => fromTheSummary(() => startRun(), TRY_AGAIN_TAP),
+        beforeLeaving: () => {
+          flushPendingRecord();
+          summaryUp(false);
+        },
+      }).then((kind) => {
+        doneButton.hidden = kind !== 'none' && kind !== 'closed';
+      });
+    }
+
+    /**
+     * A run about to be stored as a first contact is read against the history
+     * once more (G1; the visit id's two-tab case): a viewing or a playback
+     * another tab wrote after this screen read it is prior contact too. Only
+     * ever turns a first contact into none; where the run was a reading, the
+     * sheet says so, as it would have had the history shown it at the start.
+     *
+     * It asks the relation, which every run carries (G1a): a piece's run has no
+     * `unseen` to ask. A phrase's condition goes with its relation, as it was
+     * derived from it.
+     */
+    async function confirmFirstContact(result: RunResult): Promise<RunResult> {
+      if (result.firstContact !== true || !encounterTarget) return result;
+      const target = encounterTarget;
+      const fresh = await historyFor(target, history?.byId === undefined ? {} : { byId: history.byId }).catch(() => null);
+      if (fresh === null) return result;
+      const bars = sightReading ? undefined : barsOfRun(result.range);
+      if (historyFirstContact(bars, fresh)) return result;
+      if (!sightReading) return { ...result, firstContact: false };
+      const now = familiarityIn(target, fresh, { visit });
+      const sentence =
+        now.attempted !== null || now.partly.attempted !== null
+          ? SUMMARY_TEXT.sightReadRepeat
+          : now.heard !== null || now.partly.heard !== null
+            ? SUMMARY_TEXT.sightReadHeard
+            : SUMMARY_TEXT.sightReadSeen;
+      if (title.textContent === 'Passed') setHeading('Run finished');
+      let note = sheet.querySelector<HTMLElement>('#summary-note');
+      if (!note) {
+        note = document.createElement('p');
+        note.className = 'summary-note';
+        note.id = 'summary-note';
+        title.after(note);
+      }
+      note.textContent = [note.textContent, sentence].filter((part) => part !== null && part !== '').join(' ');
+      return { ...result, firstContact: false, unseen: false, passed: false, masterEligible: false };
     }
     if (run && askSelfReport) {
       pendingRecord = (report) => {
@@ -3226,7 +4365,7 @@ export function ScoreScreen(router: Router): HTMLElement {
               ? SUMMARY_TEXT.waitNotesReady
               : 'Run finished',
     );
-    sheet.appendChild(title);
+    sheetMain.appendChild(title);
 
     // What the run is, in sentences, under the heading (T40): why a run has no
     // numbers, and why one is not on the record. The second used to go to
@@ -3238,14 +4377,19 @@ export function ScoreScreen(router: Router): HTMLElement {
       said.push(SUMMARY_TEXT.notMeasured);
       if (input === 'none') said.push(SUMMARY_TEXT.notMeasuredNoInput);
     }
-    if (sightReadRepeat) said.push(alreadyMet ? SUMMARY_TEXT.sightReadRepeat : SUMMARY_TEXT.sightReadHeard);
+    // Why a reading is refused, in the learner's words: read before, heard
+    // (on any visit), or looked at on an earlier visit (G1).
+    if (sightReadRepeat) said.push(alreadyMet ? SUMMARY_TEXT.sightReadRepeat : heardBefore ? SUMMARY_TEXT.sightReadHeard : SUMMARY_TEXT.sightReadSeen);
     if (said.length > 0) {
       const note = document.createElement('p');
       note.className = 'summary-note';
       note.id = 'summary-note';
       note.textContent = said.join(' ');
-      sheet.appendChild(note);
+      sheetMain.appendChild(note);
     }
+    // The session's next step, under the result and above the numbers (X1): at the piano the heading and
+    // "Next: …" are what is read; the numbers are there to scroll to. Hidden until the record answers.
+    if (sessionRun) sheetMain.appendChild(nextHost);
 
     const lines = document.createElement('dl');
     lines.className = 'summary-stats';
@@ -3299,6 +4443,17 @@ export function ScoreScreen(router: Router): HTMLElement {
     // in the first place, so this cannot say "ended at" about a ladder that
     // never ran.
     if (ladderOn && heard) addStat(lines, 'Ladder', `ended at ${String(tempoPct)} % ${ofWhat}`);
+    // What a pass needed, where this run did not meet it (X46, `responses/9e14839e.md` §2 points 2 and 5):
+    // the standard that judged it, in the lesson page's words. A clean Keep tempo run at 70 % was headed
+    // *Run finished* with no sentence naming the 80 % it was short of. Not over a rhythm run (its own line
+    // says it never counts as playing the piece) or a sight-read (the reader's evidence decides those), and
+    // not where the notes and the tempo met it and something else stopped the pass (the technique line says
+    // so, or the reading refusal does).
+    const judgedMode = score.mode === 'wait' || score.mode === 'tempo';
+    const missedStandard = heard && judgedMode && !rhythmRun && !sightReading && !measured.passed;
+    if (missedStandard) {
+      addStat(lines, SUMMARY_TEXT.toPassLabel, SUMMARY_TEXT.toPass(criteria.passAccuracy, criteria.passTempoPct, ofWhat !== 'of written'));
+    }
     if (heard) {
       addStat(lines, 'Wrong notes', String(score.wrongNotesTotal));
       addStat(lines, 'Missed', String(score.missedTotal));
@@ -3388,22 +4543,55 @@ export function ScoreScreen(router: Router): HTMLElement {
         addStat(lines, NOT_JUDGED_TEXT.label, said.text).dd.dataset.cites = said.cites.join(' ');
       }
     }
-    sheet.appendChild(lines);
+    sheetMain.appendChild(lines);
 
+    // A piece the project sheet can be opened for (G1b): a song, never a phrase or a drill.
+    const projectPiece = item !== undefined && isProjectable(item) ? item : undefined;
     const actions = document.createElement('div');
     actions.className = 'summary-actions';
+    // The run *To pass* names, one tap away, where this run's own mode or tempo could not count (X46,
+    // `responses/9e14839e.md` §2 point 5): the sheet said "to pass, play it in Keep tempo" and offered no
+    // control that did it — *Again* restarted the same Wait run, and Keep tempo had to be found on the bar
+    // mid-run, which stamped the run "Changed" before a note. First, because it is what the sheet recommends;
+    // a fresh run, so nothing is stamped. Not where accuracy alone was short: *Again* is that retry.
+    const standardTempo = Math.ceil(criteria.passTempoPct);
+    const toTheStandard =
+      missedStandard && !tempoCanCount(score.mode, score.tempoPct, criteria)
+        ? [
+            button(
+              SUMMARY_TEXT.toTheStandard(standardTempo),
+              () =>
+                fromTheSummary(() => {
+                  if (mode !== 'tempo') {
+                    mode = 'tempo';
+                    // A mode chosen here is met for the first time as much as one chosen on the bar.
+                    maybeFirstSight({ key: `mode:${modeKey()}`, entry: MODE_HELP[modeKey()], id: 'score' });
+                  }
+                  tempoPct = standardTempo;
+                  tempo.value = String(tempoPct);
+                  render();
+                  startRun();
+                }, STANDARD_TAP),
+              'summary-standard',
+            ),
+          ]
+        : [];
     actions.append(
-      button('Again', () => startRun(), 'summary-again'),
-      button('Slower (−10%)', () => {
+      ...toTheStandard,
+      // Each through the sound's gate, the whole of it (U105): a refused
+      // *Slower* or *Faster* leaves the tempo, so the tap made again moves it
+      // once, and the summary stays up for it.
+      button('Again', () => fromTheSummary(() => startRun(), AGAIN_TAP), 'summary-again'),
+      button('Slower (−10%)', () => fromTheSummary(() => {
         tempoPct = Math.max(30, tempoPct - 10);
         tempo.value = String(tempoPct);
         startRun();
-      }, 'summary-slower'),
-      button('Faster (+10%)', () => {
+      }, SLOWER_TAP), 'summary-slower'),
+      button('Faster (+10%)', () => fromTheSummary(() => {
         tempoPct = Math.min(130, tempoPct + 10);
         tempo.value = String(tempoPct);
         startRun();
-      }, 'summary-faster'),
+      }, FASTER_TAP), 'summary-faster'),
       // A phrase nobody has heard (T40), on the sheet that says why this one
       // no longer counts: after a first reading, a repeat or a phrase played
       // to the learner, a new one is the only way to a first reading again.
@@ -3437,13 +4625,29 @@ export function ScoreScreen(router: Router): HTMLElement {
       ...(weakest.length > 0
         ? [button('Loop the weak bars', () => loopWeakBars(score), 'summary-loop')]
         : []),
-      button('Done', () => {
-        flushPendingRecord();
-        summaryUp(false);
-        leaveScore();
-      }, 'summary-done'),
+      // What next with this piece? (G1b item 5): the project sheet's first door, at the moment the
+      // question is natural. A piece only — a generated phrase or a drill is none (C5, S8) — and it
+      // opens the sheet, which makes nothing until the learner chooses an action there. The material
+      // is what this visit played: an import's loaded bytes, else the row's (G1).
+      ...(projectPiece
+        ? [
+            button(PROJECT_TEXT.door, () => {
+              openProjectSheet({
+                item: projectPiece,
+                material: encounterTarget?.material ?? playedMaterial(projectPiece, loadedIdentity === undefined ? {} : { loaded: loadedIdentity }),
+                ...(model ? { bars: model.sourceMeasureCount } : {}),
+                owner: section,
+              });
+            }, 'summary-project'),
+          ]
+        : []),
+      // The Done button is X1's (the session's transition takes its place when a session runs).
+      doneButton,
     );
-    sheet.appendChild(actions);
+    sheetNext.appendChild(actions);
+    // A stored run completes the activity first and draws the transition when it has (`save`); with nothing
+    // to store — a run waiting for *How did it go?*, a Listen or Free run — it is drawn from the record now.
+    if (sessionRun && !(run && !askSelfReport)) drawNext();
 
     // With nothing heard there is nothing to be accurate *about*, so the
     // learner says how it went instead of being shown a number they did not
@@ -3474,8 +4678,9 @@ export function ScoreScreen(router: Router): HTMLElement {
         choices.push(choice);
         ask.appendChild(choice);
       }
-      sheet.appendChild(ask);
+      sheetNext.appendChild(ask);
     }
+    drawSummaryRefusal();
     summaryUp(true);
   }
 
@@ -3545,8 +4750,23 @@ export function ScoreScreen(router: Router): HTMLElement {
     }
     // The hot spot is an unrolled measure; the loop is printed bars.
     const printed = (model?.steps.find((s) => s.measureIndex === worst.measureIndex)?.sourceMeasureIndex ?? worst.measureIndex) + 1;
-    loopBars = { from: printed, to: Math.min(printed + 1, model?.sourceMeasureCount ?? printed + 1) };
-    startRun();
+    // Through the sound's gate (U105): refused, no loop is set.
+    fromTheSummary(() => {
+      loopBars = { from: printed, to: Math.min(printed + 1, model?.sourceMeasureCount ?? printed + 1) };
+      startRun();
+    }, LOOP_WEAK_TAP);
+  }
+
+  /**
+   * A tap on the summary that starts a run (U105): through the sound's gate,
+   * and only while the summary is still up with no sheet over it when the
+   * sound has started, as it was when the tap was made.
+   */
+  function fromTheSummary(act: () => void, tap: SoundTap): void {
+    withSound(() => {
+      if (sheet.hidden || sheetOpen()) return;
+      act();
+    }, tap);
   }
 
   // --- render --------------------------------------------------------------
@@ -3580,14 +4800,51 @@ export function ScoreScreen(router: Router): HTMLElement {
       getSettings().showNoteNames && mode === 'wait' && session?.running === true
         ? waitingForLine(writtenNow())
         : '';
+    // A tap whose sound did not start comes first (G86a): over *Paused — ▶ to
+    // carry on*, over *Playing it to you*, over everything, because it is why
+    // what the learner just asked for is not happening.
     const wanted =
+      soundOffLine() ||
       pausedLine() ||
       (session?.armed === true ? firstNoteLine() : hearingLine() || named || readyLine());
     // Through the strip, which falls back to the mode's own standing line when
     // the run has nothing to say — so this line is never blank and the learner
     // is never left with a screen that says only the piece's name.
     helpStrip.setNow(wanted);
+    // The mode's standing line, not something the run said: not drawn while
+    // the hands are on the keys (U122c, `style.css`), as the chip never said it.
+    waitingLine.dataset.standing = String(wanted === '');
     waitingLine.hidden = false;
+    drawSummaryRefusal();
+  }
+
+  /**
+   * The summary's own line (U105a): the refusal's sentence where the refused
+   * control is on the summary, and nothing otherwise — a refusal standing for
+   * a control behind the sheet (inert while it is up) is the state line's
+   * alone, so the sheet never names a control it does not hold. Drawn with the
+   * state line, so the two never disagree: a tap asking again clears both, a
+   * refusal sets both, the sound starting by any path clears both.
+   */
+  function drawSummaryRefusal(): void {
+    const refused = refusedNow();
+    const control = refused === null ? null : document.getElementById(refused.id);
+    summaryRefusal.textContent = control !== null && sheet.contains(control) ? soundOffLine() : '';
+  }
+
+  /**
+   * A tap asked for the sound and the sound did not start (G86a): nothing
+   * started, and the line says so and which control asks again — ▶ (Space's
+   * refusal too, ▶'s keyboard twin), or `Hear it`, whose tap wanted the
+   * demonstration and not a run. Since U105 every control whose tap can start
+   * the sound is named the same way, and a key names ▶ (`KEY_TAP`). Only while
+   * the engine still reads not running (`refusedNow`), so a line that has
+   * stopped being true is dropped at the next redraw however the sound came on.
+   */
+  function soundOffLine(): string {
+    const refused = refusedNow();
+    if (refused === null) return '';
+    return STATE_TEXT.soundOff(refused.control, refused);
   }
 
   /**
@@ -3635,9 +4892,9 @@ export function ScoreScreen(router: Router): HTMLElement {
    * waiting run looks exactly like a frozen one — the state a control must
    * never be in unseen (`05` §6).
    */
-  function firstNoteLine(): string {
-    if (hands === 'R') return 'Your right hand starts — play its first note';
-    if (hands === 'L') return 'Your left hand starts — play its first note';
+  function firstNoteLine(hand: HandsFocus = hands): string {
+    if (hand === 'R') return 'Your right hand starts — play its first note';
+    if (hand === 'L') return 'Your left hand starts — play its first note';
     return 'Play your first note to start';
   }
 
@@ -3738,9 +4995,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       bar === undefined
         ? ''
         : `bar ${String(printedBar(bar))} / ${String(printedBar(model.sourceMeasureCount - 1))}`;
-    // The status line wins the header: with both, the title was squeezed to
-    // "Hot Cr…" (the gallery's blind cell). Sideways the mirror has room.
-    where.hidden = status.textContent !== '' && window.innerHeight > window.innerWidth;
+    // Whether it is drawn beside a status line is the moment's (`drawChrome`).
   }
 
   /** The words on one `⋯` row, when the row has something to say that changes. */
@@ -3860,25 +5115,18 @@ export function ScoreScreen(router: Router): HTMLElement {
     }
     drawWhere();
     syncLoopDim();
-    // Belt and braces with the observer: every render is a moment the copy
-    // in the bar must agree with the header.
-    syncBarLeft();
+    // Belt and braces with the observer: every render is a moment the copies
+    // sideways must agree with the header.
+    syncSideways();
     modeSelect.value = mode;
     inputSelect.value = input;
     tempo.value = String(tempoPct);
     // Not while it is being typed into: writing the rounded value back on
     // every render would fight the digits going in.
     if (document.activeElement !== bpmField) bpmField.value = String(Math.round(bpmNow()));
-    // Below 400 px the percentage goes and the bpm stays: the bar has to be
-    // one row (`04` §5), and the percentage is set in the sheet this label
-    // opens, where it is written on the slider. The bpm is the number you
-    // read while playing.
-    tempoLabel.textContent =
-      window.innerWidth < NARROW_BAR_PX
-        ? `${String(Math.round(bpmNow()))} bpm`
-        : `${String(tempoPct)}% · ${String(Math.round(bpmNow()))} bpm`;
-    // After the label is written, because its width is part of what decides
-    // whether the row still fits.
+    // The row's words and what is on it (the tempo label's among them: the
+    // bpm is the number read while playing, its percentage the first word to
+    // give), `fitBarControls`.
     fitBarControls();
     barsLabel.textContent = `${settings.barsPerWindow} bar${settings.barsPerWindow === 1 ? '' : 's'}`;
     // Scroll draws the whole piece and scrolls it, so there is no window for
@@ -3987,12 +5235,12 @@ export function ScoreScreen(router: Router): HTMLElement {
     for (const hand of HANDS) {
       document.getElementById(`score-hands-${hand.id}`)?.classList.toggle('is-selected', hands === hand.id);
     }
-    // Not during a demonstration (T33): ▶ then ends it and starts or carries
-    // on the learner's own run, which is not playing, so the button says ▶.
-    // It said ⏸, and pressing it did not pause anything.
-    const playing = session?.running === true && !session.paused && !hearing;
+    const playing = playReadsPause();
     playPause.textContent = playing ? '⏸' : '▶';
     playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    // Nothing starts while a transfer offer's snapshot is unread (D4a), or while
+    // ▶'s tap is waiting for the sound (U69); a refused tap is marked (G86a).
+    drawPlayHold();
     stripHost.hidden = settings.keys === 'off';
     stripHost.dataset.keys = settings.keys;
     section.dataset.running = String(session?.running === true);
@@ -4016,6 +5264,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       ? 'Stop playing it to you'
       : 'Play the piece to you, nothing judged';
     section.dataset.input = input;
+    // Last, from the moment as this render leaves it (U122c).
+    drawChrome();
   }
 
   /**
@@ -4092,11 +5342,14 @@ export function ScoreScreen(router: Router): HTMLElement {
       title.textContent = isSightReading(item) ? readingTitle(item.title, item.hands, routeRecipe) : item.title;
       // Unconditional, unlike the side panel below, which is a tablet's
       // second column: the rung decides what this run has to reach, and that
-      // cannot depend on how wide the screen is.
-      void findRung();
+      // cannot depend on how wide the screen is. Kept, so the opening of a run
+      // Today chose for its rung can wait for it (X46, below); it never rejects.
+      const rungFound = findRung();
       // Shown only where the file has chord symbols in it (`openItem.ts`).
       chartRow.hidden = !hasChordSymbols(item);
-      if (tablet) void fillSidePanel(item);
+      // Started now, beside the score's own reads; the first draw waits for
+      // it further down (U80).
+      const sideDecided = tablet ? fillSidePanel(item) : null;
       sections = item.teaching?.sections ?? [];
       if (sections.length > 0) {
         sectionSelect.replaceChildren();
@@ -4151,24 +5404,67 @@ export function ScoreScreen(router: Router): HTMLElement {
         const heldBy = judgingRungId();
         const taught =
           heldBy === undefined ? undefined : await loadCurriculum().then((curriculum) => taughtAtRung(curriculum, heldBy), () => undefined);
-        const phrase = generateSightReadingFor(item, named ?? freshSeed(seedsOnRecord), routeRecipe, taught);
+        let phrase: ReturnType<typeof generateSightReadingFor>;
+        try {
+          phrase = generateSightReadingFor(item, named ?? freshSeed(seedsOnRecord), routeRecipe, taught);
+        } catch (cause: unknown) {
+          if (!(cause instanceof SightReadingRefusal)) throw cause;
+          // No phrase the generator checked (D1a): a terminal state with its
+          // reason, as a score with no notes is — never the draw it could not
+          // check, and nothing recorded, because nothing was read. The header
+          // line says what happened, in words short enough to fit beside the
+          // title (with the title in it, the news was cut off at 342 px); the
+          // reason, a few sentences, goes where the music would have been.
+          status.textContent = 'No phrase could be written';
+          const reason = document.createElement('p');
+          reason.className = 'score-refusal';
+          reason.id = 'score-refusal';
+          reason.textContent = cause.message;
+          stage.replaceChildren(reason);
+          bar.hidden = true;
+          render();
+          return;
+        }
         musicXml = phrase.musicXml;
         phraseSeed = phrase.seed;
-        const seen = phrase.seed;
+        phraseGenerator = phrase.generator;
+        phraseWritten = { options: phrase.options, bpm: phrase.bpm };
+        const seen = phrase.generator;
         void history.then((rows) => {
           remember(rows);
-          if (rows.some((row) => row.seed === seen)) phraseSeen = true;
+          if (rows.some((row) => row.seed === seen.seed && phraseVersionOf(row) === seen.version)) phraseSeen = true;
         });
       } else if (item.imported) {
         const row = await getImport(item.id);
         if (typeof row?.data !== 'string') throw new Error('the imported file is missing');
         musicXml = row.data;
+        // An import is its stored bytes (G1): hashed here, where they are in
+        // hand, so a duplicate import under a new id is the same material.
+        loadedIdentity = await textIdentity(musicXml);
       } else {
         const response = await fetch(contentUrl(item.file as string));
         if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-        musicXml = toMusicXml(new Uint8Array(await response.arrayBuffer()));
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        musicXml = toMusicXml(bytes);
       }
-
+      // What a run of this item plays, and what the learner had met of it
+      // before this visit (G1): read beside the engraving, answered before play.
+      encounterTarget = {
+        itemId: item.id,
+        material: playedMaterial(item, {
+          ...(phraseGenerator !== undefined && phraseWritten !== undefined ? { phrase: { generator: phraseGenerator, ...phraseWritten } } : {}),
+          ...(loadedIdentity === undefined ? {} : { loaded: loadedIdentity }),
+        }),
+        idNamesMaterial: !sightReading,
+      };
+      const target = encounterTarget;
+      // The session's activity is open, and this is what it plays (X1): the runner marks it active and
+      // rechecks a first-contact assumption through G2's adapter, this visit's own viewing aside.
+      void sessionRun?.opened({ itemId: item.id, ...(target.material === undefined ? {} : { material: target.material }), visit });
+      historyRead = catalogIndex()
+        .then((index) => index.byId, () => undefined)
+        .then((byId) => historyFor(target, byId === undefined ? {} : { byId }))
+        .catch(() => null);
       // The model comes from an instance with no draw range: a windowed OSMD
       // clamps its cursor iterator, so extracting from the renderer's own view
       // would yield a model that stops at the end of the first window.
@@ -4185,6 +5481,35 @@ export function ScoreScreen(router: Router): HTMLElement {
         return;
       }
       model = loaded;
+      // The whole of it, in printed bars, which a run over every bar covers (G1).
+      encounterTarget = { ...encounterTarget, extent: loaded.sourceMeasureCount };
+
+      // The side panel decided before the stage is priced (U80). On a tablet
+      // its column is part of the stage's width, and the renderer fits the
+      // score to the stage it is handed — so a panel that arrives after the
+      // first draw narrows the stage under music already drawn, and the sheet
+      // is fitted again, smaller. Measured on the served build (Entry 125),
+      // every piece `side-panel-prose.spec.ts` sweeps was first drawn before
+      // its panel was decided, at every tablet size tried, and refitted
+      // narrower where the column takes width from the stage. The panel's
+      // reads (the curriculum and the lesson file, both precached) have run
+      // beside the score's since the item was found, so the wait is only what
+      // the panel takes past the score's own load. Bounded all the same,
+      // because the lesson's fetch has no timeout of its own and a score must
+      // open with or without its prose: past the bound the stage is priced
+      // undecided — which on a tablet keeps the column's track, so a panel
+      // that then arrives with text moves nothing, and one left out gives the
+      // stage its width back as an ordinary resize.
+      if (sideDecided) {
+        let bound: number | undefined;
+        await Promise.race([
+          sideDecided,
+          new Promise<void>((resolve) => {
+            bound = window.setTimeout(resolve, SIDE_PANEL_WAIT_MS);
+          }),
+        ]);
+        window.clearTimeout(bound);
+      }
 
       renderer = await WindowRenderer.create({
         container: stage,
@@ -4209,6 +5534,9 @@ export function ScoreScreen(router: Router): HTMLElement {
         // The words are for singing; this screen is for the hands (`08` §3.4.1).
         drawLyrics: false,
         drawChordSymbols: settings.showChordSymbols,
+        // No folded band (U118's `foldedReserve`): the chip it priced is not
+        // drawn since U122c, so the stacked slots start at the stage's top in
+        // every moment and the music never moves under a fold.
       });
 
       if (window.__pianopath) {
@@ -4244,6 +5572,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       // does not commit to a position: the first `showStep` is what puts notes
       // on the screen, and without it the stage is two empty divs.
       renderer.showStep(0);
+      // The notation is on the screen: this visit's viewing (G1).
+      noteViewing();
 
       // The range this piece uses, not all 88 keys. With the full keyboard
       // on a 360 px phone every key is about seven pixels, and the blue key
@@ -4253,15 +5583,18 @@ export function ScoreScreen(router: Router): HTMLElement {
       keysRange = stripRangeFor(loaded.steps.flatMap((step) => step.notes.map((note) => note.midi)));
       mountKeys()?.scrollToNote(loaded.steps[0]?.notes[0]?.midi ?? 60, 'auto');
 
-      const context = audioEngine.contextOrNull;
       session = new ScoreSession({
         model: loaded,
         renderer,
         strip,
         stripOptions: { guide: guideFor(), fingers: settings.keysFingerNumbers, flash: settings.keysFlash },
         piano: null,
-        audioContext: context,
-        destination: audioEngine.masterGain,
+        // Asked at every start, frame, latch and resume, not taken now (U67):
+        // this runs as the piece loads, which on a reload or a link straight to
+        // a piece is before any tap, when the engine has no context and no
+        // master gain, and a pair fixed here was none for the whole visit. The
+        // engine stays the one owner of the context; this only reads it.
+        audio: () => ({ context: audioEngine.contextOrNull, destination: audioEngine.masterGain }),
         onChange: render,
         onBeat: (tick) => onBeat(tick),
       onFinished: (score, looped) => {
@@ -4337,6 +5670,15 @@ export function ScoreScreen(router: Router): HTMLElement {
           /* No playback. Everything else on this screen still works. */
         });
 
+      // A transfer route's offer (D4a), read before anything can start: until it answers the screen
+      // is still loading — no bar, no keys listening, ▶ disabled — and a read that never answers
+      // leaves it so, never a practice run in the offer's place. Started when the screen was built,
+      // beside the score's own fetch.
+      if (offerRead) settleOffer(await offerRead);
+      // And what the learner had met of it (G1), before anything can start:
+      // a run's first contact is judged against it.
+      history = historyRead === null ? null : await historyRead;
+
       input = pickInput();
       mode = input === 'none' ? settings.defaultModeWithoutInput : settings.defaultModeWithInput;
       // Tempo mode, always, for a sight-read: waiting for each note is not
@@ -4356,6 +5698,23 @@ export function ScoreScreen(router: Router): HTMLElement {
       // in whatever the learner's default happens to be is a step teaching the
       // wrong thing, and the select is still theirs to change afterwards.
       if (routeMode) mode = routeMode;
+      // A run Today chose for its rung (`?rung=`, a session's activity or a card row) is what the lesson
+      // asks for, so it opens where it can count (X46, `responses/9e14839e.md` §2 point 3,
+      // `responses/43045ffb.md` §4: the item's role is a criterion attempt). It opened in the learner's
+      // defaults, Wait for me at 70 %, on a rung that counts only Keep tempo at 80 %, and the learner met
+      // the rule by failing it twice. Not a sight-read (the reader's own tempo and evidence), not a route
+      // that names its mode, and not with nothing to listen (nothing measured can count): there the defaults
+      // stand. The select and the tempo stay the learner's to change.
+      else if (!sightReading && todayRung !== undefined && input !== 'none') {
+        await rungFound;
+        const opening = openingThatCounts({ mode, tempoPct }, judgingCriteria());
+        mode = opening.mode;
+        tempoPct = opening.tempoPct;
+        tempoApplied = tempoPct;
+        // Rhythm only, a preference remembered from another screen, would make this Keep tempo run one that
+        // never counts as playing the piece; off here, and kept as the learner set it everywhere else.
+        rhythmOnly = false;
+      }
       // The first time this learner opens a piece in this mode, a card saying
       // what the mode does before the first note is judged (`04` §5f). After
       // the three lines above, so it is the mode actually about to run.
@@ -4413,6 +5772,20 @@ export function ScoreScreen(router: Router): HTMLElement {
       bar.hidden = true;
     }
   })();
+
+  /**
+   * What the offer's snapshot said (D4a): the offer's relationship for the run, or practice and the
+   * line that says so. Before the bar is shown and the sheet fitted, so the line's room is counted.
+   */
+  function settleOffer(read: OfferRead): void {
+    if (read.kind === 'kept') {
+      offer = { kind: 'kept', relationship: read.snapshot.relationship };
+      return;
+    }
+    offer = { kind: 'refused', why: read.why };
+    offerNote.textContent = read.why === 'corrupt' || read.why === 'unreadable' ? OFFER_TEXT.unreadable : OFFER_TEXT.gone;
+    offerNote.hidden = false;
+  }
 
   function pickInput(): FollowInput {
     for (const candidate of settings.inputPriority) {
@@ -4494,15 +5867,25 @@ export function ScoreScreen(router: Router): HTMLElement {
    * Only when nothing has focus that Space already means something to: the
    * browser presses a focused button on Space, so a handler here as well
    * would start a run twice from a focused *Start again*.
+   *
+   * ▶'s keyboard twin, and a user activation like it, so it asks the sound to
+   * start the same way (U69), and starts only if the screen still may when
+   * the wait is over and the sound is running (G86a). Its refusal is ▶'s,
+   * and says to tap ▶.
    */
+  const spaceMayStart = (): boolean =>
+    session !== null && !session.running && sheet.hidden && !hearing && !sheetOpen();
   const onKeyDown = (event: KeyboardEvent): void => {
     if (event.key !== ' ' || event.repeat || event.ctrlKey || event.metaKey || event.altKey) return;
     const target = event.target instanceof Element ? event.target : null;
     if (target?.closest('button, input, select, textarea, a, summary, details, [contenteditable], [role="button"]')) return;
-    if (!session || session.running || !sheet.hidden || hearing || sheetOpen()) return;
+    if (!spaceMayStart()) return;
     event.preventDefault();
-    startRun();
-    render();
+    withSound(() => {
+      if (!spaceMayStart()) return;
+      startRun();
+      render();
+    });
   };
   document.addEventListener('keydown', onKeyDown);
 
@@ -4511,6 +5894,13 @@ export function ScoreScreen(router: Router): HTMLElement {
     // `onFinished`, so tearing the screen down draws a summary — which would
     // otherwise forget the very run this is about to remember.
     leaving = true;
+    // The ⋯ and tempo sheets go with the screen (G86), first, so nothing below
+    // can leave them behind: each sits on `body`, outside what the app shell
+    // clears, with the rest of the page inert until it closes. Their rows go
+    // back to the stash as they close.
+    for (const close of openSheets.splice(0)) close();
+    // A late answer to a refused tap redraws nothing on a screen that has gone (G86a).
+    stopWatchingSound();
     // A run still waiting for *How did it go?* is let go: it is a run the app
     // heard nothing of, and unanswered it has no evidence to write (T40; T37
     // wrote it as it stood).
@@ -4546,7 +5936,10 @@ export function ScoreScreen(router: Router): HTMLElement {
     window.removeEventListener('resize', onResize);
     document.removeEventListener('visibilitychange', onVisibilityChange);
     document.removeEventListener('keydown', onKeyDown);
-    if (hideTimer !== null) window.clearTimeout(hideTimer);
+    endPeek();
+    // The session's clock writes what it holds; a screen left before its summary leaves the activity as it
+    // was — active, for *Continue* — and never completes it (X1: interrupted).
+    stopSessionClock?.();
     detachInput();
     releaseWakeLock();
     session?.dispose();

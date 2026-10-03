@@ -31,15 +31,24 @@
  *    practice standard, else it is refused with the first practice condition
  *    it missed. The conditions and their meaning are the vocabulary's
  *    (`skills.json`); `CONDITION_MET` reads the field each one's `recordedBy`
- *    names, and a test holds the two together.
+ *    names, and a test holds the two together. A note's name on the screen
+ *    is supported reading (CL11b, L58): `names-off`, met only where the row
+ *    records `keys.names === false`, stands beside every `guide-off` of a
+ *    full standard.
  * 4. **Opportunity.** The skill's demands (or every step) inside the steps the
  *    run covered, in the hands it played.
  * 5. **Precision** (timing skills, reviewer decision 6): the window must be
- *    narrower than the error the skill is about, at the run's tempo.
+ *    narrower than the error the skill is about, at the run's tempo. It is a
+ *    refusal of the timing channel, step by step (CL04, L73): where the window
+ *    cannot resolve a step, timing measures nothing there and pitch still
+ *    counts; a skill whose window resolves no step is refused. The errors are
+ *    the vocabulary's (`precision`, CL11b, L57), read from the vocabulary the
+ *    function is handed.
  *
  * Then **attribution**: `n` counts the opportunity steps the channels
- * measured, and `right` those right on every channel. A self-reported run is
- * evidence of the class `self-assessed`, which no requirement accepts.
+ * measured, and `right` those right on every channel that measured the step.
+ * A self-reported run is evidence of the class `self-assessed`, which no
+ * requirement accepts.
  *
  * **Per demand, with the overlap kept** (C4a; backlog L64; the reviewer's
  * Part 8). The same counted steps are split by demand: for each demand the
@@ -71,7 +80,9 @@ import type { ConditionId, Skill } from '../demands/vocabulary';
 import { detect, type DemandAt } from '../demands/detect';
 import type { ScoreModelData, ScoreNote } from '../score/types';
 import { isMeasurement, codeAt, takeMeasurements, type Measurement, type Observed, type StepMeasure } from './measurement';
-import type { Vocabulary } from './vocabulary';
+import { quartersOf, type Vocabulary } from './vocabulary';
+import type { Identity } from '../review/record';
+import type { Relationship } from '../curriculum/transfer';
 
 export type Standard = 'practice' | 'full';
 
@@ -99,8 +110,42 @@ export interface Refusal {
 export interface EvidenceContext {
   itemId: string;
   seed?: number;
-  /** A generated phrase read for the first time (`unseen: true`): first contact with the material. */
-  firstContact: boolean;
+  /**
+   * The exact material the run played (E1 item 7; D4 item 2), D2's `Identity` as the run stored it
+   * (`RunHeader.material`): a generated item's generator, a notated item's built file (an excerpt's
+   * cut), a sight-reading phrase's complete generator identity. A stable reference, never a copied
+   * catalogue object; absent on a legacy run. The transfer policy (G2, `transferPolicy.ts`) reads it
+   * beside the establishing references': a new seed of material the skill was shown on is no transfer.
+   */
+  material?: Identity;
+  /**
+   * `transfer` where the run came from the session's transfer offer (D4 item 2): intent, never
+   * evidence that anything transferred. The policy reads it only to say why a transfer-intended row
+   * with no relationship is unknown (G68).
+   */
+  intent?: 'transfer';
+  /**
+   * First contact, the fact (G1a's relation): the run header's `firstContact`, copied as the run stored
+   * it — never `unseen`, the phrase's sight-reading condition, and absent where the header's is absent
+   * (a row from before G1a, or a drill or paper run), never rebuilt from `unseen`, the item's identity or
+   * the encounter history (the G1a review, `responses/5b14b7a.md`). Evidence stored before G2 carried
+   * `unseen === true` here, which on the phrase runs that alone had evidence was the same value.
+   */
+  firstContact?: boolean;
+  /**
+   * How the run's material relates to what established the skill (G2; the reviewer's fact path): D4's
+   * `relationshipOf`, measured and declared apart, written once by `recordRun` against the establishing
+   * contexts as they stood before the run — or, on a transfer-offer run, the offer's relationship for
+   * its skill, as the offer made it. Absent: unknown (a legacy row, a D4 race row, a row from before
+   * G2, a run with no material), never reconstructed later.
+   */
+  relationship?: Relationship;
+  /**
+   * The demands the run measured (G2): every demand its measured records located — each record's
+   * `byDemand` and `otherDemands` — once each, sorted; written by `recordRun` with the relationship.
+   * What challenge protection compares with the establishing records' demands. Absent: unknown.
+   */
+  demands?: string[];
   /** Of the conditions the skill's standards name, those this run met. */
   met: ConditionId[];
   /** Opportunity steps counted in `n` whose own note the record cannot tell right from wrong (a chord partly missed). */
@@ -128,8 +173,36 @@ export interface EvidenceContext {
  *   note (C4d, L72: `detect.ts`). The hands-together skill's `n` and `right`
  *   and every entry for that demand change with it, so rows under 2 wait for a
  *   recompute like any other.
+ * - **4** — the same shape; 3/8 read as simple triple, three eighth-note beats,
+ *   by every detector that reads a bar's beat (L120b, `detect.ts`'s
+ *   `isCompound`): compound time is no longer located in a 3/8 bar, a quarter
+ *   entering on its second or third eighth is no longer syncopation, and a
+ *   written dotted quarter in it is a dotted quarter. Evidence stored on a 3/8
+ *   piece under 3 counted the 6/8, syncopation and dotted-quarter skills'
+ *   opportunities, and every demand's entries, by the old reading, so rows
+ *   under 3 wait for a recompute like any other.
+ * - **5** — the same shape; the timing refusal per channel (CL04, L73): at a
+ *   step the run's window cannot resolve, timing measures nothing and pitch
+ *   still counts, so a misread note there counts against a skill that is
+ *   pitched as well as timed (sight-reading, hand-independence) and against
+ *   the step's pitch demands, and a right one counts right; the rhythm demands
+ *   there (those whose coping skill has a precision of its own) are counted
+ *   by none and kept in `otherDemands` at that step. A skill whose window
+ *   resolves no step is still refused `precision`, and a timing-only skill
+ *   reads as under 4. Evidence stored under 4 left those steps out on both
+ *   channels, so rows under 4 wait for a recompute like any other.
+ * - **6** — the same shape; a read with a note's name on the screen is never
+ *   the full standard of a skill whose full standard has the guide off
+ *   (CL11b, L58): `names-off`, met only by a recorded `keys.names === false`,
+ *   joins those standards. Evidence stored under 5 counted a Wait first
+ *   reading with *Name the note I am waiting for* on and the guide off as the
+ *   full standard of the bass clef, ledger lines, reading by interval, key
+ *   signatures and accidentals, so rows under 5 wait for a recompute like any
+ *   other; it reads them at the practice standard. The support share and the
+ *   timing precisions moved into the vocabulary at the same time (L57) with
+ *   their values unchanged, which alone would have moved nothing.
  */
-export const EVIDENCE_DEFINITIONS = 3;
+export const EVIDENCE_DEFINITIONS = 6;
 
 /** A demand at some steps: another demand on a demand's counted steps (`overlapOf`), or one a skill does not count (`otherDemands`). */
 export interface DemandOverlap {
@@ -149,7 +222,7 @@ export interface DemandCount {
   demand: string;
   /** Its opportunity steps the run measured whose right or wrong the record can tell. */
   n: number;
-  /** Of those, the steps right on every channel of the skill. */
+  /** Of those, the steps right on every channel of the skill that measured the step (L73). */
   right: number;
   /** The `n` steps (model step indexes), ascending: what a later reader audits against the record. */
   steps: number[];
@@ -171,7 +244,7 @@ export interface MeasuredEvidence {
   standard: Standard;
   /** Opportunity steps the skill's channels measured. */
   n: number;
-  /** Of those, the steps right on every channel. */
+  /** Of those, the steps right on every channel that measured the step (L73). */
   right: number;
   /** When the run was (`SessionRow.at`). */
   at: string;
@@ -184,11 +257,13 @@ export interface MeasuredEvidence {
   byDemand: DemandCount[];
   /**
    * The vocabulary demands the skill does not count, located on its counted
-   * steps in the hands played (absent where there are none, and always for a
-   * skill read over every step, whose entries hold every demand): with
-   * `byDemand`, where every demand of those steps is, so the overlap can be
-   * derived (`overlapOf`) rather than stored beside every entry. A fact about
-   * the notation, never a cause.
+   * steps in the hands played (absent where there are none): with `byDemand`,
+   * where every demand of those steps is, so the overlap can be derived
+   * (`overlapOf`) rather than stored beside every entry. A fact about the
+   * notation, never a cause. A skill read over every step counts every demand
+   * but one kind: the rhythm demands at a step its window could not time,
+   * which land here (L73), so a pitch miss beside an eighth there is never read
+   * as the pitch demand's alone.
    */
   otherDemands?: DemandOverlap[];
 }
@@ -201,7 +276,7 @@ export interface SelfAssessedEvidence {
   observationId: number | null;
   report: 'rough' | 'ok' | 'clean';
   at: string;
-  context: Pick<EvidenceContext, 'itemId' | 'seed'>;
+  context: Pick<EvidenceContext, 'itemId' | 'seed' | 'material' | 'intent'>;
 }
 
 export type Evidence = MeasuredEvidence | SelfAssessedEvidence;
@@ -224,6 +299,10 @@ export const CONDITION_MET: Readonly<Record<ConditionId, { field: string; met: (
   unseen: { field: 'SessionRow.unseen', met: (o) => o.unseen === true },
   'guide-off': { field: 'SessionRow.keys.guide', met: (o) => o.keys?.guide === 'off' },
   'both-hands': { field: 'SessionRow.hands.played', met: (o) => o.hands?.played === 'both' },
+  // Recorded false, not merely unrecorded: a row that does not say the names
+  // were off is not shown to have had them off (CL11b, L58; the approval's
+  // lane-2 point, `responses/1afa30d3.md` §2).
+  'names-off': { field: 'SessionRow.keys.names', met: (o) => o.keys?.names === false },
 };
 
 /** The observation field a condition's refusal cites, in the row's own spelling. */
@@ -232,47 +311,36 @@ const CONDITION_CITES: Readonly<Record<ConditionId, string[]>> = {
   unseen: ['unseen'],
   'guide-off': ['keys.guide'],
   'both-hands': ['hands.played'],
+  'names-off': ['keys.names'],
 };
 
-// --- timing precision (reviewer decision 6, S21) ----------------------------------
+// --- timing precision (reviewer decision 6, S21; CL11b, L57) ----------------------
 
-/**
- * The error each v0 timing skill is about, in quarter-note beats: the
- * smallest distance between where the written rhythm puts a note and where the
- * likely wrong rhythm puts it. A window as wide as this or wider records the
- * wrong rhythm as hits, so the measurement cannot tell them apart and the
- * skill gets no evidence (`precision`). The global window is not changed.
+/*
+ * The error each timing skill is about, in quarter-note beats, is the
+ * vocabulary's (`skills.json`'s `precision`, with its reason beside it; until
+ * CL11b a table here): the smallest distance between where the written rhythm
+ * puts a note and where the likely wrong rhythm puts it. A window as wide as
+ * this or wider records the wrong rhythm as hits, so the measurement cannot
+ * tell them apart. The global window is not changed.
  *
- * - **triplets** `1/12`: triplet eighths at 0, 1/3, 2/3 of a beat against the
- *   rushed sixteenth-sixteenth-eighth at 0, 1/4, 1/2 (design §4's case):
- *   the second note is 1/12 of a beat early, the third 1/6.
- * - **subdivision** `1/6`: two even eighths against the same pair played
- *   long-short as a swing, the second at 2/3 of the beat.
- * - **6/8** `1/4`: the compound lilt, a quarter then an eighth (0 and 1 in
- *   quarters), evened into two dotted eighths (0 and 3/4).
- * - **dotted-quarter**, **syncopation**, **tie** `1/2`: the note after the dot
- *   placed on the beat, an off-beat note moved onto the beat, the tie cut short
- *   by its written part: each a displacement of an eighth.
- *
- * Skills whose rhythm is the whole phrase's (`every-step` opportunity, or a
- * texture: sight-reading, hand-independence) take, step by step, the finest
- * of these among the rhythm demands located at that step, and an eighth where
- * none is; the steps the window cannot resolve are left out of their count.
+ * A rhythm skill has its own; its demands are the rhythm demands. Skills whose
+ * rhythm is the whole phrase's (`every-step` opportunity, or a texture:
+ * sight-reading, hand-independence) take, step by step, the finest precision
+ * among the rhythm demands located at that step, and the vocabulary's default
+ * (an eighth) where none is. At a step the window cannot resolve, the timing
+ * channel measures nothing and the pitch channel still counts (CL04, L73): a
+ * misread note there counts against them and a right one counts right, while
+ * the rhythm demands located there are counted by none. Where the window
+ * resolves no step at all, the skill is refused.
  */
-export const TIMING_PRECISION_QUARTERS = {
-  triplets: 1 / 12,
-  subdivision: 1 / 6,
-  '6/8': 1 / 4,
-  'dotted-quarter': 1 / 2,
-  syncopation: 1 / 2,
-  tie: 1 / 2,
-} as const;
 
-/** The same table, read by any skill id: `undefined` for a skill with no rhythm of its own. */
-const PRECISION_BY_SKILL: Readonly<Record<string, number | undefined>> = TIMING_PRECISION_QUARTERS;
-
-/** The coarsest error any rhythm has: a note moved by an eighth. */
-export const DEFAULT_PRECISION_QUARTERS = 1 / 2;
+/** Each skill's own precision in the vocabulary, in quarter-note beats: a rhythm skill's; absent for the others. */
+function ownPrecisions(vocabulary: Vocabulary): ReadonlyMap<string, number> {
+  const out = new Map<string, number>();
+  for (const skill of vocabulary.skills) if (skill.precision !== undefined) out.set(skill.id, quartersOf(skill.precision));
+  return out;
+}
 
 /** Milliseconds per quarter at a beat of the played notation, at the run's tempo. */
 export function msPerQuarterAt(model: ScoreModelData, beat: number, tempoPct: number): number {
@@ -398,20 +466,41 @@ function coveredRun(observation: Observed, model: ScoreModelData): (step: number
 }
 
 /**
- * The error, in quarters, a timing skill must see at one step: its own
- * (`TIMING_PRECISION_QUARTERS`), or for a skill whose rhythm is the phrase's
- * the finest of the rhythm demands located at that step, and an eighth where
- * none is.
+ * The error, in quarters, a timing skill must see at one step: its own (the
+ * vocabulary's `precision` on the skill), or for a skill whose rhythm is the
+ * phrase's the finest of the rhythm demands located at that step, and the
+ * vocabulary's default where none is.
  */
-function precisionQuartersAt(skill: Skill, rhythmAt: ReadonlyMap<number, number>, step: number): number {
-  return PRECISION_BY_SKILL[skill.id] ?? Math.min(DEFAULT_PRECISION_QUARTERS, rhythmAt.get(step) ?? DEFAULT_PRECISION_QUARTERS);
+function precisionQuartersAt(
+  skill: Skill,
+  own: ReadonlyMap<string, number>,
+  fallback: number,
+  rhythmAt: ReadonlyMap<number, number>,
+  step: number,
+): number {
+  return own.get(skill.id) ?? Math.min(fallback, rhythmAt.get(step) ?? fallback);
+}
+
+/** The rhythm demands: those whose coping skill has a precision of its own (`rhythmPrecisionByStep`'s). */
+function rhythmDemands(vocabulary: Vocabulary, own: ReadonlyMap<string, number>): Set<string> {
+  return new Set(vocabulary.demands.filter((demand) => own.has(demand.copedWithBy)).map((demand) => demand.id));
+}
+
+/**
+ * What the timing channel measured of a skill's steps (L73): the steps its
+ * window resolves, and the rhythm demands, which only timing can tell and so
+ * are counted nowhere else. Absent for a skill with no timing channel.
+ */
+interface TimedSteps {
+  steps: ReadonlySet<number>;
+  rhythm: ReadonlySet<string>;
 }
 
 /** Step -> the finest precision any rhythm demand located there asks for. */
-function rhythmPrecisionByStep(located: Located, vocabulary: Vocabulary): Map<number, number> {
+function rhythmPrecisionByStep(located: Located, vocabulary: Vocabulary, own: ReadonlyMap<string, number>): Map<number, number> {
   const out = new Map<number, number>();
   for (const demand of vocabulary.demands) {
-    const quarters = PRECISION_BY_SKILL[demand.copedWithBy];
+    const quarters = own.get(demand.copedWithBy);
     if (quarters === undefined) continue;
     for (const at of located.get(demand.id) ?? []) {
       out.set(at.step, Math.min(out.get(at.step) ?? Infinity, quarters));
@@ -492,6 +581,7 @@ function evidenceFrom(
   model: ScoreModelData,
   at: string,
   where: DemandsAtSteps,
+  timed?: TimedSteps,
 ): MeasuredEvidence {
   let n = 0;
   let right = 0;
@@ -501,7 +591,10 @@ function evidenceFrom(
   const tallies = new Map<string, Tally>();
   const others = new Map<string, number[]>();
   for (const step of steps) {
-    const here = measurements.map((m) => m.at.get(step));
+    // Where the window could not time the step, timing measured nothing there
+    // (L73): it is left out, never read as a miss, and the other channels count.
+    const untimed = timed !== undefined && !timed.steps.has(step);
+    const here = (untimed ? measurements.filter((m) => m.channel !== 'timing') : measurements).map((m) => m.at.get(step));
     if (here.every((measure) => measure === undefined)) continue;
     n += 1;
     const learner = learnerNotesAt(model, step, played);
@@ -513,7 +606,9 @@ function evidenceFrom(
     // read over every step): the counts are the skill's steps split, never a
     // second reading of the run.
     for (const [demand, notes] of where.byStep.get(step) ?? []) {
-      if (named !== null && !named.has(demand)) {
+      // A demand the skill does not count here: one it does not name, or a
+      // rhythm demand at a step timing did not measure (L73). Where it is, kept.
+      if ((named !== null && !named.has(demand)) || (untimed && timed.rhythm.has(demand))) {
         others.set(demand, [...(others.get(demand) ?? []), step]);
         continue;
       }
@@ -552,7 +647,10 @@ function evidenceFrom(
     context: {
       itemId: observation.itemId,
       ...(observation.seed === undefined ? {} : { seed: observation.seed }),
-      firstContact: observation.unseen === true,
+      ...(observation.material === undefined ? {} : { material: observation.material }),
+      ...(observation.intent === undefined ? {} : { intent: observation.intent }),
+      // The relation as the run header stored it (G1a), never `unseen`: absent stays absent.
+      ...(observation.firstContact === undefined ? {} : { firstContact: observation.firstContact }),
       met,
       unattributed,
       estimated: measurements.some((m) => m.estimated),
@@ -569,7 +667,12 @@ function selfAssessed(skill: Skill, observation: Observed, report: 'rough' | 'ok
     observationId: observation.id ?? null,
     report,
     at,
-    context: { itemId: observation.itemId, ...(observation.seed === undefined ? {} : { seed: observation.seed }) },
+    context: {
+      itemId: observation.itemId,
+      ...(observation.seed === undefined ? {} : { seed: observation.seed }),
+      ...(observation.material === undefined ? {} : { material: observation.material }),
+      ...(observation.intent === undefined ? {} : { intent: observation.intent }),
+    },
   } as unknown as SelfAssessedEvidence;
 }
 
@@ -636,7 +739,29 @@ export function recomputeEvidence(
 ): StoredEvidence | undefined {
   const skills = targetSkills ?? [...new Set((row.evidence ?? []).map((result) => result.skill))];
   if (skills.length === 0) return undefined;
-  return stampedEvidence(evidenceFor({ observation: row, played, targetSkills: skills, vocabulary }));
+  return stampedEvidence(keptAttemptFacts(evidenceFor({ observation: row, played, targetSkills: skills, vocabulary }), row.evidence));
+}
+
+/**
+ * The facts `recordRun` wrote on the attempt (G2) — each measured record's `relationship` and
+ * `demands` — kept across a recompute, skill by skill: written once, at the run, against the
+ * contexts established then, so a later job carries them forward and never computes or fills one.
+ * A skill whose stored result carried none stays without.
+ */
+function keptAttemptFacts(fresh: EvidenceResult[], stored: readonly EvidenceResult[] | undefined): EvidenceResult[] {
+  const facts = new Map<string, Pick<EvidenceContext, 'relationship' | 'demands'>>();
+  for (const result of stored ?? []) {
+    if (result.kind !== 'measured') continue;
+    const { relationship, demands } = result.context;
+    if (relationship !== undefined || demands !== undefined) {
+      facts.set(result.skill, { ...(relationship === undefined ? {} : { relationship }), ...(demands === undefined ? {} : { demands }) });
+    }
+  }
+  if (facts.size === 0) return fresh;
+  return fresh.map((result) => {
+    const kept = result.kind === 'measured' ? facts.get(result.skill) : undefined;
+    return kept === undefined ? result : ({ ...result, context: { ...(result as MeasuredEvidence).context, ...kept } } as unknown as MeasuredEvidence);
+  });
 }
 
 function evidenceForSkill(
@@ -683,24 +808,29 @@ function evidenceForSkill(
   }
 
   // 4. The opportunity, inside the run and the hands it played.
-  let steps = opportunitySteps(skill, measuredRun(observation), observation.hands?.played, model, located);
+  const steps = opportunitySteps(skill, measuredRun(observation), observation.hands?.played, model, located);
   if (steps.length === 0) return refuse(skill.id, 'no-opportunity', ['steps', 'hands.played']);
 
-  // 5. Precision, for a skill timed at all: only the steps where the window
-  // can tell the rhythm from its error count; none, and it is refused.
+  // 5. Precision, for a skill timed at all, per channel (L73): timing measures
+  // only the steps where the window can tell the rhythm from its error, and
+  // the other channels still count the rest; none resolvable, and it is refused.
   const timing = measurements.find((m) => m.channel === 'timing');
+  let timed: TimedSteps | undefined;
   if (timing) {
     const window = timing.toleranceMs;
     if (window === null) return refuse(skill.id, 'precision', ['input.toleranceMs'], 'window not recorded');
-    const rhythmAt = rhythmPrecisionByStep(located, vocabulary);
-    steps = steps.filter((step) =>
-      windowDiscriminates(window, precisionQuartersAt(skill, rhythmAt, step), model, step, observation.tempoPct),
+    const own = ownPrecisions(vocabulary);
+    const fallback = quartersOf(vocabulary.precision);
+    const rhythmAt = rhythmPrecisionByStep(located, vocabulary, own);
+    const resolved = steps.filter((step) =>
+      windowDiscriminates(window, precisionQuartersAt(skill, own, fallback, rhythmAt, step), model, step, observation.tempoPct),
     );
-    if (steps.length === 0) return refuse(skill.id, 'precision', ['input.toleranceMs', 'tempoPct'], `${String(window)} ms`);
+    if (resolved.length === 0) return refuse(skill.id, 'precision', ['input.toleranceMs', 'tempoPct'], `${String(window)} ms`);
+    timed = { steps: new Set(resolved), rhythm: rhythmDemands(vocabulary, own) };
   }
 
   // Attribution: only the opportunity steps count, per skill and per demand.
-  const evidence = evidenceFrom(measurements, skill, observation, steps, standard, met, model, at, where);
+  const evidence = evidenceFrom(measurements, skill, observation, steps, standard, met, model, at, where, timed);
   if (evidence.n === 0) {
     // Every opportunity step fell where the channel measured nothing (a note
     // never played has no onset to time).

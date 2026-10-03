@@ -1,0 +1,18 @@
+# checks for 9 path(s): 9 matched, 0 unmatched
+# app/src/score/WindowRenderer.ts: app/src/**, app/src/score/**
+# app/tests/unit/windowRendererStage.test.ts: app/tests/unit/*.test.ts
+# app/tests/e2e/score.window-rule.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/e2e/score.arrange-race.spec.ts: app/tests/e2e/*.spec.ts
+# docs/04-ui-spec.md: docs/04-ui-spec.md, docs/**
+# docs/08-score-render-states.md: docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/runs/U32a/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/pictures/u32a/nocturne__342x740__bars-4__settled.png: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/dark-ink.spec.ts tests/e2e/engine.spec.ts tests/e2e/excerpts.spec.ts tests/e2e/microscope.spec.ts tests/e2e/modes-engraving.spec.ts tests/e2e/perf.spec.ts tests/e2e/score-fit-paths.spec.ts tests/e2e/score.arrange-race.spec.ts tests/e2e/score.countin.spec.ts tests/e2e/score.density.spec.ts tests/e2e/score.fill.spec.ts tests/e2e/score.fuzz.spec.ts tests/e2e/score.head-height.spec.ts tests/e2e/score.hearIt.spec.ts tests/e2e/score.hearbar.spec.ts tests/e2e/score.latch.spec.ts tests/e2e/score.layout.spec.ts tests/e2e/score.pickup-numbers.spec.ts tests/e2e/score.readahead.spec.ts tests/e2e/score.renderer.fuzz.spec.ts tests/e2e/score.rotate.spec.ts tests/e2e/score.screen.spec.ts tests/e2e/score.slide.spec.ts tests/e2e/score.slots.spec.ts tests/e2e/score.spec.ts tests/e2e/score.states.spec.ts tests/e2e/score.window-rule.spec.ts tests/e2e/today.spec.ts --workers=4
+states	app	npm run states

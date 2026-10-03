@@ -1,0 +1,35 @@
+﻿npx.cmd : [WebServer] (node:90572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:428
++ ... pp"; $out = & npx.cmd playwright test tests/e2e/library.spec.ts --con ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:86160) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 15 tests using 2 workers
+
+(node:88028) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:59228) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  2 tests\e2e\library.spec.ts:36:3 › Library › lists the bundled catalog and filters it (1.5s)
+  ok  1 tests\e2e\library.spec.ts:53:3 › Library › imports an .mxl, opens it on the Score screen, and keeps it across a reload (3.0s)
+  ok  3 tests\e2e\library.spec.ts:76:3 › Library › imports plain MusicXML too, and takes its title from the file (1.5s)
+  ok  5 tests\e2e\library.spec.ts:96:3 › Library › a file it cannot read fails with one sentence, not a stack trace (895ms)
+  ok  4 tests\e2e\library.spec.ts:82:3 › Library › a PDF is marked "pages, not notes" and opens in the viewer, not the Score screen (984ms)
+  ok  6 tests\e2e\library.spec.ts:112:3 › Library › a broken MIDI file is told apart from a file that is not MIDI at all (889ms)
+  ok  7 tests\e2e\library.spec.ts:138:3 › Library › an imported score can be renamed and deleted (1.4s)
+  ok  8 tests\e2e\library.spec.ts:157:3 › Library › "Only mine" shows just the imports (985ms)
+  ok  9 tests\e2e\library.spec.ts:173:3 › Library obeys 04 §0 › the list starts inside the first screenful (R1) (882ms)
+  ok 10 tests\e2e\library.spec.ts:191:3 › Library obeys 04 §0 › a filter set behind the closed row is named in the count (R1) (985ms)
+  ok 11 tests\e2e\library.spec.ts:206:3 › Library obeys 04 §0 › Import, Shelf and Score folder sit above the list, not below it (R3) (835ms)
+  ok 12 tests\e2e\library.spec.ts:228:3 › Library obeys 04 §0 › the item sheet fits its last value on the screen (833ms)
+  ok 14 tests\e2e\library.spec.ts:339:3 › the learner’s project in the Library (G85) › Details opens the one project sheet: the title stays whole, a pause there reaches the row and the filter on closing, and the store holds the one project (G85a) (3.4s)
+  ok 13 tests\e2e\library.spec.ts:263:3 › the learner’s project in the Library (G85) › a piece Learning wears the badge, the Project filter finds it alone, and paused on its sheet it wears Paused and is found under Paused (4.0s)
+  ok 15 tests\e2e\library.spec.ts:457:3 › the letter rail in Library › waits for the title sort, then moves the window to the letter (1.5s)
+
+  15 passed (15.7s)
+

@@ -114,3 +114,7 @@ concepts first.
 `docs/pending-review.md`. If Part A changes nothing, **say so explicitly** — a review that
 confirms is worth as much as one that corrects, and Entry 17 currently has no second
 reader.
+
+## Record
+
+lane: T7 · closes: — · entry: — · role: history

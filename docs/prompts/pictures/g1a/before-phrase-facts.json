@@ -1,0 +1,23 @@
+{
+  "tag": "before",
+  "stored": {
+    "unseen": false,
+    "firstContact": "absent",
+    "lessonId": "1.5",
+    "material": "generator",
+    "recipe": true
+  },
+  "seedMatches": true,
+  "sheet": {
+    "heading": "Run finished",
+    "note": "Sight-reading counts only on music you have not heard — this run is kept as practice."
+  },
+  "history": {
+    "texts": [
+      "100% at 70% · not first sight · 0 min"
+    ],
+    "fit": [
+      true
+    ]
+  }
+}

@@ -1,0 +1,159 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a465c0bc54863c9b3/app
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts (30 tests | 8 failed) 8600ms
+   ❯ each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) (26)
+     × Quick check, teaching null: the groove is passed over for the next drill until approved 68ms
+     × Quick check, teaching false: the groove is passed over for the next drill until approved 59ms
+     × Quick check, teaching null: with nothing admitted it opens nothing and says there is no drill 63ms
+     × Quick check, teaching false: with nothing admitted it opens nothing and says there is no drill 61ms
+     × the option rows are the learner’s own choice: every authored option stays listed and tappable, the refused groove among them 67ms
+   ❯ every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) (4)
+     × every rung: no control resolves to an item the admission refuses 2ms
+     × every rung: each control opens the rung’s next admitted option for it, and is gone only where the rung has none 1ms
+     × the controls that change are those whose first choice the admission refuses; the ones gone are named 1ms
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 22 passed (30)
+   Start at  20:35:03
+   Duration  9.92s (tests 88%, environment 7%, transform 4%, import 2%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Quick check, teaching null: the groove is passed over for the next drill until approved
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Quick check, teaching false: the groove is passed over for the next drill until approved
+AssertionError: expected 'ex.groove' to be 'drill.prompt' // Object.is equality
+
+Expected: "drill.prompt"
+Received: "ex.groove"
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:210:34
+    208|     expect(admittedForTeaching(first)).toBe(teaching === true);
+    209|     const section = await mount(rung({ exerciseOptions: ['ex.groove', …
+    210|     expect(picks(section).check).toBe(teaching === true ? 'ex.groove' …
+       |                                  ^
+    211|   });
+    212|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Quick check, teaching null: with nothing admitted it opens nothing and says there is no drill
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Quick check, teaching false: with nothing admitted it opens nothing and says there is no drill
+AssertionError: expected 'ex.groove' to be null
+
+- Expected:
+null
+
++ Received:
+"ex.groove"
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:215:34
+    213|   it.each(REFUSED)('Quick check, teaching %s: with nothing admitted it…
+    214|     const section = await mount(rung({ exerciseOptions: ['ex.groove'] …
+    215|     expect(picks(section).check).toBeNull();
+       |                                  ^
+    216|     expect(section.querySelector('#lesson-status')?.textContent).toBe(…
+    217|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > the option rows are the learner’s own choice: every authored option stays listed and tappable, the refused groove among them
+AssertionError: expected [ 'ex.next', 'ex.next', …(3) ] to not include 'ex.groove'
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:264:47
+    262|     expect(tap(play as HTMLElement)).toBe('ex.groove');
+    263|     // …while no automatic control resolves to it.
+    264|     expect(Object.values(picks(section))).not.toContain('ex.groove');
+       |                                               ^
+    265|   });
+    266|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) > every rung: no control resolves to an item the admission refuses
+AssertionError: 11 controls: expected [ …(11) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "latin.3 check: exercise.clave.son-2-3",
++   "jazz.4 check: exercise.comping.f.charleston.intro",
++   "holiday.5 check: exercise.ostinato.a.arpeggio",
++   "jam.5 check: exercise.comping.e.charleston.intro",
++   "jazz.6 check: exercise.comping.c.charleston",
++   "blues.6 check: exercise.boogie.c.pinetop",
++   "rock.6 check: exercise.ostinato.a.arpeggio",
++   "jam.6 check: exercise.walking-bass.e.blues.intro",
++   "latin.6 check: exercise.tumbao.g",
++   "blues.7 check: exercise.stride.f",
++   "blues.8 check: exercise.walking-bass.e-flat.blues",
++ ]
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:334:59
+    332|       }
+    333|     }
+    334|     expect(offered, `${String(offered.length)} controls`).toEqual([]);
+       |                                                           ^
+    335|   });
+    336|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) > every rung: each control opens the rung’s next admitted option for it, and is gone only where the rung has none
+AssertionError: 11 controls: expected [ …(11) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "latin.3 check: drew exercise.clave.son-2-3, next admitted null",
++   "jazz.4 check: drew exercise.comping.f.charleston.intro, next admitted exercise.rhythm.shuffle-eighths.4bar",
++   "holiday.5 check: drew exercise.ostinato.a.arpeggio, next admitted exercise.arpeggio.e-major.2oct.both",
++   "jam.5 check: drew exercise.comping.e.charleston.intro, next admitted drill.jam.form-tracker",
++   "jazz.6 check: drew exercise.comping.c.charleston, next admitted exercise.voicing7.c.shell",
++   "blues.6 check: drew exercise.boogie.c.pinetop, next admitted exercise.turnaround.c.i-vi-ii-v",
++   "rock.6 check: drew exercise.ostinato.a.arpeggio, next admitted exercise.accompaniment.broken.a-minor.both",
++   "jam.6 check: drew exercise.walking-bass.e.blues.intro, next admitted exercise.blues.twelve-bar-shuffle.e",
++   "latin.6 check: drew exercise.tumbao.g, next admitted null",
++   "blues.7 check: drew exercise.stride.f, next admitted exercise.turnaround.f.iii-vi-ii-v",
++   "blues.8 check: drew exercise.walking-bass.e-flat.blues, next admitted drill.jazz.extended-chords",
++ ]
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:344:57
+    342|       for (const control of CONTROLS) if (now[control] !== want[contro…
+    343|     }
+    344|     expect(differ, `${String(differ.length)} controls`).toEqual([]);
+       |                                                         ^
+    345|   });
+    346|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) > the controls that change are those whose first choice the admission refuses; the ones gone are named
+AssertionError: expected [ 'latin duet', 'latin.3 duet' ] to deeply equal [ 'latin duet', 'latin.3 check', …(2) ]
+
+- Expected
++ Received
+
+  [
+    "latin duet",
+-   "latin.3 check",
+    "latin.3 duet",
+-   "latin.6 check",
+  ]
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:362:25
+    360|     expect(unexplained).toEqual([]);
+    361|     // Quick check's button stays and says there is no drill; the duet…
+    362|     expect(gone.sort()).toEqual(GONE);
+       |                         ^
+    363|   });
+    364| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+
+exit 1

@@ -1,0 +1,17 @@
+C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5542: MusicXMLWarning: Could not import pedal: Error in getting PedalMark
+  self.setDirectionInDirectionType(mxSpecificDirectionTag,
+syncopation@technique.5: 725 parent(s), 334616 window(s) (19223 across a repeat, never proposed), 143513 with the target; 40 candidate(s), 40 meeting every signal; 74 parent(s) skipped
+   12.00  song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bars 25–28 both  (every signal met)
+   12.00  song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bars 53–56 both  (every signal met)
+   12.00  song.pop.andrew-prahlow-solanum-s-theme-outer-wilds.pdmx bars 1–8 right  (every signal met)
+   12.00  song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx bars 30–33 right  (every signal met)
+   12.00  song.pop.john-legend-all-of-me-john-legend-easy-piano.pdmx bars 1–4 both  (every signal met)
+   12.00  song.pop.john-legend-all-of-me-john-legend-easy-piano.pdmx bars 1–4 right  (every signal met)
+   11.80  song.classical.lemoine-etude-op-37-no-35.pdmx bars 1–8 both  (every signal met)
+   11.80  song.classical.lemoine-etude-op-37-no-35.pdmx bars 1–8 right  (every signal met)
+   11.80  song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 8–11 both  (every signal met)
+   11.80  song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 8–11 right  (every signal met)
+   11.80  song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 36–39 both  (every signal met)
+   11.80  song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 36–39 right  (every signal met)
+wrote C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\build\excerpts\candidates.json and C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\app\public\dev\review\excerpts.json
+exit 0

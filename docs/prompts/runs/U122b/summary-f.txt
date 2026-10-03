@@ -1,0 +1,24 @@
+# U122b: per state, the cells that pass each check (24 cells; finished on the cells whose piece finishes).
+# B = c6 applied per state; A = the app's own state machine under c6. 3 counts the cells where nothing moved since the previous state.
+# 4 counts the cells with nothing covered deeper than a 2 px touch.
+
+rest              B: n 24 | 1 shown 24 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 18 | 4: {'covers': 6}
+rest-refused-play B: n 24 | 1 shown 24 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 18 | 4: {'covers': 6}
+rest-refused-hear B: n 24 | 1 shown 16 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 18 | 1 fails: {'named hear under floor 47x36': 4, 'named hear under floor 52x36': 4} | 4: {'covers': 6}
+rest-cleared      B: n 24 | 1 shown 24 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 18 | 4: {'covers': 6}
+rest-tempo        B: n 24 | 1 shown 24 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 18 | 4: {'covers': 6}
+count             B: n 24 | 1 shown 24 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 24
+count             A: n 24 | 1 shown  0 | 2 hidden  0 | 3 unmoved 24 | 4 no cover  0 | 1 fails: {'count not drawn whole': 24, 'direct pause missed 5/5': 19, 'direct pause not drawn': 5} | 2 fails: {'count-in over the stage': 24, 'mode drawn': 19, 'tempo-label drawn': 19, 'hear drawn': 19, 'more drawn': 19, 'back-side drawn': 19, 'hands drawn': 19} | 4: {'covers': 24}
+count2            B: n 24 | 1 shown 18 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 24 | 1 fails: {'numerals past the window (-7 to 192 of 568)': 1, 'numerals past the window (-11 to 188 of 568)': 1, 'numerals past the window (-13 to 172 of 568)': 1, 'numerals past the window (-17 to 168 of 568)': 1, 'numerals past the window (-33 to 166 of 568)': 1, 'numerals past the window (-38 to 162 of 568)': 1} | 4: {'touch': 2}
+armed             B: n 24 | 1 shown 24 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 24
+armed             A: n 24 | 1 shown  0 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 24 | 1 fails: {'direct pause not drawn': 24}
+playing           B: n 24 | 1 shown 24 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 24
+playing           A: n 24 | 1 shown  0 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 24 | 1 fails: {'direct pause not drawn': 24}
+paused            B: n 24 | 1 shown 24 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 22 | 4: {'covers': 2}
+paused            A: n 24 | 1 shown  0 | 2 hidden  0 | 3 unmoved 24 | 4 no cover 23 | 1 fails: {'name not drawn': 24, 'bar n/m only in the chip': 24, 'direct ▶ not drawn': 24, 'mode not drawn': 24, 'tempo-label not drawn': 24, 'more not drawn': 24, 'hands not drawn,not drawn,not drawn': 24} | 2 fails: {'the paused sentence in the chip': 24} | 4: {'covers': 1}
+paused-refused    B: n 24 | 1 shown 24 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 22 | 4: {'covers': 2}
+paused-refused    A: n 24 | 1 shown  0 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 24 | 1 fails: {'sentence in the chip': 24, 'named play not drawn': 24}
+paused-cleared    B: n 24 | 1 shown 24 | 2 hidden 24 | 3 unmoved 24 | 4 no cover 22 | 4: {'covers': 2}
+paused-cleared    A: n 24 | 1 shown  0 | 2 hidden  0 | 3 unmoved 24 | 4 no cover 23 | 1 fails: {'name not drawn': 24, 'bar n/m only in the chip': 24, 'direct ▶ not drawn': 24, 'mode not drawn': 24, 'tempo-label not drawn': 24, 'more not drawn': 24, 'hands not drawn,not drawn,not drawn': 24} | 2 fails: {'the paused sentence in the chip': 24} | 4: {'covers': 1}
+finished          B: n 12 | 1 shown 12 | 2 hidden 12 | 3 unmoved 12 | 4 no cover 12
+finished          A: n 12 | 1 shown  3 | 2 hidden  0 | 3 unmoved 12 | 4 no cover 12 | 1 fails: {'next action below the fold': 4, 'next action partly in view (34%)': 1, 'next action partly in view (52%)': 1, 'next action partly in view (97%)': 1, 'next action partly in view (73%)': 1, 'next action partly in view (19%)': 1} | 2 fails: {"chip 'bar 4 / 4'": 12}

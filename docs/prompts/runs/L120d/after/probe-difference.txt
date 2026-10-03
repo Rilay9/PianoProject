@@ -1,0 +1,36 @@
+﻿the app's probe, base -> after (git diff --no-index --ignore-cr-at-eol), refusals then the coping question alone; and curriculum.json base -> after
+warning: in the working copy of 'docs/prompts/runs/L120d/base/probe-refusals.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/prompts/runs/L120d/after/probe-refusals.txt', LF will be replaced by CRLF the next time Git touches it
+diff --git a/docs/prompts/runs/L120d/base/probe-refusals.txt b/docs/prompts/runs/L120d/after/probe-refusals.txt
+index 742ac269..fa802f08 100644
+--- a/docs/prompts/runs/L120d/base/probe-refusals.txt
++++ b/docs/prompts/runs/L120d/after/probe-refusals.txt
+@@ -5 +4,0 @@
+-1.2 song.holiday.jingle-bells.rh: {"verdict":"ineligible","why":"untaught","demands":["interval.leap"]}
+@@ -13 +12 @@
+-1.4 song.folk.when-the-saints.alternating: {"verdict":"ineligible","why":"untaught","demands":["interval.leap","rhythm.syncopation"]}
++1.4 song.folk.when-the-saints.alternating: {"verdict":"ineligible","why":"untaught","demands":["rhythm.syncopation"]}
+@@ -59,2 +57,0 @@ holiday exercise.cadence.c.root: {"verdict":"ineligible","why":"untaught","deman
+-holiday song.holiday.jingle-bells.rh: {"verdict":"ineligible","why":"untaught","demands":["interval.leap"]}
+-holiday song.holiday.jingle-bells.ht: {"verdict":"ineligible","why":"untaught","demands":["interval.leap"]}
+@@ -66 +63 @@ hymns.2 exercise.cadence.c.root: {"verdict":"ineligible","why":"untaught","deman
+-hymns.2 song.folk.when-the-saints.alternating: {"verdict":"ineligible","why":"untaught","demands":["interval.leap","rhythm.syncopation"]}
++hymns.2 song.folk.when-the-saints.alternating: {"verdict":"ineligible","why":"untaught","demands":["rhythm.syncopation"]}
+warning: in the working copy of 'docs/prompts/runs/L120d/base/probe-uncoped.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/prompts/runs/L120d/after/probe-uncoped.txt', LF will be replaced by CRLF the next time Git touches it
+diff --git a/docs/prompts/runs/L120d/base/probe-uncoped.txt b/docs/prompts/runs/L120d/after/probe-uncoped.txt
+index 5e9f4c17..638e301f 100644
+--- a/docs/prompts/runs/L120d/base/probe-uncoped.txt
++++ b/docs/prompts/runs/L120d/after/probe-uncoped.txt
+@@ -4 +3,0 @@
+-1.2 song.holiday.jingle-bells.rh: ["interval.leap"]
+@@ -12 +11 @@
+-1.4 song.folk.when-the-saints.alternating: ["interval.leap","rhythm.syncopation"]
++1.4 song.folk.when-the-saints.alternating: ["rhythm.syncopation"]
+@@ -57,2 +55,0 @@ holiday exercise.cadence.c.root: ["pitch.ledger","interval.leap","range.beyond-p
+-holiday song.holiday.jingle-bells.rh: ["interval.leap"]
+-holiday song.holiday.jingle-bells.ht: ["interval.leap"]
+@@ -64 +61 @@ hymns.2 exercise.cadence.c.root: ["pitch.ledger","interval.leap","range.beyond-p
+-hymns.2 song.folk.when-the-saints.alternating: ["interval.leap","rhythm.syncopation"]
++hymns.2 song.folk.when-the-saints.alternating: ["rhythm.syncopation"]
+curriculum.json base vs after: exit 0 (0 = identical)

@@ -1,0 +1,124 @@
+# walk-as-grammar
+test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) ... 
+  test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.interval-reading.c-major.4-4.8bar.sustained.01') ... FAIL
+  test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.position-shift.c-major.4-4.12bar.blocked.01') ... FAIL
+  test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.subdivision.c-major.4-4.8bar.sustained.01') ... FAIL
+  test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.syncopation.c-major.4-4.8bar.broken.01') ... FAIL
+  test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.metre-compound.c-major.6-8.8bar.broken.01') ... FAIL
+  test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.texture-hands-together.c-major.4-4.8bar.sustained.01') ... FAIL
+
+======================================================================
+FAIL: test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.interval-reading.c-major.4-4.8bar.sustained.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 221, in test_the_grammar_meets_every_bound_on_every_recipe
+    self.assertEqual(bound_faults(table()[(recipe, "grammar")]), [])
+AssertionError: Lists differ: ['scoreWorst 0.669 < 0.8', 'oneContour 0.0[48 chars]001'] != []
+
+First list contains 3 additional elements.
+First extra element 0:
+'scoreWorst 0.669 < 0.8'
+
++ []
+- ['scoreWorst 0.669 < 0.8',
+-  'oneContour 0.000 < 0.45',
+-  'scoreMedian 0.760 < 0.8500000000000001']
+
+======================================================================
+FAIL: test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.position-shift.c-major.4-4.12bar.blocked.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 221, in test_the_grammar_meets_every_bound_on_every_recipe
+    self.assertEqual(bound_faults(table()[(recipe, "grammar")]), [])
+AssertionError: Lists differ: ['scoreWorst 0.718 < 0.8', 'oneContour 0.0[70 chars].25'] != []
+
+First list contains 4 additional elements.
+First extra element 0:
+'scoreWorst 0.718 < 0.8'
+
++ []
+- ['scoreWorst 0.718 < 0.8',
+-  'oneContour 0.033 < 0.45',
+-  'scoreMedian 0.776 < 0.8500000000000001',
+-  'leaps 0.257 > 0.25']
+
+======================================================================
+FAIL: test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.subdivision.c-major.4-4.8bar.sustained.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 221, in test_the_grammar_meets_every_bound_on_every_recipe
+    self.assertEqual(bound_faults(table()[(recipe, "grammar")]), [])
+AssertionError: Lists differ: ['scoreWorst 0.671 < 0.8', 'oneContour 0.0[91 chars]0.9'] != []
+
+First list contains 5 additional elements.
+First extra element 0:
+'scoreWorst 0.671 < 0.8'
+
++ []
+- ['scoreWorst 0.671 < 0.8',
+-  'oneContour 0.013 < 0.45',
+-  'scoreMedian 0.744 < 0.8500000000000001',
+-  'leaps 0.265 > 0.25',
+-  'motif 0.825 < 0.9']
+
+======================================================================
+FAIL: test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.syncopation.c-major.4-4.8bar.broken.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 221, in test_the_grammar_meets_every_bound_on_every_recipe
+    self.assertEqual(bound_faults(table()[(recipe, "grammar")]), [])
+AssertionError: Lists differ: ['scoreWorst 0.662 < 0.8', 'oneContour 0.0[70 chars].25'] != []
+
+First list contains 4 additional elements.
+First extra element 0:
+'scoreWorst 0.662 < 0.8'
+
++ []
+- ['scoreWorst 0.662 < 0.8',
+-  'oneContour 0.013 < 0.45',
+-  'scoreMedian 0.751 < 0.8500000000000001',
+-  'leaps 0.359 > 0.25']
+
+======================================================================
+FAIL: test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.metre-compound.c-major.6-8.8bar.broken.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 221, in test_the_grammar_meets_every_bound_on_every_recipe
+    self.assertEqual(bound_faults(table()[(recipe, "grammar")]), [])
+AssertionError: Lists differ: ['scoreWorst 0.648 < 0.8', 'oneContour 0.3[91 chars]0.9'] != []
+
+First list contains 5 additional elements.
+First extra element 0:
+'scoreWorst 0.648 < 0.8'
+
++ []
+- ['scoreWorst 0.648 < 0.8',
+-  'oneContour 0.325 < 0.45',
+-  'scoreMedian 0.783 < 0.8500000000000001',
+-  'leaps 0.327 > 0.25',
+-  'motif 0.875 < 0.9']
+
+======================================================================
+FAIL: test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.texture-hands-together.c-major.4-4.8bar.sustained.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 221, in test_the_grammar_meets_every_bound_on_every_recipe
+    self.assertEqual(bound_faults(table()[(recipe, "grammar")]), [])
+AssertionError: Lists differ: ['scoreWorst 0.709 < 0.8', 'oneContour 0.0[70 chars].25'] != []
+
+First list contains 4 additional elements.
+First extra element 0:
+'scoreWorst 0.709 < 0.8'
+
++ []
+- ['scoreWorst 0.709 < 0.8',
+-  'oneContour 0.013 < 0.45',
+-  'scoreMedian 0.756 < 0.8500000000000001',
+-  'leaps 0.272 > 0.25']
+
+----------------------------------------------------------------------
+Ran 1 test in 35.148s
+
+FAILED (failures=6)
+
+exit 1

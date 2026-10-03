@@ -1,0 +1,10 @@
+$ (cwd .) python -m unittest discover -s tools/content/tests -t tools/content -p test_prompt_views.py -v
+test_every_audit_part_has_a_view (tests.test_prompt_views.PromptViewsAreFresh.test_every_audit_part_has_a_view) ... ok
+test_every_series_has_a_view (tests.test_prompt_views.PromptViewsAreFresh.test_every_series_has_a_view) ... ok
+test_views_match_the_canonical_files (tests.test_prompt_views.PromptViewsAreFresh.test_views_match_the_canonical_files) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.018s
+
+OK
+exit 0

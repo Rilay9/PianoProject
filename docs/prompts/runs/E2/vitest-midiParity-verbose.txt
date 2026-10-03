@@ -1,0 +1,51 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ab0ca07b13a3644b6/app
+
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > has a reference to compare against 1ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > crossed-hands > reads the same tracks, note for note 1ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > crossed-hands > reads the same metre, tempo and key signatures 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > crossed-hands > chooses the same grid for every bar 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > crossed-hands > reaches the same verdict on swing, by the same counts 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > crossed-hands > quantises every onset and release to the same place 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > crossed-hands > decides the hands the same way, and says the same thing about them 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > crossed-hands > estimates the same key and writes the same one 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > crossed-hands > passes the same self-check: nothing lost, nothing added, every bar adding up 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > crossed-hands > writes the same notes, in the same hands, for the same durations 0ms
+ ↓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > crossed-hands > splits the hands the same way
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-clean > reads the same tracks, note for note 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-clean > reads the same metre, tempo and key signatures 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-clean > chooses the same grid for every bar 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-clean > reaches the same verdict on swing, by the same counts 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-clean > quantises every onset and release to the same place 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-clean > decides the hands the same way, and says the same thing about them 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-clean > estimates the same key and writes the same one 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-clean > passes the same self-check: nothing lost, nothing added, every bar adding up 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-clean > writes the same notes, in the same hands, for the same durations 0ms
+ ↓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-clean > splits the hands the same way
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-jitter35 > reads the same tracks, note for note 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-jitter35 > reads the same metre, tempo and key signatures 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-jitter35 > chooses the same grid for every bar 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-jitter35 > reaches the same verdict on swing, by the same counts 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-jitter35 > quantises every onset and release to the same place 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-jitter35 > decides the hands the same way, and says the same thing about them 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-jitter35 > estimates the same key and writes the same one 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-jitter35 > passes the same self-check: nothing lost, nothing added, every bar adding up 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-jitter35 > writes the same notes, in the same hands, for the same durations 0ms
+ ↓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > rendered-jitter35 > splits the hands the same way
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > two-hands > reads the same tracks, note for note 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > two-hands > reads the same metre, tempo and key signatures 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > two-hands > chooses the same grid for every bar 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > two-hands > reaches the same verdict on swing, by the same counts 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > two-hands > quantises every onset and release to the same place 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > two-hands > decides the hands the same way, and says the same thing about them 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > two-hands > estimates the same key and writes the same one 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > two-hands > passes the same self-check: nothing lost, nothing added, every bar adding up 0ms
+ ✓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > two-hands > writes the same notes, in the same hands, for the same durations 0ms
+ ↓ tests/unit/midiParity.test.ts > the port agrees with the Python converter > two-hands > splits the hands the same way
+ ✓ tests/unit/midiParity.test.ts > the parity reference > is made by a script and a CI step the failure above names 0ms
+
+ Test Files  1 passed (1)
+      Tests  38 passed | 4 skipped (42)
+   Start at  23:14:03
+   Duration  239ms (transform 67%, import 26%, tests 5%, worker 3%)
+

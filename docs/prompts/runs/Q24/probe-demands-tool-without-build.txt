@@ -1,0 +1,18 @@
+=== demands-probe: preconditions moved aside: ['app\\public\\content\\catalog.json', 'app\\public\\content\\curriculum.json', 'build\\catalog.generated.json']
+test_a_file_that_will_not_load_is_named_not_dropped (tests.test_demands_tool.TestDemandsTool.test_a_file_that_will_not_load_is_named_not_dropped) ... ok
+test_a_quarried_piece_is_measured_by_the_one_definition (tests.test_demands_tool.TestDemandsTool.test_a_quarried_piece_is_measured_by_the_one_definition) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 58.763s
+
+OK
+=== demands-probe: without the precondition, exit 0 (expected 1)
+=== demands-probe: preconditions back, sha256 unchanged: True
+test_a_file_that_will_not_load_is_named_not_dropped (tests.test_demands_tool.TestDemandsTool.test_a_file_that_will_not_load_is_named_not_dropped) ... ok
+test_a_quarried_piece_is_measured_by_the_one_definition (tests.test_demands_tool.TestDemandsTool.test_a_quarried_piece_is_measured_by_the_one_definition) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 5.195s
+
+OK
+=== demands-probe: with the precondition, exit 0 (expected 0)

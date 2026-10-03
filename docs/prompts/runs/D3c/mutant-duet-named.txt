@@ -1,0 +1,122 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a465c0bc54863c9b3/app
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts (30 tests | 6 failed) 8628ms
+   ❯ each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) (26)
+     × the duet’s named item, teaching null: an unadmitted named item draws no button, as a name that is not the rung’s own does; approved, it opens 67ms
+     × the duet’s named item, teaching false: an unadmitted named item draws no button, as a name that is not the rung’s own does; approved, it opens 59ms
+     × the option rows are the learner’s own choice: every authored option stays listed and tappable, the refused groove among them 66ms
+   ❯ every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) (4)
+     × every rung: no control resolves to an item the admission refuses 2ms
+     × every rung: each control opens the rung’s next admitted option for it, and is gone only where the rung has none 1ms
+     × the controls that change are those whose first choice the admission refuses; the ones gone are named 1ms
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 24 passed (30)
+   Start at  20:35:14
+   Duration  9.98s (tests 87%, environment 7%, transform 4%, import 2%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > the duet’s named item, teaching null: an unadmitted named item draws no button, as a name that is not the rung’s own does; approved, it opens
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > the duet’s named item, teaching false: an unadmitted named item draws no button, as a name that is not the rung’s own does; approved, it opens
+AssertionError: expected 'ex.groove' to be null // Object.is equality
+
+- Expected:
+null
+
++ Received:
+"ex.groove"
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:224:33
+    222|     const section = await mount(rung({ exerciseOptions: ['ex.groove'],…
+    223|     // Not the song instead: the rung named what it meant, and that is…
+    224|     expect(picks(section).duet).toBe(teaching === true ? 'ex.groove' :…
+       |                                 ^
+    225|   });
+    226|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > the option rows are the learner’s own choice: every authored option stays listed and tappable, the refused groove among them
+AssertionError: expected [ 'ex.next', 'ex.next', …(3) ] to not include 'ex.groove'
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:264:47
+    262|     expect(tap(play as HTMLElement)).toBe('ex.groove');
+    263|     // …while no automatic control resolves to it.
+    264|     expect(Object.values(picks(section))).not.toContain('ex.groove');
+       |                                               ^
+    265|   });
+    266|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) > every rung: no control resolves to an item the admission refuses
+AssertionError: 2 controls: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "latin.3 duet: exercise.clave.son-3-2.pulse",
++   "latin duet: exercise.latin-groove.c.son-3-2",
++ ]
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:334:59
+    332|       }
+    333|     }
+    334|     expect(offered, `${String(offered.length)} controls`).toEqual([]);
+       |                                                           ^
+    335|   });
+    336|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) > every rung: each control opens the rung’s next admitted option for it, and is gone only where the rung has none
+AssertionError: 2 controls: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "latin.3 duet: drew exercise.clave.son-3-2.pulse, next admitted null",
++   "latin duet: drew exercise.latin-groove.c.son-3-2, next admitted null",
++ ]
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:344:57
+    342|       for (const control of CONTROLS) if (now[control] !== want[contro…
+    343|     }
+    344|     expect(differ, `${String(differ.length)} controls`).toEqual([]);
+       |                                                         ^
+    345|   });
+    346|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) > the controls that change are those whose first choice the admission refuses; the ones gone are named
+AssertionError: expected [ 'latin.3 check', 'latin.6 check' ] to deeply equal [ 'latin duet', 'latin.3 check', …(2) ]
+
+- Expected
++ Received
+
+  [
+-   "latin duet",
+    "latin.3 check",
+-   "latin.3 duet",
+    "latin.6 check",
+  ]
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:362:25
+    360|     expect(unexplained).toEqual([]);
+    361|     // Quick check's button stays and says there is no drill; the duet…
+    362|     expect(gone.sort()).toEqual(GONE);
+       |                         ^
+    363|   });
+    364| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+
+exit 1

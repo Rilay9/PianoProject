@@ -1,0 +1,66 @@
+latin | exercise.rhythm.syncopated.4bar | no path: lost lesson:exercise.walking-bass.c.ii-v-i, skill:exercise.clave.bossa.pulse; gained skill:exercise.tresillo.c, skill:exercise.tresillo.f
+latin | drill.pattern.lh-accompaniment | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained -
+latin | exercise.rhythm.shuffle-eighths.4bar | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained -
+latin | exercise.comping.c.off-beats | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained skill:exercise.comping.b-flat.off-beats
+latin | exercise.syncopation.tied-across-bar | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained -
+latin | exercise.clave.son-3-2 | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained skill:exercise.clave.rumba-2-3
+latin | exercise.clave.son-2-3 | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained skill:exercise.clave.rumba-2-3
+latin | exercise.tumbao.c | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained skill:exercise.tumbao.d
+latin | exercise.montuno.c.2note.son-3-2 | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained skill:exercise.montuno.a.2note.son-3-2
+latin | exercise.montuno.c.3note.son-3-2 | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained skill:exercise.montuno.d.3note.son-3-2
+latin | exercise.latin-groove.c.son-3-2 | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained skill:exercise.latin-groove.d.son-3-2
+latin | song.folk.exercise-cielito-lindo.pdmx | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained lesson:song.pop.guantanamera.pdmx
+latin | song.pop.guantanamera.pdmx | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained lesson:song.folk.exercise-cielito-lindo.pdmx
+latin | song.folk.so-danco-samba.pdmx | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained lesson:song.folk.exercise-cielito-lindo.pdmx
+latin | song.folk.insensatez-how-insensitive-jobim.pdmx | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained lesson:song.folk.exercise-cielito-lindo.pdmx
+latin | song.pop.misc-tunes-tico-tico-no-fub-a.pdmx | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained lesson:song.folk.exercise-cielito-lindo.pdmx
+latin | song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx | no path: lost lesson:exercise.walking-bass.c.ii-v-i; gained lesson:song.folk.exercise-cielito-lindo.pdmx
+blues.4 | drill.blues.lh-patterns | no path: lost lesson:exercise.rhythm.syncopated.4bar; gained -
+blues.4 | exercise.rhythm.syncopated.4bar | no path: lost skill:exercise.tresillo.c, skill:exercise.tresillo.f, skill:exercise.tresillo.g, skill:exercise.clave.bossa, skill:exercise.clave.rumba-2-3; gained skill:drill.reading.sight-reading-2, skill:exercise.ostinato.a.arpeggio, skill:exercise.ostinato.d.arpeggio, skill:exercise.ostinato.e.arpeggio, skill:exercise.ostinato.a.fifths
+blues.4 | exercise.rhythm.syncopated.4bar | through blues.5-6: lost skill:exercise.tresillo.c, skill:exercise.tresillo.f, skill:exercise.tresillo.g, skill:exercise.clave.bossa, skill:exercise.clave.rumba-2-3; gained skill:exercise.clave.bossa.pulse, skill:exercise.clave.rumba-2-3.pulse, skill:exercise.clave.rumba-3-2.pulse, skill:exercise.clave.son-2-3.pulse, skill:exercise.clave.son-3-2.pulse
+blues.4 | exercise.arpeggio7.c-dominant7.2oct.both | no path: lost lesson:exercise.rhythm.syncopated.4bar; gained -
+blues.4 | exercise.rhythm.shuffle-eighths.4bar | no path: lost lesson:exercise.rhythm.syncopated.4bar; gained -
+blues.4 | exercise.blues-scale.c.1oct.right | no path: lost lesson:exercise.rhythm.syncopated.4bar; gained -
+blues.4 | exercise.blues.twelve-bar-shuffle.c | no path: lost lesson:exercise.rhythm.syncopated.4bar; gained -
+blues.4 | exercise.blues.twelve-bar-shuffle.f | no path: lost lesson:exercise.rhythm.syncopated.4bar; gained -
+blues.4 | exercise.blues.twelve-bar-shuffle.g | no path: lost lesson:exercise.rhythm.syncopated.4bar; gained -
+blues.4 | song.pop.careless-love-blues.pdmx | no path: lost lesson:exercise.rhythm.syncopated.4bar, lesson:song.classical.st-louis-blues.pdmx, lesson:song.blues.hesitating-blues; gained -
+blues.4 | song.classical.12-bar-blues.pdmx | no path: lost lesson:exercise.rhythm.syncopated.4bar, lesson:song.classical.st-louis-blues.pdmx, lesson:song.blues.hesitating-blues; gained -
+blues.4 | song.classical.st-louis-blues.pdmx | no path: lost lesson:exercise.rhythm.syncopated.4bar, lesson:song.blues.hesitating-blues; gained -
+blues.4 | song.blues.hesitating-blues | no path: lost lesson:exercise.rhythm.syncopated.4bar, lesson:song.classical.st-louis-blues.pdmx; gained -
+hymns | drill.chord.primary-c-g-f | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions; gained -
+hymns | drill.pattern.lh-accompaniment | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions; gained -
+hymns | exercise.cadence.c.voice-led | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions; gained -
+hymns | exercise.slash-bass.c | no path: lost lesson:exercise.loop4.c.inversions; gained -
+hymns | exercise.loop4.c.inversions | no path: lost lesson:exercise.slash-bass.c; gained -
+hymns | song.folk.when-the-saints.f | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.classical.abide-with-me-william-henry-monk.pdmx, lesson:song.folk.what-a-friend-we-have-in-jesus.pdmx, lesson:song.pop.martin-j-nystrom-as-the-deer-piano.pdmx; gained -
+hymns | song.folk.when-the-saints.f | through blues.5-6: lost -; gained lesson:song.folk.greensleeves.chords, lesson:song.folk.amazing-grace-satb.pdmx, lesson:song.classical.rock-of-ages-cleft-for-me.pdmx, lesson:song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx
+hymns | song.folk.greensleeves.chords | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.classical.abide-with-me-william-henry-monk.pdmx, lesson:song.folk.what-a-friend-we-have-in-jesus.pdmx, lesson:song.pop.martin-j-nystrom-as-the-deer-piano.pdmx; gained -
+hymns | song.folk.greensleeves.chords | through blues.5-6: lost -; gained lesson:song.folk.when-the-saints.f, lesson:song.folk.amazing-grace-satb.pdmx, lesson:song.classical.rock-of-ages-cleft-for-me.pdmx, lesson:song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx
+hymns | song.folk.amazing-grace-satb.pdmx | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.classical.abide-with-me-william-henry-monk.pdmx, lesson:song.folk.what-a-friend-we-have-in-jesus.pdmx, lesson:song.pop.martin-j-nystrom-as-the-deer-piano.pdmx; gained -
+hymns | song.folk.amazing-grace-satb.pdmx | through blues.5-6: lost -; gained lesson:song.folk.when-the-saints.f, lesson:song.folk.greensleeves.chords, lesson:song.classical.rock-of-ages-cleft-for-me.pdmx, lesson:song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx
+hymns | song.classical.abide-with-me-william-henry-monk.pdmx | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.folk.what-a-friend-we-have-in-jesus.pdmx, lesson:song.pop.martin-j-nystrom-as-the-deer-piano.pdmx; gained -
+hymns | song.classical.abide-with-me-william-henry-monk.pdmx | through blues.5-6: lost -; gained lesson:song.folk.when-the-saints.f, lesson:song.folk.greensleeves.chords, lesson:song.folk.amazing-grace-satb.pdmx, lesson:song.classical.rock-of-ages-cleft-for-me.pdmx, lesson:song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx
+hymns | song.classical.rock-of-ages-cleft-for-me.pdmx | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.classical.abide-with-me-william-henry-monk.pdmx, lesson:song.folk.what-a-friend-we-have-in-jesus.pdmx, lesson:song.pop.martin-j-nystrom-as-the-deer-piano.pdmx; gained -
+hymns | song.classical.rock-of-ages-cleft-for-me.pdmx | through blues.5-6: lost -; gained lesson:song.folk.when-the-saints.f, lesson:song.folk.greensleeves.chords, lesson:song.folk.amazing-grace-satb.pdmx, lesson:song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx
+hymns | song.folk.what-a-friend-we-have-in-jesus.pdmx | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.classical.abide-with-me-william-henry-monk.pdmx, lesson:song.pop.martin-j-nystrom-as-the-deer-piano.pdmx; gained -
+hymns | song.folk.what-a-friend-we-have-in-jesus.pdmx | through blues.5-6: lost -; gained lesson:song.folk.when-the-saints.f, lesson:song.folk.greensleeves.chords, lesson:song.folk.amazing-grace-satb.pdmx, lesson:song.classical.rock-of-ages-cleft-for-me.pdmx, lesson:song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx
+hymns | song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.classical.abide-with-me-william-henry-monk.pdmx, lesson:song.folk.what-a-friend-we-have-in-jesus.pdmx, lesson:song.pop.martin-j-nystrom-as-the-deer-piano.pdmx; gained -
+hymns | song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx | through blues.5-6: lost -; gained lesson:song.folk.when-the-saints.f, lesson:song.folk.greensleeves.chords, lesson:song.folk.amazing-grace-satb.pdmx, lesson:song.classical.rock-of-ages-cleft-for-me.pdmx
+hymns | song.classical.jesus-loves-me.pdmx | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.classical.abide-with-me-william-henry-monk.pdmx, lesson:song.folk.what-a-friend-we-have-in-jesus.pdmx, lesson:song.pop.martin-j-nystrom-as-the-deer-piano.pdmx; gained -
+hymns | song.classical.jesus-loves-me.pdmx | through blues.5-6: lost -; gained lesson:song.folk.when-the-saints.f, lesson:song.folk.greensleeves.chords, lesson:song.folk.amazing-grace-satb.pdmx, lesson:song.classical.rock-of-ages-cleft-for-me.pdmx
+hymns | song.pop.martin-j-nystrom-as-the-deer-piano.pdmx | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.classical.abide-with-me-william-henry-monk.pdmx, lesson:song.folk.what-a-friend-we-have-in-jesus.pdmx; gained -
+hymns | song.pop.martin-j-nystrom-as-the-deer-piano.pdmx | through blues.5-6: lost -; gained lesson:song.folk.when-the-saints.f, lesson:song.folk.greensleeves.chords, lesson:song.folk.amazing-grace-satb.pdmx, lesson:song.classical.rock-of-ages-cleft-for-me.pdmx, lesson:song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx
+hymns | song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.classical.abide-with-me-william-henry-monk.pdmx, lesson:song.folk.what-a-friend-we-have-in-jesus.pdmx, lesson:song.pop.martin-j-nystrom-as-the-deer-piano.pdmx; gained -
+hymns | song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx | through blues.5-6: lost -; gained lesson:song.folk.when-the-saints.f, lesson:song.folk.greensleeves.chords, lesson:song.folk.amazing-grace-satb.pdmx, lesson:song.classical.rock-of-ages-cleft-for-me.pdmx
+hymns | song.folk.10000-reasons-matt-redman.pdmx | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.classical.abide-with-me-william-henry-monk.pdmx, lesson:song.folk.what-a-friend-we-have-in-jesus.pdmx, lesson:song.pop.martin-j-nystrom-as-the-deer-piano.pdmx; gained -
+hymns | song.folk.10000-reasons-matt-redman.pdmx | through blues.5-6: lost -; gained lesson:song.folk.when-the-saints.f, lesson:song.folk.greensleeves.chords, lesson:song.folk.amazing-grace-satb.pdmx, lesson:song.classical.rock-of-ages-cleft-for-me.pdmx
+hymns | song.classical.simple-gifts-2-part-round.pdmx | no path: lost lesson:exercise.slash-bass.c, lesson:exercise.loop4.c.inversions, lesson:song.classical.abide-with-me-william-henry-monk.pdmx, lesson:song.folk.what-a-friend-we-have-in-jesus.pdmx, lesson:song.pop.martin-j-nystrom-as-the-deer-piano.pdmx; gained -
+hymns | song.classical.simple-gifts-2-part-round.pdmx | through blues.5-6: lost -; gained lesson:song.folk.when-the-saints.f, lesson:song.folk.greensleeves.chords, lesson:song.folk.amazing-grace-satb.pdmx, lesson:song.classical.rock-of-ages-cleft-for-me.pdmx
+practice.1 | exercise.hanon.01.both | through blues.5-6: lost -; gained lesson:exercise.five-finger.c-major.both
+practice.1 | drill.rhythm.mixed-values | through blues.5-6: lost kind:exercise.rhythm.waltz-dotted-half.4bar, kind:exercise.rhythm.waltz-half-quarter.4bar, kind:drill.rhythm.three-four, kind:exercise.rhythm.waltz-quarters.4bar, kind:exercise.rhythm.quarters.4bar, kind:exercise.rhythm.half-and-quarters.4bar, kind:drill.rhythm.quarters-rests; gained lesson:exercise.five-finger.c-major.both
+practice.1 | song.folk.hot-cross-buns | no path: lost lesson:song.classical.ode-to-joy.rh; gained -
+practice.1 | song.folk.hot-cross-buns | through blues.5-6: lost -; gained lesson:exercise.five-finger.c-major.both
+practice.1 | song.classical.ode-to-joy.rh | through blues.5-6: lost -; gained lesson:exercise.five-finger.c-major.both, lesson:song.folk.hot-cross-buns
+
+rungs whose every sheet is unchanged: blues.5, blues.6, jam.6, jazz.5, jazz.6

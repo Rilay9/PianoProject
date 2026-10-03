@@ -22,12 +22,15 @@
  * - **present** — what each rung listing the row says its reading drill
  *   trains (`PROMISED_BY_RUNG`, each line quoting where it is said) and what the
  *   row's own `concepts` claim;
- * - **absent** — every demand vocabulary v0 says is taught after the earliest
- *   rung listing the row (`content/curriculum/vocabulary/demands.json`,
- *   `taughtAt`, placed in the curriculum's own order): no eighths before 2.2, no
- *   ties or dotted quarters before 2.4, no key signature before 3.1, no
- *   syncopation, triplets or compound time before 4.5 — and 4/4 only before 4.5;
- *   and, since C4b, nothing no rung teaches at all (sixteenths, S23);
+ * - **absent** — every demand a rung listing the row has not taught
+ *   (`content/curriculum/vocabulary/demands.json`, `taughtAt`, read against
+ *   the rung's ancestry since E0a, where it was the curriculum's order at the
+ *   earliest listing): no eighths before 2.2, no ties or dotted quarters before
+ *   2.4, no key signature before 3.1, no syncopation, triplets or compound time
+ *   before 4.5 — and 4/4 only before 4.5; no walking bass off the paths of
+ *   blues.5, jazz.6 and jam.6 (E0b: `taughtAt` lists every rung that teaches a
+ *   demand, one per path); and, since C4b, nothing no rung teaches at all
+ *   (sixteenths, S23);
  * - **declared** — every skill the row says it practises (`targetSkills`) has
  *   its opportunity somewhere in the row's phrases;
  * - **well formed** — a rest inside a triplet is a triplet rest, and short
@@ -99,15 +102,48 @@ const position = (id: string): number => {
 // listing it. The untaught check below has no exceptions left.
 
 /**
- * Everything the earliest rung listing a row has not been taught yet — and,
- * since C4b, every demand no rung teaches (`taughtAt: null`): a row a rung
- * offers does not write what nothing teaches (S23).
+ * Everything a rung listing a row has not been taught yet — and, since C4b,
+ * every demand no rung teaches (`taughtAt: null`): a row a rung offers does not
+ * write what nothing teaches (S23). Revised (E0a): what the rung has taught is
+ * its ancestry (`taughtAtRung`), where it was the curriculum's order at the
+ * earliest rung listing the row — which credited jazz.8 with the walking bass
+ * blues.5 teaches, on another track.
  */
-function unintended(earliest: string): Check[] {
-  position(earliest);
-  for (const d of demands) if (d.taughtAt !== null) position(d.taughtAt);
-  return untaughtChecks(earliest, ORDER, demands);
+function unintended(rung: string): Check[] {
+  position(rung);
+  for (const d of demands) for (const at of d.taughtAt) position(at);
+  const taught = taughtAtRung(curriculum, rung);
+  expect(taught, `rung ${rung} has no ancestry`).toBeDefined();
+  return untaughtChecks(rung, ORDER, demands, () => false, taught);
 }
+
+/**
+ * A promise a rung's own path does not teach (E0a). The hold keeps the demand
+ * out of every phrase at that rung (never teach wrong), so the promise is not
+ * kept there; this names each such pair rather than letting the check pass on
+ * the file's order. Row 7 promises a walking bass (its `walking-bass` concept,
+ * and theory.9's lesson: "with triplets and a walking bass"); the vocabulary
+ * teaches the walking bass at `blues.5`, `jazz.6` and `jam.6` (E0b), and
+ * theory.9's path (theory.8 … theory.3, the core path) goes through none of
+ * them. Before E0a the file's order credited theory.9 with `blues.5`, stored
+ * before it. The curriculum's to settle (F: the lesson's sentence and the
+ * row's placement, the reviewer's finding 3 on E0a); the entry fails here once
+ * theory.9 has been taught the demand, or a phrase carries it.
+ *
+ * Revised (E0b): jazz.8 left the list. Old assumption: the walking bass is
+ * taught at `blues.5` alone, so jazz.8's path never meets it; `jazz.6`, on that
+ * path, teaches a walking line, and row 7 at jazz.8 writes its walking bass in
+ * every phrase again (the promise check above, on every seed).
+ */
+/*
+ * Revised (F2 item 4, L110): theory.9 left the list, which is empty. Old assumption: theory.9 lists row 7
+ * and its lesson promises "triplets and a walking bass". theory.9's path teaches no walking bass, so the
+ * hold kept it out of every phrase there, and row 7 opened from theory.9 differed from the level-6 row the
+ * rung also lists by nothing else; F2 took row 7 off theory.9 (it stays on jazz.8, whose path teaches the
+ * walk) and rewrote the sentence to the level-6 row's settings. The list stays, empty, so the next
+ * promise off a path is named here instead of passing on the hold.
+ */
+const PROMISED_OFF_THE_PATH: readonly { row: string; rung: string; demand: string }[] = [];
 
 const readers = catalog.filter((row) => row.drill?.kind === 'sight-reading');
 const paramsOf = (row: CatalogItem): Readonly<Record<string, unknown>> => (authored.get(row.id) ?? row).drill?.params ?? {};
@@ -164,7 +200,15 @@ describe('the nine sight-reading rows', () => {
       expect(tagged.length + rungs.flatMap((rung) => PROMISED_BY_RUNG[rung] ?? []).length, `${row.id} promises nothing this test can check`).toBeGreaterThan(0);
       for (const rung of rungs) {
         const here = atRung.get(rung) ?? [];
+        // A promise off the rung's path (E0a): untaught there, and in no phrase, so the entry cannot go stale.
+        const off = PROMISED_OFF_THE_PATH.filter((one) => one.row === row.id && one.rung === rung).map((one) => one.demand);
+        for (const demand of off) {
+          expect(taughtAtRung(curriculum, rung)?.(demand), `${label} at ${rung}: ${demand} is taught there now; remove it from PROMISED_OFF_THE_PATH`).toBe(false);
+          const detector = demands.find((d) => d.id === demand)?.detector as DetectorId;
+          expect(here.filter((p) => has(detector)(p)).length, `${label} at ${rung}: ${demand} written though untaught`).toBe(0);
+        }
         for (const check of [...tagged, ...(PROMISED_BY_RUNG[rung] ?? [])]) {
+          if (off.length > 0 && (check.about ?? []).some((demand) => off.includes(demand))) continue;
           const holding = here.filter((p) => check.holds(p)).length;
           if (check.scope === 'every') {
             expect(holding, `${label} at ${rung}: ${check.what} in ${String(holding)} of ${String(here.length)} phrases`).toBe(here.length);
@@ -175,10 +219,16 @@ describe('the nine sight-reading rows', () => {
       }
     });
 
-    it(`${label}: nothing ${earliest} has not taught`, () => {
-      for (const check of unintended(earliest)) {
-        const failing = SEEDS.filter((_, i) => !check.holds(phrases[i] as Phrase));
-        expect(failing, `${label}: ${check.what} fails at seeds ${failing.join(', ')}`).toEqual([]);
+    // Revised (E0a): at every rung listing the row, each holding it to what that rung has taught. It was
+    // the earliest listing in the file's order alone, which on parallel tracks is not the first a learner
+    // meets (row 7's jazz.8 and theory.9: neither comes before the other on its path).
+    it(`${label}: nothing a rung listing it has not taught`, () => {
+      for (const rung of rungs) {
+        const here = atRung.get(rung) ?? [];
+        for (const check of unintended(rung)) {
+          const failing = SEEDS.filter((_, i) => !check.holds(here[i] as Phrase));
+          expect(failing, `${label} at ${rung}: ${check.what} fails at seeds ${failing.join(', ')}`).toEqual([]);
+        }
       }
     });
 
@@ -252,12 +302,24 @@ describe('a row’s params reach the generator', () => {
   });
 });
 
+/**
+ * Each case below generates sixty eight-bar phrases and parses every one, so it
+ * owns its budget (H0, Q37; test class: revise, timeout only). At vitest's
+ * default of 5 s it timed out in full unit runs beside another build and passed
+ * alone: the work is the same sixty phrases either way, and only the machine's
+ * share of a processor changed (Entry 87 has the durations, alone and beside two
+ * other unit runs). The file's other generation already runs in `beforeAll`
+ * under a 240 s budget; these two read no catalog row, so they sit outside it.
+ * No assertion changed.
+ */
+const SIXTY_PHRASES_MS = 60_000;
+
 describe('levels 6 and 7 write a rest inside a triplet as a triplet rest', () => {
   // Without options, as the goldens are: the bracket fault was in the level,
   // not in the rows. 87 % and 89 % of 8-bar phrases had one (the trace, seeds
   // 1-500); a rest of a triplet's length with no <time-modification>.
   for (const level of [6, 7] as const) {
-    it(`level ${String(level)}, 60 phrases`, () => {
+    it(`level ${String(level)}, 60 phrases`, { timeout: SIXTY_PHRASES_MS }, () => {
       let restsInTriplets = 0;
       for (let seed = 1; seed <= 60; seed += 1) {
         const s = engraving(generateSightReading({ level, bars: 8, hands: 'both', seed }).musicXml);

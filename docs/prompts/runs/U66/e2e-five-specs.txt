@@ -1,0 +1,54 @@
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+
+Running 39 tests using 2 workers
+
+  ok  1 tests\e2e\engine.spec.ts:9:3 › Wait mode end to end › a perfect scripted run finishes and scores 100 % (729ms)
+  ok  2 tests\e2e\engine.spec.ts:23:3 › Wait mode end to end › the cursor follows the engine, not a clock (1.7s)
+  ok  3 tests\e2e\engine.spec.ts:40:3 › Wait mode end to end › a scripted MIDI performance drives the run through a real ReplaySource (1.1s)
+  ok  4 tests\e2e\engine.spec.ts:69:3 › Wait mode end to end › a wrong note is counted and painted red without advancing (619ms)
+  ok  5 tests\e2e\engine.spec.ts:82:3 › Wait mode end to end › a run over a repeat visits the printed bar twice (608ms)
+  ok  7 tests\e2e\engine.spec.ts:112:3 › Tempo mode end to end › a late run yields the expected timing statistics (1.4s)
+  ok  6 tests\e2e\engine.spec.ts:96:3 › Tempo mode end to end › the clock advances the cursor with nothing played, and reports misses (2.2s)
+  ok  8 tests\e2e\engine.spec.ts:156:3 › Tempo mode end to end › a long task across the first note’s window: the note, stamped inside it, is judged in it (U66) (1.7s)
+  ok  9 tests\e2e\engine.spec.ts:227:3 › Tempo mode end to end › a note far outside the tolerance is wrong and its slot is missed (1.4s)
+  ok 10 tests\e2e\engine.spec.ts:238:3 › Tempo mode end to end › the count-in delays the first step (912ms)
+  ok 11 tests\e2e\engine.spec.ts:255:5 › generated sight-reading renders and can be practised › level 1 renders and drives a perfect Wait run (655ms)
+  ok 12 tests\e2e\engine.spec.ts:255:5 › generated sight-reading renders and can be practised › level 2 renders and drives a perfect Wait run (731ms)
+  ok 13 tests\e2e\engine.spec.ts:255:5 › generated sight-reading renders and can be practised › level 3 renders and drives a perfect Wait run (707ms)
+  ok 14 tests\e2e\engine.spec.ts:255:5 › generated sight-reading renders and can be practised › level 4 renders and drives a perfect Wait run (694ms)
+  ok 15 tests\e2e\engine.spec.ts:276:3 › generated sight-reading renders and can be practised › the same seed gives the same exercise, a different seed does not (766ms)
+  ok 16 tests\e2e\modes-rhythm-only.spec.ts:66:1 › the sheet says what every choice does before one tap opens the piece (1.2s)
+  ok 18 tests\e2e\modes-rhythm-only.spec.ts:134:1 › the remembered setting does not leak into the next Keep tempo (2.1s)
+  ok 19 tests\e2e\modes-rhythm-only.spec.ts:155:1 › the row is gone in a mode with no clock, which is where it would be dead (1.1s)
+  ok 20 tests\e2e\score.countin.spec.ts:24:3 › the count-in you can see › counts the bar over the notation, then gets out of the way (6.1s)
+  ok 21 tests\e2e\score.countin.spec.ts:40:3 › the count-in you can see › it covers the notation but never the controls (2.6s)
+  ok 22 tests\e2e\score.countin.spec.ts:75:3 › the count-in you can see › the beat dot pulses in Tempo and stays away in Wait (1.1s)
+  ok 17 tests\e2e\modes-rhythm-only.spec.ts:77:1 › it opens judged on timing, answers any key, and says what the run was (14.7s)
+  ok 23 tests\e2e\score.countin.spec.ts:82:3 › the count-in you can see › Wait mode shows no beat dot: there is no clock to show (3.1s)
+  ok 24 tests\e2e\score.latch.spec.ts:82:3 › the first note starts the clock (T8) › a Tempo run on the screen keys holds on the first note until it is played (3.8s)
+  ok 26 tests\e2e\score.latch.spec.ts:119:3 › the first note starts the clock (T8) › a key on the ready screen starts the run, and with no count-in is its first note (1.3s)
+  ok 27 tests\e2e\score.latch.spec.ts:130:3 › the first note starts the clock (T8) › Space starts a run from the ready screen (1.2s)
+  ok 25 tests\e2e\score.latch.spec.ts:106:3 › the first note starts the clock (T8) › after a count-in, the count gets out of the way while it holds (5.1s)
+  ok 28 tests\e2e\score.latch.spec.ts:142:3 › the first note starts the clock (T8) › with no input, a Tempo run keeps time by the clock (2.0s)
+  ok 30 tests\e2e\score.latch.spec.ts:168:3 › what the keys must not start (T8 review) › after a run finishes by itself, a key does not start another; ▶ does (3.7s)
+  ok 29 tests\e2e\score.latch.spec.ts:157:3 › what the keys must not start (T8 review) › with a count-in, the key that starts the run is not its first note (5.2s)
+  ok 31 tests\e2e\score.latch.spec.ts:192:3 › what the keys must not start (T8 review) › neither a key nor Space starts a run under the open ⋯ sheet (2.3s)
+  ok 32 tests\e2e\score.run.spec.ts:59:3 › a whole run › Wait mode: playing it correctly says the notes are ready, and where a pass is played (2.6s)
+  ok 34 tests\e2e\score.run.spec.ts:130:3 › a whole run › a run with a fumble is offered the loop, and it names the bar (2.5s)
+  ok 35 tests\e2e\score.run.spec.ts:154:3 › a whole run › Wait mode: the score does not move on a wrong note (3.4s)
+  ok 36 tests\e2e\score.run.spec.ts:210:3 › a whole run › Wait mode: playing it wrongly still finishes, with a lower score (3.3s)
+  ok 37 tests\e2e\score.run.spec.ts:248:3 › stopping, restarting and looping › changing hands mid-run restarts it without a summary or a recorded run (2.2s)
+  ok 33 tests\e2e\score.run.spec.ts:106:3 › a whole run › Keep tempo: played in time it passes, and says its tempo and its timing (18.2s)
+  ok 39 tests\e2e\score.run.spec.ts:274:3 › stopping, restarting and looping › a loop lap puts the cursor back on the first bar (1.8s)
+  ok 38 tests\e2e\score.run.spec.ts:262:3 › stopping, restarting and looping › Hear it reaching the end is not a run (14.7s)
+
+  39 passed (1.4m)
+exit=0

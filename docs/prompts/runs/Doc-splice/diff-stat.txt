@@ -1,0 +1,6 @@
+$ git diff --stat
+ docs/03-content-pipeline.md | 34 +++++++++++++++++++++++++
+ docs/04-ui-spec.md          | 16 +++++++++++-
+ docs/08-test-map.md         | 61 +++++++++++++++++++++++++++++++++++++--------
+ 3 files changed, 100 insertions(+), 11 deletions(-)
+exit=0

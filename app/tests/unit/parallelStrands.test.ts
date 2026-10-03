@@ -23,6 +23,7 @@ import { indexCatalog } from '../../src/curriculum/selectors';
 import { defaultActiveTracks } from '../../src/curriculum/tracks';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import type { RungReading, RungStates } from '../../src/evidence/rungState';
+import { measured } from './helpers/measured';
 
 const CONTENT = join(process.cwd(), 'public', 'content');
 const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
@@ -132,7 +133,9 @@ describe('four strands with unmet work, and the file order', () => {
  * project in a project's words, never as a rung to pass.
  */
 describe('a project is not the next rung', () => {
-  const item = (id: string, over: Partial<CatalogItem> = {}): CatalogItem => ({ id, type: 'song', title: id, level: 8, hands: 'both', tracks: ['classical'], concepts: [], file: `scores/${id}.mxl`, ...over });
+  // Revised (X1, L113): measured, as every bundled row is. An unmeasured option on a rung's list is refused
+  // as any automatic offer of it is (`oneGateBoundary.test.ts`).
+  const item = (id: string, over: Partial<CatalogItem> = {}): CatalogItem => ({ id, type: 'song', title: id, level: 8, hands: 'both', tracks: ['classical'], concepts: [], file: `scores/${id}.mxl`, ...measured([]), ...over });
   const ITEMS = [item('song.eight'), item('song.eight.b'), item('song.project'), item('ex.core', { type: 'exercise' })];
   const lesson = (id: string, title: string, over: Partial<Lesson>): Lesson => ({
     id,

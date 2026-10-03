@@ -48,7 +48,8 @@ app/                     – the PWA (Vite + TypeScript)
     audio/pitch/         – AudioWorklet + score-informed note/chord detector + calibration
     data/                – IndexedDB (db.ts) + one store module each: progressStore, planStore, skillsStore, importStore,
                            booksStore (the shelf), folderLibrary + folderWalk.worker (a folder of scores on the phone, 04 §4b),
-                           levelOverrides, micCalibrationStore, midiSettings, setupStore, settingsStore/persist, backup (export/import)
+                           levelOverrides, micCalibrationStore, midiSettings, setupStore, settingsStore/persist, backup (export/import),
+                           encounterStore (what the learner met beside the runs, and the one familiarity query, G1)
     curriculum/          – loaders + selectors over curriculum.json/catalog.json, and session.ts (today's session from the Part A §8 templates)
     util/
   tests/
@@ -225,6 +226,22 @@ export interface MidiSource extends InputSource {
   clock; `Metronome` implementing the look-ahead scheduler pattern (25 ms timer, 100 ms
   look-ahead) so ticks are sample-accurate; count-in support.
 - AudioContext MUST be created/resumed on a user gesture (Android autoplay policy).
+- The app arms a one-shot start on the first interaction (`main.ts`,
+  `startOnFirstGesture`). A context the platform suspends later — a locked screen, a call;
+  `AudioEngine.watchState` publishes it — starts again only when a tap calls
+  `ensureStarted()`. On the Score screen `Hear it` (U67) and `▶` / `Space` (U69) do, inside
+  the gesture, where the engine is not running, through one gate (`withSound`): the tap waits
+  at most `PLAY_SOUND_WAIT_MS` and acts only if `audioEngine.state` is then `running`;
+  otherwise it starts nothing and the state line says the sound did not start (G86a). The next
+  tap asks again; a late answer only clears the sentence (`onStateChange`). Since U105 every
+  other tap there that can start the sound (*Carry on*, *Start again*, a hand after a refusal,
+  a bar held down, *Try again*, the summary's four) passes the same gate with its whole action
+  as the act, and the sentence names that control. A key on a connected piano is not a gesture:
+  it starts a run only where the engine is already running, and otherwise refuses at once
+  without calling `ensureStarted()`. A key on the screen is a gesture and asks; one answered
+  after its own moment starts the run without being fed to it, so no first note is timed before
+  the run began. Nothing resumes on `visibilitychange`, which is not a gesture. Unverified on a
+  device.
 
 ### 4.7 `audio/pitch/` — microphone note detection (`MicSource`)
 
@@ -249,7 +266,7 @@ IndexedDB stores (via `idb`):
 |-------|-----|-------|
 | `settings` | `'app'` | all settings (see 04-ui-spec.md §7) |
 | `progress` | itemId | `{ itemId, status:'new'|'started'|'passed'|'mastered', bestAccuracy, bestTempoPct, attempts, lastPracticedAt, minutes }` |
-| `sessions` | autoincrement | one row per practice run: itemId, mode, tempoPct, accuracy, date, durationMs; `performance: true` for a Perform run (`04` §5e), `rhythmOnly: true` for a rhythm run, which can never be a pass (`04` §5); since C1 the run's **observation** — what it measured by its own definitions, per step, the conditions it was played under, every channel it did not measure marked `not measured` (below) |
+| `sessions` | autoincrement | one row per practice run: itemId, mode, tempoPct, accuracy, date, durationMs; `performance: true` for a Perform run (`04` §5e), `rhythmOnly: true` for a rhythm run, which can never be a pass (`04` §5); since C1 the run's **observation** — what it measured by its own definitions, per step, the conditions it was played under, every channel it did not measure marked `not measured` (below); since U102 a judged drill set carries `answered`, and a set with nothing answered stores its accuracy as `not measured` beside `answered: 0` — every reader takes a run's accuracy through one reading, `data/accuracyReading.ts` |
 | `imports` | id | user-imported score: name, MusicXML text (or mxl bytes) **or PDF bytes**, `kind: 'musicxml' \| 'pdf'`, tags, addedAt, and for a PDF `cuts` — the corrected system boundaries. A PDF item is viewable and followable but not playable or judgeable — it has no notes (`04` §5b). |
 | `plan` | `'current'` | current stage/unit, chosen track order, placement-test result |
 | `streak` | `'streak'` | weekly-minutes goal progress and practice-day history (no daily-streak punishment) |
@@ -260,9 +277,18 @@ IndexedDB stores (via `idb`):
 | `folderScores` | `[folder, file]` | one score in one folder, one record each: title, composer, estimated level, bars, rating, plus the folded title the `byTitle` index is built on and a `missingAt` stamp when the file behind it has gone. Indexed `byTitle` on `[folder, sort]`, which is what makes the A-to-Z rail a key-range question rather than a walk of the listing. The *files* are not stored — a picked folder is lent for one visit — so these rows are what make browsing work with nothing plugged in. Fetched by key, for the page about to be drawn. |
 | `folderIndexes` | folder name | one compact record per folder holding the parallel arrays the browse screen filters over — path, folded haystack, letter, level, style id, status id, rated flag, and the tally of placeholder titles. About 2 MB for the owner's 37,261 against the 40-odd the full rows cost, and **opening the screen reads this and not the rows**. Rebuilt whole by a scan; deliberately untouched by a one-row change. |
 | `books` | id | a book the owner owns on paper: title, and the pieces in it with their page numbers and the rungs they are options of (replan §5.1). Typed in by hand; nothing is scanned. |
+| `encounters` | `<visit>:<n>` | what the learner met that is not a run (G1): the notation drawn for them on the Score screen (`viewed`, once a visit), a playback they asked for (`heard`), a demonstration (`demonstrated`: `Hear it`, a bar held down) — the material (D4's identity, or the item id where there is none), the item, when, what opened the screen, the visit, the printed bars where only some were covered. Indexed `byKey` (the material's key) and `byItem`. Never pruned; in the backup. |
+| `contacts` | material key | one durable summary per material of the runs the retention cap deleted (G1): the item ids, whether the facts rest on an id alone, and per span what happened (`practised` or `performed`), the printed bars, first and last, the screens — the encounter projection only, never evidence. Written in the transaction that deletes the runs; merged, never replaced, by a restore. |
+| `projects` | id | one row per piece of the learner's stated intention (G1b, version 9): `ProjectRow` — the material or the id, the state and since, the append-only history, goal, problem, sections — written only by the project sheet; the store reads one fact outside itself, whether the piece is passed (its progress row, by id), for the one offer from no project, *Keep it playable*, and writes nothing else (G96); indexed `byItem`; in the backup (a merge joins histories), cleared by *Reset progress*. |
 
-**`DB_VERSION` is 6.** Every upgrade is keyed on `oldVersion` and creates only the stores that
-version lacked, so a phone that skipped a version arrives correct. C1 (2026-09-26) grew
+**`DB_VERSION` is 9** (Q81: this said 8, from before G1b). Every upgrade is keyed on `oldVersion`
+and creates only the stores that version lacked, so a phone that skipped a version arrives correct.
+7 (C5) made no store: it marks a database from before C5 as due its one carry-over. 8 (G1) makes
+`encounters` and `contacts` and touches no other store (`encounterModel.test.ts` opens a version-7
+database with a row in every store and finds every row as it was). 9 (G1b) makes `projects`,
+indexed `byItem`, touches no other store and carries nothing into it, so a database from before
+G1b opens with no project (`projectLifecycle.test.ts` opens a version-8 database with a row in
+every store and finds every row as it was and `projects` empty). C1 (2026-09-26) grew
 `SessionRow` and changed no store and no index: every new field is optional on a value, which
 IndexedDB does not describe, so there is nothing for an upgrade to do and no version to spend.
 A row written before C1 reads as a run with no observation.
@@ -290,7 +316,15 @@ field the run carries (`RunObservation` in `data/db.ts`):
   and lenient chords, laps.
 - **Not measured is a value.** `NOT_MEASURED` (`'not measured'`) marks a channel the run did not
   measure — Wait's timing, a run nothing heard (its `accuracy`, `wrongNotes` and `missed` too),
-  a jam's judged channels. It was 0, and the Progress history printed it as "0%".
+  a jam's judged channels. It was 0, and the Progress history printed it as "0%". A drill set of a
+  kind that judges, with nothing answered, is the same: its accuracy is `not measured`, beside
+  `answered: 0` and its unanswered count in `missed` (U102). It was stored as 0 while its sheet said
+  *Not measured*. Rows stored before U102 have no `answered` and are never rewritten. One reading
+  (`accuracyReading`) reads them by the reviewer's compatibility order: the row's own `answered`,
+  else a field that records answers (none exists), else a kind whose rows provably tell zero answers
+  apart (note-flash alone: accuracy 0 beside wrong notes 0, proved at every writer, Entry 162), else
+  the stored number as legacy. A rhythm row's `missed` is the onsets not hit (its `answered` counts
+  extra taps too).
 - **Evidence is refused in one place.** A run with `unseen: false` is kept — minutes, attempt,
   row — and `recordRun` gives it no pass, no mastery, no best and no day's tick, whatever its
   writer said.
@@ -303,6 +337,19 @@ field the run carries (`RunObservation` in `data/db.ts`):
   (64 MiB of structured clone at the cap, measured on a stored row with `v8.serialize`), a small
   share of the quota the storage report (Settings → Content) showed where it was looked at —
   gigabytes, in a desktop Chromium; not yet looked at on the owner's phone.
+- **What the learner met, beside the runs (G1, 2026-09-29; Part 27, L97).** `SessionRow` stays the
+  record of runs; `encounters` holds the smallest complement — viewings, hearings, demonstrations —
+  and `contacts` the summary of each run the cap deleted, so `attempted`, `practised` and
+  `performed` (derived from the runs, never copied) survive retention. `encounterStore.familiarity`
+  is the one query over the three, per facet the most recent time or null, passage by passage over
+  the catalogue's hierarchy (an excerpt's bars in its parent's; the composition beside). Since G1a
+  the Score screen writes the first-contact relation on every run as `RunHeader.firstContact`, the
+  field a consumer of general contact reads, and `unseen` is the generated phrase's sight-reading
+  condition again, written on phrase runs only beside it (equal today). The readers that give
+  `unseen` sight-reading's consequences (`recordRun`, the rung state, the history line, the
+  evidence job) read it through `db.isPhraseRun`, which the rows G1's app stored — `unseen` on a
+  piece's run, no `firstContact` — still need. G1a spends no `DB_VERSION`: both fields are
+  optional and nothing is rewritten.
 - **The backup carries it as it is.** Rows are plain JSON — strings, numbers, arrays — so an
   export writes them whole and `importAll` restores them whole, `not measured` included
   (`backup.test.ts`); `BACKUP_VERSION` did not change, because the file's shape did not.
@@ -339,6 +386,16 @@ field the run carries (`RunObservation` in `data/db.ts`):
   syncopation), and `easy: true` for a read one dimension below on purpose. Written on every
   sight-read (the row's own recipe where nothing moved it); a row from before C4 reads as the
   row's own recipe. The reader takes the learner's last recipe from it (`04` §2).
+- **The generator (D1a, 2026-09-27).** On a sight-reading run, `SessionRow.generator` is the
+  phrase's identity — `{ family: 'sight-reading', version, seed }`, the generated catalogue's
+  `drill.generator` shape (D0) — written by the Score screen from the phrase it generated
+  (declared on `RunHeader` beside `recipe`, so the run a screen hands `recordRun` carries it
+  too). A seed names one phrase per generator version (G21), so the phrase-seen check, Today's
+  daily-met check and the evidence job read the version beside the seed (`phraseVersionOf`). One
+  more optional field on a value, so, like C1's, no store, no index, no `DB_VERSION` and no
+  upgrade; the backup carries it as it is. **Absent means version 1**: every run recorded before
+  D1a was written by version 1, the only version in force until then, and the generator still
+  writes it note for note.
 
 **The folder three, and why the split.** Every score in a folder used to be an element of one
 `folderLibraries` record, and IndexedDB can read or write only whole records — so every

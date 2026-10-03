@@ -1,0 +1,21 @@
+﻿node.exe : [WebServer] (node:64372) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:70916) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:67844) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\doors.spec.ts:283:3 › the Library rows upright › an imported row still drops its buttons to a line of their own (971ms)
+  ok 2 tests\e2e\sweeps.spec.ts:227:3 › where an item opens › a placeholder says what to do instead of opening nothing (706ms)
+  ok 3 tests\e2e\sweeps.spec.ts:240:3 › when the level model is missing › an import says "no estimate" rather than showing a made-up number (923ms)
+
+  3 passed (5.7s)
+exit 0

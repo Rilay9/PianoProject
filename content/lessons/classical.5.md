@@ -33,15 +33,15 @@ the way to get there is to practise the melody with the left hand moving
 The Alberti exercise here puts that figure under a plain scale, which is where
 to set the weight before a tune competes for it.
 
-**Trills and mordents.** A trill in Classical style starts on the **upper**
-note and finishes on the main one — unless the melody has just come from above. Decide how many notes fit and play that many evenly; an
+**Trills and mordents.** A trill in Classical-period music often starts on the **upper**
+note and finishes on the main one, unless the melody has just come from above. Decide how many notes fit and play that many evenly; an
 unmeasured trill at this level comes out as a panic. The written-out drills are
-on the technique track; here the ornaments arrive inside the pieces, which is
-the harder way round — and the reason to memorise the rule now.
+on the technique track; in a piece it is a sign, the harder way round — and the
+reason to settle a starting point now.
 
-**Pedal in Romantic miniatures.** Schumann's *First Loss* and Tchaikovsky's
-*Old French Song* both want the pedal for warmth, and legato pedalling is the
-technique. The test is whether the harmony stays clean; if two
+**Pedal in Romantic miniatures.** Neither Schumann's *First Loss* nor
+Tchaikovsky's *Old French Song* marks pedal here, so it is your choice; legato
+pedalling is the technique. The test is whether the harmony stays clean; if two
 chords blur, you changed late.
 
 **Repertoire for this rung.** Six options. The two sonatinas, and beside them

@@ -1,0 +1,20 @@
+specs: tests/e2e/side-panel-prose.spec.ts
+exists: tests/e2e/side-panel-prose.spec.ts
+[WebServer] (node:65388) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:75340) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 2 workers
+
+(node:80604) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:81640) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\side-panel-prose.spec.ts:97:3 › on a phone › the lesson prose takes none of the notation’s room (1.8s)
+  ok 2 tests\e2e\side-panel-prose.spec.ts:110:3 › on a tablet, where the panel is drawn › the lesson renders in the panel without a line overflowing it (2.1s)
+  ok 3 tests\e2e\side-panel-prose.spec.ts:169:3 › on a tablet, where the panel is drawn › a piece opened from nowhere shows the rung’s teaching without its pass line (3.6s)
+  ok 4 tests\e2e\side-panel-prose.spec.ts:195:3 › on a tablet, where the panel is drawn › one lesson from every track fits the panel (14.7s)
+
+  4 passed (19.9s)
+exit=0

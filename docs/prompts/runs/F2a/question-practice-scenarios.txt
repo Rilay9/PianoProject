@@ -1,0 +1,36 @@
+== q-p11 practice1-1.1
+  rungs 109 options 1015 checkable 550 established 246 unestablished 304 keptByNone 5 introduced 3 servesNone 148
+  untaught rows 344 (notated 249, distinct notated items 238) generated combos 87 (record differs)
+  kept by none: [('ragtime.5', 'texture.left-hand-pattern'), ('jazz.6', 'texture.walking-bass'), ('blues.6', 'texture.walking-bass'), ('jam.6', 'texture.walking-bass'), ('blues.8', 'texture.walking-bass')]
+  introduced: [('1.5', 'interval.leap', 0, 9), ('3.1', 'accidentals', 0, 11), ('blues.5', 'texture.walking-bass', 0, 11)]
+  notated untaught by demand: {'rhythm.sixteenths': 141, 'rhythm.syncopation': 99, 'range.beyond-position': 34, 'pitch.ledger': 31, 'key.signature': 26, 'rhythm.triplets': 24, 'pitch.chromatic': 19, 'interval.leap': 16, 'interval.skip': 12, 'metre.compound': 12, 'rhythm.eighths': 11, 'rhythm.shorter-than-quarter': 11, 'rhythm.dotted-quarter': 10, 'rhythm.ties': 5, 'texture.left-hand-pattern': 2, 'interval.step': 1}
+  untaught rows per track (all): {'blues-boogie': 16, 'chords-pop': 22, 'classical': 87, 'core': 76, 'holiday': 26, 'hymns-gospel': 18, 'jazz': 14, 'latin': 12, 'practice': 4, 'ragtime': 28, 'rock-metal': 7, 'technique': 34}
+  untaught rows per track (notated): {'blues-boogie': 11, 'chords-pop': 22, 'classical': 74, 'core': 50, 'holiday': 20, 'hymns-gospel': 15, 'jazz': 13, 'latin': 7, 'practice': 1, 'ragtime': 22, 'rock-metal': 6, 'technique': 8}
+  generated combos per track: {'blues-boogie': 3, 'classical': 7, 'core': 26, 'holiday': 8, 'hymns-gospel': 6, 'jazz': 1, 'latin': 7, 'practice': 12, 'ragtime': 6, 'rock-metal': 1, 'technique': 10}
+  practice.1 ancestry-core ['0.3', '0.4', '1.1'] untaught rows: [('exercise.reading.steps-and-skips-c', ['interval.skip'])]
+  practice.2 ancestry-core ['0.3', '0.4', '1.1'] untaught rows: []
+  practice.3 ancestry-core ['0.3', '0.4', '1.1'] untaught rows: [('exercise.five-finger.c-major.both', ['clef.bass', 'texture.hands-together'])]
+  practice.4 ancestry-core ['0.3', '0.4', '1.1'] untaught rows: []
+  practice.5 ancestry-core ['0.3', '0.4', '1.1'] untaught rows: [('exercise.five-finger.g-major.both', ['clef.bass', 'pitch.ledger', 'key.signature', 'texture.hands-together']), ('exercise.scale.c-major.1oct.contrary.both.2', ['clef.bass', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'range.beyond-position', 'texture.hands-together', 'texture.left-hand-pattern'])]
+  1.5 claims leap/chromatic: []
+  2.1 claims leap/chromatic: [('demand', 'interval.leap', 'concept leaps', 6, 10)]
+  3.1 claims leap/chromatic: []
+  3.3 claims leap/chromatic: [('skill', 'accidentals', 'concept', 4, 7), ('demand', 'pitch.chromatic', 'taughtAt', 4, 7)]
+== q-p15 practice1-1.5
+  rungs 109 options 1015 checkable 550 established 246 unestablished 304 keptByNone 5 introduced 3 servesNone 148
+  untaught rows 343 (notated 248, distinct notated items 237) generated combos 84 (record differs)
+  kept by none: [('ragtime.5', 'texture.left-hand-pattern'), ('jazz.6', 'texture.walking-bass'), ('blues.6', 'texture.walking-bass'), ('jam.6', 'texture.walking-bass'), ('blues.8', 'texture.walking-bass')]
+  introduced: [('1.5', 'interval.leap', 0, 9), ('3.1', 'accidentals', 0, 11), ('blues.5', 'texture.walking-bass', 0, 11)]
+  notated untaught by demand: {'rhythm.sixteenths': 141, 'rhythm.syncopation': 99, 'range.beyond-position': 34, 'pitch.ledger': 31, 'key.signature': 26, 'rhythm.triplets': 24, 'pitch.chromatic': 19, 'interval.leap': 16, 'metre.compound': 12, 'interval.skip': 11, 'rhythm.eighths': 11, 'rhythm.shorter-than-quarter': 11, 'rhythm.dotted-quarter': 10, 'rhythm.ties': 5, 'texture.left-hand-pattern': 2, 'interval.step': 1}
+  untaught rows per track (all): {'blues-boogie': 16, 'chords-pop': 22, 'classical': 87, 'core': 76, 'holiday': 26, 'hymns-gospel': 18, 'jazz': 14, 'latin': 12, 'practice': 3, 'ragtime': 28, 'rock-metal': 7, 'technique': 34}
+  untaught rows per track (notated): {'blues-boogie': 11, 'chords-pop': 22, 'classical': 74, 'core': 50, 'holiday': 20, 'hymns-gospel': 15, 'jazz': 13, 'latin': 7, 'ragtime': 22, 'rock-metal': 6, 'technique': 8}
+  generated combos per track: {'blues-boogie': 3, 'classical': 7, 'core': 26, 'holiday': 8, 'hymns-gospel': 6, 'jazz': 1, 'latin': 7, 'practice': 9, 'ragtime': 6, 'rock-metal': 1, 'technique': 10}
+  practice.1 ancestry-core ['1.3', '1.4', '1.5'] untaught rows: []
+  practice.2 ancestry-core ['1.3', '1.4', '1.5'] untaught rows: []
+  practice.3 ancestry-core ['1.3', '1.4', '1.5'] untaught rows: [('exercise.five-finger.c-major.both', ['texture.hands-together'])]
+  practice.4 ancestry-core ['1.3', '1.4', '1.5'] untaught rows: []
+  practice.5 ancestry-core ['1.3', '1.4', '1.5'] untaught rows: [('exercise.five-finger.g-major.both', ['pitch.ledger', 'key.signature', 'texture.hands-together']), ('exercise.scale.c-major.1oct.contrary.both.2', ['rhythm.eighths', 'rhythm.shorter-than-quarter', 'range.beyond-position', 'texture.hands-together', 'texture.left-hand-pattern'])]
+  1.5 claims leap/chromatic: []
+  2.1 claims leap/chromatic: [('demand', 'interval.leap', 'concept leaps', 6, 10)]
+  3.1 claims leap/chromatic: []
+  3.3 claims leap/chromatic: [('skill', 'accidentals', 'concept', 4, 7), ('demand', 'pitch.chromatic', 'taughtAt', 4, 7)]

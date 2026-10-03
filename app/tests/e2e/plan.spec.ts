@@ -9,7 +9,7 @@
  * evidence: it marks no item passed and never makes the rung complete
  * (`04` §3f).
  */
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -242,6 +242,174 @@ test.describe('Skills review', () => {
 });
 
 /**
+ * The two leaps (F2b; the reviewer's required change on F2a, `docs/review/responses/fc91e5a.md`,
+ * part 2), on the glass at the owner's width. "Leaps" was one entry: 2.1 teaches the left hand's
+ * fourth and fifth, and the entry a learner there opened described jumping "an octave or more" at
+ * Grades 5–6, with stride and oom-pah exercises to drill. The beginner's leap is its own concept
+ * now: its entry is filed under Stage 2, says it is taught in 2.1, and its finder asks for a fourth
+ * or fifth; the advanced jump keeps its own entry, "Wide leaps", filed where its technique rungs
+ * are, with its own finder. Each name is read whole at this width, and no entry is called just
+ * "Leaps".
+ *
+ * On every font (U90). CI's full run on 248c6138 read "Leaps: a fourth or fifth" cut to an ellipsis
+ * on the runner while it read whole here. The title was one line with an ellipsis, and on Segoe UI,
+ * which the stack's `system-ui` gives here, its text filled its box with nothing to spare; forcing a
+ * wider face cut it here exactly as on the runner, whose own face is not known. A learner's phone may
+ * carry any. So the case runs twice, on the stack and with every element forced to a wider face
+ * (Verdana, or DejaVu Sans where Verdana is absent), and ends by reading every name the list draws
+ * over every stage, a concept's and an exercise's: each wraps to the lines it needs.
+ */
+test.describe('the two leaps on Skills (F2b)', () => {
+  test.use({ viewport: { width: 342, height: 740 } });
+
+  /** A title is read whole where nothing of it is cut: a name cut to "Leaps: an o…" says neither leap. */
+  const readWhole = (title: Locator): Promise<boolean> => title.evaluate((node) => node.scrollWidth <= node.clientWidth);
+
+  const FACES = [
+    { name: 'on the app’s font stack', css: null },
+    // Wider than Segoe UI: on the committed one-line title this face cut the beginner's name here,
+    // the runner's failure (`docs/prompts/runs/U90/`).
+    { name: 'on a wider face', css: "body, body * { font-family: Verdana, 'DejaVu Sans', sans-serif !important; }" },
+  ] as const;
+
+  for (const face of FACES) test(`the leap a learner at 2.1 opens is the fourth or fifth; the octave-or-more jump keeps its own entry — ${face.name}`, async ({ page }) => {
+    await page.goto('/#/plan/skills');
+    await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
+    if (face.css !== null) await page.addStyleTag({ content: face.css });
+    await page.locator('#skills-stage').selectOption('2');
+    const beginner = page.locator('#skills-list .list-row[data-concept="leap"]');
+    await expect(beginner).toBeVisible();
+    await expect(beginner.locator('.list-row__title')).toHaveText('Leaps: a fourth or fifth');
+    expect(await readWhole(beginner.locator('.list-row__title')), 'the beginner name is cut').toBe(true);
+    await expect(beginner.locator('.list-row__meta')).toContainText('Stage 2 · core');
+    const block = page.locator('#skills-list .skill-concept', { has: page.locator('.list-row[data-concept="leap"]') });
+    await expect(block).toContainText('Taught in Hands together: the left hand holds');
+    await expect(block).not.toContainText(/octave|Grade/);
+    await expect(page.locator('#skills-list .list-row[data-concept="leaps"]'), 'the advanced jump is not filed under Stage 2').toHaveCount(0);
+    await beginner.getByRole('button', { name: 'Find more' }).click();
+    const sheet = page.locator('#finder-sheet');
+    await expect(sheet).toBeVisible();
+    await expect(sheet).toContainText('What this needs: reading and playing a jump of a fourth or fifth without feeling for it.');
+    await expect(sheet).toContainText('Level: easy, elementary.');
+    await expect(page.locator('#finder-prompt')).not.toHaveValue(/octave or more|Grade/);
+    await page.locator('#finder-sheet-close').click();
+    await expect(sheet).toHaveCount(0);
+
+    await page.locator('#skills-stage').selectOption('7');
+    const advanced = page.locator('#skills-list .list-row[data-concept="leaps"]');
+    await expect(advanced).toBeVisible();
+    expect(await readWhole(advanced.locator('.list-row__title')), 'the advanced name is cut beside Drill it and Find more').toBe(true);
+    await expect(advanced.locator('.list-row__title')).toHaveText('Wide leaps');
+    await expect(advanced.locator('.list-row__meta')).toContainText('Stage 7, 9');
+    await advanced.getByRole('button', { name: 'Find more' }).click();
+    await expect(sheet).toContainText('What this needs: jumping accurately to a note you cannot feel for.');
+    await expect(sheet).toContainText('Level: advanced, Grade 5 to 6.');
+    await expect(page.locator('#finder-prompt')).toHaveValue(/leaps of an octave or more/);
+    await page.locator('#finder-sheet-close').click();
+
+    // No two entries share either name, over every stage, and none is called just "Leaps".
+    await page.locator('#skills-stage').selectOption('all');
+    const showAll = page.locator('#skills-show-all');
+    for (let i = 0; i < 12 && (await showAll.count()) > 0; i += 1) await showAll.click();
+    const titles = await page.locator('#skills-list .list-row[data-concept] .list-row__title').allTextContents();
+    expect(titles.filter((title) => /leaps/i.test(title)).sort()).toEqual(['Leaps: a fourth or fifth', 'Wide leaps']);
+
+    // Every name the list draws is read whole (U90): "Hands together in A — left hand changes" and
+    // "… holds" were both cut before the word that tells them apart.
+    const cut = await page
+      .locator('#skills-list .list-row .list-row__title')
+      .evaluateAll((nodes) => nodes.filter((node) => node.scrollWidth > node.clientWidth).map((node) => node.textContent ?? ''));
+    expect(cut, 'names on Skills cut to an ellipsis').toEqual([]);
+  });
+
+  /**
+   * The count is never cut, and a cut is seen (U92). The detail line read `Stage 2 · core · 15 to
+   * practise` on one line beside Drill it and Find more, clipped at the edge without a mark: at this
+   * width "Shifting position" read `Stage 2 · core · 1` and "Primary chords with the dominant seventh"
+   * `Stage 3 · core · 2` on the stack (U90's follow-up 1), and the wide face cut the line to `Stage 2 ·
+   * co`. A cut count reads as another number. So the count leads the line, and the line wraps: with
+   * the count first on one line and an ellipsis, the wide face still cut it to `15 to prac…`, and the
+   * stack a three-figure count (`docs/prompts/runs/U92/`). Read on every row the list draws over every
+   * stage, concept and exercise rows alike: the text up to the first ` · ` lies inside the line's
+   * visible box and clear of the ellipsis where there is one; a line cut anywhere shows an ellipsis;
+   * and the line sits inside its row, so a wrapped detail still reads as the row's.
+   */
+  for (const face of FACES) test(`every Skills row’s count is read whole, and a cut detail line says it is cut — ${face.name}`, async ({ page }) => {
+    await page.goto('/#/plan/skills');
+    await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
+    if (face.css !== null) await page.addStyleTag({ content: face.css });
+    await page.locator('#skills-stage').selectOption('all');
+    const showAll = page.locator('#skills-show-all');
+    for (let i = 0; i < 12 && (await showAll.count()) > 0; i += 1) await showAll.click();
+    await expect(showAll).toHaveCount(0);
+    await page.evaluate(() => document.fonts.ready);
+
+    const shifting = page.locator('#skills-list .list-row[data-concept="position-shift"] .list-row__metatext');
+    await expect.soft(shifting, 'the count leads the detail line').toHaveText(/^\d+ to practise · Stage 2 · core$/);
+
+    const lines = await page.locator('#skills-list .list-row .list-row__metatext').evaluateAll((nodes) =>
+      nodes.map((node) => {
+        const line = node as HTMLElement;
+        const data = line.textContent ?? '';
+        const ellipsis = getComputedStyle(line).textOverflow === 'ellipsis';
+        const mark = document.createElement('span');
+        mark.textContent = '…';
+        line.append(mark);
+        const markWidth = mark.getBoundingClientRect().width;
+        mark.remove();
+        // The characters where they are laid out, not where an ellipsis folds away the ones it hides:
+        // read with it off, then put it back.
+        line.style.textOverflow = 'clip';
+        // The visible box, in fractions of a pixel: the line's own (no border, no padding) inside the
+        // meta line, which clips as well. `scrollWidth` rounds, and a line over its box by less than
+        // half a pixel still draws the ellipsis.
+        const own = line.getBoundingClientRect();
+        const meta = (line.closest('.list-row__meta') ?? line).getBoundingClientRect();
+        const row = (line.closest('.list-row') ?? line).getBoundingClientRect();
+        const left = Math.max(own.left, meta.left);
+        const top = Math.max(own.top, meta.top);
+        const bottom = Math.min(own.bottom, meta.bottom);
+        const edge = Math.min(own.right, meta.right);
+        const all = document.createRange();
+        all.selectNodeContents(line);
+        const drawn = [...all.getClientRects()].filter((r) => r.width > 0);
+        const cut =
+          line.scrollWidth > line.clientWidth ||
+          line.scrollHeight > line.clientHeight + 1 ||
+          drawn.some((r) => r.right > edge + 0.02 || r.bottom > bottom + 0.5);
+        const right = edge - (cut && ellipsis ? markWidth : 0);
+        const end = data.includes(' · ') ? data.indexOf(' · ') : data.length;
+        const range = document.createRange();
+        const text = line.firstChild;
+        if (text instanceof Text) {
+          range.setStart(text, 0);
+          range.setEnd(text, end);
+        }
+        const rects = [...range.getClientRects()].filter((r) => r.width > 0);
+        const whole =
+          rects.length > 0 && rects.every((r) => r.left >= left - 0.5 && r.right <= right + 0.5 && r.top >= top - 0.5 && r.bottom <= bottom + 0.5);
+        line.style.textOverflow = '';
+        const inRow = own.top >= row.top - 0.5 && own.bottom <= row.bottom + 0.5 && own.right <= row.right + 0.5;
+        return { data, first: data.slice(0, end), cut, ellipsis, whole, inRow };
+      }),
+    );
+    expect(lines.length, 'the list drew no detail lines').toBeGreaterThan(0);
+    expect.soft(
+      lines.filter((line) => !line.whole).map((line) => `"${line.first}" in "${line.data}"`),
+      'counts on Skills that are not read whole',
+    ).toEqual([]);
+    expect.soft(
+      lines.filter((line) => line.cut && !line.ellipsis).map((line) => line.data),
+      'detail lines on Skills cut without an ellipsis',
+    ).toEqual([]);
+    expect.soft(
+      lines.filter((line) => !line.inRow).map((line) => line.data),
+      'detail lines on Skills that leave their row',
+    ).toEqual([]);
+  });
+});
+
+/**
  * `04` §0 on Plan. The header used to be fifteen chips and eight arrows —
  * about 470 px of a 780 px screen — for a choice made once a year.
  */
@@ -469,4 +637,112 @@ test.describe('the Tracks sheet is a list of tracks, not a stream of chips', () 
       expect(faults, faults.join('\n')).toEqual([]);
     });
   }
+});
+
+/**
+ * Plan reads a project stage as the lesson page does (G1c; G83, P1; L86). Stage 9 says "Nothing here
+ * is a rung to pass", and its page says *A project: there is no rung to pass here.* with no count;
+ * Plan counted its units in the stage line (*1 of 3 lessons*), filled a bar with them and badged a
+ * row the evidence met *complete*. Here the evidence meets a Stage 9 rung (its two runs, judged by
+ * it) and a Stage 8 one: Stage 9's line is the page's sentence, with no count, bar or badge, and
+ * Stage 8's block reads as it always did — its count, its bar, its *complete*.
+ */
+test.describe('Plan: a project stage counts nothing (G1c)', () => {
+  test.use({ viewport: { width: 342, height: 740 } });
+
+  /** The lesson rows a stage draws under its head, with their badges, in order. */
+  async function blockOf(page: import('@playwright/test').Page, stage: number): Promise<{ lesson: string; badges: string[] }[]> {
+    return page.evaluate((n) => {
+      const rows: { lesson: string; badges: string[] }[] = [];
+      const head = document.querySelector(`#plan-list .list-row[data-stage="${String(n)}"]`);
+      for (let node = head?.nextElementSibling; node && !node.hasAttribute('data-stage'); node = node.nextElementSibling) {
+        if (node.matches('.list-row[data-lesson]')) {
+          rows.push({
+            lesson: node.getAttribute('data-lesson') ?? '',
+            badges: [...node.querySelectorAll('.badge')].map((badge) => badge.textContent?.trim() ?? ''),
+          });
+        }
+      }
+      return rows;
+    }, stage);
+  }
+
+  test('Stage 9 with a rung the evidence met: no count, bar or badge; Stage 8 as before', async ({ page }) => {
+    await page.goto('/#/plan');
+    await expect(page.locator('.list-row[data-stage="9"]')).toBeVisible();
+    // Clean Keep tempo runs, each judged by its rung: classical.9's and technique.8's, as many as each
+    // of their requirements counts. Read from the built curriculum, so the case follows the options
+    // and the counts wherever the curriculum moves them.
+    await page.evaluate(async () => {
+      type Requirement = { kind: string; from?: string; count?: number; performance?: boolean };
+      type Rung = { id: string; exerciseOptions: string[]; songOptions: string[]; requirements?: Requirement[] };
+      const curriculum = (await (await fetch('content/curriculum.json')).json()) as { stages: { units: { lessons: Rung[] }[] }[] };
+      const rungs = new Map(curriculum.stages.flatMap((s) => s.units.flatMap((u) => u.lessons)).map((l) => [l.id, l]));
+      // As many options as each `runs` requirement counts, from its own pool; a rung runs alone
+      // cannot meet is refused rather than seeded short.
+      const runsFor = (rung: string): string[] => {
+        const found = rungs.get(rung);
+        const asks = found?.requirements ?? [];
+        if (!found || asks.length === 0 || asks.some((ask) => ask.kind !== 'runs' || ask.performance === true)) {
+          throw new Error(`${rung} is not met by plain runs`);
+        }
+        const ids = new Set<string>();
+        for (const ask of asks) {
+          const pool = ask.from === 'songs' ? found.songOptions : ask.from === 'exercises' ? found.exerciseOptions : [...found.exerciseOptions, ...found.songOptions];
+          const picked = pool.slice(0, ask.count ?? 1);
+          if (picked.length < (ask.count ?? 1)) throw new Error(`${rung} lists too few ${ask.from ?? 'options'}`);
+          for (const id of picked) ids.add(id);
+        }
+        return [...ids];
+      };
+      const at = new Date().toISOString();
+      const runs = ['classical.9', 'technique.8'].flatMap((rung) => runsFor(rung).map((itemId) => [rung, itemId] as const)).map(([rung, itemId]) => ({
+        itemId,
+        lessonId: rung,
+        mode: 'tempo',
+        tempoPct: 100,
+        tempoMeasured: true,
+        accuracy: 1,
+        accuracyEstimated: false,
+        wrongNotes: 0,
+        missed: 0,
+        durationMs: 60_000,
+        at,
+      }));
+      const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        const request = indexedDB.open('pianopath');
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(new Error(String(request.error)));
+      });
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction('sessions', 'readwrite');
+        for (const run of runs) tx.objectStore('sessions').put(run);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(new Error(String(tx.error)));
+      });
+      db.close();
+    });
+    await page.reload();
+
+    const eight = page.locator('.list-row[data-stage="8"]');
+    const nine = page.locator('.list-row[data-stage="9"]');
+    // Stage 8 as it always read: the rung met counted, the bar filled by it.
+    await expect(eight.locator('.list-row__metatext')).toHaveText(/^1 of \d+ lessons( · |$)/);
+    await expect(eight.locator('.plan-stage-bar__fill')).toHaveCount(1);
+    // Stage 9: what the stage is, in its page's words; nothing counted, drawn or badged.
+    await expect(nine.locator('.list-row__metatext')).toHaveText('A project: there is no rung to pass here.');
+    await expect(nine.locator('.plan-stage-bar')).toHaveCount(0);
+    await expect(nine.locator('.badge')).toHaveCount(0);
+
+    await eight.click();
+    await nine.click();
+    await expect(page.locator('.list-row[data-lesson="classical.9"]')).toBeVisible();
+    const eightRows = await blockOf(page, 8);
+    expect(eightRows.find((row) => row.lesson === 'technique.8')?.badges).toEqual(['complete']);
+    const nineRows = await blockOf(page, 9);
+    expect(nineRows.map((row) => row.lesson)).toContain('classical.9');
+    expect(nineRows.filter((row) => row.badges.length > 0), 'a Stage 9 row wears a rung’s word').toEqual([]);
+    const said = (await page.locator('#plan-list').textContent()) ?? '';
+    expect(said).toContain('A project: there is no rung to pass here.');
+  });
 });

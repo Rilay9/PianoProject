@@ -47,6 +47,7 @@ import { loadRungStates } from '../../data/rungStates';
 import {
   SESSION_TEMPLATES,
   buildSession,
+  contactAssumption,
   nextRecommended,
   playInstead,
   readerPosition,
@@ -57,8 +58,10 @@ import {
 } from '../../curriculum/session';
 import {
   allProgress,
+  contactSummaries,
   dailyReadDays,
   dailyReadStreak,
+  dayKey,
   getStreak,
   onProgressChange,
   readToday,
@@ -66,17 +69,40 @@ import {
   rungRows,
   sessionsForItem,
   weekSoFar,
+  type ContactHistory,
 } from '../../data/progressStore';
+import { allEncounters } from '../../data/encounterStore';
+import { allProjects, projectIn, type ProjectRow } from '../../data/projectStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
 import { simonForStage } from '../../engine/drills/simon';
 import { getPlan } from '../../data/planStore';
+import { clearOfferSnapshot, newOfferToken, writeOfferSnapshot } from '../../data/offerSnapshot';
+import { materialOfItem } from '../../curriculum/material';
 import { getSettings, updateSettings } from '../../data/settingsStore';
 import type { ProgressRow, SessionRow } from '../../data/db';
-import { readingReason, readingTitle, swapChoiceWords, swapTierWords } from '../help';
+import {
+  applySessionEvent,
+  closeSessionRun,
+  compositionVersion,
+  isOpen,
+  newRun,
+  onSessionRunChange,
+  plannedMinutes,
+  readSessionRun,
+  startSessionRun,
+  withdrawnOf,
+  type ActivityEntry,
+  type OutsideEntry,
+  type RunActivity,
+  type SessionRun,
+} from '../../data/sessionRun';
+import { cameTo, minutesOf, newActivityToken, openActivity, openOutside, settleHeld, showsReason } from '../sessionRunner';
+import { cardLine, PROJECT_TEXT, readingReason, readingTitle, SESSION_TEXT, swapChoiceWords, swapTierWords } from '../help';
 import { webMidiSource, micSource } from '../../app/services';
 import { onScreenDispose } from '../screenLifecycle';
 import { badge, button, chip, el, handsLabel, levelLabel, listRow, openSheet, shortHandsLabel } from '../widgets';
 import { openItem, targetFor } from '../openItem';
+import type { TodayCardView } from '../../app/testHooks';
 import { screenFrame, statusLine } from './screenFrame';
 
 const SLOT_LABELS: Record<SessionSlot['kind'], string> = {
@@ -92,6 +118,44 @@ const SLOT_LABELS: Record<SessionSlot['kind'], string> = {
 function isWeekend(now = new Date()): boolean {
   const day = now.getDay();
   return day === 0 || day === 6;
+}
+
+/**
+ * A swap option's project state (G94), in the project sheet's words — *Paused*, *Put away* — with the state in
+ * `data-project`. The Library's badge (G85, `LibraryScreen.projectBadge`) in shape: plain, not `passed`, since a
+ * ✓ beside a stated intention would say the learner achieved something.
+ */
+function lifecycleBadge(project: ProjectRow): HTMLElement {
+  const node = badge(PROJECT_TEXT.states[project.state], 'project');
+  node.dataset.project = project.state;
+  return node;
+}
+
+/**
+ * A row of the session card as Today draws it (U63; the reviewer's ruling on the row budget,
+ * `responses/questions-71bd6cee.md`).
+ *
+ * At 342 px the reason was one line cut after about thirty characters, and the cut fell on the clause that
+ * decides it (*Keeping this piece playable —…*, *Next lesson — this one waits f…*), because the claim comes
+ * first and the detail after the dash. Now it takes up to two compact lines (`.today-row__reason`). The line it
+ * needs comes from the badge, which leaves its own line under the detail and sits above *Swap* and ▶ instead
+ * (`.today-row__side`): *✓ passed* or *Next* is context, and the ruling ranks it below the row's name and its
+ * reason. The title keeps its two lines.
+ *
+ * Today's own arrangement of `listRow`'s parts, nothing else's: the Library and Progress rows keep their badge
+ * line. The badge stays out of `.list-row__actions`, so a tap on it is a tap on the row, as before.
+ */
+function onTheCard(row: HTMLElement): HTMLElement {
+  row.classList.add('today-row');
+  row.querySelector('.list-row__sub')?.classList.add('today-row__reason');
+  const badges = row.querySelector('.list-row__badges');
+  const actions = row.querySelector('.list-row__actions');
+  if (badges && actions) {
+    const side = el('div.today-row__side');
+    actions.replaceWith(side);
+    side.append(badges, actions);
+  }
+  return row;
 }
 
 /**
@@ -159,6 +223,34 @@ export function TodayScreen(router: Router): HTMLElement {
   let readingRows: SessionRow[] = [];
   /** The rung the card was built from (C6): what the swap sheet holds its options to. */
   let learnerRung: string | undefined;
+  /** The stored runs the card was built from: the learner's skills, the gate's first question on the swap sheet (E0). */
+  let learnerRows: SessionRow[] = [];
+  // The rungs the learner has reached, as the session read them: their own path, for the sheet's gate (E0a).
+  let learnerReached: string[] = [];
+  /** The contact history the card was built from (G2 item 6): what a swapped-in item's contact assumption reads (X1). */
+  let learnerContact: ContactHistory = {};
+  /** The learner's projects the card was built from (G1d): what the swap sheet marks a paused or put-away option by (G94). */
+  let learnerProjects: readonly ProjectRow[] = [];
+  /**
+   * The composed card's offer instance (D4a): minted each time the card is composed and again when its
+   * transfer offer's row is swapped away, kept with the offer Today opens (`data/offerSnapshot.ts`) and
+   * carried by its route (`?offer=`), so a route issued for one composition never consumes another's
+   * relationship. A recomposed card is a new teaching decision even where it lands on the same item.
+   */
+  let cardToken = '';
+  /**
+   * Set when the transfer offer is tapped: the snapshot is on its way and the screen is leaving. A
+   * composition that lands after that (a rebuild already in flight) must not clear the offer just kept,
+   * and a second tap must not open it twice.
+   */
+  let leaving = false;
+  /**
+   * Today's session as it is being run (X1, `data/sessionRun.ts`): today's record, open or closed today, or
+   * none. While it is open the card is the run's — the composition as it was when *Start session* was pressed,
+   * each row with what became of it — never the card composed since, so new evidence never rebuilds a running
+   * lesson; the button is *Continue*. Closed today (finished or ended), the finish line says what happened.
+   */
+  let run: SessionRun | null = null;
 
   const goalLine = el('p.today-goal', { id: 'today-goal' });
   const inputChip = chip('…', {
@@ -178,7 +270,8 @@ export function TodayScreen(router: Router): HTMLElement {
         onClick: () => {
           minutes = template.minutes;
           writeSessionLength(minutes, now);
-          rebuild();
+          // Another length is another card: a running session is closed as recomposed (X1), never rebuilt.
+          void recompose().then(rebuild);
         },
       }),
     );
@@ -244,6 +337,17 @@ export function TodayScreen(router: Router): HTMLElement {
   // --- rows ---------------------------------------------------------------
 
   /**
+   * A new offer instance for the card (D4a), and whatever offer was kept before it cleared: the card was
+   * composed again, or its transfer row swapped away. Not once the offer has been tapped — the snapshot
+   * written then is the one the route about to open names.
+   */
+  function supersedeOffer(): void {
+    if (leaving) return;
+    cardToken = newOfferToken();
+    void clearOfferSnapshot().catch(() => undefined);
+  }
+
+  /**
    * Opens a card's item with the rung the run is for and the slot it fills
    * (C3 item 0b, L50), each its own route parameter and never `from`, which
    * would also send Back to the rung's page. Only the Score screen reads them;
@@ -264,7 +368,41 @@ export function TodayScreen(router: Router): HTMLElement {
       });
       return;
     }
-    const rung = curriculum ? rungForSlot(curriculum, target, slot.lessonId) : undefined;
+    // The transfer offer (D4): offered from no rung's ask, so no rung judges its run and none is
+    // credited by listing it. The offer as shown — the session's own claim, never recomputed — is kept
+    // with the card's token before the route opens (D4a), and the route names that offer, so the run
+    // records the relationship this card was made on or, where the snapshot is gone, no transfer at all.
+    const transfer = slot.claim?.kind === 'transfer' && slot.item?.id === target.id ? slot.claim : undefined;
+    if (transfer && targetFor(target) === 'score') {
+      if (leaving) return;
+      leaving = true;
+      const offer = cardToken;
+      const material = materialOfItem(target);
+      const opening = writeOfferSnapshot({
+        token: offer,
+        itemId: target.id,
+        skill: transfer.skill,
+        ...(material === undefined ? {} : { material }),
+        relationship: transfer.relationship,
+        contact: transfer.contact,
+        offeredOn: dayKey(now),
+      });
+      // Only once it is kept. A write that failed opens nothing (U73): it used to open the route all the
+      // same, and the Score screen then said "This offer is no longer on today's card", which was untrue of a
+      // write that failed. The error is said here, on Today, and the row can be tapped again.
+      void opening.then(
+        () => {
+          router.navigateScore(target.id, { slot: slot.kind, intent: { intent: 'transfer', skill: transfer.skill, offer } });
+        },
+        () => {
+          leaving = false;
+          status.textContent = SESSION_TEXT.offerNotKept;
+          status.classList.add('status--error');
+        },
+      );
+      return;
+    }
+    const rung = transfer ? undefined : curriculum ? rungForSlot(curriculum, target, slot.lessonId) : undefined;
     // A drill carries the rung too (C5): it judges the drill's run.
     if (targetFor(target) === 'drill') {
       if (rung === undefined) router.navigateDrill(target.id);
@@ -286,18 +424,36 @@ export function TodayScreen(router: Router): HTMLElement {
     });
   };
 
-  function showSwapSheet(slotIndex: number): void {
-    const slot = slots[slotIndex];
+  /**
+   * The project of an option the learner paused or put away, if it has one (G94; the reviewer's ruling,
+   * `responses/9fce3792.md`): looked up as the session, the lesson page and the Library look a piece up, by its
+   * material and then its id. Any other state is not marked: the sheet is the learner's own menu, and only a
+   * piece no automatic chooser would offer must not look like one.
+   */
+  function heldProject(choice: CatalogItem): ProjectRow | undefined {
+    const project = projectIn(learnerProjects, { itemId: choice.id, material: materialOfItem(choice) });
+    return project?.state === 'paused' || project?.state === 'retired' ? project : undefined;
+  }
+
+  /**
+   * The swap sheet for one row: the live card's (`onCard` its slots) or a running session's activity (X1:
+   * the card is the run's, and the choice replaces that activity with a new token). `chosen` does the rest.
+   */
+  function showSwapSheet(slot: SessionSlot | undefined, onCard: readonly SessionSlot[], chosen: (choice: CatalogItem, tier: Parameters<typeof swapChoiceWords>[0]) => void): void {
     if (!slot?.item || !curriculum || !catalog) return;
     const sheet = openSheet(`Instead of “${slot.item.title}”`, { id: 'today-swap' });
     let notASong = slot.kind === 'technique';
 
     const list = el('div.list');
     const drawOptions = (): void => {
-      const options = swapOptions(slot, slots, curriculum as Curriculum, catalog as CatalogIndex, {
+      const options = swapOptions(slot, [...onCard], curriculum as Curriculum, catalog as CatalogIndex, {
         excludeSongs: notASong,
         items,
         ...(learnerRung === undefined ? {} : { rung: learnerRung }),
+        // The learner's skills as well as their rung, so the gate asks both halves of its first question (E0).
+        rows: learnerRows,
+        reached: learnerReached,
+        today: new Date(),
       });
       list.replaceChildren();
       if (options.length === 0) {
@@ -314,17 +470,17 @@ export function TodayScreen(router: Router): HTMLElement {
           list.append(el('p.muted.today-swap-tier', { text: words, 'data-tier': option.tier }));
         }
         const choice = option.item;
+        const held = heldProject(choice);
         list.append(
           listRow({
             title: choice.title,
             meta: `${levelLabel(choice.level, choice.levelSource)} · ${handsLabel(choice.hands)} · ${choice.type}`,
+            badges: held ? [lifecycleBadge(held)] : [],
+            // The learner's choice, honoured as any swap is: nothing here writes the project (G94).
             dataset: { 'data-swap': choice.id, 'data-tier': option.tier },
             onClick: () => {
-              // The learner's choice, and the claim the option had; what chose the row before no longer applies.
-              const { claim: _claim, phrase: _phrase, ...rest } = slot;
-              slots[slotIndex] = { ...rest, item: choice, reason: swapChoiceWords(option.tier) };
               sheet.close();
-              drawCard();
+              chosen(choice, option.tier);
             },
           }),
         );
@@ -373,11 +529,29 @@ export function TodayScreen(router: Router): HTMLElement {
     // stop being cut in half.
     const badges: HTMLElement[] = [];
     const row = progress.find((candidate) => candidate.itemId === item.id);
-    if (row && row.status !== 'new') badges.push(badge(row.status, row.status));
+    // Done in today's session (X1): a completed activity is never offered as untouched, on a card composed
+    // after the session ended or finished. *Done today* only where its run counted (X46, `cameTo`); one a run
+    // completed without counting has its item's own state beside it (*started*), which is not untouched either.
+    const doneToday = run !== null && run.day === dayKey(now) && run.activities.some((activity) => cameTo(activity) === 'done' && activity.slot.itemId === item.id);
+    if (doneToday) badges.push(badge(SESSION_TEXT.doneToday, 'passed'));
+    else if (row && row.status !== 'new') badges.push(badge(row.status, row.status));
     if (substitute) badges.push(badge('import needed', 'warn'));
 
     const actionButtons: HTMLElement[] = [
-      button('Swap', () => showSwapSheet(slotIndex), { variant: 'quiet' }),
+      button(
+        'Swap',
+        () =>
+          showSwapSheet(slots[slotIndex], slots, (choice, tier) => {
+            // The transfer offer swapped away (D4a): no longer on the card, so whatever was kept of
+            // it is superseded, and the card's offer instance is another.
+            if (slot.claim?.kind === 'transfer') supersedeOffer();
+            // The learner's choice, and the claim the option had; what chose the row before no longer applies.
+            const { claim: _claim, phrase: _phrase, contact: _contact, ...rest } = slot;
+            slots[slotIndex] = { ...rest, item: choice, reason: swapChoiceWords(tier), contact: contactOfChoice(choice, slot.kind) };
+            drawCard();
+          }),
+        { variant: 'quiet' },
+      ),
     ];
     if (substitute) {
       // Not a dead row: the item's own alternatives name what to play instead.
@@ -396,9 +570,11 @@ export function TodayScreen(router: Router): HTMLElement {
     // The reading row plays its recipe's hands, and says so (C4).
     const reading = slot.reading?.item.id === item.id ? slot.reading : undefined;
     const hands = reading?.recipe.moved?.hands ?? item.hands;
-    return listRow({
+    return onTheCard(listRow({
       title: reading ? readingTitle(item.title, item.hands, reading.recipe) : item.title,
-      subtitle: slot.reason,
+      // The composition's words, whole — but the transfer offer's cut at its clause (U71). Up to two lines on
+      // the glass (U63, `onTheCard`).
+      subtitle: cardLine(slot.reason, slot.claim),
       // `04` §0 R2: one line that fits. "Hands together" on every row is three
       // words that never distinguish anything, so it leaves and the line stops
       // wrapping. The slot kind leads, because a row's first question is what
@@ -422,11 +598,398 @@ export function TodayScreen(router: Router): HTMLElement {
         // What chose it (C6), in data where a test can read it and a learner cannot.
         ...(slot.claim ? { 'data-claim': slot.claim.kind } : slot.reading ? { 'data-claim': 'reader' } : {}),
       },
+    }));
+  }
+
+  // --- today's session, run (X1) ------------------------------------------
+
+  /** The contact assumption of an item the learner swapped in, through G2's one adapter (`contactAssumption`). */
+  function contactOfChoice(choice: CatalogItem, kind: SessionSlot['kind']): SessionSlot['contact'] {
+    return contactAssumption({ rows: learnerRows, readingRows, contact: learnerContact }, kind, choice, undefined);
+  }
+
+  /**
+   * One card row as a session activity: the slot as composed, the route Today would open it by, the
+   * composition's own words and its contact assumption. Only the two target forms whose screens have an
+   * honest finish are activities (the protocol): a Score-screen run and a drill; anything else — a PDF, a
+   * placeholder — is no guided activity and stays outside the cursor.
+   */
+  function activityEntryFor(slot: SessionSlot, order: number): ActivityEntry | undefined {
+    const item = slot.item;
+    if (!item || !curriculum) return undefined;
+    const target = targetFor(item);
+    if (target !== 'score' && target !== 'drill') return undefined;
+    // The guided tour's steps leave the drill screen for the Score screen and come back without the token, so
+    // the screen that owns its finish cannot report it: no honest completion signal in X1.
+    if (item.drill?.kind === 'walkthrough') return undefined;
+    const phrase = target === 'score' && slot.phrase && slot.item?.id === item.id ? slot.phrase : undefined;
+    const transfer = target === 'score' && slot.claim?.kind === 'transfer' ? slot.claim : undefined;
+    const reading = target === 'score' && slot.reading?.item.id === item.id ? slot.reading : undefined;
+    const rung = transfer ? undefined : phrase ? phrase.rung : rungForSlot(curriculum, item, slot.lessonId);
+    const material = transfer ? materialOfItem(item) : undefined;
+    const recipe = phrase
+      ? { ...(phrase.recipe.moved === undefined ? {} : { moved: phrase.recipe.moved }), ...(phrase.recipe.easy === true ? { easy: true as const } : {}) }
+      : reading
+        ? routeRecipeOf(reading)
+        : undefined;
+    return {
+      order,
+      token: newActivityToken(),
+      slot: {
+        kind: slot.kind,
+        itemId: item.id,
+        title: reading ? readingTitle(item.title, item.hands, reading.recipe) : item.title,
+        minutes: slot.minutes,
+        ...(slot.claim ? { claim: claimFacts(slot.claim) } : reading ? { claim: { kind: 'reader' } } : {}),
+        ...(slot.lessonId === undefined ? {} : { lessonId: slot.lessonId }),
+      },
+      route: {
+        target,
+        itemId: item.id,
+        ...(rung === undefined ? {} : { rung }),
+        ...(reading ? { seed: reading.seed } : {}),
+        ...(recipe === undefined || Object.keys(recipe).length === 0 ? {} : { recipe }),
+        ...(transfer
+          ? { transfer: { skill: transfer.skill, relationship: transfer.relationship, contact: transfer.contact, ...(material === undefined ? {} : { material }) } }
+          : {}),
+      },
+      reason: slot.reason,
+      ...(slot.contact ? { contact: { assumed: slot.contact } } : {}),
+    };
+  }
+
+  /** The live card's slots as a session and its prompts, for *Start session*. */
+  async function startSession(): Promise<void> {
+    if (leaving) return;
+    const entries: ActivityEntry[] = [];
+    const outside: OutsideEntry[] = [];
+    slots.forEach((slot, order) => {
+      const entry = activityEntryFor(slot, order);
+      if (entry) entries.push(entry);
+      else
+        outside.push({
+          order,
+          kind: slot.kind,
+          title: slot.item?.title ?? SLOT_LABELS[slot.kind],
+          minutes: slot.minutes,
+          words: slot.reason,
+          ...(slot.item ? { itemId: slot.item.id } : {}),
+        });
     });
+    if (entries.length === 0) {
+      status.textContent = 'Nothing in the card to start yet.';
+      return;
+    }
+    const fresh = newRun({
+      day: dayKey(now),
+      sessionId: newActivityToken(),
+      version: compositionVersion(slots.map((slot) => ({ kind: slot.kind, minutes: slot.minutes, ...(slot.item ? { itemId: slot.item.id } : {}) }))),
+      startedAt: new Date().toISOString(),
+      activities: entries,
+      outside,
+      ...(breakAfter === undefined ? {} : { breakAfter }),
+    });
+    leaving = true;
+    try {
+      run = await startSessionRun(fresh);
+    } catch (cause: unknown) {
+      leaving = false;
+      status.textContent = `Today’s session could not be kept: ${String(cause)}`;
+      status.classList.add('status--error');
+      return;
+    }
+    await openCurrent(fresh);
+  }
+
+  /** Opens the run's current activity; a transfer offer that could not be kept opens nothing, said (U73). */
+  async function openCurrent(from: SessionRun): Promise<void> {
+    const current = from.current === null ? undefined : from.activities[from.current];
+    if (!current) {
+      leaving = false;
+      redrawSession();
+      return;
+    }
+    leaving = true;
+    const opened = await openActivity(router, from, current);
+    if (!opened.ok) {
+      leaving = false;
+      status.textContent = SESSION_TEXT.offerNotKept;
+      status.classList.add('status--error');
+      redrawSession();
+    }
+  }
+
+  /** *Continue*: the record read again first (another tab may have moved it on), then its current activity. */
+  async function continueSession(): Promise<void> {
+    if (leaving) return;
+    await loadRun();
+    redrawSession();
+    if (isOpen(run, now)) await openCurrent(run);
+  }
+
+  /** The learner ends the session on purpose: nothing is marked failed, and what waits is said. */
+  async function endSession(): Promise<void> {
+    if (!isOpen(run, now)) return;
+    const current = run.current === null ? undefined : run.activities[run.current];
+    const ended = await applySessionEvent({ sessionId: run.sessionId, version: run.version, token: current?.token ?? '' }, { kind: 'end' });
+    run = ended.run ?? run;
+    redrawSession();
+  }
+
+  /**
+   * An activity row tapped: made current where it is not (the learner's own order), then opened with its
+   * token. A done row opens outside the session, as practice.
+   */
+  async function playActivity(activity: RunActivity): Promise<void> {
+    if (leaving || !isOpen(run, now)) return;
+    if (activity.state === 'completed') {
+      openOutside(router, activity);
+      return;
+    }
+    let from: SessionRun = run;
+    if (from.current !== activity.index) {
+      const chosen = await applySessionEvent({ sessionId: from.sessionId, version: from.version, token: activity.token }, { kind: 'choose' });
+      if (!chosen.ok) {
+        await loadRun();
+        redrawSession();
+        return;
+      }
+      from = chosen.run;
+      run = from;
+    }
+    await openCurrent(from);
+  }
+
+  /** A running activity swapped on Today: the learner's change, with a new token (a screen of the old item can finish nothing). */
+  async function swapActivity(activity: RunActivity, choice: CatalogItem, tier: Parameters<typeof swapChoiceWords>[0]): Promise<void> {
+    if (!isOpen(run, now)) return;
+    const slot: SessionSlot = {
+      kind: activity.slot.kind,
+      minutes: activity.slot.minutes,
+      item: choice,
+      ...(activity.slot.lessonId === undefined ? {} : { lessonId: activity.slot.lessonId }),
+      reason: swapChoiceWords(tier),
+      contact: contactOfChoice(choice, activity.slot.kind),
+    };
+    const entry = activityEntryFor(slot, activity.order);
+    if (!entry) {
+      status.textContent = `${choice.title} opens as pages, so it is not a step of the session; open it from Library.`;
+      return;
+    }
+    const swapped = await applySessionEvent(
+      { sessionId: run.sessionId, version: run.version, token: activity.token },
+      { kind: 'swap', slot: entry.slot, route: entry.route, reason: entry.reason, ...(entry.contact ? { contact: entry.contact } : {}), token: entry.token },
+    );
+    if (swapped.ok) run = swapped.run;
+    else await loadRun();
+    redrawSession();
+  }
+
+  /** An activity as the swap sheet reads a row: the composed slot with its catalogue item. */
+  function slotOfActivity(activity: RunActivity): SessionSlot | undefined {
+    const item = catalog?.byId.get(activity.slot.itemId);
+    if (!item) return undefined;
+    return {
+      kind: activity.slot.kind,
+      minutes: activity.slot.minutes,
+      item,
+      ...(activity.slot.lessonId === undefined ? {} : { lessonId: activity.slot.lessonId }),
+      reason: activity.reason,
+    };
+  }
+
+  /** One row of the running card: the activity as composed, with what became of it. */
+  function activityRow(from: SessionRun, activity: RunActivity): HTMLElement {
+    const item = catalog?.byId.get(activity.slot.itemId);
+    const current = from.current === activity.index;
+    const badges: HTMLElement[] = [];
+    // The ✓ only on a run that counted (X46, `cameTo`): a warm-up left and an exercise played in Wait for me
+    // wore the same mark as the pass beside them.
+    const came = cameTo(activity);
+    if (came === 'done') badges.push(badge(SESSION_TEXT.stateDone, 'passed'));
+    else if (came === 'skipped') badges.push(badge(SESSION_TEXT.stateSkipped));
+    else if (current) badges.push(badge(SESSION_TEXT.stateNext));
+    else if (came === 'played') badges.push(badge(SESSION_TEXT.statePlayed));
+    const play = (): void => {
+      void playActivity(activity);
+    };
+    const actionButtons: HTMLElement[] = [];
+    if (activity.state !== 'completed') {
+      actionButtons.push(
+        button(
+          'Swap',
+          () => {
+            const others = from.activities.map(slotOfActivity).filter((one): one is SessionSlot => one !== undefined);
+            showSwapSheet(slotOfActivity(activity), others, (choice, tier) => {
+              void swapActivity(activity, choice, tier);
+            });
+          },
+          { variant: 'quiet' },
+        ),
+      );
+    }
+    actionButtons.push(button('▶', play, { ariaLabel: `Open ${activity.slot.title}` }));
+    // A piece the learner withdrew after *Start session* says so (G90a): Today is the durable view of what the
+    // runner did, and the transition said it once. The composition's words ("Keeping this piece playable —
+    // last played on 12 Sep") give way to it: they are the reason the activity was ahead, and the learner has
+    // withdrawn the piece it was ahead for. Every other row is as it was.
+    const withdrawn = withdrawnOf(activity);
+    const line = withdrawn === undefined ? (showsReason(activity) ? cardLine(activity.reason, activity.slot.claim) : undefined) : SESSION_TEXT.withheldRow(withdrawn);
+    const row = onTheCard(listRow({
+      title: activity.slot.title,
+      // The composition's words while the activity is ahead; none once it is behind (X46, `showsReason`): the
+      // frozen "not counted yet" sat beside the run that had just counted.
+      ...(line === undefined ? {} : { subtitle: line }),
+      meta: [
+        SLOT_LABELS[activity.slot.kind],
+        `${String(activity.slot.minutes)} min`,
+        item ? levelLabel(item.level, item.levelSource) : '',
+        item ? shortHandsLabel(item.hands) : '',
+      ]
+        .filter(Boolean)
+        .join(' · '),
+      badges,
+      actions: actionButtons,
+      onClick: play,
+      dataset: {
+        'data-slot': activity.slot.kind,
+        'data-item': activity.slot.itemId,
+        'data-activity': String(activity.index),
+        'data-state': activity.state,
+        'data-current': String(current),
+        ...(activity.slot.claim ? { 'data-claim': activity.slot.claim.kind } : {}),
+      },
+    }));
+    if (current) row.classList.add('today-row--current');
+    return row;
+  }
+
+  /**
+   * A slot outside the cursor (the protocol table): the free prompt, as a prompt; an item whose screen owns no
+   * honest finish (the guided tour), as a row that opens it outside the session — never current, never done.
+   */
+  function outsideRow(one: OutsideEntry): HTMLElement {
+    const item = one.itemId === undefined ? undefined : catalog?.byId.get(one.itemId);
+    if (!item) {
+      return el(
+        'div.today-prompt',
+        { 'data-slot': one.kind, 'data-outside': 'true' },
+        el('div.today-prompt__title', { text: one.title }),
+        el('p.today-prompt__text', { text: `${String(one.minutes)} min · ${one.words}` }),
+      );
+    }
+    const open = (): void => {
+      void openItem(router, item);
+    };
+    return onTheCard(listRow({
+      title: item.title,
+      subtitle: one.words,
+      meta: [SLOT_LABELS[one.kind], `${String(one.minutes)} min`, levelLabel(item.level, item.levelSource)].filter(Boolean).join(' · '),
+      actions: [button('▶', open, { ariaLabel: `Open ${item.title}` })],
+      onClick: open,
+      dataset: { 'data-slot': one.kind, 'data-item': item.id, 'data-outside': 'true' },
+    }));
+  }
+
+  /** The running card: the run's activities and prompts in the card's order. */
+  function drawRunCard(from: SessionRun): void {
+    const entries = [
+      ...from.activities.map((activity) => ({ order: activity.order, node: activityRow(from, activity) })),
+      ...from.outside.map((one) => ({ order: one.order, node: outsideRow(one) })),
+    ].sort((a, b) => a.order - b.order);
+    entries.forEach((entry, at) => {
+      card.append(entry.node);
+      if (from.breakAfter !== undefined && at === from.breakAfter - 1) {
+        card.append(el('p.muted.today-break', { id: 'today-break', text: 'Take a break here — stand up, shake your hands out. The second half is repertoire-heavy.' }));
+      }
+    });
+  }
+
+  /** What each activity came to, and what waits, for the finish line. */
+  function finishLine(from: SessionRun): HTMLElement {
+    const minutesSpent = minutesOf(from.elapsedMs);
+    const ended = from.closed?.why === 'ended';
+    // The card's words for what each came to (X46, `cameTo`): *done* only where its run counted.
+    const word = (activity: RunActivity): string => {
+      const came = cameTo(activity);
+      return came === 'done' ? SESSION_TEXT.stateDone : came === 'skipped' ? SESSION_TEXT.stateSkipped : SESSION_TEXT.statePlayed;
+    };
+    const came = from.activities.filter((activity) => activity.state !== 'pending' && activity.state !== 'active').map((activity) => `${SLOT_LABELS[activity.slot.kind]} ${word(activity)}`);
+    const waiting = from.activities.filter((activity) => activity.state === 'pending' || activity.state === 'active').map((activity) => SLOT_LABELS[activity.slot.kind]);
+    const detail = [came.join(' · '), waiting.length > 0 ? `${SESSION_TEXT.deferred}: ${waiting.join(', ')}` : ''].filter(Boolean).join(' — ');
+    return el(
+      'div.today-finish',
+      { id: 'today-finish', 'data-closed': from.closed?.why ?? '' },
+      el('p.today-finish__head', { text: ended ? SESSION_TEXT.endedHead(minutesSpent) : SESSION_TEXT.finishedHead(minutesSpent) }),
+      ...(detail === '' ? [] : [el('p.today-finish__detail.muted', { text: detail })]),
+    );
+  }
+
+  /** What the actions row last drew, so a rebuild that changes nothing leaves the buttons under a finger alone. */
+  let sessionDrawn = '';
+
+  /**
+   * The actions row: *Continue* with where the session is while one runs; otherwise the finish line of
+   * today's finished or ended session, if any, above *Start session*. One filled box either way (R3).
+   */
+  function drawSession(): void {
+    const open = isOpen(run, now);
+    const key = run === null ? 'none' : `${String(open)}:${run.sessionId}:${String(run.current)}:${String(minutesOf(run.elapsedMs))}:${run.closed?.why ?? ''}`;
+    if (key === sessionDrawn) return;
+    sessionDrawn = key;
+    actions.replaceChildren();
+    if (isOpen(run, now)) {
+      const running = run;
+      const current = running.current === null ? undefined : running.activities[running.current];
+      actions.dataset.session = 'running';
+      actions.append(
+        el('p.today-session-line', { id: 'today-continue-line', text: SESSION_TEXT.continueLine(minutesOf(running.elapsedMs), plannedMinutes(running), current?.slot.title) }),
+        button(SESSION_TEXT.continue, () => void continueSession(), { id: 'today-continue', variant: 'primary' }),
+        button(SESSION_TEXT.endSession, () => void endSession(), { id: 'today-end', variant: 'quiet' }),
+      );
+      return;
+    }
+    actions.dataset.session = run?.closed?.why ?? 'none';
+    if (run !== null && run.day === dayKey(now) && (run.closed?.why === 'finished' || run.closed?.why === 'ended')) actions.append(finishLine(run));
+    actions.append(button('Start session', () => void startSession(), { id: 'today-start', variant: 'primary' }));
+  }
+
+  /** Both halves of the screen the session changes. */
+  function redrawSession(): void {
+    drawSession();
+    drawCard();
+  }
+
+  /**
+   * Today's record, validated: another day's run is closed as not finished, without judgement, when today's
+   * card is composed; a corrupt one was discarded by the store.
+   */
+  async function loadRun(): Promise<void> {
+    const read = await readSessionRun().catch(() => ({ kind: 'none' as const }));
+    let stored = read.kind === 'run' ? read.run : null;
+    if (stored && !stored.closed && stored.day !== dayKey(now)) {
+      stored = (await closeSessionRun('not-finished', now).catch(() => null)) ?? stored;
+    }
+    run = stored !== null && stored.day === dayKey(now) ? stored : null;
+    // Read for the card and for *Continue*: the learner's last word on the piece that is next holds (G90).
+    // The composition is not touched; a paused piece's turn has come, and it is stepped past, said on the
+    // transition and marked on the row.
+    if (isOpen(run, now)) run = (await settleHeld(run, now)).run;
+  }
+
+  /** The card recomposed on purpose (a length, Shuffle): a running session is closed, never rebuilt in place. */
+  async function recompose(): Promise<void> {
+    if (!isOpen(run, now)) return;
+    run = (await closeSessionRun('recomposed', now, run.sessionId).catch(() => null)) ?? run;
+    sessionDrawn = '';
   }
 
   function drawCard(): void {
     card.replaceChildren();
+    if (isOpen(run, now)) {
+      drawRunCard(run);
+      return;
+    }
     slots.forEach((slot, slotIndex) => {
       card.append(rowFor(slot, slotIndex));
       if (breakAfter !== undefined && slotIndex === breakAfter - 1) {
@@ -507,23 +1070,17 @@ export function TodayScreen(router: Router): HTMLElement {
       });
     // The reason takes a second line here rather than an ellipsis (C4): the
     // card's title is one line and it has no Swap, so the row stays inside
-    // `04` §0 R2 with the whole sentence on it.
+    // `04` §0 R2 with the whole sentence on it. The session rows' reasons take
+    // two lines too since U63 (`onTheCard`); this card is not one of them and
+    // keeps its own rule and its badge line.
     row.querySelector('.list-row__sub')?.classList.add('today-reason');
     dailyCard.append(row);
   }
 
   function drawActions(): void {
-    actions.replaceChildren(
-      button(
-        'Start session',
-        () => {
-          const first = slots.find((slot) => slot.item);
-          if (first?.item) open(first.item, first);
-          else status.textContent = 'Nothing in the card to start yet.';
-        },
-        { id: 'today-start', variant: 'primary' },
-      ),
-    );
+    // *Start session* opens the session's execution state, not the first row (X1, Part 18's first case): the
+    // row is `drawSession`'s, drawn again whenever the session changes.
+    drawSession();
     // `04` §0 R3, weight by frequency: one filled box on the screen, and text
     // for the rest. `Review a skill` and `How to practise` have left for Plan,
     // which is where they belong and where they already are — six boxes of
@@ -538,7 +1095,8 @@ export function TodayScreen(router: Router): HTMLElement {
         'Shuffle options',
         () => {
           seed += 1;
-          rebuild();
+          // A shuffled card is a recomposed one: a running session is closed as recomposed (X1).
+          void recompose().then(rebuild);
         },
         { id: 'today-shuffle', variant: 'quiet' },
       ),
@@ -616,10 +1174,23 @@ export function TodayScreen(router: Router): HTMLElement {
     // Where the learner is comes from the evidence (C5: `rungState`), where it
     // was the items marked passed, counted over each rung; the same rows carry
     // the learner's skills, which the review and the warm-up read (C6).
-    void Promise.all([getPlan(), loadRungStates(curriculum, now), rungRows()]).then(([plan, states, rows]) => {
+    // The contact history beside the runs (G2 item 6): encounters and pruned runs' summaries, so a
+    // piece heard once or practised and pruned is never offered as new. A store that cannot be read
+    // gives none, which reads as the runs alone, as before.
+    const contactHistory = Promise.all([allEncounters().catch(() => []), contactSummaries().catch(() => [])]);
+    // The learner's projects (G1d; the reviewer's G82 ruling), for two things: the session's automatic
+    // eligibility — no automatic chooser offers a piece they paused or put away (G1e, `buildSession`'s one
+    // lookup) — and the swap sheet, the learner's own menu, which lists such a piece with its state beside it
+    // (G94). Nothing here writes one. A store that cannot be read gives none, which suppresses and marks
+    // nothing, as before.
+    const projectRows = allProjects().catch(() => []);
+    void Promise.all([getPlan(), loadRungStates(curriculum, now), rungRows(), contactHistory, projectRows]).then(([plan, states, rows, [encounters, summaries], projects]) => {
       // The same active set Plan and Settings show, so the three screens
       // cannot disagree about what is switched on.
       const active = activeTracksFor(plan, curriculum as Curriculum);
+      learnerRows = rows;
+      learnerContact = { encounters, summaries };
+      learnerProjects = projects;
       const built = buildSession({
         curriculum: curriculum as Curriculum,
         catalog: catalog as CatalogIndex,
@@ -630,6 +1201,7 @@ export function TodayScreen(router: Router): HTMLElement {
         // generated sight-reading row is never one, whatever an older build
         // wrote on it. The item calendar they replace is gone.
         learned: learnedPieces(progress, generated),
+        projects,
         lastPlayed: new Map(progress.map((row) => [row.itemId, row.lastPracticedAt])),
         rows,
         activeTracks: active,
@@ -642,17 +1214,23 @@ export function TodayScreen(router: Router): HTMLElement {
         // The reading slot's phrase comes from the learner's reads (C4).
         readingRows,
         today: now,
+        contact: { encounters, summaries },
       });
       slots = built.slots;
+      // A composed card is a new decision (D4a): its offer gets a new instance, and an offer kept from
+      // an earlier composition no longer stands for anything on it.
+      supersedeOffer();
+      learnerReached = built.reached;
       breakAfter = built.template.breakAfterSlot;
       drawCard();
-      // Once, after the first session exists. Nothing in the row depends on
-      // the session, so redrawing it on every rebuild only threw away whichever
-      // button a finger had just landed on — but drawing it *before* the first
-      // build put `Start session` on screen with nothing to start.
+      // Once, after the first session exists: drawing it *before* the first build put `Start session` on
+      // screen with nothing to start. The session's half of the row (`drawSession`) is drawn again only when
+      // the session itself changed, so a rebuild never throws away the button a finger has just landed on.
       if (!actionsDrawn) {
         drawActions();
         actionsDrawn = true;
+      } else {
+        drawSession();
       }
 
       const position = nextRecommended(curriculum as Curriculum, states, active, {
@@ -731,6 +1309,8 @@ export function TodayScreen(router: Router): HTMLElement {
     progress = rows;
     dailyDays = readDays;
     readingRows = await loadReadingRows(loadedItems);
+    // Today's session, before the card is drawn: while one runs, the card is the run's (X1).
+    await loadRun();
 
     const week = weekSoFar(streak);
     // Short enough not to wrap at 360 px (`04` §0 R2). Progress says it in
@@ -768,6 +1348,39 @@ export function TodayScreen(router: Router): HTMLElement {
     for (const stop of stopWatchingInput) stop();
   });
 
+  // The card as composed, for the end-to-end tests (D4a): its offer instance and each row's item and
+  // claim, so a spec can hold the offer's relationship before opening it and compare the stored run.
+  if (window.__pianopath) {
+    const readCard = (): TodayCardView => ({
+      token: cardToken,
+      slots: slots.map((slot) => ({
+        kind: slot.kind,
+        ...(slot.item ? { itemId: slot.item.id } : {}),
+        ...(slot.claim ? { claim: slot.claim } : {}),
+      })),
+    });
+    window.__pianopath.todayCard = readCard;
+    onScreenDispose(section, () => {
+      if (window.__pianopath?.todayCard === readCard) delete window.__pianopath.todayCard;
+    });
+  }
+
+  // The session moved on this page (a write elsewhere on it), or in another tab while this one was hidden:
+  // the card and the row are drawn from the record again, never from what this view last held (X1).
+  const stopWatchingRun = onSessionRunChange((stored) => {
+    run = stored !== null && stored.day === dayKey(now) ? stored : null;
+    if (catalog) redrawSession();
+  });
+  const onVisible = (): void => {
+    if (document.visibilityState !== 'visible' || !catalog) return;
+    void loadRun().then(redrawSession);
+  };
+  document.addEventListener('visibilitychange', onVisible);
+  onScreenDispose(section, () => {
+    stopWatchingRun();
+    document.removeEventListener('visibilitychange', onVisible);
+  });
+
   const stopWatchingProgress = onProgressChange(() => {
     // The daily days too: the store ticks the day when a seeded run is
     // recorded, and the tick has to reach the card without a reload.
@@ -798,6 +1411,26 @@ async function loadReadingRows(items: readonly CatalogItem[]): Promise<SessionRo
   } catch {
     // No history to read is a learner who has not read: the rung's own row.
     return [];
+  }
+}
+
+/**
+ * What a session activity keeps of the claim that chose it (X1): the kind, and the demand or skill it names —
+ * all the two adaptations read (the easy-success rule compares the named measured demands).
+ */
+function claimFacts(claim: NonNullable<SessionSlot['claim']>): NonNullable<ActivityEntry['slot']['claim']> {
+  switch (claim.kind) {
+    case 'demand':
+    case 'ready':
+      return { kind: claim.kind, demand: claim.demand };
+    case 'skill':
+    case 'skill-retention':
+    case 'transfer':
+      return { kind: claim.kind, skill: claim.skill };
+    case 'asked':
+      return claim.skill === undefined ? { kind: claim.kind } : { kind: claim.kind, skill: claim.skill };
+    default:
+      return { kind: claim.kind };
   }
 }
 

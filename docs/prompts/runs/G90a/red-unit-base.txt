@@ -1,0 +1,1147 @@
+
+ RUN  v5.0.0 <worktree>/build/g90a/base/app
+
+ ❯ tests/unit/projectLifecycle.test.ts (40 tests | 1 failed) 450ms
+   ❯ never the bridge, never the source (the brief’s item 3; its refuting test kept as a guard) (2)
+     × only the project sheet acts; the session reads a project for one thing, automatic eligibility, through one lookup the card and the running session share (G1d; G82; G1e; G90); the Library shows one (G85); no evidence, skill, eligibility or Library code reads one 241ms
+ ❯ tests/unit/sessionHeldSkip.test.ts (26 tests | 14 failed) 102ms
+   ❯ the lifecycle veto has its own adaptation kind (5)
+     × a piece the learner paused is recorded as withdrawn, with the state it was left in, never as skipped-redundant 15ms
+     × a piece the learner put away is recorded as withdrawn, with the state it was left in, never as skipped-redundant 3ms
+     × the runner writes it: at the piece’s turn the stored record holds the kind and the state, and says what the transition said 36ms
+     × a transition reads the withdrawn kind as it read the skip: it says it only while the row is still skipped 2ms
+   ❯ withdrawnOf: the one reading of why a skipped row was withdrawn, which Today’s row says (1)
+     × names the state only for a skipped activity whose record says it was withdrawn; the latest word where there are two; never another kind of skip 1ms
+   ❯ the record reads back as it was written (3)
+     × a swapped activity keeps the moment it was swapped through the store 2ms
+     × a stored record is data: the new kind needs its state, the swap moment must be text, and an older record with neither still reads 1ms
+   ❯ a swap records when it was made (2)
+     × the activity carries the moment of the swap, the swap’s own clock, and a second swap replaces it and the reasons of the first 1ms
+   ❯ the pure state machine orders a swap and a withdrawal (5)
+     × paused: after the swap it withdraws the activity; before the swap, and at the same moment, it does not 0ms
+     × retired: after the swap it withdraws the activity; before the swap, and at the same moment, it does not 0ms
+   ❯ a tapped-back row announces nothing of a skip it no longer is (2)
+     × the learner taps the withdrawn row and then skips it themselves: it is their skip, and no word of a pause is left on it 1ms
+   ❯ at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it (8)
+     × swapped in, then paused: the later word vetoes the pending activity at its turn, said, and the one after is offered 5ms
+     × swapped in, then retired: the later word vetoes the pending activity at its turn, said, and the one after is offered 2ms
+     × settleHeld says the same: what it steps past is the swapped piece when the word is the later one, and nothing when it is the earlier 4ms
+ ❯ tests/unit/sessionHeldPiece.test.ts (25 tests | 5 failed) 311ms
+   ❯ the withhold event, in the pure state machine (6)
+     × a pending activity the composition chose is skipped with the reason, and the cursor goes to the next still to do 17ms
+     × an activity ahead of the cursor, the one a transition offers after a stopped activity, is skipped and the cursor stays where it is 2ms
+   ❯ the session’s one reading of a project (the composer’s and the runner’s) (3)
+     × the session has one place that looks a project up, and the card’s predicate and the runner both ask it 5ms
+   ❯ at its turn, a pending piece the learner has paused or put away is stepped past (14)
+     × the pause lands while the piece is ahead: when the one before finishes, the transition offers the one after, says why, and the composition stands 39ms
+   ❯ the transition says a skip only while it is a skip (1)
+     × a piece the learner brought back by tapping its row is no longer announced as skipped 1ms
+ ❯ tests/unit/todayHeldPiece.test.ts (4 tests | 1 failed) 1022ms
+   ❯ the piece that is next was paused after Start session (3)
+     × Today draws it skipped, names the one after as next, and Continue opens that one — never the piece 267ms
+ ❯ tests/unit/todayHeldSkip.test.ts (11 tests | 6 failed) 5984ms
+   ❯ Today’s skipped row says why the piece was withdrawn (5)
+     × paused: the row reads “Skipped — you paused it” in place of the composition’s words, with its mark, and the record holds the kind 207ms
+     × retired: the row reads “Skipped — you put it away” in place of the composition’s words, with its mark, and the record holds the kind 192ms
+     × read back from the record, not from the project: brought back since, the row still says what the learner did, and Continue still skips it 251ms
+   ❯ a swap and a pause or put-away, ordered by when each happened, through Today (6)
+     × swapped in, then paused: the later word steps past it at its turn, said on its row, and Continue opens the one after 1320ms
+     × swapped in, then retired: the later word steps past it at its turn, said on its row, and Continue opens the one after 1317ms
+     × a row the learner taps is theirs: the swapped piece they withdrew after choosing it opens when they tap it 1308ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 27 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/projectLifecycle.test.ts > never the bridge, never the source (the brief’s item 3; its refuting test kept as a guard) > only the project sheet acts; the session reads a project for one thing, automatic eligibility, through one lookup the card and the running session share (G1d; G82; G1e; G90); the Library shows one (G85); no evidence, skill, eligibility or Library code reads one
+AssertionError: export function heldWordOf( not found: expected -1 to be greater than 0
+ ❯ span tests/unit/projectLifecycle.test.ts:698:49
+    696|       // Its own closing brace: the first `}` alone on its line after …
+    697|       const end = start + session.slice(start).search(/\n\}\r?\n/);
+    698|       expect(start, `${head.trim()} not found`).toBeGreaterThan(0);
+       |                                                 ^
+    699|       expect(end, `${head.trim()}’s end not found`).toBeGreaterThan(st…
+    700|       return [start, end];
+ ❯ tests/unit/projectLifecycle.test.ts:702:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/27]⎯
+
+ FAIL  tests/unit/sessionHeldPiece.test.ts > the withhold event, in the pure state machine > a pending activity the composition chose is skipped with the reason, and the cursor goes to the next still to do
+AssertionError: expected { index: +0, order: +0, …(7) } to match object { state: 'skipped', …(1) }
+(16 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "adaptations": [
+      {
+-       "why": "Warm-up is skipped — you paused it",
++       "why": undefined,
+      },
+    ],
+    "state": "skipped",
+  }
+
+ ❯ tests/unit/sessionHeldPiece.test.ts:189:33
+    187|     const before = fresh();
+    188|     const after = ok(apply(before, as(before, 0), withhold, NOW_AT));
+    189|     expect(after.activities[0]).toMatchObject({ state: 'skipped', adap…
+       |                                 ^
+    190|     expect(after.current).toBe(1);
+    191|     // Nothing else moved: the rest of the card is as composed, no sta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/27]⎯
+
+ FAIL  tests/unit/sessionHeldPiece.test.ts > the withhold event, in the pure state machine > an activity ahead of the cursor, the one a transition offers after a stopped activity, is skipped and the cursor stays where it is
+AssertionError: expected { index: 1, order: 1, …(7) } to match object { state: 'skipped', …(1) }
+(16 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "adaptations": [
+      {
+-       "why": "New piece is skipped — you paused it",
++       "why": undefined,
+      },
+    ],
+    "state": "skipped",
+  }
+
+ ❯ tests/unit/sessionHeldPiece.test.ts:224:33
+    222|     run = ok(apply(run, as(run, 0), { kind: 'attempted' }, NOW_AT));
+    223|     const after = ok(apply(run, as(run, 1), withhold, NOW_AT));
+    224|     expect(after.activities[1]).toMatchObject({ state: 'skipped', adap…
+       |                                 ^
+    225|     expect(after.current, 'the learner is still in the first activity'…
+    226|     expect(after.activities[0]?.state).toBe('attempted');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/27]⎯
+
+ FAIL  tests/unit/sessionHeldPiece.test.ts > the session’s one reading of a project (the composer’s and the runner’s) > the session has one place that looks a project up, and the card’s predicate and the runner both ask it
+AssertionError: expected '/**\n * The session runner\'s one ada…' to match /heldWordOf\(/
+
+- Expected:
+/heldWordOf\(/
+
++ Received:
+"/**
+ * The session runner's one adapter to the screens (X1; the reviewer's required change,
+ * `docs/review/responses/bf8de2d2.md`: one activity protocol and one runner transition, not per-screen
+ * cursor mutations).
+ *
+ * - **Opening** (`openActivity`): the runner opens an activity by the route the composition gave its slot,
+ *   with the activity's token (`?session=`); a transfer offer's snapshot is kept first (D4a) and the route is
+ *   not opened until that write settles — a failed write opens nothing and says so (U73).
+ * - **The screens report lifecycle events** through a `SessionHandle` built from their route's token —
+ *   opened, attempted, completed, and the visible time — and never read encounter history or choose the
+ *   next activity themselves. Every write carries the session id, the composition's version and the token;
+ *   a refused write changes nothing.
+ * - **The start-time recheck** (the brief's item 6; Part 27's session interaction): an activity chosen as a
+ *   first contact is rechecked when its screen opens, through G2's one adapter (`session.contactOf`) over the
+ *   runs, the encounters — this opening's own viewing aside — and the pruned runs' summaries; met since the
+ *   card was composed, it is repurposed with the reason said. The Score screen's own first-contact
+ *   derivation (G1) still decides the run's evidence; this is what the session says about it.
+ * - **The transition** (`drawTransition`): the block a finished activity's closing action becomes — the next
+ *   activity with the composition's own words for it, *Start* and *Skip or change*; *Try again* and *Move on
+ *   anyway* after a measured failure; *Done* after the last. Drawn from the stored record, so a stale screen
+ *   shows where the session really is.
+ * - **The clock** (`SessionHandle.startClock`): visible time only — a hidden page, a closed app and Today
+ *   between activities accrue nothing.
+ * - **The learner's word on a piece** (`settleHeld`; G90, the reviewer's ruling `responses/d59f2ef8.md` question
+ *   2): the composition is frozen at *Start session* and stays, but a piece the learner paused or put away on
+ *   its sheet since is not offered when its turn comes. Where the session is about to offer its current
+ *   activity — the transition drawn after the one before, *Start* on it, Today read for *Continue* — a pending
+ *   activity the composition chose whose piece is withdrawn *now* is skipped with the reason said, and the one
+ *   after is offered; nothing is recomposed, an activity underway is not interrupted, and a row or a swap the
+ *   learner chose is their own word and is left alone.
+ */
+import type { Router } from '../router';
+import {
+  applySessionEvent,
+  isAutomatic,
+  isOpen,
+  nextPending,
+  plannedMinutes,
+  readSessionRun,
+  type Expected,
+  type Outcome,
+  type RunActivity,
+  type RunEvent,
+  type SessionRun,
+  type ApplyResult,
+} from '../data/sessionRun';
+import { newOfferToken, writeOfferSnapshot } from '../data/offerSnapshot';
+import { contactSummaries, rungRows } from '../data/progressStore';
+import { allEncounters } from '../data/encounterStore';
+import { allProjects, type ProjectRow, type ProjectTarget } from '../data/projectStore';
+import { findItem } from '../curriculum/load';
+import { materialOfItem } from '../curriculum/material';
+import { contactOf, heldStateOf } from '../curriculum/session';
+import type { Identity } from '../review/record';
+import { SESSION_TEXT } from './help';
+import { el } from './widgets';
+
+/** A new activity token: the router's token form (`[0-9a-z]{6,32}`), which the offer snapshot's token shares. */
+export function newActivityToken(): string {
+  return newOfferToken();
+}
+
+/** How often visible time is written while an activity's screen is open. */
+export const CLOCK_FLUSH_MS = 15_000;
+
+/**
+ * Opens an activity through the router, with its token. The transfer offer (D4a): the composition's claim is
+ * written to the offer snapshot under the activity's token first, and the route opens only once that write
+ * has settled; a failed write opens nothing (U73) and the caller says so.
+ */
+export async function openActivity(router: Router, run: SessionRun, activity: RunActivity): Promise<{ ok: true } | { ok: false; why: 'offer-not-kept' }> {
+  const route = activity.route;
+  const session = activity.token;
+  if (route.target === 'drill') {
+    router.navigateDrill(route.itemId, { ...(route.rung === undefined ? {} : { rung: route.rung }), session });
+    return { ok: true };
+  }
+  if (route.transfer) {
+    const offer = activity.token;
+    try {
+      await writeOfferSnapshot({
+        token: offer,
+        itemId: route.itemId,
+        skill: route.transfer.skill,
+        ...(route.transfer.material === undefined ? {} : { material: route.transfer.material }),
+        relationship: route.transfer.relationship,
+        contact: route.transfer.contact,
+        offeredOn: run.day,
+      });
+    } catch {
+      return { ok: false, why: 'offer-not-kept' };
+    }
+    router.navigateScore(route.itemId, { slot: activity.slot.kind, intent: { intent: 'transfer', skill: route.transfer.skill, offer }, session });
+    return { ok: true };
+  }
+  router.navigateScore(route.itemId, {
+    ...(route.rung === undefined ? {} : { rung: route.rung }),
+    slot: activity.slot.kind,
+    ...(route.seed === undefined ? {} : { seed: route.seed }),
+    ...(route.recipe === undefined ? {} : { recipe: route.recipe }),
+    session,
+  });
+  return { ok: true };
+}
+
+/**
+ * Opens an activity's item outside the session (a done row played again from Today): its rung and slot, no
+ * token, no seed (a fresh phrase, never the one on the record) and no transfer intent — it is practice.
+ */
+export function openOutside(router: Router, activity: RunActivity): void {
+  const route = activity.route;
+  if (route.target === 'drill') {
+    router.navigateDrill(route.itemId, route.rung === undefined ? {} : { rung: route.rung });
+    return;
+  }
+  router.navigateScore(route.itemId, {
+    ...(route.rung === undefined || route.transfer ? {} : { rung: route.rung }),
+    slot: activity.slot.kind,
+    ...(route.recipe === undefined ? {} : { recipe: route.recipe }),
+  });
+}
+
+/** What a screen opened with a session token reports, and reads back. */
+export interface SessionHandle {
+  readonly token: string;
+  /** The stored run where this token is one of its activities and it is today's; null otherwise. */
+  record(): Promise<SessionRun | null>;
+  /** The screen is open and knows what it plays: marks the activity active and rechecks its contact assumption. */
+  opened(facts: { itemId: string; material?: Identity; visit?: string }): Promise<void>;
+  /** The run's count-in passed, or the drill started. */
+  attempted(): void;
+  /** A run reached its end and is stored: the visible time first, then the outcome. */
+  completed(outcome: Outcome): Promise<ApplyResult | null>;
+  /** Starts the visible-time clock; returns its stop, which writes what is left. */
+  startClock(): () => void;
+  /** An event on behalf of the transition (it acts on the record's current activity, not on this screen's). */
+  write(expected: Expected, event: RunEvent): Promise<ApplyResult>;
+}
+
+function expectedFor(run: SessionRun, token: string): Expected {
+  return { sessionId: run.sessionId, version: run.version, token };
+}
+
+/** The handle for a screen whose route carries `?session=`; null without one. */
+export function sessionHandle(token: string | undefined, clock: { now: () => Date } = { now: () => new Date() }): SessionHandle | null {
+  if (token === undefined || token === '') return null;
+  let attemptedSent = false;
+  let flushNow: (() => Promise<void>) | null = null;
+  const record = async (): Promise<SessionRun | null> => {
+    const read = await readSessionRun().catch(() => ({ kind: 'none' as const }));
+    if (read.kind !== 'run') return null;
+    const run = read.run;
+    return run.activities.some((activity) => activity.token === token) ? run : null;
+  };
+  const write = async (expected: Expected, event: RunEvent): Promise<ApplyResult> =>
+    applySessionEvent(expected, event, clock.now()).catch((): ApplyResult => ({ ok: false, why: 'none', run: null }));
+  /** An event from this screen, about its own activity. */
+  const own = async (event: RunEvent): Promise<ApplyResult | null> => {
+    const run = await record();
+    if (!run) return null;
+    return write(expectedFor(run, token), event);
+  };
+  return {
+    token,
+    record,
+    write,
+    async opened(facts) {
+      const result = await own({ kind: 'opened' });
+      if (!result?.ok) return;
+      const activity = result.run.activities.find((one) => one.token === token);
+      if (!activity?.contact || activity.contact.rechecked !== undefined) return;
+      // Only a first-contact assumption can be undone by an intervening encounter: `met` stays met, and
+      // `none` rests on nothing a new contact could invalidate.
+      if (activity.contact.assumed !== 'first-contact') {
+        await own({ kind: 'recheck', verdict: 'held' });
+        return;
+      }
+      const [rows, encounters, summaries] = await Promise.all([
+        rungRows().catch(() => []),
+        allEncounters().catch(() => []),
+        contactSummaries().catch(() => []),
+      ]);
+      // This opening's own viewing is the reading's, never prior contact (G1's visit rule).
+      const before = facts.visit === undefined ? encounters : encounters.filter((row) => row.visit !== facts.visit);
+      const contact = contactOf({ rows, contact: { encounters: before, summaries } }, facts.itemId, facts.material);
+      // Met by its exact material since the card was composed; an id-only match is unknown, never contact.
+      const met = contact.contact === 'met';
+      await own(met ? { kind: 'recheck', verdict: 'invalidated', why: SESSION_TEXT.repurposed(contact.how?.[0] ?? 'played') } : { kind: 'recheck', verdict: 'held' });
+    },
+    attempted() {
+      if (attemptedSent) return;
+      attemptedSent = true;
+      void own({ kind: 'attempted' });
+    },
+    async completed(outcome) {
+      if (flushNow) await flushNow();
+      return own({ kind: 'completed', outcome });
+    },
+    startClock() {
+      const doc = typeof document === 'undefined' ? null : document;
+      let visibleSince: number | null = doc === null || doc.visibilityState === 'visible' ? performance.now() : null;
+      let pending = 0;
+      const take = (): void => {
+        if (visibleSince === null) return;
+        const at = performance.now();
+        pending += at - visibleSince;
+        visibleSince = at;
+      };
+      const flush = async (): Promise<void> => {
+        take();
+        const ms = pending;
+        pending = 0;
+        if (ms < 1) return;
+        await own({ kind: 'accrue', ms });
+      };
+      flushNow = flush;
+      const onVisibility = (): void => {
+        if (doc?.visibilityState === 'visible') {
+          visibleSince = performance.now();
+          return;
+        }
+        take();
+        visibleSince = null;
+        void flush();
+      };
+      const onHide = (): void => {
+        void flush();
+      };
+      doc?.addEventListener('visibilitychange', onVisibility);
+      window.addEventListener('pagehide', onHide);
+      const timer = window.setInterval(() => {
+        void flush();
+      }, CLOCK_FLUSH_MS);
+      return () => {
+        window.clearInterval(timer);
+        doc?.removeEventListener('visibilitychange', onVisibility);
+        window.removeEventListener('pagehide', onHide);
+        void flush();
+        flushNow = null;
+      };
+    },
+  };
+}
+
+// --- the learner's word on a piece ------------------------------------------------------------------
+
+/** What `settleHeld` did: the run as it stands, and the activities it stepped past, in order. */
+export interface Settled {
+  run: SessionRun;
+  withheld: RunActivity[];
+}
+
+/**
+ * The project target of an activity's piece: its id and, where the catalogue can say, its material — so a
+ * project made under another id of the same file holds, as the card's composer finds it. A catalogue that
+ * cannot be read leaves the id alone: the project made under that id is still found, and no other is guessed.
+ */
+async function projectTargetOf(activity: RunActivity): Promise<ProjectTarget> {
+  const itemId = activity.route.itemId;
+  try {
+    const item = await findItem(itemId);
+    return { itemId, material: item === undefined ? undefined : materialOfItem(item) };
+  } catch {
+    return { itemId, material: undefined };
+  }
+}
+
+/** The activity the cursor is on: what Today's *Continue* and a transition after a finished activity offer. */
+const currentOf = (run: SessionRun): RunActivity | undefined => (run.current === null ? undefined : run.activities[run.current]);
+
+/**
+ * The learner's last word on a piece holds where the session next acts on it (G90; the ruling `responses/
+ * d59f2ef8.md` question 2). Called wherever the session is about to offer an activity — the transition drawn
+ * after the one before, *Start* on it, Today read for *Continue* — with what that place offers (`offering`;
+ * by default the cursor's activity): while the offered activity is pending, chosen by the composition
+ * (`isAutomatic`), and its piece is paused or put away *now* (`heldStateOf`, the composer's own reading, over
+ * the projects as they stand), the runner skips it with the reason said (`withhold`) and offers the one after
+ * — and the one after that. The transition after a stopped activity offers the one after it, which the cursor
+ * has not reached (`offeredAfter`); every other place offers the cursor's.
+ *
+ * It does not recompose: the activities, their order, words and tokens are as *Start session* kept them, and a
+ * piece that is held again later is stepped past at its own turn. It does not interrupt: an activity opened or
+ * tried is the learner's, and `apply` refuses the event for it. It does not overrule: a swapped-in piece
+ * carries no claim, and a row the learner taps becomes current by `choose` and opens without passing here. It
+ * writes nothing where nothing is withdrawn (no read of the catalogue either, where the learner has no project
+ * at all). A store of projects that cannot be read withdraws nothing, as Today's card reads none.
+ */
+export async function settleHeld(
+  run: SessionRun,
+  now: Date = new Date(),
+  offering: (run: SessionRun) => RunActivity | undefined = currentOf,
+): Promise<Settled> {
+  let at = run;
+  const withheld: RunActivity[] = [];
+  let projects: readonly ProjectRow[] | null = null;
+  for (let guard = 0; guard < run.activities.length; guard += 1) {
+    const offered = offering(at);
+    if (!isOpen(at, now) || !offered || offered.state !== 'pending' || !isAutomatic(offered)) break;
+    projects ??= await allProjects().catch((): ProjectRow[] => []);
+    if (projects.length === 0) break;
+    const held = heldStateOf(projects, await projectTargetOf(offered));
+    if (held === undefined) break;
+    const result = await applySessionEvent(expectedFor(at, offered.token), { kind: 'withhold', why: SESSION_TEXT.withheld(offered.slot.title, held) }, now).catch(
+      (): ApplyResult => ({ ok: false, why: 'none', run: null }),
+    );
+    if (!result.ok) {
+      // Moved on elsewhere (another tab) or no longer pending: what is stored is what stands.
+      if (result.run) at = result.run;
+      break;
+    }
+    withheld.push(offered);
+    at = result.run;
+  }
+  return { run: at, withheld };
+}
+
+/**
+ * What a transition offers for a screen's token: the one *Start* would open (`transitionView`'s `next`) —
+ * the cursor's activity after a finished one, the one after it where this activity was stopped and is still
+ * the cursor's. The `offering` of `settleHeld` for the transition's draw.
+ */
+export function offeredAfter(token: string, now: Date): (run: SessionRun) => RunActivity | undefined {
+  return (run) => {
+    const view = transitionView(run, token, now);
+    return view.kind === 'next' ? view.next : undefined;
+  };
+}
+
+// --- the transition ---------------------------------------------------------------------------------
+
+/**
+ * What the transition shows for a screen's token, from the stored record (pure):
+ *
+ * - `none`: no record, or the token is not this session's — the screen keeps its own closing action;
+ * - `closed`: the session was ended, recomposed or left from another day — nothing to offer;
+ * - `finished`: the last activity is behind the learner;
+ * - `kept-here`: this activity is current and its last run failed, measured;
+ * - `next`: the next activity — after this one was completed (`from: 'completed'`), or, where this one is
+ *   still current and not completed (a stopped drill, a run left unanswered), what *Start* moves on to
+ *   (`from: 'moving-on'`); `next` absent means moving on from the last.
+ */
+export type TransitionView =
+  | { kind: 'none' }
+  | { kind: 'closed' }
+  | { kind: 'finished'; run: SessionRun }
+  | { kind: 'kept-here'; run: SessionRun; mine: RunActivity; notes: string[] }
+  | { kind: 'next'; run: SessionRun; mine: RunActivity; from: 'completed' | 'moving-on'; next?: RunActivity; notes: string[] };
+
+/**
+ * The runner's own changes between this activity and the one offered after it, said: a controlled practice
+ * skipped for easy success, a piece the learner's word withdrew (G90). The activities the cursor passed over,
+ * in the order `nextPending` walks them — after this one, and round to the start where the one offered is
+ * behind it — and only while they are skipped: a row the learner tapped back to life says nothing of a skip.
+ * With nothing offered after it, only what follows this activity: the rest of the card is behind it.
+ */
+function skipsBetween(run: SessionRun, mine: RunActivity, next: RunActivity | undefined): string[] {
+  const n = run.activities.length;
+  const passed: RunActivity[] = [];
+  for (let step = 1; step < n; step += 1) {
+    const at = mine.index + step;
+    if (next === undefined && at >= n) break;
+    const activity = run.activities[at % n] as RunActivity;
+    if (next !== undefined && activity.index === next.index) break;
+    passed.push(activity);
+  }
+  return passed
+    .filter((activity) => activity.state === 'skipped')
+    .flatMap((activity) => activity.adaptations.filter((one) => one.kind === 'skipped-redundant').map((one) => one.why));
+}
+
+export function transitionView(run: SessionRun | null, token: string, now: Date): TransitionView {
+  if (run === null) return { kind: 'none' };
+  const mine = run.activities.find((activity) => activity.token === token);
+  if (!mine) return { kind: 'none' };
+  if (run.closed) return run.closed.why === 'finished' ? { kind: 'finished', run } : { kind: 'closed' };
+  if (!isOpen(run, now)) return { kind: 'closed' };
+  const repurposed = mine.adaptations.filter((one) => one.kind === 'repurposed').map((one) => one.why);
+  if (run.current === mine.index) {
+    if (mine.state === 'attempted' && mine.result?.outcome === 'failed') {
+      return { kind: 'kept-here', run, mine, notes: [...repurposed, ...mine.adaptations.filter((one) => one.kind === 'kept-here').map((one) => one.why)] };
+    }
+    const at = nextPending(run, mine.index);
+    const after = at === null ? undefined : (run.activities[at] as RunActivity);
+    return { kind: 'next', run, mine, from: 'moving-on', ...(after === undefined ? {} : { next: after }), notes: [...repurposed, ...skipsBetween(run, mine, after)] };
+  }
+  const next = run.current === null ? undefined : run.activities[run.current];
+  return { kind: 'next', run, mine, from: 'completed', ...(next ? { next } : {}), notes: [...repurposed, ...skipsBetween(run, mine, next)] };
+}
+
+/** Minutes, rounded, from the visible-time clock. */
+export function minutesOf(ms: number): number {
+  return Math.round(ms / 60_000);
+}
+
+/**
+ * What became of an activity, as the running card, the finish line and a card composed after the session say
+ * it (X46, `responses/9e14839e.md` §2 point 4): **done** only where its run counted — completed with a measured
+ * pass at the full standard (`passed-full`, the same run the rung's evidence reads) — **played** where a run
+ * completed it that measured nothing toward it (`unknown`: a drill set nobody answered, a backing track), or
+ * where it was tried and left; **skipped** where it was never tried; `null` while it is still to do. The record
+ * held the distinction (`result.outcome`) and the card read only the state, so an unmeasured exercise wore the
+ * same ✓ as a pass. Session words, never evidence: nothing here is read by `evidence/`.
+ */
+export function cameTo(activity: Pick<RunActivity, 'state' | 'result'>): 'done' | 'played' | 'skipped' | null {
+  switch (activity.state) {
+    case 'completed':
+      return activity.result?.outcome === 'passed-full' ? 'done' : 'played';
+    case 'skipped':
+      return 'skipped';
+    case 'attempted':
+      return 'played';
+    default:
+      return null;
+  }
+}
+
+/**
+ * Whether the card still shows the composition's words for an activity (X46, point 6): not once it is behind
+ * the learner — completed, or tried and moved on from. The words were the reason before the item (\"This lesson
+ * asks for it — not counted yet\", \"last played on Tuesday\") and are frozen with the card, so after it they could
+ * only be stale, and were false once the run counted; the mark says what became of it. An activity still to do
+ * keeps them: they are its purpose, and the card is the session's (`04` §2).
+ */
+export function showsReason(activity: Pick<RunActivity, 'state' | 'movedOn'>): boolean {
+  return !(activity.state === 'completed' || (activity.state === 'attempted' && activity.movedOn === true));
+}
+
+export interface TransitionHost {
+  router: Router;
+  handle: SessionHandle;
+  /** The host screen's own button, so the block looks like the sheet it sits on. */
+  button: (label: string, onClick: () => void, id: string, primary: boolean) => HTMLElement;
+  /** *Try again* on this screen: the host's own restart. */
+  tryAgain: () => void;
+  /** Before the screen is left for the next activity or Today (the host lets go of what it holds). */
+  beforeLeaving?: () => void;
+  now?: () => Date;
+}
+
+/**
+ * Draws the transition into `into` from the stored record, and draws it again after every write it makes.
+ * Resolves with what it drew; `none` leaves `into` empty, and the host keeps its own closing action.
+ */
+export async function drawTransition(into: HTMLElement, host: TransitionHost): Promise<TransitionView['kind']> {
+  const now = host.now ?? (() => new Date());
+  const read = await host.handle.record();
+  // The session is about to offer its current activity: the learner's last word on that piece holds (G90).
+  const run = read === null ? null : (await settleHeld(read, now(), offeredAfter(host.handle.token, now()))).run;
+  const view = transitionView(run, host.handle.token, now());
+  into.replaceChildren();
+  into.dataset.sessionView = view.kind;
+  if (view.kind === 'none' || view.kind === 'closed') {
+    into.hidden = true;
+    return view.kind;
+  }
+  into.hidden = false;
+  const lines: HTMLElement[] = [];
+  const actions = el('div.session-next__actions');
+  const leave = (): void => {
+    host.beforeLeaving?.();
+  };
+  const toToday = (): void => {
+    leave();
+    host.router.navigate('today');
+  };
+  const redraw = (): void => {
+    void drawTransition(into, host);
+  };
+  /** A refused write: nothing was changed, and the view is reloaded from the record, said. */
+  const refused = (): void => {
+    void drawTransition(into, host).then(() => {
+      into.prepend(el('p.session-next__note', { text: SESSION_TEXT.moved, 'data-session-refused': 'true' }));
+    });
+  };
+  if (view.kind === 'finished') {
+    lines.push(el('p.session-next__line', { text: SESSION_TEXT.lastOne }));
+    lines.push(el('p.session-next__time.muted', { text: SESSION_TEXT.timeLine(minutesOf(view.run.elapsedMs), plannedMinutes(view.run)) }));
+    actions.append(host.button(SESSION_TEXT.done, toToday, 'session-done', true));
+    into.append(...lines, actions);
+    return view.kind;
+  }
+  const time = el('p.session-next__time.muted', { text: SESSION_TEXT.timeLine(minutesOf(view.run.elapsedMs), plannedMinutes(view.run)) });
+  for (const note of view.notes) lines.push(el('p.session-next__note', { text: note }));
+  if (view.kind === 'kept-here') {
+    into.dataset.sessionActivity = String(view.mine.index);
+    actions.append(
+      host.button(SESSION_TEXT.tryAgain, () => host.tryAgain(), 'session-try-again', true),
+      host.button(
+        SESSION_TEXT.moveOn,
+        () => {
+          void host.handle.write(expectedFor(view.run, view.mine.token), { kind: 'advance' }).then((result) => (result.ok ? redraw() : refused()));
+        },
+        'session-move-on',
+        false,
+      ),
+    );
+    into.append(...lines, time, actions);
+    return view.kind;
+  }
+  const next = view.next;
+  if (next === undefined) {
+    // Moving on from the last activity: Done closes the session as finished, nothing failed.
+    lines.push(el('p.session-next__line', { text: SESSION_TEXT.lastOne }));
+    actions.append(
+      host.button(
+        SESSION_TEXT.done,
+        () => {
+          void host.handle.write(expectedFor(view.run, view.mine.token), { kind: 'advance' }).then(() => toToday());
+        },
+        'session-done',
+        true,
+      ),
+    );
+    into.append(...lines, time, actions);
+    return view.kind;
+  }
+  into.dataset.sessionNext = String(next.index);
+  into.dataset.sessionNextItem = next.slot.itemId;
+  lines.push(el('p.session-next__line', { text: SESSION_TEXT.nextLine(next.slot.title, next.slot.minutes, next.reason) }));
+  /** Opens the record's current activity once the moves before it are written. */
+  const openCurrent = async (): Promise<void> => {
+    const read = await host.handle.record();
+    const settled = read === null ? null : await settleHeld(read, now());
+    // A piece the learner paused since this screen was drawn is not opened on a screen that offered it: the
+    // view is drawn again from the record, with the one after, said (G90).
+    if (settled !== null && settled.withheld.length > 0) {
+      redraw();
+      return;
+    }
+    const fresh = settled?.run ?? null;
+    const current = fresh?.current === null || fresh?.current === undefined ? undefined : fresh.activities[fresh.current];
+    if (!fresh || !current) {
+      toToday();
+      return;
+    }
+    leave();
+    const opened = await openActivity(host.router, fresh, current);
+    if (!opened.ok) {
+      into.prepend(el('p.session-next__note', { text: SESSION_TEXT.offerNotKept }));
+    }
+  };
+  actions.append(
+    host.button(
+      SESSION_TEXT.start,
+      () => {
+        if (view.from === 'completed') {
+          void openCurrent();
+          return;
+        }
+        void host.handle.write(expectedFor(view.run, view.mine.token), { kind: 'advance' }).then((result) => (result.ok ? openCurrent() : refused()));
+      },
+      'session-start-next',
+      true,
+    ),
+    host.button(
+      SESSION_TEXT.skipOrChange,
+      () => {
+        void (async () => {
+          if (view.from === 'moving-on') {
+            const moved = await host.handle.write(expectedFor(view.run, view.mine.token), { kind: 'advance' });
+            if (!moved.ok) {
+              refused();
+              return;
+            }
+          }
+          const skipped = await host.handle.write(expectedFor(view.run, next.token), { kind: 'advance' });
+          if (!skipped.ok) {
+            refused();
+            return;
+          }
+          toToday();
+        })();
+      },
+      'session-skip',
+      false,
+    ),
+  );
+  into.append(...lines, time, actions);
+  return view.kind;
+}
+"
+
+ ❯ tests/unit/sessionHeldPiece.test.ts:270:20
+    268|     const runner = readFileSync(join(src, 'ui', 'sessionRunner.ts'), '…
+    269|     expect(runner, 'the runner reads a project its own way').not.toMat…
+    270|     expect(runner).toMatch(/heldWordOf\(/);
+       |                    ^
+    271|     expect(session.slice(session.indexOf('\nexport function buildSessi…
+    272|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/27]⎯
+
+ FAIL  tests/unit/sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the pause lands while the piece is ahead: when the one before finishes, the transition offers the one after, says why, and the composition stands
+AssertionError: expected { index: 2, order: 2, …(7) } to match object { state: 'skipped', …(1) }
+(14 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "adaptations": [
+      {
+-       "held": "paused",
+-       "kind": "withdrawn",
++       "kind": "skipped-redundant",
+        "why": "Ode to Joy is skipped — you paused it",
+      },
+    ],
+    "state": "skipped",
+  }
+
+ ❯ tests/unit/sessionHeldPiece.test.ts:291:33
+    289|     const after = await stored();
+    290|     // Its own kind (G90a): the learner withdrew the piece; no practic…
+    291|     expect(after.activities[2]).toMatchObject({ state: 'skipped', adap…
+       |                                 ^
+    292|     expect(after.current).toBe(3);
+    293|     // The snapshot stays: slots, routes, words, tokens, the free prom…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/27]⎯
+
+ FAIL  tests/unit/sessionHeldPiece.test.ts > the transition says a skip only while it is a skip > a piece the learner brought back by tapping its row is no longer announced as skipped
+AssertionError: expected { kind: 'next', …(5) } to match object { kind: 'next', …(2) }
+(32 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "from": "completed",
+    "kind": "next",
+    "notes": [
+-     "Ode to Joy is skipped — you paused it",
++     undefined,
+    ],
+  }
+
+ ❯ tests/unit/sessionHeldPiece.test.ts:538:18
+    536|     run = step(run, TOKENS[1] as string, { kind: 'completed', outcome:…
+    537|     const said = transitionView(run, TOKENS[1] as string, NOW_AT);
+    538|     expect(said).toMatchObject({ kind: 'next', from: 'completed', note…
+       |                  ^
+    539|     // The learner taps the skipped row (it becomes current again) and…
+    540|     run = step(run, TOKENS[2] as string, { kind: 'choose' });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > a piece the learner paused is recorded as withdrawn, with the state it was left in, never as skipped-redundant
+AssertionError: expected { index: +0, order: +0, …(7) } to match object { state: 'skipped', …(1) }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "adaptations": [
+      {
+-       "held": "paused",
+-       "kind": "withdrawn",
+-       "why": "Warm-up is skipped — you paused it",
++       "kind": "skipped-redundant",
++       "why": undefined,
+      },
+    ],
+    "state": "skipped",
+  }
+
+ ❯ tests/unit/sessionHeldSkip.test.ts:168:35
+    166|       const before = fresh();
+    167|       const after = step(before, TOKENS[0] as string, { kind: 'withhol…
+    168|       expect(after.activities[0]).toMatchObject({ state: 'skipped', ad…
+       |                                   ^
+    169|       expect(after.activities[0]?.adaptations.some((one) => one.kind =…
+    170|       expect(after.current).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > a piece the learner put away is recorded as withdrawn, with the state it was left in, never as skipped-redundant
+AssertionError: expected { index: +0, order: +0, …(7) } to match object { state: 'skipped', …(1) }
+(15 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "adaptations": [
+      {
+-       "held": "retired",
+-       "kind": "withdrawn",
+-       "why": "Warm-up is skipped — you put it away",
++       "kind": "skipped-redundant",
++       "why": undefined,
+      },
+    ],
+    "state": "skipped",
+  }
+
+ ❯ tests/unit/sessionHeldSkip.test.ts:168:35
+    166|       const before = fresh();
+    167|       const after = step(before, TOKENS[0] as string, { kind: 'withhol…
+    168|       expect(after.activities[0]).toMatchObject({ state: 'skipped', ad…
+       |                                   ^
+    169|       expect(after.activities[0]?.adaptations.some((one) => one.kind =…
+    170|       expect(after.current).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > the runner writes it: at the piece’s turn the stored record holds the kind and the state, and says what the transition said
+AssertionError: expected [ { kind: 'skipped-redundant', …(1) } ] to deeply equal [ { kind: 'withdrawn', …(2) } ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "held": "retired",
+-     "kind": "withdrawn",
++     "kind": "skipped-redundant",
+      "why": "Ode to Joy is skipped — you put it away",
+    },
+  ]
+
+ ❯ tests/unit/sessionHeldSkip.test.ts:193:46
+    191|     expect(notes(into)).toEqual(['Ode to Joy is skipped — you put it a…
+    192|     const after = await stored();
+    193|     expect(after.activities[2]?.adaptations).toEqual([{ kind: 'withdra…
+       |                                              ^
+    194|   });
+    195|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > a transition reads the withdrawn kind as it read the skip: it says it only while the row is still skipped
+AssertionError: expected { kind: 'next', …(5) } to match object { kind: 'next', …(2) }
+(32 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "from": "completed",
+    "kind": "next",
+    "notes": [
+-     "Ode to Joy is skipped — you paused it",
++     undefined,
+    ],
+  }
+
+ ❯ tests/unit/sessionHeldSkip.test.ts:201:61
+    199|     run = step(run, TOKENS[2] as string, { kind: 'withhold', held: 'pa…
+    200|     run = step(run, TOKENS[1] as string, { kind: 'completed', outcome:…
+    201|     expect(transitionView(run, TOKENS[1] as string, at(0))).toMatchObj…
+       |                                                             ^
+    202|   });
+    203| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > withdrawnOf: the one reading of why a skipped row was withdrawn, which Today’s row says > names the state only for a skipped activity whose record says it was withdrawn; the latest word where there are two; never another kind of skip
+TypeError: withdrawnOf is not a function
+ ❯ tests/unit/sessionHeldSkip.test.ts:209:12
+    207|     const withdrawn = (held: 'paused' | 'retired'): Adaptation => ({ k…
+    208|     const easier: Adaptation = { kind: 'skipped-redundant', why: 'Easi…
+    209|     expect(withdrawnOf({ state: 'skipped', adaptations: [withdrawn('pa…
+       |            ^
+    210|     expect(withdrawnOf({ state: 'skipped', adaptations: [withdrawn('re…
+    211|     expect(withdrawnOf({ state: 'skipped', adaptations: [withdrawn('pa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > the record reads back as it was written > a swapped activity keeps the moment it was swapped through the store
+AssertionError: expected undefined to be '2026-10-02T16:00:30.000Z' // Object.is equality
+
+- Expected:
+"2026-10-02T16:00:30.000Z"
+
++ Received:
+undefined
+
+ ❯ tests/unit/sessionHeldSkip.test.ts:247:55
+    245|     await swapIn(TOKENS[2] as string, 'song.chosen', 'Chosen piece', '…
+    246|     resetSessionRunForTest();
+    247|     expect((await stored()).activities[2]?.swappedAt).toBe(at(30).toIS…
+       |                                                       ^
+    248|   });
+    249|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > the record reads back as it was written > a stored record is data: the new kind needs its state, the swap moment must be text, and an older record with neither still reads
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/sessionHeldSkip.test.ts:261:36
+    259|       return run;
+    260|     };
+    261|     expect(validateRun(good()).ok).toBe(true);
+       |                                    ^
+    262|     // The withdrawn row: its adaptation says which state, or the reco…
+    263|     const word = (held: unknown): unknown => withActivity(0, { adaptat…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > a swap records when it was made > the activity carries the moment of the swap, the swap’s own clock, and a second swap replaces it and the reasons of the first
+AssertionError: expected { index: 2, order: 2, …(7) } to match object { state: 'pending', …(2) }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "adaptations": [],
+    "state": "pending",
+-   "swappedAt": "2026-10-02T16:00:30.000Z",
+  }
+
+ ❯ tests/unit/sessionHeldSkip.test.ts:284:31
+    282|     expect(run.activities[2]?.adaptations).toHaveLength(1);
+    283|     run = step(run, TOKENS[2] as string, SWAP('Chosen piece', 'song.ch…
+    284|     expect(run.activities[2]).toMatchObject({ state: 'pending', swappe…
+       |                               ^
+    285|     run = step(run, 'tokenx009', SWAP('Another choice', 'song.other', …
+    286|     expect(run.activities[2]?.swappedAt).toBe(at(90).toISOString());
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > paused: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+ FAIL  tests/unit/sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > retired: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+Error: refused: illegal
+ ❯ step tests/unit/sessionHeldSkip.test.ts:90:25
+     88| const step = (run: SessionRun, token: string, event: RunEvent, now: Da…
+     89|   const result = apply(run, { sessionId: run.sessionId, version: run.v…
+     90|   if (!result.ok) throw new Error(`refused: ${result.why}`);
+       |                         ^
+     91|   return result.run;
+     92| };
+ ❯ tests/unit/sessionHeldSkip.test.ts:301:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > a tapped-back row announces nothing of a skip it no longer is > the learner taps the withdrawn row and then skips it themselves: it is their skip, and no word of a pause is left on it
+AssertionError: expected [ 'skipped-redundant' ] to deeply equal [ 'withdrawn' ]
+
+- Expected
++ Received
+
+  [
+-   "withdrawn",
++   "skipped-redundant",
+  ]
+
+ ❯ tests/unit/sessionHeldSkip.test.ts:343:67
+    341|     run = step(run, TOKENS[0] as string, { kind: 'completed', outcome:…
+    342|     run = step(run, TOKENS[2] as string, { kind: 'withhold', held: 'pa…
+    343|     expect(run.activities[2]?.adaptations.map((one) => one.kind)).toEq…
+       |                                                                   ^
+    344|     run = step(run, TOKENS[2] as string, { kind: 'choose' });
+    345|     expect(run.activities[2]).toMatchObject({ state: 'pending', adapta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then paused: the later word vetoes the pending activity at its turn, said, and the one after is offered
+ FAIL  tests/unit/sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then retired: the later word vetoes the pending activity at its turn, said, and the one after is offered
+AssertionError: the piece the learner withdrew after choosing it was offered: expected 'song.chosen' to be 'song.keep' // Object.is equality
+
+Expected: "song.keep"
+Received: "song.chosen"
+
+ ❯ tests/unit/sessionHeldSkip.test.ts:397:108
+    395|       });
+    396|       expect(await drawTransition(into, options)).toBe('next');
+    397|       expect(into.dataset.sessionNextItem, 'the piece the learner with…
+       |                                                                                                            ^
+    398|       expect(notes(into)).toEqual([`Chosen piece is skipped — ${word.s…
+    399|       const run = await stored();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/27]⎯
+
+ FAIL  tests/unit/sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > settleHeld says the same: what it steps past is the swapped piece when the word is the later one, and nothing when it is the earlier
+AssertionError: expected [] to deeply equal [ 'song.chosen' ]
+
+- Expected
++ Received
+
+- [
+-   "song.chosen",
+- ]
++ []
+
+ ❯ tests/unit/sessionHeldSkip.test.ts:449:60
+    447|     await finishCurrent();
+    448|     const settled = await settleHeld(await stored());
+    449|     expect(settled.withheld.map((one) => one.slot.itemId)).toEqual(['s…
+       |                                                            ^
+    450|     expect(navigateScore).not.toHaveBeenCalled();
+    451|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/27]⎯
+
+ FAIL  tests/unit/todayHeldPiece.test.ts > the piece that is next was paused after Start session > Today draws it skipped, names the one after as next, and Continue opens that one — never the piece
+AssertionError: expected { index: 1, order: 1, …(8) } to match object { state: 'skipped', …(1) }
+(18 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "adaptations": [
+      {
+-       "held": "paused",
+-       "kind": "withdrawn",
++       "kind": "skipped-redundant",
+        "why": "Title of song.test.piece is skipped — you paused it",
+      },
+    ],
+    "state": "skipped",
+  }
+
+ ❯ tests/unit/todayHeldPiece.test.ts:148:33
+    146|     // What is written is what is drawn, and the composition is the on…
+    147|     const after = await stored();
+    148|     expect(after.activities[1]).toMatchObject({ state: 'skipped', adap…
+       |                                 ^
+    149|     expect(after.current).toBe(2);
+    150|     expect(after.activities.map((one) => one.slot.itemId)).toEqual(run…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/27]⎯
+
+ FAIL  tests/unit/todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > paused: the row reads “Skipped — you paused it” in place of the composition’s words, with its mark, and the record holds the kind
+AssertionError: expected 'Keeping this piece playable — last pl…' to be 'Skipped — you paused it' // Object.is equality
+
+Expected: "Skipped — you paused it"
+Received: "Keeping this piece playable — last played on 1 Oct"
+
+ ❯ tests/unit/todayHeldSkip.test.ts:171:31
+    169|       const section = await openToday();
+    170|       await vi.waitFor(() => expect(rowOf(section, 1).dataset.state).t…
+    171|       expect(sub(section, 1)).toBe(SENTENCE[say]);
+       |                               ^
+    172|       expect(rowOf(section, 1).querySelector('.list-row__badges')?.tex…
+    173|       expect(rowOf(section, 1).textContent).not.toContain('Keeping thi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/27]⎯
+
+ FAIL  tests/unit/todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > retired: the row reads “Skipped — you put it away” in place of the composition’s words, with its mark, and the record holds the kind
+AssertionError: expected 'Keeping this piece playable — last pl…' to be 'Skipped — you put it away' // Object.is equality
+
+Expected: "Skipped — you put it away"
+Received: "Keeping this piece playable — last played on 1 Oct"
+
+ ❯ tests/unit/todayHeldSkip.test.ts:171:31
+    169|       const section = await openToday();
+    170|       await vi.waitFor(() => expect(rowOf(section, 1).dataset.state).t…
+    171|       expect(sub(section, 1)).toBe(SENTENCE[say]);
+       |                               ^
+    172|       expect(rowOf(section, 1).querySelector('.list-row__badges')?.tex…
+    173|       expect(rowOf(section, 1).textContent).not.toContain('Keeping thi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/27]⎯
+
+ FAIL  tests/unit/todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > read back from the record, not from the project: brought back since, the row still says what the learner did, and Continue still skips it
+AssertionError: expected 'Keeping this piece playable — last pl…' to be 'Skipped — you paused it' // Object.is equality
+
+Expected: "Skipped — you paused it"
+Received: "Keeping this piece playable — last played on 1 Oct"
+
+ ❯ tests/unit/todayHeldSkip.test.ts:191:27
+    189|     const again = await openToday();
+    190|     expect(rowOf(again, 1).dataset.state).toBe('skipped');
+    191|     expect(sub(again, 1)).toBe('Skipped — you paused it');
+       |                           ^
+    192|     expect(await stored(), 'drawing Today again rewrote the record').t…
+    193|     again.querySelector<HTMLButtonElement>('#today-continue')?.click();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/27]⎯
+
+ FAIL  tests/unit/todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then paused: the later word steps past it at its turn, said on its row, and Continue opens the one after
+ FAIL  tests/unit/todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then retired: the later word steps past it at its turn, said on its row, and Continue opens the one after
+AssertionError: expected 'pending' to be 'skipped' // Object.is equality
+
+Expected: "skipped"
+Received: "pending"
+
+ ❯ tests/unit/todayHeldSkip.test.ts:237:68
+    235|       await sayOnSheet(THIRD.id, say);
+    236|       const again = await openToday();
+    237|       await vi.waitFor(() => expect(rowOf(again, 2).dataset.state).toB…
+       |                                                                    ^
+    238|       expect(sub(again, 2)).toBe(SENTENCE[say]);
+    239|       expect(rowOf(again, 3).dataset.current).toBe('true');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/27]⎯
+
+ FAIL  tests/unit/todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > a row the learner taps is theirs: the swapped piece they withdrew after choosing it opens when they tap it
+AssertionError: expected 'pending' to be 'skipped' // Object.is equality
+
+Expected: "skipped"
+Received: "pending"
+
+ ❯ tests/unit/todayHeldSkip.test.ts:272:66
+    270|     await sayOnSheet(THIRD.id, 'pause');
+    271|     const again = await openToday();
+    272|     await vi.waitFor(() => expect(rowOf(again, 2).dataset.state).toBe(…
+       |                                                                  ^
+    273|     again.querySelector<HTMLButtonElement>('#today-card [data-activity…
+    274|     await vi.waitFor(() => expect(navigateScore).toHaveBeenCalledTimes…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/27]⎯
+
+
+ Test Files  5 failed (5)
+      Tests  27 failed | 79 passed (106)
+   Start at  04:34:28
+   Duration  8.52s (tests 44%, environment 28%, transform 20%, import 7%)
+

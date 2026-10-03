@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ac3ecffe01c1d8440\tools\content\build.py", line 1525, in <module>
+    main()
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ac3ecffe01c1d8440\tools\content\build.py", line 1461, in main
+    run_build(args, started)
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ac3ecffe01c1d8440\tools\content\build.py", line 1497, in run_build
+    steps.append(merge_catalog(args.out))
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ac3ecffe01c1d8440\tools\content\build.py", line 244, in merge_catalog
+    read = attach_notation(entries, out_dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ac3ecffe01c1d8440\tools\content\build.py", line 442, in attach_notation
+    text = read_musicxml(path)
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ac3ecffe01c1d8440\tools\content\notation.py", line 49, in read_musicxml
+    return bundle.read(name).decode("utf-8", errors="replace")
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\zipfile.py", line 1527, in read
+    return fp.read()
+           ^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\zipfile.py", line 951, in read
+    buf += self._read1(self.MAX_N)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\zipfile.py", line 1041, in _read1
+    data = self._decompressor.decompress(data, n)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+MemoryError: Unable to allocate output buffer.

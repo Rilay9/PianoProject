@@ -1,0 +1,40 @@
+...F.
+======================================================================
+FAIL: test_the_seed_orders_the_windows_considered_and_adds_removes_or_rescores_none (tools.content.tests.test_excerpt_proposer.TheSeedOrdersParentsAndAdmitsNothing.test_the_seed_orders_the_windows_considered_and_adds_removes_or_rescores_none)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ab0ca07b13a3644b6\tools\content\tests\test_excerpt_proposer.py", line 409, in test_the_seed_orders_the_windows_considered_and_adds_removes_or_rescores_none
+    self.assertEqual(first, [("song.test.seeded", 5), ("song.test.other", 5), ("song.test.seeded", 3), ("song.test.other", 3)])
+AssertionError: Lists differ: [('song.test.other', 5), ('song.test.seeded', 5), ('so[39 chars], 3)] != [('song.test.seeded', 5), ('song.test.other', 5), ('so[39 chars], 3)]
+
+First differing element 0:
+('song.test.other', 5)
+('song.test.seeded', 5)
+
+- [('song.test.other', 5),
+-  ('song.test.seeded', 5),
+? ^
+
++ [('song.test.seeded', 5),
+? ^
+
+-  ('song.test.other', 3),
+?                      ^
+
++  ('song.test.other', 5),
+?                      ^
+
+-  ('song.test.seeded', 3)]
+?                         ^
+
++  ('song.test.seeded', 3),
+?                         ^
+
++  ('song.test.other', 3)]
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.084s
+
+FAILED (failures=1)
+
+exit 1

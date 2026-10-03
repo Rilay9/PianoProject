@@ -145,3 +145,7 @@ before and after; the pedagogical verdict on the sight-reading phrases apart fro
 technical one (what a rung's phrases now contain, seed by seed for two seeds per rung, and
 what could not be judged without hearing). Unverified beside what passes. Append the same
 as the entry.
+
+## Record
+
+lane: T37 · closes: — · entry: — · role: history

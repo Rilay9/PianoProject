@@ -1,0 +1,177 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-af414581e137851f7/app
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts (13 tests | 3 failed) 394ms
+   ❯ the swap sheet on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3a) (5)
+     × every row of every rung, for a learner who copes with everything: no tier offers one 366ms
+     × an authored alternatives[] entry naming an unapproved study is not offered; with a yes on its identity it is 1ms
+   ❯ the session’s skill requirement and its skill and demand steps refuse it too (D3a) (4)
+     × the swap sheet’s last resort, the same kind from the lessons reached: an unapproved one is not offered; approved, it is 1ms
+ ❯ tests/unit/eligibility.test.ts (28 tests | 3 failed) 110ms
+   ❯ a generated item that promises music, without an affirmative teaching-use decision (D3a) (7)
+     × is refused for a skill, a demand it measurably provides, a requirement and an equivalent: teaching-use-not-approved, undecided 5ms
+     × a no and a fix on record are refused the same way, their stored bit kept distinct from undecided 1ms
+     × the promise is the recipe’s: the meter family’s 12/8 blues is refused, its 5/4 drill is not 0ms
+
+ Test Files  2 failed (2)
+      Tests  6 failed | 35 passed (41)
+   Start at  16:36:44
+   Duration  1.38s (environment 32%, transform 31%, tests 23%, import 14%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/eligibility.test.ts > a generated item that promises music, without an affirmative teaching-use decision (D3a) > is refused for a skill, a demand it measurably provides, a requirement and an equivalent: teaching-use-not-approved, undecided
+AssertionError: exercise.study.interval-reading.c-major.3-4.8bar.sustained.02 for equivalent: expected { verdict: 'eligible', …(1) } to deeply equal { verdict: 'ineligible', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "teaching": null,
+-   "verdict": "ineligible",
+-   "why": "teaching-use-not-approved",
++   "for": "equivalent",
++   "verdict": "eligible",
+  }
+
+ ❯ tests/unit/eligibility.test.ts:370:78
+    368|       { for: 'equivalent' },
+    369|     ] as const) {
+    370|       expect(eligibleFor(study, COPES, want), `${study.id} for ${want.…
+       |                                                                              ^
+    371|     }
+    372|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/eligibility.test.ts > a generated item that promises music, without an affirmative teaching-use decision (D3a) > a no and a fix on record are refused the same way, their stored bit kept distinct from undecided
+AssertionError: exercise.study.interval-reading.c-major.3-4.8bar.sustained.02 with a no for equivalent: expected { verdict: 'eligible', …(1) } to deeply equal { verdict: 'ineligible', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "teaching": false,
+-   "verdict": "ineligible",
+-   "why": "teaching-use-not-approved",
++   "for": "equivalent",
++   "verdict": "eligible",
+  }
+
+ ❯ tests/unit/eligibility.test.ts:383:99
+    381|       expect(reviewed.provenance?.review.teaching).toBe(false);
+    382|       for (const want of [{ for: 'skill', skill: skill() }, { for: 'de…
+    383|         expect(eligibleFor(reviewed, COPES, want), `${study.id} with a…
+       |                                                                                                   ^
+    384|           verdict: 'ineligible',
+    385|           why: 'teaching-use-not-approved',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/eligibility.test.ts > a generated item that promises music, without an affirmative teaching-use decision (D3a) > the promise is the recipe’s: the meter family’s 12/8 blues is refused, its 5/4 drill is not
+AssertionError: expected { verdict: 'eligible', …(1) } to deeply equal { verdict: 'ineligible', …(2) }
+
+- Expected
++ Received
+
+  {
+-   "teaching": null,
+-   "verdict": "ineligible",
+-   "why": "teaching-use-not-approved",
++   "for": "equivalent",
++   "verdict": "eligible",
+  }
+
+ ❯ tests/unit/eligibility.test.ts:403:83
+    401|
+    402|   it('the promise is the recipe’s: the meter family’s 12/8 blues is re…
+    403|     expect(eligibleFor(get('exercise.meter.12-8'), COPES, { for: 'equi…
+       |                                                                                   ^
+    404|     expect(get('exercise.meter.5-4').provenance?.facts.promise, 'exerc…
+    405|     expect(eligibleFor(get('exercise.meter.5-4'), COPES, { for: 'equiv…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the swap sheet on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3a) > every row of every rung, for a learner who copes with everything: no tier offers one
+AssertionError: 599 offers: expected [ …(12) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "exercise.riff.c.falling (lesson) for drill.technique.five-finger-rh on 1.1",
++   "exercise.riff.c.falling (lesson) for drill.reading.note-flash-treble-c4-g4 on 1.1",
++   "exercise.riff.c.falling (lesson) for drill.rhythm.quarters-rests on 1.1",
++   "exercise.riff.c.falling (lesson) for exercise.five-finger.c-major.both on 1.1",
++   "exercise.riff.c.falling (lesson) for exercise.five-finger.c-major.right on 1.1",
++   "exercise.riff.c.falling (lesson) for exercise.five-finger.g-major.right on 1.1",
++   "exercise.riff.c.falling (lesson) for song.folk.hot-cross-buns on 1.1",
++   "exercise.riff.c.falling (lesson) for song.folk.mary-had-a-little-lamb on 1.1",
++   "exercise.riff.c.falling (lesson) for song.folk.merrily-we-roll-along on 1.1",
++   "exercise.riff.c.falling (lesson) for song.folk.au-clair-de-la-lune on 1.1",
++   "exercise.riff.c.falling (lesson) for song.classical.ode-to-joy.rh on 1.1",
++   "exercise.riff.c.falling (lesson) for song.folk.kum-ba-yah.pdmx on 1.1",
++ ]
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts:250:70
+    248|       }
+    249|     }
+    250|     expect(offered.slice(0, 12), `${String(offered.length)} offers`).t…
+       |                                                                      ^
+    251|   }, 300_000);
+    252|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the swap sheet on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3a) > an authored alternatives[] entry naming an unapproved study is not offered; with a yes on its identity it is
+AssertionError: exercise.study.interval-reading.c-major.3-4.8bar.sustained.02: expected [ [ …(2) ] ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   [
++     "exercise.study.interval-reading.c-major.3-4.8bar.sustained.02",
++     "alternative",
++   ],
++ ]
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts:271:36
+    269|     const named = (candidate: CatalogItem) =>
+    270|       tieredAlternatives({ itemId: source.id }, empty, indexCatalog([s…
+    271|     expect(named(study), study.id).toEqual([]);
+       |                                    ^
+    272|     expect(named(approved(study)), study.id).toEqual([[study.id, 'alte…
+    273|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the session’s skill requirement and its skill and demand steps refuse it too (D3a) > the swap sheet’s last resort, the same kind from the lessons reached: an unapproved one is not offered; approved, it is
+AssertionError: expected [ [ 'ex.groove-b', 'kind' ] ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   [
++     "ex.groove-b",
++     "kind",
++   ],
++ ]
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts:391:26
+    389|       return swapOptions(slot, [slot], curriculum, indexCatalog(items)…
+    390|     };
+    391|     expect(kindOf(null)).toEqual([]);
+       |                          ^
+    392|     expect(kindOf(true)).toEqual([['ex.groove-b', 'kind']]);
+    393|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+exit 1

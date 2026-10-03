@@ -1,0 +1,13 @@
+cells compared: 64
+
+Title moved (width or visible text): 0
+
+Controls sent behind the more button by the change: 0
+
+Controls moved with the same set on the bar: 0
+
+Back, bar n / m or the widest bar m / m cut after: 0
+
+Status cut flush after: 0
+
+Status visible text changed: 0

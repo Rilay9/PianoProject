@@ -1,0 +1,22 @@
+
+Running 16 tests using 2 workers
+
+  ok  2 tests\e2e\today.spec.ts:62:3 › Today › shows a weekly goal, an input chip, and a session card (766ms)
+  ok  1 tests\e2e\today.spec.ts:72:3 › Today › the four session lengths build different cards (1.3s)
+  ok  3 tests\e2e\today.spec.ts:86:3 › Today › remembers the session length across a reload (1.2s)
+  ok  4 tests\e2e\today.spec.ts:95:3 › Today › "Swap this" offers alternatives and can exclude songs (1.2s)
+  ok  5 tests\e2e\today.spec.ts:114:3 › Today › the "not a song" filter removes songs from the swap sheet (1.2s)
+  ok  6 tests\e2e\today.spec.ts:132:3 › Today › shuffle rebuilds the card (1.2s)
+  ok  7 tests\e2e\today.spec.ts:142:3 › Today › the tracks the data switches on are on before he touches a chip (C2) (773ms)
+  ok  8 tests\e2e\today.spec.ts:171:3 › Today › Today keeps recommending after the core path, from a track he never turned on (1.4s)
+  ok  9 tests\e2e\today.spec.ts:223:3 › Today › the warm-up and the review say why, for a learner whose lesson exercise is counted and a piece has gone unplayed (1.4s)
+  ok 10 tests\e2e\today.spec.ts:263:3 › Today › starting the session opens the first row (895ms)
+  ok 12 tests\e2e\today.spec.ts:314:3 › Today obeys 04 §0 › the session card starts inside the first screenful (R1) (719ms)
+  ok 11 tests\e2e\today.spec.ts:287:3 › the swap sheet’s demand tier (E0) › placed at 1.5, the steps-and-skips row’s sheet names the demand tier: also practises skips, with the other demands met (1.4s)
+  ok 13 tests\e2e\today.spec.ts:325:3 › Today obeys 04 §0 › a row is one line of detail and no taller than 96 px (R2) (790ms)
+  ok 14 tests\e2e\today.spec.ts:346:3 › Today obeys 04 §0 › one filled button on the screen, and it is Start session (R3) (771ms)
+  ok 15 tests\e2e\today.spec.ts:445:3 › the daily read says why this phrase (C4, C4c) › two days of misread skips on 2.2: the phrase moves by step, and the card says the skips went wrong (2.4s)
+  ok 16 tests\e2e\today.spec.ts:457:3 › the daily read says why this phrase (C4, C4c) › two reads wrong only where skips and eighths coincide, on 2.5: nothing blamed, the easy read, and the card says it is not sure yet (2.5s)
+
+  16 passed (12.9s)
+exit 0

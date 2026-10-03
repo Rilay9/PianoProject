@@ -1,0 +1,18 @@
+== map-tests  20:18:10
+map-tests exit=0
+== map-min  20:18:12
+map-min exit=0
+== tsc  20:18:13
+tsc exit=0
+== lint  20:18:23
+lint exit=0
+== vitest-all  20:19:15
+vitest-all exit=1
+== build-app  20:24:02
+build-app exit=0
+SPECS: tests/e2e/doors.spec.ts tests/e2e/finder.spec.ts tests/e2e/library.spec.ts tests/e2e/modes-rhythm-only.spec.ts
+== specs-exist  20:24:34
+specs-exist exit=0
+== e2e-targeted  20:24:34
+e2e-targeted exit=0
+CHAIN DONE 20:25:43

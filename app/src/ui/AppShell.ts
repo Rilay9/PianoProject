@@ -246,7 +246,13 @@ export function mountAppShell(root: HTMLElement, router: Router): void {
     const setCurrent = (el: HTMLElement): void => {
       currentScreen = el;
     };
-    if (route.dev) {
+    if (route.dev === 'microscope') {
+      // The review workbench (D2): builder-only, lazily loaded like the score harness, so
+      // nothing of it reaches a learner who does not type its address.
+      currentScreen = mountLazyScreen(main, setCurrent, () =>
+        import('./screens/DevMicroscopeScreen').then(({ DevMicroscopeScreen }) => () => DevMicroscopeScreen(router)),
+      );
+    } else if (route.dev) {
       currentScreen = mountLazyScreen(main, setCurrent, () =>
         import('./screens/DevScoreScreen').then(({ DevScoreScreen }) => () => DevScoreScreen(router)),
       );

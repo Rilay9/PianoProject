@@ -1,0 +1,323 @@
+CL05b red first: the extended tests/unit/drillLifecycle.test.ts (35 cases: the double's extension, the 6 new cases and the 4 rewritten CL05a cases) run against the committed source at the base cc45b3a8, before any source edit. Exit 1: 8 failed, 27 passed.
+
+
+ RUN  v5.0.0 <worktree>/app
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ ❯ tests/unit/drillLifecycle.test.ts (35 tests | 8 failed) 536ms
+   ❯ a rhythm card while hidden (CL05a, the reviewer’s required change) (6)
+     × stops its click and its grid while hidden, takes no tap, counts no hidden time, and after one count-in comes back on the same point of the same grid 31ms
+     × comes back on its grid when the audio clock stood still while hidden, its count-in and click read through both clocks again 10ms
+     × hidden after the downbeat, before any tap: quiet while hidden; on return one count-in names the downbeat again, a tap during it is a stray, and the first tap after starts the pattern and its click 8ms
+     × a tap sent to a hidden page once the count has named the downbeat is not the first onset; on return one count-in leads to the downbeat again, past the hidden span and the count 12ms
+   ❯ a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) (6)
+     × held while the sound is suspended — no click, no judged tap, the grid unmoved — then one count-in, not judged, then the grid from the point the page hid at 21ms
+     × a long hold is not counted either: a minute with the start answered and the context still suspended, and the onset next at the hide is still the next one judged 14ms
+     × hidden again while held: the held point and the click are the first hide’s, and the second span and the hold are not counted 12ms
+     × a card opened while hidden judges nothing against the moment it opened while the return’s start goes unanswered, and counts in from the top once the sound runs 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > stops its click and its grid while hidden, takes no tap, counts no hidden time, and after one count-in comes back on the same point of the same grid
+AssertionError: the grid does not resume where the page hid: expected 302100 to be close to 304600, received difference is 2500, but expected 0.0005
+ ❯ tests/unit/drillLifecycle.test.ts:767:85
+    765|     const lastCount = back[3] ?? 0;
+    766|     const beatOneAt = lastCount + 500;
+    767|     expect.soft(live.startedAt ?? 0, 'the grid does not resume where t…
+       |                                                                                     ^
+    768|     expect.soft((live.startedAt as number) - grid, 'the grid came back…
+    769|     // Tapped on each remaining onset, after the count.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > stops its click and its grid while hidden, takes no tap, counts no hidden time, and after one count-in comes back on the same point of the same grid
+AssertionError: the grid came back short of the hidden span: expected 300000 to be greater than 300000
+ ❯ tests/unit/drillLifecycle.test.ts:768:99
+    766|     const beatOneAt = lastCount + 500;
+    767|     expect.soft(live.startedAt ?? 0, 'the grid does not resume where t…
+    768|     expect.soft((live.startedAt as number) - grid, 'the grid came back…
+       |                                                                                                   ^
+    769|     // Tapped on each remaining onset, after the count.
+    770|     await play(Math.round(lastCount + 1_000 - performance.now()));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > stops its click and its grid while hidden, takes no tap, counts no hidden time, and after one count-in comes back on the same point of the same grid
+AssertionError: the taps after the return missed the grid: expected 3 to be 8 // Object.is equality
+
+- Expected
++ Received
+
+- 8
++ 3
+
+ ❯ tests/unit/drillLifecycle.test.ts:777:78
+    775|     }
+    776|     const result = live.result();
+    777|     expect.soft(result.correct, 'the taps after the return missed the …
+       |                                                                              ^
+    778|     expect.soft(result.detail?.extraTaps, 'taps were counted extra').t…
+    779|     // The rhythm card's average is its timing offset: on the grid, no…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > stops its click and its grid while hidden, takes no tap, counts no hidden time, and after one count-in comes back on the same point of the same grid
+AssertionError: taps were counted extra: expected 5 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 5
+
+ ❯ tests/unit/drillLifecycle.test.ts:778:70
+    776|     const result = live.result();
+    777|     expect.soft(result.correct, 'the taps after the return missed the …
+    778|     expect.soft(result.detail?.extraTaps, 'taps were counted extra').t…
+       |                                                                      ^
+    779|     // The rhythm card's average is its timing offset: on the grid, no…
+    780|     expect.soft(Math.abs(result.meanReactionMs)).toBeLessThan(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > comes back on its grid when the audio clock stood still while hidden, its count-in and click read through both clocks again
+AssertionError: the click did not come back on the grid: expected 305100 to be close to 302600, received difference is 2500, but expected 0.5
+ ❯ tests/unit/drillLifecycle.test.ts:807:64
+    805|     await until(() => heardSince(visibleAt).length >= 5, 'the count-in…
+    806|     const back = heardSince(visibleAt);
+    807|     expect(back[4], 'the click did not come back on the grid').toBeClo…
+       |                                                                ^
+    808|     await play(Math.round((live.startedAt as number) + 1_000 - perform…
+    809|     press(60);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > hidden after the downbeat, before any tap: quiet while hidden; on return one count-in names the downbeat again, a tap during it is a stray, and the first tap after starts the pattern and its click
+Error: never happened: the count-in began
+ ❯ until tests/unit/drillLifecycle.test.ts:261:9
+    259|     await play(25);
+    260|   }
+    261|   throw new Error(`never happened: ${what}`);
+       |         ^
+    262| }
+    263|
+ ❯ tests/unit/drillLifecycle.test.ts:872:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > a tap sent to a hidden page once the count has named the downbeat is not the first onset; on return one count-in leads to the downbeat again, past the hidden span and the count
+Error: never happened: the count-in reached its third click
+ ❯ until tests/unit/drillLifecycle.test.ts:261:9
+    259|     await play(25);
+    260|   }
+    261|   throw new Error(`never happened: ${what}`);
+       |         ^
+    262| }
+    263|
+ ❯ tests/unit/drillLifecycle.test.ts:919:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > held while the sound is suspended — no click, no judged tap, the grid unmoved — then one count-in, not judged, then the grid from the point the page hid at
+AssertionError: a tap was judged while the sound was suspended: expected 7 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 7
+
+ ❯ tests/unit/drillLifecycle.test.ts:969:91
+    967|     midiKey(62);
+    968|     expect.soft(audio.clicks.length, 'a click was scheduled while the …
+    969|     expect.soft(live.result().answered, 'a tap was judged while the so…
+       |                                                                                           ^
+    970|     expect.soft(live.result().correct).toBe(before.correct);
+    971|     expect.soft(live.result().answers[2]?.correct, 'the onset next at …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > held while the sound is suspended — no click, no judged tap, the grid unmoved — then one count-in, not judged, then the grid from the point the page hid at
+AssertionError: expected 7 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 7
+
+ ❯ tests/unit/drillLifecycle.test.ts:970:40
+    968|     expect.soft(audio.clicks.length, 'a click was scheduled while the …
+    969|     expect.soft(live.result().answered, 'a tap was judged while the so…
+    970|     expect.soft(live.result().correct).toBe(before.correct);
+       |                                        ^
+    971|     expect.soft(live.result().answers[2]?.correct, 'the onset next at …
+    972|     expect.soft(live.startedAt, 'the grid moved while it was held').to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > held while the sound is suspended — no click, no judged tap, the grid unmoved — then one count-in, not judged, then the grid from the point the page hid at
+AssertionError: the onset next at the hide was used up while the sound was suspended: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/drillLifecycle.test.ts:971:124
+    969|     expect.soft(live.result().answered, 'a tap was judged while the so…
+    970|     expect.soft(live.result().correct).toBe(before.correct);
+    971|     expect.soft(live.result().answers[2]?.correct, 'the onset next at …
+       |                                                                                                                            ^
+    972|     expect.soft(live.startedAt, 'the grid moved while it was held').to…
+    973|     // The sound runs again: one count-in, the card's own bar.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > held while the sound is suspended — no click, no judged tap, the grid unmoved — then one count-in, not judged, then the grid from the point the page hid at
+AssertionError: a tap during the count-in was judged: expected 8 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 8
+
+ ❯ tests/unit/drillLifecycle.test.ts:980:81
+    978|     await play(Math.max(0, Math.round((heardSince(runningAt)[1] ?? 0) …
+    979|     press(60);
+    980|     expect.soft(live.result().answered, 'a tap during the count-in was…
+       |                                                                                 ^
+    981|     await until(() => heardSince(runningAt).length >= 6, 'the count-in…
+    982|     const heard = heardSince(runningAt);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > held while the sound is suspended — no click, no judged tap, the grid unmoved — then one count-in, not judged, then the grid from the point the page hid at
+AssertionError: the next judged onset is not where the page hid: expected -4000 to be close to 1000, received difference is 5000, but expected 0.0005
+ ❯ tests/unit/drillLifecycle.test.ts:988:93
+    986|     const lastCount = heard[3] ?? 0;
+    987|     const nextOnsetAt = (live.startedAt as number) + 1_000;
+    988|     expect.soft(nextOnsetAt - lastCount, 'the next judged onset is not…
+       |                                                                                             ^
+    989|     // The grid moved on by everything hidden and held, not by the hid…
+    990|     expect.soft((live.startedAt as number) - grid, 'the hold was count…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > held while the sound is suspended — no click, no judged tap, the grid unmoved — then one count-in, not judged, then the grid from the point the page hid at
+AssertionError: the hold was counted as practice: expected 300000 to be greater than 302300
+ ❯ tests/unit/drillLifecycle.test.ts:990:88
+    988|     expect.soft(nextOnsetAt - lastCount, 'the next judged onset is not…
+    989|     // The grid moved on by everything hidden and held, not by the hid…
+    990|     expect.soft((live.startedAt as number) - grid, 'the hold was count…
+       |                                                                                        ^
+    991|     // The next on-time tap is the onset that was next at the hide — t…
+    992|     // not the first, and not one the hold skipped — and the rest foll…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > held while the sound is suspended — no click, no judged tap, the grid unmoved — then one count-in, not judged, then the grid from the point the page hid at
+AssertionError: expected 7 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 7
+
+ ❯ tests/unit/drillLifecycle.test.ts:996:40
+    994|     press(60);
+    995|     expect.soft(live.result().answers[2]?.correct, 'the onset next at …
+    996|     expect.soft(live.result().correct).toBe(3);
+       |                                        ^
+    997|     for (let onset = 3; onset < 8; onset += 1) {
+    998|       await play(500);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > held while the sound is suspended — no click, no judged tap, the grid unmoved — then one count-in, not judged, then the grid from the point the page hid at
+AssertionError: the taps after the count missed the grid: expected 7 to be 8 // Object.is equality
+
+- Expected
++ Received
+
+- 8
++ 7
+
+ ❯ tests/unit/drillLifecycle.test.ts:1002:72
+    1000|     }
+    1001|     const result = live.result();
+    1002|     expect(result.correct, 'the taps after the count missed the grid')…
+       |                                                                        ^
+    1003|     expect(result.detail?.extraTaps, 'taps were counted extra').toBe(0…
+    1004|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > a long hold is not counted either: a minute with the start answered and the context still suspended, and the onset next at the hide is still the next one judged
+AssertionError: the onset next at the hide fell due in the hold and was missed: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/drillLifecycle.test.ts:1021:113
+    1019|     await play(Math.round(lastCount + 1_000 - performance.now()));
+    1020|     press(60);
+    1021|     expect(live.result().answers[2]?.correct, 'the onset next at the h…
+       |                                                                                                                 ^
+    1022|     expect(live.result().correct).toBe(3);
+    1023|     expect(live.result().detail?.extraTaps).toBe(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > hidden again while held: the held point and the click are the first hide’s, and the second span and the hold are not counted
+AssertionError: the second hide moved the held point: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/drillLifecycle.test.ts:1047:87
+    1045|     await play(Math.round((heard[3] ?? 0) + 1_000 - performance.now())…
+    1046|     press(60);
+    1047|     expect(live.result().answers[2]?.correct, 'the second hide moved t…
+       |                                                                                       ^
+    1048|     expect(live.result().detail?.extraTaps).toBe(0);
+    1049|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/18]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > a card opened while hidden judges nothing against the moment it opened while the return’s start goes unanswered, and counts in from the top once the sound runs
+AssertionError: a tap was judged against the moment the card opened: expected 4 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 4
+
+ ❯ tests/unit/drillLifecycle.test.ts:1065:96
+    1063|     }
+    1064|     expect.soft(live.firstTapAt, 'a tap was the first onset with the s…
+    1065|     expect.soft(live.result().answered, 'a tap was judged against the …
+       |                                                                                                ^
+    1066|     expect.soft(start, 'the count began with the sound suspended').not…
+    1067|     resumeAudio();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/18]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 27 passed (35)
+   Start at  23:54:08
+   Duration  2.52s (transform 38%, environment 32%, tests 22%, import 8%)
+

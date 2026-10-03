@@ -1,0 +1,24 @@
+claims: 670 -> 687
+measurable: 576 -> 592
+established: 227 -> 236
+unestablished: 349 -> 356
+rungClaimsKeptByNoOption: 9 -> 9
+optionsServingNoneOfTheirRungsClaims: 156 -> 156
+generatedUntaught: 129 -> 124
+generatedUntaughtMatchesRecord: True -> True
+notated options with an untaught demand on a first listing: 253 -> 252
+  holiday song.holiday.jingle-bells.ht: ['texture.hands-together'] -> []
+  latin.3 song.folk.so-danco-samba.pdmx: ['pitch.ledger', 'rhythm.syncopation', 'rhythm.triplets', 'pitch.chromatic'] -> ['pitch.ledger', 'rhythm.triplets', 'pitch.chromatic']
+  latin.3 song.pop.guantanamera.pdmx: ['pitch.ledger', 'rhythm.syncopation', 'key.signature'] -> ['pitch.ledger', 'key.signature']
+option rows whose claims moved: 17 (rungs: ['holiday', 'latin.3'])
+generated option rows whose untaught list moved: 8
+  holiday exercise.coordination.c.hold: ['texture.hands-together'] -> []
+  jazz.7 exercise.stride.c: ['texture.walking-bass'] -> []
+  jazz.9 exercise.stride.e-flat: ['texture.walking-bass'] -> []
+  latin.3 exercise.clave.bossa: ['rhythm.syncopation'] -> []
+  latin.3 exercise.clave.rumba-3-2: ['rhythm.syncopation'] -> []
+  latin.3 exercise.clave.son-2-3: ['rhythm.syncopation'] -> []
+  latin.3 exercise.clave.son-3-2.pulse: ['pitch.ledger', 'rhythm.syncopation', 'texture.left-hand-pattern', 'texture.walking-bass'] -> ['pitch.ledger', 'texture.left-hand-pattern', 'texture.walking-bass']
+  latin.3 exercise.tresillo.c: ['rhythm.syncopation', 'texture.left-hand-pattern'] -> ['texture.left-hand-pattern']
+rung claims kept by no option: left [], joined []
+ancestry identical: True

@@ -1,0 +1,20 @@
+F
+======================================================================
+FAIL: test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones (tests.test_measured_demands.TestTheRungTheItemSitsOn.test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-afd1b1d84e0d04c46\tools\content\tests\test_measured_demands.py", line 163, in test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones
+    self.assertEqual(sorted(new), [], "untaught combinations the record does not hold")
+AssertionError: Lists differ: ['accompaniment on classical.3: texture.le[2681 chars] x1'] != []
+
+First list contains 60 additional elements.
+First extra element 0:
+'accompaniment on classical.3: texture.left-hand-pattern x1'
+
+Diff is 2913 characters long. Set self.maxDiff to None to see it. : untaught combinations the record does not hold
+
+----------------------------------------------------------------------
+Ran 1 test in 539.768s
+
+FAILED (failures=1)
+exit 1

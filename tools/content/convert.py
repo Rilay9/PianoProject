@@ -20,7 +20,9 @@ import argparse
 import copy
 import functools
 import hashlib
+import io
 import json
+import math
 import os
 import re
 import shutil
@@ -29,6 +31,7 @@ import time
 import warnings
 import zipfile
 from dataclasses import dataclass, field
+from datetime import date
 from fractions import Fraction
 from pathlib import Path
 from xml.etree import ElementTree
@@ -51,6 +54,7 @@ from music21 import (  # noqa: E402
     converter,
     duration,
     dynamics,
+    expressions,
     harmony,
     instrument,
     key,
@@ -1326,21 +1330,202 @@ def clean_beams(score: stream.Score) -> int:
     return cleaned
 
 
-def insert_tempo(staff: stream.PartStaff, bpm: float) -> None:
+def insert_tempo(staff: stream.PartStaff, bpm: float | tempo.MetronomeMark) -> None:
     """
-    Puts a metronome mark where MusicXML export will actually find it.
+    Puts a metronome mark where MusicXML export will actually find it: a
+    quarter note at `bpm`, or the mark given (E50: one read from the text the
+    score prints, `tempo_printed_as_text`).
 
     A mark inserted at the staff's own offset 0 is silently dropped when the
     staff is already divided into measures — measured: the LilyPond fixture
     came out with no `<sound tempo>` at all. It has to go inside the first
     measure.
     """
-    mark = tempo.MetronomeMark(number=bpm)
+    mark = bpm if isinstance(bpm, tempo.MetronomeMark) else tempo.MetronomeMark(number=bpm)
     measures = staff.getElementsByClass(stream.Measure)
     if measures:
         measures[0].insert(0, mark)
     else:
         staff.insert(0, mark)
+
+
+#: JavaScript's `\s` (ECMAScript's WhiteSpace and LineTerminator characters), so the port below reads and trims
+#: exactly the characters the app's import door reads and trims (`String.prototype.trim`, a `/u` regex's `\s`).
+JS_WHITESPACE = "\t\n\v\f\r   " + "".join(chr(c) for c in range(0x2000, 0x200B)) + "    　﻿"
+
+#: E32's `TEXT_MARK` (`app/src/data/importStore.ts`), ported verbatim: a metronome mark as text — an optional
+#: note (and dot), "=", an optional "ca.", a number of two or three digits, and nothing else; `\s`, `\S` and `\d`
+#: as a JavaScript `/u` regex reads them, and `$` as JavaScript's end of text.
+TEXT_TEMPO_MARK = re.compile(
+    rf"^[{JS_WHITESPACE}]*\(?[{JS_WHITESPACE}]*(?:([^{JS_WHITESPACE}])[{JS_WHITESPACE}]*(\.)?[{JS_WHITESPACE}]*)?="
+    rf"[{JS_WHITESPACE}]*(?:c(?:a)?\.?[{JS_WHITESPACE}]*)?([0-9]{{2,3}}(?:\.[0-9]+)?)[{JS_WHITESPACE}]*\)?[{JS_WHITESPACE}]*\Z"
+)
+
+#: SMuFL's metronome notes (U+ECA2–U+ECAA) and augmentation dot (U+ECB7) as the Unicode note symbols
+#: (`app/src/score/textGlyphs.ts`'s `METRONOME_NOTES`, by code point, whatever the font).
+METRONOME_GLYPHS = {
+    "": "\U0001D15D", "": "\U0001D15E", "": "\U0001D15E", "": "♩", "": "♩",
+    "": "♪", "": "♪", "": "\U0001D161", "": "\U0001D161", "": ".",
+}
+
+#: A metronome note's length in quarter notes, by its Unicode symbol (`textGlyphs.noteLengthInQuarters`).
+NOTE_QUARTERS = {"\U0001D15D": 4.0, "\U0001D15E": 2.0, "♩": 1.0, "\U0001D15F": 1.0, "♪": 0.5, "\U0001D160": 0.5,
+                 "\U0001D161": 0.25}
+
+#: The door's words for a note (`importStore.ts`'s `UNIT_WORDS`).
+UNIT_WORDS = {4.0: "whole note", 2.0: "half", 1.0: "quarter", 0.5: "eighth", 0.25: "sixteenth"}
+
+
+def _signature_at(score: stream.Score, offset: float) -> meter.TimeSignature | None:
+    """The time signature in force at `offset`: the latest at or before it, in walk order at one place."""
+    signatures = [(float(signature.getOffsetInHierarchy(score)), order, signature)
+                  for order, signature in enumerate(score.recurse().getElementsByClass(meter.TimeSignature))]
+    before = [one for one in signatures if one[0] <= offset + 1e-6]
+    return max(before, key=lambda one: (one[0], one[1]))[2] if before else None
+
+
+def tempo_printed_as_text(score: stream.Score, notes: list[str]) -> tuple[tempo.MetronomeMark, float] | None:
+    """
+    The opening metronome mark a score prints only as text, as a mark, with the printed words removed (E50).
+
+    E32's rule, the one the app's import door reads (`importStore.textTempoOf`), ported for the files the
+    content converter writes: seven bundled PDMX scores print `= N` as a `<words>` direction over bar 1, the
+    note glyph MuseScore's export dropped, and music21 hands the converter a `TextExpression` and no
+    `MetronomeMark`, so `normalise` inserted `DEFAULT_TEMPO_BPM` beside the printed words and the app played 96.
+
+    - **What is read:** a `TextExpression` whose text, SMuFL's metronome glyphs mapped (`METRONOME_GLYPHS`),
+      matches `TEXT_TEMPO_MARK`. Its note is the glyph's; where the glyph is missing, the beat of the time
+      signature in force at the mark, when its beat unit is a quarter (x/4) or a half (x/2) — in any other metre
+      a missing glyph could be a dotted quarter or an eighth, and nothing is read. The quarter-note tempo is
+      the number times the note's length in quarters (1.5 times for a dot), rounded to a thousandth as the door
+      rounds, and it lies in 20–400.
+    - **Only the opening:** the mark stands where nothing has sounded before it, by X31a's rule
+      (`difficulty.opening_quarter_bpm`): a note or a chord in any part, a grace note included, never a rest
+      or a chord symbol. A mark after a note has sounded is a later tempo change printed as text: it stays as
+      words, and a line in `notes` names it as not read, as it names any other mark it leaves.
+    - **What is returned:** a `MetronomeMark` of that note and number — music21 writes it as `<metronome>` with
+      a `<sound tempo>` in quarter notes a minute, which the app's reader lets win — and its quarter-note tempo.
+      The caller puts the mark where `insert_tempo` puts one. A line in `notes` names the mark as printed and,
+      where the glyph was missing, says it was read as the metre's beat. None where no mark is read.
+    """
+    from music21.sites import SitesException
+
+    candidates = []
+    for order, expression in enumerate(score.recurse().getElementsByClass(expressions.TextExpression)):
+        text = "".join(METRONOME_GLYPHS.get(char, char) for char in (expression.content or "")).strip(JS_WHITESPACE)
+        found = TEXT_TEMPO_MARK.match(text)
+        if found is None:
+            continue
+        symbol, dot, number = found.groups()
+        glyph = None if symbol is None else NOTE_QUARTERS.get(symbol)
+        if symbol is not None and glyph is None:
+            continue
+        try:
+            at = float(expression.getOffsetInHierarchy(score))
+        except SitesException:
+            continue
+        candidates.append((at, order, expression, text, glyph, dot is not None, number))
+    if not candidates:
+        return None
+    # One printed direction music21 gave to each staff of its part (a `<direction>` naming no `<staff>`) is one
+    # mark: the copies at one place with one text are read, or left, together.
+    printed_marks: dict[tuple[float, str], list] = {}
+    for candidate in sorted(candidates, key=lambda one: (one[0], one[1])):
+        printed_marks.setdefault((round(candidate[0], 6), candidate[3]), []).append(candidate)
+    onsets = []
+    for element in score.recurse().notes:
+        if isinstance(element, harmony.Harmony):
+            continue
+        try:
+            onsets.append(float(element.getOffsetInHierarchy(score)))
+        except SitesException:
+            continue
+    first_sound = min(onsets, default=math.inf)
+    read: tuple[tempo.MetronomeMark, float] | None = None
+    for copies in printed_marks.values():
+        at, _, expression, text, glyph, dotted, number = copies[0]
+        measure = expression.getContextByClass(stream.Measure)
+        where = f"bar {measure.number}" if measure is not None else "no bar"
+        printed = text.encode("ascii", "backslashreplace").decode("ascii")
+        signature = _signature_at(score, at)
+        beat = {4: 1.0, 2: 2.0}.get(signature.denominator) if signature is not None else None
+        unit = glyph if glyph is not None else beat
+        bpm = math.floor(float(number) * unit * (1.5 if dotted else 1.0) * 1000 + 0.5) / 1000 if unit is not None else None
+        if read is not None:
+            why = "the opening tempo is already read"
+        elif first_sound < at - 1e-6:
+            why = "a note sounds before it: a later tempo change printed as text"
+        elif unit is None:
+            why = f"its note glyph is missing and the metre ({signature.ratioString if signature else 'none'}) has no quarter or half beat"
+        elif not 20 <= bpm <= 400:
+            why = f"{bpm:g} quarter notes a minute is outside 20-400"
+        else:
+            why = None
+        if why is not None:
+            notes.append(f'tempo printed as text "{printed}" ({where}) not read: {why}')
+            continue
+        value = float(number)
+        mark = tempo.MetronomeMark(number=int(value) if value.is_integer() else value,
+                                   referent=duration.Duration(unit * (1.5 if dotted else 1.0)))
+        for copy in copies:
+            if copy[2].activeSite is not None:
+                copy[2].activeSite.remove(copy[2])
+        note_words = f"{'dotted ' if dotted else ''}{UNIT_WORDS[unit]}"
+        how = f"; its note glyph missing: read as a {note_words} (the metre's beat)" if glyph is None else ""
+        notes.append(f'tempo printed as text "{printed}" ({where}) read as the metronome mark {note_words} = {number}, '
+                     f"{bpm:g} quarter notes a minute{how}")
+        read = (mark, bpm)
+    return read
+
+
+#: How far two tempos may stand apart, in quarter notes a minute, and still be one statement written twice: X42's
+#: `SERIALIZATION_TOLERANCE` (`app/src/score/tempoFromXml.ts`, Entry 185, `docs/prompts/runs/X42/ENTRY.md`), an
+#: XML-number equivalence derived there from the corpus (its writers' largest noise 0.0002, the nearest difference any
+#: file here writes that is not noise 0.1), never a musical tolerance. The same value, stated for the converter;
+#: `test_convert.TestALaterTempoMarkSurvives.test_the_tolerance_is_x42s` holds the two equal.
+SERIALIZATION_TOLERANCE = 0.01
+
+
+def duplicate_tempo_marks(score: stream.Score, marks: list[tempo.MetronomeMark]) -> list[tempo.MetronomeMark]:
+    """
+    The metronome marks that only repeat a statement already standing at their place (E57), for `normalise` to remove.
+
+    A duplicate is a copy the parser made of one statement: music21's ABC reader gives each voice the header's tempo,
+    and kern repeats a `*MM` in every spine, so one statement arrives once per staff or voice at one position. Two marks
+    are one statement when both stand at the same position in the score — the same offset from the start, on any staff
+    or voice — and both give the same quarter-note tempo (`getQuarterBPM`) within `SERIALIZATION_TOLERANCE`. The
+    position is the offset in the whole score, not the bar number: the ABC reader hangs one voice's copy on the part
+    itself, outside any bar, at the same offset as the other voice's copy in bar 1.
+
+    Everything else is kept where it stands: a later tempo change (the fault this replaces removed every mark after the
+    first, wherever it stood), a return to an earlier tempo at a later place, a different tempo at the same place (a
+    conflict the app's reader resolves, not the converter), and a mark whose tempo reads as None (it duplicates
+    nothing). Of one statement's copies the first printed one (a `number`) is kept over a sound-only one, whatever the
+    order, or the printed marking would be lost; otherwise the first in walk order.
+    """
+    from music21.sites import SitesException
+
+    statements: dict[float, list[list[tempo.MetronomeMark]]] = {}
+    for mark in marks:
+        bpm = mark.getQuarterBPM()
+        if bpm is None:
+            continue
+        try:
+            at = round(float(mark.getOffsetInHierarchy(score)), 6)
+        except SitesException:
+            continue
+        here = statements.setdefault(at, [])
+        same = next((copies for copies in here if abs(float(copies[0].getQuarterBPM()) - float(bpm)) <= SERIALIZATION_TOLERANCE), None)
+        if same is None:
+            here.append([mark])
+        else:
+            same.append(mark)
+    duplicates: list[tempo.MetronomeMark] = []
+    for here in statements.values():
+        for copies in here:
+            kept = next((mark for mark in copies if mark.number is not None), copies[0])
+            duplicates += [mark for mark in copies if mark is not kept]
+    return duplicates
 
 
 def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None) -> tuple[stream.Score, ConversionResult]:
@@ -1421,15 +1606,25 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
         added_tempo = True
     elif existing_tempo:
         effective = float(existing_tempo[0].getQuarterBPM() or DEFAULT_TEMPO_BPM)
-        # One mark, on the top staff. music21's ABC reader puts a tempo in
-        # every voice, and OSMD dutifully draws all of them: an authored tune
-        # came out with "♩=84" twice, once over the staff and once beside the
-        # first note.
-        for mark in existing_tempo[1:]:
+        # One mark per statement. music21's ABC reader puts a tempo in every
+        # voice, and OSMD dutifully draws all of them: an authored tune came
+        # out with "♩=84" twice, once over the staff and once beside the first
+        # note. Only such a copy goes (E57): a later tempo change, and a
+        # different tempo at the same place, stay where they stand.
+        for mark in duplicate_tempo_marks(out, existing_tempo):
             if mark.activeSite is not None:
                 mark.activeSite.remove(mark)
+    elif (printed := tempo_printed_as_text(out, notes)) is not None:
+        # E50: the opening tempo the score prints only as text ("= 120" over bar 1, the note glyph missing)
+        # is its tempo, read before any default is inserted, and written where the default would go.
+        insert_tempo(staves[0], printed[0])
+        effective = printed[1]
     else:
-        insert_tempo(staves[0], float(DEFAULT_TEMPO_BPM))
+        # E59: the source states no tempo, so the converter supplies one for the player, as playback truth only.
+        # `numberSounding` is music21's field for a tempo that sounds and is not printed: the file gains the
+        # `<sound tempo>` and no `<metronome>`, which would print a quarter = 96 the edition never states.
+        # `added_tempo` (PDMX's `tempoDefaulted`) still says the tempo is the converter's.
+        insert_tempo(staves[0], tempo.MetronomeMark(numberSounding=DEFAULT_TEMPO_BPM))
         effective = float(DEFAULT_TEMPO_BPM)
         added_tempo = True
         notes.append(f"no tempo in source; added {DEFAULT_TEMPO_BPM} bpm")
@@ -1542,6 +1737,14 @@ MUSIC21_MINTED_ID = re.compile(r"^[A-Za-z][0-9a-f]{16,}$")
 #: field can express, and is what reproducible-build tooling conventionally uses.
 ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
 
+#: The creating system written into every zip entry: 3, Unix (APPNOTE 4.4.2), the host whose
+#: meaning the pinned permissions have (`external_attr` holds a Unix mode in its high 16 bits).
+#: `zipfile` writes 0 on Windows and 3 elsewhere (`ZipInfo.create_system`), so until E50a the same
+#: score normalised on the laptop and on CI's runner was two files (the reviewer's required
+#: correction, `docs/review/responses/questions-bd7d303e.md` §5). The only field that varies by
+#: platform in what `pinned_archive` writes.
+ZIP_SYSTEM = 3
+
 
 def deterministic_ids(xml_text: str) -> str:
     """
@@ -1572,6 +1775,57 @@ def deterministic_ids(xml_text: str) -> str:
     return xml_text
 
 
+#: music21's `<encoding-date>` with its whole line. `ScoreExporter.setEncoding` writes
+#: `str(datetime.date.today())` there, unconditionally, as the first child of `<encoding>`
+#: (music21 10.5.0, `musicxml/m21ToXml.py`); no parameter, metadata field or `defaults` entry
+#: controls it.
+ENCODING_DATE_LINE = re.compile(r"^[ \t]*<encoding-date>[^<\n]*</encoding-date>[ \t]*\r?\n", re.MULTILINE)
+
+#: A music21 `<encoding>` block, and its opening line with the indentation of its first child.
+ENCODING_BLOCK = re.compile(r"<encoding>(.*?)</encoding>", re.DOTALL)
+ENCODING_OPENING = re.compile(r"<encoding>(\r?\n)([ \t]*)<software>")
+
+
+def without_encoding_date(xml_text: str) -> str:
+    """
+    Removes the day music21 ran from a file it wrote: `<encoding-date>`, with its line.
+
+    The third run-dependent thing music21 writes, beside the minted ids and the zip times: without
+    this a score converted today and the same score converted next month are different files, so
+    the build's material identity (the file's sha256) moved with the calendar and a cache miss on
+    another day wrote other bytes than a hit. Removed rather than pinned, because a constant would
+    write a false encoding date into every file, and nothing reads the element (MusicXML's
+    `<encoding>` requires none of its children). `<software>` stays: it is stable per music21
+    version, which the tool fingerprint keys on. Text with no such element comes back unchanged.
+    """
+    return ENCODING_DATE_LINE.sub("", xml_text)
+
+
+def with_encoding_date(xml_text: str, day: date) -> str | None:
+    """
+    The inverse of `without_encoding_date` on a file the converter wrote: the text with music21's
+    line for `day` put back where music21 writes it — the first child of `<encoding>`, at the
+    indentation of the `<software>` line after it — so a recorded historical file can be re-proved
+    from the undated one (`former_identities`, `dated_form`). None where the text is not an undated music21
+    encoding (it has a date already, or its `<encoding>` names no music21 `<software>`): no identity
+    is made up for a file the converter did not write. Its result is hashed, never written to a file.
+    """
+    block = ENCODING_BLOCK.search(xml_text)
+    if block is None or "<encoding-date>" in block.group(1) or "<software>music21 v." not in block.group(1):
+        return None
+    opening = ENCODING_OPENING.match(xml_text, block.start())
+    if opening is None:
+        return None
+    newline, indent = opening.group(1), opening.group(2)
+    at = block.start() + len("<encoding>") + len(newline)
+    return f"{xml_text[:at]}{indent}<encoding-date>{day.isoformat()}</encoding-date>{newline}{xml_text[at:]}"
+
+
+def normalised_text(xml_text: str) -> str:
+    """The one text pass both of `write_mxl`'s branches make: the minted ids renamed, the date removed."""
+    return without_encoding_date(deterministic_ids(xml_text))
+
+
 def replace_atomically(staged: Path, path: Path, attempts: int = 6) -> None:
     """
     `staged.replace(path)`, retried, because Windows lets other processes veto it.
@@ -1600,28 +1854,48 @@ def replace_atomically(staged: Path, path: Path, attempts: int = 6) -> None:
             time.sleep(0.05 * (2**attempt))
 
 
+def is_text_entry(name: str) -> bool:
+    return name.lower().endswith((".xml", ".musicxml"))
+
+
+def pinned_archive(entries: list[tuple[str, bytes]], create_system: int | None = None) -> bytes:
+    """
+    The bytes of a `.mxl` holding these entries, every wall-clock and platform field pinned: the one
+    zip layout `normalise_archive` writes and `former_identities` rebuilds. Entry order is kept as
+    given. `create_system` is `ZIP_SYSTEM` unless a historical file is being rebuilt: one the
+    converter wrote before E50a carries its own machine's (`dated_form` records which).
+    """
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+        for name, data in entries:
+            info = zipfile.ZipInfo(name, date_time=ZIP_EPOCH)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.create_system = ZIP_SYSTEM if create_system is None else create_system
+            info.external_attr = 0o600 << 16
+            archive.writestr(info, data)
+    return buffer.getvalue()
+
+
 def normalise_archive(path: Path) -> None:
     """
     Rewrites a `.mxl` so its bytes depend only on its music.
 
-    Two things in a zip are wall-clock: the per-entry modification time, and —
-    through `deterministic_ids` above — the ids music21 minted while it was
-    running. Both are pinned here. Entry order is preserved rather than sorted,
-    because the MXL container wants `META-INF/container.xml` to stay where the
-    writer put it.
+    Three things in a music21 zip are wall-clock: the per-entry modification
+    time; the ids music21 minted while it was running (`deterministic_ids`
+    above); and the day it ran, which it writes as `<encoding-date>`
+    (`without_encoding_date`, removed since E50a). One is the machine's: the
+    creating system `zipfile` records (`ZIP_SYSTEM`, since E50a). All four are
+    pinned here. Entry order is preserved rather than sorted, because the MXL
+    container wants `META-INF/container.xml` to stay where the writer put it.
     """
     with zipfile.ZipFile(path) as archive:
         entries = [(info.filename, archive.read(info.filename)) for info in archive.infolist()]
 
     staged = path.with_suffix(path.suffix + ".tmp")
-    with zipfile.ZipFile(staged, "w", zipfile.ZIP_DEFLATED) as archive:
-        for name, data in entries:
-            if name.lower().endswith((".xml", ".musicxml")):
-                data = deterministic_ids(data.decode("utf-8")).encode("utf-8")
-            info = zipfile.ZipInfo(name, date_time=ZIP_EPOCH)
-            info.compress_type = zipfile.ZIP_DEFLATED
-            info.external_attr = 0o600 << 16
-            archive.writestr(info, data)
+    staged.write_bytes(pinned_archive(
+        [(name, normalised_text(data.decode("utf-8")).encode("utf-8") if is_text_entry(name) else data)
+         for name, data in entries]
+    ))
     replace_atomically(staged, path)
 
 
@@ -1630,7 +1904,8 @@ def write_mxl(score: stream.Score, out_path: Path) -> Path:
     Writes MusicXML. music21 picks the format from the suffix.
 
     The output is then normalised so that the same music always produces the
-    same bytes — see `normalise_archive`.
+    same bytes, on any day — see `normalise_archive`; the plain-XML branch makes
+    the same text pass (`normalised_text`).
     """
     out_path.parent.mkdir(parents=True, exist_ok=True)
     written = score.write("musicxml", fp=str(out_path))
@@ -1641,9 +1916,216 @@ def write_mxl(score: stream.Score, out_path: Path) -> Path:
         normalise_archive(out_path)
     else:
         out_path.write_text(
-            deterministic_ids(out_path.read_text(encoding="utf-8")), encoding="utf-8"
+            normalised_text(out_path.read_text(encoding="utf-8")), encoding="utf-8"
         )
     return out_path
+
+
+# ---------------------------------------------------------------------------
+# former identities (E50a)
+# ---------------------------------------------------------------------------
+
+#: The historical dated identities (E50a; the reviewer's rule, `docs/review/responses/questions-71bd6cee.md`):
+#: every dated file music21 wrote that a catalogue able to store a learner's material could have served,
+#: from the first such catalogue (D4, 9193261b, 2026-09-28: the first to carry `provenance.identity`, and
+#: the first app to store a material) to the last one deployable before E50a (the laptop's, written
+#: 2026-09-29 22:28). Historical compatibility data, never a rolling window: no date is derived, and a
+#: dated identity found outside it is added deliberately, by the generator named in the file, never by
+#: hand. Outside the tool fingerprint on purpose: it changes no converted file, only provenance.
+FORMER_IDENTITIES_FILE = Path(__file__).resolve().with_name("former_identities.json")
+
+
+def _entries(raw: bytes) -> list[tuple[str, bytes]] | None:
+    """A `.mxl`'s entries in order, or None where the bytes are not a zip."""
+    try:
+        with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+            return [(info.filename, archive.read(info.filename)) for info in archive.infolist()]
+    except zipfile.BadZipFile:
+        return None
+
+
+#: Any day at all: `with_encoding_date` takes one, and `_score_at` asks it only whether a text is an
+#: undated music21 encoding. No identity is ever made for this day.
+_ANY_DAY = date(2000, 1, 1)
+
+
+def _score_at(entries: list[tuple[str, bytes]], undated: bool) -> int | None:
+    """The index of the one text entry whose `<encoding>` is music21's, undated or dated as asked; else None."""
+    found = []
+    for index, (name, data) in enumerate(entries):
+        if not is_text_entry(name):
+            continue
+        text = data.decode("utf-8")
+        if undated and with_encoding_date(text, _ANY_DAY) is not None:
+            found.append(index)
+        if not undated and ENCODING_DATE_LINE.search(text) and with_encoding_date(without_encoding_date(text), _ANY_DAY) is not None:
+            found.append(index)
+    return found[0] if len(found) == 1 else None
+
+
+def archive_system(raw: bytes) -> int | None:
+    """The one creating system every entry of a zip records, or None (not a zip, or mixed)."""
+    try:
+        with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+            systems = {info.create_system for info in archive.infolist()}
+    except zipfile.BadZipFile:
+        return None
+    return systems.pop() if len(systems) == 1 else None
+
+
+def dated_form(raw: bytes) -> dict | None:
+    """
+    A historical file's entry for the table: `{"date", "system", "sha256", "undated"}` — the day music21
+    wrote into it, the creating system its machine's `zipfile` recorded (0 on Windows, 3 elsewhere), its
+    own sha256, and the sha256 of the same file with that line removed and zipped as the converter zips now
+    (`ZIP_SYSTEM`), which is exactly what the converter writes for the same music today. None for anything
+    but a dated music21 `.mxl` in the converter's layout on some machine, and where putting the date back
+    does not give the file back byte for byte (so every entry is a reconstruction proved when recorded).
+    """
+    entries = _entries(raw)
+    system = archive_system(raw)
+    if entries is None or system is None or pinned_archive(entries, system) != raw:
+        return None
+    at = _score_at(entries, undated=False)
+    if at is None:
+        return None
+    text = entries[at][1].decode("utf-8")
+    day = re.search(r"<encoding-date>([^<]*)</encoding-date>", text).group(1)  # type: ignore[union-attr]
+    undated = list(entries)
+    undated[at] = (entries[at][0], without_encoding_date(text).encode("utf-8"))
+    undated_bytes = pinned_archive(undated)
+    entry = {"date": day, "system": system, "sha256": hashlib.sha256(raw).hexdigest(),
+             "undated": hashlib.sha256(undated_bytes).hexdigest()}
+    return entry if _redated(undated, at, day, system) == raw else None
+
+
+def _redated(entries: list[tuple[str, bytes]], at: int, day: str, system: int) -> bytes | None:
+    """The undated entries with music21's line for `day` put back, zipped as the converter zipped on a
+    machine whose `zipfile` recorded `system`."""
+    try:
+        when = date.fromisoformat(day)
+    except ValueError:
+        return None
+    dated_text = with_encoding_date(entries[at][1].decode("utf-8"), when)
+    if dated_text is None:
+        return None
+    dated = list(entries)
+    dated[at] = (entries[at][0], dated_text.encode("utf-8"))
+    return pinned_archive(dated, system)
+
+
+@functools.lru_cache(maxsize=1)
+def historical_identities() -> dict[str, tuple[dict, ...]]:
+    """The committed table, indexed by the undated form each entry is a dated form of."""
+    if not FORMER_IDENTITIES_FILE.is_file():
+        return {}
+    table = json.loads(FORMER_IDENTITIES_FILE.read_text(encoding="utf-8"))
+    index: dict[str, list[dict]] = {}
+    for entry in table.get("identities", []):
+        index.setdefault(entry["undated"], []).append(entry)
+    return {undated: tuple(entries) for undated, entries in index.items()}
+
+
+#: E50: the reviewed musical repairs whose old identity the repaired file carries for learner continuity (the
+#: reviewer's conditional approval, `docs/review/responses/questions-bd7d303e.md` §4: "explicitly add the seven
+#: old identities to the repaired files' compatibility relation"). Each names an identity the table above recorded
+#: (`from`, with its date and creating system), the repaired file (`to`) and the line hunks that turn the repaired
+#: score's text back into the old one (`restore`). Generated by the script the file names, never by hand; outside
+#: the tool fingerprint for the same reason as the table.
+REPAIRED_IDENTITIES_FILE = Path(__file__).resolve().with_name("repaired_identities.json")
+
+
+@functools.lru_cache(maxsize=1)
+def repaired_identities() -> dict[str, tuple[dict, ...]]:
+    """The committed repairs, indexed by the repaired file's sha256."""
+    if not REPAIRED_IDENTITIES_FILE.is_file():
+        return {}
+    index: dict[str, list[dict]] = {}
+    for entry in json.loads(REPAIRED_IDENTITIES_FILE.read_text(encoding="utf-8")).get("repairs", []):
+        index.setdefault(entry["to"], []).append(entry)
+    return {to: tuple(entries) for to, entries in index.items()}
+
+
+def _restored(entries: list[tuple[str, bytes]], at: int, restore: list[dict]) -> list[tuple[str, bytes]] | None:
+    """The entries with each `restore` hunk's `now` text, held exactly once, put back as its `was`; else None."""
+    if not restore:
+        return None
+    text = entries[at][1].decode("utf-8")
+    for hunk in restore:
+        if not hunk["now"] or text.count(hunk["now"]) != 1:
+            return None
+        text = text.replace(hunk["now"], hunk["was"], 1)
+    restored = list(entries)
+    restored[at] = (entries[at][0], text.encode("utf-8"))
+    return restored
+
+
+def former_identities(path: Path, table: list[dict] | None = None, repairs: list[dict] | None = None) -> list[str]:
+    """
+    The historical identities of this file's music (E50a; the reviewer's bounded compatibility source):
+    each recorded dated file (`former_identities.json`, or `table` in a test) whose undated form is this
+    file, re-proved here — this file with that entry's date put back where music21 wrote it
+    (`with_encoding_date`) and zipped as `normalise_archive` zipped on the machine that wrote the entry
+    (`pinned_archive` with the entry's creating system) is that entry's bytes.
+    The build records them beside the row's identity (`provenance.formerIdentities`), so a run, an
+    encounter or a project stored against a dated file still names the row's material; the app resolves
+    them at read and never recomputes them. Nothing is derived beyond the table: no date is tried that no
+    deployable catalogue held.
+
+    Empty for anything the converter did not write without a date — a plain XML file (no built row is
+    one), a dated file (a committed PDMX copy while it keeps its date), a MuseScore-written copy, an
+    excerpt cut (no `<encoding>`), a `.mxl` not in the converter's layout — and for music no table entry
+    names: a musical change moves the undated bytes, so the old identities no longer re-prove.
+
+    **E50: a reviewed repair** (`repaired_identities.json`, or `repairs` in a test) is the one way an identity
+    of other music is named: a repair whose `to` is this file names its `from` where `from` is an entry the
+    table recorded for the same file, date and creating system (no alias names a dated file that never
+    existed), and this file with the repair's `restore` lines put back, then that date, zipped under that
+    system, is `from`'s bytes. Learner continuity only, as above: the old file stays other bytes to every
+    exact-byte check.
+
+    **E57: a repair of a file the build converts** names two old identities, each by its own relation: the dated
+    file the table recorded (as above), and the undated file every catalogue since E50a served — a relation marked
+    `undated`, whose `from` is the `undated` form the table recorded for an entry of the same file and which carries
+    no date or system; this file with the repair's `restore` lines put back, zipped as the converter zips now, is
+    `from`'s bytes.
+    """
+    if path.suffix.lower() != ".mxl":
+        return []
+    raw = path.read_bytes()
+    entries = _entries(raw)
+    if entries is None or pinned_archive(entries) != raw:
+        return []
+    at = _score_at(entries, undated=True)
+    if at is None:
+        return []
+    current = hashlib.sha256(raw).hexdigest()
+    if table is None:
+        candidates: tuple[dict, ...] | list[dict] = historical_identities().get(current, ())
+    else:
+        candidates = [entry for entry in table if entry["undated"] == current]
+    out: list[str] = []
+    for entry in candidates:
+        rebuilt = _redated(entries, at, entry["date"], entry["system"])
+        if rebuilt is not None and hashlib.sha256(rebuilt).hexdigest() == entry["sha256"] and entry["sha256"] not in out:
+            out.append(entry["sha256"])
+    recorded = ([entry for found in historical_identities().values() for entry in found] if table is None else table)
+    for repair in (repaired_identities().get(current, ()) if repairs is None else [r for r in repairs if r["to"] == current]):
+        restored = _restored(entries, at, repair.get("restore") or [])
+        if repair.get("undated") is True:
+            # E57: the old file as the converter wrote it without a date — the undated form the table recorded for an
+            # entry of the same file, the identity every catalogue since E50a served for a file the build converts.
+            if not any(entry["file"] == repair["file"] and entry["undated"] == repair["from"] for entry in recorded):
+                continue
+            rebuilt = None if restored is None else pinned_archive(restored)
+        else:
+            if not any(entry["file"] == repair["file"] and entry["sha256"] == repair["from"] and entry["date"] == repair["date"]
+                       and entry["system"] == repair["system"] for entry in recorded):
+                continue
+            rebuilt = None if restored is None else _redated(restored, at, repair["date"], repair["system"])
+        if rebuilt is not None and hashlib.sha256(rebuilt).hexdigest() == repair["from"] and repair["from"] not in out:
+            out.append(repair["from"])
+    return out
 
 
 # ---------------------------------------------------------------------------

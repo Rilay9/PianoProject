@@ -19,4 +19,5 @@ place rather than appending a duplicate.
 | kern-mozart-piano-sonatas | kern/mozart-piano-sonatas | https://github.com/craigsapp/mozart-piano-sonatas.git | see repository LICENSE/README (Humdrum editions by Craig Sapp) | worldwide | 2026-09-06T04:13:44+00:00 | 0f1f49d | 69 |
 | kern-scarlatti-keyboard-sonatas | kern/scarlatti-keyboard-sonatas | https://github.com/craigsapp/scarlatti-keyboard-sonatas.git | see repository LICENSE/README (Humdrum editions by Craig Sapp) | worldwide | 2026-09-06T04:13:47+00:00 | 567731b | 65 |
 | musetrainer | musetrainer | https://github.com/musetrainer/library.git | Public Domain (blanket claim by musetrainer/library; no LICENSE file, no per-file terms) | US | 2026-09-06T04:13:43+00:00 | 9128876 | 69 |
+| mutopia | mutopia/published/JoplinS/PineappleRag | https://www.mutopiaproject.org/ftp/JoplinS/PineappleRag | Public Domain (the edition's .ly header) | worldwide | 2026-09-29 | Mutopia-2014/01/12-1899 | 2 |
 | nifc-chopin | kern/chopin-first-editions | https://github.com/pl-wnifc/humdrum-chopin-first-editions.git | CC BY 4.0 (Fryderyk Chopin Institute; LICENSE.txt) | worldwide | 2026-09-06T04:13:52+00:00 | 95dfb10 | 512 |

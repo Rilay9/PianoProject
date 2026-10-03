@@ -1,0 +1,24 @@
+﻿python tools/docs/checks_for_paths.py content/curriculum/vocabulary/demands.json content/curriculum/vocabulary/demands.schema.json app/src/demands/vocabulary.ts app/src/curriculum/eligibilityCore.ts tools/content/claims.py tools/content/untaught_options.py app/tests/unit/copingQuestion.test.ts tools/content/tests/test_taught_at.py tools/content/tests/test_untaught_options.py docs/02-curriculum.md docs/08-test-map.md docs/prompts/runs/L120d/ENTRY.md
+# checks for 12 path(s): 12 matched, 0 unmatched
+# content/curriculum/vocabulary/demands.json: content/**, content/curriculum/**, content/curriculum/vocabulary/**
+# content/curriculum/vocabulary/demands.schema.json: content/**, content/curriculum/**, content/curriculum/vocabulary/**
+# app/src/demands/vocabulary.ts: app/src/**, app/src/demands/**
+# app/src/curriculum/eligibilityCore.ts: app/src/**, app/src/curriculum/**
+# tools/content/claims.py: tools/content/*.py
+# tools/content/untaught_options.py: tools/content/*.py
+# app/tests/unit/copingQuestion.test.ts: app/tests/unit/*.test.ts
+# tools/content/tests/test_taught_at.py: tools/content/tests/test_*.py
+# tools/content/tests/test_untaught_options.py: tools/content/tests/test_*.py
+# docs/02-curriculum.md: docs/02-curriculum.md, docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/runs/L120d/ENTRY.md: docs/**
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/competence.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4
+exit=0

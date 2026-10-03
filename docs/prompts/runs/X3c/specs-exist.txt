@@ -1,0 +1,6 @@
+bash ../docs/prompts/runs/X3c/scripts-specs-exist.sh tests/e2e/import-experience.spec.ts tests/e2e/converted-import.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/finder.spec.ts (in app)
+present: tests/e2e/import-experience.spec.ts
+present: tests/e2e/converted-import.spec.ts
+present: tests/e2e/midi-import.spec.ts
+present: tests/e2e/finder.spec.ts
+exit=0

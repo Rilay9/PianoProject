@@ -1,0 +1,18 @@
+unknown-forbidden-off: exit 1 — Tests  5 failed | 31 passed (36); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+unknown-forbidden-under-chosen-too: exit 1 — Tests  2 failed | 34 passed (36); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+learner-unprepared-without-a-learner: exit 1 — Tests  2 failed | 34 passed (36); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+external-eligible-by-estimate: exit 1 — Tests  2 failed | 34 passed (36); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+completeness-not-read: exit 1 — Tests  1 failed | 35 passed (36); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+novelty-silence-grants: exit 1 — Tests  1 failed | 35 passed (36); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+pdf-retried-every-launch: exit 1 — Tests  3 failed | 9 passed (12); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+correction-not-kept: exit 1 — Tests  2 failed | 10 passed (12); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+written-over-a-changed-row: exit 1 — Tests  1 failed | 11 passed (12); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+assignment-overwritten: exit 1 — Tests  1 failed | 11 passed (12); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+older-converter-not-due: exit 1 — Tests  4 failed | 8 passed (12); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+import-untrusted-not-written: exit 1 — Tests  1 failed | 11 passed (12); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+python-stamp-not-read: exit 1 — Tests  1 failed | 11 passed (12); ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+seed-orders-nothing: exit 1 — Ran 5 tests in 0.084s; FAILED (failures=1)
+seed-admits-refused: exit 1 — Ran 5 tests in 0.084s; FAILED (failures=1)
+finder-seed-unread: exit 1 — Ran 4 tests in 0.001s; FAILED (failures=1)
+
+exit 0

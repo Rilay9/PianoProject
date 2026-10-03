@@ -1,0 +1,17 @@
+﻿Copies from the main checkout (read only), robocopy /E: the kern and musetrainer datasets (without version-control folders), build/cache/convert, the three caches. robocopy exit 1 = files copied, no failure.
+    Dirs :        35        26         9         0         0         0
+   Files :      2231      2231         0         0         0         0
+   Bytes :  356.05 m  356.05 m         0         0         0         0
+kern exit 1
+    Dirs :         5         4         1         0         0         0
+   Files :        76        76         0         0         0         0
+   Bytes :    1.46 m    1.46 m         0         0         0         0
+musetrainer exit 1
+    Dirs :         1         1         0         0         0         0
+   Files :      7070      7070         0         0         0         0
+   Bytes :   45.01 m   45.01 m         0         0         0         0
+convert exit 1
+    Dirs :         1         0         1         0         0         0
+   Files :         3         3         0         0         0         0
+   Bytes :   10.40 m   10.40 m         0         0         0         0
+caches exit 1

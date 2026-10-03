@@ -367,12 +367,12 @@ for (const { orientation, size } of FORM_FACTORS) {
         await waitForSheet(page);
         await page.locator('#score-mode').selectOption('wait');
         await page.locator('#score-play').click();
-        // Sideways the header is not drawn and the waiting line is mirrored
-        // into the bar's left end (P21d A6); either counts.
+        // Sideways the header is not drawn and what the run says is on the
+        // top line, in the name's place (U122c; the bar's left end before it).
       }, async (p) => {
         const named = ((await p.locator('#score-waiting').textContent()) ?? '').trim();
-        const side = ((await p.locator('#score-status-side').textContent()) ?? '').trim();
-        // Upright the line is visible; sideways it is mirrored into the bar.
+        const side = ((await p.locator('#score-top-say').textContent()) ?? '').trim();
+        // Upright the line is visible; sideways it is on the top line.
         const ok =
           named !== '' &&
           ((await p.locator('#score-waiting').isVisible()) || side.includes(named));

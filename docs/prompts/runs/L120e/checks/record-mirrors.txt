@@ -1,0 +1,7 @@
+﻿python tools/docs/record_mirrors.py --check
+record-mirrors: entry-without-brief: docs/prompts/runs/L120e/ENTRY.md:1: Entry 178 names 'L120e', which no record block declares
+record-mirrors: 1 failure(s); nothing written
+exit=2
+--- the same check with this entry moved aside under build/l120e (the discriminating run), then moved back
+record mirrors: fresh (docs/prompts/tasks/README.md, docs/prompts/in-flight.md)
+exit=0

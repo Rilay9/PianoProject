@@ -1,0 +1,530 @@
+﻿(cd app) npx vitest run tests/unit/transferPolicy.test.ts tests/unit/transferFactsOnTheAttempt.test.ts tests/unit/masteryLadder.test.ts tests/unit/materialOnTheRecord.test.ts tests/unit/transferOffer.test.ts tests/unit/competenceSurvivesPruning.test.ts tests/unit/evidenceVersion.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6d274c20b3e170c9/app
+
+ Γ¥» tests/unit/masteryLadder.test.ts (13 tests | 2 failed) 70ms
+   Γ¥» transfer needs unfamiliar material; retained needs a later day (3)
+     ├ù another phrase of the same row is not transfer, even measured different; a first reading of another row is, where its facts say so 13ms
+   Γ¥» two histories a teacher can read (2)
+     ├ù the stretch: proficient at level 2, then two first readings of level 4 that go badly ΓÇö still proficient 8ms
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts (15 tests | 12 failed) 91ms
+   Γ¥» 1. the evidence contextΓÇÖs first contact is the run headerΓÇÖs, never `unseen` (the G1a review) (2)
+     ├ù a phrase run carrying both: the relation, from `firstContact` 11ms
+     ├ù a row with `unseen` and no `firstContact` (from before G1a): the contextΓÇÖs stays absent, never rebuilt from `unseen` 2ms
+   Γ¥» 1. `recordRun` writes the relationship and the demands on every measured record of a run with a material (5)
+     ├ù measured against the contexts established before the run: another key is a measured difference, and the demands are the runΓÇÖs 38ms
+     ├ù a transfer-offer run keeps the offerΓÇÖs relationship as written for its skill; the other skillsΓÇÖ are measured 6ms
+     ├ù a run with no material writes neither fact; a catalogue that cannot be read leaves the relationship unknown and keeps the demands 4ms
+     ├ù end to end: two reads, then a first reading in another key at the full standard ΓÇö transfer demonstrated on key, the scope beneath it 8ms
+   Γ¥» 3ΓÇô5. the ladder reads the policy over each attemptΓÇÖs own facts, calling itself once (5)
+     ├ù an ordinary new-context success: a non-offer piece in another key at the full standard ΓÇö demonstrated on key 3ms
+     ├ù a transfer-offer success: demonstrated on the offerΓÇÖs measured dimensions, its `differsOn` ignored 1ms
+     ├ù a legacy row with no relationship: unknown ΓÇö no credit, and no protection 1ms
+     ├ù one failed attempt with unknown facts is not protected: with another failure beside it, the skill goes back to familiar 1ms
+   Γ¥» 2. the establishing contexts come from the replay, and `transfer.ts` reads them from one ladder call (3)
+     ├ù `shownOnRecords` and `establishedOn` ask the ladder once each 1ms
+     ├ù the shipped vocabulary names only the relationshipΓÇÖs dimensions, and says which skills have none 1ms
+ Γ¥» tests/unit/transferOffer.test.ts (22 tests | 4 failed) 77ms
+   Γ¥» not offered (the adversaries held at the selection layer) (7)
+     ├ù beyond proficient: transfer demonstrated by the policy, the skill is offered nothing ΓÇö the offer reads proficient alone 6ms
+   Γ¥» the offerΓÇÖs contact is the session inputΓÇÖs: runs, encounters and pruned runsΓÇÖ summaries through the one adapter (G2 item 6) (4)
+     ├ù heard once in the Library and never played: met, and never offered as new 2ms
+     ├ù practised and pruned: the durable summary of its run makes it met, and it is never offered 1ms
+     ├ù the sessionΓÇÖs one contact reader is `contactIn` over the inputΓÇÖs rows and its contact field; the offerΓÇÖs claim carries its answer 0ms
+ Γ¥» tests/unit/materialOnTheRecord.test.ts (12 tests | 5 failed) 694ms
+   Γ¥» no ladder state and no rung state moves for the D4 fields, but where the policy says demonstrated (item 6; G2 item 3) (5)
+     ├ù the same reading with and without them, but where the policy says demonstrated: two reads, then a transfer-intended run on another item 13ms
+     ├ù the same reading with and without them, but where the policy says demonstrated: a legacy row beside material rows 1ms
+     ├ù the same reading with and without them, but where the policy says demonstrated: a transfer-intended run that went badly, twice 1ms
+     ├ù the same reading with and without them, but where the policy says demonstrated: a phrase met before, read again 0ms
+     ├ù the same reading with and without them, but where the policy says demonstrated: two reads, then a first reading in another key with its relationship recorded 0ms
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 23 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  tests/unit/masteryLadder.test.ts > transfer needs unfamiliar material; retained needs a later day > another phrase of the same row is not transfer, even measured different; a first reading of another row is, where its facts say so
+AssertionError: expected undefined to deeply equal [ { on: [ 'rhythm' ], ΓÇª(1) } ]
+
+- Expected:
+[
+  {
+    "on": [
+      "rhythm",
+    ],
+    "since": "2026-09-03T10:00:00.000Z",
+  },
+]
+
++ Received:
+undefined
+
+ Γ¥» tests/unit/masteryLadder.test.ts:185:35
+    183|     const reading = ladderState({ evidence: [...shown(), other], todayΓÇª
+    184|     expect(reading.state).toBe('transfer demonstrated');
+    185|     expect(reading.transferScope).toEqual([{ on: ['rhythm'], since: daΓÇª
+       |                                   ^
+    186|     expect(ladderState({ evidence: [...shown(), read(day(2), { itemId:ΓÇª
+    187|     // Not on material met before. Revised (C3 second pass, reviewer dΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/23]ΓÄ»
+
+ FAIL  tests/unit/masteryLadder.test.ts > two histories a teacher can read > the stretch: proficient at level 2, then two first readings of level 4 that go badly ΓÇö still proficient
+AssertionError: expected 'proficient' to be 'familiar' // Object.is equality
+
+Expected: "familiar"
+Received: "proficient"
+
+ Γ¥» tests/unit/masteryLadder.test.ts:268:76
+    266|     // The same two failures with no facts on them: unknown, never gueΓÇª
+    267|     const bare = [read(day(0)), read(day(1)), read(day(2)), read(day(3ΓÇª
+    268|     expect(ladderState({ evidence: bare, today: new Date(day(5)) }).stΓÇª
+       |                                                                            ^
+    269|   });
+    270| });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[2/23]ΓÄ»
+
+ FAIL  tests/unit/materialOnTheRecord.test.ts > no ladder state and no rung state moves for the D4 fields, but where the policy says demonstrated (item 6; G2 item 3) > the same reading with and without them, but where the policy says demonstrated: two reads, then a transfer-intended run on another item
+AssertionError: two reads, then a transfer-intended run on another item: sight-reading without the facts: expected undefined to deeply equal []
+
+- Expected:
+[]
+
++ Received:
+undefined
+
+ Γ¥» tests/unit/materialOnTheRecord.test.ts:247:78
+    245|         const without = of(bare);
+    246|         expect(LADDER_STATES).toContain(withFields.state);
+    247|         expect(without.transferScope, `${name}: ${skill} without the fΓÇª
+       |                                                                              ^
+    248|         if (withFields.transferScope.length === 0) {
+    249|           expect(summary(withFields), `${name}: ${skill}`).toEqual(sumΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[3/23]ΓÄ»
+
+ FAIL  tests/unit/materialOnTheRecord.test.ts > no ladder state and no rung state moves for the D4 fields, but where the policy says demonstrated (item 6; G2 item 3) > the same reading with and without them, but where the policy says demonstrated: a legacy row beside material rows
+AssertionError: a legacy row beside material rows: sight-reading without the facts: expected undefined to deeply equal []
+
+- Expected:
+[]
+
++ Received:
+undefined
+
+ Γ¥» tests/unit/materialOnTheRecord.test.ts:247:78
+    245|         const without = of(bare);
+    246|         expect(LADDER_STATES).toContain(withFields.state);
+    247|         expect(without.transferScope, `${name}: ${skill} without the fΓÇª
+       |                                                                              ^
+    248|         if (withFields.transferScope.length === 0) {
+    249|           expect(summary(withFields), `${name}: ${skill}`).toEqual(sumΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[4/23]ΓÄ»
+
+ FAIL  tests/unit/materialOnTheRecord.test.ts > no ladder state and no rung state moves for the D4 fields, but where the policy says demonstrated (item 6; G2 item 3) > the same reading with and without them, but where the policy says demonstrated: a transfer-intended run that went badly, twice
+AssertionError: a transfer-intended run that went badly, twice: sight-reading without the facts: expected undefined to deeply equal []
+
+- Expected:
+[]
+
++ Received:
+undefined
+
+ Γ¥» tests/unit/materialOnTheRecord.test.ts:247:78
+    245|         const without = of(bare);
+    246|         expect(LADDER_STATES).toContain(withFields.state);
+    247|         expect(without.transferScope, `${name}: ${skill} without the fΓÇª
+       |                                                                              ^
+    248|         if (withFields.transferScope.length === 0) {
+    249|           expect(summary(withFields), `${name}: ${skill}`).toEqual(sumΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[5/23]ΓÄ»
+
+ FAIL  tests/unit/materialOnTheRecord.test.ts > no ladder state and no rung state moves for the D4 fields, but where the policy says demonstrated (item 6; G2 item 3) > the same reading with and without them, but where the policy says demonstrated: a phrase met before, read again
+AssertionError: a phrase met before, read again: sight-reading without the facts: expected undefined to deeply equal []
+
+- Expected:
+[]
+
++ Received:
+undefined
+
+ Γ¥» tests/unit/materialOnTheRecord.test.ts:247:78
+    245|         const without = of(bare);
+    246|         expect(LADDER_STATES).toContain(withFields.state);
+    247|         expect(without.transferScope, `${name}: ${skill} without the fΓÇª
+       |                                                                              ^
+    248|         if (withFields.transferScope.length === 0) {
+    249|           expect(summary(withFields), `${name}: ${skill}`).toEqual(sumΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[6/23]ΓÄ»
+
+ FAIL  tests/unit/materialOnTheRecord.test.ts > no ladder state and no rung state moves for the D4 fields, but where the policy says demonstrated (item 6; G2 item 3) > the same reading with and without them, but where the policy says demonstrated: two reads, then a first reading in another key with its relationship recorded
+AssertionError: two reads, then a first reading in another key with its relationship recorded: sight-reading without the facts: expected undefined to deeply equal []
+
+- Expected:
+[]
+
++ Received:
+undefined
+
+ Γ¥» tests/unit/materialOnTheRecord.test.ts:247:78
+    245|         const without = of(bare);
+    246|         expect(LADDER_STATES).toContain(withFields.state);
+    247|         expect(without.transferScope, `${name}: ${skill} without the fΓÇª
+       |                                                                              ^
+    248|         if (withFields.transferScope.length === 0) {
+    249|           expect(summary(withFields), `${name}: ${skill}`).toEqual(sumΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[7/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 1. the evidence contextΓÇÖs first contact is the run headerΓÇÖs, never `unseen` (the G1a review) > a phrase run carrying both: the relation, from `firstContact`
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:75:90
+     73|   it('a phrase run carrying both: the relation, from `firstContact`', ΓÇª
+     74|     expect(contextOf({ ...noRelation, firstContact: true }).firstContaΓÇª
+     75|     expect(contextOf({ ...noRelation, unseen: true, firstContact: falsΓÇª
+       |                                                                                          ^
+     76|   });
+     77|
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[8/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 1. the evidence contextΓÇÖs first contact is the run headerΓÇÖs, never `unseen` (the G1a review) > a row with `unseen` and no `firstContact` (from before G1a): the contextΓÇÖs stays absent, never rebuilt from `unseen`
+AssertionError: expected [ 'itemId', 'firstContact', ΓÇª(3) ] to not include 'firstContact'
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:80:38
+     78|   it('a row with `unseen` and no `firstContact` (from before G1a): theΓÇª
+     79|     const context = contextOf(noRelation);
+     80|     expect(Object.keys(context)).not.toContain('firstContact');
+       |                                      ^
+     81|   });
+     82| });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[9/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 1. `recordRun` writes the relationship and the demands on every measured record of a run with a material > measured against the contexts established before the run: another key is a measured difference, and the demands are the runΓÇÖs
+AssertionError: expected undefined to deeply equal [ { ΓÇª(2) }, { ΓÇª(2) } ]
+
+- Expected:
+[
+  {
+    "itemId": "drill.reading.sight-reading-2-right",
+    "material": {
+      "family": "sight-reading",
+      "kind": "generator",
+      "recipe": {
+        "bars": 4,
+        "eighths": true,
+        "fifths": 0,
+        "hands": "right",
+        "level": 2,
+        "skips": true,
+        "timeSig": "4/4",
+      },
+      "seed": 1,
+      "tempoBpm": 72,
+      "version": 2,
+    },
+  },
+  {
+    "itemId": "drill.reading.sight-reading-2-right",
+    "material": {
+      "family": "sight-reading",
+      "kind": "generator",
+      "recipe": {
+        "bars": 4,
+        "eighths": true,
+        "fifths": 0,
+        "hands": "right",
+        "level": 2,
+        "skips": true,
+        "timeSig": "4/4",
+      },
+      "seed": 2,
+      "tempoBpm": 72,
+      "version": 2,
+    },
+  },
+]
+
++ Received:
+undefined
+
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:104:35
+    102|     const third = measuredOf(rows[2], 'interval-reading');
+    103|     const relationship = third?.context.relationship;
+    104|     expect(relationship?.shownOn).toEqual(expected.shownOn);
+       |                                   ^
+    105|     expect(relationship?.shownOn.map((one) => one.material)).toEqual([ΓÇª
+    106|     const key = relationship?.measured.find((fact) => fact.dimension =ΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[10/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 1. `recordRun` writes the relationship and the demands on every measured record of a run with a material > a transfer-offer run keeps the offerΓÇÖs relationship as written for its skill; the other skillsΓÇÖ are measured
+AssertionError: expected undefined to deeply equal { skill: 'interval-reading', ΓÇª(3) }
+
+- Expected:
+{
+  "differsOn": [
+    "family",
+  ],
+  "measured": [],
+  "shownOn": [
+    {
+      "itemId": "the.offer.as.made",
+    },
+  ],
+  "skill": "interval-reading",
+}
+
++ Received:
+undefined
+
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:123:75
+    121|     await recordRun({ ...reading(3, phraseOf(3)), intent: 'transfer', ΓÇª
+    122|     const rows = await rungRows();
+    123|     expect(measuredOf(rows[2], 'interval-reading')?.context.relationshΓÇª
+       |                                                                           ^
+    124|     expect(measuredOf(rows[2], 'sight-reading')?.context.relationship?ΓÇª
+    125|   });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[11/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 1. `recordRun` writes the relationship and the demands on every measured record of a run with a material > a run with no material writes neither fact; a catalogue that cannot be read leaves the relationship unknown and keeps the demands
+AssertionError: the given combination of arguments (undefined and string) is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a string
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:135:70
+    133|     expect(Object.keys(measuredOf(rows[0], 'interval-reading')?.contexΓÇª
+    134|     expect(Object.keys(measuredOf(rows[1], 'interval-reading')?.contexΓÇª
+    135|     expect(measuredOf(rows[1], 'interval-reading')?.context.demands).tΓÇª
+       |                                                                      ^
+    136|   });
+    137|
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[12/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 1. `recordRun` writes the relationship and the demands on every measured record of a run with a material > end to end: two reads, then a first reading in another key at the full standard ΓÇö transfer demonstrated on key, the scope beneath it
+AssertionError: expected 'proficient' to be 'transfer demonstrated' // Object.is equality
+
+Expected: "transfer demonstrated"
+Received: "proficient"
+
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:165:24
+    163|     const evidence = (await rungRows()).flatMap(storedEvidence).filterΓÇª
+    164|     const read = ladder.ladderState({ evidence, today: new Date(at(4))ΓÇª
+    165|     expect(read.state).toBe('transfer demonstrated');
+       |                        ^
+    166|     expect(read.transferScope).toEqual([{ on: ['key'], since: new DateΓÇª
+    167|     // A new seed of the same recipe instead is no transfer, whatever ΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[13/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 3ΓÇô5. the ladder reads the policy over each attemptΓÇÖs own facts, calling itself once > an ordinary new-context success: a non-offer piece in another key at the full standard ΓÇö demonstrated on key
+AssertionError: expected { Object (state, transfer, ...) } to match object { Object (state, transfer, ...) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "state": "transfer demonstrated",
+    "transfer": true,
+-   "transferScope": [
+-     {
+-       "on": [
+-         "key",
+-       ],
+-       "since": "2026-09-05T16:00:00.000Z",
+-     },
+-   ],
+  }
+
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:245:21
+    243|     const run = record(5, { material: piece('c'.repeat(64)), firstContΓÇª
+    244|     const reading = read([...SHOWN, run]);
+    245|     expect(reading).toMatchObject({ state: 'transfer demonstrated', trΓÇª
+       |                     ^
+    246|     expect(reading.established).toEqual(SHOWN.map((one) => ({ itemId: ΓÇª
+    247|   });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[14/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 3ΓÇô5. the ladder reads the policy over each attemptΓÇÖs own facts, calling itself once > a transfer-offer success: demonstrated on the offerΓÇÖs measured dimensions, its `differsOn` ignored
+AssertionError: expected undefined to deeply equal [ { on: [ 'key' ], ΓÇª(1) } ]
+
+- Expected:
+[
+  {
+    "on": [
+      "key",
+    ],
+    "since": "2026-09-05T16:00:00.000Z",
+  },
+]
+
++ Received:
+undefined
+
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:253:35
+    251|     const run = record(5, { material: piece('d'.repeat(64)), intent: 'ΓÇª
+    252|     const reading = read([...SHOWN, run]);
+    253|     expect(reading.transferScope).toEqual([{ on: ['key'], since: at(5)ΓÇª
+       |                                   ^
+    254|   });
+    255|
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[15/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 3ΓÇô5. the ladder reads the policy over each attemptΓÇÖs own facts, calling itself once > a legacy row with no relationship: unknown ΓÇö no credit, and no protection
+AssertionError: expected { Object (state, transfer, ...) } to match object { state: 'proficient', ΓÇª(2) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "state": "proficient",
+-   "transfer": false,
+-   "transferScope": [],
++   "state": "transfer demonstrated",
++   "transfer": true,
+  }
+
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:258:38
+    256|   it('a legacy row with no relationship: unknown ΓÇö no credit, and no pΓÇª
+    257|     const legacy = record(5, { itemId: 'drill.reading.sight-reading-4'ΓÇª
+    258|     expect(read([...SHOWN, legacy])).toMatchObject({ state: 'proficienΓÇª
+       |                                      ^
+    259|     const failed = [record(5, { itemId: 'piece.x', firstContact: true,ΓÇª
+    260|     // v0 spared both (first contact, another item); unknown facts areΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[16/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 3ΓÇô5. the ladder reads the policy over each attemptΓÇÖs own facts, calling itself once > one failed attempt with unknown facts is not protected: with another failure beside it, the skill goes back to familiar
+AssertionError: expected 'proficient' to be 'familiar' // Object.is equality
+
+Expected: "familiar"
+Received: "proficient"
+
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:274:61
+    272|     const unknownFacts = record(5, { material: piece('1'.repeat(64)), ΓÇª
+    273|     const plainFail = record(6, { material: piece('2'.repeat(64)), firΓÇª
+    274|     expect(read([...SHOWN, unknownFacts, plainFail]).state).toBe('famiΓÇª
+       |                                                             ^
+    275|   });
+    276| });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[17/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 2. the establishing contexts come from the replay, and `transfer.ts` reads them from one ladder call > `shownOnRecords` and `establishedOn` ask the ladder once each
+AssertionError: expected "ladderState" to be called 1 times, but got 5 times
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:297:19
+    295|     try {
+    296|       const records = shownOnRecords('interval-reading', rows);
+    297|       expect(spy).toHaveBeenCalledTimes(1);
+       |                   ^
+    298|       expect(records.map((one) => one.row.id)).toEqual([1, 2]);
+    299|       spy.mockClear();
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[18/23]ΓÄ»
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 2. the establishing contexts come from the replay, and `transfer.ts` reads them from one ladder call > the shipped vocabulary names only the relationshipΓÇÖs dimensions, and says which skills have none
+AssertionError: expected [ 'sight-reading', ΓÇª(15) ] to deeply equal [ 'reading-ahead' ]
+
+- Expected
++ Received
+
+  [
++   "sight-reading",
+    "reading-ahead",
++   "bass-clef",
++   "ledger-lines",
++   "interval-reading",
++   "position-shift",
++   "subdivision",
++   "dotted-quarter",
++   "tie",
++   "syncopation",
++   "triplets",
++   "6/8",
++   "key-signature",
++   "accidentals",
++   "hands-together",
++   "hand-independence",
+  ]
+
+ Γ¥» tests/unit/transferFactsOnTheAttempt.test.ts:321:107
+    319|     const known = new Set<string>(DIMENSIONS);
+    320|     for (const skill of VOCABULARY_V0.skills) for (const dimension of ΓÇª
+    321|     expect(VOCABULARY_V0.skills.filter((skill) => skill.transfer === uΓÇª
+       |                                                                                                           ^
+    322|   });
+    323| });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[19/23]ΓÄ»
+
+ FAIL  tests/unit/transferOffer.test.ts > not offered (the adversaries held at the selection layer) > beyond proficient: transfer demonstrated by the policy, the skill is offered nothing ΓÇö the offer reads proficient alone
+AssertionError: expected 'transfer demonstrated' to be 'proficient' // Object.is equality
+
+Expected: "proficient"
+Received: "transfer demonstrated"
+
+ Γ¥» tests/unit/transferOffer.test.ts:295:146
+    293|     expect(offers(card({ rows }))).toEqual([]);
+    294|     // v0's rule alone (the same read with no facts) is no longer beyoΓÇª
+    295|     expect(ladderState({ evidence: [...SHOWN, third].flatMap(storedEviΓÇª
+       |                                                                                                                                                  ^
+    296|   });
+    297| });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[20/23]ΓÄ»
+
+ FAIL  tests/unit/transferOffer.test.ts > the offerΓÇÖs contact is the session inputΓÇÖs: runs, encounters and pruned runsΓÇÖ summaries through the one adapter (G2 item 6) > heard once in the Library and never played: met, and never offered as new
+AssertionError: expected [ 'exercise.pentatonic.a.pentatonic' ] to not include 'exercise.pentatonic.a.pentatonic'
+ Γ¥» tests/unit/transferOffer.test.ts:317:112
+    315|
+    316|   it('heard once in the Library and never played: met, and never offerΓÇª
+    317|     expect(offers(card({ contact: { encounters: [heard], summaries: []ΓÇª
+       |                                                                                                                ^
+    318|   });
+    319|
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[21/23]ΓÄ»
+
+ FAIL  tests/unit/transferOffer.test.ts > the offerΓÇÖs contact is the session inputΓÇÖs: runs, encounters and pruned runsΓÇÖ summaries through the one adapter (G2 item 6) > practised and pruned: the durable summary of its run makes it met, and it is never offered
+AssertionError: expected [ 'exercise.pentatonic.a.pentatonic' ] to not include 'exercise.pentatonic.a.pentatonic'
+ Γ¥» tests/unit/transferOffer.test.ts:325:114
+    323|     expect(summary.itemIds).toEqual([PENT_A.id]);
+    324|     // The run itself is gone from the rows (pruned); only its summaryΓÇª
+    325|     expect(offers(card({ contact: { encounters: [], summaries: [summarΓÇª
+       |                                                                                                                  ^
+    326|   });
+    327|
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[22/23]ΓÄ»
+
+ FAIL  tests/unit/transferOffer.test.ts > the offerΓÇÖs contact is the session inputΓÇÖs: runs, encounters and pruned runsΓÇÖ summaries through the one adapter (G2 item 6) > the sessionΓÇÖs one contact reader is `contactIn` over the inputΓÇÖs rows and its contact field; the offerΓÇÖs claim carries its answer
+TypeError: contactOf is not a function
+ Γ¥» tests/unit/transferOffer.test.ts:330:12
+    328|   it('the sessionΓÇÖs one contact reader is `contactIn` over the inputΓÇÖsΓÇª
+    329|     const history = { encounters: [heard], summaries: [] };
+    330|     expect(contactOf({ rows: SHOWN, contact: history }, PENT_A.id, matΓÇª
+       |            ^
+    331|     expect(contactOf({ rows: SHOWN, contact: history }, PENT_A.id, matΓÇª
+    332|     // Absent, the runs alone (D4's reading): the field is what carrieΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[23/23]ΓÄ»
+
+
+ Test Files  4 failed | 3 passed (7)
+      Tests  23 failed | 77 passed (100)
+   Start at  04:32:09
+   Duration  21.51s (tests 79%, transform 13%, import 5%, environment 3%)
+
+exit=1

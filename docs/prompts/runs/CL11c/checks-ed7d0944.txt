@@ -1,0 +1,31 @@
+CL11c checks, head ed7d0944 (chatgpt/cl11c). Raw results, then a short review read. From app/, vitest 5.0.0.
+
+THE SHA IN THE REQUEST DOES NOT EXIST
+  check-request.md and the reply name the test-only commit 930b3b2915518345cbb019ca2eece93dee1f96d2. No such object exists in the repository (git cat-file fails). The branch's test-only commit holding both red cases is fd3e315f4e4c048ee95b04797f9dda9def1c0f0d ("Add CL11c Stop population red case"). The red run below used fd3e315f.
+
+RED, at fd3e315f (the test file copied onto the base 385c0131; the branch's engine is unchanged at that commit)
+  npx vitest run tests/unit/loopScoresOnePopulation.test.ts   exit 1   2 failed, 1 passed
+  - each completed lap is its own population ...   FAILED  :86  expected 4 to be 2 (hits)          as requested
+  - Stop after completed looping reports ...       FAILED  :123 expected true to be false (passed)  as requested
+  - a non-looped Keep tempo run ...                PASSED
+
+GREEN REQUEST, at ed7d0944: NOT GREEN
+  16 engine and score unit files (loopScoresOnePopulation, engineEarlyNote, engineMic, engineRhythmOnly, engineScoring, engineTempo, engineWait, keepTempoChargesAWrongKey, scoreSession, scoreSession.audio, scoreSummaryTruth, tempoLadder, masteryLadder, backingLoop, scoreMidRunSettings, repairedTempoLineage)
+  exit 1   3 failed, 355 passed (358)
+  1. loopScoresOnePopulation.test.ts:134  "Stop after completed looping reports and saves the last completed lap ..."
+       AssertionError: expected 'unknown' to be 'failed'
+       Read: the case calls scoreOutcome({ passed, accuracy, accuracyEstimated }) without tempoMeasured; scoreOutcome (sessionRun.ts:610) returns 'unknown' unless tempoMeasured is true. The case also rebuilds the stored decision by hand rather than reaching the save path, so it does not meet the brief's "reaches the summary and the saved-session decision".
+  2. engineTempo.test.ts:731  "keeps counting the run's duration across laps"
+       expected final.score.durationMs to be the run's wall time (30 beats); stop() now returns the last completed lap's score, whose durationMs ends at that lap's boundary.
+       Read: a regression. The practice time the history records drops whatever was played after the last lap boundary.
+  3. keepTempoChargesAWrongKey.test.ts:403  "each lap of a loop is its own: a late D that stood for lap one's D does not use up lap two's"
+       expected score.hits 2; the case reads h.engine.state.score after lap two's boundary, which under one-lap scoring is lap three's empty population.
+       Read: an existing case written for the cumulative population, needing its read moved to lap two's finish event under the new unit; not a fault in the fix itself.
+
+NOT RUN
+  The two mutants, and the full unit suite (not run outside the landing chain). Mutants wait for a green head.
+
+REVIEW READ (short)
+  - The unit and the Stop rule are coherent: one lap per population, Stop reports the last completed lap, a stop before any completed lap keeps the current attempt.
+  - The mechanism is sound and small: completeLap reuses resetRunTotals, which also now clears lenientChordSteps (a pre-existing omission). The arrays the lap score was built from are copied by Scoring.buildScore (notes, pedal; timing and hot spots derived), so the reset does not empty the saved lap (probed: the stopped score kept the lap's three notes).
+  - Needed: the run's duration kept whole on Stop while the counts come from the completed lap (or a stated reason otherwise); case 3's read moved to the lap's finish; case 1 passing tempoMeasured, or better, reaching the save path; the real test-only sha in the entry and request.

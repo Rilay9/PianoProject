@@ -54,3 +54,7 @@ videos, on every rung, and never a wrong one.
 
 Links checked, dead, wrong, replaced; rungs given videos and rungs left without with the
 searches; the index size; the validator's red proof; what is unverified.
+
+## Record
+
+lane: T21 · closes: — · entry: — · role: history

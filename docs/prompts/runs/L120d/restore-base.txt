@@ -1,0 +1,12 @@
+﻿the four generated reports (the three the build rewrites and ladder.md), diffed against build\l120d-snapshot after the base build, then restored
+--- content\scores\imported\SOURCES.md
+ ...b4721e1cd\\content\\scores\\imported\\SOURCES.md" | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+--- docs\prompts\inventory.md
+warning: in the working copy of 'C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-acfba7b3b4721e1cd\docs\prompts\inventory.md', LF will be replaced by CRLF the next time Git touches it
+--- docs\prompts\rung-claims.md
+warning: in the working copy of 'C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-acfba7b3b4721e1cd\docs\prompts\rung-claims.md', LF will be replaced by CRLF the next time Git touches it
+--- docs\generated\ladder.md
+ M app/tests/unit/copingQuestion.test.ts
+ M tools/content/tests/test_taught_at.py
+?? docs/prompts/runs/L120d/
