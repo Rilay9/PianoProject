@@ -1,5 +1,7 @@
 # CT1 — every musical claim the app makes has a source that can be checked, and nothing unchecked teaches, gates or counts as evidence (a design and build; the content-truth lane)
 
+> **HELD, 2026-10-03: do not run this brief.** Part D is flawed. Taking the judgement demands out of every gate would let untaught music through: `eligibilityCore.ts:286` refuses an item whose demands are untaught. The rule must be that uncertainty may only restrict, never grant. This brief is being revised together with the outside reviewer's replacement.
+
 You are working in the piano-teaching PWA in this repository. A small team of AI agents builds it; the owner directs it. **Read `CLAUDE.md` first, then `docs/prompts/operating-procedure.md` §11–§14.** They are the house rules, and every one applies to you.
 
 ## The problem, in one paragraph
@@ -199,3 +201,4 @@ lane: CT1 · closes: — · entry: 231
 index: Every musical claim has a source that can be checked; nothing unchecked teaches, gates or counts as evidence: the content-truth lane (`CT1-every-musical-claim-has-a-checkable-source.md`) | build | drafted 2026-10-03 (`CT1-every-musical-claim-has-a-checkable-source.md`); Entry 231
 in-flight: drafted 2026-10-03 (`CT1-every-musical-claim-has-a-checkable-source.md`): the owner's direction; claims classed by source, judgement detectors demoted, notation facts proven against an independent reading, a musician checklist, rules for future content; supersedes CL10a (Entry 231)
 state: with-reviewer 2026-10-03: the owner's prompt for a cloud session, with the outside reviewer before it is pasted (Entry 231)
+- held 2026-10-03: Part D would let untaught music through (eligibilityCore.ts:286); being revised with the reviewer's replacement under the rule that uncertainty only restricts
