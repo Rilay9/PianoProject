@@ -158,9 +158,9 @@ NC or SA content, but using such data as a **test oracle** ships nothing.
 |---|---|---|---|---|---|
 | 8.1 | DCML Mozart piano sonatas | Experts' harmony and cadence labels, bar by bar | CC BY-NC-SA 4.0 | [DCMLab/mozart_piano_sonatas](https://github.com/DCMLab/mozart_piano_sonatas) | Oracle for chord, Roman-numeral and cadence concepts (5.5) |
 | 8.2 | When in Rome (Gotham) | Roman-numeral analyses in RomanText, read by music21 | CC BY-SA 4.0 | [MarkGotham/When-in-Rome](https://github.com/MarkGotham/When-in-Rome) | Oracle for Roman numerals and progressions (5.5) |
-| 8.3 | Couturier, Bigo and Levé: Mozart texture annotations | Experts' melody and accompaniment labels per bar | CC BY 4.0 (reported) | [hal-03860195](https://hal.science/hal-03860195v1) | **The** oracle for the accompaniment figures (5.4): it tests `figures.py` against human judgement |
+| 8.3 | Couturier, Bigo and Levé: Mozart texture annotations | Experts' melody and accompaniment labels per bar | **Annotations ODbL; scores CC BY-NC-SA 4.0** (the dataset's README) | [hal-03860195](https://hal.science/hal-03860195v1) | The oracle for **accompaniment function** (5.4). It cannot establish named figures such as Alberti (see §9.0) |
 | 8.4 | CIPI | 652 pieces with Henle difficulty levels | CC BY-NC-SA 4.0 (reported) | [zenodo 8037327](https://zenodo.org/records/8037327) | Difficulty oracle (5.7, R7) |
-| 8.5 | PSyllabus | Piano Syllabus levels for 7,901 pieces (audio) | CC BY 4.0 (reported) | [zenodo 14794592](https://zenodo.org/records/14794592) | Level labels by title, to compare with the curriculum and the level model |
+| 8.5 | PSyllabus | Piano Syllabus levels for 7,901 pieces (audio) | **Unresolved:** research use only versus CC BY 4.0. A private oracle only | [zenodo 14794592](https://zenodo.org/records/14794592) | Level labels by title, to compare with the curriculum and the level model |
 | 8.6 | ASAP | Scores aligned to real piano performances | CC BY-NC-SA 4.0 | [CPJKU/asap-dataset](https://github.com/CPJKU/asap-dataset) | Oracle for score following (4.2) |
 | 8.7 | partitura | Pitch spelling, key estimation, voice separation, alignment | Apache-2.0 | [CPJKU/partitura](https://github.com/CPJKU/partitura) | Second library behind music21 for spelling and voice separation (1.13–1.15) |
 | 8.8 | MusPy | Standard metrics for symbolic music (pitch range, scale consistency, rhythm regularity) | MIT | [salu133445/muspy](https://github.com/salu133445/muspy) | Generator checks (6.3–6.5), part two |
@@ -186,7 +186,7 @@ agent's top fits:
   Mutopia and IMSLP before anything is generated. Their availability on Mutopia was not in
   the agent's report, so it is open (part two).
 - **Expert-annotated data is the test oracle wherever it covers a concept:**
-  - 8.3 for accompaniment, before any other check of `figures.py`;
+  - 8.3 for accompaniment function only; named figures need their own sourced checks;
   - 8.1 and 8.2 for chords;
   - 8.4 and 8.5 for levels;
   - 8.6 for score following.
@@ -221,6 +221,11 @@ agent's top fits:
 
 
 ## 9. The reuse census (`CLAUDE.md`, *Reuse before reinvention*)
+
+**These labels are candidate decisions, not proof** (`plan.md` §11.6). A REPLACE row needs
+three more things before anything is replaced: its semantic fit, its limitations, and a
+"why not simpler?" line. Every row also allows the no-op outcomes: keep as is, narrow the
+claim, retire, or defer.
 
 Every custom mechanism, with:
 - why it is custom;
@@ -282,9 +287,21 @@ MusicXML importer with hand split in JS.
 
 ### 9.1 Generator families (`tools/content/generate_exercises.py`, 57 families)
 
-**How it was found.** `families-ast.txt`, beside this file (a script over the AST), shows every
-family's pitches go through `music21.key.Key` or `scale.*` objects. So spelling is already
-by construction. **The musical content** (which chords, which figures, which rhythms) comes
+**How it was found.** Two scripts were run over the code, with their outputs beside this
+file:
+- `families-ast.txt`, over the AST: the tables and music21 calls of each family;
+- `spelling-paths.txt`, over the call graph: how each family spells.
+
+**Corrected after review.** It is not true that every family spells "by construction".
+- **From the key:** many families spell from the key's degrees.
+- **Through `up()`:** about 25 spell chord tones through `up()`'s single interval name per
+  semitone count (`SEMITONE_INTERVAL`, :3480), so a sharp eleventh and a flat fifth cannot
+  both be right.
+- **With no key-derived helper:** seven families (`chromatic`, `blues_scale`, `pentatonic`,
+  `riff`, `tresillo`, `swing_pair`, `modal_vamp`).
+
+Passing a name through `pitch.Pitch` checks nothing. The independent check is partitura's
+pitch-spelling estimator over every generated item (`plan.md` §11.1). **The musical content** (which chords, which figures, which rhythms) comes
 from hand tables and hand loops. The census therefore asks of each family where its content
 should come from, not how it spells.
 
@@ -313,8 +330,8 @@ should come from, not how it spells.
 
 | Family : line | Content today | Searched | Label and decision |
 |---|---|---|---|
-| `accompaniment` :2200 | `ACCOMPANIMENT_PATTERNS` :2189: broken [0,1,2,1], Alberti [0,2,1,2] (matches S6's low–high–middle–high), waltz [bass, chord, chord] over I–IV–V–I | O3 `HS1` bars in Mozart; Clementi Op. 36 | **USE REAL CONTENT first** (O3-labelled bars, Op. 36). The figure table **KEEP CUSTOM** as *the* figure definitions, shared with the matchers in one module ("one definition, two directions"). Progressions **REPLACE WITH DATA** (O1/O2 at the level) |
-| `oompah` :2315, `stride` :4268, `secondary_rag` :3038 | `OOMPAH_CHORDS` :2268; stride "bass, chord, tenth, chord"; `SECONDARY_RAG_CELL` :3030 | **Joplin rags in KernScores** (already fetched: `kern/joplin`); waltzes by Burgmüller and Gurlitt | **USE REAL CONTENT** (Joplin for stride, oom-pah and secondary rag). Generated loops kept as isolated drills, with figures from the shared definitions |
+| `accompaniment` :2200 | `ACCOMPANIMENT_PATTERNS` :2189: broken [0,1,2,1], Alberti [0,2,1,2] (matches S6's low–high–middle–high), waltz [bass, chord, chord] over I–IV–V–I | O3 `HS1` bars in Mozart; Clementi Op. 36 | **USE REAL CONTENT first:** passages in an O3 `HS1` layer **and** verified as Alberti by the sourced check; Op. 36 passages verified the same way. `HS1` alone is accompaniment. The figure table **KEEP CUSTOM**, citing the same definition as the matchers, but implemented separately from them so the check stays independent. Progressions **REPLACE WITH DATA** (O1/O2 at the level) |
+| `oompah` :2315, `stride` :4268, `secondary_rag` :3038 | `OOMPAH_CHORDS` :2268; stride "bass, chord, tenth, chord"; `SECONDARY_RAG_CELL` :3030 | **Joplin rags in KernScores** (already fetched: `kern/joplin`); waltzes by Burgmüller and Gurlitt | **USE REAL CONTENT candidates:** Joplin passages, each **verified for the figure** before it is claimed. Genre establishes nothing. Generated loops kept as isolated drills, with figures from the shared definitions |
 | `cadence` :2152 | Hand voicings, "one of three" | S3 (cadences by grade); music21 `figuredBass.realizer`; O1 cadence labels | **REPLACE WITH LIBRARY** (RomanText → realizer) **plus DATA** (O1 cadences as real examples) |
 | `four_chord_loop` :3815, `slash_bass` :3867, `intro` :5263, `modal_vamp` :5887 | `FOUR_CHORD_LOOP` :3812, hand intervals | O2 (popular-music analyses are in When in Rome); music21 `harmony.ChordSymbol` | **REPLACE WITH LIBRARY** for the chords; progressions stay as named standard forms (I–V–vi–IV is a definition) |
 | `seventh_voicing` :3760, `ii_v_i` :4390, `tritone_sub` :4491, `open_voicing` :4530, `turnaround` :4329, `passing_chord` :5427, `walkup` :5339, `comping` :4180 | `II_V_I` :3431, `VOICING_LABELS`, `COMPING_BARS` :4134, `WALKUP_*` :5334–5336, `PASSING_TARGETS` :5424 | O10 (real jazz progressions); jazz voicing definitions (shell, rootless A/B in jazz-theory texts); Tonal/music21 chord symbols | **REPLACE WITH LIBRARY** (symbols → pitches) and **REPLACE WITH DATA** (O10 progressions and turnarounds). Voicing *types* **KEEP CUSTOM** as cited definitions. Comping *rhythms* are **UNSOLVED** as to source: no open, labelled comping-rhythm data was found, so they are claimed as rhythm drills only |
@@ -328,7 +345,7 @@ should come from, not how it spells.
 | `boogie` :4665 | `BOOGIE_PATTERNS` :4618 (R–3–5–6–♭7 type) | StudyBass definition; early boogie recordings and scores (public-domain status per piece to check) | **KEEP CUSTOM** figures with the cited definition. Real content is UNSOLVED until a public-domain boogie score is confirmed |
 | `blues_scale` :4761, `pentatonic` :5710 | `BLUES_SCALE` :4757, hand intervals | music21 `scale` has no blues scale; Tonal's `Scale.get("C blues")` does | **REPLACE WITH LIBRARY** (Tonal's scale dictionary at runtime; at build a cited interval list, which is a definition) |
 | `clave` :4945, `tresillo` :5774, `tumbao` :5114, `montuno` :5149, `latin_groove` :5197 | `CLAVE_PATTERNS` :4870, `TUMBAO_OFFSETS` :4907, `LATIN_VAMP` :4912 | Clave and tresillo are standard definitions (onset sets); montuno and tumbao have published forms in salsa texts (copyrighted) | **KEEP CUSTOM** as cited onset definitions. Montuno is **UNSOLVED** for real content |
-| `swing_pair` :5823, `riff` :5619, `ostinato` :5969, `power_chord` | Hand figures | — | **KEEP CUSTOM**, small; ostinato's real content comes from O3 `S`-layer bars and Faber 3A pieces |
+| `swing_pair` :5823, `riff` :5619, `ostinato` :5969 | Hand figures | — | **KEEP CUSTOM**, small. Ostinato candidates: O3 static (`S`) layers with the repeat verified in the notes |
 
 ### 9.2 Demand detectors (`app/src/demands/detect.ts`, 19)
 
@@ -338,7 +355,7 @@ should come from, not how it spells.
 | `syncopation` | **REPLACE WITH LIBRARY** + cited definition | Rule over music21 `beatStrength` (onset on a weaker position, sustained over a stronger one). Definition from S7; the E22 blind spots are tests |
 | `beyondPosition` | **KEEP CUSTOM** | Five-finger position is a method-book definition (S5); the rule is one line |
 | `handsTogether` | **KEEP CUSTOM** | A fact of onsets |
-| `leftHandPattern` | **REPLACE WITH DATA-checked definitions** | Becomes the figure matchers (`figures.py`), validated on O3; the vague demand stays only as "accompaniment layer present", using O3a's vocabulary (`HS`/`S` layer under `M`) |
+| `leftHandPattern` | **REPLACE WITH DATA-checked definitions** | The vague demand narrows to "accompaniment layer present", in O3a's vocabulary (`H`/`S` layer under `M`), validated on O3. Named figures are separate checks (`figures.py`), each proven on its source's examples. O3 measures only their precision |
 | `walkingBass` | **ADAPT EXISTING** | Cited rule, checked against O9 statistics; stride and one-note pulse excluded (`pending-detect.patch`) |
 
 ### 9.3 Scoring and performance rules
@@ -372,15 +389,19 @@ should come from, not how it spells.
 | checklist, walkthrough, placement, dynamics, pedal, arpeggio, inversion, chord-scale | 1 each |
 | no drill kind (songs) | 7 |
 
-| Factory | Today | Searched | Label and decision |
+| Drill kinds (factory) | Today | Searched | Label and decision |
 |---|---|---|---|
-| Note flash, find key (`factories.ts` :35, :61: MIDI 60–72, uniform) | Uniform random | Faber S5 note-reading order (landmarks, then Bass C to Treble G at Primer); Alex-R-A's per-note adaptive repetition | **ADAPT EXISTING:** ranges per level from S5; per-note weakness weighting |
-| Chord and inversion ID (:114, :136) | Root 60–71; maj, min, dim, dom7 | S3's chord qualities by grade; Tonal chord dictionary | **REPLACE WITH LIBRARY** (Tonal) and **REPLACE WITH DATA** (qualities per grade from S3) |
-| Ear intervals, chords, progressions (:183, :208, :245) | Fixed sets; progressions in C | S1/S2 aural tests by grade; Perfect Ear's 43-stage ladder | **ADAPT EXISTING:** the sets per level from S1/S2 aural requirements, with Perfect Ear's order as the comparison |
-| Roman numerals, modes, chord scales, extended chords (`harmony.ts` :67–201, `theory.ts`) | Hand tables | Tonal (`RomanNumeral`, `Mode`, `Chord`) | **REPLACE WITH LIBRARY** (R4) |
-| Ear tune, call and response, transposition, trading fours | Random walks over a scale | — | **KEEP CUSTOM**; claim nothing beyond notes matched (already so) |
-| Simon (`simon.ts`) | Memory chain, pass at 5 and master at 8 | No standard | **KEEP CUSTOM**; thresholds are hypotheses |
-| Rhythm, pedal, dynamics, backing track (`special.ts`) | Windows ±150 ms, CC64, velocity ratio 1.6 | — | **KEEP CUSTOM**, MIDI only |
+| `note-flash`, `find-key` (`factories.ts` :35, :61: MIDI 60–72, uniform) | Uniform random | Faber S5 note-reading order (landmarks, then Bass C to Treble G at Primer); Alex-R-A's per-note adaptive repetition | **ADAPT EXISTING:** ranges per level from S5; per-note weakness weighting |
+| `chord`, `inversion` (:114, :136) | Root 60–71; maj, min, dim, dom7 | S3's chord qualities by grade; Tonal chord dictionary | **REPLACE WITH LIBRARY** (Tonal) and **REPLACE WITH DATA** (qualities per grade from S3), as candidates |
+| `ear-interval`, `ear-chord`, `ear-progression` (:183, :208, :245) | Fixed sets; progressions in C | S1/S2 aural tests by grade; Perfect Ear's 43-stage ladder | **ADAPT EXISTING:** the sets per level from S1/S2 aural requirements, with Perfect Ear's order as the comparison |
+| `harmonic-dictation` (`ChordDictationDrill`, `harmony.ts` :388) | Chords split at a 120 ms gap | S1/S2 aural requirements | **KEEP CUSTOM** the splitting; content per level from S1/S2 |
+| `roman-numeral`, `mode`, `chord-scale`, `extended-chord` (`harmony.ts` :67–201, `theory.ts`) | Hand tables | Tonal (`RomanNumeral`, `Mode`, `Chord`) | **REPLACE WITH LIBRARY** (R4), as a candidate |
+| `ear-tune`, `call-response`, `transposition` | Random walks over a scale; transposition reuses the sight-reading generator | — | **KEEP CUSTOM**; claim nothing beyond notes matched (already so) |
+| `sight-reading` (`engine/sightReading.ts`) | Bounded random walk, rejection sampling | S2's parameters table (fetched); ynot99 and ftrain generators; OSME | **ADAPT EXISTING:** parameters from the S2 and S1 source tables, rhythm on its own axis (ynot99); checked by the `plan.md` §4.4 checks on a seeded sample |
+| `simon` (`simon.ts`) | Memory chain, pass at 5 and master at 8 | No standard | **KEEP CUSTOM**; thresholds are hypotheses |
+| `rhythm`, `pedal`, `dynamics`, `backing-track` (`special.ts`) | Windows ±150 ms, CC64, velocity ratio 1.6; backing track records only | — | **KEEP CUSTOM**, MIDI only; thresholds are hypotheses |
+| `five-finger`, `arpeggio` (runtime technique drills) | Fixed patterns | S1/S2 technical requirements | **KEEP CUSTOM**; forms from S1/S2 |
+| `checklist`, `walkthrough`, `placement` | Not musical content: a list, a guided tour, the placement test | — | **KEEP CUSTOM**; outside the census's musical scope, listed so the coverage check is total |
 | Coaching sentences (`coaching.ts`) | "Rules, not a model"; guesses | — | **KEEP CUSTOM**, labelled as suggestions |
 
 ### 9.5 Difficulty calculations

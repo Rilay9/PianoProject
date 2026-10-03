@@ -66,8 +66,11 @@ experts' Mozart texture annotations (§3, row O3). The rule in §2 would have ca
 4. **Every number comes from a table someone published:** key lists, ranges, note values,
    lengths, tempi, the grade at which a thing appears. When none exists, the number is
    labelled a guess and treated as one.
-5. **One definition, used in both directions.** The rule that generates an Alberti bass is
-   the same object the matcher uses to find one. Two definitions of one concept is a bug.
+5. **One definition in words, two independent implementations.** The generator and the
+   checker cite the same sourced definition, but they are written separately and the
+   checker reads the produced score file. A generator never certifies its own output. The
+   checker is itself proven on source examples and expert-labelled data (corrected after
+   review, 2026-10-03).
 6. **What nobody here can check is not claimed:** whether a phrase is musical, whether a
    learner has truly mastered something, tone. The app says *unverified as music* or says
    nothing.
@@ -110,9 +113,9 @@ reading of search results and was not opened here. The reviewer confirms it.
 |---|---|---|---|---|
 | O1 | [DCML Annotated Mozart Sonatas](https://github.com/DCMLab/mozart_piano_sonatas) ([paper](https://transactions.ismir.net/articles/10.5334/tismir.63)) | Harmony, Roman numerals and cadences, labelled by experts per beat, for all the Mozart sonatas | **yes** (git) | CC BY-NC-SA 4.0: a check only |
 | O2 | [When in Rome](https://github.com/MarkGotham/When-in-Rome) | Roman-numeral analyses across many styles, in RomanText, which music21 reads | **yes** (git) | CC BY-SA 4.0 |
-| O3 | [ALGOMUS Mozart texture annotations](https://entrepot.recherche.data.gouv.fr/dataset.xhtml?persistentId=doi:10.57745/OHRWPC) ([ISMIR 2022](https://archives.ismir.net/ismir2022/paper/000061.pdf)) | **Melody versus accompaniment and texture type per bar**, labelled by experts: 1,164 labels on 9 movements (K. 279, 280 and 283, as reported) | blocked (data.gouv.fr); the scores themselves are on GitHub (craigsapp/mozart-piano-sonatas, already fetched by `fetch.py`) | CC BY 4.0 |
+| O3 | [ALGOMUS Mozart texture annotations](https://entrepot.recherche.data.gouv.fr/dataset.xhtml?persistentId=doi:10.57745/OHRWPC) ([ISMIR 2022](https://archives.ismir.net/ismir2022/paper/000061.pdf)) | **Melody versus accompaniment and texture type per bar**, labelled by experts: 1,164 labels on 9 movements (K. 279, 280 and 283, as reported) | **yes** (fetched since, `plan.md` §10) | **Annotations ODbL; scores CC BY-NC-SA 4.0** (the dataset's README). A private oracle; the scores are never shipped |
 | O4 | CIPI ([code](https://github.com/PRamoneda/difficulty-prediction-CIPI), [data](https://zenodo.org/records/8037327)) | Henle difficulty levels for 652 pieces | blocked (zenodo) | CC BY-NC-SA 4.0 |
-| O5 | PSyllabus ([paper](https://arxiv.org/pdf/2403.03947v2), [data](https://zenodo.org/records/14794592)) | Piano Syllabus levels for 7,901 pieces, matchable by title | blocked (zenodo) | CC BY 4.0 (reported) |
+| O5 | PSyllabus ([paper](https://arxiv.org/pdf/2403.03947v2), [data](https://zenodo.org/records/14794592)) | Piano Syllabus levels for 7,901 pieces, matchable by title | untested | **Unresolved:** the Zenodo page reportedly says research use only, and another record says CC BY 4.0. A private oracle only, until settled |
 | O6 | S1's and S2's **repertoire lists** | The level at which an exam board places a named public-domain piece, matched to catalogue titles. S1 names at least 59 lines with Burgmüller, Czerny, Clementi, Kabalevsky or Gurlitt (grep of the extracted text) | **yes** (S1) | Facts read off the list |
 | O7 | [ASAP](https://github.com/CPJKU/asap-dataset) | Real performances aligned note by note to scores, to test score following | **yes** (git) | CC BY-NC-SA 4.0 |
 | O8 | [PIG fingering dataset](https://beam.kisarazu.ac.jp/research/PianoFingeringDataset/) | Fingering by pianists, for 150 pieces | untested; registration required | Non-profit academic use only: a check, never shipped |
@@ -165,13 +168,21 @@ libraries.
    domain, at the level O6 gives.
 2. **Derived from verified real music.** music21 transforms an excerpt that an oracle has
    confirmed holds the concept:
-   - **Isolate.** Take the bars O3 labels as accompaniment in a Mozart sonata, left hand
-     alone, as an Alberti exercise from real Mozart.
+   - **Isolate.** Take a passage whose exact target is verified: for Alberti, O3 marks the
+     bar as an accompaniment layer (`HS1`) *and* the separately sourced Alberti check finds
+     low–high–middle–high there. `HS1` alone means accompaniment, never Alberti.
    - **Transpose with respelling.** music21 `transpose` plus key-aware spelling.
    - **Simplify.** `chordify` a passage into block chords before its broken form; thin the
      rhythm to the note values the level allows.
    - **Loop.** Repeat a figure bar as an ostinato drill.
    - **Every derived item records its parent:** the piece, the bars, and the transformation.
+   - **A transformation makes new content.** The derived item is checked again for the claim
+     it makes. Transposition rarely changes the claim; simplifying, isolating, thinning
+     and looping can.
+   - **Real content is admitted only through the same checks as generated content:**
+     source → exact target verified in the passage → level and physical fit → admitted.
+     A piece's genre or composer establishes nothing. A Joplin rag is not stride or
+     oom-pah practice until those bars are shown to hold the figure.
 3. **Generated**, only where 1 and 2 have nothing at the level. A short written comparison
    says why, as `operating-procedure.md` §12 already requires.
 
@@ -195,9 +206,10 @@ what must be true. An example, abridged:
 }
 ```
 
-Every `from` points at a row of the **level table** (§5, W8): one machine-readable file
-extracted from S1, S2, S3 and S5, citing page and grade per value. No number is typed into
-a generator.
+Every `from` points at a row of **one named source table** (§5, W8). There is one table per
+source, S1, S2, S3 and S5, each keeping its version, page and exact meaning: exam
+sight-reading parameters are not method-book sequencing. A recipe names which source it
+follows. No number is typed into a generator.
 
 ### 4.3 The realisation layers, each a library
 
@@ -255,8 +267,8 @@ before any generation.
 
 | Family | Real first | Generated with |
 |---|---|---|
-| Alberti under a tune | O3-labelled Mozart left hands; Clementi Op. 36 | RomanText I–IV–V7–I in keys from the level table; Alberti figure; CP-SAT melody |
-| Waltz bass, oom-pah | Burgmüller and Gurlitt waltzes (to check, §3d) | The waltz figure over progressions sampled from O2 |
+| Alberti under a tune | Passages verified as Alberti by both checks (O3 `HS1` plus the sourced figure check), in Mozart and Clementi Op. 36 | RomanText I–IV–V7–I in keys from the level table; Alberti figure; CP-SAT melody |
+| Waltz bass, oom-pah | Waltz and march passages in Burgmüller, Gurlitt and Joplin, each verified for the figure (to check, §3d) | The waltz figure over progressions sampled from O2 |
 | Keyboard harmony from figured bass | Bach chorales (KernScores, already fetched) | `figuredBass.realizer`, checked by `voiceLeading` |
 | Cadences: authentic, plagal, half | Cadences located by O1's labels in real excerpts | RomanText cadence formulas, in every key the level allows |
 | Secondary dominants, modulation | O1 and O2 passages labelled V/V and the like | RomanText with secondaries; `analyze('key')` checks the tonicisation |
@@ -354,9 +366,13 @@ The order is by what the learner meets wrongly today.
 - **Question:** when does each concept first appear and become required, by RCM, ABRSM and
   Faber, against our rungs?
 - **Source:** S1, S2, S3 and S5.
-- **The level table:** extracted once into `content/sources/level-table.json`, each value
-  citing document, page and grade. The extraction is checked line by line by a second
-  reader.
+- **Three source tables, then a crosswalk.** Each source is extracted separately into
+  `content/sources/levels/{rcm-2022,abrsm-2025,faber-correlation}.json`, preserving the
+  version, page and exact meaning of each value. Each extraction is checked line by line by
+  a second reader. Only then is a **crosswalk** built: per concept, where each source places
+  it, with agreement and disagreement recorded, never averaged. Where they agree, that is
+  evidence. Where they differ, it is a decision for the owner, and the spread may itself
+  show a concept's flexibility.
 - **Exit:**
   - a disagreement list with a recommendation per item;
   - **the owner decides any reorder.**
@@ -492,13 +508,16 @@ O3 cannot check Alberti recall. W1 reports exactly that and claims no more.
 - h, p, o, t, r, b and s.
 
 They replace the `texture.*` demands' home-made terms. The named styles stay as figure
-definitions under that vocabulary, one module each way (§2.5).
+definitions under that vocabulary, with the generator and the checker implemented
+independently (§2.5).
 
 **4. Generators: real content first, now listed per family** (`reuse-map.md` §9.1):
 - **Czerny, Burgmüller, Beyer, Duvernoy, Gurlitt and Clementi Op. 36** for technique,
   reading and accompaniment;
-- **Joplin from KernScores** (already fetched) for stride, oom-pah and the secondary rag;
-- **O3 `HS1` bars** for the Alberti family.
+- **Joplin from KernScores** (already fetched) as *candidates* for stride, oom-pah and the
+  secondary rag, each passage verified for its figure before it is claimed;
+- passages that are **both** in an O3 `HS1` layer and verified as Alberti by the sourced
+  check, for the Alberti family. `HS1` alone is accompaniment.
 
 The first action of W7 is listing Mutopia's holdings of those opus numbers. `study.py`'s
 grammar is retired.
@@ -515,3 +534,84 @@ grammar is retired.
 - rhythm difficulty on its own axis.
 
 **The census totals** are counted, not estimated: 64 labelled rows (`reuse-map.md` §9.9).
+
+---
+
+## 11. Corrections after the outside review (2026-10-03)
+
+The review was weighed against the repository; each point was accepted where it held there.
+
+**1. Spelling, stated exactly** (`spelling-paths.txt`, a call-graph script over
+`generate_exercises.py`):
+- **Spelled from the key:** most families spell through `scale_pitches`, `_diatonic_run`,
+  `_walk` or `_transpose_name`, the key's degrees.
+- **Spelled by `up()`, about 25 families:** chord tones go through `up()`. It turns a
+  semitone count into **one** interval name through the hand table `SEMITONE_INTERVAL`
+  (`generate_exercises.py:3480`), so 6 semitones is always A4 and never d5, and 8 is
+  always m6 and never A5. Context is lost exactly there.
+- **No key-derived helper:** `chromatic`, `blues_scale`, `pentatonic`, `riff`, `tresillo`,
+  `swing_pair` and `modal_vamp`.
+- **The `up()` table only:** `triad_inversions`, `five_finger` and `ostinato`.
+- **Literal note names:** `rhythm` and `clave` (a one-line staff, which is fine);
+  `syncopation` and `meter` (C3, E3, G3); `modal_vamp` (E2).
+- **Composed separately:** `study`, in `study.py`.
+
+**The independent check.** partitura's pitch-spelling estimator (Meredith's PS13, from the
+pitches alone) is run over every generated item, and every disagreement with the printed
+spelling is read. Until then, "spelled by music21" means only "passed through music21".
+
+**2. `HS1` is accompaniment, never Alberti.** Fixed in §4.1, §4.6 and §10. An Alberti
+candidate is a bar in an O3 accompaniment layer that **also** passes the sourced Alberti
+check.
+
+**3. Separate source tables, then a crosswalk.** Fixed in §4.2 and W8.
+
+**4. No self-certification.** Fixed in §2.5: one sourced definition, two independent
+implementations, and the checker reads the produced file. The generator's figure table and
+`figures.py` are already separate code and stay so. Merging them, as §2.5 first said, would
+have removed the independence.
+
+**5. Real content needs a verified passage-level claim.** Fixed in §4.1 and §10. The
+admission path is source → exact target verified → level and physical fit → admit.
+
+**6. REPLACE labels are candidates.** A library settles mechanics, not pedagogy. Every
+REPLACE in `reuse-map.md` §9 is a candidate until three things are recorded:
+- its **semantic fit**, checked;
+- its **limitations and failure modes**, searched;
+- a **"why not simpler?"** line.
+
+FSRS stays an owner decision about what piano review should be. A figured-bass realizer
+gives legal voicings, not the hand shapes to teach.
+
+**7. Licences.** O3's annotations are ODbL and its scores CC BY-NC-SA 4.0. PSyllabus is
+unresolved. Anything non-commercial or unresolved is a private oracle only, never shipped.
+
+**8. Coverage made executable where a registry exists.**
+`tools/content/tests/test_reuse_census.py` fails when a registered mechanism has no census
+row, and when one has two. The registries are:
+- the generator families (`family_contracts.json`);
+- the detectors (`DETECTOR_IDS`);
+- the drill kinds (`catalog.static.json`).
+
+Scoring rules and progression mechanisms have **no registry in code**. Inventing one to
+make the check pass would be process for its own sake, so they stay listed by hand in §9
+and the test says so.
+
+**What this audit is for** (the reviewer's sentence, adopted): *not to modernise the
+codebase, but to reduce the amount of musical truth this project invents.*
+
+**What follows from it:**
+- **Every row allows five outcomes:** keep as is, narrow the claim, retire, replace, or
+  defer as unsolved. Narrowing or retiring is preferred when it solves the correctness
+  problem.
+- **Four decisions stay separate:** content source, musical definition, implementation, and
+  pedagogical placement.
+- **Preference order:** real content > data lookup > library call > small sourced rule >
+  new algorithm.
+- **Priority is semantic risk first:** false teaching, false evidence, wrong gating, wrong
+  labels, wrong generated content. Elegance and duplicate code come later.
+- **Before any broad replacement,** one representative vertical slice is proven end to end
+  against an independent oracle.
+- **No universal content engine.** §4's pipeline is a pattern each family may use; it is
+  not a shared abstraction to migrate everything into.
+- **No new musical mechanism during the measurements.**
