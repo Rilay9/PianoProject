@@ -1,0 +1,3098 @@
+[
+ {
+  "id": "comping",
+  "display": "Comping",
+  "kind": "a",
+  "rungCount": 10,
+  "rungs": [
+   "blues.8",
+   "chords-pop.9",
+   "improv.6",
+   "jam",
+   "jam.5",
+   "jazz.4",
+   "jazz.5",
+   "jazz.6",
+   "jazz.9",
+   "latin"
+  ],
+  "note": "jazz comping chord pattern notation"
+ },
+ {
+  "id": "chord-symbols",
+  "display": "Chord symbols",
+  "kind": "a",
+  "rungCount": 8,
+  "rungs": [
+   "2.3",
+   "blues.3",
+   "chords-pop.3",
+   "holiday",
+   "holiday.3",
+   "hymns.2",
+   "jazz.3",
+   "jazz.4"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "syncopation",
+  "display": "Syncopation",
+  "kind": "a",
+  "rungCount": 8,
+  "rungs": [
+   "4.5",
+   "jazz.4",
+   "latin",
+   "latin.3",
+   "ragtime.5",
+   "ragtime.6",
+   "ragtime.7",
+   "ragtime.8"
+  ],
+  "note": "syncopated rhythm notation"
+ },
+ {
+  "id": "extended-chords",
+  "display": "Extended chords",
+  "kind": "a",
+  "rungCount": 7,
+  "rungs": [
+   "blues.8",
+   "chords-pop.7",
+   "improv.7",
+   "improv.8",
+   "jazz.7",
+   "jazz.8",
+   "theory.8"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "voicing",
+  "display": "Voicing",
+  "kind": "a",
+  "rungCount": 7,
+  "rungs": [
+   "chords-pop.7",
+   "chords-pop.9",
+   "classical.4.shelf",
+   "improv.7",
+   "improv.9",
+   "jazz.7",
+   "technique.6"
+  ],
+  "note": "chord voicing notation"
+ },
+ {
+  "id": "improvisation",
+  "display": "Improvising",
+  "kind": "c",
+  "rungCount": 6,
+  "rungs": [
+   "blues.9",
+   "improv.3",
+   "improv.6",
+   "improv.7",
+   "improv.9",
+   "jazz.9"
+  ],
+  "note": "improvisation skill"
+ },
+ {
+  "id": "modes",
+  "display": "Modes",
+  "kind": "a",
+  "rungCount": 6,
+  "rungs": [
+   "improv.6",
+   "improv.7",
+   "jazz.8",
+   "theory.5",
+   "theory.6",
+   "theory.7"
+  ],
+  "note": "modal notation"
+ },
+ {
+  "id": "performance-mode",
+  "display": "Performance mode",
+  "kind": "c",
+  "rungCount": 6,
+  "rungs": [
+   "4.6",
+   "4.7",
+   "holiday.6",
+   "holiday.7",
+   "latin.7",
+   "ragtime.9"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "transposition",
+  "display": "Transposition",
+  "kind": "c",
+  "rungCount": 6,
+  "rungs": [
+   "4.4",
+   "blues.8",
+   "chords-pop.6",
+   "chords-pop.8",
+   "theory.6",
+   "theory.8"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "carols",
+  "display": "Carols",
+  "kind": "c",
+  "rungCount": 5,
+  "rungs": [
+   "holiday",
+   "holiday.3",
+   "holiday.4",
+   "holiday.5",
+   "holiday.6"
+  ],
+  "note": "musical style/context"
+ },
+ {
+  "id": "harmonic-dictation",
+  "display": "Harmonic dictation",
+  "kind": "c",
+  "rungCount": 5,
+  "rungs": [
+   "jazz.6",
+   "jazz.8",
+   "theory.6",
+   "theory.8",
+   "theory.9"
+  ],
+  "note": "harmonic dictation skill"
+ },
+ {
+  "id": "playing-by-ear",
+  "display": "Playing by ear",
+  "kind": "c",
+  "rungCount": 5,
+  "rungs": [
+   "blues.9",
+   "chords-pop.9",
+   "improv.9",
+   "jazz.9",
+   "theory.9"
+  ],
+  "note": "playing-by-ear skill"
+ },
+ {
+  "id": "secondary-dominants",
+  "display": "Secondary dominants",
+  "kind": "a",
+  "rungCount": 5,
+  "rungs": [
+   "chords-pop.8",
+   "hymns.5",
+   "improv.8",
+   "jazz.9",
+   "theory.7"
+  ],
+  "note": "secondary dominant notation"
+ },
+ {
+  "id": "stride",
+  "display": "Stride",
+  "kind": "a",
+  "rungCount": 5,
+  "rungs": [
+   "blues.7",
+   "blues.9",
+   "holiday.7",
+   "jazz.7",
+   "jazz.9"
+  ],
+  "note": "stride bass figure notation"
+ },
+ {
+  "id": "turnaround",
+  "display": "Turnarounds",
+  "kind": "a",
+  "rungCount": 5,
+  "rungs": [
+   "blues.5",
+   "blues.6",
+   "blues.7",
+   "improv.8",
+   "jam.7"
+  ],
+  "note": "turnaround progression notation"
+ },
+ {
+  "id": "walking-bass",
+  "display": "The walking bass",
+  "kind": "a",
+  "rungCount": 5,
+  "rungs": [
+   "blues.6",
+   "blues.8",
+   "jam.6",
+   "jazz.6",
+   "jazz.9"
+  ],
+  "note": "walking bass figure notation"
+ },
+ {
+  "id": "arranging",
+  "display": "Arranging",
+  "kind": "c",
+  "rungCount": 4,
+  "rungs": [
+   "chords-pop.9",
+   "holiday.4",
+   "hymns.6",
+   "improv.9"
+  ],
+  "note": "arranging/arrangement skill"
+ },
+ {
+  "id": "blue-note",
+  "display": "The blue note",
+  "kind": "a",
+  "rungCount": 4,
+  "rungs": [
+   "blues.3",
+   "blues.4",
+   "blues.5",
+   "improv.5"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "boogie",
+  "display": "Boogie woogie",
+  "kind": "a",
+  "rungCount": 4,
+  "rungs": [
+   "blues.6",
+   "blues.7",
+   "blues.8",
+   "blues.9"
+  ],
+  "note": "boogie-woogie figure notation"
+ },
+ {
+  "id": "call-and-response",
+  "display": "Call and response",
+  "kind": "c",
+  "rungCount": 4,
+  "rungs": [
+   "blues.5",
+   "improv.3",
+   "improv.4",
+   "jazz.3"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "charleston",
+  "display": "The Charleston",
+  "kind": "a",
+  "rungCount": 4,
+  "rungs": [
+   "jam.5",
+   "jazz.4",
+   "jazz.5",
+   "jazz.6"
+  ],
+  "note": "charleston rhythm pattern notation"
+ },
+ {
+  "id": "ear-training",
+  "display": "Ear training",
+  "kind": "c",
+  "rungCount": 4,
+  "rungs": [
+   "theory.6",
+   "theory.7",
+   "theory.8",
+   "theory.9"
+  ],
+  "note": "ear-training skill"
+ },
+ {
+  "id": "guitar-keys",
+  "display": "Guitar keys",
+  "kind": "a",
+  "rungCount": 4,
+  "rungs": [
+   "jam",
+   "jam.5",
+   "jam.6",
+   "jam.7"
+  ],
+  "note": "keys E, A, D, G major (key signature) (reviewed; draft said c)"
+ },
+ {
+  "id": "inversions",
+  "display": "Chord inversions",
+  "kind": "a",
+  "rungCount": 4,
+  "rungs": [
+   "4.3",
+   "chords-pop.4",
+   "chords-pop.6",
+   "technique.4"
+  ],
+  "note": "chord voicing notation"
+ },
+ {
+  "id": "modulation",
+  "display": "Modulation",
+  "kind": "a",
+  "rungCount": 4,
+  "rungs": [
+   "improv.8",
+   "jazz.8",
+   "theory.8",
+   "theory.9"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "not-fast",
+  "display": "Not fast",
+  "kind": "b",
+  "rungCount": 4,
+  "rungs": [
+   "ragtime.5",
+   "ragtime.6",
+   "ragtime.7",
+   "ragtime.8"
+  ],
+  "note": "tempo instruction in performance"
+ },
+ {
+  "id": "octaves",
+  "display": "Octaves",
+  "kind": "a",
+  "rungCount": 4,
+  "rungs": [
+   "0.2",
+   "holiday.4",
+   "latin.7",
+   "technique.7"
+  ],
+  "note": "interval notation"
+ },
+ {
+  "id": "roman-numerals",
+  "display": "Roman numerals",
+  "kind": "a",
+  "rungCount": 4,
+  "rungs": [
+   "chords-pop.6",
+   "chords-pop.8",
+   "theory.6",
+   "theory.7"
+  ],
+  "note": "roman numeral notation"
+ },
+ {
+  "id": "shuffle",
+  "display": "The shuffle",
+  "kind": "b",
+  "rungCount": 4,
+  "rungs": [
+   "blues.3",
+   "blues.4",
+   "blues.6",
+   "blues.7"
+  ],
+  "note": "shuffle rhythm feel in performance"
+ },
+ {
+  "id": "swing-eighths",
+  "display": "Swung eighths",
+  "kind": "a",
+  "rungCount": 4,
+  "rungs": [
+   "jazz.3",
+   "jazz.4",
+   "jazz.5",
+   "jazz.6"
+  ],
+  "note": "note duration notation"
+ },
+ {
+  "id": "twelve-bar",
+  "display": "The twelve-bar form",
+  "kind": "a",
+  "rungCount": 4,
+  "rungs": [
+   "blues.6",
+   "blues.8",
+   "blues.9",
+   "jam.6"
+  ],
+  "note": "twelve-bar form notation"
+ },
+ {
+  "id": "voice-leading",
+  "display": "Voice leading",
+  "kind": "a",
+  "rungCount": 4,
+  "rungs": [
+   "3.2",
+   "chords-pop.6",
+   "hymns",
+   "hymns.4"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "voicing-melody",
+  "display": "Voicing the melody",
+  "kind": "b",
+  "rungCount": 4,
+  "rungs": [
+   "classical.6",
+   "classical.8",
+   "holiday.6",
+   "hymns.6"
+  ],
+  "note": "voicing-melody/projection in performance"
+ },
+ {
+  "id": "approach-note",
+  "display": "The approach note",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "blues.6",
+   "jam.6",
+   "jazz.6"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "blues-scale",
+  "display": "The blues scale",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "blues.3",
+   "blues.4",
+   "improv.5"
+  ],
+  "note": "scale notation"
+ },
+ {
+  "id": "chord-scale",
+  "display": "Chord scales",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "improv.6",
+   "jazz.7",
+   "theory.7"
+  ],
+  "note": "scale notation"
+ },
+ {
+  "id": "crushed-note",
+  "display": "The crushed note",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "blues.3",
+   "blues.4",
+   "blues.5"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "evenness",
+  "display": "Evenness",
+  "kind": "b",
+  "rungCount": 3,
+  "rungs": [
+   "4.4",
+   "practice.2",
+   "technique.5"
+  ],
+  "note": "evenness in performance"
+ },
+ {
+  "id": "four-chord-loop",
+  "display": "The four-chord loop",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "chords-pop.6",
+   "chords-pop.8",
+   "hymns.2"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "four-to-the-bar",
+  "display": "Four to the bar",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "blues.8",
+   "jazz.4",
+   "jazz.6"
+  ],
+  "note": "four-to-the-bar rhythm figure notation"
+ },
+ {
+  "id": "head-and-chorus",
+  "display": "Head and chorus",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "jam",
+   "jam.5",
+   "jam.7"
+  ],
+  "note": "jazz head-and-chorus form notation"
+ },
+ {
+  "id": "ii-V-I",
+  "display": "The ii-V-I progression",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "improv.6",
+   "jazz.5",
+   "jazz.6"
+  ],
+  "note": "roman numeral progression"
+ },
+ {
+  "id": "left-hand",
+  "display": "The left hand",
+  "kind": "c",
+  "rungCount": 3,
+  "rungs": [
+   "blues.6",
+   "holiday.7",
+   "latin.7"
+  ],
+  "note": "hand-specific pedagogical concept"
+ },
+ {
+  "id": "legato",
+  "display": "Legato",
+  "kind": "b",
+  "rungCount": 3,
+  "rungs": [
+   "classical.4",
+   "hymns.4",
+   "technique.4"
+  ],
+  "note": "a marking can be printed; the concept is how it is played (reviewed; draft said a)"
+ },
+ {
+  "id": "memorising",
+  "display": "Memorising",
+  "kind": "c",
+  "rungCount": 3,
+  "rungs": [
+   "4.7",
+   "holiday.6",
+   "ragtime.9"
+  ],
+  "note": "memorization strategy"
+ },
+ {
+  "id": "oom-pah-bass",
+  "display": "The oom-pah bass",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "ragtime.5",
+   "ragtime.6",
+   "ragtime.7"
+  ],
+  "note": "waltz accompaniment figure notation"
+ },
+ {
+  "id": "ostinato",
+  "display": "Ostinato",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "holiday.5",
+   "latin.7",
+   "rock.4"
+  ],
+  "note": "ostinato pattern notation"
+ },
+ {
+  "id": "pedalling",
+  "display": "Pedalling",
+  "kind": "b",
+  "rungCount": 3,
+  "rungs": [
+   "classical.4.shelf",
+   "classical.6",
+   "classical.8"
+  ],
+  "note": "pedal technique in performance"
+ },
+ {
+  "id": "repeated-notes",
+  "display": "Repeated notes",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "holiday.7",
+   "latin.7",
+   "technique.5"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "shell-voicings",
+  "display": "Shell voicings",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "blues.7",
+   "jazz.5",
+   "jazz.6"
+  ],
+  "note": "chord voicing notation"
+ },
+ {
+  "id": "sight-reading",
+  "display": "Sight-reading",
+  "kind": "c",
+  "rungCount": 3,
+  "rungs": [
+   "1.5",
+   "chords-pop.8",
+   "theory.9"
+  ],
+  "note": "sight-reading skill"
+ },
+ {
+  "id": "sixteenth-notes",
+  "display": "Sixteenth notes",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "4.4",
+   "ragtime.5",
+   "technique.6"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "texture",
+  "display": "Texture",
+  "kind": "c",
+  "rungCount": 3,
+  "rungs": [
+   "chords-pop.7",
+   "chords-pop.9",
+   "improv.7"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "tritone-substitution",
+  "display": "Tritone substitution",
+  "kind": "a",
+  "rungCount": 3,
+  "rungs": [
+   "improv.8",
+   "jazz.7",
+   "jazz.8"
+  ],
+  "note": "a dominant a tritone from the expected one, before its resolution (reviewed; draft said b)"
+ },
+ {
+  "id": "CC64",
+  "display": "The sustain pedal",
+  "kind": "b",
+  "rungCount": 2,
+  "rungs": [
+   "3.5",
+   "technique.6"
+  ],
+  "note": "sustain pedal MIDI control in performance"
+ },
+ {
+  "id": "I-IV-V",
+  "display": "The primary chords",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "2.3",
+   "chords-pop.3"
+  ],
+  "note": "roman numeral progression"
+ },
+ {
+  "id": "add9",
+  "display": "Add9 chords",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "chords-pop.5",
+   "chords-pop.7"
+  ],
+  "note": "extended chord notation"
+ },
+ {
+  "id": "articulation",
+  "display": "Articulation",
+  "kind": "b",
+  "rungCount": 2,
+  "rungs": [
+   "classical.3",
+   "technique.4"
+  ],
+  "note": "a marking can be printed; the concept is how it is played (reviewed; draft said a)"
+ },
+ {
+  "id": "bass-walk-up",
+  "display": "The bass walk-up",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "hymns",
+   "hymns.5"
+  ],
+  "note": "walking bass figure notation"
+ },
+ {
+  "id": "block-chords",
+  "display": "Block chords",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "2.3",
+   "holiday.4"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "broken-chords",
+  "display": "Broken chords",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "3.6",
+   "holiday.4"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "chord-charts",
+  "display": "Chord charts",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "3.2",
+   "jam.7"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "circle-of-fifths",
+  "display": "The circle of fifths",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "4.1",
+   "theory.4"
+  ],
+  "note": "circle of fifths harmonic notation"
+ },
+ {
+  "id": "clave",
+  "display": "Clave",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "latin",
+   "latin.3"
+  ],
+  "note": "clave rhythm pattern notation"
+ },
+ {
+  "id": "dynamics",
+  "display": "Dynamics",
+  "kind": "b",
+  "rungCount": 2,
+  "rungs": [
+   "2.4",
+   "technique.5"
+  ],
+  "note": "a marking can be printed; the concept is how it is played (reviewed; draft said a)"
+ },
+ {
+  "id": "endurance",
+  "display": "Endurance",
+  "kind": "c",
+  "rungCount": 2,
+  "rungs": [
+   "practice.4",
+   "technique.8"
+  ],
+  "note": "endurance/stamina practice concept"
+ },
+ {
+  "id": "form",
+  "display": "Musical form",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "improv.9",
+   "theory.9"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "four-part-harmony",
+  "display": "Four-part harmony",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "hymns",
+   "hymns.4"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "hands-together",
+  "display": "Playing hands together",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "2.1",
+   "holiday"
+  ],
+  "note": "notes in both hands sounding together (detect.ts handsTogether) (reviewed; draft said c)"
+ },
+ {
+  "id": "hanon",
+  "display": "Hanon patterns",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "4.4",
+   "technique.5"
+  ],
+  "note": "the published Hanon patterns, matched by source identity (reviewed; draft said c)"
+ },
+ {
+  "id": "harmonic-minor",
+  "display": "The harmonic minor scale",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "3.3",
+   "4.2"
+  ],
+  "note": "minor key signature"
+ },
+ {
+  "id": "held-melody",
+  "display": "Holding a melody note",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "holiday.6",
+   "technique.6"
+  ],
+  "note": "held note notation"
+ },
+ {
+  "id": "landmark-notes",
+  "display": "Landmark notes",
+  "kind": "c",
+  "rungCount": 2,
+  "rungs": [
+   "1.3",
+   "3.4"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "large-form",
+  "display": "Large forms",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "classical.8",
+   "classical.9"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "leaps",
+  "display": "Wide leaps",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "blues.7",
+   "ragtime.9"
+  ],
+  "note": "interval notation"
+ },
+ {
+  "id": "legato-pedalling",
+  "display": "Legato pedalling",
+  "kind": "b",
+  "rungCount": 2,
+  "rungs": [
+   "3.5",
+   "technique.6"
+  ],
+  "note": "a marking can be printed; the concept is how it is played (reviewed; draft said a)"
+ },
+ {
+  "id": "looping",
+  "display": "Looping a passage",
+  "kind": "c",
+  "rungCount": 2,
+  "rungs": [
+   "holiday.5",
+   "practice.1"
+  ],
+  "note": "learning strategy"
+ },
+ {
+  "id": "montuno",
+  "display": "The montuno",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "latin",
+   "latin.6"
+  ],
+  "note": "montuno accompaniment pattern notation"
+ },
+ {
+  "id": "multi-strain-form",
+  "display": "Multi-strain form",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "ragtime.6",
+   "ragtime.9"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "open-voicing",
+  "display": "Open voicings",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "chords-pop.7",
+   "chords-pop.9"
+  ],
+  "note": "chord voicing notation"
+ },
+ {
+  "id": "open-voicings",
+  "display": "Open voicings",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "rock.4",
+   "rock.5"
+  ],
+  "note": "chord voicing notation"
+ },
+ {
+  "id": "passing-chords",
+  "display": "Passing chords",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "hymns",
+   "hymns.5"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "pedal-bass",
+  "display": "A pedal bass",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "rock.4",
+   "rock.6"
+  ],
+  "note": "a held or repeated bass note under changing harmony (reviewed; draft said b)"
+ },
+ {
+  "id": "phrase-shaping",
+  "display": "Shaping a phrase",
+  "kind": "b",
+  "rungCount": 2,
+  "rungs": [
+   "4.6",
+   "4.7"
+  ],
+  "note": "phrasing/shaping in performance"
+ },
+ {
+  "id": "phrasing",
+  "display": "Phrasing",
+  "kind": "b",
+  "rungCount": 2,
+  "rungs": [
+   "1.2",
+   "technique.5"
+  ],
+  "note": "phrasing/shaping in performance"
+ },
+ {
+  "id": "quartal",
+  "display": "Quartal voicings",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "improv.7",
+   "jazz.7"
+  ],
+  "note": "quartal chord voicing notation"
+ },
+ {
+  "id": "register",
+  "display": "Register",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "holiday.4",
+   "rock.7"
+  ],
+  "note": "register (pitch range) notation"
+ },
+ {
+  "id": "reharmonisation",
+  "display": "Reharmonising",
+  "kind": "c",
+  "rungCount": 2,
+  "rungs": [
+   "hymns.6",
+   "improv.8"
+  ],
+  "note": "reharmonization skill"
+ },
+ {
+  "id": "review-queue",
+  "display": "The review queue",
+  "kind": "c",
+  "rungCount": 2,
+  "rungs": [
+   "0.3",
+   "practice.3"
+  ],
+  "note": "review scheduling method"
+ },
+ {
+  "id": "rootless-voicings",
+  "display": "Rootless voicings",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "jazz.7",
+   "jazz.8"
+  ],
+  "note": "chord voicing notation"
+ },
+ {
+  "id": "rotation",
+  "display": "Wrist rotation",
+  "kind": "c",
+  "rungCount": 2,
+  "rungs": [
+   "holiday.7",
+   "technique.6"
+  ],
+  "note": "physical technique (not in score)"
+ },
+ {
+  "id": "rubato",
+  "display": "Rubato",
+  "kind": "b",
+  "rungCount": 2,
+  "rungs": [
+   "classical.6",
+   "classical.7"
+  ],
+  "note": "rubato in performance"
+ },
+ {
+  "id": "scale",
+  "display": "Scales",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "technique.4",
+   "technique.8"
+  ],
+  "note": "scale notation"
+ },
+ {
+  "id": "secondary-rag",
+  "display": "Secondary rag",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "ragtime.8",
+   "ragtime.9"
+  ],
+  "note": "secondary dominant notation"
+ },
+ {
+  "id": "session-planning",
+  "display": "Planning a session",
+  "kind": "c",
+  "rungCount": 2,
+  "rungs": [
+   "practice.3",
+   "practice.5"
+  ],
+  "note": "session planning (not in score)"
+ },
+ {
+  "id": "seventh-chord",
+  "display": "Seventh chords",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "chords-pop.8",
+   "technique.6"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "slash-chord",
+  "display": "Slash chords",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "chords-pop.6",
+   "hymns"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "slash-chords",
+  "display": "Slash chords",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "4.3",
+   "chords-pop.4"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "slow-practice",
+  "display": "Slow practice",
+  "kind": "c",
+  "rungCount": 2,
+  "rungs": [
+   "practice.1",
+   "practice.2"
+  ],
+  "note": "practice method (not in score)"
+ },
+ {
+  "id": "staccato",
+  "display": "Staccato",
+  "kind": "b",
+  "rungCount": 2,
+  "rungs": [
+   "classical.4",
+   "technique.4"
+  ],
+  "note": "a marking can be printed; the concept is how it is played (reviewed; draft said a)"
+ },
+ {
+  "id": "steps",
+  "display": "Steps",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "1.1",
+   "1.5"
+  ],
+  "note": "interval notation"
+ },
+ {
+  "id": "stride-bass",
+  "display": "The stride bass",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "ragtime.7",
+   "ragtime.8"
+  ],
+  "note": "stride bass figure notation"
+ },
+ {
+  "id": "sustained-chords",
+  "display": "Sustained chords",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "rock.5",
+   "rock.6"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "tango",
+  "display": "Tango",
+  "kind": "c",
+  "rungCount": 2,
+  "rungs": [
+   "latin",
+   "latin.6"
+  ],
+  "note": "musical genre/style"
+ },
+ {
+  "id": "tempo-ladder",
+  "display": "The tempo ladder",
+  "kind": "c",
+  "rungCount": 2,
+  "rungs": [
+   "holiday.5",
+   "practice.2"
+  ],
+  "note": "app mode (not in score)"
+ },
+ {
+  "id": "tone",
+  "display": "Tone",
+  "kind": "b",
+  "rungCount": 2,
+  "rungs": [
+   "classical.4.shelf",
+   "technique.6"
+  ],
+  "note": "tone quality in performance"
+ },
+ {
+  "id": "trading-fours",
+  "display": "Trading fours",
+  "kind": "c",
+  "rungCount": 2,
+  "rungs": [
+   "jam",
+   "jam.7"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said b)"
+ },
+ {
+  "id": "tresillo",
+  "display": "The tresillo",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "latin.3",
+   "latin.6"
+  ],
+  "note": "tresillo rhythm pattern notation"
+ },
+ {
+  "id": "triads",
+  "display": "Triads",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "2.3",
+   "jazz.4"
+  ],
+  "note": "chord type notation"
+ },
+ {
+  "id": "trio-key-change",
+  "display": "The trio key change",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "ragtime.6",
+   "ragtime.7"
+  ],
+  "note": "trio key change form notation"
+ },
+ {
+  "id": "tumbao",
+  "display": "The tumbao",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "latin",
+   "latin.6"
+  ],
+  "note": "tumbao accompaniment pattern notation"
+ },
+ {
+  "id": "twelve-bar-blues",
+  "display": "The twelve-bar blues",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "blues.3",
+   "blues.4"
+  ],
+  "note": "twelve-bar form notation"
+ },
+ {
+  "id": "vamp",
+  "display": "The vamp",
+  "kind": "a",
+  "rungCount": 2,
+  "rungs": [
+   "rock.4",
+   "theory.5"
+  ],
+  "note": "vamp accompaniment pattern notation"
+ },
+ {
+  "id": "velocity",
+  "display": "Velocity",
+  "kind": "b",
+  "rungCount": 2,
+  "rungs": [
+   "classical.8",
+   "technique.8"
+  ],
+  "note": "velocity control in performance"
+ },
+ {
+  "id": "3/4",
+  "display": "Three-four time",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.4"
+  ],
+  "note": "time signature notation"
+ },
+ {
+  "id": "4/4",
+  "display": "Four-four time",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.1"
+  ],
+  "note": "time signature notation"
+ },
+ {
+  "id": "6/8",
+  "display": "Six-eight time",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "4.5"
+  ],
+  "note": "time signature notation"
+ },
+ {
+  "id": "8va",
+  "display": "Octave signs",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.4"
+  ],
+  "note": "octave notation"
+ },
+ {
+  "id": "B-flat-major",
+  "display": "B flat major",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "4.2"
+  ],
+  "note": "key signature"
+ },
+ {
+  "id": "C-major-scale",
+  "display": "The C major scale",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "2.5"
+  ],
+  "note": "scale notation"
+ },
+ {
+  "id": "C-position",
+  "display": "C position",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.1"
+  ],
+  "note": "hand position notation"
+ },
+ {
+  "id": "E-flat-major",
+  "display": "E flat major",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "4.2"
+  ],
+  "note": "key signature"
+ },
+ {
+  "id": "E7",
+  "display": "The E7 chord",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.3"
+  ],
+  "note": "seventh chord notation"
+ },
+ {
+  "id": "F-major",
+  "display": "F major",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "4.2"
+  ],
+  "note": "key signature"
+ },
+ {
+  "id": "I-IV-V7",
+  "display": "Primary chords with the dominant seventh",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.2"
+  ],
+  "note": "roman numeral progression"
+ },
+ {
+  "id": "LH-C-position",
+  "display": "Left hand C position",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.3"
+  ],
+  "note": "hand position notation"
+ },
+ {
+  "id": "accidentals",
+  "display": "Accidentals",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.3"
+  ],
+  "note": "key or accidental notation"
+ },
+ {
+  "id": "alberti",
+  "display": "Alberti bass",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.6"
+  ],
+  "note": "alberti bass figure notation"
+ },
+ {
+  "id": "alberti-bass",
+  "display": "Alberti bass",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.6"
+  ],
+  "note": "alberti bass figure notation"
+ },
+ {
+  "id": "alberti-bass-HT",
+  "display": "Alberti bass hands together",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "classical.5"
+  ],
+  "note": "alberti bass figure notation"
+ },
+ {
+  "id": "alternating-hands",
+  "display": "Hands alternating",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.4"
+  ],
+  "note": "hands taking turns: onsets in one hand while the other rests (reviewed; draft said c)"
+ },
+ {
+  "id": "anacrusis",
+  "display": "Upbeats",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.4"
+  ],
+  "note": "anacrusis notation"
+ },
+ {
+  "id": "anticipation",
+  "display": "The anticipation",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "jam.5"
+  ],
+  "note": "anticipation note notation (early note before harmony)"
+ },
+ {
+  "id": "arpeggio",
+  "display": "Arpeggios",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.4"
+  ],
+  "note": "arpeggio texture notation"
+ },
+ {
+  "id": "arpeggio-fingering",
+  "display": "Arpeggio fingering",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "4.3"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "arpeggio-texture",
+  "display": "Arpeggio accompaniment",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "rock.6"
+  ],
+  "note": "arpeggio texture notation"
+ },
+ {
+  "id": "balance",
+  "display": "Balance between the hands",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "technique.6"
+  ],
+  "note": "voice balance in performance"
+ },
+ {
+  "id": "baroque-dance",
+  "display": "Baroque dances",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "classical.3"
+  ],
+  "note": "musical genre/style context"
+ },
+ {
+  "id": "bass-clef",
+  "display": "The bass clef",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.3"
+  ],
+  "note": "clef notation"
+ },
+ {
+  "id": "beams",
+  "display": "Beamed notes",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "2.2"
+  ],
+  "note": "beam notation"
+ },
+ {
+  "id": "black-key-groups",
+  "display": "The black key groups",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "0.2"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "boogie-bass",
+  "display": "The boogie bass line",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "blues.4"
+  ],
+  "note": "boogie-woogie figure notation"
+ },
+ {
+  "id": "bossa-nova",
+  "display": "Bossa nova",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "latin"
+  ],
+  "note": "bossa nova rhythmic feel in performance"
+ },
+ {
+  "id": "broken-chord",
+  "display": "Broken chords",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.6"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "broken-chord-accompaniment",
+  "display": "Broken-chord accompaniment",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.6"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "broken-octaves",
+  "display": "Broken octaves",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.7"
+  ],
+  "note": "unison or octave notation"
+ },
+ {
+  "id": "build-and-release",
+  "display": "Building and releasing",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "rock.7"
+  ],
+  "note": "dynamic shaping in performance"
+ },
+ {
+  "id": "cadences",
+  "display": "Cadences",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "theory.4"
+  ],
+  "note": "cadential progression notation"
+ },
+ {
+  "id": "call-response",
+  "display": "Call and response",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "blues.9"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "cantabile",
+  "display": "Cantabile",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "classical.7"
+  ],
+  "note": "cantabile expression in performance"
+ },
+ {
+  "id": "chord-identification",
+  "display": "Recognising chords",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "theory.3"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "chord-progression",
+  "display": "Chord progressions",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "theory.6"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "chromatic",
+  "display": "Chromatic movement",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.4"
+  ],
+  "note": "chromatic scale/motion notation"
+ },
+ {
+  "id": "chromatic-harmony",
+  "display": "Chromatic harmony",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "ragtime.8"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "chunking",
+  "display": "Chunking",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "practice.1"
+  ],
+  "note": "learning strategy"
+ },
+ {
+  "id": "composition",
+  "display": "Composing",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "improv.9"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "contrary",
+  "display": "Contrary motion",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.4"
+  ],
+  "note": "notated motion types"
+ },
+ {
+  "id": "contrary-motion",
+  "display": "Contrary motion",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "4.1"
+  ],
+  "note": "notated motion types"
+ },
+ {
+  "id": "coordination",
+  "display": "Coordination",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "technique.4"
+  ],
+  "note": "coordination skill"
+ },
+ {
+  "id": "counterpoint",
+  "display": "Counterpoint",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "classical.7"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "crescendo",
+  "display": "Crescendo",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "a marking can be printed; the concept is how it is played (reviewed; draft said a)"
+ },
+ {
+  "id": "damper-pedal",
+  "display": "The damper pedal",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "3.5"
+  ],
+  "note": "pedal technique in performance"
+ },
+ {
+  "id": "diminuendo",
+  "display": "Diminuendo",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "a marking can be printed; the concept is how it is played (reviewed; draft said a)"
+ },
+ {
+  "id": "dom7",
+  "display": "Dominant sevenths",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "chords-pop.5"
+  ],
+  "note": "seventh chord notation"
+ },
+ {
+  "id": "dotted-quarter",
+  "display": "Dotted quarter notes",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "2.4"
+  ],
+  "note": "note duration notation"
+ },
+ {
+  "id": "double-notes",
+  "display": "Double notes",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.7"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "dramatic-contrast",
+  "display": "Dramatic contrast",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "classical.9"
+  ],
+  "note": "dramatic contrast expression in performance"
+ },
+ {
+  "id": "dynamic-build",
+  "display": "Building dynamics",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "rock.7"
+  ],
+  "note": "a marking can be printed; the concept is how it is played (reviewed; draft said a)"
+ },
+ {
+  "id": "eighth-note-ostinato",
+  "display": "An eighth-note ostinato",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "rock.4"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "eighth-notes",
+  "display": "Eighth notes",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "2.2"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "etude",
+  "display": "Etudes",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "classical.8"
+  ],
+  "note": "exercise/study piece type"
+ },
+ {
+  "id": "finger-independence",
+  "display": "Finger independence",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "technique.4"
+  ],
+  "note": "finger technique skill"
+ },
+ {
+  "id": "finger-numbers",
+  "display": "Finger numbers",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "0.1"
+  ],
+  "note": "finger numbering"
+ },
+ {
+  "id": "five-finger",
+  "display": "Five-finger patterns",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.4"
+  ],
+  "note": "a line within five adjacent scale degrees (reviewed; draft said c)"
+ },
+ {
+  "id": "flats",
+  "display": "Flats",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.1"
+  ],
+  "note": "accidentals in notation"
+ },
+ {
+  "id": "forearm",
+  "display": "Forearm weight",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "technique.7"
+  ],
+  "note": "physical technique (not in score)"
+ },
+ {
+  "id": "four-chord-progression",
+  "display": "The four-chord progression",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "chords-pop.4"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "grand-staff",
+  "display": "The grand staff",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.4"
+  ],
+  "note": "grand staff notation"
+ },
+ {
+  "id": "guide-tones",
+  "display": "Guide tones",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "improv.6"
+  ],
+  "note": "the third and seventh of each chord (reviewed; draft said b)"
+ },
+ {
+  "id": "habanera",
+  "display": "The habanera bass",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "ragtime.7"
+  ],
+  "note": "habanera rhythm pattern notation"
+ },
+ {
+  "id": "half-notes",
+  "display": "Half notes",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.2"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "half-pedal",
+  "display": "Half pedalling",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "technique.7"
+  ],
+  "note": "pedal technique in performance"
+ },
+ {
+  "id": "half-time-feel",
+  "display": "Half-time feel",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "rock.6"
+  ],
+  "note": "half-time feel in performance"
+ },
+ {
+  "id": "hand-independence",
+  "display": "Hand independence",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "hand independence/coordination skill"
+ },
+ {
+  "id": "hand-shape",
+  "display": "Hand shape",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "0.1"
+  ],
+  "note": "hand position/shape (not in score)"
+ },
+ {
+  "id": "held-LH",
+  "display": "A held left hand",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "2.1"
+  ],
+  "note": "held note notation"
+ },
+ {
+  "id": "injury",
+  "display": "Injury and pain",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "practice.4"
+  ],
+  "note": "injury prevention/management (not in score)"
+ },
+ {
+  "id": "interleaving",
+  "display": "Interleaving",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "practice.3"
+  ],
+  "note": "learning strategy"
+ },
+ {
+  "id": "interpretation",
+  "display": "Interpretation",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "classical.9"
+  ],
+  "note": "interpretation skill"
+ },
+ {
+  "id": "interval-reading",
+  "display": "Reading by interval",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "1.5"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "intervals",
+  "display": "Intervals",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "theory.3"
+  ],
+  "note": "interval notation"
+ },
+ {
+  "id": "inversions-by-ear",
+  "display": "Hearing inversions",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "theory.4"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "key-signature",
+  "display": "Key signatures",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.1"
+  ],
+  "note": "key signature notation"
+ },
+ {
+  "id": "key-signatures",
+  "display": "Key signatures",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "theory.3"
+  ],
+  "note": "key signature notation"
+ },
+ {
+  "id": "leap",
+  "display": "Leaps: a fourth or fifth",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "2.1"
+  ],
+  "note": "interval notation"
+ },
+ {
+  "id": "ledger-lines",
+  "display": "Ledger lines",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.4"
+  ],
+  "note": "ledger line notation"
+ },
+ {
+  "id": "letter-names",
+  "display": "Note names",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "0.2"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "maj7",
+  "display": "Major seventh chords",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "chords-pop.5"
+  ],
+  "note": "seventh chord notation"
+ },
+ {
+  "id": "major-scale-formula",
+  "display": "The major scale formula",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.1"
+  ],
+  "note": "scale notation"
+ },
+ {
+  "id": "mazurka-rhythm",
+  "display": "The mazurka rhythm",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "classical.7"
+  ],
+  "note": "mazurka-rhythm rhythm pattern notation"
+ },
+ {
+  "id": "melodic-minor",
+  "display": "The melodic minor scale",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "4.2"
+  ],
+  "note": "minor key signature"
+ },
+ {
+  "id": "melody-in-octaves",
+  "display": "Melody in octaves",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.7"
+  ],
+  "note": "unison or octave notation"
+ },
+ {
+  "id": "melody-projection",
+  "display": "Projecting the melody",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "technique.6"
+  ],
+  "note": "projection in performance"
+ },
+ {
+  "id": "melody-writing",
+  "display": "Writing a melody",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "improv.5"
+  ],
+  "note": "melody-writing skill"
+ },
+ {
+  "id": "meter-5-4",
+  "display": "Five-four time",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "odd time signature notation"
+ },
+ {
+  "id": "meter-7-8",
+  "display": "Seven-eight time",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.6"
+  ],
+  "note": "odd time signature notation"
+ },
+ {
+  "id": "middle-C",
+  "display": "Middle C",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "0.2"
+  ],
+  "note": "middle C notation"
+ },
+ {
+  "id": "min7",
+  "display": "Minor seventh chords",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "chords-pop.5"
+  ],
+  "note": "seventh chord notation"
+ },
+ {
+  "id": "minor-triads",
+  "display": "Minor chords",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.3"
+  ],
+  "note": "minor key signature"
+ },
+ {
+  "id": "modal-minor",
+  "display": "Modal minor",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "rock.4"
+  ],
+  "note": "minor key signature"
+ },
+ {
+  "id": "mordent",
+  "display": "Mordents",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "notated ornament notation"
+ },
+ {
+  "id": "motif",
+  "display": "Motifs",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "improv.3"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "motif-development",
+  "display": "Developing a motif",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "improv.4"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "motivation",
+  "display": "Motivation",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "practice.5"
+  ],
+  "note": "motivation concept (not in score)"
+ },
+ {
+  "id": "note-length",
+  "display": "Note lengths",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.4"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "octave-scale",
+  "display": "Scales in octaves",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.7"
+  ],
+  "note": "scale notation"
+ },
+ {
+  "id": "odd-meter",
+  "display": "Odd meters",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "odd time signature notation"
+ },
+ {
+  "id": "ornamentation",
+  "display": "Ornamentation",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "ornament notation"
+ },
+ {
+  "id": "ornamented-melody",
+  "display": "An ornamented melody",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "classical.7"
+  ],
+  "note": "ornament notation"
+ },
+ {
+  "id": "ornaments",
+  "display": "Ornaments",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "classical.4"
+  ],
+  "note": "ornament notation"
+ },
+ {
+  "id": "pedal",
+  "display": "The pedal",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "classical.5"
+  ],
+  "note": "pedal technique in performance"
+ },
+ {
+  "id": "pentatonic-scale",
+  "display": "The pentatonic scale",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "improv.4"
+  ],
+  "note": "scale notation"
+ },
+ {
+  "id": "pivot-chord",
+  "display": "Pivot chords",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "theory.8"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "placement",
+  "display": "The placement test",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "0.4"
+  ],
+  "note": "app mode (not in score)"
+ },
+ {
+  "id": "plagal-cadence",
+  "display": "The plagal cadence",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "hymns"
+  ],
+  "note": "cadential progression notation"
+ },
+ {
+  "id": "plateau",
+  "display": "Plateaus",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "practice.5"
+  ],
+  "note": "learning plateau concept"
+ },
+ {
+  "id": "polyrhythm-2:1",
+  "display": "Two against one",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "polyrhythm notation"
+ },
+ {
+  "id": "polyrhythm-2:3",
+  "display": "Two against three",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.7"
+  ],
+  "note": "polyrhythm notation"
+ },
+ {
+  "id": "polyrhythm-3:1",
+  "display": "Three against one",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.6"
+  ],
+  "note": "polyrhythm notation"
+ },
+ {
+  "id": "polyrhythm-3:2",
+  "display": "Three against two",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.7"
+  ],
+  "note": "polyrhythm notation"
+ },
+ {
+  "id": "position-shift",
+  "display": "Shifting position",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "2.5"
+  ],
+  "note": "hand position notation"
+ },
+ {
+  "id": "posture",
+  "display": "Posture",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "0.1"
+  ],
+  "note": "posture (not in score)"
+ },
+ {
+  "id": "power-chord",
+  "display": "The power chord",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "rock.4"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "progressions-by-ear",
+  "display": "Hearing progressions",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "theory.5"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "quarter-notes",
+  "display": "Quarter notes",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.1"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "reading-ahead",
+  "display": "Reading ahead",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "4.6"
+  ],
+  "note": "reading-ahead skill"
+ },
+ {
+  "id": "reduction",
+  "display": "Reducing a band arrangement",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "rock.overview"
+  ],
+  "note": "arranging/arrangement skill"
+ },
+ {
+  "id": "relative-minor",
+  "display": "The relative minor",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.3"
+  ],
+  "note": "minor key signature"
+ },
+ {
+  "id": "rests",
+  "display": "Rests",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.2"
+  ],
+  "note": "notated rest values"
+ },
+ {
+  "id": "rhythm",
+  "display": "Rhythm",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "rhythm pattern notation"
+ },
+ {
+  "id": "rhythm-changes",
+  "display": "Rhythm changes",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "jazz.7"
+  ],
+  "note": "rhythm pattern notation"
+ },
+ {
+  "id": "riff",
+  "display": "The riff",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "rock.4"
+  ],
+  "note": "riff melody/rhythm figure notation"
+ },
+ {
+  "id": "romantic-miniature",
+  "display": "Romantic miniatures",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "classical.6"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "scale-in-3rds",
+  "display": "Scales in thirds",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.7"
+  ],
+  "note": "scale notation"
+ },
+ {
+  "id": "scale-in-6ths",
+  "display": "Scales in sixths",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.7"
+  ],
+  "note": "scale notation"
+ },
+ {
+  "id": "scales-HT",
+  "display": "Scales hands together",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "4.1"
+  ],
+  "note": "scale notation"
+ },
+ {
+  "id": "self-assessment",
+  "display": "Marking your own work",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "0.4"
+  ],
+  "note": "self-assessment practice"
+ },
+ {
+  "id": "semitones",
+  "display": "Semitones",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.4"
+  ],
+  "note": "melodic interval of one semitone (reviewed; draft said b)"
+ },
+ {
+  "id": "seventh-qualities",
+  "display": "Seventh chord qualities",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "theory.5"
+  ],
+  "note": "chord type notation"
+ },
+ {
+  "id": "shaping",
+  "display": "Shaping a line",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "phrase shaping in performance"
+ },
+ {
+  "id": "sharps",
+  "display": "Sharps",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.1"
+  ],
+  "note": "accidentals in notation"
+ },
+ {
+  "id": "similar",
+  "display": "Similar motion",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.4"
+  ],
+  "note": "notated motion types"
+ },
+ {
+  "id": "skips",
+  "display": "Skips",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.5"
+  ],
+  "note": "interval notation"
+ },
+ {
+  "id": "slur",
+  "display": "Slurs",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "2.4"
+  ],
+  "note": "a marking can be printed; the concept is how it is played (reviewed; draft said a)"
+ },
+ {
+  "id": "sonata-form",
+  "display": "Sonata form",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "classical.7"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "sonatina-form",
+  "display": "Sonatina form",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "classical.5"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "stop-time",
+  "display": "Stop-time",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "ragtime.8"
+  ],
+  "note": "stop-time rhythm pattern notation"
+ },
+ {
+  "id": "subdivision",
+  "display": "Subdivision",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "2.2"
+  ],
+  "note": "rhythmic subdivision notation"
+ },
+ {
+  "id": "sus",
+  "display": "Suspended chords",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "chords-pop.5"
+  ],
+  "note": "extended chord notation"
+ },
+ {
+  "id": "sus-chords",
+  "display": "Suspended chords",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "chords-pop.7"
+  ],
+  "note": "chord notation"
+ },
+ {
+  "id": "sustain-pedal",
+  "display": "The sustain pedal",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "technique.6"
+  ],
+  "note": "a marking can be printed; the concept is how it is played (reviewed; draft said a)"
+ },
+ {
+  "id": "swing",
+  "display": "Swing",
+  "kind": "b",
+  "rungCount": 1,
+  "rungs": [
+   "4.5"
+  ],
+  "note": "swing interpretation in performance"
+ },
+ {
+  "id": "tempo-mode",
+  "display": "Tempo mode",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "0.3"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "tension",
+  "display": "Tension",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "practice.4"
+  ],
+  "note": "physical technique (not in score)"
+ },
+ {
+  "id": "thumb-under",
+  "display": "Passing the thumb under",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "2.5"
+  ],
+  "note": "thumb-under hand technique"
+ },
+ {
+  "id": "tie",
+  "display": "Ties",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "2.4"
+  ],
+  "note": "tie notation"
+ },
+ {
+  "id": "tied-across-bar",
+  "display": "Ties across the bar",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "tie notation"
+ },
+ {
+  "id": "tonicisation",
+  "display": "Tonicisation",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "theory.7"
+  ],
+  "note": "definable by analysis of the notes; no simple matcher (reviewed)"
+ },
+ {
+  "id": "transposing",
+  "display": "Transposing",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "chords-pop.3"
+  ],
+  "note": "transposition skill"
+ },
+ {
+  "id": "transposing-for-singers",
+  "display": "Transposing for singers",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "holiday.3"
+  ],
+  "note": "transposition skill"
+ },
+ {
+  "id": "treble-clef",
+  "display": "The treble clef",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.1"
+  ],
+  "note": "clef notation"
+ },
+ {
+  "id": "tremolo",
+  "display": "Tremolo",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.7"
+  ],
+  "note": "notated ornament notation"
+ },
+ {
+  "id": "tremolo-thirds",
+  "display": "Tremolo thirds",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "blues.5"
+  ],
+  "note": "notated ornament notation"
+ },
+ {
+  "id": "trill",
+  "display": "Trills",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "technique.6"
+  ],
+  "note": "notated ornament notation"
+ },
+ {
+  "id": "trills",
+  "display": "Trills",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "classical.5"
+  ],
+  "note": "notated ornament notation"
+ },
+ {
+  "id": "triplets",
+  "display": "Triplets",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "4.5"
+  ],
+  "note": "triplet notation"
+ },
+ {
+  "id": "twelve-bar-improv",
+  "display": "Improvising on the twelve-bar",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "improv.5"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "two-hand-independence",
+  "display": "Two-hand independence",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "technique.5"
+  ],
+  "note": "hand independence/coordination skill"
+ },
+ {
+  "id": "two-voice-texture",
+  "display": "Two-voice texture",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "classical.3"
+  ],
+  "note": "counterpoint or two-voice notation"
+ },
+ {
+  "id": "vertical-alignment",
+  "display": "Lining the hands up",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "2.1"
+  ],
+  "note": "hand vertical alignment technique"
+ },
+ {
+  "id": "virtuoso-technique",
+  "display": "Virtuoso technique",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "classical.9"
+  ],
+  "note": "virtuoso technique skill category"
+ },
+ {
+  "id": "wait-mode",
+  "display": "Wait mode",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "0.3"
+  ],
+  "note": "an activity, a skill or an app mode, not a fact of a score (reviewed; draft said a)"
+ },
+ {
+  "id": "waltz-bass",
+  "display": "The waltz bass",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "3.6"
+  ],
+  "note": "waltz accompaniment figure notation"
+ },
+ {
+  "id": "warm-up",
+  "display": "Warming up",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "practice.4"
+  ],
+  "note": "warm-up routine (not in score)"
+ },
+ {
+  "id": "whole-notes",
+  "display": "Whole notes",
+  "kind": "a",
+  "rungCount": 1,
+  "rungs": [
+   "1.2"
+  ],
+  "note": "note value notation"
+ },
+ {
+  "id": "wrist",
+  "display": "The wrist",
+  "kind": "c",
+  "rungCount": 1,
+  "rungs": [
+   "technique.6"
+  ],
+  "note": "physical technique (not in score)"
+ }
+]
