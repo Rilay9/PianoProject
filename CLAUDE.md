@@ -1,5 +1,7 @@
 # Working in this repository
 
+**Preflight, before every action** (the owner, 2026-10-03): name the current plan step, the unit of work, the learner problem, the ownership/reuse decision and the finish condition. If you cannot state all five in five short lines, do not act. After finishing, stop: never select another task by momentum. The full checklist behind this is `docs/prompts/anti-drift-checklist.md`.
+
 **The governing direction is `docs/prompts/charter.md`** (the convergence charter, 2026-10-03). Before any lane touches code, answer its gate: should PianoProject own this responsibility at all?
 
 ## Reuse before reinvention: the first rule (the owner, 2026-10-03)
