@@ -1,0 +1,18 @@
+CQ1 checks (builder). Built catalogue and curriculum: app/public/content/ (not rebuilt; reports regenerated with build.step_reports, the repository's own generator).
+
+exit 0   python3 tools/content/validate.py --allow-nc --personal
+         (first run after the claims.py change: exit 1, five stale DEFERRED_CONCEPT_CLAIMS entries; emptied in validate.py as the validator itself instructs; rerun exit 0)
+exit 1   python3 -m unittest discover -s tools/content/tests -t tools/content   (1729 tests, about 9m49s; 6 failures, 4 skipped)
+         All 6 fail identically on 738e23e, run from a git-archive copy of that head under build/cq1/old (no checkout, no stash):
+           test_import_mutopia ...ragtime_8s_stride_bass_is_established_by_it  (the Mutopia edition's .mid was not fetched here)
+           test_measured_truth ...test_the_generated_untaught_combinations_are_d0s_record
+           test_untaught_options ...the_lines_equal_the_probe_but_for_the_recorded_differences
+           test_untaught_options ...the_per_demand_counts_equal_the_probe_but_for_the_recorded_lines
+           test_measured_truth ...test_the_pinned_generated_items (exercise.clave.son-3-2.pulse, exercise.stride.c: the pins list texture.walking-bass, the built catalogue no longer does)
+         (the last appears twice, one per item). Same assertions and same messages in both trees for the four I ran there individually.
+         The baseline run also showed environment-only failures in the archive copy (missing workflow files and the like); not counted.
+exit 0   python3 tools/docs/checks_for_paths.py <the changed paths>   (10 of 10 matched; prints content-build, content-validate, review-check, content-tests, unit, build-app)
+exit 0   python3 tools/content/review.py --check
+exit 0   cd app && npx tsc -b
+exit 1   cd app && npx vitest run   (344 of 346 files pass; 2 fail, neither reads anything changed: everyOptionOpens "song.ragtime.joplin-pine-apple-rag.mutopia" opens nothing (unfetched edition); midiParity has no reference in build/midi-parity (the reference script was not run). No app file changed.)
+not run  python tools/content/build.py --offline  (the map names it; the catalogue is current for this head, and a rebuild is not needed to regenerate the two reports)

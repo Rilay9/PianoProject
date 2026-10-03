@@ -639,9 +639,14 @@ class TestExcerptsOnTheBuild(Built):
 
     def test_the_candidate_rungs_say_where_one_detector_answers_for_several_concepts(self) -> None:
         """
-        `texture.left-hand-pattern` is one detector for alberti, waltz, oom-pah, boogie and stride
-        (claims.CONCEPT_DEMANDS): a rung reached through it is a pattern in the notes, not the rung's
-        pattern, and the report says so beside the line, where F reads it.
+        A demand that several concepts share is one detector for them all (claims.CONCEPT_DEMANDS): a rung
+        reached through it is a fact in the notes, not the rung's concept, and the report says so beside the
+        line, where F reads it.
+
+        Revised (CQ1, `docs/prompts/runs/CQ1/decision.md`). Old assumption: `texture.left-hand-pattern` is
+        shared by alberti, waltz, oom-pah, boogie and stride. Those named-style rows are gone, so no demand is
+        shared today; the loop below stays so a future shared row is still annotated, and the new assertion
+        says the left-hand pattern is no longer shared.
 
         Revised (F2b part 2). Old assumption: the left-hand pattern is the only demand several concepts
         share. The leap is now two concepts, the beginner's `leap` (a fourth or fifth, 2.1) and the
@@ -662,6 +667,8 @@ class TestExcerptsOnTheBuild(Built):
             sharing.setdefault(demand, []).append(concept)
         shared = {demand: sorted(concepts) for demand, concepts in sharing.items() if len(concepts) > 1}
         self.assertNotIn("interval.leap", shared, "the leap shared with the advanced jump, which no fourth proves")
+        self.assertNotIn("texture.left-hand-pattern", shared, "CQ1: no named style is reached through the shared detector")
+        self.assertNotIn("texture.walking-bass", shared)
         report = X.candidate_rungs(self.catalog, self.curriculum)
         found: dict[str, int] = {}
         for row in report:
@@ -673,8 +680,10 @@ class TestExcerptsOnTheBuild(Built):
                         self.assertEqual(sorted(claim.get("sharedBy") or []), shared[claim["id"]], where)
                     else:
                         self.assertNotIn("sharedBy", claim, where)
-        self.assertGreater(found.get("texture.left-hand-pattern", 0), 0, "no candidate reached through the left-hand pattern to read")
-        self.assertIn("one detector", X.candidate_rungs_markdown(report))
+        # CQ1: no demand is shared by several concepts now, so no claim carries `sharedBy` and no line says
+        # "one detector"; the left-hand pattern is reached by no concept. Nothing is asserted about a count.
+        self.assertEqual(found, {}, "CQ1: a claim reached through a shared demand appeared without a new shared row")
+        self.assertNotIn("one detector", X.candidate_rungs_markdown(report))
 
     def test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs(self) -> None:
         """
@@ -1101,7 +1110,14 @@ class TestPlacementReconciled(Built):
 
         deferred = {(rung, claim_of(concept)) for rung, concept in self.validate.DEFERRED_CONCEPT_CLAIMS}
         kept_by_none = {(row["rung"], row["id"]) for row in self.report["keptByNone"]}
-        self.assertEqual(kept_by_none, deferred | self.HAND_READINGS,
+        # Revised (CQ1, `docs/prompts/runs/CQ1/decision.md`). Old assumption: the five named-style claims no option keeps
+        # (the walking bass at blues.6, blues.8, jazz.6, jam.6; the oom-pah bass at ragtime.5) are the deferrals. Those
+        # concepts map to no demand now, so those claims are not made and the deferrals are empty. What remains kept
+        # by no option is the broad demand the hand-set `taughtAt` lists for the walking bass at jazz.6, blues.6 and
+        # jam.6: not a named-style claim, `detect.ts`'s `walkingBass` reading with E22's recorded misreads, left as
+        # it was (the gate reads it) and recorded as dependency D2 of CQ1.
+        taught_at_unkept = {(rung, "texture.walking-bass") for rung in ("jazz.6", "blues.6", "jam.6")}
+        self.assertEqual(kept_by_none, deferred | self.HAND_READINGS | taught_at_unkept,
                          "a rung claim no option keeps must be introduced or deferred with its reason")
         errors, warnings = self.validate.concept_claim_findings(self.catalog, self.curriculum)
         self.assertEqual(errors, [], "the validator's rule holds on the build")
@@ -1109,7 +1125,8 @@ class TestPlacementReconciled(Built):
 
     def test_blues_5_introduces_the_walking_bass_and_claims_it_no_more(self) -> None:
         row = next(r for r in self.report["rungs"] if r["rung"] == "blues.5")
-        self.assertIn("texture.walking-bass", [c["id"] for c in row["introduced"]])
+        # Revised (CQ1): the introduced concept maps to no demand now, so the row names the concept (`kind` None).
+        self.assertIn("walking-bass", [c["id"] for c in row["introduced"]])
         self.assertNotIn("texture.walking-bass", [c["id"] for c in row["claims"]])
         self.assertIn("walking-bass", self.lessons["blues.5"].get("introduces", []))
         self.assertNotIn("walking-bass", self.lessons["blues.5"]["concepts"])

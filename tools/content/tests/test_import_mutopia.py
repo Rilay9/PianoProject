@@ -222,6 +222,16 @@ class TestThePlacement(unittest.TestCase):
         self.assertIn(RAG, lesson["songOptions"])
 
     def test_on_the_strict_flavour_ragtime_8s_stride_bass_is_established_by_it(self) -> None:
+        """
+        Revised (CQ1, `docs/prompts/runs/CQ1/decision.md`). Old assumption (Q83): ragtime.8 claims `stride-bass`,
+        mapped to `texture.left-hand-pattern`, and the Mutopia edition is the one option that establishes it on the
+        strict flavour. A broad left-hand result cannot certify a named style, so the concept maps to no demand and
+        ragtime.8 makes no such claim: it is a concept no detector measures, and nothing here is "established".
+        The name of the test is kept for the runner log's sake (`test_runner_log.py` runs it by name).
+
+        What stays of Q83's purpose: a build that could not fetch the edition fails here, naming the placeholder
+        and its reason, instead of passing on a catalogue whose one Mutopia rag was never measured.
+        """
         import claims
 
         catalog = json.loads((BUILT / "catalog.json").read_text(encoding="utf-8"))
@@ -234,10 +244,12 @@ class TestThePlacement(unittest.TestCase):
                 item["measurement"] = {"status": "unmeasured", "reason": "a strict build's placeholder"}
         report = claims.rung_claims(strict, curriculum)
         rung = next(r for r in report["rungs"] if r["rung"] == "ragtime.8")
-        stride = next(c for c in rung["claims"] if c["id"] == "texture.left-hand-pattern")
+        self.assertNotIn("texture.left-hand-pattern", [c["id"] for c in rung["claims"] if c["from"].startswith("concept ")],
+                         "CQ1: a named style (stride-bass) is not certified by the broad left-hand pattern")
+        self.assertIn("stride-bass", rung["unmeasurable"], "ragtime.8's stride bass is a claim no detector measures")
         # Q83: on a build that could not fetch the edition (CI during a Mutopia outage) this fails by design; the
-        # message says so, naming the placeholder and the reason its import step wrote. The condition is unchanged.
-        why = "ragtime.8's stride bass is kept by no option on the strict flavour"
+        # message says so, naming the placeholder and the reason its import step wrote.
+        why = "ragtime.8's Mutopia edition is not measured on this build"
         rag = next((i for i in catalog if i["id"] == RAG), None)
         if rag is not None and not rag.get("file"):
             from import_mutopia import IMPORT_HINT
@@ -247,10 +259,7 @@ class TestThePlacement(unittest.TestCase):
             reason = (hint[len(head):len(hint) - len(tail)] if hint.startswith(head) and hint.endswith(tail)
                       else hint or "no importHint")
             why += f": {RAG} is a placeholder ({reason})"
-        self.assertGreaterEqual(stride["established"], 1, why)
-        option = next(o for o in report["options"] if o["rung"] == "ragtime.8" and o["item"] == RAG)
-        self.assertEqual({c["id"]: c["status"] for c in option["claims"] if c["id"] == "texture.left-hand-pattern"},
-                         {"texture.left-hand-pattern": "established"})
+        self.assertEqual((rag or {}).get("measurement", {}).get("status"), "measured", why)
         item = next(i for i in catalog if i["id"] == RAG)
         self.assertFalse(set(item.get("tags") or []) & set(STRICT_PLACEHOLDER_TAGS), "a strict build would placeholder it")
         low, high = rung.get("levelBand") or next(

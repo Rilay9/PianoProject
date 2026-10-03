@@ -341,11 +341,16 @@ class WhatTheCutterRefuses(unittest.TestCase):
 class TheRow(unittest.TestCase):
     def test_concepts_are_the_targets_where_the_vocabulary_names_them_once(self) -> None:
         """
-        One detector finds every left-hand pattern (claims.CONCEPT_DEMANDS maps alberti, waltz, oom-pah,
-        boogie and stride to it): which pattern the passage has is not in the demand, so no concept.
+        One detector finds every left-hand pattern: which pattern the passage has is not in the demand, so no
+        concept.
+
+        Revised (CQ1, `docs/prompts/runs/CQ1/decision.md`). Old assumption: `claims.CONCEPT_DEMANDS` maps
+        `walking-bass` onto `texture.walking-bass`, so that demand names the concept. The eight named-style
+        rows are gone (a broad result or the `walkingBass` heuristic cannot certify a named style): the demand
+        names no concept until the walking-bass figure slice supplies a sourced, independently checked matcher.
         """
         self.assertEqual(X.concepts_for(["texture.left-hand-pattern"]), [])
-        self.assertEqual(X.concepts_for(["texture.walking-bass"]), ["walking-bass"])
+        self.assertEqual(X.concepts_for(["texture.walking-bass"]), [])
         self.assertEqual(X.concepts_for(["syncopation"]), ["syncopation"])
         self.assertIn("chromatic", X.concepts_for(["pitch.chromatic"]))
 
