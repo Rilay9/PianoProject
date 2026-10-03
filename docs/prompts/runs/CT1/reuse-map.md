@@ -144,6 +144,81 @@ Chord concepts are claimed without measurement | **replace (new):** music21 at b
 | 7.9 | Content review log (`review/record.ts`, `tools/content/review.py`) | Human review decisions, append-only | none needed | — | Own JSONL log | keep |
 | 7.10 | Finder prompts (`tools/content/finder.py`) | Search queries for new repertoire | none needed | — | Templates | keep |
 
+
+## 8. Expert-annotated oracles, further libraries and existing generators (the owner, 2026-10-03)
+
+**Provenance.** The owner named these candidates. A search agent then confirmed each exists
+and read its licence from search results; its queries are listed below. This session did
+not recheck them, so the reviewer confirms each before it is relied on.
+
+**Licences.** The personal build may use non-commercial data. A public release may not ship
+NC or SA content, but using such data as a **test oracle** ships nothing.
+
+| # | Candidate | What it gives this project | Licence (as reported) | Link | Use |
+|---|---|---|---|---|---|
+| 8.1 | DCML Mozart piano sonatas | Experts' harmony and cadence labels, bar by bar | CC BY-NC-SA 4.0 | [DCMLab/mozart_piano_sonatas](https://github.com/DCMLab/mozart_piano_sonatas) | Oracle for chord, Roman-numeral and cadence concepts (5.5) |
+| 8.2 | When in Rome (Gotham) | Roman-numeral analyses in RomanText, read by music21 | CC BY-SA 4.0 | [MarkGotham/When-in-Rome](https://github.com/MarkGotham/When-in-Rome) | Oracle for Roman numerals and progressions (5.5) |
+| 8.3 | Couturier, Bigo and Levé: Mozart texture annotations | Experts' melody and accompaniment labels per bar | CC BY 4.0 (reported) | [hal-03860195](https://hal.science/hal-03860195v1) | **The** oracle for the accompaniment figures (5.4): it tests `figures.py` against human judgement |
+| 8.4 | CIPI | 652 pieces with Henle difficulty levels | CC BY-NC-SA 4.0 (reported) | [zenodo 8037327](https://zenodo.org/records/8037327) | Difficulty oracle (5.7, R7) |
+| 8.5 | PSyllabus | Piano Syllabus levels for 7,901 pieces (audio) | CC BY 4.0 (reported) | [zenodo 14794592](https://zenodo.org/records/14794592) | Level labels by title, to compare with the curriculum and the level model |
+| 8.6 | ASAP | Scores aligned to real piano performances | CC BY-NC-SA 4.0 | [CPJKU/asap-dataset](https://github.com/CPJKU/asap-dataset) | Oracle for score following (4.2) |
+| 8.7 | partitura | Pitch spelling, key estimation, voice separation, alignment | Apache-2.0 | [CPJKU/partitura](https://github.com/CPJKU/partitura) | Second library behind music21 for spelling and voice separation (1.13–1.15) |
+| 8.8 | MusPy | Standard metrics for symbolic music (pitch range, scale consistency, rhythm regularity) | MIT | [salu133445/muspy](https://github.com/salu133445/muspy) | Generator checks (6.3–6.5), part two |
+| 8.9 | jSymbolic | Hundreds of symbolic features | GPL-3.0 | [DDMAL/jSymbolic2](https://github.com/DDMAL/jSymbolic2) | Possible features for difficulty (CL17); Java, build-time only |
+| 8.10 | basic-pitch, parangonar | Audio to notes; note-level alignment | Apache-2.0 | rows 3.2 and 4.2 | Offline oracles (R10) |
+
+**Existing generators.** The owner asked what exists for this personal project. The search
+agent's top fits:
+
+| Fit | Project | What it generates | Output and licence (as reported) | Link |
+|---|---|---|---|---|
+| 1 | OSME | Sight-reading with configurable notes, rhythm and range | MusicXML, TypeScript, BSD-3-Clause; **the link is unconfirmed**, as the published home is [opensheetmusiceducation.org](https://opensheetmusiceducation.org/) | reported as github.com/opensheetmusicdisplay/osme |
+| 2 | SightScore | Sight-reading by ABRSM grade | MusicXML strings, JavaScript; licence unconfirmed | reported as github.com/stevenmusic/SightScore |
+| 3 | ftrain/sightreading | A procedural sight-reading curriculum | MusicXML and MIDI, JavaScript, LGPL-3.0 | reported as github.com/ftrain/sightreading |
+| 4 | SREGen | Sight-reading by genetic algorithm | C#, licence unconfirmed | [SREGen](https://kchua.github.io/SREGen/) |
+| 5 | Tonal | The theory facts any generator needs | MIT | [tonaljs/tonal](https://github.com/tonaljs/tonal) |
+
+**What this changes (the owner's direction, 2026-10-03).**
+- **Spelling by construction.** Exercises are built from music21's scale, chord and arpeggio
+  objects, never hand tables. The scale and arpeggio families already are (6.1); R4 and R5
+  extend this to the rest.
+- **Published before generated.** Hanon, Czerny, Burgmüller, Clementi and others come from
+  Mutopia and IMSLP before anything is generated. Their availability on Mutopia was not in
+  the agent's report, so it is open (part two).
+- **Expert-annotated data is the test oracle wherever it covers a concept:**
+  - 8.3 for accompaniment, before any other check of `figures.py`;
+  - 8.1 and 8.2 for chords;
+  - 8.4 and 8.5 for levels;
+  - 8.6 for score following.
+- **Sight-reading generators.** The ones above are compared with `engine/sightReading.ts` in
+  part two §2: the same level parameters, run through MusPy's metrics. Replacement is
+  decided on that comparison, not on this list.
+- **AI music generators** (Magenta and the like) are excluded: they are opaque, the opposite
+  of checkable.
+
+**The agent's searches:**
+- OSME Open Sheet Music Education exercise generator
+- SREGen music exercise generator
+- music21 exercise generator sight reading
+- sight reading generator GitHub MusicXML
+- abcjs notation sight reading exercises
+- VexFlow music notation exercise generator
+- Tonal.js music theory exercises scale chord generator
+- ear training open source web app exercises
+- rhythm generator music exercises open source
+- Hanon Czerny Burgmüller public domain piano études
+- DCML Mozart piano sonatas corpus harmony annotations
+- Mark Gotham "When in Rome" Roman numeral music21
+- Couturier Bigo Levé Mozart texture annotations melody accompaniment (and its licence)
+- CIPI Ramoneda piano difficulty (and its licence)
+- PSyllabus (and its licence)
+- ASAP aligned scores and performances dataset
+- jSymbolic (and its licence)
+- partitura
+- MusPy
+- Spotify basic-pitch
+- parangonar
+
 ## Rows of class I: what the app does instead
 
 | Row | Needs | The app does instead |
