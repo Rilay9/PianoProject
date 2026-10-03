@@ -3,7 +3,7 @@
 Judgement: learner behaviour has not changed. The first requested causal check is published, but not run; the detector build remains unfinished until that result distinguishes the held tune from a bar with no tune. Nothing has been heard or verified as music.
 
 Base: `9dedcc0560503f46b18387a5eddf6d0274d54fe2`.
-Test-only commit: `79c56589fbafecf12390149b6be5e08ec3ee9e11`.
+Revised test checkpoint (fixture correction, still no application fix): `79c56589fbafecf12390149b6be5e08ec3ee9e11`.
 
 Mechanism inspected: `app/src/demands/detect.ts` leftHandPattern, tune predicate, reads `note.measureIndex === bar` and misses sound held from a prior measure. `app/tests/unit/helpers/phrase.ts` sums a tie's written durations into one note and creates a step at each barline. `app/src/score/types.ts` specifies merged ties as one initial note. The fixture uses those existing contracts, without adding a model field.
 
@@ -16,3 +16,5 @@ Pins and claims: no detector behavior changed, so no pin was moved, no untaught 
 Where the brief was wrong: no correction established by this checkpoint. Its explicit first-test dependency requires the orchestrator's result before the implementation proceeds; source inspection predicts that result but is not execution.
 
 Not done: extractor fixture; clef and key map changes; metre correction; share implementation; every other red-first case; corpus/pin/claim comparisons; deferral removals; application code; full runtime checks; implementation mutants. The requested test map now identifies this staged fixture. Records and the working branch are untouched.
+
+Initial strictly test-only commit: `04c51da8d8826b7bab38a01c2ad9ec0bf1476265`. The revised checkpoint changes its third control from melody ending at the barline to no melody at all: the former could encode the old every-bar rule once eligible-bar share semantics change. Documentation commits precede the revision; neither checkpoint contains an application fix.
