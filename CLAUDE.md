@@ -1,5 +1,36 @@
 # Working in this repository
 
+## Reuse before reinvention: the first rule (the owner, 2026-10-03)
+
+For every new or changed musical, pedagogical, content, analysis, curriculum, assessment
+or generation capability, **do not design custom code first.** Search, and record what you
+found:
+1. an existing usable asset: a score, an exercise, a fingering table, an annotated example;
+2. a public-domain or openly licensed score or corpus: PDMX, Mutopia, OpenScore, IMSLP;
+3. an established library: music21 (already a dependency), Tonal, partitura;
+4. an annotated dataset: ASAP, the DCML corpora, When in Rome, CIPI;
+5. an open-source implementation of the same or a related feature, such as another piano
+   tutor or sight-reading trainer;
+6. a published algorithm, standard, syllabus (RCM, ABRSM) or authoritative text.
+
+For each candidate, say:
+- what it solves;
+- its provenance;
+- its licence;
+- its fit with this project;
+- the adaptation it needs;
+- what it leaves unsolved.
+
+**Preference order:** existing asset → library → dataset or reference implementation with a
+thin adapter → published algorithm → small project-specific code → novel code only when
+nothing above can serve.
+
+Easy-to-write is never a justification. When existing work is rejected, the record says
+why. Never hand-reproduce known musical knowledge a maintained source supplies. Never
+generate a substitute when suitable licensed real material meets the need. Research the
+musical correctness of **only the gap that remains**. The project assembles the best
+existing reliable pieces, adds only what is truly project-specific, and proves the seams.
+
 **Read `docs/prompts/operating-procedure.md` before any substantial piece of work, and
 point every agent brief at it.** It is short. It says how work is decided, done and
 reported here, and it is the owner's word as of 2026-09-25. `docs/00-invariants.md`

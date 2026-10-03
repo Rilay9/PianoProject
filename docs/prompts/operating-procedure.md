@@ -170,7 +170,7 @@ Before designing or building anything, say which, with a source a reader can che
 - use the library;
 - claim less.
 
-Hand-build only when the search shows nothing exists, and show the search. This decision comes before every other rule in this file, and a brief or a review without it is incomplete. The project-wide map is `docs/prompts/runs/CT1/reuse-map.md` (CT1 part zero).
+Hand-build only when the search shows nothing exists, and show the search. This decision comes before every other rule in this file, and a brief or a review without it is incomplete. The full rule, with its six searches and its preference order, is the first section of `CLAUDE.md` (*Reuse before reinvention*). The project-wide map is `docs/prompts/runs/CT1/reuse-map.md` (CT1 part zero).
 
 ## 11. Before reporting
 

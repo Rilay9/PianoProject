@@ -30,6 +30,18 @@ The four classes:
 
 Cover at least: score import and conversion, rendering, MIDI and microphone input, pitch detection, score following and scoring, the metronome and audio, every concept detector, key, chord and Roman-numeral analysis, difficulty estimation, curriculum ordering, the sight-reading and exercise generators, ear training, theory content, the review and spaced-repetition scheduling, and the lesson content. Find the rest from the code.
 
+**The reuse census** (`CLAUDE.md`, *Reuse before reinvention*). For every custom mechanism the map finds, record why it is custom, and what asset, library, dataset, reference implementation or published algorithm was searched for and rejected, with the reason. Cover at least:
+- every generator family;
+- every demand detector;
+- every scoring and performance rule;
+- every drill factory;
+- every difficulty calculation;
+- every theory or harmony operation;
+- every content source;
+- every progression mechanism.
+
+Search open-source piano tutors and sight-reading trainers too, as reference implementations to compare against. Mark each mechanism KEEP CUSTOM, REPLACE WITH LIBRARY, REPLACE WITH DATA, ADAPT EXISTING, USE REAL CONTENT or UNSOLVED. The census may delete code, and that is welcome. Extend the map you already pushed; do not restart it.
+
 Write it to `docs/prompts/runs/CT1/reuse-map.md`. Every row cites a source a reader can open with one search; list the searches you ran. Where the app hand-built something an established library or standard already provides, the replacement joins this work's plan, unless replacing it would break a working, tested path; then say why.
 
 Parts one to three below apply the map to the concepts. Do part zero first and push it as its own checkpoint.
