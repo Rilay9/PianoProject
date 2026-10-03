@@ -1,5 +1,7 @@
 # Working in this repository
 
+**The governing direction is `docs/prompts/charter.md`** (the convergence charter, 2026-10-03). Before any lane touches code, answer its gate: should PianoProject own this responsibility at all?
+
 ## Reuse before reinvention: the first rule (the owner, 2026-10-03)
 
 For every new or changed musical, pedagogical, content, analysis, curriculum, assessment

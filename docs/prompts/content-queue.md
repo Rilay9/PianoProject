@@ -1,5 +1,7 @@
 # The content queue: one reviewed vertical slice at a time
 
+> **SUPERSEDED by `docs/prompts/charter.md` (2026-10-03).** CQ2 onward will not run. CQ1 is a tiny cleanup or is discarded.
+
 The old project-wide CT1 session is stopped. This queue is the only content-recovery sequence.
 
 If local-agent quota is scarce, use `docs/prompts/cloud-primary-content-recovery.md`: one cloud foreman owns sequencing, bounded cloud subagents gather evidence/build/review, and the local agent is used only for exact local-only evidence requests.
