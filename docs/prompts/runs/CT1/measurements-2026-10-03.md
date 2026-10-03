@@ -5,6 +5,19 @@ scope and what it cannot show. Nothing here was heard; nobody in this process ca
 
 ## 1. Real teaching material that already exists
 
+> **Superseded in part by the repository's own records.** Read `content-suggestions.md`
+> first. I measured this before reading what the repository records, and much of it
+> repeats earlier work. Two points here are wrong against those records:
+> - **"18 Joplin rags as candidates":** the rags were checked and refused. The `.ly` route
+>   fails on `\alternative`, the MIDI route merges voices, and only Pine Apple Rag got in
+>   (`content/sources/mutopia.json`, `docs/03-content-pipeline.md:93–150`).
+> - **"Clementi Op. 36 fills the gap":** three Op. 36 rows are already committed. Nos. 2–3
+>   were lost to a licence conflict in the quarry (`docs/decisions/pedagogical-quarry.md:104`).
+>
+> The PDMX licence field means nothing, and the Zenodo catalogue is unreliable (the owner;
+> `docs/decisions/2026-09-06-p11-replan.md:61`). The PDMX hits below are leads for the owner's
+> local search, nothing more.
+
 ### Mutopia
 
 **Method.** I read Mutopia's own listing pages: composer codes from `browse.html`, then every
