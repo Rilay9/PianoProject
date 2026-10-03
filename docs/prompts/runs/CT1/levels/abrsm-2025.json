@@ -1,0 +1,1978 @@
+{
+  "source": {
+    "title": "Piano Practical Grades 2025 & 2026 Qualification Specification (ABRSM)",
+    "edition": "2025 & 2026 syllabus; file name dated 20240524 (access version)",
+    "url": "https://www.abrsm.org/sites/default/files/2024-06/Piano%202025%20&%202026%20Prac%20syllabus%2020240524_access.pdf",
+    "retrieved": "2026-10-03",
+    "meaning": "ABRSM Piano Practical Grades (Initial and Grades 1-8) are examination requirements per grade: scales and arpeggios, sight-reading and aural tests are each set for the grade, and the sight-reading parameters are stated by ABRSM to be cumulative (once introduced they apply for all later grades).",
+    "pageNumbering": "All 'page' values are PDF page numbers. The printed page number is PDF page minus 1 (e.g. the 'Sight-reading parameters' table printed on p. 16 is PDF page 17). Cross-references quoted inside source wording (e.g. 'pages 45 & 46') use printed numbers."
+  },
+  "notes": [
+    "Accidentals in the pdftotext output appear as '-' (flat) and '+' (sharp), e.g. 'B -', 'F+'. Confirmed by eye on PDF pages 17, 36 and 39 (flat/sharp signs). On other scale pages the same mapping was applied to the text; each such entry keeps its 'raw' text. Entries marked mappedFromText:true were not each viewed as an image.",
+    "Rhythm/rest glyph cells in the sight-reading table (PDF p. 17) were read by eye from a 300 dpi crop and are marked readFrom:'page image'. Where the printed glyph is a rest, the rest type (minim vs semibreve etc.) was not reliably distinguishable and is described only as printed.",
+    "Sight-reading table: blank cells are blank in the source (cumulative table); nothing was filled in for blank cells. The Initial row has two sub-rows separated by a thin rule (length 4 / time 4/4, then length 6 / time 2/4); keys, hand position and other features are printed once for the whole Initial block. Pairing of 4 with 4/4 and 6 with 2/4 is by row position only (marked readFrom page image).",
+    "Scale/arpeggio entries record requirements as printed per grade; the 'as pattern below' arpeggio and contrary-motion patterns are music notation and are not transcribed (flagged patternNotTranscribed).",
+    "Aural test entries: 'task' is the verbatim first sentence of each test (hyphenation at line ends rejoined); 'details' are verbatim sentences or clauses that state ranges, keys and phrase length. Full text is on the cited page. Grade 4+ test B/C/D sub-parts are separate entries where the source numbers them.",
+    "Speed table (PDF p. 15) note unit glyphs: speeds Initial-4 are crotchet beats, Grades 5-8 are minim beats (text extraction letters q and h; confirmed by eye)."
+  ],
+  "sightReadingParameters": {
+    "introNote": {
+      "value": "These parameters are presented cumulatively, i.e. once introduced they apply for all later grades (gradually progressing in difficulty).",
+      "page": 17
+    },
+    "testDescription": {
+      "value": "Candidates will be asked to play a short unaccompanied piece that they have not seen before. They will be given half a minute to look through and, if they want to, try out any or all of the test before they are asked to play it for assessment.",
+      "page": 16
+    },
+    "valuesAreIntroducedAtThisGradeOnly": true,
+    "grades": {
+      "Initial": {
+        "lengthBars": [
+          {
+            "value": "4",
+            "page": 17
+          },
+          {
+            "value": "6",
+            "page": 17
+          }
+        ],
+        "timeSignatures": [
+          {
+            "value": "4/4",
+            "page": 17
+          },
+          {
+            "value": "2/4",
+            "page": 17
+          }
+        ],
+        "keys": [
+          {
+            "value": "C major",
+            "page": 17
+          },
+          {
+            "value": "D minor",
+            "page": 17
+          }
+        ],
+        "handPosition": [
+          {
+            "value": "Each hand:",
+            "page": 17
+          },
+          {
+            "value": "playing separately",
+            "page": 17
+          },
+          {
+            "value": "in 5-finger position (tonic to dominant)",
+            "page": 17
+          }
+        ],
+        "otherFeatures": [
+          {
+            "value": "legato phrases, staccato",
+            "page": 17
+          },
+          {
+            "value": "f and p",
+            "page": 17
+          },
+          {
+            "value": {
+              "glyphRaw": "h q iq",
+              "description": "minim, crotchet, pair of beamed quavers"
+            },
+            "page": 17,
+            "readFrom": "page image"
+          },
+          {
+            "value": {
+              "description": "a rest glyph (rectangular rest on the stave; type not distinguished)"
+            },
+            "page": 17,
+            "uncertain": true,
+            "readFrom": "page image"
+          }
+        ],
+        "lengthTimePairing": {
+          "value": [
+            {
+              "lengthBars": "4",
+              "timeSignature": "4/4"
+            },
+            {
+              "lengthBars": "6",
+              "timeSignature": "2/4"
+            }
+          ],
+          "page": 17,
+          "readFrom": "page image"
+        }
+      },
+      "Grade 1": {
+        "timeSignatures": [
+          {
+            "value": "3/4",
+            "page": 17
+          }
+        ],
+        "keys": [
+          {
+            "value": "G, F majors",
+            "page": 17
+          },
+          {
+            "value": "A minor",
+            "page": 17
+          }
+        ],
+        "handPosition": [
+          {
+            "value": "any 5-finger position",
+            "page": 17
+          }
+        ],
+        "otherFeatures": [
+          {
+            "value": "occasional accidentals (within minor keys only)",
+            "page": 17
+          },
+          {
+            "value": "slurs, accents",
+            "page": 17
+          },
+          {
+            "value": "mf and mp",
+            "page": 17
+          },
+          {
+            "value": "cresc. and dim. hairpins",
+            "page": 17
+          },
+          {
+            "value": {
+              "glyphRaw": "h . iiiq",
+              "description": "dotted minim, four beamed quavers"
+            },
+            "page": 17,
+            "readFrom": "page image"
+          },
+          {
+            "value": {
+              "description": "two rest glyphs: a rectangular rest and a crotchet rest"
+            },
+            "page": 17,
+            "uncertain": true,
+            "readFrom": "page image"
+          }
+        ]
+      },
+      "Grade 2": {
+        "keys": [
+          {
+            "value": "D major",
+            "page": 17
+          },
+          {
+            "value": "E, G minors",
+            "page": 17
+          }
+        ],
+        "handPosition": [
+          {
+            "value": "playing together",
+            "page": 17
+          }
+        ],
+        "otherFeatures": [
+          {
+            "value": "tied notes",
+            "page": 17
+          },
+          {
+            "value": "pp",
+            "page": 17
+          },
+          {
+            "value": {
+              "glyphRaw": "w ; q . e patterns",
+              "description": "semibreve; dotted crotchet + quaver patterns"
+            },
+            "page": 17,
+            "readFrom": "page image"
+          }
+        ]
+      },
+      "Grade 3": {
+        "lengthBars": [
+          {
+            "value": "up to 8",
+            "page": 17
+          }
+        ],
+        "timeSignatures": [
+          {
+            "value": "3/8",
+            "page": 17
+          }
+        ],
+        "keys": [
+          {
+            "value": "A, B-flat, E-flat majors",
+            "page": 17
+          },
+          {
+            "value": "B minor",
+            "page": 17
+          }
+        ],
+        "handPosition": [
+          {
+            "value": "outside 5-finger position",
+            "page": 17
+          }
+        ],
+        "otherFeatures": [
+          {
+            "value": "2-note chords in either hand",
+            "page": 17
+          },
+          {
+            "value": "simple semiquaver patterns",
+            "page": 17
+          },
+          {
+            "value": {
+              "description": "dotted quaver + semiquaver (beamed pair) pattern"
+            },
+            "page": 17,
+            "readFrom": "page image"
+          },
+          {
+            "value": {
+              "description": "quaver rest"
+            },
+            "page": 17,
+            "readFrom": "page image"
+          }
+        ]
+      },
+      "Grade 4": {
+        "lengthBars": [
+          {
+            "value": "c. 8",
+            "page": 17
+          }
+        ],
+        "timeSignatures": [
+          {
+            "value": "6/8",
+            "page": 17
+          }
+        ],
+        "otherFeatures": [
+          {
+            "value": "anacrusis",
+            "page": 17
+          },
+          {
+            "value": "chromatic notes",
+            "page": 17
+          },
+          {
+            "value": "pause signs",
+            "page": 17
+          },
+          {
+            "value": "tenuto",
+            "page": 17
+          }
+        ]
+      },
+      "Grade 5": {
+        "lengthBars": [
+          {
+            "value": "c. 8-12",
+            "page": 17
+          }
+        ],
+        "keys": [
+          {
+            "value": "E, A-flat majors",
+            "page": 17
+          },
+          {
+            "value": "F-sharp, C minors",
+            "page": 17
+          }
+        ],
+        "otherFeatures": [
+          {
+            "value": "4-part chords (2 notes max. in either hand)",
+            "page": 17
+          },
+          {
+            "value": "simple syncopation",
+            "page": 17
+          },
+          {
+            "value": "slowing of tempo at end",
+            "page": 17
+          },
+          {
+            "value": "ff",
+            "page": 17
+          }
+        ]
+      },
+      "Grade 6": {
+        "lengthBars": [
+          {
+            "value": "c. 12-16",
+            "page": 17
+          }
+        ],
+        "timeSignatures": [
+          {
+            "value": "9/8",
+            "page": 17
+          },
+          {
+            "value": "5/8",
+            "page": 17
+          },
+          {
+            "value": "5/4",
+            "page": 17
+          }
+        ],
+        "keys": [
+          {
+            "value": "C-sharp, F minors",
+            "page": 17
+          }
+        ],
+        "otherFeatures": [
+          {
+            "value": "triplet rhythms",
+            "page": 17
+          },
+          {
+            "value": "clef changes",
+            "page": 17
+          },
+          {
+            "value": "use of right pedal",
+            "page": 17
+          }
+        ]
+      },
+      "Grade 7": {
+        "lengthBars": [
+          {
+            "value": "c. 16-20",
+            "page": 17
+          }
+        ],
+        "timeSignatures": [
+          {
+            "value": "7/8",
+            "page": 17
+          },
+          {
+            "value": "7/4",
+            "page": 17
+          }
+        ],
+        "otherFeatures": [
+          {
+            "value": "tempo changes",
+            "page": 17
+          },
+          {
+            "value": "8va sign",
+            "page": 17
+          },
+          {
+            "value": "use of una corda pedal",
+            "page": 17
+          }
+        ]
+      },
+      "Grade 8": {
+        "lengthBars": [
+          {
+            "value": "c. 1 page",
+            "page": 17
+          }
+        ],
+        "timeSignatures": [
+          {
+            "value": "12/8",
+            "page": 17
+          }
+        ],
+        "keys": [
+          {
+            "value": "B, D-flat majors",
+            "page": 17
+          }
+        ],
+        "otherFeatures": [
+          {
+            "value": "3-part chords in either hand",
+            "page": 17
+          },
+          {
+            "value": "spread chords",
+            "page": 17
+          },
+          {
+            "value": "simple ornaments",
+            "page": 17
+          },
+          {
+            "value": "acceleration of tempo",
+            "page": 17
+          }
+        ]
+      }
+    }
+  },
+  "speedGuide": {
+    "intro": {
+      "value": "The following speeds are given as a general guide:",
+      "page": 15
+    },
+    "footnote": {
+      "value": "All speeds relate to the rhythmic grouping of four quavers",
+      "page": 15,
+      "readFrom": "page image"
+    },
+    "scales_incl_contrary_chromatic_wholetone": {
+      "unit_Initial_to_4": "crotchet",
+      "unit_5_to_8": "minim",
+      "grades": {
+        "Initial": {
+          "value": 54,
+          "page": 15
+        },
+        "1": {
+          "value": 60,
+          "page": 15
+        },
+        "2": {
+          "value": 66,
+          "page": 15
+        },
+        "3": {
+          "value": 80,
+          "page": 15
+        },
+        "4": {
+          "value": 100,
+          "page": 15
+        },
+        "5": {
+          "value": 60,
+          "page": 15
+        },
+        "6": {
+          "value": 72,
+          "page": 15
+        },
+        "7": {
+          "value": 80,
+          "page": 15
+        },
+        "8": {
+          "value": 88,
+          "page": 15
+        }
+      }
+    },
+    "arpeggios_incl_dominant_diminished_7ths": {
+      "unit_Initial_to_4": "crotchet",
+      "unit_5_to_8": "minim",
+      "grades": {
+        "Initial": {
+          "value": 52,
+          "page": 15
+        },
+        "1": {
+          "value": 58,
+          "page": 15
+        },
+        "2": {
+          "value": 63,
+          "page": 15
+        },
+        "3": {
+          "value": 72,
+          "page": 15
+        },
+        "4": {
+          "value": 80,
+          "page": 15
+        },
+        "5": {
+          "value": 44,
+          "page": 15
+        },
+        "6": {
+          "value": 50,
+          "page": 15
+        },
+        "7": {
+          "value": 56,
+          "page": 15
+        },
+        "8": {
+          "value": 66,
+          "page": 15
+        }
+      }
+    },
+    "scales_a_3rd_apart_or_6th_apart_incl_chromatic": {
+      "unit": "minim",
+      "grades": {
+        "7": {
+          "value": 60,
+          "page": 15
+        },
+        "8": {
+          "value": 60,
+          "page": 15
+        }
+      }
+    },
+    "legato_scales_in_3rds": {
+      "unit": "minim",
+      "grades": {
+        "7": {
+          "value": 46,
+          "page": 15
+        },
+        "8": {
+          "value": 52,
+          "page": 15
+        }
+      }
+    },
+    "staccato_scales_in_3rds_or_6ths": {
+      "unit": "minim",
+      "grades": {
+        "7": {
+          "value": 54,
+          "page": 15
+        },
+        "8": {
+          "value": 54,
+          "page": 15
+        }
+      }
+    }
+  },
+  "scalesGeneralRules": [
+    {
+      "value": "Memory: All requirements must be played from memory.",
+      "page": 14
+    },
+    {
+      "value": "Range: Candidates are free to start at any octave, provided the required ranges are covered. For 'hands together' requirements, the hands must be one octave apart, unless the syllabus specifies differently.",
+      "page": 14
+    },
+    {
+      "value": "Rhythm: All requirements must be played in even notes.",
+      "page": 14
+    },
+    {
+      "value": "Patterns: Arpeggios and dominant sevenths are required in root position only, except where the syllabus specifies differently. All dominant sevenths must finish by resolving on the tonic.",
+      "page": 14
+    },
+    {
+      "value": "Articulation: All requirements must be prepared legato, unless the syllabus specifies staccato (or both).",
+      "page": 14
+    },
+    {
+      "value": "Pedalling: All requirements must be played without pedalling.",
+      "page": 14
+    }
+  ],
+  "scalesAndArpeggios": {
+    "pageNoteGrades": "Initial p.21, Grade 1 p.24, Grade 2 p.27, Grade 3 p.30, Grade 4 p.33, Grade 5 p.36, Grade 6 p.39, Grade 7 p.42, Grade 8 p.45 (PDF pages). Each entry's page applies to the whole entry (type, keys, range, requirement). mappedFromText:true means accidental signs were mapped from '-'/'+' text, not viewed.",
+    "grades": {
+      "Initial": [
+        {
+          "value": {
+            "type": "scales",
+            "keys": [
+              "C major",
+              "D minor (natural or harmonic or melodic, at candidate's choice)"
+            ],
+            "range": "1 oct.",
+            "requirement": "hands separately",
+            "raw": "C major / D minor (natural or harmonic or melodic, at candidate's choice) | 1 oct. | hands separately"
+          },
+          "page": 21
+        },
+        {
+          "value": {
+            "type": "contrary-motion scale",
+            "keys": [
+              "C major"
+            ],
+            "range": "a 5th",
+            "requirement": "hands starting on the tonic (unison); as pattern below",
+            "raw": "C major | a 5th | hands starting on the tonic (unison); as pattern below",
+            "patternNotTranscribed": true
+          },
+          "page": 21
+        },
+        {
+          "value": {
+            "type": "arpeggios",
+            "keys": [
+              "C major",
+              "D minor"
+            ],
+            "range": "a 5th",
+            "requirement": "hands separately; as pattern below",
+            "raw": "C major, D minor | a 5th | hands separately; as pattern below",
+            "patternNotTranscribed": true
+          },
+          "page": 21
+        }
+      ],
+      "Grade 1": [
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "C major"
+            ],
+            "range": "1 oct.",
+            "requirement": "hands together",
+            "raw": "C major | 1 oct. | hands together"
+          },
+          "page": 24,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "G major",
+              "F major",
+              "A minor",
+              "D minor (natural or harmonic or melodic, at candidate's choice)"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands separately",
+            "raw": "G, F majors; A, D minors (natural or harmonic or melodic, at candidate's choice) | 2 oct. | hands separately"
+          },
+          "page": 24,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "contrary-motion scale",
+            "keys": [
+              "C major"
+            ],
+            "range": "1 oct.",
+            "requirement": "hands starting on the tonic (unison)",
+            "raw": "C major | 1 oct. | hands starting on the tonic (unison)"
+          },
+          "page": 24,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "arpeggios",
+            "keys": [
+              "G major",
+              "A minor"
+            ],
+            "range": "1 oct.",
+            "requirement": "hands separately",
+            "raw": "G major, A minor | 1 oct. | hands separately"
+          },
+          "page": 24,
+          "mappedFromText": true
+        }
+      ],
+      "Grade 2": [
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "G major",
+              "F major",
+              "A minor",
+              "D minor (natural or harmonic or melodic, at candidate's choice)"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands together",
+            "raw": "G, F majors; A, D minors (natural or harmonic or melodic, at candidate's choice) | 2 oct. | hands together"
+          },
+          "page": 27,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "D major",
+              "A major",
+              "E minor",
+              "G minor (natural or harmonic or melodic, at candidate's choice)"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands separately",
+            "raw": "D, A majors; E, G minors (natural or harmonic or melodic, at candidate's choice) | 2 oct. | hands separately"
+          },
+          "page": 27,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "contrary-motion scale",
+            "keys": [
+              "C major"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands starting on the tonic (unison)",
+            "raw": "C major | 2 oct. | hands starting on the tonic (unison)"
+          },
+          "page": 27,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "chromatic scale",
+            "keys": [
+              "starting on D"
+            ],
+            "range": "1 oct.",
+            "requirement": "hands separately",
+            "raw": "starting on D | 1 oct. | hands separately"
+          },
+          "page": 27,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "arpeggios",
+            "keys": [
+              "D major",
+              "A major",
+              "E minor",
+              "G minor"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands separately",
+            "raw": "D, A majors; E, G minors | 2 oct. | hands separately"
+          },
+          "page": 27,
+          "mappedFromText": true
+        }
+      ],
+      "Grade 3": [
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "D major",
+              "A major",
+              "E minor",
+              "G minor (harmonic or melodic, at candidate's choice)"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands together",
+            "raw": "D, A majors; E, G minors (harmonic or melodic, at candidate's choice) | 2 oct. | hands together"
+          },
+          "page": 30,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "B-flat major",
+              "E-flat major",
+              "B minor",
+              "C minor (harmonic or melodic, at candidate's choice)"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands separately",
+            "raw": "B-, E- majors; B, C minors (harmonic or melodic, at candidate's choice) | 2 oct. | hands separately"
+          },
+          "page": 30,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "contrary-motion scale",
+            "keys": [
+              "E major"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands starting on the tonic (unison)",
+            "raw": "E major | 2 oct. | hands starting on the tonic (unison)"
+          },
+          "page": 30,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "chromatic contrary-motion scale",
+            "keys": [
+              "starting on D"
+            ],
+            "range": "1 oct.",
+            "requirement": "hands starting on the stated note (unison)",
+            "raw": "starting on D | 1 oct. | hands starting on the stated note (unison)"
+          },
+          "page": 30,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "arpeggios",
+            "keys": [
+              "D major",
+              "A major",
+              "E minor",
+              "G minor"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands together",
+            "raw": "D, A majors; E, G minors | 2 oct. | hands together"
+          },
+          "page": 30,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "arpeggios",
+            "keys": [
+              "B-flat major",
+              "E-flat major",
+              "B minor",
+              "C minor"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands separately",
+            "raw": "B-, E- majors; B, C minors | 2 oct. | hands separately"
+          },
+          "page": 30,
+          "mappedFromText": true
+        }
+      ],
+      "Grade 4": [
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "B-flat major",
+              "E-flat major",
+              "B minor",
+              "C minor (harmonic or melodic, at candidate's choice)"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands together",
+            "raw": "B-, E- majors; B, C minors (harmonic or melodic, at candidate's choice) | 2 oct. | hands together"
+          },
+          "page": 33,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "B major",
+              "F-sharp major",
+              "A-flat major",
+              "F-sharp minor",
+              "F minor (harmonic or melodic, at candidate's choice)"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands separately",
+            "raw": "B, F+, A- majors; F+, F minors (harmonic or melodic, at candidate's choice) | 2 oct. | hands separately"
+          },
+          "page": 33,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "contrary-motion scales",
+            "keys": [
+              "E-flat major",
+              "C harmonic minor"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands starting on the tonic (unison)",
+            "raw": "E- major; C harmonic minor | 2 oct. | hands starting on the tonic (unison)"
+          },
+          "page": 33,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "chromatic scale (similar motion)",
+            "keys": [
+              "starting on F-sharp"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands together",
+            "raw": "starting on F+ | 2 oct. | hands together"
+          },
+          "page": 33,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "arpeggios",
+            "keys": [
+              "B-flat major",
+              "E-flat major",
+              "B minor",
+              "C minor"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands together",
+            "raw": "B-, E- majors; B, C minors | 2 oct. | hands together"
+          },
+          "page": 33,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "arpeggios",
+            "keys": [
+              "B major",
+              "F-sharp major",
+              "A-flat major",
+              "F-sharp minor",
+              "F minor"
+            ],
+            "range": "2 oct.",
+            "requirement": "hands separately",
+            "raw": "B, F+, A- majors; F+, F minors | 2 oct. | hands separately"
+          },
+          "page": 33,
+          "mappedFromText": true
+        }
+      ],
+      "Grade 5": [
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "A major",
+              "E major",
+              "B major",
+              "F-sharp major",
+              "D-flat major",
+              "F-sharp minor",
+              "C-sharp minor",
+              "G-sharp minor",
+              "E-flat minor",
+              "B-flat minor (harmonic or melodic, at candidate's choice)"
+            ],
+            "range": "2 oct.",
+            "requirement": "legato; hands together",
+            "raw": "A, E, B, F+, D- majors; F+, C+, G+, E-, B- minors (harmonic or melodic, at candidate's choice) | 2 oct. | legato; hands together"
+          },
+          "page": 36
+        },
+        {
+          "value": {
+            "type": "staccato scales",
+            "keys": [
+              "A-flat major",
+              "F minor (harmonic or melodic, at candidate's choice)"
+            ],
+            "range": "2 oct.",
+            "requirement": "staccato; hands separately",
+            "raw": "A- major; F minor (harmonic or melodic, at candidate's choice) | 2 oct. | staccato; hands separately"
+          },
+          "page": 36
+        },
+        {
+          "value": {
+            "type": "contrary-motion scales",
+            "keys": [
+              "D-flat major",
+              "C-sharp harmonic minor"
+            ],
+            "range": "2 oct.",
+            "requirement": "legato; hands starting on the tonic (unison)",
+            "raw": "D- major; C+ harmonic minor | 2 oct. | legato; hands starting on the tonic (unison)"
+          },
+          "page": 36
+        },
+        {
+          "value": {
+            "type": "chromatic contrary-motion scale",
+            "keys": [
+              "starting on F-sharp (LH) and A-sharp (RH)"
+            ],
+            "range": "2 oct.",
+            "requirement": "legato; hands starting a major third apart",
+            "raw": "starting on F+ (LH) and A+ (RH) | 2 oct. | legato; hands starting a major third apart"
+          },
+          "page": 36
+        },
+        {
+          "value": {
+            "type": "arpeggios",
+            "keys": [
+              "A major",
+              "E major",
+              "B major",
+              "F-sharp major",
+              "A-flat major",
+              "D-flat major",
+              "F-sharp minor",
+              "C-sharp minor",
+              "G-sharp minor",
+              "E-flat minor",
+              "F minor",
+              "B-flat minor"
+            ],
+            "range": "2 oct.",
+            "requirement": "legato; hands together",
+            "raw": "A, E, B, F+, A-, D- majors; F+, C+, G+, E-, F, B- minors | 2 oct. | legato; hands together"
+          },
+          "page": 36
+        },
+        {
+          "value": {
+            "type": "diminished seventh",
+            "keys": [
+              "starting on B"
+            ],
+            "range": "2 oct.",
+            "requirement": "legato; hands separately",
+            "raw": "starting on B | 2 oct. | legato; hands separately"
+          },
+          "page": 36
+        }
+      ],
+      "Grade 6": [
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "D major",
+              "F major",
+              "A-flat major",
+              "B major",
+              "D minor",
+              "F minor",
+              "G-sharp minor",
+              "B minor (harmonic and melodic)"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato or staccato, at examiner's choice; hands together",
+            "raw": "D, F, A-, B majors; D, F, G+, B minors (harmonic and melodic) | 4 oct. | legato or staccato, at examiner's choice; hands together"
+          },
+          "page": 39
+        },
+        {
+          "value": {
+            "type": "contrary-motion scales",
+            "keys": [
+              "D major",
+              "F major",
+              "A-flat major",
+              "B major",
+              "D harmonic minor",
+              "F harmonic minor",
+              "G-sharp harmonic minor",
+              "B harmonic minor"
+            ],
+            "range": "2 oct.",
+            "requirement": "legato; hands starting on the tonic (unison)",
+            "raw": "D, F, A-, B majors; D, F, G+, B harmonic minors | 2 oct. | legato; hands starting on the tonic (unison)"
+          },
+          "page": 39
+        },
+        {
+          "value": {
+            "type": "chromatic scales (similar motion)",
+            "keys": [
+              "starting on G-sharp",
+              "starting on B"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato or staccato, at examiner's choice; hands together",
+            "raw": "starting on G+; starting on B | 4 oct. | legato or staccato, at examiner's choice; hands together"
+          },
+          "page": 39
+        },
+        {
+          "value": {
+            "type": "arpeggios",
+            "keys": [
+              "D major",
+              "F major",
+              "A-flat major",
+              "B major",
+              "D minor",
+              "F minor",
+              "G-sharp minor",
+              "B minor"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato; hands together (root position)",
+            "raw": "D, F, A-, B majors; D, F, G+, B minors | 4 oct. | legato; hands together (root position)"
+          },
+          "page": 39
+        },
+        {
+          "value": {
+            "type": "dominant sevenths (resolving on tonic)",
+            "keys": [
+              "in the keys of D, F, A-flat and B"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato; hands together; as pattern below",
+            "raw": "in the keys of D, F, A- and B | 4 oct. | legato; hands together; as pattern below",
+            "patternNotTranscribed": true
+          },
+          "page": 39
+        },
+        {
+          "value": {
+            "type": "diminished sevenths",
+            "keys": [
+              "starting on G-sharp",
+              "starting on B"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato; hands together",
+            "raw": "starting on G+; starting on B | 4 oct. | legato; hands together"
+          },
+          "page": 39
+        }
+      ],
+      "Grade 7": [
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "D-flat major",
+              "E major",
+              "G major",
+              "B-flat major",
+              "C-sharp minor",
+              "E minor",
+              "G minor",
+              "B-flat minor (harmonic and melodic)"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato or staccato, at examiner's choice; hands together",
+            "raw": "D-, E, G, B- majors; C+, E, G, B- minors (harmonic and melodic) | 4 oct. | legato or staccato, at examiner's choice; hands together"
+          },
+          "page": 42,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "scales a third apart",
+            "keys": [
+              "D-flat major",
+              "E major",
+              "G major",
+              "B-flat major",
+              "C-sharp harmonic minor",
+              "E harmonic minor",
+              "G harmonic minor",
+              "B-flat harmonic minor"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato or staccato, at examiner's choice; hands together",
+            "raw": "D-, E, G, B- majors; C+, E, G, B- harmonic minors | 4 oct. | legato or staccato, at examiner's choice; hands together"
+          },
+          "page": 42,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "contrary-motion scales",
+            "keys": [
+              "D-flat major",
+              "E major",
+              "G major",
+              "B-flat major",
+              "C-sharp harmonic minor",
+              "E harmonic minor",
+              "G harmonic minor",
+              "B-flat harmonic minor"
+            ],
+            "range": "2 oct.",
+            "requirement": "legato or staccato, at examiner's choice; hands starting on the tonic (unison)",
+            "raw": "D-, E, G, B- majors; C+, E, G, B- harmonic minors | 2 oct. | legato or staccato, at examiner's choice; hands starting on the tonic (unison)"
+          },
+          "page": 42,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "legato scale in thirds",
+            "keys": [
+              "G major"
+            ],
+            "range": "2 oct.",
+            "requirement": "legato; hands separately",
+            "raw": "G major | 2 oct. | legato; hands separately"
+          },
+          "page": 42,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "staccato scale in thirds",
+            "keys": [
+              "G major"
+            ],
+            "range": "2 oct.",
+            "requirement": "staccato; hands separately",
+            "raw": "G major | 2 oct. | staccato; hands separately"
+          },
+          "page": 42,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "chromatic contrary-motion scale",
+            "keys": [
+              "starting on C-sharp (LH) and E (RH)"
+            ],
+            "range": "2 oct.",
+            "requirement": "legato or staccato, at examiner's choice; hands starting a minor third apart",
+            "raw": "starting on C+ (LH) and E (RH) | 2 oct. | legato or staccato, at examiner's choice; hands starting a minor third apart"
+          },
+          "page": 42,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "arpeggios",
+            "keys": [
+              "D-flat major",
+              "E major",
+              "G major",
+              "B-flat major",
+              "C-sharp minor",
+              "E minor",
+              "G minor",
+              "B-flat minor"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato; hands together; first inversion only",
+            "raw": "D-, E, G, B- majors; C+, E, G, B- minors | 4 oct. | legato; hands together; first inversion only"
+          },
+          "page": 42,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "dominant sevenths (resolving on tonic)",
+            "keys": [
+              "in the keys of D-flat, E, G and B-flat"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato; hands together; as pattern below",
+            "raw": "in the keys of D-, E, G and B- | 4 oct. | legato; hands together; as pattern below",
+            "patternNotTranscribed": true
+          },
+          "page": 42,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "diminished sevenths",
+            "keys": [
+              "starting on B-flat",
+              "starting on E"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato; hands together",
+            "raw": "starting on B-; starting on E | 4 oct. | legato; hands together"
+          },
+          "page": 42,
+          "mappedFromText": true
+        }
+      ],
+      "Grade 8": [
+        {
+          "value": {
+            "type": "scales (similar motion)",
+            "keys": [
+              "C major",
+              "E-flat major",
+              "F-sharp major",
+              "A major",
+              "C minor",
+              "E-flat minor",
+              "F-sharp minor",
+              "A minor (harmonic and melodic)"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato or staccato, at examiner's choice; hands together",
+            "raw": "C, E-, F+, A majors; C, E-, F+, A minors (harmonic and melodic) | 4 oct. | legato or staccato, at examiner's choice; hands together"
+          },
+          "page": 45,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "scales a sixth apart",
+            "keys": [
+              "C major",
+              "E-flat major",
+              "F-sharp major",
+              "A major",
+              "C harmonic minor",
+              "E-flat harmonic minor",
+              "F-sharp harmonic minor",
+              "A harmonic minor"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato or staccato, at examiner's choice; hands together",
+            "raw": "C, E-, F+, A majors; C, E-, F+, A harmonic minors | 4 oct. | legato or staccato, at examiner's choice; hands together"
+          },
+          "page": 45,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "contrary-motion scales",
+            "keys": [
+              "C major",
+              "E-flat major",
+              "F-sharp major",
+              "A major",
+              "C harmonic minor",
+              "E-flat harmonic minor",
+              "F-sharp harmonic minor",
+              "A harmonic minor"
+            ],
+            "range": "2 oct.",
+            "requirement": "legato or staccato, at examiner's choice; hands starting on the tonic (unison)",
+            "raw": "C, E-, F+, A majors; C, E-, F+, A harmonic minors | 2 oct. | legato or staccato, at examiner's choice; hands starting on the tonic (unison)"
+          },
+          "page": 45,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "legato scale in thirds",
+            "keys": [
+              "E-flat major"
+            ],
+            "range": "2 oct.",
+            "requirement": "legato; hands separately",
+            "raw": "E- major | 2 oct. | legato; hands separately"
+          },
+          "page": 45,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "staccato scale in sixths",
+            "keys": [
+              "C major"
+            ],
+            "range": "2 oct.",
+            "requirement": "staccato; hands separately",
+            "raw": "C major | 2 oct. | staccato; hands separately"
+          },
+          "page": 45,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "chromatic scale a major sixth apart",
+            "keys": [
+              "starting on E-flat (LH) and C (RH)"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato or staccato, at examiner's choice; hands together",
+            "raw": "starting on E- (LH) and C (RH) | 4 oct. | legato or staccato, at examiner's choice; hands together"
+          },
+          "page": 45,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "whole-tone scales (similar motion)",
+            "keys": [
+              "starting on E-flat",
+              "starting on C"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato or staccato, at examiner's choice; hands together",
+            "raw": "starting on E-; starting on C | 4 oct. | legato or staccato, at examiner's choice; hands together"
+          },
+          "page": 45,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "arpeggios",
+            "keys": [
+              "C major",
+              "E-flat major",
+              "F-sharp major",
+              "A major",
+              "C minor",
+              "E-flat minor",
+              "F-sharp minor",
+              "A minor"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato; hands together; second inversion only",
+            "raw": "C, E-, F+, A majors; C, E-, F+, A minors | 4 oct. | legato; hands together; second inversion only"
+          },
+          "page": 45,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "dominant sevenths (resolving on tonic)",
+            "keys": [
+              "in the keys of C, E-flat, F-sharp and A"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato; hands together; as pattern below",
+            "raw": "in the keys of C, E-, F+ and A | 4 oct. | legato; hands together; as pattern below",
+            "patternNotTranscribed": true
+          },
+          "page": 45,
+          "mappedFromText": true
+        },
+        {
+          "value": {
+            "type": "diminished sevenths",
+            "keys": [
+              "starting on E-flat",
+              "starting on C"
+            ],
+            "range": "4 oct.",
+            "requirement": "legato; hands together",
+            "raw": "starting on E-; starting on C | 4 oct. | legato; hands together"
+          },
+          "page": 45,
+          "mappedFromText": true
+        }
+      ]
+    }
+  },
+  "auralTests": {
+    "intro": {
+      "value": "The tests are given by the examiner from the piano.",
+      "page": 46
+    },
+    "grades": {
+      "Initial": [
+        {
+          "value": {
+            "test": "A",
+            "task": "To clap the pulse of a piece played by the examiner.",
+            "details": [
+              "The examiner will start playing the passage, and the candidate should join in as soon as possible, clapping in time."
+            ],
+            "kind": "pulse"
+          },
+          "page": 47
+        },
+        {
+          "value": {
+            "test": "B",
+            "task": "To clap as 'echoes' the rhythm of two phrases played by the examiner.",
+            "details": [
+              "The phrases will be two bars long, in three or four time, and consist of a melody line only.",
+              "The examiner will count in two bars."
+            ],
+            "kind": "rhythm echo"
+          },
+          "page": 47
+        },
+        {
+          "value": {
+            "test": "C",
+            "task": "To sing as 'echoes' two phrases played by the examiner.",
+            "details": [
+              "The phrases will be one bar long in 4/4 time.",
+              "They will be in a major key, and within the range of tonic-mediant."
+            ],
+            "kind": "sung echo"
+          },
+          "page": 47
+        },
+        {
+          "value": {
+            "test": "D",
+            "task": "To answer a question about one feature of a piece played by the examiner.",
+            "details": [
+              "It will be about dynamics (loud/quiet) or articulation (smooth/detached)."
+            ],
+            "kind": "musical features"
+          },
+          "page": 47
+        }
+      ],
+      "Grade 1": [
+        {
+          "value": {
+            "test": "A",
+            "task": "To clap the pulse of a piece played by the examiner, and to identify whether it is in two time or three time.",
+            "details": [
+              "The candidate is not required to state the time signature."
+            ],
+            "kind": "pulse + metre"
+          },
+          "page": 47
+        },
+        {
+          "value": {
+            "test": "B",
+            "task": "To sing as 'echoes' three phrases played by the examiner.",
+            "details": [
+              "The phrases will be two bars long, in a major key, and within the range of tonic-mediant."
+            ],
+            "kind": "sung echo"
+          },
+          "page": 47
+        },
+        {
+          "value": {
+            "test": "C",
+            "task": "To identify where a change in pitch occurs during a phrase played by the examiner.",
+            "details": [
+              "The phrase will be two bars long, in a major key, and the change will affect only one of the notes.",
+              "the candidate should state whether the change was near the beginning or near the end."
+            ],
+            "kind": "change detection"
+          },
+          "page": 47
+        },
+        {
+          "value": {
+            "test": "D",
+            "task": "To answer questions about two features of a piece played by the examiner.",
+            "details": [
+              "The first will be: dynamics (loud/quiet, or sudden/gradual changes); the second will be articulation (smooth/detached)."
+            ],
+            "kind": "musical features"
+          },
+          "page": 47
+        }
+      ],
+      "Grade 2": [
+        {
+          "value": {
+            "test": "A",
+            "task": "To clap the pulse of a piece played by the examiner, and to identify whether it is in two time or three time.",
+            "details": [
+              "The candidate is not required to state the time signature."
+            ],
+            "kind": "pulse + metre"
+          },
+          "page": 48
+        },
+        {
+          "value": {
+            "test": "B",
+            "task": "To sing as 'echoes' three phrases played by the examiner.",
+            "details": [
+              "The phrases will be two bars long, in a major key, and within the range of tonic-dominant."
+            ],
+            "kind": "sung echo"
+          },
+          "page": 48
+        },
+        {
+          "value": {
+            "test": "C",
+            "task": "To identify a change in either pitch or rhythm during a phrase played by the examiner.",
+            "details": [
+              "The phrase will be two bars long, in a major key."
+            ],
+            "kind": "change detection"
+          },
+          "page": 48
+        },
+        {
+          "value": {
+            "test": "D",
+            "task": "To answer questions about two features of a piece played by the examiner.",
+            "details": [
+              "The first will be one of the following: dynamics (loud/quiet, or sudden/gradual changes), articulation (smooth/detached); the second will be tempo (becoming slower/faster, or staying the same)."
+            ],
+            "kind": "musical features"
+          },
+          "page": 48
+        }
+      ],
+      "Grade 3": [
+        {
+          "value": {
+            "test": "A",
+            "task": "To clap the pulse of a piece played by the examiner, and to identify whether it is in two time, three time or four time.",
+            "details": [
+              "The candidate is not required to state the time signature."
+            ],
+            "kind": "pulse + metre"
+          },
+          "page": 48
+        },
+        {
+          "value": {
+            "test": "B",
+            "task": "To sing as 'echoes' three phrases played by the examiner.",
+            "details": [
+              "The phrases will be two bars long, in a major or minor key, and within the range of an octave."
+            ],
+            "kind": "sung echo"
+          },
+          "page": 48
+        },
+        {
+          "value": {
+            "test": "C",
+            "task": "To identify a change in either pitch or rhythm during a phrase played by the examiner.",
+            "details": [
+              "The phrase will be up to four bars long, in a major or minor key."
+            ],
+            "kind": "change detection"
+          },
+          "page": 48
+        },
+        {
+          "value": {
+            "test": "D",
+            "task": "To answer questions about two features of a piece played by the examiner.",
+            "details": [
+              "The first will be one of the following: dynamics (loud/quiet, or sudden/gradual changes), articulation (smooth/detached), tempo (becoming slower/faster, or staying the same); the second will be tonality (major/minor key)."
+            ],
+            "kind": "musical features"
+          },
+          "page": 48
+        }
+      ],
+      "Grade 4": [
+        {
+          "value": {
+            "test": "A",
+            "task": "To sing or play from memory a melody played twice by the examiner.",
+            "details": [
+              "The melody will be within the range of an octave, in a major or minor key with up to three sharps or flats."
+            ],
+            "kind": "memory melody"
+          },
+          "page": 49
+        },
+        {
+          "value": {
+            "test": "B",
+            "task": "To sing five notes from score in free time.",
+            "details": [
+              "The candidate may choose to sing from treble or bass clef.",
+              "The notes will be within the range of a third above and below the tonic in the key of C, F or G major.",
+              "The test will begin and end on the tonic and will not contain intervals greater than a third."
+            ],
+            "kind": "sight-singing"
+          },
+          "page": 49
+        },
+        {
+          "value": {
+            "test": "C(i)",
+            "task": "To answer questions about two features of a piece played by the examiner.",
+            "details": [
+              "The first will be one of the following: dynamics, articulation, tempo, tonality; the second will be character."
+            ],
+            "kind": "musical features"
+          },
+          "page": 49
+        },
+        {
+          "value": {
+            "test": "C(ii)",
+            "task": "To clap the rhythm of the notes in an extract from the same piece, and to identify whether it is in two time, three time or four time.",
+            "details": [
+              "The examiner will play the extract twice (unharmonised), after which the candidate should clap back the rhythm."
+            ],
+            "kind": "rhythm clap + metre"
+          },
+          "page": 49
+        }
+      ],
+      "Grade 5": [
+        {
+          "value": {
+            "test": "A",
+            "task": "To sing or play from memory a melody played twice by the examiner.",
+            "details": [
+              "The melody will be within the range of an octave, in a major or minor key with up to three sharps or flats."
+            ],
+            "kind": "memory melody"
+          },
+          "page": 50
+        },
+        {
+          "value": {
+            "test": "B",
+            "task": "To sing six notes from score in free time.",
+            "details": [
+              "The candidate may choose to sing from treble or bass clef.",
+              "The notes will be within the range of a fifth above and a fourth below the tonic, in a major key with up to two sharps or flats.",
+              "The test will begin and end on the tonic and will not contain intervals greater than a third, except for the rising fourth from dominant to tonic."
+            ],
+            "kind": "sight-singing"
+          },
+          "page": 50
+        },
+        {
+          "value": {
+            "test": "C(i)",
+            "task": "To answer questions about two features of a piece played by the examiner.",
+            "details": [
+              "The first will be one of the following: dynamics, articulation, tempo, tonality, character; the second will be style and period."
+            ],
+            "kind": "musical features"
+          },
+          "page": 50
+        },
+        {
+          "value": {
+            "test": "C(ii)",
+            "task": "To clap the rhythm of the notes in an extract from the same piece, and to identify whether it is in two time, three time or four time.",
+            "details": [
+              "The examiner will play the extract twice (unharmonised), after which the candidate should clap back the rhythm."
+            ],
+            "kind": "rhythm clap + metre"
+          },
+          "page": 50
+        }
+      ],
+      "Grade 6": [
+        {
+          "value": {
+            "test": "A",
+            "task": "To sing or play from memory the upper part of a two-part phrase played twice by the examiner.",
+            "details": [
+              "The upper part will be within the range of an octave, in a major or minor key with up to three sharps or flats."
+            ],
+            "kind": "memory melody (two-part)"
+          },
+          "page": 51
+        },
+        {
+          "value": {
+            "test": "B",
+            "task": "To sing a melody from score, with an accompaniment played by the examiner.",
+            "details": [
+              "The candidate may choose to sing from treble or bass clef.",
+              "The melody will be within the range of an octave, in a major or minor key with up to three sharps or flats."
+            ],
+            "kind": "sight-singing"
+          },
+          "page": 51
+        },
+        {
+          "value": {
+            "test": "C",
+            "task": "To identify the cadence at the end of a phrase as perfect or imperfect.",
+            "details": [
+              "The phrase will be in a major or minor key and will be played twice by the examiner.",
+              "The chords forming the cadence will be in root position."
+            ],
+            "kind": "cadence"
+          },
+          "page": 51
+        },
+        {
+          "value": {
+            "test": "D(i)",
+            "task": "To answer questions about two features of a piece played by the examiner.",
+            "details": [
+              "The first will be: texture or structure; the second will be one of the following: dynamics, articulation, tempo, tonality, character, style and period, texture/structure."
+            ],
+            "kind": "musical features"
+          },
+          "page": 51
+        },
+        {
+          "value": {
+            "test": "D(ii)",
+            "task": "To clap the rhythm of the notes in an extract from the same piece, and to identify whether it is in two time, three time or four time.",
+            "details": [
+              "The examiner will play the extract twice (unharmonised), after which the candidate should clap back the rhythm."
+            ],
+            "kind": "rhythm clap + metre"
+          },
+          "page": 51
+        }
+      ],
+      "Grade 7": [
+        {
+          "value": {
+            "test": "A",
+            "task": "To sing or play from memory the lower part of a two-part phrase played twice by the examiner.",
+            "details": [
+              "The lower part will be within the range of an octave, in a major or minor key with up to three sharps or flats."
+            ],
+            "kind": "memory melody (two-part)"
+          },
+          "page": 52
+        },
+        {
+          "value": {
+            "test": "B",
+            "task": "To sing the upper part of a two-part phrase from score, with the lower part played by the examiner.",
+            "details": [
+              "The candidate may choose to sing from treble or bass clef.",
+              "The upper part will be within the range of an octave, in a major or minor key with up to four sharps or flats."
+            ],
+            "kind": "sight-singing"
+          },
+          "page": 52
+        },
+        {
+          "value": {
+            "test": "C(i)",
+            "task": "To identify the cadence at the end of a phrase as perfect, imperfect or interrupted.",
+            "details": [
+              "The chords forming the cadence will be in root position."
+            ],
+            "kind": "cadence"
+          },
+          "page": 52
+        },
+        {
+          "value": {
+            "test": "C(ii)",
+            "task": "To identify the two chords forming the above cadence.",
+            "details": [
+              "The chords will be limited to the tonic, subdominant, dominant, dominant seventh or submediant (all in root position)."
+            ],
+            "kind": "chord identification"
+          },
+          "page": 52
+        },
+        {
+          "value": {
+            "test": "C(iii)",
+            "task": "To identify whether the modulation at the end of a different passage is to the dominant, subdominant or relative minor.",
+            "details": [
+              "The passage, played once by the examiner, will begin in a major key."
+            ],
+            "kind": "modulation"
+          },
+          "page": 52
+        },
+        {
+          "value": {
+            "test": "D(i)",
+            "task": "To answer questions about two features of a piece played by the examiner.",
+            "details": [
+              "the examiner will tell the candidate which two of the following features the questions will be about: dynamics, articulation, tempo, tonality, character, style and period, texture, structure."
+            ],
+            "kind": "musical features"
+          },
+          "page": 52
+        },
+        {
+          "value": {
+            "test": "D(ii)",
+            "task": "To clap the rhythm of the notes in an extract from the same piece, and to identify whether it is in two time, three time, four time or 6/8 time.",
+            "details": [
+              "The examiner will play the extract twice (unharmonised), after which the candidate should clap back the rhythm."
+            ],
+            "kind": "rhythm clap + metre"
+          },
+          "page": 52
+        }
+      ],
+      "Grade 8": [
+        {
+          "value": {
+            "test": "A(i)",
+            "task": "To sing or play from memory the lowest part of a three-part phrase played twice by the examiner.",
+            "details": [
+              "The lowest part will be within the range of an octave, in a major or minor key with up to three sharps or flats."
+            ],
+            "kind": "memory melody (three-part)"
+          },
+          "page": 53
+        },
+        {
+          "value": {
+            "test": "A(ii)",
+            "task": "To identify the cadence at the end of a continuing phrase as perfect, imperfect, interrupted or plagal.",
+            "details": [
+              "The chords forming the cadence will be limited to the tonic (root position, first or second inversions), supertonic (root position or first inversion), subdominant (root position), dominant (root position, first or second inversions), dominant seventh (root position) or submediant (root position)."
+            ],
+            "kind": "cadence"
+          },
+          "page": 53
+        },
+        {
+          "value": {
+            "test": "A(iii)",
+            "task": "To identify the three chords (including their positions) forming the above cadential progression.",
+            "details": [
+              "The candidate may answer using technical names (tonic, first inversion, etc.), chord numbers (Ib, etc.) or letter names (C major in first inversion, etc.)."
+            ],
+            "kind": "chord identification"
+          },
+          "page": 53
+        },
+        {
+          "value": {
+            "test": "B",
+            "task": "To sing the lower part of a two-part phrase from score, with the upper part played by the examiner.",
+            "details": [
+              "The candidate may choose to sing from treble or bass clef.",
+              "The lower part will be within the range of an octave, in a major or minor key with up to four sharps or flats."
+            ],
+            "kind": "sight-singing"
+          },
+          "page": 53
+        },
+        {
+          "value": {
+            "test": "C",
+            "task": "To identify whether the modulations at the end of two different passages are to the dominant, subdominant or relative minor/major.",
+            "details": [
+              "The first passage will begin in a major key and the second will begin in a minor key; each passage will be played once by the examiner."
+            ],
+            "kind": "modulation"
+          },
+          "page": 53
+        },
+        {
+          "value": {
+            "test": "D",
+            "task": "To describe the characteristic features of a piece played by the examiner.",
+            "details": [
+              "After hearing the piece, the candidate should describe any notable features (such as texture, structure, character, style and period, etc.)."
+            ],
+            "kind": "describe features"
+          },
+          "page": 53
+        }
+      ]
+    }
+  }
+}

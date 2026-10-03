@@ -1,0 +1,868 @@
+{
+  "source": {
+    "title": "Piano Adventures Correlation Chart (Faber Piano Adventures)",
+    "edition": "May 2017 (date printed in the page header; file uploaded 2017/09)",
+    "url": "https://pianoadventures.com/wp-content/uploads/sites/2/2017/09/Piano-Adventures-Correlation-Chart.pdf",
+    "retrieved": "2026-10-03",
+    "meaning": "A publisher's guide (Faber Piano Adventures) to roughly correlating its own method-book levels (Primer, 1, 2A, 2B, 3A, 3B, 4, 5) with other method series and with RCM and ABRSM exam levels; it is not an examination syllabus and states no requirements of its own beyond the topics listed per book level.",
+    "pageNumbering": "All 'page' values are PDF page numbers (3-page landscape PDF; page 1 = Primer to Level 2B, page 2 = Level 3A to Level 5, page 3 = end of Level 5 topics and 'Beyond PA 5')."
+  },
+  "notes": [
+    "Column order as printed: Alfred Premier, Alfred Basic, Piano Safari, Bastien 1 - 4, Piano Pronto, Music Tree, HLSP, Celebration Series, RCM Exam, ABRSM Exam. 'HLSP' is printed as an abbreviation and not expanded in the chart.",
+    "Cell text is copied as printed, including line breaks rendered as a space after '/' (e.g. 'Prep A/ Prep B'); 'parts' splits on '/' only. Source typos kept verbatim: 'doted quarter note' (Level 2B), 'Level2' (Level 3B, Celebration Series), duplicate topic 'V7 chord in root position' listed twice (Level 4).",
+    "Blank cells in the source are recorded as value:null with blankInSource:true; no value was inferred for them (blank: Primer RCM/ABRSM/Celebration; Level 1 ABRSM; Level 2A HLSP and ABRSM; Level 2B ABRSM; Level 4 Piano Safari, HLSP; Level 5 Piano Safari, Bastien, HLSP; Beyond PA 5 all but Piano Pronto, Celebration, RCM, ABRSM).",
+    "The chart's RCM column calls levels 'Prep A', 'Prep B' for Primer-2B and then 'Grade 1', 'Grade 2', 'Grade 3' for Levels 3A onward, while the Celebration Series column uses 'Level N'. RCM's own syllabus names its levels 'Level N' (not 'Grade N'); the chart's 'Grade' wording is kept as printed and not reconciled. Faber Level 3A and 3B both map to RCM 'Grade 1'; Faber 3B maps to Celebration 'Level 1/ Level2' and to ABRSM 'Grade 1/ Grade 2'.",
+    "All cells were read from a 140 dpi render of each page; the column alignment was unambiguous in the image (ruled table), so no cell is marked uncertain. The pdftotext output was not used for cell assignment because tab-separated columns were ambiguous in it.",
+    "Topic superscripts (e.g. 8th, 2nd) are flattened to plain text; the en dash in '16th–note rhythm patterns' is as printed. The chart gives no key signatures beyond those named in topics and no tempo or exam-task information."
+  ],
+  "columns": [
+    {
+      "value": "Alfred Premier",
+      "page": 1
+    },
+    {
+      "value": "Alfred Basic",
+      "page": 1
+    },
+    {
+      "value": "Piano Safari",
+      "page": 1
+    },
+    {
+      "value": "Bastien 1 - 4",
+      "page": 1
+    },
+    {
+      "value": "Piano Pronto",
+      "page": 1
+    },
+    {
+      "value": "Music Tree",
+      "page": 1
+    },
+    {
+      "value": "HLSP",
+      "page": 1
+    },
+    {
+      "value": "Celebration Series",
+      "page": 1
+    },
+    {
+      "value": "RCM Exam",
+      "page": 1
+    },
+    {
+      "value": "ABRSM Exam",
+      "page": 1
+    }
+  ],
+  "levels": [
+    {
+      "level": {
+        "value": "Piano Adventures Primer",
+        "page": 1
+      },
+      "topics": [
+        {
+          "value": "Hand position and finger numbers",
+          "page": 1
+        },
+        {
+          "value": "Note values (quarter, half, dotted-half, whole notes)",
+          "page": 1
+        },
+        {
+          "value": "Key names: A B C D E F G",
+          "page": 1
+        },
+        {
+          "value": "Steps and skips on the staff",
+          "page": 1
+        },
+        {
+          "value": "Staff notes: Bass C to Treble G",
+          "page": 1
+        },
+        {
+          "value": "4/4 and ¾ time signatures",
+          "page": 1
+        },
+        {
+          "value": "The quarter rest",
+          "page": 1
+        },
+        {
+          "value": "The tie",
+          "page": 1
+        }
+      ],
+      "correlatedLevels": {
+        "Alfred Premier": {
+          "value": "1A",
+          "page": 1
+        },
+        "Alfred Basic": {
+          "value": "1A",
+          "page": 1
+        },
+        "Piano Safari": {
+          "value": "1",
+          "page": 1
+        },
+        "Bastien 1 - 4": {
+          "value": "Primer",
+          "page": 1
+        },
+        "Piano Pronto": {
+          "value": "Prelude",
+          "page": 1
+        },
+        "Music Tree": {
+          "value": "Primer",
+          "page": 1
+        },
+        "HLSP": {
+          "value": "1",
+          "page": 1
+        },
+        "Celebration Series": {
+          "value": null,
+          "page": 1,
+          "blankInSource": true
+        },
+        "RCM Exam": {
+          "value": null,
+          "page": 1,
+          "blankInSource": true
+        },
+        "ABRSM Exam": {
+          "value": null,
+          "page": 1,
+          "blankInSource": true
+        }
+      }
+    },
+    {
+      "level": {
+        "value": "Piano Adventures Level 1",
+        "page": 1
+      },
+      "topics": [
+        {
+          "value": "Reading across the grand staff",
+          "page": 1
+        },
+        {
+          "value": "2nd, 3rd, 4th, 5th, and Octave intervals",
+          "page": 1
+        },
+        {
+          "value": "Tonic and dominant notes",
+          "page": 1
+        },
+        {
+          "value": "Legato and staccato touches",
+          "page": 1
+        },
+        {
+          "value": "Quarter, half, and whole rests",
+          "page": 1
+        },
+        {
+          "value": "C and G 5-finger scales",
+          "page": 1
+        },
+        {
+          "value": "I and V7 chords in C and G",
+          "page": 1
+        }
+      ],
+      "correlatedLevels": {
+        "Alfred Premier": {
+          "value": "1B",
+          "page": 1
+        },
+        "Alfred Basic": {
+          "value": "1B",
+          "page": 1
+        },
+        "Piano Safari": {
+          "value": "1",
+          "page": 1
+        },
+        "Bastien 1 - 4": {
+          "value": "1",
+          "page": 1
+        },
+        "Piano Pronto": {
+          "value": "Prelude",
+          "page": 1
+        },
+        "Music Tree": {
+          "value": "Primer/ Part 1",
+          "page": 1,
+          "parts": [
+            "Primer",
+            "Part 1"
+          ]
+        },
+        "HLSP": {
+          "value": "2",
+          "page": 1
+        },
+        "Celebration Series": {
+          "value": "Prep A",
+          "page": 1
+        },
+        "RCM Exam": {
+          "value": "Prep A",
+          "page": 1
+        },
+        "ABRSM Exam": {
+          "value": null,
+          "page": 1,
+          "blankInSource": true
+        }
+      }
+    },
+    {
+      "level": {
+        "value": "Piano Adventures Level 2A",
+        "page": 1
+      },
+      "topics": [
+        {
+          "value": "8th note rhythm patterns",
+          "page": 1
+        },
+        {
+          "value": "crescendo and diminuendo",
+          "page": 1
+        },
+        {
+          "value": "Whole & half step 5-finger scale pattern: W-W-H-W",
+          "page": 1
+        },
+        {
+          "value": "Cm, Gm, Dm, Am 5-finger scales",
+          "page": 1
+        },
+        {
+          "value": "5-finger transposition",
+          "page": 1
+        },
+        {
+          "value": "The phrase and phrase mark",
+          "page": 1
+        },
+        {
+          "value": "D and A major 5-finger scales",
+          "page": 1
+        },
+        {
+          "value": "Andante, moderato, allegro",
+          "page": 1
+        }
+      ],
+      "correlatedLevels": {
+        "Alfred Premier": {
+          "value": "2A",
+          "page": 1
+        },
+        "Alfred Basic": {
+          "value": "2",
+          "page": 1
+        },
+        "Piano Safari": {
+          "value": "2",
+          "page": 1
+        },
+        "Bastien 1 - 4": {
+          "value": "2",
+          "page": 1
+        },
+        "Piano Pronto": {
+          "value": "Prelude/ Mvt 1",
+          "page": 1,
+          "parts": [
+            "Prelude",
+            "Mvt 1"
+          ]
+        },
+        "Music Tree": {
+          "value": "Part 2A",
+          "page": 1
+        },
+        "HLSP": {
+          "value": null,
+          "page": 1,
+          "blankInSource": true
+        },
+        "Celebration Series": {
+          "value": "Prep A/ Prep B",
+          "page": 1,
+          "parts": [
+            "Prep A",
+            "Prep B"
+          ]
+        },
+        "RCM Exam": {
+          "value": "Prep A/ Prep B",
+          "page": 1,
+          "parts": [
+            "Prep A",
+            "Prep B"
+          ]
+        },
+        "ABRSM Exam": {
+          "value": null,
+          "page": 1,
+          "blankInSource": true
+        }
+      }
+    },
+    {
+      "level": {
+        "value": "Piano Adventures Level 2B",
+        "page": 1
+      },
+      "topics": [
+        {
+          "value": "Five C’s across the grand staff",
+          "page": 1
+        },
+        {
+          "value": "Interval of a 6th",
+          "page": 1
+        },
+        {
+          "value": "Connected pedaling",
+          "page": 1
+        },
+        {
+          "value": "Eighth rest, doted quarter note",
+          "page": 1
+        },
+        {
+          "value": "Cross-hand arpeggios",
+          "page": 1
+        },
+        {
+          "value": "C, G, and F major scales",
+          "page": 1
+        },
+        {
+          "value": "I, IV, and V7 chords in C, G, and F",
+          "page": 1
+        },
+        {
+          "value": "Musical form (AB and ABA Coda)",
+          "page": 1
+        }
+      ],
+      "correlatedLevels": {
+        "Alfred Premier": {
+          "value": "2B",
+          "page": 1
+        },
+        "Alfred Basic": {
+          "value": "2",
+          "page": 1
+        },
+        "Piano Safari": {
+          "value": "2",
+          "page": 1
+        },
+        "Bastien 1 - 4": {
+          "value": "2",
+          "page": 1
+        },
+        "Piano Pronto": {
+          "value": "Mvt 1/ Mvt 2",
+          "page": 1,
+          "parts": [
+            "Mvt 1",
+            "Mvt 2"
+          ]
+        },
+        "Music Tree": {
+          "value": "Part 2B",
+          "page": 1
+        },
+        "HLSP": {
+          "value": "3",
+          "page": 1
+        },
+        "Celebration Series": {
+          "value": "Prep B",
+          "page": 1
+        },
+        "RCM Exam": {
+          "value": "Prep B",
+          "page": 1
+        },
+        "ABRSM Exam": {
+          "value": null,
+          "page": 1,
+          "blankInSource": true
+        }
+      }
+    },
+    {
+      "level": {
+        "value": "Piano Adventures Level 3A",
+        "page": 2
+      },
+      "topics": [
+        {
+          "value": "Binary and ternary form",
+          "page": 2
+        },
+        {
+          "value": "Interval of a 7th",
+          "page": 2
+        },
+        {
+          "value": "3/8, 6/8, the triplet",
+          "page": 2
+        },
+        {
+          "value": "Swing rhythm",
+          "page": 2
+        },
+        {
+          "value": "Ostinato and alberti bass",
+          "page": 2
+        },
+        {
+          "value": "Common time and cut time",
+          "page": 2
+        },
+        {
+          "value": "Ledger lines",
+          "page": 2
+        },
+        {
+          "value": "One-octave arpeggios",
+          "page": 2
+        }
+      ],
+      "correlatedLevels": {
+        "Alfred Premier": {
+          "value": "3",
+          "page": 2
+        },
+        "Alfred Basic": {
+          "value": "3",
+          "page": 2
+        },
+        "Piano Safari": {
+          "value": "3",
+          "page": 2
+        },
+        "Bastien 1 - 4": {
+          "value": "3",
+          "page": 2
+        },
+        "Piano Pronto": {
+          "value": "Mvt 2",
+          "page": 2
+        },
+        "Music Tree": {
+          "value": "Part 3",
+          "page": 2
+        },
+        "HLSP": {
+          "value": "4",
+          "page": 2
+        },
+        "Celebration Series": {
+          "value": "Level 1",
+          "page": 2
+        },
+        "RCM Exam": {
+          "value": "Grade 1",
+          "page": 2
+        },
+        "ABRSM Exam": {
+          "value": "Grade 1",
+          "page": 2
+        }
+      }
+    },
+    {
+      "level": {
+        "value": "Piano Adventures Level 3B",
+        "page": 2
+      },
+      "topics": [
+        {
+          "value": "Playing octaves",
+          "page": 2
+        },
+        {
+          "value": "Natural/harmonic minor scales in Am",
+          "page": 2
+        },
+        {
+          "value": "Motive and sequence",
+          "page": 2
+        },
+        {
+          "value": "Natural/harmonic minor scales in Dm",
+          "page": 2
+        },
+        {
+          "value": "Triads in root, 1st, and 2nd inversion",
+          "page": 2
+        },
+        {
+          "value": "Key of A minor: i, iv, and V7 chords",
+          "page": 2
+        },
+        {
+          "value": "Grace notes",
+          "page": 2
+        },
+        {
+          "value": "Key of D minor: i, iv, and V7 chords",
+          "page": 2
+        },
+        {
+          "value": "The 12 major and minor triads",
+          "page": 2
+        },
+        {
+          "value": "16th–note rhythm patterns",
+          "page": 2
+        }
+      ],
+      "correlatedLevels": {
+        "Alfred Premier": {
+          "value": "4",
+          "page": 2
+        },
+        "Alfred Basic": {
+          "value": "3/4",
+          "page": 2,
+          "parts": [
+            "3",
+            "4"
+          ]
+        },
+        "Piano Safari": {
+          "value": "3",
+          "page": 2
+        },
+        "Bastien 1 - 4": {
+          "value": "3/4",
+          "page": 2,
+          "parts": [
+            "3",
+            "4"
+          ]
+        },
+        "Piano Pronto": {
+          "value": "Mvt 3",
+          "page": 2
+        },
+        "Music Tree": {
+          "value": "Part 3",
+          "page": 2
+        },
+        "HLSP": {
+          "value": "5",
+          "page": 2
+        },
+        "Celebration Series": {
+          "value": "Level 1/ Level2",
+          "page": 2,
+          "parts": [
+            "Level 1",
+            "Level2"
+          ]
+        },
+        "RCM Exam": {
+          "value": "Grade 1",
+          "page": 2
+        },
+        "ABRSM Exam": {
+          "value": "Grade 1/ Grade 2",
+          "page": 2,
+          "parts": [
+            "Grade 1",
+            "Grade 2"
+          ]
+        }
+      }
+    },
+    {
+      "level": {
+        "value": "Piano Adventures Level 4",
+        "page": 2
+      },
+      "topics": [
+        {
+          "value": "Review of 16th- note rhythm patterns",
+          "page": 2
+        },
+        {
+          "value": "Patterns and sequence",
+          "page": 2
+        },
+        {
+          "value": "Am, Dm, Em natural/harmonic scales",
+          "page": 2
+        },
+        {
+          "value": "All sharp key signatures",
+          "page": 2
+        },
+        {
+          "value": "16th- notes in 6/8 time",
+          "page": 2
+        },
+        {
+          "value": "More study of chord inversions",
+          "page": 2
+        },
+        {
+          "value": "V7 chord in root position",
+          "page": 2
+        },
+        {
+          "value": "V7 chord in root position",
+          "page": 2
+        },
+        {
+          "value": "2-octave scales: C, G, D, A, E, B",
+          "page": 2
+        }
+      ],
+      "correlatedLevels": {
+        "Alfred Premier": {
+          "value": "5",
+          "page": 2
+        },
+        "Alfred Basic": {
+          "value": "4/5",
+          "page": 2,
+          "parts": [
+            "4",
+            "5"
+          ]
+        },
+        "Piano Safari": {
+          "value": null,
+          "page": 2,
+          "blankInSource": true
+        },
+        "Bastien 1 - 4": {
+          "value": "4",
+          "page": 2
+        },
+        "Piano Pronto": {
+          "value": "Mvt 4",
+          "page": 2
+        },
+        "Music Tree": {
+          "value": "Part 4",
+          "page": 2
+        },
+        "HLSP": {
+          "value": null,
+          "page": 2,
+          "blankInSource": true
+        },
+        "Celebration Series": {
+          "value": "Level 2/3",
+          "page": 2,
+          "parts": [
+            "Level 2",
+            "3"
+          ]
+        },
+        "RCM Exam": {
+          "value": "Grade 2",
+          "page": 2
+        },
+        "ABRSM Exam": {
+          "value": "Grade 2/ Grade 3",
+          "page": 2,
+          "parts": [
+            "Grade 2",
+            "Grade 3"
+          ]
+        }
+      }
+    },
+    {
+      "level": {
+        "value": "Piano Adventures Level 5",
+        "page": 2
+      },
+      "topics": [
+        {
+          "value": "I, IV, V chord inversion studies",
+          "page": 2
+        },
+        {
+          "value": "12/8 time signature",
+          "page": 2
+        },
+        {
+          "value": "Perfect intervals (4th, 5th, octave)",
+          "page": 2
+        },
+        {
+          "value": "Circle of 5ths",
+          "page": 2
+        },
+        {
+          "value": "Flat key signatures",
+          "page": 2
+        },
+        {
+          "value": "Three forms of minor scales",
+          "page": 2
+        },
+        {
+          "value": "Cadences in major and minor keys",
+          "page": 2
+        },
+        {
+          "value": "More repertoire in E major",
+          "page": 2
+        },
+        {
+          "value": "Major/minor intervals (2nd, 3rd, 6th, 7th)",
+          "page": 3
+        },
+        {
+          "value": "Two-octave arpeggios: C, G, D, A, E, B",
+          "page": 3
+        },
+        {
+          "value": "Two-octave flat scales: F, Bb, Eb",
+          "page": 3
+        },
+        {
+          "value": "Changing time signatures",
+          "page": 3
+        }
+      ],
+      "correlatedLevels": {
+        "Alfred Premier": {
+          "value": "6",
+          "page": 2
+        },
+        "Alfred Basic": {
+          "value": "5/6",
+          "page": 2,
+          "parts": [
+            "5",
+            "6"
+          ]
+        },
+        "Piano Safari": {
+          "value": null,
+          "page": 2,
+          "blankInSource": true
+        },
+        "Bastien 1 - 4": {
+          "value": null,
+          "page": 2,
+          "blankInSource": true
+        },
+        "Piano Pronto": {
+          "value": "Mvt 5/ Finale",
+          "page": 2,
+          "parts": [
+            "Mvt 5",
+            "Finale"
+          ]
+        },
+        "Music Tree": {
+          "value": "Part 4",
+          "page": 2
+        },
+        "HLSP": {
+          "value": null,
+          "page": 2,
+          "blankInSource": true
+        },
+        "Celebration Series": {
+          "value": "Level 3",
+          "page": 2
+        },
+        "RCM Exam": {
+          "value": "Grade 3",
+          "page": 2
+        },
+        "ABRSM Exam": {
+          "value": "Grade 3",
+          "page": 2
+        }
+      },
+      "notes": [
+        "The Level 5 row continues onto page 3: its last four topics (from 'Major/minor intervals' to 'Changing time signatures') appear at the top of page 3 above the repeated column header, with empty correlation cells; the correlated-level cells are printed once, on page 2. Read as a row continuation, not a separate level."
+      ]
+    },
+    {
+      "level": {
+        "value": "Beyond PA 5",
+        "page": 3
+      },
+      "topics": [],
+      "correlatedLevels": {
+        "Alfred Premier": {
+          "value": null,
+          "page": 3,
+          "blankInSource": true
+        },
+        "Alfred Basic": {
+          "value": null,
+          "page": 3,
+          "blankInSource": true
+        },
+        "Piano Safari": {
+          "value": null,
+          "page": 3,
+          "blankInSource": true
+        },
+        "Bastien 1 - 4": {
+          "value": null,
+          "page": 3,
+          "blankInSource": true
+        },
+        "Piano Pronto": {
+          "value": "Encore",
+          "page": 3
+        },
+        "Music Tree": {
+          "value": null,
+          "page": 3,
+          "blankInSource": true
+        },
+        "HLSP": {
+          "value": null,
+          "page": 3,
+          "blankInSource": true
+        },
+        "Celebration Series": {
+          "value": "Level 4",
+          "page": 3
+        },
+        "RCM Exam": {
+          "value": "Grade 4 and above",
+          "page": 3
+        },
+        "ABRSM Exam": {
+          "value": "Grade 4 and above",
+          "page": 3
+        }
+      }
+    }
+  ]
+}

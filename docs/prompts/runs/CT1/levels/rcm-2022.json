@@ -1,0 +1,4255 @@
+{
+  "source": {
+    "title": "Piano Syllabus, 2022 Edition (The Royal Conservatory of Music, RCM Certificate Program)",
+    "edition": "2022 Edition",
+    "url": "https://rcmusic-kentico-cdn.s3.amazonaws.com/rcm/media/main/about%20us/rcm%20publishing/piano-syllabus-2022-edition.pdf",
+    "retrieved": "2026-10-03",
+    "meaning": "RCM Piano Syllabus levels (Preparatory A, Preparatory B, Levels 1-10) are examination requirements per level: each level lists the technical tests, ear tests and sight-reading tests a candidate is examined on at that level (plus etudes and repertoire, which are not extracted here).",
+    "pageNumbering": "All 'page' values are PDF page numbers; they equal the printed page numbers in this document."
+  },
+  "notes": [
+    "Accidental signs (flat/sharp) are missing from pdftotext output ('B major' for B-flat major). Every key list here was read by eye from page images (130 dpi full-page views); entries carry keysReadFrom:'page image'. Level 10 spot-checked at 240 dpi.",
+    "Tempo cells: the pdftotext output keeps only '= N'; the note glyph before '=' was read by eye as a crotchet in every cell (unit:'crotchet', unitReadFrom:'page image').",
+    "Note-value / rest-value glyph cells (technical-test 'Note Values' column; ear-test and sight-reading 'Note Values' and 'Time Signature(s)' cells) have no text; they were read by eye and are marked readFrom:'page image'. Descriptions use British note names and describe shapes only. Time-signature glyphs (stacked digits) were read at 240 dpi crops for Levels 1-7 musicianship tables, Level 8-9 and Level 5-6 tables; the other time-signature cells (Preparatory A/B, Level 10, Level 8 lead-sheet, Level 9 playing/lead-sheet) were read from 130 dpi page views and are marked resolution:'130 dpi view'.",
+    "Beam counts in groups of four beamed notes: Level 6 technical-test cells were checked at 240 dpi and show a double beam (semiquavers). In Levels 7-10 the same-looking group renders with what looks like more beams at 240 dpi (Level 7 crop) but the beam count could not be reliably resolved; those cells are described as 'group of four beamed notes' with uncertain:true and no rhythmic value is asserted.",
+    "Preparatory A and B 'Playing' tasks print a staff showing the allowed starting notes and fingerings; that music notation was not transcribed: {unread} entries mark it. Page must be read by eye.",
+    "The ear-test 'Chord Progressions' formula in Levels 8-10 uses figured-bass numerals (superscript/subscript); read by eye from 240 dpi crops (Levels 8, 9, 10): 'I-IV-V 6-5 over 4-3 -I' (Level 8) and 'I-VI-IV-V 6 over 4 - V 8-7 -I' (Levels 9, 10). The en-dash separated figures are reproduced as printed.",
+    "Level 10 minor keys printed for the four-octave scales are 'F-sharp, G, G-sharp, A, B-flat, B minor' but for the tonic four-note chords 'F-sharp, G, A-flat, A, B-flat, B minor'; both read at 240 dpi and kept as printed (G-sharp vs A-flat difference may be intentional or an inconsistency in the source).",
+    "Levels 9 and 10 repeat the sight-playing section on the page after the musicianship page (Level 9: p. 82; Level 10: p. 93). Level 8 technical tests are on p. 70 and the musicianship page on p. 71; Level 1-7 technical tests and musicianship are on consecutive pages as cited per entry.",
+    "Etudes, repertoire lists, Theory prerequisites and the diploma levels are not extracted. 'HS' = hands separately and 'HT' = hands together, as printed (the abbreviations are not expanded in the source on the cited pages; the expansion is the common reading and is flagged here, not a printed definition).",
+    "Chord formulae and chord-name lists use a plain hyphen where the source prints an en dash (e.g. I-IV-I for I–IV–I; major-minor 7th); accidentals are spelled out (B-flat, F-sharp). Task sentences are quoted from the page text but several lines were rejoined; where a sentence begins OR/AND it is the source's own italic connector.",
+    "Technical-test cells that span several rows (e.g. a single 'Played' cell shared by a broken row and a solid/blocked row) are recorded on each row with sharedCell:true."
+  ],
+  "levels": {
+    "Preparatory A": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 9
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Legato Pentascales (five-finger patterns)",
+              "keys": [
+                "C, G, D major",
+                "A minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; tonic to dominant, ascending and descending (ending with solid/blocked root-position triad)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 100,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "crotchet",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 9
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Staccato Pentascales",
+              "keys": [
+                "C, G, D major",
+                "A minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; tonic to dominant, ascending and descending (ending with solid/blocked root-position triad)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 100,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "staccato crotchet (dot below the note)",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 9
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Triad Sequence - broken",
+              "keys": [
+                "C major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave, ascending",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "three beamed quavers marked as a triplet (3)",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 9
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Triad Sequence - solid/blocked",
+              "keys": [
+                "C major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave, ascending",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 72,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "crotchet followed by a crotchet rest",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 9
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given rhythm, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the given rhythm.",
+            "page": 9
+          },
+          "timeSignatures": [
+            {
+              "value": "4/4",
+              "page": 9,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, minim, crotchet, pair of beamed quavers",
+            "page": 9,
+            "readFrom": "page image"
+          },
+          "approximateLength": {
+            "value": "two measures",
+            "page": 9
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play two four-note melodies written on the grand staff starting on any of these notes with the given fingers:",
+            "page": 9
+          },
+          "hands": {
+            "value": "One melody in the treble clef, to be played with the right hand alone; one melody in the bass clef, to be played with the left hand alone.",
+            "page": 9
+          },
+          "melodyShape": {
+            "value": "The melodies will move by step in one direction only and may contain a repeated note. Fingering will be indicated for the first note only.",
+            "page": 9
+          },
+          "startingNotesStaff": {
+            "unread": "[music staff with starting notes and fingerings; no text extracted]",
+            "page": 9
+          },
+          "timeSignatures": [
+            {
+              "value": "4/4",
+              "page": 9,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop (rhythm table); playing table read at 130 dpi"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, minim, crotchet",
+            "page": 9,
+            "readFrom": "page image"
+          }
+        }
+      },
+      "earTests": {
+        "clapback": {
+          "task": {
+            "value": "Students will choose to clap, tap, or sing the rhythm of a short melody after the examiner has played it twice. The examiner will identify the time signature and count one measure before beginning.",
+            "page": 9
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4 and 4/4",
+              "page": 9,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, dotted minim, minim, crotchet, pair of beamed quavers",
+            "page": 9,
+            "readFrom": "page image"
+          },
+          "approximateLength": {
+            "value": "two measures",
+            "page": 9
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality (major or minor) of a triad after the examiner has played the first five notes of a major or minor scale followed by the tonic triad in solid/blocked form once.",
+            "page": 9
+          },
+          "chords": {
+            "value": "major and minor triads",
+            "page": 9
+          },
+          "position": {
+            "value": "root position",
+            "page": 9
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back a melody based on the first three notes of a major scale. The examiner will identify the key, play the tonic triad once, and play the melody twice.",
+            "page": 9
+          },
+          "beginningNote": {
+            "value": "tonic, mediant",
+            "page": 9
+          },
+          "keys": {
+            "value": "C, G major",
+            "page": 9
+          },
+          "approximateLength": {
+            "value": "four notes",
+            "page": 9
+          }
+        }
+      }
+    },
+    "Preparatory B": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 14
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Legato Pentascales (five-finger patterns)",
+              "keys": [
+                "D, A, F major",
+                "E, D minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; tonic to dominant, ascending and descending (ending with solid/blocked root-position triad)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 14
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Staccato Pentascales",
+              "keys": [
+                "D, A, F major",
+                "E, D minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; tonic to dominant, ascending and descending (ending with solid/blocked root-position triad)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "staccato pair of beamed quavers (dots below the notes)",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 14
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "One-octave Scales",
+              "keys": [
+                "C, G major",
+                "A minor (natural)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 14
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Contrary Motion Scale",
+              "keys": [
+                "C major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 1 octave",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 14
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - broken",
+              "keys": [
+                "C, G major",
+                "A minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 50,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "three beamed quavers marked as a triplet (3)",
+                "readFrom": "page image"
+              }
+            },
+            "page": 14
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given rhythm, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the given rhythm.",
+            "page": 14
+          },
+          "timeSignatures": [
+            {
+              "value": "4/4",
+              "page": 14,
+              "readFrom": "page image",
+              "resolution": "130 dpi view"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, minim, crotchet, pair of beamed quavers",
+            "page": 14,
+            "readFrom": "page image"
+          },
+          "approximateLength": {
+            "value": "two measures",
+            "page": 14
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play a short melody written on the grand staff, divided between the hands, and starting on any of these notes in the following positions.",
+            "page": 14
+          },
+          "fingering": {
+            "value": "Fingering will be indicated for the first note of each hand only.",
+            "page": 14
+          },
+          "startingNotesStaff": {
+            "unread": "[music staff with starting notes and fingerings; no text extracted]",
+            "page": 14
+          },
+          "timeSignatures": [
+            {
+              "value": "4/4",
+              "page": 14,
+              "readFrom": "page image",
+              "resolution": "130 dpi view"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, minim, crotchet",
+            "page": 14,
+            "readFrom": "page image"
+          }
+        }
+      },
+      "earTests": {
+        "clapback": {
+          "task": {
+            "value": "Students will choose to clap, tap, or sing the rhythm of a short melody after the examiner has played it twice. The examiner will identify the time signature and count one measure before beginning.",
+            "page": 14
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4 and 4/4",
+              "page": 14,
+              "readFrom": "page image",
+              "resolution": "130 dpi view"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, dotted minim, minim, crotchet, pair of beamed quavers (read at 130 dpi; appeared identical to Preparatory A)",
+            "page": 14,
+            "readFrom": "page image",
+            "uncertain": true
+          },
+          "approximateLength": {
+            "value": "two measures",
+            "page": 14
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality (major or minor) of a triad after the examiner has played the first five notes of a major or minor scale followed by the tonic triad in solid/blocked form once.",
+            "page": 14
+          },
+          "chords": {
+            "value": "major and minor triads",
+            "page": 14
+          },
+          "position": {
+            "value": "root position",
+            "page": 14
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back a melody based on the first three notes of a major or minor scale. The examiner will identify the key, play the tonic triad once, and play the melody twice.",
+            "page": 14
+          },
+          "beginningNote": {
+            "value": "tonic, mediant",
+            "page": 14
+          },
+          "keys": {
+            "value": "C, G major; A minor",
+            "page": 14
+          },
+          "approximateLength": {
+            "value": "four notes",
+            "page": 14
+          }
+        }
+      }
+    },
+    "Level 1": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 19
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Two-octave",
+              "keys": [
+                "C, G, F major",
+                "A, E, D minor (natural and harmonic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 69,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 19
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Contrary Motion",
+              "keys": [
+                "C major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 69,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 19
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Chromatic",
+              "keys": [
+                "Starting on C"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 69,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 19
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - broken",
+              "keys": [
+                "C, G, F major",
+                "A, E, D minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 50,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "three beamed quavers marked as a triplet (3)",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 19
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - solid/blocked",
+              "keys": [
+                "C, G, F major",
+                "A, E, D minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 100,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "crotchet followed by a crotchet rest",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 19
+          }
+        ],
+        "notes": [
+          {
+            "value": "All scales are to be played legato.",
+            "page": 19
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given rhythm, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the given rhythm.",
+            "page": 20
+          },
+          "timeSignatures": [
+            {
+              "value": "4/4",
+              "page": 20,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, minim, crotchet, pair of beamed quavers",
+            "page": 20,
+            "readFrom": "page image"
+          },
+          "approximateLength": {
+            "value": "two measures",
+            "page": 20
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play a four-measure melody, written on the grand staff and divided between the hands. Fingering will be indicated for the first note of each hand only.",
+            "page": 20
+          },
+          "keys": {
+            "value": "C, G, F major; A minor",
+            "page": 20
+          },
+          "timeSignatures": [
+            {
+              "value": "4/4",
+              "page": 20,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, minim, crotchet",
+            "page": 20,
+            "readFrom": "page image"
+          },
+          "length": {
+            "value": "four-measure melody",
+            "page": 20
+          }
+        }
+      },
+      "earTests": {
+        "clapback": {
+          "task": {
+            "value": "Students will choose to clap, tap, or sing the rhythm of a short melody after the examiner has played it twice. The examiner will identify the time signature and count one measure before beginning.",
+            "page": 20
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4 and 4/4",
+              "page": 20,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, dotted minim, minim, crotchet, pair of beamed quavers, dotted crotchet, quaver",
+            "page": 20,
+            "readFrom": "page image"
+          },
+          "approximateLength": {
+            "value": "two to three measures",
+            "page": 20
+          }
+        },
+        "intervals": {
+          "task": {
+            "value": "Students will be asked to identify any of the following intervals. The examiner will play each interval in melodic form (ascending and descending) once.",
+            "page": 20
+          },
+          "alternative": {
+            "value": "OR Students may choose to sing or hum any of the following intervals (ascending and descending). The examiner will play the first note once.",
+            "page": 20
+          },
+          "list": {
+            "value": [
+              "minor 3rd",
+              "major 3rd"
+            ],
+            "page": 20
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality (major or minor) of a triad after the examiner has played it in broken and then solid/blocked form once.",
+            "page": 20
+          },
+          "chords": {
+            "value": "major and minor triads",
+            "page": 20
+          },
+          "position": {
+            "value": "root position",
+            "page": 20
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back a melody based on the first five notes of a major or minor scale. The examiner will identify the key, play the tonic triad once, and play the melody twice.",
+            "page": 20
+          },
+          "beginningNote": {
+            "value": "tonic, dominant",
+            "page": 20
+          },
+          "keys": {
+            "value": "C, G major; A minor",
+            "page": 20
+          },
+          "approximateLength": {
+            "value": "five notes",
+            "page": 20
+          }
+        }
+      }
+    },
+    "Level 2": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 25
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Two-octave",
+              "keys": [
+                "G, F, B-flat major",
+                "E, D, G minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 25
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Formula Pattern",
+              "keys": [
+                "C, G major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 25
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Chromatic",
+              "keys": [
+                "Starting on G"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 25
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - broken",
+              "keys": [
+                "G, F, B-flat major",
+                "E, D, G minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "three beamed quavers marked as a triplet (3)",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 25
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - solid/blocked",
+              "keys": [
+                "G, F, B-flat major",
+                "E, D, G minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 112,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "crotchet followed by a crotchet rest",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 25
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given rhythm, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the given rhythm.",
+            "page": 26
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4 and 4/4",
+              "page": 26,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, dotted minim, minim, crotchet, pair of beamed quavers, crotchet rest (column headed 'Note and Rest Values')",
+            "page": 26,
+            "readFrom": "page image"
+          },
+          "approximateLength": {
+            "value": "two to four measures",
+            "page": 26
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play a four-measure melody, written on the grand staff and divided between the hands. Melodies may move beyond the five-finger position.",
+            "page": 26
+          },
+          "keys": {
+            "value": "C, G, F major; A, D minor",
+            "page": 26
+          },
+          "timeSignatures": [
+            {
+              "value": "4/4",
+              "page": 26,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, minim, crotchet, pair of beamed quavers",
+            "page": 26,
+            "readFrom": "page image"
+          },
+          "length": {
+            "value": "four-measure melody",
+            "page": 26
+          }
+        }
+      },
+      "earTests": {
+        "clapback": {
+          "task": {
+            "value": "Students will choose to clap, tap, or sing the rhythm of a short melody after the examiner has played it twice. The examiner will identify the time signature and count one measure before beginning.",
+            "page": 26
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4 and 4/4",
+              "page": 26,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, dotted minim, minim, crotchet, pair of beamed quavers, dotted crotchet, quaver",
+            "page": 26,
+            "readFrom": "page image"
+          },
+          "approximateLength": {
+            "value": "two to three measures",
+            "page": 26
+          }
+        },
+        "intervals": {
+          "task": {
+            "value": "Students will be asked to identify any of the following intervals. The examiner will play each interval in melodic form (ascending and descending) once.",
+            "page": 26
+          },
+          "alternative": {
+            "value": "OR Students may choose to sing or hum any of the following intervals (ascending and descending). The examiner will play the first note once.",
+            "page": 26
+          },
+          "list": {
+            "value": [
+              "minor 3rd",
+              "major 3rd",
+              "perfect 5th"
+            ],
+            "page": 26
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality (major or minor) of a triad after the examiner has played it in solid/blocked form once.",
+            "page": 26
+          },
+          "chords": {
+            "value": "major and minor triads",
+            "page": 26
+          },
+          "position": {
+            "value": "root position",
+            "page": 26
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back a melody based on the first five notes of a major or minor scale. The examiner will identify the key, play the tonic triad once, and play the melody twice.",
+            "page": 26
+          },
+          "beginningNote": {
+            "value": "tonic, dominant",
+            "page": 26
+          },
+          "keys": {
+            "value": "G, F major; D minor",
+            "page": 26
+          },
+          "approximateLength": {
+            "value": "five notes",
+            "page": 26
+          }
+        }
+      }
+    },
+    "Level 3": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 31
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Two-octave",
+              "keys": [
+                "D, F, B-flat major",
+                "B, D, G minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 31
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Formula Pattern",
+              "keys": [
+                "D major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 31
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Chromatic",
+              "keys": [
+                "Starting on D"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 31
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - broken",
+              "keys": [
+                "D, F, B-flat major",
+                "B, D, G minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 69,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "three beamed quavers marked as a triplet (3)",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 31
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - solid/blocked",
+              "keys": [
+                "D, F, B-flat major",
+                "B, D, G minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 120,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "crotchet followed by a crotchet rest",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 31
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given rhythm, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the given rhythm.",
+            "page": 32
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4 and 4/4",
+              "page": 32,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, dotted minim, minim, crotchet, pair of beamed quavers, dotted crotchet, quaver, crotchet rest (column headed 'Note and Rest Values')",
+            "page": 32,
+            "readFrom": "page image"
+          },
+          "approximateLength": {
+            "value": "four measures",
+            "page": 32
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play a four-measure passage, hands together.",
+            "page": 32
+          },
+          "keys": {
+            "value": "C, G, D, F major; A, D minor",
+            "page": 32
+          },
+          "timeSignatures": [
+            {
+              "value": "4/4",
+              "page": 32,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, minim, crotchet, pair of beamed quavers",
+            "page": 32,
+            "readFrom": "page image"
+          },
+          "length": {
+            "value": "four-measure passage",
+            "page": 32
+          }
+        }
+      },
+      "earTests": {
+        "clapback": {
+          "task": {
+            "value": "Students will choose to clap, tap, or sing the rhythm of a short melody after the examiner has played it twice. The examiner will identify the time signature and count one measure before beginning.",
+            "page": 32
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4 and 4/4",
+              "page": 32,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, dotted minim, minim, crotchet, pair of beamed quavers, dotted crotchet, quaver",
+            "page": 32,
+            "readFrom": "page image"
+          },
+          "approximateLength": {
+            "value": "three to four measures",
+            "page": 32
+          }
+        },
+        "intervals": {
+          "task": {
+            "value": "Students will be asked to identify any of the following intervals. The examiner will play each interval in melodic form (ascending and descending) once.",
+            "page": 32
+          },
+          "alternative": {
+            "value": "OR Students may choose to sing or hum any of the following intervals (ascending and descending). The examiner will play the first note once.",
+            "page": 32
+          },
+          "list": {
+            "value": [
+              "minor 3rd",
+              "major 3rd",
+              "perfect 4th",
+              "perfect 5th"
+            ],
+            "page": 32
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality (major or minor) of a triad after the examiner has played it in solid/blocked form once. AND Students will be asked to identify a single note as the root, third, or fifth of a major or minor triad after the examiner has played the triad in broken form once.",
+            "page": 32
+          },
+          "chords": {
+            "value": "major and minor triads",
+            "page": 32
+          },
+          "position": {
+            "value": "root position",
+            "page": 32
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back a melody based on the first five notes of a major or minor scale. The examiner will identify the key, play the tonic triad once, and play the melody twice.",
+            "page": 32
+          },
+          "beginningNote": {
+            "value": "tonic, mediant, dominant",
+            "page": 32
+          },
+          "keys": {
+            "value": "D, F major; D, G minor",
+            "page": 32
+          },
+          "approximateLength": {
+            "value": "five to six notes",
+            "page": 32
+          }
+        }
+      }
+    },
+    "Level 4": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 38
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Two-octave",
+              "keys": [
+                "D, A, B-flat, E-flat major",
+                "B, G, C minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 92,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 38
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Formula Pattern",
+              "keys": [
+                "C minor (harmonic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 92,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 38
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Chromatic",
+              "keys": [
+                "Starting on C"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 38
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - broken",
+              "keys": [
+                "D, A, B-flat, E-flat major",
+                "B, G, C minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "three beamed quavers marked as a triplet (3)",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 38
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - solid/blocked",
+              "keys": [
+                "D, A, B-flat, E-flat major",
+                "B, G, C minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 120,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "crotchet followed by a crotchet rest",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 38
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Tonic",
+              "keys": [
+                "D, A, B-flat, E-flat major",
+                "B, G, C minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves (root position only)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 72,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 38
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given melody, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the rhythm of the given melody.",
+            "page": 39
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4 and 4/4",
+              "page": 39,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, dotted minim, minim, crotchet, pair of beamed quavers, dotted crotchet, quaver, dotted quaver + semiquaver (beamed pair), crotchet rest (column headed 'Note and Rest Values'); time signatures 3/4 and 4/4",
+            "page": 39,
+            "readFrom": "page image"
+          },
+          "approximateLength": {
+            "value": "four measures",
+            "page": 39
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play a four-measure passage, hands together.",
+            "page": 39
+          },
+          "keys": {
+            "value": "C, G, D, F major; A, E, D minor",
+            "page": 39
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4 and 4/4",
+              "page": 39,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, dotted minim, minim, crotchet, pair of beamed quavers",
+            "page": 39,
+            "readFrom": "page image"
+          },
+          "length": {
+            "value": "four-measure passage",
+            "page": 39
+          }
+        }
+      },
+      "earTests": {
+        "clapback": {
+          "task": {
+            "value": "Students will choose to clap, tap, or sing the rhythm of a short melody after the examiner has played it twice. The examiner will identify the time signature and count one measure before beginning.",
+            "page": 39
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4, 4/4 and 6/8",
+              "page": 39,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "value": "semibreve, dotted minim, minim, crotchet, pair of beamed quavers, dotted crotchet, quaver, dotted quaver + semiquaver (beamed pair)",
+            "page": 39,
+            "readFrom": "page image"
+          },
+          "approximateLength": {
+            "value": "two to four measures",
+            "page": 39
+          }
+        },
+        "intervals": {
+          "task": {
+            "value": "Students will be asked to identify any of the following intervals. The examiner will play each interval in melodic form (ascending and descending) once.",
+            "page": 39
+          },
+          "alternative": {
+            "value": "OR Students may choose to sing or hum any of the following intervals (ascending and descending). The examiner will play the first note once.",
+            "page": 39
+          },
+          "list": {
+            "value": [
+              "minor 3rd",
+              "major 3rd",
+              "perfect 4th",
+              "perfect 5th",
+              "perfect octave"
+            ],
+            "page": 39
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality (major or minor) of a triad after the examiner has played it in solid/blocked form once. AND Students will be asked to identify a single note as the root, third, or fifth of a major or minor triad after the examiner has played the triad in broken form once.",
+            "page": 39
+          },
+          "chords": {
+            "value": "major and minor triads",
+            "page": 39
+          },
+          "position": {
+            "value": "root position",
+            "page": 39
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back a melody based on the first five notes of a major or minor scale. The examiner will identify the key, play the tonic triad once, and play the melody twice.",
+            "page": 39
+          },
+          "beginningNote": {
+            "value": "tonic, mediant, dominant",
+            "page": 39
+          },
+          "keys": {
+            "value": "D, A major; G, C minor",
+            "page": 39
+          },
+          "approximateLength": {
+            "value": "six to eight notes",
+            "page": 39
+          }
+        }
+      }
+    },
+    "Level 5": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 45
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Two-octave",
+              "keys": [
+                "A, E, F, A-flat major",
+                "A, E, F minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 45
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Formula Pattern",
+              "keys": [
+                "A major",
+                "A minor (harmonic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 45
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Chromatic",
+              "keys": [
+                "Starting on A, F"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 1 octave",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 45
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - broken",
+              "keys": [
+                "A, E, F, A-flat major",
+                "A, E, F minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions) ending with I-V-I progression",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 66,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "three beamed quavers marked as a triplet (3)",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 45
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - solid/blocked",
+              "keys": [
+                "A, E, F, A-flat major",
+                "A, E, F minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions) ending with I-V-I progression",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 66,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 45
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th Chords - broken",
+              "keys": [
+                "A, E, F, A-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 72,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 45
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th Chords - solid/blocked",
+              "keys": [
+                "A, E, F, A-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 1 octave (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 45
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Tonic",
+              "keys": [
+                "A, E, F, A-flat major",
+                "A, E, F minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves (root position only)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              }
+            },
+            "page": 45
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given melody, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the rhythm of the given melody.",
+            "page": 46
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4, 4/4 and 6/8",
+              "page": 46,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "notPrinted": "no note-value column in this table (only Time Signatures and Approximate Length)",
+            "page": 46
+          },
+          "approximateLength": {
+            "value": "four measures",
+            "page": 46
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play a passage of music comparable to Level 2 repertoire.",
+            "page": 46
+          },
+          "keys": {
+            "value": "major and minor keys, up to two sharps or flats",
+            "page": 46
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4, 4/4 and 6/8",
+              "page": 46,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "approximateLength": {
+            "value": "eight measures",
+            "page": 46
+          },
+          "alternativeLeadSheet": {
+            "value": "Students may choose to read a lead sheet (with a melody and root/quality chord symbols) and realize an accompaniment based on the chord symbols provided. Harmonic vocabulary will be aligned with the chords presented for study in Level 5 Theory in the Theory Syllabus.",
+            "page": 46
+          },
+          "alternativeKeys": {
+            "value": "major and minor keys, up to two sharps or flats",
+            "page": 46
+          },
+          "alternativeTimeSignatures": [
+            {
+              "value": "3/4, 4/4 and 6/8",
+              "page": 46,
+              "readFrom": "page image",
+              "resolution": "130 dpi view"
+            }
+          ],
+          "alternativeLength": {
+            "value": "eight measures",
+            "page": 46
+          }
+        }
+      },
+      "earTests": {
+        "intervals": {
+          "task": {
+            "value": "Students will be asked to identify any of the following intervals. The examiner will play each interval in melodic form (ascending or descending) followed by harmonic form once.",
+            "page": 46
+          },
+          "alternative": {
+            "value": "OR Students may choose to sing or hum any of the following intervals (ascending or descending). The examiner will play the first note once.",
+            "page": 46
+          },
+          "list": {
+            "value": [
+              "minor 3rd, major 3rd",
+              "perfect 4th",
+              "perfect 5th",
+              "minor 6th, major 6th",
+              "perfect octave"
+            ],
+            "page": 46
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality of the following chords after the examiner has played the chord in solid/blocked form, close position once.",
+            "page": 46
+          },
+          "chords": {
+            "value": [
+              "major and minor triads",
+              "dominant 7th (major-minor 7th)"
+            ],
+            "page": 46
+          },
+          "position": {
+            "value": "root position",
+            "page": 46
+          }
+        },
+        "chordProgressions": {
+          "task": {
+            "value": "Students will be asked to identify chord progressions in major keys as I-IV-I or I-V-I after the examiner has played the progression twice. The progression will be played in keyboard style, and the bass line will ascend from the tonic.",
+            "page": 46
+          },
+          "progressions": {
+            "value": {
+              "major": [
+                "I-IV-I",
+                "I-V-I"
+              ]
+            },
+            "page": 46
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back a melody based on the first five notes and upper tonic of a major or minor scale. The examiner will identify the key and time signature, play the tonic chord once, and play the melody three times. Before the first playing, the examiner will count one measure. After the second playing, the student will clap the rhythm or sing the melody. After the third playing, the student will play the melody.",
+            "page": 46
+          },
+          "beginningNote": {
+            "value": "tonic, mediant, dominant, upper tonic",
+            "page": 46
+          },
+          "keys": {
+            "value": "A, E major; A, E minor",
+            "page": 46
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4 and 4/4",
+              "page": 46,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "approximateLength": {
+            "value": "up to eight notes",
+            "page": 46
+          },
+          "alternativeImprovise": {
+            "task": {
+              "value": "Students may choose to play back a given four-measure question phrase and improvise an answer phrase to create an eight-measure parallel period. The examiner will identify the key and time signature, play the tonic chord once, and play the question phrase three times.",
+              "page": 46
+            },
+            "beginningNote": {
+              "value": "tonic, mediant, dominant, upper tonic",
+              "page": 46
+            },
+            "keys": {
+              "value": "C, G, F major",
+              "page": 46
+            },
+            "timeSignatures": [
+              {
+                "value": "3/4 and 4/4",
+                "page": 46,
+                "readFrom": "page image",
+                "resolution": "240 dpi crop"
+              }
+            ],
+            "totalLength": {
+              "value": "eight measures",
+              "page": 46
+            }
+          }
+        }
+      }
+    },
+    "Level 6": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 53
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Two-octave",
+              "keys": [
+                "G, E, B, D-flat major",
+                "G, E, B, C-sharp minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "four beamed semiquavers (double beam, checked at 240 dpi)",
+                "readFrom": "page image"
+              }
+            },
+            "page": 53
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Formula Pattern",
+              "keys": [
+                "E major",
+                "E minor (harmonic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "four beamed semiquavers (double beam, checked at 240 dpi)",
+                "readFrom": "page image"
+              }
+            },
+            "page": 53
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Chromatic",
+              "keys": [
+                "Starting on E, D-flat"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "four beamed semiquavers (double beam, checked at 240 dpi)",
+                "readFrom": "page image"
+              }
+            },
+            "page": 53
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - broken",
+              "keys": [
+                "G, E, B, D-flat major",
+                "G, E, B, C-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions) ending with I-V-I progression",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "three beamed quavers marked as a triplet (3)",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 53
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Triads - solid/blocked",
+              "keys": [
+                "G, E, B, D-flat major",
+                "G, E, B, C-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions) ending with I-V-I progression",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 53
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th Chords - broken",
+              "keys": [
+                "G, E, B, D-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 88,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 53
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th Chords - solid/blocked",
+              "keys": [
+                "G, E, B, D-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 72,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 53
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Leading-tone Diminished 7th Chords - broken",
+              "keys": [
+                "G, E, B, C-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 88,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 53
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Leading-tone Diminished 7th Chords - solid/blocked",
+              "keys": [
+                "G, E, B, C-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 72,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 53
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Tonic",
+              "keys": [
+                "G, E, B, D-flat major",
+                "G, E, B, C-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves (root position only)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 92,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 53
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Dominant 7th",
+              "keys": [
+                "G, E, B, D-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves (root position only)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 92,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 53
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Leading-tone Diminished 7th",
+              "keys": [
+                "G, E, B, C-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HS; 2 octaves (root position only)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 92,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two beamed quavers",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 53
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given melody, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the rhythm of the given melody.",
+            "page": 54
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4, 4/4 and 6/8",
+              "page": 54,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "notPrinted": "no note-value column in this table (only Time Signatures and Approximate Length)",
+            "page": 54
+          },
+          "approximateLength": {
+            "value": "four measures",
+            "page": 54
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play a passage of music comparable to Level 3 repertoire.",
+            "page": 54
+          },
+          "keys": {
+            "value": "major and minor keys, up to three sharps or flats",
+            "page": 54
+          },
+          "timeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8",
+              "page": 54,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "approximateLength": {
+            "value": "eight measures",
+            "page": 54
+          },
+          "alternativeLeadSheet": {
+            "value": "Students may choose to read a lead sheet (with a melody and root/quality chord symbols) and realize an accompaniment based on the chord symbols provided. Harmonic vocabulary will be aligned with the chords presented for study in Level 6 Theory in the Theory Syllabus.",
+            "page": 54
+          },
+          "alternativeKeys": {
+            "value": "major and minor keys, up to two sharps or flats",
+            "page": 54
+          },
+          "alternativeTimeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8",
+              "page": 54,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "alternativeLength": {
+            "value": "eight measures",
+            "page": 54
+          }
+        }
+      },
+      "earTests": {
+        "intervals": {
+          "task": {
+            "value": "Students will be asked to identify any of the following intervals. The examiner will play each interval in melodic form (ascending or descending) followed by harmonic form once.",
+            "page": 54
+          },
+          "alternative": {
+            "value": "OR Students may choose to sing or hum any of the following intervals (ascending or descending). The examiner will play the first note once.",
+            "page": 54
+          },
+          "list": {
+            "value": [
+              "minor 2nd, major 2nd",
+              "minor 3rd, major 3rd",
+              "perfect 4th",
+              "perfect 5th",
+              "minor 6th, major 6th",
+              "perfect octave"
+            ],
+            "page": 54
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality of the following chords after the examiner has played the chord in solid/blocked form, close position once.",
+            "page": 54
+          },
+          "chords": {
+            "value": [
+              "major and minor triads",
+              "dominant 7th (major-minor 7th)",
+              "diminished 7th"
+            ],
+            "page": 54
+          },
+          "position": {
+            "value": "root position",
+            "page": 54
+          }
+        },
+        "chordProgressions": {
+          "task": {
+            "value": "Students will be asked to identify chord progressions in major or minor keys as listed below, after the examiner has played the progression twice. The progression will be played in keyboard style, and the bass line will ascend from the tonic.",
+            "page": 54
+          },
+          "progressions": {
+            "value": {
+              "major": [
+                "I-IV-I",
+                "I-V-I"
+              ],
+              "minor": [
+                "i-iv-i",
+                "i-V-i"
+              ]
+            },
+            "page": 54
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back a melody based on the complete scale (from tonic to tonic or dominant to dominant). The examiner will identify the key and time signature, play the tonic chord once, and play the melody three times. Before the first playing, the examiner will count one measure. After the second playing, the student will clap the rhythm or sing the melody. After the third playing, the student will play the melody.",
+            "page": 54
+          },
+          "beginningNote": {
+            "value": "tonic, mediant, dominant, upper tonic",
+            "page": 54
+          },
+          "keys": {
+            "value": "G, E major; G, E minor",
+            "page": 54
+          },
+          "timeSignatures": [
+            {
+              "value": "3/4 and 4/4",
+              "page": 54,
+              "readFrom": "page image",
+              "resolution": "130 dpi view"
+            }
+          ],
+          "approximateLength": {
+            "value": "up to nine notes",
+            "page": 54
+          },
+          "alternativeImprovise": {
+            "task": {
+              "value": "Students may choose to play back a given four-measure question phrase and improvise an answer phrase to create an eight-measure parallel period. The examiner will identify the key and time signature, play the tonic chord once, and play the question phrase three times.",
+              "page": 54
+            },
+            "beginningNote": {
+              "value": "tonic, mediant, dominant, upper tonic",
+              "page": 54
+            },
+            "keys": {
+              "value": "C, G, F major",
+              "page": 54
+            },
+            "timeSignatures": [
+              {
+                "value": "3/4 and 4/4",
+                "page": 54,
+                "readFrom": "page image",
+                "resolution": "130 dpi view"
+              }
+            ],
+            "totalLength": {
+              "value": "eight measures",
+              "page": 54
+            }
+          }
+        }
+      }
+    },
+    "Level 7": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 61
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Two-octave",
+              "keys": [
+                "C, D, F, A-flat, G-flat major",
+                "C, D, F, G-sharp, F-sharp minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 76,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 61
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Formula Pattern",
+              "keys": [
+                "D major",
+                "D minor (harmonic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 76,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 61
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Chromatic",
+              "keys": [
+                "Starting on D, G-flat"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 76,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 61
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Four-Note - broken only",
+              "keys": [
+                "C, D, F, A-flat, G-flat major",
+                "C, D, F, G-sharp, F-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions) ending with I-IV-V-I progression",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 61
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th Chords - broken",
+              "keys": [
+                "C, D, F, A-flat, G-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 61
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th Chords - solid/blocked",
+              "keys": [
+                "C, D, F, A-flat, G-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 61
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Leading-tone Diminished 7th Chords - broken",
+              "keys": [
+                "C, D, F, G-sharp, F-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 61
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Leading-tone Diminished 7th Chords - solid/blocked",
+              "keys": [
+                "C, D, F, G-sharp, F-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 61
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Tonic",
+              "keys": [
+                "C, D, F, A-flat, G-flat major",
+                "C, D, F, G-sharp, F-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 61
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Dominant 7th",
+              "keys": [
+                "C, D, F, A-flat, G-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position only)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 61
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Leading-tone Diminished 7th",
+              "keys": [
+                "C, D, F, G-sharp, F-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position only)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 61
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given melody, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the rhythm of the given melody.",
+            "page": 62
+          },
+          "timeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8",
+              "page": 62,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "notPrinted": "no note-value column in this table (only Time Signatures and Approximate Length)",
+            "page": 62
+          },
+          "approximateLength": {
+            "value": "four measures",
+            "page": 62
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play a passage of music comparable to Level 4 repertoire.",
+            "page": 62
+          },
+          "keys": {
+            "value": "major and minor keys, up to three sharps or flats",
+            "page": 62
+          },
+          "timeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8",
+              "page": 62,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "approximateLength": {
+            "value": "eight to twelve measures",
+            "page": 62
+          },
+          "alternativeLeadSheet": {
+            "value": "Students may choose to read a lead sheet (with a melody and root/quality chord symbols) and realize an accompaniment based on the chord symbols provided. Harmonic vocabulary will be aligned with the chords presented for study in Level 7 Theory in the Theory Syllabus. Students are encouraged to provide creative accompaniments appropriate to the style of the given melody.",
+            "page": 62
+          },
+          "alternativeKeys": {
+            "value": "major and minor keys, up to three sharps or flats",
+            "page": 62
+          },
+          "alternativeTimeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8",
+              "page": 62,
+              "readFrom": "page image",
+              "resolution": "130 dpi view"
+            }
+          ],
+          "alternativeLength": {
+            "value": "eight to twelve measures",
+            "page": 62
+          }
+        }
+      },
+      "earTests": {
+        "intervals": {
+          "task": {
+            "value": "Students will be asked to identify any of the following intervals. The examiner will play each interval in melodic form (ascending or descending) followed by harmonic form once.",
+            "page": 62
+          },
+          "alternative": {
+            "value": "OR Students may choose to sing or hum any of the following intervals (ascending or descending). The examiner will play the first note once.",
+            "page": 62
+          },
+          "list": {
+            "value": [
+              "minor 2nd, major 2nd",
+              "minor 3rd, major 3rd",
+              "perfect 4th",
+              "perfect 5th",
+              "minor 6th, major 6th",
+              "minor 7th, major 7th",
+              "perfect octave"
+            ],
+            "page": 62
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality of the following chords after the examiner has played the chord in solid/blocked form, close position once.",
+            "page": 62
+          },
+          "chords": {
+            "value": [
+              "major, minor, and augmented triads",
+              "dominant 7th (major-minor 7th)",
+              "diminished 7th"
+            ],
+            "page": 62
+          },
+          "position": {
+            "value": "root position",
+            "page": 62
+          }
+        },
+        "chordProgressions": {
+          "task": {
+            "value": "Students will be asked to identify chord progressions in major or minor keys as listed below, after the examiner has played the progression twice. The progression will be played in keyboard style, and the bass line will ascend from the tonic.",
+            "page": 62
+          },
+          "progressions": {
+            "value": {
+              "major": [
+                "I-IV-I",
+                "I-V-I",
+                "I-IV-V"
+              ],
+              "minor": [
+                "i-iv-i",
+                "i-V-i",
+                "i-iv-V"
+              ]
+            },
+            "page": 62
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back a melody based on the complete scale (from tonic to tonic or dominant to dominant). The examiner will identify the key and time signature, play the tonic chord once, and play the melody three times. Before the first playing, the examiner will count one measure. After the second playing, the student will clap the rhythm or sing the melody. After the third playing, the student will play the melody.",
+            "page": 62
+          },
+          "beginningNote": {
+            "value": "tonic, mediant, dominant, upper tonic",
+            "page": 62
+          },
+          "keys": {
+            "value": "D, F major; D, F minor",
+            "page": 62
+          },
+          "timeSignatures": [
+            {
+              "value": "2/4, 3/4 and 6/8",
+              "page": 62,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "approximateLength": {
+            "value": "up to ten notes",
+            "page": 62
+          },
+          "alternativeImprovise": {
+            "task": {
+              "value": "Students may choose to play back a given four-measure question phrase and improvise an answer phrase to create an eight-measure contrasting period. The examiner will identify the key and time signature, play the tonic chord once, and play the question phrase three times.",
+              "page": 62
+            },
+            "beginningNote": {
+              "value": "tonic, mediant, dominant, upper tonic",
+              "page": 62
+            },
+            "keys": {
+              "value": "C, G, F major",
+              "page": 62
+            },
+            "timeSignatures": [
+              {
+                "value": "2/4, 3/4 and 6/8",
+                "page": 62,
+                "readFrom": "page image",
+                "resolution": "240 dpi crop"
+              }
+            ],
+            "totalLength": {
+              "value": "eight measures",
+              "page": 62
+            }
+          }
+        }
+      }
+    },
+    "Level 8": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 70
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Four-octave",
+              "keys": [
+                "C, D, E, B-flat, E-flat, G-flat major",
+                "C, D, E, B-flat, E-flat, F-sharp minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 88,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 70
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Formula Pattern",
+              "keys": [
+                "E-flat major",
+                "E-flat minor (harmonic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 88,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 70
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Chromatic",
+              "keys": [
+                "Starting on E-flat, E"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 88,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 70
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Four-note - broken only",
+              "keys": [
+                "C, D, E, B-flat, E-flat, G-flat major",
+                "C, D, E, B-flat, E-flat, F-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions) ending with I-IV-V(6-5 over 4-3)-I progression",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "progressionReadFrom": "page image"
+            },
+            "page": 70
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th Chords - broken",
+              "keys": [
+                "C, D, E, B-flat, E-flat, G-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 70
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th Chords - solid/blocked",
+              "keys": [
+                "C, D, E, B-flat, E-flat, G-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 100,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 70
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Leading-tone Diminished 7th Chords - broken",
+              "keys": [
+                "C, D, E, B-flat, E-flat, F-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 70
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Leading-tone Diminished 7th Chords - solid/blocked",
+              "keys": [
+                "C, D, E, B-flat, E-flat, F-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 100,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 70
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Tonic",
+              "keys": [
+                "C, D, E, B-flat, E-flat, G-flat major",
+                "C, D, E, B-flat, E-flat, F-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 69,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 70
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Dominant 7th",
+              "keys": [
+                "C, D, E, B-flat, E-flat, G-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves (root position only)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 69,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 70
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Leading-tone Diminished 7th",
+              "keys": [
+                "C, D, E, B-flat, E-flat, F-sharp minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves (root position only)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 69,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 70
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given melody, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the rhythm of the given melody.",
+            "page": 71
+          },
+          "timeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8",
+              "page": 71,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "notPrinted": "no note-value column in this table (only Time Signatures and Approximate Length)",
+            "page": 71
+          },
+          "approximateLength": {
+            "value": "four measures",
+            "page": 71
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play a passage of music comparable to Level 5 repertoire.",
+            "page": 71
+          },
+          "keys": {
+            "value": "major and minor keys, up to four sharps or flats",
+            "page": 71
+          },
+          "timeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8 (may include an upbeat)",
+              "page": 71,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "approximateLength": {
+            "value": "eight to twelve measures",
+            "page": 71
+          },
+          "alternativeLeadSheet": {
+            "value": "Students may choose to read a lead sheet (with a melody and root/quality chord symbols) and realize an accompaniment based on the chord symbols provided. Harmonic vocabulary will be aligned with the chords presented for study in Level 8 Theory in the Theory Syllabus. Students are encouraged to provide creative accompaniments appropriate to the style of the given melody.",
+            "page": 71
+          },
+          "alternativeKeys": {
+            "value": "major and minor keys, up to three sharps or flats",
+            "page": 71
+          },
+          "alternativeTimeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8 (may include an upbeat)",
+              "page": 71,
+              "readFrom": "page image",
+              "resolution": "130 dpi view"
+            }
+          ],
+          "alternativeLength": {
+            "value": "eight to twelve measures",
+            "page": 71
+          }
+        }
+      },
+      "earTests": {
+        "intervals": {
+          "task": {
+            "value": "Students will be asked to identify any of the following intervals. The examiner will play each interval in melodic form (ascending or descending) followed by harmonic form once.",
+            "page": 71
+          },
+          "alternative": {
+            "value": "OR Students may choose to sing or hum any of the following intervals (ascending or descending). The examiner will play the first note once.",
+            "page": 71
+          },
+          "list": {
+            "value": [
+              "minor 2nd, major 2nd",
+              "minor 3rd, major 3rd",
+              "perfect 4th",
+              "augmented 4th/diminished 5th",
+              "perfect 5th",
+              "minor 6th, major 6th",
+              "minor 7th, major 7th",
+              "perfect octave"
+            ],
+            "page": 71
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality of the following chords after the examiner has played the chord in solid/blocked form, close position once.",
+            "page": 71
+          },
+          "chords": {
+            "value": [
+              "major, minor, and augmented triads",
+              "dominant 7th (major-minor 7th)",
+              "diminished 7th"
+            ],
+            "page": 71
+          },
+          "position": {
+            "value": "root position",
+            "page": 71
+          }
+        },
+        "chordProgressions": {
+          "task": {
+            "value": "Students will be asked to identify each chord in a four-chord progression in a major or minor key as listed below, after the examiner has played the progression twice. In the second playing, the examiner will pause on each chord for the student to identify it. The progression will be played in keyboard style.",
+            "page": 71
+          },
+          "progressions": {
+            "value": {
+              "major": [
+                "I-IV-V-I",
+                "I-IV-V-vi",
+                "I-vi-IV-V",
+                "I-vi-IV-I"
+              ],
+              "minor": [
+                "i-iv-V-i",
+                "i-iv-V-VI",
+                "i-VI-iv-V",
+                "i-VI-iv-i"
+              ]
+            },
+            "page": 71
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back a melody based on the complete scale (from tonic to tonic or dominant to dominant). The examiner will identify the key and time signature, play the tonic chord once, and play the melody three times. Before the first playing, the examiner will count one measure. After the second playing, the student will clap the rhythm or sing the melody. After the third playing, the student will play the melody.",
+            "page": 71
+          },
+          "beginningNote": {
+            "value": "tonic, mediant, dominant, upper tonic",
+            "page": 71
+          },
+          "keys": {
+            "value": "B-flat, E-flat major; C, E minor",
+            "page": 71
+          },
+          "timeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8 (may include an upbeat)",
+              "page": 71,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "approximateLength": {
+            "value": "up to eleven notes",
+            "page": 71
+          },
+          "alternativeImprovise": {
+            "task": {
+              "value": "Students may choose to play back a given four-measure question phrase and improvise an answer phrase to create an eight-measure contrasting period. The examiner will identify the key and time signature, play the tonic chord once, and play the question phrase three times.",
+              "page": 71
+            },
+            "beginningNote": {
+              "value": "tonic, mediant, dominant, upper tonic",
+              "page": 71
+            },
+            "keys": {
+              "value": "C, G, F major; A, E, D minor",
+              "page": 71
+            },
+            "timeSignatures": [
+              {
+                "value": "2/4, 3/4, 4/4 and 6/8 (may include an upbeat)",
+                "page": 71,
+                "readFrom": "page image",
+                "resolution": "240 dpi crop"
+              }
+            ],
+            "totalLength": {
+              "value": "eight measures",
+              "page": 71
+            }
+          }
+        }
+      }
+    },
+    "Level 9": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 80
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Four-octave",
+              "keys": [
+                "C, D-flat, D, E-flat, E, F major",
+                "C, C-sharp, D, E-flat, E, F minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Formula Pattern",
+              "keys": [
+                "F, D-flat major",
+                "F, C-sharp minor (harmonic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Chromatic",
+              "keys": [
+                "starting on any note from C-F"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "In Octaves - solid/blocked staccato",
+              "keys": [
+                "F, D-flat major",
+                "F, C-sharp minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 60,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true,
+              "alternativeTo": "broken legato* (printed 'or')"
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "In Octaves - broken legato*",
+              "keys": [
+                "F, D-flat major",
+                "F, C-sharp minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 72,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Four-note - broken",
+              "keys": [
+                "C, D-flat, D, E-flat, E, F major",
+                "C, C-sharp, D, E-flat, E, F minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions) ending with I-VI-IV-V(6 over 4)-V(8-7)-I progression",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true,
+              "progressionReadFrom": "page image"
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Four-note - solid/blocked",
+              "keys": [
+                "C, D-flat, D, E-flat, E, F major",
+                "C, C-sharp, D, E-flat, E, F minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions) ending with I-VI-IV-V(6 over 4)-V(8-7)-I progression",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true,
+              "alternativeTo": "broken alternate-note pattern** (printed 'or')"
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Four-note - broken alternate-note pattern**",
+              "keys": [
+                "C, D-flat, D, E-flat, E, F major",
+                "C, C-sharp, D, E-flat, E, F minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions) ending with I-VI-IV-V(6 over 4)-V(8-7)-I progression",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th - broken",
+              "keys": [
+                "C, D-flat, D, E-flat, E, F major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th - solid/blocked",
+              "keys": [
+                "C, D-flat, D, E-flat, E, F major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Leading-tone Diminished 7th - broken",
+              "keys": [
+                "C, C-sharp, D, E-flat, E, F minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Leading-tone Diminished 7th - solid/blocked",
+              "keys": [
+                "C, C-sharp, D, E-flat, E, F minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Tonic",
+              "keys": [
+                "C, D-flat, D, E-flat, E, F major",
+                "C, C-sharp, D, E-flat, E, F minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 84,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Dominant 7th",
+              "keys": [
+                "C, D-flat, D, E-flat, E, F major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 84,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 80
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Leading-tone Diminished 7th",
+              "keys": [
+                "C, C-sharp, D, E-flat, E, F minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 84,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 80
+          }
+        ],
+        "notes": [
+          {
+            "value": "* Broken legato octaves may be substituted for solid/blocked octaves for candidates with small hands.",
+            "page": 80
+          },
+          {
+            "value": "** Broken alternate-note pattern may be substituted for solid/blocked chords for candidates with small hands.",
+            "page": 80
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given melody, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the rhythm of the given melody.",
+            "page": 81
+          },
+          "timeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8",
+              "page": 81,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "noteValues": {
+            "notPrinted": "no note-value column in this table (only Time Signatures and Approximate Length)",
+            "page": 81
+          },
+          "approximateLength": {
+            "value": "four to six measures",
+            "page": 81
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play a passage of music comparable to Level 6 repertoire.",
+            "page": 82
+          },
+          "keys": {
+            "value": "major and minor keys up to five sharps or flats",
+            "page": 82
+          },
+          "timeSignatures": {
+            "value": "any",
+            "page": 82
+          },
+          "approximateLength": {
+            "value": "up to sixteen measures",
+            "page": 82
+          },
+          "alternativeLeadSheet": {
+            "value": "Students may choose to read a lead sheet (with a melody and root/quality chord symbols) and realize an accompaniment based on the chord symbols provided. Harmonic vocabulary will be aligned with the chords presented for study in Level 9 Harmony in the Theory Syllabus. Students are expected to provide creative accompaniments appropriate to the style of the given melody.",
+            "page": 82
+          },
+          "alternativeKeys": {
+            "value": "major and minor keys, up to four sharps or flats",
+            "page": 82
+          },
+          "alternativeTimeSignatures": {
+            "value": "any",
+            "page": 82
+          },
+          "alternativeLength": {
+            "value": "up to sixteen measures",
+            "page": 82
+          }
+        }
+      },
+      "earTests": {
+        "intervals": {
+          "task": {
+            "value": "Students will be asked to identify any of the following intervals. The examiner will play each interval in melodic form (ascending or descending) followed by harmonic form once.",
+            "page": 81
+          },
+          "alternative": {
+            "value": "OR Students may choose to sing or hum any of the following intervals (ascending or descending). The examiner will play the first note once.",
+            "page": 81
+          },
+          "list": {
+            "value": [
+              "minor 2nd, major 2nd",
+              "minor 3rd, major 3rd",
+              "perfect 4th",
+              "augmented 4th/diminished 5th",
+              "perfect 5th",
+              "minor 6th, major 6th",
+              "minor 7th, major 7th",
+              "perfect octave"
+            ],
+            "page": 81
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality of the following chords after the examiner has played the chord in solid/blocked form, close position once.",
+            "page": 81
+          },
+          "chords": {
+            "value": [
+              "major and minor four-note chords (root position, 1st inversion)",
+              "augmented triad (root position)",
+              "dominant 7th (major-minor 7th) (root position)",
+              "diminished 7th (root position)"
+            ],
+            "page": 81
+          },
+          "position": {
+            "value": "as listed per chord (column 'Positions')",
+            "page": 81
+          }
+        },
+        "chordProgressions": {
+          "task": {
+            "value": "Students will be asked to identify each chord in a four-chord progression in a major or minor key after the examiner has played the progression twice. In the second playing, the examiner will pause on each chord for the student to identify it. The progression will be played in keyboard style, beginning on the tonic chord, and may include any of the following chords.",
+            "page": 81
+          },
+          "progressions": {
+            "value": {
+              "major": "I, IV, V, vi (root position only)",
+              "minor": "i, iv, V, VI (root position only)"
+            },
+            "page": 81
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back the upper part of a two-part phrase. The examiner will identify the key and time signature, play the tonic chord once, and play the phrase three times. Before the first playing, the examiner will count one measure. After the second playing, the student will clap the rhythm or sing the upper part of the phrase. After the third playing, the student will play the upper part of the phrase.",
+            "page": 81
+          },
+          "beginningNote": {
+            "value": "tonic, mediant, dominant, upper tonic",
+            "page": 81
+          },
+          "keys": {
+            "value": "any major or minor key, up to four sharps or flats",
+            "page": 81
+          },
+          "timeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8",
+              "page": 81,
+              "readFrom": "page image",
+              "resolution": "240 dpi crop"
+            }
+          ],
+          "approximateLength": {
+            "value": "up to nine notes",
+            "page": 81
+          },
+          "alternativeImprovise": {
+            "task": {
+              "value": "Students may choose to play back a two-measure opening, complete the question (antecedent) phrase, and improvise an answer (consequent) phrase to create an eight-measure contrasting period. The examiner will identify the key and time signature, play the tonic chord once, and play the two-measure opening three times.",
+              "page": 81
+            },
+            "beginningNote": {
+              "value": "tonic, mediant, dominant, upper tonic",
+              "page": 81
+            },
+            "keys": {
+              "value": "any major or minor key up to two sharps or flats",
+              "page": 81
+            },
+            "timeSignatures": [
+              {
+                "value": "2/4, 3/4, 4/4 and 6/8",
+                "page": 81,
+                "readFrom": "page image",
+                "resolution": "240 dpi crop"
+              }
+            ],
+            "totalLength": {
+              "value": "eight measures",
+              "page": 81
+            }
+          }
+        }
+      }
+    },
+    "Level 10": {
+      "technical": {
+        "intro": {
+          "value": "Students must play all patterns from memory.",
+          "page": 91
+        },
+        "rows": [
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Four-octave",
+              "keys": [
+                "G-flat, G, A-flat, A, B-flat, B major",
+                "F-sharp, G, G-sharp, A, B-flat, B minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 120,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Separated by a 3rd",
+              "keys": [
+                "G-flat, G, A-flat major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Separated by a 6th",
+              "keys": [
+                "A, B-flat, B major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 104,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "In Octaves - solid/blocked staccato",
+              "keys": [
+                "B-flat, B major",
+                "B-flat, B minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true,
+              "alternativeTo": "broken legato* (printed 'or')"
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "In Octaves - broken legato*",
+              "keys": [
+                "B-flat, B major",
+                "B-flat, B minor (harmonic and melodic)"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 92,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Scales",
+              "name": "Chromatic in Octaves",
+              "keys": [
+                "starting on any note from F-sharp to B"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 80,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              }
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Four-note - broken alternate-note pattern",
+              "keys": [
+                "G-flat, G, A-flat, A, B-flat, B major",
+                "F-sharp, G, A-flat, A, B-flat, B minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions) ending with I-VI-IV-V(6 over 4)-V(8-7)-I progression",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 96,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true,
+              "progressionReadFrom": "page image"
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Tonic Four-note - solid/blocked",
+              "keys": [
+                "G-flat, G, A-flat, A, B-flat, B major",
+                "F-sharp, G, A-flat, A, B-flat, B minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions) ending with I-VI-IV-V(6 over 4)-V(8-7)-I progression",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 120,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th - broken alternate-note pattern",
+              "keys": [
+                "G-flat, G, A-flat, A, B-flat, B major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 96,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Dominant 7th - solid/blocked",
+              "keys": [
+                "G-flat, G, A-flat, A, B-flat, B major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 120,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Leading-tone Diminished 7th - broken alternate-note pattern",
+              "keys": [
+                "F-sharp, G, A-flat, A, B-flat, B minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 96,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Chords",
+              "name": "Leading-tone Diminished 7th - solid/blocked",
+              "keys": [
+                "F-sharp, G, A-flat, A, B-flat, B minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 2 octaves (root position and inversions)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 120,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "two crotchets",
+                "readFrom": "page image"
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Tonic",
+              "keys": [
+                "G-flat, G, A-flat, A, B-flat, B major",
+                "F-sharp, G, A-flat, A, B-flat, B minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves (root position and inversions, either individually or in sequence, starting with root position or any inversion)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 92,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Dominant 7th",
+              "keys": [
+                "G-flat, G, A-flat, A, B-flat, B major"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves (root position and inversions, either individually or in sequence, starting with root position or any inversion)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 92,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 91
+          },
+          {
+            "value": {
+              "group": "Arpeggios",
+              "name": "Leading-tone Diminished 7th",
+              "keys": [
+                "F-sharp, G, A-flat, A, B-flat, B minor"
+              ],
+              "keysReadFrom": "page image",
+              "played": "HT; 4 octaves (root position and inversions, either individually or in sequence, starting with root position or any inversion)",
+              "tempo": {
+                "unit": "crotchet",
+                "bpm": 92,
+                "unitReadFrom": "page image"
+              },
+              "noteValues": {
+                "description": "group of four beamed notes (beam count not resolved)",
+                "readFrom": "page image",
+                "uncertain": true
+              },
+              "playedCellSharedAcrossRows": true
+            },
+            "page": 91
+          }
+        ],
+        "notes": [
+          {
+            "value": "* Broken legato octaves may be substituted for solid/blocked octaves for students with small hands.",
+            "page": 91
+          }
+        ]
+      },
+      "sightReading": {
+        "rhythm": {
+          "task": {
+            "value": "For a given melody, students will be asked to: Tap a steady beat with their hand or foot for one measure. Continue tapping while speaking, tapping, or clapping the rhythm of the given melody.",
+            "page": 92
+          },
+          "timeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8",
+              "page": 92,
+              "readFrom": "page image",
+              "resolution": "130 dpi view"
+            }
+          ],
+          "noteValues": {
+            "notPrinted": "no note-value column in this table (only Time Signatures and Approximate Length)",
+            "page": 92
+          },
+          "approximateLength": {
+            "value": "four to six measures",
+            "page": 92
+          }
+        },
+        "playing": {
+          "task": {
+            "value": "Students will be asked to play a passage of music comparable to Level 7 repertoire.",
+            "page": 93
+          },
+          "keys": {
+            "value": "major and minor keys, up to five sharps or flats",
+            "page": 93
+          },
+          "timeSignatures": {
+            "value": "any",
+            "page": 93
+          },
+          "approximateLength": {
+            "value": "up to sixteen measures",
+            "page": 93
+          },
+          "alternativeLeadSheet": {
+            "value": "Students may choose to read a lead sheet (with a melody and root/quality chord symbols) and realize an accompaniment based on the chord symbols provided. Harmonic vocabulary will be aligned with the chords presented for study in Level 10 Harmony in the Theory Syllabus. Students are expected to provide creative accompaniments appropriate to the style of the given melody.",
+            "page": 93
+          },
+          "alternativeKeys": {
+            "value": "major and minor keys, up to four sharps or flats",
+            "page": 93
+          },
+          "alternativeTimeSignatures": {
+            "value": "any",
+            "page": 93
+          },
+          "alternativeLength": {
+            "value": "up to sixteen measures",
+            "page": 93
+          }
+        }
+      },
+      "earTests": {
+        "intervals": {
+          "task": {
+            "value": "Students will be asked to identify any of the following intervals. The examiner will play each interval in either melodic form (ascending or descending) or harmonic form once.",
+            "page": 92
+          },
+          "alternative": {
+            "value": "OR Students may choose to sing or hum any of the following intervals (ascending or descending). The examiner will play the first note once.",
+            "page": 92
+          },
+          "list": {
+            "value": [
+              "minor 2nd, major 2nd",
+              "minor 3rd, major 3rd",
+              "perfect 4th",
+              "augmented 4th/diminished 5th",
+              "perfect 5th",
+              "minor 6th, major 6th",
+              "minor 7th, major 7th",
+              "perfect octave",
+              "minor 9th, major 9th"
+            ],
+            "page": 92
+          }
+        },
+        "chords": {
+          "task": {
+            "value": "Students will be asked to identify the quality of the following chords after the examiner has played the chord in solid/blocked form, close position once.",
+            "page": 92
+          },
+          "chords": {
+            "value": [
+              "major and minor four-note chords (root position, 1st inversion)",
+              "augmented triad (root position)",
+              "dominant 7th (major-minor 7th) (root position)",
+              "diminished 7th (root position)",
+              "major-major 7th (root position)",
+              "minor-minor 7th (root position)"
+            ],
+            "page": 92
+          },
+          "position": {
+            "value": "as listed per chord (column 'Positions')",
+            "page": 92
+          }
+        },
+        "chordProgressions": {
+          "task": {
+            "value": "Students will be asked to identify each chord in a five-chord progression in a major or minor key as I, IV, V, VI, or cadential 6/4 after the examiner has played the progression twice. In the second playing, the examiner will pause on each chord for the student to identify it. The progression will be played in keyboard style and will begin on the tonic chord.",
+            "page": 92
+          },
+          "progressions": {
+            "value": {
+              "major": "I, IV, V, vi (root position only); cadential 6/4",
+              "minor": "i, iv, V, VI (root position only); cadential 6/4"
+            },
+            "page": 92
+          }
+        },
+        "playback": {
+          "task": {
+            "value": "Students will be asked to play back a diatonic melody and harmonize it, using basic harmonic progressions (I, IV, and V) in solid/blocked chords with the left hand. The examiner will identify the key and time signature, play the tonic chord once, and play the melody three times.",
+            "page": 92
+          },
+          "beginningNote": {
+            "value": "tonic, mediant, dominant, upper tonic",
+            "page": 92
+          },
+          "keys": {
+            "value": "any major or minor key, up to four sharps or flats",
+            "page": 92
+          },
+          "timeSignatures": [
+            {
+              "value": "2/4, 3/4, 4/4 and 6/8",
+              "page": 92,
+              "readFrom": "page image",
+              "resolution": "130 dpi view"
+            }
+          ],
+          "approximateLength": {
+            "value": "four measures",
+            "page": 92
+          },
+          "alternativeImprovise": {
+            "task": {
+              "value": "Students may choose to play back a two-measure opening, complete the question (antecedent) phrase, and improvise an answer (consequent) phrase to create an eight-measure contrasting period. The examiner will identify the key and time signature, play the tonic chord once, and play the two-measure opening three times.",
+              "page": 92
+            },
+            "beginningNote": {
+              "value": "tonic, mediant, dominant, upper tonic",
+              "page": 92
+            },
+            "keys": {
+              "value": "any major or minor key up to three sharps or flats",
+              "page": 92
+            },
+            "timeSignatures": [
+              {
+                "value": "2/4, 3/4, 4/4 and 6/8",
+                "page": 92,
+                "readFrom": "page image",
+                "resolution": "130 dpi view"
+              }
+            ],
+            "totalLength": {
+              "value": "eight measures",
+              "page": 92
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -135,9 +135,24 @@ matches only: each file must be opened before anything is believed about it.
 - **Alberti is kept as a candidate,** with its known 9-in-10 precision and the MS/HS question
   put to the owner.
 
-## 3. The level sources: extracted separately (in progress)
+## 3. The level sources, extracted separately
 
-ABRSM 2025–26, RCM 2022 and the Faber correlation chart are being extracted into three
-separate files under `levels/`, one per source. Each value carries its page and the
-source's own meaning, and glyph cells are left as "unread" rather than guessed. No crosswalk
-is built until all three are in and checked.
+Three files in `levels/`, one per source, never merged:
+
+| File | Values | Unread | Uncertain | Notes |
+|---|---|---|---|---|
+| `abrsm-2025.json` | about 205 | 0 | 2 (rest glyphs, p. 17) | Sight-reading parameters (cumulative by grade), scales and arpeggios, speed guide, aural tests. pdftotext writes flats and sharps as "-" and "+"; that mapping was confirmed by eye on pp. 17, 36 and 39 |
+| `rcm-2022.json` | about 425 | 2 (the Prep A and B "Playing" staves) | 43 (mostly beam counts at Levels 7–10) | Key lists read from page images, because pdftotext drops accidentals. Six rhythm tables print no note-value column (`notPrinted`) |
+| `faber-correlation.json` | 70 topics, 90 cells | 0 | 0 | Blank cells are null |
+
+Each value carries its page, and each file states what its source's levels *mean* (an exam
+grade, an exam level, a publisher's correlation guide).
+
+**Second read not yet done.** The plan requires one, line by line, before any crosswalk.
+The values are an agent's extraction, read by eye where noted.
+
+**Inconsistencies in the sources themselves**, recorded rather than resolved:
+- RCM Level 10 minors print G♯ in the scales and A♭ in the chords.
+- Faber's RCM column says "Grade 1/2/3" where RCM's own levels are "Level N".
+- Faber 3A and 3B both map to RCM "Grade 1".
+- Faber's typos ("doted", "Level2") and a duplicated Level 4 topic.
