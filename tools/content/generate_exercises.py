@@ -5857,7 +5857,9 @@ def make_swing_pair(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict
     for half in (0, 1):
         for _ in range(2):
             for degree, ql, finger in zip(phrase, rhythm, fingers):
-                n = note.Note(base.transpose([0, 2, 4, 5, 7][degree % 5] + 12 * (degree // 5)),
+                # Spelled as the interval (`up`), as `make_five_finger` is: a bare semitone
+                # count let music21 choose, and the flat keys came out G sharp for A flat.
+                n = note.Note(up(base, [0, 2, 4, 5, 7][degree % 5] + 12 * (degree // 5)),
                               quarterLength=ql)
                 n.articulations.append(articulations.Fingering(finger))
                 rh.append(n)
