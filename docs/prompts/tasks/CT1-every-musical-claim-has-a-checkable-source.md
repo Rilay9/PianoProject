@@ -27,7 +27,12 @@ The concepts are listed in `content/curriculum/concepts.json` (286 entries: time
 
 Start with the concepts the rungs claim; count how many rungs rely on each, and do the most-relied-on first.
 
-**For each concept of kind (a):**
+**Use the established library first; write our own code last (the owner, 2026-10-03).** These concepts are defined in music theory and largely implemented in mature software, and the bugs came from hand-writing our own versions. `music21` 10.5.0 is already a dependency (`tools/content/requirements.txt`; the converter uses it). For every concept, first look for its implementation in music21. That covers keys, intervals, chords and inversions, Roman numerals, time signatures and beat strength, ties, tuplets and clefs, among others; confirm each in its documentation. Use that function at build time. The built catalogue carries its result, and the app reads it.
+- **Custom code only where no established library implements the concept.** Expected: the named accompaniment figures, such as Alberti, waltz bass, stride, oom-pah, boogie and walking bass, and few others. Keep each one short, sourced and tested, as below.
+- **The TypeScript detectors** (`detect.ts`) stay only where the app must measure in the browser: imported scores and runtime phrases. On the whole built catalogue they must agree with the library's result, and every disagreement is resolved by reading the score. The mature library is the reference.
+- **Record the source of each concept's implementation** in `concepts.md`: the library function, or custom with its citation.
+
+**For each concept of kind (a) that needs custom code** (and, for library-backed concepts, steps 3 to 5):
 1. **Research its definition.** Use a published music-theory or pedagogy source: a theory text, Open Music Theory, the Puget Sound textbook, a graded-syllabus document. Cite it, quoting at most a phrase. Write the definition as a precise rule over the notes. Example: Alberti bass is a left-hand figure of four equal notes per group, in the order lowest, highest, middle, highest, all from one chord, repeating.
 2. **Implement it as its own matcher.** One concept, one matcher. Never one broad demand standing in for several named concepts, so the seven styles get seven matchers. Reuse the score model and its fixes. CL10a's notation work on `chatgpt/cl10a` (`ce47aef2`) may be reused selectively: the clef in force, the key per bar, pickups, the simple-time metre, with their tests. Never reuse its texture or share rules.
 3. **Prove it against examples you did not invent.**
