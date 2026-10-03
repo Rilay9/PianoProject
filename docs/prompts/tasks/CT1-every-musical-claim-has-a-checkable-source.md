@@ -123,7 +123,7 @@ Push a checkpoint after each batch of concepts, with its rows and the catalogue 
   - `docs/02-curriculum.md`;
   - `docs/04-ui-spec.md`, where words change;
   - `docs/prompts/checks.json`, for a new browser spec's helpers;
-  - `operating-procedure.md`: no concept claim without a sourced definition and its tests.
+  - `operating-procedure.md`: no concept claim without a sourced definition and its tests, and an established library's implementation before any hand-written one.
 - `docs/prompts/runs/CT1/ENTRY.md` begins `### Entry 231 — CT1`, with:
   - the judgement first: what a learner meets now;
   - the counts;
