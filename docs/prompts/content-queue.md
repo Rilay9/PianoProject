@@ -13,6 +13,7 @@
 
   Never rediscover what is recorded, and never contradict it without evidence.
 - **is one cloud session on its own branch** `claude/cq<N>`, cut from the current head of `claude/piano-teaching-app-bo19td`, and pushed only there. Never merge, never push to the working branch.
+- **leaves CL12a's files alone** (`chatgpt/cl12a`): `app/src/curriculum/session.ts`, `sessionPurpose.ts`, `app/src/data/sessionRun.ts`, `app/src/ui/screens/TodayScreen.ts`, `PlanScreen.ts`, `app/src/ui/help.ts`. If one is needed, report the dependency.
 - **takes no new instructions mid-job.** A change goes into this file or `CLAUDE.md`, never into the chat.
 - **ends with:**
   - its finish check met;
