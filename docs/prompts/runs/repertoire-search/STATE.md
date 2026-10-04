@@ -25,19 +25,18 @@ Canonical song identity never proves the archive arrangement. The exact MusicXML
 A power chord/open fifth/heavy riff; B repeating arpeggio/broken-chord accompaniment; C Alberti bass; D waltz bass/oom-pah-pah in 3/4; E ragtime oom-pah + syncopated upper voice; F stride; G boogie-woogie bass; H walking bass; I blues form vs shuffle; J habanera/tresillo/son; K bossa nova; L montuno/tumbao; M tango accompaniment/style boundary; N hymn four-part texture; O gospel walk-ups/passing.
 
 ## Cursor
-- Rows 1–8 are recorded in `LEDGER.md`.
+- Rows 1–9 are recorded in `LEDGER.md`.
 - A block: rows 1–4 closed as rejects at the exact-arrangement layer.
-- Classical-accompaniment block is active.
 - B: row 5 Chopin Op. 9 No. 2 = strong PASS; row 6 Clocks = archive-arrangement FAIL despite canonical broken-chord riff.
-- D: row 7 Gymnopédie No. 1 = near-neighbor / strict FAIL because the exact XML attacks bass on beat 1 and one chord on beat 2 sustained through beat 3, rather than bass + separate chord + separate chord.
-- C: row 8 Mozart K.545/III = PASS **as an excerpt**. Opening texture is not Alberti; at m.9 LH is C4–G4–E4–G4 and m.10 begins B3–G4–D4–G4, explicit low–high–middle–high cells.
+- D: row 7 Gymnopédie No. 1 = near-neighbor / strict FAIL because the exact XML attacks bass on beat 1 and one chord on beat 2 sustained through beat 3.
+- C: row 8 Mozart K.545/III = PASS as excerpt: m.9 C4–G4–E4–G4, m.10 B3–G4–D4–G4. Row 9 Clementi Op.36 No.1/I = PARTIAL/control only: sparse opening, brief m.11 Alberti-like A3–D4–C4–D4, then other accompaniment types.
 - External/archive cross-edge for C: K.545/I PDMX `QmXaLndsVZvGL5n1saWern2cbW1Ze1kEKpeUofRBBmhT1D` is in the project's quarry record, selected and converted successfully; web pedagogy identifies it as a sustained Alberti-bass exemplar. It is nominated only until its exact archive XML is inspected.
-- Next uninspected dump row: **9 — Muzio Clementi, Sonate en UT Majeur**.
-- Current purpose at row 9: determine whether the exact arrangement offers a cleaner sustained C exemplar or a distinct B/C control. Do not assume from Classical-sonatina reputation.
+- Next uninspected dump row: **10 — Sonatina No.1 Muzio Clementi**.
+- Current purpose at row 10: determine whether it is a different movement/edition that improves B/C coverage rather than assuming duplication from title.
 
 ## Restart algorithm
 1. Read this file only.
-2. Fetch current row from `MANIFEST.md` and the minimum useful slice of its XML.
+2. Fetch the current score and inspect only decision-relevant MusicXML evidence.
 3. Establish actual instrumentation/staves/meter/attack pattern before researching by title.
 4. If feature identity remains plausible, research the work/texture online; if web research nominates a better piece, cross-check whether that exact piece/arrangement exists in the archive.
 5. Append one concise evidence row to `LEDGER.md`.
