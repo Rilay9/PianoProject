@@ -1,0 +1,2150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.1 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
+<score-partwise version="3.1">
+  <work>
+    <work-title>When the saint go marching in</work-title>
+    </work>
+  <identification>
+    <creator type="composer">Trad.</creator>
+    <encoding>
+      <software>MuseScore 3.6.2</software>
+      <encoding-date>2025-01-14</encoding-date>
+      <supports element="accidental" type="yes"/>
+      <supports element="beam" type="yes"/>
+      <supports element="print" attribute="new-page" type="yes" value="yes"/>
+      <supports element="print" attribute="new-system" type="yes" value="yes"/>
+      <supports element="stem" type="yes"/>
+      </encoding>
+    </identification>
+  <defaults>
+    <scaling>
+      <millimeters>7.056</millimeters>
+      <tenths>40</tenths>
+      </scaling>
+    <page-layout>
+      <page-height>1683.28</page-height>
+      <page-width>1190.82</page-width>
+      <page-margins type="even">
+        <left-margin>56.6894</left-margin>
+        <right-margin>56.6894</right-margin>
+        <top-margin>56.6894</top-margin>
+        <bottom-margin>113.379</bottom-margin>
+        </page-margins>
+      <page-margins type="odd">
+        <left-margin>56.6894</left-margin>
+        <right-margin>56.6894</right-margin>
+        <top-margin>45.3515</top-margin>
+        <bottom-margin>113.379</bottom-margin>
+        </page-margins>
+      </page-layout>
+    <word-font font-family="FreeSerif" font-size="10"/>
+    <lyric-font font-family="MuseJazz Text" font-size="8"/>
+    </defaults>
+  <credit page="1">
+    <credit-type>title</credit-type>
+    <credit-words default-x="595.408" default-y="1637.93" justify="center" valign="top" font-style="italic" font-family="MuseJazz Text" font-size="40">When the Saints go marching in</credit-words>
+    </credit>
+  <credit page="1">
+    <credit-type>composer</credit-type>
+    <credit-words default-x="1134.13" default-y="1491.32" justify="right" valign="bottom" font-style="italic" font-size="12">Traditional 
+</credit-words>
+    <credit-words>New Orleans
+</credit-words>
+    <credit-words></credit-words>
+    </credit>
+  <part-list>
+    <score-part id="P1">
+      <part-name>Piano</part-name>
+      <part-abbreviation>Pno.</part-abbreviation>
+      <score-instrument id="P1-I1">
+        <instrument-name>Piano</instrument-name>
+        </score-instrument>
+      <midi-device id="P1-I1" port="1"></midi-device>
+      <midi-instrument id="P1-I1">
+        <midi-channel>1</midi-channel>
+        <midi-program>1</midi-program>
+        <volume>78.7402</volume>
+        <pan>0</pan>
+        </midi-instrument>
+      </score-part>
+    </part-list>
+  <part id="P1">
+    <measure number="0" implicit="yes" width="257.62">
+      <print>
+        <system-layout>
+          <system-margins>
+            <left-margin>21.00</left-margin>
+            <right-margin>0.00</right-margin>
+            </system-margins>
+          <top-system-distance>241.11</top-system-distance>
+          </system-layout>
+        <staff-layout number="2">
+          <staff-distance>71.50</staff-distance>
+          </staff-layout>
+        </print>
+      <attributes>
+        <divisions>2</divisions>
+        <key>
+          <fifths>0</fifths>
+          </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+          </time>
+        <staves>2</staves>
+        <clef number="1">
+          <sign>G</sign>
+          <line>2</line>
+          </clef>
+        <clef number="2">
+          <sign>F</sign>
+          <line>4</line>
+          </clef>
+        </attributes>
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
+        <frame>
+          <frame-strings>6</frame-strings>
+          <frame-frets>4</frame-frets>
+          <frame-note>
+            <string>5</string>
+            <fret>3</fret>
+            </frame-note>
+          <frame-note>
+            <string>4</string>
+            <fret>2</fret>
+            </frame-note>
+          <frame-note>
+            <string>3</string>
+            <fret>0</fret>
+            </frame-note>
+          <frame-note>
+            <string>2</string>
+            <fret>1</fret>
+            </frame-note>
+          <frame-note>
+            <string>1</string>
+            <fret>0</fret>
+            </frame-note>
+          </frame>
+        </harmony>
+      <note default-x="89.45" default-y="-55.00">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Oh</text>
+          </lyric>
+        </note>
+      <note default-x="145.16" default-y="-44.00">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">when</text>
+          </lyric>
+        </note>
+      <note default-x="200.88" default-y="-38.50">
+        <pitch>
+          <step>F</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#55FF00">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">the</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>6</duration>
+        </backup>
+      <note>
+        <rest/>
+        <duration>4</duration>
+        <voice>5</voice>
+        <type>half</type>
+        <staff>2</staff>
+        </note>
+      <note>
+        <rest/>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+        </note>
+      </measure>
+    <measure number="1" width="289.31">
+      <note default-x="12.00" default-y="-33.00">
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>8</duration>
+        <tie type="start"/>
+        <voice>1</voice>
+        <type>whole</type>
+        <notehead color="#0000FF">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <tied type="start"/>
+          <technical>
+            <fingering>5</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Saints</text>
+          <extend/>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note>
+        <rest/>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+        </note>
+      <note default-x="78.90" default-y="-104.50">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="8.22" default-y="-49.54" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Oh,</text>
+          </lyric>
+        </note>
+      <note default-x="142.88" default-y="-104.50">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-49.54" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">when</text>
+          </lyric>
+        </note>
+      <note default-x="206.86" default-y="-115.50">
+        <pitch>
+          <step>A</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>1</duration>
+        <voice>5</voice>
+        <type>eighth</type>
+        <stem>down</stem>
+        <notehead color="#00AAFF">normal</notehead>
+        <staff>2</staff>
+        <beam number="1">begin</beam>
+        <notations>
+          <technical>
+            <fingering placement="below">3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-49.54" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">the</text>
+          </lyric>
+        </note>
+      <note default-x="246.84" default-y="-104.50">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>1</duration>
+        <tie type="start"/>
+        <voice>5</voice>
+        <type>eighth</type>
+        <stem>down</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <beam number="1">end</beam>
+        <notations>
+          <tied type="start"/>
+          <technical>
+            <fingering placement="below">1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-49.54" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Saints</text>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="2" width="247.85">
+      <note default-x="17.63" default-y="-33.00">
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <tie type="stop"/>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#0000FF">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <tied type="stop"/>
+          </notations>
+        </note>
+      <note default-x="74.92" default-y="-55.00">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>1</staff>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Go</text>
+          </lyric>
+        </note>
+      <note default-x="132.22" default-y="-44.00">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>1</staff>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>begin</syllabic>
+          <text font-family="MuseJazz Text">march</text>
+          </lyric>
+        </note>
+      <note default-x="189.52" default-y="-38.50">
+        <pitch>
+          <step>F</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#55FF00">normal</notehead>
+        <staff>1</staff>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>end</syllabic>
+          <text font-family="MuseJazz Text">ing</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="16.18" default-y="-104.50">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <tie type="stop"/>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <tied type="stop"/>
+          </notations>
+        </note>
+      <note>
+        <rest/>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+        </note>
+      <note>
+        <rest/>
+        <duration>4</duration>
+        <voice>5</voice>
+        <type>half</type>
+        <staff>2</staff>
+        </note>
+      </measure>
+    <measure number="3" width="261.65">
+      <note default-x="12.00" default-y="-33.00">
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>8</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <notehead color="#0000FF">normal</notehead>
+        <staff>1</staff>
+        <lyric number="1" default-x="4.04" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">in.</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note>
+        <rest/>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+        </note>
+      <note default-x="72.40" default-y="-104.50">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <lyric number="1" default-x="6.64" default-y="-49.54" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">go</text>
+          </lyric>
+        </note>
+      <note default-x="129.87" default-y="-104.50">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <lyric number="1" default-x="6.64" default-y="-49.54" relative-y="-30.00">
+          <syllabic>begin</syllabic>
+          <text font-family="MuseJazz Text">march</text>
+          </lyric>
+        </note>
+      <note default-x="187.33" default-y="-115.50">
+        <pitch>
+          <step>A</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>1</duration>
+        <voice>5</voice>
+        <type>eighth</type>
+        <stem>down</stem>
+        <notehead color="#00AAFF">normal</notehead>
+        <staff>2</staff>
+        <beam number="1">begin</beam>
+        <lyric number="1" default-x="6.64" default-y="-49.54" relative-y="-30.00">
+          <syllabic>end</syllabic>
+          <text font-family="MuseJazz Text">ing</text>
+          </lyric>
+        </note>
+      <note default-x="223.25" default-y="-104.50">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>1</duration>
+        <tie type="start"/>
+        <voice>5</voice>
+        <type>eighth</type>
+        <stem>down</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <beam number="1">end</beam>
+        <notations>
+          <tied type="start"/>
+          </notations>
+        <lyric number="1" default-y="-49.54" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">in</text>
+          <extend/>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="4" width="279.43">
+      <print new-system="yes">
+        <system-layout>
+          <system-margins>
+            <left-margin>21.00</left-margin>
+            <right-margin>0.00</right-margin>
+            </system-margins>
+          <system-distance>150.00</system-distance>
+          </system-layout>
+        <staff-layout number="2">
+          <staff-distance>75.12</staff-distance>
+          </staff-layout>
+        </print>
+      <note>
+        <rest/>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+        </note>
+      <note default-x="117.64" default-y="-55.00">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>1</staff>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Oh</text>
+          </lyric>
+        </note>
+      <note default-x="171.23" default-y="-44.00">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>1</staff>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">when</text>
+          </lyric>
+        </note>
+      <note default-x="224.81" default-y="-38.50">
+        <pitch>
+          <step>F</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#55FF00">normal</notehead>
+        <staff>1</staff>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">the</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="62.61" default-y="-108.12">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <tie type="stop"/>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <tied type="stop"/>
+          </notations>
+        </note>
+      <note>
+        <rest/>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+        </note>
+      <note>
+        <rest/>
+        <duration>4</duration>
+        <voice>5</voice>
+        <type>half</type>
+        <staff>2</staff>
+        </note>
+      </measure>
+    <measure number="5" width="269.43">
+      <note default-x="26.35" default-y="-33.00">
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <stem>up</stem>
+        <notehead color="#0000FF">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Saints</text>
+          </lyric>
+        </note>
+      <note default-x="146.97" default-y="-44.00">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <stem>up</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">go</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="25.69" default-y="-124.62">
+        <pitch>
+          <step>G</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#0000FF">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">When</text>
+          </lyric>
+        </note>
+      <note default-x="86.01" default-y="-130.12">
+        <pitch>
+          <step>F</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#55FF00">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">2</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">the</text>
+          </lyric>
+        </note>
+      <note default-x="146.32" default-y="-135.62">
+        <pitch>
+          <step>E</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Saints</text>
+          </lyric>
+        </note>
+      <note default-x="206.63" default-y="-141.12">
+        <pitch>
+          <step>D</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#FFAA00">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">4</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">go</text>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="6" width="261.00">
+      <note default-x="26.35" default-y="-55.00">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>begin</syllabic>
+          <text font-family="MuseJazz Text">march</text>
+          </lyric>
+        </note>
+      <note default-x="142.76" default-y="-44.00">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <stem>up</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>end</syllabic>
+          <text font-family="MuseJazz Text">ing</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="27.14" default-y="-146.62">
+        <pitch>
+          <step>C</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">5</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-50.27" relative-y="-30.00">
+          <syllabic>begin</syllabic>
+          <text font-family="MuseJazz Text">march</text>
+          </lyric>
+        </note>
+      <note default-x="83.90" default-y="-141.12">
+        <pitch>
+          <step>D</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#FFAA00">normal</notehead>
+        <staff>2</staff>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>end</syllabic>
+          <text font-family="MuseJazz Text">ing</text>
+          </lyric>
+        </note>
+      <note default-x="142.11" default-y="-135.62">
+        <pitch>
+          <step>E</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>2</staff>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">right</text>
+          </lyric>
+        </note>
+      <note default-x="200.31" default-y="-130.12">
+        <pitch>
+          <step>F</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#55FF00">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">2</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">on</text>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="7" width="246.57">
+      <harmony print-frame="no">
+        <root>
+          <root-step>G</root-step>
+          </root>
+        <kind text="7">dominant</kind>
+        <frame>
+          <frame-strings>6</frame-strings>
+          <frame-frets>4</frame-frets>
+          <frame-note>
+            <string>6</string>
+            <fret>3</fret>
+            </frame-note>
+          <frame-note>
+            <string>5</string>
+            <fret>2</fret>
+            </frame-note>
+          <frame-note>
+            <string>4</string>
+            <fret>0</fret>
+            </frame-note>
+          <frame-note>
+            <string>3</string>
+            <fret>0</fret>
+            </frame-note>
+          <frame-note>
+            <string>2</string>
+            <fret>0</fret>
+            </frame-note>
+          <frame-note>
+            <string>1</string>
+            <fret>1</fret>
+            </frame-note>
+          </frame>
+        </harmony>
+      <note default-x="12.00" default-y="-49.50">
+        <pitch>
+          <step>D</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>8</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <notehead color="#FFAA00">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="2.66" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">in</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="14.93" default-y="-141.12">
+        <pitch>
+          <step>D</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#FFAA00">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">4</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="8.20" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">in,</text>
+          </lyric>
+        </note>
+      <note default-x="72.22" default-y="-124.62">
+        <pitch>
+          <step>G</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#0000FF">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">2</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">go</text>
+          </lyric>
+        </note>
+      <note default-x="129.51" default-y="-124.62">
+        <pitch>
+          <step>G</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#0000FF">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">2</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>begin</syllabic>
+          <text font-family="MuseJazz Text">march</text>
+          </lyric>
+        </note>
+      <note default-x="186.80" default-y="-119.12">
+        <pitch>
+          <step>A</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#00AAFF">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>end</syllabic>
+          <text font-family="MuseJazz Text">ing</text>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="8" width="279.65">
+      <print new-system="yes">
+        <system-layout>
+          <system-margins>
+            <left-margin>21.00</left-margin>
+            <right-margin>0.00</right-margin>
+            </system-margins>
+          <system-distance>166.20</system-distance>
+          </system-layout>
+        <staff-layout number="2">
+          <staff-distance>71.50</staff-distance>
+          </staff-layout>
+        </print>
+      <note>
+        <rest/>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+        </note>
+      <note default-x="117.70" default-y="-44.00">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Oh</text>
+          </lyric>
+        </note>
+      <note default-x="171.34" default-y="-44.00">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>1</staff>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Lord</text>
+          </lyric>
+        </note>
+      <note default-x="224.98" default-y="-49.50">
+        <pitch>
+          <step>D</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#FFAA00">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">I</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="62.61" default-y="-121.00">
+        <pitch>
+          <step>G</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#0000FF">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">2</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="8.02" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">in.</text>
+          </lyric>
+        </note>
+      <note>
+        <rest/>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+        </note>
+      <note>
+        <rest/>
+        <duration>4</duration>
+        <voice>5</voice>
+        <type>half</type>
+        <staff>2</staff>
+        </note>
+      </measure>
+    <measure number="9" width="239.91">
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
+        <frame>
+          <frame-strings>6</frame-strings>
+          <frame-frets>4</frame-frets>
+          <frame-note>
+            <string>5</string>
+            <fret>3</fret>
+            </frame-note>
+          <frame-note>
+            <string>4</string>
+            <fret>2</fret>
+            </frame-note>
+          <frame-note>
+            <string>3</string>
+            <fret>0</fret>
+            </frame-note>
+          <frame-note>
+            <string>2</string>
+            <fret>1</fret>
+            </frame-note>
+          <frame-note>
+            <string>1</string>
+            <fret>0</fret>
+            </frame-note>
+          </frame>
+        </harmony>
+      <note default-x="22.35" default-y="-55.00">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>6</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <dot/>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">want</text>
+          </lyric>
+        </note>
+      <note default-x="184.94" default-y="-55.00">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>1</staff>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">to</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note>
+        <rest/>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+        </note>
+      <note default-x="77.07" default-y="-143.00">
+        <pitch>
+          <step>C</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">I</text>
+          </lyric>
+        </note>
+      <note default-x="131.01" default-y="-143.00">
+        <pitch>
+          <step>C</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">want</text>
+          </lyric>
+        </note>
+      <note default-x="183.49" default-y="-137.50">
+        <pitch>
+          <step>D</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#FFAA00">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">2</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">to</text>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="10" width="281.43">
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind text="7">dominant</kind>
+        <frame>
+          <frame-strings>6</frame-strings>
+          <frame-frets>4</frame-frets>
+          <frame-note>
+            <string>5</string>
+            <fret>3</fret>
+            </frame-note>
+          <frame-note>
+            <string>4</string>
+            <fret>2</fret>
+            </frame-note>
+          <frame-note>
+            <string>3</string>
+            <fret>3</fret>
+            </frame-note>
+          <frame-note>
+            <string>2</string>
+            <fret>1</fret>
+            </frame-note>
+          <frame-note>
+            <string>1</string>
+            <fret>0</fret>
+            </frame-note>
+          </frame>
+        </harmony>
+      <note default-x="16.00" default-y="-44.00">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <stem>up</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">be</text>
+          </lyric>
+        </note>
+      <note default-x="148.60" default-y="-44.00">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">in</text>
+          </lyric>
+        </note>
+      <note default-x="214.50" default-y="-33.00">
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#0055FF">normal</notehead>
+        <staff>1</staff>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">that</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="16.80" default-y="-148.50">
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>2</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <accidental>flat</accidental>
+        <stem>up</stem>
+        <notehead color="#AA55FF">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">4</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">be</text>
+          </lyric>
+        </note>
+      <note default-x="82.70" default-y="-148.50">
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>2</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <accidental>flat</accidental>
+        <stem>up</stem>
+        <notehead color="#AA55FF">normal</notehead>
+        <staff>2</staff>
+        <lyric number="1" default-x="5.33" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">right</text>
+          </lyric>
+        </note>
+      <note default-x="148.60" default-y="-143.00">
+        <pitch>
+          <step>C</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">there</text>
+          </lyric>
+        </note>
+      <note default-x="214.50" default-y="-148.50">
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>2</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <accidental>flat</accidental>
+        <stem>up</stem>
+        <notehead color="#AA00FF">normal</notehead>
+        <staff>2</staff>
+        <lyric number="1" default-x="5.33" default-y="-50.27" relative-y="-30.00">
+          <syllabic>begin</syllabic>
+          <text font-family="MuseJazz Text">be</text>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="11" width="255.45">
+      <harmony print-frame="no">
+        <root>
+          <root-step>F</root-step>
+          </root>
+        <kind>major</kind>
+        <frame>
+          <frame-strings>6</frame-strings>
+          <frame-frets>4</frame-frets>
+          <frame-note>
+            <string>4</string>
+            <fret>3</fret>
+            </frame-note>
+          <frame-note>
+            <string>3</string>
+            <fret>2</fret>
+            </frame-note>
+          <frame-note>
+            <string>2</string>
+            <fret>1</fret>
+            <barre type="start"/>
+            </frame-note>
+          <frame-note>
+            <string>1</string>
+            <fret>1</fret>
+            <barre type="stop"/>
+            </frame-note>
+          </frame>
+        </harmony>
+      <note default-x="19.14" default-y="-33.00">
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#0055FF">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-47.05" relative-y="-30.00">
+          <syllabic>begin</syllabic>
+          <text font-family="MuseJazz Text">num</text>
+          </lyric>
+        </note>
+      <note default-x="77.16" default-y="-38.50">
+        <pitch>
+          <step>F</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>6</duration>
+        <tie type="start"/>
+        <voice>1</voice>
+        <type>half</type>
+        <dot/>
+        <stem>up</stem>
+        <notehead color="#55FF00">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <tied type="start"/>
+          <technical>
+            <fingering>4</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.84" default-y="-47.05" relative-y="-30.00">
+          <syllabic>end</syllabic>
+          <text font-family="MuseJazz Text">ber.</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="19.14" default-y="-154.00">
+        <pitch>
+          <step>A</step>
+          <octave>2</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#00AAFF">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">5</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-50.27" relative-y="-30.00">
+          <syllabic>end</syllabic>
+          <text font-family="MuseJazz Text">sde</text>
+          </lyric>
+        </note>
+      <note default-x="76.51" default-y="-126.50">
+        <pitch>
+          <step>F</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#55FF00">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">them</text>
+          </lyric>
+        </note>
+      <note default-x="135.33" default-y="-132.00">
+        <pitch>
+          <step>E</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">2</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">in</text>
+          </lyric>
+        </note>
+      <note default-x="194.15" default-y="-137.50">
+        <pitch>
+          <step>D</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#FFAA00">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.27" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">that</text>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="12" width="344.93">
+      <print new-system="yes">
+        <system-layout>
+          <system-margins>
+            <left-margin>21.00</left-margin>
+            <right-margin>0.00</right-margin>
+            </system-margins>
+          <system-distance>168.60</system-distance>
+          </system-layout>
+        <staff-layout number="2">
+          <staff-distance>79.88</staff-distance>
+          </staff-layout>
+        </print>
+      <note default-x="74.14" default-y="-38.50">
+        <pitch>
+          <step>F</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>4</duration>
+        <tie type="stop"/>
+        <voice>1</voice>
+        <type>half</type>
+        <stem>up</stem>
+        <notehead color="#55FF00">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <tied type="stop"/>
+          </notations>
+        </note>
+      <note default-x="209.41" default-y="-44.00">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-51.38" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">When</text>
+          </lyric>
+        </note>
+      <note default-x="276.65" default-y="-38.50">
+        <pitch>
+          <step>F</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#55FF00">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>4</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-51.38" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">the</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="74.94" default-y="-156.88">
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>2</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <accidental>flat</accidental>
+        <stem>up</stem>
+        <notehead color="#AA55FF">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">4</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-50.63" relative-y="-30.00">
+          <syllabic>begin</syllabic>
+          <text font-family="MuseJazz Text">num</text>
+          </lyric>
+        </note>
+      <note default-x="140.73" default-y="-134.88">
+        <pitch>
+          <step>F</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#55FF00">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="8.34" default-y="-50.63" relative-y="-30.00">
+          <syllabic>end</syllabic>
+          <text font-family="MuseJazz Text">ber,</text>
+          </lyric>
+        </note>
+      <note default-x="207.97" default-y="-140.38">
+        <pitch>
+          <step>E</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.63" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">When</text>
+          </lyric>
+        </note>
+      <note default-x="275.21" default-y="-134.88">
+        <pitch>
+          <step>F</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>down</stem>
+        <notehead color="#55FF7F">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">2</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.63" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">the</text>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="13" width="220.27">
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
+        <frame>
+          <frame-strings>6</frame-strings>
+          <frame-frets>4</frame-frets>
+          <frame-note>
+            <string>5</string>
+            <fret>3</fret>
+            </frame-note>
+          <frame-note>
+            <string>4</string>
+            <fret>2</fret>
+            </frame-note>
+          <frame-note>
+            <string>3</string>
+            <fret>0</fret>
+            </frame-note>
+          <frame-note>
+            <string>2</string>
+            <fret>1</fret>
+            </frame-note>
+          <frame-note>
+            <string>1</string>
+            <fret>0</fret>
+            </frame-note>
+          </frame>
+        </harmony>
+      <note default-x="26.35" default-y="-33.00">
+        <pitch>
+          <step>G</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <stem>up</stem>
+        <notehead color="#0055FF">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>5</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-51.38" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Saints</text>
+          </lyric>
+        </note>
+      <note default-x="122.40" default-y="-44.00">
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <stem>up</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-51.38" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">go</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="25.69" default-y="-129.38">
+        <pitch>
+          <step>G</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>5</voice>
+        <type>half</type>
+        <stem>down</stem>
+        <notehead color="#0055FF">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.63" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">Saints</text>
+          </lyric>
+        </note>
+      <note default-x="121.74" default-y="-140.38">
+        <pitch>
+          <step>E</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>5</voice>
+        <type>half</type>
+        <stem>down</stem>
+        <notehead color="#DAD309">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">3</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.63" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">go</text>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="14" width="223.46">
+      <harmony print-frame="no">
+        <root>
+          <root-step>G</root-step>
+          </root>
+        <kind text="7">dominant</kind>
+        <frame>
+          <frame-strings>6</frame-strings>
+          <frame-frets>4</frame-frets>
+          <frame-note>
+            <string>6</string>
+            <fret>3</fret>
+            </frame-note>
+          <frame-note>
+            <string>5</string>
+            <fret>2</fret>
+            </frame-note>
+          <frame-note>
+            <string>4</string>
+            <fret>0</fret>
+            </frame-note>
+          <frame-note>
+            <string>3</string>
+            <fret>0</fret>
+            </frame-note>
+          <frame-note>
+            <string>2</string>
+            <fret>0</fret>
+            </frame-note>
+          <frame-note>
+            <string>1</string>
+            <fret>1</fret>
+            </frame-note>
+          </frame>
+        </harmony>
+      <note default-x="26.35" default-y="-55.00">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-51.38" relative-y="-30.00">
+          <syllabic>begin</syllabic>
+          <text font-family="MuseJazz Text">march</text>
+          </lyric>
+        </note>
+      <note default-x="123.99" default-y="-49.50">
+        <pitch>
+          <step>D</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <stem>up</stem>
+        <notehead color="#FFAA00">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <technical>
+            <fingering>2</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-51.38" relative-y="-30.00">
+          <syllabic>end</syllabic>
+          <text font-family="MuseJazz Text">ing</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="26.35" default-y="-151.38">
+        <pitch>
+          <step>C</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>5</voice>
+        <type>half</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">5</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="5.33" default-y="-50.63" relative-y="-30.00">
+          <syllabic>begin</syllabic>
+          <text font-family="MuseJazz Text">march</text>
+          </lyric>
+        </note>
+      <note default-x="123.33" default-y="-145.88">
+        <pitch>
+          <step>D</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>4</duration>
+        <voice>5</voice>
+        <type>half</type>
+        <stem>down</stem>
+        <notehead color="#FFAA00">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <technical>
+            <fingering placement="below">4</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="6.64" default-y="-50.63" relative-y="-30.00">
+          <syllabic>end</syllabic>
+          <text font-family="MuseJazz Text">ing</text>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="15" width="183.40">
+      <harmony print-frame="no">
+        <root>
+          <root-step>C</root-step>
+          </root>
+        <kind>major</kind>
+        <frame>
+          <frame-strings>6</frame-strings>
+          <frame-frets>4</frame-frets>
+          <frame-note>
+            <string>5</string>
+            <fret>3</fret>
+            </frame-note>
+          <frame-note>
+            <string>4</string>
+            <fret>2</fret>
+            </frame-note>
+          <frame-note>
+            <string>3</string>
+            <fret>0</fret>
+            </frame-note>
+          <frame-note>
+            <string>2</string>
+            <fret>1</fret>
+            </frame-note>
+          <frame-note>
+            <string>1</string>
+            <fret>0</fret>
+            </frame-note>
+          </frame>
+        </harmony>
+      <note default-x="16.18" default-y="-55.00">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>8</duration>
+        <tie type="start"/>
+        <voice>1</voice>
+        <type>whole</type>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <tied type="start"/>
+          <technical>
+            <fingering>1</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="4.04" default-y="-51.38" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">in.</text>
+          </lyric>
+        </note>
+      <backup>
+        <duration>8</duration>
+        </backup>
+      <note default-x="16.18" default-y="-151.38">
+        <pitch>
+          <step>C</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>8</duration>
+        <tie type="start"/>
+        <voice>5</voice>
+        <type>whole</type>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <tied type="start"/>
+          <technical>
+            <fingering placement="below">5</fingering>
+            </technical>
+          </notations>
+        <lyric number="1" default-x="4.04" default-y="-50.63" relative-y="-30.00">
+          <syllabic>single</syllabic>
+          <text font-family="MuseJazz Text">in.</text>
+          </lyric>
+        </note>
+      </measure>
+    <measure number="16" width="84.38">
+      <note default-x="16.18" default-y="-55.00">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+          </pitch>
+        <duration>2</duration>
+        <tie type="stop"/>
+        <voice>1</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>1</staff>
+        <notations>
+          <tied type="stop"/>
+          </notations>
+        </note>
+      <backup>
+        <duration>2</duration>
+        </backup>
+      <note default-x="16.18" default-y="-151.38">
+        <pitch>
+          <step>C</step>
+          <octave>3</octave>
+          </pitch>
+        <duration>2</duration>
+        <tie type="stop"/>
+        <voice>5</voice>
+        <type>quarter</type>
+        <stem>up</stem>
+        <notehead color="#FF0000">normal</notehead>
+        <staff>2</staff>
+        <notations>
+          <tied type="stop"/>
+          </notations>
+        </note>
+      <barline location="right">
+        <bar-style>light-heavy</bar-style>
+        </barline>
+      </measure>
+    </part>
+  </score-partwise>
