@@ -25,13 +25,15 @@ Canonical song identity never proves the archive arrangement. The exact MusicXML
 A power chord/open fifth/heavy riff; B repeating arpeggio/broken-chord accompaniment; C Alberti bass; D waltz bass/oom-pah-pah in 3/4; E ragtime oom-pah + syncopated upper voice; F stride; G boogie-woogie bass; H walking bass; I blues form vs shuffle; J habanera/tresillo/son; K bossa nova; L montuno/tumbao; M tango accompaniment/style boundary; N hymn four-part texture; O gospel walk-ups/passing.
 
 ## Cursor
-- Rows 1–7 are recorded in `LEDGER.md`.
+- Rows 1–8 are recorded in `LEDGER.md`.
 - A block: rows 1–4 closed as rejects at the exact-arrangement layer.
 - Classical-accompaniment block is active.
 - B: row 5 Chopin Op. 9 No. 2 = strong PASS; row 6 Clocks = archive-arrangement FAIL despite canonical broken-chord riff.
 - D: row 7 Gymnopédie No. 1 = near-neighbor / strict FAIL because the exact XML attacks bass on beat 1 and one chord on beat 2 sustained through beat 3, rather than bass + separate chord + separate chord.
-- Next uninspected dump row: **8 — Mozart Sonata K.545, 3rd movement**.
-- Current purpose at row 8: determine whether it actually supplies C (Alberti) or another B/C control; do not assume from 'Mozart sonata'.
+- C: row 8 Mozart K.545/III = PASS **as an excerpt**. Opening texture is not Alberti; at m.9 LH is C4–G4–E4–G4 and m.10 begins B3–G4–D4–G4, explicit low–high–middle–high cells.
+- External/archive cross-edge for C: K.545/I PDMX `QmXaLndsVZvGL5n1saWern2cbW1Ze1kEKpeUofRBBmhT1D` is in the project's quarry record, selected and converted successfully; web pedagogy identifies it as a sustained Alberti-bass exemplar. It is nominated only until its exact archive XML is inspected.
+- Next uninspected dump row: **9 — Muzio Clementi, Sonate en UT Majeur**.
+- Current purpose at row 9: determine whether the exact arrangement offers a cleaner sustained C exemplar or a distinct B/C control. Do not assume from Classical-sonatina reputation.
 
 ## Restart algorithm
 1. Read this file only.
