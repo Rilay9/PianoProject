@@ -25,6 +25,7 @@ This is research only. Nothing here was built, placed or imported, and nothing w
 - `curricula-and-mutopia.md`: concept-by-level table from Faber, ABRSM 2025–26 and RCM 2022; public-domain grade-list pieces; a 548-entry Mutopia scrape.
 - `pdmx-index.md`: 245 PDMX scores read note by note, an index by characteristic, red flags per file.
 - `beyer-index.md`: all 109 pieces of Beyer Op. 101, read from the Peters scan.
+- `generation-toolbox-verification.md` and `musicxml-io-and-leads.md`: the owner's proposed toolbox, tested (section D).
 - `INDEPENDENT-ADDENDUM.md`: independent follow-up research on stronger edition-linked corpora, additional verification/indexing libraries, and genre/accompaniment sources. It supplements rather than replaces the reports above.
 
 **Queryable data lives in `data/`:**
@@ -144,6 +145,52 @@ Generated material follows the same shape: generate → independently inspect �
 10. **Independent follow-up: stronger sources and tools exist beyond the initial pass.** See `INDEPENDENT-ADDENDUM.md` for the detailed evidence. High-value additions are edition-linked Humdrum corpora (including Joplin, Mozart, Beethoven and NIFC Chopin first editions), the scholarly MEI-based Digital Mozart Edition, DCML's annotated score corpora, `humlib/musicxml2hum` as an additional independent MusicXML parser, `ms3` for native MuseScore corpora, jSymbolic2/musiF for broad characteristic indexing, and FiloBass as a source-backed walking-bass research corpus. The follow-up did **not** find a mature notation-aware generator that clearly supersedes the current `music21 + project constraints` architecture.
 
 ---
+
+## D. Generation and verification toolbox (the owner's proposal, 2026-10-04, tested)
+
+Each line pairs the owner's proposal with what testing found. Detail is in `reports/generation-toolbox-verification.md` and `reports/musicxml-io-and-leads.md`. **"Checked here"** means the lead re-ran the claim.
+
+**The rule for Fable.** First name the hard part of a family: notation, theory, constraint solving, accompaniment style, or corpus sampling. Use the mature library for that part and write only the glue.
+
+| Tool | Proposed for | What testing found |
+|---|---|---|
+| music21 | Backbone: notation, spelling, theory, MusicXML | **Holds.** Two caveats: integer transposition misspells (checked here), and its reader ignores `<alter>` when the accidental is `other` or `natural-sharp` (2 shipped files) |
+| Tonal (MIT) | Browser theory, rhythm, voicing | Use 6.4.3. **6.5.0 does not import under Node, and `tsc` fails on it.** `Progression.fromRomanNumerals('A',['i','iv','V7'])` returns A, D, E7, losing the minor (**checked here**); `Key.minorKey` lists are correct (**checked here**). `Chord.detect(E,G,C)` ranks Em#5 first (**checked here**). Voicings are jazz rootless. Pure functions are fine; parity tests come first |
+| OR-Tools CP-SAT | Many simultaneous constraints | Solves the Dorian spec in under 1 s and reports INFEASIBLE in about 0.2 s. **Its legal solutions read as B–C trills and A–B rocking** (read from the notes, not heard). Constraints alone do not make a tune, so start from real cells or a template and let the solver check rules |
+| MMA (GPL v2+) | Backing at build time | Runs from the command line, 2021 grooves. The "Blues" groove put the bass root on only 8 of 12 downbeats; "Swing" did on 12 of 12. **Output is random unless `RndSeed` is set** |
+| JJazzLab (LGPL) | Backing | **No command-line export; MIDI export goes through the GUI.** The JJazzLab Toolkit library needs Java 25; this machine has 21, so it was not run |
+| FiloBass (CC BY 4.0) | Real walking-bass patterns | 48 tracks: MusicXML, MIDI, audio, alignment. Each note checked twice and proof-read by a professional bassist. All parse; 1 short bar in 12,497. The rights of the Aebersold source recordings were not checked |
+| SCAMP (GPL-3.0) | Event-based phrases → quantized notation | 0.13.0 (2026-09-25), needs Python 3.12 or newer. Probe: quantized an uneven phrase and tied a note across the barline; music21 read it |
+| MusicLang (BSD-2) | Extract a pattern, project it onto a progression | The functions exist. Last release 2024-03; **it pins music21 8.1.0, which conflicts with the project's 10.5.0** |
+| MusPy (MIT) | Corpus metrics | Last release 2022-04, last commit 2024-01; works with music21 10.5.0 |
+| musicxml-io (MIT, TS) | Runtime reader, snipping, ABC | 0.10.3, 342 commits, 1 maintainer, API unstable. Details below |
+| note-seq | Third witness | Archived 2026-05-06; last release 2022 |
+| musicdiff (MIT) | Edition-to-import regression | 6.0 (2026-09-22). Parses through music21, so it cannot check music21 itself |
+| Abjad | — | Needs LilyPond 2.25.26 or later. Not proposed |
+
+**musicxml-io in detail.**
+- **As a reader it is strong.** All 812 shipped files load. 789 match music21 note for note; most of the rest differ only in bar labels. In the 3 real differences, music21 was wrong twice (the `<alter>` cases) and musicxml-io reported a bad `<backup>` literally once.
+- **It reads the app's own runtime MusicXML correctly.** In 14 of 14 sight-reading phrases (levels 1–7) the right-hand notes read back equal the generator's melody, triplets and chords included.
+- **As a snipper, not yet.** There is no "extract bars" operation:
+  - cutting bars 1–4 left a tie with no end, and `validate()` passed it;
+  - cutting bars 5–8 lost divisions, key, time and clefs.
+- **Its ABC parser puts all of a chord's fingerings on the chord's first note.** That is the same fault as the project's ABC route.
+- **Weight:** parse alone is 51 KB minified (14 KB gzip); parse plus serialize is 109 KB (27 KB).
+
+**New defect in shipped content (checked here).** `scores/imported/song.classical.mozart-k545-i.alt.mxl` (MuseTrainer, level 7.1) holds 20 `<alter>` values of 8 or 9. music21 and partitura refuse the file; musicxml-io loads it and calls it valid. It is in the catalogue and on no rung. How the app shows it was not looked at.
+
+**The owner's web leads, matched in PDMX metadata only** (files not opened):
+
+| Lead | Matches | Usable |
+|---|---|---|
+| Mozart K. 545 | 12 | 12 |
+| Clementi Op. 36 No. 2 | 1 | 0 (licence conflict) |
+| Attwood Sonatina in G | 2 | 2 |
+| Beethoven WoO 78 | 0 | 0 |
+| Drunken Sailor | 63 | 63 |
+| Scarborough Fair | 67 | 63 |
+
+Note that PDMX's `n_tracks` counts a two-staff piano score as one track.
 
 ## A. Repertoire index: how to query it
 
