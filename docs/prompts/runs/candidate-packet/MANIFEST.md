@@ -1,0 +1,134 @@
+# Candidate Packet Manifest
+
+| target | candidate | artist/composer | archive/catalog id | filename | arrangement/version | parts/staves | bars | why_candidate | notes |
+|--------|-----------|-----------------|-------------------|----------|---------------------|--------------|------|---------------|-------|
+| A | You Really Got Me | The Kinks | QmVQDnDcT6hKzt2P48DGhgGwwDEhayXVDH56gQZ4ZjMCH8 | A-you-really-got-me-QmVQDnDcT6hKzt2P48DGhgGwwDEhayXVDH56gQZ4ZjMCH8.musicxml |  | 1/8 | 58 | You Really Got Me (The Kinks): central repeated root–fifth riff. |  |
+| A | Iron Man |  | NOT FOUND |  |  |  |  | Iron Man (Black Sabbath): main riff as moving power-chord dyads. |  |
+| A | All Day and All of the Night |  | NOT FOUND |  |  |  |  | All Day and All of the Night (The Kinks). |  |
+| A | Smells Like Teen Spirit |  | NOT FOUND |  |  |  |  | Smells Like Teen Spirit (Nirvana). |  |
+| A | Blitzkrieg Bop |  | NOT FOUND |  |  |  |  | Blitzkrieg Bop (Ramones). |  |
+| A | Paranoid |  | NOT FOUND |  |  |  |  | Paranoid (Black Sabbath). |  |
+| A | Smoke on the Water |  | NOT FOUND |  |  |  |  | Smoke on the Water (Deep Purple): ADVERSARY. The riff is parallel fourths in the original. |  |
+| A | Seven Nation Army | The White Stripes | QmbbQYi9qzja3G9ymsqLo3zdo3gsDNhfYPwodCH6TLcQ39 | A-seven-nation-army-QmbbQYi9qzja3G9ymsqLo3zdo3gsDNhfYPwodCH6TLcQ39.musicxml |  | 1/1 | 101 | Seven Nation Army (The White Stripes): ADVERSARY or section test. |  |
+| A | Also House of the Rising Sun |  | Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR | A-also-house-of-the-rising-sun-Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR.musicxml |  | 1/1 | 17 | Also House of the Rising Sun, cid `Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR`, as a comparison only. |  |
+| B | House of the Rising Sun |  | Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR | B-house-of-the-rising-sun-Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR.musicxml |  | 1/1 | 17 | House of the Rising Sun, cid `Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR`. |  |
+| B | Moonlight Sonata I |  | song.classical.beethoven-moonlight-i | B-moonlight-sonata-i-song.classical.beethoven-moonlight-i.musicxml |  | 1/2 | 69 | Moonlight Sonata I, catalogue `song.classical.beethoven-moonlight-i`. |  |
+| B | Chopin Nocturne Op. 9 No. 2 |  | NOT FOUND |  |  |  |  | Chopin Nocturne Op. 9 No. 2, cid `QmeE94j6WFzcwouwfE2LTAgfVMfeS4XM7ZyLtezSmrSLUt`. |  |
+| B | Satie Gymnopédie No. 1 |  | NOT FOUND |  |  |  |  | Satie Gymnopédie No. 1, cid `Qmb69dY9CoqiRXre3yTcR6NDcgadeZJsBAbSuqBW6kZt7M`: CONTRAST. |  |
+| B | Nothing Else Matters |  | NOT FOUND |  |  |  |  | Nothing Else Matters (Metallica): search. |  |
+| B | Clocks | Coldplay | QmbGnCDTsKpiuFtVi7q9oqwGHzcEz3Ci8XDV8Te7gKZN4m | B-clocks-QmbGnCDTsKpiuFtVi7q9oqwGHzcEz3Ci8XDV8Te7gKZN4m.musicxml |  | 1/1 | 95 | Clocks (Coldplay): search; ostinato contrast. |  |
+| C | Mozart K. 545 first movement |  | QmPaDt5oro5S5MxK47tRyuppCxwhyyTfe5568yRv4494KE | C-mozart-k-545-first-movement-QmPaDt5oro5S5MxK47tRyuppCxwhyyTfe5568yRv4494KE.musicxml |  | 1/2 | 75 | Mozart K. 545 first movement, cid `QmPaDt5oro5S5MxK47tRyuppCxwhyyTfe5568yRv4494KE` if it is that movement; otherwise another K. 545 copy. |  |
+| C | Catalogue `song.pop.sonatina-in-g.pdmx`. |  | NOT FOUND |  |  |  |  | Catalogue `song.pop.sonatina-in-g.pdmx`. |  |
+| C | Clementi Sonatina Op. 36 No. 1: search composer and work-number variants. |  | NOT FOUND |  |  |  |  | Clementi Sonatina Op. 36 No. 1: search composer and work-number variants. |  |
+| C | Moonlight I: negative. |  | NOT FOUND |  |  |  |  | Moonlight I: negative. |  |
+| C | House of the Rising Sun: negative. |  | NOT FOUND |  |  |  |  | House of the Rising Sun: negative. |  |
+| D | Catalogue `song.classical.chopin-chopin-waltz-in-a-minor-piano-solo.pdmx`. |  | NOT FOUND |  |  |  |  | Catalogue `song.classical.chopin-chopin-waltz-in-a-minor-piano-solo.pdmx`. |  |
+| D | Catalogue `song.classical.chopin-waltz-op69-2.nifc`. |  | NOT FOUND |  |  |  |  | Catalogue `song.classical.chopin-waltz-op69-2.nifc`. |  |
+| D | The Blue Danube |  | NOT FOUND |  |  |  |  | The Blue Danube (Johann Strauss II): search. |  |
+| D | Catalogue `song.folk.happy-birthday.simple`. |  | NOT FOUND |  |  |  |  | Catalogue `song.folk.happy-birthday.simple`. |  |
+| D | Gymnopédie No. 1: NEGATIVE. |  | NOT FOUND |  |  |  |  | Gymnopédie No. 1: NEGATIVE. |  |
+| D | Bethena |  | song.ragtime.joplin-bethena | D-bethena-song.ragtime.joplin-bethena.musicxml |  | 1/2 | 164 | Bethena (Joplin): NEGATIVE. |  |
+| E | At a Georgia Campmeeting |  | NOT FOUND |  |  |  |  | At a Georgia Campmeeting, `QmY7h6JChL1C6qr1SetxcTPtNan4mtPaSjphi2QKZ6x9fw`. |  |
+| E | Whistling Rufus |  | NOT FOUND |  |  |  |  | Whistling Rufus, `Qmc5tchYeaAXcWs6eadtwesTcn8oXiyJMvJYiSWxR87ZkY`. |  |
+| E | Harlem Rag |  | NOT FOUND |  |  |  |  | Harlem Rag, `QmaUQo93TVPNaJ6UDzttTyksRcPDcyafR8Nxct8qXHeEsj`. |  |
+| E | Creole Belles | NA | QmQiUJZTS6rGpgqQJxthN2Bzckf9oZvpTw8bN3y8oxWAkp | E-creole-belles-QmQiUJZTS6rGpgqQJxthN2Bzckf9oZvpTw8bN3y8oxWAkp.musicxml |  | 1/1 | 70 | Creole Belles, `QmQiUJZTS6rGpgqQJxthN2Bzckf9oZvpTw8bN3y8oxWAkp`. |  |
+| E | The Strenuous Life |  | NOT FOUND |  |  |  |  | The Strenuous Life, `QmT34q9w9QBs4cQ3NsMV7ku2ssXXLtr8CB741M3E6PVEd9`. |  |
+| E | The Entertainer | NA | QmbJXNcUfabd1RNA4zq9VbxhLEUkgdJxTAzjZMPugdho5X | E-the-entertainer-QmbJXNcUfabd1RNA4zq9VbxhLEUkgdJxTAzjZMPugdho5X.musicxml |  | 1/2 | 37 | The Entertainer (catalogue). |  |
+| E | The Easy Winners |  | song.ragtime.joplin-easy-winners | E-the-easy-winners-song.ragtime.joplin-easy-winners.musicxml |  | 1/2 | 94 | The Easy Winners (catalogue). |  |
+| E | Maple Leaf Rag |  | song.ragtime.joplin-maple-leaf-rag | E-maple-leaf-rag-song.ragtime.joplin-maple-leaf-rag.musicxml |  | 1/2 | 85 | Maple Leaf Rag (catalogue). |  |
+| E | The Ragtime Dance |  | NOT FOUND |  |  |  |  | The Ragtime Dance, `QmQqgminBuThDMiK7kKiiebrXeF3uvNxUGH2Pce5CJ3Wut`. |  |
+| F | Carolina Shout |  | NOT FOUND |  |  |  |  | Carolina Shout, `QmX3XfoL3Mfdg1pvtTkft7xezdEJQPbu3H9z8qoH7TNrda`. |  |
+| F | Catalogue `song.blues.handful-of-keys`. |  | NOT FOUND |  |  |  |  | Catalogue `song.blues.handful-of-keys`. |  |
+| F | Twelfth Street Rag | Euday L. Bowman | QmdDBR2fHDvdhMvF69mr8rj2kJggBFhZNbpxYEcBHPutmc | F-twelfth-street-rag-QmdDBR2fHDvdhMvF69mr8rj2kJggBFhZNbpxYEcBHPutmc.musicxml |  | 1/1 | 78 | Twelfth Street Rag, `QmdDBR2fHDvdhMvF69mr8rj2kJggBFhZNbpxYEcBHPutmc`. |  |
+| F | Honeysuckle Rose |  | NOT FOUND |  |  |  |  | Honeysuckle Rose, `QmSMULfFJDNDH2UyUeNLWgm33MQ9gy2zAfjAXoEALHg7Ds`. |  |
+| F | Squeeze Me | Misc tunes | QmTw3EQxygcbdDsDvKz6zRd2fjCGsvJGhG7C6aAYbCnyq8 | F-squeeze-me-QmTw3EQxygcbdDsDvKz6zRd2fjCGsvJGhG7C6aAYbCnyq8.musicxml |  | 1/1 | 12 | Squeeze Me, `QmTw3EQxygcbdDsDvKz6zRd2fjCGsvJGhG7C6aAYbCnyq8`. |  |
+| F | The Entertainer: boundary. |  | NOT FOUND |  |  |  |  | The Entertainer: boundary. |  |
+| G | Catalogue `song.folk.boogie-woogie.pdmx`. |  | NOT FOUND |  |  |  |  | Catalogue `song.folk.boogie-woogie.pdmx`. |  |
+| G | Catalogue `exercise.boogie.a.pinetop`: a reference only. |  | NOT FOUND |  |  |  |  | Catalogue `exercise.boogie.a.pinetop`: a reference only. |  |
+| G | Pinetop's Boogie Woogie: search aliases. |  | NOT FOUND |  |  |  |  | Pinetop's Boogie Woogie: search aliases. |  |
+| G | Honky Tonk Train Blues |  | NOT FOUND |  |  |  |  | Honky Tonk Train Blues (Meade Lux Lewis): search. |  |
+| G | Yancey Special |  | NOT FOUND |  |  |  |  | Yancey Special (Jimmy Yancey): search. |  |
+| G | Jelly Roll Blues | NA | Qmdy8ab56NWmGZfDpDxhZWMK9UvsdtJmRDesastEH9SR2a | G-jelly-roll-blues-Qmdy8ab56NWmGZfDpDxhZWMK9UvsdtJmRDesastEH9SR2a.musicxml |  | 1/1 | 56 | Jelly Roll Blues, `QmbuoFtkky8Xpo8LSiAqkMXzBs2Mtc33L6GFw1kWv9T5S3`: boundary. |  |
+| G | Royal Garden Blues | Spencer Williams | Qmf5C4Cit85nReUWzAxwwLo5sNNfHwZX452Aq19MRm7rQK | G-royal-garden-blues-Qmf5C4Cit85nReUWzAxwwLo5sNNfHwZX452Aq19MRm7rQK.musicxml |  | 1/1 | 44 | Royal Garden Blues (catalogue): negative. |  |
+| H | Autumn Leaves | NA | QmcuChBdXHgeXgUB8FwNwSMmreSRCngFMDQVZRZmaUdvtK | H-autumn-leaves-QmcuChBdXHgeXgUB8FwNwSMmreSRCngFMDQVZRZmaUdvtK.musicxml |  | 1/1 | 32 | Autumn Leaves, `QmWLjxJSdX1VjYwcEkDYhj7CDhWLX4rFbSakCxiGTJWT7T`. |  |
+| H | Sweet Georgia Brown | Beginner version | QmZ9ZT4aqgQGHoN7pxc5KAegNxPMQF7FdZVMsP4cVZw9Pu | H-sweet-georgia-brown-QmZ9ZT4aqgQGHoN7pxc5KAegNxPMQF7FdZVMsP4cVZw9Pu.musicxml |  | 1/1 | 33 | Sweet Georgia Brown, `QmSpTeaiyNZDk45njpe1Fe7VGcFAzBhJy4HuuGj2btnwb5`. |  |
+| H | Catalogue `song.pop.ray-henderson-bye-bye-blackbird.pdmx`. |  | NOT FOUND |  |  |  |  | Catalogue `song.pop.ray-henderson-bye-bye-blackbird.pdmx`. |  |
+| H | Body and Soul |  | NOT FOUND |  |  |  |  | Body and Soul, `QmYLYgVPrVGkZeZgSjjBDYFUpTBWa8bXTB834ci6L7HQYN`. |  |
+| H | At the Jazz Band Ball | Misc Traditional | QmNuUoVirfoCCXKEsHyvT2JNczwEDp8vAuVdygoo25h7GQ | H-at-the-jazz-band-ball-QmNuUoVirfoCCXKEsHyvT2JNczwEDp8vAuVdygoo25h7GQ.musicxml |  | 1/1 | 48 | At the Jazz Band Ball, `QmNuUoVirfoCCXKEsHyvT2JNczwEDp8vAuVdygoo25h7GQ`. |  |
+| H | Catalogue `song.folk.muskrat-ramble.pdmx`. |  | NOT FOUND |  |  |  |  | Catalogue `song.folk.muskrat-ramble.pdmx`. |  |
+| I | Careless Love | NA | QmYD4uF6soz6USzYyusW2gnzJxRUV7fMTCA2UH11ZzYR6a | I-careless-love-QmYD4uF6soz6USzYyusW2gnzJxRUV7fMTCA2UH11ZzYR6a.musicxml |  | 1/1 | 8 | Careless Love (catalogue). |  |
+| I | St. Louis Blues | W. C. Handy | QmYutJi8H9KmexPTGDuRXTzQNkqnu1Jk8ERW1gZiMs33ZG | I-st-louis-blues-QmYutJi8H9KmexPTGDuRXTzQNkqnu1Jk8ERW1gZiMs33ZG.musicxml |  | 1/1 | 28 | St. Louis Blues, the catalogue copy plus `QmYutJi8H9KmexPTGDuRXTzQNkqnu1Jk8ERW1gZiMs33ZG`. |  |
+| I | Joe Turner Blues | Misc tunes | QmXbcEgNyEXXfV5SKFQ4rK5eJi3xTtPJQm9kMVgM7GTWVK | I-joe-turner-blues-QmXbcEgNyEXXfV5SKFQ4rK5eJi3xTtPJQm9kMVgM7GTWVK.musicxml |  | 1/1 | 26 | Joe Turner Blues, `QmXbcEgNyEXXfV5SKFQ4rK5eJi3xTtPJQm9kMVgM7GTWVK`. |  |
+| I | Jelly Roll Blues | NA | Qmdy8ab56NWmGZfDpDxhZWMK9UvsdtJmRDesastEH9SR2a | I-jelly-roll-blues-Qmdy8ab56NWmGZfDpDxhZWMK9UvsdtJmRDesastEH9SR2a.musicxml |  | 1/1 | 56 | Jelly Roll Blues, `QmbuoFtkky8Xpo8LSiAqkMXzBs2Mtc33L6GFw1kWv9T5S3`. |  |
+| I | Royal Garden Blues | Spencer Williams | Qmf5C4Cit85nReUWzAxwwLo5sNNfHwZX452Aq19MRm7rQK | I-royal-garden-blues-Qmf5C4Cit85nReUWzAxwwLo5sNNfHwZX452Aq19MRm7rQK.musicxml |  | 1/1 | 44 | Royal Garden Blues (catalogue). |  |
+| I | Farewell Blues |  | NOT FOUND |  |  |  |  | Farewell Blues, `QmStEZqKASQVCFNhKaHLcQm3R3RbDUPKA477NQ6kWsNToy`. |  |
+| I | New Orleans Blues |  | NOT FOUND |  |  |  |  | New Orleans Blues, `QmbQRktDiVKVCdRwZc7XKQ7gjJxdFRzHwD68nv7AQhtRtM`. |  |
+| J | La Paloma | Edward Kilenyi | QmPYfxoGp86jNZYhA73L93zQ4nyGdpiF5NxupQxxunC5Ce | J-la-paloma-QmPYfxoGp86jNZYhA73L93zQ4nyGdpiF5NxupQxxunC5Ce.musicxml |  | 2/2 | 16 | La Paloma, `Qmcgs76azinB9yQhdDYdtxANyCGnNRoztYusifLBEC9rjr`. |  |
+| J | Habanera from Carmen |  | NOT FOUND |  |  |  |  | Habanera from Carmen (Bizet): search. |  |
+| J | El Manisero |  | NOT FOUND |  |  |  |  | El Manisero, `QmQYBa6d8TFceraxiiZPSyufbgmR6tQZWycAWUafpQ7YHv`. |  |
+| J | Catalogue `song.pop.guantanamera.pdmx`. |  | NOT FOUND |  |  |  |  | Catalogue `song.pop.guantanamera.pdmx`. |  |
+| J | La Bamba |  | NOT FOUND |  |  |  |  | La Bamba, `QmbiVDmVP66oR6FTV6xdzRRjPSVk9NKjboh6JgrezTW6HT`: boundary. |  |
+| K | The Girl from Ipanema |  | NOT FOUND |  |  |  |  | The Girl from Ipanema, `QmbePogksNuacefKjPnFMTEPad7EfR6ugFNirGLLckffJr`. |  |
+| K | Corcovado | NA | QmWYgg7QifpX4XtkYReco3Psk4GvNgzbeZMeqTBUvabUgF | K-corcovado-QmWYgg7QifpX4XtkYReco3Psk4GvNgzbeZMeqTBUvabUgF.musicxml |  | 1/1 | 36 | Corcovado, `QmWYgg7QifpX4XtkYReco3Psk4GvNgzbeZMeqTBUvabUgF`. |  |
+| K | Chega de Saudade |  | NOT FOUND |  |  |  |  | Chega de Saudade, `Qmcnc6BPWUhP1fk6GKoXEH35gSvJNi87bKz4cy5s6xuYTV`. |  |
+| K | Só Danço Samba | Antônio Carlos Jobim | QmbmC9BRdBLb6XUbyf5TqSy1P1oYdNDYTJoSpd4nXByPMD | K-s-dan-o-samba-QmbmC9BRdBLb6XUbyf5TqSy1P1oYdNDYTJoSpd4nXByPMD.musicxml |  | 1/1 | 34 | Só Danço Samba, `QmbmC9BRdBLb6XUbyf5TqSy1P1oYdNDYTJoSpd4nXByPMD`. |  |
+| K | Catalogue `song.folk.insensatez-how-insensitive-jobim.pdmx`. |  | NOT FOUND |  |  |  |  | Catalogue `song.folk.insensatez-how-insensitive-jobim.pdmx`. |  |
+| L | Oye Como Va: search. |  | NOT FOUND |  |  |  |  | Oye Como Va: search. |  |
+| L | Son de la Loma: search. |  | NOT FOUND |  |  |  |  | Son de la Loma: search. |  |
+| L | El Cuarto de Tula: search. |  | NOT FOUND |  |  |  |  | El Cuarto de Tula: search. |  |
+| L | Chan Chan: search. |  | NOT FOUND |  |  |  |  | Chan Chan: search. |  |
+| L | Others named by a reputable external source as montuno or tumbao vehicles; record why. Do not use Tico-Tico |  | NOT FOUND |  |  |  |  | Others named by a reputable external source as montuno or tumbao vehicles; record why. Do not use Tico-Tico, La Bamba, a tango or a generic Latin piece. |  |
+| L | El Manisero as a comparison. |  | NOT FOUND |  |  |  |  | El Manisero as a comparison. |  |
+| M | La Cumparsita | Gerardo Matos Rodríguez | QmVk7Me2CRhrct17L4D8SiMBaHdpL2jYxCVaJJpTQDnVxj | M-la-cumparsita-QmVk7Me2CRhrct17L4D8SiMBaHdpL2jYxCVaJJpTQDnVxj.musicxml |  | 1/2 | 63 | La Cumparsita (catalogue). |  |
+| M | El Choclo | Ángel Gregorio Villoldo | QmQzVZ1WCCMVBtzDNwm9pH2K7qZSYqxA1Fxh6MKYdokgsW | M-el-choclo-QmQzVZ1WCCMVBtzDNwm9pH2K7qZSYqxA1Fxh6MKYdokgsW.musicxml |  | 1/2 | 49 | El Choclo (catalogue). |  |
+| M | Por una Cabeza |  | song.folk.por-una-cabeza-carlos-gardel.pdmx | M-por-una-cabeza-song.folk.por-una-cabeza-carlos-gardel.pdmx.musicxml |  | 1/2 | 66 | Por una Cabeza, `QmPqGm73syTAnvaFSwHWB5nTi3KEMybjqMYRVRox2eejWb`. |  |
+| M | Jalousie |  | NOT FOUND |  |  |  |  | Jalousie, `QmbEXBfVDk9iNqKRoXudwgcVKFL9yagDcFvwqAwvLt5h5H`. |  |
+| M | Caminito |  | NOT FOUND |  |  |  |  | Caminito, `QmWPVaLZLid7D3fiNRhaKPxH36zWf2Pu3JLFxxQYFRRwDV`. |  |
+| N | Holy |  | song.classical.1803-1856-adolphe-adam-o-holy-night.pdmx | N-holy-song.classical.1803-1856-adolphe-adam-o-holy-night.pdmx.musicxml |  | 1/1 | 50 | Holy, Holy, Holy, `QmbLfyErVgweCgsLYtW4CV2GvCwayZjJDqtLpccRmvCgdF`. |  |
+| N | Nearer | R. E. McNeill | QmbiNj43aoHcAi8oa1eJn77seLpagJoDGdRHovVM7pwodt | N-nearer-QmbiNj43aoHcAi8oa1eJn77seLpagJoDGdRHovVM7pwodt.musicxml |  | 1/2 | 18 | Nearer, My God, to Thee, `QmbFPMXf26skEX8RvUSZ5dGSuFXefEwFJ7GXiCfgjS6q2o`. |  |
+| N | O Sacred Head | Misc Traditional | QmdaDUP6oT6F8GzuiwAH1p2fM3mFDjCFJAVKBqVnBs1zTJ | N-o-sacred-head-QmdaDUP6oT6F8GzuiwAH1p2fM3mFDjCFJAVKBqVnBs1zTJ.musicxml |  | 1/2 | 79 | O Sacred Head, `QmdaDUP6oT6F8GzuiwAH1p2fM3mFDjCFJAVKBqVnBs1zTJ`. |  |
+| N | Abide With Me |  | song.classical.abide-with-me-william-henry-monk.pdmx | N-abide-with-me-song.classical.abide-with-me-william-henry-monk.pdmx.musicxml |  | 1/2 | 16 | Abide With Me (catalogue). |  |
+| N | The Old Rugged Cross |  | NOT FOUND |  |  |  |  | The Old Rugged Cross, `QmWWXx9wyvbokCusjeDXuxxxn4UBEqS1YoxRPdZ7Nfz2cL`. |  |
+| O | Just a Closer Walk with Thee | Misc Praise Songs | Qmbnua9rYTo1vkcT79QtF68f7to28oHcgvwtWh5Vq5MLzT | O-just-a-closer-walk-with-thee-Qmbnua9rYTo1vkcT79QtF68f7to28oHcgvwtWh5Vq5MLzT.musicxml |  | 1/2 | 16 | Just a Closer Walk with Thee (catalogue). |  |
+| O | Down by the Riverside | Misc Traditional | Qmb9PJUwBUhctigVCmYjYRbXCreScTLWcBWjL8bFW3Lr4w | O-down-by-the-riverside-Qmb9PJUwBUhctigVCmYjYRbXCreScTLWcBWjL8bFW3Lr4w.musicxml |  | 1/1 | 27 | Down by the Riverside, `Qmb9PJUwBUhctigVCmYjYRbXCreScTLWcBWjL8bFW3Lr4w`. |  |
+| O | Wade in the Water |  | NOT FOUND |  |  |  |  | Wade in the Water, `QmQD2gCz8DdiQi2PXv5NGqFNjXjCyTkiNYKXJwonegt3Wm`. |  |
+| O | This Little Light of Mine | African-American Spiritual | QmbNy9ivLSgU2miV53wEH6t71RYcBrKDJ1Tm2K53RfLFdL | O-this-little-light-of-mine-QmbNy9ivLSgU2miV53wEH6t71RYcBrKDJ1Tm2K53RfLFdL.musicxml |  | 1/1 | 32 | This Little Light of Mine, `QmdJuSiZwpjM6eSVwnFADjegSDNq5un3sffnvKjGSj5ujz`. |  |
+| O | Oh Happy Day |  | NOT FOUND |  |  |  |  | Oh Happy Day, `QmX54pQMc7EsMigfosNb4ifAzdiSDh8PcEtSzhBLSCV2NK`. |  |
+
+
+## Second pass: the content ids the reviewer named
+
+The first pass misparsed lines written `title, \`cid\`` and pulled title-search results instead. Rows above for those candidates are substitutes; the named copies are here.
+
+| target | candidate | artist/composer | archive/catalog id | filename | arrangement/version | parts/staves | bars | why_candidate | notes |
+|---|---|---|---|---|---|---|---|---|---|
+| B | Chopin Nocturne Op. 9 No. 2, cid | (see archive row) | QmeE94j6WFzcwouwfE2LTAgfVMfeS4XM7ZyLtezSmrSLUt | B-chopin-nocturne-op-9-no-2-cid-QmeE94j6WFzcwouwfE2LTAgfVMfeS4XM7ZyLtezSmrSLUt.musicxml | the named archive copy | 1 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| B | Satie Gymnopédie No. 1, cid | (see archive row) | Qmb69dY9CoqiRXre3yTcR6NDcgadeZJsBAbSuqBW6kZt7M | B-satie-gymnop-die-no-1-cid-Qmb69dY9CoqiRXre3yTcR6NDcgadeZJsBAbSuqBW6kZt7M.musicxml | the named archive copy | 1 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| E | At a Georgia Campmeeting | (see archive row) | QmY7h6JChL1C6qr1SetxcTPtNan4mtPaSjphi2QKZ6x9fw | E-at-a-georgia-campmeeting-QmY7h6JChL1C6qr1SetxcTPtNan4mtPaSjphi2QKZ6x9fw.musicxml | the named archive copy | 1 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| E | Whistling Rufus | (see archive row) | Qmc5tchYeaAXcWs6eadtwesTcn8oXiyJMvJYiSWxR87ZkY | E-whistling-rufus-Qmc5tchYeaAXcWs6eadtwesTcn8oXiyJMvJYiSWxR87ZkY.musicxml | the named archive copy | 1 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| E | Harlem Rag | (see archive row) | QmaUQo93TVPNaJ6UDzttTyksRcPDcyafR8Nxct8qXHeEsj | E-harlem-rag-QmaUQo93TVPNaJ6UDzttTyksRcPDcyafR8Nxct8qXHeEsj.musicxml | the named archive copy | 1 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| E | The Strenuous Life | (see archive row) | QmT34q9w9QBs4cQ3NsMV7ku2ssXXLtr8CB741M3E6PVEd9 | E-the-strenuous-life-QmT34q9w9QBs4cQ3NsMV7ku2ssXXLtr8CB741M3E6PVEd9.musicxml | the named archive copy | 1 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| E | The Ragtime Dance | (see archive row) | QmQqgminBuThDMiK7kKiiebrXeF3uvNxUGH2Pce5CJ3Wut | E-the-ragtime-dance-QmQqgminBuThDMiK7kKiiebrXeF3uvNxUGH2Pce5CJ3Wut.musicxml | the named archive copy | 2 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| F | Carolina Shout | (see archive row) | QmX3XfoL3Mfdg1pvtTkft7xezdEJQPbu3H9z8qoH7TNrda | F-carolina-shout-QmX3XfoL3Mfdg1pvtTkft7xezdEJQPbu3H9z8qoH7TNrda.musicxml | the named archive copy | 1 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| F | Honeysuckle Rose | (see archive row) | QmSMULfFJDNDH2UyUeNLWgm33MQ9gy2zAfjAXoEALHg7Ds | F-honeysuckle-rose-QmSMULfFJDNDH2UyUeNLWgm33MQ9gy2zAfjAXoEALHg7Ds.musicxml | the named archive copy | 6 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| G | Jelly Roll Blues | (see archive row) | QmbuoFtkky8Xpo8LSiAqkMXzBs2Mtc33L6GFw1kWv9T5S3 | G-jelly-roll-blues-QmbuoFtkky8Xpo8LSiAqkMXzBs2Mtc33L6GFw1kWv9T5S3.musicxml | the named archive copy | 1 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| I | Jelly Roll Blues | (see archive row) | QmbuoFtkky8Xpo8LSiAqkMXzBs2Mtc33L6GFw1kWv9T5S3 | I-jelly-roll-blues-QmbuoFtkky8Xpo8LSiAqkMXzBs2Mtc33L6GFw1kWv9T5S3.musicxml | the named archive copy | 1 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| H | Autumn Leaves | (see archive row) | QmWLjxJSdX1VjYwcEkDYhj7CDhWLX4rFbSakCxiGTJWT7T | H-autumn-leaves-QmWLjxJSdX1VjYwcEkDYhj7CDhWLX4rFbSakCxiGTJWT7T.musicxml | the named archive copy | 1 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| H | Sweet Georgia Brown | (see archive row) | QmSpTeaiyNZDk45njpe1Fe7VGcFAzBhJy4HuuGj2btnwb5 | H-sweet-georgia-brown-QmSpTeaiyNZDk45njpe1Fe7VGcFAzBhJy4HuuGj2btnwb5.musicxml | the named archive copy | 1 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| H | Body and Soul | (see archive row) | QmYLYgVPrVGkZeZgSjjBDYFUpTBWa8bXTB834ci6L7HQYN | H-body-and-soul-QmYLYgVPrVGkZeZgSjjBDYFUpTBWa8bXTB834ci6L7HQYN.musicxml | the named archive copy | 1 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| I | Farewell Blues | (see archive row) | QmStEZqKASQVCFNhKaHLcQm3R3RbDUPKA477NQ6kWsNToy | I-farewell-blues-QmStEZqKASQVCFNhKaHLcQm3R3RbDUPKA477NQ6kWsNToy.musicxml | the named archive copy | 1 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| I | New Orleans Blues | (see archive row) | QmbQRktDiVKVCdRwZc7XKQ7gjJxdFRzHwD68nv7AQhtRtM | I-new-orleans-blues-QmbQRktDiVKVCdRwZc7XKQ7gjJxdFRzHwD68nv7AQhtRtM.musicxml | the named archive copy | 1 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| J | La Paloma | (see archive row) | Qmcgs76azinB9yQhdDYdtxANyCGnNRoztYusifLBEC9rjr | J-la-paloma-Qmcgs76azinB9yQhdDYdtxANyCGnNRoztYusifLBEC9rjr.musicxml | the named archive copy | 1 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| J | El Manisero | (see archive row) | QmQYBa6d8TFceraxiiZPSyufbgmR6tQZWycAWUafpQ7YHv | J-el-manisero-QmQYBa6d8TFceraxiiZPSyufbgmR6tQZWycAWUafpQ7YHv.musicxml | the named archive copy | 2 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| J | La Bamba | (see archive row) | QmbiVDmVP66oR6FTV6xdzRRjPSVk9NKjboh6JgrezTW6HT | J-la-bamba-QmbiVDmVP66oR6FTV6xdzRRjPSVk9NKjboh6JgrezTW6HT.musicxml | the named archive copy | 2 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| K | The Girl from Ipanema | (see archive row) | QmbePogksNuacefKjPnFMTEPad7EfR6ugFNirGLLckffJr | K-the-girl-from-ipanema-QmbePogksNuacefKjPnFMTEPad7EfR6ugFNirGLLckffJr.musicxml | the named archive copy | 4 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| K | Chega de Saudade | (see archive row) | Qmcnc6BPWUhP1fk6GKoXEH35gSvJNi87bKz4cy5s6xuYTV | K-chega-de-saudade-Qmcnc6BPWUhP1fk6GKoXEH35gSvJNi87bKz4cy5s6xuYTV.musicxml | the named archive copy | 1 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| M | Por una Cabeza | (see archive row) | QmPqGm73syTAnvaFSwHWB5nTi3KEMybjqMYRVRox2eejWb | M-por-una-cabeza-QmPqGm73syTAnvaFSwHWB5nTi3KEMybjqMYRVRox2eejWb.musicxml | the named archive copy | 4 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| M | Jalousie | (see archive row) | QmbEXBfVDk9iNqKRoXudwgcVKFL9yagDcFvwqAwvLt5h5H | M-jalousie-QmbEXBfVDk9iNqKRoXudwgcVKFL9yagDcFvwqAwvLt5h5H.musicxml | the named archive copy | 1 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| M | Caminito | (see archive row) | QmWPVaLZLid7D3fiNRhaKPxH36zWf2Pu3JLFxxQYFRRwDV | M-caminito-QmWPVaLZLid7D3fiNRhaKPxH36zWf2Pu3JLFxxQYFRRwDV.musicxml | the named archive copy | 3 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| N | Holy, Holy, Holy | (see archive row) | QmbLfyErVgweCgsLYtW4CV2GvCwayZjJDqtLpccRmvCgdF | N-holy-holy-holy-QmbLfyErVgweCgsLYtW4CV2GvCwayZjJDqtLpccRmvCgdF.musicxml | the named archive copy | 5 parts / 2 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| N | Nearer, My God, to Thee | (see archive row) | QmbFPMXf26skEX8RvUSZ5dGSuFXefEwFJ7GXiCfgjS6q2o | N-nearer-my-god-to-thee-QmbFPMXf26skEX8RvUSZ5dGSuFXefEwFJ7GXiCfgjS6q2o.musicxml | the named archive copy | 2 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| N | The Old Rugged Cross | (see archive row) | QmWWXx9wyvbokCusjeDXuxxxn4UBEqS1YoxRPdZ7Nfz2cL | N-the-old-rugged-cross-QmWWXx9wyvbokCusjeDXuxxxn4UBEqS1YoxRPdZ7Nfz2cL.musicxml | the named archive copy | 2 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| O | Wade in the Water | (see archive row) | QmQD2gCz8DdiQi2PXv5NGqFNjXjCyTkiNYKXJwonegt3Wm | O-wade-in-the-water-QmQD2gCz8DdiQi2PXv5NGqFNjXjCyTkiNYKXJwonegt3Wm.musicxml | the named archive copy | 2 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| O | This Little Light of Mine | (see archive row) | QmdJuSiZwpjM6eSVwnFADjegSDNq5un3sffnvKjGSj5ujz | O-this-little-light-of-mine-QmdJuSiZwpjM6eSVwnFADjegSDNq5un3sffnvKjGSj5ujz.musicxml | the named archive copy | 1 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
+| O | Oh Happy Day | (see archive row) | QmX54pQMc7EsMigfosNb4ifAzdiSDh8PcEtSzhBLSCV2NK | O-oh-happy-day-QmX54pQMc7EsMigfosNb4ifAzdiSDh8PcEtSzhBLSCV2NK.musicxml | the named archive copy | 5 parts / 1 staves | 0 | named by the reviewer | extracted by the orchestrator's second pass |
