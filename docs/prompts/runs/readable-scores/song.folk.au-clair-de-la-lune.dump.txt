@@ -1,0 +1,24 @@
+song: song.folk.au-clair-de-la-lune
+title: Au Clair de la Lune
+composer: Traditional (French, 18th century)
+rungs: 1.1
+shipped file: scores/authored/song.folk.au-clair-de-la-lune.mxl
+catalog keySig/timeSig/tempo: C major / 4/4 / 84.0
+raw-XML counts: ties 0, tuplets 0, fingerings 22, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 8, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.au-clair-de-la-lune | Au Clair de la Lune | level 1.1 (judged)
+notation: {"bars": 8, "staves": 1, "keys": [{"fifths": 0, "mode": "major"}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: ['major']  times: ['4/4']
+bar   1 RH: C4/qua C4/qua C4/qua D4/qua
+bar   2 RH: E4/hal D4/hal
+bar   3 RH: C4/qua E4/qua D4/qua D4/qua
+bar   4 RH: C4/who
+bar   5 RH: C4/qua C4/qua C4/qua D4/qua
+bar   6 RH: E4/hal D4/hal
+bar   7 RH: C4/qua E4/qua D4/qua D4/qua
+bar   8 RH: C4/who

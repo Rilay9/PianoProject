@@ -1,0 +1,30 @@
+song: song.classical.chopin-prelude-op28-20.nifc
+title: Prelude No. 20 in C minor, Op. 28
+composer: Fryderyk Chopin
+rungs: classical.4.shelf, rock.6
+shipped file: scores/imported/song.classical.chopin-prelude-op28-20.nifc.mxl
+catalog keySig/timeSig/tempo: c minor / 4/4 / None
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 139, measures 13, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -3
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.chopin-prelude-op28-20.nifc | Prelude No. 20 in C minor, Op. 28 | level 6.0 (judged)
+notation: {"bars": 13, "staves": 2, "keys": [{"fifths": -3, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['-3']  modes: []  times: ['4/4']
+bar   1 RH: G4/qua+Eb4/qua+C4/qua+G3/qua Ab4/qua+Eb4/qua+C4/qua+Ab3/qua G4/eig.+Eb4/eig. F4/16t+D4/16t Eb4/qua+C4/qua+G3/qua+Eb3/qua  LH:v2: r/hal B3/qua+G3/qua r/qua | v3: C3/qua+C2/qua F2/qua+F1/qua G2/qua+G1/qua C3/qua+G2/qua+C2/qua
+bar   2 RH: Eb4/qua+C4/qua+Ab3/qua+Eb3/qua F4/qua+Db4/qua+Ab3/qua+F3/qua Eb4/eig.+C4/eig. Db4/16t+Bb3/16t C4/qua+Ab3/qua+Eb3/qua+C3/qua  LH:v2: r/hal G3/qua+Eb3/qua+Db3/qua r/qua | v3: Ab2/qua+Ab1/qua Db2/qua+Db1/qua Eb2/qua+Eb1/qua Ab2/qua+Ab1/qua
+bar   3 RH: D4/qua+B3/qua+F3/qua+D3/qua E4/qua+C4/qua+Bb3/qua+G3/qua+E3/qua G4/eig.+C4/eig.+Ab3/eig. F4/16t E4/qua+C4/qua+G3/qua  LH: G2/qua+G1/qua C2/qua+C1/qua F2/qua+F1/qua C3/qua+C2/qua
+bar   4 RH:v1: D4/qua+C4/qua+F#3/qua+D3/qua G4/qua+D4/qua+B3/qua+G3/qua B4/eig. Ab4/16t G4/qua+D4/qua+B3/qua | v2: r/hal F#4/qua+D4/qua+C4/qua r/qua  LH: A2/qua+D2/qua G2/qua+G1/qua D2/qua+D1/qua G2/qua+G1/qua
+bar   5 RH:v1: Eb5/qua+G4/qua+Eb4/qua Eb5/qua+Ab4/qua+Eb4/qua D5/qua+D4/qua D5/qua+G4/qua+D4/qua | v2: r/hal Ab4/eig. F#4/16t r/qua  LH: C3/qua+C2/qua C4/qua+C3/qua B3/qua+B2/qua Bb3/qua+Bb2/qua
+bar   6 RH: C5/qua+G4/qua+C4/qua D5/qua+F#4/qua+D4/qua+C4/qua B4/eig.+G4/eig.+D4/eig. A4/16t+C4/16t G4/qua+D4/qua+B3/qua  LH: A3/qua+A2/qua Ab3/qua+Ab2/qua G3/qua+G2/qua F3/qua+F2/qua
+bar   7 RH:v1: C5/qua+G4/qua+C4/qua Ab4/qua+C4/qua+Ab3/qua G4/eig. F4/16t Eb4/qua+C4/qua+G3/qua | v2: r/hal D4/qua+G3/qua r/qua  LH: Eb3/qua+Eb2/qua F3/qua+F2/qua B2/qua+B1/qua C3/qua+C2/qua
+bar   8 RH: Eb4/qua+C4/qua+Ab3/qua+Eb3/qua F4/qua+Db4/qua+Ab3/qua+F3/qua Eb4/eig. D4/16t C4/qua+G3/qua+Eb3/qua  LH:v2: r/hal B3/qua+G3/qua+F3/qua r/qua | v3: Ab2/qua+Ab1/qua Db2/qua+Db1/qua G2/qua+G1/qua C2/qua+C1/qua
+bar   9 RH:v1: Eb5/qua+G4/qua+Eb4/qua Eb5/qua+Ab4/qua+Eb4/qua D5/qua+D4/qua D5/qua+G4/qua+D4/qua | v2: r/hal Ab4/eig. F#4/16t r/qua  LH: C3/qua+C2/qua C4/qua+C3/qua B3/qua+B2/qua Bb3/qua+Bb2/qua
+bar  10 RH: C5/qua+G4/qua+C4/qua D5/qua+F#4/qua+D4/qua+C4/qua B4/eig.+G4/eig.+D4/eig. A4/16t+C4/16t G4/qua+D4/qua+B3/qua  LH: A3/qua+A2/qua Ab3/qua+Ab2/qua G3/qua+G2/qua F3/qua+F2/qua
+bar  11 RH:v1: C5/qua+G4/qua+C4/qua Ab4/qua+C4/qua+Ab3/qua G4/eig. F4/16t Eb4/qua+C4/qua+G3/qua | v2: r/hal D4/qua+G3/qua r/qua  LH: Eb3/qua+Eb2/qua F3/qua+F2/qua B2/qua+B1/qua C3/qua+C2/qua
+bar  12 RH: Eb4/qua+C4/qua+Ab3/qua+Eb3/qua F4/qua+Db4/qua+Ab3/qua+F3/qua Eb4/eig. D4/16t C4/qua+G3/qua+Eb3/qua  LH:v2: r/hal B3/qua+G3/qua+F3/qua r/qua | v3: Ab2/qua+Ab1/qua Db2/qua+Db1/qua G2/qua+G1/qua C2/qua+C1/qua
+bar  13 RH: C5/who+G4/who+Eb4/who+C4/who  LH: G3/who+C3/who

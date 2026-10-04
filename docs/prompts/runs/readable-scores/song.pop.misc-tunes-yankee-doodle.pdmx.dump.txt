@@ -1,0 +1,34 @@
+song: song.pop.misc-tunes-yankee-doodle.pdmx
+title: Yankee Doodle
+composer: Traditional (American)
+rungs: 3.2
+shipped file: scores/pdmx/QmTa7YTepiTQEhLAhtQAVJjTCEVxC2rQVQ9Sd33k8NZK1p.mxl
+catalog keySig/timeSig/tempo: G major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 39, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 41, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.misc-tunes-yankee-doodle.pdmx | Yankee Doodle | level 3.96 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['4/4']
+text on the score: ['I Gmaj', 'VERSE', 'V Dmaj', 'First Inversion', 'I Gmaj', 'V Dmaj', 'I Gmaj', 'IV Cmaj First Inversion']
+bar   1 RH: G4/qua G4/qua A4/qua B4/qua  LH: G3/hal+B3/hal D3/hal
+bar   2 RH: G4/qua B4/qua A4/qua D4/qua  LH: G3/hal+B3/hal F#3/hal
+bar   3 RH: G4/qua G4/qua A4/qua B4/qua  LH: G3/hal+B3/hal D3/hal
+bar   4 RH: G4/hal F#4/hal  LH: G3/hal+B3/hal D3/hal
+bar   5 RH: G4/qua G4/qua A4/qua B4/qua  LH: G3/hal+B3/hal D3/hal
+bar   6 RH: C5/qua B4/qua A4/qua G4/qua  LH: E3/hal G3/hal+C4/hal
+bar   7 RH: F#4/qua D4/qua E4/qua F#4/qua  LH: D3/hal C4/hal
+bar   8 RH: G4/hal G4/qua r/qua  LH: G3/hal+B3/hal G3/qua+B3/qua r/qua
+bar   9 RH: E4/qua. F#4/eig E4/qua D4/qua  LH: C3/hal G3/hal
+bar  10 RH: E4/qua F#4/qua G4/hal  LH: C3/who
+bar  11 RH: D4/qua. E4/eig D4/qua C4/qua  LH: B2/hal G3/hal
+bar  12 RH: B3/hal D4/hal  LH: D3/who
+bar  13 RH: E4/qua. F#4/eig E4/qua D4/qua  LH: C3/hal G3/hal
+bar  14 RH: E4/qua F#4/qua G4/qua E4/qua  LH: C3/who
+bar  15 RH: D4/qua G4/qua F#4/qua A4/qua  LH: D3/hal C4/hal
+bar  16 RH: G4/hal G4/qua r/qua  LH: G3/hal+B3/hal G3/qua+B3/qua r/qua

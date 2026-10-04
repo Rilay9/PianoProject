@@ -1,0 +1,41 @@
+song: song.pop.misc-christmas-silent-night.pdmx
+title: Silent Night
+composer: Franz Xaver Gruber
+rungs: holiday.4
+shipped file: scores/pdmx/QmbGudm6JgoWnHfyAHN6FkUhrVe38XyMkfmzXJLyczWSWh.mxl
+catalog keySig/timeSig/tempo: C major / None / 90.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 70, measures 24, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 3 4
+
+dump_score.py:
+song.pop.misc-christmas-silent-night.pdmx | Silent Night | level 3.86 (estimated)
+notation: {"bars": 24, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+bar   1 RH: G4/qua. A4/eig G4/qua  LH: C3/qua E3/qua G3/qua
+bar   2 RH: E4/hal.  LH: C3/qua E3/qua G3/qua
+bar   3 RH: G4/qua. A4/eig G4/qua  LH: C3/qua E3/qua G3/qua
+bar   4 RH: E4/hal.  LH: C3/qua E3/qua G3/qua
+bar   5 RH: D5/hal D5/qua  LH: G2/qua B2/qua D3/qua
+bar   6 RH: B4/hal.  LH: G2/qua B2/qua D3/qua
+bar   7 RH: C5/hal C5/qua  LH: A2/qua C3/qua E3/qua
+bar   8 RH: G4/hal.  LH: A2/qua C3/qua E3/qua
+bar   9 RH: A4/hal A4/qua  LH: F2/qua A2/qua C3/qua
+bar  10 RH: C5/qua. B4/eig A4/qua  LH: F2/qua A2/qua C3/qua
+bar  11 RH: G4/qua. A4/eig G4/qua  LH: C3/qua E3/qua G3/qua
+bar  12 RH: E4/hal.  LH: C3/qua E3/qua G3/qua
+bar  13 RH: A4/hal A4/qua  LH: F2/qua A2/qua C3/qua
+bar  14 RH: C5/qua. B4/eig A4/qua  LH: F2/qua A2/qua C3/qua
+bar  15 RH: G4/qua. A4/eig G4/qua  LH: C3/qua E3/qua G3/qua
+bar  16 RH: E4/hal.  LH: C3/qua E3/qua G3/qua
+bar  17 RH: D5/hal D5/qua  LH: G2/qua B2/qua D3/qua
+bar  18 RH: F5/qua. D5/eig B4/qua  LH: G2/qua B2/qua D3/qua
+bar  19 RH: C5/hal.  LH: A2/qua C3/qua E3/qua
+bar  20 RH: E5/hal.  LH: A2/qua C3/qua E3/qua
+bar  21 RH: C5/qua G4/qua E4/qua  LH: F2/qua A2/qua C3/qua
+bar  22 RH: G4/qua. E4/eig D4/qua  LH: G2/qua B2/qua D3/qua
+bar  23 RH: C4/hal.  LH: C3/qua E3/qua G3/qua
+bar  24 RH: C5/hal.  LH: C3/hal.

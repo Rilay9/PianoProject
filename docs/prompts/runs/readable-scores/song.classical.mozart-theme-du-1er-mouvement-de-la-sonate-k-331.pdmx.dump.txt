@@ -1,0 +1,33 @@
+song: song.classical.mozart-theme-du-1er-mouvement-de-la-sonate-k-331.pdmx
+title: Thème du 1er mouvement de la sonate K.331
+composer: Wolfgang Amadeus Mozart
+rungs: classical.3
+shipped file: scores/pdmx/QmeswnMFsq7kKrfJU2KHcucQ55D1psa3djU7BiYUptXPPR.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 55, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 19, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 3 4
+
+dump_score.py:
+song.classical.mozart-theme-du-1er-mouvement-de-la-sonate-k-331.pdmx | Thème du 1er mouvement de la sonate K.331 | level 2.45 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+bar   1 RH: E5/qua F5/qua E5/qua  LH: C3/hal.
+bar   2 RH: G5/hal G5/qua  LH: E3/hal.
+bar   3 RH: D5/qua E5/qua D5/qua  LH: G3/hal.
+bar   4 RH: F5/hal F5/qua  LH: D3/hal.
+bar   5 RH: C5/hal C5/qua  LH: E3/hal.
+bar   6 RH: D5/hal D5/qua  LH: D3/hal.
+bar   7 RH: E5/qua G5/qua F5/qua  LH: C3/hal F3/qua
+bar   8 RH: E5/hal D5/qua  LH: G3/hal.
+bar   9 RH: E5/qua F5/qua E5/qua  LH: C3/hal.
+bar  10 RH: G5/hal G5/qua  LH: E3/hal.
+bar  11 RH: D5/qua E5/qua D5/qua  LH: G3/hal.
+bar  12 RH: F5/hal F5/qua  LH: D3/hal.
+bar  13 RH: C5/hal D5/qua  LH: E3/hal D3/qua
+bar  14 RH: E5/hal F5/qua  LH: C3/hal F3/qua
+bar  15 RH: E5/hal D5/qua  LH: G3/hal.
+bar  16 RH: C5/hal.  LH: C3/hal.

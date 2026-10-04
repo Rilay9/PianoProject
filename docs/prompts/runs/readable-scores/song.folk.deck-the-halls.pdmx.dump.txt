@@ -1,0 +1,33 @@
+song: song.folk.deck-the-halls.pdmx
+title: Deck the Halls
+composer: Traditional (Welsh)
+rungs: holiday.4
+shipped file: scores/pdmx/QmPKJEDFTSJwKo4x82ZMZKwRBEuSN86RjrwLMLenwPqUtX.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 4, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 57, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.deck-the-halls.pdmx | Deck the Halls | level 4.24 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: G5/qua. F5/eig E5/qua D5/qua  LH: C3/hal. G2/qua
+bar   2 RH: C5/qua D5/qua E5/qua C5/qua  LH: A2/qua G2/qua C3/hal
+bar   3 RH: D5/eig E5/eig F5/eig D5/eig E5/qua. D5/eig  LH: G2/hal C3/eig D3/eig E3/eig F3/eig
+bar   4 RH: C5/qua B4/qua C5/hal  LH: G3/qua F3/qua C3/hal+E3/hal+G3/hal
+bar   5 RH: G5/qua. F5/eig E5/qua D5/qua  LH: C3/hal. G2/qua
+bar   6 RH: C5/eig C5/eig D5/qua E5/qua C5/qua  LH: A2/qua G2/qua C3/hal
+bar   7 RH: D5/eig E5/eig F5/eig D5/eig E5/qua. D5/eig  LH: G2/hal C3/eig D3/eig E3/eig F3/eig
+bar   8 RH: C5/eig C5/eig B4/qua C5/hal  LH: G3/qua F3/qua C3/hal+E3/hal+G3/hal
+bar   9 RH: D5/qua. E5/eig F5/qua D5/qua  LH: G2/qua D3/qua D3/qua G2/qua
+bar  10 RH: E5/qua. F5/eig G5/qua D5/qua  LH: C3/qua G3/qua C3/qua B2/qua
+bar  11 RH: E5/eig F#5/eig G5/qua A5/eig B5/eig C6/qua  LH: A2/qua B2/qua C3/hal
+bar  12 RH: B5/qua A5/qua G5/hal  LH: D3/qua D2/qua G2/hal
+bar  13 RH: G5/qua. F5/eig E5/qua D5/qua  LH: C3/hal. G2/qua
+bar  14 RH: C5/qua D5/qua E5/qua C5/qua  LH: A2/qua G2/qua C3/hal
+bar  15 RH: A4/eig A4/eig A4/eig A4/eig G4/qua. F4/eig  LH: F2/qua A2/eig B2/eig C3/qua E2/qua
+bar  16 RH: E4/qua D4/qua C4/hal  LH: F2/qua G2/qua C2/hal

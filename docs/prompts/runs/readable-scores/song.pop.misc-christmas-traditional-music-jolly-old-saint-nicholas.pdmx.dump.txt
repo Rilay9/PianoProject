@@ -1,0 +1,32 @@
+song: song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx
+title: Jolly Old Saint Nicholas
+composer: Traditional (American)
+rungs: holiday
+shipped file: scores/pdmx/QmSat3GXUTPx6h6heKP4tJdPaQZsTMc7XKky7C2BqKzcPt.mxl
+catalog keySig/timeSig/tempo: Bb major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 16, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -2 major
+  bar 1: time 2 4
+
+dump_score.py:
+song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx | Jolly Old Saint Nicholas | level 2.44 (estimated)
+notation: {"bars": 16, "staves": 1, "keys": [{"fifths": -2, "mode": "major"}], "times": ["2/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 10}
+key signatures (fifths): ['-2']  modes: ['major']  times: ['2/4']
+bar   1 RH: D5/eig D5/eig D5/eig D5/eig
+bar   2 RH: C5/eig C5/eig C5/qua
+bar   3 RH: Bb4/eig Bb4/eig Bb4/eig Bb4/eig
+bar   4 RH: D5/hal
+bar   5 RH: G4/eig G4/eig G4/eig G4/eig
+bar   6 RH: F4/eig F4/eig Bb4/qua
+bar   7 RH: A4/eig Bb4/eig C5/eig D5/eig
+bar   8 RH: C5/hal
+bar   9 RH: D5/eig D5/eig D5/eig D5/eig
+bar  10 RH: C5/eig C5/eig C5/qua
+bar  11 RH: Bb4/eig Bb4/eig Bb4/eig Bb4/eig
+bar  12 RH: D5/hal
+bar  13 RH: G4/eig G4/eig G4/eig G4/eig
+bar  14 RH: F4/eig F4/eig Bb4/qua
+bar  15 RH: C5/eig Bb4/eig C5/eig D5/eig
+bar  16 RH: Bb4/hal

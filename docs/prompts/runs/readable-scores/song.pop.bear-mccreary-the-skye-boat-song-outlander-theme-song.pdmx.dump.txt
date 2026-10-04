@@ -1,0 +1,65 @@
+song: song.pop.bear-mccreary-the-skye-boat-song-outlander-theme-song.pdmx
+title: The Skye Boat Song (Outlander theme)
+composer: Traditional (Scottish), arr. Bear McCreary
+rungs: chords-pop.4
+shipped file: scores/pdmx/QmZ8qaMvH2sZtWgYjMXDP91mErvbvhfFDdvr8V4jnMjUrq.mxl
+catalog keySig/timeSig/tempo: G major / None / 160.0
+raw-XML counts: ties 20, tuplets 0, fingerings 0, dynamics 1, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 48, measures 48, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4 -1
+  bar 1: key 1
+  bar 1: time 3 4
+
+dump_score.py:
+song.pop.bear-mccreary-the-skye-boat-song-outlander-theme-song.pdmx | The Skye Boat Song (Outlander theme) | level 3.55 (estimated)
+notation: {"bars": 48, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['3/4']
+bar   1 RH: D4/qua. E4/eig D4/qua  LH: G2/hal.
+bar   2 RH: G4/hal G4/qua  LH: E2/hal.
+bar   3 RH: A4/qua. B4/eig A4/qua  LH: A2/hal.
+bar   4 RH: D5/hal.  LH: D2/hal.
+bar   5 RH: B4/qua. A4/eig B4/qua  LH: G2/hal.
+bar   6 RH: E4/hal E4/qua  LH: C2/hal.
+bar   7 RH: D4/hal.  LH: G2/hal.
+bar   8 RH: D4/hal.  LH: G2/hal.
+bar   9 RH: D4/qua. E4/eig D4/qua  LH: G2/hal.
+bar  10 RH: G4/hal G4/qua  LH: E2/hal.
+bar  11 RH: A4/qua. B4/eig A4/qua  LH: A2/hal.
+bar  12 RH: D5/hal.  LH: D2/hal.
+bar  13 RH: B4/qua. A4/eig B4/qua  LH: G2/hal.
+bar  14 RH: E4/hal E4/qua  LH: C2/hal.
+bar  15 RH: G4/hal.  LH: G2/hal.
+bar  16 RH: G4/hal.  LH: G2/hal.
+bar  17 RH: B4/qua. G4/eig B4/qua  LH: E2/hal.
+bar  18 RH: B4/hal.  LH: E2/hal.
+bar  19 RH: A4/qua. E4/eig A4/qua  LH: A2/hal.
+bar  20 RH: A4/hal.  LH: A2/hal.
+bar  21 RH: G4/qua. E4/eig G4/qua  LH: E2/hal.
+bar  22 RH: G4/hal F#4/qua  LH: G2/hal.
+bar  23 RH: E4/hal.  LH: E2/hal.
+bar  24 RH: E4/hal.  LH: E2/hal.
+bar  25 RH: B4/qua. G4/eig B4/qua  LH: E2/hal.
+bar  26 RH: B4/hal.  LH: E2/hal.
+bar  27 RH: A4/qua. E4/eig A4/qua  LH: A2/hal.
+bar  28 RH: A4/hal.  LH: A2/hal.
+bar  29 RH: G4/qua. E4/eig G4/qua  LH: E2/hal.
+bar  30 RH: G4/hal F#4/qua  LH: G2/hal.
+bar  31 RH: E4/hal.  LH: E2/hal.
+bar  32 RH: D4/hal.  LH: D2/hal.
+bar  33 RH: D4/qua. E4/eig D4/qua  LH: G2/hal.
+bar  34 RH: G4/hal G4/qua  LH: E2/hal.
+bar  35 RH: A4/qua. B4/eig A4/qua  LH: A2/hal.
+bar  36 RH: D5/hal.  LH: D2/hal.
+bar  37 RH: B4/qua. A4/eig B4/qua  LH: G2/hal.
+bar  38 RH: E4/hal E4/qua  LH: C2/hal.
+bar  39 RH: D4/hal.  LH: G2/hal.
+bar  40 RH: D4/hal.  LH: G2/hal.
+bar  41 RH: D4/qua. E4/eig D4/qua  LH: G2/hal.
+bar  42 RH: G4/hal G4/qua  LH: E2/hal.
+bar  43 RH: A4/qua. B4/eig A4/qua  LH: A2/hal.
+bar  44 RH: D5/hal.  LH: D2/hal.
+bar  45 RH: B4/qua. A4/eig B4/qua  LH: G2/hal.
+bar  46 RH: E4/hal E4/qua  LH: C2/hal.
+bar  47 RH: G4/hal.  LH: G2/hal.
+bar  48 RH: G4/hal.  LH: G2/hal.

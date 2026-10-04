@@ -1,0 +1,33 @@
+song: song.classical.ah-vous-dirais-je-maman.pdmx
+title: Ah! vous dirai-je, Maman
+composer: Traditional (French)
+rungs: 1.2
+shipped file: scores/pdmx/QmPinqY1oto3v4qQZjnQ6Rmocg9PmKgtQE7774TYcXXytJ.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 132.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 15, grace notes 0, voices>1 0, measures 16, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 2 4
+
+dump_score.py:
+song.classical.ah-vous-dirais-je-maman.pdmx | Ah! vous dirai-je, Maman | level 1.93 (estimated)
+notation: {"bars": 16, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["2/4"], "chordCount": 15, "chords": ["C", "F", "G7"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['0']  modes: []  times: ['2/4']
+text on the score: ['Allegro', 'D.C. al Fine']
+bar   1 RH: C4/qua C4/qua  [C major]
+bar   2 RH: G4/qua G4/qua
+bar   3 RH: A4/qua A4/qua  [F major]
+bar   4 RH: G4/hal  [C major]
+bar   5 RH: F4/qua F4/qua  [F major]
+bar   6 RH: E4/qua E4/qua  [C major]
+bar   7 RH: D4/qua D4/qua  [G dominant]
+bar   8 RH: C4/hal  [C major]
+bar   9 RH: G4/qua G4/qua  [C major]
+bar  10 RH: F4/qua F4/qua  [F major]
+bar  11 RH: E4/qua E4/qua  [C major]
+bar  12 RH: D4/hal  [G dominant]
+bar  13 RH: G4/qua G4/qua  [C major]
+bar  14 RH: F4/qua F4/qua  [F major]
+bar  15 RH: E4/qua E4/qua  [C major]
+bar  16 RH: D4/hal  [G dominant]

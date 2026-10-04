@@ -1,0 +1,48 @@
+song: song.folk.exercise-cielito-lindo.pdmx
+title: Cielito Lindo
+composer: Quirino Mendoza y Cortés
+rungs: latin, latin.3
+shipped file: scores/pdmx/QmdotJP1ctgJZG85e3Wr2kWcL1QiSQ7R1e9m8faM6SF8EM.mxl
+catalog keySig/timeSig/tempo: C major / None / 160.0
+raw-XML counts: ties 26, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 32, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 3 4
+
+dump_score.py:
+song.folk.exercise-cielito-lindo.pdmx | Cielito Lindo | level 2.83 (estimated)
+notation: {"bars": 32, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+bar   1 RH: C5/qua C5/qua A4/qua
+bar   2 RH: A4/qua B4/qua G4/qua
+bar   3 RH: C5/qua C5/qua A4/qua
+bar   4 RH: A4/qua B4/qua G4/qua
+bar   5 RH: C5/qua C5/qua A4/qua
+bar   6 RH: A4/qua B4/qua G4/qua
+bar   7 RH: F4/qua D4/hal
+bar   8 RH: D4/hal.
+bar   9 RH: B4/qua B4/qua B4/qua
+bar  10 RH: B4/qua A4/qua G4/qua
+bar  11 RH: F4/qua D4/qua D4/qua
+bar  12 RH: D4/qua E4/qua F4/qua
+bar  13 RH: G4/qua G4/qua G4/qua
+bar  14 RH: G4/qua F4/qua E4/qua
+bar  15 RH: D4/qua C4/hal
+bar  16 RH: C4/hal.
+bar  17 RH: E5/hal.
+bar  18 RH: D5/hal C5/qua
+bar  19 RH: A4/hal.
+bar  20 RH: A4/hal.
+bar  21 RH: D5/hal.
+bar  22 RH: D5/hal C5/qua
+bar  23 RH: E5/qua C5/hal
+bar  24 RH: C5/hal G4/qua
+bar  25 RH: A4/hal G4/qua
+bar  26 RH: A4/qua A4/qua G4/qua
+bar  27 RH: F5/qua F5/qua D5/qua
+bar  28 RH: D5/qua B4/qua G4/qua
+bar  29 RH: A4/qua A4/qua G4/qua
+bar  30 RH: G4/qua F4/qua E4/qua
+bar  31 RH: D4/qua C4/hal
+bar  32 RH: C4/hal.

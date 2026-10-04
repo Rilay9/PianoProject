@@ -1,0 +1,91 @@
+song: song.classical.zimmer-time-hans-zimmer-inception.pdmx
+title: Time - Hans Zimmer - Inception
+composer: Hans Zimmer
+rungs: classical.4.shelf
+shipped file: scores/pdmx/QmXa9z3uvLgfHVBeipuo6vhLCQiBTg1TJxcqUUaQTX13BD.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 60.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 22, pedal 0, articulations 23, chord symbols 0, grace notes 0, voices>1 388, measures 72, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef F 4
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+  bar 26: clef G 2
+  bar 57: clef G 2
+
+dump_score.py:
+song.classical.zimmer-time-hans-zimmer-inception.pdmx | Time - Hans Zimmer - Inception | level 6.45 (estimated)
+notation: {"bars": 72, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: C3/who  LH: A2/who
+bar   2 RH: G3/who  LH: E2/who
+bar   3 RH: B2/who  LH: G2/who
+bar   4 RH: F#3/who  LH: D2/who
+bar   5 RH: C3/who  LH: A2/who
+bar   6 RH: B3/who  LH: C2/who+C3/who
+bar   7 RH: B2/who  LH: G2/who
+bar   8 RH: F#3/who  LH: D2/who
+bar   9 RH: C3/who  LH: A1/who+E2/who
+bar  10 RH: B2/who+G3/who  LH: E1/who+E2/who
+bar  11 RH: B2/who  LH: G1/who+G2/who
+bar  12 RH: A2/who+F#3/who  LH: D1/who+D2/who
+bar  13 RH: C3/who  LH: A1/who+A2/who
+bar  14 RH: C3/who+B3/who  LH: C2/who+G2/who
+bar  15 RH: B2/who  LH: G1/who+G2/who
+bar  16 RH: A2/who+F#3/who  LH: D1/who+D2/who
+bar  17 RH:v1: A2/hal+C3/hal B2/qua A2/qua | v2: E3/who  LH: A1/who+E2/who
+bar  18 RH:v1: E3/hal+G3/hal F#3/qua E3/qua | v2: B2/who  LH: E1/who+E2/who
+bar  19 RH:v1: G2/hal+B2/hal A2/qua G2/qua | v2: D3/who  LH: G1/who+D2/who
+bar  20 RH:v1: D3/hal+F#3/hal E3/qua D3/qua | v2: A2/who  LH: D1/who+D2/who
+bar  21 RH:v1: A2/hal+C3/hal B2/qua A2/qua | v2: E3/who  LH: A1/who+E2/who
+bar  22 RH: E3/hal+G3/hal+B3/hal F#3/qua+A3/qua E3/qua+G3/qua  LH: C2/who+G2/who+C3/who
+bar  23 RH:v1: G2/hal+B2/hal A2/qua G2/qua | v2: D3/who  LH: G1/who+D2/who
+bar  24 RH:v1: D3/hal+F#3/hal E3/qua D3/qua | v2: A2/who  LH: D1/who+D2/who
+bar  25 RH:v1: r/qua B3/qua A3/hal | v2: C4/who  LH:v5: E3/hal E3/qua F#3/qua | v6: A2/who+C3/who
+bar  26 RH:v1: G3/who | v2: G4/who  LH:v5: E2/who | v6: B2/qua F#3/qua E3/qua B2/qua
+bar  27 RH:v1: r/qua A3/qua G3/hal | v2: B3/who  LH:v5: D3/hal D3/qua E3/qua | v6: G2/who+B2/who
+bar  28 RH: F#3/who+F#4/who  LH:v6: A2/qua E3/qua D3/qua A2/eig B2/eig | v7: D2/who
+bar  29 RH:v1: C4/who | v2: r/qua B3/qua A3/hal  LH:v5: E3/hal E3/qua F#3/qua | v6: A2/who+C3/who
+bar  30 RH: B3/who+G4/who+B4/who  LH:v6: G3/qua A3/qua G3/qua F#3/qua | v7: C3/who+E3/who
+bar  31 RH:v1: B3/who | v2: r/qua C4/qua B3/hal  LH:v5: D3/hal D3/qua E3/qua | v6: G2/who+B2/who
+bar  32 RH: F#3/who+F#4/who  LH:v6: A2/qua E3/qua D3/qua A2/eig B2/eig | v7: D2/who
+bar  33 RH: C4/who+C5/who  LH:v6: E3/qua B3/qua E3/qua+A3/qua F#3/qua | v7: A2/who+C3/who
+bar  34 RH: G4/who+G5/who  LH:v6: G3/qua F#3/qua E3/qua B2/qua | v7: E2/who+B2/who
+bar  35 RH: B3/who+B4/who  LH:v6: D3/qua A3/qua D3/qua+G3/qua E3/qua | v7: G2/who+B2/who
+bar  36 RH: F#4/who+F#5/who  LH:v6: A2/qua+F#3/qua E3/qua D3/qua A2/eig B2/eig | v7: D2/who
+bar  37 RH: C4/who+C5/who  LH:v6: E3/qua B3/qua E3/qua+A3/qua F#3/qua | v7: A2/who+C3/who
+bar  38 RH: B4/who+G5/who+B5/who  LH:v6: E3/qua A3/qua G3/qua F#3/qua | v7: C2/who+G2/who
+bar  39 RH: B3/who+B4/who  LH:v6: D3/qua A3/qua D3/qua+G3/qua E3/qua | v7: G2/who+B2/who
+bar  40 RH: F#4/who+F#5/who  LH:v6: A2/qua+F#3/qua E3/qua D3/qua A2/eig B2/eig | v7: D2/who
+bar  41 RH: C4/who+C5/who  LH:v6: r/qua B3/qua+C4/qua A3/qua+C4/qua F#3/qua+A3/qua+C4/qua | v7: A2/who
+bar  42 RH: G4/who+G5/who  LH:v6: r/qua F#3/qua+G3/qua E3/qua+G3/qua B2/qua+G3/qua | v7: E2/who
+bar  43 RH: B3/who+B4/who  LH:v6: r/qua A3/qua+B3/qua D3/qua+G3/qua+B3/qua E3/qua+G3/qua+B3/qua | v7: G2/who
+bar  44 RH: F#4/who+F#5/who  LH:v6: r/qua E3/qua+F#3/qua D3/qua+F#3/qua A2/eig+F#3/eig B2/eig | v7: D2/who
+bar  45 RH: C4/who+C5/who  LH:v6: r/qua B3/qua+C4/qua A3/qua+C4/qua F#3/qua+A3/qua+C4/qua | v7: A2/who
+bar  46 RH: B4/who+B5/who  LH:v6: B3/qua+C4/qua A3/qua+C4/qua G3/qua+C4/qua F#3/qua+C4/qua | v7: C3/who
+bar  47 RH: B3/who+B4/who  LH:v6: r/qua A3/qua+B3/qua D3/qua+G3/qua+B3/qua E3/qua+G3/qua+B3/qua | v7: G2/who
+bar  48 RH: F#4/who+F#5/who  LH:v6: r/qua E3/qua+F#3/qua D3/qua+F#3/qua A2/eig+F#3/eig B2/eig | v7: D2/who
+bar  49 RH: C4/hal+C5/hal B3/qua+B4/qua E4/qua  LH: A2/16t C3/16t E3/16t A3/16t A2/16t C3/16t E3/16t A3/16t A2/16t C3/16t E3/16t A3/16t A2/16t C3/16t E3/16t A3/16t
+bar  50 RH: G4/hal+G5/hal F#4/qua+F#5/qua B3/qua+B4/qua  LH: E2/16t B2/16t E3/16t G3/16t E2/16t B2/16t E3/16t G3/16t E2/16t B2/16t E3/16t G3/16t E2/16t B2/16t E3/16t G3/16t
+bar  51 RH: B3/hal+B4/hal A3/qua+A4/qua D4/qua  LH: G2/16t B2/16t D3/16t G3/16t G2/16t B2/16t D3/16t G3/16t G2/16t B2/16t D3/16t G3/16t G2/16t B2/16t D3/16t G3/16t
+bar  52 RH: F#4/hal+F#5/hal E4/qua+E5/qua A3/qua+A4/qua  LH: D2/16t A2/16t D3/16t F#3/16t D2/16t A2/16t D3/16t F#3/16t D2/16t A2/16t D3/16t F#3/16t D2/16t A2/16t D3/16t F#3/16t
+bar  53 RH: C4/hal+C5/hal B3/qua+B4/qua E4/qua  LH: A2/16t C3/16t E3/16t A3/16t A2/16t C3/16t E3/16t A3/16t A2/16t C3/16t E3/16t A3/16t A2/16t C3/16t E3/16t A3/16t
+bar  54 RH: B4/hal+B5/hal G4/qua+G5/qua C4/qua+C5/qua  LH: C2/16t G2/16t C3/16t E3/16t C2/16t G2/16t C3/16t E3/16t C2/16t G2/16t C3/16t E3/16t C2/16t G2/16t C3/16t E3/16t
+bar  55 RH: B3/hal+B4/hal A3/qua+A4/qua D4/qua  LH: G2/16t B2/16t D3/16t G3/16t G2/16t B2/16t D3/16t G3/16t G2/16t B2/16t D3/16t G3/16t G2/16t B2/16t D3/16t G3/16t
+bar  56 RH: F#4/hal+F#5/hal E4/qua+E5/qua A3/qua+A4/qua  LH: D2/16t A2/16t D3/16t F#3/16t D2/16t A2/16t D3/16t F#3/16t D2/16t A2/16t D3/16t F#3/16t D2/16t A2/16t D3/16t F#3/16t
+bar  57 RH: C5/hal C6/hal  LH:v6: r/hal A5/hal | v7: A4/who
+bar  58 RH: G5/hal G6/hal  LH:v6: r/hal E5/hal | v7: C4/who
+bar  59 RH: B4/hal B5/hal  LH:v6: r/hal G5/hal | v7: G4/who
+bar  60 RH: F#5/hal F#6/hal  LH:v6: r/hal D5/hal | v7: D4/who
+bar  61 RH: C5/hal C6/hal  LH:v6: r/hal A5/hal | v7: A4/who
+bar  62 RH: B5/hal B6/hal  LH:v6: r/hal C5/hal | v7: C4/who
+bar  63 RH: B4/hal B5/hal  LH:v6: r/hal G5/hal | v7: G4/who
+bar  64 RH: F#5/hal F#6/hal  LH:v6: r/hal D5/hal | v7: D4/who
+bar  65 RH: C5/who  LH: A4/who
+bar  66 RH: G5/who  LH: E4/who
+bar  67 RH: B4/who  LH: G4/who
+bar  68 RH: F#5/who  LH: D4/who
+bar  69 RH: C5/who  LH: A4/who
+bar  70 RH: B5/who  LH: C4/who
+bar  71 RH: B4/who  LH: G4/who
+bar  72 RH: F#5/who  LH: D4/who

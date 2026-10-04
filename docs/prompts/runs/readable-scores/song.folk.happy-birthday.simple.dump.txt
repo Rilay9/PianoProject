@@ -1,0 +1,26 @@
+song: song.folk.happy-birthday.simple
+title: Happy Birthday to You
+composer: Patty and Mildred Hill (Good Morning to All, 1893)
+rungs: 2.3, 3.2, chords-pop.3
+shipped file: scores/authored/song.folk.happy-birthday.simple.mxl
+catalog keySig/timeSig/tempo: C major / 3/4 / 100.0
+raw-XML counts: ties 0, tuplets 0, fingerings 25, dynamics 0, pedal 0, articulations 0, chord symbols 8, grace notes 0, voices>1 31, measures 9, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 0 major
+  bar 0: time 3 4
+
+dump_score.py:
+song.folk.happy-birthday.simple | Happy Birthday to You | level 2.3 (judged)
+notation: {"bars": 9, "staves": 2, "keys": [{"fifths": 0, "mode": "major"}], "times": ["3/4"], "chordCount": 8, "chords": ["C", "F", "Gdominant"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: ['major']  times: ['3/4']
+bar   0 RH: G4/eig G4/eig  LH: r/qua
+bar   1 RH: A4/qua G4/qua C5/qua  LH: C3/hal.+E3/hal.+G3/hal.  [C major]
+bar   2 RH: B4/hal G4/eig G4/eig  LH: G2/hal.+B2/hal.+D3/hal.  [G dominant]
+bar   3 RH: A4/qua G4/qua D5/qua  LH: G2/hal.+B2/hal.+D3/hal.  [G dominant]
+bar   4 RH: C5/hal G4/eig G4/eig  LH: C3/hal.+E3/hal.+G3/hal.  [C major]
+bar   5 RH: G5/qua E5/qua C5/qua  LH: C3/hal.+E3/hal.+G3/hal.  [C major]
+bar   6 RH: B4/qua A4/qua F5/eig F5/eig  LH: C3/hal+E3/hal+G3/hal G2/qua+B2/qua+D3/qua  [C major]
+bar   7 RH: E5/qua C5/qua D5/qua  LH: F2/hal+A2/hal+C3/hal G2/qua+B2/qua+D3/qua  [F major]
+bar   8 RH: C5/hal.  LH: C3/hal.+E3/hal.+G3/hal.  [C major]

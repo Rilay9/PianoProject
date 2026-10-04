@@ -1,0 +1,33 @@
+song: song.folk.traditional-music-when-johnny-comes-marching-home.pdmx
+title: When Johnny Comes Marching Home
+composer: Patrick Gilmore
+rungs: 4.5
+shipped file: scores/pdmx/QmStQQYDfkCHKZCuRufd2KBh9ssgqdaxN8F5rpVjkU5kLU.mxl
+catalog keySig/timeSig/tempo: A minor / None / 110.00000000000001
+raw-XML counts: ties 16, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 8, grace notes 0, voices>1 0, measures 17, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 6 8
+
+dump_score.py:
+song.folk.traditional-music-when-johnny-comes-marching-home.pdmx | When Johnny Comes Marching Home | level 2.42 (estimated)
+notation: {"bars": 17, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["6/8"], "chordCount": 8, "chords": ["Am", "C", "Em", "G"], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['0']  modes: []  times: ['6/8']
+bar   1 RH: E4/eig  [A minor]
+bar   2 RH: E4/eig A4/eig A4/eig A4/qua B4/eig
+bar   3 RH: C5/qua B4/eig C5/qua A4/eig
+bar   4 RH: G4/hal G4/eig E4/eig  [C major]
+bar   5 RH: G4/hal G4/eig A4/eig
+bar   6 RH: E4/eig A4/eig A4/eig A4/qua B4/eig  [A minor]
+bar   7 RH: C5/qua B4/eig C5/qua D5/eig
+bar   8 RH: E5/hal E5/eig C5/eig
+bar   9 RH: E5/hal E5/eig C5/eig
+bar  10 RH: E5/qua E5/eig E5/eig D5/eig C5/eig  [A minor]
+bar  11 RH: D5/qua D5/eig D5/qua B4/eig  [G major]
+bar  12 RH: C5/qua C5/eig C5/eig B4/eig A4/eig  [A minor]
+bar  13 RH: B4/qua B4/eig B4/eig C5/eig D5/eig  [E minor]
+bar  14 RH: E5/qua E5/eig D5/qua D5/eig  [A minor]
+bar  15 RH: C5/qua C5/eig B4/qua E4/eig
+bar  16 RH: E4/eig A4/eig A4/eig A4/qua G4/eig
+bar  17 RH: A4/qua. A4/qua r/eig

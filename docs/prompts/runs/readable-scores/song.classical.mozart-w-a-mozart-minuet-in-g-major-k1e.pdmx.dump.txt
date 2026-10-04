@@ -1,0 +1,61 @@
+song: song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx
+title: Minuets in G major and C major, K. 1e and K. 1f
+composer: Wolfgang Amadeus Mozart
+rungs: classical.4
+shipped file: scores/pdmx/QmSSZAHjALT7zf8hpZpLFXaBHB9ytuBETs4QbhvYDFSAaa.mxl
+catalog keySig/timeSig/tempo: 1 sharp / None / 200.0
+raw-XML counts: ties 0, tuplets 16, fingerings 0, dynamics 3, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 126, measures 36, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 3 4
+  bar 9: time 2 4
+  bar 10: time 3 4
+  bar 18: time 2 4
+  bar 19: key 0
+  bar 19: time 3 4
+  bar 27: time 2 4
+  bar 28: time 3 4
+
+dump_score.py:
+song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx | Minuets in G major and C major, K. 1e and K. 1f | level 5.8 (estimated)
+notation: {"bars": 36, "staves": 2, "keys": [{"fifths": 1, "mode": null}, {"fifths": 0, "mode": null}], "times": ["3/4", "2/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['1', '0']  modes: []  times: ['3/4', '2/4', '3/4', '2/4', '3/4', '2/4', '3/4']
+text on the score: ['Fine', 'Fine', 'Trio.', '&lt;b&gt;Menuetto da Capo al Fine.&lt;/b&gt;', '&lt;b&gt;Menuetto da Capo al Fine.&lt;/b&gt;']
+bar   1 RH: B5/eig G5/eig  LH: r/qua
+bar   2 RH: B4/qua C5/qua D5/qua  LH: G3/qua A3/qua B3/qua
+bar   3 RH: D5/qua C5/qua A5/eig F#5/eig  LH: B3/qua A3/qua r/qua
+bar   4 RH: A4/qua B4/qua C5/qua  LH: F#3/qua G3/qua A3/qua
+bar   5 RH: C5/qua B4/qua B5/eig G5/eig  LH: A3/qua G3/qua r/qua
+bar   6 RH: E5/qua G5/eig E5/eig C#5/qua  LH: G3/hal E3/qua
+bar   7 RH: E5/eig C#5/eig A4/eig G4/eig F#4/qua  LH: C#3/qua A2/qua D3/qua
+bar   8 RH: B4/eig A4/eig G4/eig F#4/qua E4/qua  LH: G3/qua A3/qua A2/qua
+bar   9 RH: D4/hal  LH: D3/qua D2/qua
+bar  10 RH: D5/eig B4/eig  LH: r/qua
+bar  11 RH: G#4/qua F5/qua E5/qua  LH: E3/qua D4/qua C4/qua
+bar  12 RH: D5/qua C5/qua C5/eig A4/eig  LH: B3/qua A3/qua A3/eig F#3/eig
+bar  13 RH: F#4/qua E5/qua D5/qua  LH: D3/qua C4/qua B3/qua
+bar  14 RH: C5/qua B4/qua E5/eig C5/eig  LH: A3/qua G3/qua r/qua
+bar  15 RH: A4/qua C5/eig A4/eig F#4/qua  LH: C4/hal A3/qua
+bar  16 RH: D4/eig F#4/eig A4/eig C5/eig B4/qua  LH: F#3/qua D3/qua G3/qua
+bar  17 RH: E5/eig C5/eig A4/eig G4/qua F#4/qua  LH: C4/qua D4/qua D3/qua
+bar  18 RH: G4/hal  LH: G3/hal
+bar  19 RH: C5/eig G4/eig  LH: C3/eig E3/eig
+bar  20 RH: E4/qua E4/qua D4/eig E4/eig  LH:v6: G3/qua G3/qua G3/qua | v7: C3/qua C3/qua B2/eig C3/eig
+bar  21 RH: E4/qua F4/qua D5/eig B4/eig  LH:v6: G3/hal G3/qua | v7: C3/qua D3/qua B2/eig D3/eig
+bar  22 RH: F4/qua F4/qua E4/eig D4/eig  LH:v6: G3/qua G3/qua G3/qua | v7: B2/qua B2/qua B2/qua
+bar  23 RH: D4/qua E4/qua E5/16t D5/16t C5/16t B4/16t  LH:v6: G3/hal C4/16t B3/16t A3/16t G3/16t | v7: C3/hal r/qua
+bar  24 RH: A4/qua A5/qua D5/16t C5/16t B4/16t A4/16t  LH: F#3/hal B3/16t A3/16t G3/16t F#3/16t
+bar  25 RH: G4/qua G5/qua D5/16t B4/16t A4/16t G4/16t  LH: E3/hal B3/qua
+bar  26 RH: E5/qua D5/qua F#4/qua  LH: C4/qua D4/qua D3/qua
+bar  27 RH: A4/qua G4/qua  LH: G3/hal
+bar  28 RH: G5/eig E5/eig  LH: E3/eig G3/eig
+bar  29 RH: C#5/eig C#5/eig C#5/qua D5/eig E5/eig  LH:v6: A3/qua A3/qua A3/qua | v7: A3/qua G3/qua F3/eig E3/eig
+bar  30 RH: E5/qua F5/qua F5/eig D5/eig  LH:v6: A3/hal A3/qua | v7: E3/qua D3/qua D3/eig F3/eig
+bar  31 RH: B4/qua B4/qua C5/eig D5/eig  LH:v6: G3/qua G3/qua G3/qua | v7: G3/qua F3/qua E3/eig D3/eig
+bar  32 RH: D5/qua E5/qua A5/16t G5/16t F5/16t E5/16t  LH:v6: G3/hal F4/16t E4/16t D4/16t C4/16t | v7: D3/qua C3/qua r/qua
+bar  33 RH: D5/qua D6/qua G5/16t F5/16t E5/16t D5/16t  LH: B3/hal E4/16t D4/16t C4/16t B3/16t
+bar  34 RH: C5/qua C6/qua G5/16t E5/16t D5/16t C5/16t  LH: A3/hal E3/qua
+bar  35 RH: A5/qua G5/qua B4/qua  LH: F3/qua G3/qua G2/qua
+bar  36 RH: D5/qua C5/qua  LH: C3/hal

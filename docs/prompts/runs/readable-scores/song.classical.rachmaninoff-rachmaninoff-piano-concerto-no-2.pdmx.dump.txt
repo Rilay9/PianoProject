@@ -1,0 +1,74 @@
+song: song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx
+title: Rachmaninoff - Piano Concerto No. 2
+composer: Sergei Rachmaninoff
+rungs: classical.4.shelf, rock.7
+shipped file: scores/pdmx/QmUmyJufsW25moTgmLwAfcWikX64ckfHQE4bLFmFTevK8R.mxl
+catalog keySig/timeSig/tempo: C minor / None / 72.0
+raw-XML counts: ties 24, tuplets 16, fingerings 1, dynamics 8, pedal 0, articulations 36, chord symbols 0, grace notes 0, voices>1 448, measures 56, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -3
+  bar 1: time 2 2
+
+dump_score.py:
+song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx | Rachmaninoff - Piano Concerto No. 2 | level 6.96 (estimated)
+notation: {"bars": 56, "staves": 2, "keys": [{"fifths": -3, "mode": null}], "times": ["2/2"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['-3']  modes: []  times: ['2/2']
+text on the score: ['cresc.', 'dim.', 'cresc.', 'dim.']
+bar   1 RH: F4/who+Ab4/who+C5/who  LH:v6: F3/who+Ab3/who+C4/who | v7: r/hal F1/hal
+bar   2 RH: Db4/who+F4/who+Ab4/who+C5/who  LH:v6: Db3/who+Ab3/who+C4/who | v7: r/hal F1/hal
+bar   3 RH: D4/who+F4/who+Ab4/who+C5/who  LH:v6: D3/who+F3/who+Ab3/who+C4/who | v7: r/hal F1/hal
+bar   4 RH: Eb4/who+F4/who+Ab4/who+C5/who  LH:v6: Eb3/who+F3/who+Ab3/who+C4/who | v7: r/hal F1/hal
+bar   5 RH: Eb4/who+F4/who+A4/who+C5/who  LH:v6: Eb3/who+F3/who+A3/who | v7: r/hal F1/hal
+bar   6 RH: Eb4/who+F4/who+Ab4/who+C5/who  LH:v6: Eb3/who+F3/who+Ab3/who+C4/who | v7: r/hal F1/hal
+bar   7 RH: D4/who+F4/who+Ab4/who+C5/who  LH:v6: D3/who+F3/who+Ab3/who+C4/who | v7: r/hal F1/hal
+bar   8 RH:v1: Db4/who+F4/who+Ab4/who+C5/who | v2: r/qua Ab3/qua F3/qua G3/qua  LH:v5: Db3/who+F3/who+Ab3/who+C4/who | v6: r/qua Ab1/qua+Ab2/qua F1/qua+F2/qua G1/qua+G2/qua
+bar   9 RH: C4/who+Eb4/who+G4/who+C5/who  LH: C3/eig Eb3/eig G3/eig C4/eig Eb3/eig G3/eig C4/eig Eb4/eig
+bar  10 RH: r/?  LH: C3/eig Eb3/eig G3/eig C4/eig G2/eig B2/eig D3/eig G3/eig
+bar  11 RH: C5/hal. D5/qua  LH: C3/eig Eb3/eig G3/eig C4/eig G2/eig B2/eig D3/eig F3/eig
+bar  12 RH: C5/hal. D5/qua  LH: C3/eig Eb3/eig G3/eig C4/eig G2/eig B2/eig D3/eig G3/eig
+bar  13 RH: C5/hal. Bb4/qua  LH: C3/eig Eb3/eig G3/eig C4/eig D3/eig F3/eig Ab3/eig C4/eig
+bar  14 RH: Ab4/qua Bb4/qua G4/hal  LH: F2/eig Ab2/eig C3/eig F3/eig G2/eig B2/eig D3/eig G3/eig
+bar  15 RH: C5/qua D5/qua Eb5/qua D5/qua  LH: C3/eig Eb3/eig G3/eig C4/eig D3/eig F3/eig Ab3/eig C4/eig
+bar  16 RH: Eb5/hal. D5/qua  LH: Eb2/eig G2/eig Bb2/eig Eb3/eig G2/eig B2/eig D3/eig G3/eig
+bar  17 RH: C5/hal Bb4/hal  LH: Ab2/eig C3/eig Eb3/eig Ab3/eig C3/eig E3/eig G3/eig Bb3/eig
+bar  18 RH: Bb4/qua Ab4/qua G4/eig r/eig r/qua  LH: F2/eig Ab2/eig C3/eig F3/eig Ab2/eig C3/eig Eb3/eig Ab3/eig
+bar  19 RH: C5/hal. D5/qua  LH: C3/eig Eb3/eig G3/eig C4/eig G2/eig B2/eig D3/eig G3/eig
+bar  20 RH: C5/hal. D5/qua  LH: C3/eig Eb3/eig G3/eig C4/eig G2/eig B2/eig D3/eig G3/eig
+bar  21 RH: C5/hal. Bb4/qua  LH: C3/eig Eb3/eig G3/eig C4/eig Bb2/eig D3/eig F3/eig Bb3/eig
+bar  22 RH: Ab4/qua Bb4/qua G4/hal  LH: D3/eig F3/eig Ab3/eig C4/eig Ab2/eig C3/eig F3/eig Ab3/eig
+bar  23 RH: C5/hal Ab4/hal  LH: C3/eig Eb3/eig G3/eig C4/eig D3/eig Fb3/eig Ab3/eig Cb4/eig
+bar  24 RH: Ab4/hal G4/hal  LH: Ab2/eig C3/eig F3/eig Ab3/eig C3/eig E3/eig G3/eig Bb3/eig
+bar  25 RH: F4/qua Eb4/qua D4/hal  LH: Db3/eig F3/eig Ab3/eig C4/eig G2/eig B2/eig D3/eig F3/eig
+bar  26 RH: C4/hal. D4/qua  LH: C3/eig Eb3/eig G3/eig C4/eig Eb4/eig C4/eig G3/eig F#3/eig C4/eig D4/eig
+bar  27 RH: r/qua G4/qua C4/hal+Ab4/hal  LH: D3/qua+G3/qua+B3/qua Ab3/qua+C4/qua F3/eig C4/eig G3/eig C3/eig
+bar  28 RH: C4/qua+Ab4/qua F4/qua G4/qua Ab4/qua  LH: F2/eig Bb2/eig D3/eig F3/eig C3/eig Eb3/eig G3/eig C4/eig
+bar  29 RH:v1: Bb4/hal. Ab4/qua | v2: D4/who  LH: Bb2/eig D3/eig F3/eig Ab3/eig C4/eig Bb3/eig F3/eig C3/eig
+bar  30 RH:v1: G4/qua Ab4/qua Bb4/hal | v2: D4/who  LH: C3/eig Eb3/eig G3/eig Bb3/eig C4/eig Bb3/eig G3/eig Bb3/eig
+bar  31 RH: Bb4/qua B4/qua Ab4/hal+C5/hal  LH: C#3/eig Eb3/eig G3/eig C#4/eig Ab2/eig C3/eig F3/eig Ab3/eig
+bar  32 RH: Ab4/qua+C5/qua Ab4/qua Bb4/qua C5/qua  LH: F3/eig C3/eig Ab2/eig F2/eig Eb2/eig G2/eig Bb2/eig Eb3/eig
+bar  33 RH: D5/hal. C5/qua  LH: D3/eig F3/eig Ab3/eig C4/eig D3/eig G3/eig C3/eig G3/eig
+bar  34 RH: B4/qua C5/qua D5/qua Eb5/qua  LH: Eb3/eig G3/eig D3/eig F3/eig G2/eig B2/eig D3/eig F3/eig
+bar  35 RH: F5/hal. Eb5/qua  LH: D3/eig F3/eig Ab3/eig D4/eig D3/eig F3/eig Ab3/eig D4/eig
+bar  36 RH: B4/hal+D5/hal Eb5/qua F5/qua  LH: G2/eig B2/eig D3/eig G3/eig Eb2/eig G2/eig B2/eig Eb3/eig
+bar  37 RH: Eb5/who+G5/who  LH: C#3/eig Eb3/eig G3/eig Bb3/eig C#3/eig Eb3/eig G3/eig Bb3/eig
+bar  38 RH: Eb5/hal+G5/hal F5/qua G5/qua  LH: C3/eig E3/eig G3/eig Bb3/eig E3/eig G3/eig Bb3/eig Eb4/eig
+bar  39 RH: F5/qua+Ab5/qua F5/qua G5/qua Ab5/qua  LH: F3/eig Ab3/eig C4/eig F4/eig F3/eig Ab3/eig C4/eig F4/eig
+bar  40 RH: Bb5/qua Ab5/qua Fb5/hal+Bb5/hal  LH: Bb2/eig Db3/eig Fb3/eig Ab3/eig Eb3/eig G3/eig Bb3/eig Db4/eig
+bar  41 RH: G5/who+C6/who  LH: Ab2/eig C3/eig Eb3/eig Ab3/eig Ab2/eig C3/eig Eb3/eig Ab3/eig
+bar  42 RH: Ab5/hal.+D6/hal. C6/qua  LH: D3/eig F#3/eig A3/eig C4/eig D4/eig C4/eig A3/eig C4/eig
+bar  43 RH: Bb5/qua Bb5/qua Ab5/qua Bb5/qua  LH: G2/eig Bb2/eig Db3/eig F3/eig G3/eig F3/eig Db3/eig F3/eig
+bar  44 RH: G5/hal.+C6/hal. Bb5/qua  LH: C3/eig E3/eig G3/eig Bb3/eig C4/eig Bb3/eig G3/eig Bb3/eig
+bar  45 RH: F5/hal.+Ab5/hal. G5/qua  LH: Db3/eig F3/eig Ab3/eig C4/eig Ab3/eig F3/eig Ab3/eig C4/eig
+bar  46 RH: F5/qua G5/qua Ab5/qua Bb5/qua  LH: Eb2/eig G2/eig B2/eig D3/eig Ab2/eig D3/eig F3/eig Ab3/eig
+bar  47 RH: G5/hal. Gb5/qua  LH: E2/eig G2/eig B2/eig D3/eig Eb2/eig Gb2/eig Bb2/eig Db3/eig
+bar  48 RH: Gb5/qua F5/qua Gb5/qua Ab5/qua  LH: Db2/eig F2/eig Ab2/eig D3/eig C3/eig Eb3/eig Gb3/eig C4/eig
+bar  49 RH: F5/qua F5/hal.  LH: Db3/eig F3/eig Ab3/eig C4/eig B2/eig Db3/eig F3/eig Ab3/eig
+bar  50 RH: G5/hal. F5/qua  LH: G2/eig B2/eig D3/eig F3/eig Bb2/eig D3/eig F3/eig Bb3/eig
+bar  51 RH: F5/qua E5/qua Eb5/hal  LH: G2/eig C3/eig G3/eig D3/eig C3/eig Eb3/eig G3/eig Bb3/eig
+bar  52 RH: Eb5/qua D5/qua Db5/qua B4/qua  LH: A3/qua+Eb4/qua+F4/qua D3/qua Db3/qua D3/qua+F3/qua+B3/qua
+bar  53 RH: C5/hal. Bb4/qua  LH: C4/qua+Eb4/qua F#3/qua+Ab3/qua Ab2/qua+C3/qua Bb2/qua+Bb3/qua
+bar  54 RH: B4/hal. C5/qua  LH: B2/qua+G3/qua+B3/qua G3/qua+B3/qua C3/qua+F3/qua C3/qua+C4/qua
+bar  55 RH:v1: C5/who | v2: r/qua Eb4/qua C4/qua G4/qua  LH: Eb3/who+Bb3/who+C4/who
+bar  56 RH: C4/qua C4/qua+Eb4/qua+G4/qua+C5/qua D4/qua+F4/qua+G4/qua+D5/qua C4/qua+Eb4/qua+G4/qua+C5/qua  LH: r/qua C3/qua+Eb3/qua+G3/qua+C4/qua D3/qua+F3/qua+G3/qua+D4/qua C3/qua+Eb3/qua+G3/qua+C4/qua

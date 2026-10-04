@@ -1,0 +1,32 @@
+song: song.folk.korobeiniki.pdmx
+title: Korobeiniki
+composer: Traditional (Russian)
+rungs: 3.1
+shipped file: scores/pdmx/QmWqrfJmQoZZwVJtisMSEuzztCPGCE3nXuJEU3x9rFuWxZ.mxl
+catalog keySig/timeSig/tempo: D minor / None / 96.0
+raw-XML counts: ties 2, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 16, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1 minor
+  bar 1: time 2 4
+
+dump_score.py:
+song.folk.korobeiniki.pdmx | Korobeiniki | level 2.1 (estimated)
+notation: {"bars": 16, "staves": 1, "keys": [{"fifths": -1, "mode": "minor"}], "times": ["2/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['-1']  modes: ['minor']  times: ['2/4']
+bar   1 RH: A4/qua E4/eig F4/eig
+bar   2 RH: G4/qua F4/eig E4/eig
+bar   3 RH: D4/qua D4/eig F4/eig
+bar   4 RH: A4/qua G4/eig F4/eig
+bar   5 RH: E4/qua. F4/eig
+bar   6 RH: G4/qua A4/qua
+bar   7 RH: F4/qua D4/qua
+bar   8 RH: D4/qua r/qua
+bar   9 RH: G4/qua G4/eig Bb4/eig
+bar  10 RH: D5/qua C5/eig Bb4/eig
+bar  11 RH: A4/qua. F4/eig
+bar  12 RH: A4/qua G4/eig F4/eig
+bar  13 RH: E4/qua E4/eig F4/eig
+bar  14 RH: G4/qua A4/qua
+bar  15 RH: F4/qua D4/qua
+bar  16 RH: D4/qua r/qua

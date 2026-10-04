@@ -1,0 +1,72 @@
+song: song.classical.bennet-rosemary-s-waltz.pdmx
+title: Rosemary's Waltz
+composer: Richard Rodney Bennet
+rungs: classical.4.shelf
+shipped file: scores/pdmx/QmZK7Euxxh4mTrHAdwJ2oqMnjdCBomu5tHpX2WPvzp24yL.mxl
+catalog keySig/timeSig/tempo: C major / None / 110.00000000000001
+raw-XML counts: ties 6, tuplets 32, fingerings 0, dynamics 9, pedal 68, articulations 0, chord symbols 0, grace notes 0, voices>1 236, measures 51, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 3 4
+  bar 37: clef G 2
+  bar 38: clef F 4
+  bar 49: clef G 2
+
+dump_score.py:
+song.classical.bennet-rosemary-s-waltz.pdmx | Rosemary's Waltz | level 6.78 (estimated)
+notation: {"bars": 51, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+text on the score: ['pochiss. rit.', 'a tempo, con moto', 'poco rit.', 'a tempo', 'pochiss. rit.']
+bar   1 RH: r/eig D4/eig E4/eig D4/eig F4/eig D4/eig  LH: r/?
+bar   2 RH:v1: E4/hal. | v2: r/qua B3/hal  LH: G2/qua D3/qua G2/qua
+bar   3 RH:v1: r/eig D4/eig E4/eig D4/eig F#4/eig D4/eig | v2: B3/hal.  LH: D2/hal.
+bar   4 RH:v1: E4/hal. | v2: r/qua A3/hal+D4/hal  LH: B2/qua F#3/qua B2/qua
+bar   5 RH:v1: r/eig E4/eig F4/eig E4/eig G#4/eig E4/eig | v2: G#3/hal.+D4/hal.  LH: E2/hal.
+bar   6 RH:v1: F4/eig E4/eig A4/eig E4/eig F4/eig E4/eig | v2: r/qua C4/hal  LH: A2/qua E3/hal
+bar   7 RH:v1: B4/eig G#4/eig B4/eig A4/eig C5/eig B4/eig | v2: r/qua C4/hal+E4/hal  LH: D2/qua F#3/hal
+bar   8 RH:v1: D5/hal. | v2: r/qua D4/hal+F#4/hal  LH: B2/qua A3/qua B2/qua
+bar   9 RH:v1: r/eig D5/eig E5/eig D5/eig F5/eig D5/eig | v2: r/qua F4/hal+Bb4/hal  LH: Bb2/qua A3/hal
+bar  10 RH:v1: B4/hal. | v2: r/qua D4/hal+G4/hal  LH: Eb3/qua Gb3/qua Eb3/qua
+bar  11 RH:v1: r/eig Bb4/eig C5/eig Bb4/eig Db5/eig Bb4/eig | v2: r/qua Fb4/hal+Ab4/hal  LH: Gb3/qua Bb3/hal
+bar  12 RH:v1: Gb4/hal. | v2: r/qua Bb3/hal+Eb4/hal  LH: Cb3/hal Cb3/qua
+bar  13 RH:v1: r/eig Gb4/eig Ab4/eig G4/eig A4/eig F4/eig | v2: r/qua A3/hal+Db4/hal  LH: F2/qua Eb3/hal
+bar  14 RH:v1: D4/eig D4/eig E4/eig D4/eig F4/eig D4/eig | v2: r/qua A3/hal  LH: Bb2/qua F3/hal
+bar  15 RH:v1: E4/eig D4/eig F#4/eig D4/eig E4/eig D4/eig | v2: r/qua C4/hal  LH: A2/qua F#3/hal
+bar  16 RH:v1: G4/hal. | v2: r/qua A#3/qua B3/qua  LH:v5: G2/hal. | v6: r/qua C#3/qua D3/qua
+bar  17 RH:v1: r/eig G4/eig A4/eig G4/eig Bb4/eig F#4/eig | v2: r/qua C4/hal+Eb4/hal  LH: D2/qua G3/qua F#3/qua
+bar  18 RH:v1: G4/hal. | v2: r/qua A#3/qua B3/qua  LH:v5: G2/hal. | v6: r/qua C#3/qua D3/qua
+bar  19 RH:v1: r/eig G4/eig A4/eig G4/eig Bb4/eig G4/eig | v2: r/qua B3/hal+E4/hal  LH:v5: G2/hal. | v6: r/qua F3/hal
+bar  20 RH:v1: A4/eig E4/eig A3/eig E4/eig A4/eig E5/eig | v2: A4/hal.  LH: C2/qua G2/qua C3/qua
+bar  21 RH: A5/eig G4/eig A4/eig G4/eig B4/eig G4/eig  LH: G3/hal.+C4/hal.+E4/hal.
+bar  22 RH:v1: A4/eig D4/eig A3/eig D4/eig A4/eig D5/eig | v2: A4/hal.  LH: E2/qua B2/qua G3/qua
+bar  23 RH: A5/eig A4/eig Bb4/eig A4/eig C#5/eig A4/eig  LH: G3/hal.+C#4/hal.+E4/hal.
+bar  24 RH: Bb4/eig A4/eig D5/eig A4/eig Bb4/eig A4/eig  LH: D2/qua A3/hal+D4/hal+F4/hal
+bar  25 RH: E5/eig C#5/eig E5/eig D5/eig F5/eig E5/eig  LH: G2/qua F3/hal+B3/hal+E4/hal
+bar  26 RH:v1: G5/eig D5/eig B4/eig D5/eig G5/eig D6/eig | v2: G5/hal.  LH: E3/qua B3/hal+D4/hal+G4/hal
+bar  27 RH: G6/eig G5/eig A5/eig G5/eig Bb5/eig G5/eig  LH: Eb3/qua Bb3/hal+Db4/hal+G4/hal
+bar  28 RH:v1: Eb5/eig C5/eig B4/eig C5/eig Eb5/eig G5/eig C6/eig | v2: Eb5/hal.  LH: Ab2/qua G3/qua+C4/qua Eb4/qua+G4/qua
+bar  29 RH: D#6/eig D#5/eig E#5/eig D#5/eig F#5/eig D#5/eig  LH: B2/qua A3/hal+D#4/hal+F#4/hal
+bar  30 RH:v1: B4/eig G#4/eig D#4/eig G#4/eig B4/eig D#5/eig G#5/eig | v2: B4/hal.  LH: E2/qua+B2/qua G#3/qua+B3/qua D#4/qua+G#4/qua
+bar  31 RH: B5/eig B4/eig C#5/eig B4/eig D5/eig Bb4/eig  LH: Bb2/qua Ab3/hal+D4/hal+F4/hal
+bar  32 RH: G4/eig G4/eig A4/eig G4/eig Bb4/eig G4/eig  LH: Eb2/qua G3/hal+Bb3/hal+D4/hal
+bar  33 RH: A4/eig G4/eig B4/eig G4/eig A4/eig G4/eig  LH: G2/qua F3/hal+B3/hal+E4/hal
+bar  34 RH:v1: C5/eig G4/eig E4/eig G4/eig C5/eig E5/eig G5/eig | v2: C5/hal.  LH: C3/qua G3/qua+D4/qua C4/qua+E4/qua
+bar  35 RH: C6/eig C5/eig D5/eig C5/eig Eb5/eig B4/eig  LH: Ab2/qua Gb3/hal+C4/hal+Eb4/hal
+bar  36 RH:v1: C5/eig G4/eig E4/eig G4/eig C5/eig E5/eig G5/eig | v2: C5/hal.  LH: C3/qua G3/qua+D4/qua C4/qua+E4/qua
+bar  37 RH: C6/eig C6/eig D6/eig C6/eig Eb6/eig C6/eig  LH: Ab3/qua Eb4/hal+Gb4/hal+C5/hal
+bar  38 RH:v1: Ab5/eig C5/eig F5/eig C5/eig Ab5/eig C6/eig | v2: Ab5/hal.  LH: Db3/qua Ab3/qua+C4/qua+F4/qua Db3/qua
+bar  39 RH:v1: r/eig G#5/eig A#5/eig G#5/eig B5/eig G#5/eig | v2: B4/hal.  LH: E3/qua B3/hal+D4/hal+G#4/hal
+bar  40 RH:v1: E5/eig G#4/eig C#5/eig G#4/eig E5/eig G#4/eig | v2: E5/hal.  LH: A2/qua G#3/qua+C#4/qua+E4/qua A2/qua
+bar  41 RH:v1: r/eig E5/eig F#5/eig E5/eig G5/eig Eb5/eig | v2: G4/hal.  LH: Eb3/qua Bb3/hal+Db4/hal+E4/hal
+bar  42 RH: C5/eig C5/eig D5/eig C5/eig Eb5/eig C5/eig  LH: Ab2/qua G3/hal+C4/hal+Eb4/hal
+bar  43 RH: D5/eig C5/eig E5/eig C5/eig D5/eig C5/eig  LH: C2/qua E3/hal+Bb3/hal+D4/hal
+bar  44 RH: F5/hal.  LH: F2/qua B2/qua+G#3/qua C3/qua+A3/qua
+bar  45 RH: r/eig Db4/eig Eb4/eig Db4/eig E4/eig C4/eig  LH: C2/qua E3/hal+Bb3/hal
+bar  46 RH: F4/hal.  LH: F2/qua B2/qua+G#3/qua C3/qua+A3/qua
+bar  47 RH: r/eig Db4/eig Eb4/eig Db4/eig E4/eig C4/eig  LH: C2/qua E3/hal+Bb3/hal
+bar  48 RH:v1: F4/eig G#3/eig B3/eig A3/eig C4/eig F4/eig | v2: F4/hal.  LH: F2/qua D3/qua C3/qua
+bar  49 RH: G#4/eig B4/eig A4/eig C5/eig F5/eig G#5/eig  LH: B3/qua+D4/qua C4/qua+F4/qua G#4/qua+B4/qua
+bar  50 RH: B5/eig A5/eig C6/eig F6/eig G#6/eig B6/eig  LH: A4/hal+C5/hal+F5/hal C5/qua+G#5/qua+B5/qua
+bar  51 RH: A6/hal.+F7/hal.  LH: C5/hal.+A5/hal.

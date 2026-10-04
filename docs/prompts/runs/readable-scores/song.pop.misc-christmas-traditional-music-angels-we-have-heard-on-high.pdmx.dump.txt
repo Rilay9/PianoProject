@@ -1,0 +1,37 @@
+song: song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx
+title: Angels We Have Heard on High
+composer: Traditional (French)
+rungs: holiday.3
+shipped file: scores/pdmx/QmZ8ocPiXcPPmiXfsHKsygropXKWUhNUeLfUMJLtmdkx3Q.mxl
+catalog keySig/timeSig/tempo: D major / None / 96.0
+raw-XML counts: ties 2, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 47, grace notes 0, voices>1 0, measures 21, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 2 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx | Angels We Have Heard on High | level 2.86 (estimated)
+notation: {"bars": 21, "staves": 1, "keys": [{"fifths": 2, "mode": "major"}], "times": ["4/4"], "chordCount": 47, "chords": ["A", "A7", "B7", "Bm", "D", "Em", "F#7", "G"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['2']  modes: ['major']  times: ['4/4']
+bar   1 RH: F#4/qua F#4/qua F#4/qua A4/qua  [D major]
+bar   2 RH: A4/qua. G4/eig F#4/hal  [A major] [D major]
+bar   3 RH: F#4/qua E4/qua F#4/qua A4/qua  [A major] [D major]
+bar   4 RH: F#4/qua. E4/eig D4/hal  [D major] [A dominant] [D major]
+bar   5 RH: F#4/qua F#4/qua F#4/qua A4/qua  [B minor] [F# dominant] [B minor] [A major]
+bar   6 RH: A4/qua. G4/eig F#4/hal  [D major] [A dominant] [D major]
+bar   7 RH: F#4/qua E4/qua F#4/qua A4/qua  [A major] [D major]
+bar   8 RH: F#4/qua. E4/qua D4/qua.  [D major] [A dominant] [D major]
+bar   9 RH: A4/hal D4/eig B4/eig A4/eig G4/eig F#4/eig  [D major] [B dominant]
+bar  10 RH: G4/hal A4/eig G4/eig F#4/eig E4/eig  [E minor] [A dominant]
+bar  11 RH: F#4/hal G4/eig F#4/eig E4/eig D4/eig  [D major] [G major]
+bar  12 RH: E4/qua. A3/eig A3/hal  [A major]
+bar  13 RH: D4/qua E4/qua F#4/qua G4/qua  [D major] [A major] [D major] [G major]
+bar  14 RH: F#4/hal E4/qua r/qua  [D major] [A major]
+bar  15 RH: A4/hal B4/eig A4/eig G4/eig F#4/eig  [D major] [B dominant]
+bar  16 RH: G4/hal A4/eig G4/eig F#4/eig E4/eig  [E minor] [A dominant]
+bar  17 RH: F#4/hal G4/eig F#4/eig E4/eig D4/eig  [D major] [G major]
+bar  18 RH: E4/qua. A3/eig A3/hal  [A dominant]
+bar  19 RH: D4/qua E4/qua F#4/qua G4/qua  [D major] [A major] [D major] [G major]
+bar  20 RH: F#4/hal E4/hal  [D major] [A dominant]
+bar  21 RH: D4/hal. r/qua  [D major]

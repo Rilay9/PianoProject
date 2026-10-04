@@ -1,0 +1,29 @@
+song: song.folk.was-wollen-wir-trinken.pdmx
+title: Was wollen wir trinken
+composer: NA
+rungs: 2.3
+shipped file: scores/pdmx/QmVEjJW9KLRWVwUgwRvwEcuiFdbZRPUGC3BAZzRftXMbcu.mxl
+catalog keySig/timeSig/tempo: A minor / None / 96.0
+raw-XML counts: ties 0, tuplets 40, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 17, grace notes 0, voices>1 0, measures 13, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 3 4
+
+dump_score.py:
+song.folk.was-wollen-wir-trinken.pdmx | Was wollen wir trinken | level 2.02 (estimated)
+notation: {"bars": 13, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 17, "chords": ["Am", "C", "Dm", "G"], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+bar   1 RH: r/qua. D5/eig D5/eig C5/eig B4/eig  [G major]
+bar   2 RH: C5/qua A4/qua A4/eig D5/eig  [A minor]
+bar   3 RH: D5/eig C5/eig B4/eig D5/eig D5/eig C5/eig B4/eig  [G major]
+bar   4 RH: C5/qua A4/qua B4/eig G4/eig  [A minor] [G major]
+bar   5 RH: A4/qua. D5/eig D5/eig C5/eig B4/eig  [A minor] [G major]
+bar   6 RH: A4/qua. A4/eig C5/eig D5/eig  [A minor]
+bar   7 RH: E5/qua E5/qua F5/eig D5/eig  [C major] [D minor]
+bar   8 RH: E5/qua. D5/eig D5/eig C5/eig B4/eig  [G major]
+bar   9 RH: C5/qua A4/qua A4/eig D5/eig  [A minor]
+bar  10 RH: D5/eig C5/eig B4/eig D5/eig D5/eig C5/eig B4/eig  [G major]
+bar  11 RH: C5/qua A4/qua B4/eig G4/eig  [A minor] [G major]
+bar  12 RH: A4/qua. A4/eig C5/eig D5/eig  [A minor]
+bar  13 RH: A4/qua. r/qua.  [A minor]

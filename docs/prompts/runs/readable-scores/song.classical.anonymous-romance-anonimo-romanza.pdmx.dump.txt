@@ -1,0 +1,52 @@
+song: song.classical.anonymous-romance-anonimo-romanza.pdmx
+title: Romance Anonimo (Romanza)
+composer: Anonymous
+rungs: classical.4.shelf
+shipped file: scores/pdmx/QmZ4ACuGVhoKNwbrqv7KYbA8Yfn3W34H3snaD3UeCUGSz4.mxl
+catalog keySig/timeSig/tempo: E minor / None / 110.00000000000001
+raw-XML counts: ties 0, tuplets 720, fingerings 0, dynamics 0, pedal 64, articulations 0, chord symbols 0, grace notes 0, voices>1 93, measures 33, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 3 4
+  bar 17: key 4
+
+dump_score.py:
+song.classical.anonymous-romance-anonimo-romanza.pdmx | Romance Anonimo (Romanza) | level 5.53 (estimated)
+notation: {"bars": 33, "staves": 2, "keys": [{"fifths": 1, "mode": null}, {"fifths": 4, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['1', '4']  modes: []  times: ['3/4']
+text on the score: ['Moderato', 'Fine', 'Fine', '&lt;font size="11"&gt;&lt;/font&gt;D.C. al Fine', '&lt;font size="11"&gt;&lt;/font&gt;D.C. al Fine']
+bar   1 RH: B4/eig G4/eig E4/eig B4/eig G4/eig E4/eig B4/eig G4/eig E4/eig  LH: E2/qua B2/qua E3/qua
+bar   2 RH: B4/eig G4/eig E4/eig A4/eig E4/eig B3/eig G4/eig E4/eig B3/eig  LH: E2/qua B2/qua E3/qua
+bar   3 RH: G4/eig B3/eig G3/eig F#4/eig B3/eig G3/eig E4/eig B3/eig G3/eig  LH: E2/qua B2/qua E3/qua
+bar   4 RH: E4/eig B3/eig G3/eig G4/eig E4/eig B3/eig B4/eig G4/eig E4/eig  LH: E2/qua B2/qua E3/qua
+bar   5 RH: E5/eig B4/eig G4/eig E5/eig B4/eig G4/eig E5/eig B4/eig G4/eig  LH: E2/qua B2/qua E3/qua
+bar   6 RH: E5/eig B4/eig G4/eig D5/eig G4/eig E4/eig C5/eig G4/eig E4/eig  LH: E2/qua B2/qua E3/qua
+bar   7 RH: C5/eig E4/eig C4/eig B4/eig E4/eig C4/eig A4/eig E4/eig C4/eig  LH: A2/qua E3/qua A3/qua
+bar   8 RH: A4/eig E4/eig C4/eig B4/eig E4/eig C4/eig C5/eig E4/eig C4/eig  LH: C3/qua E3/qua A3/qua
+bar   9 RH: B4/eig F#4/eig D#4/eig C5/eig F#4/eig D#4/eig B4/eig F#4/eig D#4/eig  LH: B2/qua F#3/qua B3/qua
+bar  10 RH: D#5/eig F#4/eig D#4/eig C5/eig F#4/eig D#4/eig B4/eig F#4/eig D#4/eig  LH: B1/qua F#3/qua B3/qua
+bar  11 RH: B4/eig E4/eig B3/eig A4/eig E4/eig B3/eig G4/eig E4/eig B3/eig  LH: E2/qua B2/qua E3/qua
+bar  12 RH: G4/eig B3/eig G3/eig F#4/eig B3/eig G3/eig E4/eig B3/eig G3/eig  LH: G2/qua B2/qua E3/qua
+bar  13 RH: F#4/eig B3/eig A3/eig F#4/eig B3/eig A3/eig F#4/eig B3/eig A3/eig  LH: B2/qua D#3/qua F#3/qua
+bar  14 RH: F#4/eig B3/eig A3/eig G4/eig B3/eig A3/eig F#4/eig B3/eig A3/eig  LH: B1/qua D#3/qua F#3/qua
+bar  15 RH: E4/eig B3/eig G3/eig E4/eig B3/eig G3/eig E4/eig B3/eig G3/eig  LH: E3/qua B2/qua G2/qua
+bar  16 RH: E4/hal.  LH: E2/hal.
+bar  17 RH: G#4/eig B3/eig G#3/eig G#4/eig B3/eig G#3/eig G#4/eig B3/eig G#3/eig  LH: E2/qua B2/qua E3/qua
+bar  18 RH: G#4/eig B3/eig G#3/eig F#4/eig B3/eig G#3/eig E4/eig B3/eig G#3/eig  LH: E2/qua B2/qua E3/qua
+bar  19 RH: E4/eig A3/eig F#3/eig D#4/eig A3/eig F#3/eig D#4/eig A3/eig F#3/eig  LH: F#2/qua B2/qua D#3/qua
+bar  20 RH: D#4/eig A3/eig F#3/eig D4/eig A3/eig F#3/eig D#4/eig A3/eig F#3/eig  LH: B1/qua F#2/qua B2/qua
+bar  21 RH: C#5/eig F#4/eig D#4/eig C#5/eig F#4/eig D#4/eig C#5/eig F#4/eig D#4/eig  LH: F#2/qua B2/qua D#3/qua
+bar  22 RH: C#5/eig F#4/eig D#4/eig D#5/eig F#4/eig D#4/eig C#5/eig F#4/eig D#4/eig  LH: D#2/qua B2/qua D#3/qua
+bar  23 RH: C#5/eig G#4/eig E4/eig B4/eig G#4/eig E4/eig A#4/eig G#4/eig E4/eig  LH: E2/qua B2/qua E3/qua
+bar  24 RH: B4/eig G#4/eig E4/eig C#5/eig G#4/eig E4/eig D#5/eig G#4/eig E4/eig  LH: G#2/qua B2/qua E3/qua
+bar  25 RH: E5/eig G#4/eig E4/eig E5/eig G#4/eig E4/eig E5/eig G#4/eig E4/eig  LH: E2/qua B2/qua E3/qua
+bar  26 RH: E5/eig G#4/eig E4/eig D#5/eig G#4/eig E4/eig D5/eig G#4/eig E4/eig  LH: G#2/qua B2/qua E3/qua
+bar  27 RH: C#5/eig E4/eig C#4/eig C#5/eig E4/eig C#4/eig C#5/eig E4/eig C#4/eig  LH: A2/qua E3/qua A3/qua
+bar  28 RH: C#5/eig E4/eig C#4/eig B4/eig E4/eig C#4/eig A4/eig E4/eig C#4/eig  LH: C#3/qua E3/qua A3/qua
+bar  29 RH: G#4/eig D#4/eig B3/eig G#4/eig D#4/eig B3/eig G#4/eig D#4/eig B3/eig  LH: B2/qua D#3/qua F#3/qua
+bar  30 RH: G#4/eig D#4/eig B3/eig A4/eig D#4/eig B3/eig F#4/eig D#4/eig B3/eig  LH: B1/qua D#3/qua F#3/qua
+bar  31 RH: E4/eig B3/eig G#3/eig E4/eig B3/eig G#3/eig E4/eig B3/eig G#3/eig  LH: E3/qua B2/qua G#2/qua
+bar  32 RH: E4/hal.  LH: E2/hal.
+bar  33 RH: E4/hal.  LH: E2/hal.

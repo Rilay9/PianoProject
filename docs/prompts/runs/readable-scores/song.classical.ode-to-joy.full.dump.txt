@@ -1,0 +1,34 @@
+song: song.classical.ode-to-joy.full
+title: Ode to Joy (full theme)
+composer: Ludwig van Beethoven
+rungs: 2.5, 3.5, rock.overview
+shipped file: scores/authored/song.classical.ode-to-joy.full.mxl
+catalog keySig/timeSig/tempo: C major / 4/4 / 88.0
+raw-XML counts: ties 0, tuplets 0, fingerings 76, dynamics 0, pedal 0, articulations 0, chord symbols 20, grace notes 0, voices>1 20, measures 17, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.ode-to-joy.full | Ode to Joy (full theme) | level 2.5 (judged)
+notation: {"bars": 17, "staves": 2, "keys": [{"fifths": 0, "mode": "major"}], "times": ["4/4"], "chordCount": 20, "chords": ["C", "G"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: ['major']  times: ['4/4']
+bar   1 RH: E4/qua E4/qua F4/qua G4/qua  LH: C3/who  [C major]
+bar   2 RH: G4/qua F4/qua E4/qua D4/qua  LH: G3/who  [G major]
+bar   3 RH: C4/qua C4/qua D4/qua E4/qua  LH: C3/who  [C major]
+bar   4 RH: E4/qua. D4/eig D4/hal  LH: C3/hal G3/hal  [C major] [G major]
+bar   5 RH: E4/qua E4/qua F4/qua G4/qua  LH: C3/who  [C major]
+bar   6 RH: G4/qua F4/qua E4/qua D4/qua  LH: G3/who  [G major]
+bar   7 RH: C4/qua C4/qua D4/qua E4/qua  LH: C3/who  [C major]
+bar   8 RH: D4/qua. C4/eig C4/hal  LH: G3/hal C3/hal  [G major] [C major]
+bar   9 RH: D4/qua D4/qua E4/qua C4/qua  LH: G3/who  [G major]
+bar  10 RH: D4/qua E4/eig F4/eig E4/qua C4/qua  LH: G3/who  [G major]
+bar  11 RH: D4/qua E4/eig F4/eig E4/qua D4/qua  LH: G3/who  [G major]
+bar  12 RH: C4/qua D4/qua G3/hal  LH: G2/who  [G major]
+bar  13 RH: E4/qua E4/qua F4/qua G4/qua  LH: C3/who  [C major]
+bar  14 RH: G4/qua F4/qua E4/qua D4/qua  LH: G3/who  [G major]
+bar  15 RH: C4/qua C4/qua D4/qua E4/qua  LH: C3/who  [C major]
+bar  16 RH: D4/qua. C4/eig C4/hal  LH: G3/hal C3/hal  [G major] [C major]
+bar  17 RH: C4/who  LH: C3/who  [C major]

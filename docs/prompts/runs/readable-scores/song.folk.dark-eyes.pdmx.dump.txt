@@ -1,0 +1,33 @@
+song: song.folk.dark-eyes.pdmx
+title: Dark Eyes
+composer: -Traditional
+rungs: 2.3
+shipped file: scores/pdmx/QmPYit3qLZ6wyHzCwXVR2njRMCEkbZsnRaVbu2cCvACmnD.mxl
+catalog keySig/timeSig/tempo: D minor / None / 96.0
+raw-XML counts: ties 18, tuplets 8, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 8, grace notes 0, voices>1 0, measures 17, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.dark-eyes.pdmx | Dark Eyes | level 2.3 (estimated)
+notation: {"bars": 17, "staves": 1, "keys": [{"fifths": -1, "mode": null}], "times": ["4/4"], "chordCount": 8, "chords": ["A7", "Bb", "Dmi", "Gmi6"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['-1']  modes: []  times: ['4/4']
+bar   1 RH: r/qua A4/eig Bb4/eig A4/eig G#4/qua A4/qua
+bar   2 RH: Bb4/qua. A4/eig A4/hal  [A dominant]
+bar   3 RH: r/qua r/eig A4/eig G#4/qua A4/qua
+bar   4 RH: Bb4/qua. A4/eig A4/hal  [D minor]
+bar   5 RH: r/hal A4/qua D5/qua
+bar   6 RH: D5/qua. C#5/eig C#5/hal  [A dominant]
+bar   7 RH: r/eig E5/qua. F5/qua C#5/qua
+bar   8 RH: E5/qua. D5/eig D5/hal  [Bb major]
+bar   9 RH: r/hal F5/qua G5/qua
+bar  10 RH: F5/qua. E5/eig E5/qua Bb4/qua  [G minor-sixth]
+bar  11 RH: Bb4/hal E5/qua F5/qua
+bar  12 RH: E5/qua. D5/eig D5/qua A4/qua  [D minor]
+bar  13 RH: A4/qua. A4/eig G#4/qua A4/qua
+bar  14 RH: Bb4/hal A4/hal  [A dominant]
+bar  15 RH: E5/hal F5/hal
+bar  16 RH: D5/who  [D minor]
+bar  17 RH: D5/who

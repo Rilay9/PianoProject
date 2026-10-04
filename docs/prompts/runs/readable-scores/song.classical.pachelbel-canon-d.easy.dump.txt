@@ -1,0 +1,66 @@
+song: song.classical.pachelbel-canon-d.easy
+title: Canon in D (easy)
+composer: Johann Pachelbel
+rungs: 4.6, 4.7, classical.4.shelf, rock.overview
+shipped file: scores/imported/song.classical.pachelbel-canon-d.easy.mxl
+catalog keySig/timeSig/tempo: D major / 4/4 / 100.0
+raw-XML counts: ties 0, tuplets 0, fingerings 67, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 169, measures 49, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 2
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.pachelbel-canon-d.easy | Canon in D (easy) | level 5.1 (judged)
+notation: {"bars": 49, "staves": 2, "keys": [{"fifths": 2, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['2']  modes: []  times: ['4/4']
+bar   1 RH: r/?  LH: D3/eig F#3/eig A3/eig D4/eig A2/eig C#3/eig E3/eig A3/eig
+bar   2 RH: r/?  LH: B2/eig D3/eig F#3/eig B3/eig F#2/eig A2/eig C#3/eig F#3/eig
+bar   3 RH: r/?  LH: G2/eig B2/eig D3/eig G3/eig D2/eig F#2/eig A2/eig D3/eig
+bar   4 RH: r/?  LH: G2/eig B2/eig D3/eig G3/eig A2/eig C#3/eig E3/eig A3/eig
+bar   5 RH: F#5/hal E5/hal  LH: D3/eig F#3/eig A3/eig D4/eig A2/eig C#3/eig E3/eig A3/eig
+bar   6 RH: D5/hal C#5/hal  LH: B2/eig D3/eig F#3/eig B3/eig F#2/eig A2/eig C#3/eig F#3/eig
+bar   7 RH: B4/hal A4/hal  LH: G2/eig B2/eig D3/eig G3/eig D2/eig F#2/eig A2/eig D3/eig
+bar   8 RH: B4/hal C#5/hal  LH: G2/eig B2/eig D3/eig G3/eig A2/eig C#3/eig E3/eig A3/eig
+bar   9 RH: D5/hal+F#5/hal C#5/hal+E5/hal  LH: D3/eig F#3/eig A3/eig D4/eig A2/eig C#3/eig E3/eig A3/eig
+bar  10 RH: B4/hal+D5/hal A4/hal+C#5/hal  LH: B2/eig D3/eig F#3/eig B3/eig F#2/eig A2/eig C#3/eig F#3/eig
+bar  11 RH: G4/hal+B4/hal F#4/hal+A4/hal  LH: G2/eig B2/eig D3/eig G3/eig D2/eig F#2/eig A2/eig D3/eig
+bar  12 RH: G4/hal+B4/hal A4/hal+C#5/hal  LH: G2/eig B2/eig D3/eig G3/eig A2/eig C#3/eig E3/eig A3/eig
+bar  13 RH: D4/qua F#4/qua A4/qua G4/qua  LH: D3/hal A2/hal
+bar  14 RH: F#4/qua D4/qua F#4/qua E4/qua  LH: B2/hal F#2/hal
+bar  15 RH: D4/qua B3/qua D4/qua A4/qua  LH: G2/hal D2/hal
+bar  16 RH: G4/qua B4/qua A4/qua G4/qua  LH: G2/hal A2/hal
+bar  17 RH: F#4/qua D4/qua E4/qua C#5/qua  LH: D3/hal A2/hal
+bar  18 RH: D5/qua F#5/qua A5/qua A4/qua  LH: B2/hal F#2/hal
+bar  19 RH: B4/qua G4/qua A4/qua F#4/qua  LH: G2/hal D2/hal
+bar  20 RH: D4/qua D5/qua C#5/qua r/qua  LH: G2/hal A2/hal
+bar  21 RH: D5/eig C#5/eig D5/eig D4/eig C#4/eig A4/eig E4/eig F#4/eig  LH: D3/hal A2/hal
+bar  22 RH: D4/eig D5/eig C#5/eig B4/eig C#5/eig F#5/eig A5/eig B5/eig  LH: B2/hal F#2/hal
+bar  23 RH: G5/eig F#5/eig E5/eig G5/eig F#5/eig E5/eig D5/eig C#5/eig  LH: G2/hal D2/hal
+bar  24 RH: B4/eig A4/eig G4/eig F#4/eig E4/eig G4/eig F#4/eig E4/eig  LH: G2/hal A2/hal
+bar  25 RH: D4/eig E4/eig F#4/eig G4/eig A4/eig E4/eig A4/eig G4/eig  LH: D3/hal A2/hal
+bar  26 RH: F#4/eig B4/eig A4/eig G4/eig A4/eig G4/eig F#4/eig E4/eig  LH: B2/hal F#2/hal
+bar  27 RH: D4/eig B3/eig B4/eig C#5/eig D5/eig C#5/eig B4/eig A4/eig  LH: G2/hal D2/hal
+bar  28 RH: G4/eig F#4/eig E4/eig B4/eig A4/eig B4/eig A4/eig G4/eig  LH: G2/hal A2/hal
+bar  29 RH: F#4/qua F#5/qua E5/hal  LH: D3/hal A2/hal
+bar  30 RH: r/qua D5/qua F#5/hal  LH: B2/hal F#2/hal
+bar  31 RH: B5/hal A5/hal  LH: G2/hal D2/hal
+bar  32 RH: B5/hal C#6/hal  LH: G2/hal A2/hal
+bar  33 RH: D6/qua D5/qua C#5/hal  LH: D3/hal A2/hal
+bar  34 RH: r/qua B4/qua D5/hal  LH: B2/hal F#2/hal
+bar  35 RH: D5/hal r/qua D5/qua  LH: G2/hal D2/hal
+bar  36 RH: D5/qua F#5/qua E5/qua A5/qua  LH: G2/hal A2/hal
+bar  37 RH: A5/eig F#5/16t G5/16t A5/eig F#5/16t G5/16t A5/16t A4/16t B4/16t C#5/16t D5/16t E5/16t F#5/16t G5/16t  LH: D3/hal A2/hal
+bar  38 RH: F#5/eig D5/16t E5/16t F#5/eig F#4/16t G4/16t A4/16t B4/16t A4/16t G4/16t A4/16t F#4/16t G4/16t A4/16t  LH: B2/hal F#2/hal
+bar  39 RH: G4/eig B4/16t A4/16t G4/eig F#4/16t E4/16t F#4/16t E4/16t D4/16t E4/16t F#4/16t G4/16t A4/16t B4/16t  LH: G2/hal D2/hal
+bar  40 RH: G4/eig B4/16t A4/16t B4/eig C#5/16t D5/16t A4/16t B4/16t C#5/16t D5/16t E5/16t F#5/16t G5/16t A5/16t  LH: G2/hal A2/hal
+bar  41 RH: F#5/eig D5/16t E5/16t F#5/eig E5/16t D5/16t E5/16t C#5/16t D5/16t E5/16t F#5/16t E5/16t D5/16t C#5/16t  LH: D3/hal A2/hal
+bar  42 RH: D5/eig B4/16t C#5/16t D5/eig D4/16t E4/16t F#4/16t G4/16t F#4/16t E4/16t F#4/16t D5/16t C#5/16t D5/16t  LH: B2/hal F#2/hal
+bar  43 RH: B4/eig D5/16t C#5/16t B4/eig A4/16t G4/16t A4/16t G4/16t F#4/16t G4/16t A4/16t B4/16t C#5/16t D5/16t  LH: G2/hal D2/hal
+bar  44 RH: B4/eig D5/16t C#5/16t D5/eig C#5/16t B4/16t C#5/16t D5/16t E5/16t D5/16t C#5/16t D5/16t B4/16t C#5/16t  LH: G2/hal A2/hal
+bar  45 RH: D5/qua. A5/eig A5/eig B5/eig A5/eig G5/eig  LH: D3/hal A2/hal
+bar  46 RH: F#5/qua. F#5/eig F#5/eig G5/eig F#5/eig E5/eig  LH: B2/hal F#2/hal
+bar  47 RH: D5/qua. D5/eig D5/qua A4/qua  LH: G2/hal D2/hal
+bar  48 RH: D5/eig C5/eig B4/eig C5/eig C#5/hal  LH: G2/hal A2/hal
+bar  49 RH: D5/who  LH: D3/who

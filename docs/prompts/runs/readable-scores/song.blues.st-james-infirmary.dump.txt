@@ -1,0 +1,40 @@
+song: song.blues.st-james-infirmary
+title: St. James Infirmary
+composer: Traditional
+rungs: blues.3
+shipped file: scores/pdmx/Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs.mxl
+catalog keySig/timeSig/tempo: D minor / None / 96.0
+raw-XML counts: ties 6, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 41, grace notes 0, voices>1 0, measures 24, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1
+  bar 1: time 4 4
+
+dump_score.py:
+song.blues.st-james-infirmary | St. James Infirmary | level 2.52 (estimated)
+notation: {"bars": 24, "staves": 1, "keys": [{"fifths": -1, "mode": null}], "times": ["4/4"], "chordCount": 41, "chords": ["A7", "Bb7", "D7", "Dm", "F7", "Gm"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['-1']  modes: []  times: ['4/4']
+bar   1 RH: F4/qua F4/eig D4/eig F4/eig D4/eig E4/qua  [D minor] [Bb dominant] [A dominant]
+bar   2 RH: D4/qua A4/hal.  [D minor] [A dominant]
+bar   3 RH: F4/qua F4/eig D4/eig F4/qua E4/qua  [D minor] [Bb dominant] [A dominant]
+bar   4 RH: D4/who  [D minor]
+bar   5 RH: G4/qua G4/eig D4/eig Bb4/qua A4/qua  [G minor] [D dominant]
+bar   6 RH: G4/qua D4/hal.  [G minor]
+bar   7 RH: F4/eig D4/eig F4/eig D4/eig F4/qua F4/qua  [Bb dominant]
+bar   8 RH: E4/who  [A dominant]
+bar   9 RH: F4/qua F4/eig D4/eig F4/eig D4/eig E4/qua  [D minor] [Bb dominant] [A dominant]
+bar  10 RH: D4/qua A4/hal.  [D minor] [A dominant]
+bar  11 RH: F4/qua F4/eig D4/eig F4/qua E4/qua  [D minor] [Bb dominant] [A dominant]
+bar  12 RH: D4/who  [D minor]
+bar  13 RH: G4/qua G4/eig D4/eig G4/qua G4/qua  [G minor]
+bar  14 RH: G4/qua D4/hal.  [G minor] [D minor]
+bar  15 RH: F4/eig D4/eig F4/eig D4/eig F4/qua F4/qua  [Bb dominant]
+bar  16 RH: E4/hal. D4/eig F4/eig  [A dominant]
+bar  17 RH: A4/qua. A4/16t A4/16t A4/eig G4/qua A4/eig  [D minor] [A dominant]
+bar  18 RH: F4/eig D4/qua. D4/qua. F4/eig  [D minor]
+bar  19 RH: A4/qua. A4/eig D5/qua. Bb4/eig  [D minor] [Bb dominant]
+bar  20 RH: A4/hal. D4/eig F4/eig  [A dominant]
+bar  21 RH: A4/qua. A4/16t A4/16t A4/eig G4/qua A4/eig  [D minor] [A dominant]
+bar  22 RH: F4/eig D4/qua. D4/qua F4/eig D4/eig  [D minor] [F dominant]
+bar  23 RH: F4/eig F4/qua D4/eig F4/eig E4/qua D4/eig  [Bb dominant] [A dominant]
+bar  24 RH: D4/hal. D4/eig F4/eig  [D minor]

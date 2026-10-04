@@ -1,0 +1,38 @@
+song: song.folk.auld-lang-syne-anonymous-traditional.pdmx
+title: Auld Lang Syne
+composer: Traditional (Scottish)
+rungs: 4.6, holiday.5
+shipped file: scores/pdmx/QmTgrTW7qVmPtrQRLNzCWsUPapirMav2Nfg4GTBGY6j4cn.mxl
+catalog keySig/timeSig/tempo: F major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 140, measures 20, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -1 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.auld-lang-syne-anonymous-traditional.pdmx | Auld Lang Syne | level 5.11 (estimated)
+notation: {"bars": 20, "staves": 2, "keys": [{"fifths": -1, "mode": "major"}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: ['major']  times: ['4/4']
+text on the score: ['2. And here’s a hand, my trusty frien’And gie’s a hand o’ thine;We’ll tak’ a cup of kindness yet,For auld lang syne.']
+bar   1 RH:v1: C4/qua | v2: C4/qua  LH:v5: C4/qua | v6: C4/qua
+bar   2 RH: C4/qua.+F4/qua. C4/eig+F4/eig C4/qua+F4/qua F4/qua+A4/qua  LH: F3/qua.+A3/qua. F3/eig+A3/eig F3/qua+A3/qua F3/qua+C4/qua
+bar   3 RH:v1: E4/qua.+G4/qua. D4/eig+F4/eig E4/qua+G4/qua A4/eig G4/eig | v2: r/hal r/qua E4/qua  LH: C3/qua.+C4/qua. C3/eig+C4/eig C3/qua+C4/qua C3/qua+C4/qua
+bar   4 RH:v1: F4/qua. F4/eig F4/qua+A4/qua F4/qua+C5/qua | v2: F4/qua. F4/eig r/hal  LH: F3/qua.+A3/qua. F3/eig+A3/eig F3/qua+C4/qua F3/qua+A3/qua
+bar   5 RH: F4/hal.+D5/hal.  LH:v6: Bb3/hal. | v7: Bb3/hal.
+bar   6 RH: E4/qua+D5/qua  LH: Bb3/qua+C4/qua
+bar   7 RH:v1: F4/qua.+C5/qua. F4/eig+A4/eig F4/qua+A4/qua F4/qua | v2: r/hal r/qua F4/qua  LH: A3/qua.+C4/qua. F3/eig+C4/eig F3/qua+C4/qua F3/qua+A3/qua
+bar   8 RH:v1: E4/qua.+G4/qua. D4/eig+F4/eig E4/qua+G4/qua A4/eig G4/eig | v2: r/hal r/qua E4/qua  LH: C3/qua.+C4/qua. C3/eig+C4/eig C3/qua+C4/qua C3/qua+C4/qua
+bar   9 RH:v1: F4/qua. A3/eig+D4/eig Bb3/qua+D4/qua Bb3/qua+C4/qua | v2: F4/qua. r/eig r/qua r/qua  LH: D3/qua.+A3/qua. D3/eig+F3/eig Bb2/qua+F3/qua C3/qua+E3/qua
+bar  10 RH: A3/hal.+F4/hal.  LH:v6: F2/hal.+F3/hal. | v7: r/hal.
+bar  11 RH: F4/qua+D5/qua  LH:v6: F3/qua+Bb3/qua | v7: r/qua
+bar  12 RH:v1: C5/qua. A4/eig A4/qua F4/qua | v2: F4/hal F4/hal  LH:v5: A3/qua. C4/eig C4/hal | v6: F3/hal F3/qua A2/qua
+bar  13 RH: E4/qua.+G4/qua. D4/eig+F4/eig E4/qua+G4/qua E4/qua+D5/qua  LH: C3/qua.+C4/qua. C3/eig+C4/eig C3/qua+C4/qua C3/qua+Bb3/qua
+bar  14 RH:v1: C5/qua. A4/eig A4/qua C5/qua | v2: F4/hal F4/hal  LH:v5: A3/qua. C4/eig C4/qua A3/qua | v6: F3/hal F3/hal
+bar  15 RH: F4/hal.+D5/hal.  LH:v6: Bb3/hal. | v7: Bb3/hal.
+bar  16 RH: F4/qua+D5/qua  LH:v6: G#3/qua+B3/qua | v7: r/qua
+bar  17 RH:v1: F4/qua.+C5/qua. F4/eig+A4/eig F4/qua+A4/qua F4/qua | v2: r/hal r/qua F4/qua  LH: A3/qua.+C4/qua. F3/eig+C4/eig F3/qua+C4/qua F3/qua+A3/qua
+bar  18 RH:v1: E4/qua.+G4/qua. D4/eig+F4/eig E4/qua+G4/qua A4/eig G4/eig | v2: r/hal r/qua E4/qua  LH: C3/qua.+C4/qua. C3/eig+C4/eig C3/qua+C4/qua C#3/qua+A3/qua
+bar  19 RH:v1: D4/qua.+F4/qua. A3/eig+D4/eig D4/qua C4/qua | v2: r/hal Bb3/hal  LH:v5: A3/qua. F3/eig Bb2/qua+F3/qua C3/qua+E3/qua | v6: D3/hal r/hal
+bar  20 RH: A3/hal.+F4/hal.  LH: F2/hal.+F3/hal.

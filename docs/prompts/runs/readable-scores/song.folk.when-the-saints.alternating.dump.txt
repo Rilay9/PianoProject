@@ -1,0 +1,26 @@
+song: song.folk.when-the-saints.alternating
+title: Oh When the Saints Go Marching In (hands alternating)
+composer: Traditional (US spiritual)
+rungs: 1.4, hymns.2
+shipped file: scores/authored/song.folk.when-the-saints.alternating.mxl
+catalog keySig/timeSig/tempo: C major / 4/4 / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 17, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 14, measures 9, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 0 major
+  bar 0: time 4 4
+
+dump_score.py:
+song.folk.when-the-saints.alternating | Oh When the Saints Go Marching In (hands alternating) | level 1.4 (judged)
+notation: {"bars": 9, "staves": 2, "keys": [{"fifths": 0, "mode": "major"}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: ['major']  times: ['4/4']
+bar   0 RH: C4/qua E4/qua F4/qua  LH: r/hal.
+bar   1 RH: G4/who  LH: r/?
+bar   2 RH: r/qua C4/qua E4/qua F4/qua  LH: r/?
+bar   3 RH: G4/who  LH: r/?
+bar   4 RH: r/?  LH: r/qua C3/qua E3/qua F3/qua
+bar   5 RH: r/?  LH: G3/hal E3/hal
+bar   6 RH: r/?  LH: C3/hal E3/hal
+bar   7 RH: r/?  LH: D3/who
+bar   8 RH: r/?  LH: C3/who

@@ -1,0 +1,61 @@
+song: song.classical.zimmer-maestro-the-holiday.pdmx
+title: Maestro - The Holiday
+composer: Hans Zimmer
+rungs: classical.4.shelf
+shipped file: scores/pdmx/QmS2fQuPokEgVpKuT4Z2RWxuosXZqQLSCrFJo9jEUjKKdR.mxl
+catalog keySig/timeSig/tempo: C major / None / 100.0
+raw-XML counts: ties 44, tuplets 128, fingerings 0, dynamics 4, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 136, measures 42, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 3 4
+  bar 35: time 4 4
+  bar 39: time 3 4
+
+dump_score.py:
+song.classical.zimmer-maestro-the-holiday.pdmx | Maestro - The Holiday | level 5.17 (estimated)
+notation: {"bars": 42, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4", "4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['3/4', '4/4', '3/4']
+bar   1 RH: r/?  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar   2 RH: r/?  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar   3 RH: E4/qua+G4/qua E4/qua.+C5/qua. D4/eig+B4/eig  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar   4 RH: F4/hal.+D5/hal.  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar   5 RH: E4/hal.+C5/hal.  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar   6 RH: E4/hal.+C5/hal.  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar   7 RH: E4/qua+G4/qua E4/qua+C5/qua D4/qua+B4/qua  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar   8 RH: F4/qua+D5/qua E4/qua+C5/qua A4/qua+F5/qua  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar   9 RH: A4/qua+F5/qua G4/qua+E5/qua F4/qua+D5/qua  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar  10 RH: F4/qua+D5/qua A4/qua.+C5/qua. G4/eig+B4/eig  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar  11 RH: F4/hal.+A4/hal.  LH: F2/eig C3/eig F2/eig C3/eig F2/eig C3/eig
+bar  12 RH: F4/qua+A4/qua A4/qua+C5/qua G4/qua+B4/qua  LH: F2/eig C3/eig F2/eig C3/eig F2/eig C3/eig
+bar  13 RH: E4/hal.+G4/hal.  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar  14 RH: E4/hal.+G4/hal.  LH: C3/eig G3/eig C3/eig G3/eig C3/eig G3/eig
+bar  15 RH: C4/hal.+E4/hal.+A4/hal.  LH: A2/hal.+E3/hal.
+bar  16 RH: E4/qua+E5/qua D4/qua+D5/qua C4/qua+C5/qua  LH: A2/hal.+E3/hal.
+bar  17 RH: G3/hal.+G4/hal.  LH: C2/hal.+G2/hal.
+bar  18 RH: C4/qua+C5/qua D4/qua+D5/qua E4/qua+E5/qua  LH: C2/hal.+G2/hal.
+bar  19 RH: E4/qua+E5/qua D4/qua.+D5/qua. C4/eig+C5/eig  LH: A2/hal.+E3/hal.
+bar  20 RH: E4/qua+E5/qua D4/qua.+D5/qua. C4/eig+C5/eig  LH: A2/hal.+E3/hal.
+bar  21 RH: G3/hal.+G4/hal.  LH: C2/hal.+G2/hal.
+bar  22 RH: E4/qua+E5/qua F4/qua+F5/qua G4/qua+G5/qua  LH: C2/hal.+G2/hal.
+bar  23 RH: A4/hal.+A5/hal.  LH: A2/hal.+E3/hal.
+bar  24 RH: C4/qua+C5/qua D4/qua+D5/qua E4/qua+E5/qua  LH: A2/hal.+E3/hal.
+bar  25 RH: G4/hal.+G5/hal.  LH: G2/hal.+D3/hal.
+bar  26 RH: C4/qua+C5/qua D4/qua+D5/qua E4/qua+E5/qua  LH: G2/hal.+D3/hal.
+bar  27 RH: G4/qua+G5/qua F4/qua+F5/qua E4/qua+E5/qua  LH: C3/hal.+G3/hal.
+bar  28 RH: E4/qua.+E5/qua. G3/eig+G4/eig C4/qua+C5/qua  LH: C3/hal.+G3/hal.
+bar  29 RH: G4/qua+G5/qua F4/qua+F5/qua E4/qua+E5/qua  LH: C3/hal.+G3/hal.
+bar  30 RH: E4/qua+E5/qua D4/qua+D5/qua C4/qua+C5/qua  LH: C3/hal.+G3/hal.
+bar  31 RH: E4/hal.+E5/hal.  LH: A2/hal.+E3/hal.
+bar  32 RH: C4/qua+C5/qua D4/qua+D5/qua E4/qua+E5/qua  LH: A2/hal.+E3/hal.
+bar  33 RH: E4/hal.+E5/hal.  LH: C3/hal.+G3/hal.
+bar  34 RH: D4/hal.+D5/hal.  LH: G2/hal.+D3/hal.
+bar  35 RH: D4/eig E4/eig G4/eig D5/eig E4/eig C5/eig D4/eig E4/eig G4/eig D5/eig E4/eig C5/eig  LH: r/?
+bar  36 RH: D4/eig F4/eig G4/eig C5/eig D4/eig B4/eig D4/eig F4/eig G4/eig A4/eig D4/eig G4/eig  LH: r/?
+bar  37 RH: D4/eig E4/eig G4/eig D5/eig E4/eig C5/eig D4/eig E4/eig G4/eig D5/eig E4/eig C5/eig  LH: r/?
+bar  38 RH: D4/eig F4/eig G4/eig C5/eig D4/eig B4/eig D4/eig F4/eig G4/eig A4/eig D4/eig G4/eig  LH: r/?
+bar  39 RH: E4/qua+G4/qua E4/qua.+C5/qua. D4/eig+B4/eig  LH: C3/hal.+G3/hal.
+bar  40 RH: F4/hal.+D5/hal.  LH: C3/hal.+G3/hal.
+bar  41 RH: E4/hal.+C5/hal.  LH: C3/qua E3/qua G3/qua
+bar  42 RH: E4/hal.+C5/hal.  LH: C4/hal.

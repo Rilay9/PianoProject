@@ -1,0 +1,33 @@
+song: song.folk.greensleeves.waltz
+title: Greensleeves (waltz bass)
+composer: Traditional (English, 16th century)
+rungs: 3.5, 3.6, chords-pop.4, ragtime.5
+shipped file: scores/authored/song.folk.greensleeves.waltz.mxl
+catalog keySig/timeSig/tempo: a minor / 3/4 / 112.0
+raw-XML counts: ties 0, tuplets 0, fingerings 52, dynamics 0, pedal 0, articulations 0, chord symbols 15, grace notes 0, voices>1 76, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 0 minor
+  bar 0: time 3 4
+
+dump_score.py:
+song.folk.greensleeves.waltz | Greensleeves (waltz bass) | level 3.6 (judged)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": 0, "mode": "minor"}], "times": ["3/4"], "chordCount": 15, "chords": ["Aminor", "Edominant", "G"], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['0']  modes: ['minor']  times: ['3/4']
+bar   0 RH: A4/qua  LH: r/qua
+bar   1 RH: C5/hal D5/qua  LH: A2/qua C3/qua+E3/qua C3/qua+E3/qua  [A minor]
+bar   2 RH: E5/qua. F5/eig E5/qua  LH: A2/qua C3/qua+E3/qua C3/qua+E3/qua  [A minor]
+bar   3 RH: D5/hal B4/qua  LH: G2/qua B2/qua+D3/qua B2/qua+D3/qua  [G major]
+bar   4 RH: G4/qua. A4/eig B4/qua  LH: G2/qua B2/qua+D3/qua B2/qua+D3/qua  [G major]
+bar   5 RH: C5/hal A4/qua  LH: A2/qua C3/qua+E3/qua C3/qua+E3/qua  [A minor]
+bar   6 RH: A4/qua. G#4/eig A4/qua  LH: E2/qua G#2/qua+D3/qua G#2/qua+D3/qua  [E dominant]
+bar   7 RH: B4/hal G#4/qua  LH: E2/qua G#2/qua+D3/qua G#2/qua+D3/qua  [E dominant]
+bar   8 RH: E4/hal A4/qua  LH: A2/qua C3/qua+E3/qua C3/qua+E3/qua  [A minor]
+bar   9 RH: C5/hal D5/qua  LH: A2/qua C3/qua+E3/qua C3/qua+E3/qua  [A minor]
+bar  10 RH: E5/qua. F5/eig E5/qua  LH: A2/qua C3/qua+E3/qua C3/qua+E3/qua  [A minor]
+bar  11 RH: D5/hal B4/qua  LH: G2/qua B2/qua+D3/qua B2/qua+D3/qua  [G major]
+bar  12 RH: G4/qua. A4/eig B4/qua  LH: G2/qua B2/qua+D3/qua B2/qua+D3/qua  [G major]
+bar  13 RH: C5/qua. B4/eig A4/qua  LH: A2/qua C3/qua+E3/qua C3/qua+E3/qua  [A minor]
+bar  14 RH: G#4/qua. F#4/eig G#4/qua  LH: E2/qua G#2/qua+D3/qua G#2/qua+D3/qua  [E dominant]
+bar  15 RH: A4/hal.  LH: A2/qua C3/qua+E3/qua C3/qua+E3/qua  [A minor]

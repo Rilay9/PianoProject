@@ -1,0 +1,39 @@
+song: song.classical.beethoven-fur-elise.easy
+title: Für Elise (easy)
+composer: Ludwig van Beethoven
+rungs: 3.4, 4.1, 4.2, 4.6, 4.7, classical.4.shelf
+shipped file: scores/imported/song.classical.beethoven-fur-elise.easy.mxl
+catalog keySig/timeSig/tempo: A minor / 3/4 / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 6, pedal 0, articulations 1, chord symbols 0, grace notes 0, voices>1 39, measures 22, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 3 4
+
+dump_score.py:
+song.classical.beethoven-fur-elise.easy | Für Elise (easy) | level 4.1 (judged)
+notation: {"bars": 22, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+bar   1 RH: r/hal E5/eig D#5/eig  LH: r/?
+bar   2 RH: E5/eig D#5/eig E5/eig B4/eig D5/eig C5/eig  LH: r/?
+bar   3 RH: A4/qua r/eig C4/eig E4/eig A4/eig  LH: A3/hal r/qua
+bar   4 RH: B4/qua r/eig E4/eig G#4/eig B4/eig  LH: E3/hal r/qua
+bar   5 RH: C5/qua r/eig E4/eig E5/eig D#5/eig  LH: A3/hal r/qua
+bar   6 RH: E5/eig D#5/eig E5/eig B4/eig D5/eig C5/eig  LH: r/?
+bar   7 RH: A4/qua r/eig C4/eig E4/eig A4/eig  LH: A3/hal r/qua
+bar   8 RH: B4/qua r/eig E4/eig C5/eig B4/eig  LH: E3/hal r/qua
+bar   9 RH: A4/qua r/eig B4/eig C5/eig D5/eig  LH: A3/hal r/qua
+bar  10 RH: E5/qua r/eig G4/eig F5/eig E5/eig  LH: C4/hal r/qua
+bar  11 RH: D5/qua r/eig F4/eig E5/eig D5/eig  LH: B3/hal r/qua
+bar  12 RH: C5/qua r/eig E4/eig D5/eig C5/eig  LH: A3/hal r/qua
+bar  13 RH: B4/hal.  LH: G#3/hal.
+bar  14 RH: r/hal E5/eig D#5/eig  LH: r/hal r/qua
+bar  15 RH: E5/eig D#5/eig E5/eig B4/eig D5/eig C5/eig  LH: r/?
+bar  16 RH: A4/qua r/eig C4/eig E4/eig A4/eig  LH: A3/hal r/qua
+bar  17 RH: B4/qua r/eig E4/eig G#4/eig B4/eig  LH: E3/hal r/qua
+bar  18 RH: C5/qua r/eig E4/eig E5/eig D#5/eig  LH: A3/hal r/qua
+bar  19 RH: E5/eig D#5/eig E5/eig B4/eig D5/eig C5/eig  LH: r/?
+bar  20 RH: A4/qua r/eig C4/eig E4/eig A4/eig  LH: A3/hal r/qua
+bar  21 RH: B4/qua r/eig E4/eig C5/eig B4/eig  LH: E3/hal r/qua
+bar  22 RH: A4/hal.  LH: A3/hal+E4/hal A1/qua

@@ -1,0 +1,28 @@
+song: song.classical.1818-franz-xaver-gruber-silent-night.pdmx
+title: Silent Night (melody)
+composer: Franz Xaver Gruber
+rungs: holiday
+shipped file: scores/pdmx/QmbQLJvk1wKpvt5FUccvtH2cBUzcrsmuqXemG97G13gP7b.mxl
+catalog keySig/timeSig/tempo: C major / None / 90.0
+raw-XML counts: ties 2, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 11, grace notes 0, voices>1 0, measures 12, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 6 8
+
+dump_score.py:
+song.classical.1818-franz-xaver-gruber-silent-night.pdmx | Silent Night (melody) | level 2.32 (estimated)
+notation: {"bars": 12, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["6/8"], "chordCount": 11, "chords": ["C", "F", "G", "G7"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['6/8']
+bar   1 RH: G4/eig. A4/16t G4/eig E4/qua.  [C major]
+bar   2 RH: G4/eig. A4/16t G4/eig E4/qua r/eig
+bar   3 RH: D5/qua D5/eig B4/qua.  [G major]
+bar   4 RH: C5/qua C5/eig G4/qua r/eig  [C major]
+bar   5 RH: A4/qua A4/eig C5/eig. B4/16t A4/eig  [F major]
+bar   6 RH: G4/eig. A4/16t G4/eig E4/qua r/eig  [C major]
+bar   7 RH: A4/qua A4/eig C5/eig. B4/16t A4/eig  [F major]
+bar   8 RH: G4/eig. A4/16t G4/eig E4/qua r/eig  [C major]
+bar   9 RH: D5/qua D5/eig F5/eig. D5/16t B4/eig  [G dominant]
+bar  10 RH: C5/qua. E5/qua r/eig  [C major]
+bar  11 RH: C5/eig G4/eig E4/eig G4/eig. F4/16t D4/eig  [G dominant]
+bar  12 RH: C4/qua. C4/qua.  [C major]

@@ -1,0 +1,59 @@
+song: song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx
+title: O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler
+composer: Johann Sebastian Bach
+rungs: hymns.4
+shipped file: scores/pdmx/QmZ2SsdwgaxdvigPXwbAUwjXvoHU7nigJiH7t9yQqbFHis.mxl
+catalog keySig/timeSig/tempo: C major / None / 80.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 275, measures 40, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+  bar 21: time 4 4
+
+dump_score.py:
+song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx | O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler | level 5.69 (estimated)
+notation: {"bars": 40, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['4/4', '4/4']
+text on the score: ['1.', '2.', '3.', 'Andante', '3.', '2.', '1.', '3.']
+bar   1 RH:v1: E4/qua | v2: C4/qua  LH:v1: G3/qua | v2: C3/qua
+bar   2 RH:v1: A4/qua G4/qua F4/qua E4/qua | v2: C4/qua C4/qua C4/eig D4/eig D4/eig C4/eig  LH:v1: F3/qua G3/qua A3/eig G3/eig G3/qua | v2: F3/qua E3/qua A2/eig B2/eig C3/qua
+bar   3 RH:v1: D4/hal E4/qua B4/qua | v2: C4/qua B3/qua C4/qua D4/qua  LH:v1: A3/qua G3/qua G3/qua G#3/qua | v2: F2/qua G2/qua C3/qua B2/qua
+bar   4 RH:v1: C5/qua C5/qua B4/eig A4/eig B4/qua | v2: C4/eig D4/eig E4/qua E4/qua E4/eig D4/eig  LH:v1: E3/qua A3/qua A3/qua G#3/qua | v2: A2/eig B2/eig C3/eig D3/eig E3/qua E3/qua
+bar   5 RH:v1: A4/hal. | v2: C4/hal.  LH:v1: A3/hal. | v2: A2/hal.
+bar   6 RH:v1: E4/qua | v2: C4/qua  LH:v1: G3/qua | v2: C3/qua
+bar   7 RH:v1: A4/qua G4/qua F4/qua E4/qua | v2: C4/qua C4/qua C4/eig D4/eig D4/eig C4/eig  LH:v1: F3/qua G3/qua A3/eig G3/eig G3/qua | v2: F3/qua E3/qua A2/eig B2/eig C3/qua
+bar   8 RH:v1: D4/hal E4/qua B4/qua | v2: C4/qua B3/qua C4/qua D4/qua  LH:v1: A3/qua G3/qua G3/qua G#3/qua | v2: F2/qua+F3/qua G2/qua C3/qua B2/qua
+bar   9 RH:v1: C5/qua C5/qua B4/eig A4/eig B4/qua | v2: C4/eig D4/eig E4/qua E4/qua E4/eig D4/eig  LH:v1: E3/qua A3/qua A3/qua G#3/qua | v2: A2/eig B2/eig C3/eig D3/eig E3/qua E3/qua
+bar  10 RH:v1: A4/hal. | v2: C4/hal.  LH:v1: A3/hal. | v2: A2/hal.
+bar  11 RH:v1: C5/qua | v2: A4/eig G4/eig  LH:v1: E4/qua | v2: A3/qua
+bar  12 RH:v1: B4/eig A4/eig G4/qua A4/qua B4/qua | v2: F4/qua E4/eig D4/eig C4/qua F4/qua  LH:v1: D4/eig C4/eig B3/qua A3/eig G3/eig F3/eig G3/eig | v2: D3/qua E3/qua F3/eig E3/eig D3/qua
+bar  13 RH:v1: C5/hal C5/qua G4/qua | v2: F4/qua E4/eig D4/eig E4/qua E4/qua  LH:v1: A3/qua G3/eig F3/eig G3/qua C4/qua | v2: C3/hal C3/qua C3/qua
+bar  14 RH:v1: A4/qua G4/qua F4/qua F4/qua | v2: F4/qua E4/qua E4/qua D4/qua  LH:v1: C4/qua C4/eig B3/eig A3/qua A3/qua | v2: F3/qua C3/qua D3/eig E3/eig F3/eig G3/eig
+bar  15 RH:v1: E4/hal. | v2: C#4/hal.  LH:v1: A3/hal. | v2: A3/hal.
+bar  16 RH:v1: C5/qua | v2: D4/qua  LH:v1: A3/qua | v2: F#3/qua
+bar  17 RH:v1: B4/eig C5/eig D5/qua C5/qua B4/qua | v2: D4/qua D4/qua E4/qua D4/qua  LH:v1: G3/qua G3/eig F#3/eig G3/eig A3/eig B3/eig G3/eig | v2: G3/qua B2/qua E3/eig F#3/eig G3/qua
+bar  18 RH:v1: A4/hal B4/qua E4/qua | v2: E4/qua D4/qua D4/qua C4/qua  LH:v1: E3/eig A3/eig F#3/qua G3/qua G3/qua | v2: C3/qua D3/qua G2/qua C3/eig B2/eig
+bar  19 RH:v1: F4/qua E4/qua D4/qua G4/qua | v2: C4/eig B3/eig C4/qua C4/qua B3/qua  LH:v1: F3/qua G3/qua A3/qua D3/eig G3/eig | v2: A2/qua G2/qua F2/qua+F3/qua G2/qua
+bar  20 RH:v1: E4/hal. | v2: C4/hal.  LH:v1: G3/hal. | v2: C3/hal.
+bar  21 RH:v1: E4/qua | v2: C4/qua  LH:v1: A3/qua | v2: A3/eig G3/eig
+bar  22 RH:v1: A4/qua G4/qua F4/qua E4/qua | v2: C4/eig D4/eig E4/qua A3/eig B3/eig C4/qua  LH:v1: A3/eig B3/eig C4/qua D4/qua G3/qua | v2: F3/qua E3/qua D3/qua C3/qua
+bar  23 RH:v1: D4/hal E4/qua B4/qua | v2: C4/qua B3/qua C4/qua E4/qua  LH:v1: A3/qua G3/qua G3/qua B3/qua | v2: F2/qua+F3/qua G2/qua+G3/qua C3/qua G#2/qua
+bar  24 RH:v1: C5/qua C5/qua B4/eig A4/eig B4/qua | v2: E4/qua E4/qua E4/qua E4/eig D4/eig  LH:v1: B3/qua A3/qua A3/qua G#3/qua | v2: A2/eig B2/eig C3/eig D3/eig E3/qua E3/qua
+bar  25 RH:v1: A4/hal. | v2: C4/hal.  LH:v1: E3/hal. | v2: A2/hal.
+bar  26 RH:v1: E4/qua | v2: C4/qua  LH:v1: A3/qua | v2: A3/eig G3/eig
+bar  27 RH:v1: A4/qua G4/qua F4/qua E4/qua | v2: C4/eig D4/eig E4/qua A3/eig B3/eig C4/qua  LH:v1: A3/eig B3/eig C4/qua D4/qua G3/qua | v2: F3/qua E3/qua D3/qua C3/qua
+bar  28 RH:v1: D4/hal E4/qua B4/qua | v2: C4/qua B3/qua C4/qua E4/qua  LH:v1: A3/qua G3/qua G3/qua B3/qua | v2: F2/qua+F3/qua G2/qua+G3/qua C3/qua G#2/qua
+bar  29 RH:v1: C5/qua C5/qua B4/eig A4/eig B4/qua | v2: E4/qua E4/qua E4/qua E4/eig D4/eig  LH:v1: B3/qua A3/qua A3/qua G#3/qua | v2: A2/eig B2/eig C3/eig D3/eig E3/qua E3/qua
+bar  30 RH:v1: A4/hal. | v2: C4/hal.  LH:v1: E3/hal. | v2: A2/hal.
+bar  31 RH:v1: C5/qua | v2: E4/qua  LH:v1: A3/eig G3/eig | v2: A2/qua
+bar  32 RH:v1: B4/eig A4/eig G4/qua A4/qua B4/qua | v2: D4/qua D4/eig C4/eig C4/qua F4/qua  LH:v1: F3/qua G3/qua G3/qua F3/eig G3/eig | v2: D3/qua E3/qua F3/eig E3/eig D3/qua
+bar  33 RH:v1: C5/hal C5/qua G4/qua | v2: F4/qua E4/eig D4/eig E4/qua E4/qua  LH:v1: A3/qua G3/eig F3/eig G3/qua C4/eig Bb3/eig | v2: C3/hal C3/qua C3/qua
+bar  34 RH:v1: A4/qua G4/qua F4/eig E4/eig F4/qua | v2: E4/eig D4/eig E4/qua D4/eig C#4/eig D4/qua  LH:v1: A3/qua A3/qua A3/qua A3/qua | v2: F3/qua C#3/qua D3/qua D3/qua
+bar  35 RH:v1: E4/hal. | v2: C#4/hal.  LH:v1: A3/hal. | v2: A2/hal.
+bar  36 RH:v1: C5/qua | v2: D4/qua  LH:v1: A3/qua | v2: F#2/qua+F#3/qua
+bar  37 RH:v1: B4/eig C5/eig D5/qua C5/qua B4/qua | v2: D4/qua G4/qua G4/qua G4/qua  LH:v1: G3/eig A3/eig B3/qua C4/qua D4/qua | v2: G2/qua+G3/qua G3/eig F#3/eig E3/qua D3/qua
+bar  38 RH:v1: A4/hal B4/qua E4/qua | v2: G4/qua F#4/qua G4/qua C4/eig B3/eig  LH:v1: E4/qua D4/qua D4/qua G3/qua | v2: C3/qua D3/qua G2/qua+G3/qua C3/qua
+bar  39 RH:v1: F4/qua E4/qua D4/qua G4/qua | v2: A3/eig B3/eig C4/qua C4/qua B3/qua  LH:v1: F3/qua G3/qua G3/eig F3/16t E3/16t D3/eig G3/eig | v2: D3/qua E3/eig F3/eig G3/qua G2/qua
+bar  40 RH:v1: E4/hal. | v2: C4/hal.  LH:v1: G3/hal. | v2: C3/hal.

@@ -1,0 +1,25 @@
+song: song.holiday.jingle-bells.g
+title: Jingle Bells (chorus, in G major with block chords)
+composer: James Lord Pierpont
+rungs: 2.3, 3.2, chords-pop.3, holiday.3
+shipped file: scores/authored/song.holiday.jingle-bells.g.mxl
+catalog keySig/timeSig/tempo: 1 sharp / 4/4 / 104.00000000000001
+raw-XML counts: ties 0, tuplets 0, fingerings 25, dynamics 0, pedal 0, articulations 0, chord symbols 11, grace notes 0, voices>1 33, measures 8, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.holiday.jingle-bells.g | Jingle Bells (chorus, in G major with block chords) | level 3.2 (judged)
+notation: {"bars": 8, "staves": 2, "keys": [{"fifths": 1, "mode": "major"}], "times": ["4/4"], "chordCount": 11, "chords": ["C", "Ddominant", "G"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['1']  modes: ['major']  times: ['4/4']
+bar   1 RH: B4/qua B4/qua B4/hal  LH: G3/who+B3/who+D4/who  [G major]
+bar   2 RH: B4/qua B4/qua B4/hal  LH: G3/who+B3/who+D4/who  [G major]
+bar   3 RH: B4/qua D5/qua G4/qua A4/qua  LH: G3/who+B3/who+D4/who  [G major]
+bar   4 RH: B4/who  LH: G3/who+B3/who+D4/who  [G major]
+bar   5 RH: C5/qua C5/qua C5/qua C5/qua  LH: C3/who+E3/who+G3/who  [C major]
+bar   6 RH: C5/qua B4/qua B4/qua B4/qua  LH: C3/hal+E3/hal+G3/hal G3/hal+B3/hal+D4/hal  [C major] [G major]
+bar   7 RH: B4/qua A4/qua A4/qua B4/qua  LH: G3/hal+B3/hal+D4/hal D3/hal+F#3/hal+C4/hal  [G major] [D dominant]
+bar   8 RH: A4/hal D5/hal  LH: D3/hal+F#3/hal+C4/hal G3/hal+B3/hal+D4/hal  [D dominant] [G major]

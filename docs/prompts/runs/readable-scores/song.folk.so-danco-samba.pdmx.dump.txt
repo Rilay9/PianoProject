@@ -1,0 +1,50 @@
+song: song.folk.so-danco-samba.pdmx
+title: Só Danço Samba
+composer: Antonio Carlos Jobim
+rungs: latin, latin.3
+shipped file: scores/pdmx/QmbmC9BRdBLb6XUbyf5TqSy1P1oYdNDYTJoSpd4nXByPMD.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 96.0
+raw-XML counts: ties 30, tuplets 32, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 25, grace notes 0, voices>1 0, measures 34, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.so-danco-samba.pdmx | Só Danço Samba | level 2.58 (estimated)
+notation: {"bars": 34, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 25, "chords": ["C/6", "C7", "D7", "Dm7", "Fmaj7", "G7", "Gm7"], "swungMark": false, "finalBass": null}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: B4/qua B4/qua B4/qua B4/qua  [D minor-seventh]
+bar   2 RH: B4/qua B4/qua B4/qua B4/qua  [G dominant]
+bar   3 RH: B4/qua B4/qua B4/qua B4/qua  [D minor-seventh]
+bar   4 RH: B4/qua B4/qua B4/qua B4/qua  [G dominant]
+bar   5 RH: B4/qua B4/qua B4/qua B4/qua  [D minor-seventh]
+bar   6 RH: B4/qua B4/qua B4/qua B4/qua  [G dominant]
+bar   7 RH: B4/qua B4/qua B4/qua B4/qua  [D minor-seventh]
+bar 7X1 RH: r/hal r/qua r/eig G4/eig  [G dominant]
+bar   8 RH: A4/qua G4/eig A4/eig A4/eig A4/qua G4/eig  [C major-sixth]
+bar   9 RH: A4/qua G4/eig A4/eig A4/eig A4/qua.
+bar  10 RH: r/qua E5/qua Eb5/qua D5/qua B4/qua A4/qua  [D dominant]
+bar  11 RH: A4/hal r/qua r/eig G4/eig
+bar  12 RH: A4/qua G4/eig A4/eig A4/eig A4/qua G4/eig  [D minor-seventh]
+bar  13 RH: A4/qua G4/eig A4/eig A4/eig A4/qua.  [G dominant]
+bar  14 RH: r/qua C5/hal.  [C major-sixth]
+bar  15 RH: r/hal r/qua r/eig G4/eig
+bar  16 RH: r/qua C5/hal.  [C major-sixth]
+bar  17 RH: r/?
+bar  18 RH: D5/eig D5/qua D5/qua D5/qua A5/eig  [G minor-seventh]
+bar  19 RH: A5/eig A5/qua G5/qua E5/qua D5/eig  [C dominant]
+bar  20 RH: D5/who  [F major-seventh]
+bar  21 RH: D5/hal r/hal
+bar  22 RH: E5/eig E5/qua E5/eig E5/hal  [D dominant]
+bar  23 RH: B5/eig Bb5/qua A5/qua. E5/eig F5/eig
+bar  24 RH: G5/qua G5/eig G5/eig F5/eig E5/eig D5/qua  [D minor-seventh]
+bar  25 RH: D5/hal r/qua r/eig G4/eig  [G dominant]
+bar  26 RH: A4/qua G4/eig A4/eig A4/eig A4/qua G4/eig  [C major-sixth]
+bar  27 RH: A4/qua G4/eig A4/eig A4/eig A4/qua.
+bar  28 RH: r/qua E5/qua Eb5/qua D5/qua B4/qua A4/qua  [D dominant]
+bar  29 RH: A4/hal r/qua r/eig G4/eig
+bar  30 RH: A4/qua G4/eig A4/eig A4/eig A4/qua G4/eig  [D minor-seventh]
+bar  31 RH: A4/qua G4/eig A4/eig A4/eig A4/qua.  [G dominant]
+bar  32 RH: r/qua C5/hal.  [C major-sixth]
+bar  33 RH: r/?

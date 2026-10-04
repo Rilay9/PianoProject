@@ -1,0 +1,33 @@
+song: song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx
+title: Joyful joyful we adore thee
+composer: Ludwig van Beethoven
+rungs: hymns.4
+shipped file: scores/pdmx/QmZwo2Muh2rip4gGET7fkkXFgaLQiK6kc6p89ssZbqysxB.mxl
+catalog keySig/timeSig/tempo: G major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 126, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 2 2
+
+dump_score.py:
+song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx | Joyful joyful we adore thee | level 5.36 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["2/2"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['2/2']
+bar   1 RH: D4/qua+B4/qua D4/qua+B4/qua D4/qua+C5/qua D4/qua+D5/qua  LH: G3/qua G3/qua G3/qua+A3/qua G3/qua+B3/qua
+bar   2 RH: D4/qua+D5/qua D4/qua+C5/qua D4/qua+B4/qua D4/qua+A4/qua  LH: D3/qua+B3/qua D3/qua+A3/qua D3/qua+G3/qua C3/qua+F#3/qua
+bar   3 RH: D4/qua+G4/qua D4/qua+G4/qua D4/qua+A4/qua D4/qua+B4/qua  LH: B2/qua+G3/qua B2/qua+G3/qua A2/qua+F#3/qua G2/qua+G3/qua
+bar   4 RH: D4/qua.+B4/qua. D4/eig+A4/eig D4/hal+A4/hal  LH: D3/qua.+G3/qua. D3/eig+F#3/eig D3/hal+F#3/hal
+bar   5 RH: D4/qua+B4/qua D4/qua+B4/qua E4/qua+C5/qua F4/qua+D5/qua  LH:v6: G3/qua G3/qua G3/qua A3/eig B3/eig | v7: G3/qua G3/qua G3/qua G3/qua
+bar   6 RH: F4/qua+D5/qua E4/qua+C5/qua E4/qua+B4/qua E4/qua+A4/qua  LH: C3/qua+B3/qua C3/qua+C4/qua C3/qua+D4/qua C3/qua+C4/qua
+bar   7 RH: D4/qua+G4/qua D4/qua+G4/qua F#4/qua+A4/qua G4/qua+B4/qua  LH: D3/qua+B3/qua D3/qua+B3/qua D3/qua+C4/qua D3/qua+D4/qua
+bar   8 RH: F#4/qua.+A4/qua. D4/eig+G4/eig D4/hal+G4/hal  LH: D3/qua.+C4/qua. G2/eig+B3/eig G2/hal+B3/hal
+bar   9 RH: D4/qua+A4/qua D4/qua+A4/qua D4/qua+B4/qua G4/qua  LH: D3/qua+F#3/qua D3/qua+F#3/qua D3/qua+G3/qua D3/qua+B3/qua
+bar  10 RH:v1: A4/qua B4/eig C5/eig B4/qua G4/qua | v2: F#4/qua D4/qua D4/qua D4/qua  LH:v5: D4/qua G3/eig A3/eig G3/qua B3/qua | v6: D3/qua D3/qua D3/qua D3/qua
+bar  11 RH: F#4/qua+A4/qua G4/eig+B4/eig F#4/eig+C5/eig F#4/qua+B4/qua D#4/qua+A4/qua  LH:v6: C4/qua B3/eig A3/eig B3/qua B3/qua | v7: D3/qua D3/qua D#3/qua B2/qua
+bar  12 RH: E4/qua+G4/qua C#4/qua+A4/qua D4/hal  LH: E3/qua+B3/qua A2/qua+A3/qua D3/hal+F#3/hal
+bar  13 RH: D4/qua+B4/qua D4/qua+B4/qua E4/qua+C5/qua F4/qua+D5/qua  LH:v6: G3/qua G3/qua G3/qua A3/eig B3/eig | v7: G2/qua G3/qua G3/qua G3/qua
+bar  14 RH: F4/qua+D5/qua E4/qua+C5/qua E4/qua+B4/qua E4/qua+A4/qua  LH: C3/qua+B3/qua C3/qua+C4/qua C3/qua+D4/qua C3/qua+C4/qua
+bar  15 RH: D4/qua+G4/qua D4/qua+G4/qua F#4/qua+A4/qua G4/qua+B4/qua  LH: D3/qua+B3/qua D3/qua+B3/qua D3/qua+C4/qua D3/qua+D4/qua
+bar  16 RH: F#4/qua.+A4/qua. D4/eig+G4/eig D4/hal+G4/hal  LH: D3/qua.+C4/qua. G2/eig+B3/eig G2/hal+B3/hal

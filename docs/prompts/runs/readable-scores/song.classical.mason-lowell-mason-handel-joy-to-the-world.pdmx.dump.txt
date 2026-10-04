@@ -1,0 +1,36 @@
+song: song.classical.mason-lowell-mason-handel-joy-to-the-world.pdmx
+title: Joy to the World
+composer: Lowell Mason, after Handel
+rungs: holiday.3
+shipped file: scores/pdmx/QmWV7Zi7MmPd4nhX3TJLLztb5uizL1GGqcojG3vB61zMX4.mxl
+catalog keySig/timeSig/tempo: D major / None / 180.0
+raw-XML counts: ties 4, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 19, grace notes 0, voices>1 0, measures 20, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 2 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.mason-lowell-mason-handel-joy-to-the-world.pdmx | Joy to the World | level 2.9 (estimated)
+notation: {"bars": 20, "staves": 1, "keys": [{"fifths": 2, "mode": "major"}], "times": ["4/4"], "chordCount": 19, "chords": ["A7", "D", "Em", "G"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['2']  modes: ['major']  times: ['4/4']
+bar   1 RH: D5/hal C#5/qua. B4/eig  [D major] [G major]
+bar   2 RH: A4/hal. G4/qua  [D major] [E minor]
+bar   3 RH: F#4/hal E4/hal  [D major] [A dominant]
+bar   4 RH: D4/hal. A4/qua  [D major]
+bar   5 RH: B4/hal. B4/qua  [G major]
+bar   6 RH: C#5/hal. C#5/qua  [A dominant]
+bar   7 RH: D5/who  [D major]
+bar   8 RH: D5/hal. D5/qua
+bar   9 RH: D5/qua C#5/qua B4/qua A4/qua  [D major]
+bar  10 RH: A4/qua. G4/eig F#4/qua D5/qua
+bar  11 RH: D5/qua C#5/qua B4/qua A4/qua
+bar  12 RH: A4/qua. G4/eig F#4/qua F#4/qua
+bar  13 RH: F#4/qua F#4/qua F#4/qua F#4/eig G4/eig
+bar  14 RH: A4/hal. G4/eig F#4/eig
+bar  15 RH: E4/qua E4/qua E4/qua E4/eig F#4/eig  [A dominant]
+bar  16 RH: G4/hal. F#4/eig E4/eig
+bar  17 RH: D4/qua D5/qua D5/qua B4/qua  [D major] [G major]
+bar  18 RH: A4/qua. G4/eig F#4/qua G4/qua  [D major] [E minor]
+bar  19 RH: F#4/hal E4/hal  [D major] [A dominant]
+bar  20 RH: D4/who  [D major]

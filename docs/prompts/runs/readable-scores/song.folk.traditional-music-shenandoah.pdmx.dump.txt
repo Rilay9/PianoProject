@@ -1,0 +1,26 @@
+song: song.folk.traditional-music-shenandoah.pdmx
+title: Shenandoah
+composer: Traditional (American)
+rungs: chords-pop.4
+shipped file: scores/pdmx/QmVK5kNzsxHWu5ffkKcjejk4ySL1uAHXLcarBsuxTpagRR.mxl
+catalog keySig/timeSig/tempo: G major / None / 80.0
+raw-XML counts: ties 4, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 21, grace notes 0, voices>1 0, measures 10, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 1 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.traditional-music-shenandoah.pdmx | Shenandoah | level 2.45 (estimated)
+notation: {"bars": 10, "staves": 1, "keys": [{"fifths": 1, "mode": "major"}], "times": ["4/4"], "chordCount": 21, "chords": ["Am", "Bm", "C", "D", "D7", "Em", "G"], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: ['major']  times: ['4/4']
+bar   1 RH: D4/qua
+bar   2 RH: G4/eig G4/eig G4/qua. A4/eig B4/eig C5/eig  [G major] [A minor]
+bar   3 RH: E5/qua. D5/qua. G5/eig F#5/eig  [C major] [G major]
+bar   4 RH: E5/qua. D5/eig E5/eig D5/eig B4/eig D5/eig  [C major] [G major] [D major]
+bar   5 RH: D5/hal. r/eig D5/eig  [G major] [D major]
+bar   6 RH: E5/eig E5/eig E5/qua. B4/eig D5/eig B4/eig  [E minor] [B minor]
+bar   7 RH: A4/qua G4/qua. r/eig G4/eig A4/eig  [D major] [E minor] [D dominant]
+bar   8 RH: B4/qua. G4/eig B4/eig E5/eig D5/qua  [G major] [D major] [B minor]
+bar   9 RH: D5/qua G4/eig A4/eig B4/qua. G4/eig  [G major] [C major]
+bar  10 RH: A4/qua G4/hal  [D dominant] [G major]

@@ -1,0 +1,29 @@
+song: song.folk.twinkle.ht
+title: Twinkle, Twinkle, Little Star (hands together)
+composer: Traditional (Ah! vous dirai-je, maman, 1761)
+rungs: 2.1
+shipped file: scores/authored/song.folk.twinkle.ht.mxl
+catalog keySig/timeSig/tempo: C major / 4/4 / 84.0
+raw-XML counts: ties 0, tuplets 0, fingerings 46, dynamics 0, pedal 0, articulations 0, chord symbols 22, grace notes 0, voices>1 22, measures 12, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.twinkle.ht | Twinkle, Twinkle, Little Star (hands together) | level 2.1 (judged)
+notation: {"bars": 12, "staves": 2, "keys": [{"fifths": 0, "mode": "major"}], "times": ["4/4"], "chordCount": 22, "chords": ["C", "F", "G"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: ['major']  times: ['4/4']
+bar   1 RH: C4/qua C4/qua G4/qua G4/qua  LH: C3/who  [C major]
+bar   2 RH: A4/qua A4/qua G4/hal  LH: F3/hal C3/hal  [F major] [C major]
+bar   3 RH: F4/qua F4/qua E4/qua E4/qua  LH: F3/hal C3/hal  [F major] [C major]
+bar   4 RH: D4/qua D4/qua C4/hal  LH: G3/hal C3/hal  [G major] [C major]
+bar   5 RH: G4/qua G4/qua F4/qua F4/qua  LH: C3/hal G3/hal  [C major] [G major]
+bar   6 RH: E4/qua E4/qua D4/hal  LH: C3/hal G3/hal  [C major] [G major]
+bar   7 RH: G4/qua G4/qua F4/qua F4/qua  LH: C3/hal G3/hal  [C major] [G major]
+bar   8 RH: E4/qua E4/qua D4/hal  LH: C3/hal G3/hal  [C major] [G major]
+bar   9 RH: C4/qua C4/qua G4/qua G4/qua  LH: C3/who  [C major]
+bar  10 RH: A4/qua A4/qua G4/hal  LH: F3/hal C3/hal  [F major] [C major]
+bar  11 RH: F4/qua F4/qua E4/qua E4/qua  LH: F3/hal C3/hal  [F major] [C major]
+bar  12 RH: D4/qua D4/qua C4/hal  LH: G3/hal C3/hal  [G major] [C major]

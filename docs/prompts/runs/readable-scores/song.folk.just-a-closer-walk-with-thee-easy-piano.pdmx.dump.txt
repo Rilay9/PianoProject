@@ -1,0 +1,33 @@
+song: song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx
+title: Just a Closer Walk with Thee
+composer: Traditional (gospel), arr. Richard Batty
+rungs: hymns, hymns.5
+shipped file: scores/pdmx/Qmbnua9rYTo1vkcT79QtF68f7to28oHcgvwtWh5Vq5MLzT.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 34, grace notes 0, voices>1 33, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx | Just a Closer Walk with Thee | level 3.09 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 34, "chords": ["C", "C-", "C7", "F#AC", "F#\u00b0", "F7", "G7"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: G4/hal. G4/qua  LH: C3/hal G3/hal  [C major] [C major]
+bar   2 RH: A4/qua E4/qua G4/qua F#4/qua  LH: C3/hal E3/hal  [C major] [C major]
+bar   3 RH: F4/who  LH: G3/hal D3/hal  [G dominant] [G dominant]
+bar   4 RH: r/?  LH: G3/hal D3/hal  [G dominant] [G dominant]
+bar   5 RH: D5/hal. C5/qua  LH: G3/hal D3/hal  [G dominant] [G dominant]
+bar   6 RH: B4/qua G4/qua A4/qua C5/qua  LH: G3/hal D3/hal  [G dominant] [G dominant]
+bar   7 RH: A4/qua G4/hal.  LH: C3/hal G3/hal  [C major] [C major]
+bar   8 RH: r/?  LH: C3/hal G3/hal  [C major] [C major]
+bar   9 RH: E5/hal. E5/qua  LH: C3/hal G3/hal  [C major] [C major]
+bar  10 RH: E5/qua C5/qua D5/qua E5/qua  LH: C3/hal G3/hal  [C dominant] [C dominant]
+bar  11 RH: D5/qua C5/hal.  LH: F3/hal C3/hal  [F dominant] [F dominant]
+bar  12 RH: r/hal C5/qua A4/qua  LH: F3/hal C3/hal  [F# other] [F# other] [F# other] [F# other]
+bar  13 RH: G4/hal. G4/qua  LH: E3/hal C3/hal  [C major] [C major]
+bar  14 RH: G4/qua G4/qua A4/qua C5/qua  LH: G3/qua F3/qua E3/qua D3/qua  [G dominant] [G dominant]
+bar  15 RH: C5/who  LH: C3/hal G3/hal  [C major] [C major]
+bar  16 RH: r/?  LH: C3/who

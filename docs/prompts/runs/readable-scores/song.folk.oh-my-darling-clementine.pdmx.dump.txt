@@ -1,0 +1,35 @@
+song: song.folk.oh-my-darling-clementine.pdmx
+title: Oh My Darling Clementine
+composer: Percy Montrose
+rungs: 3.2
+shipped file: scores/pdmx/Qme6kbC9VxbzvXbnxbMC71d7QC2vPdoQvN7kw8emCcrvJB.mxl
+catalog keySig/timeSig/tempo: F major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 21, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 78, measures 17, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -1
+  bar 1: time 3 4
+
+dump_score.py:
+song.folk.oh-my-darling-clementine.pdmx | Oh My Darling Clementine | level 4.32 (estimated)
+notation: {"bars": 17, "staves": 2, "keys": [{"fifths": -1, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: []  times: ['3/4']
+text on the score: ['I Fmaj', 'V Cmaj7', 'I Fmaj', 'V Cmaj7', 'I Fmaj', 'V Cmaj7', 'I Fmaj', 'V Cmaj7']
+bar   1 RH: r/hal F4/eig F4/eig  LH: r/?
+bar   2 RH: F4/qua C4/qua A4/eig A4/eig  LH: C3/qua F3/qua+A3/qua F3/qua+A3/qua
+bar   3 RH: A4/qua F4/qua F4/eig A4/eig  LH: C3/qua F3/qua+A3/qua F3/qua+A3/qua
+bar   4 RH: A4/qua.+C5/qua. A4/eig+C5/eig G4/eig+Bb4/eig F4/eig+A4/eig  LH: C3/qua F3/qua+A3/qua F3/qua+A3/qua
+bar   5 RH: E4/hal+G4/hal G4/eig A4/eig  LH: G3/qua Bb3/qua+C4/qua Bb3/qua+C4/qua
+bar   6 RH: G4/qua+Bb4/qua G4/qua+Bb4/qua A4/eig G4/eig  LH: G3/qua Bb3/qua+C4/qua Bb3/qua+C4/qua
+bar   7 RH: F4/qua+A4/qua F4/qua F4/eig A4/eig  LH: C3/qua F3/qua+A3/qua F3/qua+A3/qua
+bar   8 RH: E4/qua+G4/qua r/qua E4/eig G4/eig  LH: G3/qua Bb3/qua+C4/qua Bb3/qua+C4/qua
+bar   9 RH: F4/hal F4/eig F4/eig  LH: A3/hal+C4/hal r/qua
+bar  10 RH: F4/qua C4/qua A4/eig A4/eig  LH: C3/qua F3/qua+A3/qua F3/qua+A3/qua
+bar  11 RH: A4/qua F4/qua F4/eig A4/eig  LH: C3/qua F3/qua+A3/qua F3/qua+A3/qua
+bar  12 RH: A4/qua.+C5/qua. A4/eig+C5/eig G4/eig+Bb4/eig F4/eig+A4/eig  LH: C3/qua F3/qua+A3/qua F3/qua+A3/qua
+bar  13 RH: E4/hal+G4/hal G4/eig A4/eig  LH: G3/qua Bb3/qua+C4/qua Bb3/qua+C4/qua
+bar  14 RH: G4/qua+Bb4/qua G4/qua+Bb4/qua A4/eig G4/eig  LH: G3/qua Bb3/qua+C4/qua Bb3/qua+C4/qua
+bar  15 RH: F4/qua+A4/qua F4/qua F4/eig A4/eig  LH: C3/qua F3/qua+A3/qua F3/qua+A3/qua
+bar  16 RH: E4/qua+G4/qua r/qua E4/eig G4/eig  LH: C3/qua Bb3/qua+C4/qua Bb3/qua+C4/qua
+bar  17 RH: F4/hal r/qua  LH: F3/hal+A3/hal+C4/hal r/qua

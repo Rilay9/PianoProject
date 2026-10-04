@@ -1,0 +1,50 @@
+song: song.folk.greensleeves
+title: Greensleeves
+composer: Traditional (English)
+rungs: 2.4, 3.3, 4.3, chords-pop.5
+shipped file: scores/imported/song.folk.greensleeves.mxl
+catalog keySig/timeSig/tempo: A minor / 3/4 / 120.0
+raw-XML counts: ties 4, tuplets 4, fingerings 14, dynamics 6, pedal 60, articulations 0, chord symbols 0, grace notes 0, voices>1 93, measures 33, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 3 4
+
+dump_score.py:
+song.folk.greensleeves | Greensleeves | level 5.1 (judged)
+notation: {"bars": 33, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+bar   1 RH: A4/qua  LH: r/qua
+bar   2 RH: C5/hal D5/qua  LH: A2/qua C3/qua E3/qua
+bar   3 RH: E5/qua. F5/eig E5/qua  LH: A2/qua C3/qua E3/qua
+bar   4 RH: D5/hal B4/qua  LH: G2/qua B2/qua D3/qua
+bar   5 RH: G4/qua. A4/eig B4/qua  LH: G2/qua B2/qua D3/qua
+bar   6 RH: C5/hal A4/qua  LH: F2/qua A2/qua C3/qua
+bar   7 RH: A4/qua. G#4/eig A4/qua  LH: F2/qua A2/qua C3/qua
+bar   8 RH: B4/hal G#4/qua  LH: E2/qua G#2/qua B2/qua
+bar   9 RH: E4/hal A4/qua  LH: E2/qua G#2/qua B2/qua
+bar  10 RH: A4/hal+C5/hal D5/qua  LH: A2/qua C3/qua E3/qua
+bar  11 RH: C5/qua.+E5/qua. F5/eig E5/qua+G5/qua  LH: C3/qua E3/qua G3/qua
+bar  12 RH: D5/hal B4/qua  LH: G2/qua B2/qua D3/qua
+bar  13 RH: G4/qua. r/eig G4/eig A4/eig B4/eig  LH: G2/qua B2/qua D3/qua
+bar  14 RH: A4/qua.+C5/qua. B4/eig A4/qua  LH: F2/qua A2/qua C3/qua
+bar  15 RH: G#4/qua. F#4/eig G#4/qua  LH: E2/qua G#2/qua B2/qua
+bar  16 RH: A4/hal.  LH: A2/qua C3/qua E3/qua
+bar  17 RH: A4/hal.  LH: A2/hal.
+bar  18 RH: G5/hal.  LH: C3/qua E3/qua G3/qua
+bar  19 RH: G5/qua. F#5/eig E5/qua  LH: C3/qua E3/qua G3/qua
+bar  20 RH: D5/hal B4/qua  LH: G3/qua B3/qua D4/qua
+bar  21 RH: G4/qua. A4/eig B4/qua  LH: G3/qua B3/qua D4/qua
+bar  22 RH: C5/hal A4/qua  LH: F3/qua A3/qua C4/qua
+bar  23 RH: A4/qua. G#4/eig A4/qua  LH: F3/qua A3/qua C4/qua
+bar  24 RH: B4/hal G#4/qua  LH: E3/qua G#3/qua B3/qua
+bar  25 RH: E4/hal.  LH: E3/qua G#3/qua B3/qua
+bar  26 RH: C5/hal.+G5/hal.  LH: C3/qua E3/qua G3/qua
+bar  27 RH: E5/qua.+G5/qua. F#5/eig E5/qua  LH: C4/qua B3/qua A3/qua
+bar  28 RH: D5/hal B4/qua  LH: G3/qua B3/qua D4/qua
+bar  29 RH: G4/qua. r/eig G4/eig A4/eig B4/eig  LH: G3/qua B3/qua D4/qua
+bar  30 RH: A4/qua.+C5/qua. B4/eig A4/qua  LH: F3/qua A3/qua C4/qua
+bar  31 RH: E4/qua.+G#4/qua. F#4/eig G#4/qua  LH: E3/qua G#3/qua B3/qua
+bar  32 RH: A4/hal.  LH: A3/qua C4/qua E4/qua
+bar  33 RH: A4/hal.  LH: A3/hal.

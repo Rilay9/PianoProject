@@ -1,0 +1,25 @@
+song: song.folk.mary-had-a-little-lamb.ht
+title: Mary Had a Little Lamb (hands together)
+composer: Traditional (Lowell Mason, 1830)
+rungs: 2.1
+shipped file: scores/authored/song.folk.mary-had-a-little-lamb.ht.mxl
+catalog keySig/timeSig/tempo: C major / 4/4 / 72.0
+raw-XML counts: ties 0, tuplets 0, fingerings 34, dynamics 0, pedal 0, articulations 0, chord symbols 8, grace notes 0, voices>1 8, measures 8, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.mary-had-a-little-lamb.ht | Mary Had a Little Lamb (hands together) | level 2.1 (judged)
+notation: {"bars": 8, "staves": 2, "keys": [{"fifths": 0, "mode": "major"}], "times": ["4/4"], "chordCount": 8, "chords": ["C", "G"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: ['major']  times: ['4/4']
+bar   1 RH: E4/qua D4/qua C4/qua D4/qua  LH: C3/who  [C major]
+bar   2 RH: E4/qua E4/qua E4/hal  LH: C3/who  [C major]
+bar   3 RH: D4/qua D4/qua D4/hal  LH: G3/who  [G major]
+bar   4 RH: E4/qua G4/qua G4/hal  LH: C3/who  [C major]
+bar   5 RH: E4/qua D4/qua C4/qua D4/qua  LH: C3/who  [C major]
+bar   6 RH: E4/qua E4/qua E4/qua E4/qua  LH: C3/who  [C major]
+bar   7 RH: D4/qua D4/qua E4/qua D4/qua  LH: G3/who  [G major]
+bar   8 RH: C4/who  LH: C3/who  [C major]

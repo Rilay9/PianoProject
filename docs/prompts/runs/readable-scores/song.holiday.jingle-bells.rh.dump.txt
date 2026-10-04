@@ -1,0 +1,24 @@
+song: song.holiday.jingle-bells.rh
+title: Jingle Bells (chorus)
+composer: James Lord Pierpont
+rungs: 1.2, holiday
+shipped file: scores/authored/song.holiday.jingle-bells.rh.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / 4/4 / 100.0
+raw-XML counts: ties 0, tuplets 0, fingerings 25, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 8, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.holiday.jingle-bells.rh | Jingle Bells (chorus) | level 1.2 (judged)
+notation: {"bars": 8, "staves": 1, "keys": [{"fifths": 0, "mode": "major"}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['0']  modes: ['major']  times: ['4/4']
+bar   1 RH: E4/qua E4/qua E4/hal
+bar   2 RH: E4/qua E4/qua E4/hal
+bar   3 RH: E4/qua G4/qua C4/qua D4/qua
+bar   4 RH: E4/who
+bar   5 RH: F4/qua F4/qua F4/qua F4/qua
+bar   6 RH: F4/qua E4/qua E4/qua E4/qua
+bar   7 RH: E4/qua D4/qua D4/qua E4/qua
+bar   8 RH: D4/hal G4/hal

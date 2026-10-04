@@ -1,0 +1,48 @@
+song: song.classical.satie-erik-satie-gnossienne-n1.pdmx
+title: Gnossienne No. 1
+composer: Erik Satie
+rungs: classical.4.shelf, rock.6
+shipped file: scores/pdmx/QmdV4EjTYTsxUQ5av9jmmFj7Yes4a9oHVCmYQo5YsUyRyt.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 85.0
+raw-XML counts: ties 14, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 37, voices>1 150, measures 31, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.satie-erik-satie-gnossienne-n1.pdmx | Gnossienne No. 1 | level 4.6 (estimated)
+notation: {"bars": 31, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: r/qua E5/eig G5/eig F#5/qua E5/qua  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar   2 RH: E5/eig D#5/hal E5/eig D#5/hal  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar   3 RH: r/qua E5/eig G5/eig F#5/qua E5/qua  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar   4 RH: G5/eig A5/hal G5/eig A5/hal  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar   5 RH: r/qua E5/eig G5/eig F#5/qua E5/qua  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar   6 RH: E5/eig D#5/hal C5/eig B4/hal  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar   7 RH: A4/eig B4/qua A4/eig B4/hal.  LH: E3/qua G3/hal+B3/hal G3/qua+B3/qua
+bar   8 RH: C5/eig B4/qua B4/eig A4/hal.  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar   9 RH: A4/who  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar  10 RH: C5/eig D5/hal C5/eig B4/hal  LH: D3/qua F3/hal+A3/hal F3/qua+A3/qua
+bar  11 RH: C5/eig D5/hal C5/eig B4/hal  LH: D3/qua F3/hal+A3/hal F3/qua+A3/qua
+bar  12 RH: C5/eig B4/qua B4/eig A4/hal.  LH: A2/qua E3/hal+A3/hal E3/qua+A3/qua
+bar  13 RH: A4/who  LH: A2/qua E3/hal+A3/hal E3/qua+A3/qua
+bar  14 RH: r/eig E5/eig F#5/eig G#5/eig A5/eig B5/eig D#6/eig B5/eig  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar  15 RH: A5/qua B5/eig A5/hal.  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar  16 RH: B5/eig A5/hal A5/eig G#5/hal  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar  17 RH: F5/eig E5/hal E5/eig D#5/hal  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar  18 RH: C5/eig B4/qua B4/eig A4/hal.  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar  19 RH: A4/who  LH: A3/qua C4/hal+E4/hal C4/qua+E4/qua
+bar  20 RH: C5/eig D5/hal C5/eig B4/hal  LH: D3/qua F3/hal+A3/hal F3/qua+A3/qua
+bar  21 RH: C5/eig D5/hal C5/eig B4/hal  LH: D3/qua F3/hal+A3/hal F3/qua+A3/qua
+bar  22 RH: C5/eig B4/qua B4/eig A4/hal.  LH: A2/qua E3/hal+A3/hal E3/qua+A3/qua
+bar  23 RH: A4/who  LH: A2/qua E3/hal+A3/hal E3/qua+A3/qua
+bar  24 RH: r/qua E5/eig G5/eig F#5/qua E5/qua  LH: A2/qua E3/hal+A3/hal E3/qua+A3/qua
+bar  25 RH: E5/eig D#5/who  LH: A2/qua E3/hal+A3/hal E3/qua+A3/qua
+bar  26 RH: r/qua E5/eig G5/eig F#5/qua E5/qua  LH: A2/qua E3/hal+A3/hal E3/qua+A3/qua
+bar  27 RH: G5/eig A5/who  LH: A2/qua E3/hal+A3/hal E3/qua+A3/qua
+bar  28 RH: C5/eig D5/hal C5/eig B4/hal  LH: D3/qua F3/hal+A3/hal F3/qua+A3/qua
+bar  29 RH: C5/eig D5/hal C5/eig B4/hal  LH: D3/qua F3/hal+A3/hal F3/qua+A3/qua
+bar  30 RH: C5/eig B4/qua B4/eig A4/hal.  LH: A2/qua E3/hal.+A3/hal.
+bar  31 RH: A4/who  LH: E3/who+A3/who

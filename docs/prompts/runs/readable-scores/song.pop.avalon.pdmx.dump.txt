@@ -1,0 +1,49 @@
+song: song.pop.avalon.pdmx
+title: Avalon (1920)
+composer: Vincent Rose
+rungs: jazz.4, jazz.7
+shipped file: scores/pdmx/QmYWbAbpvFJDspyT7JcKwGrudQkp7rUXUPYuz1z9UbZ8rp.mxl
+catalog keySig/timeSig/tempo: F major / None / 96.0
+raw-XML counts: ties 22, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 22, grace notes 0, voices>1 0, measures 33, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1 major
+  bar 1: time 2 2
+
+dump_score.py:
+song.pop.avalon.pdmx | Avalon (1920) | level 2.74 (estimated)
+notation: {"bars": 33, "staves": 1, "keys": [{"fifths": -1, "mode": "major"}], "times": ["2/2"], "chordCount": 22, "chords": ["Bbm6", "C7", "C7+", "D7", "E7", "Eb7", "F", "Gm", "Gm7"], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: ['major']  times: ['2/2']
+bar   1 RH: C4/hal
+bar   2 RH: G4/hal A4/hal  [C dominant]
+bar   3 RH: Bb4/hal C5/hal
+bar   4 RH: Bb4/qua A4/qua G4/hal
+bar   5 RH: G4/hal C4/hal
+bar   6 RH: F4/who  [F major]
+bar   7 RH: F4/hal G4/hal  [C dominant]
+bar   8 RH: A4/who  [F major]
+bar   9 RH: A4/hal C4/hal
+bar  10 RH: E4/hal F4/hal  [C dominant]
+bar  11 RH: G4/hal F4/hal
+bar  12 RH: E4/qua D4/qua C4/hal
+bar  13 RH: C4/hal D4/hal  [C augmented-seventh]
+bar  14 RH: A4/who  [F major]
+bar  15 RH: A4/hal D4/hal  [C augmented-seventh]
+bar  16 RH: A4/who  [F major]
+bar  17 RH: A4/hal D4/hal  [E dominant] [Eb dominant]
+bar  18 RH: A4/hal Bb4/hal  [D dominant]
+bar  19 RH: C5/hal D5/hal
+bar  20 RH: C5/qua Bb4/qua A4/hal
+bar  21 RH: A4/hal D4/hal
+bar  22 RH: G4/who  [G minor]
+bar  23 RH: G4/hal A4/hal  [D dominant]
+bar  24 RH: Bb4/who  [Bb minor-sixth]
+bar  25 RH: Bb4/qua r/qua D4/hal
+bar  26 RH: C4/hal F4/hal  [F major]
+bar  27 RH: A4/hal C5/hal  [E dominant] [Eb dominant]
+bar  28 RH: E5/qua D5/qua E5/hal  [D dominant]
+bar  29 RH: E5/qua r/qua D5/hal
+bar  30 RH: Bb4/who  [G minor-seventh]
+bar  31 RH: A4/who  [C dominant]
+bar  32 RH: F4/who  [F major]
+bar  33 RH: F4/hal. r/qua

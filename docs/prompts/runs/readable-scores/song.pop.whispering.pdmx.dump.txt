@@ -1,0 +1,64 @@
+song: song.pop.whispering.pdmx
+title: Whispering (1920)
+composer: John Schonberger
+rungs: jazz.4
+shipped file: scores/pdmx/QmepQQ5v2kUJbSkDb2qsEYvvfEeTejuATTk9D9PHMXK7Gs.mxl
+catalog keySig/timeSig/tempo: Eb major / None / 96.0
+raw-XML counts: ties 6, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 37, grace notes 0, voices>1 0, measures 48, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -3
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.whispering.pdmx | Whispering (1920) | level 2.88 (estimated)
+notation: {"bars": 48, "staves": 1, "keys": [{"fifths": -3, "mode": null}], "times": ["4/4"], "chordCount": 37, "chords": ["Abm", "Bb", "Bb7", "C7", "Cm7", "D7", "Eb", "F7", "Fm7", "G7", "Gm", "Gm7"], "swungMark": false, "finalBass": 3}
+key signatures (fifths): ['-3']  modes: []  times: ['4/4']
+bar   1 RH: G4/qua Ab4/qua Bb4/qua G4/qua  [Eb major]
+bar   2 RH: Ab4/qua G4/hal F4/qua  [Bb dominant]
+bar   3 RH: Eb4/who  [Eb major]
+bar   4 RH: Bb4/who  [Bb dominant]
+bar   5 RH: G4/qua Ab4/qua Bb4/qua G4/qua  [Eb major]
+bar   6 RH: Ab4/qua G4/qua F4/hal  [Bb dominant]
+bar   7 RH: Bb4/who  [Eb major]
+bar   8 RH: Bb4/qua r/qua r/hal
+bar   9 RH: Bb4/qua C5/qua D5/qua Bb4/qua  [G minor-seventh]
+bar  10 RH: C5/qua Bb4/hal A4/qua  [D dominant]
+bar  11 RH: G4/who  [G minor]
+bar  12 RH: D5/who
+bar  13 RH: D5/qua Eb5/qua F5/qua D5/qua  [Bb major] [G dominant]
+bar  14 RH: Eb5/qua D5/hal C5/qua  [C minor-seventh] [F dominant]
+bar  15 RH: F5/who  [Bb dominant] [F minor-seventh]
+bar  16 RH: F5/hal r/hal  [Bb dominant]
+bar  17 RH: Eb5/hal D5/qua Eb5/qua  [Eb major]
+bar  18 RH: F5/qua Eb5/qua D5/qua Eb5/qua
+bar  19 RH: D5/who  [D dominant]
+bar  20 RH: C5/who
+bar  21 RH: Bb4/hal A4/qua Bb4/qua  [Eb major]
+bar  22 RH: C5/qua Bb4/qua A4/qua Bb4/qua
+bar  23 RH: Ab4/who  [C augmented-seventh]
+bar  24 RH: G4/who  [C dominant]
+bar  25 RH: G4/hal F4/qua G4/qua  [F dominant]
+bar  26 RH: C5/qua G4/qua F4/qua G4/qua
+bar  27 RH: G4/who  [Bb dominant]
+bar  28 RH: F4/who
+bar  29 RH: Eb4/hal F4/qua G4/qua  [Eb major]
+bar  30 RH: Bb4/hal C5/qua D5/qua
+bar  31 RH: C5/hal Bb4/qua D5/qua  [Bb dominant]
+bar  32 RH: C5/hal Bb4/hal  [Bb augmented-seventh]
+bar  33 RH: Eb5/hal D5/qua Eb5/qua  [Eb major]
+bar  34 RH: F5/qua Eb5/qua D5/qua Eb5/qua
+bar  35 RH: D5/who  [D dominant]
+bar  36 RH: C5/who
+bar  37 RH: Bb4/hal A4/qua Bb4/qua  [Eb major]
+bar  38 RH: C5/qua Bb4/qua A4/qua Bb4/qua
+bar  39 RH: Ab4/who  [C augmented-seventh]
+bar  40 RH: G4/who  [C dominant]
+bar  41 RH: G4/hal F4/qua G4/qua  [F dominant]
+bar  42 RH: C5/qua G4/qua F4/qua G4/qua
+bar  43 RH: G4/who  [Bb dominant]
+bar  44 RH: F4/who
+bar  45 RH: F4/qua G4/qua Ab4/qua Bb4/qua  [F minor-seventh]
+bar  46 RH: C5/hal Eb5/hal  [Ab minor]
+bar  47 RH: Eb5/who  [Eb major]
+bar  48 RH: Eb5/qua r/qua r/hal

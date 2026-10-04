@@ -1,0 +1,36 @@
+song: song.classical.debussy-clair-de-lune-easy.pdmx
+title: Clair de Lune (easy)
+composer: Claude Debussy
+rungs: classical.4.shelf
+shipped file: scores/pdmx/QmNyaupjnP2L7AgSvjuq5TmDoDhqCJiKhGd8rT9CefbkMY.mxl
+catalog keySig/timeSig/tempo: C major / None / 69.0
+raw-XML counts: ties 90, tuplets 16, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 108, measures 17, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 9 8
+  bar 7: clef F 4
+
+dump_score.py:
+song.classical.debussy-clair-de-lune-easy.pdmx | Clair de Lune (easy) | level 5.04 (estimated)
+notation: {"bars": 17, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["9/8"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['9/8']
+text on the score: ['Largo', 'p', 'mp', 'p', 'pp']
+bar   1 RH: r/eig r/eig E5/eig+G5/eig E5/qua.+G5/qua. C5/qua.+E5/qua.  LH: r/eig E4/qua+G4/qua E4/hal.+G4/hal.
+bar   2 RH: C5/eig+E5/eig B4/eig+D5/eig C5/eig+E5/eig B4/hal.+D5/hal.  LH: F4/hal.+Ab4/hal. F4/qua.+Ab4/qua.
+bar   3 RH:v1: B4/eig+D5/eig A4/eig+C5/eig B4/eig+D5/eig C5/eig E5/eig E5/eig C5/eig | v2: r/qua. A4/hal.  LH: E4/hal.+G4/hal. E4/qua.+G4/qua.
+bar   4 RH: A4/eig+C5/eig G4/eig+B4/eig A4/eig+C5/eig G4/hal.+B4/hal.  LH: D4/hal.+F4/hal. D4/qua.+F4/qua.
+bar   5 RH:v1: F4/hal. F4/qua. | v2: B4/eig A4/eig B4/eig A4/eig D5/eig A4/eig G4/eig A4/eig G4/eig  LH: C4/hal.+D4/hal. B3/qua.+D4/qua.
+bar   6 RH:v1: D4/hal. D4/qua. | v2: G4/eig F4/eig G4/eig F4/qua. E4/qua.  LH: A3/hal.+C4/hal. Ab3/qua.+B3/qua.
+bar   7 RH:v1: C4/hal. C4/qua. | v2: E4/eig E4/eig F4/eig E4/eig A4/eig E4/eig D4/eig E4/eig D4/eig  LH: G3/hal.+A3/hal. F3/qua.+A3/qua.
+bar   8 RH:v1: A3/hal. G3/qua. | v2: D4/eig C4/eig D4/eig C4/qua. B3/qua.  LH: E3/hal.+G3/hal. G2/qua.+F3/qua.
+bar   9 RH: r/eig r/eig G4/eig E5/qua.+G5/qua. C5/qua.+E5/qua.  LH:v6: C3/qua. C3/hal. | v7: r/eig E3/eig E3/eig+G3/eig E3/hal.+G3/hal.
+bar  10 RH:v1: C5/eig+E5/eig D5/eig E5/eig D5/hal. | v2: r/eig A4/qua A4/hal.  LH: F3/hal.+A3/hal. F3/qua.+A3/qua.
+bar  11 RH: D5/eig C5/eig D5/eig C5/qua.+G5/qua. C5/qua.+E5/qua.  LH: E3/hal.+G3/hal. E3/qua.+G3/qua.
+bar  12 RH:v1: C5/eig+E5/eig D5/eig E5/eig D5/qua. C5/qua. | v2: r/eig A4/qua A4/hal.  LH: F3/hal.+A3/hal. F3/qua.+A3/qua.
+bar  13 RH: r/eig C4/eig D4/eig C4/qua.+E4/qua.+A4/qua. C4/qua.+E4/qua.  LH: E3/hal.+G3/hal. E3/qua.+G3/qua.
+bar  14 RH: r/eig F4/eig G4/eig F4/qua.+A4/qua.+C5/qua. F4/qua.+A4/qua.  LH: D3/hal.+F3/hal. D3/qua.+F3/qua.
+bar  15 RH: r/eig A4/eig B4/eig G4/qua.+B4/qua.+E5/qua. F4/qua.+G4/qua.  LH: G2/hal.+D3/hal.+F3/hal. G2/qua.
+bar  16 RH: E5/hal.+G5/hal. E5/qua.+G5/qua.  LH: C2/qua G2/eig C3/qua. G3/qua.
+bar  17 RH: E5/hal.+G5/hal. r/qua r/eig  LH: C4/hal. r/qua r/eig

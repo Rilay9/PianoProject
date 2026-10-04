@@ -1,0 +1,35 @@
+song: song.classical.bach-menuet-in-d-minor-bwv-anh-132.pdmx
+title: Minuet in D minor, BWV Anh. 132
+composer: Anonymous (Notebook for Anna Magdalena Bach)
+rungs: classical.3
+shipped file: scores/pdmx/QmSCFycf8NBkcyhemv2X2ZVVVucp1v6sG1Emook2w7Qo1K.mxl
+catalog keySig/timeSig/tempo: D minor / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 59, measures 18, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -1
+  bar 1: time 3 4
+
+dump_score.py:
+song.classical.bach-menuet-in-d-minor-bwv-anh-132.pdmx | Minuet in D minor, BWV Anh. 132 | level 5.1 (estimated)
+notation: {"bars": 18, "staves": 2, "keys": [{"fifths": -1, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['-1']  modes: []  times: ['3/4']
+bar   1 RH: A4/qua F5/eig E5/eig D5/eig C#5/eig  LH: D3/hal E3/qua
+bar   2 RH: D5/qua A4/qua Bb4/qua  LH: F3/hal G3/qua
+bar   3 RH: C#4/eig E4/eig G4/eig Bb4/eig A4/eig G4/eig  LH: A3/hal A2/qua
+bar   4 RH: F4/qua E4/eig F4/eig D4/qua  LH: D3/qua A2/qua D2/qua
+bar   5 RH: F4/qua Bb4/eig A4/eig D5/eig C5/eig  LH: D3/qua C3/qua Bb2/qua
+bar   6 RH: F5/qua E5/eig D5/eig C5/eig Bb4/eig  LH: A2/hal E3/qua
+bar   7 RH: A4/eig Bb4/16t C5/16t F4/qua E4/qua  LH: F3/qua A2/qua C3/qua
+bar   8 RH: F4/hal.  LH: F2/qua F3/eig E3/eig D3/eig C#3/eig
+bar   9 RH: F4/hal.  LH: F3/qua C3/qua F2/qua
+bar  10 RH: A5/qua F4/eig A5/eig G5/eig F5/eig  LH: F3/qua A3/qua Bb3/qua
+bar  11 RH: E5/16t F5/16t G5/eig C5/hal  LH: C4/qua. G3/eig E3/eig C3/eig
+bar  12 RH: F5/qua D4/eig F5/eig E5/eig D5/eig  LH: D3/qua C3/qua Bb2/qua
+bar  13 RH: C#5/16t D5/16t E5/eig A4/hal  LH: A2/eig B2/eig C#3/eig D3/eig E3/eig F3/eig
+bar  14 RH: A4/eig B4/eig C#5/eig D5/eig E5/eig F5/eig  LH: G3/qua E3/qua C#3/qua
+bar  15 RH: G5/eig E5/eig C#5/eig Bb5/eig A5/eig G5/eig  LH: A2/qua A3/qua C#4/qua
+bar  16 RH: F5/16t E5/16t D5/eig Bb4/qua+E5/qua E4/qua+C#5/qua  LH: D4/qua+A4/qua G3/qua A3/qua
+bar  17 RH: F4/hal.+D5/hal.  LH: D3/qua D2/eig A2/eig D3/eig E3/eig
+bar  18 RH: F4/hal.+D5/hal.  LH: D3/qua A2/qua D2/qua

@@ -1,0 +1,20 @@
+song: song.folk.hot-cross-buns.lh
+title: Hot Cross Buns (left hand)
+composer: Traditional (English street cry)
+rungs: 1.3
+shipped file: scores/authored/song.folk.hot-cross-buns.lh.mxl
+catalog keySig/timeSig/tempo: C major / 4/4 / 72.0
+raw-XML counts: ties 0, tuplets 0, fingerings 11, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 4, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef F 4
+  bar 1: key 0 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.hot-cross-buns.lh | Hot Cross Buns (left hand) | level 1.3 (judged)
+notation: {"bars": 4, "staves": 1, "keys": [{"fifths": 0, "mode": "major"}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: ['major']  times: ['4/4']
+bar   1 RH: E3/qua D3/qua C3/hal
+bar   2 RH: E3/qua D3/qua C3/hal
+bar   3 RH: C3/eig C3/eig C3/eig C3/eig D3/eig D3/eig D3/eig D3/eig
+bar   4 RH: E3/qua D3/qua C3/hal

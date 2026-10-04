@@ -1,0 +1,25 @@
+song: song.folk.kum-ba-yah.pdmx
+title: Kum Ba Yah
+composer: Traditional (spiritual)
+rungs: 1.1
+shipped file: scores/pdmx/QmQiEzhxiSxLxbDR8ymyhwWrmwwrH4m7hCT8X22juw1U94.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 8, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.kum-ba-yah.pdmx | Kum Ba Yah | level 1.58 (estimated)
+notation: {"bars": 8, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+text on the score: ['Keys:', 'Keys:']
+bar   1 RH: G4/qua B4/qua D5/qua D5/qua
+bar   2 RH: E5/qua E5/qua D5/hal
+bar   3 RH: G4/qua B4/qua D5/qua D5/qua
+bar   4 RH: C5/qua B4/qua A4/hal
+bar   5 RH: G4/qua B4/qua D5/qua D5/qua
+bar   6 RH: E5/qua E5/qua D5/hal
+bar   7 RH: C5/hal B4/hal
+bar   8 RH: A4/qua A4/qua G4/hal

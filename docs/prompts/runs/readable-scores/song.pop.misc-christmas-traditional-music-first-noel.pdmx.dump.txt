@@ -1,0 +1,43 @@
+song: song.pop.misc-christmas-traditional-music-first-noel.pdmx
+title: The First Noel
+composer: Traditional (English)
+rungs: holiday.3
+shipped file: scores/pdmx/QmbH7PjeJoE4sFYy6AmuaWooZinqkEmdmM7CV1Fk8FDrQb.mxl
+catalog keySig/timeSig/tempo: 2 sharps / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 24, grace notes 0, voices>1 0, measures 26, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 2 major
+  bar 1: time 3 4
+
+dump_score.py:
+song.pop.misc-christmas-traditional-music-first-noel.pdmx | The First Noel | level 2.54 (estimated)
+notation: {"bars": 26, "staves": 1, "keys": [{"fifths": 2, "mode": "major"}], "times": ["3/4"], "chordCount": 24, "chords": ["A7", "D", "G"], "swungMark": false, "finalBass": 6}
+key signatures (fifths): ['2']  modes: ['major']  times: ['3/4']
+text on the score: ['VERSES', 'CHORUS']
+bar   1 RH: F#4/eig E4/eig
+bar   2 RH: D4/qua. E4/eig F#4/eig G4/eig  [D major]
+bar   3 RH: A4/hal B4/eig C#5/eig
+bar   4 RH: D5/qua C#5/qua B4/qua  [G major]
+bar   5 RH: A4/hal B4/eig C#5/eig  [D major]
+bar   6 RH: D5/qua C#5/qua B4/qua  [G major]
+bar   7 RH: A4/qua B4/qua C#5/qua  [D major]
+bar   8 RH: D5/qua A4/qua G4/qua  [D major] [A dominant]
+bar   9 RH: F#4/hal F#4/eig E4/eig  [D major]
+bar  10 RH: D4/qua. E4/eig F#4/eig G4/eig
+bar  11 RH: A4/hal B4/eig C#5/eig  [D major]
+bar  12 RH: D5/qua C#5/qua B4/qua  [G major]
+bar  13 RH: A4/hal B4/eig C#5/eig  [D major]
+bar  14 RH: D5/qua C#5/qua B4/qua  [G major]
+bar  15 RH: A4/qua B4/qua C#5/qua  [D major]
+bar  16 RH: D5/qua A4/qua G4/qua  [A dominant]
+bar  17 RH: F#4/hal  [D major]
+bar  18 RH: F#4/eig E4/eig
+bar  19 RH: D4/qua. E4/eig F#4/eig G4/eig  [D major]
+bar  20 RH: A4/hal D5/eig C#5/eig
+bar  21 RH: B4/hal B4/qua  [G major]
+bar  22 RH: A4/hal.  [D major]
+bar  23 RH: D5/qua C#5/qua B4/qua  [D major]
+bar  24 RH: A4/qua B4/qua C#5/qua  [G major] [A dominant]
+bar  25 RH: D5/qua A4/qua G4/qua  [D major] [A dominant]
+bar  26 RH: F#4/hal  [D major]

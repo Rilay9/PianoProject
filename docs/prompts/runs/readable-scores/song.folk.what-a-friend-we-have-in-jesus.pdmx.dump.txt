@@ -1,0 +1,32 @@
+song: song.folk.what-a-friend-we-have-in-jesus.pdmx
+title: What a Friend We Have in Jesus
+composer: Charles C. Converse
+rungs: hymns, hymns.5
+shipped file: scores/pdmx/QmXsL1uTgwAdM5yCKnQidY933ykQ3Vaw9jmQgf2Px4xsbF.mxl
+catalog keySig/timeSig/tempo: D major / None / 96.0
+raw-XML counts: ties 16, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 32, grace notes 0, voices>1 0, measures 16, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 2 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.what-a-friend-we-have-in-jesus.pdmx | What a Friend We Have in Jesus | level 2.6 (estimated)
+notation: {"bars": 16, "staves": 1, "keys": [{"fifths": 2, "mode": "major"}], "times": ["4/4"], "chordCount": 32, "chords": ["A", "A7", "D", "D7", "E", "G", "G#dim"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['2']  modes: ['major']  times: ['4/4']
+bar   1 RH: A4/qua. A4/eig B4/eig A4/eig F#4/eig D4/eig  [D major] [D dominant]
+bar   2 RH: D4/hal B3/qua r/qua  [G major]
+bar   3 RH: A3/qua. D4/eig F#4/eig D4/eig A4/eig F#4/eig  [D major]
+bar   4 RH: E4/qua E4/qua E4/qua r/qua  [A major] [E major] [A major]
+bar   5 RH: A4/qua. A4/eig B4/eig A4/eig F#4/eig D4/eig  [D major] [D dominant]
+bar   6 RH: D4/hal B3/qua r/qua  [G major] [G# diminished]
+bar   7 RH: A3/qua. D4/eig F#4/eig E4/eig D4/eig C#4/eig  [D major] [A dominant]
+bar   8 RH: D4/qua D4/qua D4/qua r/qua  [D major] [G major] [D major]
+bar   9 RH: E4/qua. D4/eig E4/eig F#4/eig G4/eig E4/eig  [A major]
+bar  10 RH: F#4/hal A4/qua r/qua  [D major]
+bar  11 RH: B4/qua. B4/eig A4/eig F#4/eig G4/eig F#4/eig  [G major] [D major]
+bar  12 RH: E4/qua E4/qua E4/qua r/qua  [A major] [E major] [A major]
+bar  13 RH: A4/qua. A4/eig B4/eig A4/eig F#4/eig D4/eig  [D major] [D dominant]
+bar  14 RH: D4/hal B3/qua r/qua  [G major] [G# diminished]
+bar  15 RH: A3/qua. D4/eig F#4/eig E4/eig D4/eig C#4/eig  [D major] [A dominant]
+bar  16 RH: D4/qua D4/qua D4/qua r/qua  [D major] [G major] [D major]

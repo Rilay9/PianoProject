@@ -1,0 +1,65 @@
+song: song.blues.tishomingo-blues
+title: Tishomingo Blues
+composer: Spencer Williams
+rungs: blues.3
+shipped file: scores/pdmx/Qmb4ajXAjTv3vVkZmx1qtSEuUmRMVM8qbpEVPLsLM53WYA.mxl
+catalog keySig/timeSig/tempo: Ab major / None / 132.0
+raw-XML counts: ties 18, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 48, grace notes 0, voices>1 0, measures 48, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -4
+  bar 1: time 4 4
+
+dump_score.py:
+song.blues.tishomingo-blues | Tishomingo Blues | level 3.86 (estimated)
+notation: {"bars": 48, "staves": 1, "keys": [{"fifths": -4, "mode": null}], "times": ["4/4"], "chordCount": 48, "chords": ["Ab", "Ab7", "Adim", "Bb7", "C7", "Db", "Db7", "Dbm", "E7", "Eb7", "Fm"], "swungMark": false, "finalBass": 8}
+key signatures (fifths): ['-4']  modes: []  times: ['4/4']
+text on the score: ['Opt. Break on Solos']
+bar   1 RH: r/eig C5/eig+Eb5/eig C5/eig+Eb5/eig C5/eig+Eb5/eig C5/eig+Eb5/eig Ab4/qua.+C5/qua.  [Ab major]
+bar   2 RH: r/eig Db5/eig+Eb5/eig Db5/eig+Eb5/eig Db5/eig+Eb5/eig Db5/eig+Eb5/eig G4/qua.+Bb4/qua.  [Eb dominant]
+bar   3 RH: D4/eig+B4/eig D4/eig+B4/eig D4/eig+B4/eig D4/eig+B4/eig Db4/eig+Eb5/eig Db4/qua.+C5/qua.  [Bb dominant] [Eb dominant]
+bar   4 RH: C4/hal.+Ab4/hal. r/qua  [Ab major]
+bar   5 RH: r/eig Eb4/eig F4/eig Eb4/eig G4/eig F4/qua.  [Ab major]
+bar   6 RH: r/eig Eb4/eig F4/eig Eb4/eig G4/eig F4/qua.  [Eb dominant]
+bar   7 RH: r/eig Ab4/eig Bb4/eig Ab4/eig C5/eig Bb4/qua.  [Ab dominant]
+bar   8 RH: Ab4/qua Gb4/qua F4/qua Eb4/qua
+bar   9 RH: r/eig Ab4/eig Bb4/eig Ab4/eig Bb4/eig Ab4/qua.  [Db major]
+bar  10 RH: r/eig Ab4/eig Bb4/eig Ab4/eig Cb5/eig Bb4/qua.  [Db minor]
+bar  11 RH: Ab4/who  [Ab major]
+bar  12 RH: Ab4/hal. r/qua  [A diminished]
+bar  13 RH: r/eig Db5/eig Db5/eig Db5/eig C5/eig Bb4/qua.  [Eb dominant]
+bar  14 RH: Db5/qua Db5/qua C5/qua Bb4/qua
+bar  15 RH: Ab4/qua C5/qua Bb4/eig Ab4/qua.  [Bb dominant]
+bar  16 RH: Eb5/hal. Eb5/qua  [Eb dominant]
+bar  17 RH: Eb5/eig C5/eig C5/eig C5/eig C5/eig Bb4/qua.  [Ab major] [Ab dominant]
+bar  18 RH: r/eig Ab4/eig Ab4/eig Ab4/eig Ab4/eig F4/qua.  [Db major]
+bar  19 RH: Eb4/who  [Ab major]
+bar  20 RH: Eb4/hal. r/qua  [Ab dominant]
+bar  21 RH: r/eig Ab4/eig Bb4/eig Ab4/eig Cb5/eig Bb4/qua.  [Db dominant]
+bar  22 RH: r/eig Ab4/eig Bb4/eig Ab4/eig B4/eig Bb4/qua.  [E dominant]
+bar  23 RH: Ab4/who  [Ab major]
+bar  24 RH: Ab4/hal. r/qua  [A diminished]
+bar  25 RH: G4/eig Bb4/eig G4/eig F4/eig Eb4/qua F4/qua  [Eb dominant]
+bar  26 RH: G4/eig Bb4/qua Bb4/eig Bb4/qua B4/qua
+bar  27 RH: C5/eig Eb5/eig C5/eig Bb4/eig Ab4/qua Bb4/qua  [Ab major]
+bar  28 RH: C5/eig Eb5/qua Eb5/eig Eb5/qua r/qua  [A diminished]
+bar  29 RH: G4/eig Bb4/qua Bb4/eig Bb4/hal  [Eb dominant]
+bar  30 RH: Ab4/eig Bb4/qua Bb4/eig Bb4/hal  [Bb dominant]
+bar  31 RH: Eb5/eig Eb4/eig F4/eig F#4/eig G4/eig Bb4/eig G4/eig F4/eig  [Eb dominant] [Bb dominant]
+bar  32 RH: Eb4/qua r/qua r/qua Eb5/qua  [Eb dominant]
+bar  33 RH: Eb5/eig C5/eig C5/eig C5/eig C5/eig Bb4/qua.  [Ab major] [Ab dominant]
+bar  34 RH: r/eig Ab4/eig Ab4/eig Ab4/eig Ab4/eig F4/qua.  [Db major]
+bar  35 RH: Eb4/who  [Ab major]
+bar  36 RH: Eb4/hal. r/qua  [Ab dominant]
+bar  37 RH: r/eig Ab4/eig Bb4/eig Ab4/eig Bb4/eig Ab4/qua.  [Db major]
+bar  38 RH: r/eig Ab4/eig Bb4/eig Ab4/eig Bb4/eig B4/qua.
+bar  39 RH: C5/who  [C dominant]
+bar  40 RH: C5/qua r/qua r/qua Ab4/eig Bb4/eig
+bar  41 RH: C5/hal. C5/qua  [Ab major]
+bar  42 RH: Bb4/hal Bb4/hal  [C dominant]
+bar  43 RH: Ab4/qua Ab4/qua Ab4/eig Bb4/qua.  [F minor]
+bar  44 RH: B4/hal. r/qua  [E dominant]
+bar  45 RH: r/eig Eb5/eig Eb5/eig Eb5/eig Eb5/eig C5/qua.  [Ab major]
+bar  46 RH: r/eig Eb5/eig Eb5/eig Eb5/eig Eb5/eig Bb4/qua.  [Eb dominant]
+bar  47 RH: B4/eig C5/eig B4/eig C5/eig Eb5/eig C5/qua.  [Bb dominant] [Eb dominant]
+bar  48 RH: Ab4/hal. r/qua  [Ab major]

@@ -1,0 +1,65 @@
+song: song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx
+title: Beethoven Symphony 7 2nd Movement (Allegretto) Simple Piano arrangement
+composer: Ludwig van Beethoven
+rungs: classical.4.shelf
+shipped file: scores/pdmx/QmSuJuQ8iPEfz8rTTr1gm5Ti9YLRwP4oCtELEE4msNm1HE.mxl
+catalog keySig/timeSig/tempo: A minor / None / 80.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 150, measures 48, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 2 4
+
+dump_score.py:
+song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx | Beethoven Symphony 7 2nd Movement (Allegretto) Simple Piano arrangement | level 5.58 (estimated)
+notation: {"bars": 48, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["2/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['0']  modes: []  times: ['2/4']
+bar   1 RH: C4/qua+E4/qua E4/eig E4/eig  LH: A2/eig E3/eig A3/qua
+bar   2 RH: B3/qua+E4/qua E4/qua  LH: G#2/eig E3/eig G#3/eig E3/eig
+bar   3 RH: E4/qua E4/eig E4/eig  LH: E2/eig B2/eig E3/qua
+bar   4 RH: C4/qua+E4/qua E4/qua  LH: A2/eig E3/eig A3/eig E3/eig
+bar   5 RH: C4/qua+E4/qua E4/eig F#4/eig  LH: A2/eig E3/eig A3/qua
+bar   6 RH: C4/qua+E4/qua+G4/qua G4/qua  LH: G2/eig E3/qua G3/eig
+bar   7 RH: B3/qua+G4/qua G4/eig G4/eig  LH: G2/eig D3/eig G3/qua
+bar   8 RH: C4/hal+E4/hal+G4/hal  LH: C2/eig G2/eig E3/qua
+bar   9 RH: C4/qua+E4/qua+G4/qua C4/eig+E4/eig+G4/eig A4/eig  LH: C2/eig G2/eig E3/qua
+bar  10 RH: D#4/qua+F#4/qua+B4/qua B4/qua  LH: B2/eig F#3/qua B3/eig
+bar  11 RH: D4/qua+F#4/qua D4/eig+F#4/eig G#4/eig  LH: B2/eig F#3/eig B3/qua
+bar  12 RH: C#4/qua+A4/qua C4/qua+A4/qua  LH: A2/eig E3/qua.
+bar  13 RH: C4/qua+E4/qua E4/eig E4/eig  LH: A2/eig E3/eig A3/qua
+bar  14 RH: E4/qua E4/qua  LH: G#2/eig E3/eig A2/eig E3/eig
+bar  15 RH:v1: E4/hal | v2: r/qua F#4/eig G#4/eig  LH: E2/hal
+bar  16 RH: C4/hal+A4/hal  LH: A2/eig E3/eig A3/eig E3/eig
+bar  17 RH: C4/hal  LH: A2/eig E3/eig A3/eig E3/eig
+bar  18 RH: B3/hal  LH: G#2/eig E3/eig G#3/eig E3/eig
+bar  19 RH: B3/16t C4/16t D4/qua C4/16t B3/16t  LH: G#2/qua. E3/eig
+bar  20 RH: B3/eig C4/eig C4/qua  LH: A2/eig E3/qua A3/eig
+bar  21 RH: C4/qua. C4/16t D4/16t  LH: A2/eig E3/eig A3/qua
+bar  22 RH: D#4/eig E4/eig E4/eig E4/eig  LH: G2/eig E3/eig G3/qua
+bar  23 RH: D4/16t E4/16t F4/qua E4/16t D4/16t  LH: G2/eig D3/eig G3/qua
+bar  24 RH: G3/hal+E4/hal  LH: E2/eig G2/eig E3/eig G2/eig
+bar  25 RH: C4/qua+E4/qua+G4/qua C4/eig+E4/eig+G4/eig A4/eig  LH: C2/eig G2/eig E3/qua
+bar  26 RH: D#4/qua+F#4/qua+B4/qua B4/qua  LH: B2/eig F#3/qua B3/eig
+bar  27 RH: D4/qua+F#4/qua D4/eig+F#4/eig G#4/eig  LH: B2/eig F#3/eig B3/qua
+bar  28 RH: C#4/qua+A4/qua C4/qua+A4/qua  LH: A2/eig E3/qua.
+bar  29 RH: C4/qua+E4/qua E4/eig E4/eig  LH: A2/eig E3/eig A3/qua
+bar  30 RH: E4/qua E4/qua  LH: G#2/eig E3/eig A2/eig E3/eig
+bar  31 RH:v1: E4/hal | v2: r/qua F#4/eig G#4/eig  LH: E2/hal
+bar  32 RH: C4/hal+A4/hal  LH: A2/eig E3/eig A3/eig E3/eig
+bar  33 RH: C4/hal  LH: A2/eig E3/eig A3/eig E3/eig
+bar  34 RH: B3/hal  LH: G#2/eig E3/eig G#3/eig E3/eig
+bar  35 RH: B3/16t C4/16t D4/qua C4/16t B3/16t  LH: G#2/qua. E3/eig
+bar  36 RH: B3/eig C4/eig C4/qua  LH: A2/eig E3/qua A3/eig
+bar  37 RH: C4/qua. C4/16t D4/16t  LH: A2/eig E3/eig A3/qua
+bar  38 RH: D#4/eig E4/eig E4/eig E4/eig  LH: G2/eig E3/eig G3/qua
+bar  39 RH: D4/16t E4/16t F4/qua E4/16t D4/16t  LH: G2/qua D3/qua
+bar  40 RH: D4/eig E4/eig E4/qua  LH: G2/eig E3/qua.
+bar  41 RH: C4/qua+E4/qua+G4/qua C4/eig+E4/eig+G4/eig A4/eig  LH: C2/eig G2/eig E3/qua
+bar  42 RH: D#4/qua+F#4/qua+B4/qua B4/qua  LH: B2/eig F#3/qua F#3/eig
+bar  43 RH: D4/qua+F#4/qua D4/eig+F#4/eig G#4/eig  LH: B2/eig F#3/qua.
+bar  44 RH: C#4/qua+A4/qua C4/qua+A4/qua  LH: A2/qua A2/qua
+bar  45 RH: C4/qua+E4/qua E4/eig E4/eig  LH: A2/eig E3/eig A3/qua
+bar  46 RH: E4/qua E4/qua  LH: G#2/eig E3/eig A2/qua
+bar  47 RH:v1: E4/hal | v2: r/qua F#4/eig G#4/eig  LH: E2/hal
+bar  48 RH: C4/hal+E4/hal+A4/hal  LH: A2/hal+E3/hal+A3/hal

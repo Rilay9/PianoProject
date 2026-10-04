@@ -1,0 +1,29 @@
+song: song.pop.misc-christmas-good-king-wenceslas.pdmx
+title: Good King Wenceslas
+composer: Traditional
+rungs: holiday
+shipped file: scores/pdmx/QmQYwinFAWVepBRSnLxrtRxn8hGYCpjw7yeDzeArZDrkvB.mxl
+catalog keySig/timeSig/tempo: G major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 30, grace notes 0, voices>1 0, measures 13, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 1 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.misc-christmas-good-king-wenceslas.pdmx | Good King Wenceslas | level 2.05 (estimated)
+notation: {"bars": 13, "staves": 1, "keys": [{"fifths": 1, "mode": "major"}], "times": ["4/4"], "chordCount": 30, "chords": ["B7", "C", "D", "D7", "Em", "G"], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: ['major']  times: ['4/4']
+bar   1 RH: G4/qua G4/qua G4/qua A4/qua  [G major] [E minor] [D dominant]
+bar   2 RH: G4/qua G4/qua D4/hal  [G major] [D dominant]
+bar   3 RH: E4/qua D4/qua E4/qua F#4/qua  [C major] [G major] [C major] [D dominant]
+bar   4 RH: G4/hal G4/hal  [G major]
+bar   5 RH: D5/qua C5/qua B4/qua A4/qua  [G major] [D dominant]
+bar   6 RH: B4/qua A4/qua G4/hal  [G major] [D dominant] [E minor]
+bar   7 RH: E4/qua D4/qua E4/qua F#4/qua  [C major] [G major] [C major] [D dominant]
+bar   8 RH: G4/hal G4/hal  [G major]
+bar   9 RH: D4/qua D4/qua E4/qua F#4/qua  [C major] [B dominant]
+bar  10 RH: G4/qua G4/qua A4/hal  [E minor] [D dominant]
+bar  11 RH: D5/qua C5/qua B4/qua A4/qua  [G major] [C major] [D major]
+bar  12 RH: G4/hal C5/hal  [E minor] [C major]
+bar  13 RH: G4/who  [G major]

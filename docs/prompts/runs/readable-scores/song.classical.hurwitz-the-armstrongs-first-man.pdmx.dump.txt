@@ -1,0 +1,66 @@
+song: song.classical.hurwitz-the-armstrongs-first-man.pdmx
+title: The Armstrongs - First Man
+composer: Justin Hurwitz
+rungs: classical.4.shelf
+shipped file: scores/pdmx/QmW4FuFoAskRVJJ7SQXfWmXJBGHQMrWzJ5S9QyffnGHzxP.mxl
+catalog keySig/timeSig/tempo: G minor / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 97, measures 49, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -2
+  bar 1: time 6 8
+
+dump_score.py:
+song.classical.hurwitz-the-armstrongs-first-man.pdmx | The Armstrongs - First Man | level 5.47 (estimated)
+notation: {"bars": 49, "staves": 2, "keys": [{"fifths": -2, "mode": null}], "times": ["6/8"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['-2']  modes: []  times: ['6/8']
+bar   1 RH: G4/eig Bb3/eig G4/eig G4/eig Bb3/eig D4/eig  LH: G2/qua. D3/qua.
+bar   2 RH: A4/eig Bb3/eig D4/eig G4/eig Bb3/eig G4/eig  LH: G3/qua. D3/qua.
+bar   3 RH: G4/eig Bb3/eig G4/eig G4/eig Bb3/eig D4/eig  LH: G2/qua. D3/qua.
+bar   4 RH: A4/eig Bb3/eig D4/eig G4/eig Bb3/eig G4/eig  LH: G3/qua. D3/qua.
+bar   5 RH: G4/eig C4/eig G4/eig G4/eig C4/eig Eb4/eig  LH: C3/qua. G3/qua.
+bar   6 RH: D5/eig Eb4/eig G4/eig C5/eig Eb4/eig Bb4/eig  LH: C4/qua. G3/qua.
+bar   7 RH: A4/eig C4/eig A4/eig A4/eig C4/eig F4/eig  LH: F2/qua. C3/qua.
+bar   8 RH: Bb4/eig C4/eig F4/eig A4/eig C4/eig G4/eig  LH: F3/qua. C3/qua.
+bar   9 RH: G4/eig Bb3/eig G4/eig G4/eig Bb3/eig D4/eig  LH: G2/qua. D3/qua.
+bar  10 RH: A4/eig Bb3/eig D4/eig G4/eig Bb3/eig G4/eig  LH: G3/qua. D3/qua.
+bar  11 RH: G4/eig Bb3/eig G4/eig G4/eig Bb3/eig D4/eig  LH: G2/qua. D3/qua.
+bar  12 RH: A4/eig Bb3/eig D4/eig G4/eig Bb3/eig G4/eig  LH: G3/qua. D3/qua.
+bar  13 RH: G4/eig C4/eig G4/eig G4/eig C4/eig Eb4/eig  LH: C3/qua. G3/qua.
+bar  14 RH: D5/eig Eb4/eig G4/eig C5/eig Eb4/eig Bb4/eig  LH: C4/qua. G3/qua.
+bar  15 RH: A4/eig C4/eig A4/eig A4/eig C4/eig F4/eig  LH: F2/qua. C3/qua.
+bar  16 RH: Bb4/eig C4/eig F4/eig A4/eig C4/eig Bb4/eig  LH: F3/qua. C3/qua.
+bar  17 RH: Bb4/eig Eb4/eig Bb4/eig Bb4/eig Eb4/eig G4/eig  LH: Eb3/qua. Bb3/qua.
+bar  18 RH: F5/eig G4/eig Bb4/eig Eb5/eig G4/eig D5/eig  LH: Eb4/qua. Bb3/qua.
+bar  19 RH: A4/eig D4/eig A4/eig A4/eig D4/eig F4/eig  LH: D3/qua. A3/qua.
+bar  20 RH: F5/eig F4/eig A4/eig Eb5/eig F4/eig D5/eig  LH: D4/qua. A3/qua.
+bar  21 RH: Bb4/eig Eb4/eig Bb4/eig Bb4/eig Eb4/eig G4/eig  LH: Eb3/qua. Bb3/qua.
+bar  22 RH: F5/eig G4/eig Bb4/eig Eb5/eig G4/eig D5/eig  LH: Eb4/qua. Bb3/qua.
+bar  23 RH: A4/eig D4/eig A4/eig A4/eig D4/eig F4/eig  LH: D3/qua. A3/qua.
+bar  24 RH: F5/eig F4/eig A4/eig Eb5/eig F4/eig D5/eig  LH: D4/qua. A3/qua.
+bar  25 RH: G5/eig Bb4/eig G5/eig G5/eig Bb4/eig Eb5/eig  LH: Eb3/qua. Bb3/qua.
+bar  26 RH: Bb5/eig Bb4/eig Eb5/eig A5/eig Bb4/eig G5/eig  LH: Eb4/qua. Bb3/qua.
+bar  27 RH: G5/eig Bb4/eig G5/eig G5/eig Bb4/eig D5/eig  LH: G2/qua. D3/qua.
+bar  28 RH: Bb5/eig Bb4/eig D5/eig A5/eig Bb4/eig G5/eig  LH: G3/qua. D3/qua.
+bar  29 RH: G5/eig Bb4/eig G5/eig G5/eig Bb4/eig Eb5/eig  LH: Eb3/qua. Bb3/qua.
+bar  30 RH: Bb5/eig Bb4/eig Eb5/eig A5/eig Bb4/eig G5/eig  LH: Eb4/qua. Bb3/qua.
+bar  31 RH: G5/eig Bb4/eig G5/eig G5/eig Bb4/eig D5/eig  LH: G3/qua. D4/qua.
+bar  32 RH: Bb5/eig A5/eig G5/eig F5/eig Eb5/eig D5/eig  LH: G4/qua. D4/qua.
+bar  33 RH: A4/eig D4/eig A4/eig A4/eig D4/eig F4/eig  LH: D3/qua. A3/qua.
+bar  34 RH: F5/eig F4/eig A4/eig Eb5/eig F4/eig D5/eig  LH: D4/qua. A3/qua.
+bar  35 RH: Bb4/eig Eb4/eig Bb4/eig Bb4/eig Eb4/eig G4/eig  LH: Eb3/qua. Bb3/qua.
+bar  36 RH: F5/eig G4/eig Bb4/eig Eb5/eig G4/eig D5/eig  LH: Eb4/qua. Bb3/qua.
+bar  37 RH: A4/eig D4/eig A4/eig A4/eig D4/eig F4/eig  LH: D3/qua. A3/qua.
+bar  38 RH: F5/eig F4/eig A4/eig Eb5/eig F4/eig D5/eig  LH: D4/qua. A3/qua.
+bar  39 RH: Bb4/eig Eb4/eig Bb4/eig Bb4/eig Eb4/eig G4/eig  LH: Eb2/qua. Bb2/qua.
+bar  40 RH: Bb4/eig C4/eig F4/eig A4/eig C4/eig G4/eig  LH: F2/qua. C3/qua.
+bar  41 RH: G4/eig Bb3/eig G4/eig G4/eig Bb3/eig D4/eig  LH: G2/qua. D3/qua.
+bar  42 RH: A4/eig Bb3/eig D4/eig G4/eig Bb3/eig G4/eig  LH: G3/qua. D3/qua.
+bar  43 RH: G4/eig Bb3/eig G4/eig G4/eig Bb3/eig D4/eig  LH: G2/qua. D3/qua.
+bar  44 RH: A4/eig Bb3/eig D4/eig G4/eig Bb3/eig G4/eig  LH: G3/qua. D3/qua.
+bar  45 RH: G4/eig Bb3/eig G4/eig G4/eig Bb3/eig D4/eig  LH: G2/qua. D3/qua.
+bar  46 RH: A4/eig Bb3/eig D4/eig G4/eig Bb3/eig G4/eig  LH: G3/qua. D3/qua.
+bar  47 RH: G4/eig Bb3/eig G4/eig G4/eig Bb3/eig D4/eig  LH: G2/qua. D3/qua.
+bar  48 RH: A4/eig Bb3/eig D4/eig G4/eig D4/eig Bb3/eig  LH: G3/qua. D3/qua.
+bar  49 RH: G3/hal.  LH: G2/hal.

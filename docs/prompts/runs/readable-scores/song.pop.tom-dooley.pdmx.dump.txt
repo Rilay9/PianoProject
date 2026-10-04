@@ -1,0 +1,25 @@
+song: song.pop.tom-dooley.pdmx
+title: Tom Dooley
+composer: American Folksong
+rungs: chords-pop.3
+shipped file: scores/pdmx/QmZbJbz47SVt6G77saSfKKyKVwScuVRuh8QJyzU67X93US.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 37, measures 8, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.tom-dooley.pdmx | Tom Dooley | level 3.08 (estimated)
+notation: {"bars": 8, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: G4/eig G4/qua G4/eig A4/qua C5/qua  LH: C3/who+E3/who+G3/who
+bar   2 RH: r/qua E5/qua E5/hal  LH: r/qua C3/qua+E3/qua+G3/qua C3/hal+E3/hal+G3/hal
+bar   3 RH: G4/eig G4/qua G4/eig A4/qua C5/qua  LH: C3/who+E3/who+G3/who
+bar   4 RH: D5/who  LH: r/qua B2/qua+F3/qua+G3/qua B2/hal+F3/hal+G3/hal
+bar   5 RH: G4/eig G4/qua G4/eig A4/qua C5/qua  LH: B2/who+F3/who+G3/who
+bar   6 RH: r/qua D5/qua D5/hal  LH: r/qua B2/qua+F3/qua+G3/qua B2/hal+F3/hal+G3/hal
+bar   7 RH: D5/eig D5/qua D5/eig C5/qua A4/qua  LH: B2/who+F3/who+G3/who
+bar   8 RH: C5/hal. r/qua  LH: C3/hal.+E3/hal.+G3/hal. r/qua

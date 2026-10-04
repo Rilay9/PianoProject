@@ -1,0 +1,30 @@
+song: song.classical.rock-of-ages-cleft-for-me.pdmx
+title: Rock of Ages
+composer: Thomas Hastings
+rungs: hymns, hymns.4
+shipped file: scores/pdmx/QmW8wywozM6GmjiBePAtWdyzPkA1bnX5sMg22TavXxs54q.mxl
+catalog keySig/timeSig/tempo: Bb major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 126, measures 13, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key -2
+  bar 0: time 6 4
+
+dump_score.py:
+song.classical.rock-of-ages-cleft-for-me.pdmx | Rock of Ages | level 4.93 (estimated)
+notation: {"bars": 13, "staves": 2, "keys": [{"fifths": -2, "mode": null}], "times": ["6/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 10}
+key signatures (fifths): ['-2']  modes: []  times: ['6/4']
+bar   0 RH:v1: F4/qua. G4/eig | v2: D4/qua. Eb4/eig  LH:v5: Bb3/qua. Bb3/eig | v6: Bb2/qua. Bb2/eig
+bar   1 RH:v1: F4/hal D4/hal Bb4/qua. G4/eig | v2: D4/hal Bb3/hal F4/qua. Eb4/eig  LH:v5: Bb3/hal F3/hal Bb3/qua. Bb3/eig | v6: Bb2/hal Bb2/hal D3/qua. Eb3/eig
+bar   2 RH:v1: F4/who Bb4/qua C5/qua | v2: D4/who F4/qua F4/qua  LH:v5: Bb3/who Bb3/qua A3/qua | v6: Bb2/who D3/qua F3/qua
+bar   3 RH:v1: D5/hal. C5/qua Bb4/qua A4/qua | v2: F4/hal. G4/qua F4/qua Eb4/qua  LH:v5: Bb3/hal. Eb4/qua D4/qua C4/qua | v6: Bb3/hal. Eb3/qua F3/qua F3/qua
+bar   4 RH:v1: Bb4/who A4/qua. Bb4/eig | v2: D4/who C4/qua. D4/eig  LH:v5: Bb3/who F3/qua. F3/eig | v6: Bb2/who F3/qua. F3/eig
+bar   5 RH:v1: C5/hal. C5/qua A4/qua F4/qua | v2: Eb4/hal. Eb4/qua Eb4/qua Eb4/qua  LH:v5: F3/hal. A3/qua C4/qua A3/qua | v6: F3/hal. F3/qua F3/qua F3/qua
+bar   6 RH:v1: Bb4/who A4/qua. Bb4/eig | v2: D4/who C4/qua. D4/eig  LH:v5: Bb3/who F3/qua. Bb3/eig | v6: Bb2/who F3/qua. F3/eig
+bar   7 RH:v1: C5/hal. C5/qua A4/qua F4/qua | v2: Eb4/hal. Eb4/qua Eb4/qua Eb4/qua  LH:v5: A3/hal. A3/qua C4/qua A3/qua | v6: F3/hal. F3/qua F3/qua F3/qua
+bar   8 RH:v1: Bb4/who F4/qua. G4/eig | v2: D4/who D4/qua. Eb4/eig  LH:v5: Bb3/who Bb3/qua. Bb3/eig | v6: Bb2/who Bb2/qua. Bb2/eig
+bar   9 RH:v1: F4/hal D4/hal Bb4/qua. G4/eig | v2: D4/hal Bb3/hal F4/qua. Eb4/eig  LH:v5: Bb3/hal F3/hal Bb3/qua. Bb3/eig | v6: Bb2/hal Bb2/hal D3/qua. Eb3/eig
+bar  10 RH:v1: F4/who Bb4/qua C5/qua | v2: D4/who D4/qua Eb4/qua  LH:v5: Bb3/who Bb3/qua A3/qua | v6: Bb2/who G3/qua F3/qua
+bar  11 RH:v1: D5/hal. C5/qua Bb4/qua A4/qua | v2: F4/hal. G4/qua F4/qua Eb4/qua  LH:v5: Bb3/hal. Eb4/qua D4/qua C4/qua | v6: Bb3/hal. Eb3/qua F3/qua F3/qua
+bar 11X1 RH:v1: Bb4/who | v2: D4/who  LH:v5: Bb3/who | v6: Bb2/who

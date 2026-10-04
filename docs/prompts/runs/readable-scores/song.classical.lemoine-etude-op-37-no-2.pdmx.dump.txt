@@ -1,0 +1,34 @@
+song: song.classical.lemoine-etude-op-37-no-2.pdmx
+title: Étude, Op. 37 No. 2
+composer: Henry Lemoine
+rungs: technique.4
+shipped file: scores/pdmx/QmVw5uLZf9zfzqzkBWT8xKuBX9vXZ5SUCL4CCdRSnUJjmr.mxl
+catalog keySig/timeSig/tempo: C major / None / 180.0
+raw-XML counts: ties 24, tuplets 0, fingerings 74, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 121, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 2 2
+
+dump_score.py:
+song.classical.lemoine-etude-op-37-no-2.pdmx | Étude, Op. 37 No. 2 | level 4.75 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["2/2"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['2/2']
+text on the score: ['Allegro']
+bar   1 RH: G5/hal+C6/hal+E6/hal r/hal  LH: C3/eig D3/eig E3/eig F3/eig G3/eig A3/eig B3/eig C4/eig
+bar   2 RH: E5/hal+G5/hal+C6/hal r/hal  LH: C3/eig D3/eig E3/eig F3/eig G3/eig A3/eig B3/eig C4/eig
+bar   3 RH: F5/who+G5/who+B5/who  LH: D3/eig E3/eig F3/eig G3/eig A3/eig B3/eig C4/eig D4/eig
+bar   4 RH: F5/who+G5/who+B5/who  LH: D3/eig E3/eig F3/eig G3/eig A3/eig B3/eig C4/eig D4/eig
+bar   5 RH: E5/hal+G5/hal+C6/hal r/hal  LH: E3/eig F3/eig G3/eig A3/eig B3/eig C4/eig D4/eig E4/eig
+bar   6 RH: G5/hal+C6/hal+E6/hal r/hal  LH: C3/eig D3/eig E3/eig F3/eig G3/eig A3/eig B3/eig C4/eig
+bar   7 RH: G5/who+B5/who+D6/who  LH: r/eig G2/eig A2/eig B2/eig C3/eig D3/eig E3/eig F3/eig
+bar   8 RH: G5/who+B5/who+D6/who  LH: G3/eig A3/eig B3/eig C4/eig D4/eig E4/eig F4/eig G4/eig
+bar   9 RH: G5/hal+C6/hal+E6/hal r/hal  LH: C3/eig D3/eig E3/eig F3/eig G3/eig A3/eig B3/eig C4/eig
+bar  10 RH: E5/hal+G5/hal+C6/hal r/hal  LH: E3/eig F3/eig G3/eig A3/eig B3/eig C4/eig D4/eig E4/eig
+bar  11 RH: C5/who+F5/who+A5/who  LH: F3/eig G3/eig A3/eig B3/eig C4/eig D4/eig E4/eig F4/eig
+bar  12 RH: C5/hal+F5/hal+A5/hal C5/hal+F5/hal+A5/hal  LH: F3/eig G3/eig A3/eig B3/eig C4/eig D4/eig E4/eig F4/eig
+bar  13 RH: C5/hal+E5/hal+G5/hal r/hal  LH: G3/eig A3/eig B3/eig C4/eig D4/eig E4/eig F4/eig G4/eig
+bar  14 RH: F5/hal+G5/hal+B5/hal r/hal  LH: G3/eig A3/eig B3/eig C4/eig D4/eig E4/eig F4/eig G4/eig
+bar  15 RH: E5/who+G5/who+C6/who  LH: r/eig C3/eig D3/eig E3/eig F3/eig G3/eig A3/eig B3/eig
+bar  16 RH: E5/who+G5/who+C6/who  LH: C4/who

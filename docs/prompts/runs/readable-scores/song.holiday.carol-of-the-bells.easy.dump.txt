@@ -1,0 +1,58 @@
+song: song.holiday.carol-of-the-bells.easy
+title: Carol of the Bells (easy)
+composer: Mykola Leontovych
+rungs: 4.6, classical.4.shelf, holiday.5
+shipped file: scores/imported/song.holiday.carol-of-the-bells.easy.mxl
+catalog keySig/timeSig/tempo: A minor / 3/4 / 96.0
+raw-XML counts: ties 14, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 40, measures 40, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 3 4
+  bar 24: clef F 4
+
+dump_score.py:
+song.holiday.carol-of-the-bells.easy | Carol of the Bells (easy) | level 5.1 (judged)
+notation: {"bars": 40, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+bar   1 RH: C5/qua B4/eig C5/eig A4/qua  LH: r/?
+bar   2 RH: C5/qua B4/eig C5/eig A4/qua  LH: r/?
+bar   3 RH: C5/qua B4/eig C5/eig A4/qua  LH: r/?
+bar   4 RH: C5/qua B4/eig C5/eig A4/qua  LH: r/?
+bar   5 RH: C5/qua B4/eig C5/eig A4/qua  LH: A4/hal.
+bar   6 RH: C5/qua B4/eig C5/eig A4/qua  LH: G4/hal.
+bar   7 RH: C5/qua B4/eig C5/eig A4/qua  LH: F4/hal.
+bar   8 RH: C5/qua B4/eig C5/eig A4/qua  LH: E4/hal.
+bar   9 RH: C5/qua B4/eig C5/eig A4/qua  LH: F4/hal.
+bar  10 RH: C5/qua B4/eig C5/eig A4/qua  LH: E4/hal.
+bar  11 RH: C5/qua B4/eig C5/eig A4/qua  LH: D4/hal.
+bar  12 RH: C5/qua B4/eig C5/eig A4/qua  LH: A3/hal.
+bar  13 RH: C5/qua B4/eig C5/eig A4/qua  LH: D4/hal.
+bar  14 RH: C5/qua B4/eig C5/eig A4/qua  LH: E4/hal.
+bar  15 RH: C5/qua B4/eig C5/eig A4/qua  LH: F4/hal.
+bar  16 RH: C5/qua B4/eig C5/eig A4/qua  LH: E4/hal.
+bar  17 RH: E5/qua D5/eig E5/eig C5/qua  LH: E4/hal.
+bar  18 RH: E5/qua D5/eig E5/eig C5/qua  LH: F#4/hal.
+bar  19 RH: E5/qua D5/eig E5/eig C5/qua  LH: G#4/hal.
+bar  20 RH: E5/qua D5/eig E5/eig C5/qua  LH: G#4/hal.
+bar  21 RH: A5/qua A5/eig A5/eig G5/eig F5/eig  LH: A4/hal.
+bar  22 RH: E5/qua E5/eig E5/eig D5/eig C5/eig  LH: C4/hal.
+bar  23 RH: D5/qua D5/eig D5/eig E5/eig D5/eig  LH: D4/hal.
+bar  24 RH: C5/qua B4/eig C5/eig A4/qua  LH: A3/hal.
+bar  25 RH: E4/eig F#4/eig G#4/eig A4/eig B4/eig C5/eig  LH: E3/hal.
+bar  26 RH: D5/eig E5/eig D5/qua C5/qua  LH: E3/hal.
+bar  27 RH: E4/eig F#4/eig G#4/eig A4/eig B4/eig C5/eig  LH: E3/hal.
+bar  28 RH: D5/eig E5/eig D5/qua C5/qua  LH: E3/hal.
+bar  29 RH: C5/qua B4/eig C5/eig A4/qua  LH: A3/hal.
+bar  30 RH: C5/qua B4/eig C5/eig A4/qua  LH: G3/hal.
+bar  31 RH: C5/qua B4/eig C5/eig A4/qua  LH: F3/hal.
+bar  32 RH: C5/qua B4/eig C5/eig A4/qua  LH: E3/hal.
+bar  33 RH: C5/qua B4/eig C5/eig A4/qua  LH: A2/hal.
+bar  34 RH: C5/qua B4/eig C5/eig A4/qua  LH: A2/hal.
+bar  35 RH: C5/qua B4/eig C5/eig A4/qua  LH: A2/hal.
+bar  36 RH: C5/qua B4/eig C5/eig A4/qua  LH: A2/hal.
+bar  37 RH: A4/hal.  LH: A2/hal.
+bar  38 RH: C5/hal.+E5/hal.  LH: r/?
+bar  39 RH: B4/qua+D5/qua C5/hal+E5/hal  LH: r/?
+bar  40 RH: A4/hal.  LH: A2/hal.

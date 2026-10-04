@@ -1,0 +1,45 @@
+song: song.classical.st-louis-blues.pdmx
+title: St. Louis Blues (1914)
+composer: W. C. Handy
+rungs: blues.3, blues.4
+shipped file: scores/pdmx/QmYutJi8H9KmexPTGDuRXTzQNkqnu1Jk8ERW1gZiMs33ZG.mxl
+catalog keySig/timeSig/tempo: 4 sharps / None / 96.0
+raw-XML counts: ties 4, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 23, grace notes 0, voices>1 0, measures 28, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 4
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.st-louis-blues.pdmx | St. Louis Blues (1914) | level 3.03 (estimated)
+notation: {"bars": 28, "staves": 1, "keys": [{"fifths": 4, "mode": null}], "times": ["4/4"], "chordCount": 23, "chords": ["A7", "B7", "E", "E7", "Emi7", "F#mi"], "swungMark": true, "finalBass": 11}
+key signatures (fifths): ['4']  modes: []  times: ['4/4']
+text on the score: ['A', 'loose Swing Blues', 'B', 'Gritty New orleans dirge, heavy triplet feel', 'D.C. al Fine']
+bar   1 RH: G#4/eig B4/eig G#4/eig E4/qua D#4/eig C#4/eig B3/eig  [E major]
+bar   2 RH: A3/qua C#4/qua G4/qua G4/qua  [A dominant]
+bar   3 RH: E4/hal r/hal  [E major] [B dominant]
+bar   4 RH: r/?  [E major]
+bar   5 RH: A3/eig A3/eig C#4/eig C#4/eig E4/eig E4/eig G4/eig G4/eig  [A dominant]
+bar   6 RH: A4/qua A4/qua G4/eig A4/eig G4/eig E4/eig
+bar   7 RH: E4/hal E4/hal  [E major] [B dominant]
+bar   8 RH: r/hal. r/eig A4/eig  [E major]
+bar   9 RH: B4/qua. G#4/eig F#4/eig B3/qua.  [B dominant]
+bar  10 RH: r/eig B3/eig D#4/eig F#4/eig B4/eig G#4/eig F#4/qua
+bar  11 RH: E4/qua. E4/eig F#4/qua B3/qua  [E major] [E major]
+bar  12 RH: B4/who  [B dominant]
+bar  13 RH: B4/qua. G4/eig B4/eig B4/eig r/qua  [E minor-seventh]
+bar  14 RH: r/eig B4/eig A#4/eig B4/eig C5/eig B4/eig G4/qua
+bar  15 RH: F#4/who  [B dominant]
+bar  16 RH: r/?
+bar  17 RH: A4/qua. G4/eig A4/eig A4/eig r/qua
+bar  18 RH: r/eig G4/eig A4/eig A#4/eig B4/eig A4/eig G4/qua
+bar  19 RH: E4/hal r/hal  [E minor-seventh] [F# minor]
+bar  20 RH: r/?  [B dominant]
+bar  21 RH: B4/qua. G4/eig B4/eig B4/eig r/qua  [E minor-seventh]
+bar  22 RH: r/eig B4/eig A#4/eig B4/eig C5/eig B4/eig G4/qua
+bar  23 RH: F#4/who  [B dominant]
+bar  24 RH: r/?
+bar  25 RH: A4/qua. G4/eig A4/eig A4/eig r/qua
+bar  26 RH: r/eig G4/eig A4/eig A#4/eig B4/eig A4/eig G4/qua
+bar  27 RH: E4/qua. E4/eig F#4/qua B3/qua  [E dominant] [E major]
+bar  28 RH: B4/who  [B dominant]

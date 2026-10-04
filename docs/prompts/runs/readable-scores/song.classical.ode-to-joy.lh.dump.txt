@@ -1,0 +1,24 @@
+song: song.classical.ode-to-joy.lh
+title: Ode to Joy (left hand)
+composer: Ludwig van Beethoven
+rungs: 1.3
+shipped file: scores/authored/song.classical.ode-to-joy.lh.mxl
+catalog keySig/timeSig/tempo: C major / 4/4 / 84.0
+raw-XML counts: ties 0, tuplets 0, fingerings 21, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 8, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef F 4
+  bar 1: key 0 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.ode-to-joy.lh | Ode to Joy (left hand) | level 1.3 (judged)
+notation: {"bars": 8, "staves": 1, "keys": [{"fifths": 0, "mode": "major"}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: ['major']  times: ['4/4']
+bar   1 RH: E3/qua E3/qua F3/qua G3/qua
+bar   2 RH: G3/qua F3/qua E3/qua D3/qua
+bar   3 RH: C3/qua C3/qua D3/qua E3/qua
+bar   4 RH: E3/hal D3/hal
+bar   5 RH: E3/qua E3/qua F3/qua G3/qua
+bar   6 RH: G3/qua F3/qua E3/qua D3/qua
+bar   7 RH: C3/qua C3/qua D3/qua E3/qua
+bar   8 RH: D3/hal C3/hal

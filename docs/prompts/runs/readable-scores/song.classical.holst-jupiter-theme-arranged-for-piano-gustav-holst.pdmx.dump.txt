@@ -1,0 +1,43 @@
+song: song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx
+title: Jupiter Theme arranged for piano - Gustav Holst
+composer: Gustav Holst
+rungs: classical.4.shelf
+shipped file: scores/pdmx/Qme2zmL2nofwN5b7xQCS9UjiVLMuaoGt3Mx4tFqdMNQBqJ.mxl
+catalog keySig/timeSig/tempo: C major / None / 70.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 1, pedal 0, articulations 9, chord symbols 0, grace notes 0, voices>1 88, measures 25, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 0
+  bar 0: time 3 4
+
+dump_score.py:
+song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx | Jupiter Theme arranged for piano - Gustav Holst | level 5.24 (estimated)
+notation: {"bars": 25, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+text on the score: ['Andante maestoso', 'rit.']
+bar   0 RH: E4/eig G4/eig  LH: r/qua
+bar   1 RH: A4/qua. C5/eig B4/eig. G4/16t  LH: F3/hal+A3/hal G3/qua+B3/qua
+bar   2 RH: C5/eig D5/eig C5/qua B4/qua  LH: A3/hal+C4/hal G3/qua+B3/qua
+bar   3 RH: A4/eig B4/eig A4/qua G4/qua  LH: F3/hal+A3/hal G3/qua+B3/qua
+bar   4 RH: E4/hal E4/eig G4/eig  LH: A3/hal+C4/hal G3/qua+B3/qua
+bar   5 RH: A4/qua. C5/eig B4/eig. G4/16t  LH: F3/hal+A3/hal G3/qua+B3/qua
+bar   6 RH: C5/eig D5/eig E5/qua E5/qua  LH: A3/hal+C4/hal G3/qua+B3/qua
+bar   7 RH: E5/eig D5/eig C5/qua D5/qua  LH: F3/hal+A3/hal G3/qua+B3/qua
+bar   8 RH: C5/hal C5/eig+G5/eig E5/eig  LH: C4/hal+E4/hal r/qua
+bar   9 RH: D5/qua D5/qua C5/eig E5/eig  LH: G3/hal+B3/hal F3/qua+A3/qua
+bar  10 RH: D5/qua G4/qua C5/eig+G5/eig E5/eig  LH: G3/qua+B3/qua G3/qua G3/qua
+bar  11 RH: B4/qua+D5/qua D5/qua E5/eig G5/eig  LH: G3/hal+B3/hal G3/qua+C4/qua
+bar  12 RH: F5/hal+A5/hal F5/eig+A5/eig B5/eig  LH: F3/qua E3/qua D3/qua
+bar  13 RH: E5/qua+C6/qua E5/qua+B5/qua C5/qua+A5/qua  LH: A3/qua G3/qua F3/qua
+bar  14 RH: C5/qua+G5/qua C5/qua+C6/qua C5/qua+E5/qua  LH: E3/qua D3/qua C3/qua
+bar  15 RH: D5/eig C5/eig D5/qua E5/qua  LH: F3/qua D3/qua C3/qua
+bar  16 RH:v1: G5/hal E4/eig G4/eig | v2: D5/hal r/qua  LH: B2/qua A2/qua G2/qua
+bar  17 RH: A4/qua. C5/eig B4/eig. G4/16t  LH: F2/hal+C3/hal G2/qua+D3/qua
+bar  18 RH: C5/eig D5/eig C5/qua B4/qua  LH: A2/hal+E3/hal G2/qua+D3/qua
+bar  19 RH: A4/eig B4/eig A4/qua G4/qua  LH: F2/hal+C3/hal G2/qua+D3/qua
+bar  20 RH: C4/hal+E4/hal B3/eig+E4/eig G4/eig  LH: A2/hal+E3/hal G2/qua
+bar  21 RH: F4/qua.+A4/qua. C5/eig G4/eig.+B4/eig. G4/16t  LH: F2/hal+C3/hal G2/qua+D3/qua
+bar  22 RH: G4/eig+C5/eig D5/eig E5/qua G4/qua+E5/qua  LH: E2/hal+C3/hal C3/eig E3/eig
+bar  23 RH: A4/eig+E5/eig D5/eig C5/qua F4/qua+D5/qua  LH: F3/hal G3/qua
+bar  24 RH: E4/hal.+C5/hal.  LH: C3/hal.+G3/hal.

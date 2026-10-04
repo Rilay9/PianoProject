@@ -1,0 +1,83 @@
+song: song.classical.chopin-nocturne-op9-2.easy
+title: Nocturne in E-flat major, Op. 9 No. 2 (easy)
+composer: Frédéric Chopin
+rungs: classical.4.shelf
+shipped file: scores/imported/song.classical.chopin-nocturne-op9-2.easy.mxl
+catalog keySig/timeSig/tempo: Eb major / 3/4 / 110.0
+raw-XML counts: ties 8, tuplets 0, fingerings 0, dynamics 4, pedal 0, articulations 6, chord symbols 0, grace notes 6, voices>1 314, measures 65, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -3
+  bar 1: time 3 4
+
+dump_score.py:
+song.classical.chopin-nocturne-op9-2.easy | Nocturne in E-flat major, Op. 9 No. 2 (easy) | level 6.1 (judged)
+notation: {"bars": 65, "staves": 2, "keys": [{"fifths": -3, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 3}
+key signatures (fifths): ['-3']  modes: []  times: ['3/4']
+text on the score: ['Andante ']
+bar   1 RH: Bb4/qua  LH: r/qua
+bar   2 RH: G5/hal.  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar   3 RH: G5/qua F5/qua G5/qua  LH: Eb3/qua Ab3/qua+D4/qua Cb4/qua+D4/qua
+bar   4 RH: F5/hal.  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar   5 RH: Eb5/hal Bb4/qua  LH: D3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar   6 RH: G5/hal Db5/16t C5/16t Bb4/16t C5/qua  LH: C3/qua E3/qua+G3/qua E3/qua+G3/qua
+bar   7 RH: C6/hal G5/qua  LH: C3/qua E3/qua+G3/qua E3/qua+G3/qua
+bar   8 RH: Bb5/hal.  LH: F3/qua Bb3/qua+Db4/qua Bb3/qua+Db4/qua
+bar   9 RH: Ab5/hal G5/qua  LH: F3/qua Ab3/qua+C4/qua Ab3/qua+C4/qua
+bar  10 RH: F5/hal.  LH: Bb2/qua D3/qua+F3/qua D3/qua+F3/qua
+bar  11 RH: G5/hal D5/qua  LH: B2/qua F3/qua+G3/qua F3/qua+G3/qua
+bar  12 RH: Eb5/hal.  LH: C3/qua Eb3/qua+G3/qua Eb3/qua+G3/qua
+bar  13 RH: C5/hal.  LH: A2/qua C3/qua+Gb3/qua C3/qua+Gb3/qua
+bar  14 RH: Bb4/qua D6/qua C6/qua  LH: Bb2/qua Eb3/qua+Ab3/qua Eb3/qua+Ab3/qua
+bar  15 RH: Bb5/eig Ab5/eig G5/eig Ab5/eig C5/eig D5/eig  LH: Bb2/qua D3/qua+Ab3/qua D3/qua+Ab3/qua
+bar  16 RH: Eb5/hal.  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  17 RH: r/qua r/qua Bb4/qua  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  18 RH: G5/hal.  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  19 RH: F5/eig G5/eig F5/eig E5/eig F5/eig G5/eig  LH: Eb3/qua Ab3/qua+D4/qua Cb4/qua+D4/qua
+bar  20 RH: F5/qua Eb5/hal  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  21 RH: Eb5/eig F5/eig Eb5/eig D5/eig Eb5/eig F5/eig  LH: D3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  22 RH: G5/eig B4/eig C5/eig Db5/eig C5/eig F5/eig  LH: C3/qua E3/qua+G3/qua E3/qua+G3/qua
+bar  23 RH: E5/eig Ab5/eig G5/eig Db6/eig C6/eig G5/eig  LH: C3/qua E3/qua+G3/qua E3/qua+G3/qua
+bar  24 RH: Bb5/hal.  LH: F3/qua Bb3/qua+Db4/qua Bb3/qua+Db4/qua
+bar  25 RH: Ab5/hal G5/qua  LH: F3/qua Ab3/qua+C4/qua Ab3/qua+C4/qua
+bar  26 RH: F5/hal E5/eig F5/eig  LH: Bb2/qua D3/qua+F3/qua D3/qua+F3/qua
+bar  27 RH: G5/qua G5/qua D5/qua  LH: B2/qua F3/qua+G3/qua F3/qua+G3/qua
+bar  28 RH: Eb5/hal.  LH: C3/qua Eb3/qua+G3/qua Eb3/qua+G3/qua
+bar  29 RH: C5/hal.  LH: A2/qua C3/qua+Gb3/qua C3/qua+Gb3/qua
+bar  30 RH: Bb4/qua D6/qua C6/qua  LH: Bb2/qua Eb3/qua+Ab3/qua Eb3/qua+Ab3/qua
+bar  31 RH: Bb5/eig Ab5/eig G5/eig Ab5/eig C5/eig D5/eig  LH: Bb2/qua D3/qua+Ab3/qua D3/qua+Ab3/qua
+bar  32 RH: Eb5/hal.  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  33 RH: r/qua D5/qua Eb5/qua  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  34 RH: F5/hal.  LH: Bb2/qua D3/qua+F3/qua D3/qua+F3/qua
+bar  35 RH: G5/hal F5/qua  LH: Bb2/qua D3/qua+F3/qua D3/qua+F3/qua
+bar  36 RH: F5/hal.  LH: A2/qua C3/qua+Gb3/qua C3/qua+Gb3/qua
+bar  37 RH: C5/hal.  LH: A2/qua C3/qua+Gb3/qua C3/qua+Gb3/qua
+bar  38 RH: Eb5/qua Eb5/qua Eb5/qua  LH: Ab2/qua C3/qua+Eb3/qua C3/qua+Eb3/qua
+bar  39 RH: Eb5/qua D5/eig Eb5/eig F5/eig Eb5/eig  LH: Ab2/qua B2/qua+D3/qua B2/qua+D3/qua
+bar  40 RH: Eb5/hal.  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  41 RH: Bb4/hal.  LH: D3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  42 RH: Bb5/hal.  LH: C3/qua E3/qua+G3/qua E3/qua+G3/qua
+bar  43 RH: Ab5/hal G5/qua  LH: C3/qua E3/qua+G3/qua E3/qua+G3/qua
+bar  44 RH: F5/hal.  LH: F3/qua Ab3/qua+C4/qua Ab3/qua+C4/qua
+bar  45 RH: G5/hal.  LH: F3/qua Ab3/qua+C4/qua Ab3/qua+C4/qua
+bar  46 RH: Eb5/hal.  LH: F3/qua Ab3/qua+C4/qua Ab3/qua+C4/qua
+bar  47 RH: D5/qua C5/qua D5/qua  LH: F3/qua Bb3/qua+D4/qua Ab3/qua+C4/qua
+bar  48 RH: Bb4/qua B4/qua B4/qua  LH: D4/qua D#4/qua G#3/qua
+bar  49 RH: B4/qua C5/qua D5/qua  LH: G3/qua C4/qua F4/qua
+bar  50 RH: G4/16t Bb4/16t Eb5/16t G5/hal A4/eig Bb4/eig  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  51 RH: C5/eig Bb4/eig C#5/eig D5/eig G5/eig F5/eig  LH: Eb3/qua Ab3/qua+D4/qua Cb4/qua+D4/qua
+bar  52 RH: F5/qua Eb5/hal  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  53 RH: Eb5/eig F5/eig Eb5/eig D5/eig Eb5/eig F5/eig  LH: D3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  54 RH: G5/eig B4/eig C5/eig Db5/eig C5/eig F5/eig  LH: C3/qua E3/qua+G3/qua E3/qua+G3/qua
+bar  55 RH: E5/eig Ab5/eig G5/eig Db6/eig C6/eig G5/eig  LH: C3/qua E3/qua+G3/qua E3/qua+G3/qua
+bar  56 RH: Bb5/hal.  LH: F3/qua Bb3/qua+Db4/qua Bb3/qua+Db4/qua
+bar  57 RH: Ab5/hal G5/qua  LH: F3/qua Ab3/qua+C4/qua Ab3/qua+C4/qua
+bar  58 RH: F5/hal E5/eig F5/eig  LH: Bb2/qua D3/qua+F3/qua D3/qua+F3/qua
+bar  59 RH: G5/qua G5/qua D5/qua  LH: B2/qua F3/qua+G3/qua F3/qua+G3/qua
+bar  60 RH: Eb5/hal.  LH: C3/qua Eb3/qua+G3/qua Eb3/qua+G3/qua
+bar  61 RH: C5/hal.  LH: A2/qua C3/qua+Gb3/qua C3/qua+Gb3/qua
+bar  62 RH: Bb4/qua D6/qua Cb6/qua  LH: Bb2/qua Eb3/qua+Ab3/qua Eb3/qua+Ab3/qua
+bar  63 RH: C6/16t B5/16t Bb5/16t A5/16t Ab5/16t F5/16t D5/16t Cb5/16t Bb4/16t D5/16t G5/16t F5/16t  LH: Bb2/qua D3/qua+Ab3/qua D3/qua+Ab3/qua
+bar  64 RH: Eb5/hal.  LH: Eb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua
+bar  65 RH: Eb5/hal r/qua  LH: Eb3/hal r/qua

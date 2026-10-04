@@ -1,0 +1,66 @@
+song: song.classical.1803-1856-adolphe-adam-o-holy-night.pdmx
+title: O Holy Night
+composer: Adolphe Adam
+rungs: holiday.3
+shipped file: scores/pdmx/QmYQaSQ1qfK2gGYztT1xJ353ibiZE9D2Z9W1LNQDitVp7p.mxl
+catalog keySig/timeSig/tempo: D major / None / 150.0
+raw-XML counts: ties 34, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 32, grace notes 0, voices>1 0, measures 50, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 2 major
+  bar 1: time 6 8
+
+dump_score.py:
+song.classical.1803-1856-adolphe-adam-o-holy-night.pdmx | O Holy Night | level 2.88 (estimated)
+notation: {"bars": 50, "staves": 1, "keys": [{"fifths": 2, "mode": "major"}], "times": ["6/8"], "chordCount": 32, "chords": ["A", "Bm", "C#", "D", "Em", "F#m", "G"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['2']  modes: ['major']  times: ['6/8']
+bar   1 RH: F#4/qua. F#4/qua F#4/eig  [D major]
+bar   2 RH: A4/qua. A4/qua A4/eig
+bar   3 RH: B4/qua B4/eig G4/qua B4/eig  [G major]
+bar   4 RH: D5/hal.  [D major]
+bar   5 RH: A4/qua A4/eig F#4/qua E4/eig
+bar   6 RH: D4/qua. F#4/qua G4/eig
+bar   7 RH: A4/qua. G4/qua E4/eig  [A major]
+bar   8 RH: D4/hal.  [D major]
+bar   9 RH: D4/hal r/qua
+bar  10 RH: F#4/qua. F#4/qua F#4/eig  [D major]
+bar  11 RH: A4/qua. A4/qua A4/eig
+bar  12 RH: B4/qua B4/eig G4/qua B4/eig  [G major]
+bar  13 RH: D5/hal.  [D major]
+bar  14 RH: A4/qua A4/eig G#4/qua F#4/eig
+bar  15 RH: C#5/qua. A4/qua B4/eig  [F# minor]
+bar  16 RH: C#5/qua. D5/qua C#5/eig  [C# major]
+bar  17 RH: F#4/hal.  [F# minor]
+bar  18 RH: F#4/qua. r/qua A4/eig
+bar  19 RH: A4/qua. B4/qua.  [A major]
+bar  20 RH: E4/qua. A4/qua.
+bar  21 RH: B4/qua A4/eig D5/qua F#4/eig  [D major]
+bar  22 RH: B4/qua. A4/qua A4/eig
+bar  23 RH: A4/qua. B4/qua.  [A major]
+bar  24 RH: E4/qua. A4/qua.
+bar  25 RH: B4/qua A4/eig D5/qua F#4/eig  [D major]
+bar  26 RH: A4/qua. A4/qua r/eig
+bar  27 RH: D5/hal.  [B minor]
+bar  28 RH: D5/qua r/eig C#5/qua B4/eig
+bar  29 RH: C#5/hal.  [F# minor]
+bar  30 RH: C#5/qua r/eig C#5/qua.
+bar  31 RH: E5/hal.  [E minor]
+bar  32 RH: E5/eig r/eig B4/eig B4/qua B4/eig
+bar  33 RH: D5/hal.  [B minor]
+bar  34 RH: D5/qua. r/qua D5/eig
+bar  35 RH: F#5/hal.  [D major]
+bar  36 RH: E5/qua. E5/qua A4/eig  [A major]
+bar  37 RH: D5/hal.  [D major]
+bar  38 RH: D5/qua r/eig C#5/qua B4/eig  [G major]
+bar  39 RH: A4/hal.  [D major]
+bar  40 RH: A4/eig r/eig A4/eig B4/qua A4/eig  [A major]
+bar  41 RH: A4/hal.  [D major]
+bar  42 RH: A4/qua r/eig D5/qua.
+bar  43 RH: E5/hal.  [A major]
+bar  44 RH: E5/qua r/eig A4/qua.
+bar  45 RH: F#5/hal.  [D major]
+bar  46 RH: F#5/qua. E5/qua.  [E minor]
+bar  47 RH: D5/qua. D5/qua r/eig  [D major]
+bar  48 RH: C#5/qua. D5/qua E5/eig  [A major]
+bar  49 RH: D5/hal.  [D major]
+bar  50 RH: D5/hal r/qua

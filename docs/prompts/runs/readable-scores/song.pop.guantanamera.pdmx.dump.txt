@@ -1,0 +1,38 @@
+song: song.pop.guantanamera.pdmx
+title: Guantanamera
+composer: Traditional (Cuban guajira)
+rungs: latin, latin.3
+shipped file: scores/pdmx/QmZkPRC2P6LWrykPxdQHAoriDBFEtD7aqkHKcvA1eYhs7f.mxl
+catalog keySig/timeSig/tempo: 2 sharps / None / 96.0
+raw-XML counts: ties 10, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 29, grace notes 0, voices>1 0, measures 21, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 2 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.guantanamera.pdmx | Guantanamera | level 2.43 (estimated)
+notation: {"bars": 21, "staves": 1, "keys": [{"fifths": 2, "mode": "major"}], "times": ["4/4"], "chordCount": 29, "chords": ["A", "A7", "D", "G"], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['2']  modes: ['major']  times: ['4/4']
+text on the score: ['Chorus', 'Verse']
+bar   1 RH: B4/qua B4/eig B4/eig B4/eig B4/qua.  [G major]
+bar   2 RH: r/hal r/eig G4/eig B4/eig G4/eig  [A dominant]
+bar   3 RH: A4/qua B4/eig G4/eig A4/eig A4/qua.  [D major] [G major]
+bar   4 RH: r/?  [A dominant]
+bar   5 RH: F#4/qua G4/eig A4/eig B4/qua. A4/eig  [D major] [G major]
+bar   6 RH: A4/hal r/eig B4/eig G4/eig E4/eig  [A major]
+bar   7 RH: D4/qua D4/eig C#4/eig B3/qua. A3/eig  [D major] [G major]
+bar   8 RH: A3/hal r/eig  [A major]
+bar   9 RH: D4/eig E4/eig D4/eig
+bar  10 RH: E4/qua E4/eig D4/eig E4/eig E4/qua.  [D major] [G major]
+bar  11 RH: r/hal r/eig E4/eig F#4/eig G4/eig  [A dominant]
+bar  12 RH: F#4/qua D4/eig B3/eig E4/eig E4/eig E4/qua  [D major] [G major]
+bar  13 RH: r/hal r/eig D4/eig E4/eig D4/eig  [A dominant]
+bar  14 RH: E4/qua E4/eig D4/eig E4/eig E4/qua.  [D major] [G major]
+bar  15 RH: r/hal r/eig E4/eig A4/eig A4/eig  [A dominant]
+bar  16 RH: A4/hal A4/eig G4/qua F#4/eig  [D major] [G major]
+bar  17 RH: E4/eig E4/eig E4/qua r/eig E4/eig F#4/eig G4/eig  [A dominant]
+bar  18 RH: A4/eig A4/qua A4/eig B4/hal  [D major] [G major]
+bar  19 RH: A4/hal r/eig B4/eig G4/eig E4/eig  [A major]
+bar  20 RH: D4/qua D4/eig C#4/eig B3/hal  [D major] [G major]
+bar  21 RH: A3/who  [A major]

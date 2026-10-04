@@ -1,0 +1,34 @@
+song: song.classical.away-in-a-manger.pdmx
+title: Away in a Manger
+composer: James R. Murray
+rungs: holiday.4
+shipped file: scores/pdmx/QmVgS9cYzFWrEHrvGnKFqmg7rd9mfCpX3LgkP6LtqxWSbR.mxl
+catalog keySig/timeSig/tempo: F major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 135, measures 17, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key -1
+  bar 0: time 3 4
+
+dump_score.py:
+song.classical.away-in-a-manger.pdmx | Away in a Manger | level 4.94 (estimated)
+notation: {"bars": 17, "staves": 2, "keys": [{"fifths": -1, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: []  times: ['3/4']
+bar   0 RH:v1: C5/qua | v2: F4/qua  LH:v5: F3/qua | v7: A3/qua
+bar   1 RH:v1: C5/qua. Bb4/eig A4/qua | v2: F4/qua. G4/eig F4/qua  LH:v5: F3/qua. F3/eig F3/qua | v7: A3/qua. D4/eig C4/qua
+bar   2 RH:v1: A4/qua G4/qua F4/qua | v2: F4/qua C4/qua C4/qua  LH:v5: F3/qua F3/qua F3/qua | v7: C4/qua Bb3/qua A3/qua
+bar   3 RH:v1: F4/qua E4/qua D4/qua | v2: D4/qua C4/qua Bb3/qua  LH:v5: Bb2/qua Bb2/qua Bb2/qua | v7: Bb3/qua F3/qua F3/qua
+bar   4 RH:v1: C4/hal C4/qua | v2: A3/hal A3/qua  LH:v5: F2/hal F2/qua | v7: F3/hal F3/qua
+bar   5 RH:v1: C4/qua. D4/eig C4/qua | v2: Bb3/qua. Bb3/eig Bb3/qua  LH:v5: C3/qua. C3/eig C3/qua | v7: E3/qua. E3/eig E3/qua
+bar   6 RH:v1: C4/qua G4/qua E4/qua | v2: Bb3/qua Bb3/qua Bb3/qua  LH:v5: C3/qua C3/qua C3/qua | v7: E3/qua E3/qua G3/qua
+bar   7 RH:v1: D4/qua C4/qua F4/qua | v2: Bb3/qua A3/qua C4/qua  LH:v5: F3/qua F3/qua F3/qua | v7: F3/qua F3/qua A3/qua
+bar   8 RH:v1: A4/hal C5/qua | v2: F4/hal F4/qua  LH:v5: F3/hal F3/qua | v7: C4/hal A3/qua
+bar   9 RH:v1: C5/qua. Bb4/eig A4/qua | v2: F4/qua. G4/eig F4/qua  LH:v5: F3/qua. F3/eig F3/qua | v7: A3/qua. D4/eig C4/qua
+bar  10 RH:v1: A4/qua G4/qua F4/qua | v2: F4/qua C4/qua C4/qua  LH:v5: F3/qua F3/qua F3/qua | v7: C4/qua Bb3/qua A3/qua
+bar  11 RH:v1: F4/qua E4/qua D4/qua | v2: D4/qua C4/qua Bb3/qua  LH:v5: Bb2/qua Bb2/qua Bb2/qua | v7: Bb3/qua F3/qua F3/qua
+bar  12 RH:v1: C4/hal C4/qua | v2: A3/hal C4/qua  LH:v5: F2/hal A2/qua | v7: F3/hal F3/qua
+bar  13 RH:v1: Bb4/qua. A4/eig G4/qua | v2: E4/qua. F4/eig E4/qua  LH:v5: C3/qua. C3/eig C3/qua | v7: G3/qua. C4/eig C4/qua
+bar  14 RH:v1: A4/qua G4/qua F4/qua | v2: F4/qua C4/qua C4/qua  LH:v5: F3/qua F3/qua F3/qua | v7: C4/qua Bb3/qua A3/qua
+bar  15 RH:v1: G4/qua D4/qua E4/qua | v2: D4/qua Bb3/qua C4/qua  LH:v5: Bb2/qua G2/qua C3/qua | v7: G3/qua G3/qua Bb3/qua
+bar  16 RH:v1: F4/hal r/qua | v2: C4/hal r/qua  LH:v5: F3/hal r/qua | v7: A3/hal r/qua

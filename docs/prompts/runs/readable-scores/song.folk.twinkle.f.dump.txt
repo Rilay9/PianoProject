@@ -1,0 +1,29 @@
+song: song.folk.twinkle.f
+title: Twinkle, Twinkle, Little Star (in F major)
+composer: Traditional (Ah! vous dirai-je, maman, 1761)
+rungs: 3.1, 4.2
+shipped file: scores/authored/song.folk.twinkle.f.mxl
+catalog keySig/timeSig/tempo: F major / 4/4 / 84.0
+raw-XML counts: ties 0, tuplets 0, fingerings 46, dynamics 0, pedal 0, articulations 0, chord symbols 22, grace notes 0, voices>1 22, measures 12, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -1 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.twinkle.f | Twinkle, Twinkle, Little Star (in F major) | level 3.1 (judged)
+notation: {"bars": 12, "staves": 2, "keys": [{"fifths": -1, "mode": "major"}], "times": ["4/4"], "chordCount": 22, "chords": ["Bb", "Cdominant", "F"], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: ['major']  times: ['4/4']
+bar   1 RH: F4/qua F4/qua C5/qua C5/qua  LH: F3/who  [F major]
+bar   2 RH: D5/qua D5/qua C5/hal  LH: Bb3/hal F3/hal  [Bb major] [F major]
+bar   3 RH: Bb4/qua Bb4/qua A4/qua A4/qua  LH: Bb3/hal F3/hal  [Bb major] [F major]
+bar   4 RH: G4/qua G4/qua F4/hal  LH: C4/hal F3/hal  [C dominant] [F major]
+bar   5 RH: C5/qua C5/qua Bb4/qua Bb4/qua  LH: F3/hal C4/hal  [F major] [C dominant]
+bar   6 RH: A4/qua A4/qua G4/hal  LH: F3/hal C4/hal  [F major] [C dominant]
+bar   7 RH: C5/qua C5/qua Bb4/qua Bb4/qua  LH: F3/hal C4/hal  [F major] [C dominant]
+bar   8 RH: A4/qua A4/qua G4/hal  LH: F3/hal C4/hal  [F major] [C dominant]
+bar   9 RH: F4/qua F4/qua C5/qua C5/qua  LH: F3/who  [F major]
+bar  10 RH: D5/qua D5/qua C5/hal  LH: Bb3/hal F3/hal  [Bb major] [F major]
+bar  11 RH: Bb4/qua Bb4/qua A4/qua A4/qua  LH: Bb3/hal F3/hal  [Bb major] [F major]
+bar  12 RH: G4/qua G4/qua F4/hal  LH: C4/hal F3/hal  [C dominant] [F major]

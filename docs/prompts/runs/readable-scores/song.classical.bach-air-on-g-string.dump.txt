@@ -1,0 +1,55 @@
+song: song.classical.bach-air-on-g-string
+title: Air on the G String (from BWV 1068)
+composer: Johann Sebastian Bach
+rungs: classical.4.shelf
+shipped file: scores/imported/song.classical.bach-air-on-g-string.mxl
+catalog keySig/timeSig/tempo: G major / 4/4 / 66.0
+raw-XML counts: ties 46, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 1, voices>1 309, measures 37, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.bach-air-on-g-string | Air on the G String (from BWV 1068) | level 6.1 (judged)
+notation: {"bars": 37, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['4/4']
+text on the score: ['Adagio ', 'Con Ped.', 'rit.']
+bar   1 RH:v1: B4/who | v2: D4/who+G4/who  LH: G2/qua G3/qua F#3/qua F#2/qua
+bar   2 RH:v1: B4/who | v2: E4/who+G4/who  LH: E2/qua E3/qua D3/qua D2/qua
+bar   3 RH:v1: B4/qua E5/eig C5/eig B4/eig A4/eig G4/eig F#4/eig G4/eig | v2: E4/hal+G4/hal E4/hal  LH: C2/qua C3/qua C#3/qua C#2/qua
+bar   4 RH:v1: F#4/hal E4/eig D4/qua. | v2: A3/who+D4/who  LH: D2/qua D3/qua C3/qua C2/qua
+bar   5 RH:v1: D5/who | v2: D4/qua F4/eig E4/eig F4/hal  LH: B2/qua G#3/qua+D4/qua A3/qua+D4/qua A2/qua
+bar   6 RH:v1: D5/eig B4/eig F4/eig E4/eig A4/eig G#4/eig D5/eig C5/eig | v2: F4/qua  LH: G#2/qua B3/qua+D4/qua E3/qua G#3/qua+E4/qua
+bar   7 RH:v1: C5/who | v2: E4/eig D4/eig E4/hal  LH: A2/qua A3/qua+C4/qua G3/qua+C4/qua G2/qua
+bar   8 RH:v1: C5/eig A4/eig E4/eig D4/eig G4/eig F#4/eig C5/eig B4/eig | v2: E4/qua  LH: F#2/qua A3/qua+C4/qua D3/qua F#3/qua+D4/qua
+bar   9 RH:v1: B4/hal. C#5/eig D5/eig | v2: D4/hal.+G4/hal. D4/qua+A4/qua  LH: G2/qua G3/qua F#3/qua F#2/qua
+bar  10 RH:v1: G4/qua G4/eig A4/16t B4/16t B4/eig A4/eig A4/eig G4/eig | v2: B3/qua+E4/qua C#4/qua E4/qua C#4/qua+E4/qua  LH: E2/qua E3/qua C#3/qua A2/qua
+bar  11 RH:v1: F#4/eig E4/eig E4/16t F#4/16t G4/eig G4/qua F#4/eig E4/eig | v2: A3/qua+D4/qua B3/qua+D4/qua A3/qua+D4/qua A3/qua+C#4/qua  LH: D3/qua B2/qua A2/qua A2/qua
+bar  12 RH:v1: D4/who | v2: F#3/who+A3/who  LH: D2/eig E2/eig F#2/eig G2/eig A2/eig C3/eig B2/eig A2/eig
+bar  13 RH:v1: D4/who | v2: F#3/who+A3/who  LH: D2/who
+bar  14 RH:v1: F#4/hal F#4/eig G4/16t F#4/16t E4/16t F#4/16t D4/eig | v2: A3/hal+D4/hal A3/qua+D4/qua  LH: D2/qua D3/qua C3/qua C2/qua
+bar  15 RH:v1: D5/hal. F4/qua | v2: F4/hal.+B4/hal.  LH: B1/qua G#3/eig+D4/eig E4/eig A3/qua+D4/qua+F4/qua A2/qua
+bar  16 RH: E4/qua E5/qua E5/eig D5/eig C5/eig B4/eig  LH: G#2/qua B3/qua+D4/qua E3/qua G#3/qua+E4/qua
+bar  17 RH:v1: C5/hal C5/16t B4/16t A4/16t G4/16t F#4/eig E4/eig | v2: E4/hal+A4/hal E4/qua+A4/qua  LH: A2/qua A3/qua G3/qua G2/qua
+bar  18 RH:v1: D#4/eig E4/eig F#4/qua F#4/eig G4/eig A4/qua | v2: A3/eig  LH: F#2/qua F#3/eig+A3/eig B3/eig E3/qua+A3/qua+C4/qua E2/qua
+bar  19 RH:v1: A4/eig B4/eig C5/hal B4/qua | v2: B3/qua F#4/eig E4/eig D#4/eig E4/eig F#4/qua  LH: D#2/qua E2/qua F#2/qua D#2/qua
+bar  20 RH:v1: A4/eig G4/eig F#4/eig E4/eig F#4/eig G4/16t A4/16t G4/qua | v2: B3/qua+E4/qua C4/qua C4/qua D#4/qua  LH: E2/qua C3/qua+G3/qua A2/qua+A3/qua B2/qua+A3/qua
+bar  21 RH:v1: E4/who | v2: G3/who+B3/who  LH: E2/qua E3/qua D3/qua D2/qua
+bar  22 RH:v1: G4/hal G4/eig B4/eig A4/eig G4/eig | v2: A3/hal+E4/hal A3/qua+E4/qua D4/qua  LH: C#2/qua C#3/qua B2/qua B1/qua
+bar  23 RH:v1: E5/hal. D5/eig C#5/eig | v2: E4/hal.+A4/hal.+C#5/hal. E4/qua+A4/qua  LH: A1/qua A3/qua G3/qua G2/qua
+bar  24 RH:v1: B4/16t A4/16t D5/eig D4/qua E4/qua. F#4/16t G4/16t | v2: D4/qua A3/qua B3/qua C#4/qua  LH: F#2/qua F#3/qua G2/qua A2/qua
+bar  25 RH:v1: F#4/qua. E4/eig D4/hal | v2: A3/hal+D4/hal F#3/hal+A3/hal  LH: D2/qua D3/qua C3/qua C2/qua
+bar  26 RH:v1: G4/hal. B4/eig A4/eig | v2: D4/qua E4/eig F4/eig E4/hal  LH: B1/qua B2/qua+G3/qua C3/qua+G3/qua C2/qua
+bar  27 RH:v1: A4/hal. C5/eig B4/eig | v2: F#4/eig E4/eig F#4/hal  LH: C#2/qua C#3/qua+A3/qua D3/qua+A3/qua D2/qua
+bar  28 RH:v1: B4/hal. D5/eig C5/eig | v2: G#4/eig F#4/eig G#4/qua E4/qua+B4/qua  LH: D#2/qua D#3/qua+B3/qua E3/qua+B3/qua G#2/qua
+bar  29 RH:v1: C5/who | v2: E4/who+A4/who  LH: A2/qua A3/qua G3/qua G2/qua
+bar  30 RH:v1: D4/hal D4/eig F#4/eig A4/eig C5/eig | v2: A3/hal+C4/hal A3/qua+C4/qua D4/qua  LH: F#2/qua F#3/qua D3/qua F#3/qua
+bar  31 RH:v1: C5/eig A4/eig B4/hal B4/eig C5/16t D5/16t | v2: D4/qua+G4/qua D4/hal+G4/hal D4/qua+G4/qua  LH: G3/qua G2/qua F2/qua F3/qua
+bar  32 RH:v1: G4/hal G4/eig B4/eig D5/eig F5/eig | v2: D4/qua C4/qua B3/hal+F4/hal  LH: E3/qua E2/qua D2/qua D3/qua
+bar  33 RH:v1: E5/hal. G4/qua | v2: E4/hal.+G4/hal.+C5/hal. D4/qua  LH: C3/qua C2/qua B1/qua B2/qua
+bar  34 RH:v1: F#4/eig A4/eig C5/hal E4/qua | v2: C4/qua E4/hal+G4/hal C4/qua  LH: A2/qua A3/qua G3/qua G2/qua
+bar  35 RH:v1: D4/qua A4/eig B4/16t C5/16t C5/eig B4/eig B4/eig A4/eig | v2: A3/qua D4/qua+F#4/qua D4/qua+G4/qua C4/qua+E4/qua  LH: F#2/qua D2/qua G2/qua C3/qua
+bar  36 RH:v1: G4/16t F#4/16t E4/eig E4/eig F#4/eig G4/qua F#4/eig G4/eig | v2: B3/qua+D4/qua C4/qua A3/qua+D4/qua C4/qua+D4/qua  LH: D3/qua C3/qua D3/qua D2/qua
+bar  37 RH:v1: G4/who | v2: B3/who+D4/who  LH: G2/who+D3/who

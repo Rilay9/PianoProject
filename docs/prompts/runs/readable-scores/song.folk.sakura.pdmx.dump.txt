@@ -1,0 +1,31 @@
+song: song.folk.sakura.pdmx
+title: Sakura
+composer: Traditional (Japanese)
+rungs: 2.2
+shipped file: scores/pdmx/QmQ2V2JBKPsYPkPg4HbGqzM2wDZBefoC819zTZ1kgi8TUr.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 96.0
+raw-XML counts: ties 2, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 9, grace notes 0, voices>1 0, measures 15, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.sakura.pdmx | Sakura | level 2.23 (estimated)
+notation: {"bars": 15, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 9, "chords": ["Am", "Dm", "F"], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: A4/qua A4/qua B4/hal  [A minor]
+bar   2 RH: A4/qua A4/qua B4/hal
+bar   3 RH: A4/qua B4/qua C5/qua B4/qua  [F major]
+bar   4 RH: A4/qua B4/eig A4/eig F4/hal  [A minor] [D minor]
+bar   5 RH: E4/qua C4/qua E4/qua F4/qua  [A minor]
+bar   6 RH: E4/qua E4/eig C4/eig B3/hal
+bar   7 RH: A4/qua B4/qua C5/qua B4/qua
+bar   8 RH: A4/qua B4/eig A4/eig F4/hal  [D minor]
+bar   9 RH: E4/qua C4/qua E4/qua F4/qua  [A minor]
+bar  10 RH: E4/qua E4/eig C4/eig B3/hal
+bar  11 RH: A4/qua A4/qua B4/hal
+bar  12 RH: A4/qua A4/qua B4/hal
+bar  13 RH: D4/qua E4/qua F4/qua F4/qua  [D minor]
+bar  14 RH: B4/eig A4/eig F4/qua E4/hal  [A minor]
+bar  15 RH: E4/who

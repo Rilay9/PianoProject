@@ -1,0 +1,28 @@
+song: song.folk.the-water-is-wide.pdmx
+title: The Water Is Wide
+composer: Traditional (Scottish)
+rungs: 1.5
+shipped file: scores/pdmx/QmTkFVAwvGuU1anvHSDDBPJyT3Gq9dFTGm9iAxjtS9K4yv.mxl
+catalog keySig/timeSig/tempo: G major / None / 96.0
+raw-XML counts: ties 4, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 11, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 1
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.the-water-is-wide.pdmx | The Water Is Wide | level 1.9 (estimated)
+notation: {"bars": 11, "staves": 1, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['4/4']
+text on the score: ['Keys:', 'Keys:', 'Keys:']
+bar   1 RH: r/qua D4/qua G4/eig G4/eig A4/qua
+bar   2 RH: B4/hal. r/qua
+bar   3 RH: r/qua G4/qua E4/qua E4/qua
+bar   4 RH: D4/hal. r/qua
+bar   5 RH: D4/qua G4/qua F#4/qua G4/qua
+bar   6 RH: A4/qua B4/qua B4/qua A4/qua
+bar   7 RH: A4/eig A4/eig A4/eig B4/eig C5/eig D5/qua.
+bar   8 RH: C5/eig C5/eig B4/eig A4/eig B4/hal
+bar   9 RH: G4/qua E4/qua E4/qua D4/qua
+bar  10 RH: D4/hal E4/qua G4/qua
+bar  11 RH: A4/qua G4/hal.

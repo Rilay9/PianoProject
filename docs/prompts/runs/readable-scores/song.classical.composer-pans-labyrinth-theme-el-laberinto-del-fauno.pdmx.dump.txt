@@ -1,0 +1,87 @@
+song: song.classical.composer-pans-labyrinth-theme-el-laberinto-del-fauno.pdmx
+title: Pans Labyrinth Theme (El Laberinto del Fauno)
+composer: Composer
+rungs: classical.4.shelf
+shipped file: scores/pdmx/QmXEY8zxEMCaX6zCkffmpvfxU8t1Exn8et4VwNuaZRaYxa.mxl
+catalog keySig/timeSig/tempo: A minor / None / 96.0
+raw-XML counts: ties 70, tuplets 0, fingerings 0, dynamics 6, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 201, measures 67, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 3 4
+  bar 25: clef F 4
+  bar 54: clef G 2
+
+dump_score.py:
+song.classical.composer-pans-labyrinth-theme-el-laberinto-del-fauno.pdmx | Pans Labyrinth Theme (El Laberinto del Fauno) | level 5.71 (estimated)
+notation: {"bars": 67, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+text on the score: ['Adagio', 'With Pedal', 'Ritenuto to end']
+bar   1 RH: E5/eig D5/eig C5/eig D5/eig E5/eig F5/eig  LH: A3/hal.+C4/hal.+E4/hal.
+bar   2 RH: E5/hal.  LH: A3/hal.+C4/hal.+E4/hal.
+bar   3 RH: E5/eig D5/eig C5/eig D5/eig E5/eig F5/eig  LH: A3/hal.+C4/hal.+E4/hal.
+bar   4 RH: D5/hal.  LH: A3/hal.+D4/hal.+F4/hal.
+bar   5 RH: D5/eig C5/eig B4/eig C5/eig D5/eig E5/eig  LH: A3/hal.+D4/hal.+F4/hal.
+bar   6 RH: D5/hal E5/qua  LH: B3/hal.+D4/hal.+F4/hal.
+bar   7 RH: D5/hal E5/qua  LH: B3/hal.+D4/hal.+F4/hal.
+bar   8 RH: F5/hal G5/qua  LH: B3/hal.+D4/hal.+F4/hal.
+bar   9 RH: E5/hal.  LH: A3/qua E4/qua C5/qua
+bar  10 RH: E5/hal.  LH: A3/qua E4/qua C5/qua
+bar  11 RH: E5/hal.  LH: A3/qua E4/qua C5/qua
+bar  12 RH: E6/eig D6/eig C6/eig D6/eig E6/eig F6/eig  LH: A3/qua E4/qua C5/qua
+bar  13 RH: E6/hal.  LH: A3/qua E4/qua C5/qua
+bar  14 RH: E6/hal.  LH: A3/qua E4/qua C5/qua
+bar  15 RH: E6/eig D6/eig C6/eig D6/eig E6/eig F6/eig  LH: A3/qua E4/qua C5/qua
+bar  16 RH: D6/hal.  LH: A3/qua F4/qua D5/qua
+bar  17 RH: D6/hal.  LH: A3/qua F4/qua D5/qua
+bar  18 RH: D6/eig C6/eig B5/eig C6/eig D6/eig E6/eig  LH: A3/qua F4/qua D5/qua
+bar  19 RH: D6/hal E6/qua  LH: B3/qua F4/qua D5/qua
+bar  20 RH: D6/hal E6/qua  LH: B3/qua F4/qua D5/qua
+bar  21 RH: F6/hal G6/qua  LH: B3/qua F4/qua B4/qua
+bar  22 RH: E6/hal.  LH: C4/qua A4/qua E5/qua
+bar  23 RH: E6/hal.  LH: C4/qua A4/qua E5/qua
+bar  24 RH: E6/hal.  LH: C4/qua A4/qua E5/qua
+bar  25 RH: E5/hal.  LH: C3/qua G3/qua C4/qua
+bar  26 RH: E5/hal.  LH: G3/qua C4/qua G4/qua
+bar  27 RH: E5/qua F5/qua G5/qua  LH: A4/qua C4/qua C5/qua
+bar  28 RH: F5/hal.  LH: D3/qua F3/qua D4/qua
+bar  29 RH: F5/hal.  LH: F3/qua A3/qua F4/qua
+bar  30 RH: F5/qua G5/qua A5/qua  LH: A3/qua F4/qua E4/qua
+bar  31 RH: G#5/hal.  LH: G#3/qua B3/qua D4/qua
+bar  32 RH: G#5/qua G#5/qua F5/qua  LH: B3/qua D4/qua F4/qua
+bar  33 RH: E5/hal.  LH: A3/qua E4/qua C5/qua
+bar  34 RH: E5/hal.  LH: A3/qua E4/qua B4/qua
+bar  35 RH: E5/hal.  LH: A3/qua E4/qua A4/qua
+bar  36 RH: D4/qua+G4/qua+D5/qua C4/qua+G4/qua+C5/qua D4/qua+G4/qua+D5/qua  LH: C2/qua G2/qua E3/qua
+bar  37 RH: C4/qua+B4/qua C4/qua+C5/qua G4/qua  LH: C2/qua G2/qua C3/qua
+bar  38 RH: C4/qua+A4/qua D4/qua C4/qua+E4/qua  LH: E3/qua F3/qua G3/qua
+bar  39 RH: D4/qua+G4/qua+E5/qua D5/qua D4/qua+A4/qua  LH: D2/qua A2/qua F3/qua
+bar  40 RH: A4/qua+E5/qua D5/qua D5/qua+F5/qua  LH: D2/qua A2/qua D3/qua
+bar  41 RH: A4/qua+E5/qua C5/qua D5/qua  LH: F3/qua G3/qua A3/qua
+bar  42 RH: G#4/qua+E5/qua B4/qua C5/qua  LH: G#2/qua B2/qua D3/qua
+bar  43 RH: G#4/qua+D5/qua F5/qua E5/qua  LH: F3/qua G#3/qua B3/qua
+bar  44 RH: A4/qua+D5/qua C5/qua G5/qua  LH: D4/qua C4/qua B3/qua
+bar  45 RH: D4/qua+D5/qua C4/qua+C5/qua A3/qua+A4/qua  LH: C2/qua G2/qua E3/qua
+bar  46 RH: G#3/qua+G#4/qua F3/qua+F4/qua E3/qua+E4/qua  LH: C2/qua G2/qua C3/qua
+bar  47 RH: D4/qua C4/qua B3/qua  LH: C2/qua G2/qua C3/qua
+bar  48 RH: A3/qua F3/qua A3/qua  LH: D2/qua A2/qua F3/qua
+bar  49 RH: C4/qua D4/qua F4/qua  LH: D2/qua A2/qua E3/qua
+bar  50 RH: F3/qua A3/qua C4/qua  LH: D2/qua A2/qua D3/qua
+bar  51 RH: G#3/qua F4/qua D4/qua  LH: E2/qua G#2/qua B2/qua
+bar  52 RH: B4/qua G#4/qua F5/qua  LH: F3/qua D3/qua G#3/qua
+bar  53 RH: D5/qua G#5/qua F5/qua  LH: F3/qua B3/qua G#3/qua
+bar  54 RH: C5/hal.+E5/hal.+A5/hal.  LH: A3/qua E4/qua C5/qua
+bar  55 RH: C5/hal.+E5/hal.+A5/hal.  LH: A3/qua E4/qua B4/qua
+bar  56 RH: C5/hal.+E5/hal.+A5/hal.  LH: A3/qua E4/qua A4/qua
+bar  57 RH: E6/eig D6/eig C6/eig D6/eig E6/eig F6/eig  LH: A3/qua E4/qua C5/qua
+bar  58 RH: E6/hal.  LH: A3/qua E4/qua C5/qua
+bar  59 RH: E6/hal.  LH: A3/qua E4/qua C5/qua
+bar  60 RH: E6/eig D6/eig C6/eig D6/eig E6/eig F6/eig  LH: A3/qua E4/qua C5/qua
+bar  61 RH: D6/hal.  LH: A3/qua F4/qua D5/qua
+bar  62 RH: D6/hal.  LH: A3/qua F4/qua D5/qua
+bar  63 RH: D6/eig C6/eig B5/eig C6/eig D6/eig E6/eig  LH: A3/qua F4/qua D5/qua
+bar  64 RH: D6/hal E6/qua  LH: B3/qua F4/qua D5/qua
+bar  65 RH: D6/hal E6/qua  LH: B3/qua F4/qua D5/qua
+bar  66 RH: F6/hal G6/qua  LH: B3/qua F4/qua B4/qua
+bar  67 RH: A5/hal.+C6/hal.+E6/hal.  LH: A3/hal.+E4/hal.+A4/hal.

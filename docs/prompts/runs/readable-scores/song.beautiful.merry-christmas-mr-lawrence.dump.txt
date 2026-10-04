@@ -1,0 +1,95 @@
+song: song.beautiful.merry-christmas-mr-lawrence
+title: Merry Christmas Mr. Lawrence
+composer: Ryuichi Salamoto
+rungs: classical.4.shelf
+shipped file: scores/pdmx/QmbQ3jnkGv2gmoiSE9fmFUEtHkJz51UUcVvVUqsGtJ5keG.mxl
+catalog keySig/timeSig/tempo: 5 flats / None / 106.0
+raw-XML counts: ties 142, tuplets 0, fingerings 0, dynamics 3, pedal 0, articulations 0, chord symbols 128, grace notes 0, voices>1 281, measures 75, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef G 2
+  bar 1: key -5
+  bar 1: time 3 4
+  bar 17: clef F 4
+  bar 17: time 4 4
+
+dump_score.py:
+song.beautiful.merry-christmas-mr-lawrence | Merry Christmas Mr. Lawrence | level 7.64 (estimated)
+notation: {"bars": 75, "staves": 2, "keys": [{"fifths": -5, "mode": null}], "times": ["3/4", "4/4"], "chordCount": 128, "chords": ["Ab", "Ab6", "Ab7", "Abm7", "Bbm9", "Db", "Eb", "Ebm6", "Ebm7", "F7", "Fm", "Fm7", "Gbm7", "Gbmaj7"], "swungMark": false, "finalBass": 6}
+key signatures (fifths): ['-5']  modes: []  times: ['3/4', '4/4']
+text on the score: ['G♭', 'A♭', 'B♭', 'B♭', 'A♭', 'G♭', 'A♭', 'B♭']
+bar   1 RH: F5/eig Eb5/eig F5/eig Bb5/eig F5/eig Eb5/eig  LH: Gb3/hal.+Bb3/hal.+Db4/hal.+F4/hal.  [Gb major-seventh] [Gb major-seventh]
+bar   2 RH: F5/eig Eb5/eig F5/eig Bb5/eig F5/eig Eb5/eig  LH: Gb3/hal.+Bb3/hal.+Db4/hal.+F4/hal.
+bar   3 RH: F5/eig Eb5/eig F5/eig Ab5/eig F5/eig Eb5/eig  LH: Ab3/hal.+C4/hal.+Eb4/hal.+F4/hal.  [Ab major-sixth] [Ab major-sixth]
+bar   4 RH: F5/eig Eb5/eig F5/eig Ab5/eig F5/eig Eb5/eig  LH: Ab3/hal.+C4/hal.+Eb4/hal.+F4/hal.
+bar   5 RH: Eb5/eig Db5/eig Eb5/eig Ab5/eig Eb5/eig Db5/eig  LH: F3/hal.+Ab3/hal.+Db4/hal.+Eb4/hal.  [Db major] [Db major]
+bar   6 RH: Eb5/eig Db5/eig Eb5/eig Ab5/eig Eb5/eig Db5/eig  LH: F3/hal.+Ab3/hal.+Db4/hal.+Eb4/hal.
+bar   7 RH: Eb5/eig Db5/eig Eb5/eig Ab5/eig Eb5/eig Db5/eig  LH: Bb3/hal.+C4/hal.+Db4/hal.+F4/hal.  [Bb minor-ninth] [Bb minor-ninth]
+bar   8 RH: C5/eig Bb4/eig C5/eig F5/eig C5/eig Bb4/eig  LH: Bb3/hal.+C4/hal.+Db4/hal.+F4/hal.
+bar   9 RH: F5/eig Eb5/eig F5/eig Bb5/eig F5/eig Eb5/eig  LH: Gb3/hal.+Bb3/hal.+Db4/hal.+F4/hal.  [Gb major-seventh] [Gb major-seventh]
+bar  10 RH: F5/eig Eb5/eig F5/eig Bb5/eig F5/eig Eb5/eig  LH: Gb3/hal.+Bb3/hal.+Db4/hal.+F4/hal.
+bar  11 RH: F5/eig Eb5/eig F5/eig Ab5/eig F5/eig Eb5/eig  LH: Ab3/hal.+C4/hal.+Eb4/hal.+F4/hal.  [Ab major-sixth] [Ab major-sixth]
+bar  12 RH: F5/eig Eb5/eig F5/eig Ab5/eig F5/eig Eb5/eig  LH: Ab3/hal.+C4/hal.+Eb4/hal.+F4/hal.
+bar  13 RH: Eb5/eig Db5/eig Eb5/eig C6/eig Eb5/eig Db5/eig  LH: F3/hal.+Ab3/hal.+Db4/hal.+Eb4/hal.  [Db major] [Db major]
+bar  14 RH: Ab5/eig Eb5/eig Db5/eig C6/eig Eb5/eig Db5/eig  LH: F3/hal.+Ab3/hal.+Db4/hal.+Eb4/hal.
+bar  15 RH: Eb5/eig Db5/eig Eb5/eig C6/eig Eb5/eig Db5/eig  LH: Bb3/hal.+C4/hal.+Db4/hal.+F4/hal.  [Bb minor-ninth] [Bb minor-ninth]
+bar  16 RH: Ab5/eig Eb5/eig Db5/eig C6/eig Eb5/eig Db5/eig  LH: Bb3/hal.+C4/hal.+Db4/hal.+F4/hal.
+bar  17 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Eb5/eig+Eb6/eig r/eig r/qua  LH: Gb2/who+Gb3/who  [Gb major-seventh] [Gb major-seventh]
+bar  18 RH: r/qua Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig F5/eig+F6/eig Ab5/eig+Ab6/eig F5/eig+F6/eig  LH: Ab2/who+Ab3/who  [Ab major-sixth] [Ab major-sixth]
+bar  19 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Db5/eig+Db6/eig r/eig r/qua  LH: Bb2/who+Bb3/who  [Bb minor-ninth] [Bb minor-ninth]
+bar  20 RH: r/qua Db6/qua+Db7/qua C6/eig+C7/eig Ab5/eig+Ab6/eig F5/qua+F6/qua  LH: Bb2/hal+Bb3/hal Ab2/hal+Ab3/hal  [F minor] [F minor]
+bar  21 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Eb5/eig+Eb6/eig r/eig r/qua  LH: Gb2/who+Gb3/who  [Gb minor-seventh] [Gb minor-seventh]
+bar  22 RH: r/qua Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig F5/eig+F6/eig Ab5/eig+Ab6/eig F5/eig+F6/eig  LH: Ab2/who+Ab3/who  [Ab major-sixth] [Ab major-sixth]
+bar  23 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Db5/eig+Db6/eig Bb4/eig+Bb5/eig r/eig r/qua  LH: Bb2/who+Bb3/who  [Bb minor-ninth] [Bb minor-ninth]
+bar  24 RH: r/hal Ab4/hal+C5/hal+Eb5/hal+F5/hal  LH: Bb2/hal+Bb3/hal Ab2/hal+Ab3/hal  [F minor-seventh] [F minor-seventh]
+bar  25 RH: r/?  LH: Bb2/hal+Bb3/hal C3/qua Db3/qua
+bar  26 RH:v1: Cb4/hal+Eb4/hal+Gb4/hal Cb4/qua.+Eb4/qua.+Gb4/qua. Cb4/eig+Eb4/eig+Gb4/eig | v2: Bb4/eig Ab4/eig Bb4/eig Ab4/eig Ab4/eig Bb4/eig r/eig Bb4/eig  LH: Ab2/who  [Ab minor-seventh] [Ab minor-seventh]
+bar  27 RH:v1: Cb4/who+Eb4/who+Gb4/who | v2: Bb4/eig Ab4/eig Bb4/eig Ab4/eig Ab4/eig Bb4/eig Ab4/eig Gb4/eig  LH: Ab2/who
+bar  28 RH:v1: Gb3/hal+Bb3/hal+Db4/hal Gb3/qua.+Bb3/qua.+Db4/qua. Gb3/eig+Bb3/eig+Db4/eig | v2: F4/eig Eb4/eig F4/eig Eb4/eig Eb4/eig F4/eig r/eig F4/eig  LH: Eb2/who  [Eb minor-seventh] [Eb minor-seventh]
+bar  29 RH:v1: Gb3/who+Bb3/who+Db4/who | v2: F4/eig Eb4/eig F4/eig Eb4/eig Eb4/eig Eb4/eig F4/eig Gb4/eig  LH: Eb2/who
+bar  30 RH:v1: Cb4/hal+Eb4/hal+Gb4/hal Cb4/qua.+Eb4/qua.+Gb4/qua. Cb4/eig+Eb4/eig+Gb4/eig | v2: Bb4/eig Ab4/eig Bb4/eig Ab4/eig Ab4/eig Bb4/eig r/eig Bb4/eig  LH: Eb2/who  [Ab minor-seventh] [Ab minor-seventh]
+bar  31 RH:v1: Cb4/who+Eb4/who+Gb4/who | v2: Bb4/eig Ab4/eig Bb4/eig Ab4/eig Ab4/eig Bb4/eig Ab4/eig Gb4/eig  LH: Ab2/who
+bar  32 RH:v1: G3/who+Bb3/who | v2: F4/eig Eb4/eig F4/eig Bb4/eig Bb4/eig F4/qua F4/eig  LH: Eb2/who  [Eb major] [Eb major]
+bar  33 RH:v1: A3/who+C4/who | v2: F4/eig Eb4/eig F4/eig A4/eig A4/hal  LH: F2/who  [F dominant] [F dominant]
+bar  34 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Eb5/eig+Eb6/eig r/eig r/qua  LH: Gb2/who+Gb3/who  [Gb major-seventh] [Gb major-seventh]
+bar  35 RH: r/qua Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig F5/eig+F6/eig Ab5/eig+Ab6/eig F5/eig+F6/eig  LH: Ab2/who+Ab3/who  [Ab major-sixth] [Ab major-sixth]
+bar  36 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Db5/eig+Db6/eig r/eig r/qua  LH: Bb2/who+Bb3/who  [Bb minor-ninth] [Bb minor-ninth]
+bar  37 RH: r/qua Db6/qua+Db7/qua C6/eig+C7/eig Ab5/eig+Ab6/eig F5/qua+F6/qua  LH: Bb2/hal+Bb3/hal Ab2/hal+Ab3/hal  [F minor] [F minor]
+bar  38 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Eb5/eig+Eb6/eig r/eig r/qua  LH: Gb2/who+Gb3/who  [Gb major-seventh] [Gb major-seventh]
+bar  39 RH: r/qua Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig F5/eig+F6/eig Ab5/eig+Ab6/eig F5/eig+F6/eig  LH: Ab2/who+Ab3/who  [Ab major-sixth] [Ab major-sixth]
+bar  40 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Db5/eig+Db6/eig Bb4/eig+Bb5/eig r/eig r/qua  LH: Bb2/who+Bb3/who  [Bb minor-ninth] [Bb minor-ninth]
+bar  41 RH: r/hal Ab4/hal+C5/hal+Eb5/hal+F5/hal  LH: Bb2/hal+Bb3/hal Ab2/hal+Ab3/hal  [F minor-seventh] [F minor-seventh]
+bar  42 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Eb5/eig+Eb6/eig r/eig r/qua  LH: Gb2/who+Gb3/who  [Gb major-seventh] [Gb major-seventh]
+bar  43 RH: r/qua Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig F5/eig+F6/eig Ab5/eig+Ab6/eig F5/eig+F6/eig  LH: Ab2/who+Ab3/who  [Ab major-sixth] [Ab major-sixth]
+bar  44 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Db5/eig+Db6/eig r/eig r/qua  LH: Bb2/who+Bb3/who  [Bb minor-ninth] [Bb minor-ninth]
+bar  45 RH: r/qua Db6/qua+Db7/qua C6/eig+C7/eig Ab5/eig+Ab6/eig F5/qua+F6/qua  LH: Bb2/hal+Bb3/hal Ab2/hal+Ab3/hal  [F minor] [F minor]
+bar  46 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Eb5/eig+Eb6/eig r/eig r/qua  LH: G2/who+G3/who  [Eb major] [Eb major]
+bar  47 RH: r/qua Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig F5/eig+F6/eig Ab5/eig+Ab6/eig F5/eig+F6/eig  LH: Gb2/who+Gb3/who  [Ab dominant] [Ab dominant]
+bar  48 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Db5/eig+Db6/eig Bb4/qua.+Bb5/qua. Db5/eig  LH: F2/hal+F3/hal Eb2/hal+Eb3/hal  [Db major] [Eb major] [Db major] [Eb major]
+bar  49 RH:v1: C4/hal+Eb4/hal C4/hal+Eb4/hal | v2: Bb4/qua. Ab4/eig Ab4/qua F4/qua  LH: Ab2/hal+Ab3/hal Ab2/hal+Ab3/hal  [Ab major] [Ab major]
+bar  50 RH:v1: Gb4/who+Bb4/who+Db5/who+F5/who | v2: r/qua Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig  LH: Gb2/who  [Gb major-seventh] [Gb major-seventh]
+bar  51 RH: Bb3/eig+C4/eig+F4/eig Bb3/eig+C4/eig+F4/eig Bb3/eig+C4/eig+F4/eig Bb3/eig+C4/eig+F4/eig Bb3/eig+C4/eig+Eb4/eig Bb3/eig+C4/eig+Eb4/eig Bb3/eig+C4/eig+Eb4/eig Bb3/eig+C4/eig+Eb4/eig  LH: Gb2/who  [Gb major-seventh] [Eb minor-sixth] [Gb major-seventh] [Eb minor-sixth]
+bar  52 RH: Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig  LH: F2/who  [Db major] [Db major]
+bar  53 RH: Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig  LH: F2/who  [Db major] [Db major]
+bar  54 RH: Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig Bb3/eig+Db4/eig+F4/eig  LH: Gb2/who  [Gb major-seventh] [Gb major-seventh]
+bar  55 RH: Bb3/eig+C4/eig+F4/eig Bb3/eig+C4/eig+F4/eig Bb3/eig+C4/eig+F4/eig Bb3/eig+C4/eig+F4/eig Bb3/eig+C4/eig+Eb4/eig Bb3/eig+C4/eig+Eb4/eig Bb3/eig+C4/eig+Eb4/eig Bb3/eig+C4/eig+Eb4/eig  LH: Gb2/who  [Gb major-seventh] [Eb minor-sixth] [Gb major-seventh] [Eb minor-sixth]
+bar  56 RH: Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig Ab3/eig+Db4/eig+Eb4/eig  LH: F2/who  [Db major] [Db major]
+bar  57 RH: Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig Ab3/eig+Db4/eig  LH: F2/who  [Db major] [Db major]
+bar  58 RH: r/hal Ab4/hal+C5/hal+Eb5/hal+F5/hal  LH: Bb2/hal+Bb3/hal Ab2/hal+Ab3/hal  [F minor-seventh] [F minor-seventh]
+bar  59 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Eb5/eig+Eb6/eig r/eig r/qua  LH: Gb2/who+Gb3/who  [Gb major-seventh] [Gb major-seventh]
+bar  60 RH: r/qua Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig F5/eig+F6/eig Ab5/eig+Ab6/eig F5/eig+F6/eig  LH: Ab2/who+Ab3/who  [Ab major-sixth] [Ab major-sixth]
+bar  61 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Db5/eig+Db6/eig r/eig r/qua  LH: Bb2/who+Bb3/who  [Bb minor-ninth] [Bb minor-ninth]
+bar  62 RH: r/qua Db6/qua+Db7/qua C6/eig+C7/eig Ab5/eig+Ab6/eig F5/qua+F6/qua  LH: Bb2/hal+Bb3/hal Ab2/hal+Ab3/hal  [F minor] [F minor]
+bar  63 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Eb5/eig+Eb6/eig r/eig r/qua  LH: Gb2/who+Gb3/who  [Gb major-seventh] [Gb major-seventh]
+bar  64 RH: r/qua Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig F5/eig+F6/eig Ab5/eig+Ab6/eig F5/eig+F6/eig  LH: Ab2/who+Ab3/who  [Ab major-sixth] [Ab major-sixth]
+bar  65 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Db5/eig+Db6/eig Bb4/eig+Bb5/eig r/eig r/qua  LH: Bb2/who+Bb3/who  [Bb minor-ninth] [Bb minor-ninth]
+bar  66 RH: r/hal Ab4/hal+C5/hal+Eb5/hal+F5/hal  LH: Bb2/hal+Bb3/hal Ab2/hal+Ab3/hal  [F minor-seventh] [F minor-seventh]
+bar  67 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Eb5/eig+Eb6/eig r/eig r/qua  LH: Gb2/who+Gb3/who  [Gb major-seventh] [Gb major-seventh]
+bar  68 RH: r/qua Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig F5/eig+F6/eig Ab5/eig+Ab6/eig F5/eig+F6/eig  LH: Ab2/who+Ab3/who  [Ab major-sixth] [Ab major-sixth]
+bar  69 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Db5/eig+Db6/eig r/eig r/qua  LH: Bb2/who+Bb3/who  [Bb minor-ninth] [Bb minor-ninth]
+bar  70 RH: r/qua Db6/qua+Db7/qua C6/eig+C7/eig Ab5/eig+Ab6/eig F5/qua+F6/qua  LH: Bb2/hal+Bb3/hal Ab2/hal+Ab3/hal  [F minor] [F minor]
+bar  71 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Bb4/eig+Bb5/eig Eb5/eig+Eb6/eig r/eig r/qua  LH: G2/who+G3/who  [Eb major] [Eb major]
+bar  72 RH: r/qua Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig F5/eig+F6/eig Ab5/eig+Ab6/eig F5/eig+F6/eig  LH: Gb2/who+Gb3/who  [Ab dominant] [Ab dominant]
+bar  73 RH: Eb5/eig+Eb6/eig F5/eig+F6/eig Eb5/eig+Eb6/eig Db5/eig+Db6/eig Bb4/qua.+Bb5/qua. Db5/eig  LH: F2/hal+F3/hal Eb2/hal+Eb3/hal
+bar  74 RH:v1: Bb4/qua. Ab4/eig Ab4/qua F4/qua | v2: C4/hal+Eb4/hal C4/hal+Eb4/hal  LH: Ab2/hal+Ab3/hal Ab2/hal+Ab3/hal
+bar  75 RH: Gb3/who+Bb3/who+Db4/who+F4/who  LH: Gb1/who+Gb2/who  [Gb major-seventh] [Gb major-seventh]

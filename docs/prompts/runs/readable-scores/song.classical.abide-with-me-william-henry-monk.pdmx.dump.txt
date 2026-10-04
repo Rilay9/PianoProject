@@ -1,0 +1,35 @@
+song: song.classical.abide-with-me-william-henry-monk.pdmx
+title: Abide with Me
+composer: William Henry Monk
+rungs: hymns, hymns.4
+shipped file: scores/pdmx/QmSzMTdDidpQfBsdi4WsKBwL2S8mxdaMgN9ZwBD3Heg1a5.mxl
+catalog keySig/timeSig/tempo: Eb major / None / 120.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 81, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -3 major
+  bar 1: time 4 4
+  bar 5: time 4 4
+
+dump_score.py:
+song.classical.abide-with-me-william-henry-monk.pdmx | Abide with Me | level 5.28 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": -3, "mode": "major"}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 3}
+key signatures (fifths): ['-3']  modes: ['major']  times: ['4/4', '4/4']
+text on the score: ['Abide with me', 'Words by Henry F. Lyte.', 'Music by William H. Monk.', 'Edited by Christoph Lahme, (2009/6/18)', 'CPDL copyright license']
+bar   1 RH:v1: G4/hal G4/qua F4/qua | v2: Eb4/hal D4/qua D4/qua  LH:v1: Bb3/hal Bb3/qua Ab3/qua | v2: Eb3/hal Bb2/qua Bb2/qua
+bar   2 RH:v1: Eb4/hal Bb4/hal | v2: Eb4/hal Eb4/hal  LH:v1: G3/hal Eb3/hal | v2: C3/hal G2/hal
+bar   3 RH:v1: C5/qua Bb4/qua Bb4/qua Ab4/qua | v2: Eb4/qua D4/qua Eb4/qua F4/qua  LH:v1: Eb3/qua Bb3/qua Bb3/qua Bb3/qua | v2: Ab2/qua Bb2/qua C3/qua D3/qua
+bar   4 RH:v1: G4/who | v2: Eb4/who  LH:v1: Bb3/who | v2: Eb3/who
+bar   5 RH:v1: G4/hal Ab4/qua Bb4/qua | v2: Eb4/hal Eb4/qua Eb4/qua  LH:v1: Bb3/hal Ab3/qua G3/qua | v2: Eb3/qua D3/qua C3/qua Bb2/qua
+bar   6 RH:v1: C5/hal Bb4/hal | v2: Eb4/hal Eb4/hal  LH:v1: Ab3/hal G3/hal | v2: Ab2/hal Eb3/hal
+bar   7 RH:v1: Ab4/qua F4/qua G4/qua A4/qua | v2: C4/qua F4/qua Eb4/qua Eb4/qua  LH:v1: Ab3/qua Bb3/qua Bb3/qua Eb3/qua | v2: F3/qua D3/qua Eb3/qua C3/qua
+bar   8 RH:v1: Bb4/who | v2: D4/who  LH:v1: F3/who | v2: Bb2/who
+bar   9 RH:v1: G4/hal G4/qua F4/qua | v2: Eb4/hal D4/qua D4/qua  LH:v1: G3/qua Ab3/qua Bb3/qua Ab3/qua | v2: Eb3/hal Bb2/qua Bb2/qua
+bar  10 RH:v1: Eb4/hal Bb4/hal | v2: Eb4/hal Eb4/hal  LH:v1: G3/hal Eb4/qua D4/qua | v2: C3/hal G2/hal
+bar  11 RH:v1: Bb4/qua Ab4/qua Ab4/qua G4/qua | v2: Eb4/qua Eb4/qua E4/qua E4/qua  LH:v1: C4/qua C4/qua C4/qua Bb3/qua | v2: Ab2/qua. Bb2/eig C3/qua C3/qua
+bar  12 RH:v1: F4/who | v2: F4/who  LH:v1: Ab3/who | v2: F3/who
+bar  13 RH:v1: F4/hal G4/qua Ab4/qua | v2: D4/hal Eb4/qua D4/qua  LH:v1: Bb3/hal Bb3/qua Bb3/qua | v2: Ab3/hal G3/qua F3/qua
+bar  14 RH:v1: G4/qua F4/qua Eb4/qua Ab4/qua | v2: Eb4/qua D4/qua Eb4/qua F4/qua  LH:v1: Bb3/qua Ab3/qua G3/qua C4/qua | v2: Eb3/qua Bb2/qua C3/qua Ab2/qua
+bar  15 RH:v1: G4/hal F4/hal | v2: Eb4/hal D4/hal  LH:v1: Bb3/hal. Ab3/qua | v2: Bb2/hal Bb2/hal
+bar  16 RH:v1: Eb4/who | v2: Eb4/who  LH:v1: G3/who | v2: Eb3/who

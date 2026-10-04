@@ -1,0 +1,24 @@
+song: song.folk.skip-to-my-lou.pdmx
+title: Skip to My Lou
+composer: Traditional (American)
+rungs: 2.3
+shipped file: scores/pdmx/QmPYnWB1njn2PqjQcdTXDo7XFuybDjarHUjTVT2XXzgxML.mxl
+catalog keySig/timeSig/tempo: D major / None / 120.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 5, grace notes 0, voices>1 0, measures 8, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 2 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.skip-to-my-lou.pdmx | Skip to My Lou | level 2.5 (estimated)
+notation: {"bars": 8, "staves": 1, "keys": [{"fifths": 2, "mode": "major"}], "times": ["4/4"], "chordCount": 5, "chords": ["A", "D"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['2']  modes: ['major']  times: ['4/4']
+bar   1 RH: F#5/qua F#5/eig F#5/eig D5/eig D5/eig D5/qua  [D major]
+bar   2 RH: F#5/qua F#5/eig F#5/eig A5/hal
+bar   3 RH: E5/qua E5/eig E5/eig C#5/eig C#5/eig C#5/qua  [A major]
+bar   4 RH: E5/qua E5/eig E5/eig G5/hal
+bar   5 RH: F#5/qua F#5/eig F#5/eig D5/eig D5/eig D5/qua  [D major]
+bar   6 RH: F#5/qua F#5/eig F#5/eig A5/hal
+bar   7 RH: E5/qua F#5/eig G5/eig F#5/qua E5/qua  [A major]
+bar   8 RH: D5/hal D5/hal  [D major]

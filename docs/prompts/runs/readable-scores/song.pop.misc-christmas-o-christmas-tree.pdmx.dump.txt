@@ -1,0 +1,49 @@
+song: song.pop.misc-christmas-o-christmas-tree.pdmx
+title: O Christmas Tree
+composer: Traditional (German)
+rungs: holiday.3
+shipped file: scores/pdmx/QmQFWNx69mfxjRXLGudBLfb9zQptf282aNvqTAPvuKfR6s.mxl
+catalog keySig/timeSig/tempo: F major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 38, grace notes 0, voices>1 0, measures 33, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1
+  bar 1: time 3 4
+
+dump_score.py:
+song.pop.misc-christmas-o-christmas-tree.pdmx | O Christmas Tree | level 2.9 (estimated)
+notation: {"bars": 33, "staves": 1, "keys": [{"fifths": -1, "mode": null}], "times": ["3/4"], "chordCount": 38, "chords": ["C7", "Cb", "F", "Faugmented", "Gm"], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: []  times: ['3/4']
+bar   1 RH: C4/qua
+bar   2 RH: F4/eig F4/eig F4/qua G4/qua  [F major] [C dominant]
+bar   3 RH: A4/eig A4/eig A4/qua. A4/eig  [F major]
+bar   4 RH: G4/eig A4/eig Bb4/qua E4/qua  [G minor] [C dominant]
+bar   5 RH: G4/qua F4/qua C4/qua  [F major]
+bar   6 RH: F4/eig F4/eig F4/qua G4/qua  [C dominant]
+bar   7 RH: A4/eig A4/eig A4/qua. A4/eig  [F major]
+bar   8 RH: G4/eig A4/eig Bb4/qua E4/qua  [G minor] [C dominant]
+bar   9 RH: G4/qua F4/qua. C5/eig  [F major]
+bar  10 RH: C5/eig A4/eig D5/qua. C5/eig
+bar  11 RH: C5/eig Bb4/eig Bb4/qua. Bb4/eig  [G minor]
+bar  12 RH: Bb4/eig G4/eig C5/qua. Bb4/eig  [C dominant]
+bar  13 RH: Bb4/eig A4/eig A4/qua C4/qua  [F major]
+bar  14 RH: F4/eig F4/eig F4/qua G4/qua  [C dominant]
+bar  15 RH: A4/eig A4/eig A4/qua. A4/eig  [F major]
+bar  16 RH: G4/eig A4/eig Bb4/qua E4/qua  [G minor] [C dominant]
+bar  17 RH: G4/qua F4/qua C4/qua  [F major]
+bar  18 RH: F4/eig F4/eig F4/qua G4/qua  [C dominant]
+bar  19 RH: A4/eig A4/eig A4/qua. A4/eig  [F major]
+bar  20 RH: G4/eig A4/eig Bb4/qua E4/qua  [G minor] [C dominant]
+bar  21 RH: G4/qua F4/qua C4/qua  [F major]
+bar  22 RH: F4/eig F4/eig F4/qua G4/qua  [C dominant]
+bar  23 RH: A4/eig A4/eig A4/qua. A4/eig  [F major]
+bar  24 RH: G4/eig A4/eig Bb4/qua E4/qua  [G minor] [C dominant]
+bar  25 RH: G4/qua F4/qua. C5/eig  [F major]
+bar  26 RH: C5/eig A4/eig D5/qua. C5/eig
+bar  27 RH: C5/eig Bb4/eig Bb4/qua. Bb4/eig  [G minor]
+bar  28 RH: Bb4/eig G4/eig C5/qua. Bb4/eig  [C dominant]
+bar  29 RH: Bb4/eig A4/eig A4/qua C4/qua  [F major]
+bar  30 RH: F4/eig F4/eig F4/qua G4/qua  [C dominant]
+bar  31 RH: A4/eig A4/eig A4/qua. A4/eig  [F major] [F augmented]
+bar  32 RH: G4/eig A4/eig Bb4/qua E4/qua  [G minor] [Cb major]
+bar  33 RH: G4/qua F4/qua r/qua  [F major]

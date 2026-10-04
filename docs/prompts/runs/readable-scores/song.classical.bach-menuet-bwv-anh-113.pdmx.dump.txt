@@ -1,0 +1,50 @@
+song: song.classical.bach-menuet-bwv-anh-113.pdmx
+title: Minuet in F major, BWV Anh. 113
+composer: Anonymous (Notebook for Anna Magdalena Bach)
+rungs: classical.3
+shipped file: scores/pdmx/QmZzbCrrGH19zjfe766mDvw9C1cXYXSa5ApF7MRnRhpqjL.mxl
+catalog keySig/timeSig/tempo: F major / None / 96.0
+raw-XML counts: ties 0, tuplets 32, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 4, voices>1 104, measures 32, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -1
+  bar 1: time 3 4
+
+dump_score.py:
+song.classical.bach-menuet-bwv-anh-113.pdmx | Minuet in F major, BWV Anh. 113 | level 5.23 (estimated)
+notation: {"bars": 32, "staves": 2, "keys": [{"fifths": -1, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: []  times: ['3/4']
+text on the score: ['Public Domain']
+bar   1 RH: C5/qua D5/16t E5/16t F5/eig E5/qua  LH: F3/qua A3/qua G3/qua
+bar   2 RH: F5/eig E5/eig D5/eig D5/eig C5/hal  LH: A3/qua F3/eig G3/eig A3/eig F3/eig
+bar   3 RH: D5/eig Eb5/eig D5/eig C5/eig D5/eig C5/eig Bb4/eig C5/eig Bb4/eig  LH: Bb3/qua C4/qua C3/qua
+bar   4 RH: Bb4/eig A4/hal G4/qua  LH: F3/qua C3/eig D3/eig E3/eig C3/eig
+bar   5 RH: A4/eig C5/eig F4/eig C5/eig G4/eig C5/eig  LH: F3/qua A2/qua G2/qua
+bar   6 RH: A4/eig C5/eig Bb4/eig C5/eig G4/eig C5/eig  LH: F2/qua G2/qua E2/qua
+bar   7 RH: A4/eig C5/eig F4/eig C5/eig G4/eig C5/eig  LH: F2/qua A2/qua G2/qua
+bar   8 RH: A4/eig C5/eig Bb4/eig C5/eig G4/eig C5/eig  LH: F2/qua G2/qua E2/qua
+bar   9 RH: A4/eig C5/eig D5/eig E5/eig F5/eig D5/eig  LH: F2/qua F3/qua D3/qua
+bar  10 RH: C5/eig B4/eig A4/eig G4/eig C5/16t D5/16t C5/16t B4/16t  LH: G3/qua E3/qua A3/qua
+bar  11 RH: C5/eig F5/eig E5/qua D5/16t C5/16t D5/eig  LH: F3/qua G3/qua G2/qua
+bar  12 RH: C5/hal.  LH: C3/hal.
+bar  13 RH: G5/qua F5/eig E5/eig F5/eig D5/eig  LH: C3/qua G3/qua G2/qua
+bar  14 RH: E5/eig G5/eig Bb5/qua r/qua  LH: C3/qua E3/eig D3/eig E3/eig C3/eig
+bar  15 RH: A5/qua G5/eig F5/eig E5/eig D5/eig  LH: F3/qua Bb3/qua G3/qua
+bar  16 RH: D5/eig C#5/hal.  LH: A3/qua E3/qua C#3/qua
+bar  17 RH: C#5/eig D5/eig E5/eig C#5/eig D5/eig E5/eig  LH: A2/qua A3/qua E3/qua
+bar  18 RH: A4/qua A4/qua A4/qua  LH: C#3/eig D3/eig E3/eig C#3/eig D3/eig E3/eig
+bar  19 RH: C#5/eig D5/eig E5/eig C#5/eig D5/eig E5/eig  LH: A2/qua A2/qua A2/qua
+bar  20 RH: G4/qua G4/qua G4/qua  LH: C#3/eig D3/eig E3/eig C#3/eig D3/eig E3/eig
+bar  21 RH: C#5/eig D5/eig E5/eig C#5/eig D5/eig E5/eig  LH: G2/qua G2/qua G2/qua
+bar  22 RH: A4/eig D5/eig C5/eig Bb4/eig A4/eig G4/eig  LH: F2/qua F3/qua G3/qua
+bar  23 RH: F4/qua G4/qua E4/qua  LH: A3/hal A2/qua
+bar  24 RH: D4/hal.  LH: D3/eig D4/eig C4/eig Bb3/eig A3/eig G3/eig
+bar  25 RH: C5/eig F5/eig E5/eig F5/eig Eb5/eig F5/eig  LH: A3/hal G3/qua
+bar  26 RH: A5/eig F5/eig D5/eig F5/eig C5/eig F5/eig  LH: F3/qua Bb3/qua A3/qua
+bar  27 RH: D5/eig G5/eig F#5/eig G5/eig F5/eig G5/eig  LH: Bb3/hal A3/qua
+bar  28 RH: Bb5/eig G5/eig E5/eig G5/eig C5/eig Bb4/eig  LH: G3/qua C4/qua E3/qua
+bar  29 RH: A4/eig F5/eig G5/eig A5/eig G5/eig F5/eig  LH: F3/qua r/qua r/qua
+bar  30 RH: Bb4/eig G5/eig A5/eig Bb5/eig A5/eig G5/eig  LH: G3/qua r/qua r/qua
+bar  31 RH: C5/eig C6/eig Bb5/eig A5/eig G5/eig A5/eig  LH: A3/qua Bb3/qua C4/qua
+bar  32 RH: G5/eig F5/hal.  LH: F3/hal.

@@ -1,0 +1,65 @@
+song: song.classical.satie-gymnopedie-1
+title: Gymnopédie No. 1
+composer: Erik Satie
+rungs: classical.4.shelf, classical.6
+shipped file: scores/imported/song.classical.satie-gymnopedie-1.mxl
+catalog keySig/timeSig/tempo: D major / 3/4 / 60.0
+raw-XML counts: ties 14, tuplets 0, fingerings 0, dynamics 7, pedal 0, articulations 1, chord symbols 0, grace notes 0, voices>1 188, measures 47, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 2 major
+  bar 1: time 3 4
+
+dump_score.py:
+song.classical.satie-gymnopedie-1 | Gymnopédie No. 1 | level 6.2 (judged)
+notation: {"bars": 47, "staves": 2, "keys": [{"fifths": 2, "mode": "major"}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['2']  modes: ['major']  times: ['3/4']
+text on the score: ['Lent et douloureux ', 'con pedale']
+bar   1 RH: r/qua B3/hal+D4/hal+F#4/hal  LH: G2/hal.
+bar   2 RH: r/qua A3/hal+C#4/hal+F#4/hal  LH: D2/hal.
+bar   3 RH: r/qua B3/hal+D4/hal+F#4/hal  LH: G2/hal.
+bar   4 RH: r/qua A3/hal+C#4/hal+F#4/hal  LH: D2/hal.
+bar   5 RH:v1: r/qua B3/hal+D4/hal+F#4/hal | v2: F#5/qua A5/qua  LH: G2/hal.
+bar   6 RH:v1: r/qua A3/hal+C#4/hal+F#4/hal | v2: G5/qua F#5/qua C#5/qua  LH: D2/hal.
+bar   7 RH:v1: r/qua B3/hal+D4/hal+F#4/hal | v2: B4/qua C#5/qua D5/qua  LH: G2/hal.
+bar   8 RH:v1: r/qua A3/hal+C#4/hal+F#4/hal | v2: A4/hal.  LH: D2/hal.
+bar   9 RH:v1: r/qua B3/hal+D4/hal+F#4/hal | v2: F#4/hal.  LH: G2/hal.
+bar  10 RH:v1: r/qua A3/hal+C#4/hal+F#4/hal | v2: F#4/hal.  LH: D2/hal.
+bar  11 RH:v1: r/qua B3/hal+D4/hal+F#4/hal | v2: F#4/hal.  LH: G2/hal.
+bar  12 RH:v1: r/qua A3/hal+C#4/hal+F#4/hal | v2: F#4/hal.  LH: D2/hal.
+bar  13 RH:v1: r/qua B3/hal+D4/hal+F#4/hal | v2: F#5/qua A5/qua  LH: G2/hal.
+bar  14 RH:v1: r/qua A3/hal+C#4/hal+F#4/hal | v2: G5/qua F#5/qua C#5/qua  LH: D2/hal.
+bar  15 RH:v1: r/qua B3/hal+D4/hal+F#4/hal | v2: B4/qua C#5/qua D5/qua  LH: G2/hal.
+bar  16 RH:v1: r/qua A3/hal+C#4/hal+F#4/hal | v2: A4/hal.  LH: D2/hal.
+bar  17 RH:v1: r/qua A3/hal+C#4/hal+F#4/hal | v2: C#5/hal.  LH: F#2/hal.
+bar  18 RH:v1: r/qua B3/hal+D4/hal+F#4/hal | v2: F#5/hal.  LH: B1/hal.
+bar  19 RH: E4/hal.  LH:v5: E2/hal. | v6: r/qua G3/hal+B3/hal
+bar  20 RH: E4/hal.  LH:v5: E2/hal. | v6: r/qua B3/hal+D4/hal+G4/hal
+bar  21 RH: E4/hal.  LH:v5: D2/hal. | v6: r/qua F3/hal+A3/hal+D4/hal
+bar  22 RH:v1: r/? | v2: A4/qua B4/qua C5/qua  LH:v5: A1/hal. | v6: r/qua A3/hal+C4/hal+E4/hal
+bar  23 RH:v1: r/? | v2: E5/qua D5/qua B4/qua  LH:v5: D2/hal. | v6: r/qua G3/hal+B3/hal+E4/hal
+bar  24 RH:v1: r/? | v2: D5/qua C5/qua B4/qua  LH:v5: D2/hal. | v6: r/qua D3/hal+G3/hal+B3/hal+E4/hal
+bar  25 RH:v1: r/? | v2: D5/hal.  LH:v5: D2/hal. | v6: r/qua C3/hal+E3/hal+A3/hal+D4/hal
+bar  26 RH:v1: r/? | v2: D5/hal D5/qua  LH:v5: D2/hal. | v6: r/qua C3/hal+F#3/hal+A3/hal+D4/hal
+bar  27 RH:v1: r/? | v2: E5/qua F5/qua G5/qua  LH:v5: D2/hal. | v6: r/qua A3/hal+C4/hal+F4/hal
+bar  28 RH:v1: r/? | v2: A5/qua C5/qua D5/qua  LH:v5: D2/hal. | v6: r/qua A3/hal+C4/hal+E4/hal
+bar  29 RH:v1: r/? | v2: E5/qua D5/qua B4/qua  LH:v5: D2/hal. | v6: r/qua D3/hal+G3/hal+B3/hal+E4/hal
+bar  30 RH:v1: r/? | v2: D5/hal.  LH:v5: D2/hal. | v6: r/qua C3/hal+E3/hal+A3/hal+D4/hal
+bar  31 RH:v1: r/? | v2: D5/hal D5/qua  LH:v5: D2/hal. | v6: r/qua C3/hal+F#3/hal+A3/hal+D4/hal
+bar  32 RH:v1: r/qua B3/hal+E4/hal+G4/hal | v2: G5/hal.  LH: E2/hal.
+bar  33 RH:v1: r/qua A3/hal+C#4/hal+F#4/hal | v2: F#5/hal.  LH: F#2/hal.
+bar  34 RH:v1: r/qua B3/hal+D4/hal+F#4/hal | v2: B4/qua A4/qua B4/qua  LH: B1/hal.
+bar  35 RH:v1: r/qua C#4/hal+E4/hal+A4/hal | v2: C#5/qua D5/qua E5/qua  LH: E2/hal.
+bar  36 RH:v1: r/qua A3/hal+C#4/hal+F#4/hal+A4/hal | v2: C#5/qua D5/qua E5/qua  LH: E2/hal.
+bar  37 RH:v1: r/qua A3/qua+D4/qua B3/qua+D4/qua+G4/qua | v2: F#4/hal.  LH:v5: E2/hal. | v6: r/qua B2/qua E3/qua
+bar  38 RH: C4/hal.+E4/hal.+A4/hal.+C5/hal.  LH: A2/hal.+G3/hal.
+bar  39 RH: D4/hal.+F#4/hal.+A4/hal.+D5/hal.  LH: D2/hal.+A2/hal.+D3/hal.
+bar  40 RH:v1: r/qua B3/hal+E4/hal+G4/hal | v2: G5/hal.  LH: E2/hal.
+bar  41 RH:v1: r/qua A3/hal+D4/hal+F4/hal+A4/hal | v2: F5/hal.  LH: E2/hal.
+bar  42 RH:v1: r/qua A3/hal+C4/hal+F4/hal | v2: B4/qua C5/qua F5/qua  LH: E2/hal.
+bar  43 RH:v1: r/qua C4/hal+E4/hal+A4/hal | v2: E5/qua D5/qua C5/qua  LH: E2/hal.
+bar  44 RH:v1: r/qua A3/hal+C4/hal+F4/hal+A4/hal | v2: E5/qua D5/qua C5/qua  LH: E2/hal.
+bar  45 RH:v1: r/qua A3/qua+D4/qua B3/qua+D4/qua+G4/qua | v2: F4/hal.  LH:v5: E2/hal. | v6: r/qua B2/qua E3/qua
+bar  46 RH: C4/hal.+E4/hal.+A4/hal.+C5/hal.  LH: A2/hal.+G3/hal.
+bar  47 RH: D4/hal.+F4/hal.+A4/hal.+D5/hal.  LH: D2/hal.+A2/hal.+D3/hal.

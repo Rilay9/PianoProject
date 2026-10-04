@@ -1,0 +1,25 @@
+song: song.pop.michael-row-the-boat-ashore.pdmx
+title: Michael, Row the Boat Ashore
+composer: Traditional (American spiritual)
+rungs: 2.2
+shipped file: scores/pdmx/QmUx8rFCXn5az3JyawBnRrViiXQGipktKFbj5w8r8NcWaN.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 9, grace notes 0, voices>1 0, measures 9, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.michael-row-the-boat-ashore.pdmx | Michael, Row the Boat Ashore | level 1.37 (estimated)
+notation: {"bars": 9, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 9, "chords": ["C", "F", "G"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: C4/qua E4/qua
+bar   2 RH: G4/qua. E4/eig G4/qua A4/qua  [C major] [F major]
+bar   3 RH: G4/hal E4/qua G4/qua  [C major]
+bar   4 RH: A4/who  [F major]
+bar   5 RH: G4/hal E4/qua G4/qua  [C major]
+bar   6 RH: G4/qua. E4/eig F4/qua E4/qua
+bar   7 RH: D4/hal C4/qua D4/qua  [G major]
+bar   8 RH: E4/hal D4/hal  [C major] [G major]
+bar   9 RH: C4/hal  [C major]

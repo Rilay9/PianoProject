@@ -1,0 +1,65 @@
+song: song.blues.hesitating-blues
+title: Hesitating Blues
+composer: W. C. Handy
+rungs: blues.4
+shipped file: scores/pdmx/QmPwTjLQCR8fxN4eFaKywCUbYwmmwu29FizMECRdLYzDmQ.mxl
+catalog keySig/timeSig/tempo: 1 flat / None / 96.0
+raw-XML counts: ties 28, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 50, grace notes 0, voices>1 0, measures 48, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.blues.hesitating-blues | Hesitating Blues | level 3.17 (estimated)
+notation: {"bars": 48, "staves": 1, "keys": [{"fifths": -1, "mode": "major"}], "times": ["4/4"], "chordCount": 50, "chords": ["Bb", "Bb7", "C#diminished", "C7", "Dm", "Eb", "Eb7", "F", "F7", "Fdiminished", "G7"], "swungMark": false, "finalBass": 10}
+key signatures (fifths): ['-1']  modes: ['major']  times: ['4/4']
+text on the score: ['Pick-up to Chorus']
+bar   1 RH: D5/eig D5/qua. C5/eig A4/eig G#4/eig A4/eig  [F diminished] [F major]
+bar   2 RH: D5/eig D5/eig D5/eig D5/eig C5/hal  [F diminished] [F major]
+bar   3 RH: D5/eig E5/eig D5/eig C5/eig C5/eig A4/eig G#4/eig A4/eig  [F diminished] [F major]
+bar   4 RH: C5/eig A4/eig G4/eig F4/eig F4/eig G4/qua A4/eig  [F major] [C# diminished] [D minor]
+bar   5 RH: G4/hal F4/hal  [Bb major]
+bar   6 RH: r/eig C#4/eig D4/eig F4/eig G4/qua. F4/eig
+bar   7 RH: C4/hal. r/qua  [F major]
+bar   8 RH: r/hal r/eig F4/eig G4/eig A4/eig
+bar   9 RH: C5/eig B4/qua Bb4/eig Bb4/qua r/qua  [C dominant]
+bar  10 RH: r/eig F4/eig G4/eig A4/eig C5/eig A4/qua G4/eig  [G dominant] [C dominant]
+bar  11 RH: F4/hal. r/qua  [F major] [Bb dominant]
+bar  12 RH: r/?  [F dominant]
+bar  13 RH: D5/qua D5/qua C5/qua A4/qua  [Bb major] [F major]
+bar  14 RH: D5/eig E5/eig D5/eig C5/eig C5/qua. A4/eig  [Bb major] [F major]
+bar  15 RH: D5/eig E5/eig D5/eig C5/eig C5/qua G#4/eig A4/eig  [Bb major] [F major]
+bar  16 RH: C5/eig A4/eig G4/eig F4/eig F4/eig G4/qua A4/eig  [F major] [C# diminished] [D minor]
+bar  17 RH: G4/hal F4/hal  [Bb major]
+bar  18 RH: r/eig C#4/eig D4/eig F4/eig G4/qua. F4/eig
+bar  19 RH: D4/hal. r/qua  [F major]
+bar  20 RH: r/hal r/eig F4/eig G4/eig A4/eig
+bar  21 RH: C5/eig B4/qua Bb4/eig Bb4/qua r/qua  [C dominant]
+bar  22 RH: r/eig F4/eig G4/eig A4/eig C5/eig A4/qua G4/eig  [G dominant] [C dominant]
+bar  23 RH: F4/hal. r/qua  [F major] [Bb dominant]
+bar  24 RH: r/hal r/eig D4/eig C#4/eig D4/eig  [F major] [F dominant]
+bar  25 RH: F4/qua. G4/eig G4/hal  [Bb major]
+bar  26 RH: r/eig F4/eig F#4/eig G4/eig G4/hal
+bar  27 RH: r/eig D5/eig C#5/eig D5/eig Bb4/qua Bb4/qua
+bar  28 RH: Bb4/hal. Bb4/qua  [Bb dominant]
+bar  29 RH: Bb4/qua. C5/eig C5/hal  [Eb major]
+bar  30 RH: r/eig Bb4/eig C5/eig C5/eig C5/hal
+bar  31 RH: r/eig Db5/eig Db5/eig C5/eig Bb4/eig Bb4/qua Bb4/eig
+bar  32 RH: Bb4/hal r/eig F#4/eig G4/eig G#4/eig  [Bb major]
+bar  33 RH: A4/qua. G4/eig G4/hal  [F dominant]
+bar  34 RH: r/eig F4/eig F#4/eig G4/eig Bb4/eig Bb4/qua Bb4/eig
+bar  35 RH: Bb4/hal. r/qua  [Bb major]
+bar  36 RH: r/?  [F dominant]
+bar  37 RH: F4/qua. G4/eig G4/hal  [Bb major]
+bar  38 RH: r/eig F4/eig F#4/eig G4/eig G4/hal
+bar  39 RH: r/eig D5/eig C#5/eig D5/eig Bb4/qua Bb4/eig Bb4/eig
+bar  40 RH: Bb4/hal. r/qua  [Bb dominant]
+bar  41 RH: Bb4/qua. C5/eig C5/hal  [Eb major]
+bar  42 RH: r/eig Bb4/eig C5/eig C5/eig C5/hal
+bar  43 RH: r/eig Db5/eig Db5/eig C5/eig Bb4/eig Bb4/qua.
+bar  44 RH: Bb4/hal r/eig F#4/eig G4/eig G#4/eig  [Bb dominant]
+bar  45 RH: A4/hal G4/hal  [F dominant]
+bar  46 RH: r/eig F4/eig F#4/eig G4/eig Bb4/eig Bb4/qua.
+bar  47 RH: Bb4/who  [Eb dominant] [Bb major]
+bar  48 RH: Bb4/qua r/qua r/hal  [Bb major]

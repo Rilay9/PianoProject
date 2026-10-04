@@ -1,0 +1,54 @@
+song: song.classical.vivaldi-spring-vivaldi.pdmx
+title: Spring Vivaldi
+composer: Antonio Vivaldi
+rungs: classical.4.shelf
+shipped file: scores/pdmx/Qmcy9qtMnJQ8BaWKEnd5Ao7cr9W8a1u9LC49WNbNGg9ShD.mxl
+catalog keySig/timeSig/tempo: E major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 8, pedal 0, articulations 2, chord symbols 0, grace notes 1, voices>1 261, measures 37, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 4
+  bar 0: time 4 4
+
+dump_score.py:
+song.classical.vivaldi-spring-vivaldi.pdmx | Spring Vivaldi | level 5.62 (estimated)
+notation: {"bars": 37, "staves": 2, "keys": [{"fifths": 4, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['4']  modes: []  times: ['4/4']
+bar   0 RH: r/eig E5/eig  LH: r/eig E3/eig
+bar   1 RH: G#5/eig G#5/eig G#5/eig F#5/16t E5/16t B5/qua. B5/16t A5/16t  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar   2 RH: G#5/eig G#5/eig G#5/eig F#5/16t E5/16t B5/qua. B5/16t A5/16t  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar   3 RH: G#5/eig A5/16t B5/16t A5/eig G#5/eig F#5/eig D#5/eig B4/eig E5/eig  LH: E3/eig E3/eig A2/eig A#2/eig B2/qua r/eig E3/eig
+bar   4 RH: G#5/eig G#5/eig G#5/eig F#5/16t E5/16t B5/qua. B5/16t A5/16t  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar   5 RH: G#5/eig G#5/eig G#5/eig F#5/16t E5/16t B5/qua. B5/16t A5/16t  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar   6 RH: G#5/eig A5/16t B5/16t A5/eig G#5/eig F#5/eig D#5/eig B4/eig E5/eig  LH: E3/eig E3/eig A2/eig A#2/eig B2/qua r/eig E3/eig
+bar   7 RH: B5/eig A5/16t G#5/16t A5/eig B5/eig C#6/eig B5/qua E5/eig  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar   8 RH: B5/eig A5/16t G#5/16t A5/eig B5/eig C#6/eig B5/qua E5/eig  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar   9 RH: C#6/eig B5/qua A5/eig G#5/eig F#5/16t E5/16t F#5/qua  LH: E2/qua+E3/qua E3/eig B2/eig E3/eig E2/eig B3/eig B2/eig
+bar  10 RH: E5/qua r/eig E5/eig B5/eig A5/16t G#5/16t A5/eig B5/eig  LH: E2/qua r/eig E3/eig E3/qua E3/qua
+bar  11 RH: C#6/eig B5/qua E5/eig B5/eig A5/16t G#5/16t A5/eig B5/eig  LH: E3/qua E3/qua E3/qua E3/qua
+bar  12 RH: C#6/eig B5/qua E5/eig C#6/eig B5/qua A5/eig  LH: E3/qua E3/qua E3/qua E3/eig B2/eig
+bar  13 RH: G#5/eig F#5/16t E5/16t F#5/qua E5/eig G#4/16t A4/16t B4/16t A4/16t B4/16t A4/16t  LH: E3/eig E2/eig B3/eig B2/eig E3/eig E3/eig E3/eig E3/eig
+bar  14 RH: G#4/16t A4/16t G#4/16t A4/16t B4/16t A4/16t B4/16t A4/16t G#4/16t A4/16t G#4/16t A4/16t B4/16t A4/16t B4/16t A4/16t  LH: E3/eig E3/eig E3/eig E3/eig E3/eig E3/eig E3/eig E3/eig
+bar  15 RH: G#4/16t A4/16t G#4/16t A4/16t B4/16t C#5/16t B4/16t C#5/16t D#5/16t E5/16t D#5/16t E5/16t F#5/16t E5/16t F#5/16t E5/16t  LH: E3/eig E3/eig E3/eig E3/eig B2/eig B2/eig B2/eig B2/eig
+bar  16 RH: D#5/16t E5/16t D#5/16t E5/16t F#5/16t E5/16t F#5/16t E5/16t D#5/16t E5/16t D#5/16t E5/16t F#5/16t G#5/16t F#5/16t G#5/16t  LH: B2/eig B2/eig B2/eig B2/eig B2/eig B2/eig B2/eig B2/eig
+bar  17 RH: A5/16t G#5/16t A5/16t G#5/16t F#5/16t A5/16t G#5/16t F#5/16t G#5/eig F#5/16t E5/16t D#5/16t C#5/16t B4/16t A4/16t  LH: B2/eig B2/eig B2/eig B2/eig E3/eig E3/eig E3/eig E3/eig
+bar  18 RH: G#4/16t A4/16t G#4/16t A4/16t B4/16t A4/16t B4/16t A4/16t G#4/16t A4/16t G#4/16t A4/16t B4/16t A4/16t B4/16t A4/16t  LH: E3/eig E3/eig E3/eig E3/eig E3/eig E3/eig E3/eig E3/eig
+bar  19 RH: G#4/16t A4/16t G#4/16t A4/16t B4/16t A4/16t B4/16t A4/16t G#4/qua r/eig G#5/eig  LH: E3/eig E3/eig E3/eig E3/eig E3/16t B2/16t E3/16t B2/16t E3/16t B2/16t E3/16t B2/16t
+bar  20 RH: G#5/eig A5/hal G#5/hal  LH: D#3/16t B2/16t D#3/16t B2/16t D#3/16t B2/16t D#3/16t B2/16t E3/16t B2/16t E3/16t B2/16t E3/16t B2/16t E3/16t B2/16t
+bar  21 RH: F#5/hal G#5/hal  LH: F#3/16t B2/16t F#3/16t B2/16t F#3/16t B2/16t F#3/16t B2/16t E3/16t B2/16t E3/16t B2/16t E3/16t B2/16t E3/16t B2/16t
+bar  22 RH: A5/hal G#5/hal  LH: D#3/16t B2/16t D#3/16t B2/16t D#3/16t B2/16t D#3/16t B2/16t E3/16t B2/16t E3/16t B2/16t E3/16t B2/16t E3/16t B2/16t
+bar  23 RH: F#5/qua r/eig B4/eig F#5/eig E5/16t D#5/16t E5/eig F#5/eig  LH: B2/qua r/eig B2/eig+B3/eig B2/qua+B3/qua B2/qua+B3/qua
+bar  24 RH: G#5/eig F#5/qua B4/eig F#5/eig E5/16t D#5/16t E5/eig F#5/eig  LH: B2/qua+B3/qua B2/qua+B3/qua B2/qua+B3/qua B2/qua+B3/qua
+bar  25 RH: G#5/eig F#5/qua B4/eig G#5/eig F#5/qua E5/eig  LH: B2/qua+B3/qua B2/qua+B3/qua B2/qua+B3/qua B2/eig F#3/eig
+bar  26 RH: D#5/eig C#5/16t B4/16t C#5/qua B4/qua r/eig E5/eig  LH: B3/eig B2/eig F#3/eig F#2/eig B2/qua r/eig E3/eig
+bar  27 RH: G#5/eig G#5/eig G#5/eig F#5/16t E5/16t B5/qua. B5/16t A5/16t  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar  28 RH: G#5/eig G#5/eig G#5/eig F#5/16t E5/16t B5/qua. B5/16t A5/16t  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar  29 RH: G#5/eig A5/16t B5/16t A5/eig G#5/eig F#5/eig D#5/eig B4/eig E5/eig  LH: E3/eig E3/eig A2/eig A#2/eig B2/qua r/eig E3/eig
+bar  30 RH: G#5/eig G#5/eig G#5/eig F#5/16t E5/16t B5/qua. B5/16t A5/16t  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar  31 RH: G#5/eig G#5/eig G#5/eig F#5/16t E5/16t B5/qua. B5/16t A5/16t  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar  32 RH: G#5/eig A5/16t B5/16t A5/eig G#5/eig F#5/eig D#5/eig B4/eig E5/eig  LH: E3/eig E3/eig A2/eig A#2/eig B2/qua r/eig E3/eig
+bar  33 RH: B5/eig A5/16t G#5/16t A5/eig B5/eig C#6/eig B5/qua E5/eig  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar  34 RH: B5/eig A5/16t G#5/16t A5/eig B5/eig C#6/eig B5/qua E5/eig  LH: E2/qua+E3/qua E3/qua E3/qua E3/qua
+bar  35 RH: C#6/eig B5/qua A5/eig G#5/eig F#5/16t E5/16t F#5/qua  LH: E2/qua+E3/qua E3/eig B2/eig E3/eig E2/eig B3/eig B2/eig
+bar  36 RH: E5/who+E6/who  LH: E2/who+E3/who

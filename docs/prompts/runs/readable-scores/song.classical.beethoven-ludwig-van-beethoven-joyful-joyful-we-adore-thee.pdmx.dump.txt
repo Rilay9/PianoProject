@@ -1,0 +1,32 @@
+song: song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx
+title: Joyful, Joyful, We Adore Thee
+composer: Ludwig van Beethoven
+rungs: hymns.2
+shipped file: scores/pdmx/QmY8XeRQK9L3q6Rndkex64R2N5X4LGiQ9CA6qG7U61YyE7.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 40.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 72, voices>1 0, measures 16, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx | Joyful, Joyful, We Adore Thee | level 2.49 (estimated)
+notation: {"bars": 16, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: G5/eig F5/qua G5/eig F5/qua A5/eig G5/qua A5/qua
+bar   2 RH: G5/eig A5/qua G5/qua A5/eig F5/qua G5/eig E5/qua
+bar   3 RH: G4/eig D5/eig C5/eig D5/qua C5/eig D5/qua G5/eig E5/qua G5/eig F5/qua
+bar   4 RH: G5/eig F5/eig G5/eig F5/qua. G5/eig E5/eig A4/eig E5/hal
+bar   5 RH: G5/eig F5/qua G5/eig F5/qua A5/eig G5/qua A5/qua
+bar   6 RH: G5/eig A5/qua G5/qua A5/eig F5/qua G5/eig E5/qua
+bar   7 RH: G4/eig D5/eig C5/eig D5/qua C5/eig D5/qua G5/eig E5/qua G5/eig F5/qua
+bar   8 RH: G5/eig E5/eig F5/eig E5/qua. G5/eig D5/eig G4/eig D5/hal
+bar   9 RH: G5/eig E5/qua A4/eig E5/qua G5/eig F5/qua G4/eig D5/eig C5/eig D5/qua
+bar  10 RH: G5/eig E5/qua G5/eig F5/eig G5/eig A5/eig F5/qua G4/eig D5/eig C5/eig D5/qua
+bar  11 RH: G5/eig E5/qua G5/eig F5/eig G5/eig A5/eig F5/qua G5/eig E5/qua
+bar  12 RH: G4/eig D5/eig C5/eig D5/qua G5/eig E5/qua G4/eig A4/hal
+bar  13 RH: G5/eig F5/qua G5/eig F5/qua A5/eig G5/qua A5/qua
+bar  14 RH: G5/eig A5/qua G5/qua A5/eig F5/qua G5/eig E5/qua
+bar  15 RH: G4/eig D5/eig C5/eig D5/qua C5/eig D5/qua G5/eig E5/qua G5/eig F5/qua
+bar  16 RH: G5/eig E5/eig F5/eig E5/qua. G5/eig D5/eig G4/eig D5/hal

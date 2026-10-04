@@ -1,0 +1,34 @@
+song: song.classical.gurlitt-cornelius-gurlitt-op-82.pdmx
+title: Study, Op. 82
+composer: Cornelius Gurlitt
+rungs: classical.4
+shipped file: scores/pdmx/QmddAr8kqret3xp2dkRNfsnMtmeB4zjbhMsTEPjaKFVMwm.mxl
+catalog keySig/timeSig/tempo: A minor / None / 115.99999999999999
+raw-XML counts: ties 0, tuplets 0, fingerings 28, dynamics 4, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 80, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 2 4
+
+dump_score.py:
+song.classical.gurlitt-cornelius-gurlitt-op-82.pdmx | Study, Op. 82 | level 4.48 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["2/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['0']  modes: []  times: ['2/4']
+text on the score: ['Allegretto']
+bar   1 RH: A4/16t A5/16t G5/16t F5/16t E5/16t D5/16t C5/16t B4/16t  LH: A3/qua+C4/qua r/qua
+bar   2 RH: A4/qua r/qua  LH: r/eig A3/eig+C4/eig A3/eig+C4/eig A3/eig+C4/eig
+bar   3 RH: G#4/16t A4/16t B4/16t A4/16t G#4/eig r/eig  LH: B3/qua+D4/qua r/eig B3/eig+D4/eig
+bar   4 RH: G#4/16t A4/16t B4/16t A4/16t G#4/eig r/eig  LH: B3/qua+D4/qua r/eig B3/eig+D4/eig
+bar   5 RH: A4/16t A5/16t G5/16t F5/16t E5/16t D5/16t C5/16t B4/16t  LH: A3/qua+C4/qua r/qua
+bar   6 RH: A4/qua r/qua  LH: r/eig A3/eig+C4/eig A3/eig+C4/eig A3/eig+C4/eig
+bar   7 RH: B4/16t C5/16t D5/16t r/16t G#4/16t A4/16t B4/16t r/16t  LH: D4/eig+F4/eig r/eig E3/eig+B3/eig+D4/eig r/eig
+bar   8 RH: A4/16t B4/16t C5/16t B4/16t A4/eig r/eig  LH: A3/qua+C4/qua r/qua
+bar   9 RH: C5/16t C6/16t B5/16t A5/16t G5/16t F5/16t E5/16t D5/16t  LH: C4/qua+E4/qua r/qua
+bar  10 RH: C5/qua r/qua  LH: r/eig C4/eig+E4/eig C4/eig+E4/eig C4/eig+E4/eig
+bar  11 RH: B4/16t C5/16t D5/16t C5/16t B4/eig r/eig  LH: D4/qua+F4/qua r/eig D4/eig+F4/eig
+bar  12 RH: B4/16t C5/16t D5/16t C5/16t B4/eig r/eig  LH: D4/qua+F4/qua r/eig D4/eig+F4/eig
+bar  13 RH: C5/16t C6/16t B5/16t A5/16t G5/16t F5/16t E5/16t D5/16t  LH: C4/qua+E4/qua r/qua
+bar  14 RH: C5/qua r/qua  LH: r/eig C4/eig+E4/eig C4/eig+E4/eig C4/eig+E4/eig
+bar  15 RH: B4/16t C5/16t D5/16t r/16t G#4/16t A4/16t B4/16t r/16t  LH: D4/eig+F4/eig r/eig E3/eig+B3/eig+D4/eig r/eig
+bar  16 RH: A4/16t B4/16t C5/16t B4/16t A4/eig r/eig  LH: A3/qua+C4/qua r/qua

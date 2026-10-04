@@ -1,0 +1,35 @@
+song: song.folk.scarborough-fair.pdmx
+title: Scarborough Fair
+composer: Traditional (English)
+rungs: 3.1, rock.overview
+shipped file: scores/pdmx/QmbGfCQu2CdXqiLWCVa5e4egPh5evVzff4nA3k2DjTxwEG.mxl
+catalog keySig/timeSig/tempo: 2 sharps / None / 96.0
+raw-XML counts: ties 6, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 13, grace notes 0, voices>1 0, measures 19, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 2
+  bar 1: time 3 4
+
+dump_score.py:
+song.folk.scarborough-fair.pdmx | Scarborough Fair | level 2.3 (estimated)
+notation: {"bars": 19, "staves": 1, "keys": [{"fifths": 2, "mode": null}], "times": ["3/4"], "chordCount": 13, "chords": ["A", "B", "D", "Em", "G"], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['2']  modes: []  times: ['3/4']
+bar   1 RH: E4/hal E4/qua  [E minor]
+bar   2 RH: B4/hal B4/qua
+bar   3 RH: F#4/qua. G4/eig F#4/qua  [D major]
+bar   4 RH: E4/hal.  [E minor]
+bar   5 RH: r/qua B4/qua D5/qua  [G major]
+bar   6 RH: E5/hal D5/qua  [E minor]
+bar   7 RH: B4/qua C#5/qua A4/qua  [A major]
+bar   8 RH: B4/hal.  [B major]
+bar   9 RH: B4/qua r/qua E5/qua
+bar  10 RH: E5/hal E5/qua  [E minor]
+bar  11 RH: D5/hal B4/qua  [G major]
+bar  12 RH: B4/qua A4/qua G4/qua
+bar  13 RH: F#4/qua D4/hal  [D major]
+bar  14 RH: D4/hal r/qua
+bar  15 RH: E4/hal B4/qua  [E minor]
+bar  16 RH: A4/hal G4/qua
+bar  17 RH: F#4/qua E4/qua D4/qua  [D major]
+bar  18 RH: E4/hal.  [E minor]
+bar  19 RH: E4/hal r/qua

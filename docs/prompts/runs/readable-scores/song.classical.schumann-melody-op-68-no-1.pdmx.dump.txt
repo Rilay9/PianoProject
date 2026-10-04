@@ -1,0 +1,37 @@
+song: song.classical.schumann-melody-op-68-no-1.pdmx
+title: Melody, Op. 68 No. 1
+composer: Robert Schumann
+rungs: 4.3
+shipped file: scores/pdmx/QmQpYnSgWdZyuqx7dsdwh9DQo7or7f1agVLjqsoK6UyNfo.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 53, dynamics 1, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 164, measures 20, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.schumann-melody-op-68-no-1.pdmx | Melody, Op. 68 No. 1 | level 5.03 (estimated)
+notation: {"bars": 20, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: E5/qua D5/qua C5/qua B4/qua  LH: C4/eig G4/eig F4/eig G4/eig E4/eig G4/eig C4/eig E4/eig
+bar   2 RH: A4/eig C5/eig B4/eig D5/eig C5/qua G4/qua  LH: F4/eig D4/eig G4/eig F4/eig E4/eig F4/eig E4/eig D4/eig
+bar   3 RH: G5/qua F5/qua E5/qua C5/qua  LH: E4/eig G4/eig D4/eig G4/eig C4/eig G4/eig E4/eig G4/eig
+bar   4 RH: B4/qua F#4/qua+A4/qua G4/qua r/qua  LH: D4/eig G4/eig C4/eig D4/eig B3/eig D4/eig G3/qua
+bar   5 RH: D5/qua C5/qua B4/qua r/qua  LH: F4/eig G4/eig E4/eig G4/eig D4/eig G4/eig F#4/eig G4/eig
+bar   6 RH: F5/qua E5/qua D5/qua r/qua  LH: D4/eig G4/eig C4/eig G4/eig B3/eig G4/eig F#4/eig G4/eig
+bar   7 RH: A5/qua G5/qua F5/qua E5/qua  LH: F4/eig G4/eig E4/eig G4/eig D4/eig G4/eig C4/eig G4/eig
+bar   8 RH:v1: D5/eig F5/eig E5/eig G5/eig F5/qua. D5/eig | v2: r/hal A4/eig C5/eig B4/eig D5/eig  LH: B3/eig G4/eig C4/eig C#4/eig D4/qua G4/qua
+bar   9 RH: C5/qua+E5/qua D5/qua C5/qua B4/qua  LH: C4/eig G4/eig F4/eig G4/eig E4/eig G4/eig C4/eig E4/eig
+bar  10 RH: A4/eig C5/eig B4/eig D5/eig C5/qua G4/qua  LH: F4/eig D4/eig G4/eig F4/eig E4/eig F4/eig E4/eig D4/eig
+bar  11 RH: A5/qua G5/qua B4/qua+F5/qua C5/qua+E5/qua  LH: F4/eig C5/eig E4/eig C5/eig D4/eig G4/eig C4/eig G4/eig
+bar  12 RH: D5/eig F5/eig B4/eig D5/eig C5/qua r/qua  LH: F4/eig A4/eig G4/eig F4/eig E4/eig G4/eig C4/eig E4/eig
+bar  13 RH: D5/qua C5/qua B4/qua r/qua  LH: F4/eig G4/eig E4/eig G4/eig D4/eig G4/eig F#4/eig G4/eig
+bar  14 RH: F5/qua E5/qua D5/qua r/qua  LH: D4/eig G4/eig C4/eig G4/eig B3/eig G4/eig F#4/eig G4/eig
+bar  15 RH: A5/qua G5/qua F5/qua E5/qua  LH: F4/eig G4/eig E4/eig G4/eig D4/eig G4/eig C4/eig G4/eig
+bar  16 RH:v1: D5/eig F5/eig E5/eig G5/eig F5/qua. D5/eig | v2: r/hal A4/eig C5/eig B4/eig D5/eig  LH: B3/eig G4/eig C4/eig C#4/eig D4/qua G4/qua
+bar  17 RH: C5/qua+E5/qua D5/qua C5/qua B4/qua  LH: C4/eig G4/eig F4/eig G4/eig E4/eig G4/eig C4/eig E4/eig
+bar  18 RH: A4/eig C5/eig B4/eig D5/eig C5/qua G4/qua  LH: F4/eig D4/eig G4/eig F4/eig E4/eig F4/eig E4/eig D4/eig
+bar  19 RH: A5/qua G5/qua B4/qua+F5/qua C5/qua+E5/qua  LH: F4/eig C5/eig E4/eig C5/eig D4/eig G4/eig C4/eig G4/eig
+bar  20 RH: D5/eig F5/eig B4/eig D5/eig C5/qua r/qua  LH: F4/eig A4/eig G4/eig F4/eig E4/eig G4/eig C4/qua

@@ -1,0 +1,35 @@
+song: song.pop.scarborough-fair.pdmx
+title: Scarborough Fair
+composer: Traditional (English)
+rungs: chords-pop.4
+shipped file: scores/pdmx/QmTJENYHPL17Yj2pnVcVmdeMC43hVHWP9Vb5sC47i579Ya.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 96.0
+raw-XML counts: ties 4, tuplets 0, fingerings 5, dynamics 0, pedal 0, articulations 0, chord symbols 36, grace notes 0, voices>1 54, measures 18, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 3 4
+
+dump_score.py:
+song.pop.scarborough-fair.pdmx | Scarborough Fair | level 3.69 (estimated)
+notation: {"bars": 18, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 36, "chords": ["A", "D", "Em", "G"], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+bar   1 RH: E4/hal E4/qua  LH: E3/qua G3/qua B3/qua  [E minor] [E minor]
+bar   2 RH: B4/qua B4/qua B4/qua  LH: E3/qua G3/qua B3/qua  [E minor] [E minor]
+bar   3 RH: F#4/qua. G4/eig F#4/qua  LH: D3/qua F#3/qua A3/qua  [D major] [D major]
+bar   4 RH: E4/hal.  LH: E3/qua G3/qua B3/qua  [E minor] [E minor]
+bar   5 RH: r/qua B4/qua D5/qua  LH: E3/qua G3/qua B3/qua  [E minor] [E minor]
+bar   6 RH: E5/hal D5/qua  LH: E3/qua G3/qua B3/qua  [E minor] [E minor]
+bar   7 RH: B4/qua C#5/qua A4/qua  LH: E3/qua A3/qua C#4/qua  [A major] [A major]
+bar   8 RH: B4/hal.  LH: E3/qua G3/qua B3/qua  [E minor] [E minor]
+bar   9 RH: B4/qua r/qua E5/qua  LH: E3/qua G3/qua B3/qua  [E minor] [E minor]
+bar  10 RH: E5/hal E5/qua  LH: E3/qua G3/qua B3/qua  [E minor] [E minor]
+bar  11 RH: D5/hal B4/qua  LH: G3/qua B3/qua D4/qua  [G major] [G major]
+bar  12 RH: B4/qua. A4/eig G4/qua  LH: G3/qua B3/qua D4/qua  [G major] [G major]
+bar  13 RH: F#4/qua D4/hal  LH: D3/qua F#3/qua A3/qua  [D major] [D major]
+bar  14 RH: E4/hal B4/qua  LH: E3/qua G3/qua B3/qua  [E minor] [E minor]
+bar  15 RH: A4/hal G4/qua  LH: D3/qua F#3/qua A3/qua  [D major] [D major]
+bar  16 RH: F#4/qua. E4/eig D4/qua  LH: D3/qua F#3/qua A3/qua  [D major] [D major]
+bar  17 RH: E4/hal.  LH: E3/qua G3/qua B3/qua  [E minor] [E minor]
+bar  18 RH: E4/hal.  LH: E3/qua G3/qua B3/qua  [E minor] [E minor]

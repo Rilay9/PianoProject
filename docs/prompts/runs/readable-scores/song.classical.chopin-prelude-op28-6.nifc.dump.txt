@@ -1,0 +1,43 @@
+song: song.classical.chopin-prelude-op28-6.nifc
+title: Prelude No. 6 in B minor, Op. 28
+composer: Fryderyk Chopin
+rungs: classical.4.shelf
+shipped file: scores/imported/song.classical.chopin-prelude-op28-6.nifc.mxl
+catalog keySig/timeSig/tempo: b minor / 3/4 / 48.0
+raw-XML counts: ties 4, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 4, chord symbols 0, grace notes 2, voices>1 255, measures 26, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 2
+  bar 1: time 3 4
+
+dump_score.py:
+song.classical.chopin-prelude-op28-6.nifc | Prelude No. 6 in B minor, Op. 28 | level 6.0 (judged)
+notation: {"bars": 26, "staves": 2, "keys": [{"fifths": 2, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 11}
+key signatures (fifths): ['2']  modes: []  times: ['3/4']
+bar   1 RH:v1: B4/eig B4/eig B4/eig B4/eig B4/eig B4/eig | v2: F#4/qua+D4/qua F#4/qua F#4/qua  LH: B2/16t D3/16t F#3/16t B3/16t D4/qua C#4/eig. D4/16t
+bar   2 RH:v1: B4/eig B4/eig B4/eig B4/eig B4/eig B4/eig | v2: F#4/qua+D4/qua F#4/qua+D4/qua F#4/qua+D4/qua  LH: B3/qua. F#3/eig D3/eig C#3/eig
+bar   3 RH:v1: B4/eig B4/eig D5/eig D5/eig D5/eig D5/eig | v2: F#4/qua+D4/qua B4/qua B4/qua  LH: B2/16t F#3/16t B3/16t D4/16t F#4/qua E4/eig. F#4/16t
+bar   4 RH:v1: D5/eig D5/eig D5/eig D5/eig D5/eig D5/eig | v2: B4/qua+F#4/qua B4/qua+F#4/qua B4/qua+F#4/qua  LH: D4/qua. B3/eig F#3/eig D3/eig
+bar   5 RH:v1: D5/eig D5/eig D5/eig D5/eig D5/eig D5/eig | v2: B4/qua+G4/qua B4/qua B4/qua  LH: G2/16t D3/16t B3/16t D4/16t G4/qua F#4/qua
+bar   6 RH:v1: D5/eig D5/eig C#5/eig C#5/eig C#5/eig+A#4/eig D5/eig+B4/eig | v2: B4/qua+G#4/qua B4/qua+G#4/qua G4/qua  LH: F#4/qua E#4/qua E4/eig D4/eig
+bar   7 RH:v1: E5/qua. F#5/eig E5/16t D5/16t D5/eig C#5/16t B4/16t | v2: A#4/eig+G4/eig B4/eig+G4/eig A#4/eig+G4/eig C#5/eig+F#4/eig B4/eig+F#4/eig F#4/eig  LH: C#4/eig E4/eig D4/eig C#4/eig A#3/eig B3/eig D3/eig
+bar   8 RH: A#4/eig+F##4/eig+C#4/eig B4/eig+G#4/eig+D4/eig D5/eig+B4/eig+D4/eig C#5/eig+A#4/eig+C#4/eig r/qua  LH: E3/eig E#3/eig F#3/qua D3/eig C#3/eig
+bar   9 RH:v1: B4/eig B4/eig B4/eig B4/eig B4/eig B4/eig | v2: F#4/qua+D4/qua F#4/qua F#4/qua  LH: B2/16t D3/16t F#3/16t B3/16t D4/qua C#4/eig. D4/16t
+bar  10 RH:v1: B4/eig B4/eig B4/eig B4/eig B4/eig B4/eig | v2: F#4/qua+D4/qua F#4/qua+D4/qua F#4/qua+D4/qua  LH: B3/qua. F#3/eig D3/eig B2/eig
+bar  11 RH:v1: B4/eig B4/eig B4/eig B4/eig B4/eig B4/eig | v2: G4/qua+D4/qua G4/qua G4/qua  LH: G2/16t D3/16t G3/16t B3/16t D4/qua E4/eig F4/eig
+bar  12 RH:v1: C#5/eig C#5/eig C#5/eig C#5/eig C#5/eig C#5/eig | v2: G4/qua G4/qua+E4/qua G4/qua+E4/qua  LH: E4/qua. C#4/eig G3/eig C#3/eig
+bar  13 RH:v1: C#5/eig C#5/eig C#5/eig C#5/eig C#5/eig C#5/eig | v2: G4/qua+E4/qua G4/qua G4/qua+E4/qua  LH: C#2/16t G2/16t E3/16t G3/16t E4/qua C#2/16t G2/16t E3/16t G3/16t
+bar  14 RH:v1: C#5/eig C#5/eig C#5/eig C#5/eig B4/eig B4/eig | v2: G4/qua G4/qua G4/qua  LH: E4/hal r/qua
+bar  15 RH:v1: A#4/eig A#4/eig A#4/eig A#4/eig B4/eig B4/eig | v2: G4/qua+C#4/qua F#4/qua+C#4/qua F#4/qua+D4/qua  LH: E3/qua. F#3/eig E3/16t D3/16t C#3/16t B2/16t
+bar  16 RH:v1: B4/eig B4/eig A#4/eig A#4/eig B4/eig B4/eig | v2: G4/qua+C#4/qua G4/qua+C#4/qua G4/qua+D4/qua  LH: E3/qua. F#3/eig E3/16t D3/16t C#3/16t B2/16t
+bar  17 RH:v1: B4/eig B4/eig B4/eig B4/eig A#4/eig A#4/eig | v2: G4/qua+D4/qua F#4/qua+C#4/qua E4/qua+C#4/qua  LH: A2/16t G2/16t D2/16t E2/16t F#2/hal
+bar  18 RH:v1: A#4/eig A#4/eig B4/eig B4/eig B4/eig B4/eig | v2: E4/qua+C#4/qua D4/qua+B3/qua G4/qua+D4/qua  LH: G2/hal G3/qua
+bar  19 RH:v1: B4/eig B4/eig A#4/eig A#4/eig B4/eig B4/eig | v2: G4/qua+C#4/qua G4/qua+C#4/qua F#4/qua+D4/qua  LH: E3/qua. F#3/eig E3/16t D3/16t C#3/16t B2/16t
+bar  20 RH:v1: B4/eig B4/eig A#4/eig A#4/eig B4/eig B4/eig | v2: G4/qua+C#4/qua G4/qua+C#4/qua G4/qua+D4/qua  LH: E3/qua. F#3/eig E3/16t D3/16t C#3/16t B2/16t
+bar  21 RH:v1: B4/eig B4/eig B4/eig B4/eig A#4/eig A#4/eig | v2: G4/qua+D4/qua F#4/qua+C#4/qua F#4/qua+C#4/qua  LH: A2/16t G2/16t D2/16t E2/16t F#2/hal
+bar  22 RH:v1: B4/eig B4/eig B4/eig B4/eig A4/eig A4/eig | v2: F#4/qua+D4/qua F#4/qua+D4/qua F#4/qua+D4/qua  LH: B1/hal.
+bar  23 RH:v1: F#4/eig F#4/eig F#4/eig F#4/eig F#4/eig F#4/eig | v2: D4/qua r/hal  LH: B1/16t B2/16t F#3/16t B3/16t D4/qua C#4/eig. D4/16t
+bar  24 RH:v1: F#4/eig F#4/eig F#4/eig F#4/eig F#4/eig F#4/eig | v2: D4/qua D4/qua D4/qua  LH: B3/qua. F#3/eig D3/eig C#3/eig
+bar  25 RH:v1: F#4/eig F#4/eig r/qua F#4/eig F#4/eig | v2: D4/qua r/qua D4/qua  LH: B2/hal.
+bar  26 RH:v1: F#4/eig F#4/eig r/qua r/qua | v2: D4/qua r/qua r/qua  LH: B2/qua r/qua r/qua

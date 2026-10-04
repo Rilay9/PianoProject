@@ -1,0 +1,75 @@
+song: song.blues.wabash-blues
+title: Wabash Blues
+composer: Dave Ringle and Fred Meinken
+rungs: blues.3
+shipped file: scores/pdmx/QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.mxl
+catalog keySig/timeSig/tempo: 2 flats / None / 120.0
+raw-XML counts: ties 44, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 80, grace notes 0, voices>1 0, measures 57, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -2
+  bar 1: time 4 4
+  bar 17: key -3
+
+dump_score.py:
+song.blues.wabash-blues | Wabash Blues | level 3.54 (estimated)
+notation: {"bars": 57, "staves": 1, "keys": [{"fifths": -2, "mode": null}, {"fifths": -3, "mode": null}], "times": ["4/4"], "chordCount": 80, "chords": ["A", "Ab", "B7", "Bb", "Bb7", "C", "C7", "D", "D7", "Db7", "Eb", "Eb7", "F", "F#", "F#7", "F#dim", "F7", "G", "Gm"], "swungMark": false, "finalBass": null}
+key signatures (fifths): ['-2', '-3']  modes: []  times: ['4/4']
+text on the score: ['solos at B', 'Back to B']
+bar   1 RH: D5/eig Db5/eig D5/eig Db5/eig D5/eig Db5/eig D5/eig Db5/eig  [Bb major] [G minor]
+bar   2 RH: D5/eig Db5/eig D5/eig Db5/eig D5/eig Db5/eig D5/eig Bb4/eig  [Bb major]
+bar   3 RH: C5/hal D5/hal  [C dominant] [F dominant]
+bar   4 RH: Bb4/hal Bb4/eig r/eig r/qua  [Bb major]
+bar   5 RH: D5/eig Db5/eig D5/eig Db5/eig D5/eig Db5/eig D5/eig Db5/eig  [Bb major] [D dominant]
+bar   6 RH: D5/eig Db5/eig D5/eig Db5/eig D5/eig Db5/eig D5/eig Eb5/eig  [G minor] [Bb major]
+bar   7 RH: D5/hal C5/hal  [C dominant]
+bar   8 RH: C5/hal C5/eig r/eig r/qua  [F dominant]
+bar   9 RH: r/qua D5/eig D5/eig D5/eig D5/qua.  [Bb major]
+bar  10 RH: D5/eig F5/eig D5/eig Bb4/eig Bb4/hal  [Bb dominant]
+bar  11 RH: r/eig C5/eig Bb4/eig G4/eig Bb4/eig C5/qua Bb4/eig  [Eb major]
+bar  12 RH: C#5/eig C5/eig Bb4/eig F#4/eig F#4/hal  [F# dominant]
+bar  13 RH: F4/qua G4/hal A4/qua  [Bb major]
+bar  14 RH: Bb4/eig C5/eig C#5/eig D5/eig D5/eig Eb5/eig F5/qua  [Bb dominant] [G major]
+bar  15 RH: D5/hal C5/hal  [C major] [F dominant]
+bar  16 RH: Bb4/hal. r/qua  [Bb major]
+bar  17 RH: Bb4/who  [Bb dominant]
+bar  18 RH: Bb4/qua F4/qua Ab4/eig G4/qua.  [Bb dominant]
+bar  19 RH: Eb4/who  [Eb major]
+bar  20 RH: Eb4/hal. G4/qua  [Eb major] [G minor] [Ab major] [A major]
+bar  21 RH: Bb4/who  [Bb dominant]
+bar  22 RH: Bb4/qua F4/qua Ab4/eig G4/qua.  [Bb dominant]
+bar  23 RH: Eb4/who  [Eb major]
+bar  24 RH: Eb4/qua. r/eig r/qua Eb5/qua  [Eb major] [F# diminished] [Eb dominant]
+bar  25 RH: Eb5/who  [Ab major]
+bar  26 RH: Eb5/qua F5/qua Eb5/eig C5/qua.  [Ab major]
+bar  27 RH: Bb4/who  [Eb major]
+bar  28 RH: Bb4/qua. r/eig r/qua Bb4/qua  [Eb major]
+bar  29 RH: B4/who  [B dominant]
+bar  30 RH: B4/qua F#4/qua G#4/qua A4/qua  [B dominant]
+bar  31 RH: Bb4/who  [Bb dominant]
+bar  32 RH: Bb4/hal Bb4/eig r/eig r/qua  [Bb dominant]
+bar  33 RH: Bb4/who  [Bb dominant]
+bar  34 RH: Bb4/qua F4/qua Ab4/eig G4/qua.  [Bb dominant]
+bar  35 RH: Eb4/who  [Eb major]
+bar  36 RH: Eb4/hal. r/qua  [Eb major] [G minor] [Ab major] [A major]
+bar  37 RH: Bb4/who  [Bb dominant]
+bar  38 RH: Bb4/qua F4/qua Ab4/eig G4/qua.  [Bb dominant]
+bar  39 RH: Eb4/who  [Eb major]
+bar  40 RH: Eb4/qua. r/eig r/qua Eb5/qua  [Eb major] [F# diminished] [Eb dominant]
+bar  41 RH: Eb5/who  [Ab major]
+bar  42 RH: Eb5/qua F5/qua Eb5/eig C5/qua.  [Eb major]
+bar  43 RH: Bb4/who  [Eb major]
+bar  44 RH: Bb4/qua. r/eig r/qua G4/qua  [Eb major]
+bar  45 RH: Bb4/who  [Bb dominant]
+bar  46 RH: Bb4/qua F4/qua Ab4/eig G4/qua.  [Bb dominant]
+bar  47 RH: Eb4/who  [Eb major]
+bar  48 RH: Eb4/qua. r/eig r/hal  [Eb major]
+bar  49 RH: D5/eig Db5/eig D5/eig Eb5/eig D5/eig Db5/eig D5/eig Eb5/eig  [Bb major] [D major]
+bar  50 RH: D5/eig Db5/eig D5/eig Eb5/eig D5/hal  [G minor] [Bb major]
+bar  51 RH: Db5/eig C5/eig Db5/eig Eb5/eig Db5/eig C5/eig Db5/eig Eb5/eig  [F# major] [Db dominant]
+bar  52 RH: Db5/eig C5/eig Db5/eig Eb5/eig Db5/hal  [F# major] [Db dominant]
+bar  53 RH: C5/eig B4/eig C5/eig D5/eig C5/eig B4/eig C5/eig D5/eig  [C dominant] [F major]
+bar  54 RH: C5/eig B4/eig C5/eig D5/eig C5/hal  [C dominant] [F major]
+bar  55 RH: Bb4/eig A4/eig Bb4/eig C5/eig Bb4/eig A4/eig Bb4/eig C5/eig  [Bb major] [Bb dominant]
+bar  56 RH: Bb4/eig A4/eig Bb4/eig C5/eig Bb4/qua r/qua  [Eb major] [Bb major]
+bar  57 RH: r/?

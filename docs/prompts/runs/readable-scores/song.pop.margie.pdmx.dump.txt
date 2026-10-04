@@ -1,0 +1,65 @@
+song: song.pop.margie.pdmx
+title: Margie (1920)
+composer: Con Conrad and J. Russel Robinson
+rungs: jazz.4
+shipped file: scores/pdmx/QmeZfusZHg4rm2bm4HKxUxF4oML58ivgwis6fR7t6xLG9N.mxl
+catalog keySig/timeSig/tempo: 1 flat / None / 160.0
+raw-XML counts: ties 10, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 50, grace notes 0, voices>1 0, measures 48, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.margie.pdmx | Margie (1920) | level 2.8 (estimated)
+notation: {"bars": 48, "staves": 1, "keys": [{"fifths": -1, "mode": null}], "times": ["4/4"], "chordCount": 50, "chords": ["A7", "Bb", "C", "C7", "D7", "E7", "Eb7", "F", "F7", "F7+", "Fdim", "G7", "Gdim", "Gm", "Gm7"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['-1']  modes: []  times: ['4/4']
+text on the score: ['Break 2 bars']
+bar   1 RH: A4/hal C5/hal  [F major] [C major]
+bar   2 RH: Bb4/qua A4/qua F4/qua G4/qua  [Bb major] [F major] [C dominant]
+bar   3 RH: A4/eig G4/eig F4/hal.  [F major]
+bar   4 RH: F4/qua r/qua r/hal  [G minor-seventh] [C dominant]
+bar   5 RH: A4/hal C5/hal  [F major] [C major]
+bar   6 RH: Bb4/qua A4/qua F4/qua G4/qua  [Bb major] [F major] [C dominant]
+bar   7 RH: A4/who  [F diminished] [F major]
+bar   8 RH: r/?
+bar   9 RH: Bb4/hal D5/hal  [G minor]
+bar  10 RH: C5/qua Bb4/qua A4/qua C5/qua  [D dominant]
+bar  11 RH: Bb4/eig A4/eig G4/hal.  [G minor]
+bar  12 RH: G4/qua r/qua r/hal  [Eb dominant] [D dominant]
+bar  13 RH: r/qua A4/qua A4/qua A4/qua  [G dominant]
+bar  14 RH: A4/qua D4/qua F4/qua A4/qua
+bar  15 RH: C5/who  [F major] [C major]
+bar  16 RH: C5/eig r/eig C5/qua C5/qua C5/qua  [C dominant]
+bar  17 RH: C5/who  [F major]
+bar  18 RH: A4/who
+bar  19 RH: r/qua C5/qua B4/qua C5/qua
+bar  20 RH: D5/qua C5/qua A4/qua G4/qua  [F dominant] [F augmented-seventh]
+bar  21 RH: F4/who  [Bb major]
+bar  22 RH: D4/who
+bar  23 RH: r/qua F4/qua E4/qua F4/qua
+bar  24 RH: Bb4/qua F4/qua G4/qua G#4/qua
+bar  25 RH: A4/hal C5/hal  [F major]
+bar  26 RH: B4/hal C5/hal  [E dominant] [Eb dominant]
+bar  27 RH: D5/qua C5/qua A4/qua F#4/qua  [D dominant]
+bar  28 RH: F#4/hal. r/qua
+bar  29 RH: G4/hal D5/hal  [G dominant]
+bar  30 RH: C#5/hal D5/hal  [G diminished] [G dominant]
+bar  31 RH: E5/qua D5/qua Bb4/qua G4/qua  [C dominant]
+bar  32 RH: D5/qua C5/qua B4/qua Bb4/qua
+bar  33 RH: C5/who  [F major]
+bar  34 RH: A4/who
+bar  35 RH: r/qua C5/qua B4/qua C5/qua
+bar  36 RH: D5/qua C5/qua A4/qua G4/qua  [F dominant] [F augmented-seventh]
+bar  37 RH: F4/hal Bb4/hal  [Bb major]
+bar  38 RH: F4/hal G4/hal
+bar  39 RH: A4/who  [A dominant]
+bar  40 RH: A4/qua r/qua A4/qua Bb4/qua
+bar  41 RH: C5/qua D5/qua C5/qua D5/qua  [F major]
+bar  42 RH: C5/hal A4/qua Bb4/qua
+bar  43 RH: C5/qua D5/qua C5/qua D5/qua  [F dominant] [E dominant] [Eb dominant]
+bar  44 RH: E5/hal. D5/qua  [D dominant]
+bar  45 RH: Bb4/hal G4/hal  [G minor-seventh]
+bar  46 RH: Bb4/qua A4/hal G4/qua  [C dominant]
+bar  47 RH: F4/who  [F major]
+bar  48 RH: r/qua C5/qua C5/qua C5/qua  [C dominant]

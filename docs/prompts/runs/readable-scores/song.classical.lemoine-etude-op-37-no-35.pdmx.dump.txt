@@ -1,0 +1,36 @@
+song: song.classical.lemoine-etude-op-37-no-35.pdmx
+title: Étude, Op. 37 No. 35
+composer: Henry Lemoine
+rungs: technique.4
+shipped file: scores/pdmx/QmXrV8VzEXWj5Cb7DTsMnQrEJabUrX6eHJQazGGN4zBAF2.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 142.5
+raw-XML counts: ties 0, tuplets 0, fingerings 111, dynamics 8, pedal 0, articulations 121, chord symbols 0, grace notes 0, voices>1 173, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 6 8
+  bar 13: clef G 2
+  bar 15: clef F 4
+
+dump_score.py:
+song.classical.lemoine-etude-op-37-no-35.pdmx | Étude, Op. 37 No. 35 | level 4.81 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["6/8"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['0']  modes: []  times: ['6/8']
+text on the score: ['Allegretto', 'cresc.', 'Fine', 'Fine', 'poco rallentando', 'diminuendo', 'D.C. al Fine', 'D.C. al Fine']
+bar   1 RH: r/eig C5/eig+E5/eig+G5/eig G4/eig+C5/eig+E5/eig r/eig C5/eig+E5/eig+G5/eig G4/eig+C5/eig+E5/eig  LH: C3/eig r/eig r/eig G3/eig+C4/eig+E4/eig r/eig r/eig
+bar   2 RH: r/eig C5/eig+F5/eig+A5/eig A4/eig+C5/eig+F5/eig r/eig C5/eig+F5/eig+A5/eig A4/eig+C5/eig+F5/eig  LH: C3/eig r/eig r/eig A3/eig+C4/eig+F4/eig r/eig r/eig
+bar   3 RH: r/eig C5/eig+E5/eig+G5/eig G4/eig+C5/eig+E5/eig r/eig C5/eig+E5/eig+G5/eig G4/eig+C5/eig+E5/eig  LH: C3/eig r/eig r/eig G3/eig+C4/eig+E4/eig r/eig r/eig
+bar   4 RH: r/eig B4/eig+G5/eig B4/eig+F5/eig B4/eig+E5/eig B4/eig+F5/eig B4/eig+D5/eig  LH: G2/eig r/eig G3/eig+D4/eig+F4/eig G3/eig+D4/eig+F4/eig G3/eig+D4/eig+F4/eig G3/eig+D4/eig+F4/eig
+bar   5 RH: r/eig C5/eig+E5/eig+G5/eig G4/eig+C5/eig+E5/eig r/eig C5/eig+E5/eig+G5/eig G4/eig+C5/eig+E5/eig  LH: C3/eig r/eig r/eig G3/eig+C4/eig+E4/eig r/eig r/eig
+bar   6 RH: r/eig C5/eig+F5/eig+A5/eig A4/eig+C5/eig+F5/eig r/eig C5/eig+F5/eig+A5/eig A4/eig+C5/eig+F5/eig  LH: C3/eig r/eig r/eig A3/eig+C4/eig+F4/eig r/eig r/eig
+bar   7 RH: r/eig E5/eig+G5/eig C5/eig+E5/eig r/eig D5/eig+F5/eig B4/eig+D5/eig  LH: G2/eig r/eig G3/eig+C4/eig+E4/eig G3/eig+D4/eig+F4/eig r/eig G3/eig+D4/eig+F4/eig
+bar   8 RH: C5/eig G4/eig+C5/eig G4/eig+E5/eig G4/eig+C5/eig r/eig r/eig  LH: C4/eig+E4/eig C4/eig+E4/eig C4/eig+E4/eig C4/eig+E4/eig r/eig r/eig
+bar   9 RH: D5/eig+G5/eig+B5/eig r/eig r/eig B4/eig+D5/eig+G5/eig r/eig r/eig  LH: r/eig G2/eig+B2/eig+D3/eig B2/eig+D3/eig+G3/eig r/eig B2/eig+D3/eig+G3/eig D3/eig+G3/eig+B3/eig
+bar  10 RH: r/eig D5/eig+A5/eig D5/eig+G5/eig D5/eig+F#5/eig D5/eig+G5/eig D5/eig+A5/eig  LH: D3/qua+A3/qua+C4/qua D3/eig+A3/eig+C4/eig D3/eig+A3/eig+C4/eig D3/eig+A3/eig+C4/eig D3/eig+A3/eig+C4/eig
+bar  11 RH: D5/eig+G5/eig+B5/eig r/eig r/eig B4/eig+D5/eig+G5/eig r/eig r/eig  LH: r/eig G2/eig+B2/eig+D3/eig B2/eig+D3/eig+G3/eig r/eig B2/eig+D3/eig+G3/eig D3/eig+G3/eig+B3/eig
+bar  12 RH: r/eig D5/eig+A5/eig D5/eig+G5/eig D5/eig+F#5/eig D5/eig+G5/eig D5/eig+A5/eig  LH: D3/qua+A3/qua+C4/qua D3/eig+A3/eig+C4/eig D3/eig+A3/eig+C4/eig D3/eig+A3/eig+C4/eig D3/eig+A3/eig+C4/eig
+bar  13 RH: D5/eig+G5/eig A5/eig G5/eig Eb5/eig+F#5/eig Eb5/eig+G5/eig Eb5/eig+A5/eig  LH: G3/eig+B3/eig r/eig r/eig G4/eig+C5/eig G4/eig+C5/eig G4/eig+C5/eig
+bar  14 RH: D5/eig+G5/eig A5/eig G5/eig Eb5/eig+F#5/eig Eb5/eig+G5/eig Eb5/eig+A5/eig  LH: G4/eig+B4/eig r/eig r/eig G4/eig+C5/eig G4/eig+C5/eig G4/eig+C5/eig
+bar  15 RH: D5/eig+G5/eig A5/eig G5/eig r/eig D5/eig+A5/eig G5/eig  LH: G4/eig+B4/eig r/eig r/eig G3/eig+B3/eig+D4/eig r/eig r/eig
+bar  16 RH: r/eig C5/eig+A5/eig G5/eig r/eig B4/eig+A5/eig G5/eig  LH: G3/eig+C4/eig+E4/eig r/eig r/eig G3/eig+D4/eig+F4/eig r/eig r/eig

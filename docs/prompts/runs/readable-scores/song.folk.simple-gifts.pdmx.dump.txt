@@ -1,0 +1,32 @@
+song: song.folk.simple-gifts.pdmx
+title: Simple Gifts
+composer: Joseph Brackett (Shaker, 1848)
+rungs: 2.1
+shipped file: scores/pdmx/QmXQuSzr3EW1PHrfFSenLipbPuYPVwhncm3hhv9tZzEDrN.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 16, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.simple-gifts.pdmx | Simple Gifts | level 2.08 (estimated)
+notation: {"bars": 16, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: C5/qua C5/eig D5/eig E5/eig C5/eig E5/eig F5/eig
+bar   2 RH: G5/qua G5/eig G5/eig E5/qua D5/eig C5/eig
+bar   3 RH: D5/qua D5/qua D5/qua D5/qua
+bar   4 RH: D5/eig E5/eig D5/eig B4/eig G4/qua G4/qua
+bar   5 RH: C5/eig B4/eig C5/eig D5/eig E5/qua D5/eig D5/eig
+bar   6 RH: E5/qua F5/qua G5/qua. G5/eig
+bar   7 RH: D5/qua D5/eig E5/eig D5/qua C5/eig C5/eig
+bar   8 RH: D5/qua C5/eig B4/eig C5/hal
+bar   9 RH: G5/hal E5/qua. D5/eig
+bar  10 RH: E5/eig F5/eig E5/eig D5/eig C5/qua. D5/eig
+bar  11 RH: E5/qua E5/eig F5/eig G5/qua E5/qua
+bar  12 RH: D5/qua D5/eig E5/eig D5/qua. G4/eig
+bar  13 RH: C5/hal C5/qua. D5/eig
+bar  14 RH: E5/qua E5/eig F5/eig G5/qua G5/eig G5/eig
+bar  15 RH: D5/qua D5/qua E5/qua E5/eig D5/eig
+bar  16 RH: C5/qua C5/qua C5/hal

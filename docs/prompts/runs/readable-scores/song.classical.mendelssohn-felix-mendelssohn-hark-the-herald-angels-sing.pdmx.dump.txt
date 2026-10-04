@@ -1,0 +1,36 @@
+song: song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx
+title: Hark! The Herald Angels Sing
+composer: Felix Mendelssohn
+rungs: holiday.3
+shipped file: scores/pdmx/QmYYLDCTKW7E12WExM8ZAKAgiWuxBjxPtzH8SEqmnwedA1.mxl
+catalog keySig/timeSig/tempo: G major / None / 130.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 45, grace notes 0, voices>1 0, measures 20, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 1 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx | Hark! The Herald Angels Sing | level 2.74 (estimated)
+notation: {"bars": 20, "staves": 1, "keys": [{"fifths": 1, "mode": "major"}], "times": ["4/4"], "chordCount": 45, "chords": ["A", "Am", "C", "D", "D7", "E", "E7", "Em", "G"], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: ['major']  times: ['4/4']
+bar   1 RH: D4/qua G4/qua G4/qua. F#4/eig  [G major] [D major]
+bar   2 RH: G4/qua B4/qua B4/qua A4/qua  [G major] [D major]
+bar   3 RH: D5/qua D5/qua D5/qua. C5/eig  [G major] [C major]
+bar   4 RH: B4/qua A4/qua B4/hal  [D major] [G major]
+bar   5 RH: D4/qua G4/qua G4/qua. F#4/eig  [G major] [D major]
+bar   6 RH: G4/qua B4/qua B4/qua A4/qua  [G major] [A major]
+bar   7 RH: D5/qua A4/qua A4/qua. F#4/eig  [D major]
+bar   8 RH: F#4/qua E4/qua D4/hal  [D major] [A major] [D major]
+bar   9 RH: D5/qua D5/qua D5/qua G4/qua  [D major] [G major]
+bar  10 RH: C5/qua B4/qua B4/qua A4/qua  [D dominant] [G major] [D major]
+bar  11 RH: D5/qua D5/qua D5/qua G4/qua  [G major]
+bar  12 RH: C5/qua B4/qua B4/qua A4/qua  [D dominant] [G major] [D major]
+bar  13 RH: E5/qua E5/qua E5/qua D5/qua  [C major] [E dominant]
+bar  14 RH: C5/qua B4/qua C5/hal  [A minor] [E major] [A minor]
+bar  15 RH: A4/qua B4/eig C5/eig D5/qua. G4/eig  [D major] [G major]
+bar  16 RH: G4/qua A4/qua B4/hal  [E minor] [D major] [G major]
+bar  17 RH: E5/qua. E5/eig E5/qua D5/qua  [C major] [E dominant]
+bar  18 RH: C5/qua B4/qua C5/hal  [A minor] [E major] [A minor]
+bar  19 RH: A4/qua B4/eig C5/eig D5/qua. G4/eig  [D major] [G major]
+bar  20 RH: G4/qua A4/qua G4/hal  [E minor] [D major] [G major]

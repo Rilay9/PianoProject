@@ -1,0 +1,49 @@
+song: song.classical.beethoven-ludwig-van-beethoven-ecossaise.pdmx
+title: Écossaise in F major (after WoO 23)
+composer: Ludwig van Beethoven
+rungs: classical.3
+shipped file: scores/pdmx/Qmbs2gUsobGdZ9EbYb8kR9JCDiMJVpA6ukw9qpK2ifmiH4.mxl
+catalog keySig/timeSig/tempo: F major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 23, chord symbols 0, grace notes 0, voices>1 0, measures 32, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1 major
+  bar 1: time 2 4
+
+dump_score.py:
+song.classical.beethoven-ludwig-van-beethoven-ecossaise.pdmx | Écossaise in F major (after WoO 23) | level 2.94 (estimated)
+notation: {"bars": 32, "staves": 1, "keys": [{"fifths": -1, "mode": "major"}], "times": ["2/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: ['major']  times: ['2/4']
+text on the score: ['Allegro']
+bar   1 RH: F4/eig F4/eig
+bar   2 RH: A4/qua A4/eig A4/eig
+bar   3 RH: C5/qua C5/eig C5/eig
+bar   4 RH: F5/qua F5/eig F5/eig
+bar   5 RH: C5/hal
+bar   6 RH: A4/eig C5/eig Bb4/eig A4/eig
+bar   7 RH: F4/eig A4/eig G4/eig F4/eig
+bar   8 RH: G4/qua G4/eig A4/eig
+bar   9 RH: G4/qua F4/eig F4/eig
+bar  10 RH: A4/qua A4/eig A4/eig
+bar  11 RH: C5/qua C5/eig C5/eig
+bar  12 RH: F5/qua F5/eig F5/eig
+bar  13 RH: C5/hal
+bar  14 RH: A4/eig C5/eig Bb4/eig A4/eig
+bar  15 RH: F4/eig A4/eig G4/eig F4/eig
+bar  16 RH: G4/qua G4/eig A4/eig
+bar  17 RH: F4/qua F4/eig G4/eig
+bar  18 RH: A4/eig C5/eig Bb4/eig A4/eig
+bar  19 RH: F4/eig A4/eig G4/eig F4/eig
+bar  20 RH: Bb4/qua C5/eig D5/eig
+bar  21 RH: C5/qua F5/eig G5/eig
+bar  22 RH: A5/eig C6/eig Bb5/eig A5/eig
+bar  23 RH: G5/qua B5/eig C6/eig
+bar  24 RH: F5/qua F4/eig G4/eig
+bar  25 RH: A4/eig C5/eig Bb4/eig A4/eig
+bar  26 RH: F4/eig A4/eig G4/eig F4/eig
+bar  27 RH: Bb4/qua C5/eig D5/eig
+bar  28 RH: C5/qua F5/eig G5/eig
+bar  29 RH: A5/eig C6/eig Bb5/eig A5/eig
+bar  30 RH: F5/eig A5/eig G5/eig F5/eig
+bar  31 RH: G5/qua B5/eig C6/eig
+bar  32 RH: F5/qua r/qua

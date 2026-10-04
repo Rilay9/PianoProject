@@ -1,0 +1,35 @@
+song: song.folk.we-wish-you-a-merry-christmas.pdmx
+title: We Wish You a Merry Christmas
+composer: Traditional (English)
+rungs: holiday.4
+shipped file: scores/pdmx/QmSrBiF9B7kFNtAV1EHH8Jdm6sFm3ccatcp8uPgQuAdb9s.mxl
+catalog keySig/timeSig/tempo: F major / None / 96.0
+raw-XML counts: ties 2, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 38, measures 17, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key -1
+  bar 0: time 3 4
+
+dump_score.py:
+song.folk.we-wish-you-a-merry-christmas.pdmx | We Wish You a Merry Christmas | level 3.82 (estimated)
+notation: {"bars": 17, "staves": 2, "keys": [{"fifths": -1, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: []  times: ['3/4']
+text on the score: ['Moderato']
+bar   0 RH: C4/qua  LH: r/qua
+bar   1 RH: F4/qua F4/eig G4/eig F4/eig E4/eig  LH: F3/hal.+A3/hal.
+bar   2 RH: D4/qua D4/qua D4/qua  LH: F3/hal.+Bb3/hal.
+bar   3 RH: G4/qua G4/eig A4/eig G4/eig F4/eig  LH: G3/hal.+Bb3/hal.
+bar   4 RH: E4/qua C4/qua C4/qua  LH: C4/hal.
+bar   5 RH: A4/qua A4/eig Bb4/eig A4/eig G4/eig  LH: C#4/hal.
+bar   6 RH: F4/qua D4/qua C4/eig C4/eig  LH: D4/qua Bb3/qua A3/eig A3/eig
+bar   7 RH: D4/qua G4/qua E4/qua  LH: Bb3/hal G3/qua
+bar   8 RH: F4/hal C4/qua  LH: F3/hal+A3/hal r/qua
+bar   9 RH: F4/qua F4/qua F4/qua  LH: F3/hal.+A3/hal.
+bar  10 RH: E4/hal E4/qua  LH: Bb3/hal.+C4/hal.
+bar  11 RH: F4/qua E4/qua D4/qua  LH: G3/hal.+Bb3/hal.
+bar  12 RH: C4/hal G4/qua  LH: F3/hal+A3/hal G3/qua+Bb3/qua
+bar  13 RH: A4/qua G4/eig G4/eig F4/eig F4/eig  LH: A3/hal.+C4/hal.
+bar  14 RH: C5/qua C4/qua C4/eig C4/eig  LH: F3/hal.+A3/hal.
+bar  15 RH: D4/qua G4/qua E4/qua  LH: G3/hal+Bb3/hal C4/qua
+bar  16 RH: F4/hal r/qua  LH: F3/hal+A3/hal r/qua

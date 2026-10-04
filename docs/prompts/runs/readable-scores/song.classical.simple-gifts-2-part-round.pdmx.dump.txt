@@ -1,0 +1,34 @@
+song: song.classical.simple-gifts-2-part-round.pdmx
+title: Simple Gifts (2-Part Round)
+composer: NA
+rungs: hymns
+shipped file: scores/pdmx/QmUiDWgHsV5ok2kkfrw1Hgu9KN36x1avDLUJgm5D4jRujx.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 6, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 89, measures 17, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 0
+  bar 0: time 4 4
+
+dump_score.py:
+song.classical.simple-gifts-2-part-round.pdmx | Simple Gifts (2-Part Round) | level 3.85 (estimated)
+notation: {"bars": 17, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   0 RH: G4/eig G4/eig  LH: r/qua
+bar   1 RH: C5/qua C5/eig D5/eig E5/eig C5/eig E5/eig F5/eig  LH: G3/qua r/qua E3/qua E3/eig D3/eig
+bar   2 RH: G5/qua G5/eig F5/eig E5/qua D5/eig C5/eig  LH: E3/eig F3/eig E3/eig D3/eig C3/qua C3/eig D3/eig
+bar   3 RH: D5/qua D5/qua D5/qua C5/qua  LH: E3/qua E3/eig F3/eig G3/qua F3/eig E3/eig
+bar   4 RH: D5/eig E5/eig D5/eig B4/eig G4/eig r/eig G4/qua  LH: D3/qua D3/eig E3/eig D3/qua G2/qua
+bar   5 RH: C5/eig B4/eig C5/eig D5/eig E5/eig D5/eig E5/eig F5/eig  LH: C3/hal C3/qua C3/eig D3/eig
+bar   6 RH: G5/qua G5/eig F5/eig E5/qua D5/eig C5/eig  LH: E3/qua E3/eig F3/eig G3/qua F3/eig E3/eig
+bar   7 RH: D5/qua D5/qua E5/qua E5/eig D5/eig  LH: D3/qua D3/qua E3/qua E3/eig D3/eig
+bar   8 RH: C5/qua C5/qua C5/qua r/qua  LH: C3/qua C3/qua C3/qua G2/eig G2/eig
+bar   9 RH: G5/qua r/qua E5/qua. D5/eig  LH: C3/qua C3/eig D3/eig E3/eig C3/eig E3/eig F3/eig
+bar  10 RH: E5/eig F5/eig E5/eig D5/eig C5/qua. D5/eig  LH: G3/qua G3/eig F3/eig E3/qua D3/eig C3/eig
+bar  11 RH: E5/qua E5/eig F5/eig G5/qua F5/eig E5/eig  LH: D3/qua D3/qua D3/qua C3/qua
+bar  12 RH: D5/qua D5/eig E5/eig D5/qua G4/qua  LH: D3/eig E3/eig D3/eig B2/eig G2/eig r/eig G2/qua
+bar  13 RH: C5/hal C5/qua. D5/eig  LH: C3/qua C3/eig D3/eig E3/eig C3/eig E3/eig F3/eig
+bar  14 RH: E5/qua E5/eig F5/eig G5/qua F5/eig E5/eig  LH: G3/qua G3/eig F3/eig E3/qua D3/eig C3/eig
+bar  15 RH: D5/qua D5/qua E5/qua E5/eig D5/eig  LH: D3/qua D3/qua E3/qua E3/eig D3/eig
+bar  16 RH: C5/qua C5/qua C5/hal  LH: C3/qua C3/qua C3/hal

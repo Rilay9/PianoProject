@@ -1,0 +1,57 @@
+song: song.classical.grieg-morgenstimmung.pdmx
+title: Morgenstimmung
+composer: Edvard Grieg
+rungs: classical.4.shelf
+shipped file: scores/pdmx/QmPUNHoPbosz4QLCQuAYoU1NmsCxVQGScfv9xKvq5sTYhV.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 7, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 170, measures 38, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 6 8
+  bar 30: clef G 2
+  bar 32: clef F 4
+
+dump_score.py:
+song.classical.grieg-morgenstimmung.pdmx | Morgenstimmung | level 5.5 (estimated)
+notation: {"bars": 38, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["6/8"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['6/8']
+bar   1 RH: G4/eig E4/eig D4/eig C4/eig D4/eig E4/eig  LH: C3/hal.+E3/hal.+G3/hal.
+bar   2 RH: G4/eig E4/eig D4/eig C4/eig D4/16t E4/16t D4/16t E4/16t  LH: C3/hal.+E3/hal.+G3/hal.
+bar   3 RH: G4/eig E4/eig G4/eig A4/eig E4/eig A4/eig  LH: C3/qua.+E3/qua.+G3/qua. A2/qua.+C3/qua.+E3/qua.
+bar   4 RH: G4/eig E4/eig D4/eig C4/eig. r/16t r/eig  LH: C3/qua.+E3/qua.+G3/qua. G3/eig E3/eig D3/eig
+bar   5 RH: G4/eig E4/eig D4/eig C4/eig D4/eig E4/eig  LH: C3/hal.+E3/hal.+G3/hal.
+bar   6 RH: G4/eig E4/eig D4/eig C4/eig D4/16t E4/16t D4/16t E4/16t  LH: C3/hal.+E3/hal.+G3/hal.
+bar   7 RH: G4/eig E4/eig G4/eig A4/eig E4/eig A4/eig  LH: C3/qua.+E3/qua.+G3/qua. C3/qua.+E3/qua.+A3/qua.
+bar   8 RH: B4/eig G#4/eig F#4/eig E4/qua.  LH: E3/qua.+G#3/qua.+B3/qua. B3/eig G#3/eig F#3/eig
+bar   9 RH: B4/eig G#4/eig F#4/eig E4/eig F#4/eig G#4/eig  LH: E3/hal.+G#3/hal.+B3/hal.
+bar  10 RH: B4/eig G#4/eig F#4/eig E4/eig F#4/16t G#4/16t F#4/16t G#4/16t  LH: E3/hal.+G#3/hal.+B3/hal.
+bar  11 RH: B4/eig G#4/eig B4/eig C5/eig G#4/eig C5/eig  LH: E3/qua.+G#3/qua.+B3/qua. E3/qua.+G#3/qua.+C4/qua.
+bar  12 RH: B4/eig G#4/eig F#4/eig E4/qua.  LH: E3/qua.+G#3/qua.+B3/qua. B3/eig G#3/eig F#3/eig
+bar  13 RH: B4/eig G#4/eig F#4/eig E4/eig F#4/eig G#4/eig  LH: E3/hal.+G#3/hal.+B3/hal.
+bar  14 RH: B4/eig G#4/eig F#4/eig E4/eig F#4/16t G#4/16t F#4/16t G#4/16t  LH: E3/hal.+G#3/hal.+B3/hal.
+bar  15 RH: B4/eig G#4/eig B4/eig C5/eig A4/eig C5/eig  LH: E3/qua.+G#3/qua.+B3/qua. A3/qua.+C4/qua.+E4/qua.
+bar  16 RH: D5/eig B4/eig A4/eig G4/qua.  LH: G3/qua.+B3/qua.+D4/qua. D4/eig B3/eig A3/eig
+bar  17 RH: D5/eig B4/eig A4/eig G4/eig A4/16t B4/16t A4/16t B4/16t  LH: G3/hal.+B3/hal.+D4/hal.
+bar  18 RH: D5/eig B4/eig A4/eig G4/eig A4/16t B4/16t A4/16t B4/16t  LH: G2/hal.+B2/hal.+D3/hal.
+bar  19 RH: D5/eig B4/eig G4/eig D4/eig B3/eig G3/eig  LH: G3/qua.+B3/qua.+D4/qua. G2/qua.+B2/qua.+D3/qua.
+bar  20 RH: D5/eig B4/eig G4/eig D4/eig B3/eig G3/eig  LH: G3/qua.+B3/qua.+F4/qua. G2/qua.+B2/qua.+F3/qua.
+bar  21 RH: G5/eig E5/eig D5/eig C5/eig D5/eig E5/eig  LH: C3/hal.+E3/hal.+G3/hal.
+bar  22 RH: G5/eig E5/eig D5/eig C5/eig D5/16t E5/16t D5/16t E5/16t  LH: C3/hal.+E3/hal.+G3/hal.
+bar  23 RH: G5/eig E5/eig G5/eig A5/eig E5/eig A5/eig  LH: C3/qua.+E3/qua.+G3/qua. C3/qua.+E3/qua.+A3/qua.
+bar  24 RH: A5/eig F5/eig E5/eig D5/qua.  LH: D3/qua.+F3/qua.+A3/qua. A3/eig F3/eig E3/eig
+bar  25 RH: A5/eig F5/eig E5/eig D5/eig E5/eig F5/eig  LH: D3/hal.+F3/hal.+A3/hal.
+bar  26 RH: A5/eig F5/eig E5/eig D5/eig E5/16t F5/16t E5/16t F5/16t  LH: D3/hal.+F3/hal.+A3/hal.
+bar  27 RH: A5/eig F5/eig A5/eig B5/eig F5/eig B5/eig  LH: D3/qua.+F3/qua.+A3/qua. D3/qua.+F3/qua.+B3/qua.
+bar  28 RH: B5/eig G5/eig B5/eig C6/eig G5/eig C6/eig  LH: E3/qua.+G3/qua.+B3/qua. E3/qua.+G3/qua.+C4/qua.
+bar  29 RH: C6/eig A5/eig C6/eig D6/eig A5/eig D6/eig  LH: F3/qua.+A3/qua.+C4/qua. F3/qua.+A3/qua.+D4/qua.
+bar  30 RH: E6/16t B5/16t G#5/16t E5/16t G#5/16t B5/16t E5/16t r/16t r/qua  LH: E3/qua.+G#3/qua.+B3/qua. r/16t B4/16t G#4/16t E4/16t G#4/16t B4/16t
+bar  31 RH: r/?  LH: E4/hal.
+bar  32 RH: G4/eig E4/eig D4/eig C4/eig D4/eig E4/eig  LH: C3/qua.+E3/qua.+G3/qua. A3/qua.
+bar  33 RH: G4/eig E4/eig D4/eig C4/eig D4/16t E4/16t D4/16t E4/16t  LH: C3/qua.+E3/qua.+G3/qua. A3/qua.
+bar  34 RH: C4/hal.+E4/hal.+G4/hal.  LH: G3/eig E3/eig D3/eig C3/eig D3/eig E3/eig
+bar  35 RH: C4/hal.+E4/hal.+A4/hal.  LH: G3/eig E3/eig D3/eig C3/eig D3/16t E3/16t D3/16t E3/16t
+bar  36 RH: E4/hal.+G4/hal.  LH: C3/hal.+G3/hal.
+bar  37 RH: C4/hal.+A4/hal.  LH: A2/hal.+E3/hal.
+bar  38 RH: C5/hal.+E5/hal.  LH: C2/hal.+G2/hal.

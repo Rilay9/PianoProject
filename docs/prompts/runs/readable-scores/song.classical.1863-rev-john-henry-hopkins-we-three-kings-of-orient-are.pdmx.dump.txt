@@ -1,0 +1,33 @@
+song: song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx
+title: We Three Kings of Orient Are
+composer: John Henry Hopkins Jr.
+rungs: holiday
+shipped file: scores/pdmx/Qmdahxmap93SycYLJdkE4ASrpWunSugocrTDibMSjN7txA.mxl
+catalog keySig/timeSig/tempo: E minor / None / 135.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 25, grace notes 0, voices>1 0, measures 17, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 1 minor
+  bar 1: time 6 8
+
+dump_score.py:
+song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx | We Three Kings of Orient Are | level 2.21 (estimated)
+notation: {"bars": 17, "staves": 1, "keys": [{"fifths": 1, "mode": "minor"}], "times": ["6/8"], "chordCount": 25, "chords": ["Am", "B7", "C", "D", "D7", "Em", "G"], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['1']  modes: ['minor']  times: ['6/8']
+bar   1 RH: B4/qua A4/eig G4/qua E4/eig  [E minor]
+bar   2 RH: F#4/eig G4/eig F#4/eig E4/qua.  [B dominant] [E minor]
+bar   3 RH: B4/qua A4/eig G4/qua E4/eig
+bar   4 RH: F#4/eig G4/eig F#4/eig E4/qua.  [B dominant] [E minor]
+bar   5 RH: G4/qua G4/eig A4/qua A4/eig  [D major]
+bar   6 RH: B4/qua B4/eig D5/eig C5/eig B4/eig  [G major]
+bar   7 RH: A4/eig B4/eig A4/eig G4/qua F#4/eig  [A minor] [B dominant]
+bar   8 RH: E4/qua. r/qua.  [E minor]
+bar   9 RH: F#4/qua. A4/qua.  [D dominant]
+bar  10 RH: G4/qua G4/eig G4/qua D4/eig  [G major]
+bar  11 RH: G4/qua E4/eig G4/qua.  [C major] [G major]
+bar  12 RH: G4/qua G4/eig G4/qua D4/eig
+bar  13 RH: G4/qua E4/eig G4/qua.  [C major] [G major]
+bar  14 RH: G4/qua G4/eig A4/qua B4/eig  [E minor] [D major] [G major]
+bar  15 RH: C5/qua B4/eig A4/qua B4/eig  [C major] [G major] [D major] [G major]
+bar  16 RH: G4/qua G4/eig G4/qua D4/eig
+bar  17 RH: G4/qua E4/eig G4/qua.  [C major] [G major]

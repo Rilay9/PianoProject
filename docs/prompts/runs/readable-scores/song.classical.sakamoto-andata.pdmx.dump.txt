@@ -1,0 +1,83 @@
+song: song.classical.sakamoto-andata.pdmx
+title: andata
+composer: Ryuichi Sakamoto
+rungs: classical.4.shelf, rock.5
+shipped file: scores/pdmx/QmTQCM4wwNDWgVJK2DvEyfwdr61tT4mAa27UfpL5WJkZPg.mxl
+catalog keySig/timeSig/tempo: G# minor / None / 92.0
+raw-XML counts: ties 132, tuplets 0, fingerings 0, dynamics 2, pedal 0, articulations 0, chord symbols 94, grace notes 0, voices>1 253, measures 65, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 5
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.sakamoto-andata.pdmx | andata | level 6.36 (estimated)
+notation: {"bars": 65, "staves": 2, "keys": [{"fifths": 5, "mode": null}], "times": ["4/4"], "chordCount": 94, "chords": ["A#m7(b5)", "B", "BM7", "C#m", "C#m7", "D#", "D#sus4", "EM7", "F#7", "G#", "G#m", "G#mM7"], "swungMark": false, "finalBass": 8}
+key signatures (fifths): ['5']  modes: []  times: ['4/4']
+text on the score: ['cresc.', 'dim.']
+bar   1 RH: B3/who+G#4/who  LH: G#2/who+D#3/who+G#3/who  [G# minor] [G# minor]
+bar   2 RH: D#4/who+A#4/who+B4/who  LH: F#2/who+F#3/who  [G# minor] [G# minor]
+bar   3 RH:v1: E4/who+G#4/who | v2: D#5/hal C#5/qua B4/qua  LH: C#3/who+B3/who  [C# minor-seventh] [C# minor-seventh]
+bar   4 RH: C#5/who  LH: F#3/hal A#3/qua G#3/qua
+bar   5 RH:v1: B3/who+D#4/who | v2: r/hal B4/qua A#4/qua  LH: B2/who+A#3/who  [B major-seventh] [B major-seventh]
+bar   6 RH: B4/who  LH: E3/hal G#3/qua F##3/qua
+bar   7 RH:v1: C#4/who | v2: r/hal A#4/qua G#4/qua  LH:v5: A#2/who | v6: G#3/who  [A# half-diminished] [A# half-diminished]
+bar   8 RH: A#4/who  LH:v6: D#3/who | v7: G#3/hal F##3/hal
+bar   9 RH: A#3/who+B3/who+D#4/who  LH: G#2/who+D#3/who+G#3/who  [G# minor] [G# minor]
+bar  10 RH:v1: B3/who+D#4/who | v2: G#4/hal B4/hal  LH: F#2/who+F#3/who  [G# minor] [G# minor]
+bar  11 RH:v1: G#4/who | v2: F#5/hal E5/qua D#5/qua  LH: C#3/who+B3/who  [C# minor-seventh] [C# minor-seventh]
+bar  12 RH:v1: G#4/who | v2: E5/who  LH: F#3/hal A#3/qua G#3/qua  [F# dominant] [F# dominant]
+bar  13 RH:v1: D#4/who+F#4/who | v2: r/hal D#5/qua C#5/qua  LH:v5: B2/who | v6: A#3/who  [B major-seventh] [B major-seventh]
+bar  14 RH: D#5/who  LH:v6: E3/who | v7: A#3/hal G#3/qua F##3/qua
+bar  15 RH:v1: E4/who | v2: r/hal C#5/qua B4/qua  LH: A#2/who+G#3/who  [A# half-diminished] [A# half-diminished]
+bar  16 RH: C#5/who  LH: D#3/hal F##3/qua E#3/qua
+bar  17 RH:v1: D#4/who | v2: r/hal B4/qua A#4/qua  LH: G#2/who+F##3/who  [G# major-minor] [G# major-minor]
+bar  18 RH:v1: D#4/hal A#3/hal+D#4/hal | v2: B4/who  LH: G#2/hal+G#3/hal F#2/hal+F##3/hal  [G# minor] [G# minor] [G# minor] [G# minor]
+bar  19 RH:v1: B3/hal+D#4/hal C#4/qua B3/qua | v2: G#4/who  LH: E2/who+B2/who+E3/who  [E major-seventh] [E major-seventh]
+bar  20 RH: C#4/hal C##4/hal  LH: E2/who+B2/who+E3/who
+bar  21 RH: G#3/who+D#4/who  LH: D#2/who+D#3/who  [G# minor] [G# minor]
+bar  22 RH: A#3/who+D#4/who+F##4/who  LH: D#2/who+D#3/who  [D# major] [D# major]
+bar  23 RH: B3/who+D#4/who+G#4/who  LH: G#2/who+D#3/who+G#3/who  [G# minor] [G# minor]
+bar  24 RH: D#4/who+A#4/who+B4/who  LH: F#2/who+D#3/who+F#3/who  [G# minor] [G# minor]
+bar  25 RH:v1: E4/who+G#4/who+B4/who | v2: D#5/hal C#5/qua B4/qua  LH: C#2/who+B2/who  [C# minor-seventh] [C# minor-seventh]
+bar  26 RH: E4/who+A#4/who+C#5/who  LH:v6: F#2/who+C#3/who+F#3/who | v7: r/hal A#3/qua G#3/qua
+bar  27 RH:v1: C#5/hal B4/qua A#4/qua | v2: C#4/who+D#4/who  LH: B2/who+F#3/who+A#3/who  [B major-seventh] [B major-seventh]
+bar  28 RH:v1: B4/who | v2: D#4/who  LH:v5: A#3/hal G#3/qua F##3/qua | v6: E2/who+B2/who+E3/who  [E major-seventh] [E major-seventh]
+bar  29 RH:v1: B4/hal A#4/qua G#4/qua | v2: A#3/who+C#4/who  LH: A#2/who+E3/who+G#3/who  [A# half-diminished] [A# half-diminished]
+bar  30 RH:v1: A#4/who | v2: A#3/who+C#4/who  LH:v5: G#3/hal F##3/hal | v6: D#2/who+A#2/who+D#3/who  [D# suspended-fourth] [D# suspended-fourth]
+bar  31 RH: A#3/who+B3/who+D#4/who  LH: G#2/who+D#3/who+G#3/who  [G# minor] [G# minor]
+bar  32 RH:v1: B3/who+D#4/who | v2: G#4/hal G#4/hal+B4/hal  LH: F#2/who+D#3/who+F#3/who  [G# minor] [G# minor]
+bar  33 RH:v1: G#4/who+B4/who | v2: F#5/hal E5/qua D#5/qua  LH: C#2/who+B2/who  [C# minor-seventh] [C# minor-seventh]
+bar  34 RH:v1: G#4/who+B4/who | v2: E5/who  LH:v5: F#2/who+C#3/who+F#3/who | v6: r/hal A#3/qua G#3/qua  [F# dominant] [F# dominant]
+bar  35 RH:v1: F#4/who | v2: E5/hal D#5/qua C#5/qua  LH: B2/who+F#3/who+A#3/who  [B major-seventh] [B major-seventh]
+bar  36 RH:v1: F#4/who | v2: D#5/who  LH:v5: A#3/hal G#3/qua F##3/qua | v6: E2/who+B2/who+E3/who  [E major-seventh] [E major-seventh]
+bar  37 RH:v1: E4/who | v2: D#5/hal C#5/qua B4/qua  LH: A#2/who+E3/who+G#3/who  [A# half-diminished] [A# half-diminished]
+bar  38 RH: E4/who+C#5/who  LH:v6: G#3/hal F##3/qua E#3/qua | v7: D#2/who+A#2/who+D#3/who
+bar  39 RH:v1: C#5/hal B4/qua A#4/qua | v2: D#4/who  LH: G#2/who+D#3/who+F##3/who  [G# major-minor] [G# major-minor]
+bar  40 RH:v1: D#4/who+G#4/who | v2: B4/hal A#4/hal  LH: G#2/hal+D#3/hal+G#3/hal F#2/hal+D#3/hal+F#3/hal  [G# minor] [G# minor] [G# minor] [G# minor]
+bar  41 RH:v1: B3/hal+D#4/hal C#4/qua B3/qua | v2: G#4/who  LH: E2/who+B2/who+E3/who  [E major-seventh] [E major-seventh]
+bar  42 RH:v1: C#4/hal C##4/hal | v2: G#4/who  LH: E2/who+B2/who+E3/who
+bar  43 RH: B3/who+D#4/who+G#4/who  LH: D#2/who+B2/who+D#3/who
+bar  44 RH: A#3/who+D#4/who+F##4/who  LH: D#2/who+A#2/who+D#3/who
+bar  45 RH:v1: B3/hal+D#4/hal C#4/qua B3/qua | v2: G#4/who  LH: E2/who+B2/who+E3/who  [E major-seventh] [E major-seventh]
+bar  46 RH:v1: C#4/hal A#3/hal+C#4/hal | v2: G#4/hal F#4/qua E4/qua  LH: E2/who+B2/who+E3/who  [F# dominant] [F# dominant]
+bar  47 RH: B3/who+C#4/who+F#4/who  LH: D#2/who+B2/who+D#3/who  [B major] [B major]
+bar  48 RH: B3/hal+C#4/hal+F#4/hal E4/qua D#4/qua  LH: D#2/who+B2/who+D#3/who
+bar  49 RH:v1: G#3/who+E4/who | v2: B3/hal A#3/hal  LH: C#2/who+C#3/who  [C# minor-seventh] [C# minor-seventh]
+bar  50 RH:v1: E4/hal D#4/qua C#4/qua | v2: A#3/who  LH: F#2/who+C#3/who+F#3/who  [F# dominant] [F# dominant]
+bar  51 RH:v1: F#3/who+A#3/who+D#4/who | v2: r/?  LH: B1/who+B2/who  [B major-seventh] [B major-seventh]
+bar  52 RH: E3/who+G#3/who+B3/who  LH: E2/who+D#3/who  [E major-seventh] [E major-seventh]
+bar  53 RH: E3/who+G#3/who+C#4/who  LH: C#2/who+G#2/who+C#3/who  [C# minor] [C# minor]
+bar  54 RH: G#3/who+A#3/who  LH: D#2/who+A#2/who+D#3/who  [D# suspended-fourth] [D# suspended-fourth]
+bar  55 RH: A#3/who  LH: G#2/who+D#3/who+G#3/who  [G# major] [G# major]
+bar  56 RH:v1: B3/who | v2: r/hal r/hal  LH: G#2/hal+G#3/hal F#2/hal+F#3/hal  [G# minor] [G# minor] [G# minor] [G# minor]
+bar  57 RH: E3/who+G#3/who+B3/who  LH: E2/who+D#3/who
+bar  58 RH: E3/hal+G#3/hal+A#3/hal D#3/hal+G#3/hal  LH: E2/who+D#3/who
+bar  59 RH: D#3/who+G#3/who  LH: D#2/who+G#2/who
+bar  60 RH: D#3/who+G#3/who  LH: D#2/who+G#2/who
+bar  61 RH: D#3/who+G#3/who  LH: G#2/who
+bar  62 RH: D#3/who+G#3/who  LH: G#2/who
+bar  63 RH: D#3/who+G#3/who  LH: G#2/who
+bar  64 RH: D#3/who+G#3/who  LH: G#2/who
+bar  65 RH: G#3/who  LH: r/?

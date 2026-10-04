@@ -1,0 +1,34 @@
+song: song.classical.chopin-prelude-op28-7.nifc
+title: Prelude No. 7 in A major, Op. 28
+composer: Fryderyk Chopin
+rungs: classical.4.shelf, classical.6
+shipped file: scores/imported/song.classical.chopin-prelude-op28-7.nifc.mxl
+catalog keySig/timeSig/tempo: A major / 3/4 / 92.0
+raw-XML counts: ties 14, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 1, voices>1 94, measures 17, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 3
+  bar 0: time 3 4
+
+dump_score.py:
+song.classical.chopin-prelude-op28-7.nifc | Prelude No. 7 in A major, Op. 28 | level 5.4 (judged)
+notation: {"bars": 17, "staves": 2, "keys": [{"fifths": 3, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['3']  modes: []  times: ['3/4']
+bar   0 RH: E4/qua  LH: r/qua
+bar   1 RH: C#5/eig. D5/16t B4/qua+G#4/qua+D4/qua B4/qua+G#4/qua+D4/qua  LH: E2/qua E4/qua+E3/qua E4/qua+E3/qua
+bar   2 RH: B4/hal+G#4/hal+D4/hal F#5/qua+D5/qua  LH: E4/hal+E3/hal r/qua
+bar   3 RH: D#5/eig.+B#4/eig. E5/16t+C#5/16t A5/qua+C#5/qua A5/qua+C#5/qua  LH: A2/qua E4/qua+A3/qua E4/qua+A3/qua
+bar   4 RH: A5/hal+C#5/hal C#5/qua+E4/qua  LH: E4/hal+A3/hal r/qua
+bar   5 RH:v1: A#4/eig.+C#4/eig. B4/16t+D4/16t D5/qua+F#4/qua D5/qua+F#4/qua | v2: r/qua D4/hal  LH: E2/qua B3/qua+E3/qua B3/qua+E3/qua
+bar   6 RH:v1: D5/hal+F#4/hal G#4/qua+D4/qua | v2: D4/hal r/qua  LH: B3/hal+E3/hal r/qua
+bar   7 RH: G#4/eig.+D4/eig. A4/16t+C#4/16t C#5/qua+C#4/qua C#5/qua+C#4/qua  LH: A1/qua E4/qua+A3/qua+E3/qua E4/qua+A3/qua+E3/qua
+bar   8 RH: C#5/hal+C#4/hal E4/qua  LH: E4/hal+A3/hal+E3/hal r/qua
+bar   9 RH:v1: C#5/eig. D5/16t B4/qua+G#4/qua+D4/qua B4/qua+G#4/qua+D4/qua | v2: G#4/qua+E4/qua r/hal  LH: E2/qua E4/qua+E3/qua E4/qua+E3/qua
+bar  10 RH: B4/hal+G#4/hal+D4/hal F#5/qua+D5/qua  LH: E4/hal+E3/hal r/qua
+bar  11 RH:v1: r/qua C#6/qua+A5/qua C#6/qua+A5/qua | v2: D5/eig.+B#4/eig. E5/16t+C#5/16t E5/hal+C#5/hal  LH: A2/qua A4/qua+E4/qua+A3/qua A4/qua+E4/qua+A3/qua
+bar  12 RH:v1: C#6/hal+A#5/hal+E5/hal C#5/qua+A#4/qua | v2: C#5/hal+A#4/hal r/qua  LH: F#4/hal+E4/hal+C#4/hal+F#3/hal r/qua
+bar  13 RH: C#5/eig.+A#4/eig. D5/16t+B4/16t F#5/qua+B4/qua F#5/qua+A4/qua  LH: B1/qua D4/qua+F#3/qua D4/qua+B3/qua+F#3/qua
+bar  14 RH: F#5/hal+G#4/hal G#4/qua+D4/qua  LH: D4/hal+B3/hal+E3/hal r/qua
+bar  15 RH:v1: B4/eig.+D4/eig. A4/16t+C#4/16t A4/eig A5/qua+C#5/qua A5/qua+C#5/qua | v2: r/qua A4/hal  LH: A1/qua E4/qua+A3/qua+E3/qua E4/qua+A3/qua+E3/qua
+bar  16 RH: A5/hal+C#5/hal+A4/hal r/qua  LH: E4/hal+A3/hal r/qua

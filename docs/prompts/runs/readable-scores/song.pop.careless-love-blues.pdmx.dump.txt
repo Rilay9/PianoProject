@@ -1,0 +1,24 @@
+song: song.pop.careless-love-blues.pdmx
+title: Careless Love
+composer: Traditional
+rungs: 2.4, blues.3, blues.4
+shipped file: scores/pdmx/QmYD4uF6soz6USzYyusW2gnzJxRUV7fMTCA2UH11ZzYR6a.mxl
+catalog keySig/timeSig/tempo: D major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 10, grace notes 0, voices>1 0, measures 8, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 2
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.careless-love-blues.pdmx | Careless Love | level 2.63 (estimated)
+notation: {"bars": 8, "staves": 1, "keys": [{"fifths": 2, "mode": null}], "times": ["4/4"], "chordCount": 10, "chords": ["A", "A7", "D", "G"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['2']  modes: []  times: ['4/4']
+bar   1 RH: F#4/qua. D4/eig C#4/eig A3/eig G3/eig E4/eig  [D major] [A dominant]
+bar   2 RH: D4/hal. r/qua  [D major]
+bar   3 RH: F#4/qua. G4/eig A4/eig A4/eig B4/eig A4/eig  [D major]
+bar   4 RH: E4/hal. D4/eig E4/eig  [A major]
+bar   5 RH: F#4/qua. G4/eig A4/qua A4/qua  [D major]
+bar   6 RH: B4/eig B4/eig G4/eig G4/eig D4/qua E4/eig D4/eig  [G major]
+bar   7 RH: F#4/qua. D4/eig C#4/eig A3/eig G3/eig E4/eig  [D major] [A dominant]
+bar   8 RH: D4/hal. r/qua  [D major]

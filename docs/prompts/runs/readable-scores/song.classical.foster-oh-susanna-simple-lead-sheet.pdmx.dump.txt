@@ -1,0 +1,41 @@
+song: song.classical.foster-oh-susanna-simple-lead-sheet.pdmx
+title: Oh! Susanna (Simple Lead Sheet)
+composer: Stephen Foster
+rungs: chords-pop.3
+shipped file: scores/pdmx/QmcCg1Zfn95kaH8M7tD2K7Vj2Vpr4jdcDsSHR7PryiesW5.mxl
+catalog keySig/timeSig/tempo: G major / None / 184.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 27, grace notes 0, voices>1 0, measures 25, staves 0
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: key 1
+  bar 0: time 4 4
+
+dump_score.py:
+song.classical.foster-oh-susanna-simple-lead-sheet.pdmx | Oh! Susanna (Simple Lead Sheet) | level 2.27 (estimated)
+notation: {"bars": 25, "staves": 1, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4"], "chordCount": 27, "chords": ["C", "D", "G"], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['4/4']
+bar   0 RH: G4/eig A4/eig
+bar   1 RH: B4/qua D5/qua D5/qua E5/qua  [G major]
+bar   2 RH: D5/qua B4/qua G4/qua A4/qua  [G major]
+bar   3 RH: B4/qua B4/qua A4/qua G4/qua  [G major]
+bar   4 RH: A4/hal. G4/eig A4/eig  [D major]
+bar   5 RH: B4/qua D5/qua D5/qua E5/qua  [G major]
+bar   6 RH: D5/qua B4/qua G4/qua A4/qua  [G major]
+bar   7 RH: B4/qua B4/qua A4/qua A4/qua  [G major] [D major]
+bar   8 RH: G4/hal. G4/eig A4/eig  [G major]
+bar   9 RH: B4/qua D5/qua D5/qua E5/qua  [G major]
+bar  10 RH: D5/qua B4/qua G4/qua A4/qua  [G major]
+bar  11 RH: B4/qua B4/qua A4/qua G4/qua  [G major]
+bar  12 RH: A4/hal. G4/eig A4/eig  [D major]
+bar  13 RH: B4/qua D5/qua D5/qua E5/qua  [G major]
+bar  14 RH: D5/qua B4/qua G4/qua A4/qua  [G major]
+bar  15 RH: B4/qua B4/qua A4/qua A4/qua  [G major] [D major]
+bar  16 RH: G4/who  [G major]
+bar  17 RH: C5/hal C5/hal  [C major]
+bar  18 RH: E5/qua E5/hal E5/qua  [C major]
+bar  19 RH: D5/qua D5/qua B4/qua G4/qua  [G major]
+bar  20 RH: A4/hal. G4/eig A4/eig  [D major]
+bar  21 RH: B4/qua D5/qua D5/qua E5/qua  [G major]
+bar  22 RH: D5/qua B4/qua G4/qua A4/qua  [G major]
+bar  23 RH: B4/qua B4/qua A4/qua A4/qua  [G major] [D major]
+bar  24 RH: G4/hal. r/qua  [G major]

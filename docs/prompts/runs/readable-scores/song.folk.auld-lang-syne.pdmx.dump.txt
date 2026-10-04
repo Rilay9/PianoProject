@@ -1,0 +1,33 @@
+song: song.folk.auld-lang-syne.pdmx
+title: Auld Lang Syne
+composer: Traditional (Scottish)
+rungs: 2.3
+shipped file: scores/pdmx/QmPYTGunZqRpM8rmbWYzUoapVd2pi9xGRASdauFdSxqw7h.mxl
+catalog keySig/timeSig/tempo: Eb major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 23, grace notes 0, voices>1 0, measures 17, staves 0
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: key -3
+  bar 0: time 4 4
+
+dump_score.py:
+song.folk.auld-lang-syne.pdmx | Auld Lang Syne | level 2.84 (estimated)
+notation: {"bars": 17, "staves": 1, "keys": [{"fifths": -3, "mode": null}], "times": ["4/4"], "chordCount": 23, "chords": ["Ab", "Bb7", "Cminor", "Eb", "Fminor"], "swungMark": false, "finalBass": 3}
+key signatures (fifths): ['-3']  modes: []  times: ['4/4']
+bar   0 RH: Bb3/qua  [Bb dominant]
+bar   1 RH: Eb4/qua. D4/eig Eb4/qua G4/qua  [Eb major]
+bar   2 RH: F4/qua. Eb4/eig F4/qua G4/eig F4/eig  [Bb dominant]
+bar   3 RH: Eb4/qua. Eb4/eig G4/qua Bb4/qua  [Eb major]
+bar   4 RH: C5/hal. C5/qua  [Ab major]
+bar   5 RH: Bb4/qua. G4/eig G4/qua Eb4/qua  [Eb major]
+bar   6 RH: F4/qua. Eb4/eig F4/qua G4/eig F4/eig  [Bb dominant]
+bar   7 RH: Eb4/qua. C4/eig C4/qua Bb3/qua  [Eb major] [Ab major] [F minor] [Bb dominant]
+bar   8 RH: Eb4/hal. C5/qua  [Eb major] [Ab major]
+bar   9 RH: Bb4/qua. G4/eig G4/qua Eb4/qua  [Eb major]
+bar  10 RH: F4/qua. Eb4/eig F4/qua G4/qua  [Bb dominant]
+bar  11 RH: Bb4/qua. G4/eig G4/qua Bb4/qua  [Eb major]
+bar  12 RH: C5/hal. C5/qua  [Ab major]
+bar  13 RH: Bb4/qua. G4/eig G4/qua Eb4/qua  [Eb major]
+bar  14 RH: F4/qua. Eb4/eig F4/qua G4/eig F4/eig  [Bb dominant]
+bar  15 RH: Eb4/qua. C4/eig C4/qua Bb3/qua  [C minor] [Ab major] [Bb dominant]
+bar  16 RH: Eb4/hal. r/qua  [Eb major]

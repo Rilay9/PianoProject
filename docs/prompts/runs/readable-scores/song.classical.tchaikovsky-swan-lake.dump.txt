@@ -1,0 +1,49 @@
+song: song.classical.tchaikovsky-swan-lake
+title: Swan Lake (theme)
+composer: Pyotr Ilyich Tchaikovsky
+rungs: classical.4.shelf
+shipped file: scores/imported/song.classical.tchaikovsky-swan-lake.mxl
+catalog keySig/timeSig/tempo: 2 sharps / 4/4 / 100.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 7, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 216, measures 32, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 2
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.tchaikovsky-swan-lake | Swan Lake (theme) | level 6.1 (judged)
+notation: {"bars": 32, "staves": 2, "keys": [{"fifths": 2, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": null}
+key signatures (fifths): ['2']  modes: []  times: ['4/4']
+bar   1 RH: r/hal r/hal  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig D4/eig F#4/eig D4/eig
+bar   2 RH: r/?  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig D4/eig F#4/eig D4/eig
+bar   3 RH: F#5/hal B4/eig C#5/eig D5/eig E5/eig  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig E4/eig G4/eig E4/eig
+bar   4 RH: F#5/qua. D5/eig F#5/qua. D5/eig  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig D4/eig F#4/eig D4/eig
+bar   5 RH: F#5/qua. B4/eig D5/eig B4/eig F#4/eig D5/eig  LH: B3/eig D4/eig F#4/eig D4/eig G3/eig B3/eig F#3/eig A#3/eig
+bar   6 RH: B4/hal r/eig E5/eig D5/eig C#5/eig  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig E4/eig G4/eig E4/eig
+bar   7 RH: F#5/hal B4/eig C#5/eig D5/eig E5/eig  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig E4/eig G4/eig E4/eig
+bar   8 RH: F#5/qua. D5/eig F#5/qua. D5/eig  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig D4/eig F#4/eig D4/eig
+bar   9 RH: F#5/qua. B4/eig D5/eig B4/eig F#4/eig D5/eig  LH: B3/eig D4/eig F#4/eig D4/eig G3/eig B3/eig F#3/eig A#3/eig
+bar  10 RH: B4/qua r/qua r/qua B4/qua  LH: B3/eig D4/eig F#4/eig D4/eig B3/qua r/qua
+bar  11 RH: C#5/qua D5/qua E5/qua F#5/eig G5/eig  LH: A3/eig C#4/eig E4/eig C#4/eig G3/eig C#4/eig E4/eig C#4/eig
+bar  12 RH: A5/qua. G5/eig F#5/qua G5/eig A5/eig  LH: F#3/eig A3/eig C#4/eig A3/eig F#3/eig A3/eig C#4/eig A3/eig
+bar  13 RH: B5/qua. A5/eig G5/qua A5/eig B5/eig  LH: E3/eig G3/eig B3/eig G3/eig E3/eig G3/eig B3/eig G3/eig
+bar  14 RH: C#6/qua. B5/eig F#5/eig D5/eig C#5/eig B4/eig  LH: C#3/eig F3/eig G#3/eig F3/eig F#3/eig A#3/eig C#4/eig A#3/eig
+bar  15 RH: C#5/qua D5/qua E5/qua F#5/eig G5/eig  LH: A3/eig C#4/eig E4/eig C#4/eig G3/eig C#4/eig E4/eig C#4/eig
+bar  16 RH: A5/qua. G5/eig F#5/qua G5/eig A5/eig  LH: F#3/eig A3/eig C#4/eig A3/eig F#3/eig A3/eig C#4/eig A3/eig
+bar  17 RH: B5/qua. A5/eig G5/qua A5/eig B5/eig  LH: E3/eig G3/eig B3/eig G3/eig E3/eig G3/eig B3/eig G3/eig
+bar  18 RH: C6/qua. G5/eig E5/qua G5/eig C6/eig  LH: C3/eig E3/eig G3/eig E3/eig C3/eig E3/eig G3/eig E3/eig
+bar  19 RH: C#6/qua. G#5/eig C#6/qua. F#5/eig  LH: C#3/eig F3/eig G#3/eig F3/eig F#3/eig A#3/eig C#4/eig A#3/eig
+bar  20 RH: F#5/hal B4/eig C#5/eig D5/eig E5/eig  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig E4/eig G4/eig E4/eig
+bar  21 RH: F#5/qua. D5/eig F#5/qua. D5/eig  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig D4/eig F#4/eig D4/eig
+bar  22 RH: F#5/qua. B4/eig D5/eig B4/eig F#4/eig D5/eig  LH: B3/eig D4/eig F#4/eig D4/eig G3/eig B3/eig F#3/eig A#3/eig
+bar  23 RH: B4/hal r/eig E5/eig D5/eig C#5/eig  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig E4/eig G4/eig E4/eig
+bar  24 RH: F#5/hal B4/eig C#5/eig D5/eig E5/eig  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig E4/eig G4/eig E4/eig
+bar  25 RH: F#5/qua. D5/eig F#5/qua. D5/eig  LH: B3/eig D4/eig F#4/eig D4/eig B3/eig D4/eig F#4/eig D4/eig
+bar  26 RH: F#5/qua. B4/eig D5/eig B4/eig F#4/eig D5/eig  LH: B3/eig D4/eig F#4/eig D4/eig G3/eig B3/eig F#3/eig A#3/eig
+bar  27 RH: B4/hal r/hal  LH: B3/eig D4/eig F#4/eig D4/eig B3/hal
+bar  28 RH: r/?  LH: r/?
+bar  29 RH: r/?  LH: r/?
+bar  30 RH: r/?  LH: r/?
+bar  31 RH: r/?  LH: r/?
+bar  32 RH: r/?  LH: r/?

@@ -1,0 +1,33 @@
+song: song.pop.martin-j-nystrom-as-the-deer-piano.pdmx
+title: As the Deer
+composer: Martin Nystrom
+rungs: hymns, hymns.5
+shipped file: scores/pdmx/QmYFZAE5YZ84JSQHyN9nj7CjBLQUVMYchqaRR1RHM1Zuji.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 58, grace notes 0, voices>1 128, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.martin-j-nystrom-as-the-deer-piano.pdmx | As the Deer | level 4.54 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 58, "chords": ["Am", "C", "Dm", "E", "F", "G"], "swungMark": false, "finalBass": 11}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: C4/qua+E4/qua G4/qua D4/qua+G4/qua E4/eig D4/eig  LH: C3/eig G3/eig C4/eig G3/eig G2/eig D3/eig G3/eig D3/eig  [C major] [G major] [C major] [G major]
+bar   2 RH: C4/qua. E4/eig F4/eig E4/eig D4/eig C4/eig  LH: A2/eig E3/eig A3/eig E3/eig C3/eig G3/eig C4/eig G3/eig  [A minor] [C major] [A minor] [C major]
+bar   3 RH: C4/qua+A4/qua C4/eig+A4/eig C4/eig+A4/eig C4/qua.+G4/qua. F4/eig  LH: A2/eig F3/eig A3/eig F3/eig C3/eig G3/eig C4/eig G3/eig  [F major] [G major] [F major] [G major]
+bar   4 RH: D4/who+G4/who  LH: A2/eig B2/eig C3/eig D3/eig E3/eig F3/eig G3/eig A3/eig  [C major] [A minor] [G major] [C major] [A minor] [G major]
+bar   5 RH: C4/qua+E4/qua G4/qua D4/qua+G4/qua E4/eig D4/eig  LH: C3/eig G3/eig C4/eig G3/eig G2/eig D3/eig G3/eig D3/eig  [C major] [G major] [C major] [G major]
+bar   6 RH: C4/qua. E4/eig F4/eig E4/eig D4/eig C4/eig  LH: A2/eig E3/eig A3/eig E3/eig C3/eig G3/eig C4/eig G3/eig  [A minor] [A minor]
+bar   7 RH: C4/qua. E4/eig D4/qua. C4/eig  LH: C3/eig G3/eig C4/eig G3/eig A2/eig F3/eig A3/eig F3/eig  [F major] [G major] [F major] [G major]
+bar   8 RH: C4/who  LH: C3/eig D3/eig E3/eig F3/eig G3/eig A3/eig B3/eig C4/eig  [C major] [A minor] [G major] [C major] [A minor] [G major]
+bar   9 RH: E4/qua+C5/qua E4/qua+C5/qua E4/qua+C5/qua E4/eig+C5/eig B4/eig  LH: A2/eig E3/eig A3/eig E3/eig A2/eig E3/eig A3/eig E3/eig  [A minor] [A minor]
+bar  10 RH: C4/qua+A4/qua C4/qua+A4/qua G3/qua.+G4/qua. F4/eig  LH: A2/eig F3/eig A3/eig F3/eig C3/eig G3/eig C4/eig G3/eig  [F major] [C major] [F major] [C major]
+bar  11 RH: C4/qua+A4/qua C4/qua+A4/qua C4/qua+A4/qua A4/eig G4/eig  LH: A2/eig F3/eig A3/eig F3/eig A2/eig F3/eig A3/eig F3/eig  [F major] [F major]
+bar  12 RH: D4/qua+F4/qua D4/qua+F4/qua E4/hal  LH: A2/eig F3/eig A3/eig F3/eig B2/eig G#3/eig B3/eig G#3/eig  [D minor] [E major] [D minor] [E major]
+bar  13 RH: C4/qua+E4/qua G4/qua D4/qua+G4/qua E4/eig D4/eig  LH: C3/eig G3/eig C4/eig G3/eig G2/eig D3/eig G3/eig D3/eig  [C major] [G major] [C major] [G major]
+bar  14 RH: C4/qua. E4/eig F4/eig E4/eig D4/eig C4/eig  LH: A2/eig E3/eig A3/eig E3/eig C3/eig G3/eig C4/eig G3/eig  [A minor] [A minor]
+bar  15 RH: C4/qua. E4/eig D4/qua. C4/eig  LH: C3/eig G3/eig C4/eig G3/eig A2/eig F3/eig A3/eig F3/eig  [F major] [G major] [F major] [G major]
+bar  16 RH: C4/who  LH: C3/eig D3/eig C3/qua+E3/qua+A3/qua B2/hal+D3/hal+G3/hal  [C major] [C major]

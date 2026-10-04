@@ -1,0 +1,81 @@
+song: song.blues.ole-miss
+title: Ole Miss
+composer: W. C. Handy
+rungs: jazz.3
+shipped file: scores/pdmx/QmZkTYcfh1tfTpXQNpJnb3YupnMGdAxNcH53Xm9NYzA8tE.mxl
+catalog keySig/timeSig/tempo: F major / None / 96.0
+raw-XML counts: ties 72, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 55, grace notes 0, voices>1 0, measures 64, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1
+  bar 1: time 4 4
+
+dump_score.py:
+song.blues.ole-miss | Ole Miss | level 3.41 (estimated)
+notation: {"bars": 64, "staves": 1, "keys": [{"fifths": -1, "mode": null}], "times": ["4/4"], "chordCount": 55, "chords": ["A7", "Am", "Bb", "Bbm6", "Bdim", "C", "C7", "D7", "Dm", "E7", "F", "F#dim", "F7", "G7", "Gm"], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: []  times: ['4/4']
+text on the score: ['Then Play "C" and "D out.']
+bar   1 RH: C4/eig C#4/eig D4/eig D#4/eig E4/eig C5/qua C5/eig  [C dominant]
+bar   2 RH: C5/hal r/eig Bb4/eig A4/eig G4/eig
+bar   3 RH: F4/eig F#4/eig G4/eig G#4/eig A4/eig F5/qua F5/eig  [F major]
+bar   4 RH: F5/who
+bar   5 RH: D5/eig E4/qua D5/eig E4/qua D5/eig E4/eig  [C dominant]
+bar   6 RH: E4/eig D5/eig E4/qua D5/hal
+bar   7 RH: D5/eig F4/qua D5/eig F4/qua D5/eig F4/eig  [F major]
+bar   8 RH: F4/eig D5/eig F4/qua D5/eig C5/eig A4/eig F4/eig
+bar   9 RH: C4/eig C#4/eig D4/eig D#4/eig E4/eig C5/qua C5/eig  [C dominant]
+bar  10 RH: C5/hal r/eig Bb4/eig A4/eig G4/eig
+bar  11 RH: F4/eig F#4/eig G4/eig G#4/eig A4/eig F5/qua F5/eig  [F major]
+bar  12 RH: F5/who
+bar  13 RH: D5/eig E4/qua D5/eig E4/qua D5/eig E4/eig  [C dominant]
+bar  14 RH: E4/eig D5/eig E4/qua D5/hal
+bar  15 RH: C5/eig B4/eig Bb4/eig A4/eig Ab4/qua G4/eig F4/eig
+bar  16 RH: F4/qua A4/qua C5/qua Eb5/qua  [F major] [F dominant]
+bar  17 RH: D5/eig C#5/eig D5/eig Bb4/eig Bb4/qua C#5/eig D5/eig  [Bb major]
+bar  18 RH: Bb4/qua C#5/eig D5/eig A4/eig G4/eig G4/qua
+bar  19 RH: A4/eig G#4/eig A4/eig F4/eig F4/qua G#4/eig A4/eig  [F major]
+bar  20 RH: F4/qua F4/eig A4/eig C5/eig A4/eig A4/qua  [F# diminished]
+bar  21 RH: G4/hal F4/eig E4/eig E4/qua  [C major] [A dominant]
+bar  22 RH: F4/qua G4/eig A4/eig A4/hal  [D minor]
+bar  23 RH: C5/hal B4/hal  [A minor] [E dominant]
+bar  24 RH: A4/qua A4/qua C5/qua Eb5/qua  [A minor] [F dominant]
+bar  25 RH: D5/eig C#5/eig D5/eig Bb4/eig Bb4/qua C#5/eig D5/eig  [Bb major]
+bar  26 RH: Bb4/qua C#5/eig D5/eig A4/eig G4/eig G4/qua
+bar  27 RH: A4/eig G#4/eig A4/eig F4/eig F4/qua G#4/eig A4/eig  [F major]
+bar  28 RH: F4/qua A4/eig C5/eig Eb5/eig D5/eig D5/qua  [D dominant]
+bar  29 RH: D5/eig C#5/eig D5/eig Bb4/eig Bb4/qua G4/eig Bb4/eig  [G minor]
+bar  30 RH: D5/eig C#5/eig D5/eig C5/eig C5/qua G4/qua  [C dominant]
+bar  31 RH: F4/hal G4/qua. F4/eig  [F major] [Bb minor-sixth]
+bar  32 RH: F4/qua. C5/eig D5/eig C5/eig A4/eig F4/eig  [F major]
+bar  33 RH: C4/eig C#4/eig D4/eig D#4/eig E4/eig C5/qua C5/eig  [C dominant]
+bar  34 RH: C5/hal r/eig Bb4/eig A4/eig G4/eig
+bar  35 RH: F4/eig F#4/eig G4/eig G#4/eig A4/eig F5/qua F5/eig  [F major]
+bar  36 RH: F5/who
+bar  37 RH: D5/eig E4/qua D5/eig E4/qua D5/eig E4/eig  [C dominant]
+bar  38 RH: E4/eig D5/eig E4/qua D5/hal
+bar  39 RH: D5/eig F4/qua D5/eig F4/qua D5/eig F4/eig  [F major]
+bar  40 RH: F4/eig D5/eig F4/qua D5/eig C5/eig A4/eig F4/eig
+bar  41 RH: C4/eig C#4/eig D4/eig D#4/eig E4/eig C5/qua C5/eig  [C dominant]
+bar  42 RH: C5/hal r/eig Bb4/eig A4/eig G4/eig
+bar  43 RH: F4/eig F#4/eig G4/eig G#4/eig A4/eig F5/qua F5/eig  [F major]
+bar  44 RH: F5/who
+bar  45 RH: D5/eig E4/qua D5/eig E4/qua D5/eig E4/eig  [C dominant]
+bar  46 RH: E4/eig D5/eig E4/qua D5/hal
+bar  47 RH: C5/eig B4/eig Bb4/eig A4/eig Ab4/qua G4/eig F4/eig
+bar  48 RH: F4/qua C4/eig D4/eig E4/eig F4/eig G4/eig G#4/eig  [F major] [C dominant]
+bar  49 RH: A4/hal G#4/qua A4/eig C5/eig  [F major]
+bar  50 RH: C5/hal B4/qua C5/qua  [F dominant]
+bar  51 RH: Bb4/hal F4/qua G4/eig A4/eig  [Bb major]
+bar  52 RH: A4/who  [F major]
+bar  53 RH: G4/hal D4/qua G4/qua  [C dominant]
+bar  54 RH: F4/hal G4/eig A4/eig A4/qua  [F major] [D dominant]
+bar  55 RH: A4/hal G4/qua A4/eig G4/eig  [G dominant]
+bar  56 RH: G4/who  [C dominant]
+bar  57 RH: A4/hal G#4/qua A4/eig C5/eig
+bar  58 RH: C5/hal B4/qua C5/qua  [F dominant]
+bar  59 RH: Bb4/hal F4/qua G4/eig A4/eig  [Bb major]
+bar  60 RH: A4/who  [A dominant]
+bar  61 RH: G4/qua F4/eig G4/eig Ab4/eig F4/eig F4/qua  [Bb major] [B diminished]
+bar  62 RH: A4/qua C5/qua Bb4/eig A4/eig A4/qua  [F major] [D dominant]
+bar  63 RH: D4/qua F4/eig G4/eig A4/qua C4/eig F4/eig  [G dominant] [C dominant]
+bar  64 RH: F4/hal. r/qua  [F major]

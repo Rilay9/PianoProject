@@ -1,0 +1,40 @@
+song: song.folk.alouette.pdmx
+title: Alouette
+composer: Traditional (French-Canadian)
+rungs: 2.2
+shipped file: scores/pdmx/QmQrQGpXBsF8exusKg66yVxsXwcRPmtu1p6ayd88LCexre.mxl
+catalog keySig/timeSig/tempo: F major / None / 152.0
+raw-XML counts: ties 8, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 24, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1
+  bar 1: time 6 8
+
+dump_score.py:
+song.folk.alouette.pdmx | Alouette | level 2.34 (estimated)
+notation: {"bars": 24, "staves": 1, "keys": [{"fifths": -1, "mode": null}], "times": ["6/8"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: []  times: ['6/8']
+bar   1 RH: F4/qua. F4/qua G4/eig
+bar   2 RH: A4/qua. A4/qua.
+bar   3 RH: G4/qua F4/eig G4/qua A4/eig
+bar   4 RH: F4/qua. C4/qua.
+bar   5 RH: F4/qua. F4/qua G4/eig
+bar   6 RH: A4/qua. A4/qua.
+bar   7 RH: G4/qua F4/eig G4/qua A4/eig
+bar   8 RH: F4/hal.
+bar   9 RH: F4/qua G4/eig A4/qua Bb4/eig
+bar  10 RH: C5/qua C5/eig C5/qua.
+bar  11 RH: C5/qua D5/eig C5/qua Bb4/eig
+bar  12 RH: A4/qua G4/eig F4/qua.
+bar  13 RH: C5/qua C5/eig C5/qua.
+bar  14 RH: C4/qua C4/eig C4/qua.
+bar  15 RH: C5/qua. Bb4/qua.
+bar  16 RH: A4/qua. G4/qua.
+bar  17 RH: F4/qua. F4/qua G4/eig
+bar  18 RH: A4/qua. A4/qua.
+bar  19 RH: G4/qua F4/eig G4/qua A4/eig
+bar  20 RH: F4/qua. C4/qua.
+bar  21 RH: F4/qua. F4/qua G4/eig
+bar  22 RH: A4/qua. A4/qua.
+bar  23 RH: G4/qua F4/eig G4/qua A4/eig
+bar  24 RH: F4/hal.

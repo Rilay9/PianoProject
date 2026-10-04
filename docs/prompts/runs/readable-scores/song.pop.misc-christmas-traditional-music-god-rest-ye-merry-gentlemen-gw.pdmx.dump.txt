@@ -1,0 +1,36 @@
+song: song.pop.misc-christmas-traditional-music-god-rest-ye-merry-gentlemen-gw.pdmx
+title: God Rest Ye Merry, Gentlemen
+composer: Traditional (English)
+rungs: holiday.3
+shipped file: scores/pdmx/QmY2jA7QPcADe3K5wBMjf43RZcmKyMinjLgT1V7o9WkGWg.mxl
+catalog keySig/timeSig/tempo: E minor / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 17, grace notes 0, voices>1 0, measures 20, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 1 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.misc-christmas-traditional-music-god-rest-ye-merry-gentlemen-gw.pdmx | God Rest Ye Merry, Gentlemen | level 2.44 (estimated)
+notation: {"bars": 20, "staves": 1, "keys": [{"fifths": 1, "mode": "major"}], "times": ["4/4"], "chordCount": 17, "chords": ["Am", "B", "B7", "Bm7", "C", "D", "Em", "G"], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['1']  modes: ['major']  times: ['4/4']
+bar   1 RH: E4/qua
+bar   2 RH: E4/qua B4/qua B4/qua A4/qua  [E minor]
+bar   3 RH: G4/qua F#4/qua E4/qua D4/qua
+bar   4 RH: E4/qua F#4/qua G4/qua A4/qua
+bar   5 RH: B4/hal. E4/qua  [B major]
+bar   6 RH: E4/qua B4/qua B4/qua A4/qua  [E minor]
+bar   7 RH: G4/qua F#4/qua E4/qua D4/qua
+bar   8 RH: E4/qua F#4/qua G4/qua A4/qua
+bar   9 RH: B4/hal. B4/qua  [B major]
+bar  10 RH: C5/qua A4/qua B4/qua C5/qua  [A minor]
+bar  11 RH: D5/qua E5/qua B4/qua A4/qua  [B minor-seventh] [B dominant]
+bar  12 RH: G4/qua E4/qua F#4/qua G4/qua  [E minor]
+bar  13 RH: A4/hal G4/qua A4/qua  [D major]
+bar  14 RH: B4/hal C5/qua B4/qua  [G major] [C major]
+bar  15 RH: B4/qua A4/qua G4/qua F#4/qua  [B dominant]
+bar  16 RH: E4/hal G4/eig F#4/eig E4/qua  [E minor]
+bar  17 RH: A4/hal G4/qua A4/qua  [D major]
+bar  18 RH: B4/qua C5/qua D5/qua E5/qua  [G major]
+bar  19 RH: B4/qua A4/qua G4/qua F#4/qua  [B dominant]
+bar  20 RH: E4/hal.  [E minor]

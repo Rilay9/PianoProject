@@ -1,0 +1,33 @@
+song: song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx
+title: Come Thou Fount of Every Blessing
+composer: Traditional (American, "Nettleton")
+rungs: hymns
+shipped file: scores/pdmx/QmdoUTQsV4naWASs8WePirMPDNcRhVnoHKMTQQAyjdW2RU.mxl
+catalog keySig/timeSig/tempo: D major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 29, grace notes 0, voices>1 0, measures 17, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 2 major
+  bar 1: time 3 4
+
+dump_score.py:
+song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx | Come Thou Fount of Every Blessing | level 2.7 (estimated)
+notation: {"bars": 17, "staves": 1, "keys": [{"fifths": 2, "mode": "major"}], "times": ["3/4"], "chordCount": 29, "chords": ["A", "A7", "D", "G"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['2']  modes: ['major']  times: ['3/4']
+bar   1 RH: F#4/eig E4/eig
+bar   2 RH: D4/qua D4/qua F#4/eig A4/eig  [D major]
+bar   3 RH: E4/qua E4/qua F#4/eig A4/eig  [A major] [D major]
+bar   4 RH: B4/qua A4/qua F#4/eig E4/eig  [G major] [D major] [A dominant]
+bar   5 RH: D4/hal F#4/eig E4/eig  [D major] [A dominant]
+bar   6 RH: D4/qua D4/qua F#4/eig A4/eig  [D major]
+bar   7 RH: E4/qua E4/qua F#4/eig A4/eig  [A major] [D major]
+bar   8 RH: B4/qua A4/qua F#4/eig E4/eig  [G major] [D major] [A dominant]
+bar   9 RH: D4/qua A4/eig B4/16t C#5/16t  [D major]
+bar  10 RH: D5/qua C#5/qua B4/eig A4/eig  [D major] [G major]
+bar  11 RH: B4/eig A4/eig F#4/qua A4/eig B4/16t C#5/16t  [D major]
+bar  12 RH: D5/qua C#5/qua B4/eig A4/eig  [D major] [G major]
+bar  13 RH: D5/hal F#4/eig E4/eig  [D major] [A dominant]
+bar  14 RH: D4/qua D4/qua F#4/eig A4/eig  [D major]
+bar  15 RH: E4/qua E4/qua F#4/eig A4/eig  [A major] [D major]
+bar  16 RH: B4/qua A4/qua F#4/eig E4/eig  [G major] [D major] [A dominant]
+bar  17 RH: D4/hal  [D major]

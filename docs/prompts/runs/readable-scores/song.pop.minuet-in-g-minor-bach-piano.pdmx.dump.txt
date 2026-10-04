@@ -1,0 +1,33 @@
+song: song.pop.minuet-in-g-minor-bach-piano.pdmx
+title: Minuet in G minor, BWV Anh. 115 (first 16 bars)
+composer: Christian Petzold
+rungs: classical.3
+shipped file: scores/pdmx/QmVf6RECC5ZyPeEffyXEZtr1eBi6Ljj99NYNfYJC7iBVsv.mxl
+catalog keySig/timeSig/tempo: Bb major / None / 65.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 41, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -2
+  bar 1: time 3 4
+
+dump_score.py:
+song.pop.minuet-in-g-minor-bach-piano.pdmx | Minuet in G minor, BWV Anh. 115 (first 16 bars) | level 4.42 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": -2, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 10}
+key signatures (fifths): ['-2']  modes: []  times: ['3/4']
+bar   1 RH: Bb5/qua A5/qua G5/qua  LH: G3/hal.
+bar   2 RH: A5/qua D5/qua D5/qua  LH: F3/hal.
+bar   3 RH: G5/qua G4/eig A4/eig Bb4/eig C5/eig  LH: Eb3/hal.
+bar   4 RH: D5/hal.  LH: D3/qua D4/eig C4/eig Bb3/eig A3/eig
+bar   5 RH: Eb5/qua F5/eig Eb5/eig D5/eig C5/eig  LH: G3/hal+Bb3/hal A3/qua
+bar   6 RH: D5/qua Eb5/eig D5/eig C5/eig Bb4/eig  LH: Bb3/hal G3/qua
+bar   7 RH: C5/qua D5/eig C5/eig Bb4/eig C5/eig  LH: A3/qua F#3/qua G3/qua
+bar   8 RH: A4/hal.  LH: D3/qua D4/eig C4/eig Bb3/eig A3/eig
+bar   9 RH: Bb5/qua A5/qua G5/qua  LH: G3/hal.
+bar  10 RH: A5/qua D5/qua D5/qua  LH: F3/hal.
+bar  11 RH: G5/qua G4/eig A4/eig Bb4/eig C5/eig  LH: Eb3/hal.
+bar  12 RH: D5/hal.  LH: D3/qua D4/eig C4/eig B3/eig A3/eig
+bar  13 RH: F5/qua G5/eig F5/eig Eb5/eig D5/eig  LH: B3/hal+D4/hal G3/qua
+bar  14 RH: Eb5/qua F5/eig Eb5/eig D5/eig C5/eig  LH: C4/qua A3/qua F3/qua
+bar  15 RH: D5/qua G5/qua C5/qua  LH: Bb3/qua Eb3/qua F3/qua+A3/qua
+bar  16 RH: D4/hal.+F4/hal.+Bb4/hal.  LH: Bb3/qua Bb2/hal

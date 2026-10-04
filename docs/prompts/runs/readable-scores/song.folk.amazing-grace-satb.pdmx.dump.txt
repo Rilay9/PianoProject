@@ -1,0 +1,36 @@
+song: song.folk.amazing-grace-satb.pdmx
+title: Amazing Grace (four parts)
+composer: Traditional (American folk melody)
+rungs: hymns, hymns.4
+shipped file: scores/pdmx/QmZaM6TQAnnkNmeykGb8PKtMk4okYoCPa8CM4LFpR25KLx.mxl
+catalog keySig/timeSig/tempo: G major / None / 96.0
+raw-XML counts: ties 16, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 66, measures 19, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 3 4
+
+dump_score.py:
+song.folk.amazing-grace-satb.pdmx | Amazing Grace (four parts) | level 4.64 (estimated)
+notation: {"bars": 19, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['3/4']
+bar   1 RH:v1: D4/qua | v2: B3/qua  LH:v1: G3/qua | v2: G2/qua
+bar   2 RH:v1: G4/hal B4/eig G4/eig | v2: B3/hal D4/qua  LH:v1: D3/hal G3/qua | v2: G2/hal G2/eig B2/eig
+bar   3 RH:v1: B4/hal A4/qua | v2: D4/hal C4/qua  LH:v1: G3/hal F#3/qua | v2: D3/hal D3/qua
+bar   4 RH:v1: G4/hal E4/qua | v2: B3/hal C4/qua  LH:v1: G3/hal G3/qua | v2: E3/hal C3/qua
+bar   5 RH:v1: D4/hal | v2: B3/hal  LH:v1: G3/hal | v2: G2/hal
+bar   6 RH:v1: D4/qua | v2: B3/qua  LH:v1: G3/qua | v2: G2/qua
+bar   7 RH:v1: G4/hal B4/eig G4/eig | v2: B3/hal D4/qua  LH:v1: D3/hal G3/qua | v2: G2/hal G2/eig B2/eig
+bar   8 RH:v1: B4/hal A4/qua | v2: D4/hal D4/qua  LH:v1: G3/hal F#3/qua | v2: D3/hal C3/qua
+bar   9 RH:v1: D5/hal. | v2: D4/hal.  LH:v1: G3/hal. | v2: B2/hal.
+bar  10 RH:v1: D5/hal B4/qua | v2: D4/hal D4/qua  LH:v1: G3/hal G3/qua | v2: B2/hal G2/qua
+bar  11 RH:v1: D5/qua. B4/eig D5/eig B4/eig | v2: D4/hal D4/qua  LH:v1: B3/qua. G3/eig B3/eig G3/eig | v2: G3/hal G3/qua
+bar  12 RH:v1: G4/hal | v2: D4/hal  LH:v1: G3/hal | v2: B2/hal
+bar  13 RH:v1: D4/qua | v2: D4/qua  LH:v1: G3/qua | v2: B2/qua
+bar  14 RH:v1: E4/qua. G4/eig G4/eig E4/eig | v2: C4/qua. D4/eig C4/qua  LH:v1: G3/hal E3/eig G3/eig | v2: C3/qua. B2/eig C3/qua
+bar  15 RH:v1: D4/hal D4/qua | v2: B3/hal D4/qua  LH:v1: G3/hal G3/qua | v2: G2/hal B2/qua
+bar  16 RH:v1: G4/hal B4/eig G4/eig | v2: B3/hal D4/qua  LH:v1: G3/hal G3/eig B3/eig | v2: E3/hal D3/qua
+bar  17 RH:v1: B4/hal A4/qua | v2: G4/hal F#4/qua  LH:v1: D4/hal C4/qua | v2: D3/hal D3/qua
+bar  18 RH:v1: G4/hal. | v2: D4/hal.  LH:v1: B3/hal. | v2: G3/hal.
+bar  19 RH:v1: G4/hal r/qua | v2: D4/hal r/qua  LH:v1: B3/hal r/qua | v2: G3/hal r/qua

@@ -1,0 +1,57 @@
+song: song.folk.bella-ciao
+title: Bella Ciao
+composer: Traditional (Italian)
+rungs: 4.2
+shipped file: scores/imported/song.folk.bella-ciao.mxl
+catalog keySig/timeSig/tempo: 1 sharp / 4/4 / 96.0
+raw-XML counts: ties 62, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 64, grace notes 0, voices>1 457, measures 38, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 4 4
+  bar 11: key -4
+  bar 21: key 3
+
+dump_score.py:
+song.folk.bella-ciao | Bella Ciao | level 4.2 (judged)
+notation: {"bars": 38, "staves": 2, "keys": [{"fifths": 1, "mode": null}, {"fifths": -4, "mode": null}, {"fifths": 3, "mode": null}], "times": ["4/4"], "chordCount": 64, "chords": ["Am", "B", "B7", "Bbm", "Bm", "C", "C#", "C#7", "C7", "Cmaj7", "D", "Dbmaj7", "Dmaj7", "E", "Eb", "Em", "F#m", "Fm"], "swungMark": false, "finalBass": 6}
+key signatures (fifths): ['1', '-4', '3']  modes: []  times: ['4/4']
+bar   1 RH: r/eig B3/eig E4/eig F#4/eig  LH: r/hal
+bar   2 RH: G4/eig E4/eig E4/qua r/eig B3/eig E4/eig F#4/eig  LH: E2/eig E3/eig+G3/eig B1/eig E3/eig+G3/eig E2/eig E3/eig+G3/eig B1/eig E3/eig+G3/eig  [E minor] [E minor]
+bar   3 RH: G4/eig E4/eig E4/qua r/eig B3/eig E4/eig F#4/eig  LH: E2/eig E3/eig+G3/eig B1/eig E3/eig+G3/eig E2/eig E3/eig+G3/eig B1/eig E3/eig+G3/eig
+bar   4 RH: E4/qua+G4/qua F#4/eig E4/eig D4/qua+G4/qua F#4/eig E4/eig  LH: E2/eig E3/eig+G3/eig B1/eig E3/eig+G3/eig D2/eig D3/eig+F#3/eig D2/eig D3/eig+F#3/eig  [D major] [D major]
+bar   5 RH: C4/qua+E4/qua+B4/qua C4/qua+E4/qua+B4/qua B3/qua+D#4/qua+B4/qua F#4/eig+A4/eig G4/eig+B4/eig  LH: C2/eig C3/eig+E3/eig C2/eig C3/eig+E3/eig B1/eig B2/eig+D#3/eig B1/eig B2/eig+D#3/eig  [C major-seventh] [B major] [C major-seventh] [B major]
+bar   6 RH: E4/eig+C5/eig E4/eig+C5/eig E4/qua+C5/qua r/eig G4/eig+C5/eig+E5/eig F#4/eig+B4/eig+D5/eig E4/eig+A4/eig+C5/eig  LH: A1/eig C3/eig+E3/eig E2/eig C3/eig+E3/eig A1/eig C3/eig+E3/eig C2/eig C3/eig+E3/eig  [A minor] [A minor]
+bar   7 RH: F#4/eig+C5/eig+E5/eig E4/eig+B4/eig+D5/eig E4/qua+B4/qua+D5/qua r/qua F#4/eig+A4/eig E4/eig+G4/eig  LH: E2/eig E3/eig+G3/eig B1/eig E3/eig+G3/eig E2/eig E3/eig+G3/eig B1/eig E3/eig+G3/eig  [E minor] [E minor]
+bar   8 RH: D#4/qua+F#4/qua F#4/qua+B4/qua D#4/qua+F#4/qua E4/qua+G4/qua  LH: F#2/eig B2/eig+D#3/eig+A3/eig B1/eig B2/eig+D#3/eig+A3/eig F#2/eig B2/eig+D#3/eig+A3/eig B1/eig B2/eig+D#3/eig+A3/eig  [B dominant] [B dominant]
+bar   9 RH: B3/hal+E4/hal r/eig B3/eig E4/eig F#4/eig  LH: E2/eig E3/eig+G3/eig B1/eig E3/eig+G3/eig E2/eig E3/eig+G3/eig B1/eig E3/eig+G3/eig  [E minor] [E minor]
+bar  10 RH: B3/hal.+E4/hal. B4/qua+E5/qua  LH: E2/eig E3/eig+G3/eig B1/eig E3/eig+G3/eig E2/eig E3/eig+G3/eig B1/eig E3/eig+G3/eig
+bar  11 RH: C5/hal+F5/hal r/eig C4/eig F4/eig G4/eig  LH: F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig  [F minor] [F minor]
+bar  12 RH: Ab4/eig F4/eig F4/qua r/eig C4/eig F4/eig G4/eig  LH: F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig
+bar  13 RH: Ab4/eig F4/eig F4/qua r/eig C4/eig F4/eig G4/eig  LH: F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig
+bar  14 RH: F4/qua+Ab4/qua G4/eig F4/eig Eb4/qua+Ab4/qua G4/eig F4/eig  LH: F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig Eb2/eig Eb3/eig+G3/eig Eb2/eig Eb3/eig+G3/eig  [Eb major] [Eb major]
+bar  15 RH: Db4/qua+F4/qua+C5/qua Db4/qua+F4/qua+C5/qua C4/qua+E4/qua+C5/qua G4/eig+Bb4/eig Ab4/eig+C5/eig  LH: Db2/eig Db3/eig+F3/eig Db2/eig Db3/eig+F3/eig C2/eig C3/eig+E3/eig C2/eig C3/eig+E3/eig  [Db major-seventh] [C major] [Db major-seventh] [C major]
+bar  16 RH: F4/eig+Db5/eig F4/eig+Db5/eig F4/qua+Db5/qua r/eig Ab4/eig+Db5/eig+F5/eig G4/eig+C5/eig+Eb5/eig F4/eig+Bb4/eig+Db5/eig  LH: Bb1/eig Db3/eig+F3/eig F2/eig Db3/eig+F3/eig Bb1/eig Db3/eig+F3/eig Db2/eig Db3/eig+F3/eig  [Bb minor] [Bb minor]
+bar  17 RH: G4/eig+Db5/eig+F5/eig F4/eig+C5/eig+Eb5/eig F4/qua+C5/qua+Eb5/qua r/qua G4/eig+Bb4/eig F4/eig+Ab4/eig  LH: F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig  [F minor] [F minor]
+bar  18 RH: E4/qua+G4/qua G4/qua+C5/qua E4/qua+G4/qua F4/qua+Ab4/qua  LH: G2/eig C3/eig+E3/eig+Bb3/eig C2/eig C3/eig+E3/eig+Bb3/eig G2/eig C3/eig+E3/eig+Bb3/eig C2/eig C3/eig+E3/eig+Bb3/eig  [C dominant] [C dominant]
+bar  19 RH: C4/hal+F4/hal r/eig C4/eig F4/eig G4/eig  LH: F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig  [F minor] [F minor]
+bar  20 RH: C4/hal.+F4/hal. C5/qua+F5/qua  LH: F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig F2/eig F3/eig+Ab3/eig C2/eig F3/eig+Ab3/eig
+bar  21 RH: C#5/hal+F#5/hal r/eig C#4/eig F#4/eig G#4/eig  LH: F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig  [F# minor] [F# minor]
+bar  22 RH: A4/eig F#4/eig F#4/qua r/eig C#4/eig F#4/eig G#4/eig  LH: F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig
+bar  23 RH: A4/eig F#4/eig F#4/qua r/eig C#4/eig F#4/eig G#4/eig  LH: F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig
+bar  24 RH: F#4/qua+A4/qua G#4/eig F#4/eig E4/qua+A4/qua G#4/eig F#4/eig  LH: F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig E2/eig E3/eig+G#3/eig E2/eig E3/eig+G#3/eig  [E major] [E major]
+bar  25 RH: D4/qua+F#4/qua+C#5/qua D4/qua+F#4/qua+C#5/qua C#4/qua+E#4/qua+C#5/qua G#4/eig+B4/eig A4/eig+C#5/eig  LH: D2/eig D3/eig+F#3/eig D2/eig D3/eig+F#3/eig C#2/eig C#3/eig+E#3/eig C#2/eig C#3/eig+E#3/eig  [D major-seventh] [C# major] [D major-seventh] [C# major]
+bar  26 RH: F#4/eig+D5/eig F#4/eig+D5/eig F#4/qua+D5/qua r/eig A4/eig+D5/eig+F#5/eig G#4/eig+C#5/eig+E5/eig F#4/eig+B4/eig+D5/eig  LH: B1/eig D3/eig+F#3/eig F#2/eig D3/eig+F#3/eig B1/eig D3/eig+F#3/eig D2/eig D3/eig+F#3/eig  [B minor] [B minor]
+bar  27 RH: G#4/eig+D5/eig+F#5/eig F#4/eig+C#5/eig+E5/eig F#4/qua+C#5/qua+E5/qua r/qua G#4/eig+B4/eig F#4/eig+A4/eig  LH: F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig  [F# minor] [F# minor]
+bar  28 RH: E#4/qua+G#4/qua G#4/qua+C#5/qua E#4/qua+G#4/qua F#4/qua+A4/qua  LH: G#2/eig C#3/eig+E#3/eig+B3/eig C#2/eig C#3/eig+E#3/eig+B3/eig G#2/eig C#3/eig+E#3/eig+B3/eig C#2/eig C#3/eig+E#3/eig+B3/eig  [C# dominant] [C# dominant]
+bar  29 RH: C#4/hal+F#4/hal r/eig C#4/eig F#4/eig G#4/eig  LH: F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig  [F# minor] [F# minor]
+bar  30 RH: C#4/hal.+F#4/hal. G#4/eig+B4/eig A4/eig+C#5/eig  LH: F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig
+bar  31 RH: F#4/eig+D5/eig F#4/eig+D5/eig F#4/qua+D5/qua r/eig A4/eig+D5/eig+F#5/eig G#4/eig+C#5/eig+E5/eig F#4/eig+B4/eig+D5/eig  LH: B1/eig D3/eig+F#3/eig F#2/eig D3/eig+F#3/eig B1/eig D3/eig+F#3/eig D2/eig D3/eig+F#3/eig  [B minor] [B minor]
+bar  32 RH: G#4/eig+D5/eig+F#5/eig F#4/eig+C#5/eig+E5/eig F#4/qua+C#5/qua+E5/qua r/qua G#4/eig+B4/eig F#4/eig+A4/eig  LH: F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig  [F# minor] [F# minor]
+bar  33 RH: E#4/qua+G#4/qua G#4/qua+C#5/qua E#4/qua+G#4/qua F#4/qua+A4/qua  LH: G#2/eig C#3/eig+E#3/eig+B3/eig C#2/eig C#3/eig+E#3/eig+B3/eig G#2/eig C#3/eig+E#3/eig+B3/eig C#2/eig C#3/eig+E#3/eig+B3/eig  [C# dominant] [C# dominant]
+bar  34 RH: C#4/hal.+F#4/hal. G#4/eig+B4/eig A4/eig+C#5/eig  LH: F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig  [F# minor] [F# minor]
+bar  35 RH: F#4/eig+D5/eig F#4/eig+D5/eig F#4/qua+D5/qua r/eig A4/eig+D5/eig+F#5/eig G#4/eig+C#5/eig+E5/eig F#4/eig+B4/eig+D5/eig  LH: B1/eig D3/eig+F#3/eig F#2/eig D3/eig+F#3/eig B1/eig D3/eig+F#3/eig D2/eig D3/eig+F#3/eig  [B minor] [B minor]
+bar  36 RH: G#4/eig+D5/eig+F#5/eig F#4/eig+C#5/eig+E5/eig F#4/qua+C#5/qua+E5/qua r/qua G#4/eig+B4/eig F#4/eig+A4/eig  LH: F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig F#2/eig F#3/eig+A3/eig C#2/eig F#3/eig+A3/eig  [F# minor] [F# minor]
+bar  37 RH: E#4/qua+G#4/qua G#4/qua+C#5/qua E#4/qua+G#4/qua F#4/qua+A4/qua  LH: G#2/eig C#3/eig+E#3/eig+B3/eig C#2/eig C#3/eig+E#3/eig+B3/eig G#2/eig C#3/eig+E#3/eig+B3/eig C#2/eig C#3/eig+E#3/eig+B3/eig  [C# dominant] [C# dominant]
+bar  38 RH: C#4/hal.+F#4/hal. r/qua  LH: F#2/hal+C#3/hal+A3/hal r/hal  [F# minor] [F# minor]

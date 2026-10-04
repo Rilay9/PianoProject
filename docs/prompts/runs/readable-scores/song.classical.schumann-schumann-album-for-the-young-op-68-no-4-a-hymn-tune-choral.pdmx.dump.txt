@@ -1,0 +1,49 @@
+song: song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx
+title: Album for the Young, Op. 68 No. 4 "Chorale"
+composer: Robert Schumann
+rungs: 3.5, classical.4
+shipped file: scores/pdmx/QmZV18xdpHyW6Yhdc2uFEALbKNFkHsBX6xbV2qzgLS2J42.mxl
+catalog keySig/timeSig/tempo: G major / None / 96.0
+raw-XML counts: ties 4, tuplets 0, fingerings 96, dynamics 1, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 184, measures 32, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx | Album for the Young, Op. 68 No. 4 "Chorale" | level 4.96 (estimated)
+notation: {"bars": 32, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['4/4']
+bar   1 RH:v1: G4/hal A4/hal | v2: D4/hal D4/hal  LH:v5: B3/hal A3/hal | v6: G3/hal F#3/hal
+bar   2 RH:v1: B4/hal A4/hal | v2: D4/hal D4/hal  LH:v5: G3/hal A3/hal | v6: G3/hal F#3/hal
+bar   3 RH:v1: G4/hal F#4/hal | v2: C#4/hal D4/hal  LH:v5: A3/hal A3/hal | v6: E3/hal D3/hal
+bar   4 RH:v1: E4/hal D4/hal | v2: C#4/hal D4/hal  LH:v5: A3/hal F#3/hal | v6: A2/hal D3/hal
+bar   5 RH:v1: G4/hal A4/hal | v2: B3/hal D4/hal  LH:v5: E3/hal F#3/hal | v6: E3/hal D3/hal
+bar   6 RH:v1: B4/hal C5/hal | v2: D4/hal G4/hal  LH:v5: G3/hal G3/hal | v6: G3/hal E3/hal
+bar   7 RH:v1: B4/hal A4/hal | v2: D4/hal D4/qua C4/qua  LH:v5: G3/hal F#3/hal | v6: D3/hal D3/hal
+bar   8 RH:v1: G4/who | v2: B3/who  LH:v5: G3/who | v6: G2/who
+bar   9 RH:v1: G4/hal A4/hal | v2: D4/hal D4/hal  LH:v5: B3/hal A3/hal | v6: G3/hal F#3/hal
+bar  10 RH:v1: B4/hal A4/hal | v2: D4/hal D4/hal  LH:v5: G3/hal A3/hal | v6: G3/hal F#3/hal
+bar  11 RH:v1: G4/hal F#4/hal | v2: C#4/hal D4/hal  LH:v5: A3/hal A3/hal | v6: E3/hal D3/hal
+bar  12 RH:v1: E4/hal D4/hal | v2: C#4/hal D4/hal  LH:v5: A3/hal F#3/hal | v6: A2/hal D3/hal
+bar  13 RH:v1: G4/hal A4/hal | v2: B3/hal D4/hal  LH:v5: E3/hal F#3/hal | v6: E3/hal D3/hal
+bar  14 RH:v1: B4/hal C5/hal | v2: D4/hal G4/hal  LH:v5: G3/hal G3/hal | v6: G3/hal E3/hal
+bar  15 RH:v1: B4/hal A4/hal | v2: D4/hal D4/qua C4/qua  LH:v5: G3/hal F#3/hal | v6: D3/hal D3/hal
+bar  16 RH:v1: G4/who | v2: B3/who  LH:v5: G3/who | v6: G2/who
+bar  17 RH:v1: B4/hal C5/hal | v2: G4/hal F#4/hal  LH:v5: D4/hal C4/hal | v6: G3/hal A3/hal
+bar  18 RH:v1: D5/hal C5/hal | v2: G4/hal F#4/hal  LH:v5: B3/hal C4/hal | v6: B3/hal A3/hal
+bar  19 RH:v1: B4/hal A4/hal | v2: G4/hal G4/qua F#4/qua  LH:v5: D4/hal E4/qua D4/qua | v6: G3/hal C4/qua D4/qua
+bar  20 RH:v1: B4/who | v2: G4/who  LH:v5: D4/who | v6: G3/who
+bar  21 RH:v1: D5/hal D5/hal | v2: G4/hal G4/hal  LH:v5: B3/hal D4/hal | v6: G3/hal B3/hal
+bar  22 RH:v1: E5/hal D5/hal | v2: G4/hal G4/hal  LH:v5: C4/hal D4/hal | v6: C4/hal B3/hal
+bar  23 RH:v1: C5/hal B4/hal | v2: F#4/hal G4/hal  LH:v5: D4/hal D4/hal | v6: A3/hal G3/hal
+bar  24 RH:v1: A4/who | v2: F#4/who  LH:v5: D4/who | v6: D3/who
+bar  25 RH:v1: B4/qua C5/qua D5/hal | v2: G4/hal G4/hal  LH:v5: D4/hal D4/hal | v6: G3/qua A3/qua B3/hal
+bar  26 RH:v1: C5/hal B4/hal | v2: G4/hal G4/hal  LH:v5: E4/hal D4/hal | v6: C4/hal G3/hal
+bar  27 RH:v1: G4/hal A4/hal | v2: E4/hal F#4/hal  LH:v5: C4/hal C4/hal | v6: C4/hal A3/hal
+bar  28 RH:v1: B4/hal G4/hal | v2: G4/hal E4/hal  LH:v5: D4/hal C4/hal | v6: G3/hal C3/hal
+bar  29 RH:v1: B4/qua C5/qua D5/hal | v2: G4/hal G4/hal  LH:v5: D4/hal D4/hal | v6: G3/qua A3/qua B3/hal
+bar  30 RH:v1: C5/hal B4/hal | v2: F#4/hal G4/hal  LH:v5: D4/hal D4/hal | v6: A3/hal G3/hal
+bar  31 RH:v1: A4/hal A4/hal | v2: E4/hal F#4/hal  LH:v5: C4/hal C4/hal | v6: C3/hal D3/hal
+bar  32 RH:v1: G4/who | v2: G4/who  LH:v5: B3/who | v6: G3/who

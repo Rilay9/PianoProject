@@ -1,0 +1,49 @@
+song: song.classical.alexander-s-ragtime-band.pdmx
+title: Alexander's Ragtime Band (1911)
+composer: Irving Berlin
+rungs: chords-pop.4, jazz.3
+shipped file: scores/pdmx/QmXmVw7YtnACnwxi77eU7o5mjZ54U9QbF8FnXJRKVVkYFg.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 18, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 55, grace notes 0, voices>1 0, measures 33, staves 0
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: key 0
+  bar 0: time 4 4
+
+dump_score.py:
+song.classical.alexander-s-ragtime-band.pdmx | Alexander's Ragtime Band (1911) | level 3.36 (estimated)
+notation: {"bars": 33, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 55, "chords": ["Am", "C", "C7", "D", "D7", "Dm", "Em", "F", "G"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   0 RH: r/eig. Eb4/16t E4/eig. Eb4/16t
+bar   1 RH: E4/hal r/eig. Eb4/16t E4/eig. D#4/16t  [C major] [G major]
+bar   2 RH: E4/hal r/qua E4/eig. D#4/16t  [A minor] [E minor]
+bar   3 RH: E4/qua D4/qua B3/eig G3/qua C4/eig  [D minor] [G major] [C major]
+bar   4 RH: C4/hal r/eig. G#4/16t A4/eig. G#4/16t  [C dominant]
+bar   5 RH: A4/hal r/eig. G#4/16t A4/eig. G#4/16t  [F major] [E minor]
+bar   6 RH: A4/hal r/qua A4/eig. G4/16t  [D minor] [C major]
+bar   7 RH: A4/qua F4/qua C4/eig F4/qua A4/eig  [F major] [E minor] [D minor]
+bar   8 RH: A4/hal r/qua E4/eig. F4/16t  [G major]
+bar   9 RH: G4/eig. G4/16t A4/eig. E4/16t G4/qua A4/eig. E4/16t  [C major]
+bar  10 RH: G4/eig. G4/16t A4/eig. E4/16t G4/qua r/qua  [F major]
+bar  11 RH: C4/qua E4/eig. G3/16t C4/qua E4/eig. G3/16t  [C major]
+bar  12 RH: C4/eig. C4/16t E4/eig. G3/16t C4/qua r/qua
+bar  13 RH: r/qua D4/qua D4/qua. E4/16t F#4/16t  [D major] [D dominant]
+bar  14 RH: F#4/eig D4/qua E4/eig E4/eig F#4/qua G4/eig  [G major]
+bar  15 RH: G4/qua r/qua r/qua E4/qua
+bar  16 RH: F4/eig. E4/qua D4/16t D4/16t r/eig D#4/16t E4/eig. D#4/16t  [D minor] [G major]
+bar  17 RH: E4/hal r/eig. D#4/16t E4/eig. Eb4/16t  [C major] [G major]
+bar  18 RH: E4/hal r/qua E4/eig. D#4/16t  [A minor] [E minor]
+bar  19 RH: E4/qua D4/qua B3/eig G3/qua C4/eig  [D minor] [G major] [C major]
+bar  20 RH: C4/hal r/eig. G#4/16t A4/eig. G#4/16t  [C dominant]
+bar  21 RH: A4/hal r/eig. G#4/16t A4/eig. G#4/16t  [F major] [E minor]
+bar  22 RH: A4/hal r/qua A4/eig. G4/16t  [D minor] [C major]
+bar  23 RH: A4/qua F4/qua C4/eig F4/qua A4/eig  [F major] [E minor] [D minor]
+bar  24 RH: A4/hal r/eig. F4/16t E4/eig. F4/16t  [G major]
+bar  25 RH: G4/qua G4/qua G4/qua E4/qua  [C major]
+bar  26 RH: D4/eig C4/qua. E4/eig D4/qua.  [C dominant]
+bar  27 RH: C4/hal C5/hal  [F major]
+bar  28 RH: A4/qua C5/qua r/eig. F#4/16t G4/eig. F#4/16t  [D major]
+bar  29 RH: G4/hal r/eig. F#4/16t G4/eig. F#4/16t  [C major] [G major]
+bar  30 RH: G4/hal r/qua A4/eig. G4/16t  [A minor] [E minor]
+bar  31 RH: A4/qua G4/qua E4/eig E4/qua C4/eig  [F major] [G major] [C major]
+bar  32 RH: C4/hal r/hal  [F major] [C major] [F major] [C major]

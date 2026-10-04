@@ -1,0 +1,49 @@
+song: song.folk.cielito-lindo.simple
+title: Cielito Lindo (simple)
+composer: Quirino Mendoza y Cortés (1882)
+rungs: 2.4
+shipped file: scores/authored/song.folk.cielito-lindo.simple.mxl
+catalog keySig/timeSig/tempo: C major / 3/4 / 112.0
+raw-XML counts: ties 26, tuplets 0, fingerings 53, dynamics 0, pedal 0, articulations 0, chord symbols 16, grace notes 0, voices>1 32, measures 32, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0 major
+  bar 1: time 3 4
+
+dump_score.py:
+song.folk.cielito-lindo.simple | Cielito Lindo (simple) | level 3.0 (judged)
+notation: {"bars": 32, "staves": 2, "keys": [{"fifths": 0, "mode": "major"}], "times": ["3/4"], "chordCount": 16, "chords": ["C", "Dminor", "F", "G", "Gdominant"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: ['major']  times: ['3/4']
+bar   1 RH: C5/qua C5/qua A4/qua  LH: C3/hal.  [C major]
+bar   2 RH: A4/qua B4/qua G4/qua  LH: G3/hal.  [G dominant]
+bar   3 RH: C5/qua C5/qua A4/qua  LH: C3/hal.  [C major]
+bar   4 RH: A4/qua B4/qua G4/qua  LH: G3/hal.  [G dominant]
+bar   5 RH: C5/qua C5/qua A4/qua  LH: C3/hal.  [C major]
+bar   6 RH: A4/qua B4/qua G4/qua  LH: C3/hal.
+bar   7 RH: F4/qua D4/hal  LH: D3/hal.  [D minor]
+bar   8 RH: D4/hal.  LH: D3/hal.
+bar   9 RH: B4/qua B4/qua B4/qua  LH: G3/hal.  [G major]
+bar  10 RH: B4/qua A4/qua G4/qua  LH: G3/hal.
+bar  11 RH: F4/qua D4/qua D4/qua  LH: G3/hal.  [G dominant]
+bar  12 RH: D4/qua E4/qua F4/qua  LH: G3/hal.
+bar  13 RH: G4/qua G4/qua G4/qua  LH: G3/hal.
+bar  14 RH: G4/qua F4/qua E4/qua  LH: G3/hal.
+bar  15 RH: D4/qua C4/hal  LH: C3/hal.  [C major]
+bar  16 RH: C4/hal.  LH: C3/hal.
+bar  17 RH: E5/hal.  LH: C3/hal.  [C major]
+bar  18 RH: D5/hal C5/qua  LH: C3/hal.
+bar  19 RH: A4/hal.  LH: F3/hal.  [F major]
+bar  20 RH: A4/hal.  LH: F3/hal.
+bar  21 RH: D5/hal.  LH: F3/hal.
+bar  22 RH: D5/hal C5/qua  LH: G3/hal.  [G dominant]
+bar  23 RH: E5/qua C5/hal  LH: C3/hal.  [C major]
+bar  24 RH: C5/hal G4/qua  LH: C3/hal.
+bar  25 RH: A4/hal G4/qua  LH: C3/hal.
+bar  26 RH: A4/qua A4/qua G4/qua  LH: C3/hal.
+bar  27 RH: F5/qua F5/qua D5/qua  LH: F3/hal.  [F major]
+bar  28 RH: D5/qua B4/qua G4/qua  LH: G3/hal.  [G dominant]
+bar  29 RH: A4/qua A4/qua G4/qua  LH: G3/hal.
+bar  30 RH: G4/qua F4/qua E4/qua  LH: G3/hal.
+bar  31 RH: D4/qua C4/hal  LH: C3/hal.  [C major]
+bar  32 RH: C4/hal.  LH: C3/hal.

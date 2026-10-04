@@ -1,0 +1,25 @@
+song: song.folk.row-row-row-your-boat
+title: Row, Row, Row Your Boat
+composer: Traditional (US, printed 1852)
+rungs: 4.5, chords-pop.5
+shipped file: scores/authored/song.folk.row-row-row-your-boat.mxl
+catalog keySig/timeSig/tempo: C major / 6/8 / 80.99999999999999
+raw-XML counts: ties 0, tuplets 0, fingerings 35, dynamics 0, pedal 0, articulations 0, chord symbols 8, grace notes 0, voices>1 24, measures 8, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0 major
+  bar 1: time 6 8
+
+dump_score.py:
+song.folk.row-row-row-your-boat | Row, Row, Row Your Boat | level 4.5 (judged)
+notation: {"bars": 8, "staves": 2, "keys": [{"fifths": 0, "mode": "major"}], "times": ["6/8"], "chordCount": 8, "chords": ["C", "G"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: ['major']  times: ['6/8']
+bar   1 RH: C4/qua. C4/qua.  LH: C3/qua. E3/qua.+G3/qua.  [C major]
+bar   2 RH: C4/qua D4/eig E4/qua.  LH: C3/qua. E3/qua.+G3/qua.  [C major]
+bar   3 RH: E4/qua D4/eig E4/qua F4/eig  LH: C3/qua. E3/qua.+G3/qua.  [C major]
+bar   4 RH: G4/hal.  LH: C3/qua. E3/qua.+G3/qua.  [C major]
+bar   5 RH: C5/eig C5/eig C5/eig G4/eig G4/eig G4/eig  LH: C3/qua. E3/qua.+G3/qua.  [C major]
+bar   6 RH: E4/eig E4/eig E4/eig C4/eig C4/eig C4/eig  LH: C3/qua. E3/qua.+G3/qua.  [C major]
+bar   7 RH: G4/qua F4/eig E4/qua D4/eig  LH: G2/qua. B2/qua.+D3/qua.  [G major]
+bar   8 RH: C4/hal.  LH: C3/qua. E3/qua.+G3/qua.  [C major]

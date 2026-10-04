@@ -1,0 +1,47 @@
+song: song.pop.sonatina-in-g.pdmx
+title: Sonatina in G major
+composer: Thomas Attwood
+rungs: classical.4
+shipped file: scores/pdmx/QmUDoLwg9ihL1tkEX3EJZ4RoSSi8G4irTc9NuX5ozQCcTc.mxl
+catalog keySig/timeSig/tempo: G major / None / 96.0
+raw-XML counts: ties 4, tuplets 0, fingerings 0, dynamics 4, pedal 0, articulations 4, chord symbols 0, grace notes 2, voices>1 139, measures 28, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 1
+  bar 0: time 4 4
+  bar 27: time 3 4
+
+dump_score.py:
+song.pop.sonatina-in-g.pdmx | Sonatina in G major | level 4.36 (estimated)
+notation: {"bars": 28, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4", "3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['4/4', '3/4']
+text on the score: ['rall.', 'a tempo']
+bar   0 RH: B4/eig C5/eig  LH: r/qua
+bar   1 RH: D5/qua B4/qua A4/qua D5/qua  LH: G3/eig D4/eig B3/eig D4/eig F#3/eig D4/eig C4/eig D4/eig
+bar   2 RH: G4/hal. A4/eig B4/eig  LH: G3/eig D4/eig B3/eig D4/eig G3/eig D4/eig B3/eig D4/eig
+bar   3 RH: C5/qua A4/qua B4/qua G4/qua  LH: F#3/eig D4/eig C4/eig D4/eig G3/eig D4/eig B3/eig D4/eig
+bar   4 RH: B4/eig A4/eig G4/eig A4/eig B4/eig A4/eig B4/eig C5/eig A4/eig  LH: D3/hal r/hal
+bar   5 RH: D5/qua B4/qua A4/qua D5/qua  LH: G3/eig D4/eig B3/eig D4/eig D3/eig C4/eig A3/eig C4/eig
+bar   6 RH: G4/hal G4/eig A4/eig B4/eig G4/eig  LH: E3/eig B3/eig G3/eig B3/eig B2/qua r/qua
+bar   7 RH: A4/eig B4/eig C5/eig A4/eig G4/eig F#4/eig E4/eig F#4/eig  LH: C3/qua r/qua D3/hal+C4/hal
+bar   8 RH: G4/eig F#4/eig G4/eig F#4/eig G4/qua A4/eig G4/eig  LH: G3/qua+B3/qua G3/qua+B3/qua G3/qua+B3/qua r/qua
+bar   9 RH: F#4/eig G4/eig A4/eig F#4/eig D4/eig E4/eig F#4/eig D4/eig  LH: D3/qua r/qua C4/qua r/qua
+bar  10 RH: G4/eig D4/eig E4/eig F#4/eig G4/eig A4/eig B4/eig G4/eig  LH: B3/qua r/qua G3/qua r/qua
+bar  11 RH: C5/eig B4/eig C5/eig A4/eig B4/eig A4/eig B4/eig G4/eig  LH: F#3/qua r/qua G3/qua r/qua
+bar  12 RH: A4/eig G4/eig A4/eig B4/eig A4/qua A4/eig G4/eig  LH: D4/hal D3/eig A3/eig F#3/eig A3/eig
+bar  13 RH: F#4/eig G4/eig A4/eig F#4/eig D4/eig E4/eig F#4/eig D4/eig  LH: D3/hal C4/qua D3/qua
+bar  14 RH: G4/eig D4/eig E4/eig F#4/eig G4/eig A4/eig B4/eig G4/eig  LH: B3/qua D3/qua G3/qua D3/qua
+bar  15 RH: C5/eig B4/eig C5/eig A4/eig B4/eig A4/eig B4/eig G4/eig  LH: F#3/qua D3/qua G3/qua B3/qua
+bar  16 RH: D5/hal r/eig A4/eig B4/eig C#5/eig  LH: D3/eig A3/eig F#3/eig A3/eig D3/qua r/qua
+bar  17 RH: D5/eig A4/eig B4/eig C#5/eig D5/eig A4/eig B4/eig C#5/eig  LH: r/?
+bar  18 RH: D5/eig C#5/eig D5/eig C#5/eig D5/eig C#5/eig D5/eig C#5/eig  LH: r/?
+bar  19 RH: D5/eig C#5/eig D5/eig C#5/eig D5/eig C5/eig B4/eig C5/eig  LH: r/?
+bar  20 RH: D5/qua B4/qua A4/qua D5/qua  LH: G3/eig D4/eig B3/eig D4/eig F#3/eig D4/eig C4/eig D4/eig
+bar  21 RH: G4/hal. A4/eig B4/eig  LH: G3/eig D4/eig B3/eig D4/eig G3/eig D4/eig B3/eig D4/eig
+bar  22 RH: C5/qua A4/qua B4/qua G4/qua  LH: F#3/eig D4/eig C4/eig D4/eig G3/eig D4/eig B3/eig D4/eig
+bar  23 RH: B4/eig A4/eig G4/eig A4/eig B4/eig A4/qua B4/eig C5/eig  LH: D3/hal r/hal
+bar  24 RH: D5/qua B4/qua A4/qua D5/qua  LH: G3/eig D4/eig B3/eig D4/eig D3/eig C4/eig A3/eig C4/eig
+bar  25 RH: G4/hal G4/eig A4/eig B4/eig G4/eig  LH: E3/eig B3/eig G3/eig B3/eig B2/qua r/qua
+bar  26 RH: A4/eig B4/eig C5/eig A4/eig G4/eig F#4/eig E4/eig F#4/eig  LH: C3/qua r/qua D3/hal+C4/hal
+bar  27 RH: G4/eig F#4/eig G4/eig F#4/eig G4/qua  LH: G3/qua+B3/qua G3/qua+B3/qua G3/qua+B3/qua

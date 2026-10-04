@@ -1,0 +1,36 @@
+song: song.folk.uti-var-hage-swedish-traditional-song.pdmx
+title: Uti vår hage
+composer: Traditional (Swedish)
+rungs: 4.6
+shipped file: scores/pdmx/QmY9aSk9GvJuZjFABRn1XkVJwbceabpRab92bz1amNJUUb.mxl
+catalog keySig/timeSig/tempo: F minor / None / 112.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 3, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 41, measures 18, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -4
+  bar 1: time 3 4
+
+dump_score.py:
+song.folk.uti-var-hage-swedish-traditional-song.pdmx | Uti vår hage | level 4.66 (estimated)
+notation: {"bars": 18, "staves": 2, "keys": [{"fifths": -4, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-4']  modes: []  times: ['3/4']
+text on the score: ['Moderato', 'Lively']
+bar   1 RH: F4/qua Ab4/qua Bb4/qua  LH: F3/hal.
+bar   2 RH: Ab4/qua. G4/eig F4/qua  LH: F3/qua. C3/eig Db3/qua
+bar   3 RH: Ab4/qua Ab4/qua Bb4/qua  LH: F3/qua C4/qua Bb3/qua
+bar   4 RH: C5/hal Eb5/qua  LH: Ab3/hal Eb3/qua
+bar   5 RH: C5/hal Ab4/qua  LH: Ab3/hal Db3/qua
+bar   6 RH: C5/hal r/qua  LH: Ab3/hal r/qua
+bar   7 RH: Ab4/qua. Ab4/eig Ab4/qua  LH: F3/hal.
+bar   8 RH: Ab4/qua Bb4/qua C5/qua  LH: F3/qua Eb3/qua Ab3/qua
+bar   9 RH: C5/qua Bb4/qua Ab4/qua  LH: F3/qua Bb3/qua Bb3/qua
+bar  10 RH: Bb4/hal C5/qua  LH: Eb3/hal E3/qua
+bar  11 RH: Ab4/qua Ab4/eig. G4/16t F4/eig. Ab4/16t  LH: F3/hal.
+bar  12 RH: G4/qua C4/qua Bb4/qua  LH: C3/qua C3/qua G3/qua
+bar  13 RH: Ab4/qua Ab4/eig. G4/16t F4/eig. Ab4/16t  LH: F3/hal.
+bar  14 RH: G4/qua C4/qua C4/qua  LH: C3/qua C3/qua C3/qua
+bar  15 RH: F4/qua C5/qua. Bb4/eig  LH: F3/qua Eb3/qua. Db3/eig
+bar  16 RH: C5/qua G4/qua Bb4/qua  LH: Db3/qua Bb2/qua G2/qua
+bar  17 RH: Ab4/hal G4/qua  LH: Ab2/hal C3/qua
+bar  18 RH: F4/hal r/qua  LH: F2/hal+F3/hal r/qua
