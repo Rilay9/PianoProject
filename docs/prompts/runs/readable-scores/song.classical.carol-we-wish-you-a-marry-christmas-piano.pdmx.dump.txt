@@ -1,0 +1,42 @@
+song: song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx
+title: We Wish You a Merry Christmas (piano)
+composer: Traditional (English)
+rungs: holiday.5
+shipped file: scores/pdmx/QmR712RQwPDHCCiajMSiK5yUrD5vQSieBC7CnkLt8ATjyj.mxl
+catalog keySig/timeSig/tempo: E major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 48, grace notes 0, voices>1 121, measures 25, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 4
+  bar 0: time 3 4
+
+dump_score.py:
+song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx | We Wish You a Merry Christmas (piano) | level 5.1 (estimated)
+notation: {"bars": 25, "staves": 2, "keys": [{"fifths": 4, "mode": null}], "times": ["3/4"], "chordCount": 48, "chords": ["A", "B", "C#m", "E", "F#", "G#", "G#m"], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['4']  modes: []  times: ['3/4']
+bar   0 RH: B3/qua  LH: E3/qua
+bar   1 RH: E4/qua E4/eig F#4/eig E4/eig D#4/eig  LH: E2/eig G#2/eig B2/eig E3/eig B2/eig G#2/eig  [E major] [E major]
+bar   2 RH: C#4/qua C#4/qua C#4/qua  LH: A2/eig C#3/eig E3/eig A3/eig E3/eig C#3/eig  [A major] [A major]
+bar   3 RH: F#4/qua F#4/eig G#4/eig F#4/eig E4/eig  LH: F#2/eig A#2/eig C#3/eig F#3/eig C#3/eig A#2/eig  [F# major] [F# major]
+bar   4 RH: D#4/qua B3/qua B3/qua  LH: B2/eig D#3/eig F#3/eig B3/eig F#3/eig D#3/eig  [B major] [B major]
+bar   5 RH: G#4/qua G#4/eig A4/eig G#4/eig F#4/eig  LH: G#2/eig B#2/eig D#3/eig G#3/eig D#3/eig B#2/eig  [G# major] [G# major]
+bar   6 RH: E4/qua C#4/qua B3/eig B3/eig  LH: C#3/eig E3/eig G#3/eig C#4/eig G#3/eig E3/eig  [C# minor] [C# minor]
+bar   7 RH: C#4/qua F#4/qua D#4/qua  LH: A2/eig C#3/eig E3/eig A3/eig E3/eig C#3/eig  [A major] [A major]
+bar   8 RH: E4/hal B3/qua  LH: E3/hal.+G#3/hal.+B3/hal.  [E major] [E major]
+bar   9 RH: E4/qua E4/qua E4/qua  LH: E2/eig G#2/eig B2/eig E3/eig B2/eig G#2/eig  [E major] [E major]
+bar  10 RH: D#4/hal D#4/qua  LH: B2/eig D#3/eig F#3/eig B3/eig F#3/eig D#3/eig  [B major] [B major]
+bar  11 RH: E4/qua D#4/qua C#4/qua  LH: A2/eig C#3/eig E3/eig A3/eig E3/eig C#3/eig  [A major] [A major]
+bar  12 RH: B3/hal F#4/qua  LH: E2/eig G#2/eig B2/eig E3/eig B2/eig G#2/eig  [E major] [E major]
+bar  13 RH: G#4/qua F#4/qua E4/qua  LH: C#3/eig E3/eig G#3/eig C#4/eig G#3/eig E3/eig  [C# minor] [C# minor]
+bar  14 RH: B4/qua B3/qua B3/eig B3/eig  LH: G#2/eig B2/eig D#3/eig G#3/eig D#3/eig B2/eig  [G# minor] [G# minor]
+bar  15 RH: C#4/qua F#4/qua D#4/qua  LH: C#3/hal.+E3/hal.+A3/hal.  [A major] [A major]
+bar  16 RH: E4/hal B3/qua  LH: E3/hal.+G#3/hal.+B3/hal.  [E major] [E major]
+bar  17 RH: E4/qua E4/eig F#4/eig E4/eig D#4/eig  LH: E2/eig G#2/eig B2/eig E3/eig B2/eig G#2/eig  [E major] [E major]
+bar  18 RH: C#4/qua C#4/qua C#4/qua  LH: C#3/hal.+E3/hal.+A3/hal.  [A major] [A major]
+bar  19 RH: F#4/qua F#4/eig G#4/eig F#4/eig E4/eig  LH: F#2/eig A#2/eig C#3/eig F#3/eig C#3/eig A#2/eig  [F# major] [F# major]
+bar  20 RH: D#4/qua B3/qua B3/qua  LH: D#3/hal.+F#3/hal.+B3/hal.  [B major] [B major]
+bar  21 RH: G#4/qua G#4/eig A4/eig G#4/eig F#4/eig  LH: G#2/eig B#2/eig D#3/eig G#3/eig D#3/eig B#2/eig  [G# major] [G# major]
+bar  22 RH: E4/qua C#4/qua B3/eig B3/eig  LH: C#3/hal.+E3/hal.+G#3/hal.  [C# minor] [C# minor]
+bar  23 RH: C#4/qua F#4/qua D#4/qua  LH: C#3/hal.+E3/hal.+A3/hal.  [A major] [A major]
+bar  24 RH: E4/hal.  LH: E3/hal.+G#3/hal.+B3/hal.  [E major] [E major]

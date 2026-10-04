@@ -1,0 +1,75 @@
+song: song.folk.john-denver-annie-s-song.pdmx
+title: Annie's Song
+composer: John Denver
+rungs: chords-pop.6, rock.5
+shipped file: scores/pdmx/QmapX33TknezCSodheCC3At55Bm3AaWTWfznzJZWVycnLr.mxl
+catalog keySig/timeSig/tempo: D major / None / 140.0
+raw-XML counts: ties 40, tuplets 0, fingerings 0, dynamics 0, pedal 62, articulations 0, chord symbols 108, grace notes 0, voices>1 164, measures 57, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 2
+  bar 0: time 3 4
+
+dump_score.py:
+song.folk.john-denver-annie-s-song.pdmx | Annie's Song | level 4.49 (estimated)
+notation: {"bars": 57, "staves": 2, "keys": [{"fifths": 2, "mode": null}], "times": ["3/4"], "chordCount": 108, "chords": ["A", "A7", "Bm", "D", "Dsus4", "E", "Em", "F#m", "G"], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['2']  modes: []  times: ['3/4']
+text on the score: ['Moderato']
+bar   0 RH: D5/qua D5/qua C#5/qua B4/qua  LH: D3/qua D3/qua G3/qua D4/qua  [D major] [D suspended-fourth] [D major] [D suspended-fourth]
+bar   1 RH: D5/hal.  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar   2 RH: C#5/hal.  LH: A3/qua E4/qua A4/qua  [A major] [A major]
+bar   3 RH: C#5/hal B4/eig B4/eig  LH: B3/qua F#4/qua B4/qua  [B minor] [B minor]
+bar   4 RH: B4/qua C#5/qua D5/qua  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar   5 RH: A4/qua F#4/hal  LH: D3/qua A3/qua D4/qua  [D major] [D major]
+bar   6 RH: F#4/hal.  LH: C#3/qua A3/qua D4/qua  [D major] [D major]
+bar   7 RH: F#4/hal A4/eig A4/eig  LH: B2/qua F#3/qua B3/qua  [B minor] [B minor]
+bar   8 RH: A4/qua B4/qua C#5/qua  LH: A2/qua E3/qua A3/qua  [A dominant] [A dominant]
+bar   9 RH: D5/hal.  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  10 RH: C#5/hal.  LH: F#3/qua C#4/qua F#4/qua  [F# minor] [F# minor]
+bar  11 RH: C#5/hal B4/eig B4/eig  LH: E3/qua B3/qua E4/qua  [E minor] [E minor]
+bar  12 RH: B4/qua C#5/qua D5/qua  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  13 RH: C#5/hal.  LH: A3/qua E4/qua A4/qua  [A dominant] [A dominant]
+bar  14 RH: C#5/hal.  LH: A3/qua E4/qua A4/qua  [A dominant] [A dominant]
+bar  15 RH: C#5/qua r/qua D5/eig D5/eig  LH: A3/qua E4/qua A4/qua  [A dominant] [A dominant]
+bar  16 RH: D5/qua C#5/qua B4/qua  LH: r/?
+bar  17 RH: C#5/qua D5/qua E5/qua  LH: A3/qua E4/qua A4/qua  [A dominant] [A dominant]
+bar  18 RH: D5/hal.  LH: D3/qua A3/qua D4/qua  [D major] [D major]
+bar  19 RH: D5/hal.  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  20 RH: D5/qua r/qua r/qua  LH: D3/qua A3/qua D4/qua  [D major] [D major]
+bar  21 RH: D5/qua C#5/qua B4/qua  LH: r/?
+bar  22 RH: D5/hal.  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  23 RH: C#5/hal.  LH: A3/qua E4/qua A4/qua  [A major] [A major]
+bar  24 RH: C#5/hal B4/eig B4/eig  LH: B3/qua F#4/qua B4/qua  [B minor] [B minor]
+bar  25 RH: B4/qua C#5/qua D5/qua  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  26 RH: A4/qua F#4/hal  LH: D3/qua A3/qua D4/qua  [D major] [D major]
+bar  27 RH: F#4/hal.  LH: C#3/qua A3/qua D4/qua  [D major] [D major]
+bar  28 RH: F#4/qua r/qua A4/eig A4/eig  LH: B2/qua F#3/qua B3/qua  [B minor] [B minor]
+bar  29 RH: A4/qua B4/qua C#5/qua  LH: A2/qua E3/qua A3/qua  [A dominant] [A dominant]
+bar  30 RH: D5/hal.  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  31 RH: C#5/hal.  LH: F#3/qua C#4/qua F#4/qua  [F# minor] [F# minor]
+bar  32 RH: C#5/hal B4/eig B4/eig  LH: E3/qua B3/qua E4/qua  [E major] [E major]
+bar  33 RH: B4/qua C#5/qua D5/qua  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  34 RH: E5/hal.  LH: A3/qua E4/qua A4/qua  [A dominant] [A dominant]
+bar  35 RH: E5/hal.  LH: A4/qua E4/qua A3/qua  [A dominant] [A dominant]
+bar  36 RH: E5/hal D5/eig D5/eig  LH: A3/qua E4/qua A4/qua  [A dominant] [A dominant]
+bar  37 RH: D5/qua C#5/qua B4/qua  LH: r/?
+bar  38 RH: D5/hal.  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  39 RH: E5/hal.  LH: A3/qua E4/qua A4/qua  [A major] [A major]
+bar  40 RH: E5/hal D5/eig D5/eig  LH: B3/qua F#4/qua B4/qua  [B minor] [B minor]
+bar  41 RH: D5/qua C#5/qua B4/qua  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  42 RH: A4/qua F#4/hal  LH: D3/qua A3/qua D4/qua  [D major] [D major]
+bar  43 RH: F#4/hal.  LH: C#3/qua A3/qua D4/qua  [D major] [D major]
+bar  44 RH: F#4/hal A4/qua  LH: B2/qua F#3/qua B3/qua  [B minor] [B minor]
+bar  45 RH: A4/qua B4/qua C#5/qua  LH: A3/qua E4/qua A4/qua  [A dominant] [A dominant]
+bar  46 RH: D5/hal.  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  47 RH: C#5/hal.  LH: F#3/qua C#4/qua F#4/qua  [F# minor] [F# minor]
+bar  48 RH: C#5/hal B4/qua  LH: E3/qua B3/qua E4/qua  [E minor] [E minor]
+bar  49 RH: C#5/qua D5/qua. E5/eig  LH: A3/qua E4/qua A4/qua  [A dominant] [A dominant]
+bar  50 RH: D5/hal.  LH: D3/qua A3/qua D4/qua  [D major] [D major]
+bar  51 RH: D5/hal.  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  52 RH: D5/qua r/qua D5/qua  LH: D3/qua A3/qua D4/qua  [D major] [D major]
+bar  53 RH: D5/qua C#5/qua B4/qua  LH: r/?
+bar  54 RH: D5/hal.  LH: D3/qua A3/qua D4/qua  [D major] [D major]
+bar  55 RH: D5/hal.  LH: G3/qua D4/qua G4/qua  [G major] [G major]
+bar  56 RH: D5/hal.  LH: D3/qua A3/qua D4/qua  [D major] [D major]

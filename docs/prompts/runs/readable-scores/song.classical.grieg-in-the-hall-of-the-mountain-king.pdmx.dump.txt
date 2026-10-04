@@ -1,0 +1,111 @@
+song: song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx
+title: In the Hall of the Mountain King (Peer Gynt)
+composer: Edvard Grieg
+rungs: rock.7
+shipped file: scores/pdmx/QmXXdTmXQW5jKbHEHgHuZFuW57wNrtApiba8WidW76APCp.mxl
+catalog keySig/timeSig/tempo: B minor / None / 138.0
+raw-XML counts: ties 0, tuplets 104, fingerings 0, dynamics 47, pedal 156, articulations 909, chord symbols 0, grace notes 55, voices>1 893, measures 87, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef F 4
+  bar 1: clef F 4
+  bar 1: key 2
+  bar 1: time 4 4
+  bar 26: clef G 2
+  bar 42: clef F 4
+  bar 46: clef G 2
+  bar 84: clef G 2
+  bar 85: clef F 4
+  bar 87: clef F 4
+
+dump_score.py:
+song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx | In the Hall of the Mountain King (Peer Gynt) | level 8.4 (estimated)
+notation: {"bars": 87, "staves": 2, "keys": [{"fifths": 2, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 11}
+key signatures (fifths): ['2']  modes: []  times: ['4/4']
+text on the score: ['Alla marcia e molto marcato', 'sempe staccato e', 'pp', 'cresc. poco a poco', 'cresc.', 'cresc.', 'e sempre cresc.', 'cresc.']
+bar   1 RH: F#3/who+F#4/who  LH: r/?
+bar   2 RH: B1/eig C#2/eig D2/eig E2/eig F#2/eig D2/eig F#2/qua  LH: B1/qua F#2/qua B1/qua F#2/qua
+bar   3 RH: E#2/eig C#2/eig E#2/qua E2/eig C2/eig E2/qua  LH: B1/qua F#2/qua B1/qua F#2/qua
+bar   4 RH: B1/eig C#2/eig D2/eig E2/eig F#2/eig D2/eig F#2/eig B2/eig  LH: B1/qua F#2/qua B1/qua F#2/qua
+bar   5 RH: A2/eig F#2/eig D2/eig F#2/eig A2/hal  LH: D2/qua A2/qua D2/qua A2/qua
+bar   6 RH: B1/eig C#2/eig D2/eig E2/eig F#2/eig D2/eig F#2/qua  LH: B1/qua E#2/eig F#2/qua B1/qua E#2/eig F#2/qua
+bar   7 RH: E#2/eig C#2/eig E#2/qua E2/eig C2/eig E2/qua  LH: B1/qua E#2/eig F#2/qua B1/qua E#2/eig F#2/qua
+bar   8 RH: B1/eig C#2/eig D2/eig E2/eig F#2/eig D2/eig F#2/eig B2/eig  LH: B1/qua E#2/eig F#2/qua B1/qua E#2/eig F#2/qua
+bar   9 RH: A2/eig F#2/eig D2/eig F#2/eig A2/hal  LH: D2/qua G#2/eig A2/qua D2/qua G#2/eig A2/qua
+bar  10 RH: F#2/eig G#2/eig A#2/eig B2/eig C#3/eig A#2/eig C#3/qua  LH: F#2/qua C#3/qua F#2/qua C#3/qua
+bar  11 RH: D3/eig A#2/eig D3/qua C#3/eig A#2/eig C#3/qua  LH: D2/qua A#2/qua F#2/qua C#3/qua
+bar  12 RH: F#2/eig G#2/eig A#2/eig B2/eig C#3/eig A#2/eig C#3/qua  LH: F#2/qua C#3/qua F#2/qua C#3/qua
+bar  13 RH: D3/eig A#2/eig D3/qua C#3/hal  LH: D2/qua A#2/qua F#2/qua C#3/qua
+bar  14 RH: F#2/eig G#2/eig A#2/eig B2/eig C#3/eig A#2/eig C#3/qua  LH: F#2/qua B#2/eig C#3/qua F#2/qua B#2/eig C#3/qua
+bar  15 RH: D3/eig A#2/eig D3/qua C#3/eig A#2/eig C#3/qua  LH: D2/qua G##2/eig A#2/qua F#2/qua B#2/eig C#3/qua
+bar  16 RH: F#2/eig G#2/eig A#2/eig B2/eig C#3/eig A#2/eig C#3/qua  LH: F#2/qua B#2/eig C#3/qua F#2/qua B#2/eig C#3/qua
+bar  17 RH: D3/eig A#2/eig D3/qua C#3/hal  LH: D2/qua G##2/eig A#2/qua F#2/qua B#2/eig C#3/qua
+bar  18 RH: B1/eig+B2/eig C#2/eig D2/eig+D3/eig E2/eig F#2/eig+F#3/eig D2/eig F#2/qua+F#3/qua  LH: B1/qua F#2/qua B1/qua F#2/qua
+bar  19 RH: E#2/eig+E#3/eig C#2/eig E#2/qua+E#3/qua E2/eig+E3/eig C2/eig E2/qua+E3/qua  LH: B1/qua F#2/qua B1/qua F#2/qua
+bar  20 RH: B1/eig+B2/eig C#2/eig D2/eig+D3/eig E2/eig F#2/eig+F#3/eig D2/eig F#2/eig+F#3/eig B2/eig  LH: B1/qua F#2/qua B1/qua F#2/qua
+bar  21 RH: A2/eig+A3/eig F#2/eig D2/eig+D3/eig F#2/eig A2/hal+A3/hal  LH: D2/qua A2/qua D2/qua A2/qua
+bar  22 RH: B1/eig+B2/eig C#2/eig D2/eig+D3/eig E2/eig F#2/eig+F#3/eig D2/eig F#2/qua+F#3/qua  LH: B1/qua F#2/qua B1/qua F#2/qua
+bar  23 RH: E#2/eig+E#3/eig C#2/eig E#2/qua+E#3/qua E2/eig+E3/eig C2/eig E2/qua+E3/qua  LH: B1/qua F#2/qua B1/qua F#2/qua
+bar  24 RH: B1/eig+B2/eig C#2/eig D2/eig+D3/eig E2/eig F#2/eig+F#3/eig D2/eig F#2/eig+F#3/eig B2/eig+B3/eig  LH: B1/qua B2/qua A2/qua G2/qua
+bar  25 RH: F#2/eig+F#3/eig D2/eig F#2/eig+F#3/eig B2/eig B1/hal+B2/hal  LH: F#2/qua E2/qua D2/qua C#2/qua
+bar  26 RH: D3/eig+B3/eig F#3/eig+C#4/eig B3/eig+D4/eig C#4/eig+E4/eig D4/eig+F#4/eig B3/eig+D4/eig D4/qua+F#4/qua  LH: B1/qua F#2/16t+D3/16t E#2/16t F#2/eig+D3/eig B1/qua F#2/16t+D3/16t E#2/16t F#2/eig+D3/eig
+bar  27 RH: C#4/eig+E#4/eig G#3/eig+C#4/eig C#4/qua+E#4/qua C4/eig+E4/eig G3/eig+C4/eig C4/qua+E4/qua  LH: B1/qua F#2/16t+C#3/16t E#2/16t F#2/eig+C#3/eig B1/qua F#2/16t+C3/16t E#2/16t F#2/eig+C3/eig
+bar  28 RH: D3/eig+B3/eig F#3/eig+C#4/eig B3/eig+D4/eig C#4/eig+E4/eig D4/eig+F#4/eig B3/eig+D4/eig D4/eig+F#4/eig F#4/eig+B4/eig  LH: B1/qua F#2/16t+D3/16t E#2/16t F#2/eig+D3/eig B1/qua F#2/16t+D3/16t E#2/16t F#2/eig+D3/eig
+bar  29 RH: F#4/eig+A4/eig D4/eig+F#4/eig A3/eig+D4/eig D4/eig+F#4/eig F#4/hal+A4/hal  LH: D2/qua A2/16t+F#3/16t G#2/16t A2/eig+F#3/eig D2/qua A2/16t+F#3/16t G#2/16t A2/eig+F#3/eig
+bar  30 RH: D3/eig+B3/eig F#3/eig+C#4/eig B3/eig+D4/eig C#4/eig+E4/eig D4/eig+F#4/eig B3/eig+D4/eig D4/qua+F#4/qua  LH: B1/qua F#2/16t+D3/16t E#2/16t F#2/eig+D3/eig B1/qua F#2/16t+D3/16t E#2/16t F#2/eig+D3/eig
+bar  31 RH: C#4/eig+E#4/eig G#3/eig+C#4/eig C#4/qua+E#4/qua C4/eig+E4/eig G3/eig+C4/eig C4/qua+E4/qua  LH: B1/qua F#2/16t+C#3/16t E#2/16t F#2/eig+C#3/eig B1/qua F#2/16t+C3/16t E#2/16t F#2/eig+C3/eig
+bar  32 RH: D3/eig+B3/eig F#3/eig+C#4/eig B3/eig+D4/eig C#4/eig+E4/eig D4/eig+F#4/eig B3/eig+D4/eig D4/eig+F#4/eig F#4/eig+B4/eig  LH: B1/qua F#2/16t+D3/16t E#2/16t F#2/eig+D3/eig B1/qua F#2/16t+D3/16t E#2/16t F#2/eig+D3/eig
+bar  33 RH: F#4/eig+A4/eig D4/eig+F#4/eig A3/eig+D4/eig D4/eig+F#4/eig F#4/hal+A4/hal  LH: D2/qua A2/16t+F#3/16t G#2/16t A2/eig+F#3/eig D2/qua A2/16t+F#3/16t G#2/16t A2/eig+F#3/eig
+bar  34 RH: A#3/eig+F#4/eig C#4/eig+G#4/eig F#4/eig+A#4/eig G#4/eig+B4/eig F#4/eig+A#4/eig+C#5/eig C#4/eig+F#4/eig+A#4/eig F#4/qua+A#4/qua+C#5/qua  LH: F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig
+bar  35 RH: F#4/eig+A#4/eig+D5/eig D4/eig+F#4/eig+A#4/eig F#4/qua+A#4/qua+D5/qua F#4/eig+A#4/eig+C#5/eig C#4/eig+F#4/eig+A#4/eig F#4/qua+A#4/qua+C#5/qua  LH: D2/qua D3/16t+A#3/16t C#3/16t D3/eig+A#3/eig F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig
+bar  36 RH: A#3/eig+F#4/eig C#4/eig+G#4/eig F#4/eig+A#4/eig G#4/eig+B4/eig F#4/eig+A#4/eig+C#5/eig C#4/eig+F#4/eig+A#4/eig F#4/qua+A#4/qua+C#5/qua  LH: F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig
+bar  37 RH: F#4/eig+A#4/eig+D5/eig D4/eig+F#4/eig+A#4/eig F#4/qua+A#4/qua+D5/qua F#4/hal+A#4/hal+C#5/hal  LH: D2/qua D3/16t+A#3/16t C#3/16t D3/eig+A#3/eig F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig
+bar  38 RH: A#4/eig+F#5/eig C#5/eig+G#5/eig F#5/eig+A#5/eig G#5/eig+B5/eig F#5/eig+A#5/eig+C#6/eig C#5/eig+F#5/eig+A#5/eig F#5/qua+A#5/qua+C#6/qua  LH: F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig
+bar  39 RH: F#5/eig+A#5/eig+D6/eig D5/eig+F#5/eig+A#5/eig F#5/qua+A#5/qua+D6/qua F#5/eig+A#5/eig+C#6/eig C#5/eig+F#5/eig+A#5/eig F#5/qua+A#5/qua+C#6/qua  LH: D2/qua D3/16t+A#3/16t C#3/16t D3/eig+A#3/eig F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig
+bar  40 RH: A#4/eig+F#5/eig C#5/eig+G#5/eig F#5/eig+A#5/eig G#5/eig+B5/eig F#5/eig+A#5/eig+C#6/eig C#5/eig+F#5/eig+A#5/eig F#5/qua+A#5/qua+C#6/qua  LH: F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig
+bar  41 RH: F#5/eig+A#5/eig+D6/eig D5/eig+F#5/eig+A#5/eig F#5/qua+A#5/qua+D6/qua F#5/hal+A#5/hal+C#6/hal  LH: D2/qua D3/16t+A#3/16t C#3/16t D3/eig+A#3/eig F#2/qua C#3/16t+A#3/16t B#2/16t C#3/eig+A#3/eig
+bar  42 RH: B2/eig+B3/eig C#3/eig D3/eig+D4/eig E3/eig F#3/eig+F#4/eig D3/eig F#3/qua+F#4/qua  LH: B1/eig E#2/eig F#2/eig D3/eig E#2/eig F#2/eig B1/eig E#2/eig F#2/eig D3/eig E#2/eig F#2/eig
+bar  43 RH: E#3/eig+E#4/eig C#3/eig E#3/qua+E#4/qua E3/eig+E4/eig C3/eig E3/qua+E4/qua  LH: B1/eig E#2/eig F#2/eig D3/eig E#2/eig F#2/eig B1/eig E#2/eig F#2/eig D3/eig E#2/eig F#2/eig
+bar  44 RH: B2/eig+B3/eig C#3/eig D3/eig+D4/eig E3/eig F#3/eig+F#4/eig D3/eig F#3/eig+F#4/eig B3/eig  LH: B1/eig E#2/eig F#2/eig D3/eig E#2/eig F#2/eig B1/eig E#2/eig F#2/eig D3/eig E#2/eig F#2/eig
+bar  45 RH: A3/eig+A4/eig F#3/eig D3/eig+D4/eig F#3/eig A3/hal+A4/hal  LH: D2/eig G#2/eig A2/eig F#3/eig G#2/eig A2/eig D2/eig G#2/eig A2/eig F#3/eig G#2/eig A2/eig
+bar  46 RH: B3/eig+B4/eig C#4/eig D4/eig+D5/eig E4/eig F#4/eig+F#5/eig D4/eig F#4/qua+F#5/qua  LH: B1/eig E#2/eig F#2/eig D3/eig E#2/eig F#2/eig B1/eig E#2/eig F#2/eig D3/eig E#2/eig F#2/eig
+bar  47 RH: E#4/eig+E#5/eig C#4/eig E#4/qua+E#5/qua E4/eig+E5/eig C4/eig E4/qua+E5/qua  LH: B1/eig E#2/eig F#2/eig D3/eig E#2/eig F#2/eig B1/eig E#2/eig F#2/eig D3/eig E#2/eig F#2/eig
+bar  48 RH: B3/eig+B4/eig C#4/eig D4/eig+D5/eig E4/eig F#4/eig+F#5/eig D4/eig F#4/eig+F#5/eig B4/eig+B5/eig  LH: B1/eig E#2/eig F#2/eig B2/qua+B3/qua A2/qua+A3/qua G2/qua+G3/qua
+bar  49 RH: F#4/eig+F#5/eig D4/eig F#4/eig+F#5/eig B4/eig B3/hal+B4/hal  LH: F#2/qua+F#3/qua E2/qua+E3/qua D2/qua+D3/qua C#2/qua+C#3/qua
+bar  50 RH: D5/eig+B5/eig F#5/eig+C#6/eig B5/eig+D6/eig C#6/eig+E6/eig D6/eig+F#6/eig B5/eig+D6/eig D6/qua+F#6/qua  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  51 RH: C#6/eig+E#6/eig G#5/eig+C#6/eig C#6/qua+E#6/qua C6/eig+E6/eig G5/eig+C6/eig C6/qua+E6/qua  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  52 RH: D5/eig+B5/eig F#5/eig+C#6/eig B5/eig+D6/eig C#6/eig+E6/eig D6/eig+F#6/eig B5/eig+D6/eig D6/eig+F#6/eig F#6/eig+B6/eig  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  53 RH: F#6/eig+A6/eig D6/eig+F#6/eig A5/eig+D6/eig D6/eig+F#6/eig A5/hal+D6/hal+F#6/hal+A6/hal  LH: D2/eig+D3/eig C#2/eig+C#3/eig B1/eig+B2/eig A1/eig+A2/eig D2/eig+D3/eig C#2/eig+C#3/eig B1/eig+B2/eig A1/eig+A2/eig
+bar  54 RH: D5/eig+B5/eig F#5/eig+C#6/eig B5/eig+D6/eig C#6/eig+E6/eig D6/eig+F#6/eig B5/eig+D6/eig D6/qua+F#6/qua  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  55 RH: C#6/eig+E#6/eig G#5/eig+C#6/eig C#6/qua+E#6/qua C6/eig+E6/eig G5/eig+C6/eig C6/qua+E6/qua  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  56 RH: D5/eig+B5/eig F#5/eig+C#6/eig B5/eig+D6/eig C#6/eig+E6/eig D6/eig+F#6/eig B5/eig+D6/eig D6/eig+F#6/eig F#6/eig+B6/eig  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  57 RH: F#6/eig+A6/eig D6/eig+F#6/eig A5/eig+D6/eig D6/eig+F#6/eig A5/hal+D6/hal+F#6/hal+A6/hal  LH: D2/eig+D3/eig C#2/eig+C#3/eig B1/eig+B2/eig A1/eig+A2/eig D2/eig+D3/eig C#2/eig+C#3/eig B1/eig+B2/eig A1/eig+A2/eig
+bar  58 RH: A#5/eig+F#6/eig C#6/eig+G#6/eig F#6/eig+A#6/eig G#6/eig+B6/eig F#6/eig+A#6/eig+C#7/eig C#6/eig+F#6/eig+A#6/eig F#6/qua+A#6/qua+C#7/qua  LH: F#2/eig+F#3/eig E2/eig+E3/eig D2/eig+D3/eig C#2/eig+C#3/eig F#2/eig+F#3/eig E2/eig+E3/eig D2/eig+D3/eig C#2/eig+C#3/eig
+bar  59 RH: F#6/eig+A#6/eig+D7/eig D6/eig+F#6/eig+A#6/eig F#6/qua+A#6/qua+D7/qua F#6/eig+A#6/eig+C#7/eig C#6/eig+F#6/eig+A#6/eig F#6/qua+A#6/qua+C#7/qua  LH: D2/eig+D3/eig C#2/eig+C#3/eig D2/eig+D3/eig E2/eig+E3/eig F#2/eig+F#3/eig E2/eig+E3/eig D2/eig+D3/eig C#2/eig+C#3/eig
+bar  60 RH: A#5/eig+F#6/eig C#6/eig+G#6/eig F#6/eig+A#6/eig G#6/eig+B6/eig F#6/eig+A#6/eig+C#7/eig C#6/eig+F#6/eig+A#6/eig F#6/qua+A#6/qua+C#7/qua  LH: F#2/eig+F#3/eig E2/eig+E3/eig D2/eig+D3/eig C#2/eig+C#3/eig F#2/eig+F#3/eig E2/eig+E3/eig D2/eig+D3/eig C#2/eig+C#3/eig
+bar  61 RH: F#6/eig+A#6/eig+D7/eig D6/eig+F#6/eig+A#6/eig F#6/qua+A#6/qua+D7/qua C#6/hal+F#6/hal+A#6/hal+C#7/hal  LH: D2/eig+D3/eig C#2/eig+C#3/eig D2/eig+D3/eig E2/eig+E3/eig F#2/eig+F#3/eig E2/eig+E3/eig D2/eig+D3/eig C#2/eig+C#3/eig
+bar  62 RH: A#5/eig+F#6/eig C#6/eig+G#6/eig F#6/eig+A#6/eig G#6/eig+B6/eig F#6/eig+A#6/eig+C#7/eig C#6/eig+F#6/eig+A#6/eig F#6/qua+A#6/qua+C#7/qua  LH: F#2/eig+F#3/eig E#2/eig+E#3/eig D#2/eig+D#3/eig C#2/eig+C#3/eig F#2/eig+F#3/eig E#2/eig+E#3/eig D#2/eig+D#3/eig C#2/eig+C#3/eig
+bar  63 RH: F#6/eig+A#6/eig+D#7/eig D6/eig+F#6/eig+A#6/eig F#6/qua+A#6/qua+D#7/qua F#6/eig+A#6/eig+C#7/eig C#6/eig+F#6/eig+A#6/eig F#6/qua+A#6/qua+C#7/qua  LH: D#2/eig+D#3/eig C#2/eig+C#3/eig D#2/eig+D#3/eig E#2/eig+E#3/eig F#2/eig+F#3/eig E#2/eig+E#3/eig D#2/eig+D#3/eig C#2/eig+C#3/eig
+bar  64 RH: A#5/eig+F#6/eig C#6/eig+G#6/eig F#6/eig+A#6/eig G#6/eig+B6/eig F#6/eig+A#6/eig+C#7/eig C#6/eig+F#6/eig+A#6/eig F#6/qua+A#6/qua+C#7/qua  LH: F#2/eig+F#3/eig E#2/eig+E#3/eig D#2/eig+D#3/eig C#2/eig+C#3/eig F#2/eig+F#3/eig E#2/eig+E#3/eig D#2/eig+D#3/eig C#2/eig+C#3/eig
+bar  65 RH: F#6/eig+A#6/eig+D#7/eig D6/eig+F#6/eig+A#6/eig F#6/qua+A#6/qua+D#7/qua C#6/hal+F#6/hal+A#6/hal+C#7/hal  LH: D#2/eig+D#3/eig C#2/eig+C#3/eig D#2/eig+D#3/eig E#2/eig+E#3/eig F#2/eig+F#3/eig E#2/eig+E#3/eig D#2/eig+D#3/eig C#2/eig+C#3/eig
+bar  66 RH: B5/eig+B6/eig C#6/eig+C#7/eig D6/eig+D7/eig E6/eig+E7/eig F#6/eig+F#7/eig D6/eig+D7/eig F#6/qua+F#7/qua  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  67 RH: E#6/eig+E#7/eig C#6/eig+C#7/eig E#6/qua+E#7/qua E6/eig+E7/eig C6/eig+C7/eig E6/qua+E7/qua  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  68 RH: B5/eig+B6/eig C#6/eig+C#7/eig D6/eig+D7/eig E6/eig+E7/eig F#6/eig+F#7/eig D7/eig F#6/eig+F#7/eig B6/eig  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  69 RH: A6/eig+A7/eig F#7/eig D7/eig F#7/eig A6/hal+D7/hal+A7/hal  LH: D2/eig+D3/eig C#2/eig+C#3/eig B1/eig+B2/eig A1/eig+A2/eig D2/eig+D3/eig C#2/eig+C#3/eig B1/eig+B2/eig A1/eig+A2/eig
+bar  70 RH: B5/eig+B6/eig C#6/eig+C#7/eig D6/eig+D7/eig E6/eig+E7/eig F#6/eig+F#7/eig D6/eig+D7/eig F#6/qua+F#7/qua  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  71 RH: E#6/eig+E#7/eig C#6/eig+C#7/eig E#6/qua+E#7/qua E6/eig+E7/eig C6/eig+C7/eig E6/qua+E7/qua  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  72 RH: B5/eig+B6/eig C#6/eig+C#7/eig D6/eig+D7/eig E6/eig+E7/eig F#6/eig+F#7/eig D7/eig F#6/eig+F#7/eig B6/eig  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig
+bar  73 RH: F#7/eig D7/eig F#7/eig B6/eig B5/hal+B6/hal  LH: B1/eig+B2/eig A1/eig+A2/eig G1/eig+G2/eig F#1/eig+F#2/eig F#1/eig+F#2/eig E1/eig+E2/eig D1/eig+D2/eig C#1/eig+C#2/eig
+bar  74 RH: r/qua G#5/16t A5/16t A#5/16t B4/qua+B5/qua r/hal  LH: B0/qua+B1/qua D3/qua+E#3/qua+G#3/qua+B3/qua r/hal
+bar  75 RH: r/qua G#5/16t A5/16t A#5/16t B4/qua+B5/qua r/hal  LH: B0/qua+B1/qua D3/qua+F#3/qua+B3/qua r/hal
+bar  76 RH: B4/eig+B5/eig C#5/eig+C#6/eig D5/eig+D6/eig E5/eig+E6/eig F#5/eig+F#6/eig D5/eig+D6/eig F#5/eig+F#6/eig B5/eig+B6/eig  LH: G2/qua+G3/qua G3/qua+B3/qua+E#4/qua F#2/qua+F#3/qua F#3/qua+B3/qua+D4/qua
+bar  77 RH: A#5/eig+A#6/eig F#6/eig A#5/eig+A#6/eig C#6/eig B5/hal+B6/hal  LH: F#2/qua+F#3/qua F#3/qua+C#4/qua+E4/qua B1/qua+B2/qua F#3/qua+B3/qua+D4/qua
+bar  78 RH: r/qua G#6/16t A6/16t A#6/16t B5/qua+B6/qua r/hal  LH: B0/qua+B1/qua D3/qua+E#3/qua+G#3/qua+B3/qua r/hal
+bar  79 RH: r/qua G#6/16t A6/16t A#6/16t B5/qua+B6/qua r/hal  LH: B0/qua+B1/qua D3/qua+F#3/qua+B3/qua r/hal
+bar  80 RH: B5/eig+B6/eig C#6/eig+C#7/eig D6/eig+D7/eig E6/eig+E7/eig F#6/eig+F#7/eig D6/eig+D7/eig F#6/eig+F#7/eig B6/eig+B7/eig  LH: G2/qua+G3/qua G3/qua+B3/qua+E#4/qua F#2/qua+F#3/qua F#3/qua+B3/qua+D4/qua
+bar  81 RH: A#6/eig+A#7/eig F#7/eig A#6/eig+A#7/eig C#7/eig B6/hal+B7/hal  LH: F#2/qua+F#3/qua F#3/qua+C#4/qua+E4/qua B1/qua+B2/qua F#3/qua+B3/qua+D4/qua
+bar  82 RH: r/qua G#5/16t A5/16t A#5/16t B4/qua+B5/qua r/hal  LH: B0/qua+B1/qua D3/qua+E#3/qua+G#3/qua+B3/qua r/hal
+bar  83 RH: r/qua G#6/16t A6/16t A#6/16t B5/qua+B6/qua r/hal  LH: B0/qua+B1/qua D3/qua+E#3/qua+G#3/qua+B3/qua r/hal
+bar  84 RH: r/qua G#4/16t A4/16t A#4/16t D4/qua+B4/qua G#5/16t A5/16t A#5/16t D5/qua+B5/qua G#6/16t A6/16t A#6/16t D6/qua+B6/qua  LH: r/qua D3/qua+E#3/qua+G#3/qua+B3/qua D4/qua+E#4/qua+G#4/qua+B4/qua D5/qua+E#5/qua+G#5/qua+B5/qua
+bar  85 RH: G#7/16t A7/16t A#7/16t D7/qua+B7/qua G#6/16t A6/16t A#6/16t D6/qua+B6/qua G#5/16t A5/16t A#5/16t D5/qua+B5/qua G#4/16t A4/16t A#4/16t D4/qua+B4/qua  LH: D6/qua+E#6/qua+G#6/qua+B6/qua D5/qua+E#5/qua+G#5/qua+B5/qua D4/qua+E#4/qua+G#4/qua+B4/qua D3/qua+E#3/qua+G#3/qua+B3/qua
+bar  86 RH: r/?  LH: r/qua B2/hal.
+bar  87 RH: G#5/qua+B5/qua D2/qua+F#2/qua+B2/qua r/hal  LH: r/qua B0/qua+B1/qua r/hal

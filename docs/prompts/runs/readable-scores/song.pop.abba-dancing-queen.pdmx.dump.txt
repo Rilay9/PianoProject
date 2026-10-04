@@ -1,0 +1,59 @@
+song: song.pop.abba-dancing-queen.pdmx
+title: Dancing Queen
+composer: Abba
+rungs: chords-pop.6
+shipped file: scores/pdmx/QmQcCDWzkkQKt4z3XtcWdRffdizj7Lzeg5GUvNn6zCdufv.mxl
+catalog keySig/timeSig/tempo: A major / None / 90.0
+raw-XML counts: ties 114, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 164, measures 42, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 3
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.abba-dancing-queen.pdmx | Dancing Queen | level 5.13 (estimated)
+notation: {"bars": 42, "staves": 2, "keys": [{"fifths": 3, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['3']  modes: []  times: ['4/4']
+bar   1 RH: C#5/qua B4/eig B4/eig B4/qua r/qua  LH: E3/qua E3/qua E3/qua E3/qua
+bar   2 RH: C#5/qua B4/eig B4/eig B4/qua C#5/qua  LH: C#3/qua C#3/qua C#3/qua C#3/qua
+bar   3 RH: A4/eig. B4/16t B4/eig G#4/eig A4/eig. B4/16t B4/eig G#4/eig  LH: F#3/qua F#3/qua F#3/qua F#3/qua
+bar   4 RH: A4/qua F#4/qua C#5/eig. B4/16t B4/eig A4/eig  LH: B2/qua B2/qua B2/qua B2/qua
+bar   5 RH: G#4/eig. A4/16t A4/eig A4/eig A4/hal  LH: D3/qua D3/qua D3/qua D3/qua
+bar   6 RH: G#4/eig. A4/16t A4/eig A4/eig A4/qua B4/eig A4/eig  LH: B2/qua B2/qua E3/qua E3/qua
+bar   7 RH: G#4/eig. A4/16t A4/eig A4/eig A4/hal  LH: A2/qua A2/qua A2/qua A2/qua
+bar   8 RH: r/?  LH: D3/qua D3/qua D3/hal
+bar   9 RH: C#5/eig E5/16t E5/16t E5/eig E5/eig E5/eig E5/eig F#5/qua  LH: A2/qua A2/qua A2/qua A2/qua
+bar  10 RH: F#5/hal r/hal  LH: D3/qua D3/qua C#3/qua B2/qua
+bar  11 RH: C#5/eig E5/16t E5/16t E5/eig E5/eig E5/eig E5/eig C#5/qua  LH: A2/qua A2/qua A2/qua A2/qua
+bar  12 RH: C#5/hal r/qua C#5/eig B4/eig  LH: F#2/qua F#2/qua F#2/qua F#2/qua
+bar  13 RH: B4/eig B4/16t B4/16t B4/eig B4/eig C#5/eig C#5/eig r/qua  LH: E2/qua E2/qua A2/qua A2/qua
+bar  14 RH: B4/eig B4/16t B4/16t B4/eig B4/eig C#5/qua B4/eig A4/eig  LH: E2/qua E2/qua A2/qua E2/qua
+bar  15 RH: E4/eig. F#4/16t F#4/eig F#4/eig F#4/hal  LH: E2/qua F#2/qua F#2/qua F#2/qua
+bar  16 RH: E5/eig. F#5/16t F#5/eig F#5/eig F#5/hal  LH: E2/qua F#2/qua F#2/qua F#2/qua
+bar  17 RH: C#5/eig E5/16t E5/16t E5/eig E5/eig E5/eig A5/eig F#5/qua  LH: A2/qua A2/qua A2/qua A2/qua
+bar  18 RH: F#5/hal r/hal  LH: F#2/qua F#2/qua F#2/qua F#2/qua
+bar  19 RH: C#5/eig E5/16t E5/16t E5/eig E5/eig E5/eig E5/eig C#5/qua  LH: A2/qua A2/qua A2/qua A2/qua
+bar  20 RH: C#5/hal r/hal  LH: F#2/qua F#2/qua F#2/qua F#2/qua
+bar  21 RH: B4/eig B4/16t B4/16t B4/eig B4/eig C#5/eig C#5/eig r/qua  LH: E2/qua E2/qua A2/qua A2/qua
+bar  22 RH: B4/eig B4/16t B4/16t B4/eig C#5/eig C#5/qua B4/eig A4/eig  LH: E2/qua E2/qua F#2/qua F#2/qua
+bar  23 RH: E4/eig. F#4/16t F#4/eig F#4/eig F#4/hal  LH: E2/qua F#2/qua F#2/qua F#2/qua
+bar  24 RH: r/hal A4/eig. B4/16t B4/eig C#5/eig  LH: E2/qua F#2/qua F#2/qua F#2/qua
+bar  25 RH: C#5/eig. D5/16t D5/eig D5/eig D5/hal  LH: B2/qua B2/qua B2/qua B2/qua
+bar  26 RH: r/hal E5/eig. F#5/16t F#5/eig G#5/eig  LH: E2/qua E2/qua E2/qua E2/qua
+bar  27 RH: G#5/eig. A5/16t A5/eig A5/eig A5/hal  LH: A2/qua A2/qua A2/qua A2/qua
+bar  28 RH: G#5/eig. A5/16t A5/eig A5/eig A5/eig B5/qua A5/eig  LH: D3/qua D3/qua D3/qua D3/qua
+bar  29 RH: G#5/eig. A5/16t A5/eig A5/eig A5/hal  LH: A2/qua A2/qua A2/qua A2/qua
+bar  30 RH: r/?  LH: D3/qua D3/qua D3/qua D3/qua
+bar  31 RH: G#5/eig. A5/16t A5/eig A5/eig A5/hal  LH: A2/qua A2/qua A2/qua A2/qua
+bar  32 RH: G#5/eig. A5/16t A5/eig A5/eig A5/eig B5/qua A5/eig  LH: D3/qua D3/qua D3/qua D3/qua
+bar  33 RH: B5/eig. C#6/16t C#6/eig C#6/eig C#6/qua B5/qua  LH: A2/qua A2/qua A2/qua E3/qua
+bar  34 RH: A5/who  LH: D3/qua D3/qua A2/qua A2/qua
+bar  35 RH: C#5/qua B4/eig B4/eig B4/qua r/qua  LH: E2/qua E2/qua E2/qua E2/qua
+bar  36 RH: C#5/qua B4/eig B4/eig B4/qua C#5/qua  LH: C#3/qua C#3/qua C#3/qua C#3/qua
+bar  37 RH: A4/eig. B4/16t B4/eig G#4/eig A4/eig. B4/16t B4/eig G#4/eig  LH: F#3/qua F#3/qua F#3/qua F#3/qua
+bar  38 RH: A4/qua F#4/qua C#5/eig. B4/16t B4/eig A4/eig  LH: B2/qua B2/qua B2/qua B2/qua
+bar  39 RH: G#4/eig. A4/16t A4/eig A4/eig A4/hal  LH: D3/qua D3/qua D3/qua D3/qua
+bar  40 RH: G#4/eig. A4/16t A4/eig A4/eig A4/qua B4/eig A4/eig  LH: B2/qua B2/qua E3/qua E3/qua
+bar  41 RH: G#4/eig. A4/16t A4/eig A4/eig A4/hal  LH: A2/qua A2/qua A2/qua A2/qua
+bar  42 RH: A5/who  LH: A2/who

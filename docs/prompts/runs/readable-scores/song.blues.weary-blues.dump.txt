@@ -1,0 +1,61 @@
+song: song.blues.weary-blues
+title: Weary Blues
+composer: Artie Matthews
+rungs: jam.7
+shipped file: scores/pdmx/QmcFYo1tzXKkVyVhWeRgNUmEuTz3brex5krHc5ipK8yu5W.mxl
+catalog keySig/timeSig/tempo: 1 sharp / None / 200.0
+raw-XML counts: ties 26, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 34, grace notes 0, voices>1 0, measures 43, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 1
+  bar 1: time 4 4
+  bar 28: key -1
+
+dump_score.py:
+song.blues.weary-blues | Weary Blues | level 3.32 (estimated)
+notation: {"bars": 43, "staves": 1, "keys": [{"fifths": 1, "mode": null}, {"fifths": -1, "mode": null}], "times": ["4/4"], "chordCount": 34, "chords": ["Bb", "C", "C7", "D7", "F", "Fdim", "G7"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['1', '-1']  modes: []  times: ['4/4']
+text on the score: ['D.C. al Coda', 'Solos at "C"']
+bar   1 RH: D6/who  [C major]
+bar   2 RH: B5/who
+bar   3 RH: G5/qua r/qua r/hal
+bar   4 RH: r/?  [C dominant]
+bar   5 RH: r/eig G5/eig A5/eig G5/eig Bb5/eig G5/eig A5/qua  [F major]
+bar   6 RH: r/eig G5/eig A5/eig G5/eig Bb5/eig G5/eig A5/qua
+bar   7 RH: r/eig D5/eig E5/eig D5/eig F5/eig D5/eig E5/qua  [C major]
+bar   8 RH: r/eig D5/eig E5/eig D5/eig F5/eig D5/eig E5/qua
+bar   9 RH: D6/qua D6/eig D6/eig D6/hal  [G dominant]
+bar  10 RH: D6/qua C6/eig C6/eig B5/eig B5/eig A5/qua  [G dominant]
+bar  11 RH: G5/who  [C major]
+bar  12 RH: G5/qua B5/qua C6/qua C#6/qua
+bar  13 RH: D6/who  [C major]
+bar  14 RH: D6/qua E6/qua D6/qua C6/qua  [G dominant]
+bar  15 RH: B5/who  [C major]
+bar  16 RH: B5/qua G5/eig A5/eig B5/eig C6/eig D6/eig D#6/eig  [C dominant]
+bar  17 RH: E6/who  [F major]
+bar  18 RH: E6/qua G6/qua F#6/qua E6/qua
+bar  19 RH: D6/who  [C major]
+bar  20 RH: D6/qua B5/qua C6/qua C#6/qua  [C major]
+bar  21 RH: D6/who  [G dominant]
+bar  22 RH: D6/qua C6/qua B5/qua A5/qua
+bar  23 RH: G5/who  [C major]
+bar  24 RH: G5/qua B5/qua C6/qua C#6/qua
+bar  25 RH: G5/qua B5/qua C6/qua C#6/qua  [C major]
+bar  26 RH: G5/who  [C major]
+bar  27 RH: G5/qua F#5/eig G5/eig G#5/eig A5/eig A#5/eig B5/eig  [C dominant]
+bar  28 RH: C6/eig C6/eig A5/eig A5/eig C6/eig C6/eig A5/eig A5/eig  [F major]
+bar  29 RH: B5/eig B5/eig A5/eig A5/eig B5/eig B5/eig A5/eig A5/eig  [C dominant]
+bar  30 RH: C6/eig C6/eig A5/eig A5/eig C6/eig C6/eig A5/eig A5/eig  [F major]
+bar  31 RH: E6/eig Eb6/eig D6/eig C6/eig C6/qua r/qua  [F major] [C dominant]
+bar  32 RH: C6/eig C6/eig A5/eig A5/eig C6/eig C6/eig A5/eig A5/eig  [F major]
+bar  33 RH: B5/eig B5/eig A5/eig A5/eig B5/eig B5/eig A5/eig A5/eig  [C dominant]
+bar  34 RH: C6/eig C6/eig A5/eig A5/eig C6/eig C6/eig A5/qua  [F major]
+bar  35 RH: E6/eig Eb6/eig D6/eig C6/eig C6/eig C6/eig B5/eig Bb5/eig  [F major]
+bar  36 RH: A5/who  [D dominant]
+bar  37 RH: E6/who
+bar  38 RH: D6/hal. D6/qua  [Bb major]
+bar  39 RH: D#6/who  [F diminished]
+bar  40 RH: C6/eig C6/eig A5/eig A5/eig C6/eig C6/eig A5/eig A5/eig  [F major]
+bar  41 RH: B5/eig B5/eig A5/eig A5/eig B5/eig B5/eig A5/eig A5/eig  [C dominant]
+bar  42 RH: C6/eig C6/eig A5/eig A5/eig C6/eig C6/eig A5/qua  [F major]
+bar  43 RH: E6/eig Eb6/eig D6/eig C6/eig C6/hal

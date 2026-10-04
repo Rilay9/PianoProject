@@ -1,0 +1,58 @@
+song: song.classical.schumann-schumann-album-for-the-young-op-68-no-16-first-grief.pdmx
+title: Album for the Young, Op. 68 No. 16 "First Loss"
+composer: Robert Schumann
+rungs: classical.5
+shipped file: scores/pdmx/QmQ91CoSnRCiMV4oVgLTJruJcnLjXPS4Myxj5P5o7Rr3ug.mxl
+catalog keySig/timeSig/tempo: E minor / None / 92.0
+raw-XML counts: ties 24, tuplets 0, fingerings 61, dynamics 7, pedal 0, articulations 15, chord symbols 0, grace notes 0, voices>1 140, measures 34, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 1
+  bar 0: time 2 4
+  bar 2: clef G 2
+  bar 6: clef F 4
+  bar 10: clef G 2
+  bar 14: clef F 4
+  bar 20: clef G 2
+  bar 29: clef F 4
+
+dump_score.py:
+song.classical.schumann-schumann-album-for-the-young-op-68-no-16-first-grief.pdmx | Album for the Young, Op. 68 No. 16 "First Loss" | level 5.65 (estimated)
+notation: {"bars": 34, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["2/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['1']  modes: []  times: ['2/4']
+text on the score: ['Nicht schnell', 'cresc.', 'Etwas langsamer', 'Im Tempo']
+bar   0 RH: G5/eig  LH: r/eig
+bar   1 RH: F#5/eig E5/eig D#5/eig E5/eig  LH: r/?
+bar   2 RH: B4/qua. E5/eig  LH: r/eig G4/eig E4/qua+G4/qua
+bar   3 RH: C5/qua. E5/eig  LH: r/eig A4/eig E4/qua+A4/qua
+bar   4 RH: B4/qua. B4/eig  LH: r/eig G4/eig E4/qua+G4/qua
+bar   5 RH: C5/eig C5/eig B4/eig A4/eig  LH: r/eig F#4/eig D#4/eig F#4/eig
+bar   6 RH: G4/eig G4/eig F#4/eig E4/eig  LH: r/eig E4/eig A3/eig A#3/eig
+bar   7 RH: D#4/qua. E4/eig  LH: r/eig A#3/eig B3/qua
+bar   8 RH: D#4/qua.+F#4/qua. G5/eig  LH: B3/eig B3/eig B2/eig r/eig
+bar   9 RH: F#5/eig E5/eig D#5/eig E5/eig  LH: r/?
+bar  10 RH: B4/qua. E5/eig  LH: r/eig G4/eig E4/qua+G4/qua
+bar  11 RH: C5/qua. E5/eig  LH: r/eig A4/eig E4/qua+A4/qua
+bar  12 RH: B4/qua. B4/eig  LH: r/eig G4/eig E4/qua+G4/qua
+bar  13 RH: C5/eig C5/eig B4/eig A4/eig  LH: r/eig F#4/eig D#4/eig F#4/eig
+bar  14 RH: G4/eig G4/eig F#4/eig E4/eig  LH: r/eig E4/eig A3/eig A#3/eig
+bar  15 RH: D#4/qua. F#4/eig  LH: r/eig A#3/eig B3/eig A3/eig
+bar  16 RH: E4/qua r/eig  LH: E3/eig+G3/eig E3/eig E2/eig
+bar 16X1 RH: E5/eig r/qua.  LH: r/?
+bar  17 RH: D5/eig C5/eig B4/eig C5/eig  LH: r/qua r/eig E4/eig
+bar  18 RH: A4/eig F4/eig+B4/eig E4/eig+C5/eig E5/eig  LH: F4/eig D4/eig C4/eig r/eig
+bar  19 RH: D5/eig C5/eig B4/eig C5/eig  LH: r/qua r/eig A3/eig
+bar  20 RH: E4/eig D#4/eig+F#4/eig E4/eig+G4/eig r/eig  LH: C4/eig A3/eig E3/eig G4/eig
+bar  21 RH:v1: r/? | v2: r/qua r/eig G5/eig  LH:v5: F#4/eig E4/eig D#4/eig E4/eig | v6: C4/hal
+bar  22 RH:v1: r/? | v2: F#5/eig E5/eig D#5/eig E5/eig  LH:v5: B3/qua. G4/eig | v6: B3/hal
+bar  23 RH:v1: r/? | v2: D5/eig C5/eig B4/eig C5/eig  LH:v5: F#4/eig E4/eig D#4/eig E4/eig | v6: A3/hal
+bar  24 RH:v1: r/qua r/eig G5/eig | v2: B4/eig A4/eig G4/eig r/eig  LH:v2: r/qua. A4/eig | v5: D4/eig C4/eig B3/eig D#4/eig | v6: A3/qua B3/qua
+bar  25 RH: F#5/eig E5/eig D#5/eig E5/eig  LH:v6: G4/hal | v7: E4/hal
+bar  26 RH: B4/qua. E5/eig  LH: r/eig G4/eig E4/qua+G4/qua
+bar  27 RH: C5/qua. E5/eig  LH: r/eig A4/eig E4/qua+A4/qua
+bar  28 RH: B4/qua. E4/eig  LH: r/eig G4/eig E4/qua+G4/qua
+bar  29 RH: E4/eig+D5/eig E4/eig+C5/eig r/eig E4/eig  LH: G#3/eig+B3/eig A3/eig+C4/eig r/eig E3/eig
+bar  30 RH: D#4/eig+C5/eig E4/eig+B4/eig C4/eig+F#4/eig+A4/eig C#4/eig+E4/eig+G4/eig  LH: F#3/eig+A3/eig G3/eig+B3/eig A2/eig A#2/eig
+bar  31 RH: B3/qua+E4/qua+G4/qua A3/qua+B3/qua+D#4/qua+F#4/qua  LH: B2/qua B2/qua
+bar  32 RH: G3/qua+B3/qua+E4/qua r/eig  LH: B2/eig E3/eig E2/eig

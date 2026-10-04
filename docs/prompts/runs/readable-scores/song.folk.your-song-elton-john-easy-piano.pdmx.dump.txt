@@ -1,0 +1,55 @@
+song: song.folk.your-song-elton-john-easy-piano.pdmx
+title: Your Song (easy)
+composer: Elton John
+rungs: chords-pop.5
+shipped file: scores/pdmx/QmcZnZByDzCDxRpXJfSGsPqDP9reRxzqpwmcxs3HR82kHc.mxl
+catalog keySig/timeSig/tempo: F major / None / 120.0
+raw-XML counts: ties 30, tuplets 8, fingerings 0, dynamics 3, pedal 70, articulations 1, chord symbols 0, grace notes 0, voices>1 196, measures 38, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -1
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.your-song-elton-john-easy-piano.pdmx | Your Song (easy) | level 5.07 (estimated)
+notation: {"bars": 38, "staves": 2, "keys": [{"fifths": -1, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: []  times: ['4/4']
+bar   1 RH: A4/qua A4/eig C5/eig C5/eig A5/eig F5/qua  LH: F3/hal+C4/hal F3/hal+C4/hal
+bar   2 RH: Bb5/qua F5/eig D5/eig D5/eig Bb5/eig F5/qua  LH: F3/hal+D4/hal F3/hal+D4/hal
+bar   3 RH: D5/eig E5/eig C5/eig G5/eig G5/eig E5/eig C5/qua  LH: F3/hal+E4/hal F3/hal+E4/hal
+bar   4 RH: Bb4/eig F4/eig F4/eig D5/eig D5/eig Bb4/eig F4/qua  LH: F3/hal+D4/hal F3/hal+D4/hal
+bar   5 RH: r/qua A4/eig G4/eig A4/eig G4/eig A4/qua  LH: C3/hal+F3/hal+A3/hal C3/hal+F3/hal+A3/hal
+bar   6 RH: A4/eig A4/qua. A4/hal  LH: D3/hal+F3/hal+Bb3/hal D3/hal+F3/hal+Bb3/hal
+bar   7 RH: r/qua G4/eig G4/qua C5/eig G4/qua  LH: E3/hal+G3/hal+C4/hal E3/hal+G3/hal+C4/hal
+bar   8 RH: A4/qua. Bb4/16t A4/16t G4/hal  LH: E3/hal+A3/hal+C4/hal E3/hal+A3/hal+C4/hal
+bar   9 RH: r/qua F4/eig F4/qua F4/eig F4/qua  LH: D3/hal+F3/hal+A3/hal D3/hal+F3/hal+A3/hal
+bar  10 RH: F4/eig F4/qua E4/qua F4/qua.  LH: C3/hal+F3/hal+A3/hal C3/hal+F3/hal+A3/hal
+bar  11 RH: r/qua F4/qua. A4/eig F4/eig Ab4/eig  LH: B2/hal+D3/hal+G3/hal B2/hal+D3/hal+G3/hal
+bar  12 RH: G4/eig F4/eig F4/hal.  LH: Bb2/hal+D3/hal+F3/hal Bb2/hal+D3/hal+F3/hal
+bar  13 RH: r/qua F4/eig F4/qua F4/eig F4/qua  LH: F2/hal+A2/hal+C3/hal F2/hal+A2/hal+C3/hal
+bar  14 RH: A4/eig G4/qua F4/qua G4/qua.  LH: A2/hal+C#3/hal+E3/hal A2/hal+C#3/hal+E3/hal
+bar  15 RH: r/qua A4/eig C5/qua D5/qua A4/eig  LH: A2/hal+C#3/hal+E3/hal A2/hal+C#3/hal+E3/hal
+bar  16 RH: A4/who  LH: A2/hal+D3/hal+F3/hal A2/eig+D3/eig+F3/eig A2/qua.+C3/qua.+F3/qua.
+bar  17 RH: r/qua F4/eig F4/qua A4/eig C5/qua  LH: F2/hal+C3/hal+F3/hal F2/hal+C3/hal+F3/hal
+bar  18 RH: D5/qua. G4/qua F4/qua.  LH: G2/hal+D3/hal+G3/hal G2/hal+D3/hal+G3/hal
+bar  19 RH: r/qua F4/eig F4/qua F4/qua F4/eig  LH: Bb2/hal+F3/hal+Bb3/hal Bb2/hal+F3/hal+Bb3/hal
+bar  20 RH: G4/who  LH: C3/hal+G3/hal+C4/hal C3/hal+G3/hal+C4/hal
+bar  21 RH: G4/who  LH: C3/hal+G3/hal+C4/hal Bb3/eig A3/qua.
+bar  22 RH: r/qua A4/eig C5/qua A4/eig C5/qua  LH: C3/hal+E3/hal+G3/hal C3/hal+E3/hal+G3/hal
+bar  23 RH: D5/qua C5/eig G4/qua F4/qua.  LH: D3/hal+F3/hal+A3/hal D3/hal+F3/hal+A3/hal
+bar  24 RH: r/qua r/eig D4/qua F4/eig D4/eig A4/eig  LH: G2/hal+Bb2/hal+D3/hal G2/hal+Bb2/hal+D3/hal
+bar  25 RH: G4/eig F4/eig F4/hal.  LH: Bb2/hal+D3/hal+F3/hal Bb2/hal+D3/hal+F3/hal
+bar  26 RH: r/qua C5/eig C5/qua. C5/qua  LH: C3/hal+E3/hal+G3/hal C3/hal+E3/hal+G3/hal
+bar  27 RH: D5/eig C5/qua A4/eig G4/eig F4/qua.  LH: D3/hal+F3/hal+A3/hal D3/hal+F3/hal+A3/hal
+bar  28 RH: r/qua r/eig D4/qua F4/eig D4/eig A4/eig  LH: G2/hal+Bb2/hal+D3/hal G2/hal+Bb2/hal+D3/hal
+bar  29 RH: G4/eig F4/eig F4/hal.  LH: Bb2/hal+D3/hal+F3/hal Bb2/hal+D3/hal+F3/hal
+bar  30 RH: r/eig A4/eig D5/eig C5/eig D5/eig F5/qua.  LH: D3/who+A3/who+D4/who
+bar  31 RH: r/eig A4/eig D5/eig C5/eig D5/eig F5/qua.  LH: C3/who+A3/who+D4/who
+bar  32 RH: r/qua D5/eig C5/eig D5/qua F5/qua C5/qua  LH: B2/who+A3/who+D4/who
+bar  33 RH: D5/who  LH: Bb2/who+F3/who+Bb3/who
+bar  34 RH: D5/hal. D5/qua  LH: Bb2/hal.+F3/hal.+Bb3/hal. r/qua
+bar  35 RH: C5/qua. A4/qua F4/qua.  LH: F3/who+A3/who+C4/who
+bar  36 RH: G4/qua. D4/hal D4/eig  LH: Bb2/who+F3/who+Bb3/who
+bar  37 RH: A4/eig G4/qua F4/qua F4/eig F4/qua  LH: Bb2/who+F3/who+Bb3/who
+bar  38 RH: F4/who  LH: F2/who+C3/who+F3/who

@@ -1,0 +1,58 @@
+song: song.blues.riverside-blues
+title: Riverside Blues
+composer: Thomas A. Dorsey and Richard M. Jones
+rungs: jam.7
+shipped file: scores/pdmx/QmWrMZiUQFGr7ntjiLXRnbyTb6DP7j4BbRrANntqNC4T5o.mxl
+catalog keySig/timeSig/tempo: Eb major / None / 96.0
+raw-XML counts: ties 16, tuplets 24, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 55, grace notes 0, voices>1 0, measures 41, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -3
+  bar 1: time 4 4
+
+dump_score.py:
+song.blues.riverside-blues | Riverside Blues | level 3.76 (estimated)
+notation: {"bars": 41, "staves": 1, "keys": [{"fifths": -3, "mode": null}], "times": ["4/4"], "chordCount": 55, "chords": ["Ab", "Ab7", "Abm", "Bb", "Bb7", "Cm", "Eb", "Eb7", "Ebdim", "Fm", "Fm7", "G7"], "swungMark": false, "finalBass": 3}
+key signatures (fifths): ['-3']  modes: []  times: ['4/4']
+text on the score: ['2 bar unison break', 'everybody plays this figure behind clarinet lead', '2 bar clarinet break', 'Play 2 bar unison on out-chorus', 'Solos at "C"']
+bar   1 RH: Eb4/who  [C minor]
+bar   2 RH: D4/who  [G dominant]
+bar   3 RH: C4/eig C4/eig D4/qua Eb4/qua Ab4/qua  [C minor] [G dominant] [C minor] [F minor]
+bar   4 RH: G4/hal Bb4/hal  [Eb major] [Bb augmented-seventh]
+bar   5 RH: Eb5/eig Eb5/eig C5/eig C5/eig Bb4/eig G4/qua.  [Eb major]
+bar   6 RH: Eb5/eig C5/eig Cb5/eig Bb4/eig Gb4/eig Gb4/qua. F4/eig  [Ab dominant]
+bar   7 RH: Eb4/qua F4/eig F#4/eig G4/eig Bb4/qua.  [Eb major]
+bar   8 RH: Db5/eig C5/qua Bb4/eig Bb4/hal  [Eb major]
+bar   9 RH: Eb5/eig Eb5/eig Bb4/eig Gb4/qua Eb4/qua.  [Ab dominant]
+bar  10 RH: Eb5/eig C5/eig Cb5/eig Bb4/eig Gb4/eig Gb4/qua. F4/eig
+bar  11 RH: Eb4/eig Eb5/qua Bb4/eig Db5/qua. Bb4/eig  [Eb major]
+bar  12 RH: Eb5/eig Bb4/eig Db5/eig Bb4/eig Db5/eig Bb4/qua.
+bar  13 RH: G4/hal Bb4/hal  [Bb dominant]
+bar  14 RH: Eb5/eig C5/eig Cb5/eig Bb4/eig Gb4/eig Gb4/qua. F4/eig  [F minor-seventh] [Bb augmented-seventh]
+bar  15 RH: Eb4/qua Bb4/qua A4/qua Ab4/qua  [Eb major] [Eb dominant] [Eb diminished] [Ab minor]
+bar  16 RH: G4/qua. Bb4/eig Bb4/hal  [Eb major] [Bb dominant]
+bar  17 RH: G4/qua Bb4/qua Bb4/qua Bb4/qua  [Eb major] [Bb dominant]
+bar  18 RH: r/eig Eb4/eig Eb4/eig Eb4/eig Eb4/eig Eb4/eig Eb4/qua  [Eb major]
+bar  19 RH: r/eig Bb4/eig Bb4/eig Bb4/eig Bb4/eig Bb4/eig Bb4/qua  [Bb dominant]
+bar  20 RH: r/eig Eb4/eig Eb4/eig Eb4/eig Eb4/eig Eb4/eig Eb4/qua  [Eb major]
+bar  21 RH: r/eig G4/eig G4/eig G4/eig G4/eig G4/eig G4/qua  [G dominant]
+bar  22 RH: r/eig Ab4/eig Ab4/eig Ab4/eig Ab4/eig Ab4/eig Ab4/qua  [Ab major]
+bar  23 RH: r/eig Ab4/eig Ab4/eig Ab4/eig Ab4/eig Ab4/eig Ab4/qua  [Ab minor]
+bar  24 RH: Eb4/qua r/qua r/hal  [Eb major]
+bar  25 RH: r/?
+bar  26 RH: G4/hal Bb4/hal  [Bb dominant]
+bar  27 RH: Eb5/qua C5/eig Ab4/eig Gb4/qua F4/qua  [F minor-seventh] [Bb dominant]
+bar  28 RH: Eb4/qua G4/qua Gb4/qua F4/qua  [Eb major] [Eb dominant] [Eb diminished] [Ab minor]
+bar  29 RH: Eb4/hal Bb4/hal  [Eb major] [Bb dominant]
+bar  30 RH: G4/eig F#4/eig G4/eig F#4/eig G4/eig G4/qua.  [Eb major]
+bar  31 RH: G4/eig F#4/eig G4/eig Eb4/eig Gb4/eig F4/qua.  [Ab major]
+bar  32 RH: r/eig Eb4/eig F4/eig F#4/eig G4/eig Bb4/qua.  [Eb major]
+bar  33 RH: Db5/qua C5/eig Bb4/eig Bb4/hal  [Eb dominant]
+bar  34 RH: Ab4/eig G4/eig Ab4/eig G4/eig Ab4/eig Ab4/qua.  [Ab major]
+bar  35 RH: Ab4/qua Ab4/eig Eb4/eig Gb4/qua F4/eig Eb4/eig
+bar  36 RH: Eb4/eig Eb5/qua Bb4/eig Db5/qua. Bb4/eig  [Eb major]
+bar  37 RH: Eb5/eig Bb4/eig Db5/eig Bb4/eig C5/eig Bb4/qua.
+bar  38 RH: G4/hal Bb4/hal  [Bb major]
+bar  39 RH: Eb5/qua C5/eig Ab4/eig Gb4/qua F4/eig Eb4/eig  [F minor-seventh] [Bb dominant]
+bar  40 RH: Eb4/qua G4/qua Gb4/qua F4/qua  [Eb major] [Eb dominant] [Eb diminished] [Ab minor]
+bar  41 RH: Eb4/hal. r/qua  [Eb major]

@@ -1,0 +1,40 @@
+song: song.pop.coldplay-clocks-coldplay.pdmx
+title: Clocks
+composer: Coldplay
+rungs: chords-pop.6
+shipped file: scores/pdmx/QmdE9gDzNjsgAvwtF4vd6ddcceBHSspZCM79gqwGQuiBYC.mxl
+catalog keySig/timeSig/tempo: F minor / None / 120.0
+raw-XML counts: ties 18, tuplets 0, fingerings 37, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 50, measures 22, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -4
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.coldplay-clocks-coldplay.pdmx | Clocks | level 5.46 (estimated)
+notation: {"bars": 22, "staves": 2, "keys": [{"fifths": -4, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-4']  modes: []  times: ['4/4']
+text on the score: ['D.C.', 'D.C.', 'rit . . . . . . . . . . . . . .']
+bar   1 RH: Eb5/eig Bb4/eig G4/eig Eb5/eig Bb4/eig G4/eig Eb5/eig Bb4/eig  LH: Eb4/who
+bar   2 RH: Db5/eig Bb4/eig F4/eig Db5/eig Bb4/eig F4/eig Db5/eig Bb4/eig  LH: Bb3/who
+bar   3 RH: Db5/eig Bb4/eig F4/eig Db5/eig Bb4/eig F4/eig Db5/eig Bb4/eig  LH: Bb3/who
+bar   4 RH: C5/eig Ab4/eig F4/eig C5/eig Ab4/eig F4/eig C5/eig Ab4/eig  LH: F3/who
+bar   5 RH: Eb5/qua Eb5/qua Eb5/qua Eb5/eig C5/eig  LH: G3/who+Bb3/who+Eb4/who
+bar   6 RH: Db5/eig C5/qua Bb4/hal r/eig  LH: F3/who+Bb3/who+Db4/who
+bar   7 RH: Db5/qua Db5/qua Db5/qua Db5/eig Bb4/eig  LH: F3/who+Bb3/who+Db4/who
+bar   8 RH: C5/eig Bb4/qua Ab4/hal r/eig  LH: F3/who+Ab3/who+C4/who
+bar   9 RH: r/hal. Db4/qua  LH: Db3/who+Gb3/who+Bb3/who
+bar  10 RH: Db4/qua Ab4/hal Gb4/eig F4/eig  LH: Db3/who+Gb3/who+Bb3/who
+bar  11 RH: Eb4/qua Db4/eig Eb4/eig F4/hal  LH: Db3/who+F3/who+Ab3/who
+bar  12 RH: Eb5/eig Bb4/eig G4/eig Eb5/eig Bb4/eig G4/eig Eb5/eig Bb4/eig  LH: Eb3/who
+bar  13 RH: Db5/eig Bb4/eig F4/eig Db5/eig Bb4/eig F4/eig Db5/eig Bb4/eig  LH: Bb2/who
+bar  14 RH: Db5/eig Bb4/eig F4/eig Db5/eig Bb4/eig F4/eig Db5/eig Bb4/eig  LH: Bb2/who
+bar  15 RH: C5/eig Ab4/eig F4/eig C5/eig Ab4/eig F4/eig C5/eig Ab4/eig  LH: F2/who
+bar  16 RH: Ab5/eig G5/eig Eb5/eig Ab5/eig G5/eig Eb5/eig Ab5/eig G5/eig  LH: G3/who+Bb3/who+Eb4/who
+bar  17 RH: Ab5/eig G5/eig Db5/eig Ab5/eig G5/eig Db5/eig Ab5/eig G5/eig  LH: F3/who+Bb3/who+Db4/who
+bar  18 RH: Ab5/eig G5/eig Db5/eig Ab5/eig G5/eig Db5/eig Ab5/eig G5/eig  LH: F3/who+Bb3/who+Db4/who
+bar  19 RH: Ab5/eig G5/eig C5/eig Ab5/eig G5/eig C5/eig Ab5/eig G5/eig  LH: F3/who+Ab3/who+C4/who
+bar  20 RH: Ab5/eig G5/eig C5/eig Ab5/eig G5/eig C5/eig Ab5/eig G5/eig  LH: F3/who+Ab3/who+C4/who
+bar  21 RH: Ab5/eig G5/eig C5/eig Ab5/eig G5/eig C5/eig Ab5/eig G5/eig  LH: F3/who+Ab3/who+C4/who
+bar  22 RH: Ab5/eig G5/eig C5/eig Ab5/eig G5/eig C5/eig Ab5/eig G5/eig  LH: F3/who+Ab3/who+C4/who

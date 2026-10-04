@@ -1,0 +1,58 @@
+song: song.blues.jazz-me-blues
+title: Jazz Me Blues
+composer: Tom Delaney
+rungs: jam.7
+shipped file: scores/pdmx/Qmf6z3Xw9KtGD5eLovubwUr6PJwEpy2hraHLKwV8injib1.mxl
+catalog keySig/timeSig/tempo: 3 flats / None / 96.0
+raw-XML counts: ties 24, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 41, grace notes 0, voices>1 0, measures 41, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -3 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.blues.jazz-me-blues | Jazz Me Blues | level 3.62 (estimated)
+notation: {"bars": 41, "staves": 1, "keys": [{"fifths": -3, "mode": "major"}], "times": ["4/4"], "chordCount": 41, "chords": ["Ab7", "Bb", "Bb7", "Bbdiminished", "C7", "Cm", "D7", "Db7", "Eb", "Eb7", "F7", "G7"], "swungMark": false, "finalBass": null}
+key signatures (fifths): ['-3']  modes: ['major']  times: ['4/4']
+text on the score: ['Break 1 Bar', 'Break 1 Bar', 'G7', 'Break 1 Bar', 'Solos at "C"']
+bar   1 RH: G4/eig F#4/eig G4/eig Bb4/eig C5/eig Bb4/eig G4/eig Eb4/eig  [Eb major]
+bar   2 RH: G4/eig Ab4/qua Bb4/qua. Bb3/qua
+bar   3 RH: G4/eig F#4/eig G4/eig Ab4/eig Bb4/eig A4/eig Bb4/eig B4/eig
+bar   4 RH: C5/eig F4/qua F4/eig F4/qua Bb3/eig Bb3/eig  [F dominant] [Bb dominant]
+bar   5 RH: G4/eig F#4/eig G4/eig Bb4/eig C5/eig Bb4/eig G4/eig Eb4/eig  [Eb major]
+bar   6 RH: G4/eig Ab4/qua Bb4/qua. C5/eig D5/eig
+bar   7 RH: Eb5/eig B4/eig C5/eig B4/eig Bb4/eig G4/eig F4/eig Eb4/eig  [Eb major]
+bar   8 RH: F4/eig G4/qua Eb4/qua. Bb3/qua  [Bb dominant] [Eb major]
+bar   9 RH: G4/eig F#4/eig G4/eig Bb4/eig C5/eig Bb4/eig G4/eig Eb4/eig  [Eb major]
+bar  10 RH: G4/eig Ab4/qua Bb4/qua. Bb3/qua
+bar  11 RH: G4/eig F#4/eig G4/eig Ab4/eig Bb4/eig A4/eig Bb4/eig B4/eig
+bar  12 RH: C5/eig F4/qua F4/qua. Bb3/eig Bb3/eig  [F dominant] [Bb major]
+bar  13 RH: G4/eig F#4/eig G4/eig Bb4/eig C5/eig Bb4/eig G4/eig Eb4/eig  [Eb major]
+bar  14 RH: G4/eig Ab4/qua Bb4/qua. C5/eig D5/eig
+bar  15 RH: Eb5/eig B4/eig C5/eig Cb5/eig Bb4/eig G4/eig F4/eig Eb4/eig  [Eb major]
+bar  16 RH: F4/eig G4/qua Eb4/qua. r/qua  [Bb dominant] [Eb major]
+bar  17 RH: Bb4/eig Bb4/qua Bb4/eig Bb4/eig F4/eig Bb4/qua  [Bb dominant]
+bar  18 RH: Bb4/eig Bb4/qua Bb4/eig Bb4/eig G4/eig Bb4/qua  [Bb diminished]
+bar  19 RH: D5/qua Db5/qua C5/qua Bb4/qua  [Bb dominant] [Bb diminished]
+bar  20 RH: Bb4/hal r/qua B4/qua  [Bb dominant]
+bar  21 RH: r/qua C5/qua. G4/eig G4/qua  [C dominant]
+bar  22 RH: r/eig B4/eig C5/eig B4/eig C5/eig B4/eig C5/eig B4/eig
+bar  23 RH: C5/qua. F4/eig F4/hal  [F dominant]
+bar  24 RH: C5/qua. F4/eig F4/qua F4/qua
+bar  25 RH: Bb4/eig Bb4/eig C5/eig F4/eig Bb4/eig Bb4/eig C5/eig F4/eig  [Bb dominant]
+bar  26 RH: Bb4/eig C5/qua Bb4/eig Bb4/eig Bb4/eig C5/eig D5/eig  [Bb dominant]
+bar  27 RH: Eb5/qua C5/eig Bb4/eig C5/eig Bb4/eig G4/qua  [Eb major]
+bar  28 RH: Eb4/eig G4/qua Bb4/eig Bb4/eig A4/eig Bb4/eig B4/eig  [Eb dominant] [D dominant] [Db dominant]
+bar  29 RH: C5/qua. G4/eig G4/hal  [C dominant]
+bar  30 RH: r/eig B4/eig C5/eig B4/eig C5/eig B4/eig C5/eig B4/eig  [C dominant]
+bar  31 RH: C5/qua. F4/eig F4/hal  [F dominant]
+bar  32 RH: C5/qua. F4/eig F4/qua r/qua
+bar  33 RH: r/eig G4/eig G4/eig G4/eig G4/hal  [Eb major]
+bar  34 RH: r/eig G4/eig G4/eig G4/eig G4/hal  [G dominant]
+bar  35 RH: G4/eig F4/eig G4/eig F4/eig G4/eig F4/eig G4/eig F4/eig  [C minor]
+bar  36 RH: Bb4/eig Bb4/qua Bb4/eig Bb4/eig A4/eig Bb4/eig B4/eig  [C dominant]
+bar  37 RH: C5/qua C5/qua C5/qua C5/qua  [F dominant]
+bar  38 RH: C5/eig D5/qua C5/eig C5/qua Bb4/qua  [Bb dominant]
+bar  39 RH: Eb5/who  [Eb major] [Ab dominant]
+bar  40 RH: Eb5/hal r/qua B4/qua  [Eb major] [D dominant] [Db dominant]
+bar  41 RH: r/?

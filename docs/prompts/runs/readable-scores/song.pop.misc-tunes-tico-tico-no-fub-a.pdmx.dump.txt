@@ -1,0 +1,62 @@
+song: song.pop.misc-tunes-tico-tico-no-fub-a.pdmx
+title: Tico-Tico no Fubá
+composer: Zequinha de Abreu
+rungs: latin
+shipped file: scores/pdmx/QmPKNHa33oJHatrbczcz4FDLueSXj4xV1EjymuLXyTj29F.mxl
+catalog keySig/timeSig/tempo: A minor / None / 200.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 45, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key 0
+  bar 1: time 4 4
+  bar 29: key 3 major
+
+dump_score.py:
+song.pop.misc-tunes-tico-tico-no-fub-a.pdmx | Tico-Tico no Fubá | level 3.71 (estimated)
+notation: {"bars": 45, "staves": 1, "keys": [{"fifths": 0, "mode": null}, {"fifths": 3, "mode": "major"}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['0', '3']  modes: ['major']  times: ['4/4']
+bar   1 RH: E5/eig D#5/eig E5/eig
+bar   2 RH: F5/eig E5/qua A5/eig r/eig E5/eig D#5/eig E5/eig
+bar   3 RH: F5/eig E5/qua G#5/eig r/eig E5/eig D#5/eig E5/eig
+bar   4 RH: F5/eig E5/eig D6/eig B5/eig G#5/eig E5/eig D5/eig C#5/eig
+bar   5 RH: C5/hal r/eig A5/eig G#5/eig G5/eig
+bar   6 RH: F5/eig A5/qua D6/eig r/eig C6/eig A5/eig F5/eig
+bar   7 RH: E5/eig A5/qua C6/eig r/eig C6/eig B5/eig A5/eig
+bar   8 RH: B5/eig B4/eig D#5/eig F#5/eig A5/eig C6/eig B5/eig A5/eig
+bar   9 RH: G#5/hal r/eig
+bar  10 RH: B5/eig E5/eig G#5/eig B5/eig E6/eig D6/eig C6/eig B5/eig
+bar  11 RH: A5/hal r/eig
+bar  12 RH: B5/eig A5/eig G#5/eig
+bar  13 RH: G5/eig C5/eig E5/eig G5/eig C5/eig E5/eig G5/eig G#5/eig
+bar  14 RH: A5/qua F5/qua r/eig B5/eig A5/eig G#5/eig
+bar  15 RH: G5/eig B4/eig D5/eig F5/eig B4/eig D5/eig F5/eig G5/eig
+bar  16 RH: A5/qua E5/qua r/eig C6/eig C6/eig C6/eig
+bar  17 RH: C6/eig B5/eig B5/eig B5/eig r/eig A5/eig A5/eig A5/eig
+bar  18 RH: A5/eig F5/eig F5/eig F5/eig r/eig B5/eig B5/eig B5/eig
+bar  19 RH: B5/eig G5/eig G5/eig B5/eig A5/eig F5/eig F5/eig A5/eig
+bar  20 RH: G5/hal r/eig B5/eig A5/eig G#5/eig
+bar  21 RH: G5/eig C5/eig E5/eig G5/eig C5/eig E5/eig G5/eig G#5/eig
+bar  22 RH: A5/qua F5/qua r/eig B5/eig A5/eig G#5/eig
+bar  23 RH: G5/eig B4/eig D5/eig F5/eig B4/eig D5/eig F5/eig G5/eig
+bar  24 RH: A5/qua E5/qua r/eig C6/eig B5/eig Bb5/eig
+bar  25 RH: A5/eig G#5/eig A5/eig B5/eig D6/eig C6/eig B5/eig C6/eig
+bar  26 RH: E6/eig G5/eig C6/eig E6/eig G6/eig F#6/eig F6/eig E6/eig
+bar  27 RH: D6/eig C6/eig B5/eig A5/eig G5/eig F5/eig E5/eig D5/eig
+bar  28 RH: C5/hal r/eig
+bar  29 RH: A4/eig C#5/eig E5/eig
+bar  30 RH: A5/eig A4/eig C#5/eig G#5/eig r/eig A4/eig C#5/eig E5/eig
+bar  31 RH: F#5/eig A4/eig C#5/eig E5/eig r/eig A4/eig C#5/eig E5/eig
+bar  32 RH: F#5/eig A4/eig C#5/eig E5/eig r/eig A4/eig C#5/eig E5/eig
+bar  33 RH: F#5/eig B4/eig D5/eig E5/eig r/eig B4/eig D5/eig E5/eig
+bar  34 RH: A5/eig B4/eig D5/eig G#5/eig r/eig B4/eig D5/eig E5/eig
+bar  35 RH: F#5/eig B4/eig D5/eig E5/eig r/eig B4/eig D5/eig E5/eig
+bar  36 RH: A5/eig B4/eig D5/eig G#5/eig r/eig B4/eig D5/eig E5/eig
+bar  37 RH: F#5/eig A4/eig C#5/eig E5/eig r/eig A4/eig C#5/eig E5/eig
+bar  38 RH: A5/eig A4/eig C#5/eig G#5/eig r/eig A4/eig C#5/eig E5/eig
+bar  39 RH: F#5/eig A4/eig C#5/eig E5/eig r/eig A4/eig C#5/eig E5/eig
+bar  40 RH: F#5/eig E5/eig C#5/eig A#4/eig F#5/eig E5/eig C#5/eig A#4/eig
+bar  41 RH: B4/eig A#4/eig B4/eig C#5/eig D5/qua. r/eig
+bar  42 RH: D5/eig C#5/eig D5/eig E5/eig F#5/eig G#5/eig A5/eig B5/eig
+bar  43 RH: C#6/eig D6/eig D#6/eig E6/eig F#6/eig E6/eig D6/eig C#6/eig
+bar  44 RH: B5/eig A5/eig G#5/eig F#5/eig E5/eig D5/eig C#5/eig B4/eig
+bar  45 RH: A4/hal r/eig

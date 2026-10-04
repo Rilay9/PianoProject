@@ -1,0 +1,39 @@
+song: song.classical.duvernoy-etude-op-176-no-6.pdmx
+title: Étude, Op. 176 No. 6
+composer: Jean-Baptiste Duvernoy
+rungs: technique.5
+shipped file: scores/pdmx/QmX8Adb4sJp5KsY7PS6ECNa4hxci1voWafLU5p99PSygXg.mxl
+catalog keySig/timeSig/tempo: G major / None / 120.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 4, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 125, measures 21, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 1
+  bar 0: time 4 4
+
+dump_score.py:
+song.classical.duvernoy-etude-op-176-no-6.pdmx | Étude, Op. 176 No. 6 | level 4.39 (estimated)
+notation: {"bars": 21, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['4/4']
+text on the score: ['Andante', 'dolce cantabile']
+bar   0 RH: D5/qua G5/qua  LH: G3/eig D4/eig B3/eig D4/eig
+bar   1 RH: F#5/qua A5/qua D5/qua G5/qua  LH: G3/eig D4/eig C4/eig D4/eig G3/eig D4/eig B3/eig D4/eig
+bar   2 RH: F#5/qua A5/qua D5/eig B5/eig A5/eig G5/eig  LH: G3/eig D4/eig C4/eig D4/eig G3/qua B3/qua
+bar   3 RH: F#5/eig E5/eig D#5/eig E5/eig F#5/eig G5/eig B5/eig A5/eig  LH: C4/hal A3/qua C#4/qua
+bar   4 RH: G5/eig F#5/eig E5/eig D5/eig D5/qua G5/qua  LH: D4/qua r/qua G3/eig D4/eig B3/eig D4/eig
+bar   5 RH: F#5/qua A5/qua D5/qua G5/qua  LH: G3/eig D4/eig B3/eig D4/eig G3/eig D4/eig B3/eig D4/eig
+bar   6 RH: F#5/qua A5/qua D5/eig B5/eig A5/eig G5/eig  LH: G3/eig D4/eig B3/eig D4/eig G3/qua B3/qua
+bar   7 RH: F#5/eig E5/eig B5/eig A5/eig G5/eig F#5/eig E5/eig F#5/eig  LH: C4/qua A3/qua D4/qua D3/qua
+bar   8 RH: G5/qua r/qua A5/qua G5/eig F#5/eig  LH: G3/qua+B3/qua r/qua F#3/eig D4/eig A3/eig D4/eig
+bar   9 RH: E5/qua F#5/eig G5/eig A5/qua G5/eig F#5/eig  LH: G3/eig C#4/eig A3/eig C#4/eig F#3/eig D4/eig A3/eig D4/eig
+bar  10 RH: E5/qua F#5/eig G5/eig A5/qua D5/qua  LH: G3/eig C#4/eig A3/eig C#4/eig F#3/eig D4/eig A3/eig D4/eig
+bar  11 RH: B5/qua A5/eig G5/eig F#5/eig E5/eig D5/eig C#5/eig  LH: G3/eig E4/eig B3/eig E4/eig A3/qua G4/qua
+bar  12 RH: D5/qua D5/qua D5/qua G5/qua  LH: D4/qua+F#4/qua r/qua G3/eig D4/eig B3/eig D4/eig
+bar  13 RH: F#5/qua A5/qua D5/qua G5/qua  LH: G3/eig D4/eig C4/eig D4/eig G3/eig D4/eig B3/eig D4/eig
+bar  14 RH: F#5/qua A5/qua D5/eig B5/eig A5/eig G5/eig  LH: G3/eig D4/eig C4/eig D4/eig G3/qua B3/qua
+bar  15 RH: F#5/eig E5/eig D#5/eig E5/eig F#5/eig G5/eig B5/eig A5/eig  LH: C4/hal A3/qua C#4/qua
+bar  16 RH: G5/eig F#5/eig E5/eig D5/eig D5/qua G5/qua  LH: D4/qua r/qua G3/eig D4/eig B3/eig D4/eig
+bar  17 RH: F#5/qua A5/qua D5/qua G5/qua  LH: G3/eig D4/eig C4/eig D4/eig G3/eig D4/eig B3/eig D4/eig
+bar  18 RH: F#5/qua A5/qua D5/eig B5/eig A5/eig G5/eig  LH: G3/eig D4/eig C4/eig D4/eig G3/qua B3/qua
+bar  19 RH: F#5/eig E5/eig B5/eig A5/eig G5/eig F#5/eig E5/eig F#5/eig  LH: C4/qua A3/qua D4/qua D3/qua
+bar  20 RH: G5/hal r/hal  LH: G3/hal+B3/hal r/hal

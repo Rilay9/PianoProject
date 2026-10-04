@@ -1,0 +1,103 @@
+song: song.pop.takihiro-obata-isabella-s-lullaby-the-promised-neverland-emotional-anime-on-piano-vol-2.pdmx
+title: Isabella's Lullaby, from The Promised Neverland
+composer: Takahiro Obata, arr. Torby Brand
+rungs: chords-pop.8
+shipped file: scores/pdmx/QmXeePePi6UomkWywVRaWq4CyP9sc2HBMapxVDs5dj2Avy.mxl
+catalog keySig/timeSig/tempo: 5 flats / None / 112.0
+raw-XML counts: ties 8, tuplets 0, fingerings 0, dynamics 4, pedal 0, articulations 30, chord symbols 0, grace notes 0, voices>1 335, measures 86, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -5
+  bar 1: time 3 4
+
+dump_score.py:
+song.pop.takihiro-obata-isabella-s-lullaby-the-promised-neverland-emotional-anime-on-piano-vol-2.pdmx | Isabella's Lullaby, from The Promised Neverland | level 7.1 (estimated)
+notation: {"bars": 86, "staves": 2, "keys": [{"fifths": -5, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-5']  modes: []  times: ['3/4']
+bar   1 RH: r/qua F3/hal+Bb3/hal+D4/hal  LH: Bb2/hal.
+bar   2 RH: r/qua F3/hal+Bb3/hal+Eb4/hal  LH: Bb2/hal.
+bar   3 RH: r/qua F3/hal+Bb3/hal+F4/hal  LH: Bb2/hal.
+bar   4 RH: r/qua F3/hal+Bb3/hal+Eb4/hal  LH: Bb2/hal.
+bar   5 RH: r/qua F3/hal+Bb3/hal+D4/hal  LH: Bb2/hal.
+bar   6 RH: r/qua F3/hal+Bb3/hal+Eb4/hal  LH: Bb2/hal.
+bar   7 RH: r/qua F3/hal+Bb3/hal+F4/hal  LH: Bb2/hal.
+bar   8 RH: F3/hal+Bb3/hal+Eb4/hal Bb3/qua  LH: Bb2/hal.
+bar   9 RH: D4/hal Eb4/qua  LH: Bb2/qua F3/hal+Bb3/hal
+bar  10 RH: F4/hal Bb4/qua  LH: Bb2/qua Gb3/hal+Bb3/hal
+bar  11 RH: Ab4/hal Gb4/qua  LH: Bb2/qua Ab3/hal+Bb3/hal
+bar  12 RH: F4/hal.  LH: Bb2/qua Gb3/hal+Bb3/hal
+bar  13 RH: Db4/hal F4/qua  LH: Bb2/qua F3/hal+Bb3/hal
+bar  14 RH: C4/hal Eb4/qua  LH: Ab2/qua Eb3/hal+Ab3/hal
+bar  15 RH: Bb3/hal.  LH: Gb2/qua Db3/hal+Gb3/hal
+bar  16 RH: r/hal Ab3/qua  LH: F2/qua Db3/hal+F3/hal
+bar  17 RH: Bb3/qua. F4/eig Gb4/qua  LH: Gb2/qua Db3/hal+Gb3/hal
+bar  18 RH: Ab4/qua. Gb4/eig F4/qua  LH: F2/qua Ab3/hal+C4/hal
+bar  19 RH: Eb4/hal C5/qua  LH: Gb2/qua Gb3/hal+Bb3/hal
+bar  20 RH: Ab4/hal F4/qua  LH: F2/qua F3/hal+Ab3/hal
+bar  21 RH: Ab4/qua. Bb4/eig F4/qua  LH: Eb2/qua Gb3/hal+Bb3/hal
+bar  22 RH: Ab4/qua. Bb4/eig F4/qua  LH: F2/qua Ab3/hal+C4/hal
+bar  23 RH: Eb4/qua Bb3/qua Ab4/qua  LH: Gb2/qua Gb3/hal
+bar  24 RH: F4/hal Bb3/qua  LH: F2/qua F3/hal+A3/hal
+bar  25 RH: D4/hal Eb4/qua  LH: Bb2/qua F3/hal+Bb3/hal
+bar  26 RH: F4/hal Bb4/qua  LH: Bb2/qua Gb3/hal+Bb3/hal
+bar  27 RH: Ab4/hal Gb4/qua  LH: Bb2/qua Ab3/hal+Bb3/hal
+bar  28 RH: F4/hal.  LH: Bb2/qua Gb3/hal+Bb3/hal
+bar  29 RH: Db4/hal F4/qua  LH: Bb2/qua F3/hal+Bb3/hal
+bar  30 RH: Eb4/hal+Ab4/hal F4/qua  LH: F2/qua Ab3/hal+C4/hal
+bar  31 RH: Eb4/hal.+Bb4/hal.  LH: Gb2/qua F3/qua Gb3/qua
+bar  32 RH: r/?  LH: Ab3/hal F3/qua
+bar  33 RH: r/qua Gb4/qua+Bb4/qua Bb4/qua+Db5/qua  LH: Gb2/qua Gb3/hal+Bb3/hal+Db4/hal
+bar  34 RH: Ab4/qua.+C5/qua. Ab4/eig F4/qua  LH: F2/qua Ab3/hal+C4/hal+Eb4/hal
+bar  35 RH: F4/hal+Bb4/hal Db5/qua+F5/qua  LH: Gb2/qua Bb3/hal+Db4/hal+F4/hal
+bar  36 RH: Ab4/hal.+C5/hal.  LH: F2/qua F3/qua+Bb3/qua C4/qua
+bar  37 RH: Eb4/hal+Ab4/hal Bb4/qua  LH: Eb2/qua Gb3/hal+Bb3/hal+Db4/hal
+bar  38 RH: Ab4/qua.+C5/qua. Db5/eig C5/qua  LH: F2/qua Ab3/hal+C4/hal+Eb4/hal
+bar  39 RH: F4/qua+Bb4/qua Ab4/qua+C5/qua Bb4/qua+Db5/qua  LH: Gb2/qua Bb3/hal+Db4/hal+F4/hal
+bar  40 RH: Bb4/hal.+Eb5/hal.  LH: G2/qua G3/hal+Bb3/hal+Eb4/hal
+bar  41 RH: F4/hal.+C5/hal.  LH: F2/qua F3/hal+A3/hal+F4/hal
+bar  42 RH: C5/hal.+F5/hal.  LH: F2/qua A3/hal+C4/hal+Eb4/hal
+bar  43 RH: F5/hal.+A5/hal.+C6/hal.+F6/hal.  LH: F3/hal.+C4/hal.+F4/hal.
+bar  44 RH: r/qua F4/qua+C5/qua+F5/qua Bb4/eig+F5/eig+Bb5/eig C5/eig+C6/eig  LH: F2/hal.+F3/hal.
+bar  45 RH: Db5/qua.+F5/qua.+Bb5/qua.+Db6/qua. C5/eig+C6/eig Bb4/qua+Bb5/qua  LH: Bb1/eig+Bb2/eig F3/eig Bb3/eig Db4/eig Bb3/eig F3/eig
+bar  46 RH: Ab4/qua+C5/qua+Eb5/qua+Ab5/qua F4/qua+F5/qua Eb4/qua+Eb5/qua  LH: Bb2/eig F3/eig Ab3/eig C4/eig Ab3/eig F3/eig
+bar  47 RH: Eb4/qua.+Gb4/qua.+Bb4/qua.+Eb5/qua. Db4/eig+Db5/eig Ab4/qua+Ab5/qua  LH: Gb2/eig Db3/eig F3/eig Ab3/eig F3/eig Db3/eig
+bar  48 RH: F4/hal.+Ab4/hal.+C5/hal.+F5/hal.  LH: Ab2/eig Db3/eig F3/eig Ab3/eig F3/eig Db3/eig
+bar  49 RH: Bb3/qua.+F4/qua.+Bb4/qua. C4/eig+C5/eig Db4/qua+Db5/qua  LH: Gb1/eig+Gb2/eig Db3/eig F3/eig Ab3/eig F3/eig Db3/eig
+bar  50 RH: Eb4/qua+Bb4/qua+Eb5/qua A3/qua+A4/qua Eb4/qua+Eb5/qua  LH: F2/eig C3/eig Eb3/eig F3/eig Eb3/eig C3/eig
+bar  51 RH: Gb4/qua.+Db5/qua.+Gb5/qua. F4/eig+F5/eig Eb4/qua+Eb5/qua  LH: F2/eig Bb2/eig Db3/eig F3/eig Db3/eig Bb2/eig
+bar  52 RH: F4/qua.+C5/qua.+F5/qua. F4/eig+C5/eig+F5/eig Bb4/eig+F5/eig+Bb5/eig C5/eig+C6/eig  LH: F2/eig C3/eig Eb3/eig F3/eig Eb3/eig C3/eig
+bar  53 RH: Db5/qua.+F5/qua.+Bb5/qua.+Db6/qua. C5/eig+C6/eig Db5/qua+Db6/qua  LH: Gb1/eig+Gb2/eig Db3/eig Gb3/eig Bb3/eig Gb3/eig Db3/eig
+bar  54 RH: Eb5/qua+Gb5/qua+Bb5/qua+Eb6/qua Ab4/qua+Ab5/qua Eb5/qua+Eb6/qua  LH: Ab2/eig Eb3/eig Ab3/eig C4/eig Ab3/eig Eb3/eig
+bar  55 RH: Gb5/qua.+Bb5/qua.+Db6/qua.+Gb6/qua. F5/eig+F6/eig Eb5/qua+Eb6/qua  LH: F1/eig+F2/eig Bb2/eig Db3/eig Gb3/eig Db3/eig Bb2/eig
+bar  56 RH: Db5/hal+Gb5/hal+Db6/hal Bb3/eig C4/eig  LH: Gb2/eig Db3/eig F3/hal
+bar  57 RH: Bb3/qua.+Db4/qua. Eb4/eig F4/qua  LH: Gb2/eig Db3/eig Eb3/hal
+bar  58 RH: Ab3/hal.+C4/hal.  LH: F2/eig Bb2/eig C3/hal
+bar  59 RH: Gb3/hal+Bb3/hal F4/qua  LH: Gb2/eig Db3/eig Eb3/hal
+bar  60 RH: Ab3/qua+C4/qua F4/qua+C5/qua+F5/qua Bb4/eig+F5/eig+Bb5/eig C5/eig+C6/eig  LH: Ab2/eig Db3/eig Eb3/eig F3/eig Eb3/eig Db3/eig
+bar  61 RH: Db5/qua.+F5/qua.+Bb5/qua.+Db6/qua. C5/eig+C6/eig Bb4/qua+Bb5/qua  LH: Bb1/eig+Bb2/eig F3/eig Bb3/eig Db4/eig Bb3/eig F3/eig
+bar  62 RH: Ab4/qua+C5/qua+Eb5/qua+Ab5/qua F4/qua+F5/qua Eb4/qua+Eb5/qua  LH: Bb1/eig+Bb2/eig F3/eig Ab3/eig C4/eig Ab3/eig F3/eig
+bar  63 RH: Eb4/qua.+Gb4/qua.+Bb4/qua.+Eb5/qua. Db4/eig+Db5/eig Ab4/qua+Ab5/qua  LH: Gb1/eig+Gb2/eig Db3/eig F3/eig Ab3/eig F3/eig Db3/eig
+bar  64 RH: F4/hal.+Ab4/hal.+C5/hal.+F5/hal.  LH: Ab1/eig+Ab2/eig Db3/eig F3/eig Ab3/eig F3/eig Db3/eig
+bar  65 RH: Bb3/qua.+Db4/qua.+F4/qua.+Bb4/qua. C4/eig+C5/eig Db4/qua+Db5/qua  LH: Gb1/eig+Gb2/eig Db3/eig F3/eig Ab3/eig F3/eig Db3/eig
+bar  66 RH: Eb4/qua+Gb4/qua+Bb4/qua+Eb5/qua A3/qua+A4/qua Eb4/qua+Eb5/qua  LH: F1/eig+F2/eig C3/eig Eb3/eig F3/eig Eb3/eig C3/eig
+bar  67 RH: Gb4/qua.+Bb4/qua.+Db5/qua.+Gb5/qua. F4/eig+F5/eig Eb4/qua+Eb5/qua  LH: F1/eig+F2/eig Bb2/eig Db3/eig F3/eig Db3/eig Bb2/eig
+bar  68 RH: F4/qua.+Ab4/qua.+C5/qua.+F5/qua. F4/eig+C5/eig+F5/eig Bb4/eig+F5/eig+Bb5/eig C5/eig+C6/eig  LH: F1/eig+F2/eig C3/eig Eb3/eig F3/eig Eb3/eig C3/eig
+bar  69 RH: Db5/qua.+F5/qua.+Bb5/qua.+Db6/qua. C5/eig+C6/eig Db5/qua+Db6/qua  LH: Gb1/eig+Gb2/eig Db3/eig Gb3/eig Bb3/eig Gb3/eig Db3/eig
+bar  70 RH: Eb5/qua+Gb5/qua+Bb5/qua+Eb6/qua Ab4/qua+Ab5/qua Eb5/qua+Eb6/qua  LH: Ab1/eig+Ab2/eig Eb3/eig Ab3/eig C4/eig Ab3/eig Eb3/eig
+bar  71 RH: Gb5/qua.+Bb5/qua.+Db6/qua.+Gb6/qua. F5/eig+F6/eig Eb5/qua+Eb6/qua  LH: F1/eig+F2/eig Bb2/eig Db3/eig Gb3/eig Db3/eig Bb2/eig
+bar  72 RH: Db5/hal+F5/hal+Ab5/hal+Db6/hal Ab5/qua+Eb6/qua+Ab6/qua  LH: Ab1/eig+Ab2/eig Db3/eig F3/hal
+bar  73 RH: Db5/hal.+Gb5/hal.+Db6/hal.  LH: Bb1/eig+Bb2/eig Db3/eig F3/eig Bb3/eig F3/eig Db3/eig
+bar  74 RH: r/qua Bb4/qua+F5/qua+Bb5/qua F5/qua+C6/qua+F6/qua  LH: Gb1/eig+Gb2/eig Db3/eig Eb3/eig F3/eig Eb3/eig Db3/eig
+bar  75 RH: C5/hal.+F5/hal.+C6/hal.  LH: Ab1/eig+Ab2/eig C3/eig Eb3/eig Ab3/eig Eb3/eig C3/eig
+bar  76 RH: Ab4/qua+Eb5/qua+Ab5/qua Eb5/qua.+Bb5/qua.+Eb6/qua. Db5/eig+Gb5/eig+Db6/eig  LH: Ab1/qua+Ab2/qua Ab3/qua+C4/qua+F4/qua Ab3/qua+C4/qua+F4/qua
+bar  77 RH: C5/qua+F5/qua+C6/qua F5/hal+Bb5/hal  LH: Bb1/qua+Bb2/qua Bb3/hal+D4/hal+Bb4/hal
+bar  78 RH: r/qua F3/hal+Bb3/hal+Eb4/hal  LH: Bb2/hal.
+bar  79 RH: r/qua F3/hal+Bb3/hal+F4/hal  LH: Bb2/hal.
+bar  80 RH: r/qua F3/hal+Bb3/hal+Eb4/hal  LH: Bb2/hal.
+bar  81 RH: r/qua F3/hal+Bb3/hal+D4/hal  LH: Bb2/hal.
+bar  82 RH: r/qua F3/hal+Bb3/hal+Eb4/hal  LH: Bb2/hal.
+bar  83 RH: r/qua F3/hal+Bb3/hal+F4/hal  LH: Bb2/hal.
+bar  84 RH: r/qua F3/hal+Bb3/hal+Eb4/hal  LH: r/?
+bar  85 RH: r/qua r/eig F3/qua.+Bb3/qua.+D4/qua.  LH: r/?
+bar  86 RH: F3/hal.+Bb3/hal.+D4/hal.  LH: r/?

@@ -1,0 +1,53 @@
+song: song.pop.after-you-ve-gone.pdmx
+title: After You've Gone (1918)
+composer: Turner Layton
+rungs: jam.7, jazz.5
+shipped file: scores/pdmx/QmUZp4XeK4WqTkeuEreUmz7H2Wbh5nMkDNF7rG9nXH4s3A.mxl
+catalog keySig/timeSig/tempo: 2 flats / None / 110.00000000000001
+raw-XML counts: ties 24, tuplets 8, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 48, grace notes 0, voices>1 0, measures 36, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -2 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.after-you-ve-gone.pdmx | After You've Gone (1918) | level 3.16 (estimated)
+notation: {"bars": 36, "staves": 1, "keys": [{"fifths": -2, "mode": "major"}], "times": ["4/4"], "chordCount": 48, "chords": ["Bb", "Bb6", "Bb7", "Bbdim7", "C", "Cm", "Cm7", "D7", "Dm", "Eb", "Eb7", "Ebm6", "Ebm7", "F7", "F9", "G7", "G9", "Gm7"], "swungMark": false, "finalBass": null}
+key signatures (fifths): ['-2']  modes: ['major']  times: ['4/4']
+text on the score: ['Solos at "B"']
+bar   1 RH: r/eig F4/eig G4/eig Bb4/eig F4/eig G4/eig Bb4/eig G4/eig  [Bb major]
+bar   2 RH: C5/qua D5/eig C5/qua. r/qua  [F dominant]
+bar   3 RH: r/eig F4/eig G4/eig Bb4/eig F4/eig G4/eig Bb4/eig G4/eig  [Bb major]
+bar   4 RH: C5/qua D5/eig C5/qua. r/qua  [F dominant]
+bar   5 RH: r/eig D5/qua. Db5/eig C5/qua.  [D dominant]
+bar   6 RH: Bb4/eig G4/eig A4/eig Ab4/eig G4/eig G4/hal  [G minor-seventh]
+bar   7 RH: r/qua C5/eig C5/eig B4/eig Bb4/eig Bb4/qua  [F dominant] [G dominant] [Bb dominant]
+bar   8 RH: A4/eig Bb4/eig B4/eig C5/eig C5/hal  [C minor-seventh] [F dominant]
+bar   9 RH: F4/eig G4/eig Bb4/eig F4/eig G4/eig Bb4/eig G4/eig Bb4/eig  [Bb major]
+bar  10 RH: C5/qua B4/eig C5/qua. r/qua  [F dominant]
+bar  11 RH: C5/eig D5/qua C5/eig B4/eig Bb4/eig Ab4/eig F4/eig  [D minor] [G dominant]
+bar  12 RH: G4/who  [Eb dominant]
+bar  13 RH: r/eig G4/eig A4/eig Bb4/eig G4/eig A4/eig Bb4/eig C5/eig  [Bb dominant] [G minor-seventh]
+bar  14 RH: D5/eig Bb4/qua. F4/hal  [C minor] [F dominant]
+bar  15 RH: G4/eig G4/qua. A4/eig D5/qua.  [C minor-seventh] [F dominant]
+bar  16 RH: Bb4/hal. r/qua  [Bb major]
+bar  17 RH: G4/eig Bb4/eig C5/eig D5/eig D5/hal  [Eb major]
+bar  18 RH: r/eig C5/eig D5/eig C5/eig D5/eig C5/qua.  [Eb minor-sixth]
+bar  19 RH: D4/eig F4/eig G4/eig A4/eig A4/hal  [Bb major]
+bar  20 RH: r/eig G4/eig A4/eig G4/eig A4/eig G4/qua.  [G dominant]
+bar  21 RH: G4/eig D5/qua D5/eig D5/hal  [C major]
+bar  22 RH: G4/eig C5/qua C5/eig C5/hal  [F dominant-ninth]
+bar  23 RH: r/eig F4/eig G4/eig F4/eig A4/eig F4/eig G4/eig F4/eig  [Bb dominant]
+bar  24 RH: Bb4/eig D4/qua F4/eig F4/hal
+bar  25 RH: G4/eig Bb4/eig C5/eig D5/eig D5/hal  [Eb major]
+bar  26 RH: r/eig C5/eig D5/eig C5/eig D5/eig C5/qua.  [Eb minor-seventh]
+bar  27 RH: D4/eig F4/eig G4/eig A4/eig A4/hal  [Bb major]
+bar  28 RH: r/eig G4/eig A4/eig G4/eig A4/eig G4/qua.  [G dominant-ninth]
+bar  29 RH: Eb5/hal D5/hal  [C minor-seventh] [G dominant]
+bar  30 RH: C5/eig F#4/eig G4/eig D5/eig Eb5/qua C5/qua  [C minor-seventh] [Eb minor-sixth]
+bar  31 RH: r/eig C#5/eig D5/eig Bb4/eig C5/eig B4/eig C5/eig A4/eig  [Bb major] [D dominant]
+bar  32 RH: Bb4/qua D4/eig A4/eig A4/qua G4/qua  [G minor-seventh] [Bb diminished-seventh]
+bar  33 RH: F4/eig G4/eig Bb4/eig D5/eig D5/hal  [Bb major-sixth] [G dominant]
+bar  34 RH: r/eig Eb4/eig F4/eig A4/eig C5/qua D5/qua  [C minor-seventh] [F dominant]
+bar  35 RH: Bb4/hal. r/qua  [Bb major-sixth]
+bar  36 RH: r/?  [Bb dominant]

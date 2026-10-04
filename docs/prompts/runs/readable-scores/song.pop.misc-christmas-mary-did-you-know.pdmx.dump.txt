@@ -1,0 +1,80 @@
+song: song.pop.misc-christmas-mary-did-you-know.pdmx
+title: Mary Did You Know?
+composer: Buddy Greene, arr. Ethan Snyder
+rungs: holiday.5
+shipped file: scores/pdmx/QmbdYrG8z8ULJmHKR1F5sAWDSHoqUcadbD1XGGkYzMeKm8.mxl
+catalog keySig/timeSig/tempo: B minor / None / 90.0
+raw-XML counts: ties 230, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 265, measures 62, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 2 minor
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.misc-christmas-mary-did-you-know.pdmx | Mary Did You Know? | level 5.81 (estimated)
+notation: {"bars": 62, "staves": 2, "keys": [{"fifths": 2, "mode": "minor"}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 11}
+key signatures (fifths): ['2']  modes: ['minor']  times: ['4/4']
+text on the score: ['rit.']
+bar   1 RH: B3/eig C#4/eig D4/eig F#4/eig E4/hal  LH: F#3/eig E3/eig B2/eig D3/eig C#3/hal
+bar   2 RH: r/eig B3/eig F#4/eig E4/eig E4/qua D4/eig C#4/eig  LH: r/eig F#3/eig D3/eig C#3/qua. B2/eig E3/eig
+bar   3 RH: C#4/qua A3/qua B3/qua C#4/eig D4/eig  LH: E3/qua F#3/qua E3/qua A2/qua
+bar   4 RH: D4/qua E4/qua D4/qua C#4/qua  LH: A2/qua C#3/qua D3/qua E3/qua
+bar   5 RH: B3/eig C#4/eig D4/eig C#4/eig B3/hal  LH: r/hal B2/hal
+bar   6 RH: B3/hal r/qua r/eig B3/eig  LH: B2/hal B2/qua F#3/qua
+bar   7 RH: D4/eig+F#4/eig B3/eig F#4/eig C#4/eig+E4/eig C#4/hal+E4/hal  LH: F#3/hal F#3/hal
+bar   8 RH: C#4/hal+E4/hal r/qua r/eig B3/eig  LH: F#2/hal B2/qua F#3/qua
+bar   9 RH: D4/eig+F#4/eig B3/eig F#4/eig C#4/eig+E4/eig C#4/hal+E4/hal  LH: F#3/hal F#3/hal
+bar  10 RH: B3/eig C#4/eig D4/eig F#4/eig F#4/hal  LH: r/hal B2/eig F#3/eig B3/eig F#3/eig
+bar  11 RH: r/eig B3/eig F#4/eig E4/eig E4/qua D4/eig C#4/eig  LH: F#3/hal A2/eig E3/eig A3/eig E3/eig
+bar  12 RH: C#4/qua A3/qua B3/qua C#4/eig D4/eig  LH: E3/hal E2/eig B2/eig E3/eig B2/eig
+bar  13 RH: D4/qua E4/qua D4/qua C#4/qua  LH: B2/hal F#2/eig C#3/eig F#3/eig C#3/eig
+bar  14 RH: B3/eig C#4/eig D4/eig F#4/eig F#4/hal  LH: C#3/hal B2/eig F#3/eig B3/eig F#3/eig
+bar  15 RH: r/eig B3/eig F#4/eig E4/eig E4/qua D4/eig C#4/eig  LH: F#3/hal A2/eig E3/eig A3/eig E3/eig
+bar  16 RH: C#4/qua A3/qua B3/qua C#4/eig D4/eig  LH: E3/hal E2/eig B2/eig E3/eig B2/eig
+bar  17 RH: D4/qua E4/qua B3/qua+G4/qua A#3/qua+F#4/qua  LH: B2/hal F#2/eig C#3/eig F#3/eig C#3/eig
+bar  18 RH: r/eig F#4/eig G4/eig+B4/eig G4/eig+B4/eig G4/hal+B4/hal  LH: C#3/hal E2/eig B2/eig E3/eig B2/eig
+bar  19 RH: r/eig B4/eig D5/eig A4/eig+C#5/eig A4/qua+C#5/qua B4/eig A4/eig  LH: B2/hal A2/eig E3/eig A3/eig E3/eig
+bar  20 RH: A4/qua E4/qua D4/qua+F#4/qua A4/eig E4/eig+A4/eig  LH: E3/hal D3/eig A3/qua.
+bar  21 RH: E4/qua+A4/qua B4/qua D4/hal+B4/hal  LH: C#3/eig A3/qua. B2/eig F#3/qua.
+bar  22 RH: r/qua F#4/eig G4/eig G4/qua F#4/eig E4/eig  LH: A2/eig F#3/qua. E2/eig B2/eig E3/eig B2/eig
+bar  23 RH: E4/qua D4/qua E4/qua F#4/qua  LH: B2/hal E2/eig B2/eig E3/eig B2/eig
+bar  24 RH: F#4/qua F#4/qua F#4/qua G4/eig F#4/eig  LH: B2/hal F#2/eig C#3/eig F#3/qua
+bar  25 RH: F#4/qua G4/qua A#3/hal+F#4/hal  LH: F#3/hal F#2/hal
+bar  26 RH: B3/eig C#4/eig D4/eig F#4/eig A#3/qua+F#4/qua r/eig F#4/eig  LH: F#2/qua r/qua F#2/hal
+bar  27 RH: E4/eig D4/eig B3/eig A#3/eig B3/qua. B3/eig  LH: F#2/qua r/qua B2/qua F#3/qua
+bar  28 RH: D4/eig+F#4/eig B3/eig D4/eig+F#4/eig C#4/eig+E4/eig C#4/hal+E4/hal  LH: F#3/hal F#3/hal
+bar  29 RH: C#4/hal+E4/hal r/qua r/eig B3/eig  LH: F#2/hal B2/qua F#3/qua
+bar  30 RH: D4/eig+F#4/eig B3/eig F#4/eig C#4/eig+E4/eig C#4/qua+E4/qua E4/eig F#4/eig  LH: F#3/hal F#3/hal
+bar  31 RH: G4/eig A4/eig B4/eig C#5/eig B4/qua+D5/qua D5/eig E5/eig  LH: r/hal G2/eig D3/eig G3/qua
+bar  32 RH: E5/qua D5/qua A4/qua+C#5/qua D5/eig C#5/eig  LH: G3/eig D3/eig G3/qua A2/eig E3/eig A3/qua
+bar  33 RH: C#5/qua F#4/qua+C#5/qua F#4/qua+D5/qua B4/eig B4/eig  LH: A3/eig E3/eig A3/qua B2/eig F#3/qua.
+bar  34 RH: B4/qua A4/qua B4/hal  LH: A2/eig F#3/qua. G2/eig D3/eig G3/qua
+bar  35 RH: r/qua B4/qua B4/qua+D5/qua D5/eig E5/eig  LH: G3/eig D3/eig G3/qua E2/eig B2/eig E3/qua
+bar  36 RH: E5/qua D5/qua B4/qua+C#5/qua D5/eig A#4/eig+C#5/eig  LH: E3/eig B2/eig E3/qua F#2/eig C#3/eig F#3/qua
+bar  37 RH: A#4/qua+C#5/qua B4/qua B4/qua+D5/qua E5/eig F#5/eig  LH: F#3/eig C#3/eig F#3/qua B2/eig F#3/eig B3/qua
+bar  38 RH: F#5/qua G5/qua B4/hal+F#5/hal  LH: B3/hal F#2/eig C#3/eig F#3/qua
+bar  39 RH: B4/hal+F#5/hal A#4/hal+F#5/hal  LH: F#3/eig C#3/eig F#3/qua F#2/hal
+bar  40 RH: B3/eig C#4/eig D4/eig F#4/eig F#4/hal  LH: r/hal B2/eig F#3/eig B3/eig F#3/eig
+bar  41 RH: r/eig B3/eig F#4/eig E4/eig E4/qua D4/eig C#4/eig  LH: F#3/hal A2/eig E3/eig A3/eig E3/eig
+bar  42 RH: C#4/qua A3/qua B3/qua C#4/eig D4/eig  LH: E3/hal E2/eig B2/eig E3/eig B2/eig
+bar  43 RH: D4/qua E4/qua D4/qua C#4/qua  LH: B2/hal F#2/eig C#3/eig F#3/eig C#3/eig
+bar  44 RH: B3/eig C#4/eig D4/eig F#4/eig F#4/hal  LH: C#3/hal B2/eig F#3/eig B3/eig F#3/eig
+bar  45 RH: r/eig B3/eig F#4/eig E4/eig E4/qua D4/eig C#4/eig  LH: F#3/hal A2/eig E3/eig A3/eig E3/eig
+bar  46 RH: C#4/qua A3/qua B3/qua C#4/eig D4/eig  LH: E3/hal E2/eig B2/eig E3/eig B2/eig
+bar  47 RH: D4/qua E4/qua G4/qua F#4/qua  LH: B2/hal E2/eig B2/eig E3/eig B2/eig
+bar  48 RH: F#4/eig B4/eig B4/hal.  LH: B2/hal G2/eig D3/eig G3/eig D3/eig
+bar  49 RH: r/eig B4/eig D5/eig A4/eig+C#5/eig A4/qua+C#5/qua B4/eig A4/eig  LH: D3/hal A2/eig E3/eig A3/eig E3/eig
+bar  50 RH: A4/qua E4/qua D4/qua+F#4/qua A4/eig E4/eig+A4/eig  LH: E3/hal D3/eig A3/qua.
+bar  51 RH: E4/qua+A4/qua B4/qua D4/hal+B4/hal  LH: C#3/eig A3/qua. B2/eig F#3/qua.
+bar  52 RH: r/qua E4/eig F#4/eig G4/qua F#4/eig E4/eig  LH: A2/eig F#3/qua. E2/eig B2/eig E3/eig B2/eig
+bar  53 RH: E4/qua D4/qua E4/qua F#4/qua  LH: B2/hal E2/eig B2/eig E3/eig B2/eig
+bar  54 RH: r/qua F#4/eig F#4/eig B3/hal+F#4/hal  LH: B2/hal F#2/eig C#3/eig F#3/eig C#3/eig
+bar  55 RH: B3/hal+F#4/hal F#4/hal+A#4/hal  LH: C#3/qua F#3/qua F#2/eig C#3/eig F#3/eig C#3/eig
+bar  56 RH: F#4/hal+A#4/hal F#4/qua.+B4/qua. B3/eig  LH: C#3/qua F#3/qua B2/qua F#3/qua
+bar  57 RH: D4/eig+F#4/eig B3/eig F#4/eig C#4/eig+E4/eig C#4/hal+E4/hal  LH: F#3/hal F#3/hal
+bar  58 RH: C#4/hal+E4/hal r/qua r/eig B3/eig  LH: F#2/hal B2/qua F#3/qua
+bar  59 RH: D4/eig+F#4/eig B3/eig F#4/eig C#4/eig+E4/eig C#4/hal+E4/hal  LH: F#3/hal A2/qua E3/qua
+bar  60 RH: F#4/eig E4/eig D4/eig C#4/eig B3/qua r/eig B3/eig  LH: E3/hal B2/qua F#3/qua
+bar  61 RH: D4/eig+F#4/eig B3/eig F#4/eig C#4/qua.+E4/qua. A3/qua+C#4/qua  LH: F#3/hal. A2/qua+C#3/qua
+bar  62 RH: B3/who+D4/who  LH: B2/who+D3/who+F#3/who

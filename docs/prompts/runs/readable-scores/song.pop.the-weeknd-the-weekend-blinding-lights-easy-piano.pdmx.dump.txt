@@ -1,0 +1,145 @@
+song: song.pop.the-weeknd-the-weekend-blinding-lights-easy-piano.pdmx
+title: Blinding Lights (easy)
+composer: The Weeknd
+rungs: chords-pop.7
+shipped file: scores/pdmx/QmPryDa16yVbNYygnUT7oW4wgUsmLGuSGxU1ZCtP4BAcJe.mxl
+catalog keySig/timeSig/tempo: 1 flat / None / 168.0
+raw-XML counts: ties 342, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 128, grace notes 0, voices>1 584, measures 128, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -1
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.the-weeknd-the-weekend-blinding-lights-easy-piano.pdmx | Blinding Lights (easy) | level 5.4 (estimated)
+notation: {"bars": 128, "staves": 2, "keys": [{"fifths": -1, "mode": null}], "times": ["4/4"], "chordCount": 128, "chords": ["C", "Dm", "F", "Gm"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['-1']  modes: []  times: ['4/4']
+bar   1 RH: G5/hal G5/qua. F5/eig  LH: G3/who+Bb3/who  [G minor] [G minor]
+bar   2 RH: G5/eig A5/qua D5/eig D5/eig F5/qua.  LH: G3/who+Bb3/who
+bar   3 RH: G5/hal G5/qua. F5/eig  LH: D3/who+A3/who  [D minor] [D minor]
+bar   4 RH: G5/eig A5/qua D5/eig D5/eig F5/qua.  LH: D3/who+A3/who
+bar   5 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/who+A3/who  [F major] [F major]
+bar   6 RH: C6/eig A5/qua G5/eig G5/eig F5/qua G5/eig  LH: F3/who+A3/who
+bar   7 RH: G5/who  LH: C3/who+G3/who  [C major] [C major]
+bar   8 RH: G5/hal D5/eig C5/eig D5/eig C5/eig  LH: C3/who+G3/who
+bar   9 RH: D5/who  LH: G3/who+Bb3/who  [G minor] [G minor]
+bar  10 RH: D5/hal D5/eig C5/eig D5/eig C5/eig  LH: G3/hal+Bb3/hal G3/hal+Bb3/hal
+bar  11 RH: F5/qua C5/eig C5/eig C5/eig D5/eig A4/qua  LH: D3/who+A3/who  [D minor] [D minor]
+bar  12 RH: A4/hal D5/eig C5/eig D5/eig C5/eig  LH: D3/hal+A3/hal D3/hal+A3/hal
+bar  13 RH: F5/qua C5/eig C5/eig C5/eig D5/eig A4/qua  LH: F3/who+A3/who  [F major] [F major]
+bar  14 RH: A4/hal C5/qua D5/qua  LH: F3/hal+A3/hal F3/hal+A3/hal
+bar  15 RH: G4/who  LH: C3/who+G3/who  [C major] [C major]
+bar  16 RH: G4/qua. C5/eig D5/eig C5/eig D5/eig C5/eig  LH: C3/who+G3/who
+bar  17 RH: D5/who  LH: G3/who+Bb3/who  [G minor] [G minor]
+bar  18 RH: D5/hal D5/eig C5/eig D5/eig C5/eig  LH: G3/hal+Bb3/hal G3/hal+Bb3/hal
+bar  19 RH: F5/qua C5/eig C5/eig C5/eig D5/eig A4/qua  LH: D3/who+A3/who  [D minor] [D minor]
+bar  20 RH: A4/hal D5/eig C5/eig D5/eig C5/eig  LH: D3/hal+A3/hal D3/hal+A3/hal
+bar  21 RH: F5/qua C5/eig C5/eig C5/eig D5/eig A4/qua  LH: F3/who+A3/who  [F major] [F major]
+bar  22 RH: A4/hal C5/qua D5/qua  LH: F3/hal+A3/hal F3/hal+A3/hal
+bar  23 RH: G4/who  LH: C3/who+G3/who  [C major] [C major]
+bar  24 RH: G4/qua. C5/eig D5/eig C5/eig D5/eig C5/eig  LH: C3/who+G3/who
+bar  25 RH: D5/qua D5/qua F5/eig G5/qua A5/eig  LH: G3/hal+Bb3/hal G3/hal+Bb3/hal  [G minor] [G minor]
+bar  26 RH: A5/eig D5/qua F5/eig F5/eig G5/qua.  LH: G3/who+Bb3/who
+bar  27 RH: D5/qua D5/qua F5/eig G5/qua A5/eig  LH: D3/hal+A3/hal D3/hal+A3/hal  [D minor] [D minor]
+bar  28 RH: A5/eig D5/qua F5/eig F5/eig G5/qua.  LH: D3/who+A3/who
+bar  29 RH: r/qua D5/qua F5/eig G5/qua A5/eig  LH: F3/hal+A3/hal F3/hal+A3/hal  [F major] [F major]
+bar  30 RH: A5/eig D5/qua F5/eig F5/eig G5/qua.  LH: F3/who+A3/who
+bar  31 RH: E5/hal D5/hal  LH: C3/who+G3/who  [C major] [C major]
+bar  32 RH: C5/qua. D6/eig D6/eig F5/qua.  LH: C3/who+G3/who
+bar  33 RH: G5/who  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua  [G minor] [G minor]
+bar  34 RH: G5/hal G5/eig G5/eig A5/qua  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/hal+Bb3/hal
+bar  35 RH: G5/qua F5/eig F5/eig F5/eig D5/eig F5/qua  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal  [D minor] [D minor]
+bar  36 RH: F5/eig D5/qua. D5/eig F5/qua.  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal
+bar  37 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua  [F major] [F major]
+bar  38 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua
+bar  39 RH: F5/qua G5/hal.  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua  [C major] [C major]
+bar  40 RH: G5/qua. A5/eig A5/eig F5/qua.  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua
+bar  41 RH: G5/who  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua  [G minor] [G minor]
+bar  42 RH: G5/hal G5/eig G5/eig A5/qua  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/hal+Bb3/hal
+bar  43 RH: G5/qua F5/eig F5/eig F5/eig D5/eig F5/qua  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal  [D minor] [D minor]
+bar  44 RH: F5/eig D5/qua. D5/eig F5/eig F5/qua  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal
+bar  45 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua  [F major] [F major]
+bar  46 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua
+bar  47 RH: F5/qua G5/hal G5/qua  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua  [C major] [C major]
+bar  48 RH: G5/qua G5/hal G5/qua  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua
+bar  49 RH: G5/hal G5/qua. F5/eig  LH: G3/who+Bb3/who  [G minor] [G minor]
+bar  50 RH: G5/eig A5/qua D5/eig D5/eig F5/qua.  LH: G3/who+Bb3/who
+bar  51 RH: G5/hal G5/qua. F5/eig  LH: D3/who+A3/who  [D minor] [D minor]
+bar  52 RH: G5/eig A5/qua D5/eig D5/eig F5/qua.  LH: D3/who+A3/who
+bar  53 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/who+A3/who  [F major] [F major]
+bar  54 RH: C6/eig A5/qua G5/eig G5/eig F5/qua G5/eig  LH: F3/who+A3/who
+bar  55 RH: G5/who  LH: C3/who+G3/who  [C major] [C major]
+bar  56 RH: G5/qua. C5/eig D5/eig C5/eig D5/eig C5/eig  LH: C3/who+G3/who
+bar  57 RH: D5/who  LH: G3/who+Bb3/who  [G minor] [G minor]
+bar  58 RH: D5/qua. A4/eig D5/eig C5/eig D5/eig C5/eig  LH: G3/hal+Bb3/hal G3/hal+Bb3/hal
+bar  59 RH: F5/qua C5/eig C5/eig C5/eig D5/eig A4/qua  LH: D3/who+A3/who  [D minor] [D minor]
+bar  60 RH: A4/hal D5/eig C5/eig D5/eig C5/eig  LH: D3/hal+A3/hal D3/hal+A3/hal
+bar  61 RH: F5/qua C5/eig C5/eig C5/eig D5/eig A4/qua  LH: F3/who+A3/who  [F major] [F major]
+bar  62 RH: A4/hal C5/qua D5/qua  LH: F3/hal+A3/hal F3/hal+A3/hal
+bar  63 RH: G4/who  LH: C3/who+G3/who  [C major] [C major]
+bar  64 RH: F5/qua E5/qua D5/qua C5/qua  LH: C3/who+G3/who
+bar  65 RH: D5/qua D5/qua F5/eig G5/qua A5/eig  LH: G3/hal+Bb3/hal G3/hal+Bb3/hal  [G minor] [G minor]
+bar  66 RH: A5/eig D5/qua F5/eig F5/eig G5/qua.  LH: G3/who+Bb3/who
+bar  67 RH: D5/qua D5/qua F5/eig G5/qua A5/eig  LH: D3/hal+A3/hal D3/hal+A3/hal  [D minor] [D minor]
+bar  68 RH: A5/eig C6/qua F5/eig F5/eig G5/qua.  LH: D3/who+A3/who
+bar  69 RH: G5/qua D5/qua F5/eig G5/qua A5/eig  LH: F3/hal+A3/hal F3/hal+A3/hal  [F major] [F major]
+bar  70 RH: A5/eig D5/qua F5/eig F5/eig G5/qua.  LH: F3/who+A3/who
+bar  71 RH: E5/hal D5/hal  LH: C3/who+G3/who  [C major] [C major]
+bar  72 RH: C5/qua. D6/eig D6/eig F5/qua.  LH: C3/who+G3/who
+bar  73 RH: G5/who  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua  [G minor] [G minor]
+bar  74 RH: G5/hal G5/eig G5/eig A5/qua  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/hal+Bb3/hal
+bar  75 RH: G5/qua F5/eig F5/eig F5/eig D5/eig F5/qua  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal  [D minor] [D minor]
+bar  76 RH: F5/eig D5/qua. D5/eig F5/qua.  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal
+bar  77 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua  [F major] [F major]
+bar  78 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua
+bar  79 RH: F5/qua G5/hal.  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua  [C major] [C major]
+bar  80 RH: G5/qua. A5/eig A5/eig F5/qua.  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua
+bar  81 RH: G5/who  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua  [G minor] [G minor]
+bar  82 RH: G5/hal G5/eig G5/eig A5/qua  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/hal+Bb3/hal
+bar  83 RH: G5/qua F5/eig F5/eig F5/eig D5/eig F5/qua  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal  [D minor] [D minor]
+bar  84 RH: F5/eig D5/qua. D5/eig F5/qua.  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal
+bar  85 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua  [F major] [F major]
+bar  86 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua
+bar  87 RH: F5/qua G5/hal.  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua  [C major] [C major]
+bar  88 RH: G5/hal C6/eig Bb5/eig C6/eig Bb5/eig  LH: C3/who+G3/who
+bar  89 RH: D6/qua A5/eig A5/eig A5/eig G5/eig G5/qua  LH: G3/who+Bb3/who  [G minor] [G minor]
+bar  90 RH: G5/hal C6/eig A5/eig C6/eig A5/eig  LH: G3/hal+Bb3/hal G3/hal+Bb3/hal
+bar  91 RH: D6/qua A5/eig A5/eig A5/eig G5/eig G5/eig F5/eig  LH: D3/who+A3/who  [D minor] [D minor]
+bar  92 RH: F5/hal. C6/qua  LH: D3/hal+A3/hal D3/hal+A3/hal
+bar  93 RH: D6/qua A5/eig A5/eig A5/eig G5/eig A5/qua  LH: F3/who+A3/who  [F major] [F major]
+bar  94 RH: A5/eig G5/qua. C6/qua C6/qua  LH: F3/hal+A3/hal F3/hal+A3/hal
+bar  95 RH: C6/eig Bb5/eig A5/eig G5/eig G5/qua A5/qua  LH: C3/who+G3/who  [C major] [C major]
+bar  96 RH: A5/qua. A5/eig A5/eig F5/qua.  LH: C3/who+G3/who
+bar  97 RH: G5/who  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua  [G minor] [G minor]
+bar  98 RH: G5/hal G5/eig G5/eig A5/qua  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/hal+Bb3/hal
+bar  99 RH: G5/qua F5/eig F5/eig F5/eig D5/eig F5/qua  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal  [D minor] [D minor]
+bar 100 RH: F5/eig D5/qua. D5/eig F5/qua.  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal
+bar 101 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua  [F major] [F major]
+bar 102 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua
+bar 103 RH: F5/qua G5/hal G5/qua  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua  [C major] [C major]
+bar 104 RH: G5/qua G5/hal G5/qua  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua
+bar 105 RH: G5/hal G5/qua. F5/eig  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua  [G minor] [G minor]
+bar 106 RH: G5/eig A5/qua D5/eig D5/eig F5/qua.  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/hal+Bb3/hal
+bar 107 RH: G5/hal G5/qua. F5/eig  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal  [D minor] [D minor]
+bar 108 RH: G5/eig A5/qua D5/eig D5/eig F5/qua.  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal
+bar 109 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua  [F major] [F major]
+bar 110 RH: C6/eig A5/qua G5/eig G5/eig F5/qua G5/eig  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua
+bar 111 RH: G5/who  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua  [C major] [C major]
+bar 112 RH: G5/who  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua
+bar 113 RH: G5/hal G5/qua. F5/eig  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua  [G minor] [G minor]
+bar 114 RH: G5/eig A5/qua D5/eig D5/eig F5/qua.  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/hal+Bb3/hal
+bar 115 RH: G5/hal G5/qua. F5/eig  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal  [D minor] [D minor]
+bar 116 RH: G5/eig A5/qua D5/eig D5/eig F5/qua.  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal
+bar 117 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua  [F major] [F major]
+bar 118 RH: C6/eig A5/qua G5/eig G5/eig F5/qua G5/eig  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua
+bar 119 RH: G5/who  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua  [C major] [C major]
+bar 120 RH: G5/qua. A5/eig A5/eig F5/qua.  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua
+bar 121 RH: G5/who  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua G3/qua+Bb3/qua  [G minor] [G minor]
+bar 122 RH: G5/hal G5/eig G5/eig A5/qua  LH: G3/qua+Bb3/qua G3/qua+Bb3/qua G3/hal+Bb3/hal
+bar 123 RH: G5/qua F5/eig F5/eig F5/eig D5/eig F5/qua  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal  [D minor] [D minor]
+bar 124 RH: F5/eig D5/qua. D5/eig F5/qua.  LH: D3/qua+A3/qua D3/qua+A3/qua D3/hal+A3/hal
+bar 125 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua  [F major] [F major]
+bar 126 RH: C6/eig A5/qua G5/eig G5/eig F5/qua.  LH: F3/hal+A3/hal F3/qua+A3/qua F3/qua+A3/qua
+bar 127 RH: F5/qua G5/hal.  LH: C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua C3/qua+G3/qua  [C major] [C major]
+bar 128 RH: G5/who  LH: C3/who+G3/who

@@ -1,0 +1,48 @@
+song: song.folk.this-little-light-of-mine.pdmx
+title: This Little Light of Mine
+composer: NA
+rungs: hymns.5
+shipped file: scores/pdmx/QmbNy9ivLSgU2miV53wEH6t71RYcBrKDJ1Tm2K53RfLFdL.mxl
+catalog keySig/timeSig/tempo: Bb major / None / 96.0
+raw-XML counts: ties 2, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 24, grace notes 0, voices>1 0, measures 32, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -2
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.this-little-light-of-mine.pdmx | This Little Light of Mine | level 2.73 (estimated)
+notation: {"bars": 32, "staves": 1, "keys": [{"fifths": -2, "mode": null}], "times": ["4/4"], "chordCount": 24, "chords": ["Bb", "Bb7", "Eb", "F7", "Gm"], "swungMark": false, "finalBass": 10}
+key signatures (fifths): ['-2']  modes: []  times: ['4/4']
+bar   1 RH: Bb4/qua Bb4/eig G4/eig Bb4/qua G4/qua  [Bb major]
+bar   2 RH: Bb4/hal. r/qua
+bar   3 RH: D5/qua D5/eig D5/eig D5/qua C5/qua
+bar   4 RH: Bb4/hal. r/qua  [Bb dominant]
+bar   5 RH: G4/qua Bb4/eig G4/eig Bb4/qua G4/qua  [Eb major]
+bar   6 RH: Bb4/hal. r/qua
+bar   7 RH: Bb4/qua Bb4/eig Bb4/eig Bb4/qua G4/qua
+bar   8 RH: F4/hal. r/qua  [Bb major]
+bar   9 RH: Bb4/qua Bb4/eig G4/eig Bb4/qua G4/qua  [Bb major]
+bar  10 RH: Bb4/hal. r/qua
+bar  11 RH: D5/qua D5/eig D5/eig D5/qua C5/qua  [Bb major]
+bar  12 RH: Bb4/hal. Bb4/eig Bb4/eig  [G minor]
+bar  13 RH: Bb4/hal r/qua Bb4/eig Bb4/eig  [Bb major]
+bar  14 RH: Bb4/hal r/eig Bb4/eig C5/eig Bb4/eig  [Eb major]
+bar  15 RH: D5/qua D5/qua C5/eig Bb4/eig C5/qua  [Bb major] [F dominant]
+bar  16 RH: Bb4/hal. r/qua  [Bb major]
+bar  17 RH: G4/qua Bb4/qua Bb4/eig G4/eig Bb4/qua  [Bb major]
+bar  18 RH: Bb4/qua G4/qua Bb4/qua r/qua
+bar  19 RH: D5/qua D5/eig D5/eig D5/qua C5/qua
+bar  20 RH: Bb4/hal. r/qua  [Bb dominant]
+bar  21 RH: G4/qua Bb4/qua Bb4/eig G4/eig Bb4/qua  [Eb major]
+bar  22 RH: Bb4/qua Bb4/qua Bb4/qua r/qua
+bar  23 RH: Bb4/qua Bb4/eig Bb4/eig Bb4/qua G4/qua
+bar  24 RH: F4/hal. r/qua  [Bb major]
+bar  25 RH: G4/qua Bb4/qua Bb4/eig G4/eig Bb4/qua  [Bb major]
+bar  26 RH: Bb4/eig G4/qua Bb4/eig Bb4/eig r/eig r/qua
+bar  27 RH: D5/qua D5/eig D5/eig D5/qua C5/qua  [Bb major]
+bar  28 RH: Bb4/hal. Bb4/eig Bb4/eig  [G minor]
+bar  29 RH: Bb4/hal r/qua Bb4/eig Bb4/eig  [Bb major]
+bar  30 RH: Bb4/hal r/eig Bb4/eig C5/eig Bb4/eig  [Eb major]
+bar  31 RH: D5/qua D5/qua C5/eig Bb4/eig C5/qua  [Bb major] [F dominant]
+bar  32 RH: Bb4/hal. r/qua  [Bb major]

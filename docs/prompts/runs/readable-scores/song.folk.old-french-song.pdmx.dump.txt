@@ -1,0 +1,42 @@
+song: song.folk.old-french-song.pdmx
+title: Old French Song, Op. 39 No. 16
+composer: Pyotr Ilyich Tchaikovsky
+rungs: classical.5
+shipped file: scores/pdmx/QmREHZRvZn75CCS2D1EHnmXg8cL85WX2CcdtNqHeE914cM.mxl
+catalog keySig/timeSig/tempo: G minor / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 23, dynamics 0, pedal 0, articulations 0, chord symbols 42, grace notes 0, voices>1 97, measures 25, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key -2
+  bar 0: time 2 4
+
+dump_score.py:
+song.folk.old-french-song.pdmx | Old French Song, Op. 39 No. 16 | level 4.56 (estimated)
+notation: {"bars": 25, "staves": 2, "keys": [{"fifths": -2, "mode": null}], "times": ["2/4"], "chordCount": 42, "chords": ["Cm", "Cmi", "D7", "Gm", "Gmi"], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['-2']  modes: []  times: ['2/4']
+bar   0 RH: D4/eig  LH: r/eig
+bar   1 RH: G4/eig A4/eig Bb4/eig C5/eig  LH: G2/eig G3/eig G3/eig G3/eig  [G minor] [G minor]
+bar   2 RH: D5/qua. D5/eig  LH: G2/eig G3/eig G3/eig G3/eig
+bar   3 RH: C5/eig D5/eig Eb5/eig C5/eig  LH: C3/eig C4/eig C4/eig C4/eig  [C minor] [C minor]
+bar   4 RH: D5/qua. D5/eig  LH: G2/eig G3/eig G3/eig G3/eig  [G minor] [G minor]
+bar   5 RH: C5/eig D5/eig Eb5/eig C5/eig  LH: C3/eig C4/eig C4/eig C4/eig  [C minor] [C minor]
+bar   6 RH: D5/eig Eb5/eig C5/eig Bb4/eig  LH: G2/eig G3/eig C3/eig C4/eig  [G minor] [C minor] [G minor] [C minor]
+bar   7 RH: A4/qua. A4/eig  LH: D2/eig D4/eig D4/eig D4/eig  [D dominant] [D dominant]
+bar   8 RH: A4/qua. D4/eig  LH: G2/eig G3/eig G3/eig G3/eig  [G minor] [G minor]
+bar   9 RH: G4/qua G4/eig A4/eig  LH: G2/eig G3/eig G3/eig G3/eig
+bar  10 RH: Bb4/qua. Bb4/eig  LH: G2/eig G3/eig G3/eig G3/eig
+bar  11 RH: C5/qua C5/qua  LH: C3/eig C4/eig C4/eig C4/eig  [C minor] [C minor]
+bar  12 RH: A4/qua. A4/eig  LH: D2/eig D4/eig D4/eig D4/eig  [D dominant] [D dominant]
+bar  13 RH: D5/qua. D5/eig  LH: G2/eig G3/eig G3/eig G3/eig  [G minor] [G minor]
+bar  14 RH: F5/eig Eb5/eig D5/eig C5/eig  LH: C3/eig C4/eig C4/eig C4/eig  [C minor] [C minor]
+bar  15 RH: Bb4/qua A4/eig G4/eig  LH: G2/eig G3/eig G3/eig G3/eig
+bar  16 RH: A4/qua. D4/eig  LH: D2/eig D4/eig D4/eig D4/eig  [D dominant] [D dominant]
+bar  17 RH: G4/eig A4/eig Bb4/eig C5/eig  LH: G2/eig G3/eig G3/eig G3/eig  [G minor] [G minor]
+bar  18 RH: D5/qua. D5/eig  LH: G2/eig G3/eig G3/eig G3/eig
+bar  19 RH: C5/eig D5/eig Eb5/eig C5/eig  LH: C3/eig C4/eig C4/eig C4/eig  [C minor] [C minor]
+bar  20 RH: D5/qua. D5/eig  LH: G2/eig G3/eig G3/eig G3/eig  [G minor] [G minor]
+bar  21 RH: C5/eig D5/eig Eb5/eig C5/eig  LH: C3/eig C4/eig C4/eig C4/eig  [C minor] [C minor]
+bar  22 RH: D5/eig Eb5/eig C5/eig Bb4/eig  LH: G2/eig G3/eig C3/eig C4/eig  [G minor] [C minor] [G minor] [C minor]
+bar  23 RH: A4/qua. A4/eig  LH: D2/eig D4/eig D4/eig D4/eig  [D dominant] [D dominant]
+bar  24 RH: G4/hal  LH: G2/eig G3/eig G3/eig G3/eig  [G minor] [G minor]

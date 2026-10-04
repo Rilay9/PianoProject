@@ -1,0 +1,44 @@
+song: song.classical.chopin-prelude-op28-4
+title: Prélude in E minor, Op. 28 No. 4
+composer: Frédéric Chopin
+rungs: classical.6
+shipped file: scores/imported/song.classical.chopin-prelude-op28-4.mxl
+catalog keySig/timeSig/tempo: E minor / 2/2 / 50.0
+raw-XML counts: ties 4, tuplets 4, fingerings 0, dynamics 4, pedal 100, articulations 1, chord symbols 0, grace notes 2, voices>1 525, measures 26, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 1
+  bar 0: time 2 2
+
+dump_score.py:
+song.classical.chopin-prelude-op28-4 | Prélude in E minor, Op. 28 No. 4 | level 6.1 (judged)
+notation: {"bars": 26, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["2/2"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['1']  modes: []  times: ['2/2']
+text on the score: ['Largo', 'espressivo', 'stretto', 'dim.', 'smorz.']
+bar   0 RH: B3/eig. B4/16t  LH: r/qua
+bar   1 RH: B4/hal. C5/qua  LH: G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig
+bar   2 RH: B4/hal. C5/qua  LH: F#3/eig+A3/eig+E4/eig F#3/eig+A3/eig+E4/eig F#3/eig+A3/eig+E4/eig F#3/eig+A3/eig+E4/eig F#3/eig+A3/eig+Eb4/eig F#3/eig+A3/eig+Eb4/eig F#3/eig+A3/eig+Eb4/eig F#3/eig+A3/eig+Eb4/eig
+bar   3 RH: B4/hal. C5/qua  LH: F3/eig+A3/eig+Eb4/eig F3/eig+A3/eig+Eb4/eig F3/eig+A3/eig+Eb4/eig F3/eig+A3/eig+Eb4/eig F3/eig+A3/eig+D4/eig F3/eig+A3/eig+D4/eig F3/eig+G#3/eig+D4/eig F3/eig+G#3/eig+D4/eig
+bar   4 RH: B4/hal. Bb4/qua  LH: E3/eig+G#3/eig+D4/eig E3/eig+G#3/eig+D4/eig E3/eig+G#3/eig+D4/eig E3/eig+G#3/eig+D4/eig E3/eig+G3/eig+D4/eig E3/eig+G3/eig+D4/eig E3/eig+G3/eig+C#4/eig E3/eig+G3/eig+C#4/eig
+bar   5 RH: A4/hal. B4/qua  LH: E3/eig+G3/eig+C4/eig E3/eig+G3/eig+C4/eig E3/eig+G3/eig+C4/eig E3/eig+G3/eig+C4/eig E3/eig+F#3/eig+C4/eig E3/eig+F#3/eig+C4/eig E3/eig+F#3/eig+C4/eig E3/eig+F#3/eig+C4/eig
+bar   6 RH: A4/hal. B4/qua  LH: E3/eig+F#3/eig+C4/eig E3/eig+F#3/eig+C4/eig E3/eig+F#3/eig+C4/eig E3/eig+F#3/eig+C4/eig D#3/eig+F#3/eig+C4/eig D#3/eig+F#3/eig+C4/eig D#3/eig+F#3/eig+C4/eig D#3/eig+F#3/eig+C4/eig
+bar   7 RH: A4/hal. B4/eig. A4/16t  LH: D3/eig+F#3/eig+C4/eig D3/eig+F#3/eig+C4/eig D3/eig+F#3/eig+C4/eig D3/eig+F#3/eig+C4/eig D3/eig+F#3/eig+C4/eig D3/eig+F#3/eig+C4/eig D3/eig+F#3/eig+C4/eig D3/eig+F#3/eig+C4/eig
+bar   8 RH: A4/hal. G#4/qua  LH: D3/eig+F3/eig+C4/eig D3/eig+F3/eig+C4/eig D3/eig+F3/eig+C4/eig D3/eig+F3/eig+C4/eig D3/eig+F3/eig+B3/eig D3/eig+F3/eig+B3/eig D3/eig+F3/eig+B3/eig D3/eig+F3/eig+B3/eig
+bar   9 RH: G#4/qua A4/eig B4/eig D5/eig C5/eig E4/eig A4/eig  LH: C3/eig+E3/eig+B3/eig C3/eig+E3/eig+B3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig
+bar  10 RH: F#4/hal. A4/qua  LH: B2/eig+E3/eig+A3/eig B2/eig+E3/eig+A3/eig B2/eig+D#3/eig+A3/eig B2/eig+D#3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig
+bar  11 RH: F#4/hal. B4/eig A4/qua  LH: B2/eig+D#3/eig+A3/eig B2/eig+D#3/eig+A3/eig B2/eig+D#3/eig+A3/eig B2/eig+D#3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig
+bar  12 RH: G4/eig F#4/eig C4/eig B3/eig D#4/eig F#4/eig D5/eig C5/eig B4/eig  LH: B2/qua+D#3/qua+A3/qua r/qua r/hal
+bar  13 RH: B4/hal. C5/qua  LH: G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig
+bar  14 RH: B4/hal. C5/qua  LH: F#3/eig+A3/eig+E4/eig F#3/eig+A3/eig+E4/eig F#3/eig+A3/eig+E4/eig F#3/eig+A3/eig+E4/eig F3/eig+A3/eig+Eb4/eig F3/eig+A3/eig+Eb4/eig F3/eig+A3/eig+Eb4/eig F3/eig+A3/eig+Eb4/eig
+bar  15 RH: B4/hal. C5/qua  LH: F3/eig+Ab3/eig+Eb4/eig F3/eig+Ab3/eig+Eb4/eig F3/eig+Ab3/eig+D4/eig F3/eig+Ab3/eig+D4/eig E3/eig+G#3/eig+D4/eig E3/eig+G#3/eig+D4/eig E3/eig+G#3/eig+D4/eig E3/eig+G#3/eig+D4/eig
+bar  16 RH: B4/eig. A#4/16t A#4/eig B4/32n A#4/32n G##4/32n A#4/32n G5/qua F#5/eig. E5/16t  LH: E3/eig+G3/eig+D4/eig E3/eig+G3/eig+D4/eig E3/eig+G3/eig+C#4/eig E3/eig+G3/eig+C#4/eig C#3/eig+E3/eig+A#3/eig C#3/eig+E3/eig+A#3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig
+bar  17 RH: E5/eig D#5/eig C6/eig D#5/eig D#5/eig E5/eig G5/eig B4/eig  LH: B1/eig+B2/eig A3/eig+C4/eig+F#4/eig+A4/eig A3/eig+C4/eig+F#4/eig+A4/eig A3/eig+C4/eig+F#4/eig+A4/eig G3/eig+B3/eig+D#4/eig+F#4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig G3/eig+B3/eig+E4/eig
+bar  18 RH: D5/eig C5/eig E5/eig E4/eig A4/eig F#4/qua. A4/eig  LH: A3/eig+C4/eig+E4/eig A3/eig+C4/eig+E4/eig A2/eig E3/eig+F#3/eig+C4/eig B2/eig+E3/eig+B3/eig B2/eig+E3/eig+B3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig
+bar  19 RH: F#4/hal. B4/eig A4/qua  LH: B2/eig+E3/eig+B3/eig B2/eig+E3/eig+B3/eig B2/eig+E3/eig+B3/eig B2/eig+E3/eig+B3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig
+bar  20 RH: F#4/hal. F#4/eig. E4/16t  LH: B2/eig+E3/eig+B3/eig B2/eig+E3/eig+B3/eig B2/eig+E3/eig+B3/eig B2/eig+E3/eig+B3/eig B2/eig+D#3/eig+B3/eig B2/eig+D#3/eig+B3/eig B2/eig+D#3/eig+A3/eig B2/eig+D#3/eig+A3/eig
+bar  21 RH: E4/hal. F#4/qua  LH: C3/eig+G3/eig C3/eig+G3/eig C3/eig+G3/eig C3/eig+G3/eig C3/eig+Bb3/eig C3/eig+Bb3/eig C3/eig+E3/eig+A3/eig C3/eig+E3/eig+A3/eig
+bar  22 RH: E4/hal. F#4/qua  LH: B2/eig+E3/eig+A3/eig B2/eig+E3/eig+A3/eig B2/eig+E3/eig+G#3/eig B2/eig+E3/eig+G#3/eig B2/eig+E3/eig+G3/eig B2/eig+E3/eig+G3/eig B2/eig+E3/eig+G3/eig B2/eig+E3/eig+G3/eig
+bar  23 RH: E4/hal r/hal  LH: Bb2/hal+C3/hal+G3/hal r/hal
+bar  24 RH: E4/hal D#4/hal  LH:v2: E3/hal+F#3/hal+B3/hal D#3/hal+F#3/hal+B3/hal | v5: B1/hal+B2/hal B1/hal+F#2/hal+B2/hal
+bar  25 RH: E4/who  LH:v2: E3/who+G3/who+B3/who | v5: E1/who+E2/who

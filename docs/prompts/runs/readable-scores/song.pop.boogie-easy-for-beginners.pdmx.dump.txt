@@ -1,0 +1,37 @@
+song: song.pop.boogie-easy-for-beginners.pdmx
+title: Boogie (easy, for beginners)
+composer: Anonymous
+rungs: blues.6, blues.7
+shipped file: scores/pdmx/QmWrbmgnpKPFWfmckKRQxwDMFyGoUHKsPTXJqyjqoVNRDJ.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 120.0
+raw-XML counts: ties 28, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 105, measures 20, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.boogie-easy-for-beginners.pdmx | Boogie (easy, for beginners) | level 4.95 (estimated)
+notation: {"bars": 20, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: E4/who+G4/who+A4/who+C5/who  LH: C2/eig E2/eig G2/eig A2/eig Bb2/eig A2/eig G2/eig E2/eig
+bar   2 RH: E4/who+G4/who+A4/who+C5/who  LH: C2/eig E2/eig G2/eig A2/eig Bb2/eig A2/eig G2/eig E2/eig
+bar   3 RH: Eb4/who+G4/who+A4/who+C5/who  LH: F2/eig A2/eig C3/eig D3/eig Eb3/eig D3/eig C3/eig A2/eig
+bar   4 RH: Eb4/who+G4/who+A4/who+C5/who  LH: F2/eig A2/eig C3/eig D3/eig Eb3/eig D3/eig C3/eig A2/eig
+bar   5 RH: E4/who+G4/who+A4/who+C5/who  LH: C2/eig E2/eig G2/eig A2/eig Bb2/eig A2/eig G2/eig E2/eig
+bar   6 RH: F4/who+A4/who+B4/who+D5/who  LH: G2/eig B2/eig D3/eig E3/eig F3/eig E3/eig D3/eig B2/eig
+bar   7 RH: E4/who+G4/who+A4/who+C5/who  LH: C2/eig E2/eig G2/eig A2/eig Bb2/eig A2/eig G2/eig E2/eig
+bar   8 RH: D4/who+F4/who+A4/who+C5/who  LH: C2/who
+bar   9 RH: E5/eig+G5/eig C5/eig F5/eig+A5/eig C5/eig E5/eig+G5/eig C5/eig F5/eig+A5/eig C5/eig  LH: C3/qua E3/qua G3/qua A3/qua
+bar  10 RH: E5/eig+G5/eig C5/eig F5/eig+A5/eig E5/eig+G5/eig E5/eig+G5/eig r/eig r/qua  LH: Bb3/qua A3/qua G3/qua E3/qua
+bar  11 RH: E5/eig+G5/eig C5/eig F5/eig+A5/eig C5/eig E5/eig+G5/eig C5/eig F5/eig+A5/eig C5/eig  LH: C3/qua E3/qua G3/qua A3/qua
+bar  12 RH: E5/eig+G5/eig C5/eig F5/eig+A5/eig E5/eig+G5/eig E5/eig+G5/eig r/eig r/qua  LH: Bb3/qua A3/qua G3/qua E3/qua
+bar  13 RH: Eb5/eig+G5/eig C5/eig F5/eig+A5/eig C5/eig Eb5/eig+G5/eig C5/eig F5/eig+A5/eig C5/eig  LH: F3/qua A3/qua C4/qua D4/qua
+bar  14 RH: Eb5/eig+G5/eig C5/eig F5/eig+A5/eig Eb5/eig+G5/eig Eb5/eig+G5/eig r/eig r/qua  LH: Eb4/qua D4/qua C4/qua A3/qua
+bar  15 RH: E5/eig+G5/eig C5/eig F5/eig+A5/eig C5/eig E5/eig+G5/eig C5/eig F5/eig+A5/eig C5/eig  LH: C3/qua E3/qua G3/qua A3/qua
+bar  16 RH: E5/eig+G5/eig C5/eig F5/eig+A5/eig E5/eig+G5/eig E5/eig+G5/eig r/eig r/qua  LH: Bb3/qua A3/qua G3/qua E3/qua
+bar  17 RH: B5/eig+D6/eig G5/eig C6/eig+E6/eig B5/eig+D6/eig B5/eig+D6/eig r/eig r/qua  LH: G3/qua B3/qua D4/qua B3/qua
+bar  18 RH: A5/eig+C6/eig F5/eig B5/eig+D6/eig A5/eig+C6/eig A5/eig+C6/eig r/eig r/qua  LH: F3/qua A3/qua C4/qua A3/qua
+bar  19 RH: E5/eig+G5/eig C5/eig F5/eig+A5/eig C5/eig E5/eig+G5/eig C5/eig F5/eig+A5/eig C5/eig  LH: C3/qua E3/qua G3/qua A3/qua
+bar  20 RH: E5/eig+G5/eig C5/eig F5/eig+A5/eig E5/eig+G5/eig E5/eig+G5/eig r/eig r/qua  LH: Bb3/qua A3/qua G3/qua E3/qua

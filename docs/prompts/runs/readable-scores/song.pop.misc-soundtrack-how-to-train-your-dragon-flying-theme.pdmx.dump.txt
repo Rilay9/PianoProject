@@ -1,0 +1,71 @@
+song: song.pop.misc-soundtrack-how-to-train-your-dragon-flying-theme.pdmx
+title: How to Train Your Dragon: Flying Theme
+composer: Perfect Harmony
+rungs: chords-pop.6
+shipped file: scores/pdmx/QmRq52Wj6QGsHVCH2h5RT6UwBnYhjhZBoNsyrHfnmcEgZC.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 233, measures 52, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+  bar 35: key 2
+
+dump_score.py:
+song.pop.misc-soundtrack-how-to-train-your-dragon-flying-theme.pdmx | How to Train Your Dragon: Flying Theme | level 5.45 (estimated)
+notation: {"bars": 52, "staves": 2, "keys": [{"fifths": 0, "mode": null}, {"fifths": 2, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['0', '2']  modes: []  times: ['4/4']
+text on the score: ['dim.']
+bar   1 RH: C5/eig G4/eig C5/eig D5/eig B4/eig G4/eig B4/eig C5/eig  LH: C3/hal G3/hal
+bar   2 RH: A4/eig G4/eig G4/eig F4/eig F4/eig E4/eig D4/eig G4/eig  LH: C4/who
+bar   3 RH: C5/eig G4/eig C5/eig D5/eig B4/eig G4/eig B4/eig C5/eig  LH: C3/hal G3/hal
+bar   4 RH: A4/eig G4/eig G4/eig F4/eig F4/eig E4/eig D4/eig G4/eig  LH: C4/who
+bar   5 RH: C5/eig G4/eig C5/eig D5/eig B4/eig G4/eig B4/eig C5/eig  LH: C3/hal G3/hal
+bar   6 RH: E5/hal F5/eig E5/eig D5/eig C5/eig  LH: C3/qua+G3/qua E3/qua C3/hal+A3/hal
+bar   7 RH: C5/eig G4/eig C5/eig D5/eig B4/eig G4/eig B4/eig C5/eig  LH: G2/hal+C3/hal B2/hal+G3/hal
+bar   8 RH: A4/eig G4/eig G4/eig F4/eig F4/eig E4/eig D4/eig C4/eig  LH: A3/hal+C4/hal A3/hal
+bar   9 RH: C5/hal+E5/hal D5/hal+F5/hal  LH: C3/qua+G3/qua E3/qua D3/qua+G3/qua F3/qua
+bar  10 RH: B4/qua+D5/qua F5/qua C5/hal+E5/hal  LH: G3/hal+D4/hal C4/qua G2/qua
+bar  11 RH: r/qua C5/qua+E5/qua F5/hal  LH: C3/qua A3/qua G3/hal
+bar  12 RH: F4/qua+A4/qua+D5/qua A4/qua+F5/qua C5/hal+E5/hal  LH: C3/qua+G3/qua A3/qua C4/eig D4/eig C4/eig B3/eig
+bar  13 RH: r/qua F5/qua+A5/qua F5/qua+A5/qua F5/qua+B5/qua  LH: C4/hal F3/qua+A3/qua B3/qua
+bar  14 RH: F5/qua.+B5/qua. G5/eig C5/hal+E5/hal  LH: G2/qua+G3/qua E3/qua G2/hal+C3/hal
+bar  15 RH: A4/qua F5/qua+A5/qua F5/qua+A5/qua F5/qua+B5/qua  LH: F2/qua r/qua F3/qua+A3/qua F3/qua+B3/qua
+bar  16 RH: D5/qua.+B5/qua. G5/eig C5/hal+E5/hal  LH: G2/qua+B2/qua G3/qua C3/hal+G3/hal
+bar  17 RH: A3/hal+C4/hal F3/hal+C4/hal  LH: A2/qua+E3/qua C2/qua F2/qua+C3/qua E2/qua
+bar  18 RH: B3/qua.+D4/qua. E4/eig C4/hal+E4/hal  LH: G2/qua+D3/qua B2/qua C3/qua B2/qua
+bar  19 RH: r/qua r/eig C4/eig E4/qua G4/qua  LH: A2/hal F2/qua+C3/qua G2/qua
+bar  20 RH: G4/qua.+D5/qua. E5/eig G4/hal+C5/hal+E5/hal  LH: G2/hal+D3/hal+F3/hal A3/qua+C4/qua B3/qua
+bar  21 RH: F4/eig+A4/eig E5/eig A5/eig G5/eig E5/qua E5/eig D5/eig  LH: F3/qua+A3/qua D3/qua+F3/qua E3/hal+G3/hal
+bar  22 RH: B4/qua.+D5/qua. E5/eig F#4/qua A4/eig B4/eig  LH: G2/qua+G3/qua E3/qua D3/hal
+bar  23 RH: A4/qua.+C5/qua. D5/eig C5/eig B4/eig A4/eig E5/eig  LH: A2/qua+F3/qua A3/qua F3/hal+A3/hal
+bar  24 RH: D5/qua.+F#5/qua. G5/eig E5/eig F#5/eig D5/eig E5/eig  LH: D3/hal+A3/hal E3/hal+G3/hal
+bar  25 RH: D5/qua+F#5/qua A4/qua D5/qua A5/qua  LH: A2/hal+D3/hal B2/hal+D3/hal
+bar  26 RH: C5/qua+G5/qua C5/qua+G5/qua C5/qua+G5/qua C5/qua+G5/qua  LH: C3/qua C4/qua B3/qua. G3/eig
+bar  27 RH: C5/qua+G5/qua C5/qua+G5/qua C5/qua+G5/qua C5/qua+G5/qua  LH: C3/qua.+E3/qua.+A3/qua. G3/eig C3/hal+G3/hal
+bar  28 RH: C5/qua+E5/qua D5/qua D5/qua+F5/qua E5/qua  LH: C3/eig E3/eig G3/eig D3/eig B2/hal+D3/hal
+bar  29 RH: B4/qua+D5/qua F5/qua E4/hal+C5/hal+E5/hal  LH: G2/eig D3/eig A3/qua C3/qua+G3/qua E3/qua
+bar  30 RH: r/qua C5/qua+E5/qua F5/qua. E5/eig  LH: C3/qua G2/qua+G3/qua F3/qua+A3/qua G3/qua
+bar  31 RH: G4/eig+D5/eig E5/eig F5/eig E5/eig C5/hal+E5/hal  LH: G2/qua+D3/qua r/qua C3/eig E3/eig G3/qua
+bar  32 RH: r/qua C5/hal+A5/hal D5/qua+B5/qua  LH: D3/hal+F3/hal F3/hal+C4/hal
+bar  33 RH: D5/qua.+B5/qua. G5/eig C5/hal+E5/hal  LH: E3/qua+G3/qua B3/qua C3/qua E3/qua
+bar  34 RH: E4/who+G#4/who+B4/who  LH: F#3/who
+bar  35 RH: F#4/qua G4/qua A4/qua B4/qua  LH: D3/hal+F#3/hal F#3/hal+A3/hal
+bar  36 RH: D5/eig A4/eig D5/eig E5/eig C#5/eig A4/eig C#5/eig D5/eig  LH: B2/hal+D3/hal F#3/hal+A3/hal
+bar  37 RH: B4/eig A4/eig A4/eig G4/eig G4/eig F#4/eig E4/eig D4/eig  LH: B3/hal+D4/hal E3/hal+G3/hal
+bar  38 RH: D5/eig A4/eig D5/eig E5/eig C#5/eig A4/eig C#5/eig D5/eig  LH: B2/hal+D3/hal F#3/hal+A3/hal
+bar  39 RH: B4/eig A4/eig A4/eig G4/eig G4/eig F#4/eig E4/eig D4/eig  LH: B3/hal+D4/hal E3/hal+G3/hal
+bar  40 RH: B3/hal+D4/hal B3/hal+D4/hal  LH: B3/eig F#3/eig B3/eig F#3/eig B3/eig G3/eig B3/eig G3/eig
+bar  41 RH: E4/qua. F#4/eig F#4/hal  LH: A3/eig E3/eig A3/eig E3/eig B2/qua+D3/qua A2/qua+C#3/qua
+bar  42 RH: r/qua B4/qua+D5/qua F#5/qua F#5/qua+A5/qua  LH: B2/qua D3/qua G2/qua C#3/qua
+bar  43 RH: C#5/qua.+E5/qua. F#5/eig D5/hal+F#5/hal  LH: A2/qua D3/qua D3/qua C#3/qua
+bar  44 RH: B4/qua B5/eig A5/eig D5/qua+F#5/qua F#5/eig E5/eig  LH: B2/qua+F#3/qua D3/qua G2/qua+D3/qua C#3/qua
+bar  45 RH: G4/qua.+E5/qua. F#5/eig G#4/qua+B4/qua B4/eig C#5/eig  LH: A2/qua+E3/qua D3/qua E2/qua+B2/qua A2/qua
+bar  46 RH: B4/qua.+D5/qua. E5/eig D5/eig C#5/eig B4/eig C#5/eig  LH: G2/qua+D3/qua C#3/qua D3/hal+A3/hal
+bar  47 RH: B4/qua+D5/qua D5/eig E5/eig D5/eig C#5/eig B4/eig C#5/eig  LH: E3/hal+B3/hal B2/qua+F#3/qua+A3/qua F#3/qua
+bar  48 RH: B4/qua+D5/qua D5/eig E5/eig D5/eig C#5/eig B4/eig A4/eig  LH: G2/qua B2/qua D3/qua+A3/qua E3/qua
+bar  49 RH: G4/eig+B4/eig A4/eig B4/eig C#5/eig D5/eig E5/eig F#5/eig G#5/eig  LH: G2/qua D3/qua A3/qua D3/qua
+bar  50 RH: D5/eig A4/eig D5/eig E5/eig C#5/eig A4/eig C#5/eig D5/eig  LH: D3/hal+A3/hal C#3/hal+G3/hal
+bar  51 RH: B4/eig A4/eig A4/eig G4/eig G4/eig F#4/eig E4/eig D4/eig  LH: G2/hal+D3/hal C#2/hal+G2/hal
+bar  52 RH: r/?  LH: D2/who

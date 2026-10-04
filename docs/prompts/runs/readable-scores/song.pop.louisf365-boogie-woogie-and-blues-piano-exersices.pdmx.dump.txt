@@ -1,0 +1,48 @@
+song: song.pop.louisf365-boogie-woogie-and-blues-piano-exersices.pdmx
+title: Boogie-woogie and blues piano exercises
+composer: Anonymous
+rungs: blues.6
+shipped file: scores/pdmx/QmVsfkTym2X5yYxqft8X8gdzXTK3tvxGeDZobzQV42ueSu.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 4, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 0, measures 31, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.louisf365-boogie-woogie-and-blues-piano-exersices.pdmx | Boogie-woogie and blues piano exercises | level 3.97 (estimated)
+notation: {"bars": 31, "staves": 1, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": true, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+text on the score: ['Diatonic Octave Walking Bass Exersice', 'Swing', 'Chromatic Octave Walking Bass Exersice A', 'Chromatic Octave Walking Bass Exersice B', '12 Bar Octave Walking Bass Example']
+bar   1 RH: C2/eig C3/eig D2/eig D3/eig E2/eig E3/eig F2/eig F3/eig
+bar   2 RH: G2/eig G3/eig A2/eig A3/eig B2/eig B3/eig C3/eig C4/eig
+bar   3 RH: B2/eig B3/eig A2/eig A3/eig G2/eig G3/eig F2/eig F3/eig
+bar   4 RH: E2/eig E3/eig D2/eig D3/eig C2/eig C3/eig B1/eig B2/eig
+bar   5 RH: E2/eig E3/eig D2/eig D3/eig C2/eig C3/eig C2/qua
+bar   6 RH: C2/eig C3/eig C#2/eig C#3/eig D2/eig D3/eig D#2/eig D#3/eig
+bar   7 RH: E2/eig E3/eig F2/eig F3/eig F#2/eig F#3/eig G2/eig G3/eig
+bar   8 RH: Gb2/eig Gb3/eig F2/eig F3/eig E2/eig E3/eig Eb2/eig Eb3/eig
+bar   9 RH: D2/eig D3/eig Db2/eig Db3/eig C2/eig C3/eig Bb1/eig B2/eig
+bar  10 RH: C2/eig C3/eig C#2/eig C#3/eig D2/eig D3/eig D#2/eig D#3/eig
+bar  11 RH: E2/eig E3/eig F2/eig F3/eig F#2/eig F#3/eig G2/eig G3/eig
+bar  12 RH: G#2/eig G#3/eig A2/eig A3/eig A#2/eig A#3/eig B2/eig B3/eig
+bar  13 RH: C3/eig C4/eig B2/eig B3/eig Bb2/eig Bb3/eig A2/eig A3/eig
+bar  14 RH: Ab2/eig Ab3/eig G2/eig G3/eig Gb2/eig Gb3/eig F2/eig F3/eig
+bar  15 RH: E2/eig E3/eig Eb2/eig Eb3/eig D2/eig D3/eig Db2/eig Db3/eig
+bar  16 RH: C2/eig C3/eig E2/eig E3/eig F2/eig F3/eig F#2/eig F#3/eig
+bar  17 RH: G2/eig G3/eig F2/eig F3/eig E2/eig E3/eig B1/eig B2/eig
+bar  18 RH: C2/eig C3/eig C2/hal.
+bar  19 RH: C2/eig C3/eig E2/eig E3/eig G2/eig G3/eig Gb2/eig Gb3/eig
+bar  20 RH: F2/eig F3/eig Eb2/eig Eb3/eig D2/eig D3/eig Db2/eig Db3/eig
+bar  21 RH: C2/eig C3/eig A1/eig A2/eig G1/eig G2/eig E1/eig E2/eig
+bar  22 RH: C1/eig C2/eig D1/eig D2/eig D#1/eig D#2/eig E1/eig E2/eig
+bar  23 RH: F1/eig F2/eig A1/eig A2/eig C2/eig C3/eig D2/eig D3/eig
+bar  24 RH: Eb2/eig Eb3/eig D2/eig D3/eig C2/eig C3/eig A1/eig A2/eig
+bar  25 RH: C2/eig C3/eig E2/eig E3/eig G2/eig G3/eig A2/eig A3/eig
+bar  26 RH: C3/eig C4/eig A2/eig A3/eig G2/eig G3/eig F#2/eig F#3/eig
+bar  27 RH: G2/eig G3/eig F2/eig F3/eig D2/eig D3/eig B1/eig B2/eig
+bar  28 RH: F1/eig F2/eig G1/eig G2/eig A1/eig A2/eig B1/eig B2/eig
+bar  29 RH: C2/eig C3/eig E2/eig E3/eig F2/eig F3/eig Gb2/eig Gb3/eig
+bar  30 RH: G2/eig G3/eig F2/eig F3/eig E2/eig E3/eig D2/eig D3/eig
+bar  31 RH: C2/who

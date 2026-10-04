@@ -1,0 +1,72 @@
+song: song.pop.bill-bailey.pdmx
+title: Bill Bailey, Won't You Please Come Home (1902)
+composer: Hughie Cannon
+rungs: jazz.5
+shipped file: scores/pdmx/QmWznLxDTLLNUC3UT26G6Mt3pQAfUuVh2Wzp6kroNnZ2eN.mxl
+catalog keySig/timeSig/tempo: F major / None / 96.0
+raw-XML counts: ties 16, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 34, grace notes 0, voices>1 0, measures 56, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.bill-bailey.pdmx | Bill Bailey, Won't You Please Come Home (1902) | level 2.97 (estimated)
+notation: {"bars": 56, "staves": 1, "keys": [{"fifths": -1, "mode": "major"}], "times": ["4/4"], "chordCount": 34, "chords": ["A7", "Bb", "Bbm", "C7", "Caugmented", "Cdim", "D7", "Dm", "F", "F7", "G7", "Gm"], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: ['major']  times: ['4/4']
+bar   1 RH: C5/qua A4/qua A4/qua A4/qua  [D minor]
+bar   2 RH: A4/qua A4/hal A4/qua
+bar   3 RH: A4/qua A4/qua A4/qua A4/qua
+bar   4 RH: A4/hal. A4/qua
+bar   5 RH: A4/qua C5/qua D5/eig C5/eig A4/qua  [F major]
+bar   6 RH: A4/qua C5/qua D5/eig C5/eig A4/qua
+bar   7 RH: A4/qua A4/qua A4/qua A4/qua  [A dominant]
+bar   8 RH: A4/qua C5/qua C5/qua C5/qua  [D minor] [C diminished]
+bar   9 RH: C5/hal E4/hal  [C dominant]
+bar  10 RH: E4/qua C5/qua C5/qua C5/qua
+bar  11 RH: C5/hal F4/hal  [F major]
+bar  12 RH: F4/hal. A4/qua  [A dominant]
+bar  13 RH: C5/qua A4/qua A4/qua A4/qua  [D minor]
+bar  14 RH: A4/qua A4/hal A4/qua
+bar  15 RH: A4/qua A4/qua A4/qua A4/qua
+bar  16 RH: A4/hal. A4/qua
+bar  17 RH: A4/qua C5/qua D5/eig C5/eig A4/qua  [F major]
+bar  18 RH: A4/qua C5/qua D5/eig C5/eig A4/eig A4/eig
+bar  19 RH: A4/qua A4/qua A4/qua A4/qua  [A dominant]
+bar  20 RH: A4/qua C5/qua C5/qua C5/qua  [D minor] [C diminished]
+bar  21 RH: C5/hal E4/hal  [C dominant]
+bar  22 RH: E4/qua C5/qua C5/qua C5/qua
+bar  23 RH: C5/hal F4/hal  [F major]
+bar  24 RH: F4/hal. r/qua  [F major] [C dominant]
+bar  25 RH: C4/qua D4/hal F4/qua  [F major]
+bar  26 RH: A4/qua. Ab4/eig A4/qua C5/qua
+bar  27 RH: C4/qua D4/hal F4/qua
+bar  28 RH: A4/who
+bar  29 RH: C4/qua D4/hal F4/qua
+bar  30 RH: A4/hal C5/hal  [C diminished]
+bar  31 RH: C5/qua E4/hal.  [C dominant]
+bar  32 RH: E4/who
+bar  33 RH: C4/qua E4/hal G4/qua
+bar  34 RH: Bb4/qua A4/qua Bb4/qua C5/qua
+bar  35 RH: C4/qua E4/hal G4/qua
+bar  36 RH: Bb4/who
+bar  37 RH: C4/qua E4/hal G4/qua
+bar  38 RH: C5/hal D5/hal  [C augmented]
+bar  39 RH: D5/qua A4/hal.  [F major]
+bar  40 RH: A4/who
+bar  41 RH: C4/qua D4/hal F4/qua
+bar  42 RH: A4/qua. Ab4/eig A4/qua C5/qua
+bar  43 RH: C4/qua D4/hal F4/qua
+bar  44 RH: A4/hal. A4/qua
+bar  45 RH: G4/qua F4/qua E4/qua F4/qua  [F dominant]
+bar  46 RH: C5/hal Eb5/hal
+bar  47 RH: D5/who  [Bb major] [D dominant]
+bar  48 RH: D5/hal. F4/qua  [G minor]
+bar  49 RH: F4/qua F4/hal F4/qua  [Bb major]
+bar  50 RH: G4/hal. F4/qua  [Bb minor]
+bar  51 RH: C5/hal B4/qua Bb4/qua  [F major]
+bar  52 RH: A4/hal. A4/qua  [D dominant]
+bar  53 RH: A4/qua G4/qua Gb4/qua G4/qua  [G dominant] [G dominant]
+bar  54 RH: C5/hal A4/hal  [C dominant]
+bar  55 RH: F4/who  [F major]
+bar  56 RH: F4/hal. r/qua

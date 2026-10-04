@@ -1,0 +1,53 @@
+song: song.folk.before-you-go-lewis-capaldi.pdmx
+title: Before You Go
+composer: Lewis Capaldi
+rungs: chords-pop.5
+shipped file: scores/pdmx/QmQrPg74NzJjkcFJjnGLTnZtaVH931RjUd8iGXukJSoLec.mxl
+catalog keySig/timeSig/tempo: F major / None / 195.0
+raw-XML counts: ties 16, tuplets 0, fingerings 0, dynamics 3, pedal 70, articulations 0, chord symbols 0, grace notes 0, voices>1 239, measures 36, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -1
+  bar 1: time 12 8
+
+dump_score.py:
+song.folk.before-you-go-lewis-capaldi.pdmx | Before You Go | level 4.18 (estimated)
+notation: {"bars": 36, "staves": 2, "keys": [{"fifths": -1, "mode": null}], "times": ["12/8"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: []  times: ['12/8']
+bar   1 RH: r/qua. r/qua F4/eig F4/eig G4/eig G4/eig G4/qua F4/eig  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar   2 RH: r/qua. r/qua F4/eig F4/eig G4/eig G4/eig G4/eig A4/qua  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar   3 RH: r/qua G4/eig G4/eig G4/eig G4/eig G4/eig G4/eig G4/eig G4/eig G4/eig G4/eig  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar   4 RH: G4/eig G4/eig G4/eig G4/eig G4/eig A4/eig G4/eig F4/eig F4/qua F4/qua  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar   5 RH: r/qua. r/qua F4/eig C5/eig Bb4/eig A4/eig G4/qua F4/eig  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar   6 RH: r/qua. r/qua F4/eig F4/eig G4/eig G4/eig G4/eig A4/eig G4/eig  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar   7 RH: r/qua. r/qua G4/eig G4/eig G4/eig G4/eig G4/eig G4/eig G4/eig  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar   8 RH: G4/eig G4/eig G4/eig G4/eig G4/eig A4/eig G4/eig F4/eig F4/eig F4/qua.  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar   9 RH: r/qua F4/eig C5/qua. A4/qua. C5/qua.  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar  10 RH: D5/qua. C5/qua. G4/qua. F4/qua.  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar  11 RH: r/qua. C5/qua. A4/qua. C5/qua.  LH: F3/qua.+D4/qua. F3/qua.+D4/qua. F3/qua.+D4/qua. F3/qua.+D4/qua.
+bar  12 RH: D5/qua. C5/qua. G4/qua. F4/qua Bb4/eig  LH: F3/qua.+D4/qua. F3/qua.+D4/qua. F3/qua.+D4/qua. F3/qua.+D4/qua.
+bar  13 RH: Bb4/eig A4/qua G4/eig A4/eig G4/eig G4/hal.  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar  14 RH: r/qua D4/eig F4/qua F4/eig F4/qua G4/eig F4/qua Bb4/eig  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar  15 RH: Bb4/eig A4/qua G4/eig A4/eig G4/eig G4/hal.  LH: F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua. F3/qua.+C4/qua.
+bar  16 RH: r/?  LH: E3/qua.+C4/qua. E3/qua.+C4/qua. E3/qua.+C4/qua. E3/qua.+C4/qua.
+bar  17 RH: F4/who.  LH: F3/hal.+A3/hal.+C4/hal. F3/hal.+A3/hal.+C4/hal.
+bar  18 RH: r/qua. F4/qua. Bb4/qua. A4/qua.  LH: F3/hal.+A3/hal.+C4/hal. F3/hal.+A3/hal.+C4/hal.
+bar  19 RH: E4/who.  LH: E3/hal.+G3/hal.+C4/hal. E3/hal.+G3/hal.+C4/hal.
+bar  20 RH: r/qua. F4/qua. Bb4/qua. A4/qua.  LH: E3/hal.+G3/hal.+C4/hal. E3/hal.+G3/hal.+C4/hal.
+bar  21 RH: E4/qua F4/eig F4/qua F4/eig E4/qua F4/eig F4/qua F4/eig  LH: D3/hal.+F3/hal.+A3/hal. D3/hal.+F3/hal.+A3/hal.
+bar  22 RH: E4/qua. F4/qua. F4/qua. D4/qua.  LH: D3/hal.+F3/hal.+A3/hal. D3/hal.+F3/hal.+A3/hal.
+bar  23 RH: E4/qua F4/eig F4/qua F4/eig F4/qua F4/eig F4/qua F4/eig  LH: D3/hal.+F3/hal.+Bb3/hal. D3/hal.+F3/hal.+Bb3/hal.
+bar  24 RH: F4/qua. G4/qua. A4/qua. G4/qua.  LH: E3/hal.+G3/hal.+C4/hal. E3/hal.+G3/hal.+C4/hal.
+bar  25 RH: F4/who.  LH: F3/hal.+A3/hal.+C4/hal. F3/hal.+A3/hal.+C4/hal.
+bar  26 RH: r/qua. F4/qua. C5/qua. A4/qua.  LH: F3/hal.+A3/hal.+C4/hal. F3/hal.+A3/hal.+C4/hal.
+bar  27 RH: G4/who.  LH: E3/hal.+G3/hal.+C4/hal. E3/hal.+G3/hal.+C4/hal.
+bar  28 RH: r/qua. F4/qua. Bb4/qua. A4/qua.  LH: E3/hal.+G3/hal.+C4/hal. E3/hal.+G3/hal.+C4/hal.
+bar  29 RH: E4/qua F4/eig F4/qua F4/eig E4/qua F4/eig F4/qua F4/eig  LH: D3/hal.+F3/hal.+A3/hal. D3/hal.+F3/hal.+A3/hal.
+bar  30 RH: E4/qua. F4/qua. F4/qua. D4/qua.  LH: D3/hal.+F3/hal.+A3/hal. D3/hal.+F3/hal.+A3/hal.
+bar  31 RH: E4/qua F4/eig F4/qua F4/eig F4/qua F4/eig F4/qua F4/eig  LH: D3/hal.+F3/hal.+Bb3/hal. D3/hal.+F3/hal.+Bb3/hal.
+bar  32 RH: F4/qua. G4/qua. A4/qua. G4/qua.  LH: E3/hal.+G3/hal.+C4/hal. E3/hal.+G3/hal.+C4/hal.
+bar  33 RH: G4/who.  LH: E3/hal.+G3/hal.+C4/hal. E3/hal.+G3/hal.+C4/hal.
+bar  34 RH: r/qua. r/qua C4/eig E4/qua. F4/qua.  LH: E3/who.+G3/who.+C4/who.
+bar  35 RH: F4/who.  LH: F3/who.+A3/who.+C4/who.
+bar  36 RH: F4/who.  LH: F3/who.+A3/who.+C4/who.

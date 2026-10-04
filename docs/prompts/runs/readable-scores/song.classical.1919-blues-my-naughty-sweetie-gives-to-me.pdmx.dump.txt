@@ -1,0 +1,65 @@
+song: song.classical.1919-blues-my-naughty-sweetie-gives-to-me.pdmx
+title: Blues My Naughty Sweetie Gives to Me (1919)
+composer: Arthur Swanstone, Charles McCarron and Carey Morgan
+rungs: blues.5
+shipped file: scores/pdmx/QmbwEQxmMeTFvotxtPaaHYYkUEE52ECfgNFtVzp6hVvc9v.mxl
+catalog keySig/timeSig/tempo: 3 flats / None / 96.0
+raw-XML counts: ties 50, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 48, grace notes 0, voices>1 0, measures 48, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -3 major
+  bar 1: time 4 4
+  bar 17: key -2 major
+
+dump_score.py:
+song.classical.1919-blues-my-naughty-sweetie-gives-to-me.pdmx | Blues My Naughty Sweetie Gives to Me (1919) | level 3.37 (estimated)
+notation: {"bars": 48, "staves": 1, "keys": [{"fifths": -3, "mode": "major"}, {"fifths": -2, "mode": "major"}], "times": ["4/4"], "chordCount": 48, "chords": ["A7", "Ab", "Abdim", "Abm7", "Bb", "Bb7", "C7", "Cm", "D7", "Eb", "Eb7", "Ebdim", "F7", "F9", "G7", "Gm"], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['-3', '-2']  modes: ['major', 'major']  times: ['4/4']
+bar   1 RH: Eb5/eig C5/eig Bb4/eig Gb4/eig Gb4/eig Eb4/eig F4/qua  [Eb major] [Ab minor-seventh] [Bb dominant]
+bar   2 RH: Eb4/eig Eb4/qua. Eb4/hal  [Eb major]
+bar   3 RH: Eb5/eig C5/eig Bb4/eig Gb4/eig Gb4/eig Eb4/eig F4/qua  [Eb major] [Ab minor-seventh] [Bb dominant]
+bar   4 RH: Eb4/who  [Eb major]
+bar   5 RH: Bb4/eig F4/eig G4/eig Ab4/eig Ab4/eig G4/eig F4/qua  [Bb dominant]
+bar   6 RH: C5/eig G4/eig Ab4/eig Bb4/eig Bb4/eig Ab4/eig G4/qua  [Eb major] [C dominant]
+bar   7 RH: F4/eig G4/eig A4/eig Bb4/eig C5/eig D5/qua.  [F dominant]
+bar   8 RH: Bb4/who  [Bb dominant]
+bar   9 RH: Eb5/eig C5/eig Bb4/eig Gb4/eig Gb4/eig Eb4/eig F4/qua  [Eb major] [Ab minor-seventh] [Bb dominant]
+bar  10 RH: Eb4/eig Eb4/qua. Eb4/hal  [Eb major]
+bar  11 RH: Bb4/eig G4/eig Ab4/eig Bb4/eig Bb4/eig Ab4/eig G4/qua  [Eb dominant]
+bar  12 RH: C5/who  [Ab major]
+bar  13 RH: C5/eig D5/qua Eb5/eig Eb5/eig D5/eig C5/qua  [Ab major]
+bar  14 RH: Bb4/eig C5/qua D5/eig D5/qua. Bb4/eig  [G minor]
+bar  15 RH: A4/eig A4/eig Bb4/eig A4/eig Bb4/eig A4/qua.  [A dominant]
+bar  16 RH: D5/qua r/qua A4/eig Bb4/qua.  [D dominant]
+bar  17 RH: G4/who  [G minor]
+bar  18 RH: G4/qua G4/eig G4/eig A4/qua Bb4/qua  [Eb diminished]
+bar  19 RH: G4/hal G4/hal  [G minor]
+bar  20 RH: G4/qua r/qua D5/eig Eb5/qua.  [G dominant]
+bar  21 RH: C5/who  [C minor]
+bar  22 RH: C5/qua C5/eig C5/eig D5/qua Eb5/qua  [Ab diminished]
+bar  23 RH: C5/who  [C minor]
+bar  24 RH: C5/qua B4/qua C5/qua C#5/qua  [Eb dominant]
+bar  25 RH: D5/qua A4/qua Bb4/qua C5/qua  [D dominant]
+bar  26 RH: C5/qua Bb4/hal A4/qua
+bar  27 RH: D5/qua G4/qua A4/qua Bb4/qua  [G minor]
+bar  28 RH: Bb4/qua A4/hal G4/qua
+bar  29 RH: A4/qua A4/qua A4/qua Bb4/qua  [A dominant]
+bar  30 RH: Bb4/qua G#4/qua A4/hal
+bar  31 RH: D5/who  [D dominant]
+bar  32 RH: D5/qua r/qua A4/eig Bb4/qua.
+bar  33 RH: G4/who  [G minor]
+bar  34 RH: G4/qua G4/eig G4/eig A4/qua Bb4/qua  [Eb diminished]
+bar  35 RH: G4/hal G4/hal  [G minor]
+bar  36 RH: G4/qua r/qua D5/eig Eb5/qua.  [G dominant]
+bar  37 RH: C5/who  [C minor]
+bar  38 RH: C5/qua A4/qua Bb4/eig C5/qua.
+bar  39 RH: D5/who  [D dominant]
+bar  40 RH: D5/qua r/qua r/qua D5/eig C#5/eig
+bar  41 RH: D5/qua B4/qua C5/qua C#5/qua  [G dominant]
+bar  42 RH: D5/eig Eb5/qua D5/eig D5/hal
+bar  43 RH: G4/qua A4/qua Bb4/qua C5/qua  [C dominant]
+bar  44 RH: Bb4/eig A4/qua G4/eig G4/qua D5/qua
+bar  45 RH: F5/qua Eb5/qua C5/qua A4/qua  [F dominant]
+bar  46 RH: G4/eig A4/qua G4/eig G4/qua F4/qua  [C dominant] [F dominant-ninth]
+bar  47 RH: Bb4/hal. r/qua  [Bb major]
+bar  48 RH: r/hal A4/eig Bb4/qua.  [D dominant]

@@ -1,0 +1,50 @@
+song: song.pop.blonde-redhead-for-the-damaged-coda-blonde-redhead.pdmx
+title: For the Damaged Coda
+composer: Blonde Redhead
+rungs: chords-pop.7
+shipped file: scores/pdmx/QmcmotPEAeZfYRrZMRP2EaE2fgD4Uq5nCoV5xesEtHXgif.mxl
+catalog keySig/timeSig/tempo: C minor / None / 71.0
+raw-XML counts: ties 52, tuplets 0, fingerings 0, dynamics 7, pedal 0, articulations 4, chord symbols 0, grace notes 0, voices>1 224, measures 33, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -3
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.blonde-redhead-for-the-damaged-coda-blonde-redhead.pdmx | For the Damaged Coda | level 5.58 (estimated)
+notation: {"bars": 33, "staves": 2, "keys": [{"fifths": -3, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['-3']  modes: []  times: ['4/4']
+bar   1 RH: r/?  LH: C#3/eig Bb3/eig G3/eig Bb3/eig C#3/eig Bb3/eig G3/eig Bb3/eig
+bar   2 RH: r/?  LH: C#3/eig Bb3/eig G3/eig Bb3/eig C#3/eig Bb3/eig G3/eig Bb3/eig
+bar   3 RH: r/?  LH: C3/eig Ab3/eig F3/eig Ab3/eig C3/eig Ab3/eig F3/eig Ab3/eig
+bar   4 RH: r/?  LH: C3/eig Ab3/eig F3/eig Ab3/eig C3/eig Ab3/eig Eb3/eig Ab3/eig
+bar   5 RH: r/?  LH: D3/eig Ab3/eig F3/eig Ab3/eig D3/eig Ab3/eig F3/eig Ab3/eig
+bar   6 RH: r/?  LH: D3/eig B3/eig Ab3/eig B3/eig D3/eig B3/eig Ab3/eig B3/eig
+bar   7 RH: C5/eig G4/eig C5/eig G4/eig Bb4/eig F4/eig Bb4/eig F4/eig  LH: G3/qua+C4/qua C4/qua Db3/qua+Bb3/qua Bb3/qua
+bar   8 RH: Ab4/eig F4/eig Ab4/eig F4/eig G4/eig F4/eig G4/eig D4/eig  LH: C3/qua+Ab3/qua Ab3/qua D3/qua+G3/qua G3/qua
+bar   9 RH: Eb4/eig C4/eig A3/eig C4/eig r/eig C4/eig A3/eig C4/eig  LH: Eb3/hal Eb3/hal
+bar  10 RH: D4/hal D4/hal  LH: D3/eig Bb3/eig F3/eig Bb3/eig F3/eig B3/eig G3/eig B3/eig
+bar  11 RH: r/?  LH: B3/who
+bar  12 RH: r/eig C4/eig Eb4/eig+G4/eig C4/eig+C5/eig Bb4/eig D4/eig+Bb4/eig F4/eig+Ab4/eig D4/eig+Ab4/eig  LH: Eb2/qua.+Eb3/qua. Eb3/16t Eb3/16t D2/qua.+D3/qua. D3/16t D3/16t
+bar  13 RH: G4/eig Eb4/eig+G4/eig G4/eig+Ab4/eig+C5/eig Eb4/eig G4/eig D4/eig+G4/eig F4/eig+B4/eig D4/eig+Eb4/eig  LH: Eb2/qua.+Eb3/qua. Eb3/16t Eb3/16t B1/qua.+B2/qua. B2/16t B2/16t
+bar  14 RH: r/eig C4/eig Eb4/eig+G4/eig C4/eig+C5/eig Bb4/eig D4/eig+Bb4/eig F4/eig+Ab4/eig D4/eig+Ab4/eig  LH: C2/qua.+C3/qua. C3/16t C3/16t D2/qua.+D3/qua. D3/16t D3/16t
+bar  15 RH: G4/eig Eb4/eig+G4/eig G4/eig+Ab4/eig+C5/eig Eb4/eig G4/eig D4/eig+G4/eig F4/eig+B4/eig D4/eig+Eb4/eig  LH: Eb2/qua.+Eb3/qua. Eb3/16t Eb3/16t B1/qua.+B2/qua. B2/16t B2/16t
+bar  16 RH: r/qua Eb4/eig+G4/eig r/16t C4/eig. r/eig Eb4/eig+G4/eig r/16t C4/16t  LH: C2/eig C2/eig+C3/eig r/eig C3/eig C2/eig C2/eig+C3/eig r/eig C3/eig
+bar  17 RH: C4/eig r/eig Eb4/eig+G4/eig r/16t C4/eig. r/eig Eb4/eig+Ab4/eig r/eig  LH: C2/eig C2/eig+C3/eig r/eig C3/eig Ab1/16t Ab1/16t+Ab2/16t Ab1/qua+Ab2/qua r/16t Ab2/16t
+bar  18 RH: r/qua D4/qua+G4/qua r/qua F4/16t D4/eig Eb4/16t  LH: G1/16t G1/16t+G2/16t G1/qua+G2/qua r/16t G2/16t B1/16t B1/16t+B2/16t B1/eig+B2/eig r/eig B1/eig+B2/eig
+bar  19 RH: r/eig C5/eig D5/eig C5/eig+Eb5/eig Bb4/eig+F5/eig Bb4/eig+F5/eig Ab4/eig+G5/eig Ab4/eig+Eb5/eig  LH: C2/eig+C3/eig C3/eig Eb3/eig.+G3/eig. C3/16t D2/eig+D3/eig D3/eig F3/eig.+Ab3/eig. D3/16t
+bar  20 RH: G4/eig G4/eig+C5/eig Ab4/eig+D5/eig Eb5/eig G4/eig+F5/eig G4/eig+F5/eig F4/eig+G5/eig Eb4/eig+Eb5/eig  LH: Eb2/eig+Eb3/eig Eb3/eig G3/eig.+C4/eig. Eb3/16t B1/eig+B2/eig B2/eig F3/eig.+B3/eig. B2/16t
+bar  21 RH: C5/eig r/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: C2/eig+C3/eig C3/eig Eb3/eig.+G3/eig. C3/16t D2/eig+D3/eig D3/eig F3/eig.+Ab3/eig. D3/16t
+bar  22 RH: C5/eig r/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: Eb2/eig+Eb3/eig Eb3/eig G3/eig.+C4/eig. Eb3/16t B1/eig+B2/eig B2/eig F3/eig.+B3/eig. B2/16t
+bar  23 RH: C5/eig C5/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: C2/qua+C3/qua C4/qua+G4/qua C2/qua+C3/qua C4/qua+G4/qua
+bar  24 RH: C5/eig C5/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: C2/qua+C3/qua C4/qua+G4/qua C2/qua+C3/qua C4/qua+G4/qua
+bar  25 RH: C5/eig C5/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: C2/qua+C3/qua C4/qua+G4/qua C2/qua+C3/qua C4/qua+G4/qua
+bar  26 RH: C5/eig C5/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: C3/qua G4/hal G4/qua
+bar  27 RH: C5/eig C5/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: G4/qua G4/hal r/qua
+bar  28 RH: C5/eig C5/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: r/?
+bar  29 RH: C5/eig C5/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: r/?
+bar  30 RH: C5/eig C5/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: r/?
+bar  31 RH: C5/eig C5/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: r/?
+bar  32 RH: C5/eig C5/eig D5/eig Eb5/eig F5/eig F5/eig G5/eig Eb5/eig  LH: r/?
+bar  33 RH: C5/who  LH: r/?

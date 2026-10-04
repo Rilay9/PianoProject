@@ -1,0 +1,64 @@
+song: song.pop.sophie-tucker-some-of-these-days.pdmx
+title: Some of These Days (1910)
+composer: Shelton Brooks
+rungs: jazz.5
+shipped file: scores/pdmx/QmaNWxvJWuwq5M93MVdMDPfEz9csGDQXSzrjKcqh6hMWdJ.mxl
+catalog keySig/timeSig/tempo: Eb major / None / 96.0
+raw-XML counts: ties 44, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 29, grace notes 0, voices>1 0, measures 48, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -3
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.sophie-tucker-some-of-these-days.pdmx | Some of These Days (1910) | level 3.33 (estimated)
+notation: {"bars": 48, "staves": 1, "keys": [{"fifths": -3, "mode": null}], "times": ["4/4"], "chordCount": 29, "chords": ["Ab", "Adim", "Bb7", "C7", "Cm", "Eb", "Eb7", "F7", "Fm", "G7"], "swungMark": false, "finalBass": 3}
+key signatures (fifths): ['-3']  modes: []  times: ['4/4']
+bar   1 RH: Bb3/qua
+bar   2 RH: G4/eig F4/eig D4/eig Eb4/eig G4/eig F4/eig Eb4/eig D4/eig
+bar   3 RH: B3/eig C4/qua F4/eig F4/qua C4/qua
+bar   4 RH: D4/eig C#4/eig D4/eig Eb4/eig F4/qua D4/qua
+bar   5 RH: C4/hal. r/qua
+bar   6 RH: G4/eig F4/eig D4/eig Eb4/eig G4/eig F4/eig Eb4/eig D4/eig
+bar   7 RH: C#4/eig D4/qua G4/eig G4/qua G4/qua
+bar   8 RH: F4/eig G4/eig F4/eig Eb4/eig B3/qua C4/qua
+bar   9 RH: F4/hal F4/eig r/eig Bb3/qua
+bar  10 RH: G4/eig F4/eig D4/eig Eb4/eig G4/eig F4/eig Eb4/eig D4/eig
+bar  11 RH: B3/eig C4/qua F4/eig F4/qua C4/qua
+bar  12 RH: D4/eig C#4/eig D4/eig Eb4/eig F4/qua D4/qua
+bar  13 RH: C4/hal. r/qua
+bar  14 RH: Eb4/eig D4/eig C4/eig Eb4/eig Eb4/eig D4/eig C4/qua
+bar  15 RH: Eb4/eig D4/eig C4/eig Eb4/eig Eb4/eig D4/eig C4/qua
+bar  16 RH: D4/eig D4/qua D4/eig D4/qua D4/qua
+bar  17 RH: D4/hal r/eig G4/eig F#4/eig G4/eig
+bar  18 RH: F4/who  [G dominant]
+bar  19 RH: F4/qua G4/eig G4/eig G4/eig G4/eig F4/qua  [G dominant]
+bar  20 RH: Eb4/hal C4/hal  [C minor]
+bar  21 RH: C4/qua G4/qua F#4/eig G4/qua.
+bar  22 RH: F4/who  [G dominant]
+bar  23 RH: F4/qua G4/eig G4/eig G4/qua F4/qua
+bar  24 RH: Eb4/hal C4/hal  [C minor]
+bar  25 RH: C4/qua C4/qua B3/eig C4/qua.  [C minor]
+bar  26 RH: Ab4/hal Ab4/hal  [F minor]
+bar  27 RH: Ab4/qua G4/qua E4/eig C4/qua.  [C dominant]
+bar  28 RH: G4/hal G4/hal  [F dominant]
+bar  29 RH: G4/qua C4/qua D4/eig Eb4/qua.  [F dominant]
+bar  30 RH: G4/hal G4/hal  [F dominant]
+bar  31 RH: G4/qua F4/qua C5/qua F4/qua  [F dominant]
+bar  32 RH: Bb4/hal. r/qua  [Bb dominant]
+bar  33 RH: r/qua Bb4/qua Bb4/qua G4/qua  [Bb dominant]
+bar  34 RH: Eb4/hal Eb4/hal  [Eb dominant]
+bar  35 RH: Eb4/qua Bb4/qua Bb4/eig C5/qua.  [Eb dominant]
+bar  36 RH: Ab4/hal Ab4/hal  [Ab major]
+bar  37 RH: Ab4/qua Ab4/qua Ab4/eig Ab4/qua.  [Ab major]
+bar  38 RH: G4/hal G4/hal  [C dominant]
+bar  39 RH: G4/qua G4/eig G4/eig G4/eig G4/eig Ab4/qua  [C dominant]
+bar  40 RH: F4/who  [F minor]
+bar  41 RH: F4/qua C4/qua B3/qua C4/qua  [F minor]
+bar  42 RH: C5/hal C5/hal  [Ab major]
+bar  43 RH: C5/qua C5/qua B4/eig C5/qua.  [A diminished]
+bar  44 RH: Bb4/hal G4/hal  [Eb major]
+bar  45 RH: G4/qua Bb4/eig C5/eig C5/eig Bb4/eig G4/eig Eb4/eig  [C dominant]
+bar  46 RH: G4/qua G4/qua G4/eig G4/qua r/eig  [F dominant]
+bar  47 RH: r/qua G4/eig Bb4/eig Bb4/eig G4/eig F4/qua  [Bb dominant]
+bar  48 RH: Eb4/who  [Eb major]

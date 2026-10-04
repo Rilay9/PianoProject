@@ -1,0 +1,52 @@
+song: song.classical.beethoven-sonatina-in-g-major-ahn-5.pdmx
+title: Sonatina in G major, Anh. 5 No. 1
+composer: Ludwig van Beethoven
+rungs: classical.5
+shipped file: scores/pdmx/QmetPJWpxk5JX5tHPziMZZf4y1FzkEDYW3PDtnfv2BSN1z.mxl
+catalog keySig/timeSig/tempo: G major / None / 120.0
+raw-XML counts: ties 0, tuplets 0, fingerings 99, dynamics 3, pedal 0, articulations 0, chord symbols 0, grace notes 8, voices>1 185, measures 34, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.beethoven-sonatina-in-g-major-ahn-5.pdmx | Sonatina in G major, Anh. 5 No. 1 | level 5.29 (estimated)
+notation: {"bars": 34, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['4/4']
+text on the score: ['dolce']
+bar   1 RH: G4/hal B4/eig A4/eig G4/eig A4/eig B4/eig  LH: G3/hal+B3/hal F#3/hal+C4/hal
+bar   2 RH: G4/qua G5/eig D5/eig D5/eig B4/eig B4/eig G4/eig  LH: G3/qua+B3/qua r/qua r/hal
+bar   3 RH: C5/hal C5/eig B4/eig A4/eig B4/eig C5/eig  LH: D3/hal+A3/hal D3/hal+G3/hal
+bar   4 RH: A4/qua D5/eig E5/eig D5/eig B4/eig C5/eig A4/eig  LH: D3/qua+F#3/qua r/qua r/hal
+bar   5 RH: G4/hal B4/eig A4/eig G4/eig A4/eig B4/eig  LH: G3/eig D4/eig B3/eig D4/eig G3/eig F4/eig D4/eig F4/eig
+bar   6 RH: C5/hal F#5/eig E5/eig D5/eig E5/eig F#5/eig  LH: G3/eig E4/eig C4/eig E4/eig G3/eig C4/eig A3/eig C4/eig
+bar   7 RH: G5/eig D5/eig E5/eig C5/eig B4/eig D5/eig C5/eig A4/eig  LH: B3/qua C4/qua D4/qua D3/qua
+bar   8 RH: A4/hal G4/qua r/qua  LH: G3/qua D3/qua G2/qua r/qua
+bar   9 RH: A4/hal C5/eig B4/eig A4/eig B4/eig  LH: F#3/eig D3/eig F#3/eig D3/eig G3/eig D3/eig G3/eig D3/eig
+bar  10 RH: D5/eig C5/eig A5/eig G5/eig F#5/eig E5/eig D5/eig C5/eig  LH: A3/qua r/qua r/hal
+bar  11 RH: B4/hal D5/eig C5/eig B4/eig C5/eig  LH: G3/eig D3/eig G3/eig D3/eig A3/eig D3/eig A3/eig D3/eig
+bar  12 RH: E5/eig D5/eig B5/eig A5/eig G5/eig F#5/eig E5/eig D5/eig  LH: B3/qua r/qua r/hal
+bar  13 RH: C5/qua A5/eig G5/eig F#5/eig E5/eig D5/eig C5/eig  LH: D3/qua+A3/qua r/qua r/qua D3/qua+F#3/qua
+bar  14 RH: B4/qua G5/eig F#5/eig E5/eig D5/eig C5/eig B4/eig  LH: D3/qua+G3/qua r/qua r/qua D3/qua+E3/qua
+bar  15 RH: A4/qua D4/eig E4/eig F#4/eig G4/eig A4/eig B4/eig  LH: D3/qua+F#3/qua r/qua r/hal
+bar  16 RH: C5/qua B4/eig C5/eig D5/eig C5/eig A4/eig B4/eig  LH: r/?
+bar  17 RH: G4/hal B4/eig A4/eig G4/eig A4/eig B4/eig  LH: G3/hal+B3/hal F#3/hal+C4/hal
+bar  18 RH: G4/qua G5/eig D5/eig D5/eig B4/eig B4/eig G4/eig  LH: G3/qua+B3/qua r/qua r/hal
+bar  19 RH: C5/hal C5/eig B4/eig A4/eig B4/eig C5/eig  LH: D3/hal+A3/hal D3/hal+G3/hal
+bar  20 RH: A4/qua D5/eig E5/eig D5/eig B4/eig C5/eig A4/eig  LH: D3/qua+F#3/qua r/qua r/hal
+bar  21 RH: G4/hal B4/eig A4/eig G4/eig A4/eig B4/eig  LH: G3/eig D4/eig B3/eig D4/eig G3/eig F4/eig D4/eig F4/eig
+bar  22 RH: C5/hal F#5/eig E5/eig D5/eig E5/eig F#5/eig  LH: G3/eig E4/eig C4/eig E4/eig G3/eig C4/eig A3/eig C4/eig
+bar  23 RH: G5/eig D5/eig E5/eig C5/eig B4/eig D5/eig C5/eig A4/eig  LH: B3/qua C4/qua D4/qua D3/qua
+bar  24 RH: A4/hal G4/qua r/qua  LH: G3/qua D3/qua G2/qua r/qua
+bar  25 RH: D5/hal D5/qua D5/qua  LH: D3/eig A3/eig C4/eig A3/eig D3/eig A3/eig C4/eig A3/eig
+bar  26 RH: D5/hal G5/qua B5/qua  LH: D3/eig G3/eig B3/eig G3/eig D3/eig G3/eig B3/eig G3/eig
+bar  27 RH: D6/hal D6/qua D6/qua  LH: D3/eig F#3/eig A3/eig F#3/eig D3/eig F#3/eig A3/eig F#3/eig
+bar  28 RH: B5/hal r/hal  LH: D3/eig G3/eig B3/eig G3/eig D3/eig G3/eig B3/eig G3/eig
+bar  29 RH: D5/hal D5/qua D5/qua  LH: D3/eig A3/eig C4/eig A3/eig D3/eig A3/eig C4/eig A3/eig
+bar  30 RH: D5/hal G5/qua B5/qua  LH: D3/eig G3/eig B3/eig G3/eig D3/eig G3/eig B3/eig G3/eig
+bar  31 RH: D6/qua r/qua F#5/qua r/qua  LH: D3/eig F#3/eig A3/eig F#3/eig D3/eig A3/eig C4/eig A3/eig
+bar  32 RH: G5/qua r/qua B3/qua+G4/qua B3/qua+G4/qua  LH: G3/qua+B3/qua r/qua G2/qua G2/qua
+bar  33 RH: B3/hal+G4/hal B3/hal+G4/hal  LH: G2/qua G3/qua D3/qua B2/qua
+bar  34 RH: B3/who+G4/who  LH: G2/who

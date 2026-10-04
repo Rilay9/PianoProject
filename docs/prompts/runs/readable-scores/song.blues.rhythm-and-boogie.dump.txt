@@ -1,0 +1,57 @@
+song: song.blues.rhythm-and-boogie
+title: Rhythm and Boogie
+composer: 
+rungs: blues.7
+shipped file: scores/pdmx/QmR9irNmXzcCoXLCFhLDW3RmagjbVFZrKfYavFk8aLCYrL.mxl
+catalog keySig/timeSig/tempo: G major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 2, pedal 0, articulations 61, chord symbols 0, grace notes 0, voices>1 139, measures 40, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef F 4
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 4 4
+
+dump_score.py:
+song.blues.rhythm-and-boogie | Rhythm and Boogie | level 5.03 (estimated)
+notation: {"bars": 40, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['4/4']
+bar   1 RH: E3/qua+B3/qua r/qua E3/qua+B3/qua r/qua  LH: G2/qua+D3/qua r/qua G2/qua+D3/qua r/qua
+bar   2 RH: E3/qua+B3/qua E3/qua+B3/qua E3/qua+B3/qua E3/qua+B3/qua  LH: G2/qua+D3/qua G2/qua+D3/qua G2/qua+D3/qua G2/qua+D3/qua
+bar   3 RH: E3/qua+Bb3/qua r/qua E3/qua+Bb3/qua r/qua  LH: C3/qua r/qua C3/qua r/qua
+bar   4 RH: E3/qua+Bb3/qua E3/qua+Bb3/qua E3/qua+Bb3/qua E3/qua+Bb3/qua  LH: C3/qua C3/qua C3/qua C3/qua
+bar   5 RH: F#3/qua+C4/qua F#3/qua+C4/qua F#3/qua+C4/qua r/qua  LH: D3/qua D3/qua D3/qua r/qua
+bar   6 RH: E3/qua+Bb3/qua E3/qua+Bb3/qua E3/qua+Bb3/qua r/qua  LH: C3/qua C3/qua C3/qua r/qua
+bar   7 RH: E3/who+B3/who  LH: G2/who+D3/who
+bar   8 RH: D3/qua r/qua D3/qua r/qua  LH: r/qua D2/qua D2/qua r/qua
+bar   9 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  10 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  11 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  12 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  13 RH: r/eig C3/eig E2/eig F2/eig F#2/eig G2/eig F#2/eig G2/eig  LH: C2/eig r/eig r/qua r/hal
+bar  14 RH: r/eig C3/eig E2/eig F2/eig F#2/eig G2/eig F#2/eig G2/eig  LH: C2/eig r/eig r/qua r/hal
+bar  15 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  16 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  17 RH: r/eig D3/eig F#2/eig G2/eig G#2/eig A2/eig G#2/eig A2/eig  LH: D2/eig r/eig r/qua r/hal
+bar  18 RH: r/eig C3/eig E2/eig F2/eig F#2/eig G2/eig F#2/eig G2/eig  LH: C2/eig r/eig r/qua r/hal
+bar  19 RH: G3/qua F#3/qua E3/qua D3/qua  LH: G2/qua F#2/qua E2/qua D2/qua
+bar  20 RH: G3/qua G3/qua G3/qua r/qua  LH: G2/qua G2/qua G2/qua r/qua
+bar  21 RH: G2/qua G2/qua G2/qua G2/qua  LH: r/?
+bar  22 RH: G2/eig G2/eig G2/eig G2/eig G2/qua r/qua  LH: r/?
+bar  23 RH: G2/qua G2/qua G2/qua G2/qua  LH: r/?
+bar  24 RH: G2/eig G2/eig G2/eig G2/eig G2/qua r/qua  LH: r/?
+bar  25 RH: G2/qua G2/qua G2/eig G2/eig r/qua  LH: r/?
+bar  26 RH: G2/qua G2/qua G2/eig G2/eig r/qua  LH: r/?
+bar  27 RH: G2/qua G2/qua G2/qua G2/qua  LH: r/?
+bar  28 RH: G2/eig G2/eig G2/eig G2/eig G2/qua r/qua  LH: r/?
+bar  29 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  30 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  31 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  32 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  33 RH: r/eig C3/eig E2/eig F2/eig F#2/eig G2/eig F#2/eig G2/eig  LH: C2/eig r/eig r/qua r/hal
+bar  34 RH: r/eig C3/eig E2/eig F2/eig F#2/eig G2/eig F#2/eig G2/eig  LH: C2/eig r/eig r/qua r/hal
+bar  35 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  36 RH: r/eig G3/eig B2/eig C3/eig C#3/eig D3/eig C#3/eig D3/eig  LH: G2/eig r/eig r/qua r/hal
+bar  37 RH: r/eig D3/eig F#2/eig G2/eig G#2/eig A2/eig G#2/eig A2/eig  LH: D2/eig r/eig r/qua r/hal
+bar  38 RH: r/eig C3/eig E2/eig F2/eig F#2/eig G2/eig F#2/eig G2/eig  LH: C2/eig r/eig r/qua r/hal
+bar  39 RH: G3/qua F#3/qua E3/qua D3/qua  LH: G2/qua F#2/qua E2/qua D2/qua
+bar  40 RH: G3/qua r/qua G2/hal  LH: G2/qua r/qua G2/hal

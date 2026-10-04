@@ -1,0 +1,100 @@
+song: song.jazz.django-reinhardt-tiger-rag.pdmx
+title: Tiger Rag (1917)
+composer: Original Dixieland Jazz Band
+rungs: jazz.6, jazz.7
+shipped file: scores/pdmx/QmXEVJupFPVUXPiLeLbGCqs4ansn9LzCuwJ5FEamh85iUE.mxl
+catalog keySig/timeSig/tempo: 2 flats / None / 96.0
+raw-XML counts: ties 34, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 2, chord symbols 54, grace notes 16, voices>1 4, measures 81, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -2
+  bar 1: time 4 4
+  bar 26: key -3
+  bar 50: key -4
+
+dump_score.py:
+song.jazz.django-reinhardt-tiger-rag.pdmx | Tiger Rag (1917) | level 4.02 (estimated)
+notation: {"bars": 81, "staves": 1, "keys": [{"fifths": -2, "mode": null}, {"fifths": -3, "mode": null}, {"fifths": -4, "mode": null}], "times": ["4/4"], "chordCount": 54, "chords": ["Ab", "Ab7", "Bb", "Bb7", "C7", "Db", "Ddim", "Eb", "Eb7", "F", "F#dim", "F7", "Fm"], "swungMark": false, "finalBass": 8}
+key signatures (fifths): ['-2', '-3', '-4']  modes: []  times: ['4/4']
+text on the score: ['Cues are Trombone/Tuba', 'Solo Break', 'Solo Break', 'Solo Break', 'Solo Break', 'Solos at "E"']
+bar   1 RH: Bb4/qua Bb4/qua Bb4/qua Bb4/qua  [Bb major]
+bar   2 RH: Bb4/eig Bb4/qua F4/eig D4/qua F4/qua
+bar   3 RH: Bb4/qua D5/eig C5/eig C5/eig F4/eig G4/eig A4/eig  [F dominant]
+bar   4 RH: Bb4/eig A4/eig Bb4/eig C5/eig D5/hal  [Bb major]
+bar   5 RH: Bb4/qua Bb4/qua Bb4/qua Bb4/qua  [Bb major]
+bar   6 RH: Bb4/eig Bb4/qua F4/eig D4/qua F4/qua
+bar   7 RH: Bb4/qua D5/eig C5/eig C5/eig F4/eig G4/eig A4/eig  [F dominant]
+bar   8 RH: Bb4/hal Bb4/eig F4/eig G4/eig A4/eig
+bar   9 RH: Bb4/hal. r/qua
+bar  10 RH:v1: C5/qua r/qua r/qua Bb4/qua | v2: G4/qua C4/qua D4/qua Eb4/qua  [C dominant]
+bar  11 RH: A4/qua r/qua r/qua F4/qua G4/qua A4/qua A4/qua  [F major]
+bar  12 RH: Bb4/qua r/qua r/qua G4/qua A4/qua Bb4/qua Bb4/qua  [C dominant]
+bar  13 RH: A4/qua r/qua r/qua r/qua  [F major]
+bar  14 RH: C5/qua r/qua r/qua G4/qua C4/qua D4/qua Bb4/qua  [C dominant]
+bar  15 RH: A4/qua r/qua r/qua F4/qua G4/qua A4/qua A4/qua  [F major]
+bar  16 RH: Bb4/qua r/qua r/qua G4/qua A4/qua Bb4/qua G4/qua  [C dominant]
+bar  17 RH: F4/qua r/qua F4/qua D5/eig Db5/eig C5/eig B4/eig  [F major]
+bar  18 RH: Bb4/qua Bb4/qua Bb4/qua Bb4/qua  [Bb major]
+bar  19 RH: Bb4/eig Bb4/qua F4/eig D4/qua F4/qua
+bar  20 RH: Bb4/qua D5/eig C5/eig C5/eig F4/eig G4/eig A4/eig  [F dominant]
+bar  21 RH: Bb4/eig A4/eig Bb4/eig C5/eig D5/hal  [Bb major]
+bar  22 RH: Bb4/qua Bb4/qua Bb4/qua Bb4/qua  [Bb major]
+bar  23 RH: Bb4/eig Bb4/qua F4/eig D4/qua F4/qua
+bar  24 RH: Bb4/qua D5/eig C5/eig C5/eig F4/eig G4/eig A4/eig  [F dominant]
+bar  25 RH: Bb4/qua Ab4/eig G4/eig G4/eig G4/eig F4/qua  [Bb dominant]
+bar  26 RH: Eb4/hal. F4/qua  [Eb major]
+bar  27 RH: G4/qua Bb4/eig C5/eig C5/eig C5/eig Bb4/qua
+bar  28 RH: Eb5/qua r/qua r/hal
+bar  29 RH: r/?
+bar  30 RH: Eb4/hal. F4/qua  [Eb major]
+bar  31 RH: G4/qua Bb4/eig C5/eig C5/eig C5/eig Bb4/qua
+bar  32 RH: D5/qua r/qua r/hal  [Bb dominant]
+bar  33 RH: r/?
+bar  34 RH: Bb4/qua D5/qua C5/hal  [Bb dominant]
+bar  35 RH: Bb4/eig D5/qua C5/eig C5/hal
+bar  36 RH: Bb4/qua Eb5/qua C5/hal  [Eb major]
+bar  37 RH: Bb4/eig Eb5/qua C5/eig C5/hal
+bar  38 RH: Bb4/qua D5/qua C5/hal  [Bb major]
+bar  39 RH: Bb4/eig D5/qua C5/eig C5/eig Bb4/eig C5/qua
+bar  40 RH: Eb5/qua r/qua r/hal  [Eb major]
+bar  41 RH: r/?
+bar  42 RH: Bb4/qua D5/qua C5/hal  [Bb major]
+bar  43 RH: Bb4/eig D5/qua C5/eig C5/hal
+bar  44 RH: Bb4/qua Eb5/qua C5/hal  [Eb major]
+bar  45 RH: Bb4/eig Eb5/qua C5/eig C5/hal
+bar  46 RH: C5/hal G4/hal  [Ab major] [C dominant]
+bar  47 RH: Ab4/hal A4/hal  [F minor] [F# diminished]
+bar  48 RH: Bb4/eig A4/eig Bb4/eig C5/eig Bb4/eig Ab4/eig G4/eig F4/eig  [Eb major] [Bb dominant]
+bar  49 RH: Eb4/hal r/hal  [Eb major] [Eb dominant]
+bar  50 RH: r/qua Ab4/hal Ab4/qua  [Ab major]
+bar  51 RH: Ab4/qua. C5/eig r/hal
+bar  52 RH: r/qua Ab4/hal Ab4/qua
+bar  53 RH: Ab4/qua. C5/eig r/hal
+bar  54 RH: r/qua Ab4/hal Ab4/qua  [Ab major]
+bar  55 RH: Ab4/qua. Db5/eig r/hal
+bar  56 RH: r/qua G4/hal G4/qua  [Eb dominant]
+bar  57 RH: G4/qua. Bb4/eig r/hal
+bar  58 RH: r/qua G4/hal G4/qua  [Eb dominant]
+bar  59 RH: G4/qua. Bb4/eig r/hal
+bar  60 RH: r/qua G4/hal G4/qua  [Eb dominant]
+bar  61 RH: G4/qua. Bb4/eig r/hal
+bar  62 RH: r/qua G4/hal G4/qua  [Eb dominant]
+bar  63 RH: G4/hal Bb4/hal
+bar  64 RH: Ab4/qua r/qua r/hal  [Ab major]
+bar  65 RH: r/?
+bar  66 RH: r/qua Ab4/hal Ab4/qua  [Ab major]
+bar  67 RH: Ab4/qua. C5/eig r/hal
+bar  68 RH: r/qua Ab4/hal Ab4/qua
+bar  69 RH: Ab4/qua. C5/eig r/hal
+bar  70 RH: r/qua Ab4/hal Ab4/qua  [Ab major]
+bar  71 RH: Ab4/qua Ab4/eig C5/eig C5/eig Ab4/eig C5/qua  [Ab dominant]
+bar  72 RH: Bb4/who  [Db major]
+bar  73 RH: r/qua Ab4/eig F4/eig F4/eig F4/eig Ab4/qua
+bar  74 RH: r/qua B4/hal B4/qua  [Db major]
+bar  75 RH: B4/hal Ab4/hal  [D diminished]
+bar  76 RH: r/qua C5/qua B4/eig C5/qua.  [Ab major]
+bar  77 RH: Db5/hal C5/hal  [F dominant]
+bar  78 RH: r/qua C5/qua Bb4/qua Ab4/qua  [Bb dominant]
+bar  79 RH: Bb4/eig C5/qua Eb5/eig Eb5/eig C5/eig Bb4/qua  [Eb dominant]
+bar  80 RH: Ab4/who  [Ab major]
+bar  81 RH: Ab4/hal. r/qua

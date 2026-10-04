@@ -1,0 +1,56 @@
+song: song.classical.clementi-sonatina-no-1-muzio-clementi.pdmx
+title: Sonatina in C major, Op. 36 No. 1 (first movement, short edition)
+composer: Muzio Clementi
+rungs: classical.5
+shipped file: scores/pdmx/QmdYK53o4RhByfUKq2msSA9uUqUGuZUsPTWzYuwHf2GbQi.mxl
+catalog keySig/timeSig/tempo: C major / None / 156.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 38, chord symbols 0, grace notes 0, voices>1 121, measures 38, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 2 2
+  bar 13: clef F 4
+
+dump_score.py:
+song.classical.clementi-sonatina-no-1-muzio-clementi.pdmx | Sonatina in C major, Op. 36 No. 1 (first movement, short edition) | level 5.68 (estimated)
+notation: {"bars": 38, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["2/2"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['2/2']
+bar   1 RH: C5/qua E5/eig C5/eig G4/qua G4/qua  LH: C3/hal r/hal
+bar   2 RH: C5/qua E5/eig C5/eig G4/qua G5/qua  LH: C3/hal r/hal
+bar   3 RH: F5/eig E5/eig D5/eig C5/eig B4/eig C5/eig B4/eig C5/eig  LH: C3/hal C3/hal
+bar   4 RH: D5/eig C5/eig B4/eig A4/eig G4/hal  LH: G2/hal G3/eig F3/eig E3/eig D3/eig
+bar   5 RH: C5/qua E5/eig C5/eig G4/qua G4/qua  LH: C3/hal r/hal
+bar   6 RH: E5/qua G5/eig E5/eig C5/qua E5/eig C5/eig  LH: C4/hal r/qua F#3/qua
+bar   7 RH: D5/eig B4/eig C5/eig A4/eig B4/eig G4/eig A4/eig F#4/eig  LH: G3/qua C3/qua D3/qua D2/qua
+bar   8 RH: G4/eig A4/eig B4/eig C5/eig D5/eig E5/eig F#5/eig G5/eig  LH: G2/hal r/hal
+bar   9 RH: A4/qua A5/qua A5/qua A5/qua  LH: F#3/eig D4/eig A3/eig D4/eig F#3/eig D4/eig A3/eig D4/eig
+bar  10 RH: B4/eig C5/eig D5/eig E5/eig F#5/eig G5/eig A5/eig B5/eig  LH: G3/hal r/hal
+bar  11 RH: C5/qua C6/qua C6/qua C6/qua  LH: A3/eig D4/eig C4/eig D4/eig A3/eig D4/eig C4/eig D4/eig
+bar  12 RH: D5/eig G5/eig B5/eig D6/eig C6/eig B5/eig A5/eig G5/eig  LH: B3/hal r/hal
+bar  13 RH: F#5/eig E5/eig G5/eig F#5/eig A5/eig G5/eig F#5/eig E5/eig  LH: C4/hal C3/hal
+bar  14 RH: E5/eig D5/eig C5/eig B4/eig D5/eig C5/eig B4/eig A4/eig  LH: D3/hal D2/hal
+bar  15 RH: G4/hal r/hal  LH: G2/eig B2/eig D3/eig G3/eig D2/hal
+bar  16 RH: B4/qua D5/eig B4/eig G4/qua G4/qua  LH: F4/who
+bar  17 RH: C5/qua Eb5/eig C5/eig G4/qua G5/qua  LH: Eb4/who
+bar  18 RH: F5/qua D5/qua Eb5/qua C5/qua  LH: B3/hal C4/hal
+bar  19 RH: B4/eig C5/eig D5/eig B4/eig G4/qua G4/qua  LH: G3/hal r/hal
+bar  20 RH: G5/eig G4/eig G5/eig G4/eig G5/eig G4/eig G5/eig G4/eig  LH: F4/qua G3/qua D4/qua G3/qua
+bar  21 RH: G5/eig G4/eig G5/eig G4/eig G5/eig G4/eig G5/eig G4/eig  LH: Eb4/qua G3/qua C4/qua G3/qua
+bar  22 RH: D5/eig Eb5/eig F5/eig D5/eig F5/eig Eb5/eig D5/eig C5/eig  LH: B3/hal C4/hal
+bar  23 RH: B4/hal+G5/hal r/hal  LH: G3/qua G2/qua G3/eig F3/eig E3/eig D3/eig
+bar  24 RH: C4/qua E4/eig C4/eig G3/qua G3/qua  LH: C3/hal r/hal
+bar  25 RH: C4/qua E4/eig C4/eig G3/qua G4/qua  LH: C3/hal r/hal
+bar  26 RH: F4/eig E4/eig D4/eig C4/eig B3/eig C4/eig B3/eig C4/eig  LH: C3/hal C3/hal
+bar  27 RH: D4/eig C4/eig B3/eig A3/eig G3/hal  LH: G2/hal G2/eig F2/eig E2/eig D2/eig
+bar  28 RH: C4/qua G3/eig C4/eig E4/qua E4/qua  LH: C2/hal r/hal
+bar  29 RH: E4/qua C4/eig E4/eig G4/qua C5/qua  LH: C3/hal r/hal
+bar  30 RH: E4/qua+G4/qua D4/qua+F4/qua C4/qua+E4/qua B3/qua+D4/qua  LH: G3/hal G2/hal
+bar  31 RH: C4/eig D4/eig E4/eig F4/eig G4/eig A4/eig B4/eig C5/eig  LH: C3/hal r/hal
+bar  32 RH: C4/qua D5/qua D5/qua D5/qua  LH: B2/eig G3/eig D3/eig G3/eig B2/eig G3/eig D3/eig G3/eig
+bar  33 RH: E4/eig F4/eig G4/eig A4/eig B4/eig C5/eig D5/eig E5/eig  LH: C3/hal r/hal
+bar  34 RH: F4/qua F5/qua F5/qua F5/qua  LH: D3/eig G3/eig F3/eig G3/eig D3/eig G3/eig F3/eig G3/eig
+bar  35 RH: G4/eig C5/eig E5/eig G5/eig F5/eig E5/eig D5/eig C5/eig  LH: E3/hal r/hal
+bar  36 RH: A5/eig G5/eig F5/eig E5/eig D5/eig C5/eig B4/eig A4/eig  LH: F3/hal F3/hal
+bar  37 RH: G4/eig A4/eig F4/eig G4/eig E4/eig F4/eig D4/eig E4/eig  LH: G3/hal G2/hal
+bar  38 RH: C4/hal r/hal  LH: C2/eig E2/eig G2/eig C3/eig C2/hal

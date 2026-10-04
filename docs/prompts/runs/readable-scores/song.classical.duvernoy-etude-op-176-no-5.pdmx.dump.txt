@@ -1,0 +1,40 @@
+song: song.classical.duvernoy-etude-op-176-no-5.pdmx
+title: Étude, Op. 176 No. 5
+composer: Jean-Baptiste Duvernoy
+rungs: technique.5
+shipped file: scores/pdmx/Qmc9Km8ufiLXnpMepS5vBYXxfBuSRU5ZMEkTwzLb3EdzS5.mxl
+catalog keySig/timeSig/tempo: G major / None / 120.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 3, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 66, measures 22, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.duvernoy-etude-op-176-no-5.pdmx | Étude, Op. 176 No. 5 | level 4.84 (estimated)
+notation: {"bars": 22, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['4/4']
+text on the score: ['Allegro moderato']
+bar   1 RH: G4/eig A4/eig B4/eig A4/eig G4/eig A4/eig B4/eig G4/eig  LH: B3/who+D4/who
+bar   2 RH: A4/eig B4/eig C5/eig B4/eig A4/eig B4/eig C5/eig A4/eig  LH: F#3/who+D4/who
+bar   3 RH: B4/eig C5/eig D5/eig C5/eig B4/eig C5/eig D5/eig B4/eig  LH: G3/who+D4/who
+bar   4 RH: A4/eig B4/eig C5/eig B4/eig A4/eig B4/eig C5/eig A4/eig  LH: C4/who+D4/who
+bar   5 RH: G4/eig A4/eig B4/eig A4/eig G4/eig A4/eig B4/eig G4/eig  LH: B3/who+D4/who
+bar   6 RH: A4/eig B4/eig C5/eig B4/eig A4/eig B4/eig C5/eig A4/eig  LH: F#3/who+D4/who
+bar   7 RH: B4/eig C5/eig D5/eig C5/eig B4/eig C5/eig D5/eig B4/eig  LH: G3/who+D4/who
+bar   8 RH: A4/eig B4/eig C5/eig B4/eig A4/eig B4/eig C5/eig A4/eig  LH: C4/who+D4/who
+bar   9 RH: G4/eig A4/eig B4/eig A4/eig G4/eig A4/eig B4/eig A4/eig  LH: B3/eig C4/eig D4/eig C4/eig B3/eig C4/eig D4/eig C4/eig
+bar  10 RH: G4/eig A4/eig B4/eig C5/eig D5/eig E5/eig F#5/eig G5/eig  LH: B3/hal G3/hal
+bar  11 RH: E5/eig F#5/eig G5/eig F#5/eig E5/eig F#5/eig G5/eig F#5/eig  LH: C4/eig D4/eig E4/eig D4/eig C4/eig D4/eig E4/eig D4/eig
+bar  12 RH: E5/eig D5/eig C5/eig B4/eig A4/eig G4/eig F#4/eig E4/eig  LH: C4/hal r/hal
+bar  13 RH: D4/eig E4/eig F#4/eig G4/eig A4/eig G4/eig F#4/eig E4/eig  LH: F#3/eig G3/eig A3/eig B3/eig C4/eig B3/eig A3/eig G3/eig
+bar  14 RH: D4/eig E4/eig F#4/eig G4/eig A4/eig B4/eig C5/eig A4/eig  LH: F#3/hal D4/hal
+bar  15 RH: B4/eig C5/eig D5/eig E5/eig F#5/eig G5/eig A5/eig B5/eig  LH: G3/hal D4/hal
+bar  16 RH: A5/eig G5/eig F#5/eig E5/eig D5/eig C5/eig B4/eig A4/eig  LH: D3/hal D4/hal
+bar  17 RH: B4/eig C5/eig D5/eig E5/eig F#5/eig G5/eig A5/eig B5/eig  LH: G3/hal D4/hal
+bar  18 RH: A5/eig G5/eig F#5/eig E5/eig D5/eig C5/eig B4/eig A4/eig  LH: D3/hal D4/hal
+bar  19 RH: G4/eig A4/eig B4/eig C5/eig D5/eig E5/eig F#5/eig G5/eig  LH: G3/hal+B3/hal D4/hal
+bar  20 RH: D5/eig E5/eig F#5/eig G5/eig A5/eig B5/eig C6/eig D6/eig  LH: G3/hal+B3/hal D4/hal
+bar  21 RH: G5/eig A5/eig B5/eig C6/eig D6/eig E6/eig F#6/eig G6/eig  LH: G3/hal+B3/hal D4/hal
+bar  22 RH: r/?  LH: G3/hal+B3/hal r/hal

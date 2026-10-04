@@ -1,0 +1,33 @@
+song: song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx
+title: La Cumparsita (part A)
+composer: Gerardo Matos Rodríguez, arr. Javier Tucat Moreno
+rungs: latin
+shipped file: scores/pdmx/QmXRLueCMcCeFVavmPohAW9vVJe6MXUsamdGb5QLN1KS4x.mxl
+catalog keySig/timeSig/tempo: G minor / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 55, dynamics 0, pedal 0, articulations 0, chord symbols 16, grace notes 0, voices>1 113, measures 15, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -2
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx | La Cumparsita (part A) | level 5.13 (estimated)
+notation: {"bars": 15, "staves": 2, "keys": [{"fifths": -2, "mode": null}], "times": ["4/4"], "chordCount": 16, "chords": ["Cm", "D7", "Gm"], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['-2']  modes: []  times: ['4/4']
+text on the score: ['La Cumparsita [Parte A] Video-Tutorial - www.javiertucatmoreno.com/tutoriales', 'Fine']
+bar   1 RH: D4/qua C5/qua A4/qua F#4/qua  LH: D3/qua+F#3/qua+A3/qua r/qua D3/qua+F#3/qua+A3/qua r/qua  [D dominant] [D dominant]
+bar   2 RH: r/eig D4/eig Eb4/eig D4/eig C#4/qua D4/qua  LH: D3/qua+F#3/qua+A3/qua r/qua D3/qua+F#3/qua+A3/qua r/qua
+bar   3 RH: D4/qua D5/qua Bb4/qua G4/qua  LH: D3/qua+G3/qua+Bb3/qua r/qua D3/qua+G3/qua+Bb3/qua r/qua  [G minor] [G minor]
+bar   4 RH: r/eig D4/eig Eb4/eig D4/eig C#4/qua D4/qua  LH: D3/qua+G3/qua+Bb3/qua r/qua D3/qua+G3/qua+Bb3/qua r/qua
+bar   5 RH: D4/qua C5/qua A4/qua F#4/qua  LH: D3/qua+F#3/qua+A3/qua r/qua D3/qua+F#3/qua+A3/qua r/qua  [D dominant] [D dominant]
+bar   6 RH: r/eig D4/eig Eb4/eig D4/eig C#4/qua D4/qua  LH: D3/qua+F#3/qua+A3/qua r/qua D3/qua+F#3/qua+A3/qua r/qua
+bar   7 RH: D4/qua D5/qua Bb4/qua G4/qua  LH: D3/qua+G3/qua+Bb3/qua r/qua D3/qua+G3/qua+Bb3/qua r/qua  [G minor] [G minor]
+bar   8 RH: r/eig D4/eig Eb4/eig D4/eig C#4/qua D4/qua  LH: D3/qua+G3/qua+Bb3/qua r/qua D3/qua+G3/qua+Bb3/qua r/qua
+bar   9 RH: C4/qua G4/qua F#4/qua G4/qua  LH: Eb3/qua+G3/qua+C4/qua r/qua Eb3/qua+G3/qua+C4/qua r/qua  [C minor] [C minor]
+bar  10 RH: r/eig F#4/eig G4/eig F#4/eig G4/qua F#4/qua  LH: Eb3/qua+G3/qua+C4/qua r/qua Eb3/qua+G3/qua+C4/qua r/qua
+bar  11 RH: Bb3/qua G4/qua F#4/qua G4/qua  LH: D3/qua+G3/qua+Bb3/qua r/qua D3/qua+G3/qua+Bb3/qua r/qua  [G minor] [G minor]
+bar  12 RH: r/eig F#4/eig G4/eig F#4/eig G4/qua F#4/qua  LH: D3/qua+G3/qua+Bb3/qua r/qua D3/qua+G3/qua+Bb3/qua r/qua
+bar  13 RH: A3/qua D4/qua C4/qua D4/qua  LH: D3/qua+F#3/qua+A3/qua r/qua D3/qua+F#3/qua+A3/qua r/qua  [D dominant] [D dominant]
+bar  14 RH: r/eig C5/eig Bb4/eig A4/eig G4/qua F#4/qua  LH: D3/who+F#3/who+A3/who
+bar  15 RH: G4/qua r/qua Bb4/qua+D5/qua+G5/qua r/qua  LH: D3/qua+G3/qua+Bb3/qua D3/qua G2/qua r/qua  [G minor] [G minor]

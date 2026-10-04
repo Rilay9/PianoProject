@@ -1,0 +1,50 @@
+song: song.folk.down-by-the-riverside.pdmx
+title: Down By The Riverside
+composer: NA
+rungs: hymns.5
+shipped file: scores/pdmx/QmPW1rJCPXC3tNyBWk5o7bqjNVQHUomcaXLty95dCeYh69.mxl
+catalog keySig/timeSig/tempo: F major / None / 180.0
+raw-XML counts: ties 36, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 32, grace notes 0, voices>1 0, measures 33, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.folk.down-by-the-riverside.pdmx | Down By The Riverside | level 2.82 (estimated)
+notation: {"bars": 33, "staves": 1, "keys": [{"fifths": -1, "mode": "major"}], "times": ["4/4"], "chordCount": 32, "chords": ["Bb", "C7", "F"], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: ['major']  times: ['4/4']
+text on the score: ['2.  Gonna stick my sword in the golden sand', '3.  gonna put on my long white robe', '4.  gonna put on my starry crown', '5.  gonna shake hands around the world']
+bar   1 RH: A4/eig G#4/eig
+bar   2 RH: A4/eig C4/eig C4/hal D4/qua  [F major]
+bar   3 RH: F4/qua F4/eig A4/eig A4/hal  [F major]
+bar   4 RH: A4/qua A4/qua A4/qua. G#4/eig  [F major]
+bar   5 RH: A4/eig G4/qua F4/eig F4/hal  [F major]
+bar   6 RH: r/qua G4/qua G4/qua. F#4/eig  [C dominant]
+bar   7 RH: G4/eig F4/qua E4/eig E4/hal  [C dominant]
+bar   8 RH: r/qua A4/qua A4/qua. G4/eig  [F major]
+bar   9 RH: A4/eig G4/qua F4/eig F4/qua A4/eig G#4/eig  [F major]
+bar  10 RH: A4/eig C4/eig C4/hal D4/qua  [F major]
+bar  11 RH: F4/qua F4/eig A4/eig A4/hal  [F major]
+bar  12 RH: A4/qua A4/qua A4/qua. G#4/eig  [F major]
+bar  13 RH: A4/eig G4/qua F4/eig F4/hal  [F major] [F major]
+bar  14 RH: G4/qua G4/hal Bb4/qua  [C dominant]
+bar  15 RH: A4/hal G4/qua. F4/eig  [C dominant]
+bar  16 RH: F4/who  [F major]
+bar  17 RH: r/eig F4/eig F4/qua G4/qua A4/qua  [F major]
+bar  18 RH: Bb4/eig Bb4/qua. Bb4/qua Bb4/qua  [Bb major]
+bar  19 RH: Bb4/qua F4/qua G4/qua G4/eig G4/eig  [Bb major]
+bar  20 RH: A4/eig A4/qua A4/eig A4/qua G4/qua  [F major]
+bar  21 RH: F4/qua. F4/eig E4/qua F4/eig F4/eig  [F major]
+bar  22 RH: G4/qua G4/hal G4/qua  [C dominant] [C dominant]
+bar  23 RH: F4/hal G4/qua. A4/eig
+bar  24 RH: A4/who  [F major]
+bar  25 RH: r/eig F4/eig F4/qua G4/qua A4/eig A4/eig  [F major]
+bar  26 RH: Bb4/qua Bb4/qua Bb4/eig Bb4/qua Bb4/eig  [Bb major]
+bar  27 RH: Bb4/qua. Bb4/eig F4/qua G4/eig G4/eig  [Bb major]
+bar  28 RH: A4/qua A4/qua A4/qua G4/qua  [F major]
+bar  29 RH: F4/qua. F4/eig E4/qua F4/qua  [F major]
+bar  30 RH: G4/hal Bb4/hal  [C dominant]
+bar  31 RH: A4/hal G4/qua. F4/eig  [C dominant]
+bar  32 RH: F4/who  [F major]
+bar  33 RH: F4/hal r/hal

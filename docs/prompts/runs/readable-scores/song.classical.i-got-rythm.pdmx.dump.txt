@@ -1,0 +1,46 @@
+song: song.classical.i-got-rythm.pdmx
+title: I Got Rhythm
+composer: George Gershwin
+rungs: jazz.7, jazz.8
+shipped file: scores/pdmx/QmPhAvchMjTLZuhQH2sWzVFR3uCugUjh9akyizjiy1ck98.mxl
+catalog keySig/timeSig/tempo: Bb major / None / 96.0
+raw-XML counts: ties 20, tuplets 0, fingerings 0, dynamics 1, pedal 0, articulations 8, chord symbols 0, grace notes 0, voices>1 112, measures 28, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -2
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.i-got-rythm.pdmx | I Got Rhythm | level 5.5 (estimated)
+notation: {"bars": 28, "staves": 2, "keys": [{"fifths": -2, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 10}
+key signatures (fifths): ['-2']  modes: []  times: ['4/4']
+text on the score: ['B6', 'F10', '\ue260', '5', '\ue262', 'B6', 'Bdim7/D', '\ue260']
+bar   1 RH: D4/qua+F4/qua+G4/qua+Bb4/qua r/eig A3/qua+Db4/qua+Eb4/qua+Ab4/qua A3/qua.+Db4/qua.+Eb4/qua.+Gb4/qua.  LH: Bb2/qua D2/qua F2/qua Eb2/qua
+bar   2 RH: r/qua G3/qua+Bb3/qua+D4/qua+F4/qua r/eig Bb3/eig+Db4/eig+E4/eig+G4/eig r/qua  LH: D2/qua Bb2/qua Db2/qua E2/qua
+bar   3 RH: D4/qua+Eb4/qua+G4/qua+Bb4/qua r/eig Eb4/qua.+Gb4/qua.+A4/qua.+C5/qua. r/qua  LH: C2/qua Eb2/qua F2/qua Eb2/qua
+bar   4 RH: r/qua D4/qua+F4/qua+G4/qua+C5/qua r/eig Db4/eig+E4/eig+G4/eig+Bb4/eig r/qua  LH: D2/qua Bb2/qua Db2/qua E2/qua
+bar   5 RH: Bb3/qua+D4/qua+Eb4/qua+G4/qua r/eig G3/qua.+A3/qua.+Db4/qua.+Eb4/qua.+F4/qua. r/qua  LH: C2/qua Eb2/qua F2/qua Eb2/qua
+bar   6 RH: r/qua G3/qua+Bb3/qua+D4/qua+F4/qua r/eig Bb3/eig+Db4/eig+E4/eig+G4/eig r/qua  LH: D2/qua Bb2/qua Db2/qua E2/qua
+bar   7 RH: D4/qua+Eb4/qua+G4/qua+Bb4/qua r/eig Eb4/qua+Gb4/qua+A4/qua+C5/qua Eb5/eig C5/eig r/eig  LH: C2/qua Eb2/qua F2/qua Eb2/qua
+bar   8 RH: E4/qua+A4/qua+Bb4/qua+D5/qua E4/qua+A4/qua+Bb4/qua+D5/qua Eb4/eig+Gb4/eig+A4/eig+C5/eig D5/eig C5/eig r/eig  LH: C2/qua Eb2/qua F2/qua A2/qua
+bar   9 RH: D4/qua+F4/qua+G4/qua+Bb4/qua r/eig A3/qua+Db4/qua+Eb4/qua+Ab4/qua A3/qua.+Db4/qua.+Eb4/qua.+Gb4/qua.  LH: Bb2/qua D2/qua F2/qua Eb2/qua
+bar  10 RH: D4/hal.+F4/hal.+G4/hal.+Bb4/hal. r/qua  LH: Bb2/qua D2/qua F2/qua G2/qua
+bar  11 RH: r/qua E4/qua+G4/qua+B4/qua+D5/qua r/eig E4/eig+G4/eig+B4/eig+D5/eig r/qua  LH: A2/qua C3/qua E3/qua Eb3/qua
+bar  12 RH: Gb4/qua+B4/qua+C5/qua+D5/qua r/eig Gb4/hal+B4/hal+C5/hal+E5/hal r/eig  LH: D3/qua A2/qua D2/qua F#2/qua
+bar  13 RH: r/qua E4/qua+F4/qua+A4/qua+C5/qua+D5/qua r/eig E4/eig+F4/eig+A4/eig+C5/eig+D5/eig r/qua  LH: D2/qua F2/qua A2/qua Ab2/qua
+bar  14 RH: E4/qua.+F4/qua.+A4/qua.+B4/qua.+D5/qua. E4/hal+F4/hal+G4/hal+B4/hal+D5/hal r/eig  LH: G2/qua B2/qua D3/qua D2/qua
+bar  15 RH: r/qua D4/qua+F4/qua+A4/qua+C5/qua r/eig D4/eig+F4/eig+A4/eig+C5/eig r/qua  LH: G2/qua Bb2/qua D3/qua Db3/qua
+bar  16 RH: Fb4/qua+A4/qua+Bb4/qua+C5/qua r/eig Fb4/hal+A4/hal+Bb4/hal+D5/hal r/eig  LH: C3/qua G2/qua C2/qua E2/qua
+bar  17 RH: r/qua D4/qua+Eb4/qua+G4/qua+Bb4/qua+C5/qua r/eig D4/eig+Eb4/eig+G4/eig+Bb4/eig+C5/eig r/qua  LH: C2/qua Eb2/qua G2/qua Gb2/qua
+bar  18 RH: C4/hal.+Eb4/hal.+Gb4/hal.+A4/hal.+C5/hal. r/qua  LH: F2/qua A2/qua C3/qua Eb2/qua
+bar  19 RH: r/qua G3/qua+Bb3/qua+D4/qua+F4/qua r/eig Bb3/eig+Db4/eig+E4/eig+G4/eig r/qua  LH: D2/qua Bb2/qua Db2/qua E2/qua
+bar  20 RH: D4/qua+Eb4/qua+G4/qua+Bb4/qua r/eig Eb4/qua.+Gb4/qua.+A4/qua.+C5/qua. r/qua  LH: C2/qua Eb2/qua F2/qua Eb2/qua
+bar  21 RH: r/qua D4/qua+F4/qua+G4/qua+C5/qua r/eig Db4/eig+E4/eig+G4/eig+Bb4/eig r/qua  LH: D2/qua Bb2/qua Db2/qua E2/qua
+bar  22 RH: Bb3/qua+D4/qua+Eb4/qua+G4/qua r/eig G3/qua.+A3/qua.+Db4/qua.+Eb4/qua.+F4/qua. r/qua  LH: C2/qua Eb2/qua F2/qua Eb2/qua
+bar  23 RH: r/qua G3/qua+Bb3/qua+D4/qua+F4/qua r/eig Bb3/eig+Db4/eig+E4/eig+G4/eig r/qua  LH: D2/qua Bb2/qua Db2/qua E2/qua
+bar  24 RH: D4/qua+Eb4/qua+G4/qua+Bb4/qua r/eig Eb4/qua+Gb4/qua+A4/qua+C5/qua Eb5/eig C5/eig r/eig  LH: C2/qua Eb2/qua F2/qua A2/qua
+bar  25 RH: F4/qua+G4/qua+Bb4/qua+D5/qua F4/qua+G4/qua+Bb4/qua+D5/qua Gb4/eig+Bb4/eig+C5/eig D5/eig Eb5/eig r/eig  LH: Bb2/qua F2/qua Ab2/qua C3/qua
+bar  26 RH: F4/hal+Ab4/hal+B4/hal+D5/hal+F5/hal r/eig Eb5/qua B4/eig  LH: G2/qua B2/qua D3/qua Db3/qua
+bar  27 RH: E4/qua+A4/qua+Bb4/qua+D5/qua E4/qua+A4/qua+Bb4/qua+D5/qua Eb4/eig+Gb4/eig+A4/eig+C5/eig D5/eig C5/eig r/eig  LH: C3/qua E2/qua F2/qua A2/qua
+bar  28 RH: D4/qua+F4/qua+G4/qua+Bb4/qua r/qua C5/qua+D5/qua+F5/qua+G5/qua+Bb5/qua r/qua  LH: Bb2/qua F2/qua Bb1/qua r/qua

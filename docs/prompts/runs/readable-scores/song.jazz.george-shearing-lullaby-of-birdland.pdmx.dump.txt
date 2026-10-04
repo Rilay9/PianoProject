@@ -1,0 +1,44 @@
+song: song.jazz.george-shearing-lullaby-of-birdland.pdmx
+title: Lullaby of Birdland
+composer: George Shearing
+rungs: jazz.9
+shipped file: scores/pdmx/QmPijiohPK3Hqk3WnVhsRqiZMimuksJaXQCu62y5DtKWpK.mxl
+catalog keySig/timeSig/tempo: Ab major / None / 96.0
+raw-XML counts: ties 188, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 110, grace notes 0, voices>1 218, measures 26, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -4
+  bar 1: time 4 4
+
+dump_score.py:
+song.jazz.george-shearing-lullaby-of-birdland.pdmx | Lullaby of Birdland | level 6.06 (estimated)
+notation: {"bars": 26, "staves": 2, "keys": [{"fifths": -4, "mode": null}], "times": ["4/4"], "chordCount": 110, "chords": ["A7", "Ab6", "Ab7", "Abmaj7", "B13", "Bbm7", "C7", "D7", "Db7", "Dm7b5", "Eb7", "Eb7sus4", "F#7", "F7", "Fm7", "G7", "Gb13", "Gb7", "Gm7b5"], "swungMark": true, "finalBass": 8}
+key signatures (fifths): ['-4']  modes: []  times: ['4/4']
+text on the score: ['Med-Swing']
+bar   1 RH: Eb4/qua+G4/qua+Ab4/qua+C5/qua Bb4/eig Ab4/eig C4/eig+E4/eig+G4/eig F4/qua.  LH: F3/qua+Ab3/qua+C4/qua r/qua D3/eig+F3/eig+Ab3/eig r/eig r/qua  [F minor-seventh] [D half-diminished] [F minor-seventh] [D half-diminished]
+bar   2 RH: Ab3/qua+B3/qua+D4/qua F4/eig Bb3/eig+D4/eig+E4/eig Bb3/qua+D4/qua+E4/qua Bb3/qua+C4/qua  LH: G2/qua+F3/qua r/eig C2/eig+G2/eig+E3/eig C2/qua+G2/qua+E3/qua Gb2/qua+E3/qua  [G dominant] [C dominant] [Gb dominant] [G dominant] [C dominant] [Gb dominant]
+bar   3 RH: F3/qua+Ab3/qua+C4/qua G4/eig F#3/eig+C4/eig+F4/eig F#3/qua+C4/qua+F4/qua r/eig C4/eig+Db4/eig  LH: F2/qua+Eb3/qua r/eig D2/eig+A2/eig D2/qua+A2/qua r/eig Bb2/eig+Ab3/eig  [F minor-seventh] [D dominant] [Bb minor-seventh] [F minor-seventh] [D dominant] [Bb minor-seventh]
+bar   4 RH: C4/qua+Db4/qua C5/eig Db4/eig+F4/eig+Bb4/eig Db4/qua+F4/qua+Bb4/qua Db4/qua+E4/qua+Bb4/qua  LH: Bb2/qua+Ab3/qua r/eig Eb3/eig+Ab3/eig Eb3/qua+Ab3/qua Eb3/qua+G3/qua  [Eb suspended-fourth] [Eb suspended-fourth]
+bar   5 RH: G4/qua+Ab4/qua+C5/qua+Eb5/qua E4/eig+Ab4/eig+Db5/eig C5/eig C4/qua+Eb4/qua+G4/qua+Bb4/qua C#4/qua+D#4/qua+G#4/qua  LH: Ab2/qua+Eb3/qua+C4/qua C3/qua+E3/qua+Bb3/qua C3/qua+Ab3/qua B2/qua+A3/qua  [Ab major-seventh] [C dominant] [B dominant-13th] [Ab major-seventh] [C dominant] [B dominant-13th]
+bar   6 RH: C4/eig+Db4/eig+F4/eig C5/eig Bb4/eig Cb4/eig+Db4/eig+E4/eig Cb4/eig+Db4/eig+E4/eig C5/eig Bb4/eig Bb3/eig+C4/eig+Eb4/eig  LH: Bb2/qua+Ab3/qua r/eig A2/eig+G3/eig A2/qua.+G3/qua. Ab2/eig+G3/eig  [Bb minor-seventh] [A dominant] [Ab major-seventh] [Bb minor-seventh] [A dominant] [Ab major-seventh]
+bar   7 RH: Bb3/hal+C4/hal+Eb4/hal D4/eig+F4/eig+B4/eig Bb4/eig Ab4/eig Bb3/eig+Db4/eig  LH: Ab2/qua+G3/qua r/qua Db3/eig+Ab3/eig r/eig r/eig G2/eig+F3/eig  [Db dominant] [G half-diminished] [Db dominant] [G half-diminished]
+bar   8 RH: Bb3/eig+Db4/eig Ab4/eig G4/eig Bb3/eig+C4/eig Bb3/hal+C4/hal  LH: G2/qua+F3/qua r/eig G2/eig+E3/eig G2/qua+E3/qua C2/qua  [C dominant] [C dominant]
+bar   9 RH: Bb3/qua+C4/qua+Eb4/qua r/qua G3/eig+Bb3/eig+Db4/eig Eb4/eig G4/eig C4/eig+Eb4/eig+Ab4/eig  LH: Ab2/qua+G3/qua r/qua Eb2/qua r/eig Ab2/eig+F3/eig  [Ab major-seventh] [Eb dominant] [Ab major-sixth] [Ab major-seventh] [Eb dominant] [Ab major-sixth]
+bar  10 RH: C4/qua+Eb4/qua+Ab4/qua r/qua r/hal  LH: Ab2/qua+F3/qua r/qua r/hal
+bar   1 RH: G4/qua+A4/qua+C5/qua Db5/eig D5/eig F4/qua+A4/qua+C5/qua+Eb5/qua Eb5/eig F4/eig+Db5/eig  LH: F2/qua+Eb3/qua r/qua A2/qua+G3/qua r/eig Bb2/eig+Ab3/eig  [F dominant] [F dominant] [Bb minor-seventh] [F dominant] [F dominant] [Bb minor-seventh]
+bar   2 RH: r/eig F4/qua.+Bb4/qua. F4/qua+Bb4/qua E4/qua+A4/qua  LH: r/eig Bb2/qua.+Db4/qua. Bb2/qua+Db4/qua A2/qua+G3/qua  [A dominant] [A dominant]
+bar   3 RH: Eb4/qua+Bb4/qua B4/eig C5/eig E4/qua+Bb4/qua+C#5/qua Db5/eig Eb4/eig+Bb4/eig+C5/eig  LH: Ab2/qua+Gb3/qua r/qua A2/qua+G3/qua r/eig Ab2/eig+G3/eig  [Ab dominant] [A dominant] [Ab major-seventh] [Ab dominant] [A dominant] [Ab major-seventh]
+bar   4 RH: Eb4/hal+Bb4/hal+C5/hal E4/hal+C#5/hal  LH: Ab2/qua+G3/qua r/qua F#2/qua+A#3/qua r/qua  [F# dominant] [F# dominant]
+bar   5 RH: G4/qua+A4/qua+C5/qua Db5/eig D5/eig F4/qua+A4/qua+C5/qua+Eb5/qua Eb5/eig F4/eig+Db5/eig  LH: F2/qua+Eb3/qua r/qua A2/qua+G3/qua r/eig Bb2/eig+Ab3/eig  [F dominant] [F dominant] [Bb minor-seventh] [F dominant] [F dominant] [Bb minor-seventh]
+bar   6 RH: r/eig F4/qua.+Bb4/qua. F4/qua+Bb4/qua E4/qua+A4/qua  LH: r/eig Bb2/qua.+Db4/qua. Bb2/qua+Db4/qua A2/qua+G3/qua  [A dominant] [A dominant]
+bar   7 RH: Db4/qua+F4/qua+Bb4/qua B4/eig C5/eig E4/qua+Ab4/qua+Db5/qua Db5/eig Eb4/eig+G4/eig+C5/eig  LH: G2/qua+F3/qua r/qua C3/qua+Bb3/qua r/eig Ab2/eig+Eb3/eig+C4/eig  [G half-diminished] [C dominant] [Ab major-seventh] [G half-diminished] [C dominant] [Ab major-seventh]
+bar   8 RH: Eb4/eig+G4/eig+C5/eig Db5/eig C5/eig D4/qua+E4/qua+Bb4/qua Bb3/qua+Eb4/qua+Bb4/qua Bb3/eig+Eb4/eig+Bb4/eig  LH: Ab2/qua+Eb3/qua+C4/qua r/eig C3/qua+G3/qua+Bb3/qua Gb2/qua+E3/qua Gb2/eig+E3/eig  [C dominant] [Gb dominant-13th] [C dominant] [Gb dominant-13th]
+bar   1 RH: Eb4/qua+G4/qua+Ab4/qua+C5/qua Bb4/eig Ab4/eig C4/eig+E4/eig+G4/eig F4/qua.  LH: F3/qua+Ab3/qua+C4/qua r/qua D3/eig+F3/eig+Ab3/eig r/eig r/qua  [F minor-seventh] [D half-diminished] [F minor-seventh] [D half-diminished]
+bar   2 RH: Ab3/qua+B3/qua+D4/qua F4/eig Bb3/eig+D4/eig+E4/eig Bb3/qua+D4/qua+E4/qua Bb3/qua+C4/qua  LH: G2/qua+F3/qua r/eig C2/eig+G2/eig+E3/eig C2/qua+G2/qua+E3/qua Gb2/qua+E3/qua  [G dominant] [C dominant] [Gb dominant] [G dominant] [C dominant] [Gb dominant]
+bar   3 RH: F3/qua+Ab3/qua+C4/qua G4/eig F#3/eig+C4/eig+F4/eig F#3/qua+C4/qua+F4/qua r/eig C4/eig+Db4/eig  LH: F2/qua+Eb3/qua r/eig D2/eig+A2/eig D2/qua+A2/qua r/eig Bb2/eig+Ab3/eig  [F minor-seventh] [D dominant] [Bb minor-seventh] [F minor-seventh] [D dominant] [Bb minor-seventh]
+bar   4 RH: C4/qua+Db4/qua C5/eig Db4/eig+F4/eig+Bb4/eig Db4/qua+F4/qua+Bb4/qua Db4/qua+E4/qua+Bb4/qua  LH: Bb2/qua+Ab3/qua r/eig Eb3/eig+Ab3/eig Eb3/qua+Ab3/qua Eb3/qua+G3/qua  [Eb suspended-fourth] [Eb suspended-fourth]
+bar   5 RH: G4/qua+Ab4/qua+C5/qua+Eb5/qua E4/eig+Ab4/eig+Db5/eig C5/eig C4/qua+Eb4/qua+G4/qua+Bb4/qua C#4/qua+D#4/qua+G#4/qua  LH: Ab2/qua+Eb3/qua+C4/qua C3/qua+E3/qua+Bb3/qua C3/qua+Ab3/qua B2/qua+A3/qua  [Ab major-seventh] [C dominant] [B dominant-13th] [Ab major-seventh] [C dominant] [B dominant-13th]
+bar   6 RH: C4/eig+Db4/eig+F4/eig C5/eig Bb4/eig Cb4/eig+Db4/eig+E4/eig Cb4/eig+Db4/eig+E4/eig C5/eig Bb4/eig Bb3/eig+C4/eig+Eb4/eig  LH: Bb2/qua+Ab3/qua r/eig A2/eig+G3/eig A2/qua.+G3/qua. Ab2/eig+G3/eig  [Bb minor-seventh] [A dominant] [Ab major-seventh] [Bb minor-seventh] [A dominant] [Ab major-seventh]
+bar   7 RH: Bb3/hal+C4/hal+Eb4/hal r/eig Eb4/eig G4/eig C4/eig+Eb4/eig+Ab4/eig  LH: Ab2/qua.+G3/qua. G1/eig Eb1/eig r/eig r/eig Ab2/eig+F3/eig  [Eb dominant] [Ab major-sixth] [Eb dominant] [Ab major-sixth]
+bar   8 RH: C4/who+Eb4/who+Ab4/who  LH: Ab2/who+F3/who

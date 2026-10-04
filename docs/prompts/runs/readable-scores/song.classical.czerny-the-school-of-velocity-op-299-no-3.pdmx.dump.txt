@@ -1,0 +1,49 @@
+song: song.classical.czerny-the-school-of-velocity-op-299-no-3.pdmx
+title: The School of Velocity, Op. 299 No. 3
+composer: Carl Czerny
+rungs: technique.6
+shipped file: scores/pdmx/QmfNvPgreRuWGZmdcDxV1rUFJeg8pdzp2Z17EPijMMTfDH.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 153, measures 24, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+  bar 2: clef G 2
+  bar 5: clef F 4
+  bar 6: clef G 1
+  bar 9: clef F 4
+  bar 9: clef G 1
+  bar 11: clef F 4
+  bar 11: clef G 1
+  bar 13: clef F 4
+
+dump_score.py:
+song.classical.czerny-the-school-of-velocity-op-299-no-3.pdmx | The School of Velocity, Op. 299 No. 3 | level 6.03 (estimated)
+notation: {"bars": 24, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH: C4/16t E4/16t G4/16t C5/16t E4/16t G4/16t C5/16t E5/16t G4/16t C5/16t E5/16t G5/16t C5/16t E5/16t G5/16t C6/16t  LH: C3/qua+E3/qua+G3/qua r/qua r/hal
+bar   2 RH: E5/16t G5/16t C6/16t E6/16t G5/16t C6/16t E6/16t G6/16t G5/16t D6/16t F6/16t G6/16t G5/16t C6/16t E6/16t G6/16t  LH: r/qua C5/eig r/eig B4/eig r/eig C5/eig r/eig
+bar   3 RH: G5/16t B5/16t D6/16t G6/16t B5/16t D6/16t G6/16t B6/16t C6/16t D6/16t F#6/16t A6/16t D6/16t F#6/16t A6/16t D7/16t  LH: D5/eig r/eig r/qua D4/eig+F#4/eig+A4/eig+C5/eig r/eig r/qua
+bar   4 RH: B6/16t G6/16t D7/16t B6/16t G6/16t D6/16t B5/16t D6/16t G5/eig r/eig r/qua  LH: G4/eig+B4/eig r/eig r/qua r/hal
+bar   5 RH: D4/16t F4/16t A4/16t D5/16t F4/16t A4/16t D5/16t F5/16t A4/16t D5/16t F5/16t A5/16t D5/16t F5/16t A5/16t D6/16t  LH: D3/eig+F3/eig+A3/eig r/eig r/qua r/hal
+bar   6 RH: F5/16t A5/16t D6/16t F6/16t A5/16t D6/16t F6/16t A6/16t A5/16t E6/16t G6/16t A6/16t A5/16t D6/16t F6/16t A6/16t  LH: r/qua D5/eig r/eig C#5/eig r/eig D5/eig r/eig
+bar   7 RH: B5/16t D6/16t G6/16t B6/16t D6/16t G6/16t B6/16t D7/16t G6/16t B6/16t D7/16t F7/16t D6/16t F6/16t G6/16t B6/16t  LH: G4/eig+B4/eig+D5/eig+F5/eig r/eig r/hal G4/eig+B4/eig+D5/eig+F5/eig r/eig
+bar   8 RH: E6/16t G6/16t C7/16t G6/16t E6/16t C6/16t G5/16t E5/16t C5/eig r/eig r/qua  LH: C5/eig+E5/eig r/eig r/qua r/hal
+bar   9 RH: C5/eig+E5/eig r/eig r/hal C6/eig+E6/eig r/eig  LH: C3/16t E3/16t G3/16t C4/16t E3/16t G3/16t C4/16t E4/16t G3/16t C4/16t E4/16t G4/16t C4/16t E4/16t G4/16t C5/16t
+bar  10 RH: G6/16t D6/16t B5/16t G5/16t D6/16t B5/16t G5/16t D5/16t B5/16t G5/16t D5/16t B4/16t G5/16t D5/16t B4/16t G4/16t  LH: B4/eig r/eig r/qua r/hal
+bar  11 RH: A4/eig+C5/eig r/eig r/hal A5/eig+C6/eig r/eig  LH: A2/16t C3/16t E3/16t A3/16t C3/16t E3/16t A3/16t C4/16t E3/16t A3/16t C4/16t E4/16t A3/16t C4/16t E4/16t A4/16t
+bar  12 RH: E6/16t B5/16t G5/16t E5/16t B5/16t G5/16t E5/16t B4/16t G5/16t E5/16t B4/16t G4/16t E5/16t B4/16t G4/16t E4/16t  LH: G4/eig r/eig r/qua r/hal
+bar  13 RH: F4/eig+A4/eig r/eig r/hal F5/eig+A5/eig r/eig  LH: F2/16t A2/16t C3/16t F3/16t A2/16t C3/16t F3/16t A3/16t C3/16t F3/16t A3/16t C4/16t F3/16t A3/16t C4/16t F4/16t
+bar  14 RH: C6/16t G5/16t E5/16t C5/16t G5/16t E5/16t C5/16t G4/16t E5/16t C5/16t G4/16t E4/16t C5/16t G4/16t E4/16t C4/16t  LH: E4/eig r/eig r/qua r/hal
+bar  15 RH: r/16t F4/16t A4/16t D5/16t F5/16t D5/16t A4/16t F4/16t r/16t F#4/16t A4/16t D5/16t F#5/16t D5/16t A4/16t F#4/16t  LH: D3/hal C3/hal
+bar  16 RH: r/16t G4/16t B4/16t D5/16t G5/16t D5/16t B4/16t G4/16t r/16t F4/16t B4/16t D5/16t F5/16t D5/16t B4/16t F4/16t  LH: B2/hal G2/hal
+bar  17 RH: r/16t E4/16t G4/16t C5/16t E5/16t C5/16t G4/16t E4/16t E5/16t C5/16t G4/16t E4/16t E5/16t C5/16t G4/16t E4/16t  LH: C3/qua C2/qua E2/qua G2/qua
+bar  18 RH: E5/16t C5/16t G4/16t E4/16t E5/16t C5/16t G4/16t E4/16t E5/16t C5/16t A4/16t E4/16t E5/16t C5/16t A4/16t E4/16t  LH: C3/qua E3/qua A2/qua C3/qua
+bar  19 RH: D5/16t A4/16t F4/16t D4/16t D5/16t A4/16t F4/16t D4/16t C5/16t A4/16t F#4/16t Eb4/16t C5/16t A4/16t F#4/16t Eb4/16t  LH: F2/qua A2/qua F#2/qua A2/qua
+bar  20 RH: C5/16t G4/16t E4/16t C4/16t C5/16t G4/16t E4/16t C4/16t B4/16t G4/16t F4/16t D4/16t B4/16t G4/16t F4/16t D4/16t  LH: G2/qua F#2/qua G2/qua G1/qua
+bar  21 RH: C5/16t C4/16t E4/16t G4/16t C5/16t E4/16t G4/16t C5/16t E5/16t G4/16t C5/16t E5/16t G5/16t C5/16t E5/16t G5/16t  LH: C2/eig r/eig r/qua r/hal
+bar  22 RH: C6/16t C5/16t E5/16t G5/16t C6/16t E5/16t G5/16t C6/16t E6/16t G5/16t C6/16t E6/16t G6/16t C6/16t E6/16t G6/16t  LH: r/qua C4/qua G3/qua E3/qua
+bar  23 RH: C7/eig r/eig r/qua E4/qua+G4/qua+C5/qua+E5/qua r/qua  LH: C3/eig r/eig r/qua C3/qua+C4/qua r/qua
+bar  24 RH: C4/qua+E4/qua+G4/qua+C5/qua r/qua r/hal  LH: C2/qua+C3/qua r/qua r/hal

@@ -1,0 +1,38 @@
+song: song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx
+title: Holy holy holy Lord God of hosts (Hugg) - Geo. C. Hugg
+composer: NA
+rungs: hymns.6
+shipped file: scores/pdmx/QmTErR15NKs5XS4LngRFQaHHPSVBCrJ4xqHdca3YdJJtgn.mxl
+catalog keySig/timeSig/tempo: F major / None / 100.0
+raw-XML counts: ties 8, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 2, chord symbols 0, grace notes 0, voices>1 121, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -1
+  bar 1: time 4 4
+  bar 2: clef F 4
+  bar 4: clef G 2
+  bar 6: clef F 4
+  bar 7: clef G 2
+  bar 16: time 6 4
+
+dump_score.py:
+song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx | Holy holy holy Lord God of hosts (Hugg) - Geo. C. Hugg | level 5.36 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": -1, "mode": null}], "times": ["4/4", "6/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-1']  modes: []  times: ['4/4', '6/4']
+bar   1 RH: A4/qua A4/qua A4/eig G4/eig A3/qua+F4/qua  LH:v6: r/hal C4/qua r/qua | v7: F3/qua+C4/qua+F4/qua F3/qua+C4/qua+F4/qua F3/eig+F4/eig F3/eig+Bb3/eig+F4/eig F3/qua
+bar   2 RH: Bb3/qua+D4/qua+F4/qua F3/qua+Bb3/qua+D4/qua A3/hal+C4/hal  LH: Bb2/qua Bb2/qua F3/hal
+bar   3 RH: A3/qua+D4/qua+F4/qua A3/qua+D4/qua+F4/qua C4/qua+E4/qua+G4/qua C4/qua+E4/qua+G4/qua  LH: D3/qua D3/qua C3/qua C3/qua
+bar   4 RH:v1: r/hal C5/qua r/qua | v2: C4/qua+F4/qua+A4/qua C4/qua+F4/qua+C5/qua C4/hal+E4/hal  LH:v5: F3/qua A3/qua r/qua Bb4/qua | v6: r/hal G3/hal
+bar   5 RH: C4/qua+F4/qua+A4/qua C4/qua+F4/qua+A4/qua Bb3/qua+E4/qua+A4/qua A3/qua+D4/qua+F4/qua  LH:v6: F3/qua F3/qua r/eig G4/eig D3/qua | v7: r/hal C3/qua r/qua
+bar   6 RH: Bb3/qua+D4/qua+F4/qua F3/qua+Bb3/qua+D4/qua A3/hal+C4/hal  LH: Bb2/qua Bb2/qua F3/hal
+bar   7 RH: F3/qua+Bb3/qua+D4/qua Bb3/qua+D4/qua+F4/qua D4/qua+F4/qua+Bb4/qua C4/qua+F4/qua+A4/qua  LH: Bb2/qua Bb2/qua Bb2/qua C3/qua
+bar   8 RH: Bb3/qua+E4/qua+A4/qua Bb3/qua+E4/qua+G4/qua F4/hal  LH: C3/qua C3/qua F3/hal+A3/hal
+bar   9 RH: A4/qua. A4/eig A4/eig A4/eig A4/eig A4/eig  LH: F3/qua.+C4/qua.+F4/qua. F3/eig+C4/eig+F4/eig F3/eig+C4/eig+F4/eig F3/eig+C4/eig+F4/eig F3/eig+C4/eig+F4/eig F3/eig+C4/eig+F4/eig
+bar  10 RH: A4/hal.+C5/hal. r/qua  LH: F3/hal.+F4/hal. r/qua
+bar  11 RH: F4/qua. F4/eig F4/eig F4/eig F4/eig F4/eig  LH: D3/qua.+A3/qua.+D4/qua. D3/eig+A3/eig+D4/eig D3/eig+A3/eig+D4/eig D3/eig+A3/eig+D4/eig D3/eig+A3/eig+D4/eig D3/eig+A3/eig+D4/eig
+bar  12 RH: A3/hal.+C#4/hal.+A4/hal. r/qua  LH: A2/hal. r/qua
+bar  13 RH: D4/qua.+G4/qua. D4/eig+G4/eig D4/eig+G4/eig D4/eig+G4/eig E4/eig+D5/eig E4/eig+D5/eig  LH: Bb2/qua. Bb2/eig+Bb3/eig Bb2/eig+Bb3/eig Bb2/eig+Bb3/eig C3/eig+Bb3/eig C3/eig+Bb3/eig
+bar  14 RH: C5/hal A4/hal  LH:v6: F3/hal+F4/hal F3/hal+C4/hal+F4/hal | v7: A3/hal r/hal
+bar  15 RH: A3/eig+F4/eig Bb3/eig+E4/eig+G4/eig C4/eig+F4/eig+A4/eig D4/eig+G4/eig+Bb4/eig C4/qua+F4/qua+A4/qua Bb3/qua+E4/qua+G4/qua  LH: D3/eig C3/eig F3/eig Bb2/eig C3/qua C3/qua
+bar  16 RH: A3/who.+F4/who.  LH: F3/who.

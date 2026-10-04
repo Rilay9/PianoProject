@@ -1,0 +1,56 @@
+song: song.classical.ondrus-silent-night.pdmx
+title: Silent Night (Ondruš setting)
+composer: Roseau / Lukáš Ondruš
+rungs: holiday.6
+shipped file: scores/pdmx/QmfYhywhYp5v5dLCaVTVfzUNyAMLArwCXovZgaVTSEPDaN.mxl
+catalog keySig/timeSig/tempo: Ab major / None / 71.0
+raw-XML counts: ties 6, tuplets 0, fingerings 0, dynamics 14, pedal 86, articulations 0, chord symbols 0, grace notes 0, voices>1 164, measures 30, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef G 2
+  bar 1: key -4
+  bar 1: time 3 4
+  bar 2: clef F 4
+  bar 2: clef G 2
+  bar 9: clef F 4
+  bar 9: clef G 2
+  bar 10: clef F 4
+  bar 10: clef F 4
+  bar 11: clef G 2
+  bar 13: clef F 4
+
+dump_score.py:
+song.classical.ondrus-silent-night.pdmx | Silent Night (Ondruš setting) | level 7.12 (estimated)
+notation: {"bars": 30, "staves": 2, "keys": [{"fifths": -4, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 8}
+key signatures (fifths): ['-4']  modes: []  times: ['3/4']
+text on the score: ['Adagio', 'dolce']
+bar   1 RH: Ab5/qua+C6/qua+Eb6/qua+Ab6/qua Ab5/qua+C6/qua+Eb6/qua G5/qua+C6/qua  LH: Ab4/qua+C5/qua+Eb5/qua Ab4/qua+C5/qua+Eb5/qua Ab4/qua+C5/qua+Eb5/qua
+bar   2 RH: F5/qua.+Ab5/qua.+Eb6/qua. F5/eig+Ab5/eig+Db6/eig F5/qua+Bb5/qua  LH:v6: Ab4/qua.+C5/qua.+Db5/qua. Ab4/eig+Db5/eig Eb4/qua+Bb4/qua+Db5/qua | v7: r/qua Eb3/eig r/qua.
+bar   3 RH: C5/hal.+Eb5/hal.+Ab5/hal.  LH:v6: r/eig Eb4/eig Ab4/eig F4/eig Eb4/qua | v7: Ab3/hal.
+bar   4 RH: C5/hal.+Eb5/hal.+Ab5/hal.  LH: C4/qua+Eb4/qua Ab4/eig F4/eig Eb4/qua
+bar   5 RH: C5/qua.+Eb5/qua. Db5/eig+F5/eig C5/qua+Eb5/qua  LH: Eb4/qua+Ab4/qua Ab3/hal
+bar   6 RH: G4/hal.+C5/hal.  LH: Eb4/qua+Ab4/qua Ab3/eig F4/eig Eb4/qua
+bar   7 RH: C5/qua.+Eb5/qua. Db5/eig+F5/eig C5/qua+Eb5/qua  LH: C4/qua+Eb4/qua+Ab4/qua Ab3/hal
+bar   8 RH: G4/hal.+C5/hal.  LH: Eb4/qua+Ab4/qua Ab3/eig F4/eig Eb4/qua
+bar   9 RH: Db5/hal+F5/hal+Bb5/hal Db5/qua+F5/qua+Bb5/qua  LH: Eb2/eig Eb3/eig Bb3/eig Db4/eig G4/qua
+bar  10 RH:v1: Bb4/hal.+Db5/hal.+G5/hal. | v2: r/qua Ab3/qua Bb3/qua  LH: r/qua F2/qua G2/qua
+bar  11 RH: Ab4/hal+C5/hal+Ab5/hal Ab4/qua+C5/qua+Ab5/qua  LH: Ab2/eig Eb3/eig Ab3/eig Eb4/eig Ab4/qua
+bar  12 RH: G4/hal+C5/hal+Eb5/hal Ab4/qua+C5/qua+E5/qua  LH: r/eig Ab4/eig F4/eig C4/eig E4/qua
+bar  13 RH: Ab4/hal+Db5/hal+F5/hal Ab4/qua+Db5/qua+F5/qua  LH: Db2/eig Db3/eig Ab3/eig Db4/eig F4/qua
+bar  14 RH: F5/qua.+Ab5/qua. Eb5/eig+G5/eig Db5/qua+F5/qua  LH: r/qua Db3/qua r/qua
+bar  15 RH: Ab4/qua.+C5/qua.+Eb5/qua. Db5/eig+F5/eig C5/qua+Eb5/qua  LH: Ab2/eig Eb3/eig Ab3/eig Eb4/eig Ab4/qua
+bar  16 RH: G4/hal+C5/hal Ab4/qua+C5/qua  LH: Eb4/qua+Ab4/qua Ab3/qua C4/qua+E4/qua
+bar  17 RH: Ab4/hal+Db5/hal+F5/hal Ab4/qua+Db5/qua+F5/qua  LH: Db2/eig Db3/eig Ab3/eig Db4/eig F4/qua
+bar  18 RH: F5/qua.+Ab5/qua. Eb5/eig+G5/eig Db5/qua+F5/qua  LH: r/qua Db3/qua r/qua
+bar  19 RH: Ab4/qua.+C5/qua.+Eb5/qua. Db5/eig+F5/eig C5/qua+Eb5/qua  LH: Ab2/eig Eb3/eig Ab3/eig Eb4/eig Ab4/qua
+bar  20 RH: G4/hal.+C5/hal.  LH: Eb4/qua+Ab4/qua Ab3/eig F4/eig Eb4/qua
+bar  21 RH: Db5/hal+F5/hal+Bb5/hal Db5/qua+F5/qua+Bb5/qua  LH: Eb2/eig Eb3/eig Bb3/eig Db4/eig G4/qua
+bar  22 RH:v1: F5/qua.+Ab5/qua.+Db6/qua. Db5/eig+F5/eig+Bb5/eig Bb4/qua+Db5/qua+Eb5/qua+G5/qua | v2: r/qua Ab4/qua r/qua  LH: Eb3/qua F3/qua G3/qua
+bar  23 RH: C5/hal.+Eb5/hal.+Ab5/hal.  LH: Ab3/eig Eb4/eig Ab4/eig F4/eig Eb4/qua
+bar  24 RH: C5/hal.+Eb5/hal.+Ab5/hal.+C6/hal.  LH:v6: Eb4/hal.+Ab4/hal. | v7: r/eig r/eig r/eig F4/eig Eb4/qua
+bar  25 RH: C5/qua+Eb5/qua+Ab5/qua Ab4/qua+C5/qua+Eb5/qua G4/qua+Ab4/qua+C5/qua  LH: Eb4/qua+Ab4/qua C4/qua+Eb4/qua Ab3/qua+C4/qua+Eb4/qua
+bar  26 RH: F4/qua+Ab4/qua+Eb5/qua r/eig F4/eig+Ab4/eig+Db5/eig F4/qua+Bb4/qua  LH: Ab3/qua+Db4/qua Eb2/qua Eb3/qua+Bb3/qua+Db4/qua
+bar  27 RH:v1: C4/hal.+Eb4/hal.+Ab4/hal. | v2: r/eig r/eig r/eig Db4/eig C4/qua  LH:v5: Ab2/hal.+Eb3/hal.+Ab3/hal. | v6: r/eig r/eig r/eig F3/eig Eb3/qua
+bar  28 RH: Ab3/hal.+C4/hal.+Ab4/hal.  LH: Ab2/hal.+C3/hal.+Eb3/hal.+C4/hal.
+bar  29 RH: C5/hal.+Eb5/hal.+C6/hal.  LH: Ab3/hal.+Eb4/hal.+Ab4/hal.
+bar  30 RH: Eb3/hal.+C4/hal.+Eb4/hal.  LH: Ab1/hal.+Eb2/hal.+Ab2/hal.

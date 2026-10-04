@@ -1,0 +1,50 @@
+song: song.pop.the-memphis-blues.pdmx
+title: The Memphis Blues (1912)
+composer: W. C. Handy
+rungs: blues.5
+shipped file: scores/pdmx/QmTZhLYDNvTcDy8Gekzw9yXEZzq1ARS1J5XX73nssC472n.mxl
+catalog keySig/timeSig/tempo: 3 flats / None / 96.0
+raw-XML counts: ties 40, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 35, grace notes 3, voices>1 0, measures 33, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -3
+  bar 1: time 4 4
+  bar 22: key -4
+
+dump_score.py:
+song.pop.the-memphis-blues.pdmx | The Memphis Blues (1912) | level 3.99 (estimated)
+notation: {"bars": 33, "staves": 1, "keys": [{"fifths": -3, "mode": null}, {"fifths": -4, "mode": null}], "times": ["4/4"], "chordCount": 35, "chords": ["Ab", "Ab7", "Abm6", "Bb7", "C7", "D7", "Db7", "Dbm", "Eb", "Eb7", "F7"], "swungMark": false, "finalBass": 8}
+key signatures (fifths): ['-3', '-4']  modes: []  times: ['4/4']
+bar   1 RH: Bb3/eig C4/eig C#4/eig
+bar   2 RH: D4/qua Bb4/eig Ab4/eig Ab4/qua. F4/eig  [Bb dominant]
+bar   3 RH: F#4/eig G4/eig F#4/eig G4/eig Eb4/eig F4/qua Eb4/eig  [F dominant] [Bb dominant]
+bar   4 RH: Eb4/qua G4/eig G4/eig Gb4/eig Gb4/eig F4/eig F4/eig  [Eb major] [Eb dominant] [Ab dominant] [Ab minor-sixth]
+bar   5 RH: Eb4/eig Bb3/eig Bb3/eig Bb3/eig Bb3/hal  [Eb major] [Bb dominant]
+bar   6 RH: r/eig Bb4/eig A4/eig Ab4/eig Ab4/eig Bb4/eig F4/qua  [Bb dominant]
+bar   7 RH: r/eig Bb4/eig A4/eig Ab4/eig Ab4/eig Bb4/eig F4/qua
+bar   8 RH: r/eig G4/eig F#4/eig G4/eig G4/eig Eb4/eig C4/qua  [Eb major]
+bar   9 RH: r/eig G4/eig F#4/eig G4/eig G4/eig Eb4/eig C4/qua
+bar  10 RH: r/eig Bb4/eig A4/eig Ab4/eig Ab4/eig Bb4/eig F4/qua  [Bb dominant]
+bar  11 RH: r/eig Bb4/eig A4/eig Ab4/eig Ab4/eig Bb4/eig F4/qua
+bar  12 RH: r/eig G4/eig F#4/eig G4/eig G4/eig Eb4/eig C4/eig Bb3/eig  [Eb major]
+bar  13 RH: Eb4/qua Eb4/eig Eb4/eig D4/eig D4/eig Db4/eig Db4/eig  [Eb dominant] [D dominant] [Db dominant]
+bar  14 RH: C4/eig D4/eig E4/eig C4/eig D4/eig E4/eig C4/eig D4/eig  [C dominant]
+bar  15 RH: E4/eig C4/eig D4/eig E4/eig E4/hal
+bar  16 RH: F4/eig G4/eig A4/eig F4/eig G4/eig A4/eig F4/eig G4/eig  [F dominant]
+bar  17 RH: A4/eig F4/eig G4/eig A4/eig A4/hal
+bar  18 RH: r/eig Bb4/eig A4/eig Ab4/eig Ab4/eig Bb4/eig F4/qua  [Bb dominant]
+bar  19 RH: r/eig Bb4/eig A4/eig Ab4/eig Ab4/eig Bb4/eig F4/qua
+bar  20 RH: F#4/eig G4/eig F#4/eig G4/eig Eb4/eig F4/qua Eb4/eig  [F dominant] [Bb dominant]
+bar  21 RH: Eb4/hal r/eig Eb5/eig Eb5/eig Eb5/eig Eb5/eig Eb5/eig Eb5/eig  [Eb major] [Eb dominant]
+bar  22 RH: Eb5/qua. B4/eig C5/eig Ab4/eig F4/eig Eb4/eig  [Ab major]
+bar  23 RH: C4/eig Eb4/eig F4/eig Ab4/eig Ab4/eig C5/eig Db5/eig D5/eig
+bar  24 RH: Eb5/qua. B4/eig C5/eig Ab4/eig G4/eig Gb4/eig
+bar  25 RH: Gb4/hal r/eig Eb5/qua Ab4/eig  [Ab dominant]
+bar  26 RH: F5/eig D5/qua Db5/eig Db5/qua. Ab4/eig  [Db dominant]
+bar  27 RH: B4/eig C5/eig B4/eig C5/eig Ab4/eig Bb4/qua Ab4/eig
+bar  28 RH: Ab4/eig B3/eig C4/eig Ab4/eig B3/eig C4/eig Ab4/eig B3/eig  [Ab major]
+bar  29 RH: C4/eig Ab4/eig B3/eig C4/eig Ab4/eig Eb4/eig F4/eig F#4/eig
+bar  30 RH: G4/eig Eb5/eig D5/eig Db5/eig Db5/qua. Ab4/eig  [Eb dominant]
+bar  31 RH: B4/eig C5/eig B4/eig C5/eig Ab4/eig Bb4/qua Ab4/eig  [Bb dominant] [Eb dominant]
+bar  32 RH: Ab4/who  [Ab major] [Ab dominant] [Db dominant] [Db minor]
+bar  33 RH: Ab4/hal Ab4/eig r/eig r/qua  [Ab major]

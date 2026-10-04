@@ -1,0 +1,38 @@
+song: song.blues.boogie-en-sol
+title: Boogie-Boogie en Sol
+composer: Miguel Ángel Breña
+rungs: blues.7
+shipped file: scores/pdmx/QmeMcNMp66WReUt467S33B4Jkw99MyuJEpUmY7ysQ1rhR1.mxl
+catalog keySig/timeSig/tempo: 1 sharp / None / 96.0
+raw-XML counts: ties 8, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 303, measures 21, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 4 4
+
+dump_score.py:
+song.blues.boogie-en-sol | Boogie-Boogie en Sol | level 5.18 (estimated)
+notation: {"bars": 21, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['1']  modes: []  times: ['4/4']
+bar   1 RH: D5/eig B5/qua+D6/qua D5/eig Db5/eig Bb5/qua Db5/eig  LH: D2/qua D2/qua E2/qua E2/qua
+bar   2 RH: C5/eig A5/qua C5/eig B4/qua+G5/qua r/eig F#4/eig+C5/eig+D5/eig  LH: F#2/qua F#2/qua G2/eig C2/eig C#2/eig D2/eig
+bar   3 RH: F#4/qua+C5/qua+D5/qua r/qua r/hal  LH: D2/eig D2/eig C2/eig C2/eig B1/eig B1/eig A1/eig A1/eig
+bar   4 RH: G4/qua G4/qua G4/hal  LH: G1/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig D2/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig
+bar   5 RH: G4/eig G4/eig G4/eig G4/eig G4/hal  LH: G1/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig D2/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig
+bar   6 RH: A4/qua A4/qua A4/hal  LH: A1/eig C3/eig+E3/eig+G3/eig C2/eig C3/eig+E3/eig+G3/eig E2/eig C3/eig+E3/eig+G3/eig C2/eig C3/eig+E3/eig+G3/eig
+bar   7 RH: A4/eig A4/eig A4/eig A4/eig A4/hal  LH: A1/eig C3/eig+E3/eig+G3/eig C2/eig C3/eig+E3/eig+G3/eig E2/eig C3/eig+E3/eig+G3/eig C2/eig C3/eig+E3/eig+G3/eig
+bar   8 RH: B4/qua B4/qua B4/hal  LH: G1/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig D2/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig
+bar   9 RH: B4/eig B4/eig B4/eig B4/eig B4/hal  LH: G1/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig D2/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig
+bar  10 RH: C5/qua C5/qua C5/hal  LH: C2/eig C3/eig+E3/eig+G3/eig E2/eig C3/eig+E3/eig+G3/eig G2/eig C3/eig+E3/eig+G3/eig E2/eig C3/eig+E3/eig+G3/eig
+bar  11 RH: C5/eig C5/eig C5/eig C5/eig C5/hal  LH: C2/eig C3/eig+E3/eig+G3/eig E2/eig C3/eig+E3/eig+G3/eig G2/eig C3/eig+E3/eig+G3/eig E2/eig C3/eig+E3/eig+G3/eig
+bar  12 RH: D5/qua D5/qua D5/hal  LH: D2/eig C3/eig+D3/eig+F#3/eig F#2/eig C3/eig+D3/eig+F#3/eig A2/eig C3/eig+D3/eig+F#3/eig F#2/eig C3/eig+D3/eig+F#3/eig
+bar  13 RH: D5/eig D5/eig D5/eig D5/eig D5/hal  LH: D2/eig C3/eig+D3/eig+F#3/eig F#2/eig C3/eig+D3/eig+F#3/eig A2/eig C3/eig+D3/eig+F#3/eig F#2/eig C3/eig+D3/eig+F#3/eig
+bar  14 RH: C5/qua C5/qua C5/hal  LH: C2/eig C3/eig+E3/eig+G3/eig E2/eig C3/eig+E3/eig+G3/eig G2/eig C3/eig+E3/eig+G3/eig E2/eig C3/eig+E3/eig+G3/eig
+bar  15 RH: C5/eig C5/eig C5/eig C5/eig C5/hal  LH: C2/eig C3/eig+E3/eig+G3/eig E2/eig C3/eig+E3/eig+G3/eig G2/eig C3/eig+E3/eig+G3/eig E2/eig C3/eig+E3/eig+G3/eig
+bar  16 RH: B4/qua B4/qua B4/hal  LH: G1/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig D2/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig
+bar  17 RH: B4/eig B4/eig B4/eig B4/eig B4/hal  LH: G1/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig D2/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig
+bar  18 RH: A4/qua A4/qua A4/hal  LH: D2/eig C3/eig+D3/eig+F#3/eig F#2/eig C3/eig+D3/eig+F#3/eig A2/eig C3/eig+D3/eig+F#3/eig F#2/eig C3/eig+D3/eig+F#3/eig
+bar  19 RH: A4/eig A4/eig A4/eig A4/eig A4/hal  LH: D2/eig C3/eig+D3/eig+F#3/eig F#2/eig C3/eig+D3/eig+F#3/eig A2/eig C3/eig+D3/eig+F#3/eig F#2/eig C3/eig+D3/eig+F#3/eig
+bar  20 RH: G4/qua G4/qua G4/hal  LH: G1/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig D2/eig B2/eig+D3/eig+G3/eig B1/eig B2/eig+D3/eig+G3/eig
+bar  21 RH: G4/eig G4/eig G4/eig G4/eig G4/qua r/qua  LH: G2/eig B2/eig+D3/eig+G3/eig D2/eig B2/eig+D3/eig+G3/eig G2/qua+B2/qua+D3/qua+G3/qua r/qua

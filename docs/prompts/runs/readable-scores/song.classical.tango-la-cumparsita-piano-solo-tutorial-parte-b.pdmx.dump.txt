@@ -1,0 +1,34 @@
+song: song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx
+title: Tango La Cumparsita - Piano Solo (Tutorial Parte B)
+composer: NA
+rungs: latin.6
+shipped file: scores/pdmx/QmfZco3VhadA7EzganEn6PvBhvDNghDwHgjFD1W8DEZRnT.mxl
+catalog keySig/timeSig/tempo: 2 flats / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 81, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 68, measures 16, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -2
+  bar 1: time 4 4
+
+dump_score.py:
+song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx | Tango La Cumparsita - Piano Solo (Tutorial Parte B) | level 5.0 (estimated)
+notation: {"bars": 16, "staves": 2, "keys": [{"fifths": -2, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['-2']  modes: []  times: ['4/4']
+text on the score: ['La Cumparsita [Parte B] Video-Tutorial - www.javiertucatmoreno.com/tutoriales', 'Vuelve a la', 'parte A']
+bar   1 RH: G4/eig A4/eig Bb4/qua r/eig G4/eig A4/eig Bb4/eig  LH: G3/qua. Gb3/eig F3/hal
+bar   2 RH: A4/qua G4/qua r/hal  LH: E3/hal Eb3/qua D3/qua
+bar   3 RH: r/eig G4/eig G4/eig F4/eig F4/eig Eb4/eig Eb4/eig D4/eig  LH: G2/qua r/qua r/hal
+bar   4 RH: D4/hal C4/hal  LH: D2/qua F#2/qua A2/qua A1/qua
+bar   5 RH: r/eig A4/eig A4/eig G4/eig G4/eig F#4/eig F#4/qua  LH: D2/qua r/qua r/hal
+bar   6 RH: r/eig Eb4/eig Eb4/eig D4/eig D4/qua r/qua  LH: D3/qua+F#3/qua+A3/qua r/qua r/qua A2/qua
+bar   7 RH: r/qua C4/qua Bb3/qua A3/qua  LH: D2/hal F#2/hal
+bar   8 RH: G3/qua D4/hal.  LH: G2/hal Eb3/qua D3/qua
+bar   9 RH: G5/eig A5/eig Bb5/qua r/eig G5/eig A5/eig Bb5/eig  LH: G3/qua. Gb3/eig F3/hal
+bar  10 RH: A5/qua G5/qua r/hal  LH: E3/hal Eb3/qua D3/qua
+bar  11 RH: r/eig G5/eig G5/eig F5/eig F5/eig Eb5/eig Eb5/eig D5/eig  LH: G2/qua r/qua r/hal
+bar  12 RH: C5/who  LH: C2/qua G2/qua C3/qua D3/qua
+bar  13 RH: C5/eig Eb5/qua G5/eig G5/eig F#5/eig G5/qua  LH: Eb3/qua r/qua Eb3/qua+G3/qua+C4/qua r/qua
+bar  14 RH: Bb4/eig D5/qua G5/eig G5/eig F#5/eig G5/qua  LH: D3/qua+G3/qua+Bb3/qua r/qua D3/qua+G3/qua+Bb3/qua r/qua
+bar  15 RH: r/eig D5/eig A5/eig F#5/eig D5/eig C5/eig r/eig F#4/eig  LH: D3/qua+F#3/qua+A3/qua r/qua D3/qua+F#3/qua+A3/qua r/qua
+bar  16 RH: G4/qua r/qua r/hal  LH: D3/qua+G3/qua+Bb3/qua G3/qua F3/qua Eb3/qua

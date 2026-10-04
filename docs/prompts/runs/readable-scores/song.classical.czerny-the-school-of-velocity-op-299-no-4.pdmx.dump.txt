@@ -1,0 +1,48 @@
+song: song.classical.czerny-the-school-of-velocity-op-299-no-4.pdmx
+title: The School of Velocity, Op. 299 No. 4
+composer: Carl Czerny
+rungs: technique.6
+shipped file: scores/pdmx/QmcvjWXvkPvixdMuwivGURTtPgE778KSZBLEYJhkCA2ao9.mxl
+catalog keySig/timeSig/tempo: C major / None / 90.0
+raw-XML counts: ties 6, tuplets 0, fingerings 137, dynamics 0, pedal 0, articulations 0, chord symbols 80, grace notes 0, voices>1 233, measures 26, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 6 8
+  bar 8: clef G 2
+  bar 10: clef F 4
+  bar 20: clef G 2
+  bar 22: clef F 4
+
+dump_score.py:
+song.classical.czerny-the-school-of-velocity-op-299-no-4.pdmx | The School of Velocity, Op. 299 No. 4 | level 6.0 (estimated)
+notation: {"bars": 26, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["6/8"], "chordCount": 80, "chords": ["A7", "Am", "C", "C7", "Dm", "E7", "F", "G", "G7"], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['6/8']
+text on the score: ['4.']
+bar   1 RH: r/16t C4/16t D4/16t C4/16t B3/16t C4/16t r/16t D4/16t E4/16t D4/16t C#4/16t D4/16t  LH: C3/eig+E3/eig r/eig r/eig B2/eig+G3/eig r/eig r/eig  [C major] [G major] [C major] [G major]
+bar   2 RH: r/16t E4/16t F4/16t E4/16t D#4/16t E4/16t r/16t F4/16t G4/16t F4/16t E4/16t F4/16t  LH: C3/eig+G3/eig r/eig r/eig D3/eig+G3/eig+B3/eig r/eig r/eig  [C major] [G major] [C major] [G major]
+bar   3 RH: r/16t G4/16t A4/16t G4/16t F#4/16t G4/16t r/16t A4/16t B4/16t A4/16t G#4/16t A4/16t  LH: E3/eig+G3/eig+C4/eig r/eig r/eig F3/eig+A3/eig+C4/eig r/eig r/eig  [C major] [F major] [C major] [F major]
+bar   4 RH: r/16t B4/16t C5/16t B4/16t A#4/16t B4/16t r/16t C5/16t D5/16t C5/16t B4/16t C5/16t  LH: F3/eig+G3/eig+D4/eig r/eig r/eig E3/eig+G3/eig+C4/eig r/eig r/eig  [G dominant] [A minor] [G dominant] [A minor]
+bar   5 RH: r/16t D5/16t E5/16t D5/16t C#5/16t D5/16t r/16t E5/16t F5/16t E5/16t D#5/16t E5/16t  LH: F3/eig+A3/eig r/eig r/eig C#3/eig+G3/eig+A3/eig r/eig r/eig  [D minor] [A dominant] [D minor] [A dominant]
+bar   6 RH: r/16t F5/16t G5/16t F5/16t E5/16t F5/16t r/16t G5/16t A5/16t G5/16t F#5/16t G5/16t  LH: D3/eig+F3/eig+A3/eig r/eig r/eig E3/eig+Bb3/eig+C4/eig r/eig r/eig  [D minor] [C dominant] [D minor] [C dominant]
+bar   7 RH: r/16t A5/16t B5/16t A5/16t G#5/16t A5/16t r/16t B5/16t C6/16t B5/16t A#5/16t B5/16t  LH: F3/eig+A3/eig+C4/eig r/eig r/eig G#3/eig+D4/eig+F4/eig r/eig r/eig  [F major] [E dominant] [F major] [E dominant]
+bar   8 RH: r/16t C6/16t D6/16t C6/16t B5/16t C6/16t r/16t D6/16t E6/16t D6/16t C#6/16t D6/16t  LH: A3/eig+C4/eig+E4/eig r/eig r/eig B3/eig+F4/eig+G4/eig r/eig r/eig  [A minor] [G dominant] [A minor] [G dominant]
+bar   9 RH: E6/16t D#6/16t E6/16t F6/16t E6/16t D6/16t C6/16t B5/16t C6/16t D6/16t C6/16t B5/16t  LH: C4/eig+E4/eig+G4/eig r/eig r/eig E4/eig r/eig r/eig  [C major] [C major] [C major] [C major]
+bar  10 RH: A5/16t G#5/16t A5/16t B5/16t A5/16t G5/16t F5/16t E5/16t F5/16t G5/16t F5/16t E5/16t  LH: F4/eig r/eig r/eig A3/eig r/eig r/eig  [F major] [F major] [F major] [F major]
+bar  11 RH: D5/16t C#5/16t D5/16t E5/16t D5/16t C5/16t B4/16t A#4/16t B4/16t C5/16t B4/16t A4/16t  LH: B3/eig r/eig r/eig D4/eig r/eig r/eig  [G major] [G major] [G major] [G major]
+bar  12 RH: G4/16t F#4/16t G4/16t A4/16t G4/16t F4/16t E4/16t D#4/16t E4/16t F4/16t E4/16t D4/16t  LH: E4/eig r/eig r/eig G2/eig r/eig r/eig  [C major] [C major] [C major] [C major]
+bar  13 RH: r/qua. r/qua.  LH:v2: C4/16t B3/16t C4/16t D4/16t C4/16t B3/16t A3/16t G#3/16t A3/16t B3/16t A3/16t G3/16t | v6: A2/eig r/eig r/eig C3/eig r/eig r/eig  [A minor] [A minor] [A minor] [A minor]
+bar  14 RH: r/qua. r/qua.  LH:v2: F3/16t E3/16t F3/16t G3/16t F3/16t E3/16t D3/16t C#3/16t D3/16t E3/16t D3/16t C3/16t | v6: D3/eig r/eig r/eig F2/eig r/eig r/eig  [D minor] [D minor] [D minor] [D minor]
+bar  15 RH: r/?  LH:v2: B2/16t D3/16t E3/16t D3/16t C#3/16t D3/16t F#3/16t G3/16t A3/16t G3/16t F#3/16t G3/16t | v6: G2/eig r/eig r/eig r/qua r/eig  [G major] [G major]
+bar  16 RH: A#3/16t B3/16t C4/16t B3/16t A#3/16t B3/16t C#4/16t D4/16t E4/16t D4/16t C#4/16t D4/16t  LH: G2/qua.+B2/qua.+D3/qua.+F3/qua. r/qua r/eig  [G dominant] [G dominant]
+bar  17 RH: D#4/16t E4/16t F4/16t E4/16t D#4/16t E4/16t F#4/16t G4/16t A4/16t G4/16t F#4/16t G4/16t  LH: C3/qua+E3/qua+G3/qua+C4/qua r/eig r/qua r/eig  [C major] [C major]
+bar  18 RH: G#4/16t A4/16t B4/16t A4/16t G#4/16t A4/16t B4/16t C5/16t D5/16t C5/16t B4/16t C5/16t  LH: F2/qua+A2/qua+C3/qua+F3/qua r/eig r/qua r/eig  [F major] [F major]
+bar  19 RH: D#5/16t E5/16t F5/16t E5/16t D#5/16t E5/16t F#5/16t G5/16t A5/16t G5/16t F#5/16t G5/16t  LH: G2/qua+C3/qua+E3/qua+G3/qua r/eig r/qua r/eig  [C major] [C major]
+bar  20 RH: A#5/16t B5/16t C6/16t B5/16t A#5/16t B5/16t C#6/16t D6/16t E6/16t D6/16t C#6/16t D6/16t  LH: G3/qua+D4/qua+F4/qua r/eig B3/qua+F4/qua+G4/qua r/eig  [G dominant] [G dominant]
+bar  21 RH: D#6/16t E6/16t F6/16t E6/16t D#6/16t E6/16t F#6/16t G6/16t A6/16t G6/16t F#6/16t G6/16t  LH: C4/qua+E4/qua+G4/qua+C5/qua r/eig r/qua r/eig  [C major] [C major]
+bar  22 RH: G#6/16t A6/16t B6/16t A6/16t G#6/16t A6/16t B6/16t C7/16t D7/16t C7/16t B6/16t C7/16t  LH: F3/qua+A3/qua+C4/qua+F4/qua r/eig r/qua r/eig  [F major] [F major]
+bar  23 RH: F#6/16t G6/16t A6/16t G6/16t F#6/16t G6/16t B6/16t C7/16t D7/16t C7/16t B6/16t C7/16t  LH: G3/hal.+C4/hal.+E4/hal.  [C major] [C major]
+bar  24 RH: E7/eig r/eig r/eig F6/eig+G6/eig+B6/eig+D7/eig r/eig r/eig  LH: G3/eig+C4/eig+E4/eig r/eig r/eig G2/eig+B2/eig+D3/eig+G3/eig r/eig r/eig  [C major] [G dominant] [C major] [G dominant]
+bar  25 RH: E6/eig+G6/eig+C7/eig r/eig r/hal  LH: C3/qua+E3/qua+G3/qua+C4/qua r/qua r/qua  [C major] [C major]
+bar  26 RH: r/eig r/eig r/hal  LH:v2: E3/eig+G3/eig+C4/eig r/hal r/eig | v6: C2/qua+G2/qua+C3/qua r/hal

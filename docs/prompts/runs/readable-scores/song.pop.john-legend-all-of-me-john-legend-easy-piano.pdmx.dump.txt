@@ -1,0 +1,73 @@
+song: song.pop.john-legend-all-of-me-john-legend-easy-piano.pdmx
+title: All of Me (easy)
+composer: John Legend
+rungs: chords-pop.6
+shipped file: scores/pdmx/QmSZudyBJnFK8xUiNE68yDhntiHSQZ5nCQ2L5EWWKb3A5A.mxl
+catalog keySig/timeSig/tempo: G major / None / 96.0
+raw-XML counts: ties 84, tuplets 0, fingerings 0, dynamics 4, pedal 102, articulations 0, chord symbols 0, grace notes 1, voices>1 329, measures 56, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.john-legend-all-of-me-john-legend-easy-piano.pdmx | All of Me (easy) | level 5.28 (estimated)
+notation: {"bars": 56, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 7}
+key signatures (fifths): ['1']  modes: []  times: ['4/4']
+bar   1 RH: E4/qua.+B4/qua. E4/qua.+B4/qua. E4/qua+B4/qua  LH: E3/who
+bar   2 RH: E4/qua.+C5/qua. E4/qua.+C5/qua. E4/qua+C5/qua  LH: C3/who
+bar   3 RH: D4/qua.+B4/qua. D4/qua.+B4/qua. D4/qua+B4/qua  LH: G2/who
+bar   4 RH: D4/qua.+A4/qua. D4/qua.+A4/qua. D4/qua+A4/qua  LH: D3/who
+bar   5 RH: r/hal A4/eig B4/eig B4/qua  LH: B2/qua.+E3/qua. B2/qua.+E3/qua. B2/qua+E3/qua
+bar   6 RH: B4/eig B4/eig B4/qua B4/qua G4/qua  LH: C3/qua.+E3/qua. C3/qua.+E3/qua. C3/qua+E3/qua
+bar   7 RH: G4/qua r/qua A4/eig B4/eig B4/qua  LH: G2/qua.+D3/qua. G2/qua.+D3/qua. G2/qua+D3/qua
+bar   8 RH: B4/eig A4/eig B4/qua B4/eig A4/eig G4/eig G4/eig  LH: A2/qua.+D3/qua. A2/qua.+D3/qua. A2/qua+D3/qua
+bar   9 RH: E4/qua. r/eig B4/eig B4/qua.  LH: B2/qua.+E3/qua. B2/qua.+E3/qua. B2/qua+E3/qua
+bar  10 RH: C5/hal B4/eig G4/eig r/qua  LH: C3/qua.+E3/qua. C3/qua.+E3/qua. C3/qua+E3/qua
+bar  11 RH: C5/hal B4/eig G4/eig r/eig G4/eig  LH: G2/qua.+D3/qua. G2/qua.+D3/qua. G2/qua+D3/qua
+bar  12 RH: A4/hal B4/eig A4/qua E4/eig  LH: A2/qua.+D3/qua. A2/qua.+D3/qua. A2/qua+D3/qua
+bar  13 RH: A4/hal B4/eig A4/qua.  LH: A2/qua.+D3/qua. A2/qua.+D3/qua. A2/qua+D3/qua
+bar  14 RH: C5/hal. r/eig G4/eig  LH: A2/eig E3/eig A3/eig E3/eig C4/eig E3/eig C4/eig E3/eig
+bar  15 RH: E5/qua. D5/qua C5/qua B4/eig  LH: C3/eig G3/eig C4/eig G3/eig E4/eig G3/eig E4/eig G3/eig
+bar  16 RH: B4/qua. A4/qua G4/qua F#4/eig  LH: G2/eig D3/eig G3/eig D3/eig B3/eig D3/eig B3/eig D3/eig
+bar  17 RH: F#4/qua. E4/qua D4/qua E4/eig  LH: D2/eig A2/eig D3/eig A2/eig F#3/eig A2/eig F#3/eig A2/eig
+bar  18 RH: E4/hal. r/eig E5/eig  LH: A2/eig E3/eig A3/eig E3/eig C4/eig E3/eig C4/eig E3/eig
+bar  19 RH: E5/qua. E5/qua D5/eig C5/eig B4/eig  LH: C3/eig G3/eig C4/eig G3/eig E4/eig G3/eig E4/eig G3/eig
+bar  20 RH: B4/qua. B4/qua A4/eig G4/eig A4/eig  LH: G2/eig D3/eig G3/eig D3/eig B3/eig D3/eig B3/eig D3/eig
+bar  21 RH: A4/hal. r/eig B4/eig  LH: D3/eig A3/eig D4/eig A3/eig F#4/hal
+bar  22 RH: D5/hal. B4/eig E5/eig  LH: G3/qua.+B3/qua.+D4/qua. G3/qua.+B3/qua.+D4/qua. G3/qua+B3/qua+D4/qua
+bar  23 RH: E5/hal B4/hal  LH: G3/qua.+B3/qua.+D4/qua. G3/qua.+B3/qua.+D4/qua. G3/qua+B3/qua+D4/qua
+bar  24 RH: A4/hal. G4/eig B4/eig  LH: E3/qua.+G3/qua.+B3/qua. E3/qua.+G3/qua.+B3/qua. E3/qua+G3/qua+B3/qua
+bar  25 RH: B4/hal B4/eig B4/qua.  LH: E3/qua.+G3/qua.+B3/qua. E3/qua.+G3/qua.+B3/qua. E3/qua+G3/qua+B3/qua
+bar  26 RH: A4/qua A4/qua A4/qua G4/eig A4/eig  LH: C3/qua.+E3/qua.+G3/qua. C3/qua.+E3/qua.+G3/qua. C3/qua+E3/qua+G3/qua
+bar  27 RH: A4/hal B4/eig B4/qua.  LH: C3/qua.+E3/qua.+G3/qua. C3/qua.+E3/qua.+G3/qua. C3/qua+E3/qua+G3/qua
+bar  28 RH: A4/qua A4/qua A4/qua G4/eig A4/eig  LH: D3/qua.+F#3/qua.+A3/qua. D3/qua.+F#3/qua.+A3/qua. D3/qua+F#3/qua+A3/qua
+bar  29 RH: D4/hal B4/eig B4/qua.  LH: D3/qua.+F#3/qua.+A3/qua. D3/qua.+F#3/qua.+A3/qua. D3/qua+F#3/qua+A3/qua
+bar  30 RH: D4/eig r/qua B4/eig B4/eig C5/eig D5/eig G5/eig  LH: D3/who+F#3/who+A3/who
+bar  31 RH: G5/qua. F#5/hal E5/eig  LH: B2/qua.+E3/qua. B2/qua.+E3/qua. B2/qua+E3/qua
+bar  32 RH: E5/qua. D5/qua. B4/eig B4/eig  LH: C3/qua.+E3/qua. C3/qua.+E3/qua. C3/qua+E3/qua
+bar  33 RH: B4/qua r/qua r/hal  LH: G2/qua.+D3/qua. G2/qua.+D3/qua. G2/qua+D3/qua
+bar  34 RH: E4/eig F#4/qua. B4/eig B4/eig C5/eig D5/eig G5/eig  LH: D3/who+A3/who
+bar  35 RH: G5/qua. F#5/hal E5/eig  LH: B2/qua.+E3/qua. B2/qua.+E3/qua. B2/qua+E3/qua
+bar  36 RH: E5/qua. D5/qua. B4/eig B4/eig  LH: C3/qua.+E3/qua. C3/qua.+E3/qua. C3/qua+E3/qua
+bar  37 RH: B4/hal r/eig A4/eig B4/eig A4/eig  LH: G2/qua.+D3/qua. G2/qua.+D3/qua. G2/qua+D3/qua
+bar  38 RH: B4/eig C5/eig D5/eig G5/qua F#5/qua E5/eig  LH: A2/qua.+D3/qua. A2/qua.+D3/qua. A2/qua+D3/qua
+bar  39 RH: r/?  LH: A2/eig E3/eig A3/eig E3/eig C4/eig E3/eig C4/eig E3/eig
+bar  40 RH: G4/qua.+E5/qua. D5/qua C5/qua D5/eig+G5/eig  LH: C3/eig G3/eig C4/eig G3/eig E4/eig G3/eig E4/eig G3/eig
+bar  41 RH: D5/qua.+G5/qua. D5/qua+F#5/qua D5/qua+E5/qua A4/eig+D5/eig  LH: G2/eig D3/eig G3/eig D3/eig B3/eig D3/eig B3/eig D3/eig
+bar  42 RH: A4/qua.+D5/qua. A4/qua+C5/qua A4/qua+B4/qua E4/eig+A4/eig  LH: D2/eig A2/eig D3/eig A2/eig F#3/eig A2/eig F#3/eig A2/eig
+bar  43 RH: E4/who+A4/who  LH: A2/eig E3/eig A3/eig E3/eig C4/eig E3/eig C4/eig E3/eig
+bar  44 RH: G4/qua.+E5/qua. D5/qua C5/qua D5/eig+G5/eig  LH: C3/eig G3/eig C4/eig G3/eig E4/eig G3/eig E4/eig G3/eig
+bar  45 RH: D5/qua.+G5/qua. D5/qua+F#5/qua D5/qua+E5/qua A4/eig+D5/eig  LH: G2/eig D3/eig G3/eig D3/eig B3/eig D3/eig B3/eig D3/eig
+bar  46 RH: A4/hal.+D5/hal. r/eig B4/eig  LH: D3/eig A3/eig D4/eig A3/eig F#4/hal
+bar  47 RH: D5/hal. B4/eig E5/eig  LH: G3/who+B3/who+D4/who
+bar  48 RH: E5/qua r/qua B4/hal  LH: G3/who+B3/who+D4/who
+bar  49 RH: A4/hal. G4/eig B4/eig  LH: E3/who+G3/who+B3/who
+bar  50 RH: B4/qua r/qua B4/eig B4/qua.  LH: E3/who+G3/who+B3/who
+bar  51 RH: A4/qua A4/qua A4/qua G4/eig A4/eig  LH: C3/who+E3/who+G3/who
+bar  52 RH: A4/hal B4/eig B4/qua.  LH: C3/who+E3/who+G3/who
+bar  53 RH: A4/qua A4/qua A4/qua G4/eig A4/eig  LH: D3/who+F#3/who+A3/who
+bar  54 RH: D4/who  LH: D3/who+F#3/who+A3/who
+bar  55 RH: B3/who  LH: G2/who+D3/who+G3/who
+bar  56 RH: B3/who  LH: G2/who+D3/who+G3/who

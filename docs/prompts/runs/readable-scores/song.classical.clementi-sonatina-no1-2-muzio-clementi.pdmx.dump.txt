@@ -1,0 +1,89 @@
+song: song.classical.clementi-sonatina-no1-2-muzio-clementi.pdmx
+title: Sonatina in C major, Op. 36 No. 1 (third movement)
+composer: Muzio Clementi
+rungs: classical.5
+shipped file: scores/pdmx/Qmbs8bGTAq4UJLeLcyLJjzUzBtXKQRFaU3hQoqKxkfmdbD.mxl
+catalog keySig/timeSig/tempo: C major / None / 80.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 15, chord symbols 0, grace notes 0, voices>1 220, measures 70, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 3 8
+  bar 17: clef G 2
+  bar 23: clef F 4
+
+dump_score.py:
+song.classical.clementi-sonatina-no1-2-muzio-clementi.pdmx | Sonatina in C major, Op. 36 No. 1 (third movement) | level 5.34 (estimated)
+notation: {"bars": 70, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/8"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['3/8']
+bar   1 RH: E5/16t D5/16t C5/eig C5/eig  LH: C3/eig E3/eig G3/eig
+bar   2 RH: G5/qua F5/16t E5/16t  LH: C3/eig E3/eig G3/eig
+bar   3 RH: D5/eig F5/eig B4/eig  LH: C3/eig D3/eig F3/eig
+bar   4 RH: C5/eig G4/eig G4/eig  LH: C3/eig E3/eig G3/eig
+bar   5 RH: E5/16t D5/16t C5/eig C5/eig  LH: C3/eig E3/eig G3/eig
+bar   6 RH: G5/qua F5/16t E5/16t  LH: C3/eig E3/eig G3/eig
+bar   7 RH: D5/16t E5/16t F5/16t E5/16t F5/16t D5/16t  LH: G2/eig D3/eig G3/eig
+bar   8 RH: C5/qua r/eig  LH: C3/eig E3/eig G3/eig
+bar   9 RH: E5/16t D5/16t C5/eig C5/eig  LH: C3/eig E3/eig G3/eig
+bar  10 RH: G5/qua F5/16t E5/16t  LH: C3/eig E3/eig G3/eig
+bar  11 RH: D5/eig F5/eig B4/eig  LH: C3/eig D3/eig F3/eig
+bar  12 RH: C5/eig G4/eig G4/eig  LH: C3/eig E3/eig G3/eig
+bar  13 RH: E5/16t D5/16t C5/eig C5/eig  LH: C3/eig E3/eig G3/eig
+bar  14 RH: G5/qua F5/16t E5/16t  LH: C3/eig E3/eig G3/eig
+bar  15 RH: D5/16t E5/16t F5/16t E5/16t F5/16t D5/16t  LH: G2/eig D3/eig G3/eig
+bar  16 RH: C5/qua r/eig  LH: C3/eig E3/eig G3/eig
+bar  17 RH: G4/16t F4/16t E4/eig E4/eig  LH: C4/qua r/eig
+bar  18 RH: A4/16t G4/16t F4/eig F4/eig  LH: C4/qua r/eig
+bar  19 RH: D4/16t F4/16t B4/16t F4/16t B4/16t F4/16t  LH: C4/eig C4/eig C4/eig
+bar  20 RH: E4/eig G4/eig C5/eig  LH: C4/eig C4/eig C4/eig
+bar  21 RH: G4/16t F4/16t E4/eig E4/eig  LH: C4/qua r/eig
+bar  22 RH: E5/16t D5/16t C5/eig C5/eig  LH: A3/qua+C4/qua r/eig
+bar  23 RH: F#4/16t G4/16t A4/16t B4/16t C5/16t A4/16t  LH: D3/eig+A3/eig D3/eig+A3/eig D3/eig+A3/eig
+bar  24 RH: G4/qua B5/16t C6/16t  LH: G3/eig+B3/eig G3/eig+B3/eig G3/eig+B3/eig
+bar  25 RH: D6/16t C6/16t B5/16t A5/16t G5/16t F#5/16t  LH: G3/eig+B3/eig G3/eig+B3/eig G3/eig+B3/eig
+bar  26 RH: E5/16t D5/16t C5/16t B4/16t A4/16t G4/16t  LH: G3/eig+C4/eig G3/eig+C4/eig G3/eig+C4/eig
+bar  27 RH: F#4/16t G4/16t A4/16t B4/16t C5/16t A4/16t  LH: G3/eig+C4/eig G3/eig+C4/eig G3/eig+C4/eig
+bar  28 RH: G4/qua B5/16t C6/16t  LH: G3/eig+B3/eig G3/eig+B3/eig G3/eig+B3/eig
+bar  29 RH: D6/16t C6/16t B5/16t A5/16t G5/16t F#5/16t  LH: G3/eig+B3/eig G3/eig+B3/eig G3/eig+B3/eig
+bar  30 RH: F5/eig F5/eig D6/16t B5/16t  LH: G3/qua+B3/qua r/eig
+bar  31 RH: F5/eig F5/eig D6/16t B5/16t  LH: G3/qua+B3/qua r/eig
+bar  32 RH: F5/qua r/eig  LH: G3/eig B3/eig D4/eig
+bar  33 RH: D5/qua r/eig  LH: G3/eig B3/eig D4/eig
+bar  34 RH: B4/16t G4/16t A4/16t B4/16t C5/16t D5/16t  LH: G3/qua r/eig
+bar  35 RH: E5/16t D5/16t C5/eig C5/eig  LH: C3/eig E3/eig G3/eig
+bar  36 RH: G5/qua F5/16t E5/16t  LH: C3/eig E3/eig G3/eig
+bar  37 RH: D5/eig F5/eig B4/eig  LH: C3/eig D3/eig F3/eig
+bar  38 RH: C5/eig G4/eig G4/eig  LH: C3/eig E3/eig G3/eig
+bar  39 RH: E5/16t D5/16t C5/eig C5/eig  LH: C3/eig E3/eig G3/eig
+bar  40 RH: G5/qua F5/16t E5/16t  LH: C3/eig E3/eig G3/eig
+bar  41 RH: D5/16t E5/16t F5/16t E5/16t F5/16t D5/16t  LH: G2/eig D3/eig G3/eig
+bar  42 RH: C5/qua r/eig  LH: C3/eig E3/eig G3/eig
+bar  43 RH: E5/16t D5/16t C5/eig C5/eig  LH: C3/eig E3/eig G3/eig
+bar  44 RH: G5/qua F5/16t E5/16t  LH: C3/eig E3/eig G3/eig
+bar  45 RH: D5/eig F5/eig B4/eig  LH: C3/eig D3/eig F3/eig
+bar  46 RH: C5/eig G4/eig G4/eig  LH: C3/eig E3/eig G3/eig
+bar  47 RH: E5/16t D5/16t C5/eig C5/eig  LH: C3/eig E3/eig G3/eig
+bar  48 RH: G5/qua F5/16t E5/16t  LH: C3/eig E3/eig G3/eig
+bar  49 RH: D5/16t E5/16t F5/16t E5/16t F5/16t D5/16t  LH: G2/eig D3/eig G3/eig
+bar  50 RH: C5/qua r/eig  LH: C3/eig E3/eig G3/eig
+bar  51 RH: G4/16t F4/16t E4/eig E4/eig  LH: C4/qua r/eig
+bar  52 RH: A4/16t G4/16t F4/eig F4/eig  LH: C4/qua r/eig
+bar  53 RH: D4/16t F4/16t B4/16t F4/16t B4/16t F4/16t  LH: C4/eig C4/eig C4/eig
+bar  54 RH: E4/qua E5/16t F5/16t  LH: C4/eig G3/eig E3/eig
+bar  55 RH: G5/16t F5/16t E5/16t D5/16t C5/16t B4/16t  LH: C3/eig D3/eig E3/eig
+bar  56 RH: A4/16t G4/16t F4/16t E4/16t D4/16t C4/16t  LH: F3/qua r/eig
+bar  57 RH: B3/16t C4/16t D4/16t E4/16t F4/16t D4/16t  LH: G2/qua r/eig
+bar  58 RH: C4/qua r/eig  LH: C3/eig E3/eig G3/eig
+bar  59 RH: G4/16t F4/16t E4/eig E4/eig  LH: C4/qua r/eig
+bar  60 RH: A4/16t G4/16t F4/eig F4/eig  LH: C4/qua r/eig
+bar  61 RH: D4/16t F4/16t B4/16t F4/16t B4/16t F4/16t  LH: C4/eig C4/eig C4/eig
+bar  62 RH: E4/eig r/eig E5/16t F5/16t  LH: C4/eig G3/eig E3/eig
+bar  63 RH: G5/16t F5/16t E5/16t D5/16t C5/16t B4/16t  LH: C3/eig D3/eig E3/eig
+bar  64 RH: A4/16t G4/16t F4/16t E4/16t D4/16t C4/16t  LH: F3/eig F3/eig F3/eig
+bar  65 RH: B3/16t C4/16t D4/16t E4/16t F4/16t D4/16t  LH: G2/eig G2/eig G2/eig
+bar  66 RH: C4/qua r/eig  LH: C3/eig E3/eig G3/eig
+bar  67 RH: E4/qua+G4/qua r/eig  LH: C3/eig E3/eig G3/eig
+bar  68 RH: E4/qua+G4/qua+C5/qua r/eig  LH: C3/eig E3/eig G3/eig
+bar  69 RH: E5/qua+G5/qua r/eig  LH: C3/eig E3/eig G3/eig
+bar  70 RH: E5/qua+G5/qua+C6/qua r/eig  LH: C3/qua r/eig

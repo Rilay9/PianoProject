@@ -1,0 +1,42 @@
+song: song.jazz.the-dave-brubeck-quartet-take-five.pdmx
+title: Take Five
+composer: Paul Desmond
+rungs: jazz.9
+shipped file: scores/pdmx/QmSd8iw4LSxdLT5B28Fv2jg9QeLdcY7BQT2zsoeNxqqSDW.mxl
+catalog keySig/timeSig/tempo: 6 flats / None / 136.0
+raw-XML counts: ties 4, tuplets 0, fingerings 37, dynamics 0, pedal 0, articulations 0, chord symbols 49, grace notes 0, voices>1 264, measures 25, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -6
+  bar 1: time 5 4
+
+dump_score.py:
+song.jazz.the-dave-brubeck-quartet-take-five.pdmx | Take Five | level 6.03 (estimated)
+notation: {"bars": 25, "staves": 2, "keys": [{"fifths": -6, "mode": null}], "times": ["5/4"], "chordCount": 49, "chords": ["Abm6", "Abm7", "Bb7", "Bbm7", "Cb7", "Db7", "Ebm7", "F7sus4", "Gb7"], "swungMark": false, "finalBass": 10}
+key signatures (fifths): ['-6']  modes: []  times: ['5/4']
+bar   1 RH: r/hal r/qua Bb3/eig Eb4/eig Gb4/eig Ab4/eig  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar   2 RH: A4/eig Bb4/eig A4/eig Ab4/eig Gb4/qua Bb3/qua Db4/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar   3 RH: Eb4/hal. F4/16t Gb4/16t F4/16t Eb4/16t Db4/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar   4 RH: Eb4/hal. Db4/16t Eb4/16t Db4/16t Bb3/16t Ab3/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar   5 RH: Bb3/hal. Bb3/eig Eb4/eig Gb4/eig Ab4/eig  LH: Eb3/eig Gb3/eig r/eig Eb3/eig Gb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar   6 RH: A4/eig Bb4/eig A4/eig Ab4/eig Gb4/qua Bb3/qua Db4/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar   7 RH: Eb4/hal. Db4/16t Eb4/16t Db4/16t Bb3/16t Ab3/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar   8 RH: Bb3/hal. F4/16t Gb4/16t F4/16t Eb4/16t Db4/qua  LH: Eb3/eig Gb3/eig r/eig Eb3/eig Gb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar   9 RH: Eb4/who Eb4/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar  10 RH: Eb5/eig Gb5/qua Eb5/eig Cb5/qua Ab4/eig Bb4/eig Cb5/eig C5/eig  LH: Cb3/eig Eb3/eig+Gb3/eig+Bb3/eig r/eig Cb3/eig Eb3/qua+Gb3/qua+Bb3/qua Cb3/qua Eb3/qua+F3/qua+Ab3/qua  [Cb dominant] [Ab minor-sixth]
+bar  11 RH: Db5/eig F5/qua Db5/eig Bb4/qua Gb4/eig Ab4/eig A4/eig Bb4/eig  LH: Bb2/eig Db3/eig+F3/eig+Ab3/eig r/eig Bb2/eig Db3/qua+F3/qua+Ab3/qua Bb2/qua Db3/qua+Eb3/qua+Gb3/qua  [Bb minor-seventh] [Eb minor-seventh]
+bar  12 RH: Cb5/eig Eb5/qua Cb5/eig Ab4/qua F4/eig Gb4/eig Ab4/eig A4/eig  LH: Ab2/eig Cb3/eig+Eb3/eig+Gb3/eig r/eig Ab2/eig Cb3/qua+Eb3/qua+Gb3/qua Ab2/qua Cb3/qua+Db3/qua+F3/qua  [Ab minor-seventh] [Db dominant]
+bar  13 RH: Bb4/eig A4/eig Bb4/eig Cb5/eig Db5/qua Db5/eig C5/eig Db5/eig D5/eig  LH: Gb2/eig Bb2/eig+Db3/eig+F3/eig r/eig Gb2/eig Bb2/qua+Db3/qua+F3/qua Gb2/qua Bb2/qua+Db3/qua+F3/qua  [Gb dominant]
+bar  14 RH: Eb5/eig Gb5/qua Eb5/eig Cb5/qua Ab4/eig Bb4/eig Cb5/eig C5/eig  LH: Cb3/eig Eb3/eig+Gb3/eig+Bb3/eig r/eig Cb3/eig Eb3/qua+Gb3/qua+Bb3/qua Cb3/qua Eb3/qua+F3/qua+Ab3/qua  [Cb dominant] [Ab minor-sixth]
+bar  15 RH: Db5/eig F5/qua Db5/eig Bb4/qua Gb4/eig Ab4/eig A4/eig Bb4/eig  LH: Bb2/eig Db3/eig+F3/eig+Ab3/eig r/eig Bb2/eig Db3/qua+F3/qua+Ab3/qua Bb2/qua Db3/qua+Eb3/qua+Gb3/qua  [Bb minor-seventh] [Eb minor-seventh]
+bar  16 RH: Cb5/eig Eb5/qua Cb5/eig Ab4/qua F4/eig Ab4/eig Db5/eig Cb5/eig  LH: Ab2/eig Cb3/eig+Eb3/eig+Gb3/eig r/eig Ab2/eig Cb3/qua+Eb3/qua+Gb3/qua Ab2/qua Cb3/qua+Db3/qua+F3/qua  [Ab minor-seventh] [Db dominant]
+bar  17 RH: Bb4/hal. Bb3/eig Eb4/eig Gb4/eig Ab4/eig  LH: F2/eig C3/eig+Eb3/eig r/eig F2/eig C3/qua+Eb3/qua Bb2/qua D3/qua+F3/qua+Ab3/qua  [F suspended-fourth] [Bb dominant]
+bar  18 RH: A4/eig Bb4/eig A4/eig Ab4/eig Gb4/qua Bb3/qua Db4/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar  19 RH: Eb4/hal. F4/16t Gb4/16t F4/16t Eb4/16t Db4/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar  20 RH: Eb4/hal. Db4/16t Eb4/16t Db4/16t Bb3/16t Ab3/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar  21 RH: Bb3/hal. Bb3/eig Eb4/eig Gb4/eig Ab4/eig  LH: Eb3/eig Gb3/eig r/eig Eb3/eig Gb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar  22 RH: A4/eig Bb4/eig A4/eig Ab4/eig Gb4/qua Bb3/qua Db4/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar  23 RH: Eb4/hal. Db4/16t Eb4/16t Db4/16t Bb3/16t Ab3/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar  24 RH: Bb3/hal. F4/16t Gb4/16t F4/16t Eb4/16t Db4/qua  LH: Eb3/eig Gb3/eig r/eig Eb3/eig Gb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]
+bar  25 RH: Eb4/who Eb4/qua  LH: Eb3/eig Gb3/eig+Bb3/eig r/eig Eb3/eig Gb3/qua+Bb3/qua Bb2/qua Db3/qua+F3/qua  [Eb minor-seventh] [Bb minor-seventh]

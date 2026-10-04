@@ -1,0 +1,53 @@
+song: song.classical.burgmuller-burgmuller-arabesque-op-100-no-2.pdmx
+title: Arabesque, Op. 100 No. 2
+composer: Johann Friedrich Burgmüller
+rungs: classical.5
+shipped file: scores/pdmx/QmZfHayYiHJJBpxa5yZpMwR9RDMcDRYGvFC25NyyKa8ziH.mxl
+catalog keySig/timeSig/tempo: A minor / None / 126.0
+raw-XML counts: ties 4, tuplets 0, fingerings 6, dynamics 10, pedal 0, articulations 71, chord symbols 0, grace notes 0, voices>1 185, measures 33, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 2 4
+  bar 17: clef G 2
+  bar 20: clef F 4
+
+dump_score.py:
+song.classical.burgmuller-burgmuller-arabesque-op-100-no-2.pdmx | Arabesque, Op. 100 No. 2 | level 5.91 (estimated)
+notation: {"bars": 33, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["2/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 9}
+key signatures (fifths): ['0']  modes: []  times: ['2/4']
+text on the score: ['Allegro scherzando', 'leggiero', 'cresc.', 'rit.', 'a tempo', 'risoluto']
+bar   1 RH: r/?  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar   2 RH: r/?  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar   3 RH: A4/16t B4/16t C5/16t B4/16t A4/eig r/eig  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar   4 RH: A4/16t B4/16t C5/16t D5/16t E5/eig r/eig  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar   5 RH: D5/16t E5/16t F5/16t G5/16t A5/eig r/eig  LH: A3/qua+D4/qua+F4/qua A3/qua+D4/qua+F4/qua
+bar   6 RH: A5/16t B5/16t C6/16t D6/16t E6/eig r/eig  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar   7 RH: r/eig E5/eig E5/eig F5/eig  LH: G3/qua+C4/qua+E4/qua G3/qua+C4/qua+E4/qua
+bar   8 RH: D5/eig r/eig D5/qua  LH: G3/qua+B3/qua+F4/qua G3/qua+B3/qua+F4/qua
+bar   9 RH: D5/eig G5/eig D5/eig E5/eig  LH: G3/qua+B3/qua+F4/qua G3/qua+B3/qua+F4/qua
+bar  10 RH: C5/eig r/eig E5/qua  LH: C4/eig+E4/eig r/eig E4/qua
+bar  11 RH: C5/qua C6/eig r/eig  LH: C4/qua.+E4/qua. r/eig
+bar  12 RH: E5/qua. B4/eig  LH: G#3/16t A3/16t B3/16t A3/16t G#3/eig r/eig
+bar  13 RH: C5/qua. A4/eig  LH: A3/16t B3/16t C4/16t D4/16t E4/eig r/eig
+bar  14 RH: E5/qua. B4/eig  LH: G#3/16t A3/16t B3/16t A3/16t G#3/eig r/eig
+bar  15 RH: C5/qua. A4/eig  LH: A3/16t B3/16t C4/16t D4/16t E4/eig r/eig
+bar  16 RH: A5/qua. E5/eig  LH: C#4/16t D4/16t E4/16t D4/16t C#4/eig r/eig
+bar  17 RH: F5/qua. E5/eig  LH: D4/16t E4/16t F4/16t G4/16t A4/eig G4/eig
+bar  18 RH: D5/eig C5/eig B4/eig A4/eig  LH: F4/eig E4/eig D4/eig D#4/eig
+bar  19 RH: G#4/qua E5/qua  LH: E4/eig D4/eig C4/eig B3/eig
+bar  20 RH: A4/16t B4/16t C5/16t B4/16t A4/eig r/eig  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar  21 RH: A4/16t B4/16t C5/16t D5/16t E5/eig r/eig  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar  22 RH: D5/16t E5/16t F5/16t G5/16t A5/eig r/eig  LH: A3/qua+D4/qua+F4/qua A3/qua+D4/qua+F4/qua
+bar  23 RH: A5/16t B5/16t C6/16t D6/16t E6/eig r/eig  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar  24 RH: r/eig B4/eig B4/eig C5/eig  LH: A3/qua+D4/qua+E4/qua A3/qua+D4/qua+E4/qua
+bar  25 RH: A4/eig r/eig E5/qua  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar  26 RH: E5/eig B4/eig B4/eig C5/eig  LH: A3/qua+D4/qua+E4/qua A3/qua+D4/qua+E4/qua
+bar  27 RH: A4/hal  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar  28 RH: A4/16t B4/16t C5/16t B4/16t A4/eig r/eig  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar  29 RH: D5/16t E5/16t F5/16t G5/16t A5/eig r/eig  LH: A3/qua+D4/qua+F4/qua A3/qua+D4/qua+F4/qua
+bar  30 RH: A5/16t B5/16t C6/16t B5/16t A5/eig r/eig  LH: A3/qua+C4/qua+E4/qua A3/qua+C4/qua+E4/qua
+bar  31 RH: D6/16t E6/16t F6/16t G6/16t A6/eig r/eig  LH: A3/qua+D4/qua+F4/qua A3/qua+D4/qua+F4/qua
+bar  32 RH: E4/16t D4/16t C4/16t B3/16t A3/eig r/eig  LH: E3/16t D3/16t C3/16t B2/16t A2/eig r/eig
+bar  33 RH: C5/hal+A5/hal  LH: A3/hal+E4/hal

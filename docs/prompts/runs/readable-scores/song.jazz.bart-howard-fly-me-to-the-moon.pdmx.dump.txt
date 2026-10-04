@@ -1,0 +1,39 @@
+song: song.jazz.bart-howard-fly-me-to-the-moon.pdmx
+title: Fly Me to the Moon
+composer: Bart Howard
+rungs: jazz.7
+shipped file: scores/pdmx/QmS2enG17nJVrbMvvCcHDW9wAN8nLSV1CPMmtghD7SZFVQ.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 20, grace notes 0, voices>1 206, measures 22, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 4 4
+
+dump_score.py:
+song.jazz.bart-howard-fly-me-to-the-moon.pdmx | Fly Me to the Moon | level 5.19 (estimated)
+notation: {"bars": 22, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 20, "chords": ["A", "Am7", "Am9", "CMaj9", "Db9", "Dm9", "E", "Em9", "F#7"], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   1 RH:v1: C5/qua B4/qua A4/qua G4/qua | v2: E4/hal+G4/hal+A4/hal B3/qua+D4/qua+F#4/qua Bb3/qua+Eb4/qua  LH: A2/hal+E3/hal+C4/hal E2/qua+G3/qua A2/qua+G3/qua  [A minor-seventh] [A minor-seventh]
+bar   2 RH:v1: F4/qua G4/qua A4/qua C5/qua | v2: A3/qua+C4/qua+E4/qua A#3/qua+C#4/qua+E4/qua C4/qua+E4/qua+F4/qua C4/qua+F4/qua+Bb4/qua  LH: D2/hal.+F3/hal. Ab2/qua+Gb3/qua
+bar   3 RH:v1: B4/qua A4/qua G4/qua F4/qua | v2: B3/hal+E4/hal+G4/hal A3/qua+C4/qua+E4/qua Ab3/qua+C4/qua+Eb4/qua  LH: G2/hal+F3/hal D2/qua+F3/qua Db2/qua+F3/qua  [Db dominant-ninth] [Db dominant-ninth]
+bar   4 RH:v1: E4/who | v2: G3/hal+B3/hal+D4/hal A#3/hal+C4/hal  LH: C2/hal+E3/hal F#2/hal+E3/hal  [C major-ninth] [F# dominant] [C major-ninth] [F# dominant]
+bar   5 RH:v1: A4/qua G4/qua F4/qua E4/qua | v2: C4/hal+E4/hal r/hal  LH: F2/hal+A3/hal r/hal
+bar   6 RH:v1: D4/qua E4/qua F4/qua A4/qua | v2: C4/hal E4/hal  LH: Bb2/hal+A3/hal B2/hal+A3/hal
+bar   7 RH:v1: G#4/qua F4/qua E4/qua D4/qua | v2: B3/hal+D4/hal+F4/hal C4/hal  LH: E2/hal Bb2/hal+Ab3/hal
+bar   8 RH:v1: C4/hal C#4/hal | v2: B3/hal Bb3/hal  LH: A2/hal+G3/hal A2/hal+G3/hal  [A minor-ninth] [A major] [A minor-ninth] [A major]
+bar   9 RH:v1: D4/hal A4/hal | v2: F3/hal+A3/hal+C4/hal C4/hal+E4/hal+G4/hal  LH: D2/hal+A2/hal D2/hal+F3/hal
+bar  10 RH:v1: C5/hal B4/hal | v2: C4/hal+F4/hal+A4/hal B3/hal+E4/hal+G#4/hal  LH: G2/hal+F3/hal G2/hal+F3/hal
+bar  11 RH:v1: G4/who | v2: B3/hal.+D4/hal.+F#4/hal. r/qua  LH: E2/hal.+B2/hal.+G3/hal. r/qua  [E minor-ninth] [E minor-ninth]
+bar  12 RH:v1: G4/who | v2: Bb3/hal.+Db4/hal.+F4/hal. r/qua  LH: A2/hal.+G3/hal. r/qua
+bar  13 RH:v1: F4/hal F4/hal | v2: A3/hal+C4/hal+E4/hal r/hal  LH: D2/hal.+A2/hal.+F3/hal. r/qua  [D minor-ninth] [D minor-ninth]
+bar  14 RH:v1: A4/hal G4/hal | v2: C4/hal+F4/hal B3/hal+Eb4/hal  LH: G2/hal+F3/hal G2/hal+F3/hal
+bar  15 RH:v1: E4/who | v2: G3/hal+B3/hal+D4/hal r/hal  LH: C2/hal.+G2/hal.+E3/hal. r/qua
+bar  16 RH:v1: r/? | v2: D4/hal+A4/hal+C#5/hal+E5/hal F4/hal+Bb4/hal+D5/hal  LH: B2/hal+F#3/hal+A3/hal E2/hal+G#3/hal
+bar  17 RH:v1: E5/hal D5/hal | v2: F#4/hal+G4/hal+B4/hal F4/hal+Bb4/hal  LH: E2/hal+B2/hal+G3/hal E2/hal+G#3/hal  [E major] [E major]
+bar  18 RH:v1: D5/hal C#5/hal | v2: D4/hal+G4/hal+B4/hal C#4/hal+F#4/hal+A#4/hal  LH: A2/hal+G3/hal A2/hal+G3/hal
+bar  19 RH:v1: E5/qua C5/qua C5/hal | v2: E4/hal+A4/hal+C5/hal Eb4/hal+Ab4/hal  LH: D2/hal+F3/hal D2/hal+C3/hal+F#3/hal
+bar  20 RH:v1: B4/hal C5/qua D5/qua | v2: C4/hal+F4/hal+A4/hal C4/qua+F4/qua+A4/qua F4/qua+G#4/qua+B4/qua  LH: G2/hal G2/hal
+bar  21 RH:v1: C5/who | v2: D4/hal.+E4/hal.+G4/hal.+A4/hal. r/qua  LH: C2/hal.+E3/hal. r/qua
+bar  22 RH:v1: F#4/hal F4/hal | v2: A3/hal+D4/hal Ab3/hal+C4/hal  LH: E2/hal E2/hal  [E major] [E major]

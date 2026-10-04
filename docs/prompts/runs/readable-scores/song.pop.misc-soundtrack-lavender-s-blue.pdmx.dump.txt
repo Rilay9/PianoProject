@@ -1,0 +1,37 @@
+song: song.pop.misc-soundtrack-lavender-s-blue.pdmx
+title: Lavender's Blue
+composer: Arr. Camille Blecher
+rungs: chords-pop.5
+shipped file: scores/pdmx/QmVJhKEJ7eio1MEPaWiZ6ztGgnPs21NsiRkm1YffHawfHU.mxl
+catalog keySig/timeSig/tempo: C major / None / 96.0
+raw-XML counts: ties 0, tuplets 0, fingerings 0, dynamics 9, pedal 2, articulations 0, chord symbols 0, grace notes 0, voices>1 66, measures 20, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0
+  bar 1: time 3 4
+
+dump_score.py:
+song.pop.misc-soundtrack-lavender-s-blue.pdmx | Lavender's Blue | level 4.59 (estimated)
+notation: {"bars": 20, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["3/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: []  times: ['3/4']
+bar   1 RH: A5/eig C5/eig F5/eig A5/eig C5/eig A5/eig  LH: F4/hal.
+bar   2 RH: G5/eig C5/eig E5/eig G5/eig C5/eig G5/eig  LH: E4/hal.
+bar   3 RH: F5/eig A4/eig D5/eig F5/eig A4/eig F5/eig  LH: D4/hal.
+bar   4 RH: E5/eig G4/eig C5/eig E5/eig G4/eig E5/eig  LH: C4/hal.
+bar   5 RH: D5/eig F4/eig Bb4/eig D5/eig F4/eig D5/eig  LH: Bb2/hal.+F3/hal.+Bb3/hal.
+bar   6 RH: C5/eig F4/eig A4/eig C5/eig F4/eig C5/eig  LH: A2/hal.+F3/hal.+A3/hal.
+bar   7 RH: G4/eig+B4/eig D4/eig G4/eig B4/eig E4/qua+A4/qua+C5/qua  LH: G2/hal+D3/hal+G3/hal A2/qua+E3/qua+A3/qua
+bar   8 RH: G4/hal.+D5/hal.  LH: D3/hal.+G3/hal.
+bar   9 RH: C5/qua G5/qua G5/qua  LH: C3/eig G3/eig E4/eig C4/eig G4/qua
+bar  10 RH: G5/qua F5/eig E5/eig D5/eig C5/eig  LH: E3/eig G3/eig C4/eig G3/eig C4/eig G3/eig
+bar  11 RH: C5/qua A5/qua A5/qua  LH: F2/eig C3/eig F3/eig G3/eig A3/qua+C4/qua
+bar  12 RH: A5/hal.  LH: F2/eig C3/eig F3/eig C4/eig F4/eig F3/eig+C4/eig
+bar  13 RH: C5/qua G5/qua G5/qua  LH: C3/eig G3/eig E4/eig C4/eig G4/qua
+bar  14 RH: G5/qua F5/eig E5/eig D5/eig C5/eig  LH: E3/eig G3/eig C4/eig G3/eig C4/eig G3/eig
+bar  15 RH: F5/qua E5/qua D5/qua  LH: D3/qua+A3/qua D3/qua+G3/qua F3/qua
+bar  16 RH: C5/hal.  LH: E3/qua F3/qua G3/qua
+bar  17 RH: C5/eig A4/eig C5/eig E5/eig C5/eig E5/eig  LH: A2/hal.
+bar  18 RH: D5/eig G4/eig B4/eig F5/eig E5/eig F5/eig  LH: D3/hal.
+bar  19 RH: E5/eig A4/eig C5/eig F5/eig E5/eig D5/eig  LH: E3/hal.
+bar  20 RH: C5/qua+E5/qua C4/hal+E4/hal  LH: G3/qua C3/hal

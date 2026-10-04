@@ -1,0 +1,82 @@
+song: song.jazz.django-reinhardt-limehouse-blues.pdmx
+title: Limehouse Blues (1922)
+composer: Philip Braham
+rungs: jazz.5, jazz.6
+shipped file: scores/pdmx/QmWGjRhu5UsAL8TbmdX8RfLGR2yBicWMaLGm83DePAvvnn.mxl
+catalog keySig/timeSig/tempo: 1 flat / None / 184.0
+raw-XML counts: ties 46, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 52, grace notes 0, voices>1 0, measures 64, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1
+  bar 1: time 4 4
+  bar 33: key -4
+
+dump_score.py:
+song.jazz.django-reinhardt-limehouse-blues.pdmx | Limehouse Blues (1922) | level 3.15 (estimated)
+notation: {"bars": 64, "staves": 1, "keys": [{"fifths": -1, "mode": null}, {"fifths": -4, "mode": null}], "times": ["4/4"], "chordCount": 52, "chords": ["A7", "Ab", "Ab7", "Ab9", "Am", "B7", "Bb", "Bb7", "Bbm", "Bbm7", "C7", "Db", "Db7", "Dm", "E7", "Eb", "Eb7", "F", "F7", "Fm7"], "swungMark": false, "finalBass": 8}
+key signatures (fifths): ['-1', '-4']  modes: []  times: ['4/4']
+text on the score: ['(b5)', 'for repeat']
+bar   1 RH: A4/who  [F major]
+bar   2 RH: A4/who
+bar   3 RH: G4/who  [Eb major]
+bar   4 RH: A4/who  [F major]
+bar   5 RH: r/qua A4/qua G4/qua A4/qua  [F major]
+bar   6 RH: G4/qua A4/qua G4/qua A4/qua  [Eb major]
+bar   7 RH: C5/who  [F major]
+bar   8 RH: C5/who
+bar   9 RH: C5/who  [A minor]
+bar  10 RH: C5/who
+bar  11 RH: B4/who  [E dominant]
+bar  12 RH: C5/who  [A minor]
+bar  13 RH: r/qua C5/qua B4/qua C5/qua  [A minor]
+bar  14 RH: B4/qua C5/qua B4/qua C5/qua  [E dominant]
+bar  15 RH: E5/who  [A minor]
+bar  16 RH: E5/who  [C dominant]
+bar  17 RH: F5/who  [F dominant]
+bar  18 RH: D5/who
+bar  19 RH: C5/qua Bb4/qua A4/qua G4/qua  [Bb major]
+bar  20 RH: G4/who
+bar  21 RH: r/qua A4/hal E4/qua  [A dominant]
+bar  22 RH: A4/qua Ab4/qua G4/qua F4/qua
+bar  23 RH: F4/who  [D minor]
+bar  24 RH: F4/who  [Db major]
+bar  25 RH: A4/who  [F major]
+bar  26 RH: A4/who
+bar  27 RH: G4/who  [Eb major]
+bar  28 RH: A4/who  [F major]
+bar  29 RH: r/qua A4/qua G4/qua A4/qua  [F major]
+bar  30 RH: G4/qua A4/qua G4/qua A4/qua  [Eb major]
+bar  31 RH: F4/qua r/qua Ab4/hal  [F major] [Bb minor-seventh]
+bar  32 RH: G4/hal Gb4/hal  [Eb dominant] [Ab dominant]
+bar  33 RH: F4/qua G4/qua Ab4/qua F4/qua  [Db dominant]
+bar  34 RH: F4/qua G4/hal Ab4/qua
+bar  35 RH: F4/qua G4/qua Ab4/qua F4/qua
+bar  36 RH: F4/who  [B dominant] [C dominant] [Db dominant]
+bar  37 RH: F4/qua G4/qua Ab4/qua F4/qua  [Bb dominant]
+bar  38 RH: F4/qua G4/hal Ab4/qua
+bar  39 RH: F4/qua G4/qua Ab4/qua F4/qua
+bar  40 RH: F4/who
+bar  41 RH: Eb4/qua F4/qua G4/qua Ab4/qua  [Ab major]
+bar  42 RH: Ab4/qua Bb4/hal B4/qua
+bar  43 RH: C5/qua B4/qua Bb4/qua Ab4/qua  [C dominant]
+bar  44 RH: Ab4/who  [F minor-seventh]
+bar  45 RH: F4/qua G4/qua Ab4/qua A4/qua  [Bb dominant]
+bar  46 RH: A4/qua Bb4/hal C5/qua
+bar  47 RH: Bb4/qua A4/qua Ab4/qua G4/qua  [Eb dominant]
+bar  48 RH: G4/qua Gb4/hal F4/qua  [Ab dominant]
+bar  49 RH: F4/qua G4/qua Ab4/qua F4/qua  [Db dominant]
+bar  50 RH: F4/qua G4/hal Ab4/qua
+bar  51 RH: F4/qua G4/qua Ab4/qua F4/qua
+bar  52 RH: F4/who  [Db dominant] [C dominant] [B dominant]
+bar  53 RH: F4/qua G4/qua Ab4/qua F4/qua  [Bb dominant]
+bar  54 RH: F4/qua G4/hal Ab4/qua
+bar  55 RH: F4/qua G4/qua Ab4/qua F4/qua
+bar  56 RH: F4/who
+bar  57 RH: Eb5/qua D5/qua Eb5/qua F5/qua  [Ab major]
+bar  58 RH: F5/qua Eb5/hal C5/qua  [F dominant]
+bar  59 RH: Db5/qua C5/qua Db5/qua Bb4/qua  [Bb minor] [F dominant]
+bar  60 RH: Bb4/who  [Bb minor]
+bar  61 RH: Db5/qua C5/qua Db5/qua Eb5/qua  [Bb minor-seventh]
+bar  62 RH: Eb5/qua C5/hal Bb4/qua  [Eb dominant]
+bar  63 RH: Ab4/hal Ab4/qua Ab4/qua  [Ab major]
+bar  64 RH: Ab4/hal. r/qua  [Ab dominant-ninth]

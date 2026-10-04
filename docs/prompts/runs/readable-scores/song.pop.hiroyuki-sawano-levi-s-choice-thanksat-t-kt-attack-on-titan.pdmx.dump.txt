@@ -1,0 +1,103 @@
+song: song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx
+title: Levi's Choice, from Attack on Titan
+composer: Hiroyuki Sawano, arr. Torby Brand
+rungs: chords-pop.8
+shipped file: scores/pdmx/QmUF3s59KhGSJZYEijsEfEhcHE1qzPKNzy1smaxWAMgCWG.mxl
+catalog keySig/timeSig/tempo: D minor / None / 75.0
+raw-XML counts: ties 42, tuplets 208, fingerings 0, dynamics 6, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 454, measures 81, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key -1
+  bar 1: time 4 4
+  bar 33: time 5 4
+  bar 34: time 4 4
+  bar 73: clef G 2
+  bar 81: clef F 4
+
+dump_score.py:
+song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx | Levi's Choice, from Attack on Titan | level 6.48 (estimated)
+notation: {"bars": 81, "staves": 2, "keys": [{"fifths": -1, "mode": null}], "times": ["4/4", "5/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 2}
+key signatures (fifths): ['-1']  modes: []  times: ['4/4', '5/4', '4/4']
+text on the score: ['(freely)', 'Slower, freely', 'rit.']
+bar   1 RH: r/qua  LH: r/eig D2/eig
+bar   2 RH: D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig  LH: D3/eig r/eig D3/eig r/eig D3/eig r/eig D3/eig C2/eig
+bar   3 RH: C4/eig+F4/eig r/eig C4/eig+F4/eig r/eig C4/eig+F4/eig r/eig C4/eig+F4/eig r/eig  LH: C3/eig r/eig C3/eig r/eig C3/eig r/eig C3/eig Bb1/eig
+bar   4 RH: D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig  LH: Bb2/eig r/eig Bb2/eig r/eig Bb2/eig r/eig Bb2/eig C2/eig
+bar   5 RH: C4/eig+F4/eig r/eig C4/eig+F4/eig r/eig C4/eig+F4/eig r/eig C4/eig+F4/eig r/eig  LH: C3/eig r/eig C3/eig r/eig C3/eig r/eig C3/eig D2/eig
+bar   6 RH: D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig  LH: D3/eig r/eig D3/eig r/eig D3/eig r/eig D3/eig C2/eig
+bar   7 RH: E4/eig+C5/eig r/eig E4/eig+C5/eig r/eig E4/eig+C5/eig r/eig E4/eig+C5/eig r/eig  LH: C3/eig r/eig C3/eig r/eig C3/eig r/eig C3/eig Bb1/eig
+bar   8 RH: D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig D4/eig+F4/eig r/eig  LH: Bb2/eig r/eig Bb2/eig r/eig Bb2/eig r/eig Bb2/eig C2/eig
+bar   9 RH: D4/eig+G4/eig r/eig D4/eig+G4/eig r/eig D4/qua.+G4/qua. A4/eig  LH: C3/eig r/eig C3/eig r/eig C3/qua. r/eig
+bar  10 RH: E5/eig F5/eig G5/eig E5/qua F5/qua C6/qua  LH: A3/who+D4/who+F4/who
+bar  11 RH: G5/hal. r/eig A4/eig  LH: C4/who+E4/who+G4/who
+bar  12 RH: E5/eig F5/eig G5/eig E5/qua A4/qua A5/eig G5/eig F5/eig  LH: Bb3/who+D4/who+F4/who
+bar  13 RH: E5/qua. G5/qua. r/eig A4/eig  LH: G3/hal+C4/hal+E4/hal A3/hal+E4/hal+G4/hal
+bar  14 RH: E5/eig F5/eig G5/eig E5/qua F5/qua C5/qua+C6/qua  LH: A3/who+D4/who+F4/who
+bar  15 RH: D5/hal+D6/hal C6/eig Bb5/eig A5/eig G5/eig Bb5/eig A5/eig  LH: C4/who+E4/who+G4/who
+bar  16 RH: F5/qua. r/eig A5/eig E5/eig F5/eig G5/eig C6/eig F5/eig  LH: Bb3/who+D4/who+F4/who
+bar  17 RH: E5/qua. D5/hal r/eig  LH: C4/who+E4/who+G4/who
+bar  18 RH: A4/qua+C5/qua+E5/qua+A5/qua C5/qua+E5/qua+G5/qua+C6/qua F5/qua+A5/qua+C6/qua+F6/qua E5/qua+A5/qua+C6/qua+E6/qua  LH: r/?
+bar  19 RH: E5/who+A5/who+C6/who+E6/who  LH: r/?
+bar  20 RH: A4/qua+C5/qua+E5/qua+A5/qua C5/qua+E5/qua+G5/qua+C6/qua F5/qua+A5/qua+C6/qua+F6/qua D5/qua+F5/qua+A5/qua+D6/qua  LH: r/?
+bar  21 RH: D5/hal+F5/hal+A5/hal+D6/hal r/qua r/eig A4/eig  LH: r/?
+bar  22 RH: E5/eig F5/eig G5/eig E5/qua F5/qua C6/qua  LH: D2/qua A2/qua+D3/qua+F3/qua A2/qua+D3/qua+F3/qua A2/qua+D3/qua+F3/qua
+bar  23 RH: G5/hal. r/eig A4/eig  LH: C2/qua C3/qua+E3/qua+G3/qua C3/qua+E3/qua+G3/qua C3/qua+E3/qua+G3/qua
+bar  24 RH: E5/eig F5/eig G5/eig E5/qua A4/qua A5/eig G5/eig F5/eig  LH: Bb1/qua Bb2/qua+D3/qua+F3/qua Bb2/qua+D3/qua+F3/qua Bb2/qua+D3/qua+F3/qua
+bar  25 RH: E5/qua. G5/hal A4/eig  LH: G2/hal+C3/hal+E3/hal A2/hal+E3/hal+G3/hal
+bar  26 RH: E5/eig F5/eig G5/eig E5/qua D5/qua+F5/qua C5/qua+G5/qua+C6/qua  LH: D2/qua A2/qua+D3/qua+F3/qua A2/qua+D3/qua+F3/qua A2/qua+D3/qua+F3/qua
+bar  27 RH: D5/hal+A5/hal+D6/hal F5/eig+A5/eig+C6/eig Bb5/eig A5/eig G5/eig Bb5/eig A5/eig  LH: C2/qua C3/qua+E3/qua+G3/qua C3/qua+E3/qua+G3/qua C3/qua+E3/qua+G3/qua
+bar  28 RH: F5/hal A5/eig E5/eig F5/eig G5/eig C6/eig F5/eig  LH: Bb1/qua Bb2/qua+D3/qua+F3/qua Bb2/qua+D3/qua+F3/qua Bb2/qua+D3/qua+F3/qua
+bar  29 RH: E5/qua. D5/hal r/eig  LH: C3/hal+E3/hal+G3/hal r/hal
+bar  30 RH: r/eig D5/eig r/eig D5/eig r/eig D5/eig r/eig D5/eig  LH: r/?
+bar  31 RH: r/eig D5/eig r/eig D5/hal r/eig  LH: r/?
+bar  32 RH: r/eig D4/eig+D5/eig r/eig D4/eig+D5/eig r/eig D4/eig+D5/eig r/eig D4/eig+D5/eig  LH: r/?
+bar  33 RH: r/eig D4/eig+D5/eig r/eig D4/hal+D5/hal r/eig r/qua  LH: r/?
+bar  34 RH: F5/eig A4/eig C5/eig G5/eig E5/eig F5/eig C5/qua  LH: D3/eig A3/hal.+F4/hal. r/eig
+bar  35 RH: F5/eig A4/eig C5/eig G5/eig E5/eig F5/eig C5/qua  LH: E3/eig A3/hal.+F4/hal. r/eig
+bar  36 RH: F5/eig A4/eig C5/eig G5/eig E5/eig F5/eig C5/qua  LH: F3/eig A3/hal.+F4/hal. r/eig
+bar  37 RH: F5/eig A4/eig C5/eig G5/eig E5/eig F5/eig C5/qua  LH: G3/eig A3/hal.+F4/hal. r/eig
+bar  38 RH: r/eig F5/eig D5/eig F5/eig D5/eig G5/eig D5/eig G5/eig  LH: D2/who
+bar  39 RH: D5/eig Bb5/eig D5/eig Bb5/eig D5/eig A5/eig D5/eig A5/eig  LH: r/?
+bar  40 RH: A5/eig F5/eig D5/eig F5/eig D5/eig G5/eig D5/eig G5/eig  LH: D2/who
+bar  41 RH: D5/eig Bb5/eig D5/eig Bb5/eig D5/eig A5/eig D5/eig A5/eig  LH: r/?
+bar  42 RH: A5/eig F4/eig+F5/eig D5/eig F4/eig+F5/eig D5/eig G4/eig+G5/eig D5/eig G4/eig+G5/eig  LH: D1/who+D2/who
+bar  43 RH: D5/eig Bb4/eig+Bb5/eig D5/eig Bb4/eig+Bb5/eig D5/eig A4/eig+A5/eig D5/eig A4/eig+A5/eig  LH: r/?
+bar  44 RH: A4/eig+A5/eig F4/eig+F5/eig D5/eig F4/eig+F5/eig D5/eig G4/eig+G5/eig D5/eig G4/eig+G5/eig  LH: D1/who+D2/who
+bar  45 RH: D5/eig Bb4/eig+Bb5/eig D5/eig Bb4/eig+Bb5/eig D5/eig A4/eig+A5/eig D5/eig A4/eig+A5/eig  LH: r/?
+bar  46 RH: A4/hal+A5/hal r/eig A3/eig F4/eig F4/eig  LH: r/hal r/eig A2/eig F3/eig A3/eig
+bar  47 RH: Bb3/hal+D4/hal+G4/hal G4/eig A4/eig E4/eig F4/eig  LH: Bb1/qua+Bb2/qua Bb2/qua+D3/qua+F3/qua C2/qua+C3/qua C3/qua+E3/qua+G3/qua
+bar  48 RH: G4/eig F4/eig E4/eig C4/eig D4/eig. F4/16t E4/16t C4/16t F4/eig  LH: D2/qua+D3/qua D3/qua+F3/qua+A3/qua D3/qua+F3/qua+A3/qua D3/qua+F3/qua+A3/qua
+bar  49 RH: D4/hal+G4/hal G4/eig A4/eig E4/eig F4/eig  LH: Bb1/qua+Bb2/qua Bb2/qua+D3/qua+F3/qua C2/qua+C3/qua C3/qua+E3/qua+G3/qua
+bar  50 RH: C4/qua+G4/qua C5/eig Bb4/eig A4/eig F4/eig G4/eig. D4/16t  LH: F2/qua+F3/qua F3/qua+A3/qua+C4/qua F3/qua+A3/qua+C4/qua F3/qua+A3/qua+C4/qua
+bar  51 RH: Bb3/hal+D4/hal+G4/hal G4/eig A4/eig Bb4/eig A4/eig  LH: Bb1/qua+Bb2/qua Bb2/qua+D3/qua+F3/qua C2/qua+C3/qua C3/qua+E3/qua+G3/qua
+bar  52 RH: G4/qua F4/eig E4/eig D4/eig. E4/16t C4/qua  LH: D2/qua+D3/qua D3/qua+F3/qua+A3/qua D3/qua+F3/qua+A3/qua D3/qua+F3/qua+A3/qua
+bar  53 RH: D4/16t E4/16t D4/16t C4/16t D4/qua. G3/eig A3/eig E4/eig  LH: C2/qua+C3/qua C3/qua+E3/qua+G3/qua C3/qua+E3/qua+G3/qua C3/qua+E3/qua+G3/qua
+bar  54 RH: D4/eig. F4/16t D4/qua. A3/eig+A4/eig F4/eig+F5/eig F4/eig+F5/eig  LH: Bb1/qua+Bb2/qua Bb2/qua+D3/qua+F3/qua Bb2/hal+D3/hal+F3/hal
+bar  55 RH: G4/hal+C5/hal+E5/hal+G5/hal G4/eig+G5/eig A4/eig+A5/eig E4/eig+E5/eig F4/eig+F5/eig  LH: Bb0/qua+Bb1/qua Bb2/qua+D3/qua+F3/qua C1/qua+C2/qua C3/qua+E3/qua+G3/qua
+bar  56 RH: G4/eig+D5/eig+G5/eig F4/eig+F5/eig E4/eig+E5/eig C4/eig+C5/eig D4/eig.+D5/eig. F4/16t+F5/16t E4/16t+E5/16t C4/16t+C5/16t F4/eig+F5/eig  LH: D1/qua+D2/qua D3/qua+F3/qua+A3/qua D3/qua+F3/qua+A3/qua D3/qua+F3/qua+A3/qua
+bar  57 RH: G4/hal+D5/hal+G5/hal G4/eig+G5/eig A4/eig+A5/eig E4/eig+E5/eig F4/eig+F5/eig  LH: Bb0/qua+Bb1/qua Bb2/qua+D3/qua+F3/qua C1/qua+C2/qua C3/qua+E3/qua+G3/qua
+bar  58 RH: G4/qua+C5/qua+E5/qua+G5/qua C5/eig+C6/eig Bb4/eig+Bb5/eig A4/eig+A5/eig F4/eig+F5/eig G4/eig.+G5/eig. D4/16t+D5/16t  LH: F1/qua+F2/qua F3/qua+A3/qua+C4/qua F3/qua+A3/qua+C4/qua F3/qua+A3/qua+C4/qua
+bar  59 RH: G4/hal+C5/hal+E5/hal+G5/hal G4/eig+G5/eig A4/eig+A5/eig Bb4/eig+Bb5/eig A4/eig+A5/eig  LH: Bb0/qua+Bb1/qua Bb2/qua+D3/qua+F3/qua C2/qua+C3/qua C3/qua+E3/qua+G3/qua
+bar  60 RH: G4/qua+D5/qua+G5/qua F4/eig+F5/eig E4/eig+E5/eig D4/eig.+D5/eig. E4/16t+E5/16t C4/qua+C5/qua  LH: D2/qua+D3/qua D3/qua+F3/qua+A3/qua D3/qua+F3/qua+A3/qua D3/qua+F3/qua+A3/qua
+bar  61 RH: D4/16t+D5/16t E4/16t+E5/16t D4/16t+D5/16t C4/16t+C5/16t D4/qua.+A4/qua.+D5/qua. G3/eig+G4/eig A3/eig+A4/eig E4/eig+E5/eig  LH: C1/qua+C2/qua C3/qua+E3/qua+G3/qua C3/qua+E3/qua+G3/qua C3/qua+E3/qua+G3/qua
+bar  62 RH: D4/eig.+A4/eig.+D5/eig. F4/16t+F5/16t D4/qua.+F4/qua.+D5/qua. G3/eig+G4/eig A3/eig+A4/eig F4/eig+F5/eig  LH: Bb1/qua+Bb2/qua Bb2/qua+D3/qua+F3/qua Bb2/hal+D3/hal+F3/hal
+bar  63 RH: D5/eig r/eig D5/eig r/eig D5/eig r/eig D5/eig r/eig  LH: D3/who+D4/who
+bar  64 RH: D5/eig r/eig D5/eig r/eig D5/eig. r/16t r/eig A4/eig  LH: r/?
+bar  65 RH: A4/eig+D5/eig+F5/eig A5/eig E5/eig F5/qua. A4/eig E5/eig C5/eig F5/eig  LH: D2/eig A2/eig E3/eig F3/eig F3/hal
+bar  66 RH: G4/eig+C5/eig+E5/eig F5/eig C5/eig G4/hal E5/eig F5/eig  LH: C2/eig A2/eig E3/eig G3/eig G3/hal
+bar  67 RH: D5/eig+F5/eig A5/eig E5/eig F5/qua. F5/eig D5/eig+A5/eig E5/eig+G5/eig C5/eig+F5/eig  LH: Bb1/eig F2/eig C3/eig D3/eig D3/hal
+bar  68 RH: C5/hal+F5/hal E5/qua+G5/qua F5/qua+A5/qua  LH: C2/who
+bar  69 RH: G5/eig+C6/eig+E6/eig F6/eig G6/eig E6/qua F6/qua C6/qua+F6/qua+G6/qua+C7/qua  LH: D2/eig A2/eig D3/eig E3/eig E3/hal
+bar  70 RH: D6/hal+G6/hal+A6/hal+D7/hal F6/eig+A6/eig+C7/eig Bb6/eig A6/eig E6/eig+G6/eig Bb6/eig A6/eig  LH: C2/eig A2/eig C3/eig A3/eig A3/hal
+bar  71 RH: D6/hal+F6/hal C6/eig+F6/eig+A6/eig E6/eig F6/eig D6/eig+G6/eig C7/eig F6/eig  LH: Bb1/eig F2/eig Bb2/eig C3/eig C3/hal
+bar  72 RH: E6/hal+G6/hal r/eig A4/eig F5/eig F5/eig  LH: C2/eig A2/eig C3/eig A2/eig A2/hal
+bar  73 RH: G5/hal G5/eig A5/eig E5/eig F5/eig  LH: Bb3/qua D4/qua+F4/qua C4/qua E4/qua+G4/qua
+bar  74 RH: G5/eig F5/eig E5/eig C5/eig D5/eig. F5/16t E5/16t C5/16t F5/eig  LH: D4/qua F4/qua+A4/qua F4/qua+A4/qua F4/qua+A4/qua
+bar  75 RH: G5/hal G5/eig A5/eig E5/eig F5/eig  LH: Bb3/qua D4/qua+F4/qua C4/qua E4/qua+G4/qua
+bar  76 RH: G5/qua C6/eig Bb5/eig A5/eig F5/eig G5/eig. D5/16t  LH: F4/qua A4/qua+C5/qua A4/qua+C5/qua A4/qua+C5/qua
+bar  77 RH: D5/hal+G5/hal G5/eig A5/eig Bb5/eig A5/eig  LH: Bb3/qua D4/qua+F4/qua C4/qua E4/qua+G4/qua
+bar  78 RH: G5/qua F5/eig E5/eig D5/eig. E5/16t C5/qua  LH: D4/qua F4/qua+A4/qua F4/qua+A4/qua F4/qua+A4/qua
+bar  79 RH: D5/16t E5/16t D5/16t C5/16t D5/qua. G4/eig A4/eig E5/eig  LH: C4/qua E4/qua+G4/qua E4/qua+G4/qua E4/qua+G4/qua
+bar  80 RH: D5/hal r/eig G4/eig A4/eig E5/eig  LH: Bb3/qua D4/hal.+F4/hal.
+bar  81 RH: D5/who  LH: D1/who+D2/who

@@ -1,0 +1,57 @@
+song: song.pop.12th-street-rag.pdmx
+title: 12th Street Rag (1914)
+composer: Euday L. Bowman
+rungs: ragtime.5
+shipped file: scores/pdmx/QmZXXV6fF4T3Vzm6Tzw6feVKSKcgHgB4SMH3yayEum8yNK.mxl
+catalog keySig/timeSig/tempo: 2 flats / None / 96.0
+raw-XML counts: ties 4, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 1, chord symbols 28, grace notes 0, voices>1 16, measures 40, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -2 major
+  bar 1: time 4 4
+
+dump_score.py:
+song.pop.12th-street-rag.pdmx | 12th Street Rag (1914) | level 4.13 (estimated)
+notation: {"bars": 40, "staves": 1, "keys": [{"fifths": -2, "mode": "major"}], "times": ["4/4"], "chordCount": 28, "chords": ["Ab", "Ab7", "B7", "Bb7", "Eb", "Eb7", "F7"], "swungMark": false, "finalBass": 5}
+key signatures (fifths): ['-2']  modes: ['major']  times: ['4/4']
+text on the score: ['Back to top with INtro', 'Standard Doo Wack-a-doo chorus', 'Etc']
+bar   1 RH: Bb4/eig A4/eig Bb4/eig C5/eig Bb4/qua r/qua  [Bb dominant]
+bar   2 RH: Bb3/eig A3/eig Bb3/eig C4/eig Bb3/qua r/qua  [Bb dominant]
+bar   3 RH: Bb4/eig Bb4/qua Bb4/eig C5/qua C#5/qua  [Bb dominant]
+bar   4 RH: D5/qua r/qua Bb4/qua r/qua  [Bb dominant]
+bar   5 RH: Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig  [Eb major]
+bar   6 RH: C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/qua
+bar   7 RH: Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig  [Bb dominant]
+bar   8 RH: C5/who
+bar   9 RH: Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig  [Bb dominant]
+bar  10 RH: C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/qua
+bar  11 RH: Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig  [Eb major]
+bar  12 RH: C5/who
+bar  13 RH: Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig  [Eb major]
+bar  14 RH: C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/qua
+bar  15 RH: Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig  [Bb dominant]
+bar  16 RH: C5/who
+bar  17 RH: G4/hal F4/hal  [F dominant]
+bar  18 RH: D5/hal C5/hal
+bar  19 RH: Bb4/qua C4/qua D4/qua. Eb4/eig  [Bb dominant]
+bar  20 RH: F4/eig D4/qua C4/eig C4/eig Bb3/qua.
+bar  21 RH: Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig  [Eb major]
+bar  22 RH: C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/qua
+bar  23 RH: Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig  [Bb dominant]
+bar  24 RH: C5/who
+bar  25 RH: Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig  [Bb dominant]
+bar  26 RH: C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/qua
+bar  27 RH: Eb5/eig D5/eig C5/eig Eb5/eig D5/eig C5/eig Eb5/eig D5/eig  [Eb major]
+bar  28 RH: C5/hal. Bb4/qua
+bar  29 RH:v1: Eb5/qua r/qua r/qua Eb5/qua | v2: Eb4/qua r/qua r/qua Eb4/qua  [Eb major]
+bar  30 RH:v1: Db5/qua r/qua r/qua Db5/qua | v2: G4/qua r/qua r/qua G4/qua  [Eb dominant]
+bar  31 RH:v1: C5/qua r/qua r/qua C5/qua | v2: Ab4/qua r/qua r/qua Ab4/qua  [Ab major]
+bar  32 RH:v1: B4/qua r/qua r/qua B4/qua | v2: A4/qua r/qua r/qua A4/qua  [B dominant]
+bar  33 RH: Bb4/qua C5/qua Eb5/qua C5/qua  [Eb major]
+bar  34 RH: G5/hal F5/hal  [F dominant] [Bb dominant]
+bar  35 RH: Eb5/qua Bb4/eig C5/eig C5/eig Bb4/eig C5/qua  [Eb major] [Ab dominant]
+bar  36 RH: Eb5/hal Eb4/qua r/qua  [Eb major]
+bar  37 RH: Eb5/qua Eb5/eig Eb5/eig Eb5/qua Eb5/eig Eb5/eig  [Eb major]
+bar  38 RH: Eb5/qua Eb5/eig Eb5/eig Eb5/qua Eb5/eig Eb5/eig
+bar  39 RH: F5/qua F5/eig F5/eig F5/qua F5/eig F5/eig  [Bb dominant]
+bar  40 RH: F5/qua r/qua r/hal

@@ -1,0 +1,82 @@
+song: song.classical.tchaikovsky-sugar-plum
+title: Dance of the Sugar Plum Fairy (The Nutcracker)
+composer: Pyotr Ilyich Tchaikovsky
+rungs: holiday.7
+shipped file: scores/imported/song.classical.tchaikovsky-sugar-plum.mxl
+catalog keySig/timeSig/tempo: E minor / 2/4 / 70.0
+raw-XML counts: ties 2, tuplets 40, fingerings 0, dynamics 2, pedal 0, articulations 246, chord symbols 0, grace notes 0, voices>1 516, measures 53, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 1
+  bar 1: time 2 4
+  bar 8: clef G 2
+  bar 8: clef F 4
+  bar 16: clef G 2
+  bar 18: clef F 4
+  bar 22: clef F 4
+  bar 25: clef G 2
+  bar 26: clef F 4
+  bar 29: clef G 2
+  bar 32: clef G 2
+  bar 37: clef F 4
+  bar 40: clef G 2
+  bar 53: clef F 4
+
+dump_score.py:
+song.classical.tchaikovsky-sugar-plum | Dance of the Sugar Plum Fairy (The Nutcracker) | level 6.3 (judged)
+notation: {"bars": 53, "staves": 2, "keys": [{"fifths": 1, "mode": null}], "times": ["2/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['1']  modes: []  times: ['2/4']
+bar   1 RH: r/eig G3/eig+B3/eig+E4/eig r/eig A3/eig+C4/eig+F#4/eig  LH: E2/eig+E3/eig r/eig E2/eig+E3/eig r/eig
+bar   2 RH: r/eig A#3/eig+C#4/eig+G4/eig r/eig A3/eig+C4/eig+D#4/eig  LH: E2/eig+E3/eig r/eig E2/eig+E3/eig r/eig
+bar   3 RH: r/eig G3/eig+B3/eig+E4/eig r/eig A3/eig+C4/eig+F#4/eig  LH: E2/eig+E3/eig r/eig E2/eig+E3/eig r/eig
+bar   4 RH: r/eig A#3/eig+C#4/eig+G4/eig r/eig A3/eig+C4/eig+D#4/eig  LH: E2/eig+E3/eig r/eig E2/eig+E3/eig r/eig
+bar   5 RH: r/eig B5/16t+G6/16t G5/16t+E6/16t B5/eig+G6/eig A5/eig+F#6/eig  LH: E2/eig+E3/eig G3/eig+B3/eig E3/eig A3/eig+C4/eig
+bar   6 RH: F#5/eig+D#6/eig G5/eig+E6/eig F5/16t+G#5/16t+D6/16t F5/16t+G#5/16t+D6/16t F5/eig+G#5/eig+D6/eig  LH: E3/eig A#3/eig+C#4/eig E3/eig B3/eig+D4/eig
+bar   7 RH: E5/16t+G5/16t+A#5/16t+C#6/16t E5/16t+G5/16t+A#5/16t+C#6/16t E5/eig+G5/eig+A#5/eig+C#6/eig D#5/16t+F#5/16t+A5/16t+C6/16t D#5/16t+F#5/16t+A5/16t+C6/16t D#5/eig+F#5/eig+A5/eig+C6/eig  LH: E3/eig C#4/eig+E4/eig E3/eig D#4/eig+F#4/eig
+bar   8 RH: G5/16t+B5/16t E6/16t A5/16t+C6/16t E6/16t G5/eig+B5/eig r/eig  LH: E4/eig+G4/eig E4/eig+F#4/eig+A4/eig E4/eig+G4/eig E3/32n D3/32n C3/32n B2/32n
+bar   9 RH: r/eig C5/16t+G5/16t G4/16t+E5/16t C5/eig+G5/eig C5/eig+F#5/eig  LH: A#2/eig E3/eig+G3/eig+C4/eig A2/eig D#3/eig+F#3/eig+C4/eig
+bar  10 RH: D#5/eig+F#5/eig+C6/eig E5/eig+G5/eig+B5/eig A#5/16t+C#6/16t+E6/16t+G6/16t A#5/16t+C#6/16t+E6/16t+G6/16t A#5/eig+C#6/eig+E6/eig+G6/eig  LH: G2/eig E3/eig+G3/eig+B3/eig F#2/eig F#3/eig+A#3/eig
+bar  11 RH: G#5/16t+B5/16t+D6/16t+F#6/16t G#5/16t+B5/16t+D6/16t+F#6/16t G#5/eig+B5/eig+D6/eig+F#6/eig F#5/16t+A#5/16t+C#6/16t+E6/16t F#5/16t+A#5/16t+C#6/16t+E6/16t F#5/eig+A#5/eig+C#6/eig+E6/eig  LH: F#3/eig G#3/eig+B3/eig F#3/eig A#3/eig+C#4/eig
+bar  12 RH: B5/16t+D#6/16t F#6/16t A5/16t+E6/16t F#6/16t B5/eig+D#6/eig r/eig  LH: B2/eig+F#3/eig+B3/eig C3/eig+F#3/eig+A#3/eig B2/eig+F#3/eig+B3/eig B2/32n A2/32n G2/32n F#2/32n
+bar  13 RH: r/eig B5/16t+G6/16t G5/16t+E6/16t B5/eig+G6/eig A5/eig+F#6/eig  LH: E2/eig G3/eig+B3/eig E3/eig A3/eig+C4/eig
+bar  14 RH: F#5/eig+D#6/eig G5/eig+E6/eig F5/16t+G#5/16t+D6/16t F5/16t+G#5/16t+D6/16t F5/eig+G#5/eig+D6/eig  LH: E3/eig A#3/eig+C#4/eig E3/eig B3/eig+D4/eig
+bar  15 RH: E5/16t+G5/16t+A#5/16t+C#6/16t E5/16t+G5/16t+A#5/16t+C#6/16t E5/eig+G5/eig+A#5/eig+C#6/eig D#5/16t+F#5/16t+A5/16t+C6/16t D#5/16t+F#5/16t+A5/16t+C6/16t D#5/eig+F#5/eig+A5/eig+C6/eig  LH: E3/eig C#4/eig+E4/eig E3/eig D#4/eig+F#4/eig
+bar  16 RH: G5/16t+B5/16t E6/16t A5/16t+C6/16t E6/16t G5/eig+B5/eig r/eig  LH: E4/eig+G4/eig E4/eig+F#4/eig+A4/eig E4/eig+G4/eig G4/32n F#4/32n E4/32n D4/32n
+bar  17 RH: r/eig A#4/16t+E5/16t F#4/16t+C#5/16t A#4/eig+E5/eig A4/eig+B4/eig+D#5/eig  LH: C#4/eig F#3/qua+C#4/qua F#4/32n E4/32n D#4/32n C#4/32n
+bar  18 RH: r/eig G#4/16t+D5/16t E4/16t+B4/16t G#4/eig+D5/eig G4/eig+A4/eig+C#5/eig  LH: B3/eig E3/qua+B3/qua E4/32n D4/32n C#4/32n B3/32n
+bar  19 RH: r/eig F#4/16t+C5/16t D4/16t+A4/16t F#4/eig+C5/eig G4/eig+B4/eig  LH: A3/eig D3/qua+A3/qua D4/32n C4/32n B3/32n A3/32n
+bar  20 RH: r/eig B4/32n D#5/32n F#5/32n B5/32n E5/eig B3/eig  LH: G3/eig F#3/eig+A3/eig E3/eig+G3/eig B1/eig+B2/eig
+bar  21 RH: r/16t E4/16t+G4/16t+C#5/16t r/16t F#4/16t+A4/16t+D#5/16t r/16t G4/16t+C#5/16t+E5/16t r/16t A4/16t+D#5/16t+F#5/16t  LH: E3/16t+G3/16t+C#4/16t r/16t F#3/16t+A3/16t+D#4/16t r/16t G3/16t+C#4/16t+E4/16t r/16t A3/16t+D#4/16t+F#4/16t r/16t
+bar  22 RH: r/16t B4/16t+E5/16t+G5/16t r/16t G4/16t+C#5/16t+E5/16t r/16t F#4/16t+B4/16t+D#5/16t B3/16t C#4/16t B3/16t  LH: B3/16t+E4/16t+G4/16t r/16t G3/16t+C#4/16t+E4/16t r/16t F#3/16t+B3/16t+D#4/16t r/16t D#3/eig+F#3/eig
+bar  23 RH: A3/16t G3/16t A3/16t G3/16t B3/16t G3/16t B3/16t G3/16t B3/16t G3/16t B3/16t A3/16t  LH: E3/eig D#4/eig E4/eig C#3/eig+E3/eig
+bar  24 RH: G3/16t F#3/16t A3/16t F#3/16t A3/16t F#3/16t A3/16t F#3/16t A3/16t B3/eig  LH: D3/eig C#4/eig D4/eig B2/eig+B3/eig
+bar  25 RH: r/16t E4/16t+G4/16t+C#5/16t r/16t F#4/16t+A4/16t+D#5/16t r/16t G4/16t+C#5/16t+E5/16t r/16t A4/16t+D#5/16t+F#5/16t  LH: E3/16t+G3/16t+C#4/16t r/16t F#3/16t+A3/16t+D#4/16t r/16t G3/16t+C#4/16t+E4/16t r/16t A3/16t+D#4/16t+F#4/16t r/16t
+bar  26 RH: r/16t B4/16t+E5/16t+G5/16t r/16t G4/16t+C#5/16t+E5/16t r/16t F#4/16t+B4/16t+D#5/16t B3/16t C#4/16t B3/16t  LH: B3/16t+E4/16t+G4/16t r/16t G3/16t+C#4/16t+E4/16t r/16t F#3/16t+B3/16t+D#4/16t r/16t D#3/eig+F#3/eig
+bar  27 RH: A3/16t G3/16t B3/16t G3/16t B3/16t G3/16t B3/16t G3/16t B3/16t G3/16t B3/16t A3/16t  LH: E3/eig D#4/eig E4/eig C#3/eig+E3/eig
+bar  28 RH: G3/16t F#3/16t A3/16t F#3/16t A3/16t F#3/16t A3/16t F#3/16t A3/16t B3/eig  LH: D3/eig C#4/eig D4/eig B1/eig+B2/eig
+bar  29 RH: r/16t E4/16t+G4/16t+C#5/16t r/16t F#4/16t+A4/16t+D#5/16t r/16t G4/16t+C#5/16t+E5/16t B3/eig  LH: E3/16t+G3/16t+C#4/16t r/16t F#3/16t+A3/16t+D#4/16t r/16t G3/16t+C#4/16t+E4/16t r/16t B1/eig+B2/eig
+bar  30 RH: r/16t F#4/16t+A4/16t+D#5/16t r/16t G4/16t+C#5/16t+E5/16t r/16t A4/16t+D#5/16t+F#5/16t B3/eig  LH: F#3/16t+A3/16t+D#4/16t r/16t G3/16t+C#4/16t+E4/16t r/16t A3/16t+D#4/16t+F#4/16t r/16t B1/eig+B2/eig
+bar  31 RH: r/16t G4/16t+C#5/16t+E5/16t r/16t A4/16t+D5/16t+F#5/16t r/16t B4/16t+E5/16t+G5/16t r/16t B4/16t+E5/16t+G5/16t  LH:v5: G3/16t+C#4/16t+E4/16t r/16t A3/16t+D#4/16t+F#4/16t r/16t B3/16t+E4/16t+G4/16t r/16t E4/eig+G4/eig | v6: B3/eig
+bar  32 RH: C5/16t+E5/16t+A5/16t C5/16t+E5/16t+A5/16t r/16t C5/16t+E5/16t+A5/16t B4/eig+D#5/eig+F#5/eig+B5/eig r/64t r/32n. D5/64t F#5/64t A5/64t C6/64t  LH:v5: E4/16t+A4/16t E4/16t+A4/16t r/16t E4/16t+A4/16t D#4/eig+F#4/eig r/eig | v6: B3/eig B3/qua D4/64t F#4/64t A4/64t C5/64t r/16t
+bar  33 RH: r/16t D#5/64t F#5/64t A5/64t B5/64t r/16t D5/64t F#5/64t A5/64t C6/64t r/16t D#5/64t F#5/64t A5/64t B5/64t r/16t F5/64t A5/64t C6/64t E6/64t  LH: D#4/64t F#4/64t B4/64t D#5/64t r/16t F4/64t A4/64t C5/64t E5/64t r/16t D#4/64t F4/64t B4/64t D#5/64t r/16t A4/64t C5/64t D#5/64t G5/64t r/16t
+bar  34 RH: r/16t D#5/64t F#5/64t A5/64t B5/64t r/16t D5/64t F#5/64t A5/64t C6/64t r/16t D#5/64t F#5/64t A5/64t B5/64t r/16t F5/64t A5/64t C6/64t E6/64t  LH: D#4/64t F#4/64t A4/64t B4/64t r/16t D4/64t F#4/64t A4/64t C5/64t r/16t F#4/64t A4/64t B4/64t D5/64t r/16t F4/64t A4/64t C5/64t E5/64t r/16t
+bar  35 RH: r/16t D#5/64t F#5/64t A5/64t D#6/64t r/16t F5/64t A5/64t C6/64t E6/64t r/16t F#5/64t A5/64t B5/64t D#6/64t r/16t A5/64t C6/64t D#6/64t G6/64t  LH: F#4/64t A4/64t B4/64t D#5/64t r/16t F4/64t A4/64t C5/64t E5/64t r/16t F#4/64t A4/64t B4/64t D#5/64t r/16t A4/64t C5/64t D#5/64t G5/64t r/16t
+bar  36 RH: r/16t B5/32n D#6/32n F#6/32n r/16t A5/64t C6/64t D#6/64t G6/64t r/16t B5/32n D#6/32n F#6/32n r/16t D6/64t F#6/64t A6/64t C7/64t  LH: B4/32n D#5/32n F#5/32n r/16t A4/64t C5/64t D#5/64t G5/64t r/16t B4/32n D#5/32n F#5/32n r/16t D5/64t F#5/64t A5/64t C6/64t r/16t
+bar  37 RH: r/16t D#6/64t A6/64t C7/64t D7/64t r/16t D6/64t F#6/64t A6/64t C7/64t r/16t D#6/64t F#6/64t A6/64t B6/64t r/eig  LH: D#5/64t A5/64t C6/64t D6/64t r/16t D5/64t F#5/64t A5/64t C6/64t r/16t D5/64t F#5/64t A5/64t B5/64t r/16t B3/32n A3/32n G3/32n F#3/32n
+bar  38 RH: r/eig B6/16t+G7/16t G6/16t+E7/16t B6/eig+G7/eig A6/eig+F#7/eig  LH: E2/eig+E3/eig G3/eig+B3/eig+E4/eig E3/eig A3/eig+C4/eig+F#4/eig
+bar  39 RH: F#6/eig+D#7/eig G6/eig+E7/eig F6/16t+G#6/16t+D7/16t F6/16t+G#6/16t+D7/16t F6/eig+G#6/eig+D7/eig  LH: E3/eig A#3/eig+C#4/eig+G4/eig E3/eig B3/eig+D4/eig+G#4/eig
+bar  40 RH: E6/16t+G6/16t+A#6/16t+C#7/16t E6/16t+G6/16t+A#6/16t+C#7/16t E6/eig+G6/eig+A#6/eig+C#7/eig D#6/16t+F#6/16t+A6/16t+C7/16t D#6/16t+F#6/16t+A6/16t+C7/16t D#6/eig+F#6/eig+A6/eig+C7/eig  LH: E3/eig C#4/eig+E4/eig+A#4/eig E3/eig D#4/eig+F#4/eig+C5/eig
+bar  41 RH: G6/16t+B6/16t E6/16t+E7/16t A6/16t+C7/16t E6/16t+E7/16t G6/eig+B6/eig r/eig  LH: E4/eig+G4/eig+B4/eig E4/eig+F#4/eig+A4/eig E4/eig+G4/eig+B4/eig E4/32n D4/32n C4/32n B3/32n
+bar  42 RH: r/eig C6/16t+G6/16t G5/16t+E6/16t C6/eig+G6/eig C6/eig+F#6/eig  LH: A#3/eig E4/eig+G4/eig+C5/eig A3/eig D#4/eig+F#4/eig+C5/eig
+bar  43 RH: D#6/eig+F#6/eig+C7/eig E6/eig+G6/eig+B6/eig A#6/16t+C#7/16t+E7/16t+G7/16t A#6/16t+C#7/16t+E7/16t+G7/16t A#6/eig+C#7/eig+E7/eig+G7/eig  LH: G3/eig E4/eig+G4/eig+B4/eig F#3/eig+F#4/eig F#4/eig+A#4/eig
+bar  44 RH: G#6/16t+B6/16t+D7/16t+F#7/16t G#6/16t+B6/16t+D7/16t+F#7/16t G#6/eig+B6/eig+D7/eig+F#7/eig F#6/16t+A#6/16t+C#7/16t+E7/16t F#6/16t+A#6/16t+C#7/16t+E7/16t F#6/eig+A#6/eig+C#7/eig+E7/eig  LH: F#3/eig G#4/eig+B4/eig F#4/eig A#4/eig+C#5/eig
+bar  45 RH: B6/16t+D#7/16t F#7/16t A6/16t+E7/16t F#7/16t B6/eig+D#7/eig r/eig  LH: B3/eig+F#4/eig+B4/eig C4/eig+F#4/eig+A#4/eig B3/eig+F#4/eig+B4/eig B4/32n A4/32n G4/32n F#4/32n
+bar  46 RH: r/eig B6/16t+G7/16t G6/16t+E7/16t B6/eig+G7/eig A6/eig+F#7/eig  LH: E4/eig G4/eig+B4/eig E4/eig F#4/eig+A4/eig
+bar  47 RH: F#6/eig+D#7/eig G6/eig+E7/eig F6/16t+G#6/16t+D7/16t F6/16t+G#6/16t+D7/16t F6/eig+G#6/eig+D7/eig  LH: E4/eig A#4/eig+C#5/eig E4/eig B4/eig+D5/eig
+bar  48 RH: E6/16t+G6/16t+A#6/16t+C#7/16t E6/16t+G6/16t+A#6/16t+C#7/16t E6/eig+G6/eig+A#6/eig+C#7/eig D#6/16t+F#6/16t+A6/16t+C7/16t D#6/16t+F#6/16t+A6/16t+C7/16t D#6/eig+F#6/eig+A6/eig+C7/eig  LH: E4/eig C#5/eig+E5/eig E4/eig D#5/eig+F#5/eig
+bar  49 RH: G6/16t+B6/16t E7/16t A6/16t+C7/16t E7/16t G6/eig+B6/eig r/eig  LH: E5/eig+G5/eig E5/eig+F#5/eig+A5/eig E5/eig+G5/eig G5/32n F#5/32n E5/32n D5/32n
+bar  50 RH: r/eig A#6/16t+E7/16t F#6/16t+C#7/16t A#6/eig+E7/eig A6/eig+B6/eig+D#7/eig  LH: C#5/eig F#4/qua+C#5/qua F#5/32n E5/32n D#5/32n C#5/32n
+bar  51 RH: r/eig G#6/16t+D7/16t E6/16t+B6/16t G#6/eig+D7/eig G6/eig+A6/eig+C#7/eig  LH: B4/eig E4/qua+B4/qua E5/32n D5/32n C#5/32n B4/32n
+bar  52 RH: r/eig F#6/16t+C7/16t D6/16t+A6/16t F#6/eig+C7/eig G6/eig+B6/eig  LH: A4/eig D4/qua+A4/qua D5/32n C5/32n B4/32n A4/32n
+bar  53 RH: r/eig B6/32n D#7/32n F#7/32n B7/32n B6/eig+E7/eig G5/eig+B5/eig+E6/eig  LH: G4/eig+B4/eig F#4/eig+B4/eig E4/eig+G4/eig+B4/eig E3/eig+G3/eig+B3/eig+E4/eig

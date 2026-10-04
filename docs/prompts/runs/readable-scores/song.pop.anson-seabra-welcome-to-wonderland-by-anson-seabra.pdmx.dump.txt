@@ -1,0 +1,70 @@
+song: song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx
+title: Welcome to Wonderland
+composer: Anson Seabra
+rungs: chords-pop.7
+shipped file: scores/pdmx/Qme8kKsGid3vNywenLSbph9ar39AaSeA2B8m4JFzNMu6JR.mxl
+catalog keySig/timeSig/tempo: no sharps or flats / None / 65.0
+raw-XML counts: ties 78, tuplets 56, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 148, grace notes 0, voices>1 428, measures 53, staves 1
+raw-XML clef/key/time by bar:
+  bar 0: clef G 2
+  bar 0: clef F 4
+  bar 0: key 0
+  bar 0: time 4 4
+
+dump_score.py:
+song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx | Welcome to Wonderland | level 5.75 (estimated)
+notation: {"bars": 53, "staves": 2, "keys": [{"fifths": 0, "mode": null}], "times": ["4/4"], "chordCount": 148, "chords": ["A", "B", "C#m", "E", "G#"], "swungMark": false, "finalBass": 4}
+key signatures (fifths): ['0']  modes: []  times: ['4/4']
+bar   0 RH:v1: B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua E4/qua+Ab4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: E2/who | v6: E3/hal. E3/eig E3/eig  [E major] [E major]
+bar   1 RH:v1: B3/qua+E4/qua+F#4/qua B3/qua+E4/qua+F#4/qua B3/qua+Eb4/qua+F#4/qua Eb4/qua+F#4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: Ab2/who | v6: Ab3/hal. Ab3/eig Ab3/eig  [B major] [B major]
+bar   2 RH: B3/qua+E4/qua B3/qua+E4/qua B3/qua+E4/qua B3/eig+E4/eig F#4/eig Ab4/eig  LH:v6: Db3/who | v7: Ab3/who  [C# minor] [C# minor]
+bar   3 RH:v1: Db4/qua+E4/qua Db4/qua+E4/qua Db4/qua+E4/qua E4/qua | v2: r/hal. Db4/eig. B3/16t  LH:v5: A2/who | v6: E3/hal. E3/eig E3/eig  [A major] [A major]
+bar   4 RH:v1: B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua E4/qua+Ab4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: E2/who | v6: E3/hal. E3/eig E3/eig  [E major] [E major]
+bar   5 RH:v1: B3/qua+E4/qua+F#4/qua B3/qua+E4/qua+F#4/qua B3/qua+Eb4/qua+F#4/qua Eb4/qua+F#4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: Ab2/who | v6: Ab3/hal. Ab3/eig Ab3/eig  [B major] [B major]
+bar   6 RH: B3/qua+E4/qua B3/qua+E4/qua B3/qua+E4/qua B3/eig+E4/eig F#4/eig Ab4/eig  LH:v6: Db3/who | v7: Ab3/who  [C# minor] [C# minor]
+bar   7 RH:v1: Db4/qua+E4/qua Db4/qua+E4/qua Db4/qua+E4/qua E4/qua | v2: r/hal. Db4/eig. B3/16t  LH:v5: A2/who | v6: E3/hal. E3/eig E3/eig  [A major] [A major]
+bar   8 RH:v1: B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua E4/qua+Ab4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: E2/who | v6: E3/hal. E3/eig E3/eig  [E major] [E major]
+bar   9 RH:v1: B3/qua+E4/qua+F#4/qua B3/qua+E4/qua+F#4/qua B3/qua+Eb4/qua+F#4/qua Eb4/qua+F#4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: Ab2/who | v6: Ab3/hal. Ab3/eig Ab3/eig  [B major] [B major]
+bar  10 RH: B3/qua+E4/qua B3/qua+E4/qua B3/qua+E4/qua B3/qua+E4/qua  LH:v6: Db3/who | v7: Ab3/who  [C# minor] [C# minor]
+bar  11 RH:v1: B3/qua+E4/qua B3/qua+E4/qua B3/qua+E4/qua E4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: A2/who | v6: E3/hal. E3/eig E3/eig | v7: A3/who  [A major] [A major]
+bar  12 RH:v1: B3/qua+E4/qua E4/qua B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua | v2: r/qua B3/eig. B3/16t r/hal  LH:v5: A2/hal+A3/hal E2/hal | v6: E3/qua E3/eig E3/eig E3/hal  [A major] [E major] [A major] [E major]
+bar  13 RH:v1: B3/hal+F#4/hal B3/qua+E4/qua E4/qua | v2: E4/qua Eb4/qua r/qua B3/eig. B3/16t  LH:v5: Ab2/hal+Ab3/hal Db3/hal | v6: r/hal Ab3/qua. Ab3/eig  [G# major] [C# minor] [G# major] [C# minor]
+bar  14 RH:v1: B3/qua+E4/qua E4/qua B3/qua+E4/qua+Ab4/qua E4/qua+Ab4/qua | v2: r/qua B3/eig. B3/16t r/qua B3/eig. B3/16t  LH:v5: A2/hal+A3/hal E2/hal | v6: E3/qua E3/eig E3/eig E3/qua. E3/eig  [A major] [E major] [A major] [E major]
+bar  15 RH:v1: B3/qua+E4/qua E4/qua Eb4/qua Eb4/qua | v2: B3/qua B3/eig. B3/16t B3/qua B3/eig. B3/16t | v3: F#4/qua F#4/hal.  LH:v5: B2/who | v6: F#3/qua. F#3/hal F#3/eig  [B major] [B major]
+bar  16 RH:v1: B3/qua+E4/qua E4/qua B3/qua+E4/qua+Ab4/qua E4/qua+Ab4/qua | v2: r/qua B3/eig. B3/16t r/qua B3/eig. B3/16t  LH:v5: A2/hal+A3/hal E2/hal | v6: E3/qua E3/eig E3/eig E3/qua. E3/eig  [A major] [E major] [A major] [E major]
+bar  17 RH:v1: C4/hal+Eb4/hal Db4/qua+E4/qua B3/qua+Eb4/qua | v2: Ab4/qua F#4/qua r/hal  LH:v5: Ab2/hal+Eb3/hal+Ab3/hal Db3/qua B2/qua | v6: r/hal Ab3/qua F#3/qua  [G# major] [C# minor] [G# major] [C# minor]
+bar  18 RH: A3/who+Db4/who  LH:v6: A2/who | v7: E3/hal. E3/eig E3/eig  [A major] [B major] [A major] [B major]
+bar  19 RH:v1: B3/qua+Eb4/qua+E4/qua B3/qua+Eb4/qua+E4/qua B3/qua+Eb4/qua+E4/qua Eb4/qua+E4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: B2/hal. B2/eig B2/eig | v6: Eb3/who  [E major] [E major]
+bar  20 RH:v1: B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua E4/qua+Ab4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: E2/who | v6: E3/hal. E3/eig E3/eig  [E major] [E major]
+bar  21 RH:v1: B3/qua+E4/qua+F#4/qua B3/qua+E4/qua+F#4/qua B3/qua+Eb4/qua+F#4/qua Eb4/qua+F#4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: Ab2/who | v6: Ab3/hal. Ab3/eig Ab3/eig  [B major] [B major]
+bar  22 RH: B3/qua+E4/qua B3/qua+E4/qua B3/qua+E4/qua B3/eig+E4/eig F#4/eig Ab4/eig  LH:v6: Db3/who | v7: Ab3/who  [C# minor] [C# minor]
+bar  23 RH:v1: Db4/qua+E4/qua Db4/qua+E4/qua Db4/qua+E4/qua E4/qua | v2: r/hal. Db4/eig. B3/16t  LH:v5: A2/who | v6: E3/hal. E3/eig E3/eig  [A major] [A major]
+bar  24 RH:v1: B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua E4/qua+Ab4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: E2/who | v6: E3/hal. E3/eig E3/eig  [E major] [E major]
+bar  25 RH:v1: B3/qua+E4/qua+F#4/qua B3/qua+E4/qua+F#4/qua B3/qua+Eb4/qua+F#4/qua Eb4/qua+F#4/qua | v2: r/hal. B3/eig. B3/16t  LH:v5: Ab2/who | v6: Ab3/hal. Ab3/eig Ab3/eig  [B major] [B major]
+bar  26 RH: B3/qua+E4/qua B3/qua+E4/qua B3/qua+E4/qua B3/eig+E4/eig F#4/eig Ab4/eig  LH:v6: Db3/who | v7: Ab3/who  [C# minor] [C# minor]
+bar  27 RH:v1: Db4/qua+E4/qua Db4/qua+E4/qua Db4/qua+E4/qua E4/qua | v2: r/hal. Db4/eig. Db4/16t | v3: A4/who  LH:v5: A2/who | v6: E3/hal. E3/eig E3/eig | v7: A3/who  [A major] [A major]
+bar  28 RH: Db4/hal+E4/hal B3/hal+E4/hal+Ab4/hal  LH:v6: A2/hal+A3/hal E2/hal | v7: E3/hal E3/hal  [A major] [E major] [A major] [E major]
+bar  29 RH:v1: B3/qua. B3/16t B3/16t B3/hal+E4/hal | v2: E4/qua r/hal. | v3: F#4/hal r/hal  LH:v5: Ab2/hal Db3/hal | v6: Ab3/qua. Ab3/eig Ab3/hal  [G# major] [C# minor] [G# major] [C# minor]
+bar  30 RH: Db4/hal+E4/hal B3/hal+E4/hal+Ab4/hal  LH: A2/hal+E3/hal+A3/hal E2/hal+E3/hal  [A major] [E major] [A major] [E major]
+bar  31 RH:v1: B3/qua+E4/qua E4/qua Eb4/qua Eb4/qua | v2: B3/qua B3/eig. B3/16t B3/qua B3/eig. B3/16t | v3: F#4/qua F#4/hal.  LH:v5: B2/who | v6: F#3/qua. F#3/hal F#3/eig  [B major] [B major]
+bar  32 RH:v1: Db4/qua+E4/qua E4/qua E4/qua+Ab4/qua E4/16t+Ab4/16t E4/16t+Ab4/16t r/eig | v2: r/qua Db4/eig Db4/16t B3/16t B3/qua B3/eig. B3/16t  LH:v5: A3/hal E2/hal | v6: A2/qua+E3/qua A2/eig+E3/eig E3/eig E3/qua. E3/eig  [A major] [E major] [A major] [E major]
+bar  33 RH:v1: C4/qua C4/eig. C4/16t Db4/qua+E4/qua B3/qua+Eb4/qua | v2: Eb4/hal r/hal | v3: Ab4/qua F#4/qua r/hal  LH: Ab2/hal+Eb3/hal+Ab3/hal Db3/qua+Ab3/qua B2/qua+F#3/qua  [G# major] [C# minor] [G# major] [C# minor]
+bar  34 RH:v1: A3/hal. A3/eig r/eig | v2: Db4/hal. Db4/eig Db4/16t r/16t  LH: A2/who+E3/who  [A major] [B major] [A major] [B major]
+bar  35 RH:v1: B3/qua+Eb4/qua+E4/qua B3/qua+Eb4/qua+E4/qua B3/qua+Eb4/qua+E4/qua Eb4/qua+E4/qua | v2: r/hal. B3/eig. Db4/16t  LH:v5: B2/hal. B2/eig B2/eig | v6: Eb3/who  [E major] [E major]
+bar  36 RH:v1: Db4/qua+F#4/qua Db4/qua+F#4/qua B3/qua+F#4/qua B3/qua+F#4/qua | v2: A4/qua E4/qua+A4/qua E4/qua Eb4/qua  LH: F#2/hal+F#3/hal B2/hal+F#3/hal  [A major] [B major] [A major] [B major]
+bar  37 RH:v1: B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua B3/qua+Ab4/qua | v2: r/hal. E4/eig. E4/16t  LH:v5: E2/who | v6: E3/hal. E3/eig E3/eig  [E major] [E major]
+bar  38 RH:v1: Db4/qua+F#4/qua Db4/qua+E4/qua+F#4/qua B3/qua+E4/qua B3/qua+Eb4/qua | v2: A4/qua A4/eig. B4/16t F#4/hal  LH: F#2/hal+F#3/hal B2/hal+F#3/hal  [A major] [B major] [A major] [B major]
+bar  39 RH:v1: B3/qua B3/qua B3/qua B3/eig. B3/32n Db4/32n | v2: E4/qua+Ab4/qua E4/qua+Ab4/qua E4/qua+Ab4/qua E4/qua+Ab4/qua  LH:v5: E2/who | v6: E3/hal. E3/eig E3/eig  [E major] [E major]
+bar  40 RH:v1: Db4/qua+F#4/qua Db4/qua+F#4/qua B3/qua+F#4/qua B3/qua+F#4/qua | v2: A4/qua E4/qua+A4/qua E4/qua Eb4/qua  LH:v5: F#2/hal+F#3/hal B2/qua. B2/eig | v6: r/qua r/eig Db3/eig F#3/hal  [A major] [B major] [A major] [B major]
+bar  41 RH:v1: C4/hal+Eb4/hal Db4/qua+E4/qua B3/qua+Eb4/qua | v2: Ab4/qua F#4/qua r/hal  LH: Ab2/eig Eb3/eig Ab3/eig Ab2/eig Eb3/eig Ab3/eig Db3/qua+Ab3/qua B2/qua+F#3/qua  [E major] [C# minor] [E major] [C# minor]
+bar  42 RH: A3/qua+B3/qua+E4/qua A3/qua+B3/qua+E4/qua A3/qua+B3/qua+E4/qua A3/qua+B3/qua+E4/qua  LH:v6: A2/who | v7: E3/hal. E3/eig E3/eig  [A major] [A major]
+bar  43 RH:v1: Eb4/who+E4/who | v2: B3/hal. B3/eig. B3/16t  LH:v5: B2/hal. B2/eig B2/eig | v6: Eb3/who  [B major] [B major]
+bar  44 RH: B3/qua+E4/qua B3/qua+E4/qua B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua  LH:v6: A3/hal r/hal | v7: A2/qua+E3/qua r/eig E3/16t A2/16t E2/qua.+E3/qua. E2/eig+E3/eig  [A major] [E major] [A major] [E major]
+bar  45 RH:v1: E4/qua Eb4/qua B3/qua B3/eig. B3/16t | v2: B3/qua. B3/eig E4/qua E4/qua | v3: F#4/hal r/hal  LH:v5: Ab2/hal Db3/hal | v6: Ab3/qua. Ab3/eig Ab3/qua. Ab3/eig  [B major] [C# minor] [B major] [C# minor]
+bar  46 RH: B3/qua+E4/qua B3/qua+E4/qua B3/qua+E4/qua+Ab4/qua B3/qua+E4/qua+Ab4/qua  LH:v6: A3/hal E2/hal | v7: A2/qua+E3/qua A2/eig+E3/eig E3/eig E3/qua. E3/eig  [A major] [E major] [A major] [E major]
+bar  47 RH:v1: B3/qua+E4/qua E4/qua Eb4/qua Eb4/qua | v2: B3/qua B3/eig. B3/16t B3/qua B3/eig. B3/16t | v3: F#4/qua F#4/hal.  LH:v5: B2/who | v6: F#3/qua. F#3/hal F#3/eig  [B major] [B major]
+bar  48 RH:v1: Db4/qua+E4/qua E4/qua E4/qua+Ab4/qua E4/16t+Ab4/16t E4/16t+Ab4/16t r/eig | v2: r/qua Db4/eig Db4/16t A3/16t B3/qua B3/eig. B3/16t  LH:v5: A2/hal E2/qua. E2/eig | v6: E3/qua. E3/eig E3/hal  [A major] [E major] [A major] [E major]
+bar  49 RH:v1: C4/qua+Eb4/qua C4/eig. C4/16t Db4/qua+E4/qua B3/qua+Eb4/qua | v2: Ab4/qua F#4/qua r/hal  LH:v5: Ab2/hal Db3/eig Ab3/eig B3/eig B2/qua+F#3/qua | v6: r/qua Eb3/qua r/hal | v7: Ab3/qua. Ab3/eig r/hal  [G# major] [C# minor] [G# major] [C# minor]
+bar  50 RH: A3/qua+B3/qua+E4/qua A3/qua+B3/qua+E4/qua A3/qua+B3/qua+E4/qua A3/qua+B3/qua+E4/qua  LH: A2/who+E3/who  [A major] [A major]
+bar  51 RH:v1: C4/who+E4/who | v2: A4/hal Ab4/hal  LH: A2/who+E3/who+A3/who  [B major] [B major]
+bar  52 RH: B3/who+E4/who+Ab4/who  LH: E2/who+E3/who  [E major] [E major]

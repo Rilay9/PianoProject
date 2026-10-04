@@ -1,0 +1,54 @@
+song: song.classical.bach-wtc1-prelude-1
+title: Prelude No. 1 in C major, BWV 846
+composer: Johann Sebastian Bach
+rungs: classical.6
+shipped file: scores/imported/song.classical.bach-wtc1-prelude-1.mxl
+catalog keySig/timeSig/tempo: C major / 4/4 / 72.0
+raw-XML counts: ties 136, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 0, grace notes 0, voices>1 262, measures 34, staves 1
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: clef F 4
+  bar 1: key 0 major
+  bar 1: time 4 4
+  bar 32: clef F 4
+  bar 32: clef G 2
+
+dump_score.py:
+song.classical.bach-wtc1-prelude-1 | Prelude No. 1 in C major, BWV 846 | level 6.1 (judged)
+notation: {"bars": 34, "staves": 2, "keys": [{"fifths": 0, "mode": "major"}], "times": ["4/4"], "chordCount": 0, "chords": [], "swungMark": false, "finalBass": 0}
+key signatures (fifths): ['0']  modes: ['major']  times: ['4/4']
+text on the score: ['Adagio', 'Adagio', 'Adagio', 'Lento']
+bar   1 RH: r/eig G4/16t C5/16t E5/16t G4/16t C5/16t E5/16t r/eig G4/16t C5/16t E5/16t G4/16t C5/16t E5/16t  LH:v5: C4/hal C4/hal | v6: r/16t E4/eig. E4/qua r/16t E4/eig. E4/qua
+bar   2 RH: r/eig A4/16t D5/16t F5/16t A4/16t D5/16t F5/16t r/eig A4/16t D5/16t F5/16t A4/16t D5/16t F5/16t  LH:v5: C4/hal C4/hal | v6: r/16t D4/eig. D4/qua r/16t D4/eig. D4/qua
+bar   3 RH: r/eig G4/16t D5/16t F5/16t G4/16t D5/16t F5/16t r/eig G4/16t D5/16t F5/16t G4/16t D5/16t F5/16t  LH:v5: B3/hal B3/hal | v6: r/16t D4/eig. D4/qua r/16t D4/eig. D4/qua
+bar   4 RH: r/eig G4/16t C5/16t E5/16t G4/16t C5/16t E5/16t r/eig G4/16t C5/16t E5/16t G4/16t C5/16t E5/16t  LH:v5: C4/hal C4/hal | v6: r/16t E4/eig. E4/qua r/16t E4/eig. E4/qua
+bar   5 RH: r/eig A4/16t E5/16t A5/16t A4/16t E5/16t A5/16t r/eig A4/16t E5/16t A5/16t A4/16t E5/16t A5/16t  LH:v5: C4/hal C4/hal | v6: r/16t E4/eig. E4/qua r/16t E4/eig. E4/qua
+bar   6 RH: r/eig F#4/16t A4/16t D5/16t F#4/16t A4/16t D5/16t r/eig F#4/16t A4/16t D5/16t F#4/16t A4/16t D5/16t  LH:v5: C4/hal C4/hal | v6: r/16t D4/eig. D4/qua r/16t D4/eig. D4/qua
+bar   7 RH: r/eig G4/16t D5/16t G5/16t G4/16t D5/16t G5/16t r/eig G4/16t D5/16t G5/16t G4/16t D5/16t G5/16t  LH:v5: B3/hal B3/hal | v6: r/16t D4/eig. D4/qua r/16t D4/eig. D4/qua
+bar   8 RH: r/eig E4/16t G4/16t C5/16t E4/16t G4/16t C5/16t r/eig E4/16t G4/16t C5/16t E4/16t G4/16t C5/16t  LH:v5: B3/hal B3/hal | v6: r/16t C4/eig. C4/qua r/16t C4/eig. C4/qua
+bar   9 RH: r/eig E4/16t G4/16t C5/16t E4/16t G4/16t C5/16t r/eig E4/16t G4/16t C5/16t E4/16t G4/16t C5/16t  LH:v5: A3/hal A3/hal | v6: r/16t C4/eig. C4/qua r/16t C4/eig. C4/qua
+bar  10 RH: r/eig D4/16t F#4/16t C5/16t D4/16t F#4/16t C5/16t r/eig D4/16t F#4/16t C5/16t D4/16t F#4/16t C5/16t  LH:v5: D3/hal D3/hal | v6: r/16t A3/eig. A3/qua r/16t A3/eig. A3/qua
+bar  11 RH: r/eig D4/16t G4/16t B4/16t D4/16t G4/16t B4/16t r/eig D4/16t G4/16t B4/16t D4/16t G4/16t B4/16t  LH:v5: G3/hal G3/hal | v6: r/16t B3/eig. B3/qua r/16t B3/eig. B3/qua
+bar  12 RH: r/eig E4/16t G4/16t C#5/16t E4/16t G4/16t C#5/16t r/eig E4/16t G4/16t C#5/16t E4/16t G4/16t C#5/16t  LH:v5: G3/hal G3/hal | v6: r/16t Bb3/eig. Bb3/qua r/16t Bb3/eig. Bb3/qua
+bar  13 RH: r/eig D4/16t A4/16t D5/16t D4/16t A4/16t D5/16t r/eig D4/16t A4/16t D5/16t D4/16t A4/16t D5/16t  LH:v5: F3/hal F3/hal | v6: r/16t A3/eig. A3/qua r/16t A3/eig. A3/qua
+bar  14 RH: r/eig D4/16t F4/16t B4/16t D4/16t F4/16t B4/16t r/eig D4/16t F4/16t B4/16t D4/16t F4/16t B4/16t  LH:v5: F3/hal F3/hal | v6: r/16t Ab3/eig. Ab3/qua r/16t Ab3/eig. Ab3/qua
+bar  15 RH: r/eig C4/16t G4/16t C5/16t C4/16t G4/16t C5/16t r/eig C4/16t G4/16t C5/16t C4/16t G4/16t C5/16t  LH:v5: E3/hal E3/hal | v6: r/16t G3/eig. G3/qua r/16t G3/eig. G3/qua
+bar  16 RH: r/eig A3/16t C4/16t F4/16t A3/16t C4/16t F4/16t r/eig A3/16t C4/16t F4/16t A3/16t C4/16t F4/16t  LH:v5: E3/hal E3/hal | v6: r/16t F3/eig. F3/qua r/16t F3/eig. F3/qua
+bar  17 RH: r/eig A3/16t C4/16t F4/16t A3/16t C4/16t F4/16t r/eig A3/16t C4/16t F4/16t A3/16t C4/16t F4/16t  LH:v5: D3/hal D3/hal | v6: r/16t F3/eig. F3/qua r/16t F3/eig. F3/qua
+bar  18 RH: r/eig G3/16t B3/16t F4/16t G3/16t B3/16t F4/16t r/eig G3/16t B3/16t F4/16t G3/16t B3/16t F4/16t  LH:v5: G2/hal G2/hal | v6: r/16t D3/eig. D3/qua r/16t D3/eig. D3/qua
+bar  19 RH: r/eig G3/16t C4/16t E4/16t G3/16t C4/16t E4/16t r/eig G3/16t C4/16t E4/16t G3/16t C4/16t E4/16t  LH:v5: C3/hal C3/hal | v6: r/16t E3/eig. E3/qua r/16t E3/eig. E3/qua
+bar  20 RH: r/eig Bb3/16t C4/16t E4/16t Bb3/16t C4/16t E4/16t r/eig Bb3/16t C4/16t E4/16t Bb3/16t C4/16t E4/16t  LH:v5: C3/hal C3/hal | v6: r/16t G3/eig. G3/qua r/16t G3/eig. G3/qua
+bar  21 RH: r/eig A3/16t C4/16t E4/16t A3/16t C4/16t E4/16t r/eig A3/16t C4/16t E4/16t A3/16t C4/16t E4/16t  LH:v5: F2/hal F2/hal | v6: r/16t F3/eig. F3/qua r/16t F3/eig. F3/qua
+bar  22 RH: r/eig A3/16t C4/16t Eb4/16t A3/16t C4/16t Eb4/16t r/eig A3/16t C4/16t Eb4/16t A3/16t C4/16t Eb4/16t  LH:v5: F#2/hal F#2/hal | v6: r/16t C3/eig. C3/qua r/16t C3/eig. C3/qua
+bar  23 RH: r/eig B3/16t C4/16t D4/16t B3/16t C4/16t D4/16t r/eig B3/16t C4/16t D4/16t B3/16t C4/16t D4/16t  LH:v5: Ab2/hal Ab2/hal | v6: r/16t F3/eig. F3/qua r/16t F3/eig. F3/qua
+bar  24 RH: r/eig G3/16t B3/16t D4/16t G3/16t B3/16t D4/16t r/eig G3/16t B3/16t D4/16t G3/16t B3/16t D4/16t  LH:v5: G2/hal G2/hal | v6: r/16t F3/eig. F3/qua r/16t F3/eig. F3/qua
+bar  25 RH: r/eig G3/16t C4/16t E4/16t G3/16t C4/16t E4/16t r/eig G3/16t C4/16t E4/16t G3/16t C4/16t E4/16t  LH:v5: G2/hal G2/hal | v6: r/16t E3/eig. E3/qua r/16t E3/eig. E3/qua
+bar  26 RH: r/eig G3/16t B3/16t F4/16t G3/16t B3/16t F4/16t r/eig G3/16t B3/16t F4/16t G3/16t B3/16t F4/16t  LH:v5: G2/hal G2/hal | v6: r/16t D3/eig. D3/qua r/16t D3/eig. D3/qua
+bar  27 RH: r/eig A3/16t C4/16t F#4/16t A3/16t C4/16t F#4/16t r/eig A3/16t C4/16t F#4/16t A3/16t C4/16t F#4/16t  LH:v5: G2/hal G2/hal | v6: r/16t Eb3/eig. Eb3/qua r/16t Eb3/eig. Eb3/qua
+bar  28 RH: r/eig G3/16t C4/16t G4/16t G3/16t C4/16t G4/16t r/eig G3/16t C4/16t G4/16t G3/16t C4/16t G4/16t  LH:v5: G2/hal G2/hal | v6: r/16t E3/eig. E3/qua r/16t E3/eig. E3/qua
+bar  29 RH: r/eig G3/16t C4/16t F4/16t G3/16t C4/16t F4/16t r/eig G3/16t C4/16t F4/16t G3/16t C4/16t F4/16t  LH:v5: G2/hal G2/hal | v6: r/16t D3/eig. D3/qua r/16t D3/eig. D3/qua
+bar  30 RH: r/eig G3/16t B3/16t F4/16t G3/16t B3/16t F4/16t r/eig G3/16t B3/16t F4/16t G3/16t B3/16t F4/16t  LH:v5: G2/hal G2/hal | v6: r/16t D3/eig. D3/qua r/16t D3/eig. D3/qua
+bar  31 RH: r/eig G3/16t Bb3/16t E4/16t G3/16t Bb3/16t E4/16t r/eig G3/16t Bb3/16t E4/16t G3/16t Bb3/16t E4/16t  LH:v5: C2/hal C2/hal | v6: r/16t C3/eig. C3/qua r/16t C3/eig. C3/qua
+bar  32 RH: r/eig F3/16t A3/16t C4/16t F4/16t C4/16t A3/16t C4/16t A3/16t F3/16t A3/16t F3/16t D3/16t F3/16t D3/16t  LH:v5: C2/hal C2/hal | v6: r/16t C3/eig. C3/qua C3/hal
+bar  33 RH: r/eig G4/16t B4/16t D5/16t F5/16t D5/16t B4/16t D5/16t B4/16t G4/16t B4/16t D4/16t F4/16t E4/16t D4/16t  LH:v5: C2/hal C2/hal | v6: r/16t B2/eig. B2/qua B2/hal
+bar  34 RH: E4/who+G4/who+C5/who  LH: C2/who+C3/who

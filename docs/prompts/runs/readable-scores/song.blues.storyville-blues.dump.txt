@@ -1,0 +1,73 @@
+song: song.blues.storyville-blues
+title: Storyville Blues
+composer: Traditional
+rungs: jam.7
+shipped file: scores/pdmx/QmQjvJNRnH4txqUT4ta7FpCqZfeEkquYaoFqXpdM13DWPq.mxl
+catalog keySig/timeSig/tempo: Ab major / None / 132.0
+raw-XML counts: ties 38, tuplets 0, fingerings 0, dynamics 0, pedal 0, articulations 0, chord symbols 75, grace notes 0, voices>1 4, measures 56, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -4
+  bar 1: time 4 4
+
+dump_score.py:
+song.blues.storyville-blues | Storyville Blues | level 4.1 (estimated)
+notation: {"bars": 56, "staves": 1, "keys": [{"fifths": -4, "mode": null}], "times": ["4/4"], "chordCount": 75, "chords": ["Ab", "Ab7", "Bb7", "Db", "Dbm", "Eb7", "F7"], "swungMark": false, "finalBass": 8}
+key signatures (fifths): ['-4']  modes: []  times: ['4/4']
+text on the score: ['Drum Roll - Piano Roll - Sustained Bass', 'Time', 'Back to "B" for Solos', 'rit.', 'Tag']
+bar   1 RH: B4/eig C5/eig
+bar   2 RH: Eb5/hal. B4/eig C5/eig  [Ab major]
+bar   3 RH: Eb4/hal. C5/eig Bb4/eig  [Eb dominant]
+bar   4 RH: Ab4/who  [Ab dominant] [Db major] [Ab major] [Db minor]
+bar   5 RH: Ab4/hal. Eb4/eig Eb4/eig  [Ab major]
+bar   6 RH: C5/eig Eb5/eig C5/eig Bb4/eig Ab4/qua F4/eig Eb4/eig  [Ab major]
+bar   7 RH: Ab4/eig Ab4/eig Ab4/qua. Ab4/eig Bb4/eig C5/eig  [Ab dominant]
+bar   8 RH: Db5/qua Db5/qua Ab4/qua Bb4/eig C5/eig  [Db major]
+bar   9 RH: C5/hal. Eb4/eig Eb4/eig  [Ab major] [Eb dominant]
+bar  10 RH: C5/eig Eb5/eig C5/eig Bb4/eig Ab4/qua F4/eig Eb4/eig  [Ab major]
+bar  11 RH: Ab4/eig Ab4/eig Ab4/hal Bb4/eig Ab4/eig
+bar  12 RH: G4/eig Bb4/eig D5/eig C5/eig G4/qua F4/eig Bb4/eig  [Bb dominant]
+bar  13 RH: Bb4/hal. Eb4/eig Eb4/eig  [Eb dominant]
+bar  14 RH: C5/eig Eb5/eig C5/eig Bb4/eig Ab4/qua F4/eig Eb4/eig  [Ab major]
+bar  15 RH: Ab4/eig Ab4/eig Ab4/qua. Ab4/eig Bb4/eig C5/eig  [Ab dominant]
+bar  16 RH: Db5/qua Db5/qua Ab4/eig Ab4/eig Bb4/eig C5/eig  [Db major]
+bar  17 RH: C5/hal. B4/eig C5/eig  [Ab major]
+bar  18 RH: Db5/eig Db5/qua D5/eig D5/qua B4/eig C5/eig  [Db major]
+bar  19 RH: Eb5/qua C5/eig F4/eig F4/hal  [F dominant]
+bar  20 RH: Bb4/eig Ab4/eig F4/qua Bb4/qua Bb4/eig Bb4/eig  [Bb dominant]
+bar  21 RH: Bb4/hal. B4/eig C5/eig  [Eb dominant]
+bar  22 RH: Eb5/hal. B4/eig C5/eig  [Ab major]
+bar  23 RH: Ab4/hal r/eig Ab4/eig Bb4/eig C5/eig  [Ab dominant]
+bar  24 RH: Eb5/eig Db5/qua. Ab4/qua Bb4/eig C5/eig  [Db major] [Db minor]
+bar  25 RH: C5/hal. B4/eig C5/eig  [Ab major] [Eb dominant]
+bar  26 RH: Eb5/hal. B4/eig C5/eig  [Ab major]
+bar  27 RH: Ab4/hal. Bb4/eig Ab4/eig
+bar  28 RH: G4/eig Bb4/eig D5/eig C5/eig G4/qua F4/eig Bb4/eig  [Bb dominant]
+bar  29 RH: Bb4/hal. B4/eig C5/eig  [Eb dominant]
+bar  30 RH: Eb5/hal. B4/eig C5/eig  [Ab major]
+bar  31 RH: Ab4/hal. B4/eig C5/eig  [Ab dominant]
+bar  32 RH: Eb5/eig Db5/qua. Ab4/eig Ab4/eig Bb4/eig C5/eig  [Db major] [Db minor]
+bar  33 RH: C5/hal. B4/eig C5/eig  [Ab major] [Eb dominant]
+bar  34 RH: Eb5/hal. B4/eig C5/eig  [Ab major]
+bar  35 RH: Eb4/hal. Cb5/eig Bb4/eig  [Eb dominant]
+bar  36 RH: Ab4/who  [Ab major] [Ab dominant] [Db major] [Db minor]
+bar  37 RH:v1: Ab4/hal. B4/eig C5/eig | v2: r/hal r/qua Eb4/eig Eb4/eig  [Ab major] [Eb dominant]
+bar  38 RH: Eb4/hal F4/hal  [Ab major]
+bar  39 RH: Ab4/hal C5/hal  [Ab dominant]
+bar  40 RH: Eb5/eig Db5/qua. Ab4/qua Bb4/eig C5/eig  [Db major] [Db minor]
+bar  41 RH: C5/hal. Eb5/eig Eb5/eig  [Ab major]
+bar  42 RH: Eb4/hal F4/hal  [Ab major]
+bar  43 RH: Ab4/hal C5/hal  [F dominant]
+bar  44 RH: G4/eig Bb4/eig D5/eig C5/eig G4/qua F4/eig Bb4/eig  [Bb dominant]
+bar  45 RH: Bb4/hal. Eb4/eig Eb4/eig  [Eb dominant]
+bar  46 RH: Eb4/hal F4/hal  [Ab major]
+bar  47 RH: Ab4/hal C5/hal  [Ab dominant]
+bar  48 RH: Eb5/eig Db5/qua. Ab4/qua Bb4/eig C5/eig  [Db major] [Db minor]
+bar  49 RH: C5/hal. B4/eig C5/eig  [Ab major] [Eb dominant]
+bar  50 RH: Eb5/hal. B4/eig C5/eig  [Ab major]
+bar  51 RH: Eb4/hal. Cb5/eig Bb4/eig  [Eb dominant]
+bar  52 RH: Ab4/who  [Ab major] [Ab dominant] [Db major] [Db minor]
+bar  53 RH: Ab4/hal r/qua B4/eig C5/eig  [Ab major]
+bar  54 RH: Eb5/qua B4/eig C5/eig Ab4/qua Cb5/eig Bb4/eig  [Ab major] [Db major]
+bar  55 RH: Ab4/who  [Ab major] [Ab dominant] [Db major] [Db minor]
+bar  56 RH: Ab4/hal. r/qua  [Ab major]

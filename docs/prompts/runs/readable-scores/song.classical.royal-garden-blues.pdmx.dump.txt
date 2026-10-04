@@ -1,0 +1,62 @@
+song: song.classical.royal-garden-blues.pdmx
+title: Royal Garden Blues (1919)
+composer: Clarence and Spencer Williams
+rungs: blues.5, jazz.6
+shipped file: scores/pdmx/Qmf5C4Cit85nReUWzAxwwLo5sNNfHwZX452Aq19MRm7rQK.mxl
+catalog keySig/timeSig/tempo: 1 flat / None / 96.0
+raw-XML counts: ties 22, tuplets 32, fingerings 0, dynamics 0, pedal 0, articulations 1, chord symbols 52, grace notes 0, voices>1 4, measures 44, staves 0
+raw-XML clef/key/time by bar:
+  bar 1: clef G 2
+  bar 1: key -1
+  bar 1: time 4 4
+  bar 29: key -2
+
+dump_score.py:
+song.classical.royal-garden-blues.pdmx | Royal Garden Blues (1919) | level 4.2 (estimated)
+notation: {"bars": 44, "staves": 1, "keys": [{"fifths": -1, "mode": null}, {"fifths": -2, "mode": null}], "times": ["4/4"], "chordCount": 52, "chords": ["Abdim", "Bb", "Bb7", "Bbm", "C7", "Db7", "Eb7", "Ebm", "F", "F7", "G7"], "swungMark": false, "finalBass": 10}
+key signatures (fifths): ['-1', '-2']  modes: []  times: ['4/4']
+text on the score: ['Stop time - Play downbeats 4 bars', 'Trombone', 'Tuba', 'Back to "D" for Solos']
+bar   1 RH: A4/qua A4/eig F4/eig Bb4/eig C5/qua.  [F major]
+bar   2 RH: A4/qua A4/eig F4/eig Bb4/eig C5/qua.
+bar   3 RH: A4/qua C5/qua D5/qua F5/qua  [Ab diminished]
+bar   4 RH: G5/qua r/qua C5/qua r/qua  [C dominant]
+bar   5 RH: A4/qua A4/eig F4/eig Bb4/eig C5/qua.  [F major]
+bar   6 RH: A4/qua A4/eig F4/eig Bb4/eig C5/qua.
+bar   7 RH: A4/qua A4/eig F4/eig Bb4/eig C5/qua Bb4/eig
+bar   8 RH: A4/eig F4/qua G4/eig G4/qua r/qua  [F dominant]
+bar   9 RH: G4/qua G4/eig F4/eig G4/eig A4/qua.  [Bb major] [F augmented-seventh]
+bar  10 RH: G4/qua G4/eig F4/eig G4/eig A4/qua.  [Bb major] [F augmented-seventh]
+bar  11 RH: G4/qua G4/eig F4/eig G4/eig A4/qua F4/eig  [Bb major] [F augmented-seventh]
+bar  12 RH: G4/eig F4/qua D4/eig D4/hal  [Bb major]
+bar  13 RH: C4/hal D4/qua D#4/qua  [C dominant]
+bar  14 RH: E4/qua Ab4/qua Ab4/eig G4/qua.  [Db dominant] [C dominant]
+bar  15 RH: F4/who  [F major] [Bb dominant]
+bar  16 RH: F4/qua r/qua r/hal  [F major] [C dominant]
+bar  17 RH: C5/eig D5/eig C5/eig A4/eig F4/eig Eb4/qua r/qua  [F dominant]
+bar  18 RH: C5/eig D5/eig C5/eig A4/eig F4/eig Eb4/qua r/qua  [F dominant]
+bar  19 RH: C5/eig D5/eig C5/eig A4/eig F4/eig Eb4/qua r/qua  [F dominant]
+bar  20 RH: C4/eig D4/eig C4/eig A3/eig F3/eig Eb3/qua r/qua  [F dominant]
+bar  21 RH: r/qua G4/eig F4/eig G4/qua r/qua  [Bb major]
+bar  22 RH: r/eig C#4/eig D4/eig F4/eig Ab4/eig G4/qua.  [Db dominant] [C dominant]
+bar  23 RH: F4/who  [F major]
+bar  24 RH: F4/eig G4/eig G#4/eig A4/eig E5/eig D5/qua.  [Ab diminished]
+bar  25 RH: C5/who  [C dominant]
+bar  26 RH: C5/eig D#4/eig E4/eig Bb4/eig Bb4/qua A4/qua
+bar  27 RH: F4/who  [F major] [Bb dominant]
+bar  28 RH: F4/hal. r/qua  [F major] [C dominant]
+bar  29 RH: F4/qua F4/qua G4/eig A4/qua.  [F dominant]
+bar  30 RH: F4/qua F4/qua G4/eig A4/qua.  [Bb major]
+bar  31 RH: F4/qua F4/qua G4/eig A4/qua.  [Bb minor]
+bar  32 RH:v1: F4/qua r/qua F4/qua r/qua | v2: r/eig r/eig r/qua r/hal  [F major] [F dominant]
+bar  33 RH: Bb4/qua r/qua Bb4/eig C5/eig C#5/eig D5/eig  [Bb major]
+bar  34 RH: Bb4/eig Bb4/qua Bb4/eig Bb4/qua r/qua
+bar  35 RH: Bb4/qua r/qua Bb4/eig C5/eig C#5/eig D5/eig
+bar  36 RH: Bb4/eig Bb4/qua Bb4/eig Bb4/qua r/qua  [Bb dominant]
+bar  37 RH: Bb4/qua r/qua Bb4/eig B4/eig C5/eig Db5/eig  [Eb dominant]
+bar  38 RH: Bb4/eig Bb4/qua Bb4/eig Bb4/qua r/qua  [Eb minor]
+bar  39 RH: Bb4/qua r/qua Bb4/eig C5/eig C#5/eig D5/eig  [Bb major] [Eb dominant]
+bar  40 RH: B4/eig B4/qua B4/eig B4/qua r/qua  [G dominant]
+bar  41 RH: G4/qua r/qua Bb4/eig C5/eig C#5/eig D5/eig  [C dominant]
+bar  42 RH: F4/eig F4/qua F4/eig F4/eig r/eig r/qua  [F dominant]
+bar  43 RH: Bb4/qua r/qua Bb4/qua r/qua  [Bb major] [Eb dominant]
+bar  44 RH: Bb4/qua Bb4/qua Bb4/qua r/qua  [Bb major] [Eb dominant] [Bb major]
