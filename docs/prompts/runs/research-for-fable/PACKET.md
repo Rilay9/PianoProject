@@ -31,6 +31,21 @@ This is research only. Nothing here was built, placed or imported, and nothing w
 - `pdmx-index.json`: per file, its PDMX path, characteristics, red flags and edition check. The `local_file` paths point at a scratch folder that no longer exists. Re-extract by `pdmx_mxl` path, streaming `mxl.tar.gz` from Zenodo record 14648209.
 - `mutopia-piano.json`.
 
+## The frame (the owner, 2026-10-04): find → match → inspect → verify
+
+Discovery from PDMX did not fail. Trusting the search did. Keep the fast search and stop trusting it.
+
+1. **Find:** web and published sources give title lists for a characteristic. They are allowed to be noisy, because a wrong lead is cheap to reject.
+2. **Match:** find the titles in PDMX, the warehouse. Keep several editions where they exist; move on where it holds none.
+3. **Inspect:** parse with music21, scan bars for the required property, and cut 4–8-bar passages with the existing excerpt cutter.
+4. **Verify:** Partitura is the ordinary second reader. humlib or Verovio only where Partitura disagrees.
+
+Generated material follows the same shape: generate → independently inspect → ship. Finite variants are enumerated whole; seeded ones are checked over many seeds, failing closed. Real musical cells are used where musicality matters. Fable makes the bounded teaching choice.
+
+**Two cautions, for accuracy:**
+- **Partitura checks the conversion, not the source.** A note the uploader typed wrong is read the same by every parser. Where a known edition exists, compare the passage with a second copy: Mutopia, another PDMX upload, or the published edition. The source failures this project already met were of this kind (*Streets of Laredo* truncated, *El Choclo* mis-barred, *Happy Birthday*'s A♯), per `reports/source-failure-history.md`.
+- **The owner's example "4 of 8 genre placements were wrong once the MusicXML was read" was not re-checked here.**
+
 ---
 
 ## C. High-value findings (the ones likely to change what gets built)
