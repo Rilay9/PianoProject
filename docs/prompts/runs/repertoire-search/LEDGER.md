@@ -32,6 +32,13 @@ Target labels:
 | 5 | Chopin, Nocturne Op. 9 No. 2 | B | PASS | Exact XML: piano grand staff, 12/8. In m.1 LH repeatedly attacks a low bass eighth (e.g. E-flat2), then higher chord tones/chords on the next two eighths, and repeats that three-eighth accompaniment cell across the bar. This is sustained, genuine accompaniment under an independent RH melody. | Strong B exemplar. Do not relabel C (not low-high-middle-high Alberti) or D (four compound-beat cells in 12/8, not 3/4 oom-pah-pah). |
 | 6 | Clocks — Coldplay | B | FAIL for this archive score | External descriptions correctly nominate the canonical song for its broken-triad piano ostinato, but the exact dumped XML is a single C-clef staff whose notes are tagged to the Viola instrument (`P1-I2`); it is not the piano accompaniment arrangement we need. | Good example of web→archive validation rejecting a famous candidate. Search for another licensed archive arrangement if B needs a modern/pop exemplar. |
 | 7 | Satie, Gymnopédie No. 1 | D | PARTIAL; FAIL strict oom-pah-pah | Exact XML is piano in 3/4 with a low LH bass sustained for the full measure plus an upper LH chord entering on beat 2 and lasting through beats 2–3. It gives the intended bass-then-chord waltz-like texture, but there is no separate beat-3 chord attack in this dump, so it is not a clean literal oom-pah-pah exemplar. | Useful near-neighbor/control for D; keep searching for an exact bass + chord + chord articulation. |
+| 8 | Mozart, Sonata K.545, 3rd movement | C | PASS as excerpt; not global exemplar | Opening Rondo material is not Alberti. At m.9 the exact LH 16ths are C4–G4–E4–G4; m.10 begins B3–G4–D4–G4: explicit low–high–middle–high Alberti cells beneath an independent RH line. | Keep as a clean C excerpt and record the measure boundary. Do not describe the whole movement as Alberti. Research also nominated K.545/I as a stronger sustained exemplar. |
+
+## Nominated candidates not yet exact-score-validated
+
+| target | candidate | archive status | why nominated | required next check |
+|---|---|---|---|---|
+| C | Mozart, K.545, 1st movement — PDMX `QmXaLndsVZvGL5n1saWern2cbW1Ze1kEKpeUofRBBmhT1D` | Present in the project's quarry record; selected, level 7.0, conversion gate passed. Not part of the current 94-file dump. | Independent teaching references identify its opening/left hand as sustained Alberti bass; quarry record says this exact PDMX item is a two-staff piano file that converted successfully. | Obtain/inspect the exact PDMX MusicXML before promoting it from nomination to PASS. |
 
 ## Evidence discipline
 
