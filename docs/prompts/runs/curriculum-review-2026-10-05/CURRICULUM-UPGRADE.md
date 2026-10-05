@@ -6,7 +6,7 @@ The second pass the restart packet asked for. Pass one (`SYNTHESIS.md`) found wh
 
 **Classes.** MUST (a missing bridge, a badly sequenced ability, a materially weak endpoint, or a skill without which the track is not educationally credible); SHOULD (substantially improves development or independence, not a prerequisite for the track to function); NICE (enrichment); ALREADY (adequately taught now, with the place); REJECT (does not belong here, duplicates another track, or is unsupported after checking).
 
-**Design rules.** One owner per recurring ability; other tracks transfer it by a requirement line or a task, never by a copied lesson. New rungs only where a stage of development has no home; otherwise a lesson edit, a task inside an existing rung, a requirement, or a session behaviour. Generated content only where a sourced definition and an independent check exist. Real repertoire preferred to generated where it teaches the same thing. Nothing here is heard; every musical-quality judgement stays *unverified as music*.
+**Design rules.** One owner per subskill; other tracks transfer it by a requirement line or a task, never by a copied lesson. New rungs only where a stage of development has no home; otherwise a lesson edit, a task inside an existing rung, a requirement, or a session behaviour. Generated content only where a sourced definition and an independent check exist. Real repertoire preferred to generated where it teaches the same thing. Nothing here is heard; every musical-quality judgement stays *unverified as music*.
 
 **Evidence marks.** `[V]` re-read by me at HEAD; `[R]` the track record's cited evidence (file:line or notation read), not re-read by me; `[D]` the dossier's claim about an external source. Official ABRSM and RCM pages returned 403 to the reviewers; benchmark statements rest on the 2023-24 ABRSM PDF, course outlines (Berklee) and third-party transcriptions, named in each record's section 0.
 
@@ -16,46 +16,46 @@ The second pass the restart packet asked for. Pass one (`SYNTHESIS.md`) found wh
 
 ## 0. Adjustments after the outside reviewer's read (2026-10-05, the owner)
 
-1. **Decisions taken.** Hymns & gospel: narrow the name and promise to **Hymns & spirituals** now; gospel rungs 7-9 are not added (a later extension if the owner wants the domain). Rock & metal: **add rock.8 (transcribe and reduce from a recording) and rock.9 (personal full-song arrangement project)**. Jazz: **keep the soloing promise** and build the jazz-specific bridges (minor ii-V-i, chord-tone to approach-note soloing, the integrated capstone); general improvisation stays owned by improv. The † and § and ‡ rows in section 2 read accordingly: jazz † rows are MUST, rock path-B rows are MUST, hymns ‡ rows stand and the gospel row is dropped.
+1. **Decisions taken.** Hymns & gospel: narrow the name and promise to **Hymns & spirituals** now; gospel rungs 7-9 are not added (a later extension if the owner wants the domain). Rock & metal: **add rock.8 (transcribe and reduce from a recording) and rock.9 (personal full-song arrangement project)**. Jazz: **keep the soloing promise** and build the jazz-specific bridges (minor ii-V-i, chord-tone to approach-note soloing, the integrated capstone); general improvisation stays owned by improv. Section 2 is normalised to these decisions: the three jazz rows and rock.8 and rock.9 are plain MUST, the hymns rows stand, and the gospel rungs are a REJECT row.
 2. **latin.8 is a firm learning need, not conditional on material.** The new PDMX review found a two-staff Piazzolla Libertango piano arrangement (`QmakqtZzLrMc3CqFnwiqjyxmhrThav2Hmu15E6Jrg9oap2`) with a repeated accented bass ostinato, articulation and sustained rhythmic texture; the exact excerpt is refined after the El gordo triste dump. Public export stays no (Piazzolla in copyright); personal-library and curriculum admission are decided separately, per the three-admissions rule.
-3. **latin.4 is a firm learning need.** The four old candidates failed as files; that is a sourcing failure, not evidence against teaching the habanera and tresillo. Bizet's Habanera and Contra Danza are being dumped next; the shipped Por Una Cabeza and The Crave excerpts serve until then.
-4. **Dossier claims are leads, not authority.** The 25 MUST or SHOULD rows below cite an external benchmark only through the dossier (`[D]`). Before any of them drives a curriculum change, the primary source (Faber, ABRSM, RCM, Berklee or the named specialist text) is read and the claim confirmed or the row downgraded; that check is the first task of the Opus batch brief, and its result is written into the row.
+3. **latin.4 is a firm learning need.** The habanera bass is taught directly as dotted eighth, sixteenth, eighth, eighth in 2/4, a distinct rhythmic cell, then compared with the tresillo (3+3+2); tango patterns derive from the habanera. The four old candidates failed as files; that is a sourcing failure, not evidence against teaching the habanera and tresillo. Bizet's Habanera and Contra Danza are being dumped next; the shipped Por Una Cabeza and The Crave excerpts serve until then.
+4. **Dossier claims are leads, not authority.** The 24 MUST or SHOULD rows below (listed by `count_upgrade.py`) cite an external benchmark through the dossier (`[D]`). Before any of them drives a curriculum change, the primary source (Faber, ABRSM, RCM, Berklee or the named specialist text) is read and the claim confirmed or the row downgraded; that check is the first task of the batch brief, and its result is written into the row. The primary sources to read are Faber's level guides and the Berklee course pages, which are directly accessible, and the official ABRSM and RCM syllabus PDFs; "403, therefore a third-party transcription" is not acceptable where an official PDF exists.
 
-- core: Teach repeat signs, first and second endings, D.C., fermata, the natural sign, staccato, o
+- core: Teach repeat signs, first and second endings, D.C., fermata, the natural sign, staccato, once, where pieces first print them
 - core: Reading rows: key signatures and 3/4
 - core: Transposition as a core task at 1.2 and 2.5/3.2
 - core: Clap the pulse, clap an echo, two-or-three-time listening, labelled self-checked
-- practice: A later unit: practising a whole piece (structure and joins, start anywhere, one no-stop r
+- practice: A later unit: practising a whole piece (structure and joins, start anywhere, one no-stop run, record and listen, change strategy when repetition stops helping)
 - chords-pop: Playing by ear from a recording: tonic, bass, progression, chord rhythm, melody (owner)
-- chords-pop: Texture by melody density and register; bass-line options (root, root-fifth, the stepwise 
+- chords-pop: Texture by melody density and register; bass-line options (root, root-fifth, the stepwise line; walking in blues/jazz)
 - chords-pop: Pop rhythmic comping (eighth-note patterns, syncopated attacks)
 - blues-boogie: Scaffold: right hand improvises while the learner's own left hand keeps the groove
 - blues-boogie: Intro and ending paragraph; the stock blues turnaround named beside I-vi-ii-V
 - blues-boogie: Shuffle versus straight versus 12/8 slow blues, said once
-- jazz: Minor ii-V-i with shells, two or three keys, tied to theory.5/7 and 4.2 †
-- jazz: Chord-tone then approach-note soloing step †
+- jazz: Minor ii-V-i with shells, two or three keys, tied to theory.5/7 and 4.2
+- jazz: Chord-tone then approach-note soloing step
 - jazz: Solo-piano arranging technique (harmonised melody; drop-2 later)
 - theory-ear: A key or tonic before melodic dictation and the tune drill
 - theory-ear: Minor-key progressions and numerals by ear; keys other than C
 - theory-ear: Singing with scale degrees (movable do) as a self-checked habit
 - improv-compose: Transcribe two bars of a real tune, vary one element, use it
-- hymns-gospel: Accompanying a singer: choose the key, count in, keep tempo, one hymn in a second key ‡
-- hymns-gospel: Gospel rungs 7-9: cadences and chants, call-and-response, choir and singer accompaniment, 
-- holiday: Vamp or turnaround between verses; recovery when singers skip or repeat; simplify on the f
-- latin: A tresillo-and-habanera stage: the tresillo exercise (exists), a habanera bass drill from 
+- hymns-gospel: Accompanying a singer: choose the key, count in, keep tempo, one hymn in a second key
+- holiday: Vamp or turnaround between verses; recovery when singers skip or repeat; simplify on the fly (pointer)
+- latin: A tresillo-and-habanera stage: the habanera bass taught directly as dotted eighth, sixteenth, eighth, eighth in 2/4, a distinct rhythmic cell, then compared with the tresillo (3+3+2); tango patterns derive from the habanera. The tresillo exercise (exists), a habanera bass drill from the sourced definition, Por Una Cabeza bars 1-14 and The Crave as the printed models, the habanera named in the lesson
 - latin: Say which tradition each rung's material belongs to (Cuban, Brazilian, Argentine)
 - rock-metal: Syncopated chord attacks and an off-beat rock comping pattern
-- jam: Lost-and-find protocol on the existing lab: sit out two bars while the bed runs, re-enter 
+- jam: Lost-and-find protocol on the existing lab: sit out two bars while the bed runs, re-enter at bar 5 or 9, then with the chart covered
 
-5. **The "81 of 103 units" is recut by kind**, so that small edits are not built and tested as 81 independent seams. Counted by a script over section 2's MUST and SHOULD rows (heuristic on each row's class and needs cell; Opus refines the assignment when cutting batches):
+5. **The "80 of 103 units" is recut by kind**, so that small edits are not built and tested as 80 independent seams. Counted by `count_upgrade.py` over section 2's 138 MUST and SHOULD rows, each assigned to exactly one kind by the first rule that matches (the rules are in the script's docstring; a batch brief may refine one row's kind, never its class):
 
 | Kind | Rows |
 | --- | --- |
-| substantive new or restructured teaching | 5 |
-| existing-rung lesson or task additions | 76 |
-| transfer or requirement-line additions | 4 |
-| factual or text corrections | 15 |
-| repertoire, data or generator changes | 39 |
+| substantive new or restructured teaching | 8 |
+| factual or text corrections | 26 |
+| transfer or requirement-line additions | 7 |
+| repertoire, data, generator or app-code changes | 39 |
+| existing-rung lesson or task additions | 58 |
+| total (MUST + SHOULD) | 138 |
 
 Batches are grouped by kind and by content seam (a lesson file, a stage JSON, a generator family), never one seam per touched unit.
 
@@ -66,13 +66,15 @@ Batches are grouped by kind and by content seam (a lesson file, a stage JSON, a 
 | Ability | Owner (where it is built) | Recurs as | Change needed |
 | --- | --- | --- | --- |
 | **Sight-reading progression** | core: 1.5, 2.2, 2.5, 3.4, 4.5, 4.6 plus Today's daily read `[V]` | the daily read in every session; drill rows attached to technique.5, theory.6/9, jazz.8, chords-pop.8 with one lesson sentence each | MUST: core reading rows add key signatures (G and F from 3.1, up to two sharps or flats by 4.2) and 3/4 (from 1.4); SHOULD: sixteenths read before 4.6's Canon in D. Progression parameters taken from ABRSM's sight-reading table as evidence `[D]`, not copied. *data* + *generator* (reading controls) |
-| **Transposition** | chords-pop (3, 4, 6, 8) for symbol-based transposition `[R]`; core owns the first steps | core 1.2 (five-finger tune a step up), 2.5 or 3.2 (I-IV-V7 and a known tune in a second key); blues.8, jazz.9, holiday.3 already; hymns.5 (add), jam.7 (narrow); practice.5 (fix forward reference) | MUST: the two core tasks (*text*; the G-major five-finger options already exist on 1.1 and 1.3 `[R]`); SHOULD: hymns.5 task; REJECT for ragtime and latin (practice in several keys is not a transposition skill there) |
+| **Basic transposition fluency** | core (1.2, 2.5 or 3.2) | core 1.2 (five-finger tune a step up), 2.5 or 3.2 (I-IV-V7 and a known tune in a second key); holiday.3 already; hymns.5 (add); practice.5 (fix forward reference) | MUST: the two core tasks (*text*; the G-major five-finger options already exist on 1.1 and 1.3 `[R]`); SHOULD: hymns.5 task; REJECT for ragtime and latin (practice in several keys is not a transposition skill there) |
+| **Chart and symbol transposition** | chords-pop (3, 4, 6, 8) `[R]` | blues.8, jazz.9 already; jam.7 (narrow) | none at the owner; jam.7's transposition by numerals gets a worked example or is narrowed (SHOULD, 2.15) |
 | **Structural memory and arbitrary restart** | core 4.7 (sections as units, several starting points, hearing away from the piano) `[R]` | a standard requirement line on project rungs: classical.6+, ragtime.9, jazz.9, holiday.6, latin.7, blues.8/9, improv.9: "name the sections, start from three points, then Blind" | SHOULD: the requirement line (*data* `unjudged` rule + one sentence referring to 4.7); MUST where the blind tool opens a non-form piece (blues.8 on a 97-bar Pinetop: *data*) and at ragtime.9 (strain seams: *text*). No new lesson anywhere |
 | **Score study before playing** | core 4.6 gets the one routine (key and metre, sections and repeats, hardest bars, recurring accompaniment, starting points); classical.6 deepens it (cadences, texture, edition) | referenced from classical.5/8/9, hymns.6, jam.7, ragtime.6, chords-pop.9, holiday.5 (each already has a one-line prompt `[R]`) | SHOULD: one paragraph at 4.6 and one at classical.6 (*text*); the others get a reference, not a copy |
 | **Ear to voice and keyboard to notation** | theory-ear (play-back by MIDI, dictation, Simon) `[R]` | core 1.2/2.2 (clap the pulse, clap an echo, self-checked); jazz.6/8 dictation (exists); improv.9 take-down (exists); one "transcribe two bars of this shipped tune" task in blues, jazz, improv, latin, rock, using one shared task template | MUST: theory wording (what the app judges versus self-check), mode and numeral definitions, a key before dictation; SHOULD: minor-key progressions, descending intervals, bass-line dictation (*generator*); SHOULD: the shared transcription task (*text*, repertoire from the catalog) |
 | **Performance preparation and recovery** | core 4.6 (keep going, drop a note and carry on, Perform) `[V]`; practice (cold start, record-and-listen: add) | the Perform paragraph on classical.9, holiday.6/7, ragtime.9, latin.7, hymns.6, jazz.9 gains two lines: restart from a named landmark after an error; one cold start | SHOULD: the practice additions and the two-line template (*text*); MUST: jam's ensemble recovery (its own owner, below) |
 | **Learning by ear (repertoire from a recording)** | chords-pop.8/9: find the tonic, the bass, the progression, the chord rhythm, then the melody `[R]` absent today | jazz.9 (Stardust by ear exists), hymns.2 and holiday.2 (chord under a tune exists), theory.9 (eight bars by ear exists) | MUST: the chords-pop task as a self-checked routine on the learner's own song (*text*; the lab's free play exists); the drill the lesson now names trains melody playback only `[R]` |
-| **Independent repertoire and problem-solving** | chords-pop.9 (arrange), rock (reduce), classical.9 (project), the finder on every rung | each capstone asks the learner to choose, defend an omission, and write down what was left out | MUST: rock's reduction task (either owner path); the finder corrections (*data*); SHOULD: "choose what not to play" in chords-pop.9 |
+| **Independent repertoire choice and problem-solving** | core 4.6 and practice (practice.6) | the finder on every rung | MUST: the finder corrections (*data*); SHOULD: practice.6, practising a whole piece (2.2) |
+| **Domain arranging and reduction** | chords-pop.9 (pop), rock.8-9 (band to piano), classical.9 (project) | each capstone asks the learner to choose, defend an omission, and write down what was left out | MUST: rock's reduction task (rock.8); SHOULD: "choose what not to play" in chords-pop.9 |
 | **Ensemble recovery (jam)** | jam.5/6: sit out two bars while the bed runs, re-enter at bar 5 or 9 by ear and counter `[R]` absent today | jam.7 endings on cue; later a lab setting that mutes bars and reads the re-entry bar | MUST: the prose protocol on the existing lab (*text*, no code); SHOULD: the muted-bars lab setting (*code*) |
 
 ---
@@ -113,7 +115,7 @@ Endpoint upgraded: from five Stage-1 tips to a practice toolbox the learner meet
 | Hedge the interleaving law; add when blocked repetition is legitimate; acquisition versus retention | MUST | practice.3:26-28, practice.1 | `[V]` text; sources mixed `[R]` | text |
 | Next-day cold start as a check | MUST | practice.3 or practice.5 | retrieval nowhere in the track `[R]`; 4.7 carries it `[R]` | text |
 | Soften "never a page"; transposition how-to at practice.5 | SHOULD | practice.1, practice.5 | `[R]` | text |
-| A later unit: practising a whole piece (structure and joins, start anywhere, one no-stop run, record and listen, change strategy when repetition stops helping) | SHOULD | new `practice.6` at Stage 4, prerequisite 4.6 | fragments exist at 4.6, 4.7, classical.9, improv.3 `[R]`; dossier TRACK 2; Chaffin and Imreh, Williamon `[D]` | new rung, text only, no code |
+| A later unit: practising a whole piece (structure and joins, start anywhere, one no-stop run, record and listen, change strategy when repetition stops helping) | SHOULD, accepted into the final plan as a firm new unit | new `practice.6` at Stage 4, prerequisite 4.6 | fragments exist at 4.6, 4.7, classical.9, improv.3 `[R]`; dossier TRACK 2; Chaffin and Imreh, Williamon `[D]` | new rung, text only, no code |
 | Changing strategy after unchanged failure | ALREADY | practice.5:27-51, practice.1:33-35 `[R]` | dossier claim G refuted | — |
 | Tension, pain, when to stop | ALREADY | practice.4 `[R]` | — | — |
 | Ten new practice rungs | REJECT | — | the toolbox fits in edits plus one unit | — |
@@ -198,13 +200,13 @@ Endpoint kept: a learner's own chorus over their own left hand. The upgrade is t
 
 ### 2.7 jazz (7 units)
 
-Endpoint: the owner decides (section 5). This table assumes the promise is kept (the reviewer's provisional choice); under the narrow path the MUST items marked † become REJECT and "soloing" leaves the jazz.9 title and finder.
+Endpoint: the soloing promise is kept (decided in section 0); general improvisation stays owned by improv.
 
 | Item | Class | Where | Evidence | Needs |
 | --- | --- | --- | --- | --- |
-| Minor ii-V-i with shells, two or three keys, tied to theory.5/7 and 4.2 † | MUST | jazz.6 (new section) | absent from every jazz lesson `[V]`; Berklee week 8 `[D]`; shipped Fly Me to the Moon carries it `[R]` | text + generator (minor form of `drill.jazz.ii-v-i-shells`, sourced definition: iiø7 V7 i) |
-| Chord-tone then approach-note soloing step † | MUST | jazz.8 (new section) or improv.6 as prerequisite of jazz.9 | no jazz lesson teaches improvising `[V]`; guide tones exist at improv.6 `[R]`; Berklee weeks 9-10, ABRSM Jazz Piano improvisation from Grade 1 `[D]` | text + data (prerequisite); no new generator (improv.6 exercises reused) |
-| jazz.9 rewritten as one standard through learn and memorise, comp, walk or two-feel, solo, intro and ending, solo-piano pass † | MUST | jazz.9 | four accompaniment passes `[R]`; dossier TRACK 7 | text (intros and endings by reference to chords-pop.9) |
+| Minor ii-V-i with shells, two or three keys, tied to theory.5/7 and 4.2 | MUST | jazz.6 (new section) | absent from every jazz lesson `[V]`; Berklee week 8 `[D]`; shipped Fly Me to the Moon carries it `[R]` | text + generator (minor form of `drill.jazz.ii-v-i-shells`, sourced definition: iiø7 V7 i) |
+| Chord-tone then approach-note soloing step | MUST | jazz.8 (new section) or improv.6 as prerequisite of jazz.9 | no jazz lesson teaches improvising `[V]`; guide tones exist at improv.6 `[R]`; Berklee weeks 9-10, ABRSM Jazz Piano improvisation from Grade 1 `[D]` | text + data (prerequisite); no new generator (improv.6 exercises reused) |
+| jazz.9 rewritten as one standard through learn and memorise, comp, walk or two-feel, solo, intro and ending, solo-piano pass | MUST | jazz.9 | four accompaniment passes `[R]`; dossier TRACK 7 | text (intros and endings by reference to chords-pop.9) |
 | Say which jazz.9 options carry a chart and how to get the others' harmony | MUST | jazz.9 | three of six have no symbols `[R]` | text |
 | Walking approach note either side; stride sentence; C13 wording; "exactly as well" | MUST (correctness) | jazz.6, 7, 8 | `[R]` | text |
 | Lesson-to-drill mismatches (rootless on jazz.6, chord-scale on jazz.7, modes and sight-reading on jazz.8) | SHOULD | stage JSON or text | `[R]` | data or text |
@@ -220,7 +222,7 @@ Endpoint kept: a whole rag from memory. The upgrade is the bridge in, built from
 
 | Item | Class | Where | Evidence | Needs |
 | --- | --- | --- | --- | --- |
-| Harlem Rag bars 0-16 as the two-hand oom-pah model on ragtime.5 | MUST | ragtime.5 | the first leap-bearing options are 85-148-bar works at 6.8+ `[V]` (ladder); Harlem Rag strain A verified by the reviewer `[R]`; Turpin 1897, public domain | repertoire (excerpt cut; file on the candidate-packet branch) |
+| The oom-pah bridge on ragtime.5: generated control (the oom-pah exercises) → left-hand or duet excerpt: the Tyers edition of Harlem Rag, teaching window bars 5-16, where the bass-chord alternation is explicit and the surrounding material is more chromatic and ornamented → later a full two-hand rag | MUST | ragtime.5 | the first leap-bearing options are 85-148-bar works at 6.8+ `[V]` (ladder); Harlem Rag strain A verified by the reviewer `[R]`; Turpin 1897, public domain; the Tyers edition's CID is to be confirmed from the reviewer's dump: on origin only the De Lisle arrangement exists (`QmaUQo93TVPNaJ6UDzttTyksRcPDcyafR8Nxct8qXHeEsj`, on `origin/claude/xml-dump-2` and `origin/claude/candidate-packet`) | repertoire (excerpt cut, bars 5-16, from the Tyers edition) + exercise (oom-pah controls) |
 | Existing control exercises placed where the lessons need them (`exercise.oompah.c/f.octave` on 5, `.tenth` on 6, `exercise.stride.c` on 7, `exercise.secondary-rag.c.4bar` on 8) | MUST | stage JSON | stride is on stage 7 (blues) and stage 9 only; oompah and secondary-rag on stage 9 only `[V]` | exercise (data) |
 | School of Ragtime re-staged as the syncopation-over-steady-chords model and described as what it is | MUST | ragtime.5 and .6 | notation `[R]` | data + text |
 | Lesson facts: "Not fast", 2/4 counting, Bethena keys, "single most characteristic", "no other cause" | MUST (correctness) | ragtime.5, 6, 7 | `[V]` lesson lines; dumps `[R]` | text |
@@ -274,18 +276,18 @@ Endpoint kept: a finished written piece. The upgrade makes composition recursive
 
 ### 2.11 hymns-gospel (5 units)
 
-Endpoint: the owner decides (section 5). Rows marked ‡ hold under the narrow path; the gospel rungs are listed as the wide path.
+Endpoint: narrowed to Hymns & spirituals (decided in section 0); gospel rungs 7-9 are not added.
 
 | Item | Class | Where | Evidence | Needs |
 | --- | --- | --- | --- | --- |
-| Jesus Loves Me "four parts" corrected ‡ | MUST | hymns.md:43-45 | `[V]` | text |
-| The hymns.2 Joyful edition: label it, replace it, or drop it ‡ | MUST | hymns.2 | lowered third `[V]` | text or repertoire |
-| Chord-count and "nearly everywhere" claims softened ‡ | MUST (correctness) | hymns.2, hymns.md, hymns.5 | `[R]` | text |
-| Walk-up, passing-chord and plagal drills named on the Stage 3 unit ‡ | MUST | stage-3.json | drills two stages after first use `[R]` | exercise (data) |
-| Accompanying a singer: choose the key, count in, keep tempo, one hymn in a second key ‡ | MUST | hymns.5 | absent `[R]`; the narrowed promise still says accompany `[D]` | text (reuses holiday.3 and chords-pop.8) |
-| Build one arrangement yourself from a lead sheet ‡ | SHOULD | hymns.6 exit | reading only `[R]` | text |
-| Rename to "Hymns & spirituals" with the description proposed in the record ‡ | MUST under path A | 00-tracks.json, stage-3 unit title | `[R]` | data |
-| Gospel rungs 7-9: cadences and chants, call-and-response, choir and singer accompaniment, shout textures, reharmonisation, live adaptation | path B: MUST for the name; needs a research lane first | new units | no sourced formulae yet `[R]`; Berklee gospel outline `[D]`; archive pool is spirituals, not gospel arrangements `[R]` | new rungs (3) + search + external; mostly self-checked |
+| Jesus Loves Me "four parts" corrected | MUST | hymns.md:43-45 | `[V]` | text |
+| The hymns.2 Joyful edition: label it, replace it, or drop it | MUST | hymns.2 | lowered third `[V]` | text or repertoire |
+| Chord-count and "nearly everywhere" claims softened | MUST (correctness) | hymns.2, hymns.md, hymns.5 | `[R]` | text |
+| Walk-up, passing-chord and plagal drills named on the Stage 3 unit | MUST | stage-3.json | drills two stages after first use `[R]` | exercise (data) |
+| Accompanying a singer: choose the key, count in, keep tempo, one hymn in a second key | MUST | hymns.5 | absent `[R]`; the narrowed promise still says accompany `[D]` | text (reuses holiday.3 and chords-pop.8) |
+| Build one arrangement yourself from a lead sheet | SHOULD | hymns.6 exit | reading only `[R]` | text |
+| Rename to "Hymns & spirituals" with the description proposed in the record | MUST | 00-tracks.json, stage-3 unit title | `[R]` | data |
+| Gospel rungs 7-9 | REJECT | — | not added now; a later extension if the owner wants the domain | — |
 | Passing-chord definition acknowledges the dominant-chain usage | SHOULD | hymns.md, hymns.5 | sources differ `[R]` | text |
 | Four-part reading, walk-ups, passing chords, arrangement reading | ALREADY | hymns.4-6 (interpretation audit AGREE) | — | — |
 
@@ -311,7 +313,7 @@ Endpoint kept and the name's breadth stated: clave, tresillo and habanera, tumba
 
 | Item | Class | Where | Evidence | Needs |
 | --- | --- | --- | --- | --- |
-| A tresillo-and-habanera stage: the tresillo exercise (exists), a habanera bass drill from the sourced definition (dotted eighth, sixteenth, eighth, eighth), Por Una Cabeza bars 1-14 and The Crave as the printed models, the habanera named as tresillo plus beat 2 and as the tango's ancestor | MUST | new `latin.4` at Stage 4 (or the same content as a section of latin.6 if a unit is refused) | the habanera is printed in two shipped scores and named in none `[R]`; the learning need stands after the candidates failed; Wikipedia Tresillo and Habanera `[D]` | new rung + generator (small: one bass pattern, independent check by onset positions) + repertoire (excerpts of shipped scores) |
+| A tresillo-and-habanera stage: the habanera bass taught directly as dotted eighth, sixteenth, eighth, eighth in 2/4, a distinct rhythmic cell, then compared with the tresillo (3+3+2); tango patterns derive from the habanera. The tresillo exercise (exists), a habanera bass drill from the sourced definition, Por Una Cabeza bars 1-14 and The Crave as the printed models, the habanera named in the lesson | MUST | new `latin.4` at Stage 4 | the habanera is printed in two shipped scores and named in none `[R]`; the learning need stands after the candidates failed; Wikipedia Tresillo and Habanera `[D]` | new rung + generator (small: one bass pattern, independent check by onset positions) + repertoire (excerpts of shipped scores) |
 | Rumba and bossa clave defined where the exercises are | MUST | latin.3 | exercises listed, defined nowhere `[R]` | text |
 | Say which tradition each rung's material belongs to (Cuban, Brazilian, Argentine) | MUST | latin.5, latin.6 | `[R]`; dossier and Berklee separate them `[D]` | text |
 | Comp the tunes: apply the tumbao and montuno figures to the lead sheets' symbols (Insensatez, Só Danço Samba, Guantanamera) | MUST | latin.5 | no comping or application station `[R]` | text |
@@ -319,27 +321,27 @@ Endpoint kept and the name's breadth stated: clave, tresillo and habanera, tumba
 | A bossa accompaniment pattern (the Brazilian half of the track; also serves jazz.8) | SHOULD | latin.5 | none in any lesson `[R]` | generator (sourced bossa LH pattern) + text |
 | An arpeggiated guajeo as the second montuno step | SHOULD | latin.5 or 6 | drill is clave rhythm as chords `[R]` | generator |
 | A listening or transcription example per rung (shared template) | SHOULD | latin.3-7 | none `[R]` | text |
-| Modern tango (`latin.8`): the need stays; material routes: inspect the two uninspected PDMX copies for the personal library only; an authored 3-3-2 tango accompaniment drill from a sourced definition; an external recommendation (Piazzolla scores, in copyright) | SHOULD, conditional on material | new `latin.8` only when material exists | both staged candidates rejected `[V]`; public export is no in any case | search + generator + external; rung count conditional |
+| Modern tango: tango nuevo through ostinato, accent, articulation and texture, with the two-staff Piazzolla Libertango piano arrangement `QmakqtZzLrMc3CqFnwiqjyxmhrThav2Hmu15E6Jrg9oap2` as real transfer and project material (repeated accented bass ostinato, articulation, sustained rhythmic drive, changing upper harmony); excerpt choice refined after the El gordo triste dump | MUST | new `latin.8` at Stage 8 | both staged candidates rejected `[V]`; public export no (Piazzolla in copyright); personal-library and curriculum admission are separate decisions | repertoire + text; a generated control only if a sourced pattern is defined later |
 | Generic exercises able to satisfy the latin.5 requirement | SHOULD | stage-5.json | six generic options `[R]` | data |
 | `startsAtStage` 5 while latin.3 exists | SHOULD | 00-tracks.json | `[R]` | data |
 | Clave, tumbao, montuno drills, tango accompaniment, showpieces | ALREADY | latin.3, 5, 6, 7 (interpretation audit) | — | — |
 
 ### 2.14 rock-metal (5 units)
 
-Endpoint: the owner decides (section 5). Rows marked § apply under either path.
+Endpoint: extended with rock.8 and rock.9 (decided in section 0).
 
 | Item | Class | Where | Evidence | Needs |
 | --- | --- | --- | --- | --- |
-| Texture count and description match the lessons § | MUST | 00-tracks.json, rock.overview | five versus four `[R]` | data + text |
-| Wording: distorted guitar "cannot"; Rachmaninoff and Moonlight III claims; figure's hand; "eight bars"; Annie's Song's real demonstration § | MUST (correctness) | rock.4, 5, 7 | `[R]` | text |
-| One reduction task with independence: reduce eight bars of a score the learner supplies to melody, bass and one texture, and write what was left out § | MUST | rock.7 end (path A) or `rock.8` (path B) | reduction taught once at Stage 3, unjudged `[V]` for the 0-song rungs; `[R]` | text (self-checked); the learner supplies the source |
-| Register and density get a control; rock.7's required run becomes an excerpt § | SHOULD | rock.7 | drills only volume; required pieces at 6.96-8.4 `[R]` | data + text |
-| Greensleeves refit stated (3/4, A minor against 4/4 exercises) § | SHOULD | rock.4 | `[R]` | text |
-| Sus-chord framings reconciled across chords-pop.5/7 and rock.5 § | SHOULD | rock.5 | `[R]` | text |
+| Texture count and description match the lessons | MUST | 00-tracks.json, rock.overview | five versus four `[R]` | data + text |
+| Wording: distorted guitar "cannot"; Rachmaninoff and Moonlight III claims; figure's hand; "eight bars"; Annie's Song's real demonstration | MUST (correctness) | rock.4, 5, 7 | `[R]` | text |
+| One reduction task with independence: reduce eight bars of a score the learner supplies to melody, bass and one texture, and write what was left out | MUST | `rock.8` | reduction taught once at Stage 3, unjudged `[V]` for the 0-song rungs; `[R]` | text (self-checked); the learner supplies the source |
+| Register and density get a control; rock.7's required run becomes an excerpt | SHOULD | rock.7 | drills only volume; required pieces at 6.96-8.4 `[R]` | data + text |
+| Greensleeves refit stated (3/4, A minor against 4/4 exercises) | SHOULD | rock.4 | `[R]` | text |
+| Sus-chord framings reconciled across chords-pop.5/7 and rock.5 | SHOULD | rock.5 | `[R]` | text |
 | Syncopated chord attacks and an off-beat rock comping pattern | SHOULD | rock.4 or 5 | absent; power-chord drill on beats 1 and 3 only `[R]`; Berklee `[D]` | generator (small) |
-| `rock.8` transcribe and reduce 8-16 bars from a recording (bass, riff, melody, rhythmic engine; decide what survives) | path B MUST | new unit | dossier TRACK 14; no rock-idiom piano score in the catalog, four archive files rejected `[R]` | new rung, text; learner-supplied material; uses theory.9 |
-| `rock.9` personal arrangement project (section map, textures by section, build and drop, memory, a recording) | path B MUST | new unit | dossier | new rung, text; chords-pop.9 and classical.9 methods by reference |
-| Half-time and 6/8 feel, click and recording, low doublings promised by D8 | SHOULD (path B) or docs (path A) | rock.6 | absent `[R]` | text or docs |
+| `rock.8` transcribe and reduce 8-16 bars from a recording (bass, riff, melody, rhythmic engine; decide what survives) | MUST | new unit | dossier TRACK 14; no rock-idiom piano score in the catalog, four archive files rejected `[R]` | new rung, text; learner-supplied material; uses theory.9 |
+| `rock.9` personal arrangement project (section map, textures by section, build and drop, memory, a recording) | MUST | new unit | dossier | new rung, text; chords-pop.9 and classical.9 methods by reference |
+| Half-time and 6/8 feel, click and recording, low doublings promised by D8 | SHOULD | rock.6 | absent `[R]` | text |
 | Odd metre | NICE | — | no repertoire needs it `[R]` | — |
 | Reduction rule, power chord and ostinato, open voicings, arpeggio over pedal, build | ALREADY | rock.3-7 `[R]` | — | — |
 
@@ -377,49 +379,51 @@ Unchanged unless marked. **(changed)** = lesson text, data or options change; **
 - **ragtime**: 5 (changed: Harlem Rag excerpt, Whistling Rufus, School of Ragtime, oom-pah exercises, lesson facts), 6 (changed: oom-pah tenth; School of Ragtime description; "no other cause"), 7 (changed: stride exercise; Bethena; "most characteristic"), 8 (changed: secondary-rag exercise; stop-time decision), 9 (changed: strain seams).
 - **theory-ear**: 3 (changed: self-check wording; interval drill), 4 (changed: wording; inversions label; rhythm rows), 5 (changed: wording; rhythm rows), 6 (changed: definitions; application piece), 7 (changed: definitions; application), 8 (changed: modulation row; application), 9 (changed: form names; application). Every rung gains one application piece.
 - **improv-compose**: 3, 4 (changed: wording; transcription task), 5 (changed: harmonise; write-down; wording), 6 (changed: lab mismatch; unjudged rule; motif task), 7 (changed: fourths wording; 16-bar miniature; unjudged), 8 (changed: wording; unjudged), 9 (changed: write-down; revise after listening; unjudged).
-- **hymns-gospel**: 2 (changed: Joyful edition; chord-count wording), 3 (changed: Jesus Loves Me; drills named), 4, 5 (changed: singer and key task; "any chord" wording), 6 (changed: arrange exit). Path A: renamed. Path B: **7, 8, 9 (new)** after a research lane.
+- **hymns-gospel** (renamed Hymns & spirituals): 2 (changed: Joyful edition; chord-count wording), 3 (changed: Jesus Loves Me; drills named), 4, 5 (changed: singer and key task; "any chord" wording), 6 (changed: arrange exit). Track renamed **Hymns & spirituals** (00-tracks.json, stage-3 unit title); no rungs 7-9.
 - **holiday**: 2, 3 (changed: range and pulse wording; vamp, skip recovery; intro exercise), 4, 5 (changed: numbers), 6, 7. O Christmas Tree edition fixed.
-- **latin**: 3 (changed: rumba and bossa clave defined), **4 (new, Stage 4)** tresillo and habanera, 5 (changed: traditions named; comp the tunes; bossa pattern; wording), 6 (changed: habanera named; traditions), 7 (changed: Malagueña wording), **8 (conditional new)** modern tango when material exists.
-- **rock-metal** (path A): overview (changed: count), 4 (changed: wording; refit), 5 (changed: wording; sus framing), 6, 7 (changed: wording; register control; excerpt run; reduction task). Path B adds **8 and 9 (new)**.
+- **latin**: 3 (changed: rumba and bossa clave defined), **4 (new, Stage 4)** tresillo and habanera, 5 (changed: traditions named; comp the tunes; bossa pattern; wording), 6 (changed: habanera named; traditions), 7 (changed: Malagueña wording), **8 (new, Stage 8)** modern tango (tango nuevo; the Libertango arrangement).
+- **rock-metal**: overview (changed: count), 4 (changed: wording; refit), 5 (changed: wording; sus framing), 6 (changed: half-time and 6/8 feel; click and recording; low doublings), 7 (changed: wording; register control; excerpt run), **8 (new)** transcribe and reduce from a recording, with the reduction task, **9 (new)** personal arrangement project.
 - **jam**: 4 (changed: count-in; wording), 5 (changed: lost-and-find protocol; a tune; listening task), 6 (changed: verdict sentence; a tune), 7 (changed: endings; tag; transposition example).
 
 ---
 
 ## 4. Counts
 
-Counted by a script over sections 2 and 3 of this file (rows by class; "(changed)" and "(new)" markers), not estimated. "Conditional" depends on an owner decision or on material not yet found.
+Counted by `count_upgrade.py` (beside this file) over sections 2 and 3, not estimated; rerun it after any edit to either section.
 
-| Kind | Count |
+| Measure | Count |
 | --- | --- |
-| New rungs | 5 firm after section 0 (practice.6, latin.4, latin.8, rock.8, rock.9); hymns 7-9 not added |
-| Changed rungs (any lesson, data or option change) | 81 of 103 units carry a "(changed)" marker in section 3 |
-| Recommendation rows in section 2 | 175: MUST 71 (3 of them path-B only), SHOULD 65, NICE 11, REJECT 8, ALREADY 17 |
-| Rows needing lesson text | 107 |
+| Current denominator | 103 units |
+| Existing units changed (any lesson, data or option change) | 80 of 103 carry a "(changed" marker in section 3 (the rock overview's marker is not on a unit and is not counted) |
+| New units | 5: practice.6, latin.4, latin.8, rock.8, rock.9; hymns 7-9 not added |
+| Proposed final denominator | 108 units |
+| Recommendation rows in section 2 | 175: MUST 74, SHOULD 64, NICE 11, REJECT 9, ALREADY 17 |
+| Rows needing lesson text | 108 |
 | Rows needing data (stage JSON, catalog row, finder, requirement) | 31 |
-| Rows needing a generator change | 18 (4 firm MUST: contrary start; reading-row signatures and 3/4; minor ii-V-i shells; habanera bass drill) |
-| Rows needing real repertoire or an edition fix | 10 |
-| Rows needing an existing exercise placed | 6 |
-| Rows needing a content search | 6 (plus the latin.8 personal-library inspection) |
-| Rows needing an external recommendation | 2 |
-| Rows needing docs reconciled | 6 |
-| Rows needing app code | 4 (jam muted-bars lab setting; blues lab bass-off if absent; the rest are data) |
+| Rows needing a generator change | 16 (on MUST rows: contrary start; reading-row signatures and 3/4; minor ii-V-i shells; habanera bass drill; the blues I-IV-I-V turnaround variant, marked SHOULD inside its row) |
+| Rows needing real repertoire or an edition fix | 11 |
+| Rows needing an existing exercise placed | 7 |
+| Rows needing a content search | 4 |
+| Rows needing an external recommendation | 0 |
+| Rows needing docs reconciled | 5 |
+| Rows needing app code | 2 (jam muted-bars lab setting; blues lab bass-off if absent) |
 
-A row can need more than one kind, so the kinds sum to more than 175. Rung-count discipline: the dossier names about fifty abilities; this pass puts two of them in new units, six more only on an owner's word or on material, and everything else inside existing rungs as tasks, requirements or sentences.
+A row can need more than one kind, so the needs sum to more than 175. Rung-count discipline: the dossier names about fifty abilities; this pass puts five of them in five firm new units (practice.6, latin.4, latin.8, rock.8, rock.9), and everything else inside existing rungs as tasks, requirements or sentences.
 
 ---
 
 ## 5. Owner decisions (decided in section 0; kept for the record of what each path would have changed)
 
-1. **Hymns & gospel.** Narrow (rename; the singer-and-key task and the arrange exit still land): 0 new rungs. Extend: 3 new rungs after a research lane for sourced gospel cadence and chant formulae; material would be mostly self-checked. The outside reviewer's provisional choice: narrow.
-2. **Rock & metal.** Mini-module (rename or fix the description; one reduction task in rock.7): 0 new rungs. Extend: rock.8 and rock.9 with learner-supplied material and theory.9's dictation; 2 new rungs. The outside reviewer's provisional choice: extend, because transcription, reduction and a personal project serve the owner's imported repertoire. The counts above show both.
-3. **Jazz.** Keep the soloing promise: the three † items (minor ii-V-i section, soloing step, rewritten jazz.9), 1 generator change, 0 new rungs. Narrow: those three become REJECT and the title and finder lose "soloing". The outside reviewer's provisional choice: keep.
+1. **Hymns & gospel.** Decided: narrowed and renamed Hymns & spirituals; the singer-and-key task and the arrange exit land; gospel rungs 7-9 not added; 0 new rungs.
+2. **Rock & metal.** Decided: extended with rock.8 (transcribe and reduce from a recording, with the reduction task) and rock.9 (personal full-song arrangement project); 2 new rungs.
+3. **Jazz.** Decided: the soloing promise is kept; the minor ii-V-i section, the soloing step and the rewritten jazz.9 are MUST; 0 new rungs.
 
 ---
 
 ## 6. Sequence from here
 
-1. This document reviewed (the outside reviewer; the owner on the three decisions).
+1. This document reviewed (the outside reviewer; the owner's three decisions are recorded in section 0).
 2. The content-hole review already begun on the candidate branches feeds section 2's *search* and *repertoire* rows; nothing else waits on it.
-3. Consolidate: SYNTHESIS section H's batches are re-cut against this document: batch 1 the corrections (unchanged), batch 2 the MUST rows that need text, data and existing exercises, batch 3 the MUST rows that need a generator change or repertoire, batch 4 the owner-gated rows, then SHOULD rows by track. Each batch is one brief with its finish condition and its evidence lines; `content-mistakes.md` is checked before any push.
+3. Consolidate: SYNTHESIS section H's batches are re-cut against this document: batch 1 the corrections (unchanged), batch 2 the MUST rows that need text, data and existing exercises, batch 3 the MUST rows that need a generator change or repertoire, then SHOULD rows by track. Each batch is one brief with its finish condition and its evidence lines; `content-mistakes.md` is checked before any push.
 4. Implement, verify by what each seam touches, review.
 5. Then the representative learner journey.
