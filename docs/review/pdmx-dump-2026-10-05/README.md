@@ -49,6 +49,16 @@ The CSV calls these one-staff files piano, but they have no bass staff. Creole B
 
 Ask for their MusicXML by CID if the review needs it.
 
+### Added on the second request (now in `xml/` and `summary/`; rows in `rows.json` under `added_2026_10_05_second_request`)
+
+| CID | Title | Composer | Staves | Meter | Bars | Licence in the CSV |
+|---|---|---|---|---|---|---|
+| Qmc6P2a11mJaEgAdyvsqiWW9dSt7HazcVSSsU7oRtQ3ptu | Habanera, piano solo | Bizet | 2 | 2/4 | 60 | cc-zero |
+| QmYAihNhTVzw5EyFcXFRD7f5gkwnnDKRnH1gTnf4e5frxs | Contra Danza | anonymous | 2 | 2/4, and 6/8 for part of the piece | 87 | cc-zero |
+| QmXuMn7vq7C5PEYMc3J6yU5sfCrN13jRmcHy2PG3xVRhsG | El gordo triste | Piazzolla, lyrics by Ferrer | 2 | 4/4 | 75 | cc-zero |
+
+**Rights: an open question, not decided here.** For both Piazzolla scores (this one and Libertango QmakqtZzLrMc…), the cc-zero is the licence the uploader gave their own arrangement. Piazzolla died in 1992, so his compositions are presumably still under copyright, and the uploader's cc-zero would not clear that. The project ships only what it has rights to. Before either Piazzolla score is marked KEEP, someone has to decide whether the project can ship a Piazzolla arrangement. Bizet (who died in 1875) and Turpin's rags (1897 and 1899) have no such question.
+
 ## Searches with zero matches
 
 Saumell, Milonga del Ángel, Primavera Porteña, Verano Porteño and "tango nuevo" matched no row in the fields listed above.
