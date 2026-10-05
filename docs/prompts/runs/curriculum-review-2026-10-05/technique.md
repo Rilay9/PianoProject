@@ -206,3 +206,8 @@ One line each, for the synthesis:
 - The `technique.4` option list has no similar-motion scale; those are on core 4.1 and 4.2, so a learner following only the technique track skips the scales that the lesson calls the first thing to watch (`technique.4.md:19`).
 - The track's only demonstration material is video links whose content is not readable in this process; `technique.4.md:6` is titled "Grade 1" for a stage 4 rung.
 - `docs/generated/ladder.md` lines 185-189 give Lemoine at 4.8-5.0 while the exercises on the rung are 4.1; I did not check whether the étude levels follow from the notation.
+
+
+## Correction (2026-10-05, after the generator addendum)
+
+Section 4 item 1 and section 5 item 1 say all twelve two-octave contrary files start crossed. Recounted with music21 over the 36 generated contrary files: 16 do not start at the unison, 10 one-octave files start the hands an octave apart and 6 two-octave files (C, D-flat, D, E-flat, E, F) start crossed; the other 20 start at the unison. The fix in section 8 item 1 applies to those 16, not twelve.
