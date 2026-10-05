@@ -337,6 +337,9 @@ the agent inherits a question and not a conclusion; when to deviate from the bri
 the premise is found wrong, say so and take the better path, recording why); and this
 document's §11 and §12 by reference.
 
+
+**Actor by kind of work (the owner, 2026-10-05).** Before dispatch, split the work by kind and give each kind to the cheapest actor that can do it: scripts for counts, shape checks and denominators; a small model for rote verification against a list; a mid model for fact-gathering (code or sources into a fact sheet), exact before-and-after text corrections and narrow ruled lanes; a large model only for judgement-heavy synthesis or a build with design in it; the orchestrator for the decision and the citation checks that drive it, never for long drafting. A document with a fact-gathering half and a judgement half is two agents. A fan-out multiplies the shared reading by its width: pre-cut each agent's inputs, group lanes, and count the overhead before launching. Every brief is saved and pushed for the outside reviewer before dispatch.
+
 ## 14. The builder's harness
 
 A builder works in its own worktree, cut from origin's head at dispatch (the brief states
