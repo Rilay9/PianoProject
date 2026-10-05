@@ -9,11 +9,15 @@
 - **Real problem or proxy.** The proxy would be "rows closed"; the map's finish condition is "every reached MUST ability has all four stations named and supplied".
 - **Remaining uncertainty.** Which app modes can honestly serve which stations is read from docs and code, not from running the app; 24 external-benchmark claims still await their primary-source check and are marked.
 
+## Actors (2026-10-05, the owner: delegate by kind of work)
+
+Two agents, not one. **Agent A (fact-gathering):** reads the app code behind the modes once and writes `MODE-SHEET.md` beside the map: per mode, what it does, what it can measure from MIDI, what it cannot, with file:line. **Agent B (synthesis):** writes `ABILITY-MAP.md` from the fifteen records, the upgrade document, the generator addendum and the mode sheet, without reading the app code itself. A script counts the stations. The orchestrator checks the citations that drive wave one.
+
 ## The task
 
 Repository: the working branch at its current HEAD. The agent writes exactly one new file, `docs/prompts/runs/curriculum-review-2026-10-05/ABILITY-MAP.md`, changes no other file, runs nothing but read-only scripts, commits nothing, never checks out, stashes or resets. `docs/review/pdmx-dump-2026-10-05/` is someone else's work in progress and is not touched. No AI model is named.
 
-**Read first.** The restart packet sections 2, 3, 5, 7 and 8; the dossier sections 1 and 2; `CURRICULUM-UPGRADE.md` in full (sections 0, 1, 2 and 3 especially); `GENERATOR-ADDENDUM.md` sections 1, 4 and 6; the fifteen track records' sections 2, 3, 8 and 11; `docs/02-curriculum.md` Part G (mastery, review and progression rules) and Part A; `docs/04-ui-spec.md` for the screens and modes; and, for what each mode actually does, the app code behind Today's daily read, the Lab (accompaniment lab and its presets), Jam it, Trading fours, Simon, Free play, Perform, Blind, Loop, Ladder, Duet, Rhythm only, the chord-chart view, note-flash and the dictation drills (start from `app/src/ui/screens/` and `app/src/engine/`, grep for the mode names; read enough to state each mode's honest purpose and what it can measure, no more).
+**Read first.** The restart packet sections 2, 3, 5, 7 and 8; the dossier sections 1 and 2; `CURRICULUM-UPGRADE.md` in full (sections 0, 1, 2 and 3 especially); `GENERATOR-ADDENDUM.md` sections 1, 4 and 6; the fifteen track records' sections 2, 3, 8 and 11; `docs/02-curriculum.md` Part G (mastery, review and progression rules) and Part A; `docs/04-ui-spec.md` for the screens and modes; and, for what each mode actually does, `MODE-SHEET.md` (Agent A), itself drawn from the app code behind Today's daily read, the Lab (accompaniment lab and its presets), Jam it, Trading fours, Simon, Free play, Perform, Blind, Loop, Ladder, Duet, Rhythm only, the chord-chart view, note-flash and the dictation drills (start from `app/src/ui/screens/` and `app/src/engine/`, grep for the mode names; read enough to state each mode's honest purpose and what it can measure, no more).
 
 **The source of work is the review, not the generator inventory.** Do not reduce this to the 16 generator rows.
 
