@@ -1,0 +1,29 @@
+SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/4 chord-symbols=10 bars=22
+CID QmS2enG17nJVrbMvvCcHDW9wAN8nLSV1CPMmtghD7SZFVQ
+title: Fly me to the moon | song_name: fly me to the moon
+composer:  | artist: Bart Howard
+csv: tracks=0 bars=38 license=cc-zero
+
+=== part P1 'Piano' measures=22 ===
+m1 [staves=2; key fifths=0; time 4/4; clef1=G2; clef2=F4]  s1v1: C5:q B4:q A4:q G4:q | s1v2: E4:h+G4+A4 B3:q+D4+F#4 Bb3:q+Eb4 | s2v5: A2:h+E3+C4 E2:q+G3 A2:q+G3
+m2  s1v1: F4:q G4:q A4:q C5:q | s1v2: A3:q+C4+E4 A#3:q+C#4+E4 C4:q+E4+F4 C4:q+F4+Bb4 | s2v5: D2:h.+F3 Ab2:q+Gb3
+m3  s1v1: B4:q A4:q G4:q F4:q | s1v2: B3:h+E4+G4 A3:q+C4+E4 Ab3:q+C4+Eb4 | s2v5: G2:h+F3 D2:q+F3 Db2:q+F3
+m4  s1v1: E4:w | s1v2: G3:h+B3+D4 A#3:h+C4 | s2v5: C2:h+E3 F#2:h+E3
+m5  s1v1: A4:q G4:q F4:q E4:q | s1v2: C4:h+E4 r:h | s2v5: F2:h+A3 r:h
+m6  s1v1: D4:q E4:q F4:q A4:q | s1v2: C4:h E4:h | s2v5: Bb2:h+A3 B2:h+A3
+m7  s1v1: G#4:q F4:q E4:q D4:q | s1v2: B3:h+D4+F4 C4:h | s2v5: E2:h Bb2:h+Ab3
+m8  s1v1: C4:h C#4:h | s1v2: B3:h Bb3:h | s2v5: A2:h+G3 A2:h+G3
+m9  s1v1: D4:h A4:h | s1v2: F3:h+A3+C4 C4:h+E4+G4 | s2v5: D2:h+A2 D2:h+F3
+m10  s1v1: C5:h B4:h | s1v2: C4:h+F4+A4 B3:h+E4+G#4 | s2v5: G2:h+F3 G2:h+F3
+m11 [ending1-start]  s1v1: G4:w | s1v2: B3:h.+D4+F#4 r:q | s2v5: E2:h.+B2+G3 r:q
+m12  s1v1: G4:w | s1v2: Bb3:h.+Db4+F4 r:q | s2v5: A2:h.+G3 r:q
+m13  s1v1: F4:h F4:h | s1v2: A3:h+C4+E4 r:h | s2v5: D2:h.+A2+F3 r:q
+m14  s1v1: A4:h G4:h | s1v2: C4:h+F4 B3:h+Eb4 | s2v5: G2:h+F3 G2:h+F3
+m15  s1v1: E4:w | s1v2: G3:h+B3+D4 r:h | s2v5: C2:h.+G2+E3 r:q
+m16 [repeat-backward; ending1-discontinue]  s1v1: r:d4 | s1v2: D4:h+A4+C#5+E5 F4:h+Bb4+D5 | s2v5: B2:h+F#3+A3 E2:h+G#3
+m17  s1v1: E5:h D5:h | s1v2: F#4:h+G4+B4 F4:h+Bb4 | s2v5: E2:h+B2+G3 E2:h+G#3
+m18  s1v1: D5:h C#5:h | s1v2: D4:h+G4+B4 C#4:h+F#4+A#4 | s2v5: A2:h+G3 A2:h+G3
+m19  s1v1: E5:q C5:q C5:h | s1v2: E4:h+A4+C5 Eb4:h+Ab4 | s2v5: D2:h+F3 D2:h+C3+F#3
+m20  s1v1: B4:h C5:q D5:q | s1v2: C4:h+F4+A4 C4:q+F4+A4 F4:q+G#4+B4 | s2v5: G2:h G2:h
+m21  s1v1: C5:w | s1v2: D4:h.+E4+G4+A4 r:q | s2v5: C2:h.+E3 r:q
+m22  s1v1: F#4:h F4:h | s1v2: A3:h+D4 Ab3:h+C4 | s2v5: E2:h E2:h

@@ -1,0 +1,23 @@
+SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/4 chord-symbols=78 bars=16
+CID QmXa4xixopTG1f7Q96UL1KU7skUQtk25XnNjXS61QbAZy5
+title: Ode to Joy | song_name: 
+composer: Composer | artist: 
+csv: tracks=0 bars=16 license=cc-zero
+
+=== part P1 'Piano' measures=16 ===
+m1 [staves=2; key fifths=0; time 4/4; clef1=G2; clef2=F4]  s1v1: E4:q E4:q F4:q G4:q | s2v5: C3:w+G3
+m2  s1v1: G4:q F4:q E4:q D4:q | s2v5: G3:w
+m3  s1v1: C4:q C4:q D4:q E4:q | s2v5: C3:w
+m4  s1v1: E4:h D4:8 D4:8.. r:32 r:8 | s2v5: C3:w+G3
+m5  s1v1: E4:q E4:q F4:q G4:q | s2v5: C3:w+G3
+m6  s1v1: G4:q F4:q E4:q D4:q | s2v5: G3:w
+m7  s1v1: C4:q C4:q D4:q E4:q | s2v5: C3:w
+m8  s1v1: D4:q.. C4:8 C4:8.. r:16 r:32 r:8 | s2v5: C3:w+G3
+m9  s1v1: D4:q D4:q E4:q C4:q | s2v5: G3:w
+m10  s1v1: D4:q E4:8 F4:8 E4:q C4:q | s2v5: G3:w
+m11  s1v1: D4:q E4:8 F4:8 E4:q D4:q | s2v5: G3:w
+m12  s1v1: C4:q D4:q r:h | s2v5: r:q r:q G3:h
+m13  s1v1: E4:q E4:q F4:q G4:q | s2v5: C3:w+G3
+m14  s1v1: G4:q F4:q E4:q D4:q | s2v5: G3:w
+m15  s1v1: C4:q C4:q D4:q E4:q | s2v5: C3:w
+m16  s1v1: D4:q.. C4:8 C4:8.. r:16 r:32 r:8 | s2v5: C3:w+G3

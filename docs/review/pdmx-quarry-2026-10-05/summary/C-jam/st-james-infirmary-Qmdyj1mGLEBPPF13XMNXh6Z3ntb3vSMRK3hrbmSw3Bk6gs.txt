@@ -1,0 +1,31 @@
+SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=41 bars=24
+CID Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs
+title: St James Infirmary | song_name: st james infirmary
+composer: Early 1900's | artist: Misc Traditional
+csv: tracks=0 bars=32 license=cc-zero
+
+=== part P1 'P1' measures=24 ===
+m1 [key fifths=-1; time 4/4; clef=G2]  s1v1: F4:q F4:8 D4:8 F4:8 D4:8 E4:q
+m2  s1v1: D4:q A4:h.
+m3  s1v1: F4:q F4:8 D4:8 F4:q E4:q
+m4  s1v1: D4:w
+m5  s1v1: G4:q G4:8 D4:8 Bb4:q A4:q
+m6  s1v1: G4:q D4:h.
+m7  s1v1: F4:8 D4:8 F4:8 D4:8 F4:q F4:q
+m8  s1v1: E4:w
+m9  s1v1: F4:q F4:8 D4:8 F4:8 D4:8 E4:q
+m10  s1v1: D4:q A4:h.
+m11  s1v1: F4:q F4:8 D4:8 F4:q E4:q
+m12  s1v1: D4:w
+m13  s1v1: G4:q G4:8 D4:8 G4:q G4:q
+m14  s1v1: G4:q D4:h.
+m15  s1v1: F4:8 D4:8 F4:8 D4:8 F4:q F4:q
+m16  s1v1: E4:h. D4:8 F4:8
+m17 [repeat-forward]  s1v1: A4:q. A4:16 A4:16 A4:8 G4:q A4:8
+m18  s1v1: F4:8 D4:q.~ D4:q. F4:8
+m19  s1v1: A4:q. A4:8 D5:q. Bb4:8
+m20  s1v1: A4:h. D4:8 F4:8
+m21  s1v1: A4:q. A4:16 A4:16 A4:8 G4:q A4:8
+m22  s1v1: F4:8 D4:q.~ D4:q F4:8 D4:8
+m23  s1v1: F4:8 F4:q D4:8 F4:8~ E4:q D4:8
+m24  s1v1: D4:h. D4:8 F4:8

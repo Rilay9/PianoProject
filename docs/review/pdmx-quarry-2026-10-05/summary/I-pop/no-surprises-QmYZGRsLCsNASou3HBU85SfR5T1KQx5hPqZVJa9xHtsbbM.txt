@@ -1,0 +1,145 @@
+SHAPE: MIXED_PIANO2 | parts=2 max_staves=2 meters=4/4 chord-symbols=0 bars=68
+CID QmYZGRsLCsNASou3HBU85SfR5T1KQx5hPqZVJa9xHtsbbM
+title: No Surprises | song_name: 
+composer: Radiohead | artist: 
+csv: tracks=0-65 bars=68 license=cc-zero
+
+=== part P1 'Saxofón contralto' measures=68 ===
+m1 [key fifths=2; time 4/4; clef=G2; tempo=75]  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8
+m2  s1v1: F#6:8 A5:8 D6:8 A5:8 G5:8 A#5:8 D6:8 E6:8
+m3  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8
+m4  s1v1: F#6:8 A5:8 D6:8 A5:8 G5:8 A#5:8 D6:8 E6:8
+m5  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:q D5:q F#5:q D5:q
+m6  s1v1: F#6:8 A5:8 D6:8 A5:8 G5:8 A#5:8 D6:8 E6:8 | s1v2: F#5:q D5:q G4:h
+m7  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:q D5:q F#5:q D5:q
+m8  s1v1: F#6:8 A5:8 D6:8 A5:8 G5:8 A#5:8 D6:8 E6:8 | s1v2: F#5:q D5:q G4:h
+m9  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:h A4:h
+m10  s1v1: F#6:q D6:q F#6:q D6:q | s1v2: F#5:8 F#5:q E5:q. D5:8 F#5:8~
+m11  s1v1: F#6:q D6:q F#6:q D6:q | s1v2: F#5:h G4:q~ G4:8 G4:8
+m12  s1v1: F#6:q D6:q F#6:q D6:q | s1v2: F#5:8 F#5:q E5:q D5:q G5:8~
+m13  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: G5:h B4:h
+m14  s1v1: r:w | s1v2: C#5:8 C#5:q D5:q E5:q F#5:8~
+m15  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:w
+m16  s1v1: F#6:8 A5:8 D6:8 A5:8 G5:8 A#5:8 D6:8 E6:8
+m17  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:h A4:q~ A4:8 A4:8
+m18  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:8 F#5:8 F#5:8 E5:q. D5:q
+m19  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:h G4:q~ G4:8 G4:8
+m20  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:8 F#5:q E5:q~ E5:q.
+m21  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: G5:h C#5:h
+m22  s1v1: r:d4 | s1v2: C#5:8 C#5:q D5:q E5:q F#5:8
+m23  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8
+m24  s1v1: F#6:8 A5:8 D6:8 A5:8 G5:8 A#5:8 D6:8 E6:8
+m25  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:h A4:q~ A4:8 A4:8
+m26  s1v1: F#6:q D6:q F#6:q D6:q | s1v2: F#5:8 F#5:q E5:q. D5:8 F#5:8~
+m27  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:h G4:q~ G4:8 G4:8
+m28  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:8 F#5:8 F#5:8 E5:q D5:q.
+m29  s1v1: G6:8 F#6:8 F#6:8 E6:8 E6:8 F#6:8 D6:8 C#6:8~ | s1v2: G5:8 F#5:q E5:q. D5:8 C#5:8~
+m30  s1v1: C#6:h r:q C#6:8 D6:8 | s1v2: C#5:q C#5:8 D5:q E5:q.
+m31  s1v1: G6:8 F#6:8 F#6:8 E6:8 E6:8 F#6:8 D6:8 C#6:8~ | s1v2: G5:8 F#5:q E5:q. D5:8 C#5:8~
+m32  s1v1: C#6:h r:q C#6:8 D6:8 | s1v2: C#5:q C#5:8 D5:q E5:q.
+m33  s1v1: G6:8 F#6:8 F#6:8 E6:8 E6:8 F#6:8 D6:8 C#6:8~ | s1v2: G5:8 F#5:q E5:q. D5:8 C#5:8~
+m34  s1v1: C#6:h r:q C#6:8 D6:8 | s1v2: C#5:q C#5:8 D5:q E5:q.
+m35  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:w
+m36  s1v1: F#6:8 A5:8 D6:8 A5:8 G5:8 A#5:8 D6:8 E6:8 | s1v2: D5:w
+m37  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:h F#5:q~ F#5:8 F#5:8
+m38  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:8 F#5:q G5:q A5:q F#5:8~
+m39  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:h F#5:h
+m40  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 G5:8 F#5:8 | s1v2: F#5:8 F#5:q G5:q F#5:q.
+m41  s1v1: G6:8 F#6:8 F#6:8 E6:8 E6:8 F#6:8 D6:8 C#6:8~ | s1v2: G5:8 F#5:q E5:q. D5:8 C#5:8~
+m42  s1v1: C#6:h r:q C#6:8 D6:8 | s1v2: C#5:q C#5:8 D5:q E5:q.
+m43  s1v1: G6:8 F#6:8 F#6:8 E6:8 E6:8 F#6:8 D6:8 C#6:8~ | s1v2: G5:8 F#5:q E5:q. D5:8 C#5:8~
+m44  s1v1: C#6:h r:q C#6:8 D6:8 | s1v2: C#5:q C#5:8 D5:q E5:q.
+m45  s1v1: G6:8 F#6:8 F#6:8 E6:8 E6:8 F#6:8 D6:q | s1v2: G5:8 F#5:q E5:q. D5:8 G5:8~
+m46  s1v1: r:d4 | s1v2: G5:q C#5:8 C#5:q D5:q D5:8~
+m47  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: D5:w
+m48  s1v1: F#6:8 A5:8 D6:8 A5:8 G5:8 A#5:8 D6:8 E6:8
+m49  s1v1: G5:q A5:q D6:q B5:q | s1v2: A4:8 A4:8 C#5:q D5:16 C#5:16 A4:q A4:8
+m50  s1v1: G5:8 B5:8 r:q r:h | s1v2: G4:8 B4:8 D5:8 E5:8 F#5:8 D5:8 B4:8 G4:8
+m51  s1v1: G4:q G4:q D5:q B4:q
+m52  s1v1: G4:8 B4:8 D5:8 E5:8 F#5:8 D5:8 B4:8 G4:8
+m53  s1v1: E4:8+G4 B4:8 F#4:8+A4 C#5:8 G4:8+B4 D5:8 A4:8+C#5 E5:8
+m54  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:h F#5:h
+m55  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:8 F#5:q G5:q. F#5:8 F#5:8~
+m56  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:h F#5:h
+m57  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: F#5:8 F#5:q G5:q. G5:q
+m58  s1v1: G6:8 F#6:8 F#6:8 E6:8 E6:8 F#6:8 D6:8 C#6:8 | s1v2: G5:8 F#5:q E5:q. D5:8 G5:8 | s1v3: E6:h G6:h
+m59  s1v1: C#6:h r:q C#6:8 D6:8 | s1v2: G5:q C#5:8 C#5:q D5:q. | s1v3: E6:q D6:8 C#6:8 r:h
+m60  s1v1: G6:8 F#6:8 F#6:8 E6:8 E6:8 F#6:8 D6:8 C#6:8~ | s1v2: G5:8 F#5:q E5:q. D5:8 C#5:8~ | s1v3: E6:h G6:h
+m61  s1v1: C#6:h r:q C#6:8 D6:8 | s1v2: C#5:q D5:8 E5:q D5:q. | s1v3: E6:q D6:8 C#6:8 r:h
+m62  s1v1: G6:8 F#6:8 F#6:8 E6:8 E6:8 F#6:8 D6:8 C#6:8~ | s1v2: G5:8 F#5:q E5:q. D5:8 G5:8~ | s1v3: E6:h G6:h
+m63  s1v1: C#6:h r:q C#6:8 D6:8 | s1v2: G5:q C#5:8 C#5:q D5:q D5:8~ | s1v3: E6:q D6:8 C#6:8 r:h
+m64  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8 | s1v2: D5:w
+m65  s1v1: F#6:8 A5:8 D6:8 A5:8 G5:8 A#5:8 D6:8 E6:8
+m66  s1v1: F#6:8 A5:8 D6:8 A5:8 F#6:8 A5:8 D6:8 A5:8
+m67 [tempo=80]  s1v1: F#6:8 A5:8 D6:8 A5:8 G5:8 A#5:8 D6:8 E6:8
+m68  s1v1: A5:w+D6+F#6
+
+=== part P2 'Piano' measures=68 ===
+m1 [staves=2; key fifths=-1; time 4/4; clef1=G2; clef2=F4; dyn=p]  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s2v5: F2:h F2:8 F2:8~ F2:q
+m2  s1v1: A5:8 C5:8 F5:8 C5:8 Bb4:8 C#5:8 F5:8 G5:8 | s2v5: F2:h Bb2:q(3:2) Bb2:8(3:2)~ Bb2:8 A2:8
+m3  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s2v5: F2:h F2:8 F2:8~ F2:q
+m4  s1v1: A5:8 C5:8 F5:8 C5:8 Bb4:8 C#5:8 F5:8 G5:8 | s2v5: F2:h Bb2:q(3:2) Bb2:8(3:2)~ Bb2:8 A2:8
+m5  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:q F4:q A4:q F4:q | s2v5: F2:h F2:8 F2:8~ F2:q
+m6  s1v1: A5:8 C5:8 F5:8 C5:8 Bb4:8 C#5:8 F5:8 G5:8 | s1v2: A4:q F4:q Bb3:h | s2v5: F2:h Bb2:q(3:2) Bb2:8(3:2)~ Bb2:8 A2:8
+m7  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:q F4:q A4:q F4:q | s2v5: F2:h F2:8 F2:8~ F2:q
+m8  s1v1: A5:8 C5:8 F5:8 C5:8 Bb4:8 C#5:8 F5:8 G5:8 | s1v2: A4:q F4:q Bb3:h | s2v5: F2:h Bb2:q(3:2) Bb2:8(3:2)~ Bb2:8 A2:8
+m9 [dyn=mp]  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:h C4:h | s2v5: F2:h F2:8 F2:8~ F2:q
+m10  s1v1: A5:q F5:q A5:q F5:q | s1v2: A4:8 A4:q G4:q. F4:8 A4:8~ | s2v5: F2:h F2:8 F2:8~ F2:q
+m11  s1v1: A5:q F5:q A5:q F5:q | s1v2: A4:h Bb3:q~ Bb3:8 Bb3:8 | s2v5: D2:h D2:8 D2:8~ D2:q
+m12  s1v1: A5:q F5:q A5:q F5:q | s1v2: A4:8 A4:q G4:q F4:q Bb4:8~ | s2v5: D2:h D2:8 E2:8~ E2:q
+m13  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: Bb4:h D4:h | s2v5: F2:h F2:8 F2:8~ F2:8 A2:8
+m14  s1v1: r:w | s1v2: E4:8 E4:q F4:q G4:q A4:8~ | s2v5: D2:h D2:8 D2:8~ D2:q
+m15  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:w | s2v5: F2:h F2:8 F2:8~ F2:q
+m16  s1v1: A5:8 C5:8 F5:8 C5:8 Bb4:8 C#5:8 F5:8 G5:8 | s2v5: F2:h Bb2:q(3:2) Bb2:8(3:2)~ Bb2:8 A2:8
+m17  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:h C4:q~ C4:8 C4:8 | s2v5: F2:h F2:8 F2:8~ F2:q
+m18  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:8 A4:8 A4:8 G4:q. F4:q | s2v5: F2:h F2:8 F2:8~ F2:q
+m19  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:h Bb3:q~ Bb3:8 Bb3:8 | s2v5: D2:h D2:8 D2:8~ D2:q
+m20  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:8 A4:q G4:q~ G4:q. | s2v5: D2:h D2:8 E2:8~ E2:q
+m21  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: Bb4:h E4:h | s2v5: F2:h F2:8 F2:8~ F2:8 A2:8
+m22  s1v1: r:d4 | s1v2: E4:8 E4:q F4:q G4:q A4:8 | s2v5: D2:h D2:8 D2:8~ D2:q
+m23  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s2v5: F2:h F2:8 F2:8~ F2:q
+m24  s1v1: A5:8 C5:8 F5:8 C5:8 Bb4:8 C#5:8 F5:8 G5:8 | s2v5: F2:h Bb2:q(3:2) Bb2:8(3:2)~ Bb2:8 A2:8
+m25  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:h C4:q~ C4:8 C4:8 | s2v5: F2:h F2:8 F2:8~ F2:q
+m26  s1v1: A5:q F5:q A5:q F5:q | s1v2: A4:8 A4:q G4:q. F4:8 A4:8~ | s2v5: F2:h F2:8 F2:8~ F2:q
+m27  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:h Bb3:q~ Bb3:8 Bb3:8 | s2v5: D2:h D2:8 D2:8~ D2:q
+m28  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:8 A4:8 A4:8 G4:q F4:q. | s2v5: D2:h D2:8 E2:8~ E2:q
+m29  s1v1: Bb5:8 A5:8 A5:8 G5:8 G5:8 A5:8 F5:8 E5:8~ | s1v2: Bb4:8 A4:q G4:q. F4:8 E4:8~ | s2v5: F2:h F2:8 F2:8~ F2:8 A2:8
+m30  s1v1: E5:h r:q E5:8 F5:8 | s1v2: E4:q E4:8 F4:q G4:q. | s2v5: D2:h D2:8 E2:8~ E2:q
+m31  s1v1: Bb5:8 A5:8 A5:8 G5:8 G5:8 A5:8 F5:8 E5:8~ | s1v2: Bb4:8 A4:q G4:q. F4:8 E4:8~ | s2v5: F2:h F2:8 F2:8~ F2:8 A2:8
+m32  s1v1: E5:h r:q E5:8 F5:8 | s1v2: E4:q E4:8 F4:q G4:q. | s2v5: D2:h D2:8 E2:8~ E2:q
+m33  s1v1: Bb5:8 A5:8 A5:8 G5:8 G5:8 A5:8 F5:8 E5:8~ | s1v2: Bb4:8 A4:q G4:q. F4:8 E4:8~ | s2v5: F2:h F2:8 F2:8~ F2:8 A2:8
+m34  s1v1: E5:h r:q E5:8 F5:8 | s1v2: E4:q E4:8 F4:q G4:q. | s2v5: D2:h D2:8 E2:8~ E2:q
+m35  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:w | s2v5: F2:h F2:8 F2:8~ F2:q
+m36  s1v1: A5:8 C5:8 F5:8 C5:8 Bb4:8 C#5:8 F5:8 G5:8 | s1v2: F4:w | s2v5: F2:h F2:8 F2:8~ F2:q
+m37 [dyn=p]  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:h A4:q~ A4:8 A4:8 | s2v5: F2:h F2:8 F2:8~ F2:q
+m38  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:8 A4:q Bb4:q C5:q A4:8~ | s2v5: F2:h F2:8 F2:8~ F2:q
+m39  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:h A4:h | s2v5: D2:h D2:8 D2:8~ D2:q
+m40  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 Bb4:8 A4:8 | s1v2: A4:8 A4:q Bb4:q A4:q. | s2v5: D2:h D2:8 E2:8~ E2:q
+m41  s1v1: Bb5:8 A5:8 A5:8 G5:8 G5:8 A5:8 F5:8 E5:8~ | s1v2: Bb4:8 A4:q G4:q. F4:8 E4:8~ | s2v5: F2:h F2:8 F2:8~ F2:8 A2:8
+m42  s1v1: E5:h r:q E5:8 F5:8 | s1v2: E4:q E4:8 F4:q G4:q. | s2v5: D2:h D2:8 E2:8~ E2:q
+m43  s1v1: Bb5:8 A5:8 A5:8 G5:8 G5:8 A5:8 F5:8 E5:8~ | s1v2: Bb4:8 A4:q G4:q. F4:8 E4:8~ | s2v5: F2:h F2:8 F2:8~ F2:8 A2:8
+m44  s1v1: E5:h r:q E5:8 F5:8 | s1v2: E4:q E4:8 F4:q G4:q. | s2v5: D2:h D2:8 E2:8~ E2:q
+m45  s1v1: Bb5:8 A5:8 A5:8 G5:8 G5:8 A5:8 F5:q | s1v2: Bb4:8 A4:q G4:q. F4:8 Bb4:8~ | s2v5: F2:h F2:8 F2:8~ F2:8 A2:8
+m46  s1v1: r:d4 | s1v2: Bb4:q E4:8 E4:q F4:q F4:8~ | s2v5: D2:h D2:8 E2:8~ E2:q
+m47  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: F4:w | s2v5: F2:h F2:8 F2:8~ F2:q
+m48  s1v1: A5:8 C5:8 F5:8 C5:8 Bb4:8 C#5:8 F5:8 G5:8 | s2v5: F2:h Bb2:q(3:2) Bb2:8(3:2)~ Bb2:8 A2:8
+m49  s1v1: Bb4:q C5:q F5:q D5:q | s1v2: C4:8 C4:8 E4:q F4:16 E4:16 C4:q C4:8 | s2v5: F2:q F2:q F2:8 F2:8~ F2:q
+m50  s1v1: Bb4:8 D5:8 r:q r:h | s1v2: Bb3:8 D4:8 F4:8 G4:8 A4:8 F4:8 D4:8 Bb3:8 | s2v5: D2:q D2:q D2:8 D2:8~ D2:8 D2:8
+m51  s1v1: Bb3:q Bb3:q F4:q D4:q | s2v5: C2:8 C2:8 E2:q F2:16 E2:16 D2:q C2:8
+m52  s1v1: Bb3:8 D4:8 F4:8 G4:8 A4:8 F4:8 D4:8 Bb3:8 | s2v5: Bb2:8 D3:8 F3:8 G3:8 A3:8 F3:8 D3:8 Bb2:8
+m53  s1v1: G3:8+Bb3 D4:8 A3:8+C4 E4:8 Bb3:8+D4 F4:8 C4:8+E4 G4:8 | s2v5: F2:w+G2+Bb2+D3
+m54  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:h A4:h | s2v5: F2:h F2:8 F2:8~ F2:q
+m55  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:8 A4:q Bb4:q. A4:8 A4:8~ | s2v5: D2:h D2:8 E2:8~ E2:q
+m56  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:h A4:h | s2v5: F2:h F2:8 F2:8~ F2:q
+m57  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: A4:8 A4:q Bb4:q. Bb4:q | s2v5: D2:h D2:8 E2:8~ E2:q
+m58  s1v1: Bb5:8 A5:8 A5:8 G5:8 G5:8 A5:8 F5:8 E5:8 | s1v2: Bb4:8 A4:q G4:q. F4:8 Bb4:8 | s1v3: G5:h Bb5:h | s2v5: F2:h F2:8 F2:8~ F2:8 A2:8
+m59  s1v1: E5:h r:q E5:8 F5:8 | s1v2: Bb4:q E4:8 E4:q F4:q. | s1v3: G5:q F5:8 E5:8 r:h | s2v5: D2:h D2:8 E2:8~ E2:q
+m60  s1v1: Bb5:8 A5:8 A5:8 G5:8 G5:8 A5:8 F5:8 E5:8~ | s1v2: Bb4:8 A4:q G4:q. F4:8 E4:8~ | s1v3: G5:h Bb5:h | s2v5: F2:h F2:8 F2:8~ F2:8 A2:8
+m61  s1v1: E5:h r:q E5:8 F5:8 | s1v2: E4:q F4:8 G4:q F4:q. | s1v3: G5:q F5:8 E5:8 r:h | s2v5: D2:h D2:8 E2:8~ E2:q
+m62  s1v1: Bb5:8 A5:8 A5:8 G5:8 G5:8 A5:8 F5:8 E5:8~ | s1v2: Bb4:8 A4:q G4:q. F4:8 Bb4:8~ | s1v3: G5:h Bb5:h | s2v5: F2:h F2:8 F2:8~ F2:8 A2:8
+m63  s1v1: E5:h r:q E5:8 F5:8 | s1v2: Bb4:q E4:8 E4:q F4:q F4:8~ | s1v3: G5:q F5:8 E5:8 r:h | s2v5: D2:h D2:8 E2:8~ E2:q
+m64 [dyn=pp]  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s1v2: F4:w | s2v5: F2:h F2:8 F2:8~ F2:q
+m65  s1v1: A5:8 C5:8 F5:8 C5:8 Bb4:8 C#5:8 F5:8 G5:8 | s2v5: F2:h Bb2:q(3:2) Bb2:8(3:2)~ Bb2:8 A2:8
+m66  s1v1: A5:8 C5:8 F5:8 C5:8 A5:8 C5:8 F5:8 C5:8 | s2v5: F2:h F2:8 F2:8~ F2:q
+m67  s1v1: A5:8 C5:8 F5:8 C5:8 Bb4:8 C#5:8 F5:8 G5:8 | s2v5: F2:h Bb2:q(3:2) Bb2:8(3:2)~ Bb2:8 A2:8
+m68  s1v1: C5:w+F5+A5 | s2v5: F1:w

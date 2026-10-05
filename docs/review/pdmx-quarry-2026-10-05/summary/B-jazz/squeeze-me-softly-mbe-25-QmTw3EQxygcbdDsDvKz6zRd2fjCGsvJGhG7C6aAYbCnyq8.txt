@@ -1,0 +1,19 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4 chord-symbols=0 bars=12
+CID QmTw3EQxygcbdDsDvKz6zRd2fjCGsvJGhG7C6aAYbCnyq8
+title: Squeeze me Softly. MBe.25 | song_name: Squeeze me Softly. MBe.25
+composer: in margin-'M.Betham Towsett' | artist: Misc tunes
+csv: tracks=0 bars=24 license=publicdomain
+
+=== part P1 '' measures=12 ===
+m1 [key fifths=1 major; time 4/4; clef=G2; tempo=200]  s1v1: G4:q B4:8 G4:8 B4:8 D5:8 E5:q
+m2 ["NB1"]  s1v1: C5:q E5:8 C5:8 E5:8 G5:8 G5:q
+m3  s1v1: G4:q B4:8 G4:8 B4:8 D5:8 D5:q
+m4 [repeat-backward]  s1v1: E5:8 C5:8 B4:8 A4:8 A4:q G4:q
+m5 [repeat-forward]  s1v1: G5:q B5:8 G5:8 A5:8 E5:8 D5:8 G5:8
+m6  s1v1: E5:8 G5:8 F#5:8 A5:8 G5:8 A5:8 G5:8 E5:8
+m7  s1v1: G5:q B5:8 G5:8 A5:8 F#5:8 D5:8 F#5:8
+m8  s1v1: E5:8 G5:8 F#5:8 A5:8 G5:q G5:q
+m9  s1v1: G5:8 B5:8 G5:8 E5:8 F#5:8 A5:8 F#5:8 D5:8
+m10  s1v1: E5:8 G5:8 F#5:8 E5:8 D5:8 B4:8 A4:8 G4:8
+m11  s1v1: C5:8 B4:8 C5:8 D5:8 E5:8 F#5:8 G5:8 E5:8
+m12 ["NB2"; repeat-backward]  s1v1: D5:8 G5:8 B4:8 G4:8 A4:q G4:q

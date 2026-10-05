@@ -1,0 +1,66 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=2/4 chord-symbols=0 bars=59
+CID QmdTRWW1YANW9XNop1c4cu3tiRHDtwGeZkPEB5GbLQWBdf
+title: Zequinha de Abreu - Tico Tico | song_name: Tico-Tico no Fubá
+composer: Zequinha de Abreu 1917 | artist: Zequinha de Abreu
+csv: tracks=0 bars=109 license=publicdomain
+
+=== part P1 '' measures=59 ===
+m1 [key fifths=0; time 2/4; clef=G2; tempo=90]  s1v1: C5:16 B4:16 A#4:16
+m2  s1v1: A4:16 G#4:16 A4:16 B4:16 D5:16 C5:16 B4:16 C5:16
+m3  s1v1: E5:16 G4:16 C5:16 E5:16 G5:16 F#5:16 F5:16 E5:16
+m4  s1v1: D5:16 C5:16 B4:16 A4:16 G4:16 F4:16 E4:16 D4:16
+m5  s1v1: C4:q r:16
+m6 [repeat-forward]  s1v1: E4:16 D#4:16 E4:16
+m7  s1v1: F4:16 E4:8 A4:16~ A4:16 E4:16 D#4:16 E4:16
+m8  s1v1: F4:16 E4:8 G#4:16~ G#4:16 E4:16 D#4:16 E4:16
+m9  s1v1: F4:16 E4:16 D5:16 B4:16 G#4:16 E4:16 D4:16 C#4:16
+m10  s1v1: C4:q r:16 A4:16 G#4:16 G4:16
+m11  s1v1: F4:16 A4:8 D5:16~ D5:16 C5:16 A4:16 F4:16
+m12  s1v1: E4:16 A4:8 C5:16~ C5:16 C5:16 B4:16 A4:16
+m13 [ending1-start]  s1v1: B4:16 B3:16 D#4:16 F#4:16 A4:16 C5:16 B4:16 A4:16
+m14 [repeat-backward; ending1-stop]  s1v1: G#4:q r:16
+m15 [ending2-start]  s1v1: B4:16 E4:16 G#4:16 B4:16 E5:16 D5:16 C5:16 B4:16
+m16 [ending2-stop]  s1v1: A4:q r:16
+m17 [repeat-forward]  s1v1: B4:16 A4:16 G#4:16
+m18  s1v1: A4:16 C4:16 E4:16 G4:16 C4:16 E4:16 G4:16 G#4:16
+m19  s1v1: A4:8. F4:16 r:16 B4:16 A4:16 G#4:16
+m20  s1v1: A4:16 B3:16 D4:16 F4:16 B3:16 D4:16 F4:16 G4:16
+m21  s1v1: A4:8. E4:16 r:16 C5:16 C5:16 C5:16
+m22  s1v1: C5:16 B4:16 B4:16 B4:16~ B4:16 A4:16 A4:16 A4:16
+m23  s1v1: A4:16 F4:16 F4:16 F4:16~ F4:16 B4:16 B4:16 B4:16
+m24  s1v1: B4:16 G4:16 G4:16 G4:16~ G4:16 G4:16 A4:16 G4:16
+m25  s1v1: E4:16 E4:16~ E4:16 E4:16~ E4:16 B4:16 A4:16 G#4:16
+m26  s1v1: A4:16 C4:16 E4:16 G4:16 C4:16 E4:16 G4:16 G#4:16
+m27  s1v1: A4:16 F4:16 D4:16 B3:16~ B3:16 B4:16 A4:16 G#4:16
+m28  s1v1: A4:16 B3:16 D4:16 F4:16 B3:16 D4:16 F4:16 G4:16
+m29  s1v1: A4:8. E4:16 r:16 C5:16 B4:16 A#4:16
+m30  s1v1: A4:16 G#4:16 A4:16 B4:16 D5:16 C5:16 B4:16 C5:16
+m31  s1v1: E5:16 G4:16 C5:16 E5:16 G5:16 F#5:16 F5:16 E5:16
+m32  s1v1: D5:16 C5:16 B4:16 A4:16 G4:16 F4:16 E4:16 D4:16
+m33 [repeat-backward]  s1v1: C4:q r:16
+m34 [repeat-forward]  s1v1: A3:16 C#4:16 E4:16
+m35  s1v1: A4:16 A3:16 C#4:16 G#4:16~ G#4:16 A3:16 C#4:16 E4:16
+m36  s1v1: F#4:16 A3:16 C#4:16 E4:16~ E4:16 A3:16 C#4:16 E4:16
+m37  s1v1: F#4:16 A3:16 C#4:16 E4:16~ E4:16 A3:16 C#4:16 E4:16
+m38  s1v1: F#4:16 B3:16 D4:16 E4:16~ E4:16 B3:16 D4:16 E4:16
+m39  s1v1: A4:16 B3:16 D4:16 G#4:16~ G#4:16 B3:16 D4:16 E4:16
+m40  s1v1: F#4:16 B3:16 D4:16 E4:16~ E4:16 B3:16 D4:16 E4:16
+m41  s1v1: A4:16 B3:16 D4:16 G#4:16~ G#4:16 B3:16 D4:16 E4:16
+m42  s1v1: F#4:16 A3:16 C#4:16 E4:16~ E4:16 A3:16 C#4:16 E4:16
+m43  s1v1: A4:16 A3:16 C#4:16 G#4:16~ G#4:16 A3:16 C#4:16 E4:16
+m44  s1v1: F#4:16 A3:16 C#4:16 E4:16~ E4:16 A3:16 C#4:16 E4:16
+m45  s1v1: F#4:16 E4:16 C#4:16 A3:16 F#4:16 E4:16 C#4:16 A3:16
+m46  s1v1: B3:16 A3:16 B3:16 C#4:16 D4:8. r:16
+m47  s1v1: D4:16 C#4:16 D4:16 E4:16 F#4:16 G#4:16 A4:16 B4:16
+m48  s1v1: C#5:16 D5:16 D#5:16 E5:16 F#5:16 E5:16 D5:16 C#5:16
+m49  s1v1: B4:16 A4:16 G#4:16 F#4:16 E4:16 D4:16 C#4:16 B3:16
+m50 [repeat-backward]  s1v1: A3:q r:16
+m51 [repeat-forward]  s1v1: F5:16 E5:16 D5:16
+m52  s1v1: B4:16 D5:32 F5:16 E5:32 D5:16 B4:16 D5:32 F5:16 E5:32 D5:16
+m53  s1v1: B4:8. B4:16 r:16 F5:16 E5:16 D5:16
+m54  s1v1: B4:16 D5:32 F5:16 E5:32 D5:16 B4:16 D5:32 F5:16 E5:32 D5:16
+m55  s1v1: A4:8. A4:16 r:16 D5:16 E5:16 D5:16
+m56  s1v1: C#5:16 D5:16 E5:16 F5:16 G5:16 F#5:16 G5:16 G#5:16
+m57  s1v1: A5:16 E5:16~ E5:16 A5:16~ A5:16 E5:16 A5:16 A#5:16
+m58  s1v1: B5:16 F#5:16 B5:8 B5:16 G#5:16 B5:16 G#5:16
+m59 [repeat-backward]  s1v1: E5:q r:16

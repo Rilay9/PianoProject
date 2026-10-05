@@ -1,0 +1,23 @@
+SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=24 bars=16
+CID QmXWBURe48nbNXaFgz4Fhuv3p43nvqukyGufkYujjmFoCZ
+title: Ode To Joy | song_name: Symphony No.9 Op.125
+composer:  | artist: Ludwig van Beethoven
+csv: tracks=0 bars=16 license=publicdomain
+
+=== part P1 '' measures=16 ===
+m1 [key fifths=2 major; time 4/4; clef=G2]  s1v1: D5:q+F#5 F#5:q G5:q A5:q
+m2  s1v1: A5:q. G5:8 F#5:q E5:q
+m3  s1v1: D5:q D5:q E5:q F#5:q
+m4  s1v1: F#5:q. E5:8 E5:h
+m5  s1v1: D5:q+F#5 F#5:q G5:q A5:q
+m6  s1v1: A5:q. G5:8 F#5:q E5:q
+m7  s1v1: D5:q D5:q E5:q F#5:q
+m8  s1v1: E5:q. D5:8 D5:h
+m9  s1v1: E5:q E5:q F#5:q D5:q
+m10  s1v1: E5:q F#5:8 G5:8 F#5:q D5:q
+m11  s1v1: E5:q F#5:8 G5:8 F#5:q E5:q
+m12  s1v1: D5:q E5:q A4:h
+m13  s1v1: F#5:q F#5:q G5:q A5:q
+m14  s1v1: A5:q. G5:8 F#5:q E5:q
+m15  s1v1: D5:q D5:q E5:q F#5:q
+m16  s1v1: E5:q. D5:8 D5:h

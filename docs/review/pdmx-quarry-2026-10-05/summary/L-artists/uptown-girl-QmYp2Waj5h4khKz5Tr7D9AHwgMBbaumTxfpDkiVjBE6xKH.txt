@@ -1,0 +1,104 @@
+SHAPE: PIANO2 | parts=1 max_staves=2 meters= chord-symbols=0 bars=97
+CID QmYp2Waj5h4khKz5Tr7D9AHwgMBbaumTxfpDkiVjBE6xKH
+title: Uptown Girl | song_name: uptown girl
+composer:  | artist: Billy Joel
+csv: tracks=0 bars=97 license=cc-zero
+
+=== part P1 'Part_1' measures=97 ===
+m1 [staves=2; key fifths=4; clef1=G2; clef2=F4; tempo=120]  s1v1: r:q G#3:q+B3+E4 G#3:q+B3+D#4 G#3:q+B3+E4 | s2v5: E1:q.+E2 E1:q+E2 E1:q+E2 E1:8+E2
+m2  s1v1: A3:q+C#4+F#4 A3:q+C#4+E4 A3:q+C#4+D#4 A3:q+C#4 | s2v5: F#1:q.+F#2 F#1:q+F#2 F#1:q+F#2 F#1:8+F#2
+m3  s1v1: B3:q B3:q+E4+G#4 B3:q+E4+F#4 B3:q+E4+G#4 | s2v5: G#1:q.+G#2 G#1:q+G#2 G#1:q+G#2 G#1:8+G#2
+m4  s1v1: C#4:q+E4+A4 C#4:q+E4+G#4 B3:q+D#4+F#4 B3:q+D#4+E4 | s2v5: A1:q+A2 A1:q+A2 B1:q+B2 B1:q+B2
+m5  s1v1: G#3:q+B3+E4 G#3:q+B3+E4 G#3:q+B3+E4 r:q | s2v5: E1:q+E2 B2:8 E3:8~ E3:8 B2:8 E3:8 B2:8
+m6  s1v1: F#3:q[strong-accent]+A3+C#4 D#4:8 E4:8 F#4:8 E4:8 D#4:8 C#4:8 | s2v5: F#1:q+F#2 C#3:8 F#3:8~ F#3:8 C#3:8 F#3:8 C#3:8
+m7  s1v1: G#3:q+C#4 B3:8 G#3:8 B3:q r:q | s2v5: G#1:q+G#2 B2:8 D#3:8~ D#3:8 B2:8 D#3:8 B2:8
+m8  s1v1: r:8 A3:8 A3:8 A3:8 B3:8 A3:8 G#3:8 F#3:8[strong-accent] | s2v5: A1:q+A2 A2:8 E3:8 B1:q+B2 B2:8 D#3:8
+m9  s1v1: E3:q G#3:q+B3+E4 G#3:q+B3+E4 r:q | s2v5: E1:q+E2 B2:8 E3:8~ E3:8 B2:8 E3:8 B2:8
+m10  s1v1: F#3:q[strong-accent]+A3+C#4 D#4:8 E4:8 F#4:8 E4:8 D#4:8 C#4:8 | s2v5: F#1:q+F#2 C#3:8 F#3:8~ F#3:8 C#3:8 F#3:8 C#3:8
+m11  s1v1: G#3:q+C#4 B3:8 G#3:8 B3:q r:q | s2v5: G#1:q+G#2 B2:8 D#3:8~ D#3:8 B2:8 D#3:8 B2:8
+m12  s1v1: r:8 A3:8 A3:8 A3:8 B3:q C#4:8 D#4:8 | s2v5: A1:q+A2 A2:8 E3:8 B1:q+B2 B2:8 D#3:8
+m13  s1v1: G#3:q+B3+E4 G#3:q+B3+E4 G#3:q+B3+E4 r:q | s2v5: E1:q+E2 B2:8 E3:8~ E3:8 B2:8 E3:8 B2:8
+m14  s1v1: F#3:q+A3+C#4 D#4:8 E4:8 F#4:8 E4:8 D#4:8 C#4:8 | s2v5: F#1:q+F#2 C#3:8 F#3:8~ F#3:8 C#3:8 F#3:8 C#3:8
+m15  s1v1: G#3:q+C#4 B3:8 G#3:8 B3:q r:q | s2v5: G#1:q+G#2 B2:8 D#3:8~ D#3:8 B2:8 D#3:8 B2:8
+m16  s1v1: r:8 A3:8 A3:8 A3:8 B3:8 A3:8 G#3:8 F#3:8 | s2v5: A1:q+A2 A2:8 E3:8 B1:q+B2 B2:8 D#3:8
+m17  s1v1: E3:q G#3:q+B3+E4 G#3:q+B3+E4 r:q | s2v5: E1:q+E2 B2:8 E3:8~ E3:8 B2:8 E3:8 B2:8
+m18  s1v1: F#3:q[strong-accent]+A3+C#4 D#4:8 E4:8 F#4:8 E4:8 D#4:8 C#4:8 | s2v5: F#1:q+F#2 C#3:8 F#3:8~ F#3:8 C#3:8 F#3:8 C#3:8
+m19  s1v1: G#3:q+C#4 B3:8 G#3:8 B3:q r:q | s2v5: G#1:q+G#2 B2:8 D#3:8 D#3:8 B2:8 D#3:8 B2:8
+m20  s1v1: r:8 A3:8 A3:8 A3:8 B3:q r:q | s2v5: A1:q+A2 A2:8 E3:8 B1:q+B2 C#3:8 D#3:8
+m21  s1v1: r:q C#4:q E4:q A4:q | s2v5: C#2:q+C#3 C#3:8 G#3:8 C#4:8 G#3:8 C#3:q
+m22  s1v1: C4:h+E4+G4 E4:q G4:q | s2v5: A1:q+A2 A2:8 E3:8 A3:8 E3:8 A2:q
+m23  s1v1: A3:h.+D4+F4 E4:q | s2v5: D2:q+D3 D3:8 A3:8 D4:8 A3:8 D3:q
+m24  s1v1: B3:q+D4+F4 E4:q D4:q r:q | s2v5: G1:q+G2 G2:8 D3:8 G3:8 D3:8 G2:q
+m25  s1v1: r:8 r:8 C4:8 E4:8 E4:q A4:q | s2v5: C2:q+C3 C3:8 G3:8 C4:8 G3:8 C3:q
+m26  s1v1: C4:h+E4+G4 E4:q G4:q | s2v5: A1:q+A2 A2:8 E3:8 A3:8 E3:8 A2:q
+m27  s1v1: C4:h+E4 D4:q E4:q | s2v5: B1:q+B2 B2:8 F3:8 B3:8 F3:8 B2:q
+m28  s1v1: B3:q+D4+F4 E4:q D4:q E4:q | s2v5: E1:q+E2 E2:8 G#2:8 B2:8 E3:8 G#3:8 B3:8
+m29 [key fifths=3]  s1v1: r:q E3:q+A3+C#4 C#4:q D4:q | s2v5: A1:q+A2 A2:8 C#3:8 E3:8 C#3:8 A2:8 E2:8
+m30  s1v1: A3:q+C#4+E4 D4:q C#4:q r:q | s2v5: F#1:q+F#2 F#2:8 A2:8 C#3:8 A2:8 F#2:8 C#2:8
+m31  s1v1: F#3:q[strong-accent]+B3+D4 C#4:q B3:q r:q | s2v5: B1:q+B2 B2:8 D3:8 F#3:8 D3:8 B2:8 F#2:8
+m32  s1v1: F#3:q[strong-accent]+B3+D#4 C#4:q B3:q C#4:8 D#4:8 | s2v5: B1:8+B2 B2:8 D#3:8 F#3:q F#3:8 D#3:8 B2:8
+m33 [key fifths=4]  s1v1: G#3:q+B3+E4 G#3:q+B3+E4 G#3:q+B3+E4 r:q | s2v5: E1:q+E2 B2:8 E3:8~ E3:8 B2:8 E2:8 F2:8
+m34  s1v1: F#3:q[strong-accent]+A3+C#4 D#4:8 E4:8 F#4:8 E4:8 D#4:8 C#4:8 | s2v5: F#1:q+F#2 C#3:8 F#3:8~ F#3:8 C#3:8 F#2:8 G2:8
+m35  s1v1: G#3:q+C#4 B3:8 G#3:8 B3:q r:q | s1v2: r:q | s2v5: G#1:q+G#2 B2:8 D#3:8 D#3:16 B2:8 G#3:8 D#3:8 r:16
+m36  s1v1: r:8 A3:8 A3:8 A3:8 B3:8 A3:8 G#3:8 F#3:8 | s2v5: A1:q+A2 A2:8 E3:8 B1:q+B2 B2:8 D#3:8
+m37  s1v1: E3:q G#3:q+B3+E4 G#3:q+B3+F#4 G#3:q+B3+E4 | s2v5: E1:q+E2 B2:8 E3:8~ E3:8 B2:8 E2:8 F2:8
+m38  s1v1: F#3:q+A3+C#4 D#4:8 E4:8 F#4:8 E4:8 D#4:8 C#4:8 | s2v5: F#1:q+F#2 C#3:8 F#3:8~ F#3:8 C#3:8 F#2:8 G2:8
+m39  s1v1: G#3:q+C#4 B3:8 G#3:8 B3:q r:q | s2v5: G#1:q+G#2 B2:8 D#3:8~ D#3:8 B2:8 D#3:8 B2:8
+m40  s1v1: r:8 A3:8 A3:8 A3:8 B3:q r:q | s2v5: A1:q+A2 A2:8 E3:8 B1:q+B2 C#3:8 D#3:8
+m41 [key fifths=1]  s1v1: r:q G3:q B3:q D4:q | s2v5: G1:q+G2 G2:8 D3:8 G3:8 D3:8 G2:q
+m42  s1v1: C#4:q+F#4 C#4:q+E4 C#4:q+A4 C#4:q+G4 | s2v5: A1:q+A2 A2:8 E3:8 A3:8 E3:8 A2:q
+m43  s1v1: C#4:q+F#4 C#4:q+E4 C#4:q+G4 C#4:q+F#4 | s2v5: A#1:q+A#2 A#2:8 E3:8 A#3:8 E3:8 A#2:q
+m44  s1v1: B3:q[strong-accent]+E4 B3:q+D4 F#3:q+A3+C#4 F#3:q+A3+D4 | s2v5: B1:q.+B2 B1:8+B2 A1:q+A2 A1:q+A2
+m45  s1v1: r:q G3:q B3:q D4:q | s2v5: G1:q+G2 G2:8 D3:8 G3:8 D3:8 G2:q
+m46  s1v1: C#4:q+F#4 C#4:q+E4 C#4:q+A4 C#4:q+G4 | s2v5: A1:q+A2 A2:8 E3:8 A3:8 E3:8 A2:q
+m47  s1v1: C#4:q+F#4 C#4:q+E4 C#4:q+G4 C#4:q+F#4 | s2v5: A#1:q+A#2 A#2:8 E3:8 A#3:8 E3:8 A#2:q
+m48  s1v1: F#3:q[strong-accent]+B3+E4 D#4:q B3:q C#4:8 D#4:8 | s2v5: B1:8+B2 B2:8 D#3:8 F#3:8 A3:q r:q
+m49 [key fifths=4]  s1v1: G#3:q+B3+E4 G#3:q+B3+E4 G#3:q+B3+E4 r:q | s2v5: E1:q+E2 B2:8 E3:8~ E3:8 B2:8 E2:8 F2:8
+m50  s1v1: F#3:q+A3+C#4 D#4:8 E4:8 F#4:8 E4:8 D#4:8 C#4:8 | s2v5: F#1:q+F#2 C#3:8 F#3:8 F#3:8 C#3:8 F#2:8 G2:8
+m51  s1v1: G#3:q+C#4 B3:8 G#3:8 r:8 r:q r:8 | s1v2: B3:q | s2v5: G#1:q+G#2 B2:8 D#3:8 r:h | s2v6: B2:q+D#3 B2:8 G#3:8 D#3:8
+m52  s1v1: r:8 A3:8 A3:8 A3:8 B3:8 A3:8 G#3:8 F#3:8[strong-accent] | s2v5: A1:q+A2 A2:8 E3:8 B1:q+B2 B2:8 D#3:8
+m53  s1v1: E3:q G#3:q+B3+E4 G#3:q+B3+F#4 G#3:q+B3+E4 | s2v5: E1:q+E2 B2:8 E3:8~ E3:8 B2:8 E2:8 F2:8
+m54  s1v1: F#3:q+A3+C#4 D#4:8 E4:8 F#4:8 E4:8 D#4:8 C#4:8 | s2v5: F#1:q+F#2 C#3:8 F#3:8~ F#3:8 C#3:8 F#2:8 G2:8
+m55  s1v1: G#3:q+C#4 B3:8 G#3:8 B3:q r:q | s2v5: G#1:q+G#2 B2:8 D#3:8~ D#3:8 B2:8 D#3:8 B2:8
+m56  s1v1: r:8 A3:8 A3:8 A3:8 B3:q r:q | s2v5: A1:q+A2 A2:8 E3:8 B1:q+B2 C#3:8 D#3:8
+m57  s1v1: r:q C#4:q E4:q A4:q | s2v5: C#2:q+C#3 C#3:8 G#3:8 C#4:8 G#3:8 C#3:q
+m58  s1v1: C#4:h+E4+G#4 E4:q G#4:q | s2v5: A1:q+A2 A2:8 E3:8 A3:8 E3:8 A2:q
+m59  s1v1: A3:h.+D#4+F#4 E4:q | s2v5: D#2:q+D#3 D#3:8 A3:8 D#4:8 A3:8 D#3:q
+m60  s1v1: B3:q+D#4+F#4 E4:q D#4:q r:q | s2v5: G#1:q+G#2 G#2:8 D#3:8 G#3:8 D#3:8 G#2:q
+m61  s1v1: r:8 r:8 C#4:8 E4:8 E4:q A4:q | s2v5: C#2:q+C#3 C#3:8 G#3:8 C#4:8 G#3:8 C#3:q
+m62  s1v1: C#4:h+E4+G#4 E4:q G#4:q | s2v5: A1:q+A2 A2:8 E3:8 A3:8 E3:8 A2:q
+m63  s1v1: C#4:h+D#4 D#4:q E4:q | s2v5: B1:q+B2 B2:8 F#3:8 B3:8 F#3:8 B2:q
+m64  s1v1: B3:q+D#4+F#4 E4:q D#4:q E4:q r:h | s2v5: E1:q+E2 E2:8+A2 A2:h G#2:8 B2:8 E3:8 G#3:8 B3:8
+m65  s1v1: r:q E3:q+A3+C#4 C#4:q D#4:q | s2v5: A1:q+A2 A2:8 C#3:8 E3:8 C#3:8 A2:8 E2:8
+m66  s1v1: A3:q+C#4+E4 D#4:q C#4:q r:q | s2v5: F#1:q+F#2 F#2:8 A2:8 C#3:8 A2:8 F#2:8 C#2:8
+m67  s1v1: F#3:q+B3+D#4 C#4:q B3:q r:q | s2v5: B1:q+B2 B2:8 D#3:8 F#3:8 D#3:8 B2:8 F#2:8
+m68  s1v1: F#3:q+B3+D#4 C#4:q B3:q C#4:8 D#4:8 | s2v5: B1:8+B2 B2:8 D#3:8 F#3:q F#3:8 D#3:8 B2:8
+m69  s1v1: G#3:q+B3+E4 G#3:q+B3+E4 G#3:q+B3+E4 r:q | s2v5: E1:h.+E2 E1:8+E2 E#1:8+E#2
+m70  s1v1: F#3:q[strong-accent]+A3+C#4 D#4:8 E4:8 F#4:8 E4:8 D#4:8 C#4:8 | s2v5: F#1:h.+F#2 F#1:8+F#2 G1:8+G2
+m71  s1v1: G#3:q+C#4 B3:8 G#3:8 B3:q r:q | s2v5: G#1:h.+G#2 G#1:q+G#2
+m72  s1v1: r:8 A3:8 A3:8 A3:8 B3:8 A3:8 G#3:8 F#3:8 | s2v5: A1:q.+A2 A1:8+A2 B1:q.+B2 B1:8+B2
+m73  s1v1: E3:q G#3:q+B3+E4 G#3:q+B3+F#4 G#3:q+B3+E4 | s2v5: E1:h.+E2 E1:8+E2 E#1:8+E#2
+m74  s1v1: F#3:q[strong-accent]+A3+C#4 D#4:8 E4:8 G#4:8 F#4:8 E4:8 D#4:8 | s2v5: F#1:h.+F#2 F#1:8+F#2 G1:8+G2
+m75  s1v1: G#3:q+C#4 B3:8 G#3:8 B3:q r:q | s2v5: G#1:h.+G#2 G#1:q+G#2
+m76  s1v1: r:8 A3:8 A3:8 A3:8 B3:q r:q | s2v5: A1:q.+A2 A1:8+A2 B1:h+B2
+m77 [key fifths=1]  s1v1: r:q G3:q B3:q D4:q | s2v5: G1:q+G2 G2:8 D3:8 G3:8 D3:8 G2:q
+m78  s1v1: C#4:q+F#4 C#4:q+E4 C#4:q+A4 C#4:q+G4 | s2v5: A1:q+A2 A2:8 E3:8 A3:8 E3:8 A2:q
+m79  s1v1: C#4:q+F#4 C#4:q+E4 C#4:q+G4 C#4:q+F#4 | s2v5: A#1:q+A#2 A#2:8 E3:8 A#3:8 E3:8 A#2:q
+m80  s1v1: B3:q+E4 B3:q+D4 F#3:q+A3+C#4 F#3:q+A3+D4 | s2v5: B1:q.+B2 B1:8+B2 A1:q+A2 A1:q+A2
+m81  s1v1: r:q G3:q B3:q D4:q | s2v5: G1:q+G2 G2:8 D3:8 G3:8 D3:8 G2:q
+m82  s1v1: C#4:q+F#4 C#4:q+E4 C#4:q+A4 C#4:q+G4 | s2v5: A1:q+A2 A2:8 E3:8 A3:8 E3:8 A2:q
+m83  s1v1: C#4:q+F#4 C#4:q+E4 C#4:q+G4 C#4:q+F#4 | s2v5: A#1:q+A#2 A#2:8 E3:8 A#3:8 E3:8 A#2:q
+m84  s1v1: F#3:q[strong-accent]+B3+E4 D#4:q B3:q C#4:8 D#4:8 | s2v5: B1:8+B2 B2:8 D#3:8 F#3:8 A3:q r:q
+m85 [key fifths=4]  s1v1: G#3:q+B3+E4 G#3:q+B3+E4 G#3:q+B3+E4 r:q | s2v5: E1:q+E2 B2:8 E3:8~ E3:8 B2:8 E2:8 F2:8
+m86  s1v1: r:q B3:8 B3:8 B4:q D#4:q+G#4 | s2v5: F#1:q+F#2 C#3:8 F#3:8~ F#3:8 C#3:8 F#2:8 G2:8
+m87  s1v1: B3:q.+D#4+G#4 F#4:8 E4:q r:q | s2v5: G#1:q+G#2 B2:8 D#3:8~ D#3:8 B2:8 G#3:8 D#3:8
+m88  s1v1: A3:8 A3:8 A3:8 A3:8 B3:q C#4:8 D#4:8 | s2v5: A1:q+A2 A2:8 E3:8 B1:q+B2 B2:8 D#3:8
+m89  s1v1: G#3:q+B3+E4 G#3:q+B3+E4 G#3:q+B3+E4 r:q | s2v5: E1:q+E2 B2:8 E3:8~ E3:8 B2:8 E2:8 F2:8
+m90  s1v1: r:q B3:8 B3:8 B4:q D#4:q+G#4 | s2v5: F#1:q+F#2 C#3:8 F#3:8~ F#3:8 C#3:8 F#2:8 G2:8
+m91  s1v1: B3:q.+D#4+G#4 F#4:8 E4:q r:q | s1v2: r:q | s2v5: G#1:q+G#2 B2:8 D#3:8 D#3:16 B2:8 G#3:8 D#3:8 r:16
+m92  s1v1: A3:8 A3:8 A3:8 A3:8 B3:q C#4:8 D#4:8 | s2v5: A1:q+A2 A2:8 E3:8 B1:q+B2 B2:8 D#3:8
+m93  s1v1: G#3:q+B3+E4 G#3:q+B3+E4 G#3:q+B3+E4 r:q | s2v5: E1:q+E2 B2:8 E3:8~ E3:8 B2:8 E2:8 F2:8
+m94  s1v1: r:q B3:8 B3:8 B4:q D#4:q+G#4 | s2v5: F#1:q+F#2 C#3:8 F#3:8~ F#3:8 C#3:8 F#2:8 G2:8
+m95  s1v1: B3:q.+D#4+G#4 F#4:8[staccato] E4:q r:q | s2v5: G#1:q+G#2 B2:8 D#3:8~ D#3:8 B2:8 G#3:8 D#3:8
+m96  s1v1: A3:8 A3:8 A3:8 A3:8 B3:q G#3:8 F#3:8[strong-accent] | s2v5: A1:h+A2 B1:h+B2
+m97  s1v1: E4:w | s2v2: B2:w | s2v5: E3:w | s2v6: E2:w

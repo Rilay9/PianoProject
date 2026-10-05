@@ -1,0 +1,274 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4,5/8,2/4 chord-symbols=0 bars=267
+CID QmZZoMtA54kgni7gFcrBDdSsm1TGMuE1FzomzFbuGfP7Lq
+title: Master of Puppets: Metallica | song_name: master of puppets
+composer: Composer | artist: Metallica
+csv: tracks=0 bars=343 license=cc-zero
+
+=== part P1 'Piano' measures=267 ===
+m1 [key fifths=3; time 4/4; clef=G2; tempo=212; dyn=ff]  s1v1: E4:q+B4 r:q r:h
+m2  s1v1: D5:q[accent]+A5 C#5:q[accent]+G#5 C5:h[accent]+G5
+m3  s1v1: C5:w+G5
+m4 [dyn=f]  s1v1: E4:8 E4:8 E5:8 E4:8 E4:8 D#5:8 E4:8 E4:8
+m5  s1v1: D5:q[accent]+A5 C#5:q[accent]+G#5 C5:h[accent]+G5
+m6 ["Bieke Michiel"]  s1v1: E4:8 E4:8 B4:8 E4:8 E4:8 B#4:8 E4:8 E4:8
+m7 [repeat-forward]  s1v1: A4:8 E4:8 G#4:8 E4:8 G4:8 E4:8 F#4:8 E4:8
+m8  s1v1: E4:8 E4:8 E5:8 E4:8 E4:8 D#5:8 E4:8 E4:8
+m9  s1v1: D5:q[accent]+A5 C#5:q[accent]+G#5 C5:h[accent]+G5
+m10 ["x3"; repeat-backward]  s1v1: E4:8 E4:8 B4:8 E4:8 E4:8 Bb4:8 E4:8 E4:8
+m11  s1v1: A4:8 E4:8 G#4:8 E4:8 G4:8 E4:8 F#4:8 E4:8
+m12 [repeat-forward]  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m13  s1v1: C#5:8 E4:8 F4:8 C5:8 E4:8 F4:8 B4:8 B4:8
+m14  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m15 [repeat-backward]  s1v1: G4:8 F#4:8 r:8 G4:8 F#4:8 r:8 G4:8 F#4:8
+m16  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m17  s1v1: C#5:8 E4:8 F4:8 C5:8 E4:8 F4:8 B4:8 B4:8
+m18  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m19  s1v1: C#5:8 E4:8 F4:8 C5:8 E4:8 F4:8 B4:q
+m20  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m21  s1v1: C#5:8 E4:8 F4:8 C5:8 E4:8 F4:8 B4:8 B4:8
+m22  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m23  s1v1: G4:8 F#4:8 r:8 G4:8 F#4:8 r:8 G4:8 F#4:8
+m24  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m25  s1v1: C#5:8 E4:8 F4:8 C5:8 E4:8 F4:8 B4:8 B4:8
+m26  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m27  s1v1: C#5:8 E4:8 F4:8 C5:8 E4:8 F4:8 B4:q
+m28  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m29  s1v1: C#5:8 E4:8 F4:8 C5:8 E4:8 F4:8 B4:8 B4:8
+m30  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m31  s1v1: G4:8 F#4:8 r:8 G4:8 F#4:8 r:8 G4:8 F#4:8
+m32  s1v1: G4:8 F#4:8 r:8 G4:8 F#4:8 r:8 G4:8 F#4:8
+m33  s1v1: E4:q r:q r:h
+m34  s1v1: r:d4
+m35 [key fifths=2; repeat-forward]  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m36  s1v1: E4:8 G4:8 A4:8 E4:8 Bb4:8 A4:8 G4:8 A4:8
+m37  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m38 [time 5/8]  s1v1: E4:8 G4:8 A4:8 G4:8 A4:8
+m39 [time 4/4]  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m40  s1v1: E4:8 G4:8 A4:8 E4:8 Bb4:8 A4:8 G4:8 A4:8
+m41  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m42 [time 5/8; "x3"; repeat-backward]  s1v1: E4:8 G4:8 A4:8 G4:8 A4:8
+m43 [key fifths=1; time 4/4; repeat-forward]  s1v1: F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8
+m44  s1v1: F#4:8 A4:8 B4:q C5:8 B4:8 A4:8 B4:8
+m45  s1v1: F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8
+m46 [time 5/8; repeat-backward]  s1v1: F#4:8 A4:8 B4:8 A4:8 B4:8
+m47 [time 4/4]  s1v1: B4:8 B4:8 B4:8 B4:8 B4:8 B4:8 B4:8 B4:8
+m48  s1v1: E4:8+B4 E4:8 E4:8 E4:8 D5:q E5:q
+m49  s1v1: E5:8 F#5:8 B5:8 F#5:8 gF#5:8 G5:h
+m50  s1v1: C5:8 C5:8 C5:8 C5:8 C5:q B4:q
+m51 [repeat-forward]  s1v1: C5:8 C5:8 C5:8 C5:8 D#5:q B4:q
+m52  s1v1: E4:8+B4 E4:8 E4:8 E4:8 D5:q E5:q
+m53  s1v1: E5:8 F#5:8 B5:8 F#5:8 gF#5:8 G5:h
+m54 ["x3"; repeat-backward]  s1v1: C5:8 C5:8 C5:8 C5:8 C5:q B4:q
+m55  s1v1: F#5:8 E5:8 D#5:8 r:8 D#5:8 C5:8 B4:8 r:8
+m56  s1v1: E4:q+B4 E4:q+B4 r:h
+m57  s1v1: F4:q+C5 F4:q+C5 r:h
+m58  s1v1: E4:h+B4 E4:8+B4 E4:8 E4:8 E4:8
+m59 [time 2/4]  s1v1: F#4:8+C#5 E4:8 E4:8 E4:8
+m60 [time 4/4]  s1v1: G4:w+D5
+m61  s1v1: G4:w+D5
+m62  s1v1: C5:h+G5 C5:8+G5 A4:8 A4:8 A4:8
+m63 [time 2/4]  s1v1: B4:8+F#5 A4:8 A4:8 A4:8
+m64 [time 4/4]  s1v1: A4:w+E5
+m65  s1v1: A4:w+E5
+m66  s1v1: D5:h+A5 D5:8+A5 G4:8 G4:8 G4:8
+m67 [time 2/4]  s1v1: C5:8+G5 G4:8 G4:8 G4:8
+m68 [time 4/4]  s1v1: B4:w+F#5
+m69  s1v1: E5:h+B5 E5:8+B5 E4:8 E4:8 E4:8
+m70 [time 2/4]  s1v1: D5:8+A5 E4:8 E4:8 E4:8
+m71 [time 4/4]  s1v1: C5:w+G5
+m72 [time 2/4]  s1v1: C5:h+G5
+m73 [time 4/4]  s1v1: E4:q+B4 E4:q+B4 r:h
+m74  s1v1: F4:q+C5 F4:q+C5 r:h
+m75  s1v1: E4:h+B4 E4:8+B4 E4:8 E4:8 E4:8
+m76 [time 2/4]  s1v1: F#4:8+C#5 E4:8 E4:8 E4:8
+m77 [time 4/4]  s1v1: C5:w+G5
+m78  s1v1: C5:w+G5
+m79  s1v1: E4:q+B4 E4:q+B4 r:h
+m80  s1v1: F4:q+C5 F4:q+C5 r:h
+m81  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m82  s1v1: C#5:8 E4:8 F4:8 C5:8 E4:8 F4:8 B4:8 B4:8
+m83  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m84  s1v1: C#5:8 E4:8 F4:8 C5:8 E4:8 F4:8 B4:q
+m85  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m86  s1v1: C#5:8 E4:8 F4:8 C5:8 E4:8 F4:8 B4:8 B4:8
+m87  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m88  s1v1: G4:8 F#4:8 r:8 G4:8 F#4:8 r:8 G4:8 F#4:8
+m89  s1v1: G4:8 F#4:8 r:8 G4:8 F#4:8 r:8 G4:8 F#4:8
+m90 [repeat-forward]  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m91  s1v1: E4:8 G4:8 A4:8 E4:8 Bb4:8 A4:8 G4:8 A4:8
+m92  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m93 [time 5/8; "x4"; repeat-backward]  s1v1: E4:8 G4:8 A4:8 G4:8 A4:8
+m94 [time 4/4; repeat-forward]  s1v1: F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8
+m95  s1v1: F#4:8 A4:8 B4:q C5:8 B4:8 A4:8 B4:8
+m96  s1v1: F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8
+m97 [time 5/8; repeat-backward]  s1v1: F#4:8 A4:8 B4:8 A4:8 B4:8
+m98 [time 4/4]  s1v1: B4:8 B4:8 B4:8 B4:8 B4:8 B4:8 B4:8 B4:8
+m99  s1v1: E4:8+B4 E4:8 E4:8 E4:8 D5:q E5:q
+m100  s1v1: E5:8 F#5:8 B5:8 F#5:8 gF#5:8 G5:h
+m101  s1v1: C5:8 C5:8 C5:8 C5:8 C5:q B4:q
+m102 [repeat-forward]  s1v1: C5:8 C5:8 C5:8 C5:8 D#5:q B4:q
+m103  s1v1: E4:8+B4 E4:8 E4:8 E4:8 D5:q E5:q
+m104  s1v1: E5:8 F#5:8 B5:8 F#5:8 gF#5:8 G5:h
+m105 ["x3"; repeat-backward]  s1v1: C5:8 C5:8 C5:8 C5:8 C5:q B4:q
+m106  s1v1: F#5:8 E5:8 D#5:8 r:8 D#5:8 C5:8 B4:8 r:8
+m107  s1v1: E4:q+B4 E4:q+B4 r:h
+m108  s1v1: F4:q+C5 F4:q+C5 r:h
+m109  s1v1: E4:h+B4 E4:8+B4 E4:8 E4:8 E4:8
+m110 [time 2/4]  s1v1: F#4:8+C#5 E4:8 E4:8 E4:8
+m111 [time 4/4]  s1v1: G4:w+D5
+m112  s1v1: G4:w+D5
+m113  s1v1: C5:h+G5 C5:8+G5 A4:8 A4:8 A4:8
+m114 [time 2/4]  s1v1: B4:8+F#5 A4:8 A4:8 A4:8
+m115 [time 4/4]  s1v1: A4:w+E5
+m116  s1v1: A4:w+E5
+m117  s1v1: D5:h+A5 D5:8+A5 G4:8 G4:8 G4:8
+m118 [time 2/4]  s1v1: C5:8+G5 G4:8 G4:8 G4:8
+m119 [time 4/4]  s1v1: B4:w+F#5
+m120  s1v1: E5:h+B5 E5:8+B5 E4:8 E4:8 E4:8
+m121 [time 2/4]  s1v1: D5:8+A5 E4:8 E4:8 E4:8
+m122 [time 4/4]  s1v1: C5:w+G5
+m123 [time 2/4]  s1v1: C5:h+G5
+m124 [time 4/4]  s1v1: E4:q+B4 E4:q+B4 r:h
+m125  s1v1: F4:q+C5 F4:q+C5 r:h
+m126  s1v1: E4:h+B4 E4:8+B4 E4:8 E4:8 E4:8
+m127 [time 2/4]  s1v1: F#4:8+C#5 E4:8 E4:8 E4:8
+m128 [time 4/4]  s1v1: C5:w+G5
+m129  s1v1: C5:w+G5
+m130  s1v1: E4:q+B4 E4:q+B4 r:h
+m131  s1v1: F4:q+C5 F4:q+C5 r:h
+m132  s1v1: r:d4
+m133  s1v1: r:d4
+m134 [time 2/4]  s1v1: E4:8 B4:8 E5:8 G5:8
+m135 [time 4/4]  s1v1: D4:8 A4:8 D5:8 A4:8 E5:16(3:2) F#5:16(3:2) E5:16(3:2) D5:8 A4:8 G5:8
+m136  s1v1: C4:8 G4:8 D5:8 G4:8 D5:8 G4:8 E4:8 B4:8
+m137  s1v1: A3:8 A4:8 B4:8 A3:8 B3:8 A4:8 B4:8 B3:8
+m138 [time 2/4]  s1v1: D#4:8 A4:8 B4:8 G4:8
+m139  s1v1: E4:8 B4:8 E5:8 G5:8
+m140 [time 4/4]  s1v1: D4:8 A4:8 D5:8 A4:8 E5:16(3:2) F#5:16(3:2) E5:16(3:2) D5:8 A4:8 G5:8
+m141  s1v1: C4:8 G4:8 D5:8 G4:8 D5:8 G4:8 E4:8 B4:8
+m142  s1v1: A3:8 A4:8 B4:8 A3:8 B3:8 A4:8 B4:8 B3:8
+m143 [time 2/4]  s1v1: D#4:8 A4:8 B4:8 G4:8
+m144 [time 4/4; repeat-forward]  s1v1: E5:8 B5:8 G5:8 E5:8 A5:8 F#5:8 D5:8 D5:16 D5:16
+m145  s1v1: D5:8 A5:8 F#5:8 D5:8 G5:8 E5:8 C5:8 C5:16 C5:16
+m146  s1v1: C5:8 G5:8 E5:8 B4:8 F#5:8 E5:16(3:2) F#5:16(3:2) E5:16(3:2) D#5:8 C5:8
+m147 [repeat-backward]  s1v1: B4:8 C5:8 C5:16 D5:16 C5:8 D#5:8 E5:8 E5:16 F#5:16 G5:8
+m148 [time 2/4]  s1v1: E5:q. E5:16 F#5:16
+m149 [time 4/4]  s1v1: G5:q. F#5:16 G5:16 A5:8(3:2) G5:8(3:2) F#5:8(3:2) B5:8(3:2) E5:16(3:2) F#5:16(3:2) E5:8(3:2)
+m150  s1v1: C5:q. r:8 E5:q E5:q
+m151  s1v1: G5:16 F#5:16 B4:8 G5:16 F#5:16 B4:16 D5:16 B4:q B4:16 G4:16 A4:8
+m152 [time 2/4]  s1v1: B5:8. B5:16 r:16 G5:16 E5:16 G5:16
+m153  s1v1: E5:q. D5:8
+m154 [time 4/4]  s1v1: G5:8. A5:16 G5:8 F#5:8 D5:8 A5:8 G5:8 F#5:16(3:2) G5:16(3:2) F#5:16(3:2)
+m155  s1v1: C5:q. A4:16 B4:16 C5:q. B4:16 C5:16
+m156  s1v1: D5:8(3:2) C5:8(3:2) D5:8(3:2) E5:8(3:2) F#5:8(3:2) G5:8(3:2) B5:8 G5:8 G5:8 F#5:8
+m157 [time 2/4]  s1v1: D5:16(3:2) E5:16(3:2) D5:16(3:2) B4:8 A4:8 B5:8
+m158 [time 4/4]  s1v1: E5:8 B5:8 G5:8 E5:8 A5:8 F#5:8 D5:8 D5:16 D5:16
+m159  s1v1: D5:8 A5:8 F#5:8 D5:8 G5:8 E5:8 C5:8 C5:16 C5:16
+m160  s1v1: C5:8 G5:8 E5:8 B4:8 F#5:8 E5:16(3:2) F#5:16(3:2) E5:16(3:2) D#5:8 C5:8
+m161  s1v1: B4:8 C5:8 C5:16 D5:16 C5:8 D#5:8 E5:8 E5:16 F#5:16 G5:8
+m162  s1v1: E5:8 B5:8 G5:8 E5:8 A5:8 F#5:8 D5:8 D5:16 D5:16
+m163  s1v1: D5:8 A5:8 F#5:16(3:2) A5:16(3:2) F#5:16(3:2) D5:8 G5:8 E5:8 C5:8 C5:16 C5:16
+m164  s1v1: C5:8 G5:8 E5:8 B4:8 F#5:8 E5:16(3:2) F#5:16(3:2) E5:16(3:2) Eb5:8 C5:8
+m165  s1v1: B4:8 C5:8 C#5:16 D#5:16 C#5:8 D#5:8 E5:8 E5:16 F#5:16 G5:8
+m166 [time 2/4]  s1v1: E4:8 B4:8 E5:8 G5:8
+m167 [time 4/4]  s1v1: D4:8 A4:8 D5:8 A4:8 E5:16(3:2) F#5:16(3:2) E5:16(3:2) D5:8 A4:8 G5:8
+m168  s1v1: C4:8 G4:8 D5:8 G4:8 D5:8 G4:8 E4:8 B4:8
+m169  s1v1: A3:8 A4:8 B4:8 A3:8 B3:8 A4:8 B4:8 B3:8
+m170 [time 2/4]  s1v1: D#4:8 A4:8 B4:8 G4:8
+m171  s1v1: E4:8 B4:8 E5:8 G5:8
+m172 [time 4/4]  s1v1: D4:8 A4:8 D5:8 A4:8 E5:16(3:2) F#5:16(3:2) E5:16(3:2) D5:8 A4:8 G5:8
+m173  s1v1: C4:8 G4:8 D5:8 G4:8 D5:8 G4:8 E4:8 B4:8
+m174  s1v1: A3:8 A4:8 B4:8 A3:8 B3:8 A4:8 B4:8 B3:8
+m175 [time 2/4]  s1v1: D#4:8 A4:8 B4:8 G4:8
+m176 [time 4/4]  s1v1: B3:8 B3:8 B3:8 B3:8 B3:8 B3:8 B3:8 B3:8
+m177  s1v1: B3:8+E4 B3:8+E4 B3:8+E4 B3:8+E4 B3:8+E4 B3:8+E4 B3:8+E4 B3:8+E4
+m178 [key fifths=3]  s1v1: C#4:8 C#4:8 D4:8 C#4:8 C#4:8 C#4:8 D4:8 G#4:16 G#4:16
+m179  s1v1: C#4:8 C#4:8 D4:8 C#4:8 C#4:8 C#4:8 D4:8 G#4:8
+m180 ["2"]  
+m181 ["2"]  
+m182 ["2"]  
+m183 ["2"]  
+m184 ["2"]  
+m185  s1v1: G#4:w+D5
+m186  s1v1: G#4:w+D5
+m187  s1v1: G#4:w+C#5
+m188  s1v1: G#4:8 F#4:8 E4:q G#4:8 F#4:8 E4:q
+m189 [repeat-forward]  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m190  s1v1: E4:8 G4:8 A4:8 E4:8 Bb4:8 A4:8 G4:8 A4:8
+m191  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m192 [time 5/8; "x4"; repeat-backward]  s1v1: E4:8 G4:8 A4:8 G4:8 A4:8
+m193 [time 4/4; repeat-forward]  s1v1: F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8
+m194  s1v1: F#4:8 A4:8 B4:q C5:8 B4:8 A4:8 B4:8
+m195  s1v1: F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8
+m196 [time 5/8; repeat-backward]  s1v1: F#4:8 A4:8 B4:8 A4:8 B4:8
+m197 [time 4/4]  s1v1: F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8
+m198 [key fifths=1; repeat-forward]  s1v1: E4:8 E4:8 F4:8 E4:8 E4:8 F4:8 E4:8 E4:8
+m199  s1v1: F4:8 E4:8 E4:8 F4:8 E4:8 E4:8 B4:8 B4:8
+m200  s1v1: E4:8 E4:8 F4:8 E4:8 E4:8 F4:8 E4:8 E4:8
+m201 [repeat-backward]  s1v1: F4:8 E4:8 E4:8 F4:8 E4:8 E4:8 B4:q
+m202 [repeat-forward]  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:16 E4:16
+m203  s1v1: E4:8 F#4:8 G4:8 A4:8 B4:8 C5:8 D5:8 E5:8
+m204  s1v1: F#5:8 G5:8 C5:h C5:8 C5:16 C5:16
+m205 ["x3"; repeat-backward]  s1v1: C5:8 B4:8 C5:8 D5:8 C5:8 B4:8 G4:8 F#4:8
+m206  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:16 E4:16
+m207  s1v1: E4:8 F#4:8 G4:8 A4:8 B4:8 C5:8 F#5:8 G5:8
+m208  s1v1: A5:8 B5:8 E5:h E5:8 E5:16 E5:16
+m209  s1v1: E5:8 D5:8 E5:8 F#5:8 E5:8 D5:8 C5:8 B4:8
+m210  s1v1: E4:h.+B4 r:8 E5:16 E5:16
+m211  s1v1: E5:8 D5:8 E5:8 F#5:8 E5:8 D5:8 C5:8 B4:8
+m212 [repeat-forward]  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m213  s1v1: C#5:8 E4:8 F4:8 C5:8 E4:8 F4:8 B4:8 B4:8
+m214  s1v1: E4:8 F4:8 B4:8 E4:8 F4:8 C5:8 E4:8 F4:8
+m215 [repeat-backward]  s1v1: G4:8 F#4:8 r:8 G4:8 F#4:8 r:8 G4:8 F#4:8
+m216  s1v1: G4:8 F#4:8 r:8 G4:8 F#4:8 r:8 G4:8 F#4:8
+m217 [repeat-forward]  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m218  s1v1: E4:8 G4:8 A4:8 E4:8 Bb4:8 A4:8 G4:8 A4:8
+m219  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m220 [time 5/8; "x4"; repeat-backward]  s1v1: E4:8 G4:8 A4:8 G4:8 A4:8
+m221 [time 4/4; repeat-forward]  s1v1: F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8
+m222  s1v1: F#4:8 A4:8 B4:q C5:8 B4:8 A4:8 B4:8
+m223  s1v1: F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8 F#4:8
+m224 [time 5/8; repeat-backward]  s1v1: F#4:8 A4:8 B4:8 A4:8 B4:8
+m225 [time 4/4]  s1v1: B4:8 B4:8 B4:8 B4:8 B4:8 B4:8 B4:8 B4:8
+m226 [repeat-forward]  s1v1: E4:8+B4 E4:8 E4:8 E4:8 D5:q E5:q
+m227  s1v1: E5:8 F#5:8 B5:8 F#5:8 gF#5:8 G5:h
+m228  s1v1: C5:8 C5:8 C5:8 C5:8 C5:q B4:q
+m229 ["x3"; repeat-backward]  s1v1: C5:8 C5:8 C5:8 C5:8 D#5:q B4:q
+m230  s1v1: E4:8+B4 E4:8 E4:8 E4:8 D5:q E5:q
+m231  s1v1: E5:8 F#5:8 B5:8 F#5:8 gF#5:8 G5:h
+m232  s1v1: C5:8 C5:8 C5:8 C5:8 C5:q B4:q
+m233  s1v1: C5:8 C5:8 C5:8 C5:8 D#5:q B4:q
+m234  s1v1: F#5:8 E5:8 D#5:8 r:8 D#5:8 C5:8 B4:8 r:8
+m235  s1v1: E4:q+B4 E4:q+B4 r:h
+m236  s1v1: F4:q+C5 F4:q+C5 r:h
+m237  s1v1: E4:h+B4 E4:8+B4 E4:8 E4:8 E4:8
+m238 [time 2/4]  s1v1: F#4:8+C#5 E4:8 E4:8 E4:8
+m239 [time 4/4]  s1v1: G4:w+D5
+m240  s1v1: G4:w+D5
+m241  s1v1: C5:h+G5 C5:8+G5 A4:8 A4:8 A4:8
+m242 [time 2/4]  s1v1: B4:8+F#5 A4:8 A4:8 A4:8
+m243 [time 4/4]  s1v1: A4:w+E5
+m244  s1v1: A4:w+E5
+m245  s1v1: D5:h+A5 D5:8+A5 G4:8 G4:8 G4:8
+m246 [time 2/4]  s1v1: C5:8+G5 G4:8 G4:8 G4:8
+m247 [time 4/4]  s1v1: B4:w+F#5
+m248  s1v1: E5:h+B5 E5:8+B5 E4:8 E4:8 E4:8
+m249 [time 2/4]  s1v1: D5:8+A5 E4:8 E4:8 E4:8
+m250 [time 4/4]  s1v1: C5:w+G5
+m251 [time 2/4]  s1v1: C5:h+G5
+m252 [time 4/4]  s1v1: E4:q+B4 E4:q+B4 r:h
+m253  s1v1: F4:q+C5 F4:q+C5 r:h
+m254  s1v1: E4:h+B4 E4:8+B4 E4:8 E4:8 E4:8
+m255 [time 2/4]  s1v1: F#4:8+C#5 E4:8 E4:8 E4:8
+m256 [time 4/4]  s1v1: C5:w+G5
+m257  s1v1: C5:w+G5
+m258  s1v1: E4:q+B4 E4:q+B4 r:h
+m259  s1v1: F4:q+C5 F4:q+C5 r:h
+m260 [repeat-forward]  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m261  s1v1: E4:8 G4:8 A4:8 E4:8 Bb4:8 A4:8 G4:8 A4:8
+m262  s1v1: E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8 E4:8
+m263 [time 5/8; "x4"; repeat-backward]  s1v1: E4:8 G4:8 A4:8 G4:8 A4:8
+m264 [time 4/4]  s1v1: r:d4
+m265  s1v1: G4:8 F#4:8 r:8 G4:8 F#4:8 r:8 G4:8 F#4:8
+m266  s1v1: E4:w+B4
+m267  s1v1: r:d4

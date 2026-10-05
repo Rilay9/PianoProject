@@ -1,0 +1,63 @@
+SHAPE: PIANO2 | parts=1 max_staves=2 meters=9/8,4/4 chord-symbols=8 bars=56
+CID QmQnnagVBhXDRu8vs6JEc59iP52cs1BGCdrWEnaRZie71Q
+title: Things Left Unsaid | song_name: things left unsaid
+composer: Transcribed by: Sam Anderson | artist: Pink Floyd
+csv: tracks=0 bars=57 license=cc-zero
+
+=== part P1 'Piano' measures=56 ===
+m1 [staves=2; key fifths=0; time 9/8; clef1=G2; clef2=F4; dyn=p; "ab lib. LH w/ E"; tempo=97.5; "repeat until desired   ab lib. delay"; "loop, gradual cresendo, w/ delay"; repeat-forward; repeat-backward]  s1v1: E5:8 F#5:8 G#5:8 A#5:8 B5:8 G#5:8 A#5:8 F#5:8 G#5:8 | s2v5: r:d4.5
+m2 [key fifths=-3; time 4/4; "Largo"; tempo=50; "use Pedal throughout"]  s1v1: r:d4 | s2v5: E1:w[fermata]+E2
+m3 [clef2=G2]  s1v1: r:d4 | s2v5: Bb4:w~+C5+D5+Eb5
+m4  s1v1: r:d4[fermata] | s2v5: Bb4:w[fermata]+C5+D5+Eb5
+m5 [dyn=mp]  s1v1: Eb6:w~ | s2v5: Bb4:w~+C5+D5+Eb5
+m6  s1v1: Eb6:h Bb5:h | s2v5: Bb4:w~+C5+D5+Eb5
+m7  s1v1: C6:w | s2v5: Bb4:w+C5+D5+Eb5
+m8  s1v1: r:d4 | s2v5: Bb4:w~+C5+D5+Eb5
+m9  s1v1: Ab5:w~ | s2v5: Bb4:w~+C5+D5+Eb5
+m10  s1v1: Ab5:h Bb5:h | s2v5: Bb4:w+C5+D5+Eb5
+m11  s1v1: C6:w~ | s2v5: Bb4:w~+C5+D5+Eb5
+m12  s1v1: C6:w | s2v5: Bb4:w~+C5+D5+Eb5
+m13  s1v1: D6:w~ | s2v5: Bb4:w~+C5+D5+Eb5
+m14  s1v1: D6:w | s2v5: Bb4:w+C5+D5+Eb5
+m15 [clef2=F4]  s1v1: G4:w~+Bb4+C5 | s2v5: Eb3:w~+Bb3+Eb4
+m16  s1v1: G4:w[fermata]+Bb4+C5 | s2v5: Eb3:w[fermata]+Bb3+Eb4
+m17 [dyn=mf]  s1v1: Eb5:w | s2v5: Eb3:w~+G3
+m18  s1v1: G5:w | s2v5: Eb3:h+G3 G3:h~+Bb3
+m19  s1v1: Bb5:h. r:q | s2v5: G3:h+Bb3 Eb3:h~+Bb3+D4
+m20  s1v1: C6:h. G5:q | s2v5: Eb3:h+Bb3+D4 G3:h~+Eb4
+m21  s1v1: Bb5:h G5:8 F5:8 Eb5:q~ | s2v5: G3:h+Eb4 Eb3:h~+G3
+m22  s1v1: Eb5:w | s2v5: Eb3:w+G3
+m23  s1v1: D5:h~ D5:16 Eb5:16 D5:16 C5:16 D5:q~ | s2v5: Eb2:w~+Bb2+Eb3
+m24  s1v1: D5:q Eb5:16 D5:16 C5:8~ C5:h~ | s2v5: Eb2:w+Bb2+Eb3
+m25  s1v1: C5:q G5:q~ G5:8~ G5:8 Bb5:8 C6:8~ | s2v5: G2:w+G3
+m26  s1v1: C6:q D6:8(3:2) C6:8(3:2) Bb5:8(3:2) C6:8. Db6:16 D6:q | s2v5: C4:h. C4:q~
+m27  s1v1: Eb6:w | s2v5: C4:w
+m28  s1v1: C4:w~+F4+Ab4 | s1v2: r:q r:8 D6:8~ D6:16 Eb6:16 D6:8 C6:q | s2v5: C3:w+F3
+m29  s1v1: C4:w~+F4+Ab4 | s1v2: Bb5:8 C6:16 Bb5:16 Ab5:8 Bb5:16 Ab5:16 G5:q Ab5:16 G5:16 F5:8 | s2v5: F2:w~
+m30  s1v1: C4:w~+F4+Ab4 | s1v2: G5:q Ab5:16 G5:16 Ab5:8 G5:8 F5:8 Eb5:8 D5:8~ | s2v5: F2:w~
+m31  s1v1: C4:w~+F4+Ab4 | s1v2: D5:8 Eb5:16 D5:16 C5:16 D5:8 Eb5:16~ Eb5:16 F5:8.~ F5:q~ | s2v5: F2:w~
+m32  s1v1: C4:w+F4+Ab4 | s1v2: F5:w | s2v5: F2:w
+m33  s1v1: G4:w~+Bb4 | s1v2: F5:q Eb5:8 gF5:8 G5:8~ G5:q Bb5:8 C6:8 | s2v5: Eb3:w~
+m34  s1v1: G4:w~+Bb4 | s1v2: D6:q Eb6:8 Bb5:8~ Bb5:h~ | s2v5: Eb3:w
+m35  s1v1: G4:w+Bb4+Eb5 | s1v2: Bb5:h G5:8(3:2) F5:8(3:2) G5:8(3:2)~ G5:q~ | s2v5: Eb2:w~
+m36  s1v1: Bb4:w+Eb5 | s1v2: G5:w~ | s2v5: Eb2:w
+m37  s1v1: G4:w+Bb4+D5 | s1v2: G5:h. Bb5:q~ | s2v5: G2:w~
+m38  s1v1: Bb4:h+Bb5 C5:h+C6 | s2v5: G2:w
+m39  s1v1: C5:w~+F5 | s1v2: C6:8 D6:16 C6:16~ C6:16 D6:16 C6:8~ C6:8 Bb5:8 Ab5:8 G5:8 | s2v5: F2:w~
+m40  s1v1: C5:w~+F5 | s1v2: Bb5:h~ Bb5:8 Ab5:8 G5:8 F5:8 | s2v5: F2:w~
+m41  s1v1: C5:w~+F5 | s1v2: Ab5:h~ Ab5:8 G5:8 F5:8 Eb5:8 | s2v5: F2:w~
+m42  s1v1: C5:w+F5 | s1v2: G5:q~ G5:16 Ab5:16 G5:8 Ab5:16 G5:16 Ab5:16 G5:16~ G5:q | s2v5: F2:w~
+m43  s1v1: F5:8 Eb5:8 D5:q~ D5:32 Eb5:32 D5:32 Eb5:32 D5:32 Eb5:32 D5:32 Eb5:32 Eb5:32 D5:32 Eb5:32 D5:32 Eb5:8 | s2v5: F2:w
+m44  s1v1: Bb4:w~+Eb5 | s1v2: F5:q~ F5:8 Eb5:8 G5:h~ | s2v5: Eb3:w~
+m45  s1v1: Bb4:w~+Eb5+G5 | s2v5: Eb3:w~
+m46  s1v1: Bb4:w+Eb5 | s1v2: D6:q.~ D6:8 Eb6:16 D6:16 Eb6:16 D6:16~ D6:q | s2v5: Eb3:w~
+m47  s1v1: Bb4:w~+Eb5 | s1v2: Ab5:w | s2v5: Eb2:h+Eb3 Eb3:q G3:q~
+m48  s1v1: Bb4:w~+Eb5 | s1v2: Bb5:h Eb5:h | s2v5: G3:h. Bb3:q
+m49  s1v1: Bb4:w+Eb5 | s1v2: G5:h C5:q | s2v5: G3:w
+m50 ["Larghetto"; tempo=63]  s1v1: C4:w+F4+Ab4 | s1v2: F4:h | s2v5: F3:h Eb3:q Bb3:q
+m51  s1v1: F4:q. G4:8~ G4:q Ab4:q | s2v5: G3:h. F2:q~+F3
+m52  s1v1: F4:w~+Ab4+C5+F5 | s2v5: F2:w~+F3
+m53  s1v1: F4:w~+Ab4+C5+D6 | s2v5: F2:w~+F3
+m54  s1v1: F4:w~+Ab4+C5+Eb6 | s2v5: F2:w~+F3
+m55  s1v1: F4:w+Ab4+C5 | s1v2: F5:w+F6 | s2v5: F2:w+F3
+m56 ["Segue to 'It's What We Do'"]  s1v1: E5:w[fermata] | s1v2: E6:w | s2v5: E2:w[fermata]+E3

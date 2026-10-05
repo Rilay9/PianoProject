@@ -1,0 +1,61 @@
+SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4,2/4 chord-symbols=121 bars=54
+CID QmS4UQ3cPqnpBJ2PiBZ5Z79Ky4dg4HEmfSfoJ4D6utRx2g
+title: Iron man - Black Sabbath | song_name: iron man
+composer:  | artist: Black Sabbath
+csv: tracks=27 bars=80 license=cc-zero
+
+=== part P1 'Guitarra Elétrica' measures=54 ===
+m1 [key fifths=2; time 4/4; clef=G2; tempo=75]  s1v1: F#3:q F#3:q F#3:q F#3:q
+m2  s1v1: F#3:q F#3:q F#3:q F#3:q
+m3  s1v1: F#2:h E2:h~
+m4  s1v1: E2:w
+m5  s1v1: F#2:h E2:h~
+m6  s1v1: E2:w
+m7  s1v1: F#2:h E2:h~
+m8 [time 2/4]  s1v1: E2:h
+m9 [time 4/4; repeat-forward]  s1v1: B2:q+F#3 D3:q+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m10 [repeat-backward]  s1v1: G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 D3:8+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m11 [repeat-forward]  s1v1: B2:q+F#3 D3:q+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m12 [repeat-backward]  s1v1: G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 D3:8+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m13  s1v1: B2:q. D3:q B2:q A#2:8
+m14  s1v1: A2:8 A2:8 A2:8 r:8 G#2:8 A2:8 A2:8 A#2:8
+m15  s1v1: B2:8 B2:q D3:q B2:q A#2:8
+m16  s1v1: A2:8 A2:8 A2:8 r:8 G#2:8 A2:8 A2:8 A#2:8
+m17  s1v1: B2:8 B2:q D3:q B2:q A#2:8
+m18  s1v1: A2:8 A2:8 A2:8 r:8 r:h
+m19  s1v1: B2:q+F#3 D3:q+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m20  s1v1: G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 D3:8+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m21 [repeat-forward]  s1v1: B2:q+F#3 D3:q+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m22 [repeat-backward]  s1v1: G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 D3:8+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m23 [repeat-forward]  s1v1: E3:w+B3
+m24  s1v1: D3:w+A3
+m25  s1v1: B2:8+F#3 B2:8+F#3 B2:16 D3:16 E3:16 r:16 E3:16 F3:16 F#3:16 r:16 A3:16 A#3:16 B3:16 r:16
+m26 [repeat-backward]  s1v1: B2:8+F#3 B2:8+F#3 B2:16 D3:16 E3:16 r:16 E3:16 F3:16 F#3:16 r:16 A3:16 A#3:16 B3:16 r:16
+m27  s1v1: B2:q+F#3 D3:q+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m28  s1v1: G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 D3:8+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m29 [repeat-forward]  s1v1: B2:q+F#3 D3:q+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m30 [repeat-backward]  s1v1: G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 D3:8+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m31 [repeat-forward]  s1v1: E3:w+B3
+m32  s1v1: D3:w+A3
+m33  s1v1: B2:8+F#3 B2:8+F#3 B2:16 D3:16 E3:16 r:16 E3:16 F3:16 F#3:16 r:16 A3:16 A#3:16 B3:16 r:16
+m34 [repeat-backward]  s1v1: B2:8+F#3 B2:8+F#3 B2:16 D3:16 E3:16 r:16 E3:16 F3:16 F#3:16 r:16 A3:16 A#3:16 B3:16 r:16
+m35  s1v1: C#4:16 B3:8 G#3:16 r:16 G3:16 r:16 F#3:16 r:16 E3:16 r:16 C#3:16+G#3 B2:8+F#3 C#3:8+G#3
+m36  s1v1: C#4:16 B3:8 G#3:16 r:16 G3:16 r:16 F#3:16 r:16 E3:16 r:16 C#3:16+G#3 B2:8+F#3 C#3:8+G#3
+m37 [repeat-forward]  s1v1: C#3:16 C#3:16 C#3:16 C#3:16 C#3:16 C#3:16 C#3:16 C#3:16 C#3:16 C#3:16 C#3:16 C#3:16 C#3:16 C#3:16 C#3:16 C#3:16
+m38  
+m39  
+m40 ["(4x)"; repeat-backward]  
+m41  s1v1: C#4:16 B3:8 G#3:16 r:16 G3:16 r:16 F#3:16 r:16 E3:16 r:16 C#3:16+G#3 B2:8+F#3 C#3:8+G#3
+m42  s1v1: C#4:16 B3:8 G#3:16 r:16 G3:16 r:16 F#3:16 r:16 E3:16 r:16 C#3:16+G#3 B2:8+F#3 C#3:8+G#3
+m43 [repeat-forward]  s1v1: B2:8+F#3 B2:8+F#3 B2:16 D3:16 E3:16 r:16 E3:16 F3:16 F#3:16 r:16 A3:16 A#3:16 B3:16 r:16
+m44 [repeat-backward]  s1v1: B2:8+F#3 B2:8+F#3 B2:16 D3:16 E3:16 r:16 E3:16 F3:16 F#3:16 r:16 A3:16 A#3:16 B3:16 r:16
+m45 [repeat-forward]  s1v1: B2:q+F#3 D3:q+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m46 [repeat-backward]  s1v1: G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 D3:8+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m47 [repeat-forward]  s1v1: B2:q+F#3 D3:q+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m48 [repeat-backward]  s1v1: G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 G3:16+D4 F#3:16+C#4 D3:8+A3 D3:8+A3 E3:8+B3 E3:q+B3
+m49  s1v1: B2:8 B2:8 B2:8 D3:q B2:q A#2:8
+m50  s1v1: A2:8 A2:8 A2:8 r:8 G#2:8 A2:8 A2:8 A#2:8
+m51  s1v1: B2:8 B2:8 B2:8 D3:q B2:q A#2:8
+m52  s1v1: A2:8 A2:8 A2:8 r:8 G#2:8 A2:8 A2:8 A#2:8
+m53  s1v1: B2:8 B2:8 B2:8 D3:q B2:q A#2:8
+m54  s1v1: A2:8 A2:8 A2:8 r:8 r:h

@@ -1,0 +1,18 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4 chord-symbols=0 bars=11
+CID QmduvvF9WYbSxgdNZLWZHwiPmD6Bk4bDg9kvssqRP3pu6h
+title: 12 Bar Blues | song_name: 12 bar blues
+composer:  | artist: Lessons - Blues
+csv: tracks=0 bars=13 license=publicdomain
+
+=== part P1 'Piano' measures=11 ===
+m1 [key fifths=-2; time 4/4; clef=G2; tempo=150]  s1v1: C4:q E4:q G4:q A4:8 G4:8
+m2 [repeat-backward]  s1v1: Bb4:q A4:q G4:q A4:8 G4:8
+m3  s1v1: F4:q A4:q C5:q D5:8 C5:8
+m4  s1v1: Eb5:q D5:q C5:q D5:8 C5:8
+m5  s1v1: C4:q E4:q G4:q A4:8 G4:8
+m6  s1v1: Bb4:q A4:q G4:q A4:8 G4:8
+m7  s1v1: G4:q B4:q D5:q E5:8 D5:8
+m8  s1v1: F4:q A4:q C5:q D5:8 C5:8
+m9  s1v1: C4:q E4:q G4:q A4:8 G4:8
+m10  s1v1: Bb4:q A4:q G4:q A4:8 G4:8
+m11  s1v1: C4:w[fermata]+E4+G4

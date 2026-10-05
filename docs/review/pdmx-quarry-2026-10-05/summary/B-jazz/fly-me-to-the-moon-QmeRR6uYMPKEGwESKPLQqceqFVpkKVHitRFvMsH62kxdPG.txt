@@ -1,0 +1,39 @@
+SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=44 bars=32
+CID QmeRR6uYMPKEGwESKPLQqceqFVpkKVHitRFvMsH62kxdPG
+title: Fly me to the moon | song_name: fly me to the moon
+composer:  | artist: Bart Howard
+csv: tracks=66 bars=64 license=publicdomain
+
+=== part P1 'Tenor Saxophone' measures=32 ===
+m1 [key fifths=0; time 4/4; clef=G2; repeat-forward]  s1v1: D#5:q. C#5:8 B4:q A4:8 G4:8~
+m2  s1v1: G4:8 A4:8~ A4:q B4:q D5:q
+m3  s1v1: C#5:q. B4:8 A4:q G4:8 F#4:8~
+m4  s1v1: F#4:w
+m5  s1v1: B4:q. A4:8 G4:q F#4:8 E4:8~
+m6  s1v1: E4:8 F#4:8~ F#4:q G4:q B4:q
+m7  s1v1: Bb4:q. G4:8 F#4:q E4:8 D4:8~
+m8  s1v1: D4:h. D#4:q
+m9  s1v1: E4:8 B4:q B4:8~ B4:h~
+m10  s1v1: B4:h D5:q C#5:q
+m11  s1v1: A4:w~
+m12  s1v1: A4:h. C#4:q
+m13  s1v1: D4:8 G4:q G4:8~ G4:h~
+m14  s1v1: G4:q B4:h A4:q
+m15  s1v1: G4:q. F#4:8~ F#4:h~
+m16  s1v1: F#4:h r:h
+m17  s1v1: D#5:q. C#5:8 B4:q A4:8 G4:8~
+m18  s1v1: G4:8 A4:8~ A4:q B4:q D5:q
+m19  s1v1: C#5:q. B4:8 A4:q G4:8 F#4:8~
+m20  s1v1: F#4:w
+m21  s1v1: B4:q. A4:8 G4:q F#4:8 E4:8~
+m22  s1v1: E4:8 F#4:8~ F#4:q G4:q B4:q
+m23  s1v1: Bb4:q. G4:8 F#4:q E4:8 D4:8~
+m24  s1v1: D4:h. D#4:q
+m25  s1v1: E4:8 B4:q B4:8~ B4:h~
+m26  s1v1: B4:h D5:q C#5:q
+m27  s1v1: A4:w~
+m28  s1v1: A4:h. A#4:q
+m29  s1v1: B4:8 D4:q D4:8~ D4:h~
+m30  s1v1: D4:h D4:q E4:q
+m31  s1v1: D4:w
+m32 [repeat-backward]  s1v1: r:h r:h

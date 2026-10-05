@@ -1,0 +1,41 @@
+SHAPE: PIANO2 | parts=1 max_staves=2 meters=2/4 chord-symbols=24 bars=34
+CID QmRWDfadi4gsez9ishabhEcHpHNdjC7q2efEJZe5SDa8X8
+title: Garota de Ipanema | song_name: Garota de Ipanema
+composer: Arr.: Bianca Giovanella | artist: Bia Giovanella 2
+csv: tracks=0 bars=41 license=cc-zero
+
+=== part P1 'Piano' measures=34 ===
+m1 [staves=2; key fifths=-1; time 2/4; clef1=G2; clef2=F4; tempo=60]  s1v1: G5:8 G5:16 E5:16 E5:8 E5:16 D5:16 | s2v5: F3:8.+A3+E4 F3:8+A3+E4 r:8 F3:16+A3+E4
+m2  s1v1: G5:8 G5:16 E5:16 E5:16 E5:16 D5:16 G5:16~ | s2v5: r:16 F3:8+A3+E4 F3:8+A3+E4 r:16 F3:16~+A3+E4 F3:16+A3+E4
+m3  s1v1: G5:8 G5:16 E5:16 E5:8 E5:16 D5:16 | s2v5: G3:8.+B3+F4 G3:8+B3+F4 r:8 G3:16+B3+F4
+m4  s1v1: G5:8 G5:16 E5:16 E5:16 E5:16 D5:16 F5:16~ | s2v5: r:16 G3:8+B3+F4 G3:8+B3+F4 r:16 G3:16~+B3+F4 G3:16+B3+F4
+m5  s1v1: F5:8 F5:16 D5:16 D5:8 D5:16 C5:16 | s2v5: G3:8.+Bb3+F4 G3:8+Bb3+F4 r:8 G3:16+Bb3+F4
+m6  s1v1: E5:8 E5:16 C5:16 C5:8(3:2) C5:8(3:2) Bb4:8(3:2) | s2v5: G3:8.+Bb3+C4+E4 r:16 G3:q+Bb3+C4+E4
+m7 [repeat-backward]  s1v1: C5:h | s2v5: F3:8+A3+E4 F3:8.+A3+E4 F3:8~+A3+E4 F3:16+A3+E4
+m8  s1v1: F5:h | s2v5: Gb3:8+Bb3+F4 Gb3:8.+Bb3+F4 Gb3:8~+Bb3+F4 Gb3:16+Bb3+F4
+m9  s1v1: r:8(3:2) Gb5:8(3:2) F5:8(3:2) Eb5:8(3:2) F5:8(3:2) Eb5:8(3:2) | s2v5: Gb3:h+Bb3+F4
+m10  s1v1: Db5:h | s2v5: Gb3:8+A3+B3 Gb3:8.+A3+B3 Gb3:8~+A3+B3 Gb3:16+A3+B3
+m11  s1v1: Eb5:h | s2v5: Gb3:8+A3+B3 Gb3:8.+A3+B3 Gb3:8~+A3+B3 Gb3:16+A3+B3
+m12  s1v1: Ab5:h | s2v5: Gb3:8+A3+Db4 Gb3:8.+A3+Db4 Gb3:8~+A3+Db4 Gb3:16+A3+Db4
+m13  s1v1: r:8(3:2) A5:8(3:2) Ab5:8(3:2) Gb5:8(3:2) Ab5:8(3:2) Gb5:8(3:2) | s2v5: Gb3:h+A3+Db4
+m14  s1v1: E5:h | s2v5: Gb3:8+C4+D4 Gb3:8.+C4+D4 Gb3:8~+C4+D4 Gb3:16+C4+D4
+m15  s1v1: Gb5:h | s2v5: Gb3:8+C4+D4 Gb3:8.+C4+D4 Gb3:8~+C4+D4 Gb3:16+C4+D4
+m16  s1v1: A5:h | s2v5: G3:8+Bb3+F4 G3:8.+Bb3+F4 G3:8~+Bb3+F4 G3:16+Bb3+F4
+m17  s1v1: r:8(3:2) Bb5:8(3:2) A5:8(3:2) G5:8(3:2) A5:8(3:2) G5:8(3:2) | s2v5: G3:h+Bb3+F4
+m18  s1v1: F5:h | s2v5: G3:8+Bb3+Db4 G3:8.+Bb3+Db4 G3:8~+Bb3+Db4 G3:16+Bb3+Db4
+m19  s1v1: G5:q r:8(3:2) A5:8(3:2) Bb5:8(3:2) | s2v5: G3:h+Bb3+Db4
+m20  s1v1: C6:8(3:2) C5:8(3:2) D5:8(3:2) E5:8(3:2) F5:8(3:2) G5:8(3:2) | s2v5: G3:h+A3+C4+E4
+m21  s1v1: Ab5:q A5:q | s2v5: Gb3:h+C4+D4
+m22  s1v1: Bb5:8(3:2) Bb4:8(3:2) C5:8(3:2) D5:8(3:2) E5:8(3:2) F5:8(3:2) | s2v5: G3:h+Bb3+F4
+m23  s1v1: Gb5:q G5:q | s2v5: G3:h+Bb3+C4+E4
+m24  s1v1: G5:8 G5:16 E5:16 E5:8 E5:16 D5:16 | s2v5: F3:8.+A3+E4 F3:8+A3+E4 r:8 F3:16+A3+E4
+m25  s1v1: G5:8 G5:16 E5:16 E5:16 E5:16 D5:16 G5:16~ | s2v5: r:16 F3:8+A3+E4 F3:8+A3+E4 r:16 F3:16~+A3+E4 F3:16+A3+E4
+m26  s1v1: G5:8 G5:16 E5:16 E5:8 E5:16 D5:16 | s2v5: G3:8.+B3+F4 G3:8+B3+F4 r:8 G3:16+B3+F4
+m27  s1v1: G5:8 G5:16 E5:16 E5:16 E5:16 D5:16 A5:16~ | s2v5: r:16 G3:8+B3+F4 G3:8+B3+F4 r:16 G3:16~+B3+F4 G3:16+B3+F4
+m28  s1v1: A5:8 A5:16 F5:16 F5:8(3:2) F5:8(3:2) D5:8(3:2) | s2v5: G3:8.+Bb3+F4 G3:q+Bb3+F4 r:16
+m29  s1v1: C6:8. E5:16 E5:8(3:2) E5:8(3:2) D5:8(3:2) | s2v5: G3:h+Bb3+C4+E4
+m30  s1v1: E5:h | s2v5: F3:8+A3+E4 F3:8.+A3+E4 F3:8+A3+E4 r:16
+m31  s1v1: r:8. E5:16 E5:8(3:2) E5:8(3:2) D5:8(3:2) | s2v5: G3:8+Bb3+F4 G3:8.+Bb3+F4 G3:8+Bb3+F4 r:16
+m32  s1v1: E5:h | s2v5: F3:8+A3+E4 F3:8.+A3+E4 F3:8+A3+E4 r:16
+m33  s1v1: r:8. E5:16 E5:8(3:2) E5:8(3:2) D5:8(3:2) | s2v5: G3:8+Bb3+F4 G3:8.+Bb3+F4 G3:8+Bb3+F4 r:16
+m34  s1v1: E5:h+G5 | s2v5: F3:h+A3+E4

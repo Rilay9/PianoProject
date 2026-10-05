@@ -1,0 +1,140 @@
+{
+  "_comment": "Lane config for the second PDMX quarry (owner + ChatGPT request, 2026-10-05). Personal build: copyright is a label, never a filter (00 D23). 'known' = CIDs from the old quarry with the title they are believed to be; the CSV row must be checked against it. 'terms' match song_name/title/subtitle/artist_name/composer_name (never genres/tags). 'artists' match artist_name/composer_name. 'max_bars' and 'piano_only' are per-lane hit filters where given. 'dump' = how many distinct songs to dump beyond the usable known CIDs.",
+  "lanes": [
+    {
+      "id": "A-blues",
+      "goal": "one clean real twelve-bar chorus (blues.8/9); one 2-4 bar historical lick; one minor/slow-blues transfer piece",
+      "known": [
+        ["Joe Turner Blues", "QmXbcEgNyEXXfV5SKFQ4rK5eJi3xTtPJQm9kMVgM7GTWVK"],
+        ["Jelly Roll Blues", "QmbuoFtkky8Xpo8LSiAqkMXzBs2Mtc33L6GFw1kWv9T5S3"],
+        ["Farewell Blues", "QmStEZqKASQVCFNhKaHLcQm3R3RbDUPKA477NQ6kWsNToy"],
+        ["New Orleans Blues", "QmbQRktDiVKVCdRwZc7XKQ7gjJxdFRzHwD68nv7AQhtRtM"],
+        ["King Porter Stomp", "QmcHsP43Xw6S7NyHPUvczq8xKBWFNWU7RRLzECpSGZ4P65"],
+        ["Shout for Joy", "QmadiFaW4tDntpiEiazA5Ec2hyvTNCAdQ1K2Ru4XhDF3Qw"]
+      ],
+      "terms": ["12 bar blues", "twelve bar blues", "slow blues", "minor blues", "blues in c", "blues in f", "blues in g", "turnaround blues", "boogie woogie", "sweet home chicago", "stormy monday", "key to the highway", "every day i have the blues"],
+      "dump": 6
+    },
+    {
+      "id": "B-jazz",
+      "goal": "one standard supporting the full jazz.9 cycle (melody, form, comp, two-feel/walk, solo, intro/ending, solo-piano pass), with chord symbols and a manageable form; flag candidates with an obvious minor ii-V-i",
+      "known": [
+        ["After You've Gone", "QmWUXqfKQAKdGoB5Mw8vmHFcMFDdhpSc4t9vyAjYHJedxU"],
+        ["Sweet Georgia Brown", "QmSpTeaiyNZDk45njpe1Fe7VGcFAzBhJy4HuuGj2btnwb5"],
+        ["Indiana", "Qmcy1D9Q8SPEBVa1nqy4TtjYeg8saf7mwC2CxnMpj16T9z"],
+        ["Honeysuckle Rose", "QmSMULfFJDNDH2UyUeNLWgm33MQ9gy2zAfjAXoEALHg7Ds"],
+        ["Squeeze Me", "QmTw3EQxygcbdDsDvKz6zRd2fjCGsvJGhG7C6aAYbCnyq8"],
+        ["Body and Soul", "QmYLYgVPrVGkZeZgSjjBDYFUpTBWa8bXTB834ci6L7HQYN"]
+      ],
+      "terms": ["autumn leaves", "blue bossa", "all of me", "fly me to the moon", "satin doll", "there will never be another you", "softly as in a morning sunrise", "summertime", "c jam blues"],
+      "dump": 6
+    },
+    {
+      "id": "C-jam",
+      "goal": "one approachable real tune for comping (jam.5); one with harmony for building a walking bass (jam.6); ideally the same tune for both",
+      "known": [
+        ["St James Infirmary", "Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs"],
+        ["Sweet Georgia Brown", "QmSpTeaiyNZDk45njpe1Fe7VGcFAzBhJy4HuuGj2btnwb5"],
+        ["After You've Gone", "QmWUXqfKQAKdGoB5Mw8vmHFcMFDdhpSc4t9vyAjYHJedxU"],
+        ["Indiana", "Qmcy1D9Q8SPEBVa1nqy4TtjYeg8saf7mwC2CxnMpj16T9z"]
+      ],
+      "terms": ["st james infirmary", "saint james infirmary"],
+      "also_consider_lane": "B-jazz",
+      "dump": 3
+    },
+    {
+      "id": "D-hymns",
+      "goal": "a correct Joyful, Joyful replacement; stronger four-part/arrangement models",
+      "known": [
+        ["Joyful, Joyful (archive lead)", "QmY8XeRQK9L3q6Rndkex64R2N5X4LGiQ9CA6qG7U61YyE7"],
+        ["Holy Holy Holy", "QmbLfyErVgweCgsLYtW4CV2GvCwayZjJDqtLpccRmvCgdF"],
+        ["Nearer My God to Thee", "QmbFPMXf26skEX8RvUSZ5dGSuFXefEwFJ7GXiCfgjS6q2o"],
+        ["Deep River", "QmbP96wZt5Vev9pA8pembvkaMw2wx48M3PR3pWNMfJuASp"],
+        ["Steal Away", "QmcrnJ2b9XrAey8CPrVRj5xn55Tvy4dfZe1aFr6FVTHBBs"]
+      ],
+      "terms": ["joyful joyful", "joyful we adore thee", "hymn to joy", "ode to joy", "holy holy holy", "nearer my god to thee", "deep river", "steal away"],
+      "dump": 6
+    },
+    {
+      "id": "E-latin",
+      "goal": "a score that really shows a bossa accompaniment; a real montuno/guajeo/tumbao model; more modern tango around Libertango",
+      "known": [
+        ["Tico-Tico", "QmWbvFZYw6cR7ytP7V2SyZm2u6VMGCD31cBnNuWwMoqFLw"],
+        ["So Danco Samba", "QmbmC9BRdBLb6XUbyf5TqSy1P1oYdNDYTJoSpd4nXByPMD"],
+        ["Chega de Saudade", "Qmcnc6BPWUhP1fk6GKoXEH35gSvJNi87bKz4cy5s6xuYTV"],
+        ["Girl from Ipanema", "QmbePogksNuacefKjPnFMTEPad7EfR6ugFNirGLLckffJr"],
+        ["Corcovado", "QmWYgg7QifpX4XtkYReco3Psk4GvNgzbeZMeqTBUvabUgF"],
+        ["Jalousie", "QmbEXBfVDk9iNqKRoXudwgcVKFL9yagDcFvwqAwvLt5h5H"],
+        ["Por Una Cabeza", "QmPqGm73syTAnvaFSwHWB5nTi3KEMybjqMYRVRox2eejWb"],
+        ["Caminito", "QmWPVaLZLid7D3fiNRhaKPxH36zWf2Pu3JLFxxQYFRRwDV"]
+      ],
+      "terms": ["montuno", "son montuno", "tumbao", "salsa piano", "guajeo", "oye como va", "chan chan", "adios nonino", "fuga y misterio", "la muerte del angel", "michelangelo 70", "escualo", "piazzolla", "tango nuevo", "tico tico", "so danco samba", "chega de saudade", "girl from ipanema", "garota de ipanema", "corcovado", "jalousie", "por una cabeza", "caminito"],
+      "dump": 6
+    },
+    {
+      "id": "F-improv-compose",
+      "goal": "short real examples for motif, repetition/variation, harmonizing a melody, small binary/ABA form",
+      "known": [
+        ["Down in the Valley", "QmWuBBaf6uwZdiWHx1dm9meAW2tXnw6EV7hb93tnDTy3S4"],
+        ["Oh Susanna", "QmchjwvtpXykrxVrMHadPZLP7AHZ4ZgFjEg6qca7xpPFcm"],
+        ["House of the Rising Sun", "Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR"],
+        ["Autumn Leaves", "QmWLjxJSdX1VjYwcEkDYhj7CDhWLX4rFbSakCxiGTJWT7T"]
+      ],
+      "terms": ["minuet", "binary form", "theme and variation", "prelude", "bagatelle", "waltz"],
+      "max_bars": 40,
+      "piano_only": true,
+      "dump": 6
+    },
+    {
+      "id": "G-holiday",
+      "goal": "non-Christmas holiday material (Hanukkah) so the Holiday track can keep its promise",
+      "known": [],
+      "terms": ["hanukkah", "chanukah", "chanukkah", "hanukah", "maoz tzur", "ma oz tzur", "mao z tzur", "rock of ages", "hanerot halalu", "sevivon", "s vivon", "dreidel", "mi y malel", "mi yemalel", "chanukah oh chanukah", "hanukkah oh hanukkah"],
+      "dump": 6
+    },
+    {
+      "id": "H-ragtime",
+      "goal": "one authentic stop-time passage if easy; lower priority",
+      "known": [
+        ["The Harlem Rag (1899, Tyers) - already reviewed, keep", "QmXBVYcvQsE8mhE2yxpPRbFiXLxRW7HhqXB7dK2JEXUVq9"]
+      ],
+      "terms": ["stop time", "stop-time", "cakewalk", "cake walk", "slow drag"],
+      "dump": 4
+    },
+    {
+      "id": "I-pop",
+      "goal": "real four-chord and voice-led pop; arpeggiated accompaniment; syncopated comping; by-ear/reduction targets; intro/outro/modulation examples; one or two excellent songs for chords-pop.8/.9",
+      "known": [],
+      "terms": ["let it be", "hey jude", "yesterday", "something", "while my guitar gently weeps", "here comes the sun", "your song", "tiny dancer", "rocket man", "goodbye yellow brick road", "piano man", "vienna", "she's always a woman", "just the way you are", "don't stop me now", "somebody to love", "bohemian rhapsody", "love of my life", "someone like you", "easy on me", "when we were young", "the scientist", "clocks", "fix you", "viva la vida", "creep", "karma police", "no surprises", "fake plastic trees", "hallelujah", "mad world", "stand by me", "imagine", "lean on me", "bridge over troubled water", "a thousand miles", "chasing cars", "iris"],
+      "exact_title_only_for": ["something", "yesterday", "imagine", "vienna", "clocks", "creep", "iris", "hallelujah"],
+      "dump": 8
+    },
+    {
+      "id": "J-rock",
+      "goal": "riff/ostinato; power-chord or fifth texture that survives reduction; arpeggio over pedal; register/density/build/drop; rock.8 (reduce 8-16 bars) and rock.9 (full arrangement) candidates",
+      "known": [],
+      "terms": ["come together", "day tripper", "helter skelter", "paint it black", "gimme shelter", "satisfaction", "stairway to heaven", "kashmir", "whole lotta love", "comfortably numb", "wish you were here", "another brick in the wall", "time pink floyd", "we will rock you", "another one bites the dust", "uprising", "starlight", "time is running out", "hysteria", "new born", "paranoid android", "smells like teen spirit", "come as you are", "heart-shaped box", "heart shaped box", "everlong", "the pretender", "numb", "in the end", "bring me to life", "my immortal"],
+      "exact_title_only_for": ["satisfaction", "starlight", "hysteria", "numb", "in the end", "uprising", "new born"],
+      "dump": 8
+    },
+    {
+      "id": "K-metal",
+      "goal": "pedal-tone riffs; octave/fifth riff reduction; repeated-note ostinato; syncopated chord attacks; odd meter or meter change; acoustic/ballad to heavy build; multi-section song for reduction decisions; full-arrangement capstone",
+      "known": [],
+      "terms": ["nothing else matters", "fade to black", "master of puppets", "enter sandman", "the unforgiven", "orion", "seize the day", "so far away", "buried alive", "nightmare", "hail to the king", "afterlife", "a little piece of heaven", "bat country", "aerials", "toxicity", "chop suey", "lonely day", "another day", "pull me under", "the spirit carries on", "fear of the dark", "the trooper", "hallowed be thy name", "iron man", "paranoid", "war pigs", "snuff", "vermilion", "windowpane", "harvest", "nemo", "sleeping sun", "ghost love score", "can you feel my heart", "drown", "metal piano", "metallica piano", "avenged sevenfold piano", "rock piano arrangement", "metal piano arrangement", "progressive metal", "power metal", "symphonic metal"],
+      "exact_title_only_for": ["one", "orion", "nightmare", "afterlife", "another day", "iron man", "paranoid", "snuff", "harvest", "nemo", "drown", "so far away", "buried alive"],
+      "extra_exact_titles": ["one"],
+      "dump": 8
+    },
+    {
+      "id": "L-artists",
+      "goal": "personal-library expansion by artist; top 20 distinct songs per artist; flag personal-library wins even when no rung needs them",
+      "known": [],
+      "artists": ["Avenged Sevenfold", "Metallica", "Muse", "Radiohead", "Pink Floyd", "Led Zeppelin", "Queen", "Evanescence", "System of a Down", "Dream Theater", "Iron Maiden", "Black Sabbath", "Linkin Park", "Foo Fighters", "Coldplay", "Billy Joel", "Elton John", "Beatles"],
+      "artist_aliases": {"Beatles": ["the beatles", "beatles", "lennon", "mccartney"], "Avenged Sevenfold": ["avenged sevenfold", "a7x"], "System of a Down": ["system of a down", "soad"], "Queen": ["queen", "freddie mercury", "brian may"], "Muse": ["muse", "matt bellamy", "matthew bellamy"]},
+      "top_songs_per_artist": 20,
+      "dump_per_artist": 4,
+      "dump_per_artist_priority": {"Avenged Sevenfold": 8, "Metallica": 8, "Muse": 8}
+    }
+  ]
+}

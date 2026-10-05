@@ -1,0 +1,35 @@
+SHAPE: PIANO2 | parts=2 max_staves=1 meters=3/2 chord-symbols=0 bars=13
+CID QmQ3iGnFwSZFPs2Hh9vUzctQ1gTusQRwafCZoCXE3Q53xh
+title: Rock of ages - Thomas Hastings | song_name: Rock of ages
+composer: Thomas Hastings 1830 | artist: Thomas Hastings
+csv: tracks=0-0 bars=13 license=publicdomain
+
+=== part P1 '' measures=13 ===
+m1 [key fifths=-2 major; time 3/2; clef=G2; tempo=145]  s1v1: D4:q.+F4 Eb4:8+G4
+m2  s1v1: D4:h+F4 Bb3:h+D4 F4:q.+Bb4 Eb4:8+G4
+m3  s1v1: D4:w+F4 F4:q+Bb4 F4:q+C5
+m4  s1v1: F4:h.+D5 G4:q+C5 F4:q+Bb4 Eb4:q+A4
+m5  s1v1: D4:w+Bb4 C4:q.+A4 D4:8+Bb4
+m6  s1v1: Eb4:h.+C5 Eb4:q+C5 Eb4:q+A4 Eb4:q+F4
+m7  s1v1: D4:w+Bb4 C4:q.+A4 D4:8+Bb4
+m8  s1v1: Eb4:h.+C5 Eb4:q+C5 Eb4:q+A4 Eb4:q+F4
+m9  s1v1: D4:w+Bb4 D4:q.+F4 Eb4:8+G4 r:w.
+m10  s1v1: D4:h+F4 Bb3:h+D4 F4:q.+Bb4 Eb4:8+G4
+m11  s1v1: D4:w+F4 D4:q+Bb4 Eb4:q+C5
+m12  s1v1: F4:h.+D5 G4:q+C5 F4:q+Bb4 Eb4:q+A4
+m13  s1v1: D4:w+Bb4
+
+=== part P2 '' measures=13 ===
+m1 [key fifths=-2 major; time 3/2; clef=F4]  s1v1: Bb2:q.+Bb3 Bb2:8+Bb3
+m2  s1v1: Bb2:h+Bb3 Bb2:h+F3 D3:q.+Bb3 Eb3:8+Bb3
+m3  s1v1: Bb2:w+Bb3 D3:q+Bb3 F3:q+A3
+m4  s1v1: Bb3:h. Eb3:q+Eb4 F3:q+D4 F3:q+C4 | s1v2: Bb3:h.
+m5  s1v1: Bb2:w+Bb3 F3:q. F3:8 | s1v2: F3:q. F3:8
+m6  s1v1: F3:h. F3:q+A3 F3:q+C4 F3:q+A3 | s1v2: F3:h.
+m7  s1v1: Bb2:w+Bb3 F3:q. F3:8+Bb3 | s1v2: F3:q.
+m8  s1v1: F3:h.+A3 F3:q+A3 F3:q+C4 F3:q+A3
+m9  s1v1: Bb2:w+Bb3 Bb2:q.+Bb3 Bb2:8+Bb3 Bb2:h+Bb3 Bb2:h+F3 D3:q.+Bb3 Eb3:8+Bb3
+m10  s1v1: Bb2:w+Bb3 G3:q+Bb3 F3:q+A3
+m11  s1v1: Bb3:h. Eb3:q+Eb4 F3:q+D4 F3:q+C4 | s1v2: Bb3:h.
+m12  s1v1: Bb2:w+Bb3 r:h
+m13  

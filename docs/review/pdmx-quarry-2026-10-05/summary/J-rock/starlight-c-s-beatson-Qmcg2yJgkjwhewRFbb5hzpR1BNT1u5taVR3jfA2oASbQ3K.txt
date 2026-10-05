@@ -1,0 +1,23 @@
+SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/2 chord-symbols=0 bars=16
+CID Qmcg2yJgkjwhewRFbb5hzpR1BNT1u5taVR3jfA2oASbQ3K
+title: Starlight - C. S. Beatson | song_name: Starlight
+composer:  | artist: C. S. Beatson
+csv: tracks=0 bars=16 license=publicdomain
+
+=== part P1 'Grand Piano' measures=16 ===
+m1 [staves=2; key fifths=2; time 4/2; clef1=G2; clef2=F4; clef2=G2; tempo=216]  s1v1: F#4:h F#4:h A4:h D5:h | s2v5: D3:h+A3+D4 D3:h+A3+D4 F#3:h+D4 B3:h+D4+F#4
+m2  s1v1: C#5:w B4:w | s2v5: A3:w+D4+F#4 G3:w+D4+G4
+m3  s1v1: A4:h F#4:h C#4:h+E4+A4 A3:h+C#4+E4 | s2v5: F#3:h+D4 D3:h+D4 A2:h A2:h
+m4  s1v1: A3:br+D4+F#4 | s2v5: D3:br
+m5  s1v1: D4:h F#4:h A4:h D4:h+F#4+D5 | s2v5: D3:h F#3:h A3:h B3:h
+m6 [clef2=G2; clef2=F4]  s1v1: C#5:h r:h r:w | s1v2: D4:w+G#4 C#4:h+A4 F#4:h+B4 | s2v5: r:h B4:h F#3:h D3:h+F#3 | s2v6: E3:w r:w
+m7  s1v1: C#5:h A4:h D5:h G#4:h | s2v5: E3:h+A3+E4 E3:h+A3+C#4 E3:h+G#3+D4 E3:h+B3+D4
+m8  s1v1: A4:br | s1v2: A3:h+C#4 D4:h E4:h F#4:h | s2v5: r:h B3:h C#4:h D4:h | s2v6: A2:br
+m9  s1v1: C#4:h+G4 C#4:h+G4+B4 C#4:h+E4+A4 C#4:h+G4+B4 | s2v5: E3:h E3:h A2:h A2:h
+m10  s1v1: D4:w+G4+B4 D4:w+F#4+A4 | s2v5: D3:w D3:w
+m11  s1v1: D4:h+G4+B4 D4:h+G4+B4 G#4:h+B4 G#4:h+B4 | s2v5: G3:h G3:h E3:h+E4 E3:h+E4
+m12  s1v1: C#5:br | s1v2: r:w G4:w | s2v5: A4:w r:w | s2v6: A3:br+E4
+m13  s1v1: D5:h D5:h C#5:h B4:h | s2v5: B3:h+D4+F#4 B3:h+D4+F#4 A3:h+D4+F#4 G3:h+D4+G4
+m14  s1v1: A4:h A4:h A4:h A#3:h+D4+G4 | s2v5: F#3:h+D4 F#3:h+C4+D4 G3:h+B3+D4 G2:h
+m15  s1v1: D4:w+F#4 F#4:h r:h | s1v2: A3:h r:h G3:w+C#4 | s2v5: r:h G#3:h r:h E4:h | s2v6: A2:w A2:w
+m16  s1v1: F#3:br+D4 | s2v5: D3:br

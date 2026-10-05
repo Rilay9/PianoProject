@@ -1,0 +1,15 @@
+SHAPE: LEADSHEET | parts=1 max_staves=1 meters=3/4 chord-symbols=8 bars=8
+CID QmWzCHF7iXaZoDeWuZAQxtBhTYDWU25v76FEg8wJYVCu32
+title: James Hook - Minuet | song_name: Minuet
+composer: James Hook | artist: James Hook
+csv: tracks=0 bars=16 license=publicdomain
+
+=== part P1 '' measures=8 ===
+m1 [key fifths=0; time 3/4; clef=G2]  s1v1: C4:q C4:q E4:q
+m2  s1v1: E4:q D4:q r:q
+m3  s1v1: D4:q D4:q F4:q
+m4  s1v1: F4:q E4:q r:q
+m5  s1v1: C4:q C4:q r:q
+m6  s1v1: E4:q E4:q r:q
+m7  s1v1: E4:q F4:q D4:q
+m8 [repeat-backward]  s1v1: C4:h r:q

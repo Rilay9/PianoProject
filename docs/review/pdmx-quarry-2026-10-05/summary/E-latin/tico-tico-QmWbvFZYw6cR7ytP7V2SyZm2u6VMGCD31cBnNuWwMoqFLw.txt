@@ -1,0 +1,58 @@
+SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=48 bars=51
+CID QmWbvFZYw6cR7ytP7V2SyZm2u6VMGCD31cBnNuWwMoqFLw
+title: Tico Tico | song_name: Tico Tico
+composer:  | artist: Misc tunes
+csv: tracks=0 bars=153 license=publicdomain
+
+=== part P1 '' measures=51 ===
+m1 [key fifths=2 minor; time 4/4; clef=G2]  s1v1: F#4:8 F4:8 F#4:8
+m2  s1v1: G4:q F#4:8 B4:q F#4:8 F4:8 F#4:8
+m3  s1v1: G4:q F#4:8 C#5:q F#4:8 F4:8 F#4:8
+m4  s1v1: G4:8 F#4:8 E5:8 C#5:8 A#4:8 F#4:8 E4:8 Eb4:8
+m5  s1v1: D4:q. A#4:8 B4:8 A#4:8 A4:8 G#4:8
+m6  s1v1: G4:q B4:8 E5:q G4:8 B4:8 E5:8
+m7  s1v1: F#4:q B4:8 D5:q F#4:8 B4:8 B#4:8
+m8  s1v1: C#5:q. D5:8 C#5:8 B4:8 A#4:8 B4:8
+m9  s1v1: C#5:q. C#5:q F#4:8 F4:8 F#4:8
+m10  s1v1: G4:q F#4:8 B4:q F#4:8 F4:8 F#4:8
+m11  s1v1: G4:q F#4:8 C#5:q F#4:8 F4:8 F#4:8
+m12  s1v1: G4:8 F#4:8 E5:8 C#5:8 A#4:8 F#4:8 E4:8 D#4:8
+m13  s1v1: D4:q. A#4:8 B4:8 A#4:8 A4:8 G#4:8
+m14  s1v1: G4:8 B4:8 E5:8 G4:8 B4:8 E5:8 G4:8 B4:8
+m15  s1v1: F#4:8 B4:8 D5:8 F#4:8 B4:8 D5:8 F#4:8(3:2) A#4:8(3:2) C#5:8(3:2)
+m16  s1v1: F#5:8 F#4:8 F#5:8 G5:8 F#5:8 E5:8 D5:8 C#5:8
+m17 [repeat-backward]  s1v1: B4:q. B4:q
+m18  s1v1: F#4:8 G4:8 G#4:8
+m19  s1v1: A4:q G#4:8 A4:q G#4:8 A4:8 A#4:8
+m20  s1v1: B4:q G4:q. F#4:8 G4:8 G#4:8
+m21  s1v1: A4:8 C#4:8 E4:8 A4:8 C#4:8 E4:8 C#5:8 C5:8
+m22  s1v1: B4:q F#4:q. D5:8 D5:8 F#4:8
+m23  s1v1: D5:8 F#4:8 D5:8 F#4:8 C#5:8 F#4:8 C#5:8 F#4:8
+m24  s1v1: B4:q G4:q. C4:8 C#4:8 E4:8
+m25  s1v1: C#5:q G4:8 B4:q F#4:8 G4:8 G#4:8
+m26  s1v1: A4:q F#4:q. F4:8 F#4:8 G4:8
+m27  s1v1: A4:8 D4:8 F#4:8 A4:8 D4:8 F#4:8 A4:8 A#4:8
+m28  s1v1: B4:8 E4:8 G4:8 B4:8 E4:8 D5:8 C#5:16 C5:16 B4:8
+m29  s1v1: A4:8 C#4:8 E4:8 A4:8 C#4:8 E4:8 A4:8 A#4:8
+m30  s1v1: B4:8 F#4:8 F#4:q F#4:8 A4:8 D5:8 C#5:8
+m31  s1v1: B4:8 A#4:8 B4:8 C#5:8 E5:8 D5:8 C#5:8 D5:8
+m32  s1v1: F#5:8 G5:8 G#5:8 A5:8 B5:8 A5:8 G5:8 F#5:8
+m33  s1v1: E5:8 D5:8 C#5:8 B4:8 A4:8 G4:8 F#4:8 E4:8
+m34 [repeat-backward]  s1v1: D4:q. D4:q
+m35 [key fifths=5 major]  s1v1: B4:8 D#5:8 F#5:8
+m36  s1v1: B5:8 B4:8 D#5:8 F#5:8 A#5:8 B4:8 D#5:8 F#5:8
+m37  s1v1: G#5:8 B4:8 D#5:8 F#5:8 G#5:8 F#5:8 D#5:8 B4:8
+m38  s1v1: B5:8 B4:8 D#5:8 F#5:8 A#5:8 B4:8 D#5:8 F#5:8
+m39  s1v1: G#5:8 G#4:8 C#5:8 E5:8 G#5:8 E5:8 C#5:8 G#4:8
+m40  s1v1: B5:8 G#4:8 C#5:8 E5:8 A#5:8 G#4:8 C#5:8 E5:8
+m41  s1v1: G#5:8 G#4:8 C#5:8 E5:8 G#5:8 E5:8 C#5:8 G#4:8
+m42  s1v1: B5:8 G#4:8 C#5:8 E5:8 A#5:8 G#4:8 C#5:8 E5:8
+m43  s1v1: G#5:8 B4:8 D#5:8 F#5:8 G#5:8 F#5:8 D#5:8 B4:8
+m44  s1v1: B5:8 B4:8 D#5:8 F#5:8 A#5:8 B4:8 D#5:8 F#5:8
+m45  s1v1: G#5:8 B4:8 D#5:8 F#5:8 G#5:8 F#5:8 D#5:8 B4:8
+m46  s1v1: G#5:q. A5:8 G#5:8 F#5:8 E5:8 D#5:8
+m47  s1v1: G#5:8 F#5:8 E5:8 D#5:8 C#5:8 B4:8 A#4:8 A4:8
+m48  s1v1: G#4:8 A4:8 A#4:8 B4:8 C#5:8 B4:8 A#4:8 B4:8
+m49  s1v1: D#5:8 E5:8 F5:8 F#5:8 G#5:8 F#5:8 E5:8 D#5:8
+m50  s1v1: C#5:8 B4:8 A#4:8 G#4:8 F#4:8 E4:8 D#4:8 C#4:8
+m51 [repeat-backward]  s1v1: B3:q. B3:q

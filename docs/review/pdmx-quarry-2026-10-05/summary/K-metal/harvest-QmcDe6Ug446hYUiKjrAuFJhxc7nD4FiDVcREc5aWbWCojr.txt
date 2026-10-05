@@ -1,0 +1,39 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=2/4 chord-symbols=0 bars=32
+CID QmcDe6Ug446hYUiKjrAuFJhxc7nD4FiDVcREc5aWbWCojr
+title: HARVEST | song_name: HARVEST
+composer:  | artist: Misc tunes
+csv: tracks=0 bars=32 license=publicdomain
+
+=== part P1 '' measures=32 ===
+m1 [key fifths=-4 major; time 2/4; clef=G2; tempo=120]  s1v1: Eb5:h. Eb5:q
+m2  s1v1: F5:q Eb5:q Db5:q F5:q
+m3  s1v1: Eb5:h Ab4:h
+m4  s1v1: Eb5:h. Eb5:q
+m5  s1v1: F5:q Eb5:q Db5:q F5:q
+m6  s1v1: Eb5:h Ab4:h
+m7  s1v1: Eb5:h Eb5:q Eb5:q
+m8  s1v1: Db5:h C5:h
+m9  s1v1: C5:h Bb4:h
+m10  s1v1: Ab4:h Eb5:h
+m11  s1v1: Eb5:q Eb5:q Db5:q Db5:q
+m12  s1v1: C5:q C5:q Bb4:h
+m13  s1v1: Ab4:h C5:h
+m14  s1v1: C5:h C5:q Eb5:q
+m15  s1v1: Bb4:h Ab4:h
+m16  s1v1: Bb4:h C5:h
+m17  s1v1: C5:h C5:q Eb5:q
+m18  s1v1: Bb4:h Ab4:h
+m19  s1v1: Bb4:h C5:h
+m20  s1v1: C5:h C5:q Eb5:q
+m21  s1v1: Bb4:h Ab4:h
+m22  s1v1: Bb4:h C5:h
+m23  s1v1: C5:h C5:q Eb5:q
+m24  s1v1: Bb4:h Ab4:h
+m25  s1v1: Bb4:h C5:h
+m26  s1v1: C5:h C5:q Eb5:q
+m27  s1v1: Bb4:h Ab4:h
+m28  s1v1: Bb4:h C5:h
+m29  s1v1: C5:h C5:q C5:q
+m30  s1v1: C5:q C5:q Eb5:h
+m31  s1v1: Eb5:h Ab4:h
+m32  s1v1: Ab4:q.

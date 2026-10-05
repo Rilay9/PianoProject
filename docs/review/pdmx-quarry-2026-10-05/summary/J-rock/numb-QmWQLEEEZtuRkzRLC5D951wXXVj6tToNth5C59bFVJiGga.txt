@@ -1,0 +1,435 @@
+SHAPE: MIXED_PIANO2 | parts=5 max_staves=2 meters=4/4 chord-symbols=85 bars=84
+CID QmWQLEEEZtuRkzRLC5D951wXXVj6tToNth5C59bFVJiGga
+title: Numb | song_name: numb
+composer:  | artist: Linkin Park
+csv: tracks=0-40-40-42-73 bars=84 license=publicdomain
+
+=== part P1 'Flauta' measures=84 ===
+m1 [key fifths=3; time 4/4; clef=G2; tempo=120]  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:d4
+m6  s1v1: r:d4
+m7  s1v1: r:d4
+m8  s1v1: r:d4
+m9  s1v1: r:d4
+m10 [dyn=ff]  s1v1: r:q C#5:8 C#5:8 C#5:8 C#5:8 D5:8 C#5:8~
+m11  s1v1: C#5:8 C#5:8 B4:8 A4:8~ A4:h
+m12  s1v1: C#5:8 C#5:8 B4:8 A4:8~ A4:8 B4:q F#4:8
+m13  s1v1: C#5:8 C#5:8 B4:8 A4:8~ A4:8 B4:q.
+m14  s1v1: r:8 F#4:8 C#5:8 C#5:8 C#5:8 C#5:8 D5:8 C#5:8~
+m15  s1v1: C#5:8 C#5:8 B4:8 A4:8~ A4:q. F#4:8
+m16  s1v1: C#5:8 C#5:8 B4:8 A4:8~ A4:8 B4:q F#4:8
+m17  s1v1: C#5:8 B4:q A4:q B4:q B4:8
+m18  s1v1: C#5:w
+m19  s1v1: r:h r:q C#5:8 C#5:8
+m20  s1v1: F#5:8 F#5:8 E5:8 C#5:8~ C#5:8 C#5:8 C#5:8 F#5:8~
+m21  s1v1: F#5:8 F#5:8 E5:8 C#5:8~ C#5:8 D5:q E5:8~
+m22  s1v1: E5:w
+m23  s1v1: r:d4
+m24  s1v1: F#5:q. F#5:8 F#5:q E5:8 F#5:8
+m25  s1v1: F#5:q F#5:8 F#5:8 F#5:q G#5:q
+m26  s1v1: E5:q. F#5:8 F#5:q E5:8 F#5:8
+m27  s1v1: F#5:q F#5:8 F#5:8 F#5:q E5:q
+m28  s1v1: F#5:q F#5:8 F#5:8 F#5:q E5:q
+m29  s1v1: F#5:q F#5:8 F#5:8 F#5:q G#5:q
+m30  s1v1: E5:q F#5:8 F#5:8 F#5:q E5:q
+m31  s1v1: F#5:q F#5:8 F#5:8 F#5:q E5:q
+m32  s1v1: F#5:q F#5:8 F#5:8 F#5:8 F#5:8 E5:8 F#5:8~
+m33  s1v1: F#5:8 E5:8 E5:8 E5:8~ E5:h
+m34  s1v1: F#5:8 E5:8 E5:8 E5:8~ E5:8 C#5:q C#5:8
+m35  s1v1: D5:8 C#5:q B4:q C#5:q C#5:8~
+m36  s1v1: C#5:8 F#4:8 C#5:8 C#5:8 C#5:8 C#5:8 D5:8 C#5:8~
+m37  s1v1: C#5:8 C#5:8 B4:8 A4:8~ A4:q. F#4:8
+m38  s1v1: C#5:8 C#5:8 B4:8 A4:8~ A4:q. C#5:8~
+m39  s1v1: C#5:8 B4:q A4:q B4:q B4:8
+m40  s1v1: C#5:w
+m41  s1v1: r:h r:q C#5:8 C#5:8
+m42  s1v1: F#5:8 F#5:8 E5:8 C#5:8~ C#5:8 C#5:8 C#5:8 F#5:8~
+m43  s1v1: F#5:8 F#5:8 E5:8 C#5:8~ C#5:8 D5:q E5:8~
+m44  s1v1: E5:w
+m45  s1v1: r:h r:8 C#5:8 C#5:8 C#5:8
+m46  s1v1: F#5:8 F#5:8 E5:8 C#5:8~ C#5:8 C#5:8 C#5:8 C#5:8
+m47  s1v1: A5:8 G#5:q A5:q. G#5:q
+m48  s1v1: F#5:q. F#5:8 F#5:q E5:8 F#5:8
+m49  s1v1: F#5:q F#5:8 F#5:8 F#5:q G#5:q
+m50  s1v1: E5:q. F#5:8 F#5:q E5:8 F#5:8
+m51  s1v1: F#5:8 F#5:8 F#5:8 F#5:8 F#5:q E5:q
+m52  s1v1: F#5:q F#5:8 F#5:8 F#5:q E5:q
+m53  s1v1: F#5:q F#5:8 F#5:8 F#5:q G#5:q
+m54  s1v1: E5:q F#5:8 F#5:8 F#5:q E5:q
+m55  s1v1: F#5:q F#5:8 F#5:8 F#5:q E5:q
+m56  s1v1: F#5:h r:8 F#5:8 A5:8 G#5:8~
+m57  s1v1: G#5:h~ G#5:8 F#5:8 G#5:q
+m58  s1v1: A5:h G#5:h
+m59  s1v1: A5:h G#5:h
+m60  s1v1: F#5:h r:8 F#5:8 A5:8 G#5:8~
+m61  s1v1: G#5:h~ G#5:8 r:8 G#5:8 F#5:8
+m62  s1v1: G#5:8 G#5:q G#5:q F#5:8 G#5:8 F#5:8
+m63  s1v1: G#5:8 G#5:q G#5:q F#5:8 A5:8 G#5:8~
+m64  s1v1: G#5:w
+m65  s1v1: F#5:q. F#5:8 F#5:q E5:8 F#5:8
+m66  s1v1: F#5:q F#5:8 F#5:8 F#5:q G#5:q
+m67  s1v1: E5:q. F#5:8 F#5:q E5:8 F#5:8
+m68  s1v1: F#5:8 F#5:8 F#5:8 F#5:8~ F#5:q E5:q
+m69  s1v1: F#5:q F#5:8 F#5:8 F#5:q E5:q
+m70  s1v1: F#5:q F#5:8 F#5:8 F#5:q G#5:q
+m71  s1v1: E5:q F#5:8 F#5:8 F#5:q E5:q
+m72  s1v1: F#5:q F#5:8 F#5:8 F#5:q E5:q
+m73  s1v1: F#5:q. F#5:8 F#5:q E5:8 F#5:8
+m74  s1v1: F#5:q F#5:8 F#5:8 F#5:q G#5:q
+m75  s1v1: E5:q C#5:8 C#5:8 C#5:8 C#5:8 D5:8 C#5:8~
+m76  s1v1: C#5:8 C#5:8 B4:8 A4:8~ A4:h
+m77  s1v1: F#5:q. F#5:8 F#5:q E5:8 F#5:8
+m78  s1v1: F#5:q F#5:8 F#5:8 F#5:q G#5:q
+m79  s1v1: E5:q C#5:8 C#5:8 C#5:8 C#5:8 D5:8 C#5:8~
+m80  s1v1: C#5:8 C#5:8 B4:8 A4:8~ A4:h
+m81  s1v1: r:d4
+m82  s1v1: r:d4
+m83  s1v1: r:d4
+m84  s1v1: r:d4
+
+=== part P2 'Violino' measures=84 ===
+m1 [key fifths=3; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:d4
+m6 [dyn=mp]  s1v1: F#4:w
+m7  s1v1: A4:q. C#5:q. B4:q
+m8  s1v1: A4:w
+m9  s1v1: B4:q. A4:q. G#4:q
+m10  s1v1: r:d4
+m11  s1v1: r:d4
+m12  s1v1: r:d4
+m13  s1v1: r:d4
+m14  s1v1: r:d4
+m15  s1v1: r:d4
+m16  s1v1: r:d4
+m17  s1v1: r:d4
+m18  s1v1: r:d4
+m19  s1v1: r:d4
+m20  s1v1: r:d4
+m21  s1v1: r:d4
+m22  s1v1: r:d4
+m23  s1v1: r:d4
+m24 [dyn=f]  s1v1: A4:q. A4:8 A4:q G#4:8 A4:8
+m25  s1v1: F#4:w
+m26  s1v1: C#5:w
+m27  s1v1: G#4:q G#4:8 G#4:8 G#4:h
+m28  s1v1: A4:w
+m29  s1v1: D4:w
+m30  s1v1: E4:w
+m31  s1v1: G#4:q G#4:8 G#4:8 G#4:h
+m32  s1v1: r:d4
+m33  s1v1: r:d4
+m34  s1v1: r:d4
+m35  s1v1: r:d4
+m36  s1v1: A4:q G#4:q A4:q B4:q
+m37  s1v1: A4:w
+m38  s1v1: A4:w
+m39  s1v1: G#4:w
+m40  s1v1: A4:q G#4:q A4:q B4:q
+m41  s1v1: C#5:q D5:q E5:h
+m42  s1v1: C#5:w
+m43  s1v1: E5:h B4:h
+m44  s1v1: F#4:h A4:h
+m45  s1v1: r:d4
+m46  s1v1: r:d4
+m47  s1v1: r:d4
+m48 [dyn=f]  s1v1: A4:q. A4:8 A4:q G#4:8 A4:8
+m49  s1v1: F#4:w
+m50  s1v1: C#5:w
+m51  s1v1: G#4:q G#4:8 G#4:8~ G#4:h
+m52  s1v1: A4:w
+m53  s1v1: D4:w
+m54  s1v1: E4:w
+m55  s1v1: G#4:q G#4:8 G#4:8 G#4:h
+m56  s1v1: A4:w
+m57  s1v1: B4:w
+m58  s1v1: C#5:h B4:h
+m59  s1v1: A4:h B4:h
+m60  s1v1: A4:h r:h
+m61  s1v1: r:d4
+m62  s1v1: r:d4
+m63  s1v1: r:d4
+m64  s1v1: r:d4
+m65 [dyn=f]  s1v1: A4:q. A4:8 A4:q G#4:8 A4:8
+m66  s1v1: F#4:w
+m67  s1v1: C#5:w
+m68  s1v1: G#4:q G#4:8 G#4:8~ G#4:h
+m69  s1v1: A4:w
+m70  s1v1: D4:w
+m71  s1v1: E4:w
+m72  s1v1: G#4:q G#4:8 G#4:8 G#4:h
+m73  s1v1: A4:w
+m74  s1v1: r:d4
+m75  s1v1: r:d4
+m76  s1v1: r:d4
+m77 [dyn=f]  s1v1: A4:q. A4:8 A4:q G#4:8 A4:8
+m78  s1v1: F#4:w
+m79  s1v1: E5:q C#5:8 C#5:8 C#5:8 C#5:8 D5:8 C#5:8~
+m80  s1v1: C#5:8 C#5:8 B4:8 A4:8~ A4:h
+m81  s1v1: r:d4
+m82  s1v1: r:d4
+m83  s1v1: r:d4
+m84 [dyn=mp]  s1v1: E4:w
+
+=== part P3 'Violino' measures=84 ===
+m1 [key fifths=3; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:d4
+m6 [dyn=p]  s1v1: A4:w
+m7  s1v1: F#4:w
+m8  s1v1: D5:q. C#5:q. A4:q
+m9  s1v1: G#4:w
+m10  s1v1: r:d4
+m11  s1v1: r:d4
+m12  s1v1: r:d4
+m13  s1v1: r:d4
+m14  s1v1: r:d4
+m15  s1v1: r:d4
+m16  s1v1: r:d4
+m17  s1v1: r:d4
+m18  s1v1: r:d4
+m19 [dyn=f]  s1v1: C#4:q D4:q E4:q F#4:q
+m20  s1v1: A4:w
+m21  s1v1: C#5:h B4:h
+m22  s1v1: A4:h F#4:h
+m23  s1v1: G#4:8 G#4:8 G#4:q A4:q G#4:q
+m24  s1v1: F#4:w
+m25  s1v1: D4:w
+m26  s1v1: A4:q. B4:8 B4:q A4:8 B4:8
+m27  s1v1: B4:q B4:8 B4:8 B4:q A4:q
+m28  s1v1: A4:q A4:8 A4:8 A4:q G#4:q
+m29  s1v1: A4:w
+m30  s1v1: A4:q B4:8 B4:8 B4:q A4:q
+m31  s1v1: B4:q B4:8 B4:8 B4:q A4:q
+m32  s1v1: C#5:q. C#5:8 C#5:q B4:8 C#5:8~
+m33  s1v1: C#5:w
+m34  s1v1: r:d4
+m35  s1v1: C#5:8 B4:8 B4:8 B4:8~ B4:8 A4:q C#5:8~
+m36  s1v1: C#5:w
+m37  s1v1: F#4:w
+m38  s1v1: E4:w~
+m39  s1v1: E4:w
+m40  s1v1: F#4:q E4:q F#4:q G#4:q
+m41  s1v1: F#4:q D4:q E4:h
+m42  s1v1: A4:w
+m43  s1v1: r:d4
+m44  s1v1: A4:q G#4:q A4:q B4:q
+m45  s1v1: B4:h E4:h
+m46  s1v1: A4:h r:8 C#5:8 C#5:8 C#5:8
+m47  s1v1: A5:8 G#5:q A5:q. G#5:q
+m48  s1v1: F#4:w
+m49  s1v1: D4:w
+m50  s1v1: A4:q. B4:8 B4:q A4:8 B4:8
+m51  s1v1: B4:q B4:8 B4:8 B4:q A4:q
+m52  s1v1: A4:q A4:8 A4:8 A4:q G#4:q
+m53  s1v1: A4:w
+m54  s1v1: A4:q B4:8 B4:8 B4:q A4:q
+m55  s1v1: B4:q B4:8 B4:8 B4:q A4:q
+m56  s1v1: r:d4
+m57  s1v1: r:d4
+m58  s1v1: r:d4
+m59  s1v1: r:d4
+m60  s1v1: r:d4
+m61  s1v1: G#4:w
+m62  s1v1: G#4:h r:8 F#5:8 G#5:8 F#5:8
+m63  s1v1: G#5:8 G#5:q G#5:q F#5:8 A5:8 G#5:8~
+m64  s1v1: G#5:w
+m65  s1v1: F#4:w
+m66  s1v1: D4:w
+m67  s1v1: A4:q. B4:8 B4:q A4:8 B4:8
+m68  s1v1: B4:q B4:8 B4:8 B4:q A4:q
+m69  s1v1: A4:q A4:8 A4:8 A4:q G#4:q
+m70  s1v1: A4:w
+m71  s1v1: A4:q B4:8 B4:8 B4:q A4:q
+m72  s1v1: B4:q B4:8 B4:8 B4:q A4:q
+m73  s1v1: r:d4
+m74  s1v1: F#4:q F#4:8 F#4:8 F#4:q G#4:q
+m75  s1v1: A4:w
+m76  s1v1: G#4:w
+m77  s1v1: F#4:w
+m78  s1v1: D4:w
+m79  s1v1: r:d4
+m80  s1v1: r:d4
+m81 [dyn=mp]  s1v1: F#4:w
+m82  s1v1: A4:w
+m83  s1v1: A4:q. G#4:q. E4:q
+m84  s1v1: E4:w
+
+=== part P4 'Violoncelo' measures=84 ===
+m1 [key fifths=3; time 4/4; clef=F4]  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:d4
+m6 [dyn=mp]  s1v1: A3:q. C#4:q. B3:q
+m7  s1v1: A3:w
+m8  s1v1: E4:w
+m9  s1v1: G#3:w
+m10 [dyn=f]  s1v1: A3:w
+m11  s1v1: F#3:w
+m12  s1v1: E3:w
+m13  s1v1: G#3:w
+m14  s1v1: A3:w
+m15  s1v1: F#3:w
+m16  s1v1: E3:w
+m17  s1v1: G#3:w
+m18  s1v1: A3:q G#3:q A3:q B3:q
+m19  s1v1: r:w
+m20  s1v1: C#4:w
+m21  s1v1: A3:h B3:h
+m22  s1v1: F#3:q. F#3:8 F#3:q E3:8 F#3:8
+m23  s1v1: G#3:h r:h
+m24 [dyn=ff]  s1v1: C#3:w
+m25  s1v1: A3:q A3:8 A3:8 A3:q B3:q
+m26  s1v1: E3:w
+m27  s1v1: E3:q E3:8 E3:8 E3:h
+m28  s1v1: C#3:w
+m29  s1v1: F#3:q F#3:8 F#3:8 F#3:q G#3:q
+m30  s1v1: C#4:w
+m31  s1v1: G#3:q G#3:8 G#3:8 G#3:q F#3:q~
+m32  s1v1: F#3:w
+m33  s1v1: A3:q. A3:8 A3:q G#3:8 A3:8~
+m34  s1v1: A3:w
+m35  s1v1: r:d4
+m36  s1v1: r:d4
+m37  s1v1: A3:q G#3:q A3:q B3:q
+m38  s1v1: C#4:w
+m39  s1v1: B3:w
+m40  s1v1: D3:q C#3:q D3:q E3:q
+m41  s1v1: F#3:q G#3:q G#3:h
+m42  s1v1: F#3:w
+m43  s1v1: A3:h G#3:h
+m44  s1v1: D3:h F#3:h
+m45  s1v1: G#3:h B3:h
+m46  s1v1: F#3:w
+m47  s1v1: C#4:8 B3:q C#4:q. B3:q
+m48 [dyn=ff]  s1v1: C#3:w
+m49  s1v1: A3:q A3:8 A3:8 A3:q B3:q
+m50  s1v1: E3:w
+m51  s1v1: E3:q E3:8 E3:8~ E3:h
+m52  s1v1: C#3:w
+m53  s1v1: F#3:q F#3:8 F#3:8 F#3:q G#3:q
+m54  s1v1: C#4:w
+m55  s1v1: G#3:q G#3:8 G#3:8 G#3:q F#3:q
+m56  s1v1: D4:w
+m57  s1v1: G#3:w
+m58  s1v1: F#3:h G#3:h
+m59  s1v1: C#4:h E3:h
+m60  s1v1: F#3:h A3:h
+m61  s1v1: B3:w
+m62  s1v1: G#3:8 G#3:q G#3:q F#3:8 G#3:8 F#3:8
+m63  s1v1: G#3:8 G#3:q G#3:q F#3:8 A3:8 G#3:8~
+m64  s1v1: G#3:w
+m65 [dyn=ff]  s1v1: C#3:w
+m66  s1v1: A3:q A3:8 A3:8 A3:q B3:q
+m67  s1v1: E3:w
+m68  s1v1: E3:q E3:8 E3:8~ E3:h
+m69  s1v1: C#3:w
+m70  s1v1: F#3:q F#3:8 F#3:8 F#3:q G#3:q
+m71  s1v1: C#4:w
+m72  s1v1: G#3:q G#3:8 G#3:8 G#3:q F#3:q
+m73  s1v1: C#4:q. C#4:8 C#4:q B3:8 C#4:8
+m74  s1v1: C#4:q C#4:8 C#4:8 C#4:q D4:q
+m75  s1v1: A3:w
+m76  s1v1: B3:w
+m77 [dyn=ff]  s1v1: C#3:w
+m78  s1v1: A3:q A3:8 A3:8 A3:q B3:q
+m79  s1v1: C#4:w
+m80  s1v1: B3:w
+m81 [dyn=mp]  s1v1: A3:w
+m82  s1v1: D4:w
+m83  s1v1: C#4:w
+m84  s1v1: G#3:w
+
+=== part P5 'Piano' measures=84 ===
+m1 [staves=2; key fifths=3; time 4/4; clef1=G2; clef2=F4; dyn=f]  s1v1: r:h r:8 C#5:8 E5:8 C#5:8 | s2v5: r:d4
+m2  s1v1: F#5:q. A5:q. G#5:q~ | s2v5: C#3:8 F#3:8 A3:8 C#4:q A3:q.
+m3  s1v1: G#5:h r:8 C#5:8 E5:8 C#5:8 | s2v5: A2:8 D3:8 F#3:8 A3:q F#3:q.
+m4  s1v1: A5:q. G#5:q. E5:q~ | s2v5: C#3:8 E3:8 A3:8 C#4:q E4:q.
+m5  s1v1: E5:h r:8 C#5:8 E5:8 C#5:8 | s2v5: B2:8 E3:8 G#3:8 B3:h r:8
+m6 [dyn=ff; dyn=f]  s1v1: F#5:q. A5:q. G#5:q~ | s2v5: C#3:8~+A3 C#3:8~+F#3+A3 C#3:8+A3 C#4:q A3:q.
+m7  s1v1: G#5:h r:8 C#5:8 E5:8 C#5:8 | s2v5: A2:8~+F#3 A2:8~+D3+F#3 A2:8+F#3 A3:q F#3:q.
+m8  s1v1: A5:q. G#5:q. E5:q~ | s2v5: C#3:8~+A3 C#3:8~+E3+A3 C#3:8+A3 C#4:q E4:q.
+m9  s1v1: E5:h r:8 C#5:8 E5:8 C#5:8 | s2v5: B2:8~+G#3 B2:8~+E3+G#3 B2:8+G#3 B3:h r:8
+m10  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m11  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m12  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m13  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m14  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m15  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m16  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m17  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m18  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m19  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m20  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m21  s1v1: C#4:h+A4 B3:h+G#4 | s2v5: A2:h+C#3 B2:h+E3
+m22  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m23  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m24  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m25  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m26  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m27  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m28  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m29  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m30  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m31  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m32  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m33  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m34  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m35  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m36  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m37  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m38  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m39  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m40  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m41  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m42  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m43  s1v1: C#4:h+A4 B3:h+G#4 | s2v5: A2:h+C#3 B2:h+E3
+m44  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m45  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m46  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m47  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m48  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m49  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m50  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m51  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m52  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m53  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m54  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m55  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m56  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m57  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m58  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m59  s1v1: C#4:h+A4 B3:h+G#4 | s2v5: A2:h+C#3 B2:h+E3
+m60  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m61  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m62  s1v1: C#4:h+G#4 C#4:h+F#4 | s2v5: C#3:h+E#3 C#3:h+G#3
+m63  s1v1: C#4:h+F#4 C#4:h+F#4 | s2v5: C#3:h+E#3+G#3 C#3:h+E#3+G#3
+m64  s1v1: C#4:h+F#4 C#4:h+F#4 | s2v5: C#3:h+E#3+G#3 C#3:h+E#3+G#3
+m65  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m66  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m67  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m68  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m69  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m70  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m71  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m72  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m73  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m74  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m75  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m76  s1v1: B3:h+G#4 B3:h+G#4 | s2v5: B2:h+E3 B2:h+E3
+m77  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: F#2:h+C#3 F#2:h+C#3
+m78  s1v1: D4:h+F#4 D4:h+F#4 | s2v5: F#2:h+D3 F#2:h+D3
+m79  s1v1: C#4:h+A4 C#4:h+A4 | s2v5: A2:h+C#3 A2:h+C#3
+m80  s1v1: B3:h+G#4 r:8 C#5:8 E5:8 C#5:8 | s2v5: B2:w+E3
+m81  s1v1: F#5:q. A5:q. G#5:q~ | s2v5: C#3:8 F#3:8 A3:8 C#4:q A3:q.
+m82  s1v1: G#5:h r:8 C#5:8 E5:8 C#5:8 | s2v5: A2:8 D3:8 F#3:8 A3:q F#3:q.
+m83  s1v1: A5:q. G#5:q. E5:q~ | s2v5: C#3:8 E3:8 A3:8 C#4:q E4:q.
+m84  s1v1: E5:h r:h | s2v5: B2:8 E3:8 G#3:8 B3:h r:8

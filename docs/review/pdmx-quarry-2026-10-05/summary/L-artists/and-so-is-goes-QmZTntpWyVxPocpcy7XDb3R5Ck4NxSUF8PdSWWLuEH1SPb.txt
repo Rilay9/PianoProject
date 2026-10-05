@@ -1,0 +1,241 @@
+SHAPE: PIANO2 | parts=4 max_staves=1 meters=3/4,4/4 chord-symbols=0 bars=57
+CID QmZTntpWyVxPocpcy7XDb3R5Ck4NxSUF8PdSWWLuEH1SPb
+title: And so is goes | song_name: and so it goes
+composer: words and music byBILLY JOELarranged byBOB CHILCOTT | artist: Billy Joel
+csv: tracks=0-0-0-0 bars=57 license=cc-zero
+
+=== part P1 'Soprano' measures=57 ===
+m1 [key fifths=2; time 3/4; clef=G2; "hymn-like, but with rubato"; tempo=60; dyn=p]  s1v1: r:q r:8 D4:8 F#4:16 A4:8.
+m2 [time 3/4]  s1v1: B4:q. A4:8 B4:8. A4:16
+m3  s1v1: F#4:h r:8 E4:8
+m4  s1v1: F#4:8. E4:16 F#4:16 A4:8. A4:8. F#4:16
+m5  s1v1: E4:q r:8. D4:16 F#4:8. A4:16
+m6  s1v1: B4:q. A4:8 B4:16 A4:8.
+m7  s1v1: F#4:h r:8 E4:8
+m8  s1v1: F#4:8 A4:8 A4:8 F#4:16 E4:16 D4:8. D4:16
+m9 [dyn=mp]  s1v1: D4:q r:8 D4:8 F#4:16 A4:8.
+m10  s1v1: B4:q. A4:8 B4:8 A4:16 F#4:16~
+m11  s1v1: F#4:h r:8. E4:16
+m12  s1v1: F#4:8. E4:16 F#4:8. A4:16 A4:8. F#4:16
+m13  s1v1: E4:q r:8 D4:8 F#4:16 A4:8.
+m14  s1v1: B4:q. A4:8 B4:8 A4:16 F#4:16~
+m15  s1v1: F#4:h r:8 E4:8
+m16  s1v1: F#4:8 A4:8 A4:8 F#4:16 E4:16 D4:8. D4:16
+m17 [dyn=pp; "cresc."]  s1v1: D4:q r:q D4:q
+m18  s1v1: E4:8 F#4:q. F#4:q
+m19  s1v1: G4:h.
+m20  s1v1: A4:q F#4:q B4:q
+m21 [time 4/4]  s1v1: E4:h~ E4:8 r:8 D4:q
+m22 [time 3/4]  s1v1: E4:8 F#4:q. A4:q
+m23  s1v1: D5:h.
+m24  s1v1: D5:q B4:q B4:q
+m25 [time 4/4; dyn=p]  s1v1: E4:h r:8 D4:8 F#4:16 A4:8.
+m26 [time 3/4]  s1v1: B4:16 A4:8. r:q B4:8 A4:16 F#4:16~
+m27  s1v1: F#4:h r:8 E4:8
+m28  s1v1: F#4:8 E4:16 F#4:16~ F#4:8 A4:8 A4:8. F#4:16
+m29  s1v1: E4:q~ E4:8 r:16 D4:16 F#4:8 A4:8
+m30  s1v1: B4:q. A4:8 B4:8. A4:16
+m31  s1v1: F#4:h r:8 E4:8
+m32  s1v1: F#4:8 A4:8 A4:8 F#4:16 E4:16 D4:8. D4:16
+m33  s1v1: D4:q r:q D4:q
+m34  s1v1: E4:8 F#4:q. F#4:q
+m35  s1v1: G4:h.
+m36  s1v1: A4:q F#4:q B4:q
+m37 [time 4/4; "solo:"; "tutti:"; dyn=p]  s1v1: r:h r:8 D4:8 F#4:8 A4:16 D5:16~ | s1v2: E4:h~ E4:8 r:8 D4:q
+m38 [time 3/4]  s1v1: D5:q. B4:8 A4:8 G4:16 A4:16~ | s1v2: E4:8 F#4:q. E4:q
+m39  s1v1: A4:h. | s1v2: E4:h.
+m40 ["tutti"]  s1v1: D5:q B4:q B4:q
+m41 [time 4/4; dyn=pp]  s1v1: E4:h~ E4:8 r:16 D4:16 F#4:8. A4:16
+m42 [time 3/4]  s1v1: B4:q~ B4:8. A4:16 B4:8. A4:16
+m43  s1v1: F#4:h r:8 E4:8
+m44  s1v1: F#4:8. E4:16 F#4:8. B4:16 A4:8. F#4:16
+m45 [dyn=mf]  s1v1: E4:q r:8 D4:8 F#4:8 A4:8
+m46  s1v1: B4:q. A4:8 B4:8 C#5:8
+m47 [dyn=f; dyn=p]  s1v1: D5:h r:8 E5:8
+m48  s1v1: A4:8 D5:8 D5:8 B4:8 A4:8 A4:16 A4:16~
+m49 [time 4/4; dyn=pp]  s1v1: A4:h r:8 D4:8 F#4:8 A4:8
+m50 [time 3/4]  s1v1: B4:q. A4:8 B4:8 A4:8
+m51  s1v1: F#4:h r:8 E4:8
+m52  s1v1: F#4:8 E4:16 F#4:16~ F#4:8 A4:8 A4:8. F#4:16
+m53 [dyn=pp]  s1v1: E4:q r:8 D4:8 F#4:8 A4:16 D5:16~
+m54  s1v1: D5:q. B4:8 A4:8 G4:16 A4:16~
+m55 [dyn=pp]  s1v1: A4:h r:8 G4:8
+m56  s1v1: F#4:8 A4:16 A4:16~ A4:8 F#4:16 E4:16 D4:8. D4:16
+m57  s1v1: D4:h.[fermata]
+
+=== part P2 'Alto' measures=57 ===
+m1 [key fifths=2; time 3/4; clef=G2; dyn=p]  s1v1: r:q r:8 A3:8 D4:16 D4:8.
+m2 [time 3/4]  s1v1: G4:q. D4:8 G4:8. E4:16
+m3  s1v1: F#4:h r:8 E4:8
+m4  s1v1: F#4:8. E4:16 F#4:16 D4:8. B3:8. B3:16
+m5  s1v1: C#4:q r:8. A3:16 D4:8. D4:16
+m6  s1v1: A4:q G4:8 D4:8 G4:16 E4:8.
+m7  s1v1: F#4:h r:8 E4:8
+m8  s1v1: D4:8 D4:8 B3:8 B3:8 B3:8. B3:16
+m9 [dyn=mp]  s1v1: A3:q r:8 A3:8 D4:16 D4:8.
+m10  s1v1: A4:q G4:8 D4:8 G4:8 E4:16 F#4:16~
+m11  s1v1: F#4:h r:8. E4:16
+m12  s1v1: F#4:8. E4:16 F#4:8. D4:16 B3:8. B3:16
+m13  s1v1: C#4:q r:8 A3:8 D4:16 D4:8.
+m14  s1v1: A4:q G4:8 D4:8 G4:8 E4:16 F#4:16~
+m15  s1v1: F#4:h r:8 E4:8
+m16  s1v1: D4:8 D4:8 B3:8 B3:8 B3:8. B3:16
+m17 [dyn=pp; "cresc."]  s1v1: A3:q r:q A3:q
+m18  s1v1: D4:h E4:q
+m19  s1v1: E4:h. | s1v2: D4:h.
+m20  s1v1: D4:q D4:q E4:q
+m21 [time 4/4]  s1v1: D4:q C#4:q~ C#4:8 r:8 A3:q
+m22 [time 3/4]  s1v1: D4:h E4:q
+m23  s1v1: A4:h. | s1v2: E4:h.
+m24  s1v1: A4:q F#4:q D4:q | s1v2: D4:q D4:q D4:q
+m25 [time 4/4; dyn=p]  s1v1: D4:q C#4:q r:8 A3:8 D4:16 D4:8. | s1v2: B3:q A3:q r:8 A3:8 D4:16 D4:8.
+m26 [time 3/4]  s1v1: A4:16 D4:8. r:q G4:8 E4:16 F#4:16~
+m27  s1v1: F#4:h r:8 E4:8
+m28  s1v1: F#4:8 E4:16 F#4:16~ F#4:8 D4:8 B3:8. B3:16
+m29  s1v1: C#4:q~ C#4:8 r:16 A3:16 D4:8 D4:8
+m30  s1v1: A4:q G4:8 D4:8 G4:8. E4:16
+m31  s1v1: F#4:h r:8 E4:8
+m32  s1v1: D4:8 D4:8 B3:8 B3:8 B3:8. B3:16
+m33  s1v1: A3:q r:q A3:q
+m34  s1v1: D4:h E4:q
+m35  s1v1: E4:h. | s1v2: D4:h.
+m36  s1v1: D4:q D4:q E4:q
+m37 [time 4/4; dyn=p]  s1v1: D4:q C#4:q~ C#4:8 r:8 A3:q
+m38 [time 3/4]  s1v1: D4:h E4:q
+m39  s1v1: E4:h.
+m40  s1v1: A4:q F#4:q D4:q~ | s1v2: D4:q D4:q D4:q
+m41 [time 4/4; dyn=pp]  s1v1: D4:q C#4:q~ C#4:8 r:16 A3:16 D4:8. D4:16 | s1v2: B3:q A3:q~ A3:8 r:16 A3:16 D4:8. D4:16
+m42 [time 3/4]  s1v1: A4:q G4:8. D4:16 G4:8. E4:16
+m43  s1v1: F#4:h r:8 E4:8
+m44  s1v1: F#4:8. E4:16 F#4:8. D4:16 B3:8. B3:16
+m45 [dyn=mf]  s1v1: C#4:q r:8 A3:8 D4:8 D4:8
+m46  s1v1: A4:q G4:8 D4:8 G4:8 A4:8
+m47 [dyn=f]  s1v1: F#4:h r:8 A4:8 | s1v2: F#4:h r:8 E4:8
+m48  s1v1: F#4:8 A4:8 A4:8 F#4:16 E4:16 D4:8 D4:16 D4:16~ | s1v2: E4:8 D4:8 D4:8 D4:8 D4:8 D4:16 D4:16
+m49 [time 4/4; dyn=pp]  s1v1: D4:h r:8 A3:8 D4:8 D4:8
+m50 [time 3/4]  s1v1: A4:q. D4:8 A4:8 E4:8
+m51  s1v1: F#4:h r:8 E4:8
+m52  s1v1: F#4:8 E4:16 F#4:16~ F#4:8 D4:8 B3:8. B3:16
+m53 [dyn=pp]  s1v1: C#4:q r:8 D4:8 D4:8 E4:16 A4:16~ | s1v2: C#4:q r:8 D4:8 D4:8 E4:16 E4:16~
+m54  s1v1: A4:q. F#4:8 D4:8 D4:16 E4:16~ | s1v2: E4:q. E4:8 B3:8 B3:16 D4:16~
+m55 [dyn=pp]  s1v1: E4:h r:8 D4:8 | s1v2: D4:h r:8 D4:8
+m56  s1v1: F#4:8 D4:16 D4:16~ D4:8 D4:8 D4:8. D4:16
+m57  s1v1: D4:h.[fermata]
+
+=== part P3 'Tenor' measures=57 ===
+m1 [key fifths=2; time 3/4; clef=G2; dyn=p]  s1v1: r:q r:8 F#3:8 A3:16 C#4:8.
+m2 [time 3/4]  s1v1: D4:q. C#4:8 D4:8. C#4:16
+m3  s1v1: E4:q D4:q r:8 A3:8
+m4  s1v1: A3:8. A3:16 A3:16 A3:8. D3:8. D3:16
+m5  s1v1: A3:q r:8. F#3:16 A3:8. C#4:16
+m6  s1v1: D4:q. C#4:8 D4:16 C#4:8.
+m7  s1v1: E4:q D4:q r:8 A3:8
+m8  s1v1: A3:8 A3:8 D3:8 D3:8 G3:8. G3:16
+m9 [dyn=mp]  s1v1: F#3:q r:8 F#3:8 A3:16 C#4:8.
+m10  s1v1: D4:q. C#4:8 D4:8 C#4:16 E4:16~
+m11  s1v1: E4:q D4:q r:8. A3:16
+m12  s1v1: A3:8. A3:16 A3:8. A3:16 D3:8. D3:16
+m13  s1v1: A3:q r:8 F#3:8 A3:16 C#4:8.
+m14  s1v1: D4:q. C#4:8 D4:8 C#4:16 E4:16~
+m15  s1v1: E4:q D4:q r:8 A3:8
+m16  s1v1: A3:8 A3:8 D3:8 D3:8 G3:8. G3:16
+m17 [dyn=pp; "cresc."]  s1v1: F#3:q r:q F#3:q
+m18  s1v1: A3:h D4:q
+m19  s1v1: G3:h.
+m20  s1v1: F#3:q A3:q B3:q~
+m21 [time 4/4]  s1v1: B3:q A3:q A3:8 r:8 F#3:q
+m22 [time 3/4]  s1v1: A3:h D4:q
+m23  s1v1: G3:h.
+m24  s1v1: F#3:q A3:q E3:q
+m25 [time 4/4; dyn=p]  s1v1: E3:h r:8 F#3:8 A3:16 C#4:8.
+m26 [time 3/4]  s1v1: D4:16 C#4:8. r:q D4:8 C#4:16 E4:16~
+m27  s1v1: E4:q D4:q r:8 A3:8
+m28  s1v1: A3:8 A3:16 A3:16~ A3:8 A3:8 D3:8. D3:16
+m29  s1v1: A3:q~ A3:8 r:16 F#3:16 A3:8 C#4:8
+m30  s1v1: D4:q. C#4:8 D4:8. C#4:16
+m31  s1v1: E4:q D4:q r:8 A3:8
+m32  s1v1: A3:8 A3:8 D3:8 D3:8 G3:8. G3:16
+m33  s1v1: F#3:q r:q F#3:q
+m34  s1v1: A3:h D4:q
+m35  s1v1: G3:h.
+m36  s1v1: F#3:q A3:q B3:q~
+m37 [time 4/4; dyn=p]  s1v1: B3:q A3:q~ A3:8 r:8 F#3:q
+m38 [time 3/4]  s1v1: A3:h D4:q
+m39  s1v1: G3:h.
+m40  s1v1: F#3:q A3:q E3:q
+m41 [time 4/4; dyn=pp]  s1v1: E3:h~ E3:8 r:16 F#3:16 A3:8. C#4:16
+m42 [time 3/4]  s1v1: D4:q~ D4:8. C#4:16 D4:8. C#4:16
+m43  s1v1: E4:q D4:q r:8 A3:8
+m44  s1v1: A3:8. A3:16 A3:8. A3:16 D3:8. D3:16
+m45 [dyn=mf]  s1v1: A3:q r:8 F#3:8 A3:8 C#4:8
+m46  s1v1: D4:q. C#4:8 D4:8 E4:8 | s1v2: D4:q. C#4:8 D4:8 C#4:8
+m47 [dyn=f; dyn=p]  s1v1: C#4:q D4:q r:8 A3:8
+m48  s1v1: A3:8 D4:8 A3:8 B3:8 B3:8 B3:16 A3:16~ | s1v2: A3:8 D4:8 A3:8 B3:8 G3:8 G3:16 F#3:16~
+m49 [time 4/4; dyn=pp]  s1v1: A3:h r:8 F#3:8 A3:8 C#4:8 | s1v2: F#3:h r:8 F#3:8 A3:8 C#4:8
+m50 [time 3/4]  s1v1: D4:q. C#4:8 D4:8 C#4:8 | s1v2: r:d3
+m51  s1v1: E4:q D4:q r:8 A3:8
+m52  s1v1: A3:8 A3:16 A3:16~ A3:8 A3:8 D3:8. D3:16
+m53 [dyn=pp]  s1v1: A3:q r:8 A3:8 A3:8 A3:16 A3:16~
+m54  s1v1: A3:q. A3:8 A3:8 A3:16 A3:16~
+m55 [dyn=pp]  s1v1: A3:h r:8 Bb3:8 | s1v2: A3:h r:8 G3:8
+m56  s1v1: D4:8 A3:16 B3:16~ B3:8 B3:8 B3:8. B3:16 | s1v2: A3:8 F#3:16 A3:16~ A3:8 A3:8 G3:8. G3:16
+m57  s1v1: A3:h.[fermata] | s1v2: F#3:h.
+
+=== part P4 'Bass' measures=57 ===
+m1 [key fifths=2; time 3/4; clef=F4; dyn=p]  s1v1: r:q r:8 D3:8 D3:16 F#3:8.
+m2 [time 3/4]  s1v1: G3:q. F#3:8 G3:8. A3:16
+m3  s1v1: B3:h r:8 C#3:8
+m4  s1v1: D3:8. C#3:16 D3:16 F#3:8. G2:8. G2:16
+m5  s1v1: A2:q r:8. D3:16 D3:8. F#3:16
+m6  s1v1: G3:q. F#3:8 G3:16 A3:8.
+m7  s1v1: B3:h r:8 C#3:8
+m8  s1v1: D3:8 F#2:8 G2:8 G2:8 A2:8. A2:16
+m9 [dyn=mp]  s1v1: D3:q r:8 D3:8 D3:16 F#3:8.
+m10  s1v1: G3:q. F#3:8 G3:8 A3:16 B3:16~
+m11  s1v1: B3:h r:8. C#3:16
+m12  s1v1: D3:8. C#3:16 D3:8. F#3:16 G2:8. G2:16
+m13  s1v1: A2:q r:8 D3:8 D3:16 F#3:8.
+m14  s1v1: G3:q. F#3:8 G3:8 A3:16 B3:16~
+m15  s1v1: B3:h r:8 C#3:8
+m16  s1v1: D3:8 F#2:8 G2:8 G2:8 A2:8. A2:16
+m17 ["solo:"; dyn=mf; "tutti:"; dyn=pp; "cresc."]  s1v1: D3:q r:8 D3:8 F#3:8 A3:16 D4:16~ | s1v2: D3:q r:q C#3:q
+m18  s1v1: D4:q. B3:8 A3:8 G3:16 A3:16~ | s1v2: C3:h B2:q
+m19  s1v1: A3:h r:8 G3:8 | s1v2: Bb2:h.
+m20  s1v1: F#3:8 B3:8 B3:8 F#3:8 E3:8 D3:16 E3:16~ | s1v2: A2:q B2:q G#2:q
+m21 [time 4/4; dyn=mf]  s1v1: E3:h r:8 D3:8 F#3:8 A3:16 D4:16~ | s1v2: A2:h~ A2:8 r:8 D3:8 C#3:8
+m22 [time 3/4]  s1v1: D4:q. B3:8 A3:8 G3:16 A3:16~ | s1v2: C3:h B2:q
+m23  s1v1: A3:h r:8 G3:8 | s1v2: Bb2:h.
+m24  s1v1: F#3:8 B3:16 C#4:16~ C#4:8 D4:8 C#4:8. B3:16 | s1v2: A2:q B2:q G#2:q
+m25 [time 4/4; dyn=p; "tutti:"]  s1v1: A3:h r:8 D3:8 D3:16 F#3:8. | s1v2: A2:h r:8 D3:8 D3:16 F#3:8.
+m26 [time 3/4]  s1v1: G3:16 F#3:8. r:q G3:8 A3:16 B3:16~
+m27  s1v1: B3:h r:8 C#3:8
+m28  s1v1: D3:8 C#3:16 D3:16~ D3:8 F#3:8 G2:8. G2:16
+m29  s1v1: A2:q~ A2:8 r:16 D3:16 D3:8 F#3:8
+m30  s1v1: G3:q. F#3:8 G3:8. A3:16
+m31  s1v1: B3:h r:8 C#3:8
+m32  s1v1: D3:8 F#2:8 G2:8 G2:8 A2:8. A2:16
+m33 ["solo:"; "tutti:"]  s1v1: D3:q r:8 D3:8 F#3:8 A3:16 D4:16~ | s1v2: D3:q r:q C#3:q
+m34  s1v1: D4:q. B3:8 A3:8 G3:16 A3:16~ | s1v2: C3:h r:8 B2:8
+m35  s1v1: A3:h r:8 G3:8 | s1v2: Bb2:h.
+m36  s1v1: F#3:8 B3:16 B3:16~ B3:8 F#3:8 E3:8(3:2) D3:8(3:2) E3:8(3:2)~ | s1v2: A2:q B2:q G#2:q
+m37 [time 4/4; dyn=p]  s1v1: E3:h r:8 D3:8 F#3:8 A3:16 D4:16~ | s1v2: A2:h~ A2:8 r:8 D3:8 C#3:8
+m38 [time 3/4]  s1v1: D4:q. B3:8 A3:8 G3:16 A3:16~ | s1v2: C3:h B2:q
+m39  s1v1: A3:h r:8 G3:8 | s1v2: Bb2:h.
+m40  s1v1: F#3:8. B3:16 C#4:8. D4:16 C#4:8. B3:16 | s1v2: A2:q B2:q G#2:q
+m41 [time 4/4; "tutti:"; dyn=pp]  s1v1: A3:h r:8. D3:16 D3:8. F#3:16 | s1v2: A2:h~ A2:8 r:16 D3:16 D3:8. F#3:16
+m42 [time 3/4]  s1v1: G3:q~ G3:8. F#3:16 G3:8. A3:16
+m43  s1v1: B3:h r:8 C#3:8
+m44  s1v1: D3:8. C#3:16 D3:8. F#2:16 G2:8. G2:16
+m45 [dyn=mf]  s1v1: A2:q r:8 D3:8 D3:8 F#3:8
+m46  s1v1: G3:q. F#3:8 G3:8 A3:8
+m47 [dyn=f; dyn=p]  s1v1: B3:h r:8 E3:8 | s1v2: B3:h r:8 C#3:8
+m48  s1v1: D3:8 F#3:8 D3:8 D3:8 E3:8 D3:16 D3:16~ | s1v2: D3:8 D3:8 G2:8 G2:8 A2:8 A2:16 D2:16~
+m49 [time 4/4; dyn=pp]  s1v1: D3:h r:8 D3:8 D3:8 F#3:8 | s1v2: D2:h r:8 D3:8 D3:8 F#3:8
+m50 [time 3/4]  s1v1: G3:q. F#3:8 G3:8 A3:8
+m51  s1v1: B3:h r:8 C#3:8
+m52  s1v1: D3:8 C#3:16 D3:16~ D3:8 F#3:8 G2:8. G2:16
+m53 [dyn=pp]  s1v1: A2:q r:8 F#3:8 D3:8 F#3:16 D3:16~ | s1v2: A2:q r:8 D3:8 D3:8 C#3:16 C3:16~
+m54  s1v1: D3:q. D3:8 D3:8 E3:16 G3:16~ | s1v2: C3:q. C3:8 B2:8 B2:16 Bb2:16~
+m55 [dyn=pp]  s1v1: G3:h r:8 E3:8 | s1v2: Bb2:h r:8 Bb2:8
+m56  s1v1: D3:8 D3:16 D3:16~ D3:8 D3:8 E3:8. D3:16 | s1v2: A2:8 A2:16 G2:16~ G2:8 G2:8 A2:8. A2:16
+m57  s1v1: D3:h.[fermata] | s1v2: D2:h.
