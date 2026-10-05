@@ -14,6 +14,53 @@ The second pass the restart packet asked for. Pass one (`SYNTHESIS.md`) found wh
 
 ---
 
+## 0. Adjustments after the outside reviewer's read (2026-10-05, the owner)
+
+1. **Decisions taken.** Hymns & gospel: narrow the name and promise to **Hymns & spirituals** now; gospel rungs 7-9 are not added (a later extension if the owner wants the domain). Rock & metal: **add rock.8 (transcribe and reduce from a recording) and rock.9 (personal full-song arrangement project)**. Jazz: **keep the soloing promise** and build the jazz-specific bridges (minor ii-V-i, chord-tone to approach-note soloing, the integrated capstone); general improvisation stays owned by improv. The † and § and ‡ rows in section 2 read accordingly: jazz † rows are MUST, rock path-B rows are MUST, hymns ‡ rows stand and the gospel row is dropped.
+2. **latin.8 is a firm learning need, not conditional on material.** The new PDMX review found a two-staff Piazzolla Libertango piano arrangement (`QmakqtZzLrMc3CqFnwiqjyxmhrThav2Hmu15E6Jrg9oap2`) with a repeated accented bass ostinato, articulation and sustained rhythmic texture; the exact excerpt is refined after the El gordo triste dump. Public export stays no (Piazzolla in copyright); personal-library and curriculum admission are decided separately, per the three-admissions rule.
+3. **latin.4 is a firm learning need.** The four old candidates failed as files; that is a sourcing failure, not evidence against teaching the habanera and tresillo. Bizet's Habanera and Contra Danza are being dumped next; the shipped Por Una Cabeza and The Crave excerpts serve until then.
+4. **Dossier claims are leads, not authority.** The 25 MUST or SHOULD rows below cite an external benchmark only through the dossier (`[D]`). Before any of them drives a curriculum change, the primary source (Faber, ABRSM, RCM, Berklee or the named specialist text) is read and the claim confirmed or the row downgraded; that check is the first task of the Opus batch brief, and its result is written into the row.
+
+- core: Teach repeat signs, first and second endings, D.C., fermata, the natural sign, staccato, o
+- core: Reading rows: key signatures and 3/4
+- core: Transposition as a core task at 1.2 and 2.5/3.2
+- core: Clap the pulse, clap an echo, two-or-three-time listening, labelled self-checked
+- practice: A later unit: practising a whole piece (structure and joins, start anywhere, one no-stop r
+- chords-pop: Playing by ear from a recording: tonic, bass, progression, chord rhythm, melody (owner)
+- chords-pop: Texture by melody density and register; bass-line options (root, root-fifth, the stepwise 
+- chords-pop: Pop rhythmic comping (eighth-note patterns, syncopated attacks)
+- blues-boogie: Scaffold: right hand improvises while the learner's own left hand keeps the groove
+- blues-boogie: Intro and ending paragraph; the stock blues turnaround named beside I-vi-ii-V
+- blues-boogie: Shuffle versus straight versus 12/8 slow blues, said once
+- jazz: Minor ii-V-i with shells, two or three keys, tied to theory.5/7 and 4.2 †
+- jazz: Chord-tone then approach-note soloing step †
+- jazz: Solo-piano arranging technique (harmonised melody; drop-2 later)
+- theory-ear: A key or tonic before melodic dictation and the tune drill
+- theory-ear: Minor-key progressions and numerals by ear; keys other than C
+- theory-ear: Singing with scale degrees (movable do) as a self-checked habit
+- improv-compose: Transcribe two bars of a real tune, vary one element, use it
+- hymns-gospel: Accompanying a singer: choose the key, count in, keep tempo, one hymn in a second key ‡
+- hymns-gospel: Gospel rungs 7-9: cadences and chants, call-and-response, choir and singer accompaniment, 
+- holiday: Vamp or turnaround between verses; recovery when singers skip or repeat; simplify on the f
+- latin: A tresillo-and-habanera stage: the tresillo exercise (exists), a habanera bass drill from 
+- latin: Say which tradition each rung's material belongs to (Cuban, Brazilian, Argentine)
+- rock-metal: Syncopated chord attacks and an off-beat rock comping pattern
+- jam: Lost-and-find protocol on the existing lab: sit out two bars while the bed runs, re-enter 
+
+5. **The "81 of 103 units" is recut by kind**, so that small edits are not built and tested as 81 independent seams. Counted by a script over section 2's MUST and SHOULD rows (heuristic on each row's class and needs cell; Opus refines the assignment when cutting batches):
+
+| Kind | Rows |
+| --- | --- |
+| substantive new or restructured teaching | 5 |
+| existing-rung lesson or task additions | 76 |
+| transfer or requirement-line additions | 4 |
+| factual or text corrections | 15 |
+| repertoire, data or generator changes | 39 |
+
+Batches are grouped by kind and by content seam (a lesson file, a stage JSON, a generator family), never one seam per touched unit.
+
+---
+
 ## 1. Cross-track ownership map
 
 | Ability | Owner (where it is built) | Recurs as | Change needed |
@@ -344,7 +391,7 @@ Counted by a script over sections 2 and 3 of this file (rows by class; "(changed
 
 | Kind | Count |
 | --- | --- |
-| New rungs | 2 firm (practice.6, latin.4) + 6 conditional (latin.8; rock.8, rock.9; hymns 7, 8, 9) |
+| New rungs | 5 firm after section 0 (practice.6, latin.4, latin.8, rock.8, rock.9); hymns 7-9 not added |
 | Changed rungs (any lesson, data or option change) | 81 of 103 units carry a "(changed)" marker in section 3 |
 | Recommendation rows in section 2 | 175: MUST 71 (3 of them path-B only), SHOULD 65, NICE 11, REJECT 8, ALREADY 17 |
 | Rows needing lesson text | 107 |
@@ -361,7 +408,7 @@ A row can need more than one kind, so the kinds sum to more than 175. Rung-count
 
 ---
 
-## 5. Owner decisions, with what each changes
+## 5. Owner decisions (decided in section 0; kept for the record of what each path would have changed)
 
 1. **Hymns & gospel.** Narrow (rename; the singer-and-key task and the arrange exit still land): 0 new rungs. Extend: 3 new rungs after a research lane for sourced gospel cadence and chant formulae; material would be mostly self-checked. The outside reviewer's provisional choice: narrow.
 2. **Rock & metal.** Mini-module (rename or fix the description; one reduction task in rock.7): 0 new rungs. Extend: rock.8 and rock.9 with learner-supplied material and theory.9's dictation; 2 new rungs. The outside reviewer's provisional choice: extend, because transcription, reduction and a personal project serve the owner's imported repertoire. The counts above show both.
