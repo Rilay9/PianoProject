@@ -1,0 +1,205 @@
+CID QmQXGEUjpn8EVhWAAKKqhDLyWzDsNunMnfwuA8uYcRLd9k
+title: Siboney | song_name: siboney
+composer: Ruben Gonzalez | artist: Ernesto Lecuona
+csv: tracks=0-32-48 bars=65 license=cc-zero
+
+=== part P1 'Piano' measures=65 ===
+m0 [staves=2; key fifths=-3; time 4/4; clef1=G2; clef2=F4; ""; "="; tempo=80; tempo=110]  s1v1: C5:q+C6 D5:q+D6 | s2v5: C4:q D4:q
+m1  s1v1: Eb5:8[staccato]+Eb6 D5:16[staccato]+D6 C5:8[staccato]+C6 Bb4:16[staccato]+Bb5 Ab4:8[staccato]+Ab5 G4:8[staccato]+G5 D4:16[staccato]+D5 F4:8[staccato]+F5 Eb4:16[staccato]+Eb5 D4:8[staccato]+D5 | s2v5: Eb4:8[staccato] D4:16[staccato] C4:8[staccato] Bb3:16[staccato] Ab3:8[staccato] G3:8[staccato] D3:16[staccato] F3:8[staccato] Eb3:16[staccato] D3:8[staccato]
+m2  s1v1: C4:8[staccato]+C5 D4:16[staccato]+D5 C4:8[staccato]+C5 Bb3:16[staccato]+Bb4 Ab3:8[staccato]+Ab4 G3:8[staccato]+G4 D4:16[staccato] F4:8[staccato] Eb4:16[staccato] D4:8[staccato] | s2v5: C3:8[staccato] D3:16[staccato] C3:8[staccato] Bb2:16[staccato] Ab2:8[staccato] G2:8[staccato] D2:16[staccato] F2:8[staccato] Eb2:16[staccato] D2:8[staccato]
+m3 [dyn=p; dyn=p]  s1v1: C4:q r:q r:h | s2v5: C2:q Eb3:16+G3+C4 r:16 r:8 r:q Eb3:16+G3+C4 r:16 r:8
+m4 [dyn=mf]  s1v1: r:h C4:q Eb4:q | s2v5: r:h C3:q Eb3:q
+m5  s1v1: gGb4:8 G4:h C5:h+Eb5+Bb5 | s2v5: G3:h Bb3:h
+m6  s1v1: C5:h+Eb5+A5 Ab4:q[accent]+Ab5 Ab4:8(3:2)+Ab5 Bb4:8(3:2)+Bb5 Ab4:8(3:2)+Ab5 | s2v5: A3:h F4:q[accent]+Ab4+C5 r:q
+m7  s1v1: G4:8[staccato]+G5 r:16 Eb4:16+Eb5 r:q Ab4:q[accent]+Ab5 Ab4:8(3:2)+Ab5 Bb4:8(3:2)+Bb5 Ab4:8(3:2)+Ab5 | s2v5: r:h F4:q[accent]+Ab4+C5 r:q
+m8  s1v1: G4:8[staccato]+G5 r:16 Eb4:16+Eb5 r:q F4:q[staccato]+F5 D4:q+F4+D5 | s2v5: r:h Ab3:q[staccato]+C4 Ab3:q
+m9  s1v1: r:q C5:h+Eb5+C6 C5:q~+Eb5+Bb5 | s2v5: C2:q C4:h Bb3:q~
+m10  s1v1: C5:q+Eb5+Bb5 C5:q.+Eb5+G5 r:8 C4:8+C5 Eb4:8+Eb5 | s2v5: Bb3:q G3:q. r:8 C3:8 Eb3:8
+m11  s1v1: gGb4:8 G4:w | s2v5: G3:w
+m12  s1v1: r:h gBb4:8 gCb5:8 C4:q.+C5 Ab4:16 Bb4:16 | s2v5: r:w
+m13  s1v1: G4:8 r:16 Eb4:16 r:q C5:q[accent]+C6 Ab4:8(3:2) Bb4:8(3:2) Ab4:8(3:2) | s2v5: r:h C4:q r:q
+m14  s1v1: G4:8.[staccato] Eb4:16 r:q F4:q D4:q | s2v5: r:h r:h
+m15  s1v1: Eb4:w~ | s2v5: r:h r:h
+m16  s1v1: Eb4:q r:q gE4:8 gF4:8 G4:q[accent] B3:q+B4 | s2v5: r:h r:q B3:q
+m17  s1v1: G4:w~+B4+D5 | s2v5: G3:w~+B3+D4
+m18  s1v1: G4:8+B4+D5 F4:q.~+Ab4+C5 F4:q+Ab4+C5 C5:8+C6 D5:8+D6 | s2v5: G3:8+B3+D4 Ab3:q.~ Ab3:q F4:q~+Ab4
+m19  s1v1: C5:q+C6 D5:h+G5+B5 D5:q+G5 | s2v5: F4:q+Ab4 G4:h G4:q
+m20  s1v1: r:8 Ab4:q Bb4:8 C5:8+C6 D5:8+D6 C5:16+C6 D5:16+D6 C5:16+C6 D5:16+D6 | s2v5: r:8 C4:q+F4 C4:8+F4 F4:8+Ab4 F4:8+Ab4 F4:16+Ab4 F4:16+Ab4 F4:16+Ab4 F4:16+Ab4
+m21  s1v1: C5:q+C6 D5:q~+B5 D5:q+B5 G4:q+G5 | s2v5: F4:q+Ab4 G4:q~ G4:q r:q
+m22  s1v1: Ab4:q.+Ab5 F4:16+F5 G4:8(3:2)+G5 Ab4:8(3:2)+Ab5 Bb4:8(3:2)+Bb5 Ab4:8(3:2)+Ab5 Bb4:8(3:2)+Bb5 Ab4:8(3:2)+Ab5 Bb4:16+Bb5 | s2v5: r:w
+m23 [dyn=mp]  s1v1: G4:q.+G5 C5:32 Bb4:32 Ab4:32 G4:32 F4:q. Bb4:32 Ab4:32 G4:32 F4:32 | s2v5: r:w
+m24 [dyn=p; dyn=f]  s1v1: Eb4:q. F4:16 Eb4:16 D4:q[staccato] C4:8+C5 Eb4:8+Eb5 | s2v5: r:h r:q C3:8 Eb3:8
+m25  s1v1: gGb4:8 G4:q Eb4:8 B3:q. Eb4:q | s2v5: G3:q r:8 r:8 r:q r:q
+m26  s1v1: Bb3:q r:q Ab4:q[staccato]+Ab5 Ab4:q[staccato]+Ab5 | s2v5: r:h F4:q[staccato]+C5 C4:q[staccato]+F4+C5
+m27  s1v1: G4:8[staccato]+G5 r:16 Eb4:8+Eb5 r:16 r:8 Ab4:q[staccato]+Ab5 Ab4:q[staccato]+Ab5 | s2v5: r:q r:8 r:8 F4:q[staccato]+C5 C4:q[staccato]+F4+C5
+m28  s1v1: G4:8[staccato]+G5 r:16 Eb4:8+Eb5 r:16 r:8 F4:q+F5 D4:q+D5 | s2v5: r:w
+m29 [key fifths=0]  s1v1: C4:q+C5 r:8 B4:16 C5:16 Db5:8 E5:8 G5:8 F#5:8 | s2v5: r:q r:8 B2:16 C3:16 Db3:8 E3:8 G3:8 F#3:8
+m30 [key fifths=0]  s1v1: F5:8 r:q r:q E4:8.+E5 G4:8.+G5 | s2v5: F3:8 r:q r:q E3:8. G3:8.
+m31 [dyn=mf]  s1v1: E5:q.+E6 G4:8[staccato]+G5 G#4:q.+G#5 E4:16+E5 A#4:16+A#5 | s2v5: C2:q.+C3 G3:8 G#3:q. E3:16 A#3:16
+m32  s1v1: A4:q.+A5 r:8 D5:q.[accent]+D6 E5:8+E6 | s2v5: A3:q. r:8 D4:q r:8 r:8
+m33  s1v1: D5:8+D6 r:16 C5:8[staccato]+C6 r:16 r:8 r:q r:8 G4:32 A4:32 B4:32 C5:32 | s2v5: C3:q.+C4 r:8 r:q r:8 r:8
+m34 [dyn=mp]  s1v1: D5:8[staccato]+D6 r:16 C5:8[staccato]+C6 r:16 B4:8[staccato]+B5 A4:q+A5 r:8 E4:8[staccato]+E5 | s2v5: E3:h+G3+B3 Eb3:h+Gb3+C4
+m35 [dyn=mf]  s1v1: F4:8[staccato]+F5 G4:8[staccato]+G5 r:8 B4:q[staccato]+B5 r:8 gB4:32 D5:8 E5:8 | s2v5: G3:q[staccato]+D4 r:8 G3:q[staccato]+D4 r:8 gB2:32 D3:8 E3:8
+m36  s1v1: F5:16 G5:16 F5:16 E5:16 D5:16 E5:16 D5:16 C5:16 B4:16 C5:16 B4:16 A4:16 G4:16 A4:16 G4:16 F#4:16 | s2v5: F3:16 G3:16 F3:16 E3:16 D3:16 E3:16 D3:16 C3:16 B2:16 C3:16 B2:16 A2:16 G2:16 A2:16 G2:16 F#2:16
+m37  s1v1: F4:8[staccato] r:8 r:q Db4:16 D4:16 E4:16 F4:16 G4:16 A4:16 B4:16 C5:16 | s2v5: F2:8[staccato] r:8 r:q r:h
+m38 [dyn=mf]  s1v1: D5:8 r:8 D6:16 A5:16 F5:16 D5:16 Db6:q. Db6:32 A5:32 F5:32 D5:32 | s2v5: r:8 A2:q.[accent]+D3 Db3:h
+m39 [dyn=p]  s1v1: C5:h A5:q.+C6 B5:8+D6 | s2v5: C3:h C4:q.+C5 D4:8+D5
+m40 [dyn=mf]  s1v1: A5:q[staccato]+C6 G5:h~+B5 G5:8(3:2)+B5 F5:8(3:2)[staccato]+A5 G5:8(3:2)[staccato]+B5 | s2v5: C4:q[staccato]+C5 B3:h~+B4 B3:8(3:2)+B4 A3:8(3:2)[staccato]+A4 B3:8(3:2)[staccato]+B4
+m41  s1v1: F5:8+A5 r:16 E5:8+G5 r:16 F5:8[staccato]+A5 E5:8+G5 Eb5:q+Gb5 D5:8+F5 | s2v5: A3:8.+A4 G3:8.+G4 A3:8[staccato]+A4 G3:8+G4 Gb3:q+Gb4 F3:8+F4
+m42 [dyn=p]  s1v1: C5:q.+E5 C5:16+C6 B4:16+B5 C5:q.+C6 G4:16+G5 Gb4:16+Gb5 | s2v5: C3:q.+C4 C4:16 B3:16 C4:q. G3:16 Gb3:16
+m43  s1v1: G4:q.+G5 E4:16+E5 Eb4:16+Eb5 E4:q.+E5 G4:8+G5 | s2v5: G3:q. E3:16 Eb3:16 E3:q. r:8
+m44 [dyn=mf]  s1v1: E5:q.[accent]+E6 G4:8[staccato]+G5 G#4:q.+G#5 B4:8+B5 | s2v5: C2:q.+C3 G3:8 G#3:q. B3:8
+m45 [dyn=p; dyn=f]  s1v1: Bb4:8(3:2)+Bb5 A4:8(3:2)~+A5 A4:8(3:2)~+A5 A4:q+A5 F5:q.+F6 E5:8+E6 | s2v5: Bb3:8(3:2) A3:8(3:2)~ A3:8(3:2)~ A3:q F3:q.+F4 r:8
+m46  s1v1: D5:q+D6 r:8 C5:8[staccato]+C6 r:q r:8 G4:32 A4:32 B4:32 C5:32 | s2v5: C3:q.+C4 r:8 r:q r:8 r:8
+m47 [dyn=mp; dyn=mp]  s1v1: D5:8+D6 r:16 C5:8[staccato]+C6 r:16 B4:8[staccato]+B5 A4:q+A5 r:8 E4:8+E5 | s2v5: E3:h+G3+B3 Eb3:h+Gb3+C4
+m48 [dyn=mf]  s1v1: F4:8[staccato]+F5 G4:8[staccato]+G5 r:8 B4:q[staccato]+B5 r:8 gB4:32 D5:8 E5:8 | s2v5: G3:q[accent]+D4 r:8 G3:q[staccato]+D4 r:8 gB2:32 D3:8 E3:8
+m49  s1v1: F5:16 G5:16 F5:16 E5:16 D5:16 E5:16 D5:16 C5:16 B4:16 C5:16 B4:16 A4:16 G4:16 A4:16 G4:16 F#4:16 | s2v5: F3:16 G3:16 F3:16 E3:16 D3:16 E3:16 D3:16 C3:16 B2:16 C3:16 B2:16 A2:16 G2:16 A2:16 G2:16 F#2:16
+m50  s1v1: F4:8[staccato] r:8 r:8 F4:32 E4:32 Eb4:32 D4:32 Db4:16 D4:16 E4:16 F4:16 G4:16 A4:16 B4:16 C5:16 | s2v5: F2:8[staccato] r:8 r:8 r:8 r:q r:8 r:8
+m51 [dyn=mf]  s1v1: D5:8 r:8 D6:16 A5:16 F5:16 D5:16 Db6:q. Db6:32 A5:32 F5:32 D5:32 | s2v5: r:8 A2:q+D3 r:8 Db3:h
+m52 [dyn=p]  s1v1: C5:h A5:q+C6 B5:q+D6 | s2v5: C3:h C4:q+C5 D4:q+D5
+m53 [dyn=mp; dyn=mp]  s1v1: F5:q.+A5+C6 D5:q.+G5+B5 G5:8(3:2)+B5 F5:8(3:2)+A5 G5:8(3:2)+B5 | s2v5: C4:q.+C5 B3:q.~+B4 B3:8(3:2)+B4 A3:8(3:2)+A4 B3:8(3:2)+B4
+m54 [dyn=f]  s1v1: F5:8.+A5 E5:16~+G5 E5:8(3:2)+G5 F5:8(3:2)+A5 E5:8(3:2)+G5 Eb5:q+Gb5 D5:q+F5 | s2v5: A3:8.+A4 G3:16~+G4 G3:8(3:2)+G4 A3:8(3:2)+A4 G3:8(3:2)+G4 Gb3:q+Gb4 F3:q+F4
+m55 [dyn=mp]  s1v1: G4:h+C5+E5 r:8 r:8 r:q | s2v5: C3:h+C4 r:8 r:8 r:q
+m56 [key fifths=-3; dyn=f]  s1v1: r:q r:q Ab4:q+Ab5 Ab4:q+Ab5 | s2v5: r:q r:q F4:q+C5 C4:q+F4+C5
+m57  s1v1: G4:8[staccato]+G5 r:16 Eb4:8+Eb5 r:16 r:8 Ab4:q+Ab5 Ab4:q+Ab5 | s2v5: r:q r:8 r:8 F4:q+C5 C4:q+F4+C5
+m58  s1v1: G4:8[staccato]+G5 r:16 Eb4:8+Eb5 r:16 r:8 F4:q+F5 D4:q+D5 | s2v5: r:w
+m59  s1v1: Eb4:q[staccato]+Eb5 r:q r:h | s2v5: r:q Eb4:8 G3:8 A3:8 Eb4:8 G3:8 G2:8
+m60 [dyn=f; dyn=mp; dyn=f]  s1v1: r:q r:q C5:q+C6 D5:q+D6 | s2v5: C2:q r:q C4:q D4:q
+m61  s1v1: Eb5:8[staccato]+Eb6 D5:16[staccato]+D6 C5:8[staccato]+C6 Bb4:16[staccato]+Bb5 Ab4:8[staccato]+Ab5 G4:8[staccato]+G5 D4:16[staccato]+D5 F4:8[staccato]+F5 Eb4:16[staccato]+Eb5 D4:8[staccato]+D5 | s2v5: Eb4:8[staccato] D4:16[staccato] C4:8[staccato] Bb3:16[staccato] Ab3:8[staccato] G3:8[staccato] D3:16[staccato] F3:8[staccato] Eb3:16[staccato] D3:8[staccato]
+m62  s1v1: C4:8[staccato]+C5 D4:16[staccato]+D5 C4:8[staccato]+C5 Bb3:16[staccato]+Bb4 Ab3:8[staccato]+Ab4 G3:8[staccato]+G4 D4:16[staccato] F4:8[staccato] Eb4:16[staccato] D4:8[staccato] | s2v5: C3:8[staccato] D3:16[staccato] C3:8[staccato] Bb2:16[staccato] Ab2:8[staccato] G2:8[staccato] D2:16[staccato] F2:8[staccato] Eb2:16[staccato] D2:8[staccato]
+m63  s1v1: C4:w[accent] | s2v5: C2:w[accent]
+m64  s1v1: D5:w[accent]+Eb5+G5+D6 | s2v5: C2:w[accent]+C3
+
+=== part P2 'Bajo acústico' measures=65 ===
+m0 [key fifths=-3; time 4/4; clef=F4]  s1v1: r:h
+m1  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: C3:q. G3:8 C4:q. G3:8
+m4  s1v1: C3:q. G3:8 C4:q G3:q
+m5  s1v1: C3:q. G3:8 C4:q. G3:8
+m6  s1v1: C3:q. G3:8 F3:q F3:q
+m7  s1v1: C3:q. G3:8 F3:q F3:q
+m8  s1v1: C3:q. G3:8 F3:q G3:q
+m9  s1v1: C3:q. G3:8 C4:q. G3:8
+m10  s1v1: C3:q. G3:8 C4:q. G3:8
+m11  s1v1: C3:q. G3:8 C4:q. G3:8
+m12  s1v1: C3:q. G3:8 F3:q F3:q
+m13  s1v1: C3:q. G3:8 F3:q F3:q
+m14  s1v1: C3:q. G3:8 F3:q G3:q
+m15  s1v1: C3:q. G3:8 C4:q. G3:8
+m16  s1v1: C3:q. G3:8 F3:q B3:q
+m17  s1v1: D4:q. D4:8 D3:q G3:q
+m18  s1v1: Ab3:q. Ab3:8 F3:q B3:q
+m19  s1v1: D4:q. D4:8 D3:q G3:q
+m20  s1v1: Ab3:q. Ab3:8 F3:q B3:q
+m21  s1v1: D4:q. D4:8 D3:q. Ab3:8
+m22  s1v1: Ab3:h Ab3:q D3:q
+m23  s1v1: G3:h F3:h
+m24  s1v1: Eb3:h D3:h
+m25  s1v1: C3:q. G3:8 C4:q. G3:8
+m26  s1v1: C3:q. G3:8 F3:q F3:q
+m27  s1v1: C3:q. G3:8 F3:q F3:q
+m28  s1v1: C3:q. r:8 F3:q G3:q
+m29 [key fifths=0]  s1v1: C3:q r:8 B2:16 C3:16 Db3:8 E3:q.
+m30 [key fifths=0]  s1v1: D4:q D3:q G3:q G4:q
+m31  s1v1: C3:q. G4:8 G#3:q G4:q
+m32  s1v1: C4:q G4:q r:8 C4:q.
+m33  s1v1: C3:q. r:8 D3:q G3:q
+m34  s1v1: B3:8. B3:8. B3:8 C3:q. D3:8
+m35  s1v1: G3:q. G3:q. r:q
+m36  s1v1: G3:q D3:8 D3:q. G4:q
+m37  s1v1: G3:q r:q F3:q F3:q
+m38  s1v1: D3:q. A3:8 A3:q. A3:8
+m39  s1v1: D3:q r:8 G3:q F3:q.
+m40  s1v1: D3:q r:8 G3:q D4:q D3:8~
+m41  s1v1: D3:q r:8 r:8 G3:q E3:q
+m42  s1v1: C3:q. G3:8 C4:q G3:q
+m43  s1v1: C3:q. G3:8 C4:q G3:q
+m44  s1v1: C3:q. G3:8 C4:q G3:q
+m45  s1v1: C3:h r:h
+m46  s1v1: C3:q. r:8 C4:q G3:q
+m47  s1v1: B3:8. B3:8. B3:8 C3:q. D3:8
+m48  s1v1: G3:q. G3:q. r:q
+m49  s1v1: G3:q D3:8 D3:q. G4:q
+m50  s1v1: G3:q r:8 r:8 F3:q F3:q
+m51  s1v1: D3:q. A3:8 A3:q. A3:8
+m52  s1v1: D3:q r:q A3:q D3:q
+m53  s1v1: G3:q r:8 D4:8 D4:q r:8 D3:8
+m54  s1v1: D3:q G3:q G3:q G3:q
+m55  s1v1: C3:q. G3:8 C4:q G3:q
+m56 [key fifths=-3]  s1v1: C3:q r:q F3:h
+m57  s1v1: C3:q r:8 r:8 F3:q Eb3:q
+m58  s1v1: C3:q. F3:8 D3:h
+m59  s1v1: C3:q r:q r:h
+m60  s1v1: r:h C4:q G3:q
+m61  s1v1: C3:q r:q r:h
+m62  s1v1: r:d4
+m63  s1v1: r:d4
+m64  s1v1: C3:8 C3:h.~ C3:8
+
+=== part P3 'Bongós' measures=65 ===
+m0 [key fifths=0; time 4/4; clef=percussion2]  s1v1: r:h
+m1  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: x:16 r:16 r:16 x:16 x:16 r:16 x:16 r:16 x:16 r:16 x:16 r:16 x:16 r:16 x:16 r:16
+m4  
+m5  
+m6  
+m7  
+m8  
+m9  
+m10  
+m11  
+m12  
+m13  
+m14  
+m15  
+m16  
+m17  
+m18  
+m19  
+m20  
+m21  
+m22  
+m23  
+m24  
+m25  
+m26  
+m27  
+m28  
+m29  
+m30  s1v1: x:q[accent] r:q r:h
+m31  s1v1: x:16 r:16 x:16 r:16 x:16 r:16 x:16 r:16 x:16 r:16 x:16 r:16 x:16 r:16 x:16 r:16
+m32  
+m33  
+m34  
+m35  
+m36  
+m37  
+m38  
+m39  
+m40  
+m41  
+m42  
+m43  
+m44  
+m45  
+m46  
+m47  
+m48  
+m49  
+m50  
+m51  
+m52  
+m53  
+m54  
+m55  
+m56  
+m57  
+m58  
+m59  
+m60  s1v1: x:q[accent] r:q r:h
+m61  s1v1: r:d4
+m62  s1v1: r:d4
+m63  s1v1: r:d4
+m64  s1v1: r:d4
