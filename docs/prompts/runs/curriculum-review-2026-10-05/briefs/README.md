@@ -4,4 +4,4 @@ Every brief dispatched for this work opens with the decision rationale of `opera
 
 | Brief | Dispatched | Review |
 | --- | --- | --- |
-| `generator-addendum.md` | 2026-10-05, one agent, writes `../GENERATOR-ADDENDUM.md` | reviewed at 72850a06; six corrections sent to the running agent and appended to the brief |
+| `generator-addendum.md` | 2026-10-05, one agent, writes `../GENERATOR-ADDENDUM.md` | reviewed at 72850a06; six corrections sent and applied; addendum landed |

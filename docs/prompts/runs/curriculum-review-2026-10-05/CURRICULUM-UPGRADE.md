@@ -126,7 +126,7 @@ Endpoint stated, not widened: major-key four-octave scales plus the physical voc
 
 | Item | Class | Where | Evidence | Needs |
 | --- | --- | --- | --- | --- |
-| Contrary scales start at the unison | MUST | twelve `exercise.scale.*.2oct.contrary.both.*`, technique.4:26-30 | `[V]` | generator (start parameter, identity kept) + text |
+| Contrary scales start at the unison | MUST | 16 of the 36 `exercise.scale.*.contrary.both.*` files (10 one-octave files start an octave apart, 6 two-octave files start crossed: C, D-flat, D, E-flat, E, F), technique.4:26-30 | `[V]` recounted with music21 on 2026-10-05; the technique record said twelve | generator (start parameter, identity kept) + text |
 | Stop and tension condition on every rung | MUST | technique.4-7 | one rung of five `[R]` | text |
 | Every listed exercise gets a sentence or leaves the rung (7/8, sixteenth syncopation, chromatic, tremolo, Hanon 11) | MUST | technique.4-7 | `[R]` | text or data |
 | Transfer claims match the études | MUST | technique.5:58-60, technique.6:45-48 | `[R]` | text |
@@ -371,7 +371,7 @@ Unchanged unless marked. **(changed)** = lesson text, data or options change; **
 
 - **core**: 0.1 (changed: posture), 0.2, 0.3, 0.4, 1.1 (changed: eighths sentence or edition), 1.2 (changed: eighths; transposition task; clap task), 1.3 (changed: LH edition), 1.4 (changed: two-or-three-time listening), 1.5, 2.1, 2.2 (changed: echo task), 2.3 (changed: key-signature sentence), 2.4 (changed), 2.5 (changed: key-signature sentence; transposition task), 3.1 (changed: natural sign), 3.2 (changed: I-IV-V7 in a second key), 3.3, 3.4 (changed: repeat, endings, fermata, staccato), 3.5, 3.6, 4.1, 4.2, 4.3, 4.4 (changed: sixteenth reading line), 4.5, 4.6 (changed: score-study routine; gate aligned), 4.7 (changed: one threshold; prerequisite 4.6). Reading rows: key signatures and 3/4 (generator).
 - **practice**: 1 (changed), 2, 3 (changed), 4, 5 (changed); **practice.6 (new, Stage 4)** practising a whole piece.
-- **technique**: 4 (changed), 5 (changed), 6 (changed), 7 (changed), 8 (changed: scope sentence). Twelve contrary files regenerated.
+- **technique**: 4 (changed), 5 (changed), 6 (changed), 7 (changed), 8 (changed: scope sentence). Sixteen contrary files regenerated.
 - **classical**: 3 (changed: K.331 note), 4 (changed: cross-reference), 5 (changed: form task), 6 (changed: score study, phrase and cadence, rubato wording), 7, 8 (changed: étude option, pedal colour, speed recipe, cross-reference), 9 (changed: performance and recovery, memory requirement).
 - **chords-pop**: 3, 4 (changed: wording; loop exercise; prerequisite), 5 (changed: wording; comping paragraph), 6, 7 (changed: finder), 8 (changed: finder; by-ear routine; wording; prerequisite), 9 (changed: finder; two starts; texture and bass decisions; intros and endings).
 - **blues-boogie**: 3, 4 (changed: quick IV; wording; prerequisites), 5 (changed: turnaround named; intro and ending), 6 (changed: minor-blues exercises; wording), 7 (changed: wording; LH-groove scaffold), 8 (changed: title; wording; blind on a form; prerequisite), 9 (changed: wording; lick task).
