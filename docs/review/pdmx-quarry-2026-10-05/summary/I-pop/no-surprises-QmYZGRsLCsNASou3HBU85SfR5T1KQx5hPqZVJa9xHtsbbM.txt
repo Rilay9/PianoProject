@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=2 max_staves=2 meters=4/4 chord-symbols=0 bars=68
+SHAPE: MIXED_WITH_PIANO | parts=2 max_staves=2 meters=4/4 chord-symbols=0 bars=68
+INSTRUMENTS/PARTS: P1:'Saxofón contralto':staves=1:prog=65:piano=False; P2:'Piano':staves=2:prog=0:piano=True
 CID QmYZGRsLCsNASou3HBU85SfR5T1KQx5hPqZVJa9xHtsbbM
 title: No Surprises | song_name: 
 composer: Radiohead | artist: 

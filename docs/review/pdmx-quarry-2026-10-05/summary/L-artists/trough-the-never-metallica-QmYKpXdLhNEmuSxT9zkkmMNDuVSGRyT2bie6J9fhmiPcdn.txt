@@ -1,4 +1,5 @@
 SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4,6/4,3/4 chord-symbols=0 bars=167
+INSTRUMENTS/PARTS: P1:'Drumset':staves=1:prog=0:piano=True
 CID QmYKpXdLhNEmuSxT9zkkmMNDuVSGRyT2bie6J9fhmiPcdn
 title: Trough The Never: Metallica | song_name: through the never
 composer: Composer | artist: Metallica

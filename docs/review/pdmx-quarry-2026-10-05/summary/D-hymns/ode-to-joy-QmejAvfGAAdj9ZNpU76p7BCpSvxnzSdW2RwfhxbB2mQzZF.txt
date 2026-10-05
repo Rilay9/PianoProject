@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=34
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=34
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmejAvfGAAdj9ZNpU76p7BCpSvxnzSdW2RwfhxbB2mQzZF
 title: Ode to Joy | song_name: Symphony No.9 Op.125
 composer: Beethoven/arr. by Kraynak | artist: Ludwig van Beethoven

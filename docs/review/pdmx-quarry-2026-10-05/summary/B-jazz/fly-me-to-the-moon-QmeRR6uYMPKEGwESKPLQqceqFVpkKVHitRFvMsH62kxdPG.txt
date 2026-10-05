@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=44 bars=32
+INSTRUMENTS/PARTS: P1:'Tenor Saxophone':staves=1:prog=66:piano=False
 CID QmeRR6uYMPKEGwESKPLQqceqFVpkKVHitRFvMsH62kxdPG
 title: Fly me to the moon | song_name: fly me to the moon
 composer:  | artist: Bart Howard

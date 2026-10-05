@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=2/4 chord-symbols=0 bars=87
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=2/4 chord-symbols=0 bars=87
+INSTRUMENTS/PARTS: P1:'Piano.':staves=2:prog=0:piano=True
 CID Qma4jk2XgsU8hYgjmUTt3EyeqtwNW8Y8ZqJaxHuKo37DzK
 title: Heliotrope Bouquet - Joplin and Chauvin - 1907 | song_name: heliotrope bouquet
 composer: By SCOTT JOPLINand LOUIS CHAUVIN. | artist: Scott Joplin

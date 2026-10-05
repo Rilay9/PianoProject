@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=2 max_staves=1 meters=4/4 chord-symbols=0 bars=20
+SHAPE: MULTI_PIANO_PART | parts=2 max_staves=1 meters=4/4 chord-symbols=0 bars=20
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True; P2:'':staves=1:prog=0:piano=True
 CID QmbP96wZt5Vev9pA8pembvkaMw2wx48M3PR3pWNMfJuASp
 title: Deep river - African-American spiritual. | song_name: Deep River
 composer: African-American Spiritual | artist: Misc Traditional

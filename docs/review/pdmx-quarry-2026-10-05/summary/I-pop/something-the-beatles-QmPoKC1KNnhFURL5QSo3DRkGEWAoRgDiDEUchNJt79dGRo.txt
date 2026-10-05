@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/4 chord-symbols=39 bars=19
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=39 bars=19
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmPoKC1KNnhFURL5QSo3DRkGEWAoRgDiDEUchNJt79dGRo
 title: Something - The Beatles | song_name: something
 composer: George Harrison (Beatles) | artist: The Beatles

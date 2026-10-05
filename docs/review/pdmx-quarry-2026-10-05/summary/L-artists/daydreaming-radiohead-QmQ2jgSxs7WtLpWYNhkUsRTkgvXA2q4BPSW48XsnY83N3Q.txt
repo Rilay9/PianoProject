@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=6/8,4/4 chord-symbols=0 bars=64
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=6/8,4/4 chord-symbols=0 bars=64
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmQ2jgSxs7WtLpWYNhkUsRTkgvXA2q4BPSW48XsnY83N3Q
 title: Daydreaming - Radiohead | song_name: daydreaming
 composer: Notatio | artist: Radiohead

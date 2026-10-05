@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=23 bars=17
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
 CID Qme3vDrh4eg9Gk4FSqeuSag3Ft5LdbrrZzWgsRphr2CuLB
 title: Cosgrove's Cakewalk | song_name: Cosgrove's Cakewalk
 composer:  | artist: Misc tunes

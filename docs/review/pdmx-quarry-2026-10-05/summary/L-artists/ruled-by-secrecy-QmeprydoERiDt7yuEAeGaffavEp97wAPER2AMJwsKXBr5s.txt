@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=3 max_staves=2 meters=6/8 chord-symbols=0 bars=72
+SHAPE: PIANO_GRAND_STAFF | parts=3 max_staves=2 meters=6/8 chord-symbols=0 bars=72
+INSTRUMENTS/PARTS: P1:'Piano eléctrico':staves=2:prog=4:piano=True; P2:'Piano de cola':staves=1:prog=0:piano=True; P3:'Piano':staves=2:prog=0:piano=True
 CID QmeprydoERiDt7yuEAeGaffavEp97wAPER2AMJwsKXBr5s
 title: Ruled by Secrecy | song_name: ruled by secrecy
 composer:  | artist: Muse

@@ -1,4 +1,6 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=48 bars=51
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
+NOTE: identity TITLE_ONLY: no creator named
 CID QmWbvFZYw6cR7ytP7V2SyZm2u6VMGCD31cBnNuWwMoqFLw
 title: Tico Tico | song_name: Tico Tico
 composer:  | artist: Misc tunes

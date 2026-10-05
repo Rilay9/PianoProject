@@ -1,4 +1,6 @@
-SHAPE: PIANO2 | parts=2 max_staves=1 meters=4/4 chord-symbols=0 bars=16
+SHAPE: MULTI_PIANO_PART | parts=2 max_staves=1 meters=4/4 chord-symbols=0 bars=16
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True; P2:'':staves=1:prog=0:piano=True
+NOTE: identity TITLE_ONLY: term is only part of a longer title; creator alias 'spiritual' found
 CID QmcrnJ2b9XrAey8CPrVRj5xn55Tvy4dfZe1aFr6FVTHBBs
 title: Steal away to jesus - African-American spiritual. | song_name: Steal away to jesus
 composer: African-American Spiritual | artist: African-American Spiritual

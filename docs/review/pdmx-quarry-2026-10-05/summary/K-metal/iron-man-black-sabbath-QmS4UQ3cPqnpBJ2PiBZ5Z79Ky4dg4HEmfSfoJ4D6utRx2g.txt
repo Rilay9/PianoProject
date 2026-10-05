@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4,2/4 chord-symbols=121 bars=54
+INSTRUMENTS/PARTS: P1:'Guitarra Elétrica':staves=1:prog=27:piano=False
 CID QmS4UQ3cPqnpBJ2PiBZ5Z79Ky4dg4HEmfSfoJ4D6utRx2g
 title: Iron man - Black Sabbath | song_name: iron man
 composer:  | artist: Black Sabbath

@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=5 max_staves=2 meters=4/4 chord-symbols=85 bars=84
+SHAPE: MIXED_WITH_PIANO | parts=5 max_staves=2 meters=4/4 chord-symbols=85 bars=84
+INSTRUMENTS/PARTS: P1:'Flauta':staves=1:prog=73:piano=False; P2:'Violino':staves=1:prog=40:piano=False; P3:'Violino':staves=1:prog=40:piano=False; P4:'Violoncelo':staves=1:prog=42:piano=False; P5:'Piano':staves=2:prog=0:piano=True
 CID QmWQLEEEZtuRkzRLC5D951wXXVj6tToNth5C59bFVJiGga
 title: Numb | song_name: numb
 composer:  | artist: Linkin Park

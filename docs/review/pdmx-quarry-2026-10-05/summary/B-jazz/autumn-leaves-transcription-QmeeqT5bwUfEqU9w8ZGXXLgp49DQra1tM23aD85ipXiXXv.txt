@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=87 bars=96
+INSTRUMENTS/PARTS: P1:'Alto Saxophone':staves=1:prog=65:piano=False
 CID QmeeqT5bwUfEqU9w8ZGXXLgp49DQra1tM23aD85ipXiXXv
 title: Autumn Leaves Transcription | song_name: autumn leaves
 composer: Josh Kim | artist: Joseph Kosma

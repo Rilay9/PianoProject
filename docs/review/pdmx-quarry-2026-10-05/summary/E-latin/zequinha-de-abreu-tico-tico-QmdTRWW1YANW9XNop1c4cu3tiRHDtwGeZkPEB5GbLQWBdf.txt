@@ -1,4 +1,5 @@
 SHAPE: PIANO1 | parts=1 max_staves=1 meters=2/4 chord-symbols=0 bars=59
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
 CID QmdTRWW1YANW9XNop1c4cu3tiRHDtwGeZkPEB5GbLQWBdf
 title: Zequinha de Abreu - Tico Tico | song_name: Tico-Tico no Fubá
 composer: Zequinha de Abreu 1917 | artist: Zequinha de Abreu

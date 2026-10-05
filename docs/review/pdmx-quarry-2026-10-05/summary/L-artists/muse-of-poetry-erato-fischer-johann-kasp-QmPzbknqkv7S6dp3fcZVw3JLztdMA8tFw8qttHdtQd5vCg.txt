@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=30
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=30
+INSTRUMENTS/PARTS: P1:'Harpsichord':staves=2:prog=6:piano=True
 CID QmPzbknqkv7S6dp3fcZVw3JLztdMA8tFw8qttHdtQd5vCg
 title: Muse Of Poetry (Erato) Fischer Johann Kaspar Ferdinand | song_name: Muse of poetry (Erato)
 composer: J. K. F. Fischer Muse of poetry erotic poetry in particular (Erato) | artist: Johann Kaspar Ferdinand Fischer

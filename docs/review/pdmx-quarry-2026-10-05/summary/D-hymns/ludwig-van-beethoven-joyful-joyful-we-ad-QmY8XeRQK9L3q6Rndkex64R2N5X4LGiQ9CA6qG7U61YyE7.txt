@@ -1,4 +1,6 @@
 SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4 chord-symbols=0 bars=16
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
+NOTE: identity TITLE_ONLY: term is only part of a longer title; creator alias 'beethoven' found
 CID QmY8XeRQK9L3q6Rndkex64R2N5X4LGiQ9CA6qG7U61YyE7
 title: Ludwig Van Beethoven - Joyful Joyful We Adore Thee | song_name: Joyful joyful we adore Thee
 composer: Ludwig Van Beethoven | artist: Ludwig van Beethoven

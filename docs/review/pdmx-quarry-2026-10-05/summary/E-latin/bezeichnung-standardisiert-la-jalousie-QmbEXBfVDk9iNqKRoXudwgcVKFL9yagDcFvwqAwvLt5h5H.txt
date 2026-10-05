@@ -1,4 +1,6 @@
 SHAPE: PIANO1 | parts=1 max_staves=1 meters=2/2 chord-symbols=0 bars=18
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
+NOTE: identity TITLE_ONLY: term is only part of a longer title; no creator named
 CID QmbEXBfVDk9iNqKRoXudwgcVKFL9yagDcFvwqAwvLt5h5H
 title: Bezeichnung standardisiert: La Jalousie; | song_name: Bezeichnung standardisiert: La Jalousie;
 composer: Urheber unbekannt 1720 belegt | artist: Misc tunes

@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=71
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=71
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmWpwi1NS1M1QxvcLk7aGBH94ZeGz6xgZwA7DQ7dCu1h1M
 title: No Surprises | song_name: no surprises
 composer: Radiohead | artist: Radiohead

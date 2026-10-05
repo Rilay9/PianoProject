@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=6 max_staves=2 meters=4/4,2/4 chord-symbols=0 bars=81
+SHAPE: MIXED_WITH_PIANO | parts=6 max_staves=2 meters=4/4,2/4 chord-symbols=0 bars=81
+INSTRUMENTS/PARTS: P1:'Violin':staves=1:prog=40:piano=False; P2:'Flute':staves=1:prog=73:piano=False; P3:'Violin':staves=1:prog=40:piano=False; P4:'Violoncello':staves=1:prog=42:piano=False; P5:'Piano':staves=2:prog=0:piano=True; P6:'Piano':staves=2:prog=0:piano=True
 CID QmYNaW9VvQDFWoD159XYCPxmvyJmGBkhrFijb1P1PaLRUE
 title: Adios Nonino | song_name: adios nonino
 composer:  | artist: Astor Piazzolla

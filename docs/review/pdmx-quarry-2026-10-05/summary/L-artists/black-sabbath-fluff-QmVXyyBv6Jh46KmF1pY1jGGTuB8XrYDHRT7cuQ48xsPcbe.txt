@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=4 max_staves=2 meters=3/4 chord-symbols=0 bars=175
+SHAPE: MIXED_WITH_PIANO | parts=4 max_staves=2 meters=3/4 chord-symbols=0 bars=175
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True; P2:'Acoustic Guitar':staves=1:prog=25:piano=False; P3:'Electric Guitar':staves=1:prog=27:piano=False; P4:'Piano':staves=1:prog=0:piano=True
 CID QmVXyyBv6Jh46KmF1pY1jGGTuB8XrYDHRT7cuQ48xsPcbe
 title: Black Sabbath - Fluff | song_name: fluff
 composer: Tony Iommi | artist: Black Sabbath

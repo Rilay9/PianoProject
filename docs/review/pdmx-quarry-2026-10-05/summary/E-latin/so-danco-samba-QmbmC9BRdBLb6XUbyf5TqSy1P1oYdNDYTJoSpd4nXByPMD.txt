@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=25 bars=34
+INSTRUMENTS/PARTS: P1:'Piano':staves=1:prog=0:piano=True
 CID QmbmC9BRdBLb6XUbyf5TqSy1P1oYdNDYTJoSpd4nXByPMD
 title: Só Danço Samba | song_name: so danco samba
 composer: Antonio Carlos Jobim | artist: Antônio Carlos Jobim

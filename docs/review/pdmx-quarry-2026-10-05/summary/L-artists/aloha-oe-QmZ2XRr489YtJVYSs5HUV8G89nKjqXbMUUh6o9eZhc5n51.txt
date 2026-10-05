@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=19 bars=18
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
 CID QmZ2XRr489YtJVYSs5HUV8G89nKjqXbMUUh6o9eZhc5n51
 title: Aloha oe | song_name: Aloha oe
 composer: Queen Lili'uokalani (1877) | artist: Misc tunes

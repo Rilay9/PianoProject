@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=2 max_staves=2 meters=4/4,9/8 chord-symbols=0 bars=173
+SHAPE: MIXED_WITH_PIANO | parts=2 max_staves=2 meters=4/4,9/8 chord-symbols=0 bars=173
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True; P2:'Violin':staves=1:prog=40:piano=False
 CID QmZLmx4e4iS7fXab9qDW1XQkTGhkHDryn36t7g8pYfhZVv
 title: Virus | song_name: virus
 composer: Blaze Bayley Dave MurrayJanick Gers and Steve Harrisarr. by Robert Telling | artist: Iron Maiden

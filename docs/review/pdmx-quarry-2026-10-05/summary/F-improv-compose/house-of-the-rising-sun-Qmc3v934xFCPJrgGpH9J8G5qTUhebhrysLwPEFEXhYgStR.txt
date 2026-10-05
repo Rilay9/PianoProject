@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=3/4 chord-symbols=16 bars=17
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
 CID Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR
 title: House of the Rising Sun | song_name: The House of the Rising Sun
 composer: anon. | artist: Misc Traditional

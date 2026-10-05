@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=8 max_staves=2 meters=4/4 chord-symbols=0 bars=51
+SHAPE: MIXED_WITH_PIANO | parts=8 max_staves=2 meters=4/4 chord-symbols=0 bars=51
+INSTRUMENTS/PARTS: P1:'Trumpet':staves=1:prog=56:piano=False; P2:'Alto Sax':staves=1:prog=65:piano=False; P3:'Tenor Sax':staves=1:prog=66:piano=False; P4:'Trombone':staves=1:prog=57:piano=False; P5:'Piano':staves=2:prog=0:piano=True; P6:'Bass':staves=2:prog=32:piano=False; P7:'Drums':staves=1:prog=0:piano=True; P8:'Claves':staves=1:prog=0:piano=True
 CID QmZF4m2KTAiHmHpg9eYrG1y2bfQKo2chTxSNYepnmuvHtF
 title: Girl From Ipanema | song_name: the girl from ipanema
 composer: arr Noah Zahm | artist: Antônio Carlos Jobim

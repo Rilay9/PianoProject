@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=39 bars=36
+INSTRUMENTS/PARTS: P1:'ベース':staves=1:prog=34:piano=False
 CID QmXgWdLZyrDFZSLcK23xY8uhh2fN8y2AjuYYdyfUfAzJ2f
 title: Blues in F for bass lesson | song_name: 
 composer:  | artist: 

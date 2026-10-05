@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=4 max_staves=2 meters=5/8,4/8,6/8,12/8 chord-symbols=0 bars=115
+SHAPE: MIXED_WITH_PIANO | parts=4 max_staves=2 meters=5/8,4/8,6/8,12/8 chord-symbols=0 bars=115
+INSTRUMENTS/PARTS: P1:'Alto':staves=1:prog=53:piano=False; P2:'Piano':staves=2:prog=0:piano=True; P3:'Violin':staves=1:prog=40:piano=False; P4:'Drumset':staves=1:prog=0:piano=True
 CID QmX6C6SSN9pgaG7S9i39dU2aNoG12updXDxWjFfA3u3h8x
 title: Wait for Sleep | song_name: wait for sleep
 composer: Dream Theater | artist: Dream Theater

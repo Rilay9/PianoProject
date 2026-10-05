@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=9/8,4/4 chord-symbols=8 bars=56
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=9/8,4/4 chord-symbols=8 bars=56
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmQnnagVBhXDRu8vs6JEc59iP52cs1BGCdrWEnaRZie71Q
 title: Things Left Unsaid | song_name: things left unsaid
 composer: Transcribed by: Sam Anderson | artist: Pink Floyd

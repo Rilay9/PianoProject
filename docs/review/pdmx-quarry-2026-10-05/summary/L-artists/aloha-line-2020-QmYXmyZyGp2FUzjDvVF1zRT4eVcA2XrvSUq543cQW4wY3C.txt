@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=10 max_staves=2 meters=3/4,2/4,4/4 chord-symbols=0 bars=168
+SHAPE: MIXED_WITH_PIANO | parts=10 max_staves=2 meters=3/4,2/4,4/4 chord-symbols=0 bars=168
+INSTRUMENTS/PARTS: P1:'Snare Drum':staves=1:prog=56:piano=False; P2:'Tenor Drums':staves=1:prog=96:piano=False; P3:'Bass Drums':staves=1:prog=59:piano=False; P4:'Cymbals':staves=1:prog=58:piano=False; P5:'Vibraphone':staves=1:prog=11:piano=False; P6:'Xylophone':staves=1:prog=13:piano=False; P7:'Marimba':staves=1:prog=12:piano=False; P8:'Marimba':staves=1:prog=12:piano=False; P9:'Piano':staves=2:prog=0:piano=True; P10:'Drumset':staves=1:prog=0:piano=True
 CID QmYXmyZyGp2FUzjDvVF1zRT4eVcA2XrvSUq543cQW4wY3C
 title: aloha line 2020 | song_name: everlong
 composer:  | artist: Foo Fighters

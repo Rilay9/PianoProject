@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=11 bars=17
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
 CID QmchjwvtpXykrxVrMHadPZLP7AHZ4ZgFjEg6qca7xpPFcm
 title: Stephen Foster - Oh Susanna | song_name: Oh! Susanna
 composer: Stephen Foster 1847 | artist: Stephen Foster

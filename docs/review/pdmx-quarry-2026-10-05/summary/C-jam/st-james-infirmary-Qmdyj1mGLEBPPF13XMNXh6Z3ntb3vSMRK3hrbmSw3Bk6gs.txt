@@ -1,4 +1,6 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=41 bars=24
+INSTRUMENTS/PARTS: P1:'P1':staves=1:prog=0:piano=True
+NOTE: identity TITLE_ONLY: no creator named
 CID Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs
 title: St James Infirmary | song_name: st james infirmary
 composer: Early 1900's | artist: Misc Traditional

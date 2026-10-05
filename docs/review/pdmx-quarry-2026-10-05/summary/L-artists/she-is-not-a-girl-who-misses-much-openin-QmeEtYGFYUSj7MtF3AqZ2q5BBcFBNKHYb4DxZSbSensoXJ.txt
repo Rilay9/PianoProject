@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/4 chord-symbols=16 bars=12
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=16 bars=12
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmeEtYGFYUSj7MtF3AqZ2q5BBcFBNKHYb4DxZSbSensoXJ
 title: She is not a Girl who misses much_opening-1st-movement | song_name: 
 composer: John Lennon | artist: 

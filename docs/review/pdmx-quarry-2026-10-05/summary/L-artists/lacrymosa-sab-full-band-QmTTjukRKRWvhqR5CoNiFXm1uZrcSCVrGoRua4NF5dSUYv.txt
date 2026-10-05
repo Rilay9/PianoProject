@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=11 max_staves=2 meters=3/4,4/4 chord-symbols=0 bars=130
+SHAPE: MIXED_WITH_PIANO | parts=11 max_staves=2 meters=3/4,4/4 chord-symbols=0 bars=130
+INSTRUMENTS/PARTS: P1:'Voice':staves=1:prog=52:piano=False; P2:'Soprano':staves=1:prog=52:piano=False; P3:'Alto':staves=1:prog=52:piano=False; P4:'Baritone':staves=1:prog=52:piano=False; P5:'Piano':staves=2:prog=0:piano=True; P6:'Piano':staves=2:prog=0:piano=True; P7:'String Synthesizer':staves=2:prog=50:piano=False; P8:'Electric Guitar':staves=1:prog=29:piano=False; P9:'Electric Guitar':staves=1:prog=30:piano=False; P10:'Electric Bass':staves=1:prog=33:piano=False; P11:'Drumset':staves=1:prog=0:piano=True
 CID QmTTjukRKRWvhqR5CoNiFXm1uZrcSCVrGoRua4NF5dSUYv
 title: Lacrymosa SAB + Full Band | song_name: lacrymosa
 composer: By Evanescence | artist: Evanescence

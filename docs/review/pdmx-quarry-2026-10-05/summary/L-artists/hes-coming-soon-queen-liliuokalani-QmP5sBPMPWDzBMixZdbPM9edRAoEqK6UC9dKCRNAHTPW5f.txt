@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=2 max_staves=1 meters=4/4 chord-symbols=0 bars=18
+SHAPE: MULTI_PIANO_PART | parts=2 max_staves=1 meters=4/4 chord-symbols=0 bars=18
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True; P2:'':staves=1:prog=0:piano=True
 CID QmP5sBPMPWDzBMixZdbPM9edRAoEqK6UC9dKCRNAHTPW5f
 title: Hes coming soon - Queen Liliuokalani | song_name: Hes coming soon
 composer: Hawaiian tune arr. by Thoro Harris | artist: Queen Liliuokalani

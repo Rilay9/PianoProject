@@ -1,0 +1,25 @@
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=3/4 chord-symbols=0 bars=16
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
+NOTE: signals only: {"bars_ex_pickup": 16, "repeat_barlines": 3, "ending_brackets": 0, "exact_repeat_measures": 7, "transposed_repeat_measures": 3, "halves_8_or_16": true, "first_phrase_returns_exact_at_bar": 9, "first_phrase_returns_rhythm_at_bar": 9, "middle_contrasts": true, "max_simultaneity_top_staff": 1, "max_simultaneity_lower_staff": 1, "has_lower_staff": true, "chord_symbols": 0, "single_line_top": true, "support": true}
+CID QmYJ6QHJF2hx465Mn1XaXNm6e7LVX9f6fUwDhRKHhGr8Uy
+title: Waltz | song_name: Waltz in C
+composer:  | artist: composer Uknown
+csv: tracks=0 bars=32 license=cc-zero
+
+=== part P1 'Piano' measures=16 ===
+m1 [staves=2; key fifths=0; time 3/4; clef1=G2; clef2=F4]  s1v1: E5:q D5:q C5:q | s2v5: C3:h.
+m2  s1v1: C5:q C5:q C5:q | s2v5: E3:h.
+m3  s1v1: F5:q E5:q D5:q | s2v5: G3:h.
+m4  s1v1: D5:q D5:q D5:q | s2v5: F3:h.
+m5  s1v1: G5:q G5:q G5:q | s2v5: E3:h.
+m6  s1v1: G5:q F5:q E5:q | s2v5: C3:h.
+m7  s1v1: E5:q F5:q D5:q | s2v5: G3:h.
+m8 [repeat-backward]  s1v1: E5:h. | s2v5: C3:h.
+m9 [repeat-forward]  s1v1: E5:q D5:q C5:q | s2v5: C3:h.
+m10  s1v1: C5:q C5:q C5:q | s2v5: E3:h.
+m11  s1v1: F5:q E5:q D5:q | s2v5: G3:h.
+m12  s1v1: D5:q D5:q D5:q | s2v5: F3:h.
+m13  s1v1: G5:q G5:q G5:q | s2v5: E3:h.
+m14  s1v1: G5:q F5:q E5:q | s2v5: C3:h.
+m15  s1v1: E5:q F5:q D5:q | s2v5: G3:h.
+m16 [repeat-backward]  s1v1: C5:h. | s2v5: C3:h.

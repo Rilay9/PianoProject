@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=9 bars=9
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
 CID QmPTYpb73P5ZJzXgwzg1sJAcAUxCosMCjnjRQxZk7d398y
 title: Saint James Infirmary | song_name: Saint James Infirmary
 composer:  | artist: Misc tunes

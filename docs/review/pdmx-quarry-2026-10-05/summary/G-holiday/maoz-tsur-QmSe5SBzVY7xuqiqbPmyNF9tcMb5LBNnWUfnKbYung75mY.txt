@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=3 max_staves=1 meters=2/2 chord-symbols=0 bars=18
+SHAPE: MULTI_PIANO_PART | parts=3 max_staves=1 meters=2/2 chord-symbols=0 bars=18
+INSTRUMENTS/PARTS: P1:'S':staves=1:prog=0:piano=True; P2:'A':staves=1:prog=0:piano=True; P3:'T':staves=1:prog=0:piano=True
 CID QmSe5SBzVY7xuqiqbPmyNF9tcMb5LBNnWUfnKbYung75mY
 title: Maoz tsur | song_name: maoz tzur
 composer:  | artist: Misc Praise Songs

@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/4 chord-symbols=16 bars=24
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=16 bars=24
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmPXA4DmNdZ9i57iNvMXuggjaPjfuAU5L3NQTS3FpyTbsb
 title: Autumn '68 | song_name: Autumn '68
 composer: Sam Anderson | artist: Pink Floyd

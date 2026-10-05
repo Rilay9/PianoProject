@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=25 bars=25
+INSTRUMENTS/PARTS: P1:'Voice':staves=1:prog=52:piano=False
 CID QmU6qdsWTZAN5p3wzQNA3HBS6UVSAayhQbrbnwj8LPQ6Vr
 title: Final Masquerade | song_name: 
 composer: Linkin Park | artist: 

@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=94
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=94
+INSTRUMENTS/PARTS: P1:'Piano, acoustic_grand_piano_ydp_20080910 1':staves=2:prog=0:piano=True
 CID QmW1fMWmYyYEVrWZMztR41GGEQ6MFvfdpNxvqp2HgDJajh
 title: Linkin Park Crawling Piano Score | song_name: crawling
 composer:  | artist: Linkin Park

@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=3 max_staves=2 meters=4/4 chord-symbols=0 bars=12
+SHAPE: PIANO_GRAND_STAFF | parts=3 max_staves=2 meters=4/4 chord-symbols=0 bars=12
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True; P2:'Riff':staves=1:prog=0:piano=True; P3:'Drumset':staves=1:prog=0:piano=True
 CID Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi
 title: Blues Riff in C (120 bpm) | song_name: 12 bar blues
 composer: Daniels Elizabeth Calvin | artist: Lessons - Blues

@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=67
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=67
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmTAZ6A8z4vBFgQwpN5STorC5osK59XKQV6o1WWJ9vaGc5
 title: Leave Out All the Rest - Linkin Park | song_name: leave out all the rest
 composer: Linkin Park | artist: Linkin Park

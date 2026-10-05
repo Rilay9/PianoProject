@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=6/8 chord-symbols=0 bars=74
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=6/8 chord-symbols=0 bars=74
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmUFbAMfeBjxwNVwzfZxgYXR3cWv7424KN19uKNTqQad2K
 title: Beethoven - Symphony No. 9 in D Minor Op. 125 4th Movement | song_name: Joyful joyful we adore Thee
 composer: Vincent | artist: Ludwig van Beethoven

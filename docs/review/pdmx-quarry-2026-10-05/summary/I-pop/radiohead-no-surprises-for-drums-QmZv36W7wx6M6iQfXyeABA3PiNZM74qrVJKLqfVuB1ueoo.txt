@@ -1,4 +1,5 @@
 SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4 chord-symbols=0 bars=61
+INSTRUMENTS/PARTS: P1:'Набор ударных':staves=1:prog=0:piano=True
 CID QmZv36W7wx6M6iQfXyeABA3PiNZM74qrVJKLqfVuB1ueoo
 title: Radiohead - No surprises (for drums) | song_name: no surprises
 composer: http://drummatica.ru | artist: Radiohead

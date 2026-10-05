@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=30 bars=20
+INSTRUMENTS/PARTS: P1:'MusicXML Part':staves=1:prog=0:piano=True
 CID QmWUXqfKQAKdGoB5Mw8vmHFcMFDdhpSc4t9vyAjYHJedxU
 title: After Youve Gone | song_name: after youve gone
 composer: CREAMER & LAYTON | artist: Marion Harris

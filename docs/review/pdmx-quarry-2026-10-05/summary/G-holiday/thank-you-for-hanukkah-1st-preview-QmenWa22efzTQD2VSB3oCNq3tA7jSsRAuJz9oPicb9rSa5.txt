@@ -1,0 +1,286 @@
+SHAPE: MIXED_WITH_PIANO | parts=8 max_staves=2 meters=4/4 chord-symbols=0 bars=33
+INSTRUMENTS/PARTS: P1:'Piano':staves=1:prog=0:piano=True; P2:'Shofar':staves=1:prog=60:piano=False; P3:'Effect Synthesizer':staves=1:prog=96:piano=False; P4:'Pipe Organ':staves=1:prog=19:piano=False; P5:'Guitar':staves=1:prog=26:piano=False; P6:'Piano':staves=2:prog=0:piano=True; P7:'Bass':staves=1:prog=32:piano=False; P8:'Drums':staves=1:prog=0:piano=True
+CID QmenWa22efzTQD2VSB3oCNq3tA7jSsRAuJz9oPicb9rSa5
+title: Thank you for Hanukkah (1st preview) | song_name: Thank you for Hanukkah (1st preview)
+composer:  | artist: SuitcaseFan14
+csv: tracks=0-0-0-19-26-32-60-96 bars=33 license=cc-zero
+
+=== part P1 'Piano' measures=33 ===
+m1 [key fifths=0; time 4/4; clef=G2; tempo=120; "Spoken: This is my message to all these Jews out there."; "If you dont wanna listen, I don't even care."; "You see, Hanukkah is a time to pray and sing and hang out with families."; "It's a time to light candles, and forget about your fantasies."; "While this can be completely strange, so please put on your yarmulke."; "This is not about Christmas or Kwanzaa or New Years, this is Hanukkah."; "Some hanukkah traditions are lighting candles and spinning dreidels."; "So, if you want to do it, go ahead, if you're able."; "This is not christmas, where we get 1 day of gifts."; "But for you guys, you each get 8 nights for a lift."; "But a lot of kids in this town, are not in that religion, you see."; "They just open presents underneath their Christmas tree."; "Twas the 25th night of Kislev, and all through the home,"; "People light the candles for the menorah and eat sufganiyot."; "So, if you guys all want to eat latkes and play dreidel all day.."; "There's only one thing I would say…"; "t"]  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:d4
+m6  s1v1: r:d4
+m7  s1v1: r:d4
+m8  s1v1: r:d4
+m9  s1v1: r:d4
+m10  s1v1: r:d4
+m11  s1v1: r:d4
+m12  s1v1: r:d4
+m13  s1v1: r:d4
+m14  s1v1: r:d4
+m15  s1v1: r:d4
+m16  s1v1: r:d4
+m17  s1v1: r:d4
+m18  s1v1: r:d4
+m19  s1v1: r:d4
+m20  s1v1: r:d4
+m21  s1v1: r:d4
+m22  s1v1: r:d4
+m23  s1v1: r:d4
+m24  s1v1: r:d4
+m25  s1v1: r:d4
+m26  s1v1: r:d4
+m27  s1v1: r:d4
+m28  s1v1: r:d4
+m29  s1v1: r:d4
+m30  s1v1: r:d4
+m31 [tempo=125; tempo=130; tempo=140; tempo=150]  s1v1: r:d4
+m32 [tempo=160]  s1v1: r:q G4:h E4:q
+m33  s1v1: r:q E4:8 E4:8 E4:8 E4:8 G4:q
+
+=== part P2 'Shofar' measures=33 ===
+m1 [key fifths=0; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: C4:w~
+m6  s1v1: C4:w
+m7  s1v1: B3:w~
+m8  s1v1: B3:w
+m9  s1v1: C4:w~
+m10  s1v1: C4:w
+m11  s1v1: B3:w~
+m12  s1v1: B3:w
+m13  s1v1: C4:w~
+m14  s1v1: C4:w
+m15  s1v1: B3:w~
+m16  s1v1: B3:w
+m17  s1v1: C4:w~
+m18  s1v1: C4:w
+m19  s1v1: B3:w~
+m20  s1v1: B3:w
+m21  s1v1: C4:w~
+m22  s1v1: C4:w
+m23  s1v1: B3:w~
+m24  s1v1: B3:w
+m25  s1v1: C4:w~
+m26  s1v1: C4:w
+m27  s1v1: B3:w~
+m28  s1v1: B3:w
+m29  s1v1: C4:w~
+m30  s1v1: C4:w
+m31  s1v1: B3:w
+m32  s1v1: G3:q r:q r:h
+m33  s1v1: E4:h. B4:q
+
+=== part P3 'Effect Synthesizer' measures=33 ===
+m1 [key fifths=0; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:d4
+m6  s1v1: r:d4
+m7  s1v1: r:d4
+m8  s1v1: r:d4
+m9  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m10  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m11  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m12  s1v1: D3:8 D3:8 G3:8 G3:8 D3:8 D3:8 G3:8 G3:8
+m13  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m14  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m15  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m16  s1v1: D3:8 D3:8 G3:8 G3:8 D3:8 D3:8 G3:8 G3:8
+m17  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m18  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m19  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m20  s1v1: D3:8 D3:8 G3:8 G3:8 D3:8 D3:8 G3:8 G3:8
+m21  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m22  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m23  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m24  s1v1: D3:8 D3:8 G3:8 G3:8 D3:8 D3:8 G3:8 G3:8
+m25  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m26  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m27  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m28  s1v1: D3:8 D3:8 G3:8 G3:8 D3:8 D3:8 G3:8 G3:8
+m29  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m30  s1v1: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m31  s1v1: E3:q E3:q E3:q E3:q
+m32  s1v1: G3:q r:q r:h
+m33  s1v1: E3:q D3:q E3:q B2:q
+
+=== part P4 'Pipe Organ' measures=33 ===
+m1 [key fifths=0; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:d4
+m6  s1v1: r:d4
+m7  s1v1: r:d4
+m8  s1v1: r:d4
+m9  s1v1: r:d4
+m10  s1v1: r:d4
+m11  s1v1: r:d4
+m12  s1v1: r:d4
+m13 [dyn=p]  s1v1: E4:w+A4+D5
+m14  s1v1: E4:w+G4+C5
+m15  s1v1: B3:w+F4+C5
+m16  s1v1: D4:h+G4+C5 D4:h+G4+C#5
+m17  s1v1: E4:w+A4+D5
+m18  s1v1: E4:w+G4+C5
+m19  s1v1: B3:w+F4+C5
+m20  s1v1: D4:h+G4+C5 D4:h+G4+C#5
+m21  s1v1: E4:w+A4+D5
+m22  s1v1: E4:w+G4+C5
+m23  s1v1: B3:w+F4+C5
+m24  s1v1: D4:h+G4+C5 D4:h+G4+C#5
+m25  s1v1: E4:w+A4+D5
+m26  s1v1: E4:w+G4+C5
+m27  s1v1: B3:w+F4+C5
+m28  s1v1: D4:h+G4+C5 D4:h+G4+C#5
+m29  s1v1: E4:w+A4+D5
+m30  s1v1: E4:w+G4+C5
+m31  s1v1: B3:w+F4+C5
+m32  s1v1: D4:q+G4+C5 r:q r:h
+m33  s1v1: D4:w+G4+C5
+
+=== part P5 'Guitar' measures=33 ===
+m1 [key fifths=0; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:d4
+m6  s1v1: r:d4
+m7  s1v1: r:d4
+m8  s1v1: r:d4
+m9  s1v1: r:d4
+m10  s1v1: r:d4
+m11  s1v1: r:d4
+m12  s1v1: r:d4
+m13  s1v1: r:d4
+m14  s1v1: r:d4
+m15  s1v1: r:d4
+m16  s1v1: r:d4
+m17  s1v1: r:d4
+m18  s1v1: r:d4
+m19  s1v1: r:d4
+m20  s1v1: r:d4
+m21  s1v1: E4:w+A4+D5
+m22  s1v1: E4:w+G4+C5
+m23  s1v1: B3:w+F4+C5
+m24  s1v1: D4:h+G4+C5 D4:h+G4+C#5
+m25  s1v1: E4:w+A4+D5
+m26  s1v1: E4:w+G4+C5
+m27  s1v1: B3:w+F4+C5
+m28  s1v1: D4:h+G4+C5 D4:h+G4+C#5
+m29  s1v1: E4:w+A4+D5
+m30  s1v1: E4:w+G4+C5
+m31  s1v1: B3:w+F4+C5
+m32  s1v1: D4:q+G4+C5 r:q r:h
+m33  s1v1: F3:h+A3+D4 C3:h+F3+B3
+
+=== part P6 'Piano' measures=33 ===
+m1 [staves=2; key fifths=0; time 4/4; clef1=G2; clef2=F4]  s1v1: r:d4 | s2v5: r:d4
+m2  s1v1: r:d4 | s2v5: r:d4
+m3  s1v1: r:d4 | s2v5: r:d4
+m4  s1v1: r:d4 | s2v5: r:d4
+m5  s1v1: r:d4 | s2v5: r:d4
+m6  s1v1: r:d4 | s2v5: r:d4
+m7  s1v1: r:d4 | s2v5: r:d4
+m8  s1v1: r:d4 | s2v5: r:d4
+m9  s1v1: r:d4 | s2v5: r:d4
+m10  s1v1: r:d4 | s2v5: r:d4
+m11  s1v1: r:d4 | s2v5: r:d4
+m12  s1v1: r:d4 | s2v5: r:d4
+m13  s1v1: r:d4 | s2v5: r:d4
+m14  s1v1: r:d4 | s2v5: r:d4
+m15  s1v1: r:d4 | s2v5: r:d4
+m16  s1v1: r:d4 | s2v5: r:d4
+m17  s1v1: r:d4 | s2v5: r:d4
+m18  s1v1: r:d4 | s2v5: r:d4
+m19  s1v1: r:d4 | s2v5: r:d4
+m20  s1v1: r:d4 | s2v5: r:d4
+m21  s1v1: D5:q D5:q D5:q D5:q | s2v5: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m22  s1v1: A4:q A4:q A4:q A4:q | s2v5: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m23  s1v1: E4:q E4:q E4:q E4:q | s2v5: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m24  s1v1: C4:q B3:q E4:q E4:q | s2v5: D3:8 D3:8 G3:8 G3:8 D3:8 D3:8 G3:8 G3:8
+m25  s1v1: D5:q D5:q D5:q D5:q | s2v5: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m26  s1v1: A4:q A4:q A4:q A4:q | s2v5: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m27  s1v1: E4:q E4:q E4:q E4:q | s2v5: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m28  s1v1: C4:q B3:q E4:q E4:q | s2v5: D3:8 D3:8 G3:8 G3:8 D3:8 D3:8 G3:8 G3:8
+m29  s1v1: D5:q D5:q D5:q D5:q | s2v5: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m30  s1v1: A4:q A4:q A4:q A4:q | s2v5: E3:8 E3:8 A3:8 A3:8 E3:8 E3:8 A3:8 A3:8
+m31  s1v1: E4:q E4:q E4:q E4:q | s2v5: E3:q E3:q E3:q E3:q
+m32  s1v1: Eb4:q r:q r:h | s2v5: A3:q r:q r:h
+m33  s1v1: E4:h. B4:q | s2v5: E3:q D3:q E3:q B2:q
+
+=== part P7 'Bass' measures=33 ===
+m1 [key fifths=0; time 4/4; clef=F4]  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:d4
+m6  s1v1: r:d4
+m7  s1v1: r:d4
+m8  s1v1: r:d4
+m9  s1v1: r:d4
+m10  s1v1: r:d4
+m11  s1v1: r:d4
+m12  s1v1: r:d4
+m13  s1v1: r:d4
+m14  s1v1: r:d4
+m15  s1v1: r:d4
+m16  s1v1: r:d4
+m17  s1v1: E3:w
+m18  s1v1: E3:w
+m19  s1v1: E3:w
+m20  s1v1: D3:w
+m21  s1v1: E3:w
+m22  s1v1: E3:w
+m23  s1v1: E3:w
+m24  s1v1: D3:w
+m25  s1v1: E3:w
+m26  s1v1: E3:w
+m27  s1v1: E3:w
+m28  s1v1: D3:w
+m29  s1v1: E3:w
+m30  s1v1: B2:w
+m31  s1v1: B2:w
+m32  s1v1: D3:q r:q r:h
+m33  s1v1: F3:w
+
+=== part P8 'Drums' measures=33 ===
+m1 [key fifths=0; time 4/4; clef=percussion2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:d4
+m6  s1v1: r:d4
+m7  s1v1: r:d4
+m8  s1v1: r:d4
+m9  s1v1: r:d4
+m10  s1v1: r:d4
+m11  s1v1: r:d4
+m12  s1v1: r:d4
+m13  s1v1: r:d4
+m14  s1v1: r:d4
+m15  s1v1: r:d4
+m16  s1v1: r:d4
+m17  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m18  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m19  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m20  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m21  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m22  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m23  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m24  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m25  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m26  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m27  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m28  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m29  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m30  s1v1: r:h x:q r:q | s1v2: x:q x:8 x:8 r:q x:q
+m31  s1v1: r:h x:q r:q | s1v2: x:q x:q x:q x:q
+m32  s1v1: x:h r:h | s1v2: x:q r:q r:h
+m33  s1v1: x:q+x x:q x:q x:q | s1v2: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8

@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=15 max_staves=2 meters=4/4 chord-symbols=0 bars=52
+SHAPE: MIXED_WITH_PIANO | parts=15 max_staves=2 meters=4/4 chord-symbols=0 bars=52
+INSTRUMENTS/PARTS: P1:'Piccolo':staves=1:prog=72:piano=False; P2:'Flute':staves=1:prog=73:piano=False; P3:'Oboe':staves=1:prog=68:piano=False; P4:'Bassoon':staves=1:prog=70:piano=False; P5:'C Trumpet':staves=1:prog=56:piano=False; P6:'Trombone':staves=1:prog=57:piano=False; P7:'Tuba':staves=1:prog=58:piano=False; P8:'Timpani':staves=1:prog=47:piano=False; P9:'Snare Drum':staves=1:prog=48:piano=False; P10:'Cymbal':staves=1:prog=48:piano=False; P11:'Piano':staves=2:prog=0:piano=True; P12:'Violin':staves=1:prog=40:piano=False; P13:'Viola':staves=1:prog=41:piano=False; P14:'Violoncello':staves=1:prog=42:piano=False; P15:'Double Bass':staves=1:prog=43:piano=False
 CID QmSsj7o5AWXjdDAgKkXpohjam3ZRYZhcteQXNBw6vsex7s
 title: Ode to Joy (for orchestra) | song_name: Symphony No.9 Op.125
 composer: Tommy Thomson | artist: Ludwig van Beethoven

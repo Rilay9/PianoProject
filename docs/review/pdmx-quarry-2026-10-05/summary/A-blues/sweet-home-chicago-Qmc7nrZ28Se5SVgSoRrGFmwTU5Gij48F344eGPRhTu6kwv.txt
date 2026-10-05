@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=4 max_staves=2 meters=4/4 chord-symbols=0 bars=81
+SHAPE: MIXED_WITH_PIANO | parts=4 max_staves=2 meters=4/4 chord-symbols=0 bars=81
+INSTRUMENTS/PARTS: P1:'Part I':staves=1:prog=7:piano=True; P2:'Part II':staves=1:prog=6:piano=True; P3:'Part III':staves=1:prog=56:piano=False; P4:'Piano':staves=2:prog=0:piano=True
 CID Qmc7nrZ28Se5SVgSoRrGFmwTU5Gij48F344eGPRhTu6kwv
 title: Sweet Home Chicago | song_name: sweet home chicago
 composer: Robert Johnson | artist: Robert Johnson

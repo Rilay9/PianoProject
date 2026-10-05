@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=2 max_staves=2 meters=4/4 chord-symbols=65 bars=48
+SHAPE: MIXED_WITH_PIANO | parts=2 max_staves=2 meters=4/4 chord-symbols=65 bars=48
+INSTRUMENTS/PARTS: P1:'Stem':staves=1:prog=53:piano=False; P2:'Piano, MIDI 1':staves=2:prog=0:piano=True
 CID QmVWSZ3vAy8prRv14TRREdLLnXk14UqrYrc1HgeisMAqqe
 title: my immortal in F voice & piano | song_name: my immortal
 composer: David Hodges Amy Lee & Ben Moody | artist: Evanescence

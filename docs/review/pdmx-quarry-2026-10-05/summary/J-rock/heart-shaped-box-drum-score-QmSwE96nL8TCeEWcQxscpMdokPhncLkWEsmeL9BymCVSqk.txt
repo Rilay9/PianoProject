@@ -1,4 +1,5 @@
 SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4 chord-symbols=0 bars=63
+INSTRUMENTS/PARTS: P1:'Drumset':staves=1:prog=0:piano=True
 CID QmSwE96nL8TCeEWcQxscpMdokPhncLkWEsmeL9BymCVSqk
 title: Heart shaped box - Drum score | song_name: heart shaped box
 composer:  | artist: Nirvana

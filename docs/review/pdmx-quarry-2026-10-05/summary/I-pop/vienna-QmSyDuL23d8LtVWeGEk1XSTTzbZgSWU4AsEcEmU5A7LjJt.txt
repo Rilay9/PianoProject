@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=2 max_staves=2 meters=4/4 chord-symbols=0 bars=108
+SHAPE: PIANO_GRAND_STAFF | parts=2 max_staves=2 meters=4/4 chord-symbols=0 bars=108
+INSTRUMENTS/PARTS: P1:'Piano':staves=1:prog=0:piano=True; P2:'Piano':staves=2:prog=0:piano=True
 CID QmSyDuL23d8LtVWeGEk1XSTTzbZgSWU4AsEcEmU5A7LjJt
 title: Vienna | song_name: vienna
 composer: Words and Music by Billy Joel | artist: Billy Joel

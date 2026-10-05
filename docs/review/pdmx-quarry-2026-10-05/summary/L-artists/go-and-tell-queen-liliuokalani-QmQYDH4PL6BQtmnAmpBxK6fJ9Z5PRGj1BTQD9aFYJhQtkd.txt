@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=2 max_staves=1 meters=4/4 chord-symbols=0 bars=18
+SHAPE: MULTI_PIANO_PART | parts=2 max_staves=1 meters=4/4 chord-symbols=0 bars=18
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True; P2:'':staves=1:prog=0:piano=True
 CID QmQYDH4PL6BQtmnAmpBxK6fJ9Z5PRGj1BTQD9aFYJhQtkd
 title: Go and tell - Queen Liliuokalani | song_name: Go and tell
 composer: Arranged by Clarence R. Kohlmann | artist: Queen Liliuokalani

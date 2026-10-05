@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=5/4,6/4 chord-symbols=0 bars=125
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=5/4,6/4 chord-symbols=0 bars=125
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmbHZSWPLhqk5eU4ErBJNFmYdyFjHggpdCAd2ymqzSitFH
 title: Dream Theater - Disappear | song_name: disappear
 composer: Jordan Rudess | artist: Dream Theater

@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=2 max_staves=1 meters=4/4 chord-symbols=0 bars=16
+SHAPE: MULTI_PIANO_PART | parts=2 max_staves=1 meters=4/4 chord-symbols=0 bars=16
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True; P2:'':staves=1:prog=0:piano=True
 CID QmQVNEqW4vw38TNZ1ogyn7JqgTCZWzPZTHvYg6sZDYmStN
 title: Nearer my god to thee - Arthur S. Sullivan | song_name: Nearer my god to thee
 composer: Arthur Seymour Sullivan 1872 | artist: Arthur S. Sullivan

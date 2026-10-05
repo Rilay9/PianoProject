@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=10 max_staves=2 meters=4/4 chord-symbols=0 bars=65
+SHAPE: MIXED_WITH_PIANO | parts=10 max_staves=2 meters=4/4 chord-symbols=0 bars=65
+INSTRUMENTS/PARTS: P1:'Flute I. II.':staves=1:prog=73:piano=False; P2:'Oboe':staves=1:prog=68:piano=False; P3:'Clarinet in Bb I. II.':staves=1:prog=71:piano=False; P4:'Violin I':staves=1:prog=40:piano=False; P5:'Violin II':staves=1:prog=40:piano=False; P6:'Viola':staves=1:prog=41:piano=False; P7:'Violoncello I':staves=1:prog=42:piano=False; P8:'Violoncello II':staves=1:prog=42:piano=False; P9:'Double Bass':staves=1:prog=43:piano=False; P10:'Piano':staves=2:prog=0:piano=True
 CID QmQSWZ1U7q2MoQHVoWBt7htbe8f1JWrGpYpnD1MKytUV2c
 title: Por una Cabeza | song_name: por una cabeza
 composer: Carlos Gardel Arr: Flávio Régis Cunha | artist: Carlos Gardel

@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=4/4 chord-symbols=8 bars=11
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=8 bars=11
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmTLkSX6MxkF9n4dF3FMH7cvfjR4vSLkvbjQRkL3EpWVzP
 title: The King | song_name: circle of life
 composer: jc | artist: Elton John

@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=1 max_staves=2 meters=6/8 chord-symbols=0 bars=33
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=6/8 chord-symbols=0 bars=33
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
 CID QmQ1qVi1RHonfqDZydkmHSwTDQ7vzE8rQdojdK2BXTPPw1
 title: Happy Xmas (War is over) | song_name: happy xmas war is over
 composer: John Lennon | artist: John Lennon

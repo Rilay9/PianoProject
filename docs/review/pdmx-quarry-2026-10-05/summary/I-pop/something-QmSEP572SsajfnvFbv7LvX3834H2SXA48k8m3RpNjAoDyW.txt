@@ -1,4 +1,5 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=24 bars=16
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
 CID QmSEP572SsajfnvFbv7LvX3834H2SXA48k8m3RpNjAoDyW
 title: Something | song_name: Something
 composer:  | artist: Misc tunes

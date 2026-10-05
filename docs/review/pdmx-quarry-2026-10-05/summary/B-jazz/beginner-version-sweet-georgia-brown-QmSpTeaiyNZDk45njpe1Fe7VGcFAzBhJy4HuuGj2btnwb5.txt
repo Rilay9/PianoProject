@@ -1,4 +1,5 @@
 SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4 chord-symbols=0 bars=33
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
 CID QmSpTeaiyNZDk45njpe1Fe7VGcFAzBhJy4HuuGj2btnwb5
 title: Beginner version - Sweet Georgia Brown | song_name: sweet georgia brown
 composer: Beginner version | artist: Ben Bernie

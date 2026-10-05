@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=7 max_staves=2 meters=4/4 chord-symbols=0 bars=132
+SHAPE: MIXED_WITH_PIANO | parts=7 max_staves=2 meters=4/4 chord-symbols=0 bars=132
+INSTRUMENTS/PARTS: P1:'Voice':staves=1:prog=52:piano=False; P2:'Electric Guitar':staves=1:prog=27:piano=False; P3:'Electric Piano':staves=2:prog=4:piano=True; P4:'Crystal Synthesizer':staves=2:prog=98:piano=False; P5:'Bass Guitar':staves=1:prog=34:piano=False; P6:'Drumset':staves=1:prog=0:piano=True; P7:'Electric Guitar':staves=1:prog=27:piano=False
 CID Qmecq9RSLpMfuaEajmskZq9ueZGk97qvmdx78JFWNSuiRD
 title: for whom the bell tolls | song_name: for whom the bell tolls
 composer: metallica | artist: Metallica

@@ -1,4 +1,5 @@
-SHAPE: MIXED_PIANO2 | parts=5 max_staves=2 meters=4/4 chord-symbols=39 bars=41
+SHAPE: MIXED_WITH_PIANO | parts=5 max_staves=2 meters=4/4 chord-symbols=39 bars=41
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True; P2:'(Right) Synth 1':staves=1:prog=81:piano=False; P3:'(Left) Synth 1':staves=1:prog=90:piano=False; P4:'(Left) Synth 2':staves=1:prog=81:piano=False; P5:'(Left) Synth 3':staves=1:prog=80:piano=False
 CID QmfVhjHh1mgJwF5jKSEZW822CqwhLUDy115Cjx6xRR2NFX
 title: Apocalypse Please | song_name: apocalypse please
 composer: Lyrics by Matthew BellamyMusic by Matthew Bellamy Chris Wolstenholme & Dominic Howard | artist: Muse

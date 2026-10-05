@@ -1,4 +1,6 @@
 SHAPE: LEADSHEET | parts=1 max_staves=1 meters=2/2 chord-symbols=31 bars=36
+INSTRUMENTS/PARTS: P1:'Piano':staves=1:prog=0:piano=True
+NOTE: identity TITLE_ONLY: no creator named
 CID QmWYgg7QifpX4XtkYReco3Psk4GvNgzbeZMeqTBUvabUgF
 title: corcovado | song_name: 
 composer:  | artist: 

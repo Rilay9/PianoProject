@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=4 max_staves=1 meters=3/4,4/4 chord-symbols=0 bars=57
+SHAPE: MULTI_PIANO_PART | parts=4 max_staves=1 meters=3/4,4/4 chord-symbols=0 bars=57
+INSTRUMENTS/PARTS: P1:'Soprano':staves=1:prog=0:piano=True; P2:'Alto':staves=1:prog=0:piano=True; P3:'Tenor':staves=1:prog=0:piano=True; P4:'Bass':staves=1:prog=0:piano=True
 CID QmZTntpWyVxPocpcy7XDb3R5Ck4NxSUF8PdSWWLuEH1SPb
 title: And so is goes | song_name: and so it goes
 composer: words and music byBILLY JOELarranged byBOB CHILCOTT | artist: Billy Joel

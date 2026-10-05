@@ -1,4 +1,5 @@
-SHAPE: PIANO2 | parts=2 max_staves=2 meters=4/4 chord-symbols=0 bars=83
+SHAPE: PIANO_GRAND_STAFF | parts=2 max_staves=2 meters=4/4 chord-symbols=0 bars=83
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True; P2:'Drumset':staves=1:prog=0:piano=True
 CID Qmc7LuzDPKUXDhC8okv6HHhJSwqKPeAaiLH1utVHn6uGCf
 title: Muse - Hysteria | song_name: hysteria
 composer: Muse | artist: Muse
