@@ -25,3 +25,14 @@ Repository: the working branch at HEAD 91e6ee47. The agent writes exactly one ne
 8. **Counts and sequence.** Families by disposition; rows mapped; experiments; libraries by decision. Order: source verification of the 24 dossier-dependent rows, this inventory, the quarry decisions, batch briefs grouped by family and seam, implementation, the review corpora to the outside reviewer.
 
 Every claim carries its evidence (file:line, a report section, a count run). Observed is marked apart from what a report states. Reply in at most twelve lines.
+
+---
+
+## Reviewer corrections, sent to the running agent (2026-10-05)
+
+1. Family inventory classes are KEEP / FIX / EXTEND / RELABEL / MERGE / RETIRE; KEEP requires a current useful consumer or a demonstrated reusable purpose; untouched families do not default to KEEP; dead or redundant families may be retired or merged.
+2. The content-order mapping distinguishes INSPECTED/ADMITTED REAL MODEL, CANDIDATE (XML REVIEW PENDING) and NONE FOUND; a metadata hit is not a real-music solution.
+3. A generator row may resolve to: existing family unchanged; existing family extended or fixed; an existing exercise merely placed; no generator change because inspected real material suffices. A "generator" needs-cell does not force generator work.
+4. Partitura is an independent parser, not a property proof: the checker derives the claimed property from partitura's parsed events and compares with the source-derived contract.
+5. The sight-reading 20/100 sample is chosen deliberately across levels, parameter boundaries and phrase-generation approaches, and expands over any stratum where it exposes a systematic problem; it is never whole-family approval.
+6. Music-claiming family corpora include ordinary fixed seeds and boundary or adversarial parameter cases, with the exact denominator; the outside reviewer reads the MusicXML.
