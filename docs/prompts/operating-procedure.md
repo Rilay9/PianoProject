@@ -172,6 +172,30 @@ Before designing or building anything, say which, with a source a reader can che
 
 Hand-build only when the search shows nothing exists, and show the search. This decision comes before every other rule in this file, and a brief or a review without it is incomplete. The full rule, with its six searches and its preference order, is the first section of `CLAUDE.md` (*Reuse before reinvention*). The project-wide map is `docs/prompts/runs/CT1/reuse-map.md` (CT1 part zero).
 
+## 10b. The solution-class gate (the owner via the reviewer, 2026-10-05)
+
+A finding is not a task. **Do not convert a finding into an implementation task until at least one materially different solution class has been considered and the chosen class is explained.** The failure this stops is implementation-first work: turning findings into tasks for closure, keeping the existing shape because it exists, and treating green tests as proof that the product decision was good.
+
+Before any nontrivial curriculum, content, generator or product change is dispatched, the brief answers, in a short **decision rationale** at its head:
+
+1. **Learner problem.** What capability or experience should improve, in product words, not "row 12 says MUST".
+2. **Solution classes considered.** From: existing real repertoire or excerpt; a further content quarry; a lesson or text change; a task or requirement change; reuse of an existing drill; extension of an existing generator; an external library or dataset; app behaviour or code; an external recommendation; no change.
+3. **Chosen path, and why it beats the alternatives.** In particular: why generated rather than real music; why bespoke code rather than a library; why a new rung rather than a task, a transfer requirement or a lesson edit.
+4. **What evidence would reverse the decision.** No answer means the first plausible idea is being implemented.
+5. **Real problem or proxy.** Whether this solves the learner problem or the easiest measurable stand-in for it.
+6. **Remaining uncertainty**, stated as such. *Unresolved* is an acceptable state when the learning need is known and the best implementation is not; a content search that fails does not erase the need.
+
+Rules that follow from it:
+- Real inspected music beats generated pseudo-music when both can do the same teaching job; generated drills serve controlled acquisition, real repertoire serves transfer.
+- Reuse a library or dataset when it meaningfully deletes bespoke machinery; not because it exists.
+- Do not preserve an existing architecture merely because it exists; do not create a new rung when a task, a transfer requirement or a lesson edit is enough.
+- Do not call generator output music until the actual generated artefact has been reviewed by a reader; the owner is not that reader.
+- Tests verify an implementation against its specification; they do not validate that the specification was a good product decision.
+- A sample stays a sample; a sampled review is never generalised to a family or a curriculum without its denominator.
+- After every research or content review, ask explicitly whether the governing plan should change before continuing the old plan.
+
+Roles under this gate: the drafting and implementing agents write briefs and code; the orchestrator's job is decision quality and stopping implementation momentum from standing in for judgement; the outside reviewer reads the musical and curricular artefacts; the owner makes only genuine owner decisions. The loop is: find the problem, research if needed, enumerate solution classes, quarry or reuse before inventing, choose, write the rationale, implement, test, inspect the real artefact, update the plan.
+
 ## 11. Before reporting
 
 Five questions, in tier order. A correction is owed only where the answer would change
