@@ -139,6 +139,8 @@ export interface OsmdNote {
   /** The innermost tuplet the note is written in (C2); `TupletLabelNumber` is 3 for a triplet. */
   NoteTuplet?: { TupletLabelNumber?: number } | undefined;
   ParentStaffEntry?: { ParentStaff?: { Id?: number } } | undefined;
+  /** The beam the note is under, with every note it joins, each on its own staff (HD2's cross-staff groups). */
+  NoteBeam?: { Notes?: OsmdNote[] } | undefined;
   isRest(): boolean;
 }
 
@@ -170,27 +172,10 @@ export interface ExtractOptions {
    */
   declaredHand?: DeclaredHand;
   /**
-   * Verified hand facts for passages of this score (HD2; `content/sources/verified-facts.json`, read by
-   * `curriculum/verifiedFacts.ts`, which hands over only rows whose file identity is the item's current
-   * one). Explicit score truth where the voice-home reading is established wrong: every note printed in
-   * the row's bars (printed bar numbers, inclusive) on its staff in its voice takes the row's hand, and
-   * `crossStaff` follows that hand against the printed staff. Applied to a **two-staff** score only; a
-   * one-staff score's hand is HD1's declaration. Absent: the voice-home reading everywhere.
-   */
-  verifiedHands?: readonly VerifiedHand[];
-  /**
    * Safety valve: a malformed repeat structure can in principle loop forever.
    * The traversal stops and throws past this many steps.
    */
   maxSteps?: number;
-}
-
-/** One verified hand fact as the extractor applies it (HD2): printed bars inclusive, one staff, one voice. */
-export interface VerifiedHand {
-  bars: readonly [number, number];
-  staff: 1 | 2;
-  voice: number;
-  hand: 'R' | 'L';
 }
 
 const DEFAULT_MAX_STEPS = 100_000;
@@ -347,52 +332,194 @@ function parseFingering(note: OsmdNote): number | undefined {
   return Number.isInteger(n) && n >= 1 && n <= 5 ? n : undefined;
 }
 
+/** The hand a staff's notes take by default: the two piano staves, upper right, lower left (HD2). */
+function handOfStaff(staff: 1 | 2): 'R' | 'L' {
+  return staff === 2 ? 'L' : 'R';
+}
+
+/** One voice entry as the cross-staff reading sees it: where it starts and ends, and its sounding notes. */
+interface LineEntry {
+  start: number;
+  end: number;
+  grace: boolean;
+  notes: OsmdNote[];
+  staves: Set<1 | 2>;
+}
+
+/** Two staves' worth of notes, or one: the staves a set of notes is printed on. */
+function stavesOf(notes: readonly OsmdNote[]): Set<1 | 2> {
+  return new Set(notes.map(staffOf));
+}
+
+/** Time comparisons in whole notes; OSMD's fractions come back as floats. */
+const EPSILON = 1e-9;
+
 /**
- * Which staff each voice mostly lives on.
+ * The notes printed on one staff and played by the other hand, each with the staff whose hand plays it
+ * (HD2; the reviewer's ruling, `docs/review/responses/33497357.md` §1).
  *
- * Needed because a cross-staff note is *printed* on the other staff but still
- * played by its own hand: the left hand reaching up onto the treble staff is
- * staff 1, hand L. A histogram over the whole piece is robust where a
- * per-note rule is not — voice numbering conventions (1–4 upper, 5–8 lower)
- * are a MuseScore/Finale habit, not a MusicXML rule.
+ * The printed staff is the hand's default: staff 1 the right hand's, staff 2 the left's. A note is read as
+ * crossed only where its own bar shows the crossing, never from what its voice number does elsewhere in
+ * the piece — files reuse voice numbers across the staves, so a whole-piece count of a voice (the rule
+ * before HD2) gave *The Crave*'s and *Solace*'s treble inner lines to the left hand. Two local gestures
+ * establish a crossing, each read within one printed bar and one voice:
  *
- * **A compatibility reading, not a solved hand classifier (HD2).** A file that
- * reuses a voice number across the staves defeats it (*The Crave* bar 40,
- * *Solace* bars 22, 26, 30, 32: the treble inner line read as the left hand's);
- * where that is established, a verified hand fact overrides it
- * (`ExtractOptions.verifiedHands`). The printed-staff rule with local crossings
- * that would replace it was measured over the whole catalogue and changed 30,662
- * notes in 325 files, rightly on reused voice numbers and wrongly on single-hand
- * lines printed across the staves (*Moonlight* I and III, *Clair de Lune*), so it
- * is held (`docs/prompts/runs/HD2/`), and which hand plays an arbitrary score's
- * note stays UNKNOWN.
+ * - **a group that spans the staves**: a chord whose notes are printed on both staves, or a beam whose
+ *   notes are, the beam being one stretch of the bar's line (OSMD keeps a cross-staff chord as one voice
+ *   entry and gives each note of a beam its own staff). The group keeps one hand: the staff the voice's
+ *   other notes in the bar are printed on, when that is one staff. Where the voice has no other notes in
+ *   the bar, or has them on both staves, nothing local says which hand, and each note keeps its staff;
+ * - **an excursion**: the voice's line, outside such groups, starts and ends the bar on one staff and goes
+ *   to the other in between. The notes on the other staff are crossed and take the hand of the staff the
+ *   line starts and ends on.
+ *
+ * Nothing else is a crossing: a voice that changes staff only at a barline, or that moves to the other
+ * staff and stays, keeps its printed staves. A voice number holding notes on both staves at once (two
+ * lines under one number, as some exporters write a grand staff) is not one line, so no excursion is read
+ * in that bar. Grace notes belong to their line's order but never make it two lines.
  */
-function voiceHomeStaves(sheet: OsmdLikeSheet, maxSteps: number): Map<number, 1 | 2> {
-  const counts = new Map<number, { upper: number; lower: number }>();
+function crossedStaves(sheet: OsmdLikeSheet, maxSteps: number): Map<OsmdNote, 1 | 2> {
+  /** Each bar's lines: printed measure, then the voice (by OSMD's voice object, so two parts never merge). */
+  const lines = new Map<number, Map<unknown, LineEntry[]>>();
+  const lineOfNote = new Map<OsmdNote, LineEntry[]>();
+  const seen = new Set<OsmdVoiceEntry>();
   const it = sheet.MusicPartManager.getIterator();
   let guard = 0;
   while (!it.EndReached && guard < maxSteps) {
+    const measure = it.CurrentMeasureIndex;
+    const start = it.CurrentSourceTimestamp.RealValue;
     for (const entry of it.CurrentVisibleVoiceEntries()) {
-      const voice = entry.ParentVoice?.VoiceId ?? 1;
-      let tally = counts.get(voice);
-      if (!tally) {
-        tally = { upper: 0, lower: 0 };
-        counts.set(voice, tally);
+      // A repeat visits the same printed entries again: each is read once.
+      if (seen.has(entry)) continue;
+      seen.add(entry);
+      const notes = entry.Notes.filter((note) => !note.isRest());
+      if (notes.length === 0) continue;
+      const length = Math.max(...notes.map((note) => note.Length.RealValue));
+      const voiceKey: unknown = entry.ParentVoice ?? 1;
+      let bar = lines.get(measure);
+      if (!bar) {
+        bar = new Map();
+        lines.set(measure, bar);
       }
-      for (const note of entry.Notes) {
-        if (note.isRest()) continue;
-        if (staffOf(note) === 2) tally.lower += 1;
-        else tally.upper += 1;
+      let line = bar.get(voiceKey);
+      if (!line) {
+        line = [];
+        bar.set(voiceKey, line);
       }
+      line.push({ start, end: start + length, grace: entry.IsGrace === true, notes, staves: stavesOf(notes) });
+      for (const note of notes) lineOfNote.set(note, line);
     }
     it.moveToNextVisibleVoiceEntry(false);
     guard += 1;
   }
-  const home = new Map<number, 1 | 2>();
-  for (const [voice, tally] of counts) {
-    home.set(voice, tally.lower > tally.upper ? 2 : 1);
+
+  const crossed = new Map<OsmdNote, 1 | 2>();
+  const cross = (notes: readonly OsmdNote[], staff: 1 | 2): void => {
+    for (const note of notes) if (staffOf(note) !== staff) crossed.set(note, staff);
+  };
+
+  // The groups that span the staves: a chord's notes, joined with every note its beam joins.
+  const grouped = new Set<OsmdNote>();
+  const groups: OsmdNote[][] = [];
+  for (const bar of lines.values()) {
+    for (const line of bar.values()) {
+      const place = new Map<OsmdNote, number>();
+      line.forEach((entry, index) => {
+        for (const note of entry.notes) place.set(note, index);
+      });
+      for (const entry of line) {
+        const members = new Set<OsmdNote>(entry.notes);
+        for (const note of entry.notes) {
+          for (const beamed of beamWithin(note, place)) members.add(beamed);
+        }
+        if (stavesOf([...members]).size < 2) continue;
+        const fresh = [...members].filter((note) => !grouped.has(note));
+        if (fresh.length === 0) continue;
+        // A beam's later entries add nothing new; a chord inside an already-found beam joins it.
+        const joined = groups.find((group) => group.some((note) => members.has(note)));
+        if (joined) joined.push(...fresh);
+        else groups.push(fresh);
+        for (const note of fresh) grouped.add(note);
+      }
+    }
   }
-  return home;
+  for (const group of groups) {
+    // The voice's other notes in the bars the group stands in: the line it belongs to.
+    const context = new Set<1 | 2>();
+    for (const line of new Set(group.map((note) => lineOfNote.get(note)))) {
+      for (const entry of line ?? []) {
+        for (const note of entry.notes) if (!grouped.has(note)) context.add(staffOf(note));
+      }
+    }
+    // Only the line's own staff in the bar decides which hand the group is; where the line has no other
+    // notes there, or has them on both staves, the notation does not say, and each note keeps its staff.
+    if (context.size === 1) {
+      const [anchor] = [...context] as [1 | 2];
+      cross(group, anchor);
+    }
+  }
+
+  // Excursions: one line in one bar, outside the groups, leaving its staff and coming back.
+  for (const bar of lines.values()) {
+    for (const line of bar.values()) {
+      const plain = line.filter((entry) => entry.staves.size === 1 && !entry.notes.some((note) => grouped.has(note)));
+      if (twoLinesAtOnce(plain)) continue;
+      const runs: { staff: 1 | 2; entries: LineEntry[] }[] = [];
+      for (const entry of plain) {
+        const [staff] = [...entry.staves] as [1 | 2];
+        const last = runs[runs.length - 1];
+        if (last?.staff === staff) last.entries.push(entry);
+        else runs.push({ staff, entries: [entry] });
+      }
+      const first = runs[0];
+      if (runs.length < 3 || !first || runs[runs.length - 1]?.staff !== first.staff) continue;
+      for (const run of runs) {
+        if (run.staff !== first.staff) cross(run.entries.flatMap((entry) => entry.notes), first.staff);
+      }
+    }
+  }
+  return crossed;
+}
+
+/**
+ * The sounding notes a note's beam joins, where the beam is one stretch of this bar's line: every note of
+ * it in the line (`place` gives each note's entry), on consecutive entries. Otherwise nothing: OSMD can
+ * hand back a beam that runs on across bars and voices (a file reusing a beam number it never closed —
+ * *Fig Leaf Rag* bar 5's left-hand beam lists twenty notes from several bars), and that is no gesture.
+ */
+function beamWithin(note: OsmdNote, place: ReadonlyMap<OsmdNote, number>): OsmdNote[] {
+  const beamed = (note.NoteBeam?.Notes ?? []).filter((member) => !member.isRest());
+  if (beamed.length < 2) return [];
+  const indexes: number[] = [];
+  for (const member of beamed) {
+    const index = place.get(member);
+    if (index === undefined) return [];
+    indexes.push(index);
+  }
+  const entries = new Set(indexes);
+  const first = Math.min(...entries);
+  const last = Math.max(...entries);
+  return last - first + 1 === entries.size ? beamed : [];
+}
+
+/**
+ * Whether one voice number holds two lines at once in a bar: two of its entries on different staves
+ * sounding together. A single line's notes follow each other; grace notes take no time and are left out.
+ */
+function twoLinesAtOnce(entries: readonly LineEntry[]): boolean {
+  const timed = entries.filter((entry) => !entry.grace);
+  for (let i = 0; i < timed.length; i += 1) {
+    for (let j = i + 1; j < timed.length; j += 1) {
+      const a = timed[i];
+      const b = timed[j];
+      if (!a || !b) continue;
+      const [staffA] = [...a.staves];
+      const [staffB] = [...b.staves];
+      if (staffA === staffB) continue;
+      if (a.start < b.end - EPSILON && b.start < a.end - EPSILON) return true;
+    }
+  }
+  return false;
 }
 
 /**
@@ -410,21 +537,12 @@ export function extractScoreModelFromSheet(
 ): ScoreModel {
   const maxSteps = options.maxSteps ?? DEFAULT_MAX_STEPS;
   const title = sheet.TitleString?.trim() ?? '';
-  const homeStaves = voiceHomeStaves(sheet, maxSteps);
+  const crossed = crossedStaves(sheet, maxSteps);
   const keyFifths = keyFifthsByMeasure(sheet);
   const declaration = handDeclarationFor(sheet, options.declaredHand);
   /** The declared hand every note of a one-staff score takes, or nothing (HD1). */
   const declaredHand: 'R' | 'L' | undefined =
     declaration?.outcome === 'applied' ? (declaration.declared === 'left' ? 'L' : 'R') : undefined;
-  /** The verified hand facts that apply: a two-staff score's only (HD2); a one-staff score's hand is HD1's. */
-  const verified = sheet.Staves.length === 2 ? (options.verifiedHands ?? []) : [];
-  /** The verified hand of a note, by its printed bar number, staff and voice, or nothing. */
-  const verifiedHandOf = (sourceMeasureIndex: number, staff: 1 | 2, voice: number): 'R' | 'L' | undefined => {
-    if (verified.length === 0) return undefined;
-    const bar = sheet.SourceMeasures[sourceMeasureIndex]?.MeasureNumber;
-    if (bar === undefined) return undefined;
-    return verified.find((row) => row.staff === staff && row.voice === voice && bar >= row.bars[0] && bar <= row.bars[1])?.hand;
-  };
 
   const steps: ScoreStep[] = [];
   const tempoMap: TempoMapEntry[] = [];
@@ -511,14 +629,10 @@ export function extractScoreModelFromSheet(
         if (note.isRest()) continue;
         if (isTieContinuation(note)) continue;
         const staff = staffOf(note);
-        const home = homeStaves.get(voice) ?? staff;
-        // Precedence (HD2): a one-staff score's declared hand (HD1: the staff number of a lone staff says
-        // nothing about which hand plays it); else a verified hand fact for this passage of a two-staff
-        // score; else the voice's home staff, the compatibility reading. `crossStaff` follows the hand
-        // the note gets against its printed staff where a fact decides it, and the home staff otherwise.
-        const verifiedHand = declaredHand === undefined ? verifiedHandOf(sourceMeasureIndex, staff, voice) : undefined;
-        const hand: 'R' | 'L' = declaredHand ?? verifiedHand ?? (home === 2 ? 'L' : 'R');
-        const crossStaff = verifiedHand === undefined ? staff !== home : hand !== (staff === 2 ? 'L' : 'R');
+        // The printed staff decides, or the staff a local cross-staff gesture gives the note (HD2), unless a
+        // one-staff score's item declared its one hand (HD1): a lone staff's number says nothing of the hand.
+        const playedFrom = crossed.get(note) ?? staff;
+        const hand: 'R' | 'L' = declaredHand ?? handOfStaff(playedFrom);
         const midi = note.halfTone + OSMD_HALFTONE_TO_MIDI;
         const duration = roundBeats(tieDurationBeats(note));
         const fingering = parseFingering(note);
@@ -539,7 +653,7 @@ export function extractScoreModelFromSheet(
           duration,
           ...(fingering === undefined ? {} : { fingering }),
           ...(isGrace ? { graceNote: true } : {}),
-          ...(crossStaff ? { crossStaff: true } : {}),
+          ...(playedFrom !== staff ? { crossStaff: true } : {}),
           ...(tieLength > 1 ? { tieLength } : {}),
           ...(tiedDurations === undefined ? {} : { tiedDurations }),
           ...(tuplet === undefined ? {} : { tuplet }),

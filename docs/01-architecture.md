@@ -158,6 +158,21 @@ export interface ScoreModel {
   two-staff score and its cross-staff notes are unchanged. The build's demand bridge asks the
   same question of the same row (`tools/content/build.py::declared_hand`, held equal to the
   app's rule by `test_declared_hand.py`).
+- **A two-staff score's hand is a compatibility default plus verified facts** (HD2,
+  `responses/hd2-corpus-diff.md`). The default gives each note its voice number's whole-piece
+  home staff's hand. It is not a general hand classifier: a reused voice number defeats it (*The
+  Crave* bar 40, *Solace* bars 22/26/30/32), and the printed-staff replacement measured over the
+  catalogue was wrong on single-hand lines printed across the staves, so it is held and the
+  arbitrary-score question stays UNKNOWN (`docs/prompts/runs/HD2/`; its corpus diff is a
+  worklist). Established passages are explicit score truth: `hand` rows of
+  `content/sources/verified-facts.json` (item, the file identity as the catalogue records it,
+  printed bars, staff, voice, hand, proof), given to the extractor as
+  `ExtractOptions.verifiedHands` by `curriculum/verifiedFacts.ts` and to the build's bridge by
+  `tools/content/verified_hand.py`, each refusing a stale row (identity no longer the item's).
+  Precedence: HD1's one-staff declaration, then a current verified hand row on a two-staff score,
+  then the default; `crossStaff` follows the resulting hand against the printed staff. The store
+  is shared with the cells seam's `demand` rows by file only: each kind has its own validation
+  and reader, and no consumer reads across kinds.
 - The extractor MUST be unit-tested against ≥10 fixture scores covering: ties, chords, two
   voices per staff, grace notes, repeats with endings, pickup measures, cross-staff notes,
   tempo changes, 6/8, triplets.

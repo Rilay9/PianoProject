@@ -318,6 +318,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **CI3** | Today's withdrawn row reads *Skipped — you put it away* whole on any face (`data-withdrawn` on the row, the clamp lifted for that sentence); the G90a case green on both faces at the eight cells, twice; CI's render check no longer skipped (`CI3-held-skip-reason-whole.md`) | app | landed 2026-10-06 (`CI3-held-skip-reason-whole.md`); Entry 245
 | **HD1a** | The build's declared hand mirrors the app's authority rule (bundled, not an import, authored or reviewed), one source for the `hands` fact, thirteen tests red first; `docs/01` §4.1's hand contract and `checks.json`'s count corrected (`HD1a-build-hand-authority-parity.md`) | tooling | landed 2026-10-06 (`HD1a-build-hand-authority-parity.md`); Entry 246
 | **HD1b** | The untaught-options probe re-run after the hand seam: two rung-1.3 lines lose `interval.skip`, 215 `untaught` as before, `PROBE` repointed (`HD1b-probe-rerun-after-the-hand-seam.md`) | tooling | landed 2026-10-06 (`HD1b-probe-rerun-after-the-hand-seam.md`); Entry 247
+| **HD2** | Verified hand facts: a current-identity override for The Crave bar 40 and Solace bars 22/26/30/32 (staff 1 voice 2 → R), precedence HD1 declaration, then verified row, then the voice-home default; 108 notes changed, none elsewhere; the global rule parked with its corpus diff as the worklist (`HD2-verified-hand-facts.md`) | app | landed 2026-10-06 (`HD2-verified-hand-facts.md`); Entry 248
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -501,6 +502,7 @@ HD1 · landed · 244
 CI3 · landed · 245
 HD1a · landed · 246
 HD1b · landed · 247
+HD2 · landed · 248
 F0a · closed · —
 L120 · approved · —
 -->

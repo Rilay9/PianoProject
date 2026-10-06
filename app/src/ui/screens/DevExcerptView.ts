@@ -30,6 +30,7 @@ import { onScreenDispose } from '../screenLifecycle';
 import { el, button } from '../widgets';
 import { contentUrl, loadCatalog } from '../../curriculum/load';
 import { declaredHandOption } from '../../curriculum/declaredHand';
+import { verifiedHandsOption } from '../../curriculum/verifiedFacts';
 import type { CatalogItem } from '../../curriculum/types';
 import { getSettings } from '../../data/settingsStore';
 import { audioEngine } from '../../audio/AudioEngine';
@@ -517,7 +518,7 @@ export function DevExcerptView(router: Router): HTMLElement {
         const musicXml = toMusicXml(new Uint8Array(await response.arrayBuffer()));
         const probe = new OsmdView(document.createElement('div'));
         await probe.load(musicXml);
-        const loaded = probe.extractModel({ id: parent.id, ...declaredHandOption(parent) });
+        const loaded = probe.extractModel({ id: parent.id, ...declaredHandOption(parent), ...verifiedHandsOption(parent) });
         probe.dispose();
         if (disposed || shown?.candidate !== candidate) return;
         model = loaded;

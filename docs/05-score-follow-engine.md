@@ -27,6 +27,35 @@ only so that OSMD numbers the sounding staff 2 would change what the learner rea
 assumption. Every path that makes a model of a catalogue item's file passes it: the Score screen, the
 render check's DevScore load, the build's demand bridge (`build.declared_hand`), the builder screens.
 
+**Verified hand facts on a two-staff score (HD2, 2026-10-06; `responses/hd2-corpus-diff.md`).** The
+two-staff reading above, each voice number's whole-piece home staff, is a **compatibility default, not a
+solved hand classifier**. A file that reuses a voice number across the staves defeats it: in *The Crave*
+bar 40 and *Solace* bars 22, 26, 30 and 32 the treble staff's inner line (staff 1, voice 2) came out as
+the left hand's, so with R chosen the run did not wait for it and with L chosen it did, and the duet
+played it for the wrong learner. HD2 measured the replacement the reviewer first ruled (the printed staff
+as the default hand, cross-staff only from a local gesture) over the whole built catalogue: 30,662 notes
+in 325 files changed, rightly on reused voice numbers and wrongly on single-hand lines printed across the
+staves (*Moonlight* I's triplets and III's arpeggios, *Clair de Lune*'s left-hand arpeggios), so no
+automatic rule was found that tells the two apart, and it is held (`docs/prompts/runs/HD2/`, with its
+corpus diff as the **worklist** for a future consumer that needs one of those passages). Which hand plays
+an arbitrary two-staff score's note stays **UNKNOWN**; the default stands where nothing better is known.
+Where a passage's hand is established, it is written down as **explicit score truth**: a `hand` row of
+`content/sources/verified-facts.json` naming the item, the score file's identity as the catalogue records
+it, the printed bars (inclusive), the staff, the voice, the hand, and the proof (method, date, evidence).
+`curriculum/verifiedFacts.ts` hands the item's current rows to the extractor as `verifiedHands`; a row whose
+identity is not the item's current one is **stale and refused**, so an edition or file change never
+carries a hand silently. The precedence, in full: (1) HD1's authoritative declaration for a one-staff item
+(it stays in the catalogue row's provenance); (2) a current verified hand row for a two-staff item; (3) the
+voice-home default. `crossStaff` follows the resulting hand against the printed staff where a row decides
+it, so the rows' notes are ordinary right-hand staff-1 notes. The same paths pass it as pass the
+declaration (the Score screen, the builder screens, the build's bridge through
+`tools/content/verified_hand.py`), except the render check's DevScore load, whose row carries no id and
+whose hand summary a two-staff row cannot move. **The store's boundary:** one file, not a fact system;
+each `kind` has its own validation, authority and reader, and no consumer reads across kinds: `hand` rows
+only through the model's override path, `demand` rows (the cells seam's verified passages, counted only for
+their exact item and `rungs`) only through the build's claim path. Rows are added when a named consumer
+needs a passage and its hand is verified, never inferred from the corpus diff.
+
 Given session options `{ hands: 'R'|'L'|'both', loop?: {fromStep, toStep}, tempoPct, transposeSemis }`:
 
 1. **Expected set per step:** `expected[k] = step.notes.filter(n => hands==='both' || n.hand===hands).map(n => n.midi + transposeSemis)`.

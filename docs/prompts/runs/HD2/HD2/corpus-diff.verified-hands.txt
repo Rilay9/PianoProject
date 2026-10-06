@@ -1,0 +1,46 @@
+HD2 corpus diff: hand or crossStaff changed between the extractor at e7cf920c (the voice-home rule) and the verified-hand overrides
+shards read: 4; score files compared: 2014; model notes compared (repeats unrolled): 891803; files that failed to compare: 0
+notes changed: 108 in 2 files (5 printed bars)
+
+By class (notes; files; printed bars), then by transition:
+  A    108 notes;    2 files;     5 bars  reused or moved voice, whole bar on one staff: the old crossing dropped, the printed staff stands (rule 3)
+         108  L/x>R st1
+  B      0 notes;    0 files;     0 bars  two lines under one voice number (both staves at one onset in the bar): the printed staff stands
+  C      0 notes;    0 files;     0 bars  voice on both staves in the bar, one after the other, no crossing established locally: the printed staff stands (rule 2)
+  D      0 notes;    0 files;     0 bars  a crossing established in the bar (an excursion that returns, or a spanning beam or chord) where the old rule saw none
+  E      0 notes;    0 files;     0 bars  crossed under both rules, by the other hand
+  OUTSIDE      0 notes;    0 files;     0 bars  anything else: a hand change with neither rule crossing, a one-staff score, or a declared hand applied
+
+On sheets of more than two staves (folded onto staff 2 by `staffOf`, unchanged): 0 notes in []
+Declarations on the changed files: {'both': 108}
+
+Failures: none
+
+Per file (first catalogue id; notes by class):
+     88  song.ragtime.joplin-solace  A:88
+     20  song.jazz.the-crave  A:20
+
+Bars per class (catalogue id, printed bar, voice: the voice's staves in the bar | changed notes as midi/staff before>after), first 25 of each:
+  A: 9 bar-voices
+    song.ragtime.joplin-solace bar 22 v2: 1 1 1 1 1 1 1 | 81/st1:L/x>R 77/st1:L/x>R 72/st1:L/x>R 74/st1:L/x>R 76/st1:L/x>R 77/st1:L/x>R 69/st1:L/x>R 68/st1:L/x>R
+    song.ragtime.joplin-solace bar 26 v2: 1 1 1 1 1 1 1 | 81/st1:L/x>R 77/st1:L/x>R 72/st1:L/x>R 74/st1:L/x>R 76/st1:L/x>R 77/st1:L/x>R 69/st1:L/x>R 68/st1:L/x>R
+    song.ragtime.joplin-solace bar 30 v2: 1 1 1 1 1 | 74/st1:L/x>R 69/st1:L/x>R 77/st1:L/x>R 74/st1:L/x>R 65/st1:L/x>R 79/st1:L/x>R 76/st1:L/x>R 67/st1:L/x>R …
+    song.ragtime.joplin-solace bar 32 v2: 1 1 1 1 1 | 74/st1:L/x>R 69/st1:L/x>R 77/st1:L/x>R 74/st1:L/x>R 65/st1:L/x>R 79/st1:L/x>R 76/st1:L/x>R 67/st1:L/x>R …
+    song.ragtime.joplin-solace bar 22 v2: 1 1 1 1 1 1 1 | 81/st1:L/x>R 77/st1:L/x>R 72/st1:L/x>R 74/st1:L/x>R 76/st1:L/x>R 77/st1:L/x>R 69/st1:L/x>R 68/st1:L/x>R
+    song.ragtime.joplin-solace bar 26 v2: 1 1 1 1 1 1 1 | 81/st1:L/x>R 77/st1:L/x>R 72/st1:L/x>R 74/st1:L/x>R 76/st1:L/x>R 77/st1:L/x>R 69/st1:L/x>R 68/st1:L/x>R
+    song.ragtime.joplin-solace bar 30 v2: 1 1 1 1 1 | 74/st1:L/x>R 69/st1:L/x>R 77/st1:L/x>R 74/st1:L/x>R 65/st1:L/x>R 79/st1:L/x>R 76/st1:L/x>R 67/st1:L/x>R …
+    song.ragtime.joplin-solace bar 32 v2: 1 1 1 1 1 | 74/st1:L/x>R 69/st1:L/x>R 77/st1:L/x>R 74/st1:L/x>R 65/st1:L/x>R 79/st1:L/x>R 76/st1:L/x>R 67/st1:L/x>R …
+    song.jazz.the-crave bar 40 v2: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 | 77/st1:L/x>R 81/st1:L/x>R 77/st1:L/x>R 81/st1:L/x>R 77/st1:L/x>R 81/st1:L/x>R 77/st1:L/x>R 81/st1:L/x>R …
+  B: 0 bar-voices
+  C: 0 bar-voices
+  D: 0 bar-voices
+  E: 0 bar-voices
+  OUTSIDE: 0 bar-voices
+
+Against the hand rows of content/sources/verified-facts.json (5 rows):
+  row 0: song.jazz.the-crave bars 40-40 staff 1 voice 2 -> R: 20 notes changed
+  row 1: song.ragtime.joplin-solace bars 22-22 staff 1 voice 2 -> R: 16 notes changed
+  row 2: song.ragtime.joplin-solace bars 26-26 staff 1 voice 2 -> R: 16 notes changed
+  row 3: song.ragtime.joplin-solace bars 30-30 staff 1 voice 2 -> R: 28 notes changed
+  row 4: song.ragtime.joplin-solace bars 32-32 staff 1 voice 2 -> R: 28 notes changed
+  TARGET 108 notes; OUTSIDE 0 notes

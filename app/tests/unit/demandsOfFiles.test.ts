@@ -26,6 +26,11 @@
  * take (`extractScoreModel`'s `declaredHand`), so a left-hand cut is measured as the left hand's, as
  * the Score screen plays it. The report stays keyed by path.
  *
+ * **Verified hands (HD2).** An entry may also carry `verifiedHands`: the hand rows of
+ * `content/sources/verified-facts.json` whose identity is this file's sha256, as `tools/content/verified_hand.py`
+ * hands them over (`extractScoreModel`'s `verifiedHands`), so a passage whose hand is established is measured
+ * with that hand, as the Score screen plays it.
+ *
  * **The bridge regression (D0).** The generated items pinned in
  * `tools/content/tests/fixtures/bridge_regression.json` are read here directly,
  * from the built files, and `tools/content/tests/test_measured_demands.py` sends
@@ -36,7 +41,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
-import { extractScoreModel } from '../../src/score/extractScoreModel';
+import { extractScoreModel, type VerifiedHand } from '../../src/score/extractScoreModel';
 import { toMusicXml } from '../../src/score/mxl';
 import { timeSignatureAt, type ScoreModel, type ScoreModelData, type ScoreNote } from '../../src/score/types';
 import { detect, measuredDemands, soundedNotes, type DetectorId } from '../../src/demands/detect';
@@ -47,14 +52,19 @@ import { installTextMeasurer } from './helpers/scoreCatalog';
 const REPO = join(process.cwd(), '..');
 const { demands } = JSON.parse(readFileSync(join(REPO, 'content', 'curriculum', 'vocabulary', 'demands.json'), 'utf8')) as DemandsFile;
 
-async function modelOfFile(path: string, declaredHand?: DeclaredHand): Promise<ScoreModel> {
+async function modelOfFile(path: string, declaredHand?: DeclaredHand, verifiedHands?: VerifiedHand[]): Promise<ScoreModel> {
   const container = document.createElement('div');
   document.body.appendChild(container);
   try {
     const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
     const musicXml = toMusicXml(new Uint8Array(readFileSync(path)));
     await osmd.load(musicXml);
-    return extractScoreModel(osmd, { id: path, musicXml, ...(declaredHand === undefined ? {} : { declaredHand }) });
+    return extractScoreModel(osmd, {
+      id: path,
+      musicXml,
+      ...(declaredHand === undefined ? {} : { declaredHand }),
+      ...(verifiedHands === undefined || verifiedHands.length === 0 ? {} : { verifiedHands }),
+    });
   } finally {
     container.remove();
   }
@@ -177,13 +187,16 @@ function measure(model: ScoreModel): Measured {
 describe.runIf(IN !== undefined && OUT !== undefined)('the build asks for the demands of its files', () => {
   it('measures every file it is given and writes the demand ids, or why it could not', async () => {
     installTextMeasurer();
-    // A bare path, or a path with the row's declared hand (HD1).
-    const listed = JSON.parse(readFileSync(IN as string, 'utf8')) as (string | { path: string; declaredHand?: DeclaredHand })[];
+    // A bare path, or a path with the row's declared hand (HD1) and its file's verified hands (HD2).
+    const listed = JSON.parse(readFileSync(IN as string, 'utf8')) as (
+      | string
+      | { path: string; declaredHand?: DeclaredHand; verifiedHands?: VerifiedHand[] }
+    )[];
     const paths = listed.map((entry) => (typeof entry === 'string' ? { path: entry } : entry));
     const out: Record<string, Measured | { error: string }> = {};
-    for (const { path, declaredHand } of paths) {
+    for (const { path, declaredHand, verifiedHands } of paths) {
       try {
-        out[path] = measure(await modelOfFile(path, declaredHand));
+        out[path] = measure(await modelOfFile(path, declaredHand, verifiedHands));
       } catch (error) {
         out[path] = { error: String(error).slice(0, 300) };
       }

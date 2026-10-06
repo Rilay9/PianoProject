@@ -30,6 +30,7 @@ import { el, button } from '../widgets';
 import { barsPerWindowFor, isTablet } from '../tablet';
 import { contentUrl, loadCatalog } from '../../curriculum/load';
 import { declaredHandOption } from '../../curriculum/declaredHand';
+import { verifiedHandsOption } from '../../curriculum/verifiedFacts';
 import type { CatalogItem, FactKind, Provenance } from '../../curriculum/types';
 import { DEFAULT_SETTINGS, getSettings } from '../../data/settingsStore';
 import { audioEngine } from '../../audio/AudioEngine';
@@ -735,7 +736,7 @@ export function DevMicroscopeScreen(router: Router): HTMLElement {
       // OSMD clamps its cursor iterator.
       const probe = new OsmdView(document.createElement('div'));
       await probe.load(musicXml);
-      const loaded = probe.extractModel({ id: item.id, ...declaredHandOption(item) });
+      const loaded = probe.extractModel({ id: item.id, ...declaredHandOption(item), ...verifiedHandsOption(item) });
       probe.dispose();
       if (disposed) return;
       if (loaded.steps.length === 0) {

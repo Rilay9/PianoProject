@@ -112,14 +112,33 @@ def measure_opportunities(paths: list[Path], timeout: int = 3600, declared_hand:
     return answered
 
 
-def _listing(paths: list[Path], declared_hand: str | None) -> list:
-    """The bridge's input (HD1): bare paths, or each path with the declared hand."""
-    if declared_hand is None:
-        return [str(p) for p in paths]
-    return [{"path": str(p), "declaredHand": declared_hand} for p in paths]
+def _listing(paths: list[Path], declared_hand: str | None, verified_hands: dict[str, list] | None = None) -> list:
+    """
+    The bridge's input: bare paths, or each path with the declared hand (HD1) and its file's verified
+    hands (HD2: `verified_hand.hand_facts_for`'s rows, as `extractScoreModel`'s `verifiedHands`).
+    """
+    out: list = []
+    for p in paths:
+        hands = (verified_hands or {}).get(str(p)) or []
+        if declared_hand is None and not hands:
+            out.append(str(p))
+            continue
+        entry: dict = {"path": str(p)}
+        if declared_hand is not None:
+            entry["declaredHand"] = declared_hand
+        if hands:
+            entry["verifiedHands"] = hands
+        out.append(entry)
+    return out
 
 
-def measure_each(paths: list[Path], timeout: int = 3600, chunk: int = 400, declared_hand: str | None = None) -> dict[str, dict]:
+def measure_each(
+    paths: list[Path],
+    timeout: int = 3600,
+    chunk: int = 400,
+    declared_hand: str | None = None,
+    verified_hands: dict[str, list] | None = None,
+) -> dict[str, dict]:
     """
     `measure_opportunities`' rows for each file, except that a file the app could not
     measure comes back as `{"error": why}` instead of failing the whole run: the build
@@ -128,7 +147,8 @@ def measure_each(paths: list[Path], timeout: int = 3600, chunk: int = 400, decla
     In runs of `chunk` files, so one Vitest process never holds every score's model.
     A run that writes no report at all still raises `DemandsError`: that is a broken
     bridge, not a library of unreadable files, and the build must stop on it.
-    `declared_hand` as in `measure_opportunities` (HD1).
+    `declared_hand` as in `measure_opportunities` (HD1); `verified_hands`, by path, each file's
+    current verified hands (HD2).
     """
     out: dict[str, dict] = {}
     for start in range(0, len(paths), chunk):
@@ -136,7 +156,7 @@ def measure_each(paths: list[Path], timeout: int = 3600, chunk: int = 400, decla
         with tempfile.TemporaryDirectory() as scratch:
             listing = Path(scratch) / "in.json"
             report = Path(scratch) / "out.json"
-            listing.write_text(json.dumps(_listing(part, declared_hand)), encoding="utf-8")
+            listing.write_text(json.dumps(_listing(part, declared_hand, verified_hands)), encoding="utf-8")
             environment = dict(os.environ)
             environment.update({"PIANOPATH_DEMANDS_IN": str(listing), "PIANOPATH_DEMANDS_OUT": str(report)})
             result = run([_npx(), "vitest", "run", SPEC, "--reporter=dot"], cwd=APP_DIR, timeout=timeout, env=environment)

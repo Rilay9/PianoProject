@@ -684,6 +684,13 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
     measured again when the row's changes; two rows declaring different hands for one file
     stop the build, naming them, rather than one reading standing for both.
 
+    **So do the file's verified hands (HD2).** The `hand` rows of
+    `content/sources/verified-facts.json` for the row whose identity is this file's sha256
+    (`verified_hand.verified_hands`) go to the bridge as `verifiedHands`, so a passage whose
+    hand is established is measured with it, as the Score screen plays it. A row whose identity
+    is not the file's is stale: refused, and named on the build's output. A cached row remembers
+    the hands it was measured under and is measured again when they change.
+
     **Never an empty list that reads as "no demands".** A file the app cannot load, a
     score that is not notation, a piece whose notation is not bundled: `demands:
     "unmeasured"` and `measurement.status: "unmeasured"` with the reason. A runtime drill
@@ -693,6 +700,7 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
     Returns (measured, unmeasured, runtime).
     """
     import demands as D
+    import verified_hand as VF
 
     table = read_json(DENSITY_FILE)
     assert isinstance(table, dict)
@@ -722,6 +730,9 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
     todo: dict[str, Path] = {}
     # HD1: the declaration each file is measured under, and the row that set it.
     declared: dict[str, tuple[str | None, str]] = {}
+    # HD2: the verified hands each file is measured under, and the row they came from.
+    hand_facts = VF.read_hand_facts()
+    verified: dict[str, tuple[list, str]] = {}
     runtime = 0
     for entry in entries:
         rel = entry.get("file")
@@ -756,20 +767,37 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
                 f"attach_demands: {held[1]} and {entry['id']} share one score file and declare different hands "
                 f"({held[0] or 'both'} and {hand or 'both'}); the model of the file cannot be both"
             )
+        hands_here = VF.verified_hands(entry["id"], sha, hand_facts)
+        for row in VF.hand_facts_for(entry["id"], sha, hand_facts):
+            if row["stale"]:
+                print(f"attach_demands: stale verified hand for {entry['id']} bars {row['bars']}: "
+                      f"its file is no longer {row['identity']['sha256'][:12]}; refused")
+        held_hands = verified.setdefault(sha, (hands_here, entry["id"]))
+        if held_hands[0] != hands_here:
+            raise SystemExit(
+                f"attach_demands: {held_hands[1]} and {entry['id']} share one score file and verify different hands; "
+                "the model of the file cannot be both"
+            )
         planned.append((entry, sha))
-        if sha not in rows or rows[sha].get("declaredHand") != hand:
+        if sha not in rows or rows[sha].get("declaredHand") != hand or (rows[sha].get("verifiedHands") or []) != hands_here:
             todo[sha] = path
 
     # One bridge run per declaration (HD1), so a file is listed once in a run.
     for hand in sorted({declared[sha][0] for sha in todo}, key=lambda h: h or ""):
         group = {sha: path for sha, path in todo.items() if declared[sha][0] == hand}
-        answered = D.measure_each(list(group.values()), declared_hand=hand)
+        answered = D.measure_each(
+            list(group.values()),
+            declared_hand=hand,
+            verified_hands={str(path): verified[sha][0] for sha, path in group.items() if verified[sha][0]},
+        )
         for sha, path in group.items():
             row = dict(answered[str(path)])
             if "error" not in row:
                 positions[sha] = {key: row.pop(key) for key in POSITION_KEYS if key in row}
             if hand is not None:
                 row["declaredHand"] = hand
+            if verified[sha][0]:
+                row["verifiedHands"] = verified[sha][0]
             rows[sha] = row
 
     measured = 0

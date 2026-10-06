@@ -33,7 +33,8 @@ export interface ScoreNote {
   /**
    * Which hand plays it. Normally staff 1 → R, staff 2 → L, but a cross-staff
    * note (the left hand reaching up onto the treble staff) keeps the hand of
-   * its voice, which is what the learner's fingers actually do.
+   * its voice, which is what the learner's fingers actually do. A verified hand fact for the passage
+   * (HD2) and a one-staff score's declared hand (HD1) override that reading.
    */
   hand: 'R' | 'L';
   voice: number;
@@ -58,7 +59,11 @@ export interface ScoreNote {
   fingering?: number;
   /** Grace notes are excluded from matching by default (docs/05 §1.3). */
   graceNote?: boolean;
-  /** True when the printed staff is not this voice's home staff. */
+  /**
+   * True when the note is printed on one staff and played by the other staff's hand: by a verified hand
+   * fact for its passage where one applies (HD2), otherwise when its printed staff is not its voice's
+   * whole-piece home staff (the compatibility reading).
+   */
   crossStaff?: boolean;
   /** Number of notes in the merged tie chain (1 = untied). */
   tieLength?: number;
