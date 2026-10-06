@@ -67,7 +67,7 @@ def check(track: str, units: list[str]) -> list[str]:
         title, _, rest = body.partition("\n")
         if len(rest.strip()) < 40:
             faults.append(f"{track}: section nearly empty: {title.strip()[:40]}")
-    m = re.search(r"Units reviewed:\s*(\d+)\s*/\s*(\d+)", text)
+    m = re.search(r"Units reviewed:\s*\**(\d+)\**\s*/\s*\**(\d+)", text)
     if not m:
         faults.append(f"{track}: no 'Units reviewed: n/n' line")
     else:
