@@ -112,7 +112,7 @@ Ask **which source teaches this learner need best**, never "can generation be av
 - **Real excerpt or full piece** when authentic transfer or integration is the better job.
 - **External material** (a book, a recording, a song to transcribe) when that is genuinely best.
 
-Never over-musicalise a deliberately mechanical drill: a scale, a bare habanera cell, a ii-V-i shell. It should be clean, accurate, playable, varied where useful and efficient.
+Never over-musicalise a deliberately mechanical drill: a scale, a bare habanera cell, a ii-V-i shell. It should be clean, accurate, playable, varied where useful and efficient. **Experience variety** (the owner, 2026-10-06, `inputs-2026-10-06/owner-experience-variety.md`): choose the tool or mode because it is the best learner action for that step, never because Score is the easiest path; across the MUST abilities Simon, Lab, Jam, Free Play, Duet and one-hand work, hearing, Rhythm only, generated CONTROL and generated musical material, excerpts, full repertoire, chord charts and improvisation each get real teaching use where they fit, none credited for evidence it cannot establish; no quota and no mode count; the chain records are the experience map, reviewed for accidental monoculture at cluster boundaries and in the final learner journey.
 
 ## 5. Generated-content quality, with no human judgement (the owner, 2026-10-06)
 

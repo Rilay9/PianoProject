@@ -986,7 +986,16 @@ describe('a rung-listed excerpt passes the same admission on the card and the sw
         })),
       })),
     });
-    const withBit = (teaching: true | null) => (teaching === true ? catalog.map((item) => (item.type === 'excerpt' ? approved(item) : item)) : catalog);
+    /**
+     * Revised (Entry 257, 2026-10-06): the Bizet left-hand cut carries a current teaching-use yes (Entries 253, 255 and 257;
+     * the reviewer's decision), so the undecided case withholds its bit to keep asking what an undecided cut gets.
+     */
+    const DECIDED_CUTS = new Set(['excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh']);
+    const undecided = (item: CatalogItem): CatalogItem =>
+      item.type === 'excerpt' && DECIDED_CUTS.has(item.id) && item.provenance
+        ? { ...item, provenance: { ...item.provenance, review: { ...item.provenance.review, teaching: null } } }
+        : item;
+    const withBit = (teaching: true | null) => (teaching === true ? catalog.map((item) => (item.type === 'excerpt' ? approved(item) : item)) : catalog.map(undecided));
     /** For each placement: every card a fresh learner placed there gets (the core path and the rung's track, every length), and every swap sheet of the rung's exercises. */
     const offers = (teaching: true | null) => {
       const items = withBit(teaching);
@@ -1021,10 +1030,10 @@ describe('a rung-listed excerpt passes the same admission on the card and the sw
       return found;
     };
 
-    it('every built excerpt is undecided and has a rung that teaches what it was cut for', () => {
+    it('every built excerpt but the one a reviewer decided is undecided, and each has a rung that teaches what it was cut for', () => {
       expect(excerpts.length, 'no excerpt in the built catalogue').toBeGreaterThan(0);
       for (const item of excerpts) {
-        expect(item.provenance?.review.teaching, item.id).toBeNull();
+        expect(item.provenance?.review.teaching, item.id).toBe(DECIDED_CUTS.has(item.id) ? true : null);
         expect(rungFor(item), item.id).toBeDefined();
       }
     });

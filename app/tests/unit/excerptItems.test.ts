@@ -280,16 +280,20 @@ describe('the Library and exploration, whatever the teaching-use bit (E1a)', () 
     expect([EXCERPT, REJECTED, APPROVED].map(admittedForTeaching)).toEqual([false, false, true]);
   });
 
-  it('on the built catalogue, every excerpt is undecided, listed by the Library’s excerpt filter and open to exploration, and admitted to no automatic offer', () => {
+  /** Revised (Entry 257, 2026-10-06): the Bizet left-hand cut carries a reviewer's current teaching-use yes (Entries 253, 255, 257). */
+  const DECIDED_CUTS = new Set(['excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh']);
+
+  it('on the built catalogue, every excerpt is listed by the Library’s excerpt filter and open to exploration; every one but the decided cut is undecided and admitted to no automatic offer', () => {
     const catalog = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'catalog.json'), 'utf8')) as CatalogItem[];
     const cuts = catalog.filter(isExcerpt);
     expect(cuts.length, 'no excerpt in the built catalogue — has the content build run?').toBeGreaterThan(0);
     expect(catalog.filter((one) => matches(one, filters as never, new Map())).map((one) => one.id).sort()).toEqual(cuts.map((one) => one.id).sort());
     for (const cut of cuts) {
-      expect(cut.provenance?.review.teaching, cut.id).toBeNull();
+      const decided = DECIDED_CUTS.has(cut.id);
+      expect(cut.provenance?.review.teaching, cut.id).toBe(decided ? true : null);
       expect(targetFor(cut), cut.id).toBe('score');
       expect(eligibleFor(cut, COPES, { for: 'exploration' }).verdict, cut.id).toBe('eligible');
-      expect(admittedForTeaching(cut), cut.id).toBe(false);
+      expect(admittedForTeaching(cut), cut.id).toBe(decided);
     }
   });
 

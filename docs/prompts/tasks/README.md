@@ -327,6 +327,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **CD1a** | A verified passage proof goes stale with the measurement it certified: the definition version is the build's fingerprint plus the witness side, the declared hand is pinned in the proof; twelve adversary subtests red first; the four Bizet-path facts re-proved (`CD1a-passage-staleness.md`) | content tools | landed 2026-10-06 (`CD1a-passage-staleness.md`); Entry 254
 | **CUT1** | A cut's creating system pinned (`convert.ZIP_SYSTEM`) so the archive is the same bytes on any machine; red first on Windows (0 != 3); the six cuts' identities move once to the runner's; the Bizet passage fact re-bound by `--verify`; the cut's teaching-use decision re-issue asked of the reviewer (`CUT1-cut-creating-system-pinned.md`) | content tools | landed 2026-10-06 (`CUT1-cut-creating-system-pinned.md`); Entry 255
 | **G13** | The strict habanera control: the `bass_cell` family (habanera in C, F, G and a 2/4 tresillo control at ♩ = 60, differing only in the half-bar onset), proved by contract and witness on all 32 bars with six near-misses red; latin.4's counted exercise run is the 2/4 tresillo control; the lesson's contrast is like for like (`G13-habanera-control.md`) | content + tools | landed 2026-10-06 (`G13-habanera-control.md`); Entry 256
+| **TU2** | The Bizet cut's teaching-use decision re-issued on its machine-independent identity with `supersedes` (the reviewer's ruling), so the cut is admitted on every build; FABLE §4 carries the owner's experience-variety direction (`TU2-cut-decision-reissued.md`) | content | landed 2026-10-06 (`TU2-cut-decision-reissued.md`); Entry 257
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -519,6 +520,7 @@ TU1 · landed · 253
 CD1a · landed · 254
 CUT1 · landed · 255
 G13 · landed · 256
+TU2 · landed · 257
 F0a · closed · —
 L120 · approved · —
 -->
