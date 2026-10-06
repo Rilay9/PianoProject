@@ -1,0 +1,248 @@
+# The chain record for A7b.1, Minor ii-V-i with shells (FABLE.md section 3), with Blue Bossa as its real MODEL and MUSIC.
+# Cut from docs/chains/skeletons/latin-cluster.md (section 9's Blue Bossa lines, section 10's checklist) and from
+# docs/chains/A7c.1.yaml as the worked example of every field; field meanings are in ORCHESTRATION-CONTRACT.md section 1;
+# every `recorded` and `cannot_establish` is copied from MODE-SHEET.md for the step's tool, never inferred. Sources for
+# the teaching design: ABILITY-MAP.md A7b.1 (Capability, stations, Measurement, Completion) and A7c.3's L7 line (Blue
+# Bossa as the MUSIC of the bossa bass); RECONCILIATION.md R27 (the Lab in several minor keys, Read it with Play it to
+# me as the model, then Jam it), R28 (the counted drill named by `items`), R29 (a hearing step before construction;
+# INDEPENDENCE voices the standard's minor ii-V-i in shells in a key not practised), R40-R41 (the chart's cell reads a
+# root-fifth bass as no); ORCHESTRATION-CONTRACT.md section 8's minor ii-V-i chain; the reviewer's ruling that A7b.1 /
+# Blue Bossa with the G6 control is the first post-Bizet brief (docs/review/responses/a3a8771d.md).
+# status: draft. Refs, by when they resolve:
+#  - resolve now: content/lessons/jazz.5.md (the lesson that teaches the major shells and holds the shell drill today;
+#    the minor section's home, jazz.5 by R28 or jazz.6 by GENERATOR-ADDENDUM G6 and the map's MUSIC line, is the
+#    placement seam's decision, and this ref moves with it); drill.jazz.ii-v-i-shells and drill.ear.seventh-qualities
+#    (content/catalog.static.json); app/src/engine/sightReading.ts (the Lab's progression exercise and tune);
+#    song.folk.insensatez-how-insensitive-jobim.pdmx (content/sources/pdmx.json, 32 bars); the Markdown anchors and the
+#    test files named under `generated`.
+#  - the first lane commits: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6, Blue Bossa (Kenny Dorham), the quarry's
+#    lead sheet: not in content/sources/pdmx.json at 5783f22d, so the checker lists it as unresolved; it resolves once
+#    the probe (briefs/probe-bluebossa.md, Station 1) admits it with the guarded text splice.
+# Not built, so steps 4 and 11-13 cannot be played as written yet: the drill's minor form (G6: shellChord counts degrees
+# on the major scale, app/src/engine/drills/theory.ts:353-380, so a minor i comes out as a major-seventh shell; CK-6 is
+# not written); the placement (rung, lesson section, the requirement naming the drill). The record stays draft until
+# both land and the reviewer reads it.
+# The harmony this record cites (Blue Bossa: Dm7b5 | G7(#5, add #9) | Cm6 at bars 5-7, 13-15, 21-23, 29-31, and
+# Dm7b5-G7 in bar 16 into Cm6 at 17; Insensatez: Bm7b5 | E7(add b9) | Am7 at bars 13-15 and Bm7b5-E7(add b9) in bar 22
+# into Am7 at 23) is one reader's: the drafter's raw walk of <harmony> on 2026-10-06, Blue Bossa in the quarry dump
+# (docs/review/pdmx-quarry-2026-10-05/xml/B-jazz/), Insensatez in its committed .mxl. It is a claim until the probe's
+# Station 2 verifies it with independent readers.
+# The bossa bass itself (G14's pattern, its Rhythm only and Keep tempo steps) is A7c.3's CONTROL and belongs to A7c.3's
+# record; this record carries only A7c.3's L7 step, where the map makes Blue Bossa the bass's MUSIC (step 13, optional,
+# offered once A7c.3's pattern is on the learner's path). G14 waits for A7c.3 (responses/a3a8771d.md).
+ability: A7b.1
+learner_cannot: "Voice the minor ii-V-i (iiø7, V7, i) in shells in two or three minor keys, know that a root-3-7 shell cannot show the half-diminished chord's flat fifth, or recognise the progression in a tune. No jazz lesson teaches it (ABILITY-MAP A7b.1, Evidence); jazz.5's shell drill is major only and cannot express a minor key (G6); no admitted score prints the progression: the shipped Fly Me to the Moon prints a tritone-substituted setting, and Blue Bossa, which prints it, is not yet in the catalogue."
+independent_target: "Looks at a chart no lesson has explained, finds its minor ii-V-i and says its key, and voices each one in shells from the symbols, the tonic shell the symbol asks for, in a key not practised."
+steps:
+  - action: "Reads the minor ii-V-i and counts its chords: iiø7 (root, minor third, flat fifth, minor seventh), V7, and the tonic chord; the shell as root, third and seventh; that the iiø7 shell and the iim7 shell are the same three notes, because the flat fifth is the note the shell leaves out; and that Blue Bossa prints its tonic as a minor sixth chord (Cm6), whose shell takes the sixth in place of the seventh (the lesson states this spelling only from a cited source)."
+    content: {kind: explanation, ref: content/lessons/jazz.5.md}
+    tool: lesson
+    scaffold: [written definition, notation, chord symbols, key named, numerals named]
+    feedback: "None."
+    recorded: "Nothing (MODE-SHEET section 31)."
+    cannot_establish: "That the learner read, understood or can do what the page says (MODE-SHEET section 31)."
+    removes: []
+
+  - action: "Builds the three shells in C minor on the keys (D-F-C, G-B-F, C-E-flat-A), then the four-note iiø7 (D-F-A-flat-C), and reads the name the app gives each held chord."
+    content: {kind: explanation, ref: content/lessons/jazz.5.md}
+    tool: "Free play, standalone"
+    scaffold: [notation, chord symbols, key named, numerals named, held chord named]
+    feedback: "The keys held light and are named, and three or more pitch classes get a chord name: a readout of what is held, not a verdict."
+    recorded: "Nothing: the screen writes no row and keeps no state beyond the held set (MODE-SHEET section 5)."
+    cannot_establish: "Anything about the learner; whether the held chord was the intended one (MODE-SHEET section 5). Whether the namer names the three-note iiø7 shell, which has no fifth, as half-diminished is not checked."
+    removes: [written definition]
+
+  - action: "Hears a seventh chord, says its quality aloud (major seventh, dominant seventh, minor seventh or half-diminished) before playing it back."
+    content: {kind: generated, ref: drill.ear.seventh-qualities}
+    tool: Ear drills
+    scaffold: [app plays it, free replays]
+    feedback: "Right or wrong per card; Hear it plays the answer and forfeits the card (MODE-SHEET section 19)."
+    recorded: "A drill row: accuracy as the share right, wrong notes, missed, answered; per-card answers shown on the sheet only (MODE-SHEET section 0 R5, section 19). The spoken quality is not stored."
+    cannot_establish: "Quality identification as a concept: no name is asked or compared; octave placement; a learner who finds the notes by trial within the free replays can pass (MODE-SHEET section 19). The spoken quality is self-checked."
+    removes: [notation, chord symbols, key named, numerals named, held chord named]
+
+  - action: "Plays iiø7, V7 and the tonic as shells on demand, in C minor first, then in the drill's other minor keys. This is the counted run."
+    content: {kind: generated, ref: drill.jazz.ii-v-i-shells}
+    tool: Reading and theory drills
+    scaffold: [numerals named, key named]
+    feedback: "Right or wrong per card; a shown or played answer costs the card (MODE-SHEET section 25)."
+    recorded: "A drill row, share right (MODE-SHEET section 25, section 0 R5); a drill passes on accuracy alone (R4) and counts for a rung only when opened from that rung (R3), here toward the requirement whose items name this drill (RECONCILIATION R28)."
+    cannot_establish: "Recognition by ear or eye in context; use in music (MODE-SHEET section 25). That the learner knows the shell cannot show the flat fifth: the shell is the same set for iiø7 and iim7."
+    removes: [app plays it, free replays]
+
+  - action: "Sets the Accompaniment lab to the ii-V-I in C minor, builds it with Read it, and hears it with Play it to me before playing."
+    content: {kind: generated, ref: app/src/engine/sightReading.ts}
+    tool: Hear it
+    scaffold: [app plays it, notation, chord symbols, numerals named, key named, cursor, fixed key]
+    feedback: "The learner's own listening."
+    recorded: "No session row; the hearing is noted in the encounter history (MODE-SHEET section 3)."
+    cannot_establish: "Anything about the learner (MODE-SHEET section 3)."
+    removes: []
+    no_removal_reason: "The task changes from one named chord on demand to the whole progression in time: the Lab's written exercise and its sound are added as the model; the sound goes at the next step."
+
+  - action: "Plays the Lab's written ii-V-I in C minor on the Score screen in Keep tempo."
+    content: {kind: generated, ref: app/src/engine/sightReading.ts}
+    tool: Read it
+    scaffold: [notation, chord symbols, numerals named, key named, cursor, click, count-in, fixed key]
+    feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars (MODE-SHEET section 2)."
+    recorded: "Whatever the Score screen records for an import (R1); the Lab sets no lessonId and no rung lists the import, so no rung counts the run; no skill evidence (MODE-SHEET section 7a)."
+    cannot_establish: "Playing without the page; the written part is the generator's, so it says nothing about choosing a voicing (MODE-SHEET section 7a)."
+    removes: [app plays it]
+
+  - action: "Builds and plays the same progression in two more minor keys, named by the lesson, at a lower tempo first."
+    content: {kind: generated, ref: app/src/engine/sightReading.ts}
+    tool: Read it
+    scaffold: [notation, chord symbols, numerals named, key named, cursor, click, count-in]
+    feedback: "As the step before, in a new key."
+    recorded: "As the step before: an import's row that no rung counts (MODE-SHEET section 7a)."
+    cannot_establish: "As the step before; that the learner can voice the progression in a key without the Lab writing it."
+    removes: [fixed key]
+
+  - action: "Comps the ii-V-I in C minor in shells under the Lab's own tune, with the bass and drums running, from the chart and no notation."
+    content: {kind: generated, ref: app/src/engine/sightReading.ts}
+    tool: Play the tune
+    scaffold: [chord symbols, numerals named, key named, click, chord tones lit, bass and drums supplied, app plays the tune]
+    feedback: "A one-line count per time round of the notes that are chord tones of the bar they were struck over, then dropped (MODE-SHEET section 7b)."
+    recorded: "Nothing is stored; with the bed on, notes are collected per time round and a count is shown, then dropped (MODE-SHEET section 7b)."
+    cannot_establish: "Rhythm, entry, form awareness, voice-leading, or that the learner chose the notes: the chord tones are lit, and the counts are by pitch class only, any octave, any time (MODE-SHEET section 7b)."
+    removes: [notation, cursor, count-in]
+
+  - action: "Optional: plays Blue Bossa's melody in Keep tempo, so the tune is known before it is comped."
+    content: {kind: piece, ref: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6}
+    tool: Keep tempo
+    scaffold: [notation, chord symbols, cursor, click, count-in]
+    feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars (MODE-SHEET section 2)."
+    recorded: "A session row with tempoMeasured true, accuracy and timing (MODE-SHEET section 2); counted by nothing, because the requirement names the drill alone."
+    cannot_establish: "An unaided pulse; fine rhythm below the 150 ms window (MODE-SHEET section 2); anything about the harmony, since the melody is played alone."
+    removes: [numerals named, key named, chord tones lit, bass and drums supplied, app plays the tune]
+
+  - action: "Opens Blue Bossa's chord chart with Comp and Bass + drums on and listens to the app play the changes, following the chart; the lesson names bars 5 to 7 and 13 to 15 as the minor ii-V-i in C minor."
+    content: {kind: piece, ref: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6}
+    tool: Chord chart
+    scaffold: [chord symbols, count-in, app comps, bass and drums supplied, bars named in the lesson, progression named in the lesson]
+    feedback: "The learner's own listening; the chart marks the sounding bar."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "Anything about the learner; nothing is stored (MODE-SHEET section 15)."
+    removes: [notation, cursor, click]
+
+  - action: "Comps Blue Bossa's chart in shells with Comp off and Bass + drums on, the tonic shell taking the sixth the symbol asks for, in a comping rhythm jazz.6 teaches."
+    content: {kind: piece, ref: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6}
+    tool: Chord chart
+    scaffold: [chord symbols, count-in, bass and drums supplied, bars named in the lesson, progression named in the lesson]
+    feedback: "A live bar cell, yes, no or idle, by whether the held notes contain at least 60 % of the bar's chord's pitch classes; extra notes are not penalised (MODE-SHEET section 15)."
+    recorded: "Nothing; the only judgement is the live cell over what is held at that instant (MODE-SHEET section 15)."
+    cannot_establish: "Voicing, rhythm, time-keeping against the click, form awareness over a chorus, or anything over time; nothing is stored (MODE-SHEET section 15)."
+    removes: [app comps]
+
+  - action: "Comps the whole chorus of Blue Bossa in shells with Bass + drums off, no bars named."
+    content: {kind: piece, ref: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6}
+    tool: Chord chart
+    scaffold: [chord symbols, count-in]
+    feedback: "The live bar cell, as the step before (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "As the step before; the chorus is self-checked."
+    removes: [bass and drums supplied, bars named in the lesson, progression named in the lesson]
+
+  - action: "Optional, offered once A7c.3's bossa bass is on the learner's path (A7c.3 L7): plays one chorus of Blue Bossa with the left hand on the bossa bass, root and fifth from the chart's symbols, while the app comps; the lesson says to ignore the cell for the bass, which holds one note at a time."
+    content: {kind: piece, ref: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6}
+    tool: Chord chart
+    scaffold: [chord symbols, count-in, app comps]
+    feedback: "The live bar cell, which a correct root-fifth bass reads as no (RECONCILIATION R41), so the lesson tells the learner to ignore it here; the learner's own listening."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "As the step before; the bass pattern's onsets and roles (no tool reads them on the chart); the feel (unverified as music)."
+    removes: []
+    no_removal_reason: "An optional A7c.3 application on the same chart: the hands swap jobs (the learner supplies the bass, the app the chords), so help is exchanged rather than withdrawn; whether Comp sounds with Bass + drums off is read before this step is offered."
+
+  - action: "Decides from Insensatez's chart, before hearing it, which progression bars 13 to 15 print and in which key. The lesson gives the bars, not the progression."
+    content: {kind: piece, ref: "song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15"}
+    tool: lesson
+    scaffold: [chord symbols, bars named in the lesson]
+    feedback: "None until the reveal at the end of the lesson."
+    recorded: "Nothing for the decision (MODE-SHEET section 31)."
+    cannot_establish: "The identification: self-checked."
+    removes: [count-in, app comps]
+
+  - action: "Checks the decision on Insensatez's chart with Comp on, voices bars 13 to 15 in shells in A minor, then reads the answer printed at the end of the lesson."
+    content: {kind: piece, ref: "song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15"}
+    tool: Chord chart
+    scaffold: [chord symbols, count-in, app comps, bars named in the lesson, answer reveal]
+    feedback: "The reveal; the learner's own listening; the live bar cell (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "The identification: self-checked; voicing (MODE-SHEET section 15)."
+    removes: []
+    no_removal_reason: "The check that follows the decision, with the app's sound added; the help is withdrawn at the independence step."
+
+  - action: "On a later rung, with no lesson naming it, finds every minor ii-V-i in a chart and says its key, rejects what only looks like one, and voices each in shells from the symbols: Insensatez whole (its second minor ii-V-i, bars 22 to 23, is never named), then the A10.1 standard on jazz.9 once it is admitted."
+    content: {kind: piece, ref: song.folk.insensatez-how-insensitive-jobim.pdmx}
+    tool: Chord chart
+    scaffold: [chord symbols]
+    feedback: "None from the lesson; the live bar cell only (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "The identification, the choice of voicing and hearing the progression: self-checked. No one in this process can judge the voicing's sound (unverified as music)."
+    removes: [count-in, app comps, bars named in the lesson, answer reveal]
+
+failure_routes:
+  - observed: "The drill marks the tonic or the dominant wrong: a major third on i, a minor third on V7, or a natural-minor v."
+    next: "Back to the definitions; build the three C minor shells in Free play and read each name; then the drill in C minor alone before its other keys."
+  - observed: "The learner plays iim7's four notes (D-F-A-C) where the four-note iiø7 is asked, or cannot say what the shell leaves out."
+    next: "Free play on D-F-A-C against D-F-A-flat-C, reading both names; the ear drill's m7 and half-diminished cards back to back, naming the quality before each echo; then the shell again, saying which note it drops."
+  - observed: "On Blue Bossa's tonic the learner plays a minor-seventh shell (C-E-flat-B-flat) where the chart prints Cm6."
+    next: "Back to the chart symbol and the lesson's sixth-chord line; build C-E-flat-A in Free play and read its name; then bars 5 to 7 of the chart again with Bass + drums on."
+  - observed: "The progression falls apart in a new minor key in the Lab."
+    next: "Back to C minor in Read it once, then the new key at a lower tempo; Hear it on the new key's build before playing it."
+  - observed: "The changes arrive late on the chart: the shell lands after the bar has turned."
+    next: "Lower the chart's tempo; return to Play the tune in the Lab, where the chord tones are lit; then the chart with Bass + drums on before the chorus without them."
+  - observed: "The learner cannot find the progression in Insensatez."
+    next: "Back to Blue Bossa bars 5 to 7 on the chart with Comp on; the lesson's line on the chord a fifth above the dominant's root; then Insensatez bars 13 to 15 again."
+  - observed: "Optional bass step: the bossa bass collapses under the app's comp."
+    next: "Back to A7c.3's control for the pattern (Rhythm only, then Keep tempo), then the chart at a lower tempo, ignoring the cell."
+  - observed: "The learner cannot hear the progression in the tune."
+    next: "No app tool checks hearing: return to the chart with Comp on and the named bars, and to the ear drill's half-diminished cards. Hearing it stays self-checked (unverified as music)."
+
+independence_test: "Without the original scaffold, the learner looks at a chart no lesson has explained, finds its minor ii-V-i and says its key, rejects what only looks like one, and voices each in shells from the symbols in a key not practised: Insensatez whole on a later rung (bars 22 to 23 never named), then the A10.1 standard on jazz.9 once admitted. The app observes only the chart's live cell, unstored, which can say yes to a three-of-four-note shell and stores nothing; the identification, the voicing choice and hearing the progression are self-checked."
+
+evidence:
+  updates:
+    - "One run of the minor ii-V-i shell drill (the minor form of drill.jazz.ii-v-i-shells, once G6 builds it) meeting its accuracy standard, opened from the placed rung, the requirement's items naming that drill (RECONCILIATION R28; a drill row passes on accuracy alone, MODE-SHEET section 0 R4). A run of the major shell drill, of any other exercise or of any song does not meet it."
+  self_checked:
+    - "Naming the chord qualities by ear (the ear drill echoes the chord; the spoken name is not stored)."
+    - "Knowing what the shell leaves out, and choosing the tonic shell the symbol asks for."
+    - "The progression in several keys in the Lab."
+    - "Comping Blue Bossa from its chart, with and without the app's bass."
+    - "The optional bossa bass on Blue Bossa."
+    - "Finding the progression in Insensatez, and the independence test."
+  never_credits:
+    - "Recognising the minor ii-V-i by eye or by ear."
+    - "Choosing a voicing: the drill asks for one set, and the Lab writes its own."
+    - "Any Accompaniment lab row: a Read it import counts toward no rung, and Jam it stores nothing."
+    - "The Chord chart's live cell, yes or no, in any bar."
+    - "The chord name Free play shows."
+    - "An ear-drill row, or a run of the major shell drill, standing for the minor shell drill."
+    - "Any Hear it encounter, or a Keep tempo run of Blue Bossa's melody."
+    - "That Blue Bossa contains the progression: playing the tune is not the ability (ORCHESTRATION-CONTRACT section 8)."
+
+generated:
+  - family: drill.jazz.ii-v-i-shells
+    job: CONTROL
+    presented_as: drill
+    contract: "docs/prompts/runs/curriculum-review-2026-10-05/GENERATOR-ADDENDUM.md#generator-rows-16"
+    checker: "docs/prompts/runs/curriculum-review-2026-10-05/ABILITY-MAP.md#52-checkers"
+    musical_properties:
+      chord pitch-class sets of iiø7, V7 and the tonic per minor key: "CK-6, not yet written (the G6 seam): music21 RomanNumeral(fig, key.Key(t)) pitch classes for every figure and key, compared with the drill's expected sets. At 5783f22d the drill has no minor form: shellChord counts degrees on the major scale (app/src/engine/drills/theory.ts:353-380)."
+      the half-diminished quality in a root-3-7 shell: "Not shown by construction: the iiø7 shell and the iim7 shell are the same pitch classes (GENERATOR-ADDENDUM G6, the musical fact for the lesson); the G6 contract either adds the fifth or says so."
+      the tonic quality (im7, im6 or im(maj7)): "Chosen by the G6 seam from the primary source (ABILITY-MAP A7b.1); Blue Bossa prints Cm6, one reader's read, verified at the probe's Station 2."
+  - family: drill.ear.seventh-qualities
+    job: CONTROL
+    presented_as: drill
+    contract: content/catalog.static.json
+    checker: app/tests/unit/drillFromCatalog.test.ts
+  - family: app/src/engine/sightReading.ts
+    job: CONTROL
+    presented_as: drill
+    contract: "docs/prompts/runs/curriculum-review-2026-10-05/MODE-SHEET.md#7a-read-it"
+    checker: app/tests/unit/accompanimentLab.test.ts
+    musical_properties:
+      iiø7, V7 and i pitch classes in a minor key: "accompanimentLab.test.ts asserts iiø7 in A minor reads B, D, F, A (line 97); V7 and i in each of the nine minor keys, and the voicing Read it writes, are read at the probe's Station 4."
+      the Lab's own tune under Play the tune: UNKNOWN
+
+status: draft

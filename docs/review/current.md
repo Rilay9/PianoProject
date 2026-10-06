@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/a7b1-bluebossa-design.md` — **response required before dispatch**: the second chain, A7b.1 (Blue Bossa, the minor ii-V-i), as a draft record cut from the latin-cluster skeleton and its first lane's brief (intake, verified facts, the G6 control's state, the Lab and chart facts; stops at placement); three questions: one counted drill run as completion, G6's tonic quality, and whether harmony facts become a new fact kind.
 - `handoffs/sr4-landing.md` — **answered** in `responses/sr4-landing.md` (APPROVE: SR3 closed; one non-blocking comment cleanup in `heldDailyRunRoundTrip.test.ts`, done; A7c.1's only gate the owner's phone walk; the Blue Bossa chain reviewed when its handoff lands).
 - `handoffs/sr3-lb1-landing.md` — **answered** in `responses/sr3-lb1-landing.md` (LB1 approved, A7c.1's only shipping condition the owner's phone walk; SR3's credit behaviour approved; one required change: the hold persisted on the run header at play time, credit reading the stored fact, legacy rows never reclassified: lane SR4).
 - `handoffs/a7c1-shipped.md` — **answered** in `responses/a7c1-shipped.md` (APPROVE: Entries 260 and 261 accepted; LB1 a real blocker, its contract right; after LB1 the only condition left is the owner's phone walk of the 20 lesson steps covering all 24 record actions, then `shipped` and 1/28).
