@@ -222,3 +222,7 @@ Not raised as a decision, but the owner could choose a different path: (a) keep 
 - `docs/genre-plans/theory.md` lists "IN CATALOG" pieces with levels and chord-symbol counts that predate the 2026-10-05 readable-score snapshot; levels and chord counts there are historical and were not re-verified.
 - `02-curriculum.md` D6 says Stage 3 key signatures are "named from the rule — no drill", consistent with the lesson, but the track's `finder` text for theory.3 still says "recognising intervals and primary chords by ear and by sight", a promise (primary chords by ear) the lesson itself says nothing drills.
 - Core `1.5.md:49-51` states "a leap of a fourth from D up to G" for *The Water Is Wide*; a score claim in the core track, not checked here.
+
+## Amendment (2026-10-05, after the primary-source check `SOURCE-CHECK-reading.md`)
+
+Section 3 item 5's RCM claim: minor-key progressions (i-iv-i, i-V-i) first appear at RCM Level 6; Level 5 progressions are major only.

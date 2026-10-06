@@ -111,3 +111,6 @@ Nothing here converts the 425 audit into tasks; there are no theory placements i
 - **E. Score study before playing:** not touched by this track. No theory lesson asks the learner to analyse a piece they are learning (searched the 7 lessons; theory.8.md:33-36 suggests listening to a bridge, and theory.9.md:19-21 names form as a memory aid, neither is a score-study task).
 - **F. Performance and recovery:** not touched by this track beyond Simon's in-drill recovery after a miss (`theory.4.md:54-56`).
 
+## Amendment (2026-10-05, after the primary-source check `SOURCE-CHECK-reading.md`)
+
+Section 3 item 5's RCM claim: minor-key progressions (i-iv-i, i-V-i) first appear at RCM Level 6; Level 5 progressions are major only.

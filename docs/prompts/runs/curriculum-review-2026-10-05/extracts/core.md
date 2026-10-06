@@ -99,3 +99,6 @@ Ranked. None is a task list from the 425 audit.
 - E. Score study before playing: touched only as single lines (`1.1.md:40-43`, `1.4.md:35`, `3.1.md:44-45`). No general before-you-play routine.
 - F. Performance and recovery: touched at 4.6 and 4.7: Perform mode, keep going after an error (`4.6.md:23-27`), "stopping is the fault" earlier (`1.5.md:45-47`), restart from structural points (`4.7.md:29-31`). No record-and-listen task beyond "Record yourself" at `3.6.md:44`; no cold-start or audience simulation.
 
+## Amendment (2026-10-05, after the primary-source check `SOURCE-CHECK-reading.md`)
+
+Section 3 items 1 to 3 and section 4 cite the dossier's benchmark claims; the sources read say: ABRSM's sight-reading table introduces staccato at the Initial grade and ties at Grade 2, and is silent on repeats, endings, D.C. and the natural sign; Faber introduces transposition at Level 1 (C to G five-finger), not Level 4; the ABRSM clap-back echo is the Initial grade's test B, the Grade 1 echo is sung, and pulse plus two-or-three time is Grade 1 test A, printed p.46; the syllabus read is the 2025-26 PDF.

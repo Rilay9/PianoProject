@@ -187,3 +187,7 @@ No. Every finding has a notation or published-source basis and a small fix. The 
 - `0.4.md` item 8 routes to `blues-boogie.4.1`, a non-core unit; items 5 and 6 both fail to 3.4.
 - `4.1.md:39` and `4.2.md:42` use "Grade 1 piece" for pieces whose catalog level is 4.1-5.1; the packet says never to build a level crosswalk.
 - The dossier cites the ABRSM file as the 2025-26 syllabus; the file's text is the 2023 and 2024 syllabus. Noted for the synthesis if the dossier is cited as 2025-26.
+
+## Amendment (2026-10-05, after the primary-source check `SOURCE-CHECK-reading.md`)
+
+Section 3 items 1 to 3 and section 4 cite the dossier's benchmark claims; the sources read say: ABRSM's sight-reading table introduces staccato at the Initial grade and ties at Grade 2, and is silent on repeats, endings, D.C. and the natural sign; Faber introduces transposition at Level 1 (C to G five-finger), not Level 4; the ABRSM clap-back echo is the Initial grade's test B, the Grade 1 echo is sung, and pulse plus two-or-three time is Grade 1 test A, printed p.46; the syllabus read is the 2025-26 PDF.
