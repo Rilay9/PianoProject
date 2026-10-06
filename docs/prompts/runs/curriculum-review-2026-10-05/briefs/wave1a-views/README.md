@@ -3,7 +3,6 @@
 The whole brief is `../wave1a-corrections.md` (about 100 KB); these views are the same text cut at its seam headings so each fits a fetch. Edit the whole file, never a view.
 
 - `00-front.md`: rationale, the three choices, seams and dispatch order
-- `seam-1.md`: Seams, file ownership and dispatch
 - `1a-1.md`: Seam 1a.1: core lessons (W1, W2)
 - `1a-2.md`: Seam 1a.2: practice and technique lessons (W3, W5, A9.1)
 - `1a-3.md`: Seam 1a.3: classical and ragtime lessons (W6, W10)
