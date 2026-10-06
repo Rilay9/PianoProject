@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/a7c1-shipped.md` — **response required**: your two required changes applied (latin.6 narrowed, Entry 260; A7c.1 `reviewed`); the acceptance path in the record (Entry 261); the one gap before `shipped`: the double-tap loop marks the window's first bar, not the tapped one (lane LB1 building); confirm `shipped` waits on LB1 and the owner's phone walk only.
 - `handoffs/a7c1-reviewed.md` — **answered** in `responses/a7c1-reviewed.md` (the record and checker architecture ready; one required change: latin.6's Por Una Cabeza and The Crave overclaims narrowed to the verified bars, done as Entry 260; A7c.1 `reviewed`; `shipped` after A7S, the self-check no-credit proof, the counted runs and the phone-build confirmation).
 - `handoffs/sr2-landing.md` — **answered** in `responses/sr2-landing.md` (approved; one required change: a held run credits no requirement of its judging rung, immediately or retroactively, its skill evidence kept, and the card shows the held level: lane SR3).
 - `handoffs/g13-landing.md` — **answered** in `responses/g13-landing.md` (APPROVE: Entries 254-256; the four drills' notation read whole, no mismatch; the drill admission rule stands, the drills' bits stay null; the cut decision re-issued on its current identity: Entry 257).
