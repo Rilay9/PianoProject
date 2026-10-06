@@ -79,8 +79,49 @@ The existing `SOURCE-CHECK-reading.md` already source-checks the propositions be
 
 Recommended action: Claude should compare the current map text against `SOURCE-CHECK-reading.md`, lift only the stale gates whose propositions are already confirmed (preserving corrections/qualifiers), and leave genuinely distinct unresolved subclaims intact.
 
-## 5. What remains outside this packet
+## 5. IM-3 — Bizet Habanera and Contra Danza exact score read
 
-- Bizet *Habanera* / *Contra Danza* exact score read still requires their MusicXML from the owner's local PDMX archive. The repo index identifies candidates but says to request XML by CID.
-- Actual admission/placement of *Blue Bossa* is implementation/content-intake work, not further research.
+**Correction to the first version of this packet:** the XML was already present on `chatgpt/pdmx-dump-2026-10-05` from commit `fae9f529`. The old dump README was stale; its index was corrected at `0f20820a`. Before declaring a locally-sourced artifact missing, check the branch contents/path directly rather than trusting a possibly stale README.
+
+### Bizet, *Habanera* — CONFIRMED primary MODEL
+
+Exact files:
+- `docs/review/pdmx-dump-2026-10-05/xml/habanerapianosologeorgesbizet-Qmc6P2a11mJaEgAdyvsqiWW9dSt7HazcVSSsU7oRtQ3ptu.musicxml`
+- matching summary under `summary/`
+
+CID `Qmc6P2a11mJaEgAdyvsqiWW9dSt7HazcVSSsU7oRtQ3ptu`.
+
+The opening is in 2/4. In bars 1–7 the left hand repeatedly gives:
+- attack at beat-position `0`: bass D2 eighth;
+- attack at `0.75`: A2 sixteenth after an eighth + sixteenth-rest span;
+- attack at `1.0`: F3 eighth;
+- attack at `1.5`: A2 eighth.
+
+Normalised to the app's doubled 4/4 comparison frame, the attacks are exactly:
+
+`0, 1.5, 2.0, 3.0`
+
+That matches the G13 habanera cell already observed in *Por Una Cabeza*. The same rhythmic skeleton persists while the harmony/pitches vary, including later after the key change. This is stronger than a title/genre inference: the notation itself supplies the pattern.
+
+Disposition: **ADMIT as the primary printed MODEL candidate for the basic habanera bass cell** when the intake path reaches A7c.1/G13. A short left-hand-only opening excerpt is pedagogically cleaner than the whole 60-bar arrangement for initial MODEL use.
+
+### *Contra Danza* — useful contrast, not a second proof of the same cell
+
+Exact files:
+- `docs/review/pdmx-dump-2026-10-05/xml/contradanza-QmYAihNhTVzw5EyFcXFRD7f5gkwnnDKRnH1gTnf4e5frxs.musicxml`
+- matching summary under `summary/`
+
+CID `QmYAihNhTVzw5EyFcXFRD7f5gkwnnDKRnH1gTnf4e5frxs`.
+
+Its opening 2/4 accompaniment is materially different. For example bars 2–3 use a quarter-note bass attack followed by two eighth-note chord attacks, i.e. onset positions approximately:
+
+`0, 1.0, 1.5`
+
+Later the score changes into 6/8 and uses additional accompaniment textures before returning to 2/4. Therefore it should **not** be cited as another instance of the exact G13 habanera cell merely because of its title/tradition.
+
+Disposition: **keep as contrast/transfer candidate**, useful for showing that related dance repertory does not reduce to one onset mask. It is not needed to establish the G13 pattern because Bizet already does that directly.
+
+## 6. What remains outside this packet
+
+- Actual admission/placement of *Blue Bossa* and Bizet is implementation/content-intake work, not further research.
 - No broad map/source audit is authorized by this note.
