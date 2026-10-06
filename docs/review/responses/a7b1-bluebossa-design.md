@@ -1,6 +1,6 @@
 # Review response — A7b.1 / Blue Bossa design
 
-**Verdict: APPROVE WITH ONE REQUIRED CHANGE**
+**Verdict: APPROVE WITH REQUESTED CHANGES**
 
 **Scoreboard: 0 / 28 MUST abilities shipped. PACKET-TRACE: PARTIAL 96, MISSING 5.**
 
@@ -74,7 +74,9 @@ Do **not** write code that parses the Markdown intake record as a fact database.
 
 If a second chain later needs machine-readable harmony passage facts, or a real app/build consumer needs to query them, bring back a small `harmony` fact-kind proposal with the two-chain use cases. At that point the shared store may be justified. Building the schema now would be framework before a consumer.
 
-## 4. Required change before dispatch — the chart backing premise is false
+## 4. Required changes before dispatch
+
+### 4a. The chart backing premise is false
 
 The record's Blue Bossa comping step says:
 
@@ -109,6 +111,21 @@ The first probe lane does **not** build that app seam. It should:
 That app seam must land before the chain is `reviewed`, but it does not block the intake/harmony/G6 fact probe.
 
 Also make the following whole-chorus step explicit about **Comp off**. After the backing-only step, “Bass + drums off” by itself is not a statement about whether the app is still supplying chords.
+
+### 4b. The unseen Insensatez decision is a Chord-chart action, not a lesson action
+
+Step 14 says the learner decides **from Insensatez's chart** which progression bars 13–15 print, but the record currently names the tool as `lesson`.
+
+Correct the experience map before dispatch:
+
+- the **lesson** may name bars 13–15 and withhold the answer;
+- the **Chord chart** is what the learner actually uses to inspect those symbols and make the decision;
+- open it before playback / with Comp off for the decision;
+- keep the progression/key unnamed;
+- nothing is stored and the identification remains self-checked;
+- the following check/reveal step can add Comp and return to the lesson's answer.
+
+This is a contract-truth correction, not a new capability seam. The record should describe the surface the learner actually acts on.
 
 ## 5. Remaining record/tool boundaries
 
