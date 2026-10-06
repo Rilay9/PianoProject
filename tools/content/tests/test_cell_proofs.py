@@ -12,7 +12,10 @@ density rule.
 - **The verified passage fact** (a `demand` row of the verified facts store, `verified_facts.py`, checked by
   `passages.py`). A fact counts only when it is current: the same file identity,
   bars, hand, staff, demand and definition version as its verification, with the app and the witness agreeing on
-  every bar. Each change goes stale. `claims.status_of` counts a current fact for its exact item, rung and demand
+  every bar. Each change goes stale. Since CD1a (`docs/review/responses/d0762e52.md` §2) the definition version is
+  the build's own measurement fingerprint (`demands.definition_fingerprint()`, the vocabulary among its files) with
+  the witness and its partitura pin, and a one-staff proof pins the declared hand it was measured under: a byte of
+  any fingerprinted file, or the catalogue's declaration moving with the score bytes unchanged, goes stale. `claims.status_of` counts a current fact for its exact item, rung and demand
   and nothing else. The bridge-backed case shows a passage where the app and the witness disagree (a cross-staff
   bar) is not verified.
 
@@ -21,6 +24,7 @@ fixtures. The real facts are verified after the hand rule (HD2) lands. Nothing i
 """
 from __future__ import annotations
 
+import contextlib
 import copy
 import hashlib
 import json
@@ -29,12 +33,14 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import build  # noqa: E402
 import cells  # noqa: E402
 import claims  # noqa: E402
+import demands  # noqa: E402
 import family_contracts as FC  # noqa: E402
 import passages  # noqa: E402
 import verified_facts  # noqa: E402
@@ -42,6 +48,11 @@ import verified_facts  # noqa: E402
 REPO = Path(__file__).resolve().parents[3]
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "cells"
 PRESENT = FIXTURES / "present.musicxml"
+BUILT_CATALOG = REPO / "app" / "public" / "content" / "catalog.json"
+#: The files a passage proof's definition version reads: the build's measurement fingerprint's own list, and the
+#: witness's two (`cells.py` and the requirements file holding its partitura pin). Named here, not read from
+#: `passages`, so the adversaries run on a tree that predates CD1a.
+FINGERPRINTED = tuple(demands.DEFINITION_FILES) + ("tools/content/cells.py", "tools/content/requirements.txt")
 DENSITY = json.loads((REPO / "content" / "sources" / "opportunity-density.json").read_text(encoding="utf-8"))
 CELLS = ["rhythm.habanera", "rhythm.tresillo"]
 
@@ -216,21 +227,6 @@ class TheVerifiedPassageFact(unittest.TestCase):
         self.assertEqual(verified_hand.read_hand_facts(), [r for r in rows if r["kind"] == "hand"],
                          "the hand reader reads no demand row")
 
-    def test_the_definition_version_moves_with_the_detector_the_hand_rule_or_the_witness(self) -> None:
-        with tempfile.TemporaryDirectory(dir=REPO / "build") if (REPO / "build").exists() else tempfile.TemporaryDirectory() as scratch:
-            root = Path(scratch)
-            for rel in passages.DEFINITION_FILES:
-                (root / rel).parent.mkdir(parents=True, exist_ok=True)
-                shutil.copyfile(REPO / rel, root / rel)
-            base = passages.definition_version(root)
-            self.assertEqual(base, passages.definition_version(REPO))
-            for rel in ("app/src/demands/detect.ts", "app/src/score/extractScoreModel.ts", "tools/content/cells.py"):
-                with self.subTest(file=rel):
-                    original = (root / rel).read_bytes()
-                    (root / rel).write_bytes(original + b"\n// changed\n")
-                    self.assertNotEqual(passages.definition_version(root), base)
-                    (root / rel).write_bytes(original)
-
     def test_a_passage_the_two_readers_disagree_on_is_not_proved(self) -> None:
         doctored = positions_of(PRESENT)
         del doctored["rhythm.habanera"]["3"]
@@ -269,6 +265,101 @@ class TheVerifiedPassageFact(unittest.TestCase):
         self.assertEqual(crave["rungs"], ["latin.6"])
         cut = next(r for r in rows if r["item"].startswith("excerpt."))
         self.assertEqual((cut["staff"], cut["fact"]["hand"]), (1, "L"))
+
+
+class TheMeasurementTheProofCertified(unittest.TestCase):
+    """
+    CD1a (`docs/review/responses/d0762e52.md` §2): a passage proof is current only while the measurement it certified
+    is the same. Two adversaries the earlier checker let through: a byte of a file in the build's measurement
+    fingerprint (the vocabulary was in the build's list and not the passage's), and the declared hand of a one-staff
+    file moving in the catalogue while the score bytes stay the same. They replace the earlier test of the passage's
+    own file list, which is gone.
+    """
+
+    def setUp(self) -> None:
+        self.item = {"id": "song.fixture", "provenance": {"identity": {"kind": "file", "sha256": sha(PRESENT)}}}
+        self.unproved = demand_row("song.fixture", [2, 3], 2, "rhythm.habanera", ["rung.a"])
+
+    @contextlib.contextmanager
+    def tree(self):
+        """A copy of the fingerprinted files, with both readers (`demands.REPO_ROOT`, `passages.REPO`) pointed at it."""
+        (REPO / "build").mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=REPO / "build") as scratch:
+            root = Path(scratch)
+            for rel in FINGERPRINTED:
+                (root / rel).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(REPO / rel, root / rel)
+            with mock.patch.object(demands, "REPO_ROOT", root), mock.patch.object(passages, "REPO", root):
+                yield root
+
+    def proved_now(self) -> dict:
+        """The fixture passage proved under the definitions as they are now."""
+        verified = passages.verification_of(self.unproved, self.item, PRESENT, positions_of(PRESENT),
+                                            passages.definition_version())
+        return passages.proved(self.unproved, self.item, verified, "2026-10-06")
+
+    def test_one_fingerprint_the_build_s_measurement_fingerprint_is_the_proof_s_detector_side(self) -> None:
+        self.assertFalse(hasattr(passages, "DEFINITION_FILES"), "no second hand-kept list of the bridge's definitions")
+        self.assertEqual(passages.definition_version().split("+")[0], demands.definition_fingerprint())
+
+    def test_a_byte_of_any_file_in_the_build_s_fingerprint_makes_a_current_proof_stale(self) -> None:
+        # The vocabulary (`demands.json`) first: the file the passage list had dropped.
+        files = sorted(demands.DEFINITION_FILES, key=lambda rel: not rel.endswith("vocabulary/demands.json"))
+        for rel in files:
+            with self.subTest(file=rel), self.tree() as root:
+                row = self.proved_now()
+                self.assertEqual(passages.stale_reasons(row, self.item), [])
+                (root / rel).write_bytes((root / rel).read_bytes() + b"\n")
+                reasons = passages.stale_reasons(row, self.item)
+                self.assertTrue(any("fingerprint" in reason for reason in reasons), reasons)
+
+    def test_the_witness_and_its_partitura_pin_make_a_current_proof_stale_and_another_pin_does_not(self) -> None:
+        with self.tree() as root:
+            row = self.proved_now()
+            cells_py = root / "tools" / "content" / "cells.py"
+            cells_py.write_bytes(cells_py.read_bytes() + b"\n# changed\n")
+            self.assertTrue(any("witness" in reason for reason in passages.stale_reasons(row, self.item)))
+        requirements = "tools/content/requirements.txt"
+        lines = (REPO / requirements).read_text(encoding="utf-8").splitlines()
+        pin = next(line for line in lines if line.startswith("partitura"))
+        other = next(line for line in lines if line and not line.startswith("partitura"))
+        for old, new, stale in ((pin, pin + ".1", True), (other, other + ".1", False)):
+            with self.subTest(line=old), self.tree() as root:
+                row = self.proved_now()
+                path = root / requirements
+                path.write_text(path.read_text(encoding="utf-8").replace(old, new), encoding="utf-8")
+                reasons = passages.stale_reasons(row, self.item)
+                self.assertEqual(bool(reasons), stale, reasons)
+                if stale:
+                    self.assertTrue(any("partitura" in reason for reason in reasons), reasons)
+
+    def test_a_declared_hand_change_with_the_same_score_bytes_makes_the_one_staff_proof_stale(self) -> None:
+        # The Bizet left-hand cut: one staff, declared `left` by its authored selection (HD1), measured with that
+        # declaration. Read on the built catalogue and the committed store.
+        built = {row["id"]: row for row in json.loads(BUILT_CATALOG.read_text(encoding="utf-8"))}
+        cut = next(r for r in passages.demand_rows() if r["item"].startswith("excerpt."))
+        item = built[cut["item"]]
+        self.assertEqual(((item.get("notation") or {}).get("staves"), build.declared_hand(item)), (1, "left"))
+        self.assertEqual(passages.stale_reasons(cut, item), [])
+        moves = {
+            "the catalogue's hands left -> right": lambda i: i.update(hands="right"),
+            "the hands fact no longer authoritative": lambda i: i["provenance"]["facts"]["hands"].update(kind="inferred"),
+        }
+        for name, move in moves.items():
+            with self.subTest(move=name):
+                moved = copy.deepcopy(item)
+                move(moved)
+                self.assertEqual(verified_facts.identity_of(moved), verified_facts.identity_of(item), "same score bytes")
+                reasons = passages.stale_reasons(cut, moved)
+                self.assertTrue(any("declared hand" in reason for reason in reasons), reasons)
+        # A two-staff file's proof records no declaration, since the extractor applies none to it
+        # (`extractScoreModel`'s `handDeclarationFor`): its catalogue `hands` moving changes nothing it measured.
+        parent = next(r for r in passages.demand_rows()
+                      if r["item"] == "song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx")
+        self.assertIsNone(parent["proof"]["verified"].get("declaredHand", "absent"))
+        moved = copy.deepcopy(built[parent["item"]])
+        moved["hands"] = "right" if moved.get("hands") == "left" else "left"
+        self.assertEqual(passages.stale_reasons(parent, moved), [])
 
 
 class TheBridgeOnTheFixtures(unittest.TestCase):

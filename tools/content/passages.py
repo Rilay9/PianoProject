@@ -12,8 +12,14 @@ proof's `evidence` pointer.
 **When it counts.** Only when it is current: the store's identity check (the row's `identity` is the catalogue row's
 file identity), and this module's demand checker. The checker needs:
 - the proof was written by `verify` for the same bars, staff, demand and hand as the row says now;
-- under the same definition version (`definition_version`: the bytes of the app's detectors and the model they read, the
-  hand rule among them, the bridge, the lockfile that pins the engraver, and the witness with its partitura pin);
+- under the same definition version (`definition_version`, CD1a): the build's own measurement fingerprint
+  (`demands.definition_fingerprint()`: the app's detectors, the model they read with its hand rule, the vocabulary, the
+  bridge and the lockfile that pins the engraver; the one list, so whatever re-measures the catalogue stales a proof
+  too), with the witness (`cells.py`) and its partitura pin, which only a passage proof reads;
+- with the model measured as it is now: a one-staff file under the same declared hand (HD1, `build.declared_hand`,
+  recorded as `declaredHand`; null for a file of two staves, which the extractor gives no declaration), and a two-staff
+  file with the same verified hands (HD2, recorded as `hands`), so a catalogue or provenance change that moves the hand
+  goes stale with the score bytes unchanged;
 - with the app's detector and the independent witness agreeing on every bar of the passage.
 
 Any change makes it stale, and it counts for nothing until `verify` runs again. `claims.status_of` counts a current fact
@@ -34,29 +40,24 @@ import argparse
 import datetime
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import demands  # noqa: E402
 import verified_facts as VF  # noqa: E402
 
 REPO = HERE.parents[1]
 BUILT = REPO / "app" / "public" / "content"
 
-#: The files whose bytes decide a passage fact: the app's detectors and the model they read (the hand rule is
-#: `extractScoreModel.ts`'s), the bridge, the engraver's pin, and the witness with its library pin.
-DEFINITION_FILES = (
-    "app/src/demands/detect.ts",
-    "app/src/score/extractScoreModel.ts",
-    "app/src/score/types.ts",
-    "app/src/score/mxl.ts",
-    "app/tests/unit/demandsOfFiles.test.ts",
-    "app/package-lock.json",
-    "tools/content/cells.py",
-    "tools/content/requirements.txt",
-)
+#: What a passage proof reads beyond the build's measurement fingerprint (`demands.definition_fingerprint()`, never
+#: copied here): the witness, and the line of the requirements file that pins its library. The pin's line, not the
+#: whole file: another library's pin changes nothing the witness reads.
+WITNESS = "tools/content/cells.py"
+WITNESS_PIN = ("tools/content/requirements.txt", "partitura")
 
 #: The fields of a passage a proof copies: a change to any of them makes the fact stale.
 PINNED = ("bars", "staff", "demand", "hand")
@@ -64,14 +65,57 @@ PINNED = ("bars", "staff", "demand", "hand")
 METHOD = "the app's detector through the bridge and the partitura witness (cells.py), agreeing on every bar"
 
 
-def definition_version(root: Path = REPO) -> str:
-    """Twelve hex digits over `DEFINITION_FILES`' bytes, line endings normalised."""
+def witness_version() -> str:
+    """Twelve hex digits over the witness's bytes (line endings normalised) and its library's pin line."""
     digest = hashlib.sha256()
-    for rel in DEFINITION_FILES:
-        path = root / rel
-        digest.update(rel.encode("utf-8"))
-        digest.update(path.read_bytes().replace(b"\r\n", b"\n") if path.exists() else b"(missing)")
+    path = REPO / WITNESS
+    digest.update(WITNESS.encode("utf-8"))
+    digest.update(path.read_bytes().replace(b"\r\n", b"\n") if path.exists() else b"(missing)")
+    rel, library = WITNESS_PIN
+    pins = REPO / rel
+    lines = pins.read_text(encoding="utf-8").splitlines() if pins.exists() else []
+    pin = [line.strip() for line in lines if re.match(rf"\s*{library}\s*([=<>!~;\[]|$)", line, re.IGNORECASE)]
+    digest.update(rel.encode("utf-8"))
+    digest.update("\n".join(pin).encode("utf-8") if pin else b"(missing)")
     return digest.hexdigest()[:12]
+
+
+def definition_version() -> str:
+    """
+    `<measurement fingerprint>+<witness version>`: the build's own fingerprint (`demands.definition_fingerprint()`, the
+    one its measurement cache is keyed on) and the witness's (`witness_version`). Two parts, so a stale reason says which
+    side moved.
+    """
+    return f"{demands.definition_fingerprint()}+{witness_version()}"
+
+
+def version_reasons(was: str | None, now: str) -> list[str]:
+    """Why a proof's definition version is not the current one, by side; empty when it is."""
+    if was == now:
+        return []
+    old, new = (was or "").split("+"), now.split("+")
+    if len(old) != 2 or len(new) != 2:
+        return [f"proved under another definition version, not the build's measurement fingerprint with the witness's "
+                f"({was} -> {now})"]
+    out = []
+    if old[0] != new[0]:
+        out.append(f"the build's measurement fingerprint changed (the detectors, the model and its hand rule, the "
+                   f"vocabulary, the bridge or the engraver's pin: {old[0]} -> {new[0]})")
+    if old[1] != new[1]:
+        out.append(f"the witness or its partitura pin changed ({old[1]} -> {new[1]})")
+    return out
+
+
+def declared_hand_of(item: dict) -> str | None:
+    """
+    The declared hand a proof of `item`'s file records (HD1): `build.declared_hand(item)`, the hand the bridge gives
+    every note of a one-staff file; None for a file of two or more staves, which the extractor gives no declaration
+    (`extractScoreModel`'s `handDeclarationFor`), so a declaration moving there changes nothing measured.
+    """
+    import build
+
+    staves = (item.get("notation") or {}).get("staves")
+    return None if isinstance(staves, int) and staves > 1 else build.declared_hand(item)
 
 
 def view(row: dict) -> dict:
@@ -90,8 +134,7 @@ def demand_reasons(row: dict, item: dict | None, version: str | None = None) -> 
     for field in PINNED:
         if verified.get(field) != passage.get(field):
             out.append(f"the {field} changed since it was proved ({verified.get(field)!r} -> {passage.get(field)!r})")
-    if verified.get("version") != version:
-        out.append(f"the detector, hand rule or witness definitions changed ({verified.get('version')} -> {version})")
+    out.extend(version_reasons(verified.get("version"), version))
     if verified.get("app") != verified.get("witness") or verified.get("disagree"):
         out.append("the app and the witness did not agree when it was proved")
     numbers = list(range(passage["bars"][0], passage["bars"][1] + 1))
@@ -104,6 +147,11 @@ def demand_reasons(row: dict, item: dict | None, version: str | None = None) -> 
 
         if (verified.get("hands") or []) != verified_hand.verified_hands(item["id"], VF.identity_of(item)):
             out.append("the file's verified hands changed since it was proved")
+        # So is a one-staff file's declared hand (HD1), which the catalogue and its provenance hold, not the score's
+        # bytes: the identity check cannot see it move.
+        declared = declared_hand_of(item)
+        if verified.get("declaredHand") != declared:
+            out.append(f"the declared hand changed since it was proved ({verified.get('declaredHand')!r} -> {declared!r})")
     return out
 
 
@@ -263,8 +311,6 @@ def rewrite_demand_rows(text: str, rows: list[dict]) -> str:
 
 def verify(only: str | None = None) -> int:
     """Measure and witness every demand row (or one item's), and write the proofs where the two agree on every bar."""
-    import demands
-
     raw = VF.FACTS_FILE.read_bytes().decode("utf-8")
     data = json.loads(raw)
     catalog = {entry["id"]: entry for entry in json.loads((BUILT / "catalog.json").read_text(encoding="utf-8"))}
@@ -282,7 +328,8 @@ def verify(only: str | None = None) -> int:
             continue
         path = BUILT / item["file"]
         # Measured as the build measures it (`build.attach_demands`): the row's declared hand (HD1) and the file's
-        # current verified hands (HD2), each read by its own path (`build.declared_hand`, `verified_hand`).
+        # current verified hands (HD2), each read by its own path (`build.declared_hand`, `verified_hand`), and each
+        # recorded in the proof (`declaredHand` as the extractor applies it: a one-staff file's only).
         import build
         import verified_hand
 
@@ -293,7 +340,8 @@ def verify(only: str | None = None) -> int:
             print(f"{name}: the app could not measure the file: {measured['error']}")
             failed += 1
             continue
-        verified = {**verification_of(row, item, path, measured.get("positions") or {}, version), "hands": hands}
+        verified = {**verification_of(row, item, path, measured.get("positions") or {}, version), "hands": hands,
+                    "declaredHand": declared_hand_of(item)}
         if verified["disagree"] or verified["app"] != verified["witness"] or \
                 len(verified["numbers"]) != row["bars"][1] - row["bars"][0] + 1:
             print(f"{name}: NOT proved: app {verified['app']}, witness {verified['witness']}, disagree at {verified['disagree']}")
