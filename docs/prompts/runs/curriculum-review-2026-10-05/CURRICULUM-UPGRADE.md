@@ -89,12 +89,12 @@ Endpoint kept: Grade 1 fluency with reading, two hands, rhythm, chord symbols, k
 
 | Item | Class | Where | Evidence | Needs |
 | --- | --- | --- | --- | --- |
-| Teach repeat signs, first and second endings, D.C., fermata, the natural sign, staccato, once, where pieces first print them | MUST | 3.1 (natural beside the accidental rule), 3.4 or 4.5 (the rest) | no lesson names them `[V]`; Petzold, Schumann Chorale, Für Elise easy, Bella Ciao, Canon print them `[R]`; ABRSM sight-reading parameters list staccato and ties from Grade 1 `[D]` | text + data (catalog concepts) |
+| Teach repeat signs, first and second endings, D.C., fermata, the natural sign, staccato, once, where pieces first print them | MUST | 3.1 (natural beside the accidental rule), 3.4 or 4.5 (the rest) | no lesson names them `[V]`; Petzold, Schumann Chorale, Für Elise easy, Bella Ciao, Canon print them `[R]`; ABRSM sight-reading parameters list staccato from the Initial grade and ties from Grade 2, and are silent on repeats, endings, D.C. and the natural sign [source-checked 2026-10-05, ABRSM 2025-26 syllabus p.16: corrected from the dossier's "from Grade 1"] | text + data (catalog concepts) |
 | Eighth notes before 2.2 in first tunes | MUST | 0.3, 1.1, 1.2, 1.3 | Hot Cross Buns bar 3, Frère Jacques bars 5-6 `[V]` | text (one sentence) or repertoire (simplify the bars); content choice |
 | Say something about key signatures at 2.3, 2.4, 2.5 | MUST | those lessons | options carry signatures a stage before 3.1 `[R]` | text |
 | Reading rows: key signatures and 3/4 | MUST | core sight-reading rows | all six rows `fifths: 0`, no 3/4 `[R]`; ABRSM Grade 1 includes G, F, 3/4 `[D]` | data + generator (reading controls) |
-| Transposition as a core task at 1.2 and 2.5/3.2 | MUST | 1.2, 2.5 or 3.2 | never a core task `[R]`; Faber transposes at Level 4 and the dossier from Stage 1 `[D]` | text (options exist) |
-| Clap the pulse, clap an echo, two-or-three-time listening, labelled self-checked | MUST | 1.2 or 2.2; 1.4 or 2.4 | absent in Stages 0-2 `[R]`; placement item 2 asks for a clap-back with no lesson `[R]`; ABRSM Grade 1 aural `[D]` | text |
+| Transposition as a core task at 1.2 and 2.5/3.2 | MUST | 1.2, 2.5 or 3.2 | never a core task `[R]`; Faber introduces transposition at Level 1 (C to G five-finger), continues it in 2A and 2B, and transposes sight-reading exercises at Level 4; ABRSM and RCM do not require it [source-checked 2026-10-05, Faber level pages: corrected from "Level 4"] | text (options exist) |
+| Clap the pulse, clap an echo, two-or-three-time listening, labelled self-checked | MUST | 1.2 or 2.2; 1.4 or 2.4 | absent in Stages 0-2 `[R]`; placement item 2 asks for a clap-back with no lesson `[R]`; the ABRSM clap-back echo is the Initial grade's test B, the Grade 1 echo is sung, and pulse plus two-or-three time is Grade 1 test A [source-checked 2026-10-05, ABRSM 2025-26 syllabus p.46: corrected] | text |
 | Align 4.6's title with its gate; order 4.7 after 4.6 | MUST | 4.6, 4.7 | gate measures two Perform runs `[R]`; 4.7 has no prerequisite `[R]` | text + data |
 | One threshold for the 4.7 blind gate | MUST | 4.7 | three values `[R]` | text |
 | Score-study routine (owner) | SHOULD | 4.6 | single lines only `[R]`; dossier 2.5 | text |
@@ -246,7 +246,7 @@ Endpoint kept: hear and take down an eight-bar tune with its chords, and apply h
 | One real-piece application per rung (find the cadence in a hymn, I-vi-IV-V in a pop song, a V/V in a standard), self-checked | MUST | theory.3-9 | every rung has zero songs `[V]`; genre plan lists catalog pieces `[R]` | text + data (songOptions after confirming ids at HEAD) |
 | Form names at theory.9 (ABA, AABA, 32-bar) | MUST | theory.9 | finder asks for them, lesson names none `[R]` | text |
 | A key or tonic before melodic dictation and the tune drill | SHOULD | drill params | random pitches with no key `[R]`; RCM names the key `[D]` | generator |
-| Minor-key progressions and numerals by ear; keys other than C | SHOULD | ear rows | all major, all C `[R]`; RCM minor progressions `[D]` | generator |
+| Minor-key progressions and numerals by ear; keys other than C | SHOULD | ear rows | all major, all C `[R]`; RCM progressions are major only at Level 5 and minor (i-iv-i, i-V-i) first appears at Level 6 [source-checked 2026-10-05, RCM 2022 syllabus: corrected] | generator |
 | Descending and harmonic intervals; the tritone named | SHOULD | theory.3 drill and text | ascending only `[R]` | generator + text |
 | Existing rhythm rows (eighths, dotted, six-eight) on theory.4/5 | SHOULD | stage JSON | rhythm dictation once, quarters and halves `[R]` | exercise (data) |
 | Bass-line and function dictation; melody plus bass | SHOULD | theory.6/8 | `[R]`; dossier 2.4 | generator |
