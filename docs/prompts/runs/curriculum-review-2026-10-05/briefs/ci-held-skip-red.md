@@ -1,0 +1,15 @@
+# Brief: the E2E red that has hidden CI's render check since 2 October (CI3; 2026-10-06)
+
+**What governs:** FABLE §2 (CI is the broad proof on every push; its render check is the step that proves a shipped score renders with cursor parity) and the never-ship-what-CI-cannot-prove rule. Since the last green CI run on 2026-10-02 (283bdb55), every run of the CI workflow fails on E2E shard 7 at `app/tests/e2e/session-held-skip.spec.ts:265`, the case "a piece retired on its sheet after Start session: the record holds its own kind and the state, and Today's row says why, read back after a reload at three sizes (G90a)", and the retry fails the same way; because a shard fails, the "Render check and validate" job is skipped, so no push since then has had its render check run on the runner. The Bizet cut (Entry 243) and the hand seam (Entry 244) now ship without that proof.
+
+**Why this and not something else.** Alternatives: leave it (rejected: it hides the render proof every slice needs); mark the case skipped (rejected: it would hide a possible real regression of the held-piece feature from G90a); run the render job regardless of the shards (a workflow change the reviewer would have to approve, and it still leaves a red). What would reverse it: the case failing for a cause outside the feature (a runner timing), in which case the fix is the test's wait, as Entry 185's CI fix did, with the app unchanged.
+
+**Finish condition:** the mechanism established first (read the failing run's log and trace for the case: `gh run view <id> --log-failed`; the three sizes; what the read-back expects and what it found), the hypothesis named with the test that tells it from the alternative (a product regression in the held-piece record or Today's row, versus a test that races the reload or the size change on the runner), then the fix at the mechanism: if the app is wrong, the smallest app change with the case red first locally; if the test is wrong, the test's wait or assertion with the reason, the app unchanged. The case green locally at the three sizes on the lane's own port with `--workers=2`, run twice; `docs/08-test-map.md`'s row for `session-held-skip.spec.ts` says what changed and why.
+
+## Files owned
+
+`app/tests/e2e/session-held-skip.spec.ts`; if the app is wrong, the one module the trace names under `app/src/` (say which before editing) and its unit test; `docs/08-test-map.md` (the row). Nothing else; no workflow change.
+
+Harness: `operating-procedure.md` §14. Stop any preview server before a Playwright run; `--workers=2`; no content build (the built content in the main checkout is current at 2093 items; copy `app/public/content` from `C:\Users\yalir\repos\Piano Stuff\PianoProject\app\public\content` into your worktree). No commit, push, stash, checkout or reset; never name an AI model; park temporary files under `build/` in the worktree.
+
+Reply in at most eight lines: the mechanism and the test that told it from the alternative; whether the app or the test changed; the case's results at the three sizes, twice; a draft record entry (where, what, before, after, why); anything not done, by name.
