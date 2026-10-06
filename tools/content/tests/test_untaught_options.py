@@ -105,7 +105,9 @@ class TheShippedCurriculum(unittest.TestCase):
         cls.probe = probe_untaught(PROBE)
 
     def test_the_probe_is_the_one_the_brief_names(self) -> None:
-        self.assertEqual(len(self.probe), 216, "L120d's probe recorded 216 `untaught` rung-own options")
+        # 216 under L120d; 215 after the W1b landing re-ran the probe (Entry 233: the G edition on 2.5, hymns.2's
+        # options, the contrary scales' versions). The pin is a snapshot, re-run and recorded, never forced (L124).
+        self.assertEqual(len(self.probe), 215, "the W1b probe recorded 215 `untaught` rung-own options")
 
     def test_the_lines_equal_the_probe_but_for_the_recorded_differences(self) -> None:
         only_probe = {key for key in self.probe if key not in self.mine}
