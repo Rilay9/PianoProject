@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/sr2-landing.md` — **response required**: Entry 258 (SR2) landed under your SR1 ruling (the daily read held to the learner's taught set, no read at 0.1-0.4; `metre.three-four` taught at 1.4, curated-only, by the waltz contract; the reader's 3/4 move on single-hand rows only); two evidence questions: held 1.1 daily runs crediting rung 1.5's requirements, and the card printing L1.5 over a phrase held at 1.1.
 - `handoffs/g13-landing.md` — **answered** in `responses/g13-landing.md` (APPROVE: Entries 254-256; the four drills' notation read whole, no mismatch; the drill admission rule stands, the drills' bits stay null; the cut decision re-issued on its current identity: Entry 257).
 - `handoffs/cut-identity-machine-dependent.md` — **answered** in `responses/cut-identity-machine-dependent.md` (APPROVE: the narrow pin is right; identity stays the built file's sha256; the cut decision re-issued with `supersedes`, no fresh read needed for this repair, no precedent for arbitrary identity moves).
 - `handoffs/g13-habanera-control.md` — **answered** in `responses/g13-habanera-control.md` (the bass_cell family approved; one required change: latin.4's exercise requirement names the 2/4 tresillo control, never any exercise option; H7 must close before `reviewed`; teaching-use bits null until the built items are reviewed); the brief revised and dispatched.
