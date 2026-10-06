@@ -165,7 +165,7 @@
       "voice": null,
       "kind": "demand",
       "fact": {"demand": "rhythm.habanera", "hand": "L"},
-      "rungs": [],
+      "rungs": ["latin.4"],
       "proof": {
         "method": "the app's detector through the bridge and the partitura witness (cells.py), agreeing on every bar",
         "date": "2026-10-06",

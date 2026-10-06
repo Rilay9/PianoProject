@@ -995,8 +995,14 @@ def candidate_rungs(catalog: list[dict], curriculum: dict) -> list[dict]:
     """
     import claims
 
+    import passages
+
     skills, demands = claims.load_vocabulary()
     ancestry = claims.rung_ancestry(curriculum)
+    # CD1 §3a, read as `claims.rung_claims` reads it (LP1): the current verified passage facts, counted for their
+    # exact item, rung and demand, so a curated-only claim (the habanera on the Bizet cut at latin.4) is established
+    # here where its fact names the rung, and nowhere else.
+    facts = passages.current_facts(catalog)
     # One detector answering for several lesson concepts (the left-hand pattern): a claim reached
     # through it says the demand is in the notes, not that the rung's own pattern is.
     sharing: dict[str, list[str]] = {}
@@ -1021,12 +1027,12 @@ def candidate_rungs(catalog: list[dict], curriculum: dict) -> list[dict]:
             if claims.untaught_on(item, rung, ancestry, demands, curriculum):
                 continue
             rung_claims, _unmeasurable = claims.rung_claims_of(lesson, skills, demands)
-            established = [c for c in rung_claims if claims.status_of(c, item, skills) == "established"]
+            established = [c for c in rung_claims if claims.status_of(c, item, skills, rung, facts) == "established"]
             if established:
                 rows.append({"rung": rung, "title": lesson.get("title"),
                              **claims.coping_admission(item, rung, ancestry, demands, curriculum, targets),
                              "established": [claim_row(c) for c in established],
-                             "notEstablished": [{"kind": c["kind"], "id": c["id"], "status": claims.status_of(c, item, skills)}
+                             "notEstablished": [{"kind": c["kind"], "id": c["id"], "status": claims.status_of(c, item, skills, rung, facts)}
                                                 for c in rung_claims if c not in established]})
         measurement = item.get("measurement") or {}
         block = (item.get("provenance") or {}).get("excerpt") or {}

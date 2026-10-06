@@ -5,10 +5,10 @@
 # section 1, what each tool records is in MODE-SHEET.md. Where the probe's table row held two items or
 # two tools, the record has one step for each, because a step holds one content and one tool.
 # status stays draft. The cut's id resolves: the probe merged its approval into content/sources/excerpts.json
-# (event ex-d9d06e1d-f740-4a7e-a03f-dd954827e1d4). latin.4's lesson file does not exist: the probe stopped at
-# its Station 5 (excerpts.py --candidate-rungs does not list latin.4 for the cut), so the checker lists that ref
-# as unresolved. Step 6 of the probe's table (the back-to-back contrast) is two steps here, one per content,
-# per the review of 2026-10-06 (responses/bb6289f2.md section 3, item 1).
+# (event ex-d9d06e1d-f740-4a7e-a03f-dd954827e1d4). latin.4's lesson file exists since the placement seam (LP1:
+# content/lessons/latin.4.md), so every ref resolves; the probe had stopped at its Station 5, where
+# excerpts.py --candidate-rungs did not list latin.4 for the cut, a reader LP1 corrected. Step 6 of the probe's
+# table (the back-to-back contrast) is two steps here, one per content, per the review of 2026-10-06 (responses/bb6289f2.md section 3, item 1).
 ability: A7c.1
 learner_cannot: "Name or play the habanera bass (a dotted eighth, a sixteenth and two eighths in a 2/4 bar), tell it from the tresillo on the page or by ear, or know that the Argentine tango figures descend from it. latin.3 names and explains the tresillo as 3+3+2; no lesson teaches the habanera as the contrasting cell, or asks the learner to tell the two apart or apply them, and Por Una Cabeza carries the habanera in 56 of its 66 bars with nothing pointing the learner at it."
 independent_target: "Looks at a left hand they have not been told about and says which cell it uses, and where it stops using it, before hearing it; afterwards taps or plays that left hand at a tempo they choose."

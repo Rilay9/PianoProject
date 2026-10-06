@@ -54,7 +54,11 @@ BUILT = REPO / "app" / "public" / "content"
 #: right-hand Ode, the 16 contrary scales change version): 290 lines, replacing L120d's 291.
 #: Re-run 2026-10-06 after the hand seam (Entry 244: rung 1.3's one-staff left-hand songs read as the left hand, so
 #: Hot Cross Buns and Mary Had a Little Lamb lose `interval.skip` there): 290 lines, 215 `untaught`, two lines changed from W1b.
-PROBE = REPO / "docs" / "prompts" / "runs" / "HD1" / "probe-refusals.txt"
+#: Re-run 2026-10-06 at the latin.4 placement (LP1): 297 lines, 218 `untaught`. Seven lines added, all latin.4's, and
+#: no other line changed: the three tresillo exercises and the Bizet left-hand cut `teaching-use-not-approved` (no
+#: teaching-use decision admits them), and the whole Bizet, Por Una Cabeza and The Crave `untaught` for
+#: `rhythm.triplets` alone (the three context options; no rung on latin.4's path teaches triplets).
+PROBE = REPO / "docs" / "prompts" / "runs" / "LP1" / "probe-refusals.txt"
 
 #: Where the tool's lines on the shipped curriculum differ from the probe, and why. Keyed by
 #: (rung, item); `side` says which reading has the line. Nothing else may differ. Since L120b's snapshot
@@ -109,7 +113,8 @@ class TheShippedCurriculum(unittest.TestCase):
     def test_the_probe_is_the_one_the_brief_names(self) -> None:
         # 216 under L120d; 215 after the W1b landing re-ran the probe (Entry 233: the G edition on 2.5, hymns.2's
         # options, the contrary scales' versions). The pin is a snapshot, re-run and recorded, never forced (L124).
-        self.assertEqual(len(self.probe), 215, "the HD1 probe recorded 215 `untaught` rung-own options (as W1b did)")
+        # 218 after the latin.4 placement (LP1): its three context options, untaught for triplets there.
+        self.assertEqual(len(self.probe), 218, "the LP1 probe recorded 218 `untaught` rung-own options (HD1's 215 and latin.4's 3)")
 
     def test_the_lines_equal_the_probe_but_for_the_recorded_differences(self) -> None:
         only_probe = {key for key in self.probe if key not in self.mine}

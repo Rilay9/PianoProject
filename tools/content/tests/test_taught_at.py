@@ -805,7 +805,9 @@ class TestTheCells(Vocabulary):
         skills = {s["id"]: s for s in self.skills["skills"]}
         demands = {d["id"]: d for d in self.demands["demands"]}
         derived = claims.teaching_rungs(self.curriculum, skills, demands)
-        self.assertEqual(derived.get("rhythm.habanera"), ["ragtime.7"])
+        # Revised (LP1): latin.4's concepts name the habanera and its path does not reach ragtime.7, so the
+        # derivation is both rungs, in the curriculum's order, and `demands.json` lists both.
+        self.assertEqual(derived.get("rhythm.habanera"), ["latin.4", "ragtime.7"])
         self.assertEqual(derived.get("rhythm.tresillo"), ["latin.3", "latin.6"])
         for demand_id in ("rhythm.habanera", "rhythm.tresillo"):
             self.assertEqual(demands[demand_id]["taughtAt"], derived[demand_id], demand_id)

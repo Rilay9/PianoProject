@@ -708,13 +708,22 @@ class TestExcerptsOnTheBuild(Built):
                 sources = {claim["from"] for c in row["candidates"] for claim in c["established"] if claim["id"] == "interval.leap"}
                 self.assertLessEqual(sources, {"concept leap", "taughtAt"}, "the leap reached through another concept")
 
+    # Revised (LP1; class: a test asserting the state being changed). Old assumption: no rung lists an excerpt.
+    # latin.4 lists the Bizet left-hand cut, the placement the reviewer ruled (`docs/review/responses/eeff22fe.md`
+    # §1); the cut stays refused on every automatic offer until a teaching-use decision admits it. That one
+    # placement is named here; any other excerpt on any rung, or this cut on another rung, still fails.
+    PLACED = {("excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh", "latin.4")}
+
     def test_on_no_rung_and_no_named_section(self) -> None:
-        listed = {option for stage in self.curriculum["stages"] for unit in stage["units"] for lesson in unit["lessons"]
+        listed = {(option, lesson["id"]) for stage in self.curriculum["stages"] for unit in stage["units"]
+                  for lesson in unit["lessons"]
                   for option in lesson.get("exerciseOptions", []) + lesson.get("songOptions", [])}
         for item in self.excerpts():
             with self.subTest(item=item["id"]):
-                self.assertNotIn(item["id"], listed, "an excerpt placed on a rung: placement is F's")
+                on = {pair for pair in listed if pair[0] == item["id"]}
+                self.assertLessEqual(on, self.PLACED, "an excerpt placed on a rung other than the ruled one: placement is F's")
                 self.assertNotIn("sections", item.get("teaching") or {})
+        self.assertLessEqual(self.PLACED, listed, "the ruled placement is not on the built curriculum")
 
     def test_the_score_checks_read_an_excerpt_as_its_parents_declared_passage(self) -> None:
         """An excerpt is short and inside its parent by definition: never a truncated copy or an undeclared containment."""
