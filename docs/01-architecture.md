@@ -109,8 +109,9 @@ both freely licensed). Verify the license file is committed alongside.
 export interface ScoreNote {
   id: string;            // stable within a score: `${measureIndex}:${staff}:${voice}:${onsetTicks}:${midi}`
   midi: number;          // 21..108
-  staff: 1 | 2;          // 1 = upper staff (usually RH), 2 = lower (usually LH)
-  hand: 'R' | 'L';       // derived: staff 1→R, 2→L, unless MusicXML cross-staff/`<staff>` says otherwise
+  staff: 1 | 2;          // PHYSICAL staff as OSMD numbers it: 1 = upper (usually RH), 2 = lower (usually LH); never changed by a hand reading
+  hand: 'R' | 'L';       // SEMANTIC hand, derived: staff 1→R, 2→L, unless MusicXML cross-staff/`<staff>` says otherwise;
+                         // one exception, the declaration below: a one-staff score numbers its staff 1 whichever hand plays it
   voice: number;
   measureIndex: number;  // 0-based, in *playback order* after repeats are unrolled
   sourceMeasureIndex: number; // measure as printed (for cursor placement)
@@ -144,6 +145,19 @@ export interface ScoreModel {
   line up 1:1 with OSMD cursor positions. Repeats: OSMD's iterator already unrolls repeats
   when `osmd.cursor.next()` is used; ScoreModel MUST use the same traversal so
   `step.index === number of cursor.next() calls from reset`.
+- **Physical staff and semantic hand are two facts** (Entry 244, HD1; CL15 amended). `staff` is
+  where the note is printed and OSMD numbers it: a one-staff score's staff is 1 whichever hand
+  plays it, so the model cannot tell a left-hand cut from a right-hand melody by its staff, and
+  hand identity is never inferred from a clef or from silence (CL15). `hand` and `handsPresent`
+  are the semantic hand. Their one override is an authoritative declaration of the content
+  object: `ExtractOptions.declaredHand`, which `curriculum/declaredHand.ts` gives only for a
+  catalogue item that has a bundled file, is not an import, and whose `provenance.facts.hands`
+  is authored or reviewed, and which applies to a one-staff score only. A `left` or `right`
+  declaration sets every note's hand and `handsPresent` (the staff stays 1); `both` makes no
+  second hand and is reported as a mismatch; with no declaration CL15's reading stands; a
+  two-staff score and its cross-staff notes are unchanged. The build's demand bridge asks the
+  same question of the same row (`tools/content/build.py::declared_hand`, held equal to the
+  app's rule by `test_declared_hand.py`).
 - The extractor MUST be unit-tested against ≥10 fixture scores covering: ties, chords, two
   voices per staff, grace notes, repeats with endings, pickup measures, cross-staff notes,
   tempo changes, 6/8, triplets.

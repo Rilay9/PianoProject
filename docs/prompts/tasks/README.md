@@ -316,6 +316,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **DF2** | A one-hand cut carries the source range's tempo marks from the dropped staff, a cut with none keeps the default and the `tempo-defaulted` tag; the Bizet left-hand cut in the catalogue at 60; the one-staff hand mismatch traced to CL15's rule, for a ruling (`DF2-cutter-carries-the-tempo.md`) | content | landed 2026-10-06 (`DF2-cutter-carries-the-tempo.md`); Entry 243
 | **HD1** | A one-staff item's authoritative hand reaches the model (`declaredHandOf`, `handDeclaration` applied / not-one-staff / mismatch): the Bizet cut and rung 1.3's three left-hand songs read left, staff 1 kept, two-staff scores unchanged (`HD1-declared-hand-into-the-model.md`) | app | landed 2026-10-06 (`HD1-declared-hand-into-the-model.md`); Entry 244
 | **CI3** | Today's withdrawn row reads *Skipped — you put it away* whole on any face (`data-withdrawn` on the row, the clamp lifted for that sentence); the G90a case green on both faces at the eight cells, twice; CI's render check no longer skipped (`CI3-held-skip-reason-whole.md`) | app | landed 2026-10-06 (`CI3-held-skip-reason-whole.md`); Entry 245
+| **HD1a** | The build's declared hand mirrors the app's authority rule (bundled, not an import, authored or reviewed), one source for the `hands` fact, thirteen tests red first; `docs/01` §4.1's hand contract and `checks.json`'s count corrected (`HD1a-build-hand-authority-parity.md`) | tooling | landed 2026-10-06 (`HD1a-build-hand-authority-parity.md`); Entry 246
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -497,6 +498,7 @@ CH1b · landed · 242
 DF2 · landed · 243
 HD1 · landed · 244
 CI3 · landed · 245
+HD1a · landed · 246
 F0a · closed · —
 L120 · approved · —
 -->

@@ -583,14 +583,52 @@ def span_of(hands: dict | None) -> dict[str, list[int]]:
     return {hand: out[hand] for hand in ("R", "L") if hand in out}
 
 
+#: The provenance kinds under which a row's `hands` is a statement the model may take
+#: (`app/src/curriculum/declaredHand.ts`'s `AUTHORITATIVE`).
+AUTHORITATIVE_HAND_KINDS = frozenset({"authored", "reviewed"})
+
+
+def hands_fact(entry: dict) -> dict | None:
+    """
+    How a built row's `hands` is known, as `attach_provenance` records it in `facts.hands`: authored
+    by the recipe, this repository's score, an edition's staves or the approved selection, and no
+    fact for a row whose source is not known (a placeholder, an unattributable file). One function,
+    so the provenance pass and `declared_hand` cannot say different things about one row.
+    """
+    kind = source_kind(entry)
+    if kind in ("generated", "authored"):
+        return {"kind": "authored", "via": "the recipe" if kind == "generated" else "this repository's score"}
+    if kind in ("pdmx", "kern", "musetrainer"):
+        return {"kind": "authored", "via": "the edition's staves"}
+    if kind == "mutopia":
+        return {"kind": "authored", "via": "the edition's staves, a MIDI track each"}
+    if kind == "excerpt":
+        return {"kind": "authored", "via": "the approved selection (content/sources/excerpts.json)"}
+    return None
+
+
 def declared_hand(entry: dict) -> str | None:
     """
-    The hand a bundled row declares for its file, which the bridge hands to the model (HD1): its
-    `hands` when it names one hand. Every bundled row's `hands` is authored (`attach_provenance`: the
-    recipe, this repository's score, an edition's staves, the approved selection), so it is the
-    declaration the app's own rule finds (`app/src/curriculum/declaredHand.ts`); the extractor applies
-    it to a one-staff file only. `both` changes no note, so it is not handed over.
+    The hand a bundled row declares for its file, which the bridge hands to the model (HD1): the
+    app's own authority rule (`app/src/curriculum/declaredHand.ts`, Entry 244), not the row's word.
+    Authoritative only where the row has a bundled file, is not an import, and its `hands` fact is
+    authored or reviewed; `left` or `right` then, and anything else (inferred, no fact, an import,
+    no bundled file, `both`, absent) is no declaration. The extractor applies it to a one-staff file
+    only. `both` changes no note, so it is not handed over.
+
+    `attach_demands` runs before `attach_provenance`, so a built row has no record yet: its fact is
+    the one the provenance pass will write (`hands_fact`). A row that already carries a provenance is
+    read as the app reads it: its `facts.hands`, and none when the record has none.
     """
+    if entry.get("imported") is True:
+        return None
+    file = entry.get("file")
+    if not isinstance(file, str) or not file:
+        return None
+    provenance = entry.get("provenance")
+    fact = ((provenance.get("facts") or {}).get("hands") if isinstance(provenance, dict) else hands_fact(entry))
+    if not isinstance(fact, dict) or fact.get("kind") not in AUTHORITATIVE_HAND_KINDS:
+        return None
     hands = entry.get("hands")
     return hands if hands in ("left", "right") else None
 
@@ -1006,12 +1044,10 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
             facts["level"] = {"kind": "inferred", "via": "an estimate (the difficulty model, or an opus banded on import)"}
         else:
             facts["level"] = {"kind": "authored", "via": "judged for this item"}
-        if kind in ("generated", "authored"):
-            facts["hands"] = {"kind": "authored", "via": "the recipe" if kind == "generated" else "this repository's score"}
-        elif kind in ("pdmx", "kern", "musetrainer"):
-            facts["hands"] = {"kind": "authored", "via": "the edition's staves"}
-        elif kind == "mutopia":
-            facts["hands"] = {"kind": "authored", "via": "the edition's staves, a MIDI track each"}
+        # The one source of this fact, which `declared_hand` reads too (HD1a).
+        hands = hands_fact(entry)
+        if hands is not None:
+            facts["hands"] = hands
         if entry.get("type") == "song" and (entry.get("notation") or {}).get("keys"):
             facts["key"] = {"kind": "measured", "via": "the file's signature and final bass (build.settle_key_signatures)"}
         elif kind == "generated":
@@ -1094,7 +1130,7 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
                     facts["demands"]["untrusted"] = untrusted
                     facts["demands"]["untrustedWhy"] = "their difficulty depends on a tempo the converter supplied, not one the score states"
         facts["level"] = {"kind": "inferred", "via": "the difficulty model on the cut (tools/content/difficulty.py), never the parent's"}
-        facts["hands"] = {"kind": "authored", "via": "the approved selection (content/sources/excerpts.json)"}
+        facts["hands"] = hands_fact(entry)  # type: ignore[assignment]  # an excerpt always has one
         facts["boundary"] = {"kind": "authored",
                              "via": f"the approved row in content/sources/excerpts.json (event {carried.get('event')}, by {carried.get('by')})"}
         if (entry.get("notation") or {}).get("keys"):
