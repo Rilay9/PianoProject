@@ -193,4 +193,5 @@ The outside reviewer reviews it. The corrections become chain records or briefs.
 - **Model choice:** Opus for design and cross-cutting work; Sonnet for narrow ruled builds and checks; scripts before agents.
 - **Builders** work on disjoint files. Each landing is reviewed against its chain record and the scoreboard.
 - **The reviewer's verdicts** become record or status edits. They do not trigger new planning rounds.
+- **Review before building for a design decision; review after landing for a narrow seam** whose acceptance proves zero unrelated behaviour change (the owner, 2026-10-06). The landing handoff still carries the diff and the proof.
 - **Every handoff** opens with the scoreboard, then what shipped, then what is blocked and on what.
