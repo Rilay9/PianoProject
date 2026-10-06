@@ -202,6 +202,8 @@ class Cut:
     tempo_bpm: float
     time: str | None
     level: float
+    #: The converter supplied the tempo: the cut's range has no mark in force at its start (`ConversionResult.added_tempo`).
+    tempo_defaulted: bool = False
     drivers: list = field(default_factory=list)
     warnings: list = field(default_factory=list)
     #: The edition's texts the cutter left out (E33), each `{bar, parentBar, staff, kind, text, why}`.
@@ -340,6 +342,32 @@ def _carry_state_in(staff, first_measure, source_staff, first_offset: float) -> 
             first_measure.insert(0, carried)
 
 
+def _carry_tempo_from_the_dropped_staff(staves: list, keep: int) -> None:
+    """
+    A one-hand cut's tempo marks, whichever staff printed them (DF2). The unselected staff leaves with its notes
+    (`convert.drop_silent_staves`), and the page prints a grand staff's tempo over the upper staff, so a left-hand
+    cut would lose it and play at the converter's default. Each mark on the dropped staff goes onto the kept one
+    at the same bar and offset, unless the kept staff already has a mark there (it stands; two staves printing
+    one mark is one mark).
+    """
+    from music21 import tempo
+
+    dropped = [staff for index, staff in enumerate(staves) if index != keep]
+    kept = _measures(staves[keep])
+    for staff in dropped:
+        for position, measure in enumerate(_measures(staff)):
+            if position >= len(kept):
+                break
+            target = kept[position]
+            here = [target.elementOffset(m) for m in target.getElementsByClass(tempo.MetronomeMark)]
+            for mark in list(measure.getElementsByClass(tempo.MetronomeMark)):
+                offset = measure.elementOffset(mark)
+                if any(abs(offset - other) < 1e-9 for other in here):
+                    continue
+                target.insert(offset, copy.deepcopy(mark))
+                here.append(offset)
+
+
 def cut_score(score, from_bar: int, to_bar: int, selection: str, excerpt: str):
     """
     The cut as a normalised music21 score, the converter's result for it, and the edition's texts left
@@ -389,6 +417,8 @@ def cut_score(score, from_bar: int, to_bar: int, selection: str, excerpt: str):
         if selection != "both" and index != KEEP_STAFF[selection]:
             for element in list(staff.recurse().notes):
                 element.activeSite.remove(element)
+    if selection != "both":
+        _carry_tempo_from_the_dropped_staff(staves, KEEP_STAFF[selection])
     # A spanner severed by the cut (a slur that starts before it or ends after it) is dropped:
     # an end drawn with nothing to join is not what the page says.
     present = {id(n) for n in excerpt_score.recurse().notesAndRests}
@@ -486,7 +516,7 @@ def cut(parent_path: Path, from_bar: int, to_bar: int, selection: str, excerpt: 
     times = [f"{t.numerator}/{t.denominator}" for t in normalised.recurse().getElementsByClass(meter.TimeSignature)]
     return Cut(path=dest, bars=result.measures, staves=result.staves, notes=result.note_events,
                tempo_bpm=result.tempo_bpm, time=times[0] if times else None, level=estimate.level,
-               drivers=list(estimate.drivers), warnings=list(result.warnings), dropped=dropped)
+               tempo_defaulted=bool(result.added_tempo), drivers=list(estimate.drivers), warnings=list(result.warnings), dropped=dropped)
 
 
 # --------------------------------------------------------------------------------------
@@ -538,6 +568,9 @@ def entry_for(row: dict, parent: dict, made: Cut, rel_file: str) -> dict:
     selection = row.get("selection") or "both"
     eid = excerpt_id(parent["id"], row["fromBar"], row["toBar"], selection)
     tags = [t for t in (parent.get("tags") or []) if t in INHERITED_TAGS]
+    # A cut of a parent that prints a tempo, whose own bars print none in force at the start, plays the converter's.
+    if made.tempo_defaulted and "tempo-defaulted" not in tags:
+        tags.append("tempo-defaulted")
     entry: dict = {
         "id": eid,
         "type": "excerpt",

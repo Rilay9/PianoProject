@@ -99,6 +99,22 @@
       "event": "ex-a57de44f-ebc6-4a41-a93e-b7af6eeefdeb",
       "by": "E1 builder (Entry 101)",
       "at": "2026-09-28T22:14:29.004Z"
+    },
+    {
+      "of": "song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx",
+      "fromBar": 1,
+      "toBar": 12,
+      "selection": "left",
+      "targets": [
+        "rhythm.sixteenths"
+      ],
+      "label": "",
+      "note": "The habanera bass, left hand alone: printed bars 1-12, three bars of the bass alone and then the bass under the first sung phrase to the cadence on D at bar 12. Every bar's left-hand onsets are 0, 3/8, 1/2 and 3/4 of the 2/4 bar (the habanera cell: dotted eighth, sixteenth, two eighths), D2-A2-F3-A2 in bars 1-7 and 12, D2-B-flat2-G3-B-flat2 in bars 8-11; checked by two readers (partitura and a raw XML walk) on the archive file and the committed file, and no bar matches the tresillo set (latin.4 probe, cell check). No vocabulary id names the habanera; rhythm.sixteenths is the one existing demand the cell's defining onset is. Boundary by rule from the notation, not heard.",
+      "parentSha256": "cada0fcbce1b12e79d8fe0d1eab9afd5bb986e71c0e55a06e67969a1093a52aa",
+      "event": "ex-d9d06e1d-f740-4a7e-a03f-dd954827e1d4",
+      "by": "latin.4 probe builder (Entry 240)",
+      "at": "2026-10-06T07:27:41.000Z",
+      "cutVersion": 2
     }
   ],
   "rejected": [

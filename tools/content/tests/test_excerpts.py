@@ -63,13 +63,16 @@ def measures_xml(text: str) -> list[str]:
 def grand(bars: int, *, title: str = "A constructed parent", pickup: bool = False, tie_bars: tuple[int, ...] = (),
           key_change_at: int | None = None, clef_change_at: int | None = None, tempo_change_at: int | None = None,
           time_change_at: int | None = None, repeat_over: tuple[int, int] | None = None,
-          volta_at: int | None = None, silent_left: tuple[int, ...] = (), right_pitch=None) -> stream.Score:
+          volta_at: int | None = None, silent_left: tuple[int, ...] = (), right_pitch=None,
+          tempo_on_lower: bool = False, tempo_from: int = 1) -> stream.Score:
     """
     A two-staff parent: the right hand plays quarters (C5 D5 E5 F5 by default) and the left hand a
     whole C3 in every bar. `pickup` opens with a one-beat bar 1. `tie_bars` ties the right hand's
     last note of each named bar into the next bar's first note (made the same pitch). The other
     options put a key, clef, tempo or time change at the start of a printed bar, a repeat over a
     printed range, a first ending over a bar, and a silent left hand in the named bars.
+    `tempo_on_lower` prints the tempo marks on the lower staff instead of the upper; `tempo_from` is
+    the bar the first mark (84) is printed at (a later bar leaves the bars before it with none in force).
     """
     upper, lower = stream.PartStaff(), stream.PartStaff()
     upper.id, lower.id = "P1-Staff1", "P1-Staff2"
@@ -79,15 +82,17 @@ def grand(bars: int, *, title: str = "A constructed parent", pickup: bool = Fals
         top, bottom = stream.Measure(number=0 if pickup and number == 1 else (number - 1 if pickup else number)), stream.Measure()
         bottom.number = top.number
         if number == 1:
-            top.append([clef.TrebleClef(), key.KeySignature(0), meter.TimeSignature("4/4"), tempo.MetronomeMark(number=84)])
+            top.append([clef.TrebleClef(), key.KeySignature(0), meter.TimeSignature("4/4")])
             bottom.append([clef.BassClef(), key.KeySignature(0), meter.TimeSignature("4/4")])
+        if tempo_from == number:
+            (bottom if tempo_on_lower else top).append(tempo.MetronomeMark(number=84))
         if key_change_at == number:
             top.append(key.KeySignature(2))
             bottom.append(key.KeySignature(2))
         if clef_change_at == number:
             bottom.append(clef.TrebleClef())
         if tempo_change_at == number:
-            top.append(tempo.MetronomeMark(number=132))
+            (bottom if tempo_on_lower else top).append(tempo.MetronomeMark(number=132))
         if time_change_at == number:
             top.append(meter.TimeSignature("3/4"))
             bottom.append(meter.TimeSignature("3/4"))
@@ -1142,6 +1147,79 @@ class TheRepairedCut(unittest.TestCase):
         # Never exact-byte equal: D2's identity and the cut's own bytes keep the old cut and the new apart.
         self.assertFalse(review.same_identity({"kind": "file", "sha256": one["from"]}, {"kind": "file", "sha256": one["to"]}))
         self.assertNotEqual(self.old_cut.read_bytes(), self.new_cut.read_bytes())
+
+
+class TheTempoOfAOneHandCut(unittest.TestCase):
+    """
+    DF2 (Entry 241, the latin.4 probe): a one-hand cut drops the unselected staff, and `convert.normalise`'s
+    `drop_silent_staves` took the tempo mark printed on it along, so the Bizet habanera's left hand (printed
+    quarter = 60 on the treble staff) came out at the converter's default 96, untagged, and its catalogue
+    label read "authored, via the parent's". The cut now carries every tempo mark of its range whichever
+    staff printed it, and a cut with no mark in force at its start says so with the `tempo-defaulted` tag.
+    """
+
+    PARENT = {"id": "song.test.parent", "title": "A constructed parent", "source": {"kind": "pdmx"}, "tags": []}
+
+    @staticmethod
+    def sounds(path: Path) -> list[str]:
+        return re.findall(r'<sound tempo="([\d.]+)"', xml_of(path))
+
+    def test_a_left_hand_cut_keeps_the_tempo_printed_on_the_upper_staff(self) -> None:
+        made = Parent(self, grand(10)).cut(2, 5, "left")
+        self.assertEqual(made.staves, 1, "the right hand is dropped, as before")
+        self.assertEqual(made.tempo_bpm, 84.0)
+        self.assertEqual(self.sounds(made.path), ["84"], "the mark in force at the cut, once")
+        self.assertIs(made.tempo_defaulted, False)
+
+    def test_a_left_hand_cut_keeps_a_tempo_change_inside_its_range_where_it_stands(self) -> None:
+        made = Parent(self, grand(10, tempo_change_at=5)).cut(3, 7, "left")
+        bars = measures_xml(xml_of(made.path))
+        self.assertEqual(len(bars), 5)
+        self.assertRegex(bars[0], r'<sound tempo="84')
+        self.assertNotRegex(bars[1], r"<sound tempo")
+        self.assertRegex(bars[2], r'<sound tempo="132', "printed bar 5 is the cut's third bar")
+        self.assertEqual(made.tempo_bpm, 84.0, "the cut opens at the tempo in force there")
+
+    def test_a_right_hand_cut_keeps_a_tempo_printed_on_the_lower_staff(self) -> None:
+        made = Parent(self, grand(10, tempo_on_lower=True, tempo_change_at=5)).cut(3, 7, "right")
+        self.assertEqual(made.staves, 1)
+        self.assertEqual(self.sounds(made.path), ["84", "132"])
+        self.assertEqual(made.tempo_bpm, 84.0)
+
+    def test_a_mark_printed_on_both_staves_is_carried_once(self) -> None:
+        score = grand(6)
+        list(score.parts)[1].getElementsByClass(stream.Measure)[0].insert(0, tempo.MetronomeMark(number=84))
+        made = Parent(self, score).cut(1, 4, "left")
+        self.assertEqual(self.sounds(made.path), ["84"])
+
+    def test_a_cut_of_both_hands_is_as_it_was(self) -> None:
+        made = Parent(self, grand(10, tempo_change_at=5)).cut(3, 7, "both")
+        self.assertEqual(made.staves, 2)
+        self.assertEqual(self.sounds(made.path), ["84", "132"])
+
+    def test_a_range_with_no_mark_in_force_keeps_the_default_and_is_tagged(self) -> None:
+        for selection in ("left", "right", "both"):
+            with self.subTest(selection):
+                made = Parent(self, grand(10, tempo_from=6)).cut(1, 4, selection)
+                self.assertEqual(made.tempo_bpm, 96.0)
+                self.assertIs(made.tempo_defaulted, True)
+                row = {"of": "song.test.parent", "fromBar": 1, "toBar": 4, "selection": selection}
+                entry = X.entry_for(row, self.PARENT, made, "scores/excerpts/x.mxl")
+                self.assertEqual(entry["tags"], ["tempo-defaulted"])
+                self.assertEqual(entry["tempoBpm"], 96.0)
+
+    def test_a_range_with_a_mark_in_force_is_not_tagged(self) -> None:
+        for selection in ("left", "right", "both"):
+            with self.subTest(selection):
+                made = Parent(self, grand(10)).cut(1, 4, selection)
+                row = {"of": "song.test.parent", "fromBar": 1, "toBar": 4, "selection": selection}
+                self.assertEqual(X.entry_for(row, self.PARENT, made, "scores/excerpts/x.mxl")["tags"], [])
+
+    def test_the_default_tag_is_not_doubled_where_the_parent_already_carries_it(self) -> None:
+        made = Parent(self, grand(10, tempo_from=6)).cut(1, 4, "left")
+        parent = {**self.PARENT, "tags": ["tempo-defaulted", "personal-build"]}
+        row = {"of": "song.test.parent", "fromBar": 1, "toBar": 4, "selection": "left"}
+        self.assertEqual(X.entry_for(row, parent, made, "scores/excerpts/x.mxl")["tags"], ["tempo-defaulted", "personal-build"])
 
 
 class TheE59Cuts(unittest.TestCase):

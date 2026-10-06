@@ -917,7 +917,10 @@ and nothing here touches one.
   into the first bar severed to a plain note, a tie out of the last dropped; a repeat sign at
   either edge neutralised (the passage is presented once); layout and severed slurs dropped; the
   unselected staff of a one-hand cut silenced and left out by `convert.drop_silent_staves` through
-  `convert.normalise`; the header normalised — the excerpt's id as the work title, no credits, no
+  `convert.normalise`, after its tempo marks are carried onto the kept staff (the page prints a grand
+  staff's tempo over the upper staff, so a left-hand cut would otherwise play at the converter's
+  default; a cut with no mark in force at its start keeps the default and carries `tempo-defaulted`, DF2);
+  the header normalised — the excerpt's id as the work title, no credits, no
   encoding date, the archive's entry named after the excerpt — so the bytes depend on the notes
   and the definition alone. The parent's attribution is in the excerpt's catalogue `source`
   (the parent's, whole), which the Library's Source and Licence rows and the lesson row show.

@@ -1050,8 +1050,13 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
         else:
             facts["demands"] = {"kind": "unmeasured", "why": measurement.get("reason")}
         tempo_fact = parent_facts.get("tempo")
-        if tempo_fact:
+        if "tempo-defaulted" in (entry.get("tags") or []) and (tempo_fact or {}).get("kind") != "inferred":
+            # The cut's own bars print no tempo in force at their start (`excerpts.entry_for`), though the parent prints one.
+            facts["tempo"] = {"kind": "inferred", "via": "convert.py's default (the cut's bars print no tempo mark in force at their start)"}
+        elif tempo_fact:
             facts["tempo"] = {"kind": tempo_fact["kind"], "via": f"the parent's: {tempo_fact.get('via', '')}".rstrip(": ")}
+        if facts.get("tempo"):
+            tempo_fact = facts["tempo"]
             if tempo_fact["kind"] == "inferred" and isinstance(entry.get("demands"), list):
                 untrusted = [d for d in entry["demands"] if d in tempo_sensitive]
                 if untrusted:
