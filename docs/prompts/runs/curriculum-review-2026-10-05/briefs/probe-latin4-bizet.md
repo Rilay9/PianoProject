@@ -16,12 +16,12 @@ Harness: operating-procedure §14, cited and not restated. What this lane adds i
   1. A generated 2/4 habanera drill (G13). Not taken here: it is generator work, out of this probe's scope, and the map schedules it as CONTROL with CK-5 and CO-4.
   2. The shipped Por Una Cabeza, bars 1-14, cut as an excerpt (the map's REPAIR row). Not taken here: it is a second item, and it does not test the intake gate, which is the point of the probe.
   3. **A real score whose left hand prints the cell, taken through the intake gate.** Chosen.
-- **Why the chosen class.** It is the one route that exercises the gate on a real item, and the gate is the plan's first section. The owner's rule, in CLAUDE.md: "Never generate a substitute when suitable licensed real material meets the need."
+- **Why the chosen class.** This station needs an authentic printed MODEL of the cell in musical context, and this edition does that job well (FABLE §4: the source that best teaches the learner need; generated material is not second-class, and the strict CONTROL is G13's generated pair). It is also the one route that exercises the gate on a real item.
 - **What would reverse it.** Any of these, recorded and reported:
   - the chosen edition fails G1-G3, G5 or G8-G10, and so does the fallback edition;
   - the cell check fails in every window of at least eight bars;
   - the placement rules refuse an excerpt as a rung option;
-  - the outside reviewer's artefact read (CO-5) rules the cut a poor teaching use.
+  - the outside reviewer's artefact read (CO-5) finds a verified content fact or a role boundary the placement violates (never a musical like or dislike; a subjective veto is not a gate, FABLE §5).
 - **Real problem or proxy.** Real for the learner: a causal teaching sequence from naming two cells to identifying them in unseen music, with an authentic printed habanera bass as the model (the teaching design below). Partly a proxy for the plan: one item stands in for the repeatable intake path, which is why section (e) of the gate asks for what generalises and what does not.
 - **Remaining uncertainty.**
   - Whether one CID runs through `extract.py --cid` and `quarry.py` without a fresh shortlist.
@@ -281,7 +281,7 @@ QmVw has no pickup and no repeat sign, volta or jump in bars 1-12, so `excerpts.
    - the `reason` cites the cell check's output and A7c.1's MODEL role ("play the authentic printed habanera bass");
    - the `note` says "not heard".
 
-   The outside reviewer's read of this line is CO-5, after landing. A `no` there reverses the placement.
+   The D2 line's basis is the objective notation and role contract (the cell check's output, the excerpt's bars and hand, A7c.1's MODEL role), never a person's taste (FABLE §6: reviewer identity alone is never evidence). The outside reviewer's read of it is CO-5, after landing: it verifies those facts and the role boundary; a `no` grounded in a fact reverses the placement; nothing else does.
 
 **Acceptance.**
 - `validate.py`'s excerpt findings are clean, with no stale row.

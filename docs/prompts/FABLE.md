@@ -57,7 +57,7 @@ independent_target: ...             # what they do alone at the end
 steps:                              # in teaching order
   - action: ...                     # what the learner does
     content: {kind: generated|excerpt|piece|chart|external|explanation, ref: <family id | CID+bars | file | URL>}
-    tool: <a mode or drill named in MODE-SHEET.md>
+    tool: <a mode or drill named in MODE-SHEET.md, or lesson: the lesson page, a presentation surface that measures nothing>
     scaffold: [ ... ]               # help present on this step
     feedback: ...                   # what the learner is told
     recorded: ...                   # what MODE-SHEET says this tool stores
