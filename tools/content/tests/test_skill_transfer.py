@@ -75,9 +75,10 @@ class TestSkillTransfer(unittest.TestCase):
         self.assertTrue(any("transfer/dimensions" in e for e in errors), errors)
 
     def test_the_skills_without_the_block_are_listed_by_name(self) -> None:
-        self.assertEqual(validate.skills_without_transfer(self.skills), ["reading-ahead"])
+        # reading-ahead and the cells skill (CD1, Entry 249: observable none) are the two the app credits no transfer.
+        self.assertEqual(validate.skills_without_transfer(self.skills), ["reading-ahead", "habanera-and-tresillo"])
         dropped = self.with_transfer("tie", None)
-        self.assertEqual(validate.skills_without_transfer(dropped), ["reading-ahead", "tie"])
+        self.assertEqual(validate.skills_without_transfer(dropped), ["reading-ahead", "tie", "habanera-and-tresillo"])
 
     def test_no_skill_claims_family_or_source(self) -> None:
         # Part 26: a new seed of one family is not transfer, and an authentic excerpt is not

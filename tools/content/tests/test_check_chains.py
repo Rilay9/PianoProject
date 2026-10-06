@@ -102,7 +102,7 @@ class TheRealRecord(unittest.TestCase):
         self.assertIn("A7c.1 (draft)", out)
         self.assertIn("0 failure(s)", out)
         self.assertNotIn("EXEMPT", out)
-        self.assertIn("1 linted (carry an ability marker)", out)
+        self.assertRegex(out, r"[1-9]\d* linted \(carry an ability marker\)")  # at least the Bizet probe brief; the count grows with each ability brief
         self.assertRegex(out, r"\d+ skipped \(no ability marker\)")
         self.assertIn("not proof that pedagogical support faded", out)
 
