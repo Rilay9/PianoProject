@@ -172,8 +172,15 @@ export interface RunHeader {
    * that judged it (`?from=`, or the rung a Today card chose, `?rung=`), the
    * tour, and the Today slot. Only a Today card names a slot (C3 item 0b,
    * L50); any other opening stores it as not measured, and says so.
+   *
+   * `hold` (SR4; the reviewer's ruling on SR3, `docs/review/responses/sr3-lb1-landing.md` §3): the rung whose
+   * taught set the generated phrase was deliberately held to while another rung (`rung`) judged the run — the
+   * route's `?hold=` (SR2), stored by the Score screen where it wrote the phrase under it, and nowhere else. It
+   * says only that; `material` stays the phrase's identity. `rungState` reads it, and only it, for whether a run
+   * was held below the rung that judged it: absent — an unheld run, and every run written before SR4 — is never
+   * held, never guessed. Optional, so no `DB_VERSION` and no upgrade (C1's rule), and no row is rewritten.
    */
-  opened?: { tab: string; rung?: string; tour?: string; slot: TodaySlot | NotMeasured };
+  opened?: { tab: string; rung?: string; tour?: string; slot: TodaySlot | NotMeasured; hold?: string };
   /**
    * The tempo the percentage is of: the score's first marking, `written` or
    * `defaulted` where the converter made it up (the `tempo-defaulted` tag).

@@ -2676,38 +2676,6 @@ export function writtenOptions(row: Pick<SessionRow, 'material' | 'seed'>): Sigh
   return { ...(material.recipe as unknown as SightReadingOptions), ...(row.seed === undefined ? {} : { seed: row.seed }) };
 }
 
-/**
- * Whether a stored run's phrase was held below the rung that judged it (SR3; the reviewer's ruling on SR2,
- * `docs/review/responses/sr2-landing.md` §2): its stored options (`writtenOptions`) cannot write a reading demand
- * that the phrase the Score screen writes for the same row, recipe and seed held to the judging rung alone
- * (`phraseOptions` with no `hold`) can. The comparison step 3 makes above (SR2), read for credit: the hold's rung
- * is never stored (the route carries it), its effect is, and only against the catalogue row can it be read.
- *
- * Not held: a run with no stored phrase (a piece; a run from before D4's `material`), with no judging rung
- * (`lessonId`), or of a row the catalogue no longer has; such a run is read as before. A stored phrase that asks
- * more than the judging rung's, and nothing less, is not held either: no hold made it easier, and a run written
- * before a demand was held back later is not refused after the fact.
- *
- * `rungState` refuses a held run every requirement of its judging rung; the evidence modules never write a
- * phrase (C4a), so the predicate is made here, from the catalogue, and handed in (`data/rungStates`).
- */
-export function heldBelowItsRung(
-  curriculum: Curriculum,
-  items: readonly CatalogItem[],
-  vocabulary: Vocabulary = VOCABULARY_V0,
-): (row: SessionRow) => boolean {
-  const byId = new Map(items.map((item) => [item.id, item]));
-  return (row) => {
-    const judging = row.lessonId;
-    const written = writtenOptions(row);
-    const item = byId.get(row.itemId);
-    if (judging === undefined || written === undefined || item?.drill?.kind !== 'sight-reading') return false;
-    const recipe = row.recipe === undefined ? undefined : { row: row.recipe.row, ...(row.recipe.moved ? { moved: row.recipe.moved } : {}) };
-    const atRung = phraseOptions(curriculum, item, recipe, row.seed, { judging }, vocabulary);
-    return Object.values(READING_CONTROLS).some((control) => control.mayWrite(atRung) && !control.mayWrite(written));
-  };
-}
-
 function readingOfferAt(input: ReadingInput): ReadingOffer | null {
   const vocabulary = input.vocabulary ?? VOCABULARY_V0;
   const policy = input.policy ?? READER_POLICY;

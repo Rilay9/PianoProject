@@ -22,7 +22,7 @@ import { barsPerWindowFor, isTablet, sidePanelProse } from '../tablet';
 import { getImport } from '../../data/importStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
 import { generateSightReading, SightReadingRefusal, type SightReadingOptions } from '../../engine/sightReading';
-import { phraseOptions } from '../../curriculum/session';
+import { phraseOptions, taughtAtRung } from '../../curriculum/session';
 import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
 import { findLesson, masteryCriteriaFor, proseRungFor } from '../../curriculum/selectors';
 import { skillsInForce } from '../../curriculum/skillActivation';
@@ -301,6 +301,21 @@ function generateSightReadingFor(
 }
 
 /**
+ * The hold a run's header stores (`RunHeader.opened.hold`; SR4, the reviewer's ruling on SR3,
+ * `docs/review/responses/sr3-lb1-landing.md` §3): the route's hold, where the phrase was written under it while
+ * another rung judges the run, and nothing otherwise. Under it means what `phraseOptions` did with it: the
+ * curriculum was read and names the hold's rung, so the phrase was held to that rung's taught set; with no
+ * curriculum, or a hold the curriculum lacks, the phrase was written from the row as it stands and was held to
+ * nothing. A hold equal to the judging rung is that rung's own phrase, and stores none. Decided when the phrase is
+ * written, where the app knows it; never read back from the phrase against today's curriculum.
+ */
+export function storedHold(curriculum: Curriculum | undefined, rungs: { judging?: string; hold?: string }): string | undefined {
+  const { judging, hold } = rungs;
+  if (hold === undefined || judging === undefined || hold === judging || curriculum === undefined) return undefined;
+  return taughtAtRung(curriculum, hold) === undefined ? undefined : hold;
+}
+
+/**
  * A phrase's seed nobody asked for: never one a stored run of the item
  * carries, nor the one on the screen (T40's *New phrase*; C4 item 2). A random
  * 32-bit seed was almost never one of them; "almost" is not what the learner
@@ -559,6 +574,8 @@ export function ScoreScreen(router: Router): HTMLElement {
    * of the bytes this screen plays.
    */
   let phraseWritten: { options: SightReadingOptions; bpm: number } | undefined;
+  /** The hold the phrase on the screen was written under (`storedHold`, SR4): the run header's `opened.hold`. */
+  let phraseHold: string | undefined;
   /**
    * Opened from Today's transfer offer (D4, `?intent=transfer&skill=&offer=`): the run keeps the intent
    * and the relationship the offer was made on, together, or neither (D4a; the reviewer's required
@@ -3918,6 +3935,8 @@ export function ScoreScreen(router: Router): HTMLElement {
         ...(judgedBy === undefined ? {} : { rung: judgedBy }),
         ...(tourId === undefined ? {} : { tour: tourId }),
         slot: todaySlot ?? NOT_MEASURED,
+        // The hold the phrase was written under, as the screen knew it then (SR4); never inferred later.
+        ...(phraseHold === undefined ? {} : { hold: phraseHold }),
       },
       baseTempo: base
         ? { bpm: base.bpm, source: item?.tags?.includes('tempo-defaulted') === true ? 'defaulted' : 'written' }
@@ -5515,6 +5534,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         phraseSeed = phrase.seed;
         phraseGenerator = phrase.generator;
         phraseWritten = { options: phrase.options, bpm: phrase.bpm };
+        phraseHold = storedHold(holding, rungs);
         const seen = phrase.generator;
         void history.then((rows) => {
           remember(rows);

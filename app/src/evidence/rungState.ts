@@ -43,9 +43,11 @@
  *   requirements read every evidence record but those runs', then and after the learner reaches the rung.
  *   Its evidence stays the learner's everywhere else: the Skills screen's ladders (`skillLadders`) and
  *   every other rung's `skill` requirements read it as before, and no run is re-credited to the rung it
- *   was held at. Which runs are held is the caller's to say (`heldBelowItsRung`): it is read from the
- *   run's stored phrase against the catalogue row (`session.heldBelowItsRung`), and this module never
- *   writes a phrase (C4a). With no predicate, no run is held.
+ *   was held at. Which runs are held is the run's own stored fact (`heldWhenPlayed`; SR4, the reviewer's
+ *   ruling on SR3, `docs/review/responses/sr3-lb1-landing.md` §3): the hold its header kept when the Score
+ *   screen wrote the phrase under one (`RunHeader.opened.hold`), never a comparison of the stored phrase with
+ *   what today's curriculum would write, which moves when a demand moves. A run with no stored hold — an
+ *   unheld run, and every run written before SR4 — is never held, never guessed.
  *
  * **What a run measured** is read, never assumed: accuracy a number (a run
  * nothing heard is `not measured`, C1), not rhythm only, not a phrase met
@@ -325,10 +327,8 @@ function inRungOrder(rung: Lesson, ids: ReadonlySet<string>): string[] {
 /**
  * Every rung's state from the rows (see the module note). `today` dates the
  * ladder's readings. Pure: the same rows, curriculum, vocabulary, day and
- * learner record give the same state. `heldBelowItsRung` says which runs were
- * held below the rung that judged them (SR3, the module note); the app passes
- * `session.heldBelowItsRung` over the catalogue (`data/rungStates`, the Skills
- * screen).
+ * learner record give the same state. A run held below the rung that judged
+ * it is the run's stored fact (`heldWhenPlayed`; SR3, SR4, the module note).
  */
 export function rungState(
   rows: readonly SessionRow[],
@@ -336,7 +336,6 @@ export function rungState(
   vocabulary: Vocabulary,
   today: Date,
   learner: LearnerRecord = {},
-  heldBelowItsRung?: (row: SessionRow) => boolean,
 ): RungStates {
   const defaults: MasteryCriteria = {
     ...DEFAULT_MASTERY,
@@ -350,7 +349,7 @@ export function rungState(
   const evidenceBySkill = new Map<string, Evidence[]>();
   for (const row of rows) {
     if (row.lessonId !== undefined) {
-      if (heldBelowItsRung?.(row) === true) {
+      if (heldWhenPlayed(row)) {
         const held = heldBy.get(row.lessonId) ?? new Set<SessionRow>();
         held.add(row);
         heldBy.set(row.lessonId, held);
@@ -408,6 +407,17 @@ export function rungState(
     }
   }
   return { byRung };
+}
+
+/**
+ * Whether a run was held below the rung that judged it, as it stored that when it was played (SR4; the module
+ * note): its header names a hold (`opened.hold`, the route's, written by the Score screen where it wrote the phrase
+ * under it) other than the judging rung (`opened.rung`). Read from the row and nothing else — no catalogue, no
+ * vocabulary — so a demand moved to another rung later reclassifies no run. A row with no hold is never held.
+ */
+export function heldWhenPlayed(row: Pick<SessionRow, 'opened'>): boolean {
+  const hold = row.opened?.hold;
+  return hold !== undefined && hold !== row.opened?.rung;
 }
 
 /** Every skill's evidence from the rows but `apart` (a rung's held runs, SR3), by skill. */

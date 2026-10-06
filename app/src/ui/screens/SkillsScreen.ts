@@ -16,7 +16,7 @@ import type { CatalogItem, ConceptEntry as CurriculumConcept, Curriculum } from 
 import { rungRows } from '../../data/progressStore';
 import { getPlan } from '../../data/planStore';
 import { activeTracksFor } from '../../curriculum/tracks';
-import { heldBelowItsRung, nextRecommended } from '../../curriculum/session';
+import { nextRecommended } from '../../curriculum/session';
 import { getSettings } from '../../data/settingsStore';
 import { lastSupported, learnerExposures } from '../../data/skillsStore';
 import { learnerRecordFrom, rungState, skillLadders, type RungWord } from '../../evidence/rungState';
@@ -426,7 +426,7 @@ export function SkillsScreen(router: Router): HTMLElement {
     } else {
       // Nothing rusty: the stage being worked on and the one below it — where
       // the learner is by the evidence (C5), as Plan and Today say it.
-      const states = rungState(rows, curriculum, VOCABULARY_V0, now, learnerRecordFrom(plan, getSettings()), heldBelowItsRung(curriculum, items, VOCABULARY_V0));
+      const states = rungState(rows, curriculum, VOCABULARY_V0, now, learnerRecordFrom(plan, getSettings()));
       const here = nextRecommended(curriculum, states, activeTracksFor(plan, curriculum), {
         // The same starting point Plan and Today use, so the three screens
         // cannot disagree about where the learner is (built 2026-09-21).

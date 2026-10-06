@@ -1071,6 +1071,17 @@ no rung uses the defaults.*
   is for (C4). It judges and is stored as `lessonId` and `opened.rung`, the slot as
   `opened.slot`, and it does not steer Back, which is `from`'s other job. Completion is unchanged: a pass is still a flag on the item, credited on every
   rung listing it (Wave C's business).
+  **And the hold** (`?hold=`; SR2: Today's daily read before any rung lists a reading row, held
+  to the learner's own rung while the row's rung judges it): where the screen writes the phrase
+  under the route's hold and another rung judges the run, the run stores the hold as
+  `opened.hold` (SR4, `ScoreScreen.storedHold`), decided when the phrase is written. That stored
+  fact alone tells the rung state the run was held below its judging rung and credits that rung
+  nothing (`rungState.heldWhenPlayed`; SR3's rule). A run with no `opened.hold` — an unheld run,
+  and every run written before SR4 — is never held, and no run is reclassified when a demand later
+  moves rung: SR3 read the hold back by comparing the stored phrase with what today's curriculum
+  would write, which moves with the curriculum (the reviewer's ruling,
+  `review/responses/sr3-lb1-landing.md` §3). `material` stays the phrase's identity. Optional,
+  so no `DB_VERSION` change; no row is rewritten.
 - `mastery.minAccuracy` is already a fraction. `mastery.minTempoPct` is written as a fraction
   in **every** rung of the built curriculum (the values in use are 0, 0.7, 0.75, 0.8, 0.85
   and 0.9) while the scorer speaks percentages, so a value at or below 1 is read as a

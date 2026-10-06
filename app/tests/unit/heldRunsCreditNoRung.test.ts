@@ -13,19 +13,23 @@
  * The runs are made as the app makes them: Today's offer (`readingOffer`, purpose 'daily'), the route Today builds
  * (`rungForSlot` for the judging rung, the offer's `hold`), the options the Score screen writes (`phraseOptions`),
  * the generator, the real engine and evidence (`helpers/reader.ts`), and the row as the Score screen stores it
- * (`lessonId` the judging rung, `material` the phrase's complete identity). The held fact is read from that stored
- * material against the catalogue row (`session.heldBelowItsRung`), handed to `rungState` as the app's loader hands
- * it (`data/rungStates`). Nothing heard.
+ * (`lessonId` the judging rung, `material` the phrase's complete identity, `opened.hold` the route's hold where the
+ * phrase was written under one: `ScoreScreen.storedHold`). Since SR4 (the reviewer's ruling on SR3,
+ * `docs/review/responses/sr3-lb1-landing.md` §3) the held fact is that stored hold, which `rungState` reads itself
+ * (`heldWhenPlayed`); SR3 read it from the stored material against today's catalogue row, a comparison that moves
+ * when a demand moves (`heldFactStoredAtPlay.test.ts` is that adversary). "Without the rule" below is the same rows
+ * with the hold taken off: rows as every run before SR4 stored them, which are never held. Nothing heard.
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { heldBelowItsRung, phraseOptions, readingOffer, type LessonPosition, type ReadingOffer } from '../../src/curriculum/session';
+import { phraseOptions, readingOffer, type LessonPosition, type ReadingOffer } from '../../src/curriculum/session';
 import { phraseMaterial } from '../../src/curriculum/material';
 import { defaultActiveTracks } from '../../src/curriculum/tracks';
 import { dailyLevelLabel, rungForSlot } from '../../src/ui/screens/TodayScreen';
+import { storedHold } from '../../src/ui/screens/ScoreScreen';
 import { generateSightReading } from '../../src/engine/sightReading';
-import { rungState, skillLadders, type RungStates } from '../../src/evidence/rungState';
+import { heldWhenPlayed, rungState, skillLadders, type RungStates } from '../../src/evidence/rungState';
 import { storedEvidence } from '../../src/evidence/readingState';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
@@ -37,7 +41,7 @@ const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'ut
 const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
 const lessons: Lesson[] = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons));
 const lesson = (id: string): Lesson => lessons.find((one) => one.id === id) as Lesson;
-const held = heldBelowItsRung(curriculum, catalog);
+const held = heldWhenPlayed;
 
 /** The calendar: one read a day from 2 November 2026; `TODAY` is the morning after the last. */
 const dayAt = (n: number, hour: number): Date => new Date(2026, 10, 1 + n, hour);
@@ -62,10 +66,9 @@ function daily(rung: string, n: number, rows: readonly SessionRow[]): ReadingOff
 async function readDaily(rung: string, n: number, rows: readonly SessionRow[]): Promise<SessionRow> {
   const offer = daily(rung, n, rows);
   const judging = rungForSlot(curriculum, offer.item, offer.lessonId);
-  const options = phraseOptions(curriculum, offer.item, offer.recipe, offer.seed, {
-    ...(judging === undefined ? {} : { judging }),
-    ...(offer.hold === undefined ? {} : { hold: offer.hold }),
-  });
+  const rungs = { ...(judging === undefined ? {} : { judging }), ...(offer.hold === undefined ? {} : { hold: offer.hold }) };
+  const options = phraseOptions(curriculum, offer.item, offer.recipe, offer.seed, rungs);
+  const hold = storedHold(curriculum, rungs);
   const phrase = generateSightReading(options);
   const { row } = await readPhrase({
     item: offer.item,
@@ -74,7 +77,7 @@ async function readDaily(rung: string, n: number, rows: readonly SessionRow[]): 
     // At the written tempo, so a clean read also meets the rung's tempo: the run 1.5 would count as an exercise run.
     tempoPct: 100,
     recipe: { row: offer.recipe.row, ...(offer.recipe.moved ? { moved: offer.recipe.moved } : {}) },
-    opened: { tab: 'today', ...(judging === undefined ? {} : { rung: judging }), slot: 'daily-read' },
+    opened: { tab: 'today', ...(judging === undefined ? {} : { rung: judging }), slot: 'daily-read', ...(hold === undefined ? {} : { hold }) },
   });
   return {
     ...row,
@@ -85,8 +88,14 @@ async function readDaily(rung: string, n: number, rows: readonly SessionRow[]): 
   };
 }
 
+/** A row as a run before SR4 stored it: no hold in its header. */
+const withoutHold = (row: SessionRow): SessionRow => {
+  if (row.opened?.hold === undefined) return row;
+  const { hold: _hold, ...opened } = row.opened;
+  return { ...row, opened };
+};
 const stateOf = (rows: readonly SessionRow[], withRule = true): RungStates =>
-  rungState(rows, curriculum, VOCABULARY_V0, TODAY, {}, withRule ? held : undefined);
+  rungState(withRule ? rows : rows.map(withoutHold), curriculum, VOCABULARY_V0, TODAY, {});
 const outcome = (states: RungStates, id: string): unknown => {
   const reading = states.byRung.get(id);
   return { status: reading?.status, requirements: reading?.requirements.map((r) => ({ holds: r.holds, have: r.have, need: r.need, state: r.state, items: r.items })) };
@@ -104,9 +113,10 @@ beforeAll(async () => {
 }, 240_000);
 
 describe('the premise: five 1.1-held daily reads, judged by 1.5, are clean reads 1.5 would otherwise count', () => {
-  it('each is held (the offer’s hold is 1.1), judged by 1.5, and read cleanly', () => {
+  it('each is held (the offer’s hold is 1.1, stored), judged by 1.5, and read cleanly', () => {
     for (const row of heldRows) {
       expect(row.lessonId).toBe('1.5');
+      expect(row.opened).toMatchObject({ rung: '1.5', hold: '1.1' });
       expect(row.itemId).toBe('drill.reading.sight-reading-1');
       expect(held(row), `row ${String(row.id)}`).toBe(true);
     }
@@ -152,10 +162,11 @@ describe('2. their legitimate skill evidence remains', () => {
 });
 
 describe('3. after the learner reaches 1.5, a genuine unheld 1.5 read counts normally', () => {
-  it('the offer at 1.5 carries no hold, and its run is not held', () => {
+  it('the offer at 1.5 carries no hold, and its run stores none and is not held', () => {
     expect(daily('1.5', 6, heldRows).hold).toBeUndefined();
     for (const row of at15) {
       expect(row.lessonId).toBe('1.5');
+      expect(row.opened?.hold).toBeUndefined();
       expect(held(row), `row ${String(row.id)}`).toBe(false);
     }
   });
@@ -202,11 +213,17 @@ describe('5. the card says the held level while held, and the row’s level when
 });
 
 describe('no unheld run is read as held, and every held daily read is', () => {
-  /** A run of `item` judged by `judging`, its phrase written with `hold` (none: the judging rung's own), stored with its material. */
+  /**
+   * A run of `item` judged by `judging`, its phrase written with `hold` (none: the judging rung's own), stored with
+   * its material and the header's hold as the Score screen decides it (`storedHold`).
+   */
   const stored = (item: CatalogItem, judging: string, seed: number, hold?: string): SessionRow => {
-    const options = phraseOptions(curriculum, item, { row: item.id }, seed, { judging, ...(hold === undefined ? {} : { hold }) });
+    const rungs = { judging, ...(hold === undefined ? {} : { hold }) };
+    const options = phraseOptions(curriculum, item, { row: item.id }, seed, rungs);
     const phrase = generateSightReading(options);
+    const stores = storedHold(curriculum, rungs);
     return {
+      opened: { tab: 'today', rung: judging, slot: 'not measured', ...(stores === undefined ? {} : { hold: stores }) },
       itemId: item.id,
       lessonId: judging,
       seed,
@@ -243,18 +260,34 @@ describe('no unheld run is read as held, and every held daily read is', () => {
       for (let seed = 1; seed <= 5; seed += 1) expect(held(stored(row, '1.5', seed, hold)), `${hold} seed ${String(seed)}`).toBe(true);
     }
   });
-  it('a run with no stored phrase, or judged by no rung, is not held', () => {
+  it('a row with no stored hold is not held, whatever its phrase: every run before SR4, never guessed (the ruling’s legacy rule)', () => {
     const row = catalog.find((item) => item.id === 'drill.reading.sight-reading-1') as CatalogItem;
     const run = stored(row, '1.5', 1, '1.1');
-    const { material: _material, ...noMaterial } = run;
-    const { lessonId: _lessonId, ...noRung } = run;
-    expect(held(noMaterial)).toBe(false);
-    expect(held(noRung)).toBe(false);
+    expect(held(run)).toBe(true);
+    // The same phrase, held at 1.1, in a row written before the header kept the hold: read as it always was.
+    expect(held(withoutHold(run))).toBe(false);
+    const { opened: _opened, ...noHeader } = run;
+    expect(held(noHeader as SessionRow)).toBe(false);
+    // A hold naming the judging rung itself is that rung's own phrase.
+    expect(held({ ...run, opened: { ...(run.opened as NonNullable<SessionRow['opened']>), hold: '1.5' } })).toBe(false);
   });
 });
 
-describe('the app hands the held fact to every rung state it derives', () => {
-  it('each source caller of rungState passes the predicate', () => {
+describe('the Score screen stores the route’s hold where it wrote the phrase under one, and nowhere else (`storedHold`)', () => {
+  it('the daily read before 1.3: the hold, beside the judging rung', () => {
+    expect(storedHold(curriculum, { judging: '1.5', hold: '1.1' })).toBe('1.1');
+  });
+  it('no hold in the route, a hold equal to the judging rung, no judging rung, no curriculum read, or a hold the curriculum lacks: none', () => {
+    expect(storedHold(curriculum, { judging: '1.5' })).toBeUndefined();
+    expect(storedHold(curriculum, { judging: '1.5', hold: '1.5' })).toBeUndefined();
+    expect(storedHold(curriculum, { hold: '1.1' })).toBeUndefined();
+    expect(storedHold(undefined, { judging: '1.5', hold: '1.1' })).toBeUndefined();
+    expect(storedHold(curriculum, { judging: '1.5', hold: 'no.such.rung' })).toBeUndefined();
+  });
+});
+
+describe('nothing in the app infers the held fact; the rung state reads it from the rows', () => {
+  it('no source file names SR3’s inference, and no source caller of rungState hands it a predicate', () => {
     const src = join(process.cwd(), 'src');
     const files = (function walk(dir: string): string[] {
       return readdirSync(dir).flatMap((name) => {
@@ -266,6 +299,8 @@ describe('the app hands the held fact to every rung state it derives', () => {
       [...readFileSync(file, 'utf8').matchAll(/\brungState\(([^;]*?)\);/g)].map((m) => [relative(src, file), m[1] ?? ''] as const),
     );
     expect(calls.length).toBeGreaterThan(0);
-    for (const [file, args] of calls) expect(args, file).toMatch(/heldBelowItsRung\(/);
+    for (const [file, args] of calls) expect(args, file).not.toMatch(/held/i);
+    const naming = files.filter((file) => readFileSync(file, 'utf8').includes('heldBelowItsRung')).map((file) => relative(src, file));
+    expect(naming).toEqual([]);
   });
 });
