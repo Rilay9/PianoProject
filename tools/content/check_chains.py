@@ -56,10 +56,16 @@ Decisions the brief took (briefs/chain-record-checker.md, "Decisions taken here"
    a ``{#anchor}`` on a heading), so ``FABLE.md#3`` does not resolve and
    ``FABLE.md#3-the-chain-record-the-teaching-design-as-data-the-build-checks`` does; (2) an id in
    ``content/catalog.static.json``; (3) a song id or a CID in ``content/sources/pdmx.json`` (a bars
-   suffix must lie inside the item's bar count); (4) an exercise id listed in
-   ``tools/content/generator_continuity.json`` (an EXACT match against the generated items the
-   build keeps; ``family_contracts.json`` declares no item pattern, so an exercise id resolves by
-   exact match only, and ``exercise.tresillo.zz`` or ``exercise.tresillo`` does not); (5) an excerpt
+   suffix must lie inside the item's bar count); (4) an exercise id, by EXACT match, first against
+   ``tools/content/generated_ids.json`` (the manifest of every generated item the build keeps, as
+   ``{id, family, version}``; ``build.py`` writes it and fails a full build while the committed
+   copy is stale, so it is current wherever the checker runs, and the checker never imports a
+   generator), then against ``tools/content/generator_continuity.json`` (the items of each version
+   a family left, so a historical id still resolves; lane A7F, the reviewer's H7 in
+   ``docs/review/responses/g13-habanera-control.md`` section 3: a built id resolves whether or not
+   its family's version ever moved); ``family_contracts.json`` declares no item pattern, so an
+   exercise id resolves by exact match only, and ``exercise.tresillo.zz`` or
+   ``exercise.tresillo`` does not; (5) an excerpt
    id derived from a row of ``content/sources/excerpts.json`` by ``excerpts.excerpt_id``'s own rule;
    (6) a family id in ``tools/content/family_contracts.json``; (7) a well-formed http(s) URL when
    the content kind is ``external`` (never fetched: CI has no network, so a URL is only a pointer).
@@ -73,11 +79,12 @@ Fields this script adds to FABLE section 3's shape, because a rule needs somewhe
    written as two steps.
 
 The generated-step link (R7). A step ``content: {kind: generated, ref: ...}`` links to the ``generated``
-entry whose ``family`` is the ref, or, when the ref is an exercise id the build keeps in
-``tools/content/generator_continuity.json``, the entry whose ``family`` is the continuity family that
-holds that exercise (the record's steps cite ``exercise.tresillo.c``; its entry is ``tresillo``). The
-checker fails a step whose ref identifies a family (a family id in ``family_contracts.json`` or an
-exercise id in the continuity record) that no ``generated`` entry lists. A generated step whose ref
+entry whose ``family`` is the ref, or, when the ref is an exercise id rule (4) resolves, the entry whose
+``family`` is that exercise's family: its row's in ``tools/content/generated_ids.json``, else the
+continuity family that holds it (the record's steps cite ``exercise.tresillo.c``, whose entry is
+``tresillo``, and ``exercise.bass-cell.habanera.c``, whose entry is ``bass_cell``). The checker fails a
+step whose ref identifies a family (a family id in ``family_contracts.json`` or an exercise id rule (4)
+resolves) that no ``generated`` entry lists. A generated step whose ref
 identifies no family is R3's: listed in a draft, a failure once reviewed. Nothing is inferred from a
 tool or from a step's wording.
 
@@ -103,6 +110,9 @@ CHAINS_GLOB = "docs/chains/*.yaml"
 BRIEFS_GLOB = "docs/prompts/runs/*/briefs/*.md"
 MODE_SHEET = "docs/prompts/runs/curriculum-review-2026-10-05/MODE-SHEET.md"
 FABLE = "docs/prompts/FABLE.md"
+#: Rule (4)'s two sources for an exercise id, in the order they are read.
+GENERATED_IDS = "tools/content/generated_ids.json"
+GENERATOR_CONTINUITY = "tools/content/generator_continuity.json"
 
 STATUSES = ("draft", "reviewed", "shipped")
 KINDS = ("generated", "excerpt", "piece", "chart", "external", "explanation")
@@ -342,16 +352,24 @@ class Resolver:
         pdmx = (_load_json(root / "content/sources/pdmx.json") or {}).get("items", [])
         self.pdmx_by_id = {row["id"]: row for row in pdmx if isinstance(row, dict) and "id" in row}
         self.pdmx_by_cid = {row["cid"]: row for row in pdmx if isinstance(row, dict) and "cid" in row}
-        continuity = (_load_json(root / "tools/content/generator_continuity.json") or {}).get("families", {})
-        self.exercise_ids = {
-            item for fam in continuity.values() if isinstance(fam, dict) for item in (fam.get("items") or {})
-        }
+        # Rule (4): an exercise id resolves by exact match against the manifest of built generated ids first, then
+        # against the continuity record, which keeps the ids of the versions a family left (historical ids).
+        continuity = (_load_json(root / GENERATOR_CONTINUITY) or {}).get("families", {})
         self.exercise_family = {
             item: name
             for name, fam in continuity.items()
             if isinstance(fam, dict)
             for item in (fam.get("items") or {})
         }
+        built = (_load_json(root / GENERATED_IDS) or {}).get("items", [])
+        self.exercise_family.update(
+            {
+                row["id"]: row["family"]
+                for row in built
+                if isinstance(row, dict) and isinstance(row.get("id"), str) and isinstance(row.get("family"), str)
+            }
+        )
+        self.exercise_ids = set(self.exercise_family)
         self.families = set((_load_json(root / "tools/content/family_contracts.json") or {}).get("families", {}))
         self.excerpt_ids = set()
         for row in (_load_json(root / "content/sources/excerpts.json") or {}).get("excerpts", []):
@@ -365,7 +383,8 @@ class Resolver:
                 continue
 
     def family_of(self, ref: str) -> str | None:
-        """The generated family a ref identifies: a family id, or an exercise id's continuity family."""
+        """The generated family a ref identifies: a family id, or an exercise id's family (the manifest's, else the
+        continuity record's)."""
         text = str(ref).strip()
         if text in self.families:
             return text

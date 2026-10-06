@@ -329,6 +329,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **G13** | The strict habanera control: the `bass_cell` family (habanera in C, F, G and a 2/4 tresillo control at ♩ = 60, differing only in the half-bar onset), proved by contract and witness on all 32 bars with six near-misses red; latin.4's counted exercise run is the 2/4 tresillo control; the lesson's contrast is like for like (`G13-habanera-control.md`) | content + tools | landed 2026-10-06 (`G13-habanera-control.md`); Entry 256
 | **TU2** | The Bizet cut's teaching-use decision re-issued on its machine-independent identity with `supersedes` (the reviewer's ruling), so the cut is admitted on every build; FABLE §4 carries the owner's experience-variety direction (`TU2-cut-decision-reissued.md`) | content | landed 2026-10-06 (`TU2-cut-decision-reissued.md`); Entry 257
 | **SR2** | The daily read held to the learner's taught set (no read at 0.1-0.4; steps only at 1.1-1.2, judged at 1.5); `metre.three-four` taught at 1.4, curated-only, established by the waltz contract, the reader's 3/4 move on single-hand rows only; the research differential 12 declared, 12 moved, 362 byte-identical (`SR2-daily-read-hold-and-three-four.md`) | app + content | landed 2026-10-06 (`SR2-daily-read-hold-and-three-four.md`); Entry 258
+| **A7F** | A7c.1's step-20 line on latin.6 and latin.7 (decide the cell from the page, then check by ear and by tapping; self-checked) and the checker resolving built generated ids through the committed manifest the build keeps fresh; the record's refs all resolve, status draft pending the reviewer (`A7F-step20-and-generated-ids.md`) | content + tools | landed 2026-10-06 (`A7F-step20-and-generated-ids.md`); Entry 259
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -523,6 +524,7 @@ CUT1 · landed · 255
 G13 · landed · 256
 TU2 · landed · 257
 SR2 · landed · 258
+A7F · landed · 259
 F0a · closed · —
 L120 · approved · —
 -->

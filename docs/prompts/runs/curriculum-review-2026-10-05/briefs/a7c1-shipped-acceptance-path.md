@@ -1,0 +1,33 @@
+# Brief: A7c.1's acceptance path for `shipped`: one test file that exercises the counted runs and proves the self-checked step 20 credits nothing (lane A7S; 2026-10-06)
+
+ability: A7c.1
+
+**What governs:** FABLE §9 ("an ability is development-done when its chain record is `shipped`, its independence task is present in the app and its learner-facing acceptance path has been exercised: a measurable independence test has its evidence behaviour tested; a self-checked one has the app expose and record only the permitted self-check and award no unsupported skill evidence") and §1 (SHIPPED: the record passes the checker; every step playable on the owner's phone build; the step's acceptance test passed); FABLE §3's checker rule R8 (`status: shipped` requires an acceptance-test path that exists; the checker reads one top-level `acceptance_test` string, Entry 259); `docs/chains/A7c.1.yaml` (`evidence`: `updates`, `self_checked`, `never_credits`; step 20); Entries 252, 256, 257 and 259. The record's `status` is the reviewer's to move; this lane builds the path and names it in the record without changing `status`. Nothing heard.
+
+**Decision rationale (operating-procedure §10b).** Learner problem: the chain is complete on the page, but nothing proves end to end that the two counted runs meet latin.4 while every self-checked step (the naming, the contrast, the hearing, the step-20 decision on latin.6 and latin.7) is recorded only as the permitted run rows and awards no skill evidence for `habanera-and-tresillo`; without that proof `shipped` would overclaim. Solution classes: (a) a new browser spec driving every step with the MIDI mock (refused: slow, and run-counting is `rungState`'s, covered by Entries 239-240 and `latin4Completion.test.ts`); (b) **chosen:** one unit file as the acceptance path, `app/tests/unit/latin4Completion.test.ts` extended: the existing met/not-met cases, plus the self-check cases: a Hear it, Rhythm only or Wait for me run on any latin.4 option, and a Rhythm only or Hear it run on The Crave, Por Una Cabeza, La Cumparsita B or El Choclo opened from latin.6 or latin.7, award no evidence for the skill `habanera-and-tresillo` (observable none) and store nothing that names a cell; the rung's requirement meets only on the two counted rows; Plan's badge words for latin.4 when met are whatever the app says today (report them; do not change them: the self-checked-badge rule is its own app seam, Entry 252); (c) two files, one for the unit side and one browser case (refused: R8 names one path). What reverses it: the reviewer wanting a browser-driven acceptance; then (a) as a follow-up. Real problem: it is the last condition before the scoreboard can move. Uncertainty: whether the evidence job can be driven for runs on latin.6's pieces without a built-content fixture the test does not have (read `rungStateFromEvidence.test.ts` and `evidenceByDemand.test.ts` for the entry points).
+
+## Instructional chain, Failure route, Independence test
+
+Unchanged from the record (Entries 252, 256, 259); this lane adds no step. The independence test's "later" half (step 20) is self-checked; the acceptance path proves the app records only its permitted rows and credits nothing for it.
+
+## Finish condition (every item done, or an explicit not-done line by name)
+
+1. **The acceptance cases** in `app/tests/unit/latin4Completion.test.ts`, each red first where the code is new (if every case is green on the base, say so: the proof then is that the base already behaves, and the red-first evidence is the mutant below):
+   - met by one Keep tempo row of `exercise.bass-cell.tresillo.c` at the pass pair opened from latin.4 plus one whole Keep tempo row of the Bizet left-hand cut at the pass pair opened from latin.4 (existing);
+   - not met by any other combination the file refuses today (existing);
+   - **self-check rows credit nothing:** for each of the record's `self_checked` steps that has an app row (steps 2-7, 11-12, 14-16, 18-19 and the latin.6/latin.7 step 20): a Hear it row, a Rhythm only row and a Wait for me row on the relevant item, opened from the relevant rung, through the same entry points `rungStateFromEvidence.test.ts` and `evidenceByDemand.test.ts` use; assert the skill `habanera-and-tresillo` gains no evidence (its state unchanged), no skill evidence is written that the record's `never_credits` forbids, and the stored run names no cell;
+   - **a mutant** that makes a Rhythm only row count as a Keep tempo row (or awards the skill on a Hear it row) turns the self-check cases red; record it in `docs/prompts/runs/A7S/mutants.txt` and restore the code byte for byte.
+2. **The record:** `docs/chains/A7c.1.yaml` gains the top-level `acceptance_test: app/tests/unit/latin4Completion.test.ts` (the checker's R8 reads it; verify the field name at `check_chains.py`'s R8 and use exactly that); `status` stays whatever it is when you start (the reviewer moves it); the checker passes with `--lint-briefs`.
+3. **The phone-build condition** (FABLE §1): the builder does not have the phone; report instead, for each of the record's 20 steps, the control or route on the deployed app that reaches it (from the lessons' words and the Score screen's routes), and name any step no control reaches (that would be a stop for `shipped`, not for this lane).
+4. **The test map** row for `latin4Completion.test.ts` revised to say it is A7c.1's acceptance path and what it proves.
+5. **Checks:** `tsc -b --noEmit` 0, lint 0, the file green, `rungStateFromEvidence`, `evidenceByDemand`, `oneSkillState`, `skillActivation` green (the skill-evidence invariants), the chain checker 0 failures. A draft record entry; nothing heard.
+
+## Stop conditions
+
+An evidence path that awards `habanera-and-tresillo` on a self-checked row (report the row, the line that awards it and the record's `never_credits` clause; change nothing in `app/src`); the checker's R8 needing a field the record cannot carry without a checker change.
+
+## Files owned
+
+`app/tests/unit/latin4Completion.test.ts`; `docs/chains/A7c.1.yaml` (the `acceptance_test` field and the header comment only); `docs/08-test-map.md` (one row); `docs/prompts/runs/A7S/`. Not to touch: anything in `app/src`, the lessons, the stage files, the generators, the checker, the vocabulary.
+
+Harness: `operating-procedure.md` §14, once. Worktree; copy `app/public/content` from the main checkout (no content build: no content changes here); no Playwright; no git commands; never name an AI model; temp files under `build/A7S/`; `node_modules` kept. Reply in at most eight lines plus the draft entry: each finish item done or not done; the red-first or mutant evidence; the step-reachability table's one line of summary and any unreachable step; nothing heard.

@@ -76,7 +76,7 @@ status: draft|reviewed|shipped
 **The checker** (`tools/content/check_chains.py`, run in CI) enforces these rules and nothing else:
 - every field is present;
 - every `tool` is one MODE-SHEET names;
-- every `ref` resolves (file, family id, or CID in a committed source record) once `status` is `reviewed` or `shipped`; a `draft` may hold unresolved refs, and the checker lists them;
+- every `ref` resolves (file, family id, CID in a committed source record, or a built generated id in `tools/content/generated_ids.json`) once `status` is `reviewed` or `shipped`; a `draft` may hold unresolved refs, and the checker lists them;
 - every step after the first removes at least one scaffold, or carries a one-line reason;
 - the last step's scaffold is a strict subset of the first step's;
 - `never_credits` is not empty;

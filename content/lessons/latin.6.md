@@ -6,11 +6,28 @@ videos:
   - label: "Tango Piano 101"
     url: "https://www.youtube.com/watch?v=hEF4Aq5Q3tw"
     teacher: "Pianote"
-readingTime: 3
+readingTime: 5
 ---
 
 Two rungs ago the clave was something you clapped. Here the pattern is written
 into the music, and the part that carries it is the left hand.
+
+**Before you play, name each left hand yourself.** Before you play any of the
+three pieces on this rung, *Por Una Cabeza*, *The Crave* and the second part of
+*La Cumparsita*, open it and, before you press anything, look at its left hand
+and decide: does it use the habanera, the tresillo or neither, and if it uses
+one, what is the first bar where it stops? If you worked through *The habanera
+bass, and the tresillo beside it* on Stage 4, you met a passage of the first
+two there; read past those bars this time. Then check yourself: press *Hear
+it*; then loop a few bars (double-tap the first, then the last), choose *Keep
+tempo* and *L*, switch *Rhythm only* on in ⋯ and tap the left hand. Switch
+*Rhythm only* off again before you play the piece: it stays on for the next
+piece you open from this page, and a *Rhythm only* run does not count toward
+this rung. The
+paragraphs below describe each left hand, so read them after you have decided.
+Nobody checks your answer but you, and naming it earns nothing here. If you
+have not met the two cells, or they have blurred, the grid of where their notes
+start is near the top of that Stage 4 page.
 
 **The tango's left hand is a pattern, and it does not change.** *Por una
 Cabeza* is the plainest case in the app: sixty-six bars on two staves, and bar

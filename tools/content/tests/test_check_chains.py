@@ -12,6 +12,7 @@ Run: `py -3.11 -m unittest tools.content.tests.test_check_chains`
 from __future__ import annotations
 
 import io
+import json
 import shutil
 import sys
 import tempfile
@@ -32,11 +33,13 @@ SCRATCH = ROOT / "build" / "test_check_chains"
 CUT = "excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh"
 LESSON = "content/lessons/latin.4.md"
 G13_REF = "docs/prompts/runs/curriculum-review-2026-10-05/GENERATOR-ADDENDUM.md#G13"
-#: G13's generated 2/4 pair (family bass_cell). The checker resolves an exercise id only through
-#: tools/content/generator_continuity.json, which lists only families whose version moved, so these stay listed
-#: unresolved in the draft until a checker seam resolves built generated ids (G13's H7; open before `reviewed`).
+#: G13's generated 2/4 pair (family bass_cell). Until lane A7F the checker resolved an exercise id only through
+#: tools/content/generator_continuity.json, which lists only families whose version moved, so these were listed
+#: unresolved in the draft (G13's H7). Since A7F they resolve through tools/content/generated_ids.json, the manifest of
+#: built generated ids the content build writes and keeps current (`BuiltGeneratedIds` below).
 BASS_CELL_IDS = {"exercise.bass-cell.habanera.c", "exercise.bass-cell.habanera.f", "exercise.bass-cell.habanera.g",
                  "exercise.bass-cell.tresillo.c"}
+MANIFEST = ROOT / "tools" / "content" / "generated_ids.json"
 
 RESOLVER = cc.Resolver(ROOT)
 TOOLS, SHEET_PROBLEMS = cc.vocabulary(ROOT)
@@ -260,9 +263,8 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
             if step["content"]["ref"] in (LESSON, CUT):
                 step["content"]["ref"] = "exercise.tresillo.c"
                 step["content"]["kind"] = "generated"
-            # Revised (G13): the bass_cell exercise ids do not resolve yet (H7); the family id does.
-            if step["content"]["ref"] in BASS_CELL_IDS:
-                step["content"]["ref"] = "bass_cell"
+            # Revised (A7F): the bass_cell exercise ids resolve through the manifest of built generated ids, so they
+            # stay as the record writes them (G13 had replaced them with the family id while H7 was open).
         rec["generated"][0]["contract"] = "docs/prompts/FABLE.md"
         rec["generated"][0]["checker"] = "tools/content/check_chains.py"
         rec["status"] = "reviewed"
@@ -457,15 +459,16 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
         rec = load()
         rec["generated"] = []
         failures, _ = check(rec)
-        # Revised (G13): only the steps whose ref identifies a family; the bass_cell exercise ids identify none until
-        # the checker resolves built generated ids (H7), so they are R3's, listed, and never this rule's.
-        generated_steps = [n for n, s in enumerate(rec["steps"], 1)
-                           if s["content"]["kind"] == "generated" and RESOLVER.family_of(s["content"]["ref"])]
+        # Revised (A7F): every generated step now identifies its family, the bass_cell exercise ids through the
+        # manifest of built generated ids (before A7F they identified none and were R3's, listed, H7).
+        generated_steps = [n for n, s in enumerate(rec["steps"], 1) if s["content"]["kind"] == "generated"]
         self.assertTrue(generated_steps)
+        self.assertEqual([n for n in generated_steps if not RESOLVER.family_of(rec["steps"][n - 1]["content"]["ref"])], [])
         self.assertTrue(any(s["content"]["ref"] in BASS_CELL_IDS for s in rec["steps"]))
         self.assertEqual(fields(failures), [f"steps[{n}].content.ref" for n in generated_steps])
-        for failure in failures:
-            self.assertIn("'tresillo'", failure.message)
+        for n, failure in zip(generated_steps, failures):
+            ref = rec["steps"][n - 1]["content"]["ref"]
+            self.assertIn("'bass_cell'" if ref in BASS_CELL_IDS else "'tresillo'", failure.message)
             self.assertIn("no entry under generated", failure.message)
 
     def test_r7_a_step_naming_another_family_by_id_or_by_exercise_id_fails_until_that_family_is_listed(self):
@@ -866,6 +869,131 @@ class TheCommandLine(unittest.TestCase):
         self.assertIn("1 linted (carry an ability marker), 1 skipped (no ability marker)", out)
         code, _ = run_main("--root", str(self.tree.root))
         self.assertEqual(code, 0)  # without the flag the briefs are not read
+
+
+class BuiltGeneratedIds(unittest.TestCase):
+    """H7 (`docs/review/responses/g13-habanera-control.md` §3): a built generated id resolves without depending on
+    whether its family appears in the continuity record. Rule (4) reads `tools/content/generated_ids.json` (the
+    manifest the content build writes and fails on when stale) by exact match first, then
+    `generator_continuity.json`, which stays the source for historical ids. Each case builds a small tree holding the
+    two family sources, with and without the manifest, so the manifest is shown to be what resolves the four
+    bass_cell ids, which no continuity row holds."""
+
+    def setUp(self):
+        self.tree = Tree()
+        self.addCleanup(self.tree.cleanup)
+        for rel in ("tools/content/family_contracts.json", "tools/content/generator_continuity.json"):
+            self.tree.write(rel, (ROOT / rel).read_text(encoding="utf-8"))
+
+    def resolver(self, manifest: bool) -> cc.Resolver:
+        target = self.tree.root / "tools" / "content" / "generated_ids.json"
+        if manifest:
+            self.tree.write("tools/content/generated_ids.json", MANIFEST.read_text(encoding="utf-8"))
+        elif target.exists():
+            target.unlink()
+        return cc.Resolver(self.tree.root)
+
+    def test_the_four_bass_cell_ids_are_unresolved_without_the_manifest_and_resolve_with_it(self):
+        without = self.resolver(manifest=False)
+        for ref in sorted(BASS_CELL_IDS):
+            with self.subTest(without=ref):
+                self.assertFalse(without.resolve(ref, "generated")[0])
+                self.assertIsNone(without.family_of(ref))
+        with_manifest = self.resolver(manifest=True)
+        for ref in sorted(BASS_CELL_IDS):
+            with self.subTest(with_manifest=ref):
+                self.assertEqual(with_manifest.resolve(ref, "generated"), (True, ""))
+                self.assertEqual(with_manifest.family_of(ref), "bass_cell")
+
+    def test_the_committed_manifest_holds_the_four_rows_sorted_and_unique(self):
+        rows = json.loads(MANIFEST.read_text(encoding="utf-8"))["items"]
+        ids = [row["id"] for row in rows]
+        self.assertEqual(ids, sorted(ids))
+        self.assertEqual(len(ids), len(set(ids)))
+        by_id = {row["id"]: row for row in rows}
+        for ref in sorted(BASS_CELL_IDS):
+            with self.subTest(ref=ref):
+                self.assertEqual(by_id[ref]["family"], "bass_cell")
+                self.assertIsInstance(by_id[ref]["version"], int)
+        self.assertTrue(all(set(row) == {"id", "family", "version"} for row in rows))
+
+    def test_resolution_against_the_manifest_is_exact(self):
+        resolver = self.resolver(manifest=True)
+        for bad in ("exercise.bass-cell.zz", "exercise.bass-cell", "exercise.bass-cell.habanera",
+                    "exercise.bass-cell.habanera.c.x", "Exercise.bass-cell.habanera.c", "exercise.bass-cell.habanera.cc"):
+            with self.subTest(bad=bad):
+                self.assertFalse(resolver.resolve(bad, "generated")[0])
+                self.assertIsNone(resolver.family_of(bad))
+
+    def test_a_broken_record_naming_bass_cell_zz_is_listed_in_a_draft_and_fails_once_reviewed(self):
+        rec = load()
+        self.assertEqual(rec["steps"][5]["content"]["ref"], "exercise.bass-cell.tresillo.c")
+        rec["steps"][5]["content"]["ref"] = "exercise.bass-cell.zz"
+        failures, listed = check(rec)
+        self.assertEqual(failures, [])
+        self.assertIn(("steps[6].content.ref", "exercise.bass-cell.zz"), {(u.field, u.ref) for u in listed})
+        rec["status"] = "reviewed"
+        failures, _ = check(rec)
+        self.assertIn("steps[6].content.ref", fields(failures))
+        self.assertTrue(any("exercise.bass-cell.zz" in f.message for f in failures))
+
+    def test_the_continuity_record_stays_the_second_source_for_a_historical_id(self):
+        continuity = json.loads((ROOT / "tools/content/generator_continuity.json").read_text(encoding="utf-8"))
+        continuity["families"]["tresillo"]["items"]["exercise.tresillo.retired"] = {}
+        self.tree.write("tools/content/generator_continuity.json", json.dumps(continuity))
+        rows = json.loads(MANIFEST.read_text(encoding="utf-8"))["items"]
+        self.assertNotIn("exercise.tresillo.retired", {row["id"] for row in rows})
+        for manifest in (False, True):
+            with self.subTest(manifest=manifest):
+                resolver = self.resolver(manifest)
+                self.assertEqual(resolver.resolve("exercise.tresillo.retired", "generated"), (True, ""))
+                self.assertEqual(resolver.family_of("exercise.tresillo.retired"), "tresillo")
+
+    def test_the_build_fails_on_a_stale_or_missing_manifest_with_one_line_and_rewrites_it(self):
+        import build  # stdlib only at import, so this runs where the checker's tests run
+
+        catalog = [
+            {"id": "exercise.b.c", "drill": {"generator": {"family": "fam_b", "version": 2}}},
+            {"id": "exercise.a.c", "drill": {"generator": {"family": "fam_a", "version": 1}}},
+            {"id": "song.not-generated", "drill": None},
+            {"id": "drill.runtime", "drill": {"kind": "simon"}},
+        ]
+        self.assertEqual(build.generated_id_rows(catalog), [
+            {"id": "exercise.a.c", "family": "fam_a", "version": 1},
+            {"id": "exercise.b.c", "family": "fam_b", "version": 2},
+        ])
+        out = self.tree.root / "out"
+        out.mkdir()
+        (out / "catalog.json").write_text(json.dumps(catalog), encoding="utf-8")
+        path = self.tree.root / "generated_ids.json"
+        missing = build.generated_ids_finding(catalog, path)
+        self.assertIn("is missing", missing)
+        self.assertNotIn("\n", missing)
+        # neither a partial build nor a broken one checks or writes
+        self.assertTrue(build.step_generated_ids(out, full=False, built=True, path=path).skipped)
+        self.assertTrue(build.step_generated_ids(out, full=True, built=False, path=path).skipped)
+        self.assertFalse(path.exists())
+        first = build.step_generated_ids(out, full=True, built=True, path=path)
+        self.assertFalse(first.ok)
+        self.assertEqual(first.detail, missing)
+        self.assertEqual(path.read_bytes().count(b"\r"), 0)
+        self.assertIsNone(build.generated_ids_finding(catalog, path))
+        self.assertTrue(build.step_generated_ids(out, full=True, built=True, path=path).ok)
+        # a bumped version is stale, named in one line, and the file is rewritten
+        catalog[0]["drill"]["generator"]["version"] = 3
+        (out / "catalog.json").write_text(json.dumps(catalog), encoding="utf-8")
+        stale = build.step_generated_ids(out, full=True, built=True, path=path)
+        self.assertFalse(stale.ok)
+        self.assertIn("is stale", stale.detail)
+        self.assertIn("0 added, 0 removed, 1 changed", stale.detail)
+        self.assertNotIn("\n", stale.detail)
+        self.assertIsNone(build.generated_ids_finding(catalog, path))
+
+    def test_the_real_record_reports_no_unresolved_ref(self):
+        code, out = run_main("--lint-briefs")
+        self.assertEqual(code, 0, out)
+        self.assertIn("0 failure(s), 0 unresolved ref(s) in drafts", out)
+        self.assertNotIn("UNRESOLVED", out)
 
 
 if __name__ == "__main__":

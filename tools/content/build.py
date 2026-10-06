@@ -15,7 +15,10 @@ reported separately:
   6. author           — our own ABC and music21 sources
   7. merge            — the fragments into one catalog, sections attached
   8. curriculum, lessons, tips — copied through from content/
-  9. validate         — schema, cross-references, licences, durations, the ladder report
+  9. validate         — schema, cross-references, licences, durations, the ladder report;
+                        then, on a full default build, the committed manifest of built
+                        generated ids (`tools/content/generated_ids.json`), rewritten
+                        and failed when stale (`step_generated_ids`)
  10. render           — optional; every item loaded in a real browser (slow);
                         validate runs again after it, since it writes durations back
 
@@ -1577,6 +1580,93 @@ def step_validate(
     return Step("validate", ok=code == 0, detail=output if code else summary_line(output), warnings=warned)
 
 
+#: The manifest of built generated ids (lane A7F; the reviewer's H7, `docs/review/responses/g13-habanera-control.md` §3):
+#: every generated item this build keeps, as `{id, family, version}`, committed so that the chain checker
+#: (`check_chains.py`, which runs where only PyYAML is installed and the catalogue is never built) resolves a built
+#: exercise id exactly, whether or not its family's version ever moved (`generator_continuity.json` holds only the
+#: families whose version did, and stays the checker's second source, for historical ids).
+GENERATED_IDS = Path(__file__).resolve().parent / "generated_ids.json"
+
+GENERATED_IDS_COMMENT = (
+    "Written by tools/content/build.py: every generated item the build keeps (drill.generator in the built catalogue), "
+    "as {id, family, version}, sorted by id. Do not edit: a full default build compares this file with what it would "
+    "write, rewrites it and fails while they differ, so a stale copy fails CI. tools/content/check_chains.py resolves "
+    "an exercise id by exact match against these rows first, then against generator_continuity.json (FABLE.md section 3)."
+)
+
+
+def generated_id_rows(catalog: list) -> list[dict]:
+    """`{id, family, version}` for every catalogue item a generator made, sorted by id."""
+    rows = []
+    for item in catalog:
+        generator = (item.get("drill") or {}).get("generator") if isinstance(item, dict) else None
+        if not isinstance(generator, dict) or not generator.get("family"):
+            continue
+        rows.append({"id": item["id"], "family": generator["family"], "version": generator.get("version")})
+    return sorted(rows, key=lambda row: row["id"])
+
+
+def render_generated_ids(rows: list[dict]) -> str:
+    """The manifest's text: one row a line, so a family added or bumped is a diff of its own rows; LF, a final newline."""
+    body = ",\n".join("    " + json.dumps(row, ensure_ascii=False) for row in rows)
+    return (
+        "{\n"
+        f'  "_comment": {json.dumps(GENERATED_IDS_COMMENT, ensure_ascii=False)},\n'
+        '  "items": [\n'
+        f"{body}\n"
+        "  ]\n"
+        "}\n"
+    )
+
+
+def generated_ids_finding(catalog: list, path: Path = GENERATED_IDS) -> str | None:
+    """None when the committed manifest is what this catalogue would write, else the one-line reason it is stale."""
+    rows = generated_id_rows(catalog)
+    if path.is_file() and path.read_text(encoding="utf-8") == render_generated_ids(rows):
+        return None
+    try:
+        shown = path.resolve().relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        shown = str(path)
+    if not path.is_file():
+        return f"{shown} is missing: this build keeps {len(rows)} generated item(s); run the full content build and commit the file"
+    try:
+        old = {row["id"]: row for row in json.loads(path.read_text(encoding="utf-8")).get("items", [])}
+    except (ValueError, AttributeError, KeyError, TypeError):
+        old = {}
+    new = {row["id"]: row for row in rows}
+    added = len(new.keys() - old.keys())
+    removed = len(old.keys() - new.keys())
+    changed = sum(1 for key in new.keys() & old.keys() if new[key] != old[key])
+    return (
+        f"{shown} is stale: this build keeps {len(rows)} generated item(s) and the committed file differs "
+        f"({added} added, {removed} removed, {changed} changed, or its formatting); "
+        "the full content build has rewritten it, commit it"
+    )
+
+
+def step_generated_ids(out_dir: Path, full: bool, built: bool, path: Path = GENERATED_IDS) -> Step:
+    """
+    Checks the committed manifest against the catalogue this build wrote, and writes it when they differ.
+
+    Only on a full default build (`--quick` keeps a generator subset, and `--out` builds elsewhere, as `step_reports`
+    leaves the reviewer's files alone then), and only when every step before it passed, so a broken build never
+    writes a short manifest. A stale or missing file fails the step with one line and is rewritten, as a formatter
+    does: a second build passes locally, and CI, which checks out the committed file, fails until it is committed.
+    """
+    if not full:
+        return Step("generated ids", ok=True, detail="not a full default build: the manifest is neither checked nor written", skipped=True)
+    if not built:
+        return Step("generated ids", ok=True, detail="an earlier step failed: the manifest is neither checked nor written", skipped=True)
+    catalog = read_json(out_dir / "catalog.json")
+    assert isinstance(catalog, list)
+    finding = generated_ids_finding(catalog, path)
+    if finding is None:
+        return Step("generated ids", ok=True, detail=f"{len(generated_id_rows(catalog))} generated ids; the committed manifest is current")
+    path.write_text(render_generated_ids(generated_id_rows(catalog)), encoding="utf-8", newline="\n")
+    return Step("generated ids", ok=False, detail=finding)
+
+
 def step_render(out_dir: Path, limit: int) -> Step:
     args = ["--content", str(out_dir), "--apply"]
     if limit:
@@ -1711,6 +1801,12 @@ def run_build(args: argparse.Namespace, started: float) -> None:
     copy_schemas(args.out)
     copy_level_model(args.out)
     steps.append(step_validate(args.out, args.strict_license, allow_nc, args.personal))
+    # A7F (H7): the committed manifest of built generated ids, checked against this catalogue and rewritten when stale.
+    steps.append(step_generated_ids(
+        args.out,
+        full=args.out.resolve() == DEFAULT_OUT.resolve() and not args.quick,
+        built=all(step.ok for step in steps),
+    ))
     if args.render:
         steps.append(step_render(args.out, args.render_limit))
         # The render check writes measured durations back, so validate again.

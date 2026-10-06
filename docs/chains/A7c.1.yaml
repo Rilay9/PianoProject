@@ -13,10 +13,13 @@
 # (steps 6 and 7) now taps a generated 2/4 pair at quarter = 60 in C that differs only in the onset cell, the
 # family bass_cell (the habanera drill and its 2/4 tresillo control); three steps play the habanera drill at pitch
 # (C, then F or G); the counted exercise run is the 2/4 tresillo control, which the latin.4 requirement names; the
-# 4/4 tresillo steps stay as practice and continuity from latin.3 and count toward nothing. The bass_cell exercise
-# ids are listed unresolved in this draft: the checker resolves an exercise id only through
-# tools/content/generator_continuity.json, which holds only families whose version moved (a checker gap, open
-# before reviewed). The step-20 task line on latin.6 and latin.7 is still outstanding.
+# 4/4 tresillo steps stay as practice and continuity from latin.3 and count toward nothing.
+# A7F (briefs/a7c1-finish-step20-and-generated-ids.md): every ref resolves. The checker resolves an exercise id by
+# exact match against tools/content/generated_ids.json, the manifest of built generated ids the content build writes
+# and fails on when stale, then against tools/content/generator_continuity.json (H7 closed in the checker). The
+# step-20 task line has landed on latin.6 (Por Una Cabeza, The Crave, the second part of La Cumparsita) and latin.7
+# (El Choclo): it names no cell, the naming is self-checked and earns nothing. status stays draft: the reviewer sets
+# reviewed on their read. shipped needs a top-level acceptance_test path (the checker's R8) and FABLE section 9.
 ability: A7c.1
 learner_cannot: "Name or play the habanera bass (a dotted eighth, a sixteenth and two eighths in a 2/4 bar), tell it from the tresillo on the page or by ear, or know that the Argentine tango figures descend from it. latin.3 names and explains the tresillo as 3+3+2; no lesson teaches the habanera as the contrasting cell, or asks the learner to tell the two apart or apply them, and Por Una Cabeza carries the habanera in 56 of its 66 bars with nothing pointing the learner at it."
 independent_target: "Looks at a left hand they have not been told about and says which cell it uses, and where it stops using it, before hearing it; afterwards taps or plays that left hand at a tempo they choose."
