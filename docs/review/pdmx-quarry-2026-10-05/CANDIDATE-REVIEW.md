@@ -151,6 +151,85 @@ Observed notation:
 Disposition: **KEEP CANDIDATE**, likely **ADMIT** once compared with neighboring form candidates.
 Likely role: composition/form **MODEL** for phrase return, contrast, repetition/variation, and building a binary-form task from real notation.
 
+### B-jazz — Fly Me to the Moon, piano arrangement
+CID: `QmS2enG17nJVrbMvvCcHDW9wAN8nLSV1CPMmtghD7SZFVQ`
+Source read: `summary/B-jazz/fly-me-to-the-moon-QmS2en...txt`
+
+Observed notation:
+- 22-measure two-staff piano arrangement, 10 chord symbols.
+- Melody is written over explicit inner-voice voicings and bass notes rather than as a bare lead sheet.
+- Useful examples of harmonized melody, voice motion, and accompaniment reduction are visible.
+- The notation does not by itself justify the curriculum's minor-ii–V–i claim; that claim remains separately unverified/contradicted by the earlier review.
+
+Disposition: **KEEP CANDIDATE**.
+Likely role: jazz **MODEL** for harmonized melody / voicing / solo-piano reduction; not the preferred substrate for the full jazz cycle and not evidence for a named minor ii–V–i without a separate harmonic check.
+
+### B-jazz — All of Me, trombone + piano
+CID: `QmVbSHLuJ2CHRrfS3kHoWHsPGCqtcLTjNdBA5YCgFg7Bpw`
+Source read: `summary/B-jazz/all-of-me-QmVbSH...txt`
+
+Observed notation:
+- 77 measures, trombone melody/solo part plus grand-staff piano, 62 chord symbols.
+- Piano accompaniment is explicit for a long span: steady bass roots with repeated chord voicings, later more active figures.
+- The arrangement supplies the comping rather than leaving the learner to create it.
+
+Disposition: **KEEP CANDIDATE**.
+Likely role: jazz **MODEL / TRANSFER** for comparing written accompaniment treatment against a melody/solo line; possibly useful for comping reduction or transcription tasks.
+Not preferred for the full melody → comp → bass → solo independence cycle because too much of the texture is already supplied.
+
+### B-jazz — Autumn Leaves transcription
+CID: `QmeeqT5bwUfEqU9w8ZGXXLgp49DQra1tM23aD85ipXiXXv`
+Source read: `summary/B-jazz/autumn-leaves-transcription-Qmeeq...txt`
+
+Observed notation:
+- 96-measure one-staff alto-saxophone transcription with 87 chord symbols.
+- Long improvised melodic line contains eighth-note motion, triplets, rests, chromatic approaches and phrase-length variation across repeated harmonic form.
+- This is not a piano arrangement and not an acquisition score.
+
+Disposition: **HIGH-PRIORITY CANDIDATE** for a different job than the lane's main standard.
+Likely role: jazz **MODEL / TRANSFER** for solo transcription, phrase analysis, motif development, chord-tone/approach-note study, and comparing improvised material across chorus-level form.
+Required before specific theory claims: analyze selected passages against the printed harmony rather than inferring chord-tone behavior from style/title.
+
+### B-jazz — There Will Never Be Another You, lead sheet
+CID: `QmY7mQ3qBC5FhfJpQaqZQzTU4RFzkkDwGaahU5z9BNKrkQ`
+Source read: `summary/B-jazz/there-will-never-be-another-you-QmY7...txt`
+
+Observed notation:
+- Compact 33-measure lead sheet with 39 chord symbols and a single written melody line.
+- Manageable standard length and sparse texture: accompaniment, bass treatment, voicing and solo approach are left for the learner to supply.
+- The first large melodic span returns with later variation, giving a stable form for repeated tasks.
+
+Disposition: **ADMIT** as a strong jazz-cycle substrate candidate.
+Likely role: full jazz **MODEL / MUSIC / INDEPENDENCE substrate**: melody, shells/comping, two-feel or walking bass, soloing, intro/ending, and a later solo-piano realization can all be different learner tasks over the same chart.
+Follow-up: compare its harmonic and technical load with St James Infirmary / Blue Bossa before choosing the earliest full-cycle tune.
+
+### B-jazz — Satin Doll, one-line arrangement/road-map
+CID: `QmSC5ngWJnN3RxvpWsh6Xu5Go6QFkFjKVcZmCefFBgnjku`
+Source read: `summary/B-jazz/satin-doll-QmSC5...txt`
+
+Observed notation:
+- 60 measures, one staff, no chord symbols in the extracted score.
+- Contains repeated written lines, key changes, labels for Piano/Bass/Solos, an 8-bar repeated solo section, a bridge, and a return-to-head instruction.
+- Many measures in the designated solo/form area contain no written notes.
+
+Disposition: **REJECT FOR THIS ROLE** as the main jazz-cycle teaching chart.
+Possible secondary role: **KEEP CANDIDATE** as a form/road-map or trading/solo-space example if the missing harmonic information is intentionally supplied elsewhere.
+Reason: without harmony in the score it is weaker than the available lead sheets for comping, bass construction, and harmonic improvisation.
+
+### B-jazz — Blue Bossa, lead sheet
+CID: `QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6`
+Source read: `summary/B-jazz/blue-bossa-QmTjG...txt`
+
+Observed notation:
+- 32-measure one-staff lead sheet with 24 chord symbols.
+- Melody is compact and repetitive enough to leave cognitive room for accompaniment/bass tasks.
+- Sparse texture makes it suitable for multiple learner realizations rather than copying an arrangement.
+
+Disposition: **ADMIT** as a jazz-cycle substrate candidate.
+Likely role: jazz **MODEL / MUSIC / INDEPENDENCE substrate** for melody, comping, bass, soloing and arrangement choices.
+Caveat: the title/style does not make this the source for teaching a bossa accompaniment pattern; that pattern still needs an independently sourced definition/model.
+Follow-up: inspect the actual harmony labels before claiming any particular minor ii–V–i example.
+
 ## Quarry-level unresolved issue
 
 The pass-three identity classifier is still too categorical when an unexpected named creator/artist appears. Performer/transcriber credits or alternate legitimate settings can be classified as MISMATCH even when the title may identify the intended composition. Preserve identity/bibliographic verification as a separate gate from musical-role review; do not treat every current MISMATCH as final until this rule is corrected or manually checked.
@@ -159,7 +238,7 @@ The pass-three identity classifier is still too categorical when an unexpected n
 
 Prioritize candidates that can close learner-facing gaps rather than reading every dumped file equally:
 
-1. B-jazz: strongest standard/lead-sheet candidates, especially those useful for a complete melody → comp → bass → solo cycle and any candidate with a real minor ii–V–i.
+1. B-jazz: compare the newly admitted lead-sheet substrates against After You've Gone and any stronger Autumn Leaves / Fly Me variants; verify harmony only where a specific named progression matters.
 2. E-latin: Corcovado / Girl from Ipanema variants / Tico-Tico / tango-Piazzolla candidates, with separate roles for bossa substrate, Cuban pattern model, and Argentine tango/habanera/tango figures.
 3. F-improv-compose: remaining top structural nominees for motif, binary/ABA, and harmonising a melody.
 4. I-pop: Rocket Man, The Scientist, Hallelujah and other strong full-piano or lead-sheet candidates; compare their usefulness against She's Always a Woman rather than accumulating redundant songs.
