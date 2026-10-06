@@ -16,9 +16,9 @@ notes first anyway: knowing what is there is what lets you choose what to drop.
 
 **The eleventh is the awkward one.** Over a dominant chord the natural eleventh
 fights the third — a semitone apart, an octave and a bit away, and it sounds
-like a mistake unless you meant it. That is why sharp elevenths exist and why
-the sus chords do too. Play C13 with and without the eleventh and listen to
-which one you meant.
+like a mistake unless you meant it. Players get round it by raising the eleventh
+(the sharp eleventh) or by leaving the third out (a sus chord). Play C13, then
+add F, the natural eleventh, on top of it, and listen to it rub against the E.
 
 **Modulation.** The dictation drill on this rung changes key partway through.
 It is the same drill the theory track's Stage 8 lesson explains — the pivot

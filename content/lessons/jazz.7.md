@@ -24,14 +24,15 @@ with a name — it is modal jazz, and it turns up in film music too. Practise th
 thinking in thirds.
 
 **The tritone substitution.** G7 and D♭7 share their third and seventh — B and F,
-F and C♭, the same two notes spelled differently. So D♭7 resolves to C exactly as
-well as G7 does, and the bass walks down a semitone instead of leaping a fourth.
+F and C♭, the same two notes spelled differently. So D♭7 resolves to C much as
+G7 does, and the bass walks down a semitone instead of leaping a fourth.
 Play ii–V–I and ii–subV–I back to back until the second stops sounding like a
 mistake.
 
 **Stride** is here because the left hand needs somewhere to go when it is not
-walking: bass, chord, tenth, chord, the tenth being the chord's own bottom
-note again and not a bass note. Beat one is the leap you will miss.
+walking: bass, chord, tenth, chord. In the exercise the tenth is a single note,
+the chord's third a tenth above the bass, which is also the chord's own bottom
+note.
 
 **What to practise.** One ii–V–I in rootless A and again in B; the same with
 the tritone substitution; a quartal voicing moved through three roots without

@@ -6,7 +6,7 @@ videos:
   - label: "Interleaved Practice: the King of Piano Learning Techniques?"
     url: "https://www.youtube.com/watch?v=9jpx77DZJYY"
     teacher: "Bill Hilton"
-readingTime: 2
+readingTime: 3
 ---
 
 Practising one thing for forty minutes feels productive, but it may not be the
@@ -24,8 +24,14 @@ for the whole time: a technical item, a piece you are learning, and something
 you already play.
 
 Come back to the hard thing twice in the session rather than staying on it. The
-second visit, after something else has intervened, is where the learning
-happens.
+second visit, after something else has intervened, is where many players find
+more of it sticks; the research on this in music is small and mixed, so treat it
+as a habit worth trying, not a law.
+
+That does not make the loop in *Chunking, and the loop* wrong. Repeating one
+chunk until it comes out right is how a passage gets right in the first place;
+coming back to it after something else is how it stays right. Loop it first,
+then spread the repetitions out.
 
 Finish with something you enjoy playing. Ending on failure teaches you to dread
 the piano stool.

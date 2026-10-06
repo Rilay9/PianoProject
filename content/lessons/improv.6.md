@@ -35,7 +35,8 @@ progression with three notes a bar, chosen freely.
 in the next one.
 
 **Tools for this rung.** *Accompaniment lab* opens here on the minor vamp with
-its chords left to you, so put `ii7 V7 I` in and run it. The
+its key and its chords left to you: set the key to C major, put `ii7 V7 I` in
+and run it, then do the same in two more major keys. The
 notes of each bar's chord come up lit on the keys, and on ii7 and V7 the third
 and the seventh are two of them, so what this lesson asks you to find is pointed at while the
 changes go past. Play only those two a chord for the first few times round. It opens on *Hold
@@ -48,4 +49,4 @@ recorded and nothing can be passed or failed, so answer the call with the third
 and the seventh and nothing else for as long as that stays interesting.
 
 **How you'll know you've got it.** You can play through a ii–V–I and land on a
-chord tone at the start of each bar without planning it.
+chord tone at the start of each bar without planning it. The app marks this rung met on one run of its exercises; landing on chord tones over the changes is yours to check.

@@ -6,7 +6,7 @@ videos:
   - label: "How to Play Ornaments: Trills, Mordents and More"
     url: "https://www.youtube.com/watch?v=Hx_-ZWk0sy0"
     teacher: "pianoTV"
-readingTime: 3
+readingTime: 4
 ---
 
 Two different worlds at this rung, and the contrast between them is the lesson.
@@ -23,7 +23,11 @@ memory slips will be.
 Clementi's Op. 36 No. 1 — the first movement, plus one later movement in 3/8 —
 and Beethoven's Sonatina in G, Anh. 5. Attwood's, on the Stage 4 rung, is the gentler one to go back to;
 Kuhlau's and Diabelli's are in the Library.
-Before you play a note of one, mark the three sections on the page.
+Before you play a note of one, mark its sections on the page. Clementi's first
+movement has all three: exposition bars 1–15, development 16–23, recapitulation
+24–38. This edition of the Beethoven is simpler — a tune (bars 1–8), a
+contrasting passage (9–16), the tune again note for note (17–24) and a closing
+section (25–34) — so it shows that a sonatina need not have a development.
 
 **Alberti bass hands together.** Stage 3 taught the pattern; here it runs
 continuously under a melody for pages. The problem is balance. The left hand

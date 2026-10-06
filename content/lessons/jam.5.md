@@ -32,7 +32,7 @@ early. The difference is whether you still know where beat one is, which is what
 the form tracker is for.
 
 **Tools for this rung.** *Accompaniment lab* opens *Blues — twelve bars* on
-*Bed only*: a bass and drums that keep the form without keeping time *for* you,
+*Bed only*: a bass and drums that keep the beat and the form going for you to play against,
 and no chords at all, because the chords are what you came to comp. That preset
 writes no right hand, so *Play the tune* has nothing to hand you and is greyed
 out until you set *Right hand* to *Melody* yourself. Comp through eight

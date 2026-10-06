@@ -9,16 +9,16 @@ videos:
 readingTime: 3
 ---
 
-**Stride.** Bass note, chord, tenth, chord. One leap a bar, down to the bass
-and back up to the chord, and it cannot be watched — by the time your eye
+**Stride.** Bass note, chord, tenth, chord: the hand changes position on every
+beat, down to the bass and back up to the chord, and it cannot be watched — by the time your eye
 finds the bass note the beat has gone. The way in is to practise the leap alone:
 bass note, chord, and stop. Then the tenth.
 
 **The turnaround** is the last two bars, and it is what makes a chorus lead into
-the next one instead of stopping. `I–vi–ii–V` is the standard. The variant on
-this rung replaces the tonic with the chord a third above and makes the vi a
-dominant, which is what you reach for when the tune has already sat on the tonic
-for eight bars.
+the next one instead of stopping. `I–vi–ii–V`, the one Stage 5 drilled, is one
+common choice. The variant on this rung replaces the tonic with the chord a
+third above and makes the vi a dominant: more colour where the tonic has gone
+on long enough.
 
 **Speed comes from the shuffle, not the fingers.** A shuffle that is even is not
 a shuffle. Long-short, and the short one is late rather than the long one being
@@ -35,9 +35,8 @@ warm-up. *Rhythm and Boogie* is forty bars written in straight eighths with no s
 shuffle marking, so the app times it straight, with the boogie figure on the
 upper staff and a section to clap; each half ends on a written
 walk down to G rather than a turnaround. *Boogie-Boogie
-en Sol* is short and sits in G, which puts the bass figure under a different set
-of fingers — the fastest way to find out whether you learned the pattern or the
-key. None of the three is required: the rung is finished on its exercises, and
+en Sol* is short and sits in G, and its left hand is this rung's leap: a low bass
+note, then a chord above it, in eighths. None of the three is required: the rung is finished on its exercises, and
 these are what to read while you do them.
 
 **Common mistake.** Practising stride at the tempo you want it. The leap is a

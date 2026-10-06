@@ -6,7 +6,7 @@ videos:
   - label: "Identifying Intervals (Perfect, Major, Minor, Augmented, Diminished) - Music Theory for Beginners"
     url: "https://www.youtube.com/watch?v=Hwx7KSEi4z8"
     teacher: "Online Piano Learning"
-readingTime: 3
+readingTime: 4
 ---
 
 **An interval** is the distance between two notes, named by counting letter names
@@ -39,8 +39,10 @@ your hand up at each change; you will be right more often than you expect within
 a week. Nothing drills it yet — the cadence drill arrives on the next rung of
 this track, at Stage 4 — so this one is homework for your listening.
 
-**Rhythm dictation.** The app taps a two-bar rhythm and you tap it back. Count
-the beats aloud while listening — do not try to memorise it as a shape.
+**Rhythm reading.** The card shows a two-bar rhythm and you tap it against the
+click. Because the rhythm is written on the card, this trains reading and placing
+a rhythm, not hearing one; taking a rhythm down by ear is yours to practise away
+from the drill — someone claps two bars, you clap or write them back.
 
 **Simon.** The app plays one note and you play it back; then the same note and
 one more; then three. The chain grows by one each round until it breaks, and
@@ -58,7 +60,9 @@ and nothing else about the run is marked.
 **Common mistake.** Learning interval names without ever singing them. Theory
 that never reaches your ear stays a filing system.
 
-**How you'll know you've got it.** Every interval within the octave identified
-by ear at 80 % accuracy in the interval drill, a key signature of up to three sharps or
+**How you'll know you've got it.** Every interval within the octave played back
+at 80 % accuracy in the interval drill, a key signature of up to three sharps or
 flats named from the two rules above without pausing, and a chain of eight notes
-played back in Simon.
+played back in Simon. The drill marks the two notes you play back, not their
+name: naming each interval aloud before you play it, and the key signatures, are
+yours to check.

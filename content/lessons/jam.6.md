@@ -45,7 +45,9 @@ listen to one chorus of its line in the score, then play your own. *Jam it*
 plays a plainer bass — root and fifth — and, because this button opens on *Hold
 the chords*, the bar's chord on the backbeat with it. At the end of each time
 round it says how many of your notes were in the blues scale, and keeps none of
-it.
+it. That count is meant for a right hand: a walking line leaves the scale on
+purpose — the exercise's first bar in E, E G♯ B D♯, has two notes outside it — so
+a correct walk can read as half in. Ignore the count here.
 
 **Common mistake.** Walking too high. The line belongs below the guitar, and a
 bass part that wanders up into the middle of the keyboard turns into a second

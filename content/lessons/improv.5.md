@@ -17,8 +17,9 @@ passing note between F and G it is the sound of the style, and leaned on it is
 almost unbearable, which is the point.
 
 The useful surprise is that the *same* blues scale works over all three chords
-of a twelve-bar blues in C. You do not change scale when the chord changes.
-That single fact is what makes the blues the best place to learn to improvise.
+of a twelve-bar blues in C. You do not have to change scale when the chord
+changes. That is where most players start, and why the blues is a good place to
+begin improvising; the chord tones of each bar come later, on improv.6.
 
 **Over the twelve bars.** Play the form with the app's backing track. Aim to:
 land on a chord tone at bar 5 (where the IV arrives) and bar 9 (the V); leave

@@ -6,7 +6,7 @@ videos:
   - label: "MAKE YOUR FAST PASSAGES SOUND MORE EVEN, SECURE AND EFFORTLESS - NEW TIPS - Piano Technique Tutorial"
     url: "https://www.youtube.com/watch?v=l7C2LdJ2LFQ"
     teacher: "Danae Dörken"
-readingTime: 3
+readingTime: 4
 ---
 
 This is the rung where the pieces are longer than your concentration and faster
@@ -21,7 +21,7 @@ arpeggiated wash; Op. 10 No. 6 is a chromatic inner voice under a long line. **N
 start.** If you cannot say in one sentence what an étude is for, you will
 practise the notes and not the skill.
 
-**Speed is built from accuracy, not approached from slowness.** The method that
+**Speed is built from accuracy, not approached from slowness.** One method that
 works: play a short figure — two beats, not two bars — at a tempo where it is
 perfect, five times. Then raise the metronome by four clicks. When it fails,
 drop back two and stay there for a day. What does *not* work is playing the
@@ -37,9 +37,10 @@ one a name and a bar range. Then practise them out of order — a piece you can
 only play from the beginning is a piece you cannot play.
 
 **Cross-rhythm.** When a piece puts a two-beat melody over a three-beat bass
-and keeps it there, do not try to work out where the notes coincide; learn
-each hand until it is independent, then put them together and let them
-disagree. Counting will not save you, and it is not supposed to.
+and keeps it there, many players first work out slowly where the notes fall
+against each other, then stop counting: learn each hand until it is independent,
+then put them together and let them disagree. The counting gets you started;
+the independence is what plays it.
 
 **What to play.** Six options: the *Rondo alla turca*; the *Moonlight* finale,
 the fastest thing here and the best argument for the metronome method above;

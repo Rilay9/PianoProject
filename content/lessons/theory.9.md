@@ -20,6 +20,11 @@ usually the first one changed, and hearing *how* it was changed is the skill.
 different ending, you have half as much to remember. Almost all short music is
 built this way.
 
+Three names cover most of what you will take down or find: **ABA**, a section,
+a contrasting one, then the first again; **AABA**, four eight-bar sections where
+the third, the *bridge*, differs — the 32-bar form of many popular songs and
+standards; and **binary**, AB, two halves, each often repeated.
+
 **Read something new every day.** The sight-reading generator at level 6 makes
 music you have never seen, in keys up to four sharps or flats, with triplets and a
 left hand in broken chords. It is unseen by construction, which is the only way
@@ -41,4 +46,6 @@ its own; it is one of the rung's exercises and opens from its own row.
 piece is.
 
 **How you'll know you've got it.** You can hear eight bars three times and write
-them down.
+them down. The tune drill marks what you play back a phrase at a time; the
+writing, and the harmony, are yours to check — play back what you wrote and
+compare it with the drill's tune.

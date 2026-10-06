@@ -26,6 +26,9 @@ bass) sounds lighter and leans forward; second inversion (fifth in the bass)
 sounds unstable and usually wants to resolve. Play the three positions of one
 chord repeatedly and listen only to the bottom note — that is what your ear is
 actually tracking.
+The inversion drill on this rung is a reading drill — it shows a slash name and
+marks the chord you play — so hearing the position is yours to check: play one
+of the three positions without looking and name the bass note before you look.
 
 **Cadences** are the punctuation of harmony, and there are four to know:
 
@@ -55,6 +58,8 @@ it was played in. That one plays by ear and lights nothing — until you miss,
 when it plays the chain again over the lit keys and asks you for the same chain
 rather than ending the game.
 
-**How you'll know you've got it.** Cadences identified at 80 % accuracy by ear, triad
-inversions played from their slash-chord names, and an eight-note phrase played
-back correctly after two hearings.
+**How you'll know you've got it.** Cadences played back at 80 % accuracy in the
+cadence drill, triad inversions played from their slash-chord names, and an
+eight-note phrase played back correctly after two hearings. The cadence drill
+marks the chords you play back; naming the cadence — authentic, half, plagal,
+deceptive — is yours to check, so say it before you play.

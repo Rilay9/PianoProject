@@ -717,6 +717,12 @@
                   "kind": "runs",
                   "from": "exercises",
                   "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "guide-tones-three-keys",
+                  "says": "A ii–V–I in three keys, landing on a chord tone at the start of each bar.",
+                  "why": "Improvised notes are not a run the app judges, and the lab records nothing."
                 }
               ],
               "prerequisites": [
@@ -748,7 +754,8 @@
                   "kind": "lab",
                   "preset": "minor-vamp",
                   "unlock": [
-                    "progression"
+                    "progression",
+                    "key"
                   ]
                 }
               ]

@@ -6,7 +6,7 @@ videos:
   - label: "12 BAR BLUES on Piano - Boogie Woogie Basslines Tutorial"
     url: "https://www.youtube.com/watch?v=H-PqMj7Lgc8"
     teacher: "Bitesize Piano"
-readingTime: 3
+readingTime: 4
 ---
 
 The blues is a **form** before it is a style: twelve bars, three chords, repeated
@@ -31,7 +31,8 @@ top does. Count "one-and-a two-and-a" and play on the "one" and the "a".
 
 **Boogie bass.** The left hand plays the chord's **root, fifth, sixth, fifth**
 in eighth notes — for C7 that is C–G–A–G, repeated, and it moves up to F–C–D–C
-for the IV chord. Some versions add the flat seventh: root–5–6–♭7–6–5. Learn it
+for the IV chord. Some versions climb further, through the third and the flat
+seventh: root–3–5–6–♭7–6–5–3, eight notes to the bar — the climb Stage 6 uses. Learn it
 in C first until the hand does it without you.
 
 **The blues scale.** C–E♭–F–F♯–G–B♭–C. Three of those are the "blue notes": the
@@ -46,7 +47,9 @@ the flattened fifth of F is C flat, of B flat is F flat, of E flat is B double
 flat. A raised fourth can be written in every key, a few with a double sharp.
 
 **What to practise.** The generated twelve-bar shuffles in C, F and G; the shuffle exercise; then the same form with a simple right-hand
-riff on top.
+riff on top. *12 Bar Blues* among the songs is exactly that: a right-hand riff,
+one staff, no left hand and no chord symbols, through a full twelve-bar chorus
+once its repeat is taken (bars 1 and 2 twice), then a closing bar.
 
 **Common mistake.** Playing straight eighths and calling it blues. Record
 yourself and listen; the difference is obvious on playback and invisible while

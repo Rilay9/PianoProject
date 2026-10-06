@@ -6,7 +6,7 @@ videos:
   - label: "Secondary Dominants: The Complete Guide"
     url: "https://www.youtube.com/watch?v=32G6cIiZ3sI"
     teacher: "Piano With Jonny"
-readingTime: 3
+readingTime: 4
 ---
 
 Every key has seven chords. Music uses more than seven, and this is how the
@@ -37,6 +37,14 @@ a minor seventh. It is a way of finding notes, not a law of harmony. The drill
 names one scale for each chord — ionian for a major seventh, where lydian would
 also work — and marks only the scale it named, so a lydian answer counts as
 wrong there; trust your ear over it everywhere else.
+
+**Two more modes, and two more symbols.** The modes drill on this rung asks for
+all seven, from any root. The two not met yet: **Phrygian**, the white keys from
+E to E, a natural minor with its second lowered a semitone; and **Locrian**, B to
+B, a natural minor with its second and its fifth lowered, the one mode whose
+tonic triad is diminished. In the numeral drill, `°` marks a diminished triad:
+`vii°/V` in C is F♯–A–C, the leading-tone chord of G. And `V/ii` is the dominant
+of the ii chord: in C, ii is D minor, so `V/ii` is A major.
 
 **What to practise.** The secondary-dominant ear drill until `V/V` is a sound and
 not a calculation, and one chord-scale a day played through two octaves.
