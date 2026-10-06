@@ -1,22 +1,28 @@
 """HD2's corpus diff, classified.
 
-Reads the shards `corpusDiff.probe.ts` writes (`app/build/HD2/corpus-diff.shard-<n>.json`) and writes
-`docs/prompts/runs/HD2/corpus-diff.txt`. Run from the repository root after the probe:
+Reads the shards `corpusDiff.probe.ts` writes (`app/build/HD2/corpus-diff.shard-<n>.json`). Run from the
+repository root after the probe:
 
-    python docs/prompts/runs/HD2/classify.py
+    python docs/prompts/runs/HD2/classify.py corpus-diff.printed-staff.txt             # the held global rule
+    python docs/prompts/runs/HD2/classify.py corpus-diff.verified-hands.txt --targets  # the landed overrides
+
+`--targets` also checks every changed note against the `hand` rows of `content/sources/verified-facts.json`
+(through `tools/content/verified_hand.py`): TARGET where a row names its item, bar, staff and voice and the
+note now has the row's hand, not cross-staff; anything else is OUTSIDE, listed.
 
 Each changed note is classified by its transition (before = the voice-home rule at e7cf920c, after = the
-printed-staff rule) and by the shape of its voice's printed staves in that bar (the new model's notes of
+worktree's extractor) and by the shape of its voice's printed staves in that bar (the new model's notes of
 the same voice in the same unrolled bar, by onset; `1+2` where the voice sounds on both staves at one
 onset). The classes are mechanical; whether each is semantically right is a reading, not this script's.
 """
 import collections
 import json
 import pathlib
+import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[4]
 SHARDS = sorted((ROOT / 'app' / 'build' / 'HD2').glob('corpus-diff.shard-*.json'))
-OUT = ROOT / 'docs' / 'prompts' / 'runs' / 'HD2' / 'corpus-diff.txt'
+HERE = ROOT / 'docs' / 'prompts' / 'runs' / 'HD2'
 
 CLASSES = {
     'A': 'reused or moved voice, whole bar on one staff: the old crossing dropped, the printed staff stands (rule 3)',
@@ -49,7 +55,36 @@ def classify(change):
     return 'OUTSIDE'
 
 
+def targets_check(changed):
+    """Each change against the hand rows: TARGET or OUTSIDE, with the lines that say which."""
+    sys.path.insert(0, str(ROOT / 'tools' / 'content'))
+    import verified_hand as VF
+
+    rows = VF.read_hand_facts()
+    hit_rows = collections.Counter()
+    outside = []
+    for change in changed:
+        match = [i for i, r in enumerate(rows)
+                 if r['item'] in change['ids'] and r['bars'][0] <= change['bar'] <= r['bars'][1]
+                 and r['staff'] == change['staff'] and r['voice'] == change['voice'] and change['after'] == r['fact']]
+        if match:
+            hit_rows[match[0]] += 1
+        else:
+            outside.append(change)
+    lines = ['', f'Against the hand rows of content/sources/verified-facts.json ({len(rows)} rows):']
+    for i, r in enumerate(rows):
+        lines.append(f"  row {i}: {r['item']} bars {r['bars'][0]}-{r['bars'][1]} staff {r['staff']} voice {r['voice']} -> "
+                     f"{r['fact']}: {hit_rows[i]} notes changed")
+    lines.append(f'  TARGET {sum(hit_rows.values())} notes; OUTSIDE {len(outside)} notes')
+    for change in outside[:50]:
+        lines.append(f"    OUTSIDE {change['ids'][0]} bar {change['bar']} st{change['staff']} v{change['voice']} "
+                     f"{change['midi']}: {change['before']}>{change['after']}")
+    return lines
+
+
 def main():
+    out_name = next((a for a in sys.argv[1:] if not a.startswith('--')), 'corpus-diff.txt')
+    targets = '--targets' in sys.argv[1:]
     files = notes = 0
     failures = []
     changed = []
@@ -63,7 +98,8 @@ def main():
         change['class'] = classify(change)
 
     lines = [
-        'HD2 corpus diff: hand or crossStaff changed between the voice-home rule (e7cf920c) and the printed-staff rule',
+        'HD2 corpus diff: hand or crossStaff changed between the extractor at e7cf920c (the voice-home rule) and '
+        + ('the verified-hand overrides' if targets else 'the printed-staff rule'),
         f'shards read: {len(SHARDS)}; score files compared: {files}; model notes compared (repeats unrolled): {notes}; '
         f'files that failed to compare: {len(failures)}',
         f'notes changed: {len(changed)} in {len({c["file"] for c in changed})} files '
@@ -111,8 +147,10 @@ def main():
         for (item, bar, _, voice), group in list(bars.items())[:25]:
             notes_text = ' '.join(f'{c["midi"]}/st{c["staff"]}:{c["before"]}>{c["after"]}' for c in group[:8])
             lines.append(f'    {item} bar {bar} v{voice}: {group[0]["barLine"][:60]} | {notes_text}{" …" if len(group) > 8 else ""}')
-    OUT.write_text('\n'.join(lines) + '\n', encoding='utf8')
-    print('\n'.join(lines[:30]))
+    if targets:
+        lines += targets_check(changed)
+    (HERE / out_name).write_text('\n'.join(lines) + '\n', encoding='utf8')
+    print('\n'.join(lines[:12] + (lines[-10:] if targets else [])))
 
 
 if __name__ == '__main__':

@@ -1,7 +1,11 @@
 // @vitest-environment jsdom
 /**
  * HD2's corpus diff: every note of the built catalogue whose `hand` or `crossStaff` changes between the
- * voice-home rule (the extractor at e7cf920c) and the printed-staff rule (the worktree's), classified.
+ * extractor at e7cf920c (the voice-home rule) and the worktree's, classified. Run twice in HD2: against the
+ * held printed-staff rule (`held/extractScoreModel.printed-staff.ts`; `corpus-diff.printed-staff.txt`) and
+ * against the verified-hand overrides that landed (`corpus-diff.verified-hands.txt`). Each row's options are
+ * the Score screen's: its declared hand (HD1) and its current verified hands (HD2); the base extractor ignores
+ * the second.
  *
  * How to run, from `app/` with the built content in `app/public/content`:
  *   git show e7cf920c:app/src/score/extractScoreModel.ts \
@@ -9,7 +13,7 @@
  *     > build/HD2/extractScoreModel.base.ts
  *   npx vitest run --config ../docs/prompts/runs/HD2/vitest.config.ts
  * It writes `app/build/HD2/corpus-diff.shard-<n>.json` per shard; `python docs/prompts/runs/HD2/classify.py` (from the
- * repository root) classifies them into `docs/prompts/runs/HD2/corpus-diff.txt`.
+ * repository root) classifies them (its docstring names the two outputs).
  *
  * Each row with a score file is read as the unit helper `scoreCatalog.modelForItem` reads it (OSMD under
  * jsdom with the text measurer, the row's declared hand by `declaredHandOf`), and both extractors run on
@@ -19,6 +23,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { declaredHandOf } from '../../../../app/src/curriculum/declaredHand';
+import { verifiedHandsOption } from '../../../../app/src/curriculum/verifiedFacts';
 import { extractScoreModel } from '../../../../app/src/score/extractScoreModel';
 import { toMusicXml } from '../../../../app/src/score/mxl';
 import type { ScoreModel, ScoreNote } from '../../../../app/src/score/types';
@@ -77,12 +82,15 @@ describe.each(Array.from({ length: SHARDS }, (_, index) => index).filter((index)
   it('compares the two rules on every score file of the shard', async () => {
     installTextMeasurer();
     const rows = itemsWithScores(catalog());
-    const byFile = new Map<string, { id: string; file: string; declared: ReturnType<typeof declaredHandOf> }[]>();
+    type Unit = { id: string; file: string; declared: ReturnType<typeof declaredHandOf>; verified: ReturnType<typeof verifiedHandsOption> };
+    const byFile = new Map<string, Unit[]>();
     for (const row of rows) {
       const declared = declaredHandOf(row);
-      const key = `${row.file}|${String(declared)}`;
+      // The row's current verified hands (HD2), as the Score screen passes them: part of what the model is made under.
+      const verified = verifiedHandsOption(row);
+      const key = `${row.file}|${String(declared)}|${JSON.stringify(verified)}`;
       const list = byFile.get(key) ?? [];
-      list.push({ id: row.id, file: row.file, declared });
+      list.push({ id: row.id, file: row.file, declared, verified });
       byFile.set(key, list);
     }
     const units = shard(
@@ -101,7 +109,12 @@ describe.each(Array.from({ length: SHARDS }, (_, index) => index).filter((index)
       try {
         const osmd = await loadFixture(path);
         const musicXml = toMusicXml(new Uint8Array(readFileSync(path)));
-        const options = { id: first.id, musicXml, ...(first.declared === undefined ? {} : { declaredHand: first.declared }) };
+        const options = {
+          id: first.id,
+          musicXml,
+          ...(first.declared === undefined ? {} : { declaredHand: first.declared }),
+          ...first.verified,
+        };
         const before = extractBase(osmd, options);
         const after = extractScoreModel(osmd, options);
         const staves = (osmd.Sheet.Staves as unknown[]).length;
