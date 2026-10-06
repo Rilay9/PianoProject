@@ -125,21 +125,18 @@ Two methods are recommended, and the claim names the one used.
 
 **1. Musical by construction.** Material that promises music can be built from cells taken from verified real music, where that is the more verifiable strategy. Those cells are:
 - rhythm cells, motif shapes, cadence formulas, harmonic skeletons and accompaniment patterns;
-- extracted by script from admitted public-domain repertoire, Beyer, Mutopia or PDMX at the matching level;
+- extracted by script from verified real repertoire or corpora at the appropriate level (Beyer, Mutopia, PDMX, the admitted library), with source and bars recorded; rights or export status is never a generator-quality input;
 - each recorded with its source and bars (`GENERATOR-ADDENDUM.md` §5 step 5 already proposes phrase cells).
 
 The generator chooses and combines. Other construction (templates, constraint solving) is fine when its properties are verified.
 
 **2. Measured against real music of the same level.** For each family that promises music, a reference set of real pieces at that level is the oracle, not a person and not a "musicality score":
 - Compute the same objective features on the reference set and on a fixed generated corpus, with music21 or partitura, never the generator's own read-back. The features: rhythm-motif reuse per four bars; step/leap share; leap recovery; contour reversals; interval-sequence repetition; phrase-end on a stable degree with a longer value; implied cadence at phrase ends; range and register.
-- **Gates:**
-  - the generated corpus falls inside the reference set's 10th–90th percentile on every feature;
-  - every single item outside the 5th–95th percentile is listed and regenerated;
-  - the corpus and its denominator are fixed before the run: seeds chosen in advance, plus boundary and adversarial cases (use Hypothesis to search the parameter space and shrink counterexamples).
-- Rerun the same seeds after any generator change, and show that the contract still holds.
+- **Use:** the reference distributions are evidence and regression diagnostics, never automatic gates. A hard bound on a feature is allowed only when a cited source justifies it, or a calibration fixture shows it keeps declared real cases and rejects declared counterexamples; Hypothesis may search the parameter space and shrink violations of the resulting contract.
+- The corpus and its denominator are fixed before the run: seeds chosen in advance, plus boundary and adversarial cases. Rerun the same seeds after any generator change, and show that the contract still holds.
 
 **Also required, by job:**
-- **All jobs:** the pedagogical contract (what is isolated, allowed, forbidden; the difficulty envelope); an independent structural check (partitura events against a sourced contract); a near-miss that goes red; automated notation and playability checks (spelling, beaming, range, hand span, ledger lines, accidental churn).
+- **All jobs:** the pedagogical contract (what is isolated, allowed, forbidden; the difficulty envelope); an independent check by representation: a MusicXML file through partitura, musicxml-io or another event reader independent of the generator; runtime theory or harmony objects through music21, Tonal or another independent theory witness; a parameter space through Hypothesis or property tests; a sourced near-miss where a named structural or style claim needs one, and it goes red; the brief records why the chosen witness is independent enough for that property; automated notation and playability checks (spelling, beaming, range, hand span, ledger lines, accidental churn).
 - **NAMED-PATTERN:** a sourced definition and the sibling near-miss; voicing and harmony checked like any musical property.
 - **Outside reviewer (ChatGPT):** reads notation for a declared sample and returns findings as evidence, never as a verdict.
 
@@ -149,7 +146,7 @@ Never "musically good". The owner playing an item on their phone is welcome feed
 
 ## 6. Evidence and the learner model
 
-Every chain says, in `evidence`, what updates the learner state, what is self-checked, and what never earns credit (§3). No ability goes green before the learner has done its independence test. A Wait run, a lit chord tone, a looped section or a Lab bed never certifies the target ability (`MODE-SHEET.md`). Where the app cannot observe the target, the task is honest self-check, or the requirement changes. The app never pretends.
+Every chain says, in `evidence`, what updates the learner state, what is self-checked, and what never earns credit (§3). No ability goes green before the learner has done its independence test. A Wait run, a lit chord tone, a looped section or a Lab bed never certifies the target ability (`MODE-SHEET.md`). Where the app cannot observe the target, the task is honest self-check, or the requirement changes. The app never pretends. No word or reading-time limit on a lesson (the owner, 2026-10-06): length never outranks accuracy and communication.
 
 ## 7. Libraries, before custom code
 
@@ -171,7 +168,7 @@ The outside reviewer reviews it. The corrections become chain records or briefs.
 
 ## 9. Done
 
-- **An ability is done** when its chain record is `shipped` and its independence test has passed in the app.
+- **An ability is development-done** when its chain record is `shipped`, its independence task is present in the app and its learner-facing acceptance path has been exercised: a measurable independence test has its evidence behaviour tested; a self-checked one has the app expose and record only the permitted self-check and award no unsupported skill evidence. An unobservable musical ability is never required to "pass in the app".
 - **A slice is done** when the owner's phone build shows every step and the handoff names its commit.
 - **The curriculum work is done** when three things hold:
   - every MUST ability is shipped;
