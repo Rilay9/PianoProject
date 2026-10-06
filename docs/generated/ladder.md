@@ -209,7 +209,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 3 | `latin.3` | 5 | 3 | 2.4–3.6 | Guantanamera (2.4), Só Danço Samba (2.6), Cielito Lindo (2.8) |
-| 4 | `latin.4` | 3 | 4 | 2.7–7.5 | L'amour est un oiseau rebelle, bars 1–12, left hand (2.7), L'amour est un oiseau rebelle (6.2), Por Una Cabeza - Carlos Gardel (6.4), The Crave (7.5) |
+| 4 | `latin.4` | 7 | 4 | 2.7–7.5 | L'amour est un oiseau rebelle, bars 1–12, left hand (2.7), L'amour est un oiseau rebelle (6.2), Por Una Cabeza - Carlos Gardel (6.4), The Crave (7.5) |
 | 5 | `latin` | 12 | 6 | 2.3–6.4 | Insensatez (How Insensitive) (2.3), Guantanamera (2.4), Só Danço Samba (2.6), Cielito Lindo (2.8), Tico-Tico no Fubá (3.7), La Cumparsita (part A) (5.1) |
 | 6 | `latin.6` | 3 | 3 | 5.0–7.5 | Tango La Cumparsita - Piano Solo (Tutorial Parte B) (5.0), Por Una Cabeza - Carlos Gardel (6.4), The Crave (7.5) |
 | 7 | `latin.7` | 3 | 3 | 6.3–9.0 | El Choclo (tango) (7.6), Asturias (8.4), Malagueña (1928) (9.0) |

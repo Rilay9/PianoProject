@@ -9,7 +9,8 @@
     "Re-pinned by CL15, each with its version moved, where its notes changed: tremolo_octaves (the key's own thirds), pentatonic (the five-note form up and down twice), syncopation (two ties in the tie drill), interval_reading (the first note any degree of the position), walking_bass (the line ends on the tonic). Each family's unchanged items keep learner continuity through tools/content/generator_continuity.json, not through the pin.",
     "Re-pinned by G30, each with its version moved and its digest unchanged: the 42 families whose contract called their printed fingering the generator's own convention, not a published source, stopped printing it, and no item's notes changed. Their items keep learner continuity through tools/content/generator_continuity.json.",
     "Re-pinned by G30's fix-forward (docs/review/responses/09ec1337.md §3): repeated_notes, its version moved and its digest unchanged, its unsourced printed fingering withdrawn and the drill's solution declared in its row.",
-    "Re-pinned by wave 1(a) seam 1a.9, its version moved: scale, where the 16 contrary-motion items that did not start at the unison now do; its 236 unchanged items keep learner continuity through tools/content/generator_continuity.json."
+    "Re-pinned by wave 1(a) seam 1a.9, its version moved: scale, where the 16 contrary-motion items that did not start at the unison now do; its 236 unchanged items keep learner continuity through tools/content/generator_continuity.json.",
+    "Pinned by G13: bass_cell, a new family at version 1 (the habanera drill in C, F and G and its 2/4 tresillo control in C); no other family's pin moved."
   ],
   "families": {
     "accompaniment": {
@@ -26,6 +27,11 @@
       "version": 1,
       "items": 8,
       "digest": "0c4b4d3d641d31dbd30b35795e9b823c573e7f3674a3ef0e871457fdf80398ef"
+    },
+    "bass_cell": {
+      "version": 1,
+      "items": 4,
+      "digest": "e0c47931072654068ffbedf4da73596faed487ae602d0d738331df5628a98c4b"
     },
     "blues_scale": {
       "version": 1,

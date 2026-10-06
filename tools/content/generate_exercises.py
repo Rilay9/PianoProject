@@ -5835,6 +5835,84 @@ def make_tresillo(tonic: str = "C", bars: int = 8, bpm: int = 84) -> tuple[strea
     return print_as_contracted(sc, entry)
 
 
+#: The left hand's note lengths in one 2/4 bar, in quarters, for each onset cell `make_bass_cell` writes.
+#: The habanera is the upgrade's definition, "dotted eighth, sixteenth, eighth, eighth in 2/4"
+#: (`CURRICULUM-UPGRADE.md:21`): onsets at 0, 3/8, 1/2 and 3/4 of the bar. The tresillo is the same
+#: 3+3+2 the `tresillo` family writes in 4/4, here in sixteenths: a dotted eighth, a dotted eighth and an
+#: eighth, onsets at 0, 3/8 and 3/4. The two differ by one onset, the half bar, and by nothing else.
+BASS_CELL_DURATIONS = {
+    "habanera": (0.75, 0.25, 0.5, 0.5),
+    "tresillo": (0.75, 0.75, 0.5),
+}
+
+#: The counting line for each cell: the sixteenth grid "1 e & a 2 e & a" with a dot where no note starts.
+#: The two lines differ only at the half bar, which is where the two cells differ.
+BASS_CELL_COUNT = {
+    "habanera": "Count: 1 . . a 2 . & .",
+    "tresillo": "Count: 1 . . a . . & .",
+}
+
+
+def bass_cell_durations(cell: str, bar: int) -> tuple[float, ...]:
+    """
+    The left hand's note lengths in bar `bar` (0-based): the cell's, the same in every bar.
+
+    Indexed by bar only so that `test_bass_cell.py` can write a near-miss into one bar through the
+    maker's own path (the score, the writer, the app's detectors and the witness); the maker never
+    varies it.
+    """
+    return BASS_CELL_DURATIONS[cell]
+
+
+def make_bass_cell(tonic: str = "C", cell: str = "habanera", bars: int = 8, bpm: int = 60) -> tuple[stream.Score, dict]:
+    """
+    One left-hand onset cell, the habanera or the tresillo, in 2/4 on the tonic root, chords above.
+
+    A drill, and deliberately mechanical: the pattern named, the root on every onset, the right hand
+    holding the tonic triad for the bar so the bar's shape is the bass's alone, as `make_tresillo` does.
+    The habanera is a dotted eighth, a sixteenth and two eighths; the tresillo, 3+3+2, a dotted eighth,
+    a dotted eighth and an eighth. Written in the same 2/4 bar, at the same tempo, in the same key, on
+    the same notes, the two items differ only in the cell, by the habanera's onset on the half bar: a
+    pair for comparing the two cells like for like (G13). Where and how either cell occurs in music is
+    the lessons' to say.
+
+    ♩ = 60 is the written tempo of the excerpt the learner moves to next. At 60 the habanera's half-bar
+    onset and an even eighth's are 250 ms apart, wider than Keep tempo's ±150 ms window. The pitches are
+    spelled by interval from the tonic (music21's intervals, never a semitone count), so every major key
+    the maker accepts is spelled as its key writes it. No fingering is printed (the row says none).
+    """
+    tonic = one_of("tonic", tonic, MAJOR_KEYS)
+    cell = one_of("cell", cell, tuple(BASS_CELL_DURATIONS))
+    level = 4.4
+    title = f"{cell.capitalize()} bass in {note_name(tonic)}, in 2/4"
+    sc, rh, lh = grand_staff(title, bpm, ts="2/4", ks=key.Key(tonic))
+    root = pitch.Pitch(tonic + "3")
+    top = pitch.Pitch(tonic + "4")
+    triad_tones = [top, up(top, 4), up(top, 7)]
+
+    for bar in range(bars):
+        for ql in bass_cell_durations(cell, bar):
+            n = note.Note(root, quarterLength=ql)
+            n.articulations.append(articulations.Fingering(5))
+            lh.append(n)
+        # The right hand holds the chord for the whole 2/4 bar: a half note.
+        rh.append(fingered_chord(triad_tones, [1, 3, 5], 2.0))
+
+    lh.insert(0, direction_text(BASS_CELL_COUNT[cell]))
+    finalize(sc)
+
+    item_id = f"exercise.bass-cell.{cell}.{key_slug(tonic)}"
+    entry = catalog_entry(
+        item_id, title, level,
+        [cell, "latin", "left-hand", "accompaniment"],
+        "both", bpm, "accompaniment", {"key": tonic, "cell": cell, "timeSig": "2/4"},
+        f"scores/generated/{item_id}.mxl",
+        tracks=["latin"],
+        family="bass_cell",
+    )
+    return print_as_contracted(sc, entry)
+
+
 def make_swing_pair(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict]:
     """
     Four bars of eighths straight, then the same four bars swung.
@@ -6390,6 +6468,12 @@ def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, di
             items.append(make_pentatonic(k, form))
     for k in (["C"] if quick else ["C", "F", "G"]):
         items.append(make_tresillo(k))
+    # G13: latin.4's strict control. The habanera drill in the tresillo's three keys, and its 2/4
+    # tresillo partner in C only: the pair differs in the onset cell alone, so the learner's comparison
+    # is like for like, and the 2/4 tresillo in C is the rung's counted exercise run.
+    for k in (["C"] if quick else ["C", "F", "G"]):
+        items.append(make_bass_cell(k, "habanera"))
+    items.append(make_bass_cell("C", "tresillo"))
 
     # ---- latin (`02` Part D) ----------------------------------------------------------
     #

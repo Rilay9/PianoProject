@@ -605,7 +605,9 @@ G30_MARK = "(G30; the ruling,"
 #: change (`responses/09ec1337.md` §3): repeated_notes, held by Entry 211, declares its drill's solution instead.
 HELD_UNSOURCED: dict[str, str] = {}
 #: The rows that declare a solution for a fast repeated note: each one's drill, never a rule for every family.
-DECLARES_REPEATED_NOTES = {"rhythm", "repeated_notes"}
+#: Revised (G13): bass_cell joins, for the habanera's one re-strike of the root a sixteenth after the dotted eighth
+#: (0.25 s at ♩ = 60), declared with its reason in its own row.
+DECLARES_REPEATED_NOTES = {"rhythm", "repeated_notes", "bass_cell"}
 
 
 def g30_families() -> list[str]:

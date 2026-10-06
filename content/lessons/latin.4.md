@@ -2,11 +2,11 @@
 title: "The habanera bass, and the tresillo beside it"
 stage: 4
 unit: "latin.4.1"
-readingTime: 13
+readingTime: 15
 ---
 
-Two left-hand rhythms sit under a great deal of latin american music, and
-they are easy to confuse because they start the same way. One you
+Two left-hand rhythm cells in this track are easy to confuse because they
+start the same way. One you
 met on the Latin rung before this one: the tresillo, three, three, two. The
 other is the habanera. This rung is about telling the two apart on the page
 and playing the habanera in the left hand.
@@ -38,11 +38,17 @@ second note is still sounding across the middle of the bar; in the habanera a
 new note starts there. That note is what you listen for, tap for and look for
 on this rung.
 
-**A caveat before you compare them.** The tresillo exercises here are written
-in 4/4 at 84 beats a minute, and the Bizet bass is in 2/4 at 60. The bars are
-different lengths and the speeds differ, so putting the two side by side is a
-comparison of where the notes fall in the bar, not a like-for-like test. Treat
-it as a way to get your bearings.
+**Two kinds of comparison.** The two drills this rung uses for the contrast,
+*Tresillo bass in C, in 2/4* and *Habanera bass in C, in 2/4*, are written
+alike in everything but the cell: the same 2/4 bar, the same speed (60 beats a
+minute), the same key of C, a C in the left hand on every note and the same C
+major chord held above it for the whole bar. Comparing those two is like for
+like: the one difference is the habanera's note halfway through the bar. The
+tresillo exercises from the Latin rung before are another matter: they are
+written in 4/4 at 84 beats a minute, so their bar is twice as long and their
+speed differs. The Bizet bass is in 2/4 at 60 like the drills, but its notes
+move and it is in D minor. Use those two to get your bearings, not to judge
+the difference.
 
 **The controls.** Everything below opens from its row on this page with ▶.
 The names are the Score screen's own. On the bar: the mode menu (*Wait for me*,
@@ -83,26 +89,49 @@ late. A *Rhythm only* run never counts toward this rung.
 tap its rhythm: four taps a bar, on 1, on the quick note just before 2, on 2,
 and on the and of 2.
 
-**6 and 7. The contrast.** Now straight after one another: tap the tresillo
-in C, then the Bizet left hand, both with *Rhythm only* on. Before each one,
-say aloud where the habanera's extra note is (on 2, halfway through its bar)
-and that the tresillo has nothing there. After the Bizet, say which note the
-habanera added and where. Nobody checks the answer but you; the caveat above
-applies.
+**6 and 7. The contrast.** Now the two 2/4 drills straight after one
+another, each in *Keep tempo* with *L* and *Rhythm only* on: first *Tresillo
+bass in C, in 2/4*, then *Habanera bass in C, in 2/4*. Each prints a counting
+line with the music, the sixteenths with a dot wherever no note starts: the
+tresillo's "1 . . a . . & ." and the habanera's "1 . . a 2 . & .". Before each
+one, say aloud where the habanera's extra note is (on 2, halfway through the
+bar) and that the tresillo has nothing there. After the habanera, say which
+note it added and where. The two drills differ in that note and nothing else,
+so this comparison is like for like. Nobody checks the answer but you.
 
-**8. Play the tresillo.** Open ⋯ and switch *Rhythm only* off. Open the
-tresillo in C in *Keep tempo* with *L*; the app plays the right hand's chord
-for you while *Duet* in ⋯ is on, or choose *Both* to play the chord yourself.
-Set the speed to between 80 % and 100 %: the slider opens at your own default,
-which may be lower. Play all eight bars. This is the first of the two runs this
-rung counts: one run of any of the three tresillo exercises, opened from this
-page, in *Keep tempo*, at 80 % of the written tempo or more, with 90 % of the
-notes right, from the first bar to the last with no loop.
+**7a. The habanera with its notes.** Open ⋯ and switch *Rhythm only* off.
+Open *Habanera bass in C, in 2/4* in *Keep tempo* with *L*; the app plays the
+right hand's chord for you while *Duet* in ⋯ is on, or choose *Both* to play
+the chord yourself. The left hand plays C on every note, a dotted eighth, a
+sixteenth and two eighths in each of the eight bars. Lower the speed if you
+need to. This run is practice and does not count toward this rung: the
+habanera run that counts is the Bizet's, at step 13.
+
+**7b. The habanera in F and in G, if you like.** *Habanera bass in F, in 2/4*
+and *Habanera bass in G, in 2/4* are the same drill with the bass on F and on
+G under their own major chords, and a key signature of one flat and one sharp.
+Neither counts; they are there for the new keys.
+
+**7c. The 2/4 tresillo with its notes: the first counted run.** Open
+*Tresillo bass in C, in 2/4*, the drill you tapped at step 6, in *Keep tempo*
+with *L* and *Rhythm only* off. Set the speed to between 80 % and 100 %: the
+slider opens at your own default, which may be lower. Play all eight bars.
+This is the first of the two runs this rung counts: one run of this exercise,
+opened from this page, in *Keep tempo*, at 80 % of the written tempo or more
+— the written tempo is 60 beats a minute, so 48 or more — with 90 % of the
+notes right, from the first bar to the last with no loop. No other exercise on
+this page counts in its place.
+
+**8. The tresillo in 4/4, if you like.** Open *Tresillo bass in C — three,
+three, two*, the exercise of steps 2 and 4, in *Keep tempo* with *L*, and play
+all eight bars. It is the tresillo as the Latin rung before printed it, in 4/4
+at 84. It is practice, and it does not count toward this rung: the counted
+exercise run is the 2/4 tresillo of step 7c.
 
 **9 and 10. In F and in G, if you like.** *Tresillo bass in F* and *Tresillo
 bass in G* are the same exercise with the bass on F and on G, and a key
-signature of one flat and one sharp. Any one of the three counts; playing more
-of them is practice, not more credit.
+signature of one flat and one sharp. Like the C, they are practice and count
+toward nothing here.
 
 **11. The bass under the tune.** Open *L'amour est un oiseau rebelle* itself,
 the whole piece, and loop bars 1 to 12. Press *Hear it*. For the first three
@@ -121,7 +150,8 @@ speed a few percent at a time. For the run that counts, play all twelve bars
 from the first to the last with no loop, at 80 % of the written tempo or more
 — the written tempo is 60 beats a minute, so 48 or more — with 90 % of the
 notes right. There is no need to go above 100 %: this rung asks for the
-written tempo and no more. That run and one tresillo run complete the rung.
+written tempo and no more. That run and the run of the 2/4 tresillo at step 7c
+complete the rung.
 
 **What a counted run shows.** The app hears whether you played the right
 notes, each at roughly the right moment, against its own click, at the speed
@@ -166,18 +196,21 @@ the end of this page.
 **If it goes wrong.**
 
 - Wrong or missed notes in the Bizet in *Keep tempo*: play it in *Wait for me*, then loop bars 7 to 9 in *Wait for me*, then *Keep tempo* again at a lower speed.
-- The notes are right but the quick note and the one after it drift, so the bar turns into even eighths or a plain long-short pair: loop bars 1 and 2 with *Rhythm only*, press *Hear it* on the same bars, count aloud while you tap, then put the notes back at a lower speed.
-- You tap or play a tresillo where the habanera is written, or the other way round: back to the grid at the top of this page and *Hear it* on both; then tap them one after the other, saying where the halfway note is before each.
+- The notes are right but the quick note and the one after it drift, so the bar turns into even eighths or a plain long-short pair: tap *Habanera bass in C, in 2/4* with *Rhythm only* first, where the note never changes; then loop bars 1 and 2 of the Bizet with *Rhythm only*, press *Hear it* on the same bars, count aloud while you tap, then put the notes back at a lower speed.
+- You tap or play a tresillo where the habanera is written, or the other way round: back to the grid at the top of this page and *Hear it* on both; then tap the two 2/4 drills one after the other, the tresillo first, saying where the halfway note is before each.
 - Right below the written tempo, but it falls apart at 80 %: raise the speed by hand a few percent at a time. *Ladder* in ⋯, over a loop, raises it a notch after each clean pass, but only for that sitting; playing it cold on a later day is the real check.
 - The bass falls apart under the tune: back to the Bizet left hand alone, then loop bars 4 to 7 of the whole piece with *L*, then all twelve bars.
 - The tresillo falls apart in F or G: back to C, tap it once with *Rhythm only*, then the new key at a lower speed.
-- You cannot hear which is which: the app has no check for that. Go back to tapping and to where the notes start on the page; telling them apart by ear is yours to judge.
+- The habanera drill falls apart in F or G: back to *Habanera bass in C, in 2/4*, tap it once with *Rhythm only*, then the new key at a lower speed.
+- You cannot hear which is which: the app has no check for that. Go back to tapping the two 2/4 drills one after the other and to where the notes start on the page; telling them apart by ear is yours to judge.
 
 **How you'll know.** What counts toward this rung is two runs, both opened
-from this page: one *Keep tempo* run of a tresillo exercise and one *Keep
-tempo* run of the whole Bizet left hand, each at 80 % of the written tempo or
-more with 90 % of the notes right. The Bizet run is a left-hand run and counts
-as one, because the piece is the left hand. What is yours to check, and the
+from this page: one *Keep tempo* run of *Tresillo bass in C, in 2/4* and one
+*Keep tempo* run of the whole Bizet left hand, each at 80 % of the written
+tempo or more with 90 % of the notes right. The Bizet run is a left-hand run
+and counts as one, because the piece is the left hand. A run of the habanera
+drills or of the 4/4 tresillo exercises does not stand in for the 2/4
+tresillo. What is yours to check, and the
 app does not: naming and counting the two cells, the contrast between them,
 hearing the difference, the bass under the tune and any try with both hands,
 finding the tresillo in *The Crave*, and your decision about *Por Una Cabeza*.

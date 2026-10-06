@@ -1645,6 +1645,10 @@
               ],
               "textFile": "lessons/latin.4.md",
               "exerciseOptions": [
+                "exercise.bass-cell.tresillo.c",
+                "exercise.bass-cell.habanera.c",
+                "exercise.bass-cell.habanera.f",
+                "exercise.bass-cell.habanera.g",
                 "exercise.tresillo.c",
                 "exercise.tresillo.f",
                 "exercise.tresillo.g"
@@ -1663,6 +1667,9 @@
                 {
                   "kind": "runs",
                   "from": "exercises",
+                  "items": [
+                    "exercise.bass-cell.tresillo.c"
+                  ],
                   "count": 1
                 },
                 {

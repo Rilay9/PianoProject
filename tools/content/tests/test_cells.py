@@ -50,6 +50,9 @@ FIXTURES = Path(__file__).resolve().parent / "fixtures" / "cells"
 POR_UNA_CABEZA = "song.folk.por-una-cabeza-carlos-gardel.pdmx"
 THE_CRAVE = "song.jazz.the-crave"
 TRESILLOS = ("exercise.tresillo.c", "exercise.tresillo.f", "exercise.tresillo.g")
+#: G13's 2/4 pair (family bass_cell): each item's cell, every bar.
+BASS_CELLS = {"exercise.bass-cell.habanera.c": "habanera", "exercise.bass-cell.habanera.f": "habanera",
+              "exercise.bass-cell.habanera.g": "habanera", "exercise.bass-cell.tresillo.c": "tresillo"}
 BIZET = "song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx"
 BIZET_CUT = "excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh"
 SOLACE = "song.ragtime.joplin-solace"
@@ -169,6 +172,12 @@ class T6TheWitnessOnTheBuiltFiles(unittest.TestCase):
             with self.subTest(item=item):
                 self.assertEqual(cells_of(built_file(item)), ["tresillo"] * 8)
 
+    def test_the_four_bass_cell_items_8_of_8_their_own_cell(self) -> None:
+        # G13: the habanera drill in C, F and G, and the 2/4 tresillo control in C.
+        for item, cell in BASS_CELLS.items():
+            with self.subTest(item=item):
+                self.assertEqual(cells_of(built_file(item)), [cell] * 8)
+
     def test_the_bizet_parent_85_of_90_habanera(self) -> None:
         found = cells_of(built_file(BIZET))
         self.assertEqual(len(found), 90)
@@ -219,7 +228,7 @@ class T7TheDifferential(unittest.TestCase):
     def setUpClass(cls) -> None:
         import demands
 
-        named = [POR_UNA_CABEZA, THE_CRAVE, *TRESILLOS, BIZET, SOLACE]
+        named = [POR_UNA_CABEZA, THE_CRAVE, *TRESILLOS, *BASS_CELLS, BIZET, SOLACE]
         cls.paths = {item: built_file(item) for item in named}
         cls.paths.update({f"fixture:{name}": fixture(name) for name in ("present", "absent", "boundary", "pickup")})
         # Measured as the build measures them (`build.attach_demands`): with each file's current verified hands (HD2,
@@ -259,7 +268,8 @@ class T7TheDifferential(unittest.TestCase):
             self.assertEqual(other, {}, f"{item} {cell}: located on the other staff at bars {sorted(other)}")
 
     def test_the_named_files_bar_for_bar(self) -> None:
-        for item in (POR_UNA_CABEZA, THE_CRAVE, *TRESILLOS, BIZET, SOLACE):
+        # Extended (G13) to the four bass_cell items: 32 bars, both cells.
+        for item in (POR_UNA_CABEZA, THE_CRAVE, *TRESILLOS, *BASS_CELLS, BIZET, SOLACE):
             with self.subTest(item=item):
                 self.assertNotIn("error", self.rows[item])
                 self.assert_agree(item, self.paths[item], self.rows[item], staff=2, side=1)
@@ -273,6 +283,8 @@ class T7TheDifferential(unittest.TestCase):
         self.assertEqual(len(app_bars(self.rows[BIZET], "rhythm.habanera", 1)), 85)
         for item in TRESILLOS:
             self.assertEqual(len(app_bars(self.rows[item], "rhythm.tresillo", 1)), 8, item)
+        for item, cell in BASS_CELLS.items():
+            self.assertEqual(app_bars(self.rows[item], CELL_DEMAND[cell], 1), {bar: PLACES[cell] for bar in range(1, 9)}, item)
 
     def test_the_fixtures_agree_except_the_cross_staff_bar_the_two_read_by_different_representations(self) -> None:
         for name in ("present", "absent", "pickup"):

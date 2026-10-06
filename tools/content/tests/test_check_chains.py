@@ -32,6 +32,11 @@ SCRATCH = ROOT / "build" / "test_check_chains"
 CUT = "excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh"
 LESSON = "content/lessons/latin.4.md"
 G13_REF = "docs/prompts/runs/curriculum-review-2026-10-05/GENERATOR-ADDENDUM.md#G13"
+#: G13's generated 2/4 pair (family bass_cell). The checker resolves an exercise id only through
+#: tools/content/generator_continuity.json, which lists only families whose version moved, so these stay listed
+#: unresolved in the draft until a checker seam resolves built generated ids (G13's H7; open before `reviewed`).
+BASS_CELL_IDS = {"exercise.bass-cell.habanera.c", "exercise.bass-cell.habanera.f", "exercise.bass-cell.habanera.g",
+                 "exercise.bass-cell.tresillo.c"}
 
 RESOLVER = cc.Resolver(ROOT)
 TOOLS, SHEET_PROBLEMS = cc.vocabulary(ROOT)
@@ -74,6 +79,8 @@ class TheRealRecord(unittest.TestCase):
         addendum, _, anchor = G13_REF.partition("#")
         if anchor not in cc.markdown_anchors(ROOT / addendum):
             expected.add(G13_REF)
+        # Revised (G13): the bass_cell exercise ids, each listed while the checker cannot resolve it (H7).
+        expected |= {ref for ref in BASS_CELL_IDS if not RESOLVER.resolve(ref, "generated")[0]}
         self.assertEqual(listed, expected)
         self.assertEqual({u.file for u in unresolved}, {"docs/chains/A7c.1.yaml"} if unresolved else set())
         # every occurrence is listed with its field, not just each distinct ref
@@ -253,6 +260,9 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
             if step["content"]["ref"] in (LESSON, CUT):
                 step["content"]["ref"] = "exercise.tresillo.c"
                 step["content"]["kind"] = "generated"
+            # Revised (G13): the bass_cell exercise ids do not resolve yet (H7); the family id does.
+            if step["content"]["ref"] in BASS_CELL_IDS:
+                step["content"]["ref"] = "bass_cell"
         rec["generated"][0]["contract"] = "docs/prompts/FABLE.md"
         rec["generated"][0]["checker"] = "tools/content/check_chains.py"
         rec["status"] = "reviewed"
@@ -447,8 +457,12 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
         rec = load()
         rec["generated"] = []
         failures, _ = check(rec)
-        generated_steps = [n for n, s in enumerate(rec["steps"], 1) if s["content"]["kind"] == "generated"]
+        # Revised (G13): only the steps whose ref identifies a family; the bass_cell exercise ids identify none until
+        # the checker resolves built generated ids (H7), so they are R3's, listed, and never this rule's.
+        generated_steps = [n for n, s in enumerate(rec["steps"], 1)
+                           if s["content"]["kind"] == "generated" and RESOLVER.family_of(s["content"]["ref"])]
         self.assertTrue(generated_steps)
+        self.assertTrue(any(s["content"]["ref"] in BASS_CELL_IDS for s in rec["steps"]))
         self.assertEqual(fields(failures), [f"steps[{n}].content.ref" for n in generated_steps])
         for failure in failures:
             self.assertIn("'tresillo'", failure.message)

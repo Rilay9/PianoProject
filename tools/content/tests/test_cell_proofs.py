@@ -95,8 +95,10 @@ class TheContractProof(unittest.TestCase):
     def test_the_tresillo_family_names_the_exact_cell_in_every_bar_and_no_other_family_names_a_cell(self) -> None:
         rules = [r for r in FC.contract("tresillo")["requires"] if r["demand"] == "rhythm.tresillo"]
         self.assertEqual([r["minPer"] for r in rules], [["bar", 3]])
+        # Revised (G13): this pinned the one-family world before G13, not a defect. bass_cell (latin.4's 2/4 control)
+        # names both cells per item (`when: cell`), and is proved in test_bass_cell.py; any third family still fails.
         for family in FC.contracts():
-            if family == "tresillo":
+            if family in ("tresillo", "bass_cell"):
                 continue
             named = [r["demand"] for key in ("requires", "forbids") for r in FC.contract(family).get(key) or []]
             self.assertFalse(set(named) & set(CELLS), family)

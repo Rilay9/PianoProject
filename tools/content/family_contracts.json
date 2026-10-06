@@ -5683,6 +5683,132 @@
       "admission": "Onsets and notes; the cell's feel is unheard.",
       "heard": false
     },
+    "bass_cell": {
+      "maker": "make_bass_cell",
+      "version": 1,
+      "name": "one left-hand onset cell, the habanera or the tresillo, in 2/4 on the tonic root, the tonic triad held above",
+      "promise": [
+        {
+          "promise": "drill",
+          "why": "a bare onset cell on a repeated root, deliberately mechanical (FABLE §4): the pair isolates the one onset the habanera adds to the tresillo, and claims nothing a listener would judge"
+        }
+      ],
+      "target": {
+        "primary": [],
+        "notJudged": {
+          "candidate": "habanera-and-tresillo",
+          "why": "the vocabulary's skill for the two cells is observable none: Keep tempo's ±150 ms window cannot establish the cell's identity at tempo (MODE-SHEET §2), so no run of this drill is evidence of it; the item holds the cell, and that is measured on the file, never on the learner"
+        },
+        "secondary": []
+      },
+      "assumes": [
+        "clef.bass",
+        "texture.hands-together",
+        "texture.left-hand-pattern",
+        "key.signature",
+        "rhythm.shorter-than-quarter",
+        "rhythm.sixteenths"
+      ],
+      "requires": [
+        {
+          "demand": "rhythm.habanera",
+          "minPer": [
+            "bar",
+            4
+          ],
+          "when": {
+            "cell": "habanera"
+          },
+          "why": "the habanera item's promise, exactly: the habanera onset cell (0, 3/8, 1/2, 3/4 of the bar) in the left hand of every bar, four located places a bar (CK-5; G13). Established for an item only where the independent witness, cells.py reading the same file with partitura, agrees bar for bar (build.attach_demands); the onsets, never the feel"
+        },
+        {
+          "demand": "rhythm.tresillo",
+          "minPer": [
+            "bar",
+            3
+          ],
+          "when": {
+            "cell": "tresillo"
+          },
+          "why": "the control's promise, exactly: the tresillo onset cell (0, 3/8, 3/4 of the bar) in the left hand of every bar, three located places a bar, written in the habanera item's 2/4 bar (CK-5; G13). Established only where the witness agrees bar for bar, as above"
+        }
+      ],
+      "overconcentration": [],
+      "forbids": [
+        {
+          "demand": "rhythm.tresillo",
+          "when": {
+            "cell": "habanera"
+          },
+          "why": "the cross-failure: a habanera item holds no tresillo bar"
+        },
+        {
+          "demand": "rhythm.habanera",
+          "when": {
+            "cell": "tresillo"
+          },
+          "why": "the cross-failure: the control holds no habanera bar"
+        },
+        {
+          "demand": "rhythm.triplets"
+        },
+        {
+          "demand": "metre.compound"
+        }
+      ],
+      "physical": {
+        "maxSpan": 7,
+        "maxRate": 4.0,
+        "why": "measured on the four items: maxSpan 7, the right hand's root-position triad (a fifth), the widest either hand strikes at once; maxRate 4.0, the habanera's sixteenth to the half bar in the left hand, 0.25 s apart at ♩ = 60 (the 2/4 tresillo's fastest is 2.0)",
+        "repeatedNotes": {
+          "solution": "one re-strike of the root a sixteenth after the dotted eighth, once a bar: the same finger or a change of finger, the learner's choice; the app prints no fingering for it and prescribes none",
+          "why": "the habanera items strike the root again 0.25 s after the sixteenth at ♩ = 60 (the sixteenth to the half bar), under the gate's 0.3 s; this drill's solution, not a rule for every fast repeated note in piano playing; the tresillo control has no repeat under 0.5 s"
+        },
+        "fingering": {
+          "printed": "none",
+          "source": null,
+          "note": "the generator's own convention (the left hand's 5, the chord's 1-3-5), not a published source: nothing is printed until a source gives one (the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
+        }
+      },
+      "roles": {
+        "provides": [
+          "canonical",
+          "variable"
+        ],
+        "assign": [
+          {
+            "role": "canonical",
+            "when": {
+              "key": "C"
+            }
+          },
+          {
+            "role": "variable"
+          }
+        ],
+        "transfer": "not provided: another key of the same cell is a variable realisation of the same constraints, never transfer; transfer comes from repertoire (the Bizet left-hand cut, Por Una Cabeza), never from this family"
+      },
+      "assessment": {
+        "judged": [
+          {
+            "quality": "the written notes, in order",
+            "input": "pitch",
+            "precision": "each written key matched: in Wait the step completes on it; in Keep tempo it sounds inside the onset window"
+          },
+          {
+            "quality": "time",
+            "input": "onset-timing",
+            "precision": "each onset within ±150 ms of the written beat (engine toleranceMs), Keep tempo only; Wait has no clock"
+          }
+        ],
+        "unjudged": [
+          "the cell's identity at tempo: the window cannot resolve the sixteenth's exact place, so a run never shows which cell was played",
+          "nothing about this family has been heard by a person; a drill, so the musical gate does not apply"
+        ]
+      },
+      "admission": "Onsets and notes, the cell established by the contract with the partitura witness agreeing; a drill; unheard.",
+      "heard": false
+    },
     "swing_pair": {
       "maker": "make_swing_pair",
       "version": 2,

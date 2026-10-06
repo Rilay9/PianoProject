@@ -507,6 +507,13 @@ FAMILIES: dict[str, dict] = {
         lh_max=MIDDLE_C,
         lh_says="docstring: 'the bass figure under most latin music'",
     ),
+    "bass_cell": dict(
+        maker="make_bass_cell",
+        build=lambda: G.make_bass_cell("C", "habanera"),
+        bars=8, bars_says="`bars` is the argument and the plan passes its default (G13: eight bars, as the tresillo)",
+        lh_max=MIDDLE_C,
+        lh_says="docstring: the tonic root at octave 3 on every onset, the triad above",
+    ),
     "swing_pair": dict(
         maker="make_swing_pair",
         build=lambda: G.make_swing_pair("C"),

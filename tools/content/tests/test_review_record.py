@@ -364,7 +364,9 @@ class TestTheQueue(Built):
 
         self.assertEqual([t["id"] for t in self.tiers], ["music", "not-judged", "unmeasurable", "rest"])
         not_judged = {f for f, row in FC.contracts().items() if not row["target"]["primary"]}
-        self.assertEqual(len(not_judged), 38)
+        # Revised (G13): 39, with bass_cell, whose candidate skill (habanera-and-tresillo) is observable none.
+        self.assertEqual(len(not_judged), 39)
+        self.assertIn("bass_cell", not_judged)
         seen = {self.by_id[i]["drill"]["generator"]["family"] for i in self.tiers[1]["items"]}
         music_first = {self.by_id[i]["drill"]["generator"]["family"] for i in self.tiers[0]["items"]}
         # `intro` and `modal_vamp` promise music and are not judged: met in the first tier.

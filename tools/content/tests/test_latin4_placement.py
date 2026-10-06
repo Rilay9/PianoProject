@@ -9,9 +9,12 @@ every bar) and `latin.3` (where the tresillo is first named). The ruling asks th
   guard), so it cannot be the witness: the check here walks the same parent rule on its own and reports the cycle;
 - b. latin.4's ancestry holds `4.4`, `latin.3` and both of their ancestries;
 - c. the cut and the three tresillo exercises leave nothing untaught at latin.4 (`claims.untaught_on`, after a guard
-  that latin.4 is in the ancestry at all: `untaught_on` answers `[]` for a rung it does not know);
+  that latin.4 is in the ancestry at all: `untaught_on` answers `[]` for a rung it does not know); extended (G13) to
+  the four `bass_cell` items, the habanera drill in C, F and G and the 2/4 tresillo control;
 - d. latin.4's two claims are established: the habanera on the cut by its verified passage fact (bars 1-12), the
-  tresillo on each tresillo exercise;
+  tresillo on each tresillo exercise; extended (G13): the habanera on each habanera drill and the tresillo on the
+  2/4 control, each by its family contract with the witness agreeing (`measurement.contract`), and neither drill
+  establishes the other cell;
 - e. nothing unrelated changes: every other rung's ancestry, every demand's `taughtAt` but the habanera's, and
   `untaught_on` for every other rung and every catalogue item equal those of the same curriculum without latin.4;
   a mutant (another rung given latin.4 as a prerequisite) shows the differential can fail;
@@ -41,6 +44,9 @@ RUNG = "latin.4"
 CUT = "excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh"
 PARENT = "song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx"
 TRESILLOS = ("exercise.tresillo.c", "exercise.tresillo.f", "exercise.tresillo.g")
+#: G13's generated 2/4 pair: the habanera drill in three keys and its tresillo control in C (family bass_cell).
+HABANERA_DRILLS = ("exercise.bass-cell.habanera.c", "exercise.bass-cell.habanera.f", "exercise.bass-cell.habanera.g")
+CONTROL = "exercise.bass-cell.tresillo.c"
 HABANERA = "rhythm.habanera"
 
 
@@ -211,7 +217,7 @@ class ThePlacement(unittest.TestCase):
     def test_c_the_cut_and_the_tresillo_exercises_leave_nothing_untaught_at_latin4(self) -> None:
         # The guard first: `untaught_on` answers [] for a rung outside the ancestry, which would pass vacuously.
         self.assertTrue(RUNG in self.ancestry, "latin.4 is not a rung of the built curriculum: the check below would be vacuous")
-        for ident in (CUT, *TRESILLOS):
+        for ident in (CUT, *TRESILLOS, *HABANERA_DRILLS, CONTROL):
             item = self.by_id.get(ident)
             self.assertIsNotNone(item, f"{ident} is not in the built catalogue")
             self.assertIsInstance(item.get("demands"), list, f"{ident} was not measured")
@@ -228,10 +234,19 @@ class ThePlacement(unittest.TestCase):
             self.assertIn(ident, options, f"{ident} is not an option of latin.4")
             claim = {c["id"]: c for c in options[ident]["claims"]}
             self.assertEqual(claim["rhythm.tresillo"]["status"], "established", ident)
+        # G13: each drill establishes its own cell by its family contract, the witness agreeing, and not the other.
+        for ident, own, other in ([(d, HABANERA, "rhythm.tresillo") for d in HABANERA_DRILLS]
+                                  + [(CONTROL, "rhythm.tresillo", HABANERA)]):
+            self.assertIn(ident, options, f"{ident} is not an option of latin.4")
+            claim = {c["id"]: c for c in options[ident]["claims"]}
+            self.assertEqual(claim[own]["status"], "established", ident)
+            self.assertNotEqual(claim[other]["status"], "established", ident)
+            self.assertIn(own, self.by_id[ident]["measurement"].get("contract", []), f"{ident}: not by its contract")
+            self.assertNotIn(other, self.by_id[ident]["demands"], f"{ident}: the app finds the other cell")
         row = next(r for r in report["rungs"] if r["rung"] == RUNG)
         counts = {c["id"]: c["established"] for c in row["claims"]}
-        self.assertGreaterEqual(counts.get(HABANERA, 0), 1)
-        self.assertGreaterEqual(counts.get("rhythm.tresillo", 0), 3)
+        self.assertGreaterEqual(counts.get(HABANERA, 0), 1 + len(HABANERA_DRILLS))
+        self.assertGreaterEqual(counts.get("rhythm.tresillo", 0), 3 + 1)
 
     def test_g_candidate_rungs_lists_latin4_for_the_cut_with_the_habanera_established(self) -> None:
         report = excerpts.candidate_rungs(self.catalog, self.curriculum)

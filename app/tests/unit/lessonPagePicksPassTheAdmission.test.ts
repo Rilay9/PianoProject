@@ -393,6 +393,8 @@ describe('every rung of the built curriculum, on the built catalogue: no automat
 // Revised again (Entry 253, 2026-10-06): the outside reviewer decided teaching use YES for the three tresillo
 // exercises in their CONTROL role (`responses/lp1-latin4-placement.md` section 1), so latin.3's and latin.4's
 // Quick check now resolve to an admitted drill and leave this list.
+// G13 (the same day) adds four bass_cell drills to latin.4 whose family promises a drill, admitted by the gate without a
+// decision; latin.4's Quick check opens the 2/4 tresillo control. The list is unchanged by that.
 const GONE = ['jam.5 check', 'latin.6 check'];
 
 /**
