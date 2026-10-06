@@ -5,6 +5,8 @@ Branch: `chatgpt/pdmx-dump-2026-10-05`
 
 Purpose: resolve open musical/content questions that can be decided without touching Claude's active wave-one build files.
 
+Owner scope correction: **copyright / public-export status is not part of this work.** Do not spend review or build time on rights clearance unless the owner explicitly reopens it. Quarry work here is about musical accuracy, pedagogical usefulness, notation evidence, source identity where it affects musical correctness, and placement in the learning chain.
+
 ## 1. Blues Riff in C — B-natural question
 
 Candidate: `Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi`.
@@ -31,12 +33,6 @@ Therefore the open issue is **not plausibly a single transcription typo inside o
 For curriculum use, this candidate should remain **TRANSFER-CANDIDATE WITH HARMONIC CAVEAT** rather than a clean canonical first model of C-blues note choice. It can still demonstrate a complete 12-bar form and coordination over a harmonic bed, but a beginner-facing explanation must not present those repeated B naturals as the ordinary C7 chord tone.
 
 If a clean pedagogical 12-bar transfer score is required before the source can be checked, prefer another candidate rather than rewriting this edition from theory alone.
-
-### Rights/provenance warning
-
-The PDMX summary labels this CID `license=publicdomain`, but the discoverable MuseScore source for the matching `12 Bar Blues / Lessons - Blues` page currently reports **All rights reserved**. That is a provenance conflict, so the PDMX `publicdomain` field is **not sufficient public-export evidence** for this item. Treat public export as **NO / unresolved** until provenance is reconciled.
-
-Source found: https://musescore.com/user/955021/scores/454946
 
 ## 2. La Negra Tiene Tumbao — selected piano-figure classification
 
@@ -74,6 +70,7 @@ Recommended excerpt search window for a later build brief: start with bars 21-32
 No wave-one builder needs to stop.
 
 For later content waves:
-- Blues Riff in C stays useful for full-form transfer but is **not yet a clean harmony-teaching model** and is **not cleared for public export** from its current metadata alone.
+- Blues Riff in C stays useful for full-form transfer but is **not yet a clean harmony-teaching model**.
 - La Negra now has a defensible concrete role: **real block-chord/ponchando MODEL candidate**. G15 must not be scoped as an arpeggiated-guajeo-only generator if the learner-facing gap includes the shipped block-chord figure.
-- Keep the distinction between source definition, exact score observation, curriculum admission, and public-export rights.
+- Keep the distinction between source definition, exact score observation, curriculum role, and verification boundary.
+- Do not spend time on copyright/public-export status as part of this quarry workflow unless the owner explicitly asks for it.
