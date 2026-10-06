@@ -43255,3 +43255,13 @@ Base: the worktree's HEAD `0f6138e1`. The builder's harness is `operating-proced
 
 **Adjacent, recorded, not fixed.** An unnamed pool (`from` alone, no `items`) still counts partial loops; no requirement reads hands. Nothing heard.
 
+### Entry 240 — RG1a: a new run with `wholeItem: false` counts toward no `runs` requirement, named or unnamed
+
+**What a learner meets.** Any rung whose requirement draws on a pool of songs (61 shipped rungs carry an unnamed `from: songs` pool, 3.1 among them, by the orchestrator's count on 2026-10-06) no longer completes on a passing loop of part of a song. Entry 239 had refused that only where the requirement names its items; the reviewer's chat review of bb6289f2 (§1) showed the unnamed shape is live and required the refusal everywhere.
+
+**Mechanism.** `rungState.ts`, the `runs` case: `if (named && !coveredWholeItem(row)) continue;` became `if (!coveredWholeItem(row)) continue;`; the `named` constant is gone; the doc comment and `docs/05` §9a say named or unnamed. `undefined` keeps the compatibility rule (legacy, drill and paper rows count as before). No other requirement kind touched. Case 8 (`rungStateFromEvidence.test.ts`) was red on the unchanged code (`an unnamed-song partial loop: expected holds false, received holds true, items [song.n]`) and covers the unnamed full run counting, partial-then-full counting once, and a legacy unnamed row with and without a range counting; case 6's old assertion that an unnamed pool counts a partial loop is removed, being the opposite rule.
+
+**Checks.** The three RG1 test files 51/51 and `tsc -b` 0 (the builder's run and the orchestrator's rerun after the patch); the full unit suite once in the worktree: 350 files, 7826 passed, 3 failed, the same three environmental reds as Entry 239 (`midiParity`, `taughtByAncestry`, blues.3 CRLF). Test map: the RG1 row extended. No Playwright, no content build.
+
+**Left to the Bizet builder.** The A7c.1 record's sentence about partial laps, which it rewrites for both named and unnamed pools. Nothing heard.
+

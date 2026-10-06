@@ -385,7 +385,7 @@ describe('skill evidence is the learner’s everywhere; the reads a rung asks fo
 // screen now writes `wholeItem` (`coversWholeItem`, proved in `wholeItemRun.test.ts` and through the
 // screen in `observationsFromRun.test.ts`); here the requirement reads it. `range` alone is no
 // loop flag: every judged run carries one, the whole piece's included.
-describe('a named runs requirement counts a run of the whole item (RG1)', () => {
+describe('a runs requirement, named or unnamed, counts a run of the whole item (RG1, RG1a)', () => {
   const CUT = 'excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh';
   const PARENT = 'song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx';
   const N = rung('N', {
@@ -445,8 +445,7 @@ describe('a named runs requirement counts a run of the whole item (RG1)', () => 
     // A drill made when it opens has no range and no `wholeItem` (the drill screens write neither).
     const drill = at('drill.ear', { mode: 'drill:ear', tempoMeasured: false, accuracy: 0.95 });
     expect(readingsOf([drill])?.[2], 'a named drill').toMatchObject({ holds: true, items: ['drill.ear'] });
-    // An unnamed pool reads no `wholeItem`: RG1 is the named requirement's, and the brief keeps it there.
-    expect(readingsOf([at('song.n', loop)])?.[3], 'an unnamed songs requirement').toMatchObject({ holds: true, items: ['song.n'] });
+    // (An unnamed pool reads `wholeItem` too since RG1a: case 8.)
     // `done` and `measure` read their own fields only.
     const D = rung('D', {
       exerciseOptions: ['drill.check', 'ex.staccato'],
@@ -472,5 +471,18 @@ describe('a named runs requirement counts a run of the whole item (RG1)', () => 
       items: ['scale.c'],
     });
     expect(readingsOf([at(CUT, { range: { fromMeasure: 0, toMeasure: 11 } })])?.[1]?.holds, 'a legacy run of the cut').toBe(true);
+  });
+
+  it('8. an unnamed songs pool refuses a new partial loop and counts a full run and a legacy row (RG1a)', () => {
+    // The mirror of case 6's old unnamed assertion: 61 shipped rungs ask `from: songs` with no
+    // `items`, and a passing loop of part of one song must not stand for the song (FABLE §6;
+    // `docs/review/responses/bb6289f2.md` §1). The requirement is the fourth of N.
+    const unnamed = (rows: SessionRow[]) => readingsOf(rows)?.[3];
+    expect(unnamed([at('song.n', loop)]), 'an unnamed-song partial loop').toMatchObject({ holds: false, have: 0, items: [] });
+    expect(unnamed([at('song.n', whole)]), 'an unnamed-song full run').toMatchObject({ holds: true, have: 1, items: ['song.n'] });
+    expect(unnamed([at('song.n', loop), at('song.n', { ...whole, at: '2026-10-02T10:00:00.000Z' })]), 'a partial loop, then a full run').toMatchObject({ have: 1, items: ['song.n'] });
+    // A row with no `wholeItem` (legacy, drill, paper) counts as before, ranged or not.
+    expect(unnamed([at('song.n', {})]), 'a legacy unnamed row').toMatchObject({ holds: true, items: ['song.n'] });
+    expect(unnamed([at('song.n', { range: { fromMeasure: 1, toMeasure: 2 } })]), 'a legacy ranged unnamed row').toMatchObject({ holds: true, items: ['song.n'] });
   });
 });

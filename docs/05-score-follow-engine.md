@@ -1071,8 +1071,7 @@ grace-note rule, the window, the latency and the range. What is not built: conti
 gaps, time per step in Wait) has no measure yet, and is not stored ahead of one.
 
 **Whether a run covered the whole item (2026-10-06, RG1; FABLE §6; the reviewer's ruling,
-`docs/review/responses/6e7475c1.md` §5).** A requirement that names its items asks for those
-items, and a loop over part of one is not a run of it: a four-bar loop at the pass pair used to
+`docs/review/responses/6e7475c1.md` §5).** A requirement asks for items, and a loop over part of one is not a run of it: a four-bar loop at the pass pair used to
 complete a rung whose required item was the whole cut, because the `runs` requirement read the
 item, the performance flag and the standard and never what the run covered. `range` cannot say
 it: the Score screen writes a range on every judged run, the whole piece's included.
@@ -1086,9 +1085,12 @@ it: the Score screen writes a range on every judged run, the whole piece's inclu
   cut's bars is a run of the parent, partial there (excerpt identity unchanged). Steps outside the
   span with nothing for the played hand are not asked of the learner and leave nothing out; which
   hand was played is `hands`, which no requirement reads (unchanged).
-- **The rule.** `rungState` counts a run toward a `runs` requirement with `items` only where
-  `wholeItem` is not `false` (`coveredWholeItem`). An unnamed pool (`from` alone), `reads`, `done`,
-  `measure` and `skill` do not read it, and drills are judged exactly as before.
+- **The rule.** `rungState` counts a run toward a `runs` requirement only where `wholeItem` is not
+  `false` (`coveredWholeItem`), whether the requirement names its items or not: RG1 first applied it
+  to a requirement with `items` only, and the reviewer's required change (`bb6289f2.md` §1, RG1a)
+  extended it to the unnamed `from: songs` pool, which 61 shipped rungs use and on which a passing
+  partial loop of one song could still complete the rung. `reads`, `done`, `measure` and `skill` do
+  not read it, and drills are judged exactly as before.
 - **A loop whose bars take in the whole item counts.** Its `wholeItem` is `true`: the evidence
   covers the item although Loop was used. The scales' and Hanon's ladder (`?ladder=1`) loops every
   bar, and those are the named requirements that ship today (2.5, 4.1, 4.4).

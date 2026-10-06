@@ -30,8 +30,8 @@
  *   book piece's twin (`Lesson.paperTwins`, the shelf overlay's) counts toward
  *   `runs` as the book piece the judging rung lists, once (CL04, L79); `reads`,
  *   `done` and `measure` read the run under its own id, as before. A `runs`
- *   requirement that names its items counts a run only where it covered the whole
- *   item (`wholeItem`; RG1, `coveredWholeItem`, with its compatibility rule). A `done`
+ *   requirement, named or unnamed, counts a run only where it covered the whole
+ *   item (`wholeItem`; RG1, RG1a, `coveredWholeItem`, with its compatibility rule). A `done`
  *   item (a checklist, the tour, the placement test) is finished when nothing
  *   was left undone and, where the run measured an accuracy, at the rung's
  *   standard; it read every row of the item until the reviewer's C5 review.
@@ -242,9 +242,9 @@ export function meetsStandard(row: SessionRow, criteria: MasteryCriteria, accura
 }
 
 /**
- * Whether a run covered the whole item, as a named `runs` requirement reads it (RG1; FABLE §6; the
- * reviewer's ruling, `docs/review/responses/6e7475c1.md` §5). A requirement that names its items
- * (`items`) asks for those items, and a loop over part of one is not a run of it, however clean.
+ * Whether a run covered the whole item, as a `runs` requirement reads it (RG1; FABLE §6; the
+ * reviewer's ruling, `docs/review/responses/6e7475c1.md` §5). A requirement asks for items, and a
+ * loop over part of one is not a run of it, however clean.
  *
  * - **The fact is `wholeItem`**, which the Score screen writes on every run it records
  *   (`db.coversWholeItem`), never `range`: a range is written on every judged run, the whole
@@ -258,7 +258,9 @@ export function meetsStandard(row: SessionRow, criteria: MasteryCriteria, accura
  *   met on a fact the row never held, and a ranged row is no evidence either way. Only a stored
  *   `false` refuses.
  *
- * An unnamed pool (`from` alone) does not read it: RG1 is the named requirement's.
+ * Every `runs` requirement reads it, named or unnamed (RG1a; the reviewer's required change,
+ * `docs/review/responses/bb6289f2.md` §1): 61 shipped rungs ask `from: songs` with no `items`, and a
+ * passing loop of part of one song must not stand for the song.
  */
 function coveredWholeItem(row: SessionRow): boolean {
   return row.wholeItem !== false;
@@ -394,15 +396,13 @@ function read(
     case 'runs': {
       const pool = poolOf(rung, requirement);
       const twins = twinsOf(rung, pool);
-      // A requirement that names its items asks for those items whole (RG1, `coveredWholeItem`).
-      const named = requirement.items !== undefined;
       const counted = new Set<string>();
       for (const row of judged) {
         // The item the run counts as: its own where the rung lists it, else the book piece it is the twin of (L79).
         const item = pool.has(row.itemId) ? row.itemId : twins.get(row.itemId);
         if (item === undefined) continue;
         if (requirement.performance === true && row.performance !== true) continue;
-        if (named && !coveredWholeItem(row)) continue;
+        if (!coveredWholeItem(row)) continue;
         if (meetsStandard(row, criteria, requirement.accuracy)) counted.add(item);
       }
       const twoSongs =
