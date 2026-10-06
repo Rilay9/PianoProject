@@ -1070,6 +1070,34 @@ found for the hot spots), and every timed note's delta; `judgedUnder` reports th
 grace-note rule, the window, the latency and the range. What is not built: continuity (stops,
 gaps, time per step in Wait) has no measure yet, and is not stored ahead of one.
 
+**Whether a run covered the whole item (2026-10-06, RG1; FABLE §6; the reviewer's ruling,
+`docs/review/responses/6e7475c1.md` §5).** A requirement that names its items asks for those
+items, and a loop over part of one is not a run of it: a four-bar loop at the pass pair used to
+complete a rung whose required item was the whole cut, because the `runs` requirement read the
+item, the performance flag and the standard and never what the run covered. `range` cannot say
+it: the Score screen writes a range on every judged run, the whole piece's included.
+
+- **The fact.** `RunHeader.wholeItem`: `true` where no step the run gave the learner to play lies
+  outside the steps it judged, `false` where some does. The Score screen derives it in `runHeader`,
+  where `judgedUnder` is read, from the run's own prepared session (`db.coversWholeItem`), which
+  holds both the judged span and the item's whole step sequence. By steps, not printed bars: a loop
+  over bars 1–4 of a piece that ends *Fine* in bar 4 starts and ends in the bars a whole run does.
+  An excerpt's item is its cut, so a run over the whole cut is whole; a run of the parent over the
+  cut's bars is a run of the parent, partial there (excerpt identity unchanged). Steps outside the
+  span with nothing for the played hand are not asked of the learner and leave nothing out; which
+  hand was played is `hands`, which no requirement reads (unchanged).
+- **The rule.** `rungState` counts a run toward a `runs` requirement with `items` only where
+  `wholeItem` is not `false` (`coveredWholeItem`). An unnamed pool (`from` alone), `reads`, `done`,
+  `measure` and `skill` do not read it, and drills are judged exactly as before.
+- **A loop whose bars take in the whole item counts.** Its `wholeItem` is `true`: the evidence
+  covers the item although Loop was used. The scales' and Hanon's ladder (`?ladder=1`) loops every
+  bar, and those are the named requirements that ship today (2.5, 4.1, 4.4).
+- **Legacy rows count as they always did.** A row with no `wholeItem` — every run written before
+  RG1, and the drill and paper screens' runs, which have no range to cover — counts. The row does
+  not say what it covered and the rule it was written under counted it; reading it as partial would
+  take back rungs already met on a fact the row never held, and its `range` is no evidence either
+  way. Only a stored `false` refuses. Optional field, so no `DB_VERSION` and no upgrade (C1's rule).
+
 **The technique measures.** `articulationScore`, `voicingScore` and `shapingScore` (P12a) are
 computed for a run of an exercise whose own `drill` block asks for one —
 `{ kind: 'articulation', params: { articulation, heldFractionMin/Max } }`,

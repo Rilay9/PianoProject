@@ -43241,3 +43241,17 @@ Base: the worktree's HEAD `0f6138e1`. The builder's harness is `operating-proced
 
 **Not done.** PACKET-TRACE's "MODE-SHEET blocks 1-30" stands (true of the measuring blocks); the historic e8ac9382 handoff is not renumbered. Nothing heard.
 
+### Entry 239 — RG1: a named `runs` requirement counts a run only when it covered the whole required item
+
+**What a learner meets.** A rung whose requirement names a piece or an excerpt no longer completes on a passing loop of part of it. A loop over every bar still counts (the evidence covers the item), and a whole left-hand excerpt counts as itself, never through its parent. Nothing changes on screen; the rung's state changes only where a partial loop had been counted.
+
+**Premise, established at the code (49b1b336).** `ScoreScreen.runHeader` writes `range` from `judgedUnder` on every judged run, so `range` is not a loop flag; `rungState.ts`'s `runs` case (about line 369) never read it. The tempting shortcut, any ranged row is partial, would have rejected ordinary full runs, which is why the reviewer's amended ruling forbade it.
+
+**Mechanism.** The fact is derived in `runHeader` from `session.prepared`, which holds the judged span (`firstStep` to `lastStep`) and the item's whole step sequence (for an excerpt, the cut): `db.coversWholeItem` is true when no playable step lies outside the span, compared by steps rather than printed bars (a loop over bars 1-2 of a piece ending *Fine* in bar 2 covers the run's whole printed range). Stored as the optional `RunHeader.wholeItem`; optional, so no `DB_VERSION` change and no upgrade (C1's rule). `rungState.coveredWholeItem` excludes a run from a requirement with `items` only when `wholeItem === false`. Legacy policy, written in `db.ts`, `rungState.ts` and `docs/05` §9a: a row with no `wholeItem` counts as before, which covers rows from before this change and drill and paper rows.
+
+**The seven cases** (`rungStateFromEvidence.test.ts`, `wholeItemRun.test.ts` new, `observationsFromRun.test.ts` three cases through the real Score screen and store): a normal full run counts; a passing partial loop does not (red on the old code: `a loop over bars 2-3 at the pass pair counted`); a partial loop and a later full run count once; a loop covering every bar counts; the left-hand Bizet cut counts as the whole required item (red on the old code: `part of the cut`), with the cut's id as the probe brief writes it and a synthetic left-hand model, since the cut is not yet in the catalogue; drill and other requirements unchanged; legacy rows as before. Two variants of the rule were tried and refused by the tests: printed bars (fails the *Fine* case and the hand-filter case) and first-and-last-step only (fails the hand-filter case).
+
+**Checks (the builder's).** `tsc -b` 0; eslint clean on the changed files; the full unit suite once: 350 files, 7825 passed, 3 failed (`midiParity` and `taughtByAncestry` want generated files the worktree lacks; `lessonClaimsAboutApp` blues.3 is the known CRLF assertion); `docsConsistency` and the three changed test files rerun 53/53. The orchestrator reran those four files (53 passed) and `tsc -b` after the patch. Test map: a new row and the file-list lines. No Playwright, no content build.
+
+**Adjacent, recorded, not fixed.** An unnamed pool (`from` alone, no `items`) still counts partial loops; no requirement reads hands. Nothing heard.
+

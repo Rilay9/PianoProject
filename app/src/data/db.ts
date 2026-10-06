@@ -151,6 +151,23 @@ export interface RunHeader {
    */
   range?: { fromMeasure: number; toMeasure: number };
   /**
+   * Whether the run covered the whole item it was a run of (RG1; FABLE §6; the reviewer's ruling,
+   * `docs/review/responses/6e7475c1.md` §5): `true` where no step the run gave the learner to play
+   * lies outside the steps it judged, `false` where some does — a loop over part of the item. Not
+   * `range`, which is written on every judged run, the whole piece's included, and is no loop flag.
+   *
+   * Derived by the Score screen from the run's own prepared session (`coversWholeItem`), where both
+   * the judged span and the item's whole step sequence are in hand; an excerpt's item is its cut,
+   * never the parent. A loop whose bars take in the whole item is `true`: the evidence covers the
+   * item although Loop was used. A fact about the range only: the hand the run played is `hands`.
+   *
+   * Read by `rungState`'s named `runs` requirement (one with `items`), which counts a run only where
+   * this is not `false`. Absent — every run written before RG1, and the drill and paper screens'
+   * runs, which have no range to cover — counts as such runs always did (the compatibility rule in
+   * `rungState`). Optional, so no `DB_VERSION` and no upgrade (C1's rule), and no row is rewritten.
+   */
+  wholeItem?: boolean;
+  /**
    * What opened the Score screen: the tab the learner came from, the rung
    * that judged it (`?from=`, or the rung a Today card chose, `?rung=`), the
    * tour, and the Today slot. Only a Today card names a slot (C3 item 0b,
@@ -292,6 +309,24 @@ export interface PhraseGenerator {
  */
 export function phraseVersionOf(row: Pick<RunHeader, 'generator'>): number {
   return row.generator?.version ?? 1;
+}
+
+/**
+ * `RunHeader.wholeItem` from a run's prepared session (RG1): whether every step the run gave the
+ * learner to play lies inside the steps it judged (`firstStep`..`lastStep`, the loop's or the whole
+ * item's). The steps are the item's whole sequence, one per cursor position of its own model — for
+ * an excerpt, its cut's. Steps outside the span with nothing to play (the other hand's, under a hand
+ * filter) are not asked of the learner, so leaving them out leaves nothing out.
+ *
+ * By steps, not by printed bars: a loop of bars 1 to 4 of a piece that ends *Fine* in bar 4 starts
+ * and ends in the bars a whole run does, and covers a third of it.
+ */
+export function coversWholeItem(run: {
+  steps: readonly { isEmpty: boolean }[];
+  firstStep: number;
+  lastStep: number;
+}): boolean {
+  return run.steps.every((step, index) => (index >= run.firstStep && index <= run.lastStep) || step.isEmpty);
 }
 
 /**

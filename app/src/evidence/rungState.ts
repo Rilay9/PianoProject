@@ -29,7 +29,9 @@
  *   an item three rungs list meets at most the one that judged it. A run of a
  *   book piece's twin (`Lesson.paperTwins`, the shelf overlay's) counts toward
  *   `runs` as the book piece the judging rung lists, once (CL04, L79); `reads`,
- *   `done` and `measure` read the run under its own id, as before. A `done`
+ *   `done` and `measure` read the run under its own id, as before. A `runs`
+ *   requirement that names its items counts a run only where it covered the whole
+ *   item (`wholeItem`; RG1, `coveredWholeItem`, with its compatibility rule). A `done`
  *   item (a checklist, the tour, the placement test) is finished when nothing
  *   was left undone and, where the run measured an accuracy, at the rung's
  *   standard; it read every row of the item until the reviewer's C5 review.
@@ -239,6 +241,29 @@ export function meetsStandard(row: SessionRow, criteria: MasteryCriteria, accura
   return false;
 }
 
+/**
+ * Whether a run covered the whole item, as a named `runs` requirement reads it (RG1; FABLE §6; the
+ * reviewer's ruling, `docs/review/responses/6e7475c1.md` §5). A requirement that names its items
+ * (`items`) asks for those items, and a loop over part of one is not a run of it, however clean.
+ *
+ * - **The fact is `wholeItem`**, which the Score screen writes on every run it records
+ *   (`db.coversWholeItem`), never `range`: a range is written on every judged run, the whole
+ *   piece's included.
+ * - **A loop whose bars take in the whole item counts.** Its `wholeItem` is `true`: the evidence
+ *   covers the item although Loop was used — the scales' and Hanon's ladder loops over every bar.
+ * - **The compatibility rule: a row with no `wholeItem` counts, as such rows always did.** Every
+ *   run written before RG1 has none, and so do the drill and paper screens' runs, which have no
+ *   range to cover (a drill is made whole when it opens). The row does not say what it covered, and
+ *   the rule it was written under counted it; reading it as partial would take back rungs already
+ *   met on a fact the row never held, and a ranged row is no evidence either way. Only a stored
+ *   `false` refuses.
+ *
+ * An unnamed pool (`from` alone) does not read it: RG1 is the named requirement's.
+ */
+function coveredWholeItem(row: SessionRow): boolean {
+  return row.wholeItem !== false;
+}
+
 function poolOf(rung: Lesson, requirement: RunsRequirement): Set<string> {
   const songs = [...rung.songOptions, ...(rung.paperOptions ?? [])];
   const base =
@@ -369,12 +394,15 @@ function read(
     case 'runs': {
       const pool = poolOf(rung, requirement);
       const twins = twinsOf(rung, pool);
+      // A requirement that names its items asks for those items whole (RG1, `coveredWholeItem`).
+      const named = requirement.items !== undefined;
       const counted = new Set<string>();
       for (const row of judged) {
         // The item the run counts as: its own where the rung lists it, else the book piece it is the twin of (L79).
         const item = pool.has(row.itemId) ? row.itemId : twins.get(row.itemId);
         if (item === undefined) continue;
         if (requirement.performance === true && row.performance !== true) continue;
+        if (named && !coveredWholeItem(row)) continue;
         if (meetsStandard(row, criteria, requirement.accuracy)) counted.add(item);
       }
       const twoSongs =

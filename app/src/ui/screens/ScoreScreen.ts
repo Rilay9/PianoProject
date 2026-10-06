@@ -50,6 +50,7 @@ import { nextLadderTempo } from '../../engine/PracticeEngine';
 import { MASTER_DAYS, dayKey, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
 import {
   OBSERVATION_DEFINITIONS,
+  coversWholeItem,
   phraseVersionOf,
   type PhraseGenerator,
   type ReadingRecipe,
@@ -3813,6 +3814,10 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   function runHeader(score: SessionScore, first: { firstContact: boolean; unseen?: boolean; recipe?: ReadingRecipe }, demonstrated: boolean): RunHeader {
     const under = score.judgedUnder;
+    // Whether the run covered the whole item (RG1): the run's own prepared session holds both the
+    // span it judged and the item's whole step sequence (the cut's, for an excerpt), read here at
+    // the run's end, where `judgedUnder` is read, before anything restarts the session.
+    const prepared = session?.prepared;
     const base = model?.tempoMap[0];
     const judgedBy = judgingRungId();
     // The hand the engine judged, which is the run's; the screen's own
@@ -3828,6 +3833,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     return {
       definitions: OBSERVATION_DEFINITIONS,
       ...(under ? { range: { fromMeasure: under.fromMeasure, toMeasure: under.toMeasure } } : {}),
+      ...(prepared ? { wholeItem: coversWholeItem(prepared) } : {}),
       opened: {
         tab: router.route.tab,
         ...(judgedBy === undefined ? {} : { rung: judgedBy }),

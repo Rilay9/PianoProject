@@ -403,6 +403,58 @@ describe('the conditions it was played under', () => {
   });
 });
 
+// Added (RG1; docs/review/responses/6e7475c1.md §5): the screen wrote `range` on every judged run
+// and nothing that told a loop over part of the item from the whole, so a named `runs` requirement
+// could not refuse a four-bar loop. The fact is derived where `judgedUnder` is read, from the
+// run's own prepared session, and stored as `wholeItem` (`coversWholeItem`, `wholeItemRun.test.ts`).
+describe('what the run covered (RG1)', () => {
+  /** A Wait run through the real engine over its loop or the whole, every step in it right; Stop ends a loop. */
+  function waitOver(model: ScoreModel, loop?: { fromStep: number; toStep: number }) {
+    const h = harness(model, { mode: 'wait', ...(loop ? { loop } : {}) });
+    h.engine.start();
+    const { steps, firstStep, lastStep } = h.engine.prepared;
+    for (let index = firstStep; index <= lastStep; index += 1) {
+      for (const midi of steps[index]?.expected ?? []) {
+        h.clock.advanceBy(400);
+        h.play(midi);
+        h.release(midi);
+      }
+    }
+    if (loop) h.engine.stop();
+    // The score the session hands the screen: the run's end, which for a loop is its last whole lap.
+    const ended = h.events.filter((event) => event.kind === 'finished' && !event.loop).at(-1);
+    if (ended?.kind !== 'finished') throw new Error('the run did not end');
+    return { score: ended.score, prepared: h.engine.prepared };
+  }
+
+  async function stored(loop?: { fromStep: number; toStep: number }): Promise<SessionRow> {
+    await open(`#/score/${SONG_ID}`);
+    const { score, prepared } = waitOver(TWO_BARS, loop);
+    // The session the screen reads at the run's end is the one that ran it.
+    (sessionRef.current as unknown as { prepared: unknown }).prepared = prepared;
+    finish(score);
+    return storedRow();
+  }
+
+  it('a whole run stores wholeItem: true beside its range', async () => {
+    const row = await stored();
+    expect(row.range).toEqual({ fromMeasure: 0, toMeasure: 1 });
+    expect(row.wholeItem).toBe(true);
+  });
+
+  it('a loop over one bar of two stores wholeItem: false, its range that bar', async () => {
+    const row = await stored({ fromStep: 4, toStep: 7 });
+    expect(row.range).toEqual({ fromMeasure: 1, toMeasure: 1 });
+    expect(row.wholeItem, 'a loop over bar 2 stored as the whole item').toBe(false);
+  });
+
+  it('a loop over every bar stores wholeItem: true', async () => {
+    const row = await stored({ fromStep: 0, toStep: 7 });
+    expect(row.range).toEqual({ fromMeasure: 0, toMeasure: 1 });
+    expect(row.wholeItem).toBe(true);
+  });
+});
+
 describe('what the learner had heard', () => {
   it('a sight-read heard before its first run is recorded, flagged unseen: false', async () => {
     findItemSpy.mockResolvedValue(readerItem());
