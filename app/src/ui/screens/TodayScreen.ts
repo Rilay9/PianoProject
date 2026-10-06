@@ -1054,7 +1054,7 @@ export function TodayScreen(router: Router): HTMLElement {
         subtitle: readingReason(offer.why, 'daily', now),
         meta: [
           streak > 0 ? `Day ${String(streak)}` : 'Start a run',
-          levelLabel(item.level, item.levelSource),
+          dailyLevelLabel(item, offer),
           typeof bars === 'number' ? `${String(bars)} bars` : '',
         ]
           .filter(Boolean)
@@ -1462,6 +1462,18 @@ function routeRecipeOf(offer: ReadingOffer): { moved?: NonNullable<ReadingOffer[
  * its listings would be the credit by listing C5 removed (L8). It was the
  * first rung listing it, a guess C3 labelled interim.
  */
+/**
+ * The daily card's level (SR3; the reviewer's ruling on SR2, `docs/review/responses/sr2-landing.md` §2): a hold
+ * is part of the material the learner is offered, so while the phrase is held to the learner's rung (the offer's
+ * `hold`) the card says that rung's level, `L1.1` over a steps-only phrase, never the row's `L1.5`; with no hold,
+ * the row's level as every list row says it. A hold that is not a level-shaped rung id (a track rung's) says no
+ * level rather than the row's.
+ */
+export function dailyLevelLabel(item: Pick<CatalogItem, 'level' | 'levelSource'>, offer: Pick<ReadingOffer, 'hold'>): string {
+  if (offer.hold === undefined) return levelLabel(item.level, item.levelSource);
+  return /^\d+\.\d$/.test(offer.hold) ? levelLabel(Number(offer.hold)) : '';
+}
+
 export function rungForSlot(curriculum: Curriculum, item: CatalogItem, offeredFrom?: string): string | undefined {
   const lists = (lesson: { exerciseOptions: string[]; songOptions: string[] }): boolean =>
     lesson.exerciseOptions.includes(item.id) || lesson.songOptions.includes(item.id);

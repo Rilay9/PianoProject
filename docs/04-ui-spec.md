@@ -2753,11 +2753,20 @@ a bar you are stuck on. (Pinch-to-zoom and a two-finger tap for hands were liste
 built; struck — Size and hands have buttons, `08` §11.20.) A drag of more than
 12 px is a scroll and cancels the press; less is a finger.
 
-**Bar numbers in a gesture are as printed — 1-based.** `loopFromPrintedBars` looks for
-`sourceMeasureIndex === fromBar - 1`, and the fallback that reads the current window returns a
-0-based index, so the two have to be converted between. They were not, and since nothing in
-the DOM carries `data-measure` the fallback is the only path there is: every loop the
-double-tap gesture built asked for bar −1 and got nothing.
+**A gesture means the bar under the finger** (LB1, 2026-10-06). The renderer writes
+`data-measure` on each drawn bar's `.vf-measure` group: the bar's source measure index plus
+one, the loop's unit (`loopFromPrintedBars` matches `sourceMeasureIndex === bar - 1`).
+`measureAt` takes the group the tapped stroke is drawn in; else the bar whose staff lines lie
+under the point (the white between the lines, the gap of a grand staff, and up to one staff's
+height above or below); and only where the point is beside every bar, the window's first bar.
+Every number the screen writes goes through `shownBar`, so a tapped bar is named as the counter
+names it (a pickup 0). The double-tap's first tap marks the start and the second the end, in
+either order; a loop longer than the screen holds is set by double-tapping its first bar,
+playing on to its last and double-tapping that, since the half-set start waits through the run.
+Before LB1 nothing carried the attribute and the window fallback was the only path: first it
+returned a 0-based index and every loop asked for bar −1; converted, it marked the window's
+first bar wherever the finger landed, so latin.4, 6 and 7's "double-tap the first bar, then
+the last" could not be done, and the long-press played the window's first bar (Entry 261).
 
 **A beat of warning (Tempo and Listen only).** The cursor band marks the current step; a
 short line under the stave marks the next one — not a second, paler band, which read as two

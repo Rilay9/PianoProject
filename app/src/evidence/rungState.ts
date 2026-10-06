@@ -35,6 +35,17 @@
  *   item (a checklist, the tour, the placement test) is finished when nothing
  *   was left undone and, where the run measured an accuracy, at the rung's
  *   standard; it read every row of the item until the reviewer's C5 review.
+ * - **A run held below the rung that judged it credits that rung nothing** (SR3; the reviewer's ruling on
+ *   SR2, `docs/review/responses/sr2-landing.md` §2: "requirement credit does not cross the material
+ *   boundary that made the observation easier/narrower"). Before 1.3 Today's daily read is judged by 1.5
+ *   and held to the learner's own rung, so its phrase cannot ask what 1.5 teaches. Such a run meets none of
+ *   its judging rung's `runs`, `reads`, `done` or `measure` requirements, and that rung's `skill`
+ *   requirements read every evidence record but those runs', then and after the learner reaches the rung.
+ *   Its evidence stays the learner's everywhere else: the Skills screen's ladders (`skillLadders`) and
+ *   every other rung's `skill` requirements read it as before, and no run is re-credited to the rung it
+ *   was held at. Which runs are held is the caller's to say (`heldBelowItsRung`): it is read from the
+ *   run's stored phrase against the catalogue row (`session.heldBelowItsRung`), and this module never
+ *   writes a phrase (C4a). With no predicate, no run is held.
  *
  * **What a run measured** is read, never assumed: accuracy a number (a run
  * nothing heard is `not measured`, C1), not rhythm only, not a phrase met
@@ -314,7 +325,10 @@ function inRungOrder(rung: Lesson, ids: ReadonlySet<string>): string[] {
 /**
  * Every rung's state from the rows (see the module note). `today` dates the
  * ladder's readings. Pure: the same rows, curriculum, vocabulary, day and
- * learner record give the same state.
+ * learner record give the same state. `heldBelowItsRung` says which runs were
+ * held below the rung that judged them (SR3, the module note); the app passes
+ * `session.heldBelowItsRung` over the catalogue (`data/rungStates`, the Skills
+ * screen).
  */
 export function rungState(
   rows: readonly SessionRow[],
@@ -322,20 +336,29 @@ export function rungState(
   vocabulary: Vocabulary,
   today: Date,
   learner: LearnerRecord = {},
+  heldBelowItsRung?: (row: SessionRow) => boolean,
 ): RungStates {
   const defaults: MasteryCriteria = {
     ...DEFAULT_MASTERY,
     ...(learner.defaults ?? {}),
   };
   // One walk over the rows: the runs each rung judged, and every skill's
-  // evidence, whichever rung judged the run it came from.
+  // evidence, whichever rung judged the run it came from. A run held below
+  // the rung that judged it (SR3, the module note) is set apart for that rung.
   const judgedBy = new Map<string, SessionRow[]>();
+  const heldBy = new Map<string, Set<SessionRow>>();
   const evidenceBySkill = new Map<string, Evidence[]>();
   for (const row of rows) {
     if (row.lessonId !== undefined) {
-      const list = judgedBy.get(row.lessonId) ?? [];
-      list.push(row);
-      judgedBy.set(row.lessonId, list);
+      if (heldBelowItsRung?.(row) === true) {
+        const held = heldBy.get(row.lessonId) ?? new Set<SessionRow>();
+        held.add(row);
+        heldBy.set(row.lessonId, held);
+      } else {
+        const list = judgedBy.get(row.lessonId) ?? [];
+        list.push(row);
+        judgedBy.set(row.lessonId, list);
+      }
     }
     for (const evidence of storedEvidence(row)) {
       const list = evidenceBySkill.get(evidence.skill) ?? [];
@@ -344,13 +367,13 @@ export function rungState(
     }
   }
   const knownSkills = new Set(vocabulary.skills.map((skill) => skill.id));
+  const ladderOver = (skill: string, evidence: ReadonlyMap<string, readonly Evidence[]>): LadderState =>
+    knownSkills.has(skill) ? ladderState({ evidence: [...(evidence.get(skill) ?? [])], today, vocabulary }).state : 'not introduced';
   const ladders = new Map<string, LadderState>();
   const ladderOf = (skill: string): LadderState => {
     const cached = ladders.get(skill);
     if (cached) return cached;
-    const state = knownSkills.has(skill)
-      ? ladderState({ evidence: evidenceBySkill.get(skill) ?? [], today, vocabulary }).state
-      : 'not introduced';
+    const state = ladderOver(skill, evidenceBySkill);
     ladders.set(skill, state);
     return state;
   };
@@ -362,8 +385,12 @@ export function rungState(
       for (const rung of unit.lessons) {
         const criteria = masteryCriteriaFor(rung, defaults);
         const judged = judgedBy.get(rung.id) ?? [];
+        // The rung's `skill` requirements read every skill's evidence but its own held runs' (SR3).
+        const held = heldBy.get(rung.id);
+        const evidence = held === undefined ? evidenceBySkill : evidenceApart(rows, held);
+        const ladderHere = held === undefined ? ladderOf : (skill: string): LadderState => ladderOver(skill, evidence);
         const readings = (rung.requirements ?? []).map((requirement) =>
-          read(requirement, rung, criteria, judged, evidenceBySkill, ladderOf, learner),
+          read(requirement, rung, criteria, judged, evidence, ladderHere, learner),
         );
         const judgeable = readings.filter((reading) => reading.holds !== 'unjudged');
         const met = judgeable.length > 0 && judgeable.every((reading) => reading.holds === true);
@@ -381,6 +408,20 @@ export function rungState(
     }
   }
   return { byRung };
+}
+
+/** Every skill's evidence from the rows but `apart` (a rung's held runs, SR3), by skill. */
+function evidenceApart(rows: readonly SessionRow[], apart: ReadonlySet<SessionRow>): Map<string, Evidence[]> {
+  const out = new Map<string, Evidence[]>();
+  for (const row of rows) {
+    if (apart.has(row)) continue;
+    for (const evidence of storedEvidence(row)) {
+      const list = out.get(evidence.skill) ?? [];
+      list.push(evidence);
+      out.set(evidence.skill, list);
+    }
+  }
+  return out;
 }
 
 function read(

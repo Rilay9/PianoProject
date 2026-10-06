@@ -185,6 +185,10 @@ test.describe("Today's tools", () => {
     const card = page.locator('#today-daily .list-row');
     await expect(card).toBeVisible({ timeout: 30_000 });
     await expect(card).toHaveAttribute('data-daily', 'drill.reading.sight-reading-1');
+    // Added (SR3; the reviewer's ruling on SR2, `docs/review/responses/sr2-landing.md` §2): the hold is part of the
+    // material offered, so the card says the held level, never the row's L1.5 over a steps-only phrase.
+    await expect(card.locator('.list-row__metatext')).toContainText('L1.1');
+    await expect(card.locator('.list-row__metatext')).not.toContainText('L1.5');
     await expect(page.locator('#today-read')).toBeVisible();
     await page.locator('#today-read').click();
     await expect(page).toHaveURL(/#\/score\/drill\.reading\.sight-reading-1\?/, { timeout: 30_000 });

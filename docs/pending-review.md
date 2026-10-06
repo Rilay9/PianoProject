@@ -43561,3 +43561,82 @@ Base: the worktree's HEAD `0f6138e1`. The builder's harness is `operating-proced
 **Checks.** In the lane: the new cases green on the base (the base already behaves; the red-first evidence is the two mutants); `tsc -b` 0; lint 0; `latin4Completion`, `rungStateFromEvidence`, `evidenceByDemand`, `oneSkillState`, `skillActivationBoundary` 97 tests; the checker 0 failures and its tests 82 OK. In the main checkout after the merge (three-way on the test map and the checker tests, the record taken whole at `reviewed`): the checker `A7c.1 (reviewed); 0 failure(s), 0 unresolved ref(s)`; `test_check_chains`, `test_cell_proofs`, `test_verified_hand` green with the fixture base forced to draft (Entry 260); `latin4Completion`, `rungStateFromEvidence`, `evidenceByDemand`, `lessonShape` 101 tests; `tsc -b` 0. CI is the full run.
 
 **Open.** `shipped` (the reviewer's §3 on `a7c1-reviewed`): the loop-by-bar gap (LB1), then the twenty-step path confirmed on the owner's phone build; only then 1/28. Unverified as music.
+
+### Entry 262 — SR3: a held run credits no requirement of the rung that judged it; the daily card shows the held level
+
+**What a learner meets.**
+- **At 1.1 and 1.2:** the daily read is still the steps-only phrase held to the learner's taught set and judged by 1.5 (SR2). Its runs now meet none of 1.5's requirements, then or once the learner reaches 1.5. Five clean held reads used to meet 1.5's reads (5/5), its interval-reading "familiar" and one of its two exercise runs; they now leave 1.5 *not started*.
+- **The evidence stays the learner's:** the Skills screen's ladders and every other rung's `skill` requirements read it as before.
+- **At 1.5:** an unheld read counts as it always did.
+- **The card:** says `L1.1` (at 1.2, `L1.2`) over the held phrase, not `L1.5`.
+
+No picture was taken; the browser case asserts the text. Nothing heard; unverified as music. Scoreboard 0/28.
+
+**What changed, where / what / before / after / why.** Why, throughout: the reviewer's ruling on SR2 (`responses/sr2-landing.md` §2-§3; Entry 258 OPEN 1 and 2).
+- **`app/src/evidence/rungState.ts`: the one place the credit rule lives.**
+  - What: `rungState` takes an optional sixth argument, `heldBelowItsRung(row)`. A run it names is kept out of its judging rung's pool (`runs`, `reads`, `done`, `measure`), and that rung's `skill` requirements read every evidence record but those runs' (`evidenceApart`).
+  - Before: every run with a `lessonId` was pooled for its judging rung.
+  - After: with no predicate, nothing changes. The module note gains the rule.
+- **`app/src/curriculum/session.ts`: `heldBelowItsRung(curriculum, items, vocabulary)`, new, beside `writtenOptions`; the offer logic is untouched.**
+  - What: a run is held when its stored options (`material`) cannot write a reading demand that `phraseOptions(…, { judging })` writes for the same row, recipe and seed. This is SR2's step-3 comparison, read for credit.
+  - A run with no stored phrase, no `lessonId`, or a row the catalogue lacks is not held.
+  - A phrase that asks more than the judging rung's, and nothing less, is not held.
+- **Outside the brief's owned files, with the reason:** `app/src/data/rungStates.ts` (`loadRungStates` loads `allItems()` and passes the predicate) and `app/src/ui/screens/SkillsScreen.ts` (passes it over the items it loads).
+  - Why: the brief's premise was that the stored material carries the hold's rung. It does not: the route carries the rung, and the material carries only its effect (the held options).
+  - Reading that effect needs the catalogue row and the reader's writer. `evidenceByDemand.test.ts` bans both from every `src/evidence/` file (C4a).
+  - So the fact is made outside `evidence/` and handed in by both source callers. No stored field and no `DB_VERSION` change.
+- **`app/src/ui/screens/TodayScreen.ts`: `dailyLevelLabel`.**
+  - Before: the meta line always printed the row's level.
+  - After: the hold's level while the offer carries a hold; the row's level otherwise. A non-level-shaped (track) hold says no level.
+- **Tests.**
+  - New: `app/tests/unit/heldRunsCreditNoRung.test.ts`:
+    - the premise;
+    - the five cases through Today's offer, `phraseOptions`, the engine and `rungState`;
+    - every sight-reading row at every rung listing it, seeds 1-5 (75 runs): not held;
+    - every source caller of `rungState` passes the predicate.
+  - Revised: `app/tests/e2e/doors.spec.ts` (SR2's 1.1 case asserts `L1.1` and not `L1.5`).
+- **Docs:** `docs/08-test-map.md` (SR2's row extended; one file line); `docs/prompts/runs/SR3/README.md`.
+
+**Checks (in the lane).**
+- `tsc -b --noEmit` 0; lint 0.
+- The new file: 17 of 17.
+- Red first:
+  - case 1: `expected [ [ 'runs', false, 1 ], …(2) ] to deeply equal [ [ 'runs', false, +0 ], …(2) ]`;
+  - case 2: `expected [] to deeply equal [ '1.5' ]`;
+  - case 4: `have: 9, holds: true` received for `{ holds: false, have: 4, need: 5 }`;
+  - case 5: `expected 'L1.5' to be 'L1.1'`;
+  - the caller check: `data\rungStates.ts … to match /heldBelowItsRung\(/`;
+  - case 3 is preserving and was green on the base.
+- The browser case on port 4197, `--workers=2`: red `Expected substring: "L1.1"  Received string: "Start a run · L1.5 · 4 bars"`, then 1 passed.
+- The differential: every `rungState` call in `rungStateFromEvidence`, `firstThirtyDays` and `firstThirtyDaysOnTheLadder` (169 calls, 12,646 rung comparisons) was made with and without the predicate, and nothing moved.
+  - This is unchanged by construction: no fixture row carries generator `material`.
+  - The non-vacuous checks are the 75-run sweep and case 2 (on the held learner, only 1.5 moves).
+- SR2's research differential was not re-run (no generation change).
+- The whole unit suite: 7,997 passed, 4 failed (8,003; 1 skipped, 1 todo). The four reds:
+  - `lessonClaimsAboutApp` blues.3, the known CRLF-only red;
+  - `taughtByAncestry` (no `build/rung-claims.json` in the worktree) and `midiParity` (no `build/midi-parity` reference), both harness inputs absent: green with the main checkout's two files copied in for the re-run, then removed;
+  - `simonTurnCue` (a timing case): green alone.
+- The browser case ran before the unit suite. No source changed after it.
+
+**Open.**
+- **Legacy drift:** a run written at its judging rung before a demand was taught earlier would now read as held. None is known, and no real store was read.
+- **The rule applied literally:** a held run is set apart only from its judging rung's `skill` requirements. Only 1.5 asks for interval-reading, so no other rung reads it today.
+- **SR2's step 3 duplicates the comparison:** it writes `heldBelowItsRung`'s comparison inline (`readingOffer`, offer logic, not touched). Recorded, not unified.
+
+**Landing (the main checkout).** Copied whole (no file main changed since the lane's base); `tsc -b`, lint, the whole unit suite and `doors.spec.ts` `tsc -b` 0, lint 0, the whole unit suite 8,076 passed with the one known CRLF-only red (blues.3), `doors.spec.ts` 23 of 23 on the main build. The three files outside the brief's owned list (`session.ts`'s new helper, `rungStates.ts`, `SkillsScreen.ts`) are wiring the brief's wrong premise made necessary: the stored material carries the hold's effect, not its rung, and `evidenceByDemand`'s C4a boundary keeps the catalogue and the writer out of `evidence/`; accepted as the smallest honest path, reported to the reviewer with the landing.
+
+### Entry 263 — LB1: the double-tap loops the bars the learner tapped; the long-press plays the bar held; the lessons say how to reach a bar off the page
+
+**What a learner meets.** Double-tapping a bar and then another now loops exactly those bars, named as the bar counter names them (the pickup 0 where the file prints one); a long-press plays the bar under the finger. Before, both meant the window's first bar wherever the finger landed (Entry 261), so latin.4's steps 11, 14, 15, 16, 18 and 19 and the latin.6 and latin.7 task lines could not be done as written. At rest in the Window layout only the first window is on the page, so a bar further on is reached by playing or hearing to it and pausing there; a marked start survives while the learner plays on to the end bar. latin.4's controls paragraph now says so in one sentence. Nothing heard; not run on a device (the owner's phone walk is the last condition for `shipped`: `docs/prompts/runs/A7S/phone-walk.md`).
+
+**What changed, where / what / before / after / why.**
+- `app/src/score/WindowRenderer.ts`: `stampMeasures`, called from `annotate` after every draw, writes `data-measure` (the source measure index plus one, the loop's own unit) on each drawn bar's `.vf-measure` group, matched through the current engraving's measures to the group's engraver-written id, from the same source-measure list the notes' `data-bar` comes from; a number shared by two bars of one drawing is left unstamped. Nothing drawn, moved or measured differently.
+- `app/src/ui/screens/ScoreScreen.ts`: `measureAt(target, x, y)` resolves the stroke's group, else `barUnderPoint` (the bar whose staff lines lie under the point, joined across a grand staff, with up to one staff's height of margin), else the window's first bar only when the point is beside every bar; the `dblclick` handler and the long-press timer pass the point; the comment rewritten with its history. Before: `closest('[data-measure]')` never matched, so the result was always the window's first bar. Alternatives refused: converting the engraver's measure boxes to screen pixels (the page already did that maths); an overlay rect per bar (the fit and ink code reads every `path, rect`, so an overlay could change the drawn window); rewriting the lessons (no other control sets a loop of chosen bars).
+- `app/tests/e2e/score.loop-by-bar.spec.ts` (new): three loops reached by playing in Wait through the mock piano, each tapped on the white of a staff and on a note, then lapped; plus the long-press. Red on the base: The Crave `"21-21"` for 21-22; the Bizet left-hand cut `"7-7"` for 7-9; Por Una Cabeza *Loop start: bar 0* where bar 1 was tapped; the long-press *Bar 1, as written* for bar 2. Green after; with `score.states`, `score.fuzz`, `score.pickup-numbers`, `score.hearbar`, `score.run` and `score.rhythm-ladder` 49 passed in the lane. The looped run's summary line is not asserted (a loop run reaches a summary only once the loop is let go, `04` §5); the lap is read from the run.
+- `docs/04-ui-spec.md` §5: "Bar numbers in a gesture are as printed" replaced by "A gesture means the bar under the finger". `docs/08-test-map.md`: a row and the spec's entry. `app/tests/e2e/score.pickup-numbers.spec.ts`: its comment no longer says nothing carries `data-measure` (the orchestrator, at landing).
+- `content/lessons/latin.4.md`, the controls paragraph: after "To loop some bars, double-tap the first bar of the passage, then double-tap the last.", one sentence: if the bars are not on the page yet, play or *Hear it* to them and pause there first; a start you have marked stays marked while you play on to the end bar. Why: the lane's finding (item 5 of its report) and its Por Una Cabeza case, which sets 1-14 that way; `readingTime` recomputed.
+- Why, throughout: Entry 261's stop for `shipped` (record steps 18, 20 and 23) and the reviewer's gate (`responses/a7c1-shipped.md` §2: LB1 a real blocker; §3: after LB1 only the phone walk remains); FABLE §10, an app-wide gap.
+
+**Checks.** In the main checkout after the merge (the test map's two added lines applied by hand after a three-way conflict with SR3's edit): `tsc -b` 0; lint 0; the acceptance path `latin4Completion.test.ts` with `lessonShape` and `lessonClaimsAboutApp` 335 of 336, the one red the known CRLF-only blues.3 case; the chain checker `A7c.1 (reviewed); 0 failure(s), 0 unresolved ref(s)` (the reviewer's final-head rerun); the browser specs `score.loop-by-bar`, `score.states`, `score.pickup-numbers`, `score.hearbar` and `latin4.placement` 29 passed on the main build. In the lane: red first as quoted above; 49 browser cases with the score specs; the unit suite with the three environmental reds (blues.3, midiParity's reference, taughtByAncestry's build input). CI is the full run.
+
+**Open.** The owner's phone walk (the reviewer's §3: rerun the acceptance test and the checker on the final head, deploy, walk the steps with `steps.md` so all 24 record actions are covered, then `status: shipped` and 1/28). Reaching a bar outside the first window at rest is a Window-layout question (the window rule is reviewed product behaviour), recorded. Unverified as music.

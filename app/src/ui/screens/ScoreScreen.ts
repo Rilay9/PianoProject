@@ -3433,7 +3433,8 @@ export function ScoreScreen(router: Router): HTMLElement {
   stage.addEventListener('pointerdown', (event) => {
     cancelPress();
     const target = event.target;
-    pressFrom = { x: event.clientX, y: event.clientY };
+    const at = { x: event.clientX, y: event.clientY };
+    pressFrom = at;
     pressHold = window.setTimeout(() => {
       pressHold = null;
       // Not during a run (`08` §7.3). The reason written here was that the
@@ -3441,7 +3442,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       // set a run aside under a demonstration, as `Hear it` does, and the
       // long-press does not use it yet — a press mid-run is still ignored.
       if (session?.running === true) return;
-      const measure = measureAt(target);
+      // Where the finger went down: the bar under it (LB1).
+      const measure = measureAt(target, at.x, at.y);
       if (measure !== null) hearBar(measure);
     }, 400);
   });
@@ -3523,7 +3525,7 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   stage.addEventListener('dblclick', (event) => {
-    const measure = measureAt(event.target);
+    const measure = measureAt(event.target, event.clientX, event.clientY);
     if (measure === null) return;
     if (loopAnchor === null) {
       loopAnchor = measure;
@@ -3644,26 +3646,94 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   /**
-   * Which printed bar the pointer is over, as a **1-based** bar number.
+   * Which bar the pointer is over, in the loop's unit: the source measure
+   * index plus one, which `loopFromPrintedBars` matches and `shownBar` turns
+   * into the number the bar counter prints (a pickup is 0 there).
    *
-   * The units matter and were wrong. `loopFromPrintedBars` takes bar numbers
-   * as printed — it looks for `sourceMeasureIndex === fromBar - 1` — while the
-   * fallback here returned `currentWindow.fromMeasure`, which is a 0-based
-   * index. Nothing in the DOM carries `data-measure` today, so the fallback is
-   * the only path there is, and every loop it produced asked for bar −1 and
-   * got nothing: double-tap-to-loop has been quietly doing nothing at all, and
-   * long-pressing a bar to hear it (B4) found the same wall.
+   * The history, because it explains the shape. The fallback once returned
+   * `currentWindow.fromMeasure`, a 0-based index, so every loop asked for
+   * bar −1 and got nothing; converting it made the double-tap mark the
+   * window's first bar wherever the finger landed, because nothing in the page
+   * carried `data-measure` and the fallback was the only path there was. The
+   * lessons that say "double-tap the first bar, then the last" (latin.4, 6
+   * and 7) could not be done as written, and long-pressing a bar to hear it
+   * (B4) played the window's first bar the same way (Entry 261).
    *
-   * The named attribute keeps whatever it says; the fallback now converts.
+   * Since LB1 the renderer writes `data-measure` on every drawn bar's
+   * `.vf-measure` group (`stampMeasures`), and the bar is found in three
+   * steps: the group the tapped stroke is drawn in; else the bar whose staff
+   * lines are under the point (`barUnderPoint`), since a finger on the white
+   * between the lines hits the page rather than any stroke; and only where the
+   * point is beside every bar, the window's first bar, as before.
    */
-  function measureAt(target: EventTarget | null): number | null {
+  function measureAt(target: EventTarget | null, x: number, y: number): number | null {
     if (!(target instanceof Element)) return null;
     const holder = target.closest('[data-measure]');
-    const raw = holder instanceof HTMLElement ? holder.dataset.measure : undefined;
-    const value = Number(raw);
-    if (Number.isFinite(value)) return value;
+    const value = Number(holder?.getAttribute('data-measure') ?? Number.NaN);
+    if (holder && Number.isFinite(value) && value >= 1) return value;
+    const under = barUnderPoint(x, y);
+    if (under !== null) return under;
     const from = renderer?.currentWindow?.fromMeasure;
     return from === undefined ? null : from + 1;
+  }
+
+  /**
+   * The bar whose staff lines lie under a point on the screen, or `null`.
+   *
+   * Read from the sheets on the screen (`.is-front`; the probe and a hidden
+   * spare are never under a finger), each stamped bar's staff lines — the thin
+   * horizontal strokes drawn directly in its `.vf-measure` group, the same
+   * strokes the specs read as the five lines — joined across the staves of a
+   * grand staff, so the gap between them belongs to the bar too. A point above
+   * or below a bar's lines counts as that bar within one staff's height (a
+   * finger on a ledger-line note); past that it is beside every bar and the
+   * caller falls back. Where two bars could claim the point, the nearer one.
+   */
+  function barUnderPoint(x: number, y: number): number | null {
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+    const boxes = new Map<string, { bar: number; left: number; right: number; top: number; bottom: number; staff: number }>();
+    const sheets = stage.querySelectorAll<HTMLElement>('.score-buffer.is-front:not(.score-probe)');
+    for (const [sheetIndex, sheet] of [...sheets].entries()) {
+      if (sheet.hidden) continue;
+      for (const group of sheet.querySelectorAll<SVGGElement>('g.vf-measure[data-measure]')) {
+        const bar = Number(group.getAttribute('data-measure'));
+        if (!Number.isFinite(bar) || bar < 1) continue;
+        let left = Number.POSITIVE_INFINITY;
+        let right = Number.NEGATIVE_INFINITY;
+        let top = Number.POSITIVE_INFINITY;
+        let bottom = Number.NEGATIVE_INFINITY;
+        for (const line of group.querySelectorAll(':scope > path')) {
+          const r = line.getBoundingClientRect();
+          if (!(r.width > 0) || r.height > r.width / 8) continue;
+          left = Math.min(left, r.left);
+          right = Math.max(right, r.right);
+          top = Math.min(top, r.top);
+          bottom = Math.max(bottom, r.bottom);
+        }
+        if (!(right > left) || !(bottom > top)) continue;
+        // One box per bar per sheet: a bar is drawn once in a sheet, on one row.
+        const key = `${String(sheetIndex)}:${String(bar)}`;
+        const was = boxes.get(key);
+        const staff = bottom - top;
+        if (!was) {
+          boxes.set(key, { bar, left, right, top, bottom, staff });
+          continue;
+        }
+        was.left = Math.min(was.left, left);
+        was.right = Math.max(was.right, right);
+        was.top = Math.min(was.top, top);
+        was.bottom = Math.max(was.bottom, bottom);
+        was.staff = Math.min(was.staff, staff);
+      }
+    }
+    let best: { bar: number; distance: number } | null = null;
+    for (const box of boxes.values()) {
+      if (x < box.left || x > box.right) continue;
+      const distance = y < box.top ? box.top - y : y > box.bottom ? y - box.bottom : 0;
+      if (distance > box.staff) continue;
+      if (!best || distance < best.distance) best = { bar: box.bar, distance };
+    }
+    return best?.bar ?? null;
   }
 
   /** The timer that ends a peek (`peek`). */

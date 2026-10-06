@@ -35,9 +35,10 @@ test.describe('bar numbers on a pickup piece', () => {
     await expect(page.locator('#score-where')).toHaveText(/bar 0 \/ \d+/, { timeout: 30_000 });
 
     // Double-tap the stage once to anchor the loop and again to close it,
-    // which is how a person sets a one-bar loop. Nothing in the DOM carries
-    // `data-measure`, so a tap anywhere means the first bar of the window —
-    // which here is the pickup.
+    // which is how a person sets a one-bar loop. Since Entry 263 every drawn
+    // bar carries `data-measure` and a tap means the bar under the finger; a
+    // tap beside every bar (as here, at the stage's corner) still means the
+    // window's first bar — which here is the pickup.
     const stage = page.locator('#score-stage');
     await stage.dblclick({ position: { x: 40, y: 40 } });
     // The anchor message is the first place the number is printed.

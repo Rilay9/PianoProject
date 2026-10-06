@@ -57,7 +57,9 @@ The names are the Score screen's own. On the bar: the mode menu (*Wait for me*,
 and the tempo, which you tap to get the speed slider. Behind ⋯: *Rhythm only*,
 *Loop* and *Duet*. On a narrow phone *Hands* and *Hear it* can move behind ⋯
 too. To loop some bars, double-tap the first bar of the passage, then
-double-tap the last.
+double-tap the last. If the bars you want are not on the page yet, play or
+*Hear it* to them and pause there first; a start you have marked stays marked
+while you play on to the end bar.
 
 **1. Count both.** Tap or clap each line of the grid above on your knee while
 you say "1 e and a, 2 e and a" aloud, habanera first, until you can say

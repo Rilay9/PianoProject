@@ -3623,6 +3623,7 @@ export class WindowRenderer {
       element.dataset.hand = note.hand;
       element.dataset.midi = String(note.midi);
     }
+    stampMeasures(buffer.view);
     buffer.elements = elements;
     this.drawVersion += 1;
     this.applyLoopClass(buffer);
@@ -5215,6 +5216,57 @@ function layoutOf(view: OsmdView): { systems: number; bars: LaidBar[] } {
     return { systems: 0, bars: [] };
   }
   return { systems, bars };
+}
+
+/**
+ * Writes on each drawn bar's `.vf-measure` group (one per staff) which bar it
+ * is, as `data-measure`: its source measure index plus one, the unit the loop
+ * counts in (`loopFromPrintedBars`), which the Score screen's `shownBar` turns
+ * into the number its bar counter prints (a pickup is 0 there). This is how a
+ * finger on the sheet is told from the bar beside it (`measureAt`, `04` §5):
+ * until LB1 nothing carried the attribute, and every double-tap and long-press
+ * meant the window's first bar.
+ *
+ * The engraver writes its own measure number as the group's `id` and keeps no
+ * reference to the group, so the number is matched to the bar through the
+ * current engraving's measures, from the same source-measure list the notes'
+ * `data-bar` is read from (`OsmdView.noteElements`). A number two bars of one
+ * drawing share (numbering restarted inside one window) is left unstamped
+ * rather than guessed: a tap there falls back as before. Nothing is drawn or
+ * moved; the attribute is the whole change to the sheet.
+ */
+function stampMeasures(view: OsmdView): void {
+  const svg = view.svg;
+  const sheet = view.instance.Sheet;
+  const graphic = view.instance.GraphicSheet;
+  if (!svg || !sheet || !graphic) return;
+  const indexOf = new Map<unknown, number>();
+  sheet.SourceMeasures.forEach((measure, i) => indexOf.set(measure, i));
+  // The engraver's number → the bar's source index; null where two bars share it.
+  const byNumber = new Map<number, number | null>();
+  try {
+    for (const page of graphic.MusicPages ?? []) {
+      for (const system of page.MusicSystems ?? []) {
+        for (const column of system.GraphicalMeasures ?? []) {
+          for (const measure of column ?? []) {
+            if (!measure) continue;
+            const index = indexOf.get(measure.parentSourceMeasure);
+            if (index === undefined) continue;
+            const known = byNumber.get(measure.MeasureNumber);
+            if (known === undefined) byNumber.set(measure.MeasureNumber, index);
+            else if (known !== index) byNumber.set(measure.MeasureNumber, null);
+          }
+        }
+      }
+    }
+  } catch {
+    return;
+  }
+  for (const group of svg.querySelectorAll<SVGGElement>('g.vf-measure')) {
+    const index = group.id === '' ? undefined : byNumber.get(Number(group.id));
+    if (index === undefined || index === null) delete group.dataset.measure;
+    else group.dataset.measure = String(index + 1);
+  }
 }
 
 /**
