@@ -43285,3 +43285,11 @@ Base: the worktree's HEAD `0f6138e1`. The builder's harness is `operating-proced
 
 **Open.** Not heard. The right hand's octave, the single key signature over the D-major section and ♩ = 60 are for a reader.
 
+### Entry 242 — CH1b: the checker enforces the generated-step link and `presented_as`
+
+**What a learner meets.** Nothing directly; this closes the checker's last gap against FABLE §3 (the chat review of bb6289f2): a record could cite a generated family in a step while omitting it from `generated`, and a NAMED-PATTERN presented as music had no discriminator.
+
+**What** (`tools/content/check_chains.py`). A step with `content.kind: generated` must name a family that has a `generated` entry; the failure sits on `steps[n].content.ref` and names the family. A ref links as a family id or as an exercise id through the new `Resolver.family_of` (the exercise id's family in `generator_continuity.json`), because the real record cites `exercise.tresillo.c`, not a family id. A generated ref that names no family is left to the ref rule (listed in a draft, a failure once `reviewed`); the alternative, failing on any unmatched ref, would have turned the prefix-ref tests red. `presented_as` is required on every `generated` entry, `drill` or `music`; a NAMED-PATTERN with `music` and no `musical_properties` fails on that field; SIGHT-READING and MUSICAL always list properties; a CONTROL with `drill` and none passes; a NAMED-PATTERN with `drill` needs none but any it lists are checked. Nothing is inferred from a tool or a step's wording.
+
+**Checks.** `test_check_chains` 75 tests OK (66 plus nine: the two required fixtures, a missing or out-of-set `presented_as`, the drill and CONTROL passes, SIGHT-READING and MUSICAL still needing properties, a step naming another family by id or by exercise id, `family_of`, a non-generated step needing no entry; one earlier draft test now also points its steps at the unknown family). The checker on the tree: 0 failures, the A7c.1 draft's six unresolved refs, one brief linted, 22 skipped (the builder's run and the orchestrator's rerun after the patch). Test map: the checker's row names both fixtures and its rules list and tail no longer say the gap exists. The docs run on this push proves it in CI. No Playwright, no content build; nothing heard.
+

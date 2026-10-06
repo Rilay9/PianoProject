@@ -312,6 +312,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **RG1** | A named `runs` requirement counts a run only when it covered the whole required item: `RunHeader.wholeItem` derived from the prepared session's step span, refused when false, legacy rows as before (`RG1-runs-count-whole-item.md`) | app | landed 2026-10-06 (`RG1-runs-count-whole-item.md`); Entry 239
 | **RG1a** | A new run with `wholeItem: false` counts toward no `runs` requirement, named or unnamed; `undefined` keeps the compatibility rule (`RG1a-partial-refused-in-every-pool.md`) | app | landed 2026-10-06 (`RG1a-partial-refused-in-every-pool.md`); Entry 240
 | **BZ1** | The latin.4 probe: Bizet re-admitted through the intake gate with its record, the left-hand cut approved and cell-checked, stopped at placement (sixteenths off the path; habanera maps to no demand); the cutter's tempo defect found (`BZ1-the-latin4-probe.md`) | content | landed 2026-10-06 (`BZ1-the-latin4-probe.md`); Entry 241
+| **CH1b** | The chain checker enforces the generated-step link (by family id or by exercise id through `generator_continuity.json`) and `presented_as` on every generated entry; nine fixtures (`CH1b-checker-generated-link.md`) | tooling/CI | landed 2026-10-06 (`CH1b-checker-generated-link.md`); Entry 242
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -489,6 +490,7 @@ CH1a · landed · 238
 RG1 · landed · 239
 RG1a · landed · 240
 BZ1 · landed · 241
+CH1b · landed · 242
 F0a · closed · —
 L120 · approved · —
 -->

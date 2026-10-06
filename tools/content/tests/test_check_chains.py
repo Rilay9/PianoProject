@@ -434,9 +434,113 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
     def test_r7_a_generated_ref_that_does_not_resolve_is_listed_in_a_draft(self):
         rec = load()
         rec["generated"][0]["family"] = "no_such_family"
+        # the steps cite the same unknown family, so no step names a family that lacks an entry (the link
+        # rule is the next tests'); the unknown id is R3's, listed in a draft
+        for step in rec["steps"]:
+            if step["content"]["kind"] == "generated":
+                step["content"]["ref"] = "no_such_family"
         failures, listed = check(rec)
         self.assertEqual(failures, [])
         self.assertIn("generated[1].family", {u.field for u in listed})
+
+    def test_r7_a_generated_step_whose_family_has_no_entry_fails_naming_the_step_ref(self):
+        rec = load()
+        rec["generated"] = []
+        failures, _ = check(rec)
+        generated_steps = [n for n, s in enumerate(rec["steps"], 1) if s["content"]["kind"] == "generated"]
+        self.assertTrue(generated_steps)
+        self.assertEqual(fields(failures), [f"steps[{n}].content.ref" for n in generated_steps])
+        for failure in failures:
+            self.assertIn("'tresillo'", failure.message)
+            self.assertIn("no entry under generated", failure.message)
+
+    def test_r7_a_step_naming_another_family_by_id_or_by_exercise_id_fails_until_that_family_is_listed(self):
+        for ref in ("scale", "exercise.accompaniment.alberti.c-major.both"):
+            with self.subTest(ref=ref):
+                family = RESOLVER.family_of(ref)
+                self.assertIsNotNone(family)
+                self.assertNotEqual(family, "tresillo")
+                rec = load()
+                rec["steps"][3]["content"] = {"kind": "generated", "ref": ref}
+                failures, _ = check(rec)
+                self.assertEqual(fields(failures), ["steps[4].content.ref"])
+                rec["generated"].append({**rec["generated"][0], "family": family})
+                self.assertEqual(fields(check(rec)[0]), [])
+
+    def test_r7_the_link_reads_the_family_id_itself_and_an_exercise_ids_continuity_family(self):
+        self.assertEqual(RESOLVER.family_of("tresillo"), "tresillo")
+        self.assertEqual(RESOLVER.family_of("exercise.tresillo.f"), "tresillo")
+        self.assertIsNone(RESOLVER.family_of("exercise.tresillo"))
+        self.assertIsNone(RESOLVER.family_of("no_such_family"))
+
+    def test_r7_a_non_generated_step_needs_no_family_entry(self):
+        rec = load()
+        rec["generated"] = [g for g in rec["generated"] if g["family"] != "tresillo"]
+        for step in rec["steps"]:
+            if step["content"]["kind"] == "generated":
+                step["content"] = {"kind": "explanation", "ref": "tresillo"}
+        self.assertEqual(fields(check(rec)[0]), [])
+
+    def test_r7_presented_as_is_required_and_is_drill_or_music(self):
+        rec = load()
+        del rec["generated"][0]["presented_as"]
+        failures, _ = check(rec)
+        self.assertEqual(fields(failures), ["generated[1].presented_as"])
+        self.assertIn("missing", failures[0].message)
+        for bad in ("", None, "audible", "Music"):
+            with self.subTest(value=bad):
+                rec = load()
+                rec["generated"][0]["presented_as"] = bad
+                self.assertEqual(fields(check(rec)[0]), ["generated[1].presented_as"])
+        for good in ("drill", "music"):
+            with self.subTest(value=good):
+                rec = load()
+                rec["generated"][0]["presented_as"] = good
+                self.assertEqual(fields(check(rec)[0]), [])
+
+    def test_r7_a_named_pattern_presented_as_music_lists_its_musical_properties(self):
+        for props in ({}, None):
+            with self.subTest(properties=props):
+                rec = load()
+                entry = rec["generated"][0]
+                self.assertEqual((entry["job"], entry["presented_as"]), ("NAMED-PATTERN", "music"))
+                if props is None:
+                    del entry["musical_properties"]
+                else:
+                    entry["musical_properties"] = props
+                failures, _ = check(rec)
+                self.assertEqual(fields(failures), ["generated[1].musical_properties"])
+                self.assertIn("presented_as: music", failures[0].message)
+
+    def test_r7_a_named_pattern_presented_as_a_drill_needs_no_properties_but_is_checked_where_it_lists(self):
+        rec = load()
+        rec["generated"][0]["presented_as"] = "drill"
+        rec["generated"][0]["musical_properties"] = {}
+        self.assertEqual(fields(check(rec)[0]), [])
+        rec["generated"][0]["musical_properties"] = {"onset set": ""}
+        self.assertEqual(fields(check(rec)[0]), ["generated[1].musical_properties.onset set"])
+
+    def test_r7_a_mechanical_control_presented_as_a_drill_lists_no_properties_and_passes(self):
+        for properties in ("empty", "absent"):
+            with self.subTest(properties=properties):
+                rec = load()
+                entry = rec["generated"][0]
+                entry["job"] = "CONTROL"
+                entry["presented_as"] = "drill"
+                if properties == "empty":
+                    entry["musical_properties"] = {}
+                else:
+                    del entry["musical_properties"]
+                self.assertEqual(fields(check(rec)[0]), [])
+
+    def test_r7_a_sight_reading_or_musical_family_lists_properties_whatever_it_is_presented_as(self):
+        for job in ("SIGHT-READING", "MUSICAL"):
+            with self.subTest(job=job):
+                rec = load()
+                rec["generated"][0]["job"] = job
+                rec["generated"][0]["presented_as"] = "drill"
+                rec["generated"][0]["musical_properties"] = {}
+                self.assertEqual(fields(check(rec)[0]), ["generated[1].musical_properties"])
 
     # R8 -------------------------------------------------------------------------------
     def test_r8_shipped_without_an_acceptance_path(self):

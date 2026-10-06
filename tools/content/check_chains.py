@@ -12,9 +12,11 @@ nothing else:
  R4  every step after the first removes at least one scaffold, or carries a one-line reason;
  R5  the last step's scaffold is a strict subset of the first step's;
  R6  ``never_credits`` is not empty;
- R7  every generated family has its job, contract and checker; SIGHT-READING and MUSICAL (and a
-     NAMED-PATTERN that lists properties, see below) give each musical property how it is
-     established, or UNKNOWN;
+ R7  every generated family has its job, ``presented_as`` (drill or music), contract and checker;
+     every step whose content kind is ``generated`` names a family that has a ``generated`` entry
+     (see below); SIGHT-READING, MUSICAL and NAMED-PATTERN with ``presented_as: music`` list their
+     musical properties, each with how it is established or UNKNOWN; a mechanical CONTROL
+     (``presented_as: drill``) lists none and none is required;
  R8  ``status: shipped`` requires an acceptance-test path that exists.
 
 ``--lint-briefs`` also reads ``docs/prompts/runs/*/briefs/*.md``. A major curriculum brief declares
@@ -70,9 +72,20 @@ Fields this script adds to FABLE section 3's shape, because a rule needs somewhe
  * ``content`` is one mapping and ``tool`` one string per step; a row with two items or two tools is
    written as two steps.
 
-A NAMED-PATTERN family is "presented as music" with no field that says so, so R7 cannot decide it:
-the checker validates a NAMED-PATTERN's ``musical_properties`` where it lists any and does not
-require them. SIGHT-READING and MUSICAL must list at least one.
+The generated-step link (R7). A step ``content: {kind: generated, ref: ...}`` links to the ``generated``
+entry whose ``family`` is the ref, or, when the ref is an exercise id the build keeps in
+``tools/content/generator_continuity.json``, the entry whose ``family`` is the continuity family that
+holds that exercise (the record's steps cite ``exercise.tresillo.c``; its entry is ``tresillo``). The
+checker fails a step whose ref identifies a family (a family id in ``family_contracts.json`` or an
+exercise id in the continuity record) that no ``generated`` entry lists. A generated step whose ref
+identifies no family is R3's: listed in a draft, a failure once reviewed. Nothing is inferred from a
+tool or from a step's wording.
+
+``presented_as: drill|music`` is required on every ``generated`` entry (FABLE section 3) and is the only
+thing that decides whether a NAMED-PATTERN lists musical properties: ``music`` requires at least one,
+each established or UNKNOWN; ``drill`` requires none (any it does list are still validated).
+SIGHT-READING and MUSICAL always list at least one. A CONTROL requires none; a CONTROL with
+``presented_as: drill`` may omit ``musical_properties`` altogether.
 """
 from __future__ import annotations
 
@@ -95,6 +108,7 @@ STATUSES = ("draft", "reviewed", "shipped")
 KINDS = ("generated", "excerpt", "piece", "chart", "external", "explanation")
 JOBS = ("CONTROL", "SIGHT-READING", "NAMED-PATTERN", "MUSICAL")
 MUSICAL_JOBS = ("SIGHT-READING", "MUSICAL")
+PRESENTED = ("drill", "music")
 UNKNOWN = "UNKNOWN"
 #: Words that stand in for "how it is established" without saying how.
 PLACEHOLDERS = {"tbd", "todo", "?", "n/a", "na", "none", "unknown", "-", "...", "x"}
@@ -332,6 +346,12 @@ class Resolver:
         self.exercise_ids = {
             item for fam in continuity.values() if isinstance(fam, dict) for item in (fam.get("items") or {})
         }
+        self.exercise_family = {
+            item: name
+            for name, fam in continuity.items()
+            if isinstance(fam, dict)
+            for item in (fam.get("items") or {})
+        }
         self.families = set((_load_json(root / "tools/content/family_contracts.json") or {}).get("families", {}))
         self.excerpt_ids = set()
         for row in (_load_json(root / "content/sources/excerpts.json") or {}).get("excerpts", []):
@@ -343,6 +363,13 @@ class Resolver:
                 )
             except (KeyError, TypeError, ValueError):
                 continue
+
+    def family_of(self, ref: str) -> str | None:
+        """The generated family a ref identifies: a family id, or an exercise id's continuity family."""
+        text = str(ref).strip()
+        if text in self.families:
+            return text
+        return self.exercise_family.get(text)
 
     def _anchor_in(self, path: Path, anchor: str) -> bool:
         if path.suffix.casefold() != ".md" or not path.is_file():
@@ -471,6 +498,7 @@ def check_record(rec, file: str, resolver: Resolver, tools: dict[str, str] | Non
         generated = []
 
     refs: list[tuple[str, str, str | None]] = []  # (field, ref, content kind)
+    generated_steps: list[tuple[str, str]] = []  # (field, ref) of every step whose content kind is generated
     for n, step in enumerate(steps, 1):
         where = f"steps[{n}]"
         if not isinstance(step, dict):
@@ -491,6 +519,8 @@ def check_record(rec, file: str, resolver: Resolver, tools: dict[str, str] | Non
                 fail(f"{where}.content.ref", "missing or empty")
             else:
                 refs.append((f"{where}.content.ref", str(content["ref"]), kind if kind in KINDS else None))
+                if kind == "generated":
+                    generated_steps.append((f"{where}.content.ref", str(content["ref"])))
         for key in ("scaffold", "removes"):
             value = step.get(key)
             if not isinstance(value, list):
@@ -537,22 +567,46 @@ def check_record(rec, file: str, resolver: Resolver, tools: dict[str, str] | Non
         job = entry.get("job")
         if job not in JOBS:
             fail(f"{where}.job", "missing" if _blank(job) else f"{job!r} is not one of {', '.join(JOBS)}")
+        presented = entry.get("presented_as")
+        if presented not in PRESENTED:
+            fail(
+                f"{where}.presented_as",
+                "missing (drill or music: whether the learner meets the family as a drill or as music)"
+                if _blank(presented)
+                else f"{presented!r} is not one of {', '.join(PRESENTED)}",
+            )
         for key in ("contract", "checker"):
             if _blank(entry.get(key)):
                 fail(f"{where}.{key}", "missing or empty")
             else:
                 refs.append((f"{where}.{key}", str(entry[key]), None))
         props = entry.get("musical_properties")
+        if props is None and (
+            (job == "CONTROL" and presented == "drill") or (job == "NAMED-PATTERN" and presented == "music")
+        ):
+            props = {}  # a mechanical CONTROL lists none; a music NAMED-PATTERN with none fails below, by its own rule
         if not isinstance(props, dict):
-            fail(f"{where}.musical_properties", "missing (a mapping; empty only for a CONTROL or NAMED-PATTERN family)")
+            fail(f"{where}.musical_properties", "missing (a mapping; empty only for a CONTROL, or a NAMED-PATTERN presented_as drill)")
             continue
         if job in MUSICAL_JOBS and not props:
             fail(f"{where}.musical_properties", f"a {job} family lists its musical properties, each established or {UNKNOWN}")
+        if job == "NAMED-PATTERN" and presented == "music" and not props:
+            fail(
+                f"{where}.musical_properties",
+                f"a NAMED-PATTERN with presented_as: music lists its musical properties, each established or {UNKNOWN}",
+            )
         for prop, how in props.items():
             if _blank(how) or not isinstance(how, str):
                 fail(f"{where}.musical_properties.{prop}", f"neither how it is established nor {UNKNOWN}")
             elif how.strip().casefold() in PLACEHOLDERS and how.strip() != UNKNOWN:
                 fail(f"{where}.musical_properties.{prop}", f"{how!r} says nothing about how it is established; write {UNKNOWN} or the method")
+
+    # R7 -- every generated step's family is listed ------------------------------------
+    listed_families = {str(e["family"]).strip() for e in generated if isinstance(e, dict) and not _blank(e.get("family"))}
+    for field, ref in generated_steps:
+        family = resolver.family_of(ref)
+        if family is not None and family not in listed_families:
+            fail(field, f"generated step names family {family!r} (ref {ref!r}), which has no entry under generated")
 
     # R3 -- refs resolve once reviewed or shipped; a draft's are listed ----------------
     for field, ref, kind in refs:
