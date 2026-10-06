@@ -6,7 +6,7 @@ videos:
   - label: "Piano improvisation with pentatonic scale"
     url: "https://www.youtube.com/watch?v=1W8TjulBrHM"
     teacher: "Play By Ear Music School"
-readingTime: 4
+readingTime: 3
 ---
 
 **The pentatonic scale** is five notes: in C major, **C D E G A** — the major
@@ -23,8 +23,7 @@ pentatonic throughout: every note works, though C rubs on the G chord and E on
 the F. Now the ear is free
 and the only questions left are rhythm, shape and where you stop. Stage 3's
 I–IV–V loop is still on this rung and is the easier of the two; the four-chord
-one changes chord every bar, where that one changes three times in eight bars,
-which is the whole difference.
+one changes chord every bar, where that one changes three times in eight bars.
 
 **Answering the phrase.** The app's *Answer the phrase* drill plays two bars
 drawn from the pentatonic and marks you right only if you play the same notes
@@ -53,10 +52,8 @@ order is a scale, not a melody; break the order.
 
 **Tools for this rung.** *Accompaniment lab* opens on I–vi–IV–V, the loop drill's own four
 chords, with the left hand spread out under them and no right hand at all —
-that part is yours. It opens on *Hold the chords*, so the loop holds them and the
-line is yours.
-Start it — one chord a bar is far more changes than the last rung's loop, and
-the grid moving under you is what makes that obvious. Change the key when the pentatonic starts
+that part is yours. It opens on *Hold the chords*.
+Start it — one chord a bar is far more changes than the last rung's loop. Change the key when the pentatonic starts
 playing itself: the numerals do not move and your hand has to. *Trading fours*
 is the two-bar call and answer above with the call played for you: the app takes
 two bars over the loop, you take the next two, and afterwards it says whether
