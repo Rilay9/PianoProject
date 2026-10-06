@@ -301,6 +301,13 @@ export const PROMISED_BY_RUNG: Record<string, Check[]> = {
  * the shipped curriculum passes it. A demand the vocabulary declares `notAsked` (CD1 D5: the habanera and
  * the tresillo) is never one of them: the coping question does not ask it, so a phrase that happens to hold
  * the left hand's onset cell is not a phrase that asks something untaught.
+ *
+ * The metre check (SR2; the reviewer's ruling on SR1, `docs/review/responses/sr1-sightreading-quality.md` §1)
+ * reads the vocabulary, never a rung id: where `metre.compound` is untaught, every bar is 4/4, or 3/4 where
+ * `metre.three-four` is taught. Its old wording, "4/4 only (before 4.5)", held 3/4 back to 4.5 although 1.4
+ * teaches it. With no `taught` given, both demands' `taughtAt` stand in for it, read through the same order.
+ * 2/4, 2/2 and 3/8 stay held out wherever compound time is, as before; the new demand's own "no
+ * metre.three-four" check comes from the loop above.
  */
 export function untaughtChecks(
   rung: string,
@@ -312,6 +319,13 @@ export function untaughtChecks(
   const at = (id: string): number => order.indexOf(id);
   const before = (other: string): boolean => at(rung) < at(other);
   const untaught = (d: Demand): boolean => d.taughtAt.length === 0 || (taught ? !taught(d.id) : d.taughtAt.every(before));
+  const untaughtId = (id: string): boolean => {
+    const demand = demands.find((d) => d.id === id);
+    return demand === undefined ? !(taught?.(id) ?? false) : untaught(demand);
+  };
+  const threeFour = !untaughtId('metre.three-four');
+  const simpleMetre = (t: { beats: number; beatType: number }): boolean =>
+    t.beatType === 4 && (t.beats === 4 || (threeFour && t.beats === 3));
   return [
     ...demands
       .filter((d) => d.notAsked === undefined)
@@ -320,8 +334,14 @@ export function untaughtChecks(
       .map((d) =>
         every(`no ${d.id} (taught at ${d.taughtAt.join(', ') || 'no rung'})`, (p) => !has(d.detector)(p), [d.id]),
       ),
-    ...((taught ? !taught('metre.compound') : before('4.5'))
-      ? [every('4/4 only (before 4.5)', (p) => p.model.timeSigMap.every((t) => t.beats === 4 && t.beatType === 4), ['metre.compound'])]
+    ...(untaughtId('metre.compound')
+      ? [
+          every(
+            threeFour ? '4/4 or 3/4 only (compound time untaught)' : '4/4 only (compound time and 3/4 untaught)',
+            (p) => p.model.timeSigMap.every(simpleMetre),
+            ['metre.compound'],
+          ),
+        ]
       : []),
   ];
 }

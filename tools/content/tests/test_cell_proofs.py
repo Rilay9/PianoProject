@@ -79,7 +79,9 @@ class NoGeneralRule(unittest.TestCase):
         ruled, curated = set(DENSITY["demands"]), set(DENSITY["curatedOnly"])
         self.assertEqual(ruled | curated, set(demands))
         self.assertEqual(ruled & curated, set())
-        self.assertEqual(sorted(curated), CELLS)
+        # Revised (SR2): metre.three-four is curated-only too (established by the rhythm family's waltz contract,
+        # test_three_four_by_contract.py); the cells stay curated-only.
+        self.assertEqual(sorted(curated), sorted([*CELLS, "metre.three-four"]))
         for demand in CELLS:
             self.assertNotIn("hypothesis", DENSITY["curatedOnly"][demand])
             self.assertNotIn("min", DENSITY["curatedOnly"][demand])

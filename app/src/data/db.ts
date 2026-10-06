@@ -377,7 +377,8 @@ export interface ReadingMoves {
   ties?: boolean;
   syncopation?: boolean;
   triplets?: boolean;
-  timeSig?: '4/4' | '6/8';
+  /** `3/4` since SR2: the reader's move for `metre.three-four` (a type only; the stored field is unchanged). */
+  timeSig?: '4/4' | '6/8' | '3/4';
   fifths?: number | readonly number[];
   accidentals?: boolean;
   leftHand?: 'whole' | 'chord' | 'alberti' | 'broken' | 'walking';

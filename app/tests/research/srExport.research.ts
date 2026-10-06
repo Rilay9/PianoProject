@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 /**
  * The sight-reading quality lane's export (docs/prompts/runs/sightreading-quality,
  * brief `sightreading-quality.md` §2). Research tooling, never CI.
@@ -5,9 +6,12 @@
  * Every phrase goes through the app's own code path: `readingOptions` (the one
  * writer of a phrase's options, `session.ts`), `readingOffer` (Today's daily read),
  * `sightReadingOptionsFor` (a row's params), `withoutDemand` (a reader move), and
- * `generateSightReading`. Nothing under `src/` is changed or reimplemented, with one
- * exception named where it stands: `rungForSlot` (`TodayScreen.ts:1462`), six lines
- * copied because the screen module needs a browser to import.
+ * `generateSightReading`. Nothing under `src/` is changed or reimplemented.
+ *
+ * Revised (SR2): stratum BC is built through the app's own hold — the offer's `hold` and the
+ * judging rung Today names (`rungForSlot`, imported from `TodayScreen.ts` under jsdom rather than
+ * copied), written by the Score screen's `phraseOptions` — and an offer of `null` (no daily read
+ * yet, 0.1-0.4) is the outcome `NO-OFFER`, never an error.
  *
  * Modes (env):
  * - `SR_MODE=taught`: every rung's taught set, as data, to `SR_OUT/taught.json`.
@@ -30,7 +34,8 @@ import {
   type SightReadingOptions,
 } from '../../src/engine/sightReading';
 import { withoutDemand } from '../../src/engine/readingControls';
-import { readingOffer, readingOptions, taughtAtRung, type LessonPosition } from '../../src/curriculum/session';
+import { phraseOptions, readingOffer, readingOptions, taughtAtRung, type LessonPosition } from '../../src/curriculum/session';
+import { rungForSlot } from '../../src/ui/screens/TodayScreen';
 import { defaultActiveTracks } from '../../src/curriculum/tracks';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 
@@ -70,16 +75,6 @@ const lessons: Lesson[] = curriculum.stages.flatMap((stage) => stage.units.flatM
 const lessonById = new Map(lessons.map((lesson) => [lesson.id, lesson]));
 const rowById = new Map(readers.map((row) => [row.id, row]));
 
-/** `TodayScreen.ts:1462`, copied (the screen module needs a browser to import). */
-function rungForSlot(item: CatalogItem, offeredFrom?: string): string | undefined {
-  const lists = (lesson: { exerciseOptions: string[]; songOptions: string[] }): boolean =>
-    lesson.exerciseOptions.includes(item.id) || lesson.songOptions.includes(item.id);
-  const offered = offeredFrom === undefined ? undefined : lessonById.get(offeredFrom);
-  if (offered && lists(offered)) return offered.id;
-  const listing = lessons.filter(lists);
-  return listing.length === 1 ? listing[0]?.id : undefined;
-}
-
 function rowWith(id: string, params: Record<string, unknown> | undefined): CatalogItem {
   const row = rowById.get(id);
   if (!row) throw new Error(`no reading row ${id}`);
@@ -93,7 +88,8 @@ function localDay(day: string): Date {
 }
 
 interface Resolved {
-  options: SightReadingOptions;
+  /** Absent where the daily read offers nothing (SR2: `NO-OFFER`). */
+  options: SightReadingOptions | null;
   /** The rung whose taught set held the options (null: unheld). */
   heldAt: string | null;
   row: string | null;
@@ -128,13 +124,14 @@ function resolve(item: Item): Resolved {
     today: localDay(b.day as string),
     purpose: 'daily',
   });
-  if (!offer) throw new Error('no offer');
-  const hold = rungForSlot(offer.item, offer.lessonId);
-  const taught = hold === undefined ? undefined : taughtAtRung(curriculum, hold);
-  const options = readingOptions(offer.item, offer.recipe, offer.seed, taught);
+  if (!offer) return { options: null, heldAt: null, row: null };
+  // The route Today builds (`openDailyRead`): `rung` judges, the offer's `hold` (SR2) holds where it has one.
+  const judging = rungForSlot(curriculum, offer.item, offer.lessonId);
+  const rungs = { ...(judging === undefined ? {} : { judging }), ...(offer.hold === undefined ? {} : { hold: offer.hold }) };
+  const options = phraseOptions(curriculum, offer.item, offer.recipe, offer.seed, rungs);
   return {
     options,
-    heldAt: hold ?? null,
+    heldAt: offer.hold ?? judging ?? null,
     row: offer.item.id,
     offer: { item: offer.item.id, lessonId: offer.lessonId ?? null, anchored: offer.anchored, seed: offer.seed },
   };
@@ -161,7 +158,7 @@ describe.runIf(MODE === 'plan')('plan', () => {
   it('resolves every item without generating', () => {
     const out = manifestItems().map((item) => {
       const r = resolve(item);
-      return { id: item.id, ...r, unrealisable: unrealisable(r.options), dailySeedCheck: item.build.day ? dailySeed(item.build.day) : null };
+      return { id: item.id, ...r, unrealisable: r.options === null ? [] : unrealisable(r.options), dailySeedCheck: item.build.day ? dailySeed(item.build.day) : null };
     });
     mkdirSync(OUT, { recursive: true });
     writeFileSync(join(OUT, 'plan.json'), JSON.stringify(out, null, 1));
@@ -203,6 +200,7 @@ describe.runIf(MODE === 'generate')('generate', () => {
     mkdirSync(dir, { recursive: true });
     const out = manifestItems().map((item) => {
       const r = resolve(item);
+      if (r.options === null) return { id: item.id, ...r, unrealisable: [], outcome: 'NO-OFFER', deterministic: true };
       const first = attempt(r.options);
       const second = attempt(r.options);
       const same =

@@ -202,6 +202,18 @@
       "transfer": { "dimensions": ["rhythm", "texture"], "why": "Two beats of three eighths: other figures inside the compound metre, or the metre held against the other hand, change it; the key and the hand do not change the metre." }
     },
     {
+      "id": "3/4",
+      "display": "Three-four time",
+      "sentence": "Counting three beats to the bar, and holding a dotted half for all three of them.",
+      "kind": "rhythm",
+      "opportunity": ["metre.three-four"],
+      "observable": ["timing"],
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] },
+      "precision": { "quarters": [1, 1], "why": "A dotted half counted as a half, the next note a whole beat early: the bar of three read as a bar of four, or of two." },
+      "note": "SR2 (the reviewer's ruling on SR1, docs/review/responses/sr1-sightreading-quality.md §1): the copedWithBy of metre.three-four, which 1.4 teaches through its concept 3/4. Added only because the taught-at table needs a coper for it, as tie and dotted-quarter were; no item declares it in targetSkills.",
+      "transfer": { "dimensions": ["rhythm", "texture"], "why": "Three beats to the bar: other figures inside the bar of three, or the bar held against the other hand, change it; the key and the hand do not change the metre." }
+    },
+    {
       "id": "key-signature",
       "display": "Key signatures",
       "sentence": "Remembering the sharps or flats at the start of the line on every note they alter.",

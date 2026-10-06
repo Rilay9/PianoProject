@@ -320,7 +320,9 @@ describe('one density rule, read by the build and by the gate', () => {
     const curated = Object.keys(OPPORTUNITY_DENSITY.curatedOnly);
     expect([...ruled, ...curated].sort()).toEqual(VOCABULARY_V0.demands.map((d) => d.id).sort());
     expect(curated.filter((id) => ruled.includes(id))).toEqual([]);
-    expect(curated.sort()).toEqual(['rhythm.habanera', 'rhythm.tresillo']);
+    // Revised (SR2; the orchestrator's decision under the ruling on SR1, §3): `metre.three-four` joins, established
+    // only by the rhythm family's waltz contract; a general rule chosen so 1.4 passes would calibrate on what it judges.
+    expect(curated.sort()).toEqual(['metre.three-four', 'rhythm.habanera', 'rhythm.tresillo']);
     for (const id of curated) expect(OPPORTUNITY_DENSITY.curatedOnly[id]?.why.length ?? 0, id).toBeGreaterThan(20);
     // No count of located places establishes a curated-only demand, however dense.
     expect(usefulDensity({ 'rhythm.habanera': 4000, 'rhythm.tresillo': 3000 }, 10)).toEqual([]);

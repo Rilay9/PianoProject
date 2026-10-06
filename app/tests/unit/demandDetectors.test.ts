@@ -228,6 +228,43 @@ describe('metre.compound — beats of three eighths', () => {
   });
 });
 
+// SR2 (the reviewer's ruling on SR1, `docs/review/responses/sr1-sightreading-quality.md` §1): exactly what 1.4
+// teaches, `content/lessons/1.4.md:23`. A broad "triple metre" would also take 3/8 and 3/2, which 1.4 does not teach.
+describe('metre.three-four — exactly three quarter-note beats to the bar', () => {
+  const bar = [{ at: 0, dur: 3, pitch: 'C4' }];
+  it('present: 3/4', () => expect(present('threeFour', [bar], '3/4')).toBe(true));
+  it('absent: 3/8 and 3/2, triple but not what 1.4 teaches', () => {
+    expect(present('threeFour', [[{ at: 0, dur: 1.5, pitch: 'C4' }]], '3/8')).toBe(false);
+    expect(present('threeFour', [[{ at: 0, dur: 6, pitch: 'C4' }]], '3/2')).toBe(false);
+  });
+  it('absent: 6/8, 2/4 and 4/4', () => {
+    expect(present('threeFour', [[{ at: 0, dur: 3, pitch: 'C4' }]], '6/8')).toBe(false);
+    expect(present('threeFour', [[{ at: 0, dur: 2, pitch: 'C4' }]], '2/4')).toBe(false);
+    expect(present('threeFour', [[{ at: 0, dur: 4, pitch: 'C4' }]], '4/4')).toBe(false);
+    expect(present('threeFour', [[{ at: 0, dur: 4, pitch: 'C4' }]])).toBe(false);
+  });
+  it('located at every note of a 3/4 phrase', () => {
+    const model = phrase({ bars: [line(['C4', 'D4', 'E4'], 1), [{ at: 0, dur: 3, pitch: 'F4' }]], time: '3/4' });
+    const found = detect(model, 'threeFour');
+    expect(found.at.map((a) => a.noteId)).toEqual(model.steps.flatMap((step) => step.notes.map((note) => note.id)));
+  });
+  it('a 4/4 piece with one 3/4 bar is located at that bar’s notes alone', () => {
+    const model = phrase({ bars: [line(['C4', 'D4', 'E4', 'F4'], 1), line(['G4', 'F4', 'E4'], 1), line(['D4', 'C4', 'D4', 'E4'], 1)], time: '4/4' });
+    const mixed = {
+      ...model,
+      timeSigMap: [
+        { atMeasure: 0, beats: 4, beatType: 4 },
+        { atMeasure: 1, beats: 3, beatType: 4 },
+        { atMeasure: 2, beats: 4, beatType: 4 },
+      ],
+    };
+    const found = detect(mixed, 'threeFour');
+    expect(found.present).toBe(true);
+    expect([...new Set(found.at.map((a) => a.measure))]).toEqual([1]);
+    expect(found.at).toHaveLength(3);
+  });
+});
+
 describe('3/8 read as three eighth-note beats by every detector that reads a beat (L120b)', () => {
   it('M4: in 3/8 a quarter entering on the second eighth is on a beat — no syncopation there', () => {
     expect(present('syncopation', [[{ at: 0, dur: 0.5, pitch: 'C4' }, { at: 0.5, dur: 1, pitch: 'D4' }], [{ at: 0, dur: 1.5, pitch: 'E4' }]], '3/8')).toBe(false);

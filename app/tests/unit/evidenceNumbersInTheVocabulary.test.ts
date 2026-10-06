@@ -60,6 +60,8 @@ describe('the shipped numbers are unchanged', () => {
     expect(precisionQuartersOf('triplets')).toBe(1 / 12);
     expect(precisionQuartersOf('subdivision')).toBe(1 / 6);
     expect(precisionQuartersOf('6/8')).toBe(1 / 4);
+    // Added (SR2): the coper of `metre.three-four`, a dotted half counted as a half is a whole beat early.
+    expect(precisionQuartersOf('3/4')).toBe(1);
     for (const skill of ['dotted-quarter', 'syncopation', 'tie']) expect(precisionQuartersOf(skill), skill).toBe(1 / 2);
     expect(VOCABULARY_V0.precision.quarters[0] / VOCABULARY_V0.precision.quarters[1]).toBe(1 / 2);
     // Only the rhythm skills have one: the others read theirs step by step from the phrase.
@@ -70,6 +72,7 @@ describe('the shipped numbers are unchanged', () => {
       'syncopation',
       'triplets',
       '6/8',
+      '3/4',
     ]);
     for (const skill of ['sight-reading', 'hand-independence', 'interval-reading']) expect(precisionQuartersOf(skill), skill).toBeUndefined();
   });

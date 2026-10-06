@@ -106,6 +106,24 @@ const FIXTURES: Record<string, Fixture> = {
     },
     outside: { fromStep: 2, toStep: 2 },
   },
+  // Added (SR2): `metre.three-four`'s fixture, built as `metre.compound`'s is: a bar of 3/4, then a bar of 4/4 where
+  // no note is in three-four time.
+  'metre.three-four': {
+    model: {
+      ...phrase({
+        time: '3/4',
+        bars: [
+          [{ at: 0, dur: 1, pitch: 'C4' }, { at: 1, dur: 2, pitch: 'D4' }],
+          [{ at: 0, dur: 4, pitch: 'E4' }],
+        ],
+      }),
+      timeSigMap: [
+        { atMeasure: 0, beats: 3, beatType: 4 },
+        { atMeasure: 1, beats: 4, beatType: 4 },
+      ],
+    },
+    outside: { fromStep: 2, toStep: 2 },
+  },
   'key.signature': { model: one(rh(['G4', 'A4', 'F#4', 'G4']), 'G major'), outside: { fromStep: 0, toStep: 1 } },
   'pitch.chromatic': { model: one(rh(['C4', 'D4', 'F#4', 'G4'])), outside: { fromStep: 0, toStep: 1 } },
   'range.beyond-position': { model: one(rh(['C4', 'D4', 'E4', 'A4'])), outside: { fromStep: 0, toStep: 2 } },

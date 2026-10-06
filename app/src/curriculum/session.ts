@@ -2236,6 +2236,36 @@ export function readingOptions(
 }
 
 /**
+ * The options the Score screen writes a generated phrase from (C4c; SR2): the row with the recipe's moves over
+ * it, held to what `hold` has taught where the route names one (Today's unanchored daily read: the learner's own
+ * rung), else to what the judging rung has taught (`?rung=` or `?from=`); opened from nowhere, or with no
+ * curriculum to read, the row as it stands. The one place the screen's hold is decided, so the tests read the
+ * phrase the learner is shown through it, never through a copy.
+ */
+export function phraseOptions(
+  curriculum: Curriculum | undefined,
+  item: CatalogItem,
+  value: { row?: string; moved?: ReadingMoves; easy?: true } | undefined,
+  seed: number | undefined,
+  rungs: { judging?: string; hold?: string },
+  vocabulary: Vocabulary = VOCABULARY_V0,
+): SightReadingOptions {
+  const by = rungs.hold ?? rungs.judging;
+  const taught = curriculum === undefined || by === undefined ? undefined : taughtAtRung(curriculum, by, vocabulary);
+  return readingOptions(item, value, seed, taught);
+}
+
+/**
+ * Whether a phrase of these options asks only what `taught` has taught (SR2's "valid phrase"): no demand the
+ * set lacks — the coping question's `notAsked` cells aside — may be written (`mayWrite`, the predicate
+ * `heldToRung` and the generator contract rest on). `interval.step` may always be written, so before 1.1
+ * teaches steps no phrase is valid.
+ */
+export function asksOnlyTaught(options: SightReadingOptions, taught: (demand: string) => boolean, vocabulary: Vocabulary = VOCABULARY_V0): boolean {
+  return vocabulary.demands.every((d) => d.notAsked !== undefined || taught(d.id) || READING_CONTROLS[d.id]?.mayWrite(options) === false);
+}
+
+/**
  * How many things the reader moves two recipes of one row differ in: the
  * recipe keys whose value (the recipe's, else the row's own) is not the same.
  * Different rows are not comparable this way (`Infinity`): that is the rung's
@@ -2332,6 +2362,13 @@ export interface ReadingOffer {
   lessonId?: string;
   /** False before any rung that lists a reading row: the easiest row stands in, and the session has no reading slot. */
   anchored: boolean;
+  /**
+   * The rung whose taught set holds the phrase, where it is not the judging rung's (SR2; the reviewer's ruling
+   * on SR1, `docs/review/responses/sr1-sightreading-quality.md` §2): the unanchored daily read is judged by its
+   * row's rung (`TodayScreen.rungForSlot`, 1.5 for the easiest row) and held to what the learner's own rung has
+   * taught. Absent everywhere else: the phrase is held to the judging rung, as before.
+   */
+  hold?: string;
   why: ReadingWhy;
 }
 
@@ -2611,8 +2648,35 @@ function keyOfPhrase(options: SightReadingOptions): number {
  * key the phrase is in.
  *
  * Pure: the same rows, rung and day give the same offer.
+ *
+ * **The unanchored daily read (SR2).** Before any rung that lists a reading row, the easiest row stands in and
+ * is judged by its own rung; its phrase is held to what the learner's rung has taught (`hold`), here, in the
+ * reader's own options, and on the Score screen (`phraseOptions`). Where no phrase of the offer asks only what
+ * that rung has taught (`asksOnlyTaught`: before 1.1 every phrase moves by step), there is no daily read yet:
+ * `null`, Today's no-offer path. The session's slot drops an unanchored offer anyway; every anchored offer is
+ * held to its rung, as before.
  */
 export function readingOffer(input: ReadingInput): ReadingOffer | null {
+  const offer = readingOfferAt(input);
+  if (offer === null || offer.hold === undefined) return offer;
+  const vocabulary = input.vocabulary ?? VOCABULARY_V0;
+  const taught = taughtAtRung(input.curriculum, offer.hold, vocabulary);
+  if (taught === undefined) return offer;
+  return asksOnlyTaught(readingOptions(offer.item, offer.recipe, undefined, taught), taught, vocabulary) ? offer : null;
+}
+
+/**
+ * The options the last read of a row was written from, where the run stored them (`material`, D4: the complete
+ * generator identity, `material.phraseMaterial`), else `undefined`. What step 3 reads to see a phrase held
+ * below its judging rung (SR2), and the evidence job's first candidate.
+ */
+export function writtenOptions(row: Pick<SessionRow, 'material' | 'seed'>): SightReadingOptions | undefined {
+  const material = row.material;
+  if (material?.kind !== 'generator' || material.family !== 'sight-reading') return undefined;
+  return { ...(material.recipe as unknown as SightReadingOptions), ...(row.seed === undefined ? {} : { seed: row.seed }) };
+}
+
+function readingOfferAt(input: ReadingInput): ReadingOffer | null {
   const vocabulary = input.vocabulary ?? VOCABULARY_V0;
   const policy = input.policy ?? READER_POLICY;
   const readers = input.items.filter(isReader);
@@ -2624,7 +2688,18 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
     const stored = row.recipe;
     return stored && byId.has(stored.row) ? recipe(stored.row, stored.moved ?? {}, stored.easy === true) : recipe(row.itemId, {});
   };
-  const base = { item: anchor.item, ...(anchor.lessonId === undefined ? {} : { lessonId: anchor.lessonId }), anchored: anchor.anchored };
+  // SR2: the unanchored daily read is held to the learner's own rung, never to the row's (which judges it).
+  const learnerRung = input.position?.lesson.id;
+  const heldBelow =
+    input.purpose === 'daily' && !anchor.anchored && learnerRung !== undefined && taughtAtRung(input.curriculum, learnerRung, vocabulary) !== undefined
+      ? learnerRung
+      : undefined;
+  const base = {
+    item: anchor.item,
+    ...(anchor.lessonId === undefined ? {} : { lessonId: anchor.lessonId }),
+    anchored: anchor.anchored,
+    ...(heldBelow === undefined ? {} : { hold: heldBelow }),
+  };
 
   // Today's phrase already met: the card shows it as read (or heard), not as a new one.
   // Today's phrase is the day's seed under the version in force (D1a, G21): a
@@ -2689,10 +2764,11 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   if (!last) return offer(working, { kind: 'rung' });
   const measure: ReadMeasure = { at: last.at, right: last.right, n: last.n };
 
-  // The phrase is held to what the row's rung has taught (as the Score screen holds it); moves are gated by the learner's.
+  // The phrase is held to what the row's rung has taught (as the Score screen holds it), or, for the unanchored
+  // daily read, to what the learner's rung has (SR2); moves are gated by the learner's.
   const rung = input.position?.lesson.id;
   const taught = taughtAtRung(input.curriculum, rung, vocabulary) ?? ((demand: string) => vocabulary.demands.some((d) => d.id === demand && d.taughtAt.length > 0));
-  const hold = taughtAtRung(input.curriculum, anchor.lessonId, vocabulary);
+  const hold = taughtAtRung(input.curriculum, heldBelow ?? anchor.lessonId, vocabulary);
   const ctx: MoveContext = {
     item: anchor.item,
     working,
@@ -2723,6 +2799,18 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
       .filter(([, control]) => control.mayWrite(current) && !control.mayWrite(then))
       .map(([demand]) => demand);
     if (opened.length > 0) return offer(working, { kind: 'lesson', last: measure, demands: opened });
+  } else if (thenRung !== undefined && anchor.lessonId !== undefined && previous !== undefined) {
+    // SR2: the last read was judged by this rung and held below it (the unanchored daily read, held to the
+    // learner's own rung): its stored phrase (`material`) could not hold a demand this rung's hold of the same
+    // recipe can. Only what the run stored is read; a run with no material is read as before.
+    const written = writtenOptions(previous);
+    if (written !== undefined) {
+      const atRung = readingOptions(anchor.item, recipeOf(previous), previous.seed, taughtAtRung(input.curriculum, thenRung, vocabulary));
+      const opened = Object.entries(READING_CONTROLS)
+        .filter(([, control]) => control.mayWrite(current) && control.mayWrite(atRung) && !control.mayWrite(written))
+        .map(([demand]) => demand);
+      if (opened.length > 0) return offer(working, { kind: 'lesson', last: measure, demands: opened });
+    }
   }
 
   const readings = demandReadings(input.rows, vocabulary, input.today).filter((one) => one.skill === READER_SKILL);

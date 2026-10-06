@@ -38,7 +38,15 @@ function lesson(id: string, exerciseOptions: string[], songOptions: string[]): L
   };
 }
 
-/** One rung the learner is on, whose options fill the warm-up and the new slot. */
+/**
+ * One rung the learner is on, whose options fill the warm-up and the new slot.
+ *
+ * Revised (SR2; the reviewer's ruling on SR1, `responses/sr1-sightreading-quality.md` §2): the test encoded the
+ * fault: a learner whose rung had taught nothing was offered a phrase. Before: the rung was `1.2` alone, which in
+ * this one-rung curriculum teaches no vocabulary demand (steps are taught at `1.1`), and the daily read wrote a phrase
+ * of steps from it. After: the rung is `1.1`, which teaches steps, so the daily read is a phrase held to it. The rung
+ * id is otherwise arbitrary here: every other case below reads the same rung under its new name.
+ */
 const CURRICULUM = {
   version: 1,
   tracks: [{ id: 'core', title: 'Core', description: '', startsAtStage: 0 }],
@@ -52,7 +60,7 @@ const CURRICULUM = {
           id: 'u1',
           title: 'Unit',
           track: 'core',
-          lessons: [lesson('1.2', ['exercise.test.a', 'exercise.test.b'], ['song.test.c'])],
+          lessons: [lesson('1.1', ['exercise.test.a', 'exercise.test.b'], ['song.test.c'])],
         },
       ],
     },
@@ -151,7 +159,7 @@ describe('Today opens a card with its rung and its slot (L50)', () => {
     const opened = openRow(section, 'technique');
     expect(['exercise.test.a', 'exercise.test.b']).toContain(opened.id);
     expect(opened.options, 'a Today card opened with no rung for the run to be judged by').toEqual({
-      rung: '1.2',
+      rung: '1.1',
       slot: 'technique',
     });
   });
@@ -159,7 +167,7 @@ describe('Today opens a card with its rung and its slot (L50)', () => {
   it('the new piece carries the rung and the slot, and no `from`', async () => {
     const section = await openToday();
     const opened = openRow(section, 'new');
-    expect(opened.options).toMatchObject({ rung: '1.2', slot: 'new' });
+    expect(opened.options).toMatchObject({ rung: '1.1', slot: 'new' });
     expect(opened.options).not.toHaveProperty('from');
   });
 
@@ -169,7 +177,7 @@ describe('Today opens a card with its rung and its slot (L50)', () => {
     const section = await openToday();
     const opened = openRow(section, 'review');
     expect(['exercise.test.a', 'exercise.test.b']).toContain(opened.id);
-    expect(opened.options).toEqual({ rung: '1.2', slot: 'review' });
+    expect(opened.options).toEqual({ rung: '1.1', slot: 'review' });
   });
 
   // Revised (X1): *Start session* writes today's session first and then opens its first activity, so the
@@ -182,7 +190,7 @@ describe('Today opens a card with its rung and its slot (L50)', () => {
     section.querySelector<HTMLButtonElement>('#today-start')?.click();
     await vi.waitFor(() => expect(navigateScore).toHaveBeenCalledTimes(1));
     const options = navigateScore.mock.calls[0]?.[1] as { rung?: string; slot?: string; session?: string } | undefined;
-    expect(options).toMatchObject({ rung: '1.2', slot: 'technique' });
+    expect(options).toMatchObject({ rung: '1.1', slot: 'technique' });
     expect(options?.session).toMatch(/^[0-9a-z]{6,32}$/);
   });
 
@@ -197,6 +205,8 @@ describe('Today opens a card with its rung and its slot (L50)', () => {
     expect(options).toMatchObject({ slot: 'daily-read' });
     expect(typeof options.seed).toBe('number');
     expect(options).not.toHaveProperty('rung');
+    // Added (SR2): before any rung lists a reading row the phrase is held to the learner's rung.
+    expect(options).toMatchObject({ hold: '1.1' });
   });
 });
 

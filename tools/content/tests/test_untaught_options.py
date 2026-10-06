@@ -64,7 +64,10 @@ BUILT = REPO / "app" / "public" / "content"
 #: `rhythm.syncopation` and at latin.3 for `texture.left-hand-pattern`, two refusals the admission used to hide (the coping
 #: question runs only on an admitted option): a placement finding, recorded, not fixed. The Bizet cut's latin.4 line stays
 #: `teaching-use-not-approved`: its decision binds to the cut's former identity and is stale until re-issued.
-PROBE = REPO / "docs" / "prompts" / "runs" / "CUT1" / "probe-refusals.txt"
+#: Re-run 2026-10-06 at the SR2 landing (the 3/4 demand `metre.three-four`, taught at 1.4): 294 lines, 221 `untaught`. One line
+#: added from CUT1's pin and none other: `1.2 exercise.rhythm.waltz-quarters.4bar` untaught for `metre.three-four`, a placement
+#: finding (1.2 lists a 3/4 waltz two rungs before 1.4 teaches 3/4), recorded, not fixed.
+PROBE = REPO / "docs" / "prompts" / "runs" / "SR2" / "probe-refusals.txt"
 
 #: Where the tool's lines on the shipped curriculum differ from the probe, and why. Keyed by
 #: (rung, item); `side` says which reading has the line. Nothing else may differ. Since L120b's snapshot
@@ -121,7 +124,8 @@ class TheShippedCurriculum(unittest.TestCase):
         # options, the contrary scales' versions). The pin is a snapshot, re-run and recorded, never forced (L124).
         # 218 after the latin.4 placement (LP1): its three context options, untaught for triplets there.
         # 220 after the admissions and the cut's pin (CUT1): latin.4's three tresillo lines gone, tresillo.c refused at 3.6 and latin.3.
-        self.assertEqual(len(self.probe), 220, "the CUT1 probe recorded 220 `untaught` rung-own options (LP1's 218, less latin.4's three admitted exercises, plus tresillo.c at 3.6 and latin.3)")
+        # 221 after SR2: the 1.2 waltz untaught for the new 3/4 demand.
+        self.assertEqual(len(self.probe), 221, "the SR2 probe recorded 221 `untaught` rung-own options (CUT1's 220 plus the 1.2 waltz for metre.three-four)")
 
     def test_the_lines_equal_the_probe_but_for_the_recorded_differences(self) -> None:
         only_probe = {key for key in self.probe if key not in self.mine}

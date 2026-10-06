@@ -105,6 +105,15 @@
     { "id": "rhythm.triplets", "display": "Triplets", "dimension": "rhythm", "detector": "triplets", "copedWithBy": "triplets", "taughtAt": ["4.5"] },
     { "id": "metre.compound", "display": "Compound time", "dimension": "metre", "detector": "compoundMetre", "copedWithBy": "6/8", "taughtAt": ["4.5"] },
     {
+      "id": "metre.three-four",
+      "display": "Three-four time",
+      "dimension": "metre",
+      "detector": "threeFour",
+      "copedWithBy": "3/4",
+      "taughtAt": ["1.4"],
+      "taughtAtNote": "Exactly 3/4, three quarter-note beats to the bar, as 1.4 teaches it (content/lessons/1.4.md:23, 'three beats in a bar instead of four; count \"1 2 3\"'); never 3/8, 3/2 or a compound metre, which 1.4 does not teach (the reviewer's ruling on SR1, docs/review/responses/sr1-sightreading-quality.md §1). metre.compound keeps 4.5."
+    },
+    {
       "id": "key.signature",
       "display": "A key signature",
       "dimension": "key",

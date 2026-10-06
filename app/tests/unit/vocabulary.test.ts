@@ -39,9 +39,12 @@ describe('vocabulary v0 is small', () => {
   // Revised (CD1): seventeen skills and twenty-one demands. The reviewer's approval of the measured
   // cells (`docs/review/responses/530963de.md` §1, §2) adds the two onset-cell demands and their one
   // unobservable skill; the old assumption was the cap of sixteen and twenty the vocabulary had reached.
-  it('about fifteen skills and twenty demands, as the reviewer asked, and the two cells the reviewer approved', () => {
-    expect(skills.length).toBeLessThanOrEqual(17);
-    expect(demands.length).toBeLessThanOrEqual(21);
+  // Revised (SR2): eighteen skills and twenty-two demands. The reviewer's ruling on SR1
+  // (`docs/review/responses/sr1-sightreading-quality.md` §1) adds `metre.three-four`, what 1.4 teaches, and a
+  // demand needs a coper (`3/4`); the old assumption was the cap of seventeen and twenty-one CD1 reached.
+  it('about fifteen skills and twenty demands, as the reviewer asked, the two cells and 3/4 the reviewer approved', () => {
+    expect(skills.length).toBeLessThanOrEqual(18);
+    expect(demands.length).toBeLessThanOrEqual(22);
   });
   it('ids are unique', () => {
     expect(skillIds.size).toBe(skills.length);

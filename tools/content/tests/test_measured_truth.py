@@ -896,7 +896,9 @@ class TestUsefulDensity(unittest.TestCase):
         curated = self.table.get("curatedOnly") or {}
         self.assertEqual(sorted([*self.table["demands"], *curated]), sorted(self.order))
         self.assertEqual(set(self.table["demands"]) & set(curated), set())
-        self.assertEqual(sorted(curated), ["rhythm.habanera", "rhythm.tresillo"])
+        # Revised (SR2; the orchestrator's decision under the ruling on SR1, §3): metre.three-four joins, established
+        # only by the rhythm family's waltz contract (test_three_four_by_contract.py).
+        self.assertEqual(sorted(curated), ["metre.three-four", "rhythm.habanera", "rhythm.tresillo"])
         rules = {(rule["min"], rule["perBar"]) for rule in self.table["demands"].values()}
         self.assertGreater(len(rules), 5, "one threshold for every demand is the universal percentage Part 15 forbids")
         for demand, rule in self.table["demands"].items():

@@ -443,7 +443,11 @@ test.describe('the daily read says why this phrase (C4, C4c)', () => {
   /** Restores a learner placed on a rung, the rows' dates moved so the last read was yesterday, and reloads. */
   async function restore(page: Page, rows: Record<string, unknown>[], rung: string): Promise<void> {
     await page.goto('/');
-    await expect(page.locator('#today-daily [data-daily]')).toBeVisible({ timeout: 30_000 });
+    // Revised (SR2; the reviewer's ruling on SR1, `docs/review/responses/sr1-sightreading-quality.md` §2): the
+    // test encoded the fault: a learner at 0.1 was offered a phrase. Before: the wait for the hooks was the fresh
+    // learner's daily card, which 0.1 offered. After: a fresh learner has no daily read until 1.1, so the wait is
+    // Today's status line; the card is read after the learner is placed on its rung below.
+    await expect(page.locator('#today-status')).toHaveAttribute('data-lesson', /.+/, { timeout: 30_000 });
     await page.evaluate(
       async ({ rows, rung }) => {
         const local = (iso: string): Date => new Date(iso);

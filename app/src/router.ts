@@ -281,6 +281,14 @@ export interface Route {
    * no rung left its run judged by the Settings pair.
    */
   scoreRung?: string;
+  /**
+   * `#/score/<id>?hold=<lesson id>` — the rung whose taught set a generated phrase is held to, where it is
+   * not the judging rung's (SR2; the reviewer's ruling on SR1, `docs/review/responses/sr1-sightreading-quality.md`
+   * §2): Today's daily read before any rung lists a reading row is judged by the row's rung (`rung`) and held
+   * to what the learner's own rung has taught. It judges nothing, is never stored, and does not steer Back.
+   * Only a generated item reads it. Dropped when it is not a lesson id.
+   */
+  scoreHold?: string;
   /** `#/score/<id>?slot=new` — the Today slot that opened this run (L50), for the record. */
   scoreSlot?: TodaySlot;
   /**
@@ -424,8 +432,8 @@ const LEFT_HANDS = ['whole', 'chord', 'alberti', 'broken', 'walking'] as const;
 /**
  * `?recipe=` — `key:value` pairs the reader writes (C4, C4c), each checked on
  * its own and dropped when it is not one the reader writes, the way a bad
- * `rung` or `tour` is: a hand, every on/off control (`1` or `0`), four-four or
- * six-eight, a key within four accidentals or a set of them (`fifths:1|-1`,
+ * `rung` or `tour` is: a hand, every on/off control (`1` or `0`), four-four,
+ * six-eight or three-four (SR2), a key within four accidentals or a set of them (`fifths:1|-1`,
  * the seed chooses), a left-hand pattern, and the easy flag.
  */
 function parseRecipeParam(value: string | null | undefined): RouteRecipe | undefined {
@@ -440,7 +448,7 @@ function parseRecipeParam(value: string | null | undefined): RouteRecipe | undef
     else if ((RECIPE_FLAGS as readonly string[]).includes(key) && flag !== undefined) flags[key] = flag;
     else if (key === 'fifths' && /^-?[0-4]$/.test(raw)) moved.fifths = Number(raw);
     else if (key === 'fifths' && /^-?[0-4](\|-?[0-4])+$/.test(raw)) moved.fifths = raw.split('|').map(Number);
-    else if (key === 'timeSig' && (raw === '4/4' || raw === '6/8')) moved.timeSig = raw;
+    else if (key === 'timeSig' && (raw === '4/4' || raw === '6/8' || raw === '3/4')) moved.timeSig = raw;
     else if (key === 'leftHand' && (LEFT_HANDS as readonly string[]).includes(raw)) moved.leftHand = raw as (typeof LEFT_HANDS)[number];
     else if (key === 'easy' && raw === '1') easy = true;
   }
@@ -527,6 +535,10 @@ export function parseHash(hash: string): Route {
   const wantedRung = params?.get('rung');
   const scoreRung =
     wantedRung !== null && wantedRung !== undefined && looksLikeLessonId(wantedRung) ? wantedRung : undefined;
+  // The phrase's hold (SR2), dropped when it is not a lesson id, as `rung` is.
+  const wantedHold = params?.get('hold');
+  const scoreHold =
+    wantedHold !== null && wantedHold !== undefined && looksLikeLessonId(wantedHold) ? wantedHold : undefined;
   const wantedSlot = params?.get('slot');
   const scoreSlot = isTodaySlot(wantedSlot) ? wantedSlot : undefined;
   const scoreRecipe = parseRecipeParam(params?.get('recipe'));
@@ -574,6 +586,7 @@ export function parseHash(hash: string): Route {
       ...(tour === undefined ? {} : { tour }),
       ...(fromLesson === undefined ? {} : { scoreFrom: fromLesson }),
       ...(scoreRung === undefined ? {} : { scoreRung }),
+      ...(scoreHold === undefined ? {} : { scoreHold }),
       ...(scoreSlot === undefined ? {} : { scoreSlot }),
       ...(scoreRecipe === undefined ? {} : { scoreRecipe }),
       ...(scoreIntent === undefined ? {} : { scoreIntent }),
@@ -724,6 +737,7 @@ export function routeToHash(route: Route): string {
       ...(route.tour === undefined ? [] : [`tour=${encodeURIComponent(route.tour)}`]),
       ...(route.scoreFrom === undefined ? [] : [`from=${encodeURIComponent(route.scoreFrom)}`]),
       ...(route.scoreRung === undefined ? [] : [`rung=${encodeURIComponent(route.scoreRung)}`]),
+      ...(route.scoreHold === undefined ? [] : [`hold=${encodeURIComponent(route.scoreHold)}`]),
       ...(route.scoreSlot === undefined ? [] : [`slot=${route.scoreSlot}`]),
       ...(route.scoreRecipe === undefined ? [] : [`recipe=${encodeURIComponent(recipeParam(route.scoreRecipe))}`]),
       ...(route.scoreIntent === undefined
@@ -842,6 +856,8 @@ export class Router {
       from?: string;
       /** The rung a Today card chose, which judges the run and does not steer Back (L50). */
       rung?: string;
+      /** The rung whose taught set holds a generated phrase, where it is not the judging rung's (SR2). */
+      hold?: string;
       /** The Today slot that opened it (L50). */
       slot?: TodaySlot;
       /** Generate this exercise rather than a new one (Today's daily read). */
@@ -866,6 +882,7 @@ export class Router {
       ...(options.tour === undefined ? {} : { tour: options.tour }),
       ...(options.from === undefined ? {} : { scoreFrom: options.from }),
       ...(options.rung === undefined ? {} : { scoreRung: options.rung }),
+      ...(options.hold === undefined ? {} : { scoreHold: options.hold }),
       ...(options.slot === undefined ? {} : { scoreSlot: options.slot }),
       ...(options.recipe === undefined || recipeParam(options.recipe) === '' ? {} : { scoreRecipe: options.recipe }),
       ...(options.intent === undefined ? {} : { scoreIntent: options.intent }),
@@ -1019,6 +1036,8 @@ export class Router {
       // The rung a run is judged by and the slot it is for are part of which
       // run this is, for the reason `from` is (L50).
       route.scoreRung === this.current.scoreRung &&
+      // The hold is part of which phrase this is (SR2), as the recipe is.
+      route.scoreHold === this.current.scoreHold &&
       route.scoreSlot === this.current.scoreSlot &&
       // By value: the same offer's intent is the same run (D4), and another offer's is another (D4a).
       route.scoreIntent?.skill === this.current.scoreIntent?.skill &&

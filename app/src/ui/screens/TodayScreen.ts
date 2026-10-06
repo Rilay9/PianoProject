@@ -1025,6 +1025,9 @@ export function TodayScreen(router: Router): HTMLElement {
     router.navigateScore(dailyTarget.id, {
       seed: dailyOffer.seed,
       ...(rung === undefined ? {} : { rung }),
+      // Before any rung lists a reading row, the phrase is held to the learner's own rung, and `rung` still
+      // judges it (SR2; `session.readingOffer`'s `hold`).
+      ...(dailyOffer.hold === undefined ? {} : { hold: dailyOffer.hold }),
       slot,
       recipe: routeRecipeOf(dailyOffer),
     });

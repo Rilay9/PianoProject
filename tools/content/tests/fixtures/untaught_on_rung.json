@@ -364,6 +364,15 @@
     },
     {
       "family": "rhythm",
+      "rung": "1.2",
+      "demand": "metre.three-four",
+      "taughtAt": [
+        "1.4"
+      ],
+      "items": 1
+    },
+    {
+      "family": "rhythm",
       "rung": "2.4",
       "demand": "metre.compound",
       "taughtAt": [

@@ -97,9 +97,9 @@ Which demands each rung's options establish, and for the demands the rung teache
 | 0.3 | 2 | — | interval.step 1, rhythm.eighths 1, rhythm.shorter-than-quarter 1 |
 | 0.4 | 1 | — | — |
 | 1.1 | 12 | interval.step 9 | interval.step 9, interval.skip 2, rhythm.eighths 1, rhythm.shorter-than-quarter 1 |
-| 1.2 | 9 | — | interval.step 3, interval.skip 2, interval.leap 2, rhythm.eighths 1, rhythm.shorter-than-quarter 1 |
+| 1.2 | 9 | — | interval.step 3, interval.skip 2, interval.leap 2, metre.three-four 1, rhythm.eighths 1, rhythm.shorter-than-quarter 1 |
 | 1.3 | 8 | clef.bass 2 | interval.step 5, clef.bass 2, rhythm.eighths 1, rhythm.shorter-than-quarter 1 |
-| 1.4 | 9 | — | clef.bass 2, interval.step 2, interval.skip 2 |
+| 1.4 | 9 | metre.three-four 3 | metre.three-four 3, clef.bass 2, interval.step 2, interval.skip 2 |
 | 1.5 | 12 | interval.skip 6 | interval.step 9, interval.skip 6, rhythm.eighths 1, rhythm.shorter-than-quarter 1, rhythm.syncopation 1, range.beyond-position 1 |
 | practice.1 | 5 | — | interval.step 4, interval.skip 1, rhythm.eighths 1, rhythm.shorter-than-quarter 1 |
 | practice.2 | 4 | — | interval.step 3, interval.skip 1 |
@@ -107,7 +107,7 @@ Which demands each rung's options establish, and for the demands the rung teache
 | practice.4 | 4 | — | interval.step 3, clef.bass 1, texture.hands-together 1, rhythm.eighths 1, rhythm.shorter-than-quarter 1 |
 | practice.5 | 4 | — | interval.step 3, clef.bass 2, texture.hands-together 2, rhythm.eighths 1, rhythm.shorter-than-quarter 1, range.beyond-position 1, texture.left-hand-pattern 1 |
 | 2.1 | 11 | interval.leap 6, texture.hands-together 9 | texture.hands-together 9, interval.step 8, clef.bass 6, interval.leap 6, rhythm.eighths 2, rhythm.shorter-than-quarter 2, rhythm.dotted-quarter 1, range.beyond-position 1 |
-| 2.2 | 14 | rhythm.eighths 8, rhythm.shorter-than-quarter 8 | rhythm.eighths 8, rhythm.shorter-than-quarter 8, interval.step 7, interval.leap 6, interval.skip 5, range.beyond-position 4, rhythm.dotted-quarter 3, clef.bass 1, texture.hands-together 1, pitch.ledger 1, metre.compound 1, rhythm.syncopation 1 |
+| 2.2 | 14 | rhythm.eighths 8, rhythm.shorter-than-quarter 8 | rhythm.eighths 8, rhythm.shorter-than-quarter 8, interval.step 7, interval.leap 6, interval.skip 5, range.beyond-position 4, rhythm.dotted-quarter 3, metre.three-four 1, clef.bass 1, texture.hands-together 1, pitch.ledger 1, metre.compound 1, rhythm.syncopation 1 |
 | 2.3 | 10 | — | range.beyond-position 7, rhythm.shorter-than-quarter 6, clef.bass 5, interval.step 5, interval.leap 5, rhythm.eighths 5, interval.skip 4, texture.hands-together 3, rhythm.dotted-quarter 3, pitch.ledger 2, key.signature 2, rhythm.triplets 1, rhythm.ties 1, rhythm.syncopation 1, pitch.chromatic 1 |
 | 2.4 | 11 | rhythm.dotted-quarter 6, rhythm.ties 2 | interval.leap 7, range.beyond-position 7, rhythm.dotted-quarter 6, interval.step 6, rhythm.shorter-than-quarter 5, rhythm.eighths 4, interval.skip 4, pitch.chromatic 4, texture.hands-together 4, clef.bass 3, pitch.ledger 2, rhythm.ties 2, metre.compound 1, rhythm.syncopation 1 |
 | 2.5 | 11 | range.beyond-position 8 | interval.step 9, range.beyond-position 8, clef.bass 5, rhythm.eighths 3, rhythm.shorter-than-quarter 3, interval.leap 3, texture.hands-together 3, interval.skip 1, pitch.ledger 1, rhythm.ties 1 |

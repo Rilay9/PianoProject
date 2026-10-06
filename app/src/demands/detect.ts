@@ -50,6 +50,7 @@ export const DETECTOR_IDS = [
   'syncopation',
   'triplets',
   'compoundMetre',
+  'threeFour',
   'keySignature',
   'chromatic',
   'beyondPosition',
@@ -482,6 +483,22 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
       'compoundMetre',
       placed(m).filter((p) => isCompound(metreAt(m, p.note.measureIndex))).map(locate),
       present,
+    );
+  },
+
+  /**
+   * Three-four time (SR2; the reviewer's ruling on SR1, `docs/review/responses/sr1-sightreading-quality.md`
+   * §1): a bar of exactly three quarter-note beats, 3/4, as 1.4 teaches it (`content/lessons/1.4.md:23`).
+   * Never 3/8 (simple triple in eighths) or 3/2 (in halves), which 1.4 does not teach, and never a compound
+   * metre. Located at every note in a 3/4 bar, as `compoundMetre` is at a compound bar's, so a 4/4 piece
+   * with one 3/4 bar is located at that bar's notes alone.
+   */
+  threeFour: (m) => {
+    const threeFour = (t: { beats: number; beatType: number }): boolean => t.beats === 3 && t.beatType === 4;
+    return found(
+      'threeFour',
+      placed(m).filter((p) => threeFour(metreAt(m, p.note.measureIndex))).map(locate),
+      m.timeSigMap.some(threeFour),
     );
   },
 

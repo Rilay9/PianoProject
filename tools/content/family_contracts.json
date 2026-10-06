@@ -1254,6 +1254,22 @@
               "six-eight-mixed"
             ]
           }
+        },
+        {
+          "demand": "metre.three-four",
+          "minPer": [
+            "bar",
+            1
+          ],
+          "when": {
+            "pattern": [
+              "waltz-quarters",
+              "waltz-dotted-half",
+              "waltz-half-quarter",
+              "waltz-quarter-eighths"
+            ]
+          },
+          "why": "SR2 (the reviewer's ruling on SR1 §1; route 2 of responses/d0762e52.md §1): the waltz patterns are written in 3/4, what 1.4 teaches, so every bar is a bar of three beats and the app's detector locates every note there. metre.three-four is curated-only (no general count establishes it); this rule is its establishing proof on these items, the app's detector through the bridge, with partitura's time signatures as the independent witness, agreeing with the detector on every catalogue file (SR2 H7)"
         }
       ],
       "overconcentration": [],

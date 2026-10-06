@@ -824,6 +824,7 @@ declared. Three parts:
   | `rhythm.syncopation` | rhythm | `syncopation: true` | `syncopation: false` (levels 5–7: every note where its length belongs) |
   | `rhythm.triplets` | rhythm | `triplets: true` | `triplets: false` |
   | `metre.compound` | metre | `timeSig: 6/8` | `timeSig: 4/4` |
+  | `metre.three-four` | metre | `timeSig: 3/4` (exactly 3/4, taught at 1.4; SR2) | `timeSig: 4/4` |
   | `key.signature` | key | `fifths`: every key with a signature the level writes, sharps and flats, a set the seed chooses from (keys are not ranked) | `fifths: 0` |
   | `pitch.chromatic` | accidental | `accidentals: true` | `accidentals: false` |
   | `range.beyond-position` | range | `position: false` | `position: true` |
@@ -883,6 +884,7 @@ declared. Three parts:
   | 3.4–4.7 (`sight-reading-2`, `sight-reading-3`) | leap off | the left hand's roots move by fourths and fifths |
   | 4.5–4.7 | eighths off, shorter-than-quarter off | the 6/8 figures and the syncopation figure are eighths |
   | 4.5–4.7 | compound time in every phrase | its syncopation and triplets are not asked in 6/8 (T37) |
+  | 3.4–4.7 (`sight-reading-2`, `sight-reading-3`) | 3/4 on | not offered under a left-hand part (the control's `on`): under it the reader's composed recipes broke their contracts — a broken chord in a bar of three quarters reads as a walking bass (170 recipes, 3.6–4.7) and a promised dotted quarter was lost on `-3` (2) — so 3/4 on the two-hand rows waits for a predeclared contract (SR2; the ruling on SR1, §3) |
 
   Measured on the version in force: since D1a, version 2. Version 1's tie closing also made
   skip off undoable at 4.5–4.7, and gave leap off there a second reason; version 2 holds the tied

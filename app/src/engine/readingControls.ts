@@ -85,6 +85,8 @@ interface Shape {
 const metresOf = (options: SightReadingOptions): readonly TimeSig[] =>
   options.timeSig === undefined ? [] : Array.isArray(options.timeSig) ? (options.timeSig as readonly TimeSig[]) : [options.timeSig as TimeSig];
 const compoundTime = (t: TimeSig): boolean => t.beatType === 8 && t.beats % 3 === 0;
+/** Exactly 3/4 (`metre.three-four`): never 3/8 or 3/2, which 1.4 does not teach. */
+const threeFourTime = (t: TimeSig): boolean => t.beats === 3 && t.beatType === 4;
 
 function shapeOf(options: SightReadingOptions): Shape {
   const facts = levelFacts(options.level);
@@ -351,6 +353,21 @@ export const READING_CONTROLS: Readonly<Record<string, ReadingControl>> = {
     off: always({ timeSig: { beats: 4, beatType: 4 } }),
     mayWrite: (o) => shapeOf(o).compoundAny,
   },
+  // SR2 (the reviewer's ruling on SR1, `docs/review/responses/sr1-sightreading-quality.md` §1): exactly 3/4,
+  // which 1.4 teaches; `off` writes 4/4, as `metre.compound`'s does, so the reader's "in 4/4" is always true.
+  // `on` only where the phrase has no left-hand part (the single-hand rows): under a left hand the composed recipes
+  // the reader reaches broke their contracts (SR2: a broken chord in a bar of three quarters reads as a walking
+  // bass, 170 recipes on 3.6-4.7; a promised dotted quarter lost on `-3`, 2), so 3/4 on the two-hand rows waits
+  // for a predeclared contract (the ruling's §3). `mayWrite` stays the truth about the options.
+  'metre.three-four': {
+    option: 'timeSig',
+    on: (o) => (shapeOf(o).leftPart ? null : { timeSig: { beats: 3, beatType: 4 } }),
+    off: always({ timeSig: { beats: 4, beatType: 4 } }),
+    none: {
+      on: 'Not offered under a left-hand part: 3/4 on the two-hand rows waits for a predeclared contract (SR2; the ruling on SR1, §3).',
+    },
+    mayWrite: (o) => metresOf(o).some(threeFourTime),
+  },
   'key.signature': {
     option: 'fifths',
     // Every key with a signature the level writes, sharps and flats alike:
@@ -537,5 +554,14 @@ export const UNREALISABLE_AT: readonly Unrealisable[] = [
     direction: 'on',
     kind: 'generator',
     reason: 'A phrase in compound time is not asked for syncopation or triplets: one new metre is enough to read (T37).',
+  },
+  // SR2: 3/4 is taught at 1.4, and the reader does not offer it on the two-hand rows (the control's `on` under a
+  // left-hand part), where its composed recipes broke their contracts; it waits for a predeclared contract there.
+  {
+    rungs: [...TWO_HAND_ROW_RUNGS, ...LEVEL_3_RUNGS],
+    demand: 'metre.three-four',
+    direction: 'on',
+    kind: 'none',
+    reason: 'Not offered under a left-hand part: 3/4 on the two-hand rows waits for a predeclared contract (SR2; the ruling on SR1, §3).',
   },
 ];

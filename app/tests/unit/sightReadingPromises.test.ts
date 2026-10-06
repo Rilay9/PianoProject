@@ -27,7 +27,9 @@
  *   the rung's ancestry since E0a, where it was the curriculum's order at the
  *   earliest listing): no eighths before 2.2, no ties or dotted quarters before
  *   2.4, no key signature before 3.1, no syncopation, triplets or compound time
- *   before 4.5 — and 4/4 only before 4.5; no walking bass off the paths of
+ *   before 4.5 — and, wherever compound time is untaught, 4/4, or 3/4 where
+ *   `metre.three-four` is taught (SR2; it said 4/4 only before 4.5, though 1.4
+ *   teaches 3/4); no walking bass off the paths of
  *   blues.5, jazz.6 and jam.6 (E0b: `taughtAt` lists every rung that teaches a
  *   demand, one per path); and, since C4b, nothing no rung teaches at all
  *   (sixteenths, S23);

@@ -22,7 +22,7 @@ import { barsPerWindowFor, isTablet, sidePanelProse } from '../tablet';
 import { getImport } from '../../data/importStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
 import { generateSightReading, SightReadingRefusal, type SightReadingOptions } from '../../engine/sightReading';
-import { readingOptions, taughtAtRung } from '../../curriculum/session';
+import { phraseOptions } from '../../curriculum/session';
 import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
 import { findLesson, masteryCriteriaFor, proseRungFor } from '../../curriculum/selectors';
 import { skillsInForce } from '../../curriculum/skillActivation';
@@ -274,9 +274,12 @@ const STANDARD_TAP: SoundTap = { id: 'summary-standard', control: 'Keep tempo' }
  * The recipe (C4) is what Today's reader moved from the row's own params
  * (`?recipe=`): the phrase is written from the row with those moves over it,
  * by the same function the reader and its tests use (`readingOptions`). And
- * the rung that opened it (C4c): the row held to what that rung has taught
- * (`taught`), so 2.2's row stays inside C position until 2.5 teaches leaving
- * it; opened from nowhere, the row as it stands.
+ * the rung that opened it (C4c): the row held to what that rung has taught,
+ * so 2.2's row stays inside C position until 2.5 teaches leaving it; opened
+ * from nowhere, the row as it stands. Where the route names a hold (`?hold=`,
+ * SR2: Today's daily read before any rung lists a reading row), the row is
+ * held to what that rung has taught instead, and the judging rung still judges
+ * the run. The hold is decided in `session.phraseOptions`, the one place.
  *
  * And the phrase's identity (D1a): the generator's family, the version that
  * wrote it and the seed, which the run keeps (`generator`) so the history can
@@ -288,10 +291,11 @@ const STANDARD_TAP: SoundTap = { id: 'summary-standard', control: 'Keep tempo' }
 function generateSightReadingFor(
   item: CatalogItem,
   seed: number,
-  recipe?: RouteRecipe,
-  taught?: (demand: string) => boolean,
+  recipe: RouteRecipe | undefined,
+  curriculum: Curriculum | undefined,
+  rungs: { judging?: string; hold?: string },
 ): { musicXml: string; seed: number; generator: PhraseGenerator; options: SightReadingOptions; bpm: number } {
-  const options = readingOptions(item, recipe, seed, taught);
+  const options = phraseOptions(curriculum, item, recipe, seed, rungs);
   const phrase = generateSightReading(options);
   return { musicXml: phrase.musicXml, seed: phrase.seed, generator: phrase.generator, options, bpm: phrase.bpm };
 }
@@ -373,6 +377,8 @@ export function ScoreScreen(router: Router): HTMLElement {
   const todaySlot = router.route.scoreSlot;
   /** The phrase's recipe, where Today's reader named one (C4, `?recipe=`). */
   const routeRecipe = router.route.scoreRecipe;
+  /** The rung whose taught set holds a generated phrase where it is not the judging rung's (SR2, `?hold=`). */
+  const routeHold = router.route.scoreHold;
   /**
    * Today's session activity this run is, where the runner opened it (X1, `?session=`): the screen reports
    * its lifecycle through the handle — opened, attempted, completed, visible time — and the summary's closing
@@ -402,8 +408,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     // A Today run toggled into Blind is still that Today run (L50).
     ...(todayRung === undefined ? {} : { rung: todayRung }),
     ...(todaySlot === undefined ? {} : { slot: todaySlot }),
-    // And the same kind of phrase (C4): *New phrase* and Blind keep the recipe.
+    // And the same kind of phrase (C4): *New phrase* and Blind keep the recipe, and the hold (SR2).
     ...(routeRecipe === undefined ? {} : { recipe: routeRecipe }),
+    ...(routeHold === undefined ? {} : { hold: routeHold }),
     // A transfer offer's run toggled into Blind is still that offer's run (D4).
     ...(router.route.scoreIntent === undefined ? {} : { intent: router.route.scoreIntent }),
     // And a session's activity is still that activity (X1): Blind, Perform and *New phrase* keep its token.
@@ -5408,13 +5415,14 @@ export function ScoreScreen(router: Router): HTMLElement {
         };
         const named = router.route.seed;
         if (named === undefined) remember(await history);
-        // The rung the run is for holds the phrase to what it has taught (C4c).
-        const heldBy = judgingRungId();
-        const taught =
-          heldBy === undefined ? undefined : await loadCurriculum().then((curriculum) => taughtAtRung(curriculum, heldBy), () => undefined);
+        // The rung the run is for holds the phrase to what it has taught (C4c), or the route's hold (SR2).
+        const judging = judgingRungId();
+        const rungs = { ...(judging === undefined ? {} : { judging }), ...(routeHold === undefined ? {} : { hold: routeHold }) };
+        const holding =
+          rungs.hold === undefined && rungs.judging === undefined ? undefined : await loadCurriculum().catch((): undefined => undefined);
         let phrase: ReturnType<typeof generateSightReadingFor>;
         try {
-          phrase = generateSightReadingFor(item, named ?? freshSeed(seedsOnRecord), routeRecipe, taught);
+          phrase = generateSightReadingFor(item, named ?? freshSeed(seedsOnRecord), routeRecipe, holding, rungs);
         } catch (cause: unknown) {
           if (!(cause instanceof SightReadingRefusal)) throw cause;
           // No phrase the generator checked (D1a): a terminal state with its

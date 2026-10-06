@@ -42,7 +42,7 @@ import { isPhraseRun, phraseVersionOf, type EvidenceExclusion, type SessionRow }
 import type { CatalogItem, Curriculum } from '../curriculum/types';
 import { SIGHT_READING_VERSIONS, type SightReadingOptions, type SightReadingVersion } from '../engine/sightReading';
 import type { ScoreModelData, ScoreStep } from '../score/types';
-import { readingOptions, taughtAtRung } from '../curriculum/session';
+import { readingOptions, taughtAtRung, writtenOptions } from '../curriculum/session';
 import { skillsInForce } from '../curriculum/skillActivation';
 import { EVIDENCE_DEFINITIONS, recomputeEvidence, type StoredEvidence } from '../evidence/evidence';
 import type { Vocabulary } from '../evidence/vocabulary';
@@ -102,16 +102,32 @@ export function candidatePhrases(
   const seen = new Set<string>();
   const add = (written: SightReadingOptions): void => {
     const options: SightReadingOptions = { ...written, version: version as SightReadingVersion };
-    const key = JSON.stringify(options);
+    // By value, whatever the key order (the stored material's is its own): one phrase is one candidate.
+    const key = canonical(options);
     if (seen.has(key)) return;
     seen.add(key);
     out.push(options);
   };
+  // The options the run stored it was written from (D4's `material`), first (SR2): Today's unanchored daily
+  // read is judged by its row's rung and held to the learner's own, and only the material says which phrase it
+  // was. For every other run they are the judging rung's hold of the recipe, the candidate below.
+  const stored = writtenOptions(row);
+  if (stored !== undefined) add(stored);
   const taught = taughtAtRung(curriculum, rung);
   if (taught) add(readingOptions(item, recipe, row.seed, taught));
   add(readingOptions(item, recipe, row.seed));
   if (recipe !== undefined) add(readingOptions(item, undefined, row.seed));
   return out;
+}
+
+/** A value as JSON with every object's keys sorted: two spellings of one phrase's options are one key. */
+function canonical(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
+  if (value !== null && typeof value === 'object') {
+    const entries = Object.entries(value as Record<string, unknown>).filter(([, v]) => v !== undefined);
+    return `{${entries.sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => `${JSON.stringify(k)}:${canonical(v)}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
 }
 
 /** The pitches a step asks of the hands the run played. */

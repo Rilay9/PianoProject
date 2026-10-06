@@ -261,7 +261,9 @@ class TestTheVocabulary(unittest.TestCase):
         own = {s["id"]: s["precision"]["quarters"] for s in self.skills["skills"] if "precision" in s}
         self.assertEqual(
             own,
-            {"subdivision": [1, 6], "dotted-quarter": [1, 2], "tie": [1, 2], "syncopation": [1, 2], "triplets": [1, 12], "6/8": [1, 4]},
+            # Revised (SR2): the coper of metre.three-four, a dotted half counted as a half is a whole beat early.
+            {"subdivision": [1, 6], "dotted-quarter": [1, 2], "tie": [1, 2], "syncopation": [1, 2], "triplets": [1, 12], "6/8": [1, 4],
+             "3/4": [1, 1]},
         )
         self.assertEqual([s["id"] for s in self.skills["skills"] if "support" in s], [])
 

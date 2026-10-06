@@ -1064,6 +1064,7 @@ export const DEMAND_WORDS: Readonly<Record<string, { name: string; on: string; o
   'rhythm.syncopation': { name: 'the syncopation', on: 'with syncopation', off: 'without syncopation' },
   'rhythm.triplets': { name: 'the triplets', on: 'with triplets', off: 'without triplets' },
   'metre.compound': { name: 'the bars in 6/8', on: 'in 6/8', off: 'in 4/4' },
+  'metre.three-four': { name: 'the bars in 3/4', on: 'in 3/4', off: 'in 4/4' },
   'key.signature': { name: 'the key signature', on: 'with a key signature', off: 'in C major' },
   'pitch.chromatic': { name: 'the notes outside the key', on: 'with a note outside the key', off: 'without notes outside the key' },
   'range.beyond-position': {
