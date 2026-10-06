@@ -10,3 +10,6 @@ The agent edits exactly two files, `docs/prompts/runs/curriculum-review-2026-10-
 4. Rerun `count_ability_map.py`; paste its output into the map's section 7; it must exit 0. Run `count_upgrade.py` too.
 
 Reply in at most ten lines: the blocks that received the three songs; the gates lifted and left, by id; the count scripts' last lines; anything you could not match.
+
+
+**Owner correction sent to the running agent (2026-10-05):** copyright and public-export investigation is out of scope unless the owner reopens it; item 1 writes no "public export no" condition, only CANDIDATE, intake gate not yet run, personal-library admission possible, curriculum admission by a later brief; the Mauleón public-build item added by the previous consumption is removed; one dated note in the map says older rights wording is historical and non-gating; no cleanup of historical mentions.
