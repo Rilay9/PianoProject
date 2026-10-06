@@ -43337,3 +43337,7 @@ Base: the worktree's HEAD `0f6138e1`. The builder's harness is `operating-proced
 
 **Checks.** The lane: `test_checks_for_paths` 29/29, `test_demands_tool` 2/2; `test_measured_truth` not runnable there (no built catalogue). The orchestrator, against the current build in the main checkout: `test_declared_hand`, `test_checks_for_paths`, `test_measured_truth`, `test_demands_tool` 106 tests OK. Test map: the HD1 row names the new test and the tests list has its line. No content build, no Playwright.
 
+### Entry 247 — HD1b: the untaught-options probe re-run after the hand seam
+
+**What a learner meets.** Nothing new; this records what Entry 244 changed in the app's own reading of two rung-1.3 items. The probe is a snapshot, re-run and recorded, never forced (L124). Re-run at HEAD by the recipe in `test_untaught_options.py`'s docstring: 290 lines, 215 `untaught`, the same count as W1b; exactly two lines differ, both at 1.3: Hot Cross Buns (left hand) and Mary Had a Little Lamb (left hand) no longer carry `interval.skip` as untaught, because their span is now read as the left hand's (Entry 244). `PROBE` points at `docs/prompts/runs/HD1/probe-refusals.txt`; `test_untaught_options` and `test_sixteenths_owner` green. The cells seam (CD1, running) found the stale pin first at its base. Nothing heard.
+
