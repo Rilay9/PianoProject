@@ -158,13 +158,13 @@ steps:
     removes: []
     no_removal_reason: "An optional A7c.3 application on the same chart: the hands swap jobs (the learner supplies the bass, the app the chords), so help is exchanged rather than withdrawn; whether Comp sounds with Bass + drums off is read before this step is offered."
 
-  - action: "Decides from Insensatez's chart, before hearing it, which progression bars 13 to 15 print and in which key. The lesson gives the bars, not the progression."
+  - action: "Decides from Insensatez's chart, opened before playback with Comp off, which progression bars 13 to 15 print and in which key. The lesson names the bars and withholds the answer; the progression and the key stay unnamed until the reveal (the reviewer's 4b: the chart is the surface the learner acts on)."
     content: {kind: piece, ref: "song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15"}
-    tool: lesson
+    tool: Chord chart
     scaffold: [chord symbols, bars named in the lesson]
-    feedback: "None until the reveal at the end of the lesson."
-    recorded: "Nothing for the decision (MODE-SHEET section 31)."
-    cannot_establish: "The identification: self-checked."
+    feedback: "None: the chart is open and silent, its live cell idle before playback (MODE-SHEET section 15); the reveal comes at the end of the lesson."
+    recorded: "Nothing; the Chord chart stores nothing (MODE-SHEET section 15)."
+    cannot_establish: "The identification: self-checked; nothing is stored."
     removes: [count-in, app comps]
 
   - action: "Checks the decision on Insensatez's chart with Comp on, voices bars 13 to 15 in shells in A minor, then reads the answer printed at the end of the lesson."
