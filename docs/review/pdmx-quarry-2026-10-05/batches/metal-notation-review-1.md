@@ -11,6 +11,21 @@ Already reviewed in the parent ledger.
 Disposition: **HIGH-PRIORITY CANDIDATE**.
 Distinct job: selected riff/pedal-tone MODEL/TRANSFER plus later full reduction/arrangement project.
 
+## Black Sabbath — Iron Man
+CID: `QmS4UQ3cPqnpBJ2PiBZ5Z79Ky4dg4HEmfSfoJ4D6utRx2g`
+Read: `summary/K-metal/iron-man-black-sabbath-...txt`
+
+Observed:
+- compact 54-measure single-line electric-guitar score with 121 chord symbols;
+- the defining riff is written largely as parallel fifth dyads (for example B-F#, D-A, E-B) with a short chromatic/16th-note answer;
+- later sections separate repeated-note/pedal figures from fifth-based chord/riff material;
+- sparse single-line notation makes the fifth/power-texture relationship much clearer than the denser full piano reductions.
+
+Disposition: **ADMIT / HIGH-PRIORITY** as the current cleanest **power-fifth / riff MODEL** candidate.
+Likely role: after a CONTROL exercise on root-fifth shapes, inspect/reduce the riff and identify what survives when a guitar texture is mapped to piano. Then transfer the idea to learner-created riffs.
+Important caveat: this is a guitar-source notation, so do not teach guitar-specific technique from it; the pedagogical observation is pitch/rhythm/fifth texture.
+Distinct from Enter Sandman: Iron Man is the cleaner early model for fifth-based riff construction; Enter Sandman is stronger for pedal tone, attack, buildup and later full-arrangement work.
+
 ## Avenged Sevenfold — A Little Piece of Heaven
 CID: `QmbwnWBK5FE51CVpqjZ4fSQW87SX1MNzehooGRbNPDrkfm`
 Read: `summary/K-metal/a-little-piece-of-heaven-avenged-sevenfo-...txt`
@@ -56,6 +71,7 @@ Reason for not promoting now: Enter Sandman already gives a clearer riff/build m
 ## Batch principle
 
 Do not keep more giant metal scores merely because they are impressive. A later candidate should survive only if it adds a teaching job not already covered by:
+- Iron Man — clean fifth/power-riff model;
 - Enter Sandman — riff/pedal, attack, build;
 - A Little Piece of Heaven — long-form multi-meter integration, orchestration/reduction and texture decisions.
 
