@@ -1,0 +1,580 @@
+#!/usr/bin/env python3
+"""The chain-record checker (FABLE.md section 2 step 2 and section 3, 2026-10-06).
+
+One record per learner-facing ability: ``docs/chains/<ability-id>.yaml``. The record is the teaching
+design as data. This script reads every record and enforces the rules FABLE.md section 3 lists, and
+nothing else:
+
+ R1  every field is present;
+ R2  every ``tool`` is one MODE-SHEET names;
+ R3  every ``ref`` resolves once ``status`` is ``reviewed`` or ``shipped``; a ``draft`` may hold
+     unresolved refs, and they are listed (a line each, not a failure);
+ R4  every step after the first removes at least one scaffold, or carries a one-line reason;
+ R5  the last step's scaffold is a strict subset of the first step's;
+ R6  ``never_credits`` is not empty;
+ R7  every generated family has its job, contract and checker; SIGHT-READING and MUSICAL (and a
+     NAMED-PATTERN that lists properties, see below) give each musical property how it is
+     established, or UNKNOWN;
+ R8  ``status: shipped`` requires an acceptance-test path that exists.
+
+``--lint-briefs`` also reads ``docs/prompts/runs/*/briefs/*.md`` and rejects a brief that names a
+chain record (a line matching ``chain record:`` or a ``docs/chains/`` path) and lacks the headings
+Instructional chain, Failure route and Independence test.
+
+``--tools`` prints the tool vocabulary.
+
+Output: one line per failure, ``FAIL <file>: <field>: <message>``, then ``UNRESOLVED`` lines for a
+draft's unresolved refs, then a summary. Exit 1 when there is any failure. Step numbers in a field
+path are 1-based (``steps[3]`` is the third step of the record).
+
+Decisions the brief took (briefs/chain-record-checker.md, "Decisions taken here"):
+
+ * Tool vocabulary. Read from MODE-SHEET.md's section headings (sections 1 to 30, and 7a and 7b;
+   the Score-screen settings Blind, Loop, Ladder, Duet, Rhythm only and Perform are sections 9 to
+   14). ``SECTION_NAMES`` below lists, for each section, the words the sheet's own heading uses for
+   it, and ``vocabulary()`` fails when a section or a name is no longer in the sheet's headings.
+   Names compare after case-folding, collapsing whitespace and dropping a leading ``Score:`` or
+   ``Score screen:``, so a record may write ``Score: Keep tempo``. ONE value outside the sheet is
+   allowed: ``lesson``, for an explanation or task step on the lesson page, because MODE-SHEET has
+   no section for the lesson page and the first step of every chain is one.
+ * Ref resolution. A ref is ``<target>`` or ``<target>@bars=<from>-<to>``. The target resolves when
+   it is: (1) a path that exists in the tree, with an optional ``#anchor`` that must name a heading,
+   a table row or a bold lead in that file; (2) an id in ``content/catalog.static.json``; (3) a song
+   id or a CID in ``content/sources/pdmx.json`` (a bars suffix must lie inside the item's bar
+   count); (4) an exercise id listed in ``tools/content/generator_continuity.json`` (an EXACT match
+   against the generated items the build keeps, not a prefix match: a prefix match would resolve
+   ``exercise.tresillo.zz``); (5) an excerpt id derived from a row of ``content/sources/excerpts.json``
+   by ``excerpts.excerpt_id``'s own rule; (6) a family id in ``tools/content/family_contracts.json``;
+   (7) a well-formed http(s) URL when the content kind is ``external`` (never fetched: CI has no
+   network, so a URL is only a pointer).
+ * Scaffold subset. Scaffolds compare as sets of strings after trimming and lower-casing; the rule is
+   exact wording, so records write reusable tokens.
+
+Fields this script adds to FABLE section 3's shape, because a rule needs somewhere to read:
+ * ``steps[].no_removal_reason`` (optional): the one-line reason of R4.
+ * ``acceptance_test`` (top level, optional): the acceptance-test path R8 reads.
+ * ``content`` is one mapping and ``tool`` one string per step; a row with two items or two tools is
+   written as two steps.
+
+A NAMED-PATTERN family is "presented as music" with no field that says so, so R7 cannot decide it:
+the checker validates a NAMED-PATTERN's ``musical_properties`` where it lists any and does not
+require them. SIGHT-READING and MUSICAL must list at least one.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+
+import yaml
+
+ROOT = Path(__file__).resolve().parents[2]
+CHAINS_GLOB = "docs/chains/*.yaml"
+BRIEFS_GLOB = "docs/prompts/runs/*/briefs/*.md"
+MODE_SHEET = "docs/prompts/runs/curriculum-review-2026-10-05/MODE-SHEET.md"
+
+STATUSES = ("draft", "reviewed", "shipped")
+KINDS = ("generated", "excerpt", "piece", "chart", "external", "explanation")
+JOBS = ("CONTROL", "SIGHT-READING", "NAMED-PATTERN", "MUSICAL")
+MUSICAL_JOBS = ("SIGHT-READING", "MUSICAL")
+UNKNOWN = "UNKNOWN"
+#: Words that stand in for "how it is established" without saying how.
+PLACEHOLDERS = {"tbd", "todo", "?", "n/a", "na", "none", "unknown", "-", "...", "x"}
+
+#: The one tool value MODE-SHEET does not name (see the module note).
+EXTRA_TOOLS = {"lesson": "an explanation or task step on the lesson page; MODE-SHEET has no section for it"}
+
+#: For each MODE-SHEET section, the words its own heading uses for it. ``vocabulary()`` holds this to
+#: the sheet: a section that vanished or a name its heading no longer contains is a failure.
+SECTION_NAMES: dict[str, list[str]] = {
+    "1": ["Wait for me", "wait"],
+    "2": ["Keep tempo", "tempo"],
+    "3": ["Play it to me", "Hear it", "listen"],
+    "4": ["Free play", "free"],
+    "5": ["Free play, standalone", "#/play"],
+    "6": ["Simon", "drill:simon"],
+    "7": ["Accompaniment lab", "#/lab"],
+    "7a": ["Read it"],
+    "7b": ["Jam it", "Bed only", "Hold the chords", "Play the tune"],
+    "8": ["Trading fours", "trade 2", "trade 4"],
+    "9": ["Perform"],
+    "10": ["Blind"],
+    "11": ["Loop"],
+    "12": ["Ladder"],
+    "13": ["Duet"],
+    "14": ["Rhythm only"],
+    "15": ["Chord chart", "#/chart"],
+    "16": ["Today's daily sight-read"],
+    "17": ["Note flash", "drill:note-flash"],
+    "18": ["Find the key", "drill:find-key"],
+    "19": ["Ear drills", "ear-interval", "ear-chord"],
+    "20": ["ear-progression"],
+    "21": ["Melodic dictation", "Answer the phrase", "call-response"],
+    "22": ["Harmonic dictation", "harmonic-dictation"],
+    "23": ["Rhythm drill", "Rhythm dictation"],
+    "24": ["Tune playback", "ear-tune"],
+    "25": ["Reading and theory drills"],
+    "26": ["Pedal change", "dynamics"],
+    "27": ["Backing track", "drill:backing-track"],
+    "28": ["Practise from the book", "Paper"],
+    "29": ["Orientation items", "drill:checklist", "drill:walkthrough", "drill:placement"],
+    "30": ["Metronome", "PDF viewer"],
+}
+
+HEADING_RE = re.compile(r"^#{2,3}\s+(\d+[ab]?)\.\s+(.+?)\s*$")
+
+#: Briefs that name a chain record without being the brief of a learner-facing ability. The reason
+#: is printed with the exemption; a brief joins this table only by an edit here, reviewed.
+LINT_EXEMPT = {
+    "docs/prompts/runs/curriculum-review-2026-10-05/briefs/chain-record-checker.md": (
+        "builds this checker; it names the records as its own deliverable, not as the record of an ability"
+    ),
+}
+BRIEF_HEADINGS = ("Instructional chain", "Failure route", "Independence test")
+
+
+# --------------------------------------------------------------------------------------
+# result types
+# --------------------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Failure:
+    file: str
+    field: str
+    message: str
+
+    def line(self) -> str:
+        return f"FAIL {self.file}: {self.field}: {self.message}"
+
+
+@dataclass(frozen=True)
+class Unresolved:
+    file: str
+    field: str
+    ref: str
+    why: str
+
+    def line(self) -> str:
+        return f"UNRESOLVED {self.file}: {self.field}: {self.ref} ({self.why})"
+
+
+# --------------------------------------------------------------------------------------
+# the tool vocabulary
+# --------------------------------------------------------------------------------------
+
+
+def norm_tool(name: str) -> str:
+    text = re.sub(r"\s+", " ", str(name).strip()).casefold()
+    text = re.sub(r"^score(?: screen)?\s*:\s*", "", text)
+    return text.rstrip(".")
+
+
+def sheet_headings(root: Path = ROOT) -> dict[str, str]:
+    """Section id -> heading text, read from MODE-SHEET.md."""
+    path = root / MODE_SHEET
+    headings: dict[str, str] = {}
+    if not path.is_file():
+        return headings
+    for line in path.read_text(encoding="utf-8").splitlines():
+        match = HEADING_RE.match(line)
+        if match and match.group(1) not in headings:
+            headings[match.group(1)] = match.group(2)
+    return headings
+
+
+def vocabulary(root: Path = ROOT) -> tuple[dict[str, str], list[Failure]]:
+    """The tool vocabulary (normalised name -> canonical spelling) and the ways the sheet no longer
+    matches SECTION_NAMES."""
+    headings = sheet_headings(root)
+    problems: list[Failure] = []
+    names: dict[str, str] = {}
+    if not headings:
+        problems.append(Failure(MODE_SHEET, "headings", "MODE-SHEET.md is missing or has no numbered section headings"))
+        return names, problems
+    for section, words in SECTION_NAMES.items():
+        heading = headings.get(section)
+        if heading is None:
+            problems.append(Failure(MODE_SHEET, f"section {section}", "no such heading in MODE-SHEET.md; update SECTION_NAMES"))
+            continue
+        for word in words:
+            if word.casefold() not in heading.casefold():
+                problems.append(
+                    Failure(MODE_SHEET, f"section {section}", f"heading {heading!r} no longer contains {word!r}; update SECTION_NAMES")
+                )
+                continue
+            names.setdefault(norm_tool(word), word)
+    for word in EXTRA_TOOLS:
+        names.setdefault(norm_tool(word), word)
+    return names, problems
+
+
+# --------------------------------------------------------------------------------------
+# ref resolution
+# --------------------------------------------------------------------------------------
+
+BARS_RE = re.compile(r"^(?P<target>.+?)@bars=(?P<a>\d+)-(?P<b>\d+)$")
+URL_RE = re.compile(r"^https?://[^\s/$.?#][^\s]*$", re.IGNORECASE)
+HAND_SUFFIX = {"both": "", "right": ".rh", "left": ".lh"}  # the same table as excerpts.HAND_SUFFIX
+
+
+def _load_json(path: Path):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+class Resolver:
+    """What a ref can name, read once from the committed sources under ``root``."""
+
+    def __init__(self, root: Path = ROOT) -> None:
+        self.root = root
+        catalog = _load_json(root / "content/catalog.static.json") or []
+        self.catalog_ids = {row.get("id") for row in catalog if isinstance(row, dict)}
+        pdmx = (_load_json(root / "content/sources/pdmx.json") or {}).get("items", [])
+        self.pdmx_by_id = {row["id"]: row for row in pdmx if isinstance(row, dict) and "id" in row}
+        self.pdmx_by_cid = {row["cid"]: row for row in pdmx if isinstance(row, dict) and "cid" in row}
+        continuity = (_load_json(root / "tools/content/generator_continuity.json") or {}).get("families", {})
+        self.exercise_ids = {
+            item for fam in continuity.values() if isinstance(fam, dict) for item in (fam.get("items") or {})
+        }
+        self.families = set((_load_json(root / "tools/content/family_contracts.json") or {}).get("families", {}))
+        self.excerpt_ids = set()
+        for row in (_load_json(root / "content/sources/excerpts.json") or {}).get("excerpts", []):
+            try:
+                parent = row["of"]
+                stem = parent[len("song."):] if parent.startswith("song.") else parent
+                self.excerpt_ids.add(
+                    f"excerpt.{stem}.b{int(row['fromBar'])}-{int(row['toBar'])}{HAND_SUFFIX[row['selection']]}"
+                )
+            except (KeyError, TypeError, ValueError):
+                continue
+
+    def _anchor_in(self, path: Path, anchor: str) -> bool:
+        pattern = re.compile(
+            r"^\s*(?:#{1,6}\s+|\|\s*|\*\*|[-*]\s+)" + re.escape(anchor) + r"(?![A-Za-z0-9_])", re.MULTILINE
+        )
+        try:
+            return bool(pattern.search(path.read_text(encoding="utf-8")))
+        except OSError:
+            return False
+
+    def resolve(self, ref: str, kind: str | None = None) -> tuple[bool, str]:
+        """(True, '') when the ref resolves, else (False, why)."""
+        text = str(ref).strip()
+        if not text:
+            return False, "empty"
+        bars: tuple[int, int] | None = None
+        if "@" in text:
+            match = BARS_RE.match(text)
+            if not match:
+                return False, "malformed bars suffix (write <target>@bars=<from>-<to>)"
+            text = match.group("target")
+            bars = (int(match.group("a")), int(match.group("b")))
+            if not 1 <= bars[0] <= bars[1]:
+                return False, f"bars {bars[0]}-{bars[1]} is not a range"
+        if URL_RE.match(text):
+            if bars:
+                return False, "a URL takes no bars suffix"
+            if kind == "external":
+                return True, ""
+            return False, "a URL resolves only under content kind external"
+        target, _, anchor = text.partition("#")
+        if bars is None and target:
+            candidate = (self.root / target).resolve()
+            try:
+                candidate.relative_to(self.root.resolve())
+            except ValueError:
+                candidate = None
+            if candidate is not None and candidate.exists():
+                if not anchor:
+                    return True, ""
+                if candidate.is_file() and self._anchor_in(candidate, anchor):
+                    return True, ""
+                return False, f"{target} exists but names no #{anchor}"
+        if anchor:
+            return False, "no such file"
+        item = self.pdmx_by_id.get(text) or self.pdmx_by_cid.get(text)
+        if item is not None:
+            if bars is not None and bars[1] > int(item.get("bars") or 0):
+                return False, f"bars {bars[0]}-{bars[1]} are outside the item's {item.get('bars')} bars"
+            return True, ""
+        if bars is not None:
+            return False, "a bars suffix is read only on a song id or a CID in content/sources/pdmx.json"
+        if text in self.catalog_ids:
+            return True, ""
+        if text in self.exercise_ids:
+            return True, ""
+        if text in self.excerpt_ids:
+            return True, ""
+        if text in self.families:
+            return True, ""
+        return False, "no such file, id, family or CID in the committed sources"
+
+
+# --------------------------------------------------------------------------------------
+# one record
+# --------------------------------------------------------------------------------------
+
+
+def _blank(value) -> bool:
+    return value is None or (isinstance(value, str) and not value.strip())
+
+
+def _norm_item(item) -> str:
+    return re.sub(r"\s+", " ", str(item).strip()).casefold()
+
+
+def check_record(rec, file: str, resolver: Resolver, tools: dict[str, str] | None = None, root: Path = ROOT):
+    """(failures, unresolved) for one parsed record."""
+    failures: list[Failure] = []
+    unresolved: list[Unresolved] = []
+    if tools is None:
+        tools = vocabulary(root)[0]
+
+    def fail(field: str, message: str) -> None:
+        failures.append(Failure(file, field, message))
+
+    if not isinstance(rec, dict):
+        fail("(record)", "the file is not a mapping of fields")
+        return failures, unresolved
+
+    # R1 -- every field present --------------------------------------------------------
+    for key in ("ability", "learner_cannot", "independent_target", "independence_test"):
+        if _blank(rec.get(key)):
+            fail(key, "missing or empty")
+    status = rec.get("status")
+    if _blank(status):
+        fail("status", "missing")
+    elif status not in STATUSES:
+        fail("status", f"{status!r} is not one of {', '.join(STATUSES)}")
+    steps = rec.get("steps")
+    if not isinstance(steps, list) or not steps:
+        fail("steps", "missing or empty (a list of steps in teaching order)")
+        steps = []
+    routes = rec.get("failure_routes")
+    if not isinstance(routes, list) or not routes:
+        fail("failure_routes", "missing or empty (a list of {observed, next})")
+        routes = []
+    for n, route in enumerate(routes, 1):
+        for key in ("observed", "next"):
+            if not isinstance(route, dict) or _blank(route.get(key)):
+                fail(f"failure_routes[{n}].{key}", "missing or empty")
+    evidence = rec.get("evidence")
+    if not isinstance(evidence, dict):
+        fail("evidence", "missing (a mapping of updates, self_checked, never_credits)")
+        evidence = {}
+    for key in ("updates", "self_checked", "never_credits"):
+        value = evidence.get(key)
+        if not isinstance(value, list):
+            fail(f"evidence.{key}", "missing (a list; it may be empty except never_credits)")
+        elif any(_blank(item) for item in value):
+            fail(f"evidence.{key}", "has an empty item")
+    generated = rec.get("generated")
+    if not isinstance(generated, list):
+        fail("generated", "missing (a list, empty when no generated family is used)")
+        generated = []
+
+    refs: list[tuple[str, str, str | None]] = []  # (field, ref, content kind)
+    for n, step in enumerate(steps, 1):
+        where = f"steps[{n}]"
+        if not isinstance(step, dict):
+            fail(where, "not a mapping of fields")
+            continue
+        for key in ("action", "feedback", "recorded", "cannot_establish"):
+            if _blank(step.get(key)):
+                fail(f"{where}.{key}", "missing or empty")
+        content = step.get("content")
+        kind = None
+        if not isinstance(content, dict):
+            fail(f"{where}.content", "missing (a mapping of kind and ref)")
+        else:
+            kind = content.get("kind")
+            if kind not in KINDS:
+                fail(f"{where}.content.kind", f"{kind!r} is not one of {', '.join(KINDS)}")
+            if _blank(content.get("ref")):
+                fail(f"{where}.content.ref", "missing or empty")
+            else:
+                refs.append((f"{where}.content.ref", str(content["ref"]), kind if kind in KINDS else None))
+        for key in ("scaffold", "removes"):
+            value = step.get(key)
+            if not isinstance(value, list):
+                fail(f"{where}.{key}", "missing (a list; it may be empty)")
+            elif any(_blank(item) for item in value):
+                fail(f"{where}.{key}", "has an empty item")
+        # R2 -- the tool is one MODE-SHEET names -------------------------------------
+        tool = step.get("tool")
+        if _blank(tool) or not isinstance(tool, str):
+            fail(f"{where}.tool", "missing (one tool named in MODE-SHEET.md)")
+        elif norm_tool(tool) not in tools:
+            fail(f"{where}.tool", f"{tool!r} is not a tool MODE-SHEET.md names (run with --tools)")
+        # R4 -- every step after the first removes a scaffold, or says why not -------
+        if n > 1 and isinstance(step.get("removes"), list):
+            if not [item for item in step["removes"] if not _blank(item)] and _blank(step.get("no_removal_reason")):
+                fail(f"{where}.removes", "removes nothing and gives no reason (list what goes, or write no_removal_reason)")
+
+    # R5 -- the last scaffold is a strict subset of the first --------------------------
+    if len(steps) >= 1 and all(isinstance(s, dict) and isinstance(s.get("scaffold"), list) for s in (steps[0], steps[-1])):
+        first = {_norm_item(x) for x in steps[0]["scaffold"] if not _blank(x)}
+        last = {_norm_item(x) for x in steps[-1]["scaffold"] if not _blank(x)}
+        if not last < first:
+            extra = sorted(last - first)
+            detail = f"; not in the first step's scaffold: {', '.join(extra)}" if extra else "; it equals the first step's scaffold"
+            if not first:
+                detail = "; the first step's scaffold is empty"
+            fail(f"steps[{len(steps)}].scaffold", "the last step's scaffold is not a strict subset of the first step's" + detail)
+
+    # R6 -- never_credits is not empty -------------------------------------------------
+    credits = evidence.get("never_credits")
+    if isinstance(credits, list) and not [x for x in credits if not _blank(x)]:
+        fail("evidence.never_credits", "is empty: say what must never earn credit")
+
+    # R7 -- generated families ---------------------------------------------------------
+    for n, entry in enumerate(generated, 1):
+        where = f"generated[{n}]"
+        if not isinstance(entry, dict):
+            fail(where, "not a mapping of fields")
+            continue
+        if _blank(entry.get("family")):
+            fail(f"{where}.family", "missing or empty")
+        else:
+            refs.append((f"{where}.family", str(entry["family"]), None))
+        job = entry.get("job")
+        if job not in JOBS:
+            fail(f"{where}.job", "missing" if _blank(job) else f"{job!r} is not one of {', '.join(JOBS)}")
+        for key in ("contract", "checker"):
+            if _blank(entry.get(key)):
+                fail(f"{where}.{key}", "missing or empty")
+            else:
+                refs.append((f"{where}.{key}", str(entry[key]), None))
+        props = entry.get("musical_properties")
+        if not isinstance(props, dict):
+            fail(f"{where}.musical_properties", "missing (a mapping; empty only for a CONTROL or NAMED-PATTERN family)")
+            continue
+        if job in MUSICAL_JOBS and not props:
+            fail(f"{where}.musical_properties", f"a {job} family lists its musical properties, each established or {UNKNOWN}")
+        for prop, how in props.items():
+            if _blank(how) or not isinstance(how, str):
+                fail(f"{where}.musical_properties.{prop}", f"neither how it is established nor {UNKNOWN}")
+            elif how.strip().casefold() in PLACEHOLDERS and how.strip() != UNKNOWN:
+                fail(f"{where}.musical_properties.{prop}", f"{how!r} says nothing about how it is established; write {UNKNOWN} or the method")
+
+    # R3 -- refs resolve once reviewed or shipped; a draft's are listed ----------------
+    for field, ref, kind in refs:
+        ok, why = resolver.resolve(ref, kind)
+        if ok:
+            continue
+        if status in ("reviewed", "shipped"):
+            fail(field, f"ref {ref!r} does not resolve ({why}); status is {status}")
+        else:
+            unresolved.append(Unresolved(file, field, ref, why))
+
+    # R8 -- shipped needs an acceptance-test path that exists --------------------------
+    if status == "shipped":
+        path = rec.get("acceptance_test")
+        if _blank(path):
+            fail("acceptance_test", "status is shipped: name the acceptance-test path")
+        elif not (resolver.root / str(path)).exists():
+            fail("acceptance_test", f"{path!r} does not exist")
+    return failures, unresolved
+
+
+def check_file(path: Path, resolver: Resolver, tools: dict[str, str], root: Path = ROOT):
+    try:
+        shown = path.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        shown = path.as_posix()
+    try:
+        rec = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError) as exc:
+        first = str(exc).strip().splitlines()[0] if str(exc).strip() else type(exc).__name__
+        return [Failure(shown, "(file)", f"not readable as YAML: {first}")], [], None
+    failures, unresolved = check_record(rec, shown, resolver, tools, root)
+    return failures, unresolved, (rec.get("status") if isinstance(rec, dict) else None)
+
+
+# --------------------------------------------------------------------------------------
+# the brief lint
+# --------------------------------------------------------------------------------------
+
+
+def lint_briefs(root: Path = ROOT) -> tuple[list[Failure], list[str]]:
+    """(failures, notes): a brief that names a chain record carries the three headings."""
+    failures: list[Failure] = []
+    notes: list[str] = []
+    for path in sorted(root.glob(BRIEFS_GLOB)):
+        shown = path.relative_to(root).as_posix()
+        lines = path.read_text(encoding="utf-8").splitlines()
+        names_record = any("chain record:" in line.casefold() or "docs/chains/" in line for line in lines)
+        if not names_record:
+            continue
+        headings = [line.casefold() for line in lines if re.match(r"^\s{0,3}#{1,6}\s+\S", line)]
+        missing = [h for h in BRIEF_HEADINGS if not any(h.casefold() in line for line in headings)]
+        if not missing:
+            continue
+        if shown in LINT_EXEMPT:
+            notes.append(f"EXEMPT {shown}: {LINT_EXEMPT[shown]}")
+            continue
+        failures.append(
+            Failure(shown, "headings", "names a chain record but lacks the heading(s): " + ", ".join(missing))
+        )
+    return failures, notes
+
+
+# --------------------------------------------------------------------------------------
+# command line
+# --------------------------------------------------------------------------------------
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Check the chain records in docs/chains/ (FABLE.md section 3).")
+    parser.add_argument("--root", type=Path, default=ROOT, help="the tree to read (default: this repository)")
+    parser.add_argument("--lint-briefs", action="store_true", help="also lint docs/prompts/runs/*/briefs/*.md")
+    parser.add_argument("--tools", action="store_true", help="print the tool vocabulary and exit")
+    args = parser.parse_args(argv)
+    root = args.root
+
+    tools, sheet_problems = vocabulary(root)
+    if args.tools:
+        print(f"{len(tools)} tool names (MODE-SHEET.md section headings, plus the allowed extra)")
+        for key in sorted(tools):
+            extra = "  (allowed extra: " + EXTRA_TOOLS[key] + ")" if key in EXTRA_TOOLS else ""
+            print(f"  {tools[key]}{extra}")
+        for problem in sheet_problems:
+            print(problem.line())
+        return 1 if sheet_problems else 0
+
+    failures: list[Failure] = list(sheet_problems)
+    unresolved: list[Unresolved] = []
+    notes: list[str] = []
+    resolver = Resolver(root)
+    paths = sorted(root.glob(CHAINS_GLOB))
+    statuses: list[str] = []
+    for path in paths:
+        got_failures, got_unresolved, status = check_file(path, resolver, tools, root)
+        failures += got_failures
+        unresolved += got_unresolved
+        statuses.append(f"{path.stem} ({status})")
+    if args.lint_briefs:
+        got_failures, notes = lint_briefs(root)
+        failures += got_failures
+
+    for failure in failures:
+        print(failure.line())
+    for item in unresolved:
+        print(item.line())
+    for note in notes:
+        print(note)
+    summary = f"{len(paths)} chain record(s): {', '.join(statuses) or 'none'}; {len(failures)} failure(s), {len(unresolved)} unresolved ref(s) in drafts"
+    if args.lint_briefs:
+        summary += "; briefs linted"
+    print(summary)
+    return 1 if failures else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

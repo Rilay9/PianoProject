@@ -32,3 +32,11 @@ jobs:
       # entries or the review stream starts no ci.yml run, so this is the one runner that sees it.
       - name: The record's mirrors are generated
         run: python3 -m unittest tools.content.tests.test_record_mirrors -v
+      # FABLE.md section 3: the chain records in docs/chains/ obey the checker's rules, and a brief that
+      # names a record carries the three headings. A push touching only those files starts no ci.yml run,
+      # so this is the runner that sees it. PyYAML is the one dependency, installed at the version
+      # requirements.txt pins (the other tests here use the standard library alone).
+      - name: The chain records and the briefs that name them
+        run: |
+          pip install "$(grep -i '^pyyaml==' tools/content/requirements.txt)"
+          python3 tools/content/check_chains.py --lint-briefs

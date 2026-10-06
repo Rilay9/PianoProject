@@ -1,0 +1,238 @@
+# The chain record for A7c.1, Habanera and tresillo as distinct cells (FABLE.md section 3).
+# Transcribed from the teaching design in
+# docs/prompts/runs/curriculum-review-2026-10-05/briefs/probe-latin4-bizet.md (instructional chain,
+# failure route, independence test, completion treatment); field meanings are in ORCHESTRATION-CONTRACT.md
+# section 1, what each tool records is in MODE-SHEET.md. Where the probe's table row held two items or
+# two tools, the record has one step for each, because a step holds one content and one tool.
+# status stays draft: the cut's id is not committed (the probe's intake commits it) and latin.4's lesson
+# file does not exist yet; the checker lists both as unresolved.
+ability: A7c.1
+learner_cannot: "Name or play the habanera bass (a dotted eighth, a sixteenth and two eighths in a 2/4 bar), tell it from the tresillo (3+3+2) on the page or by ear, or know that the Argentine tango figures descend from it. No lesson names either cell, and Por Una Cabeza carries the habanera in 56 of its 66 bars with nothing pointing the learner at it."
+independent_target: "Looks at a left hand they have not been told about and says which cell it uses, and where it stops using it, before hearing it; afterwards taps or plays that left hand at a tempo they choose."
+steps:
+  - action: "Reads the two cells and counts them aloud: the habanera, a dotted eighth, a sixteenth and two eighths in a 2/4 bar; the tresillo, 3+3+2."
+    content: {kind: explanation, ref: content/lessons/latin.4.md}
+    tool: lesson
+    scaffold: [written definition, counting, notation]
+    feedback: "None."
+    recorded: "Nothing."
+    cannot_establish: "That the learner understood the cells or can count them."
+    removes: []
+
+  - action: "Hears the tresillo."
+    content: {kind: generated, ref: exercise.tresillo.c}
+    tool: Hear it
+    scaffold: [app plays it, notation, cursor]
+    feedback: "The learner's own listening."
+    recorded: "No session row; the hearing is noted in the encounter history (MODE-SHEET section 3)."
+    cannot_establish: "Anything about the learner."
+    removes: [written definition, counting]
+
+  - action: "Hears the habanera in the Bizet left-hand excerpt."
+    content: {kind: excerpt, ref: excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh}
+    tool: Hear it
+    scaffold: [app plays it, notation, cursor]
+    feedback: "The learner's own listening."
+    recorded: "No session row (MODE-SHEET section 3)."
+    cannot_establish: "Anything about the learner."
+    removes: []
+    no_removal_reason: "The second item of the hearing pair, with the same help; the app's sound goes at the next step, where the learner taps."
+
+  - action: "Taps the tresillo's rhythm on any key, pitch removed. Rhythm only is switched on by the learner; no lesson tool can open it."
+    content: {kind: generated, ref: exercise.tresillo.c}
+    tool: Rhythm only
+    scaffold: [notation, cursor, click, count-in, pitch removed]
+    feedback: "Hits per note, and early or late against the written rhythm, on the summary."
+    recorded: "A session row with rhythmOnly true: hits over expected notes and timing; pass forced false; excluded from rung runs (MODE-SHEET section 14)."
+    cannot_establish: "Pitch; the piece; the cell's identity at speed (the 150 ms window, MODE-SHEET section 2)."
+    removes: [app plays it]
+
+  - action: "Taps the habanera's rhythm in the Bizet left-hand excerpt, pitch removed."
+    content: {kind: excerpt, ref: excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh}
+    tool: Rhythm only
+    scaffold: [notation, cursor, click, count-in, pitch removed]
+    feedback: "Hits per note, and early or late against the written rhythm, on the summary."
+    recorded: "A session row with rhythmOnly true, as in the step before (MODE-SHEET section 14)."
+    cannot_establish: "Pitch; the piece; the cell's identity at speed."
+    removes: []
+    no_removal_reason: "The second item of the tapping pair, with the same help."
+
+  - action: "Taps the tresillo and the habanera back to back, and says which onset the habanera adds and where (the half bar)."
+    content: {kind: excerpt, ref: excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh}
+    tool: Rhythm only
+    scaffold: [notation, cursor, click, count-in, pitch removed, lesson names the difference]
+    feedback: "The learner's own comparison."
+    recorded: "Two rhythm-only rows as in the two steps before; the spoken answer is not stored."
+    cannot_establish: "The contrast itself: self-checked. The two items still differ in metre, bar length and tempo (4/4 at 84 against 2/4 at 60); a strict control is G13's."
+    removes: []
+    no_removal_reason: "The task changes from tapping one rhythm to comparing two and naming the difference, with the same help; nothing is withdrawn until pitch is added."
+
+  - action: "Plays the tresillo with pitches, at the written tempo or below, in the key of C."
+    content: {kind: generated, ref: exercise.tresillo.c}
+    tool: Keep tempo
+    scaffold: [notation, cursor, click, count-in, counting line, tempo slider, isolated cell, fixed key of C]
+    feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars."
+    recorded: "A session row with tempoMeasured true, accuracy and timing; counts toward the exercises requirement at the pass pair when opened from latin.4 (MODE-SHEET section 2, R3 and R4)."
+    cannot_establish: "An unaided pulse; fine rhythm below the window; which hand played (not a condition, R4)."
+    removes: [pitch removed, lesson names the difference]
+
+  - action: "Plays the tresillo in another key, F."
+    content: {kind: generated, ref: exercise.tresillo.f}
+    tool: Keep tempo
+    scaffold: [notation, cursor, click, count-in, counting line, tempo slider, isolated cell]
+    feedback: "As the step before, in a new key."
+    recorded: "As the step before; any one of the three keys counts."
+    cannot_establish: "As the step before. No existing item varies the key of the habanera cell under control: that is part of why G13 exists."
+    removes: [fixed key of C]
+
+  - action: "Plays the tresillo in a third key, G."
+    content: {kind: generated, ref: exercise.tresillo.g}
+    tool: Keep tempo
+    scaffold: [notation, cursor, click, count-in, counting line, tempo slider, isolated cell]
+    feedback: "As the step before, in a new key."
+    recorded: "As the step before."
+    cannot_establish: "As the step before."
+    removes: []
+    no_removal_reason: "A third key, so that one memorised transposition cannot pass; the variation is the point, not a new help withdrawn."
+
+  - action: "Sees and hears the habanera bass under Carmen's tune, bars 1 to 12 first."
+    content: {kind: piece, ref: "song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx@bars=1-12"}
+    tool: Hear it
+    scaffold: [app plays it, notation, cursor]
+    feedback: "The learner's own listening."
+    recorded: "No session row (MODE-SHEET section 3)."
+    cannot_establish: "Anything about the learner."
+    removes: [click, count-in, counting line, tempo slider, isolated cell]
+
+  - action: "Plays the authentic Bizet left-hand excerpt in Wait for me when note-finding is the problem."
+    content: {kind: excerpt, ref: excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh}
+    tool: Wait for me
+    scaffold: [notation, cursor, app waits for the learner, bass alone]
+    feedback: "The page holds until the right note is struck; wrong keys are counted."
+    recorded: "A session row with timing not measured, which never meets a rung standard (MODE-SHEET section 1, claim 1)."
+    cannot_establish: "Pulse, rhythm or fluency; the cell's identity at speed."
+    removes: [app plays it]
+
+  - action: "Plays the Bizet left-hand excerpt in Keep tempo, starting below the written tempo and raising it. This is the counted run of the whole twelve bars."
+    content: {kind: excerpt, ref: excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh}
+    tool: Keep tempo
+    scaffold: [notation, cursor, click, count-in, tempo slider, bass alone]
+    feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars."
+    recorded: "A session row that counts toward the songs requirement (items names this cut) at the pass pair, opened from latin.4."
+    cannot_establish: "The cell's identity at speed (the window cannot resolve it); an unaided pulse; the feel (unverified as music)."
+    removes: [app waits for the learner]
+
+  - action: "Optional: plays the left hand of the whole edition while the app plays the right, bars 1 to 12 looped first. Reached by opening the parent and choosing the left hand on the Score screen; the lesson says so."
+    content: {kind: piece, ref: "song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx@bars=1-12"}
+    tool: Keep tempo
+    scaffold: [notation, cursor, click, count-in, tempo slider, app plays the other hand, loop]
+    feedback: "As the step before."
+    recorded: "A session row with hands (appPlayed) and range; nothing requires it, because the parent is not in the requirement's items."
+    cannot_establish: "Hands-together skill; the whole piece (a looped range stands for the whole item today, an open gap)."
+    removes: [bass alone]
+
+  - action: "Hears real tresillo material and finds the three onsets in the printed left hand."
+    content: {kind: piece, ref: "song.jazz.the-crave@bars=21-26"}
+    tool: Hear it
+    scaffold: [app plays it, notation, cursor, bars named in the lesson, cell named in the lesson]
+    feedback: "The learner's own listening."
+    recorded: "Nothing."
+    cannot_establish: "The recognition: self-checked."
+    removes: [app plays the other hand, click, count-in, tempo slider, loop]
+
+  - action: "Optionally taps the tresillo of bars 21 and 22 on a Loop."
+    content: {kind: piece, ref: "song.jazz.the-crave@bars=21-22"}
+    tool: Rhythm only
+    scaffold: [notation, cursor, click, count-in, pitch removed, loop, bars named in the lesson, cell named in the lesson]
+    feedback: "Hits per note, and early or late against the written rhythm, on the summary."
+    recorded: "A session row with rhythmOnly true; not counted."
+    cannot_establish: "The recognition: self-checked."
+    removes: [app plays it]
+
+  - action: "Decides from the page, before hearing it, which cell the left hand of a passage uses. The lesson gives the bars, not the cell's name."
+    content: {kind: piece, ref: "song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14"}
+    tool: lesson
+    scaffold: [notation, bars named in the lesson]
+    feedback: "None until the reveal at the end of the lesson."
+    recorded: "Nothing for the decision."
+    cannot_establish: "The identification: self-checked."
+    removes: [cursor, click, count-in, pitch removed, loop, cell named in the lesson]
+
+  - action: "Checks the decision by hearing the passage."
+    content: {kind: piece, ref: "song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14"}
+    tool: Hear it
+    scaffold: [app plays it, notation, cursor, bars named in the lesson]
+    feedback: "The learner's own listening."
+    recorded: "Nothing."
+    cannot_establish: "The identification: self-checked."
+    removes: []
+    no_removal_reason: "The check that follows the decision, with the same help plus the app's sound; the help is withdrawn at the independence step."
+
+  - action: "Checks the decision by tapping the left hand on a Loop, then reads the answer printed at the end of the lesson."
+    content: {kind: piece, ref: "song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14"}
+    tool: Rhythm only
+    scaffold: [notation, cursor, click, count-in, pitch removed, loop, bars named in the lesson, answer reveal]
+    feedback: "The reveal; the learner's own listening; hits and timing on the summary."
+    recorded: "A session row with rhythmOnly true if the learner taps; not counted."
+    cannot_establish: "The identification: self-checked."
+    removes: [app plays it]
+
+  - action: "On a later rung, says which cell a piece's left hand uses, and where it breaks, before playing it, with no lesson naming it. A new task line on latin.6 and latin.7 (the pieces there include La Cumparsita, Por Una Cabeza whole and The Crave)."
+    content: {kind: piece, ref: song.folk.por-una-cabeza-carlos-gardel.pdmx}
+    tool: lesson
+    scaffold: [notation]
+    feedback: "None."
+    recorded: "Nothing for the naming; the rhythm-only or Keep tempo row of whatever they then play counts toward nothing in latin.4."
+    cannot_establish: "The naming, the choice of where the cell breaks and hearing the difference: self-checked. No one in this process can hear whether the learner's habanera has the feel (unverified as music)."
+    removes: [cursor, click, count-in, pitch removed, loop, bars named in the lesson, answer reveal]
+
+failure_routes:
+  - observed: "Wrong or missed pitches in Keep tempo on the cut (the leap D2-A2-F3, or the change to B-flat 2 and G3 in bars 8 to 11)."
+    next: "Wait for me on the cut (pitch without the clock); then Loop the trouble bars (7 to 9) in Wait; then Keep tempo at a lower tempo."
+  - observed: "Pitches right, but the second and third onsets drift, early or late at the sixteenth, so the cell blurs into even eighths or a straight dotted pair."
+    next: "Rhythm only on a Loop of bars 1 and 2; return to Hear it on the same bars; count aloud while tapping; then restore pitches at a lower tempo."
+  - observed: "The learner taps or plays a tresillo where the habanera is written, or the reverse."
+    next: "Back to the definitions and Hear it on both items; then the back-to-back taps, naming the half-bar onset before each attempt."
+  - observed: "The cut is right below the written tempo and breaks at the pass pair."
+    next: "Raise the tempo in small steps by hand. Ladder over a Loop of the cut is available (an in-session climb only, MODE-SHEET section 12); the lesson says a later day's cold run is the real check."
+  - observed: "In context the bass falls apart under the app's right hand."
+    next: "Back to the cut alone; then Loop bars 4 to 7 of the parent with the left hand chosen; then the whole twelve bars."
+  - observed: "The tresillo exercise fails in a new key."
+    next: "Back to the key of C, Rhythm only once, then the new key at a lower tempo."
+  - observed: "The learner cannot tell the cells apart by ear on Hear it."
+    next: "No app tool checks hearing: return to tapping and to the printed onsets. Telling them apart by ear stays self-checked (unverified as music)."
+
+independence_test: "Without the original scaffold, the learner looks at a left hand they have not been told about and says which cell it uses, and where it stops using it, before hearing it: Por Una Cabeza bars 1 to 14 at the identification step inside latin.4, then the latin.6 and latin.7 pieces. Afterwards the learner taps or plays that left hand at a tempo they choose. The app can observe only the rhythm-only or Keep tempo row of what they then play; the identification, the choice of where the cell breaks and hearing the difference are self-checked."
+
+evidence:
+  updates:
+    - "One Keep tempo run of a tresillo exercise meeting the pass pair (90 % accuracy at 80 % tempo), opened from latin.4 (completion treatment CT-3)."
+    - "One Keep tempo run of the Bizet left-hand cut meeting the pass pair, opened from latin.4; a left-hand-only run counts because the required item is itself the left-hand excerpt."
+  self_checked:
+    - "Naming and counting the cells."
+    - "The contrast between the two cells."
+    - "Hearing the difference."
+    - "The in-context left hand and any both-hands try."
+    - "Finding the tresillo in The Crave."
+    - "The identification and the independence test."
+  never_credits:
+    - "Recognising the habanera and the tresillo, by eye or by ear."
+    - "The cell's identity at speed (the timing window cannot resolve it)."
+    - "Hands-together playing."
+    - "Anything from Hear it, Rhythm only or Wait rows."
+    - "A looped partial lap standing for the whole cut (today's code does not prevent this; the lesson says what the counted run is)."
+
+generated:
+  - family: tresillo
+    job: NAMED-PATTERN
+    contract: docs/prompts/runs/curriculum-review-2026-10-05/GENERATOR-ADDENDUM.md#G13
+    checker: docs/prompts/runs/curriculum-review-2026-10-05/GENERATOR-ADDENDUM.md#G13
+    musical_properties:
+      onset set per bar: "CK-5: the left hand's onset sets per bar read from partitura events against the sourced cell (habanera 0, 0.75, 1.0, 1.5 in 2/4; tresillo 0, 0.75, 1.5)."
+      near-miss rejection: "CK-5 cross-failure: every tresillo bar fails the habanera check and the reverse."
+      real printed example: "CK-5: Por Una Cabeza bars 1 to 14, left hand read by partitura with values doubled, must pass; a real example the builder did not choose."
+      spelling in C, F and G: "CK-5: the item digests for C, F and G unchanged after the interval-spelling edit."
+      chord-tone roles of the non-root onsets and the harmony over two bars: UNKNOWN
+      the feel and sound of either hand: UNKNOWN
+
+status: draft

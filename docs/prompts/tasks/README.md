@@ -307,6 +307,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **CI2** | CI's content job red since the quarry merge: the research scripts under the entry-point test, and the wave's eighth-note sentence at 1.1 read into the ownership table (`CI2-content-job-red-since-the-quarry-merge.md`) | tooling/CI | landed 2026-10-06 (`CI2-content-job-red-since-the-quarry-merge.md`); Entry 234
 | **LEN1** | The lesson length cap removed (the owner, 2026-10-06): no word or reading-time rule; the three-minute test and its exception list deleted; twelve trimmed lessons restored (`LEN1-no-lesson-length-cap.md`) | content | landed 2026-10-06 (`LEN1-no-lesson-length-cap.md`); Entry 235
 | **DF1** | Chord-member fingerings reach the shipped score on the ABC route (236 marks on 7 of 33 files were dropped) and the twelve-bar blues roots are spelled by interval (`DF1-abc-chord-fingering-and-blues-spelling.md`) | content | landed 2026-10-06 (`DF1-abc-chord-fingering-and-blues-spelling.md`); Entry 236
+| **CH1** | The chain record and its checker: FABLE §3's eight rules enforced in CI over `docs/chains/`, the Bizet chain as the first draft record, the brief lint (`CH1-chain-record-checker.md`) | tooling/CI | landed 2026-10-06 (`CH1-chain-record-checker.md`); Entry 237
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -479,6 +480,7 @@ W1b · landed · 233
 CI2 · landed · 234
 LEN1 · landed · 235
 DF1 · landed · 236
+CH1 · landed · 237
 F0a · closed · —
 L120 · approved · —
 -->
