@@ -453,6 +453,11 @@ export type MaterialVerdict =
  * Every vocabulary demand the learner is not prepared for: the one gate's first question, asked of the whole vocabulary.
  * The item it asks it of carries every demand located somewhere: a demand located nowhere can be left unasked
  * (a key signature altering no sounding note, L120b), and an unknown item's key signature may alter any note.
+ *
+ * Because it is the same question (`uncoped`, through `demandsAsked`), a demand the vocabulary declares `notAsked`
+ * — the habanera and the tresillo (CD1 D5) — is never among them, so an unmeasured candidate is not refused
+ * `unknown-forbidden` for a cell that a measured one would never be asked (the reviewer's ruling,
+ * `docs/review/responses/33497357.md` §3). Every other demand is included as before.
  */
 export function unpreparedDemands(learner: Learner, vocabulary: Vocabulary = VOCABULARY_V0): string[] {
   const every: CatalogItem = {

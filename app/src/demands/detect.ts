@@ -56,6 +56,8 @@ export const DETECTOR_IDS = [
   'handsTogether',
   'leftHandPattern',
   'walkingBass',
+  'habaneraCell',
+  'tresilloCell',
 ] as const;
 export type DetectorId = (typeof DETECTOR_IDS)[number];
 
@@ -281,6 +283,76 @@ function turnsBack(pitches: number[]): boolean {
     if (left.has(here)) return true;
   }
   return false;
+}
+
+// --- the habanera and the tresillo: onset cells in the left hand (CD1) -----------------
+
+/**
+ * The two cells as onset sets, in fractions of the bar from its start (CD1 D1; CK-5). The source is
+ * the upgrade's habanera, "dotted eighth, sixteenth, eighth, eighth in 2/4 … compared with the
+ * tresillo (3+3+2)" (`CURRICULUM-UPGRADE.md:21`), with Wikipedia's Habanera and Tresillo pages as
+ * the secondary source ("the habanera is the tresillo plus the second main beat"). The habanera
+ * sounds at 0, 3/8, 1/2 and 3/4 of its 2/4 bar; the tresillo's 3+3+2 at 0, 3/8 and 3/4. The doubled
+ * form in 4/4 or 2/2 (a dotted quarter, an eighth, a quarter, a quarter; Por Una Cabeza's quarter,
+ * eighth rest, eighth, quarter, quarter) is the same fractions of its bar, so the definition rests
+ * on the onsets, never on the written durations (`ABILITY-MAP.md`'s L1 amendment).
+ *
+ * Stated here and again in `tools/content/cells.py`, each from the cited definition, on purpose:
+ * that module is the build's independent witness, reading partitura's parse of the same bytes, and
+ * an oracle that imported these constants would not be one. The sourced fixtures and the
+ * differential (`tools/content/tests/test_cells.py`) hold the two statements equal.
+ */
+const HABANERA_CELL: readonly number[] = [0, 3 / 8, 1 / 2, 3 / 4];
+const TRESILLO_CELL: readonly number[] = [0, 3 / 8, 3 / 4];
+
+/** The metres the cells are read in: the published 2/4, and its doubled form in 4/4 or 2/2. */
+function cellMetre(metre: { beats: number; beatType: number }): boolean {
+  return (
+    (metre.beats === 2 && metre.beatType === 4) ||
+    (metre.beats === 4 && metre.beatType === 4) ||
+    (metre.beats === 2 && metre.beatType === 2)
+  );
+}
+
+/**
+ * The bars whose left-hand onsets are exactly `cell` (CD1 D2), located at one note per onset: the
+ * lowest left-hand note there, so a habanera bar locates four places and a tresillo bar three,
+ * whatever the voicing. Read per unrolled measure, in 2/4, 4/4 or 2/2 only (a 3/8 fraction of a 3/4
+ * bar is no published cell, and in 6/8 the 3+3 is the beat itself), never in a pickup bar. The left
+ * hand is the note's `hand`, which a cross-staff note keeps and a one-staff item takes from its
+ * declared hand (HD1). Chords and voices merge into their distinct onsets; a tie chain is one note,
+ * so a bar entered by a tie has no onset at its start; grace notes are left out (`placed`). Exact
+ * equality, never "contains": a tresillo bar lacks the habanera's 1/2, a habanera bar has one onset
+ * more than the tresillo, and a habanera whose sixteenth is tied over the half bar is a tresillo.
+ *
+ * The onsets, never the style. In 4/4 the doubled habanera is also the common dotted-quarter,
+ * eighth, quarter, quarter bass. What this finds is that the left hand holds the declared onset
+ * cell; that the piece is a habanera or a tango, that it suits teaching the cell, or that a learner
+ * plays it with its feel are not facts it finds (`docs/review/responses/eeff22fe.md` §2).
+ */
+function cellBars(model: ScoreModelData, cell: readonly number[]): DemandAt[] {
+  const starts = barStarts(model);
+  const lowestByBar = new Map<number, Placed[]>();
+  for (const p of placed(model)) {
+    if (p.note.hand !== 'L') continue;
+    const bar = p.note.measureIndex;
+    if (model.pickup === true && bar === 0) continue;
+    if (!cellMetre(metreAt(model, bar))) continue;
+    const held = lowestByBar.get(bar) ?? [];
+    const at = held.findIndex((q) => same(q.note.onset, p.note.onset));
+    if (at < 0) held.push(p);
+    else if (p.note.midi < (held[at] as Placed).note.midi) held[at] = p;
+    lowestByBar.set(bar, held);
+  }
+  const out: DemandAt[] = [];
+  for (const [bar, lowest] of lowestByBar) {
+    if (lowest.length !== cell.length) continue;
+    const start = starts.get(bar) ?? 0;
+    const length = barLength(metreAt(model, bar));
+    const fractions = lowest.map((p) => (p.note.onset - start) / length).sort((a, b) => a - b);
+    if (fractions.every((f, i) => same(f, cell[i] as number))) out.push(...lowest.map(locate));
+  }
+  return out.sort((a, b) => a.step - b.step);
 }
 
 // --- the detectors -----------------------------------------------------------------
@@ -546,6 +618,19 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
     const everyBar = m.measureCount > 0 && Array.from({ length: m.measureCount }, (_, bar) => walks(bar) && tune(bar)).every(Boolean);
     return found('walkingBass', everyBar ? left.map(locate) : []);
   },
+
+  /**
+   * The habanera onset cell in the left hand (CD1): a bar whose left-hand onsets are exactly 0, 3/8,
+   * 1/2 and 3/4 of the bar, in 2/4, 4/4 or 2/2 (`cellBars`). Located at four places per such bar.
+   */
+  habaneraCell: (m) => found('habaneraCell', cellBars(m, HABANERA_CELL)),
+
+  /**
+   * The tresillo onset cell in the left hand (CD1): a bar whose left-hand onsets are exactly 0, 3/8
+   * and 3/4 of the bar, in 2/4, 4/4 or 2/2 (`cellBars`). Located at three places per such bar. A bar
+   * of eight sixteenths grouped 3+3+2 by accent sounds every sixteenth, and is not one.
+   */
+  tresilloCell: (m) => found('tresilloCell', cellBars(m, TRESILLO_CELL)),
 };
 
 /** One detector over one model. */

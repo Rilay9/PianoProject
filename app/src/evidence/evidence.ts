@@ -201,8 +201,14 @@ export interface EvidenceContext {
  *   other; it reads them at the practice standard. The support share and the
  *   timing precisions moved into the vocabulary at the same time (L57) with
  *   their values unchanged, which alone would have moved nothing.
+ * - **7** — two demands join the vocabulary (CD1): `rhythm.habanera` and `rhythm.tresillo`, the
+ *   left hand's onset cells (`detect.ts`'s `habaneraCell`, `tresilloCell`). Every vocabulary demand is
+ *   located on every run (`locateDemands`), so a run on a cell-bearing item gains per-demand and
+ *   `otherDemands` entries for them; their skill, `habanera-and-tresillo`, is observable `none` with no
+ *   precision, so no skill's own `n` or `right` moves. Evidence stored under 6 lacks the cells, so rows
+ *   under 6 wait for a recompute like any other.
  */
-export const EVIDENCE_DEFINITIONS = 6;
+export const EVIDENCE_DEFINITIONS = 7;
 
 /** A demand at some steps: another demand on a demand's counted steps (`overlapOf`), or one a skill does not count (`otherDemands`). */
 export interface DemandOverlap {

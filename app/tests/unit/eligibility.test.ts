@@ -103,7 +103,14 @@ describe('Part 23’s adversaries, through the gate', () => {
   it('8. demands unmeasured: refused for every automatic want where the learner is not prepared for every demand (unknown-forbidden, E2a), exploration-only with nothing to rule out, eligible for exploration — the missing measurement said in each', () => {
     const candidate = song('song.unread', unmeasured('the app could not load the file'));
     // An unknown is not an observed absence (the E2 review's required change, through the exported gate): every demand but steps and skips.
-    const unprepared = VOCABULARY_V0.demands.map((demand) => demand.id).filter((id) => id !== 'interval.step' && id !== 'interval.skip');
+    // Revised (CD1 D5; responses/33497357.md §3): less the demands the coping question never asks (`notAsked`: the habanera and
+    // the tresillo); the old assumption was every vocabulary demand. An ordinary demand without `notAsked` is still included.
+    const unprepared = VOCABULARY_V0.demands
+      .filter((demand) => demand.notAsked === undefined)
+      .map((demand) => demand.id)
+      .filter((id) => id !== 'interval.step' && id !== 'interval.skip');
+    expect(unprepared).toContain('rhythm.syncopation');
+    expect(unprepared).not.toContain('rhythm.tresillo');
     for (const want of [{ for: 'equivalent' }, { for: 'demand', demand: 'interval.skip' }, { for: 'skill', skill: 'interval-reading' }, { for: 'requirement', skill: 'interval-reading' }] as const) {
       expect(eligibleFor(candidate, STEPS_AND_SKIPS, want), want.for).toEqual({ verdict: 'ineligible', why: 'unknown-forbidden', demands: unprepared, missing: 'the app could not load the file' });
     }
@@ -306,8 +313,17 @@ describe('the reason words state the strongest fact known', () => {
 });
 
 describe('one density rule, read by the build and by the gate', () => {
-  it('names every vocabulary demand, and no two rules are the whole table', () => {
-    expect(Object.keys(OPPORTUNITY_DENSITY.demands).sort()).toEqual(VOCABULARY_V0.demands.map((d) => d.id).sort());
+  // Revised (CD1 §3a; responses/33497357.md §2, §4): a demand is named by a rule or, by decision, as curated-only (the
+  // habanera and the tresillo), never both; the old assumption was a rule for every demand.
+  it('names every vocabulary demand, by a rule or as curated-only and never both, and no two rules are the whole table', () => {
+    const ruled = Object.keys(OPPORTUNITY_DENSITY.demands);
+    const curated = Object.keys(OPPORTUNITY_DENSITY.curatedOnly);
+    expect([...ruled, ...curated].sort()).toEqual(VOCABULARY_V0.demands.map((d) => d.id).sort());
+    expect(curated.filter((id) => ruled.includes(id))).toEqual([]);
+    expect(curated.sort()).toEqual(['rhythm.habanera', 'rhythm.tresillo']);
+    for (const id of curated) expect(OPPORTUNITY_DENSITY.curatedOnly[id]?.why.length ?? 0, id).toBeGreaterThan(20);
+    // No count of located places establishes a curated-only demand, however dense.
+    expect(usefulDensity({ 'rhythm.habanera': 4000, 'rhythm.tresillo': 3000 }, 10)).toEqual([]);
     expect(new Set(Object.values(OPPORTUNITY_DENSITY.demands).map((r) => `${String(r.min)}/${String(r.perBar)}`)).size).toBeGreaterThan(5);
   });
 

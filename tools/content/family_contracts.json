@@ -5614,6 +5614,14 @@
             "bar",
             2
           ]
+        },
+        {
+          "demand": "rhythm.tresillo",
+          "minPer": [
+            "bar",
+            3
+          ],
+          "why": "the family's promise, exactly: the tresillo onset cell (0, 3/8, 3/4 of the bar) in the left hand of every bar, three located places a bar (CD1 §3a; CK-5). Established for an item only where the independent witness, cells.py reading the same file with partitura, agrees bar for bar (build.attach_demands); the onsets, never the feel"
         }
       ],
       "overconcentration": [],

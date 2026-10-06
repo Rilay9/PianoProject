@@ -658,6 +658,29 @@ def established_by_contract(entry: dict, row: dict) -> list[str]:
     return out
 
 
+#: The demands whose establishment by a contract needs the independent witness to agree (CD1 §3a).
+WITNESSED_CELLS = ("rhythm.habanera", "rhythm.tresillo")
+
+
+def _witness_agrees(entry: dict, path: Path, positions: dict | None, demand: str) -> bool:
+    """
+    Whether `cells.py` reads `demand`'s cell in exactly the bars the app located it (CD1 §3a): the left hand's staff,
+    staff 1 for a one-staff file the row declares one hand of (HD1), staff 2 otherwise. Prints the bars when not.
+    """
+    import cells
+
+    staff = 1 if ((entry.get("notation") or {}).get("staves") == 1 and declared_hand(entry)) else 2
+    try:
+        differ = cells.disagreements(path, (positions or {}).get("positions"), demand, staff)
+    except cells.CellsError as error:
+        print(f"  {entry['id']}: {demand} not established by its contract: the witness refused the file ({error})")
+        return False
+    if differ:
+        print(f"  {entry['id']}: {demand} not established by its contract: the app and the witness disagree at bars {differ}")
+        return False
+    return True
+
+
 def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
     """
     The demands the app's own detectors measure on every bundled score, on its row (E0
@@ -815,6 +838,11 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
         by_window = ([d for d in established_by_window(located, int(row["measures"]), table, order) if d not in by_density]
                      if entry.get("type") == "excerpt" else [])
         by_contract = [d for d in established_by_contract(entry, row) if d not in by_density and d not in by_window]
+        # CD1 §3a: a curated-only cell is established by a family's contract only where the independent witness
+        # (`cells.py`, partitura on the same file) agrees with the app's located places bar for bar; a disagreement
+        # keeps it unestablished, said on the build's output, never resolved by trusting either side.
+        by_contract = [d for d in by_contract if d not in WITNESSED_CELLS
+                       or _witness_agrees(entry, out_dir / entry["file"], positions.get(sha), d)]
         misread = clef_misread(out_dir / entry["file"], (entry.get("notation") or {}).get("staves"))
         # A reading known to be wrong on this file never establishes an opportunity; it stays
         # among the ids, so the gate still treats it as something the learner may have to meet.

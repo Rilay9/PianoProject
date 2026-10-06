@@ -2427,14 +2427,17 @@ function proficientAt(evidence: readonly MeasuredEvidence[], policy: ReaderPolic
  * it, and the reader does not add to it until those reads hold at every demand
  * the phrase still asks. A demand the recipe now keeps out does not hold it
  * back. `share` is the reader's skill's support share in the vocabulary (CL11b,
- * L57), the share its whole reads are supported at.
+ * L57), the share its whole reads are supported at. A demand the coping question
+ * never asks (`notAsked`: the habanera and the tresillo, CD1 D5) never holds a
+ * phrase back: the reader asks no more of a phrase than the gate does.
  */
-function heldBack(reads: readonly MeasuredEvidence[], current: SightReadingOptions, share: number): string[] {
+function heldBack(reads: readonly MeasuredEvidence[], current: SightReadingOptions, share: number, notAsked: ReadonlySet<string>): string[] {
   const out = new Set<string>();
   for (const read of reads) {
     for (const entry of read.byDemand ?? []) {
       if (entry.n === 0 || entry.right / entry.n >= share) continue;
       const demand = SAME_NOTES[entry.demand] ?? entry.demand;
+      if (notAsked.has(demand)) continue;
       if (READING_CONTROLS[demand]?.mayWrite(current) ?? true) out.add(demand);
     }
   }
@@ -2445,17 +2448,21 @@ function heldBack(reads: readonly MeasuredEvidence[], current: SightReadingOptio
  * The demands of sight-reading the reads single out (`pattern` or `isolated`)
  * that the phrase still holds, as findings a reason line may cite: "shorter
  * than a quarter" as the eighths; the lowest share first, a pattern before an
- * isolated case, the latest taught first.
+ * isolated case, the latest taught first. Never a `notAsked` demand (the habanera
+ * and the tresillo, CD1 D5): a reason line naming a cell no lesson on the path
+ * taught is a claim the app cannot support.
  */
 function singledOut(
   readings: readonly DemandReading[],
   current: SightReadingOptions,
   taughtIndex: (demand: string) => number,
+  notAsked: ReadonlySet<string>,
 ): DemandFinding[] {
   const out: DemandFinding[] = [];
   for (const one of readings) {
     if (one.selectivity === 'ambiguous') continue;
     const demand = SAME_NOTES[one.demand] ?? one.demand;
+    if (notAsked.has(demand)) continue;
     if ((READING_CONTROLS[demand]?.mayWrite(current) ?? true) !== true || out.some((found) => found.demand === demand)) continue;
     out.push({ demand, selectivity: one.selectivity, phrases: one.phrases, phrasesBelow: one.phrasesBelow, n: one.n, right: one.right });
   }
@@ -2705,6 +2712,8 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
     return at.length > 0 ? Math.min(...at) : Number.POSITIVE_INFINITY;
   };
   const vocabularyIndex = (demand: string): number => vocabulary.demands.findIndex((d) => d.id === demand);
+  // CD1 D5: the demands the coping question never asks, which never hold a phrase back nor reach a reason line.
+  const notAsked = new Set(vocabulary.demands.filter((d) => d.notAsked !== undefined).map((d) => d.id));
 
   // 3. The rung holding the row has moved on since the last read, and its phrases may now hold more.
   const thenRung = previous?.opened?.rung;
@@ -2765,7 +2774,7 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   // 4a. Two reads against the recipe.
   const lastFew = evidence.slice(-policy.stepDownAfter);
   if (lastFew.length === policy.stepDownAfter && lastFew.every((e) => !supports(e, vocabulary))) {
-    const because = singledOut(readings, current, taughtIndex)[0];
+    const because = singledOut(readings, current, taughtIndex, notAsked)[0];
     if (because) {
       const down = moveFor(ctx, because.demand, 'off');
       return down ? offer(down.recipe, { kind: 'back', last: measure, move: down, because }) : offer(working, { kind: 'kept', last: measure, because });
@@ -2776,7 +2785,7 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
 
   // 4b. Proficient at the recipe, at every demand the phrase holds: the next taught demand.
   const proficient = !previousEasy && proficientAt(evidence, policy, vocabulary);
-  const stillWrong = proficient ? heldBack(evidence.slice(-policy.stepUpAfter), current, supportShareOf(READER_SKILL, vocabulary)) : [];
+  const stillWrong = proficient ? heldBack(evidence.slice(-policy.stepUpAfter), current, supportShareOf(READER_SKILL, vocabulary), notAsked) : [];
   const ready = proficient && stillWrong.length === 0;
   if (ready) {
     const shown = (demand: string): boolean =>
@@ -2805,7 +2814,7 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   // Right as a whole, and a demand the phrase holds went wrong in the proving reads: held, and the line says
   // what the reads single out, or that the app is not sure yet.
   if (stillWrong.length > 0) {
-    const finding = singledOut(readings, current, taughtIndex).find((one) => stillWrong.includes(one.demand));
+    const finding = singledOut(readings, current, taughtIndex, notAsked).find((one) => stillWrong.includes(one.demand));
     return finding ? offer(working, { kind: 'hold', last: measure, wrong: finding }) : offer(working, { kind: 'unsure', last: measure });
   }
   const keys = current.fifths;

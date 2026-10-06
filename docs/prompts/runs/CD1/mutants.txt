@@ -1,0 +1,18 @@
+CD1 mutants. build/CD1/mutants.py applies each one alone, runs the named test, and restores the file byte for byte. Final run: on the HD2 model, after the content build.
+
+M5 and M6 (the density thresholds) are superseded by the brief's §3a: there is no density rule for either cell. M7-M13 test the two proofs, the shared store and the readers of the coping question instead.
+
+An earlier M1 changed only the match step, contains for equals. It survived because the length check made it equivalent to the original. The M1 below drops both.
+
+M1 subset: the bar contains the cell's onsets (length check dropped, contains for equals): RED (caught) by tests/unit/demandDetectors.test.ts
+M1b subset in the witness: RED (caught) by tools.content.tests.test_cells.T5TheWitnessOnHandWrittenFixtures
+M2 fractions over the beat: RED (caught) by tests/unit/demandDetectors.test.ts
+M3 every staff instead of the left hand: RED (caught) by tests/unit/demandDetectors.test.ts
+M4 notAsked dropped in demandsAsked: RED (caught) by tests/unit/copingQuestion.test.ts
+M7 the contract proof without the witness gate: RED (caught) by tools.content.tests.test_cell_proofs.TheContractProof
+M8 a passage fact counted for any rung: RED (caught) by tools.content.tests.test_cell_proofs.TheVerifiedPassageFact
+M9 a fact never goes stale on its version: RED (caught) by tools.content.tests.test_cell_proofs.TheVerifiedPassageFact
+M10 the store never refuses a changed file identity: RED (caught) by tools.content.tests.test_cell_proofs.TheVerifiedPassageFact
+M11 the daily reader holds a phrase back for a notAsked demand: RED (caught) by tests/unit/evidenceNumbersInTheVocabulary.test.ts
+M12 conflicting hand rows resolved by file order: RED (caught) by tools.content.tests.test_cell_proofs.TheVerifiedPassageFact
+M13 a fact never goes stale on its file's verified hands: RED (caught) by tools.content.tests.test_cell_proofs.TheVerifiedPassageFact

@@ -18,6 +18,13 @@
  * catalogue records it (`provenance.identity`, the build's sha256 of the bytes it ships beside the row). A
  * row whose identity is not the item's current one is **stale** and refused, so an edition or file change
  * never carries a hand silently. `stale` is derived here, never authored; `rungs` is null on a hand row.
+ *
+ * **Overlaps.** The extractor takes the first row that matches a note, so two current rows that cover the
+ * same printed bar on the same staff and voice of one item and disagree would let the file's order choose
+ * the musical truth (HD2b; the reviewer, `docs/review/responses/bf57baca.md` §5). They are refused, both
+ * rows named, when the store is read (rows of one item and one file identity: the only rows that can both
+ * be current) and again over an item's current rows. Rows that agree are redundant, not contradictory, and
+ * are tolerated: whichever the extractor meets first gives the same hand, so nothing can move.
  */
 import store from '../../../content/sources/verified-facts.json';
 import type { VerifiedHand } from '../score/extractScoreModel';
@@ -64,13 +71,52 @@ function checkHandFact(raw: Record<string, unknown>, index: number): HandFact {
   return raw as unknown as HandFact;
 }
 
+/** Whether two hand rows cover a printed bar in common on the same staff and voice. */
+const overlaps = (a: HandFact, b: HandFact): boolean =>
+  a.staff === b.staff && a.voice === b.voice && a.bars[0] <= b.bars[1] && b.bars[0] <= a.bars[1];
+
+const describeRow = (row: HandFact, index: number): string =>
+  `row ${String(index)} (bars ${String(row.bars[0])}-${String(row.bars[1])}, staff ${String(row.staff)}, voice ${String(row.voice)}, ${row.fact})`;
+
+/**
+ * Throws if two of these rows, all of one item and one file identity, give an overlapping passage
+ * different hands; the message names both. `indexes` are the rows' places in the store, for the message.
+ */
+function refuseConflicts(rows: readonly HandFact[], indexes: readonly number[]): void {
+  rows.forEach((row, i) => {
+    for (let j = i + 1; j < rows.length; j += 1) {
+      const other = rows[j];
+      if (other === undefined || row.fact === other.fact || !overlaps(row, other)) continue;
+      throw new Error(
+        `verified-facts.json: conflicting hand rows for ${row.item}: ${describeRow(row, indexes[i] ?? i)} and ${describeRow(other, indexes[j] ?? j)} give the same bars different hands; the order of the file must never choose`,
+      );
+    }
+  });
+}
+
 /** The `hand` rows of a store, each checked by the hand rules; rows of other kinds are not read. */
 export function readHandFacts(raw: unknown): HandFact[] {
   if (!isRecord(raw) || !Array.isArray(raw.facts)) throw new Error('verified-facts.json: no `facts` list');
   const out: HandFact[] = [];
+  const indexes: number[] = [];
   raw.facts.forEach((row: unknown, index) => {
-    if (isRecord(row) && row.kind === 'hand') out.push(checkHandFact(row, index));
+    if (isRecord(row) && row.kind === 'hand') {
+      out.push(checkHandFact(row, index));
+      indexes.push(index);
+    }
   });
+  // Rows of one item and one file identity are the ones that can be current together.
+  const groups = new Map<string, number[]>();
+  out.forEach((row, i) => {
+    const key = [row.item, JSON.stringify(row.identity)].join('\u0000');
+    groups.set(key, [...(groups.get(key) ?? []), i]);
+  });
+  for (const members of groups.values()) {
+    refuseConflicts(
+      members.map((i) => out[i] as HandFact),
+      members.map((i) => indexes[i] ?? i),
+    );
+  }
   return out;
 }
 
@@ -87,9 +133,13 @@ export function handFactsFor(item: HandFactItem, facts: readonly HandFact[] = HA
 
 /** The item's current verified hands, as the extractor applies them; stale rows refused. */
 export function verifiedHandsOf(item: HandFactItem, facts: readonly HandFact[] = HAND_FACTS): VerifiedHand[] {
-  return handFactsFor(item, facts)
-    .filter((row) => !row.stale)
-    .map((row) => ({ bars: row.bars, staff: row.staff, voice: row.voice, hand: row.fact }));
+  const current = handFactsFor(item, facts).filter((row) => !row.stale);
+  // Facts handed in without `readHandFacts` are read the same way: no overlap may disagree.
+  refuseConflicts(
+    current,
+    current.map((_, i) => i),
+  );
+  return current.map((row) => ({ bars: row.bars, staff: row.staff, voice: row.voice, hand: row.fact }));
 }
 
 /** The extraction option for an item: `{ verifiedHands }` where it has current ones, else nothing. */

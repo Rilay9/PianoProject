@@ -245,3 +245,65 @@ describe('the evidence function reads the precisions from the vocabulary it is h
     expect(read({ ...VOCABULARY_V0, precision: { ...VOCABULARY_V0.precision, quarters: [1, 8] } })).toMatchObject({ kind: 'refusal', reason: 'precision' });
   });
 });
+
+describe('the daily reader is the seventh reader of the coping question (CD1 D5): a notAsked demand never holds a phrase back nor reaches the line', () => {
+  // The held-back case above, at the 0.95 share: two of the twenty skips wrong in each proving read. With the real
+  // vocabulary the skips hold the phrase and the line cites them. With the same vocabulary declaring the skip
+  // `notAsked`, as the habanera and the tresillo are declared, they do neither. A real cell cannot be used for this
+  // test, because on this right-hand row `mayWrite` already masks it, so the test would pass without the rule.
+  const CONTENT = join(process.cwd(), 'public', 'content');
+  const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
+  const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
+  const row = catalog.find((item) => item.id === 'drill.reading.sight-reading-2-right') as CatalogItem;
+  const range = (from: number, count: number): number[] => Array.from({ length: count }, (_, i) => from + i);
+  const read = (id: number, at: string): SessionRow => ({
+    id,
+    itemId: row.id,
+    seed: 90_000 + id,
+    mode: 'tempo',
+    tempoPct: 100,
+    tempoMeasured: true,
+    accuracy: 0.95,
+    accuracyEstimated: false,
+    wrongNotes: 0,
+    missed: 2,
+    durationMs: 1000,
+    at,
+    unseen: true,
+    recipe: { row: row.id },
+    evidenceDefinitions: EVIDENCE_DEFINITIONS,
+    evidence: [
+      {
+        ...record('sight-reading', at, 40, 38, 'full'),
+        context: { itemId: row.id, firstContact: true, met: ['keep-tempo', 'unseen', 'guide-off', 'names-off'], unattributed: 0, estimated: false },
+        byDemand: [
+          { demand: 'interval.step', n: 20, right: 20, steps: range(0, 20), wrong: [] },
+          { demand: 'interval.skip', n: 20, right: 18, steps: range(20, 20), wrong: [20, 21] },
+        ],
+      } as unknown as MeasuredEvidence,
+    ],
+  });
+  const rows = [read(1, '2026-10-01T12:00:00.000Z'), read(2, '2026-10-02T12:00:00.000Z')];
+  const position = nextRecommended(curriculum, { byRung: new Map() }, ['core'], { startAt: '2.2' });
+  const offer = (vocabulary: Vocabulary) =>
+    readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows, today: new Date('2026-10-03T09:00:00.000Z'), purpose: 'daily', vocabulary });
+
+  it('an ordinary demand that went wrong in the proving reads still holds the phrase back, and the line cites it', () => {
+    const why = offer(STRICT)?.why;
+    expect(why?.kind).toBe('hold');
+    expect(why?.kind === 'hold' ? why.wrong?.demand : undefined).toBe('interval.skip');
+  });
+
+  it('the same demand declared notAsked never holds the phrase back, and no line cites it', () => {
+    const notAsked: Vocabulary = {
+      ...STRICT,
+      demands: STRICT.demands.map((demand) => (demand.id === 'interval.skip' ? { ...demand, notAsked: 'as a cell is (CD1 D5)' } : demand)),
+    };
+    const why = offer(notAsked)?.why;
+    // Not held at all: the phrase moves on as it does at the 0.9 share, where the skips hold it neither.
+    expect(why?.kind).toBe('forward');
+    expect(JSON.stringify(why)).not.toContain('interval.skip');
+    // The real cells carry it, so neither ever holds a phrase back or reaches a line.
+    expect(VOCABULARY_V0.demands.filter((demand) => demand.notAsked !== undefined).map((demand) => demand.id)).toEqual(['rhythm.habanera', 'rhythm.tresillo']);
+  });
+});

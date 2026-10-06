@@ -34,6 +34,12 @@
     "row lies inside its own taught position. taughtAt, copedWithBy and the detectors do not move (the",
     "leap stays a measured leap, taught at 2.1), and no evidence reader sees it.",
     "",
+    "`notAsked` (CD1 D5; the reviewer's ruling, docs/review/responses/530963de.md §3) is on rhythm.habanera and",
+    "rhythm.tresillo alone: the coping question (eligibilityCore.demandsAsked, claims.asked_of,",
+    "excerpt_proposer.untaught, the promises' untaughtChecks) leaves a demand that carries it out, with the reason",
+    "written on the row. The notation fact stays on the item, and every other reader (claims, placement, evidence)",
+    "reads it as before. Declared per demand; a demand without it is asked as before.",
+    "",
     "v0 is what the nine sight-reading rows' promises name and what the taught-at table",
     "needs. validate.py checks this file against demands.schema.json and its references;",
     "vocabulary.test.ts checks every detector exists in the app."
@@ -135,6 +141,31 @@
       "copedWithBy": "hand-independence",
       "taughtAt": ["jazz.6", "blues.6", "jam.6"],
       "taughtAtNote": "Three paths teach it: jazz.6 ('Comping, walking bass, and hearing the changes': four notes to the bar with a semitone approach to the next root, a walking line hands separately and then together under shells); blues.6 ('a line that walks', the walking-bass exercise with a right hand over the line; blues.5 introduces the line alone, left hand only, under its introduces list, F2); and jam.6 ('Walking bass, when there is no bass player'). latin no longer names it (its bass is the tumbao, F2). theory.9's path reaches none of the three."
+    },
+    {
+      "id": "rhythm.habanera",
+      "display": "The habanera rhythm in the left hand",
+      "dimension": "rhythm",
+      "detector": "habaneraCell",
+      "copedWithBy": "habanera-and-tresillo",
+      "taughtAt": [
+        "ragtime.7"
+      ],
+      "taughtAtNote": "ragtime.7, the rung whose concepts name the habanera: its lesson gives Solace as 'built on a habanera rhythm' with the cell spelled out, a dotted eighth, a sixteenth, two eighths (ragtime.7.md:25-27). The new latin.4 joins this list in its own placement seam; latin.4's path (4.4, latin.3 and the core) does not reach ragtime.7, so the list stays one rung per path. The demand is the left hand's onsets 0, 3/8, 1/2, 3/4 of a 2/4, 4/4 or 2/2 bar (CD1, CK-5): the onset cell, never the style.",
+      "notAsked": "Not asked by the coping question (CD1 D5; the reviewer's ruling, docs/review/responses/530963de.md §3). This demand is a descriptive structural fact, used for rung claims, placement evidence and content verification. The difficulties it is made of are already gated by the ordinary reading demands (the dotted quarter, eighths, sixteenths and shorter notes, syncopation) and by the rung's explicit prerequisites. The item may itself be the material that teaches the cell, so asking whether the learner has already coped with the cell would circularly refuse the teaching example, and raw onset coincidences in unrelated music must not become new learner-facing refusals. The app does teach the cell; this does not say the pattern need not be taught. A second explicit exception beside the key signature located at no sounding note (L120b), declared here per demand, never a rule that a mapped or located demand may be ignored. A known gap, recorded and not fixed: a 2/4 tresillo's dotted eighths are asked only as notes shorter than a quarter (2.2); no demand reads a dotted eighth."
+    },
+    {
+      "id": "rhythm.tresillo",
+      "display": "The tresillo rhythm in the left hand",
+      "dimension": "rhythm",
+      "detector": "tresilloCell",
+      "copedWithBy": "habanera-and-tresillo",
+      "taughtAt": [
+        "latin.3",
+        "latin.6"
+      ],
+      "taughtAtNote": "Two paths: latin.3 ('The tresillo is the clave's first half … Three, three, two', latin.3.md:36-38), which has no prerequisites, and latin.6, which stands on latin and 4.5 and teaches The Crave as 'the tresillo under a whole piece' (latin.6.md:22-26). latin.6 leaves the list if a later seam puts latin.3 on latin.6's path, because validate.py then errors 'one teaching rung per path'. The demand is the left hand's onsets 0, 3/8, 3/4 of a 2/4, 4/4 or 2/2 bar (CD1, CK-5): the onset cell, never the style.",
+      "notAsked": "Not asked by the coping question (CD1 D5; the reviewer's ruling, docs/review/responses/530963de.md §3). This demand is a descriptive structural fact, used for rung claims, placement evidence and content verification. The difficulties it is made of are already gated by the ordinary reading demands (the dotted quarter, eighths, sixteenths and shorter notes, syncopation) and by the rung's explicit prerequisites. The item may itself be the material that teaches the cell, so asking whether the learner has already coped with the cell would circularly refuse the teaching example, and raw onset coincidences in unrelated music must not become new learner-facing refusals. The app does teach the cell; this does not say the pattern need not be taught. A second explicit exception beside the key signature located at no sounding note (L120b), declared here per demand, never a rule that a mapped or located demand may be ignored. A known gap, recorded and not fixed: a 2/4 tresillo's dotted eighths are asked only as notes shorter than a quarter (2.2); no demand reads a dotted eighth."
     }
   ]
 }

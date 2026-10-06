@@ -1535,7 +1535,12 @@ def taught_at_findings(skills_file: dict, demands_file: dict, curriculum: dict) 
 #: demand (`claims.NAMED_FIGURES_AWAITING_A_SOURCED_CHECK`), so the claims are not made and a deferral of
 #: them would be stale; `concept_claim_findings` itself fails a stale deferral. Their per-bar readings are
 #: in git history (738e23e) for the figure slice that returns each style.
-DEFERRED_CONCEPT_CLAIMS: dict[tuple[str, str], str] = {}
+DEFERRED_CONCEPT_CLAIMS: dict[tuple[str, str], str] = {
+    # CD1 §3a: the habanera is curated-only (no density rule), and ragtime.7's lesson names Solace as built on a
+    # habanera rhythm without naming a passage (ragtime.7.md:25-27), so no verified passage fact can prove it there.
+    ("ragtime.7", "habanera"): ("curated-only (CD1 §3a): ragtime.7.md names Solace's habanera rhythm but no passage, so no "
+                                "verified passage fact establishes it; unestablished until a lesson names the bars"),
+}
 
 
 def concept_claim_findings(
@@ -2084,6 +2089,16 @@ def main() -> None:
         errors += excerpt_findings(catalog, args.dir)[0]
         # F2: a rung's concepts claim only what its options establish, or it introduces the concept.
         errors += concept_claim_findings(catalog, curriculum)[0]
+        # CD1 §3a: a verified passage fact that could never prove what it names.
+        import passages
+
+        errors += passages.findings(catalog, curriculum)[0]
+        # bf57baca §5: two current hand rows that disagree over the same bars, staff and voice.
+        import verified_facts
+
+        errors += verified_facts.hand_conflicts(
+            verified_facts.load(),
+            {row["id"]: verified_facts.identity_of(row) for row in catalog})
         errors += stale_ladder_report(catalog, curriculum)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
         # replan §7.5: reported by P11, an error from P12a.
@@ -2226,6 +2241,11 @@ def main() -> None:
         print(f"  {warning}")
     # F2: each deferred claim with its reason, and any introduced concept an option now establishes.
     for warning in concept_claim_findings(catalog, curriculum)[1]:
+        print(f"  {warning}")
+    # CD1 §3a: each stale verified passage fact, with why it counts for nothing.
+    import passages
+
+    for warning in passages.findings(catalog, curriculum)[1]:
         print(f"  {warning}")
     # Q80: the ladder report compared without the placeholders this build made for want of a fetch, said.
     for warning in ladder_report_findings(catalog, curriculum)[1]:

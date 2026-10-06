@@ -243,6 +243,27 @@
       "observable": ["pitch", "timing"],
       "standards": { "practice": ["keep-tempo", "both-hands"], "full": ["keep-tempo", "both-hands", "unseen", "guide-off", "names-off"] },
       "transfer": { "dimensions": ["texture", "rhythm"], "why": "The hands doing different things at once: another left-hand pattern (walking rather than repeating) or another rhythm between the hands changes it; the key does not change the independence." }
+    },
+    {
+      "id": "habanera-and-tresillo",
+      "newId": true,
+      "display": "The habanera and the tresillo",
+      "sentence": "Playing the habanera and the tresillo as the left hand's rhythm, and telling the two cells apart on the page and by ear.",
+      "kind": "rhythm",
+      "opportunity": [
+        "rhythm.habanera",
+        "rhythm.tresillo"
+      ],
+      "observable": "none",
+      "unobserved": [
+        "The cell's identity at tempo: Keep tempo's ±150 ms window cannot separate the habanera from a dotted-pair near-miss at moderate speed, and the evidence refuses timing it cannot resolve (MODE-SHEET.md §2, 'Cannot establish' (ii); ABILITY-MAP.md A7c.1), so no run is evidence that the cell was played as the cell (CD1).",
+        "Telling the two cells apart by ear is self-checked (A7c.1's never_credits): no run observes it, and nobody in this process hears music."
+      ],
+      "standards": {
+        "practice": [],
+        "full": []
+      },
+      "note": "CD1 (docs/prompts/runs/curriculum-review-2026-10-05/briefs/cells-as-measured-demands.md D4): the copedWithBy of rhythm.habanera and rhythm.tresillo, which makes 'no run is evidence of the cell' a vocabulary fact. Not syncopation (the concept would stop naming rhythm.syncopation) and not subdivision (the 4/4 tresillo's dotted quarters would become subdivision opportunities); not two skills, which would turn concepts into abilities a requirement could name."
     }
   ]
 }

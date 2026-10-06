@@ -358,7 +358,24 @@ describe('source-specific validity, per source kind (item 3)', () => {
 
 describe('the reviewer’s rule: an unknown is not an observed absence (responses/12af708.md)', () => {
   /** Every vocabulary demand but steps and skips, in the vocabulary's order. */
-  const NOT_STEPS_OR_SKIPS = VOCABULARY_V0.demands.map((demand) => demand.id).filter((id) => id !== 'interval.step' && id !== 'interval.skip');
+  // Revised (CD1 D5; responses/33497357.md §3): less the demands the coping question never asks (`notAsked`); the old
+  // assumption was every vocabulary demand.
+  const NOT_STEPS_OR_SKIPS = VOCABULARY_V0.demands
+    .filter((demand) => demand.notAsked === undefined)
+    .map((demand) => demand.id)
+    .filter((id) => id !== 'interval.step' && id !== 'interval.skip');
+
+  it('the fifth reader of the coping question (unknown-forbidden) leaves out a notAsked demand, and only such a demand (CD1 D5)', () => {
+    const unprepared = unpreparedDemands(STEPS_AND_SKIPS);
+    expect(unprepared).not.toContain('rhythm.habanera');
+    expect(unprepared).not.toContain('rhythm.tresillo');
+    // The adversary: an ordinary demand without `notAsked` is still included.
+    expect(unprepared).toContain('rhythm.syncopation');
+    expect(unprepared).toEqual(NOT_STEPS_OR_SKIPS);
+    // The rule is the data's: the same vocabulary with `notAsked` taken off asks the cells again.
+    const plain = { ...VOCABULARY_V0, demands: VOCABULARY_V0.demands.map(({ notAsked: _dropped, ...demand }) => demand) };
+    expect(unpreparedDemands(STEPS_AND_SKIPS, plain)).toEqual(expect.arrayContaining(['rhythm.habanera', 'rhythm.tresillo']));
+  });
 
   it('an automatic experience refuses a candidate whose source cannot rule out a demand the learner is not prepared for, naming the demands and the missing fact', () => {
     for (const candidate of [candidateOf(PDF), candidateOf(OLD_IMPORT), externalCandidate(RAG)]) {
@@ -581,7 +598,8 @@ describe('the thirteen adversaries at the material layer (Part 25, Q8; the revie
     expect(choice.verdict === 'none' ? choice.unmet : []).toEqual([
       'absent: interval.leap',
       'untaught: clef.bass, interval.leap, range.beyond-position, texture.hands-together',
-      `unknown-forbidden: ${VOCABULARY_V0.demands.map((d) => d.id).filter((id) => id !== 'interval.step' && id !== 'interval.skip').join(', ')}`,
+      // Revised (CD1 D5): less the notAsked demands, as the gate asks them.
+      `unknown-forbidden: ${VOCABULARY_V0.demands.filter((d) => d.notAsked === undefined).map((d) => d.id).filter((id) => id !== 'interval.step' && id !== 'interval.skip').join(', ')}`,
     ]);
     // And where one candidate passes, only it is found.
     const found = materialFor({ ...leaps, range: undefined }, candidates, COPES);

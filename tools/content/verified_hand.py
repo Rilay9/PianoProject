@@ -3,11 +3,12 @@ Verified hand facts: the build's reader of the `hand` rows of `content/sources/v
 (HD2; the reviewer's ruling, `docs/review/responses/hd2-corpus-diff.md` §2). The app reads the same rows
 through `app/src/curriculum/verifiedFacts.ts`, by the same rules.
 
-**Where it goes.** The shared loader (`tools/content/verified_facts.py`: identity staleness, the `demand`
-rows' validation and a hook for `hand` validation) is the cells lane's (CD1), not yet in this tree when HD2
-was built. This module is the `hand` half on its own, with the same row shape: `check_hand_fact` is the
-hook's body, and `read_hand_facts`, `hand_facts_for` and `verified_hands` are what the build's bridge reads.
-At landing they merge into the shared reader and `build.attach_demands` imports them from there.
+**Where it stands (CD1's landing).** The shared loader is `tools/content/verified_facts.py` (the cells lane's):
+it loads the store, derives the identity staleness every kind shares, and hands each row to its kind. This
+module stays the `hand` kind's own module rather than folding into it: `check_hand_fact` is the hand
+validation the loader delegates to, and `read_hand_facts`, `hand_facts_for` and `verified_hands` stay what
+the build's bridge reads (`build.attach_demands`). It is the build twin of the app's hand reader, landed and
+reviewed with it, and keeping the two kinds' rules in two modules keeps any reader from reaching across.
 
 **The boundary.** The store is one file shared by two kinds of row, and that is all they share: plumbing,
 not a generic fact system. Each `kind` has its own validation, its own authority and its own reader, and no
@@ -93,7 +94,17 @@ def hand_facts_for(item_id: str, sha256: str | None, facts: list[dict] | None = 
 
 
 def verified_hands(item_id: str, sha256: str | None, facts: list[dict] | None = None) -> list[dict]:
-    """The item's current verified hands, as the bridge hands them to the model; stale rows refused."""
+    """
+    The item's current verified hands, as the bridge hands them to the model; stale rows refused. Two current rows
+    that disagree over the same bars, staff and voice are refused with both named (`verified_facts.hand_conflicts`,
+    the reviewer's rule in `responses/bf57baca.md` §5), never resolved by their order in the file.
+    """
+    import verified_facts
+
+    rows = read_hand_facts() if facts is None else facts
+    conflicts = verified_facts.hand_conflicts([row for row in rows if row["item"] == item_id], {item_id: sha256})
+    if conflicts:
+        raise VerifiedFactsError("; ".join(conflicts))
     return [
         {"bars": list(row["bars"]), "staff": row["staff"], "voice": row["voice"], "hand": row["fact"]}
         for row in hand_facts_for(item_id, sha256, facts)

@@ -881,7 +881,13 @@ class TestUsefulDensity(unittest.TestCase):
         self.assertGreater(checked, 0, "no rule whose window minimum is below its whole-piece min")
 
     def test_every_vocabulary_demand_has_its_own_rule_and_none_is_universal(self) -> None:
-        self.assertEqual(sorted(self.table["demands"]), sorted(self.order))
+        # Revised (CD1 §3a; responses/33497357.md §2, §4): a demand has its own rule or, by decision, none
+        # (`curatedOnly`: the habanera and the tresillo, established only by a contract or a verified passage fact),
+        # never both; the old assumption was a rule for every vocabulary demand.
+        curated = self.table.get("curatedOnly") or {}
+        self.assertEqual(sorted([*self.table["demands"], *curated]), sorted(self.order))
+        self.assertEqual(set(self.table["demands"]) & set(curated), set())
+        self.assertEqual(sorted(curated), ["rhythm.habanera", "rhythm.tresillo"])
         rules = {(rule["min"], rule["perBar"]) for rule in self.table["demands"].values()}
         self.assertGreater(len(rules), 5, "one threshold for every demand is the universal percentage Part 15 forbids")
         for demand, rule in self.table["demands"].items():

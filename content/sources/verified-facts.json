@@ -75,6 +75,114 @@
         "date": "2026-10-06",
         "evidence": "docs/prompts/runs/CD1/evidence/solace-22.txt; docs/review/responses/hd2-corpus-diff.md §2"
       }
+    },
+    {
+      "item": "song.jazz.the-crave",
+      "identity": {"kind": "file", "sha256": "1eb6de4c0ece075772b610cc1211bb5da0d443dc11a21a5b4abe351ed085db73"},
+      "bars": [21, 26],
+      "staff": 2,
+      "voice": null,
+      "kind": "demand",
+      "fact": {"demand": "rhythm.tresillo", "hand": "L"},
+      "rungs": ["latin.6"],
+      "proof": {
+        "method": "the app's detector through the bridge and the partitura witness (cells.py), agreeing on every bar",
+        "date": "2026-10-06",
+        "evidence": "docs/chains/A7c.1.yaml (song.jazz.the-crave@bars=21-26); latin.6.md:22-26, 'the tresillo under a whole piece'",
+        "verified": {
+          "bars": [21, 26],
+          "staff": 2,
+          "demand": "rhythm.tresillo",
+          "hand": "L",
+          "version": "fb19313d179f",
+          "numbers": [21, 22, 23, 24, 25, 26],
+          "app": [21, 22, 23, 24, 25, 26],
+          "witness": [21, 22, 23, 24, 25, 26],
+          "disagree": [],
+          "hands": [{"bars": [40, 40], "staff": 1, "voice": 2, "hand": "R"}]
+        }
+      }
+    },
+    {
+      "item": "song.folk.por-una-cabeza-carlos-gardel.pdmx",
+      "identity": {"kind": "file", "sha256": "2d05ab2a12b835dd221bcb97709ce1fa936afa4f22da9c5bb7fe6293829969fb"},
+      "bars": [1, 14],
+      "staff": 2,
+      "voice": null,
+      "kind": "demand",
+      "fact": {"demand": "rhythm.habanera", "hand": "L"},
+      "rungs": [],
+      "proof": {
+        "method": "the app's detector through the bridge and the partitura witness (cells.py), agreeing on every bar",
+        "date": "2026-10-06",
+        "evidence": "docs/chains/A7c.1.yaml (song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14); ABILITY-MAP.md A7c.1's L1 amendment. No rung claims the habanera here until latin.4's placement names one.",
+        "verified": {
+          "bars": [1, 14],
+          "staff": 2,
+          "demand": "rhythm.habanera",
+          "hand": "L",
+          "version": "fb19313d179f",
+          "numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+          "app": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+          "witness": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+          "disagree": [],
+          "hands": []
+        }
+      }
+    },
+    {
+      "item": "song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx",
+      "identity": {"kind": "file", "sha256": "cada0fcbce1b12e79d8fe0d1eab9afd5bb986e71c0e55a06e67969a1093a52aa"},
+      "bars": [1, 12],
+      "staff": 2,
+      "voice": null,
+      "kind": "demand",
+      "fact": {"demand": "rhythm.habanera", "hand": "L"},
+      "rungs": [],
+      "proof": {
+        "method": "the app's detector through the bridge and the partitura witness (cells.py), agreeing on every bar",
+        "date": "2026-10-06",
+        "evidence": "docs/chains/A7c.1.yaml (song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx@bars=1-12); Entry 241's H2. No rung claims it until latin.4's placement names one.",
+        "verified": {
+          "bars": [1, 12],
+          "staff": 2,
+          "demand": "rhythm.habanera",
+          "hand": "L",
+          "version": "fb19313d179f",
+          "numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "app": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "witness": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "disagree": [],
+          "hands": []
+        }
+      }
+    },
+    {
+      "item": "excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh",
+      "identity": {"kind": "file", "sha256": "9ae0d629df17e5f827e96c93d69c1954cfbfede01f6cbc0e4c5a2b37a87fa5da"},
+      "bars": [1, 12],
+      "staff": 1,
+      "voice": null,
+      "kind": "demand",
+      "fact": {"demand": "rhythm.habanera", "hand": "L"},
+      "rungs": [],
+      "proof": {
+        "method": "the app's detector through the bridge and the partitura witness (cells.py), agreeing on every bar",
+        "date": "2026-10-06",
+        "evidence": "docs/chains/A7c.1.yaml (the left-hand cut, bars 1-12); one staff declared the left hand (HD1). No rung claims it until latin.4's placement names one.",
+        "verified": {
+          "bars": [1, 12],
+          "staff": 1,
+          "demand": "rhythm.habanera",
+          "hand": "L",
+          "version": "fb19313d179f",
+          "numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "app": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "witness": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "disagree": [],
+          "hands": []
+        }
+      }
     }
   ]
 }

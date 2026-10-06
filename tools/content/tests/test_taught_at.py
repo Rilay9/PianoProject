@@ -794,5 +794,46 @@ class TestJazz4TeachesSyncopationOnItsOwnPath(unittest.TestCase):
         self.assertEqual(self.untaught("4.5"), [])
 
 
+class TestTheCells(Vocabulary):
+    """
+    CD1 (D5, D6): the habanera and the tresillo. Each cell's `taughtAt` is the derivation from the lessons'
+    concepts, one rung per path, with no warning; and the build's coping question (`claims.asked_of`) leaves a
+    demand the vocabulary declares `notAsked` out, as the app's `eligibilityCore.demandsAsked` does (T3's twin).
+    """
+
+    def test_each_cell_s_taught_at_is_the_derivation_with_no_warning(self) -> None:
+        skills = {s["id"]: s for s in self.skills["skills"]}
+        demands = {d["id"]: d for d in self.demands["demands"]}
+        derived = claims.teaching_rungs(self.curriculum, skills, demands)
+        self.assertEqual(derived.get("rhythm.habanera"), ["ragtime.7"])
+        self.assertEqual(derived.get("rhythm.tresillo"), ["latin.3", "latin.6"])
+        for demand_id in ("rhythm.habanera", "rhythm.tresillo"):
+            self.assertEqual(demands[demand_id]["taughtAt"], derived[demand_id], demand_id)
+        self.assertEqual(self.errors(self.demands), [])
+        self.assertEqual([w for w in self.warnings(self.demands) if "habanera" in w or "tresillo" in w], [])
+
+    def test_asked_of_leaves_out_a_not_asked_demand(self) -> None:
+        demands = {d["id"]: d for d in self.demands["demands"]}
+        self.assertEqual(sorted(claims.not_asked(demands)), ["rhythm.habanera", "rhythm.tresillo"])
+        self.assertEqual(claims.not_asked(), claims.not_asked(demands), "the shipped vocabulary, read once, says the same")
+        row = {
+            "demands": ["rhythm.eighths", "key.signature", "metre.compound", "rhythm.habanera", "rhythm.tresillo"],
+            "measurement": {"status": "measured", "located": {"rhythm.eighths": 4, "rhythm.habanera": 8, "rhythm.tresillo": 3}},
+        }
+        # The cells are never asked; the key signature located nowhere is not asked (L120b); compound time located
+        # nowhere still is (the class-1 guard, unchanged).
+        self.assertEqual(claims.asked_of(row, demands), ["rhythm.eighths", "metre.compound"])
+        self.assertEqual(claims.asked_of(row), ["rhythm.eighths", "metre.compound"])
+        unmeasured = {"demands": ["rhythm.eighths", "rhythm.tresillo"]}
+        self.assertEqual(claims.asked_of(unmeasured, demands), ["rhythm.eighths"])
+        # Guard: the rule is the data's. A vocabulary whose rows carry no `notAsked` asks the cells like any demand.
+        plain = {k: {kk: vv for kk, vv in v.items() if kk != "notAsked"} for k, v in demands.items()}
+        self.assertEqual(claims.asked_of(row, plain), ["rhythm.eighths", "metre.compound", "rhythm.habanera", "rhythm.tresillo"])
+        # And through `untaught_on` at 2.2, where neither cell's teaching rung is on the path.
+        ancestry = claims.rung_ancestry(self.curriculum)
+        self.assertNotIn("rhythm.habanera", claims.untaught_on(row, "2.2", ancestry, demands, self.curriculum))
+        self.assertIn("rhythm.habanera", claims.untaught_on(row, "2.2", ancestry, plain, self.curriculum))
+
+
 if __name__ == "__main__":
     unittest.main()

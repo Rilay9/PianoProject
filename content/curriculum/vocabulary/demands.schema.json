@@ -30,6 +30,11 @@
             "uniqueItems": true
           },
           "taughtAtNote": { "type": "string", "minLength": 10 },
+          "notAsked": {
+            "description": "CD1 D5 (the reviewer's ruling, docs/review/responses/530963de.md §3): the coping question does not ask this demand, and why. Read by eligibilityCore.demandsAsked, claims.asked_of (through claims.not_asked), excerpt_proposer.untaught and the promises' untaughtChecks. The notation fact stays on the item; only the coping question leaves it out. Declared per demand with its reason, never inferred; a demand without it is asked as before (a key signature located at no sounding note is the other, narrow exception, L120b).",
+            "type": "string",
+            "minLength": 10
+          },
           "fixedPositions": {
             "description": "L120b: the fixed five-finger positions whose note reading copes with the demand where a lesson on the rung's path, or on a rung the learner has reached, names the position's concept in its own concepts (interval.skip and, since L120d, interval.leap, the same two positions on both: a skip inside C position is read by note name before 1.5 teaches reading by interval, a leap inside it before 2.1 does). Each is the concept, the hand (R or L, the bridge's hands) and the position's lowest and highest MIDI. Read by the coping question only (eligibilityCore.uncoped, claims.untaught_on).",
             "type": "array",

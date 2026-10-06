@@ -298,7 +298,9 @@ export const PROMISED_BY_RUNG: Record<string, Check[]> = {
  * line of rungs — on a track, the file's order credits what a sibling track
  * taught, and since E0b a demand can be taught on a track stored before a core
  * rung (syncopation at `latin.3`, stored before 4.1), so every caller walking
- * the shipped curriculum passes it.
+ * the shipped curriculum passes it. A demand the vocabulary declares `notAsked` (CD1 D5: the habanera and
+ * the tresillo) is never one of them: the coping question does not ask it, so a phrase that happens to hold
+ * the left hand's onset cell is not a phrase that asks something untaught.
  */
 export function untaughtChecks(
   rung: string,
@@ -312,6 +314,7 @@ export function untaughtChecks(
   const untaught = (d: Demand): boolean => d.taughtAt.length === 0 || (taught ? !taught(d.id) : d.taughtAt.every(before));
   return [
     ...demands
+      .filter((d) => d.notAsked === undefined)
       .filter(untaught)
       .filter((d) => !skip(d.id))
       .map((d) =>

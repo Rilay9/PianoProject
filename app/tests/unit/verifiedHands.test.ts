@@ -227,6 +227,48 @@ describe('the hand rows themselves', () => {
     expect(readHandFacts({ facts: [{ nonsense: true }] })).toEqual([]);
   });
 
+  describe('conflicting overlaps (HD2b: the file’s order never chooses the hand)', () => {
+    const identity = good.identity;
+    const mk = (change: Record<string, unknown>) => ({ ...good, ...change });
+    const item = { id: CRAVE, provenance: { identity: { kind: 'file' as const, sha256: identity.sha256 } } };
+
+    it('two current rows for one printed bar, staff and voice that disagree are refused, both named', () => {
+      const store = { facts: [{ nonsense: true }, mk({ fact: 'R' }), mk({ fact: 'L' })] };
+      // Rows 1 and 2 of the store (row 0 is not a row at all): both indexes and both hands are in the message.
+      expect(() => readHandFacts(store)).toThrow(/conflicting hand rows for song\.jazz\.the-crave: row 1 .*, R\) and row 2 .*, L\)/);
+      // A partial overlap is one: bar 41 is in both.
+      expect(() => readHandFacts({ facts: [mk({ bars: [38, 41], fact: 'R' }), mk({ bars: [41, 44], fact: 'L' })] })).toThrow(/row 0 .* and row 1/);
+      // The rows as the extractor would get them, handed in without the store's own check, are refused the same way.
+      const rows = [mk({ fact: 'R' }), mk({ fact: 'L' })] as unknown as Parameters<typeof verifiedHandsOf>[1];
+      expect(() => verifiedHandsOf(item, rows)).toThrow(/conflicting hand rows/);
+      // Whichever is first: the order of the two rows changes nothing about the refusal.
+      expect(() => readHandFacts({ facts: [mk({ fact: 'L' }), mk({ fact: 'R' })] })).toThrow(/conflicting hand rows/);
+    });
+
+    it('what is not an overlap, or not current together, is not a conflict', () => {
+      const ok: Record<string, unknown>[][] = [
+        // The next bar, another voice, another staff: no passage in common.
+        [mk({ bars: [40, 40], fact: 'R' }), mk({ bars: [41, 41], fact: 'L' })],
+        [mk({ fact: 'R' }), mk({ voice: 3, fact: 'L' })],
+        [mk({ fact: 'R' }), mk({ staff: 2, fact: 'L' })],
+        // Another item.
+        [mk({ fact: 'R' }), mk({ item: 'song.ragtime.joplin-solace', fact: 'L' })],
+        // Another file identity: an old edition's row, stale wherever the new one is current.
+        [mk({ fact: 'R' }), mk({ identity: { kind: 'file', sha256: 'b'.repeat(64) }, fact: 'L' })],
+      ];
+      for (const facts of ok) expect(readHandFacts({ facts }), JSON.stringify(facts.map((f) => [f.bars, f.staff, f.voice, f.fact]))).toHaveLength(2);
+      // …and the stale row never reaches the extractor: the current identity's row is the only one applied.
+      const both = readHandFacts({ facts: ok[4] });
+      expect(verifiedHandsOf(item, both)).toEqual([{ bars: [40, 40], staff: 1, voice: 2, hand: 'R' }]);
+    });
+
+    it('two rows that agree are tolerated: redundant, they give the extractor the same hand either way', () => {
+      const facts = readHandFacts({ facts: [mk({ fact: 'R' }), mk({ bars: [38, 41], fact: 'R' })] });
+      expect(facts).toHaveLength(2);
+      expect(new Set(verifiedHandsOf(item, facts).map((h) => h.hand))).toEqual(new Set(['R']));
+    });
+  });
+
   it('apply to a two-staff score only: a one-staff score is HD1’s, whatever a hand row says', async () => {
     const xml = `<?xml version="1.0" encoding="UTF-8"?><score-partwise version="4.0"><part-list><score-part id="P1"><part-name>Piano</part-name></score-part></part-list><part id="P1"><measure number="1"><attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes><note><pitch><step>C</step><octave>5</octave></pitch><duration>4</duration><voice>1</voice><type>whole</type></note></measure></part></score-partwise>`;
     const container = document.createElement('div');

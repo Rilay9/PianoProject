@@ -196,6 +196,30 @@ function shortestBar(options: SightReadingOptions): number {
  */
 const LEFT_HAND_BRINGS = ['clef.bass', 'texture.hands-together', 'interval.leap'];
 
+/**
+ * The habanera and the tresillo (CD1): what the sight-reading generator does with the left hand's onset cells.
+ * No option writes either one or keeps it out: the generator has no cell parameter (G13 gives the cell to the
+ * tresillo family, never to the reader). A cell can still arise by chance where the left hand carries its own
+ * line in a simple metre with an onset between the beats: the CD1 probe over the generator found it in level-1
+ * left-hand phrases with dotted quarters, in 4/4 and 2/2, and in no phrase where the left hand plays a pattern
+ * under a melody (whole notes, chords, an Alberti, a broken chord or a walk, whose onsets are fixed and never the
+ * cell's). `mayWrite` says so and no more. The coping question never asks the cells (`notAsked`), so nothing has
+ * to hold them out of a phrase.
+ */
+function cellMayWrite(o: SightReadingOptions): boolean {
+  const s = shapeOf(o);
+  const between =
+    READING_CONTROLS['rhythm.shorter-than-quarter']?.mayWrite(o) === true ||
+    READING_CONTROLS['rhythm.dotted-quarter']?.mayWrite(o) === true ||
+    READING_CONTROLS['rhythm.syncopation']?.mayWrite(o) === true;
+  return !s.melodyInRight && simpleAny(s) && between;
+}
+
+const CELL_NONE = {
+  on: 'No generator option writes the cell: the sight-reading generator has no cell parameter (the tresillo family writes it, G13).',
+  off: 'No option keeps it out, and none needs to: it arises only by chance in a left-hand line, and the coping question never asks it (notAsked, CD1 D5).',
+};
+
 // --- the map ---------------------------------------------------------------------
 
 const always = (patch: ControlPatch) => (): ControlPatch => patch;
@@ -392,6 +416,8 @@ export const READING_CONTROLS: Readonly<Record<string, ReadingControl>> = {
     },
     brings: () => ['pitch.ledger', ...LEFT_HAND_BRINGS],
   },
+  'rhythm.habanera': { option: null, on: () => null, off: () => null, none: CELL_NONE, mayWrite: cellMayWrite },
+  'rhythm.tresillo': { option: null, on: () => null, off: () => null, none: CELL_NONE, mayWrite: cellMayWrite },
 };
 
 /** The options with a demand turned on, or null where no option writes it. */

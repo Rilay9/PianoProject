@@ -36,9 +36,12 @@ const demandIds = new Set(demands.map((d) => d.id));
 const conditionIds = new Set(skillsFile.conditions.map((c) => c.id));
 
 describe('vocabulary v0 is small', () => {
-  it('about fifteen skills and twenty demands, as the reviewer asked', () => {
-    expect(skills.length).toBeLessThanOrEqual(16);
-    expect(demands.length).toBeLessThanOrEqual(20);
+  // Revised (CD1): seventeen skills and twenty-one demands. The reviewer's approval of the measured
+  // cells (`docs/review/responses/530963de.md` §1, §2) adds the two onset-cell demands and their one
+  // unobservable skill; the old assumption was the cap of sixteen and twenty the vocabulary had reached.
+  it('about fifteen skills and twenty demands, as the reviewer asked, and the two cells the reviewer approved', () => {
+    expect(skills.length).toBeLessThanOrEqual(17);
+    expect(demands.length).toBeLessThanOrEqual(21);
   });
   it('ids are unique', () => {
     expect(skillIds.size).toBe(skills.length);
@@ -139,5 +142,27 @@ describe('the rungs name skills in their own requirements (C5)', () => {
   // precision beside the conditions; it still keeps no bridge and no waiver.
   it('the skills file keeps no interim bridge and no waiver', () => {
     expect(Object.keys(skillsFile).sort()).toEqual(['_comment', 'conditions', 'precision', 'skills', 'support']);
+  });
+});
+
+describe('the habanera and the tresillo (CD1): two measured onset cells, coped with by a skill no run observes', () => {
+  const cells = ['rhythm.habanera', 'rhythm.tresillo'];
+  it('the two demands exist, each with its own detector the app runs', () => {
+    expect(demands.find((d) => d.id === 'rhythm.habanera')?.detector).toBe('habaneraCell');
+    expect(demands.find((d) => d.id === 'rhythm.tresillo')?.detector).toBe('tresilloCell');
+    for (const id of cells) expect(Object.keys(DETECTORS)).toContain(demands.find((d) => d.id === id)?.detector);
+  });
+  it('habanera-and-tresillo is observable none, says why, is new, has no precision, and copes with both cells', () => {
+    const skill = skills.find((s) => s.id === 'habanera-and-tresillo');
+    expect(skill?.observable).toBe('none');
+    expect(skill?.unobserved?.length ?? 0).toBeGreaterThan(0);
+    expect(skill?.newId).toBe(true);
+    expect(skill?.precision).toBeUndefined();
+    expect(skill?.opportunity).toEqual(cells);
+    for (const id of cells) expect(demands.find((d) => d.id === id)?.copedWithBy).toBe('habanera-and-tresillo');
+  });
+  it('notAsked is on exactly these two rows, each with the reviewer’s reason', () => {
+    expect(demands.filter((d) => d.notAsked !== undefined).map((d) => d.id)).toEqual(cells);
+    for (const id of cells) expect(demands.find((d) => d.id === id)?.notAsked).toContain('530963de');
   });
 });

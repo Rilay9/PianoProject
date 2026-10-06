@@ -475,3 +475,86 @@ describe('a leap wholly inside a taught fixed position is coped with by that pos
     expect(leapOf()?.fixedPositions).toEqual(skipOf()?.fixedPositions);
   });
 });
+
+// --- class 4: the habanera and the tresillo are never asked (CD1 D5) ---------------------------
+
+/**
+ * Both cells in the left hand under a held right hand: two bars of the doubled habanera in 4/4 (a dotted
+ * quarter, an eighth, a quarter, a quarter), then two of The Crave's tresillo (dotted quarter, dotted
+ * quarter, quarter).
+ */
+const CELLS = phrase({
+  bars: [
+    ...[0, 1].map(() => [
+      { at: 0, dur: 4, pitch: 'C5' },
+      { at: 0, dur: 1.5, pitch: 'C3', staff: 2 as const },
+      { at: 1.5, dur: 0.5, pitch: 'G3', staff: 2 as const },
+      { at: 2, dur: 1, pitch: 'C3', staff: 2 as const },
+      { at: 3, dur: 1, pitch: 'G3', staff: 2 as const },
+    ]),
+    ...[0, 1].map(() => [
+      { at: 0, dur: 4, pitch: 'C5' },
+      { at: 0, dur: 1.5, pitch: 'C3', staff: 2 as const },
+      { at: 1.5, dur: 1.5, pitch: 'G3', staff: 2 as const },
+      { at: 3, dur: 1, pitch: 'C3', staff: 2 as const },
+    ]),
+  ],
+});
+const CELL_IDS = ['rhythm.habanera', 'rhythm.tresillo'];
+
+describe('the habanera and the tresillo are not asked on the coping question (CD1 D5, class 4)', () => {
+  it('the row carries both cells, as the detectors read them', () => {
+    const row = rowOf('exercise.cells', CELLS);
+    expect(row.demands).toEqual(expect.arrayContaining(CELL_IDS));
+    expect(locatedOf(row)['rhythm.habanera']).toBe(8);
+    expect(locatedOf(row)['rhythm.tresillo']).toBe(6);
+  });
+
+  it('judged at 2.2, and by a learner taught nothing at all, the item is never refused for the cells', () => {
+    const row = rowOf('exercise.cells', CELLS);
+    const atTwoTwo = uncoped(row, taughtAt('2.2'));
+    for (const id of CELL_IDS) expect(atTwoTwo).not.toContain(id);
+    const nothing = uncoped(row, { taught: () => false });
+    for (const id of CELL_IDS) expect(nothing).not.toContain(id);
+    // The ordinary reading demands the cells are made of are still asked of a learner taught nothing (guard).
+    expect(nothing).toEqual(expect.arrayContaining(['clef.bass', 'rhythm.dotted-quarter', 'rhythm.eighths']));
+  });
+
+  it('at latin.6, the rung that teaches the tresillo under a whole piece, the cells are not what refuses it', () => {
+    const asked = uncoped(rowOf('exercise.cells', CELLS), taughtAt('latin.6'));
+    for (const id of CELL_IDS) expect(asked).not.toContain(id);
+  });
+
+  it('guard: a demand located nowhere other than the key signature is still asked (class 1, unchanged)', () => {
+    const row: CatalogItem = { ...rowOf('exercise.cells.compound-nowhere', CELLS), demands: [...CELL_IDS, 'metre.compound'] };
+    expect(uncoped(row, taughtAt('2.2'))).toEqual(['metre.compound']);
+  });
+
+  it('guard: the notation fact stays — question 2 still reads the cell on the row', () => {
+    const row = rowOf('exercise.cells', CELLS);
+    expect(eligibleFor(row, taughtAt('latin.6'), { for: 'demand', demand: 'rhythm.tresillo' })).toEqual({
+      verdict: 'ineligible',
+      why: 'incidental',
+      wanted: 'rhythm.tresillo',
+      located: 6,
+    });
+  });
+});
+
+describe('a runtime reading row whose phrases may hold a cell is not asked it either (CD1 D5, the runtime branch)', () => {
+  it('a left-hand line with dotted quarters may write the cell, and the coping question does not ask it', () => {
+    const row: CatalogItem = {
+      id: 'drill.reading.cd1-left-line',
+      type: 'exercise',
+      title: 'a left-hand reading row',
+      level: 1,
+      hands: 'left',
+      tracks: ['core'],
+      concepts: [],
+      drill: { kind: 'sight-reading', params: { level: 1, hands: 'L', timeSig: { beats: 4, beatType: 4 }, dottedQuarters: true } },
+    } as unknown as CatalogItem;
+    const asked = uncoped(row, { taught: () => false });
+    expect(asked.length, 'the row asks its ordinary demands (guard)').toBeGreaterThan(0);
+    for (const id of CELL_IDS) expect(asked).not.toContain(id);
+  });
+});

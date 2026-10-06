@@ -336,6 +336,9 @@ describe('2. the establishing contexts come from the replay, and `transfer.ts` r
   it('the shipped vocabulary names only the relationship’s dimensions, and says which skills have none', () => {
     const known = new Set<string>(DIMENSIONS);
     for (const skill of VOCABULARY_V0.skills) for (const dimension of skill.transfer?.dimensions ?? []) expect(known.has(dimension), `${skill.id}: ${dimension}`).toBe(true);
-    expect(VOCABULARY_V0.skills.filter((skill) => skill.transfer === undefined).map((skill) => skill.id)).toEqual(['reading-ahead']);
+    // Revised (CD1; responses/33497357.md §4): `habanera-and-tresillo` joins `reading-ahead`. It is observable `none`
+    // and claims no transfer, so nothing is manufactured for it; the old assumption was reading-ahead alone.
+    expect(VOCABULARY_V0.skills.filter((skill) => skill.transfer === undefined).map((skill) => skill.id)).toEqual(['reading-ahead', 'habanera-and-tresillo']);
+    for (const skill of VOCABULARY_V0.skills.filter((one) => one.transfer === undefined)) expect(skill.observable, skill.id).toBe('none');
   });
 });

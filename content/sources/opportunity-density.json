@@ -34,7 +34,14 @@
     "",
     "Read by the build (tools/content/build.py, which writes `measurement.established` on every bundled item)",
     "and by the app (app/src/curriculum/eligibility.ts, which applies the same rule to an imported score).",
-    "app/tests/unit/eligibility.test.ts holds the two readings equal on every item of the built catalog."
+    "app/tests/unit/eligibility.test.ts holds the two readings equal on every item of the built catalog.",
+    "",
+    "`curatedOnly` (CD1, the brief's §3a after docs/review/responses/33497357.md §2): demands with no general",
+    "density rule, by decision. Their detectors are exact presence and location facts; no count of located places",
+    "makes an item establish them. They are established by two proofs only: a generated family's contract",
+    "(build.established_by_contract, once the independent witness agrees) and a verified passage fact",
+    "(the `demand` rows of content/sources/verified-facts.json, tools/content/passages.py) for the exact item, rung and bars it proves.",
+    "Every vocabulary demand is in exactly one of `demands` and `curatedOnly`. No sentinel threshold, no hypothesis."
   ],
   "demands": {
     "clef.bass": { "min": 8, "perBar": 1, "minInWindow": 4, "windowWhy": "a bass-staff note in every bar of a four-bar phrase; the whole piece's eight is two phrases", "hypothesis": true, "why": "reading the bass staff is practised when it carries notes throughout; a bass note under the last chord is not bass-clef reading" },
@@ -56,6 +63,10 @@
     "texture.hands-together": { "min": 8, "perBar": 0.5, "minInWindow": 4, "windowWhy": "the hands coordinated in at least four places", "hypothesis": true, "why": "located only where the hands are coordinated; in half the bars at least, or the texture is a moment and not the piece" },
     "texture.left-hand-pattern": { "min": 1, "perBar": 0, "minInWindow": 1, "windowWhy": "the every-bar rule, read on the cut: present means a pattern in every bar of the passage", "hypothesis": false, "why": "the detector is already an every-bar rule: present means a pattern in every bar" },
     "texture.walking-bass": { "min": 1, "perBar": 0, "minInWindow": 1, "windowWhy": "the every-bar rule, read on the cut: present means a walk in every bar of the passage (E22's caution stands)", "hypothesis": false, "why": "the detector is already an every-bar rule: present means a walk in every bar (and its readings are known to misread a stride left hand and a one-line pulse, E22)" }
+  },
+  "curatedOnly": {
+    "rhythm.habanera": { "why": "No general rule (CD1 §3a): the habanera is the left hand's onset cell, a presence and location fact; the density numbers were measured through the hand model HD2 corrects and no named consumer needs a general rule. Established only by a verified passage fact (Bizet bars 1-12, Por Una Cabeza printed bars 1-14) or a family contract with the witness agreeing. A later named consumer with a predeclared calibration that separates its cases may add a rule then." },
+    "rhythm.tresillo": { "why": "No general rule (CD1; docs/review/responses/33497357.md §2): the predeclared calibration falsified one (docs/prompts/runs/CD1/calibration.md): the strictest min-and-perBar rule keeping The Crave also establishes the counterexample All of Me. Established only by the tresillo family's contract (exercise.tresillo.c/.f/.g, the witness agreeing) or a verified passage fact (The Crave bars 21-26)." }
   },
   "tempoSensitive": ["rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "rhythm.triplets"]
 }

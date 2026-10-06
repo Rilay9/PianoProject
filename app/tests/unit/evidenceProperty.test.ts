@@ -127,6 +127,26 @@ const FIXTURES: Record<string, Fixture> = {
     ]),
     outside: { fromStep: 1, toStep: 1 },
   },
+  // CD1: the doubled habanera and the tresillo in the left hand in bar 1 (steps 0-3 and 0-2), then a bar of
+  // the right hand alone (the loop that leaves the cell out). Their skill is observable `none`.
+  'rhythm.habanera': {
+    model: phrase({
+      bars: [
+        [{ at: 0, dur: 4, pitch: 'C5' }, { at: 0, dur: 1.5, pitch: 'C3', staff: 2 }, { at: 1.5, dur: 0.5, pitch: 'G3', staff: 2 }, { at: 2, dur: 1, pitch: 'C3', staff: 2 }, { at: 3, dur: 1, pitch: 'G3', staff: 2 }],
+        rh(['C5', 'D5', 'E5', 'F5']),
+      ],
+    }),
+    outside: { fromStep: 4, toStep: 6 },
+  },
+  'rhythm.tresillo': {
+    model: phrase({
+      bars: [
+        [{ at: 0, dur: 4, pitch: 'C5' }, { at: 0, dur: 1.5, pitch: 'C3', staff: 2 }, { at: 1.5, dur: 1.5, pitch: 'G3', staff: 2 }, { at: 3, dur: 1, pitch: 'C3', staff: 2 }],
+        rh(['C5', 'D5', 'E5', 'F5']),
+      ],
+    }),
+    outside: { fromStep: 3, toStep: 5 },
+  },
 };
 
 /** For a skill read over every step: the left hand alone, in a run of the right hand. */

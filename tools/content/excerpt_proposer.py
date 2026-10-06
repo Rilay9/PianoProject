@@ -659,13 +659,18 @@ def opportunity(target_demands: list[str], positions: dict, low: int, high: int,
 
 
 def untaught(demands: list[str], rung: str | None, ancestry: dict, vocabulary: dict) -> list[str]:
-    """The window's demands the judging rung has not taught (E0a's ancestry, E0b's lists, as `claims` reads them)."""
+    """
+    The window's demands the judging rung has not taught (E0a's ancestry, E0b's lists, as `claims` reads them),
+    less a demand the coping question never asks (`claims.not_asked`, CD1 D5: the habanera and the tresillo).
+    """
     if rung is None or rung not in ancestry:
         return []
     import claims
 
     taught_by = ancestry[rung]
-    return [d for d in demands if not any(at in taught_by for at in claims.taught_at(vocabulary.get(d)))]
+    skip = claims.not_asked(vocabulary)
+    return [d for d in demands
+            if d not in skip and not any(at in taught_by for at in claims.taught_at(vocabulary.get(d)))]
 
 
 def forbidden(parent: dict, demands: list[str]) -> list[str]:

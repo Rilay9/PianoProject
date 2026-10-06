@@ -375,6 +375,108 @@ describe('texture.walking-bass — a quarter on every beat in the left hand', ()
     expect(present('walkingBass', [line(['C3', 'D3', 'E3', 'G3'], 1, 2), line(['F2', 'G2', 'A2', 'C3'], 1, 2)])).toBe(false));
 });
 
+describe('rhythm.habanera and rhythm.tresillo — the left hand’s onsets are exactly the cell (CD1)', () => {
+  // The cells as fractions of the bar: the habanera 0, 3/8, 1/2, 3/4; the tresillo 0, 3/8, 3/4
+  // (the upgrade's "dotted eighth, sixteenth, eighth, eighth in 2/4 … the tresillo (3+3+2)").
+  const L = (at: number, dur: number, pitch = 'C3'): HandNote => ({ at, dur, pitch, staff: 2 });
+  const rh = (length = 4): HandNote[] => [{ at: 0, dur: length, pitch: 'C5' }];
+  const both = (bars: HandNote[][], time?: string): { habanera: boolean; tresillo: boolean } => ({
+    habanera: present('habaneraCell', bars, time),
+    tresillo: present('tresilloCell', bars, time),
+  });
+  const HABANERA = { habanera: true, tresillo: false };
+  const TRESILLO = { habanera: false, tresillo: true };
+  const NEITHER = { habanera: false, tresillo: false };
+
+  // The present cases, each read under both detectors below (the cross-failure).
+  const upgrade24 = [[...rh(2), L(0, 0.75), L(0.75, 0.25, 'G3'), L(1, 0.5, 'C3'), L(1.5, 0.5, 'G3')]];
+  const doubled44 = [[...rh(), L(0, 1.5), L(1.5, 0.5, 'G3'), L(2, 1, 'C3'), L(3, 1, 'G3')]];
+  // Por Una Cabeza's written form: a quarter, an eighth rest, an eighth, a quarter, a quarter.
+  const porUnaCabeza = [[...rh(), L(0, 1), L(1.5, 0.5, 'G3'), L(2, 1, 'C3'), L(3, 1, 'G3')]];
+  // The Crave's tresillo: dotted quarter, dotted quarter, quarter.
+  const crave = [[...rh(), L(0, 1.5), L(1.5, 1.5, 'G3'), L(3, 1, 'C3')]];
+  const tresillo24 = [[...rh(2), L(0, 0.75), L(0.75, 0.75, 'G3'), L(1.5, 0.5, 'C3')]];
+
+  it('present: the 2/4 habanera as the upgrade writes it, and its doubled form in 4/4 and 2/2', () => {
+    expect(both(upgrade24, '2/4')).toEqual(HABANERA);
+    expect(both(doubled44)).toEqual(HABANERA);
+    expect(both(doubled44, '2/2')).toEqual(HABANERA);
+  });
+  it('present: Por Una Cabeza’s written form, a quarter and an eighth rest where the cell has a dotted quarter', () =>
+    expect(both(porUnaCabeza)).toEqual(HABANERA));
+  it('present: The Crave’s tresillo in 4/4, and the tresillo in 2/4', () => {
+    expect(both(crave)).toEqual(TRESILLO);
+    expect(both(tresillo24, '2/4')).toEqual(TRESILLO);
+  });
+
+  it('absent: straight eighths', () => expect(both([[...rh(), ...line(['C3', 'G3', 'E3', 'G3', 'C3', 'G3', 'E3', 'G3'], 0.5, 2)]])).toEqual(NEITHER));
+  it('absent: the dotted-pair near-miss, onsets 0, 3/8, 1/2, 7/8', () =>
+    expect(both([[...rh(2), L(0, 0.75), L(0.75, 0.25, 'G3'), L(1, 0.75, 'C3'), L(1.75, 0.25, 'G3')]], '2/4')).toEqual(NEITHER));
+  it('absent: the same cell in the right hand only', () =>
+    expect(
+      both([[{ at: 0, dur: 1.5, pitch: 'C5' }, { at: 1.5, dur: 0.5, pitch: 'G4' }, { at: 2, dur: 1, pitch: 'C5' }, { at: 3, dur: 1, pitch: 'G4' }, L(0, 4)]]),
+    ).toEqual(NEITHER));
+  it('absent: a 3/4 bar and a 6/8 bar holding the same fractions', () => {
+    const fractions = [[...rh(3), L(0, 1.125), L(1.125, 0.375, 'G3'), L(1.5, 0.75, 'C3'), L(2.25, 0.75, 'G3')]];
+    expect(both(fractions, '3/4')).toEqual(NEITHER);
+    expect(both(fractions, '6/8')).toEqual(NEITHER);
+    const threeThreeTwo = [[...rh(3), L(0, 1.125), L(1.125, 1.125, 'G3'), L(2.25, 0.75, 'C3')]];
+    expect(both(threeThreeTwo, '3/4')).toEqual(NEITHER);
+    expect(both(threeThreeTwo, '6/8')).toEqual(NEITHER);
+  });
+  it('absent: a pickup bar is never read, though its notes sit where the cell’s would', () => {
+    const model = { ...phrase({ bars: [doubled44[0] as HandNote[], [...rh(), L(0, 4)]] }), pickup: true };
+    expect(detect(model, 'habaneraCell').present).toBe(false);
+    const counted = phrase({ bars: [doubled44[0] as HandNote[], [...rh(), L(0, 4)]] });
+    expect(detect(counted, 'habaneraCell').present).toBe(true);
+  });
+  it('absent: a bar entered by a tie from the bar before has no onset at its start', () => {
+    const tied = [[...rh(), { at: 0, pitch: 'C3', staff: 2 as const, tie: [4, 1.5] }], [...rh(), L(1.5, 0.5, 'G3'), L(2, 1, 'C3'), L(3, 1, 'G3')]];
+    expect(both(tied)).toEqual(NEITHER);
+  });
+  it('absent: the secondary rag’s eight sixteenths, grouped 3+3+2 by accent, sound every sixteenth', () =>
+    expect(both([[...rh(2), ...line(['C3', 'E3', 'G3', 'C3', 'E3', 'G3', 'C3', 'E3'], 0.25, 2)]], '2/4')).toEqual(NEITHER));
+
+  it('boundary: the cross-failure — no habanera bar is a tresillo bar, and no tresillo bar a habanera bar', () => {
+    for (const [bars, time] of [[upgrade24, '2/4'], [doubled44, undefined], [porUnaCabeza, undefined]] as const) {
+      expect(present('tresilloCell', bars, time)).toBe(false);
+    }
+    for (const [bars, time] of [[crave, undefined], [tresillo24, '2/4']] as const) {
+      expect(present('habaneraCell', bars, time)).toBe(false);
+    }
+  });
+  it('boundary: a habanera whose sixteenth is tied over the half bar reads as a tresillo', () =>
+    expect(both([[...rh(2), L(0, 0.75), { at: 0.75, pitch: 'G3', staff: 2, tie: [0.25, 0.5] }, L(1.5, 0.5, 'G3')]], '2/4')).toEqual(TRESILLO));
+  it('boundary: a left-hand chord is one onset, located at its lowest note', () => {
+    const model = phrase({ bars: [[...rh(), L(0, 1.5, 'G3'), L(0, 1.5, 'C3'), L(0, 1.5, 'E3'), L(1.5, 0.5, 'G3'), L(2, 1, 'C3'), L(3, 1, 'G3')]] });
+    const found = detect(model, 'habaneraCell');
+    expect(found.present).toBe(true);
+    expect(found.at).toHaveLength(4);
+    const first = model.steps[0]?.notes.find((n) => n.midi === 48);
+    expect(found.at[0]?.noteId).toBe(first?.id);
+  });
+  it('boundary: a left-hand note drawn on the upper staff (cross-staff) still counts; a right-hand note on the lower staff does not', () => {
+    const base = phrase({ bars: doubled44 });
+    const moved = (hand: 'R' | 'L', staff: 1 | 2): typeof base => ({
+      ...base,
+      steps: base.steps.map((step) => ({
+        ...step,
+        notes: step.notes.map((n) => (n.staff === 2 && n.onset === 1.5 ? { ...n, staff, hand, crossStaff: true } : n)),
+      })),
+    });
+    expect(detect(moved('L', 1), 'habaneraCell').present).toBe(true);
+    expect(detect(moved('R', 2), 'habaneraCell').present).toBe(false);
+  });
+  it('boundary: grace notes are ignored', () =>
+    expect(both([[...rh(), L(0, 1.5), { at: 1.25, dur: 0.25, pitch: 'F3', staff: 2, grace: true }, L(1.5, 0.5, 'G3'), L(2, 1, 'C3'), L(3, 1, 'G3')]])).toEqual(HABANERA));
+  it('boundary: a habanera bar locates exactly four places and a tresillo bar three', () => {
+    expect(detect(phrase({ bars: [...doubled44, ...porUnaCabeza] }), 'habaneraCell').at).toHaveLength(8);
+    expect(detect(phrase({ bars: [...crave, ...crave] }), 'tresilloCell').at).toHaveLength(6);
+    const at = detect(phrase({ bars: [...crave, [...rh(), L(0, 4)]] }), 'tresilloCell').at;
+    expect(at.map((a) => [a.measure, a.staff])).toEqual([[0, 2], [0, 2], [0, 2]]);
+  });
+});
+
 describe('the measurements the promises read', () => {
   it('the melody line is the upper staff when it plays, one note per onset, the top of a chord', () => {
     const model = phrase({ bars: [[{ at: 0, dur: 2, pitch: 'C4' }, { at: 0, dur: 2, pitch: 'E4' }, { at: 2, dur: 2, pitch: 'D4' }, { at: 0, dur: 4, pitch: 'C3', staff: 2 }]] });

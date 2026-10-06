@@ -95,6 +95,11 @@ export interface DensityRule {
 /** The density file, typed: read by the build too, so the two cannot disagree about the numbers. */
 export const OPPORTUNITY_DENSITY = densityJson as unknown as {
   demands: Record<string, DensityRule>;
+  /**
+   * Demands with no general density rule, by decision (CD1 §3a): presence and location facts that only a family
+   * contract (`measurement.contract`) or a verified passage fact establishes. `usefulDensity` never names one.
+   */
+  curatedOnly: Record<string, { why: string }>;
   tempoSensitive: string[];
 };
 

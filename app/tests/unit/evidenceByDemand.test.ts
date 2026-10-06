@@ -20,7 +20,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { phrase } from './helpers/phrase';
 import { observe, type RunPlan } from './helpers/observed';
-import { evidenceFor, isRefusal, overlapOf, type EvidenceResult, type MeasuredEvidence } from '../../src/evidence/evidence';
+import { EVIDENCE_DEFINITIONS, evidenceFor, isRefusal, overlapOf, type EvidenceResult, type MeasuredEvidence } from '../../src/evidence/evidence';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { detect, type DetectorId } from '../../src/demands/detect';
 import type { ScoreModelData } from '../../src/score/types';
@@ -370,5 +370,67 @@ describe('the evidence is keyed by musical demand, never by a reader’s control
         policyReader ? /READING_DIMENSIONS|ReadingMoves|ReadingRecipe|SightReadingOptions/ : /READING_DIMENSIONS|ReadingMoves|ReadingRecipe|SightReadingOptions|\bdimensions?\b/,
       );
     }
+  });
+});
+
+describe('the habanera and the tresillo on the evidence (CD1 D7): located like every demand, crediting no skill', () => {
+  /**
+   * One bar of the doubled habanera in the left hand (a dotted quarter, an eighth, a quarter, a quarter)
+   * and one of the tresillo (dotted quarter, dotted quarter, quarter), under a held right hand. Steps:
+   * 0 C5+C3, 1 G3, 2 C3, 3 G3, 4 C5+C3, 5 G3, 6 C3.
+   */
+  const CELLS = phrase({
+    bars: [
+      [
+        { at: 0, dur: 4, pitch: 'C5' },
+        { at: 0, dur: 1.5, pitch: 'C3', staff: 2 },
+        { at: 1.5, dur: 0.5, pitch: 'G3', staff: 2 },
+        { at: 2, dur: 1, pitch: 'C3', staff: 2 },
+        { at: 3, dur: 1, pitch: 'G3', staff: 2 },
+      ],
+      [
+        { at: 0, dur: 4, pitch: 'C5' },
+        { at: 0, dur: 1.5, pitch: 'C3', staff: 2 },
+        { at: 1.5, dur: 1.5, pitch: 'G3', staff: 2 },
+        { at: 3, dur: 1, pitch: 'C3', staff: 2 },
+      ],
+    ],
+  });
+  const ALL = VOCABULARY_V0.skills.map((skill) => skill.id);
+  const run = observe(CELLS, { ...FIRST_READ, wrongInstead: [1, 5] });
+  const results = evidenceFor({ observation: run, played: CELLS, targetSkills: ALL, vocabulary: VOCABULARY_V0 });
+  /** The vocabulary as it stood before CD1: the two cells and their skill taken out. */
+  const BEFORE = {
+    ...VOCABULARY_V0,
+    demands: VOCABULARY_V0.demands.filter((d) => d.id !== 'rhythm.habanera' && d.id !== 'rhythm.tresillo'),
+    skills: VOCABULARY_V0.skills.filter((s) => s.id !== 'habanera-and-tresillo'),
+  };
+  const before = evidenceFor({ observation: run, played: CELLS, targetSkills: ALL.filter((id) => id !== 'habanera-and-tresillo'), vocabulary: BEFORE });
+
+  it('the evidence version is 7: rows stored under 6 lack the cells and wait for the recompute', () => expect(EVIDENCE_DEFINITIONS).toBe(7));
+
+  it('a skill read over every step lists the cells where the detectors locate them, each step counted under each demand', () => {
+    const sight = measured(results, 'sight-reading');
+    expect(entry(sight, 'rhythm.habanera')).toMatchObject({ n: 4, right: 3, steps: [0, 1, 2, 3], wrong: [1] });
+    expect(entry(sight, 'rhythm.tresillo')).toMatchObject({ n: 3, right: 2, steps: [4, 5, 6], wrong: [5] });
+    expect(entry(sight, 'rhythm.habanera')?.steps).toEqual(locatedSteps(CELLS, 'habaneraCell'));
+  });
+
+  it('the cells’ own skill is never evidenced: observable none', () => {
+    const own = results.find((result) => result.skill === 'habanera-and-tresillo');
+    expect(own === undefined || isRefusal(own)).toBe(true);
+  });
+
+  it('every skill’s own n and right are what they were before the cells joined the vocabulary', () => {
+    const counts = (list: EvidenceResult[]): Record<string, [number, number] | string> =>
+      Object.fromEntries(
+        list.map((result) => [result.skill, isRefusal(result) || result.kind !== 'measured' ? 'refused' : [result.n, result.right]]),
+      );
+    const now = counts(results);
+    delete now['habanera-and-tresillo'];
+    expect(now).toEqual(counts(before));
+    // Recorded on this phrase with the vocabulary of before CD1 (`BEFORE`), so a later change to a
+    // skill's counting shows here: sight reading counts every step; the wrong G3s are the two misread.
+    expect(now['sight-reading']).toEqual([7, 5]);
   });
 });

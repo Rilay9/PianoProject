@@ -385,3 +385,30 @@ describe('every move the curriculum can ask for is made, or declared', () => {
     expect(o?.kind).toBe('ok');
   });
 });
+
+describe('the habanera and the tresillo in the control map (CD1; responses/33497357.md §4): what the generator truly does', () => {
+  // The CD1 probe's own finding: a level-1 left-hand line with dotted quarters in 4/4, seed 3, holds the doubled
+  // habanera in its left hand. A cell the generator can write by chance is one `mayWrite` must not deny.
+  const LEFT_LINE: SightReadingOptions = { level: 1, hands: 'L', timeSig: { beats: 4, beatType: 4 }, seed: 3, bars: 8, dottedQuarters: true };
+  it('no option writes or keeps out either cell, and each entry says why', () => {
+    for (const id of ['rhythm.habanera', 'rhythm.tresillo']) {
+      const control = READING_CONTROLS[id];
+      expect(control?.option, id).toBeNull();
+      expect(control?.on(LEFT_LINE), id).toBeNull();
+      expect(control?.off(LEFT_LINE), id).toBeNull();
+      expect(control?.none?.on && control.none.off, id).toBeTruthy();
+    }
+  });
+  it('mayWrite is true where a phrase was found to hold the cell, and that phrase does hold it', async () => {
+    expect(READING_CONTROLS['rhythm.habanera']?.mayWrite(LEFT_LINE)).toBe(true);
+    const phrase = await phraseOf(LEFT_LINE, 'cd1.left-line');
+    expect(detectAll(phrase.model).habaneraCell.present).toBe(true);
+  });
+  it('mayWrite is false under a melody, where the left hand plays a pattern whose onsets are never the cell’s', () => {
+    for (const leftHand of ['whole', 'chord', 'alberti', 'broken', 'walking'] as const) {
+      const options: SightReadingOptions = { level: 5, hands: 'both', leftHand, seed: 3, bars: 8 };
+      expect(READING_CONTROLS['rhythm.habanera']?.mayWrite(options), leftHand).toBe(false);
+      expect(READING_CONTROLS['rhythm.tresillo']?.mayWrite(options), leftHand).toBe(false);
+    }
+  });
+});

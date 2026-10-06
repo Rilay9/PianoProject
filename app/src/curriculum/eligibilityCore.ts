@@ -134,15 +134,26 @@ const KEY_SIGNATURE = 'key.signature';
  * the row's `demands`, question 2's opportunity reading, provenance — and only this
  * question leaves it out. The key signature alone: any other demand located nowhere is
  * asked as before. `claims.untaught_on` is the build's twin.
+ *
+ * And a demand whose vocabulary entry declares `notAsked` is never asked (CD1 D5; the reviewer's
+ * ruling, `docs/review/responses/530963de.md` §3): the habanera and the tresillo, descriptive
+ * structural facts whose difficulties the ordinary reading demands already gate, which the item may
+ * itself be teaching. A second explicit exception, declared in data per demand with its reason; a
+ * demand without it is asked as before, located or not. `claims.asked_of` is the build's twin.
  */
 function demandsAsked(item: CatalogItem, measurement: Measurement, vocabulary: Vocabulary): readonly string[] {
   if (measurement.status === 'measured') {
     const measured = Array.isArray(item.demands) ? item.demands : [];
-    return measured.filter((demand) => demand !== KEY_SIGNATURE || (measurement.located[demand] ?? 0) > 0);
+    const notAsked = new Set(vocabulary.demands.filter((demand) => demand.notAsked !== undefined).map((demand) => demand.id));
+    return measured.filter(
+      (demand) => !notAsked.has(demand) && (demand !== KEY_SIGNATURE || (measurement.located[demand] ?? 0) > 0),
+    );
   }
   if (measurement.status === 'runtime' && isReadingRow(item)) {
     const options = sightReadingOptionsFor(item.drill?.params ?? {}, 1);
-    return vocabulary.demands.filter((demand) => READING_CONTROLS[demand.id]?.mayWrite(options) === true).map((demand) => demand.id);
+    return vocabulary.demands
+      .filter((demand) => demand.notAsked === undefined && READING_CONTROLS[demand.id]?.mayWrite(options) === true)
+      .map((demand) => demand.id);
   }
   return [];
 }

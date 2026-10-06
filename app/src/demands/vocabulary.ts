@@ -138,6 +138,15 @@ export interface Demand {
    * does, so no run is ever attributed to one.
    */
   fixedPositions?: readonly FixedPosition[];
+  /**
+   * Why the coping question does not ask this demand (CD1 D5; the reviewer's ruling,
+   * `docs/review/responses/530963de.md` §3): on `rhythm.habanera` and `rhythm.tresillo` alone, a
+   * descriptive structural fact whose difficulties the ordinary reading demands and the rung's
+   * prerequisites already gate, and which the item may itself be teaching. `eligibilityCore.demandsAsked`
+   * leaves it out, and its build twins (`claims.not_asked`) do the same; every other reader reads it as
+   * before. Declared per demand, with the reason; absent, the demand is asked.
+   */
+  notAsked?: string;
 }
 
 /** One fixed position (L120b): the lesson concept that teaches it, the hand, and its lowest and highest MIDI. */

@@ -76,6 +76,13 @@ CONCEPT_DEMANDS = {
     "tied-across-bar": "rhythm.ties",
     "key-signatures": "key.signature",
     "chromatic": "pitch.chromatic",
+    # CD1 (`docs/prompts/runs/curriculum-review-2026-10-05/briefs/cells-as-measured-demands.md` D6; CK-5): the
+    # habanera and the tresillo as the left hand's onset cells, `detect.ts`'s `habaneraCell` and `tresilloCell`,
+    # witnessed independently by `cells.py` (partitura). Each concept names its own demand and no other, so
+    # `excerpts.concepts_for`'s shared-demand guard is untouched. The claim is the onset cell, never the style
+    # (`docs/review/responses/eeff22fe.md` §2): a placement still needs the curated teaching-use record (CK-4).
+    "habanera": "rhythm.habanera",
+    "tresillo": "rhythm.tresillo",
 }
 
 #: CQ1 (`docs/prompts/runs/CQ1/decision.md`): a broad accompaniment result (`leftHandPattern`) or the
@@ -319,8 +326,16 @@ def introduced_of(lesson: dict, skills: dict[str, dict]) -> list[dict]:
 CHECKED = ("established", "incidental", "absent")
 
 
-def status_of(claim: dict, item: dict | None, skills: dict[str, dict]) -> str:
-    """established, incidental (present below the density), absent, unmeasured, runtime or missing."""
+def status_of(claim: dict, item: dict | None, skills: dict[str, dict], rung: str | None = None,
+              facts: dict[tuple[str, str, str], dict] | None = None) -> str:
+    """
+    established, incidental (present below the density), absent, unmeasured, runtime or missing.
+
+    A demand claim is also established by a current verified passage fact (CD1 §3a, `passages.current_facts`) for
+    exactly this item, this `rung` and this demand: the second proof of a curated-only demand (the habanera, the
+    tresillo). Only where the caller passes the rung and the facts; never for another rung, another item or another
+    demand, and never from a target or an incidental occurrence.
+    """
     if item is None:
         return "missing"
     measurement = item.get("measurement") or {}
@@ -335,6 +350,8 @@ def status_of(claim: dict, item: dict | None, skills: dict[str, dict]) -> str:
     present = set(item.get("demands") or [])
     wanted = set(skills[claim["id"]]["opportunity"]) if claim["kind"] == "skill" else {claim["id"]}
     if wanted & established:
+        return "established"
+    if claim["kind"] == "demand" and rung is not None and facts and (item.get("id"), rung, claim["id"]) in facts:
         return "established"
     if wanted & present:
         return "incidental"
@@ -370,7 +387,28 @@ def e22_notes(claim: dict, item: dict | None, verdict: str, skills: dict[str, di
 KEY_SIGNATURE = "key.signature"
 
 
-def asked_of(item: dict) -> list[str]:
+_SHIPPED_NOT_ASKED: frozenset[str] | None = None
+
+
+def not_asked(demands: dict[str, dict] | None = None) -> frozenset[str]:
+    """
+    The demands the coping question never asks (CD1 D5; the reviewer's ruling,
+    `docs/review/responses/530963de.md` §3): those whose vocabulary entry declares `notAsked`, with its
+    reason — `rhythm.habanera` and `rhythm.tresillo`, descriptive structural facts whose difficulties the
+    ordinary reading demands already gate, and which the item may itself be teaching. The one reading the
+    build's coping readers share (`asked_of`, `excerpt_proposer.untaught`), as the app's
+    `eligibilityCore.demandsAsked` reads the same field. `demands` is a vocabulary `{id: row}`; without it,
+    the shipped `demands.json`, read once.
+    """
+    global _SHIPPED_NOT_ASKED
+    if demands is not None:
+        return frozenset(demand for demand, row in demands.items() if (row or {}).get("notAsked"))
+    if _SHIPPED_NOT_ASKED is None:
+        _SHIPPED_NOT_ASKED = not_asked(load_vocabulary()[1])
+    return _SHIPPED_NOT_ASKED
+
+
+def asked_of(item: dict, demands: dict[str, dict] | None = None) -> list[str]:
     """
     The item's demands the coping question asks, as the app's `eligibilityCore.demandsAsked` reads a
     measured row: its `demands`, less a key signature its measurement locates at no sounding note
@@ -378,15 +416,21 @@ def asked_of(item: dict) -> list[str]:
     L120a (`docs/review/responses/0bcd3be0.md`, Question 2 A). The notation fact stays on the row; the
     key signature alone is read so, and a row with no measurement record keeps it asked (nothing says
     where it is located).
+
+    And never a demand the vocabulary declares `notAsked` (CD1 D5, `not_asked`): the habanera and the
+    tresillo, measured or not. A second explicit exception, declared per demand in data; any other demand is
+    asked as before. `demands` as in `not_asked`.
     """
     listed = item.get("demands")
     if not isinstance(listed, list):
         return []
+    skip = not_asked(demands)
     measurement = item.get("measurement") or {}
     if measurement.get("status") != "measured":
-        return list(listed)
+        return [demand for demand in listed if demand not in skip]
     located = measurement.get("located") or {}
-    return [demand for demand in listed if demand != KEY_SIGNATURE or int(located.get(demand, 0)) > 0]
+    return [demand for demand in listed
+            if demand not in skip and (demand != KEY_SIGNATURE or int(located.get(demand, 0)) > 0)]
 
 
 #: `{id(curriculum): (curriculum, {rung: its own concepts})}`: worked out once per curriculum object (the
@@ -444,7 +488,7 @@ def untaught_on(item: dict, rung: str, ancestry: dict[str, set[str]], demands: d
     taught_by = ancestry[rung]
     concepts = concepts_by_rung(curriculum) if curriculum is not None else {}
     behind = {concept for member in taught_by for concept in concepts.get(member, set())}
-    return [demand for demand in asked_of(item)
+    return [demand for demand in asked_of(item, demands)
             if not any(at in taught_by for at in taught_at(demands.get(demand)))
             and not in_taught_position(item, demands.get(demand), behind)]
 
@@ -503,6 +547,10 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
     by_id = {item["id"]: item for item in catalog}
     ancestry = rung_ancestry(curriculum)
     firsts = first_listings(curriculum, ancestry)
+    import passages
+
+    # CD1 §3a: the current verified passage facts, counted for their exact item, rung and demand.
+    facts = passages.current_facts(catalog)
 
     rungs: list[dict] = []
     options: list[dict] = []
@@ -511,7 +559,7 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
         ids = list(dict.fromkeys(lesson.get("exerciseOptions", []) + lesson.get("songOptions", [])))
         claim_rows = []
         for claim in claims:
-            verdicts = {item_id: status_of(claim, by_id.get(item_id), skills) for item_id in ids}
+            verdicts = {item_id: status_of(claim, by_id.get(item_id), skills, lesson["id"], facts) for item_id in ids}
             claim_rows.append({**claim, "established": sum(1 for v in verdicts.values() if v == "established"),
                                "measurable": sum(1 for v in verdicts.values() if v in CHECKED),
                                "unmeasured": sum(1 for v in verdicts.values() if v == "unmeasured")})
@@ -519,8 +567,10 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
             item = by_id.get(item_id)
             per = []
             for claim in claims:
-                verdict = status_of(claim, item, skills)
-                per.append({**claim, "status": verdict, "e22": e22_notes(claim, item, verdict, skills)})
+                verdict = status_of(claim, item, skills, lesson["id"], facts)
+                passage = facts.get((item_id, lesson["id"], claim["id"])) if claim["kind"] == "demand" else None
+                per.append({**claim, "status": verdict, "e22": e22_notes(claim, item, verdict, skills),
+                            **({"passage": f"bars {passage['bars'][0]}-{passage['bars'][1]}"} if passage else {})})
             provenance = (item or {}).get("provenance") or {}
             options.append({
                 "rung": lesson["id"],

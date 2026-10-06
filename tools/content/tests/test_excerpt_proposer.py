@@ -301,6 +301,17 @@ class TheGates(unittest.TestCase):
         self.assertEqual(taught.untaught, [], "the right hand alone at 2.1: leaps within a fifth, nothing 2.1 has not taught")
         self.assertEqual(taught.refused_by, [])
 
+    def test_the_proposer_never_counts_a_not_asked_demand_as_untaught(self) -> None:
+        """
+        CD1 D5: the habanera and the tresillo are never asked by the coping question, so a window holding them at
+        a rung whose path teaches neither (2.2) is not refused for them; the ordinary demands still are. The rule is
+        the vocabulary's `notAsked`: without it the cells would be untaught there (the guard half).
+        """
+        demands = ["rhythm.eighths", "rhythm.habanera", "rhythm.tresillo", "rhythm.sixteenths"]
+        self.assertEqual(P.untaught(demands, "2.2", self.ancestry, self.vocabulary), ["rhythm.sixteenths"])
+        plain = {k: {kk: vv for kk, vv in v.items() if kk != "notAsked"} for k, v in self.vocabulary.items()}
+        self.assertEqual(P.untaught(demands, "2.2", self.ancestry, plain), ["rhythm.habanera", "rhythm.tresillo", "rhythm.sixteenths"])
+
     def test_the_shift_is_read_from_the_windows_span(self) -> None:
         ctx = context(PHRASES, LEAPS)
         self.assertIn("range.beyond-position", window(ctx, 1, 4, "right").demands, "C5 to C6: an octave in the right hand")
