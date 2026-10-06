@@ -26,7 +26,7 @@ Status labels: **VERIFIED** (the writer read it at the cited lines on 2026-10-06
   - The witness and the app's detector disagree on a generated bar (a stop: then the drill's cell is not a measured fact).
   - A near-miss passes the contract.
   - The coping question finds a new item untaught at latin.4, which would need a placement decision.
-  - The reviewer rules that the doubled 4/4 form (class 5) is the better control, or that the counted exercise run must stay a tresillo run (see the evidence decision below). Either is a requirement or record edit after this lane.
+  - The reviewer ruled (`responses/g13-habanera-control.md`): the 2/4 form is preferred over the doubled 4/4 (class 5), and the counted exercise run is the 2/4 tresillo control (the evidence decision below). A later ruling changing either is a requirement or record edit after this lane.
 - **Real problem or proxy.** Real for the material: the learner's comparison becomes like for like. It is still a proxy for the ability. A controlled pair proves the items differ only in the cell; it does not prove the learner hears or names the difference, which stays self-checked (FABLE §6). Landing G13 removes one of the two blockers the reviewer named. The other, the step-20 task line on latin.6 and latin.7, is still outstanding. A7c.1 stays `draft` and the scoreboard stays **0/28**.
 - **Remaining uncertainty.**
   - Whether the build's coping question and level band accept the new items at latin.4 (H3, H6).
@@ -53,17 +53,17 @@ The record's `steps` after this lane's record edit (finish item 1). The record i
 | 5 | Taps the habanera in the cut | the cut | RO | same | same | same | (pair) |
 | 6 **CHANGED** | Contrast, first half: taps the 2/4 tresillo drill after the lesson names the added half-bar onset | TRE24-C | RO | + lesson names the difference | hits, early/late; own comparison | RO row; the spoken answer not stored; *the material is a strict control, the perception self-checked* | (task change) |
 | 7 **CHANGED** | Contrast, second half: taps the 2/4 habanera drill straight after; says which onset it adds and where | HAB-C | RO | same | same | same | pitch removed, named difference |
-| 7a **NEW** | Plays the habanera drill with pitches in C, ♩ = 60 or below | HAB-C | KT | notation, cursor, click, count-in, counting line, tempo slider, isolated cell, fixed key of C | accuracy, wrong/missed, bias, hot spots | KT row; counts toward the exercises requirement at the pass pair from latin.4 (any exercise option, see below) | fixed key of C |
-| 7b **NEW** | Optional: the habanera drill in F or G | HAB-F, HAB-G | KT | as 7a less the fixed key | as 7a | as 7a; any one exercise option counts | (alternative) |
-| 8-10 | The tresillo with pitches in C; optional F, G | TRE-C/F/G | KT | as the record | as the record | KT row; counts (any exercise option) | as the record |
+| 7a **NEW** | Plays the habanera drill with pitches in C, ♩ = 60 or below | HAB-C | KT | notation, cursor, click, count-in, counting line, tempo slider, isolated cell, fixed key of C | accuracy, wrong/missed, bias, hot spots | KT row; **not counted** (the counted habanera run is the cut, step 13) | fixed key of C |
+| 7b **NEW** | Optional: the habanera drill in F or G | HAB-F, HAB-G | KT | as 7a less the fixed key | as 7a | as 7a; not counted | (alternative) |
+| 7c **NEW** | Plays the 2/4 tresillo control with pitches in C, ♩ = 60 or below: **the counted exercise run** | TRE24-C | KT | as 7a | as 7a | KT row; **counts** at the pass pair from latin.4 (the exercises requirement names this item) | fixed key of C |
+| 8-10 **CHANGED** | The 4/4 tresillo with pitches in C; optional F, G | TRE-C/F/G | KT | as the record | as the record | KT row; **no longer counted** (practice and continuity from latin.3) | as the record |
 | 11-20 | Unchanged: the bass under the tune, WFM, **the counted run of the cut**, the duet, *The Crave*, *Por Una Cabeza* identification, the later task line | as the record | as the record | as the record | as the record | as the record | as the record |
 
 The placement of 7a and 7b is the builder's (§13 judgement, with one alternative). They come after the contrast and before the Bizet in-context steps (record step 11 onward). Either order against the 4/4 tresillo steps 8-10 is allowed if the checker's scaffold rules (R4, R5) pass with honest `removes` or a one-line `no_removal_reason`. Steps 2 and 4 keep TRE-C. Not changing them is a decision: the 4/4 item carries the learner across from latin.3, and the like-for-like requirement is the contrast's. The builder reports it as considered.
 
-**Evidence decision (SETTLED here, for the reviewer's artefact read).** VERIFIED: `rungState.poolOf` (`app/src/evidence/rungState.ts:269-278`) pools every `exerciseOptions` id for a `from: exercises` requirement that names no `items`, and latin.4's is `{kind: runs, from: exercises, count: 1}`. So once the four items join `exerciseOptions`, a passing KT run of any of them meets the exercises half of the rung. The requirement's JSON does not change (not owned). The record says that the counted tresillo run gains siblings: `evidence.updates[0]` becomes one KT run of any latin.4 exercise option (a 4/4 tresillo item, the 2/4 tresillo drill or a habanera drill) at the pass pair, opened from latin.4.
-- Consequence, stated in the entry: the rung no longer requires the tresillo at pitch. The tresillo at pitch is latin.3's, which is on latin.4's path.
-- The alternative: give the exercises requirement `items` naming the tresillo items. It loses because it is a requirement change outside this lane, and it would count the 4/4 tresillo over the drill that actually isolates this rung's cell.
-- What reverses it: the reviewer requiring a tresillo-at-pitch run. That becomes a requirement seam.
+**Evidence decision (RULED, `docs/review/responses/g13-habanera-control.md` §2).** The rung's exercise requirement is **not** widened to any exercise option. latin.3 does not guarantee a tresillo played at pitch (its requirement is one run from a pool of four clave drills and `exercise.tresillo.c`), and A7c.1's capability is to play both cells and distinguish them. The smallest completion rule that keeps that intent: the exercise requirement in `content/curriculum/stage-4.json` becomes `{"kind": "runs", "from": "exercises", "items": ["exercise.bass-cell.tresillo.c"], "count": 1}` (the exact 2/4, ♩ = 60 counterpart of HAB-C), by text splice; the named song requirement stays the whole Bizet left-hand cut (the counted habanera-at-pitch run). The two counted runs are the strict 2/4 tresillo CONTROL and the authentic Bizet habanera MODEL, both in Keep tempo at the pass pair, opened from latin.4. HAB-C/F/G, the 4/4 tresillo C/F/G and the extra-key work stay lesson steps, options and failure routes; none substitutes for the required 2/4 tresillo run. The record's `evidence.updates[0]` says exactly this; the lesson's "what counts" sentences and the completion tests say the same, in this lane.
+- Consequence: `rungState.poolOf` (`app/src/evidence/rungState.ts:269-278`, VERIFIED) pools only the named item once `items` is present, so a HAB-C or a 4/4 tresillo run no longer meets the exercises half; the completion test asserts that.
+- What reverses it: a later ruling adding a third required run or a habanera-drill run; that is a requirement seam after this one.
 
 ## Failure route
 
@@ -172,7 +172,7 @@ Unchanged from the record's `independence_test`. Without the original scaffold, 
    - steps 6 and 7 changed to TRE24-C and HAB-C, and their `cannot_establish` rewritten (the material is a strict control; the contrast is self-checked);
    - steps 7a and 7b added;
    - step 9's line "No existing item varies the key of the habanera cell under control" replaced by what is now true;
-   - `evidence.updates[0]` widened as the evidence decision says;
+   - `evidence.updates[0]` rewritten as the evidence decision says (the 2/4 tresillo control named; the 4/4 tresillo runs no longer counted);
    - the habanera-in-a-new-key failure route;
    - the header comment.
 
@@ -189,15 +189,16 @@ Unchanged from the record's `independence_test`. Without the original scaffold, 
    - the caveat paragraph, rewritten: the drill pair is like for like; the 4/4 tresillo and the Bizet differ in bar and speed;
    - steps 6 and 7, rewritten to the 2/4 pair, with the Bizet cut still the MODEL at steps 3, 5 and 13;
    - the new paragraph(s) for 7a and 7b;
-   - every sentence that says what counts (`:97-100`, `:102-105`, `:176-180`), which becomes false the moment the options widen;
+   - every sentence that says what counts (`:97-100`, `:102-105`, `:176-180`): the counted exercise run is the 2/4 tresillo control, the 4/4 items are practice;
+   - the opening sentence (`:8-9`), narrowed as the reviewer required (`responses/lp1-latin4-placement.md` §2): the material establishes the two cells and the repertoire used here, not a prevalence claim; for example "Two left-hand rhythm cells in this track are easy to confuse because they start the same way.";
    - the step labels, if the record's order renumbers them, with no other text in those paragraphs changed.
 
    Every rhythm, note, key, tempo and title statement about a generated item is checked against the built file by partitura. Itemise every change as where / what / before / after / why.
 8. **The probe** (H5): unchanged, or re-pinned with every line itemised.
-9. **The requirement unchanged** (the JSON). The record states the widened count (item 1).
+9. **The requirement.** latin.4's exercises requirement in `stage-4.json` gains `"items": ["exercise.bass-cell.tresillo.c"]` by text splice (the evidence decision); `validate.py` green; the completion test proves a HAB-C or 4/4 tresillo run no longer meets it.
 10. **Tests green:**
     - `test_untaught_options.py`, `test_latin4_placement.py` (extended to the four items: nothing untaught; claims established, the habanera on HAB-*, the tresillo on TRE24-C), `test_cell_proofs.py` (H4), `test_cells.py` (T7's differential extended to the four items) and `test_taught_at.py`;
-    - `app/tests/unit/latin4Completion.test.ts`, revised with reasons in comments: options are the seven ids; met by a HAB-C run plus the cut; met by TRE24-C plus the cut; still not met by any case it refuses today;
+    - `app/tests/unit/latin4Completion.test.ts`, revised with reasons in comments: options are the seven ids; met by TRE24-C plus the cut; **not** met by HAB-C plus the cut, nor by a 4/4 tresillo plus the cut; still not met by any case it refuses today;
     - `app/tests/e2e/latin4.placement.spec.ts`, revised: seven exercise rows, and HAB-C opens at ♩ = 60 in 2/4;
     - the chain checker with the brief lint; `tsc -b --noEmit` 0.
 11. **The test map rows** in `docs/08-test-map.md`: the new test file, and the revised ones named.
@@ -222,7 +223,7 @@ If a premise above is wrong at its lines, say so, take the better path inside th
 - `tools/content/generate_exercises.py` (the new maker and its `default_plan` lines);
 - `tools/content/family_contracts.json` (the `bass_cell` row only);
 - `tools/content/build.py` (only at the contract proof, only if H1 fails for a reason inside it, reported);
-- `content/curriculum/stage-4.json` (latin.4's `exerciseOptions` only);
+- `content/curriculum/stage-4.json` (latin.4's `exerciseOptions` and the `items` of its exercises requirement only);
 - `content/lessons/latin.4.md` (the parts in finish item 7);
 - `docs/chains/A7c.1.yaml`;
 - tests under `tools/content/tests/`;
@@ -234,7 +235,7 @@ If a premise above is wrong at its lines, say so, take the better path inside th
 - `app/src/demands/detect.ts`, `tools/content/cells.py`;
 - the vocabulary (`demands.json`, `skills.json`), `opportunity-density.json`, `content/sources/verified-facts.json`;
 - any `app/src` file;
-- the tresillo row, `make_tresillo`, `check_chains.py`, latin.4's requirements, `levelBand` and prerequisites;
+- the tresillo row, `make_tresillo`, `check_chains.py`, latin.4's song requirement, `levelBand` and prerequisites;
 - every other lesson.
 
 ## Harness
@@ -258,7 +259,7 @@ Draft entry shape (`docs/pending-review.md`, number assigned at landing):
 
 > ### Entry N — G13: the strict habanera control for latin.4: a generated 2/4 pair, habanera and tresillo, differing only in the cell
 >
-> **What a learner meets.** … (latin.4's page: seven exercise rows; steps 6-7 tap the 2/4 tresillo and habanera drills at ♩ = 60 in C; the habanera with pitches in C, optional F, G; any exercise option counts with the cut; Today offers none, no teaching-use decision.) Nothing heard; the record stays `draft`; A7c.1 unshipped (step 20 outstanding); scoreboard 0/28.
+> **What a learner meets.** … (latin.4's page: seven exercise rows; steps 6-7 tap the 2/4 tresillo and habanera drills at ♩ = 60 in C; the habanera with pitches in C, optional F, G; the counted runs are the 2/4 tresillo control and the cut; the four new items carry no teaching-use decision until reviewed from their built facts (the ruling's §1), so Today offers none of them.) Nothing heard; the record stays `draft`; A7c.1 unshipped (step 20 outstanding); scoreboard 0/28.
 >
 > **What changed, where / what / before / after / why:** … (every file; the lesson itemised.)
 >
