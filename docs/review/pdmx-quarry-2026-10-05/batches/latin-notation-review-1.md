@@ -29,7 +29,21 @@ Observed:
 - ensemble score contains useful texture/orchestration evidence, but not a simple acquisition pattern.
 
 Disposition: **KEEP CANDIDATE** for later ensemble/arrangement or MUSIC work; **REJECT FOR THIS ROLE** as the primary bossa accompaniment MODEL.
-Follow-up: another Girl from Ipanema edition may still contain a more useful piano texture; do not generalize this disposition to the title.
+
+## Garota de Ipanema — solo-piano arrangement
+CID: `QmRWDfadi4gsez9ishabhEcHpHNdjC7q2efEJZe5SDa8X8`
+Read: `summary/E-latin/garota-de-ipanema-...txt`
+
+Observed:
+- 34-bar grand-staff piano score, 2/4, 24 chord symbols;
+- from the opening, the LH repeatedly places compact extended-chord voicings in a syncopated attack/rest pattern beneath the melody;
+- the same accompaniment rhythm is preserved as the harmony changes, making the rhythmic cell visually easy to isolate;
+- the middle section changes harmonic color while largely keeping a controlled accompaniment texture; return material restores the opening pattern.
+
+Disposition: **HIGH-PRIORITY CANDIDATE; current best quarry candidate for a written bossa accompaniment MODEL**.
+Likely role: real-score MODEL after a tiny CONTROL pattern, followed by application to `Só Danço Samba` or `Corcovado` lead sheets.
+Required gate: compare the exact LH onset/duration pattern from selected opening bars against a published/source-backed bossa piano/accompaniment definition before calling it the canonical pattern. The score proves what this arrangement writes; the title/genre does not by itself prove the pedagogical label.
+Edition note: arranger metadata is Bianca/Bia Giovanella rather than Jobim; treat it as an arrangement/model edition, not an authoritative original score.
 
 ## Tico-Tico — long one-staff arrangement
 CID: `QmejFJRcT7Q9hdFQWbhPZCnewzAzCzVCckYHgsVuN7RcAM`
@@ -70,6 +84,6 @@ Important correction: the notation is not, by itself, proof that the recurring L
 
 ## Batch conclusion
 
-The current quarry already gives useful Latin MUSIC/application material, but **still has not supplied a clean source-backed bossa acquisition/model pattern**. `Só Danço Samba` and `Corcovado` are lead-sheet application substrates; this `Girl from Ipanema` edition is ensemble/arrangement material, not the missing clean bossa figure. `La Negra Tiene Tumbao` remains the strongest Cuban-pattern candidate pending definition matching. `Por Una Cabeza` and `Adiós Nonino` are strong Argentine texture models, with named-pattern claims kept separate from the title/style.
+The quarry now **does contain a strong written bossa-pattern candidate**: the solo-piano `Garota de Ipanema` edition `QmRWD...`. It is not admitted as the canonical bossa pattern until its opening LH rhythm is checked against a published definition, but it changes the earlier conclusion that only application substrates had been found. `Só Danço Samba` and `Corcovado` remain excellent application lead sheets after the pattern is taught. The big-band Girl edition is later ensemble/arrangement material. `La Negra Tiene Tumbao` remains the strongest Cuban-pattern candidate pending definition matching. `Por Una Cabeza` and `Adiós Nonino` remain strong Argentine texture models with named-pattern claims kept separate from title/style.
 
-Next Latin comparisons: other Girl from Ipanema edition(s), Tico-Tico alternatives only if they expose clearer two-hand texture, and any remaining Piazzolla/Libertango candidate that adds a distinct teaching job rather than redundancy.
+Next Latin work: source-match the selected `Garota de Ipanema` opening bars; source-match `La Negra Tiene Tumbao`; then inspect another Piazzolla/Libertango candidate only if it adds a distinct teaching job rather than redundancy.
