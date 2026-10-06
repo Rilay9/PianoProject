@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/sr3-lb1-landing.md` — **response required**: Entries 262 (SR3: the held-run credit rule, the held fact derived from the stored options, one premise question) and 263 (LB1: the loop by tapped bar, the last app gap before A7c.1 ships) for the artefact review; the owner's phone walk is the final gate.
 - `handoffs/a7c1-shipped.md` — **answered** in `responses/a7c1-shipped.md` (APPROVE: Entries 260 and 261 accepted; LB1 a real blocker, its contract right; after LB1 the only condition left is the owner's phone walk of the 20 lesson steps covering all 24 record actions, then `shipped` and 1/28).
 - `handoffs/a7c1-reviewed.md` — **answered** in `responses/a7c1-reviewed.md` (the record and checker architecture ready; one required change: latin.6's Por Una Cabeza and The Crave overclaims narrowed to the verified bars, done as Entry 260; A7c.1 `reviewed`; `shipped` after A7S, the self-check no-credit proof, the counted runs and the phone-build confirmation).
 - `handoffs/sr2-landing.md` — **answered** in `responses/sr2-landing.md` (approved; one required change: a held run credits no requirement of its judging rung, immediately or retroactively, its skill evidence kept, and the card shows the held level: lane SR3).
