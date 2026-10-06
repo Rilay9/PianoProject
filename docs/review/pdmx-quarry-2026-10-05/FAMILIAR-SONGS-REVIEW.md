@@ -75,6 +75,30 @@ Potential jobs:
 - TRANSFER: strip to bass + ostinato, then add melody;
 - MUSIC: a familiar full piece whose repeating texture gives the learner a stable anchor.
 
+### Something — The Beatles
+CID: `QmPoKC1KNnhFURL5QSo3DRkGEWAoRgDiDEUchNJt79dGRo`
+Shape: reported as PIANO_GRAND_STAFF, 19 extracted bars, 39 chord symbols, but the lower staff is empty in the notation summary.
+
+Notation read:
+- the score is functionally an open melody/chart despite the two-staff container;
+- melody is complete enough to preserve phrasing while the 39 symbols carry the harmony;
+- the absence of written LH is an advantage if the task is learner-created accompaniment rather than copying an arrangement.
+
+Disposition: **PROMOTE INTO A LEARNING STATION candidate** for learner-supplied accompaniment / harmonization / independence.
+Best job: start from melody + symbols, choose a bass/accompaniment texture, then optionally compare against a fuller edition if one is selected later.
+
+### When We Were Young — Adele, accompaniment edition
+CID: `QmQhzFncR7uFfyVdjDmNZBQSVgkffiyeXwhQXfYUNA4ZyN`
+Shape: PIANO_GRAND_STAFF, 118 extracted measures, 173 chord symbols.
+
+Notation read:
+- opens with long held triadic RH voicings over single LH bass tones, exposing harmony very clearly;
+- the accompaniment repeats and then develops into more active rhythms, registral changes and fuller voicings through a long form;
+- this is an accompaniment-specific score rather than an open independence chart.
+
+Disposition: **OPTIONAL / SUGGESTED REPERTOIRE / MODEL** for accompaniment development, chord voicing and texture build.
+Do not use it as an independence substrate: it supplies too many decisions already. It is valuable precisely as a finished accompaniment to study and reduce.
+
 ### For Whom the Bell Tolls — Metallica
 CID: `Qmecq9RSLpMfuaEajmskZq9ueZGk97qvmdx78JFWNSuiRD`
 Shape: mixed 7-part score, 132 bars, including a two-staff Electric Piano part plus guitars, synth, bass and drums.
@@ -123,7 +147,7 @@ Disposition: **ALREADY PRESENT**. Familiarity coverage is better than the quarry
 
 These came from the existing mechanical quarry counts or table and are not yet admitted simply because their title matched:
 
-- **Mad World (simple arrangement)** — CID `QmdvVUSSkbAgJHckTLcewoeJrSQm3LrimVTF2YH7tReNwW`; quarry table says PIANO_GRAND_STAFF, 29 bars. **PENDING READ; high priority** because short/familiar/simple is exactly the useful combination.
+- **Mad World (simple arrangement)** — CID `QmdvVUSSkbAgJHckTLcewoeJrSQm3LrimVTF2YH7tReNwW`; quarry table says PIANO_GRAND_STAFF, 29 bars. **PENDING READ; high priority** because short/familiar/simple is exactly the useful combination. This candidate is in the mechanical table but its summary/XML was not committed in the current dump, so it needs a local extract/read rather than inference.
 - **Stand By Me** — 31 raw term hits. Need edition/creator filtering and a piano-usable score read.
 - **Let It Be** — 21 raw term hits. Need identity filtering; potentially excellent basic accompaniment/harmony material if a clean edition survives.
 - **Viva La Vida** — 23 raw term hits. Need identity/shape filtering; likely useful for repeated progression/accompaniment if a clean edition survives.
