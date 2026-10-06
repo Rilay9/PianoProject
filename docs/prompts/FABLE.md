@@ -68,7 +68,7 @@ failure_routes:                     # observed failure → next teaching action
 independence_test: ...              # the support-free task
 evidence: {updates: [ ... ], self_checked: [ ... ], never_credits: [ ... ]}
 generated:                          # one entry per generated family used
-  - {family: ..., job: A|B|C|D, contract: <path>, checker: <path>, reference: <path, for jobs B, C-as-music and D>}
+  - {family: ..., job: CONTROL|SIGHT-READING|NAMED-PATTERN|MUSICAL, contract: <path>, checker: <path>, musical_properties: {<property>: <how established> | UNKNOWN}}
 status: draft|reviewed|shipped
 ```
 
@@ -79,46 +79,59 @@ status: draft|reviewed|shipped
 - every step after the first removes at least one scaffold, or carries a one-line reason;
 - the last step's scaffold is a strict subset of the first step's;
 - `never_credits` is not empty;
-- every generated family has its job, contract and checker, and jobs B and D (and C when presented as music) have a `reference` (§5);
+- every generated family has its job, contract and checker; SIGHT-READING and MUSICAL (and NAMED-PATTERN presented as music) list their musical properties, each with how it is established or UNKNOWN (§5);
 - `status: shipped` requires an acceptance-test path that exists.
 
 A brief that names a learner-facing ability without a record that passes is not dispatchable.
 
-## 4. Choosing content: real music and generators are both first-class (the owner, 2026-10-06)
+**Brief headings.** Every major curriculum brief also carries three headings, taken from its record:
+- **Instructional chain**: learner action | content source | tool/mode | scaffold | feedback | evidence | next support removed.
+- **Failure route**: failure | smallest useful change in teaching strategy.
+- **Independence test**: what the learner eventually does without the original scaffold.
 
-Generators are valuable when they are **verified correct and useful**. Pick by the job, not by preference:
-- **Real music wins** when it does the same teaching job: modelling, transfer, style, motivation. Use real excerpts from PDMX, Mutopia or the library, through intake.
-- **Generation wins** when the job needs:
-  - control: isolate one demand;
-  - variation: keys, registers, near-misses;
-  - quantity, or material never seen before (sight-reading needs an endless supply);
-  - targeting a learner's weakness;
-  - availability, because no suitable real material exists.
-- **External recommendation** is a legitimate source: a book, a recording, a song to transcribe. Use it where the app cannot hold the material well.
-- For a **generated mini-piece** (job D), the default order is real excerpt → simplified arrangement → curated templates → free generation. Skip a step only with a written reason, such as needing many unseen variants.
-- Never over-musicalise a technical drill (job A). Precision beats charm there.
+A brief that creates, changes or newly relies on generated content adds a **Generated content** block. It names:
+- the job: CONTROL, SIGHT-READING, NAMED-PATTERN or MUSICAL;
+- the learner demand isolated;
+- what varies and what stays fixed;
+- the musical properties required;
+- the libraries and verifiers used;
+- the adversarial and boundary cases;
+- the review denominator;
+- where the learner transfers out of generation.
+
+The checker's task (§2 step 2) includes a cheap brief lint that rejects a major curriculum brief missing these headings. Tiny wording or truth fixes carry none of this.
+
+## 4. Choosing content: generated material is a first-class source (the owner, 2026-10-06)
+
+Ask **which source teaches this learner need best**, never "can generation be avoided?" Generated is not inferior, and real is not automatically better.
+- **Generated CONTROL** when precise isolation or variation is useful.
+- **Generated SIGHT-READING** because unseen material is intrinsic to the skill.
+- **Generated NAMED-PATTERN** when an exact sourced contract can be produced reliably (habanera, bossa, guajeo, walking bass).
+- **Generated MUSICAL** material when its musical structure can be specified and verified well enough (§5).
+- **Real excerpt or full piece** when authentic transfer or integration is the better job.
+- **External material** (a book, a recording, a song to transcribe) when that is genuinely best.
+
+Never over-musicalise a deliberately mechanical drill: a scale, a bare habanera cell, a ii-V-i shell. It should be clean, accurate, playable, varied where useful and efficient.
 
 ## 5. Generated-content quality, with no human judgement (the owner, 2026-10-06)
 
-The owner does not want human judgement as a gate, the owner's or anyone else's ("idk"). Nobody in this process hears music, so nothing may claim to have been heard. Musical quality is earned in two ways, and the claim says which:
+The owner does not want human judgement as a gate, the owner's or anyone else's ("idk"). Nobody in this process hears music, so nothing may claim to have been heard. A generated output passes because its required properties are **established**, not because somebody likes it.
 
-**1. Musical by construction.** Anything that promises music (sight-reading, style grooves, mini-pieces) builds from material taken from verified real music. That material is:
+**The musical contract.** Where it applies, the brief names the required musical properties: phrase structure; motive, repetition and variation; harmonic skeleton and function; cadence and closure; melodic contour; the accompaniment's relationship to the melody; voice leading; register and spacing; the stylistic pattern; playable hand distribution. Each one is checked with a library (§7), against a sourced contract, or against real music (method 2 below).
+
+**UNKNOWN is a legal answer.** If an important property cannot be established objectively, mark it UNKNOWN, then do one of three things: narrow the claim or the job; switch to a more verifiable generation strategy (a template, real-derived cells); or choose another content source. Never fill an UNKNOWN with taste.
+
+Two methods are recommended, and the claim names the one used.
+
+**1. Musical by construction.** Material that promises music can be built from cells taken from verified real music, where that is the more verifiable strategy. Those cells are:
 - rhythm cells, motif shapes, cadence formulas, harmonic skeletons and accompaniment patterns;
 - extracted by script from admitted public-domain repertoire, Beyer, Mutopia or PDMX at the matching level;
 - each recorded with its source and bars (`GENERATOR-ADDENDUM.md` §5 step 5 already proposes phrase cells).
 
-The generator chooses and combines. It does not invent the musical grammar from scratch.
+The generator chooses and combines. Other construction (templates, constraint solving) is fine when its properties are verified.
 
 **2. Measured against real music of the same level.** For each family that promises music, a reference set of real pieces at that level is the oracle, not a person and not a "musicality score":
-- Compute the same objective features on the reference set and on a fixed generated corpus. Use music21 or partitura, never the generator's own read-back. The features:
-  - rhythm-motif reuse per four bars;
-  - step/leap share;
-  - leap recovery;
-  - contour reversals;
-  - interval-sequence repetition;
-  - phrase-end on a stable degree with a longer value;
-  - an implied cadence at phrase ends;
-  - range and register.
+- Compute the same objective features on the reference set and on a fixed generated corpus, with music21 or partitura, never the generator's own read-back. The features: rhythm-motif reuse per four bars; step/leap share; leap recovery; contour reversals; interval-sequence repetition; phrase-end on a stable degree with a longer value; implied cadence at phrase ends; range and register.
 - **Gates:**
   - the generated corpus falls inside the reference set's 10th–90th percentile on every feature;
   - every single item outside the 5th–95th percentile is listed and regenerated;
@@ -126,18 +139,11 @@ The generator chooses and combines. It does not invent the musical grammar from 
 - Rerun the same seeds after any generator change, and show that the contract still holds.
 
 **Also required, by job:**
-- **All jobs:**
-  - the pedagogical contract (what is isolated, what is allowed and forbidden);
-  - an independent structural check (partitura events against a contract taken from a source);
-  - a near-miss that goes red;
-  - automated notation and playability checks (spelling, beaming, range, hand span, ledger lines, accidental churn).
-- **C (named style):** add a sourced definition, the sibling near-miss, and voicings and harmony taken from a real model.
+- **All jobs:** the pedagogical contract (what is isolated, allowed, forbidden; the difficulty envelope); an independent structural check (partitura events against a sourced contract); a near-miss that goes red; automated notation and playability checks (spelling, beaming, range, hand span, ledger lines, accidental churn).
+- **NAMED-PATTERN:** a sourced definition and the sibling near-miss; voicing and harmony checked like any musical property.
 - **Outside reviewer (ChatGPT):** reads notation for a declared sample and returns findings as evidence, never as a verdict.
 
-**The only claims allowed:**
-- "meets contract X";
-- "within the real-music reference for level L on features F, corpus N";
-- "unverified as music: not heard".
+**The only claims allowed:** "meets contract X"; "property P established by Q"; "within the real-music reference for level L on features F, corpus N"; "P is UNKNOWN"; "not heard".
 
 Never "musically good". The owner playing an item on their phone is welcome feedback, never a gate. This replaces every "human audition" line in the inputs and in `GENERATOR-ADDENDUM.md`.
 
@@ -157,9 +163,9 @@ No library is a pedagogy oracle. Do not rewrite working code only to use a libra
 ## 8. Packet traceability: once, bounded
 
 One Opus pass writes `docs/prompts/PACKET-TRACE.md`:
-- a table with one row per operative packet requirement: *requirement | where it is implemented | SATISFIED / PARTIAL / MISSING / DEFERRED BY PACKET | evidence | gap | smallest correction | seam*;
+- a table with one row per operative packet requirement: *ability or family | requirement | where implemented | SATISFIED / PARTIAL / MISSING / DEFERRED BY PACKET | concrete failure | smallest correction | enforcement check*;
 - SATISFIED needs an acceptance test, not a mention in a document;
-- the requirement list is in `inputs-2026-10-06/chatgpt-packet-compliance.md`, read under §5 here.
+- the requirement list is in `inputs-2026-10-06/chatgpt-packet-compliance.md`, read under §4–§5 here. No essay.
 
 The outside reviewer reviews it. The corrections become chain records or briefs. Then the table is updated by status edits only. There is no second reconciliation.
 
