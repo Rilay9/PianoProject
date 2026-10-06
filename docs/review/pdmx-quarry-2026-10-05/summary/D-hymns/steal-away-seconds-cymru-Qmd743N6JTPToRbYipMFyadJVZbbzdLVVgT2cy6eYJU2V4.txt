@@ -1,0 +1,17 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=6/8 chord-symbols=0 bars=9
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
+CID Qmd743N6JTPToRbYipMFyadJVZbbzdLVVgT2cy6eYJU2V4
+title: Steal Away - Seconds CYMRU | song_name: steal away
+composer:  | artist: Misc Traditional
+csv: tracks=0 bars=18 license=publicdomain
+
+=== part P1 '' measures=9 ===
+m1 [key fifths=0; time 6/8; clef=G2; tempo=40; repeat-forward]  s1v1: A4:8
+m2  s1v1: gG5:8 D5:q E5:8 C5:q.
+m3  s1v1: gG5:8 C5:16 E5:8. F5:8~ F5:q C5:8
+m4  s1v1: gG5:8 G4:q B4:8 gG5:8 E5:q D5:8
+m5  s1v1: gG5:8 D5:16 A4:8. B4:8 C5:q.
+m6  s1v1: gG5:8 D5:q E5:8 C5:q.
+m7  s1v1: gG5:8 C5:16 E5:8. F5:8~ F5:q C5:8
+m8  s1v1: gG5:8 G4:16 E5:8. C5:8 gG5:8 C5:8. B4:16 gG5:8 C5:8
+m9 [repeat-backward]  s1v1: gG5:8 F5:q. A5:8 gA4:8 E5:q.

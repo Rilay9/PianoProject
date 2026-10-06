@@ -1,0 +1,25 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4 chord-symbols=0 bars=16
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
+NOTE: identity TITLE_ONLY: term is only part of a longer title; creator alias 'beethoven' found
+CID QmY8XeRQK9L3q6Rndkex64R2N5X4LGiQ9CA6qG7U61YyE7
+title: Ludwig Van Beethoven - Joyful Joyful We Adore Thee | song_name: Joyful joyful we adore Thee
+composer: Ludwig Van Beethoven | artist: Ludwig van Beethoven
+csv: tracks=0 bars=16 license=publicdomain
+
+=== part P1 '' measures=16 ===
+m1 [key fifths=0; time 4/4; clef=G2; tempo=40]  s1v1: gG5:8 F5:q gG5:8 F5:q gA5:8 G5:q A5:q
+m2  s1v1: gG5:8 A5:q G5:q gA5:8 F5:q gG5:8 E5:q
+m3  s1v1: gG4:8 gD5:8 gC5:8 D5:q gC5:8 D5:q gG5:8 E5:q gG5:8 F5:q
+m4  s1v1: gG5:8 gF5:8 gG5:8 F5:q. gG5:8 E5:8 gA4:8 E5:h
+m5  s1v1: gG5:8 F5:q gG5:8 F5:q gA5:8 G5:q A5:q
+m6  s1v1: gG5:8 A5:q G5:q gA5:8 F5:q gG5:8 E5:q
+m7  s1v1: gG4:8 gD5:8 gC5:8 D5:q gC5:8 D5:q gG5:8 E5:q gG5:8 F5:q
+m8  s1v1: gG5:8 gE5:8 gF5:8 E5:q. gG5:8 D5:8 gG4:8 D5:h
+m9  s1v1: gG5:8 E5:q gA4:8 E5:q gG5:8 F5:q gG4:8 gD5:8 gC5:8 D5:q
+m10  s1v1: gG5:8 E5:q gG5:8 F5:8 G5:8 gA5:8 F5:q gG4:8 gD5:8 gC5:8 D5:q
+m11  s1v1: gG5:8 E5:q gG5:8 F5:8 G5:8 gA5:8 F5:q gG5:8 E5:q
+m12  s1v1: gG4:8 gD5:8 gC5:8 D5:q gG5:8 E5:q gG4:8 A4:h
+m13  s1v1: gG5:8 F5:q gG5:8 F5:q gA5:8 G5:q A5:q
+m14  s1v1: gG5:8 A5:q G5:q gA5:8 F5:q gG5:8 E5:q
+m15  s1v1: gG4:8 gD5:8 gC5:8 D5:q gC5:8 D5:q gG5:8 E5:q gG5:8 F5:q
+m16  s1v1: gG5:8 gE5:8 gF5:8 E5:q. gG5:8 D5:8 gG4:8 D5:h

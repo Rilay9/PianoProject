@@ -1,0 +1,40 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4 chord-symbols=0 bars=32
+INSTRUMENTS/PARTS: P1:'Rumpusetti':staves=1:prog=0:piano=True
+CID QmXD2aZpJZY27ZJjxsS69dysWp9FtvouuQymLi1ibBDTY9
+title: Dream Theater: Pull Me Under | song_name: pull me under
+composer: Dream Theater | artist: Dream Theater
+csv: tracks=0 bars=64 license=cc-zero
+
+=== part P1 'Rumpusetti' measures=32 ===
+m1 [key fifths=0; time 4/4; clef=percussion2; tempo=102; repeat-forward]  s1v1: x:8 x:16 x:16 x:8 x:8+x x:16 x:16 x:8 x:8 x:16 x:16 | s1v3: x:q x:q x:q x:q
+m2  
+m3  
+m4 [repeat-backward]  s1v1: x:8 x:16 x:16 x:8 x:8+x x:16 x:16 x:8 x:8 x:16 x:16 | s1v3: x:q x:q x:q x:q
+m5 [repeat-forward]  s1v1: x:q x:q+x x:q x:q+x | s1v2: x:16 x:16 x:8 x:8 x:8 x:8 x:16 x:16 x:8 x:16 x:16
+m6  s1v1: x:q x:q+x x:q x:q+x | s1v2: x:16 x:16 x:8 x:8 x:8 x:8 x:16 x:16 x:8 x:16 x:16
+m7  s1v1: x:q x:q+x x:q x:q+x | s1v2: x:16 x:16 x:8 x:8 x:8 x:8 x:16 x:16 x:8 x:16 x:16
+m8 [repeat-backward]  s1v1: x:q x:q+x x:q x:q+x | s1v2: x:16 x:16 x:8 x:8 x:8 x:8 x:16 x:16 x:8 x:16 x:16
+m9 [repeat-forward]  s1v1: x:q x:q+x x:q x:q+x | s1v2: r:8 x:8 x:8 x:8 r:8 x:8 | s1v3: x:16 x:16 x:16 x:16
+m10  s1v1: x:q x:q+x x:q x:q+x | s1v2: r:8 x:8 x:8 x:8 r:8 x:8 | s1v3: x:16 x:16 x:16 x:16
+m11  s1v1: x:q x:q+x x:q x:q+x | s1v2: r:8 x:8 x:8 x:8 r:8 x:8 | s1v3: x:16 x:16 x:16 x:16
+m12 [repeat-backward]  s1v1: x:q x:q+x x:q x:q+x | s1v2: r:8 x:8 x:8 x:8 r:8 x:8 | s1v3: x:16 x:16 x:16 x:16
+m13 [repeat-forward]  s1v1: x:q x:q+x x:q x:q+x | s1v2: r:8 x:8 x:8 x:8 r:8 x:8 | s1v3: x:16 x:16 x:8
+m14  s1v1: x:q x:q+x x:q x:q+x | s1v2: r:8 x:8 x:8 x:8 r:8 x:8 | s1v3: x:16 x:16 x:8
+m15  s1v1: x:q x:q+x x:q x:q+x | s1v2: r:8 x:8 x:8 x:8 r:8 x:8 | s1v3: x:16 x:16 x:8
+m16 [repeat-backward]  s1v1: x:q x:q+x x:q x:q+x | s1v2: r:8 x:8 x:8. x:32 x:32 | s1v3: x:16 x:16 x:8
+m17 [repeat-forward]  s1v1: x:q x:q+x x:q x:q+x | s1v3: x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m18  
+m19  
+m20 [repeat-backward]  s1v1: x:q x:q+x x:q x:q+x | s1v3: x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m1 [repeat-forward]  s1v1: x:8 x:8+x x:8 x:8+x x:8 x:8+x x:8 x:8+x | s1v3: x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m2  
+m3  
+m4 [repeat-backward]  s1v1: x:8 x:8+x x:8 x:8+x x:8 x:8+x x:8 x:8+x | s1v3: x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m5 [repeat-forward]  s1v1: x:q x:q+x x:q x:q+x | s1v3: x:8 x:16 x:16 x:8 x:16 x:16 x:8 x:16 x:16 x:8 x:16 x:16
+m6  s1v1: x:q x:q+x x:q x:q+x | s1v3: x:8 x:16 x:16 x:8 x:16 x:16 x:8 x:16 x:16 x:8 x:16 x:16
+m7  s1v1: x:q x:q+x x:q x:q+x | s1v3: x:8 x:16 x:16 x:8 x:16 x:16 x:8 x:16 x:16 x:8 x:16 x:16
+m8 [repeat-backward]  s1v1: x:q x:q+x x:q x:q+x | s1v3: x:8 x:16 x:16 x:8 x:16 x:16 x:8 x:16 x:16 x:8 x:16 x:16
+m9 [repeat-forward]  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v3: x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m10  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v3: x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m11  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v3: x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m12 [repeat-backward]  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v3: x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16

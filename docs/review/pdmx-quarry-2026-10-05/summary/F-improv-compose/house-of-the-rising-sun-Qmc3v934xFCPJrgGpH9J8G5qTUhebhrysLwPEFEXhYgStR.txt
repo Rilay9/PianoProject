@@ -1,0 +1,25 @@
+SHAPE: LEADSHEET | parts=1 max_staves=1 meters=3/4 chord-symbols=16 bars=17
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
+CID Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR
+title: House of the Rising Sun | song_name: The House of the Rising Sun
+composer: anon. | artist: Misc Traditional
+csv: tracks=0 bars=17 license=publicdomain
+
+=== part P1 '' measures=17 ===
+m1 [key fifths=-1 minor; time 3/4; clef=G2; tempo=144]  s1v1: A4:q
+m2  s1v1: D4:h E4:8 D4:8
+m3  s1v1: F4:h G4:8 G#4:8
+m4  s1v1: A4:h F4:8 E4:8
+m5  s1v1: D4:h A4:q
+m6  s1v1: D5:h A4:q
+m7  s1v1: C5:h A4:8 G4:8
+m8  s1v1: A4:h.~
+m9  s1v1: A4:q r:q A4:8 A4:8
+m10  s1v1: D5:h D4:q
+m11  s1v1: F4:h G4:q
+m12  s1v1: A4:8 A4:q. F4:8 E4:8
+m13  s1v1: D4:h A4:q
+m14  s1v1: A4:h A4:q
+m15  s1v1: A4:8 A3:q. F4:8 E4:8
+m16  s1v1: D4:h.~
+m17  s1v1: D4:h

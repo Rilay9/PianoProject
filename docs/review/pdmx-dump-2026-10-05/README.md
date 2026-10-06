@@ -49,6 +49,16 @@ The CSV calls these one-staff files piano, but they have no bass staff. Creole B
 
 Ask for their MusicXML by CID if the review needs it.
 
+### Added on the second request (now in `xml/` and `summary/`; rows in `rows.json` under `added_2026_10_05_second_request`)
+
+| CID | Title | Composer | Staves | Meter | Bars | Licence in the CSV |
+|---|---|---|---|---|---|---|
+| Qmc6P2a11mJaEgAdyvsqiWW9dSt7HazcVSSsU7oRtQ3ptu | Habanera, piano solo | Bizet | 2 | 2/4 | 60 | cc-zero |
+| QmYAihNhTVzw5EyFcXFRD7f5gkwnnDKRnH1gTnf4e5frxs | Contra Danza | anonymous | 2 | 2/4, and 6/8 for part of the piece | 87 | cc-zero |
+| QmXuMn7vq7C5PEYMc3J6yU5sfCrN13jRmcHy2PG3xVRhsG | El gordo triste | Piazzolla, lyrics by Ferrer | 2 | 4/4 | 75 | cc-zero |
+
+**Rights: already settled by `00` D23** (see `docs/03-content-pipeline.md`, the `[PDMX]` row). The CSV's licence column describes only the uploader's arrangement. Whether the composition itself is public domain is recorded as a label, and it does not block a score. The personal build takes any PDMX row the dataset marks free to use. The strict build takes only scores labelled `compositionStatus: pd`. Piazzolla died in 1992, so both of his scores (this one and Libertango QmakqtZzLrMc…) would be labelled not public domain. They would reach the personal build only, and a latin.8 built on them would have no strict-build primary. Bizet's Habanera, the anonymous Contra Danza and Turpin's Harlem Rag (1897 and 1899) are public-domain compositions.
+
 ## Searches with zero matches
 
 Saumell, Milonga del Ángel, Primavera Porteña, Verano Porteño and "tango nuevo" matched no row in the fields listed above.

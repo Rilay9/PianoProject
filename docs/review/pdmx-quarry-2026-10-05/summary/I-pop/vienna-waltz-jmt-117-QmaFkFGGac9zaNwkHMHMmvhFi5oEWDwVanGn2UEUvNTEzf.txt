@@ -1,0 +1,41 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=3/8 chord-symbols=0 bars=33
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
+CID QmaFkFGGac9zaNwkHMHMmvhFi5oEWDwVanGn2UEUvNTEzf
+title: Vienna Waltz. JMT.117 | song_name: Vienna
+composer:  | artist: Misc tunes
+csv: tracks=0 bars=66 license=publicdomain
+
+=== part P1 '' measures=33 ===
+m1 [key fifths=1 major; time 3/8; clef=G2; tempo=75; repeat-forward]  s1v1: G4:8. A4:16 B4:16 C5:16
+m2  s1v1: B4:16 D5:16 B5:16 D5:16 B5:16 D5:16
+m3  s1v1: A4:16 C5:16 A5:16 C5:16 A5:16 C5:16
+m4  s1v1: B4:16 D5:16 G5:16 D5:16 G5:16 D5:16
+m5  s1v1: G4:8. A4:16 B4:16 C5:16
+m6  s1v1: B4:16 D5:16 B5:16 D5:16 B5:16 D5:16
+m7  s1v1: A4:16 C5:16 A5:16 C5:16 A5:16 C5:16
+m8 [repeat-backward]  s1v1: G5:q r:8
+m9 [repeat-forward]  s1v1: G5:8[staccato] G4:16 B4:16 D5:16 G5:16
+m10  s1v1: B5:16 A5:16 G#5:16 A5:16 G#5:16 A5:16
+m11  s1v1: F#5:8[staccato] F#4:16 A4:16 C5:16 F#5:16
+m12  s1v1: A5:16 G5:16 F#5:16 G5:16 F#5:16 G5:16
+m13  s1v1: G4:8. A4:16 B4:16 C5:16
+m14  s1v1: B4:16 D5:16 B5:16 D5:16 B5:16 D5:16
+m15  s1v1: A4:16 C5:16 A5:16 C5:16 A5:16 C5:16
+m16 [repeat-backward]  s1v1: G5:q.
+m17 [key fifths=0 major; repeat-forward]  s1v1: E4:16 G4:16 C5:16 G4:16 E5:16 G4:16
+m18  s1v1: E4:16 G4:16 C5:16 G4:16 E5:16 G4:16
+m19  s1v1: gE5:16 F5:8 gE5:16 F5:8 gE5:16 F5:8
+m20  s1v1: D5:q B4:16 G4:16
+m21  s1v1: E4:16 G4:16 C5:16 G4:16 E5:16 G4:16
+m22  s1v1: E4:16 G4:16 C5:16 G4:16 E5:16 G4:16
+m23  s1v1: gE5:16 F5:8 gE5:16 F5:8 D5:16 B4:16
+m24 [repeat-backward]  s1v1: C5:q
+m25 [repeat-forward]  s1v1: G5:16 A5:16
+m26  s1v1: G5:16 A5:16 G5:16 A5:16 B5:16 C6:16
+m27  s1v1: G5:q E5:16 G5:16
+m28  s1v1: F5:8 F5:8 D5:16 B4:16
+m29  s1v1: C5:16 E5:16 G4:8 G5:16 A5:16
+m30  s1v1: G5:16 A5:16 G5:16 A5:16 B5:16 C6:16
+m31  s1v1: G5:q E5:16 G5:16
+m32  s1v1: gG5:16 F5:8 F5:8 D5:16 B4:16
+m33 [repeat-backward]  s1v1: C5:q

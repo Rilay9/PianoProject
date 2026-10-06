@@ -1,0 +1,48 @@
+SHAPE: PIANO_GRAND_STAFF | parts=3 max_staves=2 meters=4/4 chord-symbols=0 bars=12
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True; P2:'Riff':staves=1:prog=0:piano=True; P3:'Drumset':staves=1:prog=0:piano=True
+CID Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi
+title: Blues Riff in C (120 bpm) | song_name: 12 bar blues
+composer: Daniels Elizabeth Calvin | artist: Lessons - Blues
+csv: tracks=0-0-0 bars=12 license=publicdomain
+
+=== part P1 'Piano' measures=12 ===
+m1 [staves=2; key fifths=0; time 4/4; clef1=G2; clef2=F4; dyn=pp; dyn=pp]  s1v1: Bb3:w+E4+G4 | s2v5: C2:w
+m2  s1v1: Bb3:w+E4+G4 | s2v5: C2:w
+m3  s1v1: Bb3:w+E4+G4 | s2v5: C2:w
+m4  s1v1: Bb3:w+E4+G4 | s2v5: C2:w
+m5  s1v1: Eb4:w+A4+C5 | s2v5: F2:w
+m6  s1v1: Eb4:w+A4+C5 | s2v5: F2:w
+m7  s1v1: Bb3:w+E4+G4 | s2v5: C2:w
+m8  s1v1: Bb3:w+E4+G4 | s2v5: C2:w
+m9  s1v1: F4:w+B4+D5 | s2v5: G2:w
+m10  s1v1: Eb4:w+A4+C5 | s2v5: F2:w
+m11  s1v1: Bb3:w+E4+G4 | s2v5: C2:w
+m12  s1v1: Bb3:w+E4+G4 | s2v5: C2:w
+
+=== part P2 'Riff' measures=12 ===
+m1 [key fifths=0; time 4/4; clef=G2; dyn=mf]  s1v1: C5:h. Eb5:q
+m2  s1v1: F5:q. G5:q G5:8 F5:8. r:16
+m3  s1v1: C5:q B4:q B4:q B4:q
+m4  s1v1: B4:q B4:q B4:q B4:q
+m5  s1v1: C5:h. Eb5:q
+m6  s1v1: F5:q. G5:q G5:8 F5:8. r:16
+m7  s1v1: C5:q B4:q B4:q B4:q
+m8  s1v1: B4:q B4:q B4:q B4:q
+m9  s1v1: C5:8. C6:16 Bb5:8 G5:8 F5:8 G5:8. Eb5:16 F5:8
+m10  s1v1: Bb4:8. C5:16 G5:16 r:16 F5:16 F5:16 Eb5:16 r:16 C4:16+C5 Eb4:16+Eb5 Eb4:16+Eb5 r:16 F4:16..+F5 C4:64+C5
+m11  s1v1: C5:h. r:q
+m12  s1v1: B4:q B4:q B4:q B4:q
+
+=== part P3 'Drumset' measures=12 ===
+m1 [key fifths=0; time 4/4; clef=percussion2; dyn=mp]  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q
+m2  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q
+m3  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q
+m4  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q
+m5  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q
+m6  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q
+m7  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q
+m8  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q
+m9  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q
+m10  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q
+m11  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q
+m12  s1v1: x:8 x:8 x:8+x x:8 x:8 x:8 x:8+x x:8 | s1v2: x:8 r:8 r:q x:8 r:8 r:q

@@ -1,0 +1,60 @@
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=12/8,6/8,2/4,3/4 chord-symbols=0 bars=52
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
+CID QmQGS6WCqjnbvLW5G3HrsBhLhYxyeziMnw2YM1NXx6STUw
+title: Hoodoo (Live piano) | song_name: hoodoo
+composer: Matthew Bellamy | artist: Muse
+csv: tracks=0 bars=52 license=cc-zero
+
+=== part P1 'Piano' measures=52 ===
+m1 [staves=2; key fifths=-3; time 12/8; clef1=G2; clef2=F4; tempo=64.5; dyn=mf; "Freely"; tempo=70.5; tempo=61.5; "rit."; tempo=69; ".7"; tempo=65.55; tempo=58.5; tempo=54; tempo=46.5; "con pedale"]  s1v1: C5:q. G4:8 Bb4:q. F4:8 G4:8 Bb4:8 G4:8 Eb4:8 | s2v5: C4:q. G3:8 Bb3:q. F3:8 G3:8 Bb3:8 G3:8 Eb3:8
+m2 [".7"; tempo=64.05; "Verse"; dyn=mf]  s1v1: r:8 r:32 C4:w+Eb4+G4+C5+Eb5+G5+B5 r:q r:16. | s2v5: C2:w.+C3+C4
+m3  s1v1: r:8 r:32. C3:w+F3+Ab3+Ab3+C4+F4+Ab4+C5 r:q r:64 r:16 | s2v5: Ab1:w.+Ab2+Ab3
+m4  s1v1: r:8 r:32 Eb3:w+G3+Bb3+Eb4+G4+Bb4+Eb5 r:16. r:q | s2v5: G1:w.+G2+G3
+m5  s1v1: r:8 r:32 Eb3:w+G3+B3+Eb4+G4+B4+Eb5 r:32 r:16 r:q | s2v5: G1:w.+G2+G3
+m6  s1v1: r:8 r:64 C4:w+Eb4+G4+C5+Eb5+G5+B5 r:q r:16.. | s2v5: C2:w.+C3+C4
+m7  s1v1: r:8 r:64 Db3:w+F3+Ab3+Ab3+Db4+F4+Ab4+Db5 r:q r:16.. | s2v5: Ab1:w.+Ab2+Ab3
+m8  s1v1: r:8 r:32 Eb3:w+G3+Bb3+Eb4+G4+Bb4+D5 r:16. r:q | s2v5: G1:w.+G2+G3
+m9  s1v1: r:8 r:32 Eb3:w+G3+B3+Eb4+G4+B4+Eb5 r:16. r:q[fermata] | s2v5: G1:w.+G2+G3
+m10 [".7"; tempo=70.05; "a tempo"; dyn=mp; dyn=p]  s1v1: r:8 Ab3:8 C4:8 Ab3:8+F4 C4:8 Ab3:8 r:8 Ab3:8 C4:8 Ab3:8+F4 C4:8 Ab3:8 | s2v5: F2:h.+F3 F2:h.+F3
+m11  s1v1: r:8 G3:8 C4:8 G3:8+Eb4 C4:8 G3:8 r:8 G3:8 C4:8 G3:8+Eb4 C4:8 G3:8 | s2v5: Eb2:h.+Eb3 Eb2:h.+Eb3
+m12  s1v1: r:8 G3:8 B3:8 G3:8+D4 B3:8 G3:8 r:8 G3:8 B3:8 G3:8+D4 B3:8 G3:8 | s2v5: D2:h.+D3 D2:h.+D3
+m13  s1v1: r:8 G3:8 C4:8 G3:h.+Eb4 r:8 C4:8 Bb3:16 Ab3:16 | s2v5: Eb2:q.+Eb3 Eb2:h.+Eb3 r:8 r:q | s2v6: C3:8 r:16 Ab2:16
+m14  s1v1: r:8 D3:8 G3:8 B3:8+D4+G4 B3:8 D3:8 r:8 D3:8 G3:8 B3:8+F4+G4 Eb4:8 D4:8 | s1v2: B3:h.+D4 | s1v6: G3:h. | s2v5: G1:h.+G2 G2:h.
+m15  s1v1: r:8 Ab3:8 C4:8 Ab3:8+C4+Eb4 C4:8 Ab3:8 r:h. | s1v6: Ab3:h.+C4+Eb4 | s2v5: Ab1:h.+Ab2 Ab2:h.+Ab3
+m16 [dyn=p; ".5"; tempo=69.75; ".2"; tempo=69.3; ".1"; tempo=69.15; tempo=69]  s1v1: G3:q.+C4+Eb4 r:16 G3:16 C4:16 Eb4:16 C4:16 Eb4:16 G4:16 Eb4:16 G4:16 C5:16 G4:16 C5:16 Eb5:16 C5:16 Eb5:16 G5:16 Eb5:16 G5:16 | s2v5: G1:h.+G2 G2:h. | s2v6: r:q. G3:q.
+m17 [".3"; tempo=67.95; ".1"; tempo=67.65; tempo=64.5; ".2"; tempo=63.3; tempo=58.5; tempo=57; tempo=49.5; ".3"; tempo=43.95; tempo=37.5; tempo=97.5; dyn=pp]  s1v1: B5:16 G5:16 D5:16 G5:16 D5:16 B4:16 D5:16 B4:16 G4:16 B4:16 G4:16 D4:16 G3:h.[fermata] | s2v5: G2:w.+G3
+m18 [time 6/8; tempo=55.5; "Fortissimo"; dyn=ff; ".49"; tempo=72.74; ".4"; tempo=56.1; ".2"; tempo=69.3]  s1v1: C5:q[accent]+C6 G4:8[accent]+G5 Bb4:q[accent]+Bb5 F4:8[accent]+F5 | s2v5: C3:q[accent]+C4 G2:8[accent]+G3 Bb2:q[accent]+Bb3 F2:8[accent]+F3
+m19 [time 2/4; ".7"; tempo=67.05; "rit."; tempo=61.5; ".7"; tempo=58.05; tempo=54]  s1v1: G4:8[accent]+G5 Bb4:8[accent]+Bb5 G4:8[accent]+G5 Eb4:8[accent]+Eb5 | s2v5: G2:8[accent]+G3 Bb2:8[accent]+Bb3 G2:8[accent]+G3 Eb2:8[accent]+Eb3
+m20 [time 3/4; tempo=75; dyn=f]  s1v1: Eb3:q[accent]+G3+C4 C5:q[accent]+Eb5+G5+C6 C6:q[accent]+Eb6+G6+C7 | s2v5: C2:q[accent]+G2+C3 Eb4:q[accent]+G4+C5 C5:q[accent]+Eb5+G5+C6
+m21  s1v1: Eb3:q[accent]+G3+C4 C5:q[accent]+Eb5+G5+C6 C6:q[accent]+Eb6+G6+C7 | s2v5: C2:q[accent]+G2+C3 Eb4:q[accent]+G4+C5 C5:q[accent]+Eb5+G5+C6
+m22  s1v1: Eb3:q+G3+C4 C5:q+Eb5+G5+C6 C6:q+Eb6+G6+C7 | s2v5: C2:q+G2+C3 C4:q+Eb4+G4+C5 C5:q+Eb5+G5+C6
+m23  s1v1: Eb3:q+G3+C4 C5:q+Eb5+G5+C6 C6:q+Eb6+G6+C7 | s2v5: C2:q+G2+C3 C4:q+Eb4+G4+C5 C5:q+Eb5+G5+C6
+m24  s1v1: F3:q+Ab3+D4 C5:q+F5+Ab5+C6 F5:q+Ab5+C6+F6 | s2v5: C2:q+Ab2+C3 D4:q+F4+Ab4+C5 F4:q+Ab4+C5
+m25  s1v1: F3:q+Ab3+D4 C5:q+F5+Ab5+C6 F5:q+Ab5+C6+F6 | s2v5: C2:q+Ab2+C3 D4:q+F4+Ab4+C5 F4:q+Ab4+C5
+m26  s1v1: Eb3:q+G3+C4 C5:q+Eb5+G5+C6 C6:q+Eb6+G6+C7 | s2v5: C2:q+G2+C3 C4:q+Eb4+G4+C5 C5:q+Eb5+G5+C6
+m27  s1v1: Eb3:q+G3+C4 C5:q+Eb5+G5+C6 C6:q+Eb6+G6+C7 | s2v5: C2:q+G2+C3 C4:q+Eb4+G4+C5 C5:q+Eb5+G5+C6
+m28  s1v1: F3:q+Ab3+D4 C5:q+F5+Ab5+C6 F5:q+Ab5+C6+F6 | s2v5: C2:q+Ab2+C3 D4:q+F4+Ab4+C5 F4:q+Ab4+C5
+m29  s1v1: F3:q+Ab3+D4 C5:q+F5+Ab5+C6 F5:q+Ab5+C6+F6 | s2v5: C2:q+Ab2+C3 D4:q+F4+Ab4+C5 F4:q+Ab4+C5
+m30  s1v1: G3:q+B3+D4 B4:q+D5+G5+B5 G5:q+B5+D6+G6 | s2v5: B1:q+B2 D4:q+G4+B4 B4:q+D5+G5
+m31  s1v1: F3:q+Bb3+D4 D4:q+F4+Bb4+D5 D5:q+F5+Bb5+D6 | s2v5: Bb1:q+Bb2 F3:q+Bb3+D4 D4:q+F4+Bb4+D5
+m32  s1v1: F3:q+A3+C4 F4:q+A4+C5+F5 F5:q+A5+C6+F6 | s2v5: A1:q+A2 C4:q+F4+A4 F4:q+A4+C5+F5
+m33  s1v1: F3:q+A3+C4 F4:q+A4+C5+F5 F5:q+A5+C6+F6 | s2v5: A1:q+A2 C4:q+F4+A4 F4:q+A4+C5+F5
+m34  s1v1: Ab3:q+C4+F4 C4:q+F4+Ab4+C5 C5:q+F5+Ab5+C6 | s2v5: Ab1:q+Ab2 F3:q+Ab3+C4 C4:q+F4+Ab4+C5
+m35  s1v1: Bb3:q+Eb4+G4 Eb4:q+G4+Bb4 Eb5:q+G5+Bb5+Eb6 | s2v5: G1:q+G2 Eb3:q+G3+Bb3 G3:q+Bb3+Eb4+G4
+m36  s1v1: A3:q+C4+Eb4 Eb4:q+F#4+A4+C5 C5:q+Eb5+F#5+A5 | s2v5: F#1:q+F#2 D3:q+F#3+A3+C4 C4:q+Eb4+F#4+A4
+m37  s1v1: A3:q+C4+Eb4 C5:q+Eb5+F#5+A5 C6:q+Eb6+F#6+A6 | s2v5: F#1:q+F#2 D4:q+F#4+A4+C5 C5:q+Eb5+F#5+A5
+m38  s1v1: F#3:q+A3+D4 D4:q+F#4+A4+D5 D5:q+F#5+A5+D6 | s2v5: D2:q+D3 F#3:q+A3+D4 D4:q+F#4+A4
+m39  s1v1: C4:q+F#4+A4 D4:q+F#4+A4+D5 D5:q+F#5+A5+D6 | s2v5: C2:q+C3 F#3:q+A3+D4 D4:q+F#4+A4
+m40  s1v1: Bb3:q+D4+G4 D4:q+G4+Bb4+D5 D5:q+G5+Bb5+D6 | s2v5: Bb1:q+Bb2 D3:q+G3+Bb3 D4:q+G4+Bb4+D5
+m41  s1v1: C4:q+D4+F#4+A4 D4:q+F#4+A4+D5 D5:q+F#5+A5+D6 | s2v5: A1:q+A2 D3:q+F#3+C4 D4:q+F#4+A4+D5
+m42  s1v1: Bb3:q+D4+G4 D4:q+G4+Bb4+D5 D5:q+G5+Bb5+D6 | s2v5: Bb1:q+Bb2 D3:q+G3+Bb3 D4:q+G4+Bb4+D5
+m43  s1v1: C4:q+D4+F#4+A4 D4:q+F#4+A4+D5 D5:q+F#5+A5+D6 | s2v5: A1:q+A2 D3:q+F#3+C4 D4:q+F#4+A4+D5
+m44  s1v1: G3:q+B3+D4+F4 D4:q+G4+B4+D5 D5:q+G5+B5+D6 | s2v5: F1:q+F2 D3:q+F3+G3+B3 D4:q+G4+B4+D5
+m45  s1v1: G3:q+C4+Eb4 C4:q+Eb4+G4+C5 C5:q+Eb5+G5+C6 | s2v5: Eb1:q+Eb2 Eb3:q+G3 C4:q+Eb4+G4+C5
+m46  s1v1: B3:q+D4+G4 G4:q+B4+D5+G5 D5:q+G5+B5+D6 | s2v5: D1:q+D2 D3:q+G3+B3 D4:q+G4+B4
+m47 [time 12/8]  s1v1: C4:w.~[fermata,accent]+Eb4+G4+C5 | s2v5: C2:w.~[accent]+G2+C3
+m48 ["Final Verse"; tempo=63]  s1v1: C4:w.+Eb4+G4+C5 | s2v5: C2:w.+G2+C3
+m49 [dyn=mf]  s1v1: r:8. Db3:w+F3+Ab3+Ab3+Db4+F4+Ab4+Db5 r:q r:16 | s2v5: Ab1:w.+Ab2+Ab3
+m50  s1v1: r:8. Eb3:w+G3+Bb3+Eb4+G4+Bb4+D5 r:q r:16 | s2v5: G1:w.+G2+G3
+m51  s1v1: r:8. Eb3:w+G3+B3+Eb4+G4+B4+Eb5 r:q r:16 | s2v5: G1:w.+G2+G3
+m52 [dyn=p]  s1v1: C3:w.[fermata]+Eb3+G3+C4 | s2v5: C2:w.[fermata]+C3

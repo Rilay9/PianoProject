@@ -1,0 +1,24 @@
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=16
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
+CID QmTPmBvCqSrpJTdr87B77a5yprLJM1L6p2yUfmpoBSJW43
+title: Holy Holy Holy | song_name: Holy Holy Holy Lord God Almighty
+composer: william | artist: John B. Dykes and Camp Kirkland
+csv: tracks=0 bars=16 license=cc-zero
+
+=== part P1 'Piano' measures=16 ===
+m1 [staves=2; key fifths=2; time 4/4; clef1=G2; clef2=F4]  s1v1: r:q D4:q D4:q F#4:q F#4:q | s2v5: r:q D3:h+F#3+A3 D3:h+F#3+A3
+m2  s1v1: A4:h A4:8 r:16 r:16 A4:q | s2v5: r:q D3:h.+F#3+A3
+m3  s1v1: A4:8 B4:8 B4:q B4:q B4:q | s2v5: G2:w+B2+D3
+m4  s1v1: F#4:h+A4 F#4:h | s2v5: D3:h+F#3+A3 D3:h+F#3+A3
+m5  s1v1: A4:q A4:8 r:8 A4:8 r:8 A4:q | s2v5: D3:q+F#3+A3+D4 D3:8+F#3+A3+D4 r:8 D3:h+F#3+A3+D4
+m6  s1v1: D5:h C#5:q E4:q+A4 | s2v5: D3:h+F#3+A3 A2:h+C#3+E3
+m7  s1v1: E4:q A4:q B4:h | s2v5: A2:h+C#3+E3 G2:h+B2+D3
+m8  s1v1: A4:8 r:8 A4:h. | s2v5: D3:8+F#3+A3 r:8 D3:h.+F#3+A3
+m9  s1v1: D4:q D4:q F#4:q F#4:q | s2v5: D3:h+F#3+A3 D3:h+F#3+A3
+m10  s1v1: A4:h A4:8 r:16 r:16 A4:q | s2v5: r:q D3:h.+F#3+A3
+m11  s1v1: A4:8 B4:8 B4:q B4:q B4:8~ | s2v5: G2:h+B2+D3 r:q r:8
+m12  s1v1: B4:8 F#4:8+A4 F#4:q+A4 F#4:h | s2v5: r:q D3:q+F#3+A3 D3:h+F#3+A3
+m13  s1v1: D5:h A4:q A4:q | s2v5: D3:h+F#3+A3 D3:h+F#3+A3
+m14  s1v1: B4:h F#4:h | s2v5: G2:w+B2+D3
+m15  s1v1: G4:q. r:8 E4:q. E4:8~ | s2v5: G2:q.+B2+D3 r:8 A2:h+C#3+E3
+m16  s1v1: E4:16 r:16 r:8 D4:q D4:h | s2v5: r:q D3:q+F#3+A3 D3:h+F#3+A3

@@ -1,0 +1,42 @@
+SHAPE: MULTI_PIANO_PART | parts=2 max_staves=1 meters=2/4 chord-symbols=0 bars=16
+INSTRUMENTS/PARTS: P1:'Soprano Alto':staves=1:prog=0:piano=True; P2:'Tenor Bass':staves=1:prog=0:piano=True
+CID QmSarCz8x1vF7uW9bqG2aTxw4uwwPeK4vfDCEi2uvkiCvW
+title: The Dreydl Song - Anonymous (Traditional) | song_name: the dreidel song
+composer:  | artist: Misc Traditional
+csv: tracks=0-0 bars=16 license=publicdomain
+
+=== part P1 'Soprano Alto' measures=16 ===
+m1 [key fifths=-2 major; time 2/4; clef=G2; tempo=96; tempo=96]  s1v1: G4:8 G4:8 F#4:q+A4
+m2  s1v1: G4:8+Bb4 G4:8+Bb4 F#4:q+A4
+m3  s1v1: Bb4:8+D5 Bb4:8+D5 C5:16 Bb4:16 A4:16 G4:16
+m4  s1v1: G4:8+Bb4 G4:8+Bb4 F#4:q+A4
+m5  s1v1: G4:8 G4:8 F#4:q+A4
+m6  s1v1: G4:8+Bb4 G4:8+Bb4 Eb4:q+C5
+m7  s1v1: F4:8+D5 F4:8+D5 F#4:8+D5 D4:8
+m8  s1v1: D4:8+G4 D4:8+G4 D4:q+G4
+m9  s1v1: Eb4:8+C5 Eb4:8+C5 G4:8+C5 Eb5:8
+m10  s1v1: F#4:8+D5 F#4:8+D5 Bb4:16 A4:16 G4:8
+m11  s1v1: F#4:8 F#4:8 D4:8 F#4:8
+m12  s1v1: G4:8. A4:16 Bb4:16 A4:16 G4:8
+m13  s1v1: Eb4:8+C5 Eb4:8+C5 G4:8+C5 Eb5:8
+m14  s1v1: F#4:8+D5 F#4:8+D5 Bb4:16 A4:16 G4:8
+m15  s1v1: F#4:8 F#4:8 D4:8 F#4:8
+m16  s1v1: D4:8+G4 D4:8+G4 D4:q+G4
+
+=== part P2 'Tenor Bass' measures=16 ===
+m1 [key fifths=-2 major; time 2/4; clef=F4]  s1v1: G3:8+D4 G3:8+D4 D3:q+D4
+m2  s1v1: G3:8+D4 G3:8+D4 D3:q+D4
+m3  s1v1: G3:8+D4 G3:8+D4 Eb3:q+C4
+m4  s1v1: E3:8+C#4 E3:8+C#4 D3:q+D4
+m5  s1v1: G3:8+D4 G3:8+D4 D3:q+D4
+m6  s1v1: G3:8+D4 G3:8+D4 F3:q+C4
+m7  s1v1: Bb2:8+Bb3 Bb2:8+Bb3 D3:q+A3
+m8  s1v1: G3:8+Bb3 G3:8+Bb3 G3:q+Bb3
+m9  s1v1: C3:8+C4 C3:8+C4 Eb3:q+C4
+m10  s1v1: D3:8+A3 D3:8+A3 G3:q+D4
+m11  s1v1: D3:8+C4 D3:8+C4 D3:q+C4
+m12  s1v1: G3:8+D4 G3:8+D4 G3:q+D4
+m13  s1v1: C3:8+C4 C3:8+C4 Eb3:q+C4
+m14  s1v1: D3:8+A3 D3:8+A3 G3:q+D4
+m15  s1v1: D3:8+C4 D3:8+C4 D3:q+C4
+m16  s1v1: G3:8+Bb3 G3:8+Bb3 G3:q+Bb3

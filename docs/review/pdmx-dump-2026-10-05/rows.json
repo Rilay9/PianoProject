@@ -1030,5 +1030,61 @@
     "excluded_because": null
    }
   ]
- }
+ },
+ "added_2026_10_05_second_request": [
+  {
+   "cid": "Qmc6P2a11mJaEgAdyvsqiWW9dSt7HazcVSSsU7oRtQ3ptu",
+   "song_name": "Carmen",
+   "title": "Habanera - Piano Solo - Georges Bizet",
+   "composer_name": "Georges Bizet",
+   "artist_name": "Georges Bizet",
+   "n_tracks": "1",
+   "track_programs": "0",
+   "piano_only_by_program": true,
+   "bars": "60",
+   "rating": "4.85",
+   "n_ratings": "451",
+   "n_views": "41069",
+   "license": "cc-zero",
+   "valid_mxl_pdf": "True",
+   "mxl": "./mxl/2/5/Qmc6P2a11mJaEgAdyvsqiWW9dSt7HazcVSSsU7oRtQ3ptu.mxl",
+   "xml_dumped": true
+  },
+  {
+   "cid": "QmYAihNhTVzw5EyFcXFRD7f5gkwnnDKRnH1gTnf4e5frxs",
+   "song_name": "Contradanza",
+   "title": "Contra Danza",
+   "composer_name": "Author anonimo",
+   "artist_name": "Anonymous",
+   "n_tracks": "1",
+   "track_programs": "0",
+   "piano_only_by_program": true,
+   "bars": "87",
+   "rating": "4.83",
+   "n_ratings": "3",
+   "n_views": "100",
+   "license": "cc-zero",
+   "valid_mxl_pdf": "True",
+   "mxl": "./mxl/16/10/QmYAihNhTVzw5EyFcXFRD7f5gkwnnDKRnH1gTnf4e5frxs.mxl",
+   "xml_dumped": true
+  },
+  {
+   "cid": "QmXuMn7vq7C5PEYMc3J6yU5sfCrN13jRmcHy2PG3xVRhsG",
+   "song_name": "El gordo triste",
+   "title": "El gordo triste (Piazzolla-Ferrer)",
+   "composer_name": "Astor Piazzolla",
+   "artist_name": "Astor Piazzolla",
+   "n_tracks": "1",
+   "track_programs": "0",
+   "piano_only_by_program": true,
+   "bars": "75",
+   "rating": "4.63",
+   "n_ratings": "8",
+   "n_views": "2546",
+   "license": "cc-zero",
+   "valid_mxl_pdf": "True",
+   "mxl": "./mxl/15/46/QmXuMn7vq7C5PEYMc3J6yU5sfCrN13jRmcHy2PG3xVRhsG.mxl",
+   "xml_dumped": true
+  }
+ ]
 }

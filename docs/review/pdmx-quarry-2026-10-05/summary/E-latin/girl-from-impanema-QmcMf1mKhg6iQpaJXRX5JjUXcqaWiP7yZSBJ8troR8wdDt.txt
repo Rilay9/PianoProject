@@ -1,0 +1,306 @@
+SHAPE: MIXED_WITH_PIANO | parts=5 max_staves=2 meters=4/4 chord-symbols=6 bars=58
+INSTRUMENTS/PARTS: P1:'Flute':staves=1:prog=73:piano=False; P2:'B♭ Clarinet':staves=1:prog=71:piano=False; P3:'Alto Saxophone':staves=1:prog=65:piano=False; P4:'Alto Saxophone':staves=1:prog=65:piano=False; P5:'Piano':staves=2:prog=0:piano=True
+CID QmcMf1mKhg6iQpaJXRX5JjUXcqaWiP7yZSBJ8troR8wdDt
+title: girl from impanema | song_name: the girl from ipanema
+composer:  | artist: Antônio Carlos Jobim
+csv: tracks=0-65-65-71-73 bars=58 license=cc-zero
+
+=== part P1 'Flute' measures=58 ===
+m1 [key fifths=-1; time 4/4; clef=G2]  s1v1: G5:q. E5:8 E5:q D5:8 G5:8~
+m2  s1v1: G5:q E5:8 E5:8~ E5:8 E5:8 D5:8 G5:8~
+m3  s1v1: G5:q E5:q E5:q D5:8 G5:8~
+m4  s1v1: G5:8 G5:8 E5:8 E5:8~ E5:8 E5:8 D5:8 F5:8~
+m5  s1v1: F5:8 D5:q D5:8~ D5:8 D5:8 C5:8 E5:8~
+m6  s1v1: E5:8 C5:q C5:8 C5:8 C5:8 Bb4:q
+m7  s1v1: r:q C5:h.~
+m8  s1v1: C5:w
+m9  s1v1: F5:q C6:q. C6:q.
+m10  s1v1: F5:q A5:q. A5:q.
+m11  s1v1: G5:q D5:q. D5:q.
+m12  s1v1: G5:q F5:q. F5:q.
+m13  s1v1: G4:q G4:q. G4:q.
+m14  s1v1: C5:q C5:q. C5:q.
+m15  s1v1: r:q C5:q. F5:q.
+m16  s1v1: Bb5:q. Eb6:q.~ Eb6:q
+m17  s1v1: Gb4:q Db5:8 r:q Db5:q.
+m18  s1v1: F4:q F5:q r:h
+m19  s1v1: B4:q B4:8 r:q F#5:q.
+m20  s1v1: G#5:8 G#5:8 G5:8 F#5:8~ F#5:8 Db5:q r:8
+m21  s1v1: Gb4:q Db5:8 r:q Db5:q.
+m22  s1v1: Gb4:q Db5:h.
+m23  s1v1: D5:q. D5:8~ D5:h~
+m24  s1v1: D5:w
+m25  s1v1: r:d4
+m26  s1v1: r:d4
+m27  s1v1: r:d4
+m28  s1v1: r:d4
+m29  s1v1: r:d4
+m30  s1v1: r:d4
+m31  s1v1: r:d4
+m32  s1v1: r:d4
+m33  s1v1: G5:q. E5:8 E5:q D5:8 G5:8~
+m34  s1v1: G5:q E5:8 E5:8~ E5:8 E5:8 D5:8 G5:8~
+m35  s1v1: G5:q E5:q E5:q D5:8 G5:8~
+m36  s1v1: G5:8 G5:8 E5:8 E5:8~ E5:8 E5:8 D5:8 F5:8~
+m37  s1v1: F5:8 D5:q D5:8~ D5:8 D5:8 C5:8 E5:8~
+m38  s1v1: E5:8 C5:q C5:8 C5:8 C5:8 Bb4:q
+m39  s1v1: r:q C5:h.~
+m40  s1v1: C5:w
+m41  s1v1: G5:q. E5:8 E5:q D5:8 G5:8~
+m42  s1v1: G5:q E5:8 E5:8~ E5:8 E5:8 D5:8 G5:8~
+m43  s1v1: G5:q E5:q E5:q D5:8 G5:8~
+m44  s1v1: G5:8 G5:8 E5:8 E5:8~ E5:8 E5:8 D5:8 E5:8~
+m45  s1v1: E5:w
+m46  s1v1: r:q r:8 E5:8 E5:8 E5:8 D5:8 E5:8~
+m47  s1v1: E5:w
+m48  s1v1: r:d4
+m49  s1v1: r:d4
+m50  s1v1: r:d4
+m51  s1v1: r:d4
+m52  s1v1: r:d4
+m53  s1v1: r:d4
+m54  s1v1: r:d4
+m55  s1v1: r:d4
+m56  s1v1: r:d4
+m57  s1v1: r:d4
+m58  s1v1: r:d4
+
+=== part P2 'B♭ Clarinet' measures=58 ===
+m1 [key fifths=1; time 4/4; clef=G2]  s1v1: G4:q D5:q. D5:q.
+m2  s1v1: G4:q B4:q. B4:q.
+m3  s1v1: A4:q E4:q. E4:q.
+m4  s1v1: A4:q G4:q. G4:q.
+m5  s1v1: A3:q A3:q. A3:q.
+m6  s1v1: D4:q D4:q. D4:q.
+m7  s1v1: r:q D4:q. G4:q.
+m8  s1v1: C5:q. F5:q.~ F5:q
+m9  s1v1: A5:q. F#5:8 F#5:q E5:8 A5:8~
+m10  s1v1: A5:q F#5:8 F#5:8~ F#5:8 F#5:8 E5:8 A5:8~
+m11  s1v1: A5:q F#5:q F#5:q E5:8 A5:8~
+m12  s1v1: A5:8 A5:8 F#5:8 F#5:8~ F#5:8 F#5:8 E5:8 G5:8~
+m13  s1v1: G5:8 E5:q E5:8~ E5:8 E5:8 D5:8 F#5:8~
+m14  s1v1: F#5:8 D5:q D5:8 D5:8 D5:8 C5:q
+m15  s1v1: r:q D5:h.~
+m16  s1v1: D5:w
+m17  s1v1: Ab4:q G4:8 r:q G4:q.
+m18  s1v1: G4:q C5:q r:h
+m19  s1v1: B4:q G#4:8 r:q C5:q.~
+m20  s1v1: C5:w
+m21  s1v1: Ab4:q Ab4:8 r:q Ab4:q.
+m22  s1v1: Ab4:q G4:h.
+m23  s1v1: E4:q. E4:q. C#4:8 D4:8
+m24  s1v1: C#5:8 C5:8 B4:8 F#4:8 D4:h
+m25  s1v1: r:d4
+m26  s1v1: r:d4
+m27  s1v1: r:d4
+m28  s1v1: r:d4
+m29  s1v1: r:d4
+m30  s1v1: r:d4
+m31  s1v1: r:d4
+m32  s1v1: r:d4
+m33  s1v1: A5:q. F#5:8 F#5:q E5:8 A5:8~
+m34  s1v1: A5:q F#5:8 F#5:8~ F#5:8 F#5:8 E5:8 A5:8~
+m35  s1v1: A5:q F#5:q F#5:q E5:8 A5:8~
+m36  s1v1: A5:8 A5:8 F#5:8 F#5:8~ F#5:8 F#5:8 E5:8 G5:8~
+m37  s1v1: G5:8 E5:q E5:8~ E5:8 E5:8 D5:8 F#5:8~
+m38  s1v1: F#5:8 D5:q D5:8 D5:8 D5:8 C5:q
+m39  s1v1: r:q D5:h.~
+m40  s1v1: D5:w
+m41  s1v1: G4:q B4:q. B4:q.
+m42  s1v1: G4:q G4:q. G4:q.
+m43  s1v1: A4:q C#5:q. C#5:q.
+m44  s1v1: A4:q C#5:q. C#5:q.
+m45  s1v1: r:d4
+m46  s1v1: r:d4
+m47  s1v1: r:d4
+m48  s1v1: r:w
+m49  s1v1: r:d4
+m50  s1v1: r:d4
+m51  s1v1: r:d4
+m52  s1v1: r:d4
+m53  s1v1: r:d4
+m54  s1v1: r:d4
+m55  s1v1: r:d4
+m56  s1v1: r:d4
+m57  s1v1: r:d4
+m58  s1v1: r:d4
+
+=== part P3 'Alto Saxophone' measures=58 ===
+m1 [key fifths=2; time 4/4; clef=G2]  s1v1: D5:q F#5:q. F#5:q.
+m2  s1v1: D5:q D5:q. D5:q.
+m3  s1v1: E5:q G#5:q. G#5:q.
+m4  s1v1: E5:q G#5:q. G#5:q.
+m5  s1v1: E5:q G5:q. G5:q.
+m6  s1v1: C#5:q C#5:q. C#5:q.
+m7  s1v1: r:q A4:q. D5:q.~
+m8  s1v1: D5:w
+m9  s1v1: D5:q F#5:q. F#5:q.
+m10  s1v1: D5:q D5:q. D5:q.
+m11  s1v1: E5:q G#5:q. G#5:q.
+m12  s1v1: E5:q G#5:q. G#5:q.
+m13  s1v1: E5:q G5:q. G5:q.
+m14  s1v1: C#5:q C#5:q. C#5:q.
+m15  s1v1: r:q A4:q. D5:q.~
+m16  s1v1: D5:w
+m17  s1v1: A#5:w
+m18  s1v1: F5:q(3:2) G5:q(3:2) F5:q(3:2) Eb5:q(3:2) F5:q(3:2) Eb5:q(3:2)
+m19  s1v1: F#5:8 G#5:8 G5:8 F5:8 Eb5:8 C5:8 Eb5:q~
+m20  s1v1: Eb5:w
+m21  s1v1: F5:w~
+m22  s1v1: F5:q(3:2) F#5:q(3:2) F5:q(3:2) Eb5:q(3:2) F5:q(3:2) Eb5:q(3:2)
+m23  s1v1: C#5:q. D#5:8~ D#5:h~
+m24  s1v1: D#5:w
+m25  s1v1: F#5:w
+m26  s1v1: F#5:q(3:2) G5:q(3:2) F#5:q(3:2) E5:q(3:2) F#5:q(3:2) E5:q(3:2)
+m27  s1v1: D5:q. E5:8~ E5:h
+m28  s1v1: r:h r:q(3:2) F#5:q(3:2) G5:q(3:2)
+m29  s1v1: A5:q(3:2) A4:q(3:2) B4:q(3:2) C#5:q(3:2) D5:q(3:2) E5:q(3:2)
+m30  s1v1: E#5:h. F#5:q
+m31  s1v1: G5:q(3:2) G4:q(3:2) A4:q(3:2) B4:q(3:2) C#5:q(3:2) D5:q(3:2)
+m32  s1v1: D#5:h r:h
+m33  s1v1: D5:q F#5:q. F#5:q.
+m34  s1v1: D5:q D5:q. D5:q.
+m35  s1v1: E5:q G#5:q. G#5:q.
+m36  s1v1: E5:q G#5:q. G#5:q.
+m37  s1v1: E5:q G5:q. G5:q.
+m38  s1v1: C#5:q C#5:q. C#5:q.
+m39  s1v1: r:q A4:q. D5:q.
+m40  s1v1: G5:q. C6:q.~ C6:q
+m41  s1v1: E5:q. C#5:8 C#5:q B4:8 E5:8~
+m42  s1v1: E5:q C#5:8 C#5:8~ C#5:8 C#5:8 B4:8 E5:8~
+m43  s1v1: E5:q C#5:q C#5:q B4:8 E5:8~
+m44  s1v1: E5:8 E5:8 C#5:8 C#5:8~ C#5:8 C#5:8 B4:8 C#5:8~
+m45  s1v1: C#5:w
+m46  s1v1: r:q r:8 C#5:8 C#5:8 C#5:8 B4:8 C#5:8~
+m47  s1v1: C#5:w
+m48  s1v1: r:d4
+m49  s1v1: r:d4
+m50  s1v1: r:d4
+m51  s1v1: r:d4
+m52  s1v1: r:d4
+m53  s1v1: r:d4
+m54  s1v1: r:d4
+m55  s1v1: r:d4
+m56  s1v1: r:d4
+m57  s1v1: r:d4
+m58  s1v1: r:d4
+
+=== part P4 'Alto Saxophone' measures=58 ===
+m1 [key fifths=2; time 4/4; clef=G2]  s1v1: D5:q D5:q. D5:q.
+m2  s1v1: D5:q A4:q. A4:q.
+m3  s1v1: E5:q E5:q. E5:q.
+m4  s1v1: E5:q E5:q. E5:q.
+m5  s1v1: E5:q B4:q. B4:q.
+m6  s1v1: E5:q E5:q. E5:q.
+m7  s1v1: r:q A4:h.~
+m8  s1v1: A4:w
+m9  s1v1: D5:q D5:q. D5:q.
+m10  s1v1: D5:q A4:q. A4:q.
+m11  s1v1: E5:q E5:q. E5:q.
+m12  s1v1: E5:q E5:q. E5:q.
+m13  s1v1: E5:q B4:q. B4:q.
+m14  s1v1: E5:q E5:q. E5:q.
+m15  s1v1: r:q A4:h.~
+m16  s1v1: A4:w
+m17  s1v1: D5:w~
+m18  s1v1: D5:q(3:2) Eb5:q(3:2) D5:q(3:2) C5:q(3:2) D5:q(3:2) C5:q(3:2)
+m19  s1v1: Bb4:q. C5:8~ C5:h~
+m20  s1v1: C5:w
+m21  s1v1: F5:w~
+m22  s1v1: F5:q(3:2) F#5:q(3:2) F5:q(3:2) Eb5:q(3:2) F5:q(3:2) Eb5:q(3:2)
+m23  s1v1: F5:q. F#5:8~ F#5:h~
+m24  s1v1: F#5:w
+m25  s1v1: D5:w
+m26  s1v1: r:d4
+m27  s1v1: r:d4
+m28  s1v1: r:d4
+m29  s1v1: F#4:w
+m30  s1v1: D#5:w
+m31  s1v1: E5:w
+m32  s1v1: A4:w
+m33  s1v1: D5:q D5:q. D5:q.
+m34  s1v1: D5:q F#5:q. F#5:q.
+m35  s1v1: E5:q E5:q. E5:q.
+m36  s1v1: E5:q E5:q. E5:q.
+m37  s1v1: E5:q B4:q. B4:q.
+m38  s1v1: E5:q E5:q. E5:q.
+m39  s1v1: r:q A4:q. D5:q.~
+m40  s1v1: D5:w
+m41  s1v1: D5:q D5:q. D5:q.
+m42  s1v1: D5:q A4:q. A4:q.
+m43  s1v1: E5:q E5:q. E5:q.
+m44  s1v1: E5:q E5:q. E5:q.
+m45  s1v1: r:d4
+m46  s1v1: r:d4
+m47  s1v1: r:d4
+m48  s1v1: r:d4
+m49  s1v1: r:d4
+m50  s1v1: r:d4
+m51  s1v1: r:d4
+m52  s1v1: r:d4
+m53  s1v1: r:d4
+m54  s1v1: r:d4
+m55  s1v1: r:d4
+m56  s1v1: r:d4
+m57  s1v1: r:d4
+m58  s1v1: r:d4
+
+=== part P5 'Piano' measures=58 ===
+m1 [staves=2; key fifths=-1; time 4/4; clef1=G2; clef2=F4]  s1v1: r:d4 | s2v5: r:d4
+m2  s1v1: r:d4 | s2v5: r:d4
+m3  s1v1: r:d4 | s2v5: r:d4
+m4  s1v1: r:d4 | s2v5: r:d4
+m5  s1v1: r:d4 | s2v5: r:d4
+m6  s1v1: r:d4 | s2v5: r:d4
+m7  s1v1: r:d4 | s2v5: r:d4
+m8  s1v1: r:d4 | s2v5: r:d4
+m9  s1v1: r:d4 | s2v5: r:d4
+m10  s1v1: r:d4 | s2v5: r:d4
+m11  s1v1: r:d4 | s2v5: r:d4
+m12  s1v1: r:d4 | s2v5: r:d4
+m13  s1v1: r:d4 | s2v5: r:d4
+m14  s1v1: r:d4 | s2v5: r:d4
+m15  s1v1: r:d4 | s2v5: r:d4
+m16  s1v1: r:d4 | s2v5: r:d4
+m17  s1v1: r:d4 | s2v5: r:d4
+m18  s1v1: r:d4 | s2v5: r:d4
+m19  s1v1: r:d4 | s2v5: r:d4
+m20  s1v1: r:d4 | s2v5: r:d4
+m21  s1v1: r:d4 | s2v5: r:d4
+m22  s1v1: r:d4 | s2v5: r:d4
+m23  s1v1: r:d4 | s2v5: r:d4
+m24  s1v1: r:d4 | s2v5: r:d4
+m25  s1v1: r:d4 | s2v5: r:d4
+m26  s1v1: r:d4 | s2v5: r:d4
+m27  s1v1: r:d4 | s2v5: r:d4
+m28  s1v1: r:d4 | s2v5: r:d4
+m29  s1v1: G3:w+A3+C4+E4+G4+A4 | s2v5: A2:w+C3
+m30  s1v1: C4:w+D4+G#4 | s2v5: D3:w+F#3
+m31  s1v1: G3:w+Bb3+D4+F4+A4 | s2v5: G3:w+Bb3
+m32  s1v1: C4:q[accent]+E4+G4+Bb4+Eb5 C4:q[accent]+E4+G4+Bb4+Eb5 r:h | s2v5: r:d4
+m33  s1v1: r:d4 | s2v5: r:d4
+m34  s1v1: r:d4 | s2v5: r:d4
+m35  s1v1: r:d4 | s2v5: r:d4
+m36  s1v1: r:d4 | s2v5: r:d4
+m37  s1v1: r:d4 | s2v5: r:d4
+m38  s1v1: r:d4 | s2v5: r:d4
+m39  s1v1: r:d4 | s2v5: r:d4
+m40  s1v1: r:d4 | s2v5: r:d4
+m41  s1v1: r:d4 | s2v5: r:d4
+m42  s1v1: r:d4 | s2v5: r:d4
+m43  s1v1: r:d4 | s2v5: r:d4
+m44  s1v1: r:d4 | s2v5: r:d4
+m45  s1v1: r:d4 | s2v5: r:d4
+m46  s1v1: r:d4 | s2v5: r:d4
+m47  s1v1: r:d4 | s2v5: r:d4
+m48  s1v1: r:d4 | s2v5: r:d4
+m49  s1v1: r:d4 | s2v5: r:d4
+m50  s1v1: r:d4 | s2v5: r:d4
+m51  s1v1: r:d4 | s2v5: r:d4
+m52  s1v1: r:d4 | s2v5: r:d4
+m53  s1v1: r:d4 | s2v5: r:d4
+m54  s1v1: r:d4 | s2v5: r:d4
+m55  s1v1: r:d4 | s2v5: r:d4
+m56  s1v1: r:d4 | s2v5: r:d4
+m57  s1v1: r:d4 | s2v5: r:d4
+m58  s1v1: r:d4 | s2v5: C3:q+E3 r:q r:h
