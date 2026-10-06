@@ -9,7 +9,8 @@
  * puts away the piece on its sheet (Progress → its project); at the piece's turn the transition steps past it,
  * said; the stored run holds `withdrawn` and the state the learner left it in; Today's row says it, in each of
  * R7's cells (`SIZES`; pictures of phone upright 360 × 780, phone sideways 780 × 360 and tablet 1024 × 768),
- * each one reloaded from the stored record, with every part of the row inside it and none over another.
+ * each one reloaded from the stored record, with every part of the row inside it and none over another, on the
+ * app's own face and on a wider one (`WIDER_FACE`; CI3: the runner's face cut the sentence at 568 × 320).
  *
  * The swap walks put the project row straight into the store (the sheet is the one door in the app; the walks
  * above go through it): a swap made through Today's own swap sheet, then a pause written after it, vetoes the
@@ -40,6 +41,12 @@ const SIZES = [
   { name: 'tablet-large', width: 1366, height: 1024 },
   { name: 'tablet-large-upright', width: 1024, height: 1366 },
 ] as const;
+
+/**
+ * A face wider than this machine's Segoe UI, as `plan.spec.ts` (U90) and `score.screen.spec.ts` force it: Verdana, or
+ * DejaVu Sans where Verdana is absent (CI's runner). The row is measured on the app's own stack and on this.
+ */
+const WIDER_FACE = "body, body * { font-family: Verdana, 'DejaVu Sans', sans-serif !important; }";
 
 test.use({ viewport: { width: 360, height: 780 } });
 
@@ -291,8 +298,13 @@ for (const last of ['pause', 'retire'] as const) {
       await expect(row).not.toContainText('Keeping this piece playable');
       await expect(page.locator('#today-continue-line')).toContainText(`next: ${walk.after.title}`);
       await row.scrollIntoViewIfNeeded();
-      await expectRowIntact(page, row, sentence);
+      await test.step(`the row intact at ${size.name} ${String(size.width)} × ${String(size.height)}, the app's face`, () => expectRowIntact(page, row, sentence));
       if ('picture' in size) await page.screenshot({ path: `${PICTURES}/today-skipped-row-${state}-${size.name}-${String(size.width)}x${String(size.height)}.png` });
+      // And on a wider face (CI3): the case was red on CI's runner from G90a's first run (*the reason is cut*) and green
+      // here. On Verdana, at 568 × 320, the row's reason column is 93 px and *Skipped — you put it away* took a third
+      // line that the two-line clamp cut; the runner's face is inferred to be as wide. The next reload drops the style.
+      await page.addStyleTag({ content: WIDER_FACE });
+      await test.step(`the row intact at ${size.name} ${String(size.width)} × ${String(size.height)}, a wider face`, () => expectRowIntact(page, row, sentence));
     }
     // The record is what it was: every reload of Today moved no activity and changed no adaptation.
     expect(shape(await storedRun(page))).toEqual(settled);

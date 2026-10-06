@@ -858,6 +858,8 @@ export function TodayScreen(router: Router): HTMLElement {
         'data-state': activity.state,
         'data-current': String(current),
         ...(activity.slot.claim ? { 'data-claim': activity.slot.claim.kind } : {}),
+        // The withdrawn sentence is read whole, on any face (CI3, `style.css`): the mark the rule keys on.
+        ...(withdrawn === undefined ? {} : { 'data-withdrawn': withdrawn }),
       },
     }));
     if (current) row.classList.add('today-row--current');

@@ -169,6 +169,9 @@ describe('Today’s skipped row says why the piece was withdrawn', () => {
       const section = await openToday();
       await vi.waitFor(() => expect(rowOf(section, 1).dataset.state).toBe('skipped'));
       expect(sub(section, 1)).toBe(SENTENCE[say]);
+      // The mark the stylesheet keys on to read the sentence whole on any face (CI3); no other row carries it.
+      expect(rowOf(section, 1).dataset.withdrawn).toBe(KEPT[say]);
+      expect(rowOf(section, 2).dataset.withdrawn).toBeUndefined();
       expect(rowOf(section, 1).querySelector('.list-row__badges')?.textContent).toContain('skipped');
       expect(rowOf(section, 1).textContent).not.toContain('Keeping this piece playable');
       // The rows that were not withdrawn keep what they said.
@@ -212,6 +215,7 @@ describe('Today’s skipped row says why the piece was withdrawn', () => {
     await vi.waitFor(() => expect(rowOf(again, 1).dataset.state).toBe('skipped'));
     expect((await stored()).activities[1]?.adaptations.map((one) => one.kind)).toEqual(['skipped-redundant']);
     expect(sub(again, 1)).toBe('The practice that follows');
+    expect(rowOf(again, 1).dataset.withdrawn, 'a skip that was not a withdrawal carries the withdrawn mark').toBeUndefined();
   });
 
   it('an activity underway is not taken from the learner: opened, then paused, its row is not skipped and keeps its words', async () => {

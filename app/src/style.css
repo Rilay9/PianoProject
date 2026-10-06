@@ -5049,6 +5049,20 @@ input[type='checkbox'] {
   -webkit-box-orient: vertical;
 }
 
+/* Except a withdrawn piece's sentence (G90a), which is read whole: it takes
+   the lines it needs (CI3, as U90 did for Skills names). *Skipped — you put
+   it away* is the whole of the row's why, and at 568 × 320 its column is
+   93 px: two lines on Segoe UI, three on a wider face (Verdana here, and
+   by inference CI's runner, where the case was red), where the clamp above
+   cut it to *Skipped — / you put it…*. A
+   sentence of 25 characters, so the third line is the narrowest cell's
+   only, and only on a wide face. */
+#today-card .list-row.today-row[data-withdrawn] .list-row__sub.today-row__reason {
+  display: block;
+  -webkit-line-clamp: none;
+  line-clamp: none;
+}
+
 /* The badge beside the controls, not under the words: *✓ passed*, *Next*,
    *done today*, compact and right-aligned above *Swap* and ▶. */
 #today-card .today-row__side {
