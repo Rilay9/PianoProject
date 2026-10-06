@@ -237,11 +237,19 @@ describe('the swap sheet on the built catalogue offers no music-promising genera
   const lessons = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons));
   const study = catalog.find((item) => familyOf(item) === 'study') as CatalogItem;
 
-  it('the built catalogue has studies and grooves to refuse, none approved', () => {
+  /**
+   * Revised (Entry 253, 2026-10-06): the three tresillo exercises carry a current teaching-use yes for their CONTROL
+   * role in A7c.1, decided by the outside reviewer from their contract and witness facts
+   * (`responses/lp1-latin4-placement.md` section 1; `content/review/decisions.jsonl`). They are the only approved
+   * music-promising generated items; every other study and groove is still undecided and refused.
+   */
+  const APPROVED = ['exercise.tresillo.c', 'exercise.tresillo.f', 'exercise.tresillo.g'];
+
+  it('the built catalogue has studies and grooves to refuse; the three tresillo exercises are the only ones approved', () => {
     const music = catalog.filter(promisesMusic);
     expect(music.filter((item) => familyOf(item) === 'study').length, 'no study in the built catalogue').toBeGreaterThan(0);
     expect(music.filter((item) => familyOf(item) !== 'study').length, 'no groove in the built catalogue').toBeGreaterThan(0);
-    expect(music.filter((item) => item.provenance?.review.teaching === true).map((item) => item.id)).toEqual([]);
+    expect(music.filter((item) => item.provenance?.review.teaching === true).map((item) => item.id).sort()).toEqual(APPROVED);
   });
 
   it('every row of every rung, for a learner who copes with everything: no tier offers one', () => {
