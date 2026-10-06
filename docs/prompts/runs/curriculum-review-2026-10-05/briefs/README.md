@@ -5,4 +5,4 @@ Every brief dispatched for this work opens with the decision rationale of `opera
 | Brief | Dispatched | Review |
 | --- | --- | --- |
 | `generator-addendum.md` | 2026-10-05, one agent, writes `../GENERATOR-ADDENDUM.md` | reviewed at 72850a06; six corrections sent and applied; addendum landed |
-| `ability-map.md` | 2026-10-05, Agent A (mode sheet, fact-gathering) then Agent B (the map, synthesis) | reviewed with a blocking verdict; eleven corrections absorbed into the brief before dispatch |
+| `ability-map.md` | 2026-10-05, Agent A wrote `../MODE-SHEET.md` (30 modes, 7 claims checked: 6 confirmed, Simon corrected); Agent B dispatched for `../ABILITY-MAP.md` | `responses/1b0d8ac3.md`: approved with one required change, applied at 763d543a before Agent B ran |
