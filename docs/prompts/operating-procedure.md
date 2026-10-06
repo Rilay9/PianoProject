@@ -338,6 +338,8 @@ the premise is found wrong, say so and take the better path, recording why); and
 document's §11 and §12 by reference.
 
 
+**Another approach first, for agents too (the owner, 2026-10-05).** The §10b gate binds every agent, not only the orchestrator. A brief that asks an agent to decide anything (a wording, a placement, a mapping, a classification) tells it to write, beside each decision, one materially different approach it considered and why that one loses; an agent that cannot name one hands the decision back instead of taking the first plausible idea. A builder applies its contract exactly and never widens it because nearby code is easy to fix; where a before-block does not match, it stops that edit and reports. The failure this stops is the one visible across the project's audits: rabbit holes on details while the forest goes unseen.
+
 **Actor by kind of work (the owner, 2026-10-05).** Before dispatch, split the work by kind and give each kind to the cheapest actor that can do it: scripts for counts, shape checks and denominators; a small model for rote verification against a list; a mid model for fact-gathering (code or sources into a fact sheet), exact before-and-after text corrections and narrow ruled lanes; a large model only for judgement-heavy synthesis or a build with design in it; the orchestrator for the decision and the citation checks that drive it, never for long drafting. A document with a fact-gathering half and a judgement half is two agents. A fan-out multiplies the shared reading by its width: pre-cut each agent's inputs, group lanes, and count the overhead before launching. Every brief is saved and pushed for the outside reviewer before dispatch.
 
 ## 14. The builder's harness
