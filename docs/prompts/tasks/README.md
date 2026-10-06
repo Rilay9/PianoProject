@@ -323,6 +323,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **HD2b** | The verified-hand browser case proves the app's part at the audio boundary (R: the inner line expected, not played; L: played), red first with the rows withheld; the hand reader refuses conflicting overlaps, naming both rows (`HD2b-verified-hand-playback-proof.md`) | app | landed 2026-10-06 (`HD2b-verified-hand-playback-proof.md`); Entry 250
 | **SR1** | The sight-reading quality lane: LEVEL-SPEC against ABRSM, RCM and Faber cells, a 374-item corpus frozen before generation and read by partitura and musicxml-io (0 disagreements), properties P1-P10 and Hypothesis counterexamples, the correction drafted and reverted (`SR1-sightreading-quality.md`) | research | landed 2026-10-06 (`SR1-sightreading-quality.md`); Entry 251
 | **LP1** | latin.4 on Stage 4 with prerequisites 4.4 and latin.3: the unit, the lesson (steps 1-19 of A7c.1), the named-cut requirement, the eeff22fe placement proofs as tests, candidate-rungs reading the passage facts, the probe re-pinned at 218; A7c.1 stays draft (`LP1-latin4-placement.md`) | content + tools | landed 2026-10-06 (`LP1-latin4-placement.md`); Entry 252
+| **TU1** | Teaching use YES for the Bizet left-hand cut (MODEL) and the three tresillo exercises (CONTROL), from the reviewer's ruling on Entry 252, bound to current identities; latin.4's Start opens the tresillo in C (`TU1-teaching-use-latin4.md`) | content | landed 2026-10-06 (`TU1-teaching-use-latin4.md`); Entry 253
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -511,6 +512,7 @@ CD1 · landed · 249
 HD2b · landed · 250
 SR1 · landed · 251
 LP1 · landed · 252
+TU1 · landed · 253
 F0a · closed · —
 L120 · approved · —
 -->

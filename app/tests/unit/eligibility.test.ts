@@ -598,10 +598,25 @@ describe('an excerpt reaches an automatic offer only with a current teaching-use
     expect(eligibleFor(approved, STEPS_AND_SKIPS, WANTS[2])).toMatchObject({ verdict: 'ineligible', why: 'untaught' });
   });
 
-  it('every excerpt the build cut is undecided, admitted to no automatic offer and open to exploration', () => {
+  /**
+   * Revised (Entry 253, 2026-10-06): the Bizet left-hand cut carries a current teaching-use yes for its
+   * MODEL role in A7c.1, decided by the outside reviewer from its verified facts
+   * (`responses/lp1-latin4-placement.md` section 1; `content/review/decisions.jsonl`). It is the one
+   * decided cut; every other cut the build made is still undecided and admitted to nothing automatic.
+   */
+  const DECIDED_CUTS = new Set(['excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh']);
+
+  it('every excerpt the build cut is undecided, admitted to no automatic offer and open to exploration, except the one cut a reviewer decided', () => {
     const cuts = catalog.filter(isExcerpt);
     expect(cuts.length, 'no excerpt in the built catalogue').toBeGreaterThan(0);
-    for (const excerpt of cuts) {
+    const decided = cuts.filter((excerpt) => DECIDED_CUTS.has(excerpt.id));
+    expect(decided.map((excerpt) => excerpt.id).sort(), 'the decided cut is in the built catalogue').toEqual([...DECIDED_CUTS].sort());
+    for (const excerpt of decided) {
+      expect(excerpt.provenance?.review.teaching, excerpt.id).toBe(true);
+      expect(admittedForTeaching(excerpt), excerpt.id).toBe(true);
+      expect(eligibleFor(excerpt, COPES, { for: 'exploration' }).verdict, excerpt.id).toBe('eligible');
+    }
+    for (const excerpt of cuts.filter((candidate) => !DECIDED_CUTS.has(candidate.id))) {
       expect(excerpt.provenance?.review.teaching, excerpt.id).toBeNull();
       expect(admittedForTeaching(excerpt), excerpt.id).toBe(false);
       expect(eligibleFor(excerpt, COPES, { for: 'equivalent' }), excerpt.id).toEqual({ verdict: 'ineligible', why: 'teaching-use-not-approved', teaching: null });

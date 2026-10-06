@@ -388,9 +388,12 @@ describe('every rung of the built curriculum, on the built catalogue: no automat
  */
 // Revised (X1, G62): jam.5's Quick check joins them — its one measured option is an unapproved groove, and its
 // form tracker, which the check took before, measures nothing.
-// Revised (LP1): latin.4 joins them — its three exercises are the tresillo items, generated music with no
-// teaching-use decision, so its Quick check says there is no drill, as latin.3's does (the brief's H6).
-const GONE = ['jam.5 check', 'latin.3 check', 'latin.4 check', 'latin.6 check'];
+// Revised (LP1): latin.4 joined them while its three exercises, the tresillo items, carried no teaching-use
+// decision, so its Quick check said there was no drill, as latin.3's did (the brief's H6).
+// Revised again (Entry 253, 2026-10-06): the outside reviewer decided teaching use YES for the three tresillo
+// exercises in their CONTROL role (`responses/lp1-latin4-placement.md` section 1), so latin.3's and latin.4's
+// Quick check now resolve to an admitted drill and leave this list.
+const GONE = ['jam.5 check', 'latin.6 check'];
 
 /**
  * X1's G62 moves (the reviewer's row, `responses/e85c162.md`: a Quick check selection rule, a drill that
