@@ -304,7 +304,7 @@ discover path (`python -m unittest discover tools/content/tests`) on purpose: it
 that `tools/content/pdmx/quarry_lanes.py` writes from the owner's PDMX archive, which exists on no CI runner. Run it
 by hand after a quarry pass:
 
-    py -3.11 tools/content/pdmx/quarry_lanes.py      # writes the cached CSV hits
+    py -3.11 tools/content/pdmx/quarry_lanes.py      # writes build/quarry-cache/csv_hits_*.json (flags: --redo-csv, --redo-shape)
     py -3.11 -m unittest tools/content/pdmx/test_quarry_identity.py
 
 Do not move it into CI unless a CI consumer with that cache appears.
