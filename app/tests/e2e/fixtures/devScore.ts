@@ -20,7 +20,8 @@ interface DevScoreHandle {
   fixtures: string[];
   load(name: string): Promise<void>;
   loadMusicXml(xml: string, name?: string): Promise<void>;
-  loadUrl(url: string): Promise<void>;
+  /** `item`: the catalogue row's hand facts, for its declared hand (HD1). */
+  loadUrl(url: string, item?: { hands?: string; file?: string | null; imported?: boolean; provenance?: unknown }): Promise<void>;
   modelSummary(): {
     title: string;
     steps: number;

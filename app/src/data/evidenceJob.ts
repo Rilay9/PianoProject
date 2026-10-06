@@ -341,7 +341,11 @@ function whenIdle(timeoutMs = 2000): Promise<void> {
   });
 }
 
-/** The phrase's model, parsed and never drawn: OSMD in a detached element (as `estimateImport` does). */
+/**
+ * The phrase's model, parsed and never drawn: OSMD in a detached element (as `estimateImport` does).
+ * No declared hand (HD1): the phrase is the generator's, written now, and its staves are the truth about
+ * it (a one-staff phrase is only ever the right hand's); the reading row's `hands` is not the phrase's.
+ */
 async function modelInTheBrowser(musicXml: string, id: string): Promise<ScoreModelData> {
   const [{ OpenSheetMusicDisplay }, { extractScoreModel }] = await Promise.all([
     import('opensheetmusicdisplay'),

@@ -33,6 +33,7 @@ import { getSettings, updateSettings, type PracticeSettings } from '../../data/s
 import { getSetupRecord, markSetup } from '../../data/setupStore';
 import { getThemePreference, setThemePreference, type ThemePreference } from '../theme';
 import { contentUrl, findItem } from '../../curriculum/load';
+import { declaredHandOption } from '../../curriculum/declaredHand';
 import { toMusicXml } from '../../score/mxl';
 import { OsmdView } from '../../score/OsmdView';
 import type { ScoreModel } from '../../score/types';
@@ -915,7 +916,7 @@ function loadPreviewSource(): Promise<{ model: ScoreModel; musicXml: string }> {
     // The model comes from an instance with no draw range (`ScoreScreen`).
     const probe = new OsmdView(document.createElement('div'));
     await probe.load(musicXml);
-    const model = probe.extractModel({ id: item.id });
+    const model = probe.extractModel({ id: item.id, ...declaredHandOption(item) });
     probe.dispose();
     return { model, musicXml };
   })().catch((cause: unknown) => {

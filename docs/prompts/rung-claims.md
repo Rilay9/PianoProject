@@ -575,8 +575,8 @@ Every measured demand of an option that the curriculum has not taught by the ear
 | Twinkle, Twinkle, Little Star (`song.folk.twinkle.rh`) | 1.2 | interval.leap, range.beyond-position |
 | Frère Jacques (`song.folk.frere-jacques`) | 1.2 | pitch.ledger, interval.skip, interval.leap, rhythm.eighths, rhythm.shorter-than-quarter, range.beyond-position |
 | Ah! vous dirai-je, Maman (`song.classical.ah-vous-dirais-je-maman.pdmx`) | 1.2 | interval.leap, range.beyond-position |
-| Hot Cross Buns (left hand) (`song.folk.hot-cross-buns.lh`) | 1.3 | pitch.ledger, interval.skip, rhythm.eighths, rhythm.shorter-than-quarter |
-| Mary Had a Little Lamb (left hand) (`song.folk.mary-had-a-little-lamb.lh`) | 1.3 | pitch.ledger, interval.skip |
+| Hot Cross Buns (left hand) (`song.folk.hot-cross-buns.lh`) | 1.3 | pitch.ledger, rhythm.eighths, rhythm.shorter-than-quarter |
+| Mary Had a Little Lamb (left hand) (`song.folk.mary-had-a-little-lamb.lh`) | 1.3 | pitch.ledger |
 | Ode to Joy (left hand) (`song.classical.ode-to-joy.lh`) | 1.3 | pitch.ledger |
 | Oh When the Saints Go Marching In (hands alternating) (`song.folk.when-the-saints.alternating`) | 1.4 | rhythm.syncopation |
 | Old MacDonald Had a Farm (`song.folk.old-macdonald`) | 1.5 | interval.leap, range.beyond-position |

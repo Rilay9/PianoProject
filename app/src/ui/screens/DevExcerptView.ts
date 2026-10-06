@@ -29,6 +29,7 @@ import { createSubScreen } from './subScreen';
 import { onScreenDispose } from '../screenLifecycle';
 import { el, button } from '../widgets';
 import { contentUrl, loadCatalog } from '../../curriculum/load';
+import { declaredHandOption } from '../../curriculum/declaredHand';
 import type { CatalogItem } from '../../curriculum/types';
 import { getSettings } from '../../data/settingsStore';
 import { audioEngine } from '../../audio/AudioEngine';
@@ -516,7 +517,7 @@ export function DevExcerptView(router: Router): HTMLElement {
         const musicXml = toMusicXml(new Uint8Array(await response.arrayBuffer()));
         const probe = new OsmdView(document.createElement('div'));
         await probe.load(musicXml);
-        const loaded = probe.extractModel({ id: parent.id });
+        const loaded = probe.extractModel({ id: parent.id, ...declaredHandOption(parent) });
         probe.dispose();
         if (disposed || shown?.candidate !== candidate) return;
         model = loaded;

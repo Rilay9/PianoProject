@@ -23,6 +23,7 @@ import type { InputNoteEvent } from '../../midi/types';
 import type { EngineEvent, EngineOptions, Mode, SessionScore } from '../../engine/types';
 import { toMusicXml } from '../../score/mxl';
 import { OsmdView } from '../../score/OsmdView';
+import { declaredHandOption, type DeclaringItem } from '../../curriculum/declaredHand';
 import { clearRenderTimings, getRenderTimings, renderTimingSummary } from '../../util/renderTiming';
 import type { ScoreModel } from '../../score/types';
 import type { Router } from '../../router';
@@ -77,8 +78,13 @@ export interface DevScoreHandle {
   load(name: string): Promise<void>;
   /** Loads MusicXML text directly — the same path as the drop handler. */
   loadMusicXml(xml: string, name?: string): Promise<void>;
-  /** Loads a `.mxl`/`.musicxml` by URL; used by the content render check. */
-  loadUrl(url: string): Promise<void>;
+  /**
+   * Loads a `.mxl`/`.musicxml` by URL; used by the content render check. `item` is the catalogue row the
+   * file belongs to, where there is one: its declared hand reaches the model as the Score screen's does
+   * (HD1, `curriculum/declaredHand.ts`), so the check compares the catalogue with the model the learner
+   * gets.
+   */
+  loadUrl(url: string, item?: DeclaringItem): Promise<void>;
   lastError(): string;
   stepCount(): number;
   /** Ground truth for the step-count invariant: a real, rendered cursor. */
@@ -289,7 +295,7 @@ export function DevScoreScreen(router: Router): HTMLElement {
    * item renders means checking that *this* code renders it, so the check has
    * to go through the same loader the app uses rather than a parallel one.
    */
-  async function loadUrl(url: string): Promise<void> {
+  async function loadUrl(url: string, item?: DeclaringItem): Promise<void> {
     lastError = '';
     const response = await fetch(url);
     if (!response.ok) {
@@ -300,7 +306,7 @@ export function DevScoreScreen(router: Router): HTMLElement {
     const name = url.split('/').pop() ?? url;
     const bytes = new Uint8Array(await response.arrayBuffer());
     // `.mxl` is a zip; `toMusicXml` unwraps it and passes plain XML through.
-    await loadXml(toMusicXml(bytes), name);
+    await loadXml(toMusicXml(bytes), name, item);
   }
 
   async function loadFixture(name: string): Promise<void> {
@@ -319,7 +325,7 @@ export function DevScoreScreen(router: Router): HTMLElement {
     }
   }
 
-  async function loadXml(musicXml: string, name: string): Promise<void> {
+  async function loadXml(musicXml: string, name: string, item?: DeclaringItem): Promise<void> {
     lastError = '';
     const started = performance.now();
     try {
@@ -331,7 +337,7 @@ export function DevScoreScreen(router: Router): HTMLElement {
       // windowed OSMD clamps its cursor iterator (see OsmdView.extractModel).
       const probe = new OsmdView(document.createElement('div'));
       await probe.load(musicXml);
-      model = probe.extractModel({ id: name });
+      model = probe.extractModel({ id: name, ...(item === undefined ? {} : declaredHandOption(item)) });
       probe.dispose();
 
       currentXml = musicXml;
@@ -800,7 +806,7 @@ function startRun(mode: Mode, engineOptions: Omit<Partial<EngineOptions>, 'mode'
       })),
     micExpectations: () => micExpected,
 
-    loadUrl: (url) => loadUrl(url),
+    loadUrl: (url, item) => loadUrl(url, item),
     modelSummary: () => {
       if (!model) return null;
       const last = model.steps[model.steps.length - 1];

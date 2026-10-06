@@ -7,6 +7,26 @@ note colours, and sounds. **All timing uses an injected `Clock`** so tests are d
 
 ## 1. Preprocessing the ScoreModel for a session
 
+**Which hand a note is (CL15, amended by HD1 on 2026-10-06).** Every filter below reads `note.hand`, and
+`handsPresent` decides whether a hand has anything to play. The extractor (`extractScoreModel.ts`) gives a
+note the hand of its voice's home staff: staff 2 is the left hand, anything else the right, and a
+cross-staff note keeps its voice's hand (the left hand reaching onto the treble staff is staff 1, hand L).
+Hand identity is never inferred from a clef or from which staff is silent (CL15, the reviewer's ruling in
+`responses/questions-e71ef3ad.md`). OSMD numbers a lone staff 1 whichever hand plays it, so by staff alone
+a one-staff left-hand piece reads as the right hand. **HD1 amends this with explicit truth from the content
+object** (`responses/3a9684d5.md` §2-§5): a catalogue row's `hands`, where its provenance marks it authored
+or reviewed on a bundled file (`curriculum/declaredHand.ts`; never an import's placeholder `both`, never a
+runtime phrase, whose own staves say whose it is), reaches the extractor as `declaredHand`. On a
+**one-staff** score declared `left` or `right` every note takes that hand and `handsPresent` follows; the
+physical `staff` stays 1. A score of two staves keeps its voice-home-staff and cross-staff hands whatever
+is declared (`handDeclaration.outcome: 'not-one-staff'`). A one-staff score declared `both` is a mismatch:
+no second hand is made, the notes keep the staff-number reading, and the model says `mismatch`. No
+declaration: CL15's reading. The reason: the declaration is a fact the content object states (an approved
+left-hand cut, an edition's one staff), not a guess from notation, and keeping a silent treble staff
+only so that OSMD numbers the sounding staff 2 would change what the learner reads to suit a numbering
+assumption. Every path that makes a model of a catalogue item's file passes it: the Score screen, the
+render check's DevScore load, the build's demand bridge (`build.declared_hand`), the builder screens.
+
 Given session options `{ hands: 'R'|'L'|'both', loop?: {fromStep, toStep}, tempoPct, transposeSemis }`:
 
 1. **Expected set per step:** `expected[k] = step.notes.filter(n => hands==='both' || n.hand===hands).map(n => n.midi + transposeSemis)`.

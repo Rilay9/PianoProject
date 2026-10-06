@@ -21,6 +21,11 @@
  * same detectors produce both: the ids are `measuredDemands`, the counts are
  * `detect` over the same model, and nothing here decides a demand itself.
  *
+ * **The declared hand (HD1).** A listing entry may be `{ path, declaredHand }` instead of a bare path:
+ * the catalogue row's `hands` where the build holds it authoritative, which a one-staff file's notes
+ * take (`extractScoreModel`'s `declaredHand`), so a left-hand cut is measured as the left hand's, as
+ * the Score screen plays it. The report stays keyed by path.
+ *
  * **The bridge regression (D0).** The generated items pinned in
  * `tools/content/tests/fixtures/bridge_regression.json` are read here directly,
  * from the built files, and `tools/content/tests/test_measured_demands.py` sends
@@ -36,19 +41,20 @@ import { toMusicXml } from '../../src/score/mxl';
 import { timeSignatureAt, type ScoreModel, type ScoreModelData, type ScoreNote } from '../../src/score/types';
 import { detect, measuredDemands, soundedNotes, type DetectorId } from '../../src/demands/detect';
 import type { DemandsFile } from '../../src/demands/vocabulary';
+import type { DeclaredHand } from '../../src/score/types';
 import { installTextMeasurer } from './helpers/scoreCatalog';
 
 const REPO = join(process.cwd(), '..');
 const { demands } = JSON.parse(readFileSync(join(REPO, 'content', 'curriculum', 'vocabulary', 'demands.json'), 'utf8')) as DemandsFile;
 
-async function modelOfFile(path: string): Promise<ScoreModel> {
+async function modelOfFile(path: string, declaredHand?: DeclaredHand): Promise<ScoreModel> {
   const container = document.createElement('div');
   document.body.appendChild(container);
   try {
     const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
     const musicXml = toMusicXml(new Uint8Array(readFileSync(path)));
     await osmd.load(musicXml);
-    return extractScoreModel(osmd, { id: path, musicXml });
+    return extractScoreModel(osmd, { id: path, musicXml, ...(declaredHand === undefined ? {} : { declaredHand }) });
   } finally {
     container.remove();
   }
@@ -171,11 +177,13 @@ function measure(model: ScoreModel): Measured {
 describe.runIf(IN !== undefined && OUT !== undefined)('the build asks for the demands of its files', () => {
   it('measures every file it is given and writes the demand ids, or why it could not', async () => {
     installTextMeasurer();
-    const paths = JSON.parse(readFileSync(IN as string, 'utf8')) as string[];
+    // A bare path, or a path with the row's declared hand (HD1).
+    const listed = JSON.parse(readFileSync(IN as string, 'utf8')) as (string | { path: string; declaredHand?: DeclaredHand })[];
+    const paths = listed.map((entry) => (typeof entry === 'string' ? { path: entry } : entry));
     const out: Record<string, Measured | { error: string }> = {};
-    for (const path of paths) {
+    for (const { path, declaredHand } of paths) {
       try {
-        out[path] = measure(await modelOfFile(path));
+        out[path] = measure(await modelOfFile(path, declaredHand));
       } catch (error) {
         out[path] = { error: String(error).slice(0, 300) };
       }

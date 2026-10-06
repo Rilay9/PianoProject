@@ -17,11 +17,27 @@
  * The adversary: a one-staff bass-clef score whose staff is explicitly the right hand's (the app's own
  * convention for a one-staff piano part, `sightReading.ts`'s `leftHand: 'none'`) stays right-handed. A
  * clef-based fallback (bass ⇒ `L`) flips it and the probe's fixture, and both cases go red.
+ *
+ * **HD1 (2026-10-06): the declared hand.** The reviewer's ruling (`docs/review/responses/3a9684d5.md`
+ * §2-§5) amends CL15 without reversing it: a one-staff item whose catalogue row explicitly declares one
+ * hand (`hands: left`, authored) is that hand's, because the content object says so — never because of
+ * its clef. The extractor takes the declaration as `declaredHand` and applies it to a one-staff model
+ * only, keeping OSMD's physical `staff`; with no declaration CL15's reading stands; a `both` declaration
+ * on one staff is reported as a mismatch, never made into two hands; a two-staff score keeps its
+ * voice-home-staff and cross-staff hands whatever the row says. The seven adversaries of the brief
+ * (`docs/prompts/runs/curriculum-review-2026-10-05/briefs/declared-hand-into-the-model.md`) are the
+ * cases below, numbered as there.
  */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
+import { declaredHandOf, type DeclaringItem } from '../../src/curriculum/declaredHand';
+import type { Hands } from '../../src/curriculum/types';
 import { extractScoreModel } from '../../src/score/extractScoreModel';
-import type { ScoreModel } from '../../src/score/types';
+import type { ScoreModel, ScoreModelData } from '../../src/score/types';
+import { allFixtures, EDGE_DIR, fixtureModel, GOLDEN_DIR, loadFixture } from './helpers/fixtures';
+import { catalog, installTextMeasurer, itemsWithScores, modelForItem } from './helpers/scoreCatalog';
 
 const ATTRIBUTES = (staves: number, clefs: string): string =>
   `<attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time>${staves > 1 ? `<staves>${staves}</staves>` : ''}${clefs}</attributes>`;
@@ -65,13 +81,13 @@ const GRAND_STAFF_LEFT_HAND = score(
   LINE.map(([step, octave], index) => `${index === 0 ? ATTRIBUTES(2, TREBLE(1) + BASS(2)) : ''}${wholeRest(1)}${BACKUP}${whole(step, octave, 2)}`),
 );
 
-async function modelOf(musicXml: string): Promise<ScoreModel> {
+async function modelOf(musicXml: string, declaredHand?: Hands): Promise<ScoreModel> {
   const container = document.createElement('div');
   document.body.appendChild(container);
   try {
     const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
     await osmd.load(musicXml);
-    return extractScoreModel(osmd, { musicXml });
+    return extractScoreModel(osmd, { musicXml, ...(declaredHand === undefined ? {} : { declaredHand }) });
   } finally {
     container.remove();
   }
@@ -91,6 +107,8 @@ describe('the hand of a one-staff score is its staff number’s, never its clef�
       [1, 'R'],
     ]);
     expect(model.handsPresent).toEqual({ R: true, L: false });
+    // HD1 case 3: no declaration is CL15's reading, and the model says nothing about a declaration.
+    expect(model.handDeclaration).toBeUndefined();
   });
 
   it('the adversary: a bass-clef staff explicitly the right hand’s stays right-handed — the clef never flips it', async () => {
@@ -106,4 +124,150 @@ describe('the hand of a one-staff score is its staff number’s, never its clef�
     expect(notes.every((note) => note.staff === 2 && note.hand === 'L')).toBe(true);
     expect(model.handsPresent).toEqual({ R: false, L: true });
   });
+});
+
+/** Each sounded note's id, physical staff, semantic hand and cross-staff mark: what a declaration may touch. */
+const handsOf = (model: Pick<ScoreModelData, 'steps'>) =>
+  model.steps.flatMap((step) => step.notes.map((note) => [note.id, note.staff, note.hand, note.crossStaff === true] as const));
+
+describe('a one-staff item’s declared hand reaches the model (HD1)', () => {
+  it('1. the lone bass-clef staff declared left: every note the left hand’s on staff 1, only the left hand present', async () => {
+    const model = await modelOf(LONE_BASS_STAFF, 'left');
+    const notes = sounded(model);
+    expect(notes.map((note) => note.midi)).toEqual([48, 41, 43, 48]);
+    // The physical staff is OSMD's and stays 1; the semantic hand is the declaration's.
+    expect(notes.map((note) => [note.staff, note.hand])).toEqual([
+      [1, 'L'],
+      [1, 'L'],
+      [1, 'L'],
+      [1, 'L'],
+    ]);
+    expect(notes.some((note) => note.crossStaff === true)).toBe(false);
+    expect(model.handsPresent).toEqual({ R: false, L: true });
+    expect(model.handDeclaration).toEqual({ declared: 'left', outcome: 'applied' });
+  });
+
+  it('2. the same bytes declared right: the right hand’s', async () => {
+    const model = await modelOf(LONE_BASS_STAFF, 'right');
+    expect(sounded(model).map((note) => [note.staff, note.hand])).toEqual([
+      [1, 'R'],
+      [1, 'R'],
+      [1, 'R'],
+      [1, 'R'],
+    ]);
+    expect(model.handsPresent).toEqual({ R: true, L: false });
+    expect(model.handDeclaration).toEqual({ declared: 'right', outcome: 'applied' });
+  });
+
+  it('3. the same bytes with no declaration: CL15’s reading, the right hand, and no declaration reported', async () => {
+    const model = await modelOf(LONE_BASS_STAFF);
+    expect(sounded(model).every((note) => note.staff === 1 && note.hand === 'R')).toBe(true);
+    expect(model.handsPresent).toEqual({ R: true, L: false });
+    expect(model.handDeclaration).toBeUndefined();
+  });
+
+  it('4. a right-hand bass-clef staff declared right is never flipped by its clef', async () => {
+    for (const declared of ['right', undefined] as const) {
+      const model = await modelOf(RIGHT_HAND_IN_THE_BASS_CLEF, declared);
+      expect(sounded(model).every((note) => note.staff === 1 && note.hand === 'R'), String(declared)).toBe(true);
+      expect(model.handsPresent, String(declared)).toEqual({ R: true, L: false });
+    }
+  });
+
+  it('5. a two-staff score keeps every note’s hand whatever the row declares: each two-staff fixture against its golden (the model before HD1)', async () => {
+    installTextMeasurer();
+    const names: string[] = [];
+    for (const fixture of allFixtures()) {
+      const staves = (await loadFixture(fixture.path)).Sheet.Staves.length;
+      if (staves !== 2) continue;
+      const golden = JSON.parse(readFileSync(join(GOLDEN_DIR, `${fixture.name}.json`), 'utf8')) as ScoreModelData;
+      for (const declared of ['left', 'right', 'both'] as const) {
+        const model = await fixtureModel(fixture.path, { id: fixture.name, declaredHand: declared });
+        expect(handsOf(model), `${fixture.name} declared ${declared}`).toEqual(handsOf(golden));
+        expect(model.handsPresent, `${fixture.name} declared ${declared}`).toEqual(golden.handsPresent);
+        expect(model.handDeclaration, `${fixture.name} declared ${declared}`).toEqual({ declared, outcome: 'not-one-staff' });
+      }
+      names.push(fixture.name);
+    }
+    // The sweep reached the cases that matter: the cross-staff note (the left hand reaching onto the
+    // treble staff: staff 1, hand L) among several two-staff scores.
+    expect(names).toContain('cross-staff');
+    expect(names.length).toBeGreaterThan(5);
+    const crossed = await fixtureModel(join(EDGE_DIR, 'cross-staff.musicxml'), { declaredHand: 'right' });
+    expect(sounded(crossed).some((note) => note.crossStaff === true && note.staff === 1 && note.hand === 'L')).toBe(true);
+    // CL15's kept representation, a grand staff with the treble silent, declared right: still the left hand's.
+    const grand = await modelOf(GRAND_STAFF_LEFT_HAND, 'right');
+    expect(sounded(grand).every((note) => note.staff === 2 && note.hand === 'L')).toBe(true);
+    expect(grand.handsPresent).toEqual({ R: false, L: true });
+    expect(grand.handDeclaration).toEqual({ declared: 'right', outcome: 'not-one-staff' });
+  }, 120_000);
+
+  it('6. one staff declared both is a mismatch, reported on the model — never two hands, never quietly one', async () => {
+    const model = await modelOf(LONE_BASS_STAFF, 'both');
+    // No second hand is made: the notes keep CL15's reading by their staff number…
+    expect(sounded(model).every((note) => note.staff === 1 && note.hand === 'R')).toBe(true);
+    expect(model.handsPresent).toEqual({ R: true, L: false });
+    // …and the model says that the declaration and the score disagree.
+    expect(model.handDeclaration).toEqual({ declared: 'both', outcome: 'mismatch' });
+  });
+});
+
+describe('where the declaration comes from (HD1, `curriculum/declaredHand.ts`)', () => {
+  const authored = { kind: 'authored' as const, via: 'the approved selection (content/sources/excerpts.json)' };
+  const row = (over: Partial<DeclaringItem>): DeclaringItem => ({
+    hands: 'left',
+    file: 'scores/excerpts/cut.mxl',
+    provenance: { source: 'excerpt', facts: { hands: authored }, review: { score: null, teaching: null } },
+    ...over,
+  });
+
+  it('an authored or reviewed `hands` on a bundled file is the declaration', () => {
+    expect(declaredHandOf(row({}))).toBe('left');
+    expect(declaredHandOf(row({ hands: 'right' }))).toBe('right');
+    expect(declaredHandOf(row({ hands: 'both' }))).toBe('both');
+    expect(
+      declaredHandOf(row({ provenance: { source: 'pdmx', facts: { hands: { kind: 'reviewed' } }, review: { score: true, teaching: null } } })),
+    ).toBe('left');
+  });
+
+  it('nothing that is not authoritative becomes an override: an inferred fact, no fact, no provenance, an import, no bundled file', () => {
+    expect(
+      declaredHandOf(row({ provenance: { source: 'imported-midi', facts: { hands: { kind: 'inferred' } }, review: { score: null, teaching: null } } })),
+    ).toBeUndefined();
+    expect(declaredHandOf(row({ provenance: { source: 'pdmx', facts: {}, review: { score: null, teaching: null } } }))).toBeUndefined();
+    const { provenance: _dropped, ...withoutProvenance } = row({});
+    expect(declaredHandOf(withoutProvenance)).toBeUndefined();
+    // A provenance with no facts at all (an older or hand-built row) declares nothing, and never throws.
+    expect(declaredHandOf(row({ provenance: { source: 'excerpt' } as unknown as DeclaringItem['provenance'] }))).toBeUndefined();
+    // An import's `hands` is `importToCatalogItem`'s placeholder, whatever its provenance says of the file's staves.
+    expect(declaredHandOf(row({ imported: true, hands: 'both' }))).toBeUndefined();
+    expect(declaredHandOf(row({ imported: true }))).toBeUndefined();
+    // A runtime drill writes its phrase when it opens: its staves, not the row, say whose it is.
+    expect(declaredHandOf(row({ file: null }))).toBeUndefined();
+  });
+});
+
+/**
+ * Case 7: the Bizet left-hand cut itself, through the real catalogue entry and the built file — the
+ * declaration the Score screen passes (`helpers/scoreCatalog.modelForItem` asks `declaredHandOf`, as
+ * `ScoreScreen` does).
+ */
+describe('the Bizet left-hand cut, through its catalogue row and its built file (HD1 case 7)', () => {
+  const ID = 'excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh';
+
+  it('7. catalogue left, authored by the approved selection; the model left on OSMD’s staff 1', async () => {
+    installTextMeasurer();
+    const entry = itemsWithScores(catalog()).find((item) => item.id === ID);
+    expect(entry, `${ID} in the built catalogue — run the content build first`).toBeDefined();
+    if (!entry) return;
+    expect(entry.hands).toBe('left');
+    expect(entry.provenance?.facts.hands?.kind).toBe('authored');
+    expect(declaredHandOf(entry)).toBe('left');
+    const model = await modelForItem(entry);
+    const notes = sounded(model);
+    expect(notes.length).toBeGreaterThan(0);
+    expect(notes.every((note) => note.staff === 1 && note.hand === 'L')).toBe(true);
+    expect(model.handsPresent).toEqual({ R: false, L: true });
+    expect(model.handDeclaration).toEqual({ declared: 'left', outcome: 'applied' });
+  }, 60_000);
 });

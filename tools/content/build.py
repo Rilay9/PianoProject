@@ -583,6 +583,18 @@ def span_of(hands: dict | None) -> dict[str, list[int]]:
     return {hand: out[hand] for hand in ("R", "L") if hand in out}
 
 
+def declared_hand(entry: dict) -> str | None:
+    """
+    The hand a bundled row declares for its file, which the bridge hands to the model (HD1): its
+    `hands` when it names one hand. Every bundled row's `hands` is authored (`attach_provenance`: the
+    recipe, this repository's score, an edition's staves, the approved selection), so it is the
+    declaration the app's own rule finds (`app/src/curriculum/declaredHand.ts`); the extractor applies
+    it to a one-staff file only. `both` changes no note, so it is not handed over.
+    """
+    hands = entry.get("hands")
+    return hands if hands in ("left", "right") else None
+
+
 def established_by_contract(entry: dict, row: dict) -> list[str]:
     """
     The demands a generated item provides at its own family's density (D0's contract):
@@ -628,6 +640,12 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
     model or vocabulary discards the cache and every file is measured again; a changed
     score is measured again alone.
 
+    **The row's declared hand goes with the file (HD1).** A one-staff file declared `left`
+    is the left hand's in the model the detectors read, as on the Score screen
+    (`declared_hand`). A cached row remembers the declaration it was measured under and is
+    measured again when the row's changes; two rows declaring different hands for one file
+    stop the build, naming them, rather than one reading standing for both.
+
     **Never an empty list that reads as "no demands".** A file the app cannot load, a
     score that is not notation, a piece whose notation is not bundled: `demands:
     "unmeasured"` and `measurement.status: "unmeasured"` with the reason. A runtime drill
@@ -664,6 +682,8 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
 
     planned: list[tuple[dict, str]] = []
     todo: dict[str, Path] = {}
+    # HD1: the declaration each file is measured under, and the row that set it.
+    declared: dict[str, tuple[str | None, str]] = {}
     runtime = 0
     for entry in entries:
         rel = entry.get("file")
@@ -691,16 +711,27 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
             unmeasured(entry, f"not notation the detectors read (a {path.suffix.lstrip('.').upper()} file)")
             continue
         sha = _sha256(path)
+        hand = declared_hand(entry)
+        held = declared.setdefault(sha, (hand, entry["id"]))
+        if held[0] != hand:
+            raise SystemExit(
+                f"attach_demands: {held[1]} and {entry['id']} share one score file and declare different hands "
+                f"({held[0] or 'both'} and {hand or 'both'}); the model of the file cannot be both"
+            )
         planned.append((entry, sha))
-        if sha not in rows:
+        if sha not in rows or rows[sha].get("declaredHand") != hand:
             todo[sha] = path
 
-    if todo:
-        answered = D.measure_each(list(todo.values()))
-        for sha, path in todo.items():
+    # One bridge run per declaration (HD1), so a file is listed once in a run.
+    for hand in sorted({declared[sha][0] for sha in todo}, key=lambda h: h or ""):
+        group = {sha: path for sha, path in todo.items() if declared[sha][0] == hand}
+        answered = D.measure_each(list(group.values()), declared_hand=hand)
+        for sha, path in group.items():
             row = dict(answered[str(path)])
             if "error" not in row:
                 positions[sha] = {key: row.pop(key) for key in POSITION_KEYS if key in row}
+            if hand is not None:
+                row["declaredHand"] = hand
             rows[sha] = row
 
     measured = 0

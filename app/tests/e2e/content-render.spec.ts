@@ -133,6 +133,23 @@ interface CatalogItem {
   id: string;
   title: string;
   file: string | null;
+  /**
+   * The row's hand facts (HD1): handed to the page with the file, where the app's own rule
+   * (`curriculum/declaredHand.ts`) decides whether `hands` is a declaration the model takes.
+   */
+  hands?: string;
+  imported?: boolean;
+  provenance?: unknown;
+}
+
+/**
+ * What of the row, beside the file's bytes and the engraver, decides the model (HD1): a single-hand
+ * `hands`, which a one-staff file's notes take when the row's provenance makes it authoritative. In the
+ * key only for those rows, so a `both` row keeps its remembered measurement (a `both` declaration
+ * changes no note); a left or right row is engraved again once, under its declaration.
+ */
+function declarationKey(item: CatalogItem): string {
+  return item.hands === 'left' || item.hands === 'right' ? `-declared-${item.hands}` : '';
 }
 
 /**
@@ -261,7 +278,7 @@ test.describe('content render check', () => {
       try {
         // The file *and* the engraver: the same bytes through a different OSMD
         // are a different measurement.
-        hash = `${hashFile(filePath)}-osmd${OSMD_VERSION}`;
+        hash = `${hashFile(filePath)}-osmd${OSMD_VERSION}${declarationKey(item)}`;
       } catch (error) {
         reports.push({
           id: item.id,
@@ -294,9 +311,20 @@ test.describe('content render check', () => {
       const url = `/PianoProject/content/${item.file}`;
       let entry: ManifestEntry;
       try {
-        await page.evaluate(async (target) => {
-          await window.__pianopathDevScore?.loadUrl(target);
-        }, url);
+        // The row's hand facts go with the file, so the model is the one the Score screen makes of
+        // this item (HD1): its declared hand, where the app's rule finds one.
+        const facts = {
+          ...(item.hands === undefined ? {} : { hands: item.hands }),
+          file: item.file,
+          ...(item.imported === undefined ? {} : { imported: item.imported }),
+          ...(item.provenance === undefined ? {} : { provenance: item.provenance }),
+        };
+        await page.evaluate(
+          async ([target, row]) => {
+            await window.__pianopathDevScore?.loadUrl(target, row);
+          },
+          [url, facts] as const,
+        );
         // The dev harness catches load failures into `lastError` and resolves
         // anyway, so `loadUrl` returning proves nothing on its own — and the
         // model left behind is the *previous* item's. Without this check a

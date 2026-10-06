@@ -184,6 +184,22 @@ export interface ScoreModelData {
   pickup?: boolean;
   keySig?: string;
   handsPresent: { R: boolean; L: boolean };
+  /**
+   * The hand the caller declared for the score and what the extractor did with it (HD1), absent where
+   * none was declared. `applied`: a one-staff score declared one hand, every note that hand's;
+   * `not-one-staff`: the score has more than one staff, so its notes keep their voice-home-staff hands
+   * and the declaration changed nothing; `mismatch`: one staff declared `both`, which the score cannot
+   * be — its notes keep the reading by staff number, never a second hand, and this says so.
+   */
+  handDeclaration?: HandDeclaration;
+}
+
+/** A declared hand: a catalogue row's `hands`, where it is authoritative (`curriculum/declaredHand.ts`). */
+export type DeclaredHand = 'left' | 'right' | 'both';
+
+export interface HandDeclaration {
+  declared: DeclaredHand;
+  outcome: 'applied' | 'not-one-staff' | 'mismatch';
 }
 
 export interface ScoreModel extends ScoreModelData {
@@ -278,7 +294,7 @@ export function withBeatToMs(data: ScoreModelData): ScoreModel {
 
 /** Strips the method back off, for serialising or comparing against a golden. */
 export function toScoreModelData(model: ScoreModel): ScoreModelData {
-  const { id, title, steps, tempoMap, timeSigMap, measureCount, sourceMeasureCount, keySig, handsPresent } =
+  const { id, title, steps, tempoMap, timeSigMap, measureCount, sourceMeasureCount, keySig, handsPresent, handDeclaration } =
     model;
   return {
     id,
@@ -290,6 +306,7 @@ export function toScoreModelData(model: ScoreModel): ScoreModelData {
     sourceMeasureCount,
     ...(keySig === undefined ? {} : { keySig }),
     handsPresent,
+    ...(handDeclaration === undefined ? {} : { handDeclaration }),
   };
 }
 

@@ -31,6 +31,8 @@ import {
   roundBeats,
   WHOLE_NOTE_BEATS,
   withBeatToMs,
+  type DeclaredHand,
+  type HandDeclaration,
   type ScoreModel,
   type ScoreNote,
   type ScoreStep,
@@ -78,6 +80,11 @@ export interface OsmdLikeSheet {
   TitleString?: string;
   SourceMeasures: OsmdSourceMeasure[];
   MusicPartManager: { getIterator(): OsmdIterator };
+  /**
+   * Every staff of the sheet, across its instruments (OSMD's `MusicSheet.Staves`): only its length is
+   * read, to tell a one-staff score, the only kind a declared hand applies to (HD1).
+   */
+  Staves: readonly unknown[];
 }
 
 export interface OsmdSourceMeasure {
@@ -149,6 +156,19 @@ export interface ExtractOptions {
    * (`DEFAULT_BPM` unless asked). A tempo the file writes later is a change where it stands.
    */
   defaultBpm?: number;
+  /**
+   * The hand the item's content object declares for this score, where that declaration is authoritative
+   * (HD1; `curriculum/declaredHand.ts` decides, and every caller with a catalogue item asks it). A
+   * semantic input, never a staff number and never read from the clef: OSMD numbers a lone staff 1
+   * whichever hand plays it, and only the content object knows which.
+   *
+   * Applied to a **one-staff** score declared `left` or `right` alone: every note takes that hand, and
+   * `handsPresent` with it; the physical `staff` stays OSMD's. A score with more than one staff keeps its
+   * voice-home-staff and cross-staff hands whatever is declared. A one-staff score declared `both` is a
+   * mismatch: no second hand is made, the notes keep their reading by staff number, and the model's
+   * `handDeclaration` says so. Absent: CL15's reading, by staff number alone.
+   */
+  declaredHand?: DeclaredHand;
   /**
    * Safety valve: a malformed repeat structure can in principle loop forever.
    * The traversal stops and throws past this many steps.
@@ -364,6 +384,10 @@ export function extractScoreModelFromSheet(
   const title = sheet.TitleString?.trim() ?? '';
   const homeStaves = voiceHomeStaves(sheet, maxSteps);
   const keyFifths = keyFifthsByMeasure(sheet);
+  const declaration = handDeclarationFor(sheet, options.declaredHand);
+  /** The declared hand every note of a one-staff score takes, or nothing (HD1). */
+  const declaredHand: 'R' | 'L' | undefined =
+    declaration?.outcome === 'applied' ? (declaration.declared === 'left' ? 'L' : 'R') : undefined;
 
   const steps: ScoreStep[] = [];
   const tempoMap: TempoMapEntry[] = [];
@@ -451,7 +475,9 @@ export function extractScoreModelFromSheet(
         if (isTieContinuation(note)) continue;
         const staff = staffOf(note);
         const home = homeStaves.get(voice) ?? staff;
-        const hand: 'R' | 'L' = home === 2 ? 'L' : 'R';
+        // The voice's home staff decides, unless a one-staff score's item declared its one hand (HD1):
+        // the staff number of a lone staff says nothing about which hand plays it.
+        const hand: 'R' | 'L' = declaredHand ?? (home === 2 ? 'L' : 'R');
         const midi = note.halfTone + OSMD_HALFTONE_TO_MIDI;
         const duration = roundBeats(tieDurationBeats(note));
         const fingering = parseFingering(note);
@@ -518,7 +544,20 @@ export function extractScoreModelFromSheet(
     ...(sheet.SourceMeasures[0]?.ImplicitMeasure === true ? { pickup: true } : {}),
     ...(readKeySignature(sheet) === undefined ? {} : { keySig: readKeySignature(sheet) }),
     handsPresent,
+    ...(declaration === undefined ? {} : { handDeclaration: declaration }),
   });
+}
+
+/**
+ * What a declared hand does to this sheet (HD1): applied to a one-staff score declared one hand; nothing
+ * on a score of more than one staff, whose staves already say whose each note is; a mismatch on a
+ * one-staff score declared both, which cannot hold two hands' notes. Decided by the sheet's staff count,
+ * never by a clef or by which staves sound.
+ */
+function handDeclarationFor(sheet: OsmdLikeSheet, declared: DeclaredHand | undefined): HandDeclaration | undefined {
+  if (declared === undefined) return undefined;
+  if (sheet.Staves.length !== 1) return { declared, outcome: 'not-one-staff' };
+  return { declared, outcome: declared === 'both' ? 'mismatch' : 'applied' };
 }
 
 function slugify(value: string): string | undefined {

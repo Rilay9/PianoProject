@@ -15,6 +15,7 @@ import { audioEngine } from '../../audio/AudioEngine';
 import { metronomeSoundFor } from '../../audio/inputPolicy';
 import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { catalogIndex, findItem, contentUrl, loadCurriculum } from '../../curriculum/load';
+import { declaredHandOption } from '../../curriculum/declaredHand';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { barsPerWindowFor, isTablet, sidePanelProse } from '../tablet';
 import { getImport } from '../../data/importStore';
@@ -5476,7 +5477,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       // would yield a model that stops at the end of the first window.
       const probe = new OsmdView(document.createElement('div'));
       await probe.load(musicXml);
-      const loaded = probe.extractModel({ id: item.id });
+      // The row's declared hand where it is authoritative (HD1): a one-staff left-hand cut is the left
+      // hand's, though OSMD numbers its staff 1. A phrase and an import declare none (`declaredHand.ts`).
+      const loaded = probe.extractModel({ id: item.id, ...declaredHandOption(item) });
       probe.dispose();
       // Nothing to play is a terminal state with a reason, not a stage with
       // nothing on it and every mode refused (`08` §10).
