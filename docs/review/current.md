@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/5831d42d.md` — **response required** (2026-10-05): the quarry amendment to the ability map and the four wave-one build briefs; which may be folded in and which may dispatch.
 - `handoffs/e8ac9382.md` — **answered** in `responses/e8ac9382.md`: the block on the plan of record is lifted; the ability map is the plan of record; one required change before any wave-one build brief: each proposal becomes an exact contract (1(a) split by truth and file ownership with its choices resolved; 1(b) an exact event target or self-checked; 1(c) mode facts confirmed at current code; 1(d) bounded as written). Fact-gathering lanes for 1(b), 1(c) and the reading sources are dispatched; the build briefs follow.
 - `handoffs/1b0d8ac3.md` — **answered** in `responses/1b0d8ac3.md`: the ability-map brief approved with one required change (applied at 763d543a); the generator addendum approved as an enabling specification with four corrections (recorded in it); the process rules approved. The synthesis agent runs once the mode sheet lands; the map and the sheet come back in the next handoff.
 - `handoffs/ed6d7f46.md` — **answered** in `responses/ed6d7f46.md`: CL12's design and labels were approved at that time. The 2026-10-03 product scheduler supersedes the old dispatch permission; CL12a is now parked.
