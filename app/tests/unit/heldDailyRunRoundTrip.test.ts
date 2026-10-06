@@ -3,9 +3,10 @@
  * A daily run held below its judging rung, read back from what the run already stores (SR2, H5).
  *
  * Before 1.3 the daily read is judged by 1.5 (the run's `opened.rung`) and held to the learner's rung (the
- * route's `hold`, never stored). Two readers write the run's phrase again, and both must see the held phrase,
- * not 1.5's, from what the run already keeps — its `material` (D4: the complete generator options, `seed`
- * beside it), with no new stored field:
+ * route's `hold`). Since Entry 264 (SR4) the run stores that hold as `opened.hold`, the provenance fact rung
+ * credit reads; separately, the run's `material` (D4: the complete generator options, `seed` beside it) holds
+ * enough of the phrase's identity for two readers to write the run's phrase again, and both must see the held
+ * phrase, not 1.5's, from that material alone:
  *
  * - the reader's step 3 (`readingOffer`): a learner who read steps-only phrases at 1.1 and arrives at 1.5 is not
  *   moved on by those reads as if they had been 1.5's phrases, which may hold skips; the line says what the
