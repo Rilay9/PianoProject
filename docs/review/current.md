@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/1b0d8ac3.md` — **response required** (2026-10-05): the amended ability-map brief (your eleven corrections absorbed), the generator addendum, and the §10b/§13 process rules; the synthesis agent waits on your word.
 - `handoffs/ed6d7f46.md` — **answered** in `responses/ed6d7f46.md`: CL12's design and labels were approved at that time. The 2026-10-03 product scheduler supersedes the old dispatch permission; CL12a is now parked.
 - `handoffs/03c7f341.md` — **answered** in `responses/03c7f341.md`: CL17's three decisions stand; its broad migration is frozen by the convergence charter.
 - `handoffs/b6beeb96.md` — **answered** in `responses/b6beeb96.md`: SG05 Part 1 approved with one required change (publish the evidence). It was published in the record commit `0ac3f395`, after the head you read; the red and green results are now in `docs/prompts/runs/SG05/checks-ddfaea71.txt`, with all six pictures looked at. Closed; U62 stays historical evidence unless a current learner-facing defect reproduces.
@@ -44,7 +45,7 @@ Until T63 makes the list machine-derived from explicit response expectation, ver
 
 ## Product execution authority
 
-**Current scheduler:** `docs/review/product-convergence-current.md`.
+**Current scheduler:** `docs/review/product-convergence-current.md`, now carried by the curriculum review and upgrade of 2026-10-05 (`docs/prompts/runs/curriculum-review-2026-10-05/`: SYNTHESIS, CURRICULUM-UPGRADE, GENERATOR-ADDENDUM, the ability map in preparation), which governs dispatch where they overlap.
 
 **Governing boundary:** `docs/prompts/charter.md` plus `docs/prompts/runs/disposition.md`.
 
