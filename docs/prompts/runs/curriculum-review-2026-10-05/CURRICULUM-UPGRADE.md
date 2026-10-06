@@ -59,6 +59,8 @@ The second pass the restart packet asked for. Pass one (`SYNTHESIS.md`) found wh
 
 Batches are grouped by kind and by content seam (a lesson file, a stage JSON, a generator family), never one seam per touched unit.
 
+**Source check, reading rows (2026-10-05, `SOURCE-CHECK-reading.md`):** 9 rows checked (6 core, 3 theory-ear): 4 confirmed, 4 confirmed with a correction, written into the rows (notation marks, transposition, early aural tests, minor-key progressions), 1 still gated (its only source is a Berklee outline, outside that lane's list; a later lane reads it directly). The ABRSM syllabus read is the 2025-26 PDF; no Faber page names the dotted quarter, so its introduction level is not established. The dossier-dependent rows outside reading stay gated.
+
 ---
 
 ## 1. Cross-track ownership map
