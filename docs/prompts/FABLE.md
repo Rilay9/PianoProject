@@ -37,7 +37,7 @@ Report this number in every handoff, as *shipped / total MUST*. Planning documen
 1. **Finish the running builder and land it.** Do not interrupt running work to reformat it.
 2. **The chain record and its checker** (§3). Small and narrow; one Sonnet builder. Finish condition:
    - the checker runs in CI;
-   - the Bizet chain is the first record and passes;
+   - the Bizet chain is the first record and passes as a `draft` (its CID resolves once step 3's intake commits the source);
    - one deliberately broken record fails for each rule.
 3. **Ship the Bizet / latin.4 slice end to end** under its rewritten brief (`0ea6ca2d`). This proves the path: source → intake → verified content → chain → app → acceptance. Write down what the path needed and generalise only that.
 4. **Packet traceability table** (§8). One Opus pass, then the outside reviewer. Parallel with step 3; it must not block it.
@@ -75,7 +75,7 @@ status: draft|reviewed|shipped
 **The checker** (`tools/content/check_chains.py`, run in CI) enforces these rules and nothing else:
 - every field is present;
 - every `tool` is one MODE-SHEET names;
-- every `ref` resolves (file, family id, or CID in a committed source record);
+- every `ref` resolves (file, family id, or CID in a committed source record) once `status` is `reviewed` or `shipped`; a `draft` may hold unresolved refs, and the checker lists them;
 - every step after the first removes at least one scaffold, or carries a one-line reason;
 - the last step's scaffold is a strict subset of the first step's;
 - `never_credits` is not empty;
