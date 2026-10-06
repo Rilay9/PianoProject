@@ -19,7 +19,7 @@ one available.
 the same idea moved down an octave, or opened out so the hands are further
 apart. *Density* — more notes in the same bar: a single line becomes octaves,
 octaves become chords, a held bass becomes a repeated one. *Volume* — actually
-playing harder. Used alone it runs out after about eight bars, because a hand
+playing harder. Used alone it soon runs out, because a hand
 has a ceiling and the ear stops hearing an increase as an increase. Used last,
 after the other two have already opened the sound up, it lands.
 
@@ -49,9 +49,9 @@ again and again; this copy also changes tempo: it opens at quarter = 138, drops
 to 80, then rises toward 200, and the app follows those written changes. The
 piece teaches restraint better than anything else here because the first half must
 stay small. The *Rachmaninoff* concerto opening is a build made almost entirely
-of density: the chords thicken bar by bar and the dynamic follows rather than
-leads. *Moonlight*'s finale is the one where the build is inside the writing
-rather than marked over it.
+of density: the chords thicken over its first bars, before the theme arrives over
+arpeggios. *Moonlight*'s finale builds in its writing and in its markings both:
+its pages carry over a hundred dynamic marks.
 
 **Tools for this rung.** *Play it blind* is here for a reason that is not about
 memory: with the page gone you shape what you hear instead of what is printed,

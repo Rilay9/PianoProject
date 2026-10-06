@@ -239,51 +239,10 @@ describe('every lesson keeps its shape', () => {
     expect(wrong, `reading times that do not match the text: ${wrong.join('; ')}`).toEqual([]);
   });
 
-  it('keeps a lesson to the three minutes `03` §6 asks for', () => {
-    // A reading time, not a word count.
-    //
-    // `03` §6 said 400 words from the first commit of the repository, written
-    // before a single lesson existed, with no reason beside it and nothing
-    // anywhere enforcing it. Seven of the eighty-six had been over it for as
-    // long as they had existed. That is a guess, not a limit.
-    //
-    // What it was evidently reaching for is on the line above it in the same
-    // spec: `readingTime`. A lesson is read once before you play, not studied.
-    // So the rule is three minutes at 200 words a minute, which is the same
-    // intent measured in the unit that carries it — and it takes the exceptions
-    // from seven to two, because the five in between are long paragraphs rather
-    // than long lessons.
-    //
-    // The two that remain cover rungs that are several ideas: a whole rag with
-    // a trio and a key change, and the Romantic miniature rung with
-    // twenty-one pieces on it. The list is named so it cannot grow quietly.
-    const MINUTES = 3;
-    const WPM = 200;
-    // 2026-10-05, the first curriculum correction wave (Entry 232): the technique rungs gained the stop
-    // conditions and the one-sentence-per-listed-exercise the review required, and blues.8 gained the six-step
-    // own-left-hand ladder; each is several ideas by design. The alternative, trimming the required sentences,
-    // was rejected because it removes what the review found missing. A split of blues.8's ladder into its own
-    // task page is recorded as a later editorial choice.
-    const KNOWN_LONG = new Set([
-      'ragtime.6.md',
-      'classical.6.md',
-      'technique.4.md',
-      'technique.5.md',
-      'technique.6.md',
-      'technique.7.md',
-      'blues.8.md',
-    ]);
-    const over = bodies()
-      .map(({ name, text }) => ({
-        name,
-        minutes: Math.ceil(text.split(/\s+/).filter(Boolean).length / WPM),
-      }))
-      .filter(({ name, minutes }) => minutes > MINUTES && !KNOWN_LONG.has(name))
-      .map(({ name, minutes }) => `${name} reads in ${String(minutes)} min`);
-    expect(over, `lessons over ${String(MINUTES)} minutes and not on the list: ${over.join('; ')}`).toEqual(
-      [],
-    );
-  });
+  // There was a test here that capped every lesson at three minutes of reading (600 words at
+  // 200 a minute, with a named exception list). The owner removed the rule on 2026-10-06: no
+  // word or reading-time limit on a lesson when it costs accuracy or communication. The
+  // `readingTime` number stays computed above; nothing caps it.
 
   // There is deliberately no test that every lesson names a mistake.
   //

@@ -26,12 +26,13 @@ music feels like it is leaning forward. On solo piano the left hand plays this
 while the right does everything else.
 
 **Montuno** is the right-hand pattern: a repeating syncopated figure built from
-the chord's notes, usually in octaves or thirds, locked to the clave and
-repeated for as long as the section lasts. Like the rock ostinato, its virtue is
-that it does not change.
+the chord's notes, locked to the clave and repeated for as long as the section
+lasts. In the music it is often broken into single notes, in octaves; the
+exercises here strip it to its rhythm, a chord on each clave stroke. Like the
+rock ostinato, its virtue is that it does not change.
 
-**Putting them together.** Tumbao and montuno are independent and neither is on
-the beat, which makes this the hardest coordination in the app. Build it in
+**Putting them together.** The tumbao leaves each downbeat empty and the montuno
+follows the clave, so the two meet on some strokes and not others, which makes this the hardest coordination in the app. Build it in
 order: clap the clave until it is automatic; play the tumbao alone while you count
 the clave out loud; then add the montuno two notes at a time. The app has a clave
 to play and read, but it cannot clap one behind you while you play something else.
@@ -52,7 +53,8 @@ tell you whether your tumbao is where you think it is: *Rhythm only* scores
 the placing of every strike and nothing else, so the "and" of two and beat
 four are either right or marked. Left hand alone, that way, first. Then the
 tumbao-and-montuno exercise, which opens from its own row: the montuno in the
-right hand over the tumbao in the left — neither part is on the beat, so
+right hand over the tumbao in the left — the tumbao leaves each downbeat empty
+and the montuno follows the clave, so
 hearing the other one arrive is most of the work. The rung's songs are mostly
 printed on one staff, so the two-hand groove is in the exercise.
 

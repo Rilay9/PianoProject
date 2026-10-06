@@ -161,8 +161,10 @@ READ_NOT_TEACHING: dict[tuple[str, str], str] = {
     ("1.1", "pitch.ledger"): "middle C's own ledger line; the demand is a ledger line beyond middle C",
     ("1.3", "pitch.ledger"): "middle C's ledger line above the bass staff, and why a clef saves ledger lines; none beyond middle C is read",
     ("1.4", "pitch.ledger"): "middle C's ledger line between the staves; the demand is a ledger line beyond middle C",
-    ("1.2", "rhythm.eighths"): "named once as a value (an eighth is half a quarter) among those later rungs build on; 1.2 teaches half and whole notes",
-    ("1.2", "rhythm.shorter-than-quarter"): "named once as a value (an eighth is half a quarter) among those later rungs build on",
+    ("1.1", "rhythm.eighths"): "Hot Cross Buns' third bar named as eighth notes with a counting cue (one-and two-and); the sentence says 2.2 teaches eighths (W1, 2026-10-05)",
+    ("1.1", "rhythm.shorter-than-quarter"): "Hot Cross Buns' third bar named as eighth notes with a counting cue; 2.2 teaches eighths (W1, 2026-10-05)",
+    ("1.2", "rhythm.eighths"): "named as a value (an eighth is half a quarter) and as Frere Jacques' four eighths with the same counting cue as 1.1; 1.2 teaches half and whole notes (W1, 2026-10-05)",
+    ("1.2", "rhythm.shorter-than-quarter"): "named as a value (an eighth is half a quarter) and as Frere Jacques' four eighths with the counting cue; 2.2 teaches eighths (W1, 2026-10-05)",
     ("1.2", "rhythm.triplets"): "named once as something met later",
     ("2.1", "rhythm.eighths"): "Simple Gifts described as in eighths and quarters; the lesson teaches no counting of them (2.2 does)",
     ("2.1", "rhythm.shorter-than-quarter"): "Simple Gifts described as in eighths and quarters; the lesson teaches no counting of them (2.2 does)",
@@ -175,6 +177,7 @@ READ_NOT_TEACHING: dict[tuple[str, str], str] = {
     ("technique.4", "metre.compound"): "one étude described as in 6/8",
     ("3.5", "rhythm.syncopation"): "'syncopated pedalling', a name for legato pedalling: a pedal technique, not a rhythm",
     ("blues.4", "rhythm.syncopation"): "the shuffle's off-beat eighth and where the app expects it: swing, not syncopation",
+    ("hymns", "texture.left-hand-pattern"): "Jesus Loves Me described as a tune over a broken-chord left hand in the track overview (1a.7, 2026-10-06); the overview teaches no pattern",
 }
 
 

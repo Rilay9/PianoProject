@@ -50,7 +50,9 @@ import untaught_options as U  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
 BUILT = REPO / "app" / "public" / "content"
-PROBE = REPO / "docs" / "prompts" / "runs" / "L120d" / "after" / "probe-refusals.txt"
+#: Re-run 2026-10-06 at the W1b landing (Entry 233: 2.5 gains the G edition, hymns.2 swaps Joyful for the
+#: right-hand Ode, the 16 contrary scales change version): 290 lines, replacing L120d's 291.
+PROBE = REPO / "docs" / "prompts" / "runs" / "W1b" / "probe-refusals.txt"
 
 #: Where the tool's lines on the shipped curriculum differ from the probe, and why. Keyed by
 #: (rung, item); `side` says which reading has the line. Nothing else may differ. Since L120b's snapshot

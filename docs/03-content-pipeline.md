@@ -1023,24 +1023,19 @@ something else is a second name for one thing rather than a heading anybody sees
 section also listed `concepts[]`, which **no lesson carries**: a rung's concepts are in
 `content/curriculum/stage-*.json`, where `SkillsScreen` and `validate.py` read them.
 
-Body: **read in three minutes or less** (600 words at that rate), written for an adult
-engineer who is a musical beginner:
+Body: written for an adult engineer who is a musical beginner:
 define every term the first time (e.g. "a *triad* is three notes stacked in thirds — every
 other letter name"), give the intuition, then the rule, then "what to do at the piano".
 Include one "Common mistake" and one "How you'll know you've got it".
 
-This was "≤ 400 words" from the repository's first commit, written before any lesson
-existed, with no reason recorded and nothing enforcing it — seven lessons had been over it
-for as long as they had existed. Three minutes is the same intent measured in the unit the
-line above it already carries: a lesson is read once before you play, not studied. Two
-lessons are longer and named in `lessonShape.test.ts`, both because their rung is several
-ideas rather than one: `ragtime.6` (a whole rag, with a trio and a key change) and
-`classical.6` (voicing, rubato and pedalling across six Romantic miniatures). *(Corrected
-2026-09-22: this said "twenty-one Romantic miniatures", which was the classical Stage 6 rung
-before the rungs were cut to a few chosen pieces each — `02` Part A item 5, 2026-09-15. It
-offers six songs and nine exercises in the built curriculum.)* `ragtime.6` is the one real
-outlier in the corpus: at six minutes it reads about two and a half times the length of the
-median lesson and more than half again the length of `classical.6`, the next longest.
+**There is no length rule** (the owner, 2026-10-06): no word count and no reading-time cap
+governs a lesson, because a cap costs accuracy and communication, which outrank it. A lesson
+is as long as its facts and its learner need; every sentence earns its place by what it tells
+the learner, never by a number. `readingTime` stays a computed number for display. History:
+the first commit said "≤ 400 words" with no reason recorded; from 2026-09-14 the rule was three
+minutes at 200 words a minute with a named exception list in `lessonShape.test.ts`; at the
+2026-10-05 wave landings eleven lessons were trimmed to that cap by cutting rationale clauses,
+which the owner rejected, and the clauses were restored on 2026-10-06 with the rule's removal.
 
 ### 6a. Drill tips (`content/tips/<kind>.md`, P17)
 

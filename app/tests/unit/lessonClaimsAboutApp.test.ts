@@ -1304,13 +1304,19 @@ const T12_APP: [string, string, () => boolean][] = [
   ],
   [
     '2.5',
-    'Ode to Joy in G is on the very next core rung, and this rung already carries a G setting',
+    // Wave 1(b) edit 2 replaced "Its version in G is on the next rung" with the transposition task:
+    // the G edition is now on this rung too, opened by the rung's blind tool, and still on 3.1.
+    'Ode to Joy in G is on this rung, opened by Check your G version, page hidden, and this rung already carries a G setting',
     () => {
       const core = t12Core();
       const inG = t12RungsOffering((id) => id === 'song.classical.ode-to-joy.g');
       return (
+        inG.includes('2.5') &&
         inG.includes('3.1') &&
         core.indexOf('3.1') === core.indexOf('2.5') + 1 &&
+        (rung('2.5').tools ?? []).some(
+          (tool) => tool.kind === 'blind' && tool.item === 'song.classical.ode-to-joy.g' && tool.label === 'Check your G version, page hidden',
+        ) &&
         rung('2.5').songOptions.includes('song.classical.beethoven-ode-to-joy.easy')
       );
     },

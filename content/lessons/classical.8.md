@@ -6,7 +6,7 @@ videos:
   - label: "MAKE YOUR FAST PASSAGES SOUND MORE EVEN, SECURE AND EFFORTLESS - NEW TIPS - Piano Technique Tutorial"
     url: "https://www.youtube.com/watch?v=l7C2LdJ2LFQ"
     teacher: "Danae Dörken"
-readingTime: 3
+readingTime: 4
 ---
 
 This is the rung where the pieces are longer than your concentration and faster
@@ -55,7 +55,8 @@ separately, short figures, at the tempo you want — that is the technique.
 **Tools for this rung.** The score screen has a simpler version of the method
 above, the *Ladder*: loop the bar that holds the figure, switch it on in Keep
 tempo, and each clean pass raises the tempo by a tenth of the written speed and
-each faulty one drops it by the same, up to the written tempo. The summary says where the ladder finished, which
+each faulty one drops it by the same, up to the written tempo, while your
+attention stays on the hand. The summary says where the ladder finished, which
 is the figure to beat tomorrow. The two buttons both take the *Rondo alla
 turca*, first of the six: *Play it blind* hides the page while still following
 and marking the run, the memory half of "start from any section", and

@@ -38,8 +38,10 @@ around suggest one; the same mistake in the same place each time suggests two;
 no mistakes, and still no faster, suggests three.
 
 **Three things to change.** When in doubt, change one variable: **the tempo**
-(much slower, or briefly much faster), **the key** (transpose it — it forces
-you to think rather than recall), or **the order** (start from the middle, or
+(much slower, or briefly much faster), **the key** (transpose it: move a tune
+from the C position to the G position, every note five letters higher, to
+start, and rung 2.5 checks one for you, including the one reach below the
+position — it forces you to think rather than recall), or **the order** (start from the middle, or
 play it backwards a phrase at a time).
 
 **Common mistake.** Doing the same practice more intensely. A plateau is

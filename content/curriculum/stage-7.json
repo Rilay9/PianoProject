@@ -597,7 +597,7 @@
                   "sus2 and sus4 chords",
                   "add9 and ninth chords",
                   "open voicings spread over an octave",
-                  "chord symbols printed"
+                  "chord symbols, or a plain arrangement to find chords in"
                 ],
                 "avoid": [
                   "plain triads throughout",

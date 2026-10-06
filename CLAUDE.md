@@ -2,6 +2,8 @@
 
 **Preflight, before every action** (the owner, 2026-10-03): name the current plan step, the unit of work, the learner problem, the ownership/reuse decision and the finish condition. If you cannot state all five in five short lines, do not act. After finishing, stop: never select another task by momentum. The full checklist behind this is `docs/prompts/anti-drift-checklist.md`. **A finding is not a task:** before any nontrivial change is dispatched, the brief opens with the decision rationale of `operating-procedure.md` §10b (learner problem, solution classes considered, why the chosen one, what would reverse it, real problem or proxy, remaining uncertainty).
 
+**Curriculum work is teaching, not placement** (the owner, 2026-10-06): content, generated and found, correct, accurate and teaching. Every learner-facing curriculum brief carries the instructional chain, the failure route and the independence test of `docs/prompts/runs/curriculum-review-2026-10-05/ORCHESTRATION-CONTRACT.md` (summarised in `operating-procedure.md` §13); no ability is complete because its stations hold artefacts. No word or reading-time limit on a lesson: length never outranks accuracy and communication.
+
 **The governing direction is `docs/prompts/charter.md`** (the convergence charter, 2026-10-03). Before any lane touches code, answer its gate: should PianoProject own this responsibility at all?
 
 ## Reuse before reinvention: the first rule (the owner, 2026-10-03)

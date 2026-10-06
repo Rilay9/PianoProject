@@ -42,8 +42,8 @@ chord and a clear bass note beats an intricate part you cannot sing over.
 **Repertoire for this rung.** Six options. *Greensleeves* in 6/8, on the
 same Am, G and E7 as the 3/4 chord setting, and the full setting beside it; *Row Row Row Your Boat* as an
 arpeggio study; *Lavender's Blue* for a broken-chord accompaniment under a
-slow tune; and two ballads that live on seventh chords, *Your Song* and
-*Before You Go*. And imported lead sheets of your own.
+slow tune; *Your Song*, full of seventh chords; and *Before You Go*, where
+sevenths come and go among open fifths and suspensions. And imported lead sheets of your own.
 
 **Common mistake.** Adding sevenths to every chord because they sound
 sophisticated. A plain triad in the right place is stronger; save the colour for

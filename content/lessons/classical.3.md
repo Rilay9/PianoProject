@@ -6,7 +6,7 @@ videos:
   - label: "C. Petzold: Minuet in G Major BWV Anh. 114 | Slow Piano Tutorial | Late Beginner"
     url: "https://www.youtube.com/watch?v=fVbPrKuc2F4"
     teacher: "Classical Piano Made Playable"
-readingTime: 3
+readingTime: 4
 ---
 
 The classical track starts with dances, because a dance has a fixed pulse, short
@@ -58,7 +58,8 @@ have not learned it.
 
 **Tools for this rung.** Two things help here. *Duet* in the ⋯ controls plays
 the hand you are not: choose the right hand and the left line arrives as a
-tune rather than as something you are producing. And a few minutes of unseen music from the card
+tune rather than as something you are producing, which is the point this
+lesson keeps making. And a few minutes of unseen music from the card
 *Today* puts up each morning is a sensible warm-up before a piece of this
 length: read that first, then start on the minuet.
 

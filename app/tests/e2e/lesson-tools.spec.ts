@@ -88,6 +88,51 @@ test('a rung that names its Simon opens that one, not the stage’s', async ({ p
   await expect(page.locator('section[data-screen="drill"]')).toBeVisible();
 });
 
+test('2.5’s check opens the G edition with the notation hidden from the first frame', async ({ page }) => {
+  // Wave 1(b): the learner plays the theme a fifth higher from their own working-out, then checks it
+  // against the shipped G edition. The check is only a check if the page never shows: the button must
+  // land on that edition, blind, and the stage must be hidden from the moment it exists, not after.
+  await page.goto('/#/lesson/2.5');
+  await expect(page.locator('#lesson-tools-block')).toBeVisible();
+  const tool = page.locator('#lesson-tool-blind');
+  await expect(tool).toHaveText('Check your G version, page hidden');
+
+  // Watch the stage from before the click: the first time it exists, and the first time ink is in it.
+  await page.evaluate(() => {
+    const seen: { stageBlindAtBirth?: boolean; inkVisibilityAtBirth?: string } = {};
+    (window as unknown as { __blindSeen: typeof seen }).__blindSeen = seen;
+    new MutationObserver(() => {
+      const stage = document.querySelector('#score-stage');
+      if (stage && seen.stageBlindAtBirth === undefined) {
+        seen.stageBlindAtBirth = stage.classList.contains('score-stage--blind');
+      }
+      const svg = stage?.querySelector('svg');
+      if (svg && seen.inkVisibilityAtBirth === undefined) {
+        seen.inkVisibilityAtBirth = getComputedStyle(svg).visibility;
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  });
+
+  await tool.click();
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-blind', 'true', { timeout: 60_000 });
+  const hash = new URL(page.url()).hash;
+  expect(hash).toContain(encodeURIComponent('song.classical.ode-to-joy.g'));
+  expect(hash).toMatch(/blind=1/);
+  await page.waitForFunction(
+    () => {
+      const svg = document.querySelector('#score-stage svg');
+      return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+    },
+    undefined,
+    { timeout: 60_000 },
+  );
+  const seen = await page.evaluate(
+    () => (window as unknown as { __blindSeen: { stageBlindAtBirth?: boolean; inkVisibilityAtBirth?: string } }).__blindSeen,
+  );
+  expect(seen.stageBlindAtBirth, 'the stage existed once without being blind').toBe(true);
+  expect(seen.inkVisibilityAtBirth, 'the first ink in the stage was drawn visible').toBe('hidden');
+});
+
 test('a rung that names no tool draws no block', async ({ page }) => {
   // 1.1 is the first rung of the core path and names none.
   await page.goto('/#/lesson/1.1');

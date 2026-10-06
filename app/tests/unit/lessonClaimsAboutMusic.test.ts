@@ -415,10 +415,12 @@ const COMPARISONS: [string, string, () => boolean][] = [
   ['jazz.4', 'all three songs are from 1920', () =>
     ['song.pop.avalon.pdmx', 'song.pop.whispering.pdmx', 'song.pop.margie.pdmx'].every((id) => (byId.get(id)?.title ?? '').includes('1920'))],
   ['hymns.2', 'Swing Low is the only one of the four with its chords printed', () => {
+    // Wave 1(a) 1a.6 edit 9: the rung's Joyful edition (on D, every F natural) gave its place to
+    // the single-line Ode to Joy, so the four are the rung's four as they now stand.
     const four = [
       'song.folk.when-the-saints.alternating',
+      'song.classical.ode-to-joy.rh',
       'song.folk.be-thou-my-vision.pdmx',
-      'song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx',
       'song.folk.anonymous-swing-low-sweet-chariot.pdmx',
     ];
     const printed = four.filter((id) => (byId.get(id)?.notation?.chordCount ?? 0) > 0);
@@ -1222,16 +1224,24 @@ const T12_MUSIC: [string, string, () => boolean][] = [
 
   [
     'hymns.2',
-    'the Joyful, Joyful on this rung has no key signature, no accidental, more grace notes than notes, and a written tempo of 40',
+    // Wave 1(a) 1a.6 edit 9 replaced the sentence about the Joyful edition (no key signature, every
+    // F natural, grace notes, tempo 40) with one about the Ode to Joy that took its place; the row
+    // follows the sentence. The old edition stays in the Library and is no longer on this rung.
+    'Ode to Joy is its first eight bars, right hand only, in C, the ends of its two phrases two half notes, and on this rung',
     () => {
-      const id = 'song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx';
-      const all = t12Notes(id).filter((note) => !note.rest);
-      const graces = all.filter((note) => note.grace);
+      const id = 'song.classical.ode-to-joy.rh';
+      const halves = (bar: string): boolean => {
+        const notes = t12Bar(id, 1, bar);
+        return notes.length === 2 && notes.every((note) => note.type === 'half' && !note.dotted);
+      };
       return (
+        t12Songs('hymns.2').includes(id) &&
+        !t12Songs('hymns.2').includes('song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx') &&
+        t12Notation(id).bars === 8 &&
+        t12Notation(id).staves === 1 &&
         t12Notation(id).keys.every((key) => key.fifths === 0) &&
-        t12Count(id, /<alter>/g) === 0 &&
-        graces.length > all.length - graces.length &&
-        /<sound[^>]*tempo="40(\.0+)?"/.test(t12Xml(id))
+        halves('4') &&
+        halves('8')
       );
     },
   ],
@@ -1586,14 +1596,17 @@ const T12_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'technique.4',
-    'the contrary-motion scale starts the left hand an octave above the right and mirrors its fingering',
+    // Wave 1(a) seam 1a.9 reversed this row's first half: the lesson said the left hand began on the C
+    // above the right hand's and the hands passed through each other; the generator now starts both
+    // thumbs on the same C (core 4.1), and the lesson says so. The fingering mirror is unchanged.
+    'the contrary-motion scale starts both thumbs on the same C and mirrors its fingering',
     () => {
       const id = 'exercise.scale.c-major.2oct.contrary.both.2';
       const right = t12Bar(id, 1, '1');
       const left = t12Bar(id, 2, '1');
       return (
         right[0]?.midi === 60 &&
-        left[0]?.midi === 72 &&
+        left[0]?.midi === 60 &&
         right.map((note) => note.finger ?? '').join(' ') ===
           left.map((note) => note.finger ?? '').join(' ')
       );
@@ -2898,13 +2911,15 @@ const T22_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'holiday.3',
-    "O Holy Night is in six-eight and its melody climbs higher than any other option's, to an F sharp above the treble staff",
+    // Wave 1(a) 1a.6 edit 13: the lesson said "above the treble staff"; F sharp 5 sits on the top
+    // line (F5), and the comment below said "a third above" it. Both corrected; the data check is unchanged.
+    "O Holy Night is in six-eight and its melody climbs higher than any other option's, to an F sharp on the top line of the treble staff",
     () => {
       const top = t22Top(HOLIDAY_3_HOLY_NIGHT);
       const others = t12Songs('holiday.3')
         .filter((id) => id !== HOLIDAY_3_HOLY_NIGHT)
         .map(t22Top);
-      // MIDI 78 is F sharp 5, a third above the top line of the treble staff.
+      // MIDI 78 is F sharp 5, on the top line of the treble staff (F5) with its sharp.
       return t12Notation(HOLIDAY_3_HOLY_NIGHT).times.includes('6/8') && top === 78 && others.every((other) => other < top);
     },
   ],

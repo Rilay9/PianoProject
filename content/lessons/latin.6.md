@@ -32,10 +32,11 @@ the other two hold a figure, this one descends by half steps, which is as much
 a tango habit as the pattern is. It is also the shortest thing here and the
 place to start.
 
-**The montuno is in the exercises**, because none of these three pieces writes
-one out. The three-note study in D minor is the figure itself: every note is a
-clave stroke, three strokes in one bar and two in the next, and it repeats
-without changing. The tumbao study in G minor is the bass half — nothing on
+**The montuno's rhythm is in the exercises**, because none of these three pieces
+writes a montuno out. The three-note study in D minor is a rhythm-lock drill, not
+the montuno figure itself: it plays a chord on every clave stroke, three strokes
+in one bar and two in the next, and it repeats without changing, so your hands
+learn where the clave falls. The tumbao study in G minor is the bass half — nothing on
 beat one, and the note on four already belongs to the next bar's chord. The
 groove study puts them together, two notes on top of the bass, and neither hand
 is on the beat. Left hand alone first, then the two notes.

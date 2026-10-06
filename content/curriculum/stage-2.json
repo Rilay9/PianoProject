@@ -407,7 +407,8 @@
               ],
               "songOptions": [
                 "song.classical.ode-to-joy.full",
-                "song.classical.beethoven-ode-to-joy.easy"
+                "song.classical.beethoven-ode-to-joy.easy",
+                "song.classical.ode-to-joy.g"
               ],
               "mastery": {
                 "minAccuracy": 0.95,
@@ -446,6 +447,13 @@
               ],
               "estimatedDays": 16,
               "songOptional": true,
+              "tools": [
+                {
+                  "kind": "blind",
+                  "item": "song.classical.ode-to-joy.g",
+                  "label": "Check your G version, page hidden"
+                }
+              ],
               "levelBand": [
                 2.2,
                 4.1
@@ -586,8 +594,8 @@
               ],
               "songOptions": [
                 "song.folk.when-the-saints.alternating",
+                "song.classical.ode-to-joy.rh",
                 "song.folk.be-thou-my-vision.pdmx",
-                "song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx",
                 "song.folk.anonymous-swing-low-sweet-chariot.pdmx"
               ],
               "mastery": {
@@ -616,7 +624,7 @@
                 "chordSymbols": true
               },
               "levelBand": [
-                1.4,
+                1.1,
                 3.2
               ],
               "finder": {

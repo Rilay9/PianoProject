@@ -43042,3 +43042,178 @@ blues.3's case is the known line-ending assertion (Entry 101's diagnosis: `sourc
 **Unknown, and what stays self-checked.** Posture and pain (0.1, the technique rungs), reading ahead and phrase shape (4.6), the blind run and its comparison (4.7), naming, singing and writing (theory), everything improvised or composed (improv, blues.8's ladder): the lessons say these are the learner's, and no actor in this process can observe a body or hear a run.
 
 **Landing note (the orchestrator, 2026-10-05).** Merged at 397e2ae4 and landed with: (1) seven lessons trimmed back under the three-minute rule by cutting rationale clauses, no wave sentence, note name, number, title or "How you'll know" line touched (blues.4 652 to 595, classical.3 605 to 597, classical.5 651 to 597, classical.8 605 to 598, improv.4 622 to 596, theory.3 651 to 598, theory.7 643 to 598; the trim lane's per-cut alternatives are in its report); (2) technique.4 to technique.7 (739 to 795 words) and blues.8 (864 after its ladder was compressed) added to `lessonShape.test.ts`'s named exception list with the reason beside it: the wave's required stop conditions, per-exercise sentences and the six-step ladder are several ideas by design; the alternative, trimming those required sentences, was rejected because it removes what the review found missing; a split of blues.8's ladder into its own task page is a later editorial choice; (3) `docs/02-curriculum.md:524` aligned with the new blues.9 text (three 1920s pieces, none a twelve-bar blues); (4) the lesson tests: 500 of 501 pass; the one red, blues.3's tool-button assertion in `lessonClaimsAboutApp.test.ts`, reads files this wave did not touch (`ScoreScreen.ts`, `blues.3.md`, `LessonScreen.ts`: diff against 2e4cd1ef empty) and is taken as pre-existing on this machine; CI's conclusion on this push decides it. Product read: the blues.8 ladder as the learner meets it is six concrete steps, each naming the tool and what it cannot measure; the no-click step goes through Settings, which is clumsy and stated; *unverified as music*. Not re-read by the orchestrator: the other eleven seams' lesson text beyond the diff.
+
+### Entry 233 — W1b: seams 1a.6 to 1a.9 and wave 1(b)
+
+**Judgement first.** Nothing here has been heard, and the only screen anyone looked at is the 2.5 button, through a browser spec. Every musical sentence below is a notation reading, *unverified as music*. The length cap is gone (the owner's rule of 2026-10-06: no word or reading-time limit on lessons when it costs accuracy or communication), so the trim in item 4 was undone and nothing is open on length. The rest of this paragraph records five stops from the first pass and the orchestrator's decisions on them (2026-10-06), as applied:
+
+1. **hymns.2's level band widened.** `validate.py` refused `song.classical.ode-to-joy.rh` (level 1.1) under the band the rung printed, so the band went from **1.4–3.2** to **1.1–3.2**, high end unchanged. With that, 1a.6 edits 7 and 9 are applied. The orchestrator's reason: the reviewer approved W14 (`responses/5831d42d.md`), and `level_band_errors` requires the band to span the options.
+2. **1a.7 edits 1 and 3 shortened.** The schema caps a finder constraint at 60 characters, so both are applied in shortened form, each keeping its fact:
+   - chords-pop.9: "an arrangement to take chords from, or a bare chord chart" (57 characters).
+   - chords-pop.7: "chord symbols, or a plain arrangement to find chords in" (55 characters).
+   - The options not taken were the contract's longer wordings: "a finished arrangement to work the chords out of, or a bare chord chart to arrange" (82) and "chord symbols printed, or a plain arrangement whose chords you can work out" (75).
+3. **2.5 gains the "Tools for this rung" paragraph.** It names the default label T19 reads (*Play it blind*) as the *Check your G version, page hidden* button.
+4. **Trimmed, then restored.** Under the owner's rule of 2026-10-06 every clause listed below was put back, and `readingTime` was recomputed as ceil(words/200). The words now are chords-pop.4 609, holiday.3 618, hymns.5 603, hymns 621 and 2.5 727 (2.5's Tools paragraph stays: 17 words). The record of the trim as it was: five lessons trimmed by rationale clauses only. No task sentence, note name, number, title or "How you'll know" line was cut. `readingTime` was recomputed. Words before and after:
+
+   | Lesson | Before | After |
+   | --- | --- | --- |
+   | chords-pop.4 | 609 | 593 |
+   | holiday.3 | 618 | 590 |
+   | hymns.5 | 603 | 587 |
+   | hymns | 621 | 590 |
+   | 2.5 | 710 | 637 (the new Tools paragraph adds 17 words) |
+
+   What was cut:
+   - chords-pop.4: "and you never have to work one out twice" and "Its whole value is that it transposes".
+   - holiday.3: "so the shapes come to hand in a key you did not plan for" and "and the third one will take a fraction of the time the first did".
+   - hymns.5: "That is a faster way to learn the sound of one than reading its name first".
+   - hymns: "and seeing that makes the page far easier than it looks", "which is where a walk-up goes", "which produces a wash" and "Both are decorations on a harmony that is already correct".
+   - 2.5: "Music does not stop after five keys, so", "so it arrives before it is needed", the wrist-and-elbow diagnosis, the position-shift drill's parenthetical description, "so the scale is where the thumb gets its practice", "because the whole arm shifted to get it there", "that is the entire exercise", and "so the thumb-under from this lesson gets read at sight rather than rehearsed".
+   - Left in 2.5, because they are teaching or contracted text: the fingering sentence's explanation of a non-consecutive number (19 words), "Fine when there is a long note or a rest to do it in" (13) and "so the app marks your notes against exactly what you were aiming for" (14). Even cutting all three would leave 591 words.
+5. **The `identity_pins.json` re-pin is accepted** (G21). `inventory.md` stays as restored; the orchestrator regenerates it at landing.
+
+Base: the worktree's HEAD `0f6138e1`. The builder's harness is `operating-procedure.md` §14. The content was built with `tools/content/build.py --offline` from the main checkout's virtualenv, using `build/cache` and the three imported sources copied read-only and deleted at the end. `inventory.md`, `rung-claims.md` and `SOURCES.md` were restored after every build. The Python suite and the partitura scripts ran under the system Python 3.11, which already had `partitura==1.9.0`, so nothing was installed into the main checkout's virtualenv. `npm run build` is replaced by `npm run build:app`, as in Entry 228. Scripts that are not for the commit live under the worktree's `build/lane/`. The scripts that are kept are under `docs/prompts/runs/curriculum-review-2026-10-05/wave1a/`.
+
+**What the learner now meets, per seam.**
+
+- **1a.6 (chords-pop, hymns, holiday, latin, rock; all 28 edits applied, 7 and 9 after the band decision).**
+  - chords-pop: .4's slash chords are a bass that moves while the harmony barely does (C E F G under C and F). .5 calls *Your Song* "full of seventh chords" and has *Before You Go*'s sevenths come and go. .7's ninth chord is "common in jazz, soul and funk". .8's common mistake is moving the hand shape by white keys (C major lands on D minor).
+  - hymns: *Jesus Loves Me* is a tune over a broken-chord left hand. The half-step approach is "a good first one to try". hymns.2's fourth option is *Ode to Joy* (`song.classical.ode-to-joy.rh`), single line in C, in place of the edition on D with every F natural; the lesson says it is the tune *Joyful, Joyful* is sung to and the hymns lesson names it among the Stage 2 settings; the rung's printed band is 1.1–3.2 (was 1.4–3.2). hymns.2's "many" replaces "almost all"/"most of a hymnbook". hymns.5's five-chord trick applies to a major or minor chord.
+  - holiday.3: the comfortable range is A3 to D5, with E5 reachable for a note or two (*Hark!* and *God Rest Ye* touch it). Bar 32's C♭ in *O Christmas Tree* is named as a misprint, play C7. O Holy Night's F♯ is on the top line. One singer is the case where you follow.
+  - holiday.5: Carol of the Bells has the figure in 25 of its 40 bars and a third higher in 4. *Auld Lang Syne*'s hands are described separately.
+  - latin: latin.3 defines the rumba and bossa claves from `CLAVE_PATTERNS`, and `docs/02-curriculum.md:1204` now says the bossa's last stroke moves an eighth later. latin's montuno is the exercises' stripped rhythm, a chord on each clave stroke. The tumbao leaves the downbeat empty instead of "neither is on the beat". latin.7 gives Malagueña's first twenty bars over the C♯ pedal. latin.6's three-note study is "a rhythm-lock drill, not the montuno figure itself".
+  - The 15 montuno items are titled "Clave chords — …" and the 5 grooves "tumbao and clave chords"; their docstrings no longer call them a guajeo. The montuno finder accepts block chords on the clave's strokes.
+  - rock: rock.4 and .5 tie the power chord to distortion making a third muddy. rock.4's "How you'll know" gives the figure to the hand each context uses. rock.5's *Annie's Song* prints one Dsus4 and shows the open fifth. rock.7 drops "eight bars" and says Moonlight III carries over a hundred dynamic marks.
+- **1a.7 (stage data; all applied, edits 1 and 3 with shortened constraints).** chords-pop.9's finder accepts an arrangement to take chords from or a bare chord chart and no longer avoids written-out arrangements or requires printed symbols; chords-pop.7's accepts a plain arrangement beside chord symbols; chords-pop.8's no longer avoids written-out arrangements. 4.7 has `prerequisites: ["4.6"]`. The hymns track is titled "Hymns & spirituals" (in `00-tracks.json`, `stage-3.json:936` and `docs/02-curriculum.md:705`, with the new description; the id `hymns-gospel` is unchanged). The rock description counts the reduction plus four textures, and `docs/02-curriculum.md:1203` says four.
+- **1a.8 (the modulation row).** The second progression of *Harmonic dictation — music that changes key* is `C:I C:vi G:V7 G:I`. It sounds C, A minor, D7, G, and the card reads "C:I – C:vi – G:V7 – G:I", so the key changes on the card where G's dominant arrives.
+- **1(b) (transposition).** 2.5 offers *Ode to Joy (in G major)* and a button, *Check your G version, page hidden*, that opens it blind. 2.5's lesson asks for the theme's right hand a fifth higher. It says most of the tune sits in the G position and the learner reaches or shifts to the D below it. It says what the app marks (the notes, against an exact target) and what it cannot know (that the page was hidden, transposing as against reading). 3.2 asks for *Twinkle* in G or the *Ode* in F with I, IV and V7, self-checked. practice.5 says how to start transposing and that 2.5 checks one.
+- **1a.9 (contrary motion).** All 36 contrary-motion scales start both hands on the same written note and mirror outwards. 16 changed: the left hand of the ten one-octave items in A♭, A, B♭, B, G♭, G major and A, B♭, B, G harmonic minor moves up an octave, onto the right hand's first note. The six two-octave items in C, D♭, D, E♭, E, F major move down an octave, so the hands no longer cross. The right hand's notes and every printed finger are unchanged. technique.4 says both thumbs start on the same C.
+
+**Mechanism (1a.9), and the test that told it.** The hypothesis was that the left hand's contrary run started at the top of its own preferred range (`run(lh_start, "down")` begins at `lh_start + 12 × octaves`), so its start depended on the key. The refuting test was CK-1 on the unchanged build. It found exactly the brief's 16 (`build/lane/ck1-before.txt`: 16 of 36 fail, each "not the same letter and octave"), so the hypothesis stood. The fix acts on that mechanism: in contrary motion the left hand's run begins on the right hand's first note (`by_octaves(rh_start, -octaves)`, run down). A contrary span that would leave the keyboard is refused with `ValueError`. After the fix, 0 of 36 fail. Across all 252 planned scale items, the music digests that moved against a baseline taken before the edit are exactly these 16; no similar-motion item and none of the 20 unison items changed.
+
+**Choices the contracts left, with the alternative each beat.**
+
+- 1a.6 edit 28's after block carries the wrapper lines `    {` and `    },` that its before block leaves out. They are the file's own lines around the block, checked, so I matched them as context. *Alternative:* stop it as a mismatch. That loses because the before block matches byte for byte and the result is the contracted text exactly.
+- `readingTime` is recomputed by `lessonShape.test.ts`'s rule where an edit moved it: chords-pop.4, holiday.3, hymns.5, hymns and 2.5 went to 4; the trim took four of them back to 3, and the restore returned them to 4. *Alternative:* leave it, which keeps a second test red and the field false.
+- `docs/generated/ladder.md` was regenerated for three lines: the hymns track's new title (1a.7), 2.5's third song (1(b)) and hymns.2's band and options (1a.6 edit 9). *Alternative:* leave it, and `validate.py` fails the build on a stale ladder.
+- CK-3's oracle is a JSON fixture written by `ck3_fixture.py` beside it (music21 `RomanNumeral`). *Alternative:* the values inlined in the test. That loses because a hand-copied oracle can drift from the script that justifies it.
+- The 1a.9 unison is at the right hand's existing start. *Alternative:* move both hands down an octave in the six keys whose left hand prefers octave 2, keeping it nearer the bass staff. That loses because it changes right-hand notes the contract keeps unchanged, and the 20 items already at the unison use the right hand's start (the two-octave G major's left hand already began on G4). A consequence, not tested here: in the one-octave A, A♭, B♭, B, G and G♭ items the left hand now starts high on the bass staff, on ledger lines.
+- 1a.9 refuses a four-octave contrary scale. *Alternative:* let it write notes below A0, the fault `fits_on_the_keyboard` exists to stop. No planned item is four-octave contrary.
+- The 1(b) measurement covers two learners placed at 2.5 (no runs, and the rung's other two songs played the day before), over 30 mornings at 15, 30, 60 and 120 minutes. *Alternative:* one fresh learner, which could not show the repertoire row moving off the songs already played.
+
+**Consequential changes, each named.**
+
+- `tools/content/tests/fixtures/identity_pins.json`: the `scale` row is re-pinned to version 2 and its new digest, with a comment line. This file is not in 1a.9's list. It is G21's rule for a version bump, and without it `test_family_contracts` is red ("re-pin").
+- `tools/content/generator_continuity.json` gains the `scale` record (252 items at version 1: identity, former identities where listed, digest). It was written by `s19_continuity.py` from the catalogue built at the base, checked against the plan's identities, and round-trip checked before re-serialising.
+- Tests updated where they asserted the old content, each with its reason beside it:
+  - `lessonClaimsAboutMusic.test.ts`: holiday.3's O Holy Night label and comment (above to on the top line); technique.4's contrary row (left hand MIDI 72 to 60); hymns.2's "only one of the four with its chords printed" list (the Ode replaces the Joyful edition); and hymns.2's Joyful row re-pointed to the sentence that replaced it (the Ode: eight bars, one staff, C, bars 4 and 8 two half notes, on the rung, the Joyful edition off it).
+  - `lessonClaimsAboutApp.test.ts`: 2.5's G-edition row (the edition is now on 2.5 and opened by the labelled tool).
+- New tests:
+  - `app/tests/unit/modulationRow.test.ts` (CK-3).
+  - `app/tests/unit/transpositionTask.test.ts` (the content check and the measurement).
+  - `tools/content/tests/test_contrary_scales_unison.py` (CK-1).
+  - One case in `app/tests/e2e/lesson-tools.spec.ts`.
+  - Rows for all of these in `docs/08-test-map.md`.
+- `tools/content/requirements.txt` pins `partitura==1.9.0` (Apache-2.0).
+- Kept scripts and outputs under `docs/prompts/runs/curriculum-review-2026-10-05/wave1a/`: `ck3_fixture.py` and `ck3-fixture.json`, `ck1_list.py`, `co1_export.py` and `CO-1.md` (16/16, about 10 KB), `s19_continuity.py`, `w1b_exactness.py`, `s16_rereads.py` and `s16_rereads_xml.py`.
+
+**Regenerated files.**
+
+- 1a.6 (titles only): 20 `.mxl` under `app/public/content/scores/generated/`, namely `exercise.montuno.{a,c,d,f,g}.{2note.son-3-2,3note.son-3-2,2note.bossa}` and `exercise.latin-groove.{a,c,d,f,g}.son-3-2`. Their 20 catalogue rows changed in `title` only.
+- 1a.9: 16 `.mxl`, the 16 items listed above. Of the 252 `exercise.scale.*` catalogue rows, all changed `drill.generator.version` and `provenance.identity`. The 236 unchanged items now carry their version-1 identity in `formerGeneratorIdentities`, and the 16 changed items carry none. The 16 also changed `measurement`.
+- Everything else was compared with a sha256 snapshot of every built generated file and the whole catalogue, before and after each regeneration (`build/lane/snapshot.py`): the other 1,180 of 1,200 generated files (1a.6) and 1,184 (1a.9) are byte-identical. No other catalogue row changed in those two regenerations. Edit 9 later recomputes the `tracks` of the two hymns.2 songs it swaps (build-derived).
+- Montuno and latin-groove music digests equal their pins (`391e7c0e…`, `d306f535…`).
+- No spec measures these titles' line count. The Library's portrait titles have no clamp (G101), so the five-character longer groove title can grow a row; it is not cut.
+
+**Re-reads (S2), all held.** Edit 11: *Hark!* and *God Rest Ye*'s upper staff top at E5 (partitura). Edit 12: bar 32 symbols G minor then C♭ major, upper staff G4 A4 B♭4 E4. Edit 15: the figure in 25 bars (1-16, 24, 29-36) and a third higher in bars 17-20 (`carol-of-the-bells.easy`, 40 bars). Edit 20: Malagueña's lower staff bars 1-8 C♯2+G♯2, then a dyad over C♯2 alternating in eighths in even bars and dotted in odd. Edit 23: the Dsus4 sits at one moment in bar 0, printed on both staves, so it is one symbol. Edit 25: 113 `<dynamics>` elements. 1(b): `song.classical.ode-to-joy.g`'s right hand equals the C theme's plus seven semitones, 63 of 63 events by onset, duration and pitch (partitura, `w1b_exactness.py`), spanning D4 to D5 on D G A B C D. CK-3 step 1: the old row sounded C, A minor, B7, A, D, as the brief predicted.
+
+**Verification** (from `app/` unless named). Each seam's content build is `build.py --offline`. vitest is the full run after the build. The reds listed are the full set. The one marked "known" (blues.3) is the pre-existing one, by Entry 228's reading.
+
+| Seam | content build | vitest | tsc -b | build:app | other |
+| --- | --- | --- | --- | --- | --- |
+| 1a.6 | first build exit 1 (hymns.2 band, and ladder stale from it); after the undo, 0 | 5 failed: blues.3 (known); `readingTime` on four lessons (fixed, rerun green); lesson length (chords-pop.4, holiday.3, hymns.5, hymns); modulationRow steps 2 and 3 (red until 1a.8, as written) | 0 | 0 | Python suite: 1729 run, 6 failed and 2 errors, none in the families or files this seam touched: record mirrors (Entry 228's heading has no record block), `rung-claims.md` stale (already stale at HEAD: its counts differ beyond this lane), `test_pdmx` entry points ×4 (environment), `test_sixteenths_owner` (1.1-1.3 rows); `test_family_contracts`, `test_named_by_what_they_are`, `test_harmony_families`, `test_generator_invariants` passed |
+| 1a.7 | first build exit 1 (two finder constraints over 60 characters; edits 1 and 3 undone); then ladder stale (rename), regenerated; `validate.py` 0 | 4 failed: blues.3; lesson length; modulationRow ×2 | 0 | 0 | — |
+| 1a.8 | 0 | 2 failed: blues.3; lesson length. `modulationRow.test.ts` 3 passed (red on the old row: steps 2 and 3) | 0 | 0 | eslint 0 on the two test files (one unnecessary assertion fixed) |
+| 1(b) | exit 1 (ladder stale from 2.5's song), regenerated; `validate.py` 0, accepting the blind item as the rung's own option | 3 failed: blues.3; T19 (2.5, stop 3 above); lesson length (+2.5) | 0 | 0 | `lesson-tools.spec.ts` 5 passed on port 4292, two workers, through a config copy (deleted): the new case sees the stage blind the first time it exists and the first ink hidden; `transpositionTask.test.ts` 4 passed |
+| 1a.9 | 0 | 3 failed: blues.3; T19; lesson length; `generatedIdentityContinuity.test.ts` passed | 0 | 0 | CK-1 2 passed (shipped 36 of 36; every key and mode at one to three octaves, four refused); Python suite 1731 run, the same 6 + 2 as at 1a.6 plus `inventory.md` stale |
+| decisions (2026-10-06) | exit 1 (ladder stale: hymns.2's band and options), regenerated; `validate.py` 0 | `lessonShape`, `lessonClaimsAboutApp` (T19's file), `lessonClaimsAboutMusic`: 2 failed of 495: blues.3 (known); lesson length, "2.5.md reads in 4 min" only. T19 green. `transpositionTask.test.ts` 4 passed | 0 | not rerun | — |
+
+`inventory.md` is stale because of this lane: 2.5's third song and the renamed track. Per the harness the committed file was restored, so the landing's rebuild has to regenerate it. `rung-claims.md` is stale at HEAD and also lists the old montuno titles.
+
+**Observation, not fixed:** `test_pdmx` rewrites `docs/review/pdmx-quarry-2026-10-05/` when the Python suite runs.
+
+**A side effect, repaired.** The Python suite's `test_pdmx.TestEntryPointsRunAsScripts` runs `quarry_lanes.py` as a script, and the script did real work. It rewrote `docs/review/pdmx-quarry-2026-10-05/README.md` and `quarry-results.json`, plus 189 XML files (line endings only), both times the suite ran. Each time, every file was put back to HEAD's bytes with the checkout's line endings, and `git status -- docs/review` is empty. That test writes into a folder no lane may touch, and it is worth a look.
+
+**Edits that did not match, or were stopped.**
+
+- **Before-block mismatches:** none. Every before block matched byte for byte. 1a.7 edit 2 sits at `stage-8.json:501`, not 495, because Entry 228 added lines above it.
+- **Stopped on the first pass, applied on the orchestrator's decision:** 1a.6 edits 7 and 9 (the validator's level band, with the band widened); 1a.7 edits 1 and 3 (the schema's 60-character cap, with the constraints shortened).
+
+**Deliberately not changed.**
+
+- The generator comments and test docstring that say "five" textures (`generate_exercises.py:5256,5507`, `test_harmony_families.py:1327`), as the brief says.
+- The groove's direction "Neither hand is on the beat" (recorded in the brief as outside the seam).
+- The contrary melodic minor (in no plan; CK-1 accepts it) descends its left hand through the ascending, raised form, because `run(…, "down")` reverses the ascending form. It is noted here, not fixed.
+- `test_sixteenths_owner`'s red and the record-mirrors errors: not this lane's.
+- No score file was touched.
+- The concepts.json finder carries no length cap in validation while the stage finders cap at 60, so 1a.6 edit 28's 84-character constraint passes. This is observed, not changed.
+
+**Content-mistakes items checked.**
+
+- 9: latin.6 now says what the study does (a chord per clave stroke), not that it is the figure. 2.5 says the app marks notes and cannot tell transposing from reading.
+- 11: "left hand" in rock.5 (*Annie's Song*), latin.7 (Malagueña) and the holiday ranges reads the lower or upper staff as a hand, and these sentences are contract text. *Annie's Song*'s bar 0 lower staff is D3 D3 G3 D4, so the "open fifth bar after bar" is from the record, not re-read here.
+- 13: every count above is scoped to the files named, and the two-learner measurement is not a claim about all learners.
+- 15: nothing heard, *unverified as music*.
+- 17: the PDMX pieces' sentences rest on notation reads of those files only.
+
+**Absolute words.** These are `lint_absolutes.py`'s findings compared with HEAD, by sentence, each kept:
+
+- chords-pop.4 "only" (C and F, exact).
+- holiday.3 "most" (a hedge).
+- latin.7 "every" ("every other bar", re-read).
+- 2.5 "every" (every note five letters higher, exact by transposition), "most" (a hedge) and "exactly" (63 of 63).
+- practice.5 "every" (the same instruction).
+- The others the tool lists are words that were already there, in reworded sentences: latin.6 "none" and "every", latin "most", holiday.3 "always".
+
+**Unknown, and what stays self-checked.** Whether the 1a.9 scales feel right under the hands; the singing room (holiday); the re-voicing (chords-pop); the groove's feel (latin); that the 2.5 version was worked out and not read; the 3.2 task entirely. No one in this process can hear or watch a hand. The lessons say which parts are the learner's.
+
+**Reviewer fix-forwards on wave 1(a) (responses/b8b96730.md §3).** Applied exactly as the response words them. No test asserted the old sentences (grep of the three lesson-claims files and `lint_absolutes.py`'s tests). `readingTime` did not move. The three lesson-claims files: 482 of 483 pass, the one red being blues.3 (known). `lint_absolutes.py`, exit 0; with three `--lesson` flags it reads only the last, so I ran it once per lesson: technique.7 6 findings, jam.7 2, theory.9 8 (theory.9's "most" is gone; nothing new elsewhere).
+- §3a technique.7: "and it is the exercise here where the forearm tightens first" is removed (the tremolo is still "often helped by a small rotation of the forearm"). The stop paragraph now reads "While practising octaves, double notes or tremolo, if your forearm or wrist tightens or aches, stop", in place of "…are where strain gathers fastest". The stop condition is unchanged.
+- §3b jam.7: "Four of these five sit in flat keys, and the guitarist's keys are E, A, D and G." (the "as much early jazz does" clause is gone).
+- §3c theory.9: "Three useful form names here are **ABA**, a section, a contrasting one, then the first again; the common 32-bar **AABA** song form, with four eight-bar sections and a contrasting third section, the *bridge*; and **binary**, AB, two halves, each often repeated." This replaces "Three names cover most of what you will take down or find" and the unqualified AABA definition.
+### Entry 234 — CI2: the content job red since the quarry merge, fixed forward
+
+**Judgement first.** Two reds in CI's content-and-unit job, read from the conclusions on 8d833603, neither seen by a learner; nothing heard. The E2E shard 7 red (`session-held-skip.spec.ts`, G90a's three-size read-back) predates the last green run (2026-10-02) and is left, named.
+
+**1. The entry-point test** (`test_pdmx.TestEntryPointsRunAsScripts`): every script under `tools/content/pdmx/` must answer `--help` with a usage line. The four research files the outside reviewer's quarry merge brought in at 3680725f (first red run f2333eb2) did not: `quarry_core.py` and `summarise_xml.py` are libraries, `test_quarry_identity.py` is the quarry's own test runner (the three join the test's library exclusions with the reason), and `quarry_lanes.py` read its flags from `sys.argv` by substring, so `--help` ran a whole lane: on CI it crashed for want of the archive; here it rewrote `docs/review/pdmx-quarry-2026-10-05/` (observed twice by the orchestrator, once by the second builder; restored each time from HEAD). It now parses its flags with argparse and `--help` exits before any stage. Mechanism told from the alternative (a broken import) by the test's own stderr, which named line 906's `main()` call. `quarry_lanes.py --help` exits 0 with the usage; the test class is green.
+
+**2. The ownership table** (`untaught_options.py`, `test_sixteenths_owner.TheTable`): fifteen `rhythm.shorter-than-quarter` pairs on eleven rungs (1.1, 1.2, 1.3, 1.5, practice.1/3/4/5, 2.1, holiday, hymns.2) read as B-mapping from the wave landing 0f6138e1 on. Cause: the approved W1 counting sentence names eighth notes at 1.1, the root of every rung's ancestry, and a mention at or below a rung with no concept mapping the demand is class B unless `READ_NOT_TEACHING` holds its reading (the 1.2 reading already there did not cover 1.1, and 1.2's sentence changed). The alternative (a detector change) is excluded: no score, concept or detector changed between the green run dc9a3c24 and the red. Readings added for 1.1 and reworded for 1.2: the sentence is a counting cue and says 2.2 teaches eighths. `test_sixteenths_owner` and `test_untaught_options` green (36 tests).
+
+**Unverified.** The whole Python suite was not rerun here; CI is the full run. Nothing heard.
+
+### Entry 235 — LEN1: the lesson length cap removed, and every trimmed clause restored
+
+**The owner's rule (2026-10-06):** no word or reading-time limit on lessons when it costs accuracy and communication; removed from all documentation and rules.
+
+**What changed.** `docs/03` §6 no longer states a length; it states the rule and the history. `lessonShape.test.ts` loses the three-minute test and its `KNOWN_LONG` list (the `readingTime` test stays: the number is still computed at 200 words a minute, for display). The test-map row says so. The probe brief (`briefs/probe-latin4-bizet.md`) drops its length line.
+
+**Restored.** The seven lessons trimmed at the Entry 232 landing (blues.4, classical.3, classical.5, classical.8, improv.4, theory.3, theory.7) are back to the builder's merged text at 397e2ae4, where the diff since was the trims and `readingTime` only (checked on classical.3 and classical.8 line by line, the others by diff stat). The five lessons trimmed by the second builder (chords-pop.4, holiday.3, hymns.5, hymns, 2.5) had their clauses restored by that builder from its own cut list (17 pairs, each found exactly once); 2.5 keeps the tools paragraph its test asks for. Word counts after: chords-pop.4 609, holiday.3 618, hymns.5 603, hymns 621, 2.5 727 (the builder's count).
+
+**Left.** The 60-character schema cap on finder constraints (`validate.py`) stands: the two constraints shortened in Entry 233 kept their facts; a cap that would cost a fact is the same rule and goes the same way.
+
+**Unverified.** Nothing heard; no screen looked at for the restored lessons.
+
+### Entry 236 — DF1: chord-member fingerings reach the shipped score on the ABC route; the blues roots spelled by interval
+
+**Judgement first.** A learner opening any of seven authored tunes met chords with no fingers where the author had written them: 236 marks on 7 of the 33 ABC-route files (the restart packet's "7 of 33" reproduced by measurement, every lost mark a chord member). Nothing heard; a spot check of Greensleeves bar 1 reads A2 with 5, C3 with 2, E3 with 1 as the ABC writes them; no per-note check of every added finger on the seven files, only the unit tests and that spot check.
+
+**Mechanism** (`tools/content/abc_tools.py`). `extract_fingerings` jumped from `[` to `]` and read no `!n!` inside a chord, so every chord-member finger was dropped (single notes were read). Behind it a second fault: music21's MusicXML export writes a chord's fingerings from the chord's own `articulations` list in member order, so a mark attached to a member note never reaches the file. Fix: `extract_fingerings` returns `{member: finger}` for a chord marked member by member; `apply_fingerings` appends those onto the chord in member order; a `!n!` before the bracket stays one number for the whole chord; a chord with a gap in its marks raises, because the export order cannot skip a member (no shipped file has one). The alternative, fingers on the member note objects, lost because it never reaches the export. Told from the alternative by the per-file count (all 236 losses chord members, none single) and by the new `TestChordMemberFingering` class, four of whose five cases are red on the old code.
+
+**Before and after.** Lost marks per file before: greensleeves-68 28, greensleeves-chords 45, greensleeves-waltz 60, happy-birthday-simple 30, jingle-bells-g 33, oh-when-the-saints-f 24, row-row-row-your-boat 16; the other 26 files equal. After the rebuild every file's marks equal its tokens (80, 82, 112, 55, 58, 41, 51); 32 of the 39 authored `.mxl` byte-identical to the baseline, the 7 differing only in added `<fingering>` elements inside new `<notations><technical>`.
+
+**Blues spelling** (`tools/content/blues_forms.py`). The roots were counted in semitones, so `roots("A-")` gave G# for the tonic and `roots("E-")` G# for the IV chord; now `ROOT_INTERVALS` P1, P4, P5 with `DEGREES` derived (read by `test_harmony_families`). The brief said three blues files ship; six do (A, C, D, E, F, G), all byte-identical after the rebuild. New `test_blues_forms.py`, red on the semitone code.
+
+**Checks (the lane's).** `tsc -b` 0; `npx vitest run` 7804 passed, 2 failed (blues.3's CRLF assertion, known; `midiParity` wanting its parity reference, a missing prerequisite); the Python suite 1738 tests with 6 failures and 2 errors none in the lane's files (the record-mirrors and pdmx reds are Entries 232 and 234; `test_measured_truth`'s stale `rung-claims.md` is regenerated at this landing; the sixteenths red is Entry 234). Targeted after the final build: `test_abc_tools`, `test_blues_forms`, `test_harmony_families` 159 tests OK. No Playwright; the specs that mention fingering (`microscope`, `modes-engraving`, `score.window-rule`, `setup`) are not tied to the seven tunes. Test map: the fingering row.
+
+**Unverified as music.** Nothing heard.
+

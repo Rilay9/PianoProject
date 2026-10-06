@@ -332,9 +332,22 @@ def materially_differs(sh, kept_shs) -> str | None:
 
 
 # ---------------------------------------------------------------- main
+def parse_args(argv: list[str]):
+    """The two flags. `--help` prints the usage and exits before any stage runs: the
+    entry-point test calls every script in this folder with `--help`, and a lane run
+    reads the owner's archive and rewrites `docs/review/pdmx-quarry-2026-10-05/`."""
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__.strip().splitlines()[0],
+                                     usage="python quarry_lanes.py [--redo-csv] [--redo-shape]")
+    parser.add_argument("--redo-csv", action="store_true", help="redo the PDMX.csv pass")
+    parser.add_argument("--redo-shape", action="store_true", help="redo the shape read from the MusicXML")
+    return parser.parse_args(argv)
+
+
 def main():
-    redo_csv = "--redo-csv" in sys.argv
-    redo_shape = "--redo-shape" in sys.argv
+    args = parse_args(sys.argv[1:])
+    redo_csv = args.redo_csv
+    redo_shape = args.redo_shape
     prep_lanes()
     data = stage_csv(redo_csv)
     mean = data["archive_mean_rating"]

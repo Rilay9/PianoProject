@@ -27,9 +27,10 @@ repetition, and the hand you would expect to be the bass is the tune. Practise
 the left alone and it turns into a slow, singable line.
 
 **Malagueña**, Lecuona's, is a hundred and forty-one bars in three-four, C
-sharp minor. In its opening pages the left hand is two positions — a two-note
-chord, then a lower bass note under it — alternating in eighths, three of each
-to the bar, while the right hand plays three- and four-note chords with the
+sharp minor. Its first twenty bars hold the left hand on a low C sharp: open
+fifths in halves and quarters for eight bars, then a two-note chord above that C
+sharp, alternating with it — in eighths, three of each to the bar, in every other
+bar, and in a dotted rhythm in the bars between — while the right hand plays three- and four-note chords with the
 tune on top. That opening is an ostinato: not difficult once, and very
 difficult twenty bars running without the wrist tightening. After it the piece
 goes somewhere else entirely, which is what a hundred and forty-one bars means.

@@ -303,6 +303,10 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **CL12a** | Today and Plan name the same work ahead, each row says what it is for, and a bypassed lesson is never owed: CL12's slice A (`CL12a-today-and-plan-name-the-work-ahead.md`) | app | drafted 2026-10-03 (`CL12a-today-and-plan-name-the-work-ahead.md`); Entry 230; dispatched 2026-10-03: to the outside builder by the owner's paste, on its branch; its first checkpoint's handback decided (option 1: an ambiguous no-due row keeps its reason and shows no purpose label), in the checks file of 23606e0a
 | **CT1** | Every concept the curriculum teaches is defined from published sources, checked in the actual notes, and aligned across rungs, generators and levels (`CT1-every-musical-claim-has-a-checkable-source.md`) | build | drafted 2026-10-03 (`CT1-every-musical-claim-has-a-checkable-source.md`); Entry 231; held 2026-10-03: Part D would let untaught music through (eligibilityCore.ts:286); being revised with the reviewer's replacement under the rule that uncertainty only restricts; approved 2026-10-03: version 3, the owner's direction (research each concept, align rungs, generators and levels; nothing deleted), with the reviewer's corrections kept (restrict never grant, three questions apart, runtime generation, the modes); dispatchable to a cloud session; held 2026-10-03: stopped by the owner; one session with the whole scope drifted; continued as small lanes, the first being the named accompaniment figures
 | **W1** | Curriculum wave one: seams 1a.1 to 1a.5 (the lesson corrections the review's records required) and wave 1(c) (blues' own left hand) (`W1-curriculum-wave-one.md`) | content | dispatched 2026-10-05 (`W1-curriculum-wave-one.md`); Entry 232; landed 2026-10-05: merged 0f6138e1; the handoff to the reviewer follows the second builder's landing
+| **W1b** | Curriculum wave one, second builder: seams 1a.6 to 1a.9 (latin terms, chords-pop finders, the modulation row, the 16 contrary scales) and wave 1(b) (the 2.5 transposition task against the G edition) (`W1b-curriculum-wave-one-second-builder.md`) | content | dispatched 2026-10-05 (`W1b-curriculum-wave-one-second-builder.md`); Entry 233; landed 2026-10-06: merged in Entry 233's record commit; the handoff to the reviewer follows with the defect lane
+| **CI2** | CI's content job red since the quarry merge: the research scripts under the entry-point test, and the wave's eighth-note sentence at 1.1 read into the ownership table (`CI2-content-job-red-since-the-quarry-merge.md`) | tooling/CI | landed 2026-10-06 (`CI2-content-job-red-since-the-quarry-merge.md`); Entry 234
+| **LEN1** | The lesson length cap removed (the owner, 2026-10-06): no word or reading-time rule; the three-minute test and its exception list deleted; twelve trimmed lessons restored (`LEN1-no-lesson-length-cap.md`) | content | landed 2026-10-06 (`LEN1-no-lesson-length-cap.md`); Entry 235
+| **DF1** | Chord-member fingerings reach the shipped score on the ABC route (236 marks on 7 of 33 files were dropped) and the twelve-bar blues roots are spelled by interval (`DF1-abc-chord-fingering-and-blues-spelling.md`) | content | landed 2026-10-06 (`DF1-abc-chord-fingering-and-blues-spelling.md`); Entry 236
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -471,6 +475,10 @@ SG05 · closed · 229
 CL12a · dispatched · 230
 CT1 · held · 231
 W1 · landed · 232
+W1b · landed · 233
+CI2 · landed · 234
+LEN1 · landed · 235
+DF1 · landed · 236
 F0a · closed · —
 L120 · approved · —
 -->

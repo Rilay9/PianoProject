@@ -16,7 +16,8 @@
     "(docs/review/responses/questions-90b19bee.md §1; repeated_notes by the review's required change, 09ec1337.md §3, its record",
     "written from the plan at 09ec1337 by docs/prompts/runs/G30/scripts-fixforward_content.py), the others from the catalogue built at 7d9de990 by",
     "docs/prompts/runs/G30/scripts-continuity_table.py; interval_reading, pentatonic, tremolo_octaves and walking_bass's CL15 records",
-    "are replaced by these, their items' CL15 identities carried as formerGeneratorIdentities where the catalogue listed them."
+    "are replaced by these, their items' CL15 identities carried as formerGeneratorIdentities where the catalogue listed them.",
+    "scale: wave 1(a) seam 1a.9, when the contrary-motion scales were made to start at the unison, written from the catalogue built before the lane's edits by docs/prompts/runs/curriculum-review-2026-10-05/wave1a/s19_continuity.py."
   ],
   "families": {
     "accompaniment": {
@@ -9306,6 +9307,4800 @@
             "tempoBpm": 72
           },
           "digest": "0e1bccbe988bcbecb1a7b53149020a29e6905dc2adf9abae9c2c6fbd78f56ee3"
+        }
+      }
+    },
+    "scale": {
+      "from": 1,
+      "to": 2,
+      "items": {
+        "exercise.scale.a-flat-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "15a3137ac48cc6468274ea1615a1dbc861428054c1d5248022b2a24fde15456d"
+        },
+        "exercise.scale.a-flat-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "2e091a34c031478005a37449eb5abd5fa8bb7f5c0d7bf795300ec1cac804d7f7"
+        },
+        "exercise.scale.a-flat-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "9ac8fb2c89574b0a79680a42266e93b0d8c5c2d64ffdc5891e3b6812967d9b0b"
+        },
+        "exercise.scale.a-flat-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "3a87b47223a6d985e533881828554d7ca57b74f730b3faa6e8c5c3b4abbe3374"
+        },
+        "exercise.scale.a-flat-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A-",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "7bcb11e3de496dbeb5798352d451cce3b1d6087d09c151efb80f63959e76fd4f"
+        },
+        "exercise.scale.a-flat-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A-",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "64648c48d9f30ea6eb6ce6ae1ba088ad75b1ca4059ef358a35a9f0dc06028157"
+        },
+        "exercise.scale.a-flat-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A-",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "c7898eb8fd6a561f16c1bbc477e2ac24634fffaae64a63c9ffe8f9f9f277c076"
+        },
+        "exercise.scale.a-flat-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A-",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "b1b925a453d0b32fe1fef6a509d406d9ca5814b15394bb15a7cd040c09bc31a2"
+        },
+        "exercise.scale.a-flat-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A-",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "2aa6968db62e8492fdb186552b684537dc48f09ed6124fd6e1bb4cfba7361260"
+        },
+        "exercise.scale.a-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "5dff97e04f9f24490aaed1fbb67306a0d5b659441bc934f9174d9046fe3946be"
+        },
+        "exercise.scale.a-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "dc145a3f3390109e00f500b35ba932ce17d811f0ee119433e59f7327dfaa541d"
+        },
+        "exercise.scale.a-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "ca85512a6bbc0c6104966119373974eefdce40125ddea7b3405a4c840bd8824e"
+        },
+        "exercise.scale.a-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "8d0b2ebc6c7c3ec1f9efa50942faf245847380171b2cc003d5065027d1bac5cb"
+        },
+        "exercise.scale.a-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "23fcc63ae65779970f4dae989282bf684824a2f29d28c9e1ed2167b125e932f4"
+        },
+        "exercise.scale.a-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "71a17594e9f9c3954c103d0c98fa9ed7c86797100a897c6b97f994098e3a4e16"
+        },
+        "exercise.scale.a-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "7e384134ea75ae6da43dc0638d8f481e206ed6e8dfb8132ddf06c3d9c11b1c2c"
+        },
+        "exercise.scale.a-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "68926e54ba885ba4aca0a41ef74067ed416272ee1f193c2601aac6c0cdf9c5dd"
+        },
+        "exercise.scale.a-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "96a04a6a68a1783d6e201a4b108161e5a336226b1ea9c06ee901643b6b665610"
+        },
+        "exercise.scale.a-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "0ac93af823f4934f83756ee2d4370205b532caadf36ade66483a47552c3942bb"
+        },
+        "exercise.scale.a-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "95f02ce925d9b3528d898d2b62fe6fe31e528fb01fff5dab336a855b8b76fbf0"
+        },
+        "exercise.scale.a-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "4a2bba9d17e9d4c67155bd4022bb82635d77636cb51b59e868d4baed24dc1c99"
+        },
+        "exercise.scale.a-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "b01b9955866824abd2bb18a442cce67ae1663ee293fc5f83ebafdc28bc675171"
+        },
+        "exercise.scale.a-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "3d53590b951c4b2ccca93f9596f8e07d8fc718644d530c0fbd6ae4074fb6a2ef"
+        },
+        "exercise.scale.a-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "642e8aa3a51ee359729556ccab26880aad1718b273697710a20ddaa5ae154aa2"
+        },
+        "exercise.scale.a-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "f2d2ff7b99a929e6fc623be0f867b9a9029bcb7d8bf422656d97e653372250ac"
+        },
+        "exercise.scale.a-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c0bdeda132922561a4f72b54c5454f9e674422888e56a17ac5a03a57c08e2df8"
+        },
+        "exercise.scale.a-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "75f476c02a63a5d01f9333637deb014e0a8f9f5b1d8b80dbb6a0d11e1c51b0d5"
+        },
+        "exercise.scale.a-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "ca1404a5e1a300b02e6de5d9086aad592fe8494d063fdb3b83a2f4977f098856"
+        },
+        "exercise.scale.a-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "755c5c34e3e1fdeecfc42dc2cae6146513cdaf0ca52f04797aa6ee2449ae7968"
+        },
+        "exercise.scale.a-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "90b9798e126c678c451b12bb36306fd42fc9eb1001f4c2edacab78967e0625e8"
+        },
+        "exercise.scale.b-flat-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c77111506243cf840f5ca571b9daf4527c75b701d1abceedb1712bfdd072769f"
+        },
+        "exercise.scale.b-flat-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "4ee063fc3691cde2e01c5e062196afa43b800036a9f5456e182025a9b0e0e286"
+        },
+        "exercise.scale.b-flat-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "65938b7026c88620f8f911b56c7cd97c9472a61b7dec85cd6322668b00d76a03"
+        },
+        "exercise.scale.b-flat-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c49ab675e1f36f9884e2c09384bb01b4d4a387fa9ee8bf4e45c72f0397733412"
+        },
+        "exercise.scale.b-flat-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "117b441db30408e9a44dcc0407f5c9aa78131215bb3ab6e377e8fa4865424d3d"
+        },
+        "exercise.scale.b-flat-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "10dbea0280da0a0cca6803b1095eea8a019d7e84bbe048aa23a9c1c626ca87fe"
+        },
+        "exercise.scale.b-flat-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "20995c0ad364b48f99e80f9c9652897881ff10c56f84dcf8fd6ba6942113f54b"
+        },
+        "exercise.scale.b-flat-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "9ae82ddd503cb7a75e0fa0e614f12145116db785534200261e888bd0c76b71e9"
+        },
+        "exercise.scale.b-flat-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "67612755236583b049d6ca9bf84c3b829588b54df0ea81667e5d13f137948986"
+        },
+        "exercise.scale.b-flat-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "1bb6ff19f86ffd0766e9b1e05a356055d8fa72cc2e41f982425c0ed0804f26b1"
+        },
+        "exercise.scale.b-flat-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "4a2050c0b1f15eea699d68535a24797a9e6a3cdd181b1304ad8a04aa54d3bd0a"
+        },
+        "exercise.scale.b-flat-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "3edbed4f5aaada3cd1710ffdc51b7e6f9825c7c41e0f5268528057218be86cf5"
+        },
+        "exercise.scale.b-flat-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "0a81c1043b439ca42dbfe749a4a7456c76aba41cc3c6980b34eef925413b656f"
+        },
+        "exercise.scale.b-flat-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "4cb34aafb17738d6b9cba0f6ae271e1b772f902a7c52947b35bdfdf0da90c6ee"
+        },
+        "exercise.scale.b-flat-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "40c158e24c71fc891790281daa718f8d09b55b4d2c2369114953ad46120bc339"
+        },
+        "exercise.scale.b-flat-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "e76e54080cbc753e639d5bb245c0b2995f34fbf06b80e0bf204cade6fb8fc544"
+        },
+        "exercise.scale.b-flat-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "db08e9fdc12bc09ba50a69c0a4c797613fa9d06957bb213a93391b7efe0a5081"
+        },
+        "exercise.scale.b-flat-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "dd1b20fb13e3233cae2ecf4fe73d281081367262f9d9d5eeb4796220874dda9c"
+        },
+        "exercise.scale.b-flat-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "aba2ab4e206f52664755ae88ca5098fbc27ad2c90c3f43c2dbee77589a854e64"
+        },
+        "exercise.scale.b-flat-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "e7e952693e92cac8ef1964d3766b84afa71518833959809416e0c26029e3a4f2"
+        },
+        "exercise.scale.b-flat-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "dfaa078d1a33c9f22c97fcd663fa9bc262028ef3a28e385049e52cd5b4164ba6"
+        },
+        "exercise.scale.b-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "98d61d3ced628901570cec550065f331bd04e725c0f5bb27c60df3bf9c9f1141"
+        },
+        "exercise.scale.b-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "d7193e3af3a2cbc31666e23709a14cfa4bbe5f5960d506fbbacd118fd43c94a7"
+        },
+        "exercise.scale.b-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "3cf3a0f53d5b84f20c6cd6ac72f773d888357810d562ec6c83829a14d3721134"
+        },
+        "exercise.scale.b-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "9944ffdc5574f115bf319a6dc3ec79af7450ea0974a13031deefa2b00e004c06"
+        },
+        "exercise.scale.b-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "779730c28f6bec819e65754bdaff4400ffcb185a81d6a3aeeba1a8a64c033c85"
+        },
+        "exercise.scale.b-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "09efd0817fad06c638f21c8c6a2d78e55224878b7eb3d20579716f9ab5abe403"
+        },
+        "exercise.scale.b-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "192e68b6a51ff339d97707dd3938cb0f77b86a528f40b673f6bd81ea42e777f5"
+        },
+        "exercise.scale.b-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "3fad9399dd6ba8b0cd038c19c1ca43b69de08d610f54d262c3445d0fc90cd548"
+        },
+        "exercise.scale.b-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "a6ce370c1c025bb512dd59589ec7b5e93f2b8742ee97f38f993c18d133140af6"
+        },
+        "exercise.scale.b-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "6c8414e24d3df429209939b4453bb0f9d26295466140c6d138dc942b9f5cc4a4"
+        },
+        "exercise.scale.b-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "6602dc3d931bf02e15861ced9ac9991812792c501e795a4026af89016b89469e"
+        },
+        "exercise.scale.b-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "e26743cd3185811414817b9e8c3651fd3a26efb4df66dbf0c4199b79fd9b3523"
+        },
+        "exercise.scale.b-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "d12ffb63988f098100a45b5a7217122a5ee507ae6fdc8ac5963b62d007eb0d48"
+        },
+        "exercise.scale.b-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "529d194ddb0b7f7502cdb33fc286b4555cbd87e3516850aa2565dcf9d56bf814"
+        },
+        "exercise.scale.b-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "8141ded23f1100028c1b52de7e0f18c084561537300b6902ed0775373f35e70e"
+        },
+        "exercise.scale.b-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "609b9baf36a8a25c96a7343be784664c40965f0afd3cbf4bf588fbaf8578e47b"
+        },
+        "exercise.scale.b-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "36fde6d064aab47ff5bbe2ed6e7fb867cdd80bfb424cdd1892a792836ab1bcb3"
+        },
+        "exercise.scale.b-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "07d43a7e36781f013362a31b341fa072219c56378c41aaf670a374218d775431"
+        },
+        "exercise.scale.b-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "18772717f352e17aefa3e869467c4504aa139ffc18fbf985098799d4da25c933"
+        },
+        "exercise.scale.b-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "d302467964457f786cad7c27bf216ffdb174b573f59db7ca93811f9ad913313e"
+        },
+        "exercise.scale.b-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "B",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "d3e7491941c84089894afdffbf6fd6b8ff553a449991503da22d9c6dc21282f5"
+        },
+        "exercise.scale.c-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c8710b60b7aca26425cc5d56e42bd9e72c1cd9819fd438d7dddbcb6869f5bf93"
+        },
+        "exercise.scale.c-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "d51f477f3ed304a6f47f59401d830dc3690528073dfc97b5b93f222ebadf393e"
+        },
+        "exercise.scale.c-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "5d4f142105a13a0d1a8223d5901679399827cee45276bb61a7cda73fd5a33cd7"
+        },
+        "exercise.scale.c-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "1f5ef795c92538750a25b2e2727eef433e6682a96482c1b73420df666b00b94a"
+        },
+        "exercise.scale.c-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "50bf70736434d8ff6b8cecc7d3ac9149fd6cab2189d34a65c630255434c18a69"
+        },
+        "exercise.scale.c-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "220e963a0f6647ed9021174b44f8d27f0f79b5eada0ad599ef4363add861b0a1"
+        },
+        "exercise.scale.c-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "089430065dc48de017c9340e9d4fdf840c80983465b18241858e62afed5f33d9"
+        },
+        "exercise.scale.c-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "5bae0ff56628e2e84160e9fcce4c3328a906176bbf8cfdbe61e5dc723b93b4dd"
+        },
+        "exercise.scale.c-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "d2946ab01e9464f4af5ff98bc5667da4256ef0b2b275922c55b0904584e22c4a"
+        },
+        "exercise.scale.c-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "02395009e26957084332daeedfc1e25a065e5c7e8830997cc07fdd51307c8102"
+        },
+        "exercise.scale.c-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "5c24915993d0029ef35864a848685684617e7d3200f4659d89ddcb92643f91f6"
+        },
+        "exercise.scale.c-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "45bed1e5a55511eb705b6f87b476a6b3f9d160af78c7dab3bdb0f43379c760eb"
+        },
+        "exercise.scale.c-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "1b8625e840320260381050acfcda060b0c25b5118bef444c3bba3c30d4eb0556"
+        },
+        "exercise.scale.c-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "87f4ea1a57d647ee4cbc11c50d8a46ccc127e0798b74c21eea309f487c03c02f"
+        },
+        "exercise.scale.c-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "277fb28e0eaafe3d62127f957f26c5ee2446f742953f97ec84d2a4609b939c58"
+        },
+        "exercise.scale.c-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "9a2d9ee629bd7cdafc45c5e417b0e3a2fd70d075c8a2ea0c62fd37debcf01674"
+        },
+        "exercise.scale.c-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "1786574944dcb0d83d1942af39ce097f66948429aa8ae82c48482c6c70d4f093"
+        },
+        "exercise.scale.c-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "7f306f04645c466818c719f618c9ada520453ffdd5fded1baa7412c19e673913"
+        },
+        "exercise.scale.c-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "405c9eebbf39ae528a474af9647e3f0b20a27b869f0783502f2a0db62bd7c583"
+        },
+        "exercise.scale.c-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "fc5fe849d5e21bcc588ed2299fa7e766e51d26b98c47b5c7a1f78a3236b2d388"
+        },
+        "exercise.scale.c-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "4d03b0eaac382193f8c155dba1a066a521d25e5bdc939ec0feea24ec5f965daa"
+        },
+        "exercise.scale.c-sharp-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "d4217dedcc911c02410a492a2b1bb8fa7486bccb6657e9aa16fa76c880d5b290"
+        },
+        "exercise.scale.c-sharp-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "6e2357ae923efc784dd61ba2f6e1f1192b154e6def54af045d3da78e267ae1fd"
+        },
+        "exercise.scale.c-sharp-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "11bacf9b63f687a69faf3679b3f297bd98932a8d08767e23f7eb0beef01bfa18"
+        },
+        "exercise.scale.c-sharp-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "b0cc6b4b3b16e31ff8160c7730ec2ee92fed446f14e99e1eb50541363ae2ce0d"
+        },
+        "exercise.scale.c-sharp-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "44acc007a32fa945669e95d50ebaedbf659eabf191abcf388c4a6a9798f14928"
+        },
+        "exercise.scale.c-sharp-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "7f9e84f83d3403843350bfde7cda71bfeddf93853385e995885c5f3ceabf39b1"
+        },
+        "exercise.scale.c-sharp-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "6d0cba3e9039055b8e85b5547093b1570be9e3f459ccef85d070feb6e2aac163"
+        },
+        "exercise.scale.c-sharp-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "67f71d4d2fd143d1ad774cc68255e0a042944724f6feab1de90c4ae2771230af"
+        },
+        "exercise.scale.c-sharp-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "ccabef93ce1b7c6447d7cc0e8a79b2de35ae5be9c14aaa3cc6b3a1959266999b"
+        },
+        "exercise.scale.c-sharp-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "7ecdc2d844476daadf9c930fcb0d742c446eea2c902679ee4351a779657becbe"
+        },
+        "exercise.scale.c-sharp-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "7359079eb882ca26e5ae80435bca4e6a34061aa54e02d609a48ef263cd1b97bc"
+        },
+        "exercise.scale.c-sharp-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C#",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "d434bad94c40dfad545cf3652e6774869f39e228d90b8cb9d697c4cb2a979b58"
+        },
+        "exercise.scale.d-flat-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "92f0926a41b34e79819f8e034186fa0d719beb5895dbd726f004328663c46e1d"
+        },
+        "exercise.scale.d-flat-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "e52634c49ee03c4327f66749111c0bedbc04c09313a1539a9b8128ea14f298e3"
+        },
+        "exercise.scale.d-flat-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c35322071eb78fccff5068d98a0ab5fc1f7069206f25733a8a8335989c802b82"
+        },
+        "exercise.scale.d-flat-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "4f88cf96d482f5359f6246e26ec98ba79138ecd0b6d9b17c4e81fc2483113d8d"
+        },
+        "exercise.scale.d-flat-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D-",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "f233b6030dc2671d007f9da62ec595268f2578247ee15dd1cbbd065e242eeb32"
+        },
+        "exercise.scale.d-flat-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D-",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "a87ef2f860f1421a177c88f2d1e7a69604d9a2ed835b52f095dfe6f5412a61df"
+        },
+        "exercise.scale.d-flat-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D-",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "561edb7c72129444b84c11db069191015487254a4a92332342eb3eaf72d5d869"
+        },
+        "exercise.scale.d-flat-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D-",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "3b4c487b0cbcb60820cce2239fb660547b2d1823c510e45355e4240646d0a376"
+        },
+        "exercise.scale.d-flat-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D-",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "be23c52e5cf3ea09b15faa3eb1e6a5489f10a120bd53ec542a424cec48731daf"
+        },
+        "exercise.scale.d-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "e4eb8325a43f661476d89dadbb398c77abbcfa2bd46c25c582f697bc210f5177"
+        },
+        "exercise.scale.d-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "7eb564e233aabcaff702e95f42073102552f579a6e552f2b66f54dd719b98286"
+        },
+        "exercise.scale.d-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "69889c436dd2f21dbdef2f96b0767a4168b41c44a844f301873b7163198f492f"
+        },
+        "exercise.scale.d-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "67ae17ada60ef5854b5d4331b4f312a231c9fc2b247d5150356d61fef7f936f0"
+        },
+        "exercise.scale.d-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "a0105d6f790e0d12f66684893d00d4685707adc5d2bbfe0005c337f621f9f01f"
+        },
+        "exercise.scale.d-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "911d45affe659b2f7c08a66bc5258bd222d74fc9c52363b9cf3b76d9bdfdcc2c"
+        },
+        "exercise.scale.d-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "92994e48ee95afef0cc4eb7e8b9dba22784a3bb0460b933029f463659a36480c"
+        },
+        "exercise.scale.d-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "61d21924ff871ec6b785e0edddba10de3dc02e51704f437c085b732d17563a15"
+        },
+        "exercise.scale.d-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "02263fcda300cebf6e11afe0bc8ac8b9340499a2cba61734dddce8c620622f1f"
+        },
+        "exercise.scale.d-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "42af91651fc9e922cd8bb344b90a6f6765db86e8571b41b41b330d01f14924fe"
+        },
+        "exercise.scale.d-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "5c37adfdcb803d6dfae027fcf811e67ba333b6d45362417bb91c328f0fe6c74c"
+        },
+        "exercise.scale.d-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "50436199c38d54a3dd6904a0626fcfd51d0c4ec12251037f17ad21126f57282e"
+        },
+        "exercise.scale.d-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "b9fa839b83552a1c87643e13ae36d09594155b55128348a4d03f7212f25b1762"
+        },
+        "exercise.scale.d-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "fd6c4e349541e8c1d95a504c910c5175c6eaf55ef6c52a72992bac8f1931ab00"
+        },
+        "exercise.scale.d-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "7143d6197c8ee36cd2951ae13552a6d3998d41097bb4c50f6c9f6e265a84f77b"
+        },
+        "exercise.scale.d-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "0f2da6c95e86cf0ca22b8207f79e1c04e78aab60fe4f8a8428166638b8a48390"
+        },
+        "exercise.scale.d-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "89425d6aed9216c75c314f3ce615049e04162ef4c7ff8107f53e6a8664648f5d"
+        },
+        "exercise.scale.d-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "9ba8e6e6b442c72ed596f812c8a049cdcb3a508739da5d3108bc1278b5b4d340"
+        },
+        "exercise.scale.d-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "66024fbe2a6b5032e45081775aee863cdd1e1a860e29d9c3bda7f404bf3864ee"
+        },
+        "exercise.scale.d-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "6ce5053f9778d560da638f2e059a1718949dbf5c69582cda2174b28184cb2a4e"
+        },
+        "exercise.scale.d-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "1e8626e96739f215d990e114f9f9bc541aed7af248194d94116157be293831a5"
+        },
+        "exercise.scale.e-flat-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "046ae6422603cd76db86c9e4e52dca59eb9b0706aca16396992f9c159cf288bc"
+        },
+        "exercise.scale.e-flat-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "37020acc51b4c1887f84ec7c77b3c3d4d0d4b8a82aad0ddb475b38d5903eb97a"
+        },
+        "exercise.scale.e-flat-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "f843e240309b4f8ee072240e47835c5c839b9e4a0d7566ed5b086e028fc63962"
+        },
+        "exercise.scale.e-flat-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "9d4660104a6bd68bf24aad40d96284528fcde80d8f99be591fb88efff8666643"
+        },
+        "exercise.scale.e-flat-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "a84cbe5feaa26852f96ba3db22739e1f3519c78f84bce1986998493741ef26e7"
+        },
+        "exercise.scale.e-flat-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "caed2fd0a43bc0663b54cf2601b87ef14827f09d3631fb10b3866fa1751561ec"
+        },
+        "exercise.scale.e-flat-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "f73b3f5388475fee13235436e140e985784b83c1d015372574aea2d482f35d5f"
+        },
+        "exercise.scale.e-flat-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "6067213d9724de1b2ba9912e8e7846a12bdb047239ff07ae8dc4789bfda9e152"
+        },
+        "exercise.scale.e-flat-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "57b7761dfdcb7784dffd9cb19837ad2ae1a72163df494d9351f382d933b6104f"
+        },
+        "exercise.scale.e-flat-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "a846f985a8560831b6e837e6cbcbaf9cb4ba18f12f11f5f9ea49263dea6bb223"
+        },
+        "exercise.scale.e-flat-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "f06c39de52fecf62a15f3d0cad4cf56e3e085e349469894475855f70e4c0970b"
+        },
+        "exercise.scale.e-flat-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "85a2ed91200dc4c00d0eaff75683f140a1c2410ab0f342426aeeed94146c4393"
+        },
+        "exercise.scale.e-flat-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "95dfa43bdc11f0a004372aef96f5f51905195dee94aeea3a36fdc9afe204a056"
+        },
+        "exercise.scale.e-flat-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "29a570bf5058aa3228e0ca375894a1e6e3bf3c3a0d78e37d939311c9a7d1cff2"
+        },
+        "exercise.scale.e-flat-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "a78cbe260fc7803b2f93191fd4129a0dfcc2857289e6c6f9deec439dc9374a26"
+        },
+        "exercise.scale.e-flat-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "6cfa3bcb2aba51b034a2e72265265cb5a1a48608a3ce44b0242eb949abe47292"
+        },
+        "exercise.scale.e-flat-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "000117a2e5c3187a8609c27ef791cd9744e2203dbc2d3b208df4681d64790f52"
+        },
+        "exercise.scale.e-flat-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c6bbfa1be4450e50ec932ff1416d9f7868e2f733d5b85ce6e9b8938eeedbed4e"
+        },
+        "exercise.scale.e-flat-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "1a1b7cd2305edfad061cfea007948c0d21acf5361297c2cafc6a0b0732e6a44d"
+        },
+        "exercise.scale.e-flat-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "e8cf72a46dd407b1670e09ed51d713f09121139543f4ee2236f711aaf1ef832a"
+        },
+        "exercise.scale.e-flat-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "e5e07d89c2b7b440aaa8bf0d18ce7826adb211a7990dace14a8a1de4a4a5def7"
+        },
+        "exercise.scale.e-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c398a6826d7163c4d3b689209559e787c9c28b6d145a581d38490bb464495d34"
+        },
+        "exercise.scale.e-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "2b7767877bdf4ef113158a6376388e05ae0c278d1fa32e8446906a348a079e42"
+        },
+        "exercise.scale.e-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "8063aad10089978ed244be89a96948e6db77b111ce21b3847fb328847210bb30"
+        },
+        "exercise.scale.e-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "0a32c8a0ea0b54fbeb3914dd07c2c56fe9a72291910ee3083410cd4a01975973"
+        },
+        "exercise.scale.e-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "f0bbfe2e487964e9c4c9f4077983ecc37fbcef1ad90cb6e32ba84cc0a766be8c"
+        },
+        "exercise.scale.e-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "c9afee515da7be7f46206884e6754b50a5df77adbf00bf38f2976a3b91499872"
+        },
+        "exercise.scale.e-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "966b63c3b0f6da5e6c65e2118ba58e05a0f14513123d2a5ec2591e88e6a4c043"
+        },
+        "exercise.scale.e-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "dca394544333626df7f42eecfeb24de034867532e6e43ab38e8fdb6fcc8da870"
+        },
+        "exercise.scale.e-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "cc3c27771c0b44a13bc35e64f9e90d0281ad40f25bf32eb56e7e23fde32b4e52"
+        },
+        "exercise.scale.e-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "6845be921afaa9fd8c8284accab124b34f4f5e43116e6d046628c497cf635466"
+        },
+        "exercise.scale.e-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "b9c86e5f6200f4f73bfaf90b88d5a03dcecb515cf6356c3ba2f68e398b69d549"
+        },
+        "exercise.scale.e-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "65f5e22147ee76a429272e120e438b8433ef07152c77bb60169647ea8a7a759b"
+        },
+        "exercise.scale.e-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "7154c61c928404cff50f251a22c2a46c4c176b06fa57365dadaecce12b2dd51b"
+        },
+        "exercise.scale.e-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "7cce13bdad6fb63aa0f23c6eb1113d773b1a18a337fea99c0f2bc19e4d034f4d"
+        },
+        "exercise.scale.e-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "faa3c91467ffa66e76f64ff055b65ca9bd59bd95881c4f54281344a5e8e3c269"
+        },
+        "exercise.scale.e-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "26e6c258f0d840c505c1e10cfb610032556422a2623a1a32b0df25918a5f668f"
+        },
+        "exercise.scale.e-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "8f4778c1de42cd032ca2ac65351af362150943384c4ae9bfd10f99f66628993c"
+        },
+        "exercise.scale.e-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "4a8532d250b988c043d4d8b6de07e7222af9ddf7f18a646b5b5dc80684fc501f"
+        },
+        "exercise.scale.e-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "f9ad9d828d61bddf5bbfbde2450e4a60f30113fdf2839bbded0dabe71b4b63be"
+        },
+        "exercise.scale.e-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "d8cb4794ce277217f84b56af86c6a57aa7e06960732f2b4a0ac4bc3e2a0bdaa4"
+        },
+        "exercise.scale.e-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "eca0078898f28600fabdaf1cb1b7a4e8554e629da3d8a28b09e72f2068b9a92e"
+        },
+        "exercise.scale.f-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "ac8f1ac492e5d2a54312e553390ad8225fd9f9a04a999028fa240ccfae7807de"
+        },
+        "exercise.scale.f-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "35c35d1e9c3ed685a3e5adadb2223e7d4baf05175767de73a875cae78b10d06f"
+        },
+        "exercise.scale.f-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c30728b69ffe0d1da97cd4e5fe149f3052cdc28cd1897a9e4f64ff2f545f6e39"
+        },
+        "exercise.scale.f-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c39ed86e98c4f779f45ce86ff82479e60657aa619f67a757449f6646780db116"
+        },
+        "exercise.scale.f-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "a5995adfb40388efd3f3edb95ac781f6d6c813dc9330b326050d80987256e74f"
+        },
+        "exercise.scale.f-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "b6b3f8a8a6a2b83e11d1f2c985b7873a91d7638e3b58b7657bf0fad3bc4801fb"
+        },
+        "exercise.scale.f-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "402a62db468278a65fa1ca520d1423b51e63052bcc9311b9f8a5037b5ef887b3"
+        },
+        "exercise.scale.f-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "cfba37b3e89d83806176c4b23baea13be7538dec43911b8596e81d39fcbf9f7d"
+        },
+        "exercise.scale.f-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "b427624d2b79d5d7e7d1f1248dab08866ca964c6d8ff94d9e4a7158eb27cf565"
+        },
+        "exercise.scale.f-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "01c4844ada92ee9ea1203532446add29ef84fd49c58bb94e9d50df8de3cd455a"
+        },
+        "exercise.scale.f-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "22da7b056da6dfaa8d81c1b44e12beebb6cdc2ca536d434084576a0ac60010f2"
+        },
+        "exercise.scale.f-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "f08b9d96e5d74d2677ad175775fdd9257215b2bdfccf815f94fb6e7721fb8521"
+        },
+        "exercise.scale.f-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "02e1a3efaabc2ab0c0b9ae0e7564f27f95897f2a4bcdf22800df3da2e131b1e5"
+        },
+        "exercise.scale.f-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "021411ac88c164e9fbdc1b08b22d53cf8098a8a7a8237fa9f24e9d0700ba6f58"
+        },
+        "exercise.scale.f-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "5d2440b70420cf441896a4629b36823304ddc438654a011ee4f4adf55e85cf3b"
+        },
+        "exercise.scale.f-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "a3b5b28c36bc7941e9649fa4135b6f34e946f5b87c7fa0c72b76fbc3579d65a6"
+        },
+        "exercise.scale.f-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "0e0bfa6e80185420e2e53abb9d1e9c5f69ec5fbb91850d6324ffeec0b707db10"
+        },
+        "exercise.scale.f-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "bcb58eeef3dd01da77ce3dd38426e89d1ffc1af3a040d4ec74bb895264e8591e"
+        },
+        "exercise.scale.f-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "385e05c3d1c130540da5155c40449bb881a8b9912f494a93655c342d54855c06"
+        },
+        "exercise.scale.f-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "af8edf6d16efd2fbcd030eab5721499e846d396fb5ea2ef02fa3b59af7f8af0d"
+        },
+        "exercise.scale.f-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "d5056706a2f4176f1abc9078feb6d1d2c5237130e8c5f4ebc36360ef39f66a0a"
+        },
+        "exercise.scale.f-sharp-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "a87396cb33bb94d411d4934fae19c2e11d6bdb856260410712ef366d2c07b51a"
+        },
+        "exercise.scale.f-sharp-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "8a4641521aeb3fd2730d87c22daa896fa12ca14f2af2928b06a33b5a7afd969c"
+        },
+        "exercise.scale.f-sharp-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "35ad6ea06ff25f4d80533e3d6df4dc3f5f92f4fc0bb5a21134b59b58205a2046"
+        },
+        "exercise.scale.f-sharp-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "3896524fe7610d2a8ec295e9498c45b63343c80914ff75ce5765c405eec98bd3"
+        },
+        "exercise.scale.f-sharp-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "863c33381d6a166af1d9b77ae49053a4f83d0cdc4f23b6a448725dfd0202e997"
+        },
+        "exercise.scale.f-sharp-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "3fec2511c1bd6e08f3de1046ffed3adef1265eff8648cbad1b3b3a2635b798d9"
+        },
+        "exercise.scale.f-sharp-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "49fbee3fc22908d5df08f24b9422a5de4b82170d534d9840ff1c92b30d5c22f0"
+        },
+        "exercise.scale.f-sharp-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "faa4b45007e56506e2d8e8376f72074646508b4631851da818353247a10ed03b"
+        },
+        "exercise.scale.f-sharp-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "72e2d7bd48667f48c1935f262e5ffd0fa4bd32e59465866c902c2eb65e1a5df2"
+        },
+        "exercise.scale.f-sharp-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "dd6186c6ca61e1cf4dadfd9c608f284cb3bfeb21bee926f68ab57ce725a9f4ac"
+        },
+        "exercise.scale.f-sharp-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "4b1a72a94a2b70b9101aa4bb2cdb52712dc54f06b634da10b83832f87f8c4422"
+        },
+        "exercise.scale.f-sharp-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F#",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "bd5cefc170d8414d0983abf6bbae91b2126cf9f1a27e9df4025f166cc3b3b7c0"
+        },
+        "exercise.scale.g-flat-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "5fcdf93e42612815804ebc98e5ab39e0fc78fc26be98296cd4c570dfe1127619"
+        },
+        "exercise.scale.g-flat-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "fa0d9304062b75ae231b6f82d594ff13ea2cc28b8d23019d0c5809905076a26c"
+        },
+        "exercise.scale.g-flat-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "506816628e966dbde3c78eeebd532aeaf2bdaa8fa74163fb590a90485bcd0faf"
+        },
+        "exercise.scale.g-flat-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G-",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "99aa444cf2135cb1f38f62c3515adcfe55079d4325fb851205dc02aa4172331f"
+        },
+        "exercise.scale.g-flat-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G-",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "59bce04e9370485d02b13c8232d20c8f7284234d61378b4d593e8a82496936f4"
+        },
+        "exercise.scale.g-flat-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G-",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "dbae70d725e96f65a0ae99f0a8e629c7bf13522e33f1411b2ccc545809863f11"
+        },
+        "exercise.scale.g-flat-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G-",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "0437f532a783d1fc624f2ec7569a46722794ee002bf572c5685e8d8ec9231c92"
+        },
+        "exercise.scale.g-flat-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G-",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "1ebe55ce22b77def9e3d390070d6e2f7bddedbae49ba51922955d6b8adea953a"
+        },
+        "exercise.scale.g-flat-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G-",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "62eda1a2a70059f9c397bd883357e6efc76a779a8ebeb0d3e52482cf597d6564"
+        },
+        "exercise.scale.g-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "f7316a03da5f19656b2b7725717004e27ca1179020701f792a3a326f8273665f"
+        },
+        "exercise.scale.g-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "cea72f105fe5af57e876f9e03b7d9c780877f4adb076fb26d501fccf4d89be85"
+        },
+        "exercise.scale.g-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "2290ef7b58e1d747867b151bc0b3ae7a8f8e298c3eb8ac8245cb90a6c7ffa6ec"
+        },
+        "exercise.scale.g-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "497bbf050834e161f8560490fcc57824d469d1031f2ab90e3cbc0910dce9e6d6"
+        },
+        "exercise.scale.g-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "3757c214e20b8fba77f902e9fdc5b4a41a6254a604c42fba872cb280220c03d5"
+        },
+        "exercise.scale.g-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "5ff01a0e8cddcaff1107cab6d99922445ff6978256b139cf8a8950c3d1e86cbe"
+        },
+        "exercise.scale.g-major.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "780a908bd285b819a69c800724312b49117b21b7737cbc0f3a3fb0bbe5c7399e"
+        },
+        "exercise.scale.g-major.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "255f61bef6ceba9311cddaadeb84e190a08a4dbff6b2ca885f8fe828e2a8b2f1"
+        },
+        "exercise.scale.g-major.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "13aaa126ad58cf09a72b96b6ae1087d05751a54d57cffed84393a7e6d06eec81"
+        },
+        "exercise.scale.g-major.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "major",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "774eef41f9eca88b34173a26573b5f26351373401cffadf5e3d39fa8a50e9eb1"
+        },
+        "exercise.scale.g-major.2oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "c76bd15c2cb6122465f42305f61457509aa07576486f1acfea9de33e93027039"
+        },
+        "exercise.scale.g-major.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "major",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "8114d80c50cbfb11e2dc48871594512655a2c438050564aeb707a32e498b0717"
+        },
+        "exercise.scale.g-major.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "major",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "59d080e315072311d2174bb6668bb5979bc91eda00eb2046b8de654c9702d4ea"
+        },
+        "exercise.scale.g-major.4oct.similar.both.1": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.25,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 120
+          },
+          "digest": "ab3116f224ca1c63899a4ecc5c1eacd6943bc4030d7db8fc719277ce1e005931"
+        },
+        "exercise.scale.g-major.4oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "major",
+              "octaves": 4,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "ba6d7fa601e71ec395d43ff1c64ba1b72ef56593fca9d974c04c38f49bf077f4"
+        },
+        "exercise.scale.g-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "90fce685bf78ebb7b18595e10d83b206b0655850f4447a2ddc520a6f1e97b03b"
+        },
+        "exercise.scale.g-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "ed36713a52399c738bf270c7049dd0ace23b44d80cd7515259f9970282797dd0"
+        },
+        "exercise.scale.g-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "ecfb06a4c1c015f9a91a088034cd4502854f6c456234be7bfec2b6893ad8988b"
+        },
+        "exercise.scale.g-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "d90f45c819ec099107b13f21a7704590d8ca4120553d8ca69b8052bb855201a5"
+        },
+        "exercise.scale.g-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "5ac849a7748b1022ed395e884b285f7489718256b586e330f06021736200f4a3"
+        },
+        "exercise.scale.g-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "4a5a4baabaf887fc514fba45c8842bfa0ecfc09bda47c0cbaeba629642181056"
+        },
+        "exercise.scale.g-sharp-harmonic-minor.1oct.contrary.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "contrary",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "d4e511b70854b9cc5cf5b1dee90202f0b469b3a5cd586f090ad823a9991ecaa3"
+        },
+        "exercise.scale.g-sharp-harmonic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "a5eecd7036ee715853f4ffaeab65ecd6fcca44411be471a62c879a1244bf48ab"
+        },
+        "exercise.scale.g-sharp-harmonic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "15cd030386156d476945483b793f088f2221c0cd918ca15a9f2a40d1390e5de9"
+        },
+        "exercise.scale.g-sharp-harmonic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "harmonic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c155ecc4c2d6f482467c6cc625211bd36ad5f1706d001fe207385f7dfd9b5c0c"
+        },
+        "exercise.scale.g-sharp-harmonic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "harmonic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "b641f99ead034f9ed8635b284c3d809d34d7a2abaa63c41b08c03b19accaf4a2"
+        },
+        "exercise.scale.g-sharp-harmonic-minor.3oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "harmonic",
+              "octaves": 3,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 84
+          },
+          "digest": "0fc4ec7172a09a22dbe691cfbf8ddd470f2df79874da1f09e59698df2219d290"
+        },
+        "exercise.scale.g-sharp-melodic-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "774983b351d0a53c9516ed3658be31af65da450ee27c16e12d21230aabe5ae66"
+        },
+        "exercise.scale.g-sharp-melodic-minor.1oct.similar.left.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "bd43fd5f734120b0f76b2dd1e1f089f7132ac65b535fb216ca7f5cce2e826d68"
+        },
+        "exercise.scale.g-sharp-melodic-minor.1oct.similar.right.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "melodic",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "008f0cde75d4d436cc020f6620c6d838d52db6e54937dc06a4fd29a35bfd9e33"
+        },
+        "exercise.scale.g-sharp-melodic-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "melodic",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "895de2b220878e892aab60a09f18ebf033e8e456b9a738fe032c57a7dec0ee3c"
+        },
+        "exercise.scale.g-sharp-natural-minor.1oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "natural",
+              "octaves": 1,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "36944413aef8f496dd7ff71ae9b9109eb522daffc512452ef9e3ae81caf7d332"
+        },
+        "exercise.scale.g-sharp-natural-minor.2oct.similar.both.2": {
+          "identity": {
+            "kind": "generator",
+            "family": "scale",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G#",
+              "mode": "natural",
+              "octaves": 2,
+              "motion": "similar",
+              "rhythm": 0.5,
+              "fingeringVerified": true,
+              "hands": "both"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "0a19faca3632588af2a7cbd6e2138d56c26380d0d32a43278236ef21ef9de4e5"
         }
       }
     },

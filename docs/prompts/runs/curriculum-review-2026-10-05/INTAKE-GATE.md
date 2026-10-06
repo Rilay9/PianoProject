@@ -1,6 +1,6 @@
 # The score-intake gate: the plan's first section
 
-Drafted 2026-10-06 at HEAD 72c1b1b9. **Status: specified, not yet run end to end on a real item.** Every repertoire row in the plan stays CANDIDATE until it passes this gate. The first run is one public-domain row, Bizet's Habanera as the habanera model for a new latin.4 at Stage 4 (`briefs/probe-latin4-bizet.md`). The repeatable path is drawn from that run (section (e)), not designed ahead of it.
+Drafted 2026-10-06 at HEAD 72c1b1b9; revised the same day for the outside review `docs/review/responses/b8b96730.md` (required changes 1a-1d). **Status: specified, not yet run end to end on a real item.** Every repertoire row in the plan stays CANDIDATE until it passes this gate. The first run is one row, Bizet's Habanera as the habanera model for a new latin.4 at Stage 4 (`briefs/probe-latin4-bizet.md`), chosen because its left hand prints the cell the rung teaches. The repeatable path is drawn from that run (section (e)), not designed ahead of it.
 
 Copyright and public export are out of scope by the owner's decision (2026-10-05). They gate nothing here. The licence fields stay in the data because `import_pdmx.py` reads them; their values decide nothing in this gate.
 
@@ -25,9 +25,9 @@ One check per row. **Origin** is packet section 13 (§13), or *added* with the r
 | G9 | Playable piano range | §13 | `quarry.py` gate 3 (A0-C8, `LOWEST_PIANO_MIDI` and `HIGHEST_PIANO_MIDI`); at build, `validate.notes_off_the_keyboard` |
 | G10 | Render, readback, cursor and round trip | §13 | `quarry.py` gate 2 (round trip) and gate 5: the app's own loader and cursor-step parity in `app/tests/e2e/content-render.spec.ts`, driven by `render_check.py`. The build's render check repeats it on the catalogue item |
 | G11 | Identity: the file is the work the row names | added: the CSV's titles mislead. In the 2026-10-05 dump, "Maria Elena" was a children's song and "Oblivion" a video-game theme (`docs/review/pdmx-dump-2026-10-05/README.md`) | PARTIAL. `quarry_core.identity` returns MATCH, TITLE_ONLY or MISMATCH. Two limits were observed on 2026-10-06. *L'amour est un oiseau rebelle*, the Habanera under its own first line, returns MISMATCH for the term "Habanera". The composer string "Author anonimo" is read as a named person, which turns *Contra Danza* into a MISMATCH. So the check orders the search, and a reader confirms identity from the notation (D2 `usableScore`, category `identity`) |
-| G12 | Edition duplicates | added: two editions of one work in the catalogue must be a choice, not an accident | `quarry.py` labels `duplicate_of` (folded title plus composer); `commit.py` commits at most two editions of one work (`MAX_EDITIONS`) |
-| G13 | Provenance and checksums | added: the file that passed the gate must be the file that ships | `commit.py` writes `rawSha256` and `convertedSha256` (re-hashed after the copy); `import_pdmx.py` verifies both on every build and fails naming the file |
-| G14 | A legal catalogue item | added: the admitted file must build as an item the app can open | `validate.py`, run by `build.py`'s validate step: the file exists, the duration is plausible, ids are unique, and every option reference resolves |
+| G12 | Edition duplicates | added: two editions of one work in the catalogue must be a choice, not an accident | PARTIAL. `quarry.py` labels `duplicate_of` by folded title plus composer, and `commit.py` commits at most two editions of one work (`MAX_EDITIONS`): code catches same-title duplicates only. The boundary is the probe's own pair. *L'amour est un oiseau rebelle* (`QmVw…`) and *Habanera - Piano Solo* (`Qmc6…`) are two editions of the same aria and do not share a folded title. Edition-family equivalence across alternate or first-line titles is recorded by a reader in the intake record (`Editions compared`). Option not taken: a universal duplicate-work resolver, which the review rules out for now |
+| G13 | Provenance and checksums | added: the file that passed the gate must be the file that ships | `commit.py` writes `rawSha256` and `convertedSha256` (re-hashed after the copy); `import_pdmx.py` verifies both on every build and fails naming the file. The record also states the item's history in the repository: an earlier commit, a former identity in `tools/content/former_identities.json`, or a retirement |
+| G14 | A build-valid, openable catalogue item | added: the admitted file must build as an item the app can open | `validate.py`, run by `build.py`'s validate step: the file exists, the duration is plausible, ids are unique, and every option reference resolves |
 | G15 | Excerpt-cut fidelity (only for an item admitted as an excerpt) | added: the learner is given the cut, not the source (CK-7) | NO TOOL YET. `excerpts.py` cuts with music21 and refuses a repeat, a volta or a jump inside the range. Nothing compares the cut's events with the source bars. Reuse table below |
 
 **Mapping from `analyse` to the packet's shapes (used by hand until G6 has code).** Option not taken: renaming `analyse`'s classes in code now. That would be gate code before the probe has shown which split matters.
@@ -128,7 +128,8 @@ Excerpt: bars <from>-<to> (printed, 1-based, pickup counted), selection <both|ri
 Reason for the cut: <musical boundary as read from the notation, and the option not taken>
 Claim checks (second step, not the gate): <check, tool, result>
 
-Personal library admission: ADMITTED | NOT ADMITTED - <date>, <pdmx.json id>
+History: <earlier commits, former identities or retirements of this file, with the record entry; "none found" with the search run>
+Personal library admission: ADMITTED | RE-ADMITTED (already in the catalogue; re-checked through this gate) | NOT ADMITTED - <date>, <pdmx.json id>
 Curriculum admission: ADMITTED | CANDIDATE | NOT ADMITTED - <rung>, <role>, <D2 event id>
 Public export: out of scope (owner decision 2026-10-05); not a gate, not recorded as a decision
 By hand: <each step no tool performed, and who did it>
@@ -139,44 +140,56 @@ Unverified: <what no check covered, including "not heard">
 
 ## (d) "Plan finished", and the distance from it
 
-**Definition.** The plan is finished when all three hold:
+**Definition** (in the unit the map dispatches, the learner ability station; the reviewer's sentence, `docs/review/responses/b8b96730.md` 1a):
 
-1. Every rung has a decision (real excerpt, generated drill, or both) with its source named.
-2. This gate is specified.
-3. No open question remains except those only a listener could answer.
+> The plan is finished when every required ability station has a decided supply/disposition (no `SOURCE-NEEDED` station remains), the map's existing trace still covers every MUST/accepted target row, the intake gate is specified, every required import has a terminal disposition, and no unresolved question remains except an explicitly listener-only or owner-only one.
 
-A real excerpt counts only once its item has passed this gate and holds a curriculum admission in an intake record.
+A station's supply is "decided" when the map names it: a generated drill (CONTROL), or a real score or excerpt (MODEL/TRANSFER, MUSIC). A real score's import is terminal only when it is ADMITTED, REJECTED, NOT NEEDED or SUPERSEDED.
 
-Option not taken: "every repertoire item admitted". That would make the plan wait on builds the plan itself schedules.
+Options not taken:
+- "every rung has a decision": the earlier wording here. Nothing could count it, because the map names a station's rungs only in prose;
+- "every repertoire item admitted": that would make the plan wait on builds the plan itself schedules, and it would treat a legitimate rejection as distance.
 
-**Counting.** `count_plan_distance.py`, beside this file, counts from `ABILITY-MAP.md`, `content/sources/pdmx.json`, `intake/` and this file. **The map is keyed by ability block and station, not by rung, so the count is per station.** A CONTROL station is the drill decision; a MODEL/TRANSFER or MUSIC station is the real-score decision. Per-rung counting is not done, because the rung each station serves is named only in prose ("Tracks:" lines).
+**Counting.** `count_plan_distance.py`, beside this file, measures that sentence part by part:
+- **Stations.** Section 2's station tables, with the dated state lines applied.
+- **The trace.** It runs `count_ability_map.py`, and that script's exit code is the trace check. The rung and row trace stays that script's job.
+- **Imports.** One line per asset an IM id names, each with a status read by hand from the map's IM rows (5.4, `:935-939`), the new-imports amendment (`:941`) and the amendment lines under each block (cited per line in the script). Grouped ids count one disposition per asset: IM-3 names Bizet and *Contra Danza*, IM-10 *After You've Gone* and the *Autumn Leaves* transcription, IM-14 *Maoz Tzur* and *Dreidel Song*. IM-5 is conditional: it exists only if W14 chooses "replace". The list is a constant in the script, not a database. The script fails when the map gains or loses an IM id the list does not match.
+- **Questions.** Section 8.6, classified by hand in the script.
+- **The gate.** This file's five headings.
 
-Two parts of the count are hand classifications inside the script, listed there: the open questions of section 8.6, and one prose state change (A7c.3 CONTROL, the G14 contract). Output on 2026-10-06, after this file was written. It is abridged: the 22 applied-amendment lines, the 3 lines left for a hand check, the open-item list and the IM list are omitted; run the script for the full output.
+Output on 2026-10-06, after the revision. It is abridged: the applied state lines, the three lines left for a hand check, the open-item list and the per-asset import lines are omitted; run the script for the full output.
 
 ```
 PLAN DISTANCE (count_plan_distance.py)
 Stations: 112 in 28 blocks; as tabled: EXISTING 18, REPAIR 27, NEW 26, SOURCE-NEEDED 9, SHARED 28, NO-SEPARATE-ARTIFACT 4
-  after 22 'State X -> Y' amendment lines: EXISTING 17, REPAIR 28, NEW 29, SOURCE-NEEDED 6, SHARED 28, NO-SEPARATE-ARTIFACT 4
-  stations with no decided source (SOURCE-NEEDED after amendments): 6
+  after 22 state lines applied: EXISTING 17, REPAIR 28, NEW 29, SOURCE-NEEDED 6, SHARED 28, NO-SEPARATE-ARTIFACT 4
+  stations without a decided supply (SOURCE-NEEDED): 6
     A7a.2 MODEL/TRANSFER
     A7b.1 MODEL/TRANSFER
     A7b.1 MUSIC
     A7c.4 CONTROL
     A7c.4 MODEL/TRANSFER
     A7c.4 MUSIC
-PDMX CIDs named in the map: 31; shipped 4; not shipped (need the intake gate) 27
-IM ids named: 14 (IM-1 ... IM-14)
-Intake records: 0; admitted to the curriculum: 0
-Section 8.6 items: 21; closed 3, listener-only 2, open 14, out-of-scope 2
+Trace (count_ability_map.py): OK, exit 0
+Import dispositions: 17 assets under 14 IM ids; terminal 1; unresolved 16
+  intake records: 0; with a curriculum admission: 0 (read beside the list, not subtracted)
+Section 8.6 items: 21; closed 3, listener-only 2, open 14, owner-only 2
 Gate specified: yes (5/5 section headings in INTAKE-GATE.md)
-DISTANCE: 6 stations without a decided source + 14 imports (IM ids) without a curriculum admission + 14 open questions + 0 gate not specified
-  ceiling beside it: 27 PDMX CIDs named in the map and not shipped
+DISTANCE: 6 stations without a decided supply + 16 unresolved import dispositions + 14 open questions + 0 gate not specified + 0 trace failing
+  ceiling beside it: 27 PDMX CIDs named in the map and not in pdmx.json
 ```
 
-**Read it as three numbers that only go down: 6, 14 and 14.**
-- The 14 imports are the map's own list (IM-1 to IM-14). The 27 CIDs are a ceiling: they include comparison editions and optional-shelf scores that no station depends on.
-- The 14 open questions are the map's section 8.6 as written on 2026-10-05. Records written after the map are not read; for example, `WAVE1-FACTS.md` may already answer item 1.
-- **Stale, found while drafting:** item 10 (7) says Bizet and *Contra Danza* "were not dumped". Both are in `docs/review/pdmx-dump-2026-10-05/` (xml and summary, "added on the second request"). The item stays open because the printed-habanera check has still not been run; the probe answers it.
+**Read it as three numbers that only go down: 6, 16 and 14.**
+- **6 stations.** Six stations still have no decided supply.
+- **16 imports.** The one terminal disposition is *Contra Danza*, REJECTED as a habanera model: the map's line `:1181` says it "cannot serve this row". The 27 CIDs are a ceiling only: they include comparison editions and optional-shelf scores that no station depends on.
+- **14 questions.** The 8.6 count. The two owner-only items are the copyright and public-build items the owner closed as out of scope on 2026-10-05.
+
+**What the count can and cannot show.**
+- **It is a reading of the map as committed at `b8b96730`, not current truth beyond that commit.** Records the map has not consumed are not read.
+- *Blue Bossa* prints A7b.1's minor ii-V-i (Dm7♭5, an altered G7, Cm6), by the outside-review packet read after that map. Once the map consumes that, A7b.1's MODEL needs no score search, and two of the six stations may close.
+- The wave 1(a) landing record (`docs/pending-review.md:43081-43082`) replaced hymns.2's Joyful edition with *Ode to Joy* and named O Christmas Tree's bar-32 C♭ a misprint in the text. That may settle IM-5 (NOT NEEDED) and bears on IM-4, but the map's IM rows do not say so yet, so the count leaves both unresolved.
+- `WAVE1-FACTS.md` may already answer 8.6 item 1.
+- **A stale map line found in the revision.** The map's `:1181` describes `QmVw…` as an edition outside the dump's list, which is true, and the brief's preflight found more: that edition has been in the catalogue since 2026-09-22 (`song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx`, see the brief's Station 1). IM-3 stays unresolved until the probe records its disposition.
 
 ---
 

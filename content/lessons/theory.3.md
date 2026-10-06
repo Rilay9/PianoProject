@@ -6,7 +6,7 @@ videos:
   - label: "Identifying Intervals (Perfect, Major, Minor, Augmented, Diminished) - Music Theory for Beginners"
     url: "https://www.youtube.com/watch?v=Hwx7KSEi4z8"
     teacher: "Online Piano Learning"
-readingTime: 3
+readingTime: 4
 ---
 
 **An interval** is the distance between two notes, named by counting letter names
@@ -32,9 +32,11 @@ a half step above the last sharp. Flats arrive B♭ E♭ A♭; the key is the
 second-to-last flat. Two rules and one fact, because the flat rule
 needs two flats to point at: one flat is F major.
 
-**I, IV and V by ear.** **I** is home and settled. **IV** feels like stepping away — it is the
+**I, IV and V by ear.** These three sound different in a way you can learn to
+hear. **I** is home and settled. **IV** feels like stepping away — it is the
 "amen" chord. **V** is unstable and pulls back. Listen to a folk song and put
-your hand up at each change. Nothing drills it yet — the cadence drill arrives on the next rung of
+your hand up at each change; you will be right more often than you expect within
+a week. Nothing drills it yet — the cadence drill arrives on the next rung of
 this track, at Stage 4 — so this one is homework for your listening.
 
 **Rhythm reading.** The card shows a two-bar rhythm and you tap it against the
@@ -48,10 +50,12 @@ the score is how long a chain you kept. On this rung it is the white keys
 around middle C, and the keys light up, name themselves and land on the staff as
 the chain plays, so the only thing you have to hold is the order; take that help away with the
 chips on the card once you no longer need it. Sing the chain before you touch a
-key.
+key — a chain you can sing is a chain you can find.
 
 **Tools for this rung.** *Simon* is the button for the chain game above: it
-opens *Simon — the white keys around middle C*, the one this rung lists. Nothing else about the run is marked.
+opens *Simon — the white keys around middle C*, the one this rung lists, with
+the keys lit while the chain plays. The longest chain you kept is the score,
+and nothing else about the run is marked.
 
 **Common mistake.** Learning interval names without ever singing them. Theory
 that never reaches your ear stays a filing system.

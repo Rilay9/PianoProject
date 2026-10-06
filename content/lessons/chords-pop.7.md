@@ -20,7 +20,7 @@ play.
 
 **add9** is a major triad with the ninth added and the seventh left out. It is
 a sound you will hear in pop piano, and it is not a ninth chord — a ninth chord has the
-seventh in it and sounds like jazz. Play C, Cadd9 and C9 in a row and the
+seventh in it, a sound common in jazz, soul and funk. Play C, Cadd9 and C9 in a row and the
 difference is obvious and worth knowing.
 
 **Where the colour goes.** Spread the notes. The same four pitches under one hand

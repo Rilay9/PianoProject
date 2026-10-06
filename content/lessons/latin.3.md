@@ -19,6 +19,11 @@ three-side first, son 2-3 the other way round. The commonest mistake is to count
 the two bars separately. It is one unit; lose that and the pattern flips, which
 sounds like the band turning over.
 
+**Two more claves are on the list.** The *rumba clave* is the son with one stroke
+moved: the third stroke of the three-side comes half a beat later, on the "and"
+of 4 instead of on beat 4. The *bossa clave* keeps the son's three-side and moves
+the last stroke of the two-side half a beat later, from beat 3 to the "and" of 3.
+
 **Clap it before you play it.** The clave exercises here are written on a single line
 with nothing to read but the rhythm, which is the point — there are no notes in
 the way. Clap along until you stop counting, then keep clapping while you say

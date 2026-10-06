@@ -24,10 +24,9 @@ groups carry over from key to key and a fingering chosen afresh each time will
 not get faster.
 
 **Contrary motion** is easier than it sounds and worth doing early: both thumbs
-move at the same time, so the hands mirror each other rather than tracking two
-different passages. The two-octave C major here is the one to start on: the
-left hand begins on the C above the right hand's, so in the first bar they pass
-through each other.
+start on the same C and move at the same time, so the hands mirror each other
+rather than tracking two different passages. The two-octave C major here is the
+one to start on.
 
 **Arpeggios and inversions** are the same shape reached three ways. The C major
 arpeggio hands together is the arpeggio; play the inversions until you stop

@@ -30,7 +30,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 2 | `2.2` | 6 | 8 | 1.1–2.4 | Merrily We Roll Along (1.1), Michael, Row the Boat Ashore (1.4), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2), Sakura (2.2), Alouette (2.3), … and 2 more |
 | 2 | `2.3` | 3 | 7 | 2.0–4.1 | Was wollen wir trinken (2.0), Happy Birthday to You (2.3), Dark Eyes (2.3), Skip to My Lou (2.5), Auld Lang Syne (2.8), Jingle Bells (chorus, in G major with block chords) (3.2), … and 1 more |
 | 2 | `2.4` | 4 | 7 | 2.2–5.1 | Greensleeves (simple) (2.4), Streets of Laredo (first half, 17 bars) (2.5), Careless Love (2.6), Cielito Lindo (simple) (3.0), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), … and 1 more |
-| 2 | `2.5` *(song-optional)* | 8 | 2 | 2.2–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (easy variation) (4.1) |
+| 2 | `2.5` *(song-optional)* | 8 | 3 | 2.2–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (in G major) (3.1), Ode to Joy (easy variation) (4.1) |
 | 3 | `3.1` | 7 | 6 | 1.1–3.2 | Korobeiniki (2.1), Loch Lomond (2.2), Scarborough Fair (2.3), Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), Oh When the Saints Go Marching In (in F major) (3.2) |
 | 3 | `3.2` | 6 | 5 | 2.3–4.3 | Happy Birthday to You (2.3), Jingle Bells (chorus, in G major with block chords) (3.2), Oh When the Saints Go Marching In (in F major) (3.2), Yankee Doodle (4.0), Oh My Darling Clementine (4.3) |
 | 3 | `3.3` | 6 | 3 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
@@ -70,13 +70,13 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 6 | `holiday.6` | 3 | 4 | 6.1–7.3 | Carol of the Bells (Shchedryk) (6.1), O Holy Night (piano solo) (6.8), Silent Night (Ondruš setting) (7.1), Joy to the World (piano solo) (7.3) |
 | 7 | `holiday.7` | 3 | 3 | 6.3–7.3 | Waltz of the Flowers (The Nutcracker) (6.3), Dance of the Sugar Plum Fairy (The Nutcracker) (6.3), Skating (6.8) |
 
-## Hymns & gospel (`hymns-gospel`)
+## Hymns & spirituals (`hymns-gospel`)
 
 5 rung(s), stages 2–6.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 2 | `hymns.2` | 3 | 4 | 1.4–3.2 | Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Swing Low, Sweet Chariot (2.4), Joyful, Joyful, We Adore Thee (2.5) |
+| 2 | `hymns.2` | 3 | 4 | 1.1–3.2 | Ode to Joy (theme) (1.1), Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Swing Low, Sweet Chariot (2.4) |
 | 3 | `hymns` | 5 | 11 | 2.6–5.4 | What a Friend We Have in Jesus (2.6), Come Thou Fount of Every Blessing (2.7), Just a Closer Walk with Thee (3.1), Oh When the Saints Go Marching In (in F major) (3.2), Greensleeves (with chords) (3.3), Simple Gifts (2-Part Round) (3.9), … and 5 more |
 | 4 | `hymns.4` | 3 | 5 | 3.2–5.7 | Amazing Grace (four parts) (4.6), Rock of Ages (4.9), Abide with Me (5.3), Joyful joyful we adore thee (5.4), O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler (5.7) |
 | 5 | `hymns.5` | 3 | 5 | 2.6–5.4 | What a Friend We Have in Jesus (2.6), This Little Light of Mine (2.7), Down By The Riverside (2.8), Just a Closer Walk with Thee (3.1), As the Deer (4.5) |

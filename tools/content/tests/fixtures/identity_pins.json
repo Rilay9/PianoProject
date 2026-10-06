@@ -8,7 +8,8 @@
     "Re-pinned by D0a, each with its version moved, where the spelling policy changed the notes: seventh_arpeggio, broken_seventh, seventh_voicing, ii_v_i, four_chord_loop, tritone_sub, walking_bass, open_voicing, passing_chord.",
     "Re-pinned by CL15, each with its version moved, where its notes changed: tremolo_octaves (the key's own thirds), pentatonic (the five-note form up and down twice), syncopation (two ties in the tie drill), interval_reading (the first note any degree of the position), walking_bass (the line ends on the tonic). Each family's unchanged items keep learner continuity through tools/content/generator_continuity.json, not through the pin.",
     "Re-pinned by G30, each with its version moved and its digest unchanged: the 42 families whose contract called their printed fingering the generator's own convention, not a published source, stopped printing it, and no item's notes changed. Their items keep learner continuity through tools/content/generator_continuity.json.",
-    "Re-pinned by G30's fix-forward (docs/review/responses/09ec1337.md §3): repeated_notes, its version moved and its digest unchanged, its unsourced printed fingering withdrawn and the drill's solution declared in its row."
+    "Re-pinned by G30's fix-forward (docs/review/responses/09ec1337.md §3): repeated_notes, its version moved and its digest unchanged, its unsourced printed fingering withdrawn and the drill's solution declared in its row.",
+    "Re-pinned by wave 1(a) seam 1a.9, its version moved: scale, where the 16 contrary-motion items that did not start at the unison now do; its 236 unchanged items keep learner continuity through tools/content/generator_continuity.json."
   ],
   "families": {
     "accompaniment": {
@@ -197,9 +198,9 @@
       "digest": "97005864711bb947b6c4dcf98f2fee12853b35d0d603420cd0581e273b719f53"
     },
     "scale": {
-      "version": 1,
+      "version": 2,
       "items": 252,
-      "digest": "964d226daf6628b49dc0bcc7591586b557ceede8cacb6a9bbea8de2749040abf"
+      "digest": "35638e322e431576549fcfec438defdf62116c6e1fb2ab6c3e9e4d66d035b38e"
     },
     "secondary_rag": {
       "version": 2,

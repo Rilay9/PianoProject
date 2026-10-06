@@ -7,6 +7,7 @@ inline `[V:n]` voice form into one part plus one empty part, and it discards
 """
 from __future__ import annotations
 
+import re
 import sys
 import unittest
 from pathlib import Path
@@ -176,3 +177,78 @@ class TestVoiceClefs(unittest.TestCase):
     def test_a_voice_with_no_clef_is_not_listed(self) -> None:
         text = "X:1\nK:C\nV:1\nV:2 clef=bass\n"
         self.assertEqual(parse_voice_clefs(text), {"2": "BassClef"})
+
+
+class TestChordMemberFingering(unittest.TestCase):
+    """
+    A chord written with a finger on each member, `[!1!C!3!E!5!G]`.
+
+    The scan used to treat everything between the brackets as one note event
+    and read no mark inside it, so seven authored tunes (the chord-bearing
+    Greensleeves and Happy Birthday files among them) shipped with every
+    chord-member finger missing while `docs/03` §5 and the lesson text promise
+    one. These read the build's own path, `convert_file`, and the .mxl it
+    writes: the mapping alone would pass with the marks still lost.
+    """
+
+    ABC = (
+        "X:1\nT:Chord fingers\nL:1/4\nM:4/4\nK:C\n"
+        "V:1 clef=treble\nV:2 clef=bass\n"
+        "[V:1] !1!G !2!A [!1!C!3!E!5!G] !4!c |]\n"
+        "[V:2] !5!C, [!2!E,!1!G,] z2 |]\n"
+    )
+
+    def written_marks(self, abc: str | None = None) -> list[tuple[str, int | None]]:
+        import tempfile
+
+        from convert import convert_file
+        from tests.mxlutil import read_mxl
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "chord-fingers.abc"
+            source.write_text(abc or self.ABC, encoding="utf-8")
+            dest = Path(tmp) / "chord-fingers.mxl"
+            convert_file(source, dest)
+            xml = read_mxl(dest).xml
+        out: list[tuple[str, int | None]] = []
+        for block in re.findall(r"<note>.*?</note>", xml, re.S):
+            step = re.search(r"<step>([A-G])</step>", block)
+            if not step:
+                continue
+            finger = re.search(r"<fingering[^>]*>(\d)</fingering>", block)
+            out.append((step.group(1), int(finger.group(1)) if finger else None))
+        return out
+
+    def test_the_extractor_keeps_each_member_of_a_chord(self) -> None:
+        abc = "X:1\nK:C\nV:1\n!1!G [!1!C!3!E!5!G] !4!c |]\n"
+        self.assertEqual(extract_fingerings(abc), {"1": {0: 1, 1: {0: 1, 1: 3, 2: 5}, 2: 4}})
+
+    def test_a_mark_before_the_bracket_still_belongs_to_the_whole_event(self) -> None:
+        self.assertEqual(extract_fingerings("X:1\nK:C\nV:1\n!2![CEG] c |]\n"), {"1": {0: 2}})
+
+    def test_every_finger_lands_on_its_own_note_in_the_written_score(self) -> None:
+        notes = self.written_marks()
+        # Right hand: G A, then C E G with 1 3 5, then c. Left hand: C, then E G with 2 1.
+        self.assertIn([("C", 1), ("E", 3), ("G", 5)], [notes[i : i + 3] for i in range(len(notes))])
+        self.assertIn([("E", 2), ("G", 1)], [notes[i : i + 2] for i in range(len(notes))])
+        self.assertEqual(
+            sorted(m for _, m in notes if m is not None),
+            sorted([1, 2, 1, 3, 5, 4, 5, 2, 1]),
+        )
+
+    def test_a_chord_written_downward_keeps_each_finger_on_the_note_it_was_written_beside(self) -> None:
+        notes = self.written_marks(
+            "X:1\nT:Down\nL:1/4\nM:4/4\nK:C\nV:1 clef=treble\n"
+            "[V:1] [!5!G!3!E!1!C] z3 |]\n"
+        )
+        self.assertEqual(sorted(notes), sorted([("G", 5), ("E", 3), ("C", 1)]))
+
+    def test_a_chord_with_a_gap_in_its_marks_is_refused_not_misplaced(self) -> None:
+        from music21 import converter
+
+        from abc_tools import apply_fingerings, prepare_abc
+
+        abc = "X:1\nT:Gap\nL:1/4\nM:4/4\nK:C\nV:1\n[V:1] [C!3!EG] z3 |]\n"
+        score = converter.parse(prepare_abc(abc), format="abc")
+        with self.assertRaises(ValueError):
+            apply_fingerings(score, extract_fingerings(abc))

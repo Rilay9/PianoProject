@@ -45,8 +45,8 @@ pianos send only 0 or 127; the app says so instead of marking you down.
 
 **The rest of the list.** The *octave tremolo* in the left hand shakes between
 the two notes of an octave in sixteenths, two beats on each step of a C scale;
-like the broken octaves, it is often helped by a small rotation of the forearm,
-and it is the exercise here where the forearm tightens first. The *broken
+like the broken octaves, it is often helped by a small rotation of the forearm.
+The *broken
 dominant sevenths*, A and A flat, run each chord's four notes up and back in
 sixteenths and then again an octave higher, in both hands at once.
 
@@ -64,8 +64,8 @@ are also producing. Then swap hands, because that is the other exercise.
 left hand, loops the whole of it and raises the tempo a notch for each clean
 pass.
 
-**When to stop.** Octaves, double notes and the tremolo are where strain gathers
-fastest. If your forearm or wrist tightens or aches, stop: rest, and come back to
+**When to stop.** While practising octaves, double notes or tremolo, if your
+forearm or wrist tightens or aches, stop: rest, and come back to
 it slower, or another day. Pain is never something to play through; *When to
 stop* in the practice track, and core 4.4, say more.
 

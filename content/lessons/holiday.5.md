@@ -11,7 +11,7 @@ for note, the way somebody meant them to sound. What is left is playing it, and
 that turns out to be the harder job.
 
 **Most of a written carol is one figure.** *Carol of the Bells* is the clearest
-case there is — four notes, over and over, in thirty-three of its forty bars,
+case there is — four notes, over and over: the same figure in twenty-five of its forty bars, and the same shape a third higher in four more,
 while the left hand moves one note at a time underneath. A figure that repeats
 is not easier than a figure that changes. It is only shorter to learn, and it
 will show every unevenness you have.
@@ -43,8 +43,8 @@ hand keeping a steady rhythm while the other does not.
   in three, twenty-five bars, with the chord symbols printed above it as well.
   Its left hand is a six-note broken chord in most bars and a held chord in the
   rest.
-- *Auld Lang Syne* is in F and in four, twenty bars, and both hands are in
-  thirds and sixths nearly throughout. Nothing here repeats; the work is making
+- *Auld Lang Syne* is in F and in four, twenty bars, with the right hand often
+  in thirds and sixths and the left mostly in octaves and fifths. Nothing here repeats; the work is making
   a thick texture sound like one line.
 - *Mary Did You Know* is the long one, sixty-two bars in B minor, and the
   slowest. It is where the Ladder earns its keep.

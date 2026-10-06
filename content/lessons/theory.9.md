@@ -20,10 +20,10 @@ usually the first one changed, and hearing *how* it was changed is the skill.
 different ending, you have half as much to remember. Almost all short music is
 built this way.
 
-Three names cover most of what you will take down or find: **ABA**, a section,
-a contrasting one, then the first again; **AABA**, four eight-bar sections where
-the third, the *bridge*, differs — the 32-bar form of many popular songs and
-standards; and **binary**, AB, two halves, each often repeated.
+Three useful form names here are **ABA**, a section, a contrasting one, then the
+first again; the common 32-bar **AABA** song form, with four eight-bar sections
+and a contrasting third section, the *bridge*; and **binary**, AB, two halves,
+each often repeated.
 
 **Read something new every day.** The sight-reading generator at level 6 makes
 music you have never seen, in keys up to four sharps or flats, with triplets and a

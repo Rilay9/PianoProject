@@ -591,6 +591,9 @@
                   "why": "A run with the score hidden is not recorded as such, and the two runs are not compared."
                 }
               ],
+              "prerequisites": [
+                "4.6"
+              ],
               "estimatedDays": 21,
               "tools": [
                 {

@@ -1163,7 +1163,12 @@ class TestEntryPointsRunAsScripts(unittest.TestCase):
             for path in (TOOLS / "pdmx").glob("*.py")
             # `paths.py` and `composers.py` are libraries, not commands: they
             # have no argument parser and nothing to print a usage line with.
-            if path.name not in {"__init__.py", "paths.py", "composers.py"}
+            # `quarry_core.py` and `summarise_xml.py` are the research quarry's
+            # libraries (2026-10-05, outside CI by the README) and
+            # `test_quarry_identity.py` is that quarry's own test runner, not a
+            # command; none of the three takes arguments.
+            if path.name not in {"__init__.py", "paths.py", "composers.py",
+                                 "quarry_core.py", "summarise_xml.py", "test_quarry_identity.py"}
         )
 
     def test_each_script_reports_its_own_usage(self) -> None:

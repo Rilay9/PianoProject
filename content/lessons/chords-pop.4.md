@@ -6,7 +6,7 @@ videos:
   - label: "I vi IV V: Easy And Fun Chord Progression Tutorial"
     url: "https://www.youtube.com/watch?v=ZPabFqOPrkg"
     teacher: "PianoLessonsOnline.com"
-readingTime: 3
+readingTime: 4
 ---
 
 Three chords get you folk songs. Two more get you most of pop music.
@@ -28,9 +28,9 @@ inversions, until you can play it while thinking about something else. Then try
 starting on a different chord of the same loop: vi–IV–I–V is the same four
 chords and a completely different mood.
 
-**Slash chords.** C/E is a C chord with E in the bass, and its use is to create a
-walking bass line under static harmony: C, C/E, F, C/G. The bass moves by step
-while the chords barely change, and that stepwise bass is what makes an
+**Slash chords.** C/E is a C chord with E in the bass, and one use is a bass
+line that moves while the harmony barely does: C, C/E, F, C/G puts C, E, F and G
+in the bass, a skip and then steps, under only C and F. That moving bass is what makes an
 arrangement sound composed rather than blocked out.
 
 **Repertoire for this rung.** Seven options. *Greensleeves* is here twice, with

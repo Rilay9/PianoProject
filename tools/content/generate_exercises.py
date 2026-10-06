@@ -1099,7 +1099,20 @@ def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
         return up + down if direction == "up" else list(reversed(up)) + up[1:]
 
     rh_p = run(rh_start, "up")
-    lh_p = run(lh_start, "up" if spec.motion == "similar" else "down")
+    if spec.motion == "similar":
+        lh_p = run(lh_start, "up")
+    else:
+        # Contrary motion starts both thumbs on the same key-note and mirrors outwards (core 4.1;
+        # ABRSM Grade 1, "hands starting on the tonic"). The left hand's run used to start at the top
+        # of its own preferred range, `lh_start` plus the span, so where it began depended on the key:
+        # an octave below the right hand in six one-octave majors and four minors, an octave above it
+        # (the hands crossed) in six two-octave majors (wave 1(a) seam 1a.9, CK-1). It now begins on
+        # the right hand's first note and runs down the same span. Eight octaves of keyboard do not
+        # exist, so a span that would leave it is refused rather than written.
+        lh_low = by_octaves(rh_start, -spec.octaves)
+        if lh_low.midi < KEYBOARD_BOTTOM:
+            raise ValueError(f"{spec.tonic}: {spec.octaves} octaves in contrary motion do not fit on a piano")
+        lh_p = run(lh_low, "down")
 
     rh_f = lh_f = None
     if fingered:
@@ -5077,7 +5090,7 @@ def write_tumbao(lh: stream.PartStaff, tonic: str, plan: list[tuple[int, str]]) 
 def write_montuno(rh: stream.PartStaff, tonic: str, offsets: list[float],
                   voices: int, repetitions: int) -> None:
     """
-    The guajeo on the clave's own strokes, appended to `rh`, two bars at a time.
+    The clave's own strokes as chords, appended to `rh`, two bars at a time.
 
     Same reason as `write_tumbao`: one copy of the figure. The attacks are
     `offsets` and nothing else, because playing against the clave is the one
@@ -5150,10 +5163,12 @@ def make_montuno(
     tonic: str = "C", voices: int = 2, clave: str = "son-3-2", bpm: int = 88,
 ) -> tuple[stream.Score, dict]:
     """
-    The right-hand montuno, locked to the clave.
+    The right-hand clave-stroke study, locked to the clave.
 
-    A guajeo is chord tones on the clave's own strokes, repeated without
-    variation for as long as the section lasts — the lesson's phrase is that
+    A chord on each of the clave's own strokes, repeated without variation: the
+    clave's rhythm played as block chords, a rhythm-lock study that prepares the
+    montuno. It is not itself a guajeo, the broader repeated syncopated ostinato
+    that is often arpeggiated. The lesson's phrase for the montuno is that
     "its virtue is that it does not change". So the rhythm here *is*
     `CLAVE_PATTERNS`, not a rhythm that resembles it: if the two ever disagree
     the exercise teaches a learner to play against the clave, which is the
@@ -5168,7 +5183,7 @@ def make_montuno(
         raise ValueError(f"voices={voices!r}: the montuno is built two or three notes at a time")
     offsets = CLAVE_PATTERNS[clave]
     level = 5.6 if voices == 2 else 6.2
-    title = f"Montuno — {voices} notes on {clave.replace('-', ' ')} in {note_name(tonic)} minor"
+    title = f"Clave chords — {voices} notes on {clave.replace('-', ' ')} in {note_name(tonic)} minor"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic.lower()))
     rh.insert(0, direction_text(
         "Every note is a clave stroke. It repeats without changing"
@@ -5218,7 +5233,7 @@ def make_latin_groove(
     one_of("clave", clave, tuple(CLAVE_PATTERNS))
     level = 6.4
     offsets = CLAVE_PATTERNS[clave]
-    title = (f"Latin groove — tumbao and montuno on {clave.replace('-', ' ')} "
+    title = (f"Latin groove — tumbao and clave chords on {clave.replace('-', ' ')} "
              f"in {note_name(tonic)} minor")
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic.lower()))
     rh.insert(0, direction_text(

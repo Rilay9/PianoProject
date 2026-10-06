@@ -702,7 +702,7 @@ had been wrong since that rung existed. The track now runs Stages 2 to 6; Entry 
 outside the file list of the run that found it — a follow-up on Entry 36. The track now runs
 Stages 3, 5, 6 and 7.)*
 
-- **Hymns & gospel** `[AUTH]`: Amazing Grace, Be Thou My Vision, It Is Well, Great Is Thy
+- **Hymns & spirituals** `[AUTH]`: Amazing Grace, Be Thou My Vision, It Is Well, Great Is Thy
   Faithfulness (1923), Holy Holy Holy, Come Thou Fount, What a Friend, Swing Low, Wade in the
   Water, Go Tell It on the Mountain, This Little Light of Mine, Down by the Riverside; gospel
   passing chords and "walk-ups".
@@ -1200,8 +1200,8 @@ names a source, which in this table is the `contrary` scales alone; the others p
 | `cadence` in a **plagal** voicing | `hymns`' plagal cadence | 3 | IV–I in every major key, a third voicing on an existing family. Same level as the other two: the hand shapes are unit 3.2's either way, and what is being learnt is the sound. |
 | `walkup`, `passing-chord` | `hymns` — its title is "Four-part texture and walk-ups" | 4–5 | The diatonic and chromatic bass walk *into* the next chord, and the chord a semitone above the one you meant. `make_slash_bass` is the nearest thing the generator had and it walks a bass *down* under a chord that does not move. |
 | `intro` | `holiday`'s own "how you'll know you've got it" | 3 | "Play the last four bars of the tune before you start" — four bars of I–V–vi–IV as a vamp, the last one blocked so it hands over. |
-| `power-chord`, `ostinato` | two of `rock.overview`'s five textures | 4 | Root–fifth–octave with weight, and an eighth-note figure over a pedal bass in a minor key. `concepts.json` carries `ostinato` and `eighth-note-ostinato` and neither had any music. |
-| `clave` **with a pulse**, and the **bossa** | `latin` | 4–6 | The lesson says "clap it for a week" and admits the app cannot clap behind you: the clave alone is a rhythm nothing can mark. A quarter-note pulse on a second line gives the drift something to be wrong against. `bossa` joins `CLAVE_PATTERNS` — the son with its last stroke moved to beat 4 of the second bar, and no 3-2/2-3 pair, so its name is one word — and `COMPING_PATTERNS` reads *the same list object*, because a bossa is comped on the clave and two statements of one rhythm disagree. Its figure is the first here that is **two bars long**. Tumbao and montuno gain A and F. |
+| `power-chord`, `ostinato` | two of `rock.overview`'s four textures | 4 | Root–fifth–octave with weight, and an eighth-note figure over a pedal bass in a minor key. `concepts.json` carries `ostinato` and `eighth-note-ostinato` and neither had any music. |
+| `clave` **with a pulse**, and the **bossa** | `latin` | 4–6 | The lesson says "clap it for a week" and admits the app cannot clap behind you: the clave alone is a rhythm nothing can mark. A quarter-note pulse on a second line gives the drift something to be wrong against. `bossa` joins `CLAVE_PATTERNS` — the son with its last stroke moved an eighth later, from beat 3 of the second bar to its "and", and no 3-2/2-3 pair, so its name is one word — and `COMPING_PATTERNS` reads *the same list object*, because a bossa is comped on the clave and two statements of one rhythm disagree. Its figure is the first here that is **two bars long**. Tumbao and montuno gain A and F. |
 
 **Built 2026-09-05 (P5b), 154 new items:** coordination 10, position-shift 10,
 interval-reading 16, cadence 24, accompaniment 30, pedal 6, rhythm in 3/4, 6/8 and shuffle

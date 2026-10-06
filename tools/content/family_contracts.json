@@ -33,7 +33,7 @@
   "families": {
     "scale": {
       "maker": "make_scale",
-      "version": 1,
+      "version": 2,
       "name": "a major or minor scale, similar or contrary motion, one to four octaves",
       "promise": [
         {
