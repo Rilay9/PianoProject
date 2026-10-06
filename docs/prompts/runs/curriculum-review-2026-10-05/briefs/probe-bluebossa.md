@@ -230,6 +230,8 @@ No fallback edition exists: QmW1 is half the form, as a guitar part. Report it; 
 
 **Stop.** A reader disagrees on a bar the record names: report it, and leave the record's claim open.
 
+**The facts' home (the reviewer's ruling, `responses/a7b1-bluebossa-design.md` section 3): the intake record's Claim checks, not `verified-facts.json`.** No `kind: harmony` row and no new fact kind. For each named passage the claim check records: the exact raw and converted/current identities (the G13 hashes); the normalised per-bar harmony facts the lesson will rely on; two independent readers agreeing on root, kind, alterations or degrees and the resulting pitch classes; the app's harmony reader beside them as the consumer, never as the witness; the negative Insensatez look-alike at bars 29-31 recorded explicitly; and the rule that placement or lesson work may cite the facts only while the file identity is the one the claim check names (a moved identity makes the check stale, re-run before the wording is reused). No code parses the intake record as a fact database.
+
 ### Station 3: the state of the G6 control
 
 **Read** `theory.ts:292-380` (`MAJOR_DEGREES`, `romanToChord`, `shellChord`), `fromCatalog.ts:296-335`, the catalogue row, `drillParamsRead.test.ts:120-150`, and the placements:
@@ -244,6 +246,7 @@ No fallback edition exists: QmW1 is half the form, as a guitar part. Report it; 
 - The record's three generated families: family, contract, witness, and what is missing. CK-6 is not written.
 - The Python `ii_v_i` family's contract in `family_contracts.json`, noted as not used by the record.
 - G6's inputs: Blue Bossa's Cm6, Insensatez's Am7, the Lab's triad tonic.
+- The ruling's shape for G6 (`responses/a7b1-bluebossa-design.md` sections 1-2), reported against the current drill so G6's brief can be cut from the report: exactly three minor keys for this chain; the prompt population holds iiø7, V7 and the explicitly named tonic chord for every one of the three keys, and the ordinary run asks all nine key × chord cases (the drill cycles deterministically through its chord list and defaults to ten prompts: say whether three keys × three figures fits that shape today, and what a test would pin); no single universal tonic quality: the CONTROL includes at least a minor-sixth tonic (C minor, Cm6, the Blue Bossa case first) and a minor-seventh tonic in another configured key (the Insensatez case), each tonic prompt naming the actual chord symbol it expects (a bare `i` cannot distinguish root-3-6 from root-3-7); minor-major-seventh not required unless the source search finds a named learner-facing consumer; CK-6 compares the exact configured chord symbols or pitch-class sets, never a generic sourced `i`; the iiø7 limitation stays as the record states it (a root-3-7 shell cannot show the flat fifth: either a dedicated card with the fifth, or the lesson says the shell equals the m7 shell; the three-note drill never claims it measured the distinction).
 
 Nothing is built.
 
@@ -266,7 +269,7 @@ Report each item as a fact with its file and line, or with its run output, or as
 **The Chord chart** (the skeleton's §9 Blue Bossa lines):
 - `harmony.ts`'s pitch classes for each kind both charts print (H4);
 - `chordMatch` for the record's shells (D-F-C, G-B-F, C-E♭-A, C-E♭-B♭) and for root-fifth basses, per symbol;
-- whether Comp sounds with Bass + drums off (the record's step 13);
+- the discriminating check the reviewer named (`responses/a7b1-bluebossa-design.md` section 4), run in the browser on the lane's port: with Bass + drums on and Comp off, do bass and drums sound for each bar while the app supplies no chord comp? On the current code the expected answer is no (`ChordChartScreen.ts`: Bass + drums on forces `comping = true`, and the backing scheduler is called from `compBar()`, which `onBeat` calls only while `comping` is true, so turning Comp off silences the backing while the toggle still reads on). Record the result as an app capability gap, never as a Blue Bossa content defect, and draft the smallest follow-up seam in the report: backing scheduled whenever `backing` is on, independent of `comping`, with `comping` controlling only the app's chord voicing; a red-first browser case; the files it would own. Also whether Comp sounds with Bass + drums off (the record's step 12, now explicit: Comp off and Bass + drums off);
 - the chart's default tempo for the admitted item;
 - that the Chart door shows (`chordCount > 0`);
 - no transpose, re-confirmed.
@@ -278,6 +281,8 @@ Report each item as a fact with its file and line, or with its run output, or as
 **Stop.** None: nothing is built.
 
 ### Station 5: the report, stopped at placement
+
+The report also carries, for the placement brief: the completion rule the reviewer fixed (`responses/a7b1-bluebossa-design.md` section 1): the minor-shell drill is the one counted row, named by the requirement's `items`; the Lab's Read it row, the chart's cell, the ear drill and a melody run of Blue Bossa never count; and the lesson's truth sentence, in substance: the app can mark the shell drill requirement; finding the progression on a chart, choosing the tonic voicing from the symbol, comping the tune and the later unseen identification are self-checked and do not become app-verified because the rung is met.
 
 - The record's refs: the checker's output before and after Station 1.
 - **The stop at placement**, as the Bizet probe stopped. No stage file, lesson text, requirement, teaching-use decision or verified-fact row. Draft instead:

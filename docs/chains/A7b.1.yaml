@@ -21,7 +21,12 @@
 # Not built, so steps 4 and 11-13 cannot be played as written yet: the drill's minor form (G6: shellChord counts degrees
 # on the major scale, app/src/engine/drills/theory.ts:353-380, so a minor i comes out as a major-seventh shell; CK-6 is
 # not written); the placement (rung, lesson section, the requirement naming the drill). The record stays draft until
-# both land and the reviewer reads it.
+# both land and the reviewer reads it. A third capability, named by the reviewer's design ruling
+# (docs/review/responses/a7b1-bluebossa-design.md section 4): the Chord chart cannot supply the rhythm section without
+# its own chord comp (ChordChartScreen.ts: Bass + drums on forces comping on, and the backing is scheduled from
+# compBar, which runs only while comping is on), so step 11 (Comp off, Bass + drums on) is blocked on an app seam that
+# makes backing and comp independently switchable; that seam lands before this record is reviewed, and the probe only
+# reproduces the coupling (Station 4) and drafts the seam.
 # The harmony this record cites (Blue Bossa: Dm7b5 | G7(#5, add #9) | Cm6 at bars 5-7, 13-15, 21-23, 29-31, and
 # Dm7b5-G7 in bar 16 into Cm6 at 17; Insensatez: Bm7b5 | E7(add b9) | Am7 at bars 13-15 and Bm7b5-E7(add b9) in bar 22
 # into Am7 at 23) is one reader's: the drafter's raw walk of <harmony> on 2026-10-06, Blue Bossa in the quarry dump
@@ -125,7 +130,7 @@ steps:
     cannot_establish: "Anything about the learner; nothing is stored (MODE-SHEET section 15)."
     removes: [notation, cursor, click]
 
-  - action: "Comps Blue Bossa's chart in shells with Comp off and Bass + drums on, the tonic shell taking the sixth the symbol asks for, in a comping rhythm jazz.6 teaches."
+  - action: "Comps Blue Bossa's chart in shells with Comp off and Bass + drums on (the app supplies the rhythm section and no chord comp; BLOCKED until the Chord chart schedules backing independently of comp, the reviewer's ruling, header), the tonic shell taking the sixth the symbol asks for (Cm6 at the target resolutions, verified by the probe's Station 2 before any lesson states it), in a comping rhythm jazz.6 teaches."
     content: {kind: piece, ref: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6}
     tool: Chord chart
     scaffold: [chord symbols, count-in, bass and drums supplied, bars named in the lesson, progression named in the lesson]
@@ -134,7 +139,7 @@ steps:
     cannot_establish: "Voicing, rhythm, time-keeping against the click, form awareness over a chorus, or anything over time; nothing is stored (MODE-SHEET section 15)."
     removes: [app comps]
 
-  - action: "Comps the whole chorus of Blue Bossa in shells with Bass + drums off, no bars named."
+  - action: "Comps the whole chorus of Blue Bossa in shells with Comp off and Bass + drums off, no bars named: the learner supplies every chord and the app supplies nothing."
     content: {kind: piece, ref: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6}
     tool: Chord chart
     scaffold: [chord symbols, count-in]
