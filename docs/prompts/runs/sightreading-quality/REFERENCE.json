@@ -1,0 +1,1009 @@
+{
+ "written": "before any feature was computed (2026-10-06)",
+ "rule": "Real items (catalog type song or excerpt, with a file, provenance source neither generated nor placeholder) in the songOptions of the rungs where the level's rows anchor (brief \u00a74). An empty level is UNKNOWN, never padded.",
+ "levels": {
+  "1": {
+   "rungs": [
+    "1.3",
+    "1.4",
+    "1.5",
+    "2.1"
+   ],
+   "n": 14,
+   "windowBars": 4,
+   "status": "listed",
+   "pieces": [
+    {
+     "id": "song.classical.ode-to-joy.alternating",
+     "title": "Ode to Joy (hands alternating)",
+     "file": "scores/authored/song.classical.ode-to-joy.alternating.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "1.4"
+     ]
+    },
+    {
+     "id": "song.classical.ode-to-joy.ht",
+     "title": "Ode to Joy (hands together)",
+     "file": "scores/authored/song.classical.ode-to-joy.ht.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "2.1"
+     ]
+    },
+    {
+     "id": "song.classical.ode-to-joy.lh",
+     "title": "Ode to Joy (left hand)",
+     "file": "scores/authored/song.classical.ode-to-joy.lh.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "1.3"
+     ]
+    },
+    {
+     "id": "song.classical.ode-to-joy.rh",
+     "title": "Ode to Joy (theme)",
+     "file": "scores/authored/song.classical.ode-to-joy.rh.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "1.5"
+     ]
+    },
+    {
+     "id": "song.folk.hot-cross-buns.lh",
+     "title": "Hot Cross Buns (left hand)",
+     "file": "scores/authored/song.folk.hot-cross-buns.lh.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "1.3"
+     ]
+    },
+    {
+     "id": "song.folk.lightly-row",
+     "title": "Lightly Row",
+     "file": "scores/authored/song.folk.lightly-row.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "1.4",
+      "1.5"
+     ]
+    },
+    {
+     "id": "song.folk.mary-had-a-little-lamb.ht",
+     "title": "Mary Had a Little Lamb (hands together)",
+     "file": "scores/authored/song.folk.mary-had-a-little-lamb.ht.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "2.1"
+     ]
+    },
+    {
+     "id": "song.folk.mary-had-a-little-lamb.lh",
+     "title": "Mary Had a Little Lamb (left hand)",
+     "file": "scores/authored/song.folk.mary-had-a-little-lamb.lh.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "1.3"
+     ]
+    },
+    {
+     "id": "song.folk.old-macdonald",
+     "title": "Old MacDonald Had a Farm",
+     "file": "scores/authored/song.folk.old-macdonald.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "1.5"
+     ]
+    },
+    {
+     "id": "song.folk.simple-gifts.pdmx",
+     "title": "Simple Gifts",
+     "file": "scores/pdmx/QmXQuSzr3EW1PHrfFSenLipbPuYPVwhncm3hhv9tZzEDrN.mxl",
+     "keySig": "C major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.1"
+     ]
+    },
+    {
+     "id": "song.folk.the-water-is-wide.pdmx",
+     "title": "The Water Is Wide",
+     "file": "scores/pdmx/QmTkFVAwvGuU1anvHSDDBPJyT3Gq9dFTGm9iAxjtS9K4yv.mxl",
+     "keySig": "G major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "1.5"
+     ]
+    },
+    {
+     "id": "song.folk.twinkle.ht",
+     "title": "Twinkle, Twinkle, Little Star (hands together)",
+     "file": "scores/authored/song.folk.twinkle.ht.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "2.1"
+     ]
+    },
+    {
+     "id": "song.folk.when-the-saints.alternating",
+     "title": "Oh When the Saints Go Marching In (hands alternating)",
+     "file": "scores/authored/song.folk.when-the-saints.alternating.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "1.4"
+     ]
+    },
+    {
+     "id": "song.holiday.jingle-bells.ht",
+     "title": "Jingle Bells (chorus, hands together)",
+     "file": "scores/authored/song.holiday.jingle-bells.ht.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "2.1"
+     ]
+    }
+   ]
+  },
+  "2": {
+   "rungs": [
+    "2.2",
+    "2.3",
+    "2.4",
+    "2.5",
+    "3.1",
+    "3.2",
+    "3.3",
+    "3.4",
+    "3.5",
+    "3.6",
+    "4.1",
+    "4.2",
+    "4.3",
+    "4.4"
+   ],
+   "n": 39,
+   "windowBars": 4,
+   "status": "listed",
+   "pieces": [
+    {
+     "id": "song.classical.beethoven-fur-elise.easy",
+     "title": "F\u00fcr Elise (easy)",
+     "file": "scores/imported/song.classical.beethoven-fur-elise.easy.mxl",
+     "keySig": "A minor",
+     "timeSig": "3/4",
+     "source": "musetrainer",
+     "rungs": [
+      "3.4",
+      "4.1",
+      "4.2"
+     ]
+    },
+    {
+     "id": "song.classical.beethoven-ode-to-joy.easy",
+     "title": "Ode to Joy (easy variation)",
+     "file": "scores/imported/song.classical.beethoven-ode-to-joy.easy.mxl",
+     "keySig": "G major",
+     "timeSig": "4/4",
+     "source": "musetrainer",
+     "rungs": [
+      "2.5",
+      "4.1",
+      "4.4"
+     ]
+    },
+    {
+     "id": "song.classical.ode-to-joy.full",
+     "title": "Ode to Joy (full theme)",
+     "file": "scores/authored/song.classical.ode-to-joy.full.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "2.5",
+      "3.5"
+     ]
+    },
+    {
+     "id": "song.classical.ode-to-joy.g",
+     "title": "Ode to Joy (in G major)",
+     "file": "scores/authored/song.classical.ode-to-joy.g.mxl",
+     "keySig": "G major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "2.5",
+      "3.1",
+      "4.1"
+     ]
+    },
+    {
+     "id": "song.classical.petzold-minuet-g-bwv-anh114",
+     "title": "Minuet in G major, BWV Anh. 114",
+     "file": "scores/imported/song.classical.petzold-minuet-g-bwv-anh114.mxl",
+     "keySig": "G major",
+     "timeSig": "3/4",
+     "source": "musetrainer",
+     "rungs": [
+      "3.4",
+      "4.4"
+     ]
+    },
+    {
+     "id": "song.classical.petzold-minuet-g-bwv-anh114.alt",
+     "title": "Minuet in G major, BWV Anh. 114 (alternative edition)",
+     "file": "scores/imported/song.classical.petzold-minuet-g-bwv-anh114.alt.mxl",
+     "keySig": "G major",
+     "timeSig": "3/4",
+     "source": "musetrainer",
+     "rungs": [
+      "3.4",
+      "4.4"
+     ]
+    },
+    {
+     "id": "song.classical.schumann-melody-op-68-no-1.pdmx",
+     "title": "Melody, Op. 68 No. 1",
+     "file": "scores/pdmx/QmQpYnSgWdZyuqx7dsdwh9DQo7or7f1agVLjqsoK6UyNfo.mxl",
+     "keySig": "C major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "4.3"
+     ]
+    },
+    {
+     "id": "song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx",
+     "title": "Album for the Young, Op. 68 No. 4 \"Chorale\"",
+     "file": "scores/pdmx/QmZV18xdpHyW6Yhdc2uFEALbKNFkHsBX6xbV2qzgLS2J42.mxl",
+     "keySig": "G major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "3.5"
+     ]
+    },
+    {
+     "id": "song.folk.alouette.pdmx",
+     "title": "Alouette",
+     "file": "scores/pdmx/QmQrQGpXBsF8exusKg66yVxsXwcRPmtu1p6ayd88LCexre.mxl",
+     "keySig": "F major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.2"
+     ]
+    },
+    {
+     "id": "song.folk.anonymous-swing-low-sweet-chariot.pdmx",
+     "title": "Swing Low, Sweet Chariot",
+     "file": "scores/pdmx/QmewcJvvvjfC7tAqzEL9NFFe2tMtpYvvFfTgr8B1XvvnGc.mxl",
+     "keySig": "G major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.2"
+     ]
+    },
+    {
+     "id": "song.folk.auld-lang-syne.pdmx",
+     "title": "Auld Lang Syne",
+     "file": "scores/pdmx/QmPYTGunZqRpM8rmbWYzUoapVd2pi9xGRASdauFdSxqw7h.mxl",
+     "keySig": "Eb major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.3"
+     ]
+    },
+    {
+     "id": "song.folk.bella-ciao",
+     "title": "Bella Ciao",
+     "file": "scores/imported/song.folk.bella-ciao.mxl",
+     "keySig": "1 sharp",
+     "timeSig": "4/4",
+     "source": "musetrainer",
+     "rungs": [
+      "4.2"
+     ]
+    },
+    {
+     "id": "song.folk.cielito-lindo.simple",
+     "title": "Cielito Lindo (simple)",
+     "file": "scores/authored/song.folk.cielito-lindo.simple.mxl",
+     "keySig": "C major",
+     "timeSig": "3/4",
+     "source": "authored",
+     "rungs": [
+      "2.4"
+     ]
+    },
+    {
+     "id": "song.folk.danny-boy-c-major.pdmx",
+     "title": "Danny Boy (Londonderry Air)",
+     "file": "scores/pdmx/QmYM5YCtBPPygpGcVMuqPTbYLukjJpST99GDZUVew5b5Y2.mxl",
+     "keySig": "C major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.2"
+     ]
+    },
+    {
+     "id": "song.folk.dark-eyes.pdmx",
+     "title": "Dark Eyes",
+     "file": "scores/pdmx/QmPYit3qLZ6wyHzCwXVR2njRMCEkbZsnRaVbu2cCvACmnD.mxl",
+     "keySig": "D minor",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.3"
+     ]
+    },
+    {
+     "id": "song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx",
+     "title": "Ga je mee op zoek naar het Koningskind",
+     "file": "scores/pdmx/QmZcJuZpeQpSGrw4gd7jcwWfbjt7L84KRjAHJ771Z8kypC.mxl",
+     "keySig": "1 sharp",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.4"
+     ]
+    },
+    {
+     "id": "song.folk.greensleeves",
+     "title": "Greensleeves",
+     "file": "scores/imported/song.folk.greensleeves.mxl",
+     "keySig": "A minor",
+     "timeSig": "3/4",
+     "source": "musetrainer",
+     "rungs": [
+      "2.4",
+      "3.3",
+      "4.3"
+     ]
+    },
+    {
+     "id": "song.folk.greensleeves.chords",
+     "title": "Greensleeves (with chords)",
+     "file": "scores/authored/song.folk.greensleeves.chords.mxl",
+     "keySig": "a minor",
+     "timeSig": "3/4",
+     "source": "authored",
+     "rungs": [
+      "2.4",
+      "3.3",
+      "4.3"
+     ]
+    },
+    {
+     "id": "song.folk.greensleeves.simple",
+     "title": "Greensleeves (simple)",
+     "file": "scores/authored/song.folk.greensleeves.simple.mxl",
+     "keySig": "a minor",
+     "timeSig": "3/4",
+     "source": "authored",
+     "rungs": [
+      "2.4",
+      "3.3"
+     ]
+    },
+    {
+     "id": "song.folk.greensleeves.waltz",
+     "title": "Greensleeves (waltz bass)",
+     "file": "scores/authored/song.folk.greensleeves.waltz.mxl",
+     "keySig": "a minor",
+     "timeSig": "3/4",
+     "source": "authored",
+     "rungs": [
+      "3.5",
+      "3.6"
+     ]
+    },
+    {
+     "id": "song.folk.happy-birthday",
+     "title": "Happy Birthday to You",
+     "file": "scores/imported/song.folk.happy-birthday.mxl",
+     "keySig": "C major",
+     "timeSig": "3/4",
+     "source": "musetrainer",
+     "rungs": [
+      "2.3"
+     ]
+    },
+    {
+     "id": "song.folk.happy-birthday.simple",
+     "title": "Happy Birthday to You",
+     "file": "scores/authored/song.folk.happy-birthday.simple.mxl",
+     "keySig": "C major",
+     "timeSig": "3/4",
+     "source": "authored",
+     "rungs": [
+      "2.3",
+      "3.2"
+     ]
+    },
+    {
+     "id": "song.folk.korobeiniki.pdmx",
+     "title": "Korobeiniki",
+     "file": "scores/pdmx/QmWqrfJmQoZZwVJtisMSEuzztCPGCE3nXuJEU3x9rFuWxZ.mxl",
+     "keySig": "D minor",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "3.1"
+     ]
+    },
+    {
+     "id": "song.folk.loch-lomond.pdmx",
+     "title": "Loch Lomond",
+     "file": "scores/pdmx/QmTpVn6jiN2pCWSQA3WXwCCwiPVxhvm9cT99k21MikRwyX.mxl",
+     "keySig": "D major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "3.1"
+     ]
+    },
+    {
+     "id": "song.folk.london-bridge",
+     "title": "London Bridge Is Falling Down",
+     "file": "scores/authored/song.folk.london-bridge.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "2.2"
+     ]
+    },
+    {
+     "id": "song.folk.merrily-we-roll-along",
+     "title": "Merrily We Roll Along",
+     "file": "scores/authored/song.folk.merrily-we-roll-along.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "2.2"
+     ]
+    },
+    {
+     "id": "song.folk.oh-my-darling-clementine.pdmx",
+     "title": "Oh My Darling Clementine",
+     "file": "scores/pdmx/Qme6kbC9VxbzvXbnxbMC71d7QC2vPdoQvN7kw8emCcrvJB.mxl",
+     "keySig": "F major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "3.2"
+     ]
+    },
+    {
+     "id": "song.folk.old-macdonald",
+     "title": "Old MacDonald Had a Farm",
+     "file": "scores/authored/song.folk.old-macdonald.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "2.2"
+     ]
+    },
+    {
+     "id": "song.folk.sakura.pdmx",
+     "title": "Sakura",
+     "file": "scores/pdmx/QmQ2V2JBKPsYPkPg4HbGqzM2wDZBefoC819zTZ1kgi8TUr.mxl",
+     "keySig": "no sharps or flats",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.2"
+     ]
+    },
+    {
+     "id": "song.folk.scarborough-fair.pdmx",
+     "title": "Scarborough Fair",
+     "file": "scores/pdmx/QmbGfCQu2CdXqiLWCVa5e4egPh5evVzff4nA3k2DjTxwEG.mxl",
+     "keySig": "2 sharps",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "3.1"
+     ]
+    },
+    {
+     "id": "song.folk.skip-to-my-lou.pdmx",
+     "title": "Skip to My Lou",
+     "file": "scores/pdmx/QmPYnWB1njn2PqjQcdTXDo7XFuybDjarHUjTVT2XXzgxML.mxl",
+     "keySig": "D major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.3"
+     ]
+    },
+    {
+     "id": "song.folk.streets-of-laredo.pdmx",
+     "title": "Streets of Laredo (first half, 17 bars)",
+     "file": "scores/pdmx/QmVNSAsNKZ3DMLqoJ2Ddu4BSwLxQjXATazX9qnAaeDUZ3f.mxl",
+     "keySig": "G major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.4"
+     ]
+    },
+    {
+     "id": "song.folk.twinkle.f",
+     "title": "Twinkle, Twinkle, Little Star (in F major)",
+     "file": "scores/authored/song.folk.twinkle.f.mxl",
+     "keySig": "F major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "3.1",
+      "4.2"
+     ]
+    },
+    {
+     "id": "song.folk.was-wollen-wir-trinken.pdmx",
+     "title": "Was wollen wir trinken",
+     "file": "scores/pdmx/QmVEjJW9KLRWVwUgwRvwEcuiFdbZRPUGC3BAZzRftXMbcu.mxl",
+     "keySig": "A minor",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.3"
+     ]
+    },
+    {
+     "id": "song.folk.when-the-saints.f",
+     "title": "Oh When the Saints Go Marching In (in F major)",
+     "file": "scores/authored/song.folk.when-the-saints.f.mxl",
+     "keySig": "F major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "3.1",
+      "3.2"
+     ]
+    },
+    {
+     "id": "song.holiday.jingle-bells.g",
+     "title": "Jingle Bells (chorus, in G major with block chords)",
+     "file": "scores/authored/song.holiday.jingle-bells.g.mxl",
+     "keySig": "1 sharp",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "2.3",
+      "3.2"
+     ]
+    },
+    {
+     "id": "song.pop.careless-love-blues.pdmx",
+     "title": "Careless Love",
+     "file": "scores/pdmx/QmYD4uF6soz6USzYyusW2gnzJxRUV7fMTCA2UH11ZzYR6a.mxl",
+     "keySig": "D major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.4"
+     ]
+    },
+    {
+     "id": "song.pop.michael-row-the-boat-ashore.pdmx",
+     "title": "Michael, Row the Boat Ashore",
+     "file": "scores/pdmx/QmUx8rFCXn5az3JyawBnRrViiXQGipktKFbj5w8r8NcWaN.mxl",
+     "keySig": "C major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "2.2"
+     ]
+    },
+    {
+     "id": "song.pop.misc-tunes-yankee-doodle.pdmx",
+     "title": "Yankee Doodle",
+     "file": "scores/pdmx/QmTa7YTepiTQEhLAhtQAVJjTCEVxC2rQVQ9Sd33k8NZK1p.mxl",
+     "keySig": "G major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "3.2"
+     ]
+    }
+   ]
+  },
+  "3": {
+   "rungs": [
+    "4.5",
+    "4.6",
+    "4.7"
+   ],
+   "n": 10,
+   "windowBars": 8,
+   "status": "listed",
+   "pieces": [
+    {
+     "id": "song.classical.beethoven-fur-elise.easy",
+     "title": "F\u00fcr Elise (easy)",
+     "file": "scores/imported/song.classical.beethoven-fur-elise.easy.mxl",
+     "keySig": "A minor",
+     "timeSig": "3/4",
+     "source": "musetrainer",
+     "rungs": [
+      "4.6",
+      "4.7"
+     ]
+    },
+    {
+     "id": "song.classical.pachelbel-canon-d.easy",
+     "title": "Canon in D (easy)",
+     "file": "scores/imported/song.classical.pachelbel-canon-d.easy.mxl",
+     "keySig": "D major",
+     "timeSig": "4/4",
+     "source": "musetrainer",
+     "rungs": [
+      "4.6",
+      "4.7"
+     ]
+    },
+    {
+     "id": "song.classical.petzold-minuet-g-bwv-anh114",
+     "title": "Minuet in G major, BWV Anh. 114",
+     "file": "scores/imported/song.classical.petzold-minuet-g-bwv-anh114.mxl",
+     "keySig": "G major",
+     "timeSig": "3/4",
+     "source": "musetrainer",
+     "rungs": [
+      "4.6",
+      "4.7"
+     ]
+    },
+    {
+     "id": "song.folk.auld-lang-syne-anonymous-traditional.pdmx",
+     "title": "Auld Lang Syne",
+     "file": "scores/pdmx/QmTgrTW7qVmPtrQRLNzCWsUPapirMav2Nfg4GTBGY6j4cn.mxl",
+     "keySig": "F major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "4.6"
+     ]
+    },
+    {
+     "id": "song.folk.greensleeves.68",
+     "title": "Greensleeves (in 6/8)",
+     "file": "scores/authored/song.folk.greensleeves.68.mxl",
+     "keySig": "a minor",
+     "timeSig": "6/8",
+     "source": "authored",
+     "rungs": [
+      "4.5"
+     ]
+    },
+    {
+     "id": "song.folk.london-bridge",
+     "title": "London Bridge Is Falling Down",
+     "file": "scores/authored/song.folk.london-bridge.mxl",
+     "keySig": "C major",
+     "timeSig": "4/4",
+     "source": "authored",
+     "rungs": [
+      "4.5"
+     ]
+    },
+    {
+     "id": "song.folk.row-row-row-your-boat",
+     "title": "Row, Row, Row Your Boat",
+     "file": "scores/authored/song.folk.row-row-row-your-boat.mxl",
+     "keySig": "C major",
+     "timeSig": "6/8",
+     "source": "authored",
+     "rungs": [
+      "4.5"
+     ]
+    },
+    {
+     "id": "song.folk.traditional-music-when-johnny-comes-marching-home.pdmx",
+     "title": "When Johnny Comes Marching Home",
+     "file": "scores/pdmx/QmStQQYDfkCHKZCuRufd2KBh9ssgqdaxN8F5rpVjkU5kLU.mxl",
+     "keySig": "A minor",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "4.5"
+     ]
+    },
+    {
+     "id": "song.folk.uti-var-hage-swedish-traditional-song.pdmx",
+     "title": "Uti v\u00e5r hage",
+     "file": "scores/pdmx/QmY9aSk9GvJuZjFABRn1XkVJwbceabpRab92bz1amNJUUb.mxl",
+     "keySig": "F minor",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "4.6"
+     ]
+    },
+    {
+     "id": "song.holiday.carol-of-the-bells.easy",
+     "title": "Carol of the Bells (easy)",
+     "file": "scores/imported/song.holiday.carol-of-the-bells.easy.mxl",
+     "keySig": "A minor",
+     "timeSig": "3/4",
+     "source": "musetrainer",
+     "rungs": [
+      "4.6"
+     ]
+    }
+   ]
+  },
+  "4": {
+   "rungs": [
+    "4.6",
+    "technique.5"
+   ],
+   "n": 9,
+   "windowBars": 8,
+   "status": "listed",
+   "pieces": [
+    {
+     "id": "song.classical.beethoven-fur-elise.easy",
+     "title": "F\u00fcr Elise (easy)",
+     "file": "scores/imported/song.classical.beethoven-fur-elise.easy.mxl",
+     "keySig": "A minor",
+     "timeSig": "3/4",
+     "source": "musetrainer",
+     "rungs": [
+      "4.6"
+     ]
+    },
+    {
+     "id": "song.classical.duvernoy-etude-op-176-no-4.pdmx",
+     "title": "\u00c9tude, Op. 176 No. 4",
+     "file": "scores/pdmx/QmZSkkMsNLuU9vFB1MXJAJpCncYyCvehigxXEutumcSkGV.mxl",
+     "keySig": "C major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "technique.5"
+     ]
+    },
+    {
+     "id": "song.classical.duvernoy-etude-op-176-no-5.pdmx",
+     "title": "\u00c9tude, Op. 176 No. 5",
+     "file": "scores/pdmx/Qmc9Km8ufiLXnpMepS5vBYXxfBuSRU5ZMEkTwzLb3EdzS5.mxl",
+     "keySig": "G major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "technique.5"
+     ]
+    },
+    {
+     "id": "song.classical.duvernoy-etude-op-176-no-6.pdmx",
+     "title": "\u00c9tude, Op. 176 No. 6",
+     "file": "scores/pdmx/QmX8Adb4sJp5KsY7PS6ECNa4hxci1voWafLU5p99PSygXg.mxl",
+     "keySig": "G major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "technique.5"
+     ]
+    },
+    {
+     "id": "song.classical.pachelbel-canon-d.easy",
+     "title": "Canon in D (easy)",
+     "file": "scores/imported/song.classical.pachelbel-canon-d.easy.mxl",
+     "keySig": "D major",
+     "timeSig": "4/4",
+     "source": "musetrainer",
+     "rungs": [
+      "4.6"
+     ]
+    },
+    {
+     "id": "song.classical.petzold-minuet-g-bwv-anh114",
+     "title": "Minuet in G major, BWV Anh. 114",
+     "file": "scores/imported/song.classical.petzold-minuet-g-bwv-anh114.mxl",
+     "keySig": "G major",
+     "timeSig": "3/4",
+     "source": "musetrainer",
+     "rungs": [
+      "4.6"
+     ]
+    },
+    {
+     "id": "song.folk.auld-lang-syne-anonymous-traditional.pdmx",
+     "title": "Auld Lang Syne",
+     "file": "scores/pdmx/QmTgrTW7qVmPtrQRLNzCWsUPapirMav2Nfg4GTBGY6j4cn.mxl",
+     "keySig": "F major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "4.6"
+     ]
+    },
+    {
+     "id": "song.folk.uti-var-hage-swedish-traditional-song.pdmx",
+     "title": "Uti v\u00e5r hage",
+     "file": "scores/pdmx/QmY9aSk9GvJuZjFABRn1XkVJwbceabpRab92bz1amNJUUb.mxl",
+     "keySig": "F minor",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "4.6"
+     ]
+    },
+    {
+     "id": "song.holiday.carol-of-the-bells.easy",
+     "title": "Carol of the Bells (easy)",
+     "file": "scores/imported/song.holiday.carol-of-the-bells.easy.mxl",
+     "keySig": "A minor",
+     "timeSig": "3/4",
+     "source": "musetrainer",
+     "rungs": [
+      "4.6"
+     ]
+    }
+   ]
+  },
+  "5": {
+   "rungs": [
+    "theory.6"
+   ],
+   "n": 0,
+   "windowBars": 8,
+   "status": "UNKNOWN (no real piece on these rungs)",
+   "pieces": []
+  },
+  "6": {
+   "rungs": [
+    "chords-pop.8",
+    "theory.9"
+   ],
+   "n": 6,
+   "windowBars": 8,
+   "status": "listed",
+   "pieces": [
+    {
+     "id": "song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx",
+     "title": "Levi's Choice, from Attack on Titan",
+     "file": "scores/pdmx/QmUF3s59KhGSJZYEijsEfEhcHE1qzPKNzy1smaxWAMgCWG.mxl",
+     "keySig": "D minor",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "chords-pop.8"
+     ]
+    },
+    {
+     "id": "song.pop.kana-boon-silhouette-kana-boon-naruto-shippuden-opening-op-16.pdmx",
+     "title": "Silhouette",
+     "file": "scores/pdmx/QmY3UYMJMkKspyAJvagQsk8T5sN2J97FwA5pRm3FhFghuw.mxl",
+     "keySig": "2 sharps",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "chords-pop.8"
+     ]
+    },
+    {
+     "id": "song.pop.kevin-macleod-if-i-had-a-chicken.pdmx",
+     "title": "If I Had a Chicken",
+     "file": "scores/pdmx/QmVL6zf28ftTHyAdRAnZzBP9DT3fiQDv9KNE5XQ4uvgbg2.mxl",
+     "keySig": "C major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "chords-pop.8"
+     ]
+    },
+    {
+     "id": "song.pop.kodaline-all-i-want-kodaline.pdmx",
+     "title": "All I Want",
+     "file": "scores/pdmx/QmdnRcixps1paokonTwMsz4q6LtWUGseXqyvjzpk1rQcPp.mxl",
+     "keySig": "C major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "chords-pop.8"
+     ]
+    },
+    {
+     "id": "song.pop.takihiro-obata-isabella-s-lullaby-the-promised-neverland-emotional-anime-on-piano-vol-2.pdmx",
+     "title": "Isabella's Lullaby, from The Promised Neverland",
+     "file": "scores/pdmx/QmXeePePi6UomkWywVRaWq4CyP9sc2HBMapxVDs5dj2Avy.mxl",
+     "keySig": "5 flats",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "chords-pop.8"
+     ]
+    },
+    {
+     "id": "song.pop.toby-fox-undertale-undertale-piano.pdmx",
+     "title": "Undertale, from Undertale",
+     "file": "scores/pdmx/QmXSJTMUMUQ3ze75V1yrYGqockwRP7BJG3jLTHWfZakEKW.mxl",
+     "keySig": "3 flats",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "chords-pop.8"
+     ]
+    }
+   ]
+  },
+  "7": {
+   "rungs": [
+    "jazz.8"
+   ],
+   "n": 3,
+   "windowBars": 8,
+   "status": "listed",
+   "pieces": [
+    {
+     "id": "song.classical.i-got-rythm.pdmx",
+     "title": "I Got Rhythm",
+     "file": "scores/pdmx/QmPhAvchMjTLZuhQH2sWzVFR3uCugUjh9akyizjiy1ck98.mxl",
+     "keySig": "Bb major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "jazz.8"
+     ]
+    },
+    {
+     "id": "song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx",
+     "title": "Stardust (1927)",
+     "file": "scores/pdmx/QmUeyTNExZVRs7dr55hu3HuvDDLizDUgYBovcAZeRrZ934.mxl",
+     "keySig": "C major",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "jazz.8"
+     ]
+    },
+    {
+     "id": "song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx",
+     "title": "Uncle Ben's Cakewalk",
+     "file": "scores/pdmx/QmPSN2TnRH1hx3fAje4fabZYgPvAEb3sfdieKyACCoerwE.mxl",
+     "keySig": "1 flat",
+     "timeSig": null,
+     "source": "pdmx",
+     "rungs": [
+      "jazz.8"
+     ]
+    }
+   ]
+  }
+ }
+}

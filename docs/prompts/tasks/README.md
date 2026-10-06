@@ -321,6 +321,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **HD2** | Verified hand facts: a current-identity override for The Crave bar 40 and Solace bars 22/26/30/32 (staff 1 voice 2 → R), precedence HD1 declaration, then verified row, then the voice-home default; 108 notes changed, none elsewhere; the global rule parked with its corpus diff as the worklist (`HD2-verified-hand-facts.md`) | app | landed 2026-10-06 (`HD2-verified-hand-facts.md`); Entry 248
 | **CD1** | The habanera and tresillo onset cells as measured demands: two left-hand detectors with a partitura witness, `notAsked` in seven readers, the shared verified-facts loader, latin.3 by contract and latin.6 by The Crave 21-26, both cells curated-only (`CD1-cells-as-measured-demands.md`) | content + app | landed 2026-10-06 (`CD1-cells-as-measured-demands.md`); Entry 249
 | **HD2b** | The verified-hand browser case proves the app's part at the audio boundary (R: the inner line expected, not played; L: played), red first with the rows withheld; the hand reader refuses conflicting overlaps, naming both rows (`HD2b-verified-hand-playback-proof.md`) | app | landed 2026-10-06 (`HD2b-verified-hand-playback-proof.md`); Entry 250
+| **SR1** | The sight-reading quality lane: LEVEL-SPEC against ABRSM, RCM and Faber cells, a 374-item corpus frozen before generation and read by partitura and musicxml-io (0 disagreements), properties P1-P10 and Hypothesis counterexamples, the correction drafted and reverted (`SR1-sightreading-quality.md`) | research | landed 2026-10-06 (`SR1-sightreading-quality.md`); Entry 251
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -507,6 +508,7 @@ HD1b · landed · 247
 HD2 · landed · 248
 CD1 · landed · 249
 HD2b · landed · 250
+SR1 · landed · 251
 F0a · closed · —
 L120 · approved · —
 -->
