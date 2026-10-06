@@ -139,10 +139,68 @@
     - `syncopation`. Its opportunity would become three demands, so the concept `syncopation` would stop naming `rhythm.syncopation` in `concepts_naming`, and the teaching-rung derivation for syncopation would empty silently.
     - `subdivision`. The 4/4 tresillo's dotted quarters would become subdivision opportunities at a precision of 1/6 beat, which changes evidence for a skill the cells do not teach.
     - two skills named `habanera` and `tresillo`. Those turn concepts into abilities that a requirement could name.
-- **`opportunity-density.json`:** two rules, marked `hypothesis: true`, each with its `why`:
-  - `rhythm.habanera`: `min` 12, `perBar` 1.0, `minInWindow` 8. That is three cells, a cell in at least one bar of four, and two cells in a passage.
-  - `rhythm.tresillo`: `min` 9, `perBar` 0.75, `minInWindow` 6. The same in three-note cells.
-  - Neither is added to `tempoSensitive`. The speed of the cell's notes is already carried by `rhythm.sixteenths` and `rhythm.shorter-than-quarter`.
+- **`opportunity-density.json`:** two rules, each **derived from the calibration set in D4a** and written only after the calibration record exists. No threshold is chosen by hand, and none is marked `hypothesis: true` in place of a calibration (FABLE §5; `responses/530963de.md` §2).
+  - Neither demand is added to `tempoSensitive`. The speed of the cell's notes is already carried by `rhythm.sixteenths` and `rhythm.shorter-than-quarter`.
+
+**D4a. The density calibration, before the rules are written (SETTLED; the reviewer's required change).**
+
+**Declared positives: the teaching cases each rule must keep.** Each is an item a lesson or the A7c.1 record uses to teach the cell, and is read whole.
+- Tresillo:
+  - `exercise.tresillo.c`, `.f` and `.g`, the controls on latin.3 and 3.6;
+  - The Crave, which `latin.6.md:22-26` teaches as "the tresillo under a whole piece".
+- Habanera:
+  - Por Una Cabeza: latin.6's MUSIC station, and its bars 1-14 are the map's MODEL;
+  - Solace, which `ragtime.7.md:25-27` teaches as "built on a habanera rhythm";
+  - the Bizet parent `song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx`, which A7c.1's step "Sees and hears the habanera bass under Carmen's tune" plays (`docs/chains/A7c.1.yaml:111-113`).
+
+**Declared counterexamples: they share the onset mask, or come near it, and must not become establishment.**
+- Habanera:
+  - *Auld Lang Syne* (anonymous edition, two staves, on 4.6 and holiday.5): a folk dotted-quarter bass, the doubled cell by onsets only;
+  - Schumann's *A Little Romance*, Op. 68 No. 19;
+  - *Sans* (Undertale).
+- Tresillo:
+  - *All of Me* (John Legend);
+  - *Apex of the World* (Fire Emblem);
+  - *Mr Blue Sky*.
+- At the detector, where they must carry neither demand at all: every `exercise.clave.*` and `exercise.latin-groove.*` item (the cell is in the right hand), and `exercise.rhythm.dotted-quarter-eighth.4bar` (one staff, right hand).
+
+**Undeclared items.** Every other item D8 lists is reported with its result and is neither kept nor rejected by declaration. These include *Carioca*, El Choclo, La Cumparsita (Rodríguez) and Heliotrope Bouquet.
+
+**The rule form.** The density file's own form is `min` located places AND `perBar` located places per bar. With D2's one place per onset, located places are cells × 4 for the habanera and cells × 3 for the tresillo. The values are read from the app's measured build: `measurement.located` and the row's measures. The raw estimate is never used.
+
+**The derivation is fixed in advance, so nothing is tuned.**
+- For each cell, the rule is the strictest one that keeps every declared positive:
+  - `min` is the smallest `located` among the positives;
+  - `perBar` is the smallest located-per-bar among the positives, rounded down at the second decimal.
+- That rule is then checked against every declared counterexample.
+- If any counterexample would be established, no density rule separates the declared cases. The property stays **UNKNOWN**: the rule is not written, the lane stops, and the record says which case crossed. The positives are never re-declared and the counterexamples never dropped.
+- **Not taken:**
+  - the most lenient separating rule. It would let an undeclared onset coincidence establish wherever the counterexamples happen not to reach.
+  - choosing a value inside the separating interval by judgement.
+
+**Excerpts (`minInWindow`).** No cell excerpt is in the catalogue: the Bizet cut is held, and the Por Una Cabeza and The Crave cuts are latin.4's. The window rule therefore has no declared positive to calibrate on.
+- For both demands it is written as `minInWindow` = `min`. The density file never allows it above `min`.
+- No four-to-fourteen-bar excerpt can then establish a cell by density. Its cell claim rests on its curated approval record, with `targets` checked by the witness: the reviewer's route 2.
+- latin.4's placement seam calibrates the window rule on its own declared excerpts.
+- If the schema or `validate.py` refuses `minInWindow` equal to `min`, stop and report. Never invent a smaller value.
+
+**By the raw estimate, a rule separates** (HYPOTHESIS; the app's numbers decide):
+- Habanera: positives Por Una Cabeza (56 cell bars, 3.5 places per bar), Solace (49, 2.2) and the Bizet parent (85, 3.8). That gives `min` about 196 and `perBar` about 2.2.
+  - *Auld Lang Syne* (12 bars, 2.4 per bar) is rejected by `min` alone, because its share of cell bars is above Solace's.
+  - Schumann (6 bars) and *Sans* (4 bars) are rejected.
+- Tresillo: positives the controls (8 bars, 3.0 per bar) and The Crave (27, 1.53). That gives `min` about 24 and `perBar` about 1.53.
+  - *All of Me* (24 bars, 1.29 per bar) is rejected by `perBar` alone, a narrow margin.
+  - *Apex of the World* (30 bars of 200) is rejected.
+- **The consequence, stated:**
+  - Shorter genuine pieces stay unestablished, reported as undeclared: *Carioca* (22 of 78 bars).
+  - A latin.4 excerpt establishes nothing by density in this seam.
+
+**The record.** The builder writes `docs/prompts/runs/CD1/calibration.md` with:
+- one row per declared and undeclared item: cell bars, `located`, measures, per bar, and the verdict;
+- the derived rule;
+- each counterexample's margin.
+
+Each rule's `why` cites that file. Each rule carries a `calibratedBy` note in the row's `why` naming the positives, never `hypothesis: true` alone.
 
 **D5. The coping question does not ask the cells (SETTLED for review; the main reversal point).**
 - **The rule:** a demand with `notAsked` is left out of the demands the coping question asks. That applies in four places:
@@ -150,8 +208,13 @@
   - `claims.asked_of`, the build's twin, through one helper both readers share;
   - `excerpt_proposer.untaught`;
   - `untaughtChecks` in `app/tests/unit/helpers/promises.ts`.
-- **The reason, written into both rows:**
-  - A cell is made of notes that demands with teaching rungs already ask: the dotted quarter (2.4), eighths, sixteenths and shorter notes (2.2, 4.4), and syncopation (4.5). The cell names their order, which does not need teaching before it can be played. It is a claim (established for a rung, located for evidence and G13), never a gate.
+- **The reason, written into both rows** (the reviewer's, `responses/530963de.md` §3):
+  - The demand is a descriptive structural fact. It is used for claims, placement evidence and content verification.
+  - The difficulties it is made of are already gated by the ordinary reading demands (the dotted quarter, eighths, sixteenths and shorter notes, syncopation) and by the rung's explicit prerequisites.
+  - The item may itself be the material that teaches the cell. Asking whether the learner has already coped with the cell would circularly refuse the teaching example.
+  - Raw onset coincidences in unrelated music must not become new learner-facing refusals.
+  - The key-signature case stays narrow. This is a second explicit exception, declared in data per demand with its reason, and not a generic rule that a mapped or located demand may be ignored.
+  - The app does teach the cell's order. The exception does not say the pattern need not be taught.
   - **A known gap, recorded and not fixed:** a 2/4 tresillo's dotted eighths are asked only as notes shorter than a quarter (2.2). No demand reads a dotted eighth.
 - **Not taken:** asking the cells like any other demand. By the raw estimate below, that newly refuses about **17 rung-own options at their own rung**, among them:
   - `exercise.tresillo.c` on 3.6, its own home;
@@ -170,7 +233,8 @@
 - **`rhythm.habanera`** `taughtAt: ["ragtime.7"]`, the derived rung. The note cites `ragtime.7.md:25-27` and says the new latin.4 joins the list in its own placement seam. latin.4's path (4.4, latin.3 and the core) does not reach ragtime.7, so the list stays one rung per path.
 - **The consequence:**
   - latin.3, latin.6 and ragtime.7 each gain a measured claim, which `concept_claim_findings` now enforces.
-  - The estimate says the claims hold: `exercise.tresillo.c` (24 places in 8 bars), The Crave (27 bars, 81 places) and Solace (49 bars, 196 places) are each above D4's density. If one does not hold on the build, that is a stop line.
+  - These claims are acceptable only after D4a's calibration shows that the options establish them under the rule it derives (`responses/530963de.md` §4).
+  - `exercise.tresillo.c`, The Crave and Solace are declared positives, so they hold if a rule exists. If D4a ends UNKNOWN, these claims cannot be kept and the lane stops. It never lowers a threshold, never moves a concept to `introduces`, and never re-declares a case.
   - latin.4's claim becomes checkable: test T9.
 - **Not taken:** `taughtAt: []` with a note. The build would then warn "a teaching rung taughtAt omits" at all three rungs, and the record would say nothing teaches a cell that two lessons explain.
 
@@ -198,6 +262,8 @@
 
   It is present without density in El Choclo (latin.7), La Cumparsita (Rodríguez) and seventeen others.
 - **The Bizet left-hand cut** (bars 1-12, all habanera by the witness) carries nothing in the app until D2's one-staff caveat is resolved.
+- **The Bizet cut is content evidence only.** It is not used as app-side proof, placed on latin.4 or treated as learner-ready until the one-staff hand seam (HD1, `briefs/declared-hand-into-the-model.md`) lands. The witness reading it with `staff=1` is content evidence only, never a sign that the app sees the same hand.
+- **The surprising matches are not evidence.** Unrelated songs that share the onset mask are adversaries for D4a, never style or teaching-use evidence (`responses/530963de.md` §4).
 - **`rhythm.tresillo`:** present in 19 items; established in 5:
   - `exercise.tresillo.c`, `.f` and `.g`: 8 of 8 each;
   - The Crave: 27 of 53, on latin.6;
@@ -215,7 +281,14 @@
 
 ## 3. Acceptance tests (each red first where the code does not exist yet)
 
-**Build order:** the witness first (T5-T7), because it survives the main reversal (rationale 4); then the detector and the vocabulary; then the differential.
+**Build order:**
+1. The witness (T5-T7), because it survives the main reversal (rationale 4).
+2. The detector and the vocabulary, without the density rows.
+3. The differential.
+4. D4a's calibration on the app's measured build, and its record.
+5. Only then the two density rows (T11).
+
+What T1 and T5-T7 prove is that the classification is consistent, never that the density suits teaching.
 
 **T1. `app/tests/unit/demandDetectors.test.ts`:** a `describe` per cell, on hand-made phrases (`helpers/phrase.ts`).
 - **Present:**
@@ -276,6 +349,16 @@
 - `status_of` is `established` for Por Una Cabeza (habanera) and for The Crave and `exercise.tresillo.c` (tresillo).
 - No file is changed and nothing is placed.
 
+**T11. `tools/content/tests/test_cell_density_calibration.py`, new: the calibration, read from the built catalogue.**
+- The two density rows equal the rule D4a derives from the declared positives. The test recomputes the rule: smallest `located`, and smallest per bar rounded down at the second decimal.
+- Every declared positive is `established`. No declared counterexample is.
+- Every clave, latin-groove and dotted-quarter-drill item carries neither demand.
+- `minInWindow` equals `min` for both demands.
+- **Boundary cases:**
+  - the same rule with `min` one cell above the weakest positive, or `perBar` 0.01 above it, loses that positive (red on tighter);
+  - the rule with `perBar` at or below the strongest counterexample's establishes that counterexample (red on looser).
+- The declared lists live once, in this test, copied from D4a, and `calibration.md` cites them.
+
 **T10. Existing suites, green without editing their expectations:**
 - `tools/content/tests/test_validate_claims.py`: latin.3, latin.6 and ragtime.7 claims are established on the shipped build.
 - `tools/content/tests/test_named_figure_containment.py`: the eight stay unmapped.
@@ -295,6 +378,8 @@
 - **M2:** fractions over the beat instead of the bar. Red: the doubled 4/4 in T1, and T6 on Por Una Cabeza.
 - **M3:** every staff instead of the left hand. Red: T1's right-hand-only case.
 - **M4:** the `notAsked` filter dropped in `demandsAsked`. Red: T3.
+- **M5:** the tresillo `perBar` lowered to *All of Me*'s value. Red: T11's counterexample check (a looser threshold).
+- **M6:** the habanera `min` raised by one cell above Solace's. Red: T11's positive check (a tighter threshold).
 
 `docs/08-test-map.md` updates its row 58 (vocabulary v0 and the demand detectors) and row 33 (what the coping question asks) to name these tests.
 
@@ -310,15 +395,19 @@
 ## 5. Finish and stop
 
 **Finish condition:**
-- T1-T10 green; M1-M4 red;
+- T1-T11 green; M1-M6 red;
 - the full build green on the whole catalogue;
 - the pin re-run recorded;
+- `docs/prompts/runs/CD1/calibration.md` written before the density rows;
 - a draft entry for `docs/pending-review.md` (where, what, before, after, why) listing the app's measured items per cell with bar counts, and replacing D8's estimate.
 
 **Stop, and report without working around it, when:**
 - T7 disagrees on any bar of a named file;
 - `concept_claim_findings` fails latin.3, latin.6 or ragtime.7. Never move a concept to `introduces`, and never lower a density, to pass.
-- the re-run pin differs from W1b's lines;
+- the re-run pin differs from W1b's lines. Never re-pin to pass.
+- D4a finds no rule that keeps every declared positive and rejects every declared counterexample. The property stays UNKNOWN, with the record.
+- `minInWindow` equal to `min` is refused by the schema or by the validator.
+- A claim passes only by weakening a threshold. Never lower a threshold because the claim check is red.
 - `sightReadingPromises` or any suite not named above goes red for a reason this brief does not state.
 
 ## Files owned
@@ -341,6 +430,6 @@
 ## Could not establish (for the orchestrator)
 
 - **The Bizet cut is not readable by the app yet.** The detector cannot read the Bizet left-hand cut until the score model marks a one-staff left-hand item as the left hand. Whether DF2's item (2) will do that in the model, or only in the render report, is open. Until then latin.4's claim on that cut rests on the witness (`cells.bar_cells(cut, staff=1)`), and the app measures it on Por Una Cabeza, The Crave and the tresillo exercises.
-- **D8's counts are an estimate.** They come from a raw reader, not the app's model.
+- **D8's counts are an estimate.** They come from a raw reader, not the app's model. Whether a separating rule exists (D4a) is known only from the app's measured build. The tresillo margin is narrow: The Crave at about 1.53 places per bar against *All of Me* at about 1.29.
 - **D5 changes a reviewer ruling.** It extends a ruling the reviewer made narrowly (the key signature alone, L120b), so it needs the reviewer's word before dispatch.
 - **Nothing here has been heard.** The cells are established as onsets only: unverified as music.
