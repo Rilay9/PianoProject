@@ -1,0 +1,33 @@
+CID QmRqYM9Xi5QZwedataZCCdTqcXoh8pVSs9JVGengCfXnfm
+title: Grimes - Oblivion | song_name: oblivion
+composer: NA | artist: Grimes
+csv: tracks=0 bars=27 license=cc-zero
+
+=== part P1 'Piano' measures=27 ===
+m1 [key fifths=2; time 4/4; clef=G2; tempo=150; dyn=f]  s1v1: A5:8 A5:q. B5:8 B5:q. F#5:8
+m2  s1v1: F#5:q. r:8 B5:q. F#5:8 F#5:q. F#5:8
+m3  s1v1: D6:q C#6:q B5:q A5:q
+m4  s1v1: F#5:q. F#5:q E5:8 D5:8 E5:8~
+m5  s1v1: E5:8 F#5:q D5:q F#5:8 E5:8 D5:8 E5:8
+m6  s1v1: F#5:8 E5:8 D5:8 E5:8 F#5:8 E5:8 D5:8 E5:8
+m7  s1v1: D5:q r:8 A5:8 A5:q. B5:8
+m8  s1v1: B5:q. F#5:8 F#5:q. r:8
+m9  s1v1: B5:q. F#5:8 F#5:8 F#5:8 r:8 F#5:8 D6:q C#6:8~
+m10  s1v1: C#6:8 B5:q A5:q F#5:q A5:q F#5:8~
+m11  s1v1: F#5:8 r:q F#5:8 D5:q+F#5 D5:q+F#5
+m12  s1v1: D5:q+F#5 D5:q+F#5 D5:q+A5 D5:q+A5
+m13  s1v1: D5:q+G5 D5:q+G5 D5:q+F#5 r:q
+m14  s1v1: A5:q B5:q F#5:q r:q
+m15  s1v1: D6:q C#6:q B5:q A5:q
+m16  s1v1: F#5:h r:h
+m17  s1v1: A5:q B5:q F#5:q r:q
+m18  s1v1: E5:8 F#5:8 E5:8 D5:8 E5:8 F#5:8 E5:8 D5:8
+m19  s1v1: E5:q F#5:q D5:q r:q
+m20  s1v1: A5:q B5:q F#5:q r:q
+m21  s1v1: D6:q C#6:q B5:q A5:q
+m22  s1v1: F#5:q r:8 F#5:q E5:8 D5:8 E5:8
+m23  s1v1: F#5:8 D5:q r:8 F#5:8 E5:8 D5:8 E5:8
+m24  s1v1: F#5:8 E5:8 D5:8 E5:8 F#5:8 E5:8 D5:8 E5:8
+m25  s1v1: D5:q r:8 E5:8 E5:8 F#5:8 E5:8 D5:8
+m26  s1v1: E5:8 F#5:8 E5:8 D5:8 E5:q F#5:q
+m27  s1v1: D5:q r:8 r:8 r:h

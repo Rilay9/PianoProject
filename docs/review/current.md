@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/e8ac9382.md` — **response required** (2026-10-05): the ability map (the plan of record) and the mode sheet; whether the blocking verdict is lifted and what must change before wave one is cut into build briefs.
 - `handoffs/1b0d8ac3.md` — **answered** in `responses/1b0d8ac3.md`: the ability-map brief approved with one required change (applied at 763d543a); the generator addendum approved as an enabling specification with four corrections (recorded in it); the process rules approved. The synthesis agent runs once the mode sheet lands; the map and the sheet come back in the next handoff.
 - `handoffs/ed6d7f46.md` — **answered** in `responses/ed6d7f46.md`: CL12's design and labels were approved at that time. The 2026-10-03 product scheduler supersedes the old dispatch permission; CL12a is now parked.
 - `handoffs/03c7f341.md` — **answered** in `responses/03c7f341.md`: CL17's three decisions stand; its broad migration is frozen by the convergence charter.
