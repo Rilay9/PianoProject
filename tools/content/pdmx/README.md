@@ -296,3 +296,15 @@ and all three are worth checking first if something looks wrong:
 3. **Paths.** `pathlib` throughout, no shell anywhere, and a space in
    `C:\Users\yalir\repos\Piano Stuff` is the normal case rather than the odd
    one — quote it in PowerShell.
+
+## Research-only checks, deliberately outside default CI (2026-10-05)
+
+`tools/content/pdmx/test_quarry_identity.py` is research tooling, not a product test. It is outside the suite's
+discover path (`python -m unittest discover tools/content/tests`) on purpose: it asserts on the local quarry cache
+that `tools/content/pdmx/quarry_lanes.py` writes from the owner's PDMX archive, which exists on no CI runner. Run it
+by hand after a quarry pass:
+
+    py -3.11 tools/content/pdmx/quarry_lanes.py      # writes the cached CSV hits
+    py -3.11 -m unittest tools/content/pdmx/test_quarry_identity.py
+
+Do not move it into CI unless a CI consumer with that cache appears.

@@ -1,0 +1,7 @@
+# Research and verification tooling only (the owner, 2026-10-05): never an app or runtime dependency.
+# partitura is an independent event reader for generated and imported MusicXML; its parse is not proof that a
+# musical definition or a source score is correct. Install for wave 1(d) and the review corpora:
+#   py -3.11 -m pip install -r tools/content/requirements-research.txt
+partitura==1.9.0
+# musicxml-io (TypeScript, MIT) is a reader only, installed by the 1(d) brief where it needs it, pinned there,
+# never under app/package.json.
