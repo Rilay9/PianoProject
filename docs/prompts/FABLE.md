@@ -99,7 +99,7 @@ A brief that creates, changes or newly relies on generated content adds a **Gene
 - the review denominator;
 - where the learner transfers out of generation.
 
-The checker's task (§2 step 2) includes a cheap brief lint that rejects a major curriculum brief missing these headings. Tiny wording or truth fixes carry none of this.
+A major curriculum brief declares itself with one line, `ability: <id>`; the checker's brief lint reads every brief that carries it and rejects one missing these headings or whose record does not pass. Tiny wording or truth fixes carry no marker and none of this.
 
 ## 4. Choosing content: generated material is a first-class source (the owner, 2026-10-06)
 
@@ -146,7 +146,7 @@ Never "musically good". The owner playing an item on their phone is welcome feed
 
 ## 6. Evidence and the learner model
 
-Every chain says, in `evidence`, what updates the learner state, what is self-checked, and what never earns credit (§3). No ability goes green before the learner has done its independence test. A Wait run, a lit chord tone, a looped section or a Lab bed never certifies the target ability (`MODE-SHEET.md`). Where the app cannot observe the target, the task is honest self-check, or the requirement changes. The app never pretends. No word or reading-time limit on a lesson (the owner, 2026-10-06): length never outranks accuracy and communication.
+Every chain says, in `evidence`, what updates the learner state, what is self-checked, and what never earns credit (§3). No ability goes green before the learner has done its independence test. A Wait run, a lit chord tone, a looped section or a Lab bed never certifies the target ability (`MODE-SHEET.md`). Where the app cannot observe the target, the task is honest self-check, or the requirement changes. The app never pretends. A reviewer may decide teaching use and placement from verified content facts and the chain's stated role; this is not a musical-quality claim, and reviewer identity alone is never evidence. No word or reading-time limit on a lesson (the owner, 2026-10-06): length never outranks accuracy and communication.
 
 ## 7. Libraries, before custom code
 

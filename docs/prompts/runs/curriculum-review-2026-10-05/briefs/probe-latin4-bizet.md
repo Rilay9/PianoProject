@@ -1,5 +1,8 @@
 # Probe: one row end to end, Bizet's Habanera as the habanera model on a new latin.4
 
+ability: A7c.1
+chain record: `docs/chains/A7c.1.yaml` (the contract; it stays `draft` through this landing and the builder keeps its refs current as files land)
+
 Build contract, drafted 2026-10-06 at HEAD 72c1b1b9; revised the same day for the outside review `docs/review/responses/b8b96730.md` (section 2) and the owner's rule of 2026-10-06 on lesson length; revised again for the owner's instructional orchestration contract (`../ORCHESTRATION-CONTRACT.md`, §8, §11, §12), which widens the probe's purpose. The probe now proves source, verified content, controlled teaching, real model, appropriate mode and scaffold, support fading and honest completion, not intake alone. The worktree is cut from origin's head at dispatch; the orchestrator writes that sha here before dispatch (operating-procedure §14). The gate this contract runs is `../INTAKE-GATE.md`; its check ids (G1-G15) and its record template (section (c)) are used below without being restated.
 
 Harness: operating-procedure §14, cited and not restated. What this lane adds is listed at the end. Report: operating-procedure §11 and §12, plus `INTAKE-GATE.md` section (e), which is this probe's purpose.
@@ -118,6 +121,14 @@ Without the original scaffold, the learner looks at a left hand they have not be
 
 - **What the app can observe:** the rhythm-only or Keep tempo row of whatever they then play (timing, and pitch in Keep tempo), and none of it counts toward latin.4.
 - **What the app cannot observe:** the identification itself, the choice of where the cell breaks, and hearing the difference. These are **self-checked**, in those words. No one in this process can hear whether the learner's habanera has the feel: *unverified as music*.
+
+### Boundaries from the reviewer's approval (`docs/review/responses/6e7475c1.md` §3, §5; 2026-10-06)
+
+1. Steps 4 and 6 on the existing items are **orientation only**: metre, tempo, bar length and material differ, so they are not the strict CONTROL. G13 stays a separate seam; A7c.1 cannot become `shipped` until that controlled contrast exists and passes CK-5. This landing proves the intake and teaching path; the record stays `draft`; the scoreboard does not move.
+2. **Timing must be honest (R34, R35).** The Keep tempo window is ±150 ms (MODE-SHEET §2). It separates the habanera's second onset (0.75 of a beat) from an even eighth (0.5) only while a quarter of a beat is longer than 150 ms: a quarter note at or below 100 bpm. The cut's written tempo is 60 and the pass pair's floor is 48, both inside that bound; the tresillo exercises at 84 in 4/4 (an eighth is 357 ms) are inside it. The lesson says the counted run is at the written tempo or below, never above 100. Every sentence about the counted run says it proves the notes and rough timing of a contract-verified item; none says the app certified the cell, recognition, or the feel. CT-3 wording never implies recognition.
+3. **Step 12** is outside this probe; the identification is self-checked (steps 11 and 12 award nothing).
+4. **R36:** `content/lessons/latin.6.md` lines 15-25 name the cells of Por Una Cabeza and The Crave, which spoils the later identification. This probe may edit that one passage so latin.6 describes the pieces without naming the cell (the answer follows the attempt, never precedes it); `latin.6.md` joins the owned files for that passage only; no other latin.6 change.
+5. **The range seam** (`responses/6e7475c1.md` §5) lands separately: a ranged or looped row never satisfies an item-level `runs` requirement. Until it lands, the lesson states that the counted run is the whole twelve bars, and the entry reports the gap; the builder does not change `rungState.ts`.
 
 ### Completion treatment (contract §1 item 16)
 
