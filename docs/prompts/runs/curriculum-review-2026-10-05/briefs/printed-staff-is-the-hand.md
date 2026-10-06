@@ -1,0 +1,29 @@
+# Brief: the printed staff is the hand's default; cross-staff is a local relation (HD2; 2026-10-06)
+
+**What governs:** the outside reviewer's ruling in `docs/review/responses/33497357.md` §1 (read it whole; it is the specification and names the acceptance set), FABLE §6 and §10. The cells seam's independent witness (CD1, held) found the defect: `voiceHomeStaves()` in `app/src/score/extractScoreModel.ts` counts a voice over the whole piece and `extractScoreModel` gives every note of that voice the home staff's hand, so a reused voice id outweighs the note's explicit printed staff. The committed model dumps in `docs/prompts/runs/CD1/evidence/` show it: *The Crave* bar 40, the long staff-1 inner line is voice 2 and comes out `L`, while the real left-hand notes are staff 2 voice 3; *Solace* bars 22, 26, 30, 32, the same shape. `hand` drives hand focus, hands-separate playback and every hand-sensitive detector, so these are learner-facing faults on latin.6 and ragtime.7 today.
+
+**The ruling, as the contract.** For a two-staff piano score:
+1. the note's printed staff is the default hand fact: staff 1 is R, staff 2 is L (a product mapping from the two piano staves, not a clef inference);
+2. cross-staff is a local notation relation, never a whole-piece voice property: the printed-staff default is overridden only for the specific note(s) a bounded local gesture shows have crossed staves (the same voice makes a staff excursion inside the measure and returns; or a beamed or chord group itself spans the staves); a voice id being mostly on the other staff elsewhere in the piece is not enough;
+3. a voice changing staff only across a measure boundary is not cross-staff evidence by itself (the live Crave and Solace failure);
+4. HD1 (Entries 244, 246) stays separate and unchanged: in a one-staff score the authoritative catalogue declaration supplies the hand;
+5. `ScoreNote.crossStaff` means a locally established cross-staff note under this rule, no longer "printed staff differs from the voice's whole-piece home".
+No particular OSMD property or heuristic is required; the evidence hierarchy is. Where a local cross-staff case cannot be established from the parsed notation, keep the printed-staff reading and record the limitation; never guess from the voice's history.
+
+**Finish condition: the reviewer's acceptance set, each a test named by file, red first where it can be red on the old rule:**
+- the committed deliberate `cross-staff.musicxml` fixture: its staff-1 excursion remains L with `crossStaff: true` (green on both rules; the guard against the naive rule);
+- a reused voice id that is lower-staff elsewhere but occupies staff 1 for a complete separate measure: those staff-1 notes are R and not cross-staff (red on the old rule);
+- a local staff-2 to staff-1 to staff-2 excursion within one measure: only the excursion is cross-staff and stays with the lower-staff hand;
+- a beamed or chord cross-staff example if the parser exposes the relation: the group keeps one hand (if the parser does not expose it, say so and record the limitation);
+- the exact *The Crave* bar 40 and *Solace* bars 22, 26, 30, 32 through the real built files: the staff-1 inner voice R, the genuine staff-2 line L (red on the old rule);
+- HD1's one-staff declared-left and declared-right cases unchanged (`oneStaffHand.test.ts` kept green);
+- the existing two-staff and cross-staff goldens semantically correct: **a corpus diff** of every note whose `hand` or `crossStaff` changes under the new rule, over the built catalogue (the bridge or the unit helper that extracts models off-screen), **classified** into the intended reused-voice and cross-staff boundary; any change outside that boundary is a stop, reported with the file and bar; goldens are regenerated only for classified changes, never blindly.
+Plus `npx tsc -b`, `npx vitest run` on the changed files and the full unit suite once; the browser spec that covers hand focus on a two-staff score (name it) on the lane's own port with `--workers=2`; `docs/05-score-follow-engine.md` §1 and `docs/01-architecture.md` §4.1 state the rule and the reason (the voice-home rule and why it was wrong); `docs/08-test-map.md`'s hand row names the cases and the corpus diff.
+
+**Stop conditions:** a corpus change outside the classified boundary; the parser not exposing a staff per note (report; do not derive it from the clef); any change needed in HD1's declaration path.
+
+## Files owned
+
+`app/src/score/extractScoreModel.ts` (`voiceHomeStaves` and the hand assignment), `app/src/score/types.ts` only for `crossStaff`'s documented meaning, the fixtures under `app/tests/unit/fixtures/` (new ones for the reused-voice and local-excursion cases), the unit tests that pin the hand rule (`oneStaffHand.test.ts` untouched except to run; the two-staff and cross-staff tests extended), the goldens only as classified, the corpus-diff script under `docs/prompts/runs/HD2/` with its classified output, the browser spec named, `docs/05`, `docs/01` §4.1, `docs/08`. Not the detectors, not the catalogue data, not the cutter, not the declaration helper.
+
+Harness: `operating-procedure.md` §14. The content build is current in the main checkout (`C:\Users\yalir\repos\Piano Stuff\PianoProject\app\public\content`, 2093 items): copy it; no content build; the browser run on your own port after stopping any preview server. No commit, push, stash, checkout or reset; never name an AI model; park temporary files under `build/` in the worktree. Reply in at most ten lines: the rule as implemented and how a local cross-staff gesture is established; each acceptance case's result, red first where red; the corpus diff's counts by class and any change outside the boundary; the suites' totals; a draft record entry (where, what, before, after, why); anything not done, by name.
