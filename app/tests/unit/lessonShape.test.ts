@@ -259,7 +259,7 @@ describe('every lesson keeps its shape', () => {
     // twenty-one pieces on it. The list is named so it cannot grow quietly.
     const MINUTES = 3;
     const WPM = 200;
-    // 2026-10-05, the first curriculum correction wave (Entry 228): the technique rungs gained the stop
+    // 2026-10-05, the first curriculum correction wave (Entry 232): the technique rungs gained the stop
     // conditions and the one-sentence-per-listed-exercise the review required, and blues.8 gained the six-step
     // own-left-hand ladder; each is several ideas by design. The alternative, trimming the required sentences,
     // was rejected because it removes what the review found missing. A split of blues.8's ladder into its own
