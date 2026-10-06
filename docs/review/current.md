@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/a7c1-reviewed.md` — **response required**: A7c.1's record is complete (every ref resolves through the generated-ids manifest; the step-20 line on latin.6 and latin.7, Entry 259); `reviewed` is yours; the acceptance path for `shipped` (A7S) is building under the fast path unless you want a browser-driven one.
 - `handoffs/sr2-landing.md` — **response required**: Entry 258 (SR2) landed under your SR1 ruling (the daily read held to the learner's taught set, no read at 0.1-0.4; `metre.three-four` taught at 1.4, curated-only, by the waltz contract; the reader's 3/4 move on single-hand rows only); two evidence questions: held 1.1 daily runs crediting rung 1.5's requirements, and the card printing L1.5 over a phrase held at 1.1.
 - `handoffs/g13-landing.md` — **answered** in `responses/g13-landing.md` (APPROVE: Entries 254-256; the four drills' notation read whole, no mismatch; the drill admission rule stands, the drills' bits stay null; the cut decision re-issued on its current identity: Entry 257).
 - `handoffs/cut-identity-machine-dependent.md` — **answered** in `responses/cut-identity-machine-dependent.md` (APPROVE: the narrow pin is right; identity stays the built file's sha256; the cut decision re-issued with `supersedes`, no fresh read needed for this repair, no precedent for arbitrary identity moves).
