@@ -66,6 +66,8 @@ Findings from this table:
    Severity: depth. An exercise a learner can open on a rung with no sentence about it is a CONTROL station without instruction; the 7/8 case is the clearest because no other lesson teaches it.
 5. **No on-rung MODEL for rotation and none named for the trill.** `technique.6.md:29-30` says the trill "saves working it out over a sonatina later" and names none. Severity: depth.
 
+> **Amendment (see the correction at the end of this extract):** the contrary-motion count in section 4 item 1 and section 5 item 1 is superseded; 16 of 36 files, not twelve.
+
 ## 4. Sequencing concerns
 
 1. **Two lessons describe different starts for the same exercise.** Core `4.1.md:29-31` says "Start both thumbs on the same C and move outwards: now the hands are exact mirrors", and lists `exercise.scale.c-major.2oct.contrary.both.2` as a 4.1 option. `technique.4.md:26-30` calls that same exercise "the one to start on: the left hand begins on the C above the right hand's, so in the first bar they pass through each other." The notation agrees with technique.4 and not with 4.1: right hand C4 up to C6, left hand C5 down to C3 (read from the file; first bar RH C4 D4 E4 F4 G4 A4 B4 C5, LH C5 B4 A4 G4 F4 E4 D4 C4; the pairs run (C4,C5) ... (G4,F4), so the left hand begins to the right of the right hand and the hands pass at beat 4). The one-octave form `exercise.scale.c-major.1oct.contrary.both.2` starts both hands on C4 and diverges, as 4.1 describes. All twelve two-octave contrary files have the same construction; mechanism: `tools/content/generate_exercises.py:1085-1089, 1101-1102`, where the left hand's start is its own low octave and the contrary run reads from the top of that range. See Section 5 item 1.
@@ -116,3 +118,6 @@ Ranked. None deletes more than a sentence or an option; all are scoped to this t
 - **E. Score study before playing:** not touched. The étude paragraphs describe each piece's one figure after the fact (Lemoine "one figure each", `technique.4.md:50-53`); no lesson asks the learner to inspect an étude before playing. `classical.8.md:18-19` ("Name the problem before you start") is the nearest, a rung later.
 - **F. Performance and recovery:** partly, in the practice sense: "dropping back the moment evenness goes" (`technique.8.md:20-24`), "a scale you can play once and not twice is not at tempo yet" (`:45-46`), and the Ladder's drop-back on a faulty pass (`technique.4.md:57-59`). Performance, cold start and no-stopping runs are not touched by this track.
 
+## Correction (2026-10-05, after the generator addendum)
+
+Section 4 item 1 and section 5 item 1 say all twelve two-octave contrary files start crossed. Recounted with music21 over the 36 generated contrary files: 16 do not start at the unison, 10 one-octave files start the hands an octave apart and 6 two-octave files (C, D-flat, D, E-flat, E, F) start crossed; the other 20 start at the unison. The fix in section 8 item 1 applies to those 16, not twelve.

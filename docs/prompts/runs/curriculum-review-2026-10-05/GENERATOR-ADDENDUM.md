@@ -577,3 +577,15 @@ Not established here:
 - whether `unrealisable()` refuses the G1 parameter sets;
 - the chromatic family's spelling at `:1418`;
 - any primary-source wording. Every `[D]` line is still unconfirmed.
+
+---
+
+## Reviewer corrections (`responses/1b0d8ac3.md`, approve with requested changes, as an enabling specification only)
+
+These supersede the text above where they conflict; each dependent lane applies its correction before dispatch.
+
+1. **Dispatch authority.** The plan of record is still pending; the ability map governs dispatch. The inventory dispositions above are proposals, not work orders; the family-first sequence in section 8 does not dispatch anything. Section 4's "two rows" source-block summary is wrong: G4, G14, G15 and G16 all await their primary source (G15 the guajeo definition, G16 printed pattern evidence) and cannot be built from guessed definitions; other rows stay gated by their own unresolved source claims; unrelated evidenced teaching corrections may proceed.
+2. **G5's checker must match its tier.** The intro tier chooses a triadic reduction (`generate_exercises.py:4356-4359`, `_triad_figure`, `triad(quality)`); a checker demanding root, third and seventh in every half-bar fails correct intro output. Define the expected symbol and pitch set per tier (intro: the sourced triadic reduction; standard: the seventh-shell contract), state what each demonstrates, and do not add sevenths to satisfy a wrong test.
+3. **The `seventh_voicing` MERGE is provisional.** A matching C rootless right hand is duplication evidence, not proof the family is redundant; the row itself records different left hands, bar counts and shell forms. Compare variants, consumers and teaching jobs; keep the voicing-control and progression or voice-leading jobs in the surviving route; the minor ii-V-i repair is not gated on this merge unless a dependency is shown.
+4. **Sight-reading comparison denominators.** The contender comparison in section 5 step 5 is reported separately from the baseline 100-item progression sample, with matched cases, seeds, outputs and notation-read denominators per contender; if 20 baseline reads cannot cover the promised boundaries, expand or state which boundaries were sampled. Published grades are evidence for the app-level specification, never automatic requirements; the evaluator score is a secondary diagnostic.
+5. **What may proceed now:** primary-source fact gathering, the mode sheet, narrowly needed candidate and passage inspection, and the bounded sight-reading specification and export experiment. The generic checker harness, family extensions, merge or retire implementation and the comprehensive music-family audit wait until the map names each one's learner-facing consumer and finish.
