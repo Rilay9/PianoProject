@@ -20,6 +20,7 @@ The second pass the restart packet asked for. Pass one (`SYNTHESIS.md`) found wh
 2. **latin.8 is a firm learning need, not conditional on material.** The new PDMX review found a two-staff Piazzolla Libertango piano arrangement (`QmakqtZzLrMc3CqFnwiqjyxmhrThav2Hmu15E6Jrg9oap2`) with a repeated accented bass ostinato, articulation and sustained rhythmic texture; the exact excerpt is refined after the El gordo triste dump. Public export stays no (Piazzolla in copyright); personal-library and curriculum admission are decided separately, per the three-admissions rule.
 3. **latin.4 is a firm learning need.** The habanera bass is taught directly as dotted eighth, sixteenth, eighth, eighth in 2/4, a distinct rhythmic cell, then compared with the tresillo (3+3+2); tango patterns derive from the habanera. The four old candidates failed as files; that is a sourcing failure, not evidence against teaching the habanera and tresillo. Bizet's Habanera and Contra Danza are being dumped next; the shipped Por Una Cabeza and The Crave excerpts serve until then.
 4. **Dossier claims are leads, not authority.** The 24 MUST or SHOULD rows below (listed by `count_upgrade.py`) cite an external benchmark through the dossier (`[D]`). Before any of them drives a curriculum change, the primary source (Faber, ABRSM, RCM, Berklee or the named specialist text) is read and the claim confirmed or the row downgraded; that check is the first task of the batch brief, and its result is written into the row. The primary sources to read are Faber's level guides and the Berklee course pages, which are directly accessible, and the official ABRSM and RCM syllabus PDFs; "403, therefore a third-party transcription" is not acceptable where an official PDF exists.
+   - Consumed 2026-10-05 from SOURCE-CHECK-parallel (section 0 item 4): the parallel source check read the Berklee Online jazz piano, blues and rock keyboard, latin piano styles and basic improvisation pages and three peer-reviewed practice and memory papers (as abstracts). Rows it confirms carry the line 'source-checked 2026-10-05 (parallel): confirmed, §n' beside their table and are no longer gated. **The sources support the propositions and do not dictate rung numbers, repetition counts, thresholds or generator parameters.** Left gated, by name: the ABRSM and RCM technical-list and reading rows (the sight-reading progression, the reading rows for key signatures and 3/4, minor-key four-octave scales and the like, the key before dictation, the jam lost-and-find row's ABRSM citation), the hymn-specific rows (accompanying a singer, the vamp between verses), the exact rock-pattern claims the broad Berklee sequence does not cover (the syncopated rock comping row), and the rows whose benchmark is Faber or an unread Berklee page (memory before 4.6, harmonic hearing by ear, texture and bass-line options, pop rhythmic comping, singing with scale degrees, the stock blues turnaround, shuffle versus straight, the stage 8-9 use-case ladder).
 
 - core: Teach repeat signs, first and second endings, D.C., fermata, the natural sign, staccato, once, where pieces first print them
 - core: Reading rows: key signatures and 3/4
@@ -122,6 +123,8 @@ Endpoint upgraded: from five Stage-1 tips to a practice toolbox the learner meet
 | Tension, pain, when to stop | ALREADY | practice.4 `[R]` | — | — |
 | Ten new practice rungs | REJECT | — | the toolbox fits in edits plus one unit | — |
 
+Consumed 2026-10-05 from SOURCE-CHECK-parallel (§Practice / memory and §Practice quality): source-checked 2026-10-05 (parallel): confirmed, §Practice / memory and §Practice quality, for the row 'A later unit: practising a whole piece' (new practice.6): structure as a retrieval scheme, retrieval cues, structural restart points, and raw minutes not being a quality measure (with the caution that 'longer segments' is never turned into a rule). Gate lifted on this row; no restart count or spacing interval comes from the sources.
+
 ### 2.3 technique (5 units)
 
 Endpoint stated, not widened: major-key four-octave scales plus the physical vocabulary of Stages 4-8. Exam breadth (minor at four octaves, thirds and sixths in all keys, diminished sevenths) is NICE.
@@ -200,6 +203,8 @@ Endpoint kept: a learner's own chorus over their own left hand. The upgrade is t
 | New Orleans style, gospel-blues, tritone substitutions at blues.7 | NICE | — | D3 promised; lessons scoped them out `[R]` | docs |
 | Blue notes, form and shuffle, walking bass construction, boogie patterns, stride, twelve keys as a task | ALREADY | blues.3-8 (interpretation audit) | — | — |
 
+Consumed 2026-10-05 from SOURCE-CHECK-parallel (§Blues / rock): source-checked 2026-10-05 (parallel): confirmed, §Blues / rock, for the row 'Scaffold: right hand improvises while the learner's own left hand keeps the groove': accompaniment, time feel and phrasing come before deeper vocabulary and improvisation. Gate lifted on that row. Left gated: 'Intro and ending paragraph; the stock blues turnaround' (the blues page does not establish the turnaround formula or a blues intro and ending convention) and 'Shuffle versus straight versus 12/8 slow blues' (the page names shuffles but does not establish the distinction).
+
 ### 2.7 jazz (7 units)
 
 Endpoint: the soloing promise is kept (decided in section 0); general improvisation stays owned by improv.
@@ -217,6 +222,8 @@ Endpoint: the soloing promise is kept (decided in section 0); general improvisat
 | Bossa in a jazz context | SHOULD (owner: latin) | latin.5 teaches the pattern; jazz.8 references it | no jazz or latin lesson teaches a bossa pattern `[R]` | see latin |
 | Historical listening and transcription | NICE | jazz.9 | no actor here hears; the shared transcription task covers it | text |
 | Swing feel, triad comping, shells and ii-V-I, walking, rootless, tritone, extensions | ALREADY | jazz.3-8 (interpretation audit REVISE/AGREE) | — | — |
+
+Consumed 2026-10-05 from SOURCE-CHECK-parallel (§Jazz and §Improvisation): source-checked 2026-10-05 (parallel): confirmed, §Jazz, for 'Minor ii-V-i with shells' (minor ii-V-i after basic comping and walking-bass work), and source-checked 2026-10-05 (parallel): confirmed, §Jazz and §Improvisation, for 'Chord-tone then approach-note soloing step' (the ABRSM Jazz Piano citation in that row was not read and stays gated for that citation) and, §Jazz, for 'Solo-piano arranging technique' (harmonising the melody, then arranging; drop-2 is NICE and is not required). Gates lifted on the three rows. Not supplied: voicings, key lists, counts and rung numbers.
 
 ### 2.8 ragtime (5 units)
 
@@ -276,6 +283,8 @@ Endpoint kept: a finished written piece. The upgrade makes composition recursive
 | Chromatic approach notes; minor blues; supplied-motif improvisation | NICE | improv.6/7 | `[R]` | text |
 | Call and answer, pentatonic, blues scale, guide tones, colour, reharmonising, ABA | ALREADY | improv.3-9 `[R]` | — | — |
 
+Consumed 2026-10-05 from SOURCE-CHECK-parallel (§Improvisation): source-checked 2026-10-05 (parallel): confirmed, §Improvisation, for 'Transcribe two bars of a real tune, vary one element, use it': transcription and motivic development with variation are legitimate foundational improvisation work. Gate lifted on that row; the sources do not require Berklee's order or chromatic vocabulary at this stage.
+
 ### 2.11 hymns-gospel (5 units)
 
 Endpoint: narrowed to Hymns & spirituals (decided in section 0); gospel rungs 7-9 are not added.
@@ -327,6 +336,8 @@ Endpoint kept and the name's breadth stated: clave, tresillo and habanera, tumba
 | Generic exercises able to satisfy the latin.5 requirement | SHOULD | stage-5.json | six generic options `[R]` | data |
 | `startsAtStage` 5 while latin.3 exists | SHOULD | 00-tracks.json | `[R]` | data |
 | Clave, tumbao, montuno drills, tango accompaniment, showpieces | ALREADY | latin.3, 5, 6, 7 (interpretation audit) | — | — |
+
+Consumed 2026-10-05 from SOURCE-CHECK-parallel (§Latin): source-checked 2026-10-05 (parallel): confirmed, §Latin, for 'A tresillo-and-habanera stage' (tango patterns derived from the habanera are a distinct category) and for 'Say which tradition each rung's material belongs to' (guajeo, montuno and tumbao, bossa and samba, and tango and habanera are distinct categories and are not one generic Latin accompaniment). Gates lifted on both rows. The Wikipedia citation in the first row and the printed-habanera primary check (the Bizet dump) are unchanged by this.
 
 ### 2.14 rock-metal (5 units)
 

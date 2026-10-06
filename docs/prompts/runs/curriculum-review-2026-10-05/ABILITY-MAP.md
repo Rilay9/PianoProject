@@ -104,6 +104,7 @@ All are wave 1(a) (§6). Each row was re-read at the line before editing whereve
 - **Falls through:** CONTROL (no lesson names the marks).
 - **Measurement:** MIDI: the notes of the unrolled route in Keep tempo. A backward repeat is unrolled (`extractScoreModel.ts:12-13` [S A11]); whether endings and D.C. are unrolled was not examined [R core §3.1]. Fermata length cannot be judged, because the clock runs on [M §2]. self-checked: naming the marks and tracing the route. no actor is needed: no musical judgement is involved.
 - **Completion:** CT-3 (3.4 and 4.5 are met by runs of the pieces that print the marks; nothing changes).
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel: not covered, gate stays. ABRSM's Grade 1 staccato parameter is an ABRSM row; the parallel check did not read ABRSM, and the row's own note that the need rests on shipped scores is unchanged.
 
 #### A1.2 Read and sight-read in a key signature and in 3/4
 - **Rows:** core#3, core#4. **Priority:** P2. **Tracks:** core (owner); technique.5, theory.6/9, jazz.8, chords-pop.8 use reading rows. [D-gate] The ABRSM sight-reading table supplies the parameters as evidence, not as a copy [U §1].
@@ -123,6 +124,7 @@ All are wave 1(a) (§6). Each row was re-read at the line before editing whereve
 - **Completion:** CT-3 (the `reads` requirements at 1.5 and 3.4 are measured [M §16]).
 
 - SHOULD core#10: Sixteenth reading before Canon in D (4.4). Disposition: wave 5; a reading line at 4.4, or keep Canon out of the default 4.6/4.7 pool [R core §3.6].
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel: not covered, gate stays. This rests on ABRSM's sight-reading table; ABRSM and RCM technical and reading rows were not read by the parallel check.
 
 ### 2.2 Cluster 2 — Transposition (P2)
 
@@ -143,6 +145,7 @@ All are wave 1(a) (§6). Each row was re-read at the line before editing whereve
 - **Completion:** CT-1 (1.2 and 3.2 are met by their existing runs; the transposition task is shown as the lesson's `unjudged` rule and called self-checked).
 
 - SHOULD jam#5: Transposition by numerals on jam.7 (a worked example on eight bars, or narrowed). Disposition: wave 5, text; uses A2.1's method; the chart has no transpose control [M §15].
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel: not covered, gate stays. This rests on Faber Level 4 and the dossier; the parallel check read neither.
 
 ### 2.3 Cluster 3 — Ear to keyboard production, playing by ear and transcription (P2)
 
@@ -171,6 +174,7 @@ All are wave 1(a) (§6). Each row was re-read at the line before editing whereve
 - SHOULD blues-boogie#7: One historical lick to transcribe and transform. Disposition: wave 5; uses the shared template; a licensed lick is a content search.
   - Amended 2026-10-05 from the quarry Served by B2's Morton excerpt once it is cut (A7a.1 amendment).
 - SHOULD latin#8: A listening or transcription example per rung. Disposition: wave 5; uses the shared template.
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel: not covered, gate stays. This rests on Berklee ear-training and RCM harmonic hearing; the parallel check read the Berklee jazz, blues and rock, latin and improvisation pages, none of which is the ear-training source, and it did not read RCM.
 
 ### 2.4 Cluster 4 — Performance, structural memory and recovery (P2)
 
@@ -189,6 +193,7 @@ All are wave 1(a) (§6). Each row was re-read at the line before editing whereve
 - **Falls through:** CONTROL (no retrieval check before 4.7) and INDEPENDENCE (no whole-piece method).
 - **Measurement:** MIDI: a flagged one-pass take's accuracy and, in Keep tempo, its timing. `performance: true` counts only with the normal standard [M §9; rungState.ts:377-378]. self-checked: what slipped on the cold start, the landmark chosen, the restart, the listening. no actor can judge whether the performance is musical (unverified as music) or whether it was done for an audience [M §9].
 - **Completion:** CT-2 for practice.6 (a learner's-word rung: its material is the learner's own piece). CT-1 for classical.9.
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel (Practice / memory, Chaffin and Imreh 2002; Williamon and Valentine 2002; Practice quality, Williamon and Valentine 2000): source-checked 2026-10-05 (parallel): confirmed, §Practice / memory and §Practice quality. Gate lifted on this block. Confirmed: formal structure can organise memory; performance and retrieval cues matter; retrieval practice is distinct from merely removing the page; structural restart points belong in memory training; raw practice minutes alone are not a quality measure (confirmed with caution: it is never read as 'longer segments are better' or 'blocked repetition is bad'). Not supplied: the memory study is one expert's case study, so no restart count, spacing interval or threshold comes from it; those stay local design choices.
 
 #### A4.2 Start, stay in, recover and end together in an ensemble form
 - **Rows:** jam#1, jam#2, jam#4. **Priority:** P2 (the jam endpoint, "can function with another musician"). **Tracks:** jam (its own owner, upgrade §1); core 4.6's keep-going is the solo precedent. [D-gate] jam#1 cites the ABRSM jazz solo section with a rhythm section that does not stop.
@@ -212,6 +217,7 @@ All are wave 1(a) (§6). Each row was re-read at the line before editing whereve
 - SHOULD jazz#7: Learning and memorising a standard as a process. Disposition: folded into A10.1 INDEPENDENCE by reference to core 4.7.
 - SHOULD jam#6: A muted-bars lab setting that reads the re-entry bar. Disposition: later; code; it would make A4.2 INDEPENDENCE measurable.
 - SHOULD jam#8: Listening while playing, leaving space, role switching as tasks. Disposition: wave 5, text.
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel: not covered, gate stays. This rests on the ABRSM jazz solo section with a rhythm section; ABRSM was not read by the parallel check.
 
 ### 2.5 Cluster 5 — Practical harmony and harmonic accompaniment (P2)
 
@@ -304,11 +310,13 @@ The MUSIC station needs no artefact of its own: shelf import, Play it to me and 
 - Amended 2026-10-05 from the quarry (B1, CONTROL): State EXISTING -> EXISTING. Artefact: the authored shuffles `exercise.blues.twelve-bar-shuffle.c/f/g` (blues.4), unchanged; chord plan C C C C F F C C G F C G. The quarry adds nothing to this station and says the real scores must not replace it. Published definition: no named style claim beyond the printed twelve-bar form. Verification boundary: no new checker (shipped material); Keep tempo measures LH notes and timing, Duet measures the chosen hand only. Completion: the LH shuffle alone through 12 bars at the rung's pass pair, then with the held RH. Nothing above is superseded. Generators keep only CONTROL in this block; B2 and B3 are real scores.
 - Amended 2026-10-05 from the quarry (B2, MODEL/TRANSFER, the MODEL half before the graded task): State NEW -> NEW (a real MODEL added; candidates until intake, not admitted). Mode Keep tempo + Loop; Duet for a hand alone. Artefact: (a) *Original Jelly Roll Blues* (Morton) `QmbuoFtkky8Xpo8LSiAqkMXzBs2Mtc33L6GFw1kWv9T5S3`: 61 bars, grand staff, 4/4, 'Tempo di Blues'; bars 7-8 hold an octave-doubled two-bar riff in both hands (an observation, not a selection: the quarry chose no bars); (b) *Pinetop's Boogie Woogie*, Parham edition, `QmU7rsQ1UcCDqoY36Xk9qBQk8f6JcZgDFoAx9w96rSNYx3`: 96 bars, 2/2, tempo 160; the LH figure starts at bar 7 after six bars of tremolo; bars still to choose. It is a second edition of the piece shipped as `song.folk.boogie-woogie.pdmx` (already used by blues.8), so the shipped edition stays the default until the IM-8 comparison decides. Published definition: none supplied for 'boogie bass' or 'blue note'; any such lesson word needs the build brief's definition under the D-gate (Berklee weeks 8-10). Verification boundary: CK-7 on the chosen bars; CO-5 (the outside reviewer chooses and reads the bars; two more cuts); phrasing self-checked; no one here can decide whether it sounds like blues (unverified as music). Completion: the learner plays the chosen Morton riff and the chosen Pinetop LH bars in Keep tempo at the pass pair, says what the riff does (notes, rhythm), then uses one fragment of it in the graded task. Admission: quarry ADMIT / HIGH-PRIORITY for both; neither is in `catalog.json`: intake IM-7 and IM-8. Public export: not decided; README label unknown for both; Morton's metadata dates it 1915 and the shipped Pinetop edition is recorded `pd`; likely eligible by date [inferred]; the project's composition record decides. Wave: joins wave 2 item 7, not wave 1(c). The MODEL/TRANSFER cell above (the graded task only, no real model) is superseded in part: the real MODEL now precedes it.
 - Amended 2026-10-05 from the quarry (B3, MODEL/TRANSFER, the full-form TRANSFER half): State NEW -> NEW (candidate, not admitted). Mode Keep tempo; Duet (the RH riff while the app plays the bed); the chord chart cannot open it (0 chord symbols). Artefact: *Blues Riff in C* `Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi`, bars 1-12, three parts, an arrangement by a lesson uploader: whole-note roots C2, F2, G2 under rootless voicings (B-flat E G, E-flat A C, F B D), one-line riff, and a drum-set part; form I I I I IV IV I I V IV I I (bar 12 stays on I, where the shuffles have G). To be played it must be re-staffed (the riff to the RH, the roots to the LH). Published definition: 'twelve-bar blues' is a structural claim read from the bars. Verification boundary: CK-7 extended to a re-staffing (the events must equal the source parts' events; as written CK-7 checks a cut only). **Open question, not resolved: the riff repeats B-natural 4 in bars 3-4, 7-8 and 12 against the B-flat 3 of the C7 voicing; a reader decides whether that is a typo or intended before the score ships (never teach wrong).** Holding the LH while the riff moves is self-checked; no one here can decide the idiom (unverified as music). Completion: the riff over the written root bed through all 12 bars in Keep tempo, then over the learner's own blues.4 C shuffle (the same plan except bar 12), self-checked. Admission: quarry KEEP CANDIDATE ('the cleaner controlled full-chorus bridge'); not imported: intake IM-9. Public export: not decided; licence field `publicdomain`, README label unknown, creator 'Lessons - Blues'; needs a rights record. Wave: joins wave 2 item 7.
+  - Consumed 2026-10-05 from PARALLEL-UNBLOCKS §4 (Blues Riff in C): the open question above is CLOSED as a design decision: the B-natural recurs at corresponding places, so it is structural and never silently changed to B-flat. Keep the item as TRANSFER material with a harmony and note-choice caveat; it is not the canonical clean C7 blues-note MODEL until a source-based musical decision says what the B-natural does (see §8.6 item 11).
 - Amended 2026-10-05 from the quarry (examined, no change): A7a.1 MUSIC (EXISTING) and INDEPENDENCE (REPAIR) match the quarry's independence step.
 
 - **Falls through:** MODEL/TRANSFER (no ramp).
 - **Measurement:** MIDI: the written LH, and the LH with held RH, in Keep tempo. The improvised RH is judged by nothing: on the Score screen improvised notes count as wrong keys [M §2], and the lab's in-scale count is pitch-class only, unstored, over a bass that would clash [M §7b]. self-checked: a steady LH through the form, the RH ideas, the listening. no actor can say whether the chorus sounds like blues (unverified as music).
 - **Completion:** CT-1 (blues.7/8 are met on exercise runs; the improvised step is called self-checked).
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel (Blues / rock, Berklee Online *Blues and Rock Keyboard Techniques*): source-checked 2026-10-05 (parallel): confirmed, §Blues / rock. Gate lifted on this block. Confirmed: the broad sequence of accompaniment and time feel with a phrasing foundation, then idiomatic patterns and licks, then improvisation and application. Not supplied: the exact turnaround formula and the six-step blues ladder, which stay local and need notation or source-specific evidence.
 
 #### A7a.2 Begin, turn around and end a blues chorus
 - **Rows:** blues-boogie#3. **Priority:** P2. **Tracks:** blues-boogie; chords-pop.9's intro line by reference. [D-gate] Berklee "intros, turnarounds, endings" and PianoGroove.
@@ -326,6 +334,7 @@ The MUSIC station needs no artefact of its own: shelf import, Play it to me and 
 - **Falls through:** CONTROL (the blues turnaround is never exercised).
 - **Measurement:** MIDI: the chord drill judges sets; written bars in Keep tempo. self-checked: the intro and ending in the learner's chorus. no actor can judge the idiom (unverified as music).
 - **Completion:** CT-1 (blues.5/7 are met on exercise runs).
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel: not covered, gate stays. The blues and rock page confirms only the broad accompaniment-then-vocabulary sequence; the blues turnaround and the blues intro and ending convention are not in it (the intros and endings lesson read is in the jazz course). The exact turnaround formula stays unchecked.
 
 #### A7a.3 Play the form variants: minor blues and the quick IV
 - **Rows:** blues-boogie#4. **Priority:** P4 (the material exists and is placed nowhere). **Tracks:** blues-boogie.
@@ -367,6 +376,7 @@ The INDEPENDENCE station needs no artefact: choosing the form is one more choice
 - **Falls through:** CONTROL (no drill can express minor) and MODEL/TRANSFER.
 - **Measurement:** MIDI: once fixed, the chord drill's expected sets against the music21 fixture (CK-6). self-checked: hearing the progression in a tune. no actor can judge voicing sound (unverified as music).
 - **Completion:** CT-3 (jazz.6's exercise runs measure the voicing once the drill is right).
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel (Jazz, Berklee Online *Jazz Piano*, OPIAN-315): source-checked 2026-10-05 (parallel): confirmed, §Jazz. Gate lifted on this block. Confirmed: minor ii-V-i belongs in a developed jazz-piano pathway after basic comping and walking-bass work, with arranging and intros and endings later. Not supplied: voicing, key list, repetition count and rung number (local); the tonic quality (im7, im6, im(maj7)) is still chosen from the primary source [A G6], which the syllabus does not settle. The MODEL stays SOURCE-NEEDED (no score prints the minor ii-V-i).
 
 #### A7b.2 Solo over changes: chord tones, then approach notes
 - **Rows:** jazz#2. **Priority:** P2. **Tracks:** jazz; improv.6 (guide tones) is the control owner. [D-gate] Berklee weeks 9-10; ABRSM Jazz Piano.
@@ -387,6 +397,7 @@ The INDEPENDENCE station needs no artefact: choosing the form is one more choice
 - **Completion:** CT-1 (jazz.8 is met on exercise runs).
 
 - SHOULD jazz#6: Lesson-to-drill mismatches (rootless on jazz.6, chord-scale on jazz.7, modes and sight-reading on jazz.8). Disposition: wave 5, data or a pointer line.
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel (Jazz, Lesson 9 chord-tone soloing; Improvisation, Berklee Online *Basic Improvisation*, OPERF-110): source-checked 2026-10-05 (parallel): confirmed, §Jazz and §Improvisation. Gate lifted on the Berklee proposition (chord-tone and harmony-aware choices, motivic development and variation, transcription as a foundation). The ABRSM Jazz Piano citation in the line above was not read by the parallel check and stays gated for that citation alone. Not supplied: order, vocabulary or stage (Berklee's twelve-week order and chromatic vocabulary are not required here).
 
 #### 7c Latin (P2), substrates assigned by tradition (brief correction 6; §8.3)
 
@@ -406,6 +417,7 @@ The INDEPENDENCE station needs no artefact: choosing the form is one more choice
 - **Falls through:** CONTROL (no habanera drill) and MODEL/TRANSFER (the models are never named).
 - **Measurement:** MIDI: onsets within ±150 ms in Keep tempo and Rhythm only. At moderate tempo that window may not separate the habanera from a dotted-pair near-miss, and the evidence refuses timing it cannot resolve [M §2(ii)]. So the app checks the notes and rough timing, not the cell's identity at speed; CK-5 checks the cell in the files. self-checked: hearing the difference. no actor can judge the feel (unverified as music).
 - **Completion:** CT-3 (latin.4 is met by runs of its habanera and tresillo items, with the timing caveat in the lesson).
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel (Latin, Berklee Online *Latin Piano Styles*, OPIAN-300, Lessons 3, 6 and 10): source-checked 2026-10-05 (parallel): confirmed, §Latin. Gate lifted on the category proposition: tango patterns derived from the habanera, Cuban clave-based figures and Brazilian bossa and samba are distinct teaching categories. The primary check of a printed habanera (the Bizet dump, IM-3, in the line above) is a different check and stays open.
 
 #### A7c.2 Comp a Cuban tune: tumbao and montuno under Guantanamera
 - **Rows:** latin#3, latin#4. **Priority:** P3 (the figures are drilled, never applied). **Tracks:** latin. [D-gate] latin#3 cites the dossier and Berklee on separating traditions. This block takes the Cuban part of both rows; A7c.3 takes the Brazilian part.
@@ -421,11 +433,14 @@ The INDEPENDENCE station needs no artefact: choosing the form is one more choice
 - Amended 2026-10-05 from the quarry (L2, CONTROL): State EXISTING -> REPAIR. Mode Keep tempo. Artefact: the shipped `exercise.tumbao.c/.g`, `exercise.montuno.*` and `exercise.latin-groove.*` keep their rhythms; the repairs are wording only (the Cuban-term line below): the latin.6 sentence, the montuno docstring and title, the finder's avoid line. G15 (SHOULD latin#7) stays gated on one published guajeo pattern; Mauleon is still unread, and the quarry surfaced two more books without reading them (Patino and Moreno, *Afro-Cuban Keyboard Grooves*; Moore, *Beyond Salsa Piano*). Published definition: guajeo is the broader repeated syncopated ostinato, often arpeggiated; montuno has several meanings, one of them a piano guajeo; tumbao is historically a bass rhythm and in timba also a piano guajeo; ponchando is the block-chord, non-arpeggiated guajeo with its attack points foregrounded (all cited to Wikipedia, a secondary source). Verification boundary: unchanged for the existing items; a reader confirms each changed sentence against the definitions; no one can judge the feel. Completion: the learner plays the tumbao and the block-chord clave study under the names the lesson now gives them. Superseded in part: the CONTROL cell's 'exercise.montuno' is not called a guajeo; the montuno exercise is the clave's rhythm played as chords, not an arpeggiated guajeo, and the result is never to be called one.
 - Amended 2026-10-05 from the quarry (Cuban terms at HEAD, brief seam 1a.6 with W16, wave 1(a)): MUST change: (1) `content/lessons/latin.6.md:35-38`, 'The three-note study in D minor is the figure itself: every note is a clave stroke', must call it a block-chord study on the clave strokes, a preparation for the montuno (a rhythm-lock drill), unless a published source prints it as a ponchando; (2) `tools/content/generate_exercises.py:5155` (docstring 'A guajeo is chord tones on the clave's own strokes'), `:5171` (title 'Montuno - n notes on son 3 2') and `:5174` (direction): fix the docstring (not learner-facing) and retitle (learner-facing); the rhythm and digests are unaffected; the latin-groove title at `:5221` ('tumbao and montuno') follows the retitle; (3) the montuno finder in the concepts file (the amendment cites `content/curriculum/concepts.json:2278-2292`, avoid line at `:2289`: 'block chord accompaniment') contradicts the shipped montuno items, which are block chords, and excludes the ponchando. KEEP: the `latin.md:23-26` tumbao bass definition (add one clause: some players call the piano figure a tumbao, as the rung's own video does); `latin.md:6`'s video label (the video's own title, explained by that clause); `latin.md:28-31`'s montuno definition (add one clause that montuno also names a section and the family of figures is the guajeo; it must never become 'arpeggiated'); the tumbao finder, `stage-5.json:737-742`, `00-tracks.json:76`, `TUMBAO_OFFSETS` and `:5114-5127`. A grep of `content/lessons/latin*.md` finds no 'arpeggiat' at HEAD, so W16's 'arpeggiated' item is not in those files now; the orchestrator checks where it points. G15 keeps the name 'arpeggiated guajeo' as one type of guajeo, not as the montuno; its near-miss proves arpeggiated is not block chords.
 - Amended 2026-10-05 from the quarry (L3, MODEL/TRANSFER): State NEW -> NEW. Mode Chord chart; then Keep tempo + Loop for a printed excerpt. Artefact: the NEW latin.5 task under *Guantanamera* stays; added as a candidate: *La Negra Tiene Tumbao* `QmbYzj8P6PbJ9DwbepDeMSHTVoHyEEMhQRsuTLcqf3bqyd` (68 bars, two staves, 46 symbols). Bars are chosen only after they are classified from their note motion as arpeggiated guajeo, ponchando or bass tumbao; the quarry's own reading is that much of the inspected opening and verse texture is block-chordal. Published definition: the tightened terms; the title never classifies the figure. Verification boundary: CK-7 on the cut; a reader classifies the bars against a published 2-3 or 3-2 example; clave alignment is self-checked; no one can judge the feel. Completion: the learner plays the chosen bars and says which family, as the lesson defines them, the bars show and why. Admission: quarry HIGH-PRIORITY CANDIDATE; not imported (IM-13, after classification). Public export: no (label unknown, presumed in copyright [inferred]; personal-library and curriculum admission are separate decisions, as for Libertango).
+  - Consumed 2026-10-05 from PARALLEL-UNBLOCKS §4 (La Negra Tiene Tumbao): the classification is CLOSED: the retained bars are repeated non-arpeggiated block-chord attacks, a ponchando or block-chord-guajeo MODEL, not an arpeggiated guajeo. The title 'Tumbao' does not override the notes (see §8.6 item 11).
 - Amended 2026-10-05 from the quarry (L4, MUSIC): State REPAIR -> REPAIR. Mode Chord chart. Artefact: the end-of-lesson test pointed at *Guantanamera* stays; *La Negra*, whole, is a personal-library MUSIC candidate after L3. Verification boundary: the chart's live cell gives no verdict for a tumbao; self-checked. Completion as in the map. Admission and public export as L3: candidate, not imported, public export no.
 
 - **Falls through:** MODEL/TRANSFER (no application station).
 - **Measurement:** MIDI: the written exercises in Keep tempo. The chart's live cell needs 60 % of the chord held at an instant, which a tumbao's single bass notes will rarely give, so the cell is no verdict here [M §15]. self-checked: clave alignment, and the tune sung or played over the groove. no actor can judge the feel (unverified as music).
 - **Completion:** CT-1 (latin.5 can be met by any of twelve exercises, six of them generic [R latin §6]; the latin#10 SHOULD row would close that route).
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel (Latin, Berklee Online *Latin Piano Styles*, Lesson 3): source-checked 2026-10-05 (parallel): confirmed, §Latin. Gate lifted on this block: guajeo and montuno, tumbao, and the other Cuban clave-based figures are taught as distinct categories, separate from Brazilian and Argentine ones. The public syllabus names categories and sequence; it gives no event-level contract, which is why the G15 contract below comes from the Mauleon sample pages.
+- Consumed 2026-10-05 from PARALLEL-UNBLOCKS §2 (G15, the guajeo and montuno boundary): State: G15 stays source-gated no longer; a primary-source path exists (build still waits for its brief and the map's wave 3). Primary source: Rebeca Mauleon, *101 Montunos* (Sher Music), its public sample pages, read by the reviewer: p. 40, Ex. 10 *I-ii-V-IV with Arpeggio* (2-3 clave orientation marked), then Ex. 11 over a standard tumbao; p. 83, Ex. 47 (the text advises repeating an idea before varying it). The first controlled G15 pattern is **one exact published example, Ex. 10**, transcribed with its attacks, durations and chord roles. No averaged 'guajeo rhythm', and no universal guajeo detector: the contract is categorical (a short repeating ostinato, a syncopated profile, content that outlines the current harmony, for the arpeggiated subtype successive attacks that change pitch content through chord tones, at least two cycles before a variation, one clave orientation kept inside one control). The sibling near-miss is the block-chord (ponchando) pattern: it may be valid Cuban accompaniment, but it must fail an arpeggiated-guajeo checker. *La Negra Tiene Tumbao* stays the real MODEL for the block-chord side and is not evidence for the arpeggiated figure (its retained bars are block-chord attacks, see §8.6 item 11). Open, not decided here: whether encoding a transcription of one example from a published method may ship in the public build (a rights record of the kind amendment 5.4 uses; public export no until one exists); the transcription is checked against the page by a reader, and no one in this process can judge the feel (unverified as music).
 
 #### A7c.3 Comp a Brazilian tune: a bossa accompaniment under Insensatez and Só Danço Samba
 - **Rows:** latin#3, latin#4. **Priority:** P3. **Tracks:** latin; jazz.8 refers to it (a SHOULD line below). [D-gate] latin#3; the bossa pattern itself is G14, source-blocked.
@@ -447,6 +462,8 @@ The INDEPENDENCE station needs no artefact: choosing the form is one more choice
 - **Falls through:** CONTROL (no sourced pattern).
 - **Measurement:** MIDI: the written pattern in Keep tempo, once it exists. self-checked: applying it to the tunes. no actor can judge the feel (unverified as music).
 - **Completion:** CT-1 (latin.5, as in A7c.2).
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel (Latin, Berklee Online *Latin Piano Styles*, Lesson 6; Jazz, Lesson 7 *Playing a Bossa Nova*): source-checked 2026-10-05 (parallel): confirmed, §Latin and §Jazz. Gate lifted on this block: bossa is a distinct taught piano style. The syllabi do not expose enough notation to define a pattern; the pattern contract below comes from the two teaching pages the reviewer read.
+- Consumed 2026-10-05 from PARALLEL-UNBLOCKS §1 (G14, the bossa contract): State SOURCE-NEEDED -> contract supplied for CONTROL (the station table above is unchanged and section 7 counts the table; the build still waits for its own brief and the map's wave 3). Contract: **one basic bossa bass pattern, never 'the bossa rhythm'**, a single beginner control and not a definition of all bossa nova. Straight 4/4, straight eighths, no swing. One bar, left-hand attacks only: onset 0 (beat 1), 1.5 (the and of 2), 2.0 (beat 3), 3.5 (the and of 4), in the bass-only acquisition variant realised as a dotted quarter plus an eighth twice (root, onset 0, 1.5 beats; fifth, onset 1.5, 0.5 beat; root, onset 2.0, 1.5 beats; fifth, onset 3.5, 0.5 beat). Pitch roles root and fifth only, relative to the written harmony. The 3.5 pickup is the fifth of the next chord only in a labelled anticipation variant, otherwise the current chord's fifth. Checker: read the LH attacks independently and require exactly the onset set (0, 1.5, 2.0, 3.5) with root or fifth membership per bar; it must reject quarter-note roots on beats 1 and 3 only, the tresillo and habanera onset sets, and a syncopated RH chord pattern with no stated bass contract. No universal bossa detector and no generator rewrite: G14 EXTENDS the `comping` bossa form with this one pattern. Sources, as the reviewer read them: a Piano With Jonny lesson (step 4 states the left-hand sequence) and ChordRhythm's bossa pattern page (root to fifth, dotted quarter plus eighth, and it says there are several variants); these are teaching pages, not a whole method read. The Berklee syllabi support bossa as a taught style and expose no notation. Texture: this CONTROL teaches the two-layer picture (an LH root and fifth bass under syncopated RH chords), the bass half only, so the earlier warning about the Garota edition stands: Garota remains MODEL and TRANSFER evidence, not the source that defines this pattern, and a script compares its LH onsets with the sourced family afterward, as L6 says. The pitch-role and onset statements are the contract's; no one in this process can judge the feel (unverified as music).
 
 #### A7c.4 Modern tango: ostinato, accent, articulation and texture
 - **Rows:** latin#9. **Priority:** P7 (a promised endpoint, the new latin.8). **Tracks:** latin.
@@ -467,12 +484,15 @@ The INDEPENDENCE station needs no artefact: choosing the form is one more choice
 
 - SHOULD latin#6: A bossa accompaniment pattern. Disposition: source-blocked (G14), see A7c.3.
   - Amended 2026-10-05 from the quarry Moves with L5: gated on one pattern, no longer source-blocked.
+  - Consumed 2026-10-05 from PARALLEL-UNBLOCKS §1 (latin#6): the pattern contract is supplied (A7c.3); the SHOULD row still dispatches only with A7c.3.
 - SHOULD latin#7: An arpeggiated guajeo as the second montuno step. Disposition: source-blocked (G15; Mauleón to be read).
   - Amended 2026-10-05 from the quarry G15 stays gated on one published guajeo example; the quarry narrows the terminology only and adds two unread books.
+  - Consumed 2026-10-05 from PARALLEL-UNBLOCKS §2 (latin#7): a primary-source path now exists (Mauleon Ex. 10, see A7c.2); the arpeggiated step stays a SHOULD behind the Cuban CONTROL and its own build brief.
 - SHOULD latin#10: Generic exercises can satisfy the latin.5 requirement. Disposition: wave 5, data (makes A7c.2 CT-3).
 - SHOULD latin#11: `startsAtStage` 5 while latin.3 exists. Disposition: wave 5, data.
 - SHOULD jazz#9: Bossa in a jazz context (latin owns it). Disposition: after G14 is unblocked; a jazz.8 reference line.
   - Amended 2026-10-05 from the quarry *Blue Bossa* is the substrate, after G14 (L7); wave 3 with A7c.3.
+  - Consumed 2026-10-05 from PARALLEL-UNBLOCKS §1 (jazz#9): G14 now has its contract, so the jazz.8 reference waits only on A7c.3's build.
 
 #### 7d Ragtime (P2)
 
@@ -581,6 +601,7 @@ The MUSIC station needs no artefact: an étude is both the model and the music.
 - **Falls through:** MODEL/TRANSFER.
 - **Measurement:** MIDI: nothing about singing. The chart's live cell is unstored [M §15]. self-checked: the tempo, the key, the count-in. no actor is present as a singer and nobody here hears, so whether a singer is supported cannot be decided.
 - **Completion:** CT-1 (hymns.5's song run measures playing the hymn, not accompanying).
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel: not covered, gate stays. The hymn-specific sources were not read by the parallel check.
 
 #### A7g.2 Decorate a hymn where the decoration is taught
 - **Rows:** hymns-gospel#4. **Priority:** P4. **Tracks:** hymns-gospel.
@@ -633,6 +654,7 @@ The MUSIC station needs no artefact: every piece already uses the pulse, and a s
 - SHOULD theory-ear#9: Existing rhythm rows (eighths, dotted, six-eight) on theory.4/5. Disposition: wave 5, data; they stay read-and-tap drills [A P3].
 - SHOULD blues-boogie#6: Shuffle versus straight versus 12/8 slow blues, said once. Disposition: wave 5, text; [D] Berklee.
 - SHOULD ragtime#7: A 16th-8th-16th rhythm control. Disposition: wave 5; G8 with its near-misses [A].
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel: not covered, gate stays. This rests on ABRSM Grade 1 aural; ABRSM was not read by the parallel check.
 
 ### 2.9 Cluster 9 — Technique foundations (P4)
 
@@ -977,6 +999,7 @@ A wave is accepted when its learning gaps are closed or honestly scoped (brief c
   8. A4.1: cold start, classical.9, the practice.6 rung.
 - **Wave 3: development, controlled practice, transfer and independent use (P3-P6).** A7c.2 (P3), A7g.2 and A7f.1 (P4), A7f.2 (P5), A7g.1 (P6). A7a.3 (P4) goes earlier, in wave 2, because it shares the blues seam with A7a.2.
   - Amended 2026-10-05 from the quarry: **A7c.3 (P3) moves here from wave 4 item 5, beside A7c.2.** Its dispatch condition is that the build brief names one published pattern and its exact contract (G14 gated on a pattern, not unblocked); the Garota MODEL joins only after intake and a rights decision. Unchanged by the quarry: A7d.1 (wave 2.5), A7c.1 (2.4), A10.1 (4.1), A7e.1 (4.2), A10.2 (4.3), W14 (1(a)) and holiday#6 (wave 5).
+  - Consumed 2026-10-05 from PARALLEL-UNBLOCKS §1 (wave 3): A7c.3's dispatch condition ('the build brief names one published pattern and its exact contract') is met by the contract recorded under A7c.3; it still dispatches only through its own brief in wave 3.
 - **Wave 4: promised endpoints (P7).**
   1. A10.1, jazz.9 rewritten, after wave 2.3.
   2. A7e.1, rock.8.
@@ -984,6 +1007,7 @@ A wave is accepted when its learning gaps are closed or honestly scoped (brief c
   4. A7c.4, latin.8, after IM-2 and the public-build decision (§8.6).
   5. A7c.3, Brazilian comping, only after G14's source is read. [Superseded 2026-10-05: moved to wave 3, see the Wave 3 line below.]
 - **Wave 5: SHOULD rows by cluster,** each with its own consumer. Generator SHOULDs (G5, G8, G9-G12) go with their abilities. Source-blocked rows (G4, G14, G15, G16) wait for their sources. NICE rows go only on the owner's word.
+  - Consumed 2026-10-05 from PARALLEL-UNBLOCKS §1, §2 (wave 5 source-blocked rows): of the rows named above, G14 (contract supplied) and G15 (primary source named) no longer wait for a source; G4 and G16 still do, and the broad Berklee sequence does not cover their exact rock patterns.
 
 ---
 
@@ -1013,6 +1037,29 @@ Wave-one clusters with the six-line rationale: 4 of 4
 ```
 
 Counts re-run 2026-10-05 after the quarry fold-in; the script exits 0. The station tables are unchanged by the fold-in, so the station, mode and checker counts above are the counts of the tables as written; the amended states (amendment section 5.1) are carried on the dated amendment lines under each block and are not in these counts. The two dossier lines (11 target rows, 12 blocks) differ from the earlier paste (14 and 15): the same script gives the same two numbers on the pre-fold map, because CURRICULUM-UPGRADE.md was edited after the earlier paste; the fold-in did not change them.
+
+Counts re-run 2026-10-05 after consuming the parallel unblocks (PARALLEL-UNBLOCKS and SOURCE-CHECK-parallel). The amendments are dated lines and a seam table in section 8 and under blocks; no station table changed, so every number is unchanged and the script exits 0. Pasted verbatim [C]; this block does not supersede the one above, which it equals.
+
+```
+ABILITY MAP COUNTS (count_ability_map.py)
+MUST abilities (blocks): 28
+Stations: 112 = EXISTING 18 + REPAIR 27 + NEW 26 + SOURCE-NEEDED 9 + SHARED 28 + NO-SEPARATE-ARTIFACT 4  (sum 112; four per block: 112)
+  planned as SHARED or NO-SEPARATE-ARTIFACT (not missing work): 32
+  work to supply (REPAIR + NEW + SOURCE-NEEDED): 62
+Modes used: 19 of 34 in the vocabulary; stations with no app mode: 29
+  Keep tempo 30; Chord chart 17; Play it to me 6; Perform 5; Blind 5; Theory drills 4; Ladder 4; Free play 3; Lab: Hold the chords 3; Note flash 2; Harmonic dictation 2; Lab: Jam it 2; Duet 2; Daily sight-read 1; Simon 1; Trading fours 1; Ear: cadence / progression 1; Rhythm only 1; Loop 1
+Checkers required: 7 (NEW 6, EXISTING 1)
+Review corpora for the outside reviewer: 5
+Imports needing the intake gate and a second-edition comparison: 5
+Target rows: MUST 74 + accepted additions 5 (practice#4, latin#1, latin#9, rock-metal#8, rock-metal#9; 4 already MUST) = 75
+  traced by ability blocks 39; by W dispositions 36; split over more than one disposition 2 (latin#3, latin#4); untraced 0; non-target cited 0
+  W dispositions: 18 covering 36 row citations
+SHOULD rows with a SHOULD line: 63 of 63 (SHOULD 64 less the accepted addition practice#4)
+Dossier-dependent target rows: 11; blocks carrying [D-gate]: 12 (A1.2, A3.1, A4.1, A4.2, A7a.1, A7a.2, A7b.1, A7b.2, A7c.1, A7c.2, A7c.3, A7g.1)
+Completion treatments: 3 defined; blocks per treatment: CT-1 17, CT-2 4, CT-3 9
+MUST/SHOULD conflicts listed: 7
+Wave-one clusters with the six-line rationale: 4 of 4
+```
 
 ---
 
@@ -1056,6 +1103,8 @@ Per ability (the **Completion** line in each block): CT-1 for A2.1, A3.1, A4.1 (
 
 The upgrade's single "apply the tumbao and montuno to Insensatez, Só Danço Samba, Guantanamera" (latin#4) is split accordingly. The tumbao and montuno are never set over the Brazilian tunes.
 
+- Consumed 2026-10-05 from PARALLEL-UNBLOCKS §1, §2 (latin substrates): in the table above, 'G15 blocked' is superseded (one exact Mauleon example is the first controlled pattern; Guantanamera stays the substrate) and 'G14 blocked' is superseded (one basic bossa bass pattern, contract under A7c.3).
+
 ### 8.4 Where this map supersedes earlier plans (brief correction 9)
 
 - **SYNTHESIS §H.** Batch 1 (corrections A1-A20) becomes wave 1(a), W1-W18, with the contrary set corrected from twelve files to 16. Batch 2 (bridges) is re-cut by ability into waves 1(b)-1(d) and wave 2. Batch 3 (owner-gated) is decided (upgrade §0.1) and lives in A7g.1, A7e.1, A10.1 and A10.2. The map wins.
@@ -1069,12 +1118,14 @@ The upgrade's single "apply the tumbao and montuno to Insensatez, Só Danço Sam
 - **The 24 dossier-dependent rows** [C, `count_upgrade.py`] stay marked until their primary source is read. The 14 among the target rows carry [D-gate] on their blocks (§7 confirms all are marked). The rest are SHOULD lines marked [D] where cited. The source checks are the first task of each wave's brief: Faber level guides, Berklee course pages, and the official ABRSM and RCM PDFs; "403, therefore a third-party transcription" is not accepted where an official PDF exists [U §0.4].
 - **The Tyers Harlem Rag edition** is distinct from the inspected De Lisle file and stays CANDIDATE until read (IM-1).
 - **The shipped Fly Me to the Moon does not demonstrate the minor ii-V-i** [A G6]. A7b.1's MODEL is SOURCE-NEEDED.
-- **Four rows are source-blocked:** G4 and G16 (printed pattern offsets), G14 (bossa bass), G15 (guajeo) [A, reviewer correction 1].
+- **Four rows are source-blocked:** G4 and G16 (printed pattern offsets), G14 (bossa bass), G15 (guajeo) [A, reviewer correction 1]. [Superseded in part 2026-10-05, consumed from PARALLEL-UNBLOCKS §1, §2: G14 has a contract and G15 has a primary-source path; G4 and G16 stay source-blocked.]
 - **G5's checker is defined per tier** (reviewer correction 2).
 - **The `seventh_voicing` MERGE is provisional** and gates nothing in this map (reviewer correction 3).
 - **Admission states** carried as given: Por Una Cabeza and The Crave ADMITTED for the habanera and tresillo [A G13]; Insensatez and Só Danço Samba ADMITTED as substrate only [A G14]; Bizet and Contra Danza CANDIDATE; Combination March bars 4-19 CANDIDATE (shipped, unreviewed for the role).
 
 - Amended 2026-10-05 from the quarry (admission states): Garota is a MODEL candidate. *Blue Bossa*, *After You've Gone* and *There Will Never Be Another You* are substrate candidates. Bizet and *Contra Danza* stay CANDIDATE and were not dumped by the quarry. G14 is gated on one published pattern and its exact contract (no longer 'source-blocked on the style'); G4, G15 and G16 stay source-blocked. The Harlem Rag Tyers CID is `QmXBVY...`, a candidate until intake.
+
+- Consumed 2026-10-05 from SOURCE-CHECK-parallel (source gates, section 8.5): the 24 dossier-dependent rows are partly source-checked. Gates lifted (by block, with each block's own dated line): A4.1, A7a.1, A7b.1, A7b.2 (Berklee proposition only), A7c.1 (category proposition only), A7c.2, A7c.3. Gates left, by name: A1.1, A1.2 and A8.1 (ABRSM), A4.2 (ABRSM jazz solo), A2.1 (Faber), A3.1 (Berklee ear training and RCM), A7a.2 (blues turnaround and endings not covered), A7g.1 (hymns), and A7b.2's ABRSM Jazz Piano citation. The ABRSM and RCM technical-list rows, the hymn-specific rows and the exact rock-pattern claims the broad Berklee sequence does not cover stay gated. The sources support the propositions and do not dictate rung numbers, repetition counts, thresholds or generator parameters.
 
 ### 8.6 Not resolved here
 
@@ -1090,8 +1141,24 @@ The upgrade's single "apply the tumbao and montuno to Insensatez, Só Danço Sam
 
 10. Amended 2026-10-05 from the quarry (open items, amendment 5.4): (1) rights and the public build: Garota, *La Negra*, *Blue Bossa*, *There Will Never Be Another You* and the rock and metal scores are presumed in copyright [inferred], the quarry's composition label is `unknown`, and item 4 above now also covers A7c.3's MODEL, jazz.9's standard, K1 and K2; the owner decides that as a product question on a rights record; public export is no for those works until a record exists. (2) G14: which published pattern, its exact contract, and whether Garota's LH matches it (a script settles the match once the pattern is chosen). (3) Classifying *La Negra*'s bars (a reader, against a published example). (4) The B-natural in *Blues Riff in C* against the C7 voicing: typo or intended (a reader); OPEN. (5) Bar selection: Morton, Pinetop, Garota (bars 1-8 proposed) and the *Autumn Leaves* passages; then the Pinetop edition comparison (IM-8). (6) A7b.1's MODEL is still SOURCE-NEEDED and no score prints the minor ii-V-i; read the `<harmony>` of *Blue Bossa* and *Autumn Leaves*. (7) Bizet and *Contra Danza* were not dumped; the primary printed-habanera check (IM-3) stays open. (8) Whether the Score screen runs three-part or two-single-staff scores as two-hand items (*Maoz Tzur*, the Dykes hymn, *Deep River*): not established. (9) Stop-time has no direct definition. (10) W16's 'arpeggiated' montuno wording is not found in `content/lessons/latin*.md` at HEAD; the orchestrator checks where the item points. (11) Every musical-quality question stays *unverified as music*.
 
+11. Consumed 2026-10-05 from PARALLEL-UNBLOCKS §4 (the two quarry score reads, notation-read already): (a) *Blues Riff in C*: the B-natural 4 against the C7 voicing recurs structurally at corresponding places, so it is not a typo and no builder silently rewrites it to B-flat. Keep it as a 12-bar TRANSFER candidate with a harmony and note-choice caveat; it is not the clean canonical beginner MODEL for ordinary C7 and blues note choice until a source-based musical decision says what the B-natural is doing. CLOSED (PARALLEL-UNBLOCKS §4); item 10 (4) is superseded. (b) *La Negra Tiene Tumbao*: the retained bars are repeated non-arpeggiated block-chord attacks, a ponchando or block-chord-guajeo MODEL and not G15's arpeggiated figure. CLOSED (PARALLEL-UNBLOCKS §4); item 10 (3) is superseded for these bars. Neither is an open question in later planning. Still open and unchanged: rights and intake for both scores.
+
 ### 8.7 Notation at first print: an owned design seam (2026-10-05)
 
 Added 2026-10-05. The notation-marks and key-signature rows (A1.1 CONTROL, A1.2 MODEL/TRANSFER) left wave 1(a) because repeats, endings, ties and key signatures first appear from 1.1 to 2.4. That is the 1(a) drafter's finding (`briefs/wave1a-views/99-tail.md`): repeat signs from 1.1, first and second endings from 2.3, a coda at 2.4, ties at 1.5, 2.2 and 2.3 before 2.4 teaches them, and key signatures at 1.5 and 2.2 before 3.1. A sentence at 2.3-2.5 or a section at 3.4 would leave earlier prints unexplained, so the reverse condition of wave 1(a) applies.
 
 The seam is owned, not dropped. It must decide mark by mark whether the learner is taught the mark at first print or the early item that prints it moves (several of those items carry the 425 audit's MOVE verdict). A generic paragraph at 2.3-3.4 does not satisfy it. **Wave one is not complete until that seam has its decision.** The outside reviewer's ruling (`docs/review/responses/5831d42d.md`) approves the move out of the correction batch and requires it to be recorded as an owned design seam, so the removal is never a silent omission.
+
+Consumed 2026-10-05 from PARALLEL-UNBLOCKS §3 (the per-mark decisions), taken as the decisions of this seam. The evidence anchor is `briefs/wave1a-views/99-tail.md`; published methods do not require one ordering (one introduces marks cumulatively, another teaches endings and D.C. later), so the decision follows the learner's actual encounter and not an external grade crosswalk.
+
+| Mark | First printed | Decision |
+| --- | --- | --- |
+| Repeat sign | 1.1 (Kum Ba Yah) | TEACH AT FIRST ENCOUNTER, minimally: one short sentence before the tune (a double bar with dots means go back to the matching repeat or the start and play that section again). Keep the tune if it keeps its musical job; 1.1 does not become a roadmap lesson |
+| Key signature | 1.5 (The Water Is Wide) | MOVE The Water Is Wide off 1.5 rather than teach four premature concepts (eighths, dotted values, ties, the G signature); it already carries the 425 audit's MOVE verdict |
+| Key signature | 2.2 (Alouette in F, Swing Low in G) | TEACH MINIMALLY at 2.2, where the retained F and G material needs it: the sharps or flats right after the clef apply throughout unless cancelled; read F major's B-flat and G major's F-sharp. Later 3.x keeps broader key-signature fluency, not first exposure |
+| Tie | 1.5 | MOVE the overloaded 1.5 case; do not teach ties at 1.5 to save it |
+| Tie | 2.2 and 2.3 | One sentence at the earliest retained 2.x score that genuinely uses a tie (the same pitch joined by a curve: strike once and hold through both values). The builder names that exact retained score before editing text. If the tie is only editorial and an equally good owned item can replace it without losing its job, moving it is acceptable. 2.4 stays the full tie, slur and dotted-rhythm lesson, including tie versus slur |
+| First and second endings | 2.3 (Was wollen wir trinken) | TEACH BRIEFLY at first encounter: on the first pass take ending 1 and repeat; on the second pass skip ending 1 and take ending 2. A play-the-page sentence, not a theory unit |
+| Coda | 2.4 (Ga je mee) | MOVE or REPLACE the early item (to the first later rung that teaches roadmap marks, or an equivalent 2.4 option with no coda) unless coda navigation is made a named learner objective; it is not added to the dense ties, dotted rhythms and dynamics lesson |
+
+Seam acceptance (from the same section): the seam is closed when (1) no retained core item asks the learner to interpret a repeat, key signature, tie, volta or coda before either a minimal first-exposure instruction or an explicit move; (2) the full teaching lesson can still occur later without pretending the mark was unseen; (3) no early lesson gains unrelated notation prose solely to rescue a poor placement. The exact contract (files, sentences, the named retained scores, the moved items' replacements) is drafted separately after the current builder lands, because it touches the same core lesson files. **Wave one is still not complete until that seam lands.** This is a design record, not a dispatch.
