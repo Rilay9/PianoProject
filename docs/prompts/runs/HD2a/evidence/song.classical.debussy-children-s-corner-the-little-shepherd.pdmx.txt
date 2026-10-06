@@ -1,0 +1,22 @@
+HD2a evidence: song.classical.debussy-children-s-corner-the-little-shepherd.pdmx (scores/pdmx/QmTobBbb6pruvSbYGAGkq5mA735jihqP5kBsGZ95zMs1D3.mxl), identity sha256 8df427b41a2cc681a0525f84a16267c36d9252682e1a41f7c4624fc570f1793c
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 10-10 -> R
+  bar 10 (source measure 9) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [5, 6]; e.g. @36 L [45, 52] + v2 [61, 64]
+  bar 10 onset 36 64/st1/v2/L/x:6 61/st1/v2/L/x:6 52/st2/v5/L:6 45/st2/v5/L:6
+  bar 10 onset 37 40/st2/v6/L:5 33/st2/v6/L:5
+  bar 10 onset 38 88/st1/v1/R:4 85/st1/v1/R:4
+
+ROW staff 1 voice 2 bars 17-17 -> R
+  bar 17 (source measure 16) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [5, 6]; e.g. @64 L [40, 47] + v2 [56, 59]
+  bar 17 onset 64 59/st1/v2/L/x:6 56/st1/v2/L/x:6 47/st2/v5/L:6 40/st2/v5/L:6
+  bar 17 onset 65 35/st2/v6/L:5 28/st2/v6/L:5
+  bar 17 onset 66 83/st1/v1/R:4 80/st1/v1/R:4
+
+ROW staff 1 voice 2 bars 30-30 -> R
+  bar 30 (source measure 29) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [5, 6]; e.g. @116 L [45, 52] + v2 [61, 64]
+  bar 30 onset 116 64/st1/v2/L/x:8 61/st1/v2/L/x:8 52/st2/v5/L:8 45/st2/v5/L:8
+  bar 30 onset 117 40/st2/v6/L:7 33/st2/v6/L:7
+  bar 30 onset 118 88/st1/v1/R:4 85/st1/v1/R:4
+

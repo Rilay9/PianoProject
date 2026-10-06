@@ -1,0 +1,86 @@
+HD2a evidence: song.classical.chopin-polonaise-op26-2.nifc (scores/imported/song.classical.chopin-polonaise-op26-2.nifc.mxl), identity sha256 facb2076cdbb30f4aea305eaf7072bf9e8d4306f0ccf4917dd7c3f6bebae5ff5
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 26-28 -> R
+  bar 26 (source measure 25) st1 v2: L/x -> R; onsets 8 {'conflict': 8}; second voice(s) [3, 4]; e.g. @75.5 L [37, 49] + v2 [71, 73, 80]; @76 L [53, 56, 61, 65] + v2 [71, 73, 80]
+  bar 26 onset 75.5 80/st1/v2/L/x:0.5 73/st1/v2/L/x:0.5 71/st1/v2/L/x:0.5 49/st2/v4/L:2 37/st2/v4/L:2
+  bar 26 onset 76 80/st1/v2/L/x:0.25 73/st1/v2/L/x:0.25 71/st1/v2/L/x:0.25 65/st2/v3/L:0.25 61/st2/v3/L:0.25 56/st2/v3/L:0.25 53/st2/v3/L:0.25
+  bar 26 onset 76.25 80/st1/v2/L/x:0.25 73/st1/v2/L/x:0.25 71/st1/v2/L/x:0.25 65/st2/v3/L:0.25 61/st2/v3/L:0.25 56/st2/v3/L:0.25 53/st2/v3/L:0.25
+  bar 26 onset 76.5 82/st1/v1/R:0.25 73/st1/v2/L/x:0.5 71/st1/v2/L/x:0.5 65/st2/v3/L:0.5 61/st2/v3/L:0.5 56/st2/v3/L:0.5 53/st2/v3/L:0.5
+  bar 26 onset 76.75 80/st1/v1/R:0.25
+  bar 26 onset 77 77/st1/v1/R:0.25 73/st1/v2/L/x:0.25 71/st1/v2/L/x:0.25 65/st2/v3/L:0.25 61/st2/v3/L:0.25 56/st2/v3/L:0.25 53/st2/v3/L:0.25
+  bar 26 onset 77.25 73/st1/v1/R:0.25 71/st1/v2/L/x:0.25 65/st2/v3/L:0.25 61/st2/v3/L:0.25 56/st2/v3/L:0.25 53/st2/v3/L:0.25
+  bar 26 onset 77.5 82/st1/v2/L/x:0.5 73/st1/v2/L/x:0.5 70/st1/v2/L/x:0.5 54/st2/v4/L:0.5 42/st2/v4/L:0.5
+  bar 26 onset 78 78/st1/v2/L/x:0.5 73/st1/v2/L/x:0.5 70/st1/v2/L/x:0.5 58/st2/v4/L:0.5 46/st2/v4/L:0.5
+  bar 27 (source measure 26) st1 v2: L/x -> R; onsets 4 {'conflict': 4}; second voice(s) [3]; e.g. @78.5 L [49, 61] + v2 [65, 68, 73, 77]; @80 L [54, 61] + v2 [66, 70, 73]
+  bar 27 onset 78.5 77/st1/v2/L/x:1 73/st1/v2/L/x:1 68/st1/v2/L/x:1 65/st1/v2/L/x:1 61/st2/v3/L:1 49/st2/v3/L:1
+  bar 27 onset 80 73/st1/v2/L/x:0.5 70/st1/v2/L/x:0.5 66/st1/v2/L/x:0.5 61/st2/v3/L:0.5 54/st2/v3/L:0.5
+  bar 27 onset 80.5 77/st1/v1/R:0.25 68/st1/v2/L/x:0.5 65/st1/v2/L/x:0.5 49/st2/v3/L:0.5 37/st2/v3/L:0.5
+  bar 27 onset 80.75 75/st1/v1/R:0.25
+  bar 27 onset 81 73/st1/v1/R:0.5 68/st1/v2/L/x:0.5 65/st1/v2/L/x:0.5 53/st2/v3/L:0.25 41/st2/v3/L:0.25
+  bar 27 onset 81.25 54/st2/v3/L:0.25 42/st2/v3/L:0.25
+  bar 28 (source measure 27) st1 v2: L/x -> R; onsets 7 {'conflict': 6, 'free': 1}; second voice(s) [3]; e.g. @81.5 L [44, 56] + v2 [66, 68, 75]; @82 L [51, 56, 60] + v2 [66, 68, 75]
+  bar 28 onset 81.5 75/st1/v2/L/x:0.5 68/st1/v2/L/x:0.5 66/st1/v2/L/x:0.5 56/st2/v3/L:0.5 44/st2/v3/L:0.5
+  bar 28 onset 82 75/st1/v2/L/x:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25 60/st2/v3/L:0.25 56/st2/v3/L:0.25 51/st2/v3/L:0.25
+  bar 28 onset 82.25 75/st1/v2/L/x:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25 60/st2/v3/L:0.25 56/st2/v3/L:0.25 51/st2/v3/L:0.25
+  bar 28 onset 82.5 77/st1/v1/R:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25 60/st2/v3/L:0.5 56/st2/v3/L:0.5 51/st2/v3/L:0.5
+  bar 28 onset 82.75 75/st1/v1/R:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25
+  bar 28 onset 83 73/st1/v1/R:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25 60/st2/v3/L:0.25 56/st2/v3/L:0.25 51/st2/v3/L:0.25
+  bar 28 onset 83.25 75/st1/v1/R:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25 60/st2/v3/L:0.25 56/st2/v3/L:0.25 51/st2/v3/L:0.25
+  bar 28 onset 83.5 77/st1/v1/R:0.5 68/st1/v1/R:0.5 65/st1/v1/R:0.5 61/st2/v3/L:0.5 56/st2/v3/L:0.5 49/st2/v3/L:0.5
+  bar 28 onset 84 73/st1/v1/R:0.5 61/st1/v1/R:0.5 49/st2/v3/L:0.5 37/st2/v3/L:0.5
+
+ROW staff 1 voice 2 bars 39-39 -> R
+  bar 39 (source measure 38) st1 v2: L/x -> R; onsets 7 {'conflict': 7}; second voice(s) [3]; e.g. @114.5 L [41, 49] + v2 [58]; @115 L [41, 49] + v2 [58]
+  bar 39 onset 114.5 66/st1/v1/R:2 58/st1/v2/L/x:0.5 49/st2/v3/L:0.5 41/st2/v3/L:0.5
+  bar 39 onset 115 58/st1/v2/L/x:0.25 49/st2/v3/L:0.25 41/st2/v3/L:0.25
+  bar 39 onset 115.25 58/st1/v2/L/x:0.25 49/st2/v3/L:0.25 41/st2/v3/L:0.25
+  bar 39 onset 115.5 58/st1/v2/L/x:0.5 49/st2/v3/L:0.5 41/st2/v3/L:0.5
+  bar 39 onset 116 58/st1/v2/L/x:0.5 49/st2/v3/L:0.5 41/st2/v3/L:0.5
+  bar 39 onset 116.5 65/st1/v1/R:0.25 58/st1/v2/L/x:0.5 49/st2/v3/L:0.5 41/st2/v3/L:0.5
+  bar 39 onset 116.75 66/st1/v1/R:0.25
+  bar 39 onset 117 68/st1/v1/R:0.25 58/st1/v2/L/x:0.5 52/st2/v3/L:0.5 49/st2/v3/L:0.5 41/st2/v3/L:0.5
+  bar 39 onset 117.25 66/st1/v1/R:0.25
+
+ROW staff 1 voice 2 bars 130-132 -> R
+  bar 130 (source measure 129) st1 v2: L/x -> R; onsets 8 {'conflict': 8}; second voice(s) [3, 4]; e.g. @388.5 L [37, 49] + v2 [71, 73, 80]; @389 L [53, 56, 61, 65] + v2 [71, 73, 80]
+  bar 130 onset 388.5 80/st1/v2/L/x:0.5 73/st1/v2/L/x:0.5 71/st1/v2/L/x:0.5 49/st2/v4/L:2 37/st2/v4/L:2
+  bar 130 onset 389 80/st1/v2/L/x:0.25 73/st1/v2/L/x:0.25 71/st1/v2/L/x:0.25 65/st2/v3/L:0.25 61/st2/v3/L:0.25 56/st2/v3/L:0.25 53/st2/v3/L:0.25
+  bar 130 onset 389.25 80/st1/v2/L/x:0.25 73/st1/v2/L/x:0.25 71/st1/v2/L/x:0.25 65/st2/v3/L:0.25 61/st2/v3/L:0.25 56/st2/v3/L:0.25 53/st2/v3/L:0.25
+  bar 130 onset 389.5 82/st1/v1/R:0.25 73/st1/v2/L/x:0.5 71/st1/v2/L/x:0.5 65/st2/v3/L:0.5 61/st2/v3/L:0.5 56/st2/v3/L:0.5 53/st2/v3/L:0.5
+  bar 130 onset 389.75 80/st1/v1/R:0.25
+  bar 130 onset 390 77/st1/v1/R:0.25 73/st1/v2/L/x:0.25 71/st1/v2/L/x:0.25 65/st2/v3/L:0.25 61/st2/v3/L:0.25 56/st2/v3/L:0.25 53/st2/v3/L:0.25
+  bar 130 onset 390.25 73/st1/v1/R:0.25 71/st1/v2/L/x:0.25 65/st2/v3/L:0.25 61/st2/v3/L:0.25 56/st2/v3/L:0.25 53/st2/v3/L:0.25
+  bar 130 onset 390.5 82/st1/v2/L/x:0.5 73/st1/v2/L/x:0.5 70/st1/v2/L/x:0.5 54/st2/v4/L:0.5 42/st2/v4/L:0.5
+  bar 130 onset 391 78/st1/v2/L/x:0.5 73/st1/v2/L/x:0.5 70/st1/v2/L/x:0.5 58/st2/v4/L:0.5 46/st2/v4/L:0.5
+  bar 131 (source measure 130) st1 v2: L/x -> R; onsets 4 {'conflict': 4}; second voice(s) [3]; e.g. @391.5 L [49, 61] + v2 [65, 68, 73, 77]; @393 L [54, 61] + v2 [66, 70, 73]
+  bar 131 onset 391.5 77/st1/v2/L/x:1 73/st1/v2/L/x:1 68/st1/v2/L/x:1 65/st1/v2/L/x:1 61/st2/v3/L:1 49/st2/v3/L:1
+  bar 131 onset 393 73/st1/v2/L/x:0.5 70/st1/v2/L/x:0.5 66/st1/v2/L/x:0.5 61/st2/v3/L:0.5 54/st2/v3/L:0.5
+  bar 131 onset 393.5 77/st1/v1/R:0.25 68/st1/v2/L/x:0.5 65/st1/v2/L/x:0.5 49/st2/v3/L:0.5 37/st2/v3/L:0.5
+  bar 131 onset 393.75 75/st1/v1/R:0.25
+  bar 131 onset 394 73/st1/v1/R:0.5 68/st1/v2/L/x:0.5 65/st1/v2/L/x:0.5 53/st2/v3/L:0.25 41/st2/v3/L:0.25
+  bar 131 onset 394.25 54/st2/v3/L:0.25 42/st2/v3/L:0.25
+  bar 132 (source measure 131) st1 v2: L/x -> R; onsets 7 {'conflict': 6, 'free': 1}; second voice(s) [3]; e.g. @394.5 L [44, 56] + v2 [66, 68, 75]; @395 L [51, 56, 60] + v2 [66, 68, 75]
+  bar 132 onset 394.5 75/st1/v2/L/x:0.5 68/st1/v2/L/x:0.5 66/st1/v2/L/x:0.5 56/st2/v3/L:0.5 44/st2/v3/L:0.5
+  bar 132 onset 395 75/st1/v2/L/x:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25 60/st2/v3/L:0.25 56/st2/v3/L:0.25 51/st2/v3/L:0.25
+  bar 132 onset 395.25 75/st1/v2/L/x:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25 60/st2/v3/L:0.25 56/st2/v3/L:0.25 51/st2/v3/L:0.25
+  bar 132 onset 395.5 77/st1/v1/R:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25 60/st2/v3/L:0.5 56/st2/v3/L:0.5 51/st2/v3/L:0.5
+  bar 132 onset 395.75 75/st1/v1/R:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25
+  bar 132 onset 396 73/st1/v1/R:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25 60/st2/v3/L:0.25 56/st2/v3/L:0.25 51/st2/v3/L:0.25
+  bar 132 onset 396.25 75/st1/v1/R:0.25 68/st1/v2/L/x:0.25 66/st1/v2/L/x:0.25 60/st2/v3/L:0.25 56/st2/v3/L:0.25 51/st2/v3/L:0.25
+  bar 132 onset 396.5 77/st1/v1/R:0.5 68/st1/v1/R:0.5 65/st1/v1/R:0.5 61/st2/v3/L:0.5 56/st2/v3/L:0.5 49/st2/v3/L:0.5
+  bar 132 onset 397 73/st1/v1/R:0.5 61/st1/v1/R:0.5 49/st2/v3/L:0.5 37/st2/v3/L:0.5
+
+ROW staff 1 voice 2 bars 143-143 -> R
+  bar 143 (source measure 142) st1 v2: L/x -> R; onsets 7 {'conflict': 7}; second voice(s) [3]; e.g. @427.5 L [41, 49] + v2 [58]; @428 L [41, 49] + v2 [58]
+  bar 143 onset 427.5 66/st1/v1/R:2 58/st1/v2/L/x:0.5 49/st2/v3/L:0.5 41/st2/v3/L:0.5
+  bar 143 onset 428 58/st1/v2/L/x:0.25 49/st2/v3/L:0.25 41/st2/v3/L:0.25
+  bar 143 onset 428.25 58/st1/v2/L/x:0.25 49/st2/v3/L:0.25 41/st2/v3/L:0.25
+  bar 143 onset 428.5 58/st1/v2/L/x:0.5 49/st2/v3/L:0.5 41/st2/v3/L:0.5
+  bar 143 onset 429 58/st1/v2/L/x:0.5 49/st2/v3/L:0.5 41/st2/v3/L:0.5
+  bar 143 onset 429.5 65/st1/v1/R:0.25 58/st1/v2/L/x:0.5 49/st2/v3/L:0.5 41/st2/v3/L:0.5
+  bar 143 onset 429.75 66/st1/v1/R:0.25
+  bar 143 onset 430 68/st1/v1/R:0.25 58/st1/v2/L/x:0.5 52/st2/v3/L:0.5 49/st2/v3/L:0.5 41/st2/v3/L:0.5
+  bar 143 onset 430.25 66/st1/v1/R:0.25
+

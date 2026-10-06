@@ -1,0 +1,9 @@
+HD2a evidence: song.classical.czerny-the-art-of-preluding-op-300-no-24.pdmx (scores/pdmx/QmNnKqxQrUPJm5EyiRExBg4e81iHGsRwccGeKSYi1PgZoR.mxl), identity sha256 e76909bd488251d2aa483dec8c0fee84c32fd5cb90d68e6e8671c2bdb6f4f5a7
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 2 voice 2 bars 10-10 -> L
+  bar 10 (source measure 9) st2 v2: R/x -> L; onsets 2 {'free': 1, 'conflict': 1}; second voice(s) [1]; e.g. @38 R [53, 62] + v2 [45, 50]
+  bar 10 onset 36 52/st2/v2/R/x:2 45/st2/v2/R/x:2 38/st2/v2/R/x:3
+  bar 10 onset 38 62/st1/v1/R:1 53/st1/v1/R:1 50/st2/v2/R/x:1 45/st2/v2/R/x:1
+

@@ -1,0 +1,15 @@
+HD2a evidence: song.pop.yugo-kanno-yoshikage-kira-s-theme-piano.pdmx (scores/pdmx/QmRVhS3s7i4rKLeDsosqr8Fa8seuCSgfZKUZUKCnNH5W9A.mxl), identity sha256 ae573fab4c0bd15b4384cc1cc05d0818a40dfdace66243becfea68c35f7756c3
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 29-29 -> R
+  bar 29 (source measure 28) st1 v2: L/x -> R; onsets 8 {'conflict': 2, 'free': 6}; second voice(s) [3]; e.g. @112 L [50, 62] + v2 [69]; @114 L [49] + v2 [69]
+  bar 29 onset 112 73/st1/v1/R:16 69/st1/v2/L/x:0.5 66/st1/v1/R:12 62/st2/v3/L:2 50/st2/v3/L:2
+  bar 29 onset 112.5 61/st1/v2/L/x:0.5
+  bar 29 onset 113 69/st1/v2/L/x:0.5
+  bar 29 onset 113.5 61/st1/v2/L/x:0.5
+  bar 29 onset 114 69/st1/v2/L/x:0.5 49/st2/v3/L:2
+  bar 29 onset 114.5 61/st1/v2/L/x:0.5
+  bar 29 onset 115 69/st1/v2/L/x:0.5
+  bar 29 onset 115.5 61/st1/v2/L/x:0.5
+

@@ -1,0 +1,27 @@
+HD2a evidence: song.classical.chopin-mazurka-op41-4.nifc (scores/imported/song.classical.chopin-mazurka-op41-4.nifc.mxl), identity sha256 bb2aff45643c57d65e856c77d28d5b2bd6495731bf86347a571aa8c7636a4a15
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 34-34 -> R
+  bar 34 (source measure 34) st1 v2: L/x -> R; onsets 5 {'free': 3, 'conflict': 2}; second voice(s) [3]; e.g. @101 L [48, 55, 60] + v2 [67]; @102 L [48, 55, 60] + v2 [65]
+  bar 34 onset 100 74/st1/v1/R:2 67/st1/v2/L/x:0.5
+  bar 34 onset 100.5 68/st1/v2/L/x:0.5
+  bar 34 onset 101 67/st1/v2/L/x:0.5 60/st2/v3/L:1 55/st2/v3/L:1 48/st2/v3/L:1
+  bar 34 onset 101.5 68/st1/v2/L/x:0.5
+  bar 34 onset 102 72/st1/v1/R:1 65/st1/v2/L/x:1.5 60/st2/v3/L:1 55/st2/v3/L:1 48/st2/v3/L:1
+
+ROW staff 1 voice 2 bars 36-36 -> R
+  bar 36 (source measure 36) st1 v2: L/x -> R; onsets 3 {'conflict': 2, 'free': 1}; second voice(s) [3]; e.g. @107 L [48, 55, 60] + v2 [67]; @108 L [48, 55, 60] + v2 [65]
+  bar 36 onset 106 74/st1/v1/R:1
+  bar 36 onset 107 72/st1/v1/R:2 67/st1/v2/L/x:0.5 60/st2/v3/L:1 55/st2/v3/L:1 48/st2/v3/L:1
+  bar 36 onset 107.5 68/st1/v2/L/x:0.5
+  bar 36 onset 108 65/st1/v2/L/x:1.5 60/st2/v3/L:1 55/st2/v3/L:1 48/st2/v3/L:1
+
+ROW staff 1 voice 2 bars 38-38 -> R
+  bar 38 (source measure 38) st1 v2: L/x -> R; onsets 5 {'free': 3, 'conflict': 2}; second voice(s) [3]; e.g. @113 L [48, 55, 60] + v2 [67]; @114 L [48, 55, 60] + v2 [65]
+  bar 38 onset 112 74/st1/v1/R:2 67/st1/v2/L/x:0.5
+  bar 38 onset 112.5 68/st1/v2/L/x:0.5
+  bar 38 onset 113 67/st1/v2/L/x:0.5 60/st2/v3/L:1 55/st2/v3/L:1 48/st2/v3/L:1
+  bar 38 onset 113.5 68/st1/v2/L/x:0.5
+  bar 38 onset 114 72/st1/v1/R:1 65/st1/v2/L/x:1.5 60/st2/v3/L:2 55/st2/v3/L:2 48/st2/v3/L:2
+

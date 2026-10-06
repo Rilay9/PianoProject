@@ -1,0 +1,25 @@
+HD2a evidence: song.classical.chopin-mazurka-op68-2.nifc (scores/imported/song.classical.chopin-mazurka-op68-2.nifc.mxl), identity sha256 9151f37d4b76bab2f161260dd8499e465955d166e2789bd3c82c3886210b2f88
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 40-40 -> R
+  bar 40 (source measure 40) st1 v2: L/x -> R; onsets 3 {'conflict': 3}; second voice(s) [3]; e.g. @119.25 L [45, 54] + v2 [63, 66]; @120.25 L [45, 56] + v2 [62, 65]
+  bar 40 onset 119.25 71/st1/v1/R:0.75 66/st1/v2/L/x:1 63/st1/v2/L/x:1 54/st2/v3/L:1 45/st2/v3/L:1
+  bar 40 onset 120 71/st1/v1/R:0.25
+  bar 40 onset 120.25 71/st1/v1/R:1 65/st1/v2/L/x:1 62/st1/v2/L/x:1 56/st2/v3/L:1 45/st2/v3/L:1
+  bar 40 onset 121.25 71/st1/v1/R:1 64/st1/v2/L/x:1 62/st1/v2/L/x:1 56/st2/v3/L:1 45/st2/v3/L:1
+
+ROW staff 1 voice 2 bars 42-42 -> R
+  bar 42 (source measure 42) st1 v2: L/x -> R; onsets 3 {'conflict': 3}; second voice(s) [3]; e.g. @125.25 L [45, 54] + v2 [62, 69]; @126.25 L [45, 53] + v2 [62, 69]
+  bar 42 onset 125.25 74/st1/v1/R:0.75 69/st1/v2/L/x:1 62/st1/v2/L/x:1 54/st2/v3/L:1 45/st2/v3/L:1
+  bar 42 onset 126 74/st1/v1/R:0.25
+  bar 42 onset 126.25 71/st1/v1/R:1 69/st1/v2/L/x:1 62/st1/v2/L/x:1 53/st2/v3/L:1 45/st2/v3/L:1
+  bar 42 onset 127.25 76/st1/v1/R:1 68/st1/v2/L/x:1 62/st1/v2/L/x:1 52/st2/v3/L:1 45/st2/v3/L:1
+
+ROW staff 1 voice 2 bars 44-44 -> R
+  bar 44 (source measure 44) st1 v2: L/x -> R; onsets 3 {'conflict': 3}; second voice(s) [3]; e.g. @131.25 L [45, 54] + v2 [63, 66]; @132.25 L [45, 56] + v2 [62, 65]
+  bar 44 onset 131.25 71/st1/v1/R:0.75 66/st1/v2/L/x:1 63/st1/v2/L/x:1 54/st2/v3/L:1 45/st2/v3/L:1
+  bar 44 onset 132 71/st1/v1/R:0.25
+  bar 44 onset 132.25 71/st1/v1/R:1 65/st1/v2/L/x:1 62/st1/v2/L/x:1 56/st2/v3/L:1 45/st2/v3/L:1
+  bar 44 onset 133.25 71/st1/v1/R:1 64/st1/v2/L/x:1 62/st1/v2/L/x:1 56/st2/v3/L:1 45/st2/v3/L:1
+

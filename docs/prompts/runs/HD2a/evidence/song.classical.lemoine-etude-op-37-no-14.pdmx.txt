@@ -1,0 +1,15 @@
+HD2a evidence: song.classical.lemoine-etude-op-37-no-14.pdmx (scores/pdmx/QmQVnDKSjV2kkfDoHYu92o9LAV29eJwX17WVw3ykkdAAb8.mxl), identity sha256 a52a2f09586569fb34bce91ffddbb7ad87934ee61cea1e41edf09dcf8c40babb
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 2 voice 2 bars 24-24 -> L
+  bar 24 (source measure 23) st2 v2: R/x -> L; onsets 1 {'conflict': 1}; second voice(s) [1]; e.g. @92 R [76] + v2 [57, 61]
+  bar 24 onset 92 76/st1/v1/R:0.5 61/st2/v2/R/x:0.5 57/st2/v2/R/x:0.5
+  bar 24 onset 92.5 78/st1/v1/R:0.5
+  bar 24 onset 93 76/st1/v1/R:0.5
+  bar 24 onset 93.5 74/st1/v1/R:0.5
+  bar 24 onset 94 73/st1/v1/R:0.5
+  bar 24 onset 94.5 74/st1/v1/R:0.5
+  bar 24 onset 95 73/st1/v1/R:0.5
+  bar 24 onset 95.5 71/st1/v1/R:0.5
+

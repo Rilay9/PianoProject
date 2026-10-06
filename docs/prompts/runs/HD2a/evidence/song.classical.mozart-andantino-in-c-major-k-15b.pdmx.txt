@@ -1,0 +1,31 @@
+HD2a evidence: song.classical.mozart-andantino-in-c-major-k-15b.pdmx (scores/pdmx/QmdnQPtZH7qFdP6V42y16AGzuZpmsis99tgQjKaA4jd6Ke.mxl), identity sha256 fe7b345d420fee2178b2499fdd6eea2a56ef453ced2185cbb6b8544625f0cbe3
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 2-2 -> R
+  bar 2 (source measure 1) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @3 L [48] + v2 [67]
+  bar 2 onset 2 74/st1/v1/R:0.5 71/st1/v1/R:0.5 67/st1/v1/R:0.5 62/st1/v1/R:0.5 43/st2/v3/L:0.25
+  bar 2 onset 2.25 45/st2/v3/L:0.25
+  bar 2 onset 2.5 77/st1/v1/R:0.5 67/st1/v1/R:0.5 47/st2/v3/L:0.25
+  bar 2 onset 2.75 43/st2/v3/L:0.25
+  bar 2 onset 3 77/st1/v1/R:0.5 67/st1/v2/L/x:1 48/st2/v3/L:0.5
+  bar 2 onset 3.5 76/st1/v1/R:0.5 36/st2/v3/L:0.5
+
+ROW staff 1 voice 2 bars 18-18 -> R
+  bar 18 (source measure 17) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @34 L [43] + v2 [67]; @35 L [48] + v2 [67]
+  bar 18 onset 34 71/st1/v1/R:0.5 67/st1/v2/L/x:0.5 43/st2/v3/L:0.25
+  bar 18 onset 34.25 45/st2/v3/L:0.25
+  bar 18 onset 34.5 77/st1/v1/R:0.5 47/st2/v3/L:0.25
+  bar 18 onset 34.75 43/st2/v3/L:0.25
+  bar 18 onset 35 77/st1/v1/R:0.5 67/st1/v2/L/x:0.5 48/st2/v3/L:0.5
+  bar 18 onset 35.5 76/st1/v1/R:0.5 36/st2/v3/L:0.5
+
+ROW staff 1 voice 2 bars 22-22 -> R
+  bar 22 (source measure 21) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @42 L [43] + v2 [67]; @43 L [48] + v2 [67]
+  bar 22 onset 42 71/st1/v1/R:0.5 67/st1/v2/L/x:0.5 43/st2/v3/L:0.25
+  bar 22 onset 42.25 45/st2/v3/L:0.25
+  bar 22 onset 42.5 77/st1/v1/R:0.5 47/st2/v3/L:0.25
+  bar 22 onset 42.75 43/st2/v3/L:0.25
+  bar 22 onset 43 77/st1/v1/R:0.5 67/st1/v2/L/x:0.5 48/st2/v3/L:0.5
+  bar 22 onset 43.5 76/st1/v1/R:0.5 36/st2/v3/L:0.5
+

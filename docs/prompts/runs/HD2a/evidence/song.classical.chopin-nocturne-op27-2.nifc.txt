@@ -1,0 +1,47 @@
+HD2a evidence: song.classical.chopin-nocturne-op27-2.nifc (scores/imported/song.classical.chopin-nocturne-op27-2.nifc.mxl), identity sha256 35dcc9810a56812bcaf56a7b81df3e2fd99129d54cbe7ed51318e6ea8ee791d6
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 41-41 -> R
+  bar 41 (source measure 40) st1 v2: L/x -> R; onsets 3 {'conflict': 3}; second voice(s) [3]; e.g. @120 L [45] + v2 [75]; @122 L [54] + v2 [72, 75, 78]
+  bar 41 onset 120 80/st1/v1/R:1 75/st1/v2/L/x:1.5 45/st2/v3/L:0.25
+  bar 41 onset 120.25 63/st2/v3/L:0.25
+  bar 41 onset 120.5 54/st2/v3/L:0.25
+  bar 41 onset 120.75 63/st2/v3/L:0.25
+  bar 41 onset 121 78/st1/v1/R:0.5 60/st2/v3/L:0.25
+  bar 41 onset 121.25 51/st2/v3/L:0.25
+  bar 41 onset 121.5 33/st2/v3/L:0.25
+  bar 41 onset 121.75 63/st2/v3/L:0.25
+  bar 41 onset 122 78/st1/v2/L/x:0.5 75/st1/v2/L/x:0.5 72/st1/v2/L/x:0.5 54/st2/v3/L:0.25
+  bar 41 onset 122.25 63/st2/v3/L:0.25
+  bar 41 onset 122.5 78/st1/v2/L/x:0.5 75/st1/v2/L/x:0.5 71/st1/v2/L/x:0.5 59/st2/v3/L:0.25
+  bar 41 onset 122.75 51/st2/v3/L:0.25
+
+ROW staff 1 voice 2 bars 69-70 -> R
+  bar 69 (source measure 68) st1 v2: L/x -> R; onsets 6 {'conflict': 6}; second voice(s) [3]; e.g. @205 L [49] + v2 [80]; @206.75 L [60] + v2 [79]
+  bar 69 onset 205 80/st1/v1/R:4.5 80/st1/v2/L/x:1.75 49/st2/v3/L:0.25
+  bar 69 onset 205.25 60/st2/v3/L:0.25
+  bar 69 onset 205.5 54/st2/v3/L:0.25
+  bar 69 onset 205.75 60/st2/v3/L:0.25
+  bar 69 onset 206 56/st2/v3/L:0.25
+  bar 69 onset 206.25 51/st2/v3/L:0.25
+  bar 69 onset 206.5 49/st2/v3/L:0.25
+  bar 69 onset 206.75 79/st1/v2/L/x:0.25 60/st2/v3/L:0.25
+  bar 69 onset 207 78/st1/v2/L/x:0.25 54/st2/v3/L:0.25
+  bar 69 onset 207.25 77/st1/v2/L/x:0.25 60/st2/v3/L:0.25
+  bar 69 onset 207.5 75/st1/v2/L/x:0.25 56/st2/v3/L:0.25
+  bar 69 onset 207.75 77/st1/v2/L/x:0.25 51/st2/v3/L:0.25
+  bar 70 (source measure 69) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @208 L [37] + v2 [73]
+  bar 70 onset 208 73/st1/v2/L/x:3 37/st2/v3/L:0.25
+  bar 70 onset 208.25 61/st2/v3/L:0.25
+  bar 70 onset 208.5 49/st2/v3/L:0.25
+  bar 70 onset 208.75 61/st2/v3/L:0.25
+  bar 70 onset 209 53/st2/v3/L:0.25
+  bar 70 onset 209.25 44/st2/v3/L:0.25
+  bar 70 onset 209.5 77/st1/v1/R:0.25 37/st2/v3/L:0.25
+  bar 70 onset 209.75 78/st1/v1/R:0.25 61/st2/v3/L:0.25
+  bar 70 onset 210 79/st1/v1/R:0.25 49/st2/v3/L:0.25
+  bar 70 onset 210.25 80/st1/v1/R:0.25 61/st2/v3/L:0.25
+  bar 70 onset 210.5 84/st1/v1/R:0.25 53/st2/v3/L:0.25
+  bar 70 onset 210.75 82/st1/v1/R:0.25 44/st2/v3/L:0.25
+

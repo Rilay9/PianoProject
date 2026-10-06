@@ -1,0 +1,68 @@
+HD2a evidence: song.classical.grieg-ase-s-tod.pdmx (scores/pdmx/QmWzypSPYKE2TRY32TPVGbKKBCFWyUMdMC4QwjgKwVxzpT.mxl), identity sha256 58ea27924b1333949550c18ec58123db6bcf2e7d9edb3a58020b9e9c6cc3b8c7
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 2 voice 2 bars 1-2 -> L
+  bar 1 (source measure 0) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @0 R [50, 54] + v2 [35, 47]; @1 R [54, 59] + v2 [38, 47]
+  bar 1 onset 0 54/st1/v1/R:1 50/st1/v1/R:1 47/st2/v2/R/x:1 35/st2/v2/R/x:1
+  bar 1 onset 1 59/st1/v1/R:1 54/st1/v1/R:1 47/st2/v2/R/x:1 38/st2/v2/R/x:1
+  bar 1 onset 2 61/st1/v1/R:2 58/st1/v1/R:2 54/st1/v1/R:2 49/st2/v2/R/x:2 42/st2/v2/R/x:2
+  bar 2 (source measure 1) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @4 R [50, 54] + v2 [35, 47]; @5 R [54, 59] + v2 [38, 47]
+  bar 2 onset 4 54/st1/v1/R:1 50/st1/v1/R:1 47/st2/v2/R/x:1 35/st2/v2/R/x:1
+  bar 2 onset 5 59/st1/v1/R:1 54/st1/v1/R:1 47/st2/v2/R/x:1 38/st2/v2/R/x:1
+  bar 2 onset 6 61/st1/v1/R:2 58/st1/v1/R:2 54/st1/v1/R:2 49/st2/v2/R/x:2 42/st2/v2/R/x:2
+
+ROW staff 2 voice 2 bars 5-6 -> L
+  bar 5 (source measure 4) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @16 R [50, 54] + v2 [35, 47]; @17 R [54, 59] + v2 [38, 47]
+  bar 5 onset 16 54/st1/v1/R:1 50/st1/v1/R:1 47/st2/v2/R/x:1 35/st2/v2/R/x:1
+  bar 5 onset 17 59/st1/v1/R:1 54/st1/v1/R:1 47/st2/v2/R/x:1 38/st2/v2/R/x:1
+  bar 5 onset 18 61/st1/v1/R:2 59/st1/v1/R:2 53/st1/v1/R:2 49/st2/v2/R/x:2 43/st2/v2/R/x:2
+  bar 6 (source measure 5) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @20 R [50, 54] + v2 [35, 47]; @21 R [54, 59] + v2 [38, 47]
+  bar 6 onset 20 54/st1/v1/R:1 50/st1/v1/R:1 47/st2/v2/R/x:1 35/st2/v2/R/x:1
+  bar 6 onset 21 59/st1/v1/R:1 54/st1/v1/R:1 47/st2/v2/R/x:1 38/st2/v2/R/x:1
+  bar 6 onset 22 61/st1/v1/R:2 59/st1/v1/R:2 53/st1/v1/R:2 49/st2/v2/R/x:2 43/st2/v2/R/x:2
+
+ROW staff 2 voice 2 bars 9-10 -> L
+  bar 9 (source measure 8) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @32 R [57, 61] + v2 [42, 54]; @33 R [61, 66] + v2 [45, 54]
+  bar 9 onset 32 61/st1/v1/R:1 57/st1/v1/R:1 54/st2/v2/R/x:1 42/st2/v2/R/x:1
+  bar 9 onset 33 66/st1/v1/R:1 61/st1/v1/R:1 54/st2/v2/R/x:1 45/st2/v2/R/x:1
+  bar 9 onset 34 68/st1/v1/R:2 65/st1/v1/R:2 61/st1/v1/R:2 56/st2/v2/R/x:2 49/st2/v2/R/x:2
+  bar 10 (source measure 9) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @36 R [57, 61] + v2 [42, 54]; @37 R [61, 66] + v2 [45, 54]
+  bar 10 onset 36 61/st1/v1/R:1 57/st1/v1/R:1 54/st2/v2/R/x:1 42/st2/v2/R/x:1
+  bar 10 onset 37 66/st1/v1/R:1 61/st1/v1/R:1 54/st2/v2/R/x:1 45/st2/v2/R/x:1
+  bar 10 onset 38 68/st1/v1/R:2 65/st1/v1/R:2 61/st1/v1/R:2 56/st2/v2/R/x:2 49/st2/v2/R/x:2
+
+ROW staff 2 voice 2 bars 13-14 -> L
+  bar 13 (source measure 12) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @48 R [57, 61] + v2 [42, 54]; @49 R [61, 66] + v2 [45, 54]
+  bar 13 onset 48 61/st1/v1/R:1 57/st1/v1/R:1 54/st2/v2/R/x:1 42/st2/v2/R/x:1
+  bar 13 onset 49 66/st1/v1/R:1 61/st1/v1/R:1 54/st2/v2/R/x:1 45/st2/v2/R/x:1
+  bar 13 onset 50 68/st1/v1/R:2 66/st1/v1/R:2 60/st1/v1/R:2 56/st2/v2/R/x:2 50/st2/v2/R/x:2
+  bar 14 (source measure 13) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @52 R [57, 61] + v2 [42, 54]; @53 R [61, 66] + v2 [45, 54]
+  bar 14 onset 52 61/st1/v1/R:1 57/st1/v1/R:1 54/st2/v2/R/x:1 42/st2/v2/R/x:1
+  bar 14 onset 53 66/st1/v1/R:1 61/st1/v1/R:1 54/st2/v2/R/x:1 45/st2/v2/R/x:1
+  bar 14 onset 54 68/st1/v1/R:2 66/st1/v1/R:2 60/st1/v1/R:2 56/st2/v2/R/x:2 50/st2/v2/R/x:2
+
+ROW staff 2 voice 2 bars 17-18 -> L
+  bar 17 (source measure 16) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @64 R [54, 59, 62, 66] + v2 [35, 47]; @65 R [59, 66, 71] + v2 [38, 50]
+  bar 17 onset 64 66/st1/v1/R:1 62/st1/v1/R:1 59/st1/v1/R:1 54/st1/v1/R:1 47/st2/v2/R/x:1 35/st2/v2/R/x:1
+  bar 17 onset 65 71/st1/v1/R:1 66/st1/v1/R:1 59/st1/v1/R:1 50/st2/v2/R/x:1 38/st2/v2/R/x:1
+  bar 17 onset 66 73/st1/v1/R:2 66/st1/v1/R:2 61/st1/v1/R:2 58/st2/v2/R/x:2 49/st2/v2/R/x:2 42/st2/v2/R/x:2
+  bar 18 (source measure 17) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @68 R [54, 59, 62, 66] + v2 [35, 47]; @69 R [59, 66, 71] + v2 [38, 50]
+  bar 18 onset 68 66/st1/v1/R:1 62/st1/v1/R:1 59/st1/v1/R:1 54/st1/v1/R:1 47/st2/v2/R/x:1 35/st2/v2/R/x:1
+  bar 18 onset 69 71/st1/v1/R:1 66/st1/v1/R:1 59/st1/v1/R:1 50/st2/v2/R/x:1 38/st2/v2/R/x:1
+  bar 18 onset 70 73/st1/v1/R:2 66/st1/v1/R:2 61/st1/v1/R:2 58/st2/v2/R/x:2 49/st2/v2/R/x:2 42/st2/v2/R/x:2
+
+ROW staff 2 voice 2 bars 21-22 -> L
+  bar 21 (source measure 20) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @80 R [54, 59, 62, 66] + v2 [35, 47]; @81 R [59, 66, 71] + v2 [38, 50]
+  bar 21 onset 80 66/st1/v1/R:1 62/st1/v1/R:1 59/st1/v1/R:1 54/st1/v1/R:1 47/st2/v2/R/x:1 35/st2/v2/R/x:1
+  bar 21 onset 81 71/st1/v1/R:1 66/st1/v1/R:1 59/st1/v1/R:1 50/st2/v2/R/x:1 38/st2/v2/R/x:1
+  bar 21 onset 82 73/st1/v1/R:2 71/st1/v1/R:2 65/st1/v1/R:2 61/st1/v1/R:2 59/st2/v2/R/x:2 49/st2/v2/R/x:2 43/st2/v2/R/x:2
+  bar 22 (source measure 21) st2 v2: R/x -> L; onsets 3 {'conflict': 3}; second voice(s) [1]; e.g. @84 R [54, 59, 62, 66] + v2 [35, 47]; @85 R [59, 66, 71] + v2 [38, 50]
+  bar 22 onset 84 66/st1/v1/R:1 62/st1/v1/R:1 59/st1/v1/R:1 54/st1/v1/R:1 47/st2/v2/R/x:1 35/st2/v2/R/x:1
+  bar 22 onset 85 71/st1/v1/R:1 66/st1/v1/R:1 59/st1/v1/R:1 50/st2/v2/R/x:1 38/st2/v2/R/x:1
+  bar 22 onset 86 73/st1/v1/R:2 71/st1/v1/R:2 65/st1/v1/R:2 61/st1/v1/R:2 59/st2/v2/R/x:2 49/st2/v2/R/x:2 43/st2/v2/R/x:2
+
+ROW staff 2 voice 2 bars 45-45 -> L
+  bar 45 (source measure 44) st2 v2: R/x -> L; onsets 1 {'conflict': 1}; second voice(s) [1]; e.g. @176 R [50, 59] + v2 [35, 42]
+  bar 45 onset 176 59/st1/v1/R:4 50/st1/v1/R:4 42/st2/v2/R/x:4 35/st2/v2/R/x:4
+

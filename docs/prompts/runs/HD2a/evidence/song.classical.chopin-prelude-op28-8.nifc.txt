@@ -1,0 +1,8 @@
+HD2a evidence: song.classical.chopin-prelude-op28-8.nifc (scores/imported/song.classical.chopin-prelude-op28-8.nifc.mxl), identity sha256 42f3c277fb3302406977e56c0c5e2e031a0e73e085e5aba917ab6c32c0011923
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 2 voice 2 bars 34-34 -> L
+  bar 34 (source measure 33) st2 v2: R/x -> L; onsets 1 {'conflict': 1}; second voice(s) [1]; e.g. @132 R [61, 66] + v2 [42, 49, 57]
+  bar 34 onset 132 66/st1/v1/R:4 65/st1/v1/R/g:0.5 61/st1/v1/R:4 57/st2/v2/R/x:4 49/st2/v2/R/x:4 42/st2/v2/R/x:4
+

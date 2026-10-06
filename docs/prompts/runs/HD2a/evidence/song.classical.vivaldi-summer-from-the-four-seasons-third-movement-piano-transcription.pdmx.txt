@@ -1,0 +1,47 @@
+HD2a evidence: song.classical.vivaldi-summer-from-the-four-seasons-third-movement-piano-transcription.pdmx (scores/pdmx/QmVCyFhS2bCYTxPnCMLX3D5hMXBxKHT1Gt3J9GchhbcyiQ.mxl), identity sha256 4eb5439c7b186b59636afcf80a5c41e4ae1f9a38dd403dd0625915505d3c974f
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 75-75 -> R
+  bar 75 (source measure 74) st1 v2: L/x -> R; onsets 12 {'conflict': 1, 'free': 11}; second voice(s) [3]; e.g. @222 L [43] + v2 [74]
+  bar 75 onset 222 79/st1/v1/R:3 74/st1/v2/L/x:0.25 43/st2/v3/L:0.5
+  bar 75 onset 222.25 71/st1/v2/L/x:0.25
+  bar 75 onset 222.5 74/st1/v2/L/x:0.25
+  bar 75 onset 222.75 71/st1/v2/L/x:0.25
+  bar 75 onset 223 74/st1/v2/L/x:0.25
+  bar 75 onset 223.25 71/st1/v2/L/x:0.25
+  bar 75 onset 223.5 74/st1/v2/L/x:0.25
+  bar 75 onset 223.75 71/st1/v2/L/x:0.25
+  bar 75 onset 224 74/st1/v2/L/x:0.25
+  bar 75 onset 224.25 71/st1/v2/L/x:0.25
+  bar 75 onset 224.5 74/st1/v2/L/x:0.25
+  bar 75 onset 224.75 71/st1/v2/L/x:0.25
+
+ROW staff 1 voice 2 bars 77-78 -> R
+  bar 77 (source measure 76) st1 v2: L/x -> R; onsets 12 {'conflict': 1, 'free': 11}; second voice(s) [3]; e.g. @228 L [46] + v2 [74]
+  bar 77 onset 228 77/st1/v1/R:3 74/st1/v2/L/x:0.25 46/st2/v3/L:0.5
+  bar 77 onset 228.25 70/st1/v2/L/x:0.25
+  bar 77 onset 228.5 74/st1/v2/L/x:0.25
+  bar 77 onset 228.75 70/st1/v2/L/x:0.25
+  bar 77 onset 229 74/st1/v2/L/x:0.25
+  bar 77 onset 229.25 70/st1/v2/L/x:0.25
+  bar 77 onset 229.5 74/st1/v2/L/x:0.25
+  bar 77 onset 229.75 70/st1/v2/L/x:0.25
+  bar 77 onset 230 74/st1/v2/L/x:0.25
+  bar 77 onset 230.25 70/st1/v2/L/x:0.25
+  bar 77 onset 230.5 74/st1/v2/L/x:0.25
+  bar 77 onset 230.75 70/st1/v2/L/x:0.25
+  bar 78 (source measure 77) st1 v2: L/x -> R; onsets 12 {'conflict': 7, 'free': 5}; second voice(s) [3]; e.g. @231 L [39] + v2 [75]; @231.5 L [51] + v2 [75]
+  bar 78 onset 231 79/st1/v1/R:3 75/st1/v2/L/x:0.25 39/st2/v3/L:0.5
+  bar 78 onset 231.25 70/st1/v2/L/x:0.25
+  bar 78 onset 231.5 75/st1/v2/L/x:0.25 51/st2/v3/L:0.25
+  bar 78 onset 231.75 70/st1/v2/L/x:0.25 50/st2/v3/L:0.25
+  bar 78 onset 232 75/st1/v2/L/x:0.25 51/st2/v3/L:0.5
+  bar 78 onset 232.25 70/st1/v2/L/x:0.25
+  bar 78 onset 232.5 75/st1/v2/L/x:0.25 39/st2/v3/L:0.5
+  bar 78 onset 232.75 70/st1/v2/L/x:0.25
+  bar 78 onset 233 75/st1/v2/L/x:0.25 39/st2/v3/L:0.5
+  bar 78 onset 233.25 70/st1/v2/L/x:0.25
+  bar 78 onset 233.5 75/st1/v2/L/x:0.25 51/st2/v3/L:0.5
+  bar 78 onset 233.75 70/st1/v2/L/x:0.25
+

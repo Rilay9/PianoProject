@@ -1,0 +1,22 @@
+HD2a evidence: song.classical.chopin-nocturne-op37-1.nifc (scores/imported/song.classical.chopin-nocturne-op37-1.nifc.mxl), identity sha256 4ea0064644403f74daf630ceeb0aa5f2de18dc9eb783f3a6146f1f6ac6e8ff7e
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 20-21 -> R
+  bar 20 (source measure 20) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @77.75 L [41] + v2 [69]
+  bar 20 onset 77.75 69/st1/v1/R:1 69/st1/v2/L/x:4 41/st2/v3/L:1
+  bar 20 onset 78.75 81/st1/v1/R:1.5 67/st2/v3/L:1 63/st2/v3/L:1
+  bar 20 onset 79.75 65/st2/v3/L:1 62/st2/v3/L:1
+  bar 20 onset 80.25 79/st1/v1/R:0.5
+  bar 20 onset 80.75 79/st1/v1/R:0.333333 63/st2/v3/L:1 60/st2/v3/L:1
+  bar 20 onset 81.0833 77/st1/v1/R:0.333333
+  bar 20 onset 81.4167 75/st1/v1/R:0.333333
+  bar 21 (source measure 21) st1 v2: L/x -> R; onsets 5 {'conflict': 3, 'free': 2}; second voice(s) [3]; e.g. @81.75 L [34, 46] + v2 [74]; @82.75 L [53] + v2 [74]
+  bar 21 onset 81.75 74/st1/v2/L/x:1 46/st2/v3/L:1 34/st2/v3/L:1
+  bar 21 onset 82.75 74/st1/v2/L/x:0.333333 70/st1/v2/L/x/g:0.5 65/st1/v2/L/x/g:0.5 62/st1/v2/L/x/g:0.5 53/st2/v3/L:1
+  bar 21 onset 83.0833 72/st1/v2/L/x:0.333333
+  bar 21 onset 83.4167 70/st1/v2/L/x:0.333333
+  bar 21 onset 83.75 70/st1/v1/R:0.5 66/st1/v1/R/g:0.5 66/st1/v2/L/x:1 62/st1/v1/R/g:0.5 62/st1/v2/L/x:1 60/st1/v1/R/g:0.5 60/st1/v2/L/x:1 38/st2/v3/L:1
+  bar 21 onset 84.25 69/st1/v1/R:0.5
+  bar 21 onset 84.75 50/st2/v3/L:2
+

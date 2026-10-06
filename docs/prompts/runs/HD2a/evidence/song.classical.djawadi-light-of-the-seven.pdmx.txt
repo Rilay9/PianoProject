@@ -1,0 +1,42 @@
+HD2a evidence: song.classical.djawadi-light-of-the-seven.pdmx (scores/pdmx/QmbbrzuLZmnUn5xVHwm3urEk4Mp6KLGN9Fz7yJTJJPYkkt.mxl), identity sha256 cffa4f5fe39ee08e32854aab3830dcbcf5b41792ae8961ad1016adf9bdcc4cf9
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 19-19 -> R
+  bar 19 (source measure 18) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @72 L [44] + v2 [72]
+  bar 19 onset 72 72/st1/v2/L/x:4 68/st1/v1/R:2 63/st1/v1/R:2 44/st2/v3/L:0.5
+  bar 19 onset 72.5 51/st2/v3/L:0.5
+  bar 19 onset 73 60/st2/v3/L:0.5
+  bar 19 onset 73.5 51/st2/v3/L:0.5
+  bar 19 onset 74 67/st1/v1/R:2 63/st1/v1/R:2 39/st2/v3/L:0.5
+  bar 19 onset 74.5 46/st2/v3/L:0.5
+  bar 19 onset 75 55/st2/v3/L:0.5
+  bar 19 onset 75.5 46/st2/v3/L:0.5
+
+ROW staff 1 voice 2 bars 26-26 -> R
+  bar 26 (source measure 25) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @100 L [39] + v2 [60, 67]
+  bar 26 onset 100 72/st1/v1/R:1 67/st1/v2/L/x:4 60/st1/v2/L/x:4 39/st2/v3/L:0.5
+  bar 26 onset 100.5 48/st2/v3/L:0.5
+  bar 26 onset 101 70/st1/v1/R:1 55/st2/v3/L:0.5
+  bar 26 onset 101.5 48/st2/v3/L:0.5
+  bar 26 onset 102 68/st1/v1/R:1 55/st2/v3/L:2
+  bar 26 onset 103 67/st1/v1/R:1
+
+ROW staff 1 voice 2 bars 38-39 -> R
+  bar 38 (source measure 37) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @148 L [46] + v2 [74, 79]
+  bar 38 onset 148 84/st1/v1/R:1 79/st1/v2/L/x:4 74/st1/v2/L/x:4 46/st2/v3/L:0.5
+  bar 38 onset 148.5 55/st2/v3/L:0.5
+  bar 38 onset 149 82/st1/v1/R:1 62/st2/v3/L:0.5
+  bar 38 onset 149.5 55/st2/v3/L:0.5
+  bar 38 onset 150 80/st1/v1/R:1 62/st2/v3/L:0.5
+  bar 38 onset 150.5 55/st2/v3/L:0.5
+  bar 38 onset 151 79/st1/v1/R:1 46/st2/v3/L:1
+  bar 39 (source measure 38) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @152 L [43] + v2 [74, 79]
+  bar 39 onset 152 84/st1/v1/R:1 79/st1/v2/L/x:4 74/st1/v2/L/x:4 43/st2/v3/L:0.5
+  bar 39 onset 152.5 55/st2/v3/L:0.5
+  bar 39 onset 153 82/st1/v1/R:1 62/st2/v3/L:0.5
+  bar 39 onset 153.5 55/st2/v3/L:0.5
+  bar 39 onset 154 82/st1/v1/R:2 62/st2/v3/L:0.5
+  bar 39 onset 154.5 55/st2/v3/L:0.5
+  bar 39 onset 155 62/st2/v3/L:1
+

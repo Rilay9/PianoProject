@@ -1,0 +1,19 @@
+HD2a evidence: song.classical.schumann-carnaval-op-9-no-12-chopin.pdmx (scores/pdmx/QmfL5ffiKPto33RkaHmypncAM1cEqtdTVFJv8d9yN6PJMC.mxl), identity sha256 636a9a3d1b20917d45ef650c2c6ccc69b5c1e65796e4670ae4ddfe8ad0fc83ee
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 10-10 -> R
+  bar 10 (source measure 9) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @54 L [40] + v2 [72]
+  bar 10 onset 54 72/st1/v1/R:0.5 72/st1/v2/L/x:3 40/st2/v3/L:0.5
+  bar 10 onset 54.5 85/st1/v1/R:0.5 48/st2/v3/L:0.5
+  bar 10 onset 55 84/st1/v1/R:0.5 52/st2/v3/L:0.5
+  bar 10 onset 55.5 83/st1/v1/R:0.5 55/st2/v3/L:0.5
+  bar 10 onset 56 82/st1/v1/R:0.5 58/st2/v3/L:0.5
+  bar 10 onset 56.5 79/st1/v1/R:0.5 60/st2/v3/L:0.5
+  bar 10 onset 57 76/st1/v1/R:0.5 64/st2/v3/L:0.5
+  bar 10 onset 57.5 72/st1/v1/R:0.5 67/st2/v3/L:0.5
+  bar 10 onset 58 75/st1/v1/R:0.5 63/st2/v3/L:0.5
+  bar 10 onset 58.5 73/st1/v1/R:0.5 61/st2/v3/L:0.5
+  bar 10 onset 59 72/st1/v1/R:0.5 60/st2/v3/L:0.5
+  bar 10 onset 59.5 70/st1/v1/R:0.5 58/st2/v3/L:0.5
+
