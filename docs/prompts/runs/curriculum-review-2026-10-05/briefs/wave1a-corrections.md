@@ -32,7 +32,7 @@ Written under `briefs/wave1-contracts.md`, for the outside reviewer to read befo
 | 1a.3 Classical and ragtime lessons | W6, W10 | `content/lessons/classical.3.md`, `classical.5.md`, `classical.6.md`, `classical.8.md`, `ragtime.5.md`, `ragtime.6.md`, `ragtime.7.md` |
 | 1a.4 Blues, jazz and jam | W8, W9, W18, C2 (blues.8's Blind target) | `content/lessons/blues.4.md`, `blues.6.md`, `blues.7.md`, `blues.8.md`, `blues.9.md`, `jazz.6.md`, `jazz.7.md`, `jazz.8.md`, `jam.md`, `jam.5.md`, `jam.6.md`, `jam.7.md`; `content/curriculum/stage-8.json` (unit `blues.8.1` title; lesson `blues.8` title, `tools`, `finder.skill`, `finder.levelWords`); `docs/02-curriculum.md:523` |
 | 1a.5 Theory and improv | W11's text half, W12, W13 (as CT-1) | `content/lessons/theory.3.md`, `theory.4.md`, `theory.5.md`, `theory.6.md`, `theory.7.md`, `theory.9.md`, `improv.4.md`, `improv.5.md`, `improv.6.md`, `improv.7.md`, `improv.8.md`, `improv.9.md`; `content/catalog.static.json` (row `drill.ear.rhythm-dictation`, `title` only); `content/curriculum/stage-4.json` (lesson `improv.4`, `says`); `stage-6.json` (lesson `improv.6`, `tools` and `requirements`); `stage-7.json`, `stage-8.json`, `stage-9.json` (lessons `improv.7`, `improv.8`, `improv.9`, `requirements` only) |
-| 1a.6 Chords-pop, hymns, holiday, latin, rock lessons | W7's text half, W14, W15's text half, W16, W17's text half | `content/lessons/chords-pop.4.md`, `chords-pop.5.md`, `chords-pop.7.md`, `chords-pop.8.md`, `hymns.md`, `hymns.2.md`, `hymns.5.md`, `holiday.3.md`, `holiday.5.md`, `latin.md`, `latin.3.md`, `latin.7.md`, `rock.4.md`, `rock.5.md`, `rock.7.md`; `content/curriculum/stage-2.json` (lesson `hymns.2`, `songOptions` only); `docs/02-curriculum.md:1204` |
+| 1a.6 Chords-pop, hymns, holiday, latin, rock lessons | W7's text half, W14, W15's text half, W16 (with the three Cuban-term corrections, Edits 26-28), W17's text half | `content/lessons/chords-pop.4.md`, `chords-pop.5.md`, `chords-pop.7.md`, `chords-pop.8.md`, `hymns.md`, `hymns.2.md`, `hymns.5.md`, `holiday.3.md`, `holiday.5.md`, `latin.md`, `latin.3.md`, `latin.7.md`, `rock.4.md`, `rock.5.md`, `rock.7.md`; `content/lessons/latin.6.md` (the montuno-study sentence, Edit 26); `content/curriculum/stage-2.json` (lesson `hymns.2`, `songOptions` only); `content/curriculum/concepts.json` (the `montuno` finder only, Edit 28); `tools/content/generate_exercises.py` (`write_montuno`'s and `make_montuno`'s docstrings, `make_montuno`'s and `make_latin_groove`'s title lines only, Edit 27) and the generated montuno and latin-groove scores and catalogue entries it rewrites (titles only); `docs/02-curriculum.md:1204` |
 | 1a.7 Stage data: finders, a prerequisite, track names | W7's data half, W2's data half, W14's rename, W17's count | `content/curriculum/stage-7.json`, `stage-8.json`, `stage-9.json` (lessons `chords-pop.7`, `.8`, `.9`, `finder` only); `stage-4.json` (lesson `4.7`, add `prerequisites`); `stage-3.json` (unit `hymns-gospel.3.1` title); `content/curriculum/00-tracks.json` (rows `hymns-gospel` and `rock-metal`); `docs/02-curriculum.md:705,1203` |
 | 1a.8 The modulation row | W11's data half | `content/catalog.static.json` (row `drill.theory.harmonic-dictation-modulation`, `drill.params.progressions[1]` only); one new unit test; its record lines |
 | 1a.9 Contrary scales | W4 | `tools/content/generate_exercises.py` (`make_scale` only), `tools/content/family_contracts.json` (the `scale` row's version), `tools/content/generator_continuity.json`, `tools/content/requirements.txt` (one pin), `content/lessons/technique.4.md:26-30`, one new test under `tools/content/tests/`, the CO-1 export |
@@ -40,7 +40,7 @@ Written under `briefs/wave1-contracts.md`, for the outside reviewer to read befo
 
 **Files no seam may touch:** the app code under `app/src/`, every authored or imported score, `app/public/` (built), `docs/review/pdmx-dump-2026-10-05/`, the dated audit CSV, other lessons, other stage-JSON lesson blocks.
 
-**Shared files.** `stage-4.json` (1a.1, 1a.5, 1a.7), `stage-8.json` (1a.4, 1a.7), `stage-7.json`, `stage-9.json` (1a.5, 1a.7), `catalog.static.json` (1a.5, 1a.8), `technique.4.md` (1a.2, 1a.9), `docs/02-curriculum.md` (1a.4, 1a.6, 1a.7): every shared file is edited in disjoint blocks. **Dispatch:** seams 1a.1 to 1a.8 go to one narrow ruled builder in one worktree, one seam at a time in the order above, each seam's diff and verification reported separately so the reviewer can read each against its contract; 1a.9 goes to a second builder in its own worktree, cut after 1a.2 has merged (they share `technique.4.md`). No two builders hold one file at once.
+**Shared files.** `stage-4.json` (1a.1, 1a.5, 1a.7), `stage-8.json` (1a.4, 1a.7), `stage-7.json`, `stage-9.json` (1a.5, 1a.7), `catalog.static.json` (1a.5, 1a.8), `technique.4.md` (1a.2, 1a.9), `docs/02-curriculum.md` (1a.4, 1a.6, 1a.7), `generate_exercises.py` (1a.6 the montuno and latin-groove docstrings and titles; 1a.9 `make_scale` only): every shared file is edited in disjoint blocks. **Dispatch:** seams 1a.1 to 1a.8 go to one narrow ruled builder in one worktree, one seam at a time in the order above, each seam's diff and verification reported separately so the reviewer can read each against its contract; 1a.9 goes to a second builder in its own worktree, cut after 1a.2 has merged (they share `technique.4.md`). No two builders hold one file at once. **Amended 2026-10-05 (reviewer ruling `docs/review/responses/5831d42d.md`):** seam 1a.6 was held until the three Cuban-term corrections were in its exact edits and file list; they are (Edits 26-28), so 1a.6 may dispatch with 1a.1 to 1a.5 in the stated sequence, and 1a.7 and 1a.8 follow once the sequential builder holds this corrected 1a.6 contract.
 
 **Verification common to every lesson and data seam** (by what the seam touches; `CLAUDE.md` commands, from `app/`): `npm run content:build` (it runs `tools/content/validate.py`, which refuses a tool `item` that is not the rung's own option and an `unlock` its preset never locked); `npx vitest run` after the content build (lesson tests read built content); `npx tsc -b`; `npm run build`; `py -3.11 tools/content/lint_absolutes.py --lesson <id>` for every changed lesson, reporting any absolute word an edit introduces (it never fails; a new "always", "never", "only", "every", "all" is justified in the entry or removed). A browser spec only where a screen changes, named per seam. Before editing, grep `app/tests`, `app/src` and `docs/` for every quoted "before" phrase; a test or doc that asserts the old text is updated in the same seam with the reason beside it, or the edit stops (S3).
 
@@ -1920,9 +1920,135 @@ arpeggios. *Moonlight*'s finale builds in its writing and in its markings both:
 its pages carry over a hundred dynamic marks.
 ```
 
-**Verification.** The common list. The hymns.2 option change shows a different row on the rung page; the builder greps `app/tests/e2e` for the Joyful id and for `hymns.2` and runs any spec that names them, on the lane's own port.
+**Edit 26 (W16, the Cuban terms: the latin.6 study is not "the figure itself"; latin#5; A7c.2 term repair).** Added 2026-10-05 on the reviewer's ruling (`docs/review/responses/5831d42d.md`): the three Cuban-term corrections are absorbed here (Edits 26, 27, 28) before this seam dispatches. The published terms (the quarry's STYLE-VERIFICATION, citing Wikipedia, a secondary source): a guajeo is the broader repeated syncopated ostinato, often arpeggiated; montuno has several meanings, one of them a piano guajeo; ponchando is the block-chord, non-arpeggiated guajeo. The shipped montuno items are a block chord on each clave stroke, which `ABILITY-MAP.md` A7c.2 records as "the clave's rhythm played as chords, not a guajeo". No edit below calls the result an arpeggiated guajeo.
 
-**Acceptance for the learner.** A hymns.2 learner harmonises a correct melody; a holiday learner is told about bar 32; no chords-pop, latin or rock sentence contradicts its score or its exercise.
+`content/lessons/latin.6.md:35-38` at HEAD:
+
+```text
+**The montuno is in the exercises**, because none of these three pieces writes
+one out. The three-note study in D minor is the figure itself: every note is a
+clave stroke, three strokes in one bar and two in the next, and it repeats
+without changing. The tumbao study in G minor is the bass half — nothing on
+```
+
+After:
+
+```text
+**The montuno's rhythm is in the exercises**, because none of these three pieces
+writes a montuno out. The three-note study in D minor is a rhythm-lock drill, not
+the montuno figure itself: it plays a chord on every clave stroke, three strokes
+in one bar and two in the next, and it repeats without changing, so your hands
+learn where the clave falls. The tumbao study in G minor is the bass half — nothing on
+```
+
+Evidence: `write_montuno` (`generate_exercises.py:5077-5101`) writes one chord per clave stroke and nothing else; the claim "the figure itself" made it the montuno. The heading changes with the sentence because "The montuno is in the exercises" would otherwise contradict the next sentence. Edit 18's wording for `latin.md` (a chord on each clave stroke as the exercises' stripped-down rhythm) already agrees.
+
+**Edit 27 (W16, the montuno generator: docstrings and titles; retitle without changing the music).** Four spots in `tools/content/generate_exercises.py`, each quoted at HEAD; the notes, rhythm, ids, family name, offsets and tempo do not change, so the music digest (`family_contracts.music_digest`, which reads only onset, length, pitch, tie, tempo and metre) is unchanged and no family version moves.
+
+(a) `write_montuno`'s docstring, `:5080` at HEAD:
+
+```text
+    The guajeo on the clave's own strokes, appended to `rh`, two bars at a time.
+```
+
+After:
+
+```text
+    The clave's own strokes as chords, appended to `rh`, two bars at a time.
+```
+
+(b) `make_montuno`'s docstring, `:5153-5156` at HEAD (`:5157` stays as it is):
+
+```text
+    The right-hand montuno, locked to the clave.
+
+    A guajeo is chord tones on the clave's own strokes, repeated without
+    variation for as long as the section lasts — the lesson's phrase is that
+```
+
+After:
+
+```text
+    The right-hand clave-stroke study, locked to the clave.
+
+    A chord on each of the clave's own strokes, repeated without variation: the
+    clave's rhythm played as block chords, a rhythm-lock study that prepares the
+    montuno. It is not itself a guajeo, the broader repeated syncopated ostinato
+    that is often arpeggiated. The lesson's phrase for the montuno is that
+```
+
+(c) the learner-facing item title, `:5171` at HEAD:
+
+```text
+    title = f"Montuno — {voices} notes on {clave.replace('-', ' ')} in {note_name(tonic)} minor"
+```
+
+After:
+
+```text
+    title = f"Clave chords — {voices} notes on {clave.replace('-', ' ')} in {note_name(tonic)} minor"
+```
+
+(d) the groove title inherits the claim, `:5221` at HEAD:
+
+```text
+    title = (f"Latin groove — tumbao and montuno on {clave.replace('-', ' ')} "
+```
+
+After:
+
+```text
+    title = (f"Latin groove — tumbao and clave chords on {clave.replace('-', ' ')} "
+```
+
+The on-score direction at `:5174` (`"Every note is a clave stroke. It repeats without changing"`) is true of the item and stays. The groove's direction ("Neither hand is on the beat") is already recorded below as a fault outside this seam. The ids (`exercise.montuno.*`, `exercise.latin-groove.*`) are unchanged, so no learner state moves. Regenerate through the repo's own generate command; the entry lists every file that changed, which are the title text in the 15 `exercise.montuno.*` and the `exercise.latin-groove.*` scores and catalogue entries and nothing else. Confirm each regenerated item's `music_digest` equals the recorded one (`tools/content/tests/fixtures/identity_pins.json`, the `montuno` row, digest `391e7c0e…`, and the groove row), and that no title now wraps to more lines than it did where a spec measures title lines (grep `app/tests` and `docs/prompts/pictures` for the old titles and for the title-fit spec).
+
+**Edit 28 (W16, the montuno finder disagrees with the shipped montuno items).** `content/curriculum/concepts.json:2278-2292` at HEAD (the amendment's `:2289` is the avoid line):
+
+```text
+      "id": "montuno",
+      "display": "The montuno",
+      "finder": {
+        "skill": "playing the repeating Latin piano figure",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "a montuno figure",
+          "clave underneath"
+        ],
+        "avoid": [
+          "swing feel",
+          "block chord accompaniment"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+```
+
+After:
+
+```text
+    {
+      "id": "montuno",
+      "display": "The montuno",
+      "finder": {
+        "skill": "playing the repeating Latin piano figure",
+        "levelWords": "moderate to advancing, Grade 3 to 4",
+        "constraints": [
+          "a montuno figure, in block chords on the clave's strokes or broken into single notes",
+          "clave underneath"
+        ],
+        "avoid": [
+          "swing feel"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+```
+
+Evidence: every shipped montuno item is a chord on each clave stroke (`write_montuno`), so a finder that excludes "block chord accompaniment" rejects the rung's own models, the same fault class as W7's finders; a block-chord montuno with its attacks on the strokes is the published ponchando. The tumbao finder (`concepts.json:4031-4045`), `stage-5.json:737-742` and `00-tracks.json:76` already say tumbao is bass and montuno is piano and are not touched. Splice as text (`CLAUDE.md`: the JSON round-trip hazard); grep `app/tests` and `tools/content/tests` for the old avoid string before editing.
+
+**Verification.** The common list. The hymns.2 option change shows a different row on the rung page; the builder greps `app/tests/e2e` for the Joyful id and for `hymns.2` and runs any spec that names them, on the lane's own port. Edits 27-28 also run `py -3.11 -m pytest tools/content/tests` (including `test_family_contracts.py`, `test_generator_invariants.py`, `test_harmony_families.py` and `test_named_by_what_they_are.py`, whose forbidden-phrase list names `make_montuno`'s docstring), then `npm run content:build` and `npx vitest run` (the latin.6 claims tests read the built exercises); any test asserting the old titles is updated with the reason or the edit stops (S3).
+
+**Acceptance for the learner.** A hymns.2 learner harmonises a correct melody; a holiday learner is told about bar 32; no chords-pop, latin or rock sentence contradicts its score or its exercise. A latin.6 learner is told the three-note study is a rhythm-lock drill and not the montuno figure; the exercise lists say "Clave chords" where they said "Montuno"; the montuno finder no longer excludes the block chords the rung's own exercises are; nowhere is the result called an arpeggiated guajeo.
 
 **Stays self-checked, and the lesson says so:** the singing room (holiday), the re-voicing (chords-pop), the groove's feel (latin).
 

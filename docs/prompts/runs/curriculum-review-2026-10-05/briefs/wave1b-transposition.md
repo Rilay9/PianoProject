@@ -85,10 +85,12 @@ so the scale is where the thumb gets its practice. The *Ode to Joy (easy
 variation)* on this rung is in G already.
 
 **The same tune, a fifth higher.** Once the theme goes in C, play its right hand
-again with your thumb on G instead of C: the same fingers, every note five
-letters higher, so E becomes B, F becomes C and the bar-12 drop to G lands on D.
-The G five-finger position holds all of it, and there is no black key. Work it
-out with your ear and the fingering you already have, and do not look it up.
+again with your thumb on G instead of C: every note five letters higher, so E
+becomes B, F becomes C and the bar-12 drop to the lower G lands on the lower D.
+Most of the tune sits in the G position (G A B C D under your five fingers), and
+there is no black key. Where the C version reaches down to its lower G, reach
+down, or shift your hand, to the D below the position. Work it out with your ear
+and the fingering you already have, and do not look it up.
 Then check it: *Check your G version, page hidden* opens *Ode to Joy (in G
 major)* with the notation hidden from the start. Choose R, turn the keys guide
 off (Settings, *Keys guide*, *Off*; or *Keys* to nothing in the ⋯ controls),
@@ -146,20 +148,20 @@ After:
 
 ```text
 **Three things to change.** When in doubt, change one variable: **the tempo**
-(much slower, or briefly much faster), **the key** (transpose it: a five-finger
-tune moved from C position to G position, the same fingers and every note five
-letters higher, is enough to start, and rung 2.5 checks one for you — it forces
-you to think rather than recall), or **the order** (start from the middle, or
+(much slower, or briefly much faster), **the key** (transpose it: move a tune
+from the C position to the G position, every note five letters higher, to
+start, and rung 2.5 checks one for you, including the one reach below the
+position — it forces you to think rather than recall), or **the order** (start from the middle, or
 play it backwards a phrase at a time).
 ```
 
 ## Verification, by what the seam touches
 
-`npm run content:build` (validate refuses a `blind` item that is not the rung's option); `npx vitest run` after it; `npx tsc -b`; `npm run build`; `py -3.11 tools/content/lint_absolutes.py --lesson 2.5` and `--lesson 3.2` and `--lesson practice.5`. A screen changes (2.5 gains a tool button and a song row), so on the lane's own port: `app/tests/e2e/lesson-tools.spec.ts`, and one assertion added there or beside it that the 2.5 button lands on `song.classical.ode-to-joy.g` with the notation hidden. A test-map row for that assertion. One more measurement, reported and not fixed: a unit test over the session's slot choice for a learner at 2.5 (the existing session test helpers) says whether *Today* can hand `song.classical.ode-to-joy.g` to that learner with the page showing, and on which slot; if it can, the entry says so plainly for the orchestrator, because keeping it out of *Today* would be a product decision outside this seam. Before editing, grep `app/tests` for `2.5` option counts or tool lists that the new row and button would break; such a test is updated with the reason, or the lane stops (S3).
+`npm run content:build` (validate refuses a `blind` item that is not the rung's option); `npx vitest run` after it; `npx tsc -b`; `npm run build`; `py -3.11 tools/content/lint_absolutes.py --lesson 2.5` and `--lesson 3.2` and `--lesson practice.5`. A screen changes (2.5 gains a tool button and a song row), so on the lane's own port: `app/tests/e2e/lesson-tools.spec.ts`, and one assertion added there or beside it that the 2.5 button lands on `song.classical.ode-to-joy.g` with the notation hidden. A test-map row for that assertion. A content check that `2.5.md` and `practice.5.md` name the lower D (or the reach below the position) and contain neither "holds all of it" nor "same fingers". One more measurement, reported and not fixed: a unit test over the session's slot choice for a learner at 2.5 (the existing session test helpers) says whether *Today* can hand `song.classical.ode-to-joy.g` to that learner with the page showing, and on which slot; if it can, the entry says so plainly for the orchestrator, because keeping it out of *Today* would be a product decision outside this seam. Before editing, grep `app/tests` for `2.5` option counts or tool lists that the new row and button would break; such a test is updated with the reason, or the lane stops (S3).
 
 ## Acceptance, for the learner
 
-At 2.5 the learner finds a task to play the theme in G from their own working-out and a button that opens the exact target with the page already hidden; the page says what the app marks and what it cannot know. At 3.2 the learner is asked to play a known tune with its chords in a key nobody printed, and is told that one is theirs to judge. practice.5's advice says how to transpose and where it is checked.
+At 2.5 the learner finds a task to play the theme in G from their own working-out and a button that opens the exact target with the page already hidden. The task teaches the actual range, D4 to D5: most of the tune sits in the G position, and the learner reaches or shifts to the lower D where the C version drops to its lower G; it does not say that a fixed five-finger position covers the whole tune or that the fingers are the same throughout. The target stays exact (63 of 63 events) and the hidden-page check is unchanged; the page says what the app marks and what it cannot know. At 3.2 the learner is asked to play a known tune with its chords in a key nobody printed, and is told that one is theirs to judge. practice.5's advice says how to transpose and where it is checked.
 
 ## What stays self-checked, and the lesson says so
 
@@ -172,3 +174,51 @@ S1 a "before" block mismatch; S2 the button does not open `ode-to-joy.g` with th
 ## Record lines
 
 A `docs/pending-review.md` entry: the three lesson edits and the data line, the exactness evidence (63/63, `WAVE1-FACTS.md`), the refuted 1.2 check and why Twinkle in F is not used, what stays self-checked, the content-mistakes items checked (9: "contains" is not "the learner can"; 15: nothing heard). A `docs/08-test-map.md` row for the new assertion.
+
+## Correction 2026-10-05 (reviewer item 1, `docs/review/responses/5831d42d.md`)
+
+The exact target spans D4 to D5 (this brief's own fact), and a G five-finger position (G-A-B-C-D) does not contain the lower D, so the learner text may not say the position holds all of it or that the fingers are the same throughout. The 63-of-63 event target and the hidden-page check are unchanged.
+
+Edit 2, the instruction. Before:
+
+```text
+again with your thumb on G instead of C: the same fingers, every note five
+letters higher, so E becomes B, F becomes C and the bar-12 drop to G lands on D.
+The G five-finger position holds all of it, and there is no black key. Work it
+out with your ear and the fingering you already have, and do not look it up.
+```
+
+After:
+
+```text
+again with your thumb on G instead of C: every note five letters higher, so E
+becomes B, F becomes C and the bar-12 drop to the lower G lands on the lower D.
+Most of the tune sits in the G position (G A B C D under your five fingers), and
+there is no black key. Where the C version reaches down to its lower G, reach
+down, or shift your hand, to the D below the position. Work it out with your ear
+and the fingering you already have, and do not look it up.
+```
+
+Edit 5, practice.5's clause (it repeated the same-fingers claim). Before:
+
+```text
+(transpose it: a five-finger
+tune moved from C position to G position, the same fingers and every note five
+letters higher, is enough to start, and rung 2.5 checks one for you — it forces
+you to think rather than recall)
+```
+
+After:
+
+```text
+(transpose it: move a tune
+from the C position to the G position, every note five letters higher, to
+start, and rung 2.5 checks one for you, including the one reach below the
+position — it forces you to think rather than recall)
+```
+
+Acceptance. Before: "At 2.5 the learner finds a task to play the theme in G from their own working-out and a button that opens the exact target with the page already hidden; the page says what the app marks and what it cannot know."
+
+After: "At 2.5 the learner finds a task to play the theme in G from their own working-out and a button that opens the exact target with the page already hidden. The task teaches the actual range, D4 to D5: most of the tune sits in the G position, and the learner reaches or shifts to the lower D where the C version drops to its lower G; it does not say that a fixed five-finger position covers the whole tune or that the fingers are the same throughout. The target stays exact (63 of 63 events) and the hidden-page check is unchanged; the page says what the app marks and what it cannot know."
+
+Verification gains one line: a content check that `2.5.md` and `practice.5.md` name the lower D (or the reach below the position) and contain neither "holds all of it" nor "same fingers".
