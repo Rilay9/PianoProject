@@ -41,13 +41,19 @@ The CSV calls these one-staff files piano, but they have no bass staff. Creole B
 - **Maria Elena:** PDMX has no copy with this title.
 - **La Paloma:** all four copies are for guitar or ensemble. There is no piano copy.
 
-## Search rows not in this dump (CSV data only)
+## Bizet Habanera, Contra Danza and El gordo triste: dumped (second request)
+
+All three are in this folder now:
+- `xml/habanerapianosologeorgesbizet-Qmc6P2a11mJaEgAdyvsqiWW9dSt7HazcVSSsU7oRtQ3ptu.musicxml` and its summary in `summary/`
+- `xml/contradanza-QmYAihNhTVzw5EyFcXFRD7f5gkwnnDKRnH1gTnf4e5frxs.musicxml` and its summary in `summary/`
+- `xml/elgordotristepiazzollaferrer-QmXuMn7vq7C5PEYMc3J6yU5sfCrN13jRmcHy2PG3xVRhsG.musicxml` and its summary in `summary/`
+
+They were first listed here as CSV rows only:
 
 - **Qmc6P2a11mJa…**, Bizet, Habanera, piano solo, 60 bars, rated 4.85 by 451 people.
 - **QmYAihNhTVzw…**, "Contra Danza", anonymous, piano, 87 bars.
 - **QmXuMn7vq7C5…**, Piazzolla, "El gordo triste", piano, 75 bars.
 
-Ask for their MusicXML by CID if the review needs it.
 
 ### Added on the second request (now in `xml/` and `summary/`; rows in `rows.json` under `added_2026_10_05_second_request`)
 
