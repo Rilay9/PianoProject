@@ -244,7 +244,16 @@ Four things share the screen. Nothing on it writes a practice row except the imp
 
 ---
 
-## 31. The seven claims
+## 31. Lesson page (`lesson`)
+
+- **Learner does.** Reads what the rung teaches: it explains, names, counts and shows notation before any practice, and opens a tool only by its buttons (`ui/screens/LessonScreen.ts`; the buttons go through `openItem`, `:237`) [O]. The page is a presentation surface, not a mode: nothing on it is played, scored or timed, and no chain step that names it as its tool measures anything.
+- **Records.** No run row, no `notesHeard`, no skill evidence and no encounter: the page is read, not played, and a chain step whose tool is `lesson` leaves no trace of the practice [O at the imports and writes of `LessonScreen.ts`: it imports no `recordRun` and no evidence module; I that no other write exists, from a grep of the file, not a full read]. Its buttons write the learner's own word and a few choices, each a thing the learner pressed: *I already know this* and *Mark done* write `PlanRow.rungWords` (`recordRungWord`, `LessonScreen.ts:896`, `:931`), *Know it* on an item writes that item's self-pass (`selfPass`, `:326`), *Start here* on rung 0.4 writes the placement (`recordPlacement`, `:950`), adding from paper creates the shelf's default book when there is none (`addBook`, `:521`), and a duet button sets the playback hands (`updateSettings`, `:615`) [O]. None of these is a run, and the learner's word meets no requirement (spec `04`, "The learner's word"). The page itself records nothing about what the learner understood.
+- **Measures.** Nothing.
+- **Cannot establish.** That the learner read, understood or can do what the page says. A step whose tool is `lesson` states a definition or a count to the learner and establishes nothing about them; whatever the learner can then do is shown only by the tool the next step names. The line *What the app counts* shows what other runs have counted for the rung and is not a measurement made on this page.
+
+---
+
+## 32. The seven claims
 
 1. **Wait and Keep tempo give different evidence; Wait does not establish tempo control. CONFIRMED.** Wait stores `tempoMeasured: false` and `timing: not measured` (`Scoring.ts:209,464-466`, `ScoreScreen.ts:4157`), accuracy by steps not notes (`Scoring.ts:234-236`), cannot master (`Scoring.ts:515-518`), and `meetsStandard` passes a Wait row only if `passTempoPct <= 0` (`rungState.ts:238`); `masteryCriteriaFor` replaces a zero with the Settings pair (`selectors.ts:93-97`) which is clamped to 30-130 (`settingsStore.ts:231`), so no rung is ever met by Wait. Evidence differs too: the timing channel is refused with reason `wait` (`measurement.ts:204`) and `keep-tempo` support is unmet (`evidence.ts:296`). One qualification: a Wait run on a sight-reading row can still support a pitch-only skill (R6).
 2. **Simon's chain score establishes exact pitch-chain playback and short-term retrieval only. CONFIRMED, with two corrections.** Ordered, octave-exact (`simon.ts:561-573`), score is the longest chain (`:605-626`). Corrections: (a) on "Keys shown" the chain is lit and named as it plays (`:151-166`), so the same score can come from copying lights, and the row stores no help level (`:624`); (b) on "After a miss" the count is right answers across re-asks (`:586-607`), so it is depth reached over attempts, and replay of the chain is unlimited on every rung (`DrillScreen.ts:2770`).
@@ -256,7 +265,7 @@ Four things share the screen. Nothing on it writes a practice row except the imp
 
 ---
 
-## 32. Summary table
+## 33. Summary table
 
 | Mode | Honest teaching job | What it measures | What it cannot establish |
 |---|---|---|---|
@@ -293,12 +302,13 @@ Four things share the screen. Nothing on it writes a practice row except the imp
 | Paper (book) | Practising from a printed book | Time, notes heard, onset spread; learner's verdict | Whether notes were right |
 | Checklist / tour / placement | Orientation | Completion | Any playing |
 | Metronome / PDF viewer | A click; a readable page | Nothing recorded | Anything |
+| Lesson page (`lesson`) | Explaining, naming and showing notation before practice | Nothing | That the learner understood or can do it |
 
-Mode count: 30 numbered blocks, with 9 sub-modes inside blocks 7 and 25 (Read it, Bed only, Hold the chords, Play the tune, and the seven drills of block 25).
+Mode count: 31 numbered blocks (the lesson page, block 31, is a presentation surface that measures nothing), with 9 sub-modes inside blocks 7 and 25 (Read it, Bed only, Hold the chords, Play the tune, and the seven drills of block 25).
 
 ---
 
-## 33. What I could not establish
+## 34. What I could not establish
 
 - **[U]** Whether any other gate stops a partial-range looped run counting as a run of the whole item; I read only `rungState.ts`, which has none.
 - **[U]** Whether the metronome and PDF screens record anything; I did not open `MetronomeScreen.ts` or `PdfScreen.ts`.

@@ -25,6 +25,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      # FABLE.md section 3: the one dependency of the chain checker, PyYAML, at the version
+      # tools/content/requirements.txt pins (the other tests here use the standard library alone).
+      # Nothing else of the content stack is installed. Both the broken-record suite and the checker
+      # below need it, so it comes first.
+      - name: Install the chain checker's one pinned dependency
+        run: pip install "$(grep -i '^pyyaml==' tools/content/requirements.txt)"
       - name: The prompt views are fresh
         run: python3 -m unittest tools.content.tests.test_prompt_views -v
       # T58: the task index and in-flight are generated from the briefs' `## Record` blocks and
@@ -32,11 +38,14 @@ jobs:
       # entries or the review stream starts no ci.yml run, so this is the one runner that sees it.
       - name: The record's mirrors are generated
         run: python3 -m unittest tools.content.tests.test_record_mirrors -v
+      # FABLE.md section 3: the chain checker's own suite. The deliberately broken records are the
+      # evidence that each rule goes red (a missing field, a tool the sheet does not name, an
+      # unresolved ref, a prefix that must not resolve, a missing anchor, a brief missing a heading
+      # or its record); the production run below only shows the real records pass.
+      - name: The chain checker goes red on each broken record
+        run: python3 -m unittest tools.content.tests.test_check_chains -v
       # FABLE.md section 3: the chain records in docs/chains/ obey the checker's rules, and a brief that
-      # names a record carries the three headings. A push touching only those files starts no ci.yml run,
-      # so this is the runner that sees it. PyYAML is the one dependency, installed at the version
-      # requirements.txt pins (the other tests here use the standard library alone).
-      - name: The chain records and the briefs that name them
-        run: |
-          pip install "$(grep -i '^pyyaml==' tools/content/requirements.txt)"
-          python3 tools/content/check_chains.py --lint-briefs
+      # carries an `ability: <id>` line has the three headings and a passing record. A push touching only
+      # those files starts no ci.yml run, so this is the runner that sees it.
+      - name: The chain records and the briefs that carry an ability marker
+        run: python3 tools/content/check_chains.py --lint-briefs

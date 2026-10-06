@@ -17,11 +17,17 @@ nothing else:
      established, or UNKNOWN;
  R8  ``status: shipped`` requires an acceptance-test path that exists.
 
-``--lint-briefs`` also reads ``docs/prompts/runs/*/briefs/*.md`` and rejects a brief that names a
-chain record (a line matching ``chain record:`` or a ``docs/chains/`` path) and lacks the headings
-Instructional chain, Failure route and Independence test.
+``--lint-briefs`` also reads ``docs/prompts/runs/*/briefs/*.md``. A major curriculum brief declares
+itself with one line, ``ability: <id>`` (the id in ABILITY-MAP.md's form, FABLE.md section 3). Every
+brief that carries the line must have the headings Instructional chain, Failure route and Independence
+test, and a record ``docs/chains/<id>.yaml`` that passes (a ``draft`` passes, its unresolved refs
+listed with every record's). A brief without the line is not linted; the run says how many were
+skipped.
 
 ``--tools`` prints the tool vocabulary.
+
+The summary always says that the scaffold-subset rule (R5) is a structural check, not proof that
+pedagogical support faded.
 
 Output: one line per failure, ``FAIL <file>: <field>: <message>``, then ``UNRESOLVED`` lines for a
 draft's unresolved refs, then a summary. Exit 1 when there is any failure. Step numbers in a field
@@ -29,24 +35,32 @@ path are 1-based (``steps[3]`` is the third step of the record).
 
 Decisions the brief took (briefs/chain-record-checker.md, "Decisions taken here"):
 
- * Tool vocabulary. Read from MODE-SHEET.md's section headings (sections 1 to 30, and 7a and 7b;
+ * Tool vocabulary. Read from MODE-SHEET.md's section headings (sections 1 to 31, and 7a and 7b;
    the Score-screen settings Blind, Loop, Ladder, Duet, Rhythm only and Perform are sections 9 to
-   14). ``SECTION_NAMES`` below lists, for each section, the words the sheet's own heading uses for
-   it, and ``vocabulary()`` fails when a section or a name is no longer in the sheet's headings.
+   14, and section 31 is the lesson page, ``lesson``, a presentation surface that measures
+   nothing). ``SECTION_NAMES`` below lists, for each section, the words the sheet's own heading uses
+   for it, and ``vocabulary()`` fails when a section or a name is no longer in the sheet's headings.
    Names compare after case-folding, collapsing whitespace and dropping a leading ``Score:`` or
-   ``Score screen:``, so a record may write ``Score: Keep tempo``. ONE value outside the sheet is
-   allowed: ``lesson``, for an explanation or task step on the lesson page, because MODE-SHEET has
-   no section for the lesson page and the first step of every chain is one.
- * Ref resolution. A ref is ``<target>`` or ``<target>@bars=<from>-<to>``. The target resolves when
-   it is: (1) a path that exists in the tree, with an optional ``#anchor`` that must name a heading,
-   a table row or a bold lead in that file; (2) an id in ``content/catalog.static.json``; (3) a song
-   id or a CID in ``content/sources/pdmx.json`` (a bars suffix must lie inside the item's bar
-   count); (4) an exercise id listed in ``tools/content/generator_continuity.json`` (an EXACT match
-   against the generated items the build keeps, not a prefix match: a prefix match would resolve
-   ``exercise.tresillo.zz``); (5) an excerpt id derived from a row of ``content/sources/excerpts.json``
-   by ``excerpts.excerpt_id``'s own rule; (6) a family id in ``tools/content/family_contracts.json``;
-   (7) a well-formed http(s) URL when the content kind is ``external`` (never fetched: CI has no
-   network, so a URL is only a pointer).
+   ``Score screen:``, so a record may write ``Score: Keep tempo``. The checker defines no tool of its
+   own: it also reads the ``tool:`` field line of FABLE.md section 3, whose ``, or <name>: ...`` clauses
+   name the tools beyond the mode sheet's modes (today ``lesson``), and each such name must be
+   documented by a MODE-SHEET heading, or the vocabulary fails.
+ * Ref resolution is exact; nothing resolves by prefix or resemblance. A ref is ``<target>`` or
+   ``<target>@bars=<from>-<to>``. The target resolves when it is: (1) a path that exists in the tree;
+   with a ``#anchor`` it resolves only when the path is a Markdown file (``.md``) and the anchor
+   equals the slug of one of its headings or a literal anchor in it (see ``markdown_anchors``: the
+   slug is GitHub's, lower-cased, punctuation dropped, spaces to hyphens, a repeated heading
+   suffixed ``-1``, ``-2``; a literal anchor is an ``id=`` or ``name=`` attribute on an HTML tag, or
+   a ``{#anchor}`` on a heading), so ``FABLE.md#3`` does not resolve and
+   ``FABLE.md#3-the-chain-record-the-teaching-design-as-data-the-build-checks`` does; (2) an id in
+   ``content/catalog.static.json``; (3) a song id or a CID in ``content/sources/pdmx.json`` (a bars
+   suffix must lie inside the item's bar count); (4) an exercise id listed in
+   ``tools/content/generator_continuity.json`` (an EXACT match against the generated items the
+   build keeps; ``family_contracts.json`` declares no item pattern, so an exercise id resolves by
+   exact match only, and ``exercise.tresillo.zz`` or ``exercise.tresillo`` does not); (5) an excerpt
+   id derived from a row of ``content/sources/excerpts.json`` by ``excerpts.excerpt_id``'s own rule;
+   (6) a family id in ``tools/content/family_contracts.json``; (7) a well-formed http(s) URL when
+   the content kind is ``external`` (never fetched: CI has no network, so a URL is only a pointer).
  * Scaffold subset. Scaffolds compare as sets of strings after trimming and lower-casing; the rule is
    exact wording, so records write reusable tokens.
 
@@ -75,6 +89,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CHAINS_GLOB = "docs/chains/*.yaml"
 BRIEFS_GLOB = "docs/prompts/runs/*/briefs/*.md"
 MODE_SHEET = "docs/prompts/runs/curriculum-review-2026-10-05/MODE-SHEET.md"
+FABLE = "docs/prompts/FABLE.md"
 
 STATUSES = ("draft", "reviewed", "shipped")
 KINDS = ("generated", "excerpt", "piece", "chart", "external", "explanation")
@@ -83,9 +98,6 @@ MUSICAL_JOBS = ("SIGHT-READING", "MUSICAL")
 UNKNOWN = "UNKNOWN"
 #: Words that stand in for "how it is established" without saying how.
 PLACEHOLDERS = {"tbd", "todo", "?", "n/a", "na", "none", "unknown", "-", "...", "x"}
-
-#: The one tool value MODE-SHEET does not name (see the module note).
-EXTRA_TOOLS = {"lesson": "an explanation or task step on the lesson page; MODE-SHEET has no section for it"}
 
 #: For each MODE-SHEET section, the words its own heading uses for it. ``vocabulary()`` holds this to
 #: the sheet: a section that vanished or a name its heading no longer contains is a failure.
@@ -122,17 +134,18 @@ SECTION_NAMES: dict[str, list[str]] = {
     "28": ["Practise from the book", "Paper"],
     "29": ["Orientation items", "drill:checklist", "drill:walkthrough", "drill:placement"],
     "30": ["Metronome", "PDF viewer"],
+    "31": ["Lesson page", "lesson"],
 }
 
 HEADING_RE = re.compile(r"^#{2,3}\s+(\d+[ab]?)\.\s+(.+?)\s*$")
 
-#: Briefs that name a chain record without being the brief of a learner-facing ability. The reason
-#: is printed with the exemption; a brief joins this table only by an edit here, reviewed.
-LINT_EXEMPT = {
-    "docs/prompts/runs/curriculum-review-2026-10-05/briefs/chain-record-checker.md": (
-        "builds this checker; it names the records as its own deliverable, not as the record of an ability"
-    ),
-}
+#: A major curriculum brief declares itself with one whole line, ``ability: <id>`` (FABLE.md section 3).
+ABILITY_ID = r"[A-Za-z][A-Za-z0-9]*(?:\.[A-Za-z0-9]+)*"
+ABILITY_MARKER_RE = re.compile(rf"^ability:[ \t]+(?P<id>{ABILITY_ID})[ \t]*$")
+SCAFFOLD_NOTE = (
+    "note: the scaffold-subset rule (R5) is a structural check on the wording of two lists, "
+    "not proof that pedagogical support faded"
+)
 BRIEF_HEADINGS = ("Instructional chain", "Failure route", "Independence test")
 
 
@@ -186,9 +199,26 @@ def sheet_headings(root: Path = ROOT) -> dict[str, str]:
     return headings
 
 
+FABLE_TOOL_LINE_RE = re.compile(r"^\s*tool:\s*<(?P<body>[^>]*)>")
+FABLE_EXTRA_RE = re.compile(r",\s*or\s+(?P<name>[A-Za-z][\w-]*)\s*:")
+
+
+def fable_tool_names(root: Path = ROOT) -> tuple[list[str], list[Failure]]:
+    """The tools FABLE.md section 3's ``tool:`` field line names beyond the mode sheet's modes, read from
+    its ``, or <name>: ...`` clauses, and the ways that line cannot be read."""
+    path = root / FABLE
+    if not path.is_file():
+        return [], [Failure(FABLE, "tool field", "FABLE.md is missing: the governing definition of the tool field cannot be read")]
+    for line in path.read_text(encoding="utf-8").splitlines():
+        match = FABLE_TOOL_LINE_RE.match(line)
+        if match:
+            return [m.group("name") for m in FABLE_EXTRA_RE.finditer(match.group("body"))], []
+    return [], [Failure(FABLE, "tool field", "no `tool: <...>` field line found in the chain record shape")]
+
+
 def vocabulary(root: Path = ROOT) -> tuple[dict[str, str], list[Failure]]:
     """The tool vocabulary (normalised name -> canonical spelling) and the ways the sheet no longer
-    matches SECTION_NAMES."""
+    matches SECTION_NAMES or FABLE.md's tool field names a tool the sheet does not document."""
     headings = sheet_headings(root)
     problems: list[Failure] = []
     names: dict[str, str] = {}
@@ -207,7 +237,14 @@ def vocabulary(root: Path = ROOT) -> tuple[dict[str, str], list[Failure]]:
                 )
                 continue
             names.setdefault(norm_tool(word), word)
-    for word in EXTRA_TOOLS:
+    extras, fable_problems = fable_tool_names(root)
+    problems += fable_problems
+    sheet_text = " ".join(headings.values()).casefold()
+    for word in extras:
+        if word.casefold() not in sheet_text:
+            problems.append(
+                Failure(FABLE, "tool field", f"names the tool {word!r}, which no MODE-SHEET.md heading documents; add its section there")
+            )
         names.setdefault(norm_tool(word), word)
     return names, problems
 
@@ -228,11 +265,64 @@ def _load_json(path: Path):
         return None
 
 
+HEADING_LINE_RE = re.compile(r"^ {0,3}#{1,6}[ \t]+(?P<text>.*?)[ \t#]*$")
+HEADING_ATTR_RE = re.compile(r"\s*\{#(?P<id>[A-Za-z0-9_:.-]+)\}\s*$")
+HTML_ANCHOR_RE = re.compile(r"<[A-Za-z][^>]*?\b(?:id|name)\s*=\s*[\"'](?P<id>[^\"']+)[\"']", re.IGNORECASE)
+FENCE_RE = re.compile(r"^ {0,3}(```|~~~)")
+
+
+def heading_slug(text: str) -> str:
+    """GitHub's heading slug: links keep their text, tags and inline markup go, the rest is lower-cased,
+    anything that is not a letter, digit, underscore, space or hyphen is dropped, and each space
+    becomes a hyphen."""
+    text = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    text = re.sub(r"<[^>]*>", "", text)
+    text = re.sub(r"[`*]", "", text)
+    text = re.sub(r"[^\w\- ]", "", text.strip().casefold())
+    return text.replace(" ", "-")
+
+
+def markdown_anchors(path: Path) -> set[str]:
+    """Every anchor a Markdown file offers: the slug of each ATX heading outside a code fence (a repeated
+    slug takes ``-1``, ``-2``, as GitHub gives it), each ``{#id}`` written on a heading, and each ``id=`` or
+    ``name=`` attribute on an HTML tag. Nothing else is an anchor: not a table row, a bold lead or a number."""
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return set()
+    anchors: set[str] = set()
+    seen: dict[str, int] = {}
+    fenced = False
+    for line in text.splitlines():
+        if FENCE_RE.match(line):
+            fenced = not fenced
+            continue
+        if fenced:
+            continue
+        match = HEADING_LINE_RE.match(line)
+        if not match:
+            continue
+        body = match.group("text")
+        attr = HEADING_ATTR_RE.search(body)
+        if attr:
+            anchors.add(attr.group("id"))
+            body = body[: attr.start()]
+        slug = heading_slug(body)
+        if not slug:
+            continue
+        count = seen.get(slug, 0)
+        seen[slug] = count + 1
+        anchors.add(slug if count == 0 else f"{slug}-{count}")
+    anchors.update(m.group("id") for m in HTML_ANCHOR_RE.finditer(text))
+    return anchors
+
+
 class Resolver:
     """What a ref can name, read once from the committed sources under ``root``."""
 
     def __init__(self, root: Path = ROOT) -> None:
         self.root = root
+        self._anchors: dict[Path, set[str]] = {}
         catalog = _load_json(root / "content/catalog.static.json") or []
         self.catalog_ids = {row.get("id") for row in catalog if isinstance(row, dict)}
         pdmx = (_load_json(root / "content/sources/pdmx.json") or {}).get("items", [])
@@ -255,13 +345,12 @@ class Resolver:
                 continue
 
     def _anchor_in(self, path: Path, anchor: str) -> bool:
-        pattern = re.compile(
-            r"^\s*(?:#{1,6}\s+|\|\s*|\*\*|[-*]\s+)" + re.escape(anchor) + r"(?![A-Za-z0-9_])", re.MULTILINE
-        )
-        try:
-            return bool(pattern.search(path.read_text(encoding="utf-8")))
-        except OSError:
+        if path.suffix.casefold() != ".md" or not path.is_file():
             return False
+        key = path.resolve()
+        if key not in self._anchors:
+            self._anchors[key] = markdown_anchors(path)
+        return anchor in self._anchors[key]
 
     def resolve(self, ref: str, kind: str | None = None) -> tuple[bool, str]:
         """(True, '') when the ref resolves, else (False, why)."""
@@ -293,9 +382,11 @@ class Resolver:
             if candidate is not None and candidate.exists():
                 if not anchor:
                     return True, ""
-                if candidate.is_file() and self._anchor_in(candidate, anchor):
+                if candidate.suffix.casefold() != ".md" or not candidate.is_file():
+                    return False, f"{target} exists, but an #anchor is read only in a Markdown file"
+                if self._anchor_in(candidate, anchor):
                     return True, ""
-                return False, f"{target} exists but names no #{anchor}"
+                return False, f"{target} exists but no heading slug or literal anchor in it is #{anchor}"
         if anchor:
             return False, "no such file"
         item = self.pdmx_by_id.get(text) or self.pdmx_by_cid.get(text)
@@ -502,26 +593,56 @@ def check_file(path: Path, resolver: Resolver, tools: dict[str, str], root: Path
 # --------------------------------------------------------------------------------------
 
 
-def lint_briefs(root: Path = ROOT) -> tuple[list[Failure], list[str]]:
-    """(failures, notes): a brief that names a chain record carries the three headings."""
+def brief_markers(lines: list[str]) -> list[str]:
+    """The ability ids a brief declares, one per whole line ``ability: <id>`` (in file order, no repeats)."""
+    ids: list[str] = []
+    for line in lines:
+        match = ABILITY_MARKER_RE.match(line)
+        if match and match.group("id") not in ids:
+            ids.append(match.group("id"))
+    return ids
+
+
+def lint_briefs(
+    root: Path = ROOT, resolver: Resolver | None = None, tools: dict[str, str] | None = None
+) -> tuple[list[Failure], list[str]]:
+    """(failures, notes). Every brief that carries an ``ability: <id>`` line must have the three headings
+    and a record ``docs/chains/<id>.yaml`` that passes; a brief without the line is skipped, and a note
+    says how many were."""
     failures: list[Failure] = []
-    notes: list[str] = []
+    linted: list[str] = []
+    skipped = 0
+    if resolver is None:
+        resolver = Resolver(root)
+    if tools is None:
+        tools = vocabulary(root)[0]
     for path in sorted(root.glob(BRIEFS_GLOB)):
         shown = path.relative_to(root).as_posix()
         lines = path.read_text(encoding="utf-8").splitlines()
-        names_record = any("chain record:" in line.casefold() or "docs/chains/" in line for line in lines)
-        if not names_record:
+        ids = brief_markers(lines)
+        if not ids:
+            skipped += 1
             continue
+        linted.append(f"{shown} ({', '.join(ids)})")
         headings = [line.casefold() for line in lines if re.match(r"^\s{0,3}#{1,6}\s+\S", line)]
         missing = [h for h in BRIEF_HEADINGS if not any(h.casefold() in line for line in headings)]
-        if not missing:
-            continue
-        if shown in LINT_EXEMPT:
-            notes.append(f"EXEMPT {shown}: {LINT_EXEMPT[shown]}")
-            continue
-        failures.append(
-            Failure(shown, "headings", "names a chain record but lacks the heading(s): " + ", ".join(missing))
-        )
+        if missing:
+            failures.append(
+                Failure(shown, "headings", "carries `ability: " + ids[0] + "` but lacks the heading(s): " + ", ".join(missing))
+            )
+        for ident in ids:
+            record = root / "docs" / "chains" / f"{ident}.yaml"
+            rel = f"docs/chains/{ident}.yaml"
+            if not record.is_file():
+                failures.append(Failure(shown, "record", f"carries `ability: {ident}` but {rel} does not exist"))
+                continue
+            record_failures, _, _ = check_file(record, resolver, tools, root)
+            if record_failures:
+                failures.append(
+                    Failure(shown, "record", f"carries `ability: {ident}` but {rel} fails the checker ({len(record_failures)} failure(s), listed above)")
+                )
+    notes = [f"briefs: {len(linted)} linted (carry an ability marker), {skipped} skipped (no ability marker)"]
+    notes += [f"  linted {entry}" for entry in linted]
     return failures, notes
 
 
@@ -540,10 +661,9 @@ def main(argv: list[str] | None = None) -> int:
 
     tools, sheet_problems = vocabulary(root)
     if args.tools:
-        print(f"{len(tools)} tool names (MODE-SHEET.md section headings, plus the allowed extra)")
+        print(f"{len(tools)} tool names (MODE-SHEET.md section headings, and the tools FABLE.md's tool field names)")
         for key in sorted(tools):
-            extra = "  (allowed extra: " + EXTRA_TOOLS[key] + ")" if key in EXTRA_TOOLS else ""
-            print(f"  {tools[key]}{extra}")
+            print(f"  {tools[key]}")
         for problem in sheet_problems:
             print(problem.line())
         return 1 if sheet_problems else 0
@@ -560,7 +680,7 @@ def main(argv: list[str] | None = None) -> int:
         unresolved += got_unresolved
         statuses.append(f"{path.stem} ({status})")
     if args.lint_briefs:
-        got_failures, notes = lint_briefs(root)
+        got_failures, notes = lint_briefs(root, resolver, tools)
         failures += got_failures
 
     for failure in failures:
@@ -571,8 +691,9 @@ def main(argv: list[str] | None = None) -> int:
         print(note)
     summary = f"{len(paths)} chain record(s): {', '.join(statuses) or 'none'}; {len(failures)} failure(s), {len(unresolved)} unresolved ref(s) in drafts"
     if args.lint_briefs:
-        summary += "; briefs linted"
+        summary += "; " + notes[0].replace("briefs: ", "briefs ", 1)
     print(summary)
+    print(SCAFFOLD_NOTE)
     return 1 if failures else 0
 
 

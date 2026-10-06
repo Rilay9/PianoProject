@@ -41,7 +41,7 @@ MAP = (HERE / "ABILITY-MAP.md").read_text(encoding="utf-8").splitlines()
 CLASSES = ["MUST", "SHOULD", "NICE", "REJECT", "ALREADY"]
 STATIONS = ["CONTROL", "MODEL/TRANSFER", "MUSIC", "INDEPENDENCE"]
 STATES = ["EXISTING", "REPAIR", "NEW", "SOURCE-NEEDED", "SHARED", "NO-SEPARATE-ARTIFACT"]
-# Canonical mode names, one per MODE-SHEET.md block (section 32 summary table).
+# Canonical mode names, one per MODE-SHEET.md block (section 33 summary table).
 MODES = [
     "Wait for me", "Keep tempo", "Play it to me", "Score Free play", "Free play", "Simon",
     "Lab: Read it", "Lab: Jam it", "Lab: Hold the chords", "Lab: Play the tune",

@@ -4,7 +4,8 @@
 habanera chain, a `draft` whose unresolved refs the checker lists. Each rule is shown on a copy of that
 record broken in that one way, and fails naming the field; the copy is checked in memory, never written
 into `docs/chains/`. The brief lint is shown on a small tree of briefs under the repository's gitignored
-`build/`, and on the probe brief itself.
+`build/`, and on the probe brief itself. Reference resolution is exact: a prefix of a real id, and a
+`path#anchor` whose anchor is not a heading slug or a literal anchor, do not resolve.
 
 Run: `py -3.11 -m unittest tools.content.tests.test_check_chains`
 """
@@ -30,6 +31,7 @@ PROBE = ROOT / "docs/prompts/runs/curriculum-review-2026-10-05/briefs/probe-lati
 SCRATCH = ROOT / "build" / "test_check_chains"
 CUT = "excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh"
 LESSON = "content/lessons/latin.4.md"
+G13_REF = "docs/prompts/runs/curriculum-review-2026-10-05/GENERATOR-ADDENDUM.md#G13"
 
 RESOLVER = cc.Resolver(ROOT)
 TOOLS, SHEET_PROBLEMS = cc.vocabulary(ROOT)
@@ -67,11 +69,17 @@ class TheRealRecord(unittest.TestCase):
             expected.add(LESSON)
         if CUT not in RESOLVER.excerpt_ids:
             expected.add(CUT)
+        # the family contract's `path#G13` names a row in a table and a bold lead, which are not anchors:
+        # unresolved, and listed, until the addendum gains a heading or a literal anchor for it
+        addendum, _, anchor = G13_REF.partition("#")
+        if anchor not in cc.markdown_anchors(ROOT / addendum):
+            expected.add(G13_REF)
         self.assertEqual(listed, expected)
         self.assertEqual({u.file for u in unresolved}, {"docs/chains/A7c.1.yaml"} if unresolved else set())
         # every occurrence is listed with its field, not just each distinct ref
         rec = load()
         occurrences = sum(1 for s in rec["steps"] if s["content"]["ref"] in expected)
+        occurrences += sum(1 for g in rec["generated"] for key in ("family", "contract", "checker") if g[key] in expected)
         self.assertEqual(len(unresolved), occurrences)
 
     def test_what_the_record_cites_resolves(self):
@@ -84,7 +92,6 @@ class TheRealRecord(unittest.TestCase):
             ("song.jazz.the-crave@bars=21-26", "piece"),
             ("song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14", "piece"),
             ("tresillo", None),
-            (rec["generated"][0]["contract"], None),
         ):
             with self.subTest(ref=ref):
                 self.assertEqual(RESOLVER.resolve(ref, kind), (True, ""))
@@ -94,6 +101,10 @@ class TheRealRecord(unittest.TestCase):
         self.assertEqual(code, 0, out)
         self.assertIn("A7c.1 (draft)", out)
         self.assertIn("0 failure(s)", out)
+        self.assertNotIn("EXEMPT", out)
+        self.assertIn("1 linted (carry an ability marker)", out)
+        self.assertRegex(out, r"\d+ skipped \(no ability marker\)")
+        self.assertIn("not proof that pedagogical support faded", out)
 
     def test_the_first_record_uses_a_scaffold_token_the_last_step_shares_with_the_first(self):
         rec = load()
@@ -106,17 +117,51 @@ class TheToolVocabulary(unittest.TestCase):
     def test_every_named_section_is_in_the_sheet(self):
         self.assertEqual([p.line() for p in SHEET_PROBLEMS], [])
         headings = cc.sheet_headings(ROOT)
-        for section in [str(n) for n in range(1, 31)] + ["7a", "7b"]:
+        for section in [str(n) for n in range(1, 32)] + ["7a", "7b"]:
             self.assertIn(section, headings)
             self.assertIn(section, cc.SECTION_NAMES)
 
-    def test_the_vocabulary_holds_the_sheets_words_and_one_extra(self):
+    def test_the_vocabulary_holds_the_sheets_words_including_the_lesson_page(self):
         for name in ("Keep tempo", "Wait for me", "Hear it", "Rhythm only", "Loop", "Ladder", "Duet", "Blind", "Perform", "Simon"):
             self.assertIn(cc.norm_tool(name), TOOLS, name)
         self.assertIn(cc.norm_tool("Score: Keep tempo"), TOOLS)
         self.assertIn("lesson", TOOLS)
-        self.assertEqual(set(cc.EXTRA_TOOLS), {"lesson"})
         self.assertNotIn("magic wand", TOOLS)
+
+    def test_the_checker_holds_no_tool_table_of_its_own(self):
+        # `lesson` is read from the sheet's section 31 and FABLE's tool field line, never from the code
+        self.assertFalse(hasattr(cc, "EXTRA_TOOLS"))
+        self.assertFalse(hasattr(cc, "LINT_EXEMPT"))
+        self.assertEqual(cc.fable_tool_names(ROOT), (["lesson"], []))
+        self.assertEqual(cc.SECTION_NAMES["31"][0], "Lesson page")
+
+    def test_a_tool_fables_field_names_that_the_sheet_does_not_document_is_a_failure(self):
+        tree = Governing(fable_tool="a mode or drill named in MODE-SHEET.md, or lesson: the lesson page, or wand: a spell")
+        self.addCleanup(tree.cleanup)
+        names, problems = cc.vocabulary(tree.root)
+        self.assertIn("wand", names)  # read from the field line, as `lesson` is...
+        self.assertTrue(any(p.field == "tool field" and "wand" in p.message for p in problems), [p.line() for p in problems])
+        self.assertFalse(any("lesson" in p.message for p in problems))  # ...but only `wand` is undocumented
+
+    def test_a_fable_without_the_tool_field_line_or_without_fable_is_a_failure(self):
+        tree = Governing(fable_tool=None)
+        self.addCleanup(tree.cleanup)
+        _, problems = cc.vocabulary(tree.root)
+        self.assertTrue(any(p.field == "tool field" for p in problems), [p.line() for p in problems])
+        empty = Tree()
+        self.addCleanup(empty.cleanup)
+        sheet = empty.root / cc.MODE_SHEET
+        sheet.parent.mkdir(parents=True)
+        shutil.copy(ROOT / cc.MODE_SHEET, sheet)
+        _, problems = cc.vocabulary(empty.root)
+        self.assertTrue(any(p.file == cc.FABLE and "missing" in p.message for p in problems), [p.line() for p in problems])
+
+    def test_the_lesson_page_section_is_in_the_sheet_and_the_closing_sections_follow_it(self):
+        headings = cc.sheet_headings(ROOT)
+        self.assertIn("lesson", headings["31"].casefold())
+        self.assertTrue(headings["32"].startswith("The seven claims"))
+        self.assertTrue(headings["33"].startswith("Summary table"))
+        self.assertTrue(headings["34"].startswith("What I could not establish"))
 
     def test_a_sheet_that_loses_a_name_is_a_failure(self):
         tree = Tree()
@@ -196,9 +241,11 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
         failures, listed = check(rec)
         self.assertEqual(listed, [])
         self.assertIn("steps[2].content.ref", fields(failures))
-        # the cut and the lesson file are unresolved too, until the intake and the lesson land; the
-        # point is that every unresolved ref now fails, and nothing else does
-        self.assertEqual({f.field for f in failures if not f.field.endswith("content.ref")}, set())
+        # the cut, the lesson file and the family's `#G13` anchor are unresolved too, until the intake,
+        # the lesson and an anchor land; the point is that every unresolved ref now fails, and nothing
+        # else does
+        others = {f.field for f in failures if not f.field.endswith("content.ref")}
+        self.assertLessEqual(others, {"generated[1].contract", "generated[1].checker"})
 
     def test_r3_a_ref_that_resolves_never_fails_a_reviewed_record(self):
         rec = load()
@@ -206,6 +253,8 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
             if step["content"]["ref"] in (LESSON, CUT):
                 step["content"]["ref"] = "exercise.tresillo.c"
                 step["content"]["kind"] = "generated"
+        rec["generated"][0]["contract"] = "docs/prompts/FABLE.md"
+        rec["generated"][0]["checker"] = "tools/content/check_chains.py"
         rec["status"] = "reviewed"
         failures, listed = check(rec)
         self.assertEqual(fields(failures), [])
@@ -214,7 +263,8 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
     def test_r3_the_kinds_of_ref(self):
         good = [
             ("docs/prompts/FABLE.md", None),
-            ("docs/prompts/FABLE.md#3", None),
+            ("docs/prompts/FABLE.md#3-the-chain-record-the-teaching-design-as-data-the-build-checks", None),
+            ("docs/prompts/FABLE.md#1-the-target-and-the-one-number-that-shows-progress", None),
             ("song.jazz.the-crave", None),
             ("QmNswaWYXpxK1XegKbJVDULwZMjKN6cETGTVfXQKYsYrzs@bars=1-14", "excerpt"),
             ("tresillo", "generated"),
@@ -223,12 +273,23 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
         bad = [
             ("docs/prompts/NOPE.md", None),
             ("docs/prompts/FABLE.md#Nowhere-Such-Heading", None),
+            ("docs/prompts/FABLE.md#3", None),  # a section number is not a slug
+            ("docs/prompts/FABLE.md#3-the-chain-record", None),  # a prefix of a slug is not the slug
+            ("docs/prompts/FABLE.md#missing-anchor", None),
+            ("tools/content/check_chains.py#resolve", None),  # an anchor is read only in a Markdown file
+            ("docs/prompts#anything", None),  # nor in a directory
             ("song.jazz.the-crave@bars=21-900", None),
             ("song.jazz.the-crave@bars=26-21", None),
             ("song.jazz.the-crave@bars=x", None),
             ("tresillo@bars=1-2", None),
             ("https://example.org/a-book", "piece"),
             ("exercise.tresillo.zz", None),
+            ("exercise.tresillo", None),  # a prefix of real ids is not an id
+            ("exercise.tresillo.c.extra", None),
+            ("exercise.tresillo.", None),
+            ("tresill", None),  # nor a prefix of a family id
+            ("tresillo2", None),
+            ("excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-1", None),
             ("", None),
         ]
         for ref, kind in good:
@@ -237,6 +298,38 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
         for ref, kind in bad:
             with self.subTest(bad=ref):
                 self.assertFalse(RESOLVER.resolve(ref, kind)[0])
+
+    def test_r3_a_prefix_of_a_real_exercise_id_is_unresolved_and_named_in_a_draft_and_fails_a_reviewed_record(self):
+        rec = load()
+        rec["steps"][1]["content"]["ref"] = "exercise.tresillo.zz"
+        rec["steps"][3]["content"] = {"kind": "generated", "ref": "exercise.tresillo"}
+        rec["steps"][4]["content"] = {"kind": "generated", "ref": "exercise.tresillo.c.0"}
+        failures, listed = check(rec)
+        self.assertEqual(failures, [])
+        named = {(u.field, u.ref) for u in listed}
+        for pair in (
+            ("steps[2].content.ref", "exercise.tresillo.zz"),
+            ("steps[4].content.ref", "exercise.tresillo"),
+            ("steps[5].content.ref", "exercise.tresillo.c.0"),
+        ):
+            self.assertIn(pair, named)
+        rec["status"] = "reviewed"
+        failures, _ = check(rec)
+        for field in ("steps[2].content.ref", "steps[4].content.ref", "steps[5].content.ref"):
+            self.assertIn(field, fields(failures))
+
+    def test_r3_a_path_with_a_missing_anchor_is_unresolved_and_named_in_a_draft_and_fails_a_reviewed_record(self):
+        rec = load()
+        rec["steps"][1]["content"] = {"kind": "explanation", "ref": "docs/prompts/FABLE.md#missing-anchor"}
+        failures, listed = check(rec)
+        self.assertEqual(failures, [])
+        mine = [u for u in listed if u.ref == "docs/prompts/FABLE.md#missing-anchor"]
+        self.assertEqual([u.field for u in mine], ["steps[2].content.ref"])
+        self.assertIn("#missing-anchor", mine[0].why)
+        rec["status"] = "reviewed"
+        failures, _ = check(rec)
+        self.assertIn("steps[2].content.ref", fields(failures))
+        self.assertTrue(any("missing-anchor" in f.message for f in failures))
 
     def test_r3_a_path_cannot_leave_the_tree(self):
         self.assertFalse(RESOLVER.resolve("../../../../Windows/win.ini")[0])
@@ -384,6 +477,65 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
         self.assertEqual(fields(failures), ["(record)"])
 
 
+class TheAnchorRule(unittest.TestCase):
+    """`path#anchor`: the path exists, is Markdown, and the anchor is a heading slug or a literal anchor."""
+
+    def setUp(self):
+        self.tree = Tree()
+        self.addCleanup(self.tree.cleanup)
+        self.tree.write(
+            "doc.md",
+            "# Title: The `Start` of it\n\n"
+            "## 7a. Read it (the *first* way)\n\n"
+            "## Repeated\n\n## Repeated\n\n"
+            "```\n## Inside a fence\n```\n\n"
+            "### With [a link](http://x.example/y) {#declared}\n\n"
+            '<a id="literal-anchor"></a>\n\n'
+            "| id | what |\n|---|---|\n| G13 | a table row |\n\n"
+            "**Bold lead.** A sentence.\n",
+        )
+        self.tree.write("data.json", '{"a": 1}')
+        self.resolver = cc.Resolver(self.tree.root)
+
+    def resolves(self, ref: str) -> bool:
+        return self.resolver.resolve(ref)[0]
+
+    def test_a_heading_resolves_by_its_slug_only(self):
+        self.assertTrue(self.resolves("doc.md#title-the-start-of-it"))
+        self.assertTrue(self.resolves("doc.md#7a-read-it-the-first-way"))
+        for wrong in ("Title", "7a", "7a-read-it", "read-it-the-first-way", "title-the-start", "TITLE-THE-START-OF-IT"):
+            with self.subTest(wrong=wrong):
+                self.assertFalse(self.resolves(f"doc.md#{wrong}"))
+
+    def test_a_repeated_heading_takes_the_numbered_slug_github_gives_it(self):
+        self.assertTrue(self.resolves("doc.md#repeated"))
+        self.assertTrue(self.resolves("doc.md#repeated-1"))
+        self.assertFalse(self.resolves("doc.md#repeated-2"))
+
+    def test_a_link_in_a_heading_keeps_its_text_and_a_declared_or_literal_anchor_resolves(self):
+        self.assertTrue(self.resolves("doc.md#with-a-link"))
+        self.assertTrue(self.resolves("doc.md#declared"))
+        self.assertTrue(self.resolves("doc.md#literal-anchor"))
+
+    def test_a_table_row_a_bold_lead_and_a_fenced_heading_are_not_anchors(self):
+        for wrong in ("G13", "g13", "bold-lead", "Bold lead.", "inside-a-fence"):
+            with self.subTest(wrong=wrong):
+                self.assertFalse(self.resolves(f"doc.md#{wrong}"))
+
+    def test_the_path_must_exist_and_be_markdown(self):
+        self.assertFalse(self.resolves("nope.md#title-the-start-of-it"))
+        ok, why = self.resolver.resolve("data.json#a")
+        self.assertFalse(ok)
+        self.assertIn("Markdown", why)
+        self.assertTrue(self.resolves("doc.md"))  # no anchor: the path alone
+
+    def test_the_why_names_the_missing_anchor(self):
+        ok, why = self.resolver.resolve("doc.md#missing-anchor")
+        self.assertFalse(ok)
+        self.assertIn("#missing-anchor", why)
+        self.assertIn("doc.md", why)
+
+
 class Tree:
     """A small tree under the repository's gitignored build/, for the command line and the lint."""
 
@@ -402,30 +554,60 @@ class Tree:
         self._tmp.cleanup()
 
 
-def brief(*headings: str, names_record: bool = True) -> str:
+class Governing(Tree):
+    """A Tree holding the two governing files the vocabulary reads: the mode sheet, and FABLE.md with its
+    tool field line (replaced by `fable_tool`, or removed when that is None)."""
+
+    def __init__(self, fable_tool: str | None = "keep") -> None:
+        super().__init__()
+        sheet = self.root / cc.MODE_SHEET
+        sheet.parent.mkdir(parents=True)
+        shutil.copy(ROOT / cc.MODE_SHEET, sheet)
+        fable = (ROOT / cc.FABLE).read_text(encoding="utf-8")
+        if fable_tool != "keep":
+            lines = []
+            for line in fable.splitlines():
+                if cc.FABLE_TOOL_LINE_RE.match(line):
+                    if fable_tool is None:
+                        continue
+                    line = f"    tool: <{fable_tool}>"
+                lines.append(line)
+            fable = "\n".join(lines)
+        self.write(cc.FABLE, fable)
+
+    def write_record(self, rec: dict, ident: str = "A7c.1") -> Path:
+        return self.write(f"docs/chains/{ident}.yaml", yaml.safe_dump(rec, sort_keys=False))
+
+
+def brief(*headings: str, ability: str | None = "A7c.1") -> str:
     lines = ["# A brief", ""]
-    if names_record:
-        lines += ["Chain record: `docs/chains/A7c.1.yaml`", ""]
+    if ability:
+        lines += [f"ability: {ability}", ""]
     for heading in headings:
         lines += [f"### {heading}", "", "text", ""]
     return "\n".join(lines)
 
 
 class TheBriefLint(unittest.TestCase):
+    """Every brief that carries a whole line `ability: <id>` is linted; a brief without it is skipped."""
+
     def setUp(self):
-        self.tree = Tree()
+        self.tree = Governing()
         self.addCleanup(self.tree.cleanup)
 
-    def lint(self, **briefs: str):
+    def lint(self, with_record: bool = True, **briefs: str):
+        if with_record:
+            self.tree.write_record(load())
         for name, text in briefs.items():
             self.tree.write(f"docs/prompts/runs/r/briefs/{name}.md", text)
         return cc.lint_briefs(self.tree.root)
 
-    def test_a_brief_naming_a_record_with_all_three_headings_is_accepted(self):
-        failures, _ = self.lint(ok=brief(*cc.BRIEF_HEADINGS))
-        self.assertEqual(failures, [])
+    def test_a_marked_brief_with_all_three_headings_and_a_passing_draft_record_is_accepted(self):
+        failures, notes = self.lint(ok=brief(*cc.BRIEF_HEADINGS))
+        self.assertEqual([f.line() for f in failures], [])
+        self.assertTrue(notes[0].startswith("briefs: 1 linted"), notes)
 
-    def test_each_missing_heading_is_named(self):
+    def test_each_missing_heading_of_a_marked_brief_is_named(self):
         for missing in cc.BRIEF_HEADINGS:
             with self.subTest(missing=missing):
                 kept = [h for h in cc.BRIEF_HEADINGS if h != missing]
@@ -435,60 +617,100 @@ class TheBriefLint(unittest.TestCase):
                 self.assertIn(missing, named[0].message)
                 self.assertEqual(named[0].field, "headings")
 
-    def test_a_brief_with_no_headings_at_all_fails_naming_all_three(self):
+    def test_a_marked_brief_with_no_headings_at_all_fails_naming_all_three(self):
         failures, _ = self.lint(bare=brief())
-        self.assertEqual(len(failures), 1)
+        self.assertEqual([f.field for f in failures], ["headings"])
         for heading in cc.BRIEF_HEADINGS:
             self.assertIn(heading, failures[0].message)
 
-    def test_a_path_alone_names_a_record(self):
-        failures, _ = self.lint(path="Builds `docs/chains/B2.yaml` and nothing else.\n")
-        self.assertEqual(len(failures), 1)
+    def test_a_marked_brief_whose_record_is_missing_fails(self):
+        failures, _ = self.lint(with_record=False, orphan=brief(*cc.BRIEF_HEADINGS, ability="B9"))
+        self.assertEqual([f.field for f in failures], ["record"])
+        self.assertIn("docs/chains/B9.yaml", failures[0].message)
+        self.assertIn("does not exist", failures[0].message)
 
-    def test_a_heading_must_be_a_heading_not_a_sentence(self):
-        failures, _ = self.lint(prose=brief() + "\nThe instructional chain, failure route and independence test are in the record.\n")
-        self.assertEqual(len(failures), 1)
+    def test_a_marked_brief_whose_record_fails_the_checker_fails(self):
+        rec = load()
+        rec["evidence"]["never_credits"] = []
+        self.tree.write_record(rec)
+        failures, _ = self.lint(with_record=False, broken=brief(*cc.BRIEF_HEADINGS))
+        self.assertEqual([f.field for f in failures], ["record"])
+        self.assertIn("fails the checker", failures[0].message)
 
-    def test_a_brief_that_names_no_record_needs_no_headings(self):
-        failures, _ = self.lint(tiny="A wording fix to one lesson sentence.\n")
+    def test_a_marked_brief_whose_record_is_a_draft_with_unresolved_refs_passes(self):
+        # this tree holds no sources, so every ref of the copied record is unresolved; a draft lists them
+        record_failures, listed, status = cc.check_file(
+            self.tree.write_record(load()), cc.Resolver(self.tree.root), cc.vocabulary(self.tree.root)[0], self.tree.root
+        )
+        self.assertEqual((record_failures, status), ([], "draft"))
+        self.assertTrue(listed)
+        failures, _ = self.lint(draft=brief(*cc.BRIEF_HEADINGS))
         self.assertEqual(failures, [])
 
-    def test_the_probe_brief_is_accepted(self):
+    def test_an_unmarked_brief_is_skipped_and_the_run_says_how_many(self):
+        failures, notes = self.lint(
+            ok=brief(*cc.BRIEF_HEADINGS),
+            tiny="A wording fix to one lesson sentence.\n",
+            names_a_path="Builds `docs/chains/B2.yaml` and nothing else.\n",
+            chain_record_line="Chain record: `docs/chains/A7c.1.yaml`\n",
+            bare=brief(ability=None),
+        )
+        self.assertEqual(failures, [])
+        self.assertTrue(notes[0].startswith("briefs: 1 linted"), notes)
+        self.assertIn("4 skipped (no ability marker)", notes[0])
+
+    def test_the_marker_is_one_whole_line_in_the_id_form(self):
+        for text in (
+            "The brief says `ability: A7c.1` in a sentence.\n",
+            "  ability: A7c.1\n",  # indented
+            "ability: <id>\n",
+            "ability: \n",
+            "ability: A7c.1 and more\n",
+            "Ability: A7c.1\n",
+        ):
+            with self.subTest(text=text):
+                self.assertEqual(cc.brief_markers(text.splitlines()), [])
+        self.assertEqual(cc.brief_markers(["ability: A7c.1", "x", "ability: B2", "ability: A7c.1"]), ["A7c.1", "B2"])
+        self.assertEqual(cc.brief_markers(["ability: A10.2  "]), ["A10.2"])
+
+    def test_there_is_no_exemption_and_no_record_naming_heuristic(self):
+        # the old heuristic read `chain record:` and `docs/chains/`; neither marks a brief now
+        failures, notes = self.lint(
+            builds_the_checker="Owns `docs/chains/A7c.1.yaml`, and the line Chain record: docs/chains/A7c.1.yaml.\n"
+        )
+        self.assertEqual(failures, [])
+        self.assertIn("1 skipped", notes[0])
+        self.assertFalse(any(n.startswith("EXEMPT") for n in notes))
+
+    def test_the_probe_brief_is_the_one_marked_brief_and_is_accepted(self):
         text = PROBE.read_text(encoding="utf-8")
-        failures, _ = self.lint(probe=text, named=text + "\nChain record: docs/chains/A7c.1.yaml\n")
-        self.assertEqual(failures, [])
+        self.assertEqual(cc.brief_markers(text.splitlines()), ["A7c.1"])
+        failures, notes = self.lint(probe=text)
+        self.assertEqual([f.line() for f in failures], [])
+        self.assertTrue(notes[0].startswith("briefs: 1 linted"), notes)
 
-    def test_the_checkers_own_brief_is_the_one_named_exemption(self):
-        rel = "docs/prompts/runs/curriculum-review-2026-10-05/briefs/chain-record-checker.md"
-        self.assertIn(rel, cc.LINT_EXEMPT)
-        self.tree.write(rel, "Owns `docs/chains/A7c.1.yaml`.\n")
-        failures, notes = cc.lint_briefs(self.tree.root)
-        self.assertEqual(failures, [])
-        self.assertEqual(len(notes), 1)
-        self.assertTrue(notes[0].startswith("EXEMPT "))
-        self.tree.write("docs/prompts/runs/other/briefs/not-exempt.md", "Owns `docs/chains/A7c.1.yaml`.\n")
-        failures, _ = cc.lint_briefs(self.tree.root)
-        self.assertEqual(len(failures), 1)
+    def test_the_checkers_own_briefs_carry_no_marker_and_need_no_exemption(self):
+        for name in ("chain-checker-corrections.md", "chain-record-checker.md"):
+            with self.subTest(brief=name):
+                text = (PROBE.parent / name).read_text(encoding="utf-8")
+                self.assertEqual(cc.brief_markers(text.splitlines()), [])
 
     def test_the_real_briefs_pass_the_lint(self):
-        failures, _ = cc.lint_briefs(ROOT)
+        failures, notes = cc.lint_briefs(ROOT)
         self.assertEqual([f.line() for f in failures], [])
+        self.assertTrue(any("probe-latin4-bizet.md (A7c.1)" in n for n in notes), notes)
 
 
 class TheCommandLine(unittest.TestCase):
     def setUp(self):
-        self.tree = Tree()
+        self.tree = Governing()
         self.addCleanup(self.tree.cleanup)
-        # the sources the resolver and the tool vocabulary read, copied small
-        sheet = self.tree.root / cc.MODE_SHEET
-        sheet.parent.mkdir(parents=True)
-        shutil.copy(ROOT / cc.MODE_SHEET, sheet)
 
     def test_a_broken_record_exits_one_with_a_line_per_failure(self):
         rec = load()
         rec["steps"][3]["tool"] = "Magic wand"
         rec["evidence"]["never_credits"] = []
-        self.tree.write("docs/chains/A7c.1.yaml", yaml.safe_dump(rec, sort_keys=False))
+        self.tree.write_record(rec)
         code, out = run_main("--root", str(self.tree.root))
         self.assertEqual(code, 1, out)
         fail_lines = [line for line in out.splitlines() if line.startswith("FAIL ")]
@@ -500,7 +722,7 @@ class TheCommandLine(unittest.TestCase):
     def test_a_clean_draft_exits_zero_and_lists_what_is_unresolved(self):
         rec = load()
         rec["steps"][1]["content"]["ref"] = "exercise.tresillo.zz"
-        self.tree.write("docs/chains/A7c.1.yaml", yaml.safe_dump(rec, sort_keys=False))
+        self.tree.write_record(rec)
         code, out = run_main("--root", str(self.tree.root))
         self.assertEqual(code, 0, out)
         self.assertIn("UNRESOLVED docs/chains/A7c.1.yaml: steps[2].content.ref: exercise.tresillo.zz", out)
@@ -510,11 +732,20 @@ class TheCommandLine(unittest.TestCase):
         self.assertEqual(code, 0, out)
         self.assertIn("0 chain record(s)", out)
 
-    def test_lint_briefs_flag_fails_on_a_brief_without_the_headings(self):
+    def test_the_summary_says_the_scaffold_rule_is_structural_not_proof(self):
+        code, out = run_main("--root", str(self.tree.root))
+        self.assertEqual(code, 0, out)
+        self.assertIn("scaffold-subset rule (R5) is a structural check", out)
+        self.assertIn("not proof that pedagogical support faded", out)
+
+    def test_lint_briefs_flag_fails_on_a_marked_brief_without_the_headings_and_counts_the_skipped(self):
+        self.tree.write_record(load())
         self.tree.write("docs/prompts/runs/r/briefs/x.md", brief("Instructional chain", "Failure route"))
+        self.tree.write("docs/prompts/runs/r/briefs/tiny.md", "A wording fix.\n")
         code, out = run_main("--root", str(self.tree.root), "--lint-briefs")
         self.assertEqual(code, 1, out)
         self.assertIn("Independence test", out)
+        self.assertIn("1 linted (carry an ability marker), 1 skipped (no ability marker)", out)
         code, _ = run_main("--root", str(self.tree.root))
         self.assertEqual(code, 0)  # without the flag the briefs are not read
 

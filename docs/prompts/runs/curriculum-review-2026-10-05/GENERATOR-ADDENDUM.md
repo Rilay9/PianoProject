@@ -353,6 +353,7 @@ Sources marked `[D]` go through the primary-source check in `CURRICULUM-UPGRADE.
 - *Checker*: the music21 fixture gives the bass pitch class per figure.
 - *Transfer*: FiloBass, CANDIDATE, as walking lines for jazz.6/8 (rights unchecked).
 
+<a id="G13"></a>
 **G13 Habanera bass cell.** Rung: the new latin.4. Family `tresillo`: EXTEND with a `cell: tresillo | habanera` parameter and a `timeSig` parameter.
 - *Source*: the upgrade's definition [U §0 item 3]: dotted eighth, sixteenth, eighth, eighth in 2/4, compared with the tresillo (3+3+2). The Wikipedia Habanera and Tresillo pages agree (secondary) [R `latin.md:16-17`]. The primary check reads a printed habanera; Bizet's Habanera is being dumped [U].
 - *Contract*:

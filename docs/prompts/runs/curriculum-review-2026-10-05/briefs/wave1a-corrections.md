@@ -236,7 +236,7 @@ phrase are yours to check — the card over the bar you are playing tests the
 first, and a recording of yourself the second.
 ```
 
-Evidence: `stage-4.json:506-524` (runs from exercises 1; runs from songs 2 with `performance: true`; `reading-ahead` `unjudged`); `rungState.ts:341` (an `unjudged` reading never counts, `MODE-SHEET.md` §31.7).
+Evidence: `stage-4.json:506-524` (runs from exercises 1; runs from songs 2 with `performance: true`; `reading-ahead` `unjudged`); `rungState.ts:341` (an `unjudged` reading never counts, `MODE-SHEET.md` §32.7).
 
 **Edit 10 (W2, 4.7 one threshold; core#8).**
 
