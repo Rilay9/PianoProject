@@ -88,7 +88,7 @@
       "proof": {
         "method": "the app's detector through the bridge and the partitura witness (cells.py), agreeing on every bar",
         "date": "2026-10-06",
-        "evidence": "docs/chains/A7c.1.yaml (song.jazz.the-crave@bars=21-26); latin.6.md:22-26, 'the tresillo under a whole piece'",
+        "evidence": "docs/chains/A7c.1.yaml (song.jazz.the-crave@bars=21-26); latin.6.md, 'In bars 21 to 26 the left hand plays three, three, two in every bar' (narrowed 2026-10-06 from 'the tresillo under a whole piece', responses/a7c1-reviewed.md section 2)",
         "verified": {
           "bars": [21, 26],
           "staff": 2,

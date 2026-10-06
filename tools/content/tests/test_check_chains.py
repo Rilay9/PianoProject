@@ -46,7 +46,12 @@ TOOLS, SHEET_PROBLEMS = cc.vocabulary(ROOT)
 
 
 def load() -> dict:
-    return yaml.safe_load(RECORD.read_text(encoding="utf-8"))
+    """The real record as a draft fixture base. The real record moved to `reviewed` on 2026-10-06 (Entry 260, the reviewer's
+    ruling); the cases below derive broken or partial records from it and rely on draft semantics (unresolved refs listed, not
+    failed), so the base is forced to draft here and the real record's own status is asserted in `TheRealRecord`."""
+    rec = yaml.safe_load(RECORD.read_text(encoding="utf-8"))
+    rec["status"] = "draft"
+    return rec
 
 
 def check(rec: dict, name: str = "broken.yaml"):
@@ -68,7 +73,7 @@ class TheRealRecord(unittest.TestCase):
     def test_passes_as_a_draft_and_lists_exactly_its_unresolved_refs(self):
         failures, unresolved, status = cc.check_file(RECORD, RESOLVER, TOOLS, ROOT)
         self.assertEqual([f.line() for f in failures], [])
-        self.assertEqual(status, "draft")
+        self.assertEqual(status, "reviewed")  # since Entry 260 (2026-10-06); every ref resolves
         listed = {u.ref for u in unresolved}
         # what is not yet committed: the lesson file of the new rung, and the excerpt cut the intake adds.
         # Each is expected unresolved exactly while the thing it names is absent.
@@ -109,7 +114,7 @@ class TheRealRecord(unittest.TestCase):
     def test_the_cli_exits_zero_on_the_real_tree_and_names_the_draft(self):
         code, out = run_main("--lint-briefs")
         self.assertEqual(code, 0, out)
-        self.assertIn("A7c.1 (draft)", out)
+        self.assertIn("A7c.1 (reviewed)", out)
         self.assertIn("0 failure(s)", out)
         self.assertNotIn("EXEMPT", out)
         self.assertRegex(out, r"[1-9]\d* linted \(carry an ability marker\)")  # at least the Bizet probe brief; the count grows with each ability brief
@@ -563,6 +568,9 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
     def test_r8_shipped_without_an_acceptance_path(self):
         rec = load()
         rec["status"] = "shipped"
+        # Revised (A7S): the real record now names its acceptance path, so the case takes it out; it was
+        # written while the record had none, and relied on that.
+        rec.pop("acceptance_test", None)
         failures, _ = check(rec)
         self.assertIn("acceptance_test", fields(failures))
 

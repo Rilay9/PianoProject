@@ -19,16 +19,37 @@
  *
  * What the rows prove is notes and rough timing at a tempo against the app's clock (MODE-SHEET §2); none
  * of it is the cell's identity, the recognition or the feel, and nothing here was heard.
+ *
+ * **A7c.1's acceptance path** (lane A7S; the record's top-level `acceptance_test`, which the chain checker's
+ * R8 reads; FABLE §9: a self-checked independence test has the app record only the permitted self-check and
+ * award no unsupported skill evidence). Beside the two counted runs above, the last block drives every
+ * self-checked step that leaves an app row — a *Hear it* (an encounter, no run), a *Rhythm only* run and a
+ * *Wait for me* run on every latin.4 option, the uncounted Keep tempo runs, and the step-20 pieces on latin.6
+ * and latin.7 (the lesson's numbering; the record's step 24) — through the entry points the app uses: the
+ * activation boundary the Score screen and the evidence job ask (`skillsInForce`), the store (`recordRun`,
+ * `recordEncounter`, `rungRows`), the evidence job (`runEvidenceJob`), the ladder (`skillLadders`) and
+ * `rungState`. It asserts no row carries skill evidence, no skill moves (`habanera-and-tresillo` is observable
+ * `none` and absent from the ladder before and after), nothing stored names a cell or its demands outside the
+ * played item's own identity, and latin.4 meets on the two counted rows and on nothing else.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
-import { rungState } from '../../src/evidence/rungState';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { rungState, skillLadders } from '../../src/evidence/rungState';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
-import type { Curriculum, Lesson } from '../../src/curriculum/types';
-import type { SessionRow } from '../../src/data/db';
+import { storedEvidence } from '../../src/evidence/readingState';
+import { skillsInForce } from '../../src/curriculum/skillActivation';
+import { runFacts } from '../../src/curriculum/material';
+import { runEvidenceJob } from '../../src/data/evidenceJob';
+import { recordRun, resetProgressForTest, rungRows, sessionsTidied, walkSessions, type RunResult } from '../../src/data/progressStore';
+import { allEncounters, recordEncounter, resetEncountersForTest } from '../../src/data/encounterStore';
+import { NOT_MEASURED } from '../../src/engine/types';
+import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
+import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
+import type { EncounterRow, SessionRow } from '../../src/data/db';
 
 const curriculum = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'curriculum.json'), 'utf8')) as Curriculum;
+const catalog = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'catalog.json'), 'utf8')) as CatalogItem[];
 
 const RUNG = 'latin.4';
 const CUT = 'excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh';
@@ -159,5 +180,239 @@ describe('not met by anything else: the other requirement holds, so the rung sta
 
   it('a control run below the accuracy floor', () => {
     expect(status([run(CONTROL, { ...EIGHT_BARS, accuracy: 0.89 }), run(CUT, LEFT)])).toBe('in progress');
+  });
+});
+
+// --- A7c.1's acceptance path: the self-checked steps record only their permitted rows and credit nothing ---
+
+/** The skill the two cells are coped with by: observable `none` (CD1). */
+const SKILL = 'habanera-and-tresillo';
+const CUMPARSITA_B = 'song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx';
+const CHOCLO = 'song.classical.el-choclo-piano.pdmx';
+/** A reading row: the shipped activation's kind of item, whose runs the evidence job does pick up. */
+const READING_ROW = 'drill.reading.sight-reading-2-right';
+const AT = '2026-10-01T10:00:00.000Z';
+const byId = new Map(catalog.map((item) => [item.id, item]));
+
+type Tool = 'hear' | 'rhythm' | 'wait' | 'tempo';
+interface Case {
+  /** The lesson's step number (the brief's), then the record's. */
+  step: string;
+  itemId: string;
+  rung: string;
+  tool: Tool;
+  over?: Partial<SessionRow>;
+}
+
+function optionsOf(rungId: string): string[] {
+  for (const stage of curriculum.stages) {
+    for (const unit of stage.units) for (const one of unit.lessons) if (one.id === rungId) return [...one.exerciseOptions, ...one.songOptions];
+  }
+  return [];
+}
+
+function itemOf(id: string): CatalogItem {
+  const item = byId.get(id);
+  if (item === undefined) throw new Error(`${id} is not in the built catalog`);
+  return item;
+}
+
+/** The latin.6 and latin.7 pieces step 20's task line names (Entry 259). */
+const STEP_20: [string, string][] = [
+  ['latin.6', CABEZA],
+  ['latin.6', CRAVE],
+  ['latin.6', CUMPARSITA_B],
+  ['latin.7', CHOCLO],
+];
+
+const UNMEASURED: readonly Tool[] = ['hear', 'rhythm', 'wait'];
+
+/**
+ * Every self-checked step that leaves an app row, and the uncounted practice beside them, each at the pass
+ * pair over the whole item unless the step loops: the worst case, a row that would count if its tool were
+ * not refused.
+ */
+const SELF_CHECKED: Case[] = [
+  // Lesson steps 2-7, 11, 12, 15, 16, 18 and 19 (record steps 2-7, 15, 16, 19, 20, 22 and 23): any latin.4
+  // option heard, tapped in Rhythm only, or played in Wait for me.
+  ...optionsOf(RUNG).flatMap((itemId) => UNMEASURED.map((tool): Case => ({ step: 'lesson 2-7, 11, 12, 15, 16, 18, 19', itemId, rung: RUNG, tool }))),
+  // Lesson step 14 (record 18): the bass under the tune, the app playing the right hand, on a loop of bars 1-12.
+  {
+    step: 'lesson 14 (record 18)',
+    itemId: PARENT,
+    rung: RUNG,
+    tool: 'tempo',
+    over: { range: { fromMeasure: 0, toMeasure: 11 }, wholeItem: false, hands: { played: 'L', appPlayed: 'other hand' } },
+  },
+  // Lesson step 16 (record 20): The Crave's bars 21-22 tapped on a loop.
+  { step: 'lesson 16 (record 20)', itemId: CRAVE, rung: RUNG, tool: 'rhythm', over: { range: { fromMeasure: 20, toMeasure: 21 }, wholeItem: false } },
+  // Lesson step 19 (record 23): Por Una Cabeza's bars 1-14 (the pickup is bar 0) tapped on a loop.
+  { step: 'lesson 19 (record 23)', itemId: CABEZA, rung: RUNG, tool: 'rhythm', over: { range: { fromMeasure: 1, toMeasure: 14 }, wholeItem: false } },
+  // Lesson steps 7a, 7b, 8, 9 and 10 (record 8-10, 12-14): the uncounted Keep tempo practice (never_credits).
+  ...[...HABANERAS, ...TRESILLOS].map((itemId): Case => ({ step: 'lesson 7a-10 (record 8-10, 12-14)', itemId, rung: RUNG, tool: 'tempo' })),
+  // Lesson step 20 (record 24): the later rung's pieces, heard, tapped, waited on and played.
+  ...STEP_20.flatMap(([rung, itemId]) =>
+    (['hear', 'rhythm', 'wait', 'tempo'] as const).map((tool): Case => ({ step: `lesson 20 (record 24) on ${rung}`, itemId, rung, tool })),
+  ),
+];
+
+/**
+ * A run as the Score screen hands it to the store (`ScoreScreen.ts`, the `run` it builds in `showSummary`):
+ * Rhythm only is a Keep tempo run with `rhythmOnly` and its pass and mastery refused; Wait for me measures
+ * no tempo. Its evidence is what the screen computes: none where `skillsInForce(item)` is empty, which the
+ * first case below holds for every item here.
+ */
+function scoreScreenRun(c: Pick<Case, 'itemId' | 'rung' | 'tool' | 'over'>): RunResult {
+  const rhythm = c.tool === 'rhythm';
+  const wait = c.tool === 'wait';
+  return {
+    itemId: c.itemId,
+    lessonId: c.rung,
+    opened: { tab: 'lesson', rung: c.rung, slot: NOT_MEASURED },
+    ...runFacts(itemOf(c.itemId)),
+    mode: wait ? 'wait' : 'tempo',
+    tempoPct: 100,
+    tempoMeasured: !wait,
+    accuracy: 0.95,
+    accuracyEstimated: false,
+    wrongNotes: 0,
+    missed: 0,
+    durationMs: 60_000,
+    passed: !rhythm,
+    masterEligible: !rhythm,
+    ...(rhythm ? { rhythmOnly: true } : {}),
+    range: { fromMeasure: 0, toMeasure: 7 },
+    wholeItem: true,
+    hands: { played: 'L', appPlayed: 'none' },
+    at: AT,
+    ...c.over,
+  };
+}
+
+/** Each case as the app writes it: a Hear it as the encounter `noteHearing` writes, every other tool as a run. */
+async function store(cases: readonly Case[]): Promise<{ rows: SessionRow[]; encounters: EncounterRow[] }> {
+  for (const [index, c] of cases.entries()) {
+    if (c.tool === 'hear') {
+      await recordEncounter({
+        kind: 'heard',
+        itemId: c.itemId,
+        material: runFacts(itemOf(c.itemId)).material,
+        source: { tab: 'lesson', rung: c.rung },
+        visit: `a7s-${String(index)}`,
+        at: new Date(AT),
+      });
+    } else {
+      await recordRun(scoreScreenRun(c), new Date(AT));
+    }
+  }
+  await sessionsTidied();
+  return { rows: await rungRows(), encounters: await allEncounters() };
+}
+
+describe('A7c.1’s acceptance path: every self-checked step records only its permitted row and credits nothing', () => {
+  beforeEach(() => {
+    useFakeIndexedDb();
+    resetProgressForTest();
+    resetEncountersForTest();
+  });
+  afterEach(() => {
+    clearFakeIndexedDb();
+  });
+
+  it('the cells’ skill is observable none, and no item these steps open has a skill in force (the Score screen’s and the job’s gate)', () => {
+    expect(VOCABULARY_V0.skills.find((skill) => skill.id === SKILL)?.observable).toBe('none');
+    const inForce = [...new Set(SELF_CHECKED.map((c) => c.itemId))]
+      .map((id) => [id, skillsInForce(itemOf(id))] as const)
+      .filter(([, skills]) => skills.length > 0)
+      .map(([id, skills]) => `${id}: ${skills.join(', ')}`);
+    expect(inForce).toEqual([]);
+    // Not vacuous: the gate does let the reading rows' skills through.
+    expect(skillsInForce(itemOf(READING_ROW)).length).toBeGreaterThan(0);
+  });
+
+  it('a Hear it writes an encounter and no run; Rhythm only, Wait for me and Keep tempo write one run each, Rhythm only flagged', async () => {
+    const { rows, encounters } = await store(SELF_CHECKED);
+    const heard = SELF_CHECKED.filter((c) => c.tool === 'hear');
+    expect(encounters.map((row) => `${row.kind} ${row.itemId} ${row.source.rung ?? ''}`).sort()).toEqual(
+      heard.map((c) => `heard ${c.itemId} ${c.rung}`).sort(),
+    );
+    expect(rows).toHaveLength(SELF_CHECKED.length - heard.length);
+    expect(rows.filter((row) => row.rhythmOnly === true)).toHaveLength(SELF_CHECKED.filter((c) => c.tool === 'rhythm').length);
+    expect(rows.filter((row) => row.mode === 'wait' && row.tempoMeasured === false)).toHaveLength(SELF_CHECKED.filter((c) => c.tool === 'wait').length);
+  });
+
+  it('no stored run carries skill evidence, and no skill moves: the ladder reads as it does for a learner with no runs', async () => {
+    const { rows } = await store(SELF_CHECKED);
+    const carrying = rows.filter((row) => row.evidence !== undefined || row.evidenceDefinitions !== undefined || storedEvidence(row).length > 0);
+    expect(carrying.map((row) => `${row.itemId} ${row.mode}${row.rhythmOnly === true ? ' rhythm' : ''}`)).toEqual([]);
+    const after = skillLadders(rows, VOCABULARY_V0, TODAY);
+    expect(after).toEqual(skillLadders([], VOCABULARY_V0, TODAY));
+    // The ladder never lists a skill no run observes: nothing to move, before or after.
+    expect(after.has(SKILL)).toBe(false);
+  });
+
+  it('nothing stored names a cell, its demands or its skill, outside the played item’s own identity', async () => {
+    const { rows, encounters } = await store(SELF_CHECKED);
+    const faults: string[] = [];
+    for (const row of [...rows, ...encounters] as unknown as Record<string, unknown>[]) {
+      // The identity of what was played (its id, its material and the encounter's key built from it) names
+      // the item, a generator's recipe included; it is the fact of what was opened, not a claim about the learner.
+      const { itemId, material: _material, key: _key, ...rest } = row;
+      if (/habanera|tresillo/i.test(JSON.stringify(rest))) faults.push(`${String(itemId)}: ${JSON.stringify(rest)}`);
+      if (/rhythm\.habanera|rhythm\.tresillo|habanera-and-tresillo/.test(JSON.stringify(row))) faults.push(`${String(itemId)} names a cell demand or the skill`);
+    }
+    expect(faults).toEqual([]);
+  });
+
+  it('the evidence job leaves every one of these runs alone, and is seen to pick up a run whose item bears evidence', async () => {
+    await store(SELF_CHECKED);
+    // A reading-row run stored with no evidence: the one kind of run the job is for.
+    await recordRun({ ...scoreScreenRun({ itemId: READING_ROW, rung: '1.5', tool: 'tempo' }), passed: false, masterEligible: false }, new Date(AT));
+    const reading = (await rungRows()).find((row) => row.itemId === READING_ROW);
+    const writes: number[] = [];
+    const status = await runEvidenceJob({
+      curriculum: () => Promise.resolve(curriculum),
+      items: () => Promise.resolve(catalog),
+      walkRuns: walkSessions,
+      writeEvidence: (id) => {
+        writes.push(id);
+        return Promise.resolve();
+      },
+      modelOf: () => Promise.reject(new Error('no model in this test')),
+      write: () => {
+        throw new Error('no phrase in this test');
+      },
+      vocabulary: VOCABULARY_V0,
+      idle: () => Promise.resolve(),
+      carryOver: () => Promise.resolve(0),
+      normalise: () => Promise.resolve([]),
+      announce: () => undefined,
+    });
+    expect(reading?.id).toBeDefined();
+    expect(writes).toEqual([reading?.id]);
+    expect(status.recomputed).toBe(0);
+  });
+
+  it('latin.4 meets on the two counted rows and on nothing else; the hearing, tapping and waiting count toward no rung', async () => {
+    const { rows } = await store(SELF_CHECKED);
+    const alone = rungState(rows, curriculum, VOCABULARY_V0, TODAY).byRung.get(RUNG);
+    expect(alone?.requirements.map((reading) => [reading.have, reading.items])).toEqual([
+      [0, []],
+      [0, []],
+    ]);
+    expect(alone?.status).toBe('in progress');
+
+    await recordRun(scoreScreenRun({ itemId: CONTROL, rung: RUNG, tool: 'tempo' }), new Date(AT));
+    await recordRun(scoreScreenRun({ itemId: CUT, rung: RUNG, tool: 'tempo', over: { range: { fromMeasure: 0, toMeasure: 11 } } }), new Date(AT));
+    const met = rungState(await rungRows(), curriculum, VOCABULARY_V0, TODAY).byRung.get(RUNG);
+    expect(met?.status).toBe('met');
+    expect(met?.requirements.map((reading) => reading.items)).toEqual([[CONTROL], [CUT]]);
+
+    // Step 20's later rungs: a Rhythm only or Wait for me row meets nothing there either (a Hear it writes no run).
+    const unmeasured = rows.filter((row) => row.rhythmOnly === true || row.mode === 'wait');
+    const later = rungState(unmeasured, curriculum, VOCABULARY_V0, TODAY);
+    for (const rung of ['latin.6', 'latin.7']) {
+      expect(later.byRung.get(rung)?.requirements.map((reading) => reading.have), rung).toEqual([0, 0]);
+    }
   });
 });

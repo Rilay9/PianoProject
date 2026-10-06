@@ -29,18 +29,22 @@ Nobody checks your answer but you, and naming it earns nothing here. If you
 have not met the two cells, or they have blurred, the grid of where their notes
 start is near the top of that Stage 4 page.
 
-**The tango's left hand is a pattern, and it does not change.** *Por una
-Cabeza* is the plainest case in the app: sixty-six bars on two staves, and bar
-after bar is the same four events — a bass note on one, a single note on the
-second half of beat two, a chord on three, a bass note on four. The right hand
-does all the singing. Learn the left alone until it is automatic, because it
-never asks you for anything new and it never lets up.
+**The tango's left hand is a pattern.** *Por una Cabeza* is the plainest
+case in the app: sixty-six bars on two staves, and through its opening, bars 1
+to 14, every bar is the same four events — a bass note on one, a single note on
+the second half of beat two, a chord on three, a bass note on four. Bar 15
+breaks the pattern with two chords, and it returns after that; where it holds
+and where it gives way is yours to find on the page. The right hand does all
+the singing. Learn the left alone until the pattern is automatic, then watch
+for the bars that leave it.
 
-**The Crave is the tresillo under a whole piece.** Jelly Roll Morton called
-this the Spanish tinge. In most of its fifty-three bars the left hand plays
-three, three, two — two long notes and a shorter one, filling the bar unevenly
-— under a right hand in chords. It is in D minor. The grouping you met as a
-two-bar exercise is now the accompaniment for the length of a piece.
+**The Crave puts the tresillo under a real piece.** Jelly Roll Morton called
+this the Spanish tinge. In bars 21 to 26 the left hand plays three, three, two
+in every bar — two long notes and a shorter one, filling the bar unevenly —
+under a right hand in chords; those six bars are the passage this rung
+vouches for, and how much of the rest of the piece keeps the figure is yours to
+read. It is in D minor. The grouping you met as a two-bar exercise is now an
+accompaniment inside a piece.
 
 **La Cumparsita's second part does the other thing.** Its first part is on the
 rung below. This one is sixteen bars, two flats, and the left hand walks rather

@@ -20,6 +20,13 @@
 # step-20 task line has landed on latin.6 (Por Una Cabeza, The Crave, the second part of La Cumparsita) and latin.7
 # (El Choclo): it names no cell, the naming is self-checked and earns nothing. status stays draft: the reviewer sets
 # reviewed on their read. shipped needs a top-level acceptance_test path (the checker's R8) and FABLE section 9.
+# A7S (briefs/a7c1-shipped-acceptance-path.md): acceptance_test names app/tests/unit/latin4Completion.test.ts, the
+# acceptance path: latin.4 met by the two counted runs and nothing else, and every self-checked step that leaves an
+# app row (a Hear it encounter, a Rhythm only or Wait for me run on every latin.4 option, the uncounted Keep tempo
+# practice, and the latin.6 and latin.7 pieces of the later-rung step) recorded as its permitted row with no skill
+# evidence, no skill moved and nothing stored naming a cell outside the played item's identity. The lesson numbers
+# its steps 1 to 20 (the later-rung line is its step 20); this record numbers them 1 to 24. status is unchanged
+# here: the reviewer moves it.
 ability: A7c.1
 learner_cannot: "Name or play the habanera bass (a dotted eighth, a sixteenth and two eighths in a 2/4 bar), tell it from the tresillo on the page or by ear, or know that the Argentine tango figures descend from it. latin.3 names and explains the tresillo as 3+3+2; no lesson teaches the habanera as the contrasting cell, or asks the learner to tell the two apart or apply them, and Por Una Cabeza carries the habanera in 56 of its 66 bars with nothing pointing the learner at it."
 independent_target: "Looks at a left hand they have not been told about and says which cell it uses, and where it stops using it, before hearing it; afterwards taps or plays that left hand at a tempo they choose."
@@ -314,4 +321,6 @@ generated:
       playability: "The physical gate (confirm_physical) against the row's maxSpan, maxRate and its declared solution for the habanera's one fast re-strike (the sixteenth to the half bar on one key, a quarter of a second apart at quarter = 60)."
       the feel and sound: UNKNOWN
 
-status: draft
+acceptance_test: app/tests/unit/latin4Completion.test.ts
+
+status: reviewed

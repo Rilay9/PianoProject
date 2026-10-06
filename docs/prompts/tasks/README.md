@@ -330,6 +330,8 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **TU2** | The Bizet cut's teaching-use decision re-issued on its machine-independent identity with `supersedes` (the reviewer's ruling), so the cut is admitted on every build; FABLE §4 carries the owner's experience-variety direction (`TU2-cut-decision-reissued.md`) | content | landed 2026-10-06 (`TU2-cut-decision-reissued.md`); Entry 257
 | **SR2** | The daily read held to the learner's taught set (no read at 0.1-0.4; steps only at 1.1-1.2, judged at 1.5); `metre.three-four` taught at 1.4, curated-only, established by the waltz contract, the reader's 3/4 move on single-hand rows only; the research differential 12 declared, 12 moved, 362 byte-identical (`SR2-daily-read-hold-and-three-four.md`) | app + content | landed 2026-10-06 (`SR2-daily-read-hold-and-three-four.md`); Entry 258
 | **A7F** | A7c.1's step-20 line on latin.6 and latin.7 (decide the cell from the page, then check by ear and by tapping; self-checked) and the checker resolving built generated ids through the committed manifest the build keeps fresh; the record's refs all resolve, status draft pending the reviewer (`A7F-step20-and-generated-ids.md`) | content + tools | landed 2026-10-06 (`A7F-step20-and-generated-ids.md`); Entry 259
+| **A7G** | latin.6's Por Una Cabeza and The Crave paragraphs narrowed to the verified bars (1-14 with the break at 15; 21-26) and A7c.1 set `reviewed` on the reviewer's ruling; the SR2 ruling consumed into lane SR3 (`A7G-latin6-narrowed-reviewed.md`) | content | landed 2026-10-06 (`A7G-latin6-narrowed-reviewed.md`); Entry 260
+| **A7S** | A7c.1's acceptance path named in the record: the counted runs meet latin.4 and nothing else does; 76 self-check cases award no skill evidence (mutants M1, M2 red); 21 of 24 record steps reached on the deployed app, three need a bar loop the double-tap does not set (`A7S-acceptance-path.md`) | tests + record | landed 2026-10-06 (`A7S-acceptance-path.md`); Entry 261
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -525,6 +527,8 @@ G13 · landed · 256
 TU2 · landed · 257
 SR2 · landed · 258
 A7F · landed · 259
+A7G · landed · 260
+A7S · landed · 261
 F0a · closed · —
 L120 · approved · —
 -->
