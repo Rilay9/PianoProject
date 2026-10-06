@@ -68,7 +68,8 @@ failure_routes:                     # observed failure → next teaching action
 independence_test: ...              # the support-free task
 evidence: {updates: [ ... ], self_checked: [ ... ], never_credits: [ ... ]}
 generated:                          # one entry per generated family used
-  - {family: ..., job: CONTROL|SIGHT-READING|NAMED-PATTERN|MUSICAL, contract: <path>, checker: <path>, musical_properties: {<property>: <how established> | UNKNOWN}}
+  - {family: ..., job: CONTROL|SIGHT-READING|NAMED-PATTERN|MUSICAL, presented_as: drill|music, contract: <path>, checker: <path>, musical_properties: {<property>: <how established> | UNKNOWN}}
+                                    # every step whose content kind is generated names a family listed here; presented_as: music puts a NAMED-PATTERN under the musical-property rule
 status: draft|reviewed|shipped
 ```
 
@@ -79,7 +80,7 @@ status: draft|reviewed|shipped
 - every step after the first removes at least one scaffold, or carries a one-line reason;
 - the last step's scaffold is a strict subset of the first step's;
 - `never_credits` is not empty;
-- every generated family has its job, contract and checker; SIGHT-READING and MUSICAL (and NAMED-PATTERN presented as music) list their musical properties, each with how it is established or UNKNOWN (§5);
+- every generated family has its job, contract and checker, and every generated step's family is listed; SIGHT-READING, MUSICAL and NAMED-PATTERN with `presented_as: music` list their musical properties, each with how it is established or UNKNOWN (§5); a mechanical CONTROL lists none;
 - `status: shipped` requires an acceptance-test path that exists.
 
 A brief that names a learner-facing ability without a record that passes is not dispatchable.
