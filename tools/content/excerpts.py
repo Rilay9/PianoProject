@@ -477,7 +477,7 @@ def normalise_header(xml_text: str, excerpt: str) -> str:
 
 def write_cut(score, dest: Path, excerpt: str) -> Path:
     """`convert.write_mxl`, then the header normalised inside the archive, zip entries pinned."""
-    from convert import ZIP_EPOCH, replace_atomically, write_mxl
+    from convert import ZIP_EPOCH, ZIP_SYSTEM, replace_atomically, write_mxl
 
     write_mxl(score, dest)
     with zipfile.ZipFile(dest) as archive:
@@ -497,6 +497,10 @@ def write_cut(score, dest: Path, excerpt: str) -> Path:
                 data = data.decode("utf-8").replace(f'full-path="{written}"', f'full-path="{inner}"').encode("utf-8")
             info = zipfile.ZipInfo(name, date_time=ZIP_EPOCH)
             info.compress_type = zipfile.ZIP_DEFLATED
+            # The creating system pinned as the importer pins it (`convert.ZIP_SYSTEM`, E50a): `zipfile` writes 0 on
+            # Windows and 3 elsewhere, so until 2026-10-06 the same cut was two files, one per machine, and every
+            # identity bound to a cut (a verified passage fact, a teaching-use decision) was stale on the runner.
+            info.create_system = ZIP_SYSTEM
             info.external_attr = 0o600 << 16
             archive.writestr(info, data)
     replace_atomically(staged, dest)

@@ -41,6 +41,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from music21 import bar, clef, converter, key, metadata, meter, note, spanner, stream, tempo, tie  # noqa: E402
 
 import excerpts as X  # noqa: E402
+import convert  # noqa: E402
 from convert import write_mxl  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
@@ -167,6 +168,23 @@ class TheIdentity(unittest.TestCase):
 
 
 class TheCut(unittest.TestCase):
+    def test_its_archive_is_the_same_bytes_on_any_machine_the_creating_system_pinned(self) -> None:
+        """E50a's pin, applied to a cut (2026-10-06): `zipfile` writes the platform's creating system into every entry
+        (0 on Windows, 3 elsewhere), so until this pin the same cut was two files, one per machine, and every identity
+        bound to a cut (a verified passage fact, a teaching-use decision) was stale on the runner. Red on Windows before
+        the cutter set `create_system`; the deployed Bizet cut (`a39e7695…`) and the laptop's (`9ae0d629…`) differed in
+        exactly that byte, their entries and compressed payloads identical."""
+        made = Parent(self, grand(8)).cut(1, 4)
+        raw = made.path.read_bytes()
+        self.assertEqual(convert.archive_system(raw), convert.ZIP_SYSTEM)
+        with zipfile.ZipFile(made.path) as archive:
+            self.assertEqual({info.create_system for info in archive.infolist()}, {convert.ZIP_SYSTEM})
+            self.assertEqual({info.date_time for info in archive.infolist()}, {convert.ZIP_EPOCH})
+        # The pin is the importer's: the same entries through `pinned_archive` give the same bytes.
+        with zipfile.ZipFile(made.path) as archive:
+            entries = [(info.filename, archive.read(info.filename)) for info in archive.infolist()]
+        self.assertEqual(convert.pinned_archive(entries), raw)
+
     def test_it_has_the_bars_of_the_range(self) -> None:
         made = Parent(self, grand(8)).cut(3, 6)
         self.assertEqual(made.bars, 4)

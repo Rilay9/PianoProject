@@ -58,7 +58,13 @@ BUILT = REPO / "app" / "public" / "content"
 #: no other line changed: the three tresillo exercises and the Bizet left-hand cut `teaching-use-not-approved` (no
 #: teaching-use decision admits them), and the whole Bizet, Por Una Cabeza and The Crave `untaught` for
 #: `rhythm.triplets` alone (the three context options; no rung on latin.4's path teaches triplets).
-PROBE = REPO / "docs" / "prompts" / "runs" / "LP1" / "probe-refusals.txt"
+#: Re-run 2026-10-06 after the teaching-use decisions (Entry 253) and the cut's creating-system pin (Entry 255; CUT1): 294 lines,
+#: 220 `untaught`. Five lines changed from LP1, none other: the three tresillo exercises leave latin.4 (admitted, and nothing
+#: untaught there: the placement brief's H4 on the real path); at 3.6 `exercise.tresillo.c` is now refused `untaught` for
+#: `rhythm.syncopation` and at latin.3 for `texture.left-hand-pattern`, two refusals the admission used to hide (the coping
+#: question runs only on an admitted option): a placement finding, recorded, not fixed. The Bizet cut's latin.4 line stays
+#: `teaching-use-not-approved`: its decision binds to the cut's former identity and is stale until re-issued.
+PROBE = REPO / "docs" / "prompts" / "runs" / "CUT1" / "probe-refusals.txt"
 
 #: Where the tool's lines on the shipped curriculum differ from the probe, and why. Keyed by
 #: (rung, item); `side` says which reading has the line. Nothing else may differ. Since L120b's snapshot
@@ -114,7 +120,8 @@ class TheShippedCurriculum(unittest.TestCase):
         # 216 under L120d; 215 after the W1b landing re-ran the probe (Entry 233: the G edition on 2.5, hymns.2's
         # options, the contrary scales' versions). The pin is a snapshot, re-run and recorded, never forced (L124).
         # 218 after the latin.4 placement (LP1): its three context options, untaught for triplets there.
-        self.assertEqual(len(self.probe), 218, "the LP1 probe recorded 218 `untaught` rung-own options (HD1's 215 and latin.4's 3)")
+        # 220 after the admissions and the cut's pin (CUT1): latin.4's three tresillo lines gone, tresillo.c refused at 3.6 and latin.3.
+        self.assertEqual(len(self.probe), 220, "the CUT1 probe recorded 220 `untaught` rung-own options (LP1's 218, less latin.4's three admitted exercises, plus tresillo.c at 3.6 and latin.3)")
 
     def test_the_lines_equal_the_probe_but_for_the_recorded_differences(self) -> None:
         only_probe = {key for key in self.probe if key not in self.mine}

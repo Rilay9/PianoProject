@@ -162,7 +162,7 @@
     },
     {
       "item": "excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh",
-      "identity": {"kind": "file", "sha256": "9ae0d629df17e5f827e96c93d69c1954cfbfede01f6cbc0e4c5a2b37a87fa5da"},
+      "identity": {"kind": "file", "sha256": "a39e76951869aabbf39c1d0b4440e4f433baa86da584d7edec650dfa1e539069"},
       "bars": [1, 12],
       "staff": 1,
       "voice": null,
