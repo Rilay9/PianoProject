@@ -27,8 +27,10 @@ the moment you can no longer hear which is which.
 hard. An old description of it, from Leopold Mozart in the eighteenth
 century and from Chopin's pupils in the nineteenth, is that the accompaniment,
 usually the left hand, keeps time while the melody is free — borrow a little from one note, give it back on the next,
-so the bar comes out the same length. If your bars are getting longer, that is
-not rubato, that is hesitation. The test for this kind of rubato: play with the
+so the bar comes out the same length. If your bars are getting longer without
+your choosing it, that is hesitation, not this kind of rubato. (There is another
+kind, where the whole bar stretches and the beat itself bends; it is a choice,
+not a stumble.) The test for this kind of rubato: play with the
 metronome on. The accompaniment still lands with the click; with hesitation, it
 does not.
 

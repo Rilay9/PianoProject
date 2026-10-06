@@ -442,6 +442,12 @@
                   "kind": "runs",
                   "from": "exercises",
                   "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "finished-piece",
+                  "says": "A piece of your own, written down and playable.",
+                  "why": "Writing a piece is not a run the app records."
                 }
               ],
               "prerequisites": [

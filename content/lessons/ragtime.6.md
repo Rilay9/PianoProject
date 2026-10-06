@@ -52,8 +52,8 @@ chord about an octave apart. In a full rag you will meet:
 The technique is the same one Stage 5 named and it does not change: **the arm
 travels early, and the eye goes to the chord before the hand does.** Practise
 the left hand alone at a tempo where you never miss, then take it up by
-five clicks at a time. If you are missing leaps at speed, you took it up too
-fast; there is no other cause.
+five clicks at a time. If you are missing leaps at speed, try a slower tempo
+first, then check where your eyes are going, as above.
 
 **The tempo is printed on the music.** These editions carry a metronome
 mark — 70 on *The Entertainer*, which also says *Moderato*, 100 on *Peacherine

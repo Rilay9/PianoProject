@@ -587,7 +587,7 @@
                 {
                   "kind": "unjudged",
                   "rule": "two clean passes, then blind at >=0.9",
-                  "says": "From memory, starting anywhere, at half tempo, within a tenth of your sighted run.",
+                  "says": "From memory, starting anywhere, at half tempo: a blind run at least nine tenths of your sighted run.",
                   "why": "A run with the score hidden is not recorded as such, and the two runs are not compared."
                 }
               ],
@@ -1262,7 +1262,7 @@
                 {
                   "kind": "unjudged",
                   "rule": "four-answers-recorded",
-                  "says": "Four answers recorded.",
+                  "says": "Four answers, recorded on your own phone or recorder.",
                   "why": "A recording of your own playing is not a run the app judges."
                 }
               ],

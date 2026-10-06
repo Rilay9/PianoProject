@@ -61,6 +61,8 @@ is the score; nothing else about the run is marked.
 colours; play a Dorian vamp (Dm to G) for two minutes and you will learn more
 than from any diagram.
 
-**How you'll know you've got it.** Four seventh qualities identified by ear at
-80 % accuracy, two progressions recognised in unfamiliar music, and one tune transposed
-into three keys on the spot.
+**How you'll know you've got it.** Four seventh qualities played back at 80 %
+accuracy in the seventh-chord drill, two progressions recognised in unfamiliar
+music, and one tune transposed into three keys on the spot. The drill marks the
+chord you play back, not its name: naming maj7, 7, m7 or m7♭5 before you play,
+recognising the progressions and the transposing are yours to check.

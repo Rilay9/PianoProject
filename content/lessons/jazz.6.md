@@ -20,7 +20,8 @@ music wants drive. Practise one pattern through a whole ii–V–I before
 you try another. Mixing them comes later and comes by itself.
 
 **Walking bass.** Four notes to the bar, and the fourth one is the trick: a
-semitone below the next bar's root. Root, third, fifth, approach. Play the line
+semitone above or below the next bar's root. Root, third, fifth, approach. The
+exercises here always take the semitone below; the one above works the same way. Play the line
 alone until you can hear the next chord arriving before it does — that is the
 whole point of a walking line, and it is why bass players are never lost.
 

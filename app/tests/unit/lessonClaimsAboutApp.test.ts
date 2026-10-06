@@ -2440,15 +2440,20 @@ const T12B_APP: [string, string, () => boolean][] = [
   ],
   [
     'improv.6',
-    'the rung frees the minor vamp\'s progression so ii7 V7 I can be typed there, and leaves its key locked',
+    // Wave 1(a) seam 1a.5 edit 12 (2026-10-05): the key is freed too. Locked to A minor,
+    // the lab's ii–V–I is iiø7 V7 i, not the lesson's ii7 V7 I, and the lesson asks for
+    // three major keys; the left hand stays the preset's.
+    'the rung frees the minor vamp\'s progression and key so ii7 V7 I can be typed in a major key, and leaves its left hand locked',
     () => {
       const preset = labPreset('minor-vamp');
       const locked = labLocksFor(preset, freedBy('improv.6'));
       return (
         labTools('improv.6').join(',') === 'minor-vamp' &&
         preset?.locks.includes('progression') === true &&
+        preset?.locks.includes('key') === true &&
         !locked.has('progression') &&
-        locked.has('key')
+        !locked.has('key') &&
+        locked.has('leftHand')
       );
     },
   ],

@@ -716,6 +716,12 @@
                   "kind": "runs",
                   "from": "exercises",
                   "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "two-improvisations-own-sound",
+                  "says": "Two improvisations someone could recognise as yours.",
+                  "why": "An improvisation is not a run the app judges, and Free play keeps nothing."
                 }
               ],
               "prerequisites": [

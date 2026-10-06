@@ -3581,9 +3581,12 @@ function f3aTip(kind: string): string {
 const F3A_SENTENCES: [string, string, string[], string][] = [
   [
     '0.1',
-    'T34: flat fingers are a habit to reset, and the curve is said to help control as a heuristic, not ranked as the main reason',
-    ['the main reason'],
-    'They look relaxed, but the curved shape above often makes it easier to play two notes at different volumes.',
+    // Wave 1(a) seam 1a.1 edit 4 (2026-10-05): the heuristic that replaced the ranking
+    // ("often makes it easier to play two notes at different volumes") had no source
+    // either, so the mistake is now named as a shape to reset, with no claim about control.
+    'T34: straight or collapsing fingers are a habit to reset, with no unsourced claim about control and no ranking',
+    ['the main reason', 'two notes at different volumes'],
+    'Fingers that lock straight, or a hand that collapses at the knuckles. If that happens, stop, let the hand hang by your side again, and start from that shape.',
   ],
   [
     '1.1',

@@ -42,7 +42,9 @@ chord — Pinetop and root-and-fifth in C, walking eighths in F. Take one throug
 all twelve bars in C, moving it to each chord yourself, then the same in F. The
 walking line over the same twelve bars.
 
-**Repertoire for this rung.** Two short boogies to play the form on, and the
+**Repertoire for this rung.** One short boogie to play the form on, *Boogie
+(easy, for beginners)*; a sheet of octave walking-bass exercises that ends in a
+twelve-bar example from bar 19; and the
 real thing: Clarence "Pinetop" Smith's own *Pinetop's Boogie Woogie* (1928),
 which is levelled above everything else on this rung and is here to be
 read and listened to. Its left hand in this edition is not the climb above: from

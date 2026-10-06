@@ -6,17 +6,20 @@ videos:
   - label: "Tritone Substitution: the one jazz piano trick you need to know"
     url: "https://www.youtube.com/watch?v=3z8a0Z7K6ag"
     teacher: "PianoGroove"
-readingTime: 2
+readingTime: 3
 ---
 
 Reharmonising is composition with the melody already written, which makes it the
 best way to learn composition.
 
 **Start with the substitution you know.** Every dominant chord can become the
-dominant a tritone away. That is one decision, it works everywhere, and it
-changes the bass line from leaps into a chromatic descent.
+dominant a tritone away. That is one decision, it works for the chord symbols,
+and it changes the bass line from leaps into a chromatic descent; whether it
+suits the tune depends on the melody note above it, which the last paragraph
+comes back to.
 
-**Then the approach chords.** Any chord can be preceded by its own dominant.
+**Then the approach chords.** Almost any major or minor chord can be preceded by
+its own dominant (a diminished chord cannot).
 Insert `V7/x` before chord `x` and the music suddenly has twice as much harmonic
 motion without a single new note in the melody.
 
@@ -46,4 +49,4 @@ the melody still fits. At the end of each time round it says how many of your
 notes were chord tones of the bar, and keeps none of it.
 
 **How you'll know you've got it.** Three versions of eight bars that each sound
-deliberate.
+deliberate. The app marks this rung met on one run of its exercises; the three versions are yours to play and judge.

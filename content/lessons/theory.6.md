@@ -29,7 +29,9 @@ be read as three chords. That is the app's rule for telling chords apart, not a
 rule of music.
 
 **Modes are on this rung** because the previous theory lesson taught four of
-them and nothing let you play them. Now something does.
+them and nothing let you play them. Now something does. The drill adds a fifth,
+**Lydian**: the white keys from F to F, a major scale with its fourth raised — in
+F, B natural where F major has B flat.
 
 **What to practise.** Four numerals in three keys, then four progressions taken
 down by ear.
