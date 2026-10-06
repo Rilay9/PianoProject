@@ -42,7 +42,7 @@ Report this number in every handoff, as *shipped / total MUST*. Planning documen
 3. **Ship the Bizet / latin.4 slice end to end** under its rewritten brief (`0ea6ca2d`). This proves the path: source → intake → verified content → chain → app → acceptance. Write down what the path needed and generalise only that.
 4. **Packet traceability table** (§8). One Opus pass, then the outside reviewer. Parallel with step 3; it must not block it.
 5. **Repeat the proven path, one ability per builder, on disjoint files.** Start with abilities whose real music is already chosen: Blue Bossa (minor ii-V-i), St James Infirmary (jam comping and walking bass), Blues Riff in C (twelve-bar). Then follow the map's cluster priority.
-6. **The sight-reading quality lane** (`GENERATOR-ADDENDUM.md` §5), with §5 below replacing its human-reader step.
+6. **The sight-reading quality lane** (`GENERATOR-ADDENDUM.md` §5), with §5 below replacing its human-reader step: dispatched in parallel with step 3 on disjoint files (the owner, 2026-10-06). After the Bizet slice, the next chain exercises a generator contract (minor ii-V-i or bossa), and a per-cluster skeleton of structure (step pattern, typical fades, failure routes), never a fixed lesson, is extracted from the shipped chain.
 
 **Research only when a named next build cannot be written without the answer. Build machinery only when a named current item needs it.**
 
@@ -147,7 +147,7 @@ Never "musically good". The owner playing an item on their phone is welcome feed
 
 ## 6. Evidence and the learner model
 
-Every chain says, in `evidence`, what updates the learner state, what is self-checked, and what never earns credit (§3). No ability goes green before the learner has done its independence test. A Wait run, a lit chord tone, a looped section or a Lab bed never certifies the target ability (`MODE-SHEET.md`). Where the app cannot observe the target, the task is honest self-check, or the requirement changes. The app never pretends. A reviewer may decide teaching use and placement from verified content facts and the chain's stated role; this is not a musical-quality claim, and reviewer identity alone is never evidence. No word or reading-time limit on a lesson (the owner, 2026-10-06): length never outranks accuracy and communication.
+Every chain says, in `evidence`, what updates the learner state, what is self-checked, and what never earns credit (§3). No ability goes green before the learner has done its independence test, and the summary and Progress never present a green rung as the ability where the independence test is self-checked (the owner, 2026-10-06). A Wait run, a lit chord tone, a looped section or a Lab bed never certifies the target ability (`MODE-SHEET.md`). Where the app cannot observe the target, the task is honest self-check, or the requirement changes. The app never pretends. A reviewer may decide teaching use and placement from verified content facts and the chain's stated role; this is not a musical-quality claim, and reviewer identity alone is never evidence. No word or reading-time limit on a lesson (the owner, 2026-10-06): length never outranks accuracy and communication.
 
 ## 7. Libraries, before custom code
 
@@ -173,7 +173,7 @@ The outside reviewer reviews it. The corrections become chain records or briefs.
 - **A slice is done** when the owner's phone build shows every step and the handoff names its commit.
 - **The curriculum work is done** when three things hold:
   - every MUST ability is shipped;
-  - PACKET-TRACE has no MISSING row;
+  - every operative PACKET-TRACE row is SATISFIED or explicitly DEFERRED (by the packet or the owner); PARTIAL is an in-progress state, never a final one (the owner, 2026-10-06);
   - the packet's representative learner journey has passed end to end. In that journey:
     - Today explains what and why;
     - the right source is chosen;
@@ -194,4 +194,5 @@ The outside reviewer reviews it. The corrections become chain records or briefs.
 - **Builders** work on disjoint files. Each landing is reviewed against its chain record and the scoreboard.
 - **The reviewer's verdicts** become record or status edits. They do not trigger new planning rounds.
 - **Review before building for a design decision; a narrow seam may land before its artefact review** only when all hold (the owner and the reviewer, 2026-10-06): its design decision and semantic boundary were already reviewed; it adds no product rule, schema meaning or inference; red-first tests pin the exact defect; its blast radius is declared in advance; a before-and-after differential proves no unrelated behaviour changed; an unexpected change is a stop, never explained after landing. New inference rules, schemas, authority or broad migrations are reviewed before building.
-- **Every handoff** opens with the scoreboard, then what shipped, then what is blocked and on what.
+- **Every handoff** opens with the scoreboard and PACKET-TRACE's PARTIAL and MISSING counts, then what shipped, then what is blocked and on what.
+- **An app capability gap becomes app work** when two chains need it or it is plainly app-wide; otherwise it stays recorded (the owner, 2026-10-06).
