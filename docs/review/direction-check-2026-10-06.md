@@ -25,7 +25,7 @@ The direction is right, and the pace is better than the scoreboard suggests. The
 |---|---|---|---|
 | 8 | 91 | 10 | 8 |
 
-Seven of the 10 MISSING rows are generator work: the sight-reading lane (four rows); music-family property records; G14 bossa bass; G6 minor shells. The other three are A7c.4 modern tango, the rock endpoint, and the reference-method row. **The sight-reading lane is not dispatched.**
+Eight of the 10 MISSING rows are generator work: the sight-reading lane (four rows); the consumed music families' property and method records (two rows); G14 bossa bass; G6 minor shells. The other two are A7c.4 modern tango and the rock endpoint. **The sight-reading lane is not dispatched.**
 
 **Chain records:** one (A7c.1, draft). The checker lists `content/lessons/latin.4.md` as unresolved. The file does not exist (`git cat-file -e` false).
 
@@ -83,7 +83,7 @@ The sight-reading lane touches `sightReading.ts` and research tooling, disjoint 
 
 **R7. Rung completion versus ability.** In A7c.1 the counted evidence is Keep tempo on the Bizet left-hand cut. The independence test (naming the cell before hearing it) is self-checked, so the rung can complete without the target ability ever being observed. That is honest under FABLE §6, but the summary and Progress screens must say so. Otherwise a green rung reads as "can tell habanera from tresillo".
 
-**R8. Cost per chain.** A7c.1's record is long and careful (21 steps, 7 failure routes). At that depth, 28 MUST chains are a large authoring job. *Suggestion:* after A7c.1 ships, extract a per-cluster skeleton (the step pattern, the usual tools and fades, the usual failure routes), so later records fill a template rather than starting blank.
+**R8. Cost per chain.** A7c.1's record is long and careful (20 steps, 7 failure routes). At that depth, 28 MUST chains are a large authoring job. *Suggestion:* after A7c.1 ships, extract a per-cluster skeleton (the step pattern, the usual tools and fades, the usual failure routes), so later records fill a template rather than starting blank.
 
 ## 5. Questions for the reviewer
 
