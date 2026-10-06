@@ -1,0 +1,177 @@
+CID QmUdnPTDdYJC2SKsMKwRUBV7ixiv3KvqLfEx7wLcxJiQfR
+title: CHASING CARS BY SNOW PATROL | song_name: Chasing Cars | subtitle: 
+composer: Re-arranged By Selena UyBased off of arrangment By Jan Bock Original song By Snow Patrol | artist: Snow Patrol | xml creators: ['composer: Composer']
+licence: cc-zero | csv rating 4.66 (9) views 543
+shape: OTHER | parts: ["P1:'Flute':staves=1:prog=73:piano=False", "P2:'Flute':staves=1:prog=73:piano=False", "P3:'B♭ Clarinet':staves=1:prog=71:piano=False", "P4:'B♭ Trumpet':staves=1:prog=56:piano=False", "P5:'Alto Saxophone':staves=1:prog=65:piano=False", "P6:'Alto Saxophone':staves=1:prog=65:piano=False", "P7:'Tenor Saxophone':staves=1:prog=66:piano=False", "P8:'Baritone Saxophone':staves=1:prog=67:piano=False", "P9:'Electric Guitar':staves=1:prog=27:piano=False", "P10:'Electric Bass':staves=1:prog=33:piano=False", "P11:'Piano':staves=1:prog=0:piano=True"]
+instrument names: ['Flute', 'Flute', 'B♭ Clarinet', 'B♭ Trumpet', 'Alto Saxophone', 'Alto Saxophone', 'Tenor Saxophone', 'Baritone Saxophone', 'Electric Guitar', 'Electric Bass', 'Piano']
+staff count: 11 (max per part 1) | metres: ['4/4']
+bars (longest part): 77 | chord symbols: 0
+tempo marks: ['105'] | tempo words: none
+key signatures: ['fifths=0', 'fifths=2', 'fifths=3']
+rehearsal labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+text directions (first 25): ['System Text']
+first chord symbols: none
+
+##### === part P1 'Flute' measures=77 ===  (77 measure lines)
+(not a piano/voice part: opening 8 bars only)
+m1 [key fifths=0; time 4/4; clef=G2; tempo=105]  s1v1: r:d4
+m2  s1v1: r:d4
+m3 [repeat-forward]  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:w
+m6  s1v1: C#6:q. G#5:q. A5:8 A5:8~
+m7  s1v1: A5:h r:h
+m8  s1v1: B5:8 C#6:q G#5:q. G#5:8 F#5:8~
+
+##### === part P2 'Flute' measures=77 ===  (77 measure lines)
+(not a piano/voice part: opening 8 bars only)
+m1 [key fifths=0; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3 [repeat-forward]  s1v1: r:d4
+m4  s1v1: r:d4
+m5 [dyn=f]  s1v1: r:h r:q r:8 E4:8
+m6  s1v1: B5:8 C#6:q G#5:q. G#5:8 A5:8~
+m7  s1v1: A5:h r:h
+m8  s1v1: C#6:q. G#5:q. G#5:8 F#5:8~
+
+##### === part P3 'B♭ Clarinet' measures=77 ===  (77 measure lines)
+(not a piano/voice part: opening 8 bars only)
+m1 [key fifths=2; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3 [repeat-forward]  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: r:w
+m6  s1v1: D#5:q. A#4:q. B4:8 B4:8~
+m7  s1v1: B4:h r:h
+m8  s1v1: D#5:q. A#4:q. A#4:8 G#4:8~
+
+##### === part P4 'B♭ Trumpet' measures=77 ===  (77 measure lines)
+(not a piano/voice part: opening 8 bars only)
+m1 [key fifths=2; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3 [repeat-forward]  s1v1: r:d4
+m4  s1v1: r:d4
+m5 [dyn=f]  s1v1: r:h r:q r:8 F#4:8
+m6  s1v1: C#5:8 D#5:q A#4:q. A#4:8 B4:8~
+m7  s1v1: B4:h r:h
+m8  s1v1: C#5:8 D#5:q A#4:q. A#4:8 G#4:8~
+
+##### === part P5 'Alto Saxophone' measures=77 ===  (77 measure lines)
+(not a piano/voice part: opening 8 bars only)
+m1 [key fifths=3; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3 [repeat-forward]  s1v1: r:d4
+m4  s1v1: r:d4
+m5 [dyn=f]  s1v1: r:h r:q r:8 C#4:8
+m6  s1v1: G#4:8 A#4:q E#4:q. E#4:8 F#4:8~
+m7  s1v1: F#4:h r:h
+m8  s1v1: E#4:8 C#5:8 E#4:8 C#5:8 E#4:8 C#5:8 E#4:8 C#5:8
+
+##### === part P6 'Alto Saxophone' measures=77 ===  (77 measure lines)
+(not a piano/voice part: opening 8 bars only)
+m1 [key fifths=3; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3 [repeat-forward]  s1v1: r:d4
+m4  s1v1: r:d4
+m5  s1v1: F#4:8 C#5:8 F#4:8 C#5:8 F#4:8 C#5:8 F#4:8 C#5:8
+m6  s1v1: F#4:8 C#5:8 F#4:8 C#5:8 F#4:8 C#5:8 F#4:8 C#5:8
+m7  s1v1: E#4:8 C#5:8 E#4:8 C#5:8 E#4:8 C#5:8 E#4:8 C#5:8
+m8  s1v1: G#4:8 A#4:q E#4:q. E#4:8 D#4:8~
+
+##### === part P7 'Tenor Saxophone' measures=77 ===  (77 measure lines)
+(not a piano/voice part: opening 8 bars only)
+m1 [key fifths=2; time 4/4; clef=G2]  s1v1: r:d4
+m2  s1v1: r:d4
+m3 [repeat-forward]  s1v1: r:d4
+m4  s1v1: r:d4
+m5 [dyn=mp]  s1v1: B4:q B4:q B4:q B4:q
+m6  s1v1: B4:q B4:q B4:q B4:q
+m7  s1v1: A#4:q A#4:q A#4:q A#4:q
+m8  s1v1: A#4:q A#4:q A#4:q A#4:q
+
+##### === part P8 'Baritone Saxophone' measures=77 ===  (77 measure lines)
+(not a piano/voice part: opening 8 bars only)
+m1 [key fifths=3; time 4/4; clef=G2; dyn=mf]  s1v1: F#4:w~
+m2  s1v1: F#4:w
+m3 [repeat-forward]  s1v1: F#4:w
+m4  s1v1: Bb4:w
+m5 [dyn=mp]  s1v1: F#5:q F#5:q F#5:q F#5:q
+m6  s1v1: F#5:q F#5:q F#5:q F#5:q
+m7  s1v1: E#5:q E#5:q E#5:q E#5:q
+m8  s1v1: F#4:h F4:h
+
+##### === part P9 'Electric Guitar' measures=77 ===  (77 measure lines)
+(not a piano/voice part: opening 8 bars only)
+m1 [key fifths=0; time 4/4; clef=G2; dyn=mp]  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m2  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m3 [repeat-forward]  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m4  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m5  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m6  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m7  s1v1: G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8
+m8  s1v1: G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8
+
+##### === part P10 'Electric Bass' measures=77 ===  (77 measure lines)
+(not a piano/voice part: opening 8 bars only)
+m1 [key fifths=0; time 4/4; clef=F4; dyn=mf]  s1v1: A2:w~
+m2  s1v1: A2:w
+m3 [repeat-forward]  s1v1: A2:w
+m4  s1v1: C#3:w
+m5 [dyn=mf]  s1v1: A3:w~+E4
+m6  s1v1: A3:w+E4
+m7  s1v1: G#3:w+E4
+m8  s1v1: G#2:h G#2:h
+
+##### === part P11 'Piano' measures=77 ===  (77 measure lines)
+section/texture boundaries used: 53 (texture change (rhythm signature)), 66 (texture change (rhythm signature))
+--- opening 16 bars: lines 1-16 of 77 ---
+m1 [key fifths=0; time 4/4; clef=G2; dyn=mp]  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m2  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m3 [repeat-forward]  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m4  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m5  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m6  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m7  s1v1: G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8
+m8  s1v1: G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8
+m9  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m10  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m11  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m12  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m13  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m14  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m15  s1v1: G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8
+m16  s1v1: G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8
+--- around line 53: texture change (rhythm signature): lines 51-58 of 77 ---
+m51  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m52  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m53  s1v1: C#4:w
+m54  s1v1: r:d4
+m55  s1v1: C#4:q B3:h.
+m56  s1v1: r:d4
+m57  s1v1: C#4:q. B3:q A3:q.
+m58  s1v1: r:d4
+--- around line 66: texture change (rhythm signature): lines 64-71 of 77 ---
+m64  s1v1: r:d4
+m65  s1v1: C#4:q C#4:8 B3:q A3:q D4:8~
+m66  s1v1: D4:8 C#4:q B3:8 A3:8 A3:q.
+m67  s1v1: A3:h B3:h
+m68  s1v1: C#4:w
+m69 [dyn=p]  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m70  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m71  s1v1: G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8
+--- middle sample: lines 38-43 of 77 ---
+m38  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m39  s1v1: G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8
+m40  s1v1: G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8
+m41  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m42  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m43  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+--- last 8 bars: lines 70-77 of 77 ---
+m70  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m71  s1v1: G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8
+m72  s1v1: G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8 G#3:8 E4:8
+m73  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m74  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m75  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m76  s1v1: A3:8 E4:8 A3:8 E4:8 A3:8 E4:8 A3:8 E4:8
+m77  s1v1: E4:w[fermata]

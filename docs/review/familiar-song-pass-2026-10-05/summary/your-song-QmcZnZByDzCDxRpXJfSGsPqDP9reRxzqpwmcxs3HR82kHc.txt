@@ -1,0 +1,60 @@
+CID QmcZnZByDzCDxRpXJfSGsPqDP9reRxzqpwmcxs3HR82kHc
+title: Your Song - Elton John - Easy Piano | song_name: your song | subtitle: 
+composer: Elton JohnArranged by Sadie King | artist: Elton John | xml creators: ['composer: Elton John']
+licence: cc-zero | csv rating 4.64 (1414) views 78241
+shape: PIANO_GRAND_STAFF | parts: ["P1:'Piano':staves=2:prog=0:piano=True"]
+instrument names: ['Piano']
+staff count: 2 (max per part 2) | metres: ['4/4']
+bars (longest part): 38 | chord symbols: 0
+tempo marks: ['120'] | tempo words: none
+key signatures: ['fifths=-1']
+rehearsal labels: none
+text directions (first 25): []
+first chord symbols: none
+
+##### === part P1 'Piano' measures=38 ===  (38 measure lines)
+section/texture boundaries used: 18 (texture change (rhythm signature)), 30 (texture change (rhythm signature))
+--- opening 16 bars: lines 1-16 of 38 ---
+m1 [staves=2; key fifths=-1; time 4/4; clef1=G2; clef2=F4; dyn=f; tempo=120]  s1v1: A4:q A4:8 C5:8~ C5:8 A5:8 F5:q | s2v5: F3:h+C4 F3:h+C4
+m2  s1v1: Bb5:q F5:8 D5:8~ D5:8 Bb5:8 F5:q | s2v5: F3:h+D4 F3:h+D4
+m3  s1v1: D5:8 E5:8 C5:8 G5:8~ G5:8 E5:8 C5:q | s2v5: F3:h+E4 F3:h+E4
+m4  s1v1: Bb4:8 F4:8 F4:8 D5:8~ D5:8 Bb4:8 F4:q | s2v5: F3:h+D4 F3:h+D4
+m5 [dyn=mf]  s1v1: r:q A4:8 G4:8 A4:8 G4:8 A4:q | s2v5: C3:h+F3+A3 C3:h+F3+A3
+m6  s1v1: A4:8 A4:q.~ A4:h | s2v5: D3:h+F3+Bb3 D3:h+F3+Bb3
+m7  s1v1: r:q G4:8 G4:q C5:8 G4:q | s2v5: E3:h+G3+C4 E3:h+G3+C4
+m8  s1v1: A4:q. Bb4:16 A4:16 G4:h | s2v5: E3:h+A3+C4 E3:h+A3+C4
+m9  s1v1: r:q F4:8 F4:q F4:8 F4:q | s2v5: D3:h+F3+A3 D3:h+F3+A3
+m10  s1v1: F4:8 F4:q E4:q F4:q. | s2v5: C3:h+F3+A3 C3:h+F3+A3
+m11  s1v1: r:q F4:q. A4:8 F4:8 Ab4:8 | s2v5: B2:h+D3+G3 B2:h+D3+G3
+m12  s1v1: G4:8 F4:8~ F4:h. | s2v5: Bb2:h+D3+F3 Bb2:h+D3+F3
+m13  s1v1: r:q F4:8 F4:q F4:8 F4:q | s2v5: F2:h+A2+C3 F2:h+A2+C3
+m14  s1v1: A4:8 G4:q F4:q G4:q. | s2v5: A2:h+C#3+E3 A2:h+C#3+E3
+m15  s1v1: r:q A4:8 C5:q D5:q A4:8~ | s2v5: A2:h+C#3+E3 A2:h+C#3+E3
+m16  s1v1: A4:w | s2v5: A2:h+D3+F3 A2:8[staccato]+D3+F3 A2:q.+C3+F3
+--- around line 18: texture change (rhythm signature): lines 16-23 of 38 ---
+m16  s1v1: A4:w | s2v5: A2:h+D3+F3 A2:8[staccato]+D3+F3 A2:q.+C3+F3
+m17  s1v1: r:q F4:8 F4:q A4:8 C5:q | s2v5: F2:h+C3+F3 F2:h+C3+F3
+m18  s1v1: D5:q. G4:q F4:q. | s2v5: G2:h+D3+G3 G2:h+D3+G3
+m19  s1v1: r:q F4:8 F4:q F4:q F4:8 | s2v5: Bb2:h+F3+Bb3 Bb2:h+F3+Bb3
+m20  s1v1: G4:w~ | s2v5: C3:h+G3+C4 C3:h+G3+C4
+m21  s1v1: G4:w | s2v5: C3:h+G3+C4 Bb3:8 A3:q.
+m22  s1v1: r:q A4:8 C5:q A4:8 C5:q | s2v5: C3:h+E3+G3 C3:h+E3+G3
+m23  s1v1: D5:q C5:8 G4:q F4:q. | s2v5: D3:h+F3+A3 D3:h+F3+A3
+--- around line 30: texture change (rhythm signature): lines 28-35 of 38 ---
+m28  s1v1: r:q r:8 D4:q F4:8 D4:8 A4:8 | s2v5: G2:h+Bb2+D3 G2:h+Bb2+D3
+m29  s1v1: G4:8 F4:8~ F4:h. | s2v5: Bb2:h+D3+F3 Bb2:h+D3+F3
+m30 [dyn=mp]  s1v1: r:8 A4:8 D5:8 C5:8 D5:8 F5:q. | s2v5: D3:w+A3+D4
+m31  s1v1: r:8 A4:8 D5:8 C5:8 D5:8 F5:q. | s2v5: C3:w+A3+D4
+m32  s1v1: r:q D5:8 C5:8 D5:q(3:2) F5:q(3:2) C5:q(3:2) | s2v5: B2:w+A3+D4
+m33  s1v1: D5:w~ | s2v5: Bb2:w~+F3+Bb3
+m34  s1v1: D5:h.[fermata] D5:q | s2v5: Bb2:h.[fermata]+F3+Bb3 r:q
+m35  s1v1: C5:q. A4:q F4:q. | s2v5: F3:w+A3+C4
+--- last 8 bars: lines 31-38 of 38 ---
+m31  s1v1: r:8 A4:8 D5:8 C5:8 D5:8 F5:q. | s2v5: C3:w+A3+D4
+m32  s1v1: r:q D5:8 C5:8 D5:q(3:2) F5:q(3:2) C5:q(3:2) | s2v5: B2:w+A3+D4
+m33  s1v1: D5:w~ | s2v5: Bb2:w~+F3+Bb3
+m34  s1v1: D5:h.[fermata] D5:q | s2v5: Bb2:h.[fermata]+F3+Bb3 r:q
+m35  s1v1: C5:q. A4:q F4:q. | s2v5: F3:w+A3+C4
+m36  s1v1: G4:q. D4:h D4:8 | s2v5: Bb2:w+F3+Bb3
+m37  s1v1: A4:8 G4:q F4:q F4:8 F4:q~ | s2v5: Bb2:w+F3+Bb3
+m38  s1v1: F4:w | s2v5: F2:w+C3+F3
