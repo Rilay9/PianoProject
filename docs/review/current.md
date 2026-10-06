@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/sr4-landing.md` — **response required**: Entry 264 (SR4), your required change on SR3: the hold stored on the run header at play time (`opened.hold`), credit reading the stored fact, the inference deleted, legacy rows never reclassified, the vocabulary-move adversary red first, the round trip verified without a version bump.
 - `handoffs/sr3-lb1-landing.md` — **answered** in `responses/sr3-lb1-landing.md` (LB1 approved, A7c.1's only shipping condition the owner's phone walk; SR3's credit behaviour approved; one required change: the hold persisted on the run header at play time, credit reading the stored fact, legacy rows never reclassified: lane SR4).
 - `handoffs/a7c1-shipped.md` — **answered** in `responses/a7c1-shipped.md` (APPROVE: Entries 260 and 261 accepted; LB1 a real blocker, its contract right; after LB1 the only condition left is the owner's phone walk of the 20 lesson steps covering all 24 record actions, then `shipped` and 1/28).
 - `handoffs/a7c1-reviewed.md` — **answered** in `responses/a7c1-reviewed.md` (the record and checker architecture ready; one required change: latin.6's Por Una Cabeza and The Crave overclaims narrowed to the verified bars, done as Entry 260; A7c.1 `reviewed`; `shipped` after A7S, the self-check no-credit proof, the counted runs and the phone-build confirmation).
