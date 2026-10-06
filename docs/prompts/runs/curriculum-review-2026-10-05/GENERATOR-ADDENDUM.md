@@ -29,6 +29,9 @@ Nobody in this process hears music. Every musical-quality statement here is *unv
 
 ---
 
+> **Governing note (the owner via the outside reviewer, 2026-10-05).** This addendum is an enabling specification, not a dispatch queue and not a separate generator project. `ABILITY-MAP.md` decides what gets built. A row whose needs cell says "generator" does not by itself create generator work. For each learner need the order is: inspected real music for MODEL and TRANSFER where it works; generation for controlled acquisition or isolation; a generated mini-piece only when real material cannot do the musical job, and then with a notation review. No new generator family is invented to satisfy this document: none of its 16 rows inherently requires one; each resolves as UNCHANGED, EXTEND/FIX, PLACE or REAL. A named-style generator needs an exact published musical definition and a narrow structural contract first; nothing is retuned on titles, metadata or plausibility. Parser agreement verifies file events, not musical correctness. No generic checker harness is built unless several authorised learner-facing consumers need it. Where a real excerpt now supplies a station this document thought absent, the station is updated and the generator work dropped. A generator is touched only when the currently approved learner chain needs controlled material from it.
+
+
 ## 0. Facts that shape the rest
 
 ### 0.1 There are two generator layers, and the 16 rows touch both
