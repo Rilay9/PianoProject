@@ -193,5 +193,5 @@ The outside reviewer reviews it. The corrections become chain records or briefs.
 - **Model choice:** Opus for design and cross-cutting work; Sonnet for narrow ruled builds and checks; scripts before agents.
 - **Builders** work on disjoint files. Each landing is reviewed against its chain record and the scoreboard.
 - **The reviewer's verdicts** become record or status edits. They do not trigger new planning rounds.
-- **Review before building for a design decision; review after landing for a narrow seam** whose acceptance proves zero unrelated behaviour change (the owner, 2026-10-06). The landing handoff still carries the diff and the proof.
+- **Review before building for a design decision; a narrow seam may land before its artefact review** only when all hold (the owner and the reviewer, 2026-10-06): its design decision and semantic boundary were already reviewed; it adds no product rule, schema meaning or inference; red-first tests pin the exact defect; its blast radius is declared in advance; a before-and-after differential proves no unrelated behaviour changed; an unexpected change is a stop, never explained after landing. New inference rules, schemas, authority or broad migrations are reviewed before building.
 - **Every handoff** opens with the scoreboard, then what shipped, then what is blocked and on what.
