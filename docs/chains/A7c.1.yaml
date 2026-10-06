@@ -4,10 +4,13 @@
 # failure route, independence test, completion treatment); field meanings are in ORCHESTRATION-CONTRACT.md
 # section 1, what each tool records is in MODE-SHEET.md. Where the probe's table row held two items or
 # two tools, the record has one step for each, because a step holds one content and one tool.
-# status stays draft: the cut's id is not committed (the probe's intake commits it) and latin.4's lesson
-# file does not exist yet; the checker lists both as unresolved.
+# status stays draft. The cut's id resolves: the probe merged its approval into content/sources/excerpts.json
+# (event ex-d9d06e1d-f740-4a7e-a03f-dd954827e1d4). latin.4's lesson file does not exist: the probe stopped at
+# its Station 5 (excerpts.py --candidate-rungs does not list latin.4 for the cut), so the checker lists that ref
+# as unresolved. Step 6 of the probe's table (the back-to-back contrast) is two steps here, one per content,
+# per the review of 2026-10-06 (responses/bb6289f2.md section 3, item 1).
 ability: A7c.1
-learner_cannot: "Name or play the habanera bass (a dotted eighth, a sixteenth and two eighths in a 2/4 bar), tell it from the tresillo (3+3+2) on the page or by ear, or know that the Argentine tango figures descend from it. No lesson names either cell, and Por Una Cabeza carries the habanera in 56 of its 66 bars with nothing pointing the learner at it."
+learner_cannot: "Name or play the habanera bass (a dotted eighth, a sixteenth and two eighths in a 2/4 bar), tell it from the tresillo on the page or by ear, or know that the Argentine tango figures descend from it. latin.3 names and explains the tresillo as 3+3+2; no lesson teaches the habanera as the contrasting cell, or asks the learner to tell the two apart or apply them, and Por Una Cabeza carries the habanera in 56 of its 66 bars with nothing pointing the learner at it."
 independent_target: "Looks at a left hand they have not been told about and says which cell it uses, and where it stops using it, before hearing it; afterwards taps or plays that left hand at a tempo they choose."
 steps:
   - action: "Reads the two cells and counts them aloud: the habanera, a dotted eighth, a sixteenth and two eighths in a 2/4 bar; the tresillo, 3+3+2."
@@ -57,15 +60,25 @@ steps:
     removes: []
     no_removal_reason: "The second item of the tapping pair, with the same help."
 
-  - action: "Taps the tresillo and the habanera back to back, and says which onset the habanera adds and where (the half bar)."
+  - action: "The contrast, first half: taps the tresillo again, straight before the habanera (the next step), after the lesson has named the onset the habanera adds and where (the half bar)."
+    content: {kind: generated, ref: exercise.tresillo.c}
+    tool: Rhythm only
+    scaffold: [notation, cursor, click, count-in, pitch removed, lesson names the difference]
+    feedback: "The learner's own comparison."
+    recorded: "A rhythm-only row as in the steps before; the spoken answer is not stored."
+    cannot_establish: "The contrast itself: self-checked. The two items differ in metre, bar length and tempo as well as the cell (4/4 at 84 against 2/4), so this is orientation, not a strict control; that is G13's."
+    removes: []
+    no_removal_reason: "The task changes from tapping one rhythm to comparing two and naming the difference, with the same help plus the named difference; nothing is withdrawn until pitch is added."
+
+  - action: "The contrast, second half: taps the habanera in the Bizet left-hand excerpt straight after the tresillo, and says which onset it adds and where (the half bar)."
     content: {kind: excerpt, ref: excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh}
     tool: Rhythm only
     scaffold: [notation, cursor, click, count-in, pitch removed, lesson names the difference]
     feedback: "The learner's own comparison."
-    recorded: "Two rhythm-only rows as in the two steps before; the spoken answer is not stored."
-    cannot_establish: "The contrast itself: self-checked. The two items still differ in metre, bar length and tempo (4/4 at 84 against 2/4 at 60); a strict control is G13's."
+    recorded: "A rhythm-only row as in the steps before; the spoken answer is not stored."
+    cannot_establish: "The contrast itself: self-checked. Orientation only, as the step before; a strict control is G13's."
     removes: []
-    no_removal_reason: "The task changes from tapping one rhythm to comparing two and naming the difference, with the same help; nothing is withdrawn until pitch is added."
+    no_removal_reason: "The second item of the contrasting pair, with the same help."
 
   - action: "Plays the tresillo with pitches, at the written tempo or below, in the key of C."
     content: {kind: generated, ref: exercise.tresillo.c}
@@ -76,7 +89,7 @@ steps:
     cannot_establish: "An unaided pulse; fine rhythm below the window; which hand played (not a condition, R4)."
     removes: [pitch removed, lesson names the difference]
 
-  - action: "Plays the tresillo in another key, F."
+  - action: "Optional variation: plays the tresillo in another key, F. Offered, not required: any one of the three tresillo items counts toward the rung."
     content: {kind: generated, ref: exercise.tresillo.f}
     tool: Keep tempo
     scaffold: [notation, cursor, click, count-in, counting line, tempo slider, isolated cell]
@@ -85,15 +98,15 @@ steps:
     cannot_establish: "As the step before. No existing item varies the key of the habanera cell under control: that is part of why G13 exists."
     removes: [fixed key of C]
 
-  - action: "Plays the tresillo in a third key, G."
+  - action: "Optional variation: plays the tresillo in G instead of, or as well as, F. Offered, not required."
     content: {kind: generated, ref: exercise.tresillo.g}
     tool: Keep tempo
     scaffold: [notation, cursor, click, count-in, counting line, tempo slider, isolated cell]
     feedback: "As the step before, in a new key."
     recorded: "As the step before."
-    cannot_establish: "As the step before."
+    cannot_establish: "As the step before; and since any one tresillo item meets the requirement, nothing here shows the learner can play the cell in more than one key."
     removes: []
-    no_removal_reason: "A third key, so that one memorised transposition cannot pass; the variation is the point, not a new help withdrawn."
+    no_removal_reason: "An alternative key offered beside F as variation, not a further requirement: the evidence contract accepts any one of the three tresillo items, so F and G are optional and no help is withdrawn between them."
 
   - action: "Sees and hears the habanera bass under Carmen's tune, bars 1 to 12 first."
     content: {kind: piece, ref: "song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx@bars=1-12"}
@@ -104,7 +117,7 @@ steps:
     cannot_establish: "Anything about the learner."
     removes: [click, count-in, counting line, tempo slider, isolated cell]
 
-  - action: "Plays the authentic Bizet left-hand excerpt in Wait for me when note-finding is the problem."
+  - action: "Conditional: plays the authentic Bizet left-hand excerpt in Wait for me, only when note-finding is the problem."
     content: {kind: excerpt, ref: excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh}
     tool: Wait for me
     scaffold: [notation, cursor, app waits for the learner, bass alone]
@@ -128,7 +141,7 @@ steps:
     scaffold: [notation, cursor, click, count-in, tempo slider, app plays the other hand, loop]
     feedback: "As the step before."
     recorded: "A session row with hands (appPlayed) and range; nothing requires it, because the parent is not in the requirement's items."
-    cannot_establish: "Hands-together skill; the whole piece (a looped range stands for the whole item today, an open gap)."
+    cannot_establish: "Hands-together skill; the whole piece. The parent is not in the requirement's items, so this run counts toward nothing; a looped range of it is not the whole item."
     removes: [bass alone]
 
   - action: "Hears real tresillo material and finds the three onsets in the printed left hand."
@@ -220,11 +233,12 @@ evidence:
     - "The cell's identity at speed (the timing window cannot resolve it)."
     - "Hands-together playing."
     - "Anything from Hear it, Rhythm only or Wait rows."
-    - "A looped partial lap standing for the whole cut (today's code does not prevent this; the lesson says what the counted run is)."
+    - "A looped partial lap standing for the whole cut. For the named requirement, Entry 239 refuses a new run whose RunHeader.wholeItem is false; unnamed pools refuse it once lane RG1a lands, which is building now."
 
 generated:
   - family: tresillo
     job: NAMED-PATTERN
+    presented_as: music
     contract: docs/prompts/runs/curriculum-review-2026-10-05/GENERATOR-ADDENDUM.md#G13
     checker: docs/prompts/runs/curriculum-review-2026-10-05/GENERATOR-ADDENDUM.md#G13
     musical_properties:
