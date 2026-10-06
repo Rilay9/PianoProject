@@ -6,5 +6,6 @@ Every brief dispatched for this work opens with the decision rationale of `opera
 | --- | --- | --- |
 | `generator-addendum.md` | 2026-10-05, one agent, writes `../GENERATOR-ADDENDUM.md` | reviewed at 72850a06; six corrections sent and applied; addendum landed |
 | `ability-map.md` | 2026-10-05, Agent A wrote `../MODE-SHEET.md` (30 modes, 7 claims checked: 6 confirmed, Simon corrected); Agent B dispatched for `../ABILITY-MAP.md` | `responses/1b0d8ac3.md`: approved with one required change, applied at 763d543a before Agent B ran |
-| `wave1-facts.md` | 2026-10-05, one fact-gathering agent, writes `../WAVE1-FACTS.md` | routine fact lane under the reviewer's required change; saved as sent |
-| `source-check-sightreading.md` | 2026-10-05, one fact-gathering agent with web fetch, writes `../SOURCE-CHECK-reading.md` | routine fact lane; saved as sent |
+| `wave1-facts.md` | 2026-10-05, done: `../WAVE1-FACTS.md` | chart chips default off; tracker and click not hideable (fallback taken); nothing stored; the Ode G edition is the exact transposition target, Twinkle F is a fourth, the 8-bar edition is not exact |
+| `source-check-sightreading.md` | 2026-10-05, done: `../SOURCE-CHECK-reading.md` | 9 rows: 4 confirmed, 4 corrected (written into the upgrade rows), 1 gated |
+| `wave1-contracts.md` | 2026-10-05, one drafting agent, writes the four wave-one build briefs | the four briefs go to the reviewer in one handoff before any dispatch |
