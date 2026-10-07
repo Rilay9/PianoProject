@@ -8,7 +8,7 @@
 # INDEPENDENCE voices the standard's minor ii-V-i in shells in a key not practised), R40-R41 (the chart's cell reads a
 # root-fifth bass as no); ORCHESTRATION-CONTRACT.md section 8's minor ii-V-i chain; the reviewer's ruling that A7b.1 /
 # Blue Bossa with the G6 control is the first post-Bizet brief (docs/review/responses/a3a8771d.md).
-# status: draft. Refs, by when they resolve:
+# status: reviewed (2026-10-07: PF1 0 FAIL on the landed tree after PH2, no open requirement; responses/ph2-landing.md section 6). Refs, by when they resolve:
 #  - resolve now: content/lessons/jazz.6.md (the minor section's home, placed by G6b on 2026-10-07 under the reviewer's
 #    placement ruling, docs/review/responses/bb1-bluebossa-probe.md section 4; steps 1 and 2 point at it);
 #    drill.jazz.minor-ii-v-i-shells (G6a's item, placed on jazz.6 by G6b) and drill.ear.seventh-qualities
@@ -289,4 +289,4 @@ generated:
       iiø7, V7 and i pitch classes in a minor key: "accompanimentLab.test.ts asserts iiø7 in A minor reads B, D, F, A (line 97); V7 and i in each of the nine minor keys, and the voicing Read it writes, are read at the probe's Station 4."
       the Lab's own tune under Play the tune: UNKNOWN
 
-status: draft
+status: reviewed
