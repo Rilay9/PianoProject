@@ -93,7 +93,7 @@
     {"pattern": "app/src/ui/screens/MicScreen.ts", "checks": {"e2e": ["tests/e2e/mic.spec.ts"]}, "reason": "the microphone path end to end (docs/08)"},
     {"pattern": "app/src/ui/screens/MidiScreen.ts", "checks": {"e2e": ["tests/e2e/midi.spec.ts", "tests/e2e/midi.unplug.spec.ts"]}, "reason": "the MIDI screen (docs/08)"},
     {"pattern": "app/src/ui/screens/MetronomeScreen.ts", "checks": {"e2e": ["tests/e2e/metronome.spec.ts"]}, "reason": "the standalone metronome (docs/08)"},
-    {"pattern": "app/src/ui/screens/ChordChartScreen.ts", "checks": {"e2e": ["tests/e2e/chart.spec.ts", "tests/e2e/modes-chart-from-a-lesson.spec.ts", "tests/e2e/modes-chart-from-the-score.spec.ts"]}, "reason": "the chord chart from its two doors (docs/08)"},
+    {"pattern": "app/src/ui/screens/ChordChartScreen.ts", "checks": {"e2e": ["tests/e2e/chart.spec.ts", "tests/e2e/chart-backing.spec.ts", "tests/e2e/carry-overs.spec.ts", "tests/e2e/modes-chart-from-a-lesson.spec.ts", "tests/e2e/modes-chart-from-the-score.spec.ts"]}, "reason": "the chord chart from its two doors (docs/08)"},
     {"pattern": "app/src/ui/screens/FreePlayScreen.*", "checks": {"e2e": ["tests/e2e/modes-free-play.spec.ts"]}, "reason": "free play from a rung and from Today (docs/08)"},
     {"pattern": "app/src/ui/screens/GuideScreen.ts", "checks": {"e2e": ["tests/e2e/guide.spec.ts"]}, "reason": "the guide (docs/08)"},
     {"pattern": "app/src/ui/screens/DiagnosticsScreen.ts", "checks": {"e2e": ["tests/e2e/offline.report.spec.ts", "tests/e2e/progress.spec.ts"]}, "reason": "what Diagnostics says; Progress, Settings and Diagnostics (docs/08)"},

@@ -129,15 +129,31 @@ test.describe('drag-to-reorder tracks', () => {
 });
 
 test.describe('the backing loop', () => {
-  test('offers bass and drums, and turning it on turns the comp on', async ({ page }) => {
-    await page.goto('/#/chart/song.jazz.autumn-leaves');
+  test('offers bass and drums, and turning it on leaves the comp as it was', async ({ page }) => {
+    // Blue Bossa, a chart the build holds. The controls are drawn once the
+    // chart has loaded, so the test waits for a bar before it looks for them
+    // (a bare count() answered 0 on the first paint and skipped the test).
+    await page.goto('/#/chart/song.jazz.kenny-dorham-blue-bossa.pdmx');
+    await expect(page.locator('.chart-cell[data-bar="1"]')).toBeVisible({ timeout: 20_000 });
     const backing = page.locator('#chart-backing');
-    if (!(await backing.count())) test.skip();
+    const comp = page.locator('#chart-comp');
+    // The bass and drums are scheduled from the chart's own bars, not through
+    // the comp (CB1), so pressing the one does not press the other: with the
+    // comp off it stays off, which is how a learner comps over the app's bass.
+    await expect(comp).toHaveAttribute('aria-pressed', 'false');
     await backing.click();
     await expect(backing).toHaveAttribute('aria-pressed', 'true');
-    // The bass follows the chord, so the comp has to be running for the loop
-    // to know what to play.
-    await expect(page.locator('#chart-comp')).toHaveAttribute('aria-pressed', 'true');
+    await expect(comp).toHaveAttribute('aria-pressed', 'false');
+    // And with the comp on it stays on, through the rhythm section going off
+    // and on again.
+    await comp.click();
+    await expect(comp).toHaveAttribute('aria-pressed', 'true');
+    await backing.click();
+    await expect(backing).toHaveAttribute('aria-pressed', 'false');
+    await expect(comp).toHaveAttribute('aria-pressed', 'true');
+    await backing.click();
+    await expect(backing).toHaveAttribute('aria-pressed', 'true');
+    await expect(comp).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('stops when the screen is left', async ({ page }) => {

@@ -226,7 +226,11 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       chorus = nextChorus;
       drawForm();
       markMatch();
+      // The two are independent (CB1): the comp voices the chord on the piano,
+      // the bass and drums follow the chart's own bar, so a learner can comp
+      // over the app's rhythm section, or have it without the comp.
       if (comping) compBar();
+      if (backing) scheduleBacking(bars[bar]?.pitchClasses);
     }
   }
 
@@ -240,7 +244,6 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       compPiano = piano;
       if (!disposed && !suspended) piano.playChord(midis, (60 / bpm) * 3);
     });
-    scheduleBacking(symbol.pitchClasses);
   }
 
   /**
@@ -251,9 +254,9 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
    * against it — which on a backing track is the one fault nobody can play
    * through.
    */
-  function scheduleBacking(pitchClasses: readonly number[]): void {
+  function scheduleBacking(pitchClasses: readonly number[] | undefined): void {
     const context = audioEngine.contextOrNull;
-    if (!backing || !kit || !context) return;
+    if (!pitchClasses || !backing || !kit || !context) return;
     const secondsPerBeat = 60 / bpm;
     // A hair ahead, so the first event of the bar is scheduled rather than
     // being already in the past by the time this runs.
@@ -387,12 +390,6 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       backing = !backing;
       backingChip.setAttribute('aria-pressed', String(backing));
       section.dataset.backing = String(backing);
-      // The chord is what the bass follows, so the comp has to be running for
-      // the loop to know what to play.
-      if (backing && !comping) {
-        comping = true;
-        compChip.setAttribute('aria-pressed', 'true');
-      }
     },
   });
 

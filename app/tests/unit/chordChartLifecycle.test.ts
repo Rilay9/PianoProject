@@ -192,6 +192,7 @@ async function started(): Promise<HTMLElement> {
   await flush();
   const start = section.querySelector<HTMLButtonElement>('#chart-start');
   expect(start, 'the chart never loaded').not.toBeNull();
+  section.querySelector<HTMLButtonElement>('#chart-comp')?.click();
   section.querySelector<HTMLButtonElement>('#chart-backing')?.click();
   start?.click();
   await flush();
