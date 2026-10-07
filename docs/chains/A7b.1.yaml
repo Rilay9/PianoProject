@@ -139,7 +139,7 @@ steps:
     cannot_establish: "Anything about the learner; nothing is stored (MODE-SHEET section 15)."
     removes: [notation, cursor, click]
 
-  - action: "Comps Blue Bossa's chart in shells with Comp off and Bass + drums on (the app supplies the rhythm section and no chord comp; BLOCKED until the Chord chart schedules backing independently of comp, the reviewer's ruling, header), the tonic shell taking the sixth the symbol asks for (Cm6 at the target resolutions, verified by the probe's Station 2 before any lesson states it), in a comping rhythm jazz.6 teaches."
+  - action: "Comps Blue Bossa's chart in shells with Comp off and Bass + drums on (the app supplies the rhythm section and no chord comp; unblocked at the app by CB1, Entry 267: the Chord chart schedules backing independently of comp), the tonic shell taking the sixth the symbol asks for (Cm6 at the target resolutions, verified by the probe's Station 2 before any lesson states it), in a comping rhythm jazz.6 teaches."
     content: {kind: piece, ref: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6}
     tool: Chord chart
     scaffold: [chord symbols, count-in, bass and drums supplied, bars named in the lesson, progression named in the lesson]
