@@ -33,11 +33,13 @@ FIXTURE = {
          "ci": "unittest discover -s tools/content/tests"},
         {"id": "tsc", "cwd": "app", "run": "npx tsc -b", "ci": "npm run typecheck"},
         {"id": "unit", "cwd": "app", "run": "npx vitest run {names}", "whole": "npx vitest run", "ci": "npm run test"},
+        {"id": "unit-related", "cwd": "app", "run": "npx vitest related --run {names}", "covered_by": "unit", "ci": "npm run test"},
         {"id": "e2e", "cwd": "app", "run": "npx playwright test {names} --workers=4",
          "whole": "npx playwright test --workers=4", "ci": "npm run e2e"},
     ],
     "patterns": [
         {"pattern": "app/src/**", "checks": {"tsc": True, "unit": "*"}, "reason": "app code"},
+        {"pattern": "app/related/**", "checks": {"unit-related": ["{self}"]}, "reason": "source whose unit tests the import graph finds"},
         {"pattern": "app/src/ui/screens/TodayScreen.ts", "checks": {"e2e": ["tests/e2e/today.spec.ts"]}, "reason": "Today"},
         {"pattern": "app/src/data/**", "checks": {"e2e": ["tests/e2e/today.spec.ts", "tests/e2e/progress.spec.ts"]}, "reason": "data"},
         {"pattern": "app/tests/unit/*.test.ts", "checks": {"tsc": True, "unit": ["{self}"]}, "reason": "a unit file runs itself"},
@@ -73,6 +75,23 @@ class OnAFixtureMap(unittest.TestCase):
             "python -m unittest discover -s tools/content/tests -t tools/content -p test_b.py",
         ])
         self.assertIn(("unit", "app", "npx vitest run"), got)
+
+    def test_an_app_source_file_runs_the_unit_tests_related_to_it_and_not_the_whole_suite(self) -> None:
+        got = self.commands("app/related/ScoreSession.ts")
+        self.assertIn(("unit-related", "app", "npx vitest related --run related/ScoreSession.ts"), got)
+        self.assertNotIn(("unit", "app", "npx vitest run"), got)
+
+    def test_the_related_run_names_every_changed_source_file(self) -> None:
+        got = self.commands("app/related/b.ts", "app/related/a.ts")
+        self.assertIn(("unit-related", "app", "npx vitest related --run related/a.ts related/b.ts"), got)
+
+    def test_the_whole_unit_suite_covers_the_related_run(self) -> None:
+        got = self.commands("app/related/x.ts", "app/src/y.ts")
+        self.assertEqual([c for c in got if c[0].startswith("unit")], [("unit", "app", "npx vitest run")])
+
+    def test_a_related_check_whose_cover_is_not_asked_still_runs(self) -> None:
+        got = self.commands("app/related/x.ts", "app/tests/unit/a.test.ts")
+        self.assertEqual([c[0] for c in got if c[0].startswith("unit")], ["unit", "unit-related"])
 
     def test_the_whole_suite_wins_over_named_files(self) -> None:
         got = self.commands("app/tests/unit/a.test.ts", "app/src/x.ts")
@@ -259,9 +278,36 @@ class TheMinimumSemantics(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertIn(spec, self.e2e_names(path))
                 commands = self.result(path).commands
-                self.assertIn(WHOLE_UNIT, commands, "the unit suite stays the cheap universal guard")
+                self.assertTrue(any(c[0] == "unit-related" and path.removeprefix("app/") in c[2] for c in commands) or WHOLE_UNIT in commands,
+                                "the unit tests related to the module stay the cheap universal guard")
                 for check in ("tsc", "lint", "build-app"):
                     self.assertIn(check, [c[0] for c in commands])
+
+    def test_an_app_source_file_runs_its_related_unit_tests_not_the_whole_suite(self) -> None:
+        # app/src/** asks `unit-related`: vitest follows the import graph from the changed file.
+        got = self.result("app/src/score/ScoreSession.ts").commands
+        self.assertIn(("unit-related", "app", "npx vitest related --run src/score/ScoreSession.ts"), got)
+        self.assertNotIn(WHOLE_UNIT, got)
+        self.assertNotIn("unit", [c[0] for c in got if c[1] == "app" and c[2].startswith("npx vitest run")])
+
+    def test_a_source_file_with_a_shared_helper_is_the_whole_unit_suite_only(self) -> None:
+        # A helper the unit files import is on every unit file's path: the whole suite already
+        # covers the related run, which is then not printed.
+        got = self.result("app/src/x.ts", "app/tests/unit/helpers/y.ts").commands
+        self.assertEqual([c for c in got if c[0].startswith("unit")], [WHOLE_UNIT])
+
+    def test_the_paths_the_import_graph_cannot_see_keep_the_whole_unit_suite(self) -> None:
+        # content/**, the pipeline and the shared fixtures feed files the unit tests read at runtime.
+        for path in ("content/lessons/blues.5.md", "tools/content/build.py", "app/tests/fixtures/scores/a.musicxml"):
+            with self.subTest(path=path):
+                got = self.result(path).commands
+                self.assertIn(WHOLE_UNIT, got)
+                self.assertNotIn("unit-related", [c[0] for c in got])
+
+    def test_the_source_pattern_does_not_credit_a_rule_the_owner_disowned(self) -> None:
+        reason = next(p.reason for p in self.map.patterns if p.pattern == "app/src/**")
+        self.assertNotIn("2026-09-27", reason)
+        self.assertIn("npm run test", reason)
 
     def test_a_renderer_change_names_the_fit_paths_spec_its_chain_ran(self) -> None:
         # U74's chain ran score-fit-paths, which no docs/08 line names (a finding in Q65a's entry).

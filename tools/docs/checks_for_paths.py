@@ -10,7 +10,8 @@ cross-cutting. `tools/content/tests/test_ci_order.py` asserts CI runs every chec
 Patterns take `**`, which crosses directories, and `*` and `?`, which do not; nothing else. Every pattern matching a path contributes
 (the union, never a subtraction). A check's value is `true`, `"*"` (the whole suite), or a list of
 names: files relative to the check's directory, globs expanded against the tree, or `{self}` for
-the changed file itself. The whole suite wins over named files.
+the changed file itself. The whole suite wins over named files. A check may name `covered_by`
+another check (`unit-related` by `unit`): when that one runs whole, this one is not printed.
 
 A path no pattern names falls back to the full required suites (the map's `fallback`) and is
 printed as UNMATCHED, on stdout among the comments and on stderr, so the map can be extended. It
@@ -62,6 +63,7 @@ class Check:
     whole: str | None
     each: bool
     names_in: str  # the directory named files are relative to (default: the check's cwd)
+    covered_by: str | None = None  # a check whose whole form already runs this one: not printed then
 
 
 @dataclass
@@ -91,10 +93,13 @@ class Result:
 
 def load_map_data(data: dict) -> Map:
     checks = [
-        Check(c["id"], c.get("cwd", "."), c["run"], c.get("whole"), bool(c.get("each")), c.get("names_in", c.get("cwd", ".")))
+        Check(c["id"], c.get("cwd", "."), c["run"], c.get("whole"), bool(c.get("each")), c.get("names_in", c.get("cwd", ".")), c.get("covered_by"))
         for c in data["checks"]
     ]
     known = {c.id for c in checks}
+    for c in checks:
+        if c.covered_by is not None and c.covered_by not in known:
+            raise ValueError(f"{c.id}: covered_by names unknown check {c.covered_by}")
     patterns = [Pattern(p["pattern"], dict(p.get("checks", {})), p.get("reason", "")) for p in data["patterns"]]
     fallback = dict(data["fallback"]["checks"])
     for where, wanted in [(p.pattern, p.checks) for p in patterns] + [("fallback", fallback)]:
@@ -172,6 +177,8 @@ def checks_for(paths: list[str], the_map: Map, root: Path = ROOT) -> Result:
         value = wanted.get(check.id)
         if value is None:
             continue
+        if check.covered_by and wanted.get(check.covered_by) == "*":
+            continue  # the cover's whole suite already runs everything this one would
         if value == "*" or (value is True and check.whole):
             commands.append((check.id, check.cwd, check.whole or check.run))
         elif value is True:
