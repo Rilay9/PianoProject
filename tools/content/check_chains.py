@@ -113,6 +113,7 @@ from pathlib import Path
 import yaml
 
 import owner_asks as owner_work
+import review_closure as review_closure_guard
 
 ROOT = Path(__file__).resolve().parents[2]
 CHAINS_GLOB = "docs/chains/*.yaml"
@@ -791,6 +792,13 @@ def main(argv: list[str] | None = None) -> int:
             Failure(path, "owner work", message)
             for path, message in owner_work.problems(root)
         ]
+        review_problems, open_requirements = review_closure_guard.scan(root)
+        failures += [
+            Failure(path, "review closure", message)
+            for path, message in review_problems
+        ]
+        notes += [f"review closure: {len(open_requirements)} open requirement(s)"]
+        notes += [f"  OPEN {req.ident} from {req.source}: {req.text}" for req in open_requirements]
 
     for failure in failures:
         print(failure.line())
