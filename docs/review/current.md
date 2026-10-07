@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/ph2-look.md` — **response required** before PH2 ships: choose the split-bar look from the pictures; whether dense-analysis pieces get a chart door; the checks.json rows; four builder choices. PH2's code is held unpushed.
 - `handoffs/bb2-pf3-landing.md` — **response required**: BB2 (Insensatez on jazz.6, the ear drill as jazz.5 review, the lesson text) and PF3 (the ability-journey scope), with the clause map for `A7b1-insensatez-jazz6`, `PF1-ability-journey-scope` and `A7b1-zero-preflight-before-reviewed`.
 - `handoffs/pf2-landing.md` — **response required**: PF2's three ruled changes with their clause map; strict mode in `ci.yml` rather than docs-integrity; A7b.1's journey asserting its own requirement or the whole rung.
 - `handoffs/a7a-drafts.md` — **response required** before the St James and Blues Riff probes: the A7a.3 and A7a.1 drafts, their ids, eight design decisions, and an app-wide gap (rung requirements never read which hands a run played).

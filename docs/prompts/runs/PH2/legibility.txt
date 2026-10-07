@@ -1,0 +1,72 @@
+﻿phone-sideways-568x320: 1212 split or conflicted bars in 128 charts
+    766  boxes at 20px
+    173  placed over the rule at 16px, 2 lines
+     51  boxes at 19px
+     45  boxes at 18px
+     43  boxes at 16px
+     35  placed over the rule at 16px, 1 line
+     21  boxes at 17px
+     18  in order over the rule at 14px, wrapped to 2 lines
+     13  placed over the rule at 14px, 2 lines
+     12  placed over the rule at 13px, 2 lines
+     11  placed over the rule at 15px, 2 lines
+      9  in order over the rule at 14px, wrapped to 3 lines
+      8  placed over the rule at 15px, 1 line
+      5  placed over the rule at 14px, 1 line
+      1  in order over the rule at 14px, wrapped to 4 lines
+      1  in order over the rule at 14px, one line
+  by segments (boxes / placed / in order): 1 segment 15/0/0, 2 segments 851/133/0, 3 segments 43/86/4, 4 segments 17/33/17, 5 segments 0/1/6, 6 segments 0/4/2
+phone-sideways-780x360: 1212 split or conflicted bars in 128 charts
+    522  boxes at 20px
+    326  placed over the rule at 16px, 2 lines
+     61  in order over the rule at 14px, wrapped to 2 lines
+     50  boxes at 16px
+     39  boxes at 18px
+     38  boxes at 17px
+     33  placed over the rule at 16px, 1 line
+     28  boxes at 19px
+     25  in order over the rule at 14px, wrapped to 3 lines
+     17  placed over the rule at 14px, 2 lines
+     17  placed over the rule at 15px, 1 line
+     16  placed over the rule at 13px, 2 lines
+     16  placed over the rule at 14px, 1 line
+     13  in order over the rule at 14px, wrapped to 4 lines
+     10  placed over the rule at 15px, 2 lines
+      1  in order over the rule at 14px, wrapped to 5 lines
+  by segments (boxes / placed / in order): 1 segment 15/0/0, 2 segments 638/346/0, 3 segments 19/82/32, 4 segments 5/7/55, 5 segments 0/0/7, 6 segments 0/0/6
+phone-upright-342x740: 1212 split or conflicted bars in 128 charts
+    496  boxes at 20px
+    337  placed over the rule at 16px, 2 lines
+     67  boxes at 16px
+     64  in order over the rule at 14px, wrapped to 2 lines
+     40  boxes at 17px
+     33  boxes at 19px
+     30  boxes at 18px
+     29  in order over the rule at 14px, wrapped to 3 lines
+     25  placed over the rule at 16px, 1 line
+     23  placed over the rule at 14px, 1 line
+     19  placed over the rule at 13px, 2 lines
+     14  in order over the rule at 14px, wrapped to 4 lines
+     12  placed over the rule at 15px, 1 line
+     11  placed over the rule at 15px, 2 lines
+     11  placed over the rule at 14px, 2 lines
+      1  in order over the rule at 14px, wrapped to 5 lines
+  by segments (boxes / placed / in order): 1 segment 15/0/0, 2 segments 627/357/0, 3 segments 19/76/38, 4 segments 5/5/57, 5 segments 0/0/7, 6 segments 0/0/6
+tablet-1024x768: 1212 split or conflicted bars in 128 charts
+    798  boxes at 20px
+    156  placed over the rule at 16px, 2 lines
+     48  boxes at 16px
+     43  boxes at 17px
+     42  boxes at 19px
+     27  placed over the rule at 16px, 1 line
+     27  boxes at 18px
+     17  in order over the rule at 14px, wrapped to 2 lines
+     12  placed over the rule at 14px, 2 lines
+     11  placed over the rule at 13px, 2 lines
+      9  placed over the rule at 15px, 2 lines
+      8  placed over the rule at 14px, 1 line
+      7  in order over the rule at 14px, wrapped to 3 lines
+      5  placed over the rule at 15px, 1 line
+      1  in order over the rule at 14px, wrapped to 4 lines
+      1  in order over the rule at 15px, one line
+  by segments (boxes / placed / in order): 1 segment 15/0/0, 2 segments 868/116/0, 3 segments 55/74/4, 4 segments 20/33/14, 5 segments 0/1/6, 6 segments 0/4/2
