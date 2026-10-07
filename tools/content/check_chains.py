@@ -27,7 +27,9 @@ itself with one line, ``ability: <id>`` (the id in ABILITY-MAP.md's form, FABLE.
 brief that carries the line must have the headings Instructional chain, Failure route and Independence
 test, and a record ``docs/chains/<id>.yaml`` that passes (a ``draft`` passes, its unresolved refs
 listed with every record's). A brief without the line is not linted; the run says how many were
-skipped.
+skipped. The same flag also runs the fail-closed owner-work guard on post-baseline immutable reviewer
+handoffs, because full CI deliberately ignores ``docs/review/**`` and docs-integrity is the runner
+that sees a handoff-only push.
 
 ``--tools`` prints the tool vocabulary.
 
@@ -108,6 +110,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
+
+import owner_asks as owner_work
 
 ROOT = Path(__file__).resolve().parents[2]
 CHAINS_GLOB = "docs/chains/*.yaml"
@@ -770,6 +774,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.lint_briefs:
         got_failures, notes = lint_briefs(root, resolver, tools)
         failures += got_failures
+        failures += [
+            Failure(path, "owner work", message)
+            for path, message in owner_work.problems(root)
+        ]
 
     for failure in failures:
         print(failure.line())
