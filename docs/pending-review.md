@@ -43872,3 +43872,13 @@ Each class has broken records that fail it; 42 tests.
 **Checks.** At landing: the content build passes; the whole content Python suite, 2,050 OK; `npx tsc -b` and lint clean; the whole unit suite, the one red the standing blues.3.
 
 **Open.** The preflight's class 4 learning the field (lane PF4, building); the learner-facing line, with the first placement.
+
+### Entry 280 — PF4: the chain preflight reads hands: both
+
+**What a learner meets.** Nothing directly. Scoreboard 1/28.
+
+**Done.** Class 4 of `tools/content/preflight_chains.py` reads `hands` on each runs requirement. For `hands: both`, a step the record says counts fails when it plays one hand, keyed on the hands played and never on the word Duet: the scaffold "app plays the other hand", a hand named without both-hands wording, or an item the hand-reading class reads as one hand; an `evidence.updates` clause claiming a one-hand run counts fails; a value other than `both` fails; a one-hand step that claims nothing is not applicable. The requirement label prints `hands both` only when the field is present. 12 tests, red first (9 red before). Every record's report is identical before and after, as no stage file carries the field yet.
+
+**Checks.** At landing: the preflight and CI-order tests OK; `--strict` on the real tree exits 0 (A7c.1 shipped 0 FAIL; A7b.1 0 FAIL; the A7a drafts reported).
+
+**Open.** Class 6's journey simulation still treats a claimed Keep tempo step as holding its requirement whatever its hands; class 4 catches the defect first.

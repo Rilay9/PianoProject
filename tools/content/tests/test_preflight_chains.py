@@ -590,6 +590,137 @@ class Class4CountedItems(unittest.TestCase):
         self.assertEqual(verdicts(run(rec, context()), 4)[None], pf.FAIL)
 
 
+def hands_both(ctx: pf.Context, *which: int) -> pf.Context:
+    """The constructed tree with ``hands: both`` on the given requirements of t.2 (1 = the exercises one, 2 = the songs one)."""
+    for k in which:
+        ctx.lesson("t.2")[2]["requirements"][k - 1]["hands"] = "both"
+    return ctx
+
+
+def duet_step(tool: str = "Duet", scaffold=None, action: str = "Plays the left hand of the cell in C alone, choosing L, "
+              "while the app plays the right hand. This is the counted run.") -> dict:
+    return step(tool, "generated", "exercise.cell.c", action, "A session row that counts toward the exercises requirement.",
+                scaffold or ["notation", "app plays the other hand"])
+
+
+class Class4HandsBoth(unittest.TestCase):
+    """PF4 (A7a-hands-both-requirement): a runs requirement with ``hands: both`` counts only a run whose hands.played is
+    both; the record may not count a one-hand run toward it, in a step or in an update."""
+
+    def test_a_both_hands_keep_tempo_step_passes_a_hands_both_requirement(self):
+        results = run(record(), hands_both(context(), 1))
+        self.assertEqual(verdicts(results, 4)[None], pf.PASS, evidence(results, 4, None))
+        self.assertEqual(verdicts(results, 4)[5], pf.PASS, evidence(results, 4, 5))
+        self.assertIn("hands both", evidence(results, 4, 5))
+
+    def test_broken_a_duet_step_counted_for_a_hands_both_requirement_fails(self):
+        rec = record()
+        rec["steps"].append(duet_step())
+        results = run(rec, hands_both(context(), 1))
+        self.assertEqual(verdicts(results, 4)[9], pf.FAIL, evidence(results, 4, 9))
+        self.assertIn("counts hands both; this step plays one hand", evidence(results, 4, 9))
+        self.assertIn("the app plays the other hand", evidence(results, 4, 9))
+        self.assertEqual(verdicts(results, 4)[None], pf.FAIL)
+        self.assertIn("step 9 says its run counts toward requirement 1, which counts only runs with hands both",
+                      evidence(results, 4, None))
+
+    def test_broken_the_same_step_without_the_word_duet_fails_on_the_hands_played(self):
+        rec = record()
+        rec["steps"].append(duet_step(tool="Keep tempo"))
+        results = run(rec, hands_both(context(), 1))
+        self.assertEqual(verdicts(results, 4)[9], pf.FAIL, evidence(results, 4, 9))
+        self.assertIn("the app plays the other hand", evidence(results, 4, 9))
+
+    def test_broken_a_keep_tempo_step_naming_one_hand_for_a_hands_both_requirement_fails(self):
+        rec = record()
+        rec["steps"].append(duet_step(tool="Keep tempo", scaffold=["notation"],
+                                      action="Plays the left hand of the cell in C in Keep tempo. This is the counted run."))
+        results = run(rec, hands_both(context(), 1))
+        self.assertEqual(verdicts(results, 4)[9], pf.FAIL, evidence(results, 4, 9))
+        self.assertIn("the step names hand L alone", evidence(results, 4, 9))
+
+    def test_a_step_that_says_both_hands_is_not_read_as_one_hand(self):
+        rec = record()
+        rec["steps"].append(duet_step(tool="Keep tempo", scaffold=["notation"],
+                                      action="Plays the cell in C with both hands, the left hand under the right. "
+                                             "This is the counted run."))
+        results = run(rec, hands_both(context(), 1))
+        self.assertEqual(verdicts(results, 4)[9], pf.PASS, evidence(results, 4, 9))
+
+    def test_broken_a_counted_run_of_an_item_the_hand_reading_class_reads_as_one_hand_fails(self):
+        # The songs requirement names the left-hand cut: no run of it can record both hands.
+        results = run(record(), hands_both(context(), 2))
+        self.assertEqual(verdicts(results, 4)[6], pf.FAIL, evidence(results, 4, 6))
+        self.assertIn("reads excerpt.p.b1-4.lh as hand L only", evidence(results, 4, 6))
+
+    def test_a_one_hand_step_that_claims_nothing_would_count_nothing_and_is_not_applicable(self):
+        rec = record()
+        rec["steps"].append(duet_step(tool="Keep tempo", scaffold=["notation"],
+                                      action="Plays the left hand of the cell in C in Keep tempo."))
+        rec["steps"][-1]["recorded"] = "A session row with hands.appPlayed."
+        results = run(rec, hands_both(context(), 1))
+        self.assertEqual(verdicts(results, 4)[9], pf.NA, evidence(results, 4, 9))
+        self.assertIn("nothing would count: the run plays one hand", evidence(results, 4, 9))
+        self.assertEqual(verdicts(results, 4)[None], pf.PASS, evidence(results, 4, None))
+
+    def test_broken_an_update_saying_a_one_hand_run_counts_fails(self):
+        rec = record()
+        rec["evidence"]["updates"][0] = ("One Keep tempo run of exercise.cell.c with the left hand alone at the pass "
+                                         "pair, opened from t.2.")
+        results = run(rec, hands_both(context(), 1))
+        self.assertEqual(verdicts(results, 4)[None], pf.FAIL)
+        self.assertIn("update 1 says a one-hand run of exercise.cell.c counts, and requirement 1 counts it only with hands both",
+                      evidence(results, 4, None))
+
+    def test_an_update_saying_both_hands_passes(self):
+        rec = record()
+        rec["evidence"]["updates"][0] = ("One Keep tempo run of exercise.cell.c with both hands at the pass pair, "
+                                         "opened from t.2.")
+        results = run(rec, hands_both(context(), 1))
+        self.assertEqual(verdicts(results, 4)[None], pf.PASS, evidence(results, 4, None))
+
+    def test_broken_a_hands_value_the_requirement_type_does_not_read(self):
+        ctx = context()
+        ctx.lesson("t.2")[2]["requirements"][0]["hands"] = "left"
+        results = run(record(), ctx)
+        self.assertEqual(verdicts(results, 4)[None], pf.FAIL)
+        self.assertIn("carries hands 'left'", evidence(results, 4, None))
+
+    def test_a_requirement_without_hands_behaves_exactly_as_before(self):
+        # The same Duet step, counted, on the constructed tree with no hands field: the old verdict and evidence, and no
+        # hands wording anywhere.
+        rec = record()
+        rec["steps"].append(duet_step())
+        results = run(rec, context())
+        self.assertEqual(verdicts(results, 4)[9], pf.FAIL)
+        self.assertIn("the rung would not count it", evidence(results, 4, 9))
+        self.assertNotIn("hands both", evidence(results, 4, 9) + evidence(results, 4, None))
+        self.assertNotIn("one hand", evidence(results, 4, 9) + evidence(results, 4, None))
+        self.assertEqual(verdicts(results, 4)[None], pf.PASS)
+        # a one-hand Keep tempo step that says it counts toward nothing, on a requirement without hands, is still a leak
+        rec = record()
+        rec["steps"].append(duet_step(tool="Keep tempo", scaffold=["notation"],
+                                      action="Plays the left hand of the cell in C. This counts toward nothing."))
+        self.assertEqual(verdicts(run(rec, context()), 4)[9], pf.FAIL)
+        # a one-hand Keep tempo step that is silent, on a requirement without hands, would still count and is a FAIL
+        rec = record()
+        rec["steps"].append(duet_step(tool="Keep tempo", scaffold=["notation"],
+                                      action="Plays the left hand of the cell in C."))
+        rec["steps"][-1]["recorded"] = "A session row."
+        self.assertEqual(verdicts(run(rec, context()), 4)[9], pf.FAIL)
+
+    def test_counted_by_prints_hands_both_in_its_label_and_only_then(self):
+        ctx = context()
+        lesson = ctx.lesson("t.2")[2]
+        self.assertEqual(pf.counted_by("exercise.cell.c", lesson),
+                         ["requirement 1 (runs from exercises, items ['exercise.cell.c'])"])
+        hands_both(ctx, 1)
+        self.assertEqual(pf.counted_by("exercise.cell.c", lesson),
+                         ["requirement 1 (runs from exercises, hands both, items ['exercise.cell.c'])"])
+        lesson["requirements"][0].pop("items")
+        self.assertIn("hands both, unnamed: any of its", pf.counted_by("exercise.cell.c", lesson)[0])
+
+
 class Class5TaughtSet(unittest.TestCase):
     def test_a_generated_item_asking_only_what_its_rung_taught_passes(self):
         self.assertEqual(verdicts(run(record(), context()), 5)[3], pf.PASS)

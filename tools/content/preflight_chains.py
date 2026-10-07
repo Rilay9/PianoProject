@@ -43,6 +43,12 @@ The six seed classes, each found by the A7c.1 slice (Entries 241-270 of ``docs/p
     update's item is counted by a requirement, the counts agree, an unnamed pool counts nothing a step or
     ``never_credits`` says never counts, and every rung requirement has an update. Per step: a step that says its run
     counts is on a counting tool with a counted item; a step that says it counts toward nothing would not be counted.
+    A requirement may carry ``hands: "both"`` (PF4, ``A7a-hands-both-requirement``): rung completion then counts only
+    a run whose recorded ``hands.played`` is both, so a step the record says counts for it must play both hands, and no
+    update may say a one-hand run counts. One hand is read from what is played, never from the word Duet: the app
+    playing the other hand (the scaffold; the Duet tool is that toggle), a hand the step names with no both-hands
+    wording, or an item the hand-reading class (1) reads as one hand only. A requirement without ``hands`` is read
+    exactly as before.
  5. **Taught-set hold** (SR1-SR4, Entries 251, 258, 262, 264; the untaught-options probe). No generated item a step
     uses asks a demand its rung has not taught: ``claims.untaught_on`` (the build's twin of the app's coping question:
     ``asked_of``, ``rung_ancestry``, ``taughtAt``, taught positions) on the item's measured demands at the placed rung.
@@ -960,20 +966,59 @@ def check_reachability(rec: dict, ctx: Context, placement: Placement) -> list[Re
 # --------------------------------------------------------------------------------------
 
 
-def counted_by(item_id: str, lesson: dict) -> list[str]:
-    """The requirements of the rung that would count a run of ``item_id``: named in ``items``, or in an unnamed pool."""
+#: PF4 (``A7a-hands-both-requirement``, ruling ``docs/review/responses/a7a-drafts.md``): a runs requirement may carry
+#: ``hands: "both"``; rung completion then counts only runs whose recorded ``hands.played`` is both.
+HANDS_BOTH = "both"
+#: Prose that says a run plays both hands (it clears a hand word elsewhere in the same text).
+BOTH_HANDS_SAID = re.compile(r"\bboth hands\b|\bhands together\b|\btwo hands\b|\bhands-together\b", re.I)
+#: Prose of an ``evidence.updates`` clause that says one hand plays: a named hand, one hand, the app taking the other
+#: hand, the Duet toggle (what the app calls that), a hand-only run.
+ONE_HAND_SAID = re.compile(
+    r"\bleft[- ]hand\b|\bright[- ]hand\b|\bone[- ]hand\b|\bbass alone\b|\bapp plays the other hand\b|\bduet\b|"
+    r"\bhand alone\b|\bhands? only\b", re.I)
+
+
+def counting_requirements(item_id: str, lesson: dict) -> list[tuple[int, dict, str]]:
+    """The runs requirements of the rung that would count a run of ``item_id``: (number, requirement, label). Named in
+    ``items``, or the item is in an unnamed pool. The label says ``hands both`` when the requirement carries it (PF4)."""
     ex, songs = rung_options(lesson)
     pools = {"exercises": ex, "songs": songs}
     found = []
     for k, req in enumerate(lesson.get("requirements") or [], 1):
         if req.get("kind") != "runs":
             continue
+        hands = f", hands {req['hands']}" if req.get("hands") else ""
         if req.get("items"):
             if item_id in req["items"]:
-                found.append(f"requirement {k} (runs from {req.get('from')}, items {req['items']})")
+                found.append((k, req, f"requirement {k} (runs from {req.get('from')}{hands}, items {req['items']})"))
         elif item_id in pools.get(req.get("from"), []):
-            found.append(f"requirement {k} (runs from {req.get('from')}, unnamed: any of its {len(pools.get(req.get('from'), []))} options)")
+            found.append((k, req, f"requirement {k} (runs from {req.get('from')}{hands}, unnamed: any of its "
+                                  f"{len(pools.get(req.get('from'), []))} options)"))
     return found
+
+
+def counted_by(item_id: str, lesson: dict) -> list[str]:
+    """The requirements of the rung that would count a run of ``item_id``: named in ``items``, or in an unnamed pool."""
+    return [label for _k, _req, label in counting_requirements(item_id, lesson)]
+
+
+def one_hand_reasons(step: dict, row: dict | None) -> list[str]:
+    """Why a step plays one hand, keyed on the hands played and never on a word alone (PF4). The app taking the other
+    hand (the scaffold's ``app plays the other hand``, which sets ``hands.appPlayed``; the Duet tool is that toggle's name
+    and exists only for a one-hand choice, ``otherExists``), a hand the step names with no both-hands wording (the
+    hand-reading class's ``step_hand``), or an item the hand-reading class (1) reads as one hand only
+    (``hands_present``: a one-staff cut, a one-hand span), whose run can never record both."""
+    reasons = []
+    if scaffold_has(step, "app plays the other hand") or norm(step.get("tool")) == "duet":
+        reasons.append("the app plays the other hand, so the run's hands.played is one hand")
+    named = step_hand(step)
+    if named and not BOTH_HANDS_SAID.search(step_text(step)):
+        reasons.append(f"the step names hand {named} alone")
+    if row is not None:
+        present = hands_present(row)
+        if len(present) == 1:
+            reasons.append(f"the hand-reading class reads {row.get('id')} as hand {sorted(present)[0]} only")
+    return reasons
 
 
 def check_counted(rec: dict, ctx: Context, placement: Placement) -> list[Result]:
@@ -1012,6 +1057,18 @@ def check_counted(rec: dict, ctx: Context, placement: Placement) -> list[Result]
                     negative.add(item)
                 else:
                     positive.append((k, item, clause))
+    for k, req in enumerate(requirements, 1):
+        if req.get("kind") == "runs" and req.get("hands") not in (None, HANDS_BOTH):
+            record.verdict = FAIL
+            record.evidence.append(f"FAIL: requirement {k} carries hands {req.get('hands')!r}; the only value the "
+                                   f"requirement type reads is {HANDS_BOTH!r} (A7a-hands-both-requirement)")
+    for u, item, clause in positive:
+        hands_reqs = [(k, label) for k, req, label in counting_requirements(item, lesson) if req.get("hands") == HANDS_BOTH]
+        if hands_reqs and ONE_HAND_SAID.search(clause) and not BOTH_HANDS_SAID.search(clause):
+            record.verdict = FAIL
+            record.evidence.append(f"FAIL: update {u} says a one-hand run of {item} counts, and requirement "
+                                   f"{hands_reqs[0][0]} counts it only with hands both (a run records what was played, "
+                                   f"hands.played): \"{clause.strip()[:140]}\"")
     # Steps that say they count toward nothing name items that must never be counted.
     not_counted_steps: dict[str, list[int]] = {}
     for n, step in enumerate(rec.get("steps") or [], 1):
@@ -1080,22 +1137,40 @@ def check_counted(rec: dict, ctx: Context, placement: Placement) -> list[Result]
         said = " ".join(str(step.get(k) or "") for k in ("recorded", "action"))
         item_id, _bars = ctx.item_for((step.get("content") or {}).get("ref"))
         counts_tool = tool in COUNTING_TOOLS and not (scaffold_has(step, "loop") or re.search(r"\blooped\b", said, re.I))
-        where = counted_by(item_id, lesson) if item_id else []
+        reqs_here = counting_requirements(item_id, lesson) if item_id else []
+        where = [label for _k, _req, label in reqs_here]
+        # PF4: a requirement with ``hands: both`` counts a run only when both hands were played.
+        one_hand = (one_hand_reasons(step, ctx.by_id.get(item_id))
+                    if any(r.get("hands") == HANDS_BOTH for _k, r, _l in reqs_here) else [])
+        blocked = [(k, label) for k, req, label in reqs_here if req.get("hands") == HANDS_BOTH and one_hand]
+        would_where = [label for _k, req, label in reqs_here if not (req.get("hands") == HANDS_BOTH and one_hand)]
         claims_no = bool(CLAIMS_NOT_COUNTED.search(said))
         claims_yes = bool(CLAIMS_COUNTED.search(said)) and not claims_no
         ev = [f"tool {step.get('tool')!r} ({'a counting tool' if counts_tool else 'never counted (MODE-SHEET R3/R4, section 14, RG1)'}); "
               f"{item_id or (step.get('content') or {}).get('ref')}: "
               + (", ".join(where) if where else f"counted by no requirement of {rung}")]
+        if blocked:
+            ev.append(f"requirement {blocked[0][0]} counts hands both; this step plays one hand: " + "; ".join(one_hand))
         if claims_yes:
-            ok = counts_tool and bool(where)
+            hands_fail = bool(blocked) and not would_where
+            ok = counts_tool and bool(where) and not hands_fail
             ev.append("the step says its run counts")
-            out.append(Result(4, n, PASS if ok else FAIL, ev + ([] if ok else ["FAIL: the step says it counts; the rung would not count it"])))
+            if hands_fail:
+                record.verdict = FAIL
+                record.evidence.append(f"FAIL: step {n} says its run counts toward requirement {blocked[0][0]}, which counts "
+                                       f"only runs with hands both; it plays one hand ({'; '.join(one_hand)})")
+                ev.append("FAIL: the step says it counts; the requirement counts only a both-hands run and this one plays one hand")
+            elif not ok:
+                ev.append("FAIL: the step says it counts; the rung would not count it")
+            out.append(Result(4, n, PASS if ok else FAIL, ev))
         elif claims_no:
-            leak = counts_tool and bool(where)
+            leak = counts_tool and bool(would_where)
             ev.append("the step says its run counts toward nothing")
             out.append(Result(4, n, FAIL if leak else PASS, ev + (["FAIL: the rung would count this run"] if leak else [])))
-        elif counts_tool and where:
+        elif counts_tool and would_where:
             out.append(Result(4, n, FAIL, ev + ["FAIL: the run would count and the step does not say so"]))
+        elif counts_tool and blocked:
+            out.append(Result(4, n, NA, ev + ["no claim either way, and nothing would count: the run plays one hand"]))
         else:
             out.append(Result(4, n, NA, ev + ["no claim either way, and nothing would count"]))
     return out
