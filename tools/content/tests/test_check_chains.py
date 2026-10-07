@@ -590,6 +590,35 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
         failures, _ = check(rec)
         self.assertNotIn("acceptance_test", fields(failures))
 
+    # R9 (the owner, 2026-10-06: shipping needs an automated journey through the visible path) ----
+    def test_r9_shipped_without_a_journey(self):
+        rec = load()
+        rec["status"] = "shipped"
+        rec.pop("acceptance_journey", None)
+        self.assertIn("acceptance_journey", fields(check(rec)[0]))
+
+    def test_r9_journey_that_is_not_a_browser_spec(self):
+        rec = load()
+        rec["status"] = "shipped"
+        rec["acceptance_journey"] = "app/tests/unit/latin4Completion.test.ts"
+        journey = [f for f in check(rec)[0] if f.field == "acceptance_journey"]
+        self.assertEqual(len(journey), 1)
+        self.assertIn("not a browser spec", journey[0].message)
+
+    def test_r9_journey_that_does_not_exist(self):
+        rec = load()
+        rec["status"] = "shipped"
+        rec["acceptance_journey"] = "app/tests/e2e/no-such-journey.spec.ts"
+        journey = [f for f in check(rec)[0] if f.field == "acceptance_journey"]
+        self.assertEqual(len(journey), 1)
+        self.assertIn("does not exist", journey[0].message)
+
+    def test_r9_an_existing_browser_spec_passes_that_rule(self):
+        rec = load()
+        rec["status"] = "shipped"
+        rec["acceptance_journey"] = "app/tests/e2e/chart-backing.spec.ts"
+        self.assertNotIn("acceptance_journey", fields(check(rec)[0]))
+
     def test_a_draft_needs_no_acceptance_path(self):
         rec = load()
         rec.pop("acceptance_test", None)

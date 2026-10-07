@@ -18,6 +18,9 @@ nothing else:
      musical properties, each with how it is established or UNKNOWN; a mechanical CONTROL
      (``presented_as: drill``) lists none and none is required;
  R8  ``status: shipped`` requires an acceptance-test path that exists.
+ R9  ``status: shipped`` requires ``acceptance_journey``: an existing browser spec under
+     ``app/tests/e2e/`` (``*.spec.ts``) that drives the visible path. It enforces FABLE sections 1
+     and 9 (objective acceptance is automated, never assigned to the owner; the owner, 2026-10-06).
 
 ``--lint-briefs`` also reads ``docs/prompts/runs/*/briefs/*.md``. A major curriculum brief declares
 itself with one line, ``ability: <id>`` (the id in ABILITY-MAP.md's form, FABLE.md section 3). Every
@@ -75,6 +78,7 @@ Decisions the brief took (briefs/chain-record-checker.md, "Decisions taken here"
 Fields this script adds to FABLE section 3's shape, because a rule needs somewhere to read:
  * ``steps[].no_removal_reason`` (optional): the one-line reason of R4.
  * ``acceptance_test`` (top level, optional): the acceptance-test path R8 reads.
+ * ``acceptance_journey`` (top level, optional until shipped): the browser spec R9 reads.
  * ``content`` is one mapping and ``tool`` one string per step; a row with two items or two tools is
    written as two steps.
 
@@ -644,7 +648,18 @@ def check_record(rec, file: str, resolver: Resolver, tools: dict[str, str] | Non
             fail("acceptance_test", "status is shipped: name the acceptance-test path")
         elif not (resolver.root / str(path)).exists():
             fail("acceptance_test", f"{path!r} does not exist")
+
+    # R9 -- shipped needs an automated browser journey through the visible path ---------
+    if status == "shipped":
+        journey = rec.get("acceptance_journey")
+        if _blank(journey):
+            fail("acceptance_journey", "status is shipped: name the browser spec that drives the visible path")
+        elif not (str(journey).startswith("app/tests/e2e/") and str(journey).endswith(".spec.ts")):
+            fail("acceptance_journey", f"{journey!r} is not a browser spec under app/tests/e2e/")
+        elif not (resolver.root / str(journey)).exists():
+            fail("acceptance_journey", f"{journey!r} does not exist")
     return failures, unresolved
+
 
 
 def check_file(path: Path, resolver: Resolver, tools: dict[str, str], root: Path = ROOT):
