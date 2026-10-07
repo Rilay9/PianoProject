@@ -1,0 +1,108 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/generatedIdentityContinuity.test.ts (10 tests | 5 failed) 185ms
+   ❯ the built catalogue carries the relation for the unchanged siblings and only them (7)
+     × guard 1: an unchanged octave tremolo’s v1 identity resolves to its v2 row 25ms
+     × guard 2: an unchanged blues-form pentatonic’s v1 identity resolves to its v2 row 13ms
+     × guard 3: a changed third tremolo’s or pentatonic-form item’s v1 identity does not resolve as its v2 material 12ms
+     × guard 4: the current review identity is the new exact identity; sameIdentity never reads the relation 14ms
+     × every former generator identity on the catalogue is its row’s identity at an earlier version, never a current one 20ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/generatedIdentityContinuity.test.ts > the built catalogue carries the relation for the unchanged siblings and only them > guard 1: an unchanged octave tremolo’s v1 identity resolves to its v2 row
+AssertionError: exercise.tremolo.c.left: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ tests/unit/generatedIdentityContinuity.test.ts:80:40
+     78|       const current = identityOf(item);
+     79|       const old = atVersion(item, 1);
+     80|       expect(current.version, item.id).toBe(2);
+       |                                        ^
+     81|       expect(item.provenance?.formerGeneratorIdentities, item.id).toEq…
+     82|       expect(sameMaterial(old, current), item.id).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/generatedIdentityContinuity.test.ts > the built catalogue carries the relation for the unchanged siblings and only them > guard 2: an unchanged blues-form pentatonic’s v1 identity resolves to its v2 row
+AssertionError: exercise.pentatonic.a.blues: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ tests/unit/generatedIdentityContinuity.test.ts:93:40
+     91|       const current = identityOf(item);
+     92|       const old = atVersion(item, 1);
+     93|       expect(current.version, item.id).toBe(2);
+       |                                        ^
+     94|       expect(item.provenance?.formerGeneratorIdentities, item.id).toEq…
+     95|       expect(sameMaterial(old, current), item.id).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/generatedIdentityContinuity.test.ts > the built catalogue carries the relation for the unchanged siblings and only them > guard 3: a changed third tremolo’s or pentatonic-form item’s v1 identity does not resolve as its v2 material
+AssertionError: exercise.tremolo-third.c.left: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ tests/unit/generatedIdentityContinuity.test.ts:105:40
+    103|       const current = identityOf(item);
+    104|       const old = atVersion(item, 1);
+    105|       expect(current.version, item.id).toBe(2);
+       |                                        ^
+    106|       expect(item.provenance?.formerGeneratorIdentities, item.id).toBe…
+    107|       expect(sameMaterial(old, current), item.id).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/generatedIdentityContinuity.test.ts > the built catalogue carries the relation for the unchanged siblings and only them > guard 4: the current review identity is the new exact identity; sameIdentity never reads the relation
+AssertionError: exercise.tremolo.c.left: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/generatedIdentityContinuity.test.ts:119:95
+    117|       const current = identityOf(item);
+    118|       expect(generatorIdentity(item), item.id).toEqual(current);
+    119|       expect(sameIdentity(generatorIdentity(item) ?? undefined, atVers…
+       |                                                                                               ^
+    120|       for (const former of item.provenance?.formerGeneratorIdentities …
+    121|         expect(sameIdentity(former, current), item.id).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/generatedIdentityContinuity.test.ts > the built catalogue carries the relation for the unchanged siblings and only them > every former generator identity on the catalogue is its row’s identity at an earlier version, never a current one
+AssertionError: expected 0 to be greater than or equal to 10
+ ❯ tests/unit/generatedIdentityContinuity.test.ts:154:18
+    152|     }
+    153|     // The octave tremolos, the blues forms and the sixteenth syncopat…
+    154|     expect(rows).toBeGreaterThanOrEqual(OCTAVES.length + BLUES.length …
+       |                  ^
+    155|     expect(byId.get('exercise.syncopation.sixteenth')?.provenance?.for…
+    156|     expect(byId.get('exercise.syncopation.tied-across-bar')?.provenanc…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 5 passed (10)
+   Start at  21:31:40
+   Duration  2.20s (import 52%, transform 38%, tests 9%)
+
+exit 1

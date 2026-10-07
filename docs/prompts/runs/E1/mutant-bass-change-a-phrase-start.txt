@@ -1,0 +1,22 @@
+F...F
+======================================================================
+FAIL: test_3_a_window_starting_mid_phrase_is_not_met (tools.content.tests.test_excerpt_proposer.PhraseStart.test_3_a_window_starting_mid_phrase_is_not_met)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_excerpt_proposer.py", line 148, in test_3_a_window_starting_mid_phrase_is_not_met
+    self.assertFalse(part(window(ctx, 3, 6), "phraseStart").fired, "bar 3 is the middle of the first phrase")
+AssertionError: True is not false : bar 3 is the middle of the first phrase
+
+======================================================================
+FAIL: test_the_bass_changing_alone_marks_no_phrase (tools.content.tests.test_excerpt_proposer.PhraseStart.test_the_bass_changing_alone_marks_no_phrase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_excerpt_proposer.py", line 179, in test_the_bass_changing_alone_marks_no_phrase
+    self.assertFalse(start.fired)
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.021s
+
+FAILED (failures=2)
+exit 1

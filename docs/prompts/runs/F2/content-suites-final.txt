@@ -1,0 +1,20 @@
+﻿
+test_measured_truth.py exit 0
+test_taught_at.py exit 0
+test_validate*.py exit 0
+test_pdmx.py exit 0
+test_measured_demands.py exit 0
+
+Ran 50 tests in 4.890s
+OK
+Ran 18 tests in 0.095s
+OK
+Ran 106 tests in 1.256s
+OK
+Ran 123 tests in 6.311s
+OK (skipped=1)
+Ran 8 tests in 128.779s
+OK
+
+
+validate.py (final build) exit 0

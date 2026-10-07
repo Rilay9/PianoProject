@@ -1,0 +1,10 @@
+$ npm run lint
+# cwd: /c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693/app
+# CI=<unset>
+
+
+> pianopath@0.1.0 lint
+> eslint . --max-warnings=0
+
+
+# exit code: 0

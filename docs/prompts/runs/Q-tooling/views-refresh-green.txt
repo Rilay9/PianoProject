@@ -1,0 +1,14 @@
+$ (cwd .) python -m unittest discover -s tools/content/tests -t tools/content -p test_prompt_views*.py -v
+test_every_audit_part_has_a_view (tests.test_prompt_views.PromptViewsAreFresh.test_every_audit_part_has_a_view) ... ok
+test_every_series_has_a_view (tests.test_prompt_views.PromptViewsAreFresh.test_every_series_has_a_view) ... ok
+test_views_match_the_canonical_files (tests.test_prompt_views.PromptViewsAreFresh.test_views_match_the_canonical_files) ... ok
+test_fresh_views_on_github_s_runner_say_so (tests.test_prompt_views_refresh.OnATempTree.test_fresh_views_on_github_s_runner_say_so) ... ok
+test_on_github_s_runner_it_compares_and_writes_nothing (tests.test_prompt_views_refresh.OnATempTree.test_on_github_s_runner_it_compares_and_writes_nothing) ... ok
+test_the_validator_step_regenerates_stale_views (tests.test_prompt_views_refresh.OnATempTree.test_the_validator_step_regenerates_stale_views) ... ok
+test_validate_main_calls_the_step_before_its_verdict_line (tests.test_prompt_views_refresh.TheValidatorRunsItLast.test_validate_main_calls_the_step_before_its_verdict_line) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.098s
+
+OK
+exit 0

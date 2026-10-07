@@ -1,0 +1,14 @@
+HD2a evidence: song.classical.mozart-andante-in-b-flat-major-k-15ii.pdmx (scores/pdmx/QmX9MT7HTeyssTFnfaujN7cWs4cKzKzHftXDicWZ7pvNvf.mxl), identity sha256 09ff790188154b2c29cea5fe554648649d09664d24aa74f85c21c9292a1fb992
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 35-35 -> R
+  bar 35 (source measure 34) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @69 L [50] + v2 [70]
+  bar 35 onset 68 74/st1/v1/R:0.5 70/st1/v1/R:0.5 53/st2/v3/L:0.5
+  bar 35 onset 68.5 72/st1/v1/R:0.5 69/st1/v1/R:0.5 53/st2/v3/L:0.25
+  bar 35 onset 68.75 51/st2/v3/L:0.25
+  bar 35 onset 69 82/st1/v1/R:0.25 70/st1/v2/L/x:1 50/st2/v3/L:0.5
+  bar 35 onset 69.25 80/st1/v1/R:0.25
+  bar 35 onset 69.5 79/st1/v1/R:0.25 50/st2/v3/L:0.5
+  bar 35 onset 69.75 78/st1/v1/R:0.25
+

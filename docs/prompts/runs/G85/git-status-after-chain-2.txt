@@ -1,0 +1,8 @@
+ M app/src/ui/help.ts
+ M app/src/ui/screens/LibraryScreen.ts
+ M app/tests/e2e/library.spec.ts
+ M app/tests/e2e/projects.spec.ts
+ M app/tests/unit/projectLifecycle.test.ts
+?? app/playwright.g85-4433.config.ts
+?? app/tests/unit/libraryProjects.test.ts
+?? docs/prompts/runs/G85/

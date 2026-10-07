@@ -12,8 +12,15 @@ from __future__ import annotations
 from music21 import (chord, clef, harmony, instrument, interval, key, layout, metadata, meter,
                      note, pitch, stream, tempo)
 
-#: One chord root per bar, as scale degrees of the key: I I I I IV IV I I V IV I V.
-DEGREES = [0, 0, 0, 0, 5, 5, 0, 0, 7, 5, 0, 7]
+#: One chord root per bar, as intervals above the tonic: I I I I IV IV I I V IV I V.
+#: Intervals, not semitone counts, so the roots are spelled for the key as the
+#: shuffle figure below already is: five semitones above E flat is A flat, and a
+#: semitone count calls it G sharp.
+ROOT_INTERVALS = ("P1", "P1", "P1", "P1", "P4", "P4", "P1", "P1", "P5", "P4", "P1", "P5")
+
+#: The same form in semitones above the tonic, derived from the intervals rather
+#: than written a second time (the harmony families' test reads it).
+DEGREES = [interval.Interval(step).semitones for step in ROOT_INTERVALS]
 
 #: The shuffle figure: root, fifth, sixth, fifth of the chord. Written as
 #: intervals rather than semitone counts so the notes are spelled for the key --
@@ -25,7 +32,7 @@ SHUFFLE = ("P1", "P5", "M6", "P5")
 def roots(tonic: str) -> list[str]:
     """The twelve bars' chord roots, spelled for the key."""
     tonic_pitch = pitch.Pitch(f"{tonic}2")
-    return [tonic_pitch.transpose(step).name for step in DEGREES]
+    return [tonic_pitch.transpose(step).name for step in ROOT_INTERVALS]
 
 
 def build_twelve_bar(tonic: str, bpm: float) -> stream.Score:

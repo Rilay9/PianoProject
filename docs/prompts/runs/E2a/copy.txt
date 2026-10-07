@@ -1,0 +1,7 @@
+﻿
+robocopy kern exit 1
+robocopy musetrainer exit 1
+robocopy build/cache/convert exit 1
+robocopy build/positions-cache.json exit 1
+robocopy build/demands-cache.json exit 1
+robocopy build/notation-cache.json exit 1

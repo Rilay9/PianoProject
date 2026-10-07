@@ -1,0 +1,105 @@
+{
+ "bass": 0,
+ "kick": 0,
+ "snare": 0,
+ "hat": 0,
+ "bassHz": [],
+ "clicks": 22,
+ "accents": 6,
+ "starts": [
+  [
+   "accent",
+   0.1
+  ],
+  [
+   "click",
+   0.35
+  ],
+  [
+   "click",
+   0.6
+  ],
+  [
+   "click",
+   0.85
+  ],
+  [
+   "accent",
+   1.1
+  ],
+  [
+   "click",
+   1.35
+  ],
+  [
+   "click",
+   1.6
+  ],
+  [
+   "click",
+   1.85
+  ],
+  [
+   "accent",
+   2.1
+  ],
+  [
+   "click",
+   2.35
+  ],
+  [
+   "click",
+   2.6
+  ],
+  [
+   "click",
+   2.85
+  ],
+  [
+   "accent",
+   3.1
+  ],
+  [
+   "click",
+   3.35
+  ],
+  [
+   "click",
+   3.6
+  ],
+  [
+   "click",
+   3.85
+  ],
+  [
+   "accent",
+   4.1
+  ],
+  [
+   "click",
+   4.35
+  ],
+  [
+   "click",
+   4.6
+  ],
+  [
+   "click",
+   4.85
+  ],
+  [
+   "accent",
+   5.1
+  ],
+  [
+   "click",
+   5.35
+  ]
+ ],
+ "piano": 0,
+ "chips": {
+  "comp": "false",
+  "backing": "false"
+ },
+ "grid": "<div class=\"chart-grid\" id=\"chart-grid\"><div class=\"chart-cell\" data-bar=\"1\" data-match=\"idle\">C7</div><div class=\"chart-cell\" data-bar=\"2\" data-match=\"idle\">C7</div><div class=\"chart-cell\" data-bar=\"3\" data-match=\"idle\">C7</div><div class=\"chart-cell\" data-bar=\"4\" data-match=\"idle\">C7</div><div class=\"chart-cell\" data-bar=\"5\" data-match=\"idle\">F7</div><div class=\"chart-cell\" data-bar=\"6\">F7</div><div class=\"chart-cell\" data-bar=\"7\">C7</div><div class=\"chart-cell\" data-bar=\"8\">C7</div><div class=\"chart-cell\" data-bar=\"9\">G7</div><div class=\"chart-cell\" data-bar=\"10\">F7</div><div class=\"chart-cell\" data-bar=\"11\">C7</div><div class=\"chart-cell\" data-bar=\"12\">G7</div></div>"
+}

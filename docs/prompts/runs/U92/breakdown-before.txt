@@ -1,0 +1,4 @@
+$ (.) python docs/prompts/runs/U92/scripts-breakdown-before.py
+stack: 285 concept rows; count not on the line 71; read whole 31; digits whole, 'to practise' cut or gone 89; cut to another number 11; out of view 83
+wide: 285 concept rows; count not on the line 71; read whole 5; digits whole, 'to practise' cut or gone 58; cut to another number 0; out of view 151
+exit=0

@@ -1,0 +1,21 @@
+PYTHONIOENCODING=utf-8 python docs/prompts/runs/U82/scripts-gallery-extract.py compare docs/prompts/runs/U82/states-sideways-old.json docs/prompts/runs/U82/states-sideways-committed.json   # the tree before U74, then the committed tree
+arrangement--chunk--sideways--grand-staff: same — 2 shown, staff 52.5 px, scale 0.8244, zoom 1.75, share 0.822, window
+arrangement--chunk--sideways--one-staff: same — 1 shown, staff 112.1 px, scale 1.4018, zoom 2, share 0.658, window
+bar--740: same — 1 shown, staff 106.3 px, scale 1.3291, zoom 2, share 0.812, window
+bar--780: same — 1 shown, staff 112.1 px, scale 1.4018, zoom 2, share 0.794, window
+bar--long-title-740: same — 2 shown, staff 57.5 px, scale 0.9276, zoom 1.45, share 0.927, window
+bar--long-title-780: same — 2 shown, staff 58.4 px, scale 1.459, zoom 1, share 0.933, window
+layout--scroll--sideways: DIFFERS — shown None -> 2, staffPx None -> 62.3, pricedScale None -> 1.5573, room None -> 493
+layout--scroll--upright: DIFFERS — shown None -> 1, staffPx None -> 76.6, pricedScale None -> 1.9155, room None -> 182
+mode--free--sideways: same — 1 shown, staff 112.1 px, scale 1.4018, zoom 2, share 0.658, window
+mode--listen--sideways: same — 1 shown, staff 112.1 px, scale 1.4018, zoom 2, share 0.658, window
+mode--tempo--sideways: same — 1 shown, staff 112.1 px, scale 1.4018, zoom 2, share 0.658, window
+mode--wait--sideways: same — 1 shown, staff 112.1 px, scale 1.4018, zoom 2, share 0.658, window
+rotation--bars1-real-phone: same — 1 shown, staff None px, scale 0.917, zoom 2, share 0.392, window
+rotation--mid-run: same — 2 shown, staff None px, scale 1.4018, zoom 2, share 0.658, window
+sheet--more-sideways: same — 1 shown, staff 112.1 px, scale 1.4018, zoom 2, share 0.794, window
+size--phone-sideways-740: same — 1 shown, staff 106.3 px, scale 1.3291, zoom 2, share 0.812, window
+size--phone-sideways-780: same — 1 shown, staff 112.1 px, scale 1.4018, zoom 2, share 0.794, window
+size--phone-sideways-915: same — 1 shown, staff 131.8 px, scale 1.6469, zoom 2, share 0.776, window
+16 of 18 cell(s) the same
+exit=0

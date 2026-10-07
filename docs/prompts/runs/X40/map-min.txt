@@ -1,0 +1,41 @@
+# checks for 35 path(s): 35 matched, 0 unmatched
+# app/tests/unit/tempoSoundAgainstMark.test.ts: app/tests/unit/*.test.ts
+# docs/prompts/runs/X40/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/X40/build-personal.log: docs/**
+# docs/prompts/runs/X40/build-strict.log: docs/**
+# docs/prompts/runs/X40/cleanup.txt: docs/**
+# docs/prompts/runs/X40/defaulted.txt: docs/**
+# docs/prompts/runs/X40/disagreements.txt: docs/**
+# docs/prompts/runs/X40/exit-codes.txt: docs/**
+# docs/prompts/runs/X40/green-personal.txt: docs/**
+# docs/prompts/runs/X40/green-strict.txt: docs/**
+# docs/prompts/runs/X40/kern-mm.txt: docs/**
+# docs/prompts/runs/X40/mt-sources.json: docs/**
+# docs/prompts/runs/X40/musescore-source.txt: docs/**
+# docs/prompts/runs/X40/mutant-a.txt: docs/**
+# docs/prompts/runs/X40/mutant-b.txt: docs/**
+# docs/prompts/runs/X40/nonvacuous.txt: docs/**
+# docs/prompts/runs/X40/reader-dump.jsonl: docs/**
+# docs/prompts/runs/X40/red-empty-list.txt: docs/**
+# docs/prompts/runs/X40/scripts-cleanup.sh: docs/**
+# docs/prompts/runs/X40/scripts-defaulted.py: docs/**
+# docs/prompts/runs/X40/scripts-disagreements.py: docs/**
+# docs/prompts/runs/X40/scripts-join_table.py: docs/**
+# docs/prompts/runs/X40/scripts-kern_mm.py: docs/**
+# docs/prompts/runs/X40/scripts-mt_normalised.py: docs/**
+# docs/prompts/runs/X40/scripts-mutants.py: docs/**
+# docs/prompts/runs/X40/scripts-pdf_page.py: docs/**
+# docs/prompts/runs/X40/scripts-probe_folders.py: docs/**
+# docs/prompts/runs/X40/scripts-raw_scan.py: docs/**
+# docs/prompts/runs/X40/scripts-reader-dump.table.ts: docs/**
+# docs/prompts/runs/X40/scripts-run_probes.sh: docs/**
+# docs/prompts/runs/X40/scripts-vitest.table.config.mts: docs/**
+# docs/prompts/runs/X40/scripts-words_only.py: docs/**
+# docs/prompts/runs/X40/summary.txt: docs/**
+# docs/prompts/runs/X40/table.tsv: docs/**
+# docs/prompts/runs/X40/words-only-tempo.txt: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run tests/unit/tempoSoundAgainstMark.test.ts

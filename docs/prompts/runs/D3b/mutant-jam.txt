@@ -1,0 +1,64 @@
+mutant jam on session.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-aaa20169ef5952602/app
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts (25 tests | 2 failed) 1445ms
+   ❯ the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) (9)
+     × the jam slot: a reached jam rung’s groove is not the jam; with nothing else there the row is dropped, and a song beside it is the jam 6ms
+   ❯ the card on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3b) (3)
+     × every rung, a fresh learner placed there, every track on, every length: no row is one 958ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 23 passed (25)
+   Start at  18:01:06
+   Duration  2.27s (tests 67%, transform 23%, import 10%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) > the jam slot: a reached jam rung’s groove is not the jam; with nothing else there the row is dropped, and a song beside it is the jam
+AssertionError: teaching null: expected [ 'ex.c', 'song.c', 'ex.groove', …(1) ] to not include 'ex.groove'
+ ❯ tests/unit/gateAtTheConsumers.test.ts:659:62
+    657|     for (const teaching of REFUSED) {
+    658|       const slots = jamCard(only, [groove('ex.groove', teaching)]);
+    659|       expect(ids(slots), `teaching ${String(teaching)}`).not.toContain…
+       |                                                              ^
+    660|       expect(row(slots, 'jam'), `teaching ${String(teaching)}`).toBeUn…
+    661|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the card on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3b) > every rung, a fresh learner placed there, every track on, every length: no row is one
+AssertionError: 52 rows: expected [ …(12) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "technique.4 (60 min): jam exercise.comping.e.charleston.intro (jam)",
++   "technique.4 (120 min): jam exercise.comping.e.charleston.intro (jam)",
++   "technique.4 (120 min): jam exercise.comping.a.charleston.intro (jam)",
++   "rock.4 (60 min): jam exercise.comping.e.charleston.intro (jam)",
++   "rock.4 (120 min): jam exercise.comping.e.charleston.intro (jam)",
++   "rock.4 (120 min): jam exercise.comping.a.charleston.intro (jam)",
++   "hymns.4 (60 min): jam exercise.comping.e.charleston.intro (jam)",
++   "hymns.4 (120 min): jam exercise.comping.e.charleston.intro (jam)",
++   "hymns.4 (120 min): jam exercise.comping.a.charleston.intro (jam)",
++   "classical.5 (60 min): jam exercise.comping.e.charleston.intro (jam)",
++   "classical.5 (120 min): jam exercise.comping.e.charleston.intro (jam)",
++   "classical.5 (120 min): jam exercise.comping.a.charleston.intro (jam)",
++ ]
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts:795:68
+    793|       }
+    794|     }
+    795|     expect(offered.slice(0, 12), `${String(offered.length)} rows`).toE…
+       |                                                                    ^
+    796|   }, 300_000);
+    797|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+exit 1

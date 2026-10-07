@@ -1,0 +1,2 @@
+blues.3: src\ui\screens\ScoreScreen.ts has 4558 CRLF line ends; clause as checked out: False; with LF: True
+4.7: src\style.css has 5980 CRLF line ends; clause as checked out: False; with LF: True

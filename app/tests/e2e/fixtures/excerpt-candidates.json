@@ -1,0 +1,2987 @@
+{
+ "v": 1,
+ "runs": [
+  {
+   "for": "key.signature",
+   "demands": [
+    "key.signature"
+   ],
+   "rung": "classical.3",
+   "of": [
+    "song.classical.bach-menuet-bwv-anh-113.pdmx"
+   ],
+   "bars": [
+    4,
+    8
+   ],
+   "weights": {
+    "opportunity": {
+     "weight": 3.0,
+     "why": "the reason the passage exists: the target at the window rule's density (perBar and minInWindow)"
+    },
+    "occurrences": {
+     "weight": 2.0,
+     "why": "practice needs the target to come back through the passage, in at least half its bars, not in one bar"
+    },
+    "phraseStart": {
+     "weight": 2.0,
+     "why": "a passage that begins mid-phrase is a fragment (adversary 3): bar 1, a double bar, a repeat sign, a rehearsal mark, a new key or time, a rest, a long note or a fermata before it, or a phrase slur starting on it"
+    },
+    "ending": {
+     "weight": 2.0,
+     "why": "a passage that stops before its cadence is a fragment (adversary 4): the piece's end, a double bar, a fermata, a long note or a rest in the melody (a cadence to the tonic read from the bass or the chord symbols scores it higher; a half cadence is marked 'leads onward')"
+    },
+    "pickup": {
+     "weight": 1.0,
+     "why": "an upbeat severed from its phrase is the commonest cut fault (adversary 5): when the notes before the start lead into it after a rest or a long note, the window starts at their bar"
+    },
+    "texture": {
+     "weight": 1.0,
+     "why": "the hands as the parent has them: both sounding through a two-hand window, and no window that begins on one hand's rest and ends on the other's"
+    },
+    "length": {
+     "weight": 1.0,
+     "why": "a phrase or two: four and eight bars score highest, six next, five and seven after, shorter or longer less"
+    }
+   },
+   "met": 0.6,
+   "gates": [
+    "untaught",
+    "forbidden",
+    "physical"
+   ],
+   "rules": {
+    "key.signature": {
+     "min": 8,
+     "perBar": 0.5,
+     "minInWindow": 4,
+     "windowWhy": "the letters the signature alters sound at least four times",
+     "hypothesis": true,
+     "why": "the signature is practised when the letters it alters sound often: in half the bars at least"
+    }
+   },
+   "scanned": {
+    "parents": 1,
+    "windows": 220,
+    "crossing": 25,
+    "skippedCount": 0,
+    "withTarget": 199
+   },
+   "candidates": [
+    {
+     "id": "key.signature@classical.3@song.classical.bach-menuet-bwv-anh-113.pdmx:song.classical.bach-menuet-bwv-anh-113.pdmx:b25-32:both",
+     "of": "song.classical.bach-menuet-bwv-anh-113.pdmx",
+     "title": "Minuet in F major, BWV Anh. 113",
+     "fromBar": 25,
+     "toBar": 32,
+     "selection": "both",
+     "excerptId": "excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32",
+     "targets": [
+      "key.signature"
+     ],
+     "score": 11.0,
+     "parts": [
+      {
+       "signal": "opportunity",
+       "value": 1.0,
+       "fired": true,
+       "detail": "key.signature: 8 located in 8 bars (meets the window rule: at least 4 and 0.5 a bar)",
+       "weight": 3.0
+      },
+      {
+       "signal": "occurrences",
+       "value": 0.7,
+       "fired": true,
+       "detail": "key.signature in 5 of 8 bars",
+       "weight": 2.0
+      },
+      {
+       "signal": "phraseStart",
+       "value": 0.8,
+       "fired": true,
+       "detail": "after a long note in the melody in bar 24",
+       "weight": 2.0
+      },
+      {
+       "signal": "ending",
+       "value": 1.0,
+       "fired": true,
+       "detail": "the piece's last bar",
+       "weight": 2.0,
+       "kind": "resolves"
+      },
+      {
+       "signal": "pickup",
+       "value": 1.0,
+       "fired": true,
+       "detail": "no upbeat before bar 25",
+       "weight": 1.0
+      },
+      {
+       "signal": "texture",
+       "value": 1.0,
+       "fired": true,
+       "detail": "both hands sound in 8 of 8 bars",
+       "weight": 1.0
+      },
+      {
+       "signal": "length",
+       "value": 1.0,
+       "fired": true,
+       "detail": "8 bars",
+       "weight": 1.0
+      }
+     ],
+     "gates": [
+      {
+       "signal": "untaught",
+       "passed": true,
+       "detail": "nothing untaught at the judging rung"
+      },
+      {
+       "signal": "forbidden",
+       "passed": true,
+       "detail": "no contract forbids anything here"
+      },
+      {
+       "signal": "physical",
+       "passed": true,
+       "detail": "within D0's limits for repertoire: span, leaps, rate, repeats, register"
+      }
+     ],
+     "refusedBy": [],
+     "meetsEverySignal": true,
+     "demands": [
+      "clef.bass",
+      "interval.leap",
+      "interval.skip",
+      "interval.step",
+      "key.signature",
+      "metre.three-four",
+      "pitch.chromatic",
+      "pitch.ledger",
+      "range.beyond-position",
+      "rhythm.eighths",
+      "rhythm.shorter-than-quarter",
+      "texture.hands-together"
+     ],
+     "counts": {
+      "clef.bass": 16,
+      "pitch.ledger": 10,
+      "interval.step": 34,
+      "interval.skip": 10,
+      "interval.leap": 15,
+      "rhythm.eighths": 42,
+      "rhythm.shorter-than-quarter": 42,
+      "metre.three-four": 59,
+      "key.signature": 8,
+      "pitch.chromatic": 2,
+      "range.beyond-position": 1,
+      "texture.hands-together": 32
+     },
+     "parent": {
+      "file": "scores/pdmx/QmZzbCrrGH19zjfe766mDvw9C1cXYXSa5ApF7MRnRhpqjL.mxl",
+      "sha256": "9b24851973be44d51b23296f41010bf755eb007b26b3b2e5f47c7588dd4b03c2",
+      "bars": 32,
+      "staves": 2,
+      "level": 5.23,
+      "levelSource": "estimated",
+      "demands": [
+       "clef.bass",
+       "pitch.ledger",
+       "interval.step",
+       "interval.skip",
+       "interval.leap",
+       "rhythm.eighths",
+       "rhythm.shorter-than-quarter",
+       "rhythm.sixteenths",
+       "rhythm.triplets",
+       "metre.three-four",
+       "key.signature",
+       "pitch.chromatic",
+       "range.beyond-position",
+       "texture.hands-together"
+      ],
+      "established": [
+       "clef.bass",
+       "pitch.ledger",
+       "interval.step",
+       "interval.skip",
+       "interval.leap",
+       "rhythm.eighths",
+       "rhythm.shorter-than-quarter",
+       "rhythm.sixteenths",
+       "rhythm.triplets",
+       "key.signature",
+       "pitch.chromatic",
+       "range.beyond-position",
+       "texture.hands-together"
+      ],
+      "untaught": [
+       "rhythm.sixteenths",
+       "rhythm.triplets"
+      ],
+      "tempoBpm": 96.0,
+      "keySig": "F major",
+      "timeSig": "3/4",
+      "source": {
+       "name": "PDMX (MuseScore upload, uploader's public-domain claim)",
+       "url": "https://musescore.com/score/5915848",
+       "license": "cc-zero",
+       "pd_region": "worldwide",
+       "fetchedAt": null,
+       "checksum": "9b24851973be44d51b23296f41010bf755eb007b26b3b2e5f47c7588dd4b03c2",
+       "editionNotes": "Quarried from PDMX and normalised by tools/content/convert.py. Composition status: pd — Menuet BWV Anh.113"
+      }
+     },
+     "neighbourhood": [
+      {
+       "fromBar": 21,
+       "toBar": 28,
+       "score": 7.25,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.75,
+         "fired": true,
+         "detail": "key.signature: 6 located in 8 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.7,
+         "fired": true,
+         "detail": "key.signature in 5 of 8 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 21: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 28 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 21"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 8 of 8 bars"
+        },
+        {
+         "signal": "length",
+         "value": 1.0,
+         "fired": true,
+         "detail": "8 bars"
+        }
+       ],
+       "untaught": [
+        "texture.left-hand-pattern"
+       ],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together",
+        "texture.left-hand-pattern"
+       ]
+      },
+      {
+       "fromBar": 21,
+       "toBar": 29,
+       "score": 6.739,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.75,
+         "fired": true,
+         "detail": "key.signature: 6 located in 9 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.644,
+         "fired": true,
+         "detail": "key.signature in 5 of 9 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 21: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 29 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 21"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 9 of 9 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "9 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 21,
+       "toBar": 30,
+       "score": 7.56,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 8 located in 10 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.68,
+         "fired": true,
+         "detail": "key.signature in 6 of 10 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 21: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 30 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 21"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 10 of 10 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "10 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 21,
+       "toBar": 31,
+       "score": 7.618,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 10 located in 11 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.709,
+         "fired": true,
+         "detail": "key.signature in 7 of 11 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 21: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 31 closes on a short note and the line continues; the phrase ends in bar 32"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 21"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 11 of 11 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "11 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 21,
+       "toBar": 32,
+       "score": 9.533,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 10 located in 12 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.667,
+         "fired": true,
+         "detail": "key.signature in 7 of 12 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 21: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 1.0,
+         "fired": true,
+         "detail": "the piece's last bar"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 21"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 12 of 12 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "12 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 22,
+       "toBar": 28,
+       "score": 7.093,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.75,
+         "fired": true,
+         "detail": "key.signature: 6 located in 7 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.771,
+         "fired": true,
+         "detail": "key.signature in 5 of 7 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 22: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 28 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 22"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 7 of 7 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.7,
+         "fired": true,
+         "detail": "7 bars"
+        }
+       ],
+       "untaught": [
+        "texture.left-hand-pattern"
+       ],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together",
+        "texture.left-hand-pattern"
+       ]
+      },
+      {
+       "fromBar": 22,
+       "toBar": 29,
+       "score": 7.25,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.75,
+         "fired": true,
+         "detail": "key.signature: 6 located in 8 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.7,
+         "fired": true,
+         "detail": "key.signature in 5 of 8 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 22: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 29 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 22"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 8 of 8 bars"
+        },
+        {
+         "signal": "length",
+         "value": 1.0,
+         "fired": true,
+         "detail": "8 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 22,
+       "toBar": 30,
+       "score": 7.667,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 8 located in 9 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.733,
+         "fired": true,
+         "detail": "key.signature in 6 of 9 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 22: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 30 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 22"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 9 of 9 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "9 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 22,
+       "toBar": 31,
+       "score": 7.72,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 10 located in 10 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.76,
+         "fired": true,
+         "detail": "key.signature in 7 of 10 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 22: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 31 closes on a short note and the line continues; the phrase ends in bar 32"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 22"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 10 of 10 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "10 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 22,
+       "toBar": 32,
+       "score": 9.618,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 10 located in 11 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.709,
+         "fired": true,
+         "detail": "key.signature in 7 of 11 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 22: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 1.0,
+         "fired": true,
+         "detail": "the piece's last bar"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 22"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 11 of 11 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "11 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 23,
+       "toBar": 28,
+       "score": 6.742,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.625,
+         "fired": true,
+         "detail": "key.signature: 5 located in 6 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.733,
+         "fired": true,
+         "detail": "key.signature in 4 of 6 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 23: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 28 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 23"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 6 of 6 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.8,
+         "fired": true,
+         "detail": "6 bars"
+        }
+       ],
+       "untaught": [
+        "texture.left-hand-pattern"
+       ],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together",
+        "texture.left-hand-pattern"
+       ]
+      },
+      {
+       "fromBar": 23,
+       "toBar": 29,
+       "score": 6.489,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.625,
+         "fired": true,
+         "detail": "key.signature: 5 located in 7 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.657,
+         "fired": true,
+         "detail": "key.signature in 4 of 7 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 23: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 29 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 23"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 7 of 7 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.7,
+         "fired": true,
+         "detail": "7 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 23,
+       "toBar": 30,
+       "score": 7.625,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.875,
+         "fired": true,
+         "detail": "key.signature: 7 located in 8 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.7,
+         "fired": true,
+         "detail": "key.signature in 5 of 8 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 23: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 30 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 23"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 8 of 8 bars"
+        },
+        {
+         "signal": "length",
+         "value": 1.0,
+         "fired": true,
+         "detail": "8 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 23,
+       "toBar": 31,
+       "score": 7.667,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 9 located in 9 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.733,
+         "fired": true,
+         "detail": "key.signature in 6 of 9 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 23: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 31 closes on a short note and the line continues; the phrase ends in bar 32"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 23"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 9 of 9 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "9 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 23,
+       "toBar": 32,
+       "score": 9.56,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 9 located in 10 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.68,
+         "fired": true,
+         "detail": "key.signature in 6 of 10 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 23: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 1.0,
+         "fired": true,
+         "detail": "the piece's last bar"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 23"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 10 of 10 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "10 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 24,
+       "toBar": 28,
+       "score": 6.855,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.625,
+         "fired": true,
+         "detail": "key.signature: 5 located in 5 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.84,
+         "fired": true,
+         "detail": "key.signature in 4 of 5 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 24: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 28 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 24"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 5 of 5 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.7,
+         "fired": true,
+         "detail": "5 bars"
+        }
+       ],
+       "untaught": [
+        "texture.left-hand-pattern"
+       ],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together",
+        "texture.left-hand-pattern"
+       ]
+      },
+      {
+       "fromBar": 24,
+       "toBar": 29,
+       "score": 6.742,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.625,
+         "fired": true,
+         "detail": "key.signature: 5 located in 6 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.733,
+         "fired": true,
+         "detail": "key.signature in 4 of 6 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 24: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 29 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 24"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 6 of 6 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.8,
+         "fired": true,
+         "detail": "6 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 24,
+       "toBar": 30,
+       "score": 7.468,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.875,
+         "fired": true,
+         "detail": "key.signature: 7 located in 7 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.771,
+         "fired": true,
+         "detail": "key.signature in 5 of 7 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 24: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 30 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 24"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 7 of 7 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.7,
+         "fired": true,
+         "detail": "7 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 24,
+       "toBar": 31,
+       "score": 8.2,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 9 located in 8 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.8,
+         "fired": true,
+         "detail": "key.signature in 6 of 8 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 24: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 31 closes on a short note and the line continues; the phrase ends in bar 32"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 24"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 8 of 8 bars"
+        },
+        {
+         "signal": "length",
+         "value": 1.0,
+         "fired": true,
+         "detail": "8 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 24,
+       "toBar": 32,
+       "score": 9.667,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 9 located in 9 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.733,
+         "fired": true,
+         "detail": "key.signature in 6 of 9 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 24: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 1.0,
+         "fired": true,
+         "detail": "the piece's last bar"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 24"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 9 of 9 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "9 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 25,
+       "toBar": 28,
+       "score": 8.0,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.6,
+         "fired": true,
+         "detail": "key.signature: 4 located in 4 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.8,
+         "fired": true,
+         "detail": "key.signature in 3 of 4 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.8,
+         "fired": true,
+         "detail": "after a long note in the melody in bar 24"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 28 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 25"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 4 of 4 bars"
+        },
+        {
+         "signal": "length",
+         "value": 1.0,
+         "fired": true,
+         "detail": "4 bars"
+        }
+       ],
+       "untaught": [
+        "texture.left-hand-pattern"
+       ],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together",
+        "texture.left-hand-pattern"
+       ]
+      },
+      {
+       "fromBar": 25,
+       "toBar": 29,
+       "score": 7.46,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.6,
+         "fired": true,
+         "detail": "key.signature: 4 located in 5 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.68,
+         "fired": true,
+         "detail": "key.signature in 3 of 5 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.8,
+         "fired": true,
+         "detail": "after a long note in the melody in bar 24"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 29 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 25"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 5 of 5 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.7,
+         "fired": true,
+         "detail": "5 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 25,
+       "toBar": 30,
+       "score": 8.117,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.75,
+         "fired": true,
+         "detail": "key.signature: 6 located in 6 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.733,
+         "fired": true,
+         "detail": "key.signature in 4 of 6 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.8,
+         "fired": true,
+         "detail": "after a long note in the melody in bar 24"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 30 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 25"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 6 of 6 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.8,
+         "fired": true,
+         "detail": "6 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 25,
+       "toBar": 31,
+       "score": 8.843,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 8 located in 7 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.771,
+         "fired": true,
+         "detail": "key.signature in 5 of 7 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.8,
+         "fired": true,
+         "detail": "after a long note in the melody in bar 24"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 31 closes on a short note and the line continues; the phrase ends in bar 32"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 25"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 7 of 7 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.7,
+         "fired": true,
+         "detail": "7 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 25,
+       "toBar": 32,
+       "score": 11.0,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 8 located in 8 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.7,
+         "fired": true,
+         "detail": "key.signature in 5 of 8 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.8,
+         "fired": true,
+         "detail": "after a long note in the melody in bar 24"
+        },
+        {
+         "signal": "ending",
+         "value": 1.0,
+         "fired": true,
+         "detail": "the piece's last bar"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 25"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 8 of 8 bars"
+        },
+        {
+         "signal": "length",
+         "value": 1.0,
+         "fired": true,
+         "detail": "8 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 26,
+       "toBar": 28,
+       "score": 7.0,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.6,
+         "fired": true,
+         "detail": "key.signature: 4 located in 3 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature in 3 of 3 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 26: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 28 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 26"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 3 of 3 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "3 bars"
+        }
+       ],
+       "untaught": [
+        "texture.left-hand-pattern"
+       ],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together",
+        "texture.left-hand-pattern"
+       ]
+      },
+      {
+       "fromBar": 26,
+       "toBar": 29,
+       "score": 7.0,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.6,
+         "fired": true,
+         "detail": "key.signature: 4 located in 4 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.8,
+         "fired": true,
+         "detail": "key.signature in 3 of 4 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 26: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 29 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 26"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 4 of 4 bars"
+        },
+        {
+         "signal": "length",
+         "value": 1.0,
+         "fired": true,
+         "detail": "4 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 26,
+       "toBar": 30,
+       "score": 7.23,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.75,
+         "fired": true,
+         "detail": "key.signature: 6 located in 5 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.84,
+         "fired": true,
+         "detail": "key.signature in 4 of 5 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 26: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 30 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 26"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 5 of 5 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.7,
+         "fired": true,
+         "detail": "5 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 26,
+       "toBar": 31,
+       "score": 8.133,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 8 located in 6 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.867,
+         "fired": true,
+         "detail": "key.signature in 5 of 6 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 26: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 31 closes on a short note and the line continues; the phrase ends in bar 32"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 26"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 6 of 6 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.8,
+         "fired": true,
+         "detail": "6 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 26,
+       "toBar": 32,
+       "score": 9.843,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature: 8 located in 7 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.771,
+         "fired": true,
+         "detail": "key.signature in 5 of 7 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 26: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 1.0,
+         "fired": true,
+         "detail": "the piece's last bar"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 26"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 7 of 7 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.7,
+         "fired": true,
+         "detail": "7 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 27,
+       "toBar": 28,
+       "score": 6.325,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.375,
+         "fired": false,
+         "detail": "key.signature: 3 located in 2 bars (below the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 1.0,
+         "fired": true,
+         "detail": "key.signature in 2 of 2 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 27: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 28 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 27"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 2 of 2 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "2 bars"
+        }
+       ],
+       "untaught": [
+        "texture.left-hand-pattern"
+       ],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together",
+        "texture.left-hand-pattern"
+       ]
+      },
+      {
+       "fromBar": 27,
+       "toBar": 29,
+       "score": 5.792,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.375,
+         "fired": false,
+         "detail": "key.signature: 3 located in 3 bars (below the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.733,
+         "fired": true,
+         "detail": "key.signature in 2 of 3 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 27: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 29 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 27"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 3 of 3 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "3 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 27,
+       "toBar": 30,
+       "score": 7.075,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.625,
+         "fired": true,
+         "detail": "key.signature: 5 located in 4 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.8,
+         "fired": true,
+         "detail": "key.signature in 3 of 4 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 27: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 30 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 27"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 4 of 4 bars"
+        },
+        {
+         "signal": "length",
+         "value": 1.0,
+         "fired": true,
+         "detail": "4 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 27,
+       "toBar": 31,
+       "score": 7.605,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.875,
+         "fired": true,
+         "detail": "key.signature: 7 located in 5 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.84,
+         "fired": true,
+         "detail": "key.signature in 4 of 5 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 27: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 31 closes on a short note and the line continues; the phrase ends in bar 32"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 27"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 5 of 5 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.7,
+         "fired": true,
+         "detail": "5 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 27,
+       "toBar": 32,
+       "score": 9.492,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.875,
+         "fired": true,
+         "detail": "key.signature: 7 located in 6 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.733,
+         "fired": true,
+         "detail": "key.signature in 4 of 6 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 27: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 1.0,
+         "fired": true,
+         "detail": "the piece's last bar"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 27"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 6 of 6 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.8,
+         "fired": true,
+         "detail": "6 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.chromatic",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 28,
+       "toBar": 29,
+       "score": 5.15,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.25,
+         "fired": false,
+         "detail": "key.signature: 2 located in 2 bars (below the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.6,
+         "fired": true,
+         "detail": "key.signature in 1 of 2 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 28: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 29 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 28"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 2 of 2 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "2 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 28,
+       "toBar": 30,
+       "score": 6.467,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.6,
+         "fired": true,
+         "detail": "key.signature: 4 located in 3 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.733,
+         "fired": true,
+         "detail": "key.signature in 2 of 3 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 28: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 30 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 28"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 3 of 3 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "3 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 28,
+       "toBar": 31,
+       "score": 7.45,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.75,
+         "fired": true,
+         "detail": "key.signature: 6 located in 4 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.8,
+         "fired": true,
+         "detail": "key.signature in 3 of 4 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 28: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 31 closes on a short note and the line continues; the phrase ends in bar 32"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 28"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 4 of 4 bars"
+        },
+        {
+         "signal": "length",
+         "value": 1.0,
+         "fired": true,
+         "detail": "4 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 28,
+       "toBar": 32,
+       "score": 8.91,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.75,
+         "fired": true,
+         "detail": "key.signature: 6 located in 5 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.68,
+         "fired": true,
+         "detail": "key.signature in 3 of 5 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 28: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 1.0,
+         "fired": true,
+         "detail": "the piece's last bar"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 28"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 5 of 5 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.7,
+         "fired": true,
+         "detail": "5 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 29,
+       "toBar": 30,
+       "score": 5.15,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.25,
+         "fired": false,
+         "detail": "key.signature: 2 located in 2 bars (below the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.6,
+         "fired": true,
+         "detail": "key.signature in 1 of 2 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 29: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 30 closes on a short note and the line continues"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 29"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 2 of 2 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "2 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 29,
+       "toBar": 31,
+       "score": 6.467,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.6,
+         "fired": true,
+         "detail": "key.signature: 4 located in 3 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.733,
+         "fired": true,
+         "detail": "key.signature in 2 of 3 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 29: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 0.0,
+         "fired": false,
+         "detail": "ends mid-motion: bar 31 closes on a short note and the line continues; the phrase ends in bar 32"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 29"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 3 of 3 bars"
+        },
+        {
+         "signal": "length",
+         "value": 0.6,
+         "fired": true,
+         "detail": "3 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      },
+      {
+       "fromBar": 29,
+       "toBar": 32,
+       "score": 8.6,
+       "parts": [
+        {
+         "signal": "opportunity",
+         "value": 0.6,
+         "fired": true,
+         "detail": "key.signature: 4 located in 4 bars (meets the window rule: at least 4 and 0.5 a bar)"
+        },
+        {
+         "signal": "occurrences",
+         "value": 0.6,
+         "fired": true,
+         "detail": "key.signature in 2 of 4 bars"
+        },
+        {
+         "signal": "phraseStart",
+         "value": 0.3,
+         "fired": false,
+         "detail": "only the bass changing at bar 29: in this repertoire it changes on most downbeats, so alone it marks no phrase"
+        },
+        {
+         "signal": "ending",
+         "value": 1.0,
+         "fired": true,
+         "detail": "the piece's last bar"
+        },
+        {
+         "signal": "pickup",
+         "value": 1.0,
+         "fired": true,
+         "detail": "no upbeat before bar 29"
+        },
+        {
+         "signal": "texture",
+         "value": 1.0,
+         "fired": true,
+         "detail": "both hands sound in 4 of 4 bars"
+        },
+        {
+         "signal": "length",
+         "value": 1.0,
+         "fired": true,
+         "detail": "4 bars"
+        }
+       ],
+       "untaught": [],
+       "forbidden": [],
+       "demands": [
+        "clef.bass",
+        "interval.leap",
+        "interval.skip",
+        "interval.step",
+        "key.signature",
+        "metre.three-four",
+        "pitch.ledger",
+        "range.beyond-position",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "texture.hands-together"
+       ]
+      }
+     ]
+    }
+   ],
+   "refused": [],
+   "runId": "key.signature@classical.3@song.classical.bach-menuet-bwv-anh-113.pdmx"
+  }
+ ]
+}

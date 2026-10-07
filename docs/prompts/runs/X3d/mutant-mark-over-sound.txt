@@ -1,0 +1,535 @@
+npx vitest run tests/unit/tempoFromXml.test.ts tests/unit/scoreModelTempo.test.ts tests/unit/importSheet.test.ts tests/unit/scoreModel.test.ts (in app)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6cb245891137756b/app
+
+ ❯ tests/unit/tempoFromXml.test.ts (14 tests | 11 failed) 18ms
+   ❯ what a file states, where it states it (8)
+     × the reviewer’s shapes: half = 60 with sound 120 → 120; half = 60 alone → 120; dotted quarter = 60 with sound 90 → 90 6ms
+     × a <sound tempo> is the sounding fact: it wins over a mark in its direction, beside it at the same place, or when the two disagree 1ms
+     × keeps the file’s number: a fraction is not rounded 2ms
+     × every event at its own position: a later bar, the middle of a bar, after a backup and a forward, past chords and graces, across a divisions change 1ms
+     × a direction’s <offset> moves it only where it sounds 1ms
+     × reads every part, the first part first at one position 1ms
+     × elements that start like the ones read are not them: <measure-style>, <direction-type>, <notations> 0ms
+   ❯ the opening (4)
+     × the event at the first measure’s start; nothing written later is the opening 1ms
+     × a tempo that stands before any note sounds opens the piece: after an opening rest, after a bar of rest; not after a note has sounded 1ms
+     × a pickup is no exception: its own tempo opens it; an upbeat that sounds before a tempo over bar 1 plays at the default 1ms
+     × E48’s form: withOpeningTempo’s <sound tempo> at the start of the first bar is the opening, whatever the bar-2 mark says 0ms
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ ❯ tests/unit/scoreModelTempo.test.ts (12 tests | 1 failed) 332ms
+   ❯ the score model’s tempo map is the file’s, in quarter notes a minute (X3d) (12)
+     × (4) the learner’s stated 100 and 72 (E48, withOpeningTempo) open the half-note and dotted-quarter shapes at the number stated, and a file whose only mark is in bar 2 at 72 until bar 2 23ms
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ ❯ tests/unit/scoreModel.test.ts (445 tests | 1 failed) 1584ms
+   ❯ extractScoreModel — golden models (43)
+     × tuplets-68 matches its golden 15ms
+ ❯ tests/unit/importSheet.test.ts (29 tests | 1 failed) 1365ms
+   ❯ the file’s own tempo (X3c) (7)
+     × where the printed mark and the file’s playback tempo disagree, each is said apart, never as a conversion; a mark with no playback tempo is said with the tempo it means 6ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the file’s own tempo (X3c) > where the printed mark and the file’s playback tempo disagree, each is said apart, never as a conversion; a mark with no playback tempo is said with the tempo it means
+AssertionError: expected 'The file says 𝅗𝅥 = 60 (120 quarter no…' to be 'The file prints 𝅗𝅥 = 60; its playback…' // Object.is equality
+
+Expected: "The file prints 𝅗𝅥 = 60; its playback tempo is 100 quarter notes a minute."
+Received: "The file says 𝅗𝅥 = 60 (120 quarter notes a minute)."
+
+ ❯ tests/unit/importSheet.test.ts:677:20
+    675|   it('where the printed mark and the file’s playback tempo disagree, e…
+    676|     openImportSheet(fileRow(twoStaves({ tempo: 60, beatUnit: 'half', s…
+    677|     expect(said()).toBe('The file prints \u{1D15E} = 60; its playback …
+       |                    ^
+    678|     expect(said()).not.toContain('(100 quarter notes a minute)');
+    679|     expect(field().value).toBe('100');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/unit/scoreModel.test.ts > extractScoreModel — golden models > tuplets-68 matches its golden
+AssertionError: expected { id: 'tuplets-68', …(8) } to deeply equal { id: 'tuplets-68', …(8) }
+
+- Expected
++ Received
+
+@@ -267,11 +267,11 @@
+      },
+    ],
+    "tempoMap": [
+      {
+        "atBeat": 0,
+-       "bpm": 120,
++       "bpm": 60,
+      },
+    ],
+    "timeSigMap": [
+      {
+        "atMeasure": 0,
+
+ ❯ expectMatchesGolden tests/unit/helpers/golden.ts:41:18
+     39|   }
+     40|   const expected: unknown = JSON.parse(readFileSync(path, 'utf8'));
+     41|   expect(actual).toEqual(expected);
+       |                  ^
+     42| }
+     43|
+ ❯ tests/unit/scoreModel.test.ts:63:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/unit/scoreModelTempo.test.ts > the score model’s tempo map is the file’s, in quarter notes a minute (X3d) > (4) the learner’s stated 100 and 72 (E48, withOpeningTempo) open the half-note and dotted-quarter shapes at the number stated, and a file whose only mark is in bar 2 at 72 until bar 2
+AssertionError: expected { …(5) } to deeply equal { …(5) }
+
+- Expected
++ Received
+
+@@ -8,19 +8,19 @@
+        "atBeat": 4,
+        "bpm": 132,
+      },
+    ],
+    "dotted quarter = 60, sound 90, stated 100": {
+-     "countsIn": 100,
+-     "labels": 100,
++     "countsIn": 100.001,
++     "labels": 100.001,
+      "map": [
+        {
+          "atBeat": 0,
+-         "bpm": 100,
++         "bpm": 100.001,
+        },
+      ],
+-     "plays": 100,
++     "plays": 100.001,
+    },
+    "dotted quarter = 60, sound 90, stated 72": {
+      "countsIn": 72,
+      "labels": 72,
+      "map": [
+
+ ❯ tests/unit/scoreModelTempo.test.ts:162:17
+    160|       { atBeat: 4, bpm: 132 },
+    161|     ];
+    162|     expect(got).toEqual(wanted);
+       |                 ^
+    163|   });
+    164|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > what a file states, where it states it > the reviewer’s shapes: half = 60 with sound 120 → 120; half = 60 alone → 120; dotted quarter = 60 with sound 90 → 90
+AssertionError: expected [ [ +0, +0, 120, 'mark' ] ] to deeply equal [ [ +0, +0, 120, 'sound' ] ]
+
+- Expected
++ Received
+
+  [
+    [
+      0,
+      0,
+      120,
+-     "sound",
++     "mark",
+    ],
+  ]
+
+ ❯ tests/unit/tempoFromXml.test.ts:62:103
+     60| describe('what a file states, where it states it', () => {
+     61|   it('the reviewer’s shapes: half = 60 with sound 120 → 120; half = 60…
+     62|     expect(brief(score([direction(metronome('half', '60'), sound(120))…
+       |                                                                                                       ^
+     63|     expect(brief(score([direction(metronome('half', '60'))], { beats: …
+     64|     expect(brief(score([direction(metronome('quarter', '60', 1), sound…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > what a file states, where it states it > a <sound tempo> is the sounding fact: it wins over a mark in its direction, beside it at the same place, or when the two disagree
+AssertionError: expected { measure: +0, offset: +0, …(3) } to deeply equal { measure: +0, offset: +0, …(3) }
+
+- Expected
++ Received
+
+@@ -1,8 +1,8 @@
+  {
+-   "bpm": 100,
+-   "from": "sound",
++   "bpm": 120,
++   "from": "mark",
+    "mark": {
+      "beatUnit": "half",
+      "dots": 0,
+      "perMinute": 60,
+      "quarters": 120,
+
+ ❯ tests/unit/tempoFromXml.test.ts:70:19
+     68|     // Disagreeing in one direction: the sound.
+     69|     const apart = tempoEvents(score([direction(metronome('half', '60')…
+     70|     expect(apart).toEqual({ measure: 0, offset: 0, bpm: 100, from: 'so…
+       |                   ^
+     71|     // A sound standing in the bar at the mark's place (E32's form): t…
+     72|     expect(brief(score([`${direction(metronome('quarter', '132'))}${so…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > what a file states, where it states it > keeps the file’s number: a fraction is not rounded
+AssertionError: expected 100.5 to be 100.49999999999999 // Object.is equality
+
+- Expected
++ Received
+
+- 100.49999999999999
++ 100.5
+
+ ❯ tests/unit/tempoFromXml.test.ts:80:106
+     78|   it('keeps the file’s number: a fraction is not rounded', () => {
+     79|     expect(openingTempo(score([direction(metronome('quarter', '90.0000…
+     80|     expect(openingTempo(score([direction(metronome('quarter', '67', 1)…
+       |                                                                                                          ^
+     81|   });
+     82|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > what a file states, where it states it > every event at its own position: a later bar, the middle of a bar, after a backup and a forward, past chords and graces, across a divisions change
+AssertionError: expected [ [ +0, +0, 60, 'mark' ], …(2) ] to deeply equal [ [ +0, +0, 60, 'sound' ], …(2) ]
+
+- Expected
++ Received
+
+@@ -1,17 +1,17 @@
+  [
+    [
+      0,
+      0,
+      60,
+-     "sound",
++     "mark",
+    ],
+    [
+      1,
+      1,
+      90,
+-     "sound",
++     "mark",
+    ],
+    [
+      1,
+      3,
+      120,
+
+ ❯ tests/unit/tempoFromXml.test.ts:93:24
+     91|     // Bar 2: the change after one quarter (the chord and the grace ta…
+     92|     // whole bar and a forward of three, a sound at three quarters in.
+     93|     expect(brief(xml)).toEqual([
+       |                        ^
+     94|       [0, 0, 60, 'sound'],
+     95|       [1, 1, 90, 'sound'],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > what a file states, where it states it > a direction’s <offset> moves it only where it sounds
+AssertionError: expected [ [ [ +0, +0, 60, 'mark' ] ], …(1) ] to deeply equal [ [ [ +0, +0, 60, 'sound' ] ], …(1) ]
+
+- Expected
++ Received
+
+@@ -2,11 +2,11 @@
+    [
+      [
+        0,
+        0,
+        60,
+-       "sound",
++       "mark",
+      ],
+    ],
+    [
+      [
+        0,
+@@ -16,9 +16,9 @@
+      ],
+      [
+        0,
+        2,
+        60,
+-       "sound",
++       "mark",
+      ],
+    ],
+  ]
+
+ ❯ tests/unit/tempoFromXml.test.ts:109:46
+    107|     const visual = score([direction(metronome('quarter', '60'), `<offs…
+    108|     const sounding = score([sound(50) + direction(metronome('quarter',…
+    109|     expect([brief(visual), brief(sounding)]).toEqual([
+       |                                              ^
+    110|       [[0, 0, 60, 'sound']],
+    111|       [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > what a file states, where it states it > reads every part, the first part first at one position
+AssertionError: expected [ [ +0, +0, 60, 'mark' ], …(1) ] to deeply equal [ [ +0, +0, 60, 'sound' ], …(1) ]
+
+- Expected
++ Received
+
+@@ -1,11 +1,11 @@
+  [
+    [
+      0,
+      0,
+      60,
+-     "sound",
++     "mark",
+    ],
+    [
+      0,
+      2,
+      84,
+
+ ❯ tests/unit/tempoFromXml.test.ts:124:24
+    122|     );
+    123|     // Part 2's opening sound loses to part 1's at the same place; its…
+    124|     expect(brief(two)).toEqual([
+       |                        ^
+    125|       [0, 0, 60, 'sound'],
+    126|       [0, 2, 84, 'sound'],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > what a file states, where it states it > elements that start like the ones read are not them: <measure-style>, <direction-type>, <notations>
+AssertionError: expected [ [ +0, +0, 76, 'mark' ] ] to deeply equal [ [ +0, +0, 76, 'sound' ] ]
+
+- Expected
++ Received
+
+  [
+    [
+      0,
+      0,
+      76,
+-     "sound",
++     "mark",
+    ],
+  ]
+
+ ❯ tests/unit/tempoFromXml.test.ts:147:24
+    145|   it('elements that start like the ones read are not them: <measure-st…
+    146|     const xml = score([`<attributes><measure-style><slash type="start"…
+    147|     expect(brief(xml)).toEqual([[0, 0, 76, 'sound']]);
+       |                        ^
+    148|   });
+    149| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > the opening > the event at the first measure’s start; nothing written later is the opening
+AssertionError: expected { Object (opens, writes, ...) } to deeply equal { Object (opens, writes, ...) }
+
+- Expected
++ Received
+
+@@ -2,11 +2,11 @@
+    "events": [
+      [
+        1,
+        0,
+        132,
+-       "sound",
++       "mark",
+      ],
+    ],
+    "opens": undefined,
+    "writes": true,
+  }
+
+ ❯ tests/unit/tempoFromXml.test.ts:156:94
+    154|     // A mark only in bar 2: the file writes a tempo, but none at its …
+    155|     const later = score(['', direction(metronome('quarter', '132'), so…
+    156|     expect({ opens: openingTempo(later), writes: writesTempo(later), e…
+       |                                                                                              ^
+    157|     // Written in the first bar, but after its first beat: a change, n…
+    158|     const midFirst = score(['']).replace('<measure number="1"><attribu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > the opening > a tempo that stands before any note sounds opens the piece: after an opening rest, after a bar of rest; not after a note has sounded
+AssertionError: expected { opens: undefined, …(1) } to deeply equal { opens: undefined, …(1) }
+
+- Expected
++ Received
+
+@@ -2,10 +2,10 @@
+    "events": [
+      [
+        0,
+        1,
+        90,
+-       "sound",
++       "mark",
+      ],
+    ],
+    "opens": undefined,
+  }
+
+ ❯ tests/unit/tempoFromXml.test.ts:178:76
+    176|     // A note has sounded first: the tempo is a change where it stands…
+    177|     const afterANote = score(['', '']).replace(opening + QUARTER.repea…
+    178|     expect({ opens: openingTempo(afterANote), events: brief(afterANote…
+       |                                                                            ^
+    179|   });
+    180|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > the opening > a pickup is no exception: its own tempo opens it; an upbeat that sounds before a tempo over bar 1 plays at the default
+AssertionError: expected [ [ +0, +0, 90, 'mark' ], …(1) ] to deeply equal [ [ +0, +0, 70, 'sound' ], …(1) ]
+
+- Expected
++ Received
+
+@@ -1,11 +1,11 @@
+  [
+    [
+      0,
+      0,
+-     70,
+-     "sound",
++     90,
++     "mark",
+    ],
+    [
+      1,
+      0,
+      90,
+
+ ❯ tests/unit/tempoFromXml.test.ts:183:24
+    181|   it('a pickup is no exception: its own tempo opens it; an upbeat that…
+    182|     const own = score([direction(metronome('quarter', '60', 1), sound(…
+    183|     expect(brief(own)).toEqual([
+       |                        ^
+    184|       [0, 0, 70, 'sound'],
+    185|       [1, 0, 90, 'sound'],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > the opening > E48’s form: withOpeningTempo’s <sound tempo> at the start of the first bar is the opening, whatever the bar-2 mark says
+AssertionError: expected [ [ +0, +0, 72, 'sound' ], …(1) ] to deeply equal [ [ +0, +0, 72, 'sound' ], …(1) ]
+
+- Expected
++ Received
+
+@@ -7,8 +7,8 @@
+    ],
+    [
+      1,
+      0,
+      132,
+-     "sound",
++     "mark",
+    ],
+  ]
+
+ ❯ tests/unit/tempoFromXml.test.ts:197:27
+    195|     // The store's writer puts `<sound tempo>` straight after `<measur…
+    196|     const stated = score(['', direction(metronome('quarter', '132'), s…
+    197|     expect(brief(stated)).toEqual([
+       |                           ^
+    198|       [0, 0, 72, 'sound'],
+    199|       [1, 0, 132, 'sound'],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/14]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  14 failed | 486 passed (500)
+   Start at  08:38:50
+   Duration  2.80s (tests 50%, environment 32%, transform 11%, import 7%)
+
+exit=1

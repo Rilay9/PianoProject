@@ -1,0 +1,77 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a465c0bc54863c9b3/app
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts (30 tests | 5 failed) 8614ms
+   ❯ each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) (26)
+     × Climb the ladder, teaching null: the groove is passed over for the next exercise that opens as a score until approved 67ms
+     × Climb the ladder, teaching false: the groove is passed over for the next exercise that opens as a score until approved 60ms
+     × Climb the ladder, teaching null: not drawn where nothing admitted opens as a score, and the block goes with it 63ms
+     × Climb the ladder, teaching false: not drawn where nothing admitted opens as a score, and the block goes with it 63ms
+     × the option rows are the learner’s own choice: every authored option stays listed and tappable, the refused groove among them 66ms
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 25 passed (30)
+   Start at  20:34:52
+   Duration  9.95s (tests 87%, environment 7%, transform 4%, import 2%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Climb the ladder, teaching null: the groove is passed over for the next exercise that opens as a score until approved
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Climb the ladder, teaching false: the groove is passed over for the next exercise that opens as a score until approved
+AssertionError: expected 'ex.groove' to be 'ex.scale' // Object.is equality
+
+Expected: "ex.scale"
+Received: "ex.groove"
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:197:35
+    195|     expect(admittedForTeaching(first)).toBe(teaching === true);
+    196|     const section = await mount(rung({ exerciseOptions: ['ex.groove', …
+    197|     expect(picks(section).ladder).toBe(teaching === true ? 'ex.groove'…
+       |                                   ^
+    198|   });
+    199|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Climb the ladder, teaching null: not drawn where nothing admitted opens as a score, and the block goes with it
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Climb the ladder, teaching false: not drawn where nothing admitted opens as a score, and the block goes with it
+AssertionError: expected <button type="button" …(3)></button> to be null
+
+- Expected:
+null
+
++ Received:
+<button
+  class="link-button"
+  data-item="ex.groove"
+  id="lesson-tool-ladder"
+  type="button"
+>
+  Climb the ladder
+</button>
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:202:58
+    200|   it.each(REFUSED)('Climb the ladder, teaching %s: not drawn where not…
+    201|     const section = await mount(rung({ exerciseOptions: ['ex.groove', …
+    202|     expect(section.querySelector('#lesson-tool-ladder')).toBeNull();
+       |                                                          ^
+    203|     expect(section.querySelector<HTMLElement>('#lesson-tools-block')?.…
+    204|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > the option rows are the learner’s own choice: every authored option stays listed and tappable, the refused groove among them
+AssertionError: expected [ 'ex.next', 'ex.groove', …(3) ] to not include 'ex.groove'
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:264:47
+    262|     expect(tap(play as HTMLElement)).toBe('ex.groove');
+    263|     // …while no automatic control resolves to it.
+    264|     expect(Object.values(picks(section))).not.toContain('ex.groove');
+       |                                               ^
+    265|   });
+    266|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+
+exit 1

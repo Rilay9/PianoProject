@@ -1,0 +1,39 @@
+PDMX pool positions with more than one sound and a mark: 2021 (tolerance 0.01)
+amended moves: 142
+  QmNVL9NadmMR93ZsKZUZ3oKSTRpt34bVihFhBMtxtQ13oB.mxl @0:0: mark quarter=80; sounds [120.0, 80.0]; first 120, amended 80, tolerance-1 80, ratio-1.1 80
+  QmNhHYztSTibLvkuoRqH3jsGtbAvTcw6vAhFTZrm8Euwki.mxl @0:0: mark quarter=70; sounds [108.0, 70.0]; first 108, amended 70, tolerance-1 70, ratio-1.1 70
+  QmNhcXK7kNHaHZ5dHP6UDKnNRcYvM2qkktEQxdAXJ2eAwC.mxl @0:0: mark quarter=200; sounds [144.0, 200.0]; first 144, amended 200, tolerance-1 200, ratio-1.1 200
+  QmNpvQpmfGMx9E1rZR1MsUSEheZySuJyP5o4EsfUNzYCD9.mxl @112:0: mark quarter=156; sounds [71.0, 156.0]; first 71, amended 156, tolerance-1 156, ratio-1.1 156
+  QmNpvQpmfGMx9E1rZR1MsUSEheZySuJyP5o4EsfUNzYCD9.mxl @16:0: mark quarter=100; sounds [71.0, 100.0]; first 71, amended 100, tolerance-1 100, ratio-1.1 100
+  QmNpvQpmfGMx9E1rZR1MsUSEheZySuJyP5o4EsfUNzYCD9.mxl @32:0: mark quarter=118; sounds [71.0, 118.0]; first 71, amended 118, tolerance-1 118, ratio-1.1 118
+  QmNpvQpmfGMx9E1rZR1MsUSEheZySuJyP5o4EsfUNzYCD9.mxl @48:0: mark quarter=92; sounds [71.0, 92.0]; first 71, amended 92, tolerance-1 92, ratio-1.1 92
+  QmNpvQpmfGMx9E1rZR1MsUSEheZySuJyP5o4EsfUNzYCD9.mxl @64:0: mark quarter=114; sounds [71.0, 114.0]; first 71, amended 114, tolerance-1 114, ratio-1.1 114
+  QmNpvQpmfGMx9E1rZR1MsUSEheZySuJyP5o4EsfUNzYCD9.mxl @80:0: mark quarter=75; sounds [71.0, 75.0]; first 71, amended 75, tolerance-1 75, ratio-1.1 71
+  QmNpvQpmfGMx9E1rZR1MsUSEheZySuJyP5o4EsfUNzYCD9.mxl @96:0: mark quarter=138; sounds [71.0, 138.0]; first 71, amended 138, tolerance-1 138, ratio-1.1 138
+  QmNy5dG6L1CwXxZEScJh4rxhCYLSwEvbFWEYD92EaGaAr1.mxl @0:0: mark quarter=135; sounds [116.0, 135.0]; first 116, amended 135, tolerance-1 135, ratio-1.1 135
+  QmPUyKD5Kmw2KAExu3bqXJCffS3UUaPtU1erBRwJZyaRAT.mxl @0:0: mark quarter=72; sounds [989.0, 72.0]; first 989, amended 72, tolerance-1 72, ratio-1.1 72
+tolerance 1 differs from amended: 11
+  QmQSvQ6mvJktc4kJed96BVu9cLzjt32nsFT7MP9Bu7yTdP.mxl @14:2: mark quarter=106; sounds [105.0, 106.0]; first 105, amended 106, tolerance-1 105, ratio-1.1 105
+  QmQSvQ6mvJktc4kJed96BVu9cLzjt32nsFT7MP9Bu7yTdP.mxl @79:0: mark quarter=96; sounds [95.0, 96.0]; first 95, amended 96, tolerance-1 95, ratio-1.1 95
+  QmRMBwYZgmAAhpWLacscQVpUiodqDmfUuNDGPctJ85ScWD.mxl @121:4: mark quarter=113; sounds [113.4, 113.0]; first 113.4, amended 113, tolerance-1 113.4, ratio-1.1 113.4
+  QmRMBwYZgmAAhpWLacscQVpUiodqDmfUuNDGPctJ85ScWD.mxl @302:4: mark quarter=82; sounds [82.6, 82.4, 82.3, 82.2, 82.0, 81.9]...; first 82.6, amended 82, tolerance-1 82.6, ratio-1.1 82.6
+  QmVja3vMcSL5cBbLAAUQ6SSHBxmedTufnQKA257PugbUsL.mxl @58:3.00417: mark quarter=129; sounds [129.3, 129.2, 129.1, 129.0, 128.9, 128.8]...; first 129.3, amended 129, tolerance-1 129.3, ratio-1.1 129.3
+  QmVja3vMcSL5cBbLAAUQ6SSHBxmedTufnQKA257PugbUsL.mxl @59:3.125: mark quarter=125; sounds [125.4, 125.3, 125.1, 125.0, 124.8, 124.6]...; first 125.4, amended 125, tolerance-1 125.4, ratio-1.1 125.4
+  QmYdTj3Q8iDcWrg6QzJfMb5Qp39938CSaJPpmCnjy3JSEh.mxl @32:3: mark quarter=99; sounds [99.4, 99.0, 98.7, 98.0, 97.6, 97.3]; first 99.4, amended 99, tolerance-1 99.4, ratio-1.1 99.4
+  QmcrepQw51oaoVB5em9vxFM46ZN3ae3yjGGJG76mTsuRFF.mxl @47:0: mark quarter=70; sounds [71.0, 70.0]; first 71, amended 70, tolerance-1 71, ratio-1.1 71
+  QmcrepQw51oaoVB5em9vxFM46ZN3ae3yjGGJG76mTsuRFF.mxl @92:0: mark quarter=70; sounds [71.0, 70.0]; first 71, amended 70, tolerance-1 71, ratio-1.1 71
+  Qmd8Smn6WavdXN5pbrnQJ9EC8MPCgBKLhxCsNntv3bcBhE.mxl @1:4: mark quarter=85; sounds [85.7, 85.0, 84.4, 83.7, 81.8, 80.5]...; first 85.7, amended 85, tolerance-1 85.7, ratio-1.1 85.7
+  Qmd8Smn6WavdXN5pbrnQJ9EC8MPCgBKLhxCsNntv3bcBhE.mxl @38:3: mark quarter.=143; sounds [215.6, 214.1, 210.9, 198.6, 189.0, 176.9]; first 215.6, amended 215.6, tolerance-1 214.1, ratio-1.1 215.6
+ratio 1.1 differs from amended: 36
+  QmNpvQpmfGMx9E1rZR1MsUSEheZySuJyP5o4EsfUNzYCD9.mxl @80:0: mark quarter=75; sounds [71.0, 75.0]; first 71, amended 75, tolerance-1 75, ratio-1.1 71
+  QmPVbRjNCYWSw86RLVeY1a5GcuBTPmY2FxcZ2JFZkcZ4hQ.mxl @8:6: mark quarter=100; sounds [90.0, 110.0, 135.0, 120.0]; first 90, amended 90, tolerance-1 90, ratio-1.1 110
+  QmPhwzPacJoA9WUXzcBDyqS1btc34xj8f4LjtCMH51UmpN.mxl @48:3: mark quarter=80; sounds [92.0, 90.0, 88.0, 84.0]; first 92, amended 92, tolerance-1 92, ratio-1.1 88
+  QmPyLJ8mBFG9uFnGDQ9mv2HoZp1A3aQTg7yuwsSdQQDyff.mxl @0:0: mark quarter=118; sounds [116.0, 118.0]; first 116, amended 118, tolerance-1 118, ratio-1.1 116
+  QmQSvQ6mvJktc4kJed96BVu9cLzjt32nsFT7MP9Bu7yTdP.mxl @14:2: mark quarter=106; sounds [105.0, 106.0]; first 105, amended 106, tolerance-1 105, ratio-1.1 105
+  QmQSvQ6mvJktc4kJed96BVu9cLzjt32nsFT7MP9Bu7yTdP.mxl @15:0: mark quarter=90; sounds [95.0, 90.0]; first 95, amended 90, tolerance-1 90, ratio-1.1 95
+  QmQSvQ6mvJktc4kJed96BVu9cLzjt32nsFT7MP9Bu7yTdP.mxl @79:0: mark quarter=96; sounds [95.0, 96.0]; first 95, amended 96, tolerance-1 95, ratio-1.1 95
+  QmQT9cV9V6Fm9PH1PsXm7tW6cZCdSzKWPmfogZmca1yQXB.mxl @0:0: mark eighth=250; sounds [116.0, 125.0]; first 116, amended 125, tolerance-1 125, ratio-1.1 116
+  QmRJWypJzPyEs4LdXm3McS6bcVyXbxtTjLNimUE5ecPy78.mxl @51:0: mark half=80; sounds [170.0, 160.0, 160.0]; first 170, amended 160, tolerance-1 160, ratio-1.1 170
+  QmRMBwYZgmAAhpWLacscQVpUiodqDmfUuNDGPctJ85ScWD.mxl @121:4: mark quarter=113; sounds [113.4, 113.0]; first 113.4, amended 113, tolerance-1 113.4, ratio-1.1 113.4
+  QmRMBwYZgmAAhpWLacscQVpUiodqDmfUuNDGPctJ85ScWD.mxl @302:4: mark quarter=82; sounds [82.6, 82.4, 82.3, 82.2, 82.0, 81.9]...; first 82.6, amended 82, tolerance-1 82.6, ratio-1.1 82.6
+  QmUVh29d3VZMRsFWKFqJHc5MpDzwmpFF5j7hixaL8cYuzU.mxl @0:0: mark quarter=108; sounds [114.0, 108.0]; first 114, amended 108, tolerance-1 108, ratio-1.1 114

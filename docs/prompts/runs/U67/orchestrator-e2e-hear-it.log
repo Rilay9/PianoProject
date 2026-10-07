@@ -1,0 +1,33 @@
+[WebServer] (node:59356) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/curriculum/load.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/curriculum/tips.ts, src/data/planStore.ts, src/score/estimateImport.ts, src/ui/assignSheet.ts, src/ui/screens/ChordChartScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] (node:54832) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 2 workers
+
+(node:41176) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57012) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\score.density.spec.ts:138:3 › a 900px screen keeps note spacing and centres it (2.8s)
+  ok 2 tests\e2e\score.density.spec.ts:127:1 › a phone still gets the width filled (2.8s)
+  -  4 tests\e2e\score.density.spec.ts:198:1 › a narrow system on a phone is centred, not pinned left
+  ok 3 tests\e2e\score.density.spec.ts:138:3 › a 1512px screen keeps note spacing and centres it (2.6s)
+  ok 5 tests\e2e\score.hearIt.spec.ts:65:1 › opened by address, one tap on Hear it: the piano plays (8.2s)
+  ok 6 tests\e2e\score.hearIt.spec.ts:75:1 › after a tap on another screen first: the piano plays (the control) (8.0s)
+  ok 7 tests\e2e\score.hearIt.spec.ts:87:1 › opened by address with the click on: Hear it plays the notes and the clicks (8.2s)
+  ok 8 tests\e2e\score.hearIt.spec.ts:102:1 › opened by address in Listen, ▶ plays the notes and the clicks (7.9s)
+
+  1 skipped
+  7 passed (1.1m)

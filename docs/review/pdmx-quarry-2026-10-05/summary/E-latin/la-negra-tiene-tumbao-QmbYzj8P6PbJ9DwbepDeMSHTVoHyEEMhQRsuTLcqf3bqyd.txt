@@ -1,0 +1,76 @@
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=46 bars=68
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
+CID QmbYzj8P6PbJ9DwbepDeMSHTVoHyEEMhQRsuTLcqf3bqyd
+title: La Negra Tiene Tumbao | song_name: La negra tiene tumbao
+composer: Victor Lopez | artist: Fernando Osorio
+csv: tracks=0 bars=76 license=cc-zero
+
+=== part P1 'Piano' measures=68 ===
+m1 [staves=2; key fifths=-1; time 4/4; clef1=G2; clef2=F4]  s1v1: D4:8.+F4+A4 D4:16+F4+A4 r:q D4:8.+F4+A4 D4:16+F4+A4 r:8 D4:8+F4+A4 | s2v5: D3:8. D3:16 r:q D3:8. D3:16 r:8 A2:8
+m2  s1v1: D4:8.+F4+A4 D4:16+F4+A4 r:8 D4:8+F4+A4 D4:8.+F4+A4 D4:16+F4+A4 r:8 D4:8+F4+A4 | s2v5: D3:8. D3:16 r:q C3:8. C3:16 r:8 A2:8
+m3  s1v1: D4:8.+F4+A4 D4:16+F4+A4 r:8 D4:8+F4+A4 D4:8.+F4+A4 D4:16+F4+A4 r:8 F4:8 | s2v5: D3:8. D3:16 r:q D3:8. D3:16 r:8 A2:8
+m4  s1v1: D4:8 G4:8 C#4:8 F#4:8 C4:8 F4:8 B3:8 E4:8 | s2v5: D3:8 G3:8 C#3:8 F#3:8 C3:8 F3:8 B2:8 E3:8
+m5  s1v1: D4:w+F4 | s2v5: F3:w+A3
+m6  s1v1: C#4:h+E4 C#4:8.+E4 C#4:16+E4 r:q | s2v5: E3:h+G3 E3:8.+G3 E3:16+G3 r:q
+m7  s1v1: C#4:w+E4 | s2v5: E3:w+G3
+m8  s1v1: D4:h+F4 D4:8.+F4 D4:16+F4 r:q | s2v5: F3:h+A3 F3:8.+A3 F3:16+A3 r:q
+m9  s1v1: D4:w+F4 | s2v5: F3:w+A3
+m10  s1v1: C#4:h+E4 C#4:8.+E4 C#4:16+E4 r:q | s2v5: E3:h+G3 E3:8.+G3 E3:16+G3 r:q
+m11  s1v1: C#4:w+E4 | s2v5: E3:w+G3
+m12  s1v1: D4:h+F4 D4:8.+F4 D4:16+F4 r:8 D4:8~+F4 | s2v5: F3:h+A3 F3:8.+A3 F3:16+A3 r:8 F3:8~+A3
+m13  s1v1: D4:h.+F4 r:q | s2v5: F3:h.+A3 r:q
+m14  s1v1: C#4:8.+E4 C#4:16+E4 r:q C#4:8.+E4 C#4:16+E4 r:q | s2v5: E3:8.+G3 E3:16+G3 r:q E3:8.+G3 E3:16+G3 r:q
+m15  s1v1: C#4:8.+E4 C#4:16+E4 r:8 C#4:8~+E4 C#4:h+E4 | s2v5: E3:8.+G3 E3:16+G3 r:8 E3:8~+G3 E3:h+G3
+m16  s1v1: D4:h+F4 D4:8.+F4 D4:16+F4 r:8 D4:8~+F4 | s2v5: F3:h+A3 F3:8.+A3 F3:16+A3 r:8 F3:8~+A3
+m17  s1v1: D4:w+F4 | s2v5: F3:w+A3
+m18  s1v1: C#4:8.+E4 C#4:16+E4 r:q C#4:8.+E4 C#4:16+E4 r:q | s2v5: E3:8.+G3 E3:16+G3 r:q E3:8.+G3 E3:16+G3 r:q
+m19  s1v1: C#4:h.+E4 r:q | s2v5: E3:h.+G3 r:q
+m20  s1v1: A4:8+A5 A4:8+A5 A4:8+A5 A4:8+A5 A4:8+A5 A4:8+A5 A4:8+A5 A4:8+A5 | s2v5: A3:8 A3:8 A3:8 A3:8 A3:8 A3:8 A3:8 A3:8
+m21  s1v1: D4:8.+F4 D4:16+F4 r:q D4:8.+F4 D4:16+F4 r:q | s2v5: F3:8.+A3 F3:16+A3 r:q F3:8.+A3 F3:16+A3 r:q
+m22  s1v1: E4:8.+G4 E4:16+G4 r:8 E4:8+G4 E4:8.+G4 E4:16+G4 r:q | s2v5: A3:8.+C#4 A3:16+C#4 r:8 A3:8+C#4 A3:8.+C#4 A3:16+C#4 r:q
+m23  s1v1: E4:8.+G4 E4:16+G4 r:q E4:8.+G4 E4:16+G4 r:q | s2v5: A3:8.+C#4 A3:16+C#4 r:q A3:8.+C#4 A3:16+C#4 r:q
+m24  s1v1: D4:8.+F4 D4:16+F4 r:8 D4:8+F4 D4:8.+F4 D4:16+F4 r:q | s2v5: F3:8.+A3 F3:16+A3 r:8 F3:8+A3 F3:8.+A3 F3:16+A3 r:q
+m25  s1v1: D4:8.+F4 D4:16+F4 r:q D4:8.+F4 D4:16+F4 r:q | s2v5: F3:8.+A3 F3:16+A3 r:q F3:8.+A3 F3:16+A3 r:q
+m26  s1v1: E4:8.+G4 E4:16+G4 r:8 E4:8+G4 E4:8.+G4 E4:16+G4 r:q | s2v5: A3:8.+C#4 A3:16+C#4 r:8 A3:8+C#4 A3:8.+C#4 A3:16+C#4 r:q
+m27  s1v1: E4:8.+G4 E4:16+G4 r:q E4:8.+G4 E4:16+G4 r:q | s2v5: A3:8.+C#4 A3:16+C#4 r:q A3:8.+C#4 A3:16+C#4 r:q
+m28  s1v1: D4:8.+F4 D4:16+F4 r:8 D4:8+F4 D4:8.+F4 D4:16+F4 r:q | s2v5: F3:8.+A3 F3:16+A3 r:8 F3:8+A3 F3:8.+A3 F3:16+A3 r:q
+m29  s1v1: D4:8.+F4 D4:16+F4 r:q D4:8.+F4 D4:16+F4 r:q | s2v5: F3:8.+A3 F3:16+A3 r:q F3:8.+A3 F3:16+A3 r:q
+m30  s1v1: E4:8.+G4 E4:16+G4 r:8 E4:8+G4 E4:8.+G4 E4:16+G4 r:q | s2v5: A3:8.+C#4 A3:16+C#4 r:8 A3:8+C#4 A3:8.+C#4 A3:16+C#4 r:q
+m31  s1v1: E4:8.+G4 E4:16+G4 r:q E4:8.+G4 E4:16+G4 r:q | s2v5: A3:8.+C#4 A3:16+C#4 r:q A3:8.+C#4 A3:16+C#4 r:q
+m32  s1v1: D4:8.+F4 D4:16+F4 r:8 D4:8+F4 D4:8.+F4 D4:16+F4 r:8 F4:8 | s2v5: F3:8.+A3 F3:16+A3 r:8 F3:8+A3 F3:8.+A3 F3:16+A3 r:q
+m33  s1v1: F4:8 D4:8 D4:8 A3:8 A3:8 F3:16 F3:16~ F3:8 F4:8 | s2v5: r:h r:q r:8 F3:8
+m34  s1v1: F4:8 D4:8 D4:8 A3:8 A3:8 F3:16 F3:16~ F3:8 F4:8 | s2v5: F3:8 D3:8 D3:8 A2:8 A2:8 F2:16 F2:16~ F2:8 F3:8
+m35  s1v1: F4:8 D4:8 D4:8 A3:8 A3:8 F3:16 F3:16~ F3:8 F4:8 | s2v5: F3:8 D3:8 D3:8 A2:8 A2:8 F2:16 F2:16~ F2:8 F3:8
+m36  s1v1: D4:8 G4:8 C#4:8 F#4:8 C4:8 F4:8 B3:8 E4:8 | s2v5: D3:8 G3:8 C#3:8 F#3:8 C3:8 F3:8 B2:8 E3:8
+m37  s1v1: D4:8.+F4+A4 D4:16+F4+A4 r:q D4:8.+F4+A4 D4:16+F4+A4 r:8 D4:8+F4+A4 | s2v5: D3:8. D3:16 r:q D3:8. D3:16 r:8 A2:8
+m38  s1v1: D4:8.+F4+A4 D4:16+F4+A4 r:8 D4:8+F4+A4 D4:8.+F4+A4 D4:16+F4+A4 r:8 D4:8+F4+A4 | s2v5: D3:8. D3:16 r:q C3:8. C3:16 r:8 A2:8
+m39  s1v1: D4:8.+F4+A4 D4:16+F4+A4 r:8 D4:8+F4+A4 D4:8.+F4+A4 D4:16+F4+A4 r:8 F4:8 | s2v5: D3:8. D3:16 r:q D3:8. D3:16 r:8 A2:8
+m40  s1v1: D4:8+F4+A4 r:8 r:q r:q r:8 Bb3:8+D4+G4 | s2v5: D3:8 r:8 r:q r:q r:8 G2:8
+m41  s1v1: C#4:8+E4+A4 r:8 r:q r:q r:8 D4:8+G4+Bb4 | s2v5: A2:8 r:8 r:q r:q r:8 G2:8
+m42  s1v1: C4:8+E#4+A4 r:8 r:q r:q r:8 C4:8+E#4+A4 | s2v5: A2:8 r:8 r:q r:q r:8 A2:8
+m43  s1v1: D4:8.+F4+A4 D4:16+F4+A4 r:8 D4:8+F4+A4 D4:8.+F4+A4 D4:16+F4+A4 r:8 D4:8+F4+A4 | s2v5: D3:8. D3:16 r:8 A2:8 C3:8. C3:16 r:8 A2:8
+m44  s1v1: D4:8+F4+A4 r:8 r:q r:q r:8 Bb3:8+D4+G4 | s2v5: D3:8 r:8 r:q r:q r:8 G2:8
+m45  s1v1: C#4:8+E4+A4 r:8 r:q r:q r:8 D4:8+G4+Bb4 | s2v5: A2:8 r:8 r:q r:q r:8 G2:8
+m46  s1v1: C4:8+E#4+A4 r:8 r:q r:q r:8 A4:8 | s2v5: A2:8 r:8 r:q r:q r:8 A2:8
+m47  s1v1: A4:8 A4:8 A4:8 A4:8 A4:8 A4:16 A4:16 r:16 A4:16 A4:8 | s2v5: A2:8 A2:8 A2:8 A2:8 A2:8 A2:16 A2:16 r:16 A2:16 A2:8
+m48  s1v1: D4:8.+F4+A4 D4:16+F4+A4 r:8 D4:8+F4+A4 D4:8.+F4+A4 D4:16+F4+A4 r:8 Bb3:8+D4+G4 | s2v5: D3:q r:q r:q r:8 G2:8
+m49  s1v1: C#4:8.+E4+A4 C#4:16+E4+A4 r:8 C#4:8+E4+A4 C#4:8.+E4+A4 C#4:16+E4+A4 r:8 D4:8+G4+Bb4 | s2v5: A2:8 r:8 r:q r:q r:8 G2:8
+m50  s1v1: C#4:8.+E4+A4 C#4:16+E4+A4 r:8 C#4:8+E4+A4 C#4:8.+E4+A4 C#4:16+E4+A4 r:8 Bb3:8+D4+G4 | s2v5: A2:8 r:8 r:8 G2:8 A2:8 r:8 r:8 G2:8
+m51  s1v1: C#4:8+E4+A4 C#4:8+E4+A4 C#4:8+E4+A4 C#4:8+E4+A4 C#4:8+E4+A4 C#4:8+E4+A4 C4:q+Eb4+Gb4+Bb4 | s2v5: A2:8 A3:8 A2:8 A3:8 A2:8 A3:8 Ab3:q
+m52 [key fifths=-2]  s1v1: G4:8.+Bb4 G4:16+Bb4 r:8 G4:8~+Bb4 G4:h+Bb4 | s2v5: Bb3:8.+D4 Bb3:16+D4 r:8 Bb3:8~+D4 Bb3:h+D4
+m53  s1v1: F#4:8.+A4 F#4:16+A4 r:q F#4:8.+A4 F#4:16+A4 r:q | s2v5: A3:8.+C4 A3:16+C4 r:q A3:8.+C4 A3:16+C4 r:q
+m54  s1v1: F#4:8.+A4 F#4:16+A4 r:8 F#4:8~+A4 F#4:h+A4 | s2v5: A3:8.+C4 A3:16+C4 r:8 A3:8~+C4 A3:h+C4
+m55  s1v1: G4:8.+Bb4 G4:16+Bb4 r:q G4:8.+Bb4 G4:16+Bb4 r:q | s2v5: Bb3:8.+D4 Bb3:16+D4 r:q Bb3:8.+D4 Bb3:16+D4 r:q
+m56  s1v1: G4:8.+Bb4 G4:16+Bb4 r:8 G4:8~+Bb4 G4:h+Bb4 | s2v5: Bb3:8.+D4 Bb3:16+D4 r:8 Bb3:8~+D4 Bb3:h+D4
+m57  s1v1: F#4:8.+A4 F#4:16+A4 r:q F#4:8.+A4 F#4:16+A4 r:q | s2v5: A3:8.+C4 A3:16+C4 r:q A3:8.+C4 A3:16+C4 r:q
+m58  s1v1: F#4:8.+A4 F#4:16+A4 r:8 F#4:8~+A4 F#4:h+A4 | s2v5: A3:8.+C4 A3:16+C4 r:8 A3:8~+C4 A3:h+C4
+m59  s1v1: G4:8.+Bb4 G4:16+Bb4 r:q G4:8.+Bb4 G4:16+Bb4 r:q | s2v5: Bb3:8.+D4 Bb3:16+D4 r:q Bb3:8.+D4 Bb3:16+D4 r:q
+m60 [repeat-forward]  s1v1: G4:8.+Bb4 G4:16+Bb4 r:q G4:8.+Bb4 G4:16+Bb4 r:q | s2v5: Bb3:8.+D4 Bb3:16+D4 r:q Bb3:8.+D4 Bb3:16+D4 r:q
+m61  s1v1: F#4:8.+A4 F#4:16+A4 r:8 F#4:8+A4 F#4:8.+A4 F#4:16+A4 r:q | s2v5: A3:8.+C4 A3:16+C4 r:8 A3:8+C4 A3:8.+C4 A3:16+C4 r:q
+m62  s1v1: F#4:8.+A4 F#4:16+A4 r:q F#4:8.+A4 F#4:16+A4 r:q | s2v5: A3:8.+C4 A3:16+C4 r:q A3:8.+C4 A3:16+C4 r:q
+m63  s1v1: G4:8.+Bb4 G4:16+Bb4 r:8 G4:8+Bb4 G4:8.+Bb4 G4:16+Bb4 r:q | s2v5: Bb3:8.+D4 Bb3:16+D4 r:8 Bb3:8+D4 Bb3:8.+D4 Bb3:16+D4 r:q
+m64  s1v1: G4:8.+Bb4 G4:16+Bb4 r:q G4:8.+Bb4 G4:16+Bb4 r:q | s2v5: Bb3:8.+D4 Bb3:16+D4 r:q Bb3:8.+D4 Bb3:16+D4 r:q
+m65  s1v1: F#4:8.+A4 F#4:16+A4 r:8 F#4:8+A4 F#4:8.+A4 F#4:16+A4 r:q | s2v5: A3:8.+C4 A3:16+C4 r:8 A3:8+C4 A3:8.+C4 A3:16+C4 r:q
+m66  s1v1: F#4:8.+A4 F#4:16+A4 r:q F#4:8.+A4 F#4:16+A4 r:q | s2v5: A3:8.+C4 A3:16+C4 r:q A3:8.+C4 A3:16+C4 r:q
+m67 [repeat-backward]  s1v1: G4:8.+Bb4 G4:16+Bb4 r:8 G4:8+Bb4 G4:8.+Bb4 G4:16+Bb4 r:q | s2v5: Bb3:8.+D4 Bb3:16+D4 r:8 Bb3:8+D4 Bb3:8.+D4 Bb3:16+D4 r:q
+m68  s1v1: C4:8+F#4+A4 C4:8+F#4+A4 C4:8+F#4+A4 C4:8+F#4+A4 C4:8+F#4+A4 C4:8+F#4+A4 C4:8+F#4+A4 D4:8+G4+Bb4 | s2v5: D3:8 D3:8 D3:8 D3:8 D3:8 D3:8 D3:8 G3:8

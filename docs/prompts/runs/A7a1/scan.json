@@ -1,0 +1,169 @@
+[
+ {
+  "cid": "Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi",
+  "member": "mxl/1/6/Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.mxl",
+  "title": "Blues Riff in C (120 bpm)",
+  "song_name": "12 bar blues",
+  "composer": "Daniels Elizabeth Calvin",
+  "artist": "Lessons - Blues",
+  "tracks": "0-0-0",
+  "bars": "12",
+  "rating": "4.87",
+  "n_ratings": "5",
+  "license": "publicdomain",
+  "dedup": "True",
+  "no_license_conflict": "False",
+  "sha256": "69d5bb7ee0e3cd6ff1aed15863a4d6340538a50b0108661b7657bd0d1b877481",
+  "analyse": {
+   "shape": "PIANO_GRAND_STAFF",
+   "n_parts": 3,
+   "max_staves": 2,
+   "total_staves": 4,
+   "part_names": [
+    "Piano",
+    "Riff",
+    "Drumset"
+   ],
+   "parts": [
+    "P1:'Piano':staves=2:prog=0:piano=True",
+    "P2:'Riff':staves=1:prog=0:piano=True",
+    "P3:'Drumset':staves=1:prog=0:piano=True"
+   ],
+   "meters": [
+    "4/4"
+   ],
+   "harmony": 0,
+   "bars": 12,
+   "key": "fifths=0",
+   "tempo": []
+  },
+  "identity": [
+   "TITLE_ONLY",
+   "term is only part of a longer title; creator alias 'daniels' found"
+  ]
+ },
+ {
+  "cid": "Qmdhr5ubNVfjNqVT7ShJYdLDCxiGMGcAVtiQkGYedgP2g9",
+  "member": "mxl/3/23/Qmdhr5ubNVfjNqVT7ShJYdLDCxiGMGcAVtiQkGYedgP2g9.mxl",
+  "title": "12 Maten Blues",
+  "song_name": "12 Maten Blues",
+  "composer": "Pianolessen.eu",
+  "artist": "Pianolessen.eu",
+  "tracks": "0",
+  "bars": "12",
+  "rating": "0.0",
+  "n_ratings": "0",
+  "license": "cc-zero",
+  "dedup": "True",
+  "no_license_conflict": "False",
+  "sha256": "8064fd2f4e47b7a27b5b8fed000fc05e119ed6fbeb346e17f6ecc1b3382b7a1c",
+  "analyse": {
+   "shape": "PIANO_GRAND_STAFF",
+   "n_parts": 1,
+   "max_staves": 2,
+   "total_staves": 2,
+   "part_names": [
+    "Piano"
+   ],
+   "parts": [
+    "P1:'Piano':staves=2:prog=0:piano=True"
+   ],
+   "meters": [
+    "4/4"
+   ],
+   "harmony": 0,
+   "bars": 12,
+   "key": "fifths=0",
+   "tempo": []
+  },
+  "identity": [
+   "MISMATCH",
+   "the title does not contain the term"
+  ]
+ },
+ {
+  "cid": "QmbizGFyvL8ocPFV1J6mD8uCMZF7JtYZa6bVcik8xa7SaS",
+  "member": "mxl/1/25/QmbizGFyvL8ocPFV1J6mD8uCMZF7JtYZa6bVcik8xa7SaS.mxl",
+  "title": "Simple 12 Bar Blues Duet in E",
+  "song_name": "12 bar blues",
+  "composer": "Stephan Peters",
+  "artist": "Lessons - Blues",
+  "tracks": "0-0",
+  "bars": "27",
+  "rating": "0.0",
+  "n_ratings": "0",
+  "license": "cc-zero",
+  "dedup": "True",
+  "no_license_conflict": "False",
+  "sha256": "c4f58ecb1d203e0b3777ca223ad10f0c0937984acc51be4dfb72ec79443bbb0e",
+  "analyse": {
+   "shape": "PIANO_GRAND_STAFF",
+   "n_parts": 2,
+   "max_staves": 2,
+   "total_staves": 3,
+   "part_names": [
+    "Piano",
+    "Piano"
+   ],
+   "parts": [
+    "P1:'Piano':staves=1:prog=0:piano=True",
+    "P2:'Piano':staves=2:prog=0:piano=True"
+   ],
+   "meters": [
+    "4/4"
+   ],
+   "harmony": 0,
+   "bars": 15,
+   "key": "fifths=4",
+   "tempo": [
+    "to start",
+    "tempo=90"
+   ]
+  },
+  "identity": [
+   "MISMATCH",
+   "the title does not contain the term"
+  ]
+ },
+ {
+  "cid": "QmduvvF9WYbSxgdNZLWZHwiPmD6Bk4bDg9kvssqRP3pu6h",
+  "member": "mxl/3/46/QmduvvF9WYbSxgdNZLWZHwiPmD6Bk4bDg9kvssqRP3pu6h.mxl",
+  "title": "12 Bar Blues",
+  "song_name": "12 bar blues",
+  "composer": "NA",
+  "artist": "Lessons - Blues",
+  "tracks": "0",
+  "bars": "13",
+  "rating": "4.5",
+  "n_ratings": "19",
+  "license": "publicdomain",
+  "dedup": "True",
+  "no_license_conflict": "True",
+  "sha256": "232349ab938d1a905d0272eae1f50a354b8aa8c771f48b053c5905a5ac46f15f",
+  "analyse": {
+   "shape": "PIANO1",
+   "n_parts": 1,
+   "max_staves": 1,
+   "total_staves": 1,
+   "part_names": [
+    "Piano"
+   ],
+   "parts": [
+    "P1:'Piano':staves=1:prog=0:piano=True"
+   ],
+   "meters": [
+    "4/4"
+   ],
+   "harmony": 0,
+   "bars": 11,
+   "key": "fifths=-2",
+   "tempo": [
+    "tempo=150"
+   ]
+  },
+  "identity": [
+   "MISMATCH",
+   "the title does not contain the term"
+  ]
+ }
+]

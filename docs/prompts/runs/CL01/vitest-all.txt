@@ -1,0 +1,40 @@
+$ npx vitest run
+(the full log, over 300 KB, is not kept: its failing tests, their assertion and the totals follow)
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (288 tests | 2 failed) 408ms
+   ❯ the 2026-09-19 lesson corrections, second-read and under test: the app (80)
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 12ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2119:23
+    2117|   for (const [lesson, says, holds] of T12_APP) {
+    2118|     it(`${lesson}: ${says}`, () => {
+    2119|       expect(holds()).toBe(true);
+       |                       ^
+    2120|     });
+    2121|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed | 321 passed (322)
+      Tests  2 failed | 7536 passed | 5 skipped | 1 todo (7544)
+   Start at  18:05:22
+   Duration  256.97s (tests 75%, environment 17%, import 5%, transform 2%)
+
+    Isolate  322 workers spawned · ~1.11s startup each (spawn + environment, per file)
+             at least ~17.75s faster with isolate: false — reuses workers across files instead of one per file
+
+exit=1

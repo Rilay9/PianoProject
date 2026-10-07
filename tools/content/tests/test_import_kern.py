@@ -12,11 +12,15 @@ fetch step that would create them.
 """
 from __future__ import annotations
 
+import io
 import json
+import shutil
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -148,6 +152,98 @@ class TestNonCommercialEditions(KernImportCase):
         self.assertNotIn("nc-personal-build", item["tags"])
         self.assertIn("--allow-nc", item["importHint"])
         self.assertFalse((self.out / "scores" / "imported" / "song.ragtime.test-rag.mxl").exists())
+
+
+#: Q82: the reason the step gives for `table_for`'s row when its file is not on this build, as
+#: `validate.UNFETCHED_REASONS` reads it.
+NOT_FETCHED = "joplin/kern/rag.krn was not fetched: the kern clone is not on this build"
+
+
+class TestAFileTheCloneLacks(KernImportCase):
+    """
+    Q82: a file the clone lacks is a placeholder that says it was not fetched, as Mutopia's step does.
+
+    The fetch step skips a source it cannot reach, and a skipped source is a smaller build, not a broken one.
+    Before Q82 this step dropped such a row (`report.missing`, and nothing in the catalogue), so every rung that
+    named it pointed at nothing: with the `kern/joplin` clone moved aside, validation failed on 21 unknown items,
+    a `variantOf` and the ladder report (Q80's stop finding). The placeholder takes the licence placeholder's
+    shape and says why, on either flavour: a missing file is not a licence matter.
+    """
+
+    def test_a_row_whose_file_is_absent_is_a_placeholder_with_the_reason(self) -> None:
+        # Nothing cloned: the table names joplin/kern/rag.krn and the kern folder is empty.
+        report, catalog = self.run_with(table_for("joplin"), allow_nc=True)
+
+        self.assertEqual([item["id"] for item in catalog], ["song.ragtime.test-rag"])
+        self.assertEqual(report.missing, ["joplin/kern/rag.krn"])
+        item = catalog[0]
+        self.assertIsNone(item.get("file"))
+        self.assertIn(NOT_FETCHED, item["importHint"])
+        self.assertEqual(item["tags"], ["kern", "joplin", "import-only"])
+        # Neither imported nor a licence placeholder: nothing about the licence was read.
+        self.assertEqual(report.imported, [])
+        self.assertEqual(report.placeheld, [])
+        self.assertFalse((self.out / "scores" / "imported" / "song.ragtime.test-rag.mxl").exists())
+
+    def test_both_flavours_carry_the_same_row(self) -> None:
+        _, personal = self.run_with(table_for("joplin"), allow_nc=True)
+        _, strict = self.run_with(table_for("joplin"), allow_nc=False)
+        self.assertEqual([item["id"] for item in personal], ["song.ragtime.test-rag"])
+        self.assertEqual(personal, strict)
+
+    def test_it_has_the_licence_placeholders_level_and_alternatives(self) -> None:
+        table = table_for("joplin", levelBanded=True, alternatives=["song.ragtime.other"])
+        table["items"]["joplin/kern/other.krn"] = dict(table["items"]["joplin/kern/rag.krn"], id="song.ragtime.other",
+                                                     alternatives=["song.ragtime.test-rag"])
+        # The licence placeholder: the clone is there, the flag is not.
+        make_repo(self.kern_dir, "joplin", licence_text=NC_LICENSE)
+        (self.kern_dir / "joplin" / "kern" / "other.krn").write_text(kern_source(), encoding="utf-8")
+        _, licence = self.run_with(table, allow_nc=False)
+        # The same table with no clone at all.
+        shutil.rmtree(self.kern_dir / "joplin")
+        _, unfetched = self.run_with(table, allow_nc=False)
+
+        by_id = {item["id"]: item for item in unfetched}
+        for expected in licence:
+            got = by_id[expected["id"]]
+            for field in ("title", "subtitle", "composer", "level", "levelSource", "hands", "tracks", "concepts",
+                          "genre", "abrsmGradeApprox", "alternatives", "variantOf", "variantLabel", "tags"):
+                self.assertEqual(got.get(field), expected.get(field), f"{expected['id']}: {field}")
+            self.assertEqual(got["levelSource"], "estimated")
+            self.assertEqual(got["alternatives"], expected["alternatives"])
+            self.assertEqual({k: got["source"].get(k) for k in ("name", "url", "editionNotes")},
+                             {k: expected["source"].get(k) for k in ("name", "url", "editionNotes")})
+            self.assertIsNone(got["source"].get("fetchedAt"), "a file that did not arrive has no fetch date")
+
+    def test_a_row_the_table_excludes_stays_excluded_whether_or_not_its_file_arrived(self) -> None:
+        report, catalog = self.run_with(table_for("joplin", exclude="the table: not this edition"), allow_nc=True)
+        self.assertEqual(catalog, [])
+        self.assertEqual(report.missing, [])
+        self.assertEqual(report.excluded, [("joplin/kern/rag.krn", "the table: not this edition")])
+
+    def run_main(self, table: dict) -> tuple[str, str, list]:
+        table_path = self.root / "kern.json"
+        table_path.write_text(json.dumps(table), encoding="utf-8")
+        import_kern.TABLE_PATH = table_path
+        out, err = io.StringIO(), io.StringIO()
+        argv = ["import_kern.py", "--out", str(self.out), "--catalog", str(self.catalog), "--allow-nc"]
+        with mock.patch.object(sys, "argv", argv), redirect_stdout(out), redirect_stderr(err):
+            import_kern.main()
+        return out.getvalue(), err.getvalue(), json.loads(self.catalog.read_text(encoding="utf-8"))
+
+    def test_the_steps_last_line_counts_what_was_not_fetched(self) -> None:
+        # `build.py` shows a step's last line and nothing else, so that is where a runner's log says it.
+        out, err, _ = self.run_main(table_for("joplin"))
+        self.assertIn("1 not fetched", out.strip().splitlines()[-1])
+        self.assertIn("joplin/kern/rag.krn", err)
+
+    def test_no_kern_folder_at_all_placeholds_every_row(self) -> None:
+        # What a runner has when no kern repository could be cloned: the folder itself is absent.
+        import_kern.KERN_DIR = self.root / "never-cloned"
+        out, err, catalog = self.run_main(table_for("joplin"))
+        self.assertEqual([item["id"] for item in catalog], ["song.ragtime.test-rag"])
+        self.assertIn(NOT_FETCHED, catalog[0]["importHint"])
+        self.assertIn("1 not fetched", out.strip().splitlines()[-1])
 
 
 class TestUnlicensedRepositories(KernImportCase):

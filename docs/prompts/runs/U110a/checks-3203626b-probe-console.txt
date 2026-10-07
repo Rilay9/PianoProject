@@ -1,0 +1,19 @@
+    node.exe : [WebServer] (node:21636) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+    At line:1 char:1
+    + & "<node>/node.exe" "<node>/node_mo ...
+    + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+        + FullyQualifiedErrorId : NativeCommandError
+     
+    [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+    [WebServer] (node:24680) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+    [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+    
+    Running 2 tests using 1 worker
+    
+    (node:16444) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+    (Use `node --trace-warnings ...` to show where the warning was created)
+      ok 1 build\u110\u110-probe.spec.ts:66:3 > u110: fresh load then reloads at 360x780 (11.9s)
+      ok 2 build\u110\u110-probe.spec.ts:66:3 > u110: fresh load then reloads at 342x740 (11.4s)
+    
+      2 passed (26.6s)

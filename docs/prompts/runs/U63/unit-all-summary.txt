@@ -1,0 +1,18 @@
+npx vitest run (the whole unit suite, on the change). The full log was over 300 KB and was not kept.
+
+failing:
+  FAIL  tests/unit/expectedNote.test.ts > the spelling comes from the notation (T41) > every black key in every fixture carries its written spelling
+  FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+  FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+  FAIL  tests/unit/simonTurnCue.test.ts > the chain hands over in words, not only by going quiet > does not take a key pressed while the app is still playing as the answer
+
+
+ Test Files  3 failed | 316 passed (319)
+      Tests  4 failed | 7334 passed | 5 skipped | 1 todo (7344)
+   Start at  00:40:28
+   Duration  319.08s (tests 69%, environment 20%, import 7%, transform 3%)
+
+    Isolate  319 workers spawned · ~1.86s startup each (spawn + environment, per file)
+             at least ~29.34s faster with isolate: false — reuses workers across files instead of one per file
+
+exit 1

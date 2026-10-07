@@ -1,0 +1,42 @@
+{
+  "rendered": 2,
+  "cached": 0,
+  "items": [
+    {
+      "id": "song.folk.cielito-lindo.simple",
+      "cached": false,
+      "ok": true,
+      "title": "Cielito Lindo (simple)",
+      "steps": 74,
+      "measures": 32,
+      "sourceMeasures": 32,
+      "durationSec": 51.4,
+      "tempoBpm": 112,
+      "timeSig": "3/4",
+      "keySig": "C major",
+      "hands": "both",
+      "cursorSteps": 74,
+      "renderMs": 239,
+      "consoleErrors": [],
+      "preview": "C:\\Users\\yalir\\AppData\\Local\\Temp\\claude\\C--Users-yalir-repos-Piano-Stuff\\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\\scratchpad\\render\\previews\\song.folk.cielito-lindo.simple.png"
+    },
+    {
+      "id": "song.ragtime.joplin-pine-apple-rag.mutopia",
+      "cached": false,
+      "ok": true,
+      "title": "Pine Apple Rag (repeats written out)",
+      "steps": 1004,
+      "measures": 148,
+      "sourceMeasures": 148,
+      "durationSec": 177.3,
+      "tempoBpm": 100,
+      "timeSig": "2/4",
+      "keySig": "Bb major",
+      "hands": "both",
+      "cursorSteps": 1004,
+      "renderMs": 973,
+      "consoleErrors": [],
+      "preview": "C:\\Users\\yalir\\AppData\\Local\\Temp\\claude\\C--Users-yalir-repos-Piano-Stuff\\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\\scratchpad\\render\\previews\\song.ragtime.joplin-pine-apple-rag.mutopia.png"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+zz-g1d-pictures-Today’s-re-b2cd7-ed-then-paused-on-its-sheet/facts.json -> docs/prompts/pictures/g1d/before-facts.json
+zz-g1d-pictures-Today’s-re-b2cd7-ed-then-paused-on-its-sheet/today-paused-342x740.png -> docs/prompts/pictures/g1d/before-today-paused-342x740.png
+zz-g1d-pictures-Today’s-re-b2cd7-ed-then-paused-on-its-sheet/today-paused-review-row-342x740.png -> docs/prompts/pictures/g1d/before-today-paused-review-row-342x740.png
+zz-g1d-pictures-Today’s-re-b2cd7-ed-then-paused-on-its-sheet/today-unpaused-342x740.png -> docs/prompts/pictures/g1d/before-today-unpaused-342x740.png
+zz-g1d-pictures-Today’s-re-b2cd7-ed-then-paused-on-its-sheet/today-unpaused-review-row-342x740.png -> docs/prompts/pictures/g1d/before-today-unpaused-review-row-342x740.png
+zz-g1d-pictures-X1’s-store-2f5cd-e-paused-Today-opened-again/facts-running-session.json -> docs/prompts/pictures/g1d/before-facts-running-session.json
+zz-g1d-pictures-X1’s-store-2f5cd-e-paused-Today-opened-again/today-running-session-paused-342x740.png -> docs/prompts/pictures/g1d/before-today-running-session-paused-342x740.png
+zz-g1d-pictures-Today’s-re-b2cd7-ed-then-paused-on-its-sheet/facts.json -> docs/prompts/pictures/g1d/after-facts.json
+zz-g1d-pictures-Today’s-re-b2cd7-ed-then-paused-on-its-sheet/today-paused-342x740.png -> docs/prompts/pictures/g1d/after-today-paused-342x740.png
+zz-g1d-pictures-Today’s-re-b2cd7-ed-then-paused-on-its-sheet/today-paused-review-row-342x740.png -> docs/prompts/pictures/g1d/after-today-paused-review-row-342x740.png
+zz-g1d-pictures-Today’s-re-b2cd7-ed-then-paused-on-its-sheet/today-unpaused-342x740.png -> docs/prompts/pictures/g1d/after-today-unpaused-342x740.png
+zz-g1d-pictures-Today’s-re-b2cd7-ed-then-paused-on-its-sheet/today-unpaused-review-row-342x740.png -> docs/prompts/pictures/g1d/after-today-unpaused-review-row-342x740.png
+zz-g1d-pictures-X1’s-store-2f5cd-e-paused-Today-opened-again/facts-running-session.json -> docs/prompts/pictures/g1d/after-facts-running-session.json
+zz-g1d-pictures-X1’s-store-2f5cd-e-paused-Today-opened-again/today-running-session-paused-342x740.png -> docs/prompts/pictures/g1d/after-today-running-session-paused-342x740.png
+exit=0

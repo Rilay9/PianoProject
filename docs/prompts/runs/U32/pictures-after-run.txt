@@ -1,0 +1,22 @@
+U32_DIST=build/u32/dist-final config=playwright.u32-4473.config.ts args=zz-u32-pictures.spec.ts --workers=2
+[WebServer] (node:89156) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:87072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 2 workers
+
+(node:85788) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 tests\e2e\zz-u32-pictures.spec.ts:208:5 › u32 pictures nocturne phone-upright-342 (1.7m)
+  ok 1 tests\e2e\zz-u32-pictures.spec.ts:208:5 › u32 pictures nocturne phone-upright-390 (1.7m)
+  ok 3 tests\e2e\zz-u32-pictures.spec.ts:208:5 › u32 pictures nocturne phone-sideways (2.0m)
+  ok 4 tests\e2e\zz-u32-pictures.spec.ts:208:5 › u32 pictures nocturne tablet-upright (7.1m)
+  ok 6 tests\e2e\zz-u32-pictures.spec.ts:208:5 › u32 pictures scherzo phone-upright-342 (53.7s)
+  ok 7 tests\e2e\zz-u32-pictures.spec.ts:208:5 › u32 pictures scherzo phone-upright-390 (50.4s)
+  ok 5 tests\e2e\zz-u32-pictures.spec.ts:208:5 › u32 pictures nocturne tablet-sideways (11.7m)
+
+  7 passed (15.6m)
+exit=0

@@ -1,0 +1,11 @@
+HD2a evidence: song.blues.black-bottom-stomp (scores/pdmx/QmUxWVHCkkJuUxqhKei7ZUEPuU1eaomiq2nBFCkgNj8a3d.mxl), identity sha256 6584c3c172a8c15b7c3ce12f77e86e0c0cffdd3b1cffba653e373f7937bd53b5
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 2 voice 2 bars 56-56 -> L
+  bar 56 (source measure 55) st2 v2: R/x -> L; onsets 4 {'conflict': 4}; second voice(s) [1]; e.g. @220 R [68, 74, 77] + v2 [58]; @221 R [67, 73, 76] + v2 [57]
+  bar 56 onset 220 77/st1/v1/R:1 74/st1/v1/R:1 68/st1/v1/R:1 58/st2/v2/R/x:1
+  bar 56 onset 221 76/st1/v1/R:1 73/st1/v1/R:1 67/st1/v1/R:1 57/st2/v2/R/x:1
+  bar 56 onset 222 75/st1/v1/R:1 72/st1/v1/R:1 66/st1/v1/R:1 56/st2/v2/R/x:1
+  bar 56 onset 223 74/st1/v1/R:1 71/st1/v1/R:1 65/st1/v1/R:1 55/st2/v2/R/x:1
+

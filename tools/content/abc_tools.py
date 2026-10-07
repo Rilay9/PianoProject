@@ -177,12 +177,53 @@ _ACCIDENTALS = "^_="
 _REST_LETTER = "zZxX"
 
 
-def extract_fingerings(text: str) -> dict[str, dict[int, int]]:
+def _chord_member_fingerings(body: str) -> dict[int, int]:
+    """
+    `{member_position: finger}` for the `!n!` marks written inside one chord.
+
+    `body` is the text between `[` and `]`. A member is a note letter with its
+    accidentals; the position counts members in the order written, which is the
+    order music21 gives `chord.notes`.
+    """
+    out: dict[int, int] = {}
+    member = 0
+    pending: int | None = None
+    position = 0
+    while position < len(body):
+        char = body[position]
+        if char == "!":
+            end = body.find("!", position + 1)
+            if end == -1:
+                break
+            token = body[position + 1 : end]
+            if token.isdigit() and 1 <= int(token) <= 5:
+                pending = int(token)
+            position = end + 1
+            continue
+        if char == '"':
+            end = body.find('"', position + 1)
+            position = len(body) if end == -1 else end + 1
+            continue
+        if char in _NOTE_LETTER:
+            if pending is not None:
+                out[member] = pending
+                pending = None
+            member += 1
+        position += 1
+    return out
+
+
+def extract_fingerings(text: str) -> dict[str, dict[int, int | dict[int, int]]]:
     """
     `{voice: {note_index: finger}}` for every `!n!` in the body.
 
     Note index counts note *events* — a chord `[CEG]` is one — which is the
     same order music21 yields from `part.recurse().notes`.
+
+    A chord whose members carry their own marks, `[!1!C!3!E!5!G]`, maps to
+    `{member_position: finger}` instead of one number, and `apply_fingerings`
+    puts each finger on its own note of the chord. A mark before the bracket,
+    `!1![CEG]`, stays one number for the whole event.
     """
     prepared = inline_voices_to_blocks(strip_pianopath(text))
     out: dict[str, dict[int, int]] = {}
@@ -236,9 +277,14 @@ def extract_fingerings(text: str) -> dict[str, dict[int, int]]:
                 end = stripped.find("]", position + 1)
                 if end == -1:
                     break
-                if pending is not None:
+                members = _chord_member_fingerings(stripped[position + 1 : end])
+                if members:
+                    if pending is not None:
+                        members.setdefault(0, pending)
+                    out.setdefault(voice, {})[index] = members
+                elif pending is not None:
                     out.setdefault(voice, {})[index] = pending
-                    pending = None
+                pending = None
                 index += 1
                 position = end + 1
                 continue
@@ -277,7 +323,7 @@ def playable_notes(part) -> list:
     return [n for n in part.recurse().notes if not isinstance(n, harmony.Harmony)]
 
 
-def apply_fingerings(score, mapping: dict[str, dict[int, int]]) -> int:
+def apply_fingerings(score, mapping: dict[str, dict[int, int | dict[int, int]]]) -> int:
     """Attaches the extracted fingerings to a parsed score. Returns the count."""
     from music21 import articulations
 
@@ -292,9 +338,28 @@ def apply_fingerings(score, mapping: dict[str, dict[int, int]]) -> int:
             continue
         notes = playable_notes(parts[index])
         for index, finger in fingers.items():
-            if index < len(notes):
-                notes[index].articulations.append(articulations.Fingering(finger))
-                applied += 1
+            if index >= len(notes):
+                continue
+            target = notes[index]
+            if isinstance(finger, dict):
+                # A chord marked member by member. MusicXML export reads the
+                # *chord's* articulations, not its notes': the k-th Fingering
+                # there is written on the k-th note, so a mark on a note's own
+                # list never reaches the file. That order has no way to skip a
+                # member, so a chord fingered on some members and not on the
+                # ones before them cannot be written, and refusing it is better
+                # than writing a finger on the wrong note.
+                if sorted(finger) != list(range(len(finger))):
+                    raise ValueError(
+                        f"a chord's fingerings must start at its first note and leave no gap: "
+                        f"marks on members {sorted(finger)} of the chord at note {index}"
+                    )
+                for member in range(len(finger)):
+                    target.articulations.append(articulations.Fingering(finger[member]))
+                    applied += 1
+                continue
+            target.articulations.append(articulations.Fingering(finger))
+            applied += 1
     return applied
 
 

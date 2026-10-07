@@ -1,0 +1,9 @@
+$ (cd app) npx playwright test -c playwright.u96a-4543.config.ts --workers=1 -g the question is the screen tests/e2e/modes-placement.spec.ts
+exists: tests/e2e/modes-placement.spec.ts
+
+Running 1 test using 1 worker
+
+  ok 1 tests\e2e\modes-placement.spec.ts:63:1 › the question is the screen, and the two answers are both on it (2.4s)
+
+  1 passed (10.1s)
+exit=0

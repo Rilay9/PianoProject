@@ -1,0 +1,209 @@
+current build-converted files (the laptop's catalogue), by undated form: 211
+cache entries by date, all: 2026-09-06: 266, 2026-09-07: 21, 2026-09-08: 422, 2026-09-09: 6, 2026-09-10: 217, 2026-09-12: 320, 2026-09-13: 794, 2026-09-14: 10, 2026-09-15: 1130, 2026-09-16: 223, 2026-09-17: 10, 2026-09-18: 6, 2026-09-22: 41, 2026-09-23: 12, 2026-09-25: 17, 2026-09-26: 31, 2026-09-27: 5, 2026-09-28: 4, 2026-09-29: 39
+cache entries that are a dated form of a current file's music, by date: 2026-09-06: 49, 2026-09-08: 77, 2026-09-10: 45, 2026-09-12: 99, 2026-09-13: 286, 2026-09-14: 2, 2026-09-15: 728, 2026-09-16: 199, 2026-09-22: 4, 2026-09-27: 1, 2026-09-29: 2
+current files with a cached dated form on a day other than their catalogue file's: 198
+   scores/authored/exercise.reading.steps-and-skips-c.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.classical.ode-to-joy.alternating.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.classical.ode-to-joy.g.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15, 2026-09-16
+   scores/authored/song.classical.ode-to-joy.ht.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.classical.ode-to-joy.lh.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.classical.ode-to-joy.rh.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.au-clair-de-la-lune.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.frere-jacques.mxl: 2026-09-14, 2026-09-15
+   scores/authored/song.folk.greensleeves.68.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.greensleeves.chords.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.greensleeves.simple.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.greensleeves.waltz.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.happy-birthday.simple.mxl: 2026-09-14, 2026-09-15
+   scores/authored/song.folk.hot-cross-buns.lh.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.hot-cross-buns.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.lightly-row.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.london-bridge.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.mary-had-a-little-lamb.ht.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.mary-had-a-little-lamb.lh.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.mary-had-a-little-lamb.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.merrily-we-roll-along.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.old-macdonald.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.row-row-row-your-boat.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.twinkle.f.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.twinkle.ht.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.twinkle.rh.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.when-the-saints.alternating.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.folk.when-the-saints.f.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.holiday.jingle-bells.g.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.holiday.jingle-bells.ht.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/authored/song.holiday.jingle-bells.rh.mxl: 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.beautiful.g-minor-bach.mxl: 2026-09-15
+   scores/imported/song.classical.beethoven-fur-elise.easy.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-ballade-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-ballade-3.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-ballade-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-berceuse.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-bolero.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-ecossaise-op72-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-ecossaise-op72-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-ecossaise-op72-3.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op10-1.nifc.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op10-10.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op10-11.nifc.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op10-12.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op10-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op10-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op10-5.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op10-7.nifc.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op10-9.nifc.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op25-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op25-11.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op25-12.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op25-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op25-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op25-6.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op25-8.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-etude-op25-9.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-fantaisie-impromptu.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-marche-funebre-op72.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op17-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op17-3.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op17-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op24-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op24-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op24-3.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op24-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op30-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op30-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op30-3.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op30-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op33-3.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op33-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op41-3.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op41-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op50-2.nifc.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op56-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op59-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op6-1.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op6-2.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op63-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op63-3.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op67-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op67-3.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op67-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op68-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op68-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op68-3.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op68-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op7-1.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op7-2.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op7-3.nifc.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op7-4.nifc.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-mazurka-op7-5.nifc.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-nocturne-op15-3.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-nocturne-op27-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-nocturne-op37-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-nocturne-op48-1.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-nocturne-op55-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-nocturne-op55-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-polonaise-fantaisie.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-polonaise-g-minor.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-polonaise-g-sharp-minor.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-polonaise-op26-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-polonaise-op40-1.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-polonaise-op40-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-polonaise-op44.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-polonaise-op53.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-polonaise-op71-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-11.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-14.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-16.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-17.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-18.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-19.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-20.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-21.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-22.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-23.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-3.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-5.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-6.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-7.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-prelude-op28-8.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-rondo-mazur.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-rondo-op1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-rondo-op16.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-scherzo-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-sonata-2-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-sonata-2-3.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-sonata-2-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-sonata-3-4.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-tarantelle.nifc.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-variations-op12.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-waltz-e-minor.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-waltz-op18.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-waltz-op34-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-waltz-op34-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-waltz-op34-3.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-waltz-op64-1.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-waltz-op64-2.nifc.mxl: 2026-09-15
+   scores/imported/song.classical.chopin-waltz-op69-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-waltz-op70-1.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.chopin-waltz-op70-2.nifc.mxl: 2026-09-13, 2026-09-15
+   scores/imported/song.classical.petzold-minuet-g-bwv-anh114.alt.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.classical.schubert-liszt-standchen.mxl: 2026-09-15
+   scores/imported/song.folk.bella-ciao.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.folk.happy-birthday.alt.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.folk.happy-birthday.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.holiday.carol-of-the-bells.easy.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-antoinette.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-augustan-club-waltz.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-bethena.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-binks-waltz.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-breeze-from-alabama.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-cascades.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-chrysanthemum.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-cleopha.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-combination-march.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-country-club.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-crush-collision-march.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-easy-winners.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-elite-syncopations.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-entertainer.kern.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-entertainer.mxl: 2026-09-06, 2026-09-08, 2026-09-10, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-eugenia.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-felicity-rag.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-fig-leaf-rag.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-gladiolus-rag.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-harmony-club-waltz.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-heliotrope-bouquet.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-leola.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-lily-queen.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-magnetic-rag.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-maple-leaf-rag.kern.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-march-majestic.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-new-rag.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-nonpareil.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-original-rags.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-palm-leaf-rag.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-paragon-rag.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-peacherine-rag.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-pine-apple-rag.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-pleasant-moments.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-reflection-rag.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-rose-bud-march.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-rose-leaf-rag.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-school-of-ragtime.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-solace.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-something-doing.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-stoptime-rag.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-sugar-cane.mxl: 2026-09-15
+   scores/imported/song.ragtime.joplin-sunflower-slow-drag.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-the-favorite.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-wall-street-rag.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+   scores/imported/song.ragtime.joplin-weeping-willow.mxl: 2026-09-06, 2026-09-12, 2026-09-13, 2026-09-15
+current files with no dated form in the cache at all: 6
+   scores/authored/exercise.blues.twelve-bar-shuffle.a.mxl
+   scores/authored/exercise.blues.twelve-bar-shuffle.c.mxl
+   scores/authored/exercise.blues.twelve-bar-shuffle.d.mxl
+   scores/authored/exercise.blues.twelve-bar-shuffle.e.mxl
+   scores/authored/exercise.blues.twelve-bar-shuffle.f.mxl
+   scores/authored/exercise.blues.twelve-bar-shuffle.g.mxl

@@ -35,6 +35,7 @@
  */
 import { ACCIDENTAL_SEMITONES, timeSignatureAt, type ScoreModelData, type ScoreNote } from '../score/types';
 import { keySignatureName } from '../score/extractScoreModel';
+import { barLength, beatLength, isCompound } from '../score/metre';
 
 export const DETECTOR_IDS = [
   'bassClef',
@@ -50,12 +51,15 @@ export const DETECTOR_IDS = [
   'syncopation',
   'triplets',
   'compoundMetre',
+  'threeFour',
   'keySignature',
   'chromatic',
   'beyondPosition',
   'handsTogether',
   'leftHandPattern',
   'walkingBass',
+  'habaneraCell',
+  'tresilloCell',
 ] as const;
 export type DetectorId = (typeof DETECTOR_IDS)[number];
 
@@ -118,19 +122,12 @@ function metreAt(model: ScoreModelData, measure: number): { beats: number; beatT
   return timeSignatureAt(model.timeSigMap, measure) ?? { beats: 4, beatType: 4 };
 }
 
-/** Beats of three eighths: the generator's own rule (`sightReading.ts`), 3/8 included. */
-function isCompound(metre: { beats: number; beatType: number }): boolean {
-  return metre.beatType === 8 && metre.beats % 3 === 0;
-}
-
-/** The felt beat, in quarter-note beats: a dotted quarter in compound time. */
-function beatLength(metre: { beats: number; beatType: number }): number {
-  return isCompound(metre) ? 1.5 : 4 / metre.beatType;
-}
-
-function barLength(metre: { beats: number; beatType: number }): number {
-  return (metre.beats * 4) / metre.beatType;
-}
+/*
+ * Compound time, the felt beat and the bar's length: `isCompound`, `beatLength` and `barLength`, the one reading
+ * of a bar's beat (L120b; the reviewer's ruling on L120a, `docs/review/responses/0bcd3be0.md`: 3/8 is three
+ * eighth beats, not compound). Moved unchanged to `score/metre.ts` (MT1) so the chord chart counts its bars by the
+ * same rule; `syncopation` and `dottedQuarters` below read 3/8 by it too.
+ */
 
 /**
  * Where each unrolled measure starts, in beats. A pickup bar starts where a
@@ -274,6 +271,76 @@ function turnsBack(pitches: number[]): boolean {
   return false;
 }
 
+// --- the habanera and the tresillo: onset cells in the left hand (CD1) -----------------
+
+/**
+ * The two cells as onset sets, in fractions of the bar from its start (CD1 D1; CK-5). The source is
+ * the upgrade's habanera, "dotted eighth, sixteenth, eighth, eighth in 2/4 … compared with the
+ * tresillo (3+3+2)" (`CURRICULUM-UPGRADE.md:21`), with Wikipedia's Habanera and Tresillo pages as
+ * the secondary source ("the habanera is the tresillo plus the second main beat"). The habanera
+ * sounds at 0, 3/8, 1/2 and 3/4 of its 2/4 bar; the tresillo's 3+3+2 at 0, 3/8 and 3/4. The doubled
+ * form in 4/4 or 2/2 (a dotted quarter, an eighth, a quarter, a quarter; Por Una Cabeza's quarter,
+ * eighth rest, eighth, quarter, quarter) is the same fractions of its bar, so the definition rests
+ * on the onsets, never on the written durations (`ABILITY-MAP.md`'s L1 amendment).
+ *
+ * Stated here and again in `tools/content/cells.py`, each from the cited definition, on purpose:
+ * that module is the build's independent witness, reading partitura's parse of the same bytes, and
+ * an oracle that imported these constants would not be one. The sourced fixtures and the
+ * differential (`tools/content/tests/test_cells.py`) hold the two statements equal.
+ */
+const HABANERA_CELL: readonly number[] = [0, 3 / 8, 1 / 2, 3 / 4];
+const TRESILLO_CELL: readonly number[] = [0, 3 / 8, 3 / 4];
+
+/** The metres the cells are read in: the published 2/4, and its doubled form in 4/4 or 2/2. */
+function cellMetre(metre: { beats: number; beatType: number }): boolean {
+  return (
+    (metre.beats === 2 && metre.beatType === 4) ||
+    (metre.beats === 4 && metre.beatType === 4) ||
+    (metre.beats === 2 && metre.beatType === 2)
+  );
+}
+
+/**
+ * The bars whose left-hand onsets are exactly `cell` (CD1 D2), located at one note per onset: the
+ * lowest left-hand note there, so a habanera bar locates four places and a tresillo bar three,
+ * whatever the voicing. Read per unrolled measure, in 2/4, 4/4 or 2/2 only (a 3/8 fraction of a 3/4
+ * bar is no published cell, and in 6/8 the 3+3 is the beat itself), never in a pickup bar. The left
+ * hand is the note's `hand`, which a cross-staff note keeps and a one-staff item takes from its
+ * declared hand (HD1). Chords and voices merge into their distinct onsets; a tie chain is one note,
+ * so a bar entered by a tie has no onset at its start; grace notes are left out (`placed`). Exact
+ * equality, never "contains": a tresillo bar lacks the habanera's 1/2, a habanera bar has one onset
+ * more than the tresillo, and a habanera whose sixteenth is tied over the half bar is a tresillo.
+ *
+ * The onsets, never the style. In 4/4 the doubled habanera is also the common dotted-quarter,
+ * eighth, quarter, quarter bass. What this finds is that the left hand holds the declared onset
+ * cell; that the piece is a habanera or a tango, that it suits teaching the cell, or that a learner
+ * plays it with its feel are not facts it finds (`docs/review/responses/eeff22fe.md` §2).
+ */
+function cellBars(model: ScoreModelData, cell: readonly number[]): DemandAt[] {
+  const starts = barStarts(model);
+  const lowestByBar = new Map<number, Placed[]>();
+  for (const p of placed(model)) {
+    if (p.note.hand !== 'L') continue;
+    const bar = p.note.measureIndex;
+    if (model.pickup === true && bar === 0) continue;
+    if (!cellMetre(metreAt(model, bar))) continue;
+    const held = lowestByBar.get(bar) ?? [];
+    const at = held.findIndex((q) => same(q.note.onset, p.note.onset));
+    if (at < 0) held.push(p);
+    else if (p.note.midi < (held[at] as Placed).note.midi) held[at] = p;
+    lowestByBar.set(bar, held);
+  }
+  const out: DemandAt[] = [];
+  for (const [bar, lowest] of lowestByBar) {
+    if (lowest.length !== cell.length) continue;
+    const start = starts.get(bar) ?? 0;
+    const length = barLength(metreAt(model, bar));
+    const fractions = lowest.map((p) => (p.note.onset - start) / length).sort((a, b) => a - b);
+    if (fractions.every((f, i) => same(f, cell[i] as number))) out.push(...lowest.map(locate));
+  }
+  return out.sort((a, b) => a.step - b.step);
+}
+
 // --- the detectors -----------------------------------------------------------------
 
 /** A second on the staff: C to D, C♯ to D, E to F. */
@@ -390,13 +457,33 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
   /** A note written in a triplet. A tuplet of another number is not one. */
   triplets: (m) => found('triplets', placed(m).filter((p) => p.note.tuplet === 3).map(locate)),
 
-  /** Compound time: beats of three eighths (6/8, 9/8, 12/8; 3/8 by the same rule). Located at every note in it. */
+  /**
+   * Compound time: more than one beat of three eighths (6/8, 9/8, 12/8; never 3/8, which is simple
+   * triple, `isCompound`). Located at every note in a compound bar, so a 3/8 piece with one 6/8 bar
+   * is located at that bar's notes alone.
+   */
   compoundMetre: (m) => {
     const present = m.timeSigMap.some((t) => isCompound(t));
     return found(
       'compoundMetre',
       placed(m).filter((p) => isCompound(metreAt(m, p.note.measureIndex))).map(locate),
       present,
+    );
+  },
+
+  /**
+   * Three-four time (SR2; the reviewer's ruling on SR1, `docs/review/responses/sr1-sightreading-quality.md`
+   * §1): a bar of exactly three quarter-note beats, 3/4, as 1.4 teaches it (`content/lessons/1.4.md:23`).
+   * Never 3/8 (simple triple in eighths) or 3/2 (in halves), which 1.4 does not teach, and never a compound
+   * metre. Located at every note in a 3/4 bar, as `compoundMetre` is at a compound bar's, so a 4/4 piece
+   * with one 3/4 bar is located at that bar's notes alone.
+   */
+  threeFour: (m) => {
+    const threeFour = (t: { beats: number; beatType: number }): boolean => t.beats === 3 && t.beatType === 4;
+    return found(
+      'threeFour',
+      placed(m).filter((p) => threeFour(metreAt(m, p.note.measureIndex))).map(locate),
+      m.timeSigMap.some(threeFour),
     );
   },
 
@@ -533,6 +620,19 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
     const everyBar = m.measureCount > 0 && Array.from({ length: m.measureCount }, (_, bar) => walks(bar) && tune(bar)).every(Boolean);
     return found('walkingBass', everyBar ? left.map(locate) : []);
   },
+
+  /**
+   * The habanera onset cell in the left hand (CD1): a bar whose left-hand onsets are exactly 0, 3/8,
+   * 1/2 and 3/4 of the bar, in 2/4, 4/4 or 2/2 (`cellBars`). Located at four places per such bar.
+   */
+  habaneraCell: (m) => found('habaneraCell', cellBars(m, HABANERA_CELL)),
+
+  /**
+   * The tresillo onset cell in the left hand (CD1): a bar whose left-hand onsets are exactly 0, 3/8
+   * and 3/4 of the bar, in 2/4, 4/4 or 2/2 (`cellBars`). Located at three places per such bar. A bar
+   * of eight sixteenths grouped 3+3+2 by accent sounds every sixteenth, and is not one.
+   */
+  tresilloCell: (m) => found('tresilloCell', cellBars(m, TRESILLO_CELL)),
 };
 
 /** One detector over one model. */

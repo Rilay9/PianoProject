@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+BY ADDRESS: sample starts after Hear it = 0
+  ok 1 ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2\pw\decision\probe-score-hear.spec.ts:29:1 › opened by address, no gesture before (7.7s)
+AFTER A TAP: sample starts after Hear it = 5
+  ok 2 ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2\pw\decision\probe-score-hear.spec.ts:37:1 › opened after a tap on another screen (7.6s)
+
+  2 passed (15.9s)

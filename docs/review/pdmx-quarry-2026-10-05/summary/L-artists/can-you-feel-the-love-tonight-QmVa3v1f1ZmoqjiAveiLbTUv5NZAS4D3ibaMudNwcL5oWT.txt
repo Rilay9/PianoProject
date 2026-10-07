@@ -1,0 +1,44 @@
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=36
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
+CID QmVa3v1f1ZmoqjiAveiLbTUv5NZAS4D3ibaMudNwcL5oWT
+title: can you feel the love tonight | song_name: 
+composer: Elton John | artist: 
+csv: tracks=0 bars=64 license=cc-zero
+
+=== part P1 'Piano' measures=36 ===
+m1 [staves=2; key fifths=-3; time 4/4; clef1=G2; clef2=F4; tempo=65]  s1v1: G4:h F4:q Bb4:q | s2v5: Eb3:8 G3:8 Bb3:8 G3:8 D3:8 F3:8 Bb3:8 F3:8
+m2  s1v1: Ab4:h Ab4:8 G4:8 Eb4:8 Bb3:8 | s2v5: C3:8 Eb3:8 Ab3:8 Eb3:8 Bb2:8 Eb3:8 G3:8 Eb3:8
+m3  s1v1: C4:h Bb3:8 Eb4:8 Bb3:8 G3:8 | s2v5: Ab2:8 Eb3:8 Ab3:8 Eb3:8 G2:h+Eb3
+m4  s1v1: F3:q G3:q Ab3:h+Bb3 | s2v5: D2:q+Bb2 Eb2:q+Bb2 Eb3:q D3:q
+m5 [repeat-forward]  s1v1: C4:8 D4:16 Eb4:16~ Eb4:8 F4:8 Eb4:8 Bb3:q. | s2v5: Ab2:q Ab3:q Bb2:8 Eb3:8 G3:8 Eb3:8
+m6  s1v1: C4:8 D4:16 Eb4:16~ Eb4:8 F4:8 Eb4:h | s2v5: Ab2:q Ab3:q G2:8 Eb3:8 G3:8 Eb3:8
+m7  s1v1: C4:8 D4:8 Eb4:16~ Eb4:16 Eb4:16 F4:16 Eb4:8 Bb3:8 G4:q | s2v5: Ab2:q Ab3:q G2:8 Eb3:8 G3:8 Eb3:8
+m8  s1v1: Ab4:8 G4:8 F4:8 G4:16 F4:16~ F4:h | s2v5: Ab2:h+Eb3 Bb2:h+D3
+m9  s1v1: C4:8 D4:16 Eb4:16~ Eb4:8 F4:8 Eb4:8 Bb3:q. | s2v5: Ab2:q Ab3:q Bb2:8 Eb3:8 G3:8 Eb3:8
+m10  s1v1: C4:8 D4:16 Eb4:16~ Eb4:8 F4:8 Eb4:h | s2v5: Ab2:q Ab3:q G2:8 Eb3:8 G3:8 Eb3:8
+m11  s1v1: C4:8 D4:16 Eb4:16 Bb3:8 Bb3:8 Bb4:8 G4:8 Eb4:8 C4:8 | s2v5: Ab2:8 Ab3:q. Eb2:8 Bb2:8 Eb3:q
+m12  s1v1: Ab4:8 G4:16 F4:16~ F4:8 G4:8 F4:q. Bb3:8 | s2v5: F2:8 C3:8 F3:q Bb2:h+D3
+m13  s1v1: G4:q+Bb4 G4:8 F4:8~ F4:q Bb4:8 G4:8~ | s2v5: Eb2:q Eb3:q D2:q D3:q
+m14  s1v1: G4:q Eb4:8 C4:8~ C4:h | s2v5: C2:q C3:q Ab2:8 Eb3:8 C4:8 Ab3:8
+m15  s1v1: r:q Bb3:8 Eb4:8 Ab4:q G4:8 F4:8~ | s2v5: G3:h C3:q Bb2:q
+m16  s1v1: F4:h G4:8 F4:8 Eb4:8 Bb3:8 | s2v5: Bb2:8 F3:8 Bb3:8 F3:8 D3:q Bb2:q
+m17  s1v1: C4:q C4:16 D4:16 Eb4:8~ Eb4:q Bb3:8 Bb3:8 | s2v5: Ab2:q Ab3:q G2:q G3:q
+m18  s1v1: Bb4:8 F4:8 G4:q Eb4:16 Eb4:16 C4:8~ C4:q | s2v5: C3:q+G3 Bb2:q+G3 Ab2:8 Eb3:8 G3:8 Eb3:8
+m19  s1v1: C4:q+Ab4 Bb3:q+G4 C4:q+F4 Eb4:8+G4 D4:8~+F4 | s2v5: F2:q G2:q Ab2:q Bb2:q+F3
+m20  s1v1: D4:8+F4 Bb3:8 D4:8 Bb3:8 G4:8 F4:8 D4:8 Bb3:8 | s2v5: Bb2:w+F3
+m21  s1v1: G4:q+Bb4 G4:8 F4:8~ F4:q Bb4:8 G4:8~ | s2v5: Eb2:q Eb3:q D2:q D3:q
+m22  s1v1: G4:q Eb4:8 C4:8~ C4:h | s2v5: C2:q C3:q Ab2:8 Eb3:8 C4:8 Ab3:8
+m23  s1v1: G3:q Bb3:8 Eb4:8 Ab4:q G4:8 F4:8~ | s2v5: Eb2:q Eb3:q F2:q G2:q
+m24  s1v1: F4:h Bb4:8 F4:8 D4:8 Bb3:8 | s2v5: Bb2:8 F3:8 Bb3:8 F3:8 D3:q Bb2:q
+m25  s1v1: C4:q C4:16 D4:16 Eb4:8~ Eb4:q Bb3:8 Bb3:8 | s2v5: Ab2:q Ab3:q G2:q G3:q
+m26  s1v1: Bb4:8 F4:8 G4:q Eb4:16 Eb4:16 C4:8~ C4:8 Bb3:8 | s2v5: C3:q+G3 Bb2:q+G3 Ab2:8 Eb3:8 Ab3:8 Eb3:8
+m27  s1v1: C4:q+Ab4 Bb3:q+G4 C4:q+F4 Ab3:q+C4+Eb4 | s2v5: F2:q+Eb3 G2:q+Eb3 Ab2:q+Eb3 Bb2:q
+m28  s1v1: G3:h.+Bb3+Eb4 C4:8 Bb3:8 | s2v5: Eb2:h.+C3 r:q
+m29 [ending1-start; ending1-stop]  s1v1: G4:h F4:q Bb4:q | s2v5: Eb3:8 G3:8 Bb3:8 G3:8 D3:8 F3:8 Bb3:8 F3:8
+m30  s1v1: Ab4:h Ab4:8 G4:8 Eb4:8 Bb3:8 | s2v5: C3:8 Eb3:8 Ab3:8 Eb3:8 Bb2:8 Eb3:8 G3:8 Eb3:8
+m31  s1v1: C4:h Bb3:8 Eb4:8 Bb3:8 G3:8 | s2v5: Ab2:8 Eb3:8 Ab3:8 Eb3:8 G2:h+Eb3
+m32 [repeat-backward]  s1v1: F3:q G3:q Ab3:h+Bb3 | s2v5: D2:q+Bb2 Eb2:q+Bb2 Eb3:q D3:q
+m33 [ending2-start; ending2-discontinue]  s1v1: r:q C4:16 D4:16 Eb4:8~ Eb4:q Bb3:8 Bb3:8 | s2v5: Ab2:8 Eb3:8 Ab3:q G2:8 Eb3:8 G3:q
+m34  s1v1: Bb4:8 F4:8 G4:q Eb4:16 Eb4:16 C4:8~ C4:8 Bb3:8 | s2v5: C3:q+G3 Bb2:q+G3 Ab2:8 Eb3:8 Ab3:q
+m35  s1v1: C4:q+Ab4 Bb3:q+G4 Ab3:q+F4 G3:q+Eb4 | s2v5: F2:q+Eb3 G2:q+Eb3 Ab2:q+Eb3 Bb2:q+F3
+m36  s1v1: G3:w+Bb3+Eb4 | s2v5: G2:w+Eb3

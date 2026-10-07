@@ -1,0 +1,9 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/app
+
+
+ Test Files  3 passed (3)
+      Tests  35 passed (35)
+   Start at  19:58:45
+   Duration  441ms (transform 71%, import 16%, tests 11%, worker 2%)
+

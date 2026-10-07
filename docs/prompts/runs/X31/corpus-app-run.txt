@@ -1,0 +1,10 @@
+﻿
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ad68f7e71fb77280b/app
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  15:24:53
+   Duration  3.74s (tests 97%, import 1%, transform 1%, worker 1%)
+
+exit=0

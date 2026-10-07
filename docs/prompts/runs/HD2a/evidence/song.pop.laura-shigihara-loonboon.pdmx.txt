@@ -1,0 +1,32 @@
+HD2a evidence: song.pop.laura-shigihara-loonboon.pdmx (scores/pdmx/QmRiPR5xWaprP19qHyMKr9a7MCwDaVj5GZR6pEv3Hip9zq.mxl), identity sha256 f81bbd12f050aa0c67ef8eb3b4ec1477149c1d92509aec44f3b78cacdae041ec
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 33-33 -> R
+  bar 33 (source measure 32) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @128 L [45] + v2 [64]
+  bar 33 onset 128 72/st1/v1/R:2 64/st1/v2/L/x:6 45/st2/v3/L:1
+  bar 33 onset 129 52/st2/v3/L:1
+  bar 33 onset 130 69/st1/v1/R:1 57/st2/v3/L:1
+  bar 33 onset 131 72/st1/v1/R:1 52/st2/v3/L:1
+
+ROW staff 1 voice 2 bars 35-35 -> R
+  bar 35 (source measure 34) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @136 L [45] + v2 [64]
+  bar 35 onset 136 72/st1/v1/R:2 64/st1/v2/L/x:6 45/st2/v3/L:1
+  bar 35 onset 137 52/st2/v3/L:1
+  bar 35 onset 138 74/st1/v1/R:1 69/st1/v1/R:1 64/st1/v1/R:1 57/st2/v3/L:1
+  bar 35 onset 139 72/st1/v1/R:1 52/st2/v3/L:1
+
+ROW staff 1 voice 2 bars 41-41 -> R
+  bar 41 (source measure 40) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @160 L [45] + v2 [64, 69]
+  bar 41 onset 160 72/st1/v1/R:2 69/st1/v2/L/x:4 64/st1/v2/L/x:6 45/st2/v3/L:1
+  bar 41 onset 161 52/st2/v3/L:1
+  bar 41 onset 162 69/st1/v1/R:1 64/st1/v1/R:1 57/st2/v3/L:1
+  bar 41 onset 163 72/st1/v1/R:1 69/st1/v1/R:1 64/st1/v1/R:1 45/st2/v3/L:1
+
+ROW staff 1 voice 2 bars 43-43 -> R
+  bar 43 (source measure 42) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @168 L [45] + v2 [64]
+  bar 43 onset 168 72/st1/v1/R:2 64/st1/v2/L/x:6 45/st2/v3/L:1
+  bar 43 onset 169 52/st2/v3/L:1
+  bar 43 onset 170 74/st1/v1/R:1 69/st1/v1/R:1 64/st1/v1/R:1 57/st2/v3/L:1
+  bar 43 onset 171 72/st1/v1/R:1 52/st2/v3/L:1
+

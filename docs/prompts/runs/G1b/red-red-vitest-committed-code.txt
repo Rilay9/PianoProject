@@ -1,0 +1,133 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/projectLifecycle.test.ts (0 test)
+ ❯ tests/unit/backup.test.ts (12 tests | 1 failed) 202ms
+   ❯ a backup of a phone that has been used (P19 §C3) (1)
+     × round-trips every store it covers, and leaves out the one it does not 15ms
+ ❯ tests/unit/progressProjects.test.ts (0 test)
+ ❯ tests/unit/projectSheet.test.ts (0 test)
+ ❯ tests/unit/stage9ProjectsPage.test.ts (0 test)
+ ❯ tests/unit/projectOnTheFinishSheet.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/progressProjects.test.ts [ tests/unit/progressProjects.test.ts ]
+Error: Failed to resolve import "../../src/data/projectStore" from "tests/unit/progressProjects.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: <worktree>/app/tests/unit/progressProjects.test.ts:54:96
+  57 |  const materialOf = (id) => BY_ID.get(id)?.provenance?.identity;
+  58 |  const { ProgressScreen } = await import("../../src/ui/screens/ProgressScreen");
+  59 |  ...ion, setProjectNotes, resetProjectsForTest } = await import("../../src/data/projectStore");
+     |                                                                 ^
+  60 |  const { recordRun, resetProgressForTest, dayKey } = await import("../../src/data/progressStore");
+  61 |  const { resetEncountersForTest } = await import("../../src/data/encounterStore");
+ ❯ TransformPluginContext._formatLog <worktree>/app/node_modules/vite/dist/node/chunks/node.js:31147:39
+ ❯ TransformPluginContext.error <worktree>/app/node_modules/vite/dist/node/chunks/node.js:31144:14
+ ❯ normalizeUrl <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28083:18
+ ❯ <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28153:30
+ ❯ TransformPluginContext.transform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28119:4
+ ❯ EnvironmentPluginContainer.transform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:30932:14
+ ❯ loadAndTransform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:20671:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/projectLifecycle.test.ts [ tests/unit/projectLifecycle.test.ts ]
+Error: Cannot find module '../../src/data/projectStore' imported from <worktree>/app/tests/unit/projectLifecycle.test.ts
+ ❯ tests/unit/projectLifecycle.test.ts:36:1
+     34|   type SessionRow,
+     35| } from '../../src/data/db';
+     36| import {
+       | ^
+     37|   ACTION_STATE,
+     38|   OFFERS,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/projectOnTheFinishSheet.test.ts [ tests/unit/projectOnTheFinishSheet.test.ts ]
+Error: Failed to resolve import "../../src/data/projectStore" from "tests/unit/projectOnTheFinishSheet.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: <worktree>/app/tests/unit/projectOnTheFinishSheet.test.ts:326:59
+  362 |  });
+  363 |  const PHRASE = `#/score/${READ_ID}?seed=4242`;
+  364 |  const { allProjects, resetProjectsForTest } = await import("../../src/data/projectStore");
+      |                                                             ^
+  365 |  const { dayKey } = await import("../../src/data/progressStore");
+  366 |  const { materialKey } = await import("../../src/curriculum/material");
+ ❯ TransformPluginContext._formatLog <worktree>/app/node_modules/vite/dist/node/chunks/node.js:31147:39
+ ❯ TransformPluginContext.error <worktree>/app/node_modules/vite/dist/node/chunks/node.js:31144:14
+ ❯ normalizeUrl <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28083:18
+ ❯ <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28153:30
+ ❯ TransformPluginContext.transform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28119:4
+ ❯ EnvironmentPluginContainer.transform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:30932:14
+ ❯ loadAndTransform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:20671:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/projectSheet.test.ts [ tests/unit/projectSheet.test.ts ]
+Error: Failed to resolve import "../../src/data/projectStore" from "tests/unit/projectSheet.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: <worktree>/app/tests/unit/projectSheet.test.ts:50:79
+  60 |  const ITEM = song(SONG, file("s"));
+  61 |  const { openProjectSheet } = await import("../../src/ui/projectSheet");
+  62 |  const { allProjects, applyProjectAction, resetProjectsForTest } = await import("../../src/data/projectStore");
+     |                                                                                 ^
+  63 |  const { recordRun, resetProgressForTest, dayKey } = await import("../../src/data/progressStore");
+  64 |  const { recordEncounter, resetEncountersForTest } = await import("../../src/data/encounterStore");
+ ❯ TransformPluginContext._formatLog <worktree>/app/node_modules/vite/dist/node/chunks/node.js:31147:39
+ ❯ TransformPluginContext.error <worktree>/app/node_modules/vite/dist/node/chunks/node.js:31144:14
+ ❯ normalizeUrl <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28083:18
+ ❯ <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28153:30
+ ❯ TransformPluginContext.transform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28119:4
+ ❯ EnvironmentPluginContainer.transform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:30932:14
+ ❯ loadAndTransform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:20671:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/stage9ProjectsPage.test.ts [ tests/unit/stage9ProjectsPage.test.ts ]
+Error: Failed to resolve import "../../src/data/projectStore" from "tests/unit/stage9ProjectsPage.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: <worktree>/app/tests/unit/stage9ProjectsPage.test.ts:98:66
+  116 |  const { recordRun, resetProgressForTest, rungRows } = await import("../../src/data/progressStore");
+  117 |  const { resetPlanForTest } = await import("../../src/data/planStore");
+  118 |  const { applyProjectAction, resetProjectsForTest } = await import("../../src/data/projectStore");
+      |                                                                    ^
+  119 |  const { loadRungStates } = await import("../../src/data/rungStates");
+  120 |  const { skillLadders } = await import("../../src/evidence/rungState");
+ ❯ TransformPluginContext._formatLog <worktree>/app/node_modules/vite/dist/node/chunks/node.js:31147:39
+ ❯ TransformPluginContext.error <worktree>/app/node_modules/vite/dist/node/chunks/node.js:31144:14
+ ❯ normalizeUrl <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28083:18
+ ❯ <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28153:30
+ ❯ TransformPluginContext.transform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:28119:4
+ ❯ EnvironmentPluginContainer.transform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:30932:14
+ ❯ loadAndTransform <worktree>/app/node_modules/vite/dist/node/chunks/node.js:20671:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/backup.test.ts > a backup of a phone that has been used (P19 §C3) > round-trips every store it covers, and leaves out the one it does not
+NotFoundError: No objectStore named projects in this database
+ ❯ new NotFoundError <worktree>/app/node_modules/fake-indexeddb/build/esm/lib/errors.js:59:5
+ ❯ FDBDatabase.transaction <worktree>/app/node_modules/fake-indexeddb/build/esm/FDBDatabase.js:146:15
+ ❯ Proxy.<anonymous> <worktree>/app/node_modules/idb/build/index.js:125:26
+ ❯ Proxy.method <worktree>/app/node_modules/idb/build/index.js:228:25
+ ❯ fillEveryStore tests/unit/backup.test.ts:311:15
+    309|     // G1b: the learner's projects — what they intend to do with a pie…
+    310|     // the learner's own record, so the backup carries them too.
+    311|     await db?.put('projects', {
+       |               ^
+    312|       id: `file:${'a'.repeat(64)}`,
+    313|       material: { kind: 'file', sha256: 'a'.repeat(64) },
+ ❯ tests/unit/backup.test.ts:331:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  6 failed | 1 passed (7)
+      Tests  1 failed | 47 passed (48)
+   Start at  11:08:44
+   Duration  3.65s (environment 81%, transform 9%, import 6%, tests 4%)
+
+exit=1

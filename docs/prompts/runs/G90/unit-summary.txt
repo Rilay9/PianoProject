@@ -1,0 +1,26 @@
+# G90: the whole unit suite on the final tree (`npx vitest run`, one run). The full log (900 KB) was not kept.
+× has a reference to compare against
+× the build reads the same ancestry: the rung-claims report’s "untaught here" and the gate read one thing
+× blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+× 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+× every black key in every fixture carries its written spelling
+× reads every MuseTrainer and kern row that has a built file, Maple Leaf’s among them
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+Test Files  5 failed | 329 passed (334)
+Tests  6 failed | 7651 passed | 1 skipped | 1 todo (7659)
+
+# The two timeouts (expectedNote, tempoSoundAgainstMark) are load: the two files run alone, `npx vitest run`:
+Test Files  2 passed (2)
+Tests  18 passed (18)
+
+# The four others, run on the BASE source (the six changed files at HEAD): the same four fail.
+# Reading: midiParity needs the parity reference file and taughtByAncestry needs build/rung-claims.json,
+# neither written in a fresh worktree; lessonClaimsAboutApp (two cases) reads ScoreScreen.ts and style.css text through "\n"
+# against this CRLF checkout (checked: the two files carry CRLF, and the two strings fail to match for it), files G90 does not touch.
+× has a reference to compare against
+× the build reads the same ancestry: the rung-claims report’s "untaught here" and the gate read one thing
+× blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+× 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+Test Files  3 failed (3)
+Tests  4 failed | 318 passed (322)

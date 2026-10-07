@@ -1,0 +1,26 @@
+== map-tests  01:33:34
+map-tests exit=0
+== map-min  01:33:36
+map-min exit=0
+== content-build  01:33:36
+content-build exit=0
+== content-validate  01:42:29
+content-validate exit=0
+== review-check  01:42:46
+review-check exit=0
+== content-tests  01:42:46
+content-tests exit=1
+== tsc  01:50:57
+tsc exit=0
+== lint  01:51:08
+lint exit=0
+== vitest-all  01:51:55
+vitest-all exit=1
+== build-app  01:56:16
+build-app exit=0
+SPECS: tests/e2e/excerpts.spec.ts tests/e2e/library.spec.ts
+== specs-exist  01:56:39
+specs-exist exit=0
+== e2e-targeted  01:56:39
+e2e-targeted exit=0
+CHAIN DONE 01:57:12

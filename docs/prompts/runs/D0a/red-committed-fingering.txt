@@ -1,0 +1,113 @@
+.......F......F..........................................
+======================================================================
+FAIL: test_every_arpeggio_in_the_plan_is_spelled_for_its_key (tests.test_generator_fingering.TestArpeggioGuards.test_every_arpeggio_in_the_plan_is_spelled_for_its_key)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_generator_fingering.py", line 664, in test_every_arpeggio_in_the_plan_is_spelled_for_its_key
+    self.assertEqual(faults, [], "\n".join(faults[:40]) + f"\n… {len(faults)} in all")
+AssertionError: Lists differ: ['exercise.arpeggio7.f-half-diminished7.2o[11633 chars]ed7'] != []
+
+First list contains 128 additional elements.
+First extra element 0:
+'exercise.arpeggio7.f-half-diminished7.2oct.both: RH B4 is not spelled for F half-diminished7'
+
+Diff is 12837 characters long. Set self.maxDiff to None to see it. : exercise.arpeggio7.f-half-diminished7.2oct.both: RH B4 is not spelled for F half-diminished7
+exercise.arpeggio7.f-half-diminished7.2oct.both: RH B5 is not spelled for F half-diminished7
+exercise.arpeggio7.f-half-diminished7.2oct.both: RH B5 is not spelled for F half-diminished7
+exercise.arpeggio7.f-half-diminished7.2oct.both: RH B4 is not spelled for F half-diminished7
+exercise.arpeggio7.f-half-diminished7.2oct.both: LH B3 is not spelled for F half-diminished7
+exercise.arpeggio7.f-half-diminished7.2oct.both: LH B4 is not spelled for F half-diminished7
+exercise.arpeggio7.f-half-diminished7.2oct.both: LH B4 is not spelled for F half-diminished7
+exercise.arpeggio7.f-half-diminished7.2oct.both: LH B3 is not spelled for F half-diminished7
+exercise.arpeggio7.b-flat-half-diminished7.2oct.both: RH E5 is not spelled for B- half-diminished7
+exercise.arpeggio7.b-flat-half-diminished7.2oct.both: RH E6 is not spelled for B- half-diminished7
+exercise.arpeggio7.b-flat-half-diminished7.2oct.both: RH E6 is not spelled for B- half-diminished7
+exercise.arpeggio7.b-flat-half-diminished7.2oct.both: RH E5 is not spelled for B- half-diminished7
+exercise.arpeggio7.b-flat-half-diminished7.2oct.both: LH E4 is not spelled for B- half-diminished7
+exercise.arpeggio7.b-flat-half-diminished7.2oct.both: LH E5 is not spelled for B- half-diminished7
+exercise.arpeggio7.b-flat-half-diminished7.2oct.both: LH E5 is not spelled for B- half-diminished7
+exercise.arpeggio7.b-flat-half-diminished7.2oct.both: LH E4 is not spelled for B- half-diminished7
+exercise.arpeggio7.a-flat-minor7.2oct.both: RH B4 is not spelled for A- minor7
+exercise.arpeggio7.a-flat-minor7.2oct.both: RH B5 is not spelled for A- minor7
+exercise.arpeggio7.a-flat-minor7.2oct.both: RH B5 is not spelled for A- minor7
+exercise.arpeggio7.a-flat-minor7.2oct.both: RH B4 is not spelled for A- minor7
+exercise.arpeggio7.a-flat-minor7.2oct.both: LH B3 is not spelled for A- minor7
+exercise.arpeggio7.a-flat-minor7.2oct.both: LH B4 is not spelled for A- minor7
+exercise.arpeggio7.a-flat-minor7.2oct.both: LH B4 is not spelled for A- minor7
+exercise.arpeggio7.a-flat-minor7.2oct.both: LH B3 is not spelled for A- minor7
+exercise.arpeggio7.a-flat-half-diminished7.2oct.both: RH B4 is not spelled for A- half-diminished7
+exercise.arpeggio7.a-flat-half-diminished7.2oct.both: RH B5 is not spelled for A- half-diminished7
+exercise.arpeggio7.a-flat-half-diminished7.2oct.both: RH B5 is not spelled for A- half-diminished7
+exercise.arpeggio7.a-flat-half-diminished7.2oct.both: RH B4 is not spelled for A- half-diminished7
+exercise.arpeggio7.a-flat-half-diminished7.2oct.both: LH B3 is not spelled for A- half-diminished7
+exercise.arpeggio7.a-flat-half-diminished7.2oct.both: LH B4 is not spelled for A- half-diminished7
+exercise.arpeggio7.a-flat-half-diminished7.2oct.both: LH B4 is not spelled for A- half-diminished7
+exercise.arpeggio7.a-flat-half-diminished7.2oct.both: LH B3 is not spelled for A- half-diminished7
+exercise.arpeggio7.d-flat-dominant7.2oct.both: RH B4 is not spelled for D- dominant7
+exercise.arpeggio7.d-flat-dominant7.2oct.both: RH B5 is not spelled for D- dominant7
+exercise.arpeggio7.d-flat-dominant7.2oct.both: RH B5 is not spelled for D- dominant7
+exercise.arpeggio7.d-flat-dominant7.2oct.both: RH B4 is not spelled for D- dominant7
+exercise.arpeggio7.d-flat-dominant7.2oct.both: LH B3 is not spelled for D- dominant7
+exercise.arpeggio7.d-flat-dominant7.2oct.both: LH B4 is not spelled for D- dominant7
+exercise.arpeggio7.d-flat-dominant7.2oct.both: LH B4 is not spelled for D- dominant7
+exercise.arpeggio7.d-flat-dominant7.2oct.both: LH B3 is not spelled for D- dominant7
+… 128 in all
+
+======================================================================
+FAIL: test_every_broken_seventh_in_the_plan_is_spelled_as_stacked_thirds (tests.test_generator_fingering.TestBrokenSeventhSpelling.test_every_broken_seventh_in_the_plan_is_spelled_as_stacked_thirds)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a5335c2b4ab7ed720\tools\content\tests\test_generator_fingering.py", line 735, in test_every_broken_seventh_in_the_plan_is_spelled_as_stacked_thirds
+    self.assertEqual(faults, [], "\n".join(faults[:40]) + f"\n… {len(faults)} in all")
+AssertionError: Lists differ: ['exercise.broken7.a-flat-minor7.both: RH [7345 chars]or7'] != []
+
+First list contains 96 additional elements.
+First extra element 0:
+'exercise.broken7.a-flat-minor7.both: RH B3 is not spelled for A- minor7'
+
+Diff is 7877 characters long. Set self.maxDiff to None to see it. : exercise.broken7.a-flat-minor7.both: RH B3 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: RH B3 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: RH B4 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: RH B4 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: RH B3 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: RH B3 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: RH B4 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: RH B4 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: LH B2 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: LH B2 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: LH B3 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: LH B3 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: LH B2 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: LH B2 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: LH B3 is not spelled for A- minor7
+exercise.broken7.a-flat-minor7.both: LH B3 is not spelled for A- minor7
+exercise.broken7.d-flat-dominant7.both: RH B3 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: RH B3 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: RH B4 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: RH B4 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: RH B3 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: RH B3 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: RH B4 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: RH B4 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: LH B2 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: LH B2 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: LH B3 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: LH B3 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: LH B2 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: LH B2 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: LH B3 is not spelled for D- dominant7
+exercise.broken7.d-flat-dominant7.both: LH B3 is not spelled for D- dominant7
+exercise.broken7.d-flat-minor7.both: RH E3 is not spelled for D- minor7
+exercise.broken7.d-flat-minor7.both: RH B3 is not spelled for D- minor7
+exercise.broken7.d-flat-minor7.both: RH B3 is not spelled for D- minor7
+exercise.broken7.d-flat-minor7.both: RH E3 is not spelled for D- minor7
+exercise.broken7.d-flat-minor7.both: RH E4 is not spelled for D- minor7
+exercise.broken7.d-flat-minor7.both: RH B4 is not spelled for D- minor7
+exercise.broken7.d-flat-minor7.both: RH B4 is not spelled for D- minor7
+exercise.broken7.d-flat-minor7.both: RH E4 is not spelled for D- minor7
+… 96 in all
+
+----------------------------------------------------------------------
+Ran 57 tests in 153.674s
+
+FAILED (failures=2)

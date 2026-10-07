@@ -1,0 +1,10 @@
+
+Running 4 tests using 2 workers
+
+  ok 2 tests\e2e\microscope.spec.ts:106:3 › the microscope (D2) › opens a generated item by id: the notation settled, every fact under its hook, Hear it enabled (2.2s)
+  ok 1 tests\e2e\microscope.spec.ts:129:3 › the microscope (D2) › Hear it plays through the app’s piano: each hand alone its own pitches, both hands both (8.2s)
+  ok 3 tests\e2e\microscope.spec.ts:166:3 › the microscope (D2) › a decision is exported as a file review.py --merge accepts, and the learner’s stores do not move (7.4s)
+  ok 4 tests\e2e\microscope.spec.ts:242:3 › the microscope (D2) › the learner’s navigation never shows the route (8.6s)
+
+  4 passed (18.8s)
+playwright exit 0

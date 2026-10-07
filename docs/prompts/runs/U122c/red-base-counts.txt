@@ -1,0 +1,429 @@
+cells 13, with no failure 0
+
+per device and moment: cells with no failure / cells measured
+  phone sideways: rest 0/6, count-in 0/6, armed 0/6, playing 0/6, paused 0/6, refused 0/6, finished 0/4
+  phone upright: rest 1/3, count-in 0/3, armed 0/3, playing 0/3, paused 0/3, refused 0/3, finished 2/2
+  tablet: rest 0/4, count-in 0/4, armed 0/4, playing 0/4, paused 0/4, refused 0/4, finished 4/4
+
+the largest move of the music's top edge from rest, any moment but finished (px):
+  tablet: 62.89
+  phone upright: 47.89
+  phone sideways: 22.00
+
+at rest: Hands
+  phone sideways: Hands behind ⋯ 2
+  phone sideways: Hands on the row 4
+  phone upright: Hands behind ⋯ 1
+  phone upright: Hands on the row 2
+  tablet: Hands on the row 4
+
+at rest: Hands kept at its own width where the floor alone would send it behind ⋯ (the open trade)
+
+at rest: the selected mode as drawn (Keep tempo selected)
+  phone sideways: "Keep tempo" 6
+  phone upright: "Tempo" 3
+  tablet: "Keep tempo" 4
+
+finished: the verdict and the primary action in the first view
+  phone sideways: verdict whole 4
+  phone upright: verdict whole 2
+  tablet: verdict whole 4
+  phone sideways: "Keep tempo at 80 %" NOT whole 4
+  phone upright: "Keep tempo at 80 %" whole 2
+  tablet: "Keep tempo at 80 %" whole 4
+
+failures (394):
+  1024x1366 100% stack hcb — rest: handsR drawn under the 40-px floor
+  1024x1366 100% stack hcb — rest: handsL drawn under the 40-px floor
+  1024x1366 100% stack hcb — count-in: back drawn while the hands are on the keys
+  1024x1366 100% stack hcb — count-in: hear drawn while the hands are on the keys
+  1024x1366 100% stack hcb — count-in: mode drawn while the hands are on the keys
+  1024x1366 100% stack hcb — count-in: handsR drawn while the hands are on the keys
+  1024x1366 100% stack hcb — count-in: handsL drawn while the hands are on the keys
+  1024x1366 100% stack hcb — count-in: handsBoth drawn while the hands are on the keys
+  1024x1366 100% stack hcb — count-in: tempo drawn while the hands are on the keys
+  1024x1366 100% stack hcb — count-in: more drawn while the hands are on the keys
+  1024x1366 100% stack hcb — count-in: countin over the ink by 93.93 px
+  1024x1366 100% stack hcb — count-in: countin:digits over the ink by 2.8 px
+  1024x1366 100% stack hcb — armed: play not drawn
+  1024x1366 100% stack hcb — armed: back drawn while the hands are on the keys
+  1024x1366 100% stack hcb — playing: play not drawn
+  1024x1366 100% stack hcb — playing: back drawn while the hands are on the keys
+  1024x1366 100% stack hcb — playing: #score-play could not be tapped directly
+  1024x1366 100% stack hcb — paused: play not drawn
+  1024x1366 100% stack hcb — paused: more not drawn
+  1024x1366 100% stack hcb — paused: the mode not drawn
+  1024x1366 100% stack hcb — paused: #score-play could not be tapped directly
+  1024x1366 100% stack hcb — refused: play not drawn
+  1024x1366 100% stack hcb — refused: more not drawn
+  1024x1366 100% stack hcb — refused: the mode not drawn
+  1024x1366 100% stack hcb — refused: #score-play could not be tapped directly
+  1024x768 100% stack hcb — rest: handsR drawn under the 40-px floor
+  1024x768 100% stack hcb — rest: handsL drawn under the 40-px floor
+  1024x768 100% stack hcb — count-in: back drawn while the hands are on the keys
+  1024x768 100% stack hcb — count-in: hear drawn while the hands are on the keys
+  1024x768 100% stack hcb — count-in: mode drawn while the hands are on the keys
+  1024x768 100% stack hcb — count-in: handsR drawn while the hands are on the keys
+  1024x768 100% stack hcb — count-in: handsL drawn while the hands are on the keys
+  1024x768 100% stack hcb — count-in: handsBoth drawn while the hands are on the keys
+  1024x768 100% stack hcb — count-in: tempo drawn while the hands are on the keys
+  1024x768 100% stack hcb — count-in: more drawn while the hands are on the keys
+  1024x768 100% stack hcb — count-in: bar over the ink by 35.63 px
+  1024x768 100% stack hcb — count-in: bar:score-mode over the ink by 9.69 px
+  1024x768 100% stack hcb — count-in: bar:score-hands-L over the ink by 6.63 px
+  1024x768 100% stack hcb — count-in: bar:score-hands-both over the ink by 29.04 px
+  1024x768 100% stack hcb — count-in: countin over the ink by 94.52 px
+  1024x768 100% stack hcb — count-in: countin:digits over the ink by 29.03 px
+  1024x768 100% stack hcb — count-in: the music's top edge moved 3.76 px
+  1024x768 100% stack hcb — count-in: the stave changed 146.21 → 154.8 px
+  1024x768 100% stack hcb — armed: play not drawn
+  1024x768 100% stack hcb — armed: the music's top edge moved -59.13 px
+  1024x768 100% stack hcb — armed: the stave changed 146.21 → 154.8 px
+  1024x768 100% stack hcb — playing: play not drawn
+  1024x768 100% stack hcb — playing: the music's top edge moved -59.13 px
+  1024x768 100% stack hcb — playing: the stave changed 146.21 → 154.8 px
+  1024x768 100% stack hcb — playing: #score-play could not be tapped directly
+  1024x768 100% stack hcb — paused: play not drawn
+  1024x768 100% stack hcb — paused: back not drawn
+  1024x768 100% stack hcb — paused: more not drawn
+  1024x768 100% stack hcb — paused: the mode not drawn
+  1024x768 100% stack hcb — paused: the music's top edge moved -59.13 px
+  1024x768 100% stack hcb — paused: the stave changed 146.21 → 154.8 px
+  1024x768 100% stack hcb — paused: #score-play could not be tapped directly
+  1024x768 100% stack hcb — refused: play not drawn
+  1024x768 100% stack hcb — refused: back not drawn
+  1024x768 100% stack hcb — refused: more not drawn
+  1024x768 100% stack hcb — refused: the mode not drawn
+  1024x768 100% stack hcb — refused: the music's top edge moved -59.13 px
+  1024x768 100% stack hcb — refused: the stave changed 146.21 → 154.8 px
+  1024x768 100% stack hcb — refused: #score-play could not be tapped directly
+  1366x1024 100% stack hcb — rest: handsR drawn under the 40-px floor
+  1366x1024 100% stack hcb — rest: handsL drawn under the 40-px floor
+  1366x1024 100% stack hcb — count-in: back drawn while the hands are on the keys
+  1366x1024 100% stack hcb — count-in: hear drawn while the hands are on the keys
+  1366x1024 100% stack hcb — count-in: mode drawn while the hands are on the keys
+  1366x1024 100% stack hcb — count-in: handsR drawn while the hands are on the keys
+  1366x1024 100% stack hcb — count-in: handsL drawn while the hands are on the keys
+  1366x1024 100% stack hcb — count-in: handsBoth drawn while the hands are on the keys
+  1366x1024 100% stack hcb — count-in: tempo drawn while the hands are on the keys
+  1366x1024 100% stack hcb — count-in: more drawn while the hands are on the keys
+  1366x1024 100% stack hcb — count-in: bar over the ink by 35.63 px
+  1366x1024 100% stack hcb — count-in: bar:score-mode over the ink by 29.04 px
+  1366x1024 100% stack hcb — count-in: countin over the ink by 137.49 px
+  1366x1024 100% stack hcb — count-in: the music's top edge moved 6.26 px
+  1366x1024 100% stack hcb — count-in: the stave changed 210.89 → 225.18 px
+  1366x1024 100% stack hcb — armed: play not drawn
+  1366x1024 100% stack hcb — armed: back drawn while the hands are on the keys
+  1366x1024 100% stack hcb — armed: the music's top edge moved 6.26 px
+  1366x1024 100% stack hcb — armed: the stave changed 210.89 → 225.18 px
+  1366x1024 100% stack hcb — playing: play not drawn
+  1366x1024 100% stack hcb — playing: back drawn while the hands are on the keys
+  1366x1024 100% stack hcb — playing: the music's top edge moved 6.26 px
+  1366x1024 100% stack hcb — playing: the stave changed 210.89 → 225.18 px
+  1366x1024 100% stack hcb — playing: #score-play could not be tapped directly
+  1366x1024 100% stack hcb — paused: play not drawn
+  1366x1024 100% stack hcb — paused: more not drawn
+  1366x1024 100% stack hcb — paused: the mode not drawn
+  1366x1024 100% stack hcb — paused: the music's top edge moved 6.26 px
+  1366x1024 100% stack hcb — paused: the stave changed 210.89 → 225.18 px
+  1366x1024 100% stack hcb — paused: #score-play could not be tapped directly
+  1366x1024 100% stack hcb — refused: play not drawn
+  1366x1024 100% stack hcb — refused: more not drawn
+  1366x1024 100% stack hcb — refused: the mode not drawn
+  1366x1024 100% stack hcb — refused: the music's top edge moved 6.26 px
+  1366x1024 100% stack hcb — refused: the stave changed 210.89 → 225.18 px
+  1366x1024 100% stack hcb — refused: #score-play could not be tapped directly
+  342x740 100% stack hcb — rest: the selected mode cut (Tempo)
+  342x740 100% stack hcb — rest: handsR drawn under the 40-px floor
+  342x740 100% stack hcb — rest: handsL drawn under the 40-px floor
+  342x740 100% stack hcb — count-in: back drawn while the hands are on the keys
+  342x740 100% stack hcb — count-in: hear drawn while the hands are on the keys
+  342x740 100% stack hcb — count-in: mode drawn while the hands are on the keys
+  342x740 100% stack hcb — count-in: handsR drawn while the hands are on the keys
+  342x740 100% stack hcb — count-in: handsL drawn while the hands are on the keys
+  342x740 100% stack hcb — count-in: handsBoth drawn while the hands are on the keys
+  342x740 100% stack hcb — count-in: tempo drawn while the hands are on the keys
+  342x740 100% stack hcb — count-in: more drawn while the hands are on the keys
+  342x740 100% stack hcb — count-in: score-beat over the ink by 3.38 px
+  342x740 100% stack hcb — count-in: countin over the ink by 44.79 px
+  342x740 100% stack hcb — count-in: countin:digits over the ink by 9.17 px
+  342x740 100% stack hcb — armed: play not drawn
+  342x740 100% stack hcb — armed: the music's top edge moved -31.89 px
+  342x740 100% stack hcb — playing: play not drawn
+  342x740 100% stack hcb — playing: the music's top edge moved -31.89 px
+  342x740 100% stack hcb — playing: #score-play could not be tapped directly
+  342x740 100% stack hcb — paused: play not drawn
+  342x740 100% stack hcb — paused: back not drawn
+  342x740 100% stack hcb — paused: more not drawn
+  342x740 100% stack hcb — paused: the mode not drawn
+  342x740 100% stack hcb — paused: the music's top edge moved -31.89 px
+  342x740 100% stack hcb — paused: #score-play could not be tapped directly
+  342x740 100% stack hcb — refused: play not drawn
+  342x740 100% stack hcb — refused: back not drawn
+  342x740 100% stack hcb — refused: more not drawn
+  342x740 100% stack hcb — refused: the mode not drawn
+  342x740 100% stack hcb — refused: the music's top edge moved -31.89 px
+  342x740 100% stack hcb — refused: #score-play could not be tapped directly
+  342x740 115% wider moon — count-in: back drawn while the hands are on the keys
+  342x740 115% wider moon — count-in: hear drawn while the hands are on the keys
+  342x740 115% wider moon — count-in: mode drawn while the hands are on the keys
+  342x740 115% wider moon — count-in: tempo drawn while the hands are on the keys
+  342x740 115% wider moon — count-in: more drawn while the hands are on the keys
+  342x740 115% wider moon — count-in: countin over the ink by 23.67 px
+  342x740 115% wider moon — count-in: countin:digits over the ink by 7.17 px
+  342x740 115% wider moon — armed: play not drawn
+  342x740 115% wider moon — armed: the music's top edge moved -38.49 px
+  342x740 115% wider moon — playing: play not drawn
+  342x740 115% wider moon — playing: the music's top edge moved -38.49 px
+  342x740 115% wider moon — playing: #score-play could not be tapped directly
+  342x740 115% wider moon — paused: play not drawn
+  342x740 115% wider moon — paused: back not drawn
+  342x740 115% wider moon — paused: more not drawn
+  342x740 115% wider moon — paused: the mode not drawn
+  342x740 115% wider moon — paused: the music's top edge moved -38.49 px
+  342x740 115% wider moon — paused: #score-play could not be tapped directly
+  342x740 115% wider moon — refused: play not drawn
+  342x740 115% wider moon — refused: back not drawn
+  342x740 115% wider moon — refused: more not drawn
+  342x740 115% wider moon — refused: the mode not drawn
+  342x740 115% wider moon — refused: the music's top edge moved -38.49 px
+  360x780 100% stack hcb — rest: handsR drawn under the 40-px floor
+  360x780 100% stack hcb — rest: handsL drawn under the 40-px floor
+  360x780 100% stack hcb — count-in: back drawn while the hands are on the keys
+  360x780 100% stack hcb — count-in: hear drawn while the hands are on the keys
+  360x780 100% stack hcb — count-in: mode drawn while the hands are on the keys
+  360x780 100% stack hcb — count-in: handsR drawn while the hands are on the keys
+  360x780 100% stack hcb — count-in: handsL drawn while the hands are on the keys
+  360x780 100% stack hcb — count-in: handsBoth drawn while the hands are on the keys
+  360x780 100% stack hcb — count-in: tempo drawn while the hands are on the keys
+  360x780 100% stack hcb — count-in: more drawn while the hands are on the keys
+  360x780 100% stack hcb — count-in: score-beat over the ink by 2.89 px
+  360x780 100% stack hcb — count-in: countin over the ink by 47.24 px
+  360x780 100% stack hcb — count-in: countin:digits over the ink by 9.67 px
+  360x780 100% stack hcb — armed: play not drawn
+  360x780 100% stack hcb — armed: the music's top edge moved -47.89 px
+  360x780 100% stack hcb — playing: play not drawn
+  360x780 100% stack hcb — playing: the music's top edge moved -47.89 px
+  360x780 100% stack hcb — playing: #score-play could not be tapped directly
+  360x780 100% stack hcb — paused: play not drawn
+  360x780 100% stack hcb — paused: back not drawn
+  360x780 100% stack hcb — paused: more not drawn
+  360x780 100% stack hcb — paused: the mode not drawn
+  360x780 100% stack hcb — paused: the music's top edge moved -47.89 px
+  360x780 100% stack hcb — paused: #score-play could not be tapped directly
+  360x780 100% stack hcb — refused: play not drawn
+  360x780 100% stack hcb — refused: back not drawn
+  360x780 100% stack hcb — refused: more not drawn
+  360x780 100% stack hcb — refused: the mode not drawn
+  360x780 100% stack hcb — refused: the music's top edge moved -47.89 px
+  360x780 100% stack hcb — refused: #score-play could not be tapped directly
+  568x320 100% stack hcb — rest: the selected mode cut (Keep tempo)
+  568x320 100% stack hcb — rest: handsR drawn under the 40-px floor
+  568x320 100% stack hcb — rest: handsL drawn under the 40-px floor
+  568x320 100% stack hcb — count-in: back drawn while the hands are on the keys
+  568x320 100% stack hcb — count-in: hear drawn while the hands are on the keys
+  568x320 100% stack hcb — count-in: mode drawn while the hands are on the keys
+  568x320 100% stack hcb — count-in: handsR drawn while the hands are on the keys
+  568x320 100% stack hcb — count-in: handsL drawn while the hands are on the keys
+  568x320 100% stack hcb — count-in: handsBoth drawn while the hands are on the keys
+  568x320 100% stack hcb — count-in: tempo drawn while the hands are on the keys
+  568x320 100% stack hcb — count-in: more drawn while the hands are on the keys
+  568x320 100% stack hcb — count-in: score-beat over the ink by 2.39 px
+  568x320 100% stack hcb — count-in: countin over the ink by 49.67 px
+  568x320 100% stack hcb — count-in: countin:digits over the ink by 2.03 px
+  568x320 100% stack hcb — armed: play not drawn
+  568x320 100% stack hcb — armed: the music's top edge moved 22 px
+  568x320 100% stack hcb — playing: play not drawn
+  568x320 100% stack hcb — playing: the music's top edge moved 22 px
+  568x320 100% stack hcb — playing: #score-play could not be tapped directly
+  568x320 100% stack hcb — paused: play not drawn
+  568x320 100% stack hcb — paused: back not drawn
+  568x320 100% stack hcb — paused: more not drawn
+  568x320 100% stack hcb — paused: the mode not drawn
+  568x320 100% stack hcb — paused: the music's top edge moved 22 px
+  568x320 100% stack hcb — paused: #score-play could not be tapped directly
+  568x320 100% stack hcb — refused: play not drawn
+  568x320 100% stack hcb — refused: back not drawn
+  568x320 100% stack hcb — refused: more not drawn
+  568x320 100% stack hcb — refused: the mode not drawn
+  568x320 100% stack hcb — refused: the music's top edge moved 22 px
+  568x320 100% stack hcb — refused: #score-play could not be tapped directly
+  568x320 100% stack hcb — finished: the primary action (Keep tempo at 80 %) not whole in the sheet's first view
+  568x320 100% stack hcb — finished: the primary action (Keep tempo at 80 %) not hit
+  568x320 115% stack hcb — rest: the selected mode cut (Keep tempo)
+  568x320 115% stack hcb — rest: handsR drawn under the 40-px floor
+  568x320 115% stack hcb — rest: handsL drawn under the 40-px floor
+  568x320 115% stack hcb — count-in: back drawn while the hands are on the keys
+  568x320 115% stack hcb — count-in: hear drawn while the hands are on the keys
+  568x320 115% stack hcb — count-in: mode drawn while the hands are on the keys
+  568x320 115% stack hcb — count-in: handsR drawn while the hands are on the keys
+  568x320 115% stack hcb — count-in: handsL drawn while the hands are on the keys
+  568x320 115% stack hcb — count-in: handsBoth drawn while the hands are on the keys
+  568x320 115% stack hcb — count-in: tempo drawn while the hands are on the keys
+  568x320 115% stack hcb — count-in: more drawn while the hands are on the keys
+  568x320 115% stack hcb — count-in: score-beat over the ink by 2.39 px
+  568x320 115% stack hcb — count-in: countin over the ink by 49.67 px
+  568x320 115% stack hcb — count-in: countin:digits over the ink by 2.2 px
+  568x320 115% stack hcb — armed: play not drawn
+  568x320 115% stack hcb — armed: the music's top edge moved 22 px
+  568x320 115% stack hcb — playing: play not drawn
+  568x320 115% stack hcb — playing: the music's top edge moved 22 px
+  568x320 115% stack hcb — playing: #score-play could not be tapped directly
+  568x320 115% stack hcb — paused: play not drawn
+  568x320 115% stack hcb — paused: back not drawn
+  568x320 115% stack hcb — paused: more not drawn
+  568x320 115% stack hcb — paused: the mode not drawn
+  568x320 115% stack hcb — paused: the music's top edge moved 22 px
+  568x320 115% stack hcb — paused: #score-play could not be tapped directly
+  568x320 115% stack hcb — refused: play not drawn
+  568x320 115% stack hcb — refused: back not drawn
+  568x320 115% stack hcb — refused: more not drawn
+  568x320 115% stack hcb — refused: the mode not drawn
+  568x320 115% stack hcb — refused: the music's top edge moved 22 px
+  568x320 115% stack hcb — refused: #score-play could not be tapped directly
+  568x320 115% stack hcb — finished: the primary action (Keep tempo at 80 %) not whole in the sheet's first view
+  568x320 115% stack hcb — finished: the primary action (Keep tempo at 80 %) not hit
+  568x320 115% wider moon — rest: the selected mode cut (Keep tempo)
+  568x320 115% wider moon — count-in: back drawn while the hands are on the keys
+  568x320 115% wider moon — count-in: hear drawn while the hands are on the keys
+  568x320 115% wider moon — count-in: mode drawn while the hands are on the keys
+  568x320 115% wider moon — count-in: tempo drawn while the hands are on the keys
+  568x320 115% wider moon — count-in: more drawn while the hands are on the keys
+  568x320 115% wider moon — count-in: countin over the ink by 19.3 px
+  568x320 115% wider moon — count-in: countin:digits over the ink by 6 px
+  568x320 115% wider moon — armed: play not drawn
+  568x320 115% wider moon — armed: the music's top edge moved 22 px
+  568x320 115% wider moon — playing: play not drawn
+  568x320 115% wider moon — playing: the music's top edge moved 22 px
+  568x320 115% wider moon — playing: #score-play could not be tapped directly
+  568x320 115% wider moon — paused: play not drawn
+  568x320 115% wider moon — paused: back not drawn
+  568x320 115% wider moon — paused: more not drawn
+  568x320 115% wider moon — paused: the mode not drawn
+  568x320 115% wider moon — paused: the music's top edge moved 22 px
+  568x320 115% wider moon — paused: #score-play could not be tapped directly
+  568x320 115% wider moon — refused: play not drawn
+  568x320 115% wider moon — refused: back not drawn
+  568x320 115% wider moon — refused: more not drawn
+  568x320 115% wider moon — refused: the mode not drawn
+  568x320 115% wider moon — refused: the music's top edge moved 22 px
+  568x320 90% stack hcb — rest: play under the 40-px floor
+  568x320 90% stack hcb — rest: back under the 40-px floor
+  568x320 90% stack hcb — rest: more under the 40-px floor
+  568x320 90% stack hcb — rest: the selected mode cut (Keep tempo)
+  568x320 90% stack hcb — count-in: play under the 40-px floor
+  568x320 90% stack hcb — count-in: back drawn while the hands are on the keys
+  568x320 90% stack hcb — count-in: mode drawn while the hands are on the keys
+  568x320 90% stack hcb — count-in: tempo drawn while the hands are on the keys
+  568x320 90% stack hcb — count-in: more drawn while the hands are on the keys
+  568x320 90% stack hcb — count-in: score-beat over the ink by 2.39 px
+  568x320 90% stack hcb — count-in: countin over the ink by 49.67 px
+  568x320 90% stack hcb — count-in: countin:digits over the ink by 2.03 px
+  568x320 90% stack hcb — armed: play not drawn
+  568x320 90% stack hcb — armed: the music's top edge moved 22 px
+  568x320 90% stack hcb — playing: play not drawn
+  568x320 90% stack hcb — playing: the music's top edge moved 22 px
+  568x320 90% stack hcb — playing: #score-play could not be tapped directly
+  568x320 90% stack hcb — paused: play not drawn
+  568x320 90% stack hcb — paused: back not drawn
+  568x320 90% stack hcb — paused: more not drawn
+  568x320 90% stack hcb — paused: the mode not drawn
+  568x320 90% stack hcb — paused: the music's top edge moved 22 px
+  568x320 90% stack hcb — paused: #score-play could not be tapped directly
+  568x320 90% stack hcb — refused: play not drawn
+  568x320 90% stack hcb — refused: back not drawn
+  568x320 90% stack hcb — refused: more not drawn
+  568x320 90% stack hcb — refused: the mode not drawn
+  568x320 90% stack hcb — refused: the music's top edge moved 22 px
+  568x320 90% stack hcb — refused: #score-play could not be tapped directly
+  568x320 90% stack hcb — finished: the primary action (Keep tempo at 80 %) not whole in the sheet's first view
+  568x320 90% stack hcb — finished: the primary action (Keep tempo at 80 %) not hit
+  768x1024 100% stack hcb — rest: handsR drawn under the 40-px floor
+  768x1024 100% stack hcb — rest: handsL drawn under the 40-px floor
+  768x1024 100% stack hcb — count-in: back drawn while the hands are on the keys
+  768x1024 100% stack hcb — count-in: hear drawn while the hands are on the keys
+  768x1024 100% stack hcb — count-in: mode drawn while the hands are on the keys
+  768x1024 100% stack hcb — count-in: handsR drawn while the hands are on the keys
+  768x1024 100% stack hcb — count-in: handsL drawn while the hands are on the keys
+  768x1024 100% stack hcb — count-in: handsBoth drawn while the hands are on the keys
+  768x1024 100% stack hcb — count-in: tempo drawn while the hands are on the keys
+  768x1024 100% stack hcb — count-in: more drawn while the hands are on the keys
+  768x1024 100% stack hcb — count-in: countin over the ink by 102.62 px
+  768x1024 100% stack hcb — count-in: countin:digits over the ink by 44.01 px
+  768x1024 100% stack hcb — armed: play not drawn
+  768x1024 100% stack hcb — armed: the music's top edge moved -62.89 px
+  768x1024 100% stack hcb — playing: play not drawn
+  768x1024 100% stack hcb — playing: the music's top edge moved -62.89 px
+  768x1024 100% stack hcb — playing: #score-play could not be tapped directly
+  768x1024 100% stack hcb — paused: play not drawn
+  768x1024 100% stack hcb — paused: back not drawn
+  768x1024 100% stack hcb — paused: more not drawn
+  768x1024 100% stack hcb — paused: the mode not drawn
+  768x1024 100% stack hcb — paused: the music's top edge moved -62.89 px
+  768x1024 100% stack hcb — paused: #score-play could not be tapped directly
+  768x1024 100% stack hcb — refused: play not drawn
+  768x1024 100% stack hcb — refused: back not drawn
+  768x1024 100% stack hcb — refused: more not drawn
+  768x1024 100% stack hcb — refused: the mode not drawn
+  768x1024 100% stack hcb — refused: the music's top edge moved -62.89 px
+  768x1024 100% stack hcb — refused: #score-play could not be tapped directly
+  780x360 100% stack hcb — rest: the selected mode cut (Keep tempo)
+  780x360 100% stack hcb — rest: handsR drawn under the 40-px floor
+  780x360 100% stack hcb — rest: handsL drawn under the 40-px floor
+  780x360 100% stack hcb — count-in: back drawn while the hands are on the keys
+  780x360 100% stack hcb — count-in: hear drawn while the hands are on the keys
+  780x360 100% stack hcb — count-in: mode drawn while the hands are on the keys
+  780x360 100% stack hcb — count-in: handsR drawn while the hands are on the keys
+  780x360 100% stack hcb — count-in: handsL drawn while the hands are on the keys
+  780x360 100% stack hcb — count-in: handsBoth drawn while the hands are on the keys
+  780x360 100% stack hcb — count-in: tempo drawn while the hands are on the keys
+  780x360 100% stack hcb — count-in: more drawn while the hands are on the keys
+  780x360 100% stack hcb — count-in: countin over the ink by 68.47 px
+  780x360 100% stack hcb — armed: play not drawn
+  780x360 100% stack hcb — armed: the music's top edge moved 22 px
+  780x360 100% stack hcb — playing: play not drawn
+  780x360 100% stack hcb — playing: the music's top edge moved 22 px
+  780x360 100% stack hcb — playing: #score-play could not be tapped directly
+  780x360 100% stack hcb — paused: play not drawn
+  780x360 100% stack hcb — paused: back not drawn
+  780x360 100% stack hcb — paused: more not drawn
+  780x360 100% stack hcb — paused: the mode not drawn
+  780x360 100% stack hcb — paused: the music's top edge moved 22 px
+  780x360 100% stack hcb — paused: #score-play could not be tapped directly
+  780x360 100% stack hcb — refused: play not drawn
+  780x360 100% stack hcb — refused: back not drawn
+  780x360 100% stack hcb — refused: more not drawn
+  780x360 100% stack hcb — refused: the mode not drawn
+  780x360 100% stack hcb — refused: the music's top edge moved 22 px
+  780x360 100% stack hcb — refused: #score-play could not be tapped directly
+  780x360 100% stack hcb — finished: the primary action (Keep tempo at 80 %) not whole in the sheet's first view
+  780x360 100% stack hcb — finished: the primary action (Keep tempo at 80 %) not hit
+  780x360 115% stack moon — rest: the selected mode cut (Keep tempo)
+  780x360 115% stack moon — rest: handsR drawn under the 40-px floor
+  780x360 115% stack moon — rest: handsL drawn under the 40-px floor
+  780x360 115% stack moon — count-in: back drawn while the hands are on the keys
+  780x360 115% stack moon — count-in: hear drawn while the hands are on the keys
+  780x360 115% stack moon — count-in: mode drawn while the hands are on the keys
+  780x360 115% stack moon — count-in: handsR drawn while the hands are on the keys
+  780x360 115% stack moon — count-in: handsL drawn while the hands are on the keys
+  780x360 115% stack moon — count-in: handsBoth drawn while the hands are on the keys
+  780x360 115% stack moon — count-in: tempo drawn while the hands are on the keys
+  780x360 115% stack moon — count-in: more drawn while the hands are on the keys
+  780x360 115% stack moon — count-in: countin over the ink by 26.61 px
+  780x360 115% stack moon — count-in: countin:digits over the ink by 8.27 px
+  780x360 115% stack moon — armed: play not drawn
+  780x360 115% stack moon — armed: the music's top edge moved 22 px
+  780x360 115% stack moon — playing: play not drawn
+  780x360 115% stack moon — playing: the music's top edge moved 22 px
+  780x360 115% stack moon — playing: #score-play could not be tapped directly
+  780x360 115% stack moon — paused: play not drawn
+  780x360 115% stack moon — paused: back not drawn
+  780x360 115% stack moon — paused: more not drawn
+  780x360 115% stack moon — paused: the mode not drawn
+  780x360 115% stack moon — paused: the music's top edge moved 22 px
+  780x360 115% stack moon — paused: #score-play could not be tapped directly
+  780x360 115% stack moon — refused: play not drawn
+  780x360 115% stack moon — refused: back not drawn
+  780x360 115% stack moon — refused: more not drawn
+  780x360 115% stack moon — refused: the mode not drawn
+  780x360 115% stack moon — refused: the music's top edge moved 22 px

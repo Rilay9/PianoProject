@@ -1,0 +1,11 @@
+(in app) npx vitest run tests/unit/perfectPerformance.test.ts tests/unit/perfectPerformance.5.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+
+ Test Files  2 passed (2)
+      Tests  507 passed (507)
+   Start at  04:07:20
+   Duration  41.65s (tests 77%, environment 20%, transform 2%, import 1%)
+
+exit=0

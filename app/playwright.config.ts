@@ -31,7 +31,10 @@ export default defineConfig({
    * differently and has been green throughout.
    */
   workers: process.env.CI ? undefined : 4,
-  reporter: process.env.CI ? [['github'], ['list']] : 'list',
+  // CI adds the blob reporter (T62): one report per shard with every test's id,
+  // result and attachments, which CI's e2e-coverage job reads to prove that each
+  // test of the collection ran in exactly one shard (tools/ci/shard_coverage.py).
+  reporter: process.env.CI ? [['github'], ['list'], ['blob']] : 'list',
   use: {
     ...devices['Desktop Chrome'],
     launchOptions: {
@@ -81,7 +84,16 @@ export default defineConfig({
     // rebuilt the very catalog it had been handed to measure. Build content
     // first with `python3 tools/content/build.py`; CI and render_check.py both
     // already do.
-    command: 'npm run build:app && npm run preview',
+    //
+    // CI's browser jobs restore the app its first job built (T62), so with CI
+    // set and PIANOPATH_PREBUILT_DIST=1 the command is the preview alone: the
+    // restored `dist` is served as it is, and a missing one fails `vite preview`
+    // loudly instead of being rebuilt from whatever the runner holds. Without
+    // both, the command is the one it always was.
+    command:
+      process.env.CI && process.env.PIANOPATH_PREBUILT_DIST === '1'
+        ? 'npm run preview'
+        : 'npm run build:app && npm run preview',
     url: 'http://localhost:4173/PianoProject/',
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

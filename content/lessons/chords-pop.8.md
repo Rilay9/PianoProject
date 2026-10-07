@@ -39,8 +39,9 @@ the one to try last. All six are personal-
 library songs: the public build shows the rows and where to get the scores,
 and the rung is complete on its exercises there.
 
-**Common mistake.** Transposing the shapes rather than the harmony. It works in
-the white keys and falls apart in the flat ones.
+**Common mistake.** Moving your hand shape up by the same number of white keys
+instead of transposing the harmony. C major moved up a white key that way lands
+on D minor; read the numerals and find the notes.
 
 **Tools for this rung.** The accompaniment lab is numerals first and a key
 second, which is this whole lesson in the shape of a screen. *Accompaniment lab*

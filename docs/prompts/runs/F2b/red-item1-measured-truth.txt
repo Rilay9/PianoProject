@@ -1,0 +1,16 @@
+(in tools/content) python -m unittest tests.test_measured_truth.TestPlacementReconciled
+........F..
+======================================================================
+FAIL: test_the_practice_floor_stands_on_1_1_and_its_false_rows_are_gone (tests.test_measured_truth.TestPlacementReconciled.test_the_practice_floor_stands_on_1_1_and_its_false_rows_are_gone)
+F2b (the reviewer's required change on F2a, `responses/fc91e5a.md`, part 1): `practice.1` names 1.1,
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_measured_truth.py", line 1039, in test_the_practice_floor_stands_on_1_1_and_its_false_rows_are_gone
+    self.assertEqual(self.lessons["practice.1"].get("prerequisites"), ["1.1"])
+AssertionError: None != ['1.1']
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.462s
+
+FAILED (failures=1)
+exit=1

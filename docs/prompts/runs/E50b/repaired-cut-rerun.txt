@@ -1,0 +1,33 @@
+table tools/content/repaired_identities.json: 7 repairs, 1 cut relation(s) on entry; re-serialised to its own bytes: True
+song.pop.margie.pdmx: re-proved on the committed score, named [d14cbac25ca0]; tempoChanged True
+song.jazz.django-reinhardt-limehouse-blues.pdmx: re-proved on the committed score, named [b1b5da844294]; tempoChanged True
+song.blues.singin-the-blues: re-proved on the committed score, named [fc4e8b90f673]; tempoChanged True
+song.blues.weary-blues: re-proved on the committed score, named [cee0d8d29e95]; tempoChanged True
+song.blues.storyville-blues: re-proved on the committed score, named [d31d167ee226]; tempoChanged True
+song.blues.wabash-blues: re-proved on the committed score, named [60f8d018899c]; tempoChanged True
+song.blues.tishomingo-blues: re-proved on the committed score, named [afa635593b27]; tempoChanged True
+old parent rebuilt through its repair: 60f8d018899c = the repair's from, = git show df275e8f:content/scores/pdmx/QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.mxl
+old cut: the cutter over the old parent, zipped under system 0: ab221f8913be0384427418c639fd326119fb2f047f96eae4fa5a9a78aa9f6be8 = the laptop's served cut (E-tail's record; E50a's after build and laptop read; E50's before build)
+new cut: the cutter over the repaired parent, zipped under system 0: ed2aaa19188ac3c90ba0a1dc34c1e6e64d73ddaab3f67cdd3a5c62a82d4d8f89
+re-proved as the build does (excerpts.former_cut_identities): named [ab221f8913be]; the same bars, staves, notes and time (4, 1, 20, '4/4'); tempo 96.0 -> 120.0; levels 1.62 -> 1.69
+the score text, new cut -> old cut (the whole difference):
+   --- new cut
+   +++ old cut
+   @@ -52,2 +52,7 @@
+            <direction-type>
+   +          <words enclosure="rectangle" font-family="MuseJazz" font-size="12" font-style="italic" relative-x="-71.06" relative-y="89.55">= 120</words>
+   +        </direction-type>
+   +      </direction>
+   +      <direction placement="above">
+   +        <direction-type>
+              <rehearsal default-x="-68.54" font-size="18" halign="center" relative-x="-70.6" relative-y="36.98" valign="middle">A</rehearsal>
+   @@ -59,6 +64,6 @@
+                <beat-unit>quarter</beat-unit>
+   -            <per-minute>120</per-minute>
+   +            <per-minute>96</per-minute>
+              </metronome>
+            </direction-type>
+   -        <sound tempo="120" />
+   +        <sound tempo="96" />
+          </direction>
+tools/content/repaired_identities.json: 7 repairs and 1 cut relation, 12230 bytes; unchanged from the file on entry: True

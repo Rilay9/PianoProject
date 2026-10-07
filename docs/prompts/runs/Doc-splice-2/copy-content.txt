@@ -1,0 +1,17 @@
+﻿$ robocopy <main checkout>\app\public\content <worktree>\app\public\content /MIR /NFL /NDL /NJH /NP
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        11         1        10         0         0         0
+   Files :      2157      2157         0         0         0         0
+   Bytes :   23.68 m   23.68 m         0         0         0         0
+   Times :   0:00:01   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           25,056,285 Bytes/sec.
+   Speed :            1,433.732 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 2:11:45 PM
+
+exit=1 (robocopy: 1 = files copied, no failures)

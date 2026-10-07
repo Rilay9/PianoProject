@@ -6,12 +6,24 @@ videos:
   - label: "Piano Lesson on playing repeated notes"
     url: "https://www.youtube.com/watch?v=yhC8o7ko9xY"
     teacher: "Graham Fitch"
-readingTime: 3
+readingTime: 4
 ---
 
 Three concert pieces, each written to be played through in front of people
 rather than to accompany anything. They are the hardest things on this track,
 and what makes them hard is not the hand you notice.
+
+**Before you play El Choclo, name its left hand yourself.** Open *El Choclo*
+and, before you press anything, look at the left hand and decide: does it use
+the habanera, the tresillo or neither, and if it uses one, what is the first
+bar where it stops? Then check yourself: press *Hear it*; then loop a few bars
+(double-tap the first, then the last), choose *Keep tempo* and *L*, switch
+*Rhythm only* on in ⋯ and tap the left hand. Switch *Rhythm only* off again
+before you play the piece: it stays on for the next piece you open from this
+page, and a *Rhythm only* run does not count toward this rung. Nobody checks your answer
+but you, and naming it earns nothing here. If you have not met the two cells,
+or they have blurred, the grid of where their notes start is near the top of
+*The habanera bass, and the tresillo beside it*, on Stage 4.
 
 **El Choclo.** Forty-nine bars in two-four, beginning in two sharps. The left
 hand doubles its bass at the octave in nearly every bar, under repeated inner
@@ -27,9 +39,10 @@ repetition, and the hand you would expect to be the bass is the tune. Practise
 the left alone and it turns into a slow, singable line.
 
 **Malagueña**, Lecuona's, is a hundred and forty-one bars in three-four, C
-sharp minor. In its opening pages the left hand is two positions — a two-note
-chord, then a lower bass note under it — alternating in eighths, three of each
-to the bar, while the right hand plays three- and four-note chords with the
+sharp minor. Its first twenty bars hold the left hand on a low C sharp: open
+fifths in halves and quarters for eight bars, then a two-note chord above that C
+sharp, alternating with it — in eighths, three of each to the bar, in every other
+bar, and in a dotted rhythm in the bars between — while the right hand plays three- and four-note chords with the
 tune on top. That opening is an ostinato: not difficult once, and very
 difficult twenty bars running without the wrist tightening. After it the piece
 goes somewhere else entirely, which is what a hundred and forty-one bars means.

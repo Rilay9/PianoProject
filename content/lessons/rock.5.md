@@ -9,7 +9,7 @@ videos:
 readingTime: 3
 ---
 
-The power chord left the third out because a distorted guitar cannot hold one.
+The power chord left the third out because under heavy distortion a third turns muddy.
 This rung leaves it out on purpose, and puts something else in its place.
 
 **A suspended chord replaces the third with the note beside it.** Take the third
@@ -29,9 +29,9 @@ notes to them. This one builds them by taking a note out and moving the rest
 apart, and the two sound nothing alike. Keep them separate in your head for now.
 
 **Repertoire.** Two options, and neither is a rock song — this rung teaches a
-sound, and both of these print it in their chord symbols.
-*Annie's Song* uses a sus4 as a hinge in a plain folk progression, which is the
-clearest possible illustration of the chord not settling. Sakamoto's *andata*
+sound. *Annie's Song* prints one Dsus4, beside D in its opening bar; what it shows
+bar after bar is the open fifth in the left hand — root, fifth, octave, no third
+— the shape the power chord began. Sakamoto's *andata*
 is the whole texture at once: open spacing, suspensions that never resolve where
 you expect, and chords held for whole bars. It is harder than the level suggests,
 and it is worth sitting with rather than finishing.

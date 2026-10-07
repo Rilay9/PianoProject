@@ -1,0 +1,129 @@
+ok      chopin-nocturne-op48-1.nifc-342x740 bars 2 open   slots 2 systems 2 shown 2 ladder 1 overlap -34 W0-0@0:29..182 W1-1@188:216..382
+ok      chopin-nocturne-op48-1.nifc-342x740 bars 2 reload slots 2 systems 2 shown 2 ladder 1 overlap -34 W0-0@0:29..182 W1-1@188:216..382
+ok      chopin-nocturne-op48-1.nifc-342x740 bars 3 open   slots 3 systems 2 shown 3 ladder 2 overlap -33 W0-1@0:23..138 W2-2@151:173..299 G3-4@314:332..462
+ok      chopin-nocturne-op48-1.nifc-342x740 bars 3 reload slots 3 systems 2 shown 3 ladder 2 overlap -33 W0-1@0:23..138 W2-2@151:173..299 G3-4@314:332..462
+ok      chopin-nocturne-op48-1.nifc-342x740 bars 4 open   slots 3 systems 2 shown 4 ladder 2 overlap -25 W0-1@0:23..138 W2-3@151:173..308 G4-5@323:333..468
+ok      chopin-nocturne-op48-1.nifc-342x740 bars 4 reload slots 3 systems 2 shown 4 ladder 2 overlap -25 W0-1@0:23..138 W2-3@151:173..308 G4-5@323:333..468
+ok      chopin-nocturne-op48-1.nifc-342x740 bars 8 open   slots 3 systems 3 shown 6 ladder 2 overlap -24 W0-1@0:22..131 W2-3@145:166..294 W4-5@309:318..447
+ok      chopin-nocturne-op48-1.nifc-342x740 bars 8 reload slots 3 systems 3 shown 6 ladder 2 overlap -24 W0-1@0:22..131 W2-3@145:166..294 W4-5@309:318..447
+ok      chopin-nocturne-op48-1.nifc-360x780 bars 2 open   slots 2 systems 2 shown 2 ladder 1 overlap -35 W0-0@0:30..191 W1-1@197:226..401
+ok      chopin-nocturne-op48-1.nifc-360x780 bars 2 reload slots 2 systems 2 shown 2 ladder 1 overlap -35 W0-0@0:30..191 W1-1@197:226..401
+ok      chopin-nocturne-op48-1.nifc-360x780 bars 3 open   slots 3 systems 3 shown 3 ladder 2 overlap -35 W0-0@0:24..141 W1-1@153:176..303 W2-2@316:339..477
+ok      chopin-nocturne-op48-1.nifc-360x780 bars 3 reload slots 3 systems 3 shown 3 ladder 2 overlap -35 W0-0@0:24..141 W1-1@153:176..303 W2-2@316:339..477
+ok      chopin-nocturne-op48-1.nifc-360x780 bars 4 open   slots 3 systems 2 shown 4 ladder 2 overlap -24 W0-1@0:23..145 W2-3@158:181..323 G4-5@337:347..490
+ok      chopin-nocturne-op48-1.nifc-360x780 bars 4 reload slots 3 systems 2 shown 4 ladder 2 overlap -24 W0-1@0:23..145 W2-3@158:181..323 G4-5@337:347..490
+ok      chopin-nocturne-op48-1.nifc-360x780 bars 8 open   slots 3 systems 3 shown 6 ladder 2 overlap -24 W0-1@0:23..138 W2-3@151:173..308 W4-5@322:332..467
+ok      chopin-nocturne-op48-1.nifc-360x780 bars 8 reload slots 3 systems 3 shown 6 ladder 2 overlap -24 W0-1@0:23..138 W2-3@151:173..308 W4-5@322:332..467
+ok      chopin-nocturne-op48-1.nifc-390x844 bars 2 open   slots 2 systems 2 shown 2 ladder 1 overlap -34 W0-0@0:32..207 W1-1@210:241..431
+ok      chopin-nocturne-op48-1.nifc-390x844 bars 2 reload slots 2 systems 2 shown 2 ladder 1 overlap -34 W0-0@0:32..207 W1-1@210:241..431
+ok      chopin-nocturne-op48-1.nifc-390x844 bars 3 open   slots 3 systems 3 shown 3 ladder 2 overlap -36 W0-0@0:26..158 W1-1@168:194..337 W2-2@348:374..529
+ok      chopin-nocturne-op48-1.nifc-390x844 bars 3 reload slots 3 systems 3 shown 3 ladder 2 overlap -36 W0-0@0:26..158 W1-1@168:194..337 W2-2@348:374..529
+ok      chopin-nocturne-op48-1.nifc-390x844 bars 4 open   slots 3 systems 2 shown 4 ladder 2 overlap -23 W0-1@0:25..157 W2-3@168:192..347 G4-5@360:370..525
+ok      chopin-nocturne-op48-1.nifc-390x844 bars 4 reload slots 3 systems 2 shown 4 ladder 2 overlap -23 W0-1@0:25..157 W2-3@168:192..347 G4-5@360:370..525
+ok      chopin-nocturne-op48-1.nifc-390x844 bars 8 open   slots 3 systems 3 shown 6 ladder 2 overlap -22 W0-1@0:24..149 W2-3@161:184..331 W4-5@343:353..500
+ok      chopin-nocturne-op48-1.nifc-390x844 bars 8 reload slots 3 systems 3 shown 6 ladder 4 overlap -22 W0-1@0:24..149 W2-3@161:184..331 W4-5@343:353..500
+ok      chopin-nocturne-op48-1.nifc-412x915 bars 2 open   slots 2 systems 2 shown 2 ladder 1 overlap -36 W0-0@0:34..218 W1-1@221:254..454
+ok      chopin-nocturne-op48-1.nifc-412x915 bars 2 reload slots 2 systems 2 shown 2 ladder 1 overlap -36 W0-0@0:34..218 W1-1@221:254..454
+ok      chopin-nocturne-op48-1.nifc-412x915 bars 3 open   slots 3 systems 3 shown 3 ladder 1 overlap -34 W0-0@0:29..178 W1-1@185:212..375 W2-2@384:411..587
+ok      chopin-nocturne-op48-1.nifc-412x915 bars 3 reload slots 3 systems 3 shown 3 ladder 1 overlap -34 W0-0@0:29..178 W1-1@185:212..375 W2-2@384:411..587
+ok      chopin-nocturne-op48-1.nifc-412x915 bars 4 open   slots 3 systems 2 shown 4 ladder 1 overlap -21 W0-1@0:26..166 W2-3@176:201..365 G4-5@376:386..551
+ok      chopin-nocturne-op48-1.nifc-412x915 bars 4 reload slots 3 systems 2 shown 4 ladder 1 overlap -21 W0-1@0:26..166 W2-3@176:201..365 G4-5@376:386..551
+ok      chopin-nocturne-op48-1.nifc-412x915 bars 8 open   slots 4 systems 4 shown 8 ladder 2 overlap -24 W0-1@0:22..136 W2-3@150:172..305 W4-5@319:329..462 W6-7@489:504..643
+ok      chopin-nocturne-op48-1.nifc-412x915 bars 8 reload slots 4 systems 4 shown 8 ladder 4 overlap -24 W0-1@0:22..136 W2-3@150:172..305 W4-5@319:329..462 W6-7@489:504..643
+ok      folk.hot-cross-buns-342x740      bars 2 open   slots 3 systems 2 shown 2 ladder 1 overlap -36 W0-0@0:7..140 W1-1@169:176..309 G2-2@339:346..479
+ok      folk.hot-cross-buns-342x740      bars 2 reload slots 3 systems 2 shown 2 ladder 1 overlap -36 W0-0@0:7..140 W1-1@169:176..309 G2-2@339:346..479
+ok      folk.hot-cross-buns-342x740      bars 3 open   slots 3 systems 3 shown 3 ladder 1 overlap -36 W0-0@0:7..111 W1-1@140:147..251 W2-2@280:287..391
+ok      folk.hot-cross-buns-342x740      bars 3 reload slots 3 systems 3 shown 3 ladder 1 overlap -36 W0-0@0:7..111 W1-1@140:147..251 W2-2@280:287..391
+ok      folk.hot-cross-buns-342x740      bars 4 open   slots 4 systems 4 shown 4 ladder 1 overlap -29 W0-0@0:7..110 W1-1@133:140..243 W2-2@266:273..376 W3-3@398:405..508
+ok      folk.hot-cross-buns-342x740      bars 4 reload slots 4 systems 4 shown 4 ladder 1 overlap -29 W0-0@0:7..110 W1-1@133:140..243 W2-2@266:273..376 W3-3@398:405..508
+ok      folk.hot-cross-buns-342x740      bars 8 open   slots 4 systems 4 shown 4 ladder 1 overlap -29 W0-0@0:7..110 W1-1@133:140..243 W2-2@266:273..376 W3-3@398:405..508
+ok      folk.hot-cross-buns-342x740      bars 8 reload slots 4 systems 4 shown 4 ladder 1 overlap -29 W0-0@0:7..110 W1-1@133:140..243 W2-2@266:273..376 W3-3@398:405..508
+ok      folk.hot-cross-buns-360x780      bars 2 open   slots 3 systems 2 shown 2 ladder 1 overlap -35 W0-0@0:7..148 W1-1@177:184..325 G2-2@353:360..501
+ok      folk.hot-cross-buns-360x780      bars 2 reload slots 3 systems 2 shown 2 ladder 1 overlap -35 W0-0@0:7..148 W1-1@177:184..325 G2-2@353:360..501
+ok      folk.hot-cross-buns-360x780      bars 3 open   slots 4 systems 3 shown 3 ladder 1 overlap -35 W0-0@0:7..117 W1-1@146:153..263 W2-2@292:299..409 G3-3@437:444..554
+ok      folk.hot-cross-buns-360x780      bars 3 reload slots 4 systems 3 shown 3 ladder 1 overlap -35 W0-0@0:7..117 W1-1@146:153..263 W2-2@292:299..409 G3-3@437:444..554
+ok      folk.hot-cross-buns-360x780      bars 4 open   slots 4 systems 4 shown 4 ladder 1 overlap -35 W0-0@0:7..117 W1-1@146:153..263 W2-2@292:299..409 W3-3@437:444..554
+ok      folk.hot-cross-buns-360x780      bars 4 reload slots 4 systems 4 shown 4 ladder 1 overlap -35 W0-0@0:7..117 W1-1@146:153..263 W2-2@292:299..409 W3-3@437:444..554
+ok      folk.hot-cross-buns-360x780      bars 8 open   slots 4 systems 4 shown 4 ladder 1 overlap -35 W0-0@0:7..117 W1-1@146:153..263 W2-2@292:299..409 W3-3@437:444..554
+ok      folk.hot-cross-buns-360x780      bars 8 reload slots 4 systems 4 shown 4 ladder 1 overlap -35 W0-0@0:7..117 W1-1@146:153..263 W2-2@292:299..409 W3-3@437:444..554
+ok      folk.hot-cross-buns-390x844      bars 2 open   slots 3 systems 2 shown 2 ladder 1 overlap -36 W0-0@0:7..160 W1-1@189:196..349 G2-2@378:385..538
+ok      folk.hot-cross-buns-390x844      bars 2 reload slots 3 systems 2 shown 2 ladder 1 overlap -36 W0-0@0:7..160 W1-1@189:196..349 G2-2@378:385..538
+ok      folk.hot-cross-buns-390x844      bars 3 open   slots 4 systems 3 shown 3 ladder 1 overlap -36 W0-0@0:7..126 W1-1@155:162..281 W2-2@311:318..437 G3-3@466:473..592
+ok      folk.hot-cross-buns-390x844      bars 3 reload slots 4 systems 3 shown 3 ladder 1 overlap -36 W0-0@0:7..126 W1-1@155:162..281 W2-2@311:318..437 G3-3@466:473..592
+ok      folk.hot-cross-buns-390x844      bars 4 open   slots 4 systems 4 shown 4 ladder 1 overlap -36 W0-0@0:7..126 W1-1@155:162..281 W2-2@311:318..437 W3-3@466:473..592
+ok      folk.hot-cross-buns-390x844      bars 4 reload slots 4 systems 4 shown 4 ladder 1 overlap -36 W0-0@0:7..126 W1-1@155:162..281 W2-2@311:318..437 W3-3@466:473..592
+ok      folk.hot-cross-buns-390x844      bars 8 open   slots 4 systems 4 shown 4 ladder 1 overlap -36 W0-0@0:7..126 W1-1@155:162..281 W2-2@311:318..437 W3-3@466:473..592
+ok      folk.hot-cross-buns-390x844      bars 8 reload slots 4 systems 4 shown 4 ladder 1 overlap -36 W0-0@0:7..126 W1-1@155:162..281 W2-2@311:318..437 W3-3@466:473..592
+ok      folk.hot-cross-buns-412x915      bars 2 open   slots 3 systems 2 shown 2 ladder 1 overlap -36 W0-0@0:7..169 W1-1@198:205..367 G2-2@395:403..564
+ok      folk.hot-cross-buns-412x915      bars 2 reload slots 3 systems 2 shown 2 ladder 1 overlap -36 W0-0@0:7..169 W1-1@198:205..367 G2-2@395:403..564
+ok      folk.hot-cross-buns-412x915      bars 3 open   slots 4 systems 3 shown 3 ladder 1 overlap -36 W0-0@0:7..133 W1-1@162:169..295 W2-2@324:331..457 G3-3@487:494..620
+ok      folk.hot-cross-buns-412x915      bars 3 reload slots 4 systems 3 shown 3 ladder 1 overlap -36 W0-0@0:7..133 W1-1@162:169..295 W2-2@324:331..457 G3-3@487:494..620
+ok      folk.hot-cross-buns-412x915      bars 4 open   slots 4 systems 4 shown 4 ladder 1 overlap -36 W0-0@0:7..133 W1-1@162:169..295 W2-2@324:331..457 W3-3@487:494..620
+ok      folk.hot-cross-buns-412x915      bars 4 reload slots 4 systems 4 shown 4 ladder 1 overlap -36 W0-0@0:7..133 W1-1@162:169..295 W2-2@324:331..457 W3-3@487:494..620
+ok      folk.hot-cross-buns-412x915      bars 8 open   slots 4 systems 4 shown 4 ladder 1 overlap -36 W0-0@0:7..133 W1-1@162:169..295 W2-2@324:331..457 W3-3@487:494..620
+ok      folk.hot-cross-buns-412x915      bars 8 reload slots 4 systems 4 shown 4 ladder 1 overlap -36 W0-0@0:7..133 W1-1@162:169..295 W2-2@324:331..457 W3-3@487:494..620
+ok      ode-to-joy.ht-342x740            bars 2 open   slots 2 systems 2 shown 2 ladder 1 overlap -36 W0-0@0:12..248 W1-1@272:284..520
+ok      ode-to-joy.ht-342x740            bars 2 reload slots 2 systems 2 shown 2 ladder 3 overlap -36 W0-0@0:12..248 W1-1@272:284..520
+ok      ode-to-joy.ht-342x740            bars 3 open   slots 2 systems 2 shown 3 ladder 4 overlap -36 W0-1@0:12..186 W2-2@210:222..396
+ok      ode-to-joy.ht-342x740            bars 3 reload slots 2 systems 2 shown 3 ladder 4 overlap -36 W0-1@0:12..186 W2-2@210:222..396
+ok      ode-to-joy.ht-342x740            bars 4 open   slots 2 systems 2 shown 4 ladder 4 overlap -36 W0-1@0:12..186 W2-3@210:222..396
+ok      ode-to-joy.ht-342x740            bars 4 reload slots 2 systems 2 shown 4 ladder 4 overlap -36 W0-1@0:12..186 W2-3@210:222..396
+ok      ode-to-joy.ht-342x740            bars 8 open   slots 3 systems 3 shown 8 ladder 1 overlap -35 W0-2@0:10..139 W3-5@164:174..303 W6-7@329:339..468
+ok      ode-to-joy.ht-342x740            bars 8 reload slots 3 systems 3 shown 8 ladder 1 overlap -35 W0-2@0:10..139 W3-5@164:174..303 W6-7@329:339..468
+OVERLAP ode-to-joy.ht-360x780            bars 2 open   slots 3 systems 2 shown 2 ladder 6 overlap 72 W0-0@0:7..269 W1-1@190:197..459 G2-2@381:388..650
+OVERLAP ode-to-joy.ht-360x780            bars 2 reload slots 3 systems 2 shown 2 ladder 6 overlap 72 W0-0@0:7..269 W1-1@190:197..459 G2-2@381:388..650
+ok      ode-to-joy.ht-360x780            bars 3 open   slots 2 systems 2 shown 3 ladder 6 overlap -37 W0-1@0:8..191 W2-2@220:228..411
+ok      ode-to-joy.ht-360x780            bars 3 reload slots 2 systems 2 shown 3 ladder 6 overlap -37 W0-1@0:8..191 W2-2@220:228..411
+ok      ode-to-joy.ht-360x780            bars 4 open   slots 2 systems 2 shown 4 ladder 6 overlap -37 W0-1@0:8..191 W2-3@220:228..411
+ok      ode-to-joy.ht-360x780            bars 4 reload slots 2 systems 2 shown 4 ladder 6 overlap -37 W0-1@0:8..191 W2-3@220:228..411
+ok      ode-to-joy.ht-360x780            bars 8 open   slots 3 systems 3 shown 8 ladder 3 overlap -36 W0-2@0:10..146 W3-5@172:182..318 W6-7@345:355..491
+ok      ode-to-joy.ht-360x780            bars 8 reload slots 3 systems 3 shown 8 ladder 3 overlap -36 W0-2@0:10..146 W3-5@172:182..318 W6-7@345:355..491
+ok      ode-to-joy.ht-390x844            bars 2 open   slots 2 systems 2 shown 2 ladder 3 overlap -36 W0-0@0:7..301 W1-1@330:337..631
+ok      ode-to-joy.ht-390x844            bars 2 reload slots 2 systems 2 shown 2 ladder 3 overlap -36 W0-0@0:7..301 W1-1@330:337..631
+ok      ode-to-joy.ht-390x844            bars 3 open   slots 2 systems 2 shown 3 ladder 4 overlap -36 W0-1@0:7..207 W2-2@236:243..443
+ok      ode-to-joy.ht-390x844            bars 3 reload slots 2 systems 2 shown 3 ladder 4 overlap -36 W0-1@0:7..207 W2-2@236:243..443
+ok      ode-to-joy.ht-390x844            bars 4 open   slots 2 systems 2 shown 4 ladder 4 overlap -36 W0-1@0:7..207 W2-3@236:243..443
+ok      ode-to-joy.ht-390x844            bars 4 reload slots 2 systems 2 shown 4 ladder 4 overlap -36 W0-1@0:7..207 W2-3@236:243..443
+ok      ode-to-joy.ht-390x844            bars 8 open   slots 3 systems 3 shown 8 ladder 3 overlap -35 W0-2@0:7..155 W3-5@184:191..339 W6-7@367:374..522
+ok      ode-to-joy.ht-390x844            bars 8 reload slots 3 systems 3 shown 8 ladder 3 overlap -35 W0-2@0:7..155 W3-5@184:191..339 W6-7@367:374..522
+ok      ode-to-joy.ht-412x915            bars 2 open   slots 2 systems 2 shown 2 ladder 1 overlap -35 W0-0@0:7..336 W1-1@364:371..700
+ok      ode-to-joy.ht-412x915            bars 2 reload slots 2 systems 2 shown 2 ladder 1 overlap -35 W0-0@0:7..336 W1-1@364:371..700
+ok      ode-to-joy.ht-412x915            bars 3 open   slots 2 systems 2 shown 3 ladder 1 overlap -36 W0-1@0:7..219 W2-2@248:255..467
+ok      ode-to-joy.ht-412x915            bars 3 reload slots 2 systems 2 shown 3 ladder 1 overlap -36 W0-1@0:7..219 W2-2@248:255..467
+ok      ode-to-joy.ht-412x915            bars 4 open   slots 2 systems 2 shown 4 ladder 1 overlap -36 W0-1@0:7..219 W2-3@248:255..467
+ok      ode-to-joy.ht-412x915            bars 4 reload slots 2 systems 2 shown 4 ladder 1 overlap -36 W0-1@0:7..219 W2-3@248:255..467
+ok      ode-to-joy.ht-412x915            bars 8 open   slots 3 systems 3 shown 8 ladder 6 overlap -36 W0-2@0:7..163 W3-5@192:199..355 W6-7@384:391..547
+ok      ode-to-joy.ht-412x915            bars 8 reload slots 3 systems 3 shown 8 ladder 6 overlap -36 W0-2@0:7..163 W3-5@192:199..355 W6-7@384:391..547
+ok      twinkle.ht-342x740               bars 2 open   slots 2 systems 2 shown 2 ladder 3 overlap -36 W0-0@0:12..248 W1-1@272:284..520
+ok      twinkle.ht-342x740               bars 2 reload slots 2 systems 2 shown 2 ladder 3 overlap -36 W0-0@0:12..248 W1-1@272:284..520
+ok      twinkle.ht-342x740               bars 3 open   slots 2 systems 2 shown 3 ladder 1 overlap -36 W0-1@0:11..198 W2-2@223:234..421
+ok      twinkle.ht-342x740               bars 3 reload slots 2 systems 2 shown 3 ladder 1 overlap -36 W0-1@0:11..198 W2-2@223:234..421
+ok      twinkle.ht-342x740               bars 4 open   slots 2 systems 2 shown 4 ladder 1 overlap -36 W0-1@0:11..198 W2-3@223:234..421
+ok      twinkle.ht-342x740               bars 4 reload slots 2 systems 2 shown 4 ladder 1 overlap -36 W0-1@0:11..198 W2-3@223:234..421
+ok      twinkle.ht-342x740               bars 8 open   slots 3 systems 3 shown 8 ladder 1 overlap -33 W0-2@0:10..147 W3-5@173:180..320 W6-7@349:356..496
+ok      twinkle.ht-342x740               bars 8 reload slots 3 systems 3 shown 8 ladder 1 overlap -33 W0-2@0:10..147 W3-5@173:180..320 W6-7@349:356..496
+ok      twinkle.ht-360x780               bars 2 open   slots 2 systems 2 shown 2 ladder 5 overlap -35 W0-0@0:7..263 W1-1@291:298..554
+ok      twinkle.ht-360x780               bars 2 reload slots 2 systems 2 shown 2 ladder 5 overlap -35 W0-0@0:7..263 W1-1@291:298..554
+OVERLAP twinkle.ht-360x780               bars 3 open   slots 3 systems 2 shown 3 ladder 6 overlap 12 W0-1@0:7..205 W2-2@190:197..395 G3-4@381:383..585
+OVERLAP twinkle.ht-360x780               bars 3 reload slots 3 systems 2 shown 3 ladder 6 overlap 12 W0-1@0:7..205 W2-2@190:197..395 G3-4@381:383..585
+OVERLAP twinkle.ht-360x780               bars 4 open   slots 3 systems 2 shown 4 ladder 6 overlap 12 W0-1@0:7..205 W2-3@190:197..395 G4-5@381:383..585
+OVERLAP twinkle.ht-360x780               bars 4 reload slots 3 systems 2 shown 4 ladder 6 overlap 12 W0-1@0:7..205 W2-3@190:197..395 G4-5@381:383..585
+ok      twinkle.ht-360x780               bars 8 open   slots 3 systems 3 shown 8 ladder 1 overlap -33 W0-2@0:8..152 W3-5@181:185..333 W6-7@366:370..518
+ok      twinkle.ht-360x780               bars 8 reload slots 3 systems 3 shown 8 ladder 1 overlap -33 W0-2@0:8..152 W3-5@181:185..333 W6-7@366:370..518
+ok      twinkle.ht-390x844               bars 2 open   slots 2 systems 2 shown 2 ladder 3 overlap -36 W0-0@0:7..301 W1-1@330:337..631
+ok      twinkle.ht-390x844               bars 2 reload slots 2 systems 2 shown 2 ladder 3 overlap -36 W0-0@0:7..301 W1-1@330:337..631
+ok      twinkle.ht-390x844               bars 3 open   slots 2 systems 2 shown 3 ladder 5 overlap -36 W0-1@0:7..221 W2-2@250:257..471
+ok      twinkle.ht-390x844               bars 3 reload slots 2 systems 2 shown 3 ladder 5 overlap -36 W0-1@0:7..221 W2-2@250:257..471
+ok      twinkle.ht-390x844               bars 4 open   slots 2 systems 2 shown 4 ladder 4 overlap -36 W0-1@0:7..221 W2-3@250:257..471
+ok      twinkle.ht-390x844               bars 4 reload slots 2 systems 2 shown 4 ladder 4 overlap -36 W0-1@0:7..221 W2-3@250:257..471
+ok      twinkle.ht-390x844               bars 8 open   slots 4 systems 4 shown 8 ladder 6 overlap -33 W0-1@0:7..132 W2-3@162:169..294 W4-5@323:327..455 W6-7@488:492..620
+ok      twinkle.ht-390x844               bars 8 reload slots 4 systems 4 shown 8 ladder 6 overlap -33 W0-1@0:7..132 W2-3@162:169..294 W4-5@323:327..455 W6-7@488:492..620
+ok      twinkle.ht-412x915               bars 2 open   slots 2 systems 2 shown 2 ladder 1 overlap -35 W0-0@0:7..336 W1-1@364:371..700
+ok      twinkle.ht-412x915               bars 2 reload slots 2 systems 2 shown 2 ladder 1 overlap -35 W0-0@0:7..336 W1-1@364:371..700
+ok      twinkle.ht-412x915               bars 3 open   slots 2 systems 2 shown 3 ladder 3 overlap -36 W0-1@0:7..234 W2-2@263:270..497
+ok      twinkle.ht-412x915               bars 3 reload slots 2 systems 2 shown 3 ladder 3 overlap -36 W0-1@0:7..234 W2-2@263:270..497
+ok      twinkle.ht-412x915               bars 4 open   slots 2 systems 2 shown 4 ladder 3 overlap -36 W0-1@0:7..234 W2-3@263:270..497
+ok      twinkle.ht-412x915               bars 4 reload slots 2 systems 2 shown 4 ladder 3 overlap -36 W0-1@0:7..234 W2-3@263:270..497
+ok      twinkle.ht-412x915               bars 8 open   slots 3 systems 3 shown 8 ladder 3 overlap -32 W0-2@0:11..177 W3-5@202:209..379 W6-7@409:416..586
+ok      twinkle.ht-412x915               bars 8 reload slots 3 systems 3 shown 8 ladder 3 overlap -32 W0-2@0:11..177 W3-5@202:209..379 W6-7@409:416..586
+6 of 128 loads overlap

@@ -36,8 +36,9 @@ keep one a week.
 **Tools for this rung.** One button, *Free play*: no piece, no marking and
 nothing kept, which is the only screen in the app that matches what this rung
 asks you to do. It names a chord from three or more notes held down together,
-so a quartal shape you like can be held and named — and when it names nothing,
-that is the answer too, because a stack of fourths is not a chord with a name.
+so a quartal shape you like can be held and named: a three-note stack of fourths
+such as C–F–B♭ comes back as a sus chord, one honest name for it; a four-note
+stack may get no name at all, and that is an answer too.
 There is no other tool here on purpose: the two-minute improvisation under a
 constraint is not something the app can mark.
 
@@ -45,4 +46,4 @@ constraint is not something the app can mark.
 melody in triads beats a weak one in thirteenths.
 
 **How you'll know you've got it.** Someone could recognise two of your
-improvisations as being by the same person.
+improvisations as being by the same person. The app marks this rung met on one run of its exercises; the improvising, which nothing keeps, is yours to judge.

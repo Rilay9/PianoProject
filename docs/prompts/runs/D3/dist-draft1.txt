@@ -1,0 +1,96 @@
+FFF.FFF
+======================================================================
+FAIL: test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.interval-reading.c-major.4-4.8bar.sustained.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 221, in test_the_grammar_meets_every_bound_on_every_recipe
+    self.assertEqual(bound_faults(table()[(recipe, "grammar")]), [])
+AssertionError: Lists differ: ['oneContour 0.125 < 0.45'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'oneContour 0.125 < 0.45'
+
+- ['oneContour 0.125 < 0.45']
++ []
+
+======================================================================
+FAIL: test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.position-shift.c-major.4-4.12bar.blocked.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 221, in test_the_grammar_meets_every_bound_on_every_recipe
+    self.assertEqual(bound_faults(table()[(recipe, "grammar")]), [])
+AssertionError: Lists differ: ['oneContour 0.417 < 0.45'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'oneContour 0.417 < 0.45'
+
+- ['oneContour 0.417 < 0.45']
++ []
+
+======================================================================
+FAIL: test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) (recipe='exercise.study.subdivision.c-major.4-4.8bar.sustained.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 221, in test_the_grammar_meets_every_bound_on_every_recipe
+    self.assertEqual(bound_faults(table()[(recipe, "grammar")]), [])
+AssertionError: Lists differ: ['oneContour 0.425 < 0.45'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'oneContour 0.425 < 0.45'
+
+- ['oneContour 0.425 < 0.45']
++ []
+
+======================================================================
+FAIL: test_the_target_is_at_the_contract_s_density_in_every_study (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_target_is_at_the_contract_s_density_in_every_study) (recipe='exercise.study.interval-reading.c-major.4-4.8bar.sustained.01', seed=5)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 236, in test_the_target_is_at_the_contract_s_density_in_every_study
+    self.assertEqual(row["faults"], [])
+AssertionError: Lists differ: ['density: interval.step located 7 times, the row asks for 8'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'density: interval.step located 7 times, the row asks for 8'
+
+- ['density: interval.step located 7 times, the row asks for 8']
++ []
+
+======================================================================
+FAIL: test_the_target_is_at_the_contract_s_density_in_every_study (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_target_is_at_the_contract_s_density_in_every_study) (recipe='exercise.study.interval-reading.c-major.4-4.8bar.sustained.01', seed=6)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 236, in test_the_target_is_at_the_contract_s_density_in_every_study
+    self.assertEqual(row["faults"], [])
+AssertionError: Lists differ: ['density: interval.step located 6 times, the row asks for 8'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'density: interval.step located 6 times, the row asks for 8'
+
+- ['density: interval.step located 6 times, the row asks for 8']
++ []
+
+======================================================================
+FAIL: test_the_target_is_at_the_contract_s_density_in_every_study (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_target_is_at_the_contract_s_density_in_every_study) (recipe='exercise.study.interval-reading.c-major.4-4.8bar.sustained.01', seed=25)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study_distribution.py", line 236, in test_the_target_is_at_the_contract_s_density_in_every_study
+    self.assertEqual(row["faults"], [])
+AssertionError: Lists differ: ['density: interval.step located 7 times, the row asks for 8'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'density: interval.step located 7 times, the row asks for 8'
+
+- ['density: interval.step located 7 times, the row asks for 8']
++ []
+
+----------------------------------------------------------------------
+Ran 3 tests in 166.267s
+
+FAILED (failures=6)
+exit 1

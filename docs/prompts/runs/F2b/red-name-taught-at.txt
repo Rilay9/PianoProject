@@ -1,0 +1,18 @@
+(in tools/content) python -m unittest tests.test_taught_at.TestTheTwoLeapsAreTwoConcepts
+F....
+======================================================================
+FAIL: test_each_entry_says_which_leap_it_is (tests.test_taught_at.TestTheTwoLeapsAreTwoConcepts.test_each_entry_says_which_leap_it_is)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_taught_at.py", line 365, in test_each_entry_says_which_leap_it_is
+    self.assertEqual(leaps["display"], "Wide leaps")
+AssertionError: 'Leaps: an octave or more' != 'Wide leaps'
+- Leaps: an octave or more
++ Wide leaps
+
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.012s
+
+FAILED (failures=1)
+exit=1

@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ok 1 tests\e2e\zz-u32a-mode-debug.spec.ts:26:3 › u32a mode base scherzo:342x740:4 (18.1s)
+
+  1 passed (21.1s)

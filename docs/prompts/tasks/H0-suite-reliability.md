@@ -25,3 +25,13 @@ If a case cannot be made deterministic without changing product behaviour, do no
 ## Report
 
 Judgement first: which of the six mechanisms were proven and how; then Done / Not done / Follow-ups / Questions / Files; the table; the red lines; exit codes and the repetition and load counts; unverified beside what passes.
+
+**Delivered 2026-09-27**, Entry 87, in an isolated worktree on port 4183: six test files and nothing else; the late-run case on Playwright's clock with its assertions kept and a unit twin on the engine's `FakeClock`; the two triplet cases budgeted; the MIDI, Open-as and density cases waiting on published state instead of a heading, a first row or a sleep. Two cases did not reproduce and now name their failure. The builder's open question (two local budgets or one config-wide arrival budget) decided by the orchestrator: local, with the reason at the case (Q51). The product implication of the Q39 mechanism recorded as U66.
+
+**Approved by the reviewer 2026-09-27** (`responses/a008ba5.md`, unprompted through PR #1): the clock change keeps the timing contract; the waits use states the product already publishes; the three budgets are scoped, not broad (question 1 answered); the two non-reproduced cases stay diagnosed, not fixed; U66 for X, with a device observation useful but not a prerequisite (question 2 answered). Nothing to fix forward.
+
+## Record
+
+lane: H0 · closes: — · entry: 87
+index: Suite reliability: the diagnosed load-only failures (Q34, Q37, Q39, Q44) made deterministic with settled-state waits and a fake clock, no weaker assertion, no broad timeout; test and harness only | build (tests) | **done 2026-09-27**, Entry 87 (four of six mechanisms proven red then green; two not reproduced and made self-naming; a product finding, U66) |
+state: closed: in-flight.md's Running-now table reads closed, approved by the reviewer (responses/a008ba5.md)

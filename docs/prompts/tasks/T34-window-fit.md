@@ -84,3 +84,7 @@ picture is a proxy and the caption's numbers are the claim; an absence needs two
 a plural is several claims. `HANDOFF.md` in your scratch folder after every step. Final
 message: the red counts before and after per invariant, what changed in the sizing and
 why, the sheet's path, exit codes, what is unverified.
+
+## Record
+
+lane: T34 · closes: — · entry: — · role: history

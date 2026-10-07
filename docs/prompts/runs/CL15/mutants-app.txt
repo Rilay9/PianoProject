@@ -1,0 +1,42 @@
+control:
+  tests/unit/oneStaffHand.test.ts: exit 0
+    Tests  3 passed (3)
+  tests/unit/generatedIdentityContinuity.test.ts: exit 0
+    Tests  10 passed (10)
+U68-clef-fallback: exit 1 -> CAUGHT
+    × the probe: a lone bass-clef staff with no staff number reads as the right hand 30ms
+    × the adversary: a bass-clef staff explicitly the right hand’s stays right-handed — the clef never flips it 6ms
+    Tests  2 failed | 1 passed (3)
+    ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+9-reader-not-widened: exit 1 -> CAUGHT
+    × guard 1: an unchanged octave tremolo’s v1 identity resolves to its v2 row 13ms
+    × guard 2: an unchanged blues-form pentatonic’s v1 identity resolves to its v2 row 8ms
+    × a generator identity that is another row’s current identity is never read back as a former one 5ms
+    × a run recorded against the v1 identity is contact with the v2 row, looked up by its former key 14ms
+    Tests  4 failed | 6 passed (10)
+    ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+9-no-stamp (guards 1, 2): exit 1 -> CAUGHT
+    × guard 1: an unchanged octave tremolo’s v1 identity resolves to its v2 row 18ms
+    × guard 2: an unchanged blues-form pentatonic’s v1 identity resolves to its v2 row 7ms
+    × every former generator identity on the catalogue is its row’s identity at an earlier version, never a current one 8ms
+    Tests  3 failed | 7 passed (10)
+    ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+9-changed-stamped (guard 3): exit 1 -> CAUGHT
+    × guard 3: a changed third tremolo’s or pentatonic-form item’s v1 identity does not resolve as its v2 material 16ms
+    Tests  1 failed | 9 passed (10)
+    ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+9-old-identity-current (guard 4): exit 1 -> CAUGHT
+    × guard 1: an unchanged octave tremolo’s v1 identity resolves to its v2 row 16ms
+    × guard 4: the current review identity is the new exact identity; sameIdentity never reads the relation 6ms
+    × every former generator identity on the catalogue is its row’s identity at an earlier version, never a current one 9ms
+    Tests  3 failed | 7 passed (10)
+    ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+9-family-split (guard 5): exit 1 -> CAUGHT
+    × guard 1: an unchanged octave tremolo’s v1 identity resolves to its v2 row 17ms
+    × guard 4: the current review identity is the new exact identity; sameIdentity never reads the relation 7ms
+    × guard 5: a bumped row’s family is the family it had, in transfer’s family dimension 6ms
+    × every former generator identity on the catalogue is its row’s identity at an earlier version, never a current one 11ms
+    Tests  4 failed | 6 passed (10)
+    ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+6 of 6 caught
+exit 0

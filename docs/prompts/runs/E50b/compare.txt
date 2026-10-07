@@ -1,0 +1,37 @@
+before <worktree>\build\e50b\before (2092 rows); after <worktree>\app\public\content (2092 rows); the same ids: True
+
+## 1. every built score file
+   files: before 2013, after 2013; only before []; only after []
+   byte-identical: 2013; changed: 0 []
+
+## 2. every catalogue row, field by field
+   rows with any field moved: 8; identity moved: 0
+   provenance.formerIdentities: 1 row(s)
+   provenance.tempoRepairedFrom: 8 row(s)
+   excerpt.blues.wabash-blues.b1-4: ['provenance.formerIdentities', 'provenance.tempoRepairedFrom']
+   song.blues.singin-the-blues: ['provenance.tempoRepairedFrom']
+   song.blues.storyville-blues: ['provenance.tempoRepairedFrom']
+   song.blues.tishomingo-blues: ['provenance.tempoRepairedFrom']
+   song.blues.wabash-blues: ['provenance.tempoRepairedFrom']
+   song.blues.weary-blues: ['provenance.tempoRepairedFrom']
+   song.jazz.django-reinhardt-limehouse-blues.pdmx: ['provenance.tempoRepairedFrom']
+   song.pop.margie.pdmx: ['provenance.tempoRepairedFrom']
+
+## 3. what the repaired rows carry, after
+   song.pop.margie.pdmx: identity a009b402d731; formerIdentities ['d14cbac25ca0']; tempoRepairedFrom ['d14cbac25ca0']; tempoBpm 160.0
+   song.jazz.django-reinhardt-limehouse-blues.pdmx: identity e7ee98fa3e09; formerIdentities ['b1b5da844294']; tempoRepairedFrom ['b1b5da844294']; tempoBpm 184.0
+   song.blues.singin-the-blues: identity 2cbc202e5269; formerIdentities ['fc4e8b90f673']; tempoRepairedFrom ['fc4e8b90f673']; tempoBpm 120.0
+   song.blues.weary-blues: identity a4fef9c8aebb; formerIdentities ['cee0d8d29e95']; tempoRepairedFrom ['cee0d8d29e95']; tempoBpm 200.0
+   song.blues.storyville-blues: identity 0b7976502443; formerIdentities ['d31d167ee226']; tempoRepairedFrom ['d31d167ee226']; tempoBpm 132.0
+   song.blues.wabash-blues: identity b896827d97be; formerIdentities ['60f8d018899c']; tempoRepairedFrom ['60f8d018899c']; tempoBpm 120.0
+   song.blues.tishomingo-blues: identity bf01005d2a87; formerIdentities ['afa635593b27']; tempoRepairedFrom ['afa635593b27']; tempoBpm 132.0
+   excerpt.blues.wabash-blues.b1-4: identity ed2aaa19188a; formerIdentities ['ab221f8913be']; tempoRepairedFrom ['ab221f8913be']; tempoBpm 120.0
+   rows carrying tempoRepairedFrom: 8; exactly the seven and the cut: True
+   former identities that are some row's current identity: 0
+
+## 4. the Wabash approval, before and after
+   before: parentSha256 b896827d97be; stale {'approvedParentSha256': '60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208', 'why': "the parent's built file changed since the boundary was approved: the approval was made on other bytes"}; cutVersion 2, approvedCutVersion 1; the cut's identity ed2aaa19188a
+   after: parentSha256 b896827d97be; stale {'approvedParentSha256': '60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208', 'why': "the parent's built file changed since the boundary was approved: the approval was made on other bytes"}; cutVersion 2, approvedCutVersion 1; the cut's identity ed2aaa19188a
+   excerpts.json's row: parentSha256 60f8d018899c, cutVersion None (unchanged in the tree)
+
+0 fault(s) []

@@ -1,0 +1,266 @@
+﻿
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/harmony.test.ts (18 tests | 2 failed) 11ms
+   ❯ segmentAt: the harmony sounding at a place in a bar (PH2) (2)
+     × Blue Bossa bar 16: Dmi7b5 up to beat 3, G7 from the instant of beat 3 to the barline 5ms
+     × a bar opening on a carried segment sounds the carried chord until its first written change 0ms
+ ❯ tests/unit/chordChart.test.ts (25 tests | 10 failed) 2648ms
+   ❯ positioned harmony on the chart (PH2) (12)
+     × test 2: Blue Bossa bar 16 comps Dmi7b5 at the bar’s start and G7 two quarters later, each for its own half 128ms
+     × an off-beat change is scheduled between the beats, at its written place 127ms
+     × test 3: the live cell judges the instant a note is struck, and re-judges what is held at the change 127ms
+     × test 3: D-F-C held across the change reads yes in Dmi7b5 and is re-judged no against G7 at the change 124ms
+     × test 4 (unit half): the beat-3 bass of Blue Bossa bar 16 is G7’s, the drums and beat 1 as before 125ms
+     × state: Stop mid-bar cancels the change still to come, its strike and its mark 122ms
+     × state: hidden mid-bar cancels what was to come; shown again, the bar restarts from its first segment 128ms
+     × state: the chorus wraps to a bar 1 that opens without a symbol, carrying nothing round from the end 122ms
+     × state: a tempo changed mid-bar places the change by the new tempo from the next beat on 124ms
+     × state: Comp turned on mid-bar strikes the changes still to come; off again, it cancels them 122ms
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/chordChart.test.ts > positioned harmony on the chart (PH2) > test 2: Blue Bossa bar 16 comps Dmi7b5 
+at the bar’s start and G7 two quarters later, each for its own half
+AssertionError: expected 1.7999999999999998 to be close to 0.9, received difference is 0.8999999999999998, but 
+expected 5e-7
+ ❯ tests/unit/chordChart.test.ts:452:45
+    450|     expect(playChordSpy.mock.calls.map((call) => call[0] as number[]))…
+    451|     // Three quarters of its two-quarter segment, so it ends before G7.
+    452|     expect(playChordSpy.mock.calls[0]?.[1]).toBeCloseTo(0.9, 6);
+       |                                             ^
+    453|     await beat(16, 2, 10.6, 10.52);
+    454|     expect(pianoStartSpy).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  tests/unit/chordChart.test.ts > positioned harmony on the chart (PH2) > an off-beat change is scheduled between 
+the beats, at its written place
+AssertionError: expected [] to deeply equal [ 55, 59, 50, 53 ]
+
+- Expected
++ Received
+
+- [
+-   55,
+-   59,
+-   50,
+-   53,
+- ]
++ []
+
+ ❯ tests/unit/chordChart.test.ts:481:66
+    479|     await beat(1, 1, 10);
+    480|     await beat(1, 2, 10.6, 10.52);
+    481|     expect(pianoStartSpy.mock.calls.map((call) => call[0].midi)).toEqu…
+       |                                                                  ^
+    482|     for (const [note] of pianoStartSpy.mock.calls) expect(note.timeSec…
+    483|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  tests/unit/chordChart.test.ts > positioned harmony on the chart (PH2) > test 3: the live cell judges the 
+instant a note is struck, and re-judges what is held at the change
+AssertionError: expected undefined to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+undefined
+
+ ❯ tests/unit/chordChart.test.ts:488:51
+    486|     const section = await mount(blueBossa(), { comp: false });
+    487|     await beat(16, 1, 10);
+    488|     expect(seg(section, 16, 0)?.dataset.sounding).toBe('true');
+       |                                                   ^
+    489|     await beat(16, 3, 11.2, 11.12);
+    490|     // Just before the change: a G-B-F shell against Dmi7b5 reads no, …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  tests/unit/chordChart.test.ts > positioned harmony on the chart (PH2) > test 3: D-F-C held across the change 
+reads yes in Dmi7b5 and is re-judged no against G7 at the change
+AssertionError: expected undefined to be 'yes' // Object.is equality
+
+- Expected:
+"yes"
+
++ Received:
+undefined
+
+ ❯ tests/unit/chordChart.test.ts:511:48
+    509|     clock.currentTime = 10.5;
+    510|     press([50, 53, 60]);
+    511|     expect(seg(section, 16, 0)?.dataset.match).toBe('yes');
+       |                                                ^
+    512|     await beat(16, 3, 11.2, 11.12);
+    513|     expect(seg(section, 16, 1)?.dataset.match).not.toBe('no');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  tests/unit/chordChart.test.ts > positioned harmony on the chart (PH2) > test 4 (unit half): the beat-3 bass of 
+Blue Bossa bar 16 is G7’s, the drums and beat 1 as before
+AssertionError: expected [ [ +0, 38 ], [ 2, 44 ] ] to deeply equal [ [ +0, 38 ], [ 2, 38 ] ]
+
+- Expected
++ Received
+
+@@ -3,8 +3,8 @@
+      0,
+      38,
+    ],
+    [
+      2,
+-     38,
++     44,
+    ],
+  ]
+
+ ❯ tests/unit/chordChart.test.ts:530:25
+    528|     const bass = (plays: typeof bar15) => plays.filter((p) => p.kind =…
+    529|     // Bar 16: D (Dmi7b5's root) on beat 1, then G7's fifth, D, on bea…
+    530|     expect(bass(bar16)).toEqual([
+       |                         ^
+    531|       [0, 38],
+    532|       [2, 38],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+ FAIL  tests/unit/chordChart.test.ts > positioned harmony on the chart (PH2) > state: Stop mid-bar cancels the change 
+still to come, its strike and its mark
+AssertionError: expected [] to have a length of 4 but got +0
+
+- Expected
++ Received
+
+- 4
++ 0
+
+ ❯ tests/unit/chordChart.test.ts:543:21
+    541|     await beat(1, 1, 10);
+    542|     await beat(1, 2, 10.6, 10.52);
+    543|     expect(cancels).toHaveLength(4);
+       |                     ^
+    544|     clock.currentTime = 10.7;
+    545|     section.querySelector<HTMLButtonElement>('#chart-stop')?.click();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯
+
+ FAIL  tests/unit/chordChart.test.ts > positioned harmony on the chart (PH2) > state: hidden mid-bar cancels what was 
+to come; shown again, the bar restarts from its first segment
+AssertionError: expected undefined to be 'false' // Object.is equality
+
+- Expected:
+"false"
+
++ Received:
+undefined
+
+ ❯ tests/unit/chordChart.test.ts:561:50
+    559|     for (const cancel of cancels) expect(cancel).toHaveBeenCalled();
+    560|     await until(11);
+    561|     expect(seg(section, 1, 1)?.dataset.sounding).toBe('false');
+       |                                                  ^
+    562|     visibility = 'visible';
+    563|     document.dispatchEvent(new Event('visibilitychange'));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯
+
+ FAIL  tests/unit/chordChart.test.ts > positioned harmony on the chart (PH2) > state: the chorus wraps to a bar 1 that 
+opens without a symbol, carrying nothing round from the end
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Array [
+        50,
+        53,
+        57,
+
+ Test Files  2 failed (2)
+      Tests  12 failed | 31 passed (43)
+   Start at  07:34:13
+   Duration  3.66s (tests 73%, environment 18%, transform 7%, import 2%)
+
+      ],
+      1.7999999999999998,
+    ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/chordChart.test.ts:577:30
+    575|     await beat(1, 1, 10);
+    576|     // Bar 1 opens on nothing: no strike until Dm at beat 3.
+    577|     expect(playChordSpy).not.toHaveBeenCalled();
+       |                              ^
+    578|     expect(seg(section, 1, 0)?.textContent).toBe('—');
+    579|     await beat(2, 1, 12.4);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯
+
+ FAIL  tests/unit/chordChart.test.ts > positioned harmony on the chart (PH2) > state: a tempo changed mid-bar places 
+the change by the new tempo from the next beat on
+AssertionError: expected "vi.fn()" to be called 4 times, but got 0 times
+ ❯ tests/unit/chordChart.test.ts:600:27
+    598|     // Beat 2's time was fixed by the old tempo; the half beat after i…
+    599|     await beat(1, 2, 10.6, 10.52);
+    600|     expect(pianoStartSpy).toHaveBeenCalledTimes(4);
+       |                           ^
+    601|     for (const [note] of pianoStartSpy.mock.calls) expect(note.timeSec…
+    602|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯
+
+ FAIL  tests/unit/chordChart.test.ts > positioned harmony on the chart (PH2) > state: Comp turned on mid-bar strikes 
+the changes still to come; off again, it cancels them
+AssertionError: expected "vi.fn()" to be called 4 times, but got 0 times
+ ❯ tests/unit/chordChart.test.ts:610:27
+    608|     section.querySelector<HTMLButtonElement>('#chart-comp')?.click();
+    609|     await beat(1, 2, 10.6, 10.52);
+    610|     expect(pianoStartSpy).toHaveBeenCalledTimes(4);
+       |                           ^
+    611|     clock.currentTime = 10.7;
+    612|     section.querySelector<HTMLButtonElement>('#chart-comp')?.click();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/12]⎯
+
+ FAIL  tests/unit/harmony.test.ts > segmentAt: the harmony sounding at a place in a bar (PH2) > Blue Bossa bar 16: 
+Dmi7b5 up to beat 3, G7 from the instant of beat 3 to the barline
+TypeError: segmentAt is not a function
+ ❯ at tests/unit/harmony.test.ts:193:66
+    191|     expect(bar).toBeDefined();
+    192|     if (!bar) return;
+    193|     const at = (position: number): string | null => bar.segments[segme…
+       |                                                                  ^
+    194|     expect([at(0), at(1), at(1.999), at(2), at(2.001), at(3.99)]).toEq…
+    195|     // Outside the bar it never invents a segment: before 0 is the fir…
+ ❯ tests/unit/harmony.test.ts:194:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/12]⎯
+
+ FAIL  tests/unit/harmony.test.ts > segmentAt: the harmony sounding at a place in a bar (PH2) > a bar opening on a 
+carried segment sounds the carried chord until its first written change
+TypeError: segmentAt is not a function
+ ❯ tests/unit/harmony.test.ts:210:36
+    208|       positions.map((p) => {
+    209|         const bar = bars[index];
+    210|         return bar ? (bar.segments[segmentAt(bar, p)]?.symbol?.text ??…
+       |                                    ^
+    211|       });
+    212|     // Bar 2: C carried from 0, G7 from beat 2 exactly.
+ ❯ texts tests/unit/harmony.test.ts:208:17
+ ❯ tests/unit/harmony.test.ts:213:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/12]⎯
+

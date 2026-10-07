@@ -168,20 +168,18 @@ MIDDLE_C = 60
 #: The stretch a hand takes at once, in semitones, before it stops being a hand
 #: shape and becomes a reach. An octave: `OOMPAH_SPANS` and `make_stride` both
 #: reach a tenth and both *break* it — bass, then chord — which is the
-#: difference this number is drawing. Measured over the whole plan, exactly one
-#: family strikes wider than this, and it is named in `STRIKES_WIDER_THAN_A_HAND`.
+#: difference this number is drawing. It holds for every family's representative
+#: item, with no exemption.
+#:
+#: Replaced (D0, G38): `STRIKES_WIDER_THAN_A_HAND = {"open_voicing": 15}`. Its
+#: assumption was that the voicing tables define the shapes and a wider stretch
+#: is a content decision left open (Entry 33), so a structural check could wave
+#: it through. The physical gate decides it now, from the family's contract
+#: (`family_contracts.json`, `test_physical_gate.py`): the quartal stack is
+#: arranged within the hand over the bass, and the add9's ninth is a large-hand
+#: voicing declared with its prerequisite and its alternative. Nothing here
+#: exempts a family any more.
 AN_OCTAVE = 12
-
-#: The two shapes in the generator that ask one hand for more than an octave
-#: **at once**, with what they ask for. Both are in `make_open_voicing`, both
-#: are the shape's own table, and neither is a slip: a stack of fourths *is*
-#: `[0, 5, 10, 15]` and an added ninth on top *is* `[0, 4, 7, 14]`. Narrowing
-#: either one changes what the family teaches, and splitting the stack across
-#: the hands — which is how a pianist actually plays it — changes the family's
-#: shape. That is a content decision and it is open: Entry 33.
-STRIKES_WIDER_THAN_A_HAND = {
-    "open_voicing": 15,  # quartal, C4-F4-B♭4-E♭5; add9 is 14 in the same maker
-}
 
 #: The longest printed direction the generator writes, as a ratchet and **not**
 #: as a measurement of the page. Entry 4 shortened every direction that ran off
@@ -384,7 +382,11 @@ FAMILIES: dict[str, dict] = {
     "walking_bass": dict(
         maker="make_walking_bass",
         build=lambda: G.make_walking_bass("C", "blues"),
-        bars=12, bars_says="docstring: 'over a blues' — `TWELVE_BAR` is twelve bars",
+        # Revised (CL15; the old claim: twelve bars, the line ending on bar twelve's approach note
+        # into a chorus that is not written). A finite line resolves to the tonic (the reviewer's
+        # ruling, `responses/questions-e71ef3ad.md` §CL15), and bar twelve of the form is a V7
+        # (`TWELVE_BAR` is the form's one statement), so the closing tonic bar comes after it.
+        bars=13, bars_says="docstring: twelve bars of the blues (`TWELVE_BAR`), then the closing bar on the tonic",
         lh_max=MIDDLE_C,
         lh_says="docstring: a walking *bass* line, root-third-fifth-approach",
     ),
@@ -434,6 +436,13 @@ FAMILIES: dict[str, dict] = {
         maker="make_clave",
         build=lambda: G.make_clave(list(G.CLAVE_PATTERNS)[0]),
         bars=8, bars_says="docstring: 'eight bars rather than four' — the clave is a two-bar unit",
+    ),
+    "study": dict(
+        maker="make_study",
+        build=lambda: G.make_study(__import__("study").PLAN[0]),
+        bars=8, bars_says="the recipe's length: study.PLAN[0] is an eight-bar period",
+        lh_max=MIDDLE_C,
+        lh_says="the realiser keeps the left hand off ledger lines, at or under middle C (study.LH_HIGH)",
     ),
     "tumbao": dict(
         maker="make_tumbao",
@@ -487,7 +496,9 @@ FAMILIES: dict[str, dict] = {
     "pentatonic": dict(
         maker="make_pentatonic",
         build=lambda: G.make_pentatonic("A", "pentatonic"),
-        bars=2, bars_says="title: 'one octave, thumb under'", silent="LH",
+        # Revised (CL15; the old claim: two bars, one octave up and back once, which was under the
+        # five-second floor). Still one octave, now up and back twice: twenty-one eighths, three bars.
+        bars=3, bars_says="title: 'one octave, thumb under', played up and back twice (CL15)", silent="LH",
     ),
     "tresillo": dict(
         maker="make_tresillo",
@@ -495,6 +506,13 @@ FAMILIES: dict[str, dict] = {
         bars=8, bars_says="`bars` is the argument and the plan passes its default",
         lh_max=MIDDLE_C,
         lh_says="docstring: 'the bass figure under most latin music'",
+    ),
+    "bass_cell": dict(
+        maker="make_bass_cell",
+        build=lambda: G.make_bass_cell("C", "habanera"),
+        bars=8, bars_says="`bars` is the argument and the plan passes its default (G13: eight bars, as the tresillo)",
+        lh_max=MIDDLE_C,
+        lh_says="docstring: the tonic root at octave 3 on every onset, the triad above",
     ),
     "swing_pair": dict(
         maker="make_swing_pair",
@@ -823,8 +841,7 @@ class TestHandRange(FamilyCase):
     def test_no_hand_is_asked_to_strike_more_than_an_octave(self) -> None:
         for name, _claims, sc, _entry in self.each():
             span, where = widest_one_hand_chord(sc)
-            ceiling = STRIKES_WIDER_THAN_A_HAND.get(name, AN_OCTAVE)
-            self.assertLessEqual(span, ceiling, f"{name}: {where}")
+            self.assertLessEqual(span, AN_OCTAVE, f"{name}: {where}")
 
     def test_the_families_that_reach_a_tenth_break_it(self) -> None:
         """
@@ -1382,8 +1399,7 @@ class TestTheChecksGoRedOnAMutation(FamilyCase):
             if widest_one_hand_chord(sc)[0] == 0:
                 continue  # a family with no chord in either hand
             mutant = stretch_every_chord_by_an_octave(copy.deepcopy(sc))
-            ceiling = STRIKES_WIDER_THAN_A_HAND.get(name, AN_OCTAVE)
-            self.assertGreater(widest_one_hand_chord(mutant)[0], ceiling,
+            self.assertGreater(widest_one_hand_chord(mutant)[0], AN_OCTAVE,
                                f"{name}: mutation `stretch_every_chord_by_an_octave` "
                                "did not go red")
 
@@ -1493,6 +1509,144 @@ class TestTheChecksGoRedOnAMutation(FamilyCase):
             if not reddenable:
                 unreddened.append(name)
         self.assertEqual(unreddened, [], "families with no mutation that fails a check")
+
+
+# --------------------------------------------------------------------------------------
+# CL15: four recipes that wrote something other than what they say
+# --------------------------------------------------------------------------------------
+
+
+def planned_items(family: str) -> list[tuple]:
+    """The family's items as the shipping plan builds them (`default_plan(quick=False)`)."""
+    from tests import planned  # noqa: PLC0415 - the plan is built once per process, and only here
+
+    return planned.by_family()[family]
+
+
+class TestTheRecipesWriteWhatTheySay(unittest.TestCase):
+    """
+    G51 and G7 (CL15). Each was right on the page in part and wrong in a way its own name or
+    contract stated: a "third" that was a major third on every degree, a pentatonic run under the
+    five-second floor, an interval-reading melody that could only start on D or E, and a walking
+    line that ended on an approach note into a chorus nobody wrote.
+    """
+
+    def test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree(self) -> None:
+        """
+        `TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and
+        E-G♯ (the contract's own admission). A diatonic third is the scale's degree two above, a major
+        or a minor third as the key gives it.
+        """
+        items = [(sc, entry) for sc, entry in planned_items("tremolo_octaves") if entry["drill"]["params"]["shape"] == "third"]
+        self.assertEqual(len(items), 6)
+        for sc, entry in items:
+            tonic = entry["drill"]["params"]["key"]
+            names = [p.name for p in G.scale.MajorScale(tonic).getPitches(f"{tonic}4", f"{tonic}5")]
+            staff = "RH" if entry["hands"] == "right" else "LH"
+            notes = staves(sc)[staff]
+            pairs = [(notes[i].pitches[0], notes[i + 1].pitches[0]) for i in range(0, len(notes), 8)]
+            with self.subTest(item=entry["id"]):
+                self.assertEqual(len(pairs), 4)
+                for degree, (low, high) in enumerate(pairs):
+                    self.assertEqual((low.name, high.name), (names[degree], names[degree + 2]))
+                    self.assertEqual(G.interval.Interval(low, high).generic.directed, 3)
+                    self.assertIn(G.interval.Interval(low, high).name, ("M3", "m3"))
+        sc, _entry = G.make_tremolo_octaves("C", "right", shape="third")
+        heard = [(n.pitches[0].nameWithOctave) for n in staves(sc)["RH"][::8]]
+        upper = [(n.pitches[0].nameWithOctave) for n in staves(sc)["RH"][1::8]]
+        self.assertEqual(list(zip(heard, upper)), [("C4", "E4"), ("D4", "F4"), ("E4", "G4"), ("F4", "A4")])
+
+    def test_the_octave_tremolo_is_untouched(self) -> None:
+        sc, _entry = G.make_tremolo_octaves("C", "right")
+        pairs = [(a.pitches[0].nameWithOctave, b.pitches[0].nameWithOctave)
+                 for a, b in zip(staves(sc)["RH"][::8], staves(sc)["RH"][1::8])]
+        self.assertEqual(pairs, [("C4", "C5"), ("D4", "D5"), ("E4", "E5"), ("F4", "F5")])
+
+    def test_every_pentatonic_run_clears_the_five_second_floor(self) -> None:
+        """
+        docs/03 §3's floor (`render_check.MIN_DURATION_SEC`): an item under it gets no duration
+        written, and the validator's floor check only reads a duration that was written. The five-note
+        form was 11 eighths at 72, about 4.6 s; it now goes up and down twice, as the broken seventh's
+        figure does, rather than slowing down.
+        """
+        from render_check import MIN_DURATION_SEC  # noqa: PLC0415
+
+        for sc, entry in planned_items("pentatonic"):
+            written = sum(float(n.duration.quarterLength) for n in staves(sc)["RH"])
+            with self.subTest(item=entry["id"]):
+                self.assertGreaterEqual(written * 60 / entry["tempoBpm"], MIN_DURATION_SEC)
+
+    def test_the_pentatonic_turns_at_the_bottom_without_striking_the_tonic_twice(self) -> None:
+        sc, _entry = G.make_pentatonic("A", "pentatonic")
+        names = [n.pitches[0].nameWithOctave for n in staves(sc)["RH"]]
+        once = ["A4", "C5", "D5", "E5", "G5", "A5", "G5", "E5", "D5", "C5"]
+        self.assertEqual(names, once + once + ["A4"])
+        self.assertTrue(all(a != b for a, b in zip(names, names[1:])), "a key struck twice in a row")
+
+    def test_an_interval_reading_melody_can_start_on_any_degree_of_the_position(self) -> None:
+        """
+        G7: the first note was a move from a degree that is never written, so it could only be D or E.
+        Over fifty seeds in each hand every degree of the position starts at least one melody, the
+        finger the maker gives the first note is the degree's, and the vocabulary is still seconds and
+        thirds ending on C. G30: the convention is no longer printed (the row says none); read as if it were (tests/convention.py).
+        """
+        from tests.convention import convention_printed
+
+        firsts: dict[str, set[int]] = {"right": set(), "left": set()}
+        for hands in ("right", "left"):
+            for seed in range(1, 51):
+                with convention_printed():
+                    sc, entry = G.make_interval_reading(seed, hands)
+                notes = staves(sc)["RH" if hands == "right" else "LH"]
+                degrees = [("CDEFG".index(n.pitches[0].step) + 1) for n in notes]
+                firsts[hands].add(degrees[0])
+                printed = [a.fingerNumber for a in notes[0].articulations if hasattr(a, "fingerNumber")]
+                with self.subTest(item=entry["id"]):
+                    self.assertEqual(printed, [degrees[0] if hands == "right" else 6 - degrees[0]])
+                    self.assertTrue(all(abs(b - a) <= 2 for a, b in zip(degrees, degrees[1:])), degrees)
+                    self.assertEqual(degrees[-1], 1)
+        self.assertEqual(firsts, {"right": {1, 2, 3, 4, 5}, "left": {1, 2, 3, 4, 5}})
+
+    def test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root(self) -> None:
+        """
+        The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+        a loop resolves to the tonic. Every bar's approach note was a semitone under the next bar's root
+        *modulo the form*, so the last one led back to bar one and the line stopped on it. Now the last
+        approach leads to the tonic, which the closing bar lands on and walks up to its octave (root,
+        third, fifth, octave, under the tonic chord): a bar after a blues form, whose bar twelve is a V7
+        and stays one (`TWELVE_BAR` is the one statement of the form), and the ii-V-I's own last bar,
+        already a I. Every approach note leads to the root that follows it, a semitone up.
+        """
+        items = planned_items("walking_bass")
+        self.assertEqual(len(items), 28)
+        for sc, entry in items:
+            tonic = entry["drill"]["params"]["key"]
+            line = staves(sc)["LH"]
+            tonic_class = G.pitch.Pitch(tonic).pitchClass
+            midi = [n.pitches[0].midi for n in line]
+            with self.subTest(item=entry["id"]):
+                self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+                self.assertEqual(line[-4].pitches[0].pitchClass, tonic_class, "the closing bar does not land on the tonic")
+                closing = midi[-4:]
+                self.assertEqual([closing[1] - closing[0] in (3, 4), closing[2] - closing[0], closing[3] - closing[0]], [True, 7, 12],
+                                 "the closing bar is not the tonic chord's root, third, fifth and octave")
+                for bar in range(len(midi) // 4 - 1):
+                    self.assertEqual(midi[4 * bar + 3] + 1, midi[4 * bar + 4],
+                                     f"bar {bar + 1}'s approach note does not lead a semitone up to the next root")
+                symbols = [s for p in sc.parts for s in p.recurse().getElementsByClass(harmony.ChordSymbol)]
+                last = max(symbols, key=lambda s: s.getOffsetInHierarchy(sc.parts[0]))
+                self.assertEqual(last.root().pitchClass, tonic_class, "the last bar's chord is not the tonic's")
+                self.assertTrue(all(float(n.duration.quarterLength) == 1.0 for n in line), "every bar is four quarters")
+
+    def test_the_blues_forms_walk_twelve_unchanged_bars_then_close(self) -> None:
+        for form in ("blues", "minor-blues"):
+            sc, _entry = G.make_walking_bass("C", form)
+            with self.subTest(form=form):
+                self.assertEqual(count_bars(sc), 13)
+                self.assertEqual(len(staves(sc)["LH"]), 13 * 4)
+        sc, _entry = G.make_walking_bass("C", "ii-V-I")
+        self.assertEqual(count_bars(sc), 4)
+        self.assertEqual([n.pitches[0].nameWithOctave for n in staves(sc)["LH"][-4:]], ["C2", "E2", "G2", "C3"])
 
 
 if __name__ == "__main__":

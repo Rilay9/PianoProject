@@ -64,3 +64,7 @@ Playwright specs one at a time on 4173, `build.py --offline`, `validate.py`. Upd
 seeds were built, which were rejected and why — **and whether the clave fits the chain
 model or needed something else**, because that is the question most likely to be answered
 by forcing it.
+
+## Record
+
+lane: T3 · closes: — · entry: — · role: history

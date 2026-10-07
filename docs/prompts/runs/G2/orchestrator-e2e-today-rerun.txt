@@ -1,0 +1,32 @@
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+
+
+Running 17 tests using 2 workers
+
+[1/17] tests\e2e\today.spec.ts:64:3 › Today › shows a weekly goal, an input chip, and a session card
+[2/17] tests\e2e\today.spec.ts:80:3 › Today › the four session lengths build different cards
+[3/17] tests\e2e\today.spec.ts:95:3 › Today › remembers the session length across a reload
+[4/17] tests\e2e\today.spec.ts:104:3 › Today › "Swap this" offers alternatives and can exclude songs
+[5/17] tests\e2e\today.spec.ts:123:3 › Today › the "not a song" filter removes songs from the swap sheet
+[6/17] tests\e2e\today.spec.ts:141:3 › Today › shuffle rebuilds the card
+[7/17] tests\e2e\today.spec.ts:151:3 › Today › the tracks the data switches on are on before he touches a chip (C2)
+[8/17] tests\e2e\today.spec.ts:180:3 › Today › Today keeps recommending after the core path, from a track he never turned on
+[9/17] tests\e2e\today.spec.ts:232:3 › Today › the warm-up and the review say why, for a learner whose lesson exercise is counted and a piece has gone unplayed
+[10/17] tests\e2e\today.spec.ts:272:3 › Today › starting the session opens the first row
+[11/17] tests\e2e\today.spec.ts:296:3 › the swap sheet’s demand tier (E0) › placed at 1.5, the steps-and-skips row’s sheet names the demand tier: also practises skips, with the other demands met
+[12/17] tests\e2e\today.spec.ts:327:3 › the practice track’s floor (F2) › placed at 1.5, the practice row is a Stage 1 exercise, never Hanon
+[13/17] tests\e2e\today.spec.ts:348:3 › Today obeys 04 §0 › the session card starts inside the first screenful (R1)
+[14/17] tests\e2e\today.spec.ts:359:3 › Today obeys 04 §0 › a row is one line of detail and no taller than 96 px (R2)
+[15/17] tests\e2e\today.spec.ts:380:3 › Today obeys 04 §0 › one filled button on the screen, and it is Start session (R3)
+[16/17] tests\e2e\today.spec.ts:479:3 › the daily read says why this phrase (C4, C4c) › two days of misread skips on 2.2: the phrase moves by step, and the card says the skips went wrong
+[17/17] tests\e2e\today.spec.ts:491:3 › the daily read says why this phrase (C4, C4c) › two reads wrong only where skips and eighths coincide, on 2.5: nothing blamed, the easy read, and the card says it is not sure yet
+  17 passed (25.3s)

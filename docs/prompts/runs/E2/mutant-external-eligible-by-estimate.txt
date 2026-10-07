@@ -1,0 +1,62 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ab0ca07b13a3644b6/app
+
+ ❯ tests/unit/materialLayer.test.ts (36 tests | 2 failed) 1756ms
+   ❯ the thirteen adversaries at the material layer (Part 25, Q8; the reviewer’s thirteenth) (12)
+     × 6. an external recommendation: eligible for discovery with its estimate said as one, exploration only for a measured requirement 6ms
+     × 13. the reviewer’s: the same PDF or external candidate is refused under an automatic constrained requirement, the unknown forbidden demands named, and open under an explicitly chosen exploration or project, the missing fact named — the two contracts told apart by the requirements object 1ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 34 passed (36)
+   Start at  23:11:48
+   Duration  3.17s (tests 57%, environment 23%, transform 13%, import 7%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/materialLayer.test.ts > the thirteen adversaries at the material layer (Part 25, Q8; the reviewer’s thirteenth) > 6. an external recommendation: eligible for discovery with its estimate said as one, exploration only for a measured requirement
+AssertionError: expected { verdict: 'eligible', …(2) } to match object { verdict: 'exploration-only' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "verdict": "exploration-only",
++   "verdict": "eligible",
+  }
+
+ ❯ tests/unit/materialLayer.test.ts:531:76
+    529|     expect(discovered).toMatchObject({ verdict: 'eligible', for: 'expl…
+    530|     expect(discovered.verdict === 'eligible' ? discovered.missing : ''…
+    531|     expect(eligibleForMaterial(SYNCOPATION_PROJECT, rag, STEPS_AND_SKI…
+       |                                                                            ^
+    532|     expect(eligibleForMaterial(SYNCOPATION_PROJECT, rag, COPES)).toMat…
+    533|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/materialLayer.test.ts > the thirteen adversaries at the material layer (Part 25, Q8; the reviewer’s thirteenth) > 13. the reviewer’s: the same PDF or external candidate is refused under an automatic constrained requirement, the unknown forbidden demands named, and open under an explicitly chosen exploration or project, the missing fact named — the two contracts told apart by the requirements object
+AssertionError: external.a-rag: expected { verdict: 'eligible', …(2) } to match object { verdict: 'exploration-only' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "verdict": "exploration-only",
++   "verdict": "eligible",
+  }
+
+ ❯ tests/unit/materialLayer.test.ts:617:37
+    615|       expect(automatic, candidate.id).toMatchObject({ verdict: 'inelig…
+    616|       expect(automatic.verdict === 'ineligible' && automatic.why === '…
+    617|       expect(project, candidate.id).toMatchObject({ verdict: 'explorat…
+       |                                     ^
+    618|       expect(project.verdict === 'exploration-only' ? project.missing …
+    619|       expect(exploring, candidate.id).toMatchObject({ verdict: 'eligib…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+exit 1

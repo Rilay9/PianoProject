@@ -27,6 +27,7 @@ import { createSubScreen } from './subScreen';
 import { badge, button, chip, el, levelLabel, listRow } from '../widgets';
 import { openFinderSheet } from '../finderSheet';
 import { openItem } from '../openItem';
+import { isExerciseKind } from '../../curriculum/excerpt';
 
 /**
  * What a concept's row says: the ladder's state for a skill the vocabulary can
@@ -126,8 +127,10 @@ export function buildConcepts(
     for (const concept of item.concepts) {
       const entry = byConcept.get(concept);
       if (!entry) continue;
-      // Songs are not practice for a *skill*: they are where the skill is used.
-      if (playable && item.type !== 'song') entry.items.push(item);
+      // Songs are not practice for a *skill*: they are where the skill is used. Nor, yet, is an
+      // excerpt: it is cut for practice, and it is unplaced with its teaching use undecided until
+      // F places it (E1), so no screen lists it as what practises a skill.
+      if (playable && isExerciseKind(item)) entry.items.push(item);
     }
   }
   for (const entry of byConcept.values()) {
@@ -308,9 +311,13 @@ export function SkillsScreen(router: Router): HTMLElement {
       // never its id): the one thing the screen can say about it.
       judged ? null : el('span.muted.skill-taught', { text: `${SKILL_TEXT.taughtIn} ${entry.lesson.title}` }),
     );
+    // The count first, then the stage or stages, then the track or tracks (U92). Last, it was the
+    // part the row's edge cut: at 342 px "Shifting position" read `Stage 2 · core · 1` for fifteen,
+    // a different number with no sign that anything was missing, and on a long line `fitDetail`
+    // dropped it whole (`Stage 0, 4, 7`), since it keeps the first fact and drops from the end.
     const row = listRow({
       title: meta?.display ?? entry.concept,
-      meta: `Stage ${entry.stages.join(', ')} · ${entry.tracks.join(', ')} · ${String(entry.items.length)} to practise`,
+      meta: `${String(entry.items.length)} to practise · Stage ${entry.stages.join(', ')} · ${entry.tracks.join(', ')}`,
       actions,
       dataset: {
         'data-concept': entry.concept,

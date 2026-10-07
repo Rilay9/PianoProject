@@ -79,7 +79,11 @@ class TestCoreReach(unittest.TestCase):
         root = Path(__file__).resolve().parents[3]
         built = root / "app/public/content/catalog.json"
         if not built.exists():
-            self.skipTest("no built content; run tools/content/build.py")
+            self.fail(
+                f"{built} is missing, and this test reads the built catalogue: run "
+                "`python tools/content/build.py` first (CI: the step 'Build content', "
+                "before 'Content pipeline tests')"
+            )
         catalog = json.loads(built.read_text(encoding="utf-8"))
         items = catalog["items"] if isinstance(catalog, dict) else catalog
         ids = {item["id"] for item in items}

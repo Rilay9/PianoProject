@@ -1,0 +1,13 @@
+$ (cwd .) python tools/docs/checks_for_paths.py app/src/router.ts app/src/main.ts app/src/ui/AppShell.ts app/src/style.css app/src/app/boot.ts
+# checks for 5 path(s): 5 matched, 0 unmatched
+# app/src/router.ts: app/src/**, app/src/router.ts
+# app/src/main.ts: app/src/**, app/src/main.ts
+# app/src/ui/AppShell.ts: app/src/**, app/src/ui/AppShell.ts, app/src/ui/*.ts
+# app/src/style.css: app/src/**, app/src/style.css
+# app/src/app/boot.ts: app/src/**, app/src/app/**
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4
+exit=0

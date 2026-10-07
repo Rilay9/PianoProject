@@ -1,0 +1,51 @@
+HD2a evidence: song.ragtime.joplin-reflection-rag (scores/imported/song.ragtime.joplin-reflection-rag.mxl), identity sha256 2bb2af796a15f7a905b1817d4230a1f58ffdcfedd194d2e33c332ca586208f03
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 11-11 -> R
+  bar 11 (source measure 10) st1 v2: L/x -> R; onsets 4 {'free': 2, 'conflict': 2}; second voice(s) [3]; e.g. @20.5 L [58, 60, 64] + v2 [79]; @21 L [48] + v2 [76]
+  bar 11 onset 20 48/st2/v3/L:0.5
+  bar 11 onset 20.25 76/st1/v2/L/x:0.25
+  bar 11 onset 20.5 79/st1/v2/L/x:0.25 64/st2/v3/L:0.5 60/st2/v3/L:0.5 58/st2/v3/L:0.5
+  bar 11 onset 20.75 82/st1/v2/L/x:0.25
+  bar 11 onset 21 86/st1/v1/R:0.25 76/st1/v2/L/x:1 48/st2/v3/L:0.5
+  bar 11 onset 21.25 84/st1/v1/R:0.5
+  bar 11 onset 21.5 64/st2/v3/L:0.5 60/st2/v3/L:0.5 58/st2/v3/L:0.5
+  bar 11 onset 21.75 82/st1/v1/R:0.25
+
+ROW staff 1 voice 2 bars 24-24 -> R
+  bar 24 (source measure 23) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @44 L [42, 54] + v2 [69]; @44.5 L [54, 57, 60, 62] + v2 [74]
+  bar 24 onset 44 69/st1/v2/L/x:0.5 54/st2/v3/L:0.5 42/st2/v3/L:0.5
+  bar 24 onset 44.5 74/st1/v2/L/x:1.5 62/st2/v3/L:0.5 60/st2/v3/L:0.5 57/st2/v3/L:0.5 54/st2/v3/L:0.5
+  bar 24 onset 45 78/st1/v1/R:0.25 62/st2/v3/L:0.5 60/st2/v3/L:0.5 57/st2/v3/L:0.5 54/st2/v3/L:0.5
+  bar 24 onset 45.25 81/st1/v1/R:0.25
+  bar 24 onset 45.5 86/st1/v1/R:0.5 50/st2/v3/L:0.5 38/st2/v3/L:0.5
+
+ROW staff 1 voice 2 bars 32-32 -> R
+  bar 32 (source measure 31) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @60 L [42, 54] + v2 [69]; @60.5 L [54, 57, 60, 62] + v2 [74]
+  bar 32 onset 60 69/st1/v2/L/x:0.5 54/st2/v3/L:0.5 42/st2/v3/L:0.5
+  bar 32 onset 60.5 74/st1/v2/L/x:1.5 62/st2/v3/L:0.5 60/st2/v3/L:0.5 57/st2/v3/L:0.5 54/st2/v3/L:0.5
+  bar 32 onset 61 78/st1/v1/R:0.25 62/st2/v3/L:0.5 60/st2/v3/L:0.5 57/st2/v3/L:0.5 54/st2/v3/L:0.5
+  bar 32 onset 61.25 81/st1/v1/R:0.25
+  bar 32 onset 61.5 86/st1/v1/R:0.5 50/st2/v3/L:0.5 38/st2/v3/L:0.5
+
+ROW staff 1 voice 2 bars 43-43 -> R
+  bar 43 (source measure 42) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @82 L [46] + v2 [74]; @83 L [48] + v2 [65, 69]
+  bar 43 onset 82 74/st1/v2/L/x:1 46/st2/v3/L:0.5
+  bar 43 onset 82.5 62/st2/v3/L:0.5 58/st2/v3/L:0.5 53/st2/v3/L:0.5
+  bar 43 onset 83 77/st1/v1/R:0.25 69/st1/v2/L/x:1 65/st1/v2/L/x:1 48/st2/v3/L:0.25
+  bar 43 onset 83.25 69/st1/v1/R:0.25 53/st2/v3/L:0.25
+  bar 43 onset 83.5 72/st1/v1/R:0.25 57/st2/v3/L:0.25
+  bar 43 onset 83.75 75/st1/v1/R:0.25 60/st2/v3/L:0.25
+
+ROW staff 1 voice 2 bars 52-52 -> R
+  bar 52 (source measure 51) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @100 L [39, 51] + v2 [70]; @101 L [43, 55] + v2 [70]
+  bar 52 onset 100 79/st1/v1/R:0.25 70/st1/v2/L/x:1 51/st2/v3/L:0.5 39/st2/v3/L:0.5
+  bar 52 onset 100.25 82/st1/v1/R:0.25
+  bar 52 onset 100.5 81/st1/v1/R:0.25 63/st2/v3/L:0.5 58/st2/v3/L:0.5 55/st2/v3/L:0.5
+  bar 52 onset 100.75 79/st1/v1/R:0.25
+  bar 52 onset 101 70/st1/v1/R:0.25 70/st1/v2/L/x:1 55/st2/v3/L:0.5 43/st2/v3/L:0.5
+  bar 52 onset 101.25 72/st1/v1/R:0.25
+  bar 52 onset 101.5 74/st1/v1/R:0.25 54/st2/v3/L:0.5 42/st2/v3/L:0.5
+  bar 52 onset 101.75 75/st1/v1/R:0.25
+

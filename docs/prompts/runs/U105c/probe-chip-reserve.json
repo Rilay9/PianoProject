@@ -1,0 +1,32 @@
+{
+  "readAhead": "slots",
+  "stageTop": 0,
+  "buffers": [
+    {
+      "className": "score-buffer is-front is-cursor",
+      "inlineTop": "0px",
+      "computedTop": "0px"
+    },
+    {
+      "className": "score-buffer is-front",
+      "inlineTop": "169px",
+      "computedTop": "169px"
+    },
+    {
+      "className": "score-buffer is-front is-ahead",
+      "inlineTop": "339px",
+      "computedTop": "339px"
+    },
+    {
+      "className": "score-buffer",
+      "inlineTop": "",
+      "computedTop": "22px"
+    },
+    {
+      "className": "score-buffer score-probe",
+      "inlineTop": "",
+      "computedTop": "22px"
+    }
+  ],
+  "corner": "bar 1 / 4 · Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning."
+}

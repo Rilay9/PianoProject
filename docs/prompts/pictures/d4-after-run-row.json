@@ -1,0 +1,196 @@
+[
+  {
+    "itemId": "exercise.pentatonic.a.blues",
+    "material": {
+      "kind": "generator",
+      "family": "pentatonic",
+      "version": 1,
+      "seed": null,
+      "recipe": {
+        "key": "A",
+        "form": "blues",
+        "hands": "right"
+      },
+      "tempoBpm": 72
+    },
+    "role": "transfer",
+    "intent": "transfer",
+    "relationship": {
+      "skill": "position-shift",
+      "shownOn": [
+        {
+          "itemId": "drill.reading.sight-reading-2-right",
+          "material": {
+            "kind": "generator",
+            "family": "sight-reading",
+            "version": 2,
+            "seed": 101,
+            "recipe": {
+              "level": 2,
+              "hands": "R",
+              "bars": 4,
+              "fifths": 0,
+              "timeSig": {
+                "beats": 4,
+                "beatType": 4
+              },
+              "eighths": true,
+              "skips": true
+            },
+            "tempoBpm": 72
+          }
+        },
+        {
+          "itemId": "drill.reading.sight-reading-2-right",
+          "material": {
+            "kind": "generator",
+            "family": "sight-reading",
+            "version": 2,
+            "seed": 102,
+            "recipe": {
+              "level": 2,
+              "hands": "R",
+              "bars": 4,
+              "fifths": 0,
+              "timeSig": {
+                "beats": 4,
+                "beatType": 4
+              },
+              "eighths": true,
+              "skips": true
+            },
+            "tempoBpm": 72
+          }
+        }
+      ],
+      "declared": {
+        "skill": "position-shift",
+        "from": [
+          "position_shift"
+        ],
+        "differs": [
+          "family",
+          "rhythm"
+        ],
+        "notMeasured": [
+          "the thumb passing under rather than the hand lifting"
+        ]
+      },
+      "measured": [
+        {
+          "dimension": "family",
+          "candidate": "pentatonic",
+          "shownOn": [
+            "sight-reading",
+            "sight-reading"
+          ],
+          "differs": true
+        },
+        {
+          "dimension": "source",
+          "candidate": "generated",
+          "shownOn": [
+            "generated",
+            "generated"
+          ],
+          "differs": false
+        },
+        {
+          "dimension": "key",
+          "candidate": "0",
+          "shownOn": [
+            "0",
+            "0"
+          ],
+          "differs": false
+        },
+        {
+          "dimension": "hands",
+          "candidate": "right",
+          "shownOn": [
+            "right",
+            "right"
+          ],
+          "differs": false
+        },
+        {
+          "dimension": "texture",
+          "candidate": "none",
+          "shownOn": [
+            "none",
+            "none"
+          ],
+          "differs": false
+        },
+        {
+          "dimension": "rhythm",
+          "candidate": "rhythm.eighths, rhythm.shorter-than-quarter",
+          "shownOn": [
+            "rhythm.eighths, rhythm.shorter-than-quarter",
+            "rhythm.eighths, rhythm.shorter-than-quarter"
+          ],
+          "differs": false
+        }
+      ],
+      "differsOn": [
+        "family",
+        "rhythm"
+      ]
+    },
+    "mode": "wait",
+    "tempoPct": 70,
+    "accuracy": 1,
+    "accuracyEstimated": false,
+    "wrongNotes": 0,
+    "missed": 0,
+    "durationMs": 880.1000000238419,
+    "tempoMeasured": false,
+    "definitions": 1,
+    "range": {
+      "fromMeasure": 0,
+      "toMeasure": 1
+    },
+    "opened": {
+      "tab": "today",
+      "slot": "new"
+    },
+    "baseTempo": {
+      "bpm": 72,
+      "source": "written"
+    },
+    "hands": {
+      "played": "both",
+      "appPlayed": "none"
+    },
+    "keys": {
+      "view": "strip",
+      "guide": "next",
+      "fingers": true,
+      "names": false
+    },
+    "graceNotes": false,
+    "input": {
+      "source": "keys",
+      "toleranceMs": 150,
+      "latencyMs": 0
+    },
+    "demonstrated": false,
+    "pitch": {
+      "definition": "wait-steps",
+      "right": 13,
+      "of": 13,
+      "estimated": false
+    },
+    "early": "not measured",
+    "timing": "not measured",
+    "steps": "(per-step detail omitted)",
+    "pedal": "not measured",
+    "chords": {
+      "rolled": 0,
+      "lenient": 0
+    },
+    "loops": 0,
+    "at": "2026-09-29T02:12:03.905Z",
+    "id": 5
+  }
+]

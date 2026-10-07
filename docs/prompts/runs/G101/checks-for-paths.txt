@@ -1,0 +1,16 @@
+# checks for 7 path(s): 7 matched, 0 unmatched
+# app/src/style.css: app/src/**, app/src/style.css
+# app/tests/e2e/library.spec.ts: app/tests/e2e/*.spec.ts
+# docs/prompts/runs/G101/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/G101/scripts-playwright.g101-4617.config.ts: docs/**
+# docs/prompts/runs/G101/scripts-zz-g101-pictures.spec.ts: docs/**
+# docs/prompts/pictures/g101/after-twinkle-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-facts-115-stack.json: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4
+exit=0

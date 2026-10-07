@@ -1,0 +1,1666 @@
+{
+ "_comment": "Lane config for the second PDMX quarry (owner + ChatGPT request, 2026-10-05). Personal build: copyright is a label, never a filter (00 D23). 'known' = CIDs from the old quarry with the title they are believed to be; the CSV row must be checked against it. 'terms' match song_name/title/subtitle/artist_name/composer_name (never genres/tags). 'artists' match artist_name/composer_name. 'max_bars' and 'piano_only' are per-lane hit filters where given. 'dump' = how many distinct songs to dump beyond the usable known CIDs. Pass three: known entries carry [label, cid, expect-aliases]; 'targets' are {title, aliases} pairs whose creator is checked by the identity verdict; 'inspect_all' inspects every hit; 'require_other_term_for' drops a hit unless another term of the lane also matched.",
+ "lanes": [
+  {
+   "id": "A-blues",
+   "goal": "one clean real twelve-bar chorus (blues.8/9); one 2-4 bar historical lick; one minor/slow-blues transfer piece",
+   "known": [
+    [
+     "Joe Turner Blues",
+     "QmXbcEgNyEXXfV5SKFQ4rK5eJi3xTtPJQm9kMVgM7GTWVK",
+     [
+      "handy"
+     ]
+    ],
+    [
+     "Jelly Roll Blues",
+     "QmbuoFtkky8Xpo8LSiAqkMXzBs2Mtc33L6GFw1kWv9T5S3",
+     [
+      "morton",
+      "jelly roll morton"
+     ]
+    ],
+    [
+     "Farewell Blues",
+     "QmStEZqKASQVCFNhKaHLcQm3R3RbDUPKA477NQ6kWsNToy",
+     [
+      "schoebel",
+      "mares",
+      "rappolo",
+      "rapollo"
+     ]
+    ],
+    [
+     "New Orleans Blues",
+     "QmbQRktDiVKVCdRwZc7XKQ7gjJxdFRzHwD68nv7AQhtRtM",
+     [
+      "morton"
+     ]
+    ],
+    [
+     "King Porter Stomp",
+     "QmcHsP43Xw6S7NyHPUvczq8xKBWFNWU7RRLzECpSGZ4P65",
+     [
+      "morton"
+     ]
+    ],
+    [
+     "Shout for Joy",
+     "QmadiFaW4tDntpiEiazA5Ec2hyvTNCAdQ1K2Ru4XhDF3Qw",
+     [
+      "ammons"
+     ]
+    ]
+   ],
+   "terms": [
+    "12 bar blues",
+    "twelve bar blues",
+    "slow blues",
+    "minor blues",
+    "blues in c",
+    "blues in f",
+    "blues in g",
+    "turnaround blues",
+    "boogie woogie",
+    "sweet home chicago",
+    "stormy monday",
+    "key to the highway",
+    "every day i have the blues"
+   ],
+   "dump": 6
+  },
+  {
+   "id": "B-jazz",
+   "goal": "one standard supporting the full jazz.9 cycle (melody, form, comp, two-feel/walk, solo, intro/ending, solo-piano pass), with chord symbols and a manageable form; flag candidates with an obvious minor ii-V-i",
+   "known": [
+    [
+     "After You've Gone",
+     "QmWUXqfKQAKdGoB5Mw8vmHFcMFDdhpSc4t9vyAjYHJedxU",
+     [
+      "creamer",
+      "layton"
+     ]
+    ],
+    [
+     "Sweet Georgia Brown",
+     "QmSpTeaiyNZDk45njpe1Fe7VGcFAzBhJy4HuuGj2btnwb5",
+     [
+      "bernie",
+      "pinkard",
+      "casey"
+     ]
+    ],
+    [
+     "Indiana",
+     "Qmcy1D9Q8SPEBVa1nqy4TtjYeg8saf7mwC2CxnMpj16T9z",
+     [
+      "hanley",
+      "macdonald",
+      "mac donald"
+     ]
+    ],
+    [
+     "Honeysuckle Rose",
+     "QmSMULfFJDNDH2UyUeNLWgm33MQ9gy2zAfjAXoEALHg7Ds",
+     [
+      "waller",
+      "razaf"
+     ]
+    ],
+    [
+     "Squeeze Me",
+     "QmTw3EQxygcbdDsDvKz6zRd2fjCGsvJGhG7C6aAYbCnyq8",
+     [
+      "waller",
+      "williams"
+     ]
+    ],
+    [
+     "Body and Soul",
+     "QmYLYgVPrVGkZeZgSjjBDYFUpTBWa8bXTB834ci6L7HQYN",
+     [
+      "green",
+      "heyman",
+      "sour",
+      "eyton"
+     ]
+    ]
+   ],
+   "terms": [],
+   "dump": 6,
+   "targets": [
+    {
+     "title": "autumn leaves",
+     "aliases": [
+      "kosma",
+      "prevert",
+      "mercer"
+     ]
+    },
+    {
+     "title": "blue bossa",
+     "aliases": [
+      "dorham"
+     ]
+    },
+    {
+     "title": "all of me",
+     "aliases": [
+      "simons",
+      "marks"
+     ]
+    },
+    {
+     "title": "fly me to the moon",
+     "aliases": [
+      "howard"
+     ]
+    },
+    {
+     "title": "satin doll",
+     "aliases": [
+      "ellington",
+      "strayhorn"
+     ]
+    },
+    {
+     "title": "there will never be another you",
+     "aliases": [
+      "warren"
+     ]
+    },
+    {
+     "title": "softly as in a morning sunrise",
+     "aliases": [
+      "romberg"
+     ]
+    },
+    {
+     "title": "summertime",
+     "aliases": [
+      "gershwin"
+     ]
+    },
+    {
+     "title": "c jam blues",
+     "aliases": [
+      "ellington"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "C-jam",
+   "goal": "one approachable real tune for comping (jam.5); one with harmony for building a walking bass (jam.6); ideally the same tune for both",
+   "known": [
+    [
+     "St James Infirmary",
+     "Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs",
+     [
+      "primrose",
+      "mills",
+      "traditional"
+     ]
+    ],
+    [
+     "Sweet Georgia Brown",
+     "QmSpTeaiyNZDk45njpe1Fe7VGcFAzBhJy4HuuGj2btnwb5",
+     [
+      "bernie",
+      "pinkard",
+      "casey"
+     ]
+    ],
+    [
+     "After You've Gone",
+     "QmWUXqfKQAKdGoB5Mw8vmHFcMFDdhpSc4t9vyAjYHJedxU",
+     [
+      "creamer",
+      "layton"
+     ]
+    ],
+    [
+     "Indiana",
+     "Qmcy1D9Q8SPEBVa1nqy4TtjYeg8saf7mwC2CxnMpj16T9z",
+     [
+      "hanley",
+      "macdonald",
+      "mac donald"
+     ]
+    ]
+   ],
+   "terms": [],
+   "also_consider_lane": "B-jazz",
+   "dump": 3,
+   "targets": [
+    {
+     "title": "st james infirmary",
+     "aliases": [
+      "primrose",
+      "mills",
+      "traditional"
+     ]
+    },
+    {
+     "title": "saint james infirmary",
+     "aliases": [
+      "primrose",
+      "mills",
+      "traditional"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "D-hymns",
+   "goal": "a correct Joyful, Joyful replacement; stronger four-part/arrangement models",
+   "known": [
+    [
+     "Joyful, Joyful (archive lead)",
+     "QmY8XeRQK9L3q6Rndkex64R2N5X4LGiQ9CA6qG7U61YyE7",
+     [
+      "beethoven",
+      "van dyke"
+     ]
+    ],
+    [
+     "Holy Holy Holy",
+     "QmbLfyErVgweCgsLYtW4CV2GvCwayZjJDqtLpccRmvCgdF",
+     [
+      "dykes",
+      "heber"
+     ]
+    ],
+    [
+     "Nearer My God to Thee",
+     "QmbFPMXf26skEX8RvUSZ5dGSuFXefEwFJ7GXiCfgjS6q2o",
+     [
+      "mason",
+      "adams",
+      "dykes",
+      "sullivan"
+     ]
+    ],
+    [
+     "Deep River",
+     "QmbP96wZt5Vev9pA8pembvkaMw2wx48M3PR3pWNMfJuASp",
+     [
+      "traditional",
+      "spiritual",
+      "burleigh"
+     ]
+    ],
+    [
+     "Steal Away",
+     "QmcrnJ2b9XrAey8CPrVRj5xn55Tvy4dfZe1aFr6FVTHBBs",
+     [
+      "traditional",
+      "spiritual",
+      "burleigh"
+     ]
+    ]
+   ],
+   "terms": [],
+   "dump": 6,
+   "targets": [
+    {
+     "title": "joyful joyful",
+     "aliases": [
+      "beethoven",
+      "van dyke"
+     ]
+    },
+    {
+     "title": "joyful we adore thee",
+     "aliases": [
+      "beethoven",
+      "van dyke"
+     ]
+    },
+    {
+     "title": "hymn to joy",
+     "aliases": [
+      "beethoven",
+      "schiller",
+      "van dyke"
+     ]
+    },
+    {
+     "title": "ode to joy",
+     "aliases": [
+      "beethoven",
+      "schiller"
+     ]
+    },
+    {
+     "title": "holy holy holy",
+     "aliases": [
+      "dykes",
+      "heber"
+     ]
+    },
+    {
+     "title": "nearer my god to thee",
+     "aliases": [
+      "mason",
+      "adams",
+      "dykes",
+      "sullivan"
+     ]
+    },
+    {
+     "title": "deep river",
+     "aliases": [
+      "traditional",
+      "spiritual",
+      "burleigh"
+     ]
+    },
+    {
+     "title": "steal away",
+     "aliases": [
+      "traditional",
+      "spiritual",
+      "burleigh"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "E-latin",
+   "goal": "a score that really shows a bossa accompaniment; a real montuno/guajeo/tumbao model; more modern tango around Libertango",
+   "known": [
+    [
+     "Tico-Tico",
+     "QmWbvFZYw6cR7ytP7V2SyZm2u6VMGCD31cBnNuWwMoqFLw",
+     [
+      "abreu"
+     ]
+    ],
+    [
+     "So Danco Samba",
+     "QmbmC9BRdBLb6XUbyf5TqSy1P1oYdNDYTJoSpd4nXByPMD",
+     [
+      "jobim",
+      "moraes",
+      "de moraes",
+      "vinicius"
+     ]
+    ],
+    [
+     "Chega de Saudade",
+     "Qmcnc6BPWUhP1fk6GKoXEH35gSvJNi87bKz4cy5s6xuYTV",
+     [
+      "jobim",
+      "moraes",
+      "de moraes",
+      "vinicius"
+     ]
+    ],
+    [
+     "Girl from Ipanema",
+     "QmbePogksNuacefKjPnFMTEPad7EfR6ugFNirGLLckffJr",
+     [
+      "jobim",
+      "moraes",
+      "de moraes",
+      "vinicius"
+     ]
+    ],
+    [
+     "Corcovado",
+     "QmWYgg7QifpX4XtkYReco3Psk4GvNgzbeZMeqTBUvabUgF",
+     [
+      "jobim",
+      "moraes",
+      "de moraes",
+      "vinicius"
+     ]
+    ],
+    [
+     "Jalousie",
+     "QmbEXBfVDk9iNqKRoXudwgcVKFL9yagDcFvwqAwvLt5h5H",
+     [
+      "gade"
+     ]
+    ],
+    [
+     "Por Una Cabeza",
+     "QmPqGm73syTAnvaFSwHWB5nTi3KEMybjqMYRVRox2eejWb",
+     [
+      "gardel",
+      "le pera"
+     ]
+    ],
+    [
+     "Caminito",
+     "QmWPVaLZLid7D3fiNRhaKPxH36zWf2Pu3JLFxxQYFRRwDV",
+     [
+      "filiberto",
+      "penaloza"
+     ]
+    ]
+   ],
+   "terms": [
+    "montuno",
+    "son montuno",
+    "tumbao",
+    "salsa piano",
+    "guajeo",
+    "chan chan",
+    "piazzolla",
+    "tango nuevo"
+   ],
+   "dump": 6,
+   "targets": [
+    {
+     "title": "tico tico",
+     "aliases": [
+      "abreu"
+     ]
+    },
+    {
+     "title": "so danco samba",
+     "aliases": [
+      "jobim",
+      "moraes",
+      "de moraes",
+      "vinicius"
+     ]
+    },
+    {
+     "title": "chega de saudade",
+     "aliases": [
+      "jobim",
+      "moraes",
+      "de moraes",
+      "vinicius"
+     ]
+    },
+    {
+     "title": "girl from ipanema",
+     "aliases": [
+      "jobim",
+      "moraes",
+      "de moraes",
+      "vinicius"
+     ]
+    },
+    {
+     "title": "garota de ipanema",
+     "aliases": [
+      "jobim",
+      "moraes",
+      "de moraes",
+      "vinicius"
+     ]
+    },
+    {
+     "title": "corcovado",
+     "aliases": [
+      "jobim",
+      "moraes",
+      "de moraes",
+      "vinicius"
+     ]
+    },
+    {
+     "title": "jalousie",
+     "aliases": [
+      "gade"
+     ]
+    },
+    {
+     "title": "por una cabeza",
+     "aliases": [
+      "gardel",
+      "le pera"
+     ]
+    },
+    {
+     "title": "caminito",
+     "aliases": [
+      "filiberto",
+      "penaloza"
+     ]
+    },
+    {
+     "title": "adios nonino",
+     "aliases": [
+      "piazzolla"
+     ]
+    },
+    {
+     "title": "fuga y misterio",
+     "aliases": [
+      "piazzolla"
+     ]
+    },
+    {
+     "title": "la muerte del angel",
+     "aliases": [
+      "piazzolla"
+     ]
+    },
+    {
+     "title": "michelangelo 70",
+     "aliases": [
+      "piazzolla"
+     ]
+    },
+    {
+     "title": "escualo",
+     "aliases": [
+      "piazzolla"
+     ]
+    },
+    {
+     "title": "oye como va",
+     "aliases": [
+      "puente"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "F-improv-compose",
+   "goal": "short real examples for motif, repetition/variation, harmonizing a melody, small binary/ABA form",
+   "known": [
+    [
+     "Down in the Valley",
+     "QmWuBBaf6uwZdiWHx1dm9meAW2tXnw6EV7hb93tnDTy3S4",
+     [
+      "traditional",
+      "foster",
+      "animals"
+     ]
+    ],
+    [
+     "Oh Susanna",
+     "QmchjwvtpXykrxVrMHadPZLP7AHZ4ZgFjEg6qca7xpPFcm",
+     [
+      "foster",
+      "traditional"
+     ]
+    ],
+    [
+     "House of the Rising Sun",
+     "Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR",
+     [
+      "traditional",
+      "foster",
+      "animals"
+     ]
+    ],
+    [
+     "Autumn Leaves",
+     "QmWLjxJSdX1VjYwcEkDYhj7CDhWLX4rFbSakCxiGTJWT7T",
+     [
+      "kosma",
+      "prevert",
+      "mercer"
+     ]
+    ]
+   ],
+   "terms": [
+    "minuet",
+    "binary form",
+    "theme and variation",
+    "prelude",
+    "bagatelle",
+    "waltz"
+   ],
+   "max_bars": 40,
+   "piano_only": true,
+   "dump": 6,
+   "inspect_all": true
+  },
+  {
+   "id": "G-holiday",
+   "goal": "non-Christmas holiday material (Hanukkah) so the Holiday track can keep its promise",
+   "known": [],
+   "terms": [
+    "hanukkah",
+    "chanukah",
+    "chanukkah",
+    "hanukah",
+    "maoz tzur",
+    "ma oz tzur",
+    "mao z tzur",
+    "rock of ages",
+    "hanerot halalu",
+    "sevivon",
+    "s vivon",
+    "dreidel",
+    "mi y malel",
+    "mi yemalel",
+    "chanukah oh chanukah",
+    "hanukkah oh hanukkah"
+   ],
+   "dump": 6,
+   "require_other_term_for": [
+    "rock of ages"
+   ]
+  },
+  {
+   "id": "H-ragtime",
+   "goal": "one authentic stop-time passage if easy; lower priority",
+   "known": [
+    [
+     "The Harlem Rag (1899, Tyers) - already reviewed, keep",
+     "QmXBVYcvQsE8mhE2yxpPRbFiXLxRW7HhqXB7dK2JEXUVq9",
+     [
+      "turpin"
+     ]
+    ]
+   ],
+   "terms": [
+    "stop time",
+    "stop-time",
+    "cakewalk",
+    "cake walk",
+    "slow drag"
+   ],
+   "dump": 4
+  },
+  {
+   "id": "I-pop",
+   "goal": "real four-chord and voice-led pop; arpeggiated accompaniment; syncopated comping; by-ear/reduction targets; intro/outro/modulation examples; one or two excellent songs for chords-pop.8/.9",
+   "known": [],
+   "terms": [],
+   "exact_title_only_for": [
+    "something",
+    "yesterday",
+    "imagine",
+    "vienna",
+    "clocks",
+    "creep",
+    "iris",
+    "hallelujah"
+   ],
+   "dump": 8,
+   "targets": [
+    {
+     "title": "let it be",
+     "aliases": [
+      "beatles",
+      "lennon",
+      "mccartney",
+      "harrison",
+      "starr"
+     ]
+    },
+    {
+     "title": "hey jude",
+     "aliases": [
+      "beatles",
+      "lennon",
+      "mccartney",
+      "harrison",
+      "starr"
+     ]
+    },
+    {
+     "title": "yesterday",
+     "aliases": [
+      "beatles",
+      "lennon",
+      "mccartney",
+      "harrison",
+      "starr"
+     ]
+    },
+    {
+     "title": "something",
+     "aliases": [
+      "beatles",
+      "lennon",
+      "mccartney",
+      "harrison",
+      "starr"
+     ]
+    },
+    {
+     "title": "while my guitar gently weeps",
+     "aliases": [
+      "beatles",
+      "lennon",
+      "mccartney",
+      "harrison",
+      "starr"
+     ]
+    },
+    {
+     "title": "here comes the sun",
+     "aliases": [
+      "beatles",
+      "lennon",
+      "mccartney",
+      "harrison",
+      "starr"
+     ]
+    },
+    {
+     "title": "your song",
+     "aliases": [
+      "elton john",
+      "taupin"
+     ]
+    },
+    {
+     "title": "tiny dancer",
+     "aliases": [
+      "elton john",
+      "taupin"
+     ]
+    },
+    {
+     "title": "rocket man",
+     "aliases": [
+      "elton john",
+      "taupin"
+     ]
+    },
+    {
+     "title": "goodbye yellow brick road",
+     "aliases": [
+      "elton john",
+      "taupin"
+     ]
+    },
+    {
+     "title": "piano man",
+     "aliases": [
+      "billy joel",
+      "joel"
+     ]
+    },
+    {
+     "title": "vienna",
+     "aliases": [
+      "billy joel",
+      "joel"
+     ]
+    },
+    {
+     "title": "she's always a woman",
+     "aliases": [
+      "billy joel",
+      "joel"
+     ]
+    },
+    {
+     "title": "just the way you are",
+     "aliases": [
+      "billy joel",
+      "joel"
+     ]
+    },
+    {
+     "title": "don't stop me now",
+     "aliases": [
+      "queen",
+      "freddie mercury",
+      "mercury",
+      "brian may"
+     ]
+    },
+    {
+     "title": "somebody to love",
+     "aliases": [
+      "queen",
+      "freddie mercury",
+      "mercury",
+      "brian may"
+     ]
+    },
+    {
+     "title": "bohemian rhapsody",
+     "aliases": [
+      "queen",
+      "freddie mercury",
+      "mercury",
+      "brian may"
+     ]
+    },
+    {
+     "title": "love of my life",
+     "aliases": [
+      "queen",
+      "freddie mercury",
+      "mercury",
+      "brian may"
+     ]
+    },
+    {
+     "title": "someone like you",
+     "aliases": [
+      "adele",
+      "adkins",
+      "dan wilson"
+     ]
+    },
+    {
+     "title": "easy on me",
+     "aliases": [
+      "adele",
+      "adkins",
+      "kurstin"
+     ]
+    },
+    {
+     "title": "when we were young",
+     "aliases": [
+      "adele",
+      "adkins"
+     ]
+    },
+    {
+     "title": "the scientist",
+     "aliases": [
+      "coldplay",
+      "chris martin"
+     ]
+    },
+    {
+     "title": "clocks",
+     "aliases": [
+      "coldplay",
+      "chris martin"
+     ]
+    },
+    {
+     "title": "fix you",
+     "aliases": [
+      "coldplay",
+      "chris martin"
+     ]
+    },
+    {
+     "title": "viva la vida",
+     "aliases": [
+      "coldplay",
+      "chris martin"
+     ]
+    },
+    {
+     "title": "creep",
+     "aliases": [
+      "radiohead",
+      "yorke",
+      "greenwood"
+     ]
+    },
+    {
+     "title": "karma police",
+     "aliases": [
+      "radiohead",
+      "yorke",
+      "greenwood"
+     ]
+    },
+    {
+     "title": "no surprises",
+     "aliases": [
+      "radiohead",
+      "yorke",
+      "greenwood"
+     ]
+    },
+    {
+     "title": "fake plastic trees",
+     "aliases": [
+      "radiohead",
+      "yorke",
+      "greenwood"
+     ]
+    },
+    {
+     "title": "hallelujah",
+     "aliases": [
+      "cohen",
+      "buckley",
+      "wainwright"
+     ]
+    },
+    {
+     "title": "mad world",
+     "aliases": [
+      "tears for fears",
+      "gary jules",
+      "orzabal",
+      "michael andrews"
+     ]
+    },
+    {
+     "title": "stand by me",
+     "aliases": [
+      "ben e king",
+      "leiber",
+      "stoller"
+     ]
+    },
+    {
+     "title": "imagine",
+     "aliases": [
+      "lennon",
+      "john lennon"
+     ]
+    },
+    {
+     "title": "lean on me",
+     "aliases": [
+      "bill withers",
+      "withers"
+     ]
+    },
+    {
+     "title": "bridge over troubled water",
+     "aliases": [
+      "simon and garfunkel",
+      "simon garfunkel",
+      "paul simon",
+      "garfunkel"
+     ]
+    },
+    {
+     "title": "a thousand miles",
+     "aliases": [
+      "vanessa carlton",
+      "carlton"
+     ]
+    },
+    {
+     "title": "chasing cars",
+     "aliases": [
+      "snow patrol",
+      "lightbody"
+     ]
+    },
+    {
+     "title": "iris",
+     "aliases": [
+      "goo goo dolls",
+      "rzeznik"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "J-rock",
+   "goal": "riff/ostinato; power-chord or fifth texture that survives reduction; arpeggio over pedal; register/density/build/drop; rock.8 (reduce 8-16 bars) and rock.9 (full arrangement) candidates",
+   "known": [],
+   "terms": [
+    "we will rock you",
+    "another one bites the dust",
+    "paranoid android"
+   ],
+   "exact_title_only_for": [
+    "satisfaction",
+    "starlight",
+    "hysteria",
+    "numb",
+    "in the end",
+    "uprising",
+    "new born",
+    "time"
+   ],
+   "dump": 8,
+   "targets": [
+    {
+     "title": "come together",
+     "aliases": [
+      "beatles",
+      "lennon",
+      "mccartney",
+      "harrison",
+      "starr"
+     ]
+    },
+    {
+     "title": "day tripper",
+     "aliases": [
+      "beatles",
+      "lennon",
+      "mccartney",
+      "harrison",
+      "starr"
+     ]
+    },
+    {
+     "title": "helter skelter",
+     "aliases": [
+      "beatles",
+      "lennon",
+      "mccartney",
+      "harrison",
+      "starr"
+     ]
+    },
+    {
+     "title": "paint it black",
+     "aliases": [
+      "rolling stones",
+      "jagger",
+      "richards"
+     ]
+    },
+    {
+     "title": "gimme shelter",
+     "aliases": [
+      "rolling stones",
+      "jagger",
+      "richards"
+     ]
+    },
+    {
+     "title": "satisfaction",
+     "aliases": [
+      "rolling stones",
+      "jagger",
+      "richards"
+     ]
+    },
+    {
+     "title": "stairway to heaven",
+     "aliases": [
+      "led zeppelin",
+      "zeppelin",
+      "jimmy page",
+      "robert plant"
+     ]
+    },
+    {
+     "title": "kashmir",
+     "aliases": [
+      "led zeppelin",
+      "zeppelin",
+      "jimmy page",
+      "robert plant"
+     ]
+    },
+    {
+     "title": "whole lotta love",
+     "aliases": [
+      "led zeppelin",
+      "zeppelin",
+      "jimmy page",
+      "robert plant"
+     ]
+    },
+    {
+     "title": "comfortably numb",
+     "aliases": [
+      "pink floyd",
+      "waters",
+      "gilmour"
+     ]
+    },
+    {
+     "title": "wish you were here",
+     "aliases": [
+      "pink floyd",
+      "waters",
+      "gilmour"
+     ]
+    },
+    {
+     "title": "another brick in the wall",
+     "aliases": [
+      "pink floyd",
+      "waters",
+      "gilmour"
+     ]
+    },
+    {
+     "title": "time",
+     "aliases": [
+      "pink floyd",
+      "waters",
+      "gilmour"
+     ]
+    },
+    {
+     "title": "uprising",
+     "aliases": [
+      "muse",
+      "bellamy"
+     ]
+    },
+    {
+     "title": "starlight",
+     "aliases": [
+      "muse",
+      "bellamy"
+     ]
+    },
+    {
+     "title": "time is running out",
+     "aliases": [
+      "muse",
+      "bellamy"
+     ]
+    },
+    {
+     "title": "hysteria",
+     "aliases": [
+      "muse",
+      "bellamy"
+     ]
+    },
+    {
+     "title": "new born",
+     "aliases": [
+      "muse",
+      "bellamy"
+     ]
+    },
+    {
+     "title": "smells like teen spirit",
+     "aliases": [
+      "nirvana",
+      "cobain"
+     ]
+    },
+    {
+     "title": "come as you are",
+     "aliases": [
+      "nirvana",
+      "cobain"
+     ]
+    },
+    {
+     "title": "heart-shaped box",
+     "aliases": [
+      "nirvana",
+      "cobain"
+     ]
+    },
+    {
+     "title": "heart shaped box",
+     "aliases": [
+      "nirvana",
+      "cobain"
+     ]
+    },
+    {
+     "title": "everlong",
+     "aliases": [
+      "foo fighters",
+      "grohl"
+     ]
+    },
+    {
+     "title": "the pretender",
+     "aliases": [
+      "foo fighters",
+      "grohl"
+     ]
+    },
+    {
+     "title": "numb",
+     "aliases": [
+      "linkin park",
+      "bennington",
+      "shinoda"
+     ]
+    },
+    {
+     "title": "in the end",
+     "aliases": [
+      "linkin park",
+      "bennington",
+      "shinoda"
+     ]
+    },
+    {
+     "title": "bring me to life",
+     "aliases": [
+      "evanescence",
+      "amy lee",
+      "moody"
+     ]
+    },
+    {
+     "title": "my immortal",
+     "aliases": [
+      "evanescence",
+      "amy lee",
+      "moody"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K-metal",
+   "goal": "pedal-tone riffs; octave/fifth riff reduction; repeated-note ostinato; syncopated chord attacks; odd meter or meter change; acoustic/ballad to heavy build; multi-section song for reduction decisions; full-arrangement capstone",
+   "known": [],
+   "terms": [
+    "metal piano",
+    "metallica piano",
+    "avenged sevenfold piano",
+    "rock piano arrangement",
+    "metal piano arrangement",
+    "progressive metal",
+    "power metal",
+    "symphonic metal"
+   ],
+   "exact_title_only_for": [
+    "one",
+    "orion",
+    "nightmare",
+    "afterlife",
+    "another day",
+    "iron man",
+    "paranoid",
+    "snuff",
+    "harvest",
+    "nemo",
+    "drown",
+    "so far away",
+    "buried alive"
+   ],
+   "dump": 8,
+   "targets": [
+    {
+     "title": "nothing else matters",
+     "aliases": [
+      "metallica",
+      "hetfield",
+      "ulrich",
+      "hammett"
+     ]
+    },
+    {
+     "title": "fade to black",
+     "aliases": [
+      "metallica",
+      "hetfield",
+      "ulrich",
+      "hammett"
+     ]
+    },
+    {
+     "title": "one",
+     "aliases": [
+      "metallica",
+      "hetfield",
+      "ulrich",
+      "hammett"
+     ]
+    },
+    {
+     "title": "master of puppets",
+     "aliases": [
+      "metallica",
+      "hetfield",
+      "ulrich",
+      "hammett"
+     ]
+    },
+    {
+     "title": "enter sandman",
+     "aliases": [
+      "metallica",
+      "hetfield",
+      "ulrich",
+      "hammett"
+     ]
+    },
+    {
+     "title": "the unforgiven",
+     "aliases": [
+      "metallica",
+      "hetfield",
+      "ulrich",
+      "hammett"
+     ]
+    },
+    {
+     "title": "orion",
+     "aliases": [
+      "metallica",
+      "hetfield",
+      "ulrich",
+      "hammett"
+     ]
+    },
+    {
+     "title": "seize the day",
+     "aliases": [
+      "avenged sevenfold",
+      "a7x",
+      "m shadows",
+      "synyster gates",
+      "zacky vengeance"
+     ]
+    },
+    {
+     "title": "so far away",
+     "aliases": [
+      "avenged sevenfold",
+      "a7x",
+      "m shadows",
+      "synyster gates",
+      "zacky vengeance"
+     ]
+    },
+    {
+     "title": "buried alive",
+     "aliases": [
+      "avenged sevenfold",
+      "a7x",
+      "m shadows",
+      "synyster gates",
+      "zacky vengeance"
+     ]
+    },
+    {
+     "title": "nightmare",
+     "aliases": [
+      "avenged sevenfold",
+      "a7x",
+      "m shadows",
+      "synyster gates",
+      "zacky vengeance"
+     ]
+    },
+    {
+     "title": "hail to the king",
+     "aliases": [
+      "avenged sevenfold",
+      "a7x",
+      "m shadows",
+      "synyster gates",
+      "zacky vengeance"
+     ]
+    },
+    {
+     "title": "afterlife",
+     "aliases": [
+      "avenged sevenfold",
+      "a7x",
+      "m shadows",
+      "synyster gates",
+      "zacky vengeance"
+     ]
+    },
+    {
+     "title": "a little piece of heaven",
+     "aliases": [
+      "avenged sevenfold",
+      "a7x",
+      "m shadows",
+      "synyster gates",
+      "zacky vengeance"
+     ]
+    },
+    {
+     "title": "bat country",
+     "aliases": [
+      "avenged sevenfold",
+      "a7x",
+      "m shadows",
+      "synyster gates",
+      "zacky vengeance"
+     ]
+    },
+    {
+     "title": "aerials",
+     "aliases": [
+      "system of a down",
+      "soad",
+      "serj tankian",
+      "daron malakian",
+      "tankian",
+      "malakian"
+     ]
+    },
+    {
+     "title": "toxicity",
+     "aliases": [
+      "system of a down",
+      "soad",
+      "serj tankian",
+      "daron malakian",
+      "tankian",
+      "malakian"
+     ]
+    },
+    {
+     "title": "chop suey",
+     "aliases": [
+      "system of a down",
+      "soad",
+      "serj tankian",
+      "daron malakian",
+      "tankian",
+      "malakian"
+     ]
+    },
+    {
+     "title": "lonely day",
+     "aliases": [
+      "system of a down",
+      "soad",
+      "serj tankian",
+      "daron malakian",
+      "tankian",
+      "malakian"
+     ]
+    },
+    {
+     "title": "another day",
+     "aliases": [
+      "dream theater",
+      "petrucci",
+      "portnoy",
+      "labrie"
+     ]
+    },
+    {
+     "title": "pull me under",
+     "aliases": [
+      "dream theater",
+      "petrucci",
+      "portnoy",
+      "labrie"
+     ]
+    },
+    {
+     "title": "the spirit carries on",
+     "aliases": [
+      "dream theater",
+      "petrucci",
+      "portnoy",
+      "labrie"
+     ]
+    },
+    {
+     "title": "fear of the dark",
+     "aliases": [
+      "iron maiden",
+      "steve harris",
+      "dickinson"
+     ]
+    },
+    {
+     "title": "the trooper",
+     "aliases": [
+      "iron maiden",
+      "steve harris",
+      "dickinson"
+     ]
+    },
+    {
+     "title": "hallowed be thy name",
+     "aliases": [
+      "iron maiden",
+      "steve harris",
+      "dickinson"
+     ]
+    },
+    {
+     "title": "iron man",
+     "aliases": [
+      "black sabbath",
+      "ozzy osbourne",
+      "osbourne",
+      "iommi",
+      "geezer butler"
+     ]
+    },
+    {
+     "title": "paranoid",
+     "aliases": [
+      "black sabbath",
+      "ozzy osbourne",
+      "osbourne",
+      "iommi",
+      "geezer butler"
+     ]
+    },
+    {
+     "title": "war pigs",
+     "aliases": [
+      "black sabbath",
+      "ozzy osbourne",
+      "osbourne",
+      "iommi",
+      "geezer butler"
+     ]
+    },
+    {
+     "title": "snuff",
+     "aliases": [
+      "slipknot",
+      "corey taylor"
+     ]
+    },
+    {
+     "title": "vermilion",
+     "aliases": [
+      "slipknot",
+      "corey taylor"
+     ]
+    },
+    {
+     "title": "windowpane",
+     "aliases": [
+      "opeth",
+      "akerfeldt"
+     ]
+    },
+    {
+     "title": "harvest",
+     "aliases": [
+      "opeth",
+      "akerfeldt"
+     ]
+    },
+    {
+     "title": "nemo",
+     "aliases": [
+      "nightwish",
+      "holopainen"
+     ]
+    },
+    {
+     "title": "sleeping sun",
+     "aliases": [
+      "nightwish",
+      "holopainen"
+     ]
+    },
+    {
+     "title": "ghost love score",
+     "aliases": [
+      "nightwish",
+      "holopainen"
+     ]
+    },
+    {
+     "title": "can you feel my heart",
+     "aliases": [
+      "bring me the horizon",
+      "bmth",
+      "oliver sykes",
+      "sykes"
+     ]
+    },
+    {
+     "title": "drown",
+     "aliases": [
+      "bring me the horizon",
+      "bmth",
+      "oliver sykes",
+      "sykes"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "L-artists",
+   "goal": "personal-library expansion by artist; top 20 distinct songs per artist; flag personal-library wins even when no rung needs them",
+   "known": [],
+   "artists": [
+    "Avenged Sevenfold",
+    "Metallica",
+    "Muse",
+    "Radiohead",
+    "Pink Floyd",
+    "Led Zeppelin",
+    "Queen",
+    "Evanescence",
+    "System of a Down",
+    "Dream Theater",
+    "Iron Maiden",
+    "Black Sabbath",
+    "Linkin Park",
+    "Foo Fighters",
+    "Coldplay",
+    "Billy Joel",
+    "Elton John",
+    "Beatles"
+   ],
+   "artist_aliases": {
+    "Beatles": [
+     "the beatles",
+     "beatles",
+     "lennon",
+     "mccartney"
+    ],
+    "Avenged Sevenfold": [
+     "avenged sevenfold",
+     "a7x"
+    ],
+    "System of a Down": [
+     "system of a down",
+     "soad"
+    ],
+    "Queen": [
+     "queen",
+     "freddie mercury",
+     "brian may"
+    ],
+    "Muse": [
+     "muse",
+     "matt bellamy",
+     "matthew bellamy"
+    ]
+   },
+   "top_songs_per_artist": 20,
+   "dump_per_artist": 4,
+   "dump_per_artist_priority": {
+    "Avenged Sevenfold": 8,
+    "Metallica": 8,
+    "Muse": 8
+   },
+   "priority_size_artists": [
+    "Avenged Sevenfold",
+    "Metallica",
+    "Muse"
+   ]
+  }
+ ]
+}

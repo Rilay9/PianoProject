@@ -1,0 +1,92 @@
+# checks for 82 path(s): 82 matched, 0 unmatched
+# app/src/curriculum/eligibilityCore.ts: app/src/**, app/src/curriculum/**
+# app/src/demands/vocabulary.ts: app/src/**, app/src/demands/**
+# app/tests/unit/copingQuestion.test.ts: app/tests/unit/*.test.ts
+# content/curriculum/vocabulary/demands.json: content/**, content/curriculum/**, content/curriculum/vocabulary/**
+# content/curriculum/vocabulary/demands.schema.json: content/**, content/curriculum/**, content/curriculum/vocabulary/**
+# content/sources/excerpts.json: content/**, content/sources/**, content/sources/excerpts.json
+# docs/02-curriculum.md: docs/02-curriculum.md, docs/**
+# docs/03-content-pipeline.md: docs/03-content-pipeline.md, docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/runs/E54/ENTRY.md: docs/**
+# docs/prompts/runs/E54/checks.txt: docs/**
+# docs/prompts/runs/E54/content-suite.txt: docs/**
+# docs/prompts/runs/E54/green-unit.txt: docs/**
+# docs/prompts/runs/E54/mutants.py: docs/**
+# docs/prompts/runs/E54/mutants.txt: docs/**
+# docs/prompts/runs/E54/red-on-committed.txt: docs/**
+# docs/prompts/runs/E54/splice_docs08.py: docs/**
+# docs/prompts/runs/L120d/ENTRY.md: docs/**
+# docs/prompts/runs/L120d/after/catalog-diff.txt: docs/**
+# docs/prompts/runs/L120d/after/content-build.txt: docs/**
+# docs/prompts/runs/L120d/after/difference.txt: docs/**
+# docs/prompts/runs/L120d/after/leaps-in-position.txt: docs/**
+# docs/prompts/runs/L120d/after/other-readers.txt: docs/**
+# docs/prompts/runs/L120d/after/probe-difference.txt: docs/**
+# docs/prompts/runs/L120d/after/probe-refusals.txt: docs/**
+# docs/prompts/runs/L120d/after/probe-uncoped.txt: docs/**
+# docs/prompts/runs/L120d/after/probe.txt: docs/**
+# docs/prompts/runs/L120d/after/report-SOURCES.md.diff: docs/**
+# docs/prompts/runs/L120d/after/report-inventory.md.diff: docs/**
+# docs/prompts/runs/L120d/after/report-ladder.md.diff: docs/**
+# docs/prompts/runs/L120d/after/report-rung-claims.md.diff: docs/**
+# docs/prompts/runs/L120d/after/restore.txt: docs/**
+# docs/prompts/runs/L120d/after/untaught-options-run.txt: docs/**
+# docs/prompts/runs/L120d/after/untaught-options.txt: docs/**
+# docs/prompts/runs/L120d/base-equals-L120c.txt: docs/**
+# docs/prompts/runs/L120d/base/leaps-in-position.txt: docs/**
+# docs/prompts/runs/L120d/base/probe-refusals.txt: docs/**
+# docs/prompts/runs/L120d/base/probe-uncoped.txt: docs/**
+# docs/prompts/runs/L120d/base/probe.txt: docs/**
+# docs/prompts/runs/L120d/base/untaught-options-run.txt: docs/**
+# docs/prompts/runs/L120d/base/untaught-options.txt: docs/**
+# docs/prompts/runs/L120d/chain-checks-exit.txt: docs/**
+# docs/prompts/runs/L120d/checks-for-paths.txt: docs/**
+# docs/prompts/runs/L120d/checks/build-app.txt: docs/**
+# docs/prompts/runs/L120d/checks/content-tests.txt: docs/**
+# docs/prompts/runs/L120d/checks/content-validate.txt: docs/**
+# docs/prompts/runs/L120d/checks/d0-record.txt: docs/**
+# docs/prompts/runs/L120d/checks/e2e.txt: docs/**
+# docs/prompts/runs/L120d/checks/lint.txt: docs/**
+# docs/prompts/runs/L120d/checks/reports-with-regenerated.txt: docs/**
+# docs/prompts/runs/L120d/checks/review-check.txt: docs/**
+# docs/prompts/runs/L120d/checks/tsc.txt: docs/**
+# docs/prompts/runs/L120d/checks/unit-failures-alone.txt: docs/**
+# docs/prompts/runs/L120d/checks/unit-summary.txt: docs/**
+# docs/prompts/runs/L120d/content-build-base.txt: docs/**
+# docs/prompts/runs/L120d/copy.txt: docs/**
+# docs/prompts/runs/L120d/mutants.txt: docs/**
+# docs/prompts/runs/L120d/parity-reference.txt: docs/**
+# docs/prompts/runs/L120d/red-green/green-after-docstring-reflow.txt: docs/**
+# docs/prompts/runs/L120d/red-green/green-copingQuestion.txt: docs/**
+# docs/prompts/runs/L120d/red-green/green-test_taught_at.txt: docs/**
+# docs/prompts/runs/L120d/red-green/green-test_untaught_options.txt: docs/**
+# docs/prompts/runs/L120d/red-green/red-copingQuestion.txt: docs/**
+# docs/prompts/runs/L120d/red-green/red-test_taught_at.txt: docs/**
+# docs/prompts/runs/L120d/red-green/red-test_untaught_options-old-pin.txt: docs/**
+# docs/prompts/runs/L120d/restore-base.txt: docs/**
+# docs/prompts/runs/L120d/scripts-catalog-diff.py: docs/**
+# docs/prompts/runs/L120d/scripts-chain-checks.ps1: docs/**
+# docs/prompts/runs/L120d/scripts-chain-setup.ps1: docs/**
+# docs/prompts/runs/L120d/scripts-leaps-in-position.py: docs/**
+# docs/prompts/runs/L120d/scripts-mutants.py: docs/**
+# docs/prompts/runs/L120d/scripts-other-readers.py: docs/**
+# docs/prompts/runs/L120d/scripts-rerun.ps1: docs/**
+# docs/prompts/runs/L120d/scripts-table-diff.py: docs/**
+# docs/prompts/runs/L120d/scripts-vitest.l120d.config.ts: docs/**
+# docs/prompts/runs/L120d/scripts-zzL120dProbe.test.ts: docs/**
+# tools/content/claims.py: tools/content/*.py
+# tools/content/excerpts.py: tools/content/*.py, tools/content/excerpts.py
+# tools/content/tests/test_excerpts.py: tools/content/tests/test_*.py
+# tools/content/tests/test_taught_at.py: tools/content/tests/test_*.py
+# tools/content/tests/test_untaught_options.py: tools/content/tests/test_*.py
+# tools/content/untaught_options.py: tools/content/*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/competence.spec.ts tests/e2e/excerpts.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/library.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4

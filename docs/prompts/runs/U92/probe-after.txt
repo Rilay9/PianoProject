@@ -1,0 +1,10 @@
+$ (app/) U92_LABEL=after npx playwright test --config playwright.u92-4423.config.ts --workers=2  tests/e2e/u92-probe.spec.ts
+exists: tests/e2e/u92-probe.spec.ts
+
+Running 2 tests using 2 workers
+
+  ok 1 tests\e2e\u92-probe.spec.ts:169:3 › Skills details at 342 × 740, wide (3.4s)
+  ok 2 tests\e2e\u92-probe.spec.ts:169:3 › Skills details at 342 × 740, stack (3.4s)
+
+  2 passed (6.3s)
+exit=0

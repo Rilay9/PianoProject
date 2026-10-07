@@ -1,0 +1,91 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/windowRendererStage.test.ts (34 tests | 4 failed | 29 skipped) 1960ms
+   ❯ the stacked slots and the folded chip’s band (U118) (5)
+     × placed below the band while it is drawn and back at the top when it goes, with nothing fitted or engraved 66ms
+     × a band that is not a whole pixel starts the first slot on the pixel below it 14ms
+     × an ordinary fold during a frozen run: the stage gains the header’s row, the band is placed, and the shape and size hold 294ms
+     × a size taken while the band is drawn is priced below it: turned back while folded, it draws what a stage short by the band draws, placed under the band 1460ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the stacked slots and the folded chip’s band (U118) > placed below the band while it is drawn and back at the top when it goes, with nothing fitted or engraved
+AssertionError: folded: the first slot starts below the band, never inside it: expected +0 to be 37 // Object.is equality
+
+- Expected
++ Received
+
+- 37
++ 0
+
+ ❯ tests/unit/windowRendererStage.test.ts:1299:93
+    1297|     band.px = 37;
+    1298|     renderer.placeSlots();
+    1299|     expect(tops(stage)[0], 'folded: the first slot starts below the ba…
+       |                                                                                             ^
+    1300|     // A share's box may round a pixel past the stage; the ink is what…
+    1301|     expect(lowest(stage), 'and every slot inside the stage').toBeLessT…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the stacked slots and the folded chip’s band (U118) > a band that is not a whole pixel starts the first slot on the pixel below it
+AssertionError: expected +0 to be 37 // Object.is equality
+
+- Expected
++ Received
+
+- 37
++ 0
+
+ ❯ tests/unit/windowRendererStage.test.ts:1315:28
+    1313|     const renderer = await openWithBand(stage, band);
+    1314|     await settle();
+    1315|     expect(tops(stage)[0]).toBe(37);
+       |                            ^
+    1316|     renderer.dispose();
+    1317|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the stacked slots and the folded chip’s band (U118) > an ordinary fold during a frozen run: the stage gains the header’s row, the band is placed, and the shape and size hold
+AssertionError: the first slot below the band: expected 0 to be greater than or equal to 37
+ ❯ tests/unit/windowRendererStage.test.ts:1343:61
+    1341|     expect((renderer.debugFit() as { frozen: { scale: number } | null …
+    1342|     expect(renders(), 're-engravings').toBe(engraved);
+    1343|     expect(tops(stage)[0], 'the first slot below the band').toBeGreate…
+       |                                                             ^
+    1344|     expect(lowest(stage), 'every slot inside the stage, a share roundi…
+    1345|     renderer.setRunning(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the stacked slots and the folded chip’s band (U118) > a size taken while the band is drawn is priced below it: turned back while folded, it draws what a stage short by the band draws, placed under the band
+AssertionError: the same rows, each 37 px lower: expected [ +0, 302 ] to deeply equal [ 37, 327 ]
+
+- Expected
++ Received
+
+  [
+-   37,
+-   327,
++   0,
++   302,
+  ]
+
+ ❯ tests/unit/windowRendererStage.test.ts:1386:60
+    1384|     expect((b.debugFit() as { frozen: unknown }).frozen, 'the run hold…
+    1385|     expectSamePicture(drawn(stage, b), want, 'priced below the band');
+    1386|     expect(tops(stage), 'the same rows, each 37 px lower').toEqual(wan…
+       |                                                            ^
+    1387|     expect(lowest(stage), 'every slot inside the stage, a share roundi…
+    1388|     b.setRunning(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 1 passed | 29 skipped (34)
+   Start at  02:51:28
+   Duration  4.08s (tests 50%, environment 39%, transform 9%, import 2%)
+

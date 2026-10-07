@@ -1,0 +1,1 @@
+SOURCES.md restored to HEAD's bytes after the final build

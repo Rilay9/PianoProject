@@ -20,8 +20,7 @@ keeping eight eighths a bar going without the arm seizing up.
 **Then Pinetop's.** It climbs root, third, fifth, sixth, flat seventh and comes
 back down — eight eighths a bar, the same shape moved to each chord of the
 blues. That "moved to each chord" is the hard part: the shape is easy and the
-shift is not. Clarence "Pinetop" Smith recorded it in 1928 and every boogie bass
-since is a variation on it.
+shift is not. The pattern is named after Clarence "Pinetop" Smith.
 
 **A note on names.** Boogie figures get called after players, and a
 label does not always match what the player recorded. There is no recording or
@@ -43,7 +42,9 @@ chord — Pinetop and root-and-fifth in C, walking eighths in F. Take one throug
 all twelve bars in C, moving it to each chord yourself, then the same in F. The
 walking line over the same twelve bars.
 
-**Repertoire for this rung.** Two short boogies to play the form on, and the
+**Repertoire for this rung.** One short boogie to play the form on, *Boogie
+(easy, for beginners)*; a sheet of octave walking-bass exercises that ends in a
+twelve-bar example from bar 19; and the
 real thing: Clarence "Pinetop" Smith's own *Pinetop's Boogie Woogie* (1928),
 which is levelled above everything else on this rung and is here to be
 read and listened to. Its left hand in this edition is not the climb above: from

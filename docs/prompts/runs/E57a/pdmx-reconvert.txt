@@ -1,0 +1,12 @@
+3 changed rows (pdmx-count.txt), each checked (ii)-(v)
+
+song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx: (ii) re-converted; (iii) new e72561d66d7e, undated layout True; (iv) outside the tempo directions only E57's changes (0 line(s) E57's conversion changes there), added exactly E57's True; tempo directions 1 -> 6; (v) round trip ok, structure ok, truncation 0; opening tempo 70.0 -> 70.0; features moved by E57 []; stored features older than the committed code []
+song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx: (ii) re-converted; (iii) new d069d41ce874, undated layout True; (iv) outside the tempo directions only E57's changes (0 line(s) E57's conversion changes there), added exactly E57's True; tempo directions 1 -> 4; (v) round trip ok, structure ok, truncation 0; opening tempo 86.0 -> 86.0; features moved by E57 []; stored features older than the committed code []
+song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx: (ii) re-converted; (iii) new f5d8fed0bb86, undated layout True; (iv) outside the tempo directions only E57's changes (0 line(s) E57's conversion changes there), added exactly E57's True; tempo directions 1 -> 22; (v) round trip ok, structure ok, truncation 0; opening tempo 138.0 -> 138.0; features moved by E57 []; stored features older than the committed code []
+E57a: song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx new e72561d66d7e against E57's recorded e72561d66d7e: reproduced
+E57a: song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx new d069d41ce874 against E57's recorded d069d41ce874: reproduced
+E57a: song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx new f5d8fed0bb86 against E57's recorded f5d8fed0bb86: reproduced
+
+modes: {'re-converted': 3}; features moved by E57 on 0 row(s) []; stored features differing from the committed code on the committed file (not E57's) on 0 row(s)
+0 fault(s)
+copied over content/scores/pdmx/: 3; held rows written back as committed at the base: 0

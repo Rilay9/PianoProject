@@ -1,0 +1,87 @@
+
+Running 2 tests using 2 workers
+
+  ok 1 tests\e2e\score.screen.spec.ts:1379:5 › ▶ after the sound was suspended (U69) › a refused tap on the summary, upright (342 × 740): the sentence read once, whole, the sheet’s copy a status, and nothing changed (17.1s)
+  x  2 tests\e2e\score.screen.spec.ts:1379:5 › ▶ after the sound was suspended (U69) › a refused tap on the summary, sideways (740 × 342): the sentence read once, whole, the sheet’s copy a status, and nothing changed (17.1s)
+
+
+  1) tests\e2e\score.screen.spec.ts:1379:5 › ▶ after the sound was suspended (U69) › a refused tap on the summary, sideways (740 × 342): the sentence read once, whole, the sheet’s copy a status, and nothing changed 
+
+    Error: the sentence is not read once sideways
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 1
+
+    - Array [
+    -   "sheet",
+    - ]
+    + Array []
+
+      1501 |           .map(([name]) => name);
+      1502 |         // Soft, so a red run names every fact that failed, not only the first.
+    > 1503 |         expect.soft(painted, `the sentence is not read once ${held}`).toEqual([held === 'sideways' ? 'sheet' : 'header']);
+           |                                                                       ^
+      1504 |         const seen = held === 'sideways' ? copies.sheet : copies.header;
+      1505 |         expect(seen, 'no copy to read').not.toBeNull();
+      1506 |         if (held === 'sideways') expect.soft(seen!.inSheet, 'the summary’s line is outside the summary’s box').toBe(true);
+        at refusedTap (<worktree>\app\tests\e2e\score.screen.spec.ts:1503:71)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:1527:7
+
+    Error: the summary’s line is outside the summary’s box
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      1504 |         const seen = held === 'sideways' ? copies.sheet : copies.header;
+      1505 |         expect(seen, 'no copy to read').not.toBeNull();
+    > 1506 |         if (held === 'sideways') expect.soft(seen!.inSheet, 'the summary’s line is outside the summary’s box').toBe(true);
+           |                                                                                                                ^
+      1507 |         expect.soft(seen!.inWindow, 'the line read is off the screen').toBe(true);
+      1508 |         expect.soft(seen!.clear, 'something is drawn over the sentence').toBe(true);
+      1509 |         expect.soft(seen!.scrollWidth, 'the sentence overflows its line').toBeLessThanOrEqual(seen!.clientWidth);
+        at refusedTap (<worktree>\app\tests\e2e\score.screen.spec.ts:1506:112)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:1527:7
+
+    Error: something is drawn over the sentence
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      1506 |         if (held === 'sideways') expect.soft(seen!.inSheet, 'the summary’s line is outside the summary’s box').toBe(true);
+      1507 |         expect.soft(seen!.inWindow, 'the line read is off the screen').toBe(true);
+    > 1508 |         expect.soft(seen!.clear, 'something is drawn over the sentence').toBe(true);
+           |                                                                          ^
+      1509 |         expect.soft(seen!.scrollWidth, 'the sentence overflows its line').toBeLessThanOrEqual(seen!.clientWidth);
+      1510 |         expect.soft(seen!.textInside, 'the sentence runs outside its line').toBe(true);
+      1511 |         if (held === 'sideways') expect.soft(seen!.ellipsis, 'the summary’s line cuts with an ellipsis').toBe(false);
+        at refusedTap (<worktree>\app\tests\e2e\score.screen.spec.ts:1508:74)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:1527:7
+
+    Error: the sentence is not seen whole, once
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 3
+
+      1512 |         // Upright the sheet's copy is there for a screen reader and not painted: the sentence once.
+      1513 |         if (held === 'upright') expect.soft(copies.sheet?.shown, 'the sheet’s copy is painted upright too').toBe(false);
+    > 1514 |         expect(test.info().errors.length, 'the sentence is not seen whole, once').toBe(0);
+           |                                                                                   ^
+      1515 |         expect(await state()).toBe('suspended');
+      1516 |       };
+      1517 |
+        at refusedTap (<worktree>\app\tests\e2e\score.screen.spec.ts:1514:83)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:1527:7
+
+    Error Context: build\u105a\test-results\score.screen-▶-after-the-s-a8794--status-and-nothing-changed\error-context.md
+
+  1 failed
+    tests\e2e\score.screen.spec.ts:1379:5 › ▶ after the sound was suspended (U69) › a refused tap on the summary, sideways (740 × 342): the sentence read once, whole, the sheet’s copy a status, and nothing changed 
+  1 passed (20.0s)

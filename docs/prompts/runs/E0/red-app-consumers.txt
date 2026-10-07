@@ -1,0 +1,646 @@
+﻿
+ RUN  v5.0.0 C:/Users/yalir/AppData/Local/Temp/claude/C--Users-yalir-repos-Piano-Stuff/9b647b56-e651-4563-9f4f-ce3e1e36a4a2/scratchpad/E0/redapp/app
+
+ ❯ tests/unit/help.test.ts (0 test)
+ ❯ tests/unit/skillActivationBoundary.test.ts (0 test)
+ ❯ tests/unit/gateAtTheConsumers.test.ts (4 tests | 3 failed) 16ms
+   ❯ the swap sheet’s tiers (2)
+     × offers only the clean candidate that provides the demand the row exists for 7ms
+     × never offers an incidental sharer, an unmeasured option, a declaration the notes lack, an unready candidate or a large-hand voicing 2ms
+   ❯ the repertoire slot’s claim (2)
+     × a piece whose new demand is only incidental is not "a piece with skips" 4ms
+ ❯ tests/unit/session.test.ts (19 tests | 1 failed) 26ms
+   ❯ swapOptions (3)
+     × with no tier to offer, the same kind from the lessons reached, and nothing from no lesson 7ms
+ ❯ tests/unit/curriculumSelectors.test.ts (12 tests | 1 failed) 10ms
+   ❯ alternativesFor (8)
+     × falls back to items sharing a target skill, the nearest level first; a shared concept tag matches nothing 4ms
+ ❯ tests/unit/importOverlay.test.ts (11 tests | 1 failed) 12ms
+   ❯ what the overlay unlocks (3)
+     × does not offer an unmeasured import as an equivalent option 4ms
+ ❯ tests/unit/alternativesShareASkill.test.ts (7 tests | 5 failed) 21ms
+   ❯ the tiers are claims, in order, and each option says which (4)
+     × the same lesson, a named stand-in, an item that also trains the target skill, one that also practises a target demand 9ms
+     × a shared step, the repertoire tag or any concept tag matches nothing; incidental and unready candidates are refused 2ms
+     × with no learner, the practice tiers offer nothing: "the other demands you have met" needs someone to have met them 2ms
+     × the sheet’s words state the strongest fact known: the same lesson, also trains, also practises, with the demands met 2ms
+   ❯ the swap sheet reads the same tiers (3)
+     × with no lesson and nothing shared, the last resort is the same kind of exercise from the lessons reached, not a level window 3ms
+ ❯ tests/unit/eligibility.test.ts (0 test)
+node.exe : Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Not implemented...vas npm package:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/eligibility.test.ts [ tests/unit/eligibility.test.ts ]
+Error: Failed to resolve import "../../src/curriculum/eligibility" from "tests/unit/eligibility.test.ts". Does the 
+file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/yalir/AppData/Local/Temp/claude/C--Users-yalir-repos-Piano-Stuff/9b647b56-e651-4563-9f4f-ce3e1e36a4a2/
+scratchpad/E0/redapp/app/tests/unit/eligibility.test.ts:34:7
+  25 |  import { join } from "node:path";
+  26 |  import { afterAll, describe, expect, it } from "vitest";
+  27 |  ...Y, targetDemandsFor, targetSkillsFor, usefulDensity } from "../../src/curriculum/eligibility";
+     |                                                                 ^
+  28 |  import { indexCatalog, tieredAlternatives } from "../../src/curriculum/selectors";
+  29 |  import { SHIPPED_SKILL_ACTIVATION, EVERY_DECLARED_SKILL } from "../../src/curriculum/skillActivation";
+ ❯ TransformPluginContext._formatLog ../../../../../../../../../../repos/Piano%20Stuff/PianoProject/.claude/worktrees/a
+gent-a4916fdc4a3058d81/app/node_modules/vite/dist/node/chunks/node.js:31147:39
+ ❯ TransformPluginContext.error ../../../../../../../../../../repos/Piano%20Stuff/PianoProject/.claude/worktrees/agent-
+a4916fdc4a3058d81/app/node_modules/vite/dist/node/chunks/node.js:31144:14
+ ❯ normalizeUrl ../../../../../../../../../../repos/Piano%20Stuff/PianoProject/.claude/worktrees/agent-a4916fdc4a3058d8
+1/app/node_modules/vite/dist/node/chunks/node.js:28083:18
+ ❯ ../../../../../../../../../../repos/Piano%20Stuff/PianoProject/.claude/worktrees/agent-a4916fdc4a3058d81/app/node_mo
+dules/vite/dist/node/chunks/node.js:28153:30
+ ❯ TransformPluginContext.transform ../../../../../../../../../../repos/Piano%20Stuff/PianoProject/.claude/worktrees/ag
+ent-a4916fdc4a3058d81/app/node_modules/vite/dist/node/chunks/node.js:28119:4
+ ❯ EnvironmentPluginContainer.transform ../../../../../../../../../../repos/Piano%20Stuff/PianoProject/.claude/worktree
+s/agent-a4916fdc4a3058d81/app/node_modules/vite/dist/node/chunks/node.js:30932:14
+ ❯ loadAndTransform ../../../../../../../../../../repos/Piano%20Stuff/PianoProject/.claude/worktrees/agent-a4916fdc4a30
+58d81/app/node_modules/vite/dist/node/chunks/node.js:20671:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/unit/help.test.ts [ tests/unit/help.test.ts ]
+Error: ENOENT: no such file or directory, open 'C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stu
+ff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\E0\redapp\docs\04-ui-spec.md'
+ ❯ tests/unit/help.test.ts:47:14
+     45| import { STAFF_POLICY, type DrillKind } from '../../src/engine/drills/…
+     46|
+     47| const SPEC = readFileSync(resolve('..', 'docs', '04-ui-spec.md'), 'utf…
+       |              ^
+     48|
+     49| /** `04` §5f, from its heading to the next `##`. */
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/unit/skillActivationBoundary.test.ts [ tests/unit/skillActivationBoundary.test.ts ]
+Error: Cannot find module '../../src/curriculum/eligibility' imported from C:/Users/yalir/AppData/Local/Temp/claude/C--
+Users-yalir-repos-Piano-Stuff/9b647b56-e651-4563-9f4f-ce3e1e36a4a2/scratchpad/E0/redapp/app/tests/unit/skillActivationB
+oundary.test.ts
+ ❯ tests/unit/skillActivationBoundary.test.ts:39:1
+     37| import { swapOptions, taughtAtRung, type SessionSlot } from '../../src…
+     38| import { skillsInForce } from '../../src/curriculum/skillActivation';
+     39| import { targetSkillsFor } from '../../src/curriculum/eligibility';
+       | ^
+     40| import type { CatalogItem, Curriculum } from '../../src/curriculum/typ…
+     41| import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/alternativesShareASkill.test.ts > the tiers are claims, in order, and each option says which > the 
+same lesson, a named stand-in, an item that also trains the target skill, one that also practises a target demand
+AssertionError: expected [ …(10) ] to deeply equal [ …(4) ]
+
+- Expected
++ Received
+
+@@ -6,13 +6,37 @@
+    [
+      "song.stand-in",
+      "alternative",
+    ],
+    [
++     "song.stand-in-untaught",
++     "alternative",
++   ],
++   [
++     "song.same-skill-incidental",
++     "skill",
++   ],
++   [
+      "song.same-skill",
+      "skill",
++   ],
++   [
++     "song.same-demand-untaught",
++     "demand",
++   ],
++   [
++     "song.skips-incidental",
++     "demand",
+    ],
+    [
++     "song.only-the-tag",
++     "demand",
++   ],
++   [
+      "song.same-demand",
++     "demand",
++   ],
++   [
++     "song.only-a-concept",
+      "demand",
+    ],
+  ]
+
+ ❯ tests/unit/alternativesShareASkill.test.ts:103:59
+    101|
+    102|   it('the same lesson, a named stand-in, an item that also trains the …
+    103|     expect(tiers().map((one) => [one.item.id, one.tier])).toEqual([
+       |                                                           ^
+    104|       ['song.same-lesson', 'lesson'],
+    105|       ['song.stand-in', 'alternative'],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/unit/alternativesShareASkill.test.ts > the tiers are claims, in order, and each option says which > a 
+shared step, the repertoire tag or any concept tag matches nothing; incidental and unready candidates are refused
+AssertionError: song.only-the-tag: expected [ 'song.same-lesson', …(9) ] to not include 'song.only-the-tag'
+ ❯ tests/unit/alternativesShareASkill.test.ts:116:32
+    114|     const ids = tiers().map((one) => one.item.id);
+    115|     for (const refused of ['song.only-the-tag', 'song.only-a-concept',…
+    116|       expect(ids, refused).not.toContain(refused);
+       |                                ^
+    117|     }
+    118|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/unit/alternativesShareASkill.test.ts > the tiers are claims, in order, and each option says which > with 
+no learner, the practice tiers offer nothing: "the other demands you have met" needs someone to have met them
+AssertionError: expected [ { item: { …(11) }, …(2) }, …(6) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "item": {
++       "concepts": [
++         "repertoire",
++       ],
++       "demands": [
++         "interval.step",
++         "rhythm.eighths",
++       ],
++       "file": "scores/song.same-skill-incidental.mxl",
++       "hands": "both",
++       "id": "song.same-skill-incidental",
++       "level": 5.05,
++       "measurement": {
++         "bars": 16,
++         "definitions": 3,
++         "established": [
++           "interval.step",
++         ],
++         "located": {
++           "interval.step": 30,
++           "rhythm.eighths": 2,
++         },
++         "notes": 64,
++         "status": "measured",
++         "steps": 64,
++       },
++       "targetSkills": [
++         "subdivision",
++       ],
++       "title": "song.same-skill-incidental",
++       "tracks": [
++         "classical",
++       ],
++       "type": "song",
++     },
++     "shared": "subdivision",
++     "tier": "skill",
++   },
++   {
++     "item": {
++       "concepts": [
++         "repertoire",
++       ],
++       "demands": [
++         "interval.step",
++         "rhythm.eighths",
++       ],
++       "file": "scores/song.same-skill.mxl",
++       "hands": "both",
++       "id": "song.same-skill",
++       "level": 5.3,
++       "measurement": {
++         "bars": 16,
++         "definitions": 3,
++         "established": [
++           "interval.step",
++           "rhythm.eighths",
++         ],
++         "located": {
++           "interval.step": 16,
++           "rhythm.eighths": 16,
++         },
++         "notes": 64,
++         "status": "measured",
++         "steps": 64,
++       },
++       "targetSkills": [
++         "subdivision",
++       ],
++       "title": "song.same-skill",
++       "tracks": [
++         "classical",
++       ],
++       "type": "song",
++     },
++     "shared": "subdivision",
++     "tier": "skill",
++   },
++   {
++     "item": {
++       "concepts": [
++         "repertoire",
++       ],
++       "demands": [
++         "interval.step",
++         "rhythm.eighths",
++         "rhythm.syncopation",
++       ],
++       "file": "scores/song.same-demand-untaught.mxl",
++       "hands": "both",
++       "id": "song.same-demand-untaught",
++       "level": 5,
++       "measurement": {
++         "bars": 16,
++         "definitions": 3,
++         "established": [
++           "interval.step",
++           "rhythm.eighths",
++           "rhythm.syncopation",
++         ],
++         "located": {
++           "interval.step": 16,
++           "rhythm.eighths": 16,
++           "rhythm.syncopation": 16,
++         },
++         "notes": 64,
++         "status": "measured",
++         "steps": 64,
++       },
++       "title": "song.same-demand-untaught",
++       "tracks": [
++         "classical",
++       ],
++       "type": "song",
++     },
++     "shared": "interval.step",
++     "tier": "demand",
++   },
++   {
++     "item": {
++       "concepts": [
++         "repertoire",
++       ],
++       "demands": [
++         "interval.step",
++         "interval.skip",
++       ],
++       "file": "scores/song.skips-incidental.mxl",
++       "hands": "both",
++       "id": "song.skips-incidental",
++       "level": 5,
++       "measurement": {
++         "bars": 16,
++         "definitions": 3,
++         "established": [
++           "interval.step",
++         ],
++         "located": {
++           "interval.skip": 16,
++           "interval.step": 16,
++         },
++         "notes": 64,
++         "status": "measured",
++         "steps": 64,
++       },
++       "title": "song.skips-incidental",
++       "tracks": [
++         "classical",
++       ],
++       "type": "song",
++     },
++     "shared": "interval.step",
++     "tier": "demand",
++   },
++   {
++     "item": {
++       "concepts": [
++         "repertoire",
++       ],
++       "demands": [
++         "interval.step",
++       ],
++       "file": "scores/song.only-the-tag.mxl",
++       "hands": "both",
++       "id": "song.only-the-tag",
++       "level": 5,
++       "measurement": {
++         "bars": 16,
++         "definitions": 3,
++         "established": [
++           "interval.step",
++         ],
++         "located": {
++           "interval.step": 16,
++         },
++         "notes": 64,
++         "status": "measured",
++         "steps": 64,
++       },
++       "title": "song.only-the-tag",
++       "tracks": [
++         "classical",
++       ],
++       "type": "song",
++     },
++     "shared": "interval.step",
++     "tier": "demand",
++   },
++   {
++     "item": {
++       "concepts": [
++         "repertoire",
++       ],
++       "demands": [
++         "interval.step",
++         "rhythm.eighths",
++       ],
++       "file": "scores/song.same-demand.mxl",
++       "hands": "both",
++       "id": "song.same-demand",
++       "level": 5.1,
++       "measurement": {
++         "bars": 16,
++         "definitions": 3,
++         "established": [
++           "interval.step",
++           "rhythm.eighths",
++         ],
++         "located": {
++           "interval.step": 16,
++           "rhythm.eighths": 16,
++         },
++         "notes": 64,
++         "status": "measured",
++         "steps": 64,
++       },
++       "title": "song.same-demand",
++       "tracks": [
++         "classical",
++       ],
++       "type": "song",
++     },
++     "shared": "interval.step",
++     "tier": "demand",
++   },
++   {
++     "item": {
++       "concepts": [
++         "repertoire",
++         "minuet",
++       ],
++       "demands": [
++         "interval.step",
++       ],
++       "file": "scores/song.only-a-concept.mxl",
++       "hands": "both",
++       "id": "song.only-a-concept",
++       "level": 5.2,
++       "measurement": {
++         "bars": 16,
++         "definitions": 3,
++         "established": [
++           "interval.step",
++         ],
++         "located": {
++           "interval.step": 16,
++         },
++         "notes": 64,
++         "status": "measured",
++         "steps": 64,
++       },
++       "title": "song.only-a-concept",
++       "tracks": [
++         "classical",
++       ],
++       "type": "song",
++     },
++     "shared": "interval.step",
++     "tier": "demand",
++   },
++ ]
+
+ ❯ tests/unit/alternativesShareASkill.test.ts:122:86
+    120|   it('with no learner, the practice tiers offer nothing: "the other de…
+    121|     const noLearner = tieredAlternatives({ itemId: 'song.source', less…
+    122|     expect(noLearner.filter((one) => one.tier === 'skill' || one.tier …
+       |                                                                                      ^
+    123|     const ids = alternativesFor({ itemId: 'song.source' }, CURRICULUM,…
+    124|     expect(ids).not.toContain('song.only-the-tag');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/unit/alternativesShareASkill.test.ts > the tiers are claims, in order, and each option says which > the 
+sheet’s words state the strongest fact known: the same lesson, also trains, also practises, with the demands met
+AssertionError: expected 'Trains the same skill: subdivision' to be 'Also trains subdivision, with the oth…' // 
+Object.is equality
+
+Expected: "Also trains subdivision, with the other demands you have met"
+Received: "Trains the same skill: subdivision"
+
+ ❯ tests/unit/alternativesShareASkill.test.ts:130:51
+    128|   it('the sheet’s words state the strongest fact known: the same lesso…
+    129|     expect(swapTierWords('lesson')).toBe('From the same lesson');
+    130|     expect(swapTierWords('skill', 'subdivision')).toBe('Also trains su…
+       |                                                   ^
+    131|     expect(swapTierWords('demand', 'interval.skip')).toBe('Also practi…
+    132|     for (const tier of ['lesson', 'alternative', 'skill', 'demand', 'k…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  tests/unit/alternativesShareASkill.test.ts > the swap sheet reads the same tiers > with no lesson and nothing 
+shared, the last resort is the same kind of exercise from the lessons reached, not a level window
+TypeError: (theirs(...) ?? []).some is not a function
+ ❯ src/curriculum/selectors.ts:199:70
+    197|       if (mine.size === 0) return;
+    198|       const found = [...catalog.byId.values()]
+    199|         .filter((item) => !skip.has(item.id) && (theirs(item) ?? []).s…
+       |                                                                      ^
+    200|         .sort(nearest);
+    201|       for (const item of found) push(item.id, tier, (theirs(item) ?? […
+ ❯ sharing src/curriculum/selectors.ts:199:10
+ ❯ tieredAlternatives src/curriculum/selectors.ts:204:5
+ ❯ swapOptions src/curriculum/session.ts:1425:32
+ ❯ tests/unit/alternativesShareASkill.test.ts:174:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  tests/unit/curriculumSelectors.test.ts > alternativesFor > falls back to items sharing a target skill, the 
+nearest level first; a shared concept tag matches nothing
+AssertionError: expected [ 'exercise.vehicle', …(8) ] to not include 'exercise.unrelated'
+ ❯ tests/unit/curriculumSelectors.test.ts:130:21
+    128|     expect(ids).toContain('exercise.vehicle');
+    129|     expect(ids.indexOf('exercise.vehicle')).toBeLessThan(ids.indexOf('…
+    130|     expect(ids).not.toContain('exercise.unrelated');
+       |                     ^
+    131|   });
+    132|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the swap sheet’s tiers > offers only the clean candidate that provides 
+the demand the row exists for
+AssertionError: expected [ …(6) ] to deeply equal [ [ 'song.far-clean', 'demand' ] ]
+
+
+ Test Files  8 failed | 3 passed (11)
+      Tests  11 failed | 82 passed (93)
+   Start at  13:22:08
+   Duration  1.44s (transform 47%, environment 30%, import 18%, tests 4%, worker 1%)
+
+  Transform  transforming modules took 2.39s · 47% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+
+- Expected
++ Received
+
+  [
+    [
++     "song.unmeasured-option",
++     "lesson",
++   ],
++   [
++     "song.declares-but-lacks",
++     "skill",
++   ],
++   [
++     "song.shares-a-step",
++     "demand",
++   ],
++   [
++     "song.close-not-ready",
++     "demand",
++   ],
++   [
++     "song.large-hand",
++     "demand",
++   ],
++   [
+      "song.far-clean",
+      "demand",
+    ],
+  ]
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts:95:59
+     93|
+     94|   it('offers only the clean candidate that provides the demand the row…
+     95|     expect(tiers().map((one) => [one.item.id, one.tier])).toEqual([['s…
+       |                                                           ^
+     96|   });
+     97|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the swap sheet’s tiers > never offers an incidental sharer, an 
+unmeasured option, a declaration the notes lack, an unready candidate or a large-hand voicing
+AssertionError: song.shares-a-step: expected [ 'song.unmeasured-option', …(5) ] to not include 'song.shares-a-step'
+ ❯ tests/unit/gateAtTheConsumers.test.ts:101:32
+     99|     const ids = tiers().map((one) => one.item.id);
+    100|     for (const refused of ['song.shares-a-step', 'song.unmeasured-opti…
+    101|       expect(ids, refused).not.toContain(refused);
+       |                                ^
+    102|     }
+    103|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the repertoire slot’s claim > a piece whose new demand is only 
+incidental is not "a piece with skips"
+AssertionError: expected 'song.skips-incidental' to be undefined
+
+- Expected:
+undefined
+
++ Received:
+"song.skips-incidental"
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts:166:71
+    164|     const rung = song('song.rung', measured(['interval.step']));
+    165|     const slot = repertoireOf([rung, incidental]);
+    166|     expect(slot?.claim?.kind === 'ready' ? slot.item?.id : undefined).…
+       |                                                                       ^
+    167|   });
+    168|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+ FAIL  tests/unit/importOverlay.test.ts > what the overlay unlocks > does not offer an unmeasured import as an 
+equivalent option
+AssertionError: expected [ 'import.my-piece' ] to not include 'import.my-piece'
+ ❯ tests/unit/importOverlay.test.ts:151:47
+    149|     const catalog = indexCatalog([item, { id: 'song.a', type: 'song', …
+    150|     const alternatives = alternativesFor({ itemId: 'song.a', lessonId:…
+    151|     expect(alternatives.map((a) => a.id)).not.toContain('import.my-pie…
+       |                                               ^
+    152|   });
+    153| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯
+
+ FAIL  tests/unit/session.test.ts > swapOptions > with no tier to offer, the same kind from the lessons reached, and 
+nothing from no lesson
+AssertionError: expected [ [ 'ex.a', 'demand' ], …(5) ] to deeply equal [ [ 'ex.b', 'kind' ], …(1) ]
+
+- Expected
++ Received
+
+  [
+    [
++     "ex.a",
++     "demand",
++   ],
++   [
+      "ex.b",
+-     "kind",
++     "demand",
+    ],
+    [
+-     "ex.a",
+-     "kind",
++     "song.a",
++     "demand",
++   ],
++   [
++     "song.b",
++     "demand",
++   ],
++   [
++     "jam.a",
++     "demand",
++   ],
++   [
++     "song.c",
++     "demand",
+    ],
+  ]
+
+ ❯ tests/unit/session.test.ts:308:68
+    306|     const slot = { kind: 'review' as const, minutes: 5, item: ITEMS[2]…
+    307|     const options = swapOptions(slot, [slot], CURRICULUM, indexCatalog…
+    308|     expect(options.map((option) => [option.item.id, option.tier])).toE…
+       |                                                                    ^
+    309|       ['ex.b', 'kind'],
+    310|       ['ex.a', 'kind'],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/14]⎯
+
+exit 1

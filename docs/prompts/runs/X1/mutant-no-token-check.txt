@@ -1,0 +1,116 @@
+mutant no-token-check in app/src/data/sessionRun.ts; npx vitest run tests/unit/sessionRun.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app
+
+ ❯ tests/unit/sessionRun.test.ts (23 tests | 4 failed) 27ms
+   ❯ the state machine (12)
+     × swap: the activity is replaced with a new token, pending, its adaptations and result gone; the old token finishes nothing 5ms
+   ❯ every write is validated by the session id, the composition version and the activity token (3)
+     × a late completion from the activity before, after the cursor advanced, is refused and overwrites nothing 1ms
+     × time from a screen whose activity is no longer current is refused (only visible time on the current activity counts) 1ms
+   ❯ the store: one record under one key, validated, applied in one transaction (6)
+     × two tabs on one session: the first write lands, the second tab’s — made on the view it held — is refused and the record is the first’s 1ms
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 19 passed (23)
+   Start at  09:56:31
+   Duration  476ms (transform 69%, import 23%, tests 7%, worker 1%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/sessionRun.test.ts > the state machine > swap: the activity is replaced with a new token, pending, its adaptations and result gone; the old token finishes nothing
+AssertionError: expected { ok: true, run: { format: 1, …(9) } } to match object { ok: false, why: 'stale-token' }
+(11 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": false,
+-   "why": "stale-token",
++   "ok": true,
+  }
+
+ ❯ tests/unit/sessionRun.test.ts:165:75
+    163|     expect(r.activities[1]).toMatchObject({ token: 'swapped01', state:…
+    164|     r = ok(apply(r, as(r, 1), { kind: 'choose' }, NOW));
+    165|     expect(apply(r, old, { kind: 'completed', outcome: 'unknown' }, NO…
+       |                                                                           ^
+    166|   });
+    167|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/sessionRun.test.ts > every write is validated by the session id, the composition version and the activity token > a late completion from the activity before, after the cursor advanced, is refused and overwrites nothing
+AssertionError: expected { ok: true, run: { format: 1, …(9) } } to match object { ok: false, why: 'stale-token' }
+(11 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": false,
+-   "why": "stale-token",
++   "ok": true,
+  }
+
+ ❯ tests/unit/sessionRun.test.ts:195:18
+    193|     r = ok(apply(r, first, { kind: 'completed', outcome: 'unknown' }, …
+    194|     const late = apply(r, first, { kind: 'completed', outcome: 'failed…
+    195|     expect(late).toMatchObject({ ok: false, why: 'stale-token' });
+       |                  ^
+    196|     expect(late.run).toBe(r);
+    197|     expect(r.activities[0]?.result).toEqual({ outcome: 'unknown', atte…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/sessionRun.test.ts > every write is validated by the session id, the composition version and the activity token > time from a screen whose activity is no longer current is refused (only visible time on the current activity counts)
+AssertionError: expected { ok: true, run: { format: 1, …(9) } } to match object { ok: false, why: 'stale-token' }
+(11 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": false,
+-   "why": "stale-token",
++   "ok": true,
+  }
+
+ ❯ tests/unit/sessionRun.test.ts:213:67
+    211|     let r = run();
+    212|     r = ok(apply(r, as(r, 0), { kind: 'completed', outcome: 'unknown' …
+    213|     expect(apply(r, as(r, 0), { kind: 'accrue', ms: 5000 }, NOW)).toMa…
+       |                                                                   ^
+    214|   });
+    215| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/sessionRun.test.ts > the store: one record under one key, validated, applied in one transaction > two tabs on one session: the first write lands, the second tab’s — made on the view it held — is refused and the record is the first’s
+AssertionError: expected { ok: true, run: { format: 1, …(9) } } to match object { ok: false, why: 'stale-token' }
+(11 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": false,
+-   "why": "stale-token",
++   "ok": true,
+  }
+
+ ❯ tests/unit/sessionRun.test.ts:277:20
+    275|     const second = await applySessionEvent(tabB, { kind: 'advance' }, …
+    276|     expect(first.ok).toBe(true);
+    277|     expect(second).toMatchObject({ ok: false, why: 'stale-token' });
+       |                    ^
+    278|     const stored = await readSessionRun();
+    279|     expect(stored.kind === 'run' && stored.run.activities[0]?.state).t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+exit=1

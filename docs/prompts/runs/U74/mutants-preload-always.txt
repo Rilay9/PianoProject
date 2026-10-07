@@ -1,0 +1,37 @@
+mutant: the probe loaded in create whatever the piece's length
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/windowRendererStage.test.ts (12 tests | 1 failed) 1378ms
+   ❯ the measurement taken before the first window is priced (U74) (5)
+     × a longer piece than the probe reaches keeps the idle load: nothing loaded before the first window 7ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  01:33:15
+   Duration  2.47s (tests 58%, environment 30%, transform 9%, import 2%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the measurement taken before the first window is priced (U74) > a longer piece than the probe reaches keeps the idle load: nothing loaded before the first window
+AssertionError: loaded before the first window: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/unit/windowRendererStage.test.ts:569:60
+    567|     const renderer = await open(stage, model);
+    568|     const probe = FakeOsmdView.all.find((v) => v.label === 'osmd.rende…
+    569|     expect(probe?.loads, 'loaded before the first window').toBe(0);
+       |                                                            ^
+    570|     await settle();
+    571|     expect(probe?.loads, 'loaded on idle').toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit 1

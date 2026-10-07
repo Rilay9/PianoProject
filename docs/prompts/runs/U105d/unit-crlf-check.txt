@@ -1,0 +1,3 @@
+app/src/style.css: CRLF line endings yes; LF form present False; CRLF form present True
+build/u105d/style.base.css: CRLF line endings yes; LF form present False; CRLF form present True
+app/src/ui/screens/ScoreScreen.ts: CRLF line endings yes; LF form present False; CRLF form present True

@@ -59,3 +59,7 @@ every step; never stop silently. Do not touch `app/src/score/autoFit.ts` or
 
 Per choice: what was built, the red line, the words on screen; exit codes; what is
 unverified.
+
+## Record
+
+lane: T33 · closes: — · entry: — · role: history

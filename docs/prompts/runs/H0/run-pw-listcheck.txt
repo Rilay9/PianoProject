@@ -1,0 +1,803 @@
+Listing tests:
+  app-shell.spec.ts:12:3 › app shell › lands on Today by default and shows all five tabs
+  app-shell.spec.ts:21:3 › app shell › clicking each tab renders its screen and updates the hash
+  app-shell.spec.ts:31:3 › app shell › reloading on a non-default tab stays on that tab (hash survives reload)
+  app-shell.spec.ts:40:3 › app shell › browser back navigates to the previous tab
+  app-shell.spec.ts:48:3 › app shell › theme selector toggles data-theme on the document
+  app-shell.spec.ts:57:3 › app shell › theme preference persists across reload
+  app-shell.spec.ts:78:3 › the shell holds still while a list scrolls › the tab bar stays on the bottom of the screen
+  audio.spec.ts:9:3 › audio › the bundled soundfont is served and is under the 20 MB budget
+  audio.spec.ts:18:3 › audio › pressing "Test sound" starts the AudioContext and plays a C major chord
+  bisect-render.spec.ts:36:3 › bisect render › render each candidate slice
+  carry-overs.spec.ts:28:3 › named sections › offers the piece’s own sections and loops one of them
+  carry-overs.spec.ts:43:3 › named sections › is absent on a piece with no sections
+  carry-overs.spec.ts:53:3 › named sections › clearing the loop clears the section too
+  carry-overs.spec.ts:79:3 › drag-to-reorder tracks › moves a chip to the front and stores the new order
+  carry-overs.spec.ts:97:3 › drag-to-reorder tracks › a drag past the threshold reorders; a tap still toggles
+  carry-overs.spec.ts:113:3 › drag-to-reorder tracks › the order survives a reload, because it is stored
+  carry-overs.spec.ts:132:3 › the backing loop › offers bass and drums, and turning it on turns the comp on
+  carry-overs.spec.ts:143:3 › the backing loop › stops when the screen is left
+  carry-overs.spec.ts:157:3 › strict prerequisites › is off by default — nothing is locked (00 D17)
+  carry-overs.spec.ts:162:3 › strict prerequisites › shows a badge and a reason when it is on, and never a disabled card
+  carry-overs.spec.ts:180:3 › strict prerequisites › offers a way to the rung that would unlock it
+  carry-overs.spec.ts:194:3 › the tablet layout › shows the side panel and opens at two bars
+  carry-overs.spec.ts:207:3 › the tablet layout › the panel collapses
+  carry-overs.spec.ts:217:3 › the phone is untouched › has no side panel and keeps its own bars setting
+  chart.spec.ts:37:3 › chord chart › reads the chord symbols out of an imported score
+  chart.spec.ts:49:3 › chord chart › says so plainly when a score has no chords in it
+  chart.spec.ts:56:3 › chord chart › offers swing and comp toggles
+  chart.spec.ts:80:3 › tablet layout (docs/04 §7a) › the browsing lists become two columns
+  chart.spec.ts:93:3 › phone layout › stays one column and never scrolls sideways
+  competence.spec.ts:122:3 › one skill state on Skills and Progress › Skills opens on what the evidence has not shown lately, and says what the app cannot judge
+  competence.spec.ts:154:3 › one skill state on Skills and Progress › Progress says which skills moved in the last four weeks, and how
+  content-render.spec.ts:221:3 › content render check › every catalog item renders and yields at least one step
+  converted-import.spec.ts:49:3 › a converted MIDI performance › imports, is listed under the title the converter wrote, and engraves
+  converted-import.spec.ts:66:3 › a converted MIDI performance › walks the same number of steps as the cursor does
+  converted-import.spec.ts:87:3 › a converted MIDI performance › keeps both hands and both staves
+  dark-ink.spec.ts:18:1 › the drill draws its notation in light ink on a dark card
+  dark-ink.spec.ts:26:1 › and so does the score screen, which is where the rule came from
+  doors.spec.ts:123:3 › Today's tools › Free play opens the free-play screen
+  doors.spec.ts:131:3 › Today's tools › Sight-read opens the same phrase the daily card offers
+  doors.spec.ts:148:3 › Today's tools › Simon opens a Simon drill
+  doors.spec.ts:157:3 › Today's tools › Accompaniment lab opens the lab
+  doors.spec.ts:164:3 › Today's tools › the tools are text, so Start session is still the only filled box (R3)
+  doors.spec.ts:182:3 › Open as… from a Library row › the four modes are the mode the score opens in
+  doors.spec.ts:192:3 › Open as… from a Library row › Rhythm only opens a rhythm run, in the one mode that has a clock
+  doors.spec.ts:201:3 › Open as… from a Library row › and any other choice afterwards is not a rhythm run
+  doors.spec.ts:215:3 › Open as… from a Library row › Duet opens with a hand chosen and the app on the other one
+  doors.spec.ts:231:3 › Open as… from a Library row › Blind hides the score and leaves the rest of the run alone
+  doors.spec.ts:238:3 › Open as… from a Library row › the control is only on rows that open on the Score screen (R4)
+  doors.spec.ts:276:3 › the Library rows upright › a catalog row keeps its words and its links on one line
+  doors.spec.ts:283:3 › the Library rows upright › an imported row still drops its buttons to a line of their own
+  doors.spec.ts:306:3 › the Open as… sheet sideways › every one of the seven is on the screen without scrolling
+  doors.spec.ts:322:3 › Free play › names a held C–E–G as C major, and lets go of it
+  doors.spec.ts:341:3 › Free play › an inversion is named after its root
+  doors.spec.ts:351:3 › Free play › with nothing connected it says so and offers the way to connect (R4)
+  doors.spec.ts:363:3 › Free play › the keys on the screen are an input, not a diagram
+  doors.spec.ts:376:3 › Free play › Back returns to Today
+  doors.spec.ts:470:5 › pictures › every door, light
+  doors.spec.ts:470:5 › pictures › every door, dark
+  doors.spec.ts:491:3 › pictures › the phone at 115 % text
+  drills-harmony.spec.ts:55:3 › the harmony and ear drills › mode: names a mode and takes the scale, in order
+  drills-harmony.spec.ts:64:3 › the harmony and ear drills › chord-scale: shows a chord and takes the scale that fits it
+  drills-harmony.spec.ts:71:3 › the harmony and ear drills › extended-chord: takes every note of a ninth
+  drills-harmony.spec.ts:83:3 › the harmony and ear drills › roman-numeral: names the key it is asking in
+  drills-harmony.spec.ts:94:3 › the harmony and ear drills › transposition: prints four bars and wants them somewhere else
+  drills-harmony.spec.ts:106:3 › the harmony and ear drills › ear-tune: plays the tune, then takes it back a phrase at a time
+  drills-harmony.spec.ts:114:3 › the harmony and ear drills › harmonic-dictation: hears a progression back as chords
+  drills-review.spec.ts:284:3 › a miss keeps the card up › shows the answer on the keys and on a staff, and holds it there
+  drills-review.spec.ts:312:3 › a miss keeps the card up › a tap moves on sooner than waiting, and a right answer never waits
+  drills-review.spec.ts:361:3 › going over the ones you missed › is offered only when something was missed, and counts nothing
+  drills-review.spec.ts:426:3 › Simon › grows by one note a round, and ends on the note that breaks it
+  drills-review.spec.ts:571:3 › Simon › shows the chain on the keys, one at a time, with its name on the card
+  drills-review.spec.ts:647:3 › Simon › names the blues scale as the written scale does: F sharp, E flat, B flat
+  drills-review.spec.ts:719:3 › Simon › draws no staff on the rungs that do not light the keys
+  drills-review.spec.ts:751:3 › Simon › plays a missed chain back lit, then asks for the same chain again
+  drills-review.spec.ts:818:3 › Simon › keeps the card whole on a screen with no room for a staff
+  drills-review.spec.ts:885:7 › Simon › pictures › the Simon card mid-chain, phone-portrait light
+  drills-review.spec.ts:885:7 › Simon › pictures › the Simon card mid-chain, phone-portrait dark
+  drills-review.spec.ts:885:7 › Simon › pictures › the Simon card mid-chain, phone-portrait-long light
+  drills-review.spec.ts:885:7 › Simon › pictures › the Simon card mid-chain, phone-landscape dark
+  drills-review.spec.ts:917:3 › Simon › remembers the rung for that item, and only for that item
+  drills-review.spec.ts:959:3 › when a card draws a staff › harmonic dictation: nothing until the answer is judged, then the progression
+  drills-review.spec.ts:999:3 › when a card draws a staff › the modulating card draws the numerals it is showing, keys and all
+  drills-review.spec.ts:1012:3 › when a card draws a staff › a chord card draws nothing until the answer, then the chord — right or wrong
+  drills-review.spec.ts:1050:3 › when a card draws a staff › the pedal card carries its chord from the first frame
+  drills-review.spec.ts:1064:3 › when a card draws a staff › and keeps the card whole on a screen with no room for one
+  drills-review.spec.ts:1080:3 › when a card draws a staff › a note-flash card never draws a second staff, even when it is missed
+  drills-review.spec.ts:1101:3 › when a card draws a staff › Show me still draws it and still forfeits, and the ear kinds have none
+  drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, phone-portrait light
+  drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, phone-portrait light
+  drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, phone-portrait light
+  drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, phone-portrait light
+  drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, phone-portrait dark
+  drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, phone-portrait dark
+  drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, phone-portrait dark
+  drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, phone-portrait dark
+  drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, phone-landscape light
+  drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, phone-landscape light
+  drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, phone-landscape light
+  drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, phone-landscape light
+  drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, phone-landscape dark
+  drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, phone-landscape dark
+  drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, phone-landscape dark
+  drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, phone-landscape dark
+  drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, laptop light
+  drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, laptop light
+  drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, laptop light
+  drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, laptop light
+  drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, laptop dark
+  drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, laptop dark
+  drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, laptop dark
+  drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, laptop dark
+  drills.spec.ts:46:3 › the drill screen › runs a chord drill: right answers score, wrong ones do not
+  drills.spec.ts:63:3 › the drill screen › a note-flash card draws the note on a staff and takes the key
+  drills.spec.ts:76:3 › the drill screen › a find-key card names a key and takes it in any octave
+  drills.spec.ts:86:3 › the drill screen › an ear drill plays without naming the answer, and replays on request
+  drills.spec.ts:97:3 › the drill screen › the rhythm drill shows a one-line staff and marks the taps it catches
+  drills.spec.ts:107:3 › the drill screen › the pedal drill shows a lamp that follows CC64 and reports the timing
+  drills.spec.ts:133:3 › the drill screen › the dynamics drill meters the two phrases and compares them
+  drills.spec.ts:147:3 › the drill screen › the backing-track drill loops, judges nothing, and says so
+  drills.spec.ts:168:3 › the drill screen › a call-and-response drill plays a phrase and takes it back in order
+  drills.spec.ts:181:3 › the drill screen › the on-screen keys answer a drill, for a learner with no cable
+  drills.spec.ts:194:3 › the drill screen › finishing records the run and Progress shows it
+  drills.spec.ts:218:3 › the drill screen › ending a set early keeps it out of the history
+  drills.spec.ts:244:3 › the drill screen › and keeping it puts it there
+  drills.spec.ts:255:3 › the drill screen › you can listen back to what you improvised
+  drills.spec.ts:278:3 › the drill screen › and offers nothing to listen back to when there is nothing
+  drills.spec.ts:286:3 › the drill screen › a set that runs to its end still records itself
+  drills.spec.ts:299:3 › the drill screen › "Again" starts a fresh set rather than repeating the same cards
+  drills.spec.ts:309:3 › the drill screen › says so plainly when an item has no drill to run
+  drills.spec.ts:316:3 › sight-reading (docs/05 §8) › generates notation and opens it on the Score screen in Tempo mode
+  drills.spec.ts:324:3 › sight-reading (docs/05 §8) › is different material each time it is opened
+  drills.spec.ts:390:5 › a drill sideways › drill.technique.five-finger-lh: its buttons are on the screen
+  drills.spec.ts:390:5 › a drill sideways › drill.reading.grand-staff-flash: its buttons are on the screen
+  drills.spec.ts:390:5 › a drill sideways › drill.chord.c-f-g: its buttons are on the screen
+  drills.spec.ts:390:5 › a drill sideways › drill.ear.major-minor: its buttons are on the screen
+  drills.spec.ts:390:5 › a drill sideways › drill.theory.roman-numerals: its buttons are on the screen
+  drills.spec.ts:420:3 › the placement test says where you start › names the unit rather than printing its id
+  drills.spec.ts:434:3 › the placement test says where you start › every item it can end on names a unit that exists
+  empty-states.spec.ts:58:1 › a chart with no chords draws the sentence and one button
+  empty-states.spec.ts:94:1 › the microphone screen never says "not connected (not connected)"
+  empty-states.spec.ts:104:1 › the score folder draws no browse controls with no folder
+  empty-states.spec.ts:113:1 › the heat map says what it measures and what the shades mean
+  empty-states.spec.ts:126:1 › a chart for a piece that is not there draws no transport over nothing
+  empty-states.spec.ts:150:1 › a lesson that does not exist draws one sentence, not six empty sections
+  empty-states.spec.ts:175:1 › a search that matches nothing offers the way back to everything
+  empty-states.spec.ts:192:1 › a filter left on behind a closed row can be undone from the empty list
+  empty-states.spec.ts:214:1 › Progress on a fresh phone pairs each empty list with a way to fill it
+  empty-states.spec.ts:238:1 › a refused microphone says what to do instead, and stops pretending to listen
+  empty-states.spec.ts:295:1 › a microphone prompt that was only dismissed still offers Connect
+  empty-states.spec.ts:339:1 › a stage with nothing on the tracks you have on says so and offers the tracks
+  empty-states.spec.ts:383:1 › the error banner stays on the visible bottom edge while a long list scrolls
+  engine.spec.ts:9:3 › Wait mode end to end › a perfect scripted run finishes and scores 100 %
+  engine.spec.ts:23:3 › Wait mode end to end › the cursor follows the engine, not a clock
+  engine.spec.ts:40:3 › Wait mode end to end › a scripted MIDI performance drives the run through a real ReplaySource
+  engine.spec.ts:69:3 › Wait mode end to end › a wrong note is counted and painted red without advancing
+  engine.spec.ts:82:3 › Wait mode end to end › a run over a repeat visits the printed bar twice
+  engine.spec.ts:96:3 › Tempo mode end to end › the clock advances the cursor with nothing played, and reports misses
+  engine.spec.ts:112:3 › Tempo mode end to end › a late run yields the expected timing statistics
+  engine.spec.ts:156:3 › Tempo mode end to end › a note far outside the tolerance is wrong and its slot is missed
+  engine.spec.ts:167:3 › Tempo mode end to end › the count-in delays the first step
+  engine.spec.ts:184:5 › generated sight-reading renders and can be practised › level 1 renders and drives a perfect Wait run
+  engine.spec.ts:184:5 › generated sight-reading renders and can be practised › level 2 renders and drives a perfect Wait run
+  engine.spec.ts:184:5 › generated sight-reading renders and can be practised › level 3 renders and drives a perfect Wait run
+  engine.spec.ts:184:5 › generated sight-reading renders and can be practised › level 4 renders and drives a perfect Wait run
+  engine.spec.ts:205:3 › generated sight-reading renders and can be practised › the same seed gives the same exercise, a different seed does not
+  feedback-placement.spec.ts:46:3 › the drill screen’s status line › shows the count-in sideways, on the screen rather than below it
+  feedback-placement.spec.ts:63:3 › the drill screen’s status line › is on the screen upright too
+  feedback-placement.spec.ts:72:3 › the transposition drill’s four bars › are engraved once per card and survive the answer
+  feedback-placement.spec.ts:109:3 › Settings says what it saved where the control is › puts Saved. on the row that was changed, in view
+  feedback-placement.spec.ts:131:3 › Settings says what it saved where the control is › sideways, the note stays inside its own row’s column
+  feedback-placement.spec.ts:152:3 › "Download everything now" › counts as it goes and can be stopped
+  feedback-placement.spec.ts:168:3 › "Download everything now" › says there is no network rather than counting 1,256 failures
+  finder.spec.ts:27:3 › the finder on a rung › says what the rung needs and hands over a search and a prompt
+  finder.spec.ts:59:3 › the finder on a rung › marks an example as already bundled or as still missing
+  finder.spec.ts:67:3 › the finder on a rung › copies the prompt to the clipboard
+  finder.spec.ts:80:3 › the finder on a concept › is reachable from the Skills screen, under a readable name
+  finder.spec.ts:116:3 › two taps from a share to a rung › the assign sheet opens by itself with the rung already chosen
+  finder.spec.ts:131:3 › two taps from a share to a rung › Save is the second and last action, and the piece lands on the rung
+  finder.spec.ts:144:3 › two taps from a share to a rung › the needs line counts the piece he just added (C3)
+  finder.spec.ts:161:3 › two taps from a share to a rung › the rung survives a reload, because it is stored and not just routed
+  finder.spec.ts:168:3 › two taps from a share to a rung › an import with no rung still works and belongs to none
+  finder.spec.ts:188:3 › two taps from a share to a rung › "Import for this rung" on the lesson page opens the picker on that rung
+  first-day.spec.ts:589:5 › a first day › from nothing to a recorded pass, phone upright
+  first-day.spec.ts:589:5 › a first day › from nothing to a recorded pass, phone sideways
+  folder.add.spec.ts:123:3 › adding one score from the folder › reads the file the row names and puts it in the library
+  folder.add.spec.ts:181:3 › adding one score from the folder › survives a reload, and is not offered again
+  folder.add.spec.ts:218:3 › adding one score from the folder › the added row is in the library list on its first paint
+  folder.manifest.spec.ts:154:3 › a listing read out of library.json › says what it cannot see, and costs the first score nothing
+  folder.manifest.spec.ts:206:3 › an index that was stopped part way › says how far it got and offers to finish, and R1 still holds
+  folder.rail-cost.spec.ts:64:1 › jumping to a late letter draws a page, not everything above it
+  folder.rail-cost.spec.ts:101:3 › the rail keeps describing the listing after a jump — upright
+  folder.rail-cost.spec.ts:101:3 › the rail keeps describing the listing after a jump — sideways
+  folder.rail-cost.spec.ts:157:1 › a letter the search has emptied is dimmed and dead
+  folder.readable.spec.ts:116:3 › the folder list held upright › a title is shown in full, or at worst over two lines
+  folder.readable.spec.ts:137:3 › the folder list held upright › the words get most of the row, not half of it
+  folder.readable.spec.ts:150:3 › the folder list held upright › and the buttons are still whole
+  folder.readable.spec.ts:166:3 › the folder list held upright › the notice says the whole thing, and the first score is still on the screen
+  folder.spec.ts:196:3 › a score added from the folder and the rung it has not got › says it is on no rung, and opens the assign sheet from the folder row
+  folder.spec.ts:217:3 › a score added from the folder and the rung it has not got › assigning it on the folder screen makes the row say so, without a reload
+  folder.spec.ts:262:3 › a score added from the folder and the rung it has not got › a score already on a rung is not asked about again
+  folder.spec.ts:287:3 › a listing stored without its library.json ever being found › names the problem and offers the fix, instead of just showing hashes
+  folder.spec.ts:298:3 › a listing stored without its library.json ever being found › says nothing for an ordinary folder, even with a stray untitled file
+  folder.spec.ts:307:3 › a folder of 37,261 scores › browses, filters and searches without the screen falling over
+  folder.spec.ts:343:3 › a folder of 37,261 scores › the second open is the one the owner lives with, and it is not the first
+  folder.spec.ts:379:3 › a folder of 37,261 scores › the first score is on the screen without scrolling, upright (R1)
+  folder.spec.ts:428:3 › a folder of 37,261 scores › R1 again at the owner’s real geometry, with the real number of scores
+  folder.spec.ts:467:3 › a folder of 37,261 scores › rescanning and forgetting are both inside How this works (R1, R3)
+  folder.spec.ts:493:3 › a folder of 37,261 scores › says how to add when the folder is not connected, instead of failing obscurely
+  folder.spec.ts:518:3 › a folder of 37,261 scores › a row that failed to add stops saying so once one succeeds
+  folder.spec.ts:531:3 › a folder of 37,261 scores › a folder with no manifest still lists and still searches
+  folder.spec.ts:546:3 › the letter rail › jumps to a letter, and grows the list to reach one that is not drawn yet
+  folder.spec.ts:580:3 › the letter rail › says the listing is saved, and offers the folder back, when nothing is connected
+  folder.spec.ts:621:3 › what the archive knows about a score › Details says where the estimated level sits, and what the estimate is worth
+  generate-audio-fixtures.spec.ts:99:3 › audio fixture generation › renders the bundled piano to WAV fixtures
+  guide-shots.spec.ts:29:3 › guide pictures › every picture the guide shows
+  guide.spec.ts:33:3 › the guide › opens from Settings, with every section and every picture
+  guide.spec.ts:51:3 › the guide › the section buttons open the screens they describe
+  guide.spec.ts:61:3 › the guide › the contents jump within the page and the sections read in order
+  guide.spec.ts:71:3 › the guide › the procedures are steps and the modes are labelled, not prose
+  help-strip.spec.ts:65:3 › the Score screen says which mode this is › names the mode and what to do, above the notation, without scrolling
+  help-strip.spec.ts:85:3 › the Score screen says which mode this is › the line follows the mode, and the ? says what the controls do
+  help-strip.spec.ts:107:3 › the Score screen says which mode this is › the card that explains the mode comes up once, on the first meeting
+  help-strip.spec.ts:128:3 › a drill says what kind of thing it is › names the kind above the card, and the card says how to answer
+  help-strip.spec.ts:143:3 › a drill says what kind of thing it is › the ? names the controls and where the drill sits
+  help-strip.spec.ts:157:3 › a drill says what kind of thing it is › the first card of a kind explains it before it asks anything
+  help-strip.spec.ts:167:3 › the tools say what they are › the lab, the chord chart and free play each carry the strip
+  help-strip.spec.ts:202:3 › the guide holds the whole list › lists every mode, drill kind and tool on one page
+  help-strip.spec.ts:215:3 › the guide holds the whole list › Skills review and a lesson both offer the way in
+  keyboard-strip.spec.ts:16:3 › KeyboardStrip performance › updating a chord mutates only those keys and keeps every node identical
+  keyboard-strip.spec.ts:75:3 › KeyboardStrip performance › setState through the live MIDI path repaints without rebuilding
+  keyboard-strip.spec.ts:89:3 › KeyboardStrip performance › the strip scrolls horizontally rather than widening the page
+  keyboard-strip.spec.ts:128:5 › the keyboard strip fits on the screen › sideways: no part of a key is below the fold
+  keyboard-strip.spec.ts:128:5 › the keyboard strip fits on the screen › upright: no part of a key is below the fold
+  keys-guide.spec.ts:28:3 › the keys guide › two notes ahead marks the next key in Wait mode, with the finger numbers
+  keys-guide.spec.ts:39:3 › the keys guide › off marks nothing ahead, and no finger numbers
+  keys-guide.spec.ts:48:3 › the keys guide › the default guide marks the note it waits for, without the next one in Wait mode
+  keys-guide.spec.ts:57:3 › the keys guide › with the flash off a wrong note colours no key, and the guide stays
+  keys-guide.spec.ts:69:3 › the keys guide › the ribbon prints the finger after the note name
+  lab-both-ways.spec.ts:53:3 › the two ways round › are chips in the same row as trading fours, and the jam opens on neither
+  lab-both-ways.spec.ts:75:3 › the two ways round › are exclusive with trading fours, in both directions
+  lab-both-ways.spec.ts:97:3 › the two ways round › refuse a way round with nothing to play, and say why on the screen
+  lab-both-ways.spec.ts:129:3 › the two ways round › fall back to bed only when the preset’s way round loses its hand
+  lab-both-ways.spec.ts:141:3 › the two ways round › open preselected from the preset a rung’s tool names
+  lab-both-ways.spec.ts:151:3 › the lab explains itself › puts a line under every control and one over the two buttons
+  lab-both-ways.spec.ts:168:3 › the lab explains itself › says what a preset is for once it is on
+  lab.spec.ts:100:3 › the accompaniment lab › opens from the Library and says what it is about to build
+  lab.spec.ts:114:3 › the accompaniment lab › what Jam it will play is settable without scrolling, from both doors
+  lab.spec.ts:149:3 › the accompaniment lab › Read it lands on the Score screen with the bars that were chosen
+  lab.spec.ts:176:3 › the accompaniment lab › building the same settings twice leaves one row, not two
+  lab.spec.ts:196:3 › the accompaniment lab › Jam it shows the chords bar by bar, lights the keys, and stops
+  lab.spec.ts:227:3 › the accompaniment lab › changing a setting under a running loop stops it rather than lying
+  lab.spec.ts:240:3 › the accompaniment lab › the twelve-bar blues brings its own bar counts with it
+  lab.spec.ts:257:3 › the accompaniment lab › a numeral it cannot read is named, not guessed at
+  lab.spec.ts:277:3 › Today's sight-read › is a card of its own, with the day carried in the route
+  lab.spec.ts:296:3 › Today's sight-read › ticks and starts counting once the day is read
+  lab.spec.ts:347:3 › Today's sight-read › re-opened after it was read, the same phrase is not a new first attempt
+  lab.spec.ts:399:3 › Today's sight-read › heard before its first run, the phrase is not read for the first time
+  lab.spec.ts:477:1 › a preset sets the lab up, locks what it is about, and leaves the rest
+  lab.spec.ts:523:1 › an unknown preset id leaves an ordinary lab
+  landscape.spec.ts:41:3 › Today sideways: no title, content near the top
+  landscape.spec.ts:41:3 › Plan sideways: no title, content near the top
+  landscape.spec.ts:41:3 › Library sideways: no title, content near the top
+  landscape.spec.ts:41:3 › Progress sideways: no title, content near the top
+  landscape.spec.ts:41:3 › Settings sideways: no title, content near the top
+  landscape.spec.ts:63:3 › Skills sideways: no h1 at heading size, content near the top
+  landscape.spec.ts:63:3 › Shelf sideways: no h1 at heading size, content near the top
+  landscape.spec.ts:63:3 › a lesson sideways: no h1 at heading size, content near the top
+  landscape.spec.ts:63:3 › a drill sideways: no h1 at heading size, content near the top
+  landscape.spec.ts:113:1 › a sub-screen puts Back and its title on one line
+  landscape.spec.ts:130:1 › a sub-screen card uses the width sideways
+  landscape.spec.ts:145:1 › Settings sideways shows twice as many rows (B5)
+  lesson-flow.spec.ts:46:1 › a run played from Today is recorded, and comes back for review
+  lesson-tools.spec.ts:33:1 › the lab tool opens the lab already in the rung’s preset
+  lesson-tools.spec.ts:55:1 › the duet tool opens a piece from the rung with one hand chosen
+  lesson-tools.spec.ts:76:1 › a rung that names its Simon opens that one, not the stage’s
+  lesson-tools.spec.ts:91:1 › a rung that names no tool draws no block
+  library.spec.ts:36:3 › Library › lists the bundled catalog and filters it
+  library.spec.ts:53:3 › Library › imports an .mxl, opens it on the Score screen, and keeps it across a reload
+  library.spec.ts:76:3 › Library › imports plain MusicXML too, and takes its title from the file
+  library.spec.ts:82:3 › Library › a PDF is marked "pages, not notes" and opens in the viewer, not the Score screen
+  library.spec.ts:96:3 › Library › a file it cannot read fails with one sentence, not a stack trace
+  library.spec.ts:112:3 › Library › a broken MIDI file is told apart from a file that is not MIDI at all
+  library.spec.ts:138:3 › Library › an imported score can be renamed and deleted
+  library.spec.ts:157:3 › Library › "Only mine" shows just the imports
+  library.spec.ts:173:3 › Library obeys 04 §0 › the list starts inside the first screenful (R1)
+  library.spec.ts:191:3 › Library obeys 04 §0 › a filter set behind the closed row is named in the count (R1)
+  library.spec.ts:206:3 › Library obeys 04 §0 › Import, Shelf and Score folder sit above the list, not below it (R3)
+  library.spec.ts:228:3 › Library obeys 04 §0 › the item sheet fits its last value on the screen
+  library.spec.ts:243:3 › the letter rail in Library › waits for the title sort, then moves the window to the letter
+  metronome.spec.ts:17:3 › metronome › is reachable from Today and back again
+  metronome.spec.ts:26:3 › metronome › shows a tempo and changes it with the nudge buttons and the slider
+  metronome.spec.ts:38:3 › metronome › clamps the tempo to the range the slider offers
+  metronome.spec.ts:44:3 › metronome › draws one dot per beat and accents the first
+  metronome.spec.ts:56:3 › metronome › remembers which sound is selected
+  metronome.spec.ts:63:3 › metronome › tap tempo sets the bpm from the gaps between taps
+  metronome.spec.ts:90:3 › metronome › starts and stops, and the beat dots follow the click
+  metronome.spec.ts:122:3 › metronome › a meter chosen while it is running reaches the click
+  metronome.spec.ts:152:3 › metronome › leaving the screen stops it
+  mic.spec.ts:74:3 › microphone input › a recorded scale drives a Wait-mode run to finished
+  mic.spec.ts:117:3 › microphone input › reports level and noise floor while listening
+  mic.spec.ts:139:3 › microphone input › stays inside the 3 ms analysis budget with the CPU throttled x4
+  mic.spec.ts:172:3 › microphone input › the calibration screen runs against the fake stream and stores a table
+  mic.spec.ts:214:3 › microphone input › Diagnostics measures the analysis cost and captures a clip
+  mic.spec.ts:258:3 › the latency measurement is only ever offered to a microphone user › a piano on the end of a cable does not get it, and is told why
+  mic.spec.ts:275:3 › the latency measurement is only ever offered to a microphone user › plugging the piano in takes it away again
+  mic.spec.ts:291:3 › the latency measurement is only ever offered to a microphone user › a run that hears nothing says so and leaves the number to be set by hand
+  mic.spec.ts:339:3 › drills listen to the microphone › a chord card is aimed at the detector and answered by what it hears
+  mic.spec.ts:367:3 › drills listen to the microphone › an ear drill does not play its prompt out loud while listening
+  midi-import.spec.ts:72:3 › a MIDI file imported from the app › converts on the device and says what it decided before anything is agreed to
+  midi-import.spec.ts:101:3 › a MIDI file imported from the app › is in the Library at once and opens on the Score screen
+  midi-import.spec.ts:118:3 › a MIDI file imported from the app › walks the same number of steps as the cursor does, and keeps both hands
+  midi.spec.ts:52:3 › MIDI screen with a mocked device › injected Note-On lights the key, Note-Off clears it
+  midi.spec.ts:63:3 › MIDI screen with a mocked device › Note-On with velocity 0 releases the key too
+  midi.spec.ts:71:3 › MIDI screen with a mocked device › a held chord lights exactly its own keys
+  midi.spec.ts:79:3 › MIDI screen with a mocked device › All Notes Off releases every held key
+  midi.spec.ts:87:3 › MIDI screen with a mocked device › requests access without SysEx, and only on the button press
+  midi.spec.ts:93:3 › MIDI screen with a mocked device › shows the device and logs the played notes
+  midi.spec.ts:102:3 › MIDI screen with a mocked device › picks up a device plugged in after connecting
+  midi.spec.ts:111:3 › MIDI screen with a mocked device › pinning one input ignores notes from the other
+  midi.spec.ts:123:3 › MIDI screen with a mocked device › tapping an on-screen key works with no cable at all
+  midi.spec.ts:132:3 › MIDI screen with a mocked device › the strip draws all 88 keys, A0 to C8
+  midi.spec.ts:142:3 › MIDI screen settings persistence › the pinned input survives a reload
+  midi.spec.ts:166:3 › MIDI screen error states › a denied permission explains how to re-enable it in Chrome
+  midi.spec.ts:177:3 › MIDI screen error states › an unsupported browser says so and keeps the on-screen keyboard
+  midi.spec.ts:185:3 › MIDI screen error states › with no inputs at all the screen says so instead of failing
+  midi.spec.ts:205:3 › Diagnostics screen › logs raw hex and a parsed description, newest first
+  midi.spec.ts:215:3 › Diagnostics screen › counts active sensing instead of flooding the log with it
+  midi.spec.ts:222:3 › Diagnostics screen › the parsed column can be turned off
+  midi.spec.ts:230:3 › Diagnostics screen › Clear empties the log
+  midi.spec.ts:237:3 › Diagnostics screen › the debug report carries the browser, the devices and the messages
+  midi.spec.ts:255:3 › Diagnostics screen › reachable from Settings
+  midi.unplug.spec.ts:54:3 › MIDI: the cable pulled and put back › an unplugged port stops counting as connected
+  midi.unplug.spec.ts:75:3 › MIDI: the cable pulled and put back › a key held when the cable goes does not stay lit
+  midi.unplug.spec.ts:90:3 › MIDI: the cable pulled and put back › the piano is heard again when it is plugged back in
+  midi.unplug.spec.ts:105:3 › MIDI: the cable pulled and put back › a second adapter going does not drop the chord held on the piano
+  midi.unplug.spec.ts:129:3 › MIDI: the pinned input that is not there › pinning one input selects it, and only it
+  midi.unplug.spec.ts:137:3 › MIDI: the pinned input that is not there › when the pinned input is unplugged, "all inputs" is selected and says why
+  midi.unplug.spec.ts:156:3 › MIDI: the pinned input that is not there › the pinned choice survives the re-plug
+  midi.unplug.spec.ts:168:3 › MIDI: the pinned input that is not there › notes from the unpinned input reach the app once the pinned one is gone
+  midi.unplug.spec.ts:186:3 › MIDI: nothing connected yet › does not promise live hot-plug before Connect has been tapped
+  modes-chart-from-a-lesson.spec.ts:75:1 › the row’s Chart action opens that piece’s chart, with its chords in it
+  modes-chart-from-a-lesson.spec.ts:88:1 › the chart, the tracker and the transport are in one glance on a phone
+  modes-chart-from-a-lesson.spec.ts:124:1 › the chart has keys, and a key held on them marks the sounding bar
+  modes-chart-from-a-lesson.spec.ts:159:1 › a count-off runs it, what is played is answered, and Stop stops
+  modes-chart-from-a-lesson.spec.ts:194:1 › Back from a chart opened by a lesson row returns to that rung
+  modes-chart-from-a-lesson.spec.ts:214:1 › a chart opened from the Library still says Library, and goes there
+  modes-chart-from-a-lesson.spec.ts:232:1 › a piece the build measured no chords in is offered no door
+  modes-chart-from-the-score.spec.ts:61:1 › the sheet offers the chart, and it opens this piece’s chart
+  modes-chart-from-the-score.spec.ts:77:1 › a piece with no chords is offered no row at all, upright or sideways
+  modes-chart-from-the-score.spec.ts:94:1 › sideways the row is still there over a piece that has chords
+  modes-dictation.spec.ts:73:1 › the card gives nothing away, and the prompt is the next thing to do
+  modes-dictation.spec.ts:104:1 › the keys answer it, and the screen says so
+  modes-dictation.spec.ts:116:1 › replaying the phrase costs nothing and leaves the card closed
+  modes-duet.spec.ts:60:1 › the button opens one of the rung’s own pieces, with a hand chosen
+  modes-duet.spec.ts:80:1 › the button still means it after the Duet row has been switched off once
+  modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise
+  modes-duet.spec.ts:128:1 › Back from a run opened by the rung’s button returns to the rung
+  modes-duet.spec.ts:141:1 › sideways the Duet row survives, and it still names the hand
+  modes-engraving.spec.ts:92:3 › exercise.rhythm.quarters.4bar: the single line runs through every notehead
+  modes-engraving.spec.ts:92:3 › exercise.clave.son-3-2: the single line runs through every notehead
+  modes-engraving.spec.ts:113:1 › an ordinary grand staff still has two staves of five lines
+  modes-engraving.spec.ts:152:1 › a generated exercise prints its direction above the top staff
+  modes-free-play.spec.ts:70:1 › a rung’s Free play button opens the screen with no piece and no run
+  modes-free-play.spec.ts:87:1 › Today’s own door opens the same screen
+  modes-free-play.spec.ts:95:1 › the keys are named, and three of them are named as a chord
+  modes-free-play.spec.ts:141:1 › with nothing connected it says so and offers the two ways to fix it
+  modes-free-play.spec.ts:155:1 › Back leaves it, and leaves nothing running
+  modes-hold-the-chords.spec.ts:68:1 › the rung’s button opens the lab already holding the chords
+  modes-hold-the-chords.spec.ts:79:1 › the loop runs with the chart, the counter and the keys in one glance
+  modes-hold-the-chords.spec.ts:134:1 › Back leaves the mode off — and the lab reopens on the preset, not on the run
+  modes-lab-unlock.spec.ts:65:1 › the freed picker is live and the preset’s others are disabled
+  modes-lab-unlock.spec.ts:80:1 › a locked picker pressed does not move, and the freed one does
+  modes-lab-unlock.spec.ts:104:1 › the freed picker reaches the loop, not just the label
+  modes-ladder.spec.ts:91:1 › the rung’s button opens its exercise, looping, with the ladder armed
+  modes-ladder.spec.ts:132:1 › the keys play into it — the run moves, so the ladder has something to judge
+  modes-ladder.spec.ts:158:1 › sideways the ladder is still on and the controls are still reachable
+  modes-ladder.spec.ts:176:1 › Back leaves it off — the same exercise opened plainly is not still armed
+  modes-placement.spec.ts:63:1 › the question is the screen, and the two answers are both on it
+  modes-placement.spec.ts:81:1 › answering it records a starting point, and Plan and Today both move to it
+  modes-play-the-tune.spec.ts:58:1 › the rung’s button opens the lab with the app on the right hand
+  modes-play-the-tune.spec.ts:70:1 › the loop runs, the chart and the keys are in one glance, and a pass is counted
+  modes-play-the-tune.spec.ts:111:1 › Back leaves the mode off, and the way round comes back from the rung
+  modes-rhythm-only.spec.ts:66:1 › the sheet says what every choice does before one tap opens the piece
+  modes-rhythm-only.spec.ts:77:1 › it opens judged on timing, answers any key, and says what the run was
+  modes-rhythm-only.spec.ts:134:1 › the remembered setting does not leak into the next Keep tempo
+  modes-rhythm-only.spec.ts:155:1 › the row is gone in a mode with no clock, which is where it would be dead
+  modes-simon.spec.ts:81:1 › the rung’s button opens its own Simon, and the screen is the instruction and the keys
+  modes-simon.spec.ts:96:1 › the keys answer the chain, and the counter says so
+  modes-simon.spec.ts:134:1 › Back leaves nothing running
+  modes-technique-measure.spec.ts:125:1 › the staccato study is playable from the keys and the summary says how short
+  modes-technique-measure.spec.ts:170:1 › a measure the glass cannot take says so, rather than printing a nought
+  modes-trading-fours.spec.ts:72:1 › the rung’s own button reaches it, in its preset, with the mode off
+  modes-trading-fours.spec.ts:96:1 › the app leads, the turn cue is unmistakable and on screen, and a key answers
+  modes-trading-fours.spec.ts:148:1 › Back leaves the mode off — the same door opens a lab with no trade set
+  mounted-once.spec.ts:64:3 › one navigation, one screen › a drill, opened from Plan and from the Library
+  mounted-once.spec.ts:94:3 › one navigation, one screen › the accompaniment lab, opened from Plan and from the Library
+  mounted-once.spec.ts:116:3 › one navigation, one screen › the chord chart, opened from a rung and from the Library
+  offline.report.spec.ts:35:3 › the offline report › says the app will not work offline when registration failed
+  offline.report.spec.ts:63:3 › the offline report › says a new version is waiting when one is
+  offline.report.spec.ts:87:3 › the offline report › a worker already waiting at load is offered a toast
+  offline.report.spec.ts:116:3 › the offline report › "Last update check" is never until a check has reached the server
+  offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch
+  offline.spec.ts:224:3 › offline › every file the catalog names is in the precache manifest
+  offline.spec.ts:274:3 › offline › the engraver is not in the entry bundle (P19)
+  offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19)
+  offline.spec.ts:325:3 › the error boundary (docs/04 §8) › an uncaught error shows a banner with copyable details
+  offline.spec.ts:354:3 › the error boundary (docs/04 §8) › an unhandled rejection is caught too, and counted
+  offline.spec.ts:364:3 › the error boundary (docs/04 §8) › dismissing it leaves the app usable
+  pdf-paper.spec.ts:27:3 › dark paper › the page is inverted like every other music screen
+  pdf-paper.spec.ts:40:3 › light paper › is left alone
+  pdf-paper.spec.ts:50:3 › turning the phone › is said once upright, and not sideways
+  pdf-paper.spec.ts:67:3 › turning the phone › is never said sideways, where it would be wrong
+  pdf.spec.ts:41:3 › PDF viewer › finds the two systems on the fixture page and steps between them
+  pdf.spec.ts:53:3 › PDF viewer › tapping the right half of the page goes forward, the left half back
+  pdf.spec.ts:66:3 › PDF viewer › offers manual, timed and loop, and hides Wait, mic and MIDI follow
+  pdf.spec.ts:80:3 › PDF viewer › a corrected cut line is stored with the score and survives a reload
+  pdf.spec.ts:99:3 › PDF viewer › dragging a cut line moves it and keeps the systems in order
+  perf.spec.ts:58:3 › performance budgets (docs/01 §6) › a cold 2-bar window renders inside the first-render budget
+  perf.spec.ts:83:3 › performance budgets (docs/01 §6) › a pre-rendered window swap still fits in a frame when throttled
+  perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19)
+  perf.spec.ts:183:3 › performance budgets (docs/01 §6) › a played note is coloured within the input-to-colour budget
+  perf.spec.ts:334:3 › the two screens the catalog grew (T26) › the Library answers every genre filter, and the search box, inside the first-paint budget
+  perf.spec.ts:433:3 › the two screens the catalog grew (T26) › a lesson page with the most options is no slower to its first option than one with the fewest
+  placement-branches.spec.ts:82:3 › the placement test › has branches to walk, and they are the ones in the catalog
+  placement-branches.spec.ts:88:5 › the placement test › failing item 1 — Name a note on the staff. — starts at 1.1
+  placement-branches.spec.ts:88:5 › the placement test › failing item 2 — Clap a rhythm back. — starts at 1.2
+  placement-branches.spec.ts:88:5 › the placement test › failing item 3 — Play a five-finger pattern hands together. — starts at 2.1
+  placement-branches.spec.ts:88:5 › the placement test › failing item 4 — Play I–IV–V in G from chord symbols. — starts at 3.2
+  placement-branches.spec.ts:88:5 › the placement test › failing item 5 — Sight-read a four-bar phrase on the grand staff. — starts at 3.4
+  placement-branches.spec.ts:88:5 › the placement test › failing item 6 — Play the Petzold Minuet in G at 60% tempo. — starts at 3.4
+  placement-branches.spec.ts:88:5 › the placement test › failing item 7 — Play a C major scale hands together. — starts at 4.1
+  placement-branches.spec.ts:88:5 › the placement test › failing item 8 — Play a swung twelve-bar blues left hand. — starts at blues-boogie.4.1
+  placement-branches.spec.ts:114:3 › the placement test › passing everything starts at 4.3
+  plan.hierarchy.spec.ts:51:3 › Plan, on the phone upright › the answer is the first thing on the screen, and the only filled one (R1, R3)
+  plan.hierarchy.spec.ts:79:3 › Plan, on the phone upright › every row stays inside the budget, with every track on (R2)
+  plan.hierarchy.spec.ts:100:3 › Plan, on the phone upright › nothing on the screen is smaller than a thumb (R4)
+  plan.hierarchy.spec.ts:118:3 › Plan, on the phone upright › a track is named once over its rungs, with no id and no repetition
+  plan.hierarchy.spec.ts:155:3 › Plan, on the phone upright › nothing above a rung shows more of its title than the rung itself does
+  plan.hierarchy.spec.ts:186:3 › Plan, on the phone upright › the tracks sheet groups the ones that are off, and orders the ones that are on
+  plan.spec.ts:29:3 › Plan › lists every stage with its completion, and expands to lessons
+  plan.spec.ts:40:3 › Plan › opens a lesson far ahead of where the learner is — nothing is locked
+  plan.spec.ts:48:3 › Plan › track chips filter the units, and the core path cannot be switched off
+  plan.spec.ts:79:3 › the lesson page › shows the concept text, the options and the videos
+  plan.spec.ts:93:3 › the lesson page › "I already know this" records the learner’s word with its own badge, and no item passed
+  plan.spec.ts:110:3 › the lesson page › every option on a lesson offers a way to open it
+  plan.spec.ts:141:3 › Skills review › lists every concept with a state and a way to drill it
+  plan.spec.ts:161:3 › Skills review › lists every exercise for a concept, easiest first, collapsed after three
+  plan.spec.ts:202:3 › Skills review › a concept with many exercises reaches the upper levels
+  plan.spec.ts:226:3 › Skills review › filters by stage
+  plan.spec.ts:233:3 › Skills review › drilling a concept opens whichever screen the item belongs on
+  plan.spec.ts:251:3 › Plan obeys 04 §0 › what to practise next starts inside the first screenful, with every track on (R1)
+  plan.spec.ts:275:3 › Plan obeys 04 §0 › a lesson card never repeats its unit title (D26)
+  plan.spec.ts:298:3 › Plan obeys 04 §0 › ordering tracks lives in the sheet, not on the screen (R3)
+  plan.spec.ts:319:3 › the lesson page obeys 04 §0 › the options start inside the first screenful (R1)
+  plan.spec.ts:336:3 › the lesson page obeys 04 §0 › one filled button per option card and none in the chrome (R3)
+  plan.spec.ts:345:3 › the lesson page obeys 04 §0 › the rarely-used things moved below the options (R1)
+  plan.spec.ts:365:3 › Skills obeys 04 §0 › draws a page, not the whole curriculum (R1)
+  plan.spec.ts:379:3 › Skills obeys 04 §0 › Show all reaches every concept, a page at a time
+  plan.spec.ts:395:3 › Skills obeys 04 §0 › no filled button anywhere on the list (R3)
+  plan.spec.ts:418:5 › the Tracks sheet is a list of tracks, not a stream of chips › each track keeps its own arrows — the owner’s phone upright
+  plan.spec.ts:418:5 › the Tracks sheet is a list of tracks, not a stream of chips › each track keeps its own arrows — the owner’s phone sideways
+  plan.spec.ts:418:5 › the Tracks sheet is a list of tracks, not a stream of chips › each track keeps its own arrows — a tablet
+  progress.hierarchy.spec.ts:74:3 › Progress, on the phone upright › the answer is the first thing on the screen, with the map under it (R1)
+  progress.hierarchy.spec.ts:101:3 › Progress, on the phone upright › the figure is the loudest thing on the screen
+  progress.hierarchy.spec.ts:125:3 › Progress, on the phone upright › every row in the three lists stays inside the budget (R2)
+  progress.hierarchy.spec.ts:149:3 › Progress, on the phone upright › nothing on the screen is drawn pressable and left dead (R4)
+  progress.hierarchy.spec.ts:181:3 › Progress, on the phone upright › no filled box, because nothing here is done on most visits (R3)
+  progress.hierarchy.spec.ts:191:3 › Today's card, on the phone upright › the button that starts the session is above the card (R1, R3)
+  progress.hierarchy.spec.ts:209:3 › Today's card, on the phone upright › a long name takes a second line, but not beside a badge (R2)
+  progress.hierarchy.spec.ts:265:3 › Today's card, on the phone upright › free play is not drawn as one of the rows, because it is not one
+  progress.spec.ts:61:3 › Progress › shows the week, the heat-map and an empty repertoire on a fresh phone
+  progress.spec.ts:69:3 › Progress › records a run and shows it in the history and the heat-map
+  progress.spec.ts:88:3 › Progress › a piece passed and not played for two weeks comes back for review, in its own words
+  progress.spec.ts:99:3 › Progress › exports everything and restores it onto a wiped phone
+  progress.spec.ts:129:3 › Progress › refuses a file that is not a backup, with a sentence
+  progress.spec.ts:141:3 › Settings › groups every setting and persists a change across a reload
+  progress.spec.ts:154:3 › Settings › the offline-only switch persists
+  progress.spec.ts:162:3 › Settings › reports the storage in use
+  progress.spec.ts:170:3 › Diagnostics › reports the precache, the content counts and the errors
+  progress.spec.ts:184:3 › Diagnostics › the debug report carries the new blocks
+  progress.spec.ts:198:3 › the settings mirror (docs/01 §4.5) › a setting survives localStorage being cleared, because IndexedDB has it
+  score.arrange-race.spec.ts:142:1 › a run started at once is arranged the same as one started after the measurement
+  score.bar-targets.spec.ts:45:1 › every control on the bar is big enough to hit, and the row never wraps
+  score.bar-targets.spec.ts:110:1 › a control that leaves the bar is still reachable, with a word for it
+  score.blind.spec.ts:62:3 › a blind run › still hides the notation
+  score.blind.spec.ts:70:3 › a blind run › counts you in where you can see it
+  score.blind.spec.ts:119:3 › a blind run › keeps the beat where you can see it
+  score.blind.spec.ts:130:3 › a blind run › still says which bar you are in
+  score.countin.spec.ts:24:3 › the count-in you can see › counts the bar over the notation, then gets out of the way
+  score.countin.spec.ts:40:3 › the count-in you can see › it covers the notation but never the controls
+  score.countin.spec.ts:75:3 › the count-in you can see › the beat dot pulses in Tempo and stays away in Wait
+  score.countin.spec.ts:82:3 › the count-in you can see › Wait mode shows no beat dot: there is no clock to show
+  score.density.spec.ts:127:1 › a phone still gets the width filled
+  score.density.spec.ts:138:3 › a 900px screen keeps note spacing and centres it
+  score.density.spec.ts:138:3 › a 1512px screen keeps note spacing and centres it
+  score.density.spec.ts:198:1 › a narrow system on a phone is centred, not pinned left
+  score.fill.spec.ts:92:1 › and a piece being played uses the stage too
+  score.fill.spec.ts:178:3 › every corpus piece uses the stage, upright
+  score.fill.spec.ts:178:3 › every corpus piece uses the stage, sideways
+  score.fuzz.spec.ts:191:3 › seed 1 on song.folk.mary-had-a-little-lamb at 390×844: forty-five things a restless learner does
+  score.fuzz.spec.ts:191:3 › seed 2 on song.folk.mary-had-a-little-lamb at 390×844: forty-five things a restless learner does
+  score.fuzz.spec.ts:191:3 › seed 3 on song.folk.mary-had-a-little-lamb at 390×844: forty-five things a restless learner does
+  score.fuzz.spec.ts:191:3 › seed 4 on song.folk.twinkle.ht at 390×844: forty-five things a restless learner does
+  score.fuzz.spec.ts:191:3 › seed 5 on song.folk.twinkle.ht at 900×1200: forty-five things a restless learner does
+  score.head-height.spec.ts:150:3 › the score header is the same height all through a run at 342 px
+  score.head-height.spec.ts:215:3 › a run restarted mid-piece keeps its engraving at 342 px
+  score.head-height.spec.ts:270:3 › a run keeps its engraving when the stage's height changes at 342 px
+  score.head-height.spec.ts:150:3 › the score header is the same height all through a run at 390 px
+  score.head-height.spec.ts:215:3 › a run restarted mid-piece keeps its engraving at 390 px
+  score.head-height.spec.ts:270:3 › a run keeps its engraving when the stage's height changes at 390 px
+  score.head-height.spec.ts:317:1 › the hands control is reachable during a run when the bar has sent it to the sheet
+  score.hearbar.spec.ts:44:3 › hearing one bar › plays it once and gives the screen back
+  score.hearbar.spec.ts:63:3 › hearing one bar › a quick tap is not a long press
+  score.ladder-route.spec.ts:45:1 › opens looping the whole exercise with the ladder on
+  score.ladder-route.spec.ts:62:1 › clearing the loop switches the ladder off, exactly as it does by hand
+  score.ladder-route.spec.ts:73:1 › does nothing at all in a mode with no tempo to move
+  score.ladder-route.spec.ts:83:1 › does nothing in a performance, which is one pass and never repeats
+  score.ladder-route.spec.ts:90:1 › and the screen opens with neither when nothing asks
+  score.latch.spec.ts:82:3 › the first note starts the clock (T8) › a Tempo run on the screen keys holds on the first note until it is played
+  score.latch.spec.ts:106:3 › the first note starts the clock (T8) › after a count-in, the count gets out of the way while it holds
+  score.latch.spec.ts:119:3 › the first note starts the clock (T8) › a key on the ready screen starts the run, and with no count-in is its first note
+  score.latch.spec.ts:130:3 › the first note starts the clock (T8) › Space starts a run from the ready screen
+  score.latch.spec.ts:142:3 › the first note starts the clock (T8) › with no input, a Tempo run keeps time by the clock
+  score.latch.spec.ts:157:3 › what the keys must not start (T8 review) › with a count-in, the key that starts the run is not its first note
+  score.latch.spec.ts:168:3 › what the keys must not start (T8 review) › after a run finishes by itself, a key does not start another; ▶ does
+  score.latch.spec.ts:192:3 › what the keys must not start (T8 review) › neither a key nor Space starts a run under the open ⋯ sheet
+  score.layout.spec.ts:172:5 › score screen in landscape › 1 bar per window
+  score.layout.spec.ts:172:5 › score screen in landscape › 2 bars per window
+  score.layout.spec.ts:172:5 › score screen in landscape › 4 bars per window
+  score.layout.spec.ts:233:7 › score screen in landscape › song.folk.hot-cross-buns: the next bar is on the glass while a bar is played, 1 per window
+  score.layout.spec.ts:233:7 › score screen in landscape › song.folk.hot-cross-buns: the next bar is on the glass while a bar is played, 2 per window
+  score.layout.spec.ts:233:7 › score screen in landscape › song.folk.hot-cross-buns: the next bar is on the glass while a bar is played, 4 per window
+  score.layout.spec.ts:233:7 › score screen in landscape › song.folk.twinkle.rh: the next bar is on the glass while a bar is played, 1 per window
+  score.layout.spec.ts:233:7 › score screen in landscape › song.folk.twinkle.rh: the next bar is on the glass while a bar is played, 2 per window
+  score.layout.spec.ts:233:7 › score screen in landscape › song.folk.twinkle.rh: the next bar is on the glass while a bar is played, 4 per window
+  score.layout.spec.ts:296:3 › score screen in landscape › the window holds more bars as the setting goes up, or the row says how many it holds
+  score.layout.spec.ts:367:7 › score screen in landscape › screenshots › 1 bar per window, drawn
+  score.layout.spec.ts:367:7 › score screen in landscape › screenshots › 2 bars per window, drawn
+  score.layout.spec.ts:367:7 › score screen in landscape › screenshots › 4 bars per window, drawn
+  score.layout.spec.ts:383:3 › score screen in landscape › the notation still has most of the height with the strip showing
+  score.pickup-numbers.spec.ts:31:3 › bar numbers on a pickup piece › the loop says the same bar number the header does
+  score.pickup-numbers.spec.ts:51:3 › bar numbers on a pickup piece › a piece with no pickup is numbered exactly as before
+  score.readahead.spec.ts:41:3 › the beat of warning › Tempo marks the next step and the next key
+  score.readahead.spec.ts:62:3 › the beat of warning › Wait mode draws neither: there is no clock to be ahead of
+  score.readahead.spec.ts:78:3 › the picture and the engine are the same clock (A7) › the keys the strip wants are the notes the cursor is on
+  score.renderer.fuzz.spec.ts:51:3 › seed 11: sixty moves of the cursor, and what must still hold
+  score.renderer.fuzz.spec.ts:51:3 › seed 12: sixty moves of the cursor, and what must still hold
+  score.rhythm-ladder.spec.ts:253:3 › rhythm first › accepts a wrong pitch on time and refuses a late one
+  score.rhythm-ladder.spec.ts:288:3 › rhythm first › and with the toggle off the same press is simply wrong
+  score.rhythm-ladder.spec.ts:309:3 › rhythm first › a rhythm run played perfectly is still not a pass of the piece
+  score.rhythm-ladder.spec.ts:338:3 › the tempo ladder on a loop › a pass with misses in it slows down, and stops at the floor
+  score.rhythm-ladder.spec.ts:369:3 › the tempo ladder on a loop › a pass nothing listened to holds the tempo, and says why
+  score.rhythm-ladder.spec.ts:398:3 › the tempo ladder on a loop › a clean pass speeds up, and stops at the written tempo
+  score.rhythm-ladder.spec.ts:422:3 › the tempo ladder on a loop › the Ladder row is not offered without a loop to climb
+  score.rhythm-ladder.spec.ts:441:3 › the duet, where the hand is chosen › appears with R selected, names the hand, and is the Settings toggle
+  score.rhythm-ladder.spec.ts:474:3 › the duet, where the hand is chosen › names the other hand when L is chosen
+  score.rotate.spec.ts:460:7 › Hot Cross Buns · one bar per window · round › sideways, upright, and back: the music fills the screen each way up
+  score.rotate.spec.ts:460:7 › Hot Cross Buns · one bar per window · the owner's phone › sideways, upright, and back: the music fills the screen each way up
+  score.rotate.spec.ts:497:5 › Hot Cross Buns · two bars per window · round › a turn to upright gives the slots, each filling the width
+  score.rotate.spec.ts:460:7 › Ode to Joy (theme) · one bar per window · round › sideways, upright, and back: the music fills the screen each way up
+  score.rotate.spec.ts:460:7 › Ode to Joy (theme) · one bar per window · the owner's phone › sideways, upright, and back: the music fills the screen each way up
+  score.rotate.spec.ts:497:5 › Ode to Joy (theme) · two bars per window · round › a turn to upright gives the slots, each filling the width
+  score.rotate.spec.ts:523:3 › the edges the handoff names › turning while paused re-fits, and leaves the run paused
+  score.rotate.spec.ts:554:3 › the edges the handoff names › two turns 100 ms apart: the second measurement wins
+  score.rotate.spec.ts:584:3 › the edges the handoff names › Scroll: a turn engraves the piece again at the new width
+  score.rotate.spec.ts:634:3 › the edges the handoff names › the tour's miniature does not follow the window
+  score.run.spec.ts:59:3 › a whole run › Wait mode: playing it correctly says the notes are ready, and where a pass is played
+  score.run.spec.ts:106:3 › a whole run › Keep tempo: played in time it passes, and says its tempo and its timing
+  score.run.spec.ts:130:3 › a whole run › a run with a fumble is offered the loop, and it names the bar
+  score.run.spec.ts:154:3 › a whole run › Wait mode: the score does not move on a wrong note
+  score.run.spec.ts:210:3 › a whole run › Wait mode: playing it wrongly still finishes, with a lower score
+  score.run.spec.ts:248:3 › stopping, restarting and looping › changing hands mid-run restarts it without a summary or a recorded run
+  score.run.spec.ts:262:3 › stopping, restarting and looping › Hear it reaching the end is not a run
+  score.run.spec.ts:274:3 › stopping, restarting and looping › a loop lap puts the cursor back on the first bar
+  score.screen.spec.ts:91:3 › score screen › opens a catalog item by id and renders it
+  score.screen.spec.ts:97:3 › score screen › an unknown id says so instead of hanging
+  score.screen.spec.ts:106:3 › score screen › a score whose file will not load says why, and takes the transport away
+  score.screen.spec.ts:137:3 › score screen › the control bar gets out of the way when it is taking room from the music
+  score.screen.spec.ts:162:3 › score screen › the ⋯ sheet fits sideways without scrolling (08 §7.2)
+  score.screen.spec.ts:205:3 › score screen › and goes anyway, even when it is covering nothing (decision 5)
+  score.screen.spec.ts:225:3 › score screen › mode and input selectors change the run
+  score.screen.spec.ts:235:3 › score screen › tempo slider moves the percentage and the bpm together
+  score.screen.spec.ts:246:3 › score screen › hand focus buttons select one at a time
+  score.screen.spec.ts:255:3 › score screen › bars per window steps between 1 and 8 and redraws
+  score.screen.spec.ts:272:3 › score screen › layout is a segment that says which one you are in
+  score.screen.spec.ts:283:3 › score screen › zoom, keyboard strip and playback destination all respond
+  score.screen.spec.ts:367:3 › score screen › Size steps are monotone, and a setting draws one size whichever way it was reached
+  score.screen.spec.ts:422:3 › score screen › the metronome toggles while the sheet music is showing
+  score.screen.spec.ts:439:3 › score screen › play, pause and restart
+  score.screen.spec.ts:454:3 › score screen › Hear it plays the piece without moving the mode select (B1)
+  score.screen.spec.ts:482:5 › score screen › says once that the app is playing the left hand (B3)
+  score.screen.spec.ts:482:5 › score screen › says once that the app is playing the right hand (B3)
+  score.screen.spec.ts:502:3 › score screen › and says nothing when there is no other hand to play (B3)
+  score.screen.spec.ts:508:3 › score screen › pressing Play during a Hear it run gives you your own mode back
+  score.screen.spec.ts:521:3 › score screen › back from a deep link returns to the default tab
+  score.screen.spec.ts:531:3 › score screen › a Keep tempo run nothing listened to says it was not measured, and asks how it went
+  score.screen.spec.ts:581:3 › score screen › a Keep tempo run nothing listened to marks no note and flashes no key (L42)
+  score.screen.spec.ts:597:3 › score screen › Hear it marks no note while it plays the piece (L42)
+  score.screen.spec.ts:613:3 › score screen › the summary puts the screen behind it out of reach
+  score.screen.spec.ts:638:3 › score screen › the summary self-report records an answer
+  score.screen.spec.ts:665:3 › score screen › “Slower” restarts ten percent down
+  score.screen.spec.ts:688:3 › the keyboard strip shows the piece, not the whole piano › draws the range the music uses
+  score.screen.spec.ts:702:3 › the keyboard strip shows the piece, not the whole piano › the key it is waiting for is wide enough to hit, and on the screen
+  score.screen.spec.ts:720:3 › the sheet fills the screen (P19b) › a two-bar window is not a third of a phone screen
+  score.screen.spec.ts:755:3 › the sheet fills the screen (P19b) › the zoom buttons still do something, now that the fit does the work
+  score.screen.spec.ts:808:3 › the fit says when it has settled (T41) › a stage that loses height is unsettled until the fit at the new engraving has landed
+  score.screen.spec.ts:878:3 › naming the note it is waiting for › says nothing until the setting is on
+  score.screen.spec.ts:887:3 › naming the note it is waiting for › names it once the setting is on, and only in Wait mode
+  score.screen.spec.ts:920:3 › naming the note it is waiting for › in a flat key it names the flats the score writes (T41)
+  score.screen.spec.ts:957:3 › naming the note it is waiting for › the ribbon names the flats the score writes too (C1, U44)
+  score.screen.spec.ts:1003:3 › blind mode › hides the notation and keeps everything else
+  score.screen.spec.ts:1049:3 › blind mode › showing the score again brings the notation back
+  score.screen.spec.ts:1076:3 › a run interrupted by something else on the phone › Tempo pauses when the page is hidden and says how long you were away
+  score.screen.spec.ts:1106:3 › a run interrupted by something else on the phone › Wait mode is left alone — it has no timetable to lose
+  score.sheet-rows.spec.ts:107:1 › a control sits beside its words, not on a line under them
+  score.sheet-rows.spec.ts:170:1 › no control in the sheet is split across lines
+  score.slide.spec.ts:31:3 › sideways › holds the cursor a third across once the piece is under way
+  score.slide.spec.ts:54:3 › sideways › draws more bars than the window, so there is something to read into
+  score.slide.spec.ts:74:3 › upright › does not slide: the two slots do the reading ahead
+  score.slots.spec.ts:61:3 › upright: stacked slots, karaoke style › the system being played is never re-drawn, and the next bar is always there
+  score.slots.spec.ts:119:3 › upright: stacked slots, karaoke style › every drawn slot is drawn at the same size
+  score.slots.spec.ts:143:3 › sideways: one system › does not split the stage in two
+  score.spec.ts:22:3 › score model against a real rendered cursor › steps.length equals the number of cursor.next() calls, on every fixture
+  score.spec.ts:41:3 › score model against a real rendered cursor › no fixture throws while rendering
+  score.spec.ts:55:3 › score model against a real rendered cursor › a repeat is unrolled: more played bars than printed ones
+  score.spec.ts:63:3 › windowing › the window follows the cursor and holds exactly N bars
+  score.spec.ts:77:3 › windowing › bars per window is clamped to 1..8
+  score.spec.ts:87:3 › windowing › the window jumps back on a repeat, following the printed page
+  score.spec.ts:107:3 › windowing › the cursor band sits over the notes and moves with the step
+  score.spec.ts:126:3 › note elements and colouring › every note of the current step resolves to a drawn element
+  score.spec.ts:136:3 › note elements and colouring › each note of a chord gets its own element, so they can differ
+  score.spec.ts:152:3 › note elements and colouring › the current step is painted by class, not by re-rendering
+  score.spec.ts:161:3 › note elements and colouring › drawn notes carry the hand the model assigned, cross-staff included
+  score.spec.ts:172:3 › note elements and colouring › hand focus dims the other hand
+  score.spec.ts:187:3 › layouts › scroll layout renders the whole piece at once
+  score.spec.ts:197:3 › layouts › window layout draws only the window
+  score.spec.ts:224:3 › render timing budget › a 2-bar window renders in under 150 ms
+  score.spec.ts:246:3 › double buffering › advancing into the pre-rendered next window costs well under a frame
+  score.spec.ts:280:3 › the dev route itself › is reachable from Settings and lists every bundled fixture
+  score.spec.ts:290:3 › the dev route itself › arrow keys step the cursor and 1-8 set bars per window
+  score.spec.ts:305:3 › the dev route itself › OSMD stays out of the entry bundle
+  score.spec.ts:322:5 › window layout holds its shape › the fitted score stays inside the viewport (landscape)
+  score.spec.ts:322:5 › window layout holds its shape › the fitted score stays inside the viewport (portrait)
+  score.spec.ts:383:3 › window layout holds its shape › bars per window changes what the window holds, or says why not
+  score.spec.ts:485:9 › screenshots › chords-ties · 1 bar(s) · landscape
+  score.spec.ts:485:9 › screenshots › chords-ties · 1 bar(s) · portrait
+  score.spec.ts:485:9 › screenshots › chords-ties · 2 bar(s) · landscape
+  score.spec.ts:485:9 › screenshots › chords-ties · 2 bar(s) · portrait
+  score.spec.ts:485:9 › screenshots › chords-ties · 4 bar(s) · landscape
+  score.spec.ts:485:9 › screenshots › chords-ties · 4 bar(s) · portrait
+  score.spec.ts:485:9 › screenshots › tuplets-68 · 1 bar(s) · landscape
+  score.spec.ts:485:9 › screenshots › tuplets-68 · 1 bar(s) · portrait
+  score.spec.ts:485:9 › screenshots › tuplets-68 · 2 bar(s) · landscape
+  score.spec.ts:485:9 › screenshots › tuplets-68 · 2 bar(s) · portrait
+  score.spec.ts:485:9 › screenshots › tuplets-68 · 4 bar(s) · landscape
+  score.spec.ts:485:9 › screenshots › tuplets-68 · 4 bar(s) · portrait
+  score.spec.ts:579:5 › the score control bar › upright, 360: one row, seven controls at most
+  score.spec.ts:579:5 › the score control bar › upright: one row, seven controls at most
+  score.spec.ts:579:5 › the score control bar › sideways, 780: one row, seven controls at most
+  score.spec.ts:579:5 › the score control bar › sideways: one row, seven controls at most
+  score.spec.ts:579:5 › the score control bar › tablet: one row, seven controls at most
+  score.spec.ts:621:3 › the score control bar › everything that left the bar is behind ⋯ and still works
+  score.spec.ts:716:3 › the score control bar › sideways, the whole menu is on the screen at once
+  score.spec.ts:737:3 › the score control bar › the tempo label opens a sheet with the slider and a typed bpm
+  score.states.spec.ts:187:3 › the score screen, one state and one event at a time › a paused run says it is paused, in Wait
+  score.states.spec.ts:213:3 › the score screen, one state and one event at a time › a paused run says it is paused, in Keep tempo
+  score.states.spec.ts:236:3 › the score screen, one state and one event at a time › a bar preview cannot strand the screen in Listen
+  score.states.spec.ts:279:3 › the score screen, one state and one event at a time › taking the input away does not leave a run holding for ever
+  score.states.spec.ts:312:3 › the score screen, one state and one event at a time › hiding the page pauses a Hear it run
+  score.states.spec.ts:337:3 › the score screen, one state and one event at a time › a hand chosen after a refusal starts the run the refusal asked for
+  score.states.spec.ts:365:3 › the score screen, one state and one event at a time › the loop prompt goes when the loop it asks for is set
+  score.states.spec.ts:393:3 › the score screen, one state and one event at a time › leaving during a demonstration leaves nothing to carry on from
+  score.states.spec.ts:422:3 › the score screen, one state and one event at a time › probe: what each event does in each state
+  score.states.spec.ts:612:3 › the five choices, decided (T33) › C1: Hear it during a run puts the run back where it was, paused
+  score.states.spec.ts:650:3 › the five choices, decided (T33) › C1: a demonstration that plays to its end puts the run back too
+  score.states.spec.ts:680:3 › the five choices, decided (T33) › T40: a performance with Hear it inside it is kept as practice
+  score.states.spec.ts:729:3 › the five choices, decided (T33) › C1: ▶ during the demonstration carries the run on from where it was
+  score.states.spec.ts:755:3 › the five choices, decided (T33) › C2: a hand changed while paused restarts at bar 1 and stays paused
+  score.states.spec.ts:793:3 › the five choices, decided (T33) › C2: the tempo changed while paused restarts and names the new tempo
+  score.states.spec.ts:816:3 › the five choices, decided (T33) › C3: the metronome reads refused in Free play, and says when its click comes elsewhere
+  score.states.spec.ts:861:3 › the five choices, decided (T33) › C4: Blind and Perform are refused while a run is going, and live once it is paused
+  score.states.spec.ts:898:3 › the five choices, decided (T33) › C5: the summary names what changed during the run
+  score.states.spec.ts:917:3 › the five choices, decided (T33) › C5: and what was changed after it, while the summary was up
+  score.stepper-limits.spec.ts:51:3 › the ends of the two steppers › bars: the button goes dead at one bar and at eight, and only there
+  score.stepper-limits.spec.ts:73:3 › the ends of the two steppers › size: there is a number between the buttons, and it moves
+  score.stepper-limits.spec.ts:86:3 › the ends of the two steppers › size: both ends go dead where the range stops
+  score.stepper-limits.spec.ts:101:3 › the ends of the two steppers › a press that cannot change anything does not restart the run
+  score.strip-span.spec.ts:41:3 › every key the score is waiting for is on the strip: song.classical.chopin-nocturne-op48-1.nifc
+  score.strip-span.spec.ts:41:3 › every key the score is waiting for is on the strip: song.folk.twinkle.ht
+  score.strip-span.spec.ts:41:3 › every key the score is waiting for is on the strip: song.classical.chopin-scherzo-2.nifc
+  score.window-rule.spec.ts:622:3 › the window rule holds on phone-upright-342
+  score.window-rule.spec.ts:622:3 › the window rule holds on phone-upright-390
+  score.window-rule.spec.ts:622:3 › the window rule holds on phone-sideways
+  score.window-rule.spec.ts:622:3 › the window rule holds on tablet-upright
+  score.window-rule.spec.ts:622:3 › the window rule holds on tablet-sideways
+  score.window-rule.spec.ts:724:1 › a pass through one bar leaves the tablet sideways window as a fresh page draws it
+  score.window-rule.spec.ts:763:3 › the greyed next row does not size the window at 390 x 844
+  score.window-rule.spec.ts:763:3 › the greyed next row does not size the window at 360 x 780
+  score.window-rule.spec.ts:794:1 › mid-run, every bar on a phone upright Nocturne window is drawn at its natural spacing
+  score.window-rule.spec.ts:846:1 › the window never shrinks as the stage widens across the look-ahead breakpoint
+  score.window-rule.spec.ts:891:1 › mid-run on a phone sideways, the folded chrome leaves the music on the stage
+  settings-rules.spec.ts:25:3 › Settings obeys 04 §0 › at least eight settings on the first screenful (R2)
+  settings-rules.spec.ts:38:3 › Settings obeys 04 §0 › a row without help text is a label and its control on one line (R2)
+  settings-rules.spec.ts:54:3 › Settings obeys 04 §0 › content chips print track titles, not ids (R2)
+  setup-layout.spec.ts:252:3 › every step is laid out for a real phone, upright 342x740
+  setup-layout.spec.ts:252:3 › every step is laid out for a real phone, sideways 740x342
+  setup-layout.spec.ts:308:1 › turning the phone re-sizes the miniature instead of pushing it off the screen
+  setup-layout.spec.ts:347:1 › leaving the tour half-way and coming back opens the step it was left on
+  setup.spec.ts:36:3 › the setup tour › the first launch lands on the tour; skipping it is remembered
+  setup.spec.ts:53:3 › the setup tour › a deep link on a fresh install is left alone
+  setup.spec.ts:59:3 › the setup tour › Settings brings it back, and Back returns to Settings
+  setup.spec.ts:69:3 › the setup tour › every step is reachable, sets what it says, and Finish is remembered
+  setup.spec.ts:189:5 › the setup tour › every step photographed, phone upright
+  setup.spec.ts:189:5 › the setup tour › every step photographed, phone sideways
+  setup.spec.ts:243:3 › the setup tour › sideways on a phone the footer is on the first screenful
+  shelf.spec.ts:50:3 › the shelf › registers a book and a piece, and keeps them across a reload
+  shelf.spec.ts:58:3 › the shelf › an empty shelf leads with the one thing you can do on it
+  shelf.spec.ts:90:3 › the shelf › is reachable from Library
+  shelf.spec.ts:97:3 › the shelf › a registered piece becomes an option of its rung
+  shelf.spec.ts:108:3 › the rung asking for paper › prints the hint on a core rung
+  shelf.spec.ts:113:3 › the rung asking for paper › with no shelf it is one line, not a section (P19 A8)
+  shelf.spec.ts:124:3 › the rung asking for paper › the section comes back as soon as there is a book on the shelf
+  shelf.spec.ts:134:3 › the rung asking for paper › "I have this on paper" opens the form with the rung already chosen
+  shelf.spec.ts:147:3 › a twin that is no longer there › the shelf stops offering a score that was deleted
+  shelf.spec.ts:189:3 › practising against paper › says what it measured and what it could not
+  shelf.spec.ts:209:3 › practising against paper › does not say Playing over a finished run, or blame a metronome that was on
+  shelf.spec.ts:235:3 › practising against paper › records the run under the owner’s own verdict, not a measurement
+  shelf.spec.ts:255:3 › practising against paper › a self-assessed clean run is recorded as his answer and meets no requirement of the rung
+  shelf.spec.ts:278:3 › blind mode › hides the score and keeps everything else
+  shelf.spec.ts:291:3 › blind mode › is a route, so it survives a reload and can be linked to
+  shelf.spec.ts:303:3 › performance runs › offer no restart, and are listed apart from practice
+  shelf.spec.ts:316:3 › the PDF viewer › takes a page in the route
+  side-panel-prose.spec.ts:83:3 › on a phone › the lesson prose takes none of the notation’s room
+  side-panel-prose.spec.ts:96:3 › on a tablet, where the panel is drawn › the lesson renders in the panel without a line overflowing it
+  side-panel-prose.spec.ts:155:3 › on a tablet, where the panel is drawn › a piece opened from nowhere shows the rung’s teaching without its pass line
+  side-panel-prose.spec.ts:181:3 › on a tablet, where the panel is drawn › one lesson from every track fits the panel
+  start-and-return.spec.ts:49:3 › opening a lesson › says where you are, and gives one thing to press
+  start-and-return.spec.ts:78:3 › opening a lesson › Start opens the first thing on the rung, and says which
+  start-and-return.spec.ts:95:3 › starting a mode › says what to do before a note has been judged, in every mode
+  start-and-return.spec.ts:105:3 › starting a mode › marks the first note it is waiting for before the run starts
+  start-and-return.spec.ts:115:3 › coming back to a run left half way › says where it was left and offers both ways on
+  start-and-return.spec.ts:141:3 › coming back to a run left half way › starting from the beginning takes the offer away and leaves bar 1
+  start-and-return.spec.ts:163:3 › coming back to a run left half way › a piece never left half way is not asked about
+  sweeps.spec.ts:54:3 › every lesson page › all of them open by URL, draw their options and say what they need
+  sweeps.spec.ts:103:3 › every lesson page › every rung that has a finder can open it
+  sweeps.spec.ts:128:3 › every kind of drill › one of each opens, draws a card and offers a way to answer
+  sweeps.spec.ts:210:3 › where an item opens › a bundled song, a generated exercise and a quarried score open on the Score screen
+  sweeps.spec.ts:221:3 › where an item opens › a runtime drill opens on the drill screen
+  sweeps.spec.ts:227:3 › where an item opens › a placeholder says what to do instead of opening nothing
+  sweeps.spec.ts:240:3 › when the level model is missing › an import says "no estimate" rather than showing a made-up number
+  tips.spec.ts:28:3 › the tips block › shows the four sections under the prompt
+  tips.spec.ts:45:3 › the tips block › is collapsed during a set, on the first meeting and after
+  tips.spec.ts:60:3 › the tips block › chooses a variant from the drill’s parameters
+  tips.spec.ts:69:3 › the tips block › falls back to the kind when no variant matches
+  tips.spec.ts:78:3 › the practice module › is reachable from Plan
+  tips.spec.ts:85:3 › the practice module › every lesson is a real rung with options, not a reading list
+  tips.spec.ts:94:3 › the practice module › the plateau lesson says what to change
+  tips.spec.ts:102:3 › the practice module › the injury lesson says to stop
+  today.spec.ts:62:3 › Today › shows a weekly goal, an input chip, and a session card
+  today.spec.ts:72:3 › Today › the four session lengths build different cards
+  today.spec.ts:86:3 › Today › remembers the session length across a reload
+  today.spec.ts:95:3 › Today › "Swap this" offers alternatives and can exclude songs
+  today.spec.ts:114:3 › Today › the "not a song" filter removes songs from the swap sheet
+  today.spec.ts:132:3 › Today › shuffle rebuilds the card
+  today.spec.ts:142:3 › Today › the tracks the data switches on are on before he touches a chip (C2)
+  today.spec.ts:171:3 › Today › Today keeps recommending after the core path, from a track he never turned on
+  today.spec.ts:223:3 › Today › the warm-up and the review say why, for a learner whose lesson exercise is counted and a piece has gone unplayed
+  today.spec.ts:253:3 › Today › starting the session opens the first row
+  today.spec.ts:273:3 › Today obeys 04 §0 › the session card starts inside the first screenful (R1)
+  today.spec.ts:284:3 › Today obeys 04 §0 › a row is one line of detail and no taller than 96 px (R2)
+  today.spec.ts:305:3 › Today obeys 04 §0 › one filled button on the screen, and it is Start session (R3)
+  today.spec.ts:404:3 › the daily read says why this phrase (C4, C4c) › two days of misread skips on 2.2: the phrase moves by step, and the card says the skips went wrong
+  today.spec.ts:416:3 › the daily read says why this phrase (C4, C4c) › two reads wrong only where skips and eighths coincide, on 2.5: nothing blamed, the easy read, and the card says it is not sure yet
+  tour-practice-modes.spec.ts:46:3 › the guided tour of the practice modes › is a tour, not a notice that one is coming
+  tour-practice-modes.spec.ts:58:3 › the guided tour of the practice modes › walks all three steps on the real score screen and comes back to each
+  tour-practice-modes.spec.ts:95:3 › the guided tour of the practice modes › the Android back gesture resumes the tour the same way Back does
+  tour-practice-modes.spec.ts:104:3 › the guided tour of the practice modes › can be run again from the beginning
+  tour-practice-modes.spec.ts:122:3 › the guided tour of the practice modes › Back on a resumed step leaves the tour instead of re-entering the piece
+  tour-practice-modes.spec.ts:143:3 › the guided tour of the practice modes › there is a way out of every step
+  tour-practice-modes.spec.ts:155:3 › the guided tour of the practice modes › leaving the score screen any other way still returns to the tour
+  tour-practice-modes.spec.ts:178:5 › the guided tour of the practice modes › a step reads top to bottom at upright
+  tour-practice-modes.spec.ts:178:5 › the guided tour of the practice modes › a step reads top to bottom at sideways
+  tour-practice-modes.spec.ts:214:3 › the guided tour of the practice modes › a piece opened outside the tour still goes back to its tab
+  trading-fours.spec.ts:41:3 › trading fours › is off until it is asked for, and the two lengths are exclusive
+  trading-fours.spec.ts:60:3 › trading fours › takes the first bars, hands them over, and stops when it is stopped
+  trading-fours.spec.ts:101:3 › trading fours › a setting changed under a trade stops it rather than lying
+  trading-fours.spec.ts:117:3 › trading fours › the keys answer, and the answer is measured and not marked
+  update.tab-nav.spec.ts:78:3 › the tab bar after an update reload › appears on first load despite a blocked settings database
+  update.tab-nav.spec.ts:87:3 › the tab bar after an update reload › reappears after the reload the update toast leads to
+  wide.spec.ts:428:5 › phone-portrait › every screen is centred and capped, phone-portrait
+  wide.spec.ts:428:5 › phone-landscape › every screen is centred and capped, phone-landscape
+  wide.spec.ts:428:5 › tablet-portrait › every screen is centred and capped, tablet-portrait
+  wide.spec.ts:428:5 › tablet-landscape › every screen is centred and capped, tablet-landscape
+  wide.spec.ts:428:5 › laptop-1366 › every screen is centred and capped, laptop-1366
+  wide.spec.ts:428:5 › laptop-1536 › every screen is centred and capped, laptop-1536
+  wide.spec.ts:428:5 › desktop-1920 › every screen is centred and capped, desktop-1920
+  wide.spec.ts:505:3 › stops growing › a wider screen is more gutter, not wider content
+  wide.spec.ts:582:3 › a sparse bar is not stretched › a laptop draws the bar at its natural width; a phone fills the width
+  wide.spec.ts:639:5 › light, 115 % text › the gutters survive light at 115 % text
+  wide.spec.ts:639:5 › dark, 115 % text › the gutters survive dark at 115 % text
+Total: 800 tests in 106 files
+exit=0

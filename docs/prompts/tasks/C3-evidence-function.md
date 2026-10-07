@@ -48,3 +48,8 @@ If a v0 skill's observable cannot be evaluated from the observation as C1 stored
 ## Report
 
 Judgement first: for the three items the design worked through, what evidence a Wait run, a guided Keep tempo run and an unguided first contact now yield, as the function computes it. Then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes from unpiped runs; unverified beside what passes, including which skills' construct validity the function cannot establish.
+
+## Record
+
+lane: C3 · closes: — · entry: 72 · role: history
+index: The evidence function and the ladder; the property test over the vocabulary; the sheet's "not judged" lines | build | done 2026-09-26 (Entry 72) |

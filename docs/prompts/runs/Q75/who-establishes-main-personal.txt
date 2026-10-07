@@ -1,0 +1,24 @@
+== 2.4 (rhythm.ties): 10 options
+      drill.rhythm.dotted | status=runtime | tags=None | licence=CC0-1.0 | composition=None | file=None
+      drill.dynamics.p-f | status=runtime | tags=None | licence=CC0-1.0 | composition=None | file=None
+      exercise.rhythm.dotted-quarter-eighth.4bar | status=measured | tags=['generated'] | licence=CC0 | composition=None | file=scores/generated/exercise.rhythm.dotted-quarter-eighth.4bar.mxl
+      exercise.rhythm.six-eight-long-short.4bar | status=measured | tags=['generated'] | licence=CC0 | composition=None | file=scores/generated/exercise.rhythm.six-eight-long-short.4bar.mxl
+      song.folk.greensleeves.simple | status=measured | tags=['authored'] | licence=CC0 | composition=None | file=scores/authored/song.folk.greensleeves.simple.mxl
+      song.folk.greensleeves | status=measured | tags=['musetrainer'] | licence=Public Domain (blanket claim by musetrainer/library; no LICENSE file, no per-file terms) | composition=pd | file=scores/imported/song.folk.greensleeves.mxl
+      song.folk.greensleeves.chords | status=measured | tags=['authored'] | licence=CC0 | composition=None | file=scores/authored/song.folk.greensleeves.chords.mxl
+  EST song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx | status=measured | tags=['pdmx', 'personal-build', 'tempo-defaulted'] | licence=cc-zero | composition=unknown | file=scores/pdmx/QmZcJuZpeQpSGrw4gd7jcwWfbjt7L84KRjAHJ771Z8kypC.mxl
+      song.folk.streets-of-laredo.pdmx | status=measured | tags=['pdmx', 'tempo-defaulted'] | licence=publicdomain | composition=pd | file=scores/pdmx/QmVNSAsNKZ3DMLqoJ2Ddu4BSwLxQjXATazX9qnAaeDUZ3f.mxl
+      song.pop.careless-love-blues.pdmx | status=measured | tags=['pdmx', 'tempo-defaulted'] | licence=cc-zero | composition=pd | file=scores/pdmx/QmYD4uF6soz6USzYyusW2gnzJxRUV7fMTCA2UH11ZzYR6a.mxl
+== ragtime.8 (texture.left-hand-pattern): 12 options
+      drill.pattern.lh-accompaniment | status=runtime | tags=None | licence=CC0-1.0 | composition=None | file=None
+      exercise.rhythm.sixteenths.4bar | status=measured | tags=['generated'] | licence=CC0 | composition=None | file=scores/generated/exercise.rhythm.sixteenths.4bar.mxl
+      exercise.hanon.20.both | status=measured | tags=['generated'] | licence=PD (composition); edition CC BY-SA 4.0 | composition=None | file=scores/generated/exercise.hanon.20.both.mxl
+      exercise.arpeggio7.b-flat-dominant7.2oct.both | status=measured | tags=['generated'] | licence=CC0 | composition=None | file=scores/generated/exercise.arpeggio7.b-flat-dominant7.2oct.both.mxl
+      exercise.chromatic.c.1oct.both | status=measured | tags=['generated'] | licence=CC0 | composition=None | file=scores/generated/exercise.chromatic.c.1oct.both.mxl
+      exercise.syncopation.tied-across-bar | status=measured | tags=['generated'] | licence=CC0 | composition=None | file=scores/generated/exercise.syncopation.tied-across-bar.mxl
+  EST song.ragtime.joplin-pine-apple-rag | status=measured | tags=['kern', 'joplin', 'nc-personal-build'] | licence=CC BY-NC-SA | composition=None | file=scores/imported/song.ragtime.joplin-pine-apple-rag.mxl
+      song.ragtime.joplin-gladiolus-rag | status=measured | tags=['kern', 'joplin', 'nc-personal-build'] | licence=CC BY-NC-SA | composition=None | file=scores/imported/song.ragtime.joplin-gladiolus-rag.mxl
+      song.ragtime.joplin-magnetic-rag | status=measured | tags=['kern', 'joplin', 'nc-personal-build'] | licence=CC BY-NC-SA | composition=None | file=scores/imported/song.ragtime.joplin-magnetic-rag.mxl
+      song.ragtime.joplin-cascades | status=measured | tags=['kern', 'joplin', 'nc-personal-build'] | licence=CC BY-NC-SA | composition=None | file=scores/imported/song.ragtime.joplin-cascades.mxl
+      song.ragtime.joplin-new-rag | status=measured | tags=['kern', 'joplin', 'nc-personal-build'] | licence=CC BY-NC-SA | composition=None | file=scores/imported/song.ragtime.joplin-new-rag.mxl
+      song.classical.scott-frog-legs-rag.pdmx | status=measured | tags=['pdmx'] | licence=publicdomain | composition=pd | file=scores/pdmx/QmP459Gg8em3qE6QpfaoCogABdTCaPp16WSM2ZP41nUu4o.mxl

@@ -154,6 +154,73 @@ class TestPrintedBars(unittest.TestCase):
             self.assertIsNone(printed_bars(Path(tmp) / "absent.musicxml"))
 
 
+def unfetched_hints() -> dict[str, str]:
+    """Q82: the hint each step writes on a file its clone did not bring, and the reason inside it."""
+    import import_kern
+    import import_musetrainer
+
+    return {
+        import_musetrainer.UNFETCHED_HINT.format(
+            why=import_musetrainer.UNFETCHED_REASON.format(file="gone.mxl")
+        ): "gone.mxl was not fetched: the MuseTrainer library is not on this build",
+        import_kern.UNFETCHED_HINT.format(
+            why=import_kern.UNFETCHED_REASON.format(key="joplin/kern/gone.krn")
+        ): "joplin/kern/gone.krn was not fetched: the kern clone is not on this build",
+    }
+
+
+class TestAPlaceholderThisBuildCouldNotFetch(unittest.TestCase):
+    """
+    Q82: a sectioned item whose file this build could not fetch is warned, not failed.
+
+    `build.attach_sections` puts `content/sources/sections.json` on every item by id, a placeholder too. With no
+    file and no render report (a fresh runner has none when it validates), the count cannot be established; for a
+    fetch placeholder that is the fetch, a reason that says nothing about the sections, so the check says it did
+    not look and names the reason (Q75's rule). Every other case is unchanged: a licence placeholder, a bundled
+    file whose bars cannot be counted, and a placeholder the render report does count.
+    """
+
+    def test_a_sectioned_fetch_placeholder_does_not_error(self) -> None:
+        for hint, reason in unfetched_hints().items():
+            placeholder = dict(item(("Anywhere", 1, 4)), importHint=hint)
+            self.assertEqual(section_errors([placeholder], Path("."), MISSING), [], reason)
+
+    def test_it_is_warned_naming_the_item_and_the_fetch_reason(self) -> None:
+        from validate import section_findings
+
+        for hint, reason in unfetched_hints().items():
+            placeholder = dict(item(("Anywhere", 1, 4)), importHint=hint)
+            errors, warnings = section_findings([placeholder], Path("."), MISSING)
+            self.assertEqual(errors, [], reason)
+            self.assertEqual(warnings, [f"song.test: named sections not checked on this build: {reason}"])
+
+    def test_a_sectioned_licence_placeholder_still_errors(self) -> None:
+        import import_kern
+        import import_musetrainer
+
+        for hint in (import_musetrainer.IMPORT_HINT, import_kern.IMPORT_HINT.format(repo="joplin")):
+            placeholder = dict(item(("Anywhere", 1, 4)), importHint=hint)
+            errors = section_errors([placeholder], Path("."), MISSING)
+            self.assertEqual(len(errors), 1, hint)
+            self.assertIn("could not be established", errors[0])
+
+    def test_a_bundled_file_whose_bars_cannot_be_counted_still_errors(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "junk.musicxml").write_text("not a score", encoding="utf-8")
+            errors = section_errors([item(("Anywhere", 1, 4), file="junk.musicxml")], Path(tmp), MISSING)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("could not be established", errors[0])
+
+    def test_a_fetch_placeholder_the_render_report_counts_is_checked_as_before(self) -> None:
+        # The owner's machine keeps a render report from an earlier render: the count is there, so the rule runs.
+        hint = next(iter(unfetched_hints()))
+        with tempfile.TemporaryDirectory() as tmp:
+            path = report(Path(tmp) / "r.json", **{"song.test": 8})
+            errors = section_errors([dict(item(("Too far", 1, 9)), importHint=hint)], Path(tmp), path)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("8 printed bar(s)", errors[0])
+
+
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()
 

@@ -1,0 +1,147 @@
+U32 item 9, the long pieces: this machine, this run. Before | after, per picture.
+nocturne__phone-sideways__bars-1__midrun
+  before: staff 25.7, ink 49% of the height, spacing x1, ahead [], free below 100 vs a row 177, 1 slots/1 systems, 1 of 1 shown, sheets 2
+  after:  staff 25.7, ink 49% of the height, spacing x1, ahead [], free below 100 vs a row 177, 1 slots/1 systems, 1 of 1 shown, sheets 4
+nocturne__phone-sideways__bars-1__rest
+  before: staff 25.7, ink 55% of the height, spacing x1, ahead [], free below 80 vs a row 177, 1 slots/1 systems, 1 of 1 shown, sheets 2
+  after:  staff 25.7, ink 55% of the height, spacing x1, ahead [], free below 80 vs a row 177, 1 slots/1 systems, 1 of 1 shown, sheets 4
+nocturne__phone-sideways__bars-2__midrun
+  before: staff 25.7, ink 53% of the height, spacing x1, ahead [], free below 100 vs a row 177, 1 slots/1 systems, 2 of 2 shown, sheets 2
+  after:  staff 25.7, ink 53% of the height, spacing x1, ahead [], free below 100 vs a row 177, 1 slots/1 systems, 2 of 2 shown, sheets 4
+nocturne__phone-sideways__bars-2__rest
+  before: staff 25.7, ink 59% of the height, spacing x1, ahead [], free below 70 vs a row 177, 1 slots/1 systems, 2 of 2 shown, sheets 2
+  after:  staff 25.7, ink 59% of the height, spacing x1, ahead [], free below 70 vs a row 177, 1 slots/1 systems, 2 of 2 shown, sheets 4
+nocturne__phone-sideways__bars-4__midrun
+  before: staff 25.7, ink 66% of the height, spacing x1, ahead [], free below 63 vs a row 177, 1 slots/1 systems, 4 of 4 shown, sheets 2
+  after:  staff 25.7, ink 66% of the height, spacing x1, ahead [], free below 63 vs a row 177, 1 slots/1 systems, 4 of 4 shown, sheets 4
+nocturne__phone-sideways__bars-4__rest
+  before: staff 25.7, ink 61% of the height, spacing x1, ahead [], free below 70 vs a row 177, 1 slots/1 systems, 4 of 4 shown, sheets 2
+  after:  staff 25.7, ink 61% of the height, spacing x1, ahead [], free below 70 vs a row 177, 1 slots/1 systems, 4 of 4 shown, sheets 4
+nocturne__phone-sideways__bars-8__midrun
+  before: staff 25.7, ink 66% of the height, spacing x1, ahead [], free below 62 vs a row 186, 1 slots/1 systems, 4 of 8 shown (across), sheets 2
+  after:  staff 25.7, ink 66% of the height, spacing x1, ahead [], free below 62 vs a row 186, 1 slots/1 systems, 4 of 8 shown (across), sheets 4
+nocturne__phone-sideways__bars-8__rest
+  before: staff 25.7, ink 61% of the height, spacing x1, ahead [], free below 69 vs a row 186, 1 slots/1 systems, 4 of 8 shown (across), sheets 2
+  after:  staff 25.7, ink 61% of the height, spacing x1, ahead [], free below 69 vs a row 186, 1 slots/1 systems, 4 of 8 shown (across), sheets 4
+nocturne__phone-upright-342__bars-1__midrun  [next row gained]
+  before: staff 14.8 UNDER FLOOR, ink 15% of the height, spacing x1, ahead [], free below 564 vs a row 100, 1 slots/1 systems, 1 of 1 shown, sheets 2
+  after:  staff 35.7, ink 57% of the height, spacing x1, ahead [2-2], free below 260 vs a row 224, 2 slots/1 systems, 1 of 1 shown, sheets 4
+nocturne__phone-upright-342__bars-1__rest
+  before: staff 53.3, ink 43% of the height, spacing x1, ahead [], free below 264 vs a row 328, 1 slots/1 systems, 1 of 1 shown, sheets 2
+  after:  staff 53.3, ink 43% of the height, spacing x1, ahead [], free below 264 vs a row 328, 1 slots/1 systems, 1 of 1 shown, sheets 4
+nocturne__phone-upright-342__bars-2__midrun
+  before: staff 35.7, ink 57% of the height, spacing x1, ahead [2-2], free below 259 vs a row 224, 2 slots/2 systems, 2 of 2 shown, sheets 2
+  after:  staff 35.7, ink 57% of the height, spacing x1, ahead [2-2], free below 259 vs a row 224, 2 slots/2 systems, 2 of 2 shown, sheets 4
+nocturne__phone-upright-342__bars-2__rest
+  before: staff 35.7, ink 66% of the height, spacing x1, ahead [], free below 149 vs a row 224, 2 slots/2 systems, 2 of 2 shown, sheets 2
+  after:  staff 35.7, ink 66% of the height, spacing x1, ahead [], free below 149 vs a row 224, 2 slots/2 systems, 2 of 2 shown, sheets 4
+nocturne__phone-upright-342__bars-4__midrun
+  before: staff 25.1, ink 44% of the height, spacing x1, ahead [4-5], free below 352 vs a row 161, 2 slots/2 systems, 4 of 4 shown, sheets 2
+  after:  staff 25.1, ink 71% of the height, spacing x1, ahead [6-7 4-5], free below 169 vs a row 161, 3 slots/2 systems, 4 of 4 shown, sheets 4
+nocturne__phone-upright-342__bars-4__rest  [next row gained]
+  before: staff 25.1, ink 54% of the height, spacing x1, ahead [], free below 223 vs a row 161, 2 slots/2 systems, 4 of 4 shown, sheets 2
+  after:  staff 25.1, ink 84% of the height, spacing x1, ahead [4-5], free below 63 vs a row 161, 3 slots/2 systems, 4 of 4 shown, sheets 4
+nocturne__phone-upright-342__bars-8__midrun  [WINDOW SMALLER 25.1 -> 23.7]
+  before: staff 25.1, ink 44% of the height, spacing x1, ahead [4-5], free below 352 vs a row 161, 2 slots/2 systems, 4 of 8 shown (floor), sheets 2
+  after:  staff 23.7, ink 68% of the height, spacing x1, ahead [6-7], free below 192 vs a row 152, 3 slots/3 systems, 6 of 8 shown (floor), sheets 4
+nocturne__phone-upright-342__bars-8__rest  [WINDOW SMALLER 25.1 -> 23.7]
+  before: staff 25.1, ink 54% of the height, spacing x1, ahead [], free below 223 vs a row 161, 2 slots/2 systems, 4 of 8 shown (floor), sheets 2
+  after:  staff 23.7, ink 80% of the height, spacing x1, ahead [], free below 84 vs a row 152, 3 slots/3 systems, 6 of 8 shown (floor), sheets 4
+nocturne__phone-upright-390__bars-1__midrun
+  before: staff 40.9, ink 56% of the height, spacing x1, ahead [2-2], free below 309 vs a row 254, 2 slots/1 systems, 1 of 1 shown, sheets 2
+  after:  staff 40.9, ink 56% of the height, spacing x1, ahead [2-2], free below 309 vs a row 254, 2 slots/1 systems, 1 of 1 shown, sheets 4
+nocturne__phone-upright-390__bars-1__rest  [NEXT ROW LOST]
+  before: staff 61.1, ink 91% of the height, spacing x1, ahead [1-1], free below 14 vs a row 373, 2 slots/1 systems, 1 of 1 shown, sheets 2
+  after:  staff 61.1, ink 41% of the height, spacing x1, ahead [], free below 330 vs a row 373, 1 slots/1 systems, 1 of 1 shown, sheets 4
+nocturne__phone-upright-390__bars-2__midrun
+  before: staff 40.9, ink 56% of the height, spacing x1, ahead [2-2], free below 309 vs a row 254, 2 slots/2 systems, 2 of 2 shown, sheets 2
+  after:  staff 40.9, ink 56% of the height, spacing x1, ahead [2-2], free below 310 vs a row 254, 2 slots/2 systems, 2 of 2 shown, sheets 4
+nocturne__phone-upright-390__bars-2__rest
+  before: staff 40.9, ink 63% of the height, spacing x1, ahead [], free below 205 vs a row 254, 2 slots/2 systems, 2 of 2 shown, sheets 2
+  after:  staff 40.9, ink 63% of the height, spacing x1, ahead [], free below 205 vs a row 254, 2 slots/2 systems, 2 of 2 shown, sheets 4
+nocturne__phone-upright-390__bars-4__midrun
+  before: staff 28.8, ink 43% of the height, spacing x1, ahead [4-5], free below 416 vs a row 182, 2 slots/2 systems, 4 of 4 shown, sheets 2
+  after:  staff 28.8, ink 70% of the height, spacing x1, ahead [6-7 4-5], free below 211 vs a row 182, 3 slots/2 systems, 4 of 4 shown, sheets 4
+nocturne__phone-upright-390__bars-4__rest  [next row gained]
+  before: staff 28.8, ink 51% of the height, spacing x1, ahead [], free below 288 vs a row 182, 2 slots/2 systems, 4 of 4 shown, sheets 2
+  after:  staff 28.8, ink 79% of the height, spacing x1, ahead [4-5], free below 110 vs a row 182, 3 slots/2 systems, 4 of 4 shown, sheets 4
+nocturne__phone-upright-390__bars-8__midrun  [WINDOW SMALLER 28.8 -> 26.7]
+  before: staff 28.8, ink 43% of the height, spacing x1, ahead [4-5], free below 416 vs a row 182, 2 slots/2 systems, 4 of 8 shown (floor), sheets 2
+  after:  staff 26.7, ink 97% of the height, spacing x1, ahead [8-9], free below 0 vs a row 170, 4 slots/4 systems, 8 of 8 shown, sheets 4
+nocturne__phone-upright-390__bars-8__rest  [WINDOW SMALLER 28.8 -> 27.2]
+  before: staff 28.8, ink 51% of the height, spacing x1, ahead [], free below 288 vs a row 182, 2 slots/2 systems, 4 of 8 shown (floor), sheets 2
+  after:  staff 27.2, ink 75% of the height, spacing x1, ahead [], free below 135 vs a row 173, 3 slots/3 systems, 6 of 8 shown (floor), sheets 4
+nocturne__tablet-sideways__bars-1__midrun
+  before: staff 45.4, ink 45% of the height, spacing x1, ahead [], free below 392 vs a row 288, 1 slots/1 systems, 1 of 1 shown, sheets 2
+  after:  staff 45.4, ink 45% of the height, spacing x1, ahead [], free below 392 vs a row 288, 1 slots/1 systems, 1 of 1 shown, sheets 4
+nocturne__tablet-sideways__bars-1__rest
+  before: staff 89.3, ink 68% of the height, spacing x1, ahead [], free below 112 vs a row 559, 1 slots/1 systems, 1 of 1 shown, sheets 2
+  after:  staff 89.3, ink 68% of the height, spacing x1, ahead [], free below 112 vs a row 559, 1 slots/1 systems, 1 of 1 shown, sheets 4
+nocturne__tablet-sideways__bars-2__midrun
+  before: staff 26.1, ink 28% of the height, spacing x1, ahead [], free below 513 vs a row 170, 1 slots/1 systems, 2 of 2 shown, sheets 2
+  after:  staff 26.1, ink 28% of the height, spacing x1, ahead [], free below 513 vs a row 170, 1 slots/1 systems, 2 of 2 shown, sheets 4
+nocturne__tablet-sideways__bars-2__rest
+  before: staff 77, ink 63% of the height, spacing x1, ahead [], free below 141 vs a row 505, 1 slots/1 systems, 2 of 2 shown, sheets 2
+  after:  staff 77, ink 63% of the height, spacing x1, ahead [], free below 141 vs a row 505, 1 slots/1 systems, 2 of 2 shown, sheets 4
+nocturne__tablet-sideways__bars-4__midrun
+  before: staff 39.3, ink 84% of the height, spacing x1, ahead [8-11], free below 97 vs a row 277, 2 slots/1 systems, 4 of 4 shown, sheets 2
+  after:  staff 39.3, ink 84% of the height, spacing x1, ahead [8-11], free below 97 vs a row 277, 2 slots/1 systems, 4 of 4 shown, sheets 4
+nocturne__tablet-sideways__bars-4__rest
+  before: staff 43.5, ink 42% of the height, spacing x1, ahead [], free below 285 vs a row 306, 1 slots/1 systems, 4 of 4 shown, sheets 2
+  after:  staff 43.5, ink 42% of the height, spacing x1, ahead [], free below 285 vs a row 306, 1 slots/1 systems, 4 of 4 shown, sheets 4
+nocturne__tablet-sideways__bars-8__midrun
+  before: staff 39.2, ink 84% of the height, spacing x1, ahead [8-11], free below 97 vs a row 272, 2 slots/2 systems, 8 of 8 shown, sheets 2
+  after:  staff 39.2, ink 84% of the height, spacing x1, ahead [8-11], free below 97 vs a row 272, 2 slots/2 systems, 8 of 8 shown, sheets 4
+nocturne__tablet-sideways__bars-8__rest
+  before: staff 38.5, ink 81% of the height, spacing x1, ahead [], free below 74 vs a row 268, 2 slots/2 systems, 8 of 8 shown, sheets 2
+  after:  staff 38.5, ink 81% of the height, spacing x1, ahead [], free below 74 vs a row 268, 2 slots/2 systems, 8 of 8 shown, sheets 4
+nocturne__tablet-upright__bars-1__midrun
+  before: staff 33.9, ink 25% of the height, spacing x1, ahead [], free below 723 vs a row 213, 1 slots/1 systems, 1 of 1 shown, sheets 2
+  after:  staff 33.9, ink 25% of the height, spacing x1, ahead [], free below 723 vs a row 213, 1 slots/1 systems, 1 of 1 shown, sheets 4
+nocturne__tablet-upright__bars-1__rest
+  before: staff 122.1, ink 64% of the height, spacing x1, ahead [], free below 211 vs a row 736, 1 slots/1 systems, 1 of 1 shown, sheets 2
+  after:  staff 122.1, ink 64% of the height, spacing x1, ahead [], free below 211 vs a row 736, 1 slots/1 systems, 1 of 1 shown, sheets 4
+nocturne__tablet-upright__bars-2__midrun
+  before: staff 69, ink 74% of the height, spacing x1, ahead [2-2], free below 202 vs a row 422, 2 slots/2 systems, 2 of 2 shown, sheets 2
+  after:  staff 69, ink 74% of the height, spacing x1, ahead [2-2], free below 202 vs a row 422, 2 slots/2 systems, 2 of 2 shown, sheets 4
+nocturne__tablet-upright__bars-2__rest
+  before: staff 64.7, ink 75% of the height, spacing x1, ahead [], free below 158 vs a row 396, 2 slots/2 systems, 2 of 2 shown, sheets 2
+  after:  staff 64.7, ink 75% of the height, spacing x1, ahead [], free below 158 vs a row 396, 2 slots/2 systems, 2 of 2 shown, sheets 4
+nocturne__tablet-upright__bars-4__midrun
+  before: staff 57.5, ink 66% of the height, spacing x1, ahead [4-5], free below 282 vs a row 353, 2 slots/2 systems, 4 of 4 shown, sheets 2
+  after:  staff 57.5, ink 66% of the height, spacing x1, ahead [4-5], free below 282 vs a row 353, 2 slots/2 systems, 4 of 4 shown, sheets 4
+nocturne__tablet-upright__bars-4__rest
+  before: staff 57.5, ink 75% of the height, spacing x1, ahead [], free below 163 vs a row 353, 2 slots/2 systems, 4 of 4 shown, sheets 2
+  after:  staff 57.5, ink 75% of the height, spacing x1, ahead [], free below 163 vs a row 353, 2 slots/2 systems, 4 of 4 shown, sheets 4
+nocturne__tablet-upright__bars-8__midrun
+  before: staff 29.3, ink 47% of the height, spacing x1, ahead [8-11], free below 498 vs a row 186, 2 slots/2 systems, 8 of 8 shown, sheets 2
+  after:  staff 38.3, ink 86% of the height, spacing x1, ahead [8-10], free below 131 vs a row 241, 3 slots/3 systems, 8 of 8 shown, sheets 4
+nocturne__tablet-upright__bars-8__rest
+  before: staff 29.3, ink 43% of the height, spacing x1, ahead [], free below 440 vs a row 186, 2 slots/2 systems, 8 of 8 shown, sheets 2
+  after:  staff 38.3, ink 84% of the height, spacing x1, ahead [], free below 99 vs a row 239, 3 slots/3 systems, 8 of 8 shown, sheets 4
+scherzo__phone-upright-342__bars-2__midrun
+  before: staff 48.3, ink 66% of the height, spacing x1, ahead [2-2], free below 185 vs a row 267, 2 slots/2 systems, 2 of 2 shown, sheets 2
+  after:  staff 48.3, ink 66% of the height, spacing x1, ahead [2-2], free below 185 vs a row 267, 2 slots/2 systems, 2 of 2 shown, sheets 4
+scherzo__phone-upright-342__bars-2__rest
+  before: staff 45.8, ink 88% of the height, spacing x1, ahead [], free below 23 vs a row 254, 2 slots/2 systems, 2 of 2 shown, sheets 2
+  after:  staff 45.8, ink 88% of the height, spacing x1, ahead [], free below 23 vs a row 254, 2 slots/2 systems, 2 of 2 shown, sheets 4
+scherzo__phone-upright-342__bars-4__midrun
+  before: staff 32, ink 56% of the height, spacing x1, ahead [8-9], free below 293 vs a row 181, 2 slots/2 systems, 4 of 4 shown, sheets 2
+  after:  staff 32, ink 81% of the height, spacing x1, ahead [8-9 10-11], free below 125 vs a row 181, 3 slots/2 systems, 4 of 4 shown, sheets 4
+scherzo__phone-upright-342__bars-4__rest
+  before: staff 32, ink 57% of the height, spacing x1, ahead [], free below 196 vs a row 181, 2 slots/2 systems, 4 of 4 shown, sheets 2
+  after:  staff 32, ink 57% of the height, spacing x1, ahead [], free below 196 vs a row 181, 2 slots/2 systems, 4 of 4 shown, sheets 4
+scherzo__phone-upright-390__bars-2__midrun
+  before: staff 55.3, ink 65% of the height, spacing x1, ahead [2-2], free below 225 vs a row 304, 2 slots/2 systems, 2 of 2 shown, sheets 2
+  after:  staff 55.3, ink 65% of the height, spacing x1, ahead [2-2], free below 225 vs a row 304, 2 slots/2 systems, 2 of 2 shown, sheets 4
+scherzo__phone-upright-390__bars-2__rest
+  before: staff 55.3, ink 88% of the height, spacing x1, ahead [], free below 32 vs a row 299, 2 slots/2 systems, 2 of 2 shown, sheets 2
+  after:  staff 55.3, ink 88% of the height, spacing x1, ahead [], free below 32 vs a row 299, 2 slots/2 systems, 2 of 2 shown, sheets 4
+scherzo__phone-upright-390__bars-4__midrun
+  before: staff 36.6, ink 55% of the height, spacing x1, ahead [8-9], free below 349 vs a row 205, 2 slots/2 systems, 4 of 4 shown, sheets 2
+  after:  staff 36.6, ink 79% of the height, spacing x1, ahead [8-9 10-11], free below 157 vs a row 204, 3 slots/2 systems, 4 of 4 shown, sheets 4
+scherzo__phone-upright-390__bars-4__rest
+  before: staff 36.6, ink 54% of the height, spacing x1, ahead [], free below 259 vs a row 205, 2 slots/2 systems, 4 of 4 shown, sheets 2
+  after:  staff 36.6, ink 54% of the height, spacing x1, ahead [], free below 259 vs a row 202, 2 slots/2 systems, 4 of 4 shown, sheets 4
+
+48 pictures: the next row gained in 3, lost in 1; a window staff smaller after in 4

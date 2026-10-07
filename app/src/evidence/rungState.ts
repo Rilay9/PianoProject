@@ -26,16 +26,42 @@
  *   opened the screen, or the one a Today card chose, C1/C3), and each such run
  *   is judged again here under that rung's standard from what it measured
  *   (`masteryCriteriaFor`, the function the Score screen judges by). A run of
- *   an item three rungs list meets at most the one that judged it. A `done`
+ *   an item three rungs list meets at most the one that judged it. A run of a
+ *   book piece's twin (`Lesson.paperTwins`, the shelf overlay's) counts toward
+ *   `runs` as the book piece the judging rung lists, once (CL04, L79); `reads`,
+ *   `done` and `measure` read the run under its own id, as before. A `runs`
+ *   requirement, named or unnamed, counts a run only where it covered the whole
+ *   item (`wholeItem`; RG1, RG1a, `coveredWholeItem`, with its compatibility rule). A `done`
  *   item (a checklist, the tour, the placement test) is finished when nothing
  *   was left undone and, where the run measured an accuracy, at the rung's
  *   standard; it read every row of the item until the reviewer's C5 review.
+ * - **A run held below the rung that judged it credits that rung nothing** (SR3; the reviewer's ruling on
+ *   SR2, `docs/review/responses/sr2-landing.md` §2: "requirement credit does not cross the material
+ *   boundary that made the observation easier/narrower"). Before 1.3 Today's daily read is judged by 1.5
+ *   and held to the learner's own rung, so its phrase cannot ask what 1.5 teaches. Such a run meets none of
+ *   its judging rung's `runs`, `reads`, `done` or `measure` requirements, and that rung's `skill`
+ *   requirements read every evidence record but those runs', then and after the learner reaches the rung.
+ *   Its evidence stays the learner's everywhere else: the Skills screen's ladders (`skillLadders`) and
+ *   every other rung's `skill` requirements read it as before, and no run is re-credited to the rung it
+ *   was held at. Which runs are held is the run's own stored fact (`heldWhenPlayed`; SR4, the reviewer's
+ *   ruling on SR3, `docs/review/responses/sr3-lb1-landing.md` §3): the hold its header kept when the Score
+ *   screen wrote the phrase under one (`RunHeader.opened.hold`), never a comparison of the stored phrase with
+ *   what today's curriculum would write, which moves when a demand moves. A run with no stored hold — an
+ *   unheld run, and every run written before SR4 — is never held, never guessed.
  *
  * **What a run measured** is read, never assumed: accuracy a number (a run
  * nothing heard is `not measured`, C1), not rhythm only, not a phrase met
- * before (`unseen: false`), not the learner's own answer (`selfReport`). A
- * Keep tempo run reaches the rung's tempo on what it measured; a Wait run has
- * no tempo, so it meets only a rung that asks for none (T37). A drill has no
+ * before (`unseen: false` on a phrase's run, `isPhraseRun`: a piece played
+ * again that G1's app stored carries it too, and meets its rung as it always
+ * did; since G1a a piece's run carries the relation as `firstContact`, which
+ * no requirement reads), not the learner's own answer (`selfReport`). A
+ * Keep tempo run reaches the rung's tempo on what it measured, unless a
+ * reviewed repair has since corrected the tempo its percentage is of (E50b,
+ * `meetsStandard`), when it reaches none; a Wait run has no tempo and meets no
+ * rung's standard, since every rung asks for one (T37; CL11a: the rungs that
+ * state `minTempoPct: 0` take the Settings pair, which is never below 30 %, so
+ * no criterion a rung produces has a tempo floor of nought — `meetsStandard`'s
+ * `passTempoPct <= 0` branches stay for a constructed one). A drill has no
  * tempo and is judged on its accuracy, and Simon on its chain, as its screen
  * judges them.
  *
@@ -44,9 +70,11 @@
  * and never make a rung met; `nextRecommended` holds such a rung back, as it
  * holds back the rungs behind a placement.
  */
-import type { PlanRow, SessionRow } from '../data/db';
+import { isPhraseRun, type PlanRow, type SessionRow } from '../data/db';
+import { accuracyReading } from '../data/accuracyReading';
 import type { Curriculum, Lesson, Requirement, RunsRequirement } from '../curriculum/types';
 import { masteryCriteriaFor } from '../curriculum/selectors';
+import { tempoNotComparable } from '../curriculum/material';
 import { DEFAULT_MASTERY, type MasteryCriteria } from '../engine/Scoring';
 import { SIMON_ROUNDS, simonBestChain, simonOutcome } from '../engine/drills/simon';
 import type { Evidence, MeasuredEvidence } from './evidence';
@@ -125,7 +153,7 @@ export function skillLadders(
   for (const skill of vocabulary.skills) {
     if (skill.observable === 'none') continue;
     const exposed = exposures.get(skill.id);
-    out.set(skill.id, ladderState({ evidence: bySkill.get(skill.id) ?? [], today, ...(exposed ? { exposures: exposed } : {}) }));
+    out.set(skill.id, ladderState({ evidence: bySkill.get(skill.id) ?? [], today, vocabulary, ...(exposed ? { exposures: exposed } : {}) }));
   }
   return out;
 }
@@ -137,6 +165,11 @@ export function skillLadders(
  * which is exactly what the ladder's exposure is ("the lesson page read, a
  * demonstration heard"): a concept is *introduced* by it, and no further. It is
  * not evidence, so it moves no skill to practised, and no requirement reads it.
+ *
+ * A rung's concepts are its `concepts` and what its lesson `introduces` (CL04,
+ * G70): an introduction is met on the page like any concept, so it is an
+ * exposure too — never an encounter, familiarity or requirement. One date per
+ * concept, whichever list names it.
  */
 export function carriedExposures(
   curriculum: Curriculum,
@@ -149,7 +182,7 @@ export function carriedExposures(
     for (const unit of stage.units) {
       for (const lesson of unit.lessons) {
         if (!rungs.has(lesson.id)) continue;
-        for (const concept of lesson.concepts) {
+        for (const concept of [...lesson.concepts, ...(lesson.introduces ?? [])]) {
           const list = out.get(concept) ?? [];
           if (!list.includes(carried.at)) list.push(carried.at);
           out.set(concept, list);
@@ -177,25 +210,73 @@ export function learnerRecordFrom(
   };
 }
 
-/** Whether a stored run measured anything a requirement can read (see the module note). */
+/**
+ * Whether a stored run measured anything a requirement can read (see the module note). Its accuracy is the one
+ * reading's (`accuracyReading`, U102): a drill set nobody answered — a new row by its answered count, an older
+ * note-flash row by that kind's proven invariant — is not measured, so no zero that measured nothing is read as
+ * a share a standard could meet, and a backing track's constant 0 is not judged. An older unanswered row of any
+ * other kind keeps its legacy 0, which meets no standard above 0.
+ */
 function measured(row: SessionRow): row is SessionRow & { accuracy: number } {
   return (
     typeof row.accuracy === 'number' &&
+    accuracyReading(row).kind === 'measured' &&
     row.rhythmOnly !== true &&
-    row.unseen !== false &&
+    !(row.unseen === false && isPhraseRun(row)) &&
     row.selfReport === undefined
   );
 }
 
-/** Whether one run judged by `rung` meets its standard, re-read from what it measured. */
+/**
+ * Whether one run judged by `rung` meets its standard, re-read from what it measured.
+ *
+ * **A tempo a reviewed repair corrected** (E50b; the reviewer's required change on E50,
+ * `docs/review/responses/68e0479b.md` §3). A Keep tempo run's `tempoPct` is a percentage of the base
+ * tempo the run was played against (`SessionRow.baseTempo`). Where a reviewed repair has since changed
+ * that tempo — a run of an old file E50 re-converted, whose 100 % was 100 % of the converter's defaulted
+ * 96 and not of the tempo the repaired score prints (`material.tempoNotComparable`) — the percentage is
+ * not comparable to the item's standard: such a run meets a standard that asks no tempo, as a Wait run
+ * does, and no standard that asks one, however high its stored percentage. Never rescaled, never
+ * rewritten; its accuracy, its contact and its stored evidence are read as before. Every other run is
+ * judged exactly as it was.
+ */
 export function meetsStandard(row: SessionRow, criteria: MasteryCriteria, accuracy?: number): boolean {
   if (!measured(row)) return false;
   if (row.mode === 'drill:simon') return simonOutcome(simonBestChain(row.accuracy, SIMON_ROUNDS)).passed;
   if (row.accuracy < (accuracy ?? criteria.passAccuracy)) return false;
   if (row.mode.startsWith('drill:')) return true;
-  if (row.mode === 'tempo') return row.tempoMeasured !== false && row.tempoPct >= criteria.passTempoPct;
+  if (row.mode === 'tempo') {
+    if (row.tempoMeasured === false) return false;
+    if (tempoNotComparable(row)) return criteria.passTempoPct <= 0;
+    return row.tempoPct >= criteria.passTempoPct;
+  }
   if (row.mode === 'wait') return criteria.passTempoPct <= 0;
   return false;
+}
+
+/**
+ * Whether a run covered the whole item, as a `runs` requirement reads it (RG1; FABLE §6; the
+ * reviewer's ruling, `docs/review/responses/6e7475c1.md` §5). A requirement asks for items, and a
+ * loop over part of one is not a run of it, however clean.
+ *
+ * - **The fact is `wholeItem`**, which the Score screen writes on every run it records
+ *   (`db.coversWholeItem`), never `range`: a range is written on every judged run, the whole
+ *   piece's included.
+ * - **A loop whose bars take in the whole item counts.** Its `wholeItem` is `true`: the evidence
+ *   covers the item although Loop was used — the scales' and Hanon's ladder loops over every bar.
+ * - **The compatibility rule: a row with no `wholeItem` counts, as such rows always did.** Every
+ *   run written before RG1 has none, and so do the drill and paper screens' runs, which have no
+ *   range to cover (a drill is made whole when it opens). The row does not say what it covered, and
+ *   the rule it was written under counted it; reading it as partial would take back rungs already
+ *   met on a fact the row never held, and a ranged row is no evidence either way. Only a stored
+ *   `false` refuses.
+ *
+ * Every `runs` requirement reads it, named or unnamed (RG1a; the reviewer's required change,
+ * `docs/review/responses/bb6289f2.md` §1): 61 shipped rungs ask `from: songs` with no `items`, and a
+ * passing loop of part of one song must not stand for the song.
+ */
+function coveredWholeItem(row: SessionRow): boolean {
+  return row.wholeItem !== false;
 }
 
 function poolOf(rung: Lesson, requirement: RunsRequirement): Set<string> {
@@ -208,6 +289,23 @@ function poolOf(rung: Lesson, requirement: RunsRequirement): Set<string> {
         : [...rung.exerciseOptions, ...songs];
   const named = requirement.items === undefined ? null : new Set(requirement.items);
   return new Set(base.filter((id) => named === null || named.has(id)));
+}
+
+/**
+ * The pooled book pieces' twins, by the twin's id (CL04, L79): a measured run of a
+ * twin judged by the rung counts as the book piece the rung lists, since the twin is
+ * that piece's score, not another context (G80). A twin that is itself in the pool
+ * counts under its own id alone, so one run is one item; where two listed pieces
+ * share a twin, the first in the rung's order takes it.
+ */
+function twinsOf(rung: Lesson, pool: ReadonlySet<string>): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const paper of rung.paperOptions ?? []) {
+    const twin = rung.paperTwins?.[paper];
+    if (twin === undefined || !pool.has(paper) || pool.has(twin) || out.has(twin)) continue;
+    out.set(twin, paper);
+  }
+  return out;
 }
 
 /** The full standard satisfies a requirement for the practice one; not the other way round. */
@@ -229,7 +327,8 @@ function inRungOrder(rung: Lesson, ids: ReadonlySet<string>): string[] {
 /**
  * Every rung's state from the rows (see the module note). `today` dates the
  * ladder's readings. Pure: the same rows, curriculum, vocabulary, day and
- * learner record give the same state.
+ * learner record give the same state. A run held below the rung that judged
+ * it is the run's stored fact (`heldWhenPlayed`; SR3, SR4, the module note).
  */
 export function rungState(
   rows: readonly SessionRow[],
@@ -243,14 +342,22 @@ export function rungState(
     ...(learner.defaults ?? {}),
   };
   // One walk over the rows: the runs each rung judged, and every skill's
-  // evidence, whichever rung judged the run it came from.
+  // evidence, whichever rung judged the run it came from. A run held below
+  // the rung that judged it (SR3, the module note) is set apart for that rung.
   const judgedBy = new Map<string, SessionRow[]>();
+  const heldBy = new Map<string, Set<SessionRow>>();
   const evidenceBySkill = new Map<string, Evidence[]>();
   for (const row of rows) {
     if (row.lessonId !== undefined) {
-      const list = judgedBy.get(row.lessonId) ?? [];
-      list.push(row);
-      judgedBy.set(row.lessonId, list);
+      if (heldWhenPlayed(row)) {
+        const held = heldBy.get(row.lessonId) ?? new Set<SessionRow>();
+        held.add(row);
+        heldBy.set(row.lessonId, held);
+      } else {
+        const list = judgedBy.get(row.lessonId) ?? [];
+        list.push(row);
+        judgedBy.set(row.lessonId, list);
+      }
     }
     for (const evidence of storedEvidence(row)) {
       const list = evidenceBySkill.get(evidence.skill) ?? [];
@@ -259,13 +366,13 @@ export function rungState(
     }
   }
   const knownSkills = new Set(vocabulary.skills.map((skill) => skill.id));
+  const ladderOver = (skill: string, evidence: ReadonlyMap<string, readonly Evidence[]>): LadderState =>
+    knownSkills.has(skill) ? ladderState({ evidence: [...(evidence.get(skill) ?? [])], today, vocabulary }).state : 'not introduced';
   const ladders = new Map<string, LadderState>();
   const ladderOf = (skill: string): LadderState => {
     const cached = ladders.get(skill);
     if (cached) return cached;
-    const state = knownSkills.has(skill)
-      ? ladderState({ evidence: evidenceBySkill.get(skill) ?? [], today }).state
-      : 'not introduced';
+    const state = ladderOver(skill, evidenceBySkill);
     ladders.set(skill, state);
     return state;
   };
@@ -277,8 +384,12 @@ export function rungState(
       for (const rung of unit.lessons) {
         const criteria = masteryCriteriaFor(rung, defaults);
         const judged = judgedBy.get(rung.id) ?? [];
+        // The rung's `skill` requirements read every skill's evidence but its own held runs' (SR3).
+        const held = heldBy.get(rung.id);
+        const evidence = held === undefined ? evidenceBySkill : evidenceApart(rows, held);
+        const ladderHere = held === undefined ? ladderOf : (skill: string): LadderState => ladderOver(skill, evidence);
         const readings = (rung.requirements ?? []).map((requirement) =>
-          read(requirement, rung, criteria, judged, evidenceBySkill, ladderOf, learner),
+          read(requirement, rung, criteria, judged, evidence, ladderHere, learner),
         );
         const judgeable = readings.filter((reading) => reading.holds !== 'unjudged');
         const met = judgeable.length > 0 && judgeable.every((reading) => reading.holds === true);
@@ -298,6 +409,31 @@ export function rungState(
   return { byRung };
 }
 
+/**
+ * Whether a run was held below the rung that judged it, as it stored that when it was played (SR4; the module
+ * note): its header names a hold (`opened.hold`, the route's, written by the Score screen where it wrote the phrase
+ * under it) other than the judging rung (`opened.rung`). Read from the row and nothing else — no catalogue, no
+ * vocabulary — so a demand moved to another rung later reclassifies no run. A row with no hold is never held.
+ */
+export function heldWhenPlayed(row: Pick<SessionRow, 'opened'>): boolean {
+  const hold = row.opened?.hold;
+  return hold !== undefined && hold !== row.opened?.rung;
+}
+
+/** Every skill's evidence from the rows but `apart` (a rung's held runs, SR3), by skill. */
+function evidenceApart(rows: readonly SessionRow[], apart: ReadonlySet<SessionRow>): Map<string, Evidence[]> {
+  const out = new Map<string, Evidence[]>();
+  for (const row of rows) {
+    if (apart.has(row)) continue;
+    for (const evidence of storedEvidence(row)) {
+      const list = out.get(evidence.skill) ?? [];
+      list.push(evidence);
+      out.set(evidence.skill, list);
+    }
+  }
+  return out;
+}
+
 function read(
   requirement: Requirement,
   rung: Lesson,
@@ -310,11 +446,16 @@ function read(
   switch (requirement.kind) {
     case 'runs': {
       const pool = poolOf(rung, requirement);
+      const twins = twinsOf(rung, pool);
       const counted = new Set<string>();
       for (const row of judged) {
-        if (!pool.has(row.itemId)) continue;
+        // The item the run counts as: its own where the rung lists it, else the book piece it is the twin of (L79).
+        const item = pool.has(row.itemId) ? row.itemId : twins.get(row.itemId);
+        if (item === undefined) continue;
         if (requirement.performance === true && row.performance !== true) continue;
-        if (meetsStandard(row, criteria, requirement.accuracy)) counted.add(row.itemId);
+        if (requirement.hands === 'both' && row.hands?.played !== 'both') continue;
+        if (!coveredWholeItem(row)) continue;
+        if (meetsStandard(row, criteria, requirement.accuracy)) counted.add(item);
       }
       const twoSongs =
         learner.requireTwoSongs === true &&

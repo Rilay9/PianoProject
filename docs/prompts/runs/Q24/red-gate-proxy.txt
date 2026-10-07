@@ -1,0 +1,36 @@
+=== proxy: preconditions moved aside: ['content\\sources\\pdmx-csv-level.json']
+test_a_level_is_always_inside_the_stage_range (tests.test_pdmx.TestArchiveIndex.test_a_level_is_always_inside_the_stage_range) ... ok
+test_extract_can_be_pointed_at_hand_picked_cids (tests.test_pdmx.TestArchiveIndex.test_extract_can_be_pointed_at_hand_picked_cids) ... ok
+test_the_index_reads_the_fixture_and_keeps_what_passes_the_gates (tests.test_pdmx.TestArchiveIndex.test_the_index_reads_the_fixture_and_keeps_what_passes_the_gates) ... ok
+test_the_page_is_one_self_contained_file (tests.test_pdmx.TestArchiveIndex.test_the_page_is_one_self_contained_file) ... ok
+test_the_proxy_recovers_a_level_it_was_fitted_on (tests.test_pdmx.TestArchiveIndex.test_the_proxy_recovers_a_level_it_was_fitted_on) ... ok
+test_the_shipped_proxy_is_fitted_and_agrees_with_the_real_model (tests.test_pdmx.TestArchiveIndex.test_the_shipped_proxy_is_fitted_and_agrees_with_the_real_model) ... FAIL
+test_without_a_fitted_model_it_says_so_rather_than_guessing_wildly (tests.test_pdmx.TestArchiveIndex.test_without_a_fitted_model_it_says_so_rather_than_guessing_wildly) ... ok
+
+======================================================================
+FAIL: test_the_shipped_proxy_is_fitted_and_agrees_with_the_real_model (tests.test_pdmx.TestArchiveIndex.test_the_shipped_proxy_is_fitted_and_agrees_with_the_real_model)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ad4db920a52007e2d\tools\content\tests\test_pdmx.py", line 805, in test_the_shipped_proxy_is_fitted_and_agrees_with_the_real_model
+    self.fail(
+AssertionError: content/sources/pdmx-csv-level.json is missing or not fitted, and it is committed: refit it with `python tools/content/pdmx/index.py --fit` (CI has it from the checkout)
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.250s
+
+FAILED (failures=1)
+=== proxy: without the precondition, exit 1 (expected 1)
+=== proxy: preconditions back, sha256 unchanged: True
+test_a_level_is_always_inside_the_stage_range (tests.test_pdmx.TestArchiveIndex.test_a_level_is_always_inside_the_stage_range) ... ok
+test_extract_can_be_pointed_at_hand_picked_cids (tests.test_pdmx.TestArchiveIndex.test_extract_can_be_pointed_at_hand_picked_cids) ... ok
+test_the_index_reads_the_fixture_and_keeps_what_passes_the_gates (tests.test_pdmx.TestArchiveIndex.test_the_index_reads_the_fixture_and_keeps_what_passes_the_gates) ... ok
+test_the_page_is_one_self_contained_file (tests.test_pdmx.TestArchiveIndex.test_the_page_is_one_self_contained_file) ... ok
+test_the_proxy_recovers_a_level_it_was_fitted_on (tests.test_pdmx.TestArchiveIndex.test_the_proxy_recovers_a_level_it_was_fitted_on) ... ok
+test_the_shipped_proxy_is_fitted_and_agrees_with_the_real_model (tests.test_pdmx.TestArchiveIndex.test_the_shipped_proxy_is_fitted_and_agrees_with_the_real_model) ... ok
+test_without_a_fitted_model_it_says_so_rather_than_guessing_wildly (tests.test_pdmx.TestArchiveIndex.test_without_a_fitted_model_it_says_so_rather_than_guessing_wildly) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.228s
+
+OK
+=== proxy: with the precondition, exit 0 (expected 0)

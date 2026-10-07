@@ -1,0 +1,73 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/windowRendererStage.test.ts (34 tests | 4 failed | 29 skipped) 1467ms
+   ❯ the stacked slots and the folded chip’s band (U118) (5)
+     × placed below the band while it is drawn and back at the top when it goes, with nothing fitted or engraved 67ms
+     × a band that is not a whole pixel starts the first slot on the pixel below it 30ms
+     × an ordinary fold during a frozen run: the stage gains the header’s row, the band is placed, and the shape and size hold 250ms
+     × a size taken while the band is drawn is priced below it: turned back while folded, it draws what a stage short by the band draws, placed under the band 1019ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the stacked slots and the folded chip’s band (U118) > placed below the band while it is drawn and back at the top when it goes, with nothing fitted or engraved
+TypeError: renderer.placeSlots is not a function
+ ❯ tests/unit/windowRendererStage.test.ts:1298:14
+    1296|     expect(tops(stage)[0], 'unfolded: the first slot at the top').toBe…
+    1297|     band.px = 37;
+    1298|     renderer.placeSlots();
+       |              ^
+    1299|     expect(tops(stage)[0], 'folded: the first slot starts below the ba…
+    1300|     // A share's box may round a pixel past the stage; the ink is what…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the stacked slots and the folded chip’s band (U118) > a band that is not a whole pixel starts the first slot on the pixel below it
+AssertionError: expected +0 to be 37 // Object.is equality
+
+- Expected
++ Received
+
+- 37
++ 0
+
+ ❯ tests/unit/windowRendererStage.test.ts:1315:28
+    1313|     const renderer = await openWithBand(stage, band);
+    1314|     await settle();
+    1315|     expect(tops(stage)[0]).toBe(37);
+       |                            ^
+    1316|     renderer.dispose();
+    1317|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the stacked slots and the folded chip’s band (U118) > an ordinary fold during a frozen run: the stage gains the header’s row, the band is placed, and the shape and size hold
+TypeError: renderer.placeSlots is not a function
+ ❯ tests/unit/windowRendererStage.test.ts:1334:14
+    1332|     // stage taller by the header's row, which the stage observer repo…
+    1333|     band.px = 37;
+    1334|     renderer.placeSlots();
+       |              ^
+    1335|     stage.box = { width: 342, height: 616 };
+    1336|     observe();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the stacked slots and the folded chip’s band (U118) > a size taken while the band is drawn is priced below it: turned back while folded, it draws what a stage short by the band draws, placed under the band
+TypeError: b.placeSlots is not a function
+ ❯ tests/unit/windowRendererStage.test.ts:1380:7
+    1378|     await settle();
+    1379|     band.px = 37;
+    1380|     b.placeSlots();
+       |       ^
+    1381|     stage.box = { width: 342, height: 616 };
+    1382|     observe();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 1 passed | 29 skipped (34)
+   Start at  02:50:32
+   Duration  17.95s (environment 89%, tests 8%, transform 2%)
+

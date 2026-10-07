@@ -1,0 +1,25 @@
+$ (cwd .) npm run lint
+
+> pianopath@0.1.0 lint
+> eslint . --max-warnings=0
+
+
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a64cf9b42ff36e1ca\app\tests\unit\materialOnTheRecord.test.ts
+  146:21   error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  165:125  error  This assertion is unnecessary since it does not change the type of the expression             @typescript-eslint/no-unnecessary-type-assertion
+  167:12   error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  175:30   error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  175:42   error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  181:30   error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  181:42   error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  182:30   error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+  182:42   error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a64cf9b42ff36e1ca\app\tests\unit\transferOffer.test.ts
+  196:105  error  This assertion is unnecessary since the receiver accepts the original type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+✖ 10 problems (10 errors, 0 warnings)
+  10 errors and 0 warnings potentially fixable with the `--fix` option.
+
+
+exit 1

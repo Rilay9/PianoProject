@@ -548,8 +548,9 @@ body {
 
    So upright the words take the full width and the buttons drop to a line of
    their own, at full size: the owner asked for exactly that trade — taller
-   rows, in portrait, so the buttons *and* the names can both be read. A title
-   gets two lines before it gives up, which covers all but the longest.
+   rows, in portrait, so the buttons *and* the names can both be read. In the
+   folder a title gets two lines before it gives up, which covers all but the
+   longest; in the library it gets every line it needs (below).
 
    Deliberately scoped to these two lists. `04` §0 R2 caps a row at 96 px and
    Today is measured against it at 360 px wide; this costs about 35 px, which
@@ -618,13 +619,36 @@ body {
 
   /* Two lines, then an ellipsis. `-webkit-line-clamp` is the only way to
      ellipsise a wrapped block, and it is unprefixed nowhere that matters. */
-  #folder-list .list-row__title,
-  #library-list .list-row__title {
+  #folder-list .list-row__title {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     white-space: normal;
+  }
+
+  /* In the library a title is never cut (G101): it wraps to the lines it
+     needs, and a word longer than the room breaks rather than being cut, as on
+     Skills (U90) and for the same reason. A title here is the piece's
+     identity, and titles that differ only in their endings are common: the
+     four *Twinkle* rows, or *Piano Sonata No. 16 in C, K. 545, I. Allegro* and
+     the same with *(alternative edition)*. A catalogue row keeps its words
+     beside `Details` and `⋯`, so at 342 px the title has about half the row.
+     Two lines cut *(hands together)* at 115 % text here, and on CI's runner at
+     100 %. Three, as first ruled (`docs/review/responses/questions-eebafb5e.md`),
+     were sized to *Twinkle*: at 115 % the longest of those endings need four
+     lines on this machine's face and six on a wider one (Verdana, which
+     reproduces the runner's failure), so any count is a count for one face at
+     one text size (`docs/prompts/runs/G101/`). The links keep their size
+     (narrowing them was not the first fix), and a row grows only where its
+     title needs the room: the longest catalogue title, 122 characters, takes
+     eight lines at 115 % here. The folder stays at two: its rows give the
+     words the whole width, with the buttons on a line of their own, and
+     `folder.readable.spec.ts` measures its titles against two lines. */
+  #library-list .list-row__title {
+    white-space: normal;
+    text-overflow: clip;
+    overflow-wrap: break-word;
   }
 
   /* And the detail line gets the width too, so a composer stops being cut
@@ -929,30 +953,32 @@ body {
    width, and lists whose rows are all the same shape run in two columns.
    --------------------------------------------------------------------------- */
 @media (orientation: landscape) and (max-height: 500px) {
-  /* A6 — the score screen: the header row goes, and Back, the title and the
-     status line sit at the bar's left end instead. The keyboard strip is 56
-     px, not 72: the keys are as wide as before, and height is the scarce
-     thing. Together with the bar's row going to the stage during a run, the
-     music gets about 300 of 360 px where it had 194. */
+  /* A6 — the score screen: the header row goes. The keyboard strip is 56 px,
+     not 72: the keys are as wide as before, and height is the scarce thing.
+     Together with the bar's row going to the stage during a run, the music
+     gets about 300 of 360 px where it had 194.
+
+     Since U122c (c6, `docs/design/score-bar-layout.md` §8.7, §10.3) the
+     header's contents are split by what they are for: the piece's name and
+     `bar n / m` on a thin top line (`.score-top`, below), Back and the status
+     line at the bottom row's left end with every control. */
   .screen--score .score-head {
     display: none;
   }
 
   .screen--score .score-bar {
     justify-content: flex-start;
-    /* One row, and the title is what gives.
-
-       The bar wraps by design when it cannot fit — a safety valve so that
-       `Both` is never hidden off an edge nobody knows to drag. Sideways that
-       valve fired in ordinary use: the bar carries Back, the piece's name and
-       `bar n / m` as well as the six controls, which the valve's arithmetic
-       never counted. On a phone whose landscape is 740 px or less — a larger
-       Display size does that — Beethoven's `Piano Sonata No. 14 "Moonlight",
-       III.` pushed `⋯` onto a second row and cost the music 40 px.
-
-       So sideways it does not wrap, and the name shrinks instead: it is the
-       one thing here that is still useful at half its length. */
+    /* One row. The bar wraps by design when it cannot fit — a safety valve so
+       that `Both` is never hidden off an edge nobody knows to drag. Sideways
+       a second row costs the music 40 px, so it does not wrap: the chooser
+       (`fitBarControls`) takes words and then controls off the row until it
+       fits, and the status line yields its room first. */
     flex-wrap: nowrap;
+    /* Painted no further than its controls (U122b rule 3, `responses/e070d238.md`):
+       its padding lay over the bass staff's lowest beams at 780 × 360 with
+       Moonlight, where the controls themselves cleared them. */
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .screen--score .score-bar__left {
@@ -960,28 +986,134 @@ body {
     /* Takes the room that is left and gives it back first. */
     flex: 0 1 auto;
     min-width: 0;
+    /* And draws nothing past the room it was given (U119): the controls are
+       laid out after the group's box, so a group that draws only inside it
+       cannot cover one. What is cut is what comes last: the status line,
+       which ends at its own ellipsis (below); Back, first in the group, is
+       never cut, because a control goes behind `⋯` first (`leftGroupIsCut`
+       in `ScoreScreen.ts`, U119a). `clip` across only, not `hidden`: Back's
+       focus ring above and below is still drawn, and the group is no scroll
+       container a focus could scroll. */
+    overflow-x: clip;
   }
 
-  .screen--score .score-bar__title {
-    /* No fixed cap sideways: a share of the viewport cannot know what the
-       controls need, and 34vw of 740 is 251 px the controls then have to do
-       without. */
-    max-width: none;
-    flex: 0 1 auto;
-    min-width: 0;
-  }
-
-  /* Everything else keeps its size; the name is the only thing that yields. */
+  /* Everything else keeps its size. */
   .screen--score .score-bar > :not(.score-bar__left) {
     flex: none;
   }
 
-  /* Inside the left group too: squeezed, `← Back` and `bar 1 / 201` wrapped
-     their own text onto a second line and took the group from 36 px to 48,
-     which is the same 12 px back by another door. */
-  .screen--score .score-bar__left > :not(.score-bar__title) {
+  /* Squeezed, `← Back` wrapped its own text onto a second line and took the
+     group from 36 px to 48. */
+  .screen--score .score-bar__left > .score-button {
     flex: none;
     white-space: nowrap;
+  }
+
+  /* The status line gives its room up and ends with its own ellipsis where it
+     stops (U119a, `responses/fa4563d1.md`: "a truncated ordinary status must
+     visibly read as truncated"): shrinking, its box ends where the group's
+     room does, and `.score-bar__status`'s `text-overflow: ellipsis` draws the
+     cut. */
+  .screen--score .score-bar__left > .score-bar__status {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: none;
+  }
+
+  /* The top line (c6): the piece's name and `bar n / m` in the folded chip's
+     type, one line, as tall at rest as the band a run keeps for it, so ▶
+     moves nothing (U122b). At rest it is in the flow above the stage; from a
+     run's start it lies over the stage's top band, and the sliding sheet sits
+     below the band (`.score-buffer`, below) — so the fold, a pause and a
+     carry-on move nothing either. It has no background: the band it lies
+     over is the stage's own, and empty. */
+  .screen--score .score-top {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: baseline;
+    gap: 0.4rem;
+    box-sizing: border-box;
+    height: var(--score-top-band);
+    padding: 2px 12px 2px 8px;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .screen--score[data-running='true'] .score-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  /* The name and the moment's sentence yield, with an ellipsis; `bar n / m`
+     never does (below). */
+  .screen--score .score-top__title,
+  .screen--score .score-top__say {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .screen--score .score-top__title {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* The moment's sentence takes the name's place while it stands
+     (`topLineSays`), and the name is not drawn while the hands are on the
+     keys. */
+  .screen--score .score-top[data-says] .score-top__title,
+  .screen--score[data-chrome='folded'] .score-top__title,
+  .screen--score .score-top:not([data-says]) .score-top__say {
+    display: none;
+  }
+
+  /* A refusal is a warning in the name's place, so it does not read as the
+     name: bold, in the accent colour (U122b). */
+  .screen--score .score-top[data-says='refusal'] .score-top__say {
+    font-weight: 600;
+    color: var(--accent, #6ea8ff);
+  }
+
+  .screen--score .score-top__where {
+    flex: none;
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Whole or not at all: a refusal too long for the line takes its room
+     (`responses/e070d238.md`), never a cut number that reads as another bar. */
+  .screen--score .score-top[data-where-yields] .score-top__where {
+    display: none;
+  }
+
+  /* The beat dot in the line's left corner, where the band is. */
+  .screen--score .score-top > .score-beat {
+    align-self: center;
+  }
+
+  /* The sliding sheet below the top line's band from a run's start, not at
+     the fold: `WindowRenderer.sheetShift` reads this to fit the run. */
+  .screen--score[data-running='true'] .score-buffer {
+    top: var(--score-top-band);
+  }
+
+  /* During a run the stage takes the bar's row (decision 5, P21d A6): the
+     row overlays the foot of the sheet, painted no further than its controls,
+     rather than pushing the music up and down. One fit, at the run's start.
+     Sideways only since U122c: height is scarce here and the row clears the
+     music (U122b: in every cell measured, ⏸ alone and the whole flush row);
+     upright and on a tablet the stage keeps its reserve (below). */
+  .screen--score[data-running='true'] .score-stage {
+    margin-bottom: 0;
   }
 
   /* On the *host*, not on the strip. The bar floats `bottom: var(--strip-height)`
@@ -2261,48 +2393,41 @@ input[type='checkbox'] {
    and not so bright that it competes with the note being played — Tempo and
    Listen move whether or not you are ready, and Wait mode has no clock to be
    ahead of, so it draws none of this. */
-/* The count-in, drawn over the notation (P21c A6). Clicks alone leave the
-   first note of a piece unannounced on a phone with the sound low, which is
-   the one moment a beginner most needs to know when to start. */
+/* The count-in (P21c A6). Clicks alone leave the first note of a piece
+   unannounced on a phone with the sound low, which is the one moment a
+   beginner most needs to know when to start.
+
+   **In the row, right of ⏸, never over the notation (U122c).** It was drawn
+   over the stage under a wash that dimmed every note, its numerals on the
+   notes the learner reads to come in (walk finding 8: in Moonlight on a dozen
+   note heads, in Hot Cross Buns on the fingerings). A run folds the controls to
+   ⏸ the moment it starts, and the room they leave in the row is where the
+   count goes: large, at the row's own height, beside the control that stops
+   it (`responses/e070d238.md`: "the large count numerals beside the direct
+   pause control, without the wash"). Placed from ⏸'s edge by the script
+   (`placeCount`), which also narrows it if a long bar's count would run past
+   the row. Only while the controls are folded: a peek shows them instead. */
 .score-countin {
   position: absolute;
-  inset: 0;
-  /*
-   * Stops where the control bar starts.
-   *
-   * During a run the stage is extended under the bar to win the height, so a
-   * count-in filling the stage put its numerals across `R`, `L` and `Both` —
-   * two gallery cells said so. It cannot simply be made inert like the other
-   * overlays: stopping a run that has begun counting is exactly what someone
-   * reaches for, so the bar has to stay both usable *and* legible, which means
-   * the count-in has to keep off it rather than sit on top of it.
-   *
-   * 4.5rem, not the bar's own 3.25: the numerals are set in a clamped size and
-   * their line box runs below the glyphs, so a clearance equal to the bar left
-   * the two boxes touching on the cells with the least room. The slack is worth
-   * more than the twenty pixels it costs an overlay that is on the screen for
-   * four beats.
-   */
-  bottom: 4.5rem;
-  z-index: 3;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
   display: flex;
-  /* Low on the stage, not centred: upright the packed slots leave the
-     bottom free, and centred the count sat on the second system's notes
-     (the state gallery's count-in cell). */
-  align-items: flex-end;
-  padding-bottom: 6%;
-  justify-content: center;
-  gap: clamp(12px, 6vw, 48px);
+  align-items: center;
+  gap: 0.35em;
+  padding-left: 0.3em;
+  font-size: calc(var(--score-bar-h, 2.6rem) - 2px);
+  line-height: 1;
+  overflow: hidden;
   pointer-events: none;
-  background: color-mix(in srgb, var(--surface) 72%, transparent);
 }
 
-.score-countin[hidden] {
+.screen--score:not([data-chrome='folded']) .score-countin {
   display: none;
 }
 
 .score-countin__beat {
-  font-size: clamp(2rem, 12vmin, 5rem);
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
   opacity: 0.45;
@@ -2313,65 +2438,32 @@ input[type='checkbox'] {
   opacity: 1;
 }
 
-/* Where you are, for when the chrome has folded away and nothing else on the
-   screen says it (`08` §5.3).
+/* The stage's corner chip (`bar n / m` over the music while the chrome was
+   folded, `08` §5.3) is gone since U122c, and with it the 22 px it moved the
+   sheet down at the fold: upright and on a tablet the header keeps its box
+   through a run and says `bar n / m` where it said it at rest; sideways the
+   top line does, in the band the sheet sits below from the run's start. */
 
-   It had no rule at all, so it was an inline span in the stage's normal flow:
-   drawn whatever the chrome was doing — `bar 7 / 15` in the bar's left end and
-   `bar 7 / 15` again at the top of the sheet, on every leg of the corpus — and
-   sitting in the text flow, so it ran straight into whatever the engraver puts
-   above the first system. `bar 7 / 15E7` on both Greensleeves, and
-   `bar 6 / 11du bout de la pensée` on the Gnossienne.
-
-   Only while folded, then, and out of the flow. Top-right because the beat dot
-   has the top-left. */
-.score-stage__corner {
+/* The top line is the sideways phone's (`.score-top`, the landscape query);
+   everywhere else the header says what it says. Its band is the one a
+   sideways run keeps at the stage's top: one line of the chip's type, and no
+   less than 22 px, room for the beat dot's pulse. */
+.score-top {
   display: none;
 }
 
-/* Not on a tablet: there the header does not fold, so it is still saying
-   `bar n / m` and a chip over the sheet would say it twice. */
-/* Folded, the sheet starts below the chip rather than under it.
-
-   The chip is drawn *over* the notation on purpose — that is the trade for
-   getting `bar n / m` without a row of its own — but over is not the same as
-   on top of a note. On Greensleeves folded, it sat on a `G` chord symbol. The
-   answer is to shift the ink down by the chip's height, not to move the chip:
-   the top-right corner is where it belongs and moving it into the bar's row is
-   impossible while folded, because while folded there is no bar.
-
-   On the buffers rather than the stage: `.score-buffer` is `inset: 0` and the
-   renderer's placement is a transform inside it, so padding on the stage would
-   move nothing. It costs the music 22 px of a screen that has just been given
-   back the bar's whole row, which is 44. Not on a tablet, where the chip is
-   never drawn (the header does not fold there). */
-.screen--score[data-chrome='folded']:not([data-tablet='true']) .score-buffer {
-  top: var(--score-corner-h, 22px);
+.screen--score {
+  --score-top-band: max(22px, calc(0.8rem * 1.2 + 4px));
 }
 
-.screen--score[data-chrome='folded']:not([data-tablet='true']) .score-stage__corner {
-  display: block;
-  position: absolute;
-  top: 4px;
-  right: 8px;
-  z-index: 4;
-  font-size: 0.8rem;
-  line-height: 1.2;
-  text-align: right;
-  color: var(--text-muted);
-  background: var(--bg);
-  padding: 1px 4px;
-  border-radius: 6px;
-  pointer-events: none;
-}
-
-/* The beat dot: how a player checks the tempo without hearing the click. */
+/* The beat dot: how a player checks the tempo without hearing the click.
+   Beside `bar n / m` (U122c): in the header row upright and on a tablet, in
+   the top line sideways (`placeBeatDot`). It sat in the stage's top-left
+   corner, on the first system's clef upright. */
 .score-beat {
-  /* In the stage's top-left corner, every form factor (`08` §5.3). */
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  z-index: 4;
+  display: inline-block;
+  flex: none;
+  align-self: center;
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -2485,7 +2577,7 @@ input[type='checkbox'] {
 /* Where you are in the piece: `bar 3 / 48`, beside the title, and mirrored
    into the bar's left end sideways. */
 .score-head__where,
-.score-bar__where {
+.score-top__where {
   font-size: 0.8rem;
   color: var(--text-muted);
   white-space: nowrap;
@@ -2744,6 +2836,19 @@ input[type='checkbox'] {
   text-overflow: ellipsis;
 }
 
+/* Why a sight-reading phrase could not be written (D1a): the generator's reason,
+   a few sentences, in the stage where the music would have been. The header's
+   `.score-status` is one line cut short at a phone's width, so it carries only
+   what happened. */
+.score-refusal {
+  margin: 1.5rem 1rem;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 /* The note Wait mode is waiting for, when the owner has turned note names on.
    Quiet by default — it is there for the moment he is stuck, not as a running
    commentary. */
@@ -2850,24 +2955,16 @@ input[type='checkbox'] {
 }
 
 
-/* Back, the title and the status line, mirrored from the header for a phone
-   held sideways (P21d A6). Upright the bar is full and the header row is the
-   right place, so this is not drawn at all. */
+/* Back and the status line, mirrored from the header for a phone held
+   sideways (P21d A6; the name and `bar n / m` are on the top line since
+   U122c). Upright the bar is full and the header row is the right place, so
+   this is not drawn at all. */
 .score-bar__left {
   display: none;
   align-items: center;
   gap: 0.4rem;
   min-width: 0;
   margin-right: auto;
-}
-
-.score-bar__title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 34vw;
 }
 
 .score-bar__status {
@@ -2879,31 +2976,31 @@ input[type='checkbox'] {
   max-width: 28vw;
 }
 
-/* During a run the stage takes the bar's row (decision 5, P21d A6): the bar
-   hides itself three seconds in, and when it is asked back it overlays the
-   foot of the sheet rather than pushing the music up and down. One fit, at
-   the run's start, instead of one on every tap. */
-.screen--score[data-running='true'] .score-stage {
-  margin-bottom: 0;
-}
+/* The stage keeps the bar's row through a run, upright and on a tablet
+   (U122c, `docs/design/score-bar-layout.md` §10.4–10.5). It took the row at
+   every size (decision 5, P21d A6: the sideways phone's height), and where
+   the height decides the size the music grew at ▶ and the bar, reopened on a
+   pause, covered its foot (35 px deep at 1366 × 1024). Upright the row bought
+   nothing: the run's size and systems are the ones it had at rest. Sideways
+   it still takes the row (the landscape query). */
 
-/* The one thing on the bar allowed to give. At 360 px the six controls come to
-   358 of the 360, which is a fit that depends on a font: if anything ever
-   costs more than those two pixels, the tempo label goes short rather than the
-   whole bar going to two rows. */
+/* The tempo label: its words are chosen by the row's chooser, long or short,
+   and its width is priced at the widest it can read in that form
+   (`applyTempoLabel`), so the bpm is never cut. */
 .score-bar > .score-tempo-label {
-  flex: 0 1 auto;
+  flex: none;
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  justify-content: center;
   /* It opens the tempo sheet, so it is a control, and it was a 43 x 17 one —
      the smallest thing to hit on the screen by a wide margin. The height costs
      nothing horizontally, which is why this is the first of the bar's targets
      to fix rather than the last. */
   display: inline-flex;
   align-items: center;
-  min-height: 2.5rem;
+  min-height: max(2.5rem, 40px);
   padding-inline: 0.3rem;
 }
 
@@ -2912,29 +3009,62 @@ input[type='checkbox'] {
   bottom: var(--strip-height, 4.5rem);
 }
 
-/* And the count-in clears both. */
-.screen--score:has(.score-strip:not([hidden])) .score-countin {
-  bottom: calc(4.5rem + var(--strip-height, 4.5rem));
-}
-
-.score-bar[data-visible='false'] {
-  opacity: 0;
+/* Folded: the hands are on the keys, and the controls fold to the one that
+   acts now (U122c, `scoreChrome.ts`): ⏸ in ▶'s own place, or `Stop` under a
+   demonstration. The row keeps its box and paints nothing; every other control
+   keeps its place, unseen, so nothing moves when they come back. It was
+   `opacity: 0` on the whole bar, ▶ with it, and a paused run folded the same
+   way: *▶ to carry on* with no ▶ (walk finding 5). */
+.screen--score[data-chrome='folded'] .score-bar {
+  background: transparent;
+  border-top-color: transparent;
   pointer-events: none;
 }
 
-/* Folded, the header goes with the bar — upright, and not on a tablet.
+.screen--score[data-chrome='folded'] .score-bar > :not(.score-countin) {
+  visibility: hidden;
+}
 
-   `data-chrome='folded'` was written and only the corner chip ever read it, so
-   the header stayed where it was: `bar n / m` in the header *and* `bar n / m`
-   in the corner, which is the duplicate this round set out to end, in a new
-   place. It also meant the stage never got the row the fold is for.
+.screen--score[data-chrome='folded'] .score-bar[data-direct='score-play'] > #score-play,
+.screen--score[data-chrome='folded'] .score-bar[data-direct='score-hear'] > #score-hear {
+  visibility: visible;
+  pointer-events: auto;
+}
 
-   Not on a tablet: `04` §7a says the screens are the same there and the tablet
-   has the height to spare. Not sideways either — sideways the header is
-   already gone and its contents live in the bar's left end, which fades with
-   the bar. */
-.screen--score[data-chrome='folded']:not([data-tablet='true']) .score-head {
+/* Folded, the header keeps its box, upright and on a tablet: its Back, the
+   piece's name, the mode's name and `?` are not drawn, `bar n / m`, the app's
+   status line and what the run says stay where they were (U122c, §10.4). It
+   used to leave the flow upright, and the music jumped up by its height less
+   the chip's band at every fold (32–63 px measured) and down again at every
+   reveal, while buying the run nothing: the run's size is frozen before the
+   fold. The name goes from the flow so `bar n / m` and the status share its
+   width; Back keeps the row's height. Sideways the header is not drawn. */
+.screen--score[data-chrome='folded'] .score-head :is(#score-back, .help-strip__what, .help-strip__more) {
+  visibility: hidden;
+}
+
+.screen--score[data-chrome='folded'] .score-head .score-head__title {
   display: none;
+}
+
+.screen--score[data-chrome='folded'] .score-head__where {
+  margin-left: auto;
+}
+
+/* The beat dot beside `bar n / m` in the header row: the two go to the row's
+   right end together, whatever is drawn before them. */
+.score-head__row > .score-beat {
+  margin-left: auto;
+}
+
+.screen--score .score-head__row > .score-beat:not([hidden]) + .score-head__where {
+  margin-left: 0;
+}
+
+/* The mode's standing line is not what the run is saying: hidden folded, as
+   the chip never said it (`data-standing`, written with the line). */
+.screen--score[data-chrome='folded'] .score-head .help-strip__now[data-standing='true'] {
+  visibility: hidden;
 }
 
 /* Hidden means gone (`08` §9.20): `display: flex` above beat the user-agent
@@ -2970,7 +3100,9 @@ input[type='checkbox'] {
   background: transparent;
   color: inherit;
   cursor: pointer;
-  min-height: 2.5rem;
+  /* In the unit it is drawn in and the unit it is checked in (U124): at 90 %
+     text `2.5rem` alone was 36 px. */
+  min-height: max(2.5rem, 40px);
 }
 
 /*
@@ -2991,8 +3123,24 @@ input[type='checkbox'] {
  * So the floor below is affordable: whatever it costs, the bar stops carrying.
  */
 #score-play,
-#score-more {
-  min-width: 2.5rem;
+#score-more,
+#score-hear {
+  min-width: max(2.5rem, 40px);
+}
+
+/* Every control a sentence names meets the same floor (U124, widened by
+   U122b, `responses/e070d238.md`): Back, and each of R, L and Both, which
+   *choose L or Both* and *tap R again* name one at a time. Hands takes it
+   wherever it keeps its place on the row with it (`data-floor`, decided by
+   `fitBarControls`): where only the floor would send it behind `⋯` (a narrow
+   upright row) it keeps its own width, a product trade put to the reviewer,
+   not settled here. */
+#score-back,
+#score-back-side,
+.score-group[data-floor='true'] > #score-hands-R,
+.score-group[data-floor='true'] > #score-hands-L,
+.score-group[data-floor='true'] > #score-hands-both {
+  min-width: max(2.5rem, 40px);
 }
 
 /*
@@ -3425,6 +3573,59 @@ input[type='checkbox'] {
   display: none;
 }
 
+/* Why a tap on the sheet did not start (U105a): the state line's sentence, on
+   the sheet. Read once, in every orientation. Where the header is drawn
+   (upright, a tablet) its own line says it just above the sheet, so this copy
+   is not painted — `.visually-hidden`'s declarations — and stays in the
+   accessibility tree, a status a screen reader reaches where the inert header
+   is never read (a sentence twice on one screen reads as a glitch: the
+   orchestrator's word at the landing, 2026-09-30). Where the header is not
+   drawn, the rule below paints it. Kept in the tree while empty too, so the
+   status is there before its text is. */
+.summary-refusal {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--accent, #6ea8ff);
+}
+
+/* Sideways the header is not drawn and the bar that mirrors its line is under
+   this sheet — the same query A6 hides the header with — so here the sheet's
+   line is the one the learner reads. First on the sheet and held at its top
+   when the sheet scrolls (it can reach its 72 % and scroll), so it is in view
+   whichever control was tapped. Whole: it wraps rather than cutting, where the
+   header's line and the bar's mirror each cut with an ellipsis. The state
+   line's weight and colour, which by the tokens' arithmetic is 4.5:1 or better
+   against the sheet's surface in both themes. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .screen--score .summary-refusal {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    margin: 0 0 0.5rem;
+    padding: 0.25rem 0;
+    background: inherit;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  /* Nothing to say: no height, still in the tree. */
+  .screen--score .summary-refusal:empty {
+    margin: 0;
+    padding: 0;
+  }
+}
+
 .summary-stats {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -3451,6 +3652,55 @@ input[type='checkbox'] {
 .summary-selfreport {
   margin-top: 1.5rem;
   align-items: center;
+}
+
+/* The sheet's two parts (U122c): the outcome and the figures, then what to do
+   next. One column, as they always were, everywhere but on a phone held
+   sideways. */
+.summary-main,
+.summary-side {
+  display: contents;
+}
+
+/* Sideways the sheet is wide and short, and its 72 % ended above the actions:
+   the learner met the outcome and the figures and not the step it points to
+   (U122b; `responses/e070d238.md`: the outcome and the primary next action in
+   the first view). So the two parts stand side by side, X46's sheet in its own
+   order: the outcome and the figures on the left, the actions on the right from
+   the top, the recommended one first as X46 puts it. The actions stay at the
+   top of the sheet's view while the figures scroll. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .screen--score .summary-sheet {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    column-gap: 1.25rem;
+    align-items: start;
+  }
+
+  .screen--score .summary-sheet > .summary-refusal {
+    grid-column: 1 / -1;
+  }
+
+  .screen--score .summary-main,
+  .screen--score .summary-side {
+    display: block;
+    min-width: 0;
+  }
+
+  .screen--score .summary-side {
+    position: sticky;
+    top: 0;
+  }
+
+  /* And the outcome's own lines closer together, so X46's verdict (*To
+     pass*, *Judged*) is in the first view with the heading at 115 % text. */
+  .screen--score .summary-main > h2:first-child {
+    margin: 0 0 0.3rem;
+  }
+
+  .screen--score .summary-main > .summary-stats {
+    margin-top: 0.4rem;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -3672,6 +3922,19 @@ input[type='checkbox'] {
   white-space: nowrap;
 }
 
+/* On Skills a name is never cut: it wraps to the lines it needs (U90). As one line with an
+   ellipsis, "Leaps: a fourth or fifth" was cut on CI's runner and here under a face wider than
+   Segoe UI (Verdana) or at 115 % text; on Segoe UI itself "Finger numbers" read "Finger num…"
+   beside Drill it and Find more, and both coordination exercises in A read "Hands together in
+   A — left ha…", cut before the word that tells them apart. A cut name says neither thing. The
+   words keep their 5rem basis, so the actions stay where they were and the row grows by a line;
+   a word longer than the room breaks rather than being cut. */
+.skill-concept .list-row__title {
+  white-space: normal;
+  text-overflow: clip;
+  overflow-wrap: break-word;
+}
+
 /* The reason, one line, cut rather than wrapped (`04` §0 R2). */
 .list-row__sub {
   font-size: 0.85rem;
@@ -3715,6 +3978,19 @@ input[type='checkbox'] {
 .list-row__metatext {
   overflow: hidden;
   white-space: nowrap;
+}
+
+/* On Skills the detail line takes the lines it needs, and a cut says so (U92). It leads with the
+   count, "15 to practise", then the stages and the tracks. As one line clipped at the edge, beside
+   Drill it and Find more, it said a different number: "Shifting position" read "Stage 2 · core · 1"
+   for fifteen, with no sign that anything was missing. With the count first and an ellipsis, a face
+   wider than Segoe UI (Verdana) still cut the count itself to "15 to prac…", and so did Segoe UI on
+   a three-figure count ("120 to practise" on Arpeggios). A wrap costs the row a line; a cut count
+   costs the truth. The ellipsis stays for a single word wider than the column. The rule above holds
+   everywhere else, for the lines `fitDetail` has already trimmed. */
+#skills-list .list-row__metatext {
+  white-space: normal;
+  text-overflow: ellipsis;
 }
 
 /* Kept for the screens that still build their own strip. */
@@ -3786,6 +4062,27 @@ input[type='checkbox'] {
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text);
+  font-size: 1rem;
+}
+
+/* The date box beside *I performed it* on the project sheet (G87; G1b's
+   follow-up 6). The rule above names text and number boxes, so this one was
+   the browser's own control: a grey inset border, square corners, the
+   browser's small default type and, in Chromium, a monospace face (the
+   browser's own rule for a date box) — the one raw box among the sheet's
+   styled ones. It takes the rule above's box, border, corners and size. The
+   face is the one the browser gives every other input, the sheet's text boxes
+   among them (`-webkit-small-control`), so it follows them on each browser
+   rather than naming a family here. The control is still the browser's: its
+   picker, its value and its `max` are untouched. */
+.sheet__body input[type='date'] {
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font: -webkit-small-control;
   font-size: 1rem;
 }
 
@@ -4665,8 +4962,9 @@ input[type='checkbox'] {
 
 /* Today's sight-read says why this phrase in one sentence (C4), and it is
    read whole: the card's title is one line and it has no Swap, so a second
-   line of reason keeps the row inside R2's 96 px. Every other row's reason is
-   still one line, cut. */
+   line of reason keeps the row inside R2's 96 px. The session card's rows take
+   their own two lines since U63 (`.today-row__reason`, below); every other
+   list's reason is still one line, cut. */
 .list-row__sub.today-reason {
   white-space: normal;
 }
@@ -4700,29 +4998,91 @@ input[type='checkbox'] {
   overflow: hidden;
 }
 
-/* Except where the row also carries a badge, and then the budget decides.
-   (2026-09-12, reviewing the rule above.)
+/* Except where the row also carries a badge line, and then the budget decides.
+   (2026-09-12, reviewing the rule above.) Progress's history still works this
+   way; Today's session rows no longer have a badge line (U63, the rules below),
+   so on Today this rule is overridden and the title keeps its two lines.
 
-   A row on these two cards is four lines deep already — title, reason, detail,
-   badges — and `04` §0 R2 gives a Today row 96 px. At 16 px text that is 14 of
-   padding and border, 18.4 for the reason, 18.4 for the detail and 24 for the
-   badge line, which leaves 21 for the title: one line, and the sum comes to
-   95.6. Taking a second title line without giving up the badge line makes it
-   116, and the *reason the badge line was removed* from Today's rows was that
-   it was the line the title needed. So the trade is honest only while there is
-   no badge, and where there is one it is the badge that is the news — "you
-   passed this", "this needs importing", "that felt rough" — while the title is
-   a name the reader has seen before on the same card.
+   A row on these cards was four lines deep — title, reason, detail, badges —
+   and `04` §0 R2 gives a Today row 96 px. At 16 px text that is 14 of padding
+   and border, 18.4 for the reason, 18.4 for the detail and 24 for the badge
+   line, which leaves 21 for the title: one line, and the sum comes to 95.6.
+   Taking a second title line without giving up the badge line makes it 116.
+   So the trade is honest only while there is no badge line.
 
    Written as `:has()` rather than as a class on the row, because the condition
    is literally "is there a badge line", and `listRow` decides that from
    whether the caller passed any. The alternative was to badge nothing at all
-   on these two cards, which is R2's own instruction read backwards: badges
-   *only* when they say something the detail line does not, not never. */
+   on these cards, which is R2's own instruction read backwards: badges *only*
+   when they say something the detail line does not, not never. */
 #today-card .list-row:has(.list-row__badges) .list-row__title,
 #progress-history .list-row:has(.list-row__badges) .list-row__title {
   -webkit-line-clamp: 1;
   line-clamp: 1;
+}
+
+/* A session row's reason keeps the clause that decides it (U63; the C6
+   review's finding 6; the reviewer's ruling on the row budget,
+   `responses/questions-71bd6cee.md`).
+
+   At 342 px the reason was one line, cut, beside *Swap* and ▶: about thirty
+   characters of it. The claim comes first and the detail after the dash, so
+   the cut fell on the part that says why — *Keeping this piece playable —…*,
+   *Next lesson — this one waits f…*. It takes up to two lines now, a little
+   tighter than one line's leading so the pair reads as one sentence, and a
+   sentence longer than two lines still ends in an ellipsis rather than a third
+   line: that is a sentence for its words' owner, not for this rule.
+
+   The ruling's order, where the row cannot hold everything: the title's two
+   lines, then the reason's two, then controls a thumb can use, then the badge,
+   then 96 px. So the line comes from the badge, which sits above *Swap* and ▶
+   (`.today-row__side`, `TodayScreen.onTheCard`) rather than on a line of its
+   own; and a row whose title and reason both take two lines is taller than
+   96 px, measured and reported in U63's record for R2's owner, rather than cut
+   to meet the number. */
+#today-card .list-row.today-row .list-row__sub.today-row__reason {
+  white-space: normal;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Except a withdrawn piece's sentence (G90a), which is read whole: it takes
+   the lines it needs (CI3, as U90 did for Skills names). *Skipped — you put
+   it away* is the whole of the row's why, and at 568 × 320 its column is
+   93 px: two lines on Segoe UI, three on a wider face (Verdana here, and
+   by inference CI's runner, where the case was red), where the clamp above
+   cut it to *Skipped — / you put it…*. A
+   sentence of 25 characters, so the third line is the narrowest cell's
+   only, and only on a wide face. */
+#today-card .list-row.today-row[data-withdrawn] .list-row__sub.today-row__reason {
+  display: block;
+  -webkit-line-clamp: none;
+  line-clamp: none;
+}
+
+/* The badge beside the controls, not under the words: *✓ passed*, *Next*,
+   *done today*, compact and right-aligned above *Swap* and ▶. */
+#today-card .today-row__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex: none;
+}
+
+#today-card .today-row__side .list-row__badges {
+  margin-top: 0;
+  justify-content: flex-end;
+}
+
+/* With its badge beside the controls, a session row's title keeps its two
+   lines: half a title is not a name (`TodayScreen.ts`, the screen's ranking). */
+#today-card .list-row.today-row:has(.today-row__side .list-row__badges) .list-row__title {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 /* Free play is a prompt, not a row.
@@ -4747,6 +5107,69 @@ input[type='checkbox'] {
   margin: 2px 0 0;
   font-size: 0.9rem;
   color: var(--text-muted);
+}
+
+/* Today's session, run (X1): where the session is, above *Continue*; the
+   finish line above *Start session*; and the running card's current row, so
+   the next thing is found without reading five rows. Each line takes the row's
+   whole width, and the button stays the one filled box (R3). */
+.today-session-line,
+.today-finish {
+  flex: 1 1 100%;
+  margin: 0;
+}
+
+.today-session-line {
+  font-size: 0.9rem;
+}
+
+.today-finish__head {
+  margin: 0;
+  font-weight: 600;
+}
+
+.today-finish__detail {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+}
+
+#today-card .list-row.today-row--current {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* The transition a finished activity's closing action becomes (X1, `04` §5):
+   the next step under the result, above the numbers. */
+.session-next {
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.16));
+  border-radius: 10px;
+}
+
+.session-next__line {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.session-next__note {
+  margin: 0 0 0.25rem;
+}
+
+.session-next__time {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+}
+
+.session-next__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.score-button.score-button--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
 }
 
 /* The two that change the day and the five doors under them (R3). Quiet in
@@ -5497,25 +5920,16 @@ input[type='checkbox'] {
   visibility: hidden;
 }
 
-/* And back on again: the three things that live on the stage *because* the
-   notation might not be there.
-
-   Hiding the stage as a whole took the visible count-in, the beat dot and the
-   corner readout with it, since `visibility` inherits. Every one of them was
-   added for exactly this situation — the dot is "the one thing that must be
-   visible while the clock runs" (`08` §5.3), the corner is for when the chrome
-   has folded away and nothing else says which bar you are in, and the count-in
-   exists because on a music stand the sound is often turned down. So a blind
-   run in tempo mode counted itself in invisibly, on a screen with nothing else
-   on it whatsoever, and the gallery photographed 1,400 px of black.
-
-   The notation is the buffers and the rule above hides those by name, which is
-   all blind mode ever meant to do. */
-.score-stage--blind .score-countin,
-.score-stage--blind .score-beat,
-.score-stage--blind .score-stage__corner {
-  visibility: visible;
-}
+/* The count-in, the beat dot and `bar n / m` are not on the stage (U122c:
+   the count in the row beside ⏸, the dot and the location in the header or
+   the top line), so hiding the stage cannot take them with it. They lived on
+   the stage once, and a blind run in tempo mode counted itself in invisibly,
+   on a screen with nothing else on it, until a rule here showed them again:
+   each was added for exactly this situation — the dot is "the one thing that
+   must be visible while the clock runs" (`08` §5.3), and the count-in exists
+   because on a music stand the sound is often turned down. The notation is the
+   buffers, and the rule above hides those by name, which is all blind mode
+   ever meant to do. */
 
 .paper-readout {
   display: flex;
@@ -5870,7 +6284,8 @@ input[type='checkbox'] {
    than two lines allowed: a cut sentence says out loud that it is cut, and the
    whole of it is one tap away — the strip's `?` sheet prints `textContent`,
    which is the full string whatever the box shows. `04` section 5f's two lines
-   stay two lines; each is now exactly one line tall.
+   stay two lines; each is exactly one line tall, but for the one sentence the
+   rule after this one lets wrap: a refused tap's, whatever the run is doing.
 
    Scoped to this header on purpose. The lab and the chord chart carry the
    mode's whole sentence on their strips and have the room for it to wrap;
@@ -5882,6 +6297,68 @@ input[type='checkbox'] {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Except the sentence a refused tap says (U105b): *Sound did not start — tap
+   Slower again* wraps to the lines it needs. It is state text, not a label,
+   and whole outranks one line tall — the reviewer's ruling on the sheet's copy
+   of the same sentence (U105a, `responses/d0e1b01f.md`, choice 3), extended to
+   this one; no fixed line count, which would encode a face (G101,
+   `responses/cbdfe6f0.md`). CI's run on `122a5224` read it wider than the line
+   on the runner's face and cut it, where it fit here: the same difference of
+   face as above.
+
+   In every state the sentence can stand in, a run's included (U105c, the
+   reviewer's required change on U105b, `responses/6a374f8a.md`: whenever
+   `data-sound-refused` is why the header says it, it stays whole). A paused
+   run still reads running (`PracticeEngine.pause` leaves `running` true), and
+   a refusal stands there when ▶ is tapped to carry on, or `Hear it` or *Start
+   again* is tapped, with the sound suspended; over a demonstration ▶'s does.
+   That is where the learner has just asked for something and is being told
+   why it did not happen, and on a wider face *tap Hear it again* was cut
+   there. A bar held is not among them: a long press during a run is ignored
+   before it asks for the sound.
+
+   The fit reason above does not forbid it. That reason is a line growing
+   under a run and moving the stage it is engraved against; the size a run
+   keeps holds when the stage's height changes mid-run (`WindowRenderer`'s
+   frozen fit; `score.head-height.spec.ts` grows this header by up to 96 px
+   mid-run and the drawn size does not move). And the extra line is
+   temporary: it goes the moment a tap asks again, before that tap's act runs
+   (`withSound` clears the sentence and the mark together), or at the next
+   redraw once the sound is running (`refusedNow`). Every other line a run
+   shows stays one line with an ellipsis: the exception is keyed on the
+   refusal, not on the run. The mark is `data-sound-refused`, on the refused
+   control while `soundOffLine` draws the sentence (which `drawWaitingFor`
+   puts first, whatever the run is doing); `body`, not the screen, because a
+   control refused inside the `⋯` sheet sits on `body`. */
+body:has([data-sound-refused]) .screen--score .score-head .help-strip__now {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+
+/* …and it takes the mode's name's line while it stands, so the header keeps
+   its height and the music does not move (U122c, §10.4: the acceptance holds
+   the music's top edge from rest to a refusal). The strip's two lines are a
+   box of two lines' height on the Score, whatever they hold: the mode's name
+   and the state line, or a refusal on one or two. The selected mode stays
+   readable on the bar's select (U121). A sentence that needs a third line,
+   at a width or text size this was not measured at, still grows the header
+   rather than being cut (U105b). */
+.score-head .help-strip__lines {
+  /* The mode's name (the strip's 0.8rem), the gap, and the state line
+     (`.score-waiting`'s 0.85rem), each at the strip's line height. */
+  min-height: calc(0.8rem * 1.3 + 1px + 0.85rem * 1.3);
+}
+
+body:has([data-sound-refused]) .screen--score .score-head .help-strip__what {
+  display: none;
+}
+
+/* Sideways the refusal is on the top line, in the name's place (U122c, c6):
+   the row's status slot never carries it, so U105d's wrapping there, which
+   grew the row past the top of the window at 568 × 320 (U120), is gone. */
 
 /* The strip inside the Score screen's header row.
 
@@ -5958,6 +6435,15 @@ input[type='checkbox'] {
 
 .score-resume__note {
   flex: 1 0 100%;
+}
+
+/* A transfer offer the snapshot does not name (D4a): the run is practice, said in a sentence that
+   wraps rather than being cut like the status line, in the header that folds away mid-run. */
+.score-offer-note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: normal;
 }
 
 /* Sideways, a lesson's address shares the title's line.

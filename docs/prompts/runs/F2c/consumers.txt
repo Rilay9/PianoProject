@@ -1,0 +1,16 @@
+python docs/prompts/runs/F2c/consumers.py
+excerpts.json approved targets: ['key.signature', 'pitch.chromatic', 'syncopation', 'texture.left-hand-pattern', 'texture.walking-bass'] (interval.leap among them: False)
+teaching-repertoire works naming leap or leaps: []
+== after (as committed in this tree): CONCEPT_DEMANDS['leaps'] = None
+  concepts_naming interval.leap: ['leap']
+  teaching_rungs interval.leap: ['2.1']
+  excerpts.concepts_for(['interval.leap']): ['leap']
+  excerpt_proposer.seed_works_for(['interval.leap']): []
+  validate.taught_at_findings: errors []; warnings []
+== before (the removed line put back in memory): CONCEPT_DEMANDS['leaps'] = interval.leap
+  concepts_naming interval.leap: ['leap', 'leaps']
+  teaching_rungs interval.leap: ['2.1']
+  excerpts.concepts_for(['interval.leap']): []
+  excerpt_proposer.seed_works_for(['interval.leap']): []
+  validate.taught_at_findings: errors []; warnings []
+exit=0

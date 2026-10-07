@@ -1,0 +1,14 @@
+﻿python : test_a_yes_on_the_older_cut_leaves_the_rebuilt_cut_undecided (tests.test_review_record.TestAStaleDecisionOnAnO
+lderCutAdmitsNothing.test_a_yes_on_the_older_cut_leaves_the_rebuilt_cut_undecided) ... ok
+At line:1 char:676
++ ... ls/content; python -m unittest -v tests.test_review_record.TestAStale ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (test_a_yes_on_t...decided) ... ok:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+----------------------------------------------------------------------
+Ran 1 test in 0.846s
+
+OK
+exit 0

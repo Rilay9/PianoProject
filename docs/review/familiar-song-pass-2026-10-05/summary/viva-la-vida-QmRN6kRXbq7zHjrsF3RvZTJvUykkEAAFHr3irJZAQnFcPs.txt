@@ -1,0 +1,101 @@
+CID QmRN6kRXbq7zHjrsF3RvZTJvUykkEAAFHr3irJZAQnFcPs
+title: Viva La Vida | song_name: Viva la Vida | subtitle: 
+composer: arr. Noé Christiano | artist: Coldplay | xml creators: []
+licence: cc-zero | csv rating 0.0 (0) views 165
+shape: PIANO_GRAND_STAFF | parts: ["P1:'Piano':staves=2:prog=0:piano=True"]
+instrument names: ['Piano']
+staff count: 2 (max per part 2) | metres: ['4/4']
+bars (longest part): 124 | chord symbols: 0
+tempo marks: ['140', '100'] | tempo words: none
+key signatures: ['fifths=-3']
+rehearsal labels: none
+text directions (first 25): ['Simile', 'Revert to simile']
+first chord symbols: none
+
+##### === part P1 'Piano' measures=124 ===  (124 measure lines)
+section/texture boundaries used: 16 (texture change (rhythm signature)), 25 (texture change (rhythm signature)), 37 (texture change (rhythm signature)), 50 (texture change (rhythm signature)), 97 (repeat start), 121 (key/time/tempo change)
+--- opening 16 bars: lines 1-16 of 124 ---
+m1 [staves=2; key fifths=-3; time 4/4; clef1=F4; clef2=F4; tempo=140; dyn=ff]  s1v1: G3:q+C4 G3:q+C4 G3:q+C4 G3:8+C4 Ab3:8~+D4 | s2v5: Ab1:q+Ab2 Ab1:q+Ab2 Ab1:q.+Ab2 Bb1:8~+Bb2
+m2  s1v1: Ab3:8+D4 Ab3:q+D4 Ab3:q+D4 Ab3:q+D4 Ab3:8+D4 | s2v5: Bb1:8+Bb2 Bb1:q+Bb2 Bb1:q.+Bb2 Bb1:q+Bb2
+m3  s1v1: G3:q+Bb3 G3:q+Bb3 G3:q+Bb3 G3:8+Bb3 G3:8~+Eb4 | s2v5: Eb1:q+Eb2 Eb1:q+Eb2 Eb1:q.+Eb2 C2:8~+C3
+m4  s1v1: G3:8+Eb4 G3:q+Eb4 G3:q+Eb4 G3:q+Eb4 G3:8+D4 | s2v5: C2:8+C3 C2:q+C3 C2:q.+C3 C2:q+C3
+m5  s1v1: G3:q+C4 G3:q+C4 G3:q+C4 G3:8+C4 Ab3:8~+D4 | s2v5: Ab1:q+Ab2 Ab1:q+Ab2 Ab1:q.+Ab2 Bb1:8~+Bb2
+m6  s1v1: Ab3:8+D4 Ab3:q+D4 Ab3:q+D4 Ab3:q+D4 Ab3:8+D4 | s2v5: Bb1:8+Bb2 Bb1:q+Bb2 Bb1:q.+Bb2 Bb1:q+Bb2
+m7  s1v1: G3:q+Bb3 G3:q+Bb3 G3:q+Bb3 G3:8+Bb3 G3:8~+Eb4 | s2v5: Eb1:q+Eb2 Eb1:q+Eb2 Eb1:q.+Eb2 C2:8~+C3
+m8  s1v1: G3:8+Eb4 G3:q+Eb4 C4:q+G4 C4:q+G4 C4:8+G4 | s2v5: C2:8+C3 C2:q+C3 C2:q.+C3 C2:q+C3
+m9 [dyn=mp]  s1v1: C4:q~+G4 C4:q+G4 C4:q+G4 Ab4:8 C4:8~+F4 | s2v5: Ab2:8 C3:8 Eb3:8 Ab3:8~ Ab3:8~ Ab3:8~ Ab3:8 Bb2:8
+m10  s1v1: C4:8~+F4 C4:q+F4 C4:q+F4 C4:q+F4 C4:8+F4 | s2v5: D3:8 F3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8
+m11  s1v1: D4:q~+F4 D4:q+F4 D4:q+F4 G4:8 C4:8~+Eb4 | s2v5: Eb3:8 G3:8 Bb3:8 Eb4:8~ Eb4:8~ Eb4:8~ Eb4:8 C3:8
+m12 ["Simile"]  s1v1: C4:8~+Eb4 C4:q+Eb4 D4:q+G4 D4:q+G4 D4:8+G4 | s2v5: Eb3:8 G3:8 Bb3:8~ Bb3:8 Bb3:8~ Bb3:8 Bb3:8~ Bb3:8
+m13  s1v1: C4:q~+G4 C4:q+G4 C4:q+G4 Ab4:8 C4:8~+F4 | s2v5: Ab2:8 C3:8 Eb3:8 Ab3:8~ Ab3:8~ Ab3:8~ Ab3:8 Bb2:8
+m14  s1v1: C4:8~+F4 C4:q+F4 C4:q+F4 C4:q+F4 C4:8+F4 | s2v5: D3:8 F3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8
+m15  s1v1: D4:q~+F4 D4:q+F4 D4:q+F4 G4:8 C4:8~+Eb4 | s2v5: Eb3:8 G3:8 Bb3:8 Eb4:8~ Eb4:8~ Eb4:8~ Eb4:8 C3:8
+m16  s1v1: C4:8~+Eb4 C4:q+Eb4 C4:q C4:q Bb3:8 | s2v5: Eb3:8 G3:8 Bb3:8~ Bb3:8 Bb3:8~ Bb3:8 Bb3:8~ Bb3:8
+--- around line 16: texture change (rhythm signature): lines 14-21 of 124 ---
+m14  s1v1: C4:8~+F4 C4:q+F4 C4:q+F4 C4:q+F4 C4:8+F4 | s2v5: D3:8 F3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8
+m15  s1v1: D4:q~+F4 D4:q+F4 D4:q+F4 G4:8 C4:8~+Eb4 | s2v5: Eb3:8 G3:8 Bb3:8 Eb4:8~ Eb4:8~ Eb4:8~ Eb4:8 C3:8
+m16  s1v1: C4:8~+Eb4 C4:q+Eb4 C4:q C4:q Bb3:8 | s2v5: Eb3:8 G3:8 Bb3:8~ Bb3:8 Bb3:8~ Bb3:8 Bb3:8~ Bb3:8
+m17 [dyn=ff]  s1v1: G3:q+C4 G3:q+C4 G3:q+C4 G3:8+C4 Ab3:8~+D4 | s2v5: Ab1:q+Ab2 Ab1:q+Ab2 Ab1:q.+Ab2 Bb1:8~+Bb2
+m18  s1v1: Ab3:8+D4 Ab3:q+D4 Ab3:q+D4 Ab3:q+D4 Ab3:8+D4 | s2v5: Bb1:8+Bb2 Bb1:q+Bb2 Bb1:q.+Bb2 Bb1:q+Bb2
+m19  s1v1: G3:q+Bb3 G3:q+Bb3 G3:q+Bb3 G3:8+Bb3 G3:8~+Eb4 | s2v5: Eb1:q+Eb2 Eb1:q+Eb2 Eb1:q.+Eb2 C2:8~+C3
+m20  s1v1: G3:8+Eb4 G3:q+Eb4 G3:q+Eb4 G3:q+Eb4 G3:8+D4 | s2v5: C2:8+C3 C2:q+C3 C2:q.+C3 C2:q+C3
+m21  s1v1: G3:q+C4 G3:q+C4 G3:q+C4 G3:8+C4 Ab3:8~+D4 | s2v5: Ab1:q+Ab2 Ab1:q+Ab2 Ab1:q.+Ab2 Bb1:8~+Bb2
+--- around line 25: texture change (rhythm signature): lines 23-30 of 124 ---
+m23  s1v1: G3:q+Bb3 G3:q+Bb3 G3:q+Bb3 G3:8+Bb3 G3:8~+Eb4 | s2v5: Eb1:q+Eb2 Eb1:q+Eb2 Eb1:q.+Eb2 C2:8~+C3
+m24  s1v1: G3:8+Eb4 G3:q+Eb4 C4:q+G4 C4:q+G4 C4:8+G4 | s2v5: C2:8+C3 C2:q+C3 C2:q.+C3 C2:q+C3
+m25 [dyn=mp; "Revert to simile"]  s1v1: C4:q~+G4 C4:q+G4 C4:q+G4 Ab4:8 C4:8~+F4 | s2v5: Ab2:8 C3:8 Eb3:8 Ab3:8~ Ab3:8~ Ab3:8~ Ab3:8 Bb2:8
+m26  s1v1: C4:8~+F4 C4:q+F4 C4:q+F4 C4:q+F4 C4:8+F4 | s2v5: D3:8 F3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8
+m27  s1v1: D4:q~+F4 D4:q+F4 D4:q+F4 G4:8 C4:8~+Eb4 | s2v5: Eb3:8 G3:8 Bb3:8 Eb4:8~ Eb4:8~ Eb4:8~ Eb4:8 C3:8
+m28  s1v1: C4:8~+Eb4 C4:q+Eb4 D4:q+G4 D4:q+G4 D4:8+G4 | s2v5: Eb3:8 G3:8 Bb3:8~ Bb3:8 Bb3:8~ Bb3:8 Bb3:8~ Bb3:8
+m29  s1v1: C4:q~+G4 C4:q+G4 C4:q+G4 Ab4:8 C4:8~+F4 | s2v5: Ab2:8 C3:8 Eb3:8 Ab3:8~ Ab3:8~ Ab3:8~ Ab3:8 Bb2:8
+m30  s1v1: C4:8~+F4 C4:q+F4 C4:q+F4 C4:q+Eb4 C4:8+Eb4 | s2v5: D3:8 F3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8
+--- around line 37: texture change (rhythm signature): lines 35-42 of 124 ---
+m35  s1v1: Eb4:q+Bb4 Eb4:q+Bb4 Eb4:q+Bb4 Eb4:8+Ab4 Eb4:8~+G4 | s2v5: Eb3:8 G3:8 Bb3:8 Eb4:8~ Eb4:8~ Eb4:8~ Eb4:8 C3:8
+m36  s1v1: Eb4:8~+G4 Eb4:q+G4 Eb4:q+G4 Eb4:q+G4 Eb4:8+G4 | s2v5: Eb3:8 G3:8 Bb3:8~ Bb3:8 Bb3:8~ Bb3:8 Bb3:8~ Bb3:8
+m37  s1v1: Eb4:q~+G4 Eb4:q+G4 Eb4:q+G4 Ab4:8 D4:8~+F4 | s2v5: Ab2:8 C3:8 Eb3:8 Ab3:8~ Ab3:8~ Ab3:8~ Ab3:8 Bb2:8
+m38  s1v1: D4:8~+F4 D4:q+F4 Eb4:q Eb4:q Eb4:8 | s2v5: D3:8 F3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8
+m39  s1v1: Eb4:q.+G4 G3:q.+Eb4 Eb4:q~+G4 | s2v5: Eb2:8 G2:8 Bb2:8 Eb3:8~ Eb3:8~ Eb3:8 C2:8 Eb2:8
+m40  s1v1: Eb4:8+G4 G3:q.+Eb4 G3:q+Eb4 G3:q+Eb4 | s2v5: G2:8 Bb2:8~ Bb2:8~ Bb2:8 Bb2:8~ Bb2:8 Bb2:8~ Bb2:8
+m41 [clef1=G2; dyn=f]  s1v1: Eb4:q+C5 Eb4:q+C5 Eb4:8+C5 Bb4:8 Eb4:8+C5 Eb4:8~+Bb4 | s2v5: Ab1:q+Ab2 Ab1:q+Ab2 Ab1:q.+Ab2 Bb1:8~+Bb2
+m42  s1v1: Eb4:8+Bb4 D4:q+F4 D4:q+G4 D4:q+Ab4 D4:8~+Bb4 | s2v5: Bb1:q+Bb2 Bb1:q+Bb2 Bb1:q+Bb2 Bb1:q+Bb2
+--- around line 50: texture change (rhythm signature): lines 48-55 of 124 ---
+m48  s1v1: C4:8+G4 G3:q+C4 G3:q+D4 G3:q+Eb4 Eb4:8~+C5 | s2v5: C2:q+C3 C2:q+C3 C2:q+C3 C2:q+C3
+m49  s1v1: Eb4:q+C5 Eb4:q+C5 Eb4:8+C5 Bb4:8 Eb4:8+C5 F4:8~+D5 | s2v5: Ab1:q+Ab2 Ab1:q+Ab2 Ab1:q.+Ab2 Bb1:8~+Bb2
+m50  s1v1: F4:8+D5 G4:q+Eb5 F4:q~+D5 F4:q+D5 F4:8+Bb4 | s2v5: Bb1:8+Bb2 Bb1:q.+Bb2 Bb1:q+Bb2 Bb1:q+Bb2
+m51  s1v1: F4:q+Bb4 F4:q+Bb4 F4:q+Bb4 F4:8+Ab4 F4:8+Ab4 | s2v5: Eb1:q+Eb2 Eb1:q+Eb2 Eb1:q.+Eb2 C2:8~+C3
+m52  s1v1: F4:8+Ab4 Eb4:q+G4 Eb4:q+G4 Eb4:8+G4 Eb4:8+G4 Eb4:8+G4 | s2v5: C2:8+C3 C2:q.+C3 C2:q+C3 C2:q+C3
+m53 [dyn=mp]  s1v1: G4:q~ G4:q~ G4:8 Ab4:q F4:8~ | s2v5: Ab3:w
+m54  s1v1: F4:q~ F4:q~ F4:q F4:8 Eb4:8 | s2v5: Bb3:w
+m55  s1v1: D4:q~ D4:q G4:q D4:8 Eb4:8~ | s2v5: G3:w
+--- around line 97: repeat start: lines 95-102 of 124 ---
+m95  s1v1: Bb3:q~+D4 Bb3:q+D4 D4:q+G4 Bb3:8+D4 C4:8~+Eb4 | s2v5: G2:w+G3
+m96  s1v1: C4:q~+Eb4 C4:q+Eb4 Bb3:q~+D4 Bb3:q+D4 | s2v5: C3:q~+C4 C3:q+C4 Bb2:q~+Bb3 Bb2:q+Bb3
+m97 [clef1=F5; dyn=ff; repeat-forward]  s1v1: G3:q+C4 G3:q+C4 G3:q+C4 G3:8+C4 Ab3:8~+D4 | s2v5: Ab1:q+Ab2 Ab1:q+Ab2 Ab1:q.+Ab2 Bb1:8~+Bb2
+m98  s1v1: Ab3:8+D4 Ab3:q+D4 Ab3:q+D4 Ab3:q+D4 Ab3:8+D4 | s2v5: Bb1:8+Bb2 Bb1:q+Bb2 Bb1:q.+Bb2 Bb1:q+Bb2
+m99  s1v1: G3:q+Bb3 G3:q+Bb3 G3:q+Bb3 G3:8+Bb3 G3:8~+Eb4 | s2v5: Eb1:q+Eb2 Eb1:q+Eb2 Eb1:q.+Eb2 C2:8~+C3
+m100  s1v1: G3:8+Eb4 G3:q+Eb4 G3:q+Eb4 G3:q+Eb4 G3:8+D4 | s2v5: C2:8+C3 C2:q+C3 C2:q.+C3 C2:q+C3
+m101  s1v1: G3:q+C4 G3:q+C4 G3:q+C4 G3:8+C4 Ab3:8~+D4 | s2v5: Ab1:q+Ab2 Ab1:q+Ab2 Ab1:q.+Ab2 Bb1:8~+Bb2
+m102  s1v1: Ab3:8+D4 Ab3:q+D4 Ab3:q+D4 Ab3:q+D4 Ab3:8+D4 | s2v5: Bb1:8+Bb2 Bb1:q+Bb2 Bb1:q.+Bb2 Bb1:q+Bb2
+--- around line 121: key/time/tempo change: lines 119-124 of 124 ---
+m119  s1v1: Bb3:q~+D4 Bb3:q+D4 D4:q+G4 Bb3:8+D4 C4:8~+Eb4 | s2v5: G2:w+G3
+m120  s1v1: C4:q~+Eb4 C4:q+Eb4 Bb3:q~+D4 Bb3:q+D4 | s2v5: C3:q~+C4 C3:q+C4 Bb2:q~+Bb3 Bb2:q+Bb3
+m121 [tempo=100; dyn=mp]  s1v1: G5:q~ G5:q Ab5:q~ Ab5:q | s2v5: Ab3:w+Eb4
+m122  s1v1: F5:q~ F5:q F5:q Eb5:q | s2v5: Bb3:w+F4
+m123  s1v1: D5:q~ D5:q G5:q D5:q | s2v5: G3:w+D4
+m124  s1v1: Eb5:w[fermata] | s2v5: C4:w[fermata]
+--- middle sample: lines 62-67 of 124 ---
+m62  s1v1: Ab3:8+D4 Ab3:q+D4 Ab3:q+D4 Ab3:q+D4 Ab3:8+D4 | s2v5: Bb1:8+Bb2 Bb1:q+Bb2 Bb1:q.+Bb2 Bb1:q+Bb2
+m63  s1v1: G3:q+Bb3 G3:q+Bb3 G3:q+Bb3 G3:8+Bb3 G3:8~+Eb4 | s2v5: Eb1:q+Eb2 Eb1:q+Eb2 Eb1:q.+Eb2 C2:8~+C3
+m64  s1v1: G3:8+Eb4 G3:q+Eb4 C4:8+G4 C4:8+G4 C4:8+G4 C4:8+G4 C4:8+G4 | s2v5: C2:8+C3 C2:q+C3 C2:q.+C3 C2:q+C3
+m65 [clef1=F4; dyn=mp; "Revert to simile"]  s1v1: C4:q~+G4 C4:q+G4 C4:q+G4 Ab4:8 C4:8~+F4 | s2v5: Ab2:8 C3:8 Eb3:8 Ab3:8~ Ab3:8~ Ab3:8~ Ab3:8 Bb2:8
+m66  s1v1: C4:8~+F4 C4:q+F4 C4:q+F4 C4:q+F4 C4:8+F4 | s2v5: D3:8 F3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8 Ab3:8~ Ab3:8
+m67  s1v1: D4:q~+F4 D4:q+F4 Eb4:q+G4 Bb3:8 C4:8~+Eb4 | s2v5: Eb3:8 G3:8 Bb3:8 Eb4:8~ Eb4:8~ Eb4:8~ Eb4:8 C3:8
+--- last 8 bars: lines 117-124 of 124 ---
+m117 [dyn=f]  s1v1: Eb4:q~+G4 Eb4:q+G4 Eb4:q~+Ab4 Eb4:8+Ab4 D4:8~+F4 | s2v5: Ab2:w+Ab3
+m118  s1v1: D4:q~+F4 D4:q~+F4 D4:q+F4 D4:8+F4 C4:8+Eb4 | s2v5: Bb2:w+Bb3
+m119  s1v1: Bb3:q~+D4 Bb3:q+D4 D4:q+G4 Bb3:8+D4 C4:8~+Eb4 | s2v5: G2:w+G3
+m120  s1v1: C4:q~+Eb4 C4:q+Eb4 Bb3:q~+D4 Bb3:q+D4 | s2v5: C3:q~+C4 C3:q+C4 Bb2:q~+Bb3 Bb2:q+Bb3
+m121 [tempo=100; dyn=mp]  s1v1: G5:q~ G5:q Ab5:q~ Ab5:q | s2v5: Ab3:w+Eb4
+m122  s1v1: F5:q~ F5:q F5:q Eb5:q | s2v5: Bb3:w+F4
+m123  s1v1: D5:q~ D5:q G5:q D5:q | s2v5: G3:w+D4
+m124  s1v1: Eb5:w[fermata] | s2v5: C4:w[fermata]

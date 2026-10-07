@@ -1,0 +1,11 @@
+npx vitest run tests/unit/x3dAdversaryTable.test.ts (in app)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6cb245891137756b/app
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  08:42:24
+   Duration  2.61s (tests 60%, environment 26%, transform 9%, import 5%)
+
+exit=0

@@ -24,6 +24,11 @@
  *    Score screen — its renderer is windowed and a draw range clamps OSMD's
  *    iterator — so it is asked of the dev harness, on the very bytes the import
  *    stored.
+ *
+ * And one for the store (E2; E25): a row stored before the app measured
+ * demands — the import's measurement and provenance taken off it — is measured
+ * on the next launch, through the store, and the assign sheet reads the
+ * measured demands off the row.
  */
 import { expect, test } from '@playwright/test';
 import path from 'node:path';
@@ -68,7 +73,93 @@ async function storedXml(page: import('@playwright/test').Page, id: string): Pro
   );
 }
 
+/** The demands on a stored import row, or null where it carries none (a row imported before E0). */
+async function storedDemands(page: import('@playwright/test').Page, id: string): Promise<unknown> {
+  return page.evaluate(
+    (wanted) =>
+      new Promise<unknown>((resolve, reject) => {
+        const request = indexedDB.open('pianopath');
+        request.onerror = () => {
+          reject(new Error('could not open the database'));
+        };
+        request.onsuccess = () => {
+          const row = request.result.transaction('imports').objectStore('imports').get(wanted);
+          row.onsuccess = () => {
+            resolve((row.result as { demands?: unknown } | undefined)?.demands ?? null);
+          };
+          row.onerror = () => {
+            reject(new Error('could not read the row'));
+          };
+        };
+      }),
+    id,
+  );
+}
+
+/** Takes the measurement and the provenance off a stored row: the row as the app wrote it before E0. */
+async function asImportedBeforeE0(page: import('@playwright/test').Page, id: string): Promise<void> {
+  await page.evaluate(
+    (wanted) =>
+      new Promise<void>((resolve, reject) => {
+        const request = indexedDB.open('pianopath');
+        request.onerror = () => {
+          reject(new Error('could not open the database'));
+        };
+        request.onsuccess = () => {
+          const store = request.result.transaction('imports', 'readwrite').objectStore('imports');
+          const read = store.get(wanted);
+          read.onsuccess = () => {
+            const row = { ...(read.result as Record<string, unknown>) };
+            delete row.demands;
+            delete row.measurement;
+            delete row.provenance;
+            const write = store.put(row);
+            write.onsuccess = () => {
+              resolve();
+            };
+            write.onerror = () => {
+              reject(new Error('could not write the row'));
+            };
+          };
+        };
+      }),
+    id,
+  );
+}
+
 test.describe('a MIDI file imported from the app', () => {
+  test('an import stored before the app measured demands shows them on the assign sheet after the next launch (E2; E25)', async ({
+    page,
+  }) => {
+    // The launch's measurement waits for the first screen and an idle slice, then loads the engraver.
+    test.setTimeout(90_000);
+    await page.goto('/#/library');
+    await page.locator('#library-file').setInputFiles(TWO_HANDS);
+    await expect(page.locator('#library-status')).toContainText('Imported 1:');
+    await page.getByRole('button', { name: 'Not now' }).click();
+    await asImportedBeforeE0(page, ITEM);
+    expect(await storedDemands(page, ITEM)).toBeNull();
+
+    // The next launch measures it once, in the background, through the store.
+    await page.reload();
+    await expect.poll(() => storedDemands(page, ITEM), { timeout: 30_000 }).not.toBeNull();
+
+    // And the sheet reads the measured truth off the stored row. After a reload the list is by
+    // level again ("what you just added" is a fact about one visit), so the learner's own are asked for.
+    await page.getByRole('button', { name: 'Only mine' }).click();
+    const row = page.locator(`.list-row[data-item="${ITEM}"]`);
+    await row.getByRole('button', { name: 'Assign' }).click();
+    const line = page.locator('#assign-demands');
+    await expect(line).toBeVisible();
+    await expect(line).toContainText('Measured in the notes:');
+    await expect(line).not.toContainText('Not measured yet');
+    // Two tracks, one per hand, kept as recorded: the lower staff in the bass clef, the hands together.
+    const demands = (await storedDemands(page, ITEM)) as string[];
+    expect(demands).toEqual(expect.arrayContaining(['clef.bass', 'texture.hands-together']));
+    await expect(line).toContainText('the bass-staff notes');
+    await expect(line).toContainText('both hands together');
+  });
+
   test('converts on the device and says what it decided before anything is agreed to', async ({
     page,
   }) => {

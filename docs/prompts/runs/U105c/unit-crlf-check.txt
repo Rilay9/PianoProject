@@ -1,0 +1,1 @@
+app/src/style.css: CRLF line endings yes; LF form present False; CRLF form present True

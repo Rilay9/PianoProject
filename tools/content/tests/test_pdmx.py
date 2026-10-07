@@ -435,7 +435,11 @@ class TestWantsTable(unittest.TestCase):
         # instead of replacing the first.
         catalog_path = REPO_ROOT / "app" / "public" / "content" / "catalog.json"
         if not catalog_path.is_file():
-            self.skipTest("no built catalog; run tools/content/build.py")
+            self.fail(
+                f"{catalog_path} is missing, and this test reads the built catalogue: run "
+                "`python tools/content/build.py` first (CI: the step 'Build content', "
+                "before 'Content pipeline tests')"
+            )
         ids = {item["id"] for item in json.loads(catalog_path.read_text(encoding="utf-8"))}
         wants = shortlist_mod.load_wants(WANTS)
         rock = [want["id"] for want in wants if want["id"].startswith("song.rock.")]
@@ -701,7 +705,9 @@ class TestContentLock(unittest.TestCase):
         from common import ContentBusy, content_lock
 
         if self.pre_existing:
-            self.skipTest("a real run holds the lock")
+            # A content run on this checkout holds the lock right now, and the test
+            # would have to take it or remove it. Nothing in CI runs beside this step.
+            self.skipTest(f"a real content run holds {self.lock_path}")
         with content_lock("the test"):
             with self.assertRaises(ContentBusy) as caught:
                 with content_lock("a second run"):
@@ -716,7 +722,9 @@ class TestContentLock(unittest.TestCase):
         from common import content_lock
 
         if self.pre_existing:
-            self.skipTest("a real run holds the lock")
+            # A content run on this checkout holds the lock right now, and the test
+            # would have to take it or remove it. Nothing in CI runs beside this step.
+            self.skipTest(f"a real content run holds {self.lock_path}")
         with self.assertRaises(ValueError):
             with content_lock("a run that fails"):
                 raise ValueError("boom")
@@ -729,7 +737,9 @@ class TestContentLock(unittest.TestCase):
         from common import LOCK_STALE_SECONDS, content_lock
 
         if self.pre_existing:
-            self.skipTest("a real run holds the lock")
+            # A content run on this checkout holds the lock right now, and the test
+            # would have to take it or remove it. Nothing in CI runs beside this step.
+            self.skipTest(f"a real content run holds {self.lock_path}")
         self.lock_path.parent.mkdir(parents=True, exist_ok=True)
         self.lock_path.write_text("a crashed run (pid 1)", encoding="utf-8")
         old = clock.time() - LOCK_STALE_SECONDS - 60
@@ -792,7 +802,11 @@ class TestArchiveIndex(unittest.TestCase):
         # index sorts a shelf the way the catalog would sort it. The bar is
         # loose on purpose: this is a proxy for browsing, not a catalog level.
         if not self.model.get("fitted"):
-            self.skipTest("no fitted proxy committed")
+            self.fail(
+                "content/sources/pdmx-csv-level.json is missing or not fitted, and it is "
+                "committed: refit it with `python tools/content/pdmx/index.py --fit` "
+                "(CI has it from the checkout)"
+            )
         self.assertGreaterEqual(self.model.get("fittedOn", 0), 100)
         self.assertIn("Spearman", self.model.get("report", ""))
         for field in self.index_mod.PROXY_FIELDS:
@@ -1149,7 +1163,12 @@ class TestEntryPointsRunAsScripts(unittest.TestCase):
             for path in (TOOLS / "pdmx").glob("*.py")
             # `paths.py` and `composers.py` are libraries, not commands: they
             # have no argument parser and nothing to print a usage line with.
-            if path.name not in {"__init__.py", "paths.py", "composers.py"}
+            # `quarry_core.py` and `summarise_xml.py` are the research quarry's
+            # libraries (2026-10-05, outside CI by the README) and
+            # `test_quarry_identity.py` is that quarry's own test runner, not a
+            # command; none of the three takes arguments.
+            if path.name not in {"__init__.py", "paths.py", "composers.py",
+                                 "quarry_core.py", "summarise_xml.py", "test_quarry_identity.py"}
         )
 
     def test_each_script_reports_its_own_usage(self) -> None:
@@ -1237,7 +1256,10 @@ class TestZenodoRecord(unittest.TestCase):
         # real CSV, and it is what will end up in pdmx.json.
         candidates = REPO_ROOT / "build" / "pdmx" / "candidates.json"
         if not candidates.is_file():
-            self.skipTest("no quarry run on this machine")
+            self.skipTest(
+                f"{candidates} is not here: the quarry writes it from a PDMX archive, "
+                "which is not in the repository and which no CI step fetches"
+            )
         header = json.loads(candidates.read_text(encoding="utf-8"))["header"]
         self.assertEqual(header["csvBytes"], 209_574_867)
         self.assertEqual(commit_mod.zenodo_record_for(header), "14648209")

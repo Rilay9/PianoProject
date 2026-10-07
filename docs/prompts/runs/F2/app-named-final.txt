@@ -1,0 +1,13 @@
+﻿app named tests (final build) exit 1
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (284 tests | 2 failed) 160ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the 
+app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the 
+app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 378 passed (380)
+   Duration  13.80s (tests 85%, transform 7%, environment 5%, import 3%)
+
+

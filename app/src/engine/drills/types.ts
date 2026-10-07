@@ -182,6 +182,26 @@ export interface DrillPrompt {
    * score; the screen renders this when it is set.
    */
   musicXml?: string;
+  /**
+   * The key signature and the spelling the answer staff behind *Show me* is
+   * written with, when the prompt names its key. Absent, the staff chooses
+   * the signature that fits the notes (`answerSheet.ts` `fifthsFor`), which
+   * is what every drill but one does.
+   *
+   * The one is the minor ii–V–i shell drill (G6b; the reviewer's
+   * `ph1-g6a-landing.md` §3): its card says "Cm6 — i in C minor", and a staff
+   * under the two flats that happen to fit C-E♭-A shows a different key from
+   * the one the card names. Under C minor's three flats the A carries a
+   * natural, which is the point: the tonic and the dominant hold notes the
+   * natural minor signature does not.
+   */
+  answerSpelling?: AnswerSpelling;
+}
+
+/** A signature in fifths (flats negative) and each pitch class's written name. */
+export interface AnswerSpelling {
+  fifths: number;
+  names: Partial<Record<number, { step: string; alter: number }>>;
 }
 
 export interface DrillAnswer {
@@ -256,7 +276,29 @@ export interface Drill {
    * reveal leave this out.
    */
   reveal?(): void;
+  /**
+   * The page was hidden from `hiddenAtMs` until `visibleAtMs`, both on the
+   * input timeline (X15; CL05a, the reviewer's required change). Hidden time
+   * is not practice, so the drill moves the moments it holds for the card in
+   * flight past the span, and nothing measured across it counts it: a time to
+   * answer, a pedal lift, the grid a rhythm is judged on. Only the drill knows
+   * which moments those are; the screen says when. Kinds that hold no time
+   * leave this out.
+   */
+  excludeHidden?(hiddenAtMs: number, visibleAtMs: number): void;
   result(): DrillResult;
+}
+
+/**
+ * Where a moment recorded on the input timeline lands once a hidden span is
+ * taken out (`Drill.excludeHidden`): one from before the span moves on by all
+ * of it; one from inside it — a card that opened while the page was hidden —
+ * moves to the span's end, where the learner first saw it; one after it stays.
+ */
+export function pastHidden(tMs: number, hiddenAtMs: number, visibleAtMs: number): number {
+  if (!(visibleAtMs > hiddenAtMs)) return tMs;
+  if (tMs < hiddenAtMs) return tMs + (visibleAtMs - hiddenAtMs);
+  return tMs <= visibleAtMs ? visibleAtMs : tMs;
 }
 
 /** Options every drill accepts. */

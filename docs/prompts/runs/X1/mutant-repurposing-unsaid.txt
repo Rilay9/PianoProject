@@ -1,0 +1,35 @@
+mutant repurposing-unsaid in app/src/ui/sessionRunner.ts; npx vitest run tests/unit/sessionTransition.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app
+
+ ❯ tests/unit/sessionTransition.test.ts (9 tests | 1 failed) 351ms
+   ❯ after a completed activity (4)
+     × a repurposed first contact says why 7ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  09:57:04
+   Duration  1.71s (environment 42%, transform 28%, tests 22%, import 8%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/sessionTransition.test.ts > after a completed activity > a repurposed first contact says why
+AssertionError: expected 'Next: Eighths drill, 5 min — Has eigh…' to be 'You heard this one earlier today, so …' // Object.is equality
+
+Expected: "You heard this one earlier today, so it is practice now, not a first read"
+Received: "Next: Eighths drill, 5 min — Has eighth notes, which this lesson asks for"
+
+ ❯ tests/unit/sessionTransition.test.ts:146:27
+    144|     const { into, options } = host('transa001');
+    145|     await drawTransition(into, options);
+    146|     expect(text(into)[0]).toBe(SESSION_TEXT.repurposed('heard'));
+       |                           ^
+    147|   });
+    148| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit=1

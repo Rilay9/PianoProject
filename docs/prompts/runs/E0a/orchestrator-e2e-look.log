@@ -1,0 +1,58 @@
+[WebServer] (node:58608) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/curriculum/load.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/curriculum/tips.ts, src/data/planStore.ts, src/score/estimateImport.ts, src/ui/assignSheet.ts, src/ui/screens/ChordChartScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] (node:57084) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:51808) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+SHEET_TEXT_START
+Instead of “Rhythm: syncopated — 4 bars”
+Close
+Not a song
+
+From the same lesson
+
+Rhythm: shuffle eighths — 4 bars
+L4.5 · Right hand · exercise
+Comping — off beats in C
+L6.3 · Hands together · exercise
+Ties across the bar line
+L5.4 · Hands together · exercise
+Clave — son 3-2
+L2.8 · Right hand · exercise
+Clave — son 2-3
+L2.8 · Right hand · exercise
+Tumbao — latin bass in C minor
+L5.2 · Left hand · exercise
+Montuno — 2 notes on son 3 2 in C minor
+L5.6 · Right hand · exercise
+Montuno — 3 notes on son 3 2 in C minor
+L6.2 · Right hand · exercise
+Latin groove — tumbao and montuno on son 3 2 in C minor
+L6.4 · Hands together · exercise
+
+Also trains syncopation, with the other demands you have met
+
+Tresillo bass in C — three, three, two
+L3.6 · Hands together · exercise
+Tresillo bass in F — three, three, two
+L3.6 · Hands together · exercise
+Tresillo bass in G — three, three, two
+L3.6 · Hands together · exercise
+SHEET_TEXT_END
+  ok 1 tests\e2e\zz-e0a-look.spec.ts:38:1 › latin: the card, then the syncopated rhythm row’s sheet (2.3s)
+
+  1 passed (43.4s)

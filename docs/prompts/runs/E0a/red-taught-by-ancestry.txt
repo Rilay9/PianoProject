@@ -1,0 +1,299 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-afd1b1d84e0d04c46/app
+
+ ❯ tests/unit/taughtByAncestry.test.ts (13 tests | 9 failed) 44ms
+   ❯ two sibling tracks: a demand taught on one is not taught on the other (5)
+     × X is not taught at B.5, at B.6, or at core.4 4ms
+     × with the learner’s own path, X is taught on B.6 for a learner who reached A.5 1ms
+     × the ancestry is worked out once per curriculum: the same object gives the same set 0ms
+   ❯ the shipped curriculum (6)
+     × the walking bass is taught at blues.5 and blues.6, not at jazz.5, jazz.6 or classical.5 0ms
+     × the same fault at Stage 3: ledger lines (3.4) are not taught at blues.3, whose path leaves the core at 3.2 0ms
+     × the core path is its stage-and-unit order: 1.5’s ancestry is 0.1–1.5, 4.6’s every core rung to it, 3.4 included 1ms
+     × the file’s order decides nothing: with every stage’s track units stored before its core units, every rung teaches the same 28ms
+   ❯ the gate’s consumers read the learner’s own path (2)
+     × the swap sheet on B.6: a walking-bass option is refused unless the learner reached A.5 2ms
+     × the session on B.6: the warm-up serves B.6’s hand-independence ask with walking-bass drills only for a learner whose path went through A.5 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > two sibling tracks: a demand taught on one is not taught on the other > X is not taught at B.5, at B.6, or at core.4
+AssertionError: X at B.5: the file’s order credited A.5, stored before B.5: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/taughtByAncestry.test.ts:114:93
+    112|
+    113|   it('X is not taught at B.5, at B.6, or at core.4', () => {
+    114|     expect(at('B.5')?.(WALK), 'X at B.5: the file’s order credited A.5…
+       |                                                                                             ^
+    115|     expect(at('B.6')?.(WALK), 'X at B.6: the file’s order credited A.5…
+    116|     expect(at('core.4')?.(WALK), 'X at core.4, before either track').t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > two sibling tracks: a demand taught on one is not taught on the other > with the learner’s own path, X is taught on B.6 for a learner who reached A.5
+AssertionError: X at B.6 for a learner who reached only core and B: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/taughtByAncestry.test.ts:121:121
+    119|   it('with the learner’s own path, X is taught on B.6 for a learner wh…
+    120|     expect(at('B.6', ['core.1', 'core.4', 'A.5', 'B.5', 'B.6'])?.(WALK…
+    121|     expect(at('B.6', ['core.1', 'core.4', 'B.5', 'B.6'])?.(WALK), 'X a…
+       |                                                                                                                         ^
+    122|   });
+    123|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > two sibling tracks: a demand taught on one is not taught on the other > the ancestry is worked out once per curriculum: the same object gives the same set
+AssertionError: rungAncestry is exported: expected undefined to be defined
+ ❯ tests/unit/taughtByAncestry.test.ts:131:47
+    129|   it('the ancestry is worked out once per curriculum: the same object …
+    130|     const first = ancestryOf(curriculum);
+    131|     expect(first, 'rungAncestry is exported').toBeDefined();
+       |                                               ^
+    132|     expect(ancestryOf(curriculum)).toBe(first);
+    133|     expect(ancestryOf(curriculum)?.get('B.6')).toBe(first?.get('B.6'));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > the shipped curriculum > the walking bass is taught at blues.5 and blues.6, not at jazz.5, jazz.6 or classical.5
+AssertionError: texture.walking-bass at jazz.5: the file’s order credited blues.5, stored before jazz.5: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/taughtByAncestry.test.ts:145:114
+    143|     expect(taught('blues.5', WALK), `${WALK} at blues.5, the rung that…
+    144|     expect(taught('blues.6', WALK), `${WALK} at blues.6, which builds …
+    145|     expect(taught('jazz.5', WALK), `${WALK} at jazz.5: the file’s orde…
+       |                                                                                                                  ^
+    146|     expect(taught('jazz.6', WALK), `${WALK} at jazz.6: the file’s orde…
+    147|     expect(taught('classical.5', WALK), `${WALK} at classical.5`).toBe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > the shipped curriculum > the same fault at Stage 3: ledger lines (3.4) are not taught at blues.3, whose path leaves the core at 3.2
+AssertionError: pitch.ledger at blues.3: the file’s order credited 3.4, stored before blues.3: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/taughtByAncestry.test.ts:151:128
+    149|
+    150|   it('the same fault at Stage 3: ledger lines (3.4) are not taught at …
+    151|     expect(taught('blues.3', 'pitch.ledger'), 'pitch.ledger at blues.3…
+       |                                                                                                                                ^
+    152|     expect(taught('classical.3', 'pitch.ledger'), 'pitch.ledger at cla…
+    153|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > the shipped curriculum > the core path is its stage-and-unit order: 1.5’s ancestry is 0.1–1.5, 4.6’s every core rung to it, 3.4 included
+AssertionError: expected [] to deeply equal [ '0.1', '0.2', '0.3', '0.4', …(5) ]
+
+- Expected
++ Received
+
+- [
+-   "0.1",
+-   "0.2",
+-   "0.3",
+-   "0.4",
+-   "1.1",
+-   "1.2",
+-   "1.3",
+-   "1.4",
+-   "1.5",
+- ]
++ []
+
+ ❯ tests/unit/taughtByAncestry.test.ts:172:54
+    170|     const core = SHIPPED.stages.flatMap((stage) => stage.units.filter(…
+    171|     const upTo = (id: string): string[] => core.slice(0, core.indexOf(…
+    172|     expect([...(ancestry?.get('1.5') ?? [])].sort()).toEqual(upTo('1.5…
+       |                                                      ^
+    173|     expect([...(ancestry?.get('4.6') ?? [])].sort()).toEqual(upTo('4.6…
+    174|     // 4.6's prerequisites, followed back, never reach 3.4 (3.5 builds…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > the shipped curriculum > the file’s order decides nothing: with every stage’s track units stored before its core units, every rung teaches the same
+AssertionError: expected [ …(108) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "clef.bass at practice.1: true as shipped, false reordered",
++   "interval.step at practice.1: true as shipped, false reordered",
++   "interval.skip at practice.1: true as shipped, false reordered",
++   "interval.leap at practice.1: true as shipped, false reordered",
++   "clef.bass at practice.2: true as shipped, false reordered",
++   "interval.step at practice.2: true as shipped, false reordered",
++   "interval.skip at practice.2: true as shipped, false reordered",
++   "interval.leap at practice.2: true as shipped, false reordered",
++   "clef.bass at practice.3: true as shipped, false reordered",
++   "interval.step at practice.3: true as shipped, false reordered",
++   "interval.skip at practice.3: true as shipped, false reordered",
++   "interval.leap at practice.3: true as shipped, false reordered",
++   "clef.bass at practice.4: true as shipped, false reordered",
++   "interval.step at practice.4: true as shipped, false reordered",
++   "interval.skip at practice.4: true as shipped, false reordered",
++   "interval.leap at practice.4: true as shipped, false reordered",
++   "clef.bass at practice.5: true as shipped, false reordered",
++   "interval.step at practice.5: true as shipped, false reordered",
++   "interval.skip at practice.5: true as shipped, false reordered",
++   "interval.leap at practice.5: true as shipped, false reordered",
++   "rhythm.eighths at holiday: true as shipped, false reordered",
++   "rhythm.shorter-than-quarter at holiday: true as shipped, false reordered",
++   "rhythm.dotted-quarter at holiday: true as shipped, false reordered",
++   "rhythm.ties at holiday: true as shipped, false reordered",
++   "range.beyond-position at holiday: true as shipped, false reordered",
++   "texture.hands-together at holiday: true as shipped, false reordered",
++   "rhythm.eighths at hymns.2: true as shipped, false reordered",
++   "rhythm.shorter-than-quarter at hymns.2: true as shipped, false reordered",
++   "rhythm.dotted-quarter at hymns.2: true as shipped, false reordered",
++   "rhythm.ties at hymns.2: true as shipped, false reordered",
++   "range.beyond-position at hymns.2: true as shipped, false reordered",
++   "texture.hands-together at hymns.2: true as shipped, false reordered",
++   "pitch.ledger at classical.3: true as shipped, false reordered",
++   "key.signature at classical.3: true as shipped, false reordered",
++   "pitch.chromatic at classical.3: true as shipped, false reordered",
++   "texture.left-hand-pattern at classical.3: true as shipped, false reordered",
++   "pitch.ledger at chords-pop.3: true as shipped, false reordered",
++   "key.signature at chords-pop.3: true as shipped, false reordered",
++   "pitch.chromatic at chords-pop.3: true as shipped, false reordered",
++   "texture.left-hand-pattern at chords-pop.3: true as shipped, false reordered",
++   "pitch.ledger at blues.3: true as shipped, false reordered",
++   "key.signature at blues.3: true as shipped, false reordered",
++   "pitch.chromatic at blues.3: true as shipped, false reordered",
++   "texture.left-hand-pattern at blues.3: true as shipped, false reordered",
++   "pitch.ledger at theory.3: true as shipped, false reordered",
++   "key.signature at theory.3: true as shipped, false reordered",
++   "pitch.chromatic at theory.3: true as shipped, false reordered",
++   "texture.left-hand-pattern at theory.3: true as shipped, false reordered",
++   "pitch.ledger at improv.3: true as shipped, false reordered",
++   "key.signature at improv.3: true as shipped, false reordered",
++   "pitch.chromatic at improv.3: true as shipped, false reordered",
++   "texture.left-hand-pattern at improv.3: true as shipped, false reordered",
++   "pitch.ledger at hymns: true as shipped, false reordered",
++   "key.signature at hymns: true as shipped, false reordered",
++   "pitch.chromatic at hymns: true as shipped, false reordered",
++   "texture.left-hand-pattern at hymns: true as shipped, false reordered",
++   "pitch.ledger at rock.overview: true as shipped, false reordered",
++   "key.signature at rock.overview: true as shipped, false reordered",
++   "pitch.chromatic at rock.overview: true as shipped, false reordered",
++   "texture.left-hand-pattern at rock.overview: true as shipped, false reordered",
++   "pitch.ledger at latin.3: true as shipped, false reordered",
++   "key.signature at latin.3: true as shipped, false reordered",
++   "pitch.chromatic at latin.3: true as shipped, false reordered",
++   "texture.left-hand-pattern at latin.3: true as shipped, false reordered",
++   "pitch.ledger at holiday.3: true as shipped, false reordered",
++   "key.signature at holiday.3: true as shipped, false reordered",
++   "pitch.chromatic at holiday.3: true as shipped, false reordered",
++   "texture.left-hand-pattern at holiday.3: true as shipped, false reordered",
++   "pitch.ledger at jazz.3: true as shipped, false reordered",
++   "key.signature at jazz.3: true as shipped, false reordered",
++   "pitch.chromatic at jazz.3: true as shipped, false reordered",
++   "texture.left-hand-pattern at jazz.3: true as shipped, false reordered",
++   "rhythm.syncopation at classical.4: true as shipped, false reordered",
++   "rhythm.triplets at classical.4: true as shipped, false reordered",
++   "metre.compound at classical.4: true as shipped, false reordered",
++   "rhythm.syncopation at classical.4.shelf: true as shipped, false reordered",
++   "rhythm.triplets at classical.4.shelf: true as shipped, false reordered",
++   "metre.compound at classical.4.shelf: true as shipped, false reordered",
++   "rhythm.syncopation at chords-pop.4: true as shipped, false reordered",
++   "rhythm.triplets at chords-pop.4: true as shipped, false reordered",
++   "metre.compound at chords-pop.4: true as shipped, false reordered",
++   "rhythm.syncopation at blues.4: true as shipped, false reordered",
++   "rhythm.triplets at blues.4: true as shipped, false reordered",
++   "metre.compound at blues.4: true as shipped, false reordered",
++   "rhythm.syncopation at jazz.4: true as shipped, false reordered",
++   "rhythm.triplets at jazz.4: true as shipped, false reordered",
++   "metre.compound at jazz.4: true as shipped, false reordered",
++   "rhythm.syncopation at holiday.4: true as shipped, false reordered",
++   "rhythm.triplets at holiday.4: true as shipped, false reordered",
++   "metre.compound at holiday.4: true as shipped, false reordered",
++   "rhythm.syncopation at theory.4: true as shipped, false reordered",
++   "rhythm.triplets at theory.4: true as shipped, false reordered",
++   "metre.compound at theory.4: true as shipped, false reordered",
++   "rhythm.syncopation at improv.4: true as shipped, false reordered",
++   "rhythm.triplets at improv.4: true as shipped, false reordered",
++   "metre.compound at improv.4: true as shipped, false reordered",
++   "rhythm.syncopation at jam: true as shipped, false reordered",
++   "rhythm.triplets at jam: true as shipped, false reordered",
++   "metre.compound at jam: true as shipped, false reordered",
++   "rhythm.syncopation at technique.4: true as shipped, false reordered",
++   "rhythm.triplets at technique.4: true as shipped, false reordered",
++   "metre.compound at technique.4: true as shipped, false reordered",
++   "rhythm.syncopation at rock.4: true as shipped, false reordered",
++   "rhythm.triplets at rock.4: true as shipped, false reordered",
++   "metre.compound at rock.4: true as shipped, false reordered",
++   "rhythm.syncopation at hymns.4: true as shipped, false reordered",
++   "rhythm.triplets at hymns.4: true as shipped, false reordered",
++   "metre.compound at hymns.4: true as shipped, false reordered",
++ ]
+
+ ❯ tests/unit/taughtByAncestry.test.ts:197:19
+    195|       }
+    196|     }
+    197|     expect(moved).toEqual([]);
+       |                   ^
+    198|   });
+    199| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > the gate’s consumers read the learner’s own path > the swap sheet on B.6: a walking-bass option is refused unless the learner reached A.5
+AssertionError: song.walks on B.6’s sheet with no path given: the file’s order credited A.5: expected [ 'song.walks' ] to not include 'song.walks'
+ ❯ tests/unit/taughtByAncestry.test.ts:226:106
+    224|         ...(reached === undefined ? {} : { reached }),
+    225|       } as Parameters<typeof swapOptions>[4]).map((option) => option.i…
+    226|     expect(offered(), 'song.walks on B.6’s sheet with no path given: t…
+       |                                                                                                          ^
+    227|     expect(offered(['core.1', 'core.4', 'B.5', 'B.6']), 'song.walks fo…
+    228|     expect(offered(['core.1', 'core.4', 'A.5', 'A.6', 'B.5', 'B.6']), …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > the gate’s consumers read the learner’s own path > the session on B.6: the warm-up serves B.6’s hand-independence ask with walking-bass drills only for a learner whose path went through A.5
+AssertionError: the exposure rule on B.6, never the skill step: the file’s order credited A.5: expected 'skill' to be 'exposure' // Object.is equality
+
+Expected: "exposure"
+Received: "skill"
+
+ ❯ tests/unit/taughtByAncestry.test.ts:265:116
+    263|     expect(withA?.claim?.kind, 'the skill step, for a learner who reac…
+    264|     const withoutA = warmup(['core', 'B']);
+    265|     expect(withoutA?.claim?.kind, 'the exposure rule on B.6, never the…
+       |                                                                                                                    ^
+    266|   });
+    267| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 4 passed (13)
+   Start at  17:17:03
+   Duration  463ms (transform 71%, import 16%, tests 12%, worker 1%)
+
+exit 1

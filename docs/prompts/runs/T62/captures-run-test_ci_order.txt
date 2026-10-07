@@ -1,0 +1,26 @@
+$ python -m unittest discover -s tools/content/tests -t tools/content -p test_ci_order.py -v
+test_the_reader_keeps_each_job_s_keys_steps_and_nested_maps (tests.test_ci_order.TheGraphReader.test_the_reader_keeps_each_job_s_keys_steps_and_nested_maps) ... ok
+test_two_jobs_running_one_check_are_refused_naming_both (tests.test_ci_order.TheGraphReader.test_two_jobs_running_one_check_are_refused_naming_both) ... ok
+test_two_jobs_with_one_cited_name_are_refused_naming_both (tests.test_ci_order.TheGraphReader.test_two_jobs_with_one_cited_name_are_refused_naming_both) ... ok
+test_ci_runs_every_check_the_path_map_names (tests.test_ci_order.TheWorkflowOrder.test_ci_runs_every_check_the_path_map_names) ... ok
+test_every_job_after_the_first_is_a_fresh_runner_with_its_own_tree (tests.test_ci_order.TheWorkflowOrder.test_every_job_after_the_first_is_a_fresh_runner_with_its_own_tree) ... ok
+test_failure_keeps_its_diagnostics_and_only_the_cache_save_may_fail_quietly (tests.test_ci_order.TheWorkflowOrder.test_failure_keeps_its_diagnostics_and_only_the_cache_save_may_fail_quietly) ... ok
+test_record_and_review_pushes_start_no_run_and_nothing_else_is_ignored (tests.test_ci_order.TheWorkflowOrder.test_record_and_review_pushes_start_no_run_and_nothing_else_is_ignored) ... ok
+test_the_build_follows_what_it_needs (tests.test_ci_order.TheWorkflowOrder.test_the_build_follows_what_it_needs) ... ok
+test_the_content_cache_is_saved_after_the_render_check_under_the_shared_key (tests.test_ci_order.TheWorkflowOrder.test_the_content_cache_is_saved_after_the_render_check_under_the_shared_key) ... ok
+test_the_content_is_built_before_the_content_tests_read_it (tests.test_ci_order.TheWorkflowOrder.test_the_content_is_built_before_the_content_tests_read_it) ... ok
+test_the_converter_harness_runs (tests.test_ci_order.TheWorkflowOrder.test_the_converter_harness_runs) ... ok
+test_the_parity_reference_is_written_before_the_unit_tests_compare_against_it (tests.test_ci_order.TheWorkflowOrder.test_the_parity_reference_is_written_before_the_unit_tests_compare_against_it) ... ok
+test_the_recordings_are_fetched_before_anything_reads_them (tests.test_ci_order.TheWorkflowOrder.test_the_recordings_are_fetched_before_anything_reads_them) ... ok
+test_the_render_check_and_the_second_validation_keep_their_places (tests.test_ci_order.TheWorkflowOrder.test_the_render_check_and_the_second_validation_keep_their_places) ... ok
+test_the_render_check_serves_the_app_only_where_it_matches_the_content (tests.test_ci_order.TheWorkflowOrder.test_the_render_check_serves_the_app_only_where_it_matches_the_content) ... ok
+test_the_run_in_progress_completes_and_the_newest_tree_waits (tests.test_ci_order.TheWorkflowOrder.test_the_run_in_progress_completes_and_the_newest_tree_waits) ... ok
+test_the_shards_run_the_whole_suite_once_and_keep_their_reports (tests.test_ci_order.TheWorkflowOrder.test_the_shards_run_the_whole_suite_once_and_keep_their_reports) ... ok
+test_the_steps_the_failure_messages_name_exist (tests.test_ci_order.TheWorkflowOrder.test_the_steps_the_failure_messages_name_exist) ... ok
+test_the_unit_tests_run_after_the_content_build_they_read (tests.test_ci_order.TheWorkflowOrder.test_the_unit_tests_run_after_the_content_build_they_read) ... ok
+test_what_a_later_job_restores_was_uploaded_after_the_step_that_wrote_it (tests.test_ci_order.TheWorkflowOrder.test_what_a_later_job_restores_was_uploaded_after_the_step_that_wrote_it) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.004s
+
+OK

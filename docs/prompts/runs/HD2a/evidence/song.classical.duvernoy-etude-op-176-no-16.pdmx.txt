@@ -1,0 +1,26 @@
+HD2a evidence: song.classical.duvernoy-etude-op-176-no-16.pdmx (scores/pdmx/QmSXB1DWnqKnuj3FEiGFQe1hQpWCGmzFniyNcD8typjpcr.mxl), identity sha256 609e993ff4a312ca2513bd3bf4a6e52c4b147f0f87c8cc6ec6a90bab53c779bb
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 2 voice 2 bars 8-8 -> L
+  bar 8 (source measure 7) st2 v2: R/x -> L; onsets 1 {'conflict': 1}; second voice(s) [1]; e.g. @28 R [78] + v2 [50, 57]
+  bar 8 onset 28 78/st1/v1/R:0.5 57/st2/v2/R/x:2 50/st2/v2/R/x:2
+  bar 8 onset 28.5 79/st1/v1/R:0.5
+  bar 8 onset 29 81/st1/v1/R:0.5
+  bar 8 onset 29.5 79/st1/v1/R:0.5
+  bar 8 onset 30 78/st1/v1/R:0.5
+  bar 8 onset 30.5 76/st1/v1/R:0.5
+  bar 8 onset 31 74/st1/v1/R:0.5
+  bar 8 onset 31.5 72/st1/v1/R:0.5
+
+ROW staff 2 voice 2 bars 21-21 -> L
+  bar 21 (source measure 20) st2 v2: R/x -> L; onsets 2 {'conflict': 2}; second voice(s) [1]; e.g. @80 R [79] + v2 [55, 59]; @82 R [81] + v2 [62]
+  bar 21 onset 80 79/st1/v1/R:0.5 59/st2/v2/R/x:2 55/st2/v2/R/x:2
+  bar 21 onset 80.5 79/st1/v1/R:0.5
+  bar 21 onset 81 78/st1/v1/R:0.5
+  bar 21 onset 81.5 79/st1/v1/R:0.5
+  bar 21 onset 82 81/st1/v1/R:0.5 62/st2/v2/R/x:2
+  bar 21 onset 82.5 79/st1/v1/R:0.5
+  bar 21 onset 83 78/st1/v1/R:0.5
+  bar 21 onset 83.5 79/st1/v1/R:0.5
+

@@ -1,0 +1,1311 @@
+$ (cd app) npx vitest run tests/unit/projectLifecycle.test.ts tests/unit/projectSheet.test.ts tests/unit/sheetIsolation.test.ts tests/unit/libraryProjects.test.ts tests/unit/progressProjects.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/sheetIsolation.test.ts (11 tests | 3 failed) 134ms
+   ❯ openSheet gives focus back on closing, even when the row behind it was redrawn (5)
+     × (n) the row was replaced in the same list: focus goes to the new row’s Details, not the body 20ms
+     × (o) the new row has no such control: the row itself; the opener names nothing: focus falls where it did before, and nothing throws 6ms
+     × (r) Close, Escape and a tap outside each take the fallback 50ms
+ ❯ tests/unit/projectLifecycle.test.ts (40 tests | 5 failed) 896ms
+   ❯ the transitions table: every action from every state the sheet offers it, and nothing else (11)
+     × the offers are the table, from no project Keep it playable only for a piece passed; the states Part 27’s eight, and every action enters the state it names 20ms
+     × from none, on a piece with no pass: each offered action moves the project and appends one line; every other action is refused and writes nothing 21ms
+   ❯ from no project, Keep it playable only for a piece the record says is passed; the store refuses it otherwise (G96) (8)
+     × (a) no project and no progress row: refused, no project made, nothing written anywhere 4ms
+     × (b) a run that did not pass, and a pass under another id of the same file: refused 14ms
+     × (h) the read writes nothing: every other store the same after an accepted and a refused Keep it playable 5ms
+ ❯ tests/unit/progressProjects.test.ts (6 tests | 1 failed) 802ms
+   ❯ Projects on Progress (6)
+     × (w) Make it a project, Keep it playable, then Close: focus is on the piece’s new project row, not the page or another list 186ms
+ ❯ tests/unit/libraryProjects.test.ts (23 tests | 3 failed) 2160ms
+   ❯ the Details sheet is the door to the one project sheet (G85a) (8)
+     × (d) no project on a song that opens on the Score screen, never played: the door says so, and the sheet opens on three offers, no Keep it playable; opening wrote nothing 136ms
+     × (u) the door, Learn this, the badge redrawn behind the sheet, then Close: focus is on the piece’s row, not the page 177ms
+   ❯ a PDF import’s detail line names no type: its badge says what it is (G96 (v)) (1)
+     × the PDF’s line keeps its level and says no “song”; an import from before provenance and a bundled song still say “song” 74ms
+ ❯ tests/unit/projectSheet.test.ts (12 tests | 3 failed) 4525ms
+   ❯ the sheet for a piece with no project (5)
+     × names the piece, says it is no project yet, offers three ways in — no Keep it playable, ever drawn — says it was never opened, and writes nothing 1108ms
+     × (j) opened, listened to, played without a pass: no Keep it playable 1082ms
+     × (l) opened before the pass is on the record: three ways in, and the fourth once the pass is stored 1074ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > the Details sheet is the door to the one project sheet (G85a) > (d) no project on a song that opens on the Score screen, never played: the door says so, and the sheet opens on three offers, no Keep it playable; opening wrote nothing
+AssertionError: expected [ Array(4) ] to deeply equal [ Array(3) ]
+
+- Expected
++ Received
+
+  [
+    "Save for later",
+    "Learn this",
+    "Prepare it for performance",
++   "Keep it playable",
+  ]
+
+ ❯ tests/unit/libraryProjects.test.ts:442:98
+    440|       expect(sheet.querySelector('#project-met')?.textContent).toBe(PR…
+    441|     });
+    442|     expect([...sheet.querySelectorAll('#project-actions button')].map(…
+       |                                                                                                  ^
+    443|       (['save', 'learn', 'polish'] as const).map((action) => PROJECT_T…
+    444|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > the Details sheet is the door to the one project sheet (G85a) > (u) the door, Learn this, the badge redrawn behind the sheet, then Close: focus is on the piece’s row, not the page
+AssertionError: expected <body>…(1)</body> not to be <body>…(1)</body> // Object.is equality
+ ❯ tests/unit/libraryProjects.test.ts:491:40
+    489|     document.getElementById('project-sheet-close')?.click();
+    490|     expect(document.getElementById('project-sheet')).toBeNull();
+    491|     expect(document.activeElement).not.toBe(document.body);
+       |                                        ^
+    492|     expect(rowOf(section, 'song.none')?.contains(document.activeElemen…
+    493|     expect(document.activeElement?.textContent).toBe('Details');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > a PDF import’s detail line names no type: its badge says what it is (G96 (v)) > the PDF’s line keeps its level and says no “song”; an import from before provenance and a bundled song still say “song”
+AssertionError: expected 'L3.0 · song' to be 'L3.0' // Object.is equality
+
+Expected: "L3.0"
+Received: "L3.0 · song"
+
+ ❯ tests/unit/libraryProjects.test.ts:540:32
+    538|     const section = await mount();
+    539|     const line = (id: string): string => rowOf(section, id)?.querySele…
+    540|     expect(line('import.pdf')).toBe('L3.0');
+       |                                ^
+    541|     expect(line('import.pdf')).not.toMatch(/song/);
+    542|     expect(rowOf(section, 'import.pdf')?.textContent).toContain('PDF ·…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > (w) Make it a project, Keep it playable, then Close: focus is on the piece’s new project row, not the page or another list
+AssertionError: expected <body>…(1)</body> to be <div class="list-row" …(5)>…(1)</div> // Object.is equality
+
+- Expected
++ Received
+
+@@ -1,6 +1,703 @@
++ <body>
++   <section
++     class="screen screen--list"
++     data-screen="progress"
++   >
++     <header
++       class="screen-header"
++     >
++       <h1>
++         Progress
++       </h1>
++     </header>
++     <div
++       class="screen-body"
++     >
++       <div
++         class="block"
++         id="progress-summary"
++       >
++         <p
++           class="progress-week"
++           id="progress-week"
++         >
++           1 of 150 minutes this week
++         </p>
++         <p
++           class="muted"
++           id="progress-totals"
++         >
++           1 day practised · 1 min in total · 0 started · 1 passed · 0 mastered
++         </p>
++         <h2>
++           Minutes a day, last 13 weeks
++         </h2>
+          <div
++           aria-label="Practice minutes by day"
++           class="heatmap"
++           id="progress-heatmap"
++           role="img"
++         >
++           <span
++             class="heat-cell"
++             data-day="2026-07-02"
++             data-level="0"
++             title="2026-07-02: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-03"
++             data-level="0"
++             title="2026-07-03: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-04"
++             data-level="0"
++             title="2026-07-04: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-05"
++             data-level="0"
++             title="2026-07-05: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-06"
++             data-level="0"
++             title="2026-07-06: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-07"
++             data-level="0"
++             title="2026-07-07: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-08"
++             data-level="0"
++             title="2026-07-08: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-09"
++             data-level="0"
++             title="2026-07-09: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-10"
++             data-level="0"
++             title="2026-07-10: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-11"
++             data-level="0"
++             title="2026-07-11: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-12"
++             data-level="0"
++             title="2026-07-12: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-13"
++             data-level="0"
++             title="2026-07-13: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-14"
++             data-level="0"
++             title="2026-07-14: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-15"
++             data-level="0"
++             title="2026-07-15: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-16"
++             data-level="0"
++             title="2026-07-16: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-17"
++             data-level="0"
++             title="2026-07-17: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-18"
++             data-level="0"
++             title="2026-07-18: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-19"
++             data-level="0"
++             title="2026-07-19: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-20"
++             data-level="0"
++             title="2026-07-20: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-21"
++             data-level="0"
++             title="2026-07-21: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-22"
++             data-level="0"
++             title="2026-07-22: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-23"
++             data-level="0"
++             title="2026-07-23: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-24"
++             data-level="0"
++             title="2026-07-24: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-25"
++             data-level="0"
++             title="2026-07-25: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-26"
++             data-level="0"
++             title="2026-07-26: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-27"
++             data-level="0"
++             title="2026-07-27: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-28"
++             data-level="0"
++             title="2026-07-28: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-29"
++             data-level="0"
++             title="2026-07-29: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-30"
++             data-level="0"
++             title="2026-07-30: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-07-31"
++             data-level="0"
++             title="2026-07-31: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-01"
++             data-level="0"
++             title="2026-08-01: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-02"
++             data-level="0"
++             title="2026-08-02: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-03"
++             data-level="0"
++             title="2026-08-03: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-04"
++             data-level="0"
++             title="2026-08-04: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-05"
++             data-level="0"
++             title="2026-08-05: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-06"
++             data-level="0"
++             title="2026-08-06: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-07"
++             data-level="0"
++             title="2026-08-07: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-08"
++             data-level="0"
++             title="2026-08-08: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-09"
++             data-level="0"
++             title="2026-08-09: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-10"
++             data-level="0"
++             title="2026-08-10: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-11"
++             data-level="0"
++             title="2026-08-11: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-12"
++             data-level="0"
++             title="2026-08-12: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-13"
++             data-level="0"
++             title="2026-08-13: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-14"
++             data-level="0"
++             title="2026-08-14: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-15"
++             data-level="0"
++             title="2026-08-15: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-16"
++             data-level="0"
++             title="2026-08-16: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-17"
++             data-level="0"
++             title="2026-08-17: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-18"
++             data-level="0"
++             title="2026-08-18: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-19"
++             data-level="0"
++             title="2026-08-19: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-20"
++             data-level="0"
++             title="2026-08-20: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-21"
++             data-level="0"
++             title="2026-08-21: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-22"
++             data-level="0"
++             title="2026-08-22: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-23"
++             data-level="0"
++             title="2026-08-23: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-24"
++             data-level="0"
++             title="2026-08-24: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-25"
++             data-level="0"
++             title="2026-08-25: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-26"
++             data-level="0"
++             title="2026-08-26: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-27"
++             data-level="0"
++             title="2026-08-27: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-28"
++             data-level="0"
++             title="2026-08-28: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-29"
++             data-level="0"
++             title="2026-08-29: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-30"
++             data-level="0"
++             title="2026-08-30: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-08-31"
++             data-level="0"
++             title="2026-08-31: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-01"
++             data-level="0"
++             title="2026-09-01: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-02"
++             data-level="0"
++             title="2026-09-02: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-03"
++             data-level="0"
++             title="2026-09-03: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-04"
++             data-level="0"
++             title="2026-09-04: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-05"
++             data-level="0"
++             title="2026-09-05: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-06"
++             data-level="0"
++             title="2026-09-06: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-07"
++             data-level="0"
++             title="2026-09-07: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-08"
++             data-level="0"
++             title="2026-09-08: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-09"
++             data-level="0"
++             title="2026-09-09: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-10"
++             data-level="0"
++             title="2026-09-10: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-11"
++             data-level="0"
++             title="2026-09-11: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-12"
++             data-level="0"
++             title="2026-09-12: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-13"
++             data-level="0"
++             title="2026-09-13: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-14"
++             data-level="0"
++             title="2026-09-14: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-15"
++             data-level="0"
++             title="2026-09-15: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-16"
++             data-level="0"
++             title="2026-09-16: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-17"
++             data-level="0"
++             title="2026-09-17: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-18"
++             data-level="0"
++             title="2026-09-18: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-19"
++             data-level="0"
++             title="2026-09-19: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-20"
++             data-level="0"
++             title="2026-09-20: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-21"
++             data-level="0"
++             title="2026-09-21: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-22"
++             data-level="0"
++             title="2026-09-22: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-23"
++             data-level="0"
++             title="2026-09-23: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-24"
++             data-level="0"
++             title="2026-09-24: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-25"
++             data-level="0"
++             title="2026-09-25: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-26"
++             data-level="0"
++             title="2026-09-26: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-27"
++             data-level="0"
++             title="2026-09-27: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-28"
++             data-level="0"
++             title="2026-09-28: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-29"
++             data-level="0"
++             title="2026-09-29: 0 min"
++           />
++           <span
++             class="heat-cell"
++             data-day="2026-09-30"
++             data-level="1"
++             title="2026-09-30: 1 min"
++           />
++         </div>
++         <div
++           class="heatmap-key"
++           id="progress-heatmap-key"
++         >
++           <span
++             aria-hidden="true"
++             class="heatmap-key__swatch"
++             data-level="0"
++           />
++           <span
++             class="heatmap-key__label"
++           >
++             0
++           </span>
++           <span
++             aria-hidden="true"
++             class="heatmap-key__swatch"
++             data-level="1"
++           />
++           <span
++             class="heatmap-key__label"
++           >
++             &lt;10
++           </span>
++           <span
++             aria-hidden="true"
++             class="heatmap-key__swatch"
++             data-level="2"
++           />
++           <span
++             class="heatmap-key__label"
++           >
++             &lt;25
++           </span>
++           <span
++             aria-hidden="true"
++             class="heatmap-key__swatch"
++             data-level="3"
++           />
++           <span
++             class="heatmap-key__label"
++           >
++             &lt;45
++           </span>
++           <span
++             aria-hidden="true"
++             class="heatmap-key__swatch"
++             data-level="4"
++           />
++           <span
++             class="heatmap-key__label"
++           >
++             45+ min
++           </span>
++         </div>
++         <div
++           id="progress-goal-block"
++         >
++           <div
++             class="setting-row"
++           >
++             <label
++               for="progress-goal"
++             >
++               Weekly goal (minutes)
++             </label>
++             <input
++               id="progress-goal"
++               max="2000"
++               min="0"
++               step="10"
++               type="number"
++             />
++           </div>
++           <p
++             aria-live="polite"
++             class="status"
++             id="progress-goal-status"
++             role="status"
++           />
++         </div>
++       </div>
++       <section
++         class="block"
++       >
++         <h2>
++           Skills
++         </h2>
++         <div
++           class="list"
++           id="progress-skills"
++         >
++           <p
++             class="muted"
++           >
++             Skills could not be read: Error: no curriculum in this test
++           </p>
++         </div>
++       </section>
++       <section
++         class="block"
++       >
++         <h2>
++           Projects
++         </h2>
++         <div
++           class="list"
++           data-drawn="true"
++           id="progress-projects"
++         >
++           <div
+              class="list-row"
+              data-item="song.passed"
+              data-project="file:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+              data-state="maintaining"
+              role="button"
+@@ -16,8 +713,154 @@
+                </div>
+                <div
+                  class="list-row__sub"
+                >
+                  Keeping it playable since 2026-09-30
++               </div>
++             </div>
++           </div>
++         </div>
++       </section>
++       <section
++         class="block"
++       >
++         <h2>
++           Repertoire
++         </h2>
++         <div
++           class="list"
++           id="progress-repertoire"
++         >
++           <p
++             class="muted"
++           >
++             Nothing mastered yet. A piece joins this list after two clean runs on different days.
++           </p>
++           <button
++             class="link-button"
++             id="progress-repertoire-start"
++             type="button"
++           >
++             Start today's session
++           </button>
++         </div>
++       </section>
++       <section
++         class="block"
++       >
++         <h2>
++           Performances
++         </h2>
++         <div
++           class="list"
++           id="progress-performances"
++         >
++           <p
++             class="muted"
++           >
++             No performances yet. A performance is one run through with no restarts and no looping.
++           </p>
++           <button
++             class="link-button"
++             id="progress-performances-pick"
++             type="button"
++           >
++             Pick a piece to perform
++           </button>
++         </div>
++       </section>
++       <section
++         class="block"
++       >
++         <h2>
++           Recent sessions
++         </h2>
++         <div
++           class="list"
++           id="progress-history"
++         >
++           <div
++             class="list-row"
++             data-item="song.passed"
++             data-session="1"
++             role="button"
++             tabindex="0"
++           >
++             <div
++               class="list-row__text"
++             >
++               <div
++                 class="list-row__title"
++               >
++                 Ode to Joy
++               </div>
++               <div
++                 class="list-row__sub"
++               >
++                 2026-09-30 04:08 · Keep tempo
++               </div>
++               <div
++                 class="list-row__meta muted"
++               >
++                 <span
++                   class="list-row__metatext"
++                 >
++                   100% at 100% · 1 min
++                 </span>
++               </div>
++             </div>
++           </div>
++         </div>
++       </section>
++       <div
++         class="block"
++         id="progress-data"
++       >
++         <h2>
++           Your data
++         </h2>
++         <p
++           class="muted"
++         >
++           Everything is on this phone and nowhere else. The backup file is the only copy — imports included.
++         </p>
++         <div
++           class="row"
++         >
++           <button
++             class="button button--secondary"
++             id="progress-export"
++             type="button"
++           >
++             Export everything
++           </button>
++           <button
++             class="link-button"
++             id="progress-import"
++             type="button"
++           >
++             Import a backup
++           </button>
++           <input
++             accept=".json,application/json"
++             class="visually-hidden"
++             id="progress-file"
++             type="file"
++           />
++           <button
++             class="link-button"
++             id="progress-diagnostics"
++             type="button"
++           >
++             Diagnostics
++           </button>
+          </div>
+        </div>
++       <p
++         aria-live="polite"
++         class="status"
++         id="progress-status"
++         role="status"
++       />
+      </div>
++   </section>
++ </body>
+
+ ❯ tests/unit/progressProjects.test.ts:176:36
+    174|     document.getElementById('project-sheet-close')?.click();
+    175|     expect(document.getElementById('project-sheet')).toBeNull();
+    176|     expect(document.activeElement).toBe(section.querySelector('#progre…
+       |                                    ^
+    177|   });
+    178|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  tests/unit/projectLifecycle.test.ts > the transitions table: every action from every state the sheet offers it, and nothing else > the offers are the table, from no project Keep it playable only for a piece passed; the states Part 27’s eight, and every action enters the state it names
+AssertionError: expected [ 'save', 'learn', 'polish', 'keep' ] to deeply equal [ 'save', 'learn', 'polish' ]
+
+- Expected
++ Received
+
+  [
+    "save",
+    "learn",
+    "polish",
++   "keep",
+  ]
+
+ ❯ tests/unit/projectLifecycle.test.ts:300:42
+    298|     expect(OFFERS).toEqual(TABLE);
+    299|     expect(actionsFor(undefined, true)).toEqual(TABLE.none);
+    300|     expect(actionsFor(undefined, false)).toEqual(['save', 'learn', 'po…
+       |                                          ^
+    301|     // With a project, whether the piece is passed changes nothing: th…
+    302|     for (const state of PROJECT_STATES) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  tests/unit/projectLifecycle.test.ts > the transitions table: every action from every state the sheet offers it, and nothing else > from none, on a piece with no pass: each offered action moves the project and appends one line; every other action is refused and writes nothing
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "history": [
++     {
++       "at": "2026-09-28T12:01:00.000Z",
++       "state": "maintaining",
++       "why": "keep",
++     },
++   ],
++   "id": "file:mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
++   "itemId": "song.minuet",
++   "material": {
++     "kind": "file",
++     "sha256": "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
++   },
++   "since": "2026-09-28T12:01:00.000Z",
++   "state": "maintaining",
+  }
+
+ ❯ tests/unit/projectLifecycle.test.ts:347:102
+    345|           expect(await allProjects()).toHaveLength(1);
+    346|         } else {
+    347|           await expect(applyProjectAction(MINUET, action, { at: when }…
+       |                                                                                                      ^
+    348|           expect(await projectFor(MINUET), `${from} → ${action} wrote …
+    349|         }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+ FAIL  tests/unit/projectLifecycle.test.ts > from no project, Keep it playable only for a piece the record says is passed; the store refuses it otherwise (G96) > (a) no project and no progress row: refused, no project made, nothing written anywhere
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "history": [
++     {
++       "at": "2026-09-29T12:00:00.000Z",
++       "state": "maintaining",
++       "why": "keep",
++     },
++   ],
++   "id": "file:mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
++   "itemId": "song.minuet",
++   "material": {
++     "kind": "file",
++     "sha256": "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
++   },
++   "since": "2026-09-29T12:00:00.000Z",
++   "state": "maintaining",
+  }
+
+ ❯ tests/unit/projectLifecycle.test.ts:380:77
+    378|   it('(a) no project and no progress row: refused, no project made, no…
+    379|     const stores = await everyOtherStore();
+    380|     await expect(applyProjectAction(MINUET, 'keep', { at: new Date(NOO…
+       |                                                                             ^
+    381|     expect(await projectFor(MINUET)).toBeUndefined();
+    382|     expect(await allProjects()).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/15]⎯
+
+ FAIL  tests/unit/projectLifecycle.test.ts > from no project, Keep it playable only for a piece the record says is passed; the store refuses it otherwise (G96) > (b) a run that did not pass, and a pass under another id of the same file: refused
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "history": [
++     {
++       "at": "2026-09-29T12:00:00.000Z",
++       "state": "maintaining",
++       "why": "keep",
++     },
++   ],
++   "id": "file:mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
++   "itemId": "song.minuet",
++   "material": {
++     "kind": "file",
++     "sha256": "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
++   },
++   "since": "2026-09-29T12:00:00.000Z",
++   "state": "maintaining",
+  }
+
+ ❯ tests/unit/projectLifecycle.test.ts:389:77
+    387|     await recordRun(runOf(SONG, file('m'), { accuracy: 0.5, passed: fa…
+    388|     expect((await getProgress(SONG)).status).toBe('started');
+    389|     await expect(applyProjectAction(MINUET, 'keep', { at: new Date(NOO…
+       |                                                                             ^
+    390|     expect(await projectFor(MINUET)).toBeUndefined();
+    391|     // Keyed by the item's own id, as Progress reads it: the copy's pa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/15]⎯
+
+ FAIL  tests/unit/projectLifecycle.test.ts > from no project, Keep it playable only for a piece the record says is passed; the store refuses it otherwise (G96) > (h) the read writes nothing: every other store the same after an accepted and a refused Keep it playable
+AssertionError: promise resolved "{ …(6) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "history": [
++     {
++       "at": "2026-09-29T12:00:00.000Z",
++       "state": "maintaining",
++       "why": "keep",
++     },
++   ],
++   "id": "file:nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
++   "itemId": "song.never",
++   "material": {
++     "kind": "file",
++     "sha256": "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
++   },
++   "since": "2026-09-29T12:00:00.000Z",
++   "state": "maintaining",
+  }
+
+ ❯ tests/unit/projectLifecycle.test.ts:443:102
+    441|     const stores = await everyOtherStore();
+    442|     await applyProjectAction(MINUET, 'keep', { at: new Date(NOON) });
+    443|     await expect(applyProjectAction(target('song.never', file('n')), '…
+       |                                                                                                      ^
+    444|     expect(await everyOtherStore()).toEqual(stores);
+    445|     expect((await allProjects()).map((row) => row.itemId)).toEqual([SO…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/15]⎯
+
+ FAIL  tests/unit/projectSheet.test.ts > the sheet for a piece with no project > names the piece, says it is no project yet, offers three ways in — no Keep it playable, ever drawn — says it was never opened, and writes nothing
+AssertionError: expected [ 'save', 'learn', 'polish', 'keep' ] to deeply equal [ 'save', 'learn', 'polish' ]
+
+- Expected
++ Received
+
+  [
+    "save",
+    "learn",
+    "polish",
++   "keep",
+  ]
+
+ ❯ tests/unit/projectSheet.test.ts:148:46
+    146|     const keep = watchForKeep();
+    147|     await open();
+    148|     await vi.waitFor(() => expect(actions()).toEqual(['save', 'learn',…
+       |                                              ^
+    149|     await settle();
+    150|     keep.stop();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/15]⎯
+
+ FAIL  tests/unit/projectSheet.test.ts > the sheet for a piece with no project > (j) opened, listened to, played without a pass: no Keep it playable
+AssertionError: expected [ 'save', 'learn', 'polish', 'keep' ] to deeply equal [ 'save', 'learn', 'polish' ]
+
+- Expected
++ Received
+
+  [
+    "save",
+    "learn",
+    "polish",
++   "keep",
+  ]
+
+ ❯ tests/unit/projectSheet.test.ts:182:46
+    180|     await recordEncounter({ kind: 'viewed', itemId: SONG, material: fi…
+    181|     await open();
+    182|     await vi.waitFor(() => expect(actions()).toEqual(['save', 'learn',…
+       |                                              ^
+    183|     document.body.replaceChildren();
+    184|     await recordEncounter({ kind: 'heard', itemId: SONG, material: fil…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/15]⎯
+
+ FAIL  tests/unit/projectSheet.test.ts > the sheet for a piece with no project > (l) opened before the pass is on the record: three ways in, and the fourth once the pass is stored
+AssertionError: expected [ 'save', 'learn', 'polish', 'keep' ] to deeply equal [ 'save', 'learn', 'polish' ]
+
+- Expected
++ Received
+
+  [
+    "save",
+    "learn",
+    "polish",
++   "keep",
+  ]
+
+ ❯ tests/unit/projectSheet.test.ts:214:46
+    212|     await recordRun({ ...run, accuracy: 0.4, passed: false }, new Date…
+    213|     await open();
+    214|     await vi.waitFor(() => expect(actions()).toEqual(['save', 'learn',…
+       |                                              ^
+    215|     await recordRun(run, new Date());
+    216|     await vi.waitFor(() => expect(actions()).toEqual(['save', 'learn',…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/15]⎯
+
+ FAIL  tests/unit/sheetIsolation.test.ts > openSheet gives focus back on closing, even when the row behind it was redrawn > (n) the row was replaced in the same list: focus goes to the new row’s Details, not the body
+AssertionError: expected <body>…(1)</body> to be <button></button> // Object.is equality
+
+- Expected
++ Received
+
++ <body>
++   <section
++     data-screen="library"
++   >
++     <div
++       id="library-list"
++     >
++       <div
++         class="list-row"
++         data-item="song.a"
++         role="button"
++         tabindex="0"
++       >
+          <button>
+            Details
+          </button>
++       </div>
++     </div>
++   </section>
++ </body>
+
+ ❯ tests/unit/sheetIsolation.test.ts:151:36
+    149|     expect(details.isConnected, 'the control focused at opening is sti…
+    150|     sheet.close();
+    151|     expect(document.activeElement).toBe(fresh);
+       |                                    ^
+    152|   });
+    153|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/15]⎯
+
+ FAIL  tests/unit/sheetIsolation.test.ts > openSheet gives focus back on closing, even when the row behind it was redrawn > (o) the new row has no such control: the row itself; the opener names nothing: focus falls where it did before, and nothing throws
+AssertionError: expected <body>…(1)</body> to be <div class="list-row" …(3)></div> // Object.is equality
+
+- Expected
++ Received
+
++ <body>
++   <section
++     data-screen="library"
++   >
++     <div
++       id="library-list"
++     >
+        <div
+          class="list-row"
+          data-item="song.a"
+          role="button"
+          tabindex="0"
+        />
++     </div>
++   </section>
++ </body>
+
+ ❯ tests/unit/sheetIsolation.test.ts:159:36
+    157|     redrawRow(list, 'song.a', false);
+    158|     sheet.close();
+    159|     expect(document.activeElement).toBe(list.firstElementChild);
+       |                                    ^
+    160|
+    161|     document.body.replaceChildren();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/15]⎯
+
+ FAIL  tests/unit/sheetIsolation.test.ts > openSheet gives focus back on closing, even when the row behind it was redrawn > (r) Close, Escape and a tap outside each take the fallback
+AssertionError: Close: expected <body>…(1)</body> to be <button></button> // Object.is equality
+
+- Expected
++ Received
+
++ <body>
++   <section
++     data-screen="library"
++   >
++     <div
++       id="library-list"
++     >
++       <div
++         class="list-row"
++         data-item="song.a"
++         role="button"
++         tabindex="0"
++       >
+          <button>
+            Details
+          </button>
++       </div>
++     </div>
++   </section>
++ </body>
+
+ ❯ tests/unit/sheetIsolation.test.ts:194:43
+    192|       closeBy(sheet);
+    193|       expect(sheet.el.isConnected, way).toBe(false);
+    194|       expect(document.activeElement, way).toBe(fresh);
+       |                                           ^
+    195|     }
+    196|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/15]⎯
+
+
+ Test Files  5 failed (5)
+      Tests  15 failed | 77 passed (92)
+   Start at  00:08:20
+   Duration  9.74s (environment 41%, tests 31%, transform 21%, import 8%, worker 1%)
+
+exit=1

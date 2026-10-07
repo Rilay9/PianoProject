@@ -1,0 +1,47 @@
+## next music in view under c1, sideways, at rest and at the freeze
+  rest: in view 86 of 86
+  run-frozen: in view 86 of 86
+## c4: cells where the stave is smaller than c1 at rest (by more than half a pixel)
+  46: 568x320 t115 stack hcb; 568x320 t115 stack moon; 568x320 t115 wider hcb; 568x320 t115 wider moon; 700x350 t115 stack hcb; 700x350 t115 stack moon; 700x350 t115 wider hcb; 700x350 t115 wider moon; 720x360 t115 stack hcb; 720x360 t115 stack moon; 720x360 t115 wider hcb; 720x360 t115 wider moon; 740x342 t100 stack hcb; 740x342 t100 stack moon; 740x342 t100 wider hcb; 740x342 t100 wider moon; 740x342 t115 stack hcb; 740x342 t115 stack moon; 740x342 t115 wider hcb; 740x342 t115 wider moon; 740x342 t90 stack hcb; 740x342 t90 wider hcb; 780x360 t100 stack hcb; 780x360 t100 stack moon; 780x360 t100 wider hcb; 780x360 t100 wider moon; 780x360 t115 stack hcb; 780x360 t115 stack moon; 780x360 t115 wider hcb; 780x360 t115 wider moon; 844x390 t115 stack hcb; 844x390 t115 stack moon; 844x390 t115 wider hcb; 844x390 t115 wider moon; 880x412 t100 stack saints; 880x412 t100 wider saints; 880x412 t115 stack saints; 880x412 t115 wider saints; 1200x360 t100 stack hcb; 1200x360 t100 stack saints; 1200x360 t100 wider hcb; 1200x360 t100 wider saints; 1200x360 t115 stack hcb; 1200x360 t115 stack saints; 1200x360 t115 wider hcb; 1200x360 t115 wider saints
+## the smallest stave under an at-rest refusal, per candidate, sideways
+  c1: (22.92, '568x320 t100 stack moon', 'rest-refused-play')
+  c2: (22.92, '568x320 t100 stack moon', 'rest-refused-play')
+  c3: (22.92, '568x320 t100 stack moon', 'rest-refused-play')
+  c4: (18.65, '568x320 t115 stack moon', 'rest-refused-play')
+  c5: (22.34, '568x320 t115 stack moon', 'rest-refused-play')
+  c6: (22.34, '568x320 t115 stack moon', 'rest-refused-play')
+## refusal states that are not ok, per candidate and state, sideways
+  c1 rest-refused-play: 86 of 86 ok
+  c1 rest-refused-hear: 86 of 86 ok
+  c1 rest-refused-after-tempo: 86 of 86 ok
+  c1 rest-refused-after-resize: 86 of 86 ok
+  c1 paused-refused-play: 86 of 86 ok
+  c2 rest-refused-play: 86 of 86 ok
+  c2 rest-refused-hear: 86 of 86 ok
+  c2 rest-refused-after-tempo: 86 of 86 ok
+  c2 rest-refused-after-resize: 86 of 86 ok
+  c2 paused-refused-play: 86 of 86 ok
+  c3 rest-refused-play: 86 of 86 ok
+  c3 rest-refused-hear: 86 of 86 ok
+  c3 rest-refused-after-tempo: 86 of 86 ok
+  c3 rest-refused-after-resize: 86 of 86 ok
+  c3 paused-refused-play: 86 of 86 ok
+  c4 rest-refused-play: 86 of 86 ok
+  c4 rest-refused-hear: 86 of 86 ok
+  c4 rest-refused-after-tempo: 86 of 86 ok
+  c4 rest-refused-after-resize: 86 of 86 ok
+  c4 paused-refused-play: 86 of 86 ok
+  c5 rest-refused-play: 86 of 86 ok
+  c5 rest-refused-hear: 86 of 86 ok
+  c5 rest-refused-after-tempo: 86 of 86 ok
+  c5 rest-refused-after-resize: 86 of 86 ok
+  c5 paused-refused-play: 86 of 86 ok
+  c6 rest-refused-play: 86 of 86 ok
+  c6 rest-refused-hear: 86 of 86 ok
+  c6 rest-refused-after-tempo: 86 of 86 ok
+  c6 rest-refused-after-resize: 86 of 86 ok
+  c6 paused-refused-play: 86 of 86 ok
+## tests run, from the logs
+  passed in all: 1575
+  cell-candidate pairs in the final data: 628
+  measured states in the final data (rest counted once): 5652

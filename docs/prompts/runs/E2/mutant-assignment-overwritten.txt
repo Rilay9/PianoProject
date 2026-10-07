@@ -1,0 +1,38 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ab0ca07b13a3644b6/app
+
+ ❯ tests/unit/importMeasuredTruth.test.ts (12 tests | 1 failed) 136ms
+   ❯ the stored imports measured once on the next launch (E25), through the store (6)
+     × writes nothing over a row whose score changed while it was being measured, and nothing over an assignment saved meanwhile 5ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  23:12:09
+   Duration  1.43s (environment 51%, transform 27%, import 12%, tests 10%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the stored imports measured once on the next launch (E25), through the store > writes nothing over a row whose score changed while it was being measured, and nothing over an assignment saved meanwhile
+AssertionError: expected [ '1.3' ] to deeply equal [ '2.1' ]
+
+- Expected
++ Received
+
+  [
+-   "2.1",
++   "1.3",
+  ]
+
+ ❯ tests/unit/importMeasuredTruth.test.ts:299:32
+    297|     await measureStoredImports({ measure: racing, current: CURRENT });
+    298|     const assigned = (await getImport('import.before-e0')) as ImportRo…
+    299|     expect(assigned.lessonIds).toEqual(['2.1']);
+       |                                ^
+    300|     expect(assigned.demands).toEqual(['interval.step', 'clef.bass']);
+    301|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit 1

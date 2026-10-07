@@ -25,9 +25,9 @@ eighth, a sixteenth) across a beat, so the middle note is accented and lands on
 an off-beat. It is not swung: **ragtime is played straight**, with even
 subdivisions. Swinging it turns it into something else.
 
-**"Not fast."** Several of the Joplin editions bundled here print exactly that
-at the head of the music — not the copy of *The Entertainer* on this rung,
-which is marked *Moderato*, but the instruction is the same one. It is the
+**"Not fast."** Joplin wrote that at the head of many of his rags — the copy
+of *The Entertainer* on this rung is marked *Moderato* instead, but the
+instruction is the same one. It is the
 whole of the advice: the syncopation only registers if the pulse is steady and
 moderate, and at speed everything blurs into a scramble.
 

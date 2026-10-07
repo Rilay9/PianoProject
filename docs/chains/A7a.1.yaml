@@ -1,0 +1,276 @@
+# The chain record for A7a.1, Improvise a right hand over your own left-hand groove (FABLE.md section 3), with Blues
+# Riff in C as its real full-form TRANSFER (FABLE section 2 step 5: "Blues Riff in C (twelve-bar)"). Cut the way
+# docs/chains/A7b.1.yaml was cut: field meanings from ORCHESTRATION-CONTRACT.md section 1; every `recorded` and
+# `cannot_establish` copied from MODE-SHEET.md for the step's tool, never inferred; structure only from
+# docs/chains/skeletons/latin-cluster.md (sections 2-4). status: draft. Drafted 2026-10-07 at HEAD 75bddb14.
+#
+# Why this id:
+#  - VERIFIED, ABILITY-MAP.md:315 (amendment B3): "MODEL/TRANSFER, the full-form TRANSFER half ... Blues Riff in C
+#    Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi, bars 1-12 ... form I I I I IV IV I I V IV I I"; it sits in A7a.1's
+#    block (ABILITY-MAP.md:302-318). The only other block that mentions it, A7a.2 (ABILITY-MAP.md:335), says it does not
+#    supply A7a.2's turnaround. Not ambiguous.
+#  - VERIFIED, docs/review/responses/a3a8771d.md:31 names "the already named A7a.3 / St James and Blues Riff chains".
+#
+# Premises, each VERIFIED (file:line or the command run) or HYPOTHESIS (with what would refute it):
+#  - VERIFIED, the ladder is landed on blues.8 (content/lessons/blues.8.md:30-61; RECONCILIATION.md:36, "blues.8 ladder
+#    (landed)"): left hand measured, then the chart with Comp and Bass + drums off, bars 1-4, then 1-4 and 9-12, then the
+#    whole form, then no click, then no chart and a phone recording. blues.8's requirements are one run of any of its
+#    five exercises and an unjudged chorus line (content/curriculum/stage-8.json:350-390). The C shuffle is not a blues.8
+#    option: it is an option of blues.4, blues.5, jam and improv.5 (stage files, grep and PF1 class 3, 2026-10-07), and the lesson says
+#    to find it in the Library (blues.8.md:33). So today the ladder's one measured step counts for no rung (MODE-SHEET
+#    section 0 R3), and blues.8 is met by an exercise unrelated to this ability.
+#  - VERIFIED, the reviewer-accepted corrections this record carries (RECONCILIATION's A7a.1 rows are R22-R24 in table order,
+#    accepted as diagnoses in docs/review/responses/6e7475c1.md, 'ACCEPT as record/status evidence'): RECONCILIATION.md:37 (row E, a measured left-hand run without the click: Metronome volume 0, then
+#    Blind) is steps 3 and 4; RECONCILIATION.md:38 (row D, the left hand slipping when the right enters) is the first
+#    failure route. Row B (RECONCILIATION.md:36, blues.8's Blind sentence and its Pinetop target) is lesson text outside
+#    this record's steps; it stays a correction for the placement lane.
+#  - VERIFIED, the C shuffle prints C7 C7 C7 C7 F7 F7 C7 C7 G7 F7 C7 G7, one symbol a bar, its left hand C G A G in
+#    eighths (root, fifth, sixth, fifth) and its right hand held sevenths in halves (music21 on
+#    app/public/content/scores/authored/exercise.blues.twelve-bar-shuffle.c.mxl, 2026-10-07); catalogue: hands both,
+#    12 chord symbols, 4/4, tempo 88. The Lab's BLUES_MAJOR states the same plan (app/src/engine/sightReading.ts:2220).
+#  - VERIFIED (one reader), Blues Riff in C as the quarry dumped it: three parts, Piano (two staves: whole-note roots C2,
+#    F2, G2 under rootless voicings B♭-E-G, E♭-A-C, F-B-D), Riff (one line) and Drumset; 12 bars of 4/4, no key
+#    signature, no chord symbols; plan I I I I IV IV I I V IV I I (bar 12 on I, where the shuffle has G7); the riff
+#    holds B natural in bars 3-4, 7-8 and 12 against the voicing's B♭; bars 9-10 of the riff run in sixteenths,
+#    dotted sixteenths, octave doublings and one sixty-fourth
+#    (docs/review/pdmx-quarry-2026-10-05/summary/A-blues/blues-riff-in-c-120-bpm-Qmb7mkEf....txt). It is not in
+#    content/sources/pdmx.json or the catalogue (check_chains Resolver: the CID does not resolve, 2026-10-07): intake
+#    IM-9 has not run.
+#  - VERIFIED (two readers) and CORRECTED, 2026-10-07, the A7a.1 probe (docs/prompts/runs/A7a1/; intake record
+#    docs/prompts/runs/curriculum-review-2026-10-05/intake/Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.md): the line
+#    above holds on raw sha256 69d5bb7e... (a raw MusicXML walk and music21 agree on all 249 heads and 54 rests): 18
+#    riff B4s (bars 3-4, 7-8, 12) over the voicing's Bb3; the riff's Bb5 in bar 9 sits over the G7 voicing's B4.
+#    Correction: bar 10 has one double-dotted sixteenth (F4+F5), not "dotted sixteenths". The drums are unpitched
+#    (144 heads). IM-9 has now run: NOT ADMITTED (quarry gate 2 FAIL by staff relabelling, an unpitched part, the
+#    ensemble shape); the catalogue still cannot resolve the CID, so steps 7-9 stay unresolved until the edition lands.
+#  - VERIFIED, its role is narrowed: the B natural is structural, never silently changed to B♭; TRANSFER material with a
+#    harmony and note-choice caveat, not the canonical C7 blues-note MODEL (ABILITY-MAP.md:316;
+#    docs/review/pdmx-quarry-2026-10-05/PARALLEL-UNBLOCKS-2026-10-05.md:121-122). So no step uses it to teach which notes
+#    to choose; it models a right-hand riff carried through the whole form while the left hand keeps the form.
+#  - HYPOTHESIS, the playable edition: the map says it "must be re-staffed (the riff to the RH, the roots to the LH)"
+#    (ABILITY-MAP.md:315), which drops the rootless voicings and the drums; convert.normalise writes one part on two
+#    staves (INTAKE-GATE.md:23, inferred from its docstring, not run). Refuted if convert puts the riff and the voicings
+#    on one staff, or keeps the drums. The re-staffing is a build (CK-7 extended, ABILITY-MAP.md:315); steps 7-10 are
+#    blocked on it and on intake.
+#  - VERIFIED, 2026-10-07 (the probe, converter-report.json): the hypothesis above holds: convert_file writes riff (57
+#    heads), voicings (36) and drums (144 unpitched heads) on staff 1 and the roots (12) on staff 2, losing nothing.
+#    The ruling's re-staffed edition (docs/review/responses/a7a-drafts.md section 8, A7a1-bluesriff-restaff) is drafted
+#    as docs/prompts/runs/A7a1/brief-bluesriff-restaff.md: keeping the parts Riff and P1-Staff2 before the unchanged
+#    convert.normalise gave, in scratch, the 57 riff and 12 root heads alone, no unpitched head (one reader).
+#  - VERIFIED, a one-hand run counts like a both-hands run: meetsStandard and measured (app/src/evidence/rungState.ts:220-254)
+#    read accuracy, mode, tempo and rhythmOnly and never the row's hands (no `hands` token in the file, grep 2026-10-07);
+#    MODE-SHEET section 13 says no requirement reads hands.appPlayed. So a requirement naming the C shuffle would also be
+#    met by step 2's Duet run of one hand at the pass pair, against this record's never_credits line. Enforcing
+#    "both hands" is an app seam (a requirement that reads hands.played); A7a.1 and A7a.3 both need it (FABLE section 10:
+#    app work when two chains need it). PF1 class 4 counts Duet among the tools never counted (preflight_chains.py
+#    COUNTING_TOOLS), so the preflight does not see this either.
+#  - VERIFIED, the chart's toggles: Comp and Bass + drums start off and are independent (blues.8.md:39-41; CB1, Entry
+#    267); the C shuffle is 4/4 and one chord a bar, so PH2 does not block this record.
+#  - VERIFIED, the Lab's Blues preset (sightReading.ts:2433 onward): progression, left hand and bars locked, key free,
+#    bed `hold`; Jam it plays a root-and-fifth bass with the bar's chord on the backbeat and counts notes in the blues
+#    scale per time round, keeping none (content/lessons/jam.6.md:44-50; MODE-SHEET section 7b).
+#  - VERIFIED, 2026-10-07 by reading (was HYPOTHESIS): Hold the chords counts against the blues scale for the blues
+#    progression (LabScreen.ts:563-567 currentTradeScale; tradingFours.ts:209-223 tradeScale; drills/factories.ts:292,
+#    offsets 0 3 5 6 7 10), in C: C Eb F Gb G Bb. So E over C7 (blues.8.md:43) counts as outside, as do A and B; the
+#    riff's B naturals would too.
+#  - HYPOTHESIS, Hear it on the re-staffed Blues Riff sounds the riff and the roots only (the drums dropped). Refuted by
+#    the converted file. 2026-10-07: the converter keeps the drums (above); the re-staffed edition omits them by
+#    construction (scratch, one reader); stays HYPOTHESIS until the edition is built and rendered.
+#  - VERIFIED, 2026-10-07 by reading, the click on the Score screen (steps 2-5): the screen's Metronome row is Off by
+#    default (ScoreScreen.ts:760); it starts the session's Metronome, the one click constructed in ScoreScreen.ts,
+#    score/ and PracticeEngine.ts (grep), which sounds the count-in as well (ScoreSession.ts:575, 903-915); the
+#    count-in is otherwise drawn as dots (ScoreScreen.ts:3197-3208); Metronome volume 0 sets its gain to 0 (Metronome.ts:199-200)
+#    and is stripped from the engine's options (ScoreSession.ts:536), so the clock, cursor and measurement are
+#    unchanged. Steps 2 and 5 list "click" as a scaffold the learner must switch on; step 3 needs only the row Off.
+#    The same Settings value is the volume of the Lab's bed and the chart's backing: every bed event (bass, chord,
+#    drums) plays through DrumKit, whose gain is set from it (backingLoop.ts:198-232; LabScreen.ts:777, 918;
+#    ChordChartScreen.ts:319-325), so a learner who leaves it at 0 after step 3 meets a silent bed at step 6 (by
+#    reading, not run). The placement lane decides the step-3 wording (the Score screen's row Off is the narrower one).
+# Not used, and why: B2's Morton and Pinetop-Parham candidates (ABILITY-MAP.md:314) are the MODEL before the graded task
+# but are not admitted (IM-7, IM-8) and their bars are unchosen; FABLE section 2 names Blues Riff alone as this
+# ability's chosen music. They join this record after their own intake.
+ability: A7a.1
+learner_cannot: "Keep a shuffle or boogie left hand going through the twelve bars while the right hand plays something of its own. The written left hand and the written held-seventh right hand are practised (blues.4-6), but nothing between blues.5 and blues.9 rehearses a free right hand over the learner's own left hand; the Lab's bed and Duet always supply the bass (ABILITY-MAP A7a.1, Evidence). blues.8's ladder now asks for it, but its one measured step counts toward no rung, and no right-hand riff carried through a whole chorus is modelled before the improvised steps."
+independent_target: "Chooses a key and a left-hand figure, counts in alone, and plays one chorus of their own right hand over their own left hand with nothing on the screen, the left hand never stopping."
+steps:
+  - action: "Reads the twelve-bar plan as the C shuffle prints it (C7 C7 C7 C7 F7 F7 C7 C7 G7 F7 C7 G7), the ladder from the measured left hand to a chorus with nothing on the screen, what a right-hand fragment is (two or three blues-scale notes, then rest), and what a riff is: Blues Riff in C carries one right-hand idea through all twelve bars over roots held in the left. The lesson states the riff's B natural as written and does not offer it as a blue note."
+    content: {kind: explanation, ref: content/lessons/blues.8.md}
+    tool: lesson
+    scaffold: [written definition, notation, chord symbols, bars named in the lesson]
+    feedback: "None."
+    recorded: "Nothing (MODE-SHEET section 31)."
+    cannot_establish: "That the learner read, understood or can do what the page says (MODE-SHEET section 31)."
+    removes: []
+
+  - action: "Plays the C shuffle's left hand alone in Keep tempo, choosing L, while the app plays the right hand's held sevenths."
+    content: {kind: piece, ref: exercise.blues.twelve-bar-shuffle.c}
+    tool: Duet
+    scaffold: [notation, cursor, click, count-in, app plays the other hand]
+    feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars, for the chosen hand (MODE-SHEET section 2, section 13)."
+    recorded: "An R1 row with hands.appPlayed; no requirement reads it; the evidence condition both-hands reads hands.played only (MODE-SHEET section 13)."
+    cannot_establish: "Hands-together skill (the other hand is the app's); independence (MODE-SHEET section 13)."
+    removes: [written definition, chord symbols, bars named in the lesson]
+
+  - action: "Plays the same left hand in Keep tempo with Metronome volume set to 0 in Settings: the cursor still moves and the app still measures, but no click sounds."
+    content: {kind: piece, ref: exercise.blues.twelve-bar-shuffle.c}
+    tool: Keep tempo
+    scaffold: [notation, cursor, count-in, app plays the other hand]
+    feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars (MODE-SHEET section 2)."
+    recorded: "An R1 row with tempoMeasured true, accuracy and timing (MODE-SHEET section 2)."
+    cannot_establish: "That the learner holds a steady pulse unaided: the clock is the app's and the cursor still moves (MODE-SHEET section 2)."
+    removes: [click]
+
+  - action: "Plays the same left hand with Blind on and the keys guide off, the notation hidden and the click still at 0."
+    content: {kind: piece, ref: exercise.blues.twelve-bar-shuffle.c}
+    tool: Blind
+    scaffold: [count-in, app plays the other hand]
+    feedback: "The same as a sighted run in the same mode (MODE-SHEET section 10)."
+    recorded: "An ordinary R1 row; there is no blind field on the row (MODE-SHEET section 10)."
+    cannot_establish: "That a run was blind, or that the learner did not follow the keys if the guide was left on; memory of the form (MODE-SHEET section 10)."
+    removes: [notation, cursor]
+
+  - action: "Plays the C shuffle with both hands as written in Keep tempo, the root-fifth-sixth-fifth figure under the held sevenths. This is the counted run, proposed: named by blues.8's requirement once the shuffle is placed there."
+    content: {kind: piece, ref: exercise.blues.twelve-bar-shuffle.c}
+    tool: Keep tempo
+    scaffold: [notation, cursor, click, count-in]
+    feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars (MODE-SHEET section 2)."
+    recorded: "An R1 row with tempoMeasured true, accuracy and timing; a rung counts it only when opened from that rung (MODE-SHEET section 2, section 0 R3)."
+    cannot_establish: "An unaided pulse; fine rhythm below the 150 ms window (MODE-SHEET section 2); a right hand of the learner's own: both hands are written."
+    removes: [app plays the other hand]
+
+  - action: "Opens the Accompaniment lab's Blues preset in C, Jam it on Hold the chords, and plays right-hand fragments only, two or three blues-scale notes and then rest, in bars 1 to 4 and then through the whole form, while the app plays the bass, the drums and the bar's chord; the left hand rests."
+    content: {kind: generated, ref: app/src/engine/sightReading.ts}
+    tool: Hold the chords
+    scaffold: [chord symbols, click, bass and drums supplied, app plays the chords, chord tones lit]
+    feedback: "A one-line count per time round of the notes in the blues scale, then dropped (MODE-SHEET section 7b)."
+    recorded: "Nothing is stored; with the bed on, notes are collected per time round and a count is shown, then dropped (MODE-SHEET section 7b)."
+    cannot_establish: "Rhythm, entry, form awareness, voice-leading, or that the learner chose the notes: the chord tones are lit, and the counts are by pitch class only, any octave, any time (MODE-SHEET section 7b). The count is not a judgement of the fragment."
+    removes: [notation, cursor, count-in]
+
+  - action: "Hears Blues Riff in C, the re-staffed edition: one right-hand riff through all twelve bars over roots held in the left hand."
+    content: {kind: piece, ref: Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi}
+    tool: Hear it
+    scaffold: [app plays it, notation, cursor]
+    feedback: "The learner's own listening."
+    recorded: "No session row; the hearing is noted in the encounter history (MODE-SHEET section 3)."
+    cannot_establish: "Anything about the learner (MODE-SHEET section 3)."
+    removes: [chord symbols, click, bass and drums supplied, app plays the chords, chord tones lit]
+
+  - action: "Plays the riff in the right hand in Keep tempo, choosing R, while the app plays the held roots."
+    content: {kind: piece, ref: Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi}
+    tool: Duet
+    scaffold: [notation, cursor, click, count-in, app plays the other hand]
+    feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars, for the chosen hand (MODE-SHEET section 2, section 13)."
+    recorded: "An R1 row with hands.appPlayed; no requirement reads it; the evidence condition both-hands reads hands.played only (MODE-SHEET section 13)."
+    cannot_establish: "Hands-together skill (the other hand is the app's); independence (MODE-SHEET section 13)."
+    removes: [app plays it]
+
+  - action: "Plays Blues Riff in C with both hands in Keep tempo, the riff over the held roots, all twelve bars."
+    content: {kind: piece, ref: Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi}
+    tool: Keep tempo
+    scaffold: [notation, cursor, click, count-in]
+    feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars (MODE-SHEET section 2)."
+    recorded: "An R1 row with tempoMeasured true, accuracy and timing; counted by nothing, because the proposed requirement names the shuffle alone (MODE-SHEET section 2, section 0 R3)."
+    cannot_establish: "An unaided pulse; fine rhythm below the 150 ms window (MODE-SHEET section 2); the learner's own left-hand figure, since the roots are held."
+    removes: [app plays the other hand]
+
+  - action: "Opens the C shuffle as a Chord chart with Comp and Bass + drums off, plays the shuffle's left hand from memory and the riff in the right from memory, through the twelve bars; the lesson says what changes in bar 12, where the chart prints G7 and the riff stays on its own ending."
+    content: {kind: piece, ref: exercise.blues.twelve-bar-shuffle.c}
+    tool: Chord chart
+    scaffold: [chord symbols, click, count-in, bar tracker, written riff]
+    feedback: "The learner's own listening; the live bar cell, which a left-hand figure and a one-note riff do not satisfy, so the lesson says to ignore it (MODE-SHEET section 15)."
+    recorded: "Nothing; the only judgement is the live cell over what is held at that instant (MODE-SHEET section 15)."
+    cannot_establish: "Voicing, rhythm, time-keeping against the click, form awareness over a chorus, or anything over time; nothing is stored (MODE-SHEET section 15)."
+    removes: [notation, cursor]
+
+  - action: "On the same chart, keeps the left hand through all twelve bars and plays right-hand fragments of their own in bars 1 to 4 only, then rests until bar 1 comes round (blues.8's ladder step 2)."
+    content: {kind: piece, ref: exercise.blues.twelve-bar-shuffle.c}
+    tool: Chord chart
+    scaffold: [chord symbols, click, count-in, bar tracker, bars named in the lesson]
+    feedback: "The learner's own listening; the cell is ignored (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "As the step before; the right hand's ideas and the left hand's steadiness are self-checked."
+    removes: [written riff]
+
+  - action: "The same, the right hand answering itself in bars 9 to 12 too (blues.8's ladder step 3)."
+    content: {kind: piece, ref: exercise.blues.twelve-bar-shuffle.c}
+    tool: Chord chart
+    scaffold: [chord symbols, click, count-in, bar tracker, bars named in the lesson]
+    feedback: "The learner's own listening (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "As the step before."
+    removes: []
+    no_removal_reason: "The task widens under the same help (bars 9 to 12 added); the named bars go at the next step."
+
+  - action: "A right hand in every bar, still in short pieces with space around them, over the left hand; then the same on the F and G shuffles' charts (blues.8's ladder step 4)."
+    content: {kind: piece, ref: exercise.blues.twelve-bar-shuffle.c}
+    tool: Chord chart
+    scaffold: [chord symbols, click, count-in, bar tracker]
+    feedback: "The learner's own listening (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "As the step before; another key on the chart is the learner's own transposition of the left hand, self-checked."
+    removes: [bars named in the lesson]
+
+  - action: "The whole form on the chart with Metronome volume 0: the bar tracker only (blues.8's ladder step 5)."
+    content: {kind: piece, ref: exercise.blues.twelve-bar-shuffle.c}
+    tool: Chord chart
+    scaffold: [chord symbols, count-in, bar tracker]
+    feedback: "The learner's own listening (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "As the step before."
+    removes: [click]
+
+  - action: "Closes the chart, chooses the key and the left-hand figure (the shuffle or a Stage 6 boogie), counts in alone and plays one chorus of their own right hand over their own left hand with nothing on the screen; records it on a phone and listens once (blues.8's ladder step 6, blues.9's daily chorus)."
+    content: {kind: explanation, ref: content/lessons/blues.8.md}
+    tool: lesson
+    scaffold: []
+    feedback: "The learner's own listening to the recording."
+    recorded: "Nothing (MODE-SHEET section 31); blues.8's chorus line is an unjudged requirement, shown and never counted (MODE-SHEET section 32 claim 7)."
+    cannot_establish: "Anything about the chorus: the left hand's steadiness, the right hand's ideas and whether it sounds like the blues are self-checked; no one in this process can judge the last (unverified as music)."
+    removes: [chord symbols, count-in, bar tracker]
+
+failure_routes:
+  - observed: "The left hand slips as the right hand comes in."
+    next: "Drop back one step; if the left hand slips even alone, back to step 2 at a lower tempo and read the hot-spot bars; then bars 1 to 4 only again (RECONCILIATION A7a.1 row D)."
+  - observed: "The left hand drifts once the click goes (steps 3, 4, 14)."
+    next: "Back to step 2 with the click; Loop bars 9 to 12 (G7 F7 C7 G7, where the figure moves most) in Keep tempo; then step 3 again at a lower tempo."
+  - observed: "The riff's notes are not found (bars 9 and 10 run in sixteenths)."
+    next: "Wait for me on the riff, right hand alone; Loop bars 9 and 10 in Wait for me, then in Keep tempo at a lower tempo; then step 8 again."
+  - observed: "The right hand fills every beat, or stops the left hand to think."
+    next: "Back to step 6 (Hold the chords), fragments in bars 1 to 4 only, resting until bar 1 comes round; then step 11 again."
+  - observed: "The form is lost on the chart: the learner cannot say which bar they are in."
+    next: "Back to step 11 with the click and the tracker; count the bars aloud; then the named bars again before the whole form."
+  - observed: "The learner cannot tell whether the chorus sounds like the blues."
+    next: "No app tool judges it: listen to the recording against Blues Riff in C (step 7) once; it stays self-checked (unverified as music)."
+
+independence_test: "Without the original scaffold, the learner chooses a key and a left-hand figure (the shuffle or a Stage 6 boogie), counts in alone, and plays one chorus of their own right hand over their own left hand with nothing on the screen, recording it on a phone and listening once (blues.8's ladder step 6; blues.9's daily chorus). The app observes nothing of it; blues.8's chorus line is unjudged. The left hand's steadiness, the right hand's ideas and the form are self-checked."
+
+evidence:
+  updates:
+    - "Proposed, a reviewer decision with the placement: one Keep tempo run of exercise.blues.twelve-bar-shuffle.c, both hands as written, at the pass pair, opened from blues.8, the requirement's items naming it. Today blues.8 counts one run of any of its five exercises, none of which is the shuffle, so no blues.8 requirement measures this ability's CONTROL. Today such a requirement would also accept step 2's one-hand Duet run (rungState reads no hands; header)."
+  self_checked:
+    - "The left hand's steadiness without the click and without the page (a Blind run is not recorded as one)."
+    - "The riff over the learner's own left hand."
+    - "The right hand's fragments on the chart, at every step of the ladder."
+    - "The chorus with nothing on the screen, and the independence test."
+  never_credits:
+    - "Any Hold the chords count: it is the share of notes in the blues scale, unstored, with the chord tones lit."
+    - "The Chord chart's live cell, yes or no, in any bar."
+    - "A Duet run of one hand standing for both hands."
+    - "A Blind run as proof of memory: the row does not record that it was blind."
+    - "Any Hear it encounter."
+    - "A Keep tempo run of Blues Riff in C as an improvised right hand: the riff is written."
+    - "A run of any other blues.8 exercise (a walking bass, a boogie, a comping figure, the extended-chord drill, the transposition drill) standing for this ability."
+    - "blues.8's unjudged chorus line, shown on the page."
+
+generated:
+  - family: app/src/engine/sightReading.ts
+    job: CONTROL
+    presented_as: drill
+    contract: "docs/prompts/runs/curriculum-review-2026-10-05/MODE-SHEET.md#7b-jam-it-bed-only--hold-the-chords--play-the-tune"
+    checker: app/tests/unit/accompanimentLab.test.ts
+    musical_properties:
+      the form the Blues preset's bed plays: "BLUES_MAJOR (sightReading.ts:2220), I7 I7 I7 I7 IV7 IV7 I7 I7 V7 IV7 I7 V7, read against the C shuffle's printed plan by music21 (2026-10-07): the same twelve chords."
+      the scale Hold the chords counts against: "MODE-SHEET section 7b: the blues scale for the 12-bar form; which pitch classes that is in C: UNKNOWN until read in code."
+
+status: draft

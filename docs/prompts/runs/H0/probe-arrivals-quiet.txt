@@ -1,0 +1,48 @@
+
+Running 15 tests using 2 workers
+
+(node:49212) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:48452) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ARRIVAL {"what":"midi-boot","first":{"[data-screen=\"midi\"]":115},"gotoMs":115,"h1Ms":160,"afterGotoMs":45,"mountedMs":185,"disabledAtMount":true,"errorAtMount":true,"overOldBudget":false}
+  ok  1 tests\e2e\h0-probe-arrivals.spec.ts:47:1 › MIDI screen: cold boot to the mounted screen (committed budget: 5 s expect default) (358ms)
+ARRIVAL {"what":"midi-reload","reloadMs":44,"mountedMs":80,"afterReloadMs":36,"overOldBudget":false}
+  ok  2 tests\e2e\h0-probe-arrivals.spec.ts:70:1 › MIDI screen: reload to the mounted screen (committed budget: the click, then 5 s) (390ms)
+ARRIVAL {"what":"library-no-sw","first":{"#library-list .list-row":243},"gotoMs":133,"rowMs":331,"afterGotoMs":198,"count":"2061 of 2061 items","status":"","sw":{"controlled":false,"installing":false,"active":null},"pageResourceEntries":16,"catalog":[{"url":"http://localhost:4183/PianoProject/content/catalog.json","ms":84.53,"timing":{"startTime":1790498406385.23,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.153,"responseStart":10.338,"responseEnd":84.53},"failure":null}],"overOldBudget":false}
+ARRIVAL {"what":"library-sw","first":{"#library-list .list-row":246},"gotoMs":115,"rowMs":355,"afterGotoMs":240,"count":"2061 of 2061 items","status":"","sw":{"controlled":false,"installing":true,"active":null},"pageResourceEntries":16,"catalog":[{"url":"http://localhost:4183/PianoProject/content/catalog.json","ms":104.678,"timing":{"startTime":1790498406345.757,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.127,"responseStart":7.629,"responseEnd":104.678},"failure":null}],"overOldBudget":false}
+  ok  4 tests\e2e\h0-probe-arrivals.spec.ts:127:5 › the Library as the Duet door opens it (committed budget: 60 s for the first row) › with the service worker blocked › the same arrival (468ms)
+  ok  3 tests\e2e\h0-probe-arrivals.spec.ts:121:3 › the Library as the Duet door opens it (committed budget: 60 s for the first row) › with the service worker, as the suite runs (500ms)
+(node:39804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ARRIVAL {"what":"midi-boot","first":{"[data-screen=\"midi\"]":107},"gotoMs":107,"h1Ms":150,"afterGotoMs":43,"mountedMs":167,"disabledAtMount":true,"errorAtMount":true,"overOldBudget":false}
+  ok  6 tests\e2e\h0-probe-arrivals.spec.ts:47:1 › MIDI screen: cold boot to the mounted screen (committed budget: 5 s expect default) (327ms)
+ARRIVAL {"what":"midi-reload","reloadMs":119,"mountedMs":153,"afterReloadMs":34,"overOldBudget":false}
+  ok  7 tests\e2e\h0-probe-arrivals.spec.ts:70:1 › MIDI screen: reload to the mounted screen (committed budget: the click, then 5 s) (412ms)
+ARRIVAL {"what":"density-900","first":{"[data-screen=\"score\"]":280,"[data-screen=\"score\"][data-mode]":885,".score-view[data-measured]":1076,".score-view[data-settled]":1087},"firstSettledAfterSleepEnds":false,"gotoMs":83,"visibleMs":323,"modeMs":950,"settledMs":1138,"measuredMs":1147,"settledAfterSleepEnds":false,"overTestBudget":false}
+  ok  5 tests\e2e\h0-probe-arrivals.spec.ts:133:1 › the density case at 900 px: arrival, mode, and the fit settled (committed: 60 s caps in a 30 s test, then 2.5 s) (1.3s)
+ARRIVAL {"what":"library-sw","first":{"#library-list .list-row":224},"gotoMs":103,"rowMs":314,"afterGotoMs":211,"count":"2061 of 2061 items","status":"","sw":{"controlled":false,"installing":true,"active":null},"pageResourceEntries":16,"catalog":[{"url":"http://localhost:4183/PianoProject/content/catalog.json","ms":94.845,"timing":{"startTime":1790498408042.542,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.26,"responseStart":4.59,"responseEnd":94.845},"failure":null}],"overOldBudget":false}
+  ok  8 tests\e2e\h0-probe-arrivals.spec.ts:121:3 › the Library as the Duet door opens it (committed budget: 60 s for the first row) › with the service worker, as the suite runs (454ms)
+(node:50036) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ARRIVAL {"what":"library-no-sw","first":{"#library-list .list-row":213},"gotoMs":97,"rowMs":305,"afterGotoMs":208,"count":"2061 of 2061 items","status":"","sw":{"controlled":false,"installing":false,"active":null},"pageResourceEntries":16,"catalog":[{"url":"http://localhost:4183/PianoProject/content/catalog.json","ms":90.601,"timing":{"startTime":1790498408738.591,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.181,"responseStart":4.845,"responseEnd":90.601},"failure":null}],"overOldBudget":false}
+  ok 10 tests\e2e\h0-probe-arrivals.spec.ts:127:5 › the Library as the Duet door opens it (committed budget: 60 s for the first row) › with the service worker blocked › the same arrival (491ms)
+(node:32164) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ARRIVAL {"what":"density-900","first":{"[data-screen=\"score\"]":292,"[data-screen=\"score\"][data-mode]":530,".score-view[data-measured]":1079,".score-view[data-settled]":1089},"firstSettledAfterSleepEnds":false,"gotoMs":88,"visibleMs":341,"modeMs":580,"settledMs":1498,"measuredMs":1524,"settledAfterSleepEnds":false,"overTestBudget":false}
+  ok  9 tests\e2e\h0-probe-arrivals.spec.ts:133:1 › the density case at 900 px: arrival, mode, and the fit settled (committed: 60 s caps in a 30 s test, then 2.5 s) (1.7s)
+ARRIVAL {"what":"midi-boot","first":{"[data-screen=\"midi\"]":140},"gotoMs":140,"h1Ms":182,"afterGotoMs":42,"mountedMs":202,"disabledAtMount":true,"errorAtMount":true,"overOldBudget":false}
+  ok 11 tests\e2e\h0-probe-arrivals.spec.ts:47:1 › MIDI screen: cold boot to the mounted screen (committed budget: 5 s expect default) (363ms)
+(node:46260) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ARRIVAL {"what":"library-sw","first":{"#library-list .list-row":206},"gotoMs":92,"rowMs":303,"afterGotoMs":211,"count":"2061 of 2061 items","status":"","sw":{"controlled":false,"installing":true,"active":null},"pageResourceEntries":16,"catalog":[{"url":"http://localhost:4183/PianoProject/content/catalog.json","ms":87.759,"timing":{"startTime":1790498410358.74,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.199,"responseStart":5.513,"responseEnd":87.759},"failure":null}],"overOldBudget":false}
+  ok 12 tests\e2e\h0-probe-arrivals.spec.ts:121:3 › the Library as the Duet door opens it (committed budget: 60 s for the first row) › with the service worker, as the suite runs (461ms)
+ARRIVAL {"what":"midi-reload","reloadMs":33,"mountedMs":67,"afterReloadMs":34,"overOldBudget":false}
+  ok 13 tests\e2e\h0-probe-arrivals.spec.ts:70:1 › MIDI screen: reload to the mounted screen (committed budget: the click, then 5 s) (356ms)
+ARRIVAL {"what":"library-no-sw","first":{"#library-list .list-row":198},"gotoMs":109,"rowMs":289,"afterGotoMs":180,"count":"2061 of 2061 items","status":"","sw":{"controlled":false,"installing":false,"active":null},"pageResourceEntries":16,"catalog":[{"url":"http://localhost:4183/PianoProject/content/catalog.json","ms":48.91,"timing":{"startTime":1790498410830.6528,"domainLookupStart":-1,"domainLookupEnd":-1,"connectStart":-1,"secureConnectionStart":-1,"connectEnd":-1,"requestStart":0.149,"responseStart":3.665,"responseEnd":48.91},"failure":null}],"overOldBudget":false}
+  ok 14 tests\e2e\h0-probe-arrivals.spec.ts:127:5 › the Library as the Duet door opens it (committed budget: 60 s for the first row) › with the service worker blocked › the same arrival (430ms)
+ARRIVAL {"what":"density-900","first":{"[data-screen=\"score\"]":279,"[data-screen=\"score\"][data-mode]":512,".score-view[data-measured]":1070,".score-view[data-settled]":1079},"firstSettledAfterSleepEnds":false,"gotoMs":86,"visibleMs":321,"modeMs":553,"settledMs":1446,"measuredMs":1454,"settledAfterSleepEnds":false,"overTestBudget":false}
+  ok 15 tests\e2e\h0-probe-arrivals.spec.ts:133:1 › the density case at 900 px: arrival, mode, and the fit settled (committed: 60 s caps in a 30 s test, then 2.5 s) (1.6s)
+
+  15 passed (7.5s)
+exit=0

@@ -1,0 +1,27 @@
+﻿ ❯ tests/unit/positionedHarmony.test.ts (11 tests | 11 failed) 30ms
+     × 1. Blue Bossa bar 16, both identities: Dø7 at 0, G7 at 2; segments Dø7 [0, 2) and G7 [2, 4) 7ms
+     × 2. Insensatez bar 22: Bø7 at 0, E7 (add ♭9) at 2, the second half of a 4/4 bar 2ms
+     × 3. a symbol at the bar’s start is at 0, before or after a note-less attributes block 0ms
+     × 4. a bar with no new symbol carries the previous chord; a late first symbol opens on a carried segment 0ms
+     × 5. <backup> and several voices cannot move a harmony; grace and <chord/> notes do not, <forward> does 0ms
+       × every bar that is one written symbol at 0 shows today’s chartBars entry; the symbol list is today’s plus an offset 11ms
+     × a harmony’s <offset> moves it whatever its sound attribute; a direction’s rule is the tempo reader’s own 6ms
+     × keeps every event at a different offset, an identical restatement included 0ms
+     × merges only an exact duplicate at one offset, and counts it; two different harmonies there are a conflict 0ms
+     × bar length: an ordinary bar is the time signature’s, an explicit pickup its notated length, a mismatch reported 0ms
+     × a position outside its bar gets no segment and is never clamped: it is what the bar at that barline carries 0ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+TypeError: readHarmony is not a function
+TypeError: readHarmony is not a function
+TypeError: readHarmony is not a function
+TypeError: readHarmony is not a function
+TypeError: readHarmony is not a function
+TypeError: readHarmony is not a function
+AssertionError: expected { Object (none, no, ...) } to deeply equal { Object (none, no, ...) }
+TypeError: readHarmony is not a function
+TypeError: readHarmony is not a function
+TypeError: readHarmony is not a function
+TypeError: readHarmony is not a function
+ Test Files  1 failed (1)
+      Tests  11 failed (11)
+   Duration  215ms (transform 45%, tests 29%, import 23%, worker 3%)

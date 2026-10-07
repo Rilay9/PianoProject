@@ -1,0 +1,47 @@
+
+Running 1 test using 1 worker
+
+  x  1 tests\e2e\score.window-rule.spec.ts:890:1 › rows the window grants never overlap: Ode to Joy at 360 x 780 with the piano, fresh, on reloads and through a run (U110) (11.6s)
+
+
+  1) tests\e2e\score.window-rule.spec.ts:890:1 › rows the window grants never overlap: Ode to Joy at 360 x 780 with the piano, fresh, on reloads and through a run (U110) 
+
+    Error: fresh — a row granted and taken back while the stage settled: rows 2 → 3 → 2 → 3, settled at 2
+    reload 1 — a row granted and taken back while the stage settled: rows 2 → 3 → 2 → 3 → 2 → 3, settled at 2
+    reload 2 — a row granted and taken back while the stage settled: rows 2 → 3 → 2 → 3 → 2 → 3, settled at 2
+    reload 3 — a row granted and taken back while the stage settled: rows 2 → 3 → 2 → 3 → 2 → 3, settled at 2
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 6
+
+    - Array []
+    + Array [
+    +   "fresh — a row granted and taken back while the stage settled: rows 2 → 3 → 2 → 3, settled at 2",
+    +   "reload 1 — a row granted and taken back while the stage settled: rows 2 → 3 → 2 → 3 → 2 → 3, settled at 2",
+    +   "reload 2 — a row granted and taken back while the stage settled: rows 2 → 3 → 2 → 3 → 2 → 3, settled at 2",
+    +   "reload 3 — a row granted and taken back while the stage settled: rows 2 → 3 → 2 → 3 → 2 → 3, settled at 2",
+    + ]
+
+      933 |     scales.push(Math.min(...glass.sheets.map((s) => s.scale).filter((s) => s > 0)));
+      934 |   }
+    > 935 |   expect(faults, faults.join('\n')).toEqual([]);
+          |                                     ^
+      936 |   // A fresh load and a reload are the same window: the same shape at one size.
+      937 |   expect(new Set(shapes).size, `the shape on each load: ${shapes.join(', ')}`).toBe(1);
+      938 |   expect((Math.max(...scales) - Math.min(...scales)) / Math.min(...scales), `the size on each load: ${scales.join(', ')}`).toBeLessThan(
+        at <worktree>\app\tests\e2e\score.window-rule.spec.ts:935:37
+
+    Error Context: build\u110\test-results\score.window-rule-rows-the-dc87b-ads-and-through-a-run-U110-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\u110\test-results\score.window-rule-rows-the-dc87b-ads-and-through-a-run-U110-\trace.zip
+    Usage:
+
+        npx playwright show-trace build\u110\test-results\score.window-rule-rows-the-dc87b-ads-and-through-a-run-U110-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\score.window-rule.spec.ts:890:1 › rows the window grants never overlap: Ode to Joy at 360 x 780 with the piano, fresh, on reloads and through a run (U110) 

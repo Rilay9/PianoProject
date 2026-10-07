@@ -5,7 +5,7 @@
 // pipeline rather than inspecting XML strings.
 import { describe, expect, it } from 'vitest';
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
-import { generateSightReading, makeRng, type SightReadingLevel } from '../../src/engine/sightReading';
+import { generateSightReading, makeRng, SIGHT_READING_IN_FORCE, type SightReadingLevel } from '../../src/engine/sightReading';
 import { durationToType, midiToPitch, writeMusicXml, DIVISIONS } from '../../src/engine/musicXmlWriter';
 import { extractScoreModel } from '../../src/score/extractScoreModel';
 import { prepareSession } from '../../src/engine/prepareSession';
@@ -17,7 +17,7 @@ async function toModel(musicXml: string, id: string) {
   document.body.appendChild(container);
   const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
   await osmd.load(musicXml);
-  const model = extractScoreModel(osmd, { id });
+  const model = extractScoreModel(osmd, { id, musicXml });
   container.remove();
   return model;
 }
@@ -31,6 +31,15 @@ const LEVELS: SightReadingLevel[] = [1, 2, 3, 4, 5, 6, 7];
  * music must never do and this says what it *is*: any change to the walk, the
  * harmony, the rhythm palette or the chord-tone rule moves these numbers, and
  * that should be a line in a diff rather than something noticed months later.
+ *
+ * Revised (D1a, the flip): `GOLDEN` is version 1's, pinned by naming the
+ * version, and `GOLDEN_V2` is version 2's, recorded from it when it went into
+ * force. Old assumption: a phrase with no version named is version 1's — true
+ * until `SIGHT_READING_IN_FORCE` became 2. The diff, read (Entry 97): level 5
+ * leaves version 1's four repeated A5s for an arch from C4 to A5 and back to
+ * C4; level 6 climbs to C6 and strikes it six times running before it falls to
+ * C4, where version 1 wandered round G3 and C4 and ended on E4; level 7 moves
+ * more by step, round C4–F5, and ends on C4 where version 1 ended on D4.
  */
 const GOLDEN = {
   level5: [60, 69, 72, 69, 71, 76, 81, 81, 81, 81, 72, 71, 62, 60],
@@ -39,6 +48,13 @@ const GOLDEN = {
     60, 71, 74, 64, 57, 64, 65, 76, 79, 81, 83, 86, 86, 83, 74, 83, 84, 86, 76, 77, 79, 69,
     76, 83, 72, 62,
   ],
+} as const;
+
+/** Version 2's melodies at the same seed (D1a): the phrase the app writes since the flip. */
+const GOLDEN_V2 = {
+  level5: [60, 67, 69, 77, 81, 74, 76, 74, 74, 65, 60],
+  level6: [60, 65, 72, 76, 76, 81, 77, 84, 84, 84, 84, 84, 84, 77, 72, 64, 60],
+  level7: [60, 60, 62, 65, 69, 72, 77, 71, 64, 72, 71, 69, 64, 62, 64, 57, 60, 59, 64, 55, 55, 62, 55, 60],
 } as const;
 
 describe('seeded PRNG', () => {
@@ -322,12 +338,19 @@ describe('levels 5-7 (P12b: the replan’s rules, not a Markov table)', () => {
   it('the golden melodies (change these only on purpose)', () => {
     // Pinned so a change to the walk, the harmony or the rhythm palette is
     // visible in a diff rather than only in how the exercise feels.
-    expect(generateSightReading({ level: 5, seed: 2026, bars: 4 }).melody)
+    expect(generateSightReading({ level: 5, seed: 2026, bars: 4, version: 1 }).melody)
       .toEqual(GOLDEN.level5);
-    expect(generateSightReading({ level: 6, seed: 2026, bars: 4 }).melody)
+    expect(generateSightReading({ level: 6, seed: 2026, bars: 4, version: 1 }).melody)
       .toEqual(GOLDEN.level6);
-    expect(generateSightReading({ level: 7, seed: 2026, bars: 4 }).melody)
+    expect(generateSightReading({ level: 7, seed: 2026, bars: 4, version: 1 }).melody)
       .toEqual(GOLDEN.level7);
+  });
+
+  it('version 2’s golden melodies, the ones the app writes with no version named (change these only on purpose)', () => {
+    expect(SIGHT_READING_IN_FORCE).toBe(2);
+    expect(generateSightReading({ level: 5, seed: 2026, bars: 4 }).melody).toEqual(GOLDEN_V2.level5);
+    expect(generateSightReading({ level: 6, seed: 2026, bars: 4 }).melody).toEqual(GOLDEN_V2.level6);
+    expect(generateSightReading({ level: 7, seed: 2026, bars: 4 }).melody).toEqual(GOLDEN_V2.level7);
   });
 });
 

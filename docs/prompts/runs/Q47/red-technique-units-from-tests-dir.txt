@@ -1,0 +1,50 @@
+$ python -m unittest test_technique_units -v
+# cwd: /c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693/tools/content/tests
+# CI=<unset>
+
+test_every_rung_says_how_long_it_takes (test_technique_units.TestAgainstTheCurriculumAsItStands.test_every_rung_says_how_long_it_takes) ... FAIL
+test_every_technique_rung_still_has_its_band_and_its_finder (test_technique_units.TestAgainstTheCurriculumAsItStands.test_every_technique_rung_still_has_its_band_and_its_finder) ... FAIL
+test_running_it_again_changes_nothing (test_technique_units.TestAgainstTheCurriculumAsItStands.test_running_it_again_changes_nothing) ... FAIL
+test_the_ladder_is_chained (test_technique_units.TestAgainstTheCurriculumAsItStands.test_the_ladder_is_chained) ... FAIL
+test_a_field_the_tool_never_writes_survives (test_technique_units.TestMergeKeepsWhatItDoesNotOwn.test_a_field_the_tool_never_writes_survives) ... ok
+test_a_rung_that_already_names_its_exercises_keeps_them (test_technique_units.TestMergeKeepsWhatItDoesNotOwn.test_a_rung_that_already_names_its_exercises_keeps_them) ... ok
+test_a_rung_with_no_exercises_yet_gets_them (test_technique_units.TestMergeKeepsWhatItDoesNotOwn.test_a_rung_with_no_exercises_yet_gets_them) ... ok
+
+======================================================================
+FAIL: test_every_rung_says_how_long_it_takes (test_technique_units.TestAgainstTheCurriculumAsItStands.test_every_rung_says_how_long_it_takes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\content\tests\test_technique_units.py", line 89, in setUp
+    self.fail(
+AssertionError: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\content\tests\build\catalog.generated.json is missing, and these tests read the generated catalogue: run `python tools/content/build.py` first (CI: the step 'Build content', before 'Content pipeline tests')
+
+======================================================================
+FAIL: test_every_technique_rung_still_has_its_band_and_its_finder (test_technique_units.TestAgainstTheCurriculumAsItStands.test_every_technique_rung_still_has_its_band_and_its_finder)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\content\tests\test_technique_units.py", line 89, in setUp
+    self.fail(
+AssertionError: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\content\tests\build\catalog.generated.json is missing, and these tests read the generated catalogue: run `python tools/content/build.py` first (CI: the step 'Build content', before 'Content pipeline tests')
+
+======================================================================
+FAIL: test_running_it_again_changes_nothing (test_technique_units.TestAgainstTheCurriculumAsItStands.test_running_it_again_changes_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\content\tests\test_technique_units.py", line 89, in setUp
+    self.fail(
+AssertionError: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\content\tests\build\catalog.generated.json is missing, and these tests read the generated catalogue: run `python tools/content/build.py` first (CI: the step 'Build content', before 'Content pipeline tests')
+
+======================================================================
+FAIL: test_the_ladder_is_chained (test_technique_units.TestAgainstTheCurriculumAsItStands.test_the_ladder_is_chained)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\content\tests\test_technique_units.py", line 89, in setUp
+    self.fail(
+AssertionError: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\content\tests\build\catalog.generated.json is missing, and these tests read the generated catalogue: run `python tools/content/build.py` first (CI: the step 'Build content', before 'Content pipeline tests')
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.003s
+
+FAILED (failures=4)
+
+# exit code: 1

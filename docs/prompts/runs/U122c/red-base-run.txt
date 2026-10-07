@@ -1,0 +1,173 @@
+The red-first: the base (`af18a3ae`) app built from the base sources (`scripts-base-run.py`), and this lane's final walk spec run against it (subset and the suite cases).
+
+Running 21 tests using 2 workers
+  x   1 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 780x360 100% stack hcb (46.1s)
+  x   2 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 568x320 100% stack hcb (46.0s)
+  x   3 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 342x740 100% stack hcb (46.1s)
+  x   4 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 360x780 100% stack hcb (46.1s)
+  x   5 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 768x1024 100% stack hcb (46.1s)
+  x   6 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 1024x768 100% stack hcb (46.2s)
+  x   8 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 1024x1366 100% stack hcb (46.2s)
+  x   7 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 1366x1024 100% stack hcb (46.2s)
+  x  10 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 568x320 115% wider moon (23.1s)
+  x   9 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 568x320 115% stack hcb (46.2s)
+  x  11 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 780x360 115% stack moon (22.5s)
+  x  12 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 342x740 115% wider moon (22.9s)
+  x  14 tests\e2e\score.task-chrome.spec.ts:661:3 › U120: a refusal at rest stays in the window, 568x320 115% stack hcb (5.8s)
+  x  15 tests\e2e\score.task-chrome.spec.ts:661:3 › U120: a refusal at rest stays in the window, 568x320 115% wider moon (8.1s)
+  x  13 tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 568x320 90% stack hcb (46.0s)
+  x  16 tests\e2e\score.task-chrome.spec.ts:661:3 › U120: a refusal at rest stays in the window, 667x375 115% wider moon (8.1s)
+  x  18 tests\e2e\score.task-chrome.spec.ts:740:3 › a demonstration folds to Stop, and a tap on the music peeks, at 568x320 (1.7s)
+  x  17 tests\e2e\score.task-chrome.spec.ts:713:1 › U121: the selected mode is whole on the narrowest sideways row (4.8s)
+  x  20 tests\e2e\score.task-chrome.spec.ts:740:3 › a demonstration folds to Stop, and a tap on the music peeks, at 1366x1024 (1.8s)
+  x  19 tests\e2e\score.task-chrome.spec.ts:740:3 › a demonstration folds to Stop, and a tap on the music peeks, at 342x740 (1.8s)
+  x  21 tests\e2e\score.task-chrome.spec.ts:775:1 › the time away, sideways: the top line says it whole beside bar n / m (568 × 320, 115 %, wider face) (16.9s)
+  1) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 568x320 100% stack hcb 
+    Error: rest: the selected mode cut (Keep tempo)
+    rest: handsR drawn under the 40-px floor
+    rest: handsL drawn under the 40-px floor
+    count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+  2) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 780x360 100% stack hcb 
+    Error: rest: the selected mode cut (Keep tempo)
+    rest: handsR drawn under the 40-px floor
+    rest: handsL drawn under the 40-px floor
+    count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+  3) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 342x740 100% stack hcb 
+    Error: rest: the selected mode cut (Tempo)
+    rest: handsR drawn under the 40-px floor
+    rest: handsL drawn under the 40-px floor
+    count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+  4) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 360x780 100% stack hcb 
+    Error: rest: handsR drawn under the 40-px floor
+    rest: handsL drawn under the 40-px floor
+    count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+    count-in: handsR drawn while the hands are on the keys
+  5) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 1024x768 100% stack hcb 
+    Error: rest: handsR drawn under the 40-px floor
+    rest: handsL drawn under the 40-px floor
+    count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+    count-in: handsR drawn while the hands are on the keys
+  6) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 768x1024 100% stack hcb 
+    Error: rest: handsR drawn under the 40-px floor
+    rest: handsL drawn under the 40-px floor
+    count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+    count-in: handsR drawn while the hands are on the keys
+  7) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 1366x1024 100% stack hcb 
+    Error: rest: handsR drawn under the 40-px floor
+    rest: handsL drawn under the 40-px floor
+    count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+    count-in: handsR drawn while the hands are on the keys
+  8) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 1024x1366 100% stack hcb 
+    Error: rest: handsR drawn under the 40-px floor
+    rest: handsL drawn under the 40-px floor
+    count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+    count-in: handsR drawn while the hands are on the keys
+  9) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 568x320 115% stack hcb 
+    Error: rest: the selected mode cut (Keep tempo)
+    rest: handsR drawn under the 40-px floor
+    rest: handsL drawn under the 40-px floor
+    count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+  10) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 568x320 115% wider moon 
+    Error: rest: the selected mode cut (Keep tempo)
+    count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+    count-in: tempo drawn while the hands are on the keys
+    count-in: more drawn while the hands are on the keys
+  11) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 780x360 115% stack moon 
+    Error: rest: the selected mode cut (Keep tempo)
+    rest: handsR drawn under the 40-px floor
+    rest: handsL drawn under the 40-px floor
+    count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+  12) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 568x320 90% stack hcb 
+    Error: rest: play under the 40-px floor
+    rest: back under the 40-px floor
+    rest: more under the 40-px floor
+    rest: the selected mode cut (Keep tempo)
+    count-in: play under the 40-px floor
+    count-in: back drawn while the hands are on the keys
+  13) tests\e2e\score.task-chrome.spec.ts:545:5 › each Score moment shows what its task needs (U122c) › 342x740 115% wider moon 
+    Error: count-in: back drawn while the hands are on the keys
+    count-in: hear drawn while the hands are on the keys
+    count-in: mode drawn while the hands are on the keys
+    count-in: tempo drawn while the hands are on the keys
+    count-in: more drawn while the hands are on the keys
+    count-in: countin over the ink by 23.67 px
+  14) tests\e2e\score.task-chrome.spec.ts:661:3 › U120: a refusal at rest stays in the window, 568x320 115% stack hcb 
+    TimeoutError: locator.click: Timeout 5000ms exceeded.
+    Call log:
+      - waiting for locator('#score-title-side')
+        - locator resolved to <span id="score-title-side" class="score-bar__title">Hot Cross Buns</span>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+  15) tests\e2e\score.task-chrome.spec.ts:661:3 › U120: a refusal at rest stays in the window, 568x320 115% wider moon 
+    TimeoutError: locator.click: Timeout 5000ms exceeded.
+    Call log:
+      - waiting for locator('#score-title-side')
+        - locator resolved to <span id="score-title-side" class="score-bar__title">Piano Sonata No. 14 “Moonlight”, III. Presto agit…</span>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+  16) tests\e2e\score.task-chrome.spec.ts:661:3 › U120: a refusal at rest stays in the window, 667x375 115% wider moon 
+    TimeoutError: locator.click: Timeout 5000ms exceeded.
+    Call log:
+      - waiting for locator('#score-title-side')
+        - locator resolved to <span id="score-title-side" class="score-bar__title">Piano Sonata No. 14 “Moonlight”, III. Presto agit…</span>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+  17) tests\e2e\score.task-chrome.spec.ts:713:1 › U121: the selected mode is whole on the narrowest sideways row 
+    Error: {"back":{"shown":false,"box":null,"hit":false,"floor":false,"inWindow":false,"text":"← Back"},"play":{"shown":false,"box":null,"hit":false,"floor":false,"inWindow":false,"text":"▶"},"hear":{"shown":false,"box":null,"hit":false,"floor":false,"inWindow":false,"text":"Hear it"},"mode":{"shown":false,"box":null,"hit":false,"floor":false,"inWindow":false,"text":"Wait for meKeep tempoPlay it to meFree p"},"handsR":{"shown":false,"box":null,"hit":false,"floor":false,"inWindow":false,"text":"R"},"handsL":{"shown":false,"box":null,"hit":false,"floor":false,"inWindow":false,"text":"L"},"handsBoth":{"shown":false,"box":null,"hit":false,"floor":false,"inWindow":false,"text":"Both"},"tempo":{"shown":false,"box":null,"hit":false,"floor":false,"inWindow":false,"text":"70% · 50 bpm"},"more":{"shown":false,"box":null,"hit":false,"floor":false,"inWindow":false,"text":"⋯"}}
+    expect(received).toContain(expected) // indexOf
+    Expected value: ""
+    Received array: ["Wait for me", "Wait"]
+      724 |   await page.waitForTimeout(3_500);
+      725 |   const m = await measure(page, 'paused');
+  18) tests\e2e\score.task-chrome.spec.ts:740:3 › a demonstration folds to Stop, and a tap on the music peeks, at 568x320 
+    Error: Stop drawn, hit, at the floor {"shown":true,"box":[266.25,218.41,38.95,40],"hit":false,"floor":false,"inWindow":true,"text":"Stop"}
+    expect(received).toBe(expected) // Object.is equality
+    Expected: true
+    Received: false
+      750 |     let m = await measure(page, 'hearing');
+      751 |     let c = m.controls as Record<string, { shown: boolean; hit: boolean; floor: boolean; text: string }>;
+  19) tests\e2e\score.task-chrome.spec.ts:740:3 › a demonstration folds to Stop, and a tap on the music peeks, at 342x740 
+    Error: Stop drawn, hit, at the floor {"shown":true,"box":[42.39,622.41,38.95,40],"hit":false,"floor":false,"inWindow":true,"text":"Stop"}
+    expect(received).toBe(expected) // Object.is equality
+    Expected: true
+    Received: false
+      750 |     let m = await measure(page, 'hearing');
+      751 |     let c = m.controls as Record<string, { shown: boolean; hit: boolean; floor: boolean; text: string }>;
+  20) tests\e2e\score.task-chrome.spec.ts:740:3 › a demonstration folds to Stop, and a tap on the music peeks, at 1366x1024 
+    Error: Stop drawn, hit, at the floor {"shown":false,"box":null,"hit":false,"floor":false,"inWindow":false,"text":"Stop"}
+    expect(received).toBe(expected) // Object.is equality
+    Expected: true
+    Received: false
+      750 |     let m = await measure(page, 'hearing');
+      751 |     let c = m.controls as Record<string, { shown: boolean; hit: boolean; floor: boolean; text: string }>;
+  21) tests\e2e\score.task-chrome.spec.ts:775:1 › the time away, sideways: the top line says it whole beside bar n / m (568 × 320, 115 %, wider face) 
+    Error: expect(locator).toHaveText(expected) failed
+    Locator: locator('#score-top-say')
+    Expected pattern: /^Paused — you were away \d+ s\. ▶ to carry on\.$/
+    Timeout: 10000ms
+    Error: element(s) not found
+    Call log:
+  21 failed
+exit 1

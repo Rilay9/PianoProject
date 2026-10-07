@@ -1,0 +1,72 @@
+walk 360x780 2026-10-02T02:34:07.243Z
+shot 00-first-open http://localhost:5433/PianoProject/#/settings/setup
+shot 01-first-today http://localhost:5433/PianoProject/#/today
+shot 02-today-placed http://localhost:5433/PianoProject/#/today
+card: technique drill.technique.ht-holds | review exercise.five-finger.c-major.both | new song.classical.ode-to-joy.ht | repertoire song.folk.twinkle.ht | sightreading drill.reading.sight-reading-1
+shot 03-first-item-drill-card http://localhost:5433/PianoProject/#/drill/drill.technique.ht-holds?rung=2.1&session=muqcniq7259lpin
+first-sight 03-first-item-drill-card: Your score is the share of phrases you play back right. Asking to be shown the answer costs that card.
+shot 03-first-item-drill http://localhost:5433/PianoProject/#/drill/drill.technique.ht-holds?rung=2.1&session=muqcniq7259lpin
+shot 04-drill-ended http://localhost:5433/PianoProject/#/drill/drill.technique.ht-holds?rung=2.1&session=muqcniq7259lpin
+after the drill: current 0 :: 0 technique drill.technique.ht-holds attempted | 1 review exercise.five-finger.c-major.both pending | 2 new song.classical.ode-to-joy.ht pending | 3 repertoire song.folk.twinkle.ht pending | 4 sightreading drill.reading.sight-reading-1 pending
+shot 05-score-exercise-card http://localhost:5433/PianoProject/#/score/exercise.five-finger.c-major.both?rung=2.1&slot=review&session=muqcniq73z20jkv
+first-sight 05-score-exercise-card: A pass needs both the accuracy and the share of the written tempo, in one run: the lesson’s numbers where it states them, otherwise the ones set in Settings.
+second activity: http://localhost:5433/PianoProject/#/score/exercise.five-finger.c-major.both?rung=2.1&slot=review&session=muqcniq73z20jkv mode tempo tempo 80
+shot 05-score-exercise-open http://localhost:5433/PianoProject/#/score/exercise.five-finger.c-major.both?rung=2.1&slot=review&session=muqcniq73z20jkv
+shot 05c-exercise-wait-card http://localhost:5433/PianoProject/#/score/exercise.five-finger.c-major.both?rung=2.1&slot=review&session=muqcniq73z20jkv
+first-sight 05c-exercise-wait-card: A run in this mode is practice: it is recorded, but a pass for the rung is measured in Keep tempo.
+pressed ▶
+exercise wait play: {"struck":9,"wrong":0,"endBar":2,"summary":true}
+exercise wait text: Notes ready |  | Next: Ode to Joy (hands together), 10 min — This lesson asks for it — not counted yet |  | 0 of 30 min so far |  | Start | Skip or change | Accuracy | 100% | Tempo | Not judged in Wait for me | To pass | 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster | Wrong notes | 0 | Missed | 0 | Keep tempo at 80 % | Again | Slower (−10%) | Faster (+10%)
+exercise wait controls: session-start-next:Start | session-skip:Skip or change | summary-standard:Keep tempo at 80 % | summary-again:Again | summary-slower:Slower (−10%) | summary-faster:Faster (+10%)
+exercise wait session: current 1 :: 0 technique drill.technique.ht-holds attempted movedOn | 1 review exercise.five-finger.c-major.both attempted | 2 new song.classical.ode-to-joy.ht pending | 3 repertoire song.folk.twinkle.ht pending | 4 sightreading drill.reading.sight-reading-1 pending
+exercise wait heading: Notes ready
+shot 06-exercise-summary http://localhost:5433/PianoProject/#/score/exercise.five-finger.c-major.both?rung=2.1&slot=review&session=muqcniq73z20jkv
+after the standard control: mode tempo tempo 80
+shot 06c-after-standard http://localhost:5433/PianoProject/#/score/exercise.five-finger.c-major.both?rung=2.1&slot=review&session=muqcniq73z20jkv
+exercise standard play: {"struck":10,"wrong":0,"endBar":2,"summary":true}
+exercise standard text: Passed |  | Next: Ode to Joy (hands together), 10 min — This lesson asks for it — not counted yet |  | 0 of 30 min so far |  | Start | Skip or change | Accuracy | 100% | Tempo | 80% of written | Wrong notes | 0 | Missed | 0 | Timing | 15 ms off the beat on average, 0% of them early | Again | Slower (−10%) | Faster (+10%)
+exercise standard controls: session-start-next:Start | session-skip:Skip or change | summary-again:Again | summary-slower:Slower (−10%) | summary-faster:Faster (+10%)
+exercise standard session: current 2 :: 0 technique drill.technique.ht-holds attempted movedOn | 1 review exercise.five-finger.c-major.both completed passed-fullx1 | 2 new song.classical.ode-to-joy.ht pending | 3 repertoire song.folk.twinkle.ht pending | 4 sightreading drill.reading.sight-reading-1 pending
+exercise standard heading: Passed
+shot 06d-exercise-standard-completion http://localhost:5433/PianoProject/#/score/exercise.five-finger.c-major.both?rung=2.1&slot=review&session=muqcniq73z20jkv
+piece: http://localhost:5433/PianoProject/#/score/song.classical.ode-to-joy.ht?rung=2.1&slot=new&session=muqcniq74zlvzce mode tempo tempo 80
+shot 07-piece-open http://localhost:5433/PianoProject/#/score/song.classical.ode-to-joy.ht?rung=2.1&slot=new&session=muqcniq74zlvzce
+pressed ▶
+piece part: {"struck":19,"wrong":1,"endBar":5,"summary":false}
+shot 08-playing http://localhost:5433/PianoProject/#/score/song.classical.ode-to-joy.ht?rung=2.1&slot=new&session=muqcniq74zlvzce
+shot 09-paused http://localhost:5433/PianoProject/#/score/song.classical.ode-to-joy.ht?rung=2.1&slot=new&session=muqcniq74zlvzce
+shot 10-returned http://localhost:5433/PianoProject/#/score/song.classical.ode-to-joy.ht?rung=2.1&slot=new&session=muqcniq74zlvzce
+shot 10b-returned-bar http://localhost:5433/PianoProject/#/score/song.classical.ode-to-joy.ht?rung=2.1&slot=new&session=muqcniq74zlvzce
+piece rest: {"struck":10,"wrong":0,"endBar":7,"summary":true}
+piece first text: Passed |  | Next: Twinkle, Twinkle, Little Star (hands together), 7 min — More music from this lesson |  | 1 of 30 min so far |  | Start | Skip or change | Accuracy | 92% | Tempo | 80% of written | Wrong notes | 1 | Missed | 3 | Weakest bars | 1, 6 | Timing | 10 ms off the beat on average, 0% of them early | Again | Slower (−10%) | Faster (+10%) | Loop the weak bars | What next with this piece?
+piece first controls: session-start-next:Start | session-skip:Skip or change | summary-again:Again | summary-slower:Slower (−10%) | summary-faster:Faster (+10%) | summary-loop:Loop the weak bars | summary-project:What next with this piece?
+piece first session: current 3 :: 0 technique drill.technique.ht-holds attempted movedOn | 1 review exercise.five-finger.c-major.both completed passed-fullx1 | 2 new song.classical.ode-to-joy.ht completed passed-fullx1 | 3 repertoire song.folk.twinkle.ht pending | 4 sightreading drill.reading.sight-reading-1 pending
+piece first heading: Passed
+shot 11-completion http://localhost:5433/PianoProject/#/score/song.classical.ode-to-joy.ht?rung=2.1&slot=new&session=muqcniq74zlvzce
+after slower: mode tempo tempo 70
+shot 12-after-slower http://localhost:5433/PianoProject/#/score/song.classical.ode-to-joy.ht?rung=2.1&slot=new&session=muqcniq74zlvzce
+slower play: {"struck":29,"wrong":0,"endBar":7,"summary":true}
+slower text: Run finished |  | Next: Twinkle, Twinkle, Little Star (hands together), 7 min — More music from this lesson |  | 1 of 30 min so far |  | Start | Skip or change | Accuracy | 100% | Tempo | 70% of written | To pass | 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster | Wrong notes | 0 | Missed | 0 | Timing | 9 ms off the beat on average, 0% of them early | Keep tempo at 80 % | Again | Slower (−10%) | Faster (+10%) | What next with this piece?
+slower controls: session-start-next:Start | session-skip:Skip or change | summary-standard:Keep tempo at 80 % | summary-again:Again | summary-slower:Slower (−10%) | summary-faster:Faster (+10%) | summary-project:What next with this piece?
+slower session: current 3 :: 0 technique drill.technique.ht-holds attempted movedOn | 1 review exercise.five-finger.c-major.both completed passed-fullx1 | 2 new song.classical.ode-to-joy.ht completed passed-fullx1 | 3 repertoire song.folk.twinkle.ht pending | 4 sightreading drill.reading.sight-reading-1 pending
+slower heading: Run finished
+shot 16-tempo-completion http://localhost:5433/PianoProject/#/score/song.classical.ode-to-joy.ht?rung=2.1&slot=new&session=muqcniq74zlvzce
+shot 16c-after-standard http://localhost:5433/PianoProject/#/score/song.classical.ode-to-joy.ht?rung=2.1&slot=new&session=muqcniq74zlvzce
+standard play: {"struck":29,"wrong":0,"endBar":7,"summary":true}
+standard text: Passed |  | Next: Twinkle, Twinkle, Little Star (hands together), 7 min — More music from this lesson |  | 1 of 30 min so far |  | Start | Skip or change | Accuracy | 100% | Tempo | 80% of written | Wrong notes | 0 | Missed | 0 | Timing | 9 ms off the beat on average, 0% of them early | Again | Slower (−10%) | Faster (+10%) | What next with this piece?
+standard controls: session-start-next:Start | session-skip:Skip or change | summary-again:Again | summary-slower:Slower (−10%) | summary-faster:Faster (+10%) | summary-project:What next with this piece?
+standard session: current 3 :: 0 technique drill.technique.ht-holds attempted movedOn | 1 review exercise.five-finger.c-major.both completed passed-fullx1 | 2 new song.classical.ode-to-joy.ht completed passed-fullx1 | 3 repertoire song.folk.twinkle.ht pending | 4 sightreading drill.reading.sight-reading-1 pending
+standard heading: Passed
+shot 16d-standard-completion http://localhost:5433/PianoProject/#/score/song.classical.ode-to-joy.ht?rung=2.1&slot=new&session=muqcniq74zlvzce
+after back gesture: http://localhost:5433/PianoProject/#/score/exercise.five-finger.c-major.both?rung=2.1&slot=review&session=muqcniq73z20jkv
+shot 17a-back-gesture http://localhost:5433/PianoProject/#/score/exercise.five-finger.c-major.both?rung=2.1&slot=review&session=muqcniq73z20jkv
+shot 17b-own-back http://localhost:5433/PianoProject/#/today
+today rows: 0 attempted :: Hands-together pattern drill | Warm-up · 5 min · L2.1 | played | Swap | ▶ || 1 completed :: C major five-finger pattern — both | Review · 5 min · L2.1 | done | ▶ || 2 completed :: Ode to Joy (hands together) | New · 10 min · L2.1 | done | ▶ || 3 pending :: Twinkle, Twinkle, Little Star (hands together) | More music from this lesson | Repertoire · 7 min · L2.1 | next | Swap | ▶ || 4 pending :: Sight-reading generator, level 1 | Read something you have never seen, once, slowly | Sight-reading · 3 min · L1.5 · RH | Swap | ▶
+today session: current 3 :: 0 technique drill.technique.ht-holds attempted movedOn | 1 review exercise.five-finger.c-major.both completed passed-fullx1 | 2 new song.classical.ode-to-joy.ht completed passed-fullx1 | 3 repertoire song.folk.twinkle.ht pending | 4 sightreading drill.reading.sight-reading-1 pending
+shot 18-progress http://localhost:5433/PianoProject/#/progress
+shot 19-plan http://localhost:5433/PianoProject/#/plan
+shot 20-lesson-2.1 http://localhost:5433/PianoProject/#/lesson/2.1
+shot 20b-lesson-what-counts http://localhost:5433/PianoProject/#/lesson/2.1
+what the app counts: What the app counts — 2 of 2 | One exercise from this page at 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster. (counted: C major five-finger pattern — both) | One song from this page at 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster. (counted: Ode to Joy (hands together)) |  | A run counts for this rung when you open it from this page, or from Today’s card for this rung.
+shot 21-today-tomorrow http://localhost:5433/PianoProject/#/today
+tomorrow card: technique drill.rhythm.eighths :: Rhythm reading with eighth notes | This lesson asks for it — not counted yet | Warm-up · 5 min · L2.2 | Swap | ▶ || review exercise.rhythm.eighths.4bar :: Rhythm: eighths — 4 bars | Nothing due for review — more from this lesson | Review · 5 min · L1.3 · RH | Swap | ▶ || new song.folk.london-bridge :: London Bridge Is Falling Down | This lesson asks for it — not counted yet | New · 10 min · L2.2 | Swap | ▶ || repertoire song.folk.merrily-we-roll-along :: Merrily We Roll Along | More music from this lesson | Repertoire · 7 min · L1.1 · RH | Swap | ▶ || sightreading drill.reading.sight-reading-2-right :: Sight-reading generator, level 2, right hand | Read something you have never seen, once, slowly | Sight-reading · 3 min · L2.2 · RH | Swap | ▶

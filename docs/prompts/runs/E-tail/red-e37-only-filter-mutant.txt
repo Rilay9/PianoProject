@@ -1,0 +1,32 @@
+mutant applied: if (songs === 'only' && item.type !== 'song') return false; -> if (songs === 'only' && !isPieceMaterial(item)) return false;
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a04fff07307647d3e/app
+
+ ❯ tests/unit/excerptItems.test.ts (18 tests | 1 failed) 105ms
+   ❯ the session (session.ts) (4)
+     × never brings back an excerpt learned where retention alone would meet it: the `only` filter keeps to songs (E37) 6ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 17 passed (18)
+   Start at  01:43:12
+   Duration  1.59s (transform 74%, import 18%, tests 7%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/excerptItems.test.ts > the session (session.ts) > never brings back an excerpt learned where retention alone would meet it: the `only` filter keeps to songs (E37)
+AssertionError: review: expected 'excerpt.minuet.b25-32' not to be 'excerpt.minuet.b25-32' // Object.is equality
+ ❯ tests/unit/excerptItems.test.ts:208:80
+    206|     expect([control?.claim?.kind, control?.item?.id], 'retention bring…
+    207|     const withExcerpt = build(APPROVED.id);
+    208|     for (const slot of withExcerpt.slots) expect(slot.item?.id, slot.k…
+       |                                                                                ^
+    209|     expect(withExcerpt.slots.some((slot) => slot.claim?.kind === 'piec…
+    210|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+vitest exit 1
+restored: sha256 before 7f67bc622dfde2fe18fe952bcecda04085d6191eba287d92d117a6f588c80020, after 7f67bc622dfde2fe18fe952bcecda04085d6191eba287d92d117a6f588c80020, identical True

@@ -1,0 +1,43 @@
+
+ RUN  v5.0.0 C:/Users/yalir/AppData/Local/Temp/claude/C--Users-yalir-repos-Piano-Stuff/9b647b56-e651-4563-9f4f-ce3e1e36a4a2/scratchpad/D0/redapp/app
+
+ ❯ tests/unit/demandsOfFiles.test.ts (13 tests | 1 failed | 1 skipped) 262ms
+   ❯ generated items, measured directly, give the ids the bridge regression pins (11)
+     × exercise.tumbao.c: the detectors find exactly the pinned demands 24ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.tumbao.c: the detectors find exactly the pinned demands
+AssertionError: expected [ 'clef.bass', 'pitch.ledger', …(7) ] to deeply equal [ 'clef.bass', 'pitch.ledger', …(6) ]
+
+- Expected
++ Received
+
+@@ -3,8 +3,9 @@
+    "pitch.ledger",
+    "interval.step",
+    "interval.leap",
+    "rhythm.dotted-quarter",
+    "rhythm.ties",
++   "rhythm.syncopation",
+    "key.signature",
+    "range.beyond-position",
+  ]
+
+ ❯ tests/unit/demandsOfFiles.test.ts:122:65
+    120|       expect(existsSync(file), `${file} — run the content build first`…
+    121|       installTextMeasurer();
+    122|       expect(measuredDemands(await modelOfFile(file), demands)).toEqua…
+       |                                                                 ^
+    123|     });
+    124|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed | 1 skipped (13)
+   Start at  07:14:25
+   Duration  1.16s (environment 60%, tests 25%, import 8%, transform 8%)
+
+exit 1

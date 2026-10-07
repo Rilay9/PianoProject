@@ -1,0 +1,5 @@
+under validate in the build log: 0 line(s)
+WARNING lines the validator printed alone: 13
+equal, in order: False
+the Q80 line under validate: 0
+exit 1

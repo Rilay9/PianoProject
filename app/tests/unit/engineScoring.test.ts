@@ -10,8 +10,7 @@ import {
 } from '../../src/engine/Scoring';
 import { prepareSession, loopFromMeasures } from '../../src/engine/prepareSession';
 import { harness, makeModel, note } from './helpers/engineHarness';
-import { edgeFixtures, loadFixture } from './helpers/fixtures';
-import { extractScoreModel } from '../../src/score/extractScoreModel';
+import { edgeFixtures, fixtureModel } from './helpers/fixtures';
 import type { SessionScore } from '../../src/engine/types';
 
 function scoreWith(partial: Partial<SessionScore>): SessionScore {
@@ -186,7 +185,7 @@ describe('loops from bar numbers', () => {
 
 describe('property: the timetable agrees with the model', () => {
   it.each(edgeFixtures())('$name: step times match beatToMs, and gaps sum to the whole', async (fixture) => {
-    const model = extractScoreModel(await loadFixture(fixture.path), { id: fixture.name });
+    const model = await fixtureModel(fixture.path, { id: fixture.name });
     for (const tempoPct of [50, 100, 130]) {
       const { steps } = prepareSession(model, { mode: 'tempo', tempoPct });
       const scale = tempoPct / 100;
@@ -209,7 +208,7 @@ describe('property: the timetable agrees with the model', () => {
   });
 
   it.each(edgeFixtures())('$name: a perfect Wait run reaches the end', async (fixture) => {
-    const model = extractScoreModel(await loadFixture(fixture.path), { id: fixture.name });
+    const model = await fixtureModel(fixture.path, { id: fixture.name });
     const h = harness(model, { mode: 'wait' });
     h.engine.start();
     // Play whatever the engine is waiting for, one step at a time.

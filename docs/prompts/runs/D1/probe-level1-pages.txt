@@ -1,0 +1,17 @@
+﻿
+v1: 192 distinct of 200
+  3x  Cw | Dw | Cw | Cw
+  3x  Cw | Dq Eq Fh | Ew | Dh Ch
+  2x  Ch Dh | Eh Fh | Eh Dq Cq | Cw
+  2x  Cw | Dw | Cq Dq Ch | Dq Eq Dq Cq
+  2x  Cw | Dq Eq Fq Eq | Dw | Cw
+  2x  Cw | Dw | Cw | Dh Cq Cq
+v2: 182 distinct of 200
+  3x  Ch Dh | Eh Fh | Eh Dq Cq | Cw
+  3x  Cw | Dq Eq Fq Eq | Dw | Cw
+  2x  Cq Dq Eq Fq | Gw | Gh Fq Eq | Dh Ch
+  2x  Cw | Dw | Eh Fq Eq | Dq Cq Ch
+  2x  Cw | Dq Eq Fh | Ew | Dh Ch
+  2x  Cq Dq Eh | Fh Gh | Gh Fh | Eq Dq Ch
+
+

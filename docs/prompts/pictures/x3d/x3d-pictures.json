@@ -1,0 +1,20 @@
+{
+  "rowYourBoat-before": {
+    "label": "54 bpm",
+    "bpmField": "54"
+  },
+  "halfNoteImport-before": {
+    "label": "60 bpm",
+    "bpmField": "60",
+    "sheetLine": "Tempo · from the file — The file says 𝅗𝅥 = 60 (120 quarter notes a minute)."
+  },
+  "rowYourBoat-after": {
+    "label": "81 bpm",
+    "bpmField": "81"
+  },
+  "halfNoteImport-after": {
+    "label": "120 bpm",
+    "bpmField": "120",
+    "sheetLine": "Tempo · from the file — The file says 𝅗𝅥 = 60 (120 quarter notes a minute)."
+  }
+}

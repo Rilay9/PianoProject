@@ -19,7 +19,8 @@
               "concepts": [
                 "hands-together",
                 "held-LH",
-                "vertical-alignment"
+                "vertical-alignment",
+                "leap"
               ],
               "textFile": "lessons/2.1.md",
               "exerciseOptions": [
@@ -203,7 +204,6 @@
               "textFile": "lessons/2.3.md",
               "exerciseOptions": [
                 "drill.chord.c-f-g",
-                "exercise.inversions.c-major.both",
                 "exercise.cadence.c.root",
                 "exercise.cadence.c.voice-led"
               ],
@@ -321,7 +321,8 @@
                 "song.folk.greensleeves.chords",
                 "song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx",
                 "song.folk.streets-of-laredo.pdmx",
-                "song.pop.careless-love-blues.pdmx"
+                "song.pop.careless-love-blues.pdmx",
+                "song.folk.cielito-lindo.simple"
               ],
               "mastery": {
                 "minAccuracy": 0.9,
@@ -406,7 +407,8 @@
               ],
               "songOptions": [
                 "song.classical.ode-to-joy.full",
-                "song.classical.beethoven-ode-to-joy.easy"
+                "song.classical.beethoven-ode-to-joy.easy",
+                "song.classical.ode-to-joy.g"
               ],
               "mastery": {
                 "minAccuracy": 0.95,
@@ -445,6 +447,13 @@
               ],
               "estimatedDays": 16,
               "songOptional": true,
+              "tools": [
+                {
+                  "kind": "blind",
+                  "item": "song.classical.ode-to-joy.g",
+                  "label": "Check your G version, page hidden"
+                }
+              ],
               "levelBand": [
                 2.2,
                 4.1
@@ -585,8 +594,8 @@
               ],
               "songOptions": [
                 "song.folk.when-the-saints.alternating",
+                "song.classical.ode-to-joy.rh",
                 "song.folk.be-thou-my-vision.pdmx",
-                "song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx",
                 "song.folk.anonymous-swing-low-sweet-chariot.pdmx"
               ],
               "mastery": {
@@ -615,7 +624,7 @@
                 "chordSymbols": true
               },
               "levelBand": [
-                1.4,
+                1.1,
                 3.2
               ],
               "finder": {

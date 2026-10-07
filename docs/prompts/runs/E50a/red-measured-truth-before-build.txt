@@ -1,0 +1,36 @@
+test_a_transfer_role_carries_its_contracts_relationship_and_nothing_else_does (tests.test_measured_truth.TestTheMaterialIdentity.test_a_transfer_role_carries_its_contracts_relationship_and_nothing_else_does) ... ok
+test_every_excerpt_is_its_cuts_file_identity (tests.test_measured_truth.TestTheMaterialIdentity.test_every_excerpt_is_its_cuts_file_identity) ... ok
+test_every_row_carries_the_identity_the_build_computes (tests.test_measured_truth.TestTheMaterialIdentity.test_every_row_carries_the_identity_the_build_computes) ... ok
+test_former_identities_are_the_recorded_history_of_undated_files_and_never_a_current_one (tests.test_measured_truth.TestTheMaterialIdentity.test_former_identities_are_the_recorded_history_of_undated_files_and_never_a_current_one) ... ok
+test_it_is_the_review_records_identity (tests.test_measured_truth.TestTheMaterialIdentity.test_it_is_the_review_records_identity) ... ok
+test_no_file_the_converter_wrote_carries_an_encoding_date (tests.test_measured_truth.TestTheMaterialIdentity.test_no_file_the_converter_wrote_carries_an_encoding_date) ... FAIL
+
+======================================================================
+FAIL: test_no_file_the_converter_wrote_carries_an_encoding_date (tests.test_measured_truth.TestTheMaterialIdentity.test_no_file_the_converter_wrote_carries_an_encoding_date)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa53a621e81c2cb8c\tools\content\tests\test_measured_truth.py", line 391, in test_no_file_the_converter_wrote_carries_an_encoding_date
+    self.assertEqual(dated[:10], [], f"{len(dated)} of {written} files the converter wrote carry a date")
+AssertionError: Lists differ: ['exercise.blues.twelve-bar-shuffle.a: 202[459 chars]-16'] != []
+
+First list contains 10 additional elements.
+First extra element 0:
+'exercise.blues.twelve-bar-shuffle.a: 2026-09-29'
+
++ []
+- ['exercise.blues.twelve-bar-shuffle.a: 2026-09-29',
+-  'exercise.blues.twelve-bar-shuffle.c: 2026-09-29',
+-  'exercise.blues.twelve-bar-shuffle.d: 2026-09-29',
+-  'exercise.blues.twelve-bar-shuffle.e: 2026-09-29',
+-  'exercise.blues.twelve-bar-shuffle.f: 2026-09-29',
+-  'exercise.blues.twelve-bar-shuffle.g: 2026-09-29',
+-  'exercise.reading.steps-and-skips-c: 2026-09-16',
+-  'song.beautiful.g-minor-bach: 2026-09-16',
+-  'song.classical.beethoven-fur-elise.easy: 2026-09-16',
+-  'song.classical.chopin-ballade-2.nifc: 2026-09-16'] : 211 of 211 files the converter wrote carry a date
+
+----------------------------------------------------------------------
+Ran 6 tests in 10.164s
+
+FAILED (failures=1)
+exit 1

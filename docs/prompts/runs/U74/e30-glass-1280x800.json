@@ -1,0 +1,290 @@
+{
+ "excerpt.classical.beethoven-ode-to-joy.easy.b9-12": {
+  "stage": {
+   "w": 1040,
+   "h": 591
+  },
+  "fitBy": "width",
+  "ahead": "none",
+  "why": null,
+  "shown": 2,
+  "asked": 2,
+  "slots": 1,
+  "systems": 1,
+  "zoom": 2,
+  "bars": 4,
+  "priced": {
+   "arrangement": "slots",
+   "candidates": [
+    {
+     "shown": 2,
+     "systems": 1,
+     "staffPx": 112.5
+    },
+    {
+     "shown": 1,
+     "systems": 1,
+     "staffPx": 146.8
+    }
+   ],
+   "shown": 2,
+   "systems": 1,
+   "fit": 1.4057,
+   "drawn": 1.4057,
+   "base": 1.4057,
+   "rows": [
+    {
+     "from": 0,
+     "to": 1,
+     "px": 731
+    }
+   ]
+  },
+  "staff": 112.5,
+  "ink": {
+   "w": 1028,
+   "h": 438,
+   "wShare": 99,
+   "hShare": 74
+  },
+  "rows": [
+   {
+    "bars": "0-1",
+    "inked": [
+     0,
+     1
+    ],
+    "ahead": false,
+    "left": 7,
+    "right": 1035,
+    "top": 12,
+    "bottom": 450,
+    "stretch": "natural"
+   }
+  ]
+ },
+ "excerpt.blues.wabash-blues.b1-4": {
+  "stage": {
+   "w": 1040,
+   "h": 591
+  },
+  "fitBy": "height",
+  "ahead": "none",
+  "why": null,
+  "shown": 2,
+  "asked": 2,
+  "slots": 2,
+  "systems": 2,
+  "zoom": 2,
+  "bars": 4,
+  "priced": {
+   "arrangement": "slots",
+   "candidates": [
+    {
+     "shown": 2,
+     "systems": 2,
+     "staffPx": 87.2
+    },
+    {
+     "shown": 1,
+     "systems": 1,
+     "staffPx": 112.9
+    }
+   ],
+   "shown": 2,
+   "systems": 2,
+   "fit": 1.0903,
+   "drawn": 1.0903,
+   "base": 1.0903,
+   "rows": [
+    {
+     "from": 0,
+     "to": 0,
+     "px": 728
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "px": 627
+    }
+   ]
+  },
+  "staff": 84.2,
+  "ink": {
+   "w": 766,
+   "h": 580,
+   "wShare": 74,
+   "hShare": 98
+  },
+  "rows": [
+   {
+    "bars": "0-0",
+    "inked": [
+     0
+    ],
+    "ahead": false,
+    "left": 138,
+    "right": 904,
+    "top": -2,
+    "bottom": 269,
+    "stretch": "natural"
+   },
+   {
+    "bars": "1-1",
+    "inked": [
+     1
+    ],
+    "ahead": false,
+    "left": 138,
+    "right": 797,
+    "top": 396,
+    "bottom": 577,
+    "stretch": "natural"
+   }
+  ]
+ },
+ "excerpt.classical.i-got-rythm.pdmx.b15-18": {
+  "stage": {
+   "w": 1040,
+   "h": 591
+  },
+  "fitBy": "width",
+  "ahead": "none",
+  "why": null,
+  "shown": 2,
+  "asked": 2,
+  "slots": 1,
+  "systems": 1,
+  "zoom": 2,
+  "bars": 4,
+  "priced": {
+   "arrangement": "slots",
+   "candidates": [
+    {
+     "shown": 2,
+     "systems": 1,
+     "staffPx": 85.8
+    },
+    {
+     "shown": 1,
+     "systems": 1,
+     "staffPx": 124
+    }
+   ],
+   "shown": 2,
+   "systems": 1,
+   "fit": 1.0727,
+   "drawn": 1.0727,
+   "base": 1.0727,
+   "rows": [
+    {
+     "from": 0,
+     "to": 1,
+     "px": 958
+    }
+   ]
+  },
+  "staff": 85.8,
+  "ink": {
+   "w": 1028,
+   "h": 400,
+   "wShare": 99,
+   "hShare": 68
+  },
+  "rows": [
+   {
+    "bars": "0-1",
+    "inked": [
+     0,
+     1
+    ],
+    "ahead": false,
+    "left": 7,
+    "right": 1035,
+    "top": 8,
+    "bottom": 408,
+    "stretch": "natural"
+   }
+  ]
+ },
+ "excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28": {
+  "stage": {
+   "w": 1040,
+   "h": 591
+  },
+  "fitBy": "height",
+  "ahead": "none",
+  "why": null,
+  "shown": 2,
+  "asked": 2,
+  "slots": 2,
+  "systems": 2,
+  "zoom": 2,
+  "bars": 4,
+  "priced": {
+   "arrangement": "slots",
+   "candidates": [
+    {
+     "shown": 2,
+     "systems": 2,
+     "staffPx": 99.6
+    },
+    {
+     "shown": 1,
+     "systems": 1,
+     "staffPx": 119.3
+    }
+   ],
+   "shown": 2,
+   "systems": 2,
+   "fit": 1.2454,
+   "drawn": 1.2454,
+   "base": 1.2454,
+   "rows": [
+    {
+     "from": 0,
+     "to": 0,
+     "px": 689
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "px": 690
+    }
+   ]
+  },
+  "staff": 99.6,
+  "ink": {
+   "w": 858,
+   "h": 574,
+   "wShare": 83,
+   "hShare": 97
+  },
+  "rows": [
+   {
+    "bars": "0-0",
+    "inked": [
+     0
+    ],
+    "ahead": false,
+    "left": 7,
+    "right": 865,
+    "top": 8,
+    "bottom": 271,
+    "stretch": "natural"
+   },
+   {
+    "bars": "1-1",
+    "inked": [
+     1
+    ],
+    "ahead": false,
+    "left": 7,
+    "right": 751,
+    "top": 321,
+    "bottom": 582,
+    "stretch": "natural"
+   }
+  ]
+ }
+}

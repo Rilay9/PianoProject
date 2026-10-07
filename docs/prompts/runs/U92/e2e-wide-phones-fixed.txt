@@ -1,0 +1,10 @@
+$ (app/) npx playwright test --config playwright.u92-4423.config.ts --workers=2 --grep phone- tests/e2e/wide.spec.ts
+exists: tests/e2e/wide.spec.ts
+
+Running 2 tests using 2 workers
+
+  ok 2 tests\e2e\wide.spec.ts:428:5 › phone-portrait › every screen is centred and capped, phone-portrait (46.4s)
+  ok 1 tests\e2e\wide.spec.ts:428:5 › phone-landscape › every screen is centred and capped, phone-landscape (46.6s)
+
+  2 passed (49.6s)
+exit=0

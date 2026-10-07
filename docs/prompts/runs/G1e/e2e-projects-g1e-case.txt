@@ -1,0 +1,8 @@
+spec present: tests/e2e/projects.spec.ts
+
+Running 1 test using 1 worker
+
+  ok 1 tests\e2e\projects.spec.ts:287:1 › a piece paused on its sheet is on no row of the thin card; the rung that asks for it still names it (G1e) (4.5s)
+
+  1 passed (8.0s)
+exit=0

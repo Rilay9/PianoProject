@@ -1,0 +1,3 @@
+bash ../docs/prompts/runs/X3c/scripts-specs-exist.sh tests/e2e/x3c-pictures.spec.ts (in app)
+present: tests/e2e/x3c-pictures.spec.ts
+exit=0

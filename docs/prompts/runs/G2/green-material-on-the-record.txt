@@ -1,0 +1,15 @@
+﻿(cd app) npx vitest run tests/unit/materialOnTheRecord.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6d274c20b3e170c9/app
+
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  04:27:36
+   Duration  7.35s (tests 52%, transform 38%, import 10%)
+
+  Transform  transforming modules took 2.56s · 38% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+
+exit=0

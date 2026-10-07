@@ -1,0 +1,2 @@
+blues.3 (lessonClaimsAboutApp.test.ts:1564): ScoreScreen.ts CRLF lines 5537 ; clause as checked out: False ; same text with LF: True
+4.7 (lessonClaimsAboutApp.test.ts:1771): style.css CRLF lines 6238 ; clause as checked out: False ; same text with LF: True

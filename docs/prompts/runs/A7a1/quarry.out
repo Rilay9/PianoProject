@@ -1,0 +1,3 @@
+0/1 candidate(s) passed every machine gate
+  band 6: 0/1 passed (rejection rate 100%) {'round-trip': 1}
+wrote build\A7a1-probe\pdmx\quarried.json

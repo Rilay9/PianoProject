@@ -1,0 +1,5 @@
+﻿files compared (distinct contents in both): 2090 (unreadable in both: 0)
+only before: none
+only after: fixtures/harmony/backup-voices.musicxml
+tempoEvents: 2076 files stating a tempo, 4526 events; files whose serialised events differ: 0
+chartBars: 462 files with symbols, 61499 bars over all files; files whose serialised bars differ: 0

@@ -1,0 +1,129 @@
+# checks for 119 path(s): 119 matched, 0 unmatched
+# app/src/curriculum/types.ts: app/src/**, app/src/curriculum/**
+# app/tests/unit/lessonClaimsAboutApp.test.ts: app/tests/unit/*.test.ts
+# content/catalog.schema.json: content/**, content/*.json
+# content/curriculum/stage-2.json: content/**, content/curriculum/**
+# content/curriculum/stage-8.json: content/**, content/curriculum/**
+# content/lessons/ragtime.8.md: content/**, content/lessons/**
+# content/scores/authored/cielito-lindo-simple.abc: content/**, content/scores/**
+# content/scores/imported/SOURCES.md: content/**, content/scores/**
+# content/sources/mutopia.json: content/**, content/sources/**
+# docs/02-curriculum.md: docs/02-curriculum.md, docs/**
+# docs/03-content-pipeline.md: docs/03-content-pipeline.md, docs/**
+# docs/generated/ladder.md: docs/generated/**, docs/**
+# docs/prompts/checks.json: docs/prompts/checks.json, docs/**
+# docs/prompts/inventory.md: docs/prompts/inventory.md, docs/**
+# docs/prompts/pictures/q76/q76-pictures.json: docs/**
+# docs/prompts/pictures/q76/score-cielito-lindo-simple-opening-342x740.png: docs/**
+# docs/prompts/pictures/q76/score-pine-apple-rag-mutopia-opening-342x740.png: docs/**
+# docs/prompts/rung-claims.md: docs/prompts/rung-claims.md, docs/**
+# docs/prompts/runs/Q76/ENTRY.md: docs/**
+# docs/prompts/runs/Q76/build-after-final-personal.txt: docs/**
+# docs/prompts/runs/Q76/build-after-final-strict.txt: docs/**
+# docs/prompts/runs/Q76/build-after-personal.txt: docs/**
+# docs/prompts/runs/Q76/build-after2-personal.txt: docs/**
+# docs/prompts/runs/Q76/build-after3-personal.txt: docs/**
+# docs/prompts/runs/Q76/build-app.txt: docs/**
+# docs/prompts/runs/Q76/build-baseline-personal.txt: docs/**
+# docs/prompts/runs/Q76/build-final-personal.txt: docs/**
+# docs/prompts/runs/Q76/build-strict-after.txt: docs/**
+# docs/prompts/runs/Q76/build-strict-before.txt: docs/**
+# docs/prompts/runs/Q76/checks-for-paths.txt: docs/**
+# docs/prompts/runs/Q76/claims-diff-strict.txt: docs/**
+# docs/prompts/runs/Q76/content-tests-all-first.txt: docs/**
+# docs/prompts/runs/Q76/content-tests-all.txt: docs/**
+# docs/prompts/runs/Q76/copy.txt: docs/**
+# docs/prompts/runs/Q76/e2e-map.txt: docs/**
+# docs/prompts/runs/Q76/explore-convert.txt: docs/**
+# docs/prompts/runs/Q76/explore-headers.txt: docs/**
+# docs/prompts/runs/Q76/green-new-tests.txt: docs/**
+# docs/prompts/runs/Q76/ladder-report.txt: docs/**
+# docs/prompts/runs/Q76/lh-roots-check.txt: docs/**
+# docs/prompts/runs/Q76/lint.txt: docs/**
+# docs/prompts/runs/Q76/midi-convert-magnetic.txt: docs/**
+# docs/prompts/runs/Q76/midi-convert-pineapple.txt: docs/**
+# docs/prompts/runs/Q76/midi-fetch.txt: docs/**
+# docs/prompts/runs/Q76/midi-route.txt: docs/**
+# docs/prompts/runs/Q76/muto-verdicts.txt: docs/**
+# docs/prompts/runs/Q76/mutopia-joplin-tree.txt: docs/**
+# docs/prompts/runs/Q76/npm-ci.txt: docs/**
+# docs/prompts/runs/Q76/parity.txt: docs/**
+# docs/prompts/runs/Q76/pdmx-tie-tunes.txt: docs/**
+# docs/prompts/runs/Q76/pictures.txt: docs/**
+# docs/prompts/runs/Q76/pyly-mechanisms.txt: docs/**
+# docs/prompts/runs/Q76/red-test_import_mutopia.txt: docs/**
+# docs/prompts/runs/Q76/red-test_public_tie_option.txt: docs/**
+# docs/prompts/runs/Q76/red-vitest-after-placement.txt: docs/**
+# docs/prompts/runs/Q76/render-check.txt: docs/**
+# docs/prompts/runs/Q76/render-report.json: docs/**
+# docs/prompts/runs/Q76/render-verdict.txt: docs/**
+# docs/prompts/runs/Q76/review-check.txt: docs/**
+# docs/prompts/runs/Q76/rung-claims-personal-before.md: docs/**
+# docs/prompts/runs/Q76/scripts-claims-diff.py: docs/**
+# docs/prompts/runs/Q76/scripts-convert-trace.py: docs/**
+# docs/prompts/runs/Q76/scripts-dump-ties.py: docs/**
+# docs/prompts/runs/Q76/scripts-explore-convert.py: docs/**
+# docs/prompts/runs/Q76/scripts-explore-fetch.py: docs/**
+# docs/prompts/runs/Q76/scripts-fetch-midi.py: docs/**
+# docs/prompts/runs/Q76/scripts-item-facts.py: docs/**
+# docs/prompts/runs/Q76/scripts-ledger-row.py: docs/**
+# docs/prompts/runs/Q76/scripts-level-drivers.py: docs/**
+# docs/prompts/runs/Q76/scripts-lh-roots-check.py: docs/**
+# docs/prompts/runs/Q76/scripts-list-joplin.py: docs/**
+# docs/prompts/runs/Q76/scripts-measure-files.py: docs/**
+# docs/prompts/runs/Q76/scripts-midi-route.py: docs/**
+# docs/prompts/runs/Q76/scripts-muto-verdicts.py: docs/**
+# docs/prompts/runs/Q76/scripts-normalise-and-measure.py: docs/**
+# docs/prompts/runs/Q76/scripts-pdmx-tie-tunes.py: docs/**
+# docs/prompts/runs/Q76/scripts-playwright.q76-4393.config.ts: docs/**
+# docs/prompts/runs/Q76/scripts-proto-respell.py: docs/**
+# docs/prompts/runs/Q76/scripts-proto-unfold.py: docs/**
+# docs/prompts/runs/Q76/scripts-pyly-dump.py: docs/**
+# docs/prompts/runs/Q76/scripts-pyly-mechanisms.py: docs/**
+# docs/prompts/runs/Q76/scripts-pyly-snippets.py: docs/**
+# docs/prompts/runs/Q76/scripts-pyly-structure.py: docs/**
+# docs/prompts/runs/Q76/scripts-pyly-trace.py: docs/**
+# docs/prompts/runs/Q76/scripts-pyly-variant.py: docs/**
+# docs/prompts/runs/Q76/scripts-pyly-variants.py: docs/**
+# docs/prompts/runs/Q76/scripts-q76-pictures.spec.ts: docs/**
+# docs/prompts/runs/Q76/scripts-render-verdict.py: docs/**
+# docs/prompts/runs/Q76/scripts-render.sh: docs/**
+# docs/prompts/runs/Q76/scripts-rung-options.py: docs/**
+# docs/prompts/runs/Q76/scripts-strict-flavour-check.py: docs/**
+# docs/prompts/runs/Q76/scripts-strict-report.py: docs/**
+# docs/prompts/runs/Q76/scripts-taught-at.py: docs/**
+# docs/prompts/runs/Q76/scripts-tie-candidates.py: docs/**
+# docs/prompts/runs/Q76/scripts-try-abc.py: docs/**
+# docs/prompts/runs/Q76/scripts-voice-durations.py: docs/**
+# docs/prompts/runs/Q76/specs-exist-final.txt: docs/**
+# docs/prompts/runs/Q76/specs-exist.txt: docs/**
+# docs/prompts/runs/Q76/strict-flavour-check-after.txt: docs/**
+# docs/prompts/runs/Q76/strict-flavour-check-before.txt: docs/**
+# docs/prompts/runs/Q76/strict-report-after.txt: docs/**
+# docs/prompts/runs/Q76/strict-report-before.txt: docs/**
+# docs/prompts/runs/Q76/targeted-tests.txt: docs/**
+# docs/prompts/runs/Q76/tie-candidates-catalogue.txt: docs/**
+# docs/prompts/runs/Q76/tsc.txt: docs/**
+# docs/prompts/runs/Q76/validate-personal-after.txt: docs/**
+# docs/prompts/runs/Q76/validate-strict-after.txt: docs/**
+# docs/prompts/runs/Q76/validate-strict-before.txt: docs/**
+# docs/prompts/runs/Q76/vitest-all-before-lesson-trim.txt: docs/**
+# docs/prompts/runs/Q76/vitest-all.txt: docs/**
+# docs/prompts/runs/Q76/vitest-lessons.txt: docs/**
+# tools/content/build.py: tools/content/*.py
+# tools/content/import_mutopia.py: tools/content/*.py
+# tools/content/review.py: tools/content/*.py
+# tools/content/tests/fixtures/mutopia/PineappleRag.ly: tools/content/tests/fixtures/**
+# tools/content/tests/fixtures/mutopia/PineappleRag.mid: tools/content/tests/fixtures/**
+# tools/content/tests/test_import_mutopia.py: tools/content/tests/test_*.py
+# tools/content/tests/test_measured_truth.py: tools/content/tests/test_*.py
+# tools/content/tests/test_public_tie_option.py: tools/content/tests/test_*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/library.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/side-panel-prose.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4

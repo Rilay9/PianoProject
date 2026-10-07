@@ -1,0 +1,36 @@
+npx vitest run --config ../docs/prompts/runs/X3b/scripts-vitest.x3b.config.ts tests/unit/importSheet.test.ts -t stated twice (in app)
+[33m(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (../docs/prompts/runs/X3b/scripts-vitest.x3b.config.ts:10:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.[39m
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a20bd5674e425dc2c/app
+
+ ❯ tests/unit/importSheet.test.ts (22 tests | 1 failed | 21 skipped) 1188ms
+   ❯ the learner states the tempo (X3a; E48’s stateImportTempo) (8)
+     × stated twice without closing the sheet: the line, the stored score, the measurement, the fact and the tempo the player reads carry the second statement, and the first is nowhere 1187ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the learner states the tempo (X3a; E48’s stateImportTempo) > stated twice without closing the sheet: the line, the stored score, the measurement, the fact and the tempo the player reads carry the second statement, and the first is nowhere
+AssertionError: expected 'Tempo · yours — You stated ♩ = 72.' to contain 'You stated ♩ = 160.'
+
+Expected: "You stated ♩ = 160."
+Received: "Tempo · yours — You stated ♩ = 72."
+
+ ❯ tests/unit/importSheet.test.ts:467:39
+    465|       state('160');
+    466|       await vi.waitFor(() => {
+    467|         expect(text('#import-tempo')).toContain('You stated ♩ = 160.');
+       |                                       ^
+    468|       });
+    469|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 21 skipped (22)
+   Start at  04:16:38
+   Duration  2.53s (tests 49%, environment 27%, transform 17%, import 7%)
+
+exit=1

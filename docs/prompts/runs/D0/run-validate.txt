@@ -1,0 +1,16 @@
+  wrote needs into 105 rung(s)
+content validation of C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a60820da594074cd4\app\public\content:
+  109 lesson(s): 43 song-optional, 4 exempt from the 3-alternative rule
+  exempt: 0.1, 0.2, 0.3, 0.4
+  636 item(s) with an estimated level — L0: 0/6, L1: 5/62, L2: 64/142, L3: 60/200, L4: 66/384, L5: 140/432, L6: 128/429, L7: 121/295, L8: 26/77, L9: 26/34
+  1183 exercise(s) by level — L1: 32, L2: 61, L3: 121, L4: 298, L5: 268, L6: 266, L7: 125, L8: 12
+  truncation scan: 1982 file(s), 56973 bar(s), 248 short, 0 with a short grace
+NOTE: 181 item(s) have a composition that is not public domain and are bundled for a personal build only (docs/00 D23). Do not deploy this build publicly.
+NOTE: 46 item(s) are CC BY-NC and bundled for a personal build (docs/00 D10a). Do not deploy this build publicly.
+NOTE: 2 imported score(s) ask for keys an 88-note piano does not have; the generator refuses this and the importers do not:
+  song.beautiful.mariage-damour.alt2: D8 (midi 110), above C8
+  song.classical.bach-toccata-fugue-bwv565: G#0 (midi 20), below A0
+  evidence gate (vocabulary v0): 19 lesson rule(s) the app does not judge; 209 item(s) declare targetSkills
+    unjudged: 0.2: 20-keys-in-40s>=0.95, practice.1: method-applied, practice.2: method-applied, practice.3: method-applied, practice.4: method-applied, practice.5: method-applied, 2.3: chord-drill-20-changes>=0.95, 2.4: dynamics-contrast>=1.6, 2.5: c-major-scale-HS-60bpm>=0.95, 3.5: pedal-clean>=0.9, improv.3: three-choruses-recorded, rock.overview: textures-identified, 4.1: 4-scales-HT-2oct-80bpm>=0.95, 4.3: 30-inversions-3s-each>=0.95, 4.4: hanon-1-5-HT-80bpm>=0.97, 4.6: reading-ahead, 4.7: two clean passes, then blind at >=0.9, improv.4: four-answers-recorded, improv.5: eight-bar-melody-written
+content validation OK: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a60820da594074cd4\app\public\content (2061 catalog items)
+exit 0

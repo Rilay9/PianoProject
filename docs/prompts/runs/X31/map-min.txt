@@ -1,0 +1,66 @@
+# checks for 56 path(s): 56 matched, 0 unmatched
+# app/tests/fixtures/levelling.json: app/tests/fixtures/**
+# docs/prompts/runs/X31/ENTRY.md: docs/**
+# docs/prompts/runs/X31/build-after.exit: docs/**
+# docs/prompts/runs/X31/build-after.stderr.txt: docs/**
+# docs/prompts/runs/X31/build-after.txt: docs/**
+# docs/prompts/runs/X31/build-app.txt: docs/**
+# docs/prompts/runs/X31/build-before.exit: docs/**
+# docs/prompts/runs/X31/build-before.stderr.txt: docs/**
+# docs/prompts/runs/X31/build-before.txt: docs/**
+# docs/prompts/runs/X31/checks-for-paths.txt: docs/**
+# docs/prompts/runs/X31/content-suite.txt: docs/**
+# docs/prompts/runs/X31/converter-harness.txt: docs/**
+# docs/prompts/runs/X31/corpus-app-run.txt: docs/**
+# docs/prompts/runs/X31/corpus-bpm-run.txt: docs/**
+# docs/prompts/runs/X31/corpus-moved-by-cause.txt: docs/**
+# docs/prompts/runs/X31/corpus-table.txt: docs/**
+# docs/prompts/runs/X31/export-levelling-fixture.txt: docs/**
+# docs/prompts/runs/X31/fit-level-model-after.txt: docs/**
+# docs/prompts/runs/X31/fit-report.txt: docs/**
+# docs/prompts/runs/X31/fixture-levels-run.txt: docs/**
+# docs/prompts/runs/X31/fixture-levels.jsonl: docs/**
+# docs/prompts/runs/X31/git-status-start.txt: docs/**
+# docs/prompts/runs/X31/green-unit-difficulty.txt: docs/**
+# docs/prompts/runs/X31/latent-levels.txt: docs/**
+# docs/prompts/runs/X31/level-diff.txt: docs/**
+# docs/prompts/runs/X31/mutants.txt: docs/**
+# docs/prompts/runs/X31/npm-ci.txt: docs/**
+# docs/prompts/runs/X31/parity-reference-after.txt: docs/**
+# docs/prompts/runs/X31/parity-reference.txt: docs/**
+# docs/prompts/runs/X31/red-unit-committed.txt: docs/**
+# docs/prompts/runs/X31/restore.txt: docs/**
+# docs/prompts/runs/X31/review-check.txt: docs/**
+# docs/prompts/runs/X31/satie-bar1.txt: docs/**
+# docs/prompts/runs/X31/scripts-bar-directions.py: docs/**
+# docs/prompts/runs/X31/scripts-corpus-app.test.ts: docs/**
+# docs/prompts/runs/X31/scripts-corpus-bpm.py: docs/**
+# docs/prompts/runs/X31/scripts-corpus-table.py: docs/**
+# docs/prompts/runs/X31/scripts-fit-report.py: docs/**
+# docs/prompts/runs/X31/scripts-fixture-levels.test.ts: docs/**
+# docs/prompts/runs/X31/scripts-latent-levels.py: docs/**
+# docs/prompts/runs/X31/scripts-level-diff.py: docs/**
+# docs/prompts/runs/X31/scripts-moved-by-cause.py: docs/**
+# docs/prompts/runs/X31/scripts-mutants.py: docs/**
+# docs/prompts/runs/X31/scripts-run-build.ps1: docs/**
+# docs/prompts/runs/X31/scripts-setup.ps1: docs/**
+# docs/prompts/runs/X31/scripts-shapes-table.py: docs/**
+# docs/prompts/runs/X31/setup-copy.txt: docs/**
+# docs/prompts/runs/X31/shapes-table.md: docs/**
+# docs/prompts/runs/X31/unit-difficulty-levels-final.txt: docs/**
+# docs/prompts/runs/X31/unit-difficulty-levels.txt: docs/**
+# docs/prompts/runs/X31/validate-after.txt: docs/**
+# docs/prompts/runs/X31/validate-plain.txt: docs/**
+# docs/prompts/runs/X31/vitest-difficulty.txt: docs/**
+# docs/prompts/runs/X31/vitest-expectedNote-alone.txt: docs/**
+# tools/content/difficulty.py: tools/content/*.py
+# tools/content/tests/test_difficulty.py: tools/content/tests/test_*.py
+converter-harness	.	python -m unittest discover -s tools/midi-cleanup/tests -v
+parity-reference	.	python tools/midi-cleanup/tests/parity_reference.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/chart.spec.ts tests/e2e/converted-import.spec.ts tests/e2e/doors.spec.ts tests/e2e/engine.spec.ts tests/e2e/finder.spec.ts tests/e2e/import-experience.spec.ts tests/e2e/library.spec.ts tests/e2e/mic.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/pdf-paper.spec.ts tests/e2e/pdf.spec.ts tests/e2e/perf.spec.ts tests/e2e/score.density.spec.ts tests/e2e/score.renderer.fuzz.spec.ts tests/e2e/score.slide.spec.ts tests/e2e/score.slots.spec.ts tests/e2e/score.spec.ts tests/e2e/shelf.spec.ts tests/e2e/sweeps.spec.ts tests/e2e/wide.spec.ts --workers=4

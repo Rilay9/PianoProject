@@ -1,0 +1,37 @@
+mutant: a stage change does not take the word back
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/windowRendererStage.test.ts (12 tests | 1 failed) 1339ms
+   ❯ the measurement taken before the first window is priced (U74) (5)
+     × a fit finished in the task that drew the window is not said settled until a frame has passed, and a stage change in that frame takes it back 20ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  01:33:32
+   Duration  2.48s (tests 57%, environment 30%, transform 11%, import 2%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the measurement taken before the first window is priced (U74) > a fit finished in the task that drew the window is not said settled until a frame has passed, and a stage change in that frame takes it back
+AssertionError: the stage moved: expected 'true' to be undefined
+
+- Expected:
+undefined
+
++ Received:
+"true"
+
+ ❯ tests/unit/windowRendererStage.test.ts:590:57
+    588|     stage.box = { width: 300, height: 370 };
+    589|     observe();
+    590|     expect(stage.el.dataset.settled, 'the stage moved').toBeUndefined(…
+       |                                                         ^
+    591|     await settle();
+    592|     expect(stage.el.dataset.settled, 'said once the stage held still a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit 1

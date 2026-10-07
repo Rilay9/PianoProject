@@ -1,0 +1,115 @@
+python -m unittest discover -s tools/content/tests -t tools/content
+..........................................................................F.............................C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5103: MusicXMLWarning: Cannot put in an element with a missing voice tag when no previous voice tag was given.  Assuming voice 1... 
+  thisVoice = self.findM21VoiceFromXmlVoice(mxVoice)
+..............................................................................................................................................ssC:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 1 in part Pianois overfull: 721/480 > 1.5,assuming 1.5 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+...........................E.....................E............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................note: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\build\.content-lock is 2.0 hours old (a crashed run (pid 1)) — assuming a crashed run and taking it over
+...............18 row(s) have no decision in C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-v4k1v3ty\run\review-empty\review.csv. Nothing is committed that a person has not marked keep, drop or later (replan §2.5). Run review.py --check to list them.
+....C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_pdmx.py:567: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:\\Users\\yalir\\AppData\\Local\\Temp\\pdmx-e2e-v4k1v3ty\\run\\review-decided\\review.csv' mode='r' encoding='utf-8'>
+  decided = list(csv.DictReader(sheet.open(encoding="utf-8", newline="")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+................................................................s.........................................................................................................s....................................  127.0.0.1  code 404, message File not found
+  127.0.0.1  "GET /nope.js HTTP/1.1" 404 -
+.  127.0.0.1  "GET /score.mxl HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+.  127.0.0.1  "GET /manifest.webmanifest HTTP/1.1" 200 -
+.  127.0.0.1  "GET /sw.js HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /sw.js HTTP/1.1" 200 -
+  127.0.0.1  "GET /assets/app-abc123.js HTTP/1.1" 200 -
+.C:\Users\yalir\AppData\Local\Temp\tmp3dfecx3x has no index.html. Build first:
+  py -3.11 tools/content/build.py --offline --personal
+  cd app && set VITE_BASE=/ && npm run build:app
+.No certificate at C:\Users\yalir\AppData\Local\Temp\tmpomvb0mjj\none.pem / C:\Users\yalir\AppData\Local\Temp\tmpomvb0mjj\none.key.
+Make one once, for this laptop's address (docs/OWNER-GUIDE.md §1):
+  mkcert -cert-file C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\packaging\lan\cert.pem -key-file C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\packaging\lan\key.pem <this laptop's IP> localhost
+...............................................................................................................................................................................................................................
+======================================================================
+ERROR: test_every_promise_can_fail (tests.test_family_contracts.TestTheMutationCensus.test_every_promise_can_fail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_family_contracts.py", line 262, in test_every_promise_can_fail
+    measured = planned.measured()
+               ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\planned.py", line 60, in measured
+    paths = write_all(Path(scratch), plan())
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\planned.py", line 47, in write_all
+    return {entry["id"]: Path(G.write(sc, str(folder), entry["id"])) for sc, entry in items}
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\planned.py", line 47, in <dictcomp>
+    return {entry["id"]: Path(G.write(sc, str(folder), entry["id"])) for sc, entry in items}
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\generate_exercises.py", line 913, in write
+    write_mxl(sc, Path(path))
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\convert.py", line 1641, in write_mxl
+    normalise_archive(out_path)
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\convert.py", line 1617, in normalise_archive
+    with zipfile.ZipFile(staged, "w", zipfile.ZIP_DEFLATED) as archive:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\zipfile.py", line 1294, in __init__
+    self.fp = io.open(file, filemode)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 28] No space left on device: 'C:\\Users\\yalir\\AppData\\Local\\Temp\\tmpodzw3g7k\\exercise.boogie.c.pinetop.mxl.tmp'
+
+======================================================================
+ERROR: test_a_lesson_keeps_the_prompt_it_had_byte_for_byte_whatever_its_concepts_name (tests.test_finder.TestTheBuildPassesTheSeedConcepts.test_a_lesson_keeps_the_prompt_it_had_byte_for_byte_whatever_its_concepts_name)
+----------------------------------------------------------------------
+OSError: [Errno 28] No space left on device
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_finder.py", line 150, in test_a_lesson_keeps_the_prompt_it_had_byte_for_byte_whatever_its_concepts_name
+    built = self.build_with(lessons, [])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_finder.py", line 138, in build_with
+    step = build.copy_curriculum(out)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\build.py", line 1187, in copy_curriculum
+    write_json(
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\common.py", line 116, in write_json
+    with path.open("w", encoding="utf-8") as handle:
+OSError: [Errno 28] No space left on device
+
+======================================================================
+FAIL: test_a_test_side_helper_names_every_file_that_reads_it (tests.test_checks_for_paths.TheMinimumSemantics.test_a_test_side_helper_names_every_file_that_reads_it) (pattern='app/tests/fixtures/**', check='e2e')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_checks_for_paths.py", line 299, in test_a_test_side_helper_names_every_file_that_reads_it
+    self.assertEqual([r for r in readers if r not in (value or [])], [],
+AssertionError: Lists differ: ['tests/e2e/import-experience.spec.ts'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'tests/e2e/import-experience.spec.ts'
+
+- ['tests/e2e/import-experience.spec.ts']
++ [] : app/tests/fixtures/**: e2e does not name every file that reads it
+
+----------------------------------------------------------------------
+Ran 1391 tests in 591.046s
+
+FAILED (failures=1, errors=2, skipped=4)
+wrote C:\Users\yalir\AppData\Local\Temp\tmpca726_02\out.md (3 occurrences in 1 lessons)
+committed 15 file(s) to C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-v4k1v3ty\run\scores
+  skipped 3 row(s) marked drop or later
+  table   C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-v4k1v3ty\run\pdmx.json
+  Zenodo record: unknown — the CSV matches neither published record's size.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmpdjoegqj4\library\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+2 file(s), 0 MB -> C:\Users\yalir\AppData\Local\Temp\tmpdjoegqj4\library.zip (0 MB)
+Copy that one file to the phone and unzip it. Then: Library -> Browse a score folder -> pick pianopath-library.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmparn90rsd\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+Copy the whole folder to the phone, then: Library -> Score folder -> pick it.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmphagysdlb\library\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+2 file(s), 0 MB -> C:\Users\yalir\AppData\Local\Temp\tmphagysdlb\library.zip (0 MB)
+Copy that one file to the phone and unzip it. Then: Library -> Browse a score folder -> pick pianopath-library.
+wrote measured durations into C:\Users\yalir\AppData\Local\Temp\tmpkxmaw2so\catalog.json
+wrote measured durations into C:\Users\yalir\AppData\Local\Temp\tmpi3sp8w0l\catalog.json
+exit=1

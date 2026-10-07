@@ -1,0 +1,18 @@
+HD2a evidence: song.folk.this-country-of-mine-extended-mix-of-negaraku-malaysia-s-national-anthem-featuring-britain-japan-singapore-and-brunei.pdmx (scores/pdmx/QmY5pWGJjV8ZQ1uLSGvdeY43FZJvQsAP4VXiicW4Q2EcUx.mxl), identity sha256 c1aa15ae4d74d7337b62c7bc4787d39f3d89b23646bd71c3a326db6e95ab3ea3
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 31-31 -> R
+  bar 31 (source measure 31) st1 v2: L/x -> R; onsets 3 {'conflict': 2, 'free': 1}; second voice(s) [3]; e.g. @117 L [46, 50, 53] + v2 [77]; @118 L [46, 48, 52] + v2 [76]
+  bar 31 onset 117 86/st1/v1/R:0.5 77/st1/v2/L/x:1 53/st2/v3/L:1 50/st2/v3/L:1 46/st2/v3/L:1
+  bar 31 onset 117.5 82/st1/v1/R:0.5
+  bar 31 onset 118 81/st1/v1/R:1 76/st1/v2/L/x:1 52/st2/v3/L:2 48/st2/v3/L:2 46/st2/v3/L:2
+  bar 31 onset 119 79/st1/v1/R:1 76/st1/v2/L/x:1
+
+ROW staff 1 voice 2 bars 90-90 -> R
+  bar 90 (source measure 90) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @339 L [61, 65, 70] + v2 [82]
+  bar 90 onset 339 82/st1/v2/L/x:4 70/st2/v3/L:4 65/st2/v3/L:4 61/st2/v3/L:4
+  bar 90 onset 340 60/st1/v1/R:1
+  bar 90 onset 341 60/st1/v1/R:1
+  bar 90 onset 342 69/st1/v1/R:1
+

@@ -1,0 +1,14 @@
+..................F.
+======================================================================
+FAIL: test_the_physical_gate_refuses_an_impossible_leap (tools.content.tests.test_excerpt_proposer.TheGates.test_the_physical_gate_refuses_an_impossible_leap)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_excerpt_proposer.py", line 277, in test_the_physical_gate_refuses_an_impossible_leap
+    self.assertTrue(any(f.startswith("leap:") for f in faults), faults)
+AssertionError: False is not true : []
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.535s
+
+FAILED (failures=1)
+exit 1

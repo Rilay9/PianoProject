@@ -214,7 +214,8 @@
                 "CC64",
                 "legato-pedalling",
                 "polyrhythm-3:1",
-                "meter-7-8"
+                "meter-7-8",
+                "sixteenth-notes"
               ],
               "textFile": "lessons/technique.6.md",
               "exerciseOptions": [
@@ -310,7 +311,8 @@
                 "exercise.walking-bass.f.ii-v-i",
                 "exercise.voicing7.c.shell",
                 "drill.theory.harmonic-dictation",
-                "exercise.ii-v-i.c.rootless"
+                "exercise.ii-v-i.c.rootless",
+                "drill.jazz.minor-ii-v-i-shells"
               ],
               "songOptions": [
                 "song.pop.ray-henderson-bye-bye-blackbird.pdmx",
@@ -318,7 +320,9 @@
                 "song.jazz.django-reinhardt-tiger-rag.pdmx",
                 "song.pop.benny-goodman-louis-prima-rose-room.pdmx",
                 "song.pop.darktown-strutter-s-ball.pdmx",
-                "song.classical.royal-garden-blues.pdmx"
+                "song.classical.royal-garden-blues.pdmx",
+                "song.jazz.kenny-dorham-blue-bossa.pdmx",
+                "song.folk.insensatez-how-insensitive-jobim.pdmx"
               ],
               "songOptional": true,
               "mastery": {
@@ -329,6 +333,14 @@
                 {
                   "kind": "runs",
                   "from": "exercises",
+                  "count": 2
+                },
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "items": [
+                    "drill.jazz.minor-ii-v-i-shells"
+                  ],
                   "count": 1
                 }
               ],
@@ -346,7 +358,7 @@
                 }
               ],
               "levelBand": [
-                2.92,
+                2.32,
                 6.4
               ],
               "finder": {
@@ -716,6 +728,12 @@
                   "kind": "runs",
                   "from": "exercises",
                   "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "guide-tones-three-keys",
+                  "says": "A ii–V–I in three keys, landing on a chord tone at the start of each bar.",
+                  "why": "Improvised notes are not a run the app judges, and the lab records nothing."
                 }
               ],
               "prerequisites": [
@@ -747,7 +765,8 @@
                   "kind": "lab",
                   "preset": "minor-vamp",
                   "unlock": [
-                    "progression"
+                    "progression",
+                    "key"
                   ]
                 }
               ]

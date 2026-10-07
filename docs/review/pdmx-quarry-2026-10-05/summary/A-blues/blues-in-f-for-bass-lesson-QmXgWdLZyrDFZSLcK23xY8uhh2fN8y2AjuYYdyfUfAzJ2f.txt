@@ -1,0 +1,44 @@
+SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=39 bars=36
+INSTRUMENTS/PARTS: P1:'ベース':staves=1:prog=34:piano=False
+CID QmXgWdLZyrDFZSLcK23xY8uhh2fN8y2AjuYYdyfUfAzJ2f
+title: Blues in F for bass lesson | song_name: 
+composer:  | artist: 
+csv: tracks=34 bars=36 license=cc-zero
+
+=== part P1 'ベース' measures=36 ===
+m1 [key fifths=-1; time 4/4; clef=F4; tempo=120; "Swing"]  s1v1: F2:q A2:q C3:q Cb3:q
+m2  s1v1: Bb2:q D3:q D#3:q E3:q
+m3  s1v1: F3:q F2:q A2:q C3:q
+m4  s1v1: F3:q Eb3:q C3:q Cb3:q
+m5  s1v1: Bb2:q D3:q F3:q D3:q
+m6  s1v1: B2:q D3:q F3:q D3:q
+m7  s1v1: F3:q F3:q E3:q Eb3:q
+m8  s1v1: D3:q A2:q F2:q Gb2:q
+m9  s1v1: G2:q A2:q Bb2:q B2:q
+m10  s1v1: C3:q D3:q D#3:q E3:q
+m11  s1v1: F3:q Eb3:q D3:q F#3:q
+m12  s1v1: G3:q C#3:q C3:q E3:q
+m13  s1v1: F3:q G3:q G#3:q A3:q
+m14  s1v1: Bb3:q D4:q D#4:q E4:q
+m15  s1v1: F4:q E4:q Eb4:q D4:q
+m16  s1v1: C4:q A3:q F3:q C3:q
+m17  s1v1: Bb2:q F3:q D3:q C3:q
+m18  s1v1: Cb3:q D3:q D#3:q E3:q
+m19  s1v1: F3:q F3:q E3:q Eb3:q
+m20  s1v1: D3:q D4:8 A3:8 E4:8 C4:8 A3:q
+m21  s1v1: G3:q A3:q Bb3:q Cb4:q
+m22  s1v1: C4:q C3:q G3:q F#3:q
+m23  s1v1: F3:q Eb3:q D3:q C3:8 A2:8
+m24  s1v1: G2:q Bb2:q C3:q E3:q
+m25  s1v1: F3:q G3:q Ab3:q A3:q
+m26  s1v1: Bb3:q Bb2:q D3:q E2:q
+m27  s1v1: F2:q G2:q A2:q Gb2:q
+m28  s1v1: F2:q F2:q C3:q C3:q
+m29  s1v1: Bb2:q Bb2:8 Bb2:8 D3:q D3:8 D3:8
+m30  s1v1: B2:q B2:8 B2:8 D3:q F3:8 D3:8
+m31  s1v1: F3:q F3:q E3:q Eb3:q
+m32  s1v1: D3:q A3:q A3:q Ab3:q
+m33  s1v1: G3:q A3:q Bb3:q Cb4:q
+m34  s1v1: C4:q C3:q G3:q E3:8 G2:8
+m35  s1v1: F2:8 r:8 r:q r:h
+m36  s1v1: r:d4

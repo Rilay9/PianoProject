@@ -1,0 +1,15 @@
+﻿
+16:45:07 done validate-kern-personal-after-final exit 
+16:45:08 done validate-kern-strict-after-final exit 
+16:45:08 caches copied
+16:45:10 done build-whole-strict-after exit 
+16:45:10 done validate-whole-strict-after exit 
+16:45:10 caches copied
+16:45:12 done build-final-personal exit 
+16:45:12 done validate-final exit 
+16:45:13 done validate-final-personal exit 
+16:45:13 done review-check exit 
+16:45:14 done content-tests-all exit 
+16:53:02 done vitest-all exit 1
+16:55:07 done build-app exit 0
+16:55:07 chain finished

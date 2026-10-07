@@ -6,7 +6,7 @@ videos:
   - label: "Left Hand Walks and Runs for Hymn-playing and Improvising"
     url: "https://www.youtube.com/watch?v=bVQUZKnu8PM"
     teacher: "Jonathan Hudson"
-readingTime: 3
+readingTime: 4
 ---
 
 The rung below gave you four voices with every note printed. This one takes
@@ -28,7 +28,7 @@ The slash-chord study is the other half — in its first and third bars the righ
 hand holds one triad while the bass steps down underneath it.
 
 **The chord that is not in the key is usually the dominant of the next one.**
-One trick rather than many: any chord can be preceded by its own five chord,
+One trick rather than many: a major or minor chord can be preceded by its own five chord,
 borrowed from outside the key. Three of the songs print one, and reading the
 symbol is enough to find them.
 

@@ -1,0 +1,11 @@
+﻿(cd app) npx vitest run tests/unit/transferFactsOnTheAttempt.test.ts tests/unit/masteryLadder.test.ts tests/unit/competenceSurvivesPruning.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6d274c20b3e170c9/app
+
+
+ Test Files  3 passed (3)
+      Tests  36 passed (36)
+   Start at  04:29:50
+   Duration  13.90s (tests 90%, transform 7%, import 2%)
+
+exit=0

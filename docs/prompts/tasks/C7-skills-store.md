@@ -44,3 +44,8 @@ Judgement first: the Skills screen and Progress for a learner on 2.2 with the ow
 
 **Closed by the reviewer 2026-09-27**: approved with one required fix (L98, the first-open plan race, closed at the store), then the fix accepted; the soft-cap caveat on `holdsEvidence` is L99 for a later storage owner; the `recordRungWord` atomicity note is L100.
 
+## Record
+
+lane: C7 · closes: — · entry: 83
+index: The Skills store retired: one skill state (the ladder's), rusty as not shown lately, unmeasured concepts say so, Progress shows competence | build, browser | **done 2026-09-27**, Entry 83; **closed by the reviewer** after the L98 fix-forward (responses 65a608b, a8a0026) |
+state: closed: closed by the reviewer after the L98 fix-forward (responses 65a608b, a8a0026)

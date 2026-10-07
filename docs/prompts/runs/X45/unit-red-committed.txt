@@ -1,0 +1,686 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ ❯ tests/unit/drillLifecycle.test.ts (43 tests | 5 failed) 615ms
+   ❯ a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) (5)
+     × Part A, the start never answers: no tap is judged against the moment the card opened, and once the start answers the ordinary count-in leads to the first judged onset 16ms
+     × Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs 16ms
+     × Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed 15ms
+     × Part C, where only a tap can start the sound: a key asks for nothing, a tap on the paused card asks once, inside the tap; the ordinary count-in follows and the first tap after it is the first judged onset 12ms
+     × “Again” opens its card the same way: held while the sound is suspended, hidden during the wait and back, it counts in from the top and its first tap starts the pattern 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A, the start never answers: no tap is judged against the moment the card opened, and once the start answers the ordinary count-in leads to the first judged onset
+AssertionError: a tap was judged against the moment the card opened: expected 6 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 6
+
+ ❯ tests/unit/drillLifecycle.test.ts:1330:96
+    1328|     press(60);
+    1329|     midiKey(62);
+    1330|     expect.soft(live.result().answered, 'a tap was judged against the …
+       |                                                                                                ^
+    1331|     expect.soft(live.firstTapAt, 'a tap was the first onset with the s…
+    1332|     expect.soft(start, 'the count began with the start unanswered').no…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A, the start never answers: no tap is judged against the moment the card opened, and once the start answers the ordinary count-in leads to the first judged onset
+AssertionError: a stray during the count was judged: expected 6 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 6
+
+ ❯ countsInFromTheTop tests/unit/drillLifecycle.test.ts:1306:75
+    1304|     press(60);
+    1305|     expect(live.firstTapAt, 'a stray during the count started the rhyt…
+    1306|     expect(live.result().answered, 'a stray during the count was judge…
+       |                                                                           ^
+    1307|     await until(() => text('drill-status').startsWith('Tap the rhythm'…
+    1308|     const downbeat = live.startedAt as number;
+ ❯ tests/unit/drillLifecycle.test.ts:1336:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs
+AssertionError: the held card does not say the sound is paused: expected '' to be 'Sound is paused — tap to continue.' // Object.is equality
+
+- Expected
++ Received
+
+- Sound is paused — tap to continue.
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1283:89
+    1281|   /** The paused card, as CL05b's return shows it: the sentence, and t…
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+       |                                                                                         ^
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+ ❯ tests/unit/drillLifecycle.test.ts:1345:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs
+AssertionError: the card is not an activation target: expected null to be 'button' // Object.is equality
+
+- Expected:
+"button"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1284:89
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+       |                                                                                         ^
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+ ❯ tests/unit/drillLifecycle.test.ts:1345:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs
+AssertionError: the card cannot be reached from the keyboard: expected null to be '0' // Object.is equality
+
+- Expected:
+"0"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1285:101
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+       |                                                                                                     ^
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+    1287|   }
+ ❯ tests/unit/drillLifecycle.test.ts:1345:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs
+AssertionError: the card does not say what it does: expected null to be 'Sound is paused — tap to continue.' // Object.is equality
+
+- Expected:
+"Sound is paused — tap to continue."
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1286:93
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+       |                                                                                             ^
+    1287|   }
+    1288|
+ ❯ tests/unit/drillLifecycle.test.ts:1345:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs
+AssertionError: a tap was judged against the moment the card opened: expected 6 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 6
+
+ ❯ tests/unit/drillLifecycle.test.ts:1350:96
+    1348|     press(60);
+    1349|     midiKey(62);
+    1350|     expect.soft(live.result().answered, 'a tap was judged against the …
+       |                                                                                                ^
+    1351|     expect.soft(live.firstTapAt, 'a tap was the first onset with the s…
+    1352|     expect.soft(start, 'the count began with the sound suspended').not…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs
+AssertionError: the held card does not say the sound is paused: expected '' to be 'Sound is paused — tap to continue.' // Object.is equality
+
+- Expected
++ Received
+
+- Sound is paused — tap to continue.
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1283:89
+    1281|   /** The paused card, as CL05b's return shows it: the sentence, and t…
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+       |                                                                                         ^
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+ ❯ tests/unit/drillLifecycle.test.ts:1353:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs
+AssertionError: the card is not an activation target: expected null to be 'button' // Object.is equality
+
+- Expected:
+"button"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1284:89
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+       |                                                                                         ^
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+ ❯ tests/unit/drillLifecycle.test.ts:1353:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs
+AssertionError: the card cannot be reached from the keyboard: expected null to be '0' // Object.is equality
+
+- Expected:
+"0"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1285:101
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+       |                                                                                                     ^
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+    1287|   }
+ ❯ tests/unit/drillLifecycle.test.ts:1353:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs
+AssertionError: the card does not say what it does: expected null to be 'Sound is paused — tap to continue.' // Object.is equality
+
+- Expected:
+"Sound is paused — tap to continue."
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1286:93
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+       |                                                                                             ^
+    1287|   }
+    1288|
+ ❯ tests/unit/drillLifecycle.test.ts:1353:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs
+AssertionError: a stray during the count was judged: expected 6 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 6
+
+ ❯ countsInFromTheTop tests/unit/drillLifecycle.test.ts:1306:75
+    1304|     press(60);
+    1305|     expect(live.firstTapAt, 'a stray during the count started the rhyt…
+    1306|     expect(live.result().answered, 'a stray during the count was judge…
+       |                                                                           ^
+    1307|     await until(() => text('drill-status').startsWith('Tap the rhythm'…
+    1308|     const downbeat = live.startedAt as number;
+ ❯ tests/unit/drillLifecycle.test.ts:1359:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed
+AssertionError: the held card does not say the sound is paused: expected '' to be 'Sound is paused — tap to continue.' // Object.is equality
+
+- Expected
++ Received
+
+- Sound is paused — tap to continue.
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1283:89
+    1281|   /** The paused card, as CL05b's return shows it: the sentence, and t…
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+       |                                                                                         ^
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+ ❯ tests/unit/drillLifecycle.test.ts:1366:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed
+AssertionError: the card is not an activation target: expected null to be 'button' // Object.is equality
+
+- Expected:
+"button"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1284:89
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+       |                                                                                         ^
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+ ❯ tests/unit/drillLifecycle.test.ts:1366:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed
+AssertionError: the card cannot be reached from the keyboard: expected null to be '0' // Object.is equality
+
+- Expected:
+"0"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1285:101
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+       |                                                                                                     ^
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+    1287|   }
+ ❯ tests/unit/drillLifecycle.test.ts:1366:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed
+AssertionError: the card does not say what it does: expected null to be 'Sound is paused — tap to continue.' // Object.is equality
+
+- Expected:
+"Sound is paused — tap to continue."
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1286:93
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+       |                                                                                             ^
+    1287|   }
+    1288|
+ ❯ tests/unit/drillLifecycle.test.ts:1366:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed
+AssertionError: a count-in was begun with the sound suspended: expected "start" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st start call:
+
+    Array []
+
+
+Number of calls: 1
+
+ ❯ tests/unit/drillLifecycle.test.ts:1373:77
+    1371|     }
+    1372|     expect.soft(text('drill-status'), 'a count-in began on a standing …
+    1373|     expect.soft(start, 'a count-in was begun with the sound suspended'…
+       |                                                                             ^
+    1374|     expect.soft(live.result().answered, 'a tap was judged with the sou…
+    1375|     expect.soft(live.firstTapAt, 'a tap was the first onset with the s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed
+AssertionError: the held card does not say the sound is paused: expected '' to be 'Sound is paused — tap to continue.' // Object.is equality
+
+- Expected
++ Received
+
+- Sound is paused — tap to continue.
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1283:89
+    1281|   /** The paused card, as CL05b's return shows it: the sentence, and t…
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+       |                                                                                         ^
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+ ❯ tests/unit/drillLifecycle.test.ts:1376:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed
+AssertionError: the card is not an activation target: expected null to be 'button' // Object.is equality
+
+- Expected:
+"button"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1284:89
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+       |                                                                                         ^
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+ ❯ tests/unit/drillLifecycle.test.ts:1376:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed
+AssertionError: the card cannot be reached from the keyboard: expected null to be '0' // Object.is equality
+
+- Expected:
+"0"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1285:101
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+       |                                                                                                     ^
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+    1287|   }
+ ❯ tests/unit/drillLifecycle.test.ts:1376:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed
+AssertionError: the card does not say what it does: expected null to be 'Sound is paused — tap to continue.' // Object.is equality
+
+- Expected:
+"Sound is paused — tap to continue."
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1286:93
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+       |                                                                                             ^
+    1287|   }
+    1288|
+ ❯ tests/unit/drillLifecycle.test.ts:1376:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed
+AssertionError: the count-in is not a bar of clicks a beat apart: expected [] to deeply equal [ 500, 500, 500 ]
+
+- Expected
++ Received
+
+- [
+-   500,
+-   500,
+-   500,
+- ]
++ []
+
+ ❯ countsInFromTheTop tests/unit/drillLifecycle.test.ts:1310:82
+    1308|     const downbeat = live.startedAt as number;
+    1309|     const count = heardSince(downbeat - 2_100).filter((at) => at < dow…
+    1310|     expect.soft(gaps(count), 'the count-in is not a bar of clicks a be…
+       |                                                                                  ^
+    1311|     expect.soft(count[3] ?? 0, 'the downbeat is not a beat after the c…
+    1312|     await play(Math.max(0, Math.round((live.startedAt as number) - per…
+ ❯ tests/unit/drillLifecycle.test.ts:1382:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed
+AssertionError: the downbeat is not a beat after the count’s last click: expected +0 to be close to 1600, received difference is 1600, but expected 0.5
+ ❯ countsInFromTheTop tests/unit/drillLifecycle.test.ts:1311:91
+    1309|     const count = heardSince(downbeat - 2_100).filter((at) => at < dow…
+    1310|     expect.soft(gaps(count), 'the count-in is not a bar of clicks a be…
+    1311|     expect.soft(count[3] ?? 0, 'the downbeat is not a beat after the c…
+       |                                                                                           ^
+    1312|     await play(Math.max(0, Math.round((live.startedAt as number) - per…
+    1313|     const tapAt = performance.now();
+ ❯ tests/unit/drillLifecycle.test.ts:1382:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part C, where only a tap can start the sound: a key asks for nothing, a tap on the paused card asks once, inside the tap; the ordinary count-in follows and the first tap after it is the first judged onset
+AssertionError: the held card does not say the sound is paused: expected '' to be 'Sound is paused — tap to continue.' // Object.is equality
+
+- Expected
++ Received
+
+- Sound is paused — tap to continue.
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1283:89
+    1281|   /** The paused card, as CL05b's return shows it: the sentence, and t…
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+       |                                                                                         ^
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+ ❯ tests/unit/drillLifecycle.test.ts:1390:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part C, where only a tap can start the sound: a key asks for nothing, a tap on the paused card asks once, inside the tap; the ordinary count-in follows and the first tap after it is the first judged onset
+AssertionError: the card is not an activation target: expected null to be 'button' // Object.is equality
+
+- Expected:
+"button"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1284:89
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+       |                                                                                         ^
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+ ❯ tests/unit/drillLifecycle.test.ts:1390:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part C, where only a tap can start the sound: a key asks for nothing, a tap on the paused card asks once, inside the tap; the ordinary count-in follows and the first tap after it is the first judged onset
+AssertionError: the card cannot be reached from the keyboard: expected null to be '0' // Object.is equality
+
+- Expected:
+"0"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1285:101
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+       |                                                                                                     ^
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+    1287|   }
+ ❯ tests/unit/drillLifecycle.test.ts:1390:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part C, where only a tap can start the sound: a key asks for nothing, a tap on the paused card asks once, inside the tap; the ordinary count-in follows and the first tap after it is the first judged onset
+AssertionError: the card does not say what it does: expected null to be 'Sound is paused — tap to continue.' // Object.is equality
+
+- Expected:
+"Sound is paused — tap to continue."
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1286:93
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+       |                                                                                             ^
+    1287|   }
+    1288|
+ ❯ tests/unit/drillLifecycle.test.ts:1390:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part C, where only a tap can start the sound: a key asks for nothing, a tap on the paused card asks once, inside the tap; the ordinary count-in follows and the first tap after it is the first judged onset
+AssertionError: the tap did not ask for the sound, once, inside itself: expected [] to deeply equal [ { inGesture: true, running: false } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "inGesture": true,
+-     "running": false,
+-   },
+- ]
++ []
+
+ ❯ tests/unit/drillLifecycle.test.ts:1408:8
+    1406|         'the tap did not ask for the sound, once, inside itself',
+    1407|       )
+    1408|       .toEqual([{ inGesture: true, running: false }]);
+       |        ^
+    1409|     await flush();
+    1410|     expect.soft(audio.engineState, 'the tap did not wake the sound').t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part C, where only a tap can start the sound: a key asks for nothing, a tap on the paused card asks once, inside the tap; the ordinary count-in follows and the first tap after it is the first judged onset
+AssertionError: the tap did not wake the sound: expected 'suspended' to be 'running' // Object.is equality
+
+Expected: "running"
+Received: "suspended"
+
+ ❯ tests/unit/drillLifecycle.test.ts:1410:70
+    1408|       .toEqual([{ inGesture: true, running: false }]);
+    1409|     await flush();
+    1410|     expect.soft(audio.engineState, 'the tap did not wake the sound').t…
+       |                                                                      ^
+    1411|     expectNotPaused();
+    1412|     // The card is no longer the way back: a second tap on it asks for…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > Part C, where only a tap can start the sound: a key asks for nothing, a tap on the paused card asks once, inside the tap; the ordinary count-in follows and the first tap after it is the first judged onset
+Error: never happened: the count-in began from its first click
+ ❯ until tests/unit/drillLifecycle.test.ts:278:9
+    276|     await play(25);
+    277|   }
+    278|   throw new Error(`never happened: ${what}`);
+       |         ^
+    279| }
+    280|
+ ❯ countsInFromTheTop tests/unit/drillLifecycle.test.ts:1303:5
+ ❯ tests/unit/drillLifecycle.test.ts:1416:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > “Again” opens its card the same way: held while the sound is suspended, hidden during the wait and back, it counts in from the top and its first tap starts the pattern
+AssertionError: the held card does not say the sound is paused: expected 'Tap the rhythm on any key — your firs…' to be 'Sound is paused — tap to continue.' // Object.is equality
+
+Expected: "Sound is paused — tap to continue."
+Received: "Tap the rhythm on any key — your first tap starts it."
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1283:89
+    1281|   /** The paused card, as CL05b's return shows it: the sentence, and t…
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+       |                                                                                         ^
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+ ❯ tests/unit/drillLifecycle.test.ts:1432:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > “Again” opens its card the same way: held while the sound is suspended, hidden during the wait and back, it counts in from the top and its first tap starts the pattern
+AssertionError: the card is not an activation target: expected null to be 'button' // Object.is equality
+
+- Expected:
+"button"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1284:89
+    1282|   function expectPaused(): void {
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+       |                                                                                         ^
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+ ❯ tests/unit/drillLifecycle.test.ts:1432:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > “Again” opens its card the same way: held while the sound is suspended, hidden during the wait and back, it counts in from the top and its first tap starts the pattern
+AssertionError: the card cannot be reached from the keyboard: expected null to be '0' // Object.is equality
+
+- Expected:
+"0"
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1285:101
+    1283|     expect.soft(text('drill-status'), 'the held card does not say the …
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+       |                                                                                                     ^
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+    1287|   }
+ ❯ tests/unit/drillLifecycle.test.ts:1432:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/34]⎯
+
+ FAIL  tests/unit/drillLifecycle.test.ts > a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45) > “Again” opens its card the same way: held while the sound is suspended, hidden during the wait and back, it counts in from the top and its first tap starts the pattern
+AssertionError: the card does not say what it does: expected null to be 'Sound is paused — tap to continue.' // Object.is equality
+
+- Expected:
+"Sound is paused — tap to continue."
+
++ Received:
+null
+
+ ❯ expectPaused tests/unit/drillLifecycle.test.ts:1286:93
+    1284|     expect.soft(stageEl().getAttribute('role'), 'the card is not an ac…
+    1285|     expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot b…
+    1286|     expect.soft(stageEl().getAttribute('aria-label'), 'the card does n…
+       |                                                                                             ^
+    1287|   }
+    1288|
+ ❯ tests/unit/drillLifecycle.test.ts:1432:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/34]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 38 passed (43)
+   Start at  02:40:37
+   Duration  2.47s (transform 35%, environment 31%, tests 26%, import 7%)
+

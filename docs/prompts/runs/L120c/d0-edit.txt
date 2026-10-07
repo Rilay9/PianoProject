@@ -1,0 +1,30 @@
+removed: broken_seventh on technique.7: rhythm.sixteenths x2 (taught at 4.4 on its path)
+removed: comping on jazz.4: rhythm.syncopation x1 (taught at jazz.4 on its path)
+removed: hanon on 4.4: rhythm.sixteenths x5 (taught at 4.4 on its path)
+taughtAt: hanon on classical.4: rhythm.sixteenths [] -> ['4.4']
+removed: hanon on classical.5: rhythm.sixteenths x2 (taught at 4.4 on its path)
+removed: hanon on classical.6: rhythm.sixteenths x3 (taught at 4.4 on its path)
+removed: hanon on classical.7: rhythm.sixteenths x2 (taught at 4.4 on its path)
+removed: hanon on classical.8: rhythm.sixteenths x2 (taught at 4.4 on its path)
+removed: hanon on ragtime.6: rhythm.sixteenths x1 (taught at 4.4 on its path)
+removed: hanon on ragtime.7: rhythm.sixteenths x1 (taught at 4.4 on its path)
+removed: hanon on ragtime.8: rhythm.sixteenths x1 (taught at 4.4 on its path)
+taughtAt: hanon on technique.4: rhythm.sixteenths [] -> ['4.4']
+removed: hanon on technique.5: rhythm.sixteenths x2 (taught at 4.4 on its path)
+removed: octave_scale on technique.7: rhythm.sixteenths x2 (taught at 4.4 on its path)
+removed: repeated_notes on holiday.7: rhythm.sixteenths x1 (taught at 4.4 on its path)
+removed: repeated_notes on latin.7: rhythm.sixteenths x1 (taught at 4.4 on its path)
+removed: repeated_notes on technique.6: rhythm.sixteenths x1 (taught at 4.4 on its path)
+taughtAt: rhythm on blues.4: rhythm.syncopation ['4.5', 'latin.3'] -> ['4.5', 'latin.3', 'jazz.4']
+removed: rhythm on ragtime.5: rhythm.sixteenths x1 (taught at 4.4 on its path)
+removed: rotation on holiday.7: rhythm.sixteenths x1 (taught at 4.4 on its path)
+removed: rotation on latin.7: rhythm.sixteenths x1 (taught at 4.4 on its path)
+removed: rotation on technique.6: rhythm.sixteenths x1 (taught at 4.4 on its path)
+removed: scale on technique.8: rhythm.sixteenths x12 (taught at 4.4 on its path)
+removed: secondary_rag on ragtime.9: rhythm.sixteenths x1 (taught at 4.4 on its path)
+removed: syncopation on technique.6: rhythm.sixteenths x1 (taught at 4.4 on its path)
+removed: tremolo_octaves on blues.5: rhythm.sixteenths x1 (taught at 4.4 on its path)
+removed: tremolo_octaves on technique.7: rhythm.sixteenths x1 (taught at 4.4 on its path)
+taughtAt: tresillo on 3.6: rhythm.syncopation ['4.5', 'latin.3'] -> ['4.5', 'latin.3', 'jazz.4']
+removed: trill on technique.6: rhythm.sixteenths x1 (taught at 4.4 on its path)
+rows: 57

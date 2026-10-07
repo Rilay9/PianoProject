@@ -30,6 +30,7 @@ import {
 import { dailySeed } from '../../src/engine/sightReading';
 import { buildSession, REPERTOIRE_WINDOW_DAYS } from '../../src/curriculum/session';
 import { indexCatalog } from '../../src/curriculum/selectors';
+import { learnFormerIdentities } from '../../src/curriculum/material';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 
 const NOT_MEASURED = 'not measured';
@@ -82,6 +83,151 @@ describe('mastery is the master standard on two different days (Part G)', () => 
     const row = await recordRun({ ...RUN, masterEligible: true }, on('2026-09-03'));
     expect(row.masteredOn).toEqual(['2026-09-01', '2026-09-03']);
     expect(row.status).toBe('mastered');
+  });
+});
+
+/**
+ * E50c (Entry 190; the reviewer's required change on E50b, `docs/review/responses/65ae9d5f.md`): a fresh
+ * *mastered* counts only days supported by a run whose tempo channel is comparable under E50b's rule
+ * (`material.tempoNotComparable`). An old run of a repaired file was 100 % of the converter's defaulted 96,
+ * not of the tempo the repaired score prints, so that day cannot combine with one new day at the printed
+ * tempo to make mastery; a legacy run with no material or no base proves nothing either. `masteredOn`
+ * stays history — every date kept, none rewritten — and a row already mastered stays mastered.
+ *
+ * The old-day, the two legacy, the two repair-day and the no-database cases are red where the guard does not
+ * exist; the reach and the calendar-day cases hold the guard's own reading of the stored rows (each red under
+ * its mutant, `docs/prompts/runs/E50c/`); the controls (two comparable days, an item no repair touched, a
+ * historical mastered row) are green before and after.
+ */
+describe('E50c: a fresh mastery counts only days whose tempo is comparable (a tempo-repaired item)', () => {
+  const REPAIRED = 'song.blues.wabash-blues';
+  const OLD = 'a'.repeat(64);
+  const NEW = 'b'.repeat(64);
+  const file = (sha256: string) => ({ kind: 'file' as const, sha256 });
+  /** The repaired row as the build writes it (E50b): the old file a former identity, and tempo-repaired. */
+  const repairedRow = {
+    id: REPAIRED,
+    type: 'song',
+    title: 'Wabash Blues',
+    level: 3,
+    tracks: ['core'],
+    concepts: [],
+    file: `scores/${REPAIRED}.mxl`,
+    provenance: { identity: file(NEW), formerIdentities: [file(OLD)], tempoRepairedFrom: [file(OLD)] },
+  } as unknown as CatalogItem;
+  /** A master-standard run of the repaired item's id (the engine's own judgement: `masterEligible`). */
+  const MASTER: RunResult = { ...RUN, itemId: REPAIRED, masterEligible: true };
+  /** Before the repair: the old file, at 100 % of the defaulted 96. */
+  const oldDay: RunResult = { ...MASTER, material: file(OLD), baseTempo: { bpm: 96, source: 'defaulted' } };
+  /** After it: the repaired file at the tempo it prints. */
+  const newDay: RunResult = { ...MASTER, material: file(NEW), baseTempo: { bpm: 120, source: 'written' } };
+
+  const zone = process.env.TZ;
+  beforeEach(() => learnFormerIdentities([repairedRow]));
+  afterEach(() => {
+    learnFormerIdentities([]);
+    if (zone === undefined) delete process.env.TZ;
+    else process.env.TZ = zone;
+  });
+
+  it('an old day at 100 % of the defaulted 96 and one new day at the printed tempo is not mastery', async () => {
+    await recordRun(oldDay, on('2026-09-20'));
+    const row = await recordRun(newDay, on('2026-10-01'));
+    expect(row.status, 'an old defaulted-tempo day made the second master day').toBe('passed');
+    // History: both dates kept, neither rewritten nor dropped.
+    expect(row.masteredOn).toEqual(['2026-09-20', '2026-10-01']);
+  });
+
+  it('two days at the printed tempo still are (control)', async () => {
+    await recordRun(newDay, on('2026-10-01'));
+    const row = await recordRun(newDay, on('2026-10-02'));
+    expect(row.status).toBe('mastered');
+    expect(row.masteredOn).toEqual(['2026-10-01', '2026-10-02']);
+  });
+
+  it('an old day does not count, and a second new day then makes mastery: refused, never raised past two', async () => {
+    await recordRun(oldDay, on('2026-09-20'));
+    await recordRun(newDay, on('2026-10-01'));
+    const row = await recordRun(newDay, on('2026-10-02'));
+    expect(row.status).toBe('mastered');
+    expect(row.masteredOn).toEqual(['2026-09-20', '2026-10-01', '2026-10-02']);
+  });
+
+  it('a legacy run with no material and no base proves nothing: refused like the old file', async () => {
+    const { material: _material, baseTempo: _base, ...legacy } = oldDay;
+    await recordRun(legacy, on('2026-09-10'));
+    const row = await recordRun(newDay, on('2026-10-01'));
+    expect(row.status, 'a legacy run with no base proof made a master day').toBe('passed');
+    expect(row.masteredOn).toEqual(['2026-09-10', '2026-10-01']);
+  });
+
+  it('a run naming the repaired file but recording no base proves nothing either', async () => {
+    const { baseTempo: _base, ...noBase } = newDay;
+    await recordRun(noBase, on('2026-09-30'));
+    const row = await recordRun(newDay, on('2026-10-01'));
+    expect(row.status, 'a run with no recorded base made a master day').toBe('passed');
+  });
+
+  it('a comparable run that met no master standard does not carry an old master run’s day', async () => {
+    // The day the repair lands: the old file's master run, then a run of the repaired file below the master standard.
+    await recordRun(oldDay, on('2026-09-30'));
+    await recordRun({ ...newDay, accuracy: 0.92, masterEligible: false }, on('2026-09-30'));
+    const row = await recordRun(newDay, on('2026-10-01'));
+    expect(row.status, 'a comparable non-master run let the old master day count').toBe('passed');
+  });
+
+  it('nor does a rhythm-only run at the master numbers, which the sheet never lets master', async () => {
+    await recordRun(oldDay, on('2026-09-30'));
+    await recordRun({ ...newDay, rhythmOnly: true, passed: false, masterEligible: false }, on('2026-09-30'));
+    const row = await recordRun(newDay, on('2026-10-01'));
+    expect(row.status, 'a rhythm-only run let the old master day count').toBe('passed');
+  });
+
+  it('an earlier comparable day is reached however many runs came after it', async () => {
+    await recordRun(newDay, on('2026-10-01'));
+    // Seven runs below the master standard in between: more than `sessionsForItem`'s default of five.
+    for (let day = 2; day <= 8; day += 1) {
+      await recordRun({ ...newDay, accuracy: 0.92, masterEligible: false }, on(`2026-10-0${String(day)}`));
+    }
+    const row = await recordRun(newDay, on('2026-10-09'));
+    expect(row.status, 'the earlier comparable day was not reached').toBe('mastered');
+  });
+
+  it('a stored run’s day is the learner’s calendar day, not its UTC date', async () => {
+    process.env.TZ = 'America/New_York';
+    // 20:30 in New York on the 1st is 00:30 UTC on the 2nd.
+    await recordRun(newDay, new Date(2026, 9, 1, 20, 30));
+    const row = await recordRun(newDay, new Date(2026, 9, 3, 12, 0));
+    expect(row.masteredOn).toEqual(['2026-10-01', '2026-10-03']);
+    expect(row.status, 'the evening run was filed under the next UTC day').toBe('mastered');
+  });
+
+  it('a row mastered before the repair is never demoted (history)', async () => {
+    learnFormerIdentities([]);
+    await recordRun(oldDay, on('2026-09-10'));
+    expect((await recordRun(oldDay, on('2026-09-11'))).status).toBe('mastered');
+    learnFormerIdentities([repairedRow]);
+    expect((await recordRun({ ...newDay, accuracy: 0.92, masterEligible: false }, on('2026-10-01'))).status).toBe('mastered');
+    expect((await recordRun(newDay, on('2026-10-02'))).status).toBe('mastered');
+  });
+
+  it('an item no repair touched is judged as before, a defaulted-tempo run with no material included (control)', async () => {
+    const plain: RunResult = { ...RUN, masterEligible: true };
+    await recordRun({ ...plain, baseTempo: { bpm: 96, source: 'defaulted' } }, on('2026-09-20'));
+    const row = await recordRun(plain, on('2026-10-01'));
+    expect(row.status).toBe('mastered');
+  });
+
+  it('without a database: an item no repair touched masters as before; a repaired one never freshly does', async () => {
+    clearFakeIndexedDb();
+    resetProgressForTest();
+    await recordRun({ ...RUN, masterEligible: true }, on('2026-10-01'));
+    expect((await recordRun({ ...RUN, masterEligible: true }, on('2026-10-02'))).status).toBe('mastered');
+    // No session row is ever written without IndexedDB, so no earlier day is supported: refusal, the rule.
+    await recordRun(newDay, on('2026-10-01'));
+    const row = await recordRun(newDay, on('2026-10-02'));
+    expect(row.status).toBe('passed');
+    expect(row.masteredOn).toEqual(['2026-10-01', '2026-10-02']);
   });
 });
 

@@ -1,0 +1,23 @@
+HD2a evidence: song.classical.debussy-children-s-corner-doctor-gradus-ad-parnassum.pdmx (scores/pdmx/Qmbs6AsQ1EcraYkW8kJK6RxdrYGU2R1qA4iCV87Lg32MDD.mxl), identity sha256 a9471b49a7399645469def2cf9cfb4c6862ae277ccc386eb6ab693c7f61f242d
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 32-32 -> R
+  bar 32 (source measure 31) st1 v2: L/x -> R; onsets 12 {'conflict': 3, 'free': 9}; second voice(s) [3]; e.g. @125 L [40] + v2 [62]; @126 L [38] + v2 [64]
+  bar 32 onset 124 46/st2/v3/L:0.25
+  bar 32 onset 124.25 45/st2/v3/L:0.25
+  bar 32 onset 124.5 43/st2/v3/L:0.25
+  bar 32 onset 124.75 41/st2/v3/L:0.25
+  bar 32 onset 125 62/st1/v1/R:1 62/st1/v2/L/x:0.25 40/st2/v3/L:1
+  bar 32 onset 125.25 58/st1/v2/L/x:0.25
+  bar 32 onset 125.5 55/st1/v2/L/x:0.25
+  bar 32 onset 125.75 58/st1/v2/L/x:0.25
+  bar 32 onset 126 64/st1/v1/R:1 64/st1/v2/L/x:0.25 38/st2/v3/L:1
+  bar 32 onset 126.25 58/st1/v2/L/x:0.25
+  bar 32 onset 126.5 55/st1/v2/L/x:0.25
+  bar 32 onset 126.75 58/st1/v2/L/x:0.25
+  bar 32 onset 127 60/st1/v1/R:1 60/st1/v2/L/x:0.25 36/st2/v3/L:1
+  bar 32 onset 127.25 58/st1/v2/L/x:0.25
+  bar 32 onset 127.5 55/st1/v2/L/x:0.25
+  bar 32 onset 127.75 58/st1/v2/L/x:0.25
+

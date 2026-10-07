@@ -1,0 +1,46 @@
+npm ci
+npm warn deprecated prebuild-install@7.1.3: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, open '<worktree>\app\node_modules\exponential-backoff\dist\jitter\jitter.factory.d.ts'
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, open '<worktree>\app\node_modules\@sentry\node-core\build\cjs\utils\createMissingInstrumentationContext.js'
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, open '<worktree>\app\node_modules\@opentelemetry\sdk-trace\build\esm\platform\node\index.js'
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, open '<worktree>\app\node_modules\@formatjs\intl-localematcher\abstract\CanonicalizeUValue.d.ts'
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, open '<worktree>\app\node_modules\tar\dist\esm\path-reservations.js'
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, open '<worktree>\app\node_modules\workbox-build\node_modules\ajv\dist\vocabularies\core\id.js'
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR EBADF: bad file descriptor, write
+npm warn tar TAR_ENTRY_ERROR EBADF: bad file descriptor, write
+npm warn tar TAR_ENTRY_ERROR EBADF: bad file descriptor, write
+npm warn tar TAR_ENTRY_ERROR EBADF: bad file descriptor, write
+npm warn tar TAR_ENTRY_ERROR EBADF: bad file descriptor, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR EBADF: bad file descriptor, write
+npm warn tar TAR_ENTRY_ERROR EBADF: bad file descriptor, close
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device, write
+exit=1

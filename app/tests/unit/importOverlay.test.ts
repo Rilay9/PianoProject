@@ -16,6 +16,7 @@ import type { Curriculum, CatalogItem, Lesson } from '../../src/curriculum/types
 import type { ImportRow, SessionRow } from '../../src/data/db';
 import { rungState } from '../../src/evidence/rungState';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { measured } from './helpers/measured';
 
 function lesson(over: Partial<Lesson> = {}): Lesson {
   return {
@@ -128,14 +129,26 @@ describe('what the overlay unlocks', () => {
     expect(states.byRung.get('2.1')?.requirements[1]?.items).toEqual(['import.my-piece']);
   });
 
-  it('offers it as an alternative to the rung’s other songs', () => {
+  // Revised (E0): an import is offered beside the rung's other songs once the app has
+  // measured its demands (`importStore.measureImport`, at import); one it could not
+  // measure — or one imported before E0, whose row carries no measurement — is offered
+  // for exploration only, never as an equivalent option (the reviewer's constraint (b)).
+  // Old assumption: any catalogue item on the rung is an equivalent option.
+  it('offers it as an alternative to the rung’s other songs once its demands are measured', () => {
+    const measuredItem = importToCatalogItem(importRow({ ...measured(['interval.step']) }));
     const catalog = indexCatalog([
-      item,
+      measuredItem,
       { id: 'song.a', type: 'song', title: 'A', level: 2, concepts: [] } as unknown as CatalogItem,
       { id: 'song.b', type: 'song', title: 'B', level: 2, concepts: [] } as unknown as CatalogItem,
     ]);
     const alternatives = alternativesFor({ itemId: 'song.a', lessonId: '2.1' }, overlaid, catalog);
     expect(alternatives.map((a) => a.id)).toContain('import.my-piece');
+  });
+
+  it('does not offer an unmeasured import as an equivalent option', () => {
+    const catalog = indexCatalog([item, { id: 'song.a', type: 'song', title: 'A', level: 2, concepts: [] } as unknown as CatalogItem]);
+    const alternatives = alternativesFor({ itemId: 'song.a', lessonId: '2.1' }, overlaid, catalog);
+    expect(alternatives.map((a) => a.id)).not.toContain('import.my-piece');
   });
 });
 

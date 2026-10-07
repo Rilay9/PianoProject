@@ -1,0 +1,189 @@
+G90a mutants. One mechanism each: one source line changed, the unit files below run, the line put back, and the five changed
+source files checked against their backups by checksum afterwards. Counts are failing tests; the names are the cases that went red.
+Run: tests/unit/sessionHeldSkip.test.ts tests/unit/todayHeldSkip.test.ts tests/unit/sessionHeldPiece.test.ts tests/unit/todayHeldPiece.test.ts tests/unit/sessionAdaptation.test.ts
+
+M1  the veto records skipped-redundant again, the kind widened (sessionRun.ts, apply withhold)   CAUGHT, 15   (15 failed | 63 passed (78))
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the pause lands while the piece is ahead: when the one before finishes, the transition offers the one after, says why, and the composition stands
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > a piece the learner paused is recorded as withdrawn, with the state it was left in, never as skipped-redundant
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > a piece the learner put away is recorded as withdrawn, with the state it was left in, never as skipped-redundant
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > the runner writes it: at the piece’s turn the stored record holds the kind and the state, and says what the transition said
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > paused: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > retired: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+      sessionHeldSkip.test.ts > a tapped-back row announces nothing of a skip it no longer is > the learner taps the withdrawn row and then skips it themselves: it is their skip, and no word of a pause is left on it
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then paused: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then retired: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      todayHeldPiece.test.ts > the piece that is next was paused after Start session > Today draws it skipped, names the one after as next, and Continue opens that one — never the piece
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > paused: the row reads “Skipped — you paused it” in place of the composition’s words, with its mark, and the record holds the kind
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > retired: the row reads “Skipped — you put it away” in place of the composition’s words, with its mark, and the record holds the kind
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > read back from the record, not from the project: brought back since, the row still says what the learner did, and Continue still skips it
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then paused: the later word steps past it at its turn, said on its row, and Continue opens the one after
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then retired: the later word steps past it at its turn, said on its row, and Continue opens the one after
+M2  Today's row keeps the composition's words for a withdrawn piece (TodayScreen.ts, activityRow)   CAUGHT, 5   (5 failed | 73 passed (78))
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > paused: the row reads “Skipped — you paused it” in place of the composition’s words, with its mark, and the record holds the kind
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > retired: the row reads “Skipped — you put it away” in place of the composition’s words, with its mark, and the record holds the kind
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > read back from the record, not from the project: brought back since, the row still says what the learner did, and Continue still skips it
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then paused: the later word steps past it at its turn, said on its row, and Continue opens the one after
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then retired: the later word steps past it at its turn, said on its row, and Continue opens the one after
+M3  a swapped activity is never withdrawn, as before G90a (sessionRun.ts, isWithdrawnBy)   CAUGHT, 8   (8 failed | 70 passed (78))
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > paused: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > retired: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then paused: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then retired: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > settleHeld says the same: what it steps past is the swapped piece when the word is the later one, and nothing when it is the earlier
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then paused: the later word steps past it at its turn, said on its row, and Continue opens the one after
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then retired: the later word steps past it at its turn, said on its row, and Continue opens the one after
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > a row the learner taps is theirs: the swapped piece they withdrew after choosing it opens when they tap it
+M4  a swapped activity is withdrawn by a word from any time, the swap not ordered (sessionRun.ts, isWithdrawnBy)   CAUGHT, 8   (8 failed | 70 passed (78))
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a piece the learner chose themselves, by a swap, after they paused it stays: the choice came after the word; the composer’s next piece, paused since, does not
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > paused: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > retired: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > paused, then swapped in: the learner chose it knowing, and it is offered
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > retired, then swapped in: the learner chose it knowing, and it is offered
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > the newest word wins when there are several: swapped, paused, then swapped again, the swap is the later word and the piece is offered
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > paused, then swapped in: the learner chose it knowing, so it stays and Continue opens it
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > retired, then swapped in: the learner chose it knowing, so it stays and Continue opens it
+M5  a swap does not record when it was made (sessionRun.ts, apply swap)   CAUGHT, 10   (10 failed | 68 passed (78))
+      sessionHeldSkip.test.ts > the record reads back as it was written > a swapped activity keeps the moment it was swapped through the store
+      sessionHeldSkip.test.ts > a swap records when it was made > the activity carries the moment of the swap, the swap’s own clock, and a second swap replaces it and the reasons of the first
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > paused: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > retired: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then paused: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then retired: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > settleHeld says the same: what it steps past is the swapped piece when the word is the later one, and nothing when it is the earlier
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then paused: the later word steps past it at its turn, said on its row, and Continue opens the one after
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then retired: the later word steps past it at its turn, said on its row, and Continue opens the one after
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > a row the learner taps is theirs: the swapped piece they withdrew after choosing it opens when they tap it
+M6  a word at the very moment of the swap withdraws it, the swap not standing (sessionRun.ts, isWithdrawnBy)   CAUGHT, 2   (2 failed | 76 passed (78))
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > paused: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > retired: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+M7  a stored run holding a withdrawn adaptation is discarded as malformed (sessionRun.ts, ADAPTATIONS)   CAUGHT, 20   (20 failed | 58 passed (78))
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the pause lands while the piece is ahead: when the one before finishes, the transition offers the one after, says why, and the composition stands
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > two in a row are both stepped past, each said in order, and the one that is left is offered
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a stopped activity’s transition offers the one after it: a paused piece there is stepped past before it is shown, and Start opens the one after
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a stopped activity’s transition drawn before the pause: Start moves on, steps past the piece that is then its turn, and shows the one after, said
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the piece was already next when the learner paused it: Start does not open it, and the screen shows the one after, said
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the piece is the last one: the session finishes, and what it says is the last-one line
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > the runner writes it: at the piece’s turn the stored record holds the kind and the state, and says what the transition said
+      sessionHeldSkip.test.ts > the record reads back as it was written > after a reload (the page’s memory gone, the store kept) the withdrawn row and its state are the same, and drawing again writes nothing
+      sessionHeldSkip.test.ts > the record reads back as it was written > a stored record is data: the new kind needs its state, the swap moment must be text, and an older record with neither still reads
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then paused: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then retired: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      todayHeldPiece.test.ts > the piece that is next was paused after Start session > Today draws it skipped, names the one after as next, and Continue opens that one — never the piece
+      todayHeldPiece.test.ts > the piece that is next was paused after Start session > a row the learner taps is their own word: the skipped piece opens, whatever its project says
+      todayHeldPiece.test.ts > the piece that is next was paused after Start session > what the runner skipped is not undone by the next card: a new composition is handed the same projects as before
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > paused: the row reads “Skipped — you paused it” in place of the composition’s words, with its mark, and the record holds the kind
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > retired: the row reads “Skipped — you put it away” in place of the composition’s words, with its mark, and the record holds the kind
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > read back from the record, not from the project: brought back since, the row still says what the learner did, and Continue still skips it
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then paused: the later word steps past it at its turn, said on its row, and Continue opens the one after
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then retired: the later word steps past it at its turn, said on its row, and Continue opens the one after
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > a row the learner taps is theirs: the swapped piece they withdrew after choosing it opens when they tap it
+M8  a withdrawn adaptation is accepted without the state the learner left the piece in (sessionRun.ts, validateRun)   CAUGHT, 1   (1 failed | 77 passed (78))
+      sessionHeldSkip.test.ts > the record reads back as it was written > a stored record is data: the new kind needs its state, the swap moment must be text, and an older record with neither still reads
+M9  a row tapped back to life keeps the record of its withdrawal (sessionRun.ts, apply choose)   CAUGHT, 1   (1 failed | 77 passed (78))
+      sessionHeldSkip.test.ts > a tapped-back row announces nothing of a skip it no longer is > the learner taps the withdrawn row and then skips it themselves: it is their skip, and no word of a pause is left on it
+M10  the transition's notes leave out a withdrawn piece (sessionRunner.ts, skipsBetween)   CAUGHT, 16   (16 failed | 62 passed (78))
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the pause lands while the piece is ahead: when the one before finishes, the transition offers the one after, says why, and the composition stands
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > put away says so in its own words
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > two in a row are both stepped past, each said in order, and the one that is left is offered
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a stopped activity’s transition offers the one after it: a paused piece there is stepped past before it is shown, and Start opens the one after
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a stopped activity’s transition drawn before the pause: Start moves on, steps past the piece that is then its turn, and shows the one after, said
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the one offered after a stopped activity may be behind it on the card: the skip is still said
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the piece was already next when the learner paused it: Start does not open it, and the screen shows the one after, said
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > an activity already underway is not interrupted; the next one at its turn is
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a piece the learner chose themselves, by a swap, after they paused it stays: the choice came after the word; the composer’s next piece, paused since, does not
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a piece is found by its material, not only its id: a project made under another id of the same file holds
+      sessionHeldPiece.test.ts > the transition says a skip only while it is a skip > a piece the learner brought back by tapping its row is no longer announced as skipped
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > the runner writes it: at the piece’s turn the stored record holds the kind and the state, and says what the transition said
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > a transition reads the withdrawn kind as it read the skip: it says it only while the row is still skipped
+      sessionHeldSkip.test.ts > the record reads back as it was written > after a reload (the page’s memory gone, the store kept) the withdrawn row and its state are the same, and drawing again writes nothing
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then paused: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then retired: the later word vetoes the pending activity at its turn, said, and the one after is offered
+M11  a piece put away is said as paused (help.ts, youHeld)   CAUGHT, 9   (9 failed | 69 passed (78))
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > put away says so in its own words
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > two in a row are both stepped past, each said in order, and the one that is left is offered
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a stopped activity’s transition drawn before the pause: Start moves on, steps past the piece that is then its turn, and shows the one after, said
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > a piece the learner put away is recorded as withdrawn, with the state it was left in, never as skipped-redundant
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > the runner writes it: at the piece’s turn the stored record holds the kind and the state, and says what the transition said
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > retired: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then retired: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > retired: the row reads “Skipped — you put it away” in place of the composition’s words, with its mark, and the record holds the kind
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then retired: the later word steps past it at its turn, said on its row, and Continue opens the one after
+M12  the lookup answers the moment it is asked as the moment the learner spoke (session.ts, heldWordOf)   CAUGHT, 6   (6 failed | 72 passed (78))
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a piece the learner chose themselves, by a swap, after they paused it stays: the choice came after the word; the composer’s next piece, paused since, does not
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then paused: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then retired: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > settleHeld says the same: what it steps past is the swapped piece when the word is the later one, and nothing when it is the earlier
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > paused, then swapped in: the learner chose it knowing, so it stays and Continue opens it
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > retired, then swapped in: the learner chose it knowing, so it stays and Continue opens it
+M13  an activity underway can be withdrawn (sessionRun.ts, apply withhold)   CAUGHT, 2   (2 failed | 76 passed (78))
+      sessionHeldPiece.test.ts > the withhold event, in the pure state machine > never an activity underway: opened or attempted, the learner is in it and the event is refused
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > an activity underway is never interrupted, swapped or not, whatever the order
+M14  a row the learner taps is settled before it opens, and so overruled (TodayScreen.ts, playActivity)   CAUGHT, 2   (2 failed | 76 passed (78))
+      todayHeldPiece.test.ts > the piece that is next was paused after Start session > a row the learner taps is their own word: the skipped piece opens, whatever its project says
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > a row the learner taps is theirs: the swapped piece they withdrew after choosing it opens when they tap it
+M15  the swap moment is not checked when a stored run is read (sessionRun.ts, validateRun)   CAUGHT, 1   (1 failed | 77 passed (78))
+      sessionHeldSkip.test.ts > the record reads back as it was written > a stored record is data: the new kind needs its state, the swap moment must be text, and an older record with neither still reads
+M16  a withdrawn piece does not say which state the learner left it in on the record (sessionRun.ts, apply withhold)   CAUGHT, 6   (6 failed | 72 passed (78))
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > a piece the learner put away is recorded as withdrawn, with the state it was left in, never as skipped-redundant
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > the runner writes it: at the piece’s turn the stored record holds the kind and the state, and says what the transition said
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > retired: after the swap it withdraws the activity; before the swap, and at the same moment, it does not
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped in, then retired: the later word vetoes the pending activity at its turn, said, and the one after is offered
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > retired: the row reads “Skipped — you put it away” in place of the composition’s words, with its mark, and the record holds the kind
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then retired: the later word steps past it at its turn, said on its row, and Continue opens the one after
+M17  a row says it was withdrawn whatever state it is in now (sessionRun.ts, withdrawnOf)   CAUGHT, 1   (1 failed | 77 passed (78))
+      sessionHeldSkip.test.ts > withdrawnOf: the one reading of why a skipped row was withdrawn, which Today’s row says > names the state only for a skipped activity whose record says it was withdrawn; the latest word where there are two; never another kind of skip
+M18  the session's own offer is never withdrawn (sessionRun.ts, isWithdrawnBy)   CAUGHT, 33   (33 failed | 45 passed (78))
+      sessionHeldPiece.test.ts > the withhold event, in the pure state machine > a pending activity the composition chose is skipped with the reason, and the cursor goes to the next still to do
+      sessionHeldPiece.test.ts > the withhold event, in the pure state machine > the last activity withheld closes the session as finished: nothing is left, nothing failed
+      sessionHeldPiece.test.ts > the withhold event, in the pure state machine > an activity ahead of the cursor, the one a transition offers after a stopped activity, is skipped and the cursor stays where it is
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the pause lands while the piece is ahead: when the one before finishes, the transition offers the one after, says why, and the composition stands
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > put away says so in its own words
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > two in a row are both stepped past, each said in order, and the one that is left is offered
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a stopped activity’s transition offers the one after it: a paused piece there is stepped past before it is shown, and Start opens the one after
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a stopped activity’s transition drawn before the pause: Start moves on, steps past the piece that is then its turn, and shows the one after, said
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the one offered after a stopped activity may be behind it on the card: the skip is still said
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the piece was already next when the learner paused it: Start does not open it, and the screen shows the one after, said
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > the piece is the last one: the session finishes, and what it says is the last-one line
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > an activity already underway is not interrupted; the next one at its turn is
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a piece the learner chose themselves, by a swap, after they paused it stays: the choice came after the word; the composer’s next piece, paused since, does not
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > only paused and put away: every other state leaves it offered, and so does no project at all
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a piece is found by its material, not only its id: a project made under another id of the same file holds
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > a catalogue that cannot be read finds the project by the id it was made under
+      sessionHeldPiece.test.ts > the transition says a skip only while it is a skip > a piece the learner brought back by tapping its row is no longer announced as skipped
+      sessionHeldPiece.test.ts > settleHeld: the one place the runner steps past a withdrawn piece > reports what it stepped past, leaves a run with nothing withdrawn untouched and writes nothing for it
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > a piece the learner paused is recorded as withdrawn, with the state it was left in, never as skipped-redundant
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > a piece the learner put away is recorded as withdrawn, with the state it was left in, never as skipped-redundant
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > the runner writes it: at the piece’s turn the stored record holds the kind and the state, and says what the transition said
+      sessionHeldSkip.test.ts > the lifecycle veto has its own adaptation kind > a transition reads the withdrawn kind as it read the skip: it says it only while the row is still skipped
+      sessionHeldSkip.test.ts > the record reads back as it was written > after a reload (the page’s memory gone, the store kept) the withdrawn row and its state are the same, and drawing again writes nothing
+      sessionHeldSkip.test.ts > the record reads back as it was written > a stored record is data: the new kind needs its state, the swap moment must be text, and an older record with neither still reads
+      sessionHeldSkip.test.ts > a swap records when it was made > the activity carries the moment of the swap, the swap’s own clock, and a second swap replaces it and the reasons of the first
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > an activity the composition chose is withdrawn by a word from any time: there is no swap to order it against
+      sessionHeldSkip.test.ts > a tapped-back row announces nothing of a skip it no longer is > the learner taps the withdrawn row and then skips it themselves: it is their skip, and no word of a pause is left on it
+      todayHeldPiece.test.ts > the piece that is next was paused after Start session > Today draws it skipped, names the one after as next, and Continue opens that one — never the piece
+      todayHeldPiece.test.ts > the piece that is next was paused after Start session > a row the learner taps is their own word: the skipped piece opens, whatever its project says
+      todayHeldPiece.test.ts > the piece that is next was paused after Start session > what the runner skipped is not undone by the next card: a new composition is handed the same projects as before
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > paused: the row reads “Skipped — you paused it” in place of the composition’s words, with its mark, and the record holds the kind
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > retired: the row reads “Skipped — you put it away” in place of the composition’s words, with its mark, and the record holds the kind
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > read back from the record, not from the project: brought back since, the row still says what the learner did, and Continue still skips it
+M19  an activity with no claim and no swap moment (the learner’s, in an older record) is withdrawn (sessionRun.ts, isWithdrawnBy)   CAUGHT, 2   (2 failed | 76 passed (78))
+      sessionHeldPiece.test.ts > the withhold event, in the pure state machine > never an activity the learner chose themselves: one with no claim is a swap’s, and is refused
+      sessionHeldSkip.test.ts > the pure state machine orders a swap and a withdrawal > a record from before the swap moment was kept (a swapped activity with no moment) is never withdrawn, as it never was
+M20  a row tapped back to life loses every record of what the runner did, not only the withdrawal (sessionRun.ts, apply choose)   CAUGHT, 1   (1 failed | 77 passed (78))
+      sessionHeldSkip.test.ts > a tapped-back row announces nothing of a skip it no longer is > tapping a row that was skipped for another reason leaves what the runner said of it
+M21  the lookup answers for a project in any state, not only paused and put away (session.ts, heldWordOf)   CAUGHT, 3   (3 failed | 75 passed (78))
+      sessionHeldPiece.test.ts > the session’s one reading of a project (the composer’s and the runner’s) > paused and put away are held, said as which; every other state, and no project, is not
+      sessionHeldPiece.test.ts > at its turn, a pending piece the learner has paused or put away is stepped past > only paused and put away: every other state leaves it offered, and so does no project at all
+      sessionHeldSkip.test.ts > at its turn, a swapped-in piece is withdrawn by a word after the swap and kept by a word before it > swapped, paused, then brought back: the word at its turn is that it is wanted, and the piece is offered
+M22  Today says a piece was withdrawn on every skipped row (TodayScreen.ts, activityRow)   CAUGHT, 3   (3 failed | 75 passed (78))
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > retired: the row reads “Skipped — you put it away” in place of the composition’s words, with its mark, and the record holds the kind
+      todayHeldSkip.test.ts > Today’s skipped row says why the piece was withdrawn > a skip for another reason keeps the composition’s words on its row: only a withdrawn piece says it was withdrawn
+      todayHeldSkip.test.ts > a swap and a pause or put-away, ordered by when each happened, through Today > swapped in, then retired: the later word steps past it at its turn, said on its row, and Continue opens the one after
+
+The five source files, compared by checksum before and after every mutant: identical.
+
+M23 (browser, the layout claim) Today's row reason made too large to fit beside the controls and left to overflow (`app/src/style.css`, one rule
+    appended by `scripts/css-mutant.cjs`, the dist rebuilt for the run, the file put back and checked by checksum, the dist rebuilt again and the
+    spec run green: `e2e-green-restored.txt`)   CAUGHT, 2   (`e2e-m23.txt`)
+      session-held-skip.spec.ts > a piece paused / retired on its sheet ...: 'the reason is cut', at the first cell (342 × 740), in both states
+    The two swap walks do not measure the row and passed; the row is measured by the first two cases only.

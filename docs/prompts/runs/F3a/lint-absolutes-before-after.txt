@@ -1,0 +1,384 @@
+$ (cd .) python build/f3a/lint.py before   # tools/content/lint_absolutes.findings over the 20 touched lessons, the same list as --lesson <id> for each with its sentences; before any edit
+## 0.1 (4)
+37	none	Wherever sheet music in this app prints finger numbers, these are the numbers it uses; many pieces print none.
+43	the main reason	They look relaxed and they are the main reason beginners cannot play two notes at different volumes.
+48	all	You can press a key slowly enough to make no sound at all, then release it, without your wrist moving.
+49	only	That takes control, not strength — and it is only possible from a balanced hand.
+
+## 1.1 (6)
+14	every	Every tune on this rung but one lives inside it.
+23	every	4/4 at the start means four beats in a bar, and a bar line is just a fence every four beats to help your eye.
+28	only	Then play Hot Cross Buns, which uses only E, D and C — three fingers, three notes, and the whole point is that your hand does not move.
+36	exactly	In C position each key has exactly one finger and no other finger is allowed to visit it.
+38	the reason	Where fingering is printed above the notes it is not a suggestion; it is the reason the hand stays still.
+41	only	Kum Ba Yah is on this rung too: eight bars, right hand only, but it sits higher than C position, from the G above middle C up to the E a sixth above it: six notes, one more than five fingers hold, and no fingering printed, so work yours out before you play it.
+
+## practice.1 (4)
+12	most	Most practice is spent playing the parts you can already play.
+19	never	Not a line, and never a page.
+35	all	If you cannot get it right at all, the chunk is too big or the tempo is too high.
+39	only	When a set ends, the app offers a round of only the prompts you missed, with the answer up from the first moment and nothing scored — this lesson in miniature, because the cards you can already do stop taking the repetitions.
+
+## practice.2 (5)
+19	only	Slow practice is the only tempo at which you can be accurate on purpose rather than by luck, and accuracy is the thing that has to be repeated.
+23	only	It is also the only way to notice tension.
+31	never	This is slower than it sounds and much faster than the alternative, because you never spend a week grinding at a tempo you cannot hold.
+40	every	That is the rule above made quicker: it moves after every pass rather than every three, its notch is a tenth of the written tempo, and it stops climbing at full tempo unless you had already set it higher.
+40	every	That is the rule above made quicker: it moves after every pass rather than every three, its notch is a tenth of the written tempo, and it stops climbing at full tempo unless you had already set it higher.
+
+## practice.3 (4)
+14	most	Within a session, performance on the thing you are drilling climbs steadily — and most of that climb is gone by tomorrow.
+19	only	It also produces markedly better retention a week later, which is the only timescale that matters.
+40	all	If you run out of time, the last item is dropped, and the first item is where all the attention went.
+44	every	Today's sight-read sits outside the session card on purpose: three minutes of something else, every day, whatever else you had planned.
+
+## practice.5 (7)
+17	always	A plateau is almost always one of three things, and the useful response is to work out which.
+21	the fix	The fix is the first lesson in this track: find the chunk, loop the chunk, and stop playing the parts that already work.
+27	the fix	The fix is to go slower than feels reasonable, decide the fingering deliberately, and rebuild it.
+29	only	It takes a week and it is the only thing that works.
+37	every	If the same mistake happens in the same place every time, it is two.
+49	only	Rhythm only leaves the timing and drops the pitch; Blind removes the reading and leaves only the playing.
+50	only	Rhythm only leaves the timing and drops the pitch; Blind removes the reading and leaves only the playing.
+
+## blues.4 (7)
+23	all	All three chords are dominant sevenths, including the I.
+23	every	In every other style that would be a chord demanding resolution; in the blues it is just the colour, and the tension never resolves, which is the point.
+25	never	In every other style that would be a chord demanding resolution; in the blues it is just the colour, and the tension never resolves, which is the point.
+46	every	A raised fourth works in every key.
+60	every	The shuffle the app does check, on the pieces whose score says so: the word "shuffle" at the top moves the expected time of every off-beat eighth to where the triplet puts it, and every mode — Rhythm only included — times your strikes against that instead of against the written straight eighths.
+61	every	The shuffle the app does check, on the pieces whose score says so: the word "shuffle" at the top moves the expected time of every off-beat eighth to where the triplet puts it, and every mode — Rhythm only included — times your strikes against that instead of against the written straight eighths.
+61	only	The shuffle the app does check, on the pieces whose score says so: the word "shuffle" at the top moves the expected time of every off-beat eighth to where the triplet puts it, and every mode — Rhythm only included — times your strikes against that instead of against the written straight eighths.
+
+## blues.5 (4)
+39	exactly	The boogie bass shape transposes exactly; the fingering does not, because of the black keys.
+45	only	The exercise is the line alone, left hand only; none of this rung's pieces has one yet, and the next rung puts a right hand over it.
+45	none	The exercise is the line alone, left hand only; none of this rung's pieces has one yet, and the next rung puts a right hand over it.
+49	every	Filling every bar.
+
+## blues.6 (5)
+16	exactly	The root-and-fifth bass alternates those two notes in eighths and asks nothing of you but stamina, which is exactly why it is first: there is nothing to work out, so the only thing you are practising is keeping eight eighths a bar going without the arm seizing up.
+17	only	The root-and-fifth bass alternates those two notes in eighths and asks nothing of you but stamina, which is exactly why it is first: there is nothing to work out, so the only thing you are practising is keeping eight eighths a bar going without the arm seizing up.
+23	every	Clarence "Pinetop" Smith recorded it in 1928 and every boogie bass since is a variation on it.
+27	always	Boogie figures get called after players, and a label does not always match what the player recorded.
+43	all	Take one through all twelve bars in C, moving it to each chord yourself, then the same in F.
+
+## blues.8 (3)
+20	every	The blues is built on dominant sevenths, and every one of them takes a ninth without asking.
+36	every	Pinetop's Boogie Woogie is the 1928 original, the record every boogie bass since is a copy of, and it is the same file you met at Stage 6.
+46	every	Accompaniment lab opens Blues — twelve bars, the form fixed and every chord already a seventh; set the key to E flat and Read it prints the whole form in the new key.
+
+## classical.3 (3)
+20	most	The dance step itself spans two bars, which is why the phrases come in twos and fours: the Petzold below is thirty-two bars and comes to rest at bars 8, 16, 24 and 32, and hearing those landings is most of playing it well.
+44	only	115, here only its first sixteen bars), D minor (Anh.
+53	never	Never play the whole piece through until the chunks are secure — playing it through is testing, not practising.
+
+## classical.4 (4)
+17	all	It is a finger skill, not a pedal skill — practise it with no pedal at all and listen for the join.
+24	never	Never from the arm; that is how you get tired and loud.
+37	never	A trill alternates the main note with the note above it, never below; at this level it is four notes, and in music of Mozart's time it usually starts on the upper one: upper, main, upper, main.
+46	all	1f as its Trio, four-bar phrases with the articulation written in; Schumann's Chorale from the Album for the Young, all legato, for the opposite touch; and a Gurlitt study that slurs the right hand and leaves the left unmarked, so the contrast is yours to supply.
+
+## classical.4.shelf (7)
+16	most	These are the pieces people learn the piano for, collected in one place so you can see what you are working towards and take one down when you are ready — most of them sit above this stage, and that is the point of a shelf.
+25	only	49 pieces, one edition each, from a Stage 4 Für Elise and Clair de Lune in their easy settings up to Chopin's C-sharp minor nocturne and waltz and the Schubert–Liszt Ständchen at Stage 8: Satie's Gymnopédie and Gnossienne, Pachelbel's Canon, Bach's Air on the G String, the Handel–Halvorsen Passacaglia, four Chopin Préludes, Grieg's Morning Mood, the Romanza, Tchaikovsky's Swan Lake, Vivaldi's Spring — and, on the personal build only, Elgar's Salut d'amour and Nimrod, Puccini's O mio babbino caro, pieces by Mascagni, Holst, Mahler and Rachmaninoff, the film and game pieces you asked for by name — Einaudi, Zimmer, Sakamoto, Uematsu, Djawadi, Hurwitz, Glass, de Senneville, Clayderman — and seven other film, game and modern pieces.
+42	none	The three skills these pieces need, none of which are speed:
+47	only	Practise the chord with the melody note only sounding, then add the others quietly underneath.
+54	all	The characteristic failure with this shelf is starting six pieces that are all slightly too hard and finishing none.
+54	none	The characteristic failure with this shelf is starting six pieces that are all slightly too hard and finishing none.
+61	all	One piece from this shelf played all the way through, from memory or not, that you would play for somebody.
+
+## classical.5 (1)
+40	the reason	The written-out drills are on the technique track; here the ornaments arrive inside the pieces, which is the harder way round — and the reason to memorise the rule now.
+
+## classical.6 (10)
+12	most	Up to now, playing the right notes at the right time was most of the job.
+13	none	The pieces on this rung are short and none of them is fast; what makes them hard is that both hands are playing at once and, in all but the Prelude in C, only one of them is the tune.
+15	all	The pieces on this rung are short and none of them is fast; what makes them hard is that both hands are playing at once and, in all but the Prelude in C, only one of them is the tune.
+15	only	The pieces on this rung are short and none of them is fast; what makes them hard is that both hands are playing at once and, in all but the Prelude in C, only one of them is the tune.
+19	the fix	The fix is physical, not mental: let the hand lean towards the little finger, drop more arm weight into the top note, and keep the inner fingers light and close to the keys.
+42	always	You will always be playing into familiar ground rather than off a cliff, and the end of the piece will not be the part you have practised least.
+56	every	Practising the whole piece at one tempo, hands together, every time.
+59	none	None of these is long and you have half of each in your ear already, so once the notes are secure, run one with Blind on.
+61	only	With nothing to read, the only questions left are which hand is louder and whether the pedal change was late — and both are questions your eyes had been answering for you.
+69	only	One of these pieces played so that someone listening could hum the tune back — which they can only do if you voiced it.
+
+## technique.6 (3)
+26	exactly	The number of notes to the beat is written above the staff and the notation matches it exactly.
+37	every	It is reported beside the accuracy and not folded into it, so a flat chord with every right note is still a full-marks run.
+47	only	They are what the chromatic scale and the 3:1 independence exercise are for: a page of sixteenths that stays even only if the hand does.
+
+## chords-pop.7 (7)
+15	exactly	Sus chords have no third, which is exactly why they work: with no third they are neither major nor minor, so they sound like a chord waiting to become one.
+17	all	`sus4` resolves down to the third; `sus2` often does not resolve at all and just sits there sounding open.
+22	most	It is the sound of most pop piano, and it is not a ninth chord — a ninth chord has the seventh in it and sounds like jazz.
+30	every	The four-chord loop with every chord played `add9`, then with the first chord `sus4` resolving.
+39	every	Fix You is sus colour over a bass that barely moves, and Blinding Lights four plain chords over two-note shells, the colour left for you to add; Welcome to Wonderland and For the Damaged Coda are the open, spread voicings this rung is about; the solo setting of Scarborough Fair is a modal tune re-voiced; and Wake Me Up is the loop with a bass-and-chord left hand on every beat under it.
+41	all	All six are personal-library songs: the public build shows the rows and where to get the scores, and the rung is complete on its exercises there.
+45	every	Adding colour to every chord.
+
+## 1.5 (12)
+22	only	A leap is a 4th or wider: this rung only introduces it, since the songs here have just the odd one, and the next rung practises it, where the left hand moves from C to F and to G.
+28	all	You do not need to know which note either of them is; your hand already knows where it is, so all it needs is the distance.
+32	always	This feels wrong and is essential — reading music is like reading text aloud, where you are always a few words ahead of your voice.
+35	every	The sight-reading generator makes a new four-bar melody every time you press it.
+36	most	This is the single most valuable practice tool in the app, because you can only sight-read music you have never seen, and everything else you own you have already seen.
+37	only	This is the single most valuable practice tool in the app, because you can only sight-read music you have never seen, and everything else you own you have already seen.
+37	never	This is the single most valuable practice tool in the app, because you can only sight-read music you have never seen, and everything else you own you have already seen.
+39	never	Two or three fresh melodies a day, at a tempo slow enough that you never stop, does more for reading than an hour on a piece you know.
+42	every	Sight-reading level 1, the interval ear drill (2nd versus 3rd, played back), and Steps and Skips in C, a study where every interval is a 2nd or a 3rd and the hand never leaves C position.
+43	never	Sight-reading level 1, the interval ear drill (2nd versus 3rd, played back), and Steps and Skips in C, a study where every interval is a 2nd or a 3rd and the hand never leaves C position.
+54	all	To begin with the keys light up and name themselves as the chain plays, and each note lands on a staff on the card as it sounds, so all you have to hold is the order — three chips on the card take that help away again when you are ready.
+61	every	Today carries a sight-read of its own, under the session card and outside it: one phrase chosen for your stage, a new one every morning, and the same one again if you open the card twice.
+
+## ragtime.6 (12)
+23	all	A rag you can play three strains of is worth far more than a rag you can stumble through all of.
+26	always	The trio — the strain after the middle — almost always moves to the subdominant, a fourth up, which on the flat side means one more flat in the key signature.
+27	all	All three rags here do it: The Entertainer goes from C to F, Peacherine Rag from E flat to A flat, The Easy Winners from A flat to D flat.
+54	never	Practise the left hand alone at a tempo where you never miss, then take it up by five clicks at a time.
+62	only	Ragtime played fast stops sounding syncopated, because syncopation is only audible against a pulse you can hear.
+63	never	And never swing them: the eighths and sixteenths are dead even.
+71	exactly	Start with School of Ragtime — six short exercises Joplin wrote to teach exactly this, and the shortest thing on the rung.
+77	only	The easiest way in, because the form is the only thing that is new.
+82	most	The most work of the three and the most rewarding.
+83	most	The most work of the three and the most rewarding.
+93	every	Left hand alone, one strain, until it is automatic — every time.
+103	all	One complete rag, all its strains, hands together, at the tempo printed on the music, with the left hand steady enough that a metronome would have nothing to say.
+
+## ragtime.7 (2)
+21	never	This is the direct ancestor of stride piano, and the practice is the same as it was at Stage 5: left hand alone, eyes on the chord you are travelling to, at a tempo where you never miss.
+39	most	It is the single most characteristic ragtime device and it is what makes the style sound like it is falling forwards.
+
+exit=0
+
+$ (cd .) python build/f3a/lint.py after   # after the edits
+## 0.1 (3)
+37	none	Wherever sheet music in this app prints finger numbers, these are the numbers it uses; many pieces print none.
+48	all	You can press a key slowly enough to make no sound at all, then release it, without your wrist moving.
+49	only	That takes control, not strength — and it is only possible from a balanced hand.
+
+## 1.1 (4)
+14	every	Every tune on this rung but one lives inside it.
+23	every	4/4 at the start means four beats in a bar, and a bar line is just a fence every four beats to help your eye.
+28	only	Then play Hot Cross Buns, which uses only E, D and C — three fingers, three notes, and the whole point is that your hand does not move.
+41	only	Kum Ba Yah is on this rung too: eight bars, right hand only, but it sits higher than C position, from the G above middle C up to the E a sixth above it: six notes, one more than five fingers hold, and no fingering printed, so work yours out before you play it.
+
+## practice.1 (4)
+12	most	Most practice is spent playing the parts you can already play.
+19	never	Not a line, and never a page.
+35	all	If you cannot get it right at all, the chunk is too big or the tempo is too high.
+39	only	When a set ends, the app offers a round of only the prompts you missed, with the answer up from the first moment and nothing scored — this lesson in miniature, because the cards you can already do stop taking the repetitions.
+
+## practice.2 (2)
+40	every	That is the ladder above made quicker: it moves after every pass rather than every three, its notch is a tenth of the written tempo, and it stops climbing at full tempo unless you had already set it higher.
+40	every	That is the ladder above made quicker: it moves after every pass rather than every three, its notch is a tenth of the written tempo, and it stops climbing at full tempo unless you had already set it higher.
+
+## practice.3 (2)
+40	all	If you run out of time, the last item is dropped, and the first item is where all the attention went.
+44	every	Today's sight-read sits outside the session card on purpose: three minutes of something else, every day, whatever else you had planned.
+
+## practice.5 (4)
+21	the fix	The fix is the first lesson in this track: find the chunk, loop the chunk, and stop playing the parts that already work.
+27	the fix	The fix is to go slower than feels reasonable, decide the fingering deliberately, and rebuild it.
+49	only	Rhythm only leaves the timing and drops the pitch; Blind removes the reading and leaves only the playing.
+50	only	Rhythm only leaves the timing and drops the pitch; Blind removes the reading and leaves only the playing.
+
+## blues.4 (5)
+23	all	All three chords are dominant sevenths, including the I.
+46	every	A raised fourth can be written in every key, a few with a double sharp.
+60	every	The shuffle the app does check, on the pieces whose score says so: the word "shuffle" at the top moves the expected time of every off-beat eighth to where the triplet puts it, and every mode — Rhythm only included — times your strikes against that instead of against the written straight eighths.
+61	every	The shuffle the app does check, on the pieces whose score says so: the word "shuffle" at the top moves the expected time of every off-beat eighth to where the triplet puts it, and every mode — Rhythm only included — times your strikes against that instead of against the written straight eighths.
+61	only	The shuffle the app does check, on the pieces whose score says so: the word "shuffle" at the top moves the expected time of every off-beat eighth to where the triplet puts it, and every mode — Rhythm only included — times your strikes against that instead of against the written straight eighths.
+
+## blues.5 (4)
+39	exactly	The boogie bass shape transposes exactly; the fingering does not, because of the black keys.
+45	only	The exercise is the line alone, left hand only; none of this rung's pieces has one yet, and the next rung puts a right hand over it.
+45	none	The exercise is the line alone, left hand only; none of this rung's pieces has one yet, and the next rung puts a right hand over it.
+49	every	Filling every bar.
+
+## blues.6 (4)
+16	exactly	The root-and-fifth bass alternates those two notes in eighths and asks nothing of you but stamina, which is exactly why it is first: there is nothing to work out, so the only thing you are practising is keeping eight eighths a bar going without the arm seizing up.
+17	only	The root-and-fifth bass alternates those two notes in eighths and asks nothing of you but stamina, which is exactly why it is first: there is nothing to work out, so the only thing you are practising is keeping eight eighths a bar going without the arm seizing up.
+26	always	Boogie figures get called after players, and a label does not always match what the player recorded.
+42	all	Take one through all twelve bars in C, moving it to each chord yourself, then the same in F.
+
+## blues.8 (2)
+20	every	The blues is built on dominant sevenths, and every one of them takes a ninth without asking.
+45	every	Accompaniment lab opens Blues — twelve bars, the form fixed and every chord already a seventh; set the key to E flat and Read it prints the whole form in the new key.
+
+## classical.3 (3)
+20	most	The dance step itself spans two bars, which is why the phrases come in twos and fours: the Petzold below is thirty-two bars and comes to rest at bars 8, 16, 24 and 32, and hearing those landings is most of playing it well.
+44	only	115, here only its first sixteen bars), D minor (Anh.
+53	never	Never play the whole piece through until the chunks are secure — playing it through is testing, not practising.
+
+## classical.4 (4)
+17	all	It is a finger skill, not a pedal skill — practise it with no pedal at all and listen for the join.
+24	never	Never from the arm; that is how you get tired and loud.
+37	never	A trill alternates the main note with the note above it, never below; at this level it is four notes, and in music of Mozart's time it usually starts on the upper one: upper, main, upper, main.
+46	all	1f as its Trio, four-bar phrases with the articulation written in; Schumann's Chorale from the Album for the Young, all legato, for the opposite touch; and a Gurlitt study that slurs the right hand and leaves the left unmarked, so the contrast is yours to supply.
+
+## classical.4.shelf (7)
+16	most	These are the pieces people learn the piano for, collected in one place so you can see what you are working towards and take one down when you are ready — most of them sit above this stage, and that is the point of a shelf.
+25	only	49 pieces, one edition each, from a Stage 4 Für Elise and Clair de Lune in their easy settings up to Chopin's C-sharp minor nocturne and waltz and the Schubert–Liszt Ständchen at Stage 8: Satie's Gymnopédie and Gnossienne, Pachelbel's Canon, Bach's Air on the G String, the Handel–Halvorsen Passacaglia, four Chopin Préludes, Grieg's Morning Mood, the Romanza, Tchaikovsky's Swan Lake, Vivaldi's Spring — and, on the personal build only, Elgar's Salut d'amour and Nimrod, Puccini's O mio babbino caro, pieces by Mascagni, Holst, Mahler and Rachmaninoff, the film and game pieces you asked for by name — Einaudi, Zimmer, Sakamoto, Uematsu, Djawadi, Hurwitz, Glass, de Senneville, Clayderman — and seven other film, game and modern pieces.
+42	none	The three skills these pieces need, none of which are speed:
+47	only	Practise the chord with the melody note only sounding, then add the others quietly underneath.
+54	all	The characteristic failure with this shelf is starting six pieces that are all slightly too hard and finishing none.
+54	none	The characteristic failure with this shelf is starting six pieces that are all slightly too hard and finishing none.
+61	all	One piece from this shelf played all the way through, from memory or not, that you would play for somebody.
+
+## classical.5 (1)
+39	the reason	The written-out drills are on the technique track; in a piece it is a sign, the harder way round — and the reason to settle a starting point now.
+
+## classical.6 (10)
+12	most	Up to now, playing the right notes at the right time was most of the job.
+13	none	The pieces on this rung are short and none of them is fast; what makes them hard is that both hands are playing at once and, in all but the Prelude in C, only one of them is the tune.
+15	all	The pieces on this rung are short and none of them is fast; what makes them hard is that both hands are playing at once and, in all but the Prelude in C, only one of them is the tune.
+15	only	The pieces on this rung are short and none of them is fast; what makes them hard is that both hands are playing at once and, in all but the Prelude in C, only one of them is the tune.
+20	the fix	The fix is physical, not mental: let the hand lean towards the little finger, drop more arm weight into the top note, and keep the inner fingers light and close to the keys.
+44	always	You will always be playing into familiar ground rather than off a cliff, and the end of the piece will not be the part you have practised least.
+58	every	Practising the whole piece at one tempo, hands together, every time.
+61	none	None of these is long and you have half of each in your ear already, so once the notes are secure, run one with Blind on.
+63	only	With nothing to read, the only questions left are which hand is louder and whether the pedal change was late — and both are questions your eyes had been answering for you.
+71	only	One of these pieces played so that someone listening could hum the tune back — which they can only do if you voiced it.
+
+## technique.6 (4)
+26	exactly	The number of notes to the beat is written above the staff and the notation matches it exactly.
+29	only	That is one common way to play a trill in Classical-period music, not the only one, and having it in the fingers saves working it out over a sonatina later.
+37	every	It is reported beside the accuracy and not folded into it, so a flat chord with every right note is still a full-marks run.
+47	only	They are what the chromatic scale and the 3:1 independence exercise are for: a page of sixteenths that stays even only if the hand does.
+
+## chords-pop.7 (6)
+15	exactly	Sus chords have no third, which is exactly why they work: with no third they are neither major nor minor, so they sound like a chord waiting to become one.
+17	all	`sus4` resolves down to the third; `sus2` often does not resolve at all and just sits there sounding open.
+30	every	The four-chord loop with every chord played `add9`, then with the first chord `sus4` resolving.
+39	every	Fix You is sus colour over a bass that barely moves, and Blinding Lights four plain chords over two-note shells, the colour left for you to add; Welcome to Wonderland and For the Damaged Coda are the open, spread voicings this rung is about; the solo setting of Scarborough Fair is a modal tune re-voiced; and Wake Me Up is the loop with a bass-and-chord left hand on every beat under it.
+41	all	All six are personal-library songs: the public build shows the rows and where to get the scores, and the rung is complete on its exercises there.
+45	every	Adding colour to every chord.
+
+## 1.5 (12)
+22	only	A leap is a 4th or wider: this rung only introduces it, since the songs here have just the odd one, and the next rung practises it, where the left hand moves from C to F and to G.
+28	all	You do not need to know which note either of them is; your hand already knows where it is, so all it needs is the distance.
+32	always	This feels wrong and is essential — reading music is like reading text aloud, where you are always a few words ahead of your voice.
+35	every	The sight-reading generator makes a new four-bar melody every time you press it.
+36	most	This is the single most valuable practice tool in the app, because you can only sight-read music you have never seen, and everything else you own you have already seen.
+37	only	This is the single most valuable practice tool in the app, because you can only sight-read music you have never seen, and everything else you own you have already seen.
+37	never	This is the single most valuable practice tool in the app, because you can only sight-read music you have never seen, and everything else you own you have already seen.
+39	never	Two or three fresh melodies a day, at a tempo slow enough that you never stop, does more for reading than an hour on a piece you know.
+42	every	Sight-reading level 1, the interval ear drill (2nd versus 3rd, played back), and Steps and Skips in C, a study where every interval is a 2nd or a 3rd and the hand never leaves C position.
+43	never	Sight-reading level 1, the interval ear drill (2nd versus 3rd, played back), and Steps and Skips in C, a study where every interval is a 2nd or a 3rd and the hand never leaves C position.
+54	all	To begin with the keys light up and name themselves as the chain plays, and each note lands on a staff on the card as it sounds, so all you have to hold is the order — three chips on the card take that help away again when you are ready.
+61	every	Today carries a sight-read of its own, under the session card and outside it: one phrase chosen for your stage, a new one every morning, and the same one again if you open the card twice.
+
+## ragtime.6 (11)
+23	all	A rag you can play three strains of is worth far more than a rag you can stumble through all of.
+26	always	The trio — the strain after the middle — almost always moves to the subdominant, a fourth up, which on the flat side means one more flat in the key signature.
+27	all	All three rags here do it: The Entertainer goes from C to F, Peacherine Rag from E flat to A flat, The Easy Winners from A flat to D flat.
+54	never	Practise the left hand alone at a tempo where you never miss, then take it up by five clicks at a time.
+62	only	Ragtime played fast stops sounding syncopated, because syncopation is only audible against a pulse you can hear.
+63	never	And never swing them: the eighths and sixteenths are dead even.
+71	exactly	Start with School of Ragtime — six short exercises Joplin wrote to teach exactly this, and the shortest thing on the rung.
+77	only	The easiest way in, because the form is the only thing that is new.
+82	most	- The Easy Winners (1901) — A flat, four strains, and the most flats of the three: four, then five in the trio.
+93	every	Left hand alone, one strain, until it is automatic — every time.
+103	all	One complete rag, all its strains, hands together, at the tempo printed on the music, with the left hand steady enough that a metronome would have nothing to say.
+
+## ragtime.7 (2)
+21	never	This is the direct ancestor of stride piano, and the practice is the same as it was at Stage 5: left hand alone, eyes on the chord you are travelling to, at a tempo where you never miss.
+39	most	It is the single most characteristic ragtime device and it is what makes the style sound like it is falling forwards.
+
+exit=0
+
+# the difference
+--- before
++++ after
+@@ -1 +1 @@
+-## 0.1 (4)
++## 0.1 (3)
+@@ -3 +2,0 @@
+-43	the main reason	They look relaxed and they are the main reason beginners cannot play two notes at different volumes.
+@@ -7 +6 @@
+-## 1.1 (6)
++## 1.1 (4)
+@@ -11,2 +9,0 @@
+-36	exactly	In C position each key has exactly one finger and no other finger is allowed to visit it.
+-38	the reason	Where fingering is printed above the notes it is not a suggestion; it is the reason the hand stays still.
+@@ -21,6 +18,3 @@
+-## practice.2 (5)
+-19	only	Slow practice is the only tempo at which you can be accurate on purpose rather than by luck, and accuracy is the thing that has to be repeated.
+-23	only	It is also the only way to notice tension.
+-31	never	This is slower than it sounds and much faster than the alternative, because you never spend a week grinding at a tempo you cannot hold.
+-40	every	That is the rule above made quicker: it moves after every pass rather than every three, its notch is a tenth of the written tempo, and it stops climbing at full tempo unless you had already set it higher.
+-40	every	That is the rule above made quicker: it moves after every pass rather than every three, its notch is a tenth of the written tempo, and it stops climbing at full tempo unless you had already set it higher.
++## practice.2 (2)
++40	every	That is the ladder above made quicker: it moves after every pass rather than every three, its notch is a tenth of the written tempo, and it stops climbing at full tempo unless you had already set it higher.
++40	every	That is the ladder above made quicker: it moves after every pass rather than every three, its notch is a tenth of the written tempo, and it stops climbing at full tempo unless you had already set it higher.
+@@ -28,3 +22 @@
+-## practice.3 (4)
+-14	most	Within a session, performance on the thing you are drilling climbs steadily — and most of that climb is gone by tomorrow.
+-19	only	It also produces markedly better retention a week later, which is the only timescale that matters.
++## practice.3 (2)
+@@ -34,2 +26 @@
+-## practice.5 (7)
+-17	always	A plateau is almost always one of three things, and the useful response is to work out which.
++## practice.5 (4)
+@@ -38,2 +28,0 @@
+-29	only	It takes a week and it is the only thing that works.
+-37	every	If the same mistake happens in the same place every time, it is two.
+@@ -43 +32 @@
+-## blues.4 (7)
++## blues.4 (5)
+@@ -45,3 +34 @@
+-23	every	In every other style that would be a chord demanding resolution; in the blues it is just the colour, and the tension never resolves, which is the point.
+-25	never	In every other style that would be a chord demanding resolution; in the blues it is just the colour, and the tension never resolves, which is the point.
+-46	every	A raised fourth works in every key.
++46	every	A raised fourth can be written in every key, a few with a double sharp.
+@@ -58 +45 @@
+-## blues.6 (5)
++## blues.6 (4)
+@@ -61,3 +48,2 @@
+-23	every	Clarence "Pinetop" Smith recorded it in 1928 and every boogie bass since is a variation on it.
+-27	always	Boogie figures get called after players, and a label does not always match what the player recorded.
+-43	all	Take one through all twelve bars in C, moving it to each chord yourself, then the same in F.
++26	always	Boogie figures get called after players, and a label does not always match what the player recorded.
++42	all	Take one through all twelve bars in C, moving it to each chord yourself, then the same in F.
+@@ -65 +51 @@
+-## blues.8 (3)
++## blues.8 (2)
+@@ -67,2 +53 @@
+-36	every	Pinetop's Boogie Woogie is the 1928 original, the record every boogie bass since is a copy of, and it is the same file you met at Stage 6.
+-46	every	Accompaniment lab opens Blues — twelve bars, the form fixed and every chord already a seventh; set the key to E flat and Read it prints the whole form in the new key.
++45	every	Accompaniment lab opens Blues — twelve bars, the form fixed and every chord already a seventh; set the key to E flat and Read it prints the whole form in the new key.
+@@ -91 +76 @@
+-40	the reason	The written-out drills are on the technique track; here the ornaments arrive inside the pieces, which is the harder way round — and the reason to memorise the rule now.
++39	the reason	The written-out drills are on the technique track; in a piece it is a sign, the harder way round — and the reason to settle a starting point now.
+@@ -98,6 +83,6 @@
+-19	the fix	The fix is physical, not mental: let the hand lean towards the little finger, drop more arm weight into the top note, and keep the inner fingers light and close to the keys.
+-42	always	You will always be playing into familiar ground rather than off a cliff, and the end of the piece will not be the part you have practised least.
+-56	every	Practising the whole piece at one tempo, hands together, every time.
+-59	none	None of these is long and you have half of each in your ear already, so once the notes are secure, run one with Blind on.
+-61	only	With nothing to read, the only questions left are which hand is louder and whether the pedal change was late — and both are questions your eyes had been answering for you.
+-69	only	One of these pieces played so that someone listening could hum the tune back — which they can only do if you voiced it.
++20	the fix	The fix is physical, not mental: let the hand lean towards the little finger, drop more arm weight into the top note, and keep the inner fingers light and close to the keys.
++44	always	You will always be playing into familiar ground rather than off a cliff, and the end of the piece will not be the part you have practised least.
++58	every	Practising the whole piece at one tempo, hands together, every time.
++61	none	None of these is long and you have half of each in your ear already, so once the notes are secure, run one with Blind on.
++63	only	With nothing to read, the only questions left are which hand is louder and whether the pedal change was late — and both are questions your eyes had been answering for you.
++71	only	One of these pieces played so that someone listening could hum the tune back — which they can only do if you voiced it.
+@@ -105 +90 @@
+-## technique.6 (3)
++## technique.6 (4)
+@@ -106,0 +92 @@
++29	only	That is one common way to play a trill in Classical-period music, not the only one, and having it in the fingers saves working it out over a sonatina later.
+@@ -110 +96 @@
+-## chords-pop.7 (7)
++## chords-pop.7 (6)
+@@ -113 +98,0 @@
+-22	most	It is the sound of most pop piano, and it is not a ninth chord — a ninth chord has the seventh in it and sounds like jazz.
+@@ -133 +118 @@
+-## ragtime.6 (12)
++## ragtime.6 (11)
+@@ -142,2 +127 @@
+-82	most	The most work of the three and the most rewarding.
+-83	most	The most work of the three and the most rewarding.
++82	most	- The Easy Winners (1901) — A flat, four strains, and the most flats of the three: four, then five in the trio.
+exit=0

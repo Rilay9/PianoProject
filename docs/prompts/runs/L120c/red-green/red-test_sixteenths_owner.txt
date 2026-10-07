@@ -1,0 +1,106 @@
+F..FFFFFFFF
+======================================================================
+FAIL: test_an_option_at_4_4_establishes_the_claim (tools.content.tests.test_sixteenths_owner.The4_4Addition.test_an_option_at_4_4_establishes_the_claim)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_sixteenths_owner.py", line 191, in test_an_option_at_4_4_establishes_the_claim
+    self.assertIn(CONCEPT, lesson["concepts"])
+AssertionError: 'sixteenth-notes' not found in ['hanon', 'evenness', 'transposition']
+
+======================================================================
+FAIL: test_the_lesson_says_what_a_sixteenth_is_and_how_to_count_it (tools.content.tests.test_sixteenths_owner.The4_4Addition.test_the_lesson_says_what_a_sixteenth_is_and_how_to_count_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_sixteenths_owner.py", line 154, in test_the_lesson_says_what_a_sixteenth_is_and_how_to_count_it
+    self.assertTrue(words in self.text, f"4.4's addition does not say {words!r}")
+AssertionError: False is not true : 4.4's addition does not say '**sixteenth note**'
+
+======================================================================
+FAIL: test_sixteenth_notes_maps_to_rhythm_sixteenths (tools.content.tests.test_sixteenths_owner.TheConceptAndItsMapping.test_sixteenth_notes_maps_to_rhythm_sixteenths)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_sixteenths_owner.py", line 77, in test_sixteenth_notes_maps_to_rhythm_sixteenths
+    self.assertEqual(claims.CONCEPT_DEMANDS.get(CONCEPT), SIXTEENTHS,
+AssertionError: None != 'rhythm.sixteenths' : the one row the build's mapping table gains: sixteenth-notes names rhythm.sixteenths
+
+======================================================================
+FAIL: test_the_concept_has_a_display_name_and_a_finder (tools.content.tests.test_sixteenths_owner.TheConceptAndItsMapping.test_the_concept_has_a_display_name_and_a_finder)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_sixteenths_owner.py", line 86, in test_the_concept_has_a_display_name_and_a_finder
+    self.assertIsNotNone(entry, "concepts.json has no sixteenth-notes entry")
+AssertionError: unexpectedly None : concepts.json has no sixteenth-notes entry
+
+======================================================================
+FAIL: test_its_derived_teaching_rung_is_4_4_alone (tools.content.tests.test_sixteenths_owner.TheOwners.test_its_derived_teaching_rung_is_4_4_alone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_sixteenths_owner.py", line 113, in test_its_derived_teaching_rung_is_4_4_alone
+    self.assertEqual(derived[SIXTEENTHS], ["4.4"])
+AssertionError: Lists differ: [] != ['4.4']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'4.4'
+
+- []
++ ['4.4']
+
+======================================================================
+FAIL: test_sixteenths_are_taught_on_the_paths_through_4_4_and_nowhere_else (tools.content.tests.test_sixteenths_owner.TheOwners.test_sixteenths_are_taught_on_the_paths_through_4_4_and_nowhere_else)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_sixteenths_owner.py", line 130, in test_sixteenths_are_taught_on_the_paths_through_4_4_and_nowhere_else
+    self.assertEqual(claims.untaught_on(item, rung, self.ancestry, self.demands, self.curriculum), [],
+AssertionError: Lists differ: ['rhythm.sixteenths'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'rhythm.sixteenths'
+
+- ['rhythm.sixteenths']
++ [] : rhythm.sixteenths at ragtime.5: 4.4 teaches it, on its path
+
+======================================================================
+FAIL: test_taught_at_is_the_derivation_and_the_validator_is_clean_for_it (tools.content.tests.test_sixteenths_owner.TheOwners.test_taught_at_is_the_derivation_and_the_validator_is_clean_for_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_sixteenths_owner.py", line 120, in test_taught_at_is_the_derivation_and_the_validator_is_clean_for_it
+    self.assertEqual(self.demands[SIXTEENTHS]["taughtAt"], ["4.4"])
+AssertionError: Lists differ: [] != ['4.4']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'4.4'
+
+- []
++ ['4.4']
+
+======================================================================
+FAIL: test_the_claims_are_4_4_ragtime_5_and_technique_6_and_no_other (tools.content.tests.test_sixteenths_owner.TheOwners.test_the_claims_are_4_4_ragtime_5_and_technique_6_and_no_other)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_sixteenths_owner.py", line 105, in test_the_claims_are_4_4_ragtime_5_and_technique_6_and_no_other
+    self.assertEqual(sorted(self.naming()), sorted(CLAIMING))
+AssertionError: Lists differ: [] != ['4.4', 'ragtime.5', 'technique.6']
+
+Second list contains 3 additional elements.
+First extra element 0:
+'4.4'
+
+- []
++ ['4.4', 'ragtime.5', 'technique.6']
+
+======================================================================
+FAIL: test_hanon_no_1_at_4_4_is_no_longer_a_line (tools.content.tests.test_sixteenths_owner.TheTable.test_hanon_no_1_at_4_4_is_no_longer_a_line)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_sixteenths_owner.py", line 201, in test_hanon_no_1_at_4_4_is_no_longer_a_line
+    self.assertFalse(("4.4", "exercise.hanon.01.both") in lines, "Hanon No. 1 at 4.4 is still refused untaught")
+AssertionError: True is not false : Hanon No. 1 at 4.4 is still refused untaught
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.394s
+
+FAILED (failures=9)
+exit=1

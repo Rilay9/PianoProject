@@ -1,0 +1,70 @@
+(in tools/content) python -m unittest tests.test_taught_at
+......F..............EEFFF....
+======================================================================
+ERROR: test_each_entry_says_which_leap_it_is (tests.test_taught_at.TestTheTwoLeapsAreTwoConcepts.test_each_entry_says_which_leap_it_is)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_taught_at.py", line 354, in test_each_entry_says_which_leap_it_is
+    leap, leaps = self.concepts["leap"], self.concepts["leaps"]
+                  ~~~~~~~~~~~~~^^^^^^^^
+KeyError: 'leap'
+
+======================================================================
+ERROR: test_no_two_entries_share_a_name_where_the_leaps_are (tests.test_taught_at.TestTheTwoLeapsAreTwoConcepts.test_no_two_entries_share_a_name_where_the_leaps_are)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_taught_at.py", line 373, in test_no_two_entries_share_a_name_where_the_leaps_are
+    name = " ".join(self.concepts[ident]["display"].split()).casefold()
+                    ~~~~~~~~~~~~~^^^^^^^
+KeyError: 'leap'
+
+======================================================================
+FAIL: test_the_leap_is_untaught_after_1_5_and_taught_from_2_1 (tests.test_taught_at.TestTheCoreTeachesWhereAnOptionEstablishes.test_the_leap_is_untaught_after_1_5_and_taught_from_2_1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_taught_at.py", line 277, in test_the_leap_is_untaught_after_1_5_and_taught_from_2_1
+    self.assertIn("leap", self.lessons["1.5"].get("introduces") or [], "1.5 introduces the leap")
+AssertionError: 'leap' not found in ['leaps'] : 1.5 introduces the leap
+
+======================================================================
+FAIL: test_the_advanced_jump_is_named_only_on_its_technique_rungs (tests.test_taught_at.TestTheTwoLeapsAreTwoConcepts.test_the_advanced_jump_is_named_only_on_its_technique_rungs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_taught_at.py", line 348, in test_the_advanced_jump_is_named_only_on_its_technique_rungs
+    self.assertEqual(self.naming("leaps"), ["blues.7", "ragtime.9"],
+AssertionError: Lists differ: ['1.5', '2.1', 'blues.7', 'ragtime.9'] != ['blues.7', 'ragtime.9']
+
+First differing element 0:
+'1.5'
+'blues.7'
+
+First list contains 2 additional elements.
+First extra element 2:
+'blues.7'
+
+- ['1.5', '2.1', 'blues.7', 'ragtime.9']
+?  --------------
+
++ ['blues.7', 'ragtime.9'] : leaps (an octave or more) is named where the technique rungs name it, and nowhere else
+
+======================================================================
+FAIL: test_the_beginner_leap_is_introduced_at_1_5_and_taught_at_2_1 (tests.test_taught_at.TestTheTwoLeapsAreTwoConcepts.test_the_beginner_leap_is_introduced_at_1_5_and_taught_at_2_1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_taught_at.py", line 343, in test_the_beginner_leap_is_introduced_at_1_5_and_taught_at_2_1
+    self.assertIn("leap", self.lessons["1.5"].get("introduces") or [], "1.5 introduces the fourth or fifth")
+AssertionError: 'leap' not found in ['leaps'] : 1.5 introduces the fourth or fifth
+
+======================================================================
+FAIL: test_the_detector_reads_the_beginner_leap_as_the_leap_and_2_1_still_teaches_it (tests.test_taught_at.TestTheTwoLeapsAreTwoConcepts.test_the_detector_reads_the_beginner_leap_as_the_leap_and_2_1_still_teaches_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0b4282eb6ab6fcc3\tools\content\tests\test_taught_at.py", line 380, in test_the_detector_reads_the_beginner_leap_as_the_leap_and_2_1_still_teaches_it
+    self.assertEqual(claims.CONCEPT_DEMANDS.get("leap"), "interval.leap", "the leap demand's concept is the beginner's")
+AssertionError: None != 'interval.leap' : the leap demand's concept is the beginner's
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.158s
+
+FAILED (failures=4, errors=2)
+exit=1

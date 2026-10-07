@@ -1,0 +1,11 @@
+X42 product probe (app/build/x42/probe/tempo-probe.spec.ts): the model's own numbers, nothing heard.
+
+--- committed reader's build:
+X42PROBE {"id":"song.ragtime.joplin-maple-leaf-rag","modelOpeningTempo":100,"modelDurationSec":145.1,"labelAtOpen":"100% · 100 bpm","bpmFieldAtOpen":"100","labelInRun":"100% · 120 bpm"}
+X42PROBE {"id":"song.classical.satie-gymnopedie-1","modelOpeningTempo":60,"modelDurationSec":226.5,"labelAtOpen":"100% · 60 bpm","bpmFieldAtOpen":"60","labelInRun":"100% · 62 bpm"}
+  2 passed (26.9s)
+
+--- amended reader's build:
+X42PROBE {"id":"song.ragtime.joplin-maple-leaf-rag","modelOpeningTempo":100,"modelDurationSec":174,"labelAtOpen":"100% · 100 bpm","bpmFieldAtOpen":"100","labelInRun":"100% · 100 bpm"}
+X42PROBE {"id":"song.classical.satie-gymnopedie-1","modelOpeningTempo":76.0002,"modelDurationSec":226.1,"labelAtOpen":"100% · 76 bpm","bpmFieldAtOpen":"76","labelInRun":"100% · 62 bpm"}
+  2 passed (26.7s)

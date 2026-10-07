@@ -1,0 +1,8 @@
+states: 60 cells
+  new breakage: 2
+    1-can-i-read-it/theme--light
+        contrast: #score-waiting at 4.3:1
+        contrast: #score-help-more at 4.3:1
+    6-what-if-it-goes-wrong/rotation--bars1-real-phone
+        ,% / 9.35 music is 39% of the stage
+        at <worktree>\app\tests\states\score.states.spec.ts:487:84

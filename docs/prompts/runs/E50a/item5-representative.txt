@@ -1,0 +1,15 @@
+row song.blues.wabash-blues: cid QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt, rawSha256 b4b47922a473afcde8b196d3dcb43c4900f779aa50c5b13d92344796b439906a, convertedSha256 60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208
+streamed member mxl/14/50/QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.mxl read-only out of mxl.tar.gz (the archive was not extracted)
+raw sha256 b4b47922a473afcde8b196d3dcb43c4900f779aa50c5b13d92344796b439906a: equals the row's rawSha256
+converted under the patched date 2026-09-16: sha256 3142e0f05e86e23e0c88d1b83464d3df21fab4dbac6ab16a89b9071df3803f66
+converted under the patched date 2026-10-01: sha256 3142e0f05e86e23e0c88d1b83464d3df21fab4dbac6ab16a89b9071df3803f66
+two conversions on two dates byte-identical: True
+new file carries <encoding-date>: False
+committed file (a copy under build/e50a/item5/committed) sha256 60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208: equals the row's convertedSha256
+committed file's encoding date 2026-09-17; inner entry QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.musicxml (new: QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.musicxml)
+(1) new inner XML equals the committed inner XML with the element removed by the same function: True
+(2) new .mxl equals the normalised committed XML re-zipped through normalise_archive: True
+(3) the committed identity is recorded in tools/content/former_identities.json, dated 2026-09-17, its undated form the new file: True
+    the new file's former identities (the committed table, re-proved) are exactly the committed file's sha256: True (1 former identities)
+RESULT: equal but for the element; the committed identity is among the former identities
+exit 0

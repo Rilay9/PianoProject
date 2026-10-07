@@ -1,0 +1,9 @@
+﻿tests/unit/importSheet.test.ts(93,5): error TS2322: Type '{ status: "measured"; definitions: 3; located: {}; bars: 2; steps: 2; notes: 4; established: readonly []; }' is not assignable to type 'Measurement | undefined'.
+  Type '{ status: "measured"; definitions: 3; located: {}; bars: 2; steps: 2; notes: 4; established: readonly []; }' is not assignable to type '{ status: "measured"; definitions: number; detectors?: string | undefined; located: Record<string, number>; bars: number; steps: number; notes: number; established: string[]; contract?: string[] | undefined; window?: string[] | undefined; misread?: { ...; } | undefined; }'.
+    Types of property 'established' are incompatible.
+      The type 'readonly []' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+tests/unit/libraryImportWords.test.ts(122,7): error TS2322: Type '{ status: "measured"; definitions: 3; located: {}; bars: 4; steps: 4; notes: 4; established: readonly []; }' is not assignable to type 'Measurement | undefined'.
+  Type '{ status: "measured"; definitions: 3; located: {}; bars: 4; steps: 4; notes: 4; established: readonly []; }' is not assignable to type '{ status: "measured"; definitions: number; detectors?: string | undefined; located: Record<string, number>; bars: number; steps: number; notes: number; established: string[]; contract?: string[] | undefined; window?: string[] | undefined; misread?: { ...; } | undefined; }'.
+    Types of property 'established' are incompatible.
+      The type 'readonly []' is 'readonly' and cannot be assigned to the mutable type 'string[]'.
+exit 2

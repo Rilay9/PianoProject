@@ -11,13 +11,13 @@ readingTime: 3
 
 The rung before this one taught the reduction — melody, bass and one texture —
 and named three textures for that layer. This is the first rock texture under
-your hands, and it is the one almost
-every heavy piano part is built from: a shape with no third in it, and a figure
+your hands, and one that heavy piano
+parts are built from: a shape with no third in it, and a figure
 that does not change.
 
 **A power chord is root, fifth, octave, and no third.** The third is what makes
 a chord major or minor, so leaving it out leaves a chord that is neither — which
-is exactly why it sits under a distorted guitar without fighting the singer. On
+is why guitarists use it under distortion, where a full chord turns muddy. On
 a piano the difficulty is not finding the notes. It is that the sound comes from
 arm weight landing on a shape the hand is already holding; play it with the
 fingers and you get a thin clatter and no idea why.
@@ -56,6 +56,6 @@ The exercises are the material here; the song is where you try it.
 relaxes is an accompaniment having opinions, and it pulls the ear off the thing
 it is supposed to be holding up. Flat, even, and slightly boring is correct.
 
-**How you'll know you've got it.** The left hand keeps the figure through a
-whole page without speeding up, and the power chord sounds like weight rather
-than like fingers.
+**How you'll know you've got it.** The figure keeps going through a whole page
+without speeding up — the right hand in the exercises, the left under
+*Greensleeves* — and the power chord sounds like weight rather than like fingers.

@@ -1,0 +1,24 @@
+control unittest tools.content.tests.test_excerpts.TheRepairedCut: exit 0
+control run tests/unit/repairedTempoLineage.test.ts: exit 0
+M1 the guard removed: meetsStandard reads the old percentage as if its denominator were the repaired tempo (app/src/evidence/rungState.ts): exit 1, KILLED; restored byte for byte: True
+   red: E50b: a legacy run of a repaired row (before D4: no material, no header) predates the repair, and its tempo is refused too
+   red: E50b: a run of a repaired row that recorded no base tempo is refused too: what its percentage is of is never guessed
+   red: E50b: a run of the old file at 100 % of the defaulted 96 meets no tempo standard of the piece whose written tempo is 120
+   red: E50b: for every repaired row, the old run under its own id is refused by the tempo standard and kept by contact
+   red: E50b: the tempo lineage, not the continuity relation, is what refuses the old tempo: E50’s catalogue and none read the old percentage as before
+M2 the relation dropped: the table's cut relation removed (tools/content/repaired_identities.json): exit 1, KILLED; restored byte for byte: True
+   red: test_a_learner_continuity_only_the_approval_stays_stale_and_names_the_old_parent
+   red: test_a_nothing_is_named_that_is_not_that_excerpt_or_does_not_rebuild
+   red: test_a_one_relation_for_the_one_cut_the_build_produced
+   red: test_a_the_old_cut_is_rebuilt_from_the_relation_and_is_the_cutter_on_the_old_parent
+M2b the relation dropped at the build: former_cut_identities names nothing (tools/content/excerpts.py): exit 1, KILLED; restored byte for byte: True
+   red: test_a_nothing_is_named_that_is_not_that_excerpt_or_does_not_rebuild
+   red: test_a_the_old_cut_is_rebuilt_from_the_relation_and_is_the_cutter_on_the_old_parent
+M3 the guard keyed on the row alone: a run of the repaired file itself refused too (app/src/curriculum/material.ts): exit 1, KILLED; restored byte for byte: True
+   red: E50b guard: a run recorded after the repair, on the repaired file at its written tempo, is read as before
+M4 the cut's relation without the parent repair's re-proof (tools/content/excerpts.py): exit 1, KILLED; restored byte for byte: True
+   red: test_a_nothing_is_named_that_is_not_that_excerpt_or_does_not_rebuild
+M5 a repaired row's run with no material or no written base read as comparable (only a named old file refused) (app/src/curriculum/material.ts): exit 1, KILLED; restored byte for byte: True
+   red: E50b: a legacy run of a repaired row (before D4: no material, no header) predates the repair, and its tempo is refused too
+   red: E50b: a run of a repaired row that recorded no base tempo is refused too: what its percentage is of is never guessed
+6 of 6 killed

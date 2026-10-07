@@ -56,9 +56,10 @@ import {
   parseTimeSignature,
   romanToChord,
   shellChord,
+  shellFromSymbol,
   type ParsedChord,
 } from './theory';
-import { noteLabel, type Drill, type DrillKind, type DrillPrompt } from './types';
+import { noteLabel, type AnswerSpelling, type Drill, type DrillKind, type DrillPrompt } from './types';
 
 /** Kinds that have a screen in P8. `sight-reading` is notation and is not one. */
 export const RUNTIME_DRILL_KINDS: readonly DrillKind[] = [
@@ -292,8 +293,114 @@ function buildCallResponse(p: Params, base: Required<BuildOptions>, count: numbe
   });
 }
 
+/** `"Dm7b5"` as a lead sheet prints it: `"Dm7♭5"`. The catalogue writes music21's `-` and ASCII. */
+function displayChordSymbol(symbol: string): string {
+  const match = /^([A-G])([#-]?)(.*)$/.exec(symbol.trim());
+  if (!match) return symbol.trim();
+  const accidental = match[2] === '-' ? '♭' : match[2] === '#' ? '♯' : '';
+  const quality = (match[3] ?? '').replace(/b(?=\d)/g, '♭').replace(/#(?=\d)/g, '♯');
+  return `${match[1] as string}${accidental}${quality}`;
+}
+
+/**
+ * Per-key cases, each naming its key, its numeral and the chord symbol to play.
+ *
+ * `drill.jazz.minor-ii-v-i-shells` (A7b.1): a minor ii–V–i's tonic is whatever the chart
+ * prints (Cm6 in Blue Bossa, Am7 in Insensatez), not a rule of the minor scale, so the chord is
+ * data per case, and the symbol is the source of the notes
+ * (`shellFromSymbol` under `voicing: "shell"`). The numeral and the key ride along for the
+ * label; CK-6 checks that each case's numeral and symbol state the same chord. The order is
+ * the row's, never the seed's, so every run asks every case.
+ *
+ * A case the reader cannot build is dropped rather than guessed; CK-6's population test is
+ * what notices a drill with fewer cases than its row.
+ */
+function chordsFromCases(value: unknown, shells: boolean): CaseChord[] {
+  if (!Array.isArray(value)) return [];
+  const out: CaseChord[] = [];
+  for (const entry of value as unknown[]) {
+    if (!entry || typeof entry !== 'object') continue;
+    const { key, numeral, symbol } = entry as Record<string, unknown>;
+    if (typeof key !== 'string' || typeof numeral !== 'string' || typeof symbol !== 'string') continue;
+    const chord = shells ? shellFromSymbol(symbol) : parseChordSymbol(symbol);
+    if (!chord) continue;
+    const keyName = key.trim().replace(/^([A-G])-/, '$1♭').replace(/^([A-G])#/, '$1♯');
+    const answerSpelling = caseAnswerSpelling(key, symbol, chord.pitches);
+    out.push({
+      ...chord,
+      label: `${displayChordSymbol(symbol)} — ${numeral.trim()} in ${keyName}`,
+      ...(answerSpelling ? { answerSpelling } : {}),
+    });
+  }
+  return out;
+}
+
+/** A case's chord, with the staff it is answered on when its key could be read. */
+type CaseChord = ParsedChord & { answerSpelling?: AnswerSpelling };
+
+const LETTERS = 'CDEFGAB';
+const LETTER_PC = [0, 2, 4, 5, 7, 9, 11] as const;
+/** Each natural letter's place on the circle of fifths: F −1, C 0, G 1 … B 5. */
+const LETTER_FIFTHS = [0, 2, 4, -1, 1, 3, 5] as const;
+/**
+ * Letters above a chord's root, by semitones above it, for the degrees a tertian chord of the
+ * table has: the third (minor or major) two letters up, the fifth (diminished, perfect,
+ * augmented) four, the sixth five, the seventh (minor or major) six.
+ */
+const DEGREE_LETTERS: Partial<Record<number, number>> = { 0: 0, 3: 2, 4: 2, 6: 4, 7: 4, 8: 4, 9: 5, 10: 6, 11: 6 };
+
+/** `"C"`, `"B-"`, `"F#"` (music21's spelling, as the row writes it) as a letter index and alteration. */
+function readSpelledNote(text: string): { letter: number; alter: number } | null {
+  const match = /^([A-G])([#-]?)/.exec(text.trim());
+  if (!match) return null;
+  return { letter: LETTERS.indexOf(match[1] as string), alter: match[2] === '-' ? -1 : match[2] === '#' ? 1 : 0 };
+}
+
+/**
+ * The answer staff for a case: the signature of the key the case names, and each member spelled
+ * from the symbol's root by its chord degree (G6b; the reviewer's `ph1-g6a-landing.md` §3).
+ *
+ * The signature: a major key's place on the circle of fifths, three fewer for its relative minor
+ * (C minor three flats, A minor none, G minor two flats). The spelling: a member's letter is the
+ * root's letter moved by its degree (third two letters up, sixth five, seventh six), and its
+ * alteration is whatever reaches the sounding pitch, so G7's third is B (a natural against C minor),
+ * Cm6's sixth A, E7's third G sharp and D7's F sharp. Both are read from the row's data, never from
+ * the visible label; CK-6 holds every staff to music21's `key.Key(tonic).sharps` and spelling.
+ *
+ * Null, and the staff chooses as it always has, for a key or symbol this cannot read, a member
+ * that is not a third, sixth or seventh above the root, or one that would need a double accidental.
+ */
+function caseAnswerSpelling(key: string, symbol: string, pitches: readonly number[]): AnswerSpelling | null {
+  const keyMatch = /^\s*([A-G][#-]?)\s+(major|minor)\s*$/.exec(key);
+  const tonic = keyMatch ? readSpelledNote(keyMatch[1] as string) : null;
+  const root = readSpelledNote(symbol);
+  if (!keyMatch || !tonic || !root || pitches.length === 0) return null;
+  const fifths = (LETTER_FIFTHS[tonic.letter] ?? 0) + 7 * tonic.alter - (keyMatch[2] === 'minor' ? 3 : 0);
+  if (fifths < -7 || fifths > 7) return null;
+  const rootPc = ((pitches[0] as number) % 12 + 12) % 12;
+  const names: Partial<Record<number, { step: string; alter: number }>> = {};
+  for (const midi of pitches) {
+    const above = ((midi - (pitches[0] as number)) % 12 + 12) % 12;
+    // Letters above the root by chord degree: root, third (3-4), fifth (6-8), sixth (9), seventh (10-11).
+    const steps = DEGREE_LETTERS[above] ?? null;
+    if (steps === null) return null;
+    const letter = (root.letter + steps) % 7;
+    let alter = (((rootPc + above) % 12) - (LETTER_PC[letter] ?? 0) + 12) % 12;
+    if (alter > 6) alter -= 12;
+    if (Math.abs(alter) > 1) return null;
+    names[((midi % 12) + 12) % 12] = { step: LETTERS[letter] as string, alter };
+  }
+  return { fifths, names };
+}
+
 /** Chord symbols, or roman numerals in a set of keys, or the defaults. */
 function chordsFromParams(p: Params, rng: () => number): ParsedChord[] {
+  // Only a row that carries `cases` reaches this; no other chord row has the key.
+  if (p.cases !== undefined) {
+    const shellCases = typeof p.voicing === 'string' && p.voicing.trim().toLowerCase() === 'shell';
+    const cases = chordsFromCases(p.cases, shellCases);
+    if (cases.length > 0) return cases;
+  }
   const symbols = strings(p.chords)
     .map((symbol) => parseChordSymbol(symbol))
     .filter((chord): chord is ParsedChord => chord !== null);
@@ -345,8 +452,14 @@ function buildChord(p: Params, base: Required<BuildOptions>, rng: () => number):
   const chords = chordsFromParams(p, rng);
   if (chords.length === 0) return chordDrill(base);
   const prompts: DrillPrompt[] = Array.from({ length: base.count }, (_, index) => {
-    const chord = chords[index % chords.length] as ParsedChord;
-    return { index, label: chord.label, expected: chord.pitches };
+    const chord = chords[index % chords.length] as CaseChord;
+    // Only a `cases` row's chords carry a spelling; every other chord prompt is as it was.
+    return {
+      index,
+      label: chord.label,
+      expected: chord.pitches,
+      ...(chord.answerSpelling ? { answerSpelling: chord.answerSpelling } : {}),
+    };
   });
   return new PromptDrill({ kind: 'chord', prompts, anyOctave: true, clock: base.clock });
 }

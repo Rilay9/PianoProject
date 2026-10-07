@@ -38,6 +38,7 @@ carries one status:
 - Accepted requirements leave this channel for the matrix or a brief with a row id; nothing lives
   here that should live there.
 - `current.md` is overwritten per handoff and a response is a new file per handoff; git holds the history.
+- Answered items leave `current.md` for `answered-archive.md` once a newer batch is answered, so `current.md` stays under the fetch limit (it had grown to 77 KB by 2026-10-01, when the first move was made).
 - **The owner triggers only the reviewer** (the reviewer's refinement, 2026-09-26). After posting a
   handoff the orchestrator stops work that depends on the verdict, polls the branch for a new file under
   `docs/review/responses/` at a slow cadence, and when one lands processes it under the owner's standing
@@ -83,3 +84,28 @@ written as `docs/review/handoffs/<seven-character implementation HEAD>.md` at th
 posted, so a later handoff never overwrites an unreviewed one; `current.md` stays the pointer to the
 latest. A response is named by the implementation HEAD it reviewed and answers that handoff file.
 
+## The trigger (from 2026-09-27): pull request #1
+
+The reviewer's timed tasks are disabled. Pull request #1 on `claude/piano-teaching-app-bo19td` is the
+standing trigger: every push to the branch updates the PR and wakes the reviewer's GitHub-triggered
+task, which reads the handoff files, skips any that already have a matching response, reviews the new
+one, and commits its response file. **The PR stays open and is never merged**; it exists only to be
+updated. A response commit wakes the reviewer again and it skips. The orchestrator's side is unchanged:
+one immutable handoff per seam under `handoffs/`, the watcher on `responses/`, every finding verified
+at the line, dispositions recorded, the D0 gate respected. Docs-only pushes wake the reviewer too, so
+record commits are batched where they can be.
+
+## Brief handoffs (from 2026-09-27): the pre-dispatch gate gets its own file
+
+The reviewer's automation acts only on a file under `handoffs/` that has no matching response, so
+a brief "at the gate" in `current.md` alone is never reviewed (the reviewer's finding, 2026-09-27,
+after E0 sat unread through two watches). The second of the two gates per task therefore posts the
+same way as the first: `handoffs/<seven-character HEAD of the commit that carries the brief>.md`,
+opening with the words "a brief handoff: no implementation to review", pointing at the brief's file
+and the entries and responses it builds on, listing the decisions the orchestrator made in it for the
+reviewer to accept or overturn, and asking its questions. The reply is `responses/<same>.md` with the
+usual statuses (APPROVE means dispatch when the brief's other gates are met; BLOCKING means the brief
+changes before dispatch). A brief handoff and an implementation handoff are different seams and never
+share a file; a brief that changes after its review gets a new handoff at its new commit.
+
+One exception, the reviewer's fast path (`responses/questions-70656183.md`, 2026-09-30, operating procedure §11): a verdict of APPROVE WITH ONE REQUIRED CHANGE on an otherwise accepted seam is itself the pre-reviewed brief for that change, returned to the same builder under the five conditions §11 states; the fix still gets its own implementation HEAD, entry, handoff and post-build review.

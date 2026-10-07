@@ -323,13 +323,11 @@
                 "skill": "turning a bare chord chart into an arrangement with an intro, a texture and an ending",
                 "levelWords": "advanced, pop piano arranging, solo piano from a chord chart",
                 "constraints": [
-                  "chord chart or lead sheet only",
+                  "an arrangement to take chords from, or a bare chord chart",
                   "a song with distinct sections",
-                  "room to change texture between sections",
-                  "chord symbols printed"
+                  "room to change texture between sections"
                 ],
                 "avoid": [
-                  "fully written-out arrangements",
                   "one texture throughout",
                   "instrumental etudes"
                 ],
@@ -358,7 +356,6 @@
               "exerciseOptions": [
                 "drill.ear.tune-long",
                 "drill.theory.harmonic-dictation-modulation",
-                "drill.reading.sight-reading-7",
                 "drill.theory.roman-numerals-secondary",
                 "drill.reading.sight-reading-6"
               ],
@@ -443,6 +440,12 @@
                   "kind": "runs",
                   "from": "exercises",
                   "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "finished-piece",
+                  "says": "A piece of your own, written down and playable.",
+                  "why": "Writing a piece is not a run the app records."
                 }
               ],
               "prerequisites": [

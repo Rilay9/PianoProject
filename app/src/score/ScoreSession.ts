@@ -125,6 +125,13 @@ export interface ScoreSessionOptions {
   audioContext?: AudioContext | null;
   /** Node the piano and metronome connect to; the shared master gain. */
   destination?: AudioNode | null;
+  /**
+   * Where the context and the destination come from, asked at every boundary
+   * that uses them (U67). When given, `audioContext` and `destination` are not
+   * read: the Score screen builds its session before the first tap, and a pair
+   * fixed then was none for the whole visit.
+   */
+  audio?: () => SessionAudio;
   onChange?: () => void;
   onFinished?: (score: SessionScore, looped: boolean) => void;
   /**
@@ -136,6 +143,15 @@ export interface ScoreSessionOptions {
    * session only forwards what the engine already emits.
    */
   onBeat?: (beat: { beat: number; bar: number; isCountIn: boolean }) => void;
+}
+
+/**
+ * The audio a session plays through, as one pair (U67): the context whose clock
+ * the notes are timed on, and the node the metronome is routed to.
+ */
+export interface SessionAudio {
+  context: AudioContext | null;
+  destination: AudioNode | null;
 }
 
 /**
@@ -321,6 +337,28 @@ export class ScoreSession {
     this.stripView = options.strip ?? null;
     this.stripOptions = { ...DEFAULT_STRIP_OPTIONS, ...(options.stripOptions ?? {}) };
     this.piano = options.piano ?? null;
+  }
+
+  /**
+   * The context and the destination, read together at the moment of use (U67).
+   *
+   * They were fixed from the options when the session was built, and the Score
+   * screen builds its session as the piece loads: on a reload, or a link
+   * straight to a piece, that is before any tap, when the app's engine has
+   * neither. The session held nothing for the whole visit, and `Hear it` moved
+   * the cursor through the piece without scheduling one note or click. Every
+   * boundary (playback, the latch, the click's start and its resume) asks here
+   * instead, once, for both: the notes are timed on the context's clock and the
+   * click is routed to the destination, and a context refreshed alone would
+   * have played the notes and sent the click past the master gain
+   * (`responses/b2a55d0.md`). The session never makes or owns a context; the
+   * provider hands over what the app's engine holds. A metronome already
+   * clicking keeps the pair it was built with until it is rebuilt.
+   */
+  private audioNow(): SessionAudio {
+    const provided = this.options.audio?.();
+    if (provided) return { context: provided.context, destination: provided.destination };
+    return { context: this.options.audioContext ?? null, destination: this.options.destination ?? null };
   }
 
   /**
@@ -664,7 +702,7 @@ export class ScoreSession {
 
   /** The metronome picked up on the engine's grid, from the next beat. */
   private startMetronomeOnGrid(engine: PracticeEngine): void {
-    const context = this.options.audioContext;
+    const { context } = this.audioNow();
     if (!context) {
       this.startMetronome(this.runOptions);
       return;
@@ -859,7 +897,8 @@ export class ScoreSession {
   // --- internals -----------------------------------------------------------
 
   private startMetronome(run: RunOptions, startTimeSec?: number, firstBeatInBar?: number): void {
-    const context = this.options.audioContext;
+    // Both from one reading, so the click goes where its clock is.
+    const { context, destination } = this.audioNow();
     if (!context) return;
     this.metronome?.dispose();
     const prepared = this.engine?.prepared;
@@ -871,7 +910,7 @@ export class ScoreSession {
       countInBars: 0,
       sound: run.metronomeSound ?? 'wood',
       volume: run.metronomeVolume ?? 0.6,
-      ...(this.options.destination ? { destination: this.options.destination } : {}),
+      ...(destination ? { destination } : {}),
     });
     this.metronome.start(startTimeSec, firstBeatInBar);
   }
@@ -1197,7 +1236,7 @@ export class ScoreSession {
   private schedulePlayback(): void {
     const engine = this.engine;
     const piano = this.piano;
-    const context = this.options.audioContext;
+    const { context } = this.audioNow();
     if (!engine || !piano || !context) return;
     const mode = engine.mode;
     if (mode !== 'tempo' && mode !== 'listen') return;
@@ -1245,7 +1284,7 @@ export class ScoreSession {
    */
   private onLatched(stepIndex: number, latchPerfMs: number): void {
     const engine = this.engine;
-    const context = this.options.audioContext;
+    const { context } = this.audioNow();
     if (!engine) return;
     const which = this.runOptions.playbackHands ?? 'non-focused';
     const piano = this.piano;

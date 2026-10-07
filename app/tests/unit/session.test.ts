@@ -25,6 +25,7 @@ import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types
 import type { SessionRow } from '../../src/data/db';
 import { rungState, type RungStates } from '../../src/evidence/rungState';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { measured } from './helpers/measured';
 
 /**
  * Where the learner is, from runs each judged by the rung named with its item
@@ -48,6 +49,8 @@ function statesOf(curriculum: Curriculum, runs: [itemId: string, rung: string][]
   return rungState(rows, curriculum, VOCABULARY_V0, new Date('2026-10-02T10:00:00Z'));
 }
 
+// Revised (E0): a constructed score carries its measurement (steps, at a useful density),
+// because the swap sheet's gate offers nothing unmeasured as equivalent practice.
 function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
   return {
     id,
@@ -58,6 +61,7 @@ function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
     tracks: ['core'],
     concepts: ['c'],
     file: `scores/${id}.mxl`,
+    ...measured(['interval.step']),
     ...over,
   };
 }

@@ -1,0 +1,36 @@
+[WebServer] (node:64532) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/curriculum/load.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/curriculum/tips.ts, src/data/planStore.ts, src/score/estimateImport.ts, src/ui/assignSheet.ts, src/ui/screens/ChordChartScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] (node:11752) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 2 workers
+
+(node:62548) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55764) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  2 tests\e2e\lesson-tools.spec.ts:33:1 › the lab tool opens the lab already in the rung’s preset (1.1s)
+  ok  1 tests\e2e\lesson-tools.spec.ts:55:1 › the duet tool opens a piece from the rung with one hand chosen (1.4s)
+  ok  3 tests\e2e\lesson-tools.spec.ts:76:1 › a rung that names its Simon opens that one, not the stage’s (911ms)
+  ok  4 tests\e2e\lesson-tools.spec.ts:91:1 › a rung that names no tool draws no block (625ms)
+  ok  5 tests\e2e\start-and-return.spec.ts:49:3 › opening a lesson › says where you are, and gives one thing to press (666ms)
+  ok  6 tests\e2e\start-and-return.spec.ts:78:3 › opening a lesson › Start opens the first thing on the rung, and says which (748ms)
+  ok  8 tests\e2e\start-and-return.spec.ts:120:3 › starting a mode › says what to do before a note has been judged, in every mode (887ms)
+  ok  7 tests\e2e\start-and-return.spec.ts:93:3 › opening a lesson › Start is an offer: it passes over a listed groove no one has approved for teaching, and says what it opens instead (1.1s)
+  ok  9 tests\e2e\start-and-return.spec.ts:130:3 › starting a mode › marks the first note it is waiting for before the run starts (898ms)
+  ok 10 tests\e2e\start-and-return.spec.ts:140:3 › coming back to a run left half way › says where it was left and offers both ways on (11.5s)
+  ok 12 tests\e2e\start-and-return.spec.ts:188:3 › coming back to a run left half way › a piece never left half way is not asked about (888ms)
+  ok 11 tests\e2e\start-and-return.spec.ts:166:3 › coming back to a run left half way › starting from the beginning takes the offer away and leaves bar 1 (11.9s)
+
+  12 passed (31.6s)

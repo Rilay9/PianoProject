@@ -1,0 +1,37 @@
+
+Running 1 test using 1 worker
+
+  x  1 tests\e2e\score.screen.spec.ts:1224:3 › ▶ after the sound was suspended (U69) › a start that never answers: no run, ▶ at rest, the state line says so; the next ▶ runs with the sound (11.4s)
+
+
+  1) tests\e2e\score.screen.spec.ts:1224:3 › ▶ after the sound was suspended (U69) › a start that never answers: no run, ▶ at rest, the state line says so; the next ▶ runs with the sound 
+
+    Error: the state line after the bound
+
+    expect(locator).toHaveText(expected) failed
+
+    Locator:  locator('#score-waiting')
+    Expected: "Sound did not start — tap ▶ again"
+    Received: "The count-in clicks, then play along."
+    Timeout:  10000ms
+
+    Call log:
+      - the state line after the bound locator('#score-waiting') with timeout 10000ms
+      - waiting for locator('#score-waiting')
+        24 × locator resolved to <p role="status" id="score-waiting" aria-live="polite" class="score-waiting help-strip__now">The count-in clicks, then play along.</p>
+           - unexpected value "The count-in clicks, then play along."
+
+
+      1255 |     await play.click({ timeout: 5_000 });
+      1256 |     // Past the bound: the sentence is what says the wait is over (polled, no fixed sleep).
+    > 1257 |     await expect(page.locator('#score-waiting'), 'the state line after the bound').toHaveText(sentence, {
+           |                                                                                    ^
+      1258 |       timeout: 10_000,
+      1259 |     });
+      1260 |     await expect(section, 'a run started against a sound that had not started').not.toHaveAttribute(
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0033f8fd2796c83d\app\tests\e2e\score.screen.spec.ts:1257:84
+
+    Error Context: build\g86a\test-results\score.screen-▶-after-the-s-b572d--next-▶-runs-with-the-sound\error-context.md
+
+  1 failed
+    tests\e2e\score.screen.spec.ts:1224:3 › ▶ after the sound was suspended (U69) › a start that never answers: no run, ▶ at rest, the state line says so; the next ▶ runs with the sound 

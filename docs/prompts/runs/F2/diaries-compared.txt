@@ -1,0 +1,11 @@
+0 mornings differ across 5 diaries
+== ambiguity-a.txt: 0 of 10 mornings differ
+== ambiguity-b.txt: 0 of 10 mornings differ
+== intermediate.txt: 0 of 30 mornings differ
+== musician.txt: 0 of 30 mornings differ
+== skip.txt: 0 of 30 mornings differ
+ambiguity-a.txt identical
+ambiguity-b.txt identical
+intermediate.txt identical
+musician.txt identical
+skip.txt identical

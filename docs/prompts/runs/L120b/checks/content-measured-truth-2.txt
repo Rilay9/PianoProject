@@ -1,0 +1,22 @@
+..............................................FF............
+======================================================================
+FAIL: test_the_committed_markdown_is_this_catalogues (tests.test_measured_truth.TestTheReports.test_the_committed_markdown_is_this_catalogues) (path='rung-claims.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8cdf3dae958f4a\tools\content\tests\test_measured_truth.py", line 781, in test_the_committed_markdown_is_this_catalogues
+    self.assertEqual(path.read_text(encoding="utf-8").replace("\r\n", "\n"), text,
+AssertionError: "# Th[2514 chars]ns: 87 (D0's record holds 87; the same).\n\n##[97064 chars] |\n" != "# Th[2514 chars]ns: 82 (D0's record holds 82; the same).\n\n##[96266 chars] |\n" : rung-claims.md is stale: rebuild
+
+======================================================================
+FAIL: test_the_committed_markdown_is_this_catalogues (tests.test_measured_truth.TestTheReports.test_the_committed_markdown_is_this_catalogues) (path='inventory.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8cdf3dae958f4a\tools\content\tests\test_measured_truth.py", line 781, in test_the_committed_markdown_is_this_catalogues
+    self.assertEqual(path.read_text(encoding="utf-8").replace("\r\n", "\n"), text,
+AssertionError: "# Th[3533 chars]er | 193 |\n| rhythm.ties | 336 |\n| rhythm.sy[29704 chars]ce\n" != "# Th[3533 chars]er | 200 |\n| rhythm.ties | 336 |\n| rhythm.sy[29614 chars]ce\n"
+Diff is 37506 characters long. Set self.maxDiff to None to see it. : inventory.md is stale: rebuild
+
+----------------------------------------------------------------------
+Ran 59 tests in 12.702s
+
+FAILED (failures=2)

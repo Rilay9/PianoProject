@@ -1,0 +1,18 @@
+# checks for 10 path(s): 10 matched, 0 unmatched
+# .github/workflows/pages.yml: .github/workflows/pages.yml
+# tools/content/claims.py: tools/content/*.py
+# tools/content/validate.py: tools/content/*.py
+# tools/content/build.py: tools/content/*.py
+# tools/content/tests/test_validate_claims.py: tools/content/tests/test_*.py
+# docs/03-content-pipeline.md: docs/03-content-pipeline.md, docs/**
+# docs/prompts/rung-claims.md: docs/prompts/rung-claims.md, docs/**
+# docs/prompts/inventory.md: docs/prompts/inventory.md, docs/**
+# docs/prompts/checks.json: docs/prompts/checks.json, docs/**
+# docs/prompts/runs/Q75/ENTRY.md: docs/**
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app
+exit=0

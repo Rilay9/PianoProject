@@ -33,6 +33,16 @@ own interval contract, and the two makers are held to spell every chord
 alike. And the white-root seventh arpeggios printed a fingering marked
 verified that no source had been read for; the fingering is now a published
 one (`MCLAIN_SEVENTH_ASCENT`), transcribed here apart from the generator.
+
+T53c took three more (G48, G49, G45). G♯ natural minor, both ways, and G♯
+melodic minor coming down put the left thumb on F♯, because `make_scale`
+fingered every minor form from the harmonic table, whose thumb falls on F𝄪;
+each of the four minor forms now has its table, and G♯ minor's left hand is
+held to Kelley's chart and Clementi's run (`KELLEY_G_SHARP_MINOR`,
+`CLEMENTI_G_SHARP_MINOR_LH`). The broken sevenths printed a fingering no
+source gives while their flag said unverified; they now print none. And the
+chromatic scale from E began the left hand on the thumb twice; it is held to
+McLain's chromatic figure (`MCLAIN_CHROMATIC_FROM_C`).
 """
 from __future__ import annotations
 
@@ -48,6 +58,7 @@ from music21 import articulations, converter, interval, key, note, pitch  # noqa
 
 import generate_exercises as G  # noqa: E402
 from abc_tools import apply_fingerings, extract_fingerings, prepare_abc  # noqa: E402
+from tests.convention import convention_printed  # noqa: E402
 from generate_exercises import (  # noqa: E402
     BLACK_PITCH_CLASSES,
     HARMONIC_MINOR_FINGERING,
@@ -233,17 +244,131 @@ B_FLAT_MINOR_RH_ASCENT = {
 }
 
 LILYPOND_STEPS = {"c": "C", "d": "D", "e": "E", "f": "F", "g": "G", "a": "A", "b": "B"}
+LILYPOND_ACCIDENTALS = {"": "", "es": "-", "is": "#", "eses": "--", "isis": "##"}
 
 
 def read_lilypond(line: str) -> list[tuple[str, int | None]]:
     """(the note's name in music21's spelling, its printed finger or None), note by note."""
     out = []
     for token in line.split():
-        match = re.fullmatch(r"([a-g])(es|is)?!?\d*(?:[_-](\d))?", token)
+        match = re.fullmatch(r"([a-g])((?:es|is){0,2})!?\d*\.?(?:[_-](\d))?", token)
         assert match, token
-        name = LILYPOND_STEPS[match.group(1)] + {"es": "-", "is": "#", None: ""}[match.group(2)]
+        name = LILYPOND_STEPS[match.group(1)] + LILYPOND_ACCIDENTALS[match.group(2)]
         out.append((name, int(match.group(3)) if match.group(3) else None))
     return out
+
+
+# --------------------------------------------------------------------------------------
+# the G♯ minor scales' left hand (T53c, G48)
+# --------------------------------------------------------------------------------------
+
+#: Robert Kelley's scale chart (the page `KELLEY_B_FLAT_MINOR_RH` names; the chart
+#: image read 2026-09-27): G♯/A♭ minor as its three minor columns print it. The
+#: melodic column is headed "(ascending)"; there is no descending one, because the
+#: melodic minor comes down through the natural minor's notes and the natural
+#: column fingers them. The harmonic left hand puts its thumb on the seventh,
+#: F𝄪, a white key; the natural left hand keeps it off the natural seventh, F♯.
+KELLEY_G_SHARP_MINOR = {
+    "natural": {"RH": "34123123", "LH": "32132143"},
+    "harmonic": {"RH": "34123123", "LH": "32143213"},
+    "melodic (ascending)": {"RH": "34123123", "LH": "32143213"},
+}
+
+#: Which of the chart's columns fingers each form going up and coming down.
+G_SHARP_MINOR_COLUMNS = {
+    "harmonic": ("harmonic", "harmonic"),
+    "natural": ("natural", "natural"),
+    "melodic": ("melodic (ascending)", "natural"),
+}
+
+#: Clementi, Op. 42 (Mutopia, as for B♭ minor), the left hand of
+#: `inlineScaleGisMin`, verbatim: G♯ melodic minor up an octave and a fifth with
+#: E♯ and F𝄪, back down through the natural minor's F♯ and E (engraved `fis!` and
+#: `e!`) to the F𝄪 below the start, and home. Every finger of the first octave up
+#: is printed; coming down he prints the thumb on E and on B, never on F♯.
+CLEMENTI_G_SHARP_MINOR_LH = (
+    "gis16-3 ais-2 b-1 cis-4 dis-3 eis-2 fisis-1 gis-3 ais b cis-3 dis-2 "
+    "cis-3 b-1 ais gis fis! e!-1 dis cis b-1 ais gis fisis-4 gis2.-3"
+)
+
+
+def read_scale_pattern(pattern: str, octaves: int) -> list[int]:
+    """
+    The ascent a scale chart's pattern gives over `octaves`.
+
+    Kelley's first rule: the fingering "repeats every octave", so every tonic
+    after the first takes the pattern's last digit. For these G♯ minor patterns
+    the first and last digits agree, so no inner tonic needs a finger of its own.
+    """
+    digits = [int(d) for d in pattern]
+    return digits[:1] + digits[1:] * octaves
+
+
+#: The five items G48 is about, their left hands as printed up and back, read
+#: from the chart by the rule above: the natural form's 32132143 both ways, and
+#: the melodic form's 32143213 going up and the natural form's coming down.
+G_SHARP_MINOR_LH = {
+    "exercise.scale.g-sharp-natural-minor.1oct.similar.both.2":
+        [3, 2, 1, 3, 2, 1, 4, 3, 4, 1, 2, 3, 1, 2, 3],
+    "exercise.scale.g-sharp-natural-minor.2oct.similar.both.2":
+        [3, 2, 1, 3, 2, 1, 4, 3, 2, 1, 3, 2, 1, 4, 3, 4, 1, 2, 3, 1, 2, 3, 4, 1, 2, 3, 1, 2, 3],
+    "exercise.scale.g-sharp-melodic-minor.1oct.similar.left.2":
+        [3, 2, 1, 4, 3, 2, 1, 3, 4, 1, 2, 3, 1, 2, 3],
+    "exercise.scale.g-sharp-melodic-minor.1oct.similar.both.2":
+        [3, 2, 1, 4, 3, 2, 1, 3, 4, 1, 2, 3, 1, 2, 3],
+    "exercise.scale.g-sharp-melodic-minor.2oct.similar.both.2":
+        [3, 2, 1, 4, 3, 2, 1, 3, 2, 1, 4, 3, 2, 1, 3, 4, 1, 2, 3, 1, 2, 3, 4, 1, 2, 3, 1, 2, 3],
+}
+
+#: Scale steps in semitones, tonic to tonic, for each minor form's table.
+MINOR_FORM_STEPS = {
+    "harmonic": [0, 2, 3, 5, 7, 8, 11, 12],
+    "natural": [0, 2, 3, 5, 7, 8, 10, 12],
+    "melodic ascending": [0, 2, 3, 5, 7, 9, 11, 12],
+    "melodic descending": [0, 2, 3, 5, 7, 8, 10, 12],
+}
+
+
+# --------------------------------------------------------------------------------------
+# the chromatic scale (T53c, G45)
+# --------------------------------------------------------------------------------------
+
+#: Margaret Starr McLain, *Class Piano* (the edition `MCLAIN_SEVENTH_ASCENT`
+#: names), chapter 9, "Chromatic Scale Fingering", read 2026-09-27: the figure,
+#: C up to C, each hand's finger as printed. The rule under it: black keys take
+#: the third finger, single white keys the thumb, and each pair of neighbouring
+#: white keys 1 and 2, the pairs being the only place the two hands differ.
+#: Indexed by pitch class from C.
+MCLAIN_CHROMATIC_FROM_C = {
+    "RH": [2, 3, 1, 3, 1, 2, 3, 1, 3, 1, 3, 1, 2],
+    "LH": [1, 3, 1, 3, 2, 1, 3, 1, 3, 1, 3, 2, 1],
+}
+
+
+def chromatic_source_faults(sc) -> list[str]:
+    """
+    Where a chromatic scale's print differs from the book's finger for each key.
+
+    One allowance, the first note of a run: the right hand's 2 is on the upper
+    white of a pair (F, C), so a right hand that starts there starts without
+    the pair's lower note and begins on the thumb, as the scale tables let a
+    run's first note be fingered for a hand that starts there. The left hand's
+    2 is on the lower white (E, B), whose partner is the very next note, so it
+    has no such allowance. The crossing guard runs over the same notes.
+    """
+    faults = []
+    for part_id in ("RH", "LH"):
+        notes = fingered_notes(sc, part_id)
+        if not notes or all(f is None for _, f in notes):
+            continue
+        for index, (p, finger) in enumerate(notes):
+            wanted = MCLAIN_CHROMATIC_FROM_C[part_id][p.pitchClass]
+            if index == 0 and part_id == "RH" and p.pitchClass in (0, 5):
+                wanted = 1
+            if finger != wanted:
+                faults.append(f"{part_id} {p.nameWithOctave}({finger}): the book's figure gives {wanted}")
+        faults += crossing_faults(notes, part_id)
+    return faults
 
 
 # --------------------------------------------------------------------------------------
@@ -315,9 +440,12 @@ SEVENTH_INTERVALS = {
     "half-diminished7": ("P1", "m3", "d5", "m7"),
 }
 
-#: White keys wearing an accidental. The generator prints the enharmonic
-#: instead (`_readable`), as it does for a double accidental.
-NOBODY_WRITES = {"C-", "F-", "B#", "E#"}
+#: The four white keys that can wear an accidental. A seventh chord's own
+#: tone is printed as its stacked thirds spell it, these included
+#: (`_readable`, D0a): C flat is A flat minor 7's third and F flat is G flat
+#: 7's seventh. Only a double accidental is printed as its enharmonic, and
+#: the enharmonic is never one of these.
+WHITE_KEYS_WITH_ACCIDENTALS = {"C-", "F-", "B#", "E#"}
 
 
 def spelling_faults(sc, entry: dict) -> list[str]:
@@ -327,8 +455,7 @@ def spelling_faults(sc, entry: dict) -> list[str]:
     A triad arpeggio prints only its key's first, third and fifth degrees; a
     seventh arpeggio or a broken seventh prints its four notes as stacked
     thirds from the root, except that a note whose stacked-thirds spelling
-    needs a double accidental, or is one nobody writes, may be printed as its
-    enharmonic.
+    needs a double accidental may be printed as its enharmonic.
     """
     params = entry["drill"]["params"]
     root = params["key"]
@@ -343,9 +470,9 @@ def spelling_faults(sc, entry: dict) -> list[str]:
                 for want in proper:
                     if p.name == want.name:
                         ok = True
-                    elif (abs(want.alter) > 1 or want.name in NOBODY_WRITES) and \
+                    elif abs(want.alter) > 1 and \
                             p.pitchClass == want.pitchClass and abs(p.alter) <= 1 and \
-                            p.name not in NOBODY_WRITES:
+                            p.name not in WHITE_KEYS_WITH_ACCIDENTALS:
                         ok = True
             else:
                 k = key.Key(root if quality == "major" else root.lower())
@@ -411,7 +538,8 @@ def chart_faults(sc, entry: dict, chart: dict) -> list[str]:
 
 
 #: The families these tests read from the shipping plan, by id prefix.
-PLAN_FAMILIES = ("exercise.arpeggio.", "exercise.arpeggio7.", "exercise.broken7.", "exercise.scale.")
+PLAN_FAMILIES = ("exercise.arpeggio.", "exercise.arpeggio7.", "exercise.broken7.", "exercise.scale.",
+                 "exercise.chromatic.")
 
 _PLAN: dict[str, list[tuple[object, dict]]] | None = None
 
@@ -689,33 +817,136 @@ class TestTheBFlatMinorScaleJoin(unittest.TestCase):
         self.assertEqual(checked, 252)
         self.assertEqual(faults, [], "\n".join(faults[:40]) + f"\n… {len(faults)} in all")
 
-    def test_the_thumb_takes_a_black_key_only_where_g_sharp_minor_borrows_its_harmonic_table(self) -> None:
+    def test_no_scale_in_the_plan_puts_the_thumb_on_a_black_key(self) -> None:
         """
-        A pin, not a blessing: this row fails the day the fault is fixed.
+        Every scale in the plan, both hands, no exception.
 
-        `make_scale` fingers the melodic and natural minors from the harmonic
-        table. G♯ minor's harmonic left hand puts the thumb on the raised
-        seventh, F𝄪, a white key; the natural seventh is F♯, a black one, so the
-        natural form both ways and the melodic form's way down put the left
-        thumb on F♯. Kelley's chart gives G♯ natural minor a left hand of its
-        own, 32132143, for exactly this reason. It is not this task's table
-        (T53b's follow-up); meanwhile every other scale in the plan is held to
-        the rule here.
+        This row replaces T53b's pin, which listed five G♯ minor items as a
+        known fault: the natural form both ways and the melodic form coming
+        down put the left thumb on F♯, because `make_scale` fingered them from
+        the harmonic table, whose thumb falls on F𝄪. Each minor form now takes
+        its own table (G48), so the pin's list is empty and the rule holds for
+        all of them.
         """
-        faults = {}
+        checked, faults = 0, {}
         for sc, entry in plan_items("exercise.scale."):
+            checked += 1
             found = scale_thumb_faults(sc)
             if found:
                 faults[entry["id"]] = found
-        self.assertEqual(sorted(faults), [
-            "exercise.scale.g-sharp-melodic-minor.1oct.similar.both.2",
-            "exercise.scale.g-sharp-melodic-minor.1oct.similar.left.2",
-            "exercise.scale.g-sharp-melodic-minor.2oct.similar.both.2",
-            "exercise.scale.g-sharp-natural-minor.1oct.similar.both.2",
-            "exercise.scale.g-sharp-natural-minor.2oct.similar.both.2",
-        ])
-        self.assertEqual({fault.split("(")[0][:5] for found in faults.values() for fault in found},
-                         {"LH F#"})
+        self.assertEqual(checked, 252)
+        self.assertEqual(faults, {}, "\n".join(f"{item}: {found}" for item, found in faults.items()))
+
+
+class TestTheMinorFormsFingerings(unittest.TestCase):
+    """
+    G48: each minor form has its own fingering, and G♯ minor's are the sources'.
+
+    Harmonic, natural, melodic going up and melodic coming down: four forms, and
+    `make_scale` took the harmonic table for all of them. In G♯ minor that put
+    the left thumb on F♯ wherever the notes were natural. The one-octave tables
+    are checked against the sources first, then what the plan prints over one,
+    two and three octaves.
+    """
+
+    def test_the_one_octave_tables_are_the_sources(self) -> None:
+        digits = lambda pattern: [int(d) for d in pattern]  # noqa: E731
+        for form, column in (("harmonic", "harmonic"), ("natural", "natural"),
+                             ("melodic ascending", "melodic (ascending)"), ("melodic descending", "natural")):
+            rh, lh = G.MINOR_FINGERING[form]["G#"]
+            self.assertEqual(lh, digits(KELLEY_G_SHARP_MINOR[column]["LH"]), f"{form}: the chart's {column} LH")
+            self.assertEqual(rh, digits(KELLEY_G_SHARP_MINOR[column]["RH"]), f"{form}: the chart's {column} RH")
+        # Clementi's first octave up is the melodic form, every finger printed.
+        printed = [finger for _, finger in read_lilypond(CLEMENTI_G_SHARP_MINOR_LH)][:8]
+        self.assertEqual(G.MINOR_FINGERING["melodic ascending"]["G#"][1], printed)
+        self.assertEqual(G.MINOR_SCALE_FORMS, {
+            "harmonic": ("harmonic", "harmonic"),
+            "natural": ("natural", "natural"),
+            "melodic": ("melodic ascending", "melodic descending"),
+        })
+
+    def test_clementi_s_run_is_the_melodic_left_hand_both_ways(self) -> None:
+        sc, _ = make_scale(ScaleSpec("G#", "melodic", "left", 1))
+        notes = fingered_notes(sc, "LH")
+        source = read_lilypond(CLEMENTI_G_SHARP_MINOR_LH)
+        # His first octave up, and his octave from the upper G♯ down to the lower.
+        for printed, run in ((notes[:8], source[:8]), (notes[7:], source[15:23])):
+            self.assertEqual([p.name for p, _ in printed], [name for name, _ in run])
+            disagree = [f"{p.nameWithOctave}({finger}): Clementi prints {want}"
+                        for (p, finger), (_, want) in zip(printed, run)
+                        if want is not None and finger != want]
+            self.assertEqual(disagree, [])
+        # The unprinted fingers coming down step from his printed thumbs, E and B.
+        self.assertEqual([f for _, f in notes[7:]], [3, 4, 1, 2, 3, 1, 2, 3])
+
+    def test_the_five_items_print_the_left_hand_the_sources_give(self) -> None:
+        items = {entry["id"]: (sc, entry) for sc, entry in plan_items("exercise.scale.")}
+        for item_id, wanted in G_SHARP_MINOR_LH.items():
+            sc, entry = items[item_id]
+            params = entry["drill"]["params"]
+            up_column, down_column = G_SHARP_MINOR_COLUMNS[params["mode"]]
+            up = read_scale_pattern(KELLEY_G_SHARP_MINOR[up_column]["LH"], params["octaves"])
+            down = read_scale_pattern(KELLEY_G_SHARP_MINOR[down_column]["LH"], params["octaves"])
+            self.assertEqual(up + list(reversed(down))[1:], wanted, f"{item_id}: the sequence written here is the chart's")
+            printed = fingered_notes(sc, "LH")
+            self.assertEqual([f for _, f in printed], wanted, item_id)
+            self.assertEqual([p.nameWithOctave for p, f in printed if f == 1 and p.name == "F#"], [], item_id)
+
+    def test_every_g_sharp_minor_scale_in_the_plan_is_fingered_as_the_sources_give(self) -> None:
+        checked, faults = 0, []
+        for sc, entry in plan_items("exercise.scale."):
+            params = entry["drill"]["params"]
+            if params["key"] != "G#" or params["mode"] == "major":
+                continue
+            checked += 1
+            self.assertTrue(params["fingeringVerified"], entry["id"])
+            up_column, down_column = G_SHARP_MINOR_COLUMNS[params["mode"]]
+            for part_id in ("RH", "LH"):
+                printed = [f for _, f in fingered_notes(sc, part_id)]
+                if not printed:
+                    continue
+                up = read_scale_pattern(KELLEY_G_SHARP_MINOR[up_column][part_id], params["octaves"])
+                down = list(reversed(read_scale_pattern(KELLEY_G_SHARP_MINOR[down_column][part_id],
+                                                        params["octaves"])))
+                contrary = part_id == "LH" and params["motion"] == "contrary"
+                wanted = down + up[1:] if contrary else up + down[1:]
+                if printed != wanted:
+                    faults.append(f"{entry['id']} {part_id}: prints {printed}, the chart reads {wanted}")
+        # Harmonic and melodic one hand at one octave, the three forms together at
+        # one and two octaves, the contrary-motion octave and harmonic at three.
+        self.assertEqual(checked, 12)
+        self.assertEqual(faults, [], "\n".join(faults))
+
+    def test_the_natural_table_differs_from_the_harmonic_only_in_g_sharp_minor_s_left_hand(self) -> None:
+        """
+        Clementi's twelve descents, read 2026-09-27 from the Mutopia typeset with
+        the repository's own parser (T53c; the extraction commits only the first
+        octave up, G46), put the thumbs where the harmonic table puts them on the
+        natural minor's notes in twenty-three of the twenty-four hands. The
+        twenty-fourth is G♯ minor's left hand, thumbs on E and B. This holds the
+        natural table to that reading.
+        """
+        self.assertEqual(set(G.NATURAL_MINOR_FINGERING), set(HARMONIC_MINOR_FINGERING))
+        differ = sorted((tonic, hand) for tonic in HARMONIC_MINOR_FINGERING
+                        for hand, index in (("RH", 0), ("LH", 1))
+                        if G.NATURAL_MINOR_FINGERING[tonic][index] != HARMONIC_MINOR_FINGERING[tonic][index])
+        self.assertEqual(differ, [("G#", "LH")])
+
+    def test_every_minor_form_s_table_keeps_the_thumb_on_white_keys(self) -> None:
+        # `test_fingering.py`'s rules, on each form's own notes and in every key.
+        faults = []
+        for form, table in G.MINOR_FINGERING.items():
+            steps = MINOR_FORM_STEPS[form]
+            for tonic, (rh, lh) in table.items():
+                base = pitch.Pitch(tonic).pitchClass
+                for hand, fingering in (("RH", rh), ("LH", lh)):
+                    self.assertEqual(len(fingering), 8, f"{form} {tonic} {hand}")
+                    thumbs = [i for i, f in enumerate(fingering) if f == 1]
+                    faults += [f"{form} {tonic} {hand}: thumb on a black key at degree {i + 1}"
+                               for i in thumbs if (base + steps[i]) % 12 in BLACK_PITCH_CLASSES]
+                    faults += [f"{form} {tonic} {hand}: {b - a - 1} notes between thumbs"
+                               for a, b in zip(thumbs, thumbs[1:]) if b - a > 4]
+        self.assertEqual(faults, [], "\n".join(faults))
 
 
 class TestTheFingeringChecksGoRedOnAMutation(unittest.TestCase):
@@ -779,6 +1010,39 @@ class TestTheFingeringChecksGoRedOnAMutation(unittest.TestCase):
                             "mutation `the_join_the_table_starts_on` did not go red on the guards")
         self.assertNotEqual([f for _, f in ascent(fingered_notes(mutant, "RH"))], B_FLAT_MINOR_RH_ASCENT[2],
                             "mutation `the_join_the_table_starts_on` did not go red on the sources")
+
+    def test_the_harmonic_table_for_every_minor_form_fails_the_guard_and_the_sources(self) -> None:
+        # `make_scale` as it shipped: the natural minor, and the melodic minor
+        # coming down, fingered from the harmonic table.
+        for spec in (ScaleSpec("G#", "natural", "both", 2, "similar", 0.5, 72),
+                     ScaleSpec("G#", "melodic", "left", 1, "similar", 0.5, 60)):
+            real, entry = make_scale(spec)
+            self.assertEqual(scale_thumb_faults(real), [], entry["id"])
+            self.assertEqual([f for _, f in fingered_notes(real, "LH")], G_SHARP_MINOR_LH[entry["id"]])
+            with mock.patch.dict(G.MINOR_FINGERING, {"natural": HARMONIC_MINOR_FINGERING,
+                                                     "melodic descending": HARMONIC_MINOR_FINGERING}):
+                mutant, _ = make_scale(spec)
+            self.assertNotEqual(scale_thumb_faults(mutant), [],
+                                f"{entry['id']}: mutation `the_harmonic_table_for_every_form` did not go red on the guard")
+            self.assertNotEqual([f for _, f in fingered_notes(mutant, "LH")], G_SHARP_MINOR_LH[entry["id"]],
+                                f"{entry['id']}: mutation `the_harmonic_table_for_every_form` passed the sources")
+
+    def test_a_thumb_start_in_the_left_hand_fails_the_chromatic_source(self) -> None:
+        # The first-note exception for both hands, as it shipped: a run from E
+        # began the left hand E(1) F(1).
+        real_finger = G.chromatic_finger
+
+        def the_thumb_starts_either_hand(midi, first, hand="right"):
+            if first and midi % 12 not in BLACK_PITCH_CLASSES:
+                return 1
+            return real_finger(midi, first, hand)
+
+        real, _ = make_chromatic("E", "left", 1)
+        self.assertEqual(chromatic_source_faults(real), [])
+        with mock.patch.object(G, "chromatic_finger", the_thumb_starts_either_hand):
+            mutant, _ = make_chromatic("E", "left", 1)
+        self.assertNotEqual(chromatic_source_faults(mutant), [],
+                            "mutation `the_thumb_starts_either_hand` did not go red")
 
     def test_spelling_broken_sevenths_by_semitones_fails_the_spelling_check(self) -> None:
         # One helper spells both seventh families, so breaking it breaks both.
@@ -844,22 +1108,55 @@ class TestSeventhArpeggioFingering(unittest.TestCase):
         self.assertTrue(all(f is None for _, f in fingered_notes(sc, "LH")))
         self.assertFalse(entry["drill"]["params"]["fingeringVerified"])
 
-    def test_a_broken_seventh_on_a_black_root_prints_no_fingering(self) -> None:
-        sc, _ = make_broken_seventh("D-", "dominant7", "both")
-        self.assertTrue(all(f is None for _, f in fingered_notes(sc, "RH")))
-        sc, _ = make_broken_seventh("C", "dominant7", "both")
-        self.assertEqual([f for _, f in fingered_notes(sc, "RH")][:8], [1, 2, 3, 4, 5, 4, 3, 2])
+
+class TestBrokenSeventhFingering(unittest.TestCase):
+    """
+    G49: a broken seventh prints a fingering a source gives, or none.
+
+    The white roots printed 1-2-3-4-5-4-3-2 in the right hand and 5-4-3-2-1-2-3-4
+    in the left with `fingeringVerified` false, the flag no screen reads. The
+    learner reads engraved numbers as the fingering, so "printed but unverified"
+    is not a state an item may be in. No source for this figure was found
+    (T53c), so none is printed until one is.
+    """
+
+    def test_no_broken_seventh_in_the_plan_prints_a_fingering(self) -> None:
+        checked, faults = 0, []
+        for sc, entry in plan_items("exercise.broken7."):
+            checked += 1
+            printed = [f"{part_id} {p.nameWithOctave}({f})" for part_id in ("RH", "LH")
+                       for p, f in fingered_notes(sc, part_id) if f is not None]
+            verified = entry["drill"]["params"]["fingeringVerified"]
+            if printed or verified:
+                faults.append(f"{entry['id']}: verified={verified}, printed {len(printed)} fingers, "
+                              f"the first {printed[:1]}")
+        self.assertEqual(checked, 36)
+        self.assertEqual(faults, [], "\n".join(faults))
+
+    def test_a_white_root_prints_none_as_a_black_root_does(self) -> None:
+        # It read [1, 2, 3, 4, 5, 4, 3, 2] for C: the fingering this asserted.
+        for root in ("C", "A", "D-"):
+            for hands in ("both", "right", "left"):
+                sc, entry = make_broken_seventh(root, "dominant7", hands)
+                for part_id in ("RH", "LH"):
+                    self.assertTrue(all(f is None for _, f in fingered_notes(sc, part_id)),
+                                    f"{entry['id']} {part_id}")
+                self.assertFalse(entry["drill"]["params"]["fingeringVerified"], entry["id"])
 
 
 class TestWalkingBassFingering(unittest.TestCase):
+    """G30: the convention is no longer printed (the row says none); read as if it were (tests/convention.py)."""
+
     def test_root_third_fifth_sit_under_five_three_one(self) -> None:
-        sc, _ = make_walking_bass("C", "blues", "intro")
+        with convention_printed():
+            sc, _ = make_walking_bass("C", "blues", "intro")
         lh = fingered_notes(sc, "LH")
         for bar in range(12):
             self.assertEqual([f for _, f in lh[bar * 4 : bar * 4 + 3]], [5, 3, 1], f"bar {bar + 1}")
 
     def test_the_approach_note_is_fingered_by_where_it_lands(self) -> None:
-        sc, _ = make_walking_bass("C", "blues", "intro")
+        with convention_printed():
+            sc, _ = make_walking_bass("C", "blues", "intro")
         lh = fingered_notes(sc, "LH")
         # Bar 1: C E G then B below the C — the hand drops, the little finger takes it.
         self.assertEqual(lh[3][0].nameWithOctave, "B1")
@@ -871,7 +1168,8 @@ class TestWalkingBassFingering(unittest.TestCase):
     def test_the_thumb_is_never_below_the_second_finger_within_a_bar(self) -> None:
         for tonic in ("C", "F", "B-", "E-"):
             for form in ("blues", "ii-V-I"):
-                sc, entry = make_walking_bass(tonic, form)
+                with convention_printed():
+                    sc, entry = make_walking_bass(tonic, form)
                 lh = fingered_notes(sc, "LH")
                 for start in range(0, len(lh), 4):
                     bar = lh[start : start + 4]
@@ -879,6 +1177,8 @@ class TestWalkingBassFingering(unittest.TestCase):
                         continue
                     by_finger = {f: p.ps for p, f in bar[:3]}
                     _, approach_finger = bar[3]
+                    # G30: on a fingerless score every check here passed with nothing read.
+                    self.assertIsNotNone(approach_finger, entry["id"])
                     approach_ps = bar[3][0].ps
                     # A finger's note is never above a lower-numbered finger's in the left hand.
                     if approach_finger == 1:
@@ -929,6 +1229,34 @@ class TestChromaticLeftHand(unittest.TestCase):
         lh = [f for _, f in fingered_notes(sc, "LH")]
         self.assertEqual(rh[:13], [1, 3, 1, 3, 1, 2, 3, 1, 3, 1, 3, 1, 2])
         self.assertEqual(len(rh), len(lh))
+
+    def test_the_left_hand_from_e_begins_on_the_second_finger(self) -> None:
+        # G45: it read E3(1) F3(1), the thumb on two neighbouring keys. The
+        # book's figure has the left hand's E on 2 and F on 1.
+        for hands, octaves in (("left", 1), ("both", 1), ("both", 2)):
+            sc, entry = make_chromatic("E", hands, octaves)
+            lh = fingered_notes(sc, "LH")
+            self.assertEqual([(p.nameWithOctave, f) for p, f in lh[:3]], [("E3", 2), ("F3", 1), ("F#3", 3)],
+                             entry["id"])
+
+    def test_the_scale_from_c_is_the_book_s_figure(self) -> None:
+        sc, _ = make_chromatic("C", "both", 1)
+        lh = [f for _, f in fingered_notes(sc, "LH")][:13]
+        rh = [f for _, f in fingered_notes(sc, "RH")][:13]
+        self.assertEqual(lh, MCLAIN_CHROMATIC_FROM_C["LH"])
+        # The one difference: the run starts on the right hand's C, which the
+        # figure, written as a cycle, fingers 2 and the item begins on the thumb.
+        self.assertEqual(rh[1:], MCLAIN_CHROMATIC_FROM_C["RH"][1:])
+        self.assertEqual((rh[0], MCLAIN_CHROMATIC_FROM_C["RH"][0]), (1, 2))
+
+    def test_every_chromatic_scale_in_the_plan_takes_the_book_s_finger_on_every_key(self) -> None:
+        checked, faults = 0, []
+        for sc, entry in plan_items("exercise.chromatic."):
+            checked += 1
+            faults += [f"{entry['id']}: {fault}" for fault in chromatic_source_faults(sc)]
+        # From C, D, E and G: each hand alone and both at one octave, both at two.
+        self.assertEqual(checked, 16)
+        self.assertEqual(faults, [], "\n".join(faults))
 
 
 class TestTumbaoAnticipation(unittest.TestCase):

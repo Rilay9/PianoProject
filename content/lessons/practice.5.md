@@ -14,8 +14,8 @@ passage that has been "nearly there" for a fortnight, a general sense that the
 last month achieved nothing.
 
 **This is normal and it is not a sign you have reached your limit.** A plateau
-is almost always one of three things, and the useful response is to work out
-which.
+can have more than one cause; three worth checking are below, and the useful
+response is to work out which one you are in.
 
 **One: you are practising the wrong thing.** You play the piece from the top,
 it breaks in the same bar, you go back to the top. The fix is the first lesson
@@ -25,21 +25,23 @@ that already work.
 **Two: you have automated it wrong.** Something learned at speed, or learned
 with a fingering that does not survive, is now a habit and habits do not
 improve with repetition — they entrench. The fix is to go slower than feels
-reasonable, decide the fingering deliberately, and rebuild it. It takes a week
-and it is the only thing that works.
+reasonable, decide the fingering deliberately, and rebuild it. Rebuilding can
+take a while, so give it more than one session.
 
 **Three: it is consolidating.** Sometimes nothing is wrong. Learning is not
 linear, and a fortnight of no visible progress is often followed by a step up
 that arrives without warning. This is the case where the right response is to
 keep going and change nothing.
 
-**Which one is it.** If the mistakes move around, it is one. If the same
-mistake happens in the same place every time, it is two. If there are no
-mistakes and it just is not getting faster, it is usually three.
+**Which one is it.** A rough guide rather than a test: mistakes that move
+around suggest one; the same mistake in the same place each time suggests two;
+no mistakes, and still no faster, suggests three.
 
 **Three things to change.** When in doubt, change one variable: **the tempo**
-(much slower, or briefly much faster), **the key** (transpose it — it forces
-you to think rather than recall), or **the order** (start from the middle, or
+(much slower, or briefly much faster), **the key** (transpose it: move a tune
+from the C position to the G position, every note five letters higher, to
+start, and rung 2.5 checks one for you, including the one reach below the
+position — it forces you to think rather than recall), or **the order** (start from the middle, or
 play it backwards a phrase at a time).
 
 **Common mistake.** Doing the same practice more intensely. A plateau is

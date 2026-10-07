@@ -14,9 +14,10 @@ here it stops being enough. The pieces on this rung are short and none of them
 is fast; what makes them hard is that **both hands are playing at once and,
 in all but the Prelude in C, only one of them is the tune.**
 
-**Voicing.** In a Romantic miniature the right hand usually holds a melody in
-the top note and an accompaniment underneath it, in the same hand. Play them at
-the same volume and the piece turns to mush. The fix is physical, not mental:
+**Voicing.** In a Romantic miniature the right hand often holds a melody in
+the top note and an accompaniment underneath it, in the same hand. Played at one
+volume, the tune can get lost; a common starting point is a melody that sings
+over a quieter accompaniment. The fix is physical, not mental:
 let the hand lean towards the little finger, drop more arm weight into the top
 note, and keep the inner fingers light and close to the keys. Practise it by
 playing the melody alone, then the accompaniment alone, then both — and stop
@@ -26,9 +27,12 @@ the moment you can no longer hear which is which.
 hard. An old description of it, from Leopold Mozart in the eighteenth
 century and from Chopin's pupils in the nineteenth, is that the accompaniment,
 usually the left hand, keeps time while the melody is free — borrow a little from one note, give it back on the next,
-so the bar comes out the same length. If your bars are getting longer, that is
-not rubato, that is hesitation. The test: play with the metronome on. Rubato
-survives a metronome. Hesitation does not.
+so the bar comes out the same length. If your bars are getting longer without
+your choosing it, that is hesitation, not this kind of rubato. (There is another
+kind, where the whole bar stretches and the beat itself bends; it is a choice,
+not a stumble.) The test for this kind of rubato: play with the
+metronome on. The accompaniment still lands with the click; with hesitation, it
+does not.
 
 **The pedal is not a sustain switch.** At this level the pedal changes on the
 harmony, not on the beat, and the change happens *after* the new chord sounds —

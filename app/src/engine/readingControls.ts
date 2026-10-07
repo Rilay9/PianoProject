@@ -85,6 +85,8 @@ interface Shape {
 const metresOf = (options: SightReadingOptions): readonly TimeSig[] =>
   options.timeSig === undefined ? [] : Array.isArray(options.timeSig) ? (options.timeSig as readonly TimeSig[]) : [options.timeSig as TimeSig];
 const compoundTime = (t: TimeSig): boolean => t.beatType === 8 && t.beats % 3 === 0;
+/** Exactly 3/4 (`metre.three-four`): never 3/8 or 3/2, which 1.4 does not teach. */
+const threeFourTime = (t: TimeSig): boolean => t.beats === 3 && t.beatType === 4;
 
 function shapeOf(options: SightReadingOptions): Shape {
   const facts = levelFacts(options.level);
@@ -195,6 +197,30 @@ function shortestBar(options: SightReadingOptions): number {
  * roots make between I, IV and V (C4's `VALUE_DEMANDS` found the same).
  */
 const LEFT_HAND_BRINGS = ['clef.bass', 'texture.hands-together', 'interval.leap'];
+
+/**
+ * The habanera and the tresillo (CD1): what the sight-reading generator does with the left hand's onset cells.
+ * No option writes either one or keeps it out: the generator has no cell parameter (G13 gives the cell to the
+ * tresillo family, never to the reader). A cell can still arise by chance where the left hand carries its own
+ * line in a simple metre with an onset between the beats: the CD1 probe over the generator found it in level-1
+ * left-hand phrases with dotted quarters, in 4/4 and 2/2, and in no phrase where the left hand plays a pattern
+ * under a melody (whole notes, chords, an Alberti, a broken chord or a walk, whose onsets are fixed and never the
+ * cell's). `mayWrite` says so and no more. The coping question never asks the cells (`notAsked`), so nothing has
+ * to hold them out of a phrase.
+ */
+function cellMayWrite(o: SightReadingOptions): boolean {
+  const s = shapeOf(o);
+  const between =
+    READING_CONTROLS['rhythm.shorter-than-quarter']?.mayWrite(o) === true ||
+    READING_CONTROLS['rhythm.dotted-quarter']?.mayWrite(o) === true ||
+    READING_CONTROLS['rhythm.syncopation']?.mayWrite(o) === true;
+  return !s.melodyInRight && simpleAny(s) && between;
+}
+
+const CELL_NONE = {
+  on: 'No generator option writes the cell: the sight-reading generator has no cell parameter (the tresillo family writes it, G13).',
+  off: 'No option keeps it out, and none needs to: it arises only by chance in a left-hand line, and the coping question never asks it (notAsked, CD1 D5).',
+};
 
 // --- the map ---------------------------------------------------------------------
 
@@ -327,6 +353,21 @@ export const READING_CONTROLS: Readonly<Record<string, ReadingControl>> = {
     off: always({ timeSig: { beats: 4, beatType: 4 } }),
     mayWrite: (o) => shapeOf(o).compoundAny,
   },
+  // SR2 (the reviewer's ruling on SR1, `docs/review/responses/sr1-sightreading-quality.md` §1): exactly 3/4,
+  // which 1.4 teaches; `off` writes 4/4, as `metre.compound`'s does, so the reader's "in 4/4" is always true.
+  // `on` only where the phrase has no left-hand part (the single-hand rows): under a left hand the composed recipes
+  // the reader reaches broke their contracts (SR2: a broken chord in a bar of three quarters reads as a walking
+  // bass, 170 recipes on 3.6-4.7; a promised dotted quarter lost on `-3`, 2), so 3/4 on the two-hand rows waits
+  // for a predeclared contract (the ruling's §3). `mayWrite` stays the truth about the options.
+  'metre.three-four': {
+    option: 'timeSig',
+    on: (o) => (shapeOf(o).leftPart ? null : { timeSig: { beats: 3, beatType: 4 } }),
+    off: always({ timeSig: { beats: 4, beatType: 4 } }),
+    none: {
+      on: 'Not offered under a left-hand part: 3/4 on the two-hand rows waits for a predeclared contract (SR2; the ruling on SR1, §3).',
+    },
+    mayWrite: (o) => metresOf(o).some(threeFourTime),
+  },
   'key.signature': {
     option: 'fifths',
     // Every key with a signature the level writes, sharps and flats alike:
@@ -392,6 +433,8 @@ export const READING_CONTROLS: Readonly<Record<string, ReadingControl>> = {
     },
     brings: () => ['pitch.ledger', ...LEFT_HAND_BRINGS],
   },
+  'rhythm.habanera': { option: null, on: () => null, off: () => null, none: CELL_NONE, mayWrite: cellMayWrite },
+  'rhythm.tresillo': { option: null, on: () => null, off: () => null, none: CELL_NONE, mayWrite: cellMayWrite },
 };
 
 /** The options with a demand turned on, or null where no option writes it. */
@@ -452,10 +495,6 @@ const RIGHT_ROW_RUNGS = ['2.2', '2.3', '2.4', '2.5', '3.1', '3.2', '3.3'];
 const TWO_HAND_ROW_RUNGS = ['3.4', '3.5', '3.6', '4.1', '4.2', '4.3', '4.4'];
 const LEVEL_3_RUNGS = ['4.5', '4.6', '4.7'];
 
-const TIE_CLOSING_THIRD =
-  'A tie’s closing note is set to the tied pitch after the melody has moved on, so the note after it can be a third away.';
-const TIE_CLOSING_LEAP =
-  'A tie’s closing note is set to the tied pitch after the melody has moved on, so the note after it can be a fourth or wider away.';
 const COMPOUND_FIGURES =
   'Compound time at levels 1–4 is written in its three first figures, all of dotted quarters, quarters and eighths.';
 
@@ -466,6 +505,13 @@ const COMPOUND_FIGURES =
  * with these reasons). Everything not listed is made: the demand in every
  * phrase asked, the promises kept, nothing untaught, nothing else new but what
  * the control `brings`. The table, rung by rung, is in `05` §8.
+ *
+ * Measured on the version in force. Since D1a that is version 2, whose walk
+ * holds a tied pitch through its tie, so version 1's reason at 4.5–4.7 — a
+ * tie's closing note could leap past the cap — is gone: skips off is made there
+ * now, and leaps off is still undoable for the reason `unrealisable` gave
+ * beside the tie's all along, the left hand's roots, as on the two-hand row's
+ * rungs.
  */
 export const UNREALISABLE_AT: readonly Unrealisable[] = [
   {
@@ -476,12 +522,12 @@ export const UNREALISABLE_AT: readonly Unrealisable[] = [
     reason: 'A phrase that never moves by step is not one the generator writes, nor one a reader needs.',
   },
   {
-    rungs: LEVEL_1_RUNGS,
+    rungs: ['2.1'],
     demand: 'interval.leap',
     direction: 'on',
     kind: 'promise',
     reason:
-      '1.5 teaches the leap in its song, but its reading drill promises "only steps and skips" ("every interval is a 2nd or a 3rd"); a leap there breaks it.',
+      '2.1 teaches the leap (the left hand moves from C to F and to G), but the reader’s row there is 1.5’s, whose drill promises "only steps and skips" ("every interval is a 2nd or a 3rd"); a leap there breaks it. 1.5 only introduces the leap (F2a).',
   },
   {
     rungs: ['2.1'],
@@ -491,21 +537,31 @@ export const UNREALISABLE_AT: readonly Unrealisable[] = [
     reason: 'Level 1 writes one hand at a time; both hands start at level 2.',
   },
   {
-    rungs: TWO_HAND_ROW_RUNGS,
+    rungs: [...TWO_HAND_ROW_RUNGS, ...LEVEL_3_RUNGS],
     demand: 'interval.leap',
     direction: 'off',
     kind: 'generator',
     reason: 'The left hand’s roots move between I, IV and V, by fourths and fifths.',
   },
-  { rungs: LEVEL_3_RUNGS, demand: 'interval.skip', direction: 'off', kind: 'generator', reason: TIE_CLOSING_THIRD },
-  { rungs: LEVEL_3_RUNGS, demand: 'interval.leap', direction: 'off', kind: 'generator', reason: TIE_CLOSING_LEAP },
   { rungs: LEVEL_3_RUNGS, demand: 'rhythm.eighths', direction: 'off', kind: 'generator', reason: COMPOUND_FIGURES },
   { rungs: LEVEL_3_RUNGS, demand: 'rhythm.shorter-than-quarter', direction: 'off', kind: 'generator', reason: COMPOUND_FIGURES },
+  // L120c: 4.4 teaches sixteenths, so from 4.5 the reader may ask for them; the level-3 row's compound phrases
+  // cannot hold them. At 4.4 the level-2 row writes them when asked.
+  { rungs: LEVEL_3_RUNGS, demand: 'rhythm.sixteenths', direction: 'on', kind: 'generator', reason: COMPOUND_FIGURES },
   {
     rungs: LEVEL_3_RUNGS,
     demand: 'metre.compound',
     direction: 'on',
     kind: 'generator',
     reason: 'A phrase in compound time is not asked for syncopation or triplets: one new metre is enough to read (T37).',
+  },
+  // SR2: 3/4 is taught at 1.4, and the reader does not offer it on the two-hand rows (the control's `on` under a
+  // left-hand part), where its composed recipes broke their contracts; it waits for a predeclared contract there.
+  {
+    rungs: [...TWO_HAND_ROW_RUNGS, ...LEVEL_3_RUNGS],
+    demand: 'metre.three-four',
+    direction: 'on',
+    kind: 'none',
+    reason: 'Not offered under a left-hand part: 3/4 on the two-hand rows waits for a predeclared contract (SR2; the ruling on SR1, §3).',
   },
 ];

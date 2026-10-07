@@ -1,0 +1,340 @@
+﻿python : test_measuring_per_voice_does_not_narrow_it 
+(tools.content.tests.test_difficulty.TestBlackBottomStompBar101.test_measuring_per_voice_does_not_narrow_it) ... ok
+At line:1 char:333
++ ... NG="utf-8"; python -m unittest tools.content.tests.test_difficulty -v ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (test_measuring_...rrow_it) ... ok:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+test_the_wide_chord_is_one_element_of_one_voice 
+(tools.content.tests.test_difficulty.TestBlackBottomStompBar101.test_the_wide_chord_is_one_element_of_one_voice) ... ok
+test_a_symbol_adds_no_simultaneity_span_leap_or_range (tools.content.tests.test_difficulty.TestChordSymbolsAreNotNotes.
+test_a_symbol_adds_no_simultaneity_span_leap_or_range) ... ok
+test_the_melody_is_what_is_measured 
+(tools.content.tests.test_difficulty.TestChordSymbolsAreNotNotes.test_the_melody_is_what_is_measured) ... ok
+test_there_is_no_chord_symbol_feature 
+(tools.content.tests.test_difficulty.TestChordSymbolsAreNotNotes.test_there_is_no_chord_symbol_feature) ... ok
+test_the_build_and_the_app_differ_only_where_named 
+(tools.content.tests.test_difficulty.TestTheAppsTempoShapes.test_the_build_and_the_app_differ_only_where_named) ... 
+FAIL
+test_the_build_reads_each_shape_as_music21_does 
+(tools.content.tests.test_difficulty.TestTheAppsTempoShapes.test_the_build_reads_each_shape_as_music21_does) ... FAIL
+test_a_left_hand_under_both_voices_has_not_crossed 
+(tools.content.tests.test_difficulty.TestTheCrossingFloor.test_a_left_hand_under_both_voices_has_not_crossed) ... ok
+test_the_lowest_voice_sounding_is_the_floor 
+(tools.content.tests.test_difficulty.TestTheCrossingFloor.test_the_lowest_voice_sounding_is_the_floor) ... ok
+test_a_dotted_quarter_mark_is_counted_in_quarter_notes 
+(tools.content.tests.test_difficulty.TestTheOpeningTempo.test_a_dotted_quarter_mark_is_counted_in_quarter_notes) ... 
+FAIL
+test_a_file_with_no_mark_keeps_the_default 
+(tools.content.tests.test_difficulty.TestTheOpeningTempo.test_a_file_with_no_mark_keeps_the_default) ... ok
+test_a_half_note_mark_is_counted_in_quarter_notes 
+(tools.content.tests.test_difficulty.TestTheOpeningTempo.test_a_half_note_mark_is_counted_in_quarter_notes) ... FAIL
+test_a_text_only_mark_keeps_the_default 
+(tools.content.tests.test_difficulty.TestTheOpeningTempo.test_a_text_only_mark_keeps_the_default) ... FAIL
+test_the_opening_is_the_earliest_mark_not_the_first_found 
+(tools.content.tests.test_difficulty.TestTheOpeningTempo.test_the_opening_is_the_earliest_mark_not_the_first_found) 
+... FAIL
+test_a_voice_boundary_is_not_a_leap 
+(tools.content.tests.test_difficulty.TestTwoVoicesOnOneStaff.test_a_voice_boundary_is_not_a_leap) ... ok
+test_span_and_simultaneity_stay_within_a_voice 
+(tools.content.tests.test_difficulty.TestTwoVoicesOnOneStaff.test_span_and_simultaneity_stay_within_a_voice) ... ok
+test_voice_lines_splits_and_orders 
+(tools.content.tests.test_difficulty.TestTwoVoicesOnOneStaff.test_voice_lines_splits_and_orders) ... ok
+
+======================================================================
+FAIL: test_the_build_and_the_app_differ_only_where_named 
+(tools.content.tests.test_difficulty.TestTheAppsTempoShapes.test_the_build_and_the_app_differ_only_where_named)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-ad68f7e71fb77280b\tools\content\tests\test_difficulty.py", line 463, in 
+test_the_build_and_the_app_differ_only_where_named
+    self.assertEqual(sorted(differ), sorted(_GAPS), differ)
+AssertionError: Lists differ: ["'c. 108'", '16th = 240 alone', "E48's form: a sound o[721 chars]one'] != ["'c. 108'", 
+'a mark and a sound that disagree in one d[206 chars]mpo"]
+
+First differing element 1:
+'16th = 240 alone'
+'a mark and a sound that disagree in one direction'
+
+First list contains 15 additional elements.
+First extra element 7:
+"a sound standing beside a mark at one place (E32's form)"
+
+  ["'c. 108'",
+-  '16th = 240 alone',
+-  "E48's form: a sound opening bar 1, a mark in bar 2",
+   'a mark and a sound that disagree in one direction',
+   'a mark only in bar 2',
+   'a pickup whose mark and sound disagree',
+-  'a sound alone in the bar, 72.5',
+   "a sound standing beside a mark at one place (E32's form)",
++  'a tempo after the first note of bar 1',
+-  "a tempo after an opening rest (the Fifth's shape)",
+-  'a tempo word with its sound, 132',
+-  'an opening sound, then a sounding offset',
+-  "an upbeat before bar 1's tempo",
+?                                  ^
+
++  "an upbeat before bar 1's tempo"]
+?                                  ^
+
+-  'breve = 10 alone',
+-  'dotted eighth = 120 alone',
+-  'dotted half = 61 alone',
+-  'dotted quarter = 60 with sound 90, 6/8',
+-  'dotted quarter = 67 with sound 100.49999999999999',
+-  'double-dotted quarter = 40 alone',
+-  'eighth = 120 alone',
+-  'half = 60 alone, cut time',
+-  'half = 60 with sound 120, cut time',
+-  'whole = 30 alone'] : {'half = 60 with sound 120, cut time': (60.0, 120), 'half = 60 alone, cut time': (60.0, 120), 
+'dotted quarter = 60 with sound 90, 6/8': (60.0, 90), 'eighth = 120 alone': (120.0, 60), 'whole = 30 alone': (30.0, 
+120), '16th = 240 alone': (240.0, 60), 'breve = 10 alone': (10.0, 80), 'dotted half = 61 alone': (61.0, 183), 'dotted 
+eighth = 120 alone': (120.0, 90), 'double-dotted quarter = 40 alone': (40.0, 70), 'a sound alone in the bar, 72.5': 
+(100.0, 72.5), 'a tempo word with its sound, 132': (100.0, 132), 'dotted quarter = 67 with sound 100.49999999999999': 
+(67.0, 100.49999999999999), 'an opening sound, then a sounding offset': (100.0, 50), "a tempo after an opening rest 
+(the Fifth's shape)": (100.0, 164), "E48's form: a sound opening bar 1, a mark in bar 2": (100.0, 72), 'a mark and a 
+sound that disagree in one direction': (60.0, 100), "a sound standing beside a mark at one place (E32's form)": 
+(132.0, 100), 'a pickup whose mark and sound disagree': (60.0, 70), "'c. 108'": (100.0, 108), 'a mark only in bar 2': 
+(132.0, 100), "an upbeat before bar 1's tempo": (60.0, 100)}
+
+======================================================================
+FAIL: test_the_build_reads_each_shape_as_music21_does 
+(tools.content.tests.test_difficulty.TestTheAppsTempoShapes.test_the_build_reads_each_shape_as_music21_does)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-ad68f7e71fb77280b\tools\content\tests\test_difficulty.py", line 459, in 
+test_the_build_reads_each_shape_as_music21_does
+    self.assertEqual(self.read, {name: round(build, 6) for name, (_x, _b, _app, build) in self.shapes.items()})
+AssertionError: {'hal[29 chars]me': 60.0, 'half = 60 alone, cut time': 60.0, [1311 chars]60.0} != {'hal[29 chars]me': 
+120, 'half = 60 alone, cut time': 120, 'd[1246 chars]: 90}
+- {"'c. 108'": 100.0,
+?                 --
+
++ {"'c. 108'": 100,
+-  '16th = 240 alone': 240.0,
+?                      ^^^^
+
++  '16th = 240 alone': 60,
+?                      ^
+
+-  "E48's form: a sound opening bar 1, a mark in bar 2": 100.0,
+?                                                        ^^^^^
+
++  "E48's form: a sound opening bar 1, a mark in bar 2": 72,
+?                                                        ^^
+
+-  'a mark and a sound that disagree in one direction': 60.0,
+?                                                       ^^^
+
++  'a mark and a sound that disagree in one direction': 120,
+?                                                       ^^
+
+-  'a mark on bar 2 after a cue note and rests': 72.0,
+?                                                  --
+
++  'a mark on bar 2 after a cue note and rests': 72,
+-  'a mark only in bar 2': 132.0,
+?                             --
+
++  'a mark only in bar 2': 132,
+-  'a mark with no number': 100.0,
+?                              --
+
++  'a mark with no number': 100,
+-  'a metric modulation': 100.0,
+?                            --
+
++  'a metric modulation': 100,
+-  'a pickup whose mark and sound disagree': 60.0,
+?                                            ^^^
+
++  'a pickup whose mark and sound disagree': 90,
+?                                            ^
+
+-  'a range': 100.0,
+?                --
+
++  'a range': 100,
+-  'a sound alone in the bar, 72.5': 100.0,
+?                                    ^^^ ^
+
++  'a sound alone in the bar, 72.5': 72.5,
+?                                    ^^ ^
+
+-  'a sound in a comment': 100.0,
+?                             --
+
++  'a sound in a comment': 100,
+-  "a sound standing beside a mark at one place (E32's form)": 132.0,
+?                                                                 --
+
++  "a sound standing beside a mark at one place (E32's form)": 132,
+-  "a tempo after an opening rest (the Fifth's shape)": 100.0,
+?                                                        ^^^^
+
++  "a tempo after an opening rest (the Fifth's shape)": 164,
+?                                                        ^^
+
+-  'a tempo after the first note of bar 1': 100.0,
+?                                           ^^^^
+
++  'a tempo after the first note of bar 1': 90,
+?                                           ^
+
+-  'a tempo word alone': 100.0,
+?                           --
+
++  'a tempo word alone': 100,
+-  'a tempo word with its sound, 132': 100.0,
+?                                       ^^^^
+
++  'a tempo word with its sound, 132': 132,
+?                                       ^^
+
+-  'a visual offset': 60.0,
+?                       --
+
++  'a visual offset': 60,
+-  'an opening sound, a mark in bar 2': 100.0,
+?                                          --
+
++  'an opening sound, a mark in bar 2': 100,
+-  'an opening sound, then a sounding offset': 100.0,
+?                                              ^^^^
+
++  'an opening sound, then a sounding offset': 50,
+?                                              ^
+
+-  "an upbeat before bar 1's tempo": 60.0,
+?                                    ^^^
+
++  "an upbeat before bar 1's tempo": 90,
+?                                    ^
+
+-  'breve = 10 alone': 10.0,
+?                      ^^^
+
++  'breve = 10 alone': 80,
+?                      ^
+
+-  'dotted eighth = 120 alone': 120.0,
+?                               ^^^^
+
++  'dotted eighth = 120 alone': 90,
+?                               ^
+
+-  'dotted half = 61 alone': 61.0,
+?                            - ^^
+
++  'dotted half = 61 alone': 183,
+?                             ^^
+
+-  'dotted quarter = 60 with sound 90, 6/8': 60.0,
+?                                            ^^^
+
++  'dotted quarter = 60 with sound 90, 6/8': 90,
+?                                            ^
+
+-  'dotted quarter = 67 with sound 100.49999999999999': 67.0,
+?                                                       ^^ ^
+
++  'dotted quarter = 67 with sound 100.49999999999999': 100.5,
+?                                                       ^^^ ^
+
+-  'double-dotted quarter = 40 alone': 40.0,
+?                                      ^^^
+
++  'double-dotted quarter = 40 alone': 70,
+?                                      ^
+
+-  'eighth = 120 alone': 120.0,
+?                        ^^^^
+
++  'eighth = 120 alone': 60,
+?                        ^
+
+-  'half = 60 alone, cut time': 60.0,
+?                               ^^^
+
++  'half = 60 alone, cut time': 120,
+?                               ^^
+
+-  'half = 60 with sound 120, cut time': 60.0,
+?                                        ^^^
+
++  'half = 60 with sound 120, cut time': 120,
+?                                        ^^
+
+-  'no tempo at all': 100.0,
+?                        --
+
++  'no tempo at all': 100,
+   'quarter = 90.00009000009 with its sound': 90.00009,
+-  'the metronome-note form': 100.0,
+?                                --
+
++  'the metronome-note form': 100,
+-  "two parts at one place: the first part's": 60.0,
+?                                                --
+
++  "two parts at one place: the first part's": 60,
+-  'whole = 30 alone': 30.0}
+?                      ^^^
+
++  'whole = 30 alone': 120}
+?                      ^^
+
+
+======================================================================
+FAIL: test_a_dotted_quarter_mark_is_counted_in_quarter_notes 
+(tools.content.tests.test_difficulty.TestTheOpeningTempo.test_a_dotted_quarter_mark_is_counted_in_quarter_notes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-ad68f7e71fb77280b\tools\content\tests\test_difficulty.py", line 286, in 
+test_a_dotted_quarter_mark_is_counted_in_quarter_notes
+    self.assertAlmostEqual(_tempo_read(score, beats=6), 120.0, places=6)
+AssertionError: 80.0 != 120.0 within 6 places (40.0 difference)
+
+======================================================================
+FAIL: test_a_half_note_mark_is_counted_in_quarter_notes 
+(tools.content.tests.test_difficulty.TestTheOpeningTempo.test_a_half_note_mark_is_counted_in_quarter_notes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-ad68f7e71fb77280b\tools\content\tests\test_difficulty.py", line 279, in 
+test_a_half_note_mark_is_counted_in_quarter_notes
+    self.assertAlmostEqual(_tempo_read(score, beats=2), 120.0, places=6)
+AssertionError: 60.0 != 120.0 within 6 places (60.0 difference)
+
+======================================================================
+FAIL: test_a_text_only_mark_keeps_the_default 
+(tools.content.tests.test_difficulty.TestTheOpeningTempo.test_a_text_only_mark_keeps_the_default)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-ad68f7e71fb77280b\tools\content\tests\test_difficulty.py", line 309, in 
+test_a_text_only_mark_keeps_the_default
+    self.assertAlmostEqual(_tempo_read(score, beats=4), 100.0, places=6)
+AssertionError: 132.0 != 100.0 within 6 places (32.0 difference)
+
+======================================================================
+FAIL: test_the_opening_is_the_earliest_mark_not_the_first_found 
+(tools.content.tests.test_difficulty.TestTheOpeningTempo.test_the_opening_is_the_earliest_mark_not_the_first_found)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-ad68f7e71fb77280b\tools\content\tests\test_difficulty.py", line 298, in 
+test_the_opening_is_the_earliest_mark_not_the_first_found
+    self.assertAlmostEqual(_tempo_read(score, beats=4), 120.0, places=6)
+AssertionError: 60.0 != 120.0 within 6 places (60.0 difference)
+
+----------------------------------------------------------------------
+Ran 17 tests in 1.618s
+
+FAILED (failures=6)
+exit=1

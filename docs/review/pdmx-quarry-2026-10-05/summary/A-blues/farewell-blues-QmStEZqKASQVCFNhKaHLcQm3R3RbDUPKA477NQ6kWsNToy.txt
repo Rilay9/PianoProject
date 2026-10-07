@@ -1,0 +1,42 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=2/4 chord-symbols=0 bars=33
+INSTRUMENTS/PARTS: P1:'':staves=1:prog=0:piano=True
+NOTE: identity TITLE_ONLY: no creator named
+CID QmStEZqKASQVCFNhKaHLcQm3R3RbDUPKA477NQ6kWsNToy
+title: Farewell Blues | song_name: Farewell Blues
+composer:  | artist: Misc tunes
+csv: tracks=0 bars=33 license=publicdomain
+
+=== part P1 '' measures=33 ===
+m1 [key fifths=2 major; time 2/4; clef=G2]  s1v1: F#5:16 G5:16
+m2  s1v1: A5:16 B5:16 A5:16 F#5:16 A5:16 B5:16 A5:16 F#5:16
+m3  s1v1: A5:16 B5:16 A5:16 G5:16 F#5:16 E5:16 D5:16 B4:16
+m4  s1v1: D5:16 E5:16 D5:16 B4:16 D5:16 E5:16 D5:16 B4:16
+m5  s1v1: D5:16 E5:16 D5:16 C#5:16 B4:16 C#5:16 D5:16 B4:16
+m6  s1v1: A4:16 F#4:16 A4:16 C#5:16 D5:16 C#5:16 D5:16 E5:16
+m7  s1v1: F#5:16 D5:16 F#5:16 G5:16 A5:16 B5:16 A5:16 F#5:16
+m8  s1v1: E5:16 C#5:16 E5:16 A5:16 C#6:16 A5:16 B5:16 C#6:16
+m9  s1v1: A5:8 F#5:8 G5:8 G#5:8
+m10  s1v1: A5:16 B5:16 A5:16 F#5:16 A5:16 B5:16 A5:16 F#5:8
+m11  s1v1: A5:16 B5:16 A5:16 G5:16 F#5:16 E5:16 D5:16 B4:16
+m12  s1v1: D5:16 E5:16 D5:16 B4:16 D5:16 E5:16 D5:16 B4:16
+m13  s1v1: D5:16 E5:16 D5:16 C#5:16 B4:16 C#5:16 D5:16 B4:16
+m14  s1v1: A4:16 F#4:16 A4:16 C#5:16 D5:16 C#5:16 D5:16 E5:16
+m15  s1v1: F#5:16 D5:16 F#5:16 G5:16 A5:16 B5:16 A5:16 G5:16
+m16  s1v1: F#5:16 E5:16 D5:16 B4:16 D5:8 E5:8
+m17  s1v1: D5:q. A4:16 D5:16
+m18  s1v1: F#5:q+A5 F#5:16+A5 F#5:8.+A5
+m19  s1v1: D5:q+F#5 C5:q+F#5
+m20  s1v1: B4:q+D5 B4:16+D5 B4:8.+D5
+m21  s1v1: G4:q~+B4 G4:8+B4 D5:16 B4:16
+m22  s1v1: A4:16 F#4:16 A4:16 C#5:16 D5:16 C#5:16 D5:16 E5:16
+m23  s1v1: F#5:16 D5:16 F#5:16 G5:16 A5:16 B5:16 A5:16 F#5:16
+m24  s1v1: E5:16 C#5:16 E5:16 A5:16 C#6:16 A5:16 B5:16 C#6:16
+m25  s1v1: A5:8 F#5:8 G5:8 G#5:8
+m26  s1v1: F#5:q+A5 F#5:16+A5 F#5:8.+A5
+m27  s1v1: D5:q+F#5 C5:q+F#5
+m28  s1v1: B4:q+D5 B4:16+D5 B4:8.+D5
+m29  s1v1: G4:q~+B4 G4:8+B4 D5:16 B4:16
+m30  s1v1: A4:16 F#4:16 A4:16 C#5:16 D5:16 C#5:16 D5:16 E5:16
+m31  s1v1: F#5:16 D5:16 F#5:16 G5:16 A5:16 B5:16 A5:16 G5:16
+m32  s1v1: F#5:16 E5:16 D5:16 B4:16 D5:8 E5:8
+m33  s1v1: D5:q~+F#5 D5:8+F#5

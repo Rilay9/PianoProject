@@ -1,0 +1,146 @@
+
+Running 8 tests using 4 workers
+
+  ok 2 tests\e2e\score.window-rule.spec.ts:952:1 › mid-run on a phone sideways, the folded chrome leaves the music on the stage (7.1s)
+  x  3 tests\e2e\score.window-rule.spec.ts:1152:3 › folded upright, the stacked slots start below the chip and keep the size the run froze (U105c’s layout) (9.2s)
+  x  1 tests\e2e\score.window-rule.spec.ts:1152:3 › folded upright, the stacked slots start below the chip and keep the size the run froze (sized by the height) (9.3s)
+  x  4 tests\e2e\score.window-rule.spec.ts:1178:1 › folded upright after a crossing into the third bar: still below the chip, in reading order (9.6s)
+  ok 8 tests\e2e\score.window-rule.spec.ts:1289:1 › a tablet folds without a chip: no band, the slots at the top (7.5s)
+  x  7 tests\e2e\score.window-rule.spec.ts:1272:1 › where every sentence fits one line, the band is one line (8.8s)
+  x  5 tests\e2e\score.window-rule.spec.ts:1208:1 › a size taken while folded: turned and turned back with the chrome folded, the bottom system stays on the stage (11.9s)
+  x  6 tests\e2e\score.window-rule.spec.ts:1228:1 › what the chip says changes nothing: the band, the slots and the size stay where they were (9.9s)
+
+
+  1) tests\e2e\score.window-rule.spec.ts:1152:3 › folded upright, the stacked slots start below the chip and keep the size the run froze (U105c’s layout) 
+
+    Error: paused, folded: the band holds the chip as it is now {"chrome":"folded","chipShown":true,"chipBottom":36.6875,"chipLines":2,"band":0,"stageH":666,"zoom":2,"scale":0.917049,"frozen":0.917049,"shape":"3/2/2","placed":[{"top":0,"from":0,"ahead":false},{"top":169,"from":1,"ahead":false},{"top":339,"from":2,"ahead":true}],"firstInkTop":5.760323524475098,"inkBottom":478.4324035644531,"under":["path.vf-clef","text.vf-text \"3\"","text.vf-text \"2\"","text.vf-text \"1\""]}
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 36.1875
+    Received:    0
+
+      1131 |   const said = JSON.stringify(folded);
+      1132 |   expect(folded.chipShown, `${where}: the chip is drawn, folded on a phone ${said}`).toBe(true);
+    > 1133 |   expect(folded.band, `${where}: the band holds the chip as it is now ${said}`).toBeGreaterThanOrEqual(folded.chipBottom - 0.5);
+           |                                                                                 ^
+      1134 |   expect(folded.placed[0]?.top ?? -1, `${where} (1): the first slot starts below the band ${said}`).toBeGreaterThanOrEqual(folded.band);
+      1135 |   expect(folded.firstInkTop ?? -1, `${where} (1): the first system's ink below the chip ${said}`).toBeGreaterThanOrEqual(folded.chipBottom);
+      1136 |   expect(folded.under, `${where} (2): nothing of the score under the chip ${said}`).toEqual([]);
+        at belowTheChip (<worktree>\app\tests\e2e\score.window-rule.spec.ts:1133:81)
+        at <worktree>\app\tests\e2e\score.window-rule.spec.ts:1166:5
+
+    Error Context: build\u118\test-results\score.window-rule-folded-u-3b281-e-run-froze-U105c’s-layout-\error-context.md
+
+  2) tests\e2e\score.window-rule.spec.ts:1152:3 › folded upright, the stacked slots start below the chip and keep the size the run froze (sized by the height) 
+
+    Error: paused, folded: the band holds the chip as it is now {"chrome":"folded","chipShown":true,"chipBottom":36.6875,"chipLines":2,"band":0,"stageH":666,"zoom":1.42,"scale":0.82,"frozen":0.82,"shape":"3/3/3","placed":[{"top":0,"from":0,"ahead":false},{"top":197,"from":1,"ahead":false},{"top":394,"from":2,"ahead":false}],"firstInkTop":10.819710731506348,"inkBottom":566.3626708984375,"under":["path.vf-measure","rect.vf-measure","path.vf-clef","path.vf-timesignature","path.vf-stem","text.vf-text \"1\"","text.vf-text \"2\"","text.vf-text \"3\"","text.vf-text \"4\"","rect.vf-connector","rect.vf-connector","path.vf-brace","path.vf-brace"]}
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 36.1875
+    Received:    0
+
+      1131 |   const said = JSON.stringify(folded);
+      1132 |   expect(folded.chipShown, `${where}: the chip is drawn, folded on a phone ${said}`).toBe(true);
+    > 1133 |   expect(folded.band, `${where}: the band holds the chip as it is now ${said}`).toBeGreaterThanOrEqual(folded.chipBottom - 0.5);
+           |                                                                                 ^
+      1134 |   expect(folded.placed[0]?.top ?? -1, `${where} (1): the first slot starts below the band ${said}`).toBeGreaterThanOrEqual(folded.band);
+      1135 |   expect(folded.firstInkTop ?? -1, `${where} (1): the first system's ink below the chip ${said}`).toBeGreaterThanOrEqual(folded.chipBottom);
+      1136 |   expect(folded.under, `${where} (2): nothing of the score under the chip ${said}`).toEqual([]);
+        at belowTheChip (<worktree>\app\tests\e2e\score.window-rule.spec.ts:1133:81)
+        at <worktree>\app\tests\e2e\score.window-rule.spec.ts:1166:5
+
+    Error Context: build\u118\test-results\score.window-rule-folded-u-4338c--froze-sized-by-the-height-\error-context.md
+
+  3) tests\e2e\score.window-rule.spec.ts:1178:1 › folded upright after a crossing into the third bar: still below the chip, in reading order 
+
+    Error: after a crossing, folded: the band holds the chip as it is now {"chrome":"folded","chipShown":true,"chipBottom":36.6875,"chipLines":2,"band":0,"stageH":666,"zoom":2,"scale":0.715761,"frozen":0.7157605137485891,"shape":"3/2/2","placed":[{"top":0,"from":1,"ahead":false},{"top":140,"from":2,"ahead":false},{"top":280,"from":3,"ahead":false}],"firstInkTop":6.325532913208008,"inkBottom":390.14453125,"under":["path.vf-measure","rect.vf-measure","path.vf-clef","text.vf-text \"3\"","text.vf-text \"2\"","text.vf-text \"1\"","text.vf-text \"2\""]}
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 36.1875
+    Received:    0
+
+      1131 |   const said = JSON.stringify(folded);
+      1132 |   expect(folded.chipShown, `${where}: the chip is drawn, folded on a phone ${said}`).toBe(true);
+    > 1133 |   expect(folded.band, `${where}: the band holds the chip as it is now ${said}`).toBeGreaterThanOrEqual(folded.chipBottom - 0.5);
+           |                                                                                 ^
+      1134 |   expect(folded.placed[0]?.top ?? -1, `${where} (1): the first slot starts below the band ${said}`).toBeGreaterThanOrEqual(folded.band);
+      1135 |   expect(folded.firstInkTop ?? -1, `${where} (1): the first system's ink below the chip ${said}`).toBeGreaterThanOrEqual(folded.chipBottom);
+      1136 |   expect(folded.under, `${where} (2): nothing of the score under the chip ${said}`).toEqual([]);
+        at belowTheChip (<worktree>\app\tests\e2e\score.window-rule.spec.ts:1133:81)
+        at <worktree>\app\tests\e2e\score.window-rule.spec.ts:1205:3
+
+    Error Context: build\u118\test-results\score.window-rule-folded-u-4f21a-w-the-chip-in-reading-order\error-context.md
+
+  4) tests\e2e\score.window-rule.spec.ts:1208:1 › a size taken while folded: turned and turned back with the chrome folded, the bottom system stays on the stage 
+
+    Error: turned back, folded: the band holds the chip as it is now {"chrome":"folded","chipShown":true,"chipBottom":36.6875,"chipLines":2,"band":0,"stageH":666,"zoom":1.63,"scale":0.862306,"frozen":0.862306,"shape":"3/3/3","placed":[{"top":0,"from":0,"ahead":false},{"top":231,"from":1,"ahead":false},{"top":461,"from":2,"ahead":false}],"firstInkTop":5.970086097717285,"inkBottom":661.6544189453125,"under":["path.vf-measure","rect.vf-measure","path.vf-clef","path.vf-timesignature","path.vf-stem","text.vf-text \"1\"","text.vf-text \"2\"","text.vf-text \"3\"","text.vf-text \"4\"","rect.vf-connector","rect.vf-connector","path.vf-brace","path.vf-brace"]}
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 36.1875
+    Received:    0
+
+      1131 |   const said = JSON.stringify(folded);
+      1132 |   expect(folded.chipShown, `${where}: the chip is drawn, folded on a phone ${said}`).toBe(true);
+    > 1133 |   expect(folded.band, `${where}: the band holds the chip as it is now ${said}`).toBeGreaterThanOrEqual(folded.chipBottom - 0.5);
+           |                                                                                 ^
+      1134 |   expect(folded.placed[0]?.top ?? -1, `${where} (1): the first slot starts below the band ${said}`).toBeGreaterThanOrEqual(folded.band);
+      1135 |   expect(folded.firstInkTop ?? -1, `${where} (1): the first system's ink below the chip ${said}`).toBeGreaterThanOrEqual(folded.chipBottom);
+      1136 |   expect(folded.under, `${where} (2): nothing of the score under the chip ${said}`).toEqual([]);
+        at belowTheChip (<worktree>\app\tests\e2e\score.window-rule.spec.ts:1133:81)
+        at <worktree>\app\tests\e2e\score.window-rule.spec.ts:1225:3
+
+    Error Context: build\u118\test-results\score.window-rule-a-size-t-b4981-m-system-stays-on-the-stage\error-context.md
+
+  5) tests\e2e\score.window-rule.spec.ts:1228:1 › what the chip says changes nothing: the band, the slots and the size stay where they were 
+
+    Error: armed: the band holds the tallest of them {"armed":{"chrome":"folded","chipShown":true,"chipBottom":21.34375,"chipLines":1,"band":0,"stageH":666,"zoom":2,"scale":0.917049,"frozen":0.917049,"shape":"3/2/2","placed":[{"top":0,"from":0,"ahead":false},{"top":169,"from":1,"ahead":false},{"top":339,"from":2,"ahead":true}],"firstInkTop":5.760323524475098,"inkBottom":478.4324035644531,"under":[]},"playing":{"chrome":"folded","chipShown":true,"chipBottom":21.34375,"chipLines":1,"band":0,"stageH":666,"zoom":2,"scale":0.917049,"frozen":0.917049,"shape":"3/2/2","placed":[{"top":0,"from":0,"ahead":false},{"top":169,"from":1,"ahead":false},{"top":339,"from":2,"ahead":true}],"firstInkTop":5.760323524475098,"inkBottom":478.4324035644531,"under":[]},"paused":{"chrome":"folded","chipShown":true,"chipBottom":36.6875,"chipLines":2,"band":0,"stageH":666,"zoom":2,"scale":0.917049,"frozen":0.917049,"shape":"3/2/2","placed":[{"top":0,"from":0,"ahead":false},{"top":169,"from":1,"ahead":false},{"top":339,"from":2,"ahead":true}],"firstInkTop":5.760323524475098,"inkBottom":478.4324035644531,"under":["path.vf-clef","text.vf-text \"3\"","text.vf-text \"2\"","text.vf-text \"1\""]}}
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 36.1875
+    Received:    0
+
+      1263 |   for (const [name, after] of Object.entries(seen)) {
+      1264 |     expect(after.band, `${name}: the band is the same whatever the chip says ${said}`).toBe(armed.band);
+    > 1265 |     expect(after.band, `${name}: the band holds the tallest of them ${said}`).toBeGreaterThanOrEqual(paused.chipBottom - 0.5);
+           |                                                                               ^
+      1266 |     expect([after.shape, after.zoom, after.frozen], `${name}: the shape, engraving and held size ${said}`).toEqual([armed.shape, armed.zoom, armed.frozen]);
+      1267 |     expect(after.under, `${name}: nothing under the chip ${said}`).toEqual([]);
+      1268 |   }
+        at <worktree>\app\tests\e2e\score.window-rule.spec.ts:1265:79
+
+    Error Context: build\u118\test-results\score.window-rule-what-the-c1ead-e-size-stay-where-they-were\error-context.md
+
+  6) tests\e2e\score.window-rule.spec.ts:1272:1 › where every sentence fits one line, the band is one line 
+
+    Error: one line, folded: the band holds the chip as it is now {"chrome":"folded","chipShown":true,"chipBottom":21.34375,"chipLines":1,"band":0,"stageH":694,"zoom":2,"scale":1.54518,"frozen":1.54518,"shape":"2/2/4","placed":[{"top":0,"from":0,"ahead":false},{"top":261,"from":2,"ahead":false}],"firstInkTop":6.719857215881348,"inkBottom":491.82666015625,"under":["text.vf-text \"3\"","text.vf-text \"2\"","text.vf-text \"1\""]}
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 20.84375
+    Received:    0
+
+      1131 |   const said = JSON.stringify(folded);
+      1132 |   expect(folded.chipShown, `${where}: the chip is drawn, folded on a phone ${said}`).toBe(true);
+    > 1133 |   expect(folded.band, `${where}: the band holds the chip as it is now ${said}`).toBeGreaterThanOrEqual(folded.chipBottom - 0.5);
+           |                                                                                 ^
+      1134 |   expect(folded.placed[0]?.top ?? -1, `${where} (1): the first slot starts below the band ${said}`).toBeGreaterThanOrEqual(folded.band);
+      1135 |   expect(folded.firstInkTop ?? -1, `${where} (1): the first system's ink below the chip ${said}`).toBeGreaterThanOrEqual(folded.chipBottom);
+      1136 |   expect(folded.under, `${where} (2): nothing of the score under the chip ${said}`).toEqual([]);
+        at belowTheChip (<worktree>\app\tests\e2e\score.window-rule.spec.ts:1133:81)
+        at <worktree>\app\tests\e2e\score.window-rule.spec.ts:1286:3
+
+    Error Context: build\u118\test-results\score.window-rule-where-ev-1db88-e-line-the-band-is-one-line\error-context.md
+
+  6 failed
+    tests\e2e\score.window-rule.spec.ts:1152:3 › folded upright, the stacked slots start below the chip and keep the size the run froze (U105c’s layout) 
+    tests\e2e\score.window-rule.spec.ts:1152:3 › folded upright, the stacked slots start below the chip and keep the size the run froze (sized by the height) 
+    tests\e2e\score.window-rule.spec.ts:1178:1 › folded upright after a crossing into the third bar: still below the chip, in reading order 
+    tests\e2e\score.window-rule.spec.ts:1208:1 › a size taken while folded: turned and turned back with the chrome folded, the bottom system stays on the stage 
+    tests\e2e\score.window-rule.spec.ts:1228:1 › what the chip says changes nothing: the band, the slots and the size stay where they were 
+    tests\e2e\score.window-rule.spec.ts:1272:1 › where every sentence fits one line, the band is one line 
+  2 passed (22.9s)

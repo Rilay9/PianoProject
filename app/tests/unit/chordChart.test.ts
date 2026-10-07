@@ -45,6 +45,7 @@ vi.mock('../../src/audio/Metronome', () => ({
     }
     setBpm(): void {}
     setBeatsPerBar(): void {}
+    setBarShape(): void {}
     setCountInBars(): void {}
     setVolume(): void {}
     setSound(): void {}
@@ -202,6 +203,45 @@ describe("a catalog tempo outside the bpm field's own 40-240 range", () => {
     await vi.waitFor(() => {
       expect(section.querySelector<HTMLInputElement>('#chart-bpm')?.value).toBe(expected);
     });
+  });
+});
+
+/**
+ * The tempo field counts the chart's beat (MT1, red case 4; the reviewer's ruling, `docs/review/responses/
+ * ph1-g6a-landing.md` §4): beats a minute in the first bar's felt beat, the unit named wherever it is not a
+ * quarter. The catalog's tempo is quarter notes a minute (`tempoFromXml.ts`), so the sounding tempo is the same:
+ * Row, Row, Row's 81 quarters is 54 dotted quarters, Corcovado's 96 is 48 half notes, Blue Bossa's 4/4 is today's.
+ */
+describe('the tempo field counts the chart’s beat (MT1)', () => {
+  afterEach(() => {
+    document.body.replaceChildren();
+    currentTempoBpm = undefined;
+  });
+
+  function metred(beats: number, beatType: number): string {
+    const time = `<attributes><divisions>1</divisions><time><beats>${String(beats)}</beats><beat-type>${String(beatType)}</beat-type></time></attributes>`;
+    return `<score-partwise><part id="P1"><measure number="1">${time}<harmony><root><root-step>C</root-step></root><kind>major</kind></harmony></measure></part></score-partwise>`;
+  }
+
+  it.each([
+    ['6/8', 6, 8, 81, '54', 'bpm (dotted quarters)', 'Tempo, in dotted quarters a minute'],
+    ['6/8, the catalog’s float', 6, 8, 80.99999999999999, '54', 'bpm (dotted quarters)', 'Tempo, in dotted quarters a minute'],
+    ['12/8', 12, 8, 76, '50.667', 'bpm (dotted quarters)', 'Tempo, in dotted quarters a minute'],
+    ['2/2', 2, 2, 96, '48', 'bpm (half notes)', 'Tempo, in half notes a minute'],
+    ['3/4', 3, 4, 192, '192', 'bpm', 'Tempo'],
+    ['4/4', 4, 4, 96, '96', 'bpm', 'Tempo'],
+  ] as [string, number, number, number, string, string, string][])('%s: the field opens in the beat’s unit, the unit named', async (_name, beats, beatType, tempoBpm, value, label, name) => {
+    currentTempoBpm = tempoBpm;
+    currentXml = metred(beats, beatType);
+    const section = ChordChartScreen(router, 'demo');
+    document.body.replaceChildren(section);
+    await vi.waitFor(() => {
+      expect(section.querySelector('#chart-start')).not.toBeNull();
+    });
+    const field = section.querySelector<HTMLInputElement>('#chart-bpm');
+    expect(field?.value).toBe(value);
+    expect(section.querySelector('label[for="chart-bpm"]')?.textContent).toBe(label);
+    expect(field?.getAttribute('aria-label')).toBe(name);
   });
 });
 

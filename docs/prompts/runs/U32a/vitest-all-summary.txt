@@ -1,0 +1,12 @@
+U32a: the whole unit suite, npx vitest run, on the final tree (the full log was not kept: over 300 KB).
+The two lessonClaimsAboutApp line-ending claims fail on a CRLF checkout and pass on the runner (Entry 101);
+midiParity and taughtByAncestry failed on inputs a fresh worktree lacks (build/midi-parity, build/rung-claims.json)
+and passed once those were written or copied (vitest-env-rerun.txt).
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+ FAIL  tests/unit/midiParity.test.ts > the port agrees with the Python converter > has a reference to compare against
+ FAIL  tests/unit/taughtByAncestry.test.ts > the shipped curriculum > the build reads the same ancestry: the rung-claims report’s "untaught here" and the gate read one thing
+ Test Files  3 failed | 319 passed (322)
+      Tests  4 failed | 7406 passed | 1 skipped | 1 todo (7412)
+exit=1

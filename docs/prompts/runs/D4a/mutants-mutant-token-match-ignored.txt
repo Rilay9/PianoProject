@@ -1,0 +1,248 @@
+$ npx.cmd vitest run tests/unit/offerSnapshot.test.ts tests/unit/transferOfferOnTheRun.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/offerSnapshot.test.ts (21 tests | 3 failed) 20ms
+   ❯ the snapshot on a real store (4)
+     × a newer offer written over it: the older route’s token no longer matches 6ms
+   ❯ the read’s refusals, each named (13)
+     × another token: refused (superseded) 1ms
+     × a route with no token (from before D4a): refused (superseded) 1ms
+ ❯ tests/unit/transferOfferOnTheRun.test.ts (18 tests | 2 failed) 1420ms
+   ❯ 4. same-day recomposition or swap: the old route downgrades to practice, said (2)
+     × the card recomposed and a newer offer opened since: the old token no longer matches 65ms
+   ❯ 5. another item or day, missing, corrupt or unreadable: practice, said, neither intent nor relationship (8)
+     × a route from before the token (D4’s spelling): refused, not guessed 63ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/offerSnapshot.test.ts > the snapshot on a real store > a newer offer written over it: the older route’s token no longer matches
+AssertionError: expected { kind: 'kept', snapshot: { …(7) } } to deeply equal { kind: 'refused', why: 'superseded' }
+
+- Expected
++ Received
+
+  {
+-   "kind": "refused",
+-   "why": "superseded",
++   "kind": "kept",
++   "snapshot": {
++     "contact": {
++       "contact": "unmet",
++       "metById": false,
++     },
++     "itemId": "exercise.pentatonic.a.blues",
++     "material": {
++       "family": "pentatonic",
++       "kind": "generator",
++       "recipe": {
++         "form": "blues",
++         "hands": "right",
++         "key": "A",
++       },
++       "seed": null,
++       "tempoBpm": 72,
++       "version": 1,
++     },
++     "offeredOn": "2026-09-28",
++     "relationship": {
++       "differsOn": [
++         "family",
++         "rhythm",
++       ],
++       "measured": [
++         {
++           "candidate": "pentatonic",
++           "differs": true,
++           "dimension": "family",
++           "shownOn": [
++             "sight-reading",
++             "sight-reading",
++           ],
++         },
++         {
++           "candidate": "rhythm.eighths",
++           "differs": false,
++           "dimension": "rhythm",
++           "shownOn": [
++             "rhythm.eighths",
++             null,
++           ],
++         },
++       ],
++       "shownOn": [
++         {
++           "itemId": "drill.reading.sight-reading-2-right",
++           "material": {
++             "family": "sight-reading",
++             "kind": "generator",
++             "recipe": {
++               "hands": "R",
++               "level": 2,
++             },
++             "seed": 101,
++             "tempoBpm": 72,
++             "version": 2,
++           },
++         },
++         {
++           "itemId": "drill.reading.sight-reading-2-right",
++         },
++       ],
++       "skill": "position-shift",
++     },
++     "skill": "position-shift",
++     "token": "k3offer0002",
++   },
+  }
+
+ ❯ tests/unit/offerSnapshot.test.ts:85:37
+     83|     await writeOfferSnapshot(SNAPSHOT);
+     84|     await writeOfferSnapshot({ ...SNAPSHOT, token: 'k3offer0002' });
+     85|     expect(await loadOffer(WANTED)).toEqual({ kind: 'refused', why: 's…
+       |                                     ^
+     86|     expect((await loadOffer({ ...WANTED, token: 'k3offer0002' })).kind…
+     87|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/offerSnapshot.test.ts > the read’s refusals, each named > another token: refused (superseded)
+ FAIL  tests/unit/offerSnapshot.test.ts > the read’s refusals, each named > a route with no token (from before D4a): refused (superseded)
+AssertionError: expected { kind: 'kept', snapshot: { …(7) } } to deeply equal { kind: 'refused', why: 'superseded' }
+
+- Expected
++ Received
+
+  {
+-   "kind": "refused",
+-   "why": "superseded",
++   "kind": "kept",
++   "snapshot": {
++     "contact": {
++       "contact": "unmet",
++       "metById": false,
++     },
++     "itemId": "exercise.pentatonic.a.blues",
++     "material": {
++       "family": "pentatonic",
++       "kind": "generator",
++       "recipe": {
++         "form": "blues",
++         "hands": "right",
++         "key": "A",
++       },
++       "seed": null,
++       "tempoBpm": 72,
++       "version": 1,
++     },
++     "offeredOn": "2026-09-28",
++     "relationship": {
++       "differsOn": [
++         "family",
++         "rhythm",
++       ],
++       "measured": [
++         {
++           "candidate": "pentatonic",
++           "differs": true,
++           "dimension": "family",
++           "shownOn": [
++             "sight-reading",
++             "sight-reading",
++           ],
++         },
++         {
++           "candidate": "rhythm.eighths",
++           "differs": false,
++           "dimension": "rhythm",
++           "shownOn": [
++             "rhythm.eighths",
++             null,
++           ],
++         },
++       ],
++       "shownOn": [
++         {
++           "itemId": "drill.reading.sight-reading-2-right",
++           "material": {
++             "family": "sight-reading",
++             "kind": "generator",
++             "recipe": {
++               "hands": "R",
++               "level": 2,
++             },
++             "seed": 101,
++             "tempoBpm": 72,
++             "version": 2,
++           },
++         },
++         {
++           "itemId": "drill.reading.sight-reading-2-right",
++         },
++       ],
++       "skill": "position-shift",
++     },
++     "skill": "position-shift",
++     "token": "k3offer0001",
++   },
+  }
+
+ ❯ tests/unit/offerSnapshot.test.ts:136:50
+    134|     ['no day', { ...SNAPSHOT, offeredOn: 20260928 }, WANTED, 'corrupt'…
+    135|   ].map(([name, raw, wanted, why]) => ({ name, raw, wanted, why })))('…
+    136|     expect(offerFor(raw, wanted as OfferWanted)).toEqual({ kind: 'refu…
+       |                                                  ^
+    137|   });
+    138| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/transferOfferOnTheRun.test.ts > 4. same-day recomposition or swap: the old route downgrades to practice, said > the card recomposed and a newer offer opened since: the old token no longer matches
+AssertionError: expected null to be 'This offer is no longer on today’s ca…' // Object.is equality
+
+- Expected:
+"This offer is no longer on today’s card; opened as practice."
+
++ Received:
+null
+
+ ❯ expectPractice tests/unit/transferOfferOnTheRun.test.ts:425:19
+    423| async function expectPractice(hash: string, line: string): Promise<voi…
+    424|   await open(hash);
+    425|   expect(note_()).toBe(line);
+       |                   ^
+    426|   expect(play().disabled).toBe(false);
+    427|   finish();
+ ❯ tests/unit/transferOfferOnTheRun.test.ts:436:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/transferOfferOnTheRun.test.ts > 5. another item or day, missing, corrupt or unreadable: practice, said, neither intent nor relationship > a route from before the token (D4’s spelling): refused, not guessed
+AssertionError: expected null to be 'This offer is no longer on today’s ca…' // Object.is equality
+
+- Expected:
+"This offer is no longer on today’s card; opened as practice."
+
++ Received:
+null
+
+ ❯ expectPractice tests/unit/transferOfferOnTheRun.test.ts:425:19
+    423| async function expectPractice(hash: string, line: string): Promise<voi…
+    424|   await open(hash);
+    425|   expect(note_()).toBe(line);
+       |                   ^
+    426|   expect(play().disabled).toBe(false);
+    427|   finish();
+ ❯ tests/unit/transferOfferOnTheRun.test.ts:459:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  5 failed | 34 passed (39)
+   Start at  00:03:59
+   Duration  3.13s (tests 44%, transform 26%, environment 21%, import 9%)
+
+
+exit 1
+token-match-ignored: caught; src/data/offerSnapshot.ts restored by sha256

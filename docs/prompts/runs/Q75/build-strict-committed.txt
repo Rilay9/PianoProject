@@ -1,0 +1,19 @@
+
+--- content build ---
+  ok    fetch            fetched 10 source(s), skipped 5
+  ok    import [MT]      imported 64 score(s), excluded 4, normalised 8 (8 cached, 1 converted)
+  ok    import [KERN]    imported 116 score(s), 47 placeholder(s), excluded 73 (116 cached, 0 converted)
+  ok    import [PDMX]    imported 367 score(s), 175 placeholder(s)
+  ok    generate [GEN]   wrote 1200 items to build\q75-strict\content\scores\generated; catalog C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a172918e0ab7443a8\build\catalog.generated.json
+  ok    author [AUTH]    authored 38 item(s) (32 cached, 0 converted)
+  ok    merge catalog    2089 items, 22 with named sections, 4 excerpt(s) cut (1 not: the parent is not bundled here), 100 given a track by their rung, 1783 read from the score, 417 keySig corrected, demands measured on 1783 (235 unmeasured, 71 made at runtime)
+  ok    score checks     score-checks gate: 32 high row(s), 32 allowed by content\score-checks.allow.json
+  ok    curriculum       11 file(s), 10 stage(s), 105 finder(s), 285 concept(s)
+  ok    reports          550 checkable claims on 1015 options: 336 not established, 8 kept by no option; 784 works, 813 arrangements (docs/prompts left alone)
+  ok    lessons          109 file(s)
+  ok    tips             20 kind(s), 7 variant(s)
+  FAIL  validate         content validation FAILED (2 error(s)):
+  - 2.4: its concepts name tie (tie) and none of its 8 checked options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), or keep an option that establishes it
+  - ragtime.8: its concepts name stride-bass (texture.left-hand-pattern) and none of its 11 checked options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), or keep an option that establishes it
+  177.6s → build\q75-strict\content
+exit=1

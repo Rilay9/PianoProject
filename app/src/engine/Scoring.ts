@@ -112,6 +112,12 @@ export interface ScoreInput {
   notes: readonly RecordedNote[];
   /** docs/05 §11.4: microphone accuracy is an estimate and is labelled so. */
   accuracyEstimated: boolean;
+  /**
+   * The run judged timing alone (`05` §3a). Its figure is the rhythm's — how
+   * much of the piece the learner was in time for — and an extra tap does not
+   * come off it: it was not asked which key. Absent reads as an ordinary run.
+   */
+  rhythmOnly?: boolean;
   lenientChordSteps: number;
   /** Every CC64 value the run saw. Absent reads as none, for old callers. */
   pedal?: readonly number[];
@@ -214,15 +220,23 @@ export function buildScore(input: ScoreInput): SessionScore {
     expectedNotes += step.expected.length;
   }
 
-  // Wait mode has no timetable, so a step is the unit; Tempo judges every
-  // pitch against a slot, so a note is.
+  // Accuracy is the written notes played right, with nothing extra (CL11a; `05`
+  // §2–§3, `02` Part G). Wait mode has no timetable, so a step is the unit, and
+  // a wrong key already makes its step unclean. Keep tempo judges every pitch
+  // against a slot, so a note is the unit: the notes struck in their window, less
+  // one note for each wrong key, floored at nought. A right note at the wrong
+  // time is already one miss or one early note and was never also a wrong key
+  // (`PracticeEngine.findLateStep`), so nothing is charged twice. A chord with
+  // one note missed keeps two thirds of its credit, as it always did. A
+  // rhythm-only run keeps its own figure: it never asked which key.
+  const wrongKeys = input.rhythmOnly === true ? 0 : input.wrongNotesTotal;
   const accuracy =
     input.mode === 'wait'
       ? totalSteps > 0
         ? input.correctSteps / totalSteps
         : 0
       : expectedNotes > 0
-        ? input.hits / expectedNotes
+        ? Math.max(0, input.hits - wrongKeys) / expectedNotes
         : 0;
 
   return {
@@ -271,6 +285,14 @@ export interface MeasureContext {
  * Keep tempo's is expected pitches struck inside their window, and a
  * rhythm-only run has no pitch at all — its figure is the rhythm's. A run the
  * app heard nothing of measured nothing: no pitch, no timing, no steps.
+ *
+ * **What was observed is kept apart from the verdict** (CL11a, observation
+ * definitions 2). Keep tempo's `pitch.right` is the notes struck in their
+ * window, a count, and stays that: `SessionScore.accuracy` is the verdict, net
+ * of the wrong keys, and a reader that divided `right` by `of` and called the
+ * result accuracy would read a run full of extra keys as clean. The wrong keys
+ * are on the row (`wrongNotes`, and per step in `steps.wrong`), which is where
+ * a reader that wants the verdict for a step reads them (`measurement.ts`).
  */
 export function measuresOf(score: SessionScore, context: MeasureContext): RunMeasures {
   const chords = { rolled: score.rolledChordSteps, lenient: score.lenientChordSteps };
@@ -444,6 +466,30 @@ export function measuresTempo(mode: Mode): boolean {
 }
 
 /**
+ * Whether a run in this mode at this tempo can meet the criterion's tempo floor
+ * (T37's rule, the one `evaluateOutcome` passes by): a Keep tempo run at or above
+ * the floor, or any judged run where the floor is nought. The accuracy is the
+ * playing's; this is the half the settings decide before a note is played.
+ */
+export function tempoCanCount(mode: Mode, tempoPct: number, criteria: Pick<MasteryCriteria, 'passTempoPct'>): boolean {
+  return measuresTempo(mode) ? tempoPct >= criteria.passTempoPct : criteria.passTempoPct <= 0;
+}
+
+/**
+ * The opening a judged run needs so that it can count (X46, `responses/9e14839e.md` §2 point 3): the
+ * mode and tempo it would open in, unchanged where they can already meet the criterion's tempo floor,
+ * otherwise Keep tempo at the floor — never slower than the tempo asked for. A run Today composes as
+ * what its rung asks for opens here; Wait for me stays one tap away on the bar.
+ */
+export function openingThatCounts(
+  opening: { mode: Mode; tempoPct: number },
+  criteria: Pick<MasteryCriteria, 'passTempoPct'>,
+): { mode: Mode; tempoPct: number } {
+  if (tempoCanCount(opening.mode, opening.tempoPct, criteria)) return opening;
+  return { mode: 'tempo', tempoPct: Math.max(opening.tempoPct, Math.ceil(criteria.passTempoPct)) };
+}
+
+/**
  * Evaluates a run against the pass and master thresholds.
  *
  * Listen and Free never pass: nothing was judged, so there is nothing to
@@ -464,9 +510,7 @@ export function evaluateOutcome(
 ): Outcome {
   const judged = score.mode === 'wait' || score.mode === 'tempo';
   const tempoMeasured = measuresTempo(score.mode);
-  const tempoMet = tempoMeasured
-    ? score.tempoPct >= criteria.passTempoPct
-    : criteria.passTempoPct <= 0;
+  const tempoMet = tempoCanCount(score.mode, score.tempoPct, criteria);
   const passed = judged && score.accuracy >= criteria.passAccuracy && tempoMet;
   const masterEligible =
     tempoMeasured &&

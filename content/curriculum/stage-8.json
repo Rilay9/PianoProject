@@ -133,6 +133,7 @@
               ],
               "songOptions": [
                 "song.ragtime.joplin-pine-apple-rag",
+                "song.ragtime.joplin-pine-apple-rag.mutopia",
                 "song.ragtime.joplin-gladiolus-rag",
                 "song.ragtime.joplin-magnetic-rag",
                 "song.ragtime.joplin-cascades",
@@ -342,12 +343,12 @@
         },
         {
           "id": "blues.8.1",
-          "title": "Blues: every key, and the chords underneath",
+          "title": "Blues: new keys, and the chords underneath",
           "track": "blues-boogie",
           "lessons": [
             {
               "id": "blues.8",
-              "title": "The form in twelve keys, and what the ninth chord adds",
+              "title": "The form in new keys, and what the ninth chord adds",
               "concepts": [
                 "twelve-bar",
                 "boogie",
@@ -380,6 +381,12 @@
                   "kind": "runs",
                   "from": "exercises",
                   "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "chorus-over-own-left-hand",
+                  "says": "A chorus of your own right hand over your own left-hand groove, with no chart and no click.",
+                  "why": "Improvised notes are not a run the app judges, and the chord chart stores nothing."
                 }
               ],
               "prerequisites": [
@@ -400,8 +407,8 @@
                 8.7
               ],
               "finder": {
-                "skill": "playing the twelve-bar form in any key and colouring it with ninths",
-                "levelWords": "advanced, blues piano, twelve bar in all keys, ninth chords",
+                "skill": "playing the twelve-bar form in new keys and colouring it with ninths",
+                "levelWords": "advanced, blues piano, twelve bar in new keys, ninth chords",
                 "constraints": [
                   "twelve-bar form",
                   "ninth chords",
@@ -492,7 +499,6 @@
                   "verse and chorus"
                 ],
                 "avoid": [
-                  "fully written-out arrangements",
                   "one fixed key",
                   "instrumental pieces"
                 ],
@@ -605,6 +611,12 @@
                   "kind": "runs",
                   "from": "exercises",
                   "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "three-reharmonisations",
+                  "says": "Three versions of the same eight bars, each with chords you chose.",
+                  "why": "A reharmonisation you play is not a run the app judges."
                 }
               ],
               "prerequisites": [

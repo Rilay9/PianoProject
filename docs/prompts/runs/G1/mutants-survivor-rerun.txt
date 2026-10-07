@@ -1,0 +1,6 @@
+﻿phrase-history-not-read: CAUGHT (exit 1) — src/ui/screens/ScoreScreen.ts
+    × heard, left, returned later, read: not first contact, and the history says so 131ms
+    × viewed on an earlier visit and never played or heard: not first contact, and the sheet says seen 124ms
+    Tests  2 failed | 13 passed (15)
+1 of 1 caught
+exit 0

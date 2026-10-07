@@ -6,15 +6,17 @@ videos:
   - label: "Piano improvisation with pentatonic scale"
     url: "https://www.youtube.com/watch?v=1W8TjulBrHM"
     teacher: "Play By Ear Music School"
-readingTime: 3
+readingTime: 4
 ---
 
 **The pentatonic scale** is five notes: in C major, **C D E G A** — the major
 scale with the fourth and seventh removed. Those two are the notes that create
 friction (the fourth clashes with the tonic chord's third, the seventh is a
 leading tone that demands resolution), so taking them out leaves a scale with
-no note that sounds wrong over most diatonic progressions. It is the reason the black
-keys alone (an F sharp pentatonic) sound good over almost anything.
+no note that sounds wrong over most diatonic progressions in its key. The black
+keys alone are a pentatonic too, F sharp major's, which is why they sound good
+over F sharp and the chords around it; over a C chord they share no note with it
+and clash.
 
 **Over I–vi–IV–V.** The app loops C–Am–F–G, one chord a bar. Use C major
 pentatonic throughout: every note works, though C rubs on the G chord and E on

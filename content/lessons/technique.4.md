@@ -9,7 +9,7 @@ videos:
   - label: "How to Play Legato & Staccato on the Piano | Technique Tuesday Tutorial"
     url: "https://www.youtube.com/watch?v=sfty1bjShBI"
     teacher: "PianoTips"
-readingTime: 3
+readingTime: 4
 ---
 
 This rung is not repertoire. It is the set of shapes every piece after it is
@@ -24,10 +24,9 @@ groups carry over from key to key and a fingering chosen afresh each time will
 not get faster.
 
 **Contrary motion** is easier than it sounds and worth doing early: both thumbs
-move at the same time, so the hands mirror each other rather than tracking two
-different passages. The two-octave C major here is the one to start on: the
-left hand begins on the C above the right hand's, so in the first bar they pass
-through each other.
+start on the same C and move at the same time, so the hands mirror each other
+rather than tracking two different passages. The two-octave C major here is the
+one to start on.
 
 **Arpeggios and inversions** are the same shape reached three ways. The C major
 arpeggio hands together is the arpeggio; play the inversions until you stop
@@ -43,8 +42,16 @@ the average one took of its written value. That sits beside the accuracy rather 
 staccato phrase of right notes held too long is a full-marks run with a line
 under it saying so. A note it never saw released is not counted.
 
-Two exercises pass this rung. Take the scales at a tempo where the thumb is
-silent.
+Any two exercises pass this rung; the app does not check which. The scale and
+the staccato–legato pair are what the rung is for, so make them two of yours, and
+take the scale at a tempo where the thumb is silent.
+
+**Two more on the list.** *Hanon No. 1* is the figure core 4.4 taught — eight
+notes up and back, moved up a step each bar — here as an evenness warm-up, hands
+separately before together. The *chromatic scale* from C takes every key in
+turn, black and white: the printed fingering puts 3 on every black key and the
+thumb on most white ones, so the thumb passes on nearly every other note and
+has to stay quiet doing it.
 
 **An étude to put it in.** Three of Lemoine's *Études enfantines*, Op. 37 —
 No. 1, No. 2 and No. 35 — are on this rung as pieces: sixteen bars each, one
@@ -59,6 +66,10 @@ is written out — the legato phrase in C — loops the whole of it and turns th
 Ladder on, so a clean pass earns the next notch and a faulty one gives it back.
 Take the scales the same way from their own rows, and listen for the thumb as
 the tempo rises.
+
+**When to stop.** If your hand, wrist or forearm aches or tightens, stop: rest,
+and come back to it slower, or another day. Pain is never something to play
+through; *When to stop* in the practice track, and core 4.4, say more.
 
 **How you'll know you've got it.** A scale hands together at a tempo where you
 cannot hear the thumb arrive — not quieter, *inaudible* as an event. And the

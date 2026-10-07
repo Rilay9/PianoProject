@@ -1,0 +1,4 @@
+1) sideways 640 × 360 on a wider face at 115 % text, a three-digit bar (Moonlight III), paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control
+     - the piece’s widest bar number would be cut (“bar 201 / 201”)
+     - Hands stayed on the bar although Back and the bar number do not fit beside it
+summary: 1 failed, 28 passed

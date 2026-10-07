@@ -1,0 +1,16 @@
+drill.reading.sight-reading-1 at 1.5: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-1-left at 1.3: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-1-left at 1.4: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-2 at 3.4: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-2 at classical.3: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-2-right at 2.2: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 200
+drill.reading.sight-reading-2-right at 2.5: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-3 at 4.5: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-3 at 4.6: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-4 at 4.6: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-4 at technique.5: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-5 at theory.6: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-6 at chords-pop.8: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-6 at theory.9: options differ on 0 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-7 at jazz.8: options differ on 200 of 200 seeds; the file's-order hold differs from the unheld row on 0
+drill.reading.sight-reading-7 at theory.9: options differ on 200 of 200 seeds; the file's-order hold differs from the unheld row on 0

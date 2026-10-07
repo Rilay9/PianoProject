@@ -31,12 +31,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { nextRecommended, readingOffer, readingOptions, type ReadingOffer } from '../../src/curriculum/session';
+import { nextRecommended, readingOffer, readingOptions, taughtAtRung, type ReadingOffer } from '../../src/curriculum/session';
 import { generateSightReading } from '../../src/engine/sightReading';
 import { demandReadings, type DemandReading } from '../../src/evidence/demandReadings';
 import type { MeasuredEvidence } from '../../src/evidence/evidence';
-import { SUPPORT_SHARE } from '../../src/evidence/ladder';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { supportShareOf, VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { readingReason } from '../../src/ui/help';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 import type { ReadingRecipe, SessionRow } from '../../src/data/db';
@@ -49,14 +48,15 @@ const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'ut
 const TWO_RIGHT = catalog.find((item) => item.id === 'drill.reading.sight-reading-2-right') as CatalogItem;
 const FIXTURE = join(process.cwd(), 'tests', 'e2e', 'fixtures', 'reader-learners.json');
 
-const ORDER = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
-/** What a rung has taught, by the vocabulary's `taughtAt` in the curriculum's order (this file's own reading of it). */
+/**
+ * What a rung has taught: `taughtAtRung`, the rung's ancestry, as the Score screen holds a phrase.
+ * Revised (E0b): this file's own reading was one `taughtAt` rung at or before the rung in the file's
+ * order; with `taughtAt` a list that order credits 4.1–4.4 with the syncopation `latin.3` teaches.
+ */
 const taughtAt =
   (rung: string) =>
-  (demand: string): boolean => {
-    const at = VOCABULARY_V0.demands.find((d) => d.id === demand)?.taughtAt;
-    return at !== null && at !== undefined && ORDER.indexOf(at) >= 0 && ORDER.indexOf(at) <= ORDER.indexOf(rung);
-  };
+  (demand: string): boolean =>
+    taughtAtRung(curriculum, rung)?.(demand) ?? false;
 /** The options the Score screen writes for a recipe opened on this rung: the row held to what the rung has taught (C4c). */
 const written = (item: CatalogItem, recipe: ReadingRecipe, seed: number, rung: string) =>
   readingOptions(item, recipe, seed, taughtAt(rung));
@@ -129,7 +129,7 @@ const named = (readings: readonly DemandReading[]): string[] =>
 /** The last read's sight-reading share went against it (the precondition of every step down here). */
 function against(row: SessionRow): boolean {
   const result = (row.evidence ?? []).find((one) => one.skill === 'sight-reading') as { n: number; right: number } | undefined;
-  return result !== undefined && result.n > 0 && result.right / result.n < SUPPORT_SHARE;
+  return result !== undefined && result.n > 0 && result.right / result.n < supportShareOf('sight-reading');
 }
 
 const OWN: ReadingRecipe = { row: TWO_RIGHT.id };
@@ -201,7 +201,7 @@ describe('two reads against the recipe, one demand singled out: that demand’s 
     expect(skip.selectivity, 'the skips were not singled out by the second bad two-hand read').toBe('pattern');
     const withoutTogether = skip.basis.withoutRival.find((one) => one.demand === 'texture.hands-together');
     expect(withoutTogether?.n, 'no skip went wrong away from a coordination step').toBeGreaterThanOrEqual(2);
-    expect((withoutTogether?.right ?? 0) / (withoutTogether?.n ?? 1)).toBeLessThan(SUPPORT_SHARE);
+    expect((withoutTogether?.right ?? 0) / (withoutTogether?.n ?? 1)).toBeLessThan(supportShareOf('sight-reading'));
     // Nothing the hands control governs is singled out: the left hand stays.
     expect(named(readings)).toEqual(['interval.skip pattern']);
     const next = offer(twoHandSkipLearner, '2.2', six);
@@ -301,16 +301,42 @@ describe('two reads against the recipe, nothing singled out: nothing blamed, the
 
 describe('a key signature is a key to read, never a harder key', () => {
   const READY: ReadingRecipe = { row: TWO_RIGHT.id, moved: { hands: 'both', position: false, dottedQuarters: true, ties: true } };
+  const READY_WITH_LEAPS: ReadingRecipe = { row: TWO_RIGHT.id, moved: { ...READY.moved, leaps: true } };
   let ready: SessionRow[];
+  let readyWithLeaps: SessionRow[];
 
   beforeAll(async () => {
     const seeds = await seedsWhere(READY, '3.1', 2, 7000, () => true);
     ready = await readDays(seeds.map((seed) => ({ recipe: READY, seed })), '3.1');
+    const leapSeeds = await seedsWhere(READY_WITH_LEAPS, '3.1', 2, 7000, () => true);
+    readyWithLeaps = await readDays(leapSeeds.map((seed) => ({ recipe: READY_WITH_LEAPS, seed })), '3.1');
   }, 120_000);
 
-  it('on 3.1, clean at everything 2.x taught: the key signature comes on as a set of keys, and the line names the key this phrase is in', () => {
+  // Revised (D1a, the flip): the reader's order at 3.1, traced (Entry 97).
+  // Old assumption: two clean reads of READY show a leap (a fourth or wider)
+  // in both phrases, so leaps count as shown and the next taught demand is the
+  // key signature. Under version 1 they did: seed 7001's melody leapt a fourth
+  // in bar 4 from a tie's closing note (the tie fault, S26: every melodic leap
+  // version 1 wrote in 200 phrases of this recipe followed a tie's closing
+  // note, none came elsewhere), and the leaps detector, which reads both
+  // staves, also found the left hand's roots moving by a fourth or fifth in
+  // both phrases. Version 2 holds the tied pitch, and the phrase it keeps for
+  // seed 7001 leaps on neither staff, so the reads show a leap in one phrase
+  // of two: not yet shown. The new order: a leap first — the earliest taught
+  // demand (1.5) the phrase does not promise and the reads have not shown —
+  // then, once the reads show one, the key signature (the case after this).
+  it('on 3.1, clean at everything 2.x taught but not yet shown a leap: the leap comes on first', () => {
+    const next = offer(ready, '3.1', morning(3));
+    expect(next.why.kind).toBe('forward');
+    const why = next.why as Extract<ReadingOffer['why'], { kind: 'forward' }>;
+    expect(why.move.demand).toBe('interval.leap');
+    expect(why.move.direction).toBe('on');
+    expect(next.recipe.moved).toEqual({ ...READY.moved, leaps: true });
+  });
+
+  it('on 3.1, clean at everything 2.x taught, leaps shown: the key signature comes on as a set of keys, and the line names the key this phrase is in', () => {
     const today = morning(3);
-    const next = offer(ready, '3.1', today);
+    const next = offer(readyWithLeaps, '3.1', today);
     expect(next.why.kind).toBe('forward');
     const why = next.why as Extract<ReadingOffer['why'], { kind: 'forward' }>;
     expect(why.move.demand).toBe('key.signature');

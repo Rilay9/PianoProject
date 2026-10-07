@@ -1,0 +1,40 @@
+SHAPE: LEADSHEET | parts=1 max_staves=1 meters=4/4 chord-symbols=24 bars=32
+INSTRUMENTS/PARTS: P1:'Piano':staves=1:prog=0:piano=True
+CID QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6
+title: Blue Bossa | song_name: blue bossa
+composer: Kenny Dorham | artist: Kenny Dorham
+csv: tracks=0 bars=32 license=cc-zero
+
+=== part P1 'Piano' measures=32 ===
+m1 [key fifths=-3; time 4/4; clef=G2]  s1v1: G5:q. F5:8 Eb5:8 D5:q C5:8~
+m2  s1v1: C5:h. Bb4:q
+m3  s1v1: Ab4:h G5:q. F5:8~
+m4  s1v1: F5:w
+m5  s1v1: F5:q. Eb5:8 D5:8 C5:q Bb4:8~
+m6  s1v1: Bb4:h. Ab4:q
+m7  s1v1: G4:h F5:q. Eb5:8~
+m8  s1v1: Eb5:w
+m9  s1v1: Eb5:q. Db5:8 C5:8 Bb4:q Ab4:8~
+m10  s1v1: Ab4:h. Gb4:q
+m11  s1v1: Gb4:q F4:8 Bb4:q F4:8 Ab4:q~
+m12  s1v1: Ab4:w
+m13  s1v1: Ab4:q G4:8 Bb4:8~ Bb4:h
+m14  s1v1: Ab4:q G4:8 Bb4:8~ Bb4:q. Ab4:8
+m15  s1v1: G4:w~
+m16  s1v1: G4:h. G4:q
+m17  s1v1: G5:q. F5:8 Eb5:8 D5:q C5:8~
+m18  s1v1: C5:h r:8 Bb4:q Ab4:8~
+m19  s1v1: Ab4:h r:8 G5:q F5:8~
+m20  s1v1: F5:w
+m21  s1v1: F5:q. Eb5:8 D5:8 C5:q Bb4:8~
+m22  s1v1: Bb4:h r:8 Ab4:q G4:8~
+m23  s1v1: G4:h r:8 F5:q Eb5:8~
+m24  s1v1: Eb5:w
+m25  s1v1: Eb5:q. Db5:8 C5:8 Bb4:q Ab4:8~
+m26  s1v1: Ab4:h r:8 Gb4:q Gb4:8~
+m27  s1v1: Gb4:q. F4:8 Bb4:q. Ab4:8
+m28  s1v1: Ab4:w
+m29  s1v1: F4:q+Ab4 Eb4:8+G4 F4:8~+Bb4 F4:q.+Bb4 F4:8+Ab4
+m30  s1v1: F4:q+Ab4 F4:8+G4 F4:8~+Bb4 F4:q.+Bb4 Eb4:8+Ab4
+m31  s1v1: D4:w~+G4
+m32  s1v1: D4:w+G4

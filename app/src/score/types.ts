@@ -33,7 +33,8 @@ export interface ScoreNote {
   /**
    * Which hand plays it. Normally staff 1 → R, staff 2 → L, but a cross-staff
    * note (the left hand reaching up onto the treble staff) keeps the hand of
-   * its voice, which is what the learner's fingers actually do.
+   * its voice, which is what the learner's fingers actually do. A verified hand fact for the passage
+   * (HD2) and a one-staff score's declared hand (HD1) override that reading.
    */
   hand: 'R' | 'L';
   voice: number;
@@ -58,7 +59,11 @@ export interface ScoreNote {
   fingering?: number;
   /** Grace notes are excluded from matching by default (docs/05 §1.3). */
   graceNote?: boolean;
-  /** True when the printed staff is not this voice's home staff. */
+  /**
+   * True when the note is printed on one staff and played by the other staff's hand: by a verified hand
+   * fact for its passage where one applies (HD2), otherwise when its printed staff is not its voice's
+   * whole-piece home staff (the compatibility reading).
+   */
   crossStaff?: boolean;
   /** Number of notes in the merged tie chain (1 = untied). */
   tieLength?: number;
@@ -184,6 +189,22 @@ export interface ScoreModelData {
   pickup?: boolean;
   keySig?: string;
   handsPresent: { R: boolean; L: boolean };
+  /**
+   * The hand the caller declared for the score and what the extractor did with it (HD1), absent where
+   * none was declared. `applied`: a one-staff score declared one hand, every note that hand's;
+   * `not-one-staff`: the score has more than one staff, so its notes keep their voice-home-staff hands
+   * and the declaration changed nothing; `mismatch`: one staff declared `both`, which the score cannot
+   * be — its notes keep the reading by staff number, never a second hand, and this says so.
+   */
+  handDeclaration?: HandDeclaration;
+}
+
+/** A declared hand: a catalogue row's `hands`, where it is authoritative (`curriculum/declaredHand.ts`). */
+export type DeclaredHand = 'left' | 'right' | 'both';
+
+export interface HandDeclaration {
+  declared: DeclaredHand;
+  outcome: 'applied' | 'not-one-staff' | 'mismatch';
 }
 
 export interface ScoreModel extends ScoreModelData {
@@ -278,7 +299,7 @@ export function withBeatToMs(data: ScoreModelData): ScoreModel {
 
 /** Strips the method back off, for serialising or comparing against a golden. */
 export function toScoreModelData(model: ScoreModel): ScoreModelData {
-  const { id, title, steps, tempoMap, timeSigMap, measureCount, sourceMeasureCount, keySig, handsPresent } =
+  const { id, title, steps, tempoMap, timeSigMap, measureCount, sourceMeasureCount, keySig, handsPresent, handDeclaration } =
     model;
   return {
     id,
@@ -290,6 +311,7 @@ export function toScoreModelData(model: ScoreModel): ScoreModelData {
     sourceMeasureCount,
     ...(keySig === undefined ? {} : { keySig }),
     handsPresent,
+    ...(handDeclaration === undefined ? {} : { handDeclaration }),
   };
 }
 

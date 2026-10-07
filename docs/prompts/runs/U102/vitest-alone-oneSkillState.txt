@@ -1,0 +1,11 @@
+$ (cd app) npx vitest run tests/unit/oneSkillState.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a46fbdac26027e48f/app
+
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  23:16:59
+   Duration  1.51s (transform 57%, tests 29%, import 14%)
+
+exit=0

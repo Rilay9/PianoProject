@@ -1,0 +1,150 @@
+CID QmTmhiFsKppNMNycpcjsq2dzzDRMMFGME4zjky17GLerzb
+title: Take me home country roads - John Denver | song_name: Take Me Home Country Roads | subtitle: 
+composer: John Denver | artist: John Denver | xml creators: ['composer: John Denver']
+licence: cc-zero | csv rating 0.0 (0) views 153
+shape: MULTI_PIANO_PART | parts: ["P1:'':staves=1:prog=0:piano=True", "P2:'':staves=1:prog=0:piano=True", "P3:'':staves=1:prog=0:piano=True"]
+instrument names: ['', '', '']
+staff count: 3 (max per part 1) | metres: ['4/4']
+bars (longest part): 61 | chord symbols: 0
+tempo marks: ['160'] | tempo words: none
+key signatures: ['fifths=1 major']
+rehearsal labels: none
+text directions (first 25): ['To Coda']
+first chord symbols: none
+
+##### === part P1 '' measures=61 ===  (61 measure lines)
+section/texture boundaries used: 16 (texture change (rhythm signature)), 27 (texture change (rhythm signature)), 37 (texture change (rhythm signature)), 45 (texture change (rhythm signature))
+--- opening 16 bars: lines 1-16 of 61 ---
+m1 [key fifths=1 major; time 4/4; clef=G2; tempo=160]  s1v1: D5:q D5:q
+m2 [repeat-forward]  s1v1: E5:q. D5:8~ D5:h
+m3  s1v1: r:h E5:q D5:8 E5:8~
+m4  s1v1: E5:8 G5:q.~ G5:h
+m5  s1v1: r:h A5:8 A5:q.
+m6  s1v1: B5:q. A5:8~ A5:h
+m7  s1v1: E5:q E5:q E5:q D5:q
+m8  s1v1: E5:8 G5:q G5:8~ G5:h~
+m9  s1v1: G5:w
+m10  s1v1: r:h D5:q D5:q
+m11  s1v1: E5:q. D5:8~ D5:h
+m12  s1v1: E5:q G5:q G5:q B5:q
+m13  s1v1: B5:w
+m14  s1v1: A5:q A5:q A5:q A5:q
+m15  s1v1: B5:q. A5:8~ A5:h
+m16  s1v1: E5:q G5:q G5:q A5:8 G5:8~
+--- around line 16: texture change (rhythm signature): lines 14-21 of 61 ---
+m14  s1v1: A5:q A5:q A5:q A5:q
+m15  s1v1: B5:q. A5:8~ A5:h
+m16  s1v1: E5:q G5:q G5:q A5:8 G5:8~
+m17  s1v1: G5:h
+m18  s1v1: G5:q A5:q
+m19  s1v1: B5:w~
+m20  s1v1: B5:h B5:8 A5:8 G5:q
+m21  s1v1: A5:w~
+--- around line 27: texture change (rhythm signature): lines 25-32 of 61 ---
+m25  s1v1: E6:w~
+m26  s1v1: E6:h E6:q E6:q
+m27  s1v1: D6:q B5:h.~
+m28  s1v1: B5:h B5:8 A5:8 G5:q
+m29  s1v1: A5:q B5:h.~
+m30  s1v1: B5:h B5:8 A5:8 G5:q
+m31  s1v1: G5:w~
+m32 ["To Coda"]  s1v1: G5:h G5:q A5:q
+--- around line 37: texture change (rhythm signature): lines 35-42 of 61 ---
+m35 [ending1-start; repeat-backward; ending1-stop]  s1v1: r:h D5:q D5:q
+m36 [ending2-start; ending2-discontinue]  s1v1: r:q G5:q G5:q G5:q
+m37  s1v1: F#5:h G5:q A5:q
+m38  s1v1: B5:q B5:q B5:q B5:q
+m39  s1v1: B5:q A5:q G5:q. G5:8
+m40  s1v1: C6:q. C6:8 C6:q C6:q
+m41  s1v1: B5:q B5:q A5:q G5:q
+m42  s1v1: A5:h B5:q. B5:8
+--- around line 45: texture change (rhythm signature): lines 43-50 of 61 ---
+m43  s1v1: A5:h. A5:q
+m44  s1v1: B5:q B5:q B5:q B5:q
+m45  s1v1: A5:q A5:q A5:8 A5:q.
+m46  s1v1: G5:q G5:q G5:8 G5:q.
+m47  s1v1: G5:q. G5:8 G5:8 G5:q.
+m48  s1v1: A5:q B5:q A5:h~
+m49  s1v1: A5:h A5:q B5:q
+m50  s1v1: C6:w~
+--- last 8 bars: lines 54-61 of 61 ---
+m54  s1v1: A5:w~
+m55  s1v1: A5:h B5:8 A5:8 G5:q
+m56  s1v1: G5:w~
+m57  s1v1: G5:h B5:8 A5:8 G5:q
+m58  s1v1: A5:w~
+m59  s1v1: A5:h B5:8 A5:8 G5:q
+m60  s1v1: G5:w~
+m61  s1v1: G5:h~ G5:q[fermata] r:q
+
+##### === part P2 '' measures=61 ===  (61 measure lines)
+section/texture boundaries used: none detected (pattern persists by rhythm signature)
+--- opening 16 bars: lines 1-16 of 61 ---
+m1 [key fifths=1 major; time 4/4; clef=F4]  s1v1: r:h
+m2 [repeat-forward]  s1v1: r:q D3:8 G3:8+B3+D4 r:8 D3:8 G3:q+B3+D4
+m3  s1v1: r:q E3:8 G3:8+B3 r:8 E3:8 G3:q+B3
+m4  s1v1: r:q E3:8 G3:8+B3 r:8 E3:8 G3:q+B3
+m5  s1v1: r:q D3:8 F#3:8+A3+D4 r:8 D3:8 F#3:q+A3+D4
+m6  s1v1: r:q D3:8 F#3:8+A3+D4 r:8 D3:8 F#3:q+A3+D4
+m7  s1v1: r:q E3:8 G3:8+C4+E4 r:8 E3:8 G3:q+C4+E4
+m8  s1v1: r:q D3:8 G3:8+B3+D4 r:8 D3:8 G3:q+B3+D4
+m9  s1v1: r:q D3:8 G3:8+B3+D4 r:8 D3:8 G3:q+B3+D4
+m10  s1v1: r:q D3:8 G3:8+B3+D4 r:8 D3:8 G3:q+B3+D4
+m11  s1v1: r:q D3:8 G3:8+B3+D4 r:8 D3:8 G3:q+B3+D4
+m12  s1v1: r:q E3:8 G3:8+B3 r:8 E3:8 G3:q+B3
+m13  s1v1: r:q E3:8 G3:8+B3 r:8 E3:8 G3:q+B3
+m14  s1v1: r:q D3:8 F#3:8+A3+D4 r:8 D3:8 F#3:q+A3+D4
+m15  s1v1: r:q D3:8 F#3:8+A3+D4 r:8 D3:8 F#3:q+A3+D4
+m16  s1v1: r:q E3:8 G3:8+C4+E4 r:8 E3:8 G3:q+C4+E4
+--- middle sample: lines 30-35 of 61 ---
+m30  s1v1: r:q D3:8 F#3:8+A3+D4 r:8 D3:8 F#3:q+A3+D4
+m31  s1v1: r:q E3:8 G3:8+C4+E4 r:8 E3:8 G3:q+C4+E4
+m32  s1v1: r:q E3:8 G3:8+C4+E4 r:8 E3:8 G3:q+C4+E4
+m33  s1v1: r:q D3:8 G3:8+B3+D4 r:8 D3:8 G3:q+B3+D4
+m34  s1v1: r:q D3:8 G3:8+B3+D4 r:8 D3:8 G3:q+B3+D4
+m35 [ending1-start; repeat-backward; ending1-stop]  s1v1: r:q D3:8 G3:8+B3+D4 r:8 D3:8 G3:q+B3+D4
+--- last 8 bars: lines 54-61 of 61 ---
+m54  s1v1: r:q D3:8 F#3:8+A3+D4 r:8 D3:8 F#3:q+A3+D4
+m55  s1v1: r:q D3:8 F#3:8+A3+D4 r:8 D3:8 F#3:q+A3+D4
+m56  s1v1: r:q D3:8 G3:8+B3+D4 r:8 D3:8 G3:q+B3+D4
+m57  s1v1: r:q D3:8 G3:8+B3+D4 r:8 D3:8 G3:q+B3+D4
+m58  s1v1: r:q D3:8 F#3:8+A3+D4 r:8 D3:8 F#3:q+A3+D4
+m59  s1v1: r:q D3:8 F#3:8+A3+D4 r:8 D3:8 F#3:q+A3+D4
+m60  s1v1: r:q D3:q+G3+B3+D4 r:q D3:q+G3+B3+D4
+m61  s1v1: D3:h.[fermata]+G3+B3+D4 r:q
+
+##### === part P3 '' measures=61 ===  (61 measure lines)
+section/texture boundaries used: none detected (pattern persists by rhythm signature)
+--- opening 16 bars: lines 1-16 of 61 ---
+m1 [key fifths=1 major; time 4/4; clef=F4]  s1v1: r:h
+m2 [repeat-forward]  s1v1: G2:h D2:h
+m3  s1v1: E2:h B1:h
+m4  s1v1: E2:h B1:h
+m5  s1v1: D2:h A1:h
+m6  s1v1: D2:h A1:h
+m7  s1v1: C2:h G1:h
+m8  s1v1: G2:h D2:h
+m9  s1v1: G2:h D2:h
+m10  s1v1: G2:h D2:h
+m11  s1v1: G2:h D2:h
+m12  s1v1: E2:h B1:h
+m13  s1v1: E2:h B1:h
+m14  s1v1: D2:h A1:h
+m15  s1v1: D2:h A1:h
+m16  s1v1: C2:h G1:h
+--- middle sample: lines 30-35 of 61 ---
+m30  s1v1: D2:h A1:h
+m31  s1v1: C2:h G1:h
+m32  s1v1: C2:h G1:h
+m33  s1v1: G2:h D2:h
+m34  s1v1: G2:h D2:h
+m35 [ending1-start; repeat-backward; ending1-stop]  s1v1: G2:h D2:h
+--- last 8 bars: lines 54-61 of 61 ---
+m54  s1v1: D2:h A1:h
+m55  s1v1: D2:h A1:h
+m56  s1v1: G2:h D2:h
+m57  s1v1: G2:h D2:h
+m58  s1v1: D2:h A1:h
+m59  s1v1: D2:h A1:h
+m60  s1v1: G2:q. G2:q G2:8 D2:q
+m61  s1v1: G1:h.[fermata]+G2 r:q

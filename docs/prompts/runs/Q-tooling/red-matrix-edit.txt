@@ -1,0 +1,24 @@
+$ (cwd .) python -m unittest discover -s tools/content/tests -t tools/content -p test_matrix_edit.py -v
+tests.test_matrix_edit (unittest.loader._FailedTest.tests.test_matrix_edit) ... ERROR
+
+======================================================================
+ERROR: tests.test_matrix_edit (unittest.loader._FailedTest.tests.test_matrix_edit)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: tests.test_matrix_edit
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\unittest\loader.py", line 419, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\unittest\loader.py", line 362, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a1787d8a95fb5d777\tools\content\tests\test_matrix_edit.py", line 25, in <module>
+    import matrix_edit as me  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'matrix_edit'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+exit 1

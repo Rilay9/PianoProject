@@ -34,6 +34,19 @@ export interface BeatSchedulerOptions {
    * learner's first note (T8), and the accent must stay on the downbeat.
    */
   firstBeatInBar?: number;
+  /**
+   * Each bar's own beat count and beat length, for a run whose bars differ (the chord chart, MT1): asked for each
+   * bar from bar 1 as the bar before it ends, by the scheduler itself, so a stalled timer that drops a bar's last
+   * click cannot leave the next bar counted in the old metre (a listener-side `setBeatsPerBar` can; MT1's
+   * `chartMetre.test.ts`). The count-in is in bar 1's shape. Supersedes `beatsPerBar` where given.
+   */
+  barShape?: (bar: number) => BarShape;
+}
+
+/** One bar's count: its beats, and each beat's length as a multiple of `60 / bpm` (1 when omitted). */
+export interface BarShape {
+  beats: number;
+  beatScale?: number;
 }
 
 /**
@@ -58,10 +71,17 @@ export class BeatScheduler {
    */
   private barOriginIndex = 0;
   private barOriginBar: number;
+  /** `options.barShape`; `null` for the one fixed meter every other caller runs. */
+  private readonly barShape: ((bar: number) => BarShape) | null;
+  /** The current bar's beat length, as a multiple of `60 / bpm`: 1 unless `barShape` says otherwise. */
+  private beatScale = 1;
 
   constructor(options: BeatSchedulerOptions) {
     if (!(options.bpm > 0)) throw new RangeError(`bpm must be positive, got ${options.bpm}`);
-    this.beatsPerBar = Math.max(1, Math.trunc(options.beatsPerBar ?? 4));
+    this.barShape = options.barShape ?? null;
+    const opening = this.barShape ? shapeOf(this.barShape(1)) : null;
+    if (opening) this.beatScale = opening.beatScale;
+    this.beatsPerBar = opening ? opening.beats : Math.max(1, Math.trunc(options.beatsPerBar ?? 4));
     const countInBars = Math.max(0, Math.trunc(options.countInBars ?? 0));
     this.countInBeats = countInBars * this.beatsPerBar;
     this.barOriginBar = 1 - countInBars;
@@ -138,9 +158,18 @@ export class BeatScheduler {
     const horizon = currentTimeSec + lookaheadSec;
     const beats: MetronomeBeat[] = [];
     while (this.nextTimeSec < horizon && beats.length < MAX_BEATS_PER_PULL) {
-      beats.push(this.describe(this.nextIndex, this.nextTimeSec));
+      const beat = this.describe(this.nextIndex, this.nextTimeSec);
+      beats.push(beat);
       this.nextIndex += 1;
-      this.nextTimeSec += this.secondsPerBeat;
+      this.nextTimeSec += this.beatScale === 1 ? this.secondsPerBeat : this.secondsPerBeat * this.beatScale;
+      // A bar of its own shape ends here: the next bar starts at the next beat, in its own count.
+      if (this.barShape && beat.beatInBar === this.beatsPerBar && beat.bar + 1 >= 1) {
+        const next = shapeOf(this.barShape(beat.bar + 1));
+        this.barOriginBar = beat.bar + 1;
+        this.barOriginIndex = this.nextIndex;
+        this.beatsPerBar = next.beats;
+        this.beatScale = next.beatScale;
+      }
     }
     return beats;
   }
@@ -160,4 +189,10 @@ export class BeatScheduler {
       isAccent: beatInBar === 1,
     };
   }
+}
+
+/** A bar shape made whole: at least one beat, a positive beat length. */
+function shapeOf(shape: BarShape): { beats: number; beatScale: number } {
+  const scale = shape.beatScale ?? 1;
+  return { beats: Math.max(1, Math.trunc(shape.beats)), beatScale: scale > 0 ? scale : 1 };
 }

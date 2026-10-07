@@ -27,8 +27,8 @@ never miss.** There is no shortcut and nobody has ever found one.
   syncopation. It is marked *Very slow march time*, it has the fewest leaps of
   anything on this rung, and it is the piece to start with if Maple Leaf is
   still too much.
-- ***Bethena*** is a concert waltz in 3/4 with five strains, each in a different
-  key. The syncopation is gentler; the reading is harder.
+- ***Bethena*** is a concert waltz in 3/4 with six sections in four keys, G
+  coming back between B flat, F and D. The syncopation is gentler; the reading is harder.
 - ***Heliotrope Bouquet***, written with Louis Chauvin, is a "slow drag" — the
   tempo marking is the point, and it prints more accidentals to the bar than
   anything else on this rung.
@@ -36,8 +36,8 @@ never miss.** There is no shortcut and nobody has ever found one.
 **The secondary rag.** *Elite Syncopations* has passages where the right hand
 groups its sixteenths in threes against a two-beat bar — three, three, two,
 starting again at each bar line. Count it out once on paper, then stop counting
-and learn it as a shape. It is the single most characteristic ragtime
-device and it is what makes the style sound like it is falling forwards.
+and learn it as a shape. It is one of the most characteristic ragtime
+devices, and it is what makes the style sound like it is falling forwards.
 
 **Two editions of Maple Leaf.** Besides the one on this rung, the library
 has the scholarly Humdrum edition. They differ in
@@ -45,7 +45,7 @@ small ways — beaming, a few accidentals, some dynamics. When they disagree, th
 guess about what Joplin wrote.
 
 **What to play.** Six options. Beyond the five above there is *Sugar Cane*, a
-rag in the Maple Leaf mould at a gentler pace. *Original Rags*, *Fig Leaf*,
+rag in the Maple Leaf mould. *Original Rags*, *Fig Leaf*,
 *Paragon*, *Antoinette*, *Pleasant Moments* and the rest of the middle rags
 are under Ragtime in the Library.
 

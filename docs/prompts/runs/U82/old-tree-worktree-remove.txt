@@ -1,0 +1,2 @@
+﻿git worktree remove --force build/u82-old   # after its node_modules junction was removed as a link (cmd /c rmdir, no /s), so nothing behind it was touched; git worktree list names no u82-old afterwards; the main checkout's node_modules checked present
+exit=0

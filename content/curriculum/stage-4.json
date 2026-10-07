@@ -126,7 +126,7 @@
               ],
               "songOptions": [
                 "song.folk.bella-ciao",
-                "song.classical.beethoven-fur-elise.beginner",
+                "song.classical.beethoven-fur-elise.easy",
                 "song.folk.twinkle.f"
               ],
               "mastery": {
@@ -212,7 +212,7 @@
                 "exercise.arpeggio.e-minor.2oct.left"
               ],
               "songOptions": [
-                "song.classical.pachelbel-canon-d.easy",
+                "song.classical.schumann-melody-op-68-no-1.pdmx",
                 "song.folk.greensleeves",
                 "song.folk.greensleeves.chords"
               ],
@@ -290,7 +290,8 @@
               "concepts": [
                 "hanon",
                 "evenness",
-                "transposition"
+                "transposition",
+                "sixteenth-notes"
               ],
               "textFile": "lessons/4.4.md",
               "exerciseOptions": [
@@ -586,9 +587,12 @@
                 {
                   "kind": "unjudged",
                   "rule": "two clean passes, then blind at >=0.9",
-                  "says": "From memory, starting anywhere, at half tempo, within a tenth of your sighted run.",
+                  "says": "From memory, starting anywhere, at half tempo: a blind run at least nine tenths of your sighted run.",
                   "why": "A run with the score hidden is not recorded as such, and the two runs are not compared."
                 }
+              ],
+              "prerequisites": [
+                "4.6"
               ],
               "estimatedDays": 21,
               "tools": [
@@ -1006,7 +1010,8 @@
                 "charleston",
                 "four-to-the-bar",
                 "chord-symbols",
-                "triads"
+                "triads",
+                "syncopation"
               ],
               "textFile": "lessons/jazz.4.md",
               "exerciseOptions": [
@@ -1260,7 +1265,7 @@
                 {
                   "kind": "unjudged",
                   "rule": "four-answers-recorded",
-                  "says": "Four answers recorded.",
+                  "says": "Four answers, recorded on your own phone or recorder.",
                   "why": "A recording of your own playing is not a run the app judges."
                 }
               ],
@@ -1620,6 +1625,82 @@
                   "melody with block chords under it",
                   "lead sheets with chord symbols only",
                   "organ scores with a separate pedal stave"
+                ],
+                "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
+              }
+            }
+          ]
+        },
+        {
+          "id": "latin.4.1",
+          "title": "Latin: the habanera bass, and the tresillo beside it",
+          "track": "latin",
+          "lessons": [
+            {
+              "id": "latin.4",
+              "title": "The habanera bass, and the tresillo beside it",
+              "concepts": [
+                "habanera",
+                "tresillo"
+              ],
+              "textFile": "lessons/latin.4.md",
+              "exerciseOptions": [
+                "exercise.bass-cell.tresillo.c",
+                "exercise.bass-cell.habanera.c",
+                "exercise.bass-cell.habanera.f",
+                "exercise.bass-cell.habanera.g",
+                "exercise.tresillo.c",
+                "exercise.tresillo.f",
+                "exercise.tresillo.g"
+              ],
+              "songOptions": [
+                "excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh",
+                "song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx",
+                "song.folk.por-una-cabeza-carlos-gardel.pdmx",
+                "song.jazz.the-crave"
+              ],
+              "mastery": {
+                "minAccuracy": 0.9,
+                "minTempoPct": 0.8
+              },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "items": [
+                    "exercise.bass-cell.tresillo.c"
+                  ],
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "items": [
+                    "excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh"
+                  ],
+                  "count": 1
+                }
+              ],
+              "prerequisites": [
+                "4.4",
+                "latin.3"
+              ],
+              "estimatedDays": 14,
+              "levelBand": [
+                2.67,
+                7.46
+              ],
+              "finder": {
+                "skill": "telling the habanera bass from the tresillo, and playing the habanera in the left hand",
+                "levelWords": "intermediate, habanera, tango, latin rhythm, left-hand pattern, 2/4",
+                "constraints": [
+                  "a left hand repeating the habanera figure",
+                  "the bass written out on its own staff",
+                  "Spanish, Cuban or Argentine music"
+                ],
+                "avoid": [
+                  "lead sheets that leave the left hand to you",
+                  "even eighths where the habanera is only implied"
                 ],
                 "formats": "MusicXML or .mxl please; PDF is readable but cannot be followed."
               }

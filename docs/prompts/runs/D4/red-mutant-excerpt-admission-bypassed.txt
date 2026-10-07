@@ -1,0 +1,661 @@
+mutant excerpt-admission-bypassed: src/curriculum/session.ts
+--- old
+      if (!usable(ctx, item, 'any')) continue;
+      const declared = item.role === 'transfer' && item.provenance?.transferOf?.skill === skill.id && !isExcerpt(item);
+      const offerable = declared
+        ? eligible(gate(ctx, item, learner, { for: 'skill', skill: skill.id, activation }))
+        : isExcerpt(item) && placed.has(item.id) && demands.some((demand) => eligible(gate(ctx, item, learner, { for: 'demand', demand })));
+--- new
+      if (!(usable(ctx, item, 'any') || (isExcerpt(item) && !ctx.used.has(item.id)))) continue;
+      const declared = item.role === 'transfer' && item.provenance?.transferOf?.skill === skill.id && !isExcerpt(item);
+      const offerable = declared
+        ? eligible(gate(ctx, item, learner, { for: 'skill', skill: skill.id, activation }))
+        : isExcerpt(item) && placed.has(item.id) && demands.length > 0;
+
+$ npx vitest run tests/unit/transferOffer.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a64cf9b42ff36e1ca/app
+
+ ❯ tests/unit/transferOffer.test.ts (18 tests | 2 failed) 39ms
+   ❯ an excerpt: a current teaching-use yes on its cut, placed on a reached rung, and the gate (adversary 9) (5)
+     × the right measured opportunity and an approved boundary, teaching undecided: out 7ms
+     × approved and placed, with a demand the learner has not met: the gate refuses it 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/transferOffer.test.ts > an excerpt: a current teaching-use yes on its cut, placed on a reached rung, and the gate (adversary 9) > the right measured opportunity and an approved boundary, teaching undecided: out
+AssertionError: expected [ { kind: 'new', minutes: 10, …(4) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "claim": {
++       "contact": {
++         "contact": "unmet",
++         "metById": false,
++       },
++       "kind": "transfer",
++       "relationship": {
++         "composition": {
++           "key": "work:anonymous notebook for anna magdalena bach|minuet in f major bwv anh 113",
++           "playedAs": [],
++         },
++         "differsOn": [
++           "family",
++           "source",
++           "key",
++           "hands",
++           "texture",
++           "rhythm",
++         ],
++         "measured": [
++           {
++             "candidate": "work:anonymous notebook for anna magdalena bach|minuet in f major bwv anh 113",
++             "differs": true,
++             "dimension": "family",
++             "shownOn": [
++               "sight-reading",
++               "sight-reading",
++             ],
++           },
++           {
++             "candidate": "notated",
++             "differs": true,
++             "dimension": "source",
++             "shownOn": [
++               "generated",
++               "generated",
++             ],
++           },
++           {
++             "candidate": "-1",
++             "differs": true,
++             "dimension": "key",
++             "shownOn": [
++               "0",
++               "0",
++             ],
++           },
++           {
++             "candidate": "both",
++             "differs": true,
++             "dimension": "hands",
++             "shownOn": [
++               "right",
++               "right",
++             ],
++           },
++           {
++             "candidate": "texture.hands-together",
++             "differs": true,
++             "dimension": "texture",
++             "shownOn": [
++               "none",
++               "none",
++             ],
++           },
++           {
++             "candidate": "rhythm.eighths, rhythm.shorter-than-quarter",
++             "differs": true,
++             "dimension": "rhythm",
++             "shownOn": [
++               "none",
++               "none",
++             ],
++           },
++         ],
++         "shownOn": [
++           {
++             "itemId": "drill.reading.sight-reading-2-right",
++             "material": {
++               "family": "sight-reading",
++               "kind": "generator",
++               "recipe": {
++                 "bars": 4,
++                 "eighths": true,
++                 "fifths": 0,
++                 "hands": "R",
++                 "level": 2,
++                 "skips": true,
++               },
++               "seed": 10,
++               "tempoBpm": 72,
++               "version": 2,
++             },
++           },
++           {
++             "itemId": "drill.reading.sight-reading-2-right",
++             "material": {
++               "family": "sight-reading",
++               "kind": "generator",
++               "recipe": {
++                 "bars": 4,
++                 "eighths": true,
++                 "fifths": 0,
++                 "hands": "R",
++                 "level": 2,
++                 "skips": true,
++               },
++               "seed": 11,
++               "tempoBpm": 72,
++               "version": 2,
++             },
++           },
++         ],
++         "skill": "interval-reading",
++       },
++       "skill": "interval-reading",
++     },
++     "item": {
++       "composer": "Anonymous (Notebook for Anna Magdalena Bach)",
++       "compositionStatus": "pd",
++       "concepts": [
++         "key-signature",
++         "key-signatures",
++       ],
++       "demands": [
++         "clef.bass",
++         "pitch.ledger",
++         "interval.step",
++         "interval.skip",
++         "interval.leap",
++         "rhythm.eighths",
++         "rhythm.shorter-than-quarter",
++         "key.signature",
++         "pitch.chromatic",
++         "range.beyond-position",
++         "texture.hands-together",
++       ],
++       "excerptOf": "song.classical.bach-menuet-bwv-anh-113.pdmx",
++       "file": "scores/excerpts/excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32.mxl",
++       "hands": "both",
++       "id": "excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32",
++       "keySig": "F major",
++       "level": 3.85,
++       "levelSource": "estimated",
++       "measurement": {
++         "bars": 8,
++         "definitions": 3,
++         "detectors": "afebe9f6aa27",
++         "established": [
++           "clef.bass",
++           "pitch.ledger",
++           "interval.step",
++           "interval.skip",
++           "interval.leap",
++           "rhythm.eighths",
++           "rhythm.shorter-than-quarter",
++           "key.signature",
++           "range.beyond-position",
++           "texture.hands-together",
++         ],
++         "located": {
++           "clef.bass": 16,
++           "interval.leap": 14,
++           "interval.skip": 10,
++           "interval.step": 33,
++           "key.signature": 8,
++           "pitch.chromatic": 2,
++           "pitch.ledger": 10,
++           "range.beyond-position": 6,
++           "rhythm.eighths": 42,
++           "rhythm.shorter-than-quarter": 42,
++           "texture.hands-together": 32,
++         },
++         "notes": 59,
++         "status": "measured",
++         "steps": 43,
++       },
++       "notation": {
++         "bars": 8,
++         "chordCount": 0,
++         "chords": [],
++         "finalBass": 5,
++         "keys": [
++           {
++             "fifths": -1,
++             "mode": null,
++           },
++         ],
++         "staves": 2,
++         "swungMark": false,
++         "times": [
++           "3/4",
++         ],
++       },
++       "provenance": {
++         "arrangement": "song.classical.bach-menuet-bwv-anh-113.pdmx",
++         "composition": "work:anonymous notebook for anna magdalena bach|minuet in f major bwv anh 113",
++         "converter": {
++           "name": "tools/content/excerpts.py",
++           "version": 1,
++         },
++         "edition": "pdmx:QmZzbCrrGH19zjfe766mDvw9C1cXYXSa5ApF7MRnRhpqjL",
++         "excerpt": {
++           "cutVersion": 1,
++           "event": "ex-4a4c15fa-bb27-4b0e-994f-230100e132cf",
++           "fromBar": 25,
++           "key": "cbe9f3d34ab5d1b6fa15987637868c2076fbf458c855169883fac29a7b194e2d",
++           "of": "song.classical.bach-menuet-bwv-anh-113.pdmx",
++           "parentEdition": "pdmx:QmZzbCrrGH19zjfe766mDvw9C1cXYXSa5ApF7MRnRhpqjL",
++           "parentSha256": "c64c189e8d78cfae168e6b978fbbbec28582229f6d13377aa540f09eb5c7c514",
++           "selection": "both",
++           "targets": [
++             "key.signature",
++           ],
++           "toBar": 32,
++         },
++         "facts": {
++           "arrangement": {
++             "kind": "inferred",
++             "via": "the parent's (song.classical.bach-menuet-bwv-anh-113.pdmx)",
++           },
++           "boundary": {
++             "kind": "authored",
++             "via": "the approved row in content/sources/excerpts.json (event ex-4a4c15fa-bb27-4b0e-994f-230100e132cf, by E1 builder (Entry 101))",
++           },
++           "composition": {
++             "kind": "inferred",
++             "via": "the parent's (song.classical.bach-menuet-bwv-anh-113.pdmx)",
++           },
++           "demands": {
++             "definitions": 3,
++             "detectors": "afebe9f6aa27",
++             "kind": "measured",
++             "on": "scores/excerpts/excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32.mxl",
++             "untrusted": [
++               "rhythm.eighths",
++               "rhythm.shorter-than-quarter",
++             ],
++             "untrustedWhy": "their difficulty depends on a tempo the converter supplied, not one the score states",
++             "via": "app/src/demands/detect.ts",
++           },
++           "hands": {
++             "kind": "authored",
++             "via": "the approved selection (content/sources/excerpts.json)",
++           },
++           "key": {
++             "kind": "measured",
++             "via": "the cut's signature, carried in from the parent at the cut",
++           },
++           "level": {
++             "kind": "inferred",
++             "via": "the difficulty model on the cut (tools/content/difficulty.py), never the parent's",
++           },
++           "tempo": {
++             "kind": "inferred",
++             "via": "the parent's: convert.py's default (the upload has no tempo of its own)",
++           },
++         },
++         "identity": {
++           "kind": "file",
++           "sha256": "854cba4a21e2b37d8850d4ea28b574cc165c70879a915eda069b725fd9aa344e",
++         },
++         "review": {
++           "score": null,
++           "teaching": null,
++         },
++         "source": "excerpt",
++       },
++       "source": {
++         "checksum": "c64c189e8d78cfae168e6b978fbbbec28582229f6d13377aa540f09eb5c7c514",
++         "editionNotes": "Quarried from PDMX and normalised by tools/content/convert.py. Composition status: pd — Menuet BWV Anh.113",
++         "fetchedAt": null,
++         "license": "cc-zero",
++         "name": "PDMX (MuseScore upload, uploader's public-domain claim)",
++         "pd_region": "worldwide",
++         "url": "https://musescore.com/score/5915848",
++       },
++       "tags": [
++         "tempo-defaulted",
++       ],
++       "tempoBpm": 96,
++       "timeSig": "3/4",
++       "title": "Minuet in F major, BWV Anh. 113, bars 25–32",
++       "tracks": [
++         "classical",
++       ],
++       "type": "excerpt",
++     },
++     "kind": "new",
++     "lessonId": "A",
++     "minutes": 10,
++     "reason": "Reading by interval: something new, for a skill you have shown — it should feel different",
++   },
++ ]
+
+ ❯ tests/unit/transferOffer.test.ts:291:116
+    289|     expect(CUT.measurement?.status === 'measured' ? CUT.measurement.es…
+    290|     expect(withBit(null).provenance?.review.teaching).toBeNull();
+    291|     expect(offers(card({ rows: READER, curriculum: placed, vocabulary:…
+       |                                                                                                                    ^
+    292|   });
+    293|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/transferOffer.test.ts > an excerpt: a current teaching-use yes on its cut, placed on a reached rung, and the gate (adversary 9) > approved and placed, with a demand the learner has not met: the gate refuses it
+AssertionError: expected [ { kind: 'new', minutes: 10, …(4) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "claim": {
++       "contact": {
++         "contact": "unmet",
++         "metById": false,
++       },
++       "kind": "transfer",
++       "relationship": {
++         "composition": {
++           "key": "work:anonymous notebook for anna magdalena bach|minuet in f major bwv anh 113",
++           "playedAs": [],
++         },
++         "differsOn": [
++           "family",
++           "source",
++           "key",
++           "hands",
++           "texture",
++           "rhythm",
++         ],
++         "measured": [
++           {
++             "candidate": "work:anonymous notebook for anna magdalena bach|minuet in f major bwv anh 113",
++             "differs": true,
++             "dimension": "family",
++             "shownOn": [
++               "sight-reading",
++               "sight-reading",
++             ],
++           },
++           {
++             "candidate": "notated",
++             "differs": true,
++             "dimension": "source",
++             "shownOn": [
++               "generated",
++               "generated",
++             ],
++           },
++           {
++             "candidate": "-1",
++             "differs": true,
++             "dimension": "key",
++             "shownOn": [
++               "0",
++               "0",
++             ],
++           },
++           {
++             "candidate": "both",
++             "differs": true,
++             "dimension": "hands",
++             "shownOn": [
++               "right",
++               "right",
++             ],
++           },
++           {
++             "candidate": "texture.hands-together",
++             "differs": true,
++             "dimension": "texture",
++             "shownOn": [
++               "none",
++               "none",
++             ],
++           },
++           {
++             "candidate": "rhythm.eighths, rhythm.shorter-than-quarter",
++             "differs": true,
++             "dimension": "rhythm",
++             "shownOn": [
++               "none",
++               "none",
++             ],
++           },
++         ],
++         "shownOn": [
++           {
++             "itemId": "drill.reading.sight-reading-2-right",
++             "material": {
++               "family": "sight-reading",
++               "kind": "generator",
++               "recipe": {
++                 "bars": 4,
++                 "eighths": true,
++                 "fifths": 0,
++                 "hands": "R",
++                 "level": 2,
++                 "skips": true,
++               },
++               "seed": 10,
++               "tempoBpm": 72,
++               "version": 2,
++             },
++           },
++           {
++             "itemId": "drill.reading.sight-reading-2-right",
++             "material": {
++               "family": "sight-reading",
++               "kind": "generator",
++               "recipe": {
++                 "bars": 4,
++                 "eighths": true,
++                 "fifths": 0,
++                 "hands": "R",
++                 "level": 2,
++                 "skips": true,
++               },
++               "seed": 11,
++               "tempoBpm": 72,
++               "version": 2,
++             },
++           },
++         ],
++         "skill": "interval-reading",
++       },
++       "skill": "interval-reading",
++     },
++     "item": {
++       "composer": "Anonymous (Notebook for Anna Magdalena Bach)",
++       "compositionStatus": "pd",
++       "concepts": [
++         "key-signature",
++         "key-signatures",
++       ],
++       "demands": [
++         "clef.bass",
++         "pitch.ledger",
++         "interval.step",
++         "interval.skip",
++         "interval.leap",
++         "rhythm.eighths",
++         "rhythm.shorter-than-quarter",
++         "key.signature",
++         "pitch.chromatic",
++         "range.beyond-position",
++         "texture.hands-together",
++       ],
++       "excerptOf": "song.classical.bach-menuet-bwv-anh-113.pdmx",
++       "file": "scores/excerpts/excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32.mxl",
++       "hands": "both",
++       "id": "excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32",
++       "keySig": "F major",
++       "level": 3.85,
++       "levelSource": "estimated",
++       "measurement": {
++         "bars": 8,
++         "definitions": 3,
++         "detectors": "afebe9f6aa27",
++         "established": [
++           "clef.bass",
++           "pitch.ledger",
++           "interval.step",
++           "interval.skip",
++           "interval.leap",
++           "rhythm.eighths",
++           "rhythm.shorter-than-quarter",
++           "key.signature",
++           "range.beyond-position",
++           "texture.hands-together",
++         ],
++         "located": {
++           "clef.bass": 16,
++           "interval.leap": 14,
++           "interval.skip": 10,
++           "interval.step": 33,
++           "key.signature": 8,
++           "pitch.chromatic": 2,
++           "pitch.ledger": 10,
++           "range.beyond-position": 6,
++           "rhythm.eighths": 42,
++           "rhythm.shorter-than-quarter": 42,
++           "texture.hands-together": 32,
++         },
++         "notes": 59,
++         "status": "measured",
++         "steps": 43,
++       },
++       "notation": {
++         "bars": 8,
++         "chordCount": 0,
++         "chords": [],
++         "finalBass": 5,
++         "keys": [
++           {
++             "fifths": -1,
++             "mode": null,
++           },
++         ],
++         "staves": 2,
++         "swungMark": false,
++         "times": [
++           "3/4",
++         ],
++       },
++       "provenance": {
++         "arrangement": "song.classical.bach-menuet-bwv-anh-113.pdmx",
++         "composition": "work:anonymous notebook for anna magdalena bach|minuet in f major bwv anh 113",
++         "converter": {
++           "name": "tools/content/excerpts.py",
++           "version": 1,
++         },
++         "edition": "pdmx:QmZzbCrrGH19zjfe766mDvw9C1cXYXSa5ApF7MRnRhpqjL",
++         "excerpt": {
++           "cutVersion": 1,
++           "event": "ex-4a4c15fa-bb27-4b0e-994f-230100e132cf",
++           "fromBar": 25,
++           "key": "cbe9f3d34ab5d1b6fa15987637868c2076fbf458c855169883fac29a7b194e2d",
++           "of": "song.classical.bach-menuet-bwv-anh-113.pdmx",
++           "parentEdition": "pdmx:QmZzbCrrGH19zjfe766mDvw9C1cXYXSa5ApF7MRnRhpqjL",
++           "parentSha256": "c64c189e8d78cfae168e6b978fbbbec28582229f6d13377aa540f09eb5c7c514",
++           "selection": "both",
++           "targets": [
++             "key.signature",
++           ],
++           "toBar": 32,
++         },
++         "facts": {
++           "arrangement": {
++             "kind": "inferred",
++             "via": "the parent's (song.classical.bach-menuet-bwv-anh-113.pdmx)",
++           },
++           "boundary": {
++             "kind": "authored",
++             "via": "the approved row in content/sources/excerpts.json (event ex-4a4c15fa-bb27-4b0e-994f-230100e132cf, by E1 builder (Entry 101))",
++           },
++           "composition": {
++             "kind": "inferred",
++             "via": "the parent's (song.classical.bach-menuet-bwv-anh-113.pdmx)",
++           },
++           "demands": {
++             "definitions": 3,
++             "detectors": "afebe9f6aa27",
++             "kind": "measured",
++             "on": "scores/excerpts/excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32.mxl",
++             "untrusted": [
++               "rhythm.eighths",
++               "rhythm.shorter-than-quarter",
++             ],
++             "untrustedWhy": "their difficulty depends on a tempo the converter supplied, not one the score states",
++             "via": "app/src/demands/detect.ts",
++           },
++           "hands": {
++             "kind": "authored",
++             "via": "the approved selection (content/sources/excerpts.json)",
++           },
++           "key": {
++             "kind": "measured",
++             "via": "the cut's signature, carried in from the parent at the cut",
++           },
++           "level": {
++             "kind": "inferred",
++             "via": "the difficulty model on the cut (tools/content/difficulty.py), never the parent's",
++           },
++           "tempo": {
++             "kind": "inferred",
++             "via": "the parent's: convert.py's default (the upload has no tempo of its own)",
++           },
++         },
++         "identity": {
++           "kind": "file",
++           "sha256": "854cba4a21e2b37d8850d4ea28b574cc165c70879a915eda069b725fd9aa344e",
++         },
++         "review": {
++           "score": null,
++           "teaching": true,
++         },
++         "source": "excerpt",
++       },
++       "source": {
++         "checksum": "c64c189e8d78cfae168e6b978fbbbec28582229f6d13377aa540f09eb5c7c514",
++         "editionNotes": "Quarried from PDMX and normalised by tools/content/convert.py. Composition status: pd — Menuet BWV Anh.113",
++         "fetchedAt": null,
++         "license": "cc-zero",
++         "name": "PDMX (MuseScore upload, uploader's public-domain claim)",
++         "pd_region": "worldwide",
++         "url": "https://musescore.com/score/5915848",
++       },
++       "tags": [
++         "tempo-defaulted",
++       ],
++       "tempoBpm": 96,
++       "timeSig": "3/4",
++       "title": "Minuet in F major, BWV Anh. 113, bars 25–32",
++       "tracks": [
++         "classical",
++       ],
++       "type": "excerpt",
++     },
++     "kind": "new",
++     "lessonId": "A",
++     "minutes": 10,
++     "reason": "Reading by interval: something new, for a skill you have shown — it should feel different",
++   },
++ ]
+
+ ❯ tests/unit/transferOffer.test.ts:305:134
+    303|
+    304|   it('approved and placed, with a demand the learner has not met: the …
+    305|     expect(offers(card({ rows: READER, curriculum: placed, vocabulary:…
+       |                                                                                                                                      ^
+    306|   });
+    307|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 16 passed (18)
+   Start at  22:25:38
+   Duration  627ms (transform 66%, import 26%, tests 8%, worker 1%)
+
+
+exit 1

@@ -1,0 +1,41 @@
+﻿node.exe : [WebServer] (node:71996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:71108) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 23 tests using 1 worker
+
+(node:69924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\finder.spec.ts:27:3 › the finder on a rung › says what the rung needs and hands over a search and a prompt (1.1s)
+  ok  2 tests\e2e\finder.spec.ts:59:3 › the finder on a rung › marks an example as already bundled or as still missing (764ms)
+  ok  3 tests\e2e\finder.spec.ts:67:3 › the finder on a rung › copies the prompt to the clipboard (796ms)
+  ok  4 tests\e2e\finder.spec.ts:80:3 › the finder on a concept › is reachable from the Skills screen, under a readable name (684ms)
+  ok  5 tests\e2e\finder.spec.ts:116:3 › two taps from a share to a rung › the assign sheet opens by itself with the rung already chosen (944ms)
+  ok  6 tests\e2e\finder.spec.ts:131:3 › two taps from a share to a rung › Save is the second and last action, and the piece lands on the rung (1.4s)
+  ok  7 tests\e2e\finder.spec.ts:144:3 › two taps from a share to a rung › the needs line counts the piece he just added (C3) (2.0s)
+  ok  8 tests\e2e\finder.spec.ts:161:3 › two taps from a share to a rung › the rung survives a reload, because it is stored and not just routed (1.4s)
+  ok  9 tests\e2e\finder.spec.ts:168:3 › two taps from a share to a rung › an import with no rung still works and belongs to none (1.9s)
+  ok 10 tests\e2e\finder.spec.ts:188:3 › two taps from a share to a rung › "Import for this rung" on the lesson page opens the picker on that rung (1.0s)
+  ok 11 tests\e2e\library.spec.ts:36:3 › Library › lists the bundled catalog and filters it (768ms)
+  ok 12 tests\e2e\library.spec.ts:53:3 › Library › imports an .mxl, opens it on the Score screen, and keeps it across a reload (2.1s)
+  ok 13 tests\e2e\library.spec.ts:76:3 › Library › imports plain MusicXML too, and takes its title from the file (1.1s)
+  ok 14 tests\e2e\library.spec.ts:82:3 › Library › a PDF is marked "pages, not notes" and opens in the viewer, not the Score screen (934ms)
+  ok 15 tests\e2e\library.spec.ts:96:3 › Library › a file it cannot read fails with one sentence, not a stack trace (772ms)
+  ok 16 tests\e2e\library.spec.ts:112:3 › Library › a broken MIDI file is told apart from a file that is not MIDI at all (804ms)
+  ok 17 tests\e2e\library.spec.ts:138:3 › Library › an imported score can be renamed and deleted (1.5s)
+  ok 18 tests\e2e\library.spec.ts:157:3 › Library › "Only mine" shows just the imports (1.0s)
+  ok 19 tests\e2e\library.spec.ts:173:3 › Library obeys 04 §0 › the list starts inside the first screenful (R1) (716ms)
+  ok 20 tests\e2e\library.spec.ts:191:3 › Library obeys 04 §0 › a filter set behind the closed row is named in the count (R1) (871ms)
+  ok 21 tests\e2e\library.spec.ts:206:3 › Library obeys 04 §0 › Import, Shelf and Score folder sit above the list, not below it (R3) (782ms)
+  ok 22 tests\e2e\library.spec.ts:228:3 › Library obeys 04 §0 › the item sheet fits its last value on the screen (775ms)
+  ok 23 tests\e2e\library.spec.ts:243:3 › the letter rail in Library › waits for the title sort, then moves the window to the letter (1.4s)
+
+  23 passed (28.7s)
+exit 0

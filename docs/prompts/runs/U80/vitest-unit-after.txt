@@ -1,0 +1,11 @@
+(in app) npx vitest run tests/unit/scoreSidePanelDecision.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  04:11:32
+   Duration  4.05s (tests 60%, transform 19%, environment 17%, import 4%)
+
+exit=0

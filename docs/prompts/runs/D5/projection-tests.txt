@@ -1,0 +1,8 @@
+test_review_record.py (whole, with D5's two classes) and test_musical_evaluator.py (the file D5 touched at a constant), on the final build
+
+
+error lines (first 220 characters, counted):
+
+Ran 42 tests
+OK
+exit 0

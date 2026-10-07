@@ -1,0 +1,48 @@
+{
+  "viewport": {
+    "width": 342,
+    "height": 740
+  },
+  "condition": "text-115",
+  "sentence": "Sound did not start — tap Slower again",
+  "headBefore": 0,
+  "stageBefore": {
+    "top": 0,
+    "height": 740
+  },
+  "running": "false",
+  "text": "Sound did not start — tap Slower again",
+  "classes": "score-waiting help-strip__now",
+  "marked": [
+    "summary-slower"
+  ],
+  "fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+  "rootFontSize": "18.4px",
+  "whiteSpace": "nowrap",
+  "overflow": "hidden",
+  "textOverflow": "ellipsis",
+  "clientWidth": 280,
+  "scrollWidth": 281,
+  "cut": true,
+  "textInside": false,
+  "lineBox": {
+    "top": 71.640625,
+    "bottom": 91.96875,
+    "height": 20.328125,
+    "left": 11.03125,
+    "right": 290.96875
+  },
+  "textRuns": 2,
+  "headHeight": 97.484375,
+  "stage": {
+    "top": 97.484375,
+    "height": 582.515625
+  },
+  "frontSvg": {
+    "top": 105.9158935546875,
+    "height": 102.353759765625,
+    "width": 420.8671875
+  },
+  "sheetTop": 286.453125,
+  "lineAboveSheet": true
+}

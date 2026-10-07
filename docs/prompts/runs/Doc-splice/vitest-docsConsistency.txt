@@ -1,0 +1,11 @@
+$ (cd app) npx vitest run tests/unit/docsConsistency.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  02:52:43
+   Duration  1.08s (transform 53%, tests 27%, import 16%, worker 3%)
+
+exit=0

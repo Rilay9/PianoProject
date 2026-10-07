@@ -25,3 +25,12 @@ If a sentence turns out to be a contested fact rather than voice once you are at
 ## Report
 
 Judgement first: three of the eleven as a learner now reads them, the ones whose advice was hardest to keep; then Done / Not done / Follow-ups / Questions / Files; the table; the red lines; exit codes; unverified beside what passes.
+
+**Delivered 2026-09-27**, Entry 88, in an isolated worktree: all eleven rows (twelve sentences) rewritten in the teacher layer with the advice kept; the brief's candidate for 3.4 ("the first piece here written for both hands at once") was false of the plan and was not used — the ranking is cut; twelve claims rows added; the four style pointers left as existence-only for G to judge.
+
+**Accepted by the reviewer 2026-09-27** (`responses/a94baee.md`): the style pointers for G; the T55 "every key" diagnosis superseded — the sentence is literally correct.
+
+## Record
+
+lane: F1 · closes: — · entry: 88 · role: history
+index: The eleven F0 deferrals classed "F's voice rewrite": absolutes, superlatives and fake precision removed, the advice kept; lesson text only | content | **done 2026-09-27**, Entry 88; **accepted by the reviewer** (responses/a94baee.md) |

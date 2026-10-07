@@ -94,6 +94,7 @@ vi.mock('../../src/score/WindowRenderer', async (importOriginal) => {
       setBarsPerWindow(): void {}
       setLoopRange(): void {}
       setRunning(): void {}
+      placeSlots(): void {}
       fitToStage(): void {}
       refit(): void {}
       dispose(): void {}
@@ -396,7 +397,61 @@ describe('the conditions it was played under', () => {
     expect(row.graceNotes).toBe(false);
     expect(row.input).toEqual({ source: 'keys', toleranceMs: 150, latencyMs: 0 });
     expect(row.range).toEqual({ fromMeasure: 0, toMeasure: 1 });
-    expect(row.definitions).toBe(1);
+    // 2 since CL11a (Entry 219; class: replace): the stamp names the accuracy definitions, and Keep tempo's now
+    // charges a wrong key. The literal is the point: a row says which rules judged it.
+    expect(row.definitions).toBe(2);
+  });
+});
+
+// Added (RG1; docs/review/responses/6e7475c1.md §5): the screen wrote `range` on every judged run
+// and nothing that told a loop over part of the item from the whole, so a named `runs` requirement
+// could not refuse a four-bar loop. The fact is derived where `judgedUnder` is read, from the
+// run's own prepared session, and stored as `wholeItem` (`coversWholeItem`, `wholeItemRun.test.ts`).
+describe('what the run covered (RG1)', () => {
+  /** A Wait run through the real engine over its loop or the whole, every step in it right; Stop ends a loop. */
+  function waitOver(model: ScoreModel, loop?: { fromStep: number; toStep: number }) {
+    const h = harness(model, { mode: 'wait', ...(loop ? { loop } : {}) });
+    h.engine.start();
+    const { steps, firstStep, lastStep } = h.engine.prepared;
+    for (let index = firstStep; index <= lastStep; index += 1) {
+      for (const midi of steps[index]?.expected ?? []) {
+        h.clock.advanceBy(400);
+        h.play(midi);
+        h.release(midi);
+      }
+    }
+    if (loop) h.engine.stop();
+    // The score the session hands the screen: the run's end, which for a loop is its last whole lap.
+    const ended = h.events.filter((event) => event.kind === 'finished' && !event.loop).at(-1);
+    if (ended?.kind !== 'finished') throw new Error('the run did not end');
+    return { score: ended.score, prepared: h.engine.prepared };
+  }
+
+  async function stored(loop?: { fromStep: number; toStep: number }): Promise<SessionRow> {
+    await open(`#/score/${SONG_ID}`);
+    const { score, prepared } = waitOver(TWO_BARS, loop);
+    // The session the screen reads at the run's end is the one that ran it.
+    (sessionRef.current as unknown as { prepared: unknown }).prepared = prepared;
+    finish(score);
+    return storedRow();
+  }
+
+  it('a whole run stores wholeItem: true beside its range', async () => {
+    const row = await stored();
+    expect(row.range).toEqual({ fromMeasure: 0, toMeasure: 1 });
+    expect(row.wholeItem).toBe(true);
+  });
+
+  it('a loop over one bar of two stores wholeItem: false, its range that bar', async () => {
+    const row = await stored({ fromStep: 4, toStep: 7 });
+    expect(row.range).toEqual({ fromMeasure: 1, toMeasure: 1 });
+    expect(row.wholeItem, 'a loop over bar 2 stored as the whole item').toBe(false);
+  });
+
+  it('a loop over every bar stores wholeItem: true', async () => {
+    const row = await stored({ fromStep: 0, toStep: 7 });
+    expect(row.range).toEqual({ fromMeasure: 0, toMeasure: 1 });
+    expect(row.wholeItem).toBe(true);
   });
 });
 
@@ -411,6 +466,8 @@ describe('what the learner had heard', () => {
     finish(tempoRun(TWO_BARS));
     const row = await storedRow();
     expect(row.unseen).toBe(false);
+    // G1a: the encounter relation beside sight-reading's condition, the same value today.
+    expect(row.firstContact).toBe(false);
     expect(row.demonstrated).toBe(false);
   });
 
@@ -422,6 +479,7 @@ describe('what the learner had heard', () => {
     finish(tempoRun(TWO_BARS));
     const row = await storedRow();
     expect(row.unseen).toBe(true);
+    expect(row.firstContact).toBe(true);
   });
 
   it('a demonstrated take stores demonstrated: true and no performance flag', async () => {
@@ -434,7 +492,12 @@ describe('what the learner had heard', () => {
     const row = await storedRow();
     expect(row.demonstrated).toBe(true);
     expect(row.performance).toBeUndefined();
-    // A piece is not a generated phrase: first sight is not a claim it makes.
-    expect(row.unseen).toBeUndefined();
+    // Revised (G1): first contact is written on every run since G1, a piece's
+    // included — an audit fact, never a gate on its pass. This take had the
+    // piece played to the learner inside it, so it was not a first contact.
+    // Revised (G1a): under its own name, `firstContact`; `unseen` is the
+    // generated phrase's field again, and a piece's run carries none.
+    expect(row.firstContact).toBe(false);
+    expect('unseen' in row, 'a piece’s run carries sight-reading’s field').toBe(false);
   });
 });

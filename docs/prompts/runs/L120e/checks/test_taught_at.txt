@@ -1,0 +1,7 @@
+﻿python -m unittest discover -s tools/content/tests -t tools/content -p test_taught_at.py
+..................................................
+----------------------------------------------------------------------
+Ran 50 tests in 0.282s
+
+OK
+exit=0

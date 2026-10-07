@@ -56,7 +56,7 @@ job during someone else's solo is to be quieter than you think necessary.
 
 **Tools for this rung.** The guitarist is not always in the room.
 *Accompaniment lab* opens *Blues — twelve bars* on *Bed only*: a bass line and
-a kick that do not stop, and no chords, because the chords are the thing you
+drums — kick, snare and hi-hat — that do not stop, and no chords, because the chords are the thing you
 came to play. It starts in C and the key is yours, so set it to E or to A. That is where to get the comping quiet enough and the
 gaps wide enough before there is somebody else to leave them for. Nothing on
 that screen is marked or kept.

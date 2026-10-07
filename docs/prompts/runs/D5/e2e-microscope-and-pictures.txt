@@ -1,0 +1,12 @@
+
+Running 6 tests using 1 worker
+
+  ok 1 .probe\d5-pictures.spec.ts:21:1 › the three lines at a study, a groove and a drill (time omitted)
+  ok 2 tests\e2e\microscope.spec.ts:115:3 › the microscope (D2) › opens a generated item by id: the notation settled, every fact under its hook, Hear it enabled (time omitted)
+  ok 3 tests\e2e\microscope.spec.ts:138:3 › the microscope (D2) › Hear it plays through the app’s piano: each hand alone its own pitches, both hands both (time omitted)
+  ok 4 tests\e2e\microscope.spec.ts:175:3 › the microscope (D2) › a decision is exported as a file review.py --merge accepts, and the learner’s stores do not move (time omitted)
+  ok 5 tests\e2e\microscope.spec.ts:251:3 › the microscope (D2) › three lines tell what the build knows: the gate’s verdict, the selected requirements, every fact’s value (D5) (time omitted)
+  ok 6 tests\e2e\microscope.spec.ts:297:3 › the microscope (D2) › the learner’s navigation never shows the route (time omitted)
+
+  6 passed (time omitted)
+exit 0

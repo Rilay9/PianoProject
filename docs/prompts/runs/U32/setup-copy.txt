@@ -1,0 +1,8 @@
+copy caches
+copied content/scores/imported/kern exit 0
+copied content/scores/imported/musetrainer exit 0
+copied content/scores/imported/mutopia exit 0
+copied build/cache exit 0
+copied build/demands-cache.json exit 0
+copied build/notation-cache.json exit 0
+copied build/positions-cache.json exit 0

@@ -210,7 +210,6 @@ class TestAnacrusis(BarSplitCase):
         self.assertEqual(instants(written), instants(source))
 
 
-@unittest.skipUnless(CLEOPHA.exists(), "craigsapp's Joplin edition is not in this tree")
 class TestCleopha(BarSplitCase):
     """
     The rag the fault was found on. Bar 54 is written
@@ -220,6 +219,15 @@ class TestCleopha(BarSplitCase):
     and its second strain used to begin a bar late, behind silence Joplin did
     not write.
     """
+
+    def setUp(self) -> None:
+        if not CLEOPHA.exists():
+            self.fail(
+                f"{CLEOPHA} is missing: craigsapp's Joplin edition is fetched, not "
+                "committed. Run `python tools/content/fetch.py --only kern-joplin` (CI: the "
+                "step 'Build content' clones it, before 'Content pipeline tests')"
+            )
+        super().setUp()
 
     def test_a_real_split_bar_keeps_every_instant(self) -> None:
         source, written = self.round_trip(CLEOPHA)

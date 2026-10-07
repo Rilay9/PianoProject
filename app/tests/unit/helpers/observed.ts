@@ -40,11 +40,28 @@ export interface RunPlan {
    * for a step whose notes are not all misread — one hand of a chord (C4a).
    */
   wrongPitch?: (step: number, midi: number) => boolean;
+  /**
+   * Keep tempo: steps where a key a tritone above the step's first note is struck beside the written
+   * notes, in time (CL11a): every written note is right and one key is extra. A hand-made phrase must
+   * not ask for that pitch within a beat of the step, or the engine reads it as an early or late note.
+   */
+  strayKeys?: readonly number[];
   /** Nothing reaches the engine: the run nothing heard. */
   silent?: boolean;
   loop?: { fromStep: number; toStep: number };
   unseen?: boolean;
+  /**
+   * The run header's first-contact relation (G1a). Unless said, the `unseen` given: a phrase run the
+   * Score screen stores carries both from one derivation, and the evidence context reads this one (G2).
+   */
+  firstContact?: boolean;
   guide?: 'next' | 'next-two' | 'off';
+  /**
+   * Whether a note's name was on the screen (`keys.names`, C1): with the guide off, Wait with *Name
+   * the note I am waiting for* on (CL11b, L58). Unless said, `false`, as the Score screen records a
+   * run with no name shown.
+   */
+  names?: boolean;
   id?: number;
   at?: string;
   itemId?: string;
@@ -93,7 +110,7 @@ export function play(data: ScoreModelData, plan: RunPlan = {}): { score: Session
       }
     }
     if (!h.engine.state.finished) h.engine.stop();
-    return { score: h.engine.state.score, h };
+    return { score: h.of('finished').filter((event) => !event.loop).at(-1)?.score ?? h.engine.state.score, h };
   }
   const origin = steps[firstStep]?.tMs ?? 0;
   for (let index = firstStep; index <= lastStep; index += 1) {
@@ -104,13 +121,21 @@ export function play(data: ScoreModelData, plan: RunPlan = {}): { score: Session
     const misread = (midi: number): boolean => plan.wrongInstead?.includes(index) === true || plan.wrongPitch?.(index, midi) === true;
     const keys = step.expected.map((midi) => (misread(midi) ? (plan.wrongKey ?? whiteKeyBelow)(midi) : midi));
     for (const midi of keys) h.play(midi);
+    const strays = plan.strayKeys?.includes(index) === true ? [(step.expected[0] ?? 60) + 6] : [];
+    for (const midi of strays) h.play(midi);
     until(h, at + 60);
-    for (const midi of keys) h.release(midi);
+    for (const midi of [...keys, ...strays]) h.release(midi);
   }
   const last = steps[lastStep];
-  until(h, (last ? last.tMs - origin + last.durMs : 0) + 4 * BEAT_MS);
+  const end = (last ? last.tMs - origin + last.durMs : 0) + 4 * BEAT_MS;
+  if (plan.loop) {
+    // The plan plays one lap; stop at its finish rather than score later silent laps.
+    while (h.clock.now() < end && !h.of('finished').some((event) => event.loop)) {
+      until(h, Math.min(end, h.clock.now() + 16));
+    }
+  } else until(h, end);
   if (!h.engine.state.finished) h.engine.stop();
-  return { score: h.engine.state.score, h };
+  return { score: h.of('finished').filter((event) => !event.loop).at(-1)?.score ?? h.engine.state.score, h };
 }
 
 /** A C1 observation of the plan's run: the measures and the header the Score screen writes. */
@@ -139,7 +164,7 @@ export function observe(data: ScoreModelData, plan: RunPlan = {}): Observed {
     opened: { tab: 'library', slot: NOT_MEASURED },
     baseTempo: { bpm: data.tempoMap[0]?.bpm ?? 72, source: 'written' },
     hands: { played: plan.hands ?? 'both', appPlayed: 'none' },
-    keys: { view: 'strip', guide, fingers: guide !== 'off', names: false },
+    keys: { view: 'strip', guide, fingers: guide !== 'off', names: plan.names ?? false },
     graceNotes: under?.graceNotes ?? NOT_MEASURED,
     input: {
       source: 'keys',
@@ -147,6 +172,7 @@ export function observe(data: ScoreModelData, plan: RunPlan = {}): Observed {
       latencyMs: under?.inputLatencyMs ?? NOT_MEASURED,
     },
     ...(plan.unseen === undefined ? {} : { unseen: plan.unseen }),
+    ...((plan.firstContact ?? plan.unseen) === undefined ? {} : { firstContact: plan.firstContact ?? plan.unseen }),
     demonstrated: false,
     ...measures,
   } as Observed;

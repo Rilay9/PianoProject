@@ -1,0 +1,28 @@
+HD2a evidence: song.classical.chopin-variations-op12.nifc (scores/imported/song.classical.chopin-variations-op12.nifc.mxl), identity sha256 1a04bed0db8ecc00624215c2b1191ddd3a37a7fb1284d23d8fab0fbe36beb685
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 210-211 -> R
+  bar 210 (source measure 209) st1 v2: L/x -> R; onsets 10 {'conflict': 6, 'free': 4}; second voice(s) [3, 4]; e.g. @639.5 L [53, 53] + v2 [87]; @640 L [65] + v2 [86]
+  bar 210 onset 639.5 91/st1/v1/R:1 87/st1/v2/L/x:0.25 53/st2/v3/L:1.5 53/st2/v4/L:0.5
+  bar 210 onset 639.75 89/st1/v2/L/x:0.25
+  bar 210 onset 640 86/st1/v2/L/x:0.25 65/st2/v4/L:0.5
+  bar 210 onset 640.25 87/st1/v2/L/x:0.25
+  bar 210 onset 640.5 93/st1/v1/R:0.5 84/st1/v2/L/x:0.5 63/st2/v4/L:0.5 60/st2/v4/L:0.5
+  bar 210 onset 641 89/st1/v1/R:1 86/st1/v2/L/x:0.25 53/st2/v3/L:1.5 53/st2/v4/L:0.5
+  bar 210 onset 641.25 87/st1/v2/L/x:0.25
+  bar 210 onset 641.5 84/st1/v2/L/x:0.25 65/st2/v4/L:0.5
+  bar 210 onset 641.75 86/st1/v2/L/x:0.25
+  bar 210 onset 642 94/st1/v1/R:0.5 82/st1/v2/L/x:0.5 62/st2/v4/L:0.5 58/st2/v4/L:0.5
+  bar 211 (source measure 210) st1 v2: L/x -> R; onsets 5 {'conflict': 3, 'free': 2}; second voice(s) [3, 4]; e.g. @642.5 L [53, 53] + v2 [93]; @643 L [65] + v2 [91]
+  bar 211 onset 642.5 96/st1/v1/R:1 93/st1/v2/L/x:0.25 53/st2/v3/L:1.5 53/st2/v4/L:0.5
+  bar 211 onset 642.75 94/st1/v2/L/x:0.25
+  bar 211 onset 643 91/st1/v2/L/x:0.25 65/st2/v4/L:0.5
+  bar 211 onset 643.25 93/st1/v2/L/x:0.25
+  bar 211 onset 643.5 98/st1/v1/R:0.5 89/st1/v2/L/x:0.5 63/st2/v4/L:0.5 60/st2/v4/L:0.5
+  bar 211 onset 644 86/st1/v1/R:0.25 62/st2/v3/L:0.5 58/st2/v3/L:0.5
+  bar 211 onset 644.25 94/st1/v1/R:0.25
+  bar 211 onset 644.5 96/st1/v1/R:0.25
+  bar 211 onset 644.75 94/st1/v1/R:0.25
+  bar 211 onset 645 100/st1/v1/R:0.5 88/st1/v1/R:0.5 64/st2/v3/L:0.5 61/st2/v3/L:0.5 58/st2/v3/L:0.5 55/st2/v3/L:0.5
+

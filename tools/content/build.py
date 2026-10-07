@@ -10,11 +10,15 @@ reported separately:
   2. import [MT]      — the MuseTrainer library, per-file licence decisions
   3. import [KERN]    — the Humdrum editions, per-file licence decisions
   4. import [PDMX]    — the reviewed quarry slice, checksummed (step_import_pdmx)
+  4a. import [MUTO]   — Mutopia's public-domain editions from their published MIDI, spelled from the .ly (Q76)
   5. generate         — scales, arpeggios, Hanon, harmony families, rhythm rows
   6. author           — our own ABC and music21 sources
   7. merge            — the fragments into one catalog, sections attached
   8. curriculum, lessons, tips — copied through from content/
-  9. validate         — schema, cross-references, licences, durations, the ladder report
+  9. validate         — schema, cross-references, licences, durations, the ladder report;
+                        then, on a full default build, the committed manifest of built
+                        generated ids (`tools/content/generated_ids.json`), rewritten
+                        and failed when stale (`step_generated_ids`)
  10. render           — optional; every item loaded in a real browser (slow);
                         validate runs again after it, since it writes durations back
 
@@ -38,6 +42,7 @@ Usage (the personal build is the default — docs/00 D23, owner 2026-09-12):
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import shutil
 import sys
@@ -72,6 +77,7 @@ FRAGMENTS = (
     "catalog.generated.json",
     "catalog.authored.json",
     "catalog.pdmx.json",
+    "catalog.mutopia.json",
 )
 
 
@@ -137,6 +143,26 @@ def step_import_pdmx(out_dir: Path, personal: bool, strict_license: bool) -> Ste
     code, output = python("import_pdmx.py", *args)
     return Step("import [PDMX]", ok=code == 0, detail=summary_line(output),
                 warnings=[] if code == 0 else [output])
+
+
+def step_import_mutopia(out_dir: Path, offline: bool, no_cache: bool = False) -> Step:
+    """
+    Mutopia's public-domain editions (Q76): `content/sources/mutopia.json`'s rows, each from the MIDI file Mutopia
+    publishes for it, converted by the repository's MIDI converter and spelled and keyed from the edition's .ly.
+
+    It fetches only the files the table names, and not at all when the build is offline or asked not to refresh
+    what is fetched; a row whose files are missing or not the pinned ones is a placeholder saying so, which is a
+    smaller build, never a failed one (the fetch step's rule), and the placeholder is printed under the step.
+    """
+    args = ["--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.mutopia.json")]
+    if offline:
+        args.append("--offline")
+    if no_cache:
+        args.append("--no-cache")
+    code, output = python("import_mutopia.py", *args)
+    placeheld = [line.strip() for line in output.splitlines() if line.strip().startswith("placeholder ")]
+    return Step("import [MUTO]", ok=code == 0, detail=summary_line(output),
+                warnings=([] if code == 0 else [output]) + placeheld)
 
 
 def step_score_checks(out_dir: Path) -> Step:
@@ -213,19 +239,31 @@ def merge_catalog(out_dir: Path) -> Step:
     entries.sort(key=lambda item: item["id"])
     sections = attach_sections(entries)
     tracked = attach_rung_tracks(entries)
+    # E1: the approved excerpts, cut from their parents' built files into files of their own,
+    # before the notation, demands and provenance steps read every file alike.
+    import excerpts as excerpt_step
+
+    cut, unbundled, refusals = excerpt_step.attach_excerpts(entries, out_dir)
     read = attach_notation(entries, out_dir)
     keyed = settle_key_signatures(entries)
+    measured, unmeasured, runtime = attach_demands(entries, out_dir)
+    attach_provenance(entries, out_dir)
     write_json(out_dir / "catalog.json", entries)
     detail = f"{len(entries)} items"
     if sections:
         detail += f", {sections} with named sections"
+    if cut or unbundled:
+        detail += f", {cut} excerpt(s) cut" + (f" ({len(unbundled)} not: the parent is not bundled here)" if unbundled else "")
     if tracked:
         detail += f", {tracked} given a track by their rung"
     if read:
         detail += f", {read} read from the score"
     if keyed:
         detail += f", {keyed} keySig corrected"
-    return Step("merge catalog", ok=True, detail=detail)
+    detail += f", demands measured on {measured} ({unmeasured} unmeasured, {runtime} made at runtime)"
+    # A row the cutter refuses (a range across a repeat sign, a parent that is gone) stops the
+    # build with the row and the bars named: shipping the catalogue without it would hide it.
+    return Step("merge catalog", ok=not refusals, detail=detail, warnings=["excerpts refused:\n" + "\n".join(refusals)] if refusals else [])
 
 
 #: Circle-of-fifths names, index 0 = C major / A minor. The same four tables
@@ -439,6 +477,798 @@ def attach_notation(entries: list[dict], out_dir: Path) -> int:
     return touched
 
 
+#: The per-demand useful-density rule for notated items (E0): one file, read here and
+#: by `app/src/curriculum/eligibility.ts`.
+DENSITY_FILE = CONTENT_SRC / "sources" / "opportunity-density.json"
+
+#: What a score file is, for the detectors: MusicXML, compressed or not.
+NOTATION_SUFFIXES = (".mxl", ".musicxml", ".xml")
+
+
+def _sha256(path: Path) -> str:
+    import hashlib
+
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+#: The detectors' clef assumption (`detect.ts`'s module note): staff 1 is read as the treble
+#: clef and staff 2 as the bass. A file whose upper staff is written in the bass clef — a
+#: one-staff part in the bass clef, or an upper staff that changes to it — is read wrong by
+#: the two detectors that depend on the clef. Found from the file's own `<clef>` signs,
+#: which is structure, not a demand reading; the readings are marked, never corrected here
+#: (the detectors' readings are E22's seam).
+CLEF_MISREAD = ("clef.bass", "pitch.ledger")
+_CLEF = __import__("re").compile(r'<clef(?:\s+number="(\d)")?[^>]*>\s*<sign>([A-Z]+)</sign>')
+
+
+def clef_misread(path: Path, staves: int | None) -> str | None:
+    """Why the clef-dependent readings of this file are unreliable, or None."""
+    from notation import read_musicxml
+
+    text = read_musicxml(path)
+    if text is None:
+        return None
+    upper = [sign for number, sign in _CLEF.findall(text) if number in ("", "1")]
+    if not upper or "F" not in upper:
+        return None
+    if staves == 1 and upper[0] == "F":
+        return "one staff in the bass clef: the detectors read staff 1 as the treble clef (detect.ts's clef assumption)"
+    return "the upper staff moves into the bass clef: the detectors read staff 1 as the treble clef throughout (detect.ts's clef assumption)"
+
+
+def established_by_density(located: dict[str, int], bars: int, table: dict, order: list[str]) -> list[str]:
+    """
+    The demands a notated item provides at a useful density (E0 item 3): the located
+    count reaches the demand's `min` and its count per bar reaches `perBar`
+    (`content/sources/opportunity-density.json`). In the vocabulary's order.
+
+    The same arithmetic as `usefulDensity` in `app/src/curriculum/eligibility.ts`, over
+    the same file; `eligibility.test.ts` holds the two equal on every built item.
+    """
+    rules = table["demands"]
+    out = []
+    for demand in order:
+        rule = rules.get(demand)
+        n = int(located.get(demand, 0))
+        if rule is None or n <= 0:
+            continue
+        if n >= rule["min"] and n / max(bars, 1) >= rule["perBar"]:
+            out.append(demand)
+    return out
+
+
+#: The window minimum where the density file states none (E1 item 9): two occurrences.
+DEFAULT_MIN_IN_WINDOW = 2
+
+
+def established_by_window(located: dict[str, int], bars: int, table: dict, order: list[str]) -> list[str]:
+    """
+    The demands an excerpt provides at a useful density (E1 item 9): the window rule — `perBar`
+    reached and the located count at least `minInWindow` (two where the file states none) — in
+    place of the whole-piece `min`, which a four-to-eight-bar cut cannot hold. The proposer reads
+    the same rule for a window (`excerpt_proposer.window_rule`). In the vocabulary's order.
+    """
+    rules = table["demands"]
+    out = []
+    for demand in order:
+        rule = rules.get(demand)
+        n = int(located.get(demand, 0))
+        if rule is None or n <= 0:
+            continue
+        if n >= rule.get("minInWindow", DEFAULT_MIN_IN_WINDOW) and n / max(bars, 1) >= rule["perBar"]:
+            out.append(demand)
+    return out
+
+
+#: The bridge's per-printed-bar positions (E1 item 5), kept apart from the counts: the proposer
+#: reads them, the catalogue never carries them, and the counts' cache stays the size it was.
+POSITIONS_CACHE = "positions-cache.json"
+POSITION_KEYS = ("positions", "everyBar", "hands", "printedBars")
+
+
+def span_of(hands: dict | None) -> dict[str, list[int]]:
+    """
+    Each sounding hand's lowest and highest MIDI over the whole piece (L120b), from the bridge's
+    per-printed-bar `hands` (`demandsOfFiles.test.ts`: grace notes left out, each printed note once):
+    `{"R": [low, high], "L": [low, high]}`, a hand that never sounds left out. The row's
+    `measurement.span`, which the coping question reads to say whether a skip lies inside a taught
+    fixed position (`demands.json`'s `fixedPositions`); the per-bar figures stay off the row.
+    """
+    out: dict[str, list[int]] = {}
+    for bar in (hands or {}).values():
+        for hand, (low, high) in (bar or {}).items():
+            held = out.get(hand)
+            out[hand] = [int(low), int(high)] if held is None else [min(held[0], int(low)), max(held[1], int(high))]
+    return {hand: out[hand] for hand in ("R", "L") if hand in out}
+
+
+#: The provenance kinds under which a row's `hands` is a statement the model may take
+#: (`app/src/curriculum/declaredHand.ts`'s `AUTHORITATIVE`).
+AUTHORITATIVE_HAND_KINDS = frozenset({"authored", "reviewed"})
+
+
+def hands_fact(entry: dict) -> dict | None:
+    """
+    How a built row's `hands` is known, as `attach_provenance` records it in `facts.hands`: authored
+    by the recipe, this repository's score, an edition's staves or the approved selection, and no
+    fact for a row whose source is not known (a placeholder, an unattributable file). One function,
+    so the provenance pass and `declared_hand` cannot say different things about one row.
+    """
+    kind = source_kind(entry)
+    if kind in ("generated", "authored"):
+        return {"kind": "authored", "via": "the recipe" if kind == "generated" else "this repository's score"}
+    if kind in ("pdmx", "kern", "musetrainer"):
+        return {"kind": "authored", "via": "the edition's staves"}
+    if kind == "mutopia":
+        return {"kind": "authored", "via": "the edition's staves, a MIDI track each"}
+    if kind == "excerpt":
+        return {"kind": "authored", "via": "the approved selection (content/sources/excerpts.json)"}
+    return None
+
+
+def declared_hand(entry: dict) -> str | None:
+    """
+    The hand a bundled row declares for its file, which the bridge hands to the model (HD1): the
+    app's own authority rule (`app/src/curriculum/declaredHand.ts`, Entry 244), not the row's word.
+    Authoritative only where the row has a bundled file, is not an import, and its `hands` fact is
+    authored or reviewed; `left` or `right` then, and anything else (inferred, no fact, an import,
+    no bundled file, `both`, absent) is no declaration. The extractor applies it to a one-staff file
+    only. `both` changes no note, so it is not handed over.
+
+    `attach_demands` runs before `attach_provenance`, so a built row has no record yet: its fact is
+    the one the provenance pass will write (`hands_fact`). A row that already carries a provenance is
+    read as the app reads it: its `facts.hands`, and none when the record has none.
+    """
+    if entry.get("imported") is True:
+        return None
+    file = entry.get("file")
+    if not isinstance(file, str) or not file:
+        return None
+    provenance = entry.get("provenance")
+    fact = ((provenance.get("facts") or {}).get("hands") if isinstance(provenance, dict) else hands_fact(entry))
+    if not isinstance(fact, dict) or fact.get("kind") not in AUTHORITATIVE_HAND_KINDS:
+        return None
+    hands = entry.get("hands")
+    return hands if hands in ("left", "right") else None
+
+
+def established_by_contract(entry: dict, row: dict) -> list[str]:
+    """
+    The demands a generated item provides at its own family's density (D0's contract):
+    each `requires` rule that states a density — a count per bar, or a count of two or
+    more — and that the item meets, by the contract's own gate (`pedagogical_faults`
+    on that one rule). A rule asking only for presence states no density and
+    establishes nothing here (the tie drill's one tie in four bars was D0 finding 6's
+    example; since CL15 its rule asks for two, and the drill's two establish it).
+    """
+    import family_contracts as FC
+
+    family = ((entry.get("drill") or {}).get("generator") or {}).get("family")
+    if not family or family not in FC.contracts():
+        return []
+    recipe = FC.recipe_of(entry)
+    out = []
+    for rule in FC.selected(FC.contract(family).get("requires"), recipe):
+        if "minPer" not in rule and int(rule.get("min", 0)) < 2:
+            continue
+        faults = FC.pedagogical_faults({"requires": [rule], "target": {"primary": []}}, recipe, row)
+        if not faults and rule["demand"] not in out:
+            out.append(rule["demand"])
+    return out
+
+
+#: The demands whose establishment by a contract needs the independent witness to agree (CD1 §3a).
+WITNESSED_CELLS = ("rhythm.habanera", "rhythm.tresillo")
+
+
+def _witness_agrees(entry: dict, path: Path, positions: dict | None, demand: str) -> bool:
+    """
+    Whether `cells.py` reads `demand`'s cell in exactly the bars the app located it (CD1 §3a): the left hand's staff,
+    staff 1 for a one-staff file the row declares one hand of (HD1), staff 2 otherwise. Prints the bars when not.
+    """
+    import cells
+
+    staff = 1 if ((entry.get("notation") or {}).get("staves") == 1 and declared_hand(entry)) else 2
+    try:
+        differ = cells.disagreements(path, (positions or {}).get("positions"), demand, staff)
+    except cells.CellsError as error:
+        print(f"  {entry['id']}: {demand} not established by its contract: the witness refused the file ({error})")
+        return False
+    if differ:
+        print(f"  {entry['id']}: {demand} not established by its contract: the app and the witness disagree at bars {differ}")
+        return False
+    return True
+
+
+def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
+    """
+    The demands the app's own detectors measure on every bundled score, on its row (E0
+    item 1; E23): `demands` (the ids, in the vocabulary's order) and `measurement` — the
+    located count of each demand, the bars, steps and notes, which demands the item
+    provides at a useful density (`established`), the definitions they were measured
+    under, and each sounding hand's range over the piece (`span`, L120b: `span_of` the
+    bridge's per-bar `hands`, which stay in the positions cache).
+
+    **One measurement, through the bridge.** Every score file goes through
+    `demands.measure_each`, which runs `app/src/demands/detect.ts` on the model the app
+    makes of the file (`demandsOfFiles.test.ts`): authored, PDMX, Kern, MuseTrainer and
+    generated alike, never a Python reading of a demand. Measured on the arrangement in
+    the file; nothing here reads a title, a genre or a level.
+
+    **Cached on the file's bytes** in `build/demands-cache.json`, like
+    `attach_notation`, and on `demands.definition_fingerprint()`: a changed detector,
+    model or vocabulary discards the cache and every file is measured again; a changed
+    score is measured again alone.
+
+    **The row's declared hand goes with the file (HD1).** A one-staff file declared `left`
+    is the left hand's in the model the detectors read, as on the Score screen
+    (`declared_hand`). A cached row remembers the declaration it was measured under and is
+    measured again when the row's changes; two rows declaring different hands for one file
+    stop the build, naming them, rather than one reading standing for both.
+
+    **So do the file's verified hands (HD2).** The `hand` rows of
+    `content/sources/verified-facts.json` for the row whose identity is this file's sha256
+    (`verified_hand.verified_hands`) go to the bridge as `verifiedHands`, so a passage whose
+    hand is established is measured with it, as the Score screen plays it. A row whose identity
+    is not the file's is stale: refused, and named on the build's output. A cached row remembers
+    the hands it was measured under and is measured again when they change.
+
+    **Never an empty list that reads as "no demands".** A file the app cannot load, a
+    score that is not notation, a piece whose notation is not bundled: `demands:
+    "unmeasured"` and `measurement.status: "unmeasured"` with the reason. A runtime drill
+    writes no score: it has no `demands` at all and `measurement.status: "runtime"`,
+    because its demands belong to each phrase it makes.
+
+    Returns (measured, unmeasured, runtime).
+    """
+    import demands as D
+    import verified_hand as VF
+
+    table = read_json(DENSITY_FILE)
+    assert isinstance(table, dict)
+    vocabulary = read_json(CONTENT_SRC / "curriculum" / "vocabulary" / "demands.json")
+    assert isinstance(vocabulary, dict)
+    order = [d["id"] for d in vocabulary["demands"]]
+    fingerprint = D.definition_fingerprint()
+    definitions = D.evidence_definitions()
+    cache_path = BUILD_DIR / "demands-cache.json"
+    cache = read_json(cache_path) if cache_path.exists() else {}
+    assert isinstance(cache, dict)
+    rows: dict[str, dict] = dict(cache.get("files") or {}) if cache.get("fingerprint") == fingerprint else {}
+    # E1: the positions, beside the counts under the same fingerprint. A file whose counts are
+    # cached without its positions (a cache from before E1) is measured again.
+    positions_path = BUILD_DIR / POSITIONS_CACHE
+    positions_cache = read_json(positions_path) if positions_path.exists() else {}
+    assert isinstance(positions_cache, dict)
+    positions: dict[str, dict] = (dict(positions_cache.get("files") or {})
+                                  if positions_cache.get("fingerprint") == fingerprint else {})
+    rows = {sha: row for sha, row in rows.items() if sha in positions or "error" in row}
+
+    def unmeasured(entry: dict, reason: str) -> None:
+        entry["demands"] = "unmeasured"
+        entry["measurement"] = {"status": "unmeasured", "reason": reason}
+
+    planned: list[tuple[dict, str]] = []
+    todo: dict[str, Path] = {}
+    # HD1: the declaration each file is measured under, and the row that set it.
+    declared: dict[str, tuple[str | None, str]] = {}
+    # HD2: the verified hands each file is measured under, and the row they came from.
+    hand_facts = VF.read_hand_facts()
+    verified: dict[str, tuple[list, str]] = {}
+    runtime = 0
+    for entry in entries:
+        rel = entry.get("file")
+        if not rel:
+            if entry.get("drill"):
+                entry.pop("demands", None)
+                reading = (entry.get("drill") or {}).get("kind") == "sight-reading"
+                entry["measurement"] = {
+                    "status": "runtime",
+                    "reason": (
+                        "made when it opens: each phrase's demands are the reading controls', held to the rung that opens it"
+                        if reading
+                        else "made when it opens: a runtime drill writes no score the build can measure"
+                    ),
+                }
+                runtime += 1
+            else:
+                unmeasured(entry, "no notation is bundled: it arrives when the learner imports the piece")
+            continue
+        path = out_dir / rel
+        if not path.exists():
+            unmeasured(entry, "the score file was not built")
+            continue
+        if path.suffix.lower() not in NOTATION_SUFFIXES:
+            unmeasured(entry, f"not notation the detectors read (a {path.suffix.lstrip('.').upper()} file)")
+            continue
+        sha = _sha256(path)
+        hand = declared_hand(entry)
+        held = declared.setdefault(sha, (hand, entry["id"]))
+        if held[0] != hand:
+            raise SystemExit(
+                f"attach_demands: {held[1]} and {entry['id']} share one score file and declare different hands "
+                f"({held[0] or 'both'} and {hand or 'both'}); the model of the file cannot be both"
+            )
+        hands_here = VF.verified_hands(entry["id"], sha, hand_facts)
+        for row in VF.hand_facts_for(entry["id"], sha, hand_facts):
+            if row["stale"]:
+                print(f"attach_demands: stale verified hand for {entry['id']} bars {row['bars']}: "
+                      f"its file is no longer {row['identity']['sha256'][:12]}; refused")
+        held_hands = verified.setdefault(sha, (hands_here, entry["id"]))
+        if held_hands[0] != hands_here:
+            raise SystemExit(
+                f"attach_demands: {held_hands[1]} and {entry['id']} share one score file and verify different hands; "
+                "the model of the file cannot be both"
+            )
+        planned.append((entry, sha))
+        if sha not in rows or rows[sha].get("declaredHand") != hand or (rows[sha].get("verifiedHands") or []) != hands_here:
+            todo[sha] = path
+
+    # One bridge run per declaration (HD1), so a file is listed once in a run.
+    for hand in sorted({declared[sha][0] for sha in todo}, key=lambda h: h or ""):
+        group = {sha: path for sha, path in todo.items() if declared[sha][0] == hand}
+        answered = D.measure_each(
+            list(group.values()),
+            declared_hand=hand,
+            verified_hands={str(path): verified[sha][0] for sha, path in group.items() if verified[sha][0]},
+        )
+        for sha, path in group.items():
+            row = dict(answered[str(path)])
+            if "error" not in row:
+                positions[sha] = {key: row.pop(key) for key in POSITION_KEYS if key in row}
+            if hand is not None:
+                row["declaredHand"] = hand
+            if verified[sha][0]:
+                row["verifiedHands"] = verified[sha][0]
+            rows[sha] = row
+
+    measured = 0
+    failed = 0
+    for entry, sha in planned:
+        row = rows[sha]
+        if "error" in row:
+            unmeasured(entry, f"the app could not load the file: {row['error']}")
+            failed += 1
+            continue
+        located = {demand: int(n) for demand, n in (row.get("opportunities") or {}).items() if int(n) > 0}
+        by_density = established_by_density(located, int(row["measures"]), table, order)
+        # An excerpt is a window (E1 item 9): the window rule establishes what the whole-piece
+        # count cannot, and `window` says which.
+        by_window = ([d for d in established_by_window(located, int(row["measures"]), table, order) if d not in by_density]
+                     if entry.get("type") == "excerpt" else [])
+        by_contract = [d for d in established_by_contract(entry, row) if d not in by_density and d not in by_window]
+        # CD1 §3a: a curated-only cell is established by a family's contract only where the independent witness
+        # (`cells.py`, partitura on the same file) agrees with the app's located places bar for bar; a disagreement
+        # keeps it unestablished, said on the build's output, never resolved by trusting either side.
+        by_contract = [d for d in by_contract if d not in WITNESSED_CELLS
+                       or _witness_agrees(entry, out_dir / entry["file"], positions.get(sha), d)]
+        misread = clef_misread(out_dir / entry["file"], (entry.get("notation") or {}).get("staves"))
+        # A reading known to be wrong on this file never establishes an opportunity; it stays
+        # among the ids, so the gate still treats it as something the learner may have to meet.
+        established = [d for d in order if (d in by_density or d in by_window or d in by_contract)
+                       and not (misread and d in CLEF_MISREAD)]
+        # L120b: each sounding hand's range over the piece, for the coping question's fixed positions.
+        span = span_of((positions.get(sha) or {}).get("hands"))
+        entry["demands"] = list(row["demands"])
+        entry["measurement"] = {
+            "status": "measured",
+            "definitions": definitions,
+            "detectors": fingerprint,
+            "located": located,
+            "bars": int(row["measures"]),
+            "steps": int(row["steps"]),
+            "notes": int(row["notes"]),
+            "established": established,
+            **({"contract": [d for d in by_contract if d in established]} if [d for d in by_contract if d in established] else {}),
+            **({"window": [d for d in by_window if d in established]} if [d for d in by_window if d in established] else {}),
+            **({"misread": {"demands": list(CLEF_MISREAD), "why": misread}} if misread else {}),
+            **({"span": span} if span else {}),
+        }
+        measured += 1
+
+    write_json(cache_path, {"fingerprint": fingerprint, "files": {sha: rows[sha] for _e, sha in planned}})
+    # Compact: the proposer's input, per printed bar, a few megabytes indented would be many more.
+    positions_path.parent.mkdir(parents=True, exist_ok=True)
+    with positions_path.open("w", encoding="utf-8", newline="\n") as handle:
+        json.dump({"fingerprint": fingerprint, "files": {sha: positions[sha] for _e, sha in planned if sha in positions}},
+                  handle, ensure_ascii=False, separators=(",", ":"))
+        handle.write("\n")
+
+    # A reader that fails on most files is a broken bridge, not a library of unreadable
+    # scores (attach_notation's lesson): stop, rather than ship a catalog of "unmeasured".
+    if planned and failed > len(planned) // 10:
+        raise SystemExit(
+            f"attach_demands: {failed} of {len(planned)} score files could not be measured. "
+            f"That is the detector run failing, not the library; the first: "
+            f"{next(e['measurement']['reason'] for e, _s in planned if e.get('demands') == 'unmeasured')}"
+        )
+    unmeasured_count = sum(1 for entry in entries if entry.get("demands") == "unmeasured")
+    return measured, unmeasured_count, runtime
+
+
+def source_kind(entry: dict) -> str:
+    """Where an item's notes come from (R35): the one answer every provenance record starts from."""
+    tags = set(entry.get("tags") or [])
+    rel = entry.get("file") or ""
+    drill = entry.get("drill") or {}
+    if entry.get("type") == "excerpt":
+        # A passage cut by the build from its parent's file (E1): its own kind, whatever the
+        # parent's was, with the parent's chain carried in its `excerpt` block.
+        return "excerpt"
+    if drill.get("generator") or rel.startswith("scores/generated/"):
+        return "generated"
+    if not rel and drill:
+        return "runtime"
+    if "pdmx" in tags:
+        return "pdmx"
+    if "kern" in tags:
+        return "kern"
+    if "musetrainer" in tags:
+        return "musetrainer"
+    if "mutopia" in tags:
+        return "mutopia"
+    if "authored" in tags or rel.startswith("scores/authored/"):
+        return "authored"
+    if not rel:
+        return "placeholder"
+    return "unknown"
+
+
+def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
+    """
+    Where every item came from and how each fact about it is known (E0 item 2; R35,
+    R15, R11, Part 21 §B): `provenance` on every row.
+
+    - `source`: authored, pdmx, kern, musetrainer, mutopia (Q76: its `converter` names the MIDI
+      converter, the published MIDI it read by checksum and the .ly its spelling came from),
+      generated (with D0's identity), runtime (a drill the app makes when it opens), placeholder
+      (not bundled).
+    - `edition`, `composition`, `arrangement`: R15's chain as far as the data knows it.
+      An authored variant names its tune by `variantOf` (authored); otherwise the
+      composition is `work_key` of the title and composer — the PDMX identity function,
+      conservative by design (two keys that differ may still be one piece; two that
+      match are one), so it is `inferred`. A PDMX duplicate edition shares its
+      arrangement with the upload it duplicates.
+    - `converter` / `generator`: what turned the source into the score, by version.
+    - `facts`: each fact with how it is known — `measured` (the detectors, by their
+      definitions), `inferred` (the converter's default tempo, a level estimate, an
+      identity key), `authored` (written by the edition, the generator's recipe or this
+      repository), `reviewed` (a person's decision). Never flattened into one field.
+      Where the tempo is inferred, the tempo-sensitive demands are listed untrusted.
+    - `review`: R42's two decisions as separate bits — a usable, faithful score; a good
+      teaching use — filled from the human review record (`content/review/decisions.jsonl`,
+      D2) by `review.fill_reviewed`: each dimension's current decision on the item's current
+      identity (a triage line or a stale identity never), as the bit (`yes` true; `no` and
+      `fix` false) and as a `reviewed` fact with the value, the basis, the date and the event
+      id (`reviewedScore`, `reviewedTeaching`). `null` is "no person has decided". A PDMX
+      row's quarry `keep` is a source-level decision of the quarry, recorded as `quarryKeep`
+      (the decision; the reviewer's note stays in `pdmx.json`) and never read as either bit
+      (Part 12 §14: one keep bit never implies both). `out_dir` is where the built score
+      files are, for a notated item's identity (the file's sha256).
+    - `physical`: a generated item's declared large-hand voicing, with its prerequisite
+      and alternative (D0 finding 5), so no selector recommends it without them.
+    - `facts.promise` (D3a): a generated item's promise, `music` or `drill`, as an `authored`
+      fact from the contract table — the rule matching the item's recipe (`review.promise_of`,
+      the microscope's reading; the `meter` family is a drill in 5/4 and music in 12/8), never
+      the row's first rule — so the app's one gate can keep a music-promising item with no
+      affirmative teaching-use decision out of automatic offers without reading the table. A
+      runtime drill and a notated item carry none.
+    - `identity` (D4 item 1): the material identity on every row, D2's `Identity` as
+      `review.current_identity` computes it — a generated item's generator triple, recipe and tempo;
+      a notated item's built file by its sha256 (an excerpt's cut included); `none`, with the reason,
+      for a drill made when it opens or a placeholder — so every run can store the exact versioned
+      material it played and the app never recomputes it.
+    - `formerGeneratorIdentities` (CL15): on a generated row of a family whose version moved, the
+      identity the item had at the version left, where the generator proved its music unchanged
+      (`family_contracts.former_generator_identities`); learner continuity only.
+    - `transferOf` (D4 item 4): a transfer role's relationship as its family contract declares it for
+      the recipe (`transfer_of`: the skill, the families it was written against, the dimensions
+      declared to differ, what stays unmeasured), an authored fact; intent, never evidence.
+    """
+    import family_contracts as FC
+    from convert import tool_fingerprint
+    from pdmx.shortlist import work_key
+    from review import promise_of
+
+    table = read_json(DENSITY_FILE)
+    assert isinstance(table, dict)
+    tempo_sensitive = set(table["tempoSensitive"])
+    pdmx_rows: dict[str, dict] = {}
+    pdmx_path = CONTENT_SRC / "sources" / "pdmx.json"
+    if pdmx_path.exists():
+        data = read_json(pdmx_path)
+        assert isinstance(data, dict)
+        pdmx_rows = {row["id"]: row for row in data.get("items", [])}
+    converter = {"name": "tools/content/convert.py", "version": tool_fingerprint()[:12]}
+    by_id = {entry["id"]: entry for entry in entries}
+
+    def root_of(entry: dict) -> dict:
+        seen = {entry["id"]}
+        here = entry
+        while here.get("variantOf") and here["variantOf"] in by_id and here["variantOf"] not in seen:
+            seen.add(here["variantOf"])
+            here = by_id[here["variantOf"]]
+        return here
+
+    # CL15: the generator's proven former identities (`family_contracts.former_generator_identities`),
+    # carried on a generated row only as far as this step and written beside its identity below.
+    former_generators: dict[str, list[dict]] = {}
+    for entry in entries:
+        kind = source_kind(entry)
+        # Q76: what the [MUTO] import did, carried on the row only as far as this step.
+        mutopia = entry.pop("_mutopia", None)
+        carried_generators = entry.pop("_formerGeneratorIdentities", None)
+        if carried_generators:
+            former_generators[entry["id"]] = carried_generators
+        if kind == "excerpt":
+            continue  # after every parent's record, below: it carries the parent's chain down
+        source = entry.get("source") or {}
+        checksum = str(source.get("checksum") or "").replace("sha256:", "")
+        drill = entry.get("drill") or {}
+        facts: dict[str, dict] = {}
+        record: dict = {"source": kind}
+
+        # --- identity (R15) -----------------------------------------------------
+        if kind == "generated":
+            generator = drill.get("generator") or {}
+            record["generator"] = {
+                "name": "tools/content/generate_exercises.py",
+                "family": generator.get("family"),
+                "version": generator.get("version"),
+                "seed": generator.get("seed"),
+            }
+        elif kind == "runtime":
+            record["generator"] = {"name": "the app, when the drill opens", "kind": drill.get("kind")}
+        else:
+            if kind == "pdmx":
+                row = pdmx_rows.get(entry["id"], {})
+                cid = row.get("cid") or Path(entry.get("file") or "").stem or None
+                record["edition"] = f"pdmx:{cid}" if cid else None
+                duplicate = row.get("duplicateOf")
+                record["arrangement"] = duplicate or entry["id"]
+                facts["arrangement"] = {"kind": "authored" if duplicate else "inferred",
+                                        "via": "the quarry's duplicate edition" if duplicate else "one upload, one arrangement"}
+                # The decision alone: the reviewer's note is working prose with no source
+                # (one names a year T22 removed from every catalogue field), and it stays in
+                # the source table.
+                decision = (row.get("review") or {}).get("decision")
+                if decision:
+                    record["quarryKeep"] = decision
+            elif kind == "mutopia" and mutopia:
+                record["edition"] = mutopia["edition"]
+                record["arrangement"] = entry["id"]
+                facts["arrangement"] = {"kind": "authored", "via": "one catalogue entry per edition"}
+            else:
+                record["edition"] = f"{kind}:sha256:{checksum[:16]}" if checksum else None
+                record["arrangement"] = entry["id"]
+                facts["arrangement"] = {"kind": "authored", "via": "one catalogue entry per edition or arrangement"}
+            root = root_of(entry)
+            if root is not entry:
+                record["composition"] = f"variant-of:{root['id']}"
+                facts["composition"] = {"kind": "authored", "via": "variantOf"}
+            else:
+                artist = str((pdmx_rows.get(entry["id"]) or {}).get("artist") or "")
+                record["composition"] = f"work:{work_key(entry.get('title') or '', entry.get('composer'), artist)}"
+                facts["composition"] = {"kind": "inferred", "via": "work_key (title and composer)"}
+            if kind in ("pdmx", "kern", "musetrainer"):
+                record["converter"] = converter
+            elif kind == "mutopia" and mutopia:
+                # The source artifact is the MIDI Mutopia publishes, never its notation (the reviewer, Q76).
+                record["converter"] = {**mutopia["converter"], "normaliser": converter,
+                                       "artifact": mutopia["artifact"], "spelling": mutopia["spelling"]}
+            elif kind == "authored":
+                record["converter"] = {"name": "tools/content/author.py", "version": converter["version"]}
+
+        # --- the facts ----------------------------------------------------------
+        measurement = entry.get("measurement") or {}
+        if measurement.get("status") == "measured":
+            facts["demands"] = {
+                "kind": "measured",
+                "via": "app/src/demands/detect.ts",
+                "definitions": measurement.get("definitions"),
+                "detectors": measurement.get("detectors"),
+            }
+            if measurement.get("misread"):
+                facts["demands"]["misread"] = measurement["misread"]["demands"]
+                facts["demands"]["misreadWhy"] = measurement["misread"]["why"]
+        elif measurement.get("status") == "unmeasured":
+            facts["demands"] = {"kind": "unmeasured", "why": measurement.get("reason")}
+        else:
+            facts["demands"] = {"kind": "runtime", "why": measurement.get("reason")}
+
+        if kind in ("generated", "authored"):
+            facts["tempo"] = {"kind": "authored", "via": "the recipe" if kind == "generated" else "this repository's score"}
+        elif kind == "pdmx":
+            defaulted = "tempo-defaulted" in (entry.get("tags") or [])
+            facts["tempo"] = ({"kind": "inferred", "via": "convert.py's default (the upload has no tempo of its own)"}
+                              if defaulted else {"kind": "authored", "via": "the upload"})
+        elif kind in ("kern", "musetrainer"):
+            facts["tempo"] = ({"kind": "authored", "via": "the edition"} if entry.get("tempoBpm")
+                              else {"kind": "inferred", "via": "convert.py's default (the edition has no tempo of its own)"})
+        elif kind == "mutopia":
+            facts["tempo"] = ({"kind": "authored", "via": "the edition's tempo mark, as its published MIDI carries it"}
+                              if (mutopia or {}).get("tempoFromEdition")
+                              else {"kind": "inferred", "via": "the published MIDI's tempo, LilyPond's default where the edition states none"})
+        if facts.get("tempo", {}).get("kind") == "inferred" and isinstance(entry.get("demands"), list):
+            untrusted = [d for d in entry["demands"] if d in tempo_sensitive]
+            if untrusted:
+                facts["demands"]["untrusted"] = untrusted
+                facts["demands"]["untrustedWhy"] = "their difficulty depends on a tempo the converter supplied, not one the score states"
+
+        if entry.get("levelSource") == "estimated":
+            facts["level"] = {"kind": "inferred", "via": "an estimate (the difficulty model, or an opus banded on import)"}
+        else:
+            facts["level"] = {"kind": "authored", "via": "judged for this item"}
+        # The one source of this fact, which `declared_hand` reads too (HD1a).
+        hands = hands_fact(entry)
+        if hands is not None:
+            facts["hands"] = hands
+        if entry.get("type") == "song" and (entry.get("notation") or {}).get("keys"):
+            facts["key"] = {"kind": "measured", "via": "the file's signature and final bass (build.settle_key_signatures)"}
+        elif kind == "generated":
+            facts["key"] = {"kind": "authored", "via": "the recipe"}
+        if entry.get("targetSkills"):
+            facts["targetSkills"] = ({"kind": "authored", "via": f"the family contract, version {(drill.get('generator') or {}).get('version')}"}
+                                     if kind == "generated" else {"kind": "authored", "via": "the vocabulary's reading rows (C2)"})
+        if entry.get("role"):
+            facts["role"] = {"kind": "authored", "via": "the family contract"}
+
+        record["facts"] = facts
+        record["review"] = {"score": None, "teaching": None}
+
+        if kind == "generated":
+            family = (drill.get("generator") or {}).get("family")
+            if family in FC.contracts():
+                facts["promise"] = {"kind": "authored", "via": "family_contracts.json (the rule matching the recipe)",
+                                    "value": promise_of(FC.contract(family), FC.recipe_of(entry))}
+                large = (FC.contract(family).get("physical") or {}).get("largeHand")
+                if large and FC.matches(large.get("when"), FC.recipe_of(entry)):
+                    record["physical"] = {
+                        "largeHandSpan": large.get("span"),
+                        "prerequisite": large.get("prerequisite"),
+                        "alternative": large.get("alternative"),
+                    }
+                # D4 item 4: a transfer role's relationship as the contract declares it for the recipe.
+                relation = transfer_of(FC.contract(family), FC.recipe_of(entry)) if entry.get("role") == "transfer" else None
+                if relation is not None:
+                    record["transferOf"] = relation
+                    facts["transferOf"] = {"kind": "authored", "via": "family_contracts.json (the rule matching the recipe)"}
+        entry["provenance"] = record
+
+    # E1 item 4: an excerpt's record, from its parent's. Its identity is the chain the parent
+    # has — composition and arrangement carried down — plus the `excerpt` block: the definition,
+    # the cut version, the parent's bytes at cut time and edition, and the key over them.
+    import excerpts as excerpt_step
+
+    for entry in entries:
+        if source_kind(entry) != "excerpt":
+            continue
+        carried = entry.pop("_excerpt", None) or {}
+        parent = by_id.get(entry.get("excerptOf") or "") or {}
+        excerpt_step.settle_key(entry, parent)
+        parent_record = parent.get("provenance") or {}
+        parent_facts = parent_record.get("facts") or {}
+        facts: dict[str, dict] = {}
+        record: dict = {"source": "excerpt", "edition": parent_record.get("edition")}
+        for name in ("composition", "arrangement"):
+            if parent_record.get(name):
+                record[name] = parent_record[name]
+                facts[name] = {"kind": "inferred" if (parent_facts.get(name) or {}).get("kind") == "inferred" else "authored",
+                               "via": f"the parent's ({entry.get('excerptOf')})"}
+        record["converter"] = {"name": "tools/content/excerpts.py", "version": excerpt_step.CUT_VERSION}
+        measurement = entry.get("measurement") or {}
+        if measurement.get("status") == "measured":
+            facts["demands"] = {
+                "kind": "measured",
+                "via": "app/src/demands/detect.ts",
+                # The file measured: the cut, never the parent's.
+                "on": entry.get("file"),
+                "definitions": measurement.get("definitions"),
+                "detectors": measurement.get("detectors"),
+            }
+            if measurement.get("misread"):
+                facts["demands"]["misread"] = measurement["misread"]["demands"]
+                facts["demands"]["misreadWhy"] = measurement["misread"]["why"]
+        else:
+            facts["demands"] = {"kind": "unmeasured", "why": measurement.get("reason")}
+        tempo_fact = parent_facts.get("tempo")
+        if "tempo-defaulted" in (entry.get("tags") or []) and (tempo_fact or {}).get("kind") != "inferred":
+            # The cut's own bars print no tempo in force at their start (`excerpts.entry_for`), though the parent prints one.
+            facts["tempo"] = {"kind": "inferred", "via": "convert.py's default (the cut's bars print no tempo mark in force at their start)"}
+        elif tempo_fact:
+            facts["tempo"] = {"kind": tempo_fact["kind"], "via": f"the parent's: {tempo_fact.get('via', '')}".rstrip(": ")}
+        if facts.get("tempo"):
+            tempo_fact = facts["tempo"]
+            if tempo_fact["kind"] == "inferred" and isinstance(entry.get("demands"), list):
+                untrusted = [d for d in entry["demands"] if d in tempo_sensitive]
+                if untrusted:
+                    facts["demands"]["untrusted"] = untrusted
+                    facts["demands"]["untrustedWhy"] = "their difficulty depends on a tempo the converter supplied, not one the score states"
+        facts["level"] = {"kind": "inferred", "via": "the difficulty model on the cut (tools/content/difficulty.py), never the parent's"}
+        facts["hands"] = hands_fact(entry)  # type: ignore[assignment]  # an excerpt always has one
+        facts["boundary"] = {"kind": "authored",
+                             "via": f"the approved row in content/sources/excerpts.json (event {carried.get('event')}, by {carried.get('by')})"}
+        if (entry.get("notation") or {}).get("keys"):
+            facts["key"] = {"kind": "measured", "via": "the cut's signature, carried in from the parent at the cut"}
+        record["facts"] = facts
+        record["review"] = {"score": None, "teaching": None}
+        if carried:
+            record["excerpt"] = excerpt_step.provenance_block({"_excerpt": carried}, parent_record)
+        entry["provenance"] = record
+
+    # The reviewed facts (D2 item 4): the record's current decisions, per dimension.
+    import review
+
+    review.fill_reviewed(entries, out_dir)
+
+    # D4 item 1: the material identity, D2's, on every row, from the same function the record binds to.
+    # E50a: beside it, on a row whose file the converter wrote without music21's date, the historical
+    # dated identities of that file's music (`tools/content/former_identities.json`, the identities the
+    # catalogues able to store a learner's material held), each re-proved against the built bytes by
+    # `convert.former_identities`, so a learner's row stored against a dated file still names this
+    # row's material. Learner continuity only: D2's record and every other exact-byte check keep
+    # reading `identity` alone.
+    # E50b: an excerpt cut of a repaired parent carries its old cut where the one derived repair relation
+    # the build produced names it and re-proves (`excerpts.former_cut_identities`), and every former
+    # identity a repair marks `tempoChanged` is also listed as `tempoRepairedFrom`: a run of that file
+    # measured its percentage of another tempo, so no tempo-dependent standard reads it against this
+    # row's (`material.tempoNotComparable`, `rungState.meetsStandard`). Still learner continuity only:
+    # the approval stays stale and its `parentSha256` untouched.
+    # CL15: on a generated row of a family whose version moved, the identity the item had at the
+    # version left, where the generator proved its music unchanged (the generated-identity continuity
+    # relation, `generator_continuity.json`). Learner continuity only, as for a file: never the row's
+    # own identity, never an identity some row holds now, and D2's record reads `identity` alone.
+    from convert import former_identities, repaired_identities
+
+    identities = review.identities(entries, out_dir)
+    current_generators = [identity for identity in identities.values() if identity.get("kind") == "generator"]
+    for entry_id, identity in identities.items():
+        provenance = by_id[entry_id]["provenance"]
+        provenance["identity"] = identity
+        if identity.get("kind") == "generator" and entry_id in former_generators:
+            kept = [one for one in former_generators[entry_id]
+                    if one.get("kind") == "generator" and not any(review.same_identity(one, now) for now in current_generators)]
+            if kept:
+                provenance["formerGeneratorIdentities"] = kept
+        if identity.get("kind") == "file" and out_dir is not None:
+            path = out_dir / by_id[entry_id]["file"]
+            shas = former_identities(path)
+            tempo = {one["from"] for one in repaired_identities().get(identity["sha256"], ()) if one.get("tempoChanged") is True}
+            block = provenance.get("excerpt")
+            parent = by_id.get(block["of"]) if block else None
+            if block and parent and parent.get("file"):
+                shas += [sha for sha in excerpt_step.former_cut_identities(path, entry_id, block, out_dir / parent["file"]) if sha not in shas]
+                tempo |= {one["from"] for one in excerpt_step.repaired_cuts() if one.get("id") == entry_id and one.get("tempoChanged") is True}
+            former = [{"kind": "file", "sha256": sha} for sha in shas if sha != identity["sha256"]]
+            if former:
+                provenance["formerIdentities"] = former
+                changed = [one for one in former if one["sha256"] in tempo]
+                if changed:
+                    provenance["tempoRepairedFrom"] = changed
+
+
+def transfer_of(row: dict, recipe: dict) -> dict | None:
+    """
+    D4 item 4: the family contract's `transferOf` for a transfer item's recipe — the skill it is transfer
+    material for, the families it was written against (`from`), the surface dimensions declared to differ
+    and what stays unmeasured — as the rule matching the recipe (one object for the whole row, or a list
+    of rules each with its `when`), `when` dropped. Intent and relationship facts, never evidence.
+    """
+    import family_contracts as FC
+
+    declared = (row.get("roles") or {}).get("transferOf")
+    if declared is None:
+        return None
+    for rule in declared if isinstance(declared, list) else [declared]:
+        if FC.matches(rule.get("when"), recipe):
+            return {key: value for key, value in rule.items() if key != "when"}
+    return None
+
+
 def attach_rung_tracks(entries: list[dict]) -> int:
     """
     A song on a genre rung carries that genre's track (2026-09-18).
@@ -555,7 +1385,13 @@ def copy_curriculum(out_dir: Path) -> Step:
     stages.sort(key=lambda stage: stage["number"])
 
     # The prompts are generated here, not authored (replan §4.1): one wording
-    # change fixes every rung at once, and what ships can be checked.
+    # change fixes every rung at once, and what ships can be checked. A lesson's
+    # concepts are deliberately not passed to the seed list (E2a, Entry 111): a
+    # rung's finder states a key, a metre, a genre and a level the seed's works
+    # carry none of, and matched on any one of the lesson's concepts, most of the
+    # seeded examples contradicted the rung's own "must" or "avoid" (Minuet in G
+    # beside "C major" and "avoid moving left hand"). The concept entries below
+    # pass their own id, where the seed's claim and the prompt's subject agree.
     lessons_with_finders = 0
     for stage in stages:
         for unit in stage.get("units", []):
@@ -582,8 +1418,13 @@ def copy_curriculum(out_dir: Path) -> Step:
                 # about a button.
                 out["appFeature"] = True
             elif entry.get("finder"):
+                # The concept's own id reaches the seed list (E2a): its works are named
+                # among the examples where the seed knows the concept — a proposal for
+                # the owner's search, never an admission.
                 out["finder"] = finder.generate(
-                    entry["finder"], what=finder.concept_what(entry["display"].lower())
+                    entry["finder"],
+                    what=finder.concept_what(entry["display"].lower()),
+                    concepts=[entry["id"]],
                 )
             concepts.append(out)
 
@@ -597,6 +1438,56 @@ def copy_curriculum(out_dir: Path) -> Step:
         detail=f"{len(files)} file(s), {len(stages)} stage(s), "
                f"{lessons_with_finders} finder(s), {len(concepts)} concept(s)",
     )
+
+
+#: Where the two generated reports live for the reviewer and the owner (E0 items 5 and 6).
+RUNG_CLAIMS_MD = REPO_ROOT / "docs" / "prompts" / "rung-claims.md"
+INVENTORY_MD = REPO_ROOT / "docs" / "prompts" / "inventory.md"
+
+
+def step_reports(out_dir: Path, write_docs: bool) -> Step:
+    """
+    The rung-claims report and the inventory, from the catalogue and curriculum this build
+    just wrote (E0 items 5 and 6; `claims.py`). Always as JSON under `build/`; as the two
+    markdown files in `docs/prompts/` only for the default build, so a `--out` or
+    `--quick` build never rewrites what the reviewer reads with a partial catalogue.
+
+    Also the builder's microscope data (D2), under the builder-only `dev/` root beside the
+    content directory (`app/public/dev/review/microscope.json` for the default build; D2a),
+    never inside it: every file under `content/` is in the learner's precache (P19).
+    """
+    import claims
+
+    catalog = read_json(out_dir / "catalog.json")
+    curriculum = read_json(out_dir / "curriculum.json")
+    assert isinstance(catalog, list) and isinstance(curriculum, dict)
+    report = claims.rung_claims(catalog, curriculum)
+    inventory = claims.inventory(catalog, curriculum)
+    write_json(BUILD_DIR / "rung-claims.json", report)
+    write_json(BUILD_DIR / "inventory.json", inventory)
+    # The builder's microscope reads the report's data, the contracts' verdicts, the queue and
+    # the record beside the catalogue (D2): one file under `dev/`, beside the built content and
+    # never precached (D2a).
+    import review
+
+    review.write_microscope(out_dir, catalog, report)
+    # D2 wrote it inside the built content; a checkout built before D2a still holds that copy,
+    # served there and never precached, which the offline invariant refuses (P19).
+    stale = out_dir / "review" / "microscope.json"
+    if stale.is_file():
+        stale.unlink()
+        try:
+            stale.parent.rmdir()
+        except OSError:
+            pass
+    if write_docs:
+        RUNG_CLAIMS_MD.write_text(claims.render_rung_claims(report), encoding="utf-8", newline="\n")
+        INVENTORY_MD.write_text(claims.render_inventory(inventory), encoding="utf-8", newline="\n")
+    s = report["summary"]
+    detail = (f"{s['measurable']} checkable claims on {s['options']} options: {s['unestablished']} not established, "
+              f"{s['rungClaimsKeptByNoOption']} kept by no option; {inventory['headline']['works']} works, "
+              f"{inventory['headline']['arrangements']} arrangements")
+    return Step("reports", ok=True, detail=detail + ("" if write_docs else " (docs/prompts left alone)"))
 
 
 def copy_lessons(out_dir: Path) -> Step:
@@ -669,6 +1560,14 @@ def copy_level_model(out_dir: Path) -> None:
 def step_validate(
     out_dir: Path, strict_license: bool, allow_nc: bool = False, personal: bool = False
 ) -> Step:
+    """
+    The validator: on a pass its verdict line is the detail, on a failure its whole output.
+
+    Its `WARNING` lines are the step's warnings, on a pass and a failure alike (Q84): since Q75 and Q80 they name what
+    this build could not measure or could not fetch, and keeping the verdict alone on a pass dropped them, so the one
+    log a Pages deploy leaves said "content validation OK" and nothing else. The summary prints them under the step,
+    in the validator's own words, as it prints the `[MUTO]` step's placeholders.
+    """
     args = ["--dir", str(out_dir)]
     if strict_license:
         args.append("--strict-license")
@@ -677,7 +1576,95 @@ def step_validate(
     if personal:
         args.append("--personal")
     code, output = python("validate.py", *args)
-    return Step("validate", ok=code == 0, detail=output if code else summary_line(output))
+    warned = [line.strip() for line in output.splitlines() if line.strip().startswith("WARNING")]
+    return Step("validate", ok=code == 0, detail=output if code else summary_line(output), warnings=warned)
+
+
+#: The manifest of built generated ids (lane A7F; the reviewer's H7, `docs/review/responses/g13-habanera-control.md` §3):
+#: every generated item this build keeps, as `{id, family, version}`, committed so that the chain checker
+#: (`check_chains.py`, which runs where only PyYAML is installed and the catalogue is never built) resolves a built
+#: exercise id exactly, whether or not its family's version ever moved (`generator_continuity.json` holds only the
+#: families whose version did, and stays the checker's second source, for historical ids).
+GENERATED_IDS = Path(__file__).resolve().parent / "generated_ids.json"
+
+GENERATED_IDS_COMMENT = (
+    "Written by tools/content/build.py: every generated item the build keeps (drill.generator in the built catalogue), "
+    "as {id, family, version}, sorted by id. Do not edit: a full default build compares this file with what it would "
+    "write, rewrites it and fails while they differ, so a stale copy fails CI. tools/content/check_chains.py resolves "
+    "an exercise id by exact match against these rows first, then against generator_continuity.json (FABLE.md section 3)."
+)
+
+
+def generated_id_rows(catalog: list) -> list[dict]:
+    """`{id, family, version}` for every catalogue item a generator made, sorted by id."""
+    rows = []
+    for item in catalog:
+        generator = (item.get("drill") or {}).get("generator") if isinstance(item, dict) else None
+        if not isinstance(generator, dict) or not generator.get("family"):
+            continue
+        rows.append({"id": item["id"], "family": generator["family"], "version": generator.get("version")})
+    return sorted(rows, key=lambda row: row["id"])
+
+
+def render_generated_ids(rows: list[dict]) -> str:
+    """The manifest's text: one row a line, so a family added or bumped is a diff of its own rows; LF, a final newline."""
+    body = ",\n".join("    " + json.dumps(row, ensure_ascii=False) for row in rows)
+    return (
+        "{\n"
+        f'  "_comment": {json.dumps(GENERATED_IDS_COMMENT, ensure_ascii=False)},\n'
+        '  "items": [\n'
+        f"{body}\n"
+        "  ]\n"
+        "}\n"
+    )
+
+
+def generated_ids_finding(catalog: list, path: Path = GENERATED_IDS) -> str | None:
+    """None when the committed manifest is what this catalogue would write, else the one-line reason it is stale."""
+    rows = generated_id_rows(catalog)
+    if path.is_file() and path.read_text(encoding="utf-8") == render_generated_ids(rows):
+        return None
+    try:
+        shown = path.resolve().relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        shown = str(path)
+    if not path.is_file():
+        return f"{shown} is missing: this build keeps {len(rows)} generated item(s); run the full content build and commit the file"
+    try:
+        old = {row["id"]: row for row in json.loads(path.read_text(encoding="utf-8")).get("items", [])}
+    except (ValueError, AttributeError, KeyError, TypeError):
+        old = {}
+    new = {row["id"]: row for row in rows}
+    added = len(new.keys() - old.keys())
+    removed = len(old.keys() - new.keys())
+    changed = sum(1 for key in new.keys() & old.keys() if new[key] != old[key])
+    return (
+        f"{shown} is stale: this build keeps {len(rows)} generated item(s) and the committed file differs "
+        f"({added} added, {removed} removed, {changed} changed, or its formatting); "
+        "the full content build has rewritten it, commit it"
+    )
+
+
+def step_generated_ids(out_dir: Path, full: bool, built: bool, path: Path = GENERATED_IDS) -> Step:
+    """
+    Checks the committed manifest against the catalogue this build wrote, and writes it when they differ.
+
+    Only on a full default build (`--quick` keeps a generator subset, and `--out` builds elsewhere, as `step_reports`
+    leaves the reviewer's files alone then), and only when every step before it passed, so a broken build never
+    writes a short manifest. A stale or missing file fails the step with one line and is rewritten, as a formatter
+    does: a second build passes locally, and CI, which checks out the committed file, fails until it is committed.
+    """
+    if not full:
+        return Step("generated ids", ok=True, detail="not a full default build: the manifest is neither checked nor written", skipped=True)
+    if not built:
+        return Step("generated ids", ok=True, detail="an earlier step failed: the manifest is neither checked nor written", skipped=True)
+    catalog = read_json(out_dir / "catalog.json")
+    assert isinstance(catalog, list)
+    finding = generated_ids_finding(catalog, path)
+    if finding is None:
+        return Step("generated ids", ok=True, detail=f"{len(generated_id_rows(catalog))} generated ids; the committed manifest is current")
+    path.write_text(render_generated_ids(generated_id_rows(catalog)), encoding="utf-8", newline="\n")
+    return Step("generated ids", ok=False, detail=finding)
 
 
 def step_render(out_dir: Path, limit: int) -> Step:
@@ -802,16 +1789,24 @@ def run_build(args: argparse.Namespace, started: float) -> None:
     steps.append(step_import(args.out, args.no_cache, args.personal))
     steps.append(step_import_kern(args.out, allow_nc, args.no_cache))
     steps.append(step_import_pdmx(args.out, args.personal, args.strict_license))
+    steps.append(step_import_mutopia(args.out, args.offline or args.skip_fetch, args.no_cache))
     steps.append(step_generate(args.out, args.quick))
     steps.append(step_author(args.out, args.no_cache))
     steps.append(merge_catalog(args.out))
     steps.append(step_score_checks(args.out))
     steps.append(copy_curriculum(args.out))
+    steps.append(step_reports(args.out, write_docs=args.out.resolve() == DEFAULT_OUT.resolve() and not args.quick))
     steps.append(copy_lessons(args.out))
     steps.append(copy_tips(args.out))
     copy_schemas(args.out)
     copy_level_model(args.out)
     steps.append(step_validate(args.out, args.strict_license, allow_nc, args.personal))
+    # A7F (H7): the committed manifest of built generated ids, checked against this catalogue and rewritten when stale.
+    steps.append(step_generated_ids(
+        args.out,
+        full=args.out.resolve() == DEFAULT_OUT.resolve() and not args.quick,
+        built=all(step.ok for step in steps),
+    ))
     if args.render:
         steps.append(step_render(args.out, args.render_limit))
         # The render check writes measured durations back, so validate again.

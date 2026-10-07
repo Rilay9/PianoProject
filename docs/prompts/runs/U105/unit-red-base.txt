@@ -1,0 +1,260 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a8afa8b653d73a23a/app
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts (59 tests | 31 failed) 6368ms
+   ❯ every tap that starts the sound asks for it, and a refusal names the control (U105) (27)
+     × Carry on: a start that never answers changes nothing the tap would change, and the line names it 75ms
+     × Start again: a start that never answers changes nothing the tap would change, and the line names it 61ms
+     × R: a start that never answers changes nothing the tap would change, and the line names it 108ms
+     × bar 1: a start that never answers changes nothing the tap would change, and the line names it 106ms
+     × Try again: a start that never answers changes nothing the tap would change, and the line names it 150ms
+     × Again: a start that never answers changes nothing the tap would change, and the line names it 105ms
+     × Slower: a start that never answers changes nothing the tap would change, and the line names it 99ms
+     × Faster: a start that never answers changes nothing the tap would change, and the line names it 112ms
+     × Loop: a start that never answers changes nothing the tap would change, and the line names it 132ms
+     × Carry on: a start that fails is refused the same 84ms
+     × Start again: a start that fails is refused the same 84ms
+     × R: a start that fails is refused the same 82ms
+     × bar 1: a start that fails is refused the same 91ms
+     × Try again: a start that fails is refused the same 168ms
+     × Again: a start that fails is refused the same 73ms
+     × Slower: a start that fails is refused the same 73ms
+     × Faster: a start that fails is refused the same 114ms
+     × Loop: a start that fails is refused the same 143ms
+     × Carry on: a start that answers with the sound running does what the tap did, once 108ms
+     × Start again: a start that answers with the sound running does what the tap did, once 81ms
+     × R: a start that answers with the sound running does what the tap did, once 74ms
+     × bar 1: a start that answers with the sound running does what the tap did, once 95ms
+     × Try again: a start that answers with the sound running does what the tap did, once 182ms
+     × Again: a start that answers with the sound running does what the tap did, once 100ms
+     × Slower: a start that answers with the sound running does what the tap did, once 130ms
+     × Faster: a start that answers with the sound running does what the tap did, once 100ms
+     × Loop: a start that answers with the sound running does what the tap did, once 92ms
+   ❯ a key that would start a run (U105) (5)
+     × a piano key with the sound suspended asks nothing, starts nothing, and says to tap ▶; ▶ then starts the run without that key 88ms
+     × a key on the screen with the sound suspended asks in its tap; the run starts once it has, and the first note fed is one played after 82ms
+     × a key on the screen whose start never answers, or fails, starts no run, silent 129ms
+   ❯ the standing refusal (U105) (2)
+     × a start that makes ▶ read ⏸ lets the standing refusal go 98ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 31 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Carry on: a start that never answers changes nothing the tap would change, and the line names it
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > bar 1: a start that never answers changes nothing the tap would change, and the line names it
+AssertionError: a run started against a sound that had not started: expected "vi.fn()" to be called +0 times, but got 1 times
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1104:84
+    1102|     vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    1103|     await settle();
+    1104|     expect(session().starts, 'a run started against a sound that had n…
+       |                                                                                    ^
+    1105|     expect(engine.ensureStarted, 'the tap did not ask the sound to sta…
+    1106|     row.unchanged(section);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/31]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Start again: a start that never answers changes nothing the tap would change, and the line names it
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > R: a start that never answers changes nothing the tap would change, and the line names it
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Try again: a start that never answers changes nothing the tap would change, and the line names it
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Again: a start that never answers changes nothing the tap would change, and the line names it
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Slower: a start that never answers changes nothing the tap would change, and the line names it
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Faster: a start that never answers changes nothing the tap would change, and the line names it
+AssertionError: a run started against a sound that had not started: expected "vi.fn()" to be called 1 times, but got 2 times
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1104:84
+    1102|     vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    1103|     await settle();
+    1104|     expect(session().starts, 'a run started against a sound that had n…
+       |                                                                                    ^
+    1105|     expect(engine.ensureStarted, 'the tap did not ask the sound to sta…
+    1106|     row.unchanged(section);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/31]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Loop: a start that never answers changes nothing the tap would change, and the line names it
+AssertionError: a run started against a sound that had not started: expected "vi.fn()" to be called 1 times, but got 2 times
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1104:84
+    1102|     vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    1103|     await settle();
+    1104|     expect(session().starts, 'a run started against a sound that had n…
+       |                                                                                    ^
+    1105|     expect(engine.ensureStarted, 'the tap did not ask the sound to sta…
+    1106|     row.unchanged(section);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/31]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Carry on: a start that fails is refused the same
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > bar 1: a start that fails is refused the same
+AssertionError: a start that failed started a run: expected "vi.fn()" to be called +0 times, but got 1 times
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1125:67
+    1123|     row.tap();
+    1124|     await settle();
+    1125|     expect(session().starts, 'a start that failed started a run').toHa…
+       |                                                                   ^
+    1126|     row.unchanged(section);
+    1127|     expect(stateLine()).toBe(row.sentence);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/31]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Start again: a start that fails is refused the same
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Try again: a start that fails is refused the same
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Again: a start that fails is refused the same
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Slower: a start that fails is refused the same
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Faster: a start that fails is refused the same
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Loop: a start that fails is refused the same
+AssertionError: a start that failed started a run: expected "vi.fn()" to be called 1 times, but got 2 times
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1125:67
+    1123|     row.tap();
+    1124|     await settle();
+    1125|     expect(session().starts, 'a start that failed started a run').toHa…
+       |                                                                   ^
+    1126|     row.unchanged(section);
+    1127|     expect(stateLine()).toBe(row.sentence);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/31]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > R: a start that fails is refused the same
+AssertionError: a start that failed started a run: expected "vi.fn()" to be called 1 times, but got 2 times
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1125:67
+    1123|     row.tap();
+    1124|     await settle();
+    1125|     expect(session().starts, 'a start that failed started a run').toHa…
+       |                                                                   ^
+    1126|     row.unchanged(section);
+    1127|     expect(stateLine()).toBe(row.sentence);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/31]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Carry on: a start that answers with the sound running does what the tap did, once
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Start again: a start that answers with the sound running does what the tap did, once
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > R: a start that answers with the sound running does what the tap did, once
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Try again: a start that answers with the sound running does what the tap did, once
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Again: a start that answers with the sound running does what the tap did, once
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Faster: a start that answers with the sound running does what the tap did, once
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Loop: a start that answers with the sound running does what the tap did, once
+AssertionError: the tap did not ask the sound to start: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1137:76
+    1135|     vi.useFakeTimers();
+    1136|     row.tap();
+    1137|     expect(engine.ensureStarted, 'the tap did not ask the sound to sta…
+       |                                                                            ^
+    1138|     expect(session().starts, 'a run started before the sound had').toH…
+    1139|     await settle();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/31]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > bar 1: a start that answers with the sound running does what the tap did, once
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Slower: a start that answers with the sound running does what the tap did, once
+AssertionError: the tap did not ask the sound to start: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1137:76
+    1135|     vi.useFakeTimers();
+    1136|     row.tap();
+    1137|     expect(engine.ensureStarted, 'the tap did not ask the sound to sta…
+       |                                                                            ^
+    1138|     expect(session().starts, 'a run started before the sound had').toH…
+    1139|     await settle();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/31]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a key that would start a run (U105) > a piano key with the sound suspended asks nothing, starts nothing, and says to tap ▶; ▶ then starts the run without that key
+AssertionError: a run started, silent, from a piano key: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "countInBars": 1,
+        "hands": "both",
+        "inputLatencyMs": 0,
+        "judging": true,
+        "metronome": false,
+        "metronomeSound": "wood",
+        "metronomeVolume": 0.6,
+        "mode": "wait",
+        "playbackHands": "non-focused",
+        "strict": false,
+        "tempoPct": 70,
+        "toleranceMs": 150,
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1201:77
+    1199|     vi.useFakeTimers();
+    1200|     playPianoKey(64, 1_234);
+    1201|     expect(session().starts, 'a run started, silent, from a piano key'…
+       |                                                                             ^
+    1202|     expect(engine.ensureStarted, 'a piano key asked the sound to start…
+    1203|     expect(stateLine()).toBe(KEY_REFUSED);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/31]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a key that would start a run (U105) > a key on the screen with the sound suspended asks in its tap; the run starts once it has, and the first note fed is one played after
+AssertionError: the key’s tap did not ask the sound to start: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1231:82
+    1229|     engine.state = 'suspended';
+    1230|     screenKeyboardSource.noteOn(64, 90, 1_000);
+    1231|     expect(engine.ensureStarted, 'the key’s tap did not ask the sound …
+       |                                                                                  ^
+    1232|     expect(session().starts, 'a run started before the sound had').not…
+    1233|     await settle();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/31]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a key that would start a run (U105) > a key on the screen whose start never answers, or fails, starts no run, silent
+AssertionError: a run started, silent, from a key on the screen: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "countInBars": 1,
+        "hands": "both",
+        "inputLatencyMs": 0,
+        "judging": true,
+        "metronome": false,
+        "metronomeSound": "wood",
+        "metronomeVolume": 0.6,
+        "mode": "wait",
+        "playbackHands": "non-focused",
+        "strict": false,
+        "tempoPct": 70,
+        "toleranceMs": 150,
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1252:85
+    1250|     vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    1251|     await settle();
+    1252|     expect(session().starts, 'a run started, silent, from a key on the…
+       |                                                                                     ^
+    1253|     expect(stateLine()).toBe(KEY_REFUSED);
+    1254|     expect(playButton().dataset.soundRefused).toBe('true');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/31]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > the standing refusal (U105) > a start that makes ▶ read ⏸ lets the standing refusal go
+AssertionError: the refusal stood over a run that plays: expected 'Sound did not start — tap Hear it aga…' not to be 'Sound did not start — tap Hear it aga…' // Object.is equality
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1284:72
+    1282|     expect(session().starts).toHaveBeenCalledTimes(2);
+    1283|     expect(playButton().textContent).toBe('⏸');
+    1284|     expect(stateLine(), 'the refusal stood over a run that plays').not…
+       |                                                                        ^
+    1285|     expect(document.querySelectorAll('[data-sound-refused]')).toHaveLe…
+    1286|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/31]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  31 failed | 28 passed (59)
+   Start at  01:23:26
+   Duration  30.55s (environment 65%, tests 22%, transform 12%, import 2%)
+

@@ -1,0 +1,10 @@
+$ python tools/midi-cleanup/tests/parity_reference.py
+# cwd: /c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693
+# CI=1
+
+wrote 5 reference file(s) to C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\build\midi-parity: rendered-clean.json, rendered-jitter35.json, crossed-hands.json, two-hands.json, one-track-two-hands.json
+  FAILED, missing under CI: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\build\midi-real\bach-bwv885-prelude-2011.mid: the step 'Fetch the MAESTRO test recordings' (before 'MIDI converter harness') fetches it
+  FAILED, missing under CI: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\build\midi-real\grieg-op38-7-waltz-2014.mid: the step 'Fetch the MAESTRO test recordings' (before 'MIDI converter harness') fetches it
+  FAILED, missing under CI: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\build\midi-real\scarlatti-k525-2008.mid: the step 'Fetch the MAESTRO test recordings' (before 'MIDI converter harness') fetches it
+
+# exit code: 1

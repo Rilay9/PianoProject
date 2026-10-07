@@ -6,8 +6,7 @@
 // bars at each step, which slot is re-drawn, and — the part that is easy to
 // get wrong — what "what comes next" means when the piece repeats.
 import { describe, expect, it } from 'vitest';
-import { loadFixture } from './helpers/fixtures';
-import { extractScoreModel } from '../../src/score/extractScoreModel';
+import { fixtureModel } from './helpers/fixtures';
 import type { ScoreStep } from '../../src/score/types';
 import {
   barsPerSlot,
@@ -315,8 +314,7 @@ describe('what comes next, when the piece repeats', () => {
 
 describe('the real repeat fixture', () => {
   it('shows the second ending as the repeat comes round', async () => {
-    const osmd = await loadFixture('tests/fixtures/scores/edge/repeat-endings.musicxml');
-    const model = extractScoreModel(osmd, { id: 'repeat-endings' });
+    const model = await fixtureModel('tests/fixtures/scores/edge/repeat-endings.musicxml', { id: 'repeat-endings' });
     const played = [...new Set(model.steps.map((s) => s.sourceMeasureIndex))];
     // Three printed bars, played 0 1 0 2: the fixture is only useful if the
     // extractor really did unroll it.

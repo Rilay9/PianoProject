@@ -1,0 +1,57 @@
+mutant legacy-given-current-identity: src/curriculum/transfer.ts
+--- old
+  const established = shownOn;
+--- new
+  const established = shownOn.map((one) => ({ ...one, reference: { ...one.reference, material: one.reference.material ?? (byId.get(one.reference.itemId) ? materialOfItem(byId.get(one.reference.itemId) as CatalogItem) : undefined) } }));
+
+$ npx vitest run tests/unit/transferRelationship.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a64cf9b42ff36e1ca/app
+
+ ❯ tests/unit/transferRelationship.test.ts (11 tests | 1 failed) 18ms
+   ❯ what the skill was shown on: the ladder’s answer, as references (4)
+     × a legacy read is an unknown historical reference: its item id and no material — never the item’s current identity 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/transferRelationship.test.ts > what the skill was shown on: the ladder’s answer, as references > a legacy read is an unknown historical reference: its item id and no material — never the item’s current identity
+AssertionError: expected [ { …(2) }, { …(2) } ] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+  [
+    {
+      "itemId": "song.beautiful.g-minor-bach",
++     "material": {
++       "kind": "file",
++       "sha256": "b7f747c79f016cb31be9ec0ac1721d62feda425cf2ea463cb6474f972bf994db",
++     },
+    },
+    {
+      "itemId": "song.beautiful.g-minor-bach",
++     "material": {
++       "kind": "file",
++       "sha256": "b7f747c79f016cb31be9ec0ac1721d62feda425cf2ea463cb6474f972bf994db",
++     },
+    },
+  ]
+
+ ❯ tests/unit/transferRelationship.test.ts:96:34
+     94|     // And the relationship an offer or a run records says the same.
+     95|     const relationship = relationshipOf('position-shift', PENT_A, lega…
+     96|     expect(relationship.shownOn).toEqual(references);
+       |                                  ^
+     97|     expect(dimension(relationship, 'key')?.shownOn, 'no key is read of…
+     98|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  22:25:39
+   Duration  597ms (transform 68%, import 27%, tests 4%, worker 1%)
+
+
+exit 1

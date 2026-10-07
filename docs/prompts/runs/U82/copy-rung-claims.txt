@@ -1,0 +1,4 @@
+﻿Copy-Item "<main checkout>\build\rung-claims.json" "<worktree>\build\rung-claims.json"
+# the content build's report, which taughtByAncestry.test.ts reads; from the same main-checkout build as the copied app/public/content (the content build was not run here, copy-content.txt)
+copied: 1286797 bytes
+exit=0

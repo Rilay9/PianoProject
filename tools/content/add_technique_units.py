@@ -68,7 +68,7 @@ UNITS: dict[int, dict] = {
         "concepts": [
             "repeated-notes", "evenness", "hand-independence", "polyrhythm-2:1",
             "dynamics", "shaping", "crescendo", "diminuendo", "phrasing",
-            "rhythm", "syncopation", "tied-across-bar", "odd-meter", "meter-5-4",
+            "rhythm", "tied-across-bar", "odd-meter", "meter-5-4",
             "mordent", "ornamentation", "hanon", "two-hand-independence",
         ],
         "levels": (5.0, 6.0),
@@ -82,7 +82,7 @@ UNITS: dict[int, dict] = {
             "seventh-chord", "broken-chord", "rotation", "alberti", "wrist",
             "trill", "voicing", "melody-projection", "balance", "tone",
             "sustain-pedal", "held-melody", "CC64", "legato-pedalling",
-            "polyrhythm-3:1", "meter-7-8",
+            "polyrhythm-3:1", "meter-7-8", "sixteenth-notes",
         ],
         "levels": (6.0, 7.0),
     },

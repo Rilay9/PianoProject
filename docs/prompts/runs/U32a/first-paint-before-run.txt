@@ -1,0 +1,12 @@
+
+Running 6 tests using 1 worker
+
+  ok 1 tests\e2e\zz-u32a-look.spec.ts:114:5 › u32a first paint before-first nocturne:4 (4.1s)
+  ok 2 tests\e2e\zz-u32a-look.spec.ts:114:5 › u32a first paint before-first nocturne:8 (3.8s)
+  ok 3 tests\e2e\zz-u32a-look.spec.ts:114:5 › u32a first paint before-first scherzo:4 (5.8s)
+  ok 4 tests\e2e\zz-u32a-look.spec.ts:114:5 › u32a first paint before-first scherzo:8 (5.5s)
+  ok 5 tests\e2e\zz-u32a-look.spec.ts:114:5 › u32a first paint before-first twinkle:4 (3.2s)
+  ok 6 tests\e2e\zz-u32a-look.spec.ts:114:5 › u32a first paint before-first twinkle:8 (3.1s)
+
+  6 passed (28.6s)
+exit=0

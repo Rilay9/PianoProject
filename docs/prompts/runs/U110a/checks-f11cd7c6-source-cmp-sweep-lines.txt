@@ -1,0 +1,27 @@
+// Compares two sweep summary text files (summarise-sweep.cjs output) line by line, keyed by cell + bars + load.
+// Usage: node cmp-sweep-lines.cjs <this run> <archived>
+const fs = require('node:fs');
+const parse = (f) => {
+  const m = new Map();
+  for (const line of fs.readFileSync(f, 'utf8').split(/\r?\n/)) {
+    const x = /^(ok|OVERLAP)\s+(\S+)\s+bars (\d+) (open|reload)\s+slots (\d+) systems (\d+) shown (\d+) ladder (\S+) overlap (\S+) (.*)$/.exec(line);
+    if (!x) continue;
+    m.set(`${x[2]} bars ${x[3]} ${x[4]}`, { flag: x[1], shape: `${x[5]}/${x[6]}/${x[7]}`, ladder: x[8], overlap: x[9], rows: x[10] });
+  }
+  return m;
+};
+const a = parse(process.argv[2]);
+const b = parse(process.argv[3]);
+let sameShape = 0, sameRows = 0, sameLadder = 0, sameAll = 0;
+const diffs = [];
+for (const [k, r] of [...a.entries()].sort()) {
+  const o = b.get(k);
+  if (!o) { diffs.push(`MISSING in archived: ${k}`); continue; }
+  const s = r.shape === o.shape, rw = r.rows === o.rows, l = r.ladder === o.ladder;
+  if (s) sameShape += 1; if (rw) sameRows += 1; if (l) sameLadder += 1; if (s && rw && l) sameAll += 1;
+  if (!(s && rw && l)) diffs.push(`${k}: shape ${o.shape} -> ${r.shape}${s ? '' : ' (DIFF)'}; ladder ${o.ladder} -> ${r.ladder}${l ? '' : ' (DIFF)'}; rows ${rw ? 'same' : `\n     archived ${o.rows}\n     this run ${r.rows}`}`);
+}
+console.log(`this run ${a.size} loads, archived ${b.size} loads; same shape ${sameShape}, same rows ${sameRows}, same ladder count ${sameLadder}, all three same ${sameAll}`);
+for (const d of diffs) console.log(d);
+const ov = (m) => [...m.values()].filter((r) => r.flag === 'OVERLAP').length;
+console.log(`OVERLAP-marked loads: this run ${ov(a)}, archived ${ov(b)}`);

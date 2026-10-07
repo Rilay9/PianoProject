@@ -1,0 +1,110 @@
+{
+ "source": {
+  "head": "b99707a80627c3336f9c17cfceace0121d3008d6",
+  "sourcesSha256": "ad5e26e8aa8a31d8",
+  "bundle": "build\\sr-quality\\bundle\\engine.mjs"
+ },
+ "settings": {
+  "derandomize": true,
+  "database": null,
+  "deadline": null,
+  "max_examples": 300
+ },
+ "properties": {
+  "H1": {
+   "calls": 300,
+   "refused": 39,
+   "knownT37Waiver": 6,
+   "noPatch": 1,
+   "result": "no counterexample"
+  },
+  "H1-gap": {
+   "calls": 322,
+   "last": {
+    "request": {
+     "options": {
+      "level": 1,
+      "hands": "R",
+      "bars": 1,
+      "seed": 0,
+      "fifths": 0,
+      "timeSig": {
+       "beats": 2,
+       "beatType": 4
+      },
+      "skips": true
+     }
+    },
+    "meta": {
+     "table": true
+    },
+    "why": [
+     "No phrase could be written for level 1, right hand, 1 bar of 2/4 with no sharps or flats.",
+     "In 4096 draws none kept its promise (a skip beside a step) within the level\u2019s rules (no interval wider than a third).",
+     "None kept every promise; the last draw lacked a skip beside a step."
+    ]
+   },
+   "result": "counterexample: refused with an empty unrealisable()"
+  },
+  "H2": {
+   "calls": 300,
+   "result": "no counterexample"
+  },
+  "H3": {
+   "calls": 353,
+   "written": 317,
+   "last": {
+    "request": {
+     "options": {
+      "level": 6,
+      "hands": "L",
+      "bars": 1,
+      "seed": 0,
+      "fifths": 0,
+      "timeSig": {
+       "beats": 3,
+       "beatType": 8
+      }
+     }
+    },
+    "meta": {
+     "table": true
+    },
+    "why": [
+     "P2 metre or bar sums"
+    ]
+   },
+   "result": "counterexample: P2 metre or bar sums"
+  },
+  "H4": {
+   "calls": 94,
+   "written": 94,
+   "last": {
+    "request": {
+     "options": {
+      "level": 1,
+      "hands": "R",
+      "bars": 1,
+      "seed": 0,
+      "fifths": 0,
+      "timeSig": {
+       "beats": 3,
+       "beatType": 8
+      },
+      "sixteenths": true
+     },
+     "hold": "2.2"
+    },
+    "meta": {
+     "rung": "2.2"
+    },
+    "why": [
+     "rhythm.sixteenths"
+    ]
+   },
+   "known34Gap": 3,
+   "result": "counterexample: untaught at 2.2: ['rhythm.sixteenths']"
+  }
+ },
+ "domain": "edges"
+}

@@ -95,6 +95,54 @@ CATALOG = [{"id": "drill.read", "targetSkills": ["reading"]}, {"id": "ex.1"}]
 UNJUDGED_PEDAL = {"kind": "unjudged", "rule": "pedal-clean>=0.9", "says": "Change the pedal cleanly.", "why": "pedalling is not judged"}
 
 
+class TestARunsRequirementThatSaysHands(unittest.TestCase):
+    """`hands: both` on a runs requirement (A7a-hands-both-requirement; `docs/review/responses/a7a-drafts.md` §7)."""
+
+    RECORDED = {
+        "conditions": SKILLS["conditions"] + [{"id": "both-hands", "meaning": "both hands", "recordedBy": "SessionRow.hands.played"}],
+        "skills": SKILLS["skills"],
+    }
+
+    def gate(self, requirement: dict, skills: dict) -> list[str]:
+        errors, _ = evidence_gate(curriculum(rung("9.9", [], [requirement])), skills, CATALOG)
+        return errors
+
+    def test_hands_both_is_accepted_where_a_run_records_the_hands(self) -> None:
+        self.assertEqual(self.gate({"kind": "runs", "from": "exercises", "count": 1, "hands": "both"}, self.RECORDED), [])
+
+    def test_a_requirement_without_hands_is_unchanged(self) -> None:
+        self.assertEqual(self.gate({"kind": "runs", "from": "exercises", "count": 1}, SKILLS), [])
+
+    def test_hands_both_is_refused_where_no_run_records_the_hands(self) -> None:
+        errors = self.gate({"kind": "runs", "from": "exercises", "count": 1, "hands": "both"}, SKILLS)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("both-hands", errors[0])
+
+    def test_any_other_hands_value_is_refused(self) -> None:
+        for value in ("left", "R", "one", ""):
+            errors = self.gate({"kind": "runs", "from": "exercises", "count": 1, "hands": value}, self.RECORDED)
+            self.assertEqual(len(errors), 1, value)
+            self.assertIn("only 'both'", errors[0])
+
+    def test_the_schema_admits_hands_both_and_nothing_else(self) -> None:
+        import jsonschema
+
+        schema = json.loads((CONTENT / "curriculum.schema.json").read_text(encoding="utf8"))
+        runs = next(
+            branch
+            for branch in schema["properties"]["stages"]["items"]["properties"]["units"]["items"]["properties"]["lessons"]["items"][
+                "properties"
+            ]["requirements"]["items"]["oneOf"]
+            if branch["properties"]["kind"].get("const") == "runs"
+        )
+        validator = jsonschema.Draft202012Validator(runs)
+        base = {"kind": "runs", "from": "exercises", "count": 1}
+        self.assertEqual(list(validator.iter_errors(base)), [])
+        self.assertEqual(list(validator.iter_errors({**base, "hands": "both"})), [])
+        for value in ("left", "R", "right", "one", "", True, None):
+            self.assertNotEqual(list(validator.iter_errors({**base, "hands": value})), [], repr(value))
+
+
 class TestTheGate(unittest.TestCase):
     def test_a_rung_requiring_a_skill_no_run_can_measure_is_refused(self) -> None:
         errors, _ = evidence_gate(
@@ -224,6 +272,66 @@ class TestTheVocabulary(unittest.TestCase):
         row["targetSkills"] = ["sight-reading", "juggling"]
         errors = vocabulary_errors(self.skills, self.demands, self.curriculum, catalog)
         self.assertTrue(any("juggling" in e for e in errors), errors)
+
+    def _skill(self, skills: dict, skill_id: str) -> dict:
+        return next(s for s in skills["skills"] if s["id"] == skill_id)
+
+    # CL11b, L58: a read with a note's name on the screen is never unaided reading.
+
+    def test_names_off_is_declared_and_joins_every_full_standard_that_lists_the_guide_off(self) -> None:
+        conditions = {c["id"]: c for c in self.skills["conditions"]}
+        self.assertIn("names-off", conditions)
+        self.assertIn("SessionRow.keys.names", conditions["names-off"]["recordedBy"])
+        for skill in self.skills["skills"]:
+            full, practice = skill["standards"]["full"], skill["standards"]["practice"]
+            self.assertEqual("names-off" in full, "guide-off" in full, skill["id"])
+            self.assertNotIn("names-off", practice, skill["id"])
+
+    def test_a_full_standard_with_the_guide_off_and_the_names_allowed_is_refused(self) -> None:
+        skills = copy.deepcopy(self.skills)
+        reading = self._skill(skills, "interval-reading")
+        reading["standards"]["full"] = [c for c in reading["standards"]["full"] if c != "names-off"]
+        errors = vocabulary_errors(skills, self.demands, self.curriculum, self.catalog)
+        self.assertTrue(any("interval-reading" in e and "names-off" in e for e in errors), errors)
+
+    def test_a_standard_naming_a_condition_nobody_declared_is_still_refused(self) -> None:
+        # The refusal names-off passes once it is declared (validate.py's undeclared-condition check).
+        skills = copy.deepcopy(self.skills)
+        skills["conditions"] = [c for c in skills["conditions"] if c["id"] != "names-off"]
+        errors = vocabulary_errors(skills, self.demands, self.curriculum, self.catalog)
+        self.assertTrue(any("'names-off'" in e and "not declared" in e for e in errors), errors)
+
+    # CL11b, L57: the support share and the timing precisions are the vocabulary's, values unchanged.
+
+    def test_the_share_and_the_precisions_are_the_vocabulary_s_with_their_values(self) -> None:
+        self.assertEqual(self.skills["support"]["share"], 0.9)
+        self.assertEqual(self.skills["precision"]["quarters"], [1, 2])
+        own = {s["id"]: s["precision"]["quarters"] for s in self.skills["skills"] if "precision" in s}
+        self.assertEqual(
+            own,
+            # Revised (SR2): the coper of metre.three-four, a dotted half counted as a half is a whole beat early.
+            {"subdivision": [1, 6], "dotted-quarter": [1, 2], "tie": [1, 2], "syncopation": [1, 2], "triplets": [1, 12], "6/8": [1, 4],
+             "3/4": [1, 1]},
+        )
+        self.assertEqual([s["id"] for s in self.skills["skills"] if "support" in s], [])
+
+    def test_a_rhythm_skill_without_its_precision_is_refused(self) -> None:
+        skills = copy.deepcopy(self.skills)
+        del self._skill(skills, "triplets")["precision"]
+        errors = vocabulary_errors(skills, self.demands, self.curriculum, self.catalog)
+        self.assertTrue(any("triplets" in e and "precision" in e for e in errors), errors)
+
+    def test_a_precision_on_a_skill_no_run_times_is_refused(self) -> None:
+        skills = copy.deepcopy(self.skills)
+        self._skill(skills, "interval-reading")["precision"] = {"quarters": [1, 2], "why": "constructed: pitch is not timed"}
+        errors = vocabulary_errors(skills, self.demands, self.curriculum, self.catalog)
+        self.assertTrue(any("interval-reading" in e and "precision" in e for e in errors), errors)
+
+    def test_a_share_outside_nought_to_one_is_refused(self) -> None:
+        skills = copy.deepcopy(self.skills)
+        skills["support"]["share"] = 1.5
+        errors = vocabulary_errors(skills, self.demands, self.curriculum, self.catalog)
+        self.assertTrue(any("support" in e for e in errors), errors)
 
 
 class TestClaimingConcepts(unittest.TestCase):

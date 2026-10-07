@@ -117,6 +117,14 @@
                           "type": "string"
                         }
                       },
+                      "introduces": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "uniqueItems": true,
+                        "description": "F2: concepts the rung's lesson introduces while no piece on the rung practises them yet. Never a claim the options must keep, never a teaching rung (the build derives taughtAt from concepts alone), never a requirement met; validate.py fails a concept named in concepts that no option establishes, and passes it here."
+                      },
                       "textFile": {
                         "type": "string"
                       },
@@ -310,6 +318,10 @@
                                 },
                                 "performance": {
                                   "type": "boolean"
+                                },
+                                "hands": {
+                                  "description": "How the item was played: both = only a run whose recorded SessionRow.hands.played is both counts (a one-hand run, a Duet run included, does not). Absent: the hands are not asked.",
+                                  "const": "both"
                                 },
                                 "accuracy": {
                                   "type": "number",

@@ -1,0 +1,12 @@
+﻿(cd app) npm run lint
+
+> pianopath@0.1.0 lint
+> eslint . --max-warnings=0
+
+
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a6d274c20b3e170c9\app\tests\unit\competenceSurvivesPruning.test.ts
+  55:15  error  'EvidenceResult' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+✖ 1 problem (1 error, 0 warnings)
+
+exit=1

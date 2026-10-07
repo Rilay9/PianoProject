@@ -1,0 +1,766 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a7ad2cfdf974de0ab/app
+
+ ❯ tests/unit/toPartwise.test.ts (0 test)
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening mark with its <sound tempo>, a mark alone, a compound metre’s dotted mark: the same events, map, label, timetable and count-in
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening mark with its <sound tempo>, a mark alone, a compound metre’s dotted mark: the same events, map, label, timetable and count-in
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening mark with its <sound tempo>, a mark alone, a compound metre’s dotted mark: the same events, map, label, timetable and count-in
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening mark with its <sound tempo>, a mark alone, a compound metre’s dotted mark: the same events, map, label, timetable and count-in
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening mark with its <sound tempo>, a mark alone, a compound metre’s dotted mark: the same events, map, label, timetable and count-in
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening mark with its <sound tempo>, a mark alone, a compound metre’s dotted mark: the same events, map, label, timetable and count-in
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening <sound tempo> a bar-2 mark does not displace, and genuine later changes where they stand: a bar-2 half-note mark, a change in the middle of bar 2, a second part’s change at its own divisions
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening <sound tempo> a bar-2 mark does not displace, and genuine later changes where they stand: a bar-2 half-note mark, a change in the middle of bar 2, a second part’s change at its own divisions
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening <sound tempo> a bar-2 mark does not displace, and genuine later changes where they stand: a bar-2 half-note mark, a change in the middle of bar 2, a second part’s change at its own divisions
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening <sound tempo> a bar-2 mark does not displace, and genuine later changes where they stand: a bar-2 half-note mark, a change in the middle of bar 2, a second part’s change at its own divisions
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening <sound tempo> a bar-2 mark does not displace, and genuine later changes where they stand: a bar-2 half-note mark, a change in the middle of bar 2, a second part’s change at its own divisions
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening <sound tempo> a bar-2 mark does not displace, and genuine later changes where they stand: a bar-2 half-note mark, a change in the middle of bar 2, a second part’s change at its own divisions
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening <sound tempo> a bar-2 mark does not displace, and genuine later changes where they stand: a bar-2 half-note mark, a change in the middle of bar 2, a second part’s change at its own divisions
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening <sound tempo> a bar-2 mark does not displace, and genuine later changes where they stand: a bar-2 half-note mark, a change in the middle of bar 2, a second part’s change at its own divisions
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > the learner’s stated tempo written into the file (E48): the same opening on the half-note shape, on a file whose only mark is in bar 2, and on a file with no tempo at all
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > the learner’s stated tempo written into the file (E48): the same opening on the half-note shape, on a file whose only mark is in bar 2, and on a file with no tempo at all
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > the learner’s stated tempo written into the file (E48): the same opening on the half-note shape, on a file whose only mark is in bar 2, and on a file with no tempo at all
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > the learner’s stated tempo written into the file (E48): the same opening on the half-note shape, on a file whose only mark is in bar 2, and on a file with no tempo at all
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > the learner’s stated tempo written into the file (E48): the same opening on the half-note shape, on a file whose only mark is in bar 2, and on a file with no tempo at all
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > the learner’s stated tempo written into the file (E48): the same opening on the half-note shape, on a file whose only mark is in bar 2, and on a file with no tempo at all
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > the learner’s stated tempo written into the file (E48): the same opening on the half-note shape, on a file whose only mark is in bar 2, and on a file with no tempo at all
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > the learner’s stated tempo written into the file (E48): the same opening on the half-note shape, on a file whose only mark is in bar 2, and on a file with no tempo at all
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > the learner’s stated tempo written into the file (E48): the same opening on the half-note shape, on a file whose only mark is in bar 2, and on a file with no tempo at all
+Could not parse MusicXML, no valid partwise element found
+
+ ❯ tests/unit/scoreModelTempo.test.ts (16 tests | 3 failed) 537ms
+   ❯ a timewise file reads as its partwise twin, through the import door (X3e) (3)
+     × an opening mark with its <sound tempo>, a mark alone, a compound metre’s dotted mark: the same events, map, label, timetable and count-in 96ms
+     × an opening <sound tempo> a bar-2 mark does not displace, and genuine later changes where they stand: a bar-2 half-note mark, a change in the middle of bar 2, a second part’s change at its own divisions 46ms
+     × the learner’s stated tempo written into the file (E48): the same opening on the half-note shape, on a file whose only mark is in bar 2, and on a file with no tempo at all 42ms
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+Could not parse MusicXML, no valid partwise element found
+
+stderr | tests/unit/importSheet.test.ts > swapping the hands > a piano file imported in the timewise form swaps like its partwise twin, and a corrected score handed over timewise is kept in the form the engraver loads (X3e)
+Could not parse MusicXML, no valid partwise element found
+
+ ❯ tests/unit/importSheet.test.ts (31 tests | 2 failed) 1554ms
+   ❯ a timewise file’s sheet reads as its partwise twin’s (X3e) (1)
+     × the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo 95ms
+   ❯ swapping the hands (4)
+     × a piano file imported in the timewise form swaps like its partwise twin, and a corrected score handed over timewise is kept in the form the engraver loads (X3e) 6ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/toPartwise.test.ts [ tests/unit/toPartwise.test.ts ]
+Error: Cannot find module '../../src/score/toPartwise' imported from C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a7ad2cfdf974de0ab/app/tests/unit/toPartwise.test.ts
+ ❯ tests/unit/toPartwise.test.ts:12:1
+     10| import { describe, expect, it } from 'vitest';
+     11| import { tempoEvents } from '../../src/score/tempoFromXml';
+     12| import { toPartwise } from '../../src/score/toPartwise';
+       | ^
+     13| import { timewiseTwin } from './helpers/timewise';
+     14|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/importSheet.test.ts > a timewise file’s sheet reads as its partwise twin’s (X3e) > the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo
+AssertionError: expected { …(10) } to deeply equal { …(10) }
+
+- Expected
++ Received
+
+@@ -5,56 +5,56 @@
+        "said": "The file writes no tempo at its opening, only later in the piece.",
+        "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file writes no tempo at its opening, only later in the piece.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "file",
+      },
+      "timewise": {
+-       "field": "",
+-       "said": "The file writes no tempo at its opening, only later in the piece.",
+-       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file writes no tempo at its opening, only later in the piece.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+-       "whose": "file",
++       "field": "100",
++       "said": "The file states no tempo, so the app chose ♩ = 100.",
++       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength1 barKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · the app’s guess — The file states no tempo, so the app chose ♩ = 100.♩ = Use this tempoSwap the handsThe file writes its hands as separate parts; the app swaps only a piano’s two staves.What the notes askThe app could not measure its notes (the app could not read the score's notes (Error: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML)).Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
++       "whose": "guess",
+      },
+    },
+    "a text mark \"= 60\" in cut time (E32)": {
+      "partwise": {
+        "field": "120",
+        "said": "The file’s mark says “= 60”, with no note; the app reads it as a half note, the metre’s beat: 120 quarter notes a minute.",
+        "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file’s mark says “= 60”, with no note; the app reads it as a half note, the metre’s beat: 120 quarter notes a minute.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "file",
+      },
+      "timewise": {
+-       "field": "120",
+-       "said": "The file’s mark says “= 60”, with no note; the app reads it as a half note, the metre’s beat: 120 quarter notes a minute.",
+-       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file’s mark says “= 60”, with no note; the app reads it as a half note, the metre’s beat: 120 quarter notes a minute.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+-       "whose": "file",
++       "field": "100",
++       "said": "The file states no tempo, so the app chose ♩ = 100.",
++       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength1 barKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · the app’s guess — The file states no tempo, so the app chose ♩ = 100.♩ = Use this tempoSwap the handsThe file writes its hands as separate parts; the app swaps only a piano’s two staves.What the notes askThe app could not measure its notes (the app could not read the score's notes (Error: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML)).Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
++       "whose": "guess",
+      },
+    },
+    "dotted quarter = 60, sound 90": {
+      "partwise": {
+        "field": "90",
+        "said": "The file says ♩. = 60 (90 quarter notes a minute).",
+        "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file says ♩. = 60 (90 quarter notes a minute).♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the bars in 6/8, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "file",
+      },
+      "timewise": {
+-       "field": "90",
+-       "said": "The file says ♩. = 60 (90 quarter notes a minute).",
+-       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file says ♩. = 60 (90 quarter notes a minute).♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the bars in 6/8, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+-       "whose": "file",
++       "field": "100",
++       "said": "The file states no tempo, so the app chose ♩ = 100.",
++       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength1 barKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · the app’s guess — The file states no tempo, so the app chose ♩ = 100.♩ = Use this tempoSwap the handsThe file writes its hands as separate parts; the app swaps only a piano’s two staves.What the notes askThe app could not measure its notes (the app could not read the score's notes (Error: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML)).Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
++       "whose": "guess",
+      },
+    },
+    "half = 60 alone": {
+      "partwise": {
+        "field": "120",
+        "said": "The file says 𝅗𝅥 = 60 (120 quarter notes a minute).",
+        "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file says 𝅗𝅥 = 60 (120 quarter notes a minute).♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "file",
+      },
+      "timewise": {
+-       "field": "120",
+-       "said": "The file says 𝅗𝅥 = 60 (120 quarter notes a minute).",
+-       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file says 𝅗𝅥 = 60 (120 quarter notes a minute).♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+-       "whose": "file",
++       "field": "100",
++       "said": "The file states no tempo, so the app chose ♩ = 100.",
++       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength1 barKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · the app’s guess — The file states no tempo, so the app chose ♩ = 100.♩ = Use this tempoSwap the handsThe file writes its hands as separate parts; the app swaps only a piano’s two staves.What the notes askThe app could not measure its notes (the app could not read the score's notes (Error: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML)).Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
++       "whose": "guess",
+      },
+    },
+    "half = 60, sound 100": {
+      "partwise": {
+        "field": "100",
+@@ -62,41 +62,41 @@
+        "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file prints 𝅗𝅥 = 60; its playback tempo is 100 quarter notes a minute.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "file",
+      },
+      "timewise": {
+        "field": "100",
+-       "said": "The file prints 𝅗𝅥 = 60; its playback tempo is 100 quarter notes a minute.",
+-       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file prints 𝅗𝅥 = 60; its playback tempo is 100 quarter notes a minute.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+-       "whose": "file",
++       "said": "The file states no tempo, so the app chose ♩ = 100.",
++       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength1 barKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · the app’s guess — The file states no tempo, so the app chose ♩ = 100.♩ = Use this tempoSwap the handsThe file writes its hands as separate parts; the app swaps only a piano’s two staves.What the notes askThe app could not measure its notes (the app could not read the score's notes (Error: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML)).Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
++       "whose": "guess",
+      },
+    },
+    "half = 60, sound 120": {
+      "partwise": {
+        "field": "120",
+        "said": "The file says 𝅗𝅥 = 60 (120 quarter notes a minute).",
+        "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file says 𝅗𝅥 = 60 (120 quarter notes a minute).♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "file",
+      },
+      "timewise": {
+-       "field": "120",
+-       "said": "The file says 𝅗𝅥 = 60 (120 quarter notes a minute).",
+-       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file says 𝅗𝅥 = 60 (120 quarter notes a minute).♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+-       "whose": "file",
++       "field": "100",
++       "said": "The file states no tempo, so the app chose ♩ = 100.",
++       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength1 barKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · the app’s guess — The file states no tempo, so the app chose ♩ = 100.♩ = Use this tempoSwap the handsThe file writes its hands as separate parts; the app swaps only a piano’s two staves.What the notes askThe app could not measure its notes (the app could not read the score's notes (Error: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML)).Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
++       "whose": "guess",
+      },
+    },
+    "quarter = 96": {
+      "partwise": {
+        "field": "96",
+        "said": "The file says ♩ = 96.",
+        "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file says ♩ = 96.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "file",
+      },
+      "timewise": {
+-       "field": "96",
+-       "said": "The file says ♩ = 96.",
+-       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file says ♩ = 96.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+-       "whose": "file",
++       "field": "100",
++       "said": "The file states no tempo, so the app chose ♩ = 100.",
++       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength1 barKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · the app’s guess — The file states no tempo, so the app chose ♩ = 100.♩ = Use this tempoSwap the handsThe file writes its hands as separate parts; the app swaps only a piano’s two staves.What the notes askThe app could not measure its notes (the app could not read the score's notes (Error: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML)).Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
++       "whose": "guess",
+      },
+    },
+    "sound 100 at the opening, quarter = 132 in bar 2": {
+      "partwise": {
+        "field": "100",
+@@ -104,26 +104,26 @@
+        "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file says ♩ = 100.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "file",
+      },
+      "timewise": {
+        "field": "100",
+-       "said": "The file says ♩ = 100.",
+-       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · from the file — The file says ♩ = 100.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+-       "whose": "file",
++       "said": "The file states no tempo, so the app chose ♩ = 100.",
++       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength1 barKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · the app’s guess — The file states no tempo, so the app chose ♩ = 100.♩ = Use this tempoSwap the handsThe file writes its hands as separate parts; the app swaps only a piano’s two staves.What the notes askThe app could not measure its notes (the app could not read the score's notes (Error: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML)).Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
++       "whose": "guess",
+      },
+    },
+    "stated 72 on half = 60, sound 120 (E48)": {
+      "partwise": {
+        "field": "72",
+        "said": "You stated ♩ = 72.",
+        "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · yours — You stated ♩ = 72.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "yours",
+      },
+      "timewise": {
+-       "field": "72",
+-       "said": "You stated ♩ = 72.",
+-       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · yours — You stated ♩ = 72.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
++       "field": "",
++       "said": "You stated it.",
++       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength1 barKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · yours — You stated it.♩ = Use this tempoSwap the handsThe file writes its hands as separate parts; the app swaps only a piano’s two staves.What the notes askThe app could not measure its notes (the app could not read the score's notes (Error: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML)).Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "yours",
+      },
+    },
+    "stated 72 on no tempo (E48)": {
+      "partwise": {
+@@ -131,12 +131,12 @@
+        "said": "You stated ♩ = 72.",
+        "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · yours — You stated ♩ = 72.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "yours",
+      },
+      "timewise": {
+-       "field": "72",
+-       "said": "You stated ♩ = 72.",
+-       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength2 barsKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · yours — You stated ♩ = 72.♩ = Use this tempoSwap the handsIf the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.What the notes askMeasured in the notes: the bass-staff notes, the key signature and both hands together.Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
++       "field": "",
++       "said": "You stated it.",
++       "sheet": "Two stavesCloseYour own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.What the app readComposerA. ComposerLength1 barKey signatureone sharpWhat the app guessedHands · from the file — The file’s own staves.Tempo · yours — You stated it.♩ = Use this tempoSwap the handsThe file writes its hands as separate parts; the app swaps only a piano’s two staves.What the notes askThe app could not measure its notes (the app could not read the score's notes (Error: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML)).Where does it belong?Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.Which rungNo rung — just put it in my libraryStage 1 · First stepsLevelNo estimate — the app could not read the notes. Type a level if you know one.What it trainsTaken from the rung. Used by the Skills screen.SaveNot now",
+        "whose": "yours",
+      },
+    },
+  }
+
+ ❯ tests/unit/importSheet.test.ts:813:17
+    811|       wanted[shape] = { partwise: line, timewise: line };
+    812|     }
+    813|     expect(got).toEqual(wanted);
+       |                 ^
+    814|   }, 60_000);
+    815| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/importSheet.test.ts > swapping the hands > a piano file imported in the timewise form swaps like its partwise twin, and a corrected score handed over timewise is kept in the form the engraver loads (X3e)
+AssertionError: expected 'The file writes its hands as separate…' to be '<?xml version="1.0" encoding="UTF-8"?…' // Object.is equality
+
+Expected: "<?xml version="1.0" encoding="UTF-8"?><score-partwise version="4.0"><work><work-title>Two staves</work-title></work><identification><creator type="composer">A. Composer</creator></identification><part-list><score-part id="P1"><part-name>Piano</part-name></score-part></part-list><part id="P1"><measure number="1"><attributes><divisions>1</divisions><key><fifths>1</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><staves>2</staves><clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef></attributes><direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>96</per-minute></metronome></direction-type><staff>1</staff><sound tempo="96"/></direction><note><pitch><step>E</step><octave>4</octave></pitch><duration>4</duration><voice>1</voice><type>whole</type><staff>2</staff></note><backup><duration>4</duration></backup><note><pitch><step>C</step><octave>3</octave></pitch><duration>4</duration><voice>5</voice><type>whole</type><staff>1</staff></note></measure><measure number="2"><note><pitch><step>E</step><octave>4</octave></pitch><duration>4</duration><voice>1</voice><type>whole</type><staff>2</staff></note><backup><duration>4</duration></backup><note><pitch><step>C</step><octave>3</octave></pitch><duration>4</duration><voice>5</voice><type>whole</type><staff>1</staff></note></measure></part></score-partwise>"
+Received: "The file writes its hands as separate parts; the app swaps only a piano’s two staves."
+
+ ❯ tests/unit/importSheet.test.ts:902:62
+    900|     const swapped = swapHands(imported.data as string);
+    901|     const partwiseSwap = swapHands(twoStaves({ tempo: 96 }));
+    902|     expect('xml' in swapped ? swapped.xml : swapped.refused).toBe('xml…
+       |                                                              ^
+    903|
+    904|     // The store's other door: a corrected score in the timewise form …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening mark with its <sound tempo>, a mark alone, a compound metre’s dotted mark: the same events, map, label, timetable and count-in
+AssertionError: expected { halfWithSound: { …(2) }, …(2) } to deeply equal { halfWithSound: { …(2) }, …(2) }
+
+- Expected
++ Received
+
+@@ -20,28 +20,13 @@
+          ],
+          "plays": 90,
+        },
+      },
+      "timewise": {
+-       "events": [
+-         [
+-           0,
+-           0,
+-           90,
+-           "sound",
+-         ],
+-       ],
++       "events": [],
+        "readings": {
+-         "countsIn": 90,
+-         "labels": 90,
+-         "map": [
+-           {
+-             "atBeat": 0,
+-             "bpm": 90,
+-           },
+-         ],
+-         "plays": 90,
++         "refused": "OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+        },
+      },
+    },
+    "halfAlone": {
+      "partwise": {
+@@ -64,28 +49,13 @@
+          ],
+          "plays": 120,
+        },
+      },
+      "timewise": {
+-       "events": [
+-         [
+-           0,
+-           0,
+-           120,
+-           "mark",
+-         ],
+-       ],
++       "events": [],
+        "readings": {
+-         "countsIn": 120,
+-         "labels": 120,
+-         "map": [
+-           {
+-             "atBeat": 0,
+-             "bpm": 120,
+-           },
+-         ],
+-         "plays": 120,
++         "refused": "OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+        },
+      },
+    },
+    "halfWithSound": {
+      "partwise": {
+@@ -108,27 +78,12 @@
+          ],
+          "plays": 120,
+        },
+      },
+      "timewise": {
+-       "events": [
+-         [
+-           0,
+-           0,
+-           120,
+-           "sound",
+-         ],
+-       ],
++       "events": [],
+        "readings": {
+-         "countsIn": 120,
+-         "labels": 120,
+-         "map": [
+-           {
+-             "atBeat": 0,
+-             "bpm": 120,
+-           },
+-         ],
+-         "plays": 120,
++         "refused": "OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+        },
+      },
+    },
+  }
+
+ ❯ tests/unit/scoreModelTempo.test.ts:354:8
+    352|       halfAlone: await throughTheDoor('half alone', HALF_60),
+    353|       dotted: await throughTheDoor('dotted', DOTTED_60_SOUND_90),
+    354|     }).toEqual({
+       |        ^
+    355|       halfWithSound: both({ events: [[0, 0, 120, 'sound']], readings: …
+    356|       halfAlone: both({ events: [[0, 0, 120, 'mark']], readings: at(12…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > an opening <sound tempo> a bar-2 mark does not displace, and genuine later changes where they stand: a bar-2 half-note mark, a change in the middle of bar 2, a second part’s change at its own divisions
+AssertionError: expected { opensAt100: { …(2) }, …(3) } to deeply equal { opensAt100: { …(2) }, …(3) }
+
+- Expected
++ Received
+
+@@ -30,38 +30,13 @@
+          ],
+          "plays": 60,
+        },
+      },
+      "timewise": {
+-       "events": [
+-         [
+-           0,
+-           0,
+-           60,
+-           "sound",
+-         ],
+-         [
+-           1,
+-           0,
+-           120,
+-           "mark",
+-         ],
+-       ],
++       "events": [],
+        "readings": {
+-         "countsIn": 60,
+-         "labels": 60,
+-         "map": [
+-           {
+-             "atBeat": 0,
+-             "bpm": 60,
+-           },
+-           {
+-             "atBeat": 4,
+-             "bpm": 120,
+-           },
+-         ],
+-         "plays": 60,
++         "refused": "OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+        },
+      },
+    },
+    "midBar": {
+      "partwise": {
+@@ -94,38 +69,13 @@
+          ],
+          "plays": 60,
+        },
+      },
+      "timewise": {
+-       "events": [
+-         [
+-           0,
+-           0,
+-           60,
+-           "sound",
+-         ],
+-         [
+-           1,
+-           2,
+-           90,
+-           "sound",
+-         ],
+-       ],
++       "events": [],
+        "readings": {
+-         "countsIn": 60,
+-         "labels": 60,
+-         "map": [
+-           {
+-             "atBeat": 0,
+-             "bpm": 60,
+-           },
+-           {
+-             "atBeat": 6,
+-             "bpm": 90,
+-           },
+-         ],
+-         "plays": 60,
++         "refused": "OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+        },
+      },
+    },
+    "opensAt100": {
+      "partwise": {
+@@ -158,38 +108,13 @@
+          ],
+          "plays": 100,
+        },
+      },
+      "timewise": {
+-       "events": [
+-         [
+-           0,
+-           0,
+-           100,
+-           "sound",
+-         ],
+-         [
+-           1,
+-           0,
+-           132,
+-           "sound",
+-         ],
+-       ],
++       "events": [],
+        "readings": {
+-         "countsIn": 100,
+-         "labels": 100,
+-         "map": [
+-           {
+-             "atBeat": 0,
+-             "bpm": 100,
+-           },
+-           {
+-             "atBeat": 4,
+-             "bpm": 132,
+-           },
+-         ],
+-         "plays": 100,
++         "refused": "OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+        },
+      },
+    },
+    "twoParts": {
+      "partwise": {
+@@ -222,37 +147,12 @@
+          ],
+          "plays": 60,
+        },
+      },
+      "timewise": {
+-       "events": [
+-         [
+-           0,
+-           0,
+-           60,
+-           "sound",
+-         ],
+-         [
+-           1,
+-           2,
+-           90,
+-           "sound",
+-         ],
+-       ],
++       "events": [],
+        "readings": {
+-         "countsIn": 60,
+-         "labels": 60,
+-         "map": [
+-           {
+-             "atBeat": 0,
+-             "bpm": 60,
+-           },
+-           {
+-             "atBeat": 6,
+-             "bpm": 90,
+-           },
+-         ],
+-         "plays": 60,
++         "refused": "OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+        },
+      },
+    },
+  }
+
+ ❯ tests/unit/scoreModelTempo.test.ts:388:8
+    386|       midBar: await throughTheDoor('mid bar', midBar),
+    387|       twoParts: await throughTheDoor('two parts', twoParts),
+    388|     }).toEqual({
+       |        ^
+    389|       opensAt100: both({
+    390|         events: [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/scoreModelTempo.test.ts > a timewise file reads as its partwise twin, through the import door (X3e) > the learner’s stated tempo written into the file (E48): the same opening on the half-note shape, on a file whose only mark is in bar 2, and on a file with no tempo at all
+AssertionError: expected { halfWithSound: { …(2) }, …(2) } to deeply equal { halfWithSound: { …(2) }, …(2) }
+
+- Expected
++ Received
+
+@@ -20,28 +20,13 @@
+          ],
+          "plays": 72,
+        },
+      },
+      "timewise": {
+-       "events": [
+-         [
+-           0,
+-           0,
+-           72,
+-           "sound",
+-         ],
+-       ],
++       "events": [],
+        "readings": {
+-         "countsIn": 72,
+-         "labels": 72,
+-         "map": [
+-           {
+-             "atBeat": 0,
+-             "bpm": 72,
+-           },
+-         ],
+-         "plays": 72,
++         "refused": "OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+        },
+      },
+    },
+    "markOnlyInBar2": {
+      "partwise": {
+@@ -74,41 +59,16 @@
+          ],
+          "plays": 72,
+        },
+      },
+      "timewise": {
+-       "events": [
+-         [
+-           0,
+-           0,
+-           72,
+-           "sound",
+-         ],
+-         [
+-           1,
+-           0,
+-           132,
+-           "sound",
+-         ],
+-       ],
++       "events": [],
+        "readings": {
+-         "countsIn": 72,
+-         "labels": 72,
+-         "map": [
+-           {
+-             "atBeat": 0,
+-             "bpm": 72,
+-           },
+-           {
+-             "atBeat": 4,
+-             "bpm": 132,
++         "refused": "OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+        },
+-         ],
+-         "plays": 72,
+      },
+    },
+-   },
+    "noTempo": {
+      "partwise": {
+        "events": [
+          [
+            0,
+@@ -128,27 +88,12 @@
+          ],
+          "plays": 72,
+        },
+      },
+      "timewise": {
+-       "events": [
+-         [
+-           0,
+-           0,
+-           72,
+-           "sound",
+-         ],
+-       ],
++       "events": [],
+        "readings": {
+-         "countsIn": 72,
+-         "labels": 72,
+-         "map": [
+-           {
+-             "atBeat": 0,
+-             "bpm": 72,
+-           },
+-         ],
+-         "plays": 72,
++         "refused": "OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+        },
+      },
+    },
+  }
+
+ ❯ tests/unit/scoreModelTempo.test.ts:431:8
+    429|       markOnlyInBar2: await throughTheDoor('stated bar 2', MARK_ONLY_I…
+    430|       noTempo: await throughTheDoor('stated bare', score([]), 72),
+    431|     }).toEqual({
+       |        ^
+    432|       halfWithSound: both({ events: [[0, 0, 72, 'sound']], readings: a…
+    433|       markOnlyInBar2: both({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  3 failed | 2 passed (5)
+      Tests  5 failed | 60 passed (65)
+   Start at  10:19:19
+   Duration  3.36s (environment 47%, tests 33%, transform 13%, import 7%)
+
+exit 1

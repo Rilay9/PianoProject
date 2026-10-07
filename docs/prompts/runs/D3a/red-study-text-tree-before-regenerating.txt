@@ -1,0 +1,19 @@
+study loaded from the worktree
+test_the_report_makes_placement_no_owners (tests.test_study.TestTheCandidateRungsReport.test_the_report_makes_placement_no_owners)
+D3a (`responses/ee70b43.md`): placement is F's on a stated gate that needs no owner — a ... FAIL
+
+======================================================================
+FAIL: test_the_report_makes_placement_no_owners (tests.test_study.TestTheCandidateRungsReport.test_the_report_makes_placement_no_owners)
+D3a (`responses/ee70b43.md`): placement is F's on a stated gate that needs no owner — a
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af414581e137851f7\tools\content\tests\test_study.py", line 384, in test_the_report_makes_placement_no_owners
+    self.assertEqual(header, text.split("\n## ")[0].rstrip("\n"), "the committed report's opening is not its source's")
+AssertionError: "# Ca[390 chars]study, and placement stays F's and the owner's[78 chars]sic." != "# Ca[390 chars]study. Placement is F's, on a stated gate that[304 chars]sic."
+Diff is 919 characters long. Set self.maxDiff to None to see it. : the committed report's opening is not its source's
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)
+exit 1

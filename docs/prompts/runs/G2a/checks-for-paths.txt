@@ -1,0 +1,12 @@
+python tools/docs/checks_for_paths.py app/src/evidence/transferPolicy.ts app/src/evidence/ladder.ts app/tests/unit/transferPolicy.test.ts app/tests/unit/masteryLadder.test.ts (in .)
+# checks for 4 path(s): 4 matched, 0 unmatched
+# app/src/evidence/transferPolicy.ts: app/src/**, app/src/evidence/**
+# app/src/evidence/ladder.ts: app/src/**, app/src/evidence/**
+# app/tests/unit/transferPolicy.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/masteryLadder.test.ts: app/tests/unit/*.test.ts
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/competence.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/progress.spec.ts tests/e2e/score.ladder-route.spec.ts tests/e2e/today.spec.ts --workers=4
+exit=0

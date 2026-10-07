@@ -1,0 +1,144 @@
+{
+  "header": {
+    "pdmxDir": "<archive dir>",
+    "layout": "mxl.tar.gz",
+    "note": "two-row shortlist for the A7a.3 probe (the BB1 workaround): the Qmdyj (St James) and QmYutJ (St. Louis Blues) CSV rows run through shortlist.select() over a one-row CSV; extract.py --cid and quarry.py read only candidates.json or index.json",
+    "csvSha256": "66d82911c027e08bff869df6f16a379570d742ca5ca4d7712da262bf74bcb1f7",
+    "csvBytes": 209574867,
+    "csvRows": 254077,
+    "rejectionRates": {
+      "3": {
+        "offered": 1,
+        "passed": 1,
+        "reasons": {},
+        "rejectionRate": 0.0
+      },
+      "1-2": {
+        "offered": 1,
+        "passed": 1,
+        "reasons": {},
+        "rejectionRate": 0.0
+      }
+    }
+  },
+  "rows": [
+    {
+      "cid": "QmYutJi8H9KmexPTGDuRXTzQNkqnu1Jk8ERW1gZiMs33ZG",
+      "ok": true,
+      "reason": "",
+      "gate": "",
+      "title": "st louis blues",
+      "composer": null,
+      "converted": "converted/QmYutJi8H9KmexPTGDuRXTzQNkqnu1Jk8ERW1gZiMs33ZG.mxl",
+      "raw_sha256": "d3e5a851099883b46adbc214c8244298344cad1cc4a21ba10263a2abe970c3b6",
+      "converted_sha256": "e41004fe86dacdca366b5a069b8b4d0efadead023666d9a9a5a91b27ae4147e6",
+      "measures": 28,
+      "notes": 115,
+      "staves": 1,
+      "tempo_bpm": 96.0,
+      "tempo_defaulted": true,
+      "single_line": true,
+      "lyrics_stripped": 0,
+      "features": {
+        "bars": 28.0,
+        "notesPerBar": 3.2857142857142856,
+        "notesPerSecond": 1.3142857142857143,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 15.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.22826086956521738,
+        "keyAccidentals": 4.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 5.0
+      },
+      "level": 3.03,
+      "level_source": "model",
+      "level_drivers": [
+        [
+          "rangeLeft",
+          -1.336
+        ],
+        [
+          "notesPerSecond",
+          -0.505
+        ],
+        [
+          "notesPerBar",
+          -0.375
+        ]
+      ],
+      "duplicate_of": null,
+      "render_steps": 0,
+      "render_cursor_steps": 0,
+      "render_ms": 0.0
+    },
+    {
+      "cid": "Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs",
+      "ok": true,
+      "reason": "",
+      "gate": "",
+      "title": "St James Infirmary",
+      "composer": null,
+      "converted": "converted/Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs.mxl",
+      "raw_sha256": "cffce9542f7982f73082449cab59b0341012cbef96c6bf23b70fc9c940a203b8",
+      "converted_sha256": "9eceb857dce2409ca57860006b71c892f358d5f5d43b61e9660778cf9dff606d",
+      "measures": 24,
+      "notes": 136,
+      "staves": 1,
+      "tempo_bpm": 96.0,
+      "tempo_defaulted": true,
+      "single_line": true,
+      "lyrics_stripped": 151,
+      "features": {
+        "bars": 24.0,
+        "notesPerBar": 3.9583333333333335,
+        "notesPerSecond": 1.5833333333333333,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 8.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 12.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.021052631578947368,
+        "keyAccidentals": 1.0,
+        "shortestValue": 0.25,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 6.0
+      },
+      "level": 2.52,
+      "level_source": "model",
+      "level_drivers": [
+        [
+          "rangeLeft",
+          -1.336
+        ],
+        [
+          "notesPerSecond",
+          -0.456
+        ],
+        [
+          "rangeRight",
+          -0.407
+        ]
+      ],
+      "duplicate_of": null,
+      "render_steps": 0,
+      "render_cursor_steps": 0,
+      "render_ms": 0.0
+    }
+  ]
+}

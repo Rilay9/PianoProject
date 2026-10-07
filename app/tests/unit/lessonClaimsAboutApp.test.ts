@@ -46,8 +46,7 @@ import {
 import { drillFromCatalog } from '../../src/engine/drills/fromCatalog';
 import { masteryCriteriaFor } from '../../src/curriculum/selectors';
 import { DEFAULT_MASTERY } from '../../src/engine/Scoring';
-import { nextRecommended, readingMoves, readingOffer } from '../../src/curriculum/session';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { nextRecommended, readingMoves, readingOffer, taughtAtRung } from '../../src/curriculum/session';
 import { hasChordSymbols } from '../../src/ui/openItem';
 import type { CatalogItem, Curriculum, Lesson, LessonTool } from '../../src/curriculum/types';
 
@@ -1305,13 +1304,19 @@ const T12_APP: [string, string, () => boolean][] = [
   ],
   [
     '2.5',
-    'Ode to Joy in G is on the very next core rung, and this rung already carries a G setting',
+    // Wave 1(b) edit 2 replaced "Its version in G is on the next rung" with the transposition task:
+    // the G edition is now on this rung too, opened by the rung's blind tool, and still on 3.1.
+    'Ode to Joy in G is on this rung, opened by Check your G version, page hidden, and this rung already carries a G setting',
     () => {
       const core = t12Core();
       const inG = t12RungsOffering((id) => id === 'song.classical.ode-to-joy.g');
       return (
+        inG.includes('2.5') &&
         inG.includes('3.1') &&
         core.indexOf('3.1') === core.indexOf('2.5') + 1 &&
+        (rung('2.5').tools ?? []).some(
+          (tool) => tool.kind === 'blind' && tool.item === 'song.classical.ode-to-joy.g' && tool.label === 'Check your G version, page hidden',
+        ) &&
         rung('2.5').songOptions.includes('song.classical.beethoven-ode-to-joy.easy')
       );
     },
@@ -1439,12 +1444,9 @@ const T12_APP: [string, string, () => boolean][] = [
     () => {
       const position = nextRecommended(curriculum, NO_RUNS, ['core'], { startAt: '3.4' });
       const offer = readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows: [], today: new Date(2026, 9, 1), purpose: 'daily' });
-      // What the curriculum has taught by 3.4 (the vocabulary's `taughtAt`, in the curriculum's own order).
-      const order = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
-      const taught = (demand: string): boolean => {
-        const rung = VOCABULARY_V0.demands.find((d) => d.id === demand)?.taughtAt;
-        return rung !== null && rung !== undefined && order.indexOf(rung) >= 0 && order.indexOf(rung) <= order.indexOf('3.4');
-      };
+      // What the curriculum has taught by 3.4: `taughtAtRung`, 3.4's ancestry. Revised (E0b): it was one
+      // `taughtAt` rung in the curriculum's own order; `taughtAt` is a list now, one rung per path.
+      const taught = (demand: string): boolean => taughtAtRung(curriculum, '3.4')?.(demand) ?? false;
       const row = item('drill.reading.sight-reading-2');
       const moves = readingMoves({ curriculum, item: row, recipe: { row: row.id }, rung: '3.4' });
       const on = moves.filter((move) => move.direction === 'on');
@@ -1771,15 +1773,20 @@ const T12_APP: [string, string, () => boolean][] = [
   [
     '4.7',
     'blind hides the score and the cursor and leaves the count-in and the beat dot',
+    // Revised by U122c (class: replace): the count-in and the beat dot left the stage — the count
+    // into the bar beside ⏸, the dot beside `bar n / m` — so the stage the blind rule hides no longer
+    // holds them, and the rule that showed them on it again went. The claim is the same; the check
+    // reads where they are. Line endings normalised, so a Windows checkout reads what CI reads.
     () => {
-      const css = t12Repo('app/src/style.css');
-      const shown = /\.score-stage--blind \.score-countin,[\s\S]*?\{/.exec(css)?.[0] ?? '';
+      const css = t12Repo('app/src/style.css').replace(/\r\n/g, '\n');
+      const screen = source('ui/screens/ScoreScreen.ts').replace(/\r\n/g, '\n');
       return (
         css.includes('.score-stage--blind {\n  visibility: hidden;\n}') &&
         css.includes('.score-stage--blind .score-buffer') &&
-        shown.includes('.score-countin') &&
-        shown.includes('.score-beat') &&
-        !shown.includes('.score-cursor')
+        screen.includes('bar.appendChild(countIn)') &&
+        screen.includes('headRow.insertBefore(beatDot, where)') &&
+        screen.includes('topLine.prepend(beatDot)') &&
+        !/stage\.appendChild\((countIn|beatDot)\)/.test(screen)
       );
     },
   ],
@@ -2326,10 +2333,14 @@ const T12B_APP: [string, string, () => boolean][] = [
     'ragtime.6',
     "the score's tempo comes from the file, and the app's own default is used only when the file states none",
     () => {
+      // Revised in X3d: the map is placed from the file's own tempo events (`tempoFromXml`), no longer from
+      // the engraver's `CurrentBpm`, which misread a metronome mark's note; the default still fills only a
+      // map that is empty or starts after beat 0 (the claim holds, and more exactly than before).
       const extract = source('score/extractScoreModel.ts');
       return (
-        extract.includes('const bpm = it.CurrentBpm;') &&
-        extract.includes('tempoMap.push({ atBeat: onset, bpm })') &&
+        extract.includes('tempoEvents(options.musicXml)') &&
+        extract.includes('placeTempo(') &&
+        !extract.includes('CurrentBpm') &&
         extract.includes('tempoMap.length === 0') &&
         extract.includes('options.defaultBpm ?? DEFAULT_BPM')
       );
@@ -2435,15 +2446,20 @@ const T12B_APP: [string, string, () => boolean][] = [
   ],
   [
     'improv.6',
-    'the rung frees the minor vamp\'s progression so ii7 V7 I can be typed there, and leaves its key locked',
+    // Wave 1(a) seam 1a.5 edit 12 (2026-10-05): the key is freed too. Locked to A minor,
+    // the lab's ii–V–I is iiø7 V7 i, not the lesson's ii7 V7 I, and the lesson asks for
+    // three major keys; the left hand stays the preset's.
+    'the rung frees the minor vamp\'s progression and key so ii7 V7 I can be typed in a major key, and leaves its left hand locked',
     () => {
       const preset = labPreset('minor-vamp');
       const locked = labLocksFor(preset, freedBy('improv.6'));
       return (
         labTools('improv.6').join(',') === 'minor-vamp' &&
         preset?.locks.includes('progression') === true &&
+        preset?.locks.includes('key') === true &&
         !locked.has('progression') &&
-        locked.has('key')
+        !locked.has('key') &&
+        locked.has('leftHand')
       );
     },
   ],
@@ -2752,15 +2768,23 @@ const T12B_APP: [string, string, () => boolean][] = [
   ],
   [
     'ragtime.8',
-    'Euphonic Sounds is in no catalog row, and the rung\'s five Joplin rags all come from the same non-public-domain edition',
+    // Q76: the rung gained Pine Apple Rag's public-domain Mutopia edition, so "five Joplin rags, all from the
+    // same non-public-domain edition" became five from that edition and Pine Apple Rag again from Mutopia, and
+    // Euphonic Sounds is in neither source.
+    'Euphonic Sounds is in no catalog row, and the rung\'s five Joplin rags come from one non-public-domain edition, with Pine Apple Rag also in a public-domain one',
     () => {
       const songs = rung('ragtime.8').songOptions ?? [];
       const joplin = songs.filter((id) => id.includes('joplin-'));
+      const nc = joplin.filter((id) => t12bFields(id).tags.includes('nc-personal-build'));
+      const publicDomain = joplin.filter((id) => !t12bFields(id).tags.includes('nc-personal-build'));
       return (
         catalog.filter((row) => /euphonic/i.test(`${row.id} ${row.title ?? ''}`)).length === 0 &&
         t12Repo('content/sources/kern.json').includes('joplin/euphonic') &&
-        joplin.length === 5 &&
-        joplin.every((id) => t12bFields(id).tags.includes('nc-personal-build'))
+        !/euphonic/i.test(t12Repo('content/sources/mutopia.json')) &&
+        nc.length === 5 &&
+        publicDomain.length === 1 &&
+        publicDomain[0] === 'song.ragtime.joplin-pine-apple-rag.mutopia' &&
+        t12bFields(publicDomain[0]).tags.includes('mutopia')
       );
     },
   ],
@@ -2893,7 +2917,7 @@ import {
 import { LAB_KEYS, labKey, romanToLabChord } from '../../src/engine/sightReading';
 import { CHORD_SCALES, chordScaleFor, nameHeldChord, romanToChord } from '../../src/engine/drills/theory';
 import { simonForStage } from '../../src/engine/drills/simon';
-import { fifthsFor } from '../../src/engine/drills/answerSheet';
+import { fifthsFor, sheetForPrompt } from '../../src/engine/drills/answerSheet';
 import { barSchedule } from '../../src/audio/backingLoop';
 import { appPitches } from '../../src/score/ScoreSession';
 
@@ -3011,7 +3035,10 @@ const T19_APP: [string, string, () => boolean][] = [
       // lives on the Library's line of doors. `0.3` is the third: its tour of
       // the app names the lab and says in the same sentence that it is under
       // Library (Entry 55 found it as the one lesson still calling it *Lab*).
-      const allowed = new Set(['1.5:simon', '3.6:lab', '0.3:lab']);
+      // `jazz.6` is the fourth (G6b): its minor ii-V-i section sends the learner
+      // to *Free play* for the four-note comparison and says in the same
+      // sentence that it is on Today (the `G6B_APP` row pins Today's button).
+      const allowed = new Set(['1.5:simon', '3.6:lab', '0.3:lab', 'jazz.6:play']);
       const wrong: string[] = [];
       for (const lesson of t19Rungs()) {
         const kinds = new Set<string>((lesson.tools ?? []).map((tool) => tool.kind));
@@ -3117,10 +3144,13 @@ const T19_APP: [string, string, () => boolean][] = [
     'the duet opens a hands-together tune',
     () => t19FirstSong('2.1') === 'song.classical.ode-to-joy.ht',
   ],
+  // Revised (L120c item 8). Old assumption: the duet opens the easy Canon in D, 3.5's first song. The Canon's
+  // sixteenths (bars 37-44) need 4.4, which teaches them, so it left 3.5 (4.6 and 4.7 list it) and Schumann's
+  // Chorale took its place: four voices in half notes, the chord changes legato pedalling is about.
   [
     '3.5',
-    'the duet opens the easy Canon in D',
-    () => t19FirstSong('3.5') === 'song.classical.pachelbel-canon-d.easy',
+    'the duet opens Schumann’s Chorale from the Album for the Young',
+    () => t19FirstSong('3.5') === 'song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx',
   ],
   [
     '3.6',
@@ -3208,11 +3238,13 @@ const T19_APP: [string, string, () => boolean][] = [
   ],
   [
     'ragtime.8',
-    'the one button is blind, and it opens Pine Apple Rag — first of the rung’s six',
+    // Q76: seven since Pine Apple Rag's public-domain edition joined the rung, second, after its other edition.
+    'the one button is blind, and it opens Pine Apple Rag — first of the rung’s seven',
     () =>
       t19Kinds('ragtime.8').join(',') === 'blind' &&
       t19FirstSong('ragtime.8') === 'song.ragtime.joplin-pine-apple-rag' &&
-      rung('ragtime.8').songOptions.length === 6,
+      rung('ragtime.8').songOptions[1] === 'song.ragtime.joplin-pine-apple-rag.mutopia' &&
+      rung('ragtime.8').songOptions.length === 7,
   ],
   [
     'blues.5',
@@ -3290,16 +3322,23 @@ const T19_APP: [string, string, () => boolean][] = [
   ],
 
   // --- three duets that now name an exercise, because the songs cannot ------
+  // Revised (F2 item 5, L111): the two Latin rows. Old assumption: the rung carries a duet tool naming its
+  // two-staff groove, and the lesson says *Play it as a duet* opens it. The groove is generated music with
+  // no teaching-use decision, so the page draws no button for it (D3c); the tool and the sentence went
+  // together, and the rows now hold that no duet is claimed while the one two-staff option is still the
+  // rung's and still undecided. The songs are printed on one staff, as before.
   [
     'latin.3',
-    'the duet names the son clave over a quarter-note pulse — the one option here with two staves — because all three of the rung’s songs are printed on one',
+    'no duet: the son clave over a pulse, the one option here with two staves, has no teaching-use decision, so the rung carries no duet tool and the lesson names none; the songs are printed on one staff each',
     () => {
-      const named = t19Item('latin.3', 'duet');
+      const pulse = item('exercise.clave.son-3-2.pulse');
       const songs = rung('latin.3').songOptions;
       return (
-        named === 'exercise.clave.son-3-2.pulse' &&
-        rung('latin.3').exerciseOptions.includes(named) &&
-        t19Staves(named) === 2 &&
+        !t19Kinds('latin.3').includes('duet') &&
+        rung('latin.3').exerciseOptions.includes(pulse.id) &&
+        t19Staves(pulse.id) === 2 &&
+        pulse.provenance?.facts.promise?.value === 'music' &&
+        pulse.provenance.review.teaching !== true &&
         songs.length === 3 &&
         songs.every((id) => t19Staves(id) === 1)
       );
@@ -3307,14 +3346,16 @@ const T19_APP: [string, string, () => boolean][] = [
   ],
   [
     'latin',
-    'the duet names the tumbao-and-montuno exercise, because five of the rung’s six songs are printed on one staff',
+    'no duet: the tumbao-and-montuno groove, the rung’s two-staff exercise, has no teaching-use decision, so the rung carries no duet tool and the lesson names none; five of its six songs are printed on one staff',
     () => {
-      const named = t19Item('latin', 'duet');
+      const groove = item('exercise.latin-groove.c.son-3-2');
       const songs = rung('latin').songOptions;
       return (
-        named === 'exercise.latin-groove.c.son-3-2' &&
-        rung('latin').exerciseOptions.includes(named) &&
-        t19Staves(named) === 2 &&
+        !t19Kinds('latin').includes('duet') &&
+        rung('latin').exerciseOptions.includes(groove.id) &&
+        t19Staves(groove.id) === 2 &&
+        groove.provenance?.facts.promise?.value === 'music' &&
+        groove.provenance.review.teaching !== true &&
         songs.filter((id) => t19Staves(id) === 1).length === 5
       );
     },
@@ -3569,6 +3610,9 @@ import { SWING_OFFBEAT } from '../../src/audio/backingLoop';
 import { swungOnset } from '../../src/engine/prepareSession';
 import { CHORD_BOUNDARY_MS, chordScaleDrill } from '../../src/engine/drills/harmony';
 import { harness as f0Harness, makeModel as f0Model, note as f0Note } from './helpers/engineHarness';
+import { mxlToMusicXml } from '../../src/score/mxl';
+import { tempoEvents } from '../../src/score/tempoFromXml';
+import { chartBars, readHarmony } from '../../src/score/harmony';
 
 const F0_LESSONS = resolve('..', 'content', 'lessons');
 
@@ -3757,10 +3801,554 @@ const F0_APP: [string, string, () => boolean][] = [
       );
     },
   ],
+  // F3a (T52, Entry 157): the three sentences F0 found contradicting the app,
+  // each joined to the app's own fact, so the row fails if the fact moves
+  // under the sentence. A pace or effort word in these sentences would need
+  // an ear or a measure the app does not carry; the sentence says what the
+  // app does or what the page shows instead.
+  [
+    '1.5',
+    "The Water Is Wide is named with no pace, while the app plays it at convert.py's default because the upload has no tempo of its own",
+    () => {
+      const id = 'song.folk.the-water-is-wide.pdmx';
+      const text = f0Text('1.5');
+      const sentence = text.split(/(?<=[.!?])\s+/).find((s) => s.includes('The Water Is Wide')) ?? '';
+      return (
+        rung('1.5').songOptions.includes(id) &&
+        (item(id).tags ?? []).includes('tempo-defaulted') &&
+        sentence !== '' &&
+        !/\b(?:slow|slower|fast|faster|quick|brisk|gentle|gentler|lively|stately)\b/i.test(sentence) &&
+        text.includes('The Water Is Wide is the tune: a Scottish air whose melody is mostly steps')
+      );
+    },
+  ],
+  [
+    'ragtime.6',
+    'The Easy Winners is ranked by no effort the three levels do not carry, and is named for the flats its file has most of',
+    () => {
+      const winners = item('song.ragtime.joplin-easy-winners');
+      const peacherine = item('song.ragtime.joplin-peacherine-rag');
+      const entertainer = item('song.ragtime.joplin-entertainer');
+      const flattest = (row: CatalogItem): number => Math.min(...(row.notation?.keys ?? []).map((k) => k.fifths));
+      const text = f0Text('ragtime.6');
+      const entry = text.slice(text.indexOf('The Easy Winners (1901)'), text.indexOf('Two more sit behind them'));
+      const ranksByEffort = /most work|most rewarding|hardest|most demanding|most difficult/i.test(entry);
+      const levelsCarryIt = winners.level > peacherine.level && winners.level > entertainer.level;
+      return (
+        [winners, peacherine, entertainer].every((row) => rung('ragtime.6').songOptions.includes(row.id)) &&
+        (!ranksByEffort || levelsCarryIt) &&
+        (winners.notation?.keys ?? []).map((k) => k.fifths).join(',') === '-4,-5' &&
+        flattest(winners) < flattest(peacherine) &&
+        flattest(winners) < flattest(entertainer) &&
+        entry.includes('A flat, four strains, and the most flats of the three: four, then five in the trio.')
+      );
+    },
+  ],
+  [
+    // The brief's premise was that the app plays the two at one tempo. Until
+    // X42 it did only at the catalogue's figure and at the opening: Maple
+    // Leaf's file writes a words-only <sound tempo="120"> beside its printed
+    // quarter = 100 (with its own 100) at two places, and the one tempo reader
+    // (`tempoFromXml`, which the engine's map is placed from) took the first
+    // sound. Since X42 (Entry 185) the sound that agrees with the printed mark
+    // wins there, so the reader plays Maple Leaf at 100 at every position it
+    // states a tempo, as the catalogue says and as it plays Sugar Cane: the two
+    // surfaces now agree. The sentence still makes no pace comparison (whether
+    // it should now make one is put to the reviewer, X42's report); the row
+    // holds both facts so that either moving sends a reader back to it.
+    'ragtime.7',
+    "Sugar Cane is likened to Maple Leaf at no pace, while the catalogue and the app's tempo map both give the two one tempo",
+    () => {
+      const sugar = item('song.ragtime.joplin-sugar-cane');
+      const maple = item('song.ragtime.joplin-maple-leaf-rag');
+      const bpms = (row: CatalogItem): number[] =>
+        tempoEvents(mxlToMusicXml(new Uint8Array(readFileSync(join(CONTENT, row.file ?? ''))))).map((e) => e.bpm);
+      const text = f0Text('ragtime.7');
+      const sentence = text.split(/(?<=[.!?])\s+/).find((s) => s.includes('Sugar Cane')) ?? '';
+      return (
+        rung('ragtime.7').songOptions.includes(sugar.id) &&
+        rung('ragtime.7').songOptions.includes(maple.id) &&
+        typeof sugar.tempoBpm === 'number' &&
+        sugar.tempoBpm === maple.tempoBpm &&
+        bpms(sugar).join(',') === '100' &&
+        bpms(maple).join(',') === '100,100,100' &&
+        sentence !== '' &&
+        !/\b(?:pace|tempo|slow|slower|fast|faster|gentle|gentler|quick|quicker|brisk)\b/i.test(sentence) &&
+        text.includes('Beyond the five above there is Sugar Cane, a rag in the Maple Leaf mould.')
+      );
+    },
+  ],
+  [
+    // L120c (the reviewer's Question 3 on L120a): 4.4 teaches the Hanon page's sixteenths as four even notes to the
+    // quarter-note beat, "four even notes per metronome click". That holds only while Hanon 1-5 are written in 2/4
+    // and the Score screen's metronome clicks once per quarter-note beat: `prepareSession` counts beats in quarter
+    // notes (2/4 is two), and the session's metronome takes its tempo from that beat and its bar from that count.
+    // The page's own values (every note a sixteenth but the last, beamed in fours on the beat) are held by
+    // `tools/content/tests/test_sixteenths_owner.py` against the built files.
+    '4.4',
+    'Hanon 1 to 5 are in 2/4, and the metronome clicks once per quarter-note beat, so four sixteenths go to each click',
+    () => {
+      const hanon = [1, 2, 3, 4, 5].map((n) => item(`exercise.hanon.0${String(n)}.both`));
+      const session = source('score/ScoreSession.ts');
+      const prepare = source('engine/prepareSession.ts');
+      return (
+        hanon.every((row) => rung('4.4').exerciseOptions.includes(row.id)) &&
+        hanon.every((row) => ((row.notation as { times?: string[] } | undefined)?.times ?? []).join(',') === '2/4') &&
+        prepare.includes('const beatsPerBar = timeSig ? (timeSig.beats * 4) / timeSig.beatType : 4;') &&
+        prepare.includes('model.beatToMs(startBeat + 1, tempoScale) - model.beatToMs(startBeat, tempoScale)') &&
+        session.includes('bpm: prepared ? 60_000 / prepared.msPerBeat : 80,') &&
+        session.includes('beatsPerBar: prepared?.options.beatsPerBar ?? 4,') &&
+        f0Text('4.4').includes('four even notes per metronome click')
+      );
+    },
+  ],
 ];
 
 describe('F0: the corrected lessons say only what the app does', () => {
   for (const [lesson, says, holds] of F0_APP) {
+    it(`${lesson}: ${says}`, () => {
+      expect(holds()).toBe(true);
+    });
+  }
+});
+
+// --- G6b: jazz.6's minor ii-V-i section ----------------------------------------------------------
+//
+// The section added to `jazz.6.md` by G6b (the brief `docs/prompts/runs/curriculum-review-2026-10-05/
+// briefs/g6-minor-shells.md`, lane G6b; the chain record `docs/chains/A7b.1.yaml`, steps 1, 2 and 4).
+// One row per app fact the section states: what the drill asks and how it judges, what the staff
+// behind it draws, what Free play names, and what the rung counts. Each row also reads the lesson's
+// own sentence, so neither side can move alone. Red against the catalogue and curriculum before G6b
+// (no minor drill on jazz.6, a generic count of 1, and an answer staff that chose its own key).
+
+function g6bText(): string {
+  return readFileSync(join(F0_LESSONS, 'jazz.6.md'), 'utf8')
+    .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
+    .replace(/\*/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+const G6B_DRILL = 'drill.jazz.minor-ii-v-i-shells';
+
+/** Every card of one run of the minor drill, at a seed. */
+function g6bCards(seed?: number): DrillPromptShape[] {
+  const drill = drillFromCatalog(item(G6B_DRILL), seed === undefined ? {} : { seed });
+  const out: DrillPromptShape[] = [];
+  for (let prompt = drill?.next() ?? null; prompt; prompt = drill?.next() ?? null) out.push(prompt);
+  return out;
+}
+type DrillPromptShape = NonNullable<ReturnType<NonNullable<ReturnType<typeof drillFromCatalog>>['next']>>;
+
+/** The signature a staff writes and the accidental each written pitch needs under it, as `G7 B natural`. */
+function g6bStaff(card: DrillPromptShape): { fifths: number; marked: string[] } {
+  const xml = sheetForPrompt(card) ?? '';
+  const fifths = Number(/<fifths>(-?\d+)<\/fifths>/.exec(xml)?.[1] ?? Number.NaN);
+  const inKey = (step: string): number =>
+    fifths > 0 ? ('FCGDAEB'.slice(0, fifths).includes(step) ? 1 : 0) : fifths < 0 ? ('BEADGCF'.slice(0, -fifths).includes(step) ? -1 : 0) : 0;
+  const marked: string[] = [];
+  for (const m of xml.matchAll(/<step>([A-G])<\/step>\s*(?:<alter>(-?\d+)<\/alter>\s*)?<octave>/g)) {
+    const step = m[1] as string;
+    const alter = Number(m[2] ?? 0);
+    if (alter !== inKey(step)) marked.push(`${step} ${alter < 0 ? 'flat' : alter > 0 ? 'sharp' : 'natural'}`);
+  }
+  return { fifths, marked };
+}
+
+const G6B_APP: [string, string, () => boolean][] = [
+  [
+    'jazz.6',
+    'the minor drill is among the page’s exercises, and what counts is two exercises, one of them the minor drill',
+    () => {
+      const text = g6bText();
+      const reqs = rung('jazz.6').requirements ?? [];
+      return (
+        rung('jazz.6').exerciseOptions.includes(G6B_DRILL) &&
+        item(G6B_DRILL).title === 'Minor ii-V-i with shell voicings' &&
+        JSON.stringify(reqs) ===
+          JSON.stringify([
+            { kind: 'runs', from: 'exercises', count: 2 },
+            { kind: 'runs', from: 'exercises', items: [G6B_DRILL], count: 1 },
+          ]) &&
+        JSON.stringify(written('jazz.6').requirements) === JSON.stringify(reqs) &&
+        !rung('jazz.6').exerciseOptions.includes('drill.jazz.ii-v-i-shells') &&
+        text.includes("Minor ii-V-i with shell voicings, among this page's exercises") &&
+        text.includes('Two exercise runs, each opened from this page') &&
+        text.includes('the major ii–V–I drill from Stage 5 does not stand in for the minor one')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'a passing run is 90 % right, and a written exercise is also played in Keep tempo at 85 % of its tempo or more; the drill passes at nine of ten',
+    () => {
+      const criteria = masteryCriteriaFor(rung('jazz.6'), DEFAULT_MASTERY);
+      const evidence = readFileSync(resolve('src', 'evidence', 'rungState.ts'), 'utf8');
+      const text = g6bText();
+      return (
+        criteria.passAccuracy === 0.9 &&
+        criteria.passTempoPct === 85 &&
+        evidence.includes("if (row.mode.startsWith('drill:')) return true;") &&
+        evidence.includes("if (row.mode === 'wait') return criteria.passTempoPct <= 0;") &&
+        g6bCards().length === 10 &&
+        text.includes('with at least nine of its ten cards right') &&
+        text.includes('A passing run is 90 % right; for a written exercise it is also played in Keep tempo, from the first bar to the last, at 85 % of its written tempo or more')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'the drill asks nine shells, iiø7, V7 and i in C, A and G minor, each card naming symbol, numeral and key; ten cards, the first again last, the same every time',
+    () => {
+      const want = [
+        'Dm7♭5 — iiø7 in C minor',
+        'G7 — V7 in C minor',
+        'Cm6 — i in C minor',
+        'Bm7♭5 — iiø7 in A minor',
+        'E7 — V7 in A minor',
+        'Am7 — i in A minor',
+        'Am7♭5 — iiø7 in G minor',
+        'D7 — V7 in G minor',
+        'Gm7 — i in G minor',
+        'Dm7♭5 — iiø7 in C minor',
+      ];
+      const labels = (seed?: number) => g6bCards(seed).map((card) => card.label);
+      const text = g6bText();
+      return (
+        JSON.stringify(labels()) === JSON.stringify(want) &&
+        JSON.stringify(labels(7)) === JSON.stringify(want) &&
+        text.includes('iiø7, V7 and i in C minor (Dm7♭5, G7, Cm6), in A minor (Bm7♭5, E7, Am7) and in G minor (Am7♭5, D7, Gm7)') &&
+        text.includes('"Cm6 — i in C minor"') &&
+        text.includes('A run is ten cards: the nine in that order, then the first again, the same ten every time')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'each card asks the three notes of the shell, any octave, any order, no fifth; it is judged as soon as three different notes are down',
+    () => {
+      const promptDrill = readFileSync(resolve('src', 'engine', 'drills', 'PromptDrill.ts'), 'utf8');
+      const fromCatalog = readFileSync(resolve('src', 'engine', 'drills', 'fromCatalog.ts'), 'utf8');
+      // Each symbol's fifth, the member a shell leaves out (A flat, D, G, F, B, E, E flat, A, D).
+      const fifths: Record<string, number> = {
+        'Dm7♭5': 8,
+        G7: 2,
+        Cm6: 7,
+        'Bm7♭5': 5,
+        E7: 11,
+        Am7: 4,
+        'Am7♭5': 3,
+        D7: 9,
+        Gm7: 2,
+      };
+      const text = g6bText();
+      return (
+        g6bCards().every((card) => {
+          const symbol = card.label.split(' — ')[0] ?? '';
+          const pcs = new Set(card.expected.map((m) => ((m % 12) + 12) % 12));
+          return card.expected.length === 3 && pcs.size === 3 && !pcs.has(fifths[symbol] ?? -1);
+        }) &&
+        fromCatalog.includes("return new PromptDrill({ kind: 'chord', prompts, anyOctave: true, clock: base.clock });") &&
+        promptDrill.includes('if (distinct >= prompt.expected.length) this.settle(false, input.tMs);') &&
+        text.includes('asks for the three notes of the shell, in any octave and in any order') &&
+        text.includes('The card is judged as soon as three different notes are down')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'Show me and Hear it give the answer away, and a card they were used on does not count as right',
+    () => {
+      const promptDrill = readFileSync(resolve('src', 'engine', 'drills', 'PromptDrill.ts'), 'utf8');
+      return (
+        REVEALABLE_KINDS.has('chord') &&
+        promptDrill.includes('const correct = this.answers.filter((a) => a.correct && a.revealed !== true).length;') &&
+        g6bText().includes('Show me and Hear it give the answer away, and a card they were used on does not count as right')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'once a card is answered its shell is drawn in the key the card names, the chromatic notes marked: G7’s B and Cm6’s A natural, E7’s G♯ and D7’s F♯ sharp',
+    () => {
+      const staffs = g6bCards()
+        .slice(0, 9)
+        .map((card) => g6bStaff(card));
+      const want = [
+        [-3, []],
+        [-3, ['B natural']],
+        [-3, ['A natural']],
+        [0, []],
+        [0, ['G sharp']],
+        [0, []],
+        [-2, []],
+        [-2, ['F sharp']],
+        [-2, []],
+      ];
+      return (
+        STAFF_POLICY.chord === 'after-answer' &&
+        JSON.stringify(staffs.map((s) => [s.fifths, s.marked])) === JSON.stringify(want) &&
+        g6bText().includes(
+          "Once a card is answered, the shell is drawn on a staff in the key the card names: three flats for C minor, none for A minor, two flats for G minor. There G7's B and Cm6's A carry a natural, and E7's G♯ and D7's F♯ a sharp",
+        )
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'Am7♭5 in G minor and Am7 in A minor ask for the same three notes, A, C and G',
+    () => {
+      const cards = g6bCards();
+      const pcs = (i: number) => JSON.stringify([...new Set((cards[i]?.expected ?? []).map((m) => m % 12))].sort((a, b) => a - b));
+      return (
+        (cards[6]?.label ?? '').startsWith('Am7♭5') &&
+        (cards[5]?.label ?? '').startsWith('Am7 ') &&
+        pcs(6) === pcs(5) &&
+        pcs(5) === JSON.stringify([0, 7, 9]) &&
+        g6bText().includes('Am7♭5 in G minor and Am7 in A minor ask for the same three notes, A, C and G')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'Free play is on Today and names D-F-A♭-C D half-diminished 7th, D-F-A-C D minor 7th, and D-F-C nothing',
+    () => {
+      const today = readFileSync(resolve('src', 'ui', 'screens', 'TodayScreen.ts'), 'utf8');
+      const freePlay = readFileSync(resolve('src', 'ui', 'screens', 'FreePlayScreen.ts'), 'utf8');
+      const text = g6bText();
+      return (
+        today.includes("button('Free play', () => router.navigatePlay()") &&
+        freePlay.includes("chordLine.textContent = chord?.label ?? '';") &&
+        nameHeldChord([62, 65, 68, 72])?.label === 'D half-diminished 7th' &&
+        nameHeldChord([62, 65, 69, 72])?.label === 'D minor 7th' &&
+        nameHeldChord([62, 65, 72]) === null &&
+        text.includes('Open Free play, on Today, and hold D, F, A♭ and C: the app names it D half-diminished 7th. Raise the A♭ to A and it says D minor 7th') &&
+        text.includes('both times you are holding D, F and C, which Free play does not name')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    // Revised (BB2): Insensatez joined the songs after Blue Bossa (the reviewer's
+    // docs/review/responses/mt1-g6b-pf1-landing.md section 5), so Blue Bossa is no longer the last song
+    // and the lesson no longer places it by position. The old row pinned "the last song on this page"
+    // and seven songs.
+    'Blue Bossa is one of the page’s songs, and a run of it counts toward nothing on this rung',
+    () => {
+      const songs = rung('jazz.6').songOptions;
+      const reqs = rung('jazz.6').requirements ?? [];
+      const text = g6bText();
+      return (
+        songs.includes('song.jazz.kenny-dorham-blue-bossa.pdmx') &&
+        reqs.every((r) => r.kind === 'runs' && r.from === 'exercises') &&
+        text.includes('Blue Bossa, one of the songs on this page') &&
+        !text.includes('the last song on this page') &&
+        text.includes('A run of the tune itself counts toward nothing on this rung')
+      );
+    },
+  ],
+];
+
+describe('G6b: jazz.6’s minor ii-V-i section says only what the app does', () => {
+  for (const [lesson, says, holds] of G6B_APP) {
+    it(`${lesson}: ${says}`, () => {
+      expect(holds()).toBe(true);
+    });
+  }
+});
+
+// --- BB2: jazz.6's Insensatez question and the ear drill's review route --------------------------
+//
+// The reviewer's docs/review/responses/mt1-g6b-pf1-landing.md section 5, carried by lane BB2 (the chain
+// record docs/chains/A7b.1.yaml, steps 3, 14 and 15). Step 3: the seventh-quality ear drill stays on
+// jazz.5 and the jazz.6 lesson sends the learner there by the visible route, as review that counts for
+// nothing on jazz.6. Steps 14-15: Insensatez is an optional jazz.6 song that earns no rung credit; the
+// lesson has the learner decide what bars 13 to 15 print, from the chart, before playback with Comp
+// off, and gives the answer only at the page's end. One row per app fact the new text states; each row
+// also reads the lesson's own sentence, so neither side can move alone. Red before BB2: Insensatez was
+// no jazz.6 option and the lesson said none of this. Nothing here was heard.
+
+const BB2_INSENSATEZ = 'song.folk.insensatez-how-insensitive-jobim.pdmx';
+const BB2_BLUE_BOSSA = 'song.jazz.kenny-dorham-blue-bossa.pdmx';
+const BB2_EAR = 'drill.ear.seventh-qualities';
+
+/**
+ * The chart's cells for a built score, as `ChordChartScreen.ts` computes them today (its load: `readHarmony`,
+ * then `chartBars` over the larger of the printed-measure count and the symbol count). PH2 replaces that
+ * load with source measures; the cells this row reads (one per bar, its first symbol's text) are the
+ * lesson's claim, so a change there turns this red rather than leaving the sentence stale.
+ */
+function bb2ChartCells(id: string): (string | null)[] {
+  const xml = mxlToMusicXml(new Uint8Array(readFileSync(join(CONTENT, item(id).file ?? ''))));
+  const { symbols } = readHarmony(xml);
+  const measureCount = new Set([...xml.matchAll(/<measure\b[^>]*\bnumber="([^"]+)"/g)].map((m) => m[1])).size;
+  return chartBars(symbols, Math.max(measureCount, symbols.length)).map((symbol) => symbol?.text ?? null);
+}
+
+/** Where a rung sits: its stage's number and its unit's track, from the built curriculum. */
+function bb2Where(id: string): { stage: number; track: string } | undefined {
+  for (const stage of curriculum.stages) {
+    for (const unit of stage.units) {
+      if (unit.lessons.some((lesson) => lesson.id === id)) return { stage: stage.number, track: unit.track };
+    }
+  }
+  return undefined;
+}
+
+const BB2_APP: [string, string, () => boolean][] = [
+  [
+    'jazz.6',
+    'Insensatez is one of the page’s songs with a Chart door beside it, and no song run is asked for, so a run of it earns nothing here',
+    () => {
+      const lesson = rung('jazz.6');
+      const reqs = lesson.requirements ?? [];
+      const text = g6bText();
+      return (
+        lesson.songOptions.includes(BB2_INSENSATEZ) &&
+        written('jazz.6').songOptions.includes(BB2_INSENSATEZ) &&
+        lesson.songOptional === true &&
+        reqs.length > 0 &&
+        reqs.every((r) => r.kind === 'runs' && r.from === 'exercises') &&
+        !lesson.exerciseOptions.includes(BB2_INSENSATEZ) &&
+        hasChordSymbols(item(BB2_INSENSATEZ)) &&
+        item(BB2_INSENSATEZ).title === 'Insensatez (How Insensitive)' &&
+        source('ui/screens/LessonScreen.ts').includes(
+          "button('Chart', () => { router.navigateChart(item.id, { from: lessonId }); }",
+        ) &&
+        text.includes('Tap Chart beside it') &&
+        text.includes('Like Blue Bossa, a run of it counts toward nothing on this rung')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'the chart opens with Comp and Bass + drums off and does not start until Count off ▶; the lesson has the learner decide before pressing it, then hear it with Comp, then play with Comp off',
+    () => {
+      const chart = source('ui/screens/ChordChartScreen.ts');
+      const text = g6bText();
+      return (
+        chart.includes('let comping = false;') &&
+        chart.includes('let backing = false;') &&
+        chart.includes("chip('Comp', {") &&
+        chart.includes("chip('Bass + drums', {") &&
+        chart.includes("button('Count off ▶', () => void start(), { id: 'chart-start', variant: 'primary' })") &&
+        chart.includes("button('Stop', stop, { id: 'chart-stop' })") &&
+        text.includes(
+          'Comp and Bass + drums start off, and the chart does not start until you press Count off ▶, so leave it for now',
+        ) &&
+        text.includes('decide which progression they are, and in which key') &&
+        text.includes('Then turn Comp on, press Count off ▶ and listen through those bars') &&
+        text.includes('press Stop, turn Comp off, press Count off ▶ again')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'each chart cell is one bar from bar 1: Insensatez has 32 cells and the 13th to 15th print Bmi7b5, E7 and Ami7; Blue Bossa’s chart prints Dmi7b5 and Cmi6',
+    () => {
+      const ins = bb2ChartCells(BB2_INSENSATEZ);
+      const bb = bb2ChartCells(BB2_BLUE_BOSSA);
+      const text = g6bText();
+      return (
+        ins.length === 32 &&
+        ins[12] === 'Bmi7b5' &&
+        ins[13] === 'E7' &&
+        ins[14] === 'Ami7' &&
+        bb[4] === 'Dmi7b5' &&
+        bb[6] === 'Cmi6' &&
+        ins[20] === 'Fma7' &&
+        text.includes('mi for minor and ma for major, with a b after the number for a flat') &&
+        text.includes(
+          'Each cell of the chart is one bar, from bar 1, left to right and row by row: bars 13 to 15 are the thirteenth to fifteenth cells',
+        ) &&
+        text.includes("Blue Bossa's chart, for instance, writes its Dm7♭5 as Dmi7b5 and its Cm6 as Cmi6") &&
+        text.includes('Bmi7b5, E7 and Ami7 on the chart, that is Bm7♭5, E7 and Am7')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'the answer is the page’s last paragraph, and nothing between the question and it names the progression, the key or the chords',
+    () => {
+      const raw = readFileSync(join(F0_LESSONS, 'jazz.6.md'), 'utf8').replace(/\r\n/g, '\n').trimEnd();
+      const paragraphs = raw.split(/\n\s*\n/);
+      const last = paragraphs[paragraphs.length - 1] ?? '';
+      const text = g6bText();
+      const asked = text.indexOf('Insensatez (How Insensitive)');
+      const answered = text.indexOf('The answer for Insensatez.');
+      const between = text.slice(asked, answered);
+      return (
+        last.startsWith('**The answer for Insensatez.**') &&
+        asked > 0 &&
+        answered > asked &&
+        text.includes('This page gives the answer at its very end') &&
+        ['A minor', 'Bm7♭5', 'Bmi7b5', 'Ami7', 'Am7', 'E7', 'ii–V–i'].every((giveaway) => !between.includes(giveaway))
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'the seventh-quality ear drill is on Stage 5’s jazz rung, not this page: Plan, Stage 5, Swing, shell voicings and ii-V-I under Jazz, Ear drill — seventh-chord qualities',
+    () => {
+      const where = bb2Where('jazz.5');
+      const track = curriculum.tracks.find((one) => one.id === where?.track);
+      const plan = source('ui/screens/PlanScreen.ts');
+      const shell = source('ui/AppShell.ts');
+      const text = g6bText();
+      return (
+        rung('jazz.5').exerciseOptions.includes(BB2_EAR) &&
+        !rung('jazz.6').exerciseOptions.includes(BB2_EAR) &&
+        (rung('jazz.6').prerequisites ?? []).includes('jazz.5') &&
+        where?.stage === 5 &&
+        track?.title === 'Jazz' &&
+        rung('jazz.5').title === 'Swing, shell voicings and ii-V-I' &&
+        item(BB2_EAR).title === 'Ear drill — seventh-chord qualities' &&
+        shell.includes("plan: 'Plan',") &&
+        plan.includes('title: `Stage ${String(stage.number)} · ${stage.title}`,') &&
+        plan.includes("el('span.plan-track__name', { text: track?.title ?? group.track })") &&
+        plan.includes('title: lesson.title,') &&
+        text.includes("The ear drill for seventh chords is on Stage 5's jazz rung, not on this page") &&
+        text.includes(
+          'On Plan, open Stage 5, then Swing, shell voicings and ii-V-I under Jazz, and open Ear drill — seventh-chord qualities from its exercises',
+        )
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'the ear drill plays one of the four seventh qualities and asks for the notes back in any octave, never the name; a run of it counts toward nothing on jazz.6',
+    () => {
+      const drill = drillFromCatalog(item(BB2_EAR), { seed: 3 });
+      const first = drill?.next() ?? null;
+      // Line endings flattened: a Windows checkout writes CRLF, and the pin below spans a line break.
+      const screen = source('ui/screens/DrillScreen.ts').replace(/\r\n/g, '\n');
+      const reqs = rung('jazz.6').requirements ?? [];
+      const text = g6bText();
+      return (
+        JSON.stringify(params(BB2_EAR).qualities) === JSON.stringify(['maj7', '7', 'm7', 'm7b5']) &&
+        first !== null &&
+        first.expected.length === 4 &&
+        (first.playback ?? []).length > 0 &&
+        screen.includes("case 'ear-chord':\n        return 'Play back the chord';") &&
+        screen.includes('// Deliberately blank: naming it on screen would answer the question.') &&
+        source('engine/drills/fromCatalog.ts').includes(
+          "return new PromptDrill({ kind: 'ear-chord', prompts, anyOctave: true, clock: base.clock });",
+        ) &&
+        reqs.every((r) => r.kind === 'runs' && r.from === 'exercises') &&
+        !rung('jazz.6').exerciseOptions.includes(BB2_EAR) &&
+        text.includes(
+          'Each card plays one seventh chord, a major seventh, a dominant seventh, a minor seventh or a half-diminished seventh, and waits for you to play it back, in any octave',
+        ) &&
+        text.includes(
+          'It never asks for the name, so say the quality aloud before you play: the app checks only the notes you play back',
+        ) &&
+        text.includes('A run of it counts toward nothing on this page')
+      );
+    },
+  ],
+];
+
+describe('BB2: jazz.6’s Insensatez question and the ear drill’s review route say only what the app does', () => {
+  for (const [lesson, says, holds] of BB2_APP) {
     it(`${lesson}: ${says}`, () => {
       expect(holds()).toBe(true);
     });

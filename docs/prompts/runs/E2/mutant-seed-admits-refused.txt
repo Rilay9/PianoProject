@@ -1,0 +1,21 @@
+F....
+======================================================================
+FAIL: test_a_refused_window_stays_refused_on_a_seeded_parent (tools.content.tests.test_excerpt_proposer.TheSeedOrdersParentsAndAdmitsNothing.test_a_refused_window_stays_refused_on_a_seeded_parent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ab0ca07b13a3644b6\tools\content\tests\test_excerpt_proposer.py", line 420, in test_a_refused_window_stays_refused_on_a_seeded_parent
+    self.assertEqual(P.acceptance_order([refused], {"song.test.seeded"}), [])
+AssertionError: Lists differ: [Scored(parent='song.test.seeded', low=1, [894 chars]3.0)] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+Scored(parent='song.test.seeded', low=1, high=4, selection='both', parts=[Part(signal='opportunity', value=1.0, detail='interval.leap: 7 located in 4 bars (meets the window rule: at least 3 and 0.25 a bar)', kind=None), Part(signal='occurrences', value=0.8, detail='interval.leap in 3 of 4 bars', kind=None), Part(signal='phraseStart', value=1.0, detail="the piece's first bar", kind=None), Part(signal='ending', value=1.0, detail="the piece's last bar", kind='resolves'), Part(signal='pickup', value=1.0, detail='no pickup before bar 1', kind=None), Part(signal='texture', value=1.0, detail='both hands sound in 4 of 4 bars', kind=None), Part(signal='length', value=1.0, detail='4 bars', kind=None)], demands=['clef.bass', 'interval.leap', 'range.beyond-position', 'texture.hands-together'], counts={'interval.leap': 7, 'clef.bass': 4}, untaught=['range.beyond-position', 'texture.hands-together'], forbidden=[], physical=None, level=3.0)
+
+Diff is 1636 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.084s
+
+FAILED (failures=1)
+
+exit 1

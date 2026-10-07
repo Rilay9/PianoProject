@@ -168,7 +168,7 @@ describe('the bed plays the tune', () => {
     document.body.appendChild(container);
     const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
     await osmd.load(built.musicXml);
-    const model = extractScoreModel(osmd, { id: 'lab-both-ways' });
+    const model = extractScoreModel(osmd, { id: 'lab-both-ways', musicXml: built.musicXml });
     container.remove();
 
     const written = model.steps.flatMap((step) =>

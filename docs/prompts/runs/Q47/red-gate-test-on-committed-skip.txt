@@ -1,0 +1,36 @@
+$ python -m unittest discover -s tools/midi-cleanup/tests -p test_converter.py -k Gate -v
+# cwd: /c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693
+# CI=1
+
+test_in_ci_their_absence_fails_naming_the_fetch_step (test_converter.TestTheRealRecordingsGate.test_in_ci_their_absence_fails_naming_the_fetch_step) ... FAIL
+test_on_a_developer_checkout_their_absence_skips_naming_the_script (test_converter.TestTheRealRecordingsGate.test_on_a_developer_checkout_their_absence_skips_naming_the_script) ... FAIL
+
+======================================================================
+FAIL: test_in_ci_their_absence_fails_naming_the_fetch_step (test_converter.TestTheRealRecordingsGate.test_in_ci_their_absence_fails_naming_the_fetch_step)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_converter.py", line 501, in test_in_ci_their_absence_fails_naming_the_fetch_step
+    self.assertEqual(
+AssertionError: Tuples differ: (0, 1) != (1, 0)
+
+First differing element 0:
+0
+1
+
+- (0, 1)
++ (1, 0) : CI=true with build/midi-real/ empty must fail, not skip
+
+======================================================================
+FAIL: test_on_a_developer_checkout_their_absence_skips_naming_the_script (test_converter.TestTheRealRecordingsGate.test_on_a_developer_checkout_their_absence_skips_naming_the_script)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_converter.py", line 512, in test_on_a_developer_checkout_their_absence_skips_naming_the_script
+    self.assertIn("tools/midi-cleanup/tests/fetch_maestro.py", result.skipped[0][1])
+AssertionError: 'tools/midi-cleanup/tests/fetch_maestro.py' not found in 'C:\\Users\\yalir\\repos\\Piano Stuff\\PianoProject\\.claude\\worktrees\\agent-a3f3005a49d448693\\build\\midi-real is under .gitignore; fetch the three MAESTRO performances named in its SOURCE.md to run these: bach-bwv885-prelude-2011.mid, grieg-op38-7-waltz-2014.mid, scarlatti-k525-2008.mid. They come from the MAESTRO v3.0.0 MIDI zip as test input only, not redistributable, so they are not committed and no CI step fetches them'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.036s
+
+FAILED (failures=2)
+
+# exit code: 1

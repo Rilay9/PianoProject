@@ -1,0 +1,55 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts (67 tests | 6 failed) 4588ms
+   ❯ a refused tap on the summary says so on the summary (U105a) (7)
+     × Try again: the summary’s own line names it, first on the sheet, as a status; the tap left unapplied 126ms
+     × Again: the summary’s own line names it, first on the sheet, as a status; the tap left unapplied 61ms
+     × Slower: the summary’s own line names it, first on the sheet, as a status; the tap left unapplied 64ms
+     × Faster: the summary’s own line names it, first on the sheet, as a status; the tap left unapplied 61ms
+     × Loop: the summary’s own line names it, first on the sheet, as a status; the tap left unapplied 63ms
+     × the summary’s line goes when the sound starts some other way, and while the next tap asks; a refusal again brings it back 62ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a refused tap on the summary says so on the summary (U105a) > Try again: the summary’s own line names it, first on the sheet, as a status; the tap left unapplied
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a refused tap on the summary says so on the summary (U105a) > Again: the summary’s own line names it, first on the sheet, as a status; the tap left unapplied
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a refused tap on the summary says so on the summary (U105a) > Slower: the summary’s own line names it, first on the sheet, as a status; the tap left unapplied
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a refused tap on the summary says so on the summary (U105a) > Faster: the summary’s own line names it, first on the sheet, as a status; the tap left unapplied
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a refused tap on the summary says so on the summary (U105a) > Loop: the summary’s own line names it, first on the sheet, as a status; the tap left unapplied
+AssertionError: summary-refusal: expected null not to be null
+ ❯ byId tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:363:24
+    361| function byId(id: string): HTMLElement {
+    362|   const node = document.getElementById(id);
+    363|   expect(node, id).not.toBeNull();
+       |                        ^
+    364|   return node as HTMLElement;
+    365| }
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1201:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a refused tap on the summary says so on the summary (U105a) > the summary’s line goes when the sound starts some other way, and while the next tap asks; a refusal again brings it back
+AssertionError: expected '' to be 'Sound did not start — tap Again' // Object.is equality
+
+- Expected
++ Received
+
+- Sound did not start — tap Again
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:1220:27
+    1218|     vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    1219|     await settle();
+    1220|     expect(summaryLine()).toBe(STATE_TEXT.soundOff('Again'));
+       |                           ^
+    1221|     engineBecomes('running');
+    1222|     expect(summaryLine(), 'the line stood over a sound that runs').toB…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 61 passed (67)
+   Start at  13:12:23
+   Duration  19.50s (environment 69%, tests 24%, transform 6%, import 1%)
+

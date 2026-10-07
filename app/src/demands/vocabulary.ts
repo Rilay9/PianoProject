@@ -4,11 +4,13 @@
  *
  * Types only. The detectors are code (`detect.ts`); the files themselves are
  * bundled for the evidence function by `evidence/vocabulary.ts` (C3), which
- * reads the skills' observables and conditions from them. The files' own schemas
+ * reads the skills' observables and conditions from them, and since CL11b
+ * (L57) the support share and the timing precisions. The files' own schemas
  * (`skills.schema.json`, `demands.schema.json` beside them) are the authority;
  * `validate.py` checks them and their references on every build.
  */
 import type { DetectorId } from './detect';
+import type { Dimension } from '../curriculum/transfer';
 
 /** What kind of ability a skill is (design §11 item 1); decides the shape of its criterion. */
 export type SkillKind = 'reading' | 'rhythm' | 'coordination' | 'technique' | 'continuity';
@@ -16,8 +18,27 @@ export type SkillKind = 'reading' | 'rhythm' | 'coordination' | 'technique' | 'c
 /** A channel a run measures. `velocity`, `pedal` and `continuity` come when they are built. */
 export type Channel = 'pitch' | 'timing';
 
-/** A run condition a skill's standard can require (Keep tempo, unseen, the guide off, both hands). */
-export type ConditionId = 'keep-tempo' | 'unseen' | 'guide-off' | 'both-hands';
+/** A run condition a skill's standard can require (Keep tempo, unseen, the guide off, both hands, no note's name on the screen). */
+export type ConditionId = 'keep-tempo' | 'unseen' | 'guide-off' | 'both-hands' | 'names-off';
+
+/**
+ * The support share (CL11b, L57): a record supports a skill where at least this share of its
+ * counted steps was right. The vocabulary's, or a skill's own where its ability needs another.
+ */
+export interface SupportShare {
+  share: number;
+  why: string;
+}
+
+/**
+ * A timing precision (CL11b, L57; reviewer decision 6): the error a timing skill is about, as
+ * `[numerator, denominator]` of a quarter-note beat. A rhythm skill's own, or the vocabulary's
+ * default for a skill whose rhythm is the phrase's.
+ */
+export interface Precision {
+  quarters: readonly [number, number];
+  why: string;
+}
 
 export interface Condition {
   id: ConditionId;
@@ -48,6 +69,22 @@ export interface Skill {
   /** The run conditions for the practice standard and for the full one (design §4(c)). */
   standards: { practice: ConditionId[]; full: ConditionId[] };
   note?: string;
+  /** The skill's own support share, where it needs another than the vocabulary's (none does in v0). */
+  support?: SupportShare;
+  /** A rhythm skill's own precision: its demands are the rhythm demands, which only timing tells. */
+  precision?: Precision;
+  /**
+   * The dimensions on which a change of material is transfer for this skill, with the reason (G2:
+   * `evidence/transferPolicy.ts` reads it). Absent: the data has not said which changes matter, and
+   * the skill is credited no transfer (the build's report lists it).
+   */
+  transfer?: SkillTransfer;
+}
+
+/** A skill's transfer claim (G2): each dimension a `curriculum/transfer.ts` `DIMENSIONS` entry (`validate.py` checks). */
+export interface SkillTransfer {
+  dimensions: Dimension[];
+  why: string;
 }
 
 /**
@@ -57,6 +94,10 @@ export interface Skill {
  */
 export interface SkillsFile {
   conditions: Condition[];
+  /** The support share every skill reads unless it names its own (L57). */
+  support: SupportShare;
+  /** The precision a skill whose rhythm is the phrase's falls back to where no rhythm demand is located (L57). */
+  precision: Precision;
   skills: Skill[];
 }
 
@@ -76,9 +117,44 @@ export interface Demand {
   detector: DetectorId;
   /** The skill that copes with it: one reviewed table, the start of `needsSkills`. */
   copedWithBy: string;
-  /** The rung that teaches it, or `null` with `taughtAtNote` where none does. */
-  taughtAt: string | null;
+  /**
+   * Every rung that teaches it, one per path (E0b): no listed rung is on another's
+   * path, and a demand is taught at a rung when any listed rung is in the rung's
+   * ancestry or the learner's reached set (`session.taughtAtRung`). `[]`, with
+   * `taughtAtNote`, where none does. It was one rung or `null`.
+   */
+  taughtAt: readonly string[];
   taughtAtNote?: string;
+  /**
+   * The fixed five-finger positions whose note reading copes with this demand where a
+   * lesson on the rung's path, or on a rung the learner has reached, teaches the position
+   * (L120b; the reviewer's Question 1 on L120a, `docs/review/responses/0bcd3be0.md`): a
+   * skip inside C position is read by note name before 1.5 teaches reading by interval.
+   * `interval.skip` has them, and `interval.leap` the same two since L120d (the reviewer's
+   * Question 1 on L120b, `docs/review/responses/c8680b70.md`: a leap inside C position is read
+   * by note name before 2.1 teaches it). Where each position is taught is read from the lessons'
+   * own `concepts` (`session.positionTaughtAtRung`), never from a rung list here; the
+   * coping question alone reads them (`eligibilityCore.uncoped`), and no evidence reader
+   * does, so no run is ever attributed to one.
+   */
+  fixedPositions?: readonly FixedPosition[];
+  /**
+   * Why the coping question does not ask this demand (CD1 D5; the reviewer's ruling,
+   * `docs/review/responses/530963de.md` §3): on `rhythm.habanera` and `rhythm.tresillo` alone, a
+   * descriptive structural fact whose difficulties the ordinary reading demands and the rung's
+   * prerequisites already gate, and which the item may itself be teaching. `eligibilityCore.demandsAsked`
+   * leaves it out, and its build twins (`claims.not_asked`) do the same; every other reader reads it as
+   * before. Declared per demand, with the reason; absent, the demand is asked.
+   */
+  notAsked?: string;
+}
+
+/** One fixed position (L120b): the lesson concept that teaches it, the hand, and its lowest and highest MIDI. */
+export interface FixedPosition {
+  concept: string;
+  hand: 'R' | 'L';
+  low: number;
+  high: number;
 }
 
 export interface DemandsFile {

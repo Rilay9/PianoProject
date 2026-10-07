@@ -1,0 +1,15 @@
+HD2a evidence: song.pop.thomasclarke11-joy-to-the-world.pdmx (scores/pdmx/QmYf6wWUpWm2gMJEDHwq9SipkzcUP91nhsUDhn67aD6uxX.mxl), identity sha256 837f2d587f2e351306e109e77d3613364d3cdae3aa9190608f98f6fac9731820
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 29-29 -> R
+  bar 29 (source measure 28) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @114 L [37] + v2 [67]; @115 L [26] + v2 [67]
+  bar 29 onset 112 31/st2/v3/L:0.5
+  bar 29 onset 112.5 79/st1/v1/R:0.5 74/st1/v1/R:0.5 43/st2/v3/L:0.5
+  bar 29 onset 113 67/st1/v1/R:1 35/st2/v3/L:0.5
+  bar 29 onset 113.5 36/st2/v3/L:0.5
+  bar 29 onset 114 78/st1/v1/R:1 74/st1/v1/R:1 67/st1/v2/L/x:1 37/st2/v3/L:0.5
+  bar 29 onset 114.5 38/st2/v3/L:0.5
+  bar 29 onset 115 76/st1/v1/R:0.5 72/st1/v1/R:0.5 67/st1/v2/L/x:1 26/st2/v3/L:0.5
+  bar 29 onset 115.5 74/st1/v1/R:0.5 71/st1/v1/R:0.5 40/st2/v3/L:0.5
+

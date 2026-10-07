@@ -1,0 +1,8 @@
+reading rows listed on rungs: 15; held options moved on: 0
+
+reader moves changed on: 5
+technique.5 drill.reading.sight-reading-4: gained [rhythm.sixteenths on] lost []
+theory.6 drill.reading.sight-reading-5: gained [rhythm.sixteenths on] lost []
+jazz.8 drill.reading.sight-reading-7: gained [rhythm.sixteenths on] lost []
+chords-pop.8 drill.reading.sight-reading-6: gained [rhythm.sixteenths on] lost []
+theory.9 drill.reading.sight-reading-6: gained [rhythm.sixteenths on] lost []

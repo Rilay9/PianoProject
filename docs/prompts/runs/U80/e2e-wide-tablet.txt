@@ -1,0 +1,10 @@
+(in app) for f in tests/e2e/wide.spec.ts; do test -f "$f" || { echo "specs-exist: missing $f"; exit 2; }; done; echo "specs-exist: ok"; npx playwright test --config=playwright.u80-4313.config.ts --workers=2 --grep tablet tests/e2e/wide.spec.ts
+specs-exist: ok
+
+Running 2 tests using 2 workers
+
+  ok 2 tests\e2e\wide.spec.ts:428:5 › tablet-landscape › every screen is centred and capped, tablet-landscape (47.8s)
+  ok 1 tests\e2e\wide.spec.ts:428:5 › tablet-portrait › every screen is centred and capped, tablet-portrait (48.0s)
+
+  2 passed (51.0s)
+exit=0

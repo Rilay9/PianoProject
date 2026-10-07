@@ -1,0 +1,1590 @@
+HD2 corpus diff: hand or crossStaff changed between the extractor at e7cf920c (the voice-home rule) and the verified-hand overrides
+shards read: 4; score files compared: 2014; model notes compared (repeats unrolled): 891803; files that failed to compare: 0
+notes changed: 12511 in 232 files (2151 printed bars)
+
+By class (notes; files; printed bars), then by transition:
+  A  12511 notes;  232 files;  2151 bars  reused or moved voice, whole bar on one staff: the old crossing dropped, the printed staff stands (rule 3)
+       10338  L/x>R st1
+        2173  R/x>L st2
+  B      0 notes;    0 files;     0 bars  two lines under one voice number (both staves at one onset in the bar): the printed staff stands
+  C      0 notes;    0 files;     0 bars  voice on both staves in the bar, one after the other, no crossing established locally: the printed staff stands (rule 2)
+  D      0 notes;    0 files;     0 bars  a crossing established in the bar (an excursion that returns, or a spanning beam or chord) where the old rule saw none
+  E      0 notes;    0 files;     0 bars  crossed under both rules, by the other hand
+  OUTSIDE      0 notes;    0 files;     0 bars  anything else: a hand change with neither rule crossing, a one-staff score, or a declared hand applied
+
+On sheets of more than two staves (folded onto staff 2 by `staffOf`, unchanged): 0 notes in []
+Declarations on the changed files: {'both': 12511}
+
+Failures: none
+
+Per file (first catalogue id; notes by class):
+    739  song.classical.chopin-polonaise-op44.nifc  A:739
+    488  song.classical.chopin-polonaise-fantaisie.nifc  A:488
+    358  song.classical.chopin-polonaise-op40-2.nifc  A:358
+    320  song.ragtime.joplin-nonpareil  A:320
+    310  song.classical.chopin-nocturne-op48-1.nifc  A:310
+    306  song.ragtime.joplin-gladiolus-rag  A:306
+    301  song.classical.chopin-sonata-2-1.nifc  A:301
+    265  song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx  A:265
+    260  song.ragtime.joplin-bethena  A:260
+    250  song.classical.chopin-etude-op25-4.nifc  A:250
+    238  song.classical.chopin-polonaise-op40-1.nifc  A:238
+    236  song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx  A:236
+    233  song.ragtime.joplin-magnetic-rag  A:233
+    232  song.ragtime.joplin-heliotrope-bouquet  A:232
+    230  song.ragtime.joplin-lily-queen  A:230
+    211  song.ragtime.joplin-wall-street-rag  A:211
+    203  song.ragtime.joplin-eugenia  A:203
+    199  song.classical.chopin-ballade-3.nifc  A:199
+    179  song.classical.debussy-claude-debussy-la-cathedrale-engloutie-the-submerged-cathedral.pdmx  A:179
+    165  song.ragtime.joplin-rose-leaf-rag  A:165
+    138  song.ragtime.joplin-solace  A:138
+    131  song.classical.chopin-prelude-op28-17.nifc  A:131
+    124  song.ragtime.joplin-crush-collision-march  A:124
+    123  song.classical.chopin-sonata-3-4.nifc  A:123
+    121  song.classical.chopin-ballade-4.nifc  A:121
+    119  song.classical.chopin-tarantelle.nifc  A:119
+    117  song.classical.joplin-search-light-rag.pdmx  A:117
+    112  song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx  A:112
+    111  song.classical.chopin-waltz-e-minor.nifc  A:111
+    110  song.classical.chopin-rondo-op1.nifc  A:110
+    110  song.classical.chopin-polonaise-op26-2.nifc  A:110
+    108  song.classical.chopin-sonata-2-2.nifc  A:108
+    108  song.ragtime.joplin-cleopha  A:108
+    104  song.classical.chopin-polonaise-op71-1.nifc  A:104
+     98  song.ragtime.joplin-pleasant-moments  A:98
+     96  song.ragtime.joplin-elite-syncopations  A:96
+     95  song.ragtime.joplin-fig-leaf-rag  A:95
+     93  song.classical.chopin-sonata-2-3.nifc  A:93
+     93  song.classical.chopin-mazurka-op30-4.nifc  A:93
+     92  song.classical.chopin-polonaise-op53.nifc  A:92
+     91  song.classical.chopin-mazurka-op17-4.nifc  A:91
+     86  song.ragtime.joplin-weeping-willow  A:86
+     84  song.classical.chopin-rondo-mazur.nifc  A:84
+     84  song.classical.chopin-bolero.nifc  A:84
+     84  song.classical.chopin-nocturne-op15-3.nifc  A:84
+     84  song.classical.chopin-scherzo-2.nifc  A:84
+     83  song.ragtime.joplin-pine-apple-rag  A:83
+     80  song.classical.chopin-waltz-op18.nifc  A:80
+     78  song.ragtime.joplin-leola  A:78
+     78  song.classical.grieg-ase-s-tod.pdmx  A:78
+     76  song.pop.kerry-mills-at-a-georgia-camp-meeting-mills-1897-kerry-mills.pdmx  A:76
+     72  song.classical.czerny-the-school-of-velocity-op-299-no-5.pdmx  A:72
+     71  song.pop.mederic-niot-summer-road-s-cakewalk.pdmx  A:71
+     70  song.ragtime.joplin-school-of-ragtime  A:70
+     68  song.classical.chopin-berceuse.nifc  A:68
+     68  song.ragtime.joplin-easy-winners  A:68
+     68  song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx  A:68
+     68  song.ragtime.joplin-felicity-rag  A:68
+     65  song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx  A:65
+     63  song.ragtime.joplin-chrysanthemum  A:63
+     62  song.ragtime.joplin-peacherine-rag  A:62
+     60  song.beautiful.merry-christmas-mr-lawrence  A:60
+     57  song.ragtime.joplin-augustan-club-waltz  A:57
+     56  song.classical.sakamoto-andata.pdmx  A:56
+     55  song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx  A:55
+     52  song.classical.grieg-album-leaf-op-47-no-2.pdmx  A:52
+     51  song.ragtime.joplin-antoinette  A:51
+     50  song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx  A:50
+     48  song.classical.chopin-marche-funebre-op72.nifc  A:48
+     48  song.classical.bach-fugue-in-g-minor-bwv-542-piano-transcription.pdmx  A:48
+     48  song.classical.chopin-mazurka-op56-2.nifc  A:48
+     48  song.classical.chopin-waltz-op34-2.nifc  A:48
+     47  song.ragtime.joplin-country-club  A:47
+     46  song.classical.chopin-waltz-op34-1.nifc  A:46
+     46  song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx  A:46
+     45  song.classical.chopin-etude-op10-4.nifc  A:45
+     44  song.classical.chopin-ecossaise-op72-3.nifc  A:44
+     43  song.ragtime.joplin-paragon-rag  A:43
+     43  song.classical.debussy-reverie.pdmx  A:43
+     42  song.classical.chopin-mazurka-op6-2.nifc  A:42
+     42  song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx  A:42
+     41  song.classical.glass-dead-things.pdmx  A:41
+     40  song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx  A:40
+     39  song.folk.wake-me-up-avicii.pdmx  A:39
+     37  song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx  A:37
+     36  song.classical.chopin-mazurka-op50-1.nifc  A:36
+     36  song.ragtime.joplin-sugar-cane  A:36
+     36  song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx  A:36
+     36  song.classical.vivaldi-summer-from-the-four-seasons-third-movement-piano-transcription.pdmx  A:36
+     34  song.classical.chopin-prelude-op28-22.nifc  A:34
+     34  song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx  A:34
+     33  song.classical.debussy-debussy-la-fille-aux-cheveux-de-lin.pdmx  A:33
+     32  song.ragtime.joplin-binks-waltz  A:32
+     32  song.classical.chopin-etude-op25-9.nifc  A:32
+     32  song.classical.chopin-mazurka-op63-2.nifc  A:32
+     31  song.folk.3-variations-on-happy-birthday.pdmx  A:31
+     30  song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx  A:30
+     30  song.classical.debussy-debussy-claude-la-plus-que-lente.pdmx  A:30
+     30  song.classical.chopin-ballade-2.nifc  A:30
+     30  song.classical.chopin-mazurka-op17-3.nifc  A:30
+     30  song.pop.yanni-one-man-s-dream-by-yanni.pdmx  A:30
+     29  song.classical.chopin-nocturne-op55-1.nifc  A:29
+     27  song.classical.chopin-mazurka-op59-3.nifc  A:27
+     27  song.classical.czerny-the-school-of-velocity-op-299-no-7.pdmx  A:27
+     27  song.classical.schumann-a-little-romance-op-68-no-19.pdmx  A:27
+     26  song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx  A:26
+     26  song.ragtime.joplin-reflection-rag  A:26
+     25  song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx  A:25
+     25  song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx  A:25
+     24  song.ragtime.joplin-stoptime-rag  A:24
+     24  song.pop.coldplay-fix-you-coldplay.pdmx  A:24
+     24  song.classical.bach-cello-suite-no-1-prelude-piano-transcription.pdmx  A:24
+     24  song.classical.lemoine-etude-op-37-no-17.pdmx  A:24
+     22  song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx  A:22
+     22  song.ragtime.joplin-palm-leaf-rag  A:22
+     22  song.classical.tchaikovsky-waltz-op-39-no-8.pdmx  A:22
+     22  song.classical.mozart-contredanse-in-f-major-k-15h.pdmx  A:22
+     21  song.classical.chopin-prelude-op28-3.nifc  A:21
+     21  song.pop.misc-cartoons-platinum-disco-by-yuka-iguchi.pdmx  A:21
+     20  song.classical.tchaikovsky-october-autumn-song-from-tchaikovsky-s-the-seasons.pdmx  A:20
+     20  song.ragtime.joplin-march-majestic  A:20
+     20  song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx  A:20
+     20  song.jazz.the-crave  A:20
+     20  song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx  A:20
+     19  song.classical.chopin-mazurka-op30-1.nifc  A:19
+     18  song.classical.chopin-etude-op10-12.nifc  A:18
+     18  song.classical.chopin-mazurka-op68-2.nifc  A:18
+     18  song.classical.chopin-mazurka-op59-2.nifc  A:18
+     18  song.classical.chopin-waltz-op64-2.nifc  A:18
+     17  song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx  A:17
+     16  song.classical.chopin-mazurka-op33-4.nifc  A:16
+     16  song.classical.chopin-mazurka-op7-2.nifc  A:16
+     15  song.classical.chopin-mazurka-op17-2.nifc  A:15
+     15  song.classical.chopin-variations-op12.nifc  A:15
+     15  song.pop.hans-otto-borgmann-tango-notturno.pdmx  A:15
+     14  song.classical.chopin-nocturne-op27-2.nifc  A:14
+     14  song.classical.mozart-movement-for-a-piano-sonata-in-b-flat-major-k-15aa.pdmx  A:14
+     14  song.classical.chopin-mazurka-op24-4.nifc  A:14
+     13  song.classical.schubert-liszt-standchen  A:13
+     13  song.classical.bertini-etude-in-c-major-op-29-no-1.pdmx  A:13
+     13  song.classical.chopin-rondo-op16.nifc  A:13
+     13  song.classical.chopin-mazurka-op41-4.nifc  A:13
+     12  song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx  A:12
+     12  song.classical.debussy-children-s-corner-doctor-gradus-ad-parnassum.pdmx  A:12
+     12  song.classical.chopin-prelude-op28-21.nifc  A:12
+     12  song.blues.handful-of-keys  A:12
+     12  song.classical.lemoine-etude-op-37-no-21.pdmx  A:12
+     12  song.classical.mozart-minuet-in-a-flat-major-k-15ff.pdmx  A:12
+     12  song.pop.kevin-macleod-if-i-had-a-chicken.pdmx  A:12
+     12  song.classical.bennet-rosemary-s-waltz.pdmx  A:12
+     12  song.classical.schubert-german-dance-no-1-d-841.pdmx  A:12
+     11  song.classical.chopin-prelude-op28-20.nifc  A:11
+     11  song.classical.chopin-nocturne-op37-1.nifc  A:11
+     11  song.classical.mendelssohn-hunting-song-op-19-no-3.pdmx  A:11
+     11  song.folk.down-by-the-riverside.pdmx.2  A:11
+     10  song.classical.chopin-mazurka-op68-1.nifc  A:10
+     10  song.ragtime.joplin-cascades  A:10
+     10  song.classical.mozart-andantino-in-c-major-k-15b.pdmx  A:10
+      9  song.classical.chopin-mazurka-op63-3.nifc  A:9
+      9  song.classical.chopin-nocturne-op55-2.nifc  A:9
+      9  song.classical.debussy-clair-de-lune-easy.pdmx  A:9
+      9  song.folk.lost-without-you-freya-ridings.pdmx  A:9
+      9  song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx  A:9
+      9  song.classical.chopin-prelude-op28-7.nifc  A:9
+      8  song.classical.chopin-prelude-op28-5.nifc  A:8
+      8  song.pop.yugo-kanno-yoshikage-kira-s-theme-piano.pdmx  A:8
+      8  song.classical.chopin-prelude-op28-18.nifc  A:8
+      8  song.classical.bach-fugue-in-g-minor-bwv-578-piano-transcription.pdmx  A:8
+      8  song.classical.bach-little-prelude-in-d-major-bwv-936.pdmx  A:8
+      8  song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx  A:8
+      8  song.classical.chopin-mazurka-op7-4.nifc  A:8
+      8  song.classical.mozart-andante-in-g-minor-k-15r.pdmx  A:8
+      8  song.classical.schumann-spring-song-op-68-no-15.pdmx  A:8
+      8  song.classical.zimmer-time-hans-zimmer-inception.pdmx  A:8
+      7  song.ragtime.joplin-the-favorite  A:7
+      7  song.pop.los-tres-golpes-the-three-strikes.pdmx  A:7
+      7  song.pop.die-wilden-huehner-die-wilden-huhner-ouverture-finished.pdmx  A:7
+      7  song.classical.djawadi-light-of-the-seven.pdmx  A:7
+      6  song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx  A:6
+      6  song.classical.handel-handel-g-f-menuet-hwv-434-4.pdmx  A:6
+      6  song.classical.chopin-mazurka-op50-2.nifc  A:6
+      6  song.classical.palmer-days-in-the-sun.pdmx  A:6
+      6  song.classical.chopin-mazurka-op68-3.nifc  A:6
+      6  song.ragtime.joplin-combination-march  A:6
+      6  song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx  A:6
+      6  song.pop.harry-styles-falling-by-harry-styles.pdmx  A:6
+      6  song.classical.debussy-children-s-corner-the-little-shepherd.pdmx  A:6
+      5  song.classical.chopin-waltz-op69-2.nifc  A:5
+      5  song.classical.czerny-the-art-of-preluding-op-300-no-24.pdmx  A:5
+      5  song.classical.pieczonka-tarantella-in-a-minor.pdmx  A:5
+      5  song.classical.chopin-mazurka-op30-2.nifc  A:5
+      5  song.classical.chopin-prelude-op28-6.nifc  A:5
+      5  song.classical.duvernoy-etude-op-176-no-16.pdmx  A:5
+      5  song.pop.laura-shigihara-loonboon.pdmx  A:5
+      4  song.classical.chopin-etude-op10-11.nifc  A:4
+      4  song.ragtime.joplin-entertainer.kern  A:4
+      4  song.classical.lemoine-etude-op-37-no-30.pdmx  A:4
+      4  song.jazz.chevy-chase  A:4
+      4  song.classical.chopin-etude-op25-12.nifc  A:4
+      4  song.classical.chopin-mazurka-op67-1.nifc  A:4
+      4  song.classical.czerny-waltz-op-32-no-2.pdmx  A:4
+      4  song.classical.chopin-mazurka-op24-3.nifc  A:4
+      4  song.classical.chopin-mazurka-op30-3.nifc  A:4
+      4  song.classical.chopin-mazurka-op7-3.nifc  A:4
+      4  song.blues.black-bottom-stomp  A:4
+      4  song.pop.honne-location-unknown-brooklyn-session-honne.pdmx  A:4
+      4  song.folk.this-country-of-mine-extended-mix-of-negaraku-malaysia-s-national-anthem-featuring-britain-japan-singapore-and-brunei.pdmx  A:4
+      4  song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx  A:4
+      3  song.classical.beethoven-bagatelle-in-d-major-op-119-no-3.pdmx  A:3
+      3  song.classical.lemoine-etude-op-37-no-18.pdmx  A:3
+      3  song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx  A:3
+      3  song.classical.chopin-fantaisie-impromptu.nifc  A:3
+      3  song.classical.chopin-prelude-op28-8.nifc  A:3
+      3  song.ragtime.joplin-sunflower-slow-drag  A:3
+      2  song.classical.chopin-mazurka-op24-1.nifc  A:2
+      2  song.ragtime.joplin-something-doing  A:2
+      2  song.pop.thomasclarke11-joy-to-the-world.pdmx  A:2
+      2  song.classical.lemoine-etude-op-37-no-14.pdmx  A:2
+      2  song.classical.mozart-andante-in-b-flat-major-k-15ii.pdmx  A:2
+      2  song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx  A:2
+      2  song.classical.schumann-carnaval-op-9-no-12-chopin.pdmx  A:2
+      2  song.ragtime.joplin-harmony-club-waltz  A:2
+      2  song.classical.chopin-prelude-op28-2.nifc  A:2
+      2  song.classical.lemoine-etude-op-37-no-43.pdmx  A:2
+      1  song.classical.chopin-etude-op25-6.nifc  A:1
+      1  song.classical.schumann-schumann-album-for-the-young-op-68-no-18-the-little-reaper-s-song.pdmx  A:1
+      1  song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx  A:1
+      1  song.classical.chopin-etude-op10-7.nifc  A:1
+      1  song.jazz.marc-sabatella-harmony-and-chord-progressions.pdmx  A:1
+      1  song.classical.c418-minecraft-nether.pdmx  A:1
+      1  song.classical.offenbach-cancan-offenbach.pdmx  A:1
+      1  song.classical.chopin-mazurka-op68-4.nifc  A:1
+
+Bars per class (catalogue id, printed bar, voice: the voice's staves in the bar | changed notes as midi/staff before>after), first 25 of each:
+  A: 2736 bar-voices
+    song.classical.chopin-ballade-4.nifc bar 45 v2: 1 1 1 | 68/st1:L/x>R 70/st1:L/x>R 71/st1:L/x>R
+    song.classical.chopin-ballade-4.nifc bar 50 v2: 1 | 73/st1:L/x>R
+    song.classical.chopin-ballade-4.nifc bar 63 v2: 1 1 1 1 1 1 1 1 1 1 1 1 | 76/st1:L/x>R 73/st1:L/x>R 75/st1:L/x>R 72/st1:L/x>R 70/st1:L/x>R 72/st1:L/x>R 68/st1:L/x>R 70/st1:L/x>R …
+    song.classical.chopin-ballade-4.nifc bar 64 v2: 1 1 1 1 1 1 1 1 1 1 1 1 | 76/st1:L/x>R 73/st1:L/x>R 75/st1:L/x>R 72/st1:L/x>R 70/st1:L/x>R 72/st1:L/x>R 68/st1:L/x>R 70/st1:L/x>R …
+    song.classical.chopin-ballade-4.nifc bar 68 v2: 1 1 1 | 65/st1:L/x>R 57/st1:L/x>R 58/st1:L/x>R
+    song.classical.chopin-ballade-4.nifc bar 69 v2: 1 1 1 1 | 70/st1:L/x>R 69/st1:L/x>R 69/st1:L/x>R 70/st1:L/x>R
+    song.classical.chopin-ballade-4.nifc bar 120 v2: 1 | 61/st1:L/x>R
+    song.classical.chopin-ballade-4.nifc bar 124 v2: 1 1 1 1 1 1 1 1 1 1 1 1 | 61/st1:L/x>R 63/st1:L/x>R 61/st1:L/x>R 64/st1:L/x>R 54/st1:L/x>R 61/st1:L/x>R 55/st1:L/x>R 61/st1:L/x>R …
+    song.classical.chopin-ballade-4.nifc bar 175 v2: 1 1 1 1 1 1 1 | 78/st1:L/x>R 66/st1:L/x>R 70/st1:L/x>R 70/st1:L/x>R 72/st1:L/x>R 73/st1:L/x>R 78/st1:L/x>R
+    song.classical.chopin-ballade-4.nifc bar 177 v2: 1 1 1 1 | 68/st1:L/x>R 89/st1:L/x>R 80/st1:L/x>R 77/st1:L/x>R 89/st1:L/x>R 80/st1:L/x>R 77/st1:L/x>R 85/st1:L/x>R …
+    song.classical.chopin-ballade-4.nifc bar 179 v2: 1 1 1 1 1 | 75/st1:L/x>R 73/st1:L/x>R 89/st1:L/x>R 80/st1:L/x>R 77/st1:L/x>R 85/st1:L/x>R 80/st1:L/x>R 73/st1:L/x>R …
+    song.classical.chopin-ballade-4.nifc bar 184 v2: 1 1 1 | 75/st1:L/x>R 73/st1:L/x>R 85/st1:L/x>R 79/st1:L/x>R 75/st1:L/x>R 73/st1:L/x>R 85/st1:L/x>R 80/st1:L/x>R …
+    song.classical.chopin-ballade-4.nifc bar 190 v2: 1 1 1 1 1 | 77/st1:L/x>R 65/st1:L/x>R 82/st1:L/x>R 73/st1:L/x>R 70/st1:L/x>R 80/st1:L/x>R 77/st1:L/x>R 68/st1:L/x>R …
+    song.classical.chopin-etude-op10-11.nifc bar 50 v2: 1 1 | 91/st1:L/x>R 87/st1:L/x>R 79/st1:L/x>R 80/st1:L/x>R
+    song.classical.chopin-etude-op25-6.nifc bar 30 v2: 1 | 74/st1:L/x>R
+    song.classical.chopin-marche-funebre-op72.nifc bar 9 v2: 1 | 71/st1:L/x>R 65/st1:L/x>R 59/st1:L/x>R
+    song.classical.chopin-marche-funebre-op72.nifc bar 17 v2: 1 | 71/st1:L/x>R 65/st1:L/x>R 59/st1:L/x>R
+    song.classical.chopin-marche-funebre-op72.nifc bar 25 v2: 1 | 71/st1:L/x>R 65/st1:L/x>R 59/st1:L/x>R
+    song.classical.chopin-marche-funebre-op72.nifc bar 27 v2: 1 1 | 68/st1:L/x>R 63/st1:L/x>R 68/st1:L/x>R 63/st1:L/x>R
+    song.classical.chopin-marche-funebre-op72.nifc bar 31 v2: 1 1 | 68/st1:L/x>R 63/st1:L/x>R 68/st1:L/x>R 65/st1:L/x>R
+    song.classical.chopin-marche-funebre-op72.nifc bar 33 v2: 1 1 | 68/st1:L/x>R 73/st1:L/x>R 67/st1:L/x>R
+    song.classical.chopin-marche-funebre-op72.nifc bar 35 v2: 1 1 | 68/st1:L/x>R 63/st1:L/x>R 68/st1:L/x>R 63/st1:L/x>R
+    song.classical.chopin-marche-funebre-op72.nifc bar 39 v2: 1 1 | 68/st1:L/x>R 63/st1:L/x>R 68/st1:L/x>R 65/st1:L/x>R
+    song.classical.chopin-marche-funebre-op72.nifc bar 41 v2: 1 1 | 68/st1:L/x>R 73/st1:L/x>R 67/st1:L/x>R
+    song.classical.chopin-marche-funebre-op72.nifc bar 51 v2: 1 1 | 68/st1:L/x>R 63/st1:L/x>R 68/st1:L/x>R 63/st1:L/x>R
+  B: 0 bar-voices
+  C: 0 bar-voices
+  D: 0 bar-voices
+  E: 0 bar-voices
+  OUTSIDE: 0 bar-voices
+
+Against the hand rows of content/sources/verified-facts.json (1302 rows):
+  row 0: song.jazz.the-crave bars 40-40 staff 1 voice 2 -> R: 20 notes changed
+  row 1: song.ragtime.joplin-solace bars 22-22 staff 1 voice 2 -> R: 16 notes changed
+  row 2: song.ragtime.joplin-solace bars 26-26 staff 1 voice 2 -> R: 16 notes changed
+  row 3: song.ragtime.joplin-solace bars 30-30 staff 1 voice 2 -> R: 28 notes changed
+  row 4: song.ragtime.joplin-solace bars 32-32 staff 1 voice 2 -> R: 28 notes changed
+  row 5: song.classical.chopin-polonaise-fantaisie.nifc bars 7-9 staff 1 voice 2 -> R: 5 notes changed
+  row 6: song.classical.chopin-polonaise-fantaisie.nifc bars 32-32 staff 1 voice 2 -> R: 2 notes changed
+  row 7: song.classical.chopin-polonaise-fantaisie.nifc bars 38-40 staff 1 voice 2 -> R: 24 notes changed
+  row 8: song.classical.chopin-polonaise-fantaisie.nifc bars 51-51 staff 1 voice 2 -> R: 1 notes changed
+  row 9: song.classical.chopin-polonaise-fantaisie.nifc bars 61-61 staff 1 voice 2 -> R: 1 notes changed
+  row 10: song.classical.chopin-polonaise-fantaisie.nifc bars 70-70 staff 1 voice 2 -> R: 2 notes changed
+  row 11: song.classical.chopin-polonaise-fantaisie.nifc bars 107-107 staff 1 voice 2 -> R: 4 notes changed
+  row 12: song.classical.chopin-polonaise-fantaisie.nifc bars 214-215 staff 1 voice 2 -> R: 3 notes changed
+  row 13: song.classical.chopin-polonaise-fantaisie.nifc bars 227-227 staff 1 voice 2 -> R: 13 notes changed
+  row 14: song.classical.chopin-polonaise-fantaisie.nifc bars 230-231 staff 1 voice 2 -> R: 36 notes changed
+  row 15: song.classical.chopin-polonaise-fantaisie.nifc bars 242-244 staff 1 voice 2 -> R: 68 notes changed
+  row 16: song.classical.chopin-polonaise-fantaisie.nifc bars 246-248 staff 1 voice 2 -> R: 76 notes changed
+  row 17: song.classical.chopin-polonaise-fantaisie.nifc bars 254-260 staff 1 voice 2 -> R: 160 notes changed
+  row 18: song.classical.chopin-polonaise-fantaisie.nifc bars 262-262 staff 1 voice 2 -> R: 18 notes changed
+  row 19: song.classical.chopin-polonaise-fantaisie.nifc bars 266-271 staff 1 voice 2 -> R: 75 notes changed
+  row 20: song.classical.chopin-polonaise-op44.nifc bars 14-15 staff 1 voice 2 -> R: 43 notes changed
+  row 21: song.classical.chopin-polonaise-op44.nifc bars 17-17 staff 1 voice 2 -> R: 18 notes changed
+  row 22: song.classical.chopin-polonaise-op44.nifc bars 19-20 staff 1 voice 2 -> R: 33 notes changed
+  row 23: song.classical.chopin-polonaise-op44.nifc bars 35-40 staff 1 voice 2 -> R: 109 notes changed
+  row 24: song.classical.chopin-polonaise-op44.nifc bars 43-46 staff 1 voice 2 -> R: 50 notes changed
+  row 25: song.classical.chopin-polonaise-op44.nifc bars 61-66 staff 1 voice 2 -> R: 107 notes changed
+  row 26: song.classical.chopin-polonaise-op44.nifc bars 69-72 staff 1 voice 2 -> R: 45 notes changed
+  row 27: song.classical.chopin-polonaise-op44.nifc bars 163-163 staff 1 voice 2 -> R: 1 notes changed
+  row 28: song.classical.chopin-polonaise-op44.nifc bars 169-169 staff 1 voice 2 -> R: 2 notes changed
+  row 29: song.classical.chopin-polonaise-op44.nifc bars 171-171 staff 1 voice 2 -> R: 1 notes changed
+  row 30: song.classical.chopin-polonaise-op44.nifc bars 175-175 staff 1 voice 2 -> R: 1 notes changed
+  row 31: song.classical.chopin-polonaise-op44.nifc bars 222-222 staff 1 voice 2 -> R: 2 notes changed
+  row 32: song.classical.chopin-polonaise-op44.nifc bars 228-228 staff 1 voice 2 -> R: 2 notes changed
+  row 33: song.classical.chopin-polonaise-op44.nifc bars 230-230 staff 1 voice 2 -> R: 1 notes changed
+  row 34: song.classical.chopin-polonaise-op44.nifc bars 234-234 staff 1 voice 2 -> R: 1 notes changed
+  row 35: song.classical.chopin-polonaise-op44.nifc bars 237-237 staff 1 voice 2 -> R: 4 notes changed
+  row 36: song.classical.chopin-polonaise-op44.nifc bars 248-248 staff 1 voice 2 -> R: 6 notes changed
+  row 37: song.classical.chopin-polonaise-op44.nifc bars 256-256 staff 1 voice 2 -> R: 4 notes changed
+  row 38: song.classical.chopin-polonaise-op44.nifc bars 268-273 staff 1 voice 2 -> R: 109 notes changed
+  row 39: song.classical.chopin-polonaise-op44.nifc bars 276-276 staff 1 voice 2 -> R: 18 notes changed
+  row 40: song.classical.chopin-polonaise-op44.nifc bars 278-279 staff 1 voice 2 -> R: 33 notes changed
+  row 41: song.classical.chopin-polonaise-op44.nifc bars 294-299 staff 1 voice 2 -> R: 107 notes changed
+  row 42: song.classical.chopin-polonaise-op44.nifc bars 302-302 staff 1 voice 2 -> R: 9 notes changed
+  row 43: song.classical.chopin-polonaise-op44.nifc bars 304-305 staff 1 voice 2 -> R: 33 notes changed
+  row 44: song.classical.chopin-ballade-4.nifc bars 45-45 staff 1 voice 2 -> R: 3 notes changed
+  row 45: song.classical.chopin-ballade-4.nifc bars 50-50 staff 1 voice 2 -> R: 1 notes changed
+  row 46: song.classical.chopin-ballade-4.nifc bars 63-64 staff 1 voice 2 -> R: 45 notes changed
+  row 47: song.classical.chopin-ballade-4.nifc bars 68-69 staff 1 voice 2 -> R: 7 notes changed
+  row 48: song.classical.chopin-ballade-4.nifc bars 120-120 staff 1 voice 2 -> R: 1 notes changed
+  row 49: song.classical.chopin-ballade-4.nifc bars 124-124 staff 1 voice 2 -> R: 12 notes changed
+  row 50: song.classical.chopin-ballade-4.nifc bars 175-175 staff 1 voice 2 -> R: 7 notes changed
+  row 51: song.classical.chopin-ballade-4.nifc bars 177-177 staff 1 voice 2 -> R: 10 notes changed
+  row 52: song.classical.chopin-ballade-4.nifc bars 179-179 staff 1 voice 2 -> R: 11 notes changed
+  row 53: song.classical.chopin-ballade-4.nifc bars 184-184 staff 1 voice 2 -> R: 10 notes changed
+  row 54: song.classical.chopin-ballade-4.nifc bars 190-190 staff 1 voice 2 -> R: 14 notes changed
+  row 55: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx bars 45-45 staff 1 voice 2 -> R: 3 notes changed
+  row 56: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx bars 50-50 staff 1 voice 2 -> R: 1 notes changed
+  row 57: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx bars 69-69 staff 1 voice 2 -> R: 4 notes changed
+  row 58: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx bars 124-124 staff 1 voice 2 -> R: 12 notes changed
+  row 59: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx bars 180-180 staff 1 voice 2 -> R: 1 notes changed
+  row 60: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx bars 182-182 staff 1 voice 2 -> R: 2 notes changed
+  row 61: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx bars 187-187 staff 1 voice 2 -> R: 2 notes changed
+  row 62: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx bars 193-193 staff 1 voice 2 -> R: 14 notes changed
+  row 63: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx bars 227-227 staff 1 voice 2 -> R: 3 notes changed
+  row 64: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx bars 229-229 staff 1 voice 2 -> R: 3 notes changed
+  row 65: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx bars 219-219 staff 1 voice 3 -> R: 1 notes changed
+  row 66: song.classical.chopin-rondo-op1.nifc bars 86-86 staff 1 voice 2 -> R: 2 notes changed
+  row 67: song.classical.chopin-rondo-op1.nifc bars 101-101 staff 1 voice 2 -> R: 12 notes changed
+  row 68: song.classical.chopin-rondo-op1.nifc bars 105-105 staff 1 voice 2 -> R: 12 notes changed
+  row 69: song.classical.chopin-rondo-op1.nifc bars 136-137 staff 1 voice 2 -> R: 4 notes changed
+  row 70: song.classical.chopin-rondo-op1.nifc bars 144-145 staff 1 voice 2 -> R: 4 notes changed
+  row 71: song.classical.chopin-rondo-op1.nifc bars 194-194 staff 1 voice 2 -> R: 8 notes changed
+  row 72: song.classical.chopin-rondo-op1.nifc bars 208-212 staff 1 voice 2 -> R: 38 notes changed
+  row 73: song.classical.chopin-rondo-op1.nifc bars 214-214 staff 1 voice 2 -> R: 2 notes changed
+  row 74: song.classical.chopin-rondo-op1.nifc bars 230-230 staff 1 voice 2 -> R: 2 notes changed
+  row 75: song.classical.chopin-rondo-op1.nifc bars 292-292 staff 1 voice 2 -> R: 2 notes changed
+  row 76: song.classical.chopin-rondo-op1.nifc bars 350-352 staff 1 voice 2 -> R: 24 notes changed
+  row 77: song.classical.chopin-nocturne-op48-1.nifc bars 36-36 staff 1 voice 2 -> R: 3 notes changed
+  row 78: song.classical.chopin-nocturne-op48-1.nifc bars 51-52 staff 1 voice 2 -> R: 50 notes changed
+  row 79: song.classical.chopin-nocturne-op48-1.nifc bars 55-56 staff 1 voice 2 -> R: 78 notes changed
+  row 80: song.classical.chopin-nocturne-op48-1.nifc bars 60-61 staff 1 voice 2 -> R: 49 notes changed
+  row 81: song.classical.chopin-nocturne-op48-1.nifc bars 65-65 staff 1 voice 2 -> R: 12 notes changed
+  row 82: song.classical.chopin-nocturne-op48-1.nifc bars 67-70 staff 1 voice 2 -> R: 116 notes changed
+  row 83: song.classical.chopin-nocturne-op48-1.nifc bars 76-76 staff 1 voice 2 -> R: 2 notes changed
+  row 84: song.ragtime.joplin-magnetic-rag bars 7-8 staff 1 voice 2 -> R: 4 notes changed
+  row 85: song.ragtime.joplin-magnetic-rag bars 11-13 staff 1 voice 2 -> R: 34 notes changed
+  row 86: song.ragtime.joplin-magnetic-rag bars 15-15 staff 1 voice 2 -> R: 16 notes changed
+  row 87: song.ragtime.joplin-magnetic-rag bars 17-17 staff 1 voice 2 -> R: 14 notes changed
+  row 88: song.ragtime.joplin-magnetic-rag bars 19-19 staff 1 voice 2 -> R: 16 notes changed
+  row 89: song.ragtime.joplin-magnetic-rag bars 28-28 staff 1 voice 2 -> R: 6 notes changed
+  row 90: song.ragtime.joplin-magnetic-rag bars 32-32 staff 1 voice 2 -> R: 2 notes changed
+  row 91: song.ragtime.joplin-magnetic-rag bars 36-36 staff 1 voice 2 -> R: 6 notes changed
+  row 92: song.ragtime.joplin-magnetic-rag bars 47-47 staff 1 voice 2 -> R: 4 notes changed
+  row 93: song.ragtime.joplin-magnetic-rag bars 67-67 staff 1 voice 2 -> R: 4 notes changed
+  row 94: song.ragtime.joplin-magnetic-rag bars 75-76 staff 1 voice 2 -> R: 12 notes changed
+  row 95: song.ragtime.joplin-magnetic-rag bars 78-78 staff 1 voice 2 -> R: 8 notes changed
+  row 96: song.ragtime.joplin-magnetic-rag bars 81-81 staff 1 voice 2 -> R: 20 notes changed
+  row 97: song.ragtime.joplin-magnetic-rag bars 84-84 staff 1 voice 2 -> R: 3 notes changed
+  row 98: song.ragtime.joplin-magnetic-rag bars 87-88 staff 1 voice 2 -> R: 4 notes changed
+  row 99: song.ragtime.joplin-magnetic-rag bars 91-93 staff 1 voice 2 -> R: 34 notes changed
+  row 100: song.ragtime.joplin-magnetic-rag bars 95-95 staff 1 voice 2 -> R: 16 notes changed
+  row 101: song.ragtime.joplin-magnetic-rag bars 97-97 staff 1 voice 2 -> R: 14 notes changed
+  row 102: song.ragtime.joplin-magnetic-rag bars 99-99 staff 1 voice 2 -> R: 16 notes changed
+  row 103: song.classical.chopin-prelude-op28-17.nifc bars 13-13 staff 2 voice 2 -> L: 21 notes changed
+  row 104: song.classical.chopin-prelude-op28-17.nifc bars 37-37 staff 2 voice 2 -> L: 22 notes changed
+  row 105: song.classical.chopin-prelude-op28-17.nifc bars 39-39 staff 2 voice 2 -> L: 24 notes changed
+  row 106: song.classical.chopin-prelude-op28-17.nifc bars 49-49 staff 2 voice 2 -> L: 22 notes changed
+  row 107: song.classical.chopin-prelude-op28-17.nifc bars 67-67 staff 2 voice 2 -> L: 21 notes changed
+  row 108: song.classical.chopin-prelude-op28-17.nifc bars 75-75 staff 2 voice 2 -> L: 21 notes changed
+  row 109: song.classical.chopin-tarantelle.nifc bars 7-7 staff 1 voice 2 -> R: 1 notes changed
+  row 110: song.classical.chopin-tarantelle.nifc bars 15-15 staff 1 voice 2 -> R: 1 notes changed
+  row 111: song.classical.chopin-tarantelle.nifc bars 97-99 staff 1 voice 2 -> R: 11 notes changed
+  row 112: song.classical.chopin-tarantelle.nifc bars 113-115 staff 1 voice 2 -> R: 11 notes changed
+  row 113: song.classical.chopin-tarantelle.nifc bars 122-122 staff 1 voice 2 -> R: 4 notes changed
+  row 114: song.classical.chopin-tarantelle.nifc bars 130-130 staff 1 voice 2 -> R: 4 notes changed
+  row 115: song.classical.chopin-tarantelle.nifc bars 145-148 staff 1 voice 2 -> R: 13 notes changed
+  row 116: song.classical.chopin-tarantelle.nifc bars 152-152 staff 1 voice 2 -> R: 2 notes changed
+  row 117: song.classical.chopin-tarantelle.nifc bars 156-156 staff 1 voice 2 -> R: 2 notes changed
+  row 118: song.classical.chopin-tarantelle.nifc bars 160-160 staff 1 voice 2 -> R: 2 notes changed
+  row 119: song.classical.chopin-tarantelle.nifc bars 182-183 staff 1 voice 2 -> R: 2 notes changed
+  row 120: song.classical.chopin-tarantelle.nifc bars 185-185 staff 1 voice 2 -> R: 5 notes changed
+  row 121: song.classical.chopin-tarantelle.nifc bars 190-191 staff 1 voice 2 -> R: 3 notes changed
+  row 122: song.classical.chopin-tarantelle.nifc bars 193-193 staff 1 voice 2 -> R: 1 notes changed
+  row 123: song.classical.chopin-tarantelle.nifc bars 224-224 staff 1 voice 2 -> R: 2 notes changed
+  row 124: song.classical.chopin-tarantelle.nifc bars 229-243 staff 1 voice 2 -> R: 37 notes changed
+  row 125: song.classical.chopin-tarantelle.nifc bars 253-255 staff 1 voice 2 -> R: 18 notes changed
+  row 126: song.classical.chopin-polonaise-op40-2.nifc bars 10-10 staff 1 voice 2 -> R: 15 notes changed
+  row 127: song.classical.chopin-polonaise-op40-2.nifc bars 15-17 staff 1 voice 2 -> R: 36 notes changed
+  row 128: song.classical.chopin-polonaise-op40-2.nifc bars 26-26 staff 1 voice 2 -> R: 15 notes changed
+  row 129: song.classical.chopin-polonaise-op40-2.nifc bars 31-33 staff 1 voice 2 -> R: 36 notes changed
+  row 130: song.classical.chopin-polonaise-op40-2.nifc bars 51-51 staff 1 voice 2 -> R: 24 notes changed
+  row 131: song.classical.chopin-polonaise-op40-2.nifc bars 63-63 staff 1 voice 2 -> R: 30 notes changed
+  row 132: song.classical.chopin-polonaise-op40-2.nifc bars 68-70 staff 1 voice 2 -> R: 72 notes changed
+  row 133: song.classical.chopin-polonaise-op40-2.nifc bars 113-120 staff 1 voice 2 -> R: 99 notes changed
+  row 134: song.classical.chopin-polonaise-op40-2.nifc bars 124-124 staff 1 voice 2 -> R: 15 notes changed
+  row 135: song.classical.chopin-polonaise-op40-2.nifc bars 129-129 staff 1 voice 2 -> R: 16 notes changed
+  row 136: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 35-35 staff 2 voice 2 -> L: 8 notes changed
+  row 137: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 37-40 staff 2 voice 2 -> L: 30 notes changed
+  row 138: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 46-46 staff 2 voice 2 -> L: 12 notes changed
+  row 139: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 49-49 staff 2 voice 2 -> L: 12 notes changed
+  row 140: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 54-54 staff 2 voice 2 -> L: 12 notes changed
+  row 141: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 57-58 staff 2 voice 2 -> L: 24 notes changed
+  row 142: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 60-60 staff 2 voice 2 -> L: 12 notes changed
+  row 143: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 66-66 staff 2 voice 2 -> L: 12 notes changed
+  row 144: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 69-70 staff 2 voice 2 -> L: 24 notes changed
+  row 145: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 72-72 staff 2 voice 2 -> L: 12 notes changed
+  row 146: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 78-78 staff 2 voice 2 -> L: 12 notes changed
+  row 147: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 81-82 staff 2 voice 2 -> L: 24 notes changed
+  row 148: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 113-113 staff 2 voice 2 -> L: 8 notes changed
+  row 149: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 115-118 staff 2 voice 2 -> L: 30 notes changed
+  row 150: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 127-127 staff 2 voice 2 -> L: 1 notes changed
+  row 151: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 129-129 staff 2 voice 2 -> L: 1 notes changed
+  row 152: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx bars 135-136 staff 2 voice 2 -> L: 2 notes changed
+  row 153: song.classical.chopin-sonata-2-1.nifc bars 16-16 staff 1 voice 2 -> R: 12 notes changed
+  row 154: song.classical.chopin-sonata-2-1.nifc bars 37-38 staff 1 voice 2 -> R: 38 notes changed
+  row 155: song.classical.chopin-sonata-2-1.nifc bars 45-45 staff 1 voice 2 -> R: 2 notes changed
+  row 156: song.classical.chopin-sonata-2-1.nifc bars 49-49 staff 1 voice 2 -> R: 2 notes changed
+  row 157: song.classical.chopin-sonata-2-1.nifc bars 52-52 staff 1 voice 2 -> R: 2 notes changed
+  row 158: song.classical.chopin-sonata-2-1.nifc bars 59-59 staff 1 voice 2 -> R: 4 notes changed
+  row 159: song.classical.chopin-sonata-2-1.nifc bars 61-63 staff 1 voice 2 -> R: 26 notes changed
+  row 160: song.classical.chopin-sonata-2-1.nifc bars 69-77 staff 1 voice 2 -> R: 118 notes changed
+  row 161: song.classical.chopin-sonata-2-1.nifc bars 80-80 staff 1 voice 2 -> R: 10 notes changed
+  row 162: song.classical.chopin-sonata-2-1.nifc bars 122-125 staff 1 voice 2 -> R: 7 notes changed
+  row 163: song.classical.chopin-sonata-2-1.nifc bars 130-131 staff 1 voice 2 -> R: 4 notes changed
+  row 164: song.classical.chopin-sonata-2-1.nifc bars 175-175 staff 1 voice 2 -> R: 10 notes changed
+  row 165: song.classical.chopin-sonata-2-1.nifc bars 179-179 staff 1 voice 2 -> R: 1 notes changed
+  row 166: song.classical.chopin-sonata-2-1.nifc bars 181-181 staff 1 voice 2 -> R: 2 notes changed
+  row 167: song.classical.chopin-sonata-2-1.nifc bars 185-185 staff 1 voice 2 -> R: 2 notes changed
+  row 168: song.classical.chopin-sonata-2-1.nifc bars 188-188 staff 1 voice 2 -> R: 2 notes changed
+  row 169: song.classical.chopin-sonata-2-1.nifc bars 190-192 staff 1 voice 2 -> R: 13 notes changed
+  row 170: song.classical.chopin-sonata-2-1.nifc bars 194-195 staff 1 voice 2 -> R: 3 notes changed
+  row 171: song.classical.chopin-sonata-2-1.nifc bars 197-205 staff 1 voice 2 -> R: 40 notes changed
+  row 172: song.classical.chopin-sonata-2-1.nifc bars 209-209 staff 1 voice 2 -> R: 2 notes changed
+  row 173: song.classical.chopin-sonata-2-1.nifc bars 229-229 staff 1 voice 2 -> R: 1 notes changed
+  row 174: song.classical.chopin-sonata-2-2.nifc bars 88-89 staff 1 voice 2 -> R: 10 notes changed
+  row 175: song.classical.chopin-sonata-2-2.nifc bars 96-97 staff 1 voice 2 -> R: 10 notes changed
+  row 176: song.classical.chopin-sonata-2-2.nifc bars 104-106 staff 1 voice 2 -> R: 12 notes changed
+  row 177: song.classical.chopin-sonata-2-2.nifc bars 116-116 staff 1 voice 2 -> R: 4 notes changed
+  row 178: song.classical.chopin-sonata-2-2.nifc bars 124-125 staff 1 voice 2 -> R: 10 notes changed
+  row 179: song.classical.chopin-sonata-2-2.nifc bars 132-134 staff 1 voice 2 -> R: 12 notes changed
+  row 180: song.classical.chopin-sonata-2-2.nifc bars 165-166 staff 1 voice 2 -> R: 20 notes changed
+  row 181: song.classical.chopin-sonata-2-2.nifc bars 173-174 staff 1 voice 2 -> R: 20 notes changed
+  row 182: song.classical.chopin-sonata-2-2.nifc bars 279-280 staff 1 voice 2 -> R: 10 notes changed
+  row 183: song.classical.chopin-scherzo-2.nifc bars 65-65 staff 1 voice 2 -> R: 1 notes changed
+  row 184: song.classical.chopin-scherzo-2.nifc bars 67-68 staff 1 voice 2 -> R: 2 notes changed
+  row 185: song.classical.chopin-scherzo-2.nifc bars 72-76 staff 1 voice 2 -> R: 6 notes changed
+  row 186: song.classical.chopin-scherzo-2.nifc bars 101-101 staff 1 voice 2 -> R: 4 notes changed
+  row 187: song.classical.chopin-scherzo-2.nifc bars 197-197 staff 1 voice 2 -> R: 1 notes changed
+  row 188: song.classical.chopin-scherzo-2.nifc bars 199-200 staff 1 voice 2 -> R: 2 notes changed
+  row 189: song.classical.chopin-scherzo-2.nifc bars 204-205 staff 1 voice 2 -> R: 3 notes changed
+  row 190: song.classical.chopin-scherzo-2.nifc bars 207-208 staff 1 voice 2 -> R: 2 notes changed
+  row 191: song.classical.chopin-scherzo-2.nifc bars 212-212 staff 1 voice 2 -> R: 1 notes changed
+  row 192: song.classical.chopin-scherzo-2.nifc bars 233-233 staff 1 voice 2 -> R: 8 notes changed
+  row 193: song.classical.chopin-scherzo-2.nifc bars 289-289 staff 1 voice 2 -> R: 1 notes changed
+  row 194: song.classical.chopin-scherzo-2.nifc bars 294-294 staff 1 voice 2 -> R: 1 notes changed
+  row 195: song.classical.chopin-scherzo-2.nifc bars 311-311 staff 1 voice 2 -> R: 1 notes changed
+  row 196: song.classical.chopin-scherzo-2.nifc bars 313-313 staff 1 voice 2 -> R: 1 notes changed
+  row 197: song.classical.chopin-scherzo-2.nifc bars 315-315 staff 1 voice 2 -> R: 1 notes changed
+  row 198: song.classical.chopin-scherzo-2.nifc bars 317-317 staff 1 voice 2 -> R: 1 notes changed
+  row 199: song.classical.chopin-scherzo-2.nifc bars 319-319 staff 1 voice 2 -> R: 1 notes changed
+  row 200: song.classical.chopin-scherzo-2.nifc bars 321-321 staff 1 voice 2 -> R: 1 notes changed
+  row 201: song.classical.chopin-scherzo-2.nifc bars 323-323 staff 1 voice 2 -> R: 1 notes changed
+  row 202: song.classical.chopin-scherzo-2.nifc bars 325-325 staff 1 voice 2 -> R: 1 notes changed
+  row 203: song.classical.chopin-scherzo-2.nifc bars 332-333 staff 1 voice 2 -> R: 7 notes changed
+  row 204: song.classical.chopin-scherzo-2.nifc bars 375-375 staff 1 voice 2 -> R: 2 notes changed
+  row 205: song.classical.chopin-scherzo-2.nifc bars 388-388 staff 1 voice 2 -> R: 1 notes changed
+  row 206: song.classical.chopin-scherzo-2.nifc bars 391-391 staff 1 voice 2 -> R: 1 notes changed
+  row 207: song.classical.chopin-scherzo-2.nifc bars 396-396 staff 1 voice 2 -> R: 1 notes changed
+  row 208: song.classical.chopin-scherzo-2.nifc bars 413-413 staff 1 voice 2 -> R: 1 notes changed
+  row 209: song.classical.chopin-scherzo-2.nifc bars 415-415 staff 1 voice 2 -> R: 1 notes changed
+  row 210: song.classical.chopin-scherzo-2.nifc bars 417-417 staff 1 voice 2 -> R: 1 notes changed
+  row 211: song.classical.chopin-scherzo-2.nifc bars 419-419 staff 1 voice 2 -> R: 1 notes changed
+  row 212: song.classical.chopin-scherzo-2.nifc bars 421-421 staff 1 voice 2 -> R: 1 notes changed
+  row 213: song.classical.chopin-scherzo-2.nifc bars 423-423 staff 1 voice 2 -> R: 1 notes changed
+  row 214: song.classical.chopin-scherzo-2.nifc bars 425-425 staff 1 voice 2 -> R: 1 notes changed
+  row 215: song.classical.chopin-scherzo-2.nifc bars 427-427 staff 1 voice 2 -> R: 1 notes changed
+  row 216: song.classical.chopin-scherzo-2.nifc bars 495-495 staff 1 voice 2 -> R: 1 notes changed
+  row 217: song.classical.chopin-scherzo-2.nifc bars 503-503 staff 1 voice 2 -> R: 1 notes changed
+  row 218: song.classical.chopin-scherzo-2.nifc bars 511-511 staff 1 voice 2 -> R: 1 notes changed
+  row 219: song.classical.chopin-scherzo-2.nifc bars 515-515 staff 1 voice 2 -> R: 1 notes changed
+  row 220: song.classical.chopin-scherzo-2.nifc bars 551-551 staff 1 voice 2 -> R: 1 notes changed
+  row 221: song.classical.chopin-scherzo-2.nifc bars 648-648 staff 1 voice 2 -> R: 1 notes changed
+  row 222: song.classical.chopin-scherzo-2.nifc bars 650-651 staff 1 voice 2 -> R: 2 notes changed
+  row 223: song.classical.chopin-scherzo-2.nifc bars 655-656 staff 1 voice 2 -> R: 3 notes changed
+  row 224: song.classical.chopin-scherzo-2.nifc bars 658-659 staff 1 voice 2 -> R: 2 notes changed
+  row 225: song.classical.chopin-scherzo-2.nifc bars 663-663 staff 1 voice 2 -> R: 1 notes changed
+  row 226: song.classical.chopin-scherzo-2.nifc bars 684-684 staff 1 voice 2 -> R: 8 notes changed
+  row 227: song.classical.chopin-scherzo-2.nifc bars 759-759 staff 1 voice 2 -> R: 1 notes changed
+  row 228: song.classical.chopin-scherzo-2.nifc bars 763-763 staff 1 voice 2 -> R: 1 notes changed
+  row 229: song.classical.chopin-rondo-mazur.nifc bars 162-162 staff 1 voice 2 -> R: 6 notes changed
+  row 230: song.classical.chopin-rondo-mazur.nifc bars 177-179 staff 1 voice 2 -> R: 8 notes changed
+  row 231: song.classical.chopin-rondo-mazur.nifc bars 191-192 staff 1 voice 2 -> R: 12 notes changed
+  row 232: song.classical.chopin-rondo-mazur.nifc bars 385-388 staff 1 voice 2 -> R: 12 notes changed
+  row 233: song.classical.chopin-rondo-mazur.nifc bars 401-401 staff 1 voice 2 -> R: 2 notes changed
+  row 234: song.classical.chopin-rondo-mazur.nifc bars 449-456 staff 1 voice 2 -> R: 44 notes changed
+  row 235: song.ragtime.joplin-nonpareil bars 5-8 staff 1 voice 2 -> R: 10 notes changed
+  row 236: song.ragtime.joplin-nonpareil bars 13-16 staff 1 voice 2 -> R: 10 notes changed
+  row 237: song.ragtime.joplin-nonpareil bars 29-29 staff 1 voice 2 -> R: 12 notes changed
+  row 238: song.ragtime.joplin-nonpareil bars 34-35 staff 1 voice 2 -> R: 96 notes changed
+  row 239: song.ragtime.joplin-nonpareil bars 40-41 staff 1 voice 2 -> R: 48 notes changed
+  row 240: song.ragtime.joplin-nonpareil bars 48-49 staff 1 voice 2 -> R: 48 notes changed
+  row 241: song.ragtime.joplin-nonpareil bars 51-52 staff 1 voice 2 -> R: 48 notes changed
+  row 242: song.ragtime.joplin-nonpareil bars 68-69 staff 1 voice 2 -> R: 48 notes changed
+  row 243: song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx bars 1-1 staff 2 voice 2 -> L: 3 notes changed
+  row 244: song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx bars 3-26 staff 2 voice 2 -> L: 113 notes changed
+  row 245: song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx bars 90-90 staff 2 voice 2 -> L: 9 notes changed
+  row 246: song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx bars 144-145 staff 2 voice 2 -> L: 12 notes changed
+  row 247: song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx bars 147-147 staff 2 voice 2 -> L: 12 notes changed
+  row 248: song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx bars 149-149 staff 2 voice 2 -> L: 6 notes changed
+  row 249: song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx bars 213-213 staff 2 voice 2 -> L: 23 notes changed
+  row 250: song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx bars 247-253 staff 2 voice 2 -> L: 26 notes changed
+  row 251: song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx bars 255-273 staff 2 voice 2 -> L: 61 notes changed
+  row 252: song.ragtime.joplin-rose-leaf-rag bars 12-12 staff 2 voice 2 -> L: 18 notes changed
+  row 253: song.ragtime.joplin-rose-leaf-rag bars 21-21 staff 2 voice 2 -> L: 4 notes changed
+  row 254: song.ragtime.joplin-rose-leaf-rag bars 26-29 staff 2 voice 2 -> L: 64 notes changed
+  row 255: song.ragtime.joplin-rose-leaf-rag bars 33-33 staff 2 voice 2 -> L: 14 notes changed
+  row 256: song.ragtime.joplin-rose-leaf-rag bars 37-37 staff 2 voice 2 -> L: 8 notes changed
+  row 257: song.ragtime.joplin-rose-leaf-rag bars 46-46 staff 2 voice 2 -> L: 9 notes changed
+  row 258: song.ragtime.joplin-rose-leaf-rag bars 66-66 staff 2 voice 2 -> L: 14 notes changed
+  row 259: song.ragtime.joplin-rose-leaf-rag bars 68-68 staff 2 voice 2 -> L: 12 notes changed
+  row 260: song.ragtime.joplin-rose-leaf-rag bars 71-71 staff 2 voice 2 -> L: 4 notes changed
+  row 261: song.ragtime.joplin-rose-leaf-rag bars 87-88 staff 2 voice 2 -> L: 18 notes changed
+  row 262: song.ragtime.joplin-gladiolus-rag bars 2-2 staff 1 voice 2 -> R: 6 notes changed
+  row 263: song.ragtime.joplin-gladiolus-rag bars 4-4 staff 1 voice 2 -> R: 4 notes changed
+  row 264: song.ragtime.joplin-gladiolus-rag bars 16-17 staff 1 voice 2 -> R: 6 notes changed
+  row 265: song.ragtime.joplin-gladiolus-rag bars 36-36 staff 1 voice 2 -> R: 3 notes changed
+  row 266: song.ragtime.joplin-gladiolus-rag bars 38-38 staff 1 voice 2 -> R: 3 notes changed
+  row 267: song.ragtime.joplin-gladiolus-rag bars 50-50 staff 1 voice 2 -> R: 2 notes changed
+  row 268: song.ragtime.joplin-gladiolus-rag bars 54-57 staff 1 voice 2 -> R: 36 notes changed
+  row 269: song.ragtime.joplin-gladiolus-rag bars 66-66 staff 1 voice 2 -> R: 10 notes changed
+  row 270: song.ragtime.joplin-gladiolus-rag bars 69-74 staff 1 voice 2 -> R: 128 notes changed
+  row 271: song.ragtime.joplin-gladiolus-rag bars 77-81 staff 1 voice 2 -> R: 98 notes changed
+  row 272: song.ragtime.joplin-gladiolus-rag bars 83-83 staff 1 voice 2 -> R: 10 notes changed
+  row 273: song.ragtime.joplin-heliotrope-bouquet bars 4-4 staff 1 voice 2 -> R: 2 notes changed
+  row 274: song.ragtime.joplin-heliotrope-bouquet bars 9-12 staff 1 voice 2 -> R: 20 notes changed
+  row 275: song.ragtime.joplin-heliotrope-bouquet bars 17-19 staff 1 voice 2 -> R: 12 notes changed
+  row 276: song.ragtime.joplin-heliotrope-bouquet bars 21-23 staff 1 voice 2 -> R: 30 notes changed
+  row 277: song.ragtime.joplin-heliotrope-bouquet bars 29-31 staff 1 voice 2 -> R: 26 notes changed
+  row 278: song.ragtime.joplin-heliotrope-bouquet bars 33-35 staff 1 voice 2 -> R: 14 notes changed
+  row 279: song.ragtime.joplin-heliotrope-bouquet bars 37-37 staff 1 voice 2 -> R: 2 notes changed
+  row 280: song.ragtime.joplin-heliotrope-bouquet bars 42-45 staff 1 voice 2 -> R: 20 notes changed
+  row 281: song.ragtime.joplin-heliotrope-bouquet bars 50-52 staff 1 voice 2 -> R: 12 notes changed
+  row 282: song.ragtime.joplin-heliotrope-bouquet bars 54-54 staff 1 voice 2 -> R: 6 notes changed
+  row 283: song.ragtime.joplin-heliotrope-bouquet bars 56-56 staff 1 voice 2 -> R: 6 notes changed
+  row 284: song.ragtime.joplin-heliotrope-bouquet bars 59-60 staff 1 voice 2 -> R: 36 notes changed
+  row 285: song.ragtime.joplin-heliotrope-bouquet bars 62-62 staff 1 voice 2 -> R: 6 notes changed
+  row 286: song.ragtime.joplin-heliotrope-bouquet bars 71-72 staff 1 voice 2 -> R: 10 notes changed
+  row 287: song.ragtime.joplin-heliotrope-bouquet bars 75-77 staff 1 voice 2 -> R: 20 notes changed
+  row 288: song.ragtime.joplin-heliotrope-bouquet bars 79-80 staff 1 voice 2 -> R: 10 notes changed
+  row 289: song.ragtime.joplin-bethena bars 9-27 staff 1 voice 2 -> R: 45 notes changed
+  row 290: song.ragtime.joplin-bethena bars 30-30 staff 1 voice 2 -> R: 8 notes changed
+  row 291: song.ragtime.joplin-bethena bars 32-32 staff 1 voice 2 -> R: 8 notes changed
+  row 292: song.ragtime.joplin-bethena bars 35-36 staff 1 voice 2 -> R: 12 notes changed
+  row 293: song.ragtime.joplin-bethena bars 38-38 staff 1 voice 2 -> R: 8 notes changed
+  row 294: song.ragtime.joplin-bethena bars 40-40 staff 1 voice 2 -> R: 8 notes changed
+  row 295: song.ragtime.joplin-bethena bars 43-43 staff 1 voice 2 -> R: 8 notes changed
+  row 296: song.ragtime.joplin-bethena bars 53-67 staff 1 voice 2 -> R: 35 notes changed
+  row 297: song.ragtime.joplin-bethena bars 71-74 staff 1 voice 2 -> R: 7 notes changed
+  row 298: song.ragtime.joplin-bethena bars 89-91 staff 1 voice 2 -> R: 12 notes changed
+  row 299: song.ragtime.joplin-bethena bars 96-96 staff 1 voice 2 -> R: 4 notes changed
+  row 300: song.ragtime.joplin-bethena bars 119-121 staff 1 voice 2 -> R: 16 notes changed
+  row 301: song.ragtime.joplin-bethena bars 123-124 staff 1 voice 2 -> R: 12 notes changed
+  row 302: song.ragtime.joplin-bethena bars 127-133 staff 1 voice 2 -> R: 42 notes changed
+  row 303: song.ragtime.joplin-bethena bars 141-155 staff 1 voice 2 -> R: 35 notes changed
+  row 304: song.classical.chopin-polonaise-op71-1.nifc bars 30-30 staff 1 voice 2 -> R: 18 notes changed
+  row 305: song.classical.chopin-polonaise-op71-1.nifc bars 32-32 staff 1 voice 2 -> R: 18 notes changed
+  row 306: song.classical.chopin-polonaise-op71-1.nifc bars 75-75 staff 1 voice 2 -> R: 2 notes changed
+  row 307: song.classical.chopin-polonaise-op71-1.nifc bars 79-79 staff 1 voice 2 -> R: 3 notes changed
+  row 308: song.classical.chopin-polonaise-op71-1.nifc bars 81-82 staff 1 voice 2 -> R: 9 notes changed
+  row 309: song.classical.chopin-polonaise-op71-1.nifc bars 85-85 staff 1 voice 2 -> R: 6 notes changed
+  row 310: song.classical.chopin-polonaise-op71-1.nifc bars 87-87 staff 1 voice 2 -> R: 6 notes changed
+  row 311: song.classical.chopin-polonaise-op71-1.nifc bars 89-89 staff 1 voice 2 -> R: 6 notes changed
+  row 312: song.classical.chopin-polonaise-op71-1.nifc bars 123-123 staff 1 voice 2 -> R: 18 notes changed
+  row 313: song.classical.chopin-polonaise-op71-1.nifc bars 125-125 staff 1 voice 2 -> R: 18 notes changed
+  row 314: song.classical.chopin-berceuse.nifc bars 39-39 staff 1 voice 2 -> R: 32 notes changed
+  row 315: song.classical.chopin-berceuse.nifc bars 42-42 staff 1 voice 2 -> R: 36 notes changed
+  row 316: song.classical.chopin-ballade-2.nifc bars 11-11 staff 1 voice 2 -> R: 4 notes changed
+  row 317: song.classical.chopin-ballade-2.nifc bars 83-83 staff 1 voice 2 -> R: 1 notes changed
+  row 318: song.classical.chopin-ballade-2.nifc bars 91-91 staff 1 voice 2 -> R: 7 notes changed
+  row 319: song.classical.chopin-ballade-2.nifc bars 93-93 staff 1 voice 2 -> R: 4 notes changed
+  row 320: song.classical.chopin-ballade-2.nifc bars 105-105 staff 1 voice 2 -> R: 1 notes changed
+  row 321: song.classical.chopin-ballade-2.nifc bars 116-116 staff 1 voice 2 -> R: 5 notes changed
+  row 322: song.classical.chopin-ballade-2.nifc bars 118-118 staff 1 voice 2 -> R: 2 notes changed
+  row 323: song.classical.chopin-ballade-2.nifc bars 178-178 staff 1 voice 2 -> R: 3 notes changed
+  row 324: song.classical.chopin-ballade-2.nifc bars 182-182 staff 1 voice 2 -> R: 3 notes changed
+  row 325: song.classical.chopin-etude-op25-4.nifc bars 1-8 staff 2 voice 2 -> L: 103 notes changed
+  row 326: song.classical.chopin-etude-op25-4.nifc bars 19-21 staff 2 voice 2 -> L: 36 notes changed
+  row 327: song.classical.chopin-etude-op25-4.nifc bars 28-29 staff 2 voice 2 -> L: 24 notes changed
+  row 328: song.classical.chopin-etude-op25-4.nifc bars 33-33 staff 2 voice 2 -> L: 14 notes changed
+  row 329: song.classical.chopin-etude-op25-4.nifc bars 42-46 staff 2 voice 2 -> L: 66 notes changed
+  row 330: song.classical.chopin-etude-op25-4.nifc bars 63-63 staff 2 voice 2 -> L: 4 notes changed
+  row 331: song.classical.chopin-etude-op25-4.nifc bars 65-65 staff 2 voice 2 -> L: 3 notes changed
+  row 332: song.ragtime.joplin-wall-street-rag bars 9-11 staff 1 voice 2 -> R: 42 notes changed
+  row 333: song.ragtime.joplin-wall-street-rag bars 21-21 staff 1 voice 2 -> R: 7 notes changed
+  row 334: song.ragtime.joplin-wall-street-rag bars 23-25 staff 1 voice 2 -> R: 28 notes changed
+  row 335: song.ragtime.joplin-wall-street-rag bars 27-29 staff 1 voice 2 -> R: 38 notes changed
+  row 336: song.ragtime.joplin-wall-street-rag bars 31-33 staff 1 voice 2 -> R: 26 notes changed
+  row 337: song.ragtime.joplin-wall-street-rag bars 36-36 staff 1 voice 2 -> R: 12 notes changed
+  row 338: song.ragtime.joplin-wall-street-rag bars 41-41 staff 1 voice 2 -> R: 4 notes changed
+  row 339: song.ragtime.joplin-wall-street-rag bars 45-46 staff 1 voice 2 -> R: 12 notes changed
+  row 340: song.ragtime.joplin-wall-street-rag bars 50-50 staff 1 voice 2 -> R: 14 notes changed
+  row 341: song.ragtime.joplin-wall-street-rag bars 52-52 staff 1 voice 2 -> R: 6 notes changed
+  row 342: song.ragtime.joplin-wall-street-rag bars 54-54 staff 1 voice 2 -> R: 12 notes changed
+  row 343: song.ragtime.joplin-wall-street-rag bars 70-70 staff 1 voice 2 -> R: 10 notes changed
+  row 344: song.classical.chopin-mazurka-op24-4.nifc bars 6-6 staff 1 voice 2 -> R: 4 notes changed
+  row 345: song.classical.chopin-mazurka-op24-4.nifc bars 8-8 staff 1 voice 2 -> R: 4 notes changed
+  row 346: song.classical.chopin-mazurka-op24-4.nifc bars 10-10 staff 1 voice 2 -> R: 5 notes changed
+  row 347: song.classical.chopin-mazurka-op24-4.nifc bars 96-96 staff 1 voice 2 -> R: 1 notes changed
+  row 348: song.classical.chopin-sonata-3-4.nifc bars 73-73 staff 1 voice 2 -> R: 1 notes changed
+  row 349: song.classical.chopin-sonata-3-4.nifc bars 102-103 staff 1 voice 2 -> R: 10 notes changed
+  row 350: song.classical.chopin-sonata-3-4.nifc bars 106-118 staff 1 voice 2 -> R: 77 notes changed
+  row 351: song.classical.chopin-sonata-3-4.nifc bars 122-122 staff 1 voice 2 -> R: 9 notes changed
+  row 352: song.classical.chopin-sonata-3-4.nifc bars 126-126 staff 1 voice 2 -> R: 9 notes changed
+  row 353: song.classical.chopin-sonata-3-4.nifc bars 128-128 staff 1 voice 2 -> R: 4 notes changed
+  row 354: song.classical.chopin-sonata-3-4.nifc bars 226-226 staff 1 voice 2 -> R: 1 notes changed
+  row 355: song.classical.chopin-sonata-3-4.nifc bars 228-228 staff 1 voice 2 -> R: 12 notes changed
+  row 356: song.ragtime.joplin-solace bars 29-29 staff 1 voice 2 -> R: 4 notes changed
+  row 357: song.ragtime.joplin-solace bars 57-57 staff 1 voice 2 -> R: 16 notes changed
+  row 358: song.ragtime.joplin-solace bars 61-61 staff 1 voice 2 -> R: 4 notes changed
+  row 359: song.ragtime.joplin-solace bars 65-65 staff 1 voice 2 -> R: 18 notes changed
+  row 360: song.ragtime.joplin-solace bars 83-83 staff 1 voice 2 -> R: 8 notes changed
+  row 361: song.ragtime.joplin-lily-queen bars 3-3 staff 1 voice 2 -> R: 17 notes changed
+  row 362: song.ragtime.joplin-lily-queen bars 12-12 staff 1 voice 2 -> R: 16 notes changed
+  row 363: song.ragtime.joplin-lily-queen bars 16-16 staff 1 voice 2 -> R: 22 notes changed
+  row 364: song.ragtime.joplin-lily-queen bars 20-20 staff 1 voice 2 -> R: 6 notes changed
+  row 365: song.ragtime.joplin-lily-queen bars 22-23 staff 1 voice 2 -> R: 14 notes changed
+  row 366: song.ragtime.joplin-lily-queen bars 30-31 staff 1 voice 2 -> R: 16 notes changed
+  row 367: song.ragtime.joplin-lily-queen bars 36-37 staff 1 voice 2 -> R: 18 notes changed
+  row 368: song.ragtime.joplin-lily-queen bars 39-39 staff 1 voice 2 -> R: 5 notes changed
+  row 369: song.ragtime.joplin-lily-queen bars 48-48 staff 1 voice 2 -> R: 8 notes changed
+  row 370: song.ragtime.joplin-lily-queen bars 52-52 staff 1 voice 2 -> R: 11 notes changed
+  row 371: song.ragtime.joplin-lily-queen bars 56-57 staff 1 voice 2 -> R: 9 notes changed
+  row 372: song.ragtime.joplin-lily-queen bars 61-63 staff 1 voice 2 -> R: 12 notes changed
+  row 373: song.ragtime.joplin-lily-queen bars 65-67 staff 1 voice 2 -> R: 22 notes changed
+  row 374: song.ragtime.joplin-lily-queen bars 70-70 staff 1 voice 2 -> R: 10 notes changed
+  row 375: song.ragtime.joplin-lily-queen bars 72-72 staff 1 voice 2 -> R: 14 notes changed
+  row 376: song.ragtime.joplin-lily-queen bars 81-81 staff 1 voice 2 -> R: 16 notes changed
+  row 377: song.ragtime.joplin-lily-queen bars 88-88 staff 1 voice 2 -> R: 14 notes changed
+  row 378: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 2-2 staff 2 voice 2 -> L: 5 notes changed
+  row 379: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 4-4 staff 2 voice 2 -> L: 5 notes changed
+  row 380: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 10-10 staff 2 voice 2 -> L: 5 notes changed
+  row 381: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 12-12 staff 2 voice 2 -> L: 5 notes changed
+  row 382: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 14-14 staff 2 voice 2 -> L: 12 notes changed
+  row 383: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 16-17 staff 2 voice 2 -> L: 15 notes changed
+  row 384: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 21-21 staff 2 voice 2 -> L: 10 notes changed
+  row 385: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 50-50 staff 2 voice 2 -> L: 5 notes changed
+  row 386: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 52-52 staff 2 voice 2 -> L: 5 notes changed
+  row 387: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 54-54 staff 2 voice 2 -> L: 12 notes changed
+  row 388: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 58-59 staff 2 voice 2 -> L: 32 notes changed
+  row 389: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx bars 62-62 staff 2 voice 2 -> L: 1 notes changed
+  row 390: song.classical.debussy-children-s-corner-doctor-gradus-ad-parnassum.pdmx bars 32-32 staff 1 voice 2 -> R: 12 notes changed
+  row 391: song.classical.chopin-polonaise-op40-1.nifc bars 16-16 staff 1 voice 2 -> R: 38 notes changed
+  row 392: song.classical.chopin-polonaise-op40-1.nifc bars 37-38 staff 1 voice 2 -> R: 45 notes changed
+  row 393: song.classical.chopin-polonaise-op40-1.nifc bars 53-54 staff 1 voice 2 -> R: 46 notes changed
+  row 394: song.classical.chopin-polonaise-op40-1.nifc bars 77-78 staff 1 voice 2 -> R: 90 notes changed
+  row 395: song.classical.chopin-polonaise-op40-1.nifc bars 96-96 staff 1 voice 2 -> R: 19 notes changed
+  row 396: song.ragtime.joplin-eugenia bars 11-11 staff 1 voice 2 -> R: 4 notes changed
+  row 397: song.ragtime.joplin-eugenia bars 16-16 staff 1 voice 2 -> R: 2 notes changed
+  row 398: song.ragtime.joplin-eugenia bars 19-19 staff 1 voice 2 -> R: 8 notes changed
+  row 399: song.ragtime.joplin-eugenia bars 23-23 staff 1 voice 2 -> R: 2 notes changed
+  row 400: song.ragtime.joplin-eugenia bars 27-29 staff 1 voice 2 -> R: 14 notes changed
+  row 401: song.ragtime.joplin-eugenia bars 31-31 staff 1 voice 2 -> R: 2 notes changed
+  row 402: song.ragtime.joplin-eugenia bars 45-45 staff 1 voice 2 -> R: 2 notes changed
+  row 403: song.ragtime.joplin-eugenia bars 50-50 staff 1 voice 2 -> R: 1 notes changed
+  row 404: song.ragtime.joplin-eugenia bars 53-54 staff 1 voice 2 -> R: 6 notes changed
+  row 405: song.ragtime.joplin-eugenia bars 58-62 staff 1 voice 2 -> R: 34 notes changed
+  row 406: song.ragtime.joplin-eugenia bars 66-68 staff 1 voice 2 -> R: 20 notes changed
+  row 407: song.ragtime.joplin-eugenia bars 90-94 staff 1 voice 2 -> R: 68 notes changed
+  row 408: song.ragtime.joplin-eugenia bars 98-100 staff 1 voice 2 -> R: 40 notes changed
+  row 409: song.classical.chopin-ballade-3.nifc bars 5-5 staff 1 voice 2 -> R: 1 notes changed
+  row 410: song.classical.chopin-ballade-3.nifc bars 19-20 staff 1 voice 2 -> R: 21 notes changed
+  row 411: song.classical.chopin-ballade-3.nifc bars 23-24 staff 1 voice 2 -> R: 28 notes changed
+  row 412: song.classical.chopin-ballade-3.nifc bars 42-42 staff 1 voice 2 -> R: 1 notes changed
+  row 413: song.classical.chopin-ballade-3.nifc bars 66-66 staff 1 voice 2 -> R: 2 notes changed
+  row 414: song.classical.chopin-ballade-3.nifc bars 76-76 staff 1 voice 2 -> R: 1 notes changed
+  row 415: song.classical.chopin-ballade-3.nifc bars 136-136 staff 1 voice 2 -> R: 1 notes changed
+  row 416: song.classical.chopin-ballade-3.nifc bars 138-140 staff 1 voice 2 -> R: 22 notes changed
+  row 417: song.classical.chopin-ballade-3.nifc bars 142-142 staff 1 voice 2 -> R: 2 notes changed
+  row 418: song.classical.chopin-ballade-3.nifc bars 156-156 staff 1 voice 2 -> R: 1 notes changed
+  row 419: song.classical.chopin-ballade-3.nifc bars 189-189 staff 1 voice 2 -> R: 1 notes changed
+  row 420: song.classical.chopin-ballade-3.nifc bars 191-191 staff 1 voice 2 -> R: 4 notes changed
+  row 421: song.classical.chopin-ballade-3.nifc bars 196-197 staff 1 voice 2 -> R: 2 notes changed
+  row 422: song.classical.chopin-ballade-3.nifc bars 199-201 staff 1 voice 2 -> R: 4 notes changed
+  row 423: song.classical.chopin-ballade-3.nifc bars 204-205 staff 1 voice 2 -> R: 3 notes changed
+  row 424: song.classical.chopin-ballade-3.nifc bars 212-213 staff 1 voice 2 -> R: 26 notes changed
+  row 425: song.classical.chopin-ballade-3.nifc bars 216-220 staff 1 voice 2 -> R: 79 notes changed
+  row 426: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 12-12 staff 1 voice 2 -> R: 2 notes changed
+  row 427: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 16-16 staff 1 voice 2 -> R: 2 notes changed
+  row 428: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 20-20 staff 1 voice 2 -> R: 2 notes changed
+  row 429: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 24-24 staff 1 voice 2 -> R: 2 notes changed
+  row 430: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 28-28 staff 1 voice 2 -> R: 2 notes changed
+  row 431: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 32-32 staff 1 voice 2 -> R: 2 notes changed
+  row 432: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 97-97 staff 1 voice 2 -> R: 3 notes changed
+  row 433: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 100-101 staff 1 voice 2 -> R: 6 notes changed
+  row 434: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 104-104 staff 1 voice 2 -> R: 3 notes changed
+  row 435: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 108-108 staff 1 voice 2 -> R: 6 notes changed
+  row 436: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 112-112 staff 1 voice 2 -> R: 6 notes changed
+  row 437: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 123-124 staff 1 voice 2 -> R: 17 notes changed
+  row 438: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 137-137 staff 1 voice 2 -> R: 1 notes changed
+  row 439: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 147-149 staff 1 voice 2 -> R: 5 notes changed
+  row 440: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 152-153 staff 1 voice 2 -> R: 3 notes changed
+  row 441: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 158-158 staff 1 voice 2 -> R: 1 notes changed
+  row 442: song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx bars 185-185 staff 1 voice 2 -> R: 2 notes changed
+  row 443: song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx bars 35-35 staff 1 voice 2 -> R: 12 notes changed
+  row 444: song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx bars 41-41 staff 1 voice 2 -> R: 4 notes changed
+  row 445: song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx bars 46-46 staff 1 voice 2 -> R: 2 notes changed
+  row 446: song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx bars 49-49 staff 1 voice 2 -> R: 4 notes changed
+  row 447: song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx bars 53-54 staff 1 voice 2 -> R: 4 notes changed
+  row 448: song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx bars 57-57 staff 1 voice 2 -> R: 4 notes changed
+  row 449: song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx bars 62-63 staff 1 voice 2 -> R: 4 notes changed
+  row 450: song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx bars 65-66 staff 1 voice 2 -> R: 3 notes changed
+  row 451: song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx bars 95-95 staff 1 voice 2 -> R: 1 notes changed
+  row 452: song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx bars 37-37 staff 1 voice 5 -> R: 2 notes changed
+  row 453: song.classical.chopin-mazurka-op59-3.nifc bars 76-79 staff 1 voice 2 -> R: 24 notes changed
+  row 454: song.classical.chopin-mazurka-op59-3.nifc bars 134-134 staff 1 voice 2 -> R: 3 notes changed
+  row 455: song.ragtime.joplin-augustan-club-waltz bars 7-7 staff 1 voice 2 -> R: 2 notes changed
+  row 456: song.ragtime.joplin-augustan-club-waltz bars 15-15 staff 1 voice 2 -> R: 2 notes changed
+  row 457: song.ragtime.joplin-augustan-club-waltz bars 23-23 staff 1 voice 2 -> R: 2 notes changed
+  row 458: song.ragtime.joplin-augustan-club-waltz bars 27-27 staff 1 voice 2 -> R: 2 notes changed
+  row 459: song.ragtime.joplin-augustan-club-waltz bars 35-35 staff 1 voice 2 -> R: 2 notes changed
+  row 460: song.ragtime.joplin-augustan-club-waltz bars 37-37 staff 1 voice 2 -> R: 1 notes changed
+  row 461: song.ragtime.joplin-augustan-club-waltz bars 71-71 staff 1 voice 2 -> R: 2 notes changed
+  row 462: song.ragtime.joplin-augustan-club-waltz bars 87-87 staff 1 voice 2 -> R: 10 notes changed
+  row 463: song.ragtime.joplin-augustan-club-waltz bars 107-107 staff 1 voice 2 -> R: 4 notes changed
+  row 464: song.ragtime.joplin-augustan-club-waltz bars 109-109 staff 1 voice 2 -> R: 4 notes changed
+  row 465: song.ragtime.joplin-augustan-club-waltz bars 114-114 staff 1 voice 2 -> R: 2 notes changed
+  row 466: song.ragtime.joplin-augustan-club-waltz bars 120-122 staff 1 voice 2 -> R: 20 notes changed
+  row 467: song.ragtime.joplin-augustan-club-waltz bars 130-130 staff 1 voice 2 -> R: 4 notes changed
+  row 468: song.classical.chopin-nocturne-op55-2.nifc bars 4-4 staff 1 voice 2 -> R: 1 notes changed
+  row 469: song.classical.chopin-nocturne-op55-2.nifc bars 43-45 staff 1 voice 2 -> R: 3 notes changed
+  row 470: song.classical.chopin-nocturne-op55-2.nifc bars 51-53 staff 1 voice 2 -> R: 3 notes changed
+  row 471: song.classical.chopin-nocturne-op55-2.nifc bars 56-56 staff 1 voice 2 -> R: 1 notes changed
+  row 472: song.classical.chopin-nocturne-op55-2.nifc bars 63-63 staff 1 voice 2 -> R: 1 notes changed
+  row 473: song.classical.debussy-claude-debussy-la-cathedrale-engloutie-the-submerged-cathedral.pdmx bars 17-18 staff 1 voice 3 -> R: 8 notes changed
+  row 474: song.classical.debussy-claude-debussy-la-cathedrale-engloutie-the-submerged-cathedral.pdmx bars 6-6 staff 2 voice 2 -> L: 3 notes changed
+  row 475: song.classical.debussy-claude-debussy-la-cathedrale-engloutie-the-submerged-cathedral.pdmx bars 63-65 staff 2 voice 2 -> L: 24 notes changed
+  row 476: song.classical.debussy-claude-debussy-la-cathedrale-engloutie-the-submerged-cathedral.pdmx bars 72-83 staff 2 voice 2 -> L: 144 notes changed
+  row 477: song.pop.kerry-mills-at-a-georgia-camp-meeting-mills-1897-kerry-mills.pdmx bars 26-26 staff 1 voice 2 -> R: 8 notes changed
+  row 478: song.pop.kerry-mills-at-a-georgia-camp-meeting-mills-1897-kerry-mills.pdmx bars 58-58 staff 1 voice 2 -> R: 16 notes changed
+  row 479: song.pop.kerry-mills-at-a-georgia-camp-meeting-mills-1897-kerry-mills.pdmx bars 62-62 staff 1 voice 2 -> R: 16 notes changed
+  row 480: song.pop.kerry-mills-at-a-georgia-camp-meeting-mills-1897-kerry-mills.pdmx bars 69-69 staff 1 voice 2 -> R: 12 notes changed
+  row 481: song.pop.kerry-mills-at-a-georgia-camp-meeting-mills-1897-kerry-mills.pdmx bars 77-77 staff 1 voice 2 -> R: 8 notes changed
+  row 482: song.pop.kerry-mills-at-a-georgia-camp-meeting-mills-1897-kerry-mills.pdmx bars 79-79 staff 1 voice 2 -> R: 8 notes changed
+  row 483: song.pop.kerry-mills-at-a-georgia-camp-meeting-mills-1897-kerry-mills.pdmx bars 85-85 staff 1 voice 2 -> R: 8 notes changed
+  row 484: song.classical.bach-fugue-in-g-minor-bwv-542-piano-transcription.pdmx bars 83-83 staff 1 voice 3 -> R: 4 notes changed
+  row 485: song.classical.bach-fugue-in-g-minor-bwv-542-piano-transcription.pdmx bars 19-19 staff 2 voice 2 -> L: 10 notes changed
+  row 486: song.classical.bach-fugue-in-g-minor-bwv-542-piano-transcription.pdmx bars 114-115 staff 2 voice 2 -> L: 34 notes changed
+  row 487: song.classical.chopin-mazurka-op17-4.nifc bars 65-67 staff 1 voice 2 -> R: 23 notes changed
+  row 488: song.classical.chopin-mazurka-op17-4.nifc bars 73-76 staff 1 voice 2 -> R: 29 notes changed
+  row 489: song.classical.chopin-mazurka-op17-4.nifc bars 81-83 staff 1 voice 2 -> R: 23 notes changed
+  row 490: song.classical.chopin-mazurka-op17-4.nifc bars 89-91 staff 1 voice 2 -> R: 16 notes changed
+  row 491: song.classical.pieczonka-tarantella-in-a-minor.pdmx bars 91-91 staff 1 voice 2 -> R: 5 notes changed
+  row 492: song.classical.chopin-polonaise-op53.nifc bars 18-19 staff 1 voice 2 -> R: 17 notes changed
+  row 493: song.classical.chopin-polonaise-op53.nifc bars 22-22 staff 1 voice 2 -> R: 10 notes changed
+  row 494: song.classical.chopin-polonaise-op53.nifc bars 91-91 staff 1 voice 2 -> R: 6 notes changed
+  row 495: song.classical.chopin-polonaise-op53.nifc bars 96-96 staff 1 voice 2 -> R: 2 notes changed
+  row 496: song.classical.chopin-polonaise-op53.nifc bars 111-111 staff 1 voice 2 -> R: 6 notes changed
+  row 497: song.classical.chopin-polonaise-op53.nifc bars 116-116 staff 1 voice 2 -> R: 2 notes changed
+  row 498: song.classical.chopin-polonaise-op53.nifc bars 124-126 staff 1 voice 2 -> R: 49 notes changed
+  row 499: song.ragtime.joplin-cleopha bars 6-6 staff 1 voice 2 -> R: 8 notes changed
+  row 500: song.ragtime.joplin-cleopha bars 8-10 staff 1 voice 2 -> R: 28 notes changed
+  row 501: song.ragtime.joplin-cleopha bars 14-14 staff 1 voice 2 -> R: 8 notes changed
+  row 502: song.ragtime.joplin-cleopha bars 16-18 staff 1 voice 2 -> R: 28 notes changed
+  row 503: song.ragtime.joplin-cleopha bars 40-40 staff 1 voice 2 -> R: 4 notes changed
+  row 504: song.ragtime.joplin-cleopha bars 42-44 staff 1 voice 2 -> R: 14 notes changed
+  row 505: song.ragtime.joplin-cleopha bars 48-48 staff 1 voice 2 -> R: 4 notes changed
+  row 506: song.ragtime.joplin-cleopha bars 50-52 staff 1 voice 2 -> R: 14 notes changed
+  row 507: song.classical.schubert-liszt-standchen bars 74-74 staff 1 voice 2 -> R: 1 notes changed
+  row 508: song.classical.schubert-liszt-standchen bars 78-78 staff 1 voice 2 -> R: 1 notes changed
+  row 509: song.classical.schubert-liszt-standchen bars 82-82 staff 1 voice 2 -> R: 3 notes changed
+  row 510: song.classical.schubert-liszt-standchen bars 84-84 staff 1 voice 2 -> R: 2 notes changed
+  row 511: song.classical.schubert-liszt-standchen bars 88-88 staff 1 voice 2 -> R: 2 notes changed
+  row 512: song.classical.schubert-liszt-standchen bars 100-100 staff 1 voice 2 -> R: 2 notes changed
+  row 513: song.classical.schubert-liszt-standchen bars 104-105 staff 1 voice 2 -> R: 2 notes changed
+  row 514: song.ragtime.joplin-crush-collision-march bars 6-6 staff 1 voice 2 -> R: 12 notes changed
+  row 515: song.ragtime.joplin-crush-collision-march bars 14-14 staff 1 voice 2 -> R: 12 notes changed
+  row 516: song.ragtime.joplin-crush-collision-march bars 22-22 staff 1 voice 2 -> R: 12 notes changed
+  row 517: song.ragtime.joplin-crush-collision-march bars 24-24 staff 1 voice 2 -> R: 12 notes changed
+  row 518: song.ragtime.joplin-crush-collision-march bars 26-28 staff 1 voice 2 -> R: 40 notes changed
+  row 519: song.ragtime.joplin-crush-collision-march bars 30-30 staff 1 voice 2 -> R: 12 notes changed
+  row 520: song.ragtime.joplin-crush-collision-march bars 32-32 staff 1 voice 2 -> R: 12 notes changed
+  row 521: song.ragtime.joplin-crush-collision-march bars 34-34 staff 1 voice 2 -> R: 12 notes changed
+  row 522: song.classical.debussy-reverie.pdmx bars 19-21 staff 1 voice 2 -> R: 20 notes changed
+  row 523: song.classical.debussy-reverie.pdmx bars 23-26 staff 1 voice 2 -> R: 19 notes changed
+  row 524: song.classical.debussy-reverie.pdmx bars 38-38 staff 1 voice 2 -> R: 2 notes changed
+  row 525: song.classical.debussy-reverie.pdmx bars 76-76 staff 1 voice 2 -> R: 1 notes changed
+  row 526: song.classical.debussy-reverie.pdmx bars 98-98 staff 1 voice 2 -> R: 1 notes changed
+  row 527: song.classical.chopin-rondo-op16.nifc bars 8-8 staff 1 voice 2 -> R: 2 notes changed
+  row 528: song.classical.chopin-rondo-op16.nifc bars 84-84 staff 1 voice 2 -> R: 2 notes changed
+  row 529: song.classical.chopin-rondo-op16.nifc bars 88-88 staff 1 voice 2 -> R: 2 notes changed
+  row 530: song.classical.chopin-rondo-op16.nifc bars 236-236 staff 1 voice 2 -> R: 2 notes changed
+  row 531: song.classical.chopin-rondo-op16.nifc bars 240-240 staff 1 voice 2 -> R: 2 notes changed
+  row 532: song.classical.chopin-rondo-op16.nifc bars 432-432 staff 1 voice 2 -> R: 2 notes changed
+  row 533: song.classical.chopin-rondo-op16.nifc bars 434-434 staff 1 voice 2 -> R: 1 notes changed
+  row 534: song.classical.chopin-etude-op10-4.nifc bars 0-0 staff 1 voice 2 -> R: 1 notes changed
+  row 535: song.classical.chopin-etude-op10-4.nifc bars 3-3 staff 1 voice 2 -> R: 16 notes changed
+  row 536: song.classical.chopin-etude-op10-4.nifc bars 13-13 staff 1 voice 2 -> R: 4 notes changed
+  row 537: song.classical.chopin-etude-op10-4.nifc bars 53-53 staff 1 voice 2 -> R: 16 notes changed
+  row 538: song.classical.chopin-etude-op10-4.nifc bars 63-63 staff 1 voice 2 -> R: 4 notes changed
+  row 539: song.classical.chopin-etude-op10-4.nifc bars 65-65 staff 1 voice 2 -> R: 4 notes changed
+  row 540: song.ragtime.joplin-pleasant-moments bars 5-5 staff 1 voice 2 -> R: 2 notes changed
+  row 541: song.ragtime.joplin-pleasant-moments bars 7-7 staff 1 voice 2 -> R: 2 notes changed
+  row 542: song.ragtime.joplin-pleasant-moments bars 13-13 staff 1 voice 2 -> R: 2 notes changed
+  row 543: song.ragtime.joplin-pleasant-moments bars 17-17 staff 1 voice 2 -> R: 6 notes changed
+  row 544: song.ragtime.joplin-pleasant-moments bars 21-21 staff 1 voice 2 -> R: 4 notes changed
+  row 545: song.ragtime.joplin-pleasant-moments bars 26-27 staff 1 voice 2 -> R: 10 notes changed
+  row 546: song.ragtime.joplin-pleasant-moments bars 29-29 staff 1 voice 2 -> R: 4 notes changed
+  row 547: song.ragtime.joplin-pleasant-moments bars 33-33 staff 1 voice 2 -> R: 18 notes changed
+  row 548: song.ragtime.joplin-pleasant-moments bars 39-39 staff 1 voice 2 -> R: 2 notes changed
+  row 549: song.ragtime.joplin-pleasant-moments bars 41-41 staff 1 voice 2 -> R: 2 notes changed
+  row 550: song.ragtime.joplin-pleasant-moments bars 47-47 staff 1 voice 2 -> R: 2 notes changed
+  row 551: song.ragtime.joplin-pleasant-moments bars 51-51 staff 1 voice 2 -> R: 6 notes changed
+  row 552: song.ragtime.joplin-pleasant-moments bars 59-60 staff 1 voice 2 -> R: 14 notes changed
+  row 553: song.ragtime.joplin-pleasant-moments bars 67-69 staff 1 voice 2 -> R: 18 notes changed
+  row 554: song.ragtime.joplin-pleasant-moments bars 72-72 staff 1 voice 2 -> R: 1 notes changed
+  row 555: song.ragtime.joplin-pleasant-moments bars 74-74 staff 1 voice 2 -> R: 1 notes changed
+  row 556: song.ragtime.joplin-pleasant-moments bars 80-80 staff 1 voice 2 -> R: 1 notes changed
+  row 557: song.ragtime.joplin-pleasant-moments bars 84-84 staff 1 voice 2 -> R: 3 notes changed
+  row 558: song.ragtime.joplin-fig-leaf-rag bars 7-8 staff 1 voice 2 -> R: 12 notes changed
+  row 559: song.ragtime.joplin-fig-leaf-rag bars 11-11 staff 1 voice 2 -> R: 4 notes changed
+  row 560: song.ragtime.joplin-fig-leaf-rag bars 15-17 staff 1 voice 2 -> R: 26 notes changed
+  row 561: song.ragtime.joplin-fig-leaf-rag bars 24-24 staff 1 voice 2 -> R: 4 notes changed
+  row 562: song.ragtime.joplin-fig-leaf-rag bars 41-42 staff 1 voice 2 -> R: 6 notes changed
+  row 563: song.ragtime.joplin-fig-leaf-rag bars 45-45 staff 1 voice 2 -> R: 2 notes changed
+  row 564: song.ragtime.joplin-fig-leaf-rag bars 49-51 staff 1 voice 2 -> R: 13 notes changed
+  row 565: song.ragtime.joplin-fig-leaf-rag bars 58-58 staff 1 voice 2 -> R: 12 notes changed
+  row 566: song.ragtime.joplin-fig-leaf-rag bars 70-71 staff 1 voice 2 -> R: 12 notes changed
+  row 567: song.ragtime.joplin-fig-leaf-rag bars 85-85 staff 1 voice 2 -> R: 4 notes changed
+  row 568: song.classical.chopin-polonaise-op26-2.nifc bars 26-28 staff 1 voice 2 -> R: 48 notes changed
+  row 569: song.classical.chopin-polonaise-op26-2.nifc bars 39-39 staff 1 voice 2 -> R: 7 notes changed
+  row 570: song.classical.chopin-polonaise-op26-2.nifc bars 130-132 staff 1 voice 2 -> R: 48 notes changed
+  row 571: song.classical.chopin-polonaise-op26-2.nifc bars 143-143 staff 1 voice 2 -> R: 7 notes changed
+  row 572: song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx bars 35-35 staff 1 voice 6 -> R: 1 notes changed
+  row 573: song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx bars 103-103 staff 1 voice 6 -> R: 1 notes changed
+  row 574: song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx bars 58-59 staff 2 voice 2 -> L: 19 notes changed
+  row 575: song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx bars 62-62 staff 2 voice 2 -> L: 9 notes changed
+  row 576: song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx bars 78-78 staff 2 voice 2 -> L: 6 notes changed
+  row 577: song.classical.chopin-mazurka-op7-4.nifc bars 26-26 staff 1 voice 2 -> R: 3 notes changed
+  row 578: song.classical.chopin-mazurka-op7-4.nifc bars 30-30 staff 1 voice 2 -> R: 3 notes changed
+  row 579: song.classical.chopin-mazurka-op7-4.nifc bars 33-34 staff 1 voice 2 -> R: 2 notes changed
+  row 580: song.classical.chopin-mazurka-op6-2.nifc bars 2-2 staff 1 voice 2 -> R: 4 notes changed
+  row 581: song.classical.chopin-mazurka-op6-2.nifc bars 4-4 staff 1 voice 2 -> R: 4 notes changed
+  row 582: song.classical.chopin-mazurka-op6-2.nifc bars 6-6 staff 1 voice 2 -> R: 6 notes changed
+  row 583: song.classical.chopin-mazurka-op6-2.nifc bars 53-53 staff 1 voice 2 -> R: 8 notes changed
+  row 584: song.classical.chopin-mazurka-op6-2.nifc bars 55-55 staff 1 voice 2 -> R: 8 notes changed
+  row 585: song.classical.chopin-mazurka-op6-2.nifc bars 57-57 staff 1 voice 2 -> R: 12 notes changed
+  row 586: song.ragtime.joplin-paragon-rag bars 8-8 staff 1 voice 2 -> R: 8 notes changed
+  row 587: song.ragtime.joplin-paragon-rag bars 19-19 staff 1 voice 2 -> R: 6 notes changed
+  row 588: song.ragtime.joplin-paragon-rag bars 24-25 staff 1 voice 2 -> R: 8 notes changed
+  row 589: song.ragtime.joplin-paragon-rag bars 27-28 staff 1 voice 2 -> R: 12 notes changed
+  row 590: song.ragtime.joplin-paragon-rag bars 32-32 staff 1 voice 2 -> R: 2 notes changed
+  row 591: song.ragtime.joplin-paragon-rag bars 42-42 staff 1 voice 2 -> R: 4 notes changed
+  row 592: song.ragtime.joplin-paragon-rag bars 53-53 staff 1 voice 2 -> R: 3 notes changed
+  row 593: song.classical.grieg-album-leaf-op-47-no-2.pdmx bars 29-30 staff 2 voice 2 -> L: 8 notes changed
+  row 594: song.classical.grieg-album-leaf-op-47-no-2.pdmx bars 33-34 staff 2 voice 2 -> L: 8 notes changed
+  row 595: song.classical.grieg-album-leaf-op-47-no-2.pdmx bars 36-36 staff 2 voice 2 -> L: 4 notes changed
+  row 596: song.classical.grieg-album-leaf-op-47-no-2.pdmx bars 69-69 staff 2 voice 2 -> L: 2 notes changed
+  row 597: song.classical.grieg-album-leaf-op-47-no-2.pdmx bars 72-72 staff 2 voice 2 -> L: 4 notes changed
+  row 598: song.classical.grieg-album-leaf-op-47-no-2.pdmx bars 82-83 staff 2 voice 2 -> L: 8 notes changed
+  row 599: song.classical.grieg-album-leaf-op-47-no-2.pdmx bars 86-87 staff 2 voice 2 -> L: 8 notes changed
+  row 600: song.classical.grieg-album-leaf-op-47-no-2.pdmx bars 89-89 staff 2 voice 2 -> L: 4 notes changed
+  row 601: song.classical.grieg-album-leaf-op-47-no-2.pdmx bars 122-122 staff 2 voice 2 -> L: 2 notes changed
+  row 602: song.classical.grieg-album-leaf-op-47-no-2.pdmx bars 125-125 staff 2 voice 2 -> L: 4 notes changed
+  row 603: song.classical.chopin-waltz-op18.nifc bars 9-9 staff 1 voice 2 -> R: 6 notes changed
+  row 604: song.classical.chopin-waltz-op18.nifc bars 16-16 staff 1 voice 2 -> R: 10 notes changed
+  row 605: song.classical.chopin-waltz-op18.nifc bars 42-42 staff 1 voice 2 -> R: 3 notes changed
+  row 606: song.classical.chopin-waltz-op18.nifc bars 49-49 staff 1 voice 2 -> R: 5 notes changed
+  row 607: song.classical.chopin-waltz-op18.nifc bars 197-197 staff 1 voice 2 -> R: 3 notes changed
+  row 608: song.classical.chopin-waltz-op18.nifc bars 204-204 staff 1 voice 2 -> R: 5 notes changed
+  row 609: song.classical.chopin-waltz-op18.nifc bars 229-229 staff 1 voice 2 -> R: 3 notes changed
+  row 610: song.classical.chopin-waltz-op18.nifc bars 239-239 staff 1 voice 2 -> R: 3 notes changed
+  row 611: song.classical.chopin-waltz-op18.nifc bars 267-268 staff 1 voice 2 -> R: 8 notes changed
+  row 612: song.classical.chopin-waltz-op18.nifc bars 271-273 staff 1 voice 2 -> R: 15 notes changed
+  row 613: song.classical.chopin-waltz-op18.nifc bars 275-277 staff 1 voice 2 -> R: 9 notes changed
+  row 614: song.classical.chopin-waltz-op18.nifc bars 279-281 staff 1 voice 2 -> R: 9 notes changed
+  row 615: song.classical.chopin-waltz-op18.nifc bars 283-283 staff 1 voice 2 -> R: 1 notes changed
+  row 616: song.classical.debussy-debussy-claude-la-plus-que-lente.pdmx bars 87-87 staff 2 voice 2 -> L: 12 notes changed
+  row 617: song.classical.debussy-debussy-claude-la-plus-que-lente.pdmx bars 95-95 staff 2 voice 2 -> L: 12 notes changed
+  row 618: song.classical.debussy-debussy-claude-la-plus-que-lente.pdmx bars 146-146 staff 2 voice 2 -> L: 4 notes changed
+  row 619: song.classical.debussy-debussy-claude-la-plus-que-lente.pdmx bars 148-148 staff 2 voice 2 -> L: 2 notes changed
+  row 620: song.beautiful.merry-christmas-mr-lawrence bars 26-26 staff 1 voice 2 -> R: 12 notes changed
+  row 621: song.beautiful.merry-christmas-mr-lawrence bars 28-28 staff 1 voice 2 -> R: 12 notes changed
+  row 622: song.beautiful.merry-christmas-mr-lawrence bars 30-30 staff 1 voice 2 -> R: 12 notes changed
+  row 623: song.beautiful.merry-christmas-mr-lawrence bars 32-32 staff 1 voice 2 -> R: 12 notes changed
+  row 624: song.beautiful.merry-christmas-mr-lawrence bars 49-49 staff 1 voice 2 -> R: 8 notes changed
+  row 625: song.beautiful.merry-christmas-mr-lawrence bars 74-74 staff 1 voice 2 -> R: 4 notes changed
+  row 626: song.ragtime.joplin-weeping-willow bars 7-7 staff 1 voice 2 -> R: 8 notes changed
+  row 627: song.ragtime.joplin-weeping-willow bars 15-15 staff 1 voice 2 -> R: 8 notes changed
+  row 628: song.ragtime.joplin-weeping-willow bars 18-18 staff 1 voice 2 -> R: 6 notes changed
+  row 629: song.ragtime.joplin-weeping-willow bars 27-27 staff 1 voice 2 -> R: 40 notes changed
+  row 630: song.ragtime.joplin-weeping-willow bars 41-41 staff 1 voice 2 -> R: 8 notes changed
+  row 631: song.ragtime.joplin-weeping-willow bars 49-49 staff 1 voice 2 -> R: 8 notes changed
+  row 632: song.ragtime.joplin-weeping-willow bars 52-52 staff 1 voice 2 -> R: 6 notes changed
+  row 633: song.ragtime.joplin-weeping-willow bars 82-82 staff 1 voice 2 -> R: 2 notes changed
+  row 634: song.classical.joplin-search-light-rag.pdmx bars 5-6 staff 1 voice 2 -> R: 10 notes changed
+  row 635: song.classical.joplin-search-light-rag.pdmx bars 9-9 staff 1 voice 2 -> R: 4 notes changed
+  row 636: song.classical.joplin-search-light-rag.pdmx bars 11-11 staff 1 voice 2 -> R: 8 notes changed
+  row 637: song.classical.joplin-search-light-rag.pdmx bars 13-15 staff 1 voice 2 -> R: 10 notes changed
+  row 638: song.classical.joplin-search-light-rag.pdmx bars 18-18 staff 1 voice 2 -> R: 2 notes changed
+  row 639: song.classical.joplin-search-light-rag.pdmx bars 34-34 staff 1 voice 2 -> R: 6 notes changed
+  row 640: song.classical.joplin-search-light-rag.pdmx bars 40-41 staff 1 voice 2 -> R: 5 notes changed
+  row 641: song.classical.joplin-search-light-rag.pdmx bars 44-44 staff 1 voice 2 -> R: 2 notes changed
+  row 642: song.classical.joplin-search-light-rag.pdmx bars 46-46 staff 1 voice 2 -> R: 4 notes changed
+  row 643: song.classical.joplin-search-light-rag.pdmx bars 48-50 staff 1 voice 2 -> R: 5 notes changed
+  row 644: song.classical.joplin-search-light-rag.pdmx bars 53-53 staff 1 voice 2 -> R: 1 notes changed
+  row 645: song.classical.joplin-search-light-rag.pdmx bars 68-68 staff 1 voice 2 -> R: 6 notes changed
+  row 646: song.classical.joplin-search-light-rag.pdmx bars 70-70 staff 1 voice 2 -> R: 2 notes changed
+  row 647: song.classical.joplin-search-light-rag.pdmx bars 72-72 staff 1 voice 2 -> R: 2 notes changed
+  row 648: song.classical.joplin-search-light-rag.pdmx bars 79-80 staff 1 voice 2 -> R: 18 notes changed
+  row 649: song.classical.joplin-search-light-rag.pdmx bars 87-88 staff 1 voice 2 -> R: 20 notes changed
+  row 650: song.classical.joplin-search-light-rag.pdmx bars 18-18 staff 1 voice 3 -> R: 8 notes changed
+  row 651: song.classical.joplin-search-light-rag.pdmx bars 53-53 staff 1 voice 3 -> R: 4 notes changed
+  row 652: song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx bars 2-4 staff 1 voice 2 -> R: 4 notes changed
+  row 653: song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx bars 10-10 staff 1 voice 2 -> R: 1 notes changed
+  row 654: song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx bars 12-14 staff 1 voice 2 -> R: 5 notes changed
+  row 655: song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx bars 16-17 staff 1 voice 2 -> R: 3 notes changed
+  row 656: song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx bars 19-19 staff 1 voice 2 -> R: 1 notes changed
+  row 657: song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx bars 29-30 staff 1 voice 2 -> R: 4 notes changed
+  row 658: song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx bars 32-32 staff 1 voice 2 -> R: 2 notes changed
+  row 659: song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx bars 34-35 staff 1 voice 2 -> R: 2 notes changed
+  row 660: song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx bars 2-2 staff 1 voice 3 -> R: 1 notes changed
+  row 661: song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx bars 10-10 staff 1 voice 3 -> R: 1 notes changed
+  row 662: song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx bars 27-27 staff 1 voice 3 -> R: 1 notes changed
+  row 663: song.classical.chopin-mazurka-op30-4.nifc bars 5-5 staff 1 voice 2 -> R: 3 notes changed
+  row 664: song.classical.chopin-mazurka-op30-4.nifc bars 7-7 staff 1 voice 2 -> R: 3 notes changed
+  row 665: song.classical.chopin-mazurka-op30-4.nifc bars 13-13 staff 1 voice 2 -> R: 3 notes changed
+  row 666: song.classical.chopin-mazurka-op30-4.nifc bars 15-15 staff 1 voice 2 -> R: 3 notes changed
+  row 667: song.classical.chopin-mazurka-op30-4.nifc bars 25-25 staff 1 voice 2 -> R: 1 notes changed
+  row 668: song.classical.chopin-mazurka-op30-4.nifc bars 27-27 staff 1 voice 2 -> R: 1 notes changed
+  row 669: song.classical.chopin-mazurka-op30-4.nifc bars 31-31 staff 1 voice 2 -> R: 2 notes changed
+  row 670: song.classical.chopin-mazurka-op30-4.nifc bars 51-53 staff 1 voice 2 -> R: 7 notes changed
+  row 671: song.classical.chopin-mazurka-op30-4.nifc bars 59-60 staff 1 voice 2 -> R: 7 notes changed
+  row 672: song.classical.chopin-mazurka-op30-4.nifc bars 66-68 staff 1 voice 2 -> R: 12 notes changed
+  row 673: song.classical.chopin-mazurka-op30-4.nifc bars 70-72 staff 1 voice 2 -> R: 12 notes changed
+  row 674: song.classical.chopin-mazurka-op30-4.nifc bars 82-84 staff 1 voice 2 -> R: 12 notes changed
+  row 675: song.classical.chopin-mazurka-op30-4.nifc bars 86-88 staff 1 voice 2 -> R: 12 notes changed
+  row 676: song.classical.chopin-mazurka-op30-4.nifc bars 101-101 staff 1 voice 2 -> R: 3 notes changed
+  row 677: song.classical.chopin-mazurka-op30-4.nifc bars 103-103 staff 1 voice 2 -> R: 3 notes changed
+  row 678: song.classical.chopin-mazurka-op30-4.nifc bars 109-109 staff 1 voice 2 -> R: 3 notes changed
+  row 679: song.classical.chopin-mazurka-op30-4.nifc bars 111-111 staff 1 voice 2 -> R: 3 notes changed
+  row 680: song.classical.chopin-mazurka-op30-4.nifc bars 119-119 staff 1 voice 2 -> R: 1 notes changed
+  row 681: song.classical.chopin-mazurka-op30-4.nifc bars 121-121 staff 1 voice 2 -> R: 1 notes changed
+  row 682: song.classical.chopin-mazurka-op30-4.nifc bars 123-123 staff 1 voice 2 -> R: 1 notes changed
+  row 683: song.classical.chopin-nocturne-op15-3.nifc bars 70-70 staff 1 voice 2 -> R: 2 notes changed
+  row 684: song.classical.chopin-nocturne-op15-3.nifc bars 72-72 staff 1 voice 2 -> R: 2 notes changed
+  row 685: song.classical.chopin-nocturne-op15-3.nifc bars 76-76 staff 1 voice 2 -> R: 2 notes changed
+  row 686: song.classical.chopin-nocturne-op15-3.nifc bars 121-124 staff 1 voice 2 -> R: 18 notes changed
+  row 687: song.classical.chopin-nocturne-op15-3.nifc bars 126-126 staff 1 voice 2 -> R: 6 notes changed
+  row 688: song.classical.chopin-nocturne-op15-3.nifc bars 128-132 staff 1 voice 2 -> R: 18 notes changed
+  row 689: song.classical.chopin-nocturne-op15-3.nifc bars 137-140 staff 1 voice 2 -> R: 18 notes changed
+  row 690: song.classical.chopin-nocturne-op15-3.nifc bars 144-148 staff 1 voice 2 -> R: 18 notes changed
+  row 691: song.classical.chopin-marche-funebre-op72.nifc bars 9-9 staff 1 voice 2 -> R: 3 notes changed
+  row 692: song.classical.chopin-marche-funebre-op72.nifc bars 17-17 staff 1 voice 2 -> R: 3 notes changed
+  row 693: song.classical.chopin-marche-funebre-op72.nifc bars 25-25 staff 1 voice 2 -> R: 3 notes changed
+  row 694: song.classical.chopin-marche-funebre-op72.nifc bars 27-27 staff 1 voice 2 -> R: 4 notes changed
+  row 695: song.classical.chopin-marche-funebre-op72.nifc bars 31-31 staff 1 voice 2 -> R: 4 notes changed
+  row 696: song.classical.chopin-marche-funebre-op72.nifc bars 33-33 staff 1 voice 2 -> R: 3 notes changed
+  row 697: song.classical.chopin-marche-funebre-op72.nifc bars 35-35 staff 1 voice 2 -> R: 4 notes changed
+  row 698: song.classical.chopin-marche-funebre-op72.nifc bars 39-39 staff 1 voice 2 -> R: 4 notes changed
+  row 699: song.classical.chopin-marche-funebre-op72.nifc bars 41-41 staff 1 voice 2 -> R: 3 notes changed
+  row 700: song.classical.chopin-marche-funebre-op72.nifc bars 51-51 staff 1 voice 2 -> R: 4 notes changed
+  row 701: song.classical.chopin-marche-funebre-op72.nifc bars 55-55 staff 1 voice 2 -> R: 4 notes changed
+  row 702: song.classical.chopin-marche-funebre-op72.nifc bars 57-57 staff 1 voice 2 -> R: 3 notes changed
+  row 703: song.classical.chopin-marche-funebre-op72.nifc bars 67-67 staff 1 voice 2 -> R: 3 notes changed
+  row 704: song.classical.chopin-marche-funebre-op72.nifc bars 75-75 staff 1 voice 2 -> R: 3 notes changed
+  row 705: song.classical.chopin-bolero.nifc bars 132-133 staff 1 voice 2 -> R: 18 notes changed
+  row 706: song.classical.chopin-bolero.nifc bars 137-137 staff 1 voice 2 -> R: 2 notes changed
+  row 707: song.classical.chopin-bolero.nifc bars 164-167 staff 1 voice 2 -> R: 24 notes changed
+  row 708: song.classical.chopin-bolero.nifc bars 180-180 staff 1 voice 2 -> R: 2 notes changed
+  row 709: song.classical.chopin-bolero.nifc bars 244-247 staff 1 voice 2 -> R: 38 notes changed
+  row 710: song.classical.chopin-mazurka-op50-1.nifc bars 4-4 staff 2 voice 2 -> L: 6 notes changed
+  row 711: song.classical.chopin-mazurka-op50-1.nifc bars 12-13 staff 2 voice 2 -> L: 5 notes changed
+  row 712: song.classical.chopin-mazurka-op50-1.nifc bars 28-28 staff 2 voice 2 -> L: 6 notes changed
+  row 713: song.classical.chopin-mazurka-op50-1.nifc bars 36-37 staff 2 voice 2 -> L: 5 notes changed
+  row 714: song.classical.chopin-mazurka-op50-1.nifc bars 60-60 staff 2 voice 2 -> L: 6 notes changed
+  row 715: song.classical.chopin-mazurka-op50-1.nifc bars 68-69 staff 2 voice 2 -> L: 7 notes changed
+  row 716: song.classical.chopin-mazurka-op50-1.nifc bars 85-85 staff 2 voice 2 -> L: 1 notes changed
+  row 717: song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx bars 25-40 staff 1 voice 2 -> R: 16 notes changed
+  row 718: song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx bars 45-64 staff 1 voice 2 -> R: 28 notes changed
+  row 719: song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx bars 70-70 staff 1 voice 2 -> R: 3 notes changed
+  row 720: song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx bars 72-72 staff 1 voice 2 -> R: 3 notes changed
+  row 721: song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx bars 122-122 staff 1 voice 2 -> R: 3 notes changed
+  row 722: song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx bars 124-124 staff 1 voice 2 -> R: 3 notes changed
+  row 723: song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx bars 168-168 staff 1 voice 2 -> R: 3 notes changed
+  row 724: song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx bars 170-170 staff 1 voice 2 -> R: 3 notes changed
+  row 725: song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx bars 206-206 staff 1 voice 2 -> R: 3 notes changed
+  row 726: song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx bars 208-208 staff 1 voice 2 -> R: 3 notes changed
+  row 727: song.classical.chopin-waltz-op34-2.nifc bars 29-31 staff 1 voice 2 -> R: 12 notes changed
+  row 728: song.classical.chopin-waltz-op34-2.nifc bars 33-35 staff 1 voice 2 -> R: 12 notes changed
+  row 729: song.classical.chopin-waltz-op34-2.nifc bars 97-99 staff 1 voice 2 -> R: 12 notes changed
+  row 730: song.classical.chopin-waltz-op34-2.nifc bars 101-103 staff 1 voice 2 -> R: 12 notes changed
+  row 731: song.classical.chopin-etude-op10-12.nifc bars 27-27 staff 1 voice 2 -> R: 4 notes changed
+  row 732: song.classical.chopin-etude-op10-12.nifc bars 57-57 staff 1 voice 2 -> R: 7 notes changed
+  row 733: song.classical.chopin-etude-op10-12.nifc bars 70-71 staff 1 voice 2 -> R: 4 notes changed
+  row 734: song.classical.chopin-etude-op10-12.nifc bars 77-78 staff 1 voice 2 -> R: 3 notes changed
+  row 735: song.pop.mederic-niot-summer-road-s-cakewalk.pdmx bars 6-6 staff 2 voice 2 -> L: 12 notes changed
+  row 736: song.pop.mederic-niot-summer-road-s-cakewalk.pdmx bars 10-10 staff 2 voice 2 -> L: 12 notes changed
+  row 737: song.pop.mederic-niot-summer-road-s-cakewalk.pdmx bars 18-19 staff 2 voice 2 -> L: 21 notes changed
+  row 738: song.pop.mederic-niot-summer-road-s-cakewalk.pdmx bars 27-27 staff 2 voice 2 -> L: 5 notes changed
+  row 739: song.pop.mederic-niot-summer-road-s-cakewalk.pdmx bars 29-29 staff 2 voice 2 -> L: 5 notes changed
+  row 740: song.pop.mederic-niot-summer-road-s-cakewalk.pdmx bars 38-38 staff 2 voice 2 -> L: 2 notes changed
+  row 741: song.pop.mederic-niot-summer-road-s-cakewalk.pdmx bars 40-40 staff 2 voice 2 -> L: 1 notes changed
+  row 742: song.pop.mederic-niot-summer-road-s-cakewalk.pdmx bars 59-60 staff 2 voice 2 -> L: 13 notes changed
+  row 743: song.classical.chopin-waltz-e-minor.nifc bars 13-15 staff 1 voice 2 -> R: 15 notes changed
+  row 744: song.classical.chopin-waltz-e-minor.nifc bars 21-23 staff 1 voice 2 -> R: 15 notes changed
+  row 745: song.classical.chopin-waltz-e-minor.nifc bars 45-47 staff 1 voice 2 -> R: 30 notes changed
+  row 746: song.classical.chopin-waltz-e-minor.nifc bars 53-55 staff 1 voice 2 -> R: 30 notes changed
+  row 747: song.classical.chopin-waltz-e-minor.nifc bars 98-98 staff 1 voice 2 -> R: 3 notes changed
+  row 748: song.classical.chopin-waltz-e-minor.nifc bars 122-122 staff 1 voice 2 -> R: 3 notes changed
+  row 749: song.classical.chopin-waltz-e-minor.nifc bars 142-144 staff 1 voice 2 -> R: 15 notes changed
+  row 750: song.classical.bach-fugue-in-g-minor-bwv-578-piano-transcription.pdmx bars 41-41 staff 2 voice 2 -> L: 8 notes changed
+  row 751: song.classical.chopin-mazurka-op56-2.nifc bars 6-7 staff 1 voice 2 -> R: 4 notes changed
+  row 752: song.classical.chopin-mazurka-op56-2.nifc bars 9-14 staff 1 voice 2 -> R: 12 notes changed
+  row 753: song.classical.chopin-mazurka-op56-2.nifc bars 17-18 staff 1 voice 2 -> R: 5 notes changed
+  row 754: song.classical.chopin-mazurka-op56-2.nifc bars 21-22 staff 1 voice 2 -> R: 5 notes changed
+  row 755: song.classical.chopin-mazurka-op56-2.nifc bars 25-26 staff 1 voice 2 -> R: 5 notes changed
+  row 756: song.classical.chopin-mazurka-op56-2.nifc bars 69-70 staff 1 voice 2 -> R: 2 notes changed
+  row 757: song.classical.chopin-mazurka-op56-2.nifc bars 73-74 staff 1 voice 2 -> R: 5 notes changed
+  row 758: song.classical.chopin-mazurka-op56-2.nifc bars 77-78 staff 1 voice 2 -> R: 5 notes changed
+  row 759: song.classical.chopin-mazurka-op56-2.nifc bars 81-82 staff 1 voice 2 -> R: 5 notes changed
+  row 760: song.ragtime.joplin-school-of-ragtime bars 10-11 staff 1 voice 3 -> R: 70 notes changed
+  row 761: song.classical.chopin-mazurka-op68-2.nifc bars 40-40 staff 1 voice 2 -> R: 6 notes changed
+  row 762: song.classical.chopin-mazurka-op68-2.nifc bars 42-42 staff 1 voice 2 -> R: 6 notes changed
+  row 763: song.classical.chopin-mazurka-op68-2.nifc bars 44-44 staff 1 voice 2 -> R: 6 notes changed
+  row 764: song.ragtime.joplin-pine-apple-rag bars 10-10 staff 1 voice 2 -> R: 2 notes changed
+  row 765: song.ragtime.joplin-pine-apple-rag bars 19-19 staff 1 voice 2 -> R: 10 notes changed
+  row 766: song.ragtime.joplin-pine-apple-rag bars 21-21 staff 1 voice 2 -> R: 5 notes changed
+  row 767: song.ragtime.joplin-pine-apple-rag bars 45-45 staff 1 voice 2 -> R: 1 notes changed
+  row 768: song.ragtime.joplin-pine-apple-rag bars 54-54 staff 1 voice 2 -> R: 5 notes changed
+  row 769: song.ragtime.joplin-pine-apple-rag bars 58-58 staff 1 voice 2 -> R: 8 notes changed
+  row 770: song.ragtime.joplin-pine-apple-rag bars 62-62 staff 1 voice 2 -> R: 12 notes changed
+  row 771: song.ragtime.joplin-pine-apple-rag bars 68-68 staff 1 voice 2 -> R: 12 notes changed
+  row 772: song.ragtime.joplin-pine-apple-rag bars 85-87 staff 1 voice 2 -> R: 28 notes changed
+  row 773: song.classical.chopin-mazurka-op30-2.nifc bars 32-32 staff 1 voice 2 -> R: 3 notes changed
+  row 774: song.classical.chopin-mazurka-op30-2.nifc bars 64-64 staff 1 voice 2 -> R: 2 notes changed
+  row 775: song.classical.grieg-ase-s-tod.pdmx bars 1-2 staff 2 voice 2 -> L: 12 notes changed
+  row 776: song.classical.grieg-ase-s-tod.pdmx bars 5-6 staff 2 voice 2 -> L: 12 notes changed
+  row 777: song.classical.grieg-ase-s-tod.pdmx bars 9-10 staff 2 voice 2 -> L: 12 notes changed
+  row 778: song.classical.grieg-ase-s-tod.pdmx bars 13-14 staff 2 voice 2 -> L: 12 notes changed
+  row 779: song.classical.grieg-ase-s-tod.pdmx bars 17-18 staff 2 voice 2 -> L: 14 notes changed
+  row 780: song.classical.grieg-ase-s-tod.pdmx bars 21-22 staff 2 voice 2 -> L: 14 notes changed
+  row 781: song.classical.grieg-ase-s-tod.pdmx bars 45-45 staff 2 voice 2 -> L: 2 notes changed
+  row 782: song.ragtime.joplin-reflection-rag bars 11-11 staff 1 voice 2 -> R: 8 notes changed
+  row 783: song.ragtime.joplin-reflection-rag bars 24-24 staff 1 voice 2 -> R: 4 notes changed
+  row 784: song.ragtime.joplin-reflection-rag bars 32-32 staff 1 voice 2 -> R: 4 notes changed
+  row 785: song.ragtime.joplin-reflection-rag bars 43-43 staff 1 voice 2 -> R: 6 notes changed
+  row 786: song.ragtime.joplin-reflection-rag bars 52-52 staff 1 voice 2 -> R: 4 notes changed
+  row 787: song.blues.black-bottom-stomp bars 56-56 staff 2 voice 2 -> L: 4 notes changed
+  row 788: song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx bars 9-9 staff 2 voice 2 -> L: 9 notes changed
+  row 789: song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx bars 18-18 staff 2 voice 2 -> L: 6 notes changed
+  row 790: song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx bars 24-24 staff 2 voice 2 -> L: 6 notes changed
+  row 791: song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx bars 29-29 staff 2 voice 2 -> L: 4 notes changed
+  row 792: song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx bars 31-31 staff 2 voice 2 -> L: 9 notes changed
+  row 793: song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx bars 57-57 staff 2 voice 2 -> L: 10 notes changed
+  row 794: song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx bars 61-61 staff 2 voice 2 -> L: 4 notes changed
+  row 795: song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx bars 64-64 staff 2 voice 2 -> L: 2 notes changed
+  row 796: song.ragtime.joplin-elite-syncopations bars 8-8 staff 1 voice 2 -> R: 32 notes changed
+  row 797: song.ragtime.joplin-elite-syncopations bars 16-16 staff 1 voice 2 -> R: 32 notes changed
+  row 798: song.ragtime.joplin-elite-syncopations bars 42-42 staff 1 voice 2 -> R: 16 notes changed
+  row 799: song.ragtime.joplin-elite-syncopations bars 50-50 staff 1 voice 2 -> R: 16 notes changed
+  row 800: song.classical.chopin-nocturne-op27-2.nifc bars 41-41 staff 1 voice 2 -> R: 7 notes changed
+  row 801: song.classical.chopin-nocturne-op27-2.nifc bars 69-70 staff 1 voice 2 -> R: 7 notes changed
+  row 802: song.classical.chopin-sonata-2-3.nifc bars 7-8 staff 1 voice 2 -> R: 16 notes changed
+  row 803: song.classical.chopin-sonata-2-3.nifc bars 11-14 staff 1 voice 2 -> R: 35 notes changed
+  row 804: song.classical.chopin-sonata-2-3.nifc bars 19-20 staff 1 voice 2 -> R: 4 notes changed
+  row 805: song.classical.chopin-sonata-2-3.nifc bars 27-28 staff 1 voice 2 -> R: 4 notes changed
+  row 806: song.classical.chopin-sonata-2-3.nifc bars 62-63 staff 1 voice 2 -> R: 16 notes changed
+  row 807: song.classical.chopin-sonata-2-3.nifc bars 66-69 staff 1 voice 2 -> R: 10 notes changed
+  row 808: song.classical.chopin-sonata-2-3.nifc bars 74-75 staff 1 voice 2 -> R: 4 notes changed
+  row 809: song.classical.chopin-sonata-2-3.nifc bars 82-83 staff 1 voice 2 -> R: 4 notes changed
+  row 810: song.classical.chopin-variations-op12.nifc bars 210-211 staff 1 voice 2 -> R: 15 notes changed
+  row 811: song.classical.chopin-ecossaise-op72-3.nifc bars 2-2 staff 1 voice 2 -> R: 12 notes changed
+  row 812: song.classical.chopin-ecossaise-op72-3.nifc bars 4-4 staff 1 voice 2 -> R: 10 notes changed
+  row 813: song.classical.chopin-ecossaise-op72-3.nifc bars 6-6 staff 1 voice 2 -> R: 12 notes changed
+  row 814: song.classical.chopin-ecossaise-op72-3.nifc bars 8-8 staff 1 voice 2 -> R: 10 notes changed
+  row 815: song.classical.chopin-mazurka-op17-3.nifc bars 21-23 staff 1 voice 2 -> R: 30 notes changed
+  row 816: song.classical.chopin-mazurka-op41-4.nifc bars 34-34 staff 1 voice 2 -> R: 5 notes changed
+  row 817: song.classical.chopin-mazurka-op41-4.nifc bars 36-36 staff 1 voice 2 -> R: 3 notes changed
+  row 818: song.classical.chopin-mazurka-op41-4.nifc bars 38-38 staff 1 voice 2 -> R: 5 notes changed
+  row 819: song.ragtime.joplin-country-club bars 32-32 staff 1 voice 2 -> R: 16 notes changed
+  row 820: song.ragtime.joplin-country-club bars 39-39 staff 1 voice 2 -> R: 3 notes changed
+  row 821: song.ragtime.joplin-country-club bars 63-64 staff 1 voice 2 -> R: 10 notes changed
+  row 822: song.ragtime.joplin-country-club bars 83-83 staff 1 voice 2 -> R: 4 notes changed
+  row 823: song.ragtime.joplin-country-club bars 85-85 staff 1 voice 2 -> R: 4 notes changed
+  row 824: song.ragtime.joplin-country-club bars 87-88 staff 1 voice 2 -> R: 10 notes changed
+  row 825: song.ragtime.joplin-antoinette bars 12-12 staff 1 voice 2 -> R: 6 notes changed
+  row 826: song.ragtime.joplin-antoinette bars 18-18 staff 1 voice 2 -> R: 4 notes changed
+  row 827: song.ragtime.joplin-antoinette bars 22-24 staff 1 voice 2 -> R: 8 notes changed
+  row 828: song.ragtime.joplin-antoinette bars 28-28 staff 1 voice 2 -> R: 4 notes changed
+  row 829: song.ragtime.joplin-antoinette bars 30-35 staff 1 voice 2 -> R: 20 notes changed
+  row 830: song.ragtime.joplin-antoinette bars 45-45 staff 1 voice 2 -> R: 3 notes changed
+  row 831: song.ragtime.joplin-antoinette bars 81-81 staff 1 voice 2 -> R: 6 notes changed
+  row 832: song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx bars 33-33 staff 2 voice 2 -> L: 15 notes changed
+  row 833: song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx bars 37-37 staff 2 voice 2 -> L: 16 notes changed
+  row 834: song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx bars 41-41 staff 2 voice 2 -> L: 16 notes changed
+  row 835: song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx bars 47-48 staff 2 voice 2 -> L: 8 notes changed
+  row 836: song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 66-67 staff 1 voice 2 -> R: 2 notes changed
+  row 837: song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 72-72 staff 1 voice 2 -> R: 1 notes changed
+  row 838: song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 76-76 staff 1 voice 2 -> R: 1 notes changed
+  row 839: song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 93-93 staff 1 voice 2 -> R: 2 notes changed
+  row 840: song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 136-136 staff 1 voice 2 -> R: 9 notes changed
+  row 841: song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 194-196 staff 1 voice 2 -> R: 4 notes changed
+  row 842: song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 228-228 staff 1 voice 2 -> R: 2 notes changed
+  row 843: song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 245-245 staff 1 voice 2 -> R: 1 notes changed
+  row 844: song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 266-266 staff 1 voice 2 -> R: 2 notes changed
+  row 845: song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx bars 270-270 staff 1 voice 2 -> R: 2 notes changed
+  row 846: song.ragtime.joplin-chrysanthemum bars 19-19 staff 1 voice 2 -> R: 8 notes changed
+  row 847: song.ragtime.joplin-chrysanthemum bars 29-29 staff 1 voice 2 -> R: 4 notes changed
+  row 848: song.ragtime.joplin-chrysanthemum bars 36-36 staff 1 voice 2 -> R: 2 notes changed
+  row 849: song.ragtime.joplin-chrysanthemum bars 53-53 staff 1 voice 2 -> R: 2 notes changed
+  row 850: song.ragtime.joplin-chrysanthemum bars 56-56 staff 1 voice 2 -> R: 2 notes changed
+  row 851: song.ragtime.joplin-chrysanthemum bars 64-65 staff 1 voice 2 -> R: 8 notes changed
+  row 852: song.ragtime.joplin-chrysanthemum bars 67-68 staff 1 voice 2 -> R: 10 notes changed
+  row 853: song.ragtime.joplin-chrysanthemum bars 76-77 staff 1 voice 2 -> R: 18 notes changed
+  row 854: song.ragtime.joplin-chrysanthemum bars 90-90 staff 1 voice 2 -> R: 1 notes changed
+  row 855: song.ragtime.joplin-chrysanthemum bars 98-99 staff 1 voice 2 -> R: 4 notes changed
+  row 856: song.ragtime.joplin-chrysanthemum bars 101-102 staff 1 voice 2 -> R: 4 notes changed
+  row 857: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 38-38 staff 1 voice 2 -> R: 3 notes changed
+  row 858: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 57-58 staff 1 voice 2 -> R: 5 notes changed
+  row 859: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 61-62 staff 1 voice 2 -> R: 4 notes changed
+  row 860: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 71-71 staff 1 voice 2 -> R: 1 notes changed
+  row 861: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 107-107 staff 1 voice 2 -> R: 4 notes changed
+  row 862: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 121-122 staff 1 voice 2 -> R: 4 notes changed
+  row 863: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 131-131 staff 1 voice 2 -> R: 1 notes changed
+  row 864: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 18-18 staff 1 voice 5 -> R: 2 notes changed
+  row 865: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 22-22 staff 1 voice 5 -> R: 1 notes changed
+  row 866: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 30-30 staff 1 voice 5 -> R: 1 notes changed
+  row 867: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 32-32 staff 1 voice 5 -> R: 2 notes changed
+  row 868: song.classical.kreisler-kreisler-s-liebesleid-piano-solo.pdmx bars 104-104 staff 1 voice 5 -> R: 2 notes changed
+  row 869: song.classical.chopin-prelude-op28-21.nifc bars 50-53 staff 1 voice 2 -> R: 10 notes changed
+  row 870: song.classical.chopin-prelude-op28-21.nifc bars 57-58 staff 1 voice 2 -> R: 2 notes changed
+  row 871: song.classical.czerny-the-school-of-velocity-op-299-no-5.pdmx bars 15-15 staff 1 voice 2 -> R: 2 notes changed
+  row 872: song.classical.czerny-the-school-of-velocity-op-299-no-5.pdmx bars 35-37 staff 1 voice 2 -> R: 6 notes changed
+  row 873: song.classical.czerny-the-school-of-velocity-op-299-no-5.pdmx bars 47-50 staff 1 voice 2 -> R: 64 notes changed
+  row 874: song.pop.hans-otto-borgmann-tango-notturno.pdmx bars 2-2 staff 1 voice 2 -> R: 15 notes changed
+  row 875: song.folk.3-variations-on-happy-birthday.pdmx bars 55-55 staff 1 voice 2 -> R: 2 notes changed
+  row 876: song.folk.3-variations-on-happy-birthday.pdmx bars 59-59 staff 1 voice 2 -> R: 2 notes changed
+  row 877: song.folk.3-variations-on-happy-birthday.pdmx bars 102-102 staff 1 voice 2 -> R: 5 notes changed
+  row 878: song.folk.3-variations-on-happy-birthday.pdmx bars 121-122 staff 1 voice 2 -> R: 6 notes changed
+  row 879: song.folk.3-variations-on-happy-birthday.pdmx bars 164-164 staff 1 voice 2 -> R: 6 notes changed
+  row 880: song.folk.3-variations-on-happy-birthday.pdmx bars 169-169 staff 1 voice 2 -> R: 1 notes changed
+  row 881: song.folk.3-variations-on-happy-birthday.pdmx bars 193-193 staff 1 voice 2 -> R: 2 notes changed
+  row 882: song.folk.3-variations-on-happy-birthday.pdmx bars 195-195 staff 1 voice 2 -> R: 2 notes changed
+  row 883: song.folk.3-variations-on-happy-birthday.pdmx bars 209-209 staff 1 voice 2 -> R: 2 notes changed
+  row 884: song.folk.3-variations-on-happy-birthday.pdmx bars 211-211 staff 1 voice 2 -> R: 1 notes changed
+  row 885: song.folk.3-variations-on-happy-birthday.pdmx bars 213-214 staff 1 voice 2 -> R: 2 notes changed
+  row 886: song.ragtime.joplin-leola bars 10-12 staff 1 voice 2 -> R: 14 notes changed
+  row 887: song.ragtime.joplin-leola bars 14-14 staff 1 voice 2 -> R: 6 notes changed
+  row 888: song.ragtime.joplin-leola bars 28-29 staff 1 voice 2 -> R: 12 notes changed
+  row 889: song.ragtime.joplin-leola bars 32-32 staff 1 voice 2 -> R: 16 notes changed
+  row 890: song.ragtime.joplin-leola bars 44-46 staff 1 voice 2 -> R: 14 notes changed
+  row 891: song.ragtime.joplin-leola bars 48-48 staff 1 voice 2 -> R: 6 notes changed
+  row 892: song.ragtime.joplin-leola bars 65-65 staff 1 voice 2 -> R: 8 notes changed
+  row 893: song.ragtime.joplin-leola bars 72-72 staff 1 voice 2 -> R: 2 notes changed
+  row 894: song.classical.chopin-mazurka-op7-2.nifc bars 34-34 staff 1 voice 2 -> R: 8 notes changed
+  row 895: song.classical.chopin-mazurka-op7-2.nifc bars 36-36 staff 1 voice 2 -> R: 2 notes changed
+  row 896: song.classical.chopin-mazurka-op7-2.nifc bars 38-38 staff 1 voice 2 -> R: 2 notes changed
+  row 897: song.classical.chopin-mazurka-op7-2.nifc bars 52-52 staff 1 voice 2 -> R: 2 notes changed
+  row 898: song.classical.chopin-mazurka-op7-2.nifc bars 54-54 staff 1 voice 2 -> R: 2 notes changed
+  row 899: song.ragtime.joplin-easy-winners bars 8-8 staff 1 voice 2 -> R: 4 notes changed
+  row 900: song.ragtime.joplin-easy-winners bars 16-16 staff 1 voice 2 -> R: 8 notes changed
+  row 901: song.ragtime.joplin-easy-winners bars 42-42 staff 1 voice 2 -> R: 2 notes changed
+  row 902: song.ragtime.joplin-easy-winners bars 50-50 staff 1 voice 2 -> R: 4 notes changed
+  row 903: song.ragtime.joplin-easy-winners bars 67-67 staff 1 voice 2 -> R: 4 notes changed
+  row 904: song.ragtime.joplin-easy-winners bars 70-71 staff 1 voice 2 -> R: 14 notes changed
+  row 905: song.ragtime.joplin-easy-winners bars 73-73 staff 1 voice 2 -> R: 6 notes changed
+  row 906: song.ragtime.joplin-easy-winners bars 75-75 staff 1 voice 2 -> R: 3 notes changed
+  row 907: song.ragtime.joplin-easy-winners bars 88-89 staff 1 voice 2 -> R: 14 notes changed
+  row 908: song.ragtime.joplin-easy-winners bars 91-91 staff 1 voice 2 -> R: 6 notes changed
+  row 909: song.ragtime.joplin-easy-winners bars 93-93 staff 1 voice 2 -> R: 3 notes changed
+  row 910: song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx bars 63-65 staff 1 voice 2 -> R: 6 notes changed
+  row 911: song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx bars 4-4 staff 1 voice 2 -> R: 5 notes changed
+  row 912: song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx bars 29-29 staff 1 voice 2 -> R: 3 notes changed
+  row 913: song.classical.chopin-waltz-op34-1.nifc bars 86-86 staff 1 voice 2 -> R: 6 notes changed
+  row 914: song.classical.chopin-waltz-op34-1.nifc bars 96-96 staff 1 voice 2 -> R: 7 notes changed
+  row 915: song.classical.chopin-waltz-op34-1.nifc bars 102-102 staff 1 voice 2 -> R: 6 notes changed
+  row 916: song.classical.chopin-waltz-op34-1.nifc bars 112-112 staff 1 voice 2 -> R: 7 notes changed
+  row 917: song.classical.chopin-waltz-op34-1.nifc bars 114-115 staff 1 voice 2 -> R: 5 notes changed
+  row 918: song.classical.chopin-waltz-op34-1.nifc bars 122-122 staff 1 voice 2 -> R: 1 notes changed
+  row 919: song.classical.chopin-waltz-op34-1.nifc bars 134-134 staff 1 voice 2 -> R: 6 notes changed
+  row 920: song.classical.chopin-waltz-op34-1.nifc bars 144-144 staff 1 voice 2 -> R: 8 notes changed
+  row 921: song.classical.chopin-mazurka-op67-1.nifc bars 8-8 staff 1 voice 2 -> R: 3 notes changed
+  row 922: song.classical.chopin-mazurka-op67-1.nifc bars 48-48 staff 1 voice 2 -> R: 1 notes changed
+  row 923: song.pop.yanni-one-man-s-dream-by-yanni.pdmx bars 45-45 staff 2 voice 2 -> L: 8 notes changed
+  row 924: song.pop.yanni-one-man-s-dream-by-yanni.pdmx bars 47-47 staff 2 voice 2 -> L: 9 notes changed
+  row 925: song.pop.yanni-one-man-s-dream-by-yanni.pdmx bars 67-67 staff 2 voice 2 -> L: 8 notes changed
+  row 926: song.pop.yanni-one-man-s-dream-by-yanni.pdmx bars 76-76 staff 2 voice 2 -> L: 5 notes changed
+  row 927: song.classical.chopin-mazurka-op63-3.nifc bars 43-43 staff 1 voice 2 -> R: 5 notes changed
+  row 928: song.classical.chopin-mazurka-op63-3.nifc bars 49-49 staff 1 voice 2 -> R: 1 notes changed
+  row 929: song.classical.chopin-mazurka-op63-3.nifc bars 72-72 staff 1 voice 2 -> R: 3 notes changed
+  row 930: song.classical.schumann-schumann-album-for-the-young-op-68-no-18-the-little-reaper-s-song.pdmx bars 37-37 staff 2 voice 2 -> L: 1 notes changed
+  row 931: song.classical.tchaikovsky-october-autumn-song-from-tchaikovsky-s-the-seasons.pdmx bars 1-1 staff 1 voice 2 -> R: 4 notes changed
+  row 932: song.classical.tchaikovsky-october-autumn-song-from-tchaikovsky-s-the-seasons.pdmx bars 30-31 staff 1 voice 2 -> R: 6 notes changed
+  row 933: song.classical.tchaikovsky-october-autumn-song-from-tchaikovsky-s-the-seasons.pdmx bars 34-34 staff 1 voice 2 -> R: 4 notes changed
+  row 934: song.classical.tchaikovsky-october-autumn-song-from-tchaikovsky-s-the-seasons.pdmx bars 49-49 staff 1 voice 2 -> R: 2 notes changed
+  row 935: song.classical.tchaikovsky-october-autumn-song-from-tchaikovsky-s-the-seasons.pdmx bars 51-52 staff 1 voice 2 -> R: 4 notes changed
+  row 936: song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx bars 9-9 staff 1 voice 2 -> R: 1 notes changed
+  row 937: song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx bars 39-40 staff 1 voice 2 -> R: 2 notes changed
+  row 938: song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx bars 43-44 staff 1 voice 2 -> R: 2 notes changed
+  row 939: song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx bars 53-53 staff 1 voice 2 -> R: 2 notes changed
+  row 940: song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx bars 60-60 staff 1 voice 2 -> R: 2 notes changed
+  row 941: song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx bars 62-66 staff 1 voice 2 -> R: 26 notes changed
+  row 942: song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx bars 78-78 staff 1 voice 2 -> R: 2 notes changed
+  row 943: song.ragtime.joplin-cascades bars 64-64 staff 1 voice 2 -> R: 5 notes changed
+  row 944: song.ragtime.joplin-cascades bars 70-70 staff 1 voice 2 -> R: 5 notes changed
+  row 945: song.ragtime.joplin-felicity-rag bars 6-7 staff 1 voice 2 -> R: 12 notes changed
+  row 946: song.ragtime.joplin-felicity-rag bars 9-9 staff 1 voice 2 -> R: 4 notes changed
+  row 947: song.ragtime.joplin-felicity-rag bars 14-15 staff 1 voice 2 -> R: 12 notes changed
+  row 948: song.ragtime.joplin-felicity-rag bars 17-17 staff 1 voice 2 -> R: 4 notes changed
+  row 949: song.ragtime.joplin-felicity-rag bars 34-34 staff 1 voice 2 -> R: 4 notes changed
+  row 950: song.ragtime.joplin-felicity-rag bars 62-63 staff 1 voice 2 -> R: 12 notes changed
+  row 951: song.ragtime.joplin-felicity-rag bars 65-65 staff 1 voice 2 -> R: 4 notes changed
+  row 952: song.ragtime.joplin-felicity-rag bars 70-71 staff 1 voice 2 -> R: 12 notes changed
+  row 953: song.ragtime.joplin-felicity-rag bars 73-73 staff 1 voice 2 -> R: 4 notes changed
+  row 954: song.classical.chopin-mazurka-op17-2.nifc bars 40-40 staff 1 voice 2 -> R: 3 notes changed
+  row 955: song.classical.chopin-mazurka-op17-2.nifc bars 42-42 staff 1 voice 2 -> R: 3 notes changed
+  row 956: song.classical.chopin-mazurka-op17-2.nifc bars 44-44 staff 1 voice 2 -> R: 3 notes changed
+  row 957: song.classical.chopin-mazurka-op17-2.nifc bars 46-46 staff 1 voice 2 -> R: 3 notes changed
+  row 958: song.classical.chopin-mazurka-op17-2.nifc bars 48-48 staff 1 voice 2 -> R: 3 notes changed
+  row 959: song.ragtime.joplin-peacherine-rag bars 12-12 staff 1 voice 2 -> R: 12 notes changed
+  row 960: song.ragtime.joplin-peacherine-rag bars 16-16 staff 1 voice 2 -> R: 8 notes changed
+  row 961: song.ragtime.joplin-peacherine-rag bars 27-27 staff 1 voice 2 -> R: 4 notes changed
+  row 962: song.ragtime.joplin-peacherine-rag bars 29-29 staff 1 voice 2 -> R: 4 notes changed
+  row 963: song.ragtime.joplin-peacherine-rag bars 36-36 staff 1 voice 2 -> R: 4 notes changed
+  row 964: song.ragtime.joplin-peacherine-rag bars 46-46 staff 1 voice 2 -> R: 6 notes changed
+  row 965: song.ragtime.joplin-peacherine-rag bars 50-50 staff 1 voice 2 -> R: 4 notes changed
+  row 966: song.ragtime.joplin-peacherine-rag bars 59-60 staff 1 voice 2 -> R: 12 notes changed
+  row 967: song.ragtime.joplin-peacherine-rag bars 67-67 staff 1 voice 2 -> R: 6 notes changed
+  row 968: song.ragtime.joplin-peacherine-rag bars 85-85 staff 1 voice 2 -> R: 2 notes changed
+  row 969: song.pop.yugo-kanno-yoshikage-kira-s-theme-piano.pdmx bars 29-29 staff 1 voice 2 -> R: 8 notes changed
+  row 970: song.classical.debussy-debussy-la-fille-aux-cheveux-de-lin.pdmx bars 32-32 staff 1 voice 5 -> R: 2 notes changed
+  row 971: song.classical.debussy-debussy-la-fille-aux-cheveux-de-lin.pdmx bars 24-26 staff 2 voice 2 -> L: 31 notes changed
+  row 972: song.classical.sakamoto-andata.pdmx bars 1-2 staff 2 voice 2 -> L: 5 notes changed
+  row 973: song.classical.sakamoto-andata.pdmx bars 4-4 staff 2 voice 2 -> L: 3 notes changed
+  row 974: song.classical.sakamoto-andata.pdmx bars 6-6 staff 2 voice 2 -> L: 3 notes changed
+  row 975: song.classical.sakamoto-andata.pdmx bars 9-9 staff 2 voice 2 -> L: 3 notes changed
+  row 976: song.classical.sakamoto-andata.pdmx bars 16-16 staff 2 voice 2 -> L: 3 notes changed
+  row 977: song.classical.sakamoto-andata.pdmx bars 21-21 staff 2 voice 2 -> L: 2 notes changed
+  row 978: song.classical.sakamoto-andata.pdmx bars 23-24 staff 2 voice 2 -> L: 12 notes changed
+  row 979: song.classical.sakamoto-andata.pdmx bars 31-31 staff 2 voice 2 -> L: 6 notes changed
+  row 980: song.classical.sakamoto-andata.pdmx bars 43-44 staff 2 voice 2 -> L: 6 notes changed
+  row 981: song.classical.sakamoto-andata.pdmx bars 47-47 staff 2 voice 2 -> L: 3 notes changed
+  row 982: song.classical.sakamoto-andata.pdmx bars 52-54 staff 2 voice 2 -> L: 8 notes changed
+  row 983: song.classical.sakamoto-andata.pdmx bars 59-59 staff 2 voice 2 -> L: 2 notes changed
+  row 984: song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx bars 1-1 staff 1 voice 2 -> R: 2 notes changed
+  row 985: song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx bars 9-9 staff 1 voice 2 -> R: 2 notes changed
+  row 986: song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx bars 39-39 staff 1 voice 2 -> R: 8 notes changed
+  row 987: song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx bars 41-41 staff 1 voice 2 -> R: 5 notes changed
+  row 988: song.classical.vivaldi-summer-from-the-four-seasons-third-movement-piano-transcription.pdmx bars 75-75 staff 1 voice 2 -> R: 12 notes changed
+  row 989: song.classical.vivaldi-summer-from-the-four-seasons-third-movement-piano-transcription.pdmx bars 77-78 staff 1 voice 2 -> R: 24 notes changed
+  row 990: song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx bars 39-40 staff 1 voice 2 -> R: 4 notes changed
+  row 991: song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx bars 47-48 staff 1 voice 2 -> R: 4 notes changed
+  row 992: song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx bars 88-88 staff 1 voice 2 -> R: 4 notes changed
+  row 993: song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx bars 90-90 staff 1 voice 2 -> R: 2 notes changed
+  row 994: song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx bars 92-92 staff 1 voice 2 -> R: 2 notes changed
+  row 995: song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx bars 94-94 staff 1 voice 2 -> R: 2 notes changed
+  row 996: song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx bars 96-96 staff 1 voice 2 -> R: 2 notes changed
+  row 997: song.classical.chopin-mazurka-op33-4.nifc bars 58-58 staff 1 voice 2 -> R: 4 notes changed
+  row 998: song.classical.chopin-mazurka-op33-4.nifc bars 61-61 staff 1 voice 2 -> R: 4 notes changed
+  row 999: song.classical.chopin-mazurka-op33-4.nifc bars 122-122 staff 1 voice 2 -> R: 4 notes changed
+  row 1000: song.classical.chopin-mazurka-op33-4.nifc bars 125-125 staff 1 voice 2 -> R: 4 notes changed
+  row 1001: song.classical.mendelssohn-hunting-song-op-19-no-3.pdmx bars 13-13 staff 1 voice 2 -> R: 2 notes changed
+  row 1002: song.classical.mendelssohn-hunting-song-op-19-no-3.pdmx bars 15-15 staff 1 voice 2 -> R: 2 notes changed
+  row 1003: song.classical.mendelssohn-hunting-song-op-19-no-3.pdmx bars 59-59 staff 1 voice 2 -> R: 4 notes changed
+  row 1004: song.classical.mendelssohn-hunting-song-op-19-no-3.pdmx bars 61-61 staff 1 voice 2 -> R: 1 notes changed
+  row 1005: song.classical.mendelssohn-hunting-song-op-19-no-3.pdmx bars 69-69 staff 1 voice 2 -> R: 2 notes changed
+  row 1006: song.classical.czerny-the-school-of-velocity-op-299-no-7.pdmx bars 22-22 staff 1 voice 2 -> R: 3 notes changed
+  row 1007: song.classical.czerny-the-school-of-velocity-op-299-no-7.pdmx bars 28-28 staff 1 voice 2 -> R: 4 notes changed
+  row 1008: song.classical.czerny-the-school-of-velocity-op-299-no-7.pdmx bars 32-35 staff 1 voice 2 -> R: 12 notes changed
+  row 1009: song.classical.czerny-the-school-of-velocity-op-299-no-7.pdmx bars 37-39 staff 1 voice 2 -> R: 8 notes changed
+  row 1010: song.pop.los-tres-golpes-the-three-strikes.pdmx bars 8-8 staff 1 voice 2 -> R: 1 notes changed
+  row 1011: song.pop.los-tres-golpes-the-three-strikes.pdmx bars 15-15 staff 1 voice 2 -> R: 6 notes changed
+  row 1012: song.classical.bach-little-prelude-in-d-major-bwv-936.pdmx bars 13-13 staff 2 voice 2 -> L: 8 notes changed
+  row 1013: song.classical.chopin-mazurka-op63-2.nifc bars 19-19 staff 1 voice 2 -> R: 4 notes changed
+  row 1014: song.classical.chopin-mazurka-op63-2.nifc bars 27-27 staff 1 voice 2 -> R: 4 notes changed
+  row 1015: song.classical.chopin-mazurka-op63-2.nifc bars 29-29 staff 1 voice 2 -> R: 4 notes changed
+  row 1016: song.classical.chopin-mazurka-op63-2.nifc bars 33-36 staff 1 voice 2 -> R: 20 notes changed
+  row 1017: song.ragtime.joplin-binks-waltz bars 3-4 staff 1 voice 2 -> R: 6 notes changed
+  row 1018: song.ragtime.joplin-binks-waltz bars 33-33 staff 1 voice 2 -> R: 4 notes changed
+  row 1019: song.ragtime.joplin-binks-waltz bars 84-84 staff 1 voice 2 -> R: 2 notes changed
+  row 1020: song.ragtime.joplin-binks-waltz bars 101-101 staff 1 voice 2 -> R: 14 notes changed
+  row 1021: song.ragtime.joplin-binks-waltz bars 121-121 staff 1 voice 2 -> R: 4 notes changed
+  row 1022: song.ragtime.joplin-binks-waltz bars 134-134 staff 1 voice 2 -> R: 2 notes changed
+  row 1023: song.ragtime.joplin-march-majestic bars 8-8 staff 1 voice 2 -> R: 10 notes changed
+  row 1024: song.ragtime.joplin-march-majestic bars 16-16 staff 1 voice 2 -> R: 10 notes changed
+  row 1025: song.ragtime.joplin-sugar-cane bars 52-53 staff 1 voice 2 -> R: 4 notes changed
+  row 1026: song.ragtime.joplin-sugar-cane bars 55-57 staff 1 voice 2 -> R: 14 notes changed
+  row 1027: song.ragtime.joplin-sugar-cane bars 59-61 staff 1 voice 2 -> R: 18 notes changed
+  row 1028: song.classical.chopin-mazurka-op30-1.nifc bars 31-31 staff 2 voice 2 -> L: 9 notes changed
+  row 1029: song.classical.chopin-mazurka-op30-1.nifc bars 33-33 staff 2 voice 2 -> L: 3 notes changed
+  row 1030: song.classical.chopin-mazurka-op30-1.nifc bars 51-51 staff 2 voice 2 -> L: 7 notes changed
+  row 1031: song.classical.schumann-a-little-romance-op-68-no-19.pdmx bars 9-10 staff 2 voice 2 -> L: 15 notes changed
+  row 1032: song.classical.schumann-a-little-romance-op-68-no-19.pdmx bars 16-16 staff 2 voice 2 -> L: 12 notes changed
+  row 1033: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 9-10 staff 1 voice 2 -> R: 4 notes changed
+  row 1034: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 17-18 staff 1 voice 2 -> R: 4 notes changed
+  row 1035: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 35-35 staff 1 voice 2 -> R: 2 notes changed
+  row 1036: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 43-44 staff 1 voice 2 -> R: 2 notes changed
+  row 1037: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 51-52 staff 1 voice 2 -> R: 2 notes changed
+  row 1038: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 56-56 staff 1 voice 2 -> R: 1 notes changed
+  row 1039: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 61-61 staff 1 voice 2 -> R: 6 notes changed
+  row 1040: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 65-66 staff 1 voice 2 -> R: 6 notes changed
+  row 1041: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 69-69 staff 1 voice 2 -> R: 6 notes changed
+  row 1042: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 98-98 staff 1 voice 2 -> R: 3 notes changed
+  row 1043: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 102-103 staff 1 voice 2 -> R: 3 notes changed
+  row 1044: song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx bars 106-106 staff 1 voice 2 -> R: 3 notes changed
+  row 1045: song.classical.chopin-nocturne-op37-1.nifc bars 20-21 staff 1 voice 2 -> R: 11 notes changed
+  row 1046: song.classical.chopin-etude-op25-9.nifc bars 45-45 staff 2 voice 2 -> L: 6 notes changed
+  row 1047: song.classical.chopin-etude-op25-9.nifc bars 48-51 staff 2 voice 2 -> L: 26 notes changed
+  row 1048: song.folk.wake-me-up-avicii.pdmx bars 6-7 staff 1 voice 2 -> R: 5 notes changed
+  row 1049: song.folk.wake-me-up-avicii.pdmx bars 9-9 staff 1 voice 2 -> R: 3 notes changed
+  row 1050: song.folk.wake-me-up-avicii.pdmx bars 11-11 staff 1 voice 2 -> R: 1 notes changed
+  row 1051: song.folk.wake-me-up-avicii.pdmx bars 17-17 staff 1 voice 2 -> R: 1 notes changed
+  row 1052: song.folk.wake-me-up-avicii.pdmx bars 22-24 staff 1 voice 2 -> R: 6 notes changed
+  row 1053: song.folk.wake-me-up-avicii.pdmx bars 62-66 staff 1 voice 2 -> R: 10 notes changed
+  row 1054: song.folk.wake-me-up-avicii.pdmx bars 68-68 staff 1 voice 2 -> R: 1 notes changed
+  row 1055: song.folk.wake-me-up-avicii.pdmx bars 73-73 staff 1 voice 2 -> R: 1 notes changed
+  row 1056: song.folk.wake-me-up-avicii.pdmx bars 77-80 staff 1 voice 2 -> R: 10 notes changed
+  row 1057: song.folk.wake-me-up-avicii.pdmx bars 85-85 staff 1 voice 2 -> R: 1 notes changed
+  row 1058: song.classical.schumann-spring-song-op-68-no-15.pdmx bars 24-24 staff 1 voice 2 -> R: 4 notes changed
+  row 1059: song.classical.schumann-spring-song-op-68-no-15.pdmx bars 40-40 staff 1 voice 2 -> R: 4 notes changed
+  row 1060: song.classical.mozart-contredanse-in-f-major-k-15h.pdmx bars 13-13 staff 2 voice 2 -> L: 4 notes changed
+  row 1061: song.classical.mozart-contredanse-in-f-major-k-15h.pdmx bars 17-17 staff 2 voice 2 -> L: 2 notes changed
+  row 1062: song.classical.mozart-contredanse-in-f-major-k-15h.pdmx bars 19-19 staff 2 voice 2 -> L: 2 notes changed
+  row 1063: song.classical.mozart-contredanse-in-f-major-k-15h.pdmx bars 21-24 staff 2 voice 2 -> L: 14 notes changed
+  row 1064: song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx bars 36-37 staff 1 voice 5 -> R: 4 notes changed
+  row 1065: song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx bars 39-42 staff 1 voice 5 -> R: 13 notes changed
+  row 1066: song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx bars 52-53 staff 1 voice 5 -> R: 4 notes changed
+  row 1067: song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx bars 55-58 staff 1 voice 5 -> R: 13 notes changed
+  row 1068: song.ragtime.joplin-entertainer.kern bars 69-69 staff 1 voice 2 -> R: 4 notes changed
+  row 1069: song.classical.palmer-days-in-the-sun.pdmx bars 13-13 staff 1 voice 2 -> R: 2 notes changed
+  row 1070: song.classical.palmer-days-in-the-sun.pdmx bars 34-34 staff 1 voice 2 -> R: 1 notes changed
+  row 1071: song.classical.palmer-days-in-the-sun.pdmx bars 37-38 staff 1 voice 2 -> R: 3 notes changed
+  row 1072: song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx bars 47-48 staff 1 voice 2 -> R: 3 notes changed
+  row 1073: song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx bars 131-132 staff 1 voice 2 -> R: 3 notes changed
+  row 1074: song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx bars 73-73 staff 2 voice 5 -> L: 3 notes changed
+  row 1075: song.classical.bennet-rosemary-s-waltz.pdmx bars 3-3 staff 1 voice 2 -> R: 1 notes changed
+  row 1076: song.classical.bennet-rosemary-s-waltz.pdmx bars 20-20 staff 1 voice 2 -> R: 1 notes changed
+  row 1077: song.classical.bennet-rosemary-s-waltz.pdmx bars 22-22 staff 1 voice 2 -> R: 1 notes changed
+  row 1078: song.classical.bennet-rosemary-s-waltz.pdmx bars 26-26 staff 1 voice 2 -> R: 1 notes changed
+  row 1079: song.classical.bennet-rosemary-s-waltz.pdmx bars 28-28 staff 1 voice 2 -> R: 1 notes changed
+  row 1080: song.classical.bennet-rosemary-s-waltz.pdmx bars 30-30 staff 1 voice 2 -> R: 1 notes changed
+  row 1081: song.classical.bennet-rosemary-s-waltz.pdmx bars 34-34 staff 1 voice 2 -> R: 1 notes changed
+  row 1082: song.classical.bennet-rosemary-s-waltz.pdmx bars 36-36 staff 1 voice 2 -> R: 1 notes changed
+  row 1083: song.classical.bennet-rosemary-s-waltz.pdmx bars 38-40 staff 1 voice 2 -> R: 3 notes changed
+  row 1084: song.classical.bennet-rosemary-s-waltz.pdmx bars 48-48 staff 1 voice 2 -> R: 1 notes changed
+  row 1085: song.classical.chopin-etude-op25-12.nifc bars 18-18 staff 1 voice 2 -> R: 2 notes changed
+  row 1086: song.classical.chopin-etude-op25-12.nifc bars 74-74 staff 1 voice 2 -> R: 2 notes changed
+  row 1087: song.classical.glass-dead-things.pdmx bars 25-25 staff 1 voice 2 -> R: 1 notes changed
+  row 1088: song.classical.glass-dead-things.pdmx bars 39-40 staff 1 voice 2 -> R: 8 notes changed
+  row 1089: song.classical.glass-dead-things.pdmx bars 58-61 staff 1 voice 2 -> R: 7 notes changed
+  row 1090: song.classical.glass-dead-things.pdmx bars 63-64 staff 1 voice 2 -> R: 4 notes changed
+  row 1091: song.classical.glass-dead-things.pdmx bars 66-69 staff 1 voice 2 -> R: 7 notes changed
+  row 1092: song.classical.glass-dead-things.pdmx bars 71-72 staff 1 voice 2 -> R: 2 notes changed
+  row 1093: song.classical.glass-dead-things.pdmx bars 74-74 staff 1 voice 2 -> R: 2 notes changed
+  row 1094: song.classical.glass-dead-things.pdmx bars 76-76 staff 1 voice 2 -> R: 2 notes changed
+  row 1095: song.classical.glass-dead-things.pdmx bars 78-78 staff 1 voice 2 -> R: 2 notes changed
+  row 1096: song.classical.glass-dead-things.pdmx bars 82-82 staff 1 voice 2 -> R: 2 notes changed
+  row 1097: song.classical.glass-dead-things.pdmx bars 84-84 staff 1 voice 2 -> R: 2 notes changed
+  row 1098: song.classical.glass-dead-things.pdmx bars 86-86 staff 1 voice 2 -> R: 2 notes changed
+  row 1099: song.classical.chopin-prelude-op28-22.nifc bars 8-8 staff 2 voice 2 -> L: 12 notes changed
+  row 1100: song.classical.chopin-prelude-op28-22.nifc bars 16-16 staff 2 voice 2 -> L: 12 notes changed
+  row 1101: song.classical.chopin-prelude-op28-22.nifc bars 39-41 staff 2 voice 2 -> L: 10 notes changed
+  row 1102: song.classical.lemoine-etude-op-37-no-17.pdmx bars 19-20 staff 1 voice 2 -> R: 12 notes changed
+  row 1103: song.classical.lemoine-etude-op-37-no-17.pdmx bars 23-24 staff 1 voice 2 -> R: 12 notes changed
+  row 1104: song.classical.lemoine-etude-op-37-no-43.pdmx bars 9-9 staff 1 voice 2 -> R: 2 notes changed
+  row 1105: song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx bars 69-69 staff 2 voice 2 -> L: 12 notes changed
+  row 1106: song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx bars 72-72 staff 2 voice 2 -> L: 6 notes changed
+  row 1107: song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx bars 96-98 staff 2 voice 2 -> L: 7 notes changed
+  row 1108: song.classical.chopin-mazurka-op59-2.nifc bars 27-27 staff 1 voice 2 -> R: 2 notes changed
+  row 1109: song.classical.chopin-mazurka-op59-2.nifc bars 31-31 staff 1 voice 2 -> R: 2 notes changed
+  row 1110: song.classical.chopin-mazurka-op59-2.nifc bars 68-68 staff 1 voice 2 -> R: 6 notes changed
+  row 1111: song.classical.chopin-mazurka-op59-2.nifc bars 84-84 staff 1 voice 2 -> R: 8 notes changed
+  row 1112: song.classical.chopin-mazurka-op68-1.nifc bars 22-22 staff 1 voice 2 -> R: 2 notes changed
+  row 1113: song.classical.chopin-mazurka-op68-1.nifc bars 47-48 staff 1 voice 2 -> R: 8 notes changed
+  row 1114: song.classical.chopin-nocturne-op55-1.nifc bars 7-7 staff 1 voice 2 -> R: 2 notes changed
+  row 1115: song.classical.chopin-nocturne-op55-1.nifc bars 15-15 staff 1 voice 2 -> R: 3 notes changed
+  row 1116: song.classical.chopin-nocturne-op55-1.nifc bars 31-31 staff 1 voice 2 -> R: 3 notes changed
+  row 1117: song.classical.chopin-nocturne-op55-1.nifc bars 47-47 staff 1 voice 2 -> R: 3 notes changed
+  row 1118: song.classical.chopin-nocturne-op55-1.nifc bars 59-61 staff 1 voice 2 -> R: 5 notes changed
+  row 1119: song.classical.chopin-nocturne-op55-1.nifc bars 63-68 staff 1 voice 2 -> R: 10 notes changed
+  row 1120: song.classical.chopin-nocturne-op55-1.nifc bars 84-84 staff 1 voice 2 -> R: 2 notes changed
+  row 1121: song.classical.chopin-nocturne-op55-1.nifc bars 98-98 staff 1 voice 2 -> R: 1 notes changed
+  row 1122: song.classical.schubert-german-dance-no-1-d-841.pdmx bars 4-4 staff 2 voice 2 -> L: 4 notes changed
+  row 1123: song.classical.schubert-german-dance-no-1-d-841.pdmx bars 8-8 staff 2 voice 2 -> L: 4 notes changed
+  row 1124: song.classical.schubert-german-dance-no-1-d-841.pdmx bars 17-17 staff 2 voice 2 -> L: 4 notes changed
+  row 1125: song.jazz.chevy-chase bars 48-48 staff 1 voice 2 -> R: 1 notes changed
+  row 1126: song.jazz.chevy-chase bars 52-52 staff 1 voice 2 -> R: 1 notes changed
+  row 1127: song.jazz.chevy-chase bars 102-102 staff 1 voice 2 -> R: 2 notes changed
+  row 1128: song.blues.handful-of-keys bars 77-77 staff 1 voice 2 -> R: 1 notes changed
+  row 1129: song.blues.handful-of-keys bars 104-104 staff 1 voice 2 -> R: 7 notes changed
+  row 1130: song.blues.handful-of-keys bars 122-122 staff 1 voice 2 -> R: 3 notes changed
+  row 1131: song.blues.handful-of-keys bars 126-126 staff 1 voice 2 -> R: 1 notes changed
+  row 1132: song.classical.chopin-mazurka-op68-4.nifc bars 30-30 staff 1 voice 2 -> R: 1 notes changed
+  row 1133: song.classical.lemoine-etude-op-37-no-18.pdmx bars 49-49 staff 2 voice 2 -> L: 3 notes changed
+  row 1134: song.classical.mozart-andantino-in-c-major-k-15b.pdmx bars 2-2 staff 1 voice 2 -> R: 2 notes changed
+  row 1135: song.classical.mozart-andantino-in-c-major-k-15b.pdmx bars 18-18 staff 1 voice 2 -> R: 4 notes changed
+  row 1136: song.classical.mozart-andantino-in-c-major-k-15b.pdmx bars 22-22 staff 1 voice 2 -> R: 4 notes changed
+  row 1137: song.classical.beethoven-bagatelle-in-d-major-op-119-no-3.pdmx bars 52-52 staff 1 voice 2 -> R: 3 notes changed
+  row 1138: song.classical.chopin-mazurka-op24-1.nifc bars 40-40 staff 1 voice 2 -> R: 2 notes changed
+  row 1139: song.classical.chopin-waltz-op64-2.nifc bars 9-9 staff 1 voice 2 -> R: 2 notes changed
+  row 1140: song.classical.chopin-waltz-op64-2.nifc bars 11-11 staff 1 voice 2 -> R: 2 notes changed
+  row 1141: song.classical.chopin-waltz-op64-2.nifc bars 25-25 staff 1 voice 2 -> R: 2 notes changed
+  row 1142: song.classical.chopin-waltz-op64-2.nifc bars 27-27 staff 1 voice 2 -> R: 1 notes changed
+  row 1143: song.classical.chopin-waltz-op64-2.nifc bars 29-30 staff 1 voice 2 -> R: 2 notes changed
+  row 1144: song.classical.chopin-waltz-op64-2.nifc bars 138-138 staff 1 voice 2 -> R: 2 notes changed
+  row 1145: song.classical.chopin-waltz-op64-2.nifc bars 140-140 staff 1 voice 2 -> R: 2 notes changed
+  row 1146: song.classical.chopin-waltz-op64-2.nifc bars 154-154 staff 1 voice 2 -> R: 2 notes changed
+  row 1147: song.classical.chopin-waltz-op64-2.nifc bars 156-156 staff 1 voice 2 -> R: 1 notes changed
+  row 1148: song.classical.chopin-waltz-op64-2.nifc bars 158-159 staff 1 voice 2 -> R: 2 notes changed
+  row 1149: song.classical.bertini-etude-in-c-major-op-29-no-1.pdmx bars 4-4 staff 1 voice 2 -> R: 1 notes changed
+  row 1150: song.classical.bertini-etude-in-c-major-op-29-no-1.pdmx bars 20-20 staff 1 voice 2 -> R: 1 notes changed
+  row 1151: song.classical.bertini-etude-in-c-major-op-29-no-1.pdmx bars 24-24 staff 1 voice 2 -> R: 3 notes changed
+  row 1152: song.classical.bertini-etude-in-c-major-op-29-no-1.pdmx bars 29-29 staff 1 voice 2 -> R: 1 notes changed
+  row 1153: song.classical.bertini-etude-in-c-major-op-29-no-1.pdmx bars 33-36 staff 1 voice 2 -> R: 7 notes changed
+  row 1154: song.classical.chopin-prelude-op28-5.nifc bars 33-35 staff 1 voice 2 -> R: 8 notes changed
+  row 1155: song.pop.coldplay-fix-you-coldplay.pdmx bars 1-1 staff 2 voice 2 -> L: 4 notes changed
+  row 1156: song.pop.coldplay-fix-you-coldplay.pdmx bars 3-3 staff 2 voice 2 -> L: 4 notes changed
+  row 1157: song.pop.coldplay-fix-you-coldplay.pdmx bars 20-20 staff 2 voice 2 -> L: 4 notes changed
+  row 1158: song.pop.coldplay-fix-you-coldplay.pdmx bars 27-30 staff 2 voice 2 -> L: 12 notes changed
+  row 1159: song.classical.offenbach-cancan-offenbach.pdmx bars 58-58 staff 1 voice 2 -> R: 1 notes changed
+  row 1160: song.ragtime.joplin-stoptime-rag bars 44-45 staff 1 voice 2 -> R: 6 notes changed
+  row 1161: song.ragtime.joplin-stoptime-rag bars 48-49 staff 1 voice 2 -> R: 6 notes changed
+  row 1162: song.ragtime.joplin-stoptime-rag bars 63-64 staff 1 voice 2 -> R: 6 notes changed
+  row 1163: song.ragtime.joplin-stoptime-rag bars 67-68 staff 1 voice 2 -> R: 6 notes changed
+  row 1164: song.classical.tchaikovsky-waltz-op-39-no-8.pdmx bars 35-37 staff 1 voice 2 -> R: 5 notes changed
+  row 1165: song.classical.tchaikovsky-waltz-op-39-no-8.pdmx bars 39-41 staff 1 voice 2 -> R: 6 notes changed
+  row 1166: song.classical.tchaikovsky-waltz-op-39-no-8.pdmx bars 43-45 staff 1 voice 2 -> R: 5 notes changed
+  row 1167: song.classical.tchaikovsky-waltz-op-39-no-8.pdmx bars 47-49 staff 1 voice 2 -> R: 6 notes changed
+  row 1168: song.pop.kevin-macleod-if-i-had-a-chicken.pdmx bars 101-101 staff 1 voice 2 -> R: 6 notes changed
+  row 1169: song.pop.kevin-macleod-if-i-had-a-chicken.pdmx bars 109-109 staff 1 voice 2 -> R: 6 notes changed
+  row 1170: song.classical.bach-cello-suite-no-1-prelude-piano-transcription.pdmx bars 33-36 staff 1 voice 2 -> R: 24 notes changed
+  row 1171: song.ragtime.joplin-palm-leaf-rag bars 9-9 staff 1 voice 2 -> R: 6 notes changed
+  row 1172: song.ragtime.joplin-palm-leaf-rag bars 15-15 staff 1 voice 2 -> R: 4 notes changed
+  row 1173: song.ragtime.joplin-palm-leaf-rag bars 47-47 staff 1 voice 2 -> R: 2 notes changed
+  row 1174: song.ragtime.joplin-palm-leaf-rag bars 65-65 staff 1 voice 2 -> R: 6 notes changed
+  row 1175: song.ragtime.joplin-palm-leaf-rag bars 71-71 staff 1 voice 2 -> R: 4 notes changed
+  row 1176: song.folk.down-by-the-riverside.pdmx.2 bars 21-21 staff 1 voice 2 -> R: 1 notes changed
+  row 1177: song.folk.down-by-the-riverside.pdmx.2 bars 23-25 staff 1 voice 2 -> R: 4 notes changed
+  row 1178: song.folk.down-by-the-riverside.pdmx.2 bars 27-27 staff 1 voice 2 -> R: 1 notes changed
+  row 1179: song.folk.down-by-the-riverside.pdmx.2 bars 29-29 staff 1 voice 2 -> R: 1 notes changed
+  row 1180: song.folk.down-by-the-riverside.pdmx.2 bars 31-32 staff 1 voice 2 -> R: 2 notes changed
+  row 1181: song.folk.down-by-the-riverside.pdmx.2 bars 34-34 staff 1 voice 2 -> R: 2 notes changed
+  row 1182: song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx bars 30-30 staff 1 voice 2 -> R: 6 notes changed
+  row 1183: song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx bars 57-58 staff 1 voice 2 -> R: 4 notes changed
+  row 1184: song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx bars 65-66 staff 1 voice 2 -> R: 4 notes changed
+  row 1185: song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx bars 107-108 staff 1 voice 2 -> R: 4 notes changed
+  row 1186: song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx bars 115-116 staff 1 voice 2 -> R: 4 notes changed
+  row 1187: song.classical.chopin-prelude-op28-3.nifc bars 7-10 staff 1 voice 2 -> R: 10 notes changed
+  row 1188: song.classical.chopin-prelude-op28-3.nifc bars 16-17 staff 1 voice 2 -> R: 2 notes changed
+  row 1189: song.classical.chopin-prelude-op28-3.nifc bars 20-21 staff 1 voice 2 -> R: 4 notes changed
+  row 1190: song.classical.chopin-prelude-op28-3.nifc bars 23-25 staff 1 voice 2 -> R: 5 notes changed
+  row 1191: song.classical.debussy-clair-de-lune-easy.pdmx bars 15-17 staff 2 voice 2 -> L: 9 notes changed
+  row 1192: song.pop.misc-cartoons-platinum-disco-by-yuka-iguchi.pdmx bars 3-3 staff 1 voice 2 -> R: 2 notes changed
+  row 1193: song.pop.misc-cartoons-platinum-disco-by-yuka-iguchi.pdmx bars 5-5 staff 1 voice 2 -> R: 6 notes changed
+  row 1194: song.pop.misc-cartoons-platinum-disco-by-yuka-iguchi.pdmx bars 7-7 staff 1 voice 2 -> R: 2 notes changed
+  row 1195: song.pop.misc-cartoons-platinum-disco-by-yuka-iguchi.pdmx bars 13-13 staff 1 voice 2 -> R: 3 notes changed
+  row 1196: song.pop.misc-cartoons-platinum-disco-by-yuka-iguchi.pdmx bars 20-21 staff 1 voice 2 -> R: 6 notes changed
+  row 1197: song.pop.misc-cartoons-platinum-disco-by-yuka-iguchi.pdmx bars 24-24 staff 1 voice 2 -> R: 2 notes changed
+  row 1198: song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx bars 16-16 staff 1 voice 3 -> R: 2 notes changed
+  row 1199: song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx bars 28-28 staff 1 voice 3 -> R: 1 notes changed
+  row 1200: song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx bars 30-30 staff 1 voice 3 -> R: 1 notes changed
+  row 1201: song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx bars 32-32 staff 1 voice 3 -> R: 2 notes changed
+  row 1202: song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx bars 34-34 staff 1 voice 3 -> R: 2 notes changed
+  row 1203: song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx bars 46-46 staff 1 voice 3 -> R: 1 notes changed
+  row 1204: song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx bars 48-48 staff 1 voice 3 -> R: 2 notes changed
+  row 1205: song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx bars 31-31 staff 2 voice 2 -> L: 5 notes changed
+  row 1206: song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx bars 51-51 staff 2 voice 2 -> L: 2 notes changed
+  row 1207: song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx bars 53-53 staff 2 voice 2 -> L: 2 notes changed
+  row 1208: song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bars 5-5 staff 1 voice 2 -> R: 1 notes changed
+  row 1209: song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bars 7-7 staff 1 voice 2 -> R: 1 notes changed
+  row 1210: song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bars 21-21 staff 1 voice 2 -> R: 1 notes changed
+  row 1211: song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bars 23-23 staff 1 voice 2 -> R: 1 notes changed
+  row 1212: song.classical.debussy-children-s-corner-the-little-shepherd.pdmx bars 10-10 staff 1 voice 2 -> R: 2 notes changed
+  row 1213: song.classical.debussy-children-s-corner-the-little-shepherd.pdmx bars 17-17 staff 1 voice 2 -> R: 2 notes changed
+  row 1214: song.classical.debussy-children-s-corner-the-little-shepherd.pdmx bars 30-30 staff 1 voice 2 -> R: 2 notes changed
+  row 1215: song.ragtime.joplin-combination-march bars 3-3 staff 1 voice 2 -> R: 6 notes changed
+  row 1216: song.classical.handel-handel-g-f-menuet-hwv-434-4.pdmx bars 31-31 staff 1 voice 2 -> R: 2 notes changed
+  row 1217: song.classical.handel-handel-g-f-menuet-hwv-434-4.pdmx bars 37-37 staff 1 voice 2 -> R: 4 notes changed
+  row 1218: song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx bars 25-26 staff 1 voice 2 -> R: 6 notes changed
+  row 1219: song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx bars 59-60 staff 1 voice 2 -> R: 6 notes changed
+  row 1220: song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx bars 6-6 staff 1 voice 2 -> R: 3 notes changed
+  row 1221: song.classical.lemoine-etude-op-37-no-30.pdmx bars 22-22 staff 1 voice 2 -> R: 4 notes changed
+  row 1222: song.classical.mozart-movement-for-a-piano-sonata-in-b-flat-major-k-15aa.pdmx bars 45-47 staff 1 voice 2 -> R: 14 notes changed
+  row 1223: song.classical.zimmer-time-hans-zimmer-inception.pdmx bars 17-21 staff 1 voice 2 -> R: 5 notes changed
+  row 1224: song.classical.zimmer-time-hans-zimmer-inception.pdmx bars 23-24 staff 1 voice 2 -> R: 2 notes changed
+  row 1225: song.classical.zimmer-time-hans-zimmer-inception.pdmx bars 26-26 staff 1 voice 2 -> R: 1 notes changed
+  row 1226: song.classical.chopin-mazurka-op30-3.nifc bars 49-49 staff 1 voice 2 -> R: 1 notes changed
+  row 1227: song.classical.chopin-mazurka-op30-3.nifc bars 51-51 staff 1 voice 2 -> R: 1 notes changed
+  row 1228: song.classical.chopin-mazurka-op30-3.nifc bars 53-53 staff 1 voice 2 -> R: 1 notes changed
+  row 1229: song.classical.chopin-mazurka-op30-3.nifc bars 65-65 staff 1 voice 2 -> R: 1 notes changed
+  row 1230: song.classical.duvernoy-etude-op-176-no-16.pdmx bars 8-8 staff 2 voice 2 -> L: 2 notes changed
+  row 1231: song.classical.duvernoy-etude-op-176-no-16.pdmx bars 21-21 staff 2 voice 2 -> L: 3 notes changed
+  row 1232: song.classical.djawadi-light-of-the-seven.pdmx bars 19-19 staff 1 voice 2 -> R: 1 notes changed
+  row 1233: song.classical.djawadi-light-of-the-seven.pdmx bars 26-26 staff 1 voice 2 -> R: 2 notes changed
+  row 1234: song.classical.djawadi-light-of-the-seven.pdmx bars 38-39 staff 1 voice 2 -> R: 4 notes changed
+  row 1235: song.classical.lemoine-etude-op-37-no-21.pdmx bars 21-22 staff 2 voice 2 -> L: 12 notes changed
+  row 1236: song.classical.mozart-minuet-in-a-flat-major-k-15ff.pdmx bars 9-9 staff 1 voice 2 -> R: 12 notes changed
+  row 1237: song.classical.mozart-andante-in-g-minor-k-15r.pdmx bars 6-6 staff 1 voice 2 -> R: 2 notes changed
+  row 1238: song.classical.mozart-andante-in-g-minor-k-15r.pdmx bars 8-9 staff 1 voice 2 -> R: 6 notes changed
+  row 1239: song.classical.chopin-prelude-op28-20.nifc bars 4-5 staff 1 voice 2 -> R: 5 notes changed
+  row 1240: song.classical.chopin-prelude-op28-20.nifc bars 7-7 staff 1 voice 2 -> R: 2 notes changed
+  row 1241: song.classical.chopin-prelude-op28-20.nifc bars 9-9 staff 1 voice 2 -> R: 2 notes changed
+  row 1242: song.classical.chopin-prelude-op28-20.nifc bars 11-11 staff 1 voice 2 -> R: 2 notes changed
+  row 1243: song.folk.lost-without-you-freya-ridings.pdmx bars 18-18 staff 1 voice 2 -> R: 3 notes changed
+  row 1244: song.folk.lost-without-you-freya-ridings.pdmx bars 22-22 staff 1 voice 2 -> R: 3 notes changed
+  row 1245: song.folk.lost-without-you-freya-ridings.pdmx bars 84-84 staff 1 voice 2 -> R: 3 notes changed
+  row 1246: song.classical.chopin-prelude-op28-7.nifc bars 9-9 staff 1 voice 2 -> R: 2 notes changed
+  row 1247: song.classical.chopin-prelude-op28-7.nifc bars 11-12 staff 1 voice 2 -> R: 6 notes changed
+  row 1248: song.classical.chopin-prelude-op28-7.nifc bars 15-15 staff 1 voice 2 -> R: 1 notes changed
+  row 1249: song.classical.chopin-mazurka-op24-3.nifc bars 27-27 staff 1 voice 2 -> R: 4 notes changed
+  row 1250: song.folk.this-country-of-mine-extended-mix-of-negaraku-malaysia-s-national-anthem-featuring-britain-japan-singapore-and-brunei.pdmx bars 31-31 staff 1 voice 2 -> R: 3 notes changed
+  row 1251: song.folk.this-country-of-mine-extended-mix-of-negaraku-malaysia-s-national-anthem-featuring-britain-japan-singapore-and-brunei.pdmx bars 90-90 staff 1 voice 2 -> R: 1 notes changed
+  row 1252: song.classical.chopin-prelude-op28-8.nifc bars 34-34 staff 2 voice 2 -> L: 3 notes changed
+  row 1253: song.pop.thomasclarke11-joy-to-the-world.pdmx bars 29-29 staff 1 voice 2 -> R: 2 notes changed
+  row 1254: song.classical.chopin-prelude-op28-18.nifc bars 5-6 staff 1 voice 2 -> R: 8 notes changed
+  row 1255: song.classical.c418-minecraft-nether.pdmx bars 29-29 staff 1 voice 2 -> R: 1 notes changed
+  row 1256: song.classical.chopin-mazurka-op7-3.nifc bars 47-48 staff 1 voice 2 -> R: 2 notes changed
+  row 1257: song.classical.chopin-mazurka-op7-3.nifc bars 55-56 staff 1 voice 2 -> R: 2 notes changed
+  row 1258: song.ragtime.joplin-the-favorite bars 6-6 staff 1 voice 2 -> R: 2 notes changed
+  row 1259: song.ragtime.joplin-the-favorite bars 14-14 staff 1 voice 2 -> R: 2 notes changed
+  row 1260: song.ragtime.joplin-the-favorite bars 38-38 staff 1 voice 2 -> R: 1 notes changed
+  row 1261: song.ragtime.joplin-the-favorite bars 40-40 staff 1 voice 2 -> R: 1 notes changed
+  row 1262: song.ragtime.joplin-the-favorite bars 48-48 staff 1 voice 2 -> R: 1 notes changed
+  row 1263: song.pop.die-wilden-huehner-die-wilden-huhner-ouverture-finished.pdmx bars 23-23 staff 1 voice 2 -> R: 1 notes changed
+  row 1264: song.pop.die-wilden-huehner-die-wilden-huhner-ouverture-finished.pdmx bars 45-45 staff 1 voice 2 -> R: 2 notes changed
+  row 1265: song.pop.die-wilden-huehner-die-wilden-huhner-ouverture-finished.pdmx bars 50-51 staff 1 voice 2 -> R: 3 notes changed
+  row 1266: song.pop.die-wilden-huehner-die-wilden-huhner-ouverture-finished.pdmx bars 106-106 staff 1 voice 2 -> R: 1 notes changed
+  row 1267: song.pop.honne-location-unknown-brooklyn-session-honne.pdmx bars 89-89 staff 1 voice 2 -> R: 1 notes changed
+  row 1268: song.pop.honne-location-unknown-brooklyn-session-honne.pdmx bars 91-91 staff 1 voice 2 -> R: 1 notes changed
+  row 1269: song.pop.honne-location-unknown-brooklyn-session-honne.pdmx bars 93-94 staff 1 voice 2 -> R: 2 notes changed
+  row 1270: song.pop.laura-shigihara-loonboon.pdmx bars 33-33 staff 1 voice 2 -> R: 1 notes changed
+  row 1271: song.pop.laura-shigihara-loonboon.pdmx bars 35-35 staff 1 voice 2 -> R: 1 notes changed
+  row 1272: song.pop.laura-shigihara-loonboon.pdmx bars 41-41 staff 1 voice 2 -> R: 2 notes changed
+  row 1273: song.pop.laura-shigihara-loonboon.pdmx bars 43-43 staff 1 voice 2 -> R: 1 notes changed
+  row 1274: song.classical.chopin-etude-op10-11.nifc bars 50-50 staff 1 voice 2 -> R: 4 notes changed
+  row 1275: song.ragtime.joplin-something-doing bars 68-68 staff 1 voice 2 -> R: 2 notes changed
+  row 1276: song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx bars 45-45 staff 1 voice 2 -> R: 3 notes changed
+  row 1277: song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx bars 48-48 staff 1 voice 2 -> R: 3 notes changed
+  row 1278: song.classical.chopin-mazurka-op50-2.nifc bars 16-16 staff 1 voice 2 -> R: 2 notes changed
+  row 1279: song.classical.chopin-mazurka-op50-2.nifc bars 47-47 staff 1 voice 2 -> R: 2 notes changed
+  row 1280: song.classical.chopin-mazurka-op50-2.nifc bars 91-91 staff 1 voice 2 -> R: 2 notes changed
+  row 1281: song.classical.lemoine-etude-op-37-no-14.pdmx bars 24-24 staff 2 voice 2 -> L: 2 notes changed
+  row 1282: song.classical.mozart-andante-in-b-flat-major-k-15ii.pdmx bars 35-35 staff 1 voice 2 -> R: 2 notes changed
+  row 1283: song.classical.chopin-mazurka-op68-3.nifc bars 25-25 staff 1 voice 2 -> R: 6 notes changed
+  row 1284: song.pop.harry-styles-falling-by-harry-styles.pdmx bars 70-70 staff 1 voice 2 -> R: 6 notes changed
+  row 1285: song.classical.chopin-waltz-op69-2.nifc bars 124-124 staff 1 voice 2 -> R: 4 notes changed
+  row 1286: song.classical.chopin-waltz-op69-2.nifc bars 127-127 staff 1 voice 2 -> R: 1 notes changed
+  row 1287: song.classical.czerny-the-art-of-preluding-op-300-no-24.pdmx bars 10-10 staff 2 voice 2 -> L: 5 notes changed
+  row 1288: song.classical.chopin-prelude-op28-6.nifc bars 8-8 staff 2 voice 2 -> L: 5 notes changed
+  row 1289: song.jazz.marc-sabatella-harmony-and-chord-progressions.pdmx bars 7-7 staff 1 voice 2 -> R: 1 notes changed
+  row 1290: song.classical.czerny-waltz-op-32-no-2.pdmx bars 8-8 staff 2 voice 2 -> L: 4 notes changed
+  row 1291: song.classical.chopin-fantaisie-impromptu.nifc bars 44-44 staff 1 voice 2 -> R: 1 notes changed
+  row 1292: song.classical.chopin-fantaisie-impromptu.nifc bars 52-52 staff 1 voice 2 -> R: 1 notes changed
+  row 1293: song.classical.chopin-fantaisie-impromptu.nifc bars 64-64 staff 1 voice 2 -> R: 1 notes changed
+  row 1294: song.ragtime.joplin-sunflower-slow-drag bars 57-57 staff 1 voice 2 -> R: 3 notes changed
+  row 1295: song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx bars 73-73 staff 1 voice 2 -> R: 2 notes changed
+  row 1296: song.classical.schumann-carnaval-op-9-no-12-chopin.pdmx bars 10-10 staff 1 voice 2 -> R: 2 notes changed
+  row 1297: song.ragtime.joplin-harmony-club-waltz bars 103-103 staff 1 voice 2 -> R: 2 notes changed
+  row 1298: song.classical.chopin-prelude-op28-2.nifc bars 22-22 staff 1 voice 2 -> R: 2 notes changed
+  row 1299: song.classical.chopin-etude-op25-6.nifc bars 30-30 staff 1 voice 2 -> R: 1 notes changed
+  row 1300: song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx bars 16-16 staff 1 voice 2 -> R: 1 notes changed
+  row 1301: song.classical.chopin-etude-op10-7.nifc bars 59-59 staff 1 voice 2 -> R: 1 notes changed
+  TARGET 12511 notes; OUTSIDE 0 notes

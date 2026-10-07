@@ -99,6 +99,13 @@ export default defineConfig({
           'content/**/*.{json,mxl,musicxml,md}',
           'content/**/*.{sf2,sf3,mp3,ogg,wav,js}',
         ],
+        // The builder-only root, `dev/` (D2a): the microscope's data (`#/dev/microscope`, D2),
+        // megabytes a learner never opens, fetched from the network by the one screen that
+        // reads it. It sits beside `content/`, not in it, so every file under `content/` is
+        // precached without exception (`offline.spec.ts`, P19). No pattern above reaches a
+        // `.json` under `dev/`; this keeps any file there out whatever its type. Workbox's own
+        // default ignore is kept beside it, since naming this replaces the default.
+        globIgnores: ['**/node_modules/**/*', 'dev/**'],
         // Workbox's default is 2 MB and it skips larger files *silently*.
         maximumFileSizeToCacheInBytes: 30 * 1024 * 1024,
         // Take control of the page that installed us, so the very first visit

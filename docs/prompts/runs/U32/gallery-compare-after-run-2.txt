@@ -1,0 +1,27 @@
+60 cells compared (60 before, 60 after), 4 differ
+arrangement--slots--upright--grand-staff:
+  state.fit.shapeChanges.n: 3 -> 5
+layout--scroll--sideways:
+  state.keys.correct.1: 67 -> 60
+  state.keys.correct.2: 69 -> 67
+  state.keys.correct.3: undefined -> 69
+layout--scroll--upright:
+  state.keys.correct.1: 67 -> 60
+  state.keys.correct.2: 69 -> 67
+  state.keys.correct.3: undefined -> 69
+mode--free--sideways:
+  state.slots.0.top: 10 -> 32
+  state.slots.0.height: 423 -> 392
+  state.slots.0.svgTop: 10 -> 32
+  state.slots.0.staveY: 8 -> 30
+  state.slots.1.top: 10 -> 32
+  state.slots.1.svgTop: 10 -> 32
+  state.slots.1.staveY: 8 -> 30
+  state.slots.2.top: 1 -> 23
+  state.slots.2.height: 302 -> 280
+  state.slots.3.top: 1 -> 23
+  state.slots.3.height: 302 -> 280
+  state.slots.4.top: 1 -> 23
+  state.slots.4.height: 302 -> 280
+  state.slots.4.svgTop: 1 -> 23
+  state.slots.4.staveY: -1 -> 21

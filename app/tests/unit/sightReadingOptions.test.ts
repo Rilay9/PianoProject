@@ -30,8 +30,9 @@ async function modelOf(options: SightReadingOptions, seed: number): Promise<Scor
   document.body.appendChild(container);
   try {
     const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
-    await osmd.load(generateSightReading({ ...options, seed }).musicXml);
-    return extractScoreModel(osmd, { id: `options.${String(seed)}` });
+    const { musicXml } = generateSightReading({ ...options, seed });
+    await osmd.load(musicXml);
+    return extractScoreModel(osmd, { id: `options.${String(seed)}`, musicXml });
   } finally {
     container.remove();
   }

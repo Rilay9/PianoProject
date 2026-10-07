@@ -1,0 +1,740 @@
+# PH2: the charts the bundle opens, read as the screen now reads them (charts.table.ts)
+
+catalogue items with a bundled file and a measured chord count: 460; with a symbol the reader names: 459
+one-chord charts (every bar one segment, no conflict): 331; charts with a split or conflicted bar: 128
+bars by segment count: 1: 4684, 2: 984, 3: 133, 4: 67, 5: 7, 6: 6
+items with a conflict: 12; items opening on a pickup: 32; segments at or past the clock bar's end: 1
+items whose legacy grid drew a different bar count from the source measures: 99
+
+## Bars of three or more segments (densest first)
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 1 (6/8, length 3): F@0+0.5  E+@0.5+0.5  F@1+0.5  F/C@1.5+0.5  F/D@2+0.5  F/E@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 19 (6/8, length 3): C7/G@0+0.5  F♯dim@0.5+0.5  Fm@1+0.5  C/E@1.5+0.5  D♯dim@2+0.5  Dm7@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 20 (6/8, length 3): C@0+0.5  C7@0.5+0.5  F/C@1+0.5  C7@1.5+0.5  F/C@2+0.5  C7@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 22 (6/8, length 3): F@0+0.5  C7@0.5+0.5  F/C@1+0.5  C7@1.5+0.5  F/C@2+0.5  C7@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 24 (6/8, length 3): F/C@0+0.5  C7@0.5+0.5  F/C@1+0.5  C7@1.5+0.5  F/C@2+0.5  C7@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 28 (6/8, length 3): F@0+0.5  C7@0.5+0.5  F@1+0.5  C7@1.5+0.5  F@2+0.5  C7@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 2 (6/8, length 3): F|E+@0+1  F@1+0.5  F/C@1.5+0.5  F@2+0.5  F♯dim@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 5 (6/8, length 3): F@0+0.5  Gm7@0.5+0.5  F/A@1+0.5  B♭|F/A@1.5+1  G♯dim@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 7 (6/8, length 3): F@0+0.5  Gm7@0.5+0.5  F/A@1+0.5  B♭|F/A@1.5+1  G♯dim@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 9 (6/8, length 3): F@0+0.5  Edim@0.5+1  Dm/F@1.5+0.5  A7/E@2+0.5  Dm@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 10 (6/8, length 3): C/E@0+0.5  Ddim@0.5+0.75  C/E@1.25+0.75  G/D@2+0.5  C@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 12 (6/8, length 3): C/G|G+@0+1  C/G@1+0.5  G7@1.5+0.5  C/G@2+0.5  G@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 18 (6/8, length 3): C/E|F@0+1  C7/G@1+0.5  F♯dim@1.5+0.5  C7/G@2+0.5  F@2.5+0.5
+song.blues.aunt-hagars-blues bar 11 (4/4, length 4): E♭@0+1  E♭7@1+1  A♭@2+1  A♭m@3+1
+song.blues.aunt-hagars-blues bar 25 (4/4, length 4): E♭@0+1  E♭7@1+1  A♭@2+1  Adim@3+1
+song.blues.aunt-hagars-blues bar 37 (4/4, length 4): E♭@0+1  E♭7@1+1.5  A♭@2.5+1  Adim@3.5+0.5
+song.blues.jazz-me-blues bar 28 (4/4, length 4): E♭(carried)@0+0.5  E♭7@0.5+1.5  D7@2+1  D♭7@3+1
+song.blues.riverside-blues bar 3 (4/4, length 4): Cm@0+1  G7@1+1  Cm@2+1  Fm@3+1
+song.blues.riverside-blues bar 15 (4/4, length 4): E♭@0+1  E♭7@1+1  E♭dim@2+1  A♭m@3+1
+song.blues.riverside-blues bar 28 (4/4, length 4): E♭@0+1  E♭7@1+1  E♭dim@2+1  A♭m@3+1
+song.blues.riverside-blues bar 40 (4/4, length 4): E♭@0+1  E♭7@1+1  E♭dim@2+1  A♭m@3+1
+song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx bar 15 (6/8, length 3): C@0+1  G@1+0.5  D@1.5+1  G@2.5+0.5
+song.classical.alexander-s-ragtime-band.pdmx bar 33 (4/4, length 4): F@0+1  C@1+1  F@2+1  C@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 3 (6/8, length 3): C7/G@0+0.875  F♯dim@0.875+0.125  C7/G@1+0.5  F/C@1.5+1.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 11 (6/8, length 3): C/E|D♯dim@0+1  C/E@1+0.5  Dm/F@1.5+0.5  F♯dim@2+1
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 17 (6/8, length 3): C|Dm7@0+1  C/E@1+0.5  Dm7|C/E@1.5+1  F@2.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 27 (6/8, length 3): F@0+0.5  C7@0.5+1  F@1.5+0.5  C7@2+1
+song.classical.czerny-the-school-of-velocity-op-299-no-7.pdmx bar 42 (4/4, length 4): C@0+1  G7@1+1  C@2+1  G7@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-7.pdmx bar 43 (4/4, length 4): C@0+1  G7@1+1  C@2+1  G7@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 1 (4/4, length 4): C@0+1.5  G7@1.5+0.5  C@2+1.5  G7@3.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 2 (4/4, length 4): C@0+1.5  G7@1.5+0.5  C@2+1.5  G7@3.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 5 (4/4, length 4): G@0+1.5  D7@1.5+0.5  G@2+1.5  D7@3.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 6 (4/4, length 4): G@0+1.5  D7@1.5+0.5  G@2+1.5  D7@3.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 9 (4/4, length 4): C@0+1  G7@1+1  C@2+1  G7@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 10 (4/4, length 4): C@0+1  G7@1+1  C@2+1  E7@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 11 (4/4, length 4): Am@0+1  E7@1+1  Am@2+1  E7@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 12 (4/4, length 4): Am@0+1  E7@1+1  Am@2+1  Am/C@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 23 (4/4, length 4): G@0+1.5  D7@1.5+0.5  G@2+1.5  D7@3.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 27 (4/4, length 4): G@0+1  D7@1+1  G@2+1  D7@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 28 (4/4, length 4): G@0+1  D7@1+1  G@2+1  D7@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 43 (4/4, length 4): C@0+1.5  G7@1.5+0.5  C@2+1.5  G7@3.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 44 (4/4, length 4): C@0+1.5  G7@1.5+0.5  C@2+1.5  G7@3.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 47 (4/4, length 4): C@0+1.5  G7@1.5+0.5  C@2+1.5  G7@3.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-9.pdmx bar 29 (4/4, length 4): G@0+1.5  Gdim@1.5+0.5  G@2+1.5  Gdim@3.5+0.5
+song.classical.czerny-the-school-of-velocity-op-299-no-9.pdmx bar 33 (4/4, length 4): G@0+1  D♯dim@1+1  Em@2+1  G9/D@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-9.pdmx bar 34 (4/4, length 4): C@0+1  G♯dim@1+1  Am@2+1  G/D@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-9.pdmx bar 35 (4/4, length 4): Am/C@0+1  Ddim@1+1  Am/C@2+1  Ddim@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-9.pdmx bar 65 (4/4, length 4): C@0+1  G/B@1+1  Am@2+1  Em/G@3+1
+song.classical.czerny-the-school-of-velocity-op-299-no-9.pdmx bar 66 (4/4, length 4): Dm/F@0+1  C/E@1+1  Dm@2+1  A7/C♯@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 6 (4/4, length 4): B6@0+1  B6/F@1+1  C/E@2+1  E♭6@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 7 (4/4, length 4): Dm7@0+1  D♭7@1+1  Cm7@2+1  C7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 10 (4/4, length 4): Gm@0+1  E7@1+1  Gm7/A@2+1  A7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 19 (4/4, length 4): F@0+1  F/E♭@1+1  Dm7@2+1  Gm7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 20 (4/4, length 4): Cm7@0+1  F7@1+1  B♭7@2+1  B♭7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 58 (4/4, length 4): G6@0+1  G6/D@1+1  A/C♯@2+1  C6@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 59 (4/4, length 4): Bm7@0+1  B♭7@1+1  Am7@2+1  A7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 62 (4/4, length 4): Em@0+1  C♯7@1+1  Em7/F♯@2+1  F♯7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 71 (4/4, length 4): D@0+1  D/C@1+1  Bm7@2+1  Em7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 72 (4/4, length 4): Am7@0+1  D7@1+1  G7@2+1  G7@3+1
+song.classical.por-toda-minha-vida.pdmx bar 9 (4/4, length 4): Bm@0+1.5  E7@1.5+0.5  Amaj7@2+1.5  Dmaj7@3.5+0.5
+song.folk.auld-lang-syne.pdmx bar 8 (4/4, length 4): E♭@0+1.5  A♭@1.5+0.5  Fm@2+1  B♭7@3+1
+song.folk.muskrat-ramble.pdmx bar 28 (4/4, length 4): A♭(carried)@0+0.5  A♭@0.5+1.5  G7@2+1  G♭7@3+1
+song.jazz.marc-sabatella-harmony-and-chord-progressions.pdmx bar 5 (4/4, length 4): G@0+1  G9/B@1+1  C@2+1  Cmi6@3+1
+song.jazz.marc-sabatella-harmony-and-chord-progressions.pdmx bar 6 (4/4, length 4): G/D@0+1  B7/D♯@1+1  Emi@2+1  Emi7@3+1
+song.jazz.marc-sabatella-harmony-and-chord-progressions.pdmx bar 7 (4/4, length 4): A7sus4@0+1  E♭7@1+1  D9sus4@2+1  D7@3+1
+song.pop.benny-goodman-louis-prima-rose-room.pdmx bar 16 (4/4, length 4): A♭@0+1  A♭7@1+1  A♭dim7@2+1  B♭m7b5@3+1
+song.pop.frank-sinatra-let-it-snow-leadsheet.pdmx bar 8 (4/4, length 4): E7@0+1  A7@1+1  D7@2+1  G7@3+1
+song.pop.frank-sinatra-let-it-snow-leadsheet.pdmx bar 16 (4/4, length 4): E7@0+1  A7@1+1  D7@2+1  G7@3+1
+song.pop.frank-sinatra-let-it-snow-leadsheet.pdmx bar 32 (4/4, length 4): E7@0+1  A7@1+1  D7@2+1  G7@3+1
+song.pop.margie.pdmx bar 43 (4/4, length 4): F(carried)@0+1  F7@1+1  E7@2+1  E♭7@3+1
+song.pop.misc-christmas-good-king-wenceslas.pdmx bar 3 (4/4, length 4): C@0+1  G@1+1  C@2+1  D7@3+1
+song.pop.misc-christmas-good-king-wenceslas.pdmx bar 7 (4/4, length 4): C@0+1  G@1+1  C@2+1  D7@3+1
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx bar 5 (4/4, length 4): Bm@0+1  F♯7@1+1  Bm@2+1  A@3+1
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx bar 13 (4/4, length 4): D@0+1  A@1+1  D@2+1  G@3+1
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx bar 19 (4/4, length 4): D@0+1  A@1+1  D@2+1  G@3+1
+song.pop.the-memphis-blues.pdmx bar 4 (4/4, length 4): E♭@0+1  E♭7@1+1  A♭7@2+1.5  A♭m6@3.5+0.5
+song.pop.the-memphis-blues.pdmx bar 13 (4/4, length 4): E♭(carried)@0+1.5  E♭7@1.5+1  D7@2.5+1  D♭7@3.5+0.5
+song.pop.the-memphis-blues.pdmx bar 32 (4/4, length 4): A♭@0+1  A♭7@1+1  D♭7@2+1  D♭m@3+1
+song.ragtime.joplin-entertainer bar 29 (2/4, length 2): G@0+0.5  F@0.5+0.5  E@1+0.5  D@1.5+0.5
+song.ragtime.joplin-entertainer bar 88 (2/4, length 2): Dmi/F@0+0.5  Dmi@0.5+0.5  Dmi/E@1+0.75  Dmi/F@1.75+0.25
+song.blues.aunt-hagars-blues bar 1 (4/4, length 4): —(carried)@0+0.5  E♭@0.5+2.5  B♭aug@3+1
+song.blues.aunt-hagars-blues bar 27 (4/4, length 4): E♭@0+1  B7@1+2  B♭7@3+1
+song.blues.aunt-hagars-blues bar 39 (4/4, length 4): E♭@0+1  B7@1+2  B♭7@3+1
+song.blues.hesitating-blues bar 1 (4/4, length 4): —(carried)@0+0.5  F°@0.5+1.5  F@2+2
+song.blues.hesitating-blues bar 4 (4/4, length 4): F/C@0+1  C♯°@1+1  Dm@2+2
+song.blues.hesitating-blues bar 16 (4/4, length 4): F/C@0+1  C♯°@1+1  Dm@2+2
+song.blues.jazz-me-blues bar 40 (4/4, length 4): E♭@0+2  D7@2+1  D♭7@3+1
+song.blues.livery-stable-blues bar 3 (4/4, length 4): Edim@0+1  E♭@1+2  B♭7@3+1
+song.blues.livery-stable-blues bar 28 (4/4, length 4): E♭@0+2  B7@2+0.5  B♭7@2.5+1.5
+song.blues.livery-stable-blues bar 35 (4/4, length 4): B♭7@0+2  B7@2+1  B♭7@3+1
+song.blues.livery-stable-blues bar 36 (4/4, length 4): B♭7(carried)@0+0.5  E♭@0.5+2  B♭7@2.5+1.5
+song.blues.long-gone bar 12 (4/4, length 4): B♭7@0+1  E♭7@1+1  A♭@2+2
+song.blues.long-gone bar 13 (4/4, length 4): A♭(carried)@0+1  A♭@1+1  Fm7@2+2
+song.blues.long-gone bar 30 (4/4, length 4): A♭(carried)@0+0.5  A♭@0.5+1.5  A♭7/C@2+2
+song.blues.long-gone bar 33 (4/4, length 4): B♭7@0+1  E♭7@1+1  A♭@2+2
+song.blues.long-gone bar 34 (4/4, length 4): A♭(carried)@0+1  A♭@1+1  Fm7@2+2
+song.blues.satanic-blues bar 45 (4/4, length 4): E♭@0+2  B♭m@2+0.5  C7@2.5+1.5
+song.blues.satanic-blues bar 47 (4/4, length 4): E♭@0+0.5  E@0.5+1  F@1.5+2.5
+song.blues.st-james-infirmary bar 1 (4/4, length 4): Dm@0+2  B♭7@2+1  A7@3+1
+song.blues.st-james-infirmary bar 3 (4/4, length 4): Dm@0+2  B♭7@2+1  A7@3+1
+song.blues.st-james-infirmary bar 9 (4/4, length 4): Dm@0+2  B♭7@2+1  A7@3+1
+song.blues.st-james-infirmary bar 11 (4/4, length 4): Dm@0+2  B♭7@2+1  A7@3+1
+song.blues.wabash-blues bar 24 (4/4, length 4): E♭@0+2  F♯dim@2+1  E♭7@3+1
+song.blues.wabash-blues bar 40 (4/4, length 4): E♭@0+2  F♯dim@2+1  E♭7@3+1
+song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx bar 14 (6/8, length 3): Em@0+1.5  D@1.5+1  G@2.5+0.5
+song.classical.1919-blues-my-naughty-sweetie-gives-to-me.pdmx bar 1 (4/4, length 4): E♭@0+2  A♭m7@2+1  B♭7@3+1
+song.classical.1919-blues-my-naughty-sweetie-gives-to-me.pdmx bar 3 (4/4, length 4): E♭@0+2  A♭m7@2+1  B♭7@3+1
+song.classical.1919-blues-my-naughty-sweetie-gives-to-me.pdmx bar 9 (4/4, length 4): E♭@0+2  A♭m7@2+1  B♭7@3+1
+song.classical.alexander-s-ragtime-band.pdmx bar 4 (4/4, length 4): Dm@0+2  G@2+1.5  C@3.5+0.5
+song.classical.alexander-s-ragtime-band.pdmx bar 8 (4/4, length 4): F@0+2  Em@2+1.5  Dm@3.5+0.5
+song.classical.alexander-s-ragtime-band.pdmx bar 20 (4/4, length 4): Dm@0+2  G@2+1.5  C@3.5+0.5
+song.classical.alexander-s-ragtime-band.pdmx bar 24 (4/4, length 4): F@0+2  Em@2+1.5  Dm@3.5+0.5
+song.classical.alexander-s-ragtime-band.pdmx bar 32 (4/4, length 4): F@0+2  G@2+1.5  C@3.5+0.5
+song.classical.anon-kum-ba-yah.pdmx bar 8 (3/4, length 3): C@0+1  G7@1+1  C@2+1
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 4 (6/8, length 3): F♯dim|C7/G@0+1  C7/G@1+1  C7@2+1
+song.classical.czerny-the-school-of-velocity-op-299-no-9.pdmx bar 37 (4/4, length 4): G/D@0+2  G/B@2+1  G@3+1
+song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx bar 8 (4/4, length 4): D@0+1  A@1+1  D@2+2
+song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx bar 10 (4/4, length 4): D7@0+1  G@1+1  D@2+2
+song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx bar 12 (4/4, length 4): D7@0+1  G@1+1  D@2+2
+song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx bar 14 (4/4, length 4): Am@0+1  E@1+1  Am@2+2
+song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx bar 16 (4/4, length 4): Em@0+1  D@1+1  G@2+2
+song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx bar 18 (4/4, length 4): Am@0+1  E@1+1  Am@2+2
+song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx bar 20 (4/4, length 4): Em@0+1  D@1+1  G@2+2
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 5 (4/4, length 4): Cm7/F@0+2  Fsus4@2+1  F7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 8 (4/4, length 4): E♭7@0+1  F7@1+1  B7@2+2
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 9 (4/4, length 4): Cm7@0+2  Fsus4@2+1  F7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 17 (4/4, length 4): E♭7@0+1  E♭7@1+1  D7@2+2
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 21 (4/4, length 4): E♭7@0+1  E♭7@1+1  D7@2+2
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 24 (4/4, length 6): E♭/F@0+1  F7@1+1  B♭add9@2+4
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 29 (4/4, length 4): Cm7/F@0+2  Fsus4@2+1  F7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 32 (4/4, length 4): Cm7@0+1  F7@1+1  B7@2+2
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 33 (4/4, length 4): Cm7@0+2  Fsus4@2+1  F7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 41 (4/4, length 4): E♭7@0+1  E♭7@1+1  D7@2+2
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 43 (4/4, length 4): F@0+2  Dm7@2+1  Gm7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 44 (4/4, length 4): Cm7@0+1  Fm7@1+1  B♭7@2+2
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 45 (4/4, length 4): E♭7@0+1  E♭7@1+1  Dm6@2+2
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 48 (4/4, length 4): E♭/F@0+1  F7@1+1  B♭6@2+2
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 56 (4/4, length 4): A7@0+2  Cm7/D@2+1  D7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 57 (4/4, length 4): Am7/D@0+2  Dsus4@2+1  D7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 60 (4/4, length 4): C7@0+1  D7@1+1  G7@2+2
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 61 (4/4, length 4): Am7@0+2  Dsus4@2+1  D7@3+1
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 69 (4/4, length 4): C7@0+1  C7@1+1  B7@2+2
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 73 (4/4, length 4): C7@0+1  C7@1+1  B7@2+2
+song.classical.por-toda-minha-vida.pdmx bar 6 (4/4, length 4): Gmaj7@0+2  A@2+1  A7@3+1
+song.classical.por-toda-minha-vida.pdmx bar 10 (4/4, length 4): Gmaj7@0+1.5  C@1.5+0.5  F♯7@2+2
+song.classical.por-toda-minha-vida.pdmx bar 15 (4/4, length 4): F♯m7(carried)@0+0.5  Gmaj7@0.5+1.5  Dmaj7@2+2
+song.classical.por-toda-minha-vida.pdmx bar 16 (4/4, length 4): G♯dim@0+1  Em/G@1+2  F♯7@3+1
+song.classical.por-toda-minha-vida.pdmx bar 19 (4/4, length 4): G7@0+2  F♯@2+1  F♯7@3+1
+song.classical.royal-garden-blues.pdmx bar 14 (4/4, length 4): C7(carried)@0+2  D♭7@2+0.5  C7@2.5+1.5
+song.classical.royal-garden-blues.pdmx bar 22 (4/4, length 4): B♭(carried)@0+2  D♭7@2+1  C7@3+1
+song.classical.royal-garden-blues.pdmx bar 44 (4/4, length 4): B♭@0+1  E♭7@1+1  B♭@2+2
+song.classical.tchaikovsky-swan-lake.pdmx bar 12 (4/4, length 4): C@0+2  F@2+1  Bm@3+1
+song.folk.auld-lang-syne.pdmx bar 16 (4/4, length 4): Cm@0+2  A♭@2+1  B♭7@3+1
+song.folk.carioquinha.pdmx bar 41 (2/4, length 2): D@0+0.75  D♭7@0.75+0.75  C7@1.5+0.5
+song.folk.carioquinha.pdmx bar 57 (2/4, length 2): D@0+1  D♭7@1+0.5  C7@1.5+0.5
+song.folk.traditional-music-shenandoah.pdmx bar 4 (4/4, length 4): C@0+2  G@2+1  D@3+1
+song.folk.traditional-music-shenandoah.pdmx bar 7 (4/4, length 4): D@0+1  Em@1+2  D7@3+1
+song.folk.traditional-music-shenandoah.pdmx bar 8 (4/4, length 4): G@0+2  D@2+1  Bm@3+1
+song.folk.traditional-music-shenandoah.pdmx bar 9 (4/4, length 4): Bm(carried)@0+1  G@1+1  C@2+2
+song.folk.what-a-friend-we-have-in-jesus.pdmx bar 4 (4/4, length 4): A@0+1  E@1+1  A@2+2
+song.folk.what-a-friend-we-have-in-jesus.pdmx bar 8 (4/4, length 4): D@0+1  G@1+1  D@2+2
+song.folk.what-a-friend-we-have-in-jesus.pdmx bar 12 (4/4, length 4): A@0+1  E@1+1  A@2+2
+song.folk.what-a-friend-we-have-in-jesus.pdmx bar 16 (4/4, length 4): D@0+1  G@1+1  D@2+2
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 2 (4/4, length 4): G7@0+1.5  C7@1.5+1.5  G♭7@3+1
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 3 (4/4, length 4): Fm7@0+1.5  D7@1.5+2  B♭m7@3.5+0.5
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 5 (4/4, length 4): A♭maj7@0+1  C7@1+2  B13@3+1
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 6 (4/4, length 4): B♭m7@0+1.5  A7@1.5+2  A♭maj7@3.5+0.5
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 7 (4/4, length 4): A♭maj7(carried)@0+2  D♭7@2+1.5  Gm7b5@3.5+0.5
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 9 (4/4, length 4): A♭maj7@0+2  E♭7@2+1.5  A♭6@3.5+0.5
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 11 (4/4, length 4): F7@0+2  F7/A@2+1.5  B♭m7@3.5+0.5
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 13 (4/4, length 4): A♭7@0+2  A7@2+1.5  A♭maj7@3.5+0.5
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 15 (4/4, length 4): F7@0+2  F7/A@2+1.5  B♭m7@3.5+0.5
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 17 (4/4, length 4): Gm7b5@0+2  C7@2+1.5  A♭maj7@3.5+0.5
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 18 (4/4, length 4): A♭maj7(carried)@0+1.5  C7@1.5+1  G♭13@2.5+1.5
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 20 (4/4, length 4): G7@0+1.5  C7@1.5+1.5  G♭7@3+1
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 21 (4/4, length 4): Fm7@0+1.5  D7@1.5+2  B♭m7@3.5+0.5
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 23 (4/4, length 4): A♭maj7@0+1  C7@1+2  B13@3+1
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 24 (4/4, length 4): B♭m7@0+1.5  A7@1.5+2  A♭maj7@3.5+0.5
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 25 (4/4, length 4): A♭maj7(carried)@0+2  E♭7@2+1.5  A♭6@3.5+0.5
+song.pop.after-you-ve-gone.pdmx bar 7 (4/4, length 4): F7@0+2  G7@2+1  B♭7@3+1
+song.pop.benny-goodman-louis-prima-rose-room.pdmx bar 13 (4/4, length 4): D♭m@0+2  E♭5@2+1  E@3+1
+song.pop.darktown-strutter-s-ball.pdmx bar 6 (4/4, length 4): F7@0+1  E♭7@1+1  D7@2+2
+song.pop.darlene-love-baby-won-t-you-please-come-home.pdmx bar 5 (4/4, length 4): B♭@0+2  D7@2+0.5  D@2.5+1.5
+song.pop.darlene-love-baby-won-t-you-please-come-home.pdmx bar 30 (4/4, length 4): B♭@0+1  A♭@1+1  G7@2+2
+song.pop.hans-otto-borgmann-tango-notturno.pdmx bar 3 (4/4, length 4): A7@0+2  Gm@2+1  A7@3+1
+song.pop.hans-otto-borgmann-tango-notturno.pdmx bar 5 (4/4, length 4): Dm@0+1  A7@1+2  Dm@3+1
+song.pop.hans-otto-borgmann-tango-notturno.pdmx bar 54 (4/4, length 4): Dm@0+1  A7@1+1  Dm@2+2
+song.pop.margie.pdmx bar 2 (4/4, length 4): B♭@0+1  F@1+2  C7@3+1
+song.pop.margie.pdmx bar 6 (4/4, length 4): B♭@0+1  F@1+2  C7@3+1
+song.pop.martin-j-nystrom-as-the-deer-piano.pdmx bar 4 (4/4, length 4): C@0+1  Am@1+1.5  G@2.5+1.5
+song.pop.martin-j-nystrom-as-the-deer-piano.pdmx bar 8 (4/4, length 4): C@0+1  Am@1+1.5  G@2.5+1.5
+song.pop.misc-christmas-good-king-wenceslas.pdmx bar 1 (4/4, length 4): G@0+2  Em@2+1  D7@3+1
+song.pop.misc-christmas-good-king-wenceslas.pdmx bar 6 (4/4, length 4): G@0+1  D7@1+1  Em@2+2
+song.pop.misc-christmas-good-king-wenceslas.pdmx bar 9 (4/4, length 4): G(carried)@0+2  C@2+1  B7@3+1
+song.pop.misc-christmas-good-king-wenceslas.pdmx bar 11 (4/4, length 4): G@0+1  C@1+1  D@2+2
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx bar 3 (4/4, length 4): D(carried)@0+1  A@1+1  D@2+2
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx bar 4 (4/4, length 4): D@0+1.5  A7@1.5+0.5  D@2+2
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx bar 6 (4/4, length 4): D@0+1.5  A7@1.5+0.5  D@2+2
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx bar 7 (4/4, length 4): D(carried)@0+1  A@1+1  D@2+2
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx bar 8 (4/4, length 4): D@0+1.5  A7@1.5+1  D@2.5+1.5
+song.pop.misc-christmas-traditional-music-first-noel.pdmx bar 24 (3/4, length 3): D(carried)@0+1  G@1+1  A7@2+1
+song.pop.misc-christmas-traditional-music-up-on-the-housetop-gw.pdmx bar 14 (4/4, length 4): C@0+1  G@1+1  C♯dim@2+2
+song.pop.misc-christmas-traditional-music-up-on-the-housetop-gw.pdmx bar 16 (4/4, length 4): Am7@0+1  D7@1+1  G@2+2
+song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx bar 4 (3/4, length 3): G@0+1  D@1+1  A7@2+1
+song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx bar 8 (3/4, length 3): G@0+1  D@1+1  A7@2+1
+song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx bar 10 (3/4, length 3): D(carried)@0+1  D@1+1  G@2+1
+song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx bar 12 (3/4, length 3): D(carried)@0+1  D@1+1  G@2+1
+song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx bar 16 (3/4, length 3): G@0+1  D@1+1  A7@2+1
+song.pop.misc-tunes-o-worship-the-king-all-glorious-above-lyons.pdmx bar 4 (3/4, length 3): C@0+1  D7@1+1  G@2+1
+song.ragtime.joplin-entertainer bar 10 (2/4, length 2): F@0+1  C/E@1+0.5  Cmi/E♭@1.5+0.5
+song.ragtime.joplin-entertainer bar 27 (2/4, length 2): C@0+1  C/E@1+0.5  Cmi/E♭@1.5+0.5
+song.ragtime.joplin-entertainer bar 44 (2/4, length 2): F@0+1  C/E@1+0.5  Cmi/E♭@1.5+0.5
+song.ragtime.joplin-entertainer bar 89 (2/4, length 2): C/G@0+1  F♯o7@1+0.5  C/G@1.5+0.5
+
+## The thirty narrowest segments (share of the bar)
+0.0417  song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 3: "F♯dim" 0.125 of 3
+0.0625  song.classical.alexander-s-ragtime-band.pdmx bar 14: "D7" 0.25 of 4
+0.1250  song.blues.aunt-hagars-blues bar 1: "—" 0.5 of 4
+0.1250  song.blues.aunt-hagars-blues bar 13: "B♭7" 0.5 of 4
+0.1250  song.blues.aunt-hagars-blues bar 37: "Adim" 0.5 of 4
+0.1250  song.blues.hesitating-blues bar 1: "—" 0.5 of 4
+0.1250  song.blues.jazz-me-blues bar 12: "F7" 0.5 of 4
+0.1250  song.blues.jazz-me-blues bar 28: "E♭" 0.5 of 4
+0.1250  song.blues.livery-stable-blues bar 14: "E♭" 0.5 of 4
+0.1250  song.blues.livery-stable-blues bar 19: "A♭" 0.5 of 4
+0.1250  song.blues.livery-stable-blues bar 28: "B7" 0.5 of 4
+0.1250  song.blues.livery-stable-blues bar 30: "E♭7" 0.5 of 4
+0.1250  song.blues.livery-stable-blues bar 36: "B♭7" 0.5 of 4
+0.1250  song.blues.long-gone bar 5: "A♭" 0.5 of 4
+0.1250  song.blues.long-gone bar 30: "A♭" 0.5 of 4
+0.1250  song.blues.ole-miss bar 1: "—" 0.5 of 4
+0.1250  song.blues.ole-miss bar 17: "F7" 0.5 of 4
+0.1250  song.blues.riverside-blues bar 30: "B♭7" 0.5 of 4
+0.1250  song.blues.satanic-blues bar 45: "B♭m" 0.5 of 4
+0.1250  song.blues.satanic-blues bar 47: "E♭" 0.5 of 4
+0.1250  song.blues.tishomingo-blues bar 5: "A♭" 0.5 of 4
+0.1250  song.classical.alexander-s-ragtime-band.pdmx bar 4: "C" 0.5 of 4
+0.1250  song.classical.alexander-s-ragtime-band.pdmx bar 8: "Dm" 0.5 of 4
+0.1250  song.classical.alexander-s-ragtime-band.pdmx bar 15: "G" 0.5 of 4
+0.1250  song.classical.alexander-s-ragtime-band.pdmx bar 20: "C" 0.5 of 4
+0.1250  song.classical.alexander-s-ragtime-band.pdmx bar 24: "Dm" 0.5 of 4
+0.1250  song.classical.alexander-s-ragtime-band.pdmx bar 32: "C" 0.5 of 4
+0.1250  song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 1: "G7" 0.5 of 4
+0.1250  song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 1: "G7" 0.5 of 4
+0.1250  song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx bar 2: "G7" 0.5 of 4
+
+## The thirty longest texts in split bars
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 4: "F♯dim|C7/G" 1 of 3
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 11: "C/E|D♯dim" 1 of 3
+song.classical.por-toda-minha-vida.pdmx bar 13: "G♯m7(b5)" 2 of 4
+song.classical.por-toda-minha-vida.pdmx bar 18: "G♯m7(b5)" 2 of 4
+song.jazz.bart-howard-fly-me-to-the-moon.pdmx bar 17: "E♭5add♭9" 2 of 4
+song.jazz.bart-howard-fly-me-to-the-moon.pdmx bar 22: "E♭5add♭9" 2 of 4
+song.jazz.bart-howard-fly-me-to-the-moon.pdmx bar 22: "E♭5add♯9" 2 of 4
+excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28 bar 4: "E♭m6//F" 2 of 4
+song.beautiful.merry-christmas-mr-lawrence bar 51: "E♭m6/G♭" 2 of 4
+song.beautiful.merry-christmas-mr-lawrence bar 55: "E♭m6/G♭" 2 of 4
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 17: "Dm7|C/E" 1 of 3
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 4: "E♭m6//F" 2 of 4
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 28: "E♭m6//F" 2 of 4
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx bar 52: "E♭m6//F" 2 of 4
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 4: "E♭7sus4" 2 of 4
+song.jazz.george-shearing-lullaby-of-birdland.pdmx bar 22: "E♭7sus4" 2 of 4
+song.pop.marr11317-recado-bossa-nova.pdmx bar 46: "E-7(b5)" 2 of 4
+exercise.turnaround.b-flat.i-vi-ii-v bar 1: "B♭maj7" 2 of 4
+exercise.turnaround.e-flat.i-vi-ii-v bar 1: "E♭maj7" 2 of 4
+song.beautiful.merry-christmas-mr-lawrence bar 24: "Fm7/A♭" 2 of 4
+song.beautiful.merry-christmas-mr-lawrence bar 41: "Fm7/A♭" 2 of 4
+song.beautiful.merry-christmas-mr-lawrence bar 51: "G♭maj7" 2 of 4
+song.beautiful.merry-christmas-mr-lawrence bar 55: "G♭maj7" 2 of 4
+song.beautiful.merry-christmas-mr-lawrence bar 58: "Fm7/A♭" 2 of 4
+song.beautiful.merry-christmas-mr-lawrence bar 66: "Fm7/A♭" 2 of 4
+song.blues.singin-the-blues bar 2: "E♭Maj7" 2 of 4
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 5: "B♭|F/A" 1 of 3
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 7: "B♭|F/A" 1 of 3
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 12: "C/G|G+" 1 of 3
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx bar 21: "F|B♭/F" 1.5 of 3
+
+## Pickups, conflicts, segments past the clock
+conflicts: song.blues.hesitating-blues: bar 47 @0 E♭7|B♭
+conflicts: song.blues.jazz-me-blues: bar 39 @0 E♭|A♭7
+conflicts: song.blues.livery-stable-blues: bar 24 @0 E♭|A♭7
+pickup: song.blues.livery-stable-blues: notated 1.5 of 4 quarters, lead 2.5; segments —(carried)@0
+pickup: song.blues.satanic-blues: notated 1 of 4 quarters, lead 3; segments —(carried)@0
+conflicts: song.blues.storyville-blues: bar 4 @0 A♭7|D♭|A♭|D♭m; bar 36 @0 A♭|A♭7|D♭|D♭m; bar 52 @0 A♭|A♭7|D♭|D♭m; bar 55 @0 A♭|A♭7|D♭|D♭m
+pickup: song.blues.storyville-blues: notated 1 of 4 quarters, lead 3; segments —(carried)@0
+conflicts: song.blues.wabash-blues: bar 20 @0 E♭|Gm; bar 20 @3 A♭|A; bar 36 @0 E♭|Gm; bar 36 @3 A♭|A
+pickup: song.classical.alexander-s-ragtime-band.pdmx: notated 2 of 4 quarters, lead 2; segments —(carried)@0
+pickup: song.classical.anon-kum-ba-yah.pdmx: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+conflicts: song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx: bar 2 @0 F|E+; bar 4 @0 F♯dim|C7/G; bar 5 @1.5 B♭|F/A; bar 7 @1.5 B♭|F/A; bar 11 @0 C/E|D♯dim; bar 12 @0 C/G|G+; bar 17 @0 C|Dm7; bar 17 @1.5 Dm7|C/E; bar 18 @0 C/E|F; bar 21 @0 F|B♭/F; bar 23 @0 F|B♭/F
+pickup: song.classical.foster-oh-susanna-simple-lead-sheet.pdmx: notated 1 of 4 quarters, lead 3; segments —(carried)@0
+pickup: song.classical.foster-stephen-foster-camptown-races.pdmx: notated 1 of 4 quarters, lead 3; segments —(carried)@0
+pickup: song.classical.home-on-the-range-secondary-dominants.pdmx: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.folk.auld-lang-syne.pdmx: notated 1 of 4 quarters, lead 3; segments B♭7@0
+pickup: song.folk.bella-ciao: notated 2 of 4 quarters, lead 2; segments —(carried)@0
+conflicts: song.folk.carioquinha.pdmx: bar 6 @0 Dm|A7
+pickup: song.folk.down-by-the-riverside.pdmx: notated 1 of 4 quarters, lead 3; segments —(carried)@0
+pickup: song.folk.greensleeves.68: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.folk.greensleeves.chords: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.folk.greensleeves.simple: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.folk.greensleeves.waltz: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.folk.happy-birthday.simple: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.folk.old-french-song.pdmx: notated 0.5 of 2 quarters, lead 1.5; segments —(carried)@0
+past the clock bar: song.folk.traditional-music-home-on-the-range.pdmx bar 29 segment @3 (clock 3, length 6, status mismatch)
+pickup: song.folk.traditional-music-home-on-the-range.pdmx: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.folk.traditional-music-shenandoah.pdmx: notated 1 of 4 quarters, lead 3; segments —(carried)@0
+pickup: song.folk.traditional-music-when-johnny-comes-marching-home.pdmx: notated 0.5 of 3 quarters, lead 2.5; segments Am@0
+pickup: song.folk.when-the-saints.f: notated 3 of 4 quarters, lead 1; segments F@0
+conflicts: song.jazz.django-reinhardt-limehouse-blues.pdmx: bar 36 @0 B7|C7|D♭7; bar 52 @0 D♭7|C7|B7
+conflicts: song.pop.avalon.pdmx: bar 17 @2 E7|E♭7; bar 27 @2 E7|E♭7
+pickup: song.pop.avalon.pdmx: notated 2 of 4 quarters, lead 2; segments —(carried)@0
+conflicts: song.pop.bill-bailey.pdmx: bar 47 @0 B♭|D7
+conflicts: song.pop.darlene-love-baby-won-t-you-please-come-home.pdmx: bar 6 @0 D+|Gm
+conflicts: song.pop.margie.pdmx: bar 7 @0 Fdim|F; bar 15 @0 F|C
+pickup: song.pop.marr11317-recado-bossa-nova.pdmx: notated 1.5 of 4 quarters, lead 2.5; segments —(carried)@0
+pickup: song.pop.michael-row-the-boat-ashore.pdmx: notated 2 of 4 quarters, lead 2; segments —(carried)@0
+pickup: song.pop.misc-christmas-o-christmas-tree.pdmx: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.pop.misc-christmas-traditional-music-first-noel.pdmx: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.pop.misc-christmas-traditional-music-god-rest-ye-merry-gentlemen-gw.pdmx: notated 1 of 4 quarters, lead 3; segments —(carried)@0
+pickup: song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.pop.misc-tunes-o-worship-the-king-all-glorious-above-lyons.pdmx: notated 1 of 3 quarters, lead 2; segments —(carried)@0
+pickup: song.pop.sophie-tucker-some-of-these-days.pdmx: notated 1 of 4 quarters, lead 3; segments —(carried)@0
+pickup: song.pop.the-memphis-blues.pdmx: notated 1.5 of 4 quarters, lead 2.5; segments —(carried)@0
+
+## Legacy bar counts that differ
+excerpt.blues.wabash-blues.b1-4: legacy 6 bars, source measures 4
+excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28: legacy 8 bars, source measures 4
+exercise.passing-chord.b-flat: legacy 6 bars, source measures 4
+exercise.passing-chord.c: legacy 6 bars, source measures 4
+exercise.passing-chord.e-flat: legacy 6 bars, source measures 4
+exercise.passing-chord.f: legacy 6 bars, source measures 4
+exercise.slash-bass.b-flat: legacy 8 bars, source measures 4
+exercise.slash-bass.c: legacy 8 bars, source measures 4
+exercise.slash-bass.e-flat: legacy 8 bars, source measures 4
+exercise.slash-bass.f: legacy 8 bars, source measures 4
+exercise.turnaround.b-flat.i-vi-ii-v: legacy 4 bars, source measures 2
+exercise.turnaround.b-flat.i-vi-ii-v.intro: legacy 4 bars, source measures 2
+exercise.turnaround.b-flat.iii-vi-ii-v: legacy 4 bars, source measures 2
+exercise.turnaround.c.i-vi-ii-v: legacy 4 bars, source measures 2
+exercise.turnaround.c.i-vi-ii-v.intro: legacy 4 bars, source measures 2
+exercise.turnaround.c.iii-vi-ii-v: legacy 4 bars, source measures 2
+exercise.turnaround.e-flat.i-vi-ii-v: legacy 4 bars, source measures 2
+exercise.turnaround.e-flat.i-vi-ii-v.intro: legacy 4 bars, source measures 2
+exercise.turnaround.e-flat.iii-vi-ii-v: legacy 4 bars, source measures 2
+exercise.turnaround.f.i-vi-ii-v: legacy 4 bars, source measures 2
+exercise.turnaround.f.i-vi-ii-v.intro: legacy 4 bars, source measures 2
+exercise.turnaround.f.iii-vi-ii-v: legacy 4 bars, source measures 2
+song.beautiful.merry-christmas-mr-lawrence: legacy 128 bars, source measures 75
+song.blues.aunt-hagars-blues: legacy 68 bars, source measures 52
+song.blues.hesitating-blues: legacy 50 bars, source measures 48
+song.blues.livery-stable-blues: legacy 47 bars, source measures 37
+song.blues.long-gone: legacy 69 bars, source measures 41
+song.blues.riverside-blues: legacy 55 bars, source measures 41
+song.blues.satanic-blues: legacy 65 bars, source measures 47
+song.blues.st-james-infirmary: legacy 41 bars, source measures 24
+song.blues.storyville-blues: legacy 75 bars, source measures 56
+song.blues.wabash-blues: legacy 80 bars, source measures 57
+song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx: legacy 25 bars, source measures 17
+song.classical.alexander-s-ragtime-band.pdmx: legacy 55 bars, source measures 33
+song.classical.anon-kum-ba-yah.pdmx: legacy 15 bars, source measures 9
+song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx: legacy 48 bars, source measures 25
+song.classical.czerny-the-school-of-velocity-op-299-no-1.pdmx: legacy 28 bars, source measures 22
+song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx: legacy 244 bars, source measures 30
+song.classical.czerny-the-school-of-velocity-op-299-no-4.pdmx: legacy 80 bars, source measures 26
+song.classical.czerny-the-school-of-velocity-op-299-no-5.pdmx: legacy 150 bars, source measures 52
+song.classical.czerny-the-school-of-velocity-op-299-no-6.pdmx: legacy 72 bars, source measures 32
+song.classical.czerny-the-school-of-velocity-op-299-no-7.pdmx: legacy 106 bars, source measures 45
+song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx: legacy 212 bars, source measures 55
+song.classical.czerny-the-school-of-velocity-op-299-no-9.pdmx: legacy 204 bars, source measures 71
+song.classical.foster-oh-susanna-simple-lead-sheet.pdmx: legacy 27 bars, source measures 25
+song.classical.home-on-the-range-secondary-dominants.pdmx: legacy 56 bars, source measures 33
+song.classical.mendelssohn-felix-mendelssohn-hark-the-herald-angels-sing.pdmx: legacy 45 bars, source measures 20
+song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx: legacy 189 bars, source measures 80
+song.classical.ode-to-joy.full: legacy 20 bars, source measures 17
+song.classical.ode-to-joy.g: legacy 20 bars, source measures 17
+song.classical.ode-to-joy.ht: legacy 10 bars, source measures 8
+song.classical.por-toda-minha-vida.pdmx: legacy 45 bars, source measures 22
+song.classical.royal-garden-blues.pdmx: legacy 52 bars, source measures 44
+song.classical.sakamoto-andata.pdmx: legacy 94 bars, source measures 65
+song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx: legacy 16 bars, source measures 15
+song.classical.tchaikovsky-swan-lake.pdmx: legacy 38 bars, source measures 25
+song.folk.amazing-grace-easy-piano.pdmx: legacy 18 bars, source measures 17
+song.folk.anonymous-swing-low-sweet-chariot.pdmx: legacy 20 bars, source measures 16
+song.folk.auld-lang-syne.pdmx: legacy 23 bars, source measures 17
+song.folk.bella-ciao: legacy 64 bars, source measures 38
+song.folk.el-gordo-triste-piazzolla-ferrer.pdmx: legacy 112 bars, source measures 41
+song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx: legacy 33 bars, source measures 32
+song.folk.i-remember-you.pdmx: legacy 60 bars, source measures 46
+song.folk.john-denver-annie-s-song.pdmx: legacy 108 bars, source measures 57
+song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx: legacy 32 bars, source measures 16
+song.folk.muskrat-ramble.pdmx: legacy 70 bars, source measures 32
+song.folk.old-french-song.pdmx: legacy 42 bars, source measures 25
+song.folk.suo-gan-welsh-traditional-lullaby.pdmx: legacy 20 bars, source measures 16
+song.folk.traditional-music-shenandoah.pdmx: legacy 21 bars, source measures 10
+song.folk.twinkle.f: legacy 22 bars, source measures 12
+song.folk.twinkle.ht: legacy 22 bars, source measures 12
+song.folk.was-wollen-wir-trinken.pdmx: legacy 17 bars, source measures 13
+song.folk.what-a-friend-we-have-in-jesus.pdmx: legacy 32 bars, source measures 16
+song.holiday.jingle-bells.g: legacy 11 bars, source measures 8
+song.holiday.jingle-bells.ht: legacy 11 bars, source measures 8
+song.jazz.george-shearing-lullaby-of-birdland.pdmx: legacy 110 bars, source measures 26
+song.jazz.marc-sabatella-harmony-and-chord-progressions.pdmx: legacy 32 bars, source measures 8
+song.jazz.the-dave-brubeck-quartet-take-five.pdmx: legacy 49 bars, source measures 25
+song.jazz.vince-guaraldi-skating.pdmx: legacy 268 bars, source measures 137
+song.pop.after-you-ve-gone.pdmx: legacy 48 bars, source measures 36
+song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx: legacy 148 bars, source measures 53
+song.pop.careless-love-blues.pdmx: legacy 10 bars, source measures 8
+song.pop.darktown-strutter-s-ball.pdmx: legacy 47 bars, source measures 36
+song.pop.darlene-love-baby-won-t-you-please-come-home.pdmx: legacy 55 bars, source measures 32
+song.pop.frank-sinatra-let-it-snow-leadsheet.pdmx: legacy 64 bars, source measures 33
+song.pop.guantanamera.pdmx: legacy 29 bars, source measures 21
+song.pop.hans-otto-borgmann-tango-notturno.pdmx: legacy 94 bars, source measures 54
+song.pop.margie.pdmx: legacy 50 bars, source measures 48
+song.pop.martin-j-nystrom-as-the-deer-piano.pdmx: legacy 58 bars, source measures 16
+song.pop.misc-christmas-good-king-wenceslas.pdmx: legacy 30 bars, source measures 13
+song.pop.misc-christmas-o-christmas-tree.pdmx: legacy 38 bars, source measures 33
+song.pop.misc-christmas-traditional-music-angels-we-have-heard-on-high.pdmx: legacy 47 bars, source measures 21
+song.pop.misc-christmas-traditional-music-up-on-the-housetop-gw.pdmx: legacy 20 bars, source measures 16
+song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx: legacy 29 bars, source measures 17
+song.pop.misc-tunes-o-worship-the-king-all-glorious-above-lyons.pdmx: legacy 27 bars, source measures 17
+song.pop.sammy-fain-and-irving-kahal-i-ll-be-seeing-you.pdmx: legacy 37 bars, source measures 32
+song.pop.scarborough-fair.pdmx: legacy 36 bars, source measures 18
+song.pop.the-memphis-blues.pdmx: legacy 35 bars, source measures 33
+song.ragtime.joplin-entertainer: legacy 164 bars, source measures 92
+
+## One-chord 4/4 charts with every bar full and the legacy bar count unchanged (304)
+exercise.blues.twelve-bar-shuffle.a (12 bars)
+exercise.blues.twelve-bar-shuffle.c (12 bars)
+exercise.blues.twelve-bar-shuffle.d (12 bars)
+exercise.blues.twelve-bar-shuffle.e (12 bars)
+exercise.blues.twelve-bar-shuffle.f (12 bars)
+exercise.blues.twelve-bar-shuffle.g (12 bars)
+exercise.boogie.a.pinetop (4 bars)
+exercise.boogie.a.root-fifth (4 bars)
+exercise.boogie.a.walking-eighths (4 bars)
+exercise.boogie.b-flat.pinetop (4 bars)
+exercise.boogie.b-flat.pinetop.minor-blues (4 bars)
+exercise.boogie.b-flat.root-fifth (4 bars)
+exercise.boogie.b-flat.root-fifth.minor-blues (4 bars)
+exercise.boogie.b-flat.walking-eighths (4 bars)
+exercise.boogie.b-flat.walking-eighths.minor-blues (4 bars)
+exercise.boogie.c.pinetop (4 bars)
+exercise.boogie.c.pinetop.minor-blues (4 bars)
+exercise.boogie.c.root-fifth (4 bars)
+exercise.boogie.c.root-fifth.minor-blues (4 bars)
+exercise.boogie.c.walking-eighths (4 bars)
+exercise.boogie.c.walking-eighths.minor-blues (4 bars)
+exercise.boogie.d.pinetop (4 bars)
+exercise.boogie.d.root-fifth (4 bars)
+exercise.boogie.d.walking-eighths (4 bars)
+exercise.boogie.e-flat.pinetop (4 bars)
+exercise.boogie.e-flat.pinetop.minor-blues (4 bars)
+exercise.boogie.e-flat.root-fifth (4 bars)
+exercise.boogie.e-flat.root-fifth.minor-blues (4 bars)
+exercise.boogie.e-flat.walking-eighths (4 bars)
+exercise.boogie.e-flat.walking-eighths.minor-blues (4 bars)
+exercise.boogie.e.pinetop (4 bars)
+exercise.boogie.e.root-fifth (4 bars)
+exercise.boogie.e.walking-eighths (4 bars)
+exercise.boogie.f.pinetop (4 bars)
+exercise.boogie.f.pinetop.minor-blues (4 bars)
+exercise.boogie.f.root-fifth (4 bars)
+exercise.boogie.f.root-fifth.minor-blues (4 bars)
+exercise.boogie.f.walking-eighths (4 bars)
+exercise.boogie.f.walking-eighths.minor-blues (4 bars)
+exercise.boogie.g.pinetop (4 bars)
+exercise.boogie.g.root-fifth (4 bars)
+exercise.boogie.g.walking-eighths (4 bars)
+exercise.comping.a.anticipated.intro (4 bars)
+exercise.comping.a.bossa (4 bars)
+exercise.comping.a.bossa.intro (4 bars)
+exercise.comping.a.charleston.intro (4 bars)
+exercise.comping.a.four-on-the-floor.intro (4 bars)
+exercise.comping.a.off-beats.intro (4 bars)
+exercise.comping.b-flat.anticipated (4 bars)
+exercise.comping.b-flat.anticipated.intro (4 bars)
+exercise.comping.b-flat.charleston (4 bars)
+exercise.comping.b-flat.charleston.intro (4 bars)
+exercise.comping.b-flat.four-on-the-floor (4 bars)
+exercise.comping.b-flat.four-on-the-floor.intro (4 bars)
+exercise.comping.b-flat.off-beats (4 bars)
+exercise.comping.b-flat.off-beats.intro (4 bars)
+exercise.comping.c.anticipated (4 bars)
+exercise.comping.c.anticipated.intro (4 bars)
+exercise.comping.c.bossa (4 bars)
+exercise.comping.c.bossa.intro (4 bars)
+exercise.comping.c.charleston (4 bars)
+exercise.comping.c.charleston.intro (4 bars)
+exercise.comping.c.four-on-the-floor (4 bars)
+exercise.comping.c.four-on-the-floor.intro (4 bars)
+exercise.comping.c.off-beats (4 bars)
+exercise.comping.c.off-beats.intro (4 bars)
+exercise.comping.d.anticipated.intro (4 bars)
+exercise.comping.d.bossa (4 bars)
+exercise.comping.d.bossa.intro (4 bars)
+exercise.comping.d.charleston.intro (4 bars)
+exercise.comping.d.four-on-the-floor.intro (4 bars)
+exercise.comping.d.off-beats.intro (4 bars)
+exercise.comping.e-flat.anticipated (4 bars)
+exercise.comping.e-flat.anticipated.intro (4 bars)
+exercise.comping.e-flat.charleston (4 bars)
+exercise.comping.e-flat.charleston.intro (4 bars)
+exercise.comping.e-flat.four-on-the-floor (4 bars)
+exercise.comping.e-flat.four-on-the-floor.intro (4 bars)
+exercise.comping.e-flat.off-beats (4 bars)
+exercise.comping.e-flat.off-beats.intro (4 bars)
+exercise.comping.e.anticipated.intro (4 bars)
+exercise.comping.e.charleston.intro (4 bars)
+exercise.comping.e.four-on-the-floor.intro (4 bars)
+exercise.comping.e.off-beats.intro (4 bars)
+exercise.comping.f.anticipated (4 bars)
+exercise.comping.f.anticipated.intro (4 bars)
+exercise.comping.f.bossa (4 bars)
+exercise.comping.f.bossa.intro (4 bars)
+exercise.comping.f.charleston (4 bars)
+exercise.comping.f.charleston.intro (4 bars)
+exercise.comping.f.four-on-the-floor (4 bars)
+exercise.comping.f.four-on-the-floor.intro (4 bars)
+exercise.comping.f.off-beats (4 bars)
+exercise.comping.f.off-beats.intro (4 bars)
+exercise.comping.g.anticipated.intro (4 bars)
+exercise.comping.g.bossa (4 bars)
+exercise.comping.g.bossa.intro (4 bars)
+exercise.comping.g.charleston.intro (4 bars)
+exercise.comping.g.four-on-the-floor.intro (4 bars)
+exercise.comping.g.off-beats.intro (4 bars)
+exercise.ii-v-i.a (4 bars)
+exercise.ii-v-i.a-flat (4 bars)
+exercise.ii-v-i.a-flat.rootless (4 bars)
+exercise.ii-v-i.a-flat.shells (4 bars)
+exercise.ii-v-i.a.rootless (4 bars)
+exercise.ii-v-i.a.shells (4 bars)
+exercise.ii-v-i.b (4 bars)
+exercise.ii-v-i.b-flat (4 bars)
+exercise.ii-v-i.b-flat.rootless (4 bars)
+exercise.ii-v-i.b-flat.shells (4 bars)
+exercise.ii-v-i.b.rootless (4 bars)
+exercise.ii-v-i.b.shells (4 bars)
+exercise.ii-v-i.c (4 bars)
+exercise.ii-v-i.c.rootless (4 bars)
+exercise.ii-v-i.c.shells (4 bars)
+exercise.ii-v-i.d (4 bars)
+exercise.ii-v-i.d-flat (4 bars)
+exercise.ii-v-i.d-flat.rootless (4 bars)
+exercise.ii-v-i.d-flat.shells (4 bars)
+exercise.ii-v-i.d.rootless (4 bars)
+exercise.ii-v-i.d.shells (4 bars)
+exercise.ii-v-i.e (4 bars)
+exercise.ii-v-i.e-flat (4 bars)
+exercise.ii-v-i.e-flat.rootless (4 bars)
+exercise.ii-v-i.e-flat.shells (4 bars)
+exercise.ii-v-i.e.rootless (4 bars)
+exercise.ii-v-i.e.shells (4 bars)
+exercise.ii-v-i.f (4 bars)
+exercise.ii-v-i.f-sharp (4 bars)
+exercise.ii-v-i.f-sharp.rootless (4 bars)
+exercise.ii-v-i.f-sharp.shells (4 bars)
+exercise.ii-v-i.f.rootless (4 bars)
+exercise.ii-v-i.f.shells (4 bars)
+exercise.ii-v-i.g (4 bars)
+exercise.ii-v-i.g.rootless (4 bars)
+exercise.ii-v-i.g.shells (4 bars)
+exercise.intro.a.4bar (4 bars)
+exercise.intro.c.4bar (4 bars)
+exercise.intro.d.4bar (4 bars)
+exercise.intro.f.4bar (4 bars)
+exercise.intro.g.4bar (4 bars)
+exercise.latin-groove.a.son-3-2 (8 bars)
+exercise.latin-groove.c.son-3-2 (8 bars)
+exercise.latin-groove.d.son-3-2 (8 bars)
+exercise.latin-groove.f.son-3-2 (8 bars)
+exercise.latin-groove.g.son-3-2 (8 bars)
+exercise.loop4.a-flat.inversions (4 bars)
+exercise.loop4.a-flat.root (4 bars)
+exercise.loop4.a.inversions (4 bars)
+exercise.loop4.a.root (4 bars)
+exercise.loop4.b-flat.inversions (4 bars)
+exercise.loop4.b-flat.root (4 bars)
+exercise.loop4.b.inversions (4 bars)
+exercise.loop4.b.root (4 bars)
+exercise.loop4.c.inversions (4 bars)
+exercise.loop4.c.root (4 bars)
+exercise.loop4.d-flat.inversions (4 bars)
+exercise.loop4.d-flat.root (4 bars)
+exercise.loop4.d.inversions (4 bars)
+exercise.loop4.d.root (4 bars)
+exercise.loop4.e-flat.inversions (4 bars)
+exercise.loop4.e-flat.root (4 bars)
+exercise.loop4.e.inversions (4 bars)
+exercise.loop4.e.root (4 bars)
+exercise.loop4.f-sharp.inversions (4 bars)
+exercise.loop4.f-sharp.root (4 bars)
+exercise.loop4.f.inversions (4 bars)
+exercise.loop4.f.root (4 bars)
+exercise.loop4.g.inversions (4 bars)
+exercise.loop4.g.root (4 bars)
+exercise.montuno.a.2note.bossa (4 bars)
+exercise.montuno.a.2note.son-3-2 (4 bars)
+exercise.montuno.a.3note.son-3-2 (4 bars)
+exercise.montuno.c.2note.bossa (4 bars)
+exercise.montuno.c.2note.son-3-2 (4 bars)
+exercise.montuno.c.3note.son-3-2 (4 bars)
+exercise.montuno.d.2note.bossa (4 bars)
+exercise.montuno.d.2note.son-3-2 (4 bars)
+exercise.montuno.d.3note.son-3-2 (4 bars)
+exercise.montuno.f.2note.bossa (4 bars)
+exercise.montuno.f.2note.son-3-2 (4 bars)
+exercise.montuno.f.3note.son-3-2 (4 bars)
+exercise.montuno.g.2note.bossa (4 bars)
+exercise.montuno.g.2note.son-3-2 (4 bars)
+exercise.montuno.g.3note.son-3-2 (4 bars)
+exercise.open-voicing.b-flat.add9 (4 bars)
+exercise.open-voicing.b-flat.quartal (4 bars)
+exercise.open-voicing.b-flat.sus2 (4 bars)
+exercise.open-voicing.b-flat.sus4 (4 bars)
+exercise.open-voicing.c.add9 (4 bars)
+exercise.open-voicing.c.quartal (4 bars)
+exercise.open-voicing.c.sus2 (4 bars)
+exercise.open-voicing.c.sus4 (4 bars)
+exercise.open-voicing.e-flat.add9 (4 bars)
+exercise.open-voicing.e-flat.quartal (4 bars)
+exercise.open-voicing.e-flat.sus2 (4 bars)
+exercise.open-voicing.e-flat.sus4 (4 bars)
+exercise.open-voicing.f.add9 (4 bars)
+exercise.open-voicing.f.quartal (4 bars)
+exercise.open-voicing.f.sus2 (4 bars)
+exercise.open-voicing.f.sus4 (4 bars)
+exercise.power-chord.a (4 bars)
+exercise.power-chord.d (4 bars)
+exercise.power-chord.e (4 bars)
+exercise.secondary-rag.c.4bar (4 bars)
+exercise.stride.b-flat (4 bars)
+exercise.stride.c (4 bars)
+exercise.stride.e-flat (4 bars)
+exercise.stride.f (4 bars)
+exercise.tritone-sub.b-flat (4 bars)
+exercise.tritone-sub.c (4 bars)
+exercise.tritone-sub.e-flat (4 bars)
+exercise.tritone-sub.f (4 bars)
+exercise.tumbao.a (8 bars)
+exercise.tumbao.c (8 bars)
+exercise.tumbao.d (8 bars)
+exercise.tumbao.f (8 bars)
+exercise.tumbao.g (8 bars)
+exercise.voicing7.a-flat.close (3 bars)
+exercise.voicing7.a-flat.rootless-a (3 bars)
+exercise.voicing7.a-flat.rootless-b (3 bars)
+exercise.voicing7.a-flat.shell (3 bars)
+exercise.voicing7.a.close (3 bars)
+exercise.voicing7.a.rootless-a (3 bars)
+exercise.voicing7.a.rootless-b (3 bars)
+exercise.voicing7.a.shell (3 bars)
+exercise.voicing7.b-flat.close (3 bars)
+exercise.voicing7.b-flat.rootless-a (3 bars)
+exercise.voicing7.b-flat.rootless-b (3 bars)
+exercise.voicing7.b-flat.shell (3 bars)
+exercise.voicing7.b.close (3 bars)
+exercise.voicing7.b.rootless-a (3 bars)
+exercise.voicing7.b.rootless-b (3 bars)
+exercise.voicing7.b.shell (3 bars)
+exercise.voicing7.c.close (3 bars)
+exercise.voicing7.c.rootless-a (3 bars)
+exercise.voicing7.c.rootless-b (3 bars)
+exercise.voicing7.c.shell (3 bars)
+exercise.voicing7.d-flat.close (3 bars)
+exercise.voicing7.d-flat.rootless-a (3 bars)
+exercise.voicing7.d-flat.rootless-b (3 bars)
+exercise.voicing7.d-flat.shell (3 bars)
+exercise.voicing7.d.close (3 bars)
+exercise.voicing7.d.rootless-a (3 bars)
+exercise.voicing7.d.rootless-b (3 bars)
+exercise.voicing7.d.shell (3 bars)
+exercise.voicing7.e-flat.close (3 bars)
+exercise.voicing7.e-flat.rootless-a (3 bars)
+exercise.voicing7.e-flat.rootless-b (3 bars)
+exercise.voicing7.e-flat.shell (3 bars)
+exercise.voicing7.e.close (3 bars)
+exercise.voicing7.e.rootless-a (3 bars)
+exercise.voicing7.e.rootless-b (3 bars)
+exercise.voicing7.e.shell (3 bars)
+exercise.voicing7.f-sharp.close (3 bars)
+exercise.voicing7.f-sharp.rootless-a (3 bars)
+exercise.voicing7.f-sharp.rootless-b (3 bars)
+exercise.voicing7.f-sharp.shell (3 bars)
+exercise.voicing7.f.close (3 bars)
+exercise.voicing7.f.rootless-a (3 bars)
+exercise.voicing7.f.rootless-b (3 bars)
+exercise.voicing7.f.shell (3 bars)
+exercise.voicing7.g.close (3 bars)
+exercise.voicing7.g.rootless-a (3 bars)
+exercise.voicing7.g.rootless-b (3 bars)
+exercise.voicing7.g.shell (3 bars)
+exercise.walking-bass.a.blues (13 bars)
+exercise.walking-bass.a.blues.intro (13 bars)
+exercise.walking-bass.b-flat.blues (13 bars)
+exercise.walking-bass.b-flat.blues.intro (13 bars)
+exercise.walking-bass.b-flat.ii-v-i (4 bars)
+exercise.walking-bass.b-flat.ii-v-i.intro (4 bars)
+exercise.walking-bass.b-flat.minor-blues (13 bars)
+exercise.walking-bass.c.blues (13 bars)
+exercise.walking-bass.c.blues.intro (13 bars)
+exercise.walking-bass.c.ii-v-i (4 bars)
+exercise.walking-bass.c.ii-v-i.intro (4 bars)
+exercise.walking-bass.c.minor-blues (13 bars)
+exercise.walking-bass.d.blues (13 bars)
+exercise.walking-bass.d.blues.intro (13 bars)
+exercise.walking-bass.e-flat.blues (13 bars)
+exercise.walking-bass.e-flat.blues.intro (13 bars)
+exercise.walking-bass.e-flat.ii-v-i (4 bars)
+exercise.walking-bass.e-flat.ii-v-i.intro (4 bars)
+exercise.walking-bass.e-flat.minor-blues (13 bars)
+exercise.walking-bass.e.blues (13 bars)
+exercise.walking-bass.e.blues.intro (13 bars)
+exercise.walking-bass.f.blues (13 bars)
+exercise.walking-bass.f.blues.intro (13 bars)
+exercise.walking-bass.f.ii-v-i (4 bars)
+exercise.walking-bass.f.ii-v-i.intro (4 bars)
+exercise.walking-bass.f.minor-blues (13 bars)
+exercise.walking-bass.g.blues (13 bars)
+exercise.walking-bass.g.blues.intro (13 bars)
+exercise.walkup.b-flat (4 bars)
+exercise.walkup.c (4 bars)
+exercise.walkup.e-flat (4 bars)
+exercise.walkup.f (4 bars)
+song.folk.dark-eyes.pdmx (17 bars)
+song.folk.london-bridge (8 bars)
+song.folk.mary-had-a-little-lamb.ht (8 bars)
+song.folk.skip-to-my-lou.pdmx (8 bars)
+song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx (111 bars)
+song.pop.the-weeknd-the-weekend-blinding-lights-easy-piano.pdmx (128 bars)

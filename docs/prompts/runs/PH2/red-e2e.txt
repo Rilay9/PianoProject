@@ -1,0 +1,197 @@
+﻿node.exe : [WebServer] (node:48916) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:46416) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 22 tests using 2 workers
+
+(node:47780) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43480) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\chart-backing.spec.ts:182:3 › Blue Bossa chart: Comp and Bass + drums are independent › A: Bass + drums on, Comp on — bass, drums and the piano comp (7.8s)
+  ok  2 tests\e2e\carry-overs.spec.ts:159:3 › the backing loop › stops when the screen is left (9.9s)
+  ok  4 tests\e2e\chart-backing.spec.ts:203:3 › Blue Bossa chart: Comp and Bass + drums are independent › C: Comp on, Bass + drums off — the piano comp, no bass, no drums (6.6s)
+  ok  3 tests\e2e\chart-backing.spec.ts:191:3 › Blue Bossa chart: Comp and Bass + drums are independent › B: Bass + drums on, Comp off — the same bass and drums as A, no piano (12.8s)
+  ok  5 tests\e2e\chart-backing.spec.ts:209:3 › Blue Bossa chart: Comp and Bass + drums are independent › D: both off — the click alone (6.5s)
+  x   7 tests\e2e\chart-backing.spec.ts:247:3 › Blue Bossa bar 16: the bass on beat 3 is G7’s › E: Bass + drums on, Comp off, run to bar 17 (20.3s)
+  ok  6 tests\e2e\chart-backing.spec.ts:223:3 › a chart with one chord in every bar: the four cases (PH2 differential) › A to D on the twelve-bar shuffle in C (25.3s)
+(node:42920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  9 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Skating, 3/4: the click, the tracker, the tempo field and Bass + drums (5.3s)
+  ok  8 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Take Five, 5/4: the click, the tracker, the tempo field and Bass + drums (6.6s)
+  ok 10 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Row, Row, Row Your Boat, 6/8: the click, the tracker, the tempo field and Bass + drums (4.1s)
+  ok 11 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Corcovado, 2/2: the click, the tracker, the tempo field and Bass + drums (4.1s)
+  ok 12 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Ah vous dirai-je, 2/4: the click, the tracker, the tempo field and Bass + drums (4.0s)
+  ok 13 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Twelve-eight exercise, 12/8: the click, the tracker, the tempo field and Bass + drums (5.4s)
+  ok 14 tests\e2e\chart-metre.spec.ts:192:3 › the chord chart counts each bar in its written metre › Skating, 3/4: the unsourced “jazz waltz” comment does not switch on chart backing (4.5s)
+  ok 15 tests\e2e\chart-metre.spec.ts:201:3 › the chord chart counts each bar in its written metre › Bella Ciao, 4/4 with a pickup: today’s four-beat bars, Bass + drums offered and playing (the 4/4 differential) (7.7s)
+  x  17 tests\e2e\chart-segments.spec.ts:49:3 › a bar with more than one chord shows every one, as wide as it lasts › Blue Bossa bar 16: Dmi7b5 then G7, half and half; bar 15 is drawn as before (7.1s)
+(node:49800) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 16 tests\e2e\chart-metre.spec.ts:224:3 › the chord chart counts each bar in its written metre › Mr Lawrence, 3/4 then 4/4 from bar 17: the first beat of bar 17 is the accent and its bar has four (16.5s)
+  x  18 tests\e2e\chart-segments.spec.ts:63:3 › a bar with more than one chord shows every one, as wide as it lasts › Insensatez bar 22: Bmi7b5 then E7, half and half (7.7s)
+  x  19 tests\e2e\chart-segments.spec.ts:70:3 › a bar with more than one chord shows every one, as wide as it lasts › Czerny No. 8 bar 1: C, G7, C, G7 at three to one (7.5s)
+(node:42140) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:49188) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 21 tests\e2e\chart.spec.ts:49:3 › chord chart › says so plainly when a score has no chords in it (1.6s)
+  ok 20 tests\e2e\chart.spec.ts:37:3 › chord chart › reads the chord symbols out of an imported score (3.3s)
+  ok 22 tests\e2e\chart.spec.ts:56:3 › chord chart › offers swing and comp toggles (3.4s)
+
+
+  1) tests\e2e\chart-backing.spec.ts:247:3 › Blue Bossa bar 16: the bass on beat 3 is G7’s › E: Bass + drums on, Comp off, run to bar 17 
+
+    Error: bar 16: D for Dmi7b5 on beat 1, D for G7 on beat 3
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+        73,
+    -   73,
+    +   104,
+      ]
+
+      249 |     const e = await run(page, 'E backing on, to bar 17', false, true, { stopAt: 'Bar 17 of 32' });
+      250 |     expect(e.bassHz.length, 'sixteen bars of bass were not scheduled').toBeGreaterThanOrEqual(32);
+    > 251 |     expect(e.bassHz.slice(30, 32), 'bar 16: D for Dmi7b5 on beat 1, D for G7 on beat 3').toEqual([73, 73]);
+          |                                                                                          ^
+      252 |   });
+      253 | });
+      254 |
+        at <worktree>\app\tests\e2e\chart-backing.spec.ts:251:90
+
+    Error Context: build\ph2\test-results\chart-backing-Blue-Bossa-b-c0688-s-on-Comp-off-run-to-bar-17\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\ph2\test-results\chart-backing-Blue-Bossa-b-c0688-s-on-Comp-off-run-to-bar-17\trace.zip
+    Usage:
+
+        npx playwright show-trace build\ph2\test-results\chart-backing-Blue-Bossa-b-c0688-s-on-Comp-off-run-to-bar-17\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\chart-segments.spec.ts:49:3 › a bar with more than one chord shows every one, as wide as it lasts › Blue Bossa bar 16: Dmi7b5 then G7, half and half; bar 15 is drawn as before 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('#chart-grid .chart-cell[data-bar="16"]')
+    Expected: "true"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('#chart-grid .chart-cell[data-bar="16"]') with timeout 5000ms
+      - waiting for locator('#chart-grid .chart-cell[data-bar="16"]')
+        14 × locator resolved to <div data-bar="16" class="chart-cell" data-current="false">Dmi7b5</div>
+           - unexpected value "null"
+
+
+      30 | async function segments(page: Page, bar: number): Promise<{ texts: string[]; widths: number[] }> {
+      31 |   const cell = page.locator(`#chart-grid .chart-cell[data-bar="${String(bar)}"]`);
+    > 32 |   await expect(cell).toHaveAttribute('data-split', 'true');
+         |                      ^
+      33 |   return cell.evaluate((node) => {
+      34 |     const boxes = [...node.querySelectorAll<HTMLElement>('.chart-seg')];
+      35 |     const labels = [...node.querySelectorAll<HTMLElement>('.chart-seg-label')].sort((a, b) => Number(a.dataset.seg) - Number(b.dataset.seg));
+        at segments (<worktree>\app\tests\e2e\chart-segments.spec.ts:32:22)
+        at <worktree>\app\tests\e2e\chart-segments.spec.ts:51:25
+
+    Error Context: build\ph2\test-results\chart-segments-a-bar-with--aa859-f-bar-15-is-drawn-as-before\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\ph2\test-results\chart-segments-a-bar-with--aa859-f-bar-15-is-drawn-as-before\trace.zip
+    Usage:
+
+        npx playwright show-trace build\ph2\test-results\chart-segments-a-bar-with--aa859-f-bar-15-is-drawn-as-before\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests\e2e\chart-segments.spec.ts:63:3 › a bar with more than one chord shows every one, as wide as it lasts › Insensatez bar 22: Bmi7b5 then E7, half and half 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('#chart-grid .chart-cell[data-bar="22"]')
+    Expected: "true"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('#chart-grid .chart-cell[data-bar="22"]') with timeout 5000ms
+      - waiting for locator('#chart-grid .chart-cell[data-bar="22"]')
+        14 × locator resolved to <div data-bar="22" class="chart-cell" data-current="false">Bmi7b5</div>
+           - unexpected value "null"
+
+
+      30 | async function segments(page: Page, bar: number): Promise<{ texts: string[]; widths: number[] }> {
+      31 |   const cell = page.locator(`#chart-grid .chart-cell[data-bar="${String(bar)}"]`);
+    > 32 |   await expect(cell).toHaveAttribute('data-split', 'true');
+         |                      ^
+      33 |   return cell.evaluate((node) => {
+      34 |     const boxes = [...node.querySelectorAll<HTMLElement>('.chart-seg')];
+      35 |     const labels = [...node.querySelectorAll<HTMLElement>('.chart-seg-label')].sort((a, b) => Number(a.dataset.seg) - Number(b.dataset.seg));
+        at segments (<worktree>\app\tests\e2e\chart-segments.spec.ts:32:22)
+        at <worktree>\app\tests\e2e\chart-segments.spec.ts:65:25
+
+    Error Context: build\ph2\test-results\chart-segments-a-bar-with--53c50-mi7b5-then-E7-half-and-half\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\ph2\test-results\chart-segments-a-bar-with--53c50-mi7b5-then-E7-half-and-half\trace.zip
+    Usage:
+
+        npx playwright show-trace build\ph2\test-results\chart-segments-a-bar-with--53c50-mi7b5-then-E7-half-and-half\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) tests\e2e\chart-segments.spec.ts:70:3 › a bar with more than one chord shows every one, as wide as it lasts › Czerny No. 8 bar 1: C, G7, C, G7 at three to one 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('#chart-grid .chart-cell[data-bar="1"]')
+    Expected: "true"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('#chart-grid .chart-cell[data-bar="1"]') with timeout 5000ms
+      - waiting for locator('#chart-grid .chart-cell[data-bar="1"]')
+        14 × locator resolved to <div data-bar="1" class="chart-cell" data-current="true">C</div>
+           - unexpected value "null"
+
+
+      30 | async function segments(page: Page, bar: number): Promise<{ texts: string[]; widths: number[] }> {
+      31 |   const cell = page.locator(`#chart-grid .chart-cell[data-bar="${String(bar)}"]`);
+    > 32 |   await expect(cell).toHaveAttribute('data-split', 'true');
+         |                      ^
+      33 |   return cell.evaluate((node) => {
+      34 |     const boxes = [...node.querySelectorAll<HTMLElement>('.chart-seg')];
+      35 |     const labels = [...node.querySelectorAll<HTMLElement>('.chart-seg-label')].sort((a, b) => Number(a.dataset.seg) - Number(b.dataset.seg));
+        at segments (<worktree>\app\tests\e2e\chart-segments.spec.ts:32:22)
+        at <worktree>\app\tests\e2e\chart-segments.spec.ts:72:24
+
+    Error Context: build\ph2\test-results\chart-segments-a-bar-with--36936-1-C-G7-C-G7-at-three-to-one\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\ph2\test-results\chart-segments-a-bar-with--36936-1-C-G7-C-G7-at-three-to-one\trace.zip
+    Usage:
+
+        npx playwright show-trace build\ph2\test-results\chart-segments-a-bar-with--36936-1-C-G7-C-G7-at-three-to-one\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    tests\e2e\chart-backing.spec.ts:247:3 › Blue Bossa bar 16: the bass on beat 3 is G7’s › E: Bass + drums on, Comp off, run to bar 17 
+    tests\e2e\chart-segments.spec.ts:49:3 › a bar with more than one chord shows every one, as wide as it lasts › Blue Bossa bar 16: Dmi7b5 then G7, half and half; bar 15 is drawn as before 
+    tests\e2e\chart-segments.spec.ts:63:3 › a bar with more than one chord shows every one, as wide as it lasts › Insensatez bar 22: Bmi7b5 then E7, half and half 
+    tests\e2e\chart-segments.spec.ts:70:3 › a bar with more than one chord shows every one, as wide as it lasts › Czerny No. 8 bar 1: C, G7, C, G7 at three to one 
+  18 passed (1.7m)

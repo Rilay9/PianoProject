@@ -1,0 +1,30 @@
+﻿node.exe : [WebServer] (node:71376) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:73356) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 2 workers
+
+(node:74388) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:71392) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  2 tests\e2e\converted-import.spec.ts:66:3 › a converted MIDI performance › walks the same number of steps as the cursor does (651ms)
+  ok  3 tests\e2e\converted-import.spec.ts:87:3 › a converted MIDI performance › keeps both hands and both staves (600ms)
+  ok  1 tests\e2e\converted-import.spec.ts:49:3 › a converted MIDI performance › imports, is listed under the title the converter wrote, and engraves (1.6s)
+  ok  4 tests\e2e\lab.spec.ts:277:3 › Today's sight-read › is a card of its own, with the day carried in the route (1.2s)
+  ok  5 tests\e2e\lab.spec.ts:296:3 › Today's sight-read › ticks and starts counting once the day is read (1.2s)
+  ok  7 tests\e2e\lab.spec.ts:399:3 › Today's sight-read › heard before its first run, the phrase is not read for the first time (27.9s)
+  ok  6 tests\e2e\lab.spec.ts:347:3 › Today's sight-read › re-opened after it was read, the same phrase is not a new first attempt (50.3s)
+  ok  9 tests\e2e\transfer-offer.spec.ts:165:3 › the transfer offer (D4) › a learner proficient at shifting position is offered transfer material on Today, and its run keeps what was played and why (7.0s)
+  ok  8 tests\e2e\lab.spec.ts:461:3 › Today's sight-read › heard at noon, left, read in the evening: not a first reading, and the history says so (29.5s)
+  ok 10 tests\e2e\transfer-offer.spec.ts:232:3 › the transfer offer (D4) › the run stores the relationship the card offered, beside the intent, through the offer Today kept (D4a) (3.6s)
+
+  10 passed (1.1m)
+exit 0

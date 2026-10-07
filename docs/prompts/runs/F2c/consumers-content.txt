@@ -1,0 +1,7 @@
+(in tools/content) python -m unittest tests.test_excerpts tests.test_excerpt_proposer
+....................................................................
+----------------------------------------------------------------------
+Ran 68 tests in 7.590s
+
+OK
+exit=0

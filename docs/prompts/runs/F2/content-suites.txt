@@ -1,0 +1,23 @@
+﻿
+test_measured_truth.py exit 1
+test_taught_at.py exit 1
+test_validate*.py exit 0
+test_pdmx.py exit 0
+test_measured_demands.py exit 0
+
+FAIL: test_the_moved_options_left_where_untaught_and_stay_where_taught 
+Ran 50 tests in 5.081s
+FAILED (failures=1)
+FAIL: test_two_paths_two_rungs (tests.test_taught_at.TestOneTeachingRungPerPath.test_two_paths_two_rungs)
+FAIL: test_the_rungs_whose_concepts_name_a_demand_one_per_path 
+FAIL: test_jazz_6_naming_the_walking_bass_must_make_the_list 
+Ran 18 tests in 0.106s
+FAILED (failures=3)
+Ran 106 tests in 1.239s
+OK
+Ran 123 tests in 6.547s
+OK (skipped=1)
+Ran 8 tests in 131.592s
+OK
+
+

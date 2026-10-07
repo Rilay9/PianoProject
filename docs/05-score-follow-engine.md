@@ -7,6 +7,55 @@ note colours, and sounds. **All timing uses an injected `Clock`** so tests are d
 
 ## 1. Preprocessing the ScoreModel for a session
 
+**Which hand a note is (CL15, amended by HD1 on 2026-10-06).** Every filter below reads `note.hand`, and
+`handsPresent` decides whether a hand has anything to play. The extractor (`extractScoreModel.ts`) gives a
+note the hand of its voice's home staff: staff 2 is the left hand, anything else the right, and a
+cross-staff note keeps its voice's hand (the left hand reaching onto the treble staff is staff 1, hand L).
+Hand identity is never inferred from a clef or from which staff is silent (CL15, the reviewer's ruling in
+`responses/questions-e71ef3ad.md`). OSMD numbers a lone staff 1 whichever hand plays it, so by staff alone
+a one-staff left-hand piece reads as the right hand. **HD1 amends this with explicit truth from the content
+object** (`responses/3a9684d5.md` §2-§5): a catalogue row's `hands`, where its provenance marks it authored
+or reviewed on a bundled file (`curriculum/declaredHand.ts`; never an import's placeholder `both`, never a
+runtime phrase, whose own staves say whose it is), reaches the extractor as `declaredHand`. On a
+**one-staff** score declared `left` or `right` every note takes that hand and `handsPresent` follows; the
+physical `staff` stays 1. A score of two staves keeps its voice-home-staff and cross-staff hands whatever
+is declared (`handDeclaration.outcome: 'not-one-staff'`). A one-staff score declared `both` is a mismatch:
+no second hand is made, the notes keep the staff-number reading, and the model says `mismatch`. No
+declaration: CL15's reading. The reason: the declaration is a fact the content object states (an approved
+left-hand cut, an edition's one staff), not a guess from notation, and keeping a silent treble staff
+only so that OSMD numbers the sounding staff 2 would change what the learner reads to suit a numbering
+assumption. Every path that makes a model of a catalogue item's file passes it: the Score screen, the
+render check's DevScore load, the build's demand bridge (`build.declared_hand`), the builder screens.
+
+**Verified hand facts on a two-staff score (HD2, 2026-10-06; `responses/hd2-corpus-diff.md`).** The
+two-staff reading above, each voice number's whole-piece home staff, is a **compatibility default, not a
+solved hand classifier**. A file that reuses a voice number across the staves defeats it: in *The Crave*
+bar 40 and *Solace* bars 22, 26, 30 and 32 the treble staff's inner line (staff 1, voice 2) came out as
+the left hand's, so with R chosen the run did not wait for it and with L chosen it did, and the duet
+played it for the wrong learner. HD2 measured the replacement the reviewer first ruled (the printed staff
+as the default hand, cross-staff only from a local gesture) over the whole built catalogue: 30,662 notes
+in 325 files changed, rightly on reused voice numbers and wrongly on single-hand lines printed across the
+staves (*Moonlight* I's triplets and III's arpeggios, *Clair de Lune*'s left-hand arpeggios), so no
+automatic rule was found that tells the two apart, and it is held (`docs/prompts/runs/HD2/`, with its
+corpus diff as the **worklist** for a future consumer that needs one of those passages). Which hand plays
+an arbitrary two-staff score's note stays **UNKNOWN**; the default stands where nothing better is known.
+Where a passage's hand is established, it is written down as **explicit score truth**: a `hand` row of
+`content/sources/verified-facts.json` naming the item, the score file's identity as the catalogue records
+it, the printed bars (inclusive), the staff, the voice, the hand, and the proof (method, date, evidence).
+`curriculum/verifiedFacts.ts` hands the item's current rows to the extractor as `verifiedHands`; a row whose
+identity is not the item's current one is **stale and refused**, so an edition or file change never
+carries a hand silently. The precedence, in full: (1) HD1's authoritative declaration for a one-staff item
+(it stays in the catalogue row's provenance); (2) a current verified hand row for a two-staff item; (3) the
+voice-home default. `crossStaff` follows the resulting hand against the printed staff where a row decides
+it, so the rows' notes are ordinary right-hand staff-1 notes. The same paths pass it as pass the
+declaration (the Score screen, the builder screens, the build's bridge through
+`tools/content/verified_hand.py`), except the render check's DevScore load, whose row carries no id and
+whose hand summary a two-staff row cannot move. **The store's boundary:** one file, not a fact system;
+each `kind` has its own validation, authority and reader, and no consumer reads across kinds: `hand` rows
+only through the model's override path, `demand` rows (the cells seam's verified passages, counted only for
+their exact item and `rungs`) only through the build's claim path. Rows are added when a named consumer
+needs a passage and its hand is verified, never inferred from the corpus diff.
+
 Given session options `{ hands: 'R'|'L'|'both', loop?: {fromStep, toStep}, tempoPct, transposeSemis }`:
 
 1. **Expected set per step:** `expected[k] = step.notes.filter(n => hands==='both' || n.hand===hands).map(n => n.midi + transposeSemis)`.
@@ -19,6 +68,43 @@ Given session options `{ hands: 'R'|'L'|'both', loop?: {fromStep, toStep}, tempo
 4. **Repeated pitches in one step** (unison across staves): expected set is a *multiset* only
    if the two notes are in different hands; otherwise deduplicate (one key can only go down once).
 5. **Timing:** `tStep[k] = model.beatToMs(step.onset, tempoPct/100)`; `durStep[k] = tStep[k+1]-tStep[k]`.
+
+   **The tempo map is the file's** (X3d, Entry 133; X3e, Entry 137). `model.tempoMap` is placed from
+   `score/tempoFromXml.ts`, the one tempo reader, never from OSMD's iterator: each `<metronome>`
+   normalised to quarter notes a minute (per-minute × the beat unit's length in quarters; one dot ×
+   1.5, two × 1.75; a metric modulation, the metronome-note form and a mark with no number are not
+   tempos) and each `<sound tempo>` — a direction's or one standing in the bar — as written,
+   fractions kept; at one position a `<sound tempo>` wins over a mark, being what the file says it
+   plays. Where more than one sound stands at one position with a mark beside it, the sound that is
+   serialization-equivalent to the position's first mark, once both are read in quarter notes a
+   minute — the same statement differing only by the writer's own numeric noise
+   (`SERIALIZATION_TOLERANCE`, 0.01, derived from the corpus in the constant's comment), not a
+   different tempo — wins over a sibling that does not agree; failing an agreeing sound, or where
+   there is no mark, the first in score order (the top part, then the page) wins, as with several
+   marks (X42, Entry 185: of 2,013 built scores this moves three positions, *Maple Leaf Rag*'s bars
+   1 and 51 from a words-only 120 to the 100 beside its printed quarter = 100, and Satie's first
+   *Gymnopédie*'s opening from 60 to the 76.0002 beside its printed quarter = ca. 76; a printed mark
+   still never outranks a lone sound). **The reader walks the partwise nesting only, and every score the app holds is partwise:
+   the import door keeps a `<score-timewise>` file as its partwise twin (`score/toPartwise.ts`, X3e)
+   before anything reads it, because OSMD 2.1.2 loads nothing else, and no bundled score is timewise
+   (Entry 137's search); so a timewise file's opening mark, `<sound tempo>` and later changes give
+   the map, the label, the count-in and the import sheet its partwise twin gives.** Each event
+   stands at its measure's start on the unrolled timeline plus its offset, placed every time the
+   walk enters the measure, a bar repeated on its own included. The piece opens at the event at the
+   first measure's start, or at the file's first tempo where nothing sounds before it (a tempo hung
+   on the first note after opening rests); otherwise at `DEFAULT_BPM` (or `defaultBpm`) until the
+   first event, which is a change where it stands. `extractScoreModel` requires the MusicXML it was
+   loaded from (`musicXml`); `OsmdView.extractModel` passes the text it loaded. Every consumer reads
+   the map: the Score screen's label and bpm field (`bpmAt` at the cursor, times the percentage),
+   the timetable and the count-in (`beatToMs` from the run's first step), the evidence windows
+   (`msPerQuarterAt`), the import estimate (`difficulty.ts`, the first entry), the dev screens. Why:
+   OSMD 2.1.2 read a mark's number as quarter notes whatever its note, let it replace the `<sound
+   tempo>` beside it, gave tempo words numbers of its own, took a `<sound tempo>` standing in a bar
+   only where no other tempo stood, and opened at the first tempo anywhere — a half note = 60 in cut
+   time played at 60 for 120, *The Entertainer* at 106 for its 70 (X3c's probe; Entry 133's corpus:
+   179 of 2,011 bundled openings moved, 175 to the content build's own reading); and it refuses a
+   timewise document outright, so before X3e a timewise import opened nowhere and its sheet said the
+   app chose 100 (Entry 137).
 6. **Swing** (`EngineOptions.swing`, built 2026-09-21): where the score carries a *swing* or
    *shuffle* direction, an eighth written on the off-beat is expected where a shuffle puts
    it, not where it is printed. `onset` is replaced by `swungOnset(onset)` before step 5:
@@ -69,13 +155,22 @@ is what learners expect, and the HP-130 like all pianos may send Note-Off late w
 Sustain pedal (CC64) is recorded for the pedal drill scorer but never blocks advancement.
 
 Accuracy for the run: `correctSteps / totalSteps` where a step is "correct" if it was completed
-with zero wrong notes *and* ≤ 1 retry. Also report `wrongNotesTotal`.
+with zero wrong notes *and* ≤ 1 retry. Also report `wrongNotesTotal`. Accuracy means one thing
+in both modes — the written notes played right, with nothing extra — and in Wait the unit is the
+step, so a wrong key costs its step (Keep tempo's unit is the note, §3).
 
 **Wait mode measures no tempo (2026-09-25, T37).** The page holds until the note arrives, so
 no lateness is recorded (`deltas` is written only in the Tempo path) and the run's `tempoPct`
-is the slider's setting. `evaluateOutcome` reports `tempoMeasured: false` for it: a Wait run
-meets a criterion only where the criterion asks for no tempo, and is never master-eligible.
-It is honest evidence of the notes and none of the pulse; the record and the sheet say which.
+is the slider's setting. `evaluateOutcome` reports `tempoMeasured: false` for it, and it is
+never master-eligible. It meets no rung's standard, because every rung asks for a tempo: the
+rungs whose `minTempoPct` is 0 (11 of the 109, among them the Stage 0 checklist, the tour and
+the improvisation rungs) state no number of their own and take the Settings pair, which
+`coerceSettings` keeps between 30 and 130, so no criterion `masteryCriteriaFor` hands the engine
+has a tempo floor of nought (CL11a, 2026-10-02, re-derived over the built curriculum; the
+`passTempoPct <= 0` branches stay in the code, for a constructed criterion). This sentence used
+to say a Wait run met a criterion "where the criterion asks for no tempo", which no authored
+criterion does. It is honest evidence of the notes and none of the pulse; the record and the
+sheet say which.
 
 ## 3. Tempo mode (default without MIDI; also the "performance" mode) — "the clock drives"
 
@@ -99,9 +194,44 @@ Judging input (only if any input source is active):
   wrong note and then a miss: one early note, two faults, neither of them "early". A beat or
   more ahead it is that pitch struck somewhere else, and still an extra note; a rhythm-only
   run keeps the rule below unchanged.
+- **Nor is it a wrong key if it is the right pitch, late** (2026-10-02, CL11a). The mirror of
+  the early rule, bounded the same way: a pitch a step the strike is *past* asks for — past its
+  window by more than `toleranceMs` and by less than a beat — whose note for it is still
+  unplayed (the window closed on it, or no tick has closed the window yet) and that no earlier
+  late strike has stood for. That strike is the note, played late: the miss stands (counted
+  when the window closes, or already counted), and the strike is not also a wrong key. It
+  used to be both. **At most one late strike per missed note** — once per expected pitch
+  occurrence — so a second strike of that pitch is a wrong key, and so are a pitch already
+  played at its step, a pitch a beat or more behind its step, a pitch that no step asks for,
+  and a microphone guess the engine is not sure of. Where one pitch could be early for a step
+  ahead and late for one behind (the same note a beat or less apart), it belongs to the
+  nearer in time; a tie keeps the early reading. What a late strike has stood for, and what
+  was missed, are kept per lap (the step indexes repeat in a loop) and forgotten at a
+  recount after a pause (the clock is rewound and the count must not match a note from before
+  it). The played note is kept as played, with no step, as a wrong key is.
 - When the clock passes `tStep[j] + toleranceMs` and a slot in `expected[j]` is unsatisfied →
-  `missed`.
-- Accuracy = hits / expected slots; timing stats = mean/σ of deltaMs, % early, % late.
+  `missed`. The miss is decided on the first tick past that time, unless that tick follows a
+  stall — a gap longer than the tick contract allows a free main thread (25 ms, the session's
+  interval) — in which case the window stays open for a note stamped inside it until a tick one
+  tick interval later, and never once a stamp inside it could no longer be trusted (1 s), so a
+  note played in time and delivered late by the stall is still judged by its stamp, and the
+  run's end and a loop's wrap wait the same way (2026-09-30, U66). A tick inside that wait that
+  itself follows a stall starts it again from itself: the stall that ends is not always the
+  last, and the queue the first one built has not had its turn (2026-10-02, U125).
+- Accuracy = the written notes played right, with nothing extra (observation definitions 2,
+  2026-10-02, CL11a): `max(0, hits − wrongNotesTotal) / expected slots`. A wrong key costs one
+  note, as it makes its step unclean in Wait (§2), so on a single-line piece the two modes give
+  the same figure for the same playing. A right note at the wrong time costs once — a miss, or
+  `early` — and never also a wrong key. A chord with one pitch missed keeps two thirds of its
+  credit. A rhythm-only run keeps `hits / expected slots`, the rhythm's own figure (§3a).
+  `hits` stays the observed count of notes struck in their window (`SessionScore.hits`,
+  `pitch.right` on the record); accuracy is the verdict, and a reader that divides `right` by
+  `of` and calls it accuracy reads a run full of extra keys as clean. A row stamped
+  `definitions: 1` keeps the accuracy it was judged with, since it cannot tell a wrong key from
+  a late right note and holds no expected pitches to tell them by; under 2, a Keep tempo step
+  with a wrong key against it is not right on the pitch channel of the evidence
+  (`measurement.ts`), the right note's onset still timed. Timing stats = mean/σ of deltaMs,
+  % early, % late.
   **Pass** needs accuracy ≥ 90 % (setting) at tempoPct ≥ 80 % (setting) — or at the rung's
   own pair where the item is on a rung (`02` Part G, `selectors.masteryCriteriaFor`).
 - `correctSteps` counts the steps every pitch of which arrived inside its window, which is
@@ -547,7 +677,7 @@ is the melody it writes when that key is asked for outright. The nine rows now a
 | `sight-reading-4` | 4.6, technique.5 | C, 4/4, `accidentals` (the raised fourth rising to the fifth) |
 | `sight-reading-5` | theory.6 | keys to three accidentals, 4/4, `syncopation` |
 | `sight-reading-6` | chords-pop.8, theory.9 | keys to four accidentals, 4/4, `triplets` |
-| `sight-reading-7` | jazz.8, theory.9 | keys to four accidentals, 4/4, `triplets`, `sixteenths: false` (C4b, S23: no rung teaches reading sixteenths) |
+| `sight-reading-7` | jazz.8, theory.9 | keys to four accidentals, 4/4, `triplets`, `sixteenths: false` (C4b, S23: no rung teaches reading sixteenths; with them kept out its right hand draws level 6's lengths, so a seed writes nearly row 6's melody over a walking bass — D1's reader's read, Entry 94) |
 
 **Levels 1–4 place every note where its length belongs** (same date): a plain note of length L
 starts on a multiple of L, a dotted quarter on a beat, a dotted half on beat one or three; in
@@ -694,6 +824,7 @@ declared. Three parts:
   | `rhythm.syncopation` | rhythm | `syncopation: true` | `syncopation: false` (levels 5–7: every note where its length belongs) |
   | `rhythm.triplets` | rhythm | `triplets: true` | `triplets: false` |
   | `metre.compound` | metre | `timeSig: 6/8` | `timeSig: 4/4` |
+  | `metre.three-four` | metre | `timeSig: 3/4` (exactly 3/4, taught at 1.4; SR2) | `timeSig: 4/4` |
   | `key.signature` | key | `fifths`: every key with a signature the level writes, sharps and flats, a set the seed chooses from (keys are not ranked) | `fifths: 0` |
   | `pitch.chromatic` | accidental | `accidentals: true` | `accidentals: false` |
   | `range.beyond-position` | range | `position: false` | `position: true` |
@@ -702,8 +833,9 @@ declared. Three parts:
   | `texture.walking-bass` | texture | `leftHand: 'walking'` | `leftHand: 'broken'` |
 
   Declared as brought, measured: the left hand added at level 2+ brings the bass staff, both
-  hands at once, and its roots' leaps; a tie at level 2 can bring a leap (its closing note is
-  set after the melody has moved on — a fault of the tie's closing, D's, declared not fixed);
+  hands at once, and its roots' leaps; at version 1 a tie at level 2 can bring a leap (its
+  closing note is set after the melody has moved on — the tie's closing fault, S26); version 2,
+  in force since D1a, holds the tied pitch and writes none (D1 below);
   a moving left-hand pattern brings ledger lines below the bass staff (built from C2).
 - **`unrealisable(options)`** (`sightReading.ts`, pure): what the generator cannot write, in
   words, instead of writing something else and letting it pass. The reasons, as printed:
@@ -727,7 +859,8 @@ declared. Three parts:
   held to steps cannot leap." · "A tie's closing note is set to the tied pitch after the
   melody has moved on, so the note after it can be a third away / a fourth or wider away." ·
   "From level 5 the melody moves to a chord tone on the strong beats, which can be a third /
-  a fourth or wider away." · "The Alberti, broken-chord and walking left hands move by
+  a fourth or wider away." (these two at version 1 only: version 2 has neither way past a held
+  cap, D1 below) · "The Alberti, broken-chord and walking left hands move by
   thirds." · "The left hand's roots move between I, IV and V, by fourths and fifths." · "The
   syncopation below level 5 is the eighth–quarter–eighth figure." · "A dotted quarter in
   simple time is completed by an eighth." · "From level 5 a syncopated bar opens on an eighth
@@ -746,17 +879,121 @@ declared. Three parts:
   | rungs (the reader's row) | cannot | why |
   |---|---|---|
   | 1.3–4.7 (every row) | step off | no control: a phrase without a step is neither written nor needed |
-  | 1.5, 2.1 (`sight-reading-1`) | leap on | 1.5's drill promises "only steps and skips" |
+  | 2.1 (`sight-reading-1`) | leap on | 2.1 teaches the leap, but the row there is 1.5's, whose drill promises "only steps and skips" (1.5 only introduces the leap since F2a, so nothing asks for it there) |
   | 2.1 (`sight-reading-1`) | hands together on | level 1 writes one hand (2.1 teaches both; the row there cannot) |
-  | 3.4–4.4 (`sight-reading-2`) | leap off | the left hand's roots move by fourths and fifths |
-  | 4.5–4.7 (`sight-reading-3`) | skip off, leap off | a tie's closing note (and the left hand's roots) |
+  | 3.4–4.7 (`sight-reading-2`, `sight-reading-3`) | leap off | the left hand's roots move by fourths and fifths |
   | 4.5–4.7 | eighths off, shorter-than-quarter off | the 6/8 figures and the syncopation figure are eighths |
   | 4.5–4.7 | compound time in every phrase | its syncopation and triplets are not asked in 6/8 (T37) |
+  | 3.4–4.7 (`sight-reading-2`, `sight-reading-3`) | 3/4 on | not offered under a left-hand part (the control's `on`): under it the reader's composed recipes broke their contracts — a broken chord in a bar of three quarters reads as a walking bass (170 recipes, 3.6–4.7) and a promised dotted quarter was lost on `-3` (2) — so 3/4 on the two-hand rows waits for a predeclared contract (SR2; the ruling on SR1, §3) |
+
+  Measured on the version in force: since D1a, version 2. Version 1's tie closing also made
+  skip off undoable at 4.5–4.7, and gave leap off there a second reason; version 2 holds the tied
+  pitch, so skip off is made there now, and the reader may offer it (`readingOffer` reads this
+  table).
 
   Everything else is made, including the S25 moves: ties and dotted quarters from 2.4 on the
   right-hand row, from 3.4 on the two-hand row and on 4.5's; a ledger line beyond middle C on
   3.4's row (S22). The reader asks for them since C4c: the thirty-day learner reaches dotted
   quarters on 2.5's second day and ties three days later (`checkpoint-2026-09-27-diary.md`).
+
+**The phrase chosen for its shape (2026-09-27, D1; S7, S18, S26, G9, G20, G21, G22).** The hard
+layer above stands: the promises, nothing untaught, the range, the metre, the key,
+`unrealisable`. What the phrases lacked was shape: legal cells over a constrained walk that
+stopped wherever the bar ran out and wandered (on the committed generator, over the distribution
+suite's seeds, about three phrases in five arrive at levels 2–4 and one in five on level 7's own
+table; a fifth of four-bar units are one contour at levels 3–5). Version 2 of the generator:
+
+- **S26 in the hard layer.** No melodic interval beyond the level's leap cap: the walk holds a
+  tied pitch through its tie (version 1 moved on and set the next bar's first note back to the
+  tied pitch, so the note after it could leap past the cap — seed 71282 on the right-hand row
+  with ties: C4 tied into bar 2 then G4, a fifth, and A4 tied into bar 4 then E4, a fourth, where
+  the cap is a third), and levels 5–7 move a strong beat to a chord tone only within the cap of
+  the note before (version 1's snap could go a step past it). A tie leaves the beat only where
+  the phrase has syncopation of its own — designed at levels 5–7, promised at 1–4 (4.5's row) —
+  so a level 1–4 phrase never syncopates by accident, below 4.5 or after it: stricter than
+  "below 4.5", because T37's placement rule for levels 1–4 is every note where its length
+  belongs, whatever the rung. `unrealisable` declares neither way past a held cap at version 2.
+- **Valid candidates scored** (`sightReadingScore.ts`, one module for the judging, split for
+  ownership). After the first draw that keeps every promise and the hard layer the generator
+  keeps drawing, up to 16 valid draws or 96 draws past the first, scores each and keeps the
+  earliest within 0.05 of the best among those at or above the valid draws' lower quartile of
+  notes. A draw that breaks a hard constraint is never scored. **It fails closed (D1a; the
+  reviewer's finding 1 on D1, `review/responses/b15758e.md`):** until its first valid draw it
+  keeps drawing within the redraw budget (4,096 draws, the same budget version 1's promises
+  have), so the window opens wherever that draw comes, however late; if the whole budget yields
+  none it refuses — `SightReadingRefusal`, thrown by `generateSightReading` — and never hands back
+  the last draw, which D1 did ("the last draw stands, as in version 1") and which could break a
+  promise the row asked for or a rule the level sets. The refusal's reasons are sentences in
+  `unrealisable`'s shape: what was asked (the level, the hands, the bars, the metre, the key, the
+  seed), the promises and the level's rules with the draws spent, what the draws broke (the
+  promises the last draw lacked, or how many kept them and broke a rule, and which), and the
+  generator's own declared reasons where the options contradict themselves. The Score screen
+  shows it as a terminal state — the header says no phrase could be written, the reasons stand
+  where the music would have been, nothing is recorded — and Today's reader, which asks the
+  generator only for a phrase's key, takes the key the seed chose (settled before any draw) from
+  the refusal. Reached, on the app's own options, by no option set in D1a's sweep (every level
+  and hand with each control on and off, six seeds each: every phrase found a valid draw, and no
+  draw that kept its promises broke the hard layer); the regressions force it through a test
+  seam (`sightReadingFailsClosed.test.ts`). Version 1 keeps its last draw, as it always did. The
+  parts, each 0–1:
+  **arrival** (weight 5, the fault named first): the final event on the last bar's downbeat 1,
+  begun in the last bar and held a felt beat from the half bar 0.9, from another beat 0.7, from
+  off the beat 0.5, the close on the tonic, and from level 5 the approach by step or from a chord
+  tone of the final harmony. The rule the tests state is the reviewer's: the final event begins on
+  the last bar's felt beat 1, or begins in the last bar and sustains at least one felt beat — never
+  a long note elsewhere in the last bar. In 5/8 and 7/8 the felt beat is the shorter group, a
+  quarter, not an eighth (no row asks for them). **Contour** (3): each four-bar unit an arch, a
+  valley, an ascent or a descent, read on the beats (the note sounding on each felt beat), so a
+  broken figure inside a beat is not a turn; a turn counts once the line has come back a third;
+  rocking between two notes beyond four, one pitch struck more than three times running, and
+  turning on more than half the moves cost it. **Motif** (1.5, from level 2): a bar's rhythm
+  under other notes, or its interval shape at another pitch; an exact repeat beyond the first
+  costs. **Harmony** (1.5): strong beats on the left hand's chord tones, a note leaning on the
+  chord by step half. **Beginning** (1): the tonic or a chord tone of bar 1, on the downbeat.
+  **Rests** (1, levels 3–7): a rest closing a two-bar group rewarded; one in the arrival bar,
+  after another rest or splitting a beat's short notes penalised; the syncopation rest is the
+  level's device. **Leaps** (0.5): a fourth or wider costs its size towards the cap, half when
+  the next move turns back. No part asks for one form. Why the floor and the tolerance: without
+  the floor the choice drifted to sparser phrases, which are easier to shape (level 2 fell from
+  about four notes a bar to three and a half), and the strict best collapsed level 1 onto a
+  handful of phrases (156 different in 200 seeds; with the tolerance 182; version 1, 192).
+- **Identity.** `SightReadingResult.generator` is `{ family: 'sight-reading', version, seed }`,
+  D0's shape, and `version` is an option; version 1 writes what the committed generator wrote,
+  note for note (`sightReadingUnchanged.test.ts`, its hashes pinned to `version: 1`). **The app
+  writes version 2 since D1a** (`SIGHT_READING_IN_FORCE`; D1 held it at 1, Entry 94, because a
+  run's record kept no version and a version-2 phrase of a seed already read would have been the
+  same encounter to the history — G21). The record carries it now: `generator` on the session
+  row (`data/db.ts`, beside `recipe`; optional, so no IndexedDB version and no upgrade, C1's
+  rule), written by the Score screen with every run of a generated phrase; **absent means version
+  1**, which every run recorded before D1a was. Every reader that keys on the seed was found and
+  decided: the Score screen's phrase-seen check and Today's daily-met check compare the version
+  beside the seed (`phraseVersionOf`), so a run of the same seed under another version met other
+  music; the evidence job writes a stored run's phrase again by the version that wrote it, and
+  keeps out a version it cannot write (`phrase-differs`); the two sets of seeds a screen avoids
+  when it draws one — the Score screen's `seedsOnRecord` and the reader's slot seeds — keep every
+  seed on record whatever its version, because avoiding a seed costs nothing in a 32-bit space
+  and many seeds write the same notes at both versions; the store's day tick
+  (`progressStore.recordRun`) reads only the run being recorded, which the version in force
+  wrote. Most phrases change at the flip (815 of the 1,004 keys of the golden; the left hand read
+  alone at levels 2–7 and seeds whose first draw was already within the tolerance of the best do
+  not), and so does the reader at 3.1: with the tie's leap gone, two clean reads there show a
+  leap in fewer phrases, and the reader offers a leap before the key signature (Entry 97).
+- **The distribution suite** (`sightReadingDistribution.test.ts`): each level's own table (200
+  seeds) and each row at each rung listing it (150), measured on the MusicXML read back and
+  written as a table on request: key and metre as asked, interval classes, notes a bar, rests,
+  repeated notes, contour, oscillation, the arrival rule, strong-beat arrival, the tonic, strong
+  beats on chord tones, a motif, each promise's presence and density, accidentals, span, the left
+  hand's pattern, the search, the kept phrase's score, near-duplicates and hard violations.
+  Bounded, between version 1 and version 2 on these seeds and red on the committed generator:
+  arrival by the rule (levels 2–7), strong-beat arrival (level 1, where every note is a beat long
+  and every phrase arrives by the rule at either version), four-bar units with one contour
+  (modest at 6–7, where tripling the candidates barely moved it: the walk is the ceiling),
+  rocking at levels 1–2, and S26. Guards version 1 passes too: the key and metre, every promise
+  on the page, notes a bar within a tenth of version 1's, repeated notes at most a third of the
+  moves, near-duplicates (a fifth at level 1's small space, none elsewhere), the strong beats on
+  chord tones at 5–7, the search within the redraw budget, and a floor under the kept phrase's
+  score. The numbers are this generator's from these seeds (Entry 94's table), not product
+  facts; nothing was heard, and the phrases are unverified as music.
 
 **Unseen, and the seed.** The daily read keeps the day's seed (`dailySeed`), which ticks the day;
 the slot draws its own for the day (`dailySeed(day + '#reading')` stepped by Shuffle), and every
@@ -834,6 +1071,17 @@ no rung uses the defaults.*
   is for (C4). It judges and is stored as `lessonId` and `opened.rung`, the slot as
   `opened.slot`, and it does not steer Back, which is `from`'s other job. Completion is unchanged: a pass is still a flag on the item, credited on every
   rung listing it (Wave C's business).
+  **And the hold** (`?hold=`; SR2: Today's daily read before any rung lists a reading row, held
+  to the learner's own rung while the row's rung judges it): where the screen writes the phrase
+  under the route's hold and another rung judges the run, the run stores the hold as
+  `opened.hold` (SR4, `ScoreScreen.storedHold`), decided when the phrase is written. That stored
+  fact alone tells the rung state the run was held below its judging rung and credits that rung
+  nothing (`rungState.heldWhenPlayed`; SR3's rule). A run with no `opened.hold` — an unheld run,
+  and every run written before SR4 — is never held, and no run is reclassified when a demand later
+  moves rung: SR3 read the hold back by comparing the stored phrase with what today's curriculum
+  would write, which moves with the curriculum (the reviewer's ruling,
+  `review/responses/sr3-lb1-landing.md` §3). `material` stays the phrase's identity. Optional,
+  so no `DB_VERSION` change; no row is rewritten.
 - `mastery.minAccuracy` is already a fraction. `mastery.minTempoPct` is written as a fraction
   in **every** rung of the built curriculum (the values in use are 0, 0.7, 0.75, 0.8, 0.85
   and 0.9) while the scorer speaks percentages, so a value at or below 1 is read as a
@@ -852,6 +1100,19 @@ no rung uses the defaults.*
 - The run is stored with the rung that judged it (`SessionRow.lessonId`). Older rows keep the
   `passed`/`bestAccuracy`/`bestTempoPct` they were written with; **changing a rung's numbers
   does not re-judge history**, and the numbers needed to re-judge it are in the row.
+- A run's `tempoPct` is a percentage of its `baseTempo`. Where a reviewed repair has since
+  corrected that base (E50b: E50's seven PDMX scores and the Wabash cut, whose old files played
+  at the converter's defaulted 96), the rung state's re-reading of the run (`rungState.meetsStandard`)
+  refuses its tempo channel as not comparable — it meets a standard that asks no tempo (none of the
+  authored rungs does, CL11a: §2) and none that asks one — rather than reading 100 % of 96 as 100 % of
+  the printed tempo. The progress row's
+  derivations (`status`, `passedOn`, `masteredOn`, `bestTempoPct`) were judged when the run was
+  recorded and stay as they are: history, neither rewritten nor recomputed. One decision is taken
+  now, not read back: a *fresh* award of *mastered* for one of those items counts only the
+  `masteredOn` days a stored run supports whose tempo is comparable and whose own numbers meet the
+  master standard (E50c, `progressStore.recordRun`), so an old day at 100 % of 96 and one new day
+  at the printed tempo are one master day, not two; the dates stay as history, a row already
+  mastered stays mastered, and the sheet's *Mastery run N of 2* never counts past the row's status.
 
 **What a run records (2026-09-26, C1).** `Scoring.measuresOf` is the one place a run's
 measures are defined for the record, beside `buildScore` for the sheet: pitch with its
@@ -870,6 +1131,36 @@ steps (a wrong note that matched nothing against the step nearest it in time, as
 found for the hot spots), and every timed note's delta; `judgedUnder` reports the hands, the
 grace-note rule, the window, the latency and the range. What is not built: continuity (stops,
 gaps, time per step in Wait) has no measure yet, and is not stored ahead of one.
+
+**Whether a run covered the whole item (2026-10-06, RG1; FABLE §6; the reviewer's ruling,
+`docs/review/responses/6e7475c1.md` §5).** A requirement asks for items, and a loop over part of one is not a run of it: a four-bar loop at the pass pair used to
+complete a rung whose required item was the whole cut, because the `runs` requirement read the
+item, the performance flag and the standard and never what the run covered. `range` cannot say
+it: the Score screen writes a range on every judged run, the whole piece's included.
+
+- **The fact.** `RunHeader.wholeItem`: `true` where no step the run gave the learner to play lies
+  outside the steps it judged, `false` where some does. The Score screen derives it in `runHeader`,
+  where `judgedUnder` is read, from the run's own prepared session (`db.coversWholeItem`), which
+  holds both the judged span and the item's whole step sequence. By steps, not printed bars: a loop
+  over bars 1–4 of a piece that ends *Fine* in bar 4 starts and ends in the bars a whole run does.
+  An excerpt's item is its cut, so a run over the whole cut is whole; a run of the parent over the
+  cut's bars is a run of the parent, partial there (excerpt identity unchanged). Steps outside the
+  span with nothing for the played hand are not asked of the learner and leave nothing out; which
+  hand was played is `hands`, which no requirement reads (unchanged).
+- **The rule.** `rungState` counts a run toward a `runs` requirement only where `wholeItem` is not
+  `false` (`coveredWholeItem`), whether the requirement names its items or not: RG1 first applied it
+  to a requirement with `items` only, and the reviewer's required change (`bb6289f2.md` §1, RG1a)
+  extended it to the unnamed `from: songs` pool, which 61 shipped rungs use and on which a passing
+  partial loop of one song could still complete the rung. `reads`, `done`, `measure` and `skill` do
+  not read it, and drills are judged exactly as before.
+- **A loop whose bars take in the whole item counts.** Its `wholeItem` is `true`: the evidence
+  covers the item although Loop was used. The scales' and Hanon's ladder (`?ladder=1`) loops every
+  bar, and those are the named requirements that ship today (2.5, 4.1, 4.4).
+- **Legacy rows count as they always did.** A row with no `wholeItem` — every run written before
+  RG1, and the drill and paper screens' runs, which have no range to cover — counts. The row does
+  not say what it covered and the rule it was written under counted it; reading it as partial would
+  take back rungs already met on a fact the row never held, and its `range` is no evidence either
+  way. Only a stored `false` refuses. Optional field, so no `DB_VERSION` and no upgrade (C1's rule).
 
 **The technique measures.** `articulationScore`, `voicingScore` and `shapingScore` (P12a) are
 computed for a run of an exercise whose own `drill` block asks for one —
@@ -941,6 +1232,13 @@ reader selects by the skill-level counts (§8); the per-demand counts and readin
 measurement shows the skill** — right notes in a fixed position are what a note-namer plays as
 well as an interval-reader (the reviewer's principle, `audit-2026-09-25-outside.md` Part 7).
 
+**A project is not evidence (G1b; the reviewer's ruling on G1b).** The learner's project states
+(`projects`, `docs/01` §4.5) — *I performed it* and its date among them — are learner-stated
+intention: no evidence record, observation, encounter, run or competence result is written by a
+project action, and no evidence, ladder, rung or eligibility reader reads one.
+`projectLifecycle.test.ts` pins it (every other store, the rung state and the skill ladders
+deep-equal across every action).
+
 **`evidenceFor(observation, played, targetSkills, vocabulary)`** (`evidence.ts`). The notation
 played is the score model (the phrase this seed generated, the file); the run's steps are C1's
 codes, `from + i` in model step indexes, the same numbers the detectors locate demands at (checked
@@ -950,28 +1248,33 @@ rung or tags. One result per declared skill, decided in this order:
 1. **Target** — only `targetSkills`; a skill nobody declared gets nothing.
 2. **Channel** — every channel of the skill's `observable` measured (`measurement.ts`): nothing on
    a row with no measures block (a row before C1, and the placeholders `accuracy: 1` and
-   `tempoPct: 100` some writers store, L52); pitch where the row's `pitch` is not *not measured*
+   `tempoPct: 100` some writers store, L52); nothing on a row written under observation definitions this build does not know (`KNOWN_OBSERVATION_DEFINITIONS`, today `{1}`: refused on both channels, `unknown-definitions`, never read as version 1; CL04, L70); pitch where the row's `pitch` is not *not measured*
    and its per-step codes are kept (a row compacted to bars measures nothing here); timing on a
    Keep tempo run that timed a note. `observable: none` is refused outright.
 3. **Conditions** — the skill's full standard, else its practice standard, else refused with the
    first practice condition missed. The conditions are `skills.json`'s, and each is read from the
    field its `recordedBy` names: `keep-tempo` from `mode` and `tempoMeasured`, `unseen` from
-   `unseen`, `guide-off` from `keys.guide`, `both-hands` from `hands.played`. Sight-reading's
+   `unseen`, `guide-off` from `keys.guide`, `both-hands` from `hands.played`, `names-off` from
+   `keys.names` — met only where the row records `false`; a row that does not record it is not
+   shown to have had the names off. Sight-reading's
    practice standard includes `unseen` (C3 second pass, reviewer decision 3): a phrase heard or
-   read before is no evidence of reading at any standard.
+   read before is no evidence of reading at any standard. **A note's name on the screen is
+   supported reading** (CL11b, L58; the ruling `questions-53670d2a.md` §3): `names-off` stands
+   beside every `guide-off` of a full standard (`validate.py` refuses one without it). With the
+   guide off a name reaches the screen only in Wait with *Name the note I am waiting for* on, so
+   such a first reading is the practice standard of the bass clef, ledger lines, reading by
+   interval, key signatures and accidentals — the five whose full standard asks for no Keep
+   tempo — and no longer their full one; in Keep tempo with the guide off the Score screen
+   records no name, so nothing there changes.
 4. **Opportunity** — the skill's demands (or every step with a note for the learner) inside the
    steps the run covered, in the hands it played.
-5. **Precision** (reviewer decision 6, S21) — a timing skill counts only the steps where the run's
-   window is narrower than the error the skill is about, at the tempo the run kept there
-   (`TIMING_PRECISION_QUARTERS`: triplets 1/12 of a quarter, subdivision 1/6, 6/8 1/4, the dotted
-   quarter, syncopation and ties 1/2; a skill whose rhythm is the phrase's takes the finest demand
-   located at each step, and an eighth where none is). None left, and it is refused. At Anh. 113's
+5. **Precision** (reviewer decision 6, S21) — the timing channel measures only the steps where the run's window is narrower than the error the skill is about, at the tempo the run kept there (the vocabulary's `precision`, each with its reason beside it, since CL11b, L57; a code table until then, with the same values: triplets 1/12 of a quarter, subdivision 1/6, 6/8 1/4, the dotted quarter, syncopation and ties 1/2; a skill whose rhythm is the phrase's takes the finest demand located at each step, and the vocabulary's default, an eighth, where none is; a rhythm skill's demands are the rhythm demands); at the other steps it measures nothing and the pitch channel still counts, so a misread note there counts against a skill timed as well as pitched and a right one counts right, while the rhythm demands located there are counted by none (CL04, L73). No step resolvable, and the skill is refused. At Anh. 113's
    ♩ = 96 and the rung's 80 % a quarter is 781 ms and the rushed triplet's second note 65 ms early,
    inside ±150: no triplet evidence; a window narrower than that gives it (`tripletPrecision.test.ts`).
    The global window is not changed.
 
 Then attribution: `n` counts the opportunity steps the channels measured, `right` those right on
-every channel. C1 keeps a step's code, not which pitch of a chord was missed, so a chord step
+every channel that measured the step. C1 keeps a step's code, not which pitch of a chord was missed, so a chord step
 partly missed counts in `n` and never in `right` (`context.unattributed` says how many): `right`
 is a floor. A refusal is `{skill, reason, cites}` — `not-measured:<channel>`,
 `not-measured:observable`, `condition:<id>`, `no-opportunity`, `precision`, `unknown-skill` — and
@@ -993,15 +1296,13 @@ the record cannot say which note — C1 keeps the step's code, not which pitch w
 so the step is out of that demand's `n` and listed in `unattributed`; a demand on every note of
 the step, or a step where every pitch was missed (`m`), is told (`StepMeasure.uniform`). For a
 skill with a demand list, `otherDemands` names the demands it does not count, located on its
-counted steps; with the entries' own steps that says where every demand of those steps is, and
+counted steps — and for a skill read over every step, the rhythm demands at a step its window could not time (L73); with the entries' own steps that says where every demand of those steps is, and
 `overlapOf(evidence, demand)` derives which other demands shared a demand's steps. Each
 (demand, step) is stored once: stored beside every entry, the overlap made the evidence several
 times the observation it came from. **No field says which demand caused a miss**: one wrong note
 at a skip, in the left hand, during eighths is wrong under all three. A demand with no measured
 opportunity is absent, `no-opportunity` stays a skill-level refusal only when none of the skill's
-demands had one, and a timing step the window cannot resolve is out of the skill's steps and so
-out of every demand's (at 100 % of a phrase written at 72 bpm the eighths drop out of
-sight-reading's counts, as the precision rule above already said). One pass over the detectors per run serves every skill.
+demands had one, and at a step the window cannot resolve the rhythm demands are counted by none and listed in `otherDemands`, while the step's pitch demands are told by pitch (at 100 % of a phrase written at 72 bpm a misread eighth counts against sight-reading and its interval, and the eighth sits beside it in the overlap; CL04, L73). One pass over the detectors per run serves every skill.
 
 **Demand readings** (`demandReadings.ts`, C4a). `demandReadings(rows, vocabulary, today)`: per
 reading-strand skill and per demand its evidence counted, over the skill's last
@@ -1023,7 +1324,8 @@ was absent, judged wherever it had at least `MIN_CONTRAST` such opportunities, a
 such comparison exists. Demands the same skill copes with (`copedWithBy`: the step, skip and
 leap; the eighth and "shorter than a quarter") are never rivals of one another — one ability
 graded, and "shorter than a quarter" is every eighth over again — but are held to selectivity.
-The support share is the ladder's (`SUPPORT_SHARE`, Part G's pass share). **The four constants
+The support share is the skill's, the one the ladder reads: the vocabulary's (`supportShareOf`, 0.9;
+CL11b, L57), read from the vocabulary handed in. **The four constants
 and the arithmetic are hypotheses**, not measurements; `basis` on each reading carries the
 numbers it was decided on. The worked examples (`demandReadings.test.ts`): five first readings
 of 2.2's row with every skip misread give `pattern` for skips under sight-reading and reading by
@@ -1039,13 +1341,13 @@ is named. The evidence and the readings speak in the vocabulary's demand ids and
 what a reader can change; the reader maps a supported demand to a control (C4c) and acts only on
 `isolated` or `pattern`.
 
-**The evidence's own version** (L66, C4a). `EVIDENCE_DEFINITIONS` (3) in `evidence.ts`, stamped on
+**The evidence's own version** (L66, C4a). `EVIDENCE_DEFINITIONS` (6) in `evidence.ts`, stamped on
 the row beside the evidence as `evidenceDefinitions` by the record call (`stampedEvidence`);
 `storedEvidence` takes only the current stamp and ignores the observation's `definitions`, which
 stays the observation's. Version 1 is C3's per-skill evidence as C4 stored it under the
 observation's stamp; version 2 is C4a–C4c's, whose hands-together counts sat on every note over
-the other hand's held note: rows under either contribute nothing until the job below brings
-them up to date. `recomputeEvidence(row, played, vocabulary)` is what the record call would
+the other hand's held note; version 3 counts playing together only where the hands are coordinated (C4d), version 4 reads 3/8 as simple triple (L120b), version 5 refuses timing per channel at a step the window cannot resolve (CL04, L73), version 6 reads a first reading with a note's name on the screen at the practice standard (CL11b, L58): rows under any earlier version contribute nothing until the job below brings
+them up to date. Under 6 the job reads a learner's stored Wait readings with *Name the note I am waiting for* on, the guide off, as the practice standard, so a reading skill those readings alone had made proficient reads familiar after it; unaided and Keep tempo readings keep their standard (`namesOnIsPractice.test.ts`). `recomputeEvidence(row, played, vocabulary)` is what the record call would
 store today.
 
 **The recompute job** (C5; L78, L66; `app/src/data/evidenceJob.ts`). On every open, after the
@@ -1070,8 +1372,10 @@ the row (`evidenceRecompute`), and not tried again until the version moves: `no-
 `not-generated`, `phrase-differs` (the generator writes that phrase differently now — C4d's redraw
 budget moved some). A kept-out row contributes nothing, as decided at C4d; nothing is estimated.
 The limit: a phrase that differs only in pitches where the learner played nothing early would
-match, because the generator's version is not on the row (Part 9 §8 of the outside audit wants
-it). Progress is on the storage report (`04` §3f). The same job carries the learner's history
+match, so the match is a check and not an identity; since D1a the row names the generator
+version that wrote its phrase (`generator`, absent meaning version 1), and each candidate is
+written by that version, so a change of version is never left to the match to notice (Part 9 §8
+of the outside audit asked for it). Progress is on the storage report (`04` §3f). The same job carries the learner's history
 from before C5 over once and puts back to practised the reading rows an older build passed or
 mastered (S8), before any row.
 
@@ -1091,17 +1395,38 @@ morning after the second bad read (`readerMovesTheDemand.test.ts`), not after an
 **`ladderState(evidence, today)`** (`ladder.ts`) — introduced (an exposure), practised (a record of
 either outcome), familiar (supporting at the practice standard on a day), proficient (supporting at
 the full standard on two days, the most recent full attempt supporting), transfer demonstrated
-(then a first reading of another item), retained (then a first attempt of a day supporting at least
+(then a supporting full-standard attempt the transfer policy reads as `demonstrated`: first contact,
+on material that measurably differs from what established the skill on one of the skill's own
+dimensions — `transferPolicy.ts`, G2; never another cut of a composition the learner has already
+played (`relationship.composition.playedAs` non-empty), which reads `unknown` before the dimensions
+until the relationship carries the arrangement or section fact that would tell an independent
+context from familiarity with the tune, G2a), retained (then a first attempt of a day supporting at least
 21 days after the previous support), mastered (then no full attempt against it among the last two).
-Supporting is `right / n` at or above Part G's pass share: v0 skills declare no threshold. Two full
+Supporting is `right / n` at or above the skill's support share, the vocabulary's (`skills.json`'s
+`support`, 0.9, which a skill may override and none does; CL11b, L57): it was Part G's pass share
+read from the engine's constant, so a change to the rungs' pass re-read every skill's history, and
+its value did not change when it moved. The transfer policy's full-standard support is handed the
+same share. Two full
 attempts against it in a row put anything from proficient back to familiar; time alone lowers
 nothing, and 21 days without support is shown as *not shown recently*. The history is replayed in
 order, so the state is derived every time and never stored. Three rules are named and are
 hypotheses, not measurements: `RETENTION_DAYS` (21, from the last step of the item review calendar C6 retired),
-`RECENT_ATTEMPTS` (2), and `countsTowardsMovingDown` — **an attempt against on first contact with
-material other than where proficiency was shown does not count towards moving down, nor against
-mastery** (C3 second pass): a learner proficient at level 2 who reads two level-4 phrases badly at
-sight still reads level 2, and the attempts are evidence about the harder material, not transfer.
+`RECENT_ATTEMPTS` (2), and `countsTowardsMovingDown` — **a failed full-standard attempt the transfer
+policy spares does not count towards moving down, nor against mastery**: first contact, and a
+dimension of the skill measurably different from what established it (never read for another cut of
+a composition already played: such an attempt is `unknown` and counts unless it carries a demand no
+establishing record carried, G2a) or a demand no establishing record carried; an unknown fact spares
+nothing (G2). A learner proficient at level 2 who reads two level-4 phrases badly at sight still
+reads level 2 where the phrases' facts show the harder material. **Each attempt carries its own
+facts** (G2): the evidence context's `firstContact` is the run header's (never `unseen`; absent
+where the header's is), and `recordRun` writes `relationship` (D4's `relationshipOf` over the item
+as played, against what the ladder's replay established before the run; a transfer-offer run's own
+relationship for its skill) and `demands` (every demand the run's records located) on every measured
+record of a run with a material; a recompute keeps them. The ladder exposes `established` (the
+supporting full-standard records before proficiency, since it was last lost) and `transferScope`
+(each demonstrated reading's dimensions and when, never more than the summary's `transfer`). A
+skill's transfer dimensions are the vocabulary's `transfer` block; a skill without one is credited
+no transfer.
 Since C7 the Skills screen and Progress read this ladder and nothing else, and "rusty" is its
 *not shown recently* (`04` §3a); the skills store's own state and its thirty-day rust are gone.
 
@@ -1184,7 +1509,14 @@ and, on a strong onset with no expected pitch rising, report the most salient pi
 - Tempo mode: onsets are time-stamped in the worklet (sample-accurate) and reported as observed;
   `PracticeEngine` shifts them by `inputLatencyMs` when it judges them, which is the only place
   that subtraction happens. Tolerance defaults to ±200 ms for mic (vs ±150 for MIDI).
-- Accuracy from mic is labelled "estimated"; the summary sheet says so.
+- Accuracy from mic is labelled "estimated"; the summary sheet says so. A sure wrong note from the
+  microphone costs a note in Tempo mode as one from MIDI does (§3); a guess below
+  `wrongNoteConfidence` is shown amber and never charged. **An estimated pass counts as a MIDI pass
+  does** (2026-10-02, CL11a): the sheet's heading, the rung's state, the progress row and Today's row
+  all read it, with the estimate labelled. An estimated *failure* keeps the session's caution — the
+  activity completes as `unknown`, so it neither insists on *Try again* nor fails the card. Whether
+  the detector is accurate enough on a real piano to count at all is a fact about the detector; this
+  aligns the readers and does not certify it.
 - The app playing back the *other* hand through the phone speaker while listening through the
   same phone's mic will contaminate detection. Rules: when mic input is active, playback of
   expected pitches is muted; metronome uses a short high click (≥ 4 kHz) that the detector
@@ -1212,3 +1544,8 @@ play three chords (C, F, G) (chord leniency check). Stores to `micCalibration`. 
   owner shares back; these become regression fixtures for the HP-130 + S25 combination.
 - **Optional tier 2 (later):** Spotify's Basic Pitch model via TensorFlow.js for Free-mode
   transcription and for turning a recorded improvisation into notation; not needed for follow.
+
+
+### CL11c — loop scoring population
+
+A loop is judged one completed lap at a time. At each lap boundary the engine emits that lap's score, then clears the score/evidence totals before the repeated step indexes begin again; the tempo ladder therefore judges each lap alone. If the learner presses Stop after at least one completed lap, the summary and stored run use the last completed lap rather than the partial lap that has just begun. If no lap has completed, Stop reports the current partial run as before. Loop count remains run context; it is not a scoring denominator.

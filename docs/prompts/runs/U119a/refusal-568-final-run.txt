@@ -1,0 +1,101 @@
+
+Running 2 tests using 2 workers
+
+{"playTop":-15.4375,"playBottom":30.5625,"statusTop":-242.4375,"statusWidth":10.90625,"barHeight":513.875,"window":320}
+  x  2 build\u119a\narrow\refusal-568.spec.ts:15:3 › a refusal sideways (568 × 320) at 115 % text, song.folk.hot-cross-buns: ▶ and the sentence stay inside the window (2.5s)
+{"playTop":35.5625,"playBottom":81.5625,"statusTop":-140.4375,"statusWidth":13.984375,"barHeight":411.875,"window":320}
+  x  1 build\u119a\narrow\refusal-568.spec.ts:15:3 › a refusal sideways (568 × 320) at 115 % text on a wider face, song.classical.beethoven-moonlight-iii: ▶ and the sentence stay inside the window (4.9s)
+
+
+  1) build\u119a\narrow\refusal-568.spec.ts:15:3 › a refusal sideways (568 × 320) at 115 % text, song.folk.hot-cross-buns: ▶ and the sentence stay inside the window 
+
+    Error: ▶ is above the top of the window
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 0
+    Received:    -15.4375
+
+      65 |     });
+      66 |     console.log(JSON.stringify(seen));
+    > 67 |     expect.soft(seen.playTop, '▶ is above the top of the window').toBeGreaterThanOrEqual(0);
+         |                                                                   ^
+      68 |     expect.soft(seen.statusTop, 'the sentence starts above the top of the window').toBeGreaterThanOrEqual(0);
+      69 |     expect.soft(seen.barHeight, 'the bar is taller than the window').toBeLessThanOrEqual(seen.window);
+      70 |   });
+        at <worktree>\app\build\u119a\narrow\refusal-568.spec.ts:67:67
+
+    Error: the sentence starts above the top of the window
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 0
+    Received:    -242.4375
+
+      66 |     console.log(JSON.stringify(seen));
+      67 |     expect.soft(seen.playTop, '▶ is above the top of the window').toBeGreaterThanOrEqual(0);
+    > 68 |     expect.soft(seen.statusTop, 'the sentence starts above the top of the window').toBeGreaterThanOrEqual(0);
+         |                                                                                    ^
+      69 |     expect.soft(seen.barHeight, 'the bar is taller than the window').toBeLessThanOrEqual(seen.window);
+      70 |   });
+      71 | }
+        at <worktree>\app\build\u119a\narrow\refusal-568.spec.ts:68:84
+
+    Error: the bar is taller than the window
+
+    expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 320
+    Received:    513.875
+
+      67 |     expect.soft(seen.playTop, '▶ is above the top of the window').toBeGreaterThanOrEqual(0);
+      68 |     expect.soft(seen.statusTop, 'the sentence starts above the top of the window').toBeGreaterThanOrEqual(0);
+    > 69 |     expect.soft(seen.barHeight, 'the bar is taller than the window').toBeLessThanOrEqual(seen.window);
+         |                                                                      ^
+      70 |   });
+      71 | }
+      72 |
+        at <worktree>\app\build\u119a\narrow\refusal-568.spec.ts:69:70
+
+    Error Context: build\u119a\test-results\refusal-568-a-refusal-side-43803-ence-stay-inside-the-window\error-context.md
+
+  2) build\u119a\narrow\refusal-568.spec.ts:15:3 › a refusal sideways (568 × 320) at 115 % text on a wider face, song.classical.beethoven-moonlight-iii: ▶ and the sentence stay inside the window 
+
+    Error: the sentence starts above the top of the window
+
+    expect(received).toBeGreaterThanOrEqual(expected)
+
+    Expected: >= 0
+    Received:    -140.4375
+
+      66 |     console.log(JSON.stringify(seen));
+      67 |     expect.soft(seen.playTop, '▶ is above the top of the window').toBeGreaterThanOrEqual(0);
+    > 68 |     expect.soft(seen.statusTop, 'the sentence starts above the top of the window').toBeGreaterThanOrEqual(0);
+         |                                                                                    ^
+      69 |     expect.soft(seen.barHeight, 'the bar is taller than the window').toBeLessThanOrEqual(seen.window);
+      70 |   });
+      71 | }
+        at <worktree>\app\build\u119a\narrow\refusal-568.spec.ts:68:84
+
+    Error: the bar is taller than the window
+
+    expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 320
+    Received:    411.875
+
+      67 |     expect.soft(seen.playTop, '▶ is above the top of the window').toBeGreaterThanOrEqual(0);
+      68 |     expect.soft(seen.statusTop, 'the sentence starts above the top of the window').toBeGreaterThanOrEqual(0);
+    > 69 |     expect.soft(seen.barHeight, 'the bar is taller than the window').toBeLessThanOrEqual(seen.window);
+         |                                                                      ^
+      70 |   });
+      71 | }
+      72 |
+        at <worktree>\app\build\u119a\narrow\refusal-568.spec.ts:69:70
+
+    Error Context: build\u119a\test-results\refusal-568-a-refusal-side-b342b-ence-stay-inside-the-window\error-context.md
+
+  2 failed
+    build\u119a\narrow\refusal-568.spec.ts:15:3 › a refusal sideways (568 × 320) at 115 % text, song.folk.hot-cross-buns: ▶ and the sentence stay inside the window 
+    build\u119a\narrow\refusal-568.spec.ts:15:3 › a refusal sideways (568 × 320) at 115 % text on a wider face, song.classical.beethoven-moonlight-iii: ▶ and the sentence stay inside the window 
+exit 1

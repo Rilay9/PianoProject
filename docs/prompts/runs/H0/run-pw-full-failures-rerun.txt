@@ -1,0 +1,139 @@
+
+Running 4 tests using 2 workers
+
+(node:39648) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:42904) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+longest score (780 bars), CPU ×4: first window in 77026 ms
+  x  2 tests\e2e\offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch (1.4m)
+(node:51636) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19) (1.5m)
+(node:45624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  3 tests\e2e\score.window-rule.spec.ts:794:1 › mid-run, every bar on a phone upright Nocturne window is drawn at its natural spacing (27.8s)
+  x  4 tests\e2e\wide.spec.ts:582:3 › a sparse bar is not stretched › a laptop draws the bar at its natural width; a phone fills the width (39.3s)
+
+
+  1) tests\e2e\offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#diag-offline')
+    Expected substring: "Currently offline"
+    Received string:    "Checking…"
+    Timeout: 30000ms
+
+    Call log:
+      - Expect "toContainText" locator('#diag-offline') with timeout 30000ms
+      - waiting for locator('#diag-offline')
+        62 × locator resolved to <div class="kv-block" id="diag-offline">…</div>
+           - unexpected value "Checking…"
+
+
+      196 |       window.location.hash = '#/settings/diagnostics';
+      197 |     });
+    > 198 |     await expect(page.locator('#diag-offline')).toContainText('Currently offline', {
+          |                                                 ^
+      199 |       timeout: 30_000,
+      200 |     });
+      201 |     // Not `toContainText('Precached')`, which is what stood here and which
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8975fbed466f62\app\tests\e2e\offline.spec.ts:198:49
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\offline-offline-the-whole--dac94-off-after-one-online-launch\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\offline-offline-the-whole--dac94-off-after-one-online-launch\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\offline-offline-the-whole--dac94-off-after-one-online-launch\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19) 
+
+    Error: expect(received).toBeLessThan(expected)
+
+    Expected: < 60000
+    Received:   77026
+
+      177 |     // number that settles it comes from the S25. What it catches is the first
+      178 |     // window becoming a function of the whole score's length.
+    > 179 |     expect(firstWindowMs).toBeLessThan(60_000);
+          |                           ^
+      180 |     await expect(page.locator('#score-status')).not.toContainText('Could not open');
+      181 |   });
+      182 |
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8975fbed466f62\app\tests\e2e\perf.spec.ts:179:27
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\perf-performance-budgets-d-c58e0-ns-on-the-Score-screen-P19-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\perf-performance-budgets-d-c58e0-ns-on-the-Score-screen-P19-\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\perf-performance-budgets-d-c58e0-ns-on-the-Score-screen-P19-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests\e2e\score.window-rule.spec.ts:794:1 › mid-run, every bar on a phone upright Nocturne window is drawn at its natural spacing 
+
+    Error: the run never got past the first window
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 3
+    Received:   0
+
+      827 |     if (!moved) break;
+      828 |   }
+    > 829 |   expect(reached, 'the run never got past the first window').toBeGreaterThan(3);
+          |                                                              ^
+      830 |   await settle(page);
+      831 |   const glass = await readGlass(page);
+      832 |   const stretched = faultsOf(glass, 4, '', []).filter((f) => f.startsWith('(a)'));
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8975fbed466f62\app\tests\e2e\score.window-rule.spec.ts:829:62
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\score.window-rule-mid-run--bb80b-rawn-at-its-natural-spacing\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\score.window-rule-mid-run--bb80b-rawn-at-its-natural-spacing\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\score.window-rule-mid-run--bb80b-rawn-at-its-natural-spacing\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) tests\e2e\wide.spec.ts:582:3 › a sparse bar is not stretched › a laptop draws the bar at its natural width; a phone fills the width 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForFunction: Target page, context or browser has been closed
+
+      209 | /** Waits for the engraver to have actually drawn something. */
+      210 | async function waitForSheet(page: Page): Promise<void> {
+    > 211 |   await page.waitForFunction(
+          |              ^
+      212 |     () => {
+      213 |       const svg = document.querySelector('#score-stage .is-front svg');
+      214 |       return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+        at waitForSheet (C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8975fbed466f62\app\tests\e2e\wide.spec.ts:211:14)
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8975fbed466f62\app\tests\e2e\wide.spec.ts:615:11
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\wide-a-sparse-bar-is-not-s-00cb6-dth-a-phone-fills-the-width\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\wide-a-sparse-bar-is-not-s-00cb6-dth-a-phone-fills-the-width\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\wide-a-sparse-bar-is-not-s-00cb6-dth-a-phone-fills-the-width\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    tests\e2e\offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch 
+    tests\e2e\perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19) 
+    tests\e2e\score.window-rule.spec.ts:794:1 › mid-run, every bar on a phone upright Nocturne window is drawn at its natural spacing 
+    tests\e2e\wide.spec.ts:582:3 › a sparse bar is not stretched › a laptop draws the bar at its natural width; a phone fills the width 
+exit=1

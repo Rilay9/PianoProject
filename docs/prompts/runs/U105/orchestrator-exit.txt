@@ -1,0 +1,26 @@
+== map-tests  02:27:54
+map-tests exit=0
+== map-min  02:27:57
+map-min exit=0
+== tsc  02:27:57
+tsc exit=0
+== lint  02:28:08
+lint exit=0
+== vitest-all  02:28:56
+vitest-all exit=1
+== build-app  02:35:33
+build-app exit=0
+SPECS: 
+== specs-exist  02:36:09
+specs-exist exit=1
+== e2e-targeted  02:36:09
+e2e-targeted exit=1
+CHAIN DONE 02:57:53
+== e2e-rerun  02:58:26
+e2e-rerun exit=1
+RERUN DONE 03:06:23
+== build-app  03:36:46
+build-app exit=0
+== e2e-rerun  03:37:16
+e2e-rerun exit=0
+RERUN DONE 03:37:56

@@ -1,0 +1,178 @@
+{
+  "viewport": {
+    "width": 740,
+    "height": 342
+  },
+  "contextState": "suspended",
+  "section": {
+    "running": "true"
+  },
+  "line": {
+    "text": "The count-in clicks, then play along.",
+    "box": {
+      "top": 0,
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "hidden": false,
+      "visible": false
+    },
+    "whiteSpace": "nowrap",
+    "textOverflow": "ellipsis",
+    "overflow": "hidden",
+    "cut": false
+  },
+  "side": {
+    "text": "",
+    "box": {
+      "top": 260.40625,
+      "bottom": 260.40625,
+      "left": 220.96875,
+      "right": 220.96875,
+      "hidden": false,
+      "visible": false
+    }
+  },
+  "head": {
+    "top": 0,
+    "bottom": 0,
+    "left": 0,
+    "right": 0,
+    "hidden": false,
+    "visible": false
+  },
+  "bar": {
+    "top": 233.8125,
+    "bottom": 286,
+    "left": 0,
+    "right": 740,
+    "hidden": false,
+    "visible": true
+  },
+  "sheet": {
+    "top": 0,
+    "bottom": 0,
+    "left": 0,
+    "right": 0,
+    "hidden": true,
+    "visible": false
+  },
+  "again": {
+    "box": {
+      "top": 0,
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "hidden": false,
+      "visible": false
+    },
+    "refused": null
+  },
+  "play": "⏸",
+  "fitsOnTheLine": [
+    {
+      "text": "Sound did not start — tap ▶ again",
+      "chars": 33,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Hear it again",
+      "chars": 39,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap ▶",
+      "chars": 27,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Carry on again",
+      "chars": 40,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Start again",
+      "chars": 37,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap R again",
+      "chars": 33,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Both again",
+      "chars": 36,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — hold bar 12 again",
+      "chars": 39,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Try again",
+      "chars": 35,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Again",
+      "chars": 31,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Slower again",
+      "chars": 38,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Faster again",
+      "chars": 38,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Loop again",
+      "chars": 36,
+      "clientWidth": 0,
+      "scrollWidth": 0,
+      "height": 0,
+      "cut": false
+    }
+  ]
+}

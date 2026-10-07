@@ -9,12 +9,22 @@
 // message is short (an acknowledgement, a one-line answer, a question back to the
 // owner) is let through without the pass at all.
 //
+// Revised 2026-09-29: length alone let "All tests green." through, which is exactly
+// the kind of claim the pass exists for. A turn is now substantive when any of three
+// signals holds: the last message makes a claim (a result word such as green, passed,
+// done, fixed, verified, merged, landed, an exit code, "no errors"); the turn ran a
+// tool that does work (an edit, a write, a shell command, an agent) since the last
+// human message; or the last message is long. Short, claim-free, tool-free turns —
+// "Okay.", a question back, the pass's own one-line reply — still skip it.
+//
 // `stop_hook_active` is true on the continuation this hook itself caused; letting
 // that one stop is what prevents an endless loop.
 const fs = require('fs');
 const path = require('path');
 
 const SHORT_TURN_CHARS = 600;
+const CLAIM = /\b(green|pass(ed|es|ing)?|fail(ed|s|ing)?|done|fixed|verified|works?|working|merged|landed|pushed|committed|complete[ds]?|resolved|no (errors|failures|issues)|all (tests|checks|specs)|exit(ed)? ?(code )?\d|\d+ (passed|failed))\b/i;
+const WORK_TOOLS = new Set(['Edit', 'Write', 'MultiEdit', 'NotebookEdit', 'Bash', 'PowerShell', 'Agent', 'Workflow', 'SendMessage']);
 
 let input = '';
 process.stdin.on('data', (c) => (input += c));
@@ -22,7 +32,8 @@ process.stdin.on('end', () => {
   let payload = {};
   try { payload = JSON.parse(input); } catch { /* no payload: still run */ }
   if (payload.stop_hook_active) process.exit(0);
-  if (lastAssistantTextLength(payload.transcript_path) < SHORT_TURN_CHARS) process.exit(0);
+  const turn = lastTurn(payload.transcript_path);
+  if (!turn.substantive) process.exit(0);
 
   // The repository is two levels above this file. Not CLAUDE_PROJECT_DIR: sessions are
   // often opened on the parent folder, which has no CLAUDE.md and is not a git repo.
@@ -40,39 +51,51 @@ process.stdin.on('end', () => {
   process.stdout.write(JSON.stringify({
     decision: 'block',
     reason:
-      'Before this turn ends, run the four questions below against what you just reported. ' +
+      'Before this turn ends, run the questions below against what you just reported. ' +
       'Fix a fault only if it would change what the owner or the next agent does, and say in ' +
       'one line what it caught. Wording alone earns nothing. If nothing would change, reply ' +
       'with the single line "Checklist: nothing found." Do not restate the report.\n\n' + checklist,
   }));
 });
 
-// The length of the last assistant message's text in the transcript, or a large
-// number when the transcript cannot be read, so an unreadable transcript still gets
-// the pass rather than skipping it.
-function lastAssistantTextLength(transcriptPath) {
-  if (!transcriptPath) return Number.MAX_SAFE_INTEGER;
+// Reads the transcript backwards from its end to the last human message: the last
+// assistant text (its length and whether it makes a claim) and whether any assistant
+// message in between used a tool that does work. Unreadable transcript: substantive,
+// so the pass runs rather than being skipped.
+function lastTurn(transcriptPath) {
+  const substantive = { substantive: true };
+  if (!transcriptPath) return substantive;
   try {
     const lines = fs.readFileSync(transcriptPath, 'utf8').split('\n');
+    let lastText = null;
+    let workTool = false;
     for (let i = lines.length - 1; i >= 0; i -= 1) {
       const line = lines[i].trim();
       if (!line) continue;
       let entry;
       try { entry = JSON.parse(line); } catch { continue; }
-      if (entry.type !== 'assistant') continue;
       const content = entry.message && entry.message.content;
-      if (!Array.isArray(content)) return Number.MAX_SAFE_INTEGER;
-      let length = 0;
-      let sawToolUse = false;
-      for (const block of content) {
-        if (block.type === 'text' && typeof block.text === 'string') length += block.text.length;
-        if (block.type === 'tool_use') sawToolUse = true;
+      if (entry.type === 'user') {
+        // A tool result is stored as a user entry; a human message has a string or a
+        // text block and no tool_result block.
+        if (typeof content === 'string') break;
+        if (Array.isArray(content) && !content.some((b) => b && b.type === 'tool_result')) break;
+        continue;
       }
-      // A message that is only tool calls is mid-turn, not a report: keep looking back
-      // would be wrong too, so treat it as substantial and let the pass run.
-      if (sawToolUse && length === 0) return Number.MAX_SAFE_INTEGER;
-      return length;
+      if (entry.type !== 'assistant') continue;
+      if (!Array.isArray(content)) return substantive;
+      let text = '';
+      for (const block of content) {
+        if (block.type === 'text' && typeof block.text === 'string') text += block.text;
+        if (block.type === 'tool_use' && WORK_TOOLS.has(block.name)) workTool = true;
+      }
+      if (lastText === null && text.length > 0) lastText = text;
     }
+    if (lastText === null) return substantive; // only tool calls, or nothing read: let the pass run
+    if (/^\s*Checklist:/i.test(lastText)) return { substantive: false };
+    return {
+      substantive: workTool || CLAIM.test(lastText) || lastText.length >= SHORT_TURN_CHARS,
+    };
   } catch { /* fall through */ }
-  return Number.MAX_SAFE_INTEGER;
+  return substantive;
 }

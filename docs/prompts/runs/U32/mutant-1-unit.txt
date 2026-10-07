@@ -1,0 +1,108 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ae90e835312da8da3/app
+
+ ❯ tests/unit/windowRendererStage.test.ts (21 tests | 5 failed) 2016ms
+   ❯ a piece past the probe’s reach keeps its look-ahead row: sheets by need (U32) (7)
+     × (b) after the first window, on idle, the long piece gets its sheets, and the next bar is greyed below a two-system window 34ms
+     × (c) once its sheets are in, the long piece’s first window is priced as a short piece’s with the same bars on the same stage 59ms
+     × (d) data-settled is withheld while a sheet load is pending, and said once it has landed and the re-plan has run 13ms
+     × (e) a run started before the idle queue runs keeps the sheets it started with: none is made during the run, and the rest arrive once it stops 252ms
+     × (f) disposed with a sheet load queued, or with one in flight: nothing drawn after, every sheet made disposed, nothing thrown 61ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a piece past the probe’s reach keeps its look-ahead row: sheets by need (U32) > (b) after the first window, on idle, the long piece gets its sheets, and the next bar is greyed below a two-system window
+AssertionError: the sheets made after the first window: {"slotCount":2,"systems":2,"shown":2,"sheets":{"made":2,"loaded":2,"pending":0},"made":2}: expected 2 to be 4 // Object.is equality
+
+- Expected
++ Received
+
+- 4
++ 2
+
+ ❯ tests/unit/windowRendererStage.test.ts:782:82
+    780|     const fit = fitOf(renderer);
+    781|     const said = JSON.stringify({ slotCount: fit.slotCount, systems: f…
+    782|     expect(sheetsOf().length, `the sheets made after the first window:…
+       |                                                                                  ^
+    783|     expect(sheetsOf().map((view) => view.loads), 'each sheet loaded on…
+    784|     expect(fit.sheets, 'debugFit says what was made, loaded and pendin…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a piece past the probe’s reach keeps its look-ahead row: sheets by need (U32) > (c) once its sheets are in, the long piece’s first window is priced as a short piece’s with the same bars on the same stage
+AssertionError: the short piece: {"rows":["0-0","1-1","2-2"],"size":0.9041095890410958,"zoom":1}; the long: {"rows":["0-0","1-1"],"size":0.9041095890410958,"zoom":1}: expected { slotCount: 2, systems: 2, shown: 2 } to deeply equal { slotCount: 3, systems: 2, shown: 2 }
+
+- Expected
++ Received
+
+  {
+    "shown": 2,
+-   "slotCount": 3,
++   "slotCount": 2,
+    "systems": 2,
+  }
+
+ ❯ tests/unit/windowRendererStage.test.ts:802:122
+    800|     const got = { fit: fitOf(long.renderer), picture: drawn(long.stage…
+    801|     const shape = (fit: Fit): unknown => ({ slotCount: fit.slotCount, …
+    802|     expect(shape(got.fit), `the short piece: ${JSON.stringify(want.pic…
+       |                                                                                                                          ^
+    803|     expectSamePicture(got.picture, want.picture, 'the long piece again…
+    804|     long.renderer.dispose();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a piece past the probe’s reach keeps its look-ahead row: sheets by need (U32) > (d) data-settled is withheld while a sheet load is pending, and said once it has landed and the re-plan has run
+AssertionError: a sheet load was asked for after the first window: expected 0 to be greater than 0
+ ❯ tests/unit/windowRendererStage.test.ts:811:79
+    809|     const held = holdLateLoads();
+    810|     await settle();
+    811|     expect(held.asked(), 'a sheet load was asked for after the first w…
+       |                                                                               ^
+    812|     expect(fitOf(renderer).sheets?.pending, 'debugFit says a sheet is …
+    813|     expect(stage.el.dataset.settled, 'said settled with a sheet load i…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a piece past the probe’s reach keeps its look-ahead row: sheets by need (U32) > (e) a run started before the idle queue runs keeps the sheets it started with: none is made during the run, and the rest arrive once it stops
+AssertionError: the run keeps the two sheets it started with, the rest still owed: expected { made: 2, loaded: 2, pending: +0 } to deeply equal { made: 2, loaded: 2, pending: 2 }
+
+- Expected
++ Received
+
+  {
+    "loaded": 2,
+    "made": 2,
+-   "pending": 2,
++   "pending": 0,
+  }
+
+ ❯ tests/unit/windowRendererStage.test.ts:836:93
+    834|     const fit = fitOf(eager.renderer);
+    835|     expect(FakeOsmdView.all.length, 'engravers made while the run was …
+    836|     expect(fit.sheets, 'the run keeps the two sheets it started with, …
+       |                                                                                             ^
+    837|     expect(fit.slotCount, 'the arrangement a renderer with two sheets …
+    838|     expect(eager.stage.el.dataset.settled, 'a frozen run with sheets o…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a piece past the probe’s reach keeps its look-ahead row: sheets by need (U32) > (f) disposed with a sheet load queued, or with one in flight: nothing drawn after, every sheet made disposed, nothing thrown
+AssertionError: in flight: a sheet load was asked for after the first window: expected 0 to be greater than 0
+ ❯ tests/unit/windowRendererStage.test.ts:868:90
+    866|     const held = holdLateLoads();
+    867|     await settle();
+    868|     expect(held.asked(), 'in flight: a sheet load was asked for after …
+       |                                                                                          ^
+    869|     const drawnBefore = renders();
+    870|     flying.renderer.dispose();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 16 passed (21)
+   Start at  01:03:07
+   Duration  3.62s (tests 58%, environment 29%, transform 10%, import 2%)
+

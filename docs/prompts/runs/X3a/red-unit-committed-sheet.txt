@@ -1,0 +1,71 @@
+npx vitest run tests/unit/importSheet.test.ts (in app)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a069b575703e603b8/app
+
+ ❯ tests/unit/importSheet.test.ts (18 tests | 4 failed) 411ms
+   ❯ the learner states the tempo (X3a; E48’s stateImportTempo) (4)
+     × the app’s guess and the file’s tempo offer a number field and Use this tempo on the tempo line; a stated tempo and a PDF offer none 6ms
+     × Use this tempo calls stateImportTempo with the row’s id and the number, and the sheet re-reads the row: “You stated ♩ = N”, yours, no control, the row’s state “tempo yours” 98ms
+     × a tempo outside the store’s bounds is refused in the store’s own words, never clamped, and the row is as it was 15ms
+     × the line says the tempo the learner stated, in quarter notes, whatever the file’s own mark printed 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the learner states the tempo (X3a; E48’s stateImportTempo) > the app’s guess and the file’s tempo offer a number field and Use this tempo on the tempo line; a stated tempo and a PDF offer none
+AssertionError: no control under the app’s guess: expected null not to be null
+ ❯ tests/unit/importSheet.test.ts:270:61
+    268|     openImportSheet(INFERRED, CURRICULUM);
+    269|     const control = document.getElementById('import-tempo-set');
+    270|     expect(control, 'no control under the app’s guess').not.toBeNull();
+       |                                                             ^
+    271|     // On the tempo line: the control follows it, before anything else…
+    272|     expect(document.getElementById('import-tempo')?.nextElementSibling…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the learner states the tempo (X3a; E48’s stateImportTempo) > Use this tempo calls stateImportTempo with the row’s id and the number, and the sheet re-reads the row: “You stated ♩ = N”, yours, no control, the row’s state “tempo yours”
+TypeError: Cannot set properties of null (setting 'value')
+ ❯ state tests/unit/importSheet.test.ts:254:13
+    252|   /** Types a tempo into the field and presses *Use this tempo*. */
+    253|   function state(value: string): void {
+    254|     field().value = value;
+       |             ^
+    255|     use().click();
+    256|   }
+ ❯ tests/unit/importSheet.test.ts:301:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the learner states the tempo (X3a; E48’s stateImportTempo) > a tempo outside the store’s bounds is refused in the store’s own words, never clamped, and the row is as it was
+TypeError: Cannot set properties of null (setting 'value')
+ ❯ state tests/unit/importSheet.test.ts:254:13
+    252|   /** Types a tempo into the field and presses *Use this tempo*. */
+    253|   function state(value: string): void {
+    254|     field().value = value;
+       |             ^
+    255|     use().click();
+    256|   }
+ ❯ tests/unit/importSheet.test.ts:346:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the learner states the tempo (X3a; E48’s stateImportTempo) > the line says the tempo the learner stated, in quarter notes, whatever the file’s own mark printed
+TypeError: Cannot set properties of null (setting 'value')
+ ❯ state tests/unit/importSheet.test.ts:254:13
+    252|   /** Types a tempo into the field and presses *Use this tempo*. */
+    253|   function state(value: string): void {
+    254|     field().value = value;
+       |             ^
+    255|     use().click();
+    256|   }
+ ❯ tests/unit/importSheet.test.ts:374:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 14 passed (18)
+   Start at  03:26:14
+   Duration  2.31s (environment 32%, import 27%, transform 22%, tests 19%)
+
+exit=1

@@ -1,0 +1,299 @@
+# The chain record for A7a.3, Play the form variants: minor blues and the quick IV (FABLE.md section 3), with
+# St James Infirmary as its real minor-key TRANSFER for walking and comping (FABLE section 2 step 5: "St James
+# Infirmary (jam comping and walking bass)"). Cut the way docs/chains/A7b.1.yaml was cut: field meanings from
+# ORCHESTRATION-CONTRACT.md section 1; every `recorded` and `cannot_establish` copied from MODE-SHEET.md for the step's
+# tool, never inferred; structure only from docs/chains/skeletons/latin-cluster.md (sections 2-4, and section 9's
+# St James lines). status: draft. Drafted 2026-10-07 at HEAD 75bddb14.
+#
+# Why this id (the map makes it a choice, not a lookup):
+#  - VERIFIED, ABILITY-MAP.md:350-351: A7a.3's CONTROL is "4 exercise.walking-bass.*.minor-blues" (with 12 boogie
+#    items) placed on blues.6, and its MODEL/TRANSFER row names "St. James Infirmary (D minor), both shipped"; :354
+#    confirms song.blues.st-james-infirmary shipped, 24 bars, 41 symbols, "already this block's MODEL". No other MUST
+#    block names St James (grep of ABILITY-MAP.md for "james", 2026-10-07).
+#  - VERIFIED, docs/review/responses/a3a8771d.md:31: the reviewer names "the already named A7a.3 / St James and Blues
+#    Riff chains in FABLE's order".
+#  - VERIFIED, the ambiguity: FABLE's label "jam comping and walking bass" is the quarry's role for the tune
+#    (docs/review/pdmx-quarry-2026-10-05/CURRICULUM-USE-SYNTHESIS.md:31) and the map's SHOULD row jam#7, "a real tune
+#    to comp behind and walk under at jam.5/6" (ABILITY-MAP.md:250-251), which is not a MUST ability; A7a.3's
+#    capability is "play the twelve-bar form in minor, and with the IV in bar 2" (ABILITY-MAP.md:345). The skeleton
+#    says "the record id is open" (latin-cluster.md:106). Chosen: A7a.3, because it is the only MUST block that names
+#    the tune and its CONTROL is the minor walking bass; the jam-comping job enters as this record's MUSIC steps on the
+#    chart, not as a separate ability.
+#
+# Premises, each VERIFIED (file:line or the command run) or HYPOTHESIS (with what would refute it):
+#  - VERIFIED, St James is not a twelve-bar form: RECONCILIATION.md:40 (A7a.3 row A) and the reviewer's acceptance of
+#    R26 (docs/review/responses/6e7475c1.md:29: "keep it only under the narrower minor-key/family-tune role"). So the
+#    record never presents it as the minor twelve-bar; the minor-form MODEL is SOURCE-NEEDED (no real score chosen) and
+#    the generated items carry the form.
+#  - VERIFIED (two readers, both identities; the A7a.3 probe, 2026-10-07), St James's harmony: a raw MusicXML walk
+#    (ElementTree, offsets from divisions, backup, forward and <offset>) and music21 (converter.parse,
+#    harmony.ChordSymbol) agree on all 41 symbols, bar, offset, root, kind and pitch classes, on the raw archive member
+#    (sha256 cffce954..., = pdmx.json rawSha256) and on the committed file (9eceb857..., = convertedSha256); raw and
+#    committed agree symbol for symbol (docs/prompts/runs/A7a3/harmony-stj-raw.json, harmony-stj-committed.json).
+#    24 bars of 4/4, one flat; chords Dm, Gm, B♭7, A7, D7 (bar 5 beat 3), F7 (bar 22 beat 3); bars 7-8 and 15-16 are
+#    B♭7 | A7, and B♭7 goes to A7 also inside bars 1, 3, 9, 11 (beats 3-4), 19-20 and 23 (beats 1-3); 13 of 24 bars
+#    carry two or three symbols (1, 2, 3, 5, 9, 10, 11, 14, 17, 19, 21, 22, 23), every offset as written before. The
+#    catalogue row agrees on 24 bars, one staff, hands right, 41 symbols, chords A7 Bb7 D7 Dm F7 Gm, tempo 96
+#    tempo-defaulted, 4/4.
+#  - CORRECTED by the probe (two readers, form-stj-*.json): the form is a 16-bar verse and an 8-bar refrain, not
+#    "three eight-bar phrases" of one kind. Bars 1-8 and 9-16 are the verse (the melody of 9-16 restates 1-8 except
+#    at bars 13 and 16; the harmony of 9-12 and 15-16 restates 1-4 and 7-8); bars 17-24 are the refrain, whose first
+#    lyric line names the infirmary and which carries three lyric lines; the eight other PDMX St James editions print
+#    only an 8-bar refrain with a pickup (9 bars). The "repeat (17-24)" is a start-repeat barline at bar 17 with no
+#    end repeat (bar 24 ends light-heavy); music21's expandRepeats refuses it as badly formed, and the app's render of
+#    the former identity (2026-09-18) counted 32 measures, i.e. 17-24 played twice. Still not a twelve-bar.
+#  - VERIFIED, the generated minor form is i7 i7 i7 i7 | iv7 iv7 i7 i7 | ♭VI7 V7 i7 V7 (TWELVE_BAR_MINOR,
+#    tools/content/generate_exercises.py:3963-3965), plus a closing tonic bar (make_walking_bass, :4018 onward, the
+#    "closing" comment); four keys are built, C, F, B♭ and E♭ (narrow list, :6364; the loop at :6403), so there is no
+#    D minor item; the ids resolve in tools/content/generated_ids.json (check_chains Resolver, 2026-10-07).
+#  - VERIFIED, a conflicting statement of the same fact: the Lab's BLUES_MINOR (app/src/engine/sightReading.ts:2226-
+#    2230) writes V7 at bar 9 and iv7 at bar 10. Two places state the minor twelve-bar differently; no lesson states
+#    it. St James's own B♭7 | A7 matches the generator's bars 9-10, which is why this record uses the generated items
+#    and keeps the Lab out of A7a.3 until a sourced definition decides the form.
+#  - SOURCED by the probe (docs/prompts/runs/A7a3/SOURCES.md; requirement A7a3-minor-blues-source still open): no
+#    single canonical bars 9-10. Wikipedia "Twelve-bar blues", Minor blues, prints i7 i7 i7 i7 | iv7 iv7 i7 i7 |
+#    ♭VI7 V7 i7 i7 (the generator's 9-10, but i7 in bar 12); PianoGroove and LearnJazzStandards give ♭VI7 to V7;
+#    guitar-chord.org's "simple" minor blues is V7 then iv7 (the Lab's), with a ♭VI7-V7 bar as a variant; Premier
+#    Guitar (2013) calls V7 in bar 9 "a very common version" and gives ♭VI7-V7 as the next figure; Open Music Theory
+#    2e (Gotham et al.) says a minor blues "typically replaces" V-IV-I with ii-V-I. Both disputed forms are attested
+#    variants; a lesson names the one the item plays as a variant, never as the form.
+#  - VERIFIED, the walking line: root, third, fifth, then a semitone below the next root, four quarters a bar
+#    (make_walking_bass's docstring and loop, generate_exercises.py:4018-4100); jam.6's lesson says the approach is
+#    "one step above or below the new root" (content/lessons/jam.6.md:23-24), so the lesson for this record says what
+#    the generated line does and nothing wider.
+#  - VERIFIED, placement today: no exercise.walking-bass.*.minor-blues id is in any stage file; St James is a
+#    songOption of blues.3 only (content/curriculum/stage-3.json:736); St. Louis Blues of blues.3 and blues.4; blues.6
+#    counts one run of any of its five exercises (stage-6.json:473 onward), none of them minor (grep of the stage
+#    files, 2026-10-07). No lesson teaches the minor blues or the quick IV (grep of content/lessons/blues.*.md for
+#    "minor" and "quick", 2026-10-07).
+#  - VERIFIED, a one-hand run counts like a both-hands run: meetsStandard and measured (app/src/evidence/rungState.ts:220-254)
+#    read accuracy, mode, tempo and rhythmOnly and never the row's hands (no `hands` token in the file, grep 2026-10-07);
+#    MODE-SHEET section 13 says no requirement reads hands.appPlayed. So a requirement naming the C minor walking item would also be
+#    met by step 4's Duet run of one hand at the pass pair, against this record's never_credits line. Enforcing
+#    "both hands" is an app seam (a requirement that reads hands.played); A7a.1 and A7a.3 both need it (FABLE section 10:
+#    app work when two chains need it). PF1 class 4 counts Duet among the tools never counted (preflight_chains.py
+#    COUNTING_TOOLS), so the preflight does not see this either.
+#  - VERIFIED, the chart's controls: Bass + drums and Comp are independent since CB1 (docs/pending-review.md Entry
+#    267: case B, Bass + drums on and Comp off, bass and drums with no piano; case C, Comp on and Bass + drums off,
+#    piano with no rhythm section); Bass + drums is offered only on 4/4 charts since MT1 (Entry 274); St James, St.
+#    Louis Blues and the generated items are 4/4.
+#  - VERIFIED, the chart shows one chord per bar until PH2: Entry 268 ("the chord chart still draws, comps and judges
+#    from today's one-chord-per-bar reduction"); PH2 may dispatch (docs/review/responses/mt1-g6b-pf1-landing.md
+#    section 1). So every St James chart step (steps 9-12) and bar 3 of the St. Louis step (13) are BLOCKED on PH2: on
+#    today's chart the bar shows, sounds and judges only its first chord, in 13 of St James's 24 bars (17 symbols not
+#    shown). VERIFIED by the probe (chartBars against chartSegments, run, app-facts.json), and more: today's grid for
+#    St James has 41 cells, not 24 (ChordChartScreen.ts:639 counts the larger of 24 measures and 41 symbols), cells
+#    25-41 all Dm past the end of the file; recorded for PH2 already (docs/pending-review.md:43721, item 3).
+#  - VERIFIED (two readers, both identities; raw d3e5a851... and committed e41004fe..., the pdmx.json hashes), St.
+#    Louis Blues bar 2 is A7 in E (four sharps, no mode element), IV7, with E in bars 1, 3 and 4 and B7 at beat 3 of
+#    bar 3; 23/23 symbols agree. Bars 1-12, under a repeat, are a whole twelve-bar with the quick IV: E | A7 | E, B7 |
+#    E | A7 | (A7) | E, B7 | E | B7 | (B7) | E, E/G♯ | B7 (bar 10 is V, not IV). Bars 13-28 are a 16-bar minor strain
+#    (Em7 ... B7), then "D.C. al Fine" with no Fine mark written.
+#  - SOURCED by the probe (teaching sites, not a published text; SOURCES.md), the walking rule on a bar of two or
+#    three chords (St James bars 1, 2, 3, 5, 9-11, 14, 17, 19, 21-23): LearnJazzStandards puts the root "on the first
+#    beat the chord is introduced" and, with several chords a bar, leaves room only for the root and the linking
+#    tone; the last beat before a change is a half step below or above the next root, or its fifth; JazzGuitar.be and
+#    Become A Bassist say the same for two chords a bar. On St James's three-chord bars (Dm two beats, B♭7 one, A7
+#    one) that leaves the root alone on beats 3 and 4: a reading of the rule, not a source's example (HYPOTHESIS).
+#  - VERIFIED (chordMatch run, app-facts.json): root, third and seventh of B♭7, A7, D7, F7, Cm7, Fm7, A♭7 and G7 each
+#    0.75, yes; the Dm and Gm triads 1.0, yes; one held bass note 0.25 (0.33 on a triad), no; a rootless third-and-
+#    seventh shell 0.5, no; root and fifth 0.5, no.
+#  - CORRECTED (ChordChartScreen.ts:155, 220-231, 236-244, 547-556, read): with no Count off pressed the cell is live
+#    (every note event calls markMatch) but the bar never advances (only onBeat moves it), so it judges every held
+#    chord against bar 1's symbol: on the E♭ minor item a comp of bars 2-13 is scored against E♭m7 (an A♭7 shell
+#    against Cm7 scores 0.25, no). Step 14's "live bar cell" is therefore feedback for bar 1 only.
+#  - VERIFIED (an independent reader, docs/prompts/runs/A7a3/walk-read.json): the four minor-blues walking items and
+#    exercise.walking-bass.c.blues as built (main checkout, 2026-10-07 07:59, generator unchanged since f8fb9779), read
+#    by a raw MusicXML walk with music21 ChordSymbol as the theory oracle: 13 bars each, every bar root-third-fifth-
+#    approach in four quarters, minor thirds on every m7 bar, major on every 7 bar, each approach a semitone below the
+#    next bar's first note, the closing bar root-third-fifth-octave, the right hand one root-third-seventh chord held
+#    four beats, the symbols TWELVE_BAR_MINOR plus a closing i7; 0 breaks in 65 bars. Adversaries go red (a major
+#    third on i7 or iv7, a whole-step approach, the major sibling against the minor form). The E♭ minor item spells
+#    bar 9's ♭VI7 as B7 (B-D♯-F♯-A, approach A♯2); CO-3 as a whole has not run.
+# The quick IV has no generated control (blues_forms.py leaves it out, ABILITY-MAP.md:346) and no Lab form; its MODEL
+# is St. Louis Blues bars 1-4 on the chart, and its INDEPENDENCE is a choice inside A7a.1's own chorus
+# (ABILITY-MAP.md:352-353, MUSIC SHARED and INDEPENDENCE NO-SEPARATE-ARTIFACT), so this record carries one quick-IV step and cites A7a.1 for the rest.
+# The 12 exercise.boogie.*.minor-blues items of P2 are not used here; whether P2 places them is P2's own decision.
+ability: A7a.3
+learner_cannot: "Play the twelve-bar blues in minor, walk a bass line through it, or comp it; play the quick IV in bar 2 of a major blues; or carry the minor walk and comp into a real minor-key tune. The generated minor-blues walking items exist on no rung, no lesson teaches the minor form or the quick change (ABILITY-MAP A7a.3, Evidence), and St. James Infirmary sits on blues.3 as a melody to play, its chords never walked or comped."
+independent_target: "Opens the chart of a minor twelve-bar in a key not practised and, with no bars named and nothing supplied, walks the bass and comps the chords through the form; and plays the quick IV in bar 2 of their own major chorus when they choose that variant."
+steps:
+  - action: "Reads the minor twelve-bar as the generated items write it (i7 i7 i7 i7, iv7 iv7 i7 i7, ♭VI7 V7 i7 V7, a closing tonic bar), the walking line those items play (root, third, fifth, then a semitone below the next root), the quick IV (IV7 in bar 2 of a major blues), and St. James Infirmary as a minor-key tune of three eight-bar phrases, not a twelve-bar, whose B♭7 to A7 is the same pair as the minor blues' bars 9 and 10. The lesson states the minor form only from a cited source."
+    content: {kind: explanation, ref: content/lessons/blues.6.md}
+    tool: lesson
+    scaffold: [written definition, notation, chord symbols, numerals named, key named, bars named in the lesson]
+    feedback: "None."
+    recorded: "Nothing (MODE-SHEET section 31)."
+    cannot_establish: "That the learner read, understood or can do what the page says (MODE-SHEET section 31)."
+    removes: []
+
+  - action: "Hears the major-blues walking bass already met on blues.6, exercise.walking-bass.c.blues."
+    content: {kind: generated, ref: exercise.walking-bass.c.blues}
+    tool: Hear it
+    scaffold: [app plays it, notation, chord symbols, cursor, key named, fixed key]
+    feedback: "The learner's own listening."
+    recorded: "No session row; the hearing is noted in the encounter history (MODE-SHEET section 3)."
+    cannot_establish: "Anything about the learner (MODE-SHEET section 3)."
+    removes: [written definition, numerals named, bars named in the lesson]
+
+  - action: "Hears the minor-blues walking bass in C straight after it, exercise.walking-bass.c.minor-blues, listening for the minor third in bars 1 to 8 and the two bars that leave the key."
+    content: {kind: generated, ref: exercise.walking-bass.c.minor-blues}
+    tool: Hear it
+    scaffold: [app plays it, notation, chord symbols, cursor, key named, fixed key]
+    feedback: "The learner's own listening."
+    recorded: "No session row; the hearing is noted in the encounter history (MODE-SHEET section 3)."
+    cannot_establish: "Anything about the learner; that the difference was heard (MODE-SHEET section 3)."
+    removes: []
+    no_removal_reason: "The second item of the hearing pair, with the same help; the app's sound goes at the next step, where the learner plays."
+
+  - action: "Plays the left hand of exercise.walking-bass.c.minor-blues alone in Keep tempo, choosing L, while the app plays the right hand's shells."
+    content: {kind: generated, ref: exercise.walking-bass.c.minor-blues}
+    tool: Duet
+    scaffold: [notation, chord symbols, cursor, click, count-in, key named, fixed key, app plays the other hand]
+    feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars, for the chosen hand (MODE-SHEET section 2, section 13)."
+    recorded: "An R1 row with hands.appPlayed; no requirement reads it; the evidence condition both-hands reads hands.played only (MODE-SHEET section 13)."
+    cannot_establish: "Hands-together skill (the other hand is the app's); independence (MODE-SHEET section 13)."
+    removes: [app plays it]
+
+  - action: "Plays exercise.walking-bass.c.minor-blues with both hands in Keep tempo, the walking line under the written shells. This is the counted run, proposed: named by the placed rung's requirement once P2 places the item."
+    content: {kind: generated, ref: exercise.walking-bass.c.minor-blues}
+    tool: Keep tempo
+    scaffold: [notation, chord symbols, cursor, click, count-in, key named, fixed key]
+    feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars (MODE-SHEET section 2)."
+    recorded: "An R1 row with tempoMeasured true, accuracy and timing; a rung counts it only when opened from that rung (MODE-SHEET section 2, section 0 R3)."
+    cannot_establish: "That the learner holds a steady pulse unaided (the clock is the app's); fine rhythm below the 150 ms window (MODE-SHEET section 2); walking without the page."
+    removes: [app plays the other hand]
+
+  - action: "Plays exercise.walking-bass.f.minor-blues with both hands in Keep tempo, a lower tempo first: the same form in a second key."
+    content: {kind: generated, ref: exercise.walking-bass.f.minor-blues}
+    tool: Keep tempo
+    scaffold: [notation, chord symbols, cursor, click, count-in, key named]
+    feedback: "As the step before, in a new key (MODE-SHEET section 2)."
+    recorded: "An R1 row with tempoMeasured true, accuracy and timing; counted by nothing, because the proposed requirement names the C item alone (MODE-SHEET section 2, section 0 R3)."
+    cannot_establish: "As the step before; a second key written out is a variable realisation of the same contract, not transfer (family_contracts.json walking_bass roles)."
+    removes: [fixed key]
+
+  - action: "Opens exercise.walking-bass.c.minor-blues as a Chord chart with Comp off and Bass + drums on, and comps the right hand's shells through the form over the app's bass and drums, the left hand resting."
+    content: {kind: generated, ref: exercise.walking-bass.c.minor-blues}
+    tool: Chord chart
+    scaffold: [chord symbols, click, count-in, bar tracker, bass and drums supplied]
+    feedback: "A live bar cell, yes, no or idle, by whether the held notes contain at least 60 % of the bar's chord's pitch classes; extra notes are not penalised (MODE-SHEET section 15)."
+    recorded: "Nothing; the only judgement is the live cell over what is held at that instant (MODE-SHEET section 15)."
+    cannot_establish: "Voicing, rhythm, time-keeping against the click, form awareness over a chorus, or anything over time; nothing is stored (MODE-SHEET section 15)."
+    removes: [notation, cursor, key named]
+
+  - action: "Hears St. James Infirmary, the tune whose chords the next steps walk and comp."
+    content: {kind: piece, ref: song.blues.st-james-infirmary}
+    tool: Hear it
+    scaffold: [app plays it, notation, chord symbols, cursor]
+    feedback: "The learner's own listening."
+    recorded: "No session row; the hearing is noted in the encounter history (MODE-SHEET section 3)."
+    cannot_establish: "Anything about the learner (MODE-SHEET section 3)."
+    removes: [click, count-in, bar tracker, bass and drums supplied]
+
+  - action: "Opens St. James Infirmary's chord chart with Comp and Bass + drums on and follows the 24 bars while the app plays the changes; the lesson names its chords (Dm, Gm, B♭7, A7) and bars 7 and 8, B♭7 to A7. Blocked on PH2: today's chart shows and sounds only the first chord of 13 of its bars."
+    content: {kind: piece, ref: song.blues.st-james-infirmary}
+    tool: Chord chart
+    scaffold: [chord symbols, count-in, bar tracker, app comps, bass and drums supplied, bars named in the lesson, progression named in the lesson]
+    feedback: "The learner's own listening; the chart marks the sounding bar."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "Anything about the learner; nothing is stored (MODE-SHEET section 15)."
+    removes: [app plays it, notation, cursor]
+
+  - action: "Walks a bass line under St. James Infirmary's chart with Comp on and Bass + drums off, one note a beat, the root on the beat each symbol starts, in the left hand alone; the lesson tells the learner to ignore the cell, which reads one held bass note as no. Blocked on PH2 and on a sourced walking rule for bars of two or three chords."
+    content: {kind: piece, ref: song.blues.st-james-infirmary}
+    tool: Chord chart
+    scaffold: [chord symbols, count-in, bar tracker, app comps, bars named in the lesson]
+    feedback: "The learner's own listening; the live bar cell, which a single bass note cannot satisfy, so the lesson says to ignore it (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "The bass line's notes, rhythm or approach; voicing, time-keeping, form awareness; nothing is stored (MODE-SHEET section 15). Whether the line walks well: unverified as music."
+    removes: [bass and drums supplied, progression named in the lesson]
+
+  - action: "Comps St. James Infirmary's chart in the right hand with Comp off and Bass + drums on, over the app's bass and drums, the left hand resting. Blocked on PH2."
+    content: {kind: piece, ref: song.blues.st-james-infirmary}
+    tool: Chord chart
+    scaffold: [chord symbols, count-in, bar tracker, bass and drums supplied]
+    feedback: "The live bar cell, yes, no or idle, by whether the held notes contain at least 60 % of the bar's chord's pitch classes (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "Voicing, rhythm, time-keeping against the click, form awareness over a chorus, or anything over time; nothing is stored (MODE-SHEET section 15)."
+    removes: [app comps, bars named in the lesson]
+
+  - action: "Plays St. James Infirmary from its chart with both hands, Comp off and Bass + drums off: the walking bass in the left hand and the comp in the right, through the 24 bars and the repeat. Blocked on PH2."
+    content: {kind: piece, ref: song.blues.st-james-infirmary}
+    tool: Chord chart
+    scaffold: [chord symbols, count-in, bar tracker]
+    feedback: "The live bar cell over both hands' held notes (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "As the step before; hands together over time and the bass line are self-checked."
+    removes: [bass and drums supplied]
+
+  - action: "Plays bars 1 to 4 of St. Louis Blues from its chart, Comp off and Bass + drums off, the left hand on the roots and the right on the chords: E, A7 in bar 2 (the quick IV), E, E; the lesson names bar 2 and why it is called quick. Bar 3's B7 at beat 3 shows only after PH2."
+    content: {kind: piece, ref: "song.classical.st-louis-blues.pdmx@bars=1-4"}
+    tool: Chord chart
+    scaffold: [chord symbols, count-in, bar tracker, bars named in the lesson, progression named in the lesson]
+    feedback: "The live bar cell (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "Anything over time; that the learner will choose the quick IV in their own chorus (self-checked, A7a.1's chorus)."
+    removes: []
+    no_removal_reason: "The second variant, the quick IV, under named bars as its first meeting; the names go at the independence step."
+
+  - action: "Opens the chart of exercise.walking-bass.e-flat.minor-blues, a key not practised, with Comp off, Bass + drums off and no Count off pressed, counts in alone, and walks the bass and comps the chords through the minor twelve-bar with no bars named. In their own major chorus (A7a.1's last step) they play the quick IV when they choose that variant."
+    content: {kind: generated, ref: exercise.walking-bass.e-flat.minor-blues}
+    tool: Chord chart
+    scaffold: [chord symbols]
+    feedback: "None from the lesson; the live bar cell only (MODE-SHEET section 15)."
+    recorded: "Nothing (MODE-SHEET section 15)."
+    cannot_establish: "The walk, the comp, the form and the choice of variant: self-checked. Whether it sounds like a minor blues: unverified as music."
+    removes: [count-in, bar tracker, bars named in the lesson, progression named in the lesson]
+
+failure_routes:
+  - observed: "Note-finding on the minor walking line: wrong or missed notes in the left hand."
+    next: "Wait for me on exercise.walking-bass.c.minor-blues, left hand alone; Loop bars 9 and 10 (♭VI7, V7) in Wait for me, then in Keep tempo at a lower tempo; then the whole left hand in Keep tempo."
+  - observed: "A major third on i7 or iv7: the major-blues walk carried over."
+    next: "Back to the hearing pair (steps 2 and 3) back to back, naming the bars that differ; build Cm7 against C7 in Free play, standalone, and read each name; then step 4 again."
+  - observed: "The left hand holds alone and breaks when the shells come in."
+    next: "Back to step 4 (Duet, left hand) at a lower tempo; then both hands with Loop on the hot-spot bars; then the whole item."
+  - observed: "The comp lands late on the chart."
+    next: "Lower the chart's tempo; back to step 7 on the generated item, where every bar has one chord, before St. James Infirmary again."
+  - observed: "The walk falls apart on St. James Infirmary's bars of two or three chords."
+    next: "Back to step 10 with Comp on at a lower tempo, the lesson's split-bar rule read again; the generated chart (one chord a bar) once more first."
+  - observed: "The quick IV is missed: the left hand stays on I in bar 2."
+    next: "St. Louis Blues bars 1 to 4 with Comp on to hear the change, then Comp off again; then A7a.1's chart with the quick IV named."
+  - observed: "The learner cannot hear a minor blues from a major one."
+    next: "No app tool checks hearing: the hearing pair again and the lesson's named bars; hearing it stays self-checked (unverified as music)."
+
+independence_test: "Without the original scaffold, the learner opens the chart of a minor twelve-bar in a key not practised (exercise.walking-bass.e-flat.minor-blues), counts in alone with nothing supplied and no bars named, and walks the bass and comps the chords through the form; and plays the quick IV in bar 2 of their own major chorus when they choose that variant (A7a.1's last step). The app observes only the chart's live cell, unstored, which cannot judge a single bass note; the walk, the comp, the form and the choice of variant are self-checked."
+
+evidence:
+  updates:
+    - "Proposed, a reviewer decision with P2's placement: one Keep tempo run of exercise.walking-bass.c.minor-blues, both hands, at the pass pair, opened from the placed rung (blues.6 in the map), the requirement's items naming it. Today the item is on no rung and blues.6 counts one run of any of its five exercises, none minor, so nothing measures this ability's CONTROL. Today such a requirement would also accept step 4's one-hand Duet run (rungState reads no hands; header)."
+  self_checked:
+    - "Hearing the minor form against the major one."
+    - "The minor walk and comp in a second key and on the chart with the app's bass and drums."
+    - "Walking and comping St. James Infirmary from its chart."
+    - "The quick IV in St. Louis Blues bars 1 to 4, and choosing it in the learner's own chorus."
+    - "The independence test."
+  never_credits:
+    - "The Chord chart's live cell, yes or no, in any bar."
+    - "Any Hear it encounter."
+    - "A Duet run of the left hand alone standing for both hands."
+    - "A run of exercise.walking-bass.c.blues (the major form) or of any boogie item standing for the minor walking item."
+    - "A Keep tempo run of the F minor item standing for the named C minor item."
+    - "Any Keep tempo run of St. James Infirmary's melody, or of St. Louis Blues: playing the tune is not the ability."
+    - "That St. James Infirmary is a minor twelve-bar blues: it is three eight-bar phrases (RECONCILIATION A7a.3 row A)."
+
+generated:
+  - family: walking_bass
+    job: NAMED-PATTERN
+    presented_as: music
+    contract: tools/content/family_contracts.json
+    checker: tools/content/tests/test_harmony_families.py
+    musical_properties:
+      the minor form's harmonic skeleton: "By construction, TWELVE_BAR_MINOR (generate_exercises.py:3963-3965) plus a closing tonic bar; against a sourced definition of the minor twelve-bar: UNKNOWN (no source cited, and the Lab's BLUES_MINOR at sightReading.ts:2226-2230 states another bar 9 and 10)."
+      four quarters a bar, root on each downbeat, root-third-fifth then a semitone below the next root: "By construction (make_walking_bass); test_harmony_families.py TestWalkingBass reads four notes a bar for the ii-V-I and the semitone approach for the major blues in C; for the four minor-blues items: UNKNOWN until an independent reader (music21 or partitura, never the generator's read-back) reads them (the probe's Station 3)."
+      a minor third on every m7 bar: "By construction (triad(quality)[1] in make_walking_bass); UNKNOWN by an independent reader until the probe's Station 3."
+      register and hand span: "The family's physical contract (family_contracts.json walking_bass physical: maxSpan 12, leaps max 18) and validate.notes_off_the_keyboard at build; the notation read CO-3 has not run: UNKNOWN beyond the build checks."
+      the sourced definition of a walking bass and its sibling near-miss (FABLE section 5): UNKNOWN
+      the line's feel and sound: UNKNOWN
+
+status: draft

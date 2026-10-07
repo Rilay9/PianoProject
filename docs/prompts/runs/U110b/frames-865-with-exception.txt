@@ -1,0 +1,23 @@
+
+Running 1 test using 1 worker
+
+TARGET 830 PRE stage 656.1 slots 3/2/3 zoom 1.36 ladder 6@1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.200000000000045 past -11.7 gaps [24,24]
+   1 frame(s) 17 ms | stage 656.1 slots 3 zoom 1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.1 past -11.7
+   94 frame(s) 1550 ms | stage 621.1 slots 2 zoom 1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] | overlap -35.9 past -199.7
+   FRAMES after the shrink: 94; painted with ink overlapping or leaving the stage: 0
+TARGET 770 PRE stage 656.1 slots 3/2/3 zoom 1.36 ladder 6@1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.200000000000045 past -11.7 gaps [24,24]
+   1 frame(s) 17 ms | stage 656.1 slots 3 zoom 1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.1 past -11.7
+   92 frame(s) 1517 ms | stage 561.1 slots 2 zoom 1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] | overlap -35.9 past -139.7
+   FRAMES after the shrink: 92; painted with ink overlapping or leaving the stage: 0
+TARGET 770 PRE stage 656.1 slots 3/2/3 zoom 1.36 ladder 6@1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.200000000000045 past -11.7 gaps [24,24]
+   1 frame(s) 17 ms | stage 656.1 slots 3 zoom 1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.1 past -11.7
+   92 frame(s) 1517 ms | stage 561.1 slots 2 zoom 1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] | overlap -35.9 past -139.7
+   FRAMES after the shrink: 92; painted with ink overlapping or leaving the stage: 0
+TARGET 750 PRE stage 656.1 slots 3/2/3 zoom 1.36 ladder 6@1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.200000000000045 past -11.7 gaps [24,24]
+   1 frame(s) 17 ms | stage 656.1 slots 3 zoom 1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] 3-4G[446+204 ink 452.6..644.4] | overlap -31.1 past -11.7
+   92 frame(s) 1517 ms | stage 541.1 slots 2 zoom 1.36 | 0-1[0+199 ink 11.3..198.4] 2-2[223+199 ink 234.3..421.4] | overlap -35.9 past -119.7
+   FRAMES after the shrink: 92; painted with ink overlapping or leaving the stage: 0
+  ok 1 build\u110b\u110b-frames.spec.ts:38:1 › u110b frames (16.4s)
+
+  1 passed (19.9s)
+exit 0

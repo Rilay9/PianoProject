@@ -43,3 +43,7 @@ and the unit tests `dbUpgrades.test.ts`, `boot.test.ts` first.**
 
 Per item: what the spec chains or measures, what it found, fixes with red lines; counts;
 what is unverified.
+
+## Record
+
+lane: T26 · closes: — · entry: — · role: history

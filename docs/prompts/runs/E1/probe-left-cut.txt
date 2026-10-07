@@ -1,0 +1,4 @@
+excerpt.folk.twinkle.ht.b1-8.lh staves 1 demands ['pitch.ledger', 'interval.leap'] misread: one staff in the bass clef: the detectors read staff 1 as the treble clef (detect.ts's clef assumption)
+excerpt.folk.twinkle.ht.b1-8.rh staves 1 demands ['interval.step', 'interval.leap', 'range.beyond-position'] misread: None
+excerpt.folk.twinkle.ht.b1-8 staves 2 demands ['clef.bass', 'interval.step', 'interval.leap', 'range.beyond-position', 'texture.hands-together'] misread: None
+exit 0

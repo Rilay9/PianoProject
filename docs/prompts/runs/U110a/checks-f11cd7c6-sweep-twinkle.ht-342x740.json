@@ -1,0 +1,108 @@
+[
+ {
+  "bars": 2,
+  "load": "open",
+  "slots": 2,
+  "systems": 2,
+  "shown": 2,
+  "ladder": 1,
+  "overlapPx": -36,
+  "rows": [
+   "W0-0@0:12..248",
+   "W1-1@272:284..520"
+  ]
+ },
+ {
+  "bars": 2,
+  "load": "reload",
+  "slots": 2,
+  "systems": 2,
+  "shown": 2,
+  "ladder": 1,
+  "overlapPx": -36,
+  "rows": [
+   "W0-0@0:12..248",
+   "W1-1@272:284..520"
+  ]
+ },
+ {
+  "bars": 3,
+  "load": "open",
+  "slots": 2,
+  "systems": 2,
+  "shown": 3,
+  "ladder": 1,
+  "overlapPx": -36,
+  "rows": [
+   "W0-1@0:11..198",
+   "W2-2@223:234..421"
+  ]
+ },
+ {
+  "bars": 3,
+  "load": "reload",
+  "slots": 2,
+  "systems": 2,
+  "shown": 3,
+  "ladder": 1,
+  "overlapPx": -36,
+  "rows": [
+   "W0-1@0:11..198",
+   "W2-2@223:234..421"
+  ]
+ },
+ {
+  "bars": 4,
+  "load": "open",
+  "slots": 2,
+  "systems": 2,
+  "shown": 4,
+  "ladder": 1,
+  "overlapPx": -36,
+  "rows": [
+   "W0-1@0:11..198",
+   "W2-3@223:234..421"
+  ]
+ },
+ {
+  "bars": 4,
+  "load": "reload",
+  "slots": 2,
+  "systems": 2,
+  "shown": 4,
+  "ladder": 1,
+  "overlapPx": -36,
+  "rows": [
+   "W0-1@0:11..198",
+   "W2-3@223:234..421"
+  ]
+ },
+ {
+  "bars": 8,
+  "load": "open",
+  "slots": 3,
+  "systems": 3,
+  "shown": 8,
+  "ladder": 1,
+  "overlapPx": -33,
+  "rows": [
+   "W0-2@0:10..147",
+   "W3-5@173:180..320",
+   "W6-7@349:356..496"
+  ]
+ },
+ {
+  "bars": 8,
+  "load": "reload",
+  "slots": 3,
+  "systems": 3,
+  "shown": 8,
+  "ladder": 1,
+  "overlapPx": -33,
+  "rows": [
+   "W0-2@0:10..147",
+   "W3-5@173:180..320",
+   "W6-7@349:356..496"
+  ]
+ }
+]

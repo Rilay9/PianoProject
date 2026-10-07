@@ -1,0 +1,2 @@
+record-mirrors: stale-record: docs/prompts/tasks/CL04-evidence-truth.md:92: CL04's record ends at approved, and Entry 175 (docs/prompts/runs/CL04/ENTRY.md:1) shows it landed
+record-mirrors: 1 failure(s); nothing written

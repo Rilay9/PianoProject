@@ -1,0 +1,613 @@
+diff --git a/app/src/curriculum/eligibility.ts b/app/src/curriculum/eligibility.ts
+index 9523679..ff7661c 100644
+--- a/app/src/curriculum/eligibility.ts
++++ b/app/src/curriculum/eligibility.ts
+@@ -49,7 +49,10 @@
+  * `teaching-use-not-approved`, and passes to the questions only for exploration; the
+  * Library does not call this gate. A drill's promise is its contract, and a notated
+  * item's notes are its truth, so neither is touched. The route to `true` is D2's record:
+- * a `goodTeachingUse: yes` on the item's current identity, merged and built.
++ * a `goodTeachingUse: yes` on the item's current identity, merged and built. The same
++ * reading, exported alone as `admittedForTeaching` (D3b), is what the session card's
++ * rows drawn straight from a rung's list pass (`session.usable`): one definition, two
++ * askers.
+  */
+ import densityJson from '../../../content/sources/opportunity-density.json';
+ import { READING_CONTROLS } from '../engine/readingControls';
+@@ -281,6 +284,20 @@ function unapprovedMusic(item: CatalogItem): null | false | undefined {
+   return provenance.review.teaching === true ? undefined : provenance.review.teaching;
+ }
+ 
++/**
++ * The teaching-use admission, alone (D3b; the reviewer's required change on D3a): false only for a
++ * generated item whose family promises music for its recipe and has no affirmative teaching-use
++ * decision; true for everything else — a drill, a runtime reading row, a notated item. The same
++ * reading `eligibleFor` makes (`unapprovedMusic`, defined once), for the session card's paths that
++ * take an item straight from a rung's list without asking the gate — a rung's `runs`, `done` and
++ * `measure` asks, the fallback ladder's rung and prerequisite steps, the jam slot, the exposure rule —
++ * which `session.usable` puts through it: an authored placement is not a teaching-use decision.
++ * Exploration and the Library never ask it.
++ */
++export function admittedForTeaching(item: CatalogItem): boolean {
++  return unapprovedMusic(item) === undefined;
++}
++
+ /** The one gate: can the learner cope, and does the candidate provide the opportunity wanted. */
+ export function eligibleFor(candidate: CatalogItem, learner: Learner, want: Want, vocabulary: Vocabulary = VOCABULARY_V0): Eligibility {
+   const physical = candidate.provenance?.physical;
+diff --git a/app/src/curriculum/session.ts b/app/src/curriculum/session.ts
+index f5662a6..fce1a12 100644
+--- a/app/src/curriculum/session.ts
++++ b/app/src/curriculum/session.ts
+@@ -19,7 +19,7 @@ import {
+ } from './selectors';
+ import { lockState } from './prerequisites';
+ import { SHIPPED_SKILL_ACTIVATION, type SkillActivation } from './skillActivation';
+-import { eligible, eligibleFor, type Eligibility, type Learner, type Want as GateWant } from './eligibility';
++import { admittedForTeaching, eligible, eligibleFor, type Eligibility, type Learner, type Want as GateWant } from './eligibility';
+ import type { RequirementReading, RungStates } from '../evidence/rungState';
+ import { phraseVersionOf, type ReadingMoves, type ReadingRecipe, type SessionRow } from '../data/db';
+ import { dayKey, daysBetween, type LearnedPiece } from '../data/progressStore';
+@@ -665,9 +665,17 @@ function readingsOf(ctx: SlotContext, rung: Lesson): RequirementReading[] {
+   }));
+ }
+ 
+-/** A slot's eye on an item: playable, not on the card, never a reading row (the reading slot is the reader's, L65). */
++/**
++ * A slot's eye on an item: playable, not on the card, never a reading row (the reading slot is the
++ * reader's, L65), and admitted for teaching use (D3b): a generated item whose family promises music is
++ * offered by no slot until a person's `yes` on its teaching use is built (`eligibility.admittedForTeaching`,
++ * the gate's own reading). Every slot that takes an item from a rung's list without asking the gate — a
++ * want's `offer` (`runs`, `done`, `measure`), the ladder's rung and prerequisite steps, the jam slot, the
++ * exposure rule — chooses only through here, so a rung listing one is not a decision to teach it; where it
++ * was a row's only candidate the row takes the next step that passes, or is dropped.
++ */
+ function usable(ctx: SlotContext, item: CatalogItem | undefined, songs: 'any' | 'none' | 'only'): item is CatalogItem {
+-  if (!item || !playable(item) || ctx.used.has(item.id) || isReadingRow(item)) return false;
++  if (!item || !playable(item) || ctx.used.has(item.id) || isReadingRow(item) || !admittedForTeaching(item)) return false;
+   if (songs === 'none' && item.type === 'song') return false;
+   if (songs === 'only' && item.type !== 'song') return false;
+   return true;
+@@ -707,7 +715,12 @@ function gate(ctx: SlotContext, item: CatalogItem, learner: Learner, want: GateW
+  * One unmet requirement of a rung and the items that would serve it: the
+  * unit the warm-up and the new slot choose among. `pool` is every item the
+  * requirement would count, whether or not it can be offered now; `offer`
+- * those that can.
++ * those that can (`usable`: the teaching-use admission included, D3b). Only
++ * `offer` is ever chosen from. A want whose pool is not empty but whose offer is
++ * empty (its candidates on the card already, unplayable, or not admitted) still
++ * says the rung asks something: the slot waits for the fallback ladder rather than
++ * moving on to the next lesson as if this one's ask were met, and `pool` only
++ * orders the new slot's wants (`fresh`'s `served`).
+  */
+ interface Want {
+   rung: Lesson;
+@@ -1250,7 +1263,9 @@ const JAM_TRACKS = new Set(['chords-pop', 'blues-boogie', 'jazz', 'jam']);
+  * Jam: an option of a rung on a jam track the learner has reached — the
+  * learner's own rung first where it is one — played least lately. It was any
+  * item on those tracks at or below the stage number plus one; before any jam
+- * rung is reached there is no jam row.
++ * rung is reached there is no jam row. The options pass `usable`, so a groove a
++ * jam rung lists is the jam only once its teaching use is approved (D3b); with
++ * nothing else on the reached jam rungs there is no jam row.
+  */
+ function jam(ctx: SlotContext, phase: Phase): Choice | undefined {
+   if (phase === 'fallback') return undefined;
+diff --git a/app/tests/unit/gateAtTheConsumers.test.ts b/app/tests/unit/gateAtTheConsumers.test.ts
+index f21ed0e..e98179d 100644
+--- a/app/tests/unit/gateAtTheConsumers.test.ts
++++ b/app/tests/unit/gateAtTheConsumers.test.ts
+@@ -10,17 +10,21 @@
+  * same-lesson option, a declared skill the notes do not carry, a level-close
+  * candidate the learner is not ready for, a declared large-hand voicing, and a
+  * repertoire piece whose new demand is only incidental.
++ *
++ * Since D3a and D3b, also the teaching-use admission: at the gate (D3a), and on the
++ * session card's rows drawn straight from a rung's list without the gate (D3b).
+  */
+ import { readFileSync } from 'node:fs';
+ import { join } from 'node:path';
+ import { describe, expect, it } from 'vitest';
+-import { buildSession, swapOptions, type SessionSlot } from '../../src/curriculum/session';
++import { admittedForTeaching, eligibleFor } from '../../src/curriculum/eligibility';
++import { buildSession, swapOptions, type BuildInput, type SessionSlot } from '../../src/curriculum/session';
+ import { indexCatalog, tieredAlternatives } from '../../src/curriculum/selectors';
+ import { EVERY_DECLARED_SKILL, SHIPPED_SKILL_ACTIVATION } from '../../src/curriculum/skillActivation';
+ import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
+ import type { SessionRow } from '../../src/data/db';
+ import { EVIDENCE_DEFINITIONS, type MeasuredEvidence } from '../../src/evidence/evidence';
+-import { rungState } from '../../src/evidence/rungState';
++import { rungState, type RungReading } from '../../src/evidence/rungState';
+ import { VOCABULARY_V0, type Vocabulary } from '../../src/evidence/vocabulary';
+ import { matches as libraryMatches } from '../../src/ui/screens/LibraryScreen';
+ 
+@@ -392,3 +396,409 @@ describe('the session’s skill requirement and its skill and demand steps refus
+     expect(kindOf(true)).toEqual([['ex.groove-b', 'kind']]);
+   });
+ });
++
++/**
++ * D3b: the session card's rows that take an item straight from a rung's list — a rung's `runs`, `done` and
++ * `measure` asks, the fallback ladder's rung and prerequisite steps, the jam slot and the exposure rule —
++ * are automatic offers too, and pass the same teaching-use admission as the gate (the reviewer's required
++ * change on D3a, `responses/c8717be.md`): an authored placement is not a teaching-use decision. Each path
++ * on constructed rungs, for `teaching: null` and `false` (refused alike) and `true` (offered again, the
++ * card then exactly what it is for the same item with no promise at all), with a generated drill and a
++ * notated song beside it offered as before; where the refused item was the row's only candidate, the row
++ * is filled by the next step that already passes, or dropped — never by the refused item, and never by a
++ * line saying the rung's asks are met.
++ */
++describe('the session card’s rows drawn straight from a rung’s list pass the same admission (D3b)', () => {
++  const TODAY = new Date(2026, 9, 20, 9);
++  /** Vocabulary v0 with eighth notes taught at the constructed lesson E (as `fallbackOrder.test.ts`). */
++  const VOCABULARY: Vocabulary = {
++    ...VOCABULARY_V0,
++    demands: VOCABULARY_V0.demands.map((demand) => (demand.id === 'rhythm.eighths' ? { ...demand, taughtAt: ['E'] } : demand)),
++  };
++  const exercise = (id: string, over: Partial<CatalogItem> = {}): CatalogItem => ({
++    id,
++    type: 'exercise',
++    title: id,
++    level: 1.5,
++    hands: 'right',
++    tracks: ['core'],
++    concepts: [],
++    file: `scores/${id}.mxl`,
++    ...over,
++  });
++  /** A generated groove as the build writes one: a file, a drill kind, the family's promise `music`, the stored bit. */
++  const groove = (id: string, teaching: boolean | null, kind = 'clave'): CatalogItem => exercise(id, { drill: { kind, params: {} }, ...measured([]), ...musical(teaching) });
++  /** The same item with no promise fact: what every one of these paths offered before D3b, whatever the bit. */
++  const unpromised = (item: CatalogItem): CatalogItem => ({ ...item, provenance: { source: 'authored', facts: {}, review: { score: null, teaching: null } } });
++  /** A generated drill: its family promises a drill, and no person has decided its teaching use. */
++  const drill = (id: string, kind = 'scale'): CatalogItem =>
++    exercise(id, {
++      drill: { kind, params: {} },
++      ...measured([]),
++      provenance: { source: 'generated', facts: { promise: { kind: 'authored', via: 'family_contracts.json', value: 'drill' } }, review: { score: null, teaching: null } },
++    });
++  /** A notated song no person has decided on: its notes are its truth. */
++  const notated = (id: string): CatalogItem => song(id, { ...measured([]), provenance: { source: 'pdmx', facts: {}, review: { score: null, teaching: null } } });
++  /** P's exercise, an ordinary notated one: what the ladder's prerequisite step finds. */
++  const pre = exercise('ex.pre', measured([]));
++  /** R's own exercise training the skill it asks for, never playable: the skill requirement has a pool and nothing to offer. */
++  const gone = exercise('ex.r-gone', { targetSkills: ['subdivision'], file: null, ...measured(['rhythm.eighths']) });
++  const REFUSED = [null, false] as const;
++
++  /**
++   * The rung after R asks for an exercise the card can have: a card that treated a refused ask as met would
++   * offer it as "The next lesson asks for it", which is false while R's ask waits (`claimsNext`).
++   */
++  const next = exercise('ex.next', measured([]));
++  /** E and P before R (placed at R, so both behind the placement); R builds on P; R2 after R. */
++  const core = (r: Partial<Lesson>, p: string[] = ['ex.pre'], e: string[] = []): Curriculum => ({
++    version: 1,
++    tracks: [{ id: 'core', title: 'Core', description: '', startsAtStage: 0 }],
++    stages: [
++      {
++        number: 1,
++        title: 'One',
++        summary: '',
++        units: [
++          {
++            id: 'u',
++            title: 'U',
++            track: 'core',
++            lessons: [
++              lesson('E', { exerciseOptions: e, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] }),
++              lesson('P', { title: 'The lesson R builds on', exerciseOptions: p, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] }),
++              lesson('R', { prerequisites: ['P'], ...r }),
++              lesson('R2', { title: 'The lesson after R', exerciseOptions: ['ex.next'], requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] }),
++            ],
++          },
++        ],
++      },
++    ],
++  });
++  const card = (curriculum: Curriculum, listed: CatalogItem[], over: Partial<BuildInput> = {}): SessionSlot[] => {
++    const items = [...listed, next];
++    return buildSession({
++      curriculum,
++      catalog: indexCatalog(items),
++      items,
++      states: rungState([], curriculum, VOCABULARY_V0, TODAY),
++      rows: [],
++      learned: [],
++      lastPlayed: new Map(),
++      activeTracks: ['core'],
++      minutes: 15,
++      startAt: 'R',
++      today: TODAY,
++      skillActivation: EVERY_DECLARED_SKILL,
++      vocabulary: VOCABULARY,
++      ...over,
++    }).slots;
++  };
++  const row =(slots: SessionSlot[], kind: SessionSlot['kind']): SessionSlot | undefined => slots.find((slot) => slot.kind === kind);
++  const shape = (slots: SessionSlot[]) => slots.map((slot) => [slot.kind, slot.item?.id, slot.claim?.kind, slot.reason]);
++  const ids = (slots: SessionSlot[]) => slots.map((slot) => slot.item?.id);
++  /** No row says the rung's asks are met: none offers the next lesson's as "the next lesson asks for it". */
++  const claimsNext = (slots: SessionSlot[]) => slots.some((slot) => slot.claim?.kind === 'asked' && slot.claim.next);
++
++  it('runs: the rung’s own groove is not what it asks for until approved; the warm-up takes the next valid step, and a drill and a notated song beside it are offered as before', () => {
++    const only = core({ exerciseOptions: ['ex.groove'], requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] });
++    for (const teaching of REFUSED) {
++      const slots = card(only, [groove('ex.groove', teaching), pre]);
++      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
++      expect(row(slots, 'technique'), `teaching ${String(teaching)}`).toMatchObject({ item: { id: 'ex.pre' }, claim: { kind: 'prerequisite', rung: { id: 'P' } } });
++      expect(claimsNext(slots)).toBe(false);
++    }
++    const approved = card(only, [groove('ex.groove', true), pre]);
++    expect(row(approved, 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'asked', requirement: { kind: 'runs' } } });
++    expect(shape(approved)).toEqual(shape(card(only, [unpromised(groove('ex.groove', true)), pre])));
++
++    const beside = core({
++      exerciseOptions: ['ex.groove', 'ex.drill'],
++      songOptions: ['song.notated'],
++      requirements: [
++        { kind: 'runs', from: 'exercises', count: 1 },
++        { kind: 'runs', from: 'songs', count: 1 },
++      ],
++    });
++    const items = (teaching: boolean | null) => [groove('ex.groove', teaching), drill('ex.drill'), notated('song.notated'), pre];
++    for (const teaching of REFUSED) {
++      const slots = card(beside, items(teaching));
++      expect(row(slots, 'technique'), `teaching ${String(teaching)}`).toMatchObject({ item: { id: 'ex.drill' }, claim: { kind: 'asked', requirement: { kind: 'runs', from: 'exercises' } } });
++      expect(row(slots, 'new'), `teaching ${String(teaching)}`).toMatchObject({ item: { id: 'song.notated' }, claim: { kind: 'asked', requirement: { kind: 'runs', from: 'songs' } } });
++    }
++    const both = card(beside, items(true));
++    expect([row(both, 'technique')?.item?.id, row(both, 'new')?.item?.id]).toEqual(['ex.groove', 'song.notated']);
++    expect(shape(both)).toEqual(shape(card(beside, [unpromised(groove('ex.groove', true)), drill('ex.drill'), notated('song.notated'), pre])));
++  });
++
++  it('done: a requirement naming the groove stays unmet and no row claims it; the next valid step fills the warm-up, or the rung’s other option', () => {
++    const only = core({ exerciseOptions: ['ex.groove'], requirements: [{ kind: 'done', item: 'ex.groove' }] });
++    for (const teaching of REFUSED) {
++      const slots = card(only, [groove('ex.groove', teaching), pre]);
++      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
++      expect(slots.some((slot) => slot.claim?.kind === 'asked' && slot.claim.requirement.kind === 'done')).toBe(false);
++      expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.pre' }, claim: { kind: 'prerequisite' } });
++      expect(claimsNext(slots)).toBe(false);
++    }
++    expect(row(card(only, [groove('ex.groove', true), pre]), 'technique')).toMatchObject({
++      item: { id: 'ex.groove' },
++      claim: { kind: 'asked', requirement: { kind: 'done', item: 'ex.groove' } },
++    });
++
++    const beside = core({ exerciseOptions: ['ex.groove', 'ex.drill'], requirements: [{ kind: 'done', item: 'ex.groove' }] });
++    for (const teaching of REFUSED) {
++      // The rung asks for the groove and cannot have it: its other option, said as the rung's own, never as what it asks.
++      expect(row(card(beside, [groove('ex.groove', teaching), drill('ex.drill'), pre]), 'technique')).toMatchObject({ item: { id: 'ex.drill' }, claim: { kind: 'rung', rung: { id: 'R' } } });
++    }
++    expect(row(card(beside, [groove('ex.groove', true), drill('ex.drill'), pre]), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'asked' } });
++  });
++
++  it('measure: the rung’s groove of the measured kind is refused; a generated drill of the same kind beside it is what the rung asks for', () => {
++    const only = core({ exerciseOptions: ['ex.groove'], requirements: [{ kind: 'measure', measure: 'clave' }] });
++    for (const teaching of REFUSED) {
++      const slots = card(only, [groove('ex.groove', teaching), pre]);
++      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
++      expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.pre' }, claim: { kind: 'prerequisite' } });
++    }
++    expect(row(card(only, [groove('ex.groove', true), pre]), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'asked', requirement: { kind: 'measure' } } });
++
++    const beside = core({ exerciseOptions: ['ex.groove', 'ex.clave-drill'], requirements: [{ kind: 'measure', measure: 'clave' }] });
++    const items = (teaching: boolean | null) => [groove('ex.groove', teaching), drill('ex.clave-drill', 'clave'), pre];
++    for (const teaching of REFUSED) {
++      expect(row(card(beside, items(teaching)), 'technique'), `teaching ${String(teaching)}`).toMatchObject({ item: { id: 'ex.clave-drill' }, claim: { kind: 'asked', requirement: { kind: 'measure' } } });
++    }
++    expect(row(card(beside, items(true)), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'asked' } });
++  });
++
++  it('the ladder’s rung step: the rung’s groove is passed over for the next step, or for a drill of the rung beside it', () => {
++    const skill = [{ kind: 'skill' as const, skill: 'subdivision', state: 'familiar' as const }];
++    const only = core({ exerciseOptions: ['ex.r-gone', 'ex.groove'], requirements: skill });
++    for (const teaching of REFUSED) {
++      const slots = card(only, [gone, groove('ex.groove', teaching), pre]);
++      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
++      expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.pre' }, claim: { kind: 'prerequisite' } });
++    }
++    const approved = card(only, [gone, groove('ex.groove', true), pre]);
++    expect(row(approved, 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'rung', rung: { id: 'R' } } });
++    expect(shape(approved)).toEqual(shape(card(only, [gone, unpromised(groove('ex.groove', true)), pre])));
++
++    const beside = core({ exerciseOptions: ['ex.r-gone', 'ex.groove', 'ex.drill'], requirements: skill });
++    for (const teaching of REFUSED) {
++      expect(row(card(beside, [gone, groove('ex.groove', teaching), drill('ex.drill'), pre]), 'technique')).toMatchObject({ item: { id: 'ex.drill' }, claim: { kind: 'rung' } });
++    }
++    expect(row(card(beside, [gone, groove('ex.groove', true), drill('ex.drill'), pre]), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'rung' } });
++  });
++
++  it('the ladder’s prerequisite step: the prerequisite rung’s groove is passed over for exposure, or for its notated exercise beside it', () => {
++    const skill = [{ kind: 'skill' as const, skill: 'subdivision', state: 'familiar' as const }];
++    const expo = exercise('ex.expo', { file: null, drill: { kind: 'scale', params: {} } });
++    const only = core({ exerciseOptions: ['ex.r-gone'], requirements: skill }, ['ex.groove'], ['ex.expo']);
++    for (const teaching of REFUSED) {
++      const slots = card(only, [gone, groove('ex.groove', teaching), expo]);
++      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
++      expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.expo' }, claim: { kind: 'exposure', family: { by: 'kind', id: 'scale' } } });
++    }
++    const approved = card(only, [gone, groove('ex.groove', true), expo]);
++    expect(row(approved, 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'prerequisite', rung: { id: 'P' }, of: { id: 'R' } } });
++    expect(shape(approved)).toEqual(shape(card(only, [gone, unpromised(groove('ex.groove', true)), expo])));
++
++    const beside = core({ exerciseOptions: ['ex.r-gone'], requirements: skill }, ['ex.groove', 'ex.pre'], ['ex.expo']);
++    for (const teaching of REFUSED) {
++      expect(row(card(beside, [gone, groove('ex.groove', teaching), pre, expo]), 'technique')).toMatchObject({ item: { id: 'ex.pre' }, claim: { kind: 'prerequisite' } });
++    }
++    expect(row(card(beside, [gone, groove('ex.groove', true), pre, expo]), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'prerequisite' } });
++  });
++
++  it('the jam slot: a reached jam rung’s groove is not the jam; with nothing else there the row is dropped, and a song beside it is the jam', () => {
++    /** The core path's C, the learner's rung; the jazz rung J met, so reached and not a strand. */
++    const jamCurriculum = (exercises: string[], songs: string[]): Curriculum => ({
++      version: 1,
++      tracks: [
++        { id: 'core', title: 'Core', description: '', startsAtStage: 0 },
++        { id: 'jazz', title: 'Jazz', description: '', startsAtStage: 1 },
++      ],
++      stages: [
++        {
++          number: 1,
++          title: 'One',
++          summary: '',
++          units: [
++            {
++              id: 'u',
++              title: 'U',
++              track: 'core',
++              lessons: [
++                lesson('C', {
++                  exerciseOptions: ['ex.c'],
++                  songOptions: ['song.c'],
++                  requirements: [
++                    { kind: 'runs', from: 'exercises', count: 1 },
++                    { kind: 'runs', from: 'songs', count: 1 },
++                  ],
++                }),
++              ],
++            },
++            { id: 'j', title: 'J', track: 'jazz', lessons: [lesson('J', { title: 'Comping behind somebody', exerciseOptions: exercises, songOptions: songs, requirements: [{ kind: 'runs', from: 'any', count: 1 }] })] },
++          ],
++        },
++      ],
++    });
++    const jamCard = (curriculum: Curriculum, items: CatalogItem[]) => {
++      const j = curriculum.stages[0]?.units[1]?.lessons[0] as Lesson;
++      const met: RungReading = { rung: j, status: 'met', judged: true, carried: false, requirements: [] };
++      return card(curriculum, [exercise('ex.c', measured([])), notated('song.c'), ...items], {
++        states: { byRung: new Map([['J', met]]) },
++        activeTracks: ['core', 'jazz'],
++        minutes: 60,
++        startAt: undefined,
++      });
++    };
++    const only = jamCurriculum(['ex.groove'], []);
++    for (const teaching of REFUSED) {
++      const slots = jamCard(only, [groove('ex.groove', teaching)]);
++      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
++      expect(row(slots, 'jam'), `teaching ${String(teaching)}`).toBeUndefined();
++    }
++    const approved = jamCard(only, [groove('ex.groove', true)]);
++    expect(row(approved, 'jam')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'jam', rung: { id: 'J' } } });
++    expect(shape(approved)).toEqual(shape(jamCard(only, [unpromised(groove('ex.groove', true))])));
++
++    const beside = jamCurriculum(['ex.groove'], ['song.j']);
++    for (const teaching of REFUSED) {
++      expect(row(jamCard(beside, [groove('ex.groove', teaching), notated('song.j')]), 'jam')).toMatchObject({ item: { id: 'song.j' }, claim: { kind: 'jam' } });
++    }
++    expect(row(jamCard(beside, [groove('ex.groove', true), notated('song.j')]), 'jam')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'jam' } });
++  });
++
++  it('the exposure rule: a family whose only member is the groove is not "from your lessons"; with nothing else the warm-up is dropped, and a drill’s family beside it is chosen', () => {
++    /** R asks only for a song, so the warm-up has nothing asked of it and takes the exposure rule over E's exercises. */
++    const exposureCurriculum = (e: string[]): Curriculum => ({
++      version: 1,
++      tracks: [{ id: 'core', title: 'Core', description: '', startsAtStage: 0 }],
++      stages: [
++        {
++          number: 1,
++          title: 'One',
++          summary: '',
++          units: [
++            {
++              id: 'u',
++              title: 'U',
++              track: 'core',
++              lessons: [
++                lesson('E', { exerciseOptions: e, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] }),
++                lesson('R', { songOptions: ['song.r'], requirements: [{ kind: 'runs', from: 'songs', count: 1 }] }),
++              ],
++            },
++          ],
++        },
++      ],
++    });
++    const only = exposureCurriculum(['ex.groove']);
++    for (const teaching of REFUSED) {
++      const slots = card(only, [groove('ex.groove', teaching), notated('song.r')]);
++      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
++      expect(row(slots, 'technique'), `teaching ${String(teaching)}`).toBeUndefined();
++      expect(row(slots, 'new')).toMatchObject({ item: { id: 'song.r' }, claim: { kind: 'asked' } });
++    }
++    const approved = card(only, [groove('ex.groove', true), notated('song.r')]);
++    expect(row(approved, 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'exposure', family: { by: 'kind', id: 'clave' } } });
++    expect(shape(approved)).toEqual(shape(card(only, [unpromised(groove('ex.groove', true)), notated('song.r')])));
++
++    const beside = exposureCurriculum(['ex.groove', 'ex.scale']);
++    for (const teaching of REFUSED) {
++      expect(row(card(beside, [groove('ex.groove', teaching), drill('ex.scale'), notated('song.r')]), 'technique')).toMatchObject({
++        item: { id: 'ex.scale' },
++        claim: { kind: 'exposure', family: { by: 'kind', id: 'scale' } },
++      });
++    }
++    expect(row(card(beside, [groove('ex.groove', true), drill('ex.scale'), notated('song.r')]), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'exposure' } });
++  });
++
++  it('the admission is one exported predicate: refused only for a music promise without a yes; drills, notated items, reading rows and bare items admitted', () => {
++    expect(admittedForTeaching(groove('x', null))).toBe(false);
++    expect(admittedForTeaching(groove('x', false))).toBe(false);
++    expect(admittedForTeaching(groove('x', true))).toBe(true);
++    expect(admittedForTeaching(drill('x'))).toBe(true);
++    expect(admittedForTeaching(notated('x'))).toBe(true);
++    expect(admittedForTeaching(exercise('x', { file: null, drill: { kind: 'sight-reading', params: {} } }))).toBe(true);
++    expect(admittedForTeaching(song('x'))).toBe(true);
++  });
++
++  it('session.ts reads neither the promise fact nor the teaching bit: it asks the admission', () => {
++    const source = readFileSync(join(process.cwd(), 'src', 'curriculum', 'session.ts'), 'utf8');
++    expect(source).not.toMatch(/facts\??\.promise|review\??\.teaching/);
++    expect(source).toMatch(/admittedForTeaching\(/);
++  });
++});
++
++describe('the card on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3b)', () => {
++  const CONTENT = join(process.cwd(), 'public', 'content');
++  const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
++  const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
++  const TODAY = new Date(2026, 8, 28, 9);
++  const tracks = curriculum.tracks.map((track) => track.id);
++  /** A fresh learner placed at `rung` with every track on (D3a's card probe), at `minutes`. */
++  const cardAt = (items: CatalogItem[], rung: string, minutes: number): SessionSlot[] =>
++    buildSession({
++      curriculum,
++      catalog: indexCatalog(items),
++      items,
++      states: rungState([], curriculum, VOCABULARY_V0, TODAY),
++      rows: [],
++      learned: [],
++      lastPlayed: new Map(),
++      activeTracks: tracks,
++      minutes,
++      startAt: rung,
++      today: TODAY,
++    }).slots;
++  const rungs = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
++
++  it('the gate refuses as not approved for teaching use exactly the items the admission refuses: one reading of the fact and the bit', () => {
++    const disagree: string[] = [];
++    let refused = 0;
++    for (const item of catalog) {
++      if (admittedForTeaching(item) === unapproved(item)) disagree.push(`${item.id} (against the contract table)`);
++      // A declared large-hand voicing is refused before the teaching-use check, whatever it promises.
++      if (item.provenance?.physical) continue;
++      const verdict = eligibleFor(item, COPES, { for: 'equivalent' });
++      const notApproved = verdict.verdict === 'ineligible' && verdict.why === 'teaching-use-not-approved';
++      if (notApproved) refused += 1;
++      if (notApproved === admittedForTeaching(item)) disagree.push(item.id);
++    }
++    expect(disagree.slice(0, 12), `${String(disagree.length)} disagree`).toEqual([]);
++    expect(refused).toBeGreaterThan(0);
++  });
++
++  it('every rung, a fresh learner placed there, every track on, every length: no row is one', () => {
++    const index = indexCatalog(catalog);
++    const offered: string[] = [];
++    for (const rung of rungs) {
++      for (const minutes of [15, 30, 60, 120]) {
++        const slots = buildSession({
++          curriculum,
++          catalog: index,
++          items: catalog,
++          states: rungState([], curriculum, VOCABULARY_V0, TODAY),
++          rows: [],
++          learned: [],
++          lastPlayed: new Map(),
++          activeTracks: tracks,
++          minutes,
++          startAt: rung,
++          today: TODAY,
++        }).slots;
++        for (const slot of slots) if (slot.item && unapproved(slot.item)) offered.push(`${rung} (${String(minutes)} min): ${slot.kind} ${slot.item.id} (${slot.claim?.kind ?? 'no claim'})`);
++      }
++    }
++    expect(offered.slice(0, 12), `${String(offered.length)} rows`).toEqual([]);
++  }, 300_000);
++
++  it('once a teaching-use yes is on their identity, the rungs’ own grooves are the card’s rows again', () => {
++    const items = catalog.map((item) => (promisesMusic(item) ? approved(item) : item));
++    expect(cardAt(items, 'holiday.5', 30).find((slot) => slot.kind === 'technique')).toMatchObject({ item: { id: 'exercise.ostinato.a.arpeggio' }, claim: { kind: 'asked' } });
++    expect(cardAt(items, 'jazz.9', 60).find((slot) => slot.kind === 'jam')).toMatchObject({ item: { id: 'exercise.comping.c.anticipated' }, claim: { kind: 'jam' } });
++    expect(cardAt(items, 'ragtime.9', 30).find((slot) => slot.kind === 'review')).toMatchObject({ item: { id: 'exercise.secondary-rag.c.4bar' }, claim: { kind: 'rung' } });
++  });
++});
+diff --git a/docs/02-curriculum.md b/docs/02-curriculum.md
+index b86eac5..e4349a6 100644
+--- a/docs/02-curriculum.md
++++ b/docs/02-curriculum.md
+@@ -928,7 +928,12 @@ that decision exists a study reaches the learner only through the Library (Part
+ >   the item's current identity, through the microscope's export and `review.py --merge`, built
+ >   into `provenance.review.teaching === true`, admits it to the same gates as everything else; a
+ >   stale decision (a changed identity) does not. Before D3a the demand and skill tiers offered the
+->   2.1 studies as *Also practises both hands together* on 2.1's rows.
++>   2.1 studies as *Also practises both hands together* on 2.1's rows. Since D3b (2026-09-28) the
++>   session card's rows that take an item straight from a rung's list — its asks, the fallback's
++>   rung and prerequisite steps, the jam slot, the exposure rule — pass the same admission
++>   (`eligibility.admittedForTeaching`), because a rung listing a groove is placement, not a
++>   decision to teach it; a rung's ask whose every candidate is refused (`latin.3`'s and
++>   `latin.6`'s exercises, all grooves) stays unmet, and the card takes the next valid step.
+ 
+ The table above is a technique syllabus in the conservatoire sense. It is not the whole of
+ what a learner practises, and a skill with no generated exercise ends up either untested or
+diff --git a/docs/04-ui-spec.md b/docs/04-ui-spec.md
+index f5eb16e..ab1fbf5 100644
+--- a/docs/04-ui-spec.md
++++ b/docs/04-ui-spec.md
+@@ -266,6 +266,23 @@ fallback until C6 and are deleted.
+   retention, a demand-ready piece — and only then the fallbacks, so a fallback never takes what a
+   claim asked for; a review with nothing due chooses last. No slot offers an item a
+   requirement has counted while something the rung asks for waits.
++- **An automatic row is an offer, and passes the teaching-use admission (D3b, 2026-09-28).** A
++  rung listing an item is its authored placement, not a decision that the item is fit to teach
++  (the reviewer's ruling on D3a). So every slot that takes an item straight from a rung's list
++  without asking the gate — a rung's `runs`, `done` and `measure` asks, the fallback ladder's rung
++  and prerequisite steps, the jam slot and the exposure rule — chooses only among items that pass
++  the same admission the gate applies (`eligibility.admittedForTeaching`, read once, in
++  `session.usable`): a generated item whose family promises music (the studies, the grooves, the
++  12/8 blues) is on no row until a person's `goodTeachingUse: yes` on its current identity is
++  built. Where that leaves a rung's ask with nothing to offer, the ask stays unmet in the rung
++  state and the slot takes the next step of the fallback ladder that passes (a prerequisite rung's
++  option, the exposure rule), or the row is dropped; no row says the ask is met or offers the next
++  lesson as though it were, and no row says anything waits for review, which is the content
++  pipeline's business and not a thing to practise. On the current build, `latin.3`'s and
++  `latin.6`'s exercise asks have only grooves to count and stay unmet until a decision exists; for
++  a fresh learner placed at any rung, every groove's row was filled by an admitted item, through
++  the slot's own rule or the ladder's next step, and no row was dropped (Entry 103's probe). The
++  Library and exploration never ask.
+ 
+ The line is the session row's second line and is cut at the owner's width, so the claim comes
+ in its first words and the detail after the dash:
+@@ -324,8 +341,8 @@ you like — no scoring, no cursor", `chose` "You chose this one".
+   identity is in D2's record and built (D3a: the gate's reason is *not approved for teaching use*,
+   never "not yet reviewed", because a `no` or a `fix` is a reviewed decision too). The Library
+   still lists every one of them, and opening one from there is exploration, which no gate
+-  refuses; a groove a rung lists can still be the card's own row for that rung, since the card
+-  takes a rung's list as it stands and nothing is removed from a rung. A shared concept tag or a step every tune has
++  refuses; since D3b a groove a rung lists is not the card's own row for that rung either (the
++  card's rows pass the same admission, above), though nothing is removed from a rung. A shared concept tag or a step every tune has
+   matches nothing: the `repertoire` tag on every quarried piece made the old third tier a level
+   window over the quarry. The words state the strongest fact known, never "similar difficulty".
+   Each tier's words are printed once over its options, and a row keeps `data-tier`; a chosen
+diff --git a/docs/08-test-map.md b/docs/08-test-map.md
+index 36051f5..5c5c67a 100644
+--- a/docs/08-test-map.md
++++ b/docs/08-test-map.md
+@@ -30,7 +30,8 @@ A test named here is the reproduction: every failure prints the seed and the act
+ | **A demand taught at more than one rung** (E0b; the reviewer's finding 2 on E0a): `taughtAt` as a list, every rung that teaches the demand, one per path (`demands.schema.json`); `validate.taught_at_findings` (every listed rung a rung, none on another listed rung's path, each naming the demand in its concepts or read by hand in `taughtAtNote`; a warning for each hand reading and each rung the derivation `claims.teaching_rungs` gives with nothing listed on its path); `claims.taught_at`, `concepts_naming`; `taughtAtRung`, the strand's edges, the reader's fallback and its taught-order, `targetDemandsFor`, `claims.untaught_on`, the report's rung claims, columns and coverage | the walking bass credited to `blues.5` alone, so a learner through `jazz.6`, whose lesson teaches and assigns a walking line, is withheld it at `jazz.8`; a second teaching rung that stands on the first; a listed rung whose lesson never names the demand; a rung whose concepts name it left off the list in silence; `theory.9` or a sibling track credited by adjacency | `tools/content/tests/test_taught_at.py` (added: the schema refuses a string and `null`, `[]` needs a note; two paths valid, one path twice refused, a missing rung refused; a rung not naming the demand refused, a hand reading warned; `jazz.6` left off is warned; the committed lists give exactly four warnings; the derivation; `claims.untaught_on` at `jazz.6`–`jazz.9` and `jam.6` taught, at `theory.9`, `classical.6`, `chords-pop.6`, `jazz.5`, `latin` not — red on the committed vocabulary and validator but the last), `test_measured_truth.py` (added: a walking-bass option taught on `jazz.8`, untaught on `theory.9` and `classical.6`; the inventory's `jazz.6` teaches it), `test_measured_demands.py` (added: no recorded combination has a teaching rung on its path, and each row's `taughtAt` is the vocabulary's), `fixtures/untaught_on_rung.json` (rewritten), `app/tests/unit/taughtByAncestry.test.ts` (added: two listed rungs on sibling tracks; (a) `jazz.6` without `blues.5`; (b) row 7 may write the walk at `jazz.8`, not at `theory.9`; (c) `classical.6` and `chords-pop.6`; the demand tier on `jazz.6`; the repertoire claim on a listed rung's strand; revised: `jazz.6` left the E0a case), `sightReadingPromises.test.ts` (revised: `PROMISED_OFF_THE_PATH` keeps `theory.9` only), `vocabulary.test.ts`, `helpers/promises.ts`, `generatorContract`, `composedContract`, `firstThirtyDays`, `readerMovesTheDemand`, `lessonClaimsAboutApp`, `scoreSummaryTruth`, `recommendRespondsToEvidence`, `alternativesShareASkill`, `fallbackOrder`, `slotsFromEvidence` (revised: the list; the file-order copies read `taughtAtRung`) | done (E0b, 2026-09-27); nothing heard; `latin` names walking-bass and is not listed (its lesson teaches a tumbao), warned until F reads it; 1.1's steps, 1.5's leap and 3.1's accidentals are hand readings, warned |
+ | **The microscope and the human review record** (D2): `#/dev/microscope/<item id>` (`DevMicroscopeScreen.ts`: the item drawn by the Score screen's renderer, Hear it through `ScoreSession`'s Listen run, hands together and each alone, the contract's and the measurement's facts, per-dimension decisions kept on the device and exported); `content/review/decisions.jsonl` (one dimension per event, bound to the item's identity) and `tools/content/review.py` (`--merge`, `--check`, the queue, the build's reviewed facts); `app/src/review/record.ts` (the screen's half of the contract); the rung-claims report's teaching-review column; the `heard` declaration held to the record | a basis shared between the two decisions, or the strongest basis winning across them (the brief as first drafted); a later decision losing to an earlier one merged later; a stale identity or a triage line filling a bit; a rerun merge appending twice; a line naming an identity or an item the catalogue does not have merged; a family marked heard with no hearing on record; the route reachable from a learner screen or tab; a review writing a learner's progress, sessions or settings | `tools/content/tests/test_review_record.py` (added: the shared cases, the malformed lines by number, the merge idempotent and refusing, the build's reviewed facts red first on a fixture with one decision, every built item's bits and facts equal to the record's current decisions, the report's review column, the queue's tiers, the screen's data, `--check`), `fixtures/review_cases.json` (added, read by both implementations), `test_family_contracts.py` (revised: `heard` held to the record — D0 asserted every music family unheard — and its adversaries), `app/tests/unit/reviewRecord.test.ts` (added: the same cases through `record.ts`, and its resolution equal to the build's on the built catalogue), `microscopeRoute.test.ts` (added: the route by id, round trip, refusal, never a tab), `tests/e2e/microscope.spec.ts` (added: a generated item opened by id, settled, every fact under its hook, Hear it enabled; each hand alone scheduling only its pitches; a decision exported and accepted by `review.py --merge`, twice; the learner's stores byte-identical across a review; the five tabs and no learner screen naming the route) | done (D2, 2026-09-27); one decision in the record, a score review from notation (Entry 95); nothing heard by a person through the screen yet; the phone picture is at 342 × 740 in the entry |
+ | **The generated study** (D3; G19, G16, G9's second half, G22): `tools/content/study.py` (the recipe, the grammar, the realiser), `generate_exercises.make_study` and `confirm_musical`, the `study` contract row, `family_contracts.musical_gate` evaluating it through `musical_evaluator.py` (D1's parts ported, held equal to `sightReadingScore.ts` on a shared fixture, with the multi-phrase, minor and declared-harmony semantics), the pedagogical repetition rule, the candidate-rungs report | a random tune with the right demands shipped as music; a phrase that stops, a cadence on a note outside its chord, a close that is not authentic; a middle repeating its opening bar as a drill would; a demand the recipe's rung has not taught (a minor key before accidentals, 6/8 before 4.5, a left-hand pattern before 3.6); a draw the realiser never checked written because the budget ran out; the port drifting from D1's scorer, or matching it on major four-bar phrases while misreading a minor or multi-phrase study; a new seed of a study called transfer; a study placed on a rung before a person has decided its teaching use | `tools/content/tests/test_study.py` (added: the grammar's cadences in both modes, recipes the rung cannot carry refused with the reason, an invalid draw never scored, the budget exhausted a refusal, the floor enforced, determinism; every plan study through the musical gate on its page, the repetition rule, every measured demand taught at the recipe's rung, spelled in its key, the left hand playing the declared progression, on no rung; the four gates red on the brief's adversaries; the candidate-rungs report equal to `claims.py`'s reading), `test_musical_evaluator.py` (added: the twin on every fixture case and a drifted port caught; each study semantic and each part on a case built to pass and one to fail), `test_study_distribution.py` (added: the six canonical recipes over forty seeds, the grammar within every bound and the random walk red on a shape bound, the target at the contract's density through the bridge; the table on `D3_TABLE`), `app/tests/unit/studyEvaluatorTwin.test.ts` (added: D1's scorer held to the same fixture; `STUDY_TWIN_WRITE=1` records), and the revised `test_family_contracts.py` (the census's musical hook), `test_generator_invariants.py` (the study's row), `test_roles.py` (a transfer declared per recipe; register measured), `test_review_record.py` (fifteen music families in the queue's first tier), `fixtures/identity_pins.json`, `fixtures/bridge_regression.json` (one hand-read study) | built (D3, Entry 100); unheard: whether a study reads as a small piece is a person's, through the microscope |
+-| **Generated music kept out of automatic offers until a teaching use is approved** (D3a; the reviewer's required change on D3, `responses/ee70b43.md`, and on D3a's brief, `responses/d483be4.md`): `build.attach_provenance`'s `facts.promise` (a generated item's family promise for its recipe, authored from the contract table by `review.promise_of`), and one check in `eligibility.eligibleFor` before its two questions — a `music` item whose `provenance.review.teaching` is not `true` is `teaching-use-not-approved` (the stored `null` or `false` kept in the verdict) for a skill, a requirement, a demand and an equivalent, and passes only for exploration; the candidate-rungs report's sentence (`study.candidate_rungs_markdown`) and `claims.py`'s report sentence making placement the owner's, corrected | an unheard study offered on a swap sheet as "Also practises both hands together" by the side door of the demand and skill tiers; a groove offered as a same-lesson equivalent or an authored stand-in; a study serving a rung's skill requirement or its skill or demand step; a `no` or `fix` read as approval, or refused under a false "not yet reviewed"; the `meter` family's promise read from the row's first rule, so its 5/4 drill is refused and its 12/8 blues offered; a drill, a notated song or a runtime reading row newly refused; the Library losing a study; a report saying placement is the owner's | `app/tests/unit/eligibility.test.ts` (added: a built study refused for a skill, a requirement, a demand it provides and an equivalent, eligible for exploration; a `no` and a `fix` refused alike with the bit kept; a `yes` passing to the existing gates and still refused for an untaught demand; the meter's 12/8 refused and 5/4 not; a drill, a notated song and a reading row unchanged), `gateAtTheConsumers.test.ts` (added: every row of every rung on the built catalogue for a learner who copes with everything offers none in any tier, and the same rows offer them once approved; an authored alternative naming the study refused, then offered; the Library listing every study and never importing the gate; the session's skill requirement, skill step and demand step, and the swap sheet's last resort, on constructed items), `tools/content/tests/test_measured_truth.py` (added: `TestThePromiseFact` — every generated item's fact the rule its recipe matches, authored, from the table; the music families music and the drills drill; the meter family's 5/4 drill and 12/8 music against its conditional first rule; no runtime or notated item carrying one), `test_study.py` (added: the candidate-rungs report makes placement no owner's, and the committed report's opening is its source's) — each red on the committed tree | done (D3a, Entry 102); nothing heard; no teaching-use decision made; the rungs' own grooves still reach the card as the rung's list (nothing removed from a rung) |
++| **Generated music kept out of automatic offers until a teaching use is approved** (D3a; the reviewer's required change on D3, `responses/ee70b43.md`, and on D3a's brief, `responses/d483be4.md`): `build.attach_provenance`'s `facts.promise` (a generated item's family promise for its recipe, authored from the contract table by `review.promise_of`), and one check in `eligibility.eligibleFor` before its two questions — a `music` item whose `provenance.review.teaching` is not `true` is `teaching-use-not-approved` (the stored `null` or `false` kept in the verdict) for a skill, a requirement, a demand and an equivalent, and passes only for exploration; the candidate-rungs report's sentence (`study.candidate_rungs_markdown`) and `claims.py`'s report sentence making placement the owner's, corrected | an unheard study offered on a swap sheet as "Also practises both hands together" by the side door of the demand and skill tiers; a groove offered as a same-lesson equivalent or an authored stand-in; a study serving a rung's skill requirement or its skill or demand step; a `no` or `fix` read as approval, or refused under a false "not yet reviewed"; the `meter` family's promise read from the row's first rule, so its 5/4 drill is refused and its 12/8 blues offered; a drill, a notated song or a runtime reading row newly refused; the Library losing a study; a report saying placement is the owner's | `app/tests/unit/eligibility.test.ts` (added: a built study refused for a skill, a requirement, a demand it provides and an equivalent, eligible for exploration; a `no` and a `fix` refused alike with the bit kept; a `yes` passing to the existing gates and still refused for an untaught demand; the meter's 12/8 refused and 5/4 not; a drill, a notated song and a reading row unchanged), `gateAtTheConsumers.test.ts` (added: every row of every rung on the built catalogue for a learner who copes with everything offers none in any tier, and the same rows offer them once approved; an authored alternative naming the study refused, then offered; the Library listing every study and never importing the gate; the session's skill requirement, skill step and demand step, and the swap sheet's last resort, on constructed items), `tools/content/tests/test_measured_truth.py` (added: `TestThePromiseFact` — every generated item's fact the rule its recipe matches, authored, from the table; the music families music and the drills drill; the meter family's 5/4 drill and 12/8 music against its conditional first rule; no runtime or notated item carrying one), `test_study.py` (added: the candidate-rungs report makes placement no owner's, and the committed report's opening is its source's) — each red on the committed tree | done (D3a, Entry 102); nothing heard; no teaching-use decision made; the rungs' own grooves still reach the card as the rung's list (nothing removed from a rung) — closed by D3b, the next row |
++| **The session card's automatic rows pass the same teaching-use admission** (D3b; the reviewer's required change on D3a, `responses/c8717be.md`, and the brief's answers, `responses/e0d1a3a.md`): `eligibility.admittedForTeaching` (the gate's own reading, `unapprovedMusic`, exported alone) read in `session.usable`, the one filter every slot chooses through — a want's `offer` (a rung's `runs`, `done` and `measure` asks), the fallback ladder's steps (`choose`: the rung and prerequisite steps; the skill and demand steps also ask the gate), the jam slot, the exposure rule, the review's repertoire retention and the repertoire claim (songs only, which no generated item is); a want's `pool` unfiltered, so a refused ask stays an ask and the slot takes the fallback ladder | a rung's own groove on the card as the warm-up the lesson asks for, the review's "more from …", the jam or an exposure family, because the rung lists it; a `false` read as approval; a drill or a notated song newly refused; a refused ask treated as met, so the card offers the next lesson as "The next lesson asks for it"; a row kept populated by the refused item; a second reading of the promise or the bit in `session.ts` | `app/tests/unit/gateAtTheConsumers.test.ts` (added, *the session card's rows drawn straight from a rung's list pass the same admission (D3b)*: each of `runs`, `done`, `measure`, the ladder's rung step, its prerequisite step, the jam slot and the exposure rule on constructed rungs — `teaching: null` and `false` not offered, `true` offered with the card exactly as for the same item with no promise, a generated drill and a notated song beside it offered as before, the only-candidate row filled by the next valid step or dropped and never said to be met; the predicate itself; `session.ts` reading neither the fact nor the bit; and *the card on the built catalogue …*: the gate and the admission refusing the same items, one reading, and both agreeing with the contract table; every rung, a fresh learner placed there, every track on, every length, no row one; approved, `holiday.5`'s ostinato, `jazz.9`'s comping and `ragtime.9`'s rag back on their rows) — red on the committed code; six mutants (a `false` admitted; the admission off the want's offer, the ladder, exposure or the jam slot; the pool filtered instead of the offer) each caught | done (D3b, Entry 103); nothing heard; no teaching-use decision made; `latin.3`'s and `latin.6`'s exercise asks unfillable until one is; the rung page's *Start*, *Climb the ladder*, *Quick check* and duet picks still read a rung's list without it (`LessonScreen`, outside D3b; a follow-up) |
+ | **Vocabulary v0 and the demand detectors** (C2): what a skill is (kind, opportunity, observable, standards), what a demand is (detector, coper, rung that teaches it), the one definition of each demand, the build gate | a demand defined twice and the two drifting (a broken chord read as a walking bass, a left-hand melody as a pattern); a triplet read as an eighth, a tied quarter as a dotted one, middle C's ledger line as the ledger-line skill; an item or demand naming an id nobody defines; a rung completing on a skill no run can measure, or on a count nothing counts | `tests/unit/demandDetectors.test.ts` (every v0 demand: present, absent, boundary, on hand-made phrases), `vocabulary.test.ts` (every skill observable or `none` with reasons, every detector exists, every id resolves), `scoreModelWrittenValues.test.ts` (tie parts and tuplets on the model), `demandsOfFiles.test.ts` (Anh. 113 measured by the app, all nineteen demands against the notation), `tools/content/tests/test_evidence_gate.py` (the gate red on a rung requiring an unmeasurable skill; waivers; stale waivers; the tree's three), `test_demands_tool.py` (the build reaches the TypeScript detectors) | done (C2, 2026-09-26); the catalog carries no `demands` yet (E); nothing heard |
+ | **Evidence from observations, and the ladder** (C3): nothing judged when nothing listens (L42), Today's rung and slot in the route (L50), the evidence function and its refusals, the timing precision, the ladder, the sheet's *Not judged* lines and the *Accents* line (U46) | every note painted red and its key flashed behind *Not measured* during a Keep tempo run nothing listened to, and the same on `Hear it`; a Today run judged by the Settings pair and stored with no rung; evidence from a channel the run did not measure, from a placeholder (`accuracy: 1`, `tempoPct: 100`), from a demand the learner did not play, for a skill nobody declared, or from a window too wide to tell a rhythm from its error; exposure or one pass read as mastery; the sheet silent about what it could not judge, and printing a share of accents over one loudness | `engineTempo.test.ts` (Listen and a Keep tempo run with nothing judging close no window as a miss and keep the clock), `tests/e2e/score.screen.spec.ts` (no note or key takes a verdict colour during such a run or during `Hear it`, watched from before ▶), `todayOpensWithItsRung.test.ts`, `router.test.ts`, `rungMastery.test.ts` and `scoreSummaryTruth.test.ts` (a Today card's rung and slot in the route, judging and stored, Back still Today's), `evidenceOnlyMeasured.test.ts`, `evidenceProperty.test.ts` (every v0 skill and each of its demands: unmeasured, placeholders, outside what was played, everything met), `tripletPrecision.test.ts`, `demandIsNotAbility.test.ts` (the compiler refuses an `Opportunity` as a `Measurement`), `evidenceTouchesNamedSkills.test.ts`, `masteryLadder.test.ts` (two teacher histories), `feedbackFromMeasurements.test.ts` (every *Not judged* line cites fields on the stored row) — each seen red on the committed code | done (C3, 2026-09-26); nothing selects by evidence yet (C4); which pitch of a chord was missed is not recorded, so a partly missed chord step counts against every demand on it (per demand since C4a: out of that demand's count and listed as unattributed, row below) |
+ | **The first reader** (C4): evidence stored at record time with its stamp, the reading state, the next sight-reading phrase from it (the daily read and the session's reading slot), unseen seeds, the easy band, the reason line, the side panel from nowhere (U47) | a daily read that is the hardest row at or below the stage whatever the learner read, and a reading slot that is any row at or below it by catalog order (S4, L12); renumbering the stages changing the phrase; two dimensions moved at once, or a dimension the rung has not taught; a move that breaks what the row promises; a phrase the learner has played or heard offered as a read; no easy read, or an easy one that says nothing; a reason line that claims what the evidence did not measure, or claims a reason where no evidence chose the phrase; a stored row whose evidence nobody can read back; a tablet panel quoting a pass the run is not held to | `readingState.test.ts` (three realistic five-read learners — never read, misread the skips on two days, clean — read into three different states; no stored evidence or a stale stamp contributes nothing), `feedbackFromMeasurements.test.ts` (the row keeps the evidence and refusals the sheet was drawn from, stamped), `sightReadingFromReadingState.test.ts` (three different next recipes, each one dimension from the last; the taught-at gate; the trap; unseen seeds; the easy band within four reads; one dimension from day to day; every move of every row keeps what the row always writes and adds only its own demands, twelve seeds each, by the detectors; the reason words printed in `04` §2), `recommendRespondsToEvidence.test.ts` (reading part: failing and never-read learners at one rung get different phrases, nothing else on the card changes, renumbered stages change nothing), `firstThirtyDays.test.ts` (reading part: a month through the real reader, generator, engine, evidence and store: always unseen, never two dimensions, a step back, a step on, easy reads, no key before 3.1), `sightReadingSlot.test.ts` (revised: the stage rule's Stage 1-2 claims kept as the floor, the evidence rule added), `scoreSummaryTruth.test.ts` (the recipe writes its phrase and reaches the record; *New phrase* and a fresh open draw no seed on record), `router.test.ts` (`?recipe=`), `tablet.test.ts` (the pass paragraph dropped for a run no rung opened, in every lesson), `lessonClaimsAboutApp.test.ts` (3.4's new sentence); `tests/e2e/today.spec.ts` (the reason on the glass at 342 px, whole, and ▶ opening that phrase), `side-panel-prose.spec.ts` (no pass line from nowhere, whole from the rung) — each seen red on the committed code | done (C4, 2026-09-26); nothing heard; the evidence is per skill, so no line can name the demand that went wrong (per demand since C4a, row below; the reader and its line are C4c's); 1.3's and levels 5-7's rows have no dimension to move; the warm-up slot can take the rung's reading row, and the reading slot is then dropped |
+@@ -392,7 +393,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
+ - `help.test.ts` — every mode, drill kind and tool has all four answers in `ui/help.ts`, in sentences, never in the code's own names for the modes, and the same lines `04` §5f prints; every sentence the Score screen says about a run — the state line, a refused `⋯` row, the summary's *Changed* line — printed in §5f too (T33), and the sheet's T40 sentences (*Not measured*, the repeat, a performance heard part way) and C3's *Not judged* sentences; and every number a drill puts in `detail` is named in words rather than printed as its field name.
+ - `importOverlay.test.ts` — an imported piece becomes an option of the rung; offered beside the rung's songs once its demands are measured, never while unmeasured (E0).
+ - `eligibility.test.ts` — the one gate (E0): Part 23's nine adversaries, the corrected import, the large-hand refusal, the requirement only evidence can meet, the readiness floor, the reason words, the density rule equal to the build's; since D3a, a built study that promises music and has no affirmative teaching-use decision refused for every automatic want and eligible for exploration, a `no` and a `fix` refused alike, a `yes` admitted to the existing gates, the meter's promise by recipe, drills, songs and reading rows unchanged.
+-- `gateAtTheConsumers.test.ts` — the gate's traps through `tieredAlternatives` and the repertoire claim, written to the consumers' own signatures (E0); since D3a, no unapproved music-promising generated item in any tier of any rung's swap sheet on the built catalogue, an authored alternative naming one refused, the Library still listing the studies, the session's skill requirement and skill and demand steps and the swap sheet's last resort refusing one — and each offering it once approved.
++- `gateAtTheConsumers.test.ts` — the gate's traps through `tieredAlternatives` and the repertoire claim, written to the consumers' own signatures (E0); since D3a, no unapproved music-promising generated item in any tier of any rung's swap sheet on the built catalogue, an authored alternative naming one refused, the Library still listing the studies, the session's skill requirement and skill and demand steps and the swap sheet's last resort refusing one — and each offering it once approved; since D3b, the session card's rows drawn straight from a rung's list (`runs`, `done`, `measure`, the ladder's rung and prerequisite steps, the jam slot, the exposure rule) refusing one for `null` and `false` and offering it for `true`, drills and notated songs beside it unchanged, the only-candidate row filled by the next valid step or dropped, the admission one exported predicate, and every rung's card on the built catalogue free of one.
+ - `taughtByAncestry.test.ts` — "taught by this rung" is the rung's ancestry, never the file's order (E0a): two sibling tracks, the shipped walking bass and ledger lines, the core path, the reordered file, the learner's reached rungs through the swap sheet and the session, the build's ancestry equal to the app's; since E0b a demand taught at more than one rung (the walking bass at `jazz.6` without `blues.5`, row 7 at `jazz.8` and `theory.9`, the sibling tracks, the demand tier and the repertoire claim).
+ - `importStore.test.ts` — importing the owner's scores: the happy path and the parser's one sentence.
+ - `midiParse.test.ts` — the MIDI reader on files built byte by byte: onsets in quarter notes, a release written as a note-on of velocity zero, a pitch struck again while it is down, a note still down at the end, running status, SysEx skipped by its length; and the note-track merge, which `convertMidi` asks for only when a file has three or more note tracks.

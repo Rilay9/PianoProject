@@ -1,0 +1,1 @@
+The builder's captures for D4a (Entry 109): each run's exit-and-summary file, the red lines and mutants, and the orchestrator's chain on the merged tree (`orchestrator-exit.txt`). Left in the worktree's folder: `scripts/`.

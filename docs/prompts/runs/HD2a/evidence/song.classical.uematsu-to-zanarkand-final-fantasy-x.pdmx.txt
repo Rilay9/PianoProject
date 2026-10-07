@@ -1,0 +1,24 @@
+HD2a evidence: song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx (scores/pdmx/QmVM8sy9fma66nHKmyjHLAxQqF8mguPVoqTvUsXYxyfcKQ.mxl), identity sha256 0ee4b8b42bd4d1d9419ab2b325275ab7b393f89f01f5a3b76b40796e411f280e
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 25-26 -> R
+  bar 25 (source measure 24) st1 v2: L/x -> R; onsets 3 {'conflict': 1, 'free': 2}; second voice(s) [3]; e.g. @72 L [60, 71] + v2 [83]
+  bar 25 onset 72 83/st1/v2/L/x:1 76/st1/v1/R:3 74/st1/v1/R:3 71/st2/v3/L:3 60/st2/v3/L:3
+  bar 25 onset 73 83/st1/v2/L/x:1
+  bar 25 onset 74 83/st1/v2/L/x:1
+  bar 26 (source measure 25) st1 v2: L/x -> R; onsets 3 {'conflict': 1, 'free': 2}; second voice(s) [3]; e.g. @75 L [62, 72] + v2 [83]
+  bar 26 onset 75 83/st1/v2/L/x:1 78/st1/v1/R:3 76/st1/v1/R:3 72/st2/v3/L:3 62/st2/v3/L:3
+  bar 26 onset 76 81/st1/v2/L/x:1
+  bar 26 onset 77 86/st1/v2/L/x:1
+
+ROW staff 1 voice 2 bars 59-60 -> R
+  bar 59 (source measure 58) st1 v2: L/x -> R; onsets 3 {'conflict': 1, 'free': 2}; second voice(s) [3]; e.g. @174 L [60, 71] + v2 [83]
+  bar 59 onset 174 83/st1/v2/L/x:1 76/st1/v1/R:3 74/st1/v1/R:3 71/st2/v3/L:3 60/st2/v3/L:3
+  bar 59 onset 175 83/st1/v2/L/x:1
+  bar 59 onset 176 83/st1/v2/L/x:1
+  bar 60 (source measure 59) st1 v2: L/x -> R; onsets 3 {'conflict': 1, 'free': 2}; second voice(s) [3]; e.g. @177 L [62, 72] + v2 [83]
+  bar 60 onset 177 83/st1/v2/L/x:1 78/st1/v1/R:3 76/st1/v1/R:3 72/st2/v3/L:3 62/st2/v3/L:3
+  bar 60 onset 178 81/st1/v2/L/x:1
+  bar 60 onset 179 86/st1/v2/L/x:1
+

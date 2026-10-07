@@ -1,0 +1,13 @@
+HD2a evidence: song.pop.hans-otto-borgmann-tango-notturno.pdmx (scores/pdmx/QmdVUPP8RphroBWSK7FpsbWxLoyp6kQQuGA6KG9EPdDZc7.mxl), identity sha256 8cd32e8e7b7f3c6ff9e140305542c4784b09c7519e672ac20f583db781fe33cb
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 2-2 -> R
+  bar 2 (source measure 1) st1 v2: L/x -> R; onsets 5 {'conflict': 3, 'free': 2}; second voice(s) [3]; e.g. @4 L [39, 51] + v2 [57, 61, 67]; @6 L [39, 51] + v2 [57, 61, 67]
+  bar 2 onset 4 69/st1/v1/R:2 67/st1/v2/L/x:0.5 61/st1/v2/L/x:0.5 57/st1/v2/L/x:0.5 51/st2/v3/L:1 39/st2/v3/L:1
+  bar 2 onset 4.5 67/st1/v2/L/x:1 61/st1/v2/L/x:1 57/st1/v2/L/x:1
+  bar 2 onset 5 51/st2/v3/L:1 39/st2/v3/L:1
+  bar 2 onset 5.5 67/st1/v2/L/x:0.5 61/st1/v2/L/x:0.5 57/st1/v2/L/x:0.5
+  bar 2 onset 6 69/st1/v1/R:2 67/st1/v2/L/x:1 61/st1/v2/L/x:1 57/st1/v2/L/x:1 51/st2/v3/L:1 39/st2/v3/L:1
+  bar 2 onset 7 67/st1/v2/L/x:1 61/st1/v2/L/x:1 57/st1/v2/L/x:1 51/st2/v3/L:1 39/st2/v3/L:1
+

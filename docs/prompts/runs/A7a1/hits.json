@@ -1,0 +1,130 @@
+{
+ "rows": 254077,
+ "blues_riff": [
+  {
+   "cid": "Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi",
+   "member": "mxl/1/6/Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.mxl",
+   "title": "Blues Riff in C (120 bpm)",
+   "song_name": "12 bar blues",
+   "composer": "Daniels Elizabeth Calvin",
+   "artist": "Lessons - Blues",
+   "tracks": "0-0-0",
+   "bars": "12",
+   "rating": "4.87",
+   "n_ratings": "5",
+   "license": "publicdomain",
+   "dedup": "True",
+   "no_license_conflict": "False"
+  },
+  {
+   "cid": "Qmdhr5ubNVfjNqVT7ShJYdLDCxiGMGcAVtiQkGYedgP2g9",
+   "member": "mxl/3/23/Qmdhr5ubNVfjNqVT7ShJYdLDCxiGMGcAVtiQkGYedgP2g9.mxl",
+   "title": "12 Maten Blues",
+   "song_name": "12 Maten Blues",
+   "composer": "Pianolessen.eu",
+   "artist": "Pianolessen.eu",
+   "tracks": "0",
+   "bars": "12",
+   "rating": "0.0",
+   "n_ratings": "0",
+   "license": "cc-zero",
+   "dedup": "True",
+   "no_license_conflict": "False"
+  }
+ ],
+ "twelve_bar_same_creator": [
+  {
+   "cid": "Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi",
+   "member": "mxl/1/6/Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.mxl",
+   "title": "Blues Riff in C (120 bpm)",
+   "song_name": "12 bar blues",
+   "composer": "Daniels Elizabeth Calvin",
+   "artist": "Lessons - Blues",
+   "tracks": "0-0-0",
+   "bars": "12",
+   "rating": "4.87",
+   "n_ratings": "5",
+   "license": "publicdomain",
+   "dedup": "True",
+   "no_license_conflict": "False"
+  },
+  {
+   "cid": "QmbizGFyvL8ocPFV1J6mD8uCMZF7JtYZa6bVcik8xa7SaS",
+   "member": "mxl/1/25/QmbizGFyvL8ocPFV1J6mD8uCMZF7JtYZa6bVcik8xa7SaS.mxl",
+   "title": "Simple 12 Bar Blues Duet in E",
+   "song_name": "12 bar blues",
+   "composer": "Stephan Peters",
+   "artist": "Lessons - Blues",
+   "tracks": "0-0",
+   "bars": "27",
+   "rating": "0.0",
+   "n_ratings": "0",
+   "license": "cc-zero",
+   "dedup": "True",
+   "no_license_conflict": "False"
+  },
+  {
+   "cid": "QmduvvF9WYbSxgdNZLWZHwiPmD6Bk4bDg9kvssqRP3pu6h",
+   "member": "mxl/3/46/QmduvvF9WYbSxgdNZLWZHwiPmD6Bk4bDg9kvssqRP3pu6h.mxl",
+   "title": "12 Bar Blues",
+   "song_name": "12 bar blues",
+   "composer": "NA",
+   "artist": "Lessons - Blues",
+   "tracks": "0",
+   "bars": "13",
+   "rating": "4.5",
+   "n_ratings": "19",
+   "license": "publicdomain",
+   "dedup": "True",
+   "no_license_conflict": "True"
+  }
+ ],
+ "twelve_bar_other_count": 3,
+ "by_creator": [
+  {
+   "cid": "Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi",
+   "member": "mxl/1/6/Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.mxl",
+   "title": "Blues Riff in C (120 bpm)",
+   "song_name": "12 bar blues",
+   "composer": "Daniels Elizabeth Calvin",
+   "artist": "Lessons - Blues",
+   "tracks": "0-0-0",
+   "bars": "12",
+   "rating": "4.87",
+   "n_ratings": "5",
+   "license": "publicdomain",
+   "dedup": "True",
+   "no_license_conflict": "False"
+  },
+  {
+   "cid": "QmbizGFyvL8ocPFV1J6mD8uCMZF7JtYZa6bVcik8xa7SaS",
+   "member": "mxl/1/25/QmbizGFyvL8ocPFV1J6mD8uCMZF7JtYZa6bVcik8xa7SaS.mxl",
+   "title": "Simple 12 Bar Blues Duet in E",
+   "song_name": "12 bar blues",
+   "composer": "Stephan Peters",
+   "artist": "Lessons - Blues",
+   "tracks": "0-0",
+   "bars": "27",
+   "rating": "0.0",
+   "n_ratings": "0",
+   "license": "cc-zero",
+   "dedup": "True",
+   "no_license_conflict": "False"
+  },
+  {
+   "cid": "QmduvvF9WYbSxgdNZLWZHwiPmD6Bk4bDg9kvssqRP3pu6h",
+   "member": "mxl/3/46/QmduvvF9WYbSxgdNZLWZHwiPmD6Bk4bDg9kvssqRP3pu6h.mxl",
+   "title": "12 Bar Blues",
+   "song_name": "12 bar blues",
+   "composer": "NA",
+   "artist": "Lessons - Blues",
+   "tracks": "0",
+   "bars": "13",
+   "rating": "4.5",
+   "n_ratings": "19",
+   "license": "publicdomain",
+   "dedup": "True",
+   "no_license_conflict": "True"
+  }
+ ]
+}

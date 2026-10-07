@@ -1,0 +1,10 @@
+
+Running 4 tests using 4 workers
+
+  ok 2 build\u105d\probe\probe.spec.ts:153:7 › bal780 paused stack base (5.2s)
+  ok 1 build\u105d\probe\probe.spec.ts:153:7 › bal780 paused wider-face base (5.5s)
+  ok 4 build\u105d\probe\probe.spec.ts:153:7 › bal780 paused wider-face h2-balance (5.4s)
+  ok 3 build\u105d\probe\probe.spec.ts:153:7 › bal780 paused stack h2-balance (5.5s)
+
+  4 passed (8.4s)
+exit 0

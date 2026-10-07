@@ -1,0 +1,3 @@
+﻿docs/prompts/inventory.md: HEAD's text, CRLF restored
+docs/prompts/rung-claims.md: HEAD's text, CRLF restored
+exit 0

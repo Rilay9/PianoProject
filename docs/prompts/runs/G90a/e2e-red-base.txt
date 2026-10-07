@@ -1,0 +1,114 @@
+# base dist, session-held-skip
+
+Running 4 tests using 1 worker
+
+  x  1 tests\e2e\session-held-skip.spec.ts:265:3 › a piece paused on its sheet after Start session: the record holds its own kind and the state, and Today's row says why, read back after a reload at three sizes (G90a) (6.5s)
+  x  2 tests\e2e\session-held-skip.spec.ts:265:3 › a piece retired on its sheet after Start session: the record holds its own kind and the state, and Today's row says why, read back after a reload at three sizes (G90a) (4.5s)
+  x  3 tests\e2e\session-held-skip.spec.ts:332:1 › a piece swapped in and then paused (the later word) is stepped past at its turn, said on the transition and on Today; the swap kept its moment through the store (G90a) (2.6s)
+  ok 4 tests\e2e\session-held-skip.spec.ts:362:1 › a piece paused and then swapped in (the earlier word) is the learner’s own choice: it is offered at its turn and nothing is skipped (G90a) (3.0s)
+
+
+  1) tests\e2e\session-held-skip.spec.ts:265:3 › a piece paused on its sheet after Start session: the record holds its own kind and the state, and Today's row says why, read back after a reload at three sizes (G90a) 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 1
+
+      Array [
+        Object {
+    -     "held": "paused",
+    -     "kind": "withdrawn",
+    +     "kind": "skipped-redundant",
+          "why": "Ode to Joy (hands together) is skipped — you paused it",
+        },
+      ]
+
+      270 |     const mine = record.activities[walk.at];
+      271 |     expect(mine?.state).toBe('skipped');
+    > 272 |     expect(mine?.adaptations).toEqual([{ kind: 'withdrawn', held: state, why: `${walk.title} is skipped — ${last === 'pause' ? 'you paused it' : 'you put it away'}` }]);
+          |                               ^
+      273 |     // The learner has not moved on yet (an activity stopped early is still the cursor's); Start opens the one after.
+      274 |     await page.locator('#session-start-next').click();
+      275 |     await expect(page).toHaveURL(new RegExp(`${walk.after.itemId.replace(/\./g, '\\.')}.*session=[0-9a-z]+`), { timeout: 30_000 });
+        at <worktree>\app\tests\e2e\session-held-skip.spec.ts:272:31
+
+    Error Context: build\g90a\test-results\session-held-skip-a-piece--e45b2-reload-at-three-sizes-G90a-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\g90a\test-results\session-held-skip-a-piece--e45b2-reload-at-three-sizes-G90a-\trace.zip
+    Usage:
+
+        npx playwright show-trace build\g90a\test-results\session-held-skip-a-piece--e45b2-reload-at-three-sizes-G90a-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\session-held-skip.spec.ts:265:3 › a piece retired on its sheet after Start session: the record holds its own kind and the state, and Today's row says why, read back after a reload at three sizes (G90a) 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 1
+
+      Array [
+        Object {
+    -     "held": "retired",
+    -     "kind": "withdrawn",
+    +     "kind": "skipped-redundant",
+          "why": "Ode to Joy (hands together) is skipped — you put it away",
+        },
+      ]
+
+      270 |     const mine = record.activities[walk.at];
+      271 |     expect(mine?.state).toBe('skipped');
+    > 272 |     expect(mine?.adaptations).toEqual([{ kind: 'withdrawn', held: state, why: `${walk.title} is skipped — ${last === 'pause' ? 'you paused it' : 'you put it away'}` }]);
+          |                               ^
+      273 |     // The learner has not moved on yet (an activity stopped early is still the cursor's); Start opens the one after.
+      274 |     await page.locator('#session-start-next').click();
+      275 |     await expect(page).toHaveURL(new RegExp(`${walk.after.itemId.replace(/\./g, '\\.')}.*session=[0-9a-z]+`), { timeout: 30_000 });
+        at <worktree>\app\tests\e2e\session-held-skip.spec.ts:272:31
+
+    Error Context: build\g90a\test-results\session-held-skip-a-piece--d8ad6-reload-at-three-sizes-G90a-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\g90a\test-results\session-held-skip-a-piece--d8ad6-reload-at-three-sizes-G90a-\trace.zip
+    Usage:
+
+        npx playwright show-trace build\g90a\test-results\session-held-skip-a-piece--d8ad6-reload-at-three-sizes-G90a-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests\e2e\session-held-skip.spec.ts:332:1 › a piece swapped in and then paused (the later word) is stepped past at its turn, said on the transition and on Today; the swap kept its moment through the store (G90a) 
+
+    Error: the swap kept the moment it was made
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: Any<String>
+    Received: undefined
+
+      339 |   const swapped = await swapRowForASong(page);
+      340 |   const run = await storedRun(page);
+    > 341 |   expect(run.activities[swapped.at]?.swappedAt, 'the swap kept the moment it was made').toEqual(expect.any(String));
+          |                                                                                         ^
+      342 |   expect(run.activities[swapped.at]?.slot.claim, 'a swap carries no claim').toBeUndefined();
+      343 |   // The learner pauses the piece afterwards: a later word than the swap.
+      344 |   await page.waitForTimeout(50);
+        at <worktree>\app\tests\e2e\session-held-skip.spec.ts:341:89
+
+    Error Context: build\g90a\test-results\session-held-skip-a-piece--04fc0-ent-through-the-store-G90a-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\g90a\test-results\session-held-skip-a-piece--04fc0-ent-through-the-store-G90a-\trace.zip
+    Usage:
+
+        npx playwright show-trace build\g90a\test-results\session-held-skip-a-piece--04fc0-ent-through-the-store-G90a-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    tests\e2e\session-held-skip.spec.ts:265:3 › a piece paused on its sheet after Start session: the record holds its own kind and the state, and Today's row says why, read back after a reload at three sizes (G90a) 
+    tests\e2e\session-held-skip.spec.ts:265:3 › a piece retired on its sheet after Start session: the record holds its own kind and the state, and Today's row says why, read back after a reload at three sizes (G90a) 
+    tests\e2e\session-held-skip.spec.ts:332:1 › a piece swapped in and then paused (the later word) is stepped past at its turn, said on the transition and on Today; the swap kept its moment through the store (G90a) 
+  1 passed (28.3s)
+exit 1

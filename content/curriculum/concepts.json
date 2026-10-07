@@ -17,8 +17,9 @@
     "skills, and holds their kind, opportunity, observable and standards: sight-reading,",
     "reading-ahead, bass-clef, ledger-lines, interval-reading, position-shift, subdivision,",
     "dotted-quarter, tie, syncopation, triplets, 6/8, key-signature, hands-together and",
-    "hand-independence. Their entries here keep the display name and the finder. `steps`, `skips`",
-    "and `eighth-notes` are demands in v0 (interval.step, interval.skip, rhythm.eighths), and",
+    "hand-independence. Their entries here keep the display name and the finder. `steps`, `skips`,",
+    "`eighth-notes` and `sixteenth-notes` (L120c) are demands in v0 (interval.step, interval.skip,",
+    "rhythm.eighths, rhythm.sixteenths), and",
     "`C-position` and `LH-C-position` are a range it measures (range.beyond-position absent): none",
     "is a v0 skill, and they stay here because lessons name them. Nothing else here is touched by v0."
   ],
@@ -255,6 +256,23 @@
         "avoid": [
           "ledger lines",
           "hand position changes"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "accidentals",
+      "display": "Accidentals",
+      "finder": {
+        "skill": "reading a sharp, flat or natural written beside a note, and letting it last to the end of the bar",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "accidentals written in the music",
+          "a minor key with its raised seventh"
+        ],
+        "avoid": [
+          "chromatic runs",
+          "changes of key"
         ],
         "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
       }
@@ -1885,8 +1903,23 @@
       }
     },
     {
+      "id": "leap",
+      "display": "Leaps: a fourth or fifth",
+      "finder": {
+        "skill": "reading and playing a jump of a fourth or fifth without feeling for it",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a few leaps of a fourth or fifth in a stepwise melody"
+        ],
+        "avoid": [
+          "octave leaps"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
       "id": "leaps",
-      "display": "Leaps",
+      "display": "Wide leaps",
       "finder": {
         "skill": "jumping accurately to a note you cannot feel for",
         "levelWords": "advanced, Grade 5 to 6",
@@ -2248,12 +2281,11 @@
         "skill": "playing the repeating Latin piano figure",
         "levelWords": "moderate to advancing, Grade 3 to 4",
         "constraints": [
-          "a montuno figure",
+          "a montuno figure, in block chords on the clave's strokes or broken into single notes",
           "clave underneath"
         ],
         "avoid": [
-          "swing feel",
-          "block chord accompaniment"
+          "swing feel"
         ],
         "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
       }
@@ -3324,6 +3356,23 @@
         ],
         "avoid": [
           "contrary motion only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "sixteenth-notes",
+      "display": "Sixteenth notes",
+      "finder": {
+        "skill": "playing four even notes to the beat",
+        "levelWords": "moderate, Grade 2 to 3, up to advancing, Grade 4 to 5",
+        "constraints": [
+          "sixteenth notes in groups of four",
+          "a steady pulse"
+        ],
+        "avoid": [
+          "triplets",
+          "syncopation"
         ],
         "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
       }

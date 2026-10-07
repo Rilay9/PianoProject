@@ -1,0 +1,102 @@
+......FF.FF.F......EFEF
+======================================================================
+ERROR: test_a_claim_counts_its_checked_and_its_unmeasured_options_apart (tools.content.tests.test_validate_claims.TestTheReportCountsTheUnmeasuredApart.test_a_claim_counts_its_checked_and_its_unmeasured_options_apart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a172918e0ab7443a8\tools\content\tests\test_validate_claims.py", line 214, in test_a_claim_counts_its_checked_and_its_unmeasured_options_apart
+    self.assertEqual((row["established"], row["measurable"], row["unmeasured"]), (0, 1, 1),
+                                                             ~~~^^^^^^^^^^^^^^
+KeyError: 'unmeasured'
+
+======================================================================
+ERROR: test_the_summary_counts_unmeasured_pairs_apart_from_the_checkable (tools.content.tests.test_validate_claims.TestTheReportCountsTheUnmeasuredApart.test_the_summary_counts_unmeasured_pairs_apart_from_the_checkable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a172918e0ab7443a8\tools\content\tests\test_validate_claims.py", line 221, in test_the_summary_counts_unmeasured_pairs_apart_from_the_checkable
+    self.assertEqual((s["measurable"], s["unestablished"], s["unmeasured"]), (1, 1, 1),
+                                                           ~^^^^^^^^^^^^^^
+KeyError: 'unmeasured'
+
+======================================================================
+FAIL: test_a_deferral_whose_options_this_build_could_not_measure_is_not_stale (tools.content.tests.test_validate_claims.TestOnlyWhatThisBuildMeasured.test_a_deferral_whose_options_this_build_could_not_measure_is_not_stale)
+A deferral is stale when the claim is kept or no longer made, never because a build could not look.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a172918e0ab7443a8\tools\content\tests\test_validate_claims.py", line 187, in test_a_deferral_whose_options_this_build_could_not_measure_is_not_stale
+    self.assertTrue(any("misreads this walk" in w and "1 unmeasured on this build" in w for w in warnings), warnings)
+AssertionError: False is not true : ["WARNING (rung claims, F2): F.1 claims walking-bass (texture.walking-bass) and none of its 1 checked options establishes it; deferred: the fixture's detector misreads this walk"]
+
+======================================================================
+FAIL: test_a_deferral_with_a_placeholder_beside_its_checked_options_still_warns_with_its_reason (tools.content.tests.test_validate_claims.TestOnlyWhatThisBuildMeasured.test_a_deferral_with_a_placeholder_beside_its_checked_options_still_warns_with_its_reason)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a172918e0ab7443a8\tools\content\tests\test_validate_claims.py", line 193, in test_a_deferral_with_a_placeholder_beside_its_checked_options_still_warns_with_its_reason
+    self.assertTrue(any("misreads this walk" in w and "none of its 1 checked options" in w for w in warnings), warnings)
+AssertionError: False is not true : ["WARNING (rung claims, F2): F.1 claims walking-bass (texture.walking-bass) and none of its 2 checked options establishes it; deferred: the fixture's detector misreads this walk"]
+
+======================================================================
+FAIL: test_its_one_establishing_option_unmeasured_here_is_warned_not_failed (tools.content.tests.test_validate_claims.TestOnlyWhatThisBuildMeasured.test_its_one_establishing_option_unmeasured_here_is_warned_not_failed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a172918e0ab7443a8\tools\content\tests\test_validate_claims.py", line 144, in test_its_one_establishing_option_unmeasured_here_is_warned_not_failed
+    self.assertEqual(errors, [], "the build measured no option of F.1: it cannot say the claim is unkept")
+AssertionError: Lists differ: ['F.1: its concepts name walking-bass (tex[204 chars] it'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'F.1: its concepts name walking-bass (texture.walking-bass) and none of its 1 checked options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), or keep an option that establishes it'
+
++ []
+- ['F.1: its concepts name walking-bass (texture.walking-bass) and none of its 1 '
+-  'checked options establishes it: move it to introduces (the rung introduces '
+-  'it, and its lesson says no piece there practises it yet), or keep an option '
+-  'that establishes it'] : the build measured no option of F.1: it cannot say the claim is unkept
+
+======================================================================
+FAIL: test_one_unmeasured_and_one_measured_absent_is_warned_not_failed (tools.content.tests.test_validate_claims.TestOnlyWhatThisBuildMeasured.test_one_unmeasured_and_one_measured_absent_is_warned_not_failed)
+The Pages deploy's case: 2.4's one tie option and ragtime.8's Joplin rags are placeholders in
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a172918e0ab7443a8\tools\content\tests\test_validate_claims.py", line 164, in test_one_unmeasured_and_one_measured_absent_is_warned_not_failed
+    self.assertEqual(errors, [], "an unmeasured option refutes nothing: the claim is not judged on this build")
+AssertionError: Lists differ: ['F.1: its concepts name walking-bass (tex[204 chars] it'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'F.1: its concepts name walking-bass (texture.walking-bass) and none of its 2 checked options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), or keep an option that establishes it'
+
++ []
+- ['F.1: its concepts name walking-bass (texture.walking-bass) and none of its 2 '
+-  'checked options establishes it: move it to introduces (the rung introduces '
+-  'it, and its lesson says no piece there practises it yet), or keep an option '
+-  'that establishes it'] : an unmeasured option refutes nothing: the claim is not judged on this build
+
+======================================================================
+FAIL: test_the_failing_message_says_how_many_were_checked_and_unmeasured (tools.content.tests.test_validate_claims.TestOnlyWhatThisBuildMeasured.test_the_failing_message_says_how_many_were_checked_and_unmeasured)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a172918e0ab7443a8\tools\content\tests\test_validate_claims.py", line 178, in test_the_failing_message_says_how_many_were_checked_and_unmeasured
+    self.assertTrue(any("none of its 2 checked options establishes it" in e and "0 unmeasured on this build" in e
+AssertionError: False is not true : a reader of the runner's log tells a fully measured rung from a placeholder; got ['F.1: its concepts name walking-bass (texture.walking-bass) and none of its 2 checked options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), or keep an option that establishes it']
+
+======================================================================
+FAIL: test_the_markdown_shows_the_unmeasured_count_beside_the_checked (tools.content.tests.test_validate_claims.TestTheReportCountsTheUnmeasuredApart.test_the_markdown_shows_the_unmeasured_count_beside_the_checked)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a172918e0ab7443a8\tools\content\tests\test_validate_claims.py", line 226, in test_the_markdown_shows_the_unmeasured_count_beside_the_checked
+    self.assertIn("unmeasured on this build: 1", text.split("## The rungs Part 12 names first")[0])
+AssertionError: 'unmeasured on this build: 1' not found in "# The rung-claims report\n\nGenerated by `tools/content/build.py` from the built catalogue and curriculum (E0 item 5; R38, Part 12 §1). Do not edit by hand: rebuild. Nothing here removes an option from a rung; the authored lists stay authoritative, and this is what F and G rewrite from. `validate.py` warns with its count.\n\n**How to read it.** A rung claims the skills its requirements name, the vocabulary skills and notated facts its concepts name, and the demands the vocabulary says it teaches (`taughtAt`). Each option **establishes** a claim when its measured demands provide it at a useful density (`content/sources/opportunity-density.json`, or a generated family's own contract density), carries it **incidentally** (present, below that density), lacks it (**absent**), or was **unmeasured**. A concept the vocabulary has no detector for cannot be established by the notes at all: it needs a person's judgement, and the review bit is shown. Detector readings E22 records as misreadings are marked and never counted as teaching truth: `(E22)` after a demand an option establishes, and the reason beside a claim it bears on. The detectors' clef assumption (an upper staff written in the bass clef is read as treble, `detect.ts`'s own note) is marked the same way; those readings never establish anything.\n\n## Summary\n\n- 2 rungs, 3 rung options, 2 option-claim pairs, of which 2 can be checked against notation.\n- **0 established, 2 not established** (incidental 0, absent 1, unmeasured 1); the reading rows' own claims 0, other runtime drills 0.\n- **1 rung claims that no option of the rung establishes** (listed below: the promises the notes do not keep).\n- 1 concepts a rung introduces under `introduces` (F2): named by its lesson and practised by no piece there yet, so no claim, never a teaching rung, never `taughtAt`, never a requirement met.\n- 1 measured options establish none of their rung's measurable claims.\n- 0 concept claims across the rungs name something no detector measures; 0 options carry a human teaching-use review.\n- 0 catalogue scores write their upper staff in the bass clef somewhere; their bass-staff and ledger-line readings are the clef assumption's and are marked, never established.\n- The generated items' untaught-on-rung combinations: 0 (D0's record holds 87; they differ — see below).\n\n"
+
+======================================================================
+FAIL: test_the_validators_count_line_says_it_too (tools.content.tests.test_validate_claims.TestTheReportCountsTheUnmeasuredApart.test_the_validators_count_line_says_it_too)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a172918e0ab7443a8\tools\content\tests\test_validate_claims.py", line 233, in test_the_validators_count_line_says_it_too
+    self.assertIn("1 of 1 checkable claims", line)
+AssertionError: '1 of 1 checkable claims' not found in "WARNING (rung claims, E0): 2 of 2 checkable claims on rung options are not established by the options' measured demands; 1 rung claims no option establishes; 0 concept claims no detector can measure, with 0 human teaching-use reviews. Nothing is removed from a rung: docs/prompts/rung-claims.md."
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.027s
+
+FAILED (failures=7, errors=2)
+exit=1

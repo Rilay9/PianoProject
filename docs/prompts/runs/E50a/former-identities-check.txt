@@ -1,0 +1,4 @@
+C:/Users/yalir/repos/Piano Stuff/PianoProject/app/public/content: 2092 rows, 753 dated music21 identities, 0 outside the table
+C:/Users/yalir/repos/Piano Stuff/PianoProject/app/dist/content: 2092 rows, 753 dated music21 identities, 0 outside the table
+C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-aa53a621e81c2cb8c/build/e50a/before/content: 2092 rows, 753 dated music21 identities, 0 outside the table
+exit 0

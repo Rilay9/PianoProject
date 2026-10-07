@@ -1,0 +1,8 @@
+git show HEAD:docs/prompts/inventory.md > docs/prompts/inventory.md; git show HEAD:docs/prompts/rung-claims.md > docs/prompts/rung-claims.md; sha256 of each HEAD blob, then of each file
+The offline build rewrote both reports (the kern and musetrainer datasets are absent from a fresh worktree); both put back to HEAD's bytes.
+c045775747f7ccb7b73659ff2b474dca2176cbf8d8df9a54a403e0ae5fc0e2fe *-
+c045775747f7ccb7b73659ff2b474dca2176cbf8d8df9a54a403e0ae5fc0e2fe *<worktree>/docs/prompts/inventory.md
+546c0827efe2f4a0ecacf3c64620996ccaf89c4e943bad5aad846df6fdf90f3d *-
+546c0827efe2f4a0ecacf3c64620996ccaf89c4e943bad5aad846df6fdf90f3d *<worktree>/docs/prompts/rung-claims.md
+git status still lists both as M: the blobs hold CRLF under core.autocrlf=true; the files are HEAD's bytes, and neither is G1a's to commit.
+exit=0

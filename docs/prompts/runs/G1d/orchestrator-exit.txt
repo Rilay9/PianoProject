@@ -1,0 +1,21 @@
+== map-tests  15:14:54
+map-tests exit=0
+== map-min  15:14:56
+map-min exit=0
+== tsc  15:14:56
+tsc exit=0
+== lint  15:15:06
+lint exit=0
+== vitest-all  15:15:48
+vitest-all exit=1
+== build-app  15:19:49
+build-app exit=0
+SPECS: tests/e2e/app-shell.spec.ts tests/e2e/doors.spec.ts tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/modes-free-play.spec.ts tests/e2e/modes-placement.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.hierarchy.spec.ts tests/e2e/progress.spec.ts tests/e2e/projects.spec.ts tests/e2e/session-run.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts
+== specs-exist  15:20:19
+specs-exist exit=0
+== e2e-targeted  15:20:19
+e2e-targeted exit=0
+CHAIN DONE 15:23:08
+== vitest-timeouts-rerun  15:23:26
+vitest-timeouts-rerun exit=0
+CHAIN DONE 15:23:34

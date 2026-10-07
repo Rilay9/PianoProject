@@ -1,0 +1,32 @@
+('1.5', 'song.folk.old-macdonald') ('range.beyond-position',) -> ('interval.leap', 'range.beyond-position')
+('1.5', 'song.folk.the-water-is-wide.pdmx') ('rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.dotted-quarter', 'rhythm.ties', 'rhythm.syncopation', 'key.signature', 'range.beyond-position') -> ('interval.leap', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.dotted-quarter', 'rhythm.ties', 'rhythm.syncopation', 'key.signature', 'range.beyond-position')
+('3.1', 'exercise.pentatonic.a.blues') ('pitch.ledger',) -> ('pitch.ledger', 'pitch.chromatic')
+('blues.3', 'exercise.blues-scale.c.1oct.right') None -> ('pitch.chromatic',)
+('blues.3', 'exercise.blues-scale.f.1oct.right') None -> ('pitch.chromatic',)
+('blues.3', 'exercise.blues-scale.g.1oct.right') None -> ('pitch.chromatic',)
+('blues.3', 'song.blues.tishomingo-blues') ('rhythm.syncopation',) -> ('rhythm.syncopation', 'pitch.chromatic')
+('blues.3', 'song.blues.wabash-blues') ('rhythm.syncopation',) -> ('rhythm.syncopation', 'pitch.chromatic')
+('blues.3', 'song.classical.st-louis-blues.pdmx') ('pitch.ledger', 'rhythm.syncopation') -> ('pitch.ledger', 'rhythm.syncopation', 'pitch.chromatic')
+('holiday', 'exercise.cadence.c.root') ('pitch.ledger', 'range.beyond-position') -> ('pitch.ledger', 'interval.leap', 'range.beyond-position')
+('holiday', 'song.classical.1818-franz-xaver-gruber-silent-night.pdmx') ('rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.sixteenths', 'rhythm.ties', 'metre.compound', 'range.beyond-position') -> ('interval.leap', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.sixteenths', 'rhythm.ties', 'metre.compound', 'range.beyond-position')
+('holiday', 'song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx') ('rhythm.eighths', 'rhythm.shorter-than-quarter', 'metre.compound', 'key.signature', 'range.beyond-position') -> ('interval.leap', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'metre.compound', 'key.signature', 'range.beyond-position')
+('holiday', 'song.holiday.jingle-bells.ht') None -> ('interval.leap',)
+('holiday', 'song.pop.misc-christmas-good-king-wenceslas.pdmx') ('key.signature', 'range.beyond-position') -> ('interval.leap', 'key.signature', 'range.beyond-position')
+('holiday', 'song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx') ('rhythm.eighths', 'rhythm.shorter-than-quarter', 'key.signature', 'range.beyond-position') -> ('interval.leap', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'key.signature', 'range.beyond-position')
+('hymns', 'song.classical.abide-with-me-william-henry-monk.pdmx') ('pitch.ledger',) -> ('pitch.ledger', 'pitch.chromatic')
+('hymns', 'song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx') ('rhythm.syncopation',) -> ('rhythm.syncopation', 'pitch.chromatic')
+('hymns', 'song.pop.martin-j-nystrom-as-the-deer-piano.pdmx') ('pitch.ledger', 'texture.left-hand-pattern') -> ('pitch.ledger', 'pitch.chromatic', 'texture.left-hand-pattern')
+('hymns.2', 'exercise.cadence.c.root') ('pitch.ledger', 'range.beyond-position') -> ('pitch.ledger', 'interval.leap', 'range.beyond-position')
+('hymns.2', 'song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx') ('pitch.ledger', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.dotted-quarter', 'range.beyond-position') -> ('pitch.ledger', 'interval.leap', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.dotted-quarter', 'range.beyond-position')
+('hymns.2', 'song.folk.anonymous-swing-low-sweet-chariot.pdmx') ('rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.dotted-quarter', 'rhythm.syncopation', 'key.signature', 'range.beyond-position') -> ('interval.leap', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.dotted-quarter', 'rhythm.syncopation', 'key.signature', 'range.beyond-position')
+('hymns.2', 'song.folk.be-thou-my-vision.pdmx') ('rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.syncopation', 'key.signature', 'range.beyond-position') -> ('interval.leap', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'rhythm.syncopation', 'key.signature', 'range.beyond-position')
+('jazz.3', 'song.blues.ole-miss') ('rhythm.syncopation',) -> ('rhythm.syncopation', 'pitch.chromatic')
+('jazz.3', 'song.classical.alexander-s-ragtime-band.pdmx') ('pitch.ledger', 'rhythm.sixteenths', 'rhythm.syncopation') -> ('pitch.ledger', 'rhythm.sixteenths', 'rhythm.syncopation', 'pitch.chromatic')
+('jazz.3', 'song.pop.ray-henderson-bye-bye-blackbird.pdmx') ('pitch.ledger', 'rhythm.syncopation') -> ('pitch.ledger', 'rhythm.syncopation', 'pitch.chromatic')
+('practice.2', 'exercise.five-finger.c-major.right') ('interval.step',) -> None
+('practice.2', 'exercise.reading.steps-and-skips-c') ('interval.step', 'interval.skip') -> None
+('practice.2', 'song.classical.ode-to-joy.rh') ('interval.step',) -> None
+('practice.4', 'exercise.five-finger.c-major.both') ('clef.bass', 'interval.step', 'texture.hands-together') -> None
+('practice.4', 'exercise.five-finger.c-major.right') ('interval.step',) -> None
+('practice.5', 'song.classical.ode-to-joy.rh') ('interval.step',) -> None
+ancestry changed: ['practice.2', 'practice.3', 'practice.4', 'practice.5']

@@ -36,9 +36,15 @@ const demandIds = new Set(demands.map((d) => d.id));
 const conditionIds = new Set(skillsFile.conditions.map((c) => c.id));
 
 describe('vocabulary v0 is small', () => {
-  it('about fifteen skills and twenty demands, as the reviewer asked', () => {
-    expect(skills.length).toBeLessThanOrEqual(16);
-    expect(demands.length).toBeLessThanOrEqual(20);
+  // Revised (CD1): seventeen skills and twenty-one demands. The reviewer's approval of the measured
+  // cells (`docs/review/responses/530963de.md` §1, §2) adds the two onset-cell demands and their one
+  // unobservable skill; the old assumption was the cap of sixteen and twenty the vocabulary had reached.
+  // Revised (SR2): eighteen skills and twenty-two demands. The reviewer's ruling on SR1
+  // (`docs/review/responses/sr1-sightreading-quality.md` §1) adds `metre.three-four`, what 1.4 teaches, and a
+  // demand needs a coper (`3/4`); the old assumption was the cap of seventeen and twenty-one CD1 reached.
+  it('about fifteen skills and twenty demands, as the reviewer asked, the two cells and 3/4 the reviewer approved', () => {
+    expect(skills.length).toBeLessThanOrEqual(18);
+    expect(demands.length).toBeLessThanOrEqual(22);
   });
   it('ids are unique', () => {
     expect(skillIds.size).toBe(skills.length);
@@ -92,9 +98,11 @@ describe('every demand', () => {
       const skill = skills.find((s) => s.id === demand.copedWithBy);
       expect(skill?.opportunity === 'every-step' || skill?.opportunity.includes(demand.id)).toBe(true);
     });
-    it(`${demand.id}: is taught at a rung the curriculum has, or says why none`, () => {
-      if (demand.taughtAt === null) expect(demand.taughtAtNote?.length ?? 0).toBeGreaterThan(0);
-      else expect(rungs, `${demand.id} → ${demand.taughtAt}`).toContain(demand.taughtAt);
+    // Revised (E0b): `taughtAt` is every rung that teaches the demand, one per path; old assumption one rung or null.
+    it(`${demand.id}: is taught at rungs the curriculum has, or says why none`, () => {
+      expect(Array.isArray(demand.taughtAt), `${demand.id}: taughtAt is a list`).toBe(true);
+      if (demand.taughtAt.length === 0) expect(demand.taughtAtNote?.length ?? 0).toBeGreaterThan(0);
+      for (const rung of demand.taughtAt) expect(rungs, `${demand.id} → ${rung}`).toContain(rung);
     });
   }
   it('every detector the app runs belongs to exactly one demand', () => {
@@ -133,7 +141,31 @@ describe('the rungs name skills in their own requirements (C5)', () => {
     }
     expect(rungs.size).toBe(lessons.length);
   });
+  // Revised (CL11b, L57): the file gained the support share and the default
+  // precision beside the conditions; it still keeps no bridge and no waiver.
   it('the skills file keeps no interim bridge and no waiver', () => {
-    expect(Object.keys(skillsFile).sort()).toEqual(['_comment', 'conditions', 'skills']);
+    expect(Object.keys(skillsFile).sort()).toEqual(['_comment', 'conditions', 'precision', 'skills', 'support']);
+  });
+});
+
+describe('the habanera and the tresillo (CD1): two measured onset cells, coped with by a skill no run observes', () => {
+  const cells = ['rhythm.habanera', 'rhythm.tresillo'];
+  it('the two demands exist, each with its own detector the app runs', () => {
+    expect(demands.find((d) => d.id === 'rhythm.habanera')?.detector).toBe('habaneraCell');
+    expect(demands.find((d) => d.id === 'rhythm.tresillo')?.detector).toBe('tresilloCell');
+    for (const id of cells) expect(Object.keys(DETECTORS)).toContain(demands.find((d) => d.id === id)?.detector);
+  });
+  it('habanera-and-tresillo is observable none, says why, is new, has no precision, and copes with both cells', () => {
+    const skill = skills.find((s) => s.id === 'habanera-and-tresillo');
+    expect(skill?.observable).toBe('none');
+    expect(skill?.unobserved?.length ?? 0).toBeGreaterThan(0);
+    expect(skill?.newId).toBe(true);
+    expect(skill?.precision).toBeUndefined();
+    expect(skill?.opportunity).toEqual(cells);
+    for (const id of cells) expect(demands.find((d) => d.id === id)?.copedWithBy).toBe('habanera-and-tresillo');
+  });
+  it('notAsked is on exactly these two rows, each with the reviewer’s reason', () => {
+    expect(demands.filter((d) => d.notAsked !== undefined).map((d) => d.id)).toEqual(cells);
+    for (const id of cells) expect(demands.find((d) => d.id === id)?.notAsked).toContain('530963de');
   });
 });

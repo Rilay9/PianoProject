@@ -1,0 +1,90 @@
+mutant wants-offer on session.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-aaa20169ef5952602/app
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts (25 tests | 4 failed) 1006ms
+   ❯ the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) (9)
+     × runs: the rung’s own groove is not what it asks for until approved; the warm-up takes the next valid step, and a drill and a notated song beside it are offered as before 4ms
+     × done: a requirement naming the groove stays unmet and no row claims it; the next valid step fills the warm-up, or the rung’s other option 1ms
+     × measure: the rung’s groove of the measured kind is refused; a generated drill of the same kind beside it is what the rung asks for 1ms
+   ❯ the card on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3b) (3)
+     × every rung, a fresh learner placed there, every track on, every length: no row is one 615ms
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 21 passed (25)
+   Start at  18:00:57
+   Duration  1.79s (tests 60%, transform 27%, import 12%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) > runs: the rung’s own groove is not what it asks for until approved; the warm-up takes the next valid step, and a drill and a notated song beside it are offered as before
+AssertionError: teaching null: expected [ 'ex.groove', 'ex.pre' ] to not include 'ex.groove'
+ ❯ tests/unit/gateAtTheConsumers.test.ts:507:62
+    505|     for (const teaching of REFUSED) {
+    506|       const slots = card(only, [groove('ex.groove', teaching), pre]);
+    507|       expect(ids(slots), `teaching ${String(teaching)}`).not.toContain…
+       |                                                              ^
+    508|       expect(row(slots, 'technique'), `teaching ${String(teaching)}`).…
+    509|       expect(claimsNext(slots)).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) > done: a requirement naming the groove stays unmet and no row claims it; the next valid step fills the warm-up, or the rung’s other option
+AssertionError: teaching null: expected [ 'ex.groove', 'ex.pre' ] to not include 'ex.groove'
+ ❯ tests/unit/gateAtTheConsumers.test.ts:538:62
+    536|     for (const teaching of REFUSED) {
+    537|       const slots = card(only, [groove('ex.groove', teaching), pre]);
+    538|       expect(ids(slots), `teaching ${String(teaching)}`).not.toContain…
+       |                                                              ^
+    539|       expect(slots.some((slot) => slot.claim?.kind === 'asked' && slot…
+    540|       expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) > measure: the rung’s groove of the measured kind is refused; a generated drill of the same kind beside it is what the rung asks for
+AssertionError: teaching null: expected [ 'ex.groove', 'ex.pre' ] to not include 'ex.groove'
+ ❯ tests/unit/gateAtTheConsumers.test.ts:560:62
+    558|     for (const teaching of REFUSED) {
+    559|       const slots = card(only, [groove('ex.groove', teaching), pre]);
+    560|       expect(ids(slots), `teaching ${String(teaching)}`).not.toContain…
+       |                                                              ^
+    561|       expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.…
+    562|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the card on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3b) > every rung, a fresh learner placed there, every track on, every length: no row is one
+AssertionError: 44 rows: expected [ …(12) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "theory.4 (15 min): technique exercise.ostinato.a.arpeggio (asked)",
++   "theory.4 (30 min): technique exercise.ostinato.a.arpeggio (asked)",
++   "theory.4 (60 min): technique exercise.ostinato.a.arpeggio (asked)",
++   "theory.4 (120 min): technique exercise.ostinato.a.arpeggio (asked)",
++   "improv.4 (15 min): technique exercise.ostinato.a.arpeggio (asked)",
++   "improv.4 (30 min): technique exercise.ostinato.a.arpeggio (asked)",
++   "improv.4 (60 min): technique exercise.ostinato.a.arpeggio (asked)",
++   "improv.4 (120 min): technique exercise.ostinato.a.arpeggio (asked)",
++   "jam (15 min): technique exercise.ostinato.a.arpeggio (asked)",
++   "jam (30 min): technique exercise.ostinato.a.arpeggio (asked)",
++   "jam (60 min): technique exercise.ostinato.a.arpeggio (asked)",
++   "jam (120 min): technique exercise.ostinato.a.arpeggio (asked)",
++ ]
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts:795:68
+    793|       }
+    794|     }
+    795|     expect(offered.slice(0, 12), `${String(offered.length)} rows`).toE…
+       |                                                                    ^
+    796|   }, 300_000);
+    797|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+exit 1

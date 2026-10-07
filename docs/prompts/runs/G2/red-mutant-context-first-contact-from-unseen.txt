@@ -1,0 +1,51 @@
+(cd app) npx vitest run tests/unit/transferPolicy.test.ts tests/unit/transferFactsOnTheAttempt.test.ts tests/unit/transferOffer.test.ts tests/unit/masteryLadder.test.ts   # mutant context-first-contact-from-unseen in app/src/evidence/evidence.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6d274c20b3e170c9/app
+
+ ❯ tests/unit/transferFactsOnTheAttempt.test.ts (15 tests | 2 failed) 95ms
+   ❯ 1. the evidence context’s first contact is the run header’s, never `unseen` (the G1a review) (2)
+     × a phrase run carrying both: the relation, from `firstContact` 8ms
+     × a row with `unseen` and no `firstContact` (from before G1a): the context’s stays absent, never rebuilt from `unseen` 2ms
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 71 passed (73)
+   Start at  04:54:22
+   Duration  749ms (transform 67%, import 23%, tests 10%, worker 1%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 1. the evidence context’s first contact is the run header’s, never `unseen` (the G1a review) > a phrase run carrying both: the relation, from `firstContact`
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/transferFactsOnTheAttempt.test.ts:75:90
+     73|   it('a phrase run carrying both: the relation, from `firstContact`', …
+     74|     expect(contextOf({ ...noRelation, firstContact: true }).firstConta…
+     75|     expect(contextOf({ ...noRelation, unseen: true, firstContact: fals…
+       |                                                                                          ^
+     76|   });
+     77|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/transferFactsOnTheAttempt.test.ts > 1. the evidence context’s first contact is the run header’s, never `unseen` (the G1a review) > a row with `unseen` and no `firstContact` (from before G1a): the context’s stays absent, never rebuilt from `unseen`
+AssertionError: expected [ 'itemId', 'firstContact', …(3) ] to not include 'firstContact'
+ ❯ tests/unit/transferFactsOnTheAttempt.test.ts:80:38
+     78|   it('a row with `unseen` and no `firstContact` (from before G1a): the…
+     79|     const context = contextOf(noRelation);
+     80|     expect(Object.keys(context)).not.toContain('firstContact');
+       |                                      ^
+     81|   });
+     82| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+exit=1

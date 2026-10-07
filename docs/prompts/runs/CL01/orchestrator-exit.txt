@@ -1,0 +1,34 @@
+== map-tests  18:56:46
+map-tests exit=0
+== map-min  18:56:49
+map-min exit=0
+== content-build  18:56:49
+content-build exit=0
+ M docs/prompts/backlog-2026-09-25.md
+ M docs/prompts/views/backlog/U.md
+?? docs/prompts/pictures/c6-A-day-one-342x740-full.png
+?? docs/prompts/pictures/c6-A-day-one-342x740.png
+?? docs/prompts/pictures/c6-B-skill-retention-342x740-full.png
+?? docs/prompts/pictures/c6-B-skill-retention-342x740.png
+?? docs/prompts/pictures/c6-B-swap-sheet-342x740.png
+?? docs/prompts/pictures/c6-C-piece-retention-342x740-full.png
+?? docs/prompts/pictures/c6-C-piece-retention-342x740.png
+?? docs/prompts/pictures/c6-cards.txt
+?? docs/prompts/tasks/U105b-the-header-refusal-line-wraps.md
+?? docs/review/handoffs/c935a64c.content.md
+== content-validate  19:01:35
+content-validate exit=0
+== review-check  19:01:55
+review-check exit=0
+== content-tests  19:01:55
+content-tests exit=1
+== vitest-all  19:12:20
+vitest-all exit=1
+== build-app  19:16:33
+build-app exit=0
+SPECS: tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/plan.spec.ts tests/e2e/side-panel-prose.spec.ts tests/e2e/start-and-return.spec.ts
+== specs-exist  19:17:09
+specs-exist exit=0
+== e2e-targeted  19:17:09
+e2e-targeted exit=0
+CHAIN DONE 19:18:12

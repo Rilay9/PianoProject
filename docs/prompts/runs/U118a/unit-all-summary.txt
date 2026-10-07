@@ -1,0 +1,13 @@
+# `npx vitest run`, the whole unit suite: the failures and the totals. The full log was not kept.
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+ FAIL  tests/unit/midiParity.test.ts > the port agrees with the Python converter > has a reference to compare against
+AssertionError: no reference in <worktree>\build\midi-parity: run `python tools/midi-cleanup/tests/parity_reference.py` from the repository root (CI: the step "Write the MIDI parity reference", before "Unit tests"). It writes the references for the committed fixtures, and for each of the three MAESTRO performances that build/midi-real/ holds (see its SOURCE.md).: expected 0 to be greater than 0
+ FAIL  tests/unit/taughtByAncestry.test.ts > the shipped curriculum > the build reads the same ancestry: the rung-claims report’s "untaught here" and the gate read one thing
+Error: ENOENT: no such file or directory, open '<worktree>\build\rung-claims.json'
+ Test Files  3 failed | 327 passed (330)
+      Tests  4 failed | 7592 passed | 1 skipped | 1 todo (7598)
+vitest exit 1

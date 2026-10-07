@@ -1,0 +1,54 @@
+[WebServer] (node:108116) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:110612) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 36 tests using 4 workers
+
+(node:111036) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47368) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:111020) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91748) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c1 568x320 t90 stack hcb (5.9s)
+  ok  4 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c2 568x320 t90 stack hcb (5.8s)
+  ok  3 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c3 568x320 t90 stack hcb (6.0s)
+  ok  2 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c4 568x320 t90 stack hcb (6.0s)
+  ok  5 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c6 568x320 t90 stack hcb (5.8s)
+  ok  6 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c5 568x320 t90 stack hcb (5.8s)
+  ok  7 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c1 568x320 t90 wider hcb (5.8s)
+  ok  8 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c2 568x320 t90 wider hcb (5.8s)
+  ok 10 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c4 568x320 t90 wider hcb (5.4s)
+  ok 11 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c5 568x320 t90 wider hcb (5.5s)
+  ok 12 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c6 568x320 t90 wider hcb (5.5s)
+  ok  9 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c3 568x320 t90 wider hcb (5.8s)
+  ok 13 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c1 740x342 t90 stack hcb (5.7s)
+  ok 15 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c3 740x342 t90 stack hcb (5.6s)
+  ok 14 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c2 740x342 t90 stack hcb (5.7s)
+  ok 16 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c4 740x342 t90 stack hcb (5.7s)
+  ok 19 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c1 740x342 t90 wider hcb (5.4s)
+  ok 17 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c5 740x342 t90 stack hcb (5.7s)
+  ok 18 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c6 740x342 t90 stack hcb (5.7s)
+  ok 20 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c2 740x342 t90 wider hcb (5.7s)
+  ok 21 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c3 740x342 t90 wider hcb (5.5s)
+  ok 22 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c4 740x342 t90 wider hcb (5.4s)
+  ok 23 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c5 740x342 t90 wider hcb (5.6s)
+  ok 24 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c6 740x342 t90 wider hcb (5.5s)
+  ok 25 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c1 780x360 t90 stack hcb (5.4s)
+  ok 26 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c2 780x360 t90 stack hcb (5.7s)
+  ok 28 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c4 780x360 t90 stack hcb (5.5s)
+  ok 27 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c3 780x360 t90 stack hcb (5.8s)
+  ok 29 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c5 780x360 t90 stack hcb (5.7s)
+  ok 31 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c1 780x360 t90 wider hcb (5.5s)
+  ok 30 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c6 780x360 t90 stack hcb (5.7s)
+  ok 32 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c2 780x360 t90 wider hcb (5.6s)
+  ok 33 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c3 780x360 t90 wider hcb (5.4s)
+  ok 34 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c4 780x360 t90 wider hcb (5.7s)
+  ok 35 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c5 780x360 t90 wider hcb (5.7s)
+  ok 36 build\u122a\probe6\premise.spec.ts:723:11 › r-small sideways c6 780x360 t90 wider hcb (5.7s)
+
+  36 passed (55.9s)
+exit 0

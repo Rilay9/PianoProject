@@ -1,0 +1,237 @@
+app/src/ui/screens/ScoreScreen.ts: HEAD's bytes written (sha256 2bb2871dd5b7c7f5…)
+app/src/ui/screens/ProgressScreen.ts: HEAD's bytes written (sha256 8f12026a32bc846a…)
+app/src/ui/screens/LessonScreen.ts: HEAD's bytes written (sha256 c50496be998ced7b…)
+app/src/data/backup.ts: HEAD's bytes written (sha256 a151772f0840ce25…)
+app/src/ui/screens/SettingsScreen.ts: HEAD's bytes written (sha256 d36e222d5e43f4d1…)
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/projectLifecycle.test.ts (32 tests | 2 failed) 191ms
+   ❯ the backup carries the projects, and a restore follows the learner (2)
+     × a replace restores them; a merge restored twice adds nothing; a change made on the device since the export is kept 7ms
+   ❯ never the bridge, never the source (the brief’s item 3; its refuting test kept as a guard) (2)
+     × only the project sheet acts, and no evidence, skill, eligibility, session or Library code reads a project 77ms
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (284 tests | 2 failed) 180ms
+   ❯ the 2026-09-19 lesson corrections, second-read and under test: the app (80)
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 8ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 2ms
+ ❯ tests/unit/stage9ProjectsPage.test.ts (4 tests | 3 failed) 326ms
+   ❯ a Stage 9 unit’s page (3)
+     × shows each song option as a project — not started — says there is no rung to pass, and counts nothing 79ms
+     × runs that meet the unit’s requirements change nothing there: the page reads projects, not runs 59ms
+     × changing one project’s state changes only that project’s row, and no rung state, evidence, eligibility or skill state 126ms
+ ❯ tests/unit/projectOnTheFinishSheet.test.ts (3 tests | 2 failed) 416ms
+   ❯ What next with this piece? (3)
+     × a piece’s finish sheet offers it; the sheet it opens says the piece was just played, and makes nothing until the learner acts 167ms
+     × an import’s project is its stored bytes 128ms
+ ❯ tests/unit/projectSheet.test.ts (7 tests | 1 failed) 1011ms
+   ❯ Reset progress clears the projects with the rest of the learner’s history (item 8) (1)
+     × the store is on the reset’s list, and the reset leaves it empty 5ms
+ ❯ tests/unit/progressProjects.test.ts (5 tests | 5 failed) 5065ms
+   ❯ Projects on Progress (5)
+     × lists every project under one heading, newest change first: title, state, since, and the goal where one is typed 1025ms
+     × a passed piece with no project offers Make it a project; a piece with one, a piece only started and an exercise do not 1012ms
+     × the offer is the learner’s: it opens the sheet and makes nothing until an action is chosen 1017ms
+     × a project’s row opens its sheet 1006ms
+     × with no project and nothing passed, one sentence says how a project is made 1004ms
+
+ Test Files  6 failed | 1 passed (7)
+      Tests  15 failed | 332 passed (347)
+   Start at  11:33:49
+   Duration  7.05s (tests 43%, environment 27%, transform 23%, import 7%)
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2119:23
+    2117|   for (const [lesson, says, holds] of T12_APP) {
+    2118|     it(`${lesson}: ${says}`, () => {
+    2119|       expect(holds()).toBe(true);
+       |                       ^
+    2120|     });
+    2121|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > lists every project under one heading, newest change first: title, state, since, and the goal where one is typed
+ FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > a passed piece with no project offers Make it a project; a piece with one, a piece only started and an exercise do not
+ FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > the offer is the learner’s: it opens the sheet and makes nothing until an action is chosen
+ FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > a project’s row opens its sheet
+ FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > with no project and nothing passed, one sentence says how a project is made
+AssertionError: expected null not to be null
+ ❯ tests/unit/progressProjects.test.ts:64:101
+     62|   const section = ProgressScreen(router);
+     63|   document.body.replaceChildren(section);
+     64|   await vi.waitFor(() => expect(section.querySelector('#progress-proje…
+       |                                                                                                     ^
+     65|   return section;
+     66| }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  tests/unit/projectLifecycle.test.ts > the backup carries the projects, and a restore follows the learner > a replace restores them; a merge restored twice adds nothing; a change made on the device since the export is kept
+AssertionError: the older backup put the device’s state back: expected 'learning' to be 'polishing' // Object.is equality
+
+Expected: "polishing"
+Received: "learning"
+
+ ❯ tests/unit/projectLifecycle.test.ts:442:75
+    440|     const [merged] = (await allProjects());
+    441|     expect(await allProjects()).toHaveLength(1);
+    442|     expect(merged?.state, 'the older backup put the device’s state bac…
+       |                                                                           ^
+    443|     expect(merged?.history.map((step) => step.why)).toEqual(['learn', …
+    444|     expect(merged).toMatchObject({ goal: 'bars 1–16', problem: 'the tr…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  tests/unit/projectLifecycle.test.ts > never the bridge, never the source (the brief’s item 3; its refuting test kept as a guard) > only the project sheet acts, and no evidence, skill, eligibility, session or Library code reads a project
+AssertionError: expected [ 'ui/projectSheet.ts' ] to deeply equal [ 'data/backup.ts', …(5) ]
+
+- Expected
++ Received
+
+  [
+-   "data/backup.ts",
+    "ui/projectSheet.ts",
+-   "ui/screens/LessonScreen.ts",
+-   "ui/screens/ProgressScreen.ts",
+-   "ui/screens/ScoreScreen.ts",
+-   "ui/screens/SettingsScreen.ts",
+  ]
+
+ ❯ tests/unit/projectLifecycle.test.ts:522:28
+    520|     // The learner's action has one door: the sheet's buttons. Nothing…
+    521|     expect(actors).toEqual(['ui/projectSheet.ts']);
+    522|     expect(readers.sort()).toEqual([
+       |                            ^
+    523|       'data/backup.ts',
+    524|       'ui/projectSheet.ts',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  tests/unit/projectOnTheFinishSheet.test.ts > What next with this piece? > a piece’s finish sheet offers it; the sheet it opens says the piece was just played, and makes nothing until the learner acts
+AssertionError: the finish sheet has no door to the project sheet: expected null not to be null
+ ❯ tests/unit/projectOnTheFinishSheet.test.ts:340:75
+    338|     await lastStored();
+    339|     const door = document.getElementById('summary-project');
+    340|     expect(door, 'the finish sheet has no door to the project sheet').…
+       |                                                                           ^
+    341|     expect(door?.textContent).toBe('What next with this piece?');
+    342|     click('summary-project');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  tests/unit/projectOnTheFinishSheet.test.ts > What next with this piece? > an import’s project is its stored bytes
+AssertionError: #summary-project is not on the screen: expected null not to be null
+ ❯ click tests/unit/projectOnTheFinishSheet.test.ts:245:54
+    243| function click(id: string): void {
+    244|   const control = document.getElementById(id);
+    245|   expect(control, `#${id} is not on the screen`).not.toBeNull();
+       |                                                      ^
+    246|   (control as HTMLElement).click();
+    247| }
+ ❯ tests/unit/projectOnTheFinishSheet.test.ts:364:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+ FAIL  tests/unit/projectSheet.test.ts > Reset progress clears the projects with the rest of the learner’s history (item 8) > the store is on the reset’s list, and the reset leaves it empty
+AssertionError: expected undefined to deeply equal ArrayContaining{…}
+
+- Expected:
+ArrayContaining [
+  "progress",
+  "sessions",
+  "encounters",
+  "contacts",
+  "projects",
+]
+
++ Received:
+undefined
+
+ ❯ tests/unit/projectSheet.test.ts:224:26
+    222| describe('Reset progress clears the projects with the rest of the lear…
+    223|   it('the store is on the reset’s list, and the reset leaves it empty'…
+    224|     expect(RESET_STORES).toEqual(expect.arrayContaining(['progress', '…
+       |                          ^
+    225|     await recordRun(run, new Date(YESTERDAY));
+    226|     await applyProjectAction({ itemId: SONG, material: file('s') }, 'l…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/15]⎯
+
+ FAIL  tests/unit/stage9ProjectsPage.test.ts > a Stage 9 unit’s page > shows each song option as a project — not started — says there is no rung to pass, and counts nothing
+AssertionError: expected undefined to be 'A project: there is no rung to pass h…' // Object.is equality
+
+- Expected:
+"A project: there is no rung to pass here."
+
++ Received:
+undefined
+
+ ❯ tests/unit/stage9ProjectsPage.test.ts:167:67
+    165|   it('shows each song option as a project — not started — says there i…
+    166|     const section = await mount('classical.9');
+    167|     expect(section.querySelector('#lesson-project')?.textContent).toBe…
+       |                                                                   ^
+    168|     for (const id of ['song.ballade', 'song.campanella', 'song.impromp…
+    169|     expect(rungClaims(section)).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/15]⎯
+
+ FAIL  tests/unit/stage9ProjectsPage.test.ts > a Stage 9 unit’s page > runs that meet the unit’s requirements change nothing there: the page reads projects, not runs
+AssertionError: expected [ '/What the app counts/' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "/What the app counts/",
++ ]
+
+ ❯ tests/unit/stage9ProjectsPage.test.ts:182:33
+    180|     expect((await loadRungStates(curriculum as never)).byRung.get('cla…
+    181|     const section = await mount('classical.9');
+    182|     expect(rungClaims(section)).toEqual([]);
+       |                                 ^
+    183|     expect(stateOf(section, 'song.ballade')).toEqual({ word: 'not star…
+    184|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/15]⎯
+
+ FAIL  tests/unit/stage9ProjectsPage.test.ts > a Stage 9 unit’s page > changing one project’s state changes only that project’s row, and no rung state, evidence, eligibility or skill state
+AssertionError: expected { word: '', state: undefined } to deeply equal { word: 'Learning', state: 'learning' }
+
+- Expected
++ Received
+
+  {
+-   "state": "learning",
+-   "word": "Learning",
++   "state": undefined,
++   "word": "",
+  }
+
+ ❯ tests/unit/stage9ProjectsPage.test.ts:209:45
+    207|     await applyProjectAction({ itemId: 'song.ballade', material: file(…
+    208|     const second = await mount('classical.9');
+    209|     expect(stateOf(second, 'song.ballade')).toEqual({ word: 'Learning'…
+       |                                             ^
+    210|     expect(['song.campanella', 'song.impromptu'].map((id) => songRow(s…
+    211|     expect(rungClaims(second)).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/15]⎯
+
+exit=1
+every file restored by its bytes (sha256 equal)

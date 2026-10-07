@@ -1,0 +1,16 @@
+== after · Skills, Stage 2: entries whose name says "leaps":["leap"]
+  [leap] Leaps: a fourth or fifth | Stage 2 · core · 0 to practise | Find more | not judged by the app | Taught in Hands together: the left hand holds
+  finder sheet: Find more for Leaps: a fourth or fifth | Close | What this needs: reading and playing a jump of a fourth or fifth without feeling for it. | Level: easy, elementary. | Search for it | Paste this into a search engine. | Copy search | Or ask an assistant | Paste this into a chatbot. It already says what to avoid and where to look. | Copy prompt | What makes a piece right | a few leaps of a fourth or fifth in a stepwise melody | And what makes one wrong | octave leaps | MusicXML or .mxl preferred; a PDF works but cannot be scored.
+== after · Skills, Stage 7: entries whose name says "leaps":["leaps"]
+  [leaps] Wide leaps | Stage 7, 9 · blues-boogie, ragtime | Drill it | Find more | not judged by the app | Taught in The leaping left hand and the two bars that send you back | Oom-pah bass in B♭ — the chord at the octave | L4.2 · exercise | Oom-pah bass in C — the chord at the octave | L4.2 · exercise | Oom-pah bass in E♭ — the chord at the octave | L4.2 · exercise | Show all 12
+  finder sheet: Find more for Wide leaps | Close | What this needs: jumping accurately to a note you cannot feel for. | Level: advanced, Grade 5 to 6. | Search for it | Paste this into a search engine. | Copy search | Or ask an assistant | Paste this into a chatbot. It already says what to avoid and where to look. | Copy prompt | What makes a piece right | leaps of an octave or more | printed fingering | And what makes one wrong | stepwise writing only | MusicXML or .mxl preferred; a PDF works but cannot be scored.
+== after · Today placed at 1.1: 4 rows; a How to practise row: false
+  drill.technique.five-finger-rh — Right-hand five-finger walk | This lesson asks for it — not counted yet | Warm-up · 5 min · L1.1 · RH | Swap | ▶
+  drill.reading.note-flash-treble-c4-g4 — Note flash — treble C4 to G4 | Nothing due for review — more from this lesson | Review · 5 min · L1.1 · RH | Swap | ▶
+  song.folk.hot-cross-buns — Hot Cross Buns | This lesson asks for it — not counted yet | New · 10 min · L1.1 · RH | Swap | ▶
+  song.folk.mary-had-a-little-lamb — Mary Had a Little Lamb | More music from this lesson | Repertoire · 7 min · L1.1 · RH | Swap | ▶
+== after · Today placed at 1.2: 4 rows; a How to practise row: true
+  drill.rhythm.mixed-values — Rhythm reading — quarters, halves, wholes | This lesson asks for it — not counted yet | Warm-up · 5 min · L1.2 | Swap | ▶
+  exercise.rhythm.half-and-quarters.4bar — Rhythm: half and quarters — 4 bars | Nothing due for review — more from this lesson | Review · 5 min · L1.2 · RH | Swap | ▶
+  exercise.five-finger.c-major.right — C major five-finger pattern — right | How to practise asks for it — not counted yet | New · 10 min · L1.1 · RH | Swap | ▶
+  song.folk.lightly-row — Lightly Row | More music from this lesson | Repertoire · 7 min · L1.2 · RH | Swap | ▶

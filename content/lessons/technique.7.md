@@ -6,7 +6,7 @@ videos:
   - label: "How to Play Octaves on Piano (2 Ways!) | Kate Boyd - The Piano Prof"
     url: "https://www.youtube.com/watch?v=E8q-CWA3nis"
     teacher: "The Piano Prof | Kate Boyd"
-readingTime: 3
+readingTime: 4
 ---
 
 Nearly everything on this rung is one hand doing two things at once; the two
@@ -15,14 +15,14 @@ note at a time in each hand.
 
 **Scales in thirds and sixths.** Both notes come out of the scale, so the
 interval keeps changing between major and minor — that is what makes it a scale
-in thirds rather than a scale doubled. Both fingers are printed: in thirds the
-standard three-group cycle, 1-3, 2-4, 3-5 and round again, retraced on the way
-down; in sixths mostly 1-5, with 2-5 and 1-4 among them. Take that as a starting point rather than a rule. The inner finger in particular
+in thirds rather than a scale doubled. A common fingering: in thirds the three-group cycle,
+1-3, 2-4, 3-5 and round again, retraced on the way
+down; in sixths mostly 1-5, with 2-5 and 1-4 among them. None is printed: a starting point, not a rule. The inner finger in particular
 depends on your hand and on the key, and if it does not suit yours, change it,
 write it in, and then keep the one you chose — an inner fingering you decide
 again every time is the thing that stops this getting faster.
 
-**Octaves.** The printed fingering, thumb and fifth on white keys and thumb and
+**Octaves.** The fingering, thumb and fifth on white keys and thumb and
 **fourth** on black ones in both hands, is common, not a rule: the longer fourth
 reaches a black key easily, but a large hand may use it on white keys too and a
 small one the fifth throughout. Keep what your hand plays easily. The broken
@@ -39,8 +39,16 @@ lifts the dampers only a little, so they still touch the strings: a loud sound
 is cut short but not stopped, and a quieter ring carries on. Find by ear where
 they catch on your piano. This exercise opens as an ordinary score,
 and its summary says what share of your pedal readings, while the pedal was
-down, sat between 32 and 96 — 0 is fully up, 127 fully down. Some digital
+down, sat between 32 and 96 — a window this exercise uses, not a fact about your
+piano, on a scale where 0 is fully up and 127 fully down. Some digital
 pianos send only 0 or 127; the app says so instead of marking you down.
+
+**The rest of the list.** The *octave tremolo* in the left hand shakes between
+the two notes of an octave in sixteenths, two beats on each step of a C scale;
+like the broken octaves, it is often helped by a small rotation of the forearm.
+The *broken
+dominant sevenths*, A and A flat, run each chord's four notes up and back in
+sixteenths and then again an octave higher, in both hands at once.
 
 **An étude to put it in.** Czerny Op. 299 No. 5, No. 8 and No. 10, the faster
 ones: No. 5 has scales in both hands and right-hand double notes, No. 8 broken
@@ -56,6 +64,12 @@ are also producing. Then swap hands, because that is the other exercise.
 left hand, loops the whole of it and raises the tempo a notch for each clean
 pass.
 
+**When to stop.** While practising octaves, double notes or tremolo, if your
+forearm or wrist tightens or aches, stop: rest, and come back to
+it slower, or another day. Pain is never something to play through; *When to
+stop* in the practice track, and core 4.4, say more.
+
 **How you'll know you've got it.** The same fingering for thirds and for
 octaves in D flat twice running, without deciding it again. Two against three where you can stop anywhere and say which
-hand is on the beat. And a half pedal your piano reports between 0 and 127.
+hand is on the beat. And a half pedal held where your ear hears the dampers
+catch, with most of your pedal-down readings inside the exercise's 32–96 window. The app passes the rung on any two exercise runs and does not check which; the thirds and sixths, the octaves, the half pedal and the two-against-three pair are what it is for.

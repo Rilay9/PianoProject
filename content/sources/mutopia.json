@@ -1,0 +1,78 @@
+{
+  "_comment": [
+    "The [MUTO] tier (docs/03-content-pipeline.md §2; Q76, 2026-09-29): Mutopia Project editions the public,",
+    "licence-strict build can bundle, read by tools/content/import_mutopia.py. The owner's word of 2026-09-29:",
+    "public-domain material first where it exists. Written for ragtime.8, whose stride bass the phone's build",
+    "practised with no bundled piece: every craigsapp Joplin edition is CC BY-NC-SA and a placeholder there.",
+    "",
+    "The route is the MIDI file Mutopia publishes for each edition (the reviewer's first fallback,",
+    "docs/review/responses/questions-400e69c8.md §2), converted by the repository's MIDI converter",
+    "(tools/midi-cleanup/midi_to_musicxml.py), with every note's spelling and the key changes taken from the",
+    "edition's own LilyPond source. python-ly's MusicXML writer, the route docs/03 first named, gives no rag",
+    "that is right: it writes both volta endings in turn, and on the ragtime.8 rags music21 refuses what it",
+    "writes (checkedAndRefused below; docs/prompts/runs/Q76/muto-verdicts.txt). A MIDI-derived score is not",
+    "Mutopia's notation — repeats are written out and voices merged into chords, as a MIDI file carries",
+    "neither — and the catalogue row says so.",
+    "",
+    "Nothing here is trusted: both files are fetched at the pinned places and refused unless their sha256 is",
+    "the one below; the licence is re-read from the .ly header (`license`, else `copyright`) and the",
+    "composition's year is checked against docs/03 §1 rule 1 on every build."
+  ],
+  "source": {
+    "name": "The Mutopia Project",
+    "site": "https://www.mutopiaproject.org",
+    "mirror": "https://github.com/MutopiaProject/MutopiaProject",
+    "revision": "2144afd6f52d56c5b6995b8b589ef1268b3139f0",
+    "lyBase": "https://raw.githubusercontent.com/MutopiaProject/MutopiaProject/2144afd6f52d56c5b6995b8b589ef1268b3139f0/ftp/",
+    "midiBase": "https://www.mutopiaproject.org/ftp/",
+    "fetch": "only the files the items name: the .ly from the GitHub mirror at the pinned revision (the published .ly is byte-identical there, line endings aside), the .mid from Mutopia's own site, which is the only place it is published",
+    "pinned": "2026-09-29"
+  },
+  "items": [
+    {
+      "id": "song.ragtime.joplin-pine-apple-rag.mutopia",
+      "title": "Pine Apple Rag (repeats written out)",
+      "composer": "Scott Joplin",
+      "publishedYear": 1908,
+      "edition": "Mutopia-2014/01/12-1899",
+      "pieceUrl": "https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=1899",
+      "ly": {"path": "JoplinS/PineappleRag/PineappleRag.ly", "sha256": "747778b06d95d58e17eada42246326b05fbb7e1416dc9196f94d101934b3f67f"},
+      "midi": {"path": "JoplinS/PineappleRag/PineappleRag.mid", "sha256": "a8ff24b340900baaa53e43ad575bc1857721706f0bd420425446f8b14e252420"},
+      "staves": ["right", "left"],
+      "key": "Bb major",
+      "timeSig": "2/4",
+      "tracks": ["ragtime", "classical"],
+      "concepts": ["syncopation", "stride-bass", "secondary-rag", "trio-key-change"],
+      "placeholderLevel": 7.4,
+      "_placeholderLevel": "used only when no file is built (the row is then a placeholder): the level the craigsapp edition of the same work is judged at; a built row's level is the level model's estimate for its file",
+      "variantOf": "song.ragtime.joplin-pine-apple-rag",
+      "variantLabel": "Mutopia edition, public domain",
+      "editionNotes": "The Mutopia Project's edition (Mutopia-2014/01/12-1899), typeset by Coyau from the Seminary Music Co. edition of 1908 and placed in the public domain. Converted here from the MIDI file Mutopia publishes for that edition, by the repository's MIDI converter, with every note's spelling and the key change taken from the edition's LilyPond source: the notes and their times are the edition's, the page is not — the repeats are written out and where the edition writes two voices in one hand they are merged into chords, because a MIDI file carries neither."
+    }
+  ],
+  "notTaken": {
+    "_comment": "Converted by the same route and measured, and not placed on a rung, with the reason.",
+    "JoplinS/magnetic/magnetic": "Magnetic Rag (Mutopia-2008/09/08-441). The MIDI converter reads it back whole, but the import refuses it: notes of the upper staff are left that the edition's spelling cannot be found for. Converted with the converter's own spelling it would not establish ragtime.8's stride bass either (its left hand leaves the pattern in the closing bars), and its published MIDI carries LilyPond's default tempo because the edition's \\tempo line is commented out. A second public option for ragtime.8 is a follow-up, not this list's."
+  },
+  "checkedAndRefused": {
+    "_comment": "The Joplin folder at the pinned revision, through python-ly 0.9.10's MusicXML writer (the convert.parse_lilypond path), as it stands and after python-ly's own rel2abs and rhythm_explicit with every repeat unfolded. Every one of the 16 single-file editions uses \\alternative, which the writer does not implement (it writes both endings in turn). The MIDI route was tried on ragtime.8's two rags only.",
+    "JoplinS/a-breeze-from-alabama/a-breeze-from-alabama.ly": "converts, both endings in turn; the left-hand pattern fails from the first bar; ragtime.9's work",
+    "JoplinS/EliteSyncopations/EliteSyncopations.ly": "python-ly writes no notes",
+    "JoplinS/entertainer/entertainer.ly": "converts, both endings in turn; unfolded, it comes out near twice its length and the left-hand pattern fails through the second half; ragtime.5 and 6's work",
+    "JoplinS/eugenia/eugenia.ly": "python-ly refuses its header (UnboundLocalError)",
+    "JoplinS/magnetic/magnetic.ly": "music21 refuses what python-ly writes (a voice overflows its bar); taken by the MIDI route instead, see notTaken",
+    "JoplinS/maple/maple.ly": "converts, both endings in turn and repeat marks doubled: a wrong score; ragtime.7's work",
+    "JoplinS/original/original.ly": "converts, both endings in turn; ragtime.9's work",
+    "JoplinS/peacherine/peacherine.ly": "python-ly refuses its header (UnboundLocalError)",
+    "JoplinS/PineappleRag/PineappleRag.ly": "music21 refuses what python-ly writes: the left hand's first bar closes after a quarter, a chord ending a bar is split across the bar line, a two-voice block's next bar lands in the same measure; taken by the MIDI route instead, see items",
+    "JoplinS/search/search.ly": "converts, both endings in turn; ragtime.9's work",
+    "JoplinS/SomethingDoing/SomethingDoing.ly": "music21 refuses what python-ly writes (a voice overflows its bar)",
+    "JoplinS/sugar-cane/sugar-cane.ly": "converts, both endings in turn; unfolded, it comes out near twice its length and the left-hand pattern fails through the second half; ragtime.7's work",
+    "JoplinS/sun-flower-slow-drag/sun-flower-slow-drag.ly": "music21 refuses what python-ly writes (a voice overflows its bar)",
+    "JoplinS/TheStrenuousLife/TheStrenuousLife.ly": "music21 refuses what python-ly writes (a voice overflows its bar)",
+    "JoplinS/WallStreetRag/WallStreetRag.ly": "music21 refuses what python-ly writes (a voice overflows its bar)",
+    "JoplinS/winners/winners.ly": "music21 refuses what python-ly writes (a voice overflows its bar)",
+    "JoplinS/bethena/bethena-lys": "a multi-file edition (\\include of part files) python-ly's writer does not follow; not converted; ragtime.7's work",
+    "JoplinS/solace/solace-lys": "a multi-file edition (\\include of part files) python-ly's writer does not follow; not converted; ragtime.7's work"
+  }
+}

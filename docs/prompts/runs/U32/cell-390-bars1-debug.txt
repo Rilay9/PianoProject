@@ -1,0 +1,39 @@
+U32 item 4e: the Nocturne at 342 x 740, Bars 4, x4 throttle, this machine; ms after the first ink.
+Each line is a change on the glass or in what could move it; "picture" marks a change of the rows or the scale.
+
+base__390x844__bars-1__1.json: final {"slots":1,"systems":1,"rowPx":373,"stage":635,"changes":{"zoom":2,"width":390,"asked":1,"n":1}}
+== base__390x844__bars-1__1.json: first ink 2030, settled +905
+  [1] picture rows 0-0,1-1~ | transform translate(27.3761px, 5.57688px) scale(1.52686) | zoom 1 | stage 390x690 | measured - | changes null | sheets 2
+  [21] picture rows 0-0,1-1~ | transform translate(27.3761px, 6.76466px) scale(1.52686) | zoom 1 | stage 390x690 | measured - | changes null | sheets 2
+  [209] picture rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x687 | measured - | changes null | sheets 2
+  [218] rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x635 | measured - | changes null | sheets 2
+  [858] picture rows 0-0 | transform translate(27.3761px, 43.4082px) scale(0.763432) | zoom 2 | stage 390x635 | measured 2 | changes {"zoom":2,"width":390,"asked":1,"n":1} | sheets 2
+  pictures from the first ink to settled: 4
+base__390x844__bars-1__2.json: final {"slots":1,"systems":1,"rowPx":373,"stage":635,"changes":{"zoom":2,"width":390,"asked":1,"n":1}}
+== base__390x844__bars-1__2.json: first ink 1409, settled +1002
+  [1] picture rows 0-0,1-1~ | transform translate(27.3761px, 5.57688px) scale(1.52686) | zoom 1 | stage 390x690 | measured - | changes null | sheets 2
+  [19] picture rows 0-0,1-1~ | transform translate(27.3761px, 6.76466px) scale(1.52686) | zoom 1 | stage 390x690 | measured - | changes null | sheets 2
+  [176] picture rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x687 | measured - | changes null | sheets 2
+  [187] rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x635 | measured - | changes null | sheets 2
+  [993] picture rows 0-0 | transform translate(27.3761px, 43.4082px) scale(0.763432) | zoom 2 | stage 390x635 | measured 2 | changes {"zoom":2,"width":390,"asked":1,"n":1} | sheets 2
+  pictures from the first ink to settled: 4
+final__390x844__bars-1__1.json: final {"slots":1,"systems":1,"rowPx":373,"stage":635,"changes":{"zoom":2,"width":390,"asked":1,"n":1}}
+== final__390x844__bars-1__1.json: first ink 1918, settled +2795
+  [1] picture rows 0-0,1-1~ | transform translate(27.3761px, 5.57688px) scale(1.52686) | zoom 1 | stage 390x690 | measured - | changes null | sheets 2
+  [20] picture rows 0-0,1-1~ | transform translate(27.3761px, 6.76466px) scale(1.52686) | zoom 1 | stage 390x690 | measured - | changes null | sheets 2
+  [192] picture rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x687 | measured - | changes null | sheets 2
+  [201] rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x635 | measured - | changes null | sheets 2
+  [582] rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x635 | measured - | changes null | sheets 3
+  [1556] rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x635 | measured - | changes null | sheets 4
+  [2790] picture rows 0-0 | transform translate(27.3761px, 43.4082px) scale(0.763432) | zoom 2 | stage 390x635 | measured 2 | changes {"zoom":2,"width":390,"asked":1,"n":1} | sheets 4
+  pictures from the first ink to settled: 4
+final__390x844__bars-1__2.json: final {"slots":1,"systems":1,"rowPx":373,"stage":635,"changes":{"zoom":2,"width":390,"asked":1,"n":1}}
+== final__390x844__bars-1__2.json: first ink 1365, settled +2834
+  [1] picture rows 0-0,1-1~ | transform translate(27.3761px, 5.57688px) scale(1.52686) | zoom 1 | stage 390x690 | measured - | changes null | sheets 2
+  [16] picture rows 0-0,1-1~ | transform translate(27.3761px, 6.76466px) scale(1.52686) | zoom 1 | stage 390x690 | measured - | changes null | sheets 2
+  [157] picture rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x687 | measured - | changes null | sheets 2
+  [165] rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x635 | measured - | changes null | sheets 2
+  [784] rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x635 | measured - | changes null | sheets 3
+  [1626] rows 0-0,1-1~ | transform translate(27.3761px, 7.4146px) scale(0.763432) | zoom 2 | stage 390x635 | measured - | changes null | sheets 4
+  [2828] picture rows 0-0 | transform translate(27.3761px, 43.4082px) scale(0.763432) | zoom 2 | stage 390x635 | measured 2 | changes {"zoom":2,"width":390,"asked":1,"n":1} | sheets 4
+  pictures from the first ink to settled: 4

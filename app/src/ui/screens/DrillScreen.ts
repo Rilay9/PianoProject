@@ -57,13 +57,17 @@ import {
   type DrillResult,
 } from '../../engine/drills';
 import { Metronome } from '../../audio/Metronome';
+import { drillOutcomeOf, type Outcome } from '../../data/sessionRun';
+import { UNJUDGED_DRILL_KINDS, accuracyReading, setMeasured } from '../../data/accuracyReading';
+import { drawTransition, sessionHandle } from '../sessionRunner';
 import { audioTimeToPerformanceMs, captureAudioClockAnchor, type AudioClockAnchor } from '../../audio/clock';
 import { metronomeSoundFor, shouldMuteExpectedPlayback } from '../../audio/inputPolicy';
 import { noteLabel, worthRecording, type DrillKind } from '../../engine/drills/types';
 import { NOT_MEASURED, type EngineInput, type Mode } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
 import { getMidiSettings } from '../../data/midiSettings';
-import { getProgress, recordRun, sessionsForItem } from '../../data/progressStore';
+import { getProgress, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
+import { runFacts } from '../../curriculum/material';
 import { recordPlacement } from '../../data/planStore';
 import { tipsFor, type Tips } from '../../curriculum/tips';
 import { coach, type Coaching } from '../../engine/drills/coaching';
@@ -80,8 +84,8 @@ import type { InputNoteEvent } from '../../midi/types';
 import type { OsmdView } from '../../score/OsmdView';
 import { KeyboardStrip } from '../KeyboardStrip';
 import { rhythmRow, staffCard } from '../StaffCard';
-import { onScreenDispose } from '../screenLifecycle';
-import { DRILL_HELP, drillDetailLabel } from '../help';
+import { activeClock, onScreenDispose, onScreenSuspend, pageHidden } from '../screenLifecycle';
+import { DRILL_HELP, SUMMARY_TEXT, drillDetailLabel } from '../help';
 import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from '../helpStrip';
 import { badge, button, chip, el } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
@@ -158,6 +162,14 @@ const SIMON_REPLAY_NOTICE = `Here it is again, on the keys. ${TAP_TO_CONTINUE}`;
  */
 const SIMON_LISTENING = 'Listen — the app is playing.';
 const SIMON_YOUR_TURN = 'Your turn — play it back.';
+/**
+ * A chain the page hid in the middle of (X15; the reviewer's ruling,
+ * `responses/questions-e71ef3ad.md` §CL05). It does not come back on its own:
+ * a partial chain is not something to carry on from, and sound on unlocking a
+ * phone is the worse surprise. So the line says what happened and what to
+ * press, and — like the other two — names no note.
+ */
+const SIMON_INTERRUPTED = 'Interrupted — press ▶ Play again to hear the chain.';
 
 /**
  * How sure the detector has to be before a heard note counts as an answer.
@@ -222,6 +234,47 @@ const DICTATION_TICK_MS = 60;
 const FORM_TICK_MS = 100;
 
 /**
+ * How long a rhythm card back from a hidden page waits on `ensureStarted()`
+ * before it reads the engine's state anyway (CL05b): the Score screen's bound,
+ * `PLAY_SOUND_WAIT_MS`, for the same reason — outside a gesture a platform may
+ * never answer a start (`AudioEngine.ts`). Past it the card goes on waiting,
+ * held, for the engine's own `statechange`.
+ */
+const SOUND_WAIT_MS = 1_000;
+
+/**
+ * What a held rhythm card says while its sound is not running, and what its
+ * card then does (CL05b, point 3; the reviewer's ruling,
+ * `responses/questions-91f683ff.md`). It replaces the card's own line only
+ * for as long as that lasts.
+ */
+const SOUND_PAUSED = 'Sound is paused — tap to continue.';
+
+/**
+ * A rhythm card held on its return from a hidden page (CL05b): what its one
+ * count-in leads back to, and whether its click was going when the page hid.
+ *
+ * - `top`: the count had not named the downbeat and no tap had landed. It
+ *   counts in from the top, as it always has (`startCountIn`).
+ * - `downbeat`: the count had named the downbeat and no tap had landed. One
+ *   count leads to the downbeat again.
+ * - `grid`: the pattern was running. One count leads back to `pointMs`, the
+ *   pattern's time when the page hid.
+ */
+interface RhythmHold {
+  from: 'top' | 'downbeat' | 'grid';
+  pointMs: number;
+  wasSounding: boolean;
+}
+
+/** Whether a run of the item is measured: notation on the Score screen, or a drill of a kind that judges. */
+export function measuresARun(item: CatalogItem): boolean {
+  if (item.file) return true;
+  const kind = item.drill?.kind;
+  return kind !== undefined && !UNJUDGED_DRILL_KINDS.has(kind);
+}
+
+/**
  * docs/02 Part G: a drill passes at the same accuracy a piece does.
  *
  * `judged` says whether there was a verdict at all (T41). A backing track
@@ -236,7 +289,7 @@ export function drillOutcome(
 ): { passed: boolean; masterEligible: boolean; judged: boolean } {
   // A backing track judges nothing, so it can neither pass nor fail; it is
   // recorded as time spent and nothing more.
-  if (result.kind === 'backing-track') return { passed: false, masterEligible: false, judged: false };
+  if (UNJUDGED_DRILL_KINDS.has(result.kind)) return { passed: false, masterEligible: false, judged: false };
   if (result.answered === 0) return { passed: false, masterEligible: false, judged: true };
   // Simon is scored by how far the chain got, not by a share of the cards:
   // breaking at the sixth round is five chains right out of six, which as an
@@ -247,6 +300,50 @@ export function drillOutcome(
     passed: result.accuracy >= passAccuracyPct / 100,
     masterEligible: result.accuracy >= 0.97,
     judged: true,
+  };
+}
+
+/** What a drill set puts on the record beside its verdict (`drillRecordCounts`). */
+export type DrillRecordCounts = Pick<RunResult, 'accuracy' | 'wrongNotes' | 'missed' | 'answered' | 'notesHeard'>;
+
+/**
+ * The record's accuracy, wrong notes, misses and answered count for a set, from the model's own counts and the
+ * verdict (`keep` stores them; U102). One reading of the result reads them back (`data/accuracyReading.ts`).
+ *
+ * - **A kind that judges nothing** (a backing track, T41): its accuracy, wrong notes and misses are not
+ *   measured (C1, L49), and what it counted is the notes played. No answered count.
+ * - **A kind that judges, nothing answered** (`setMeasured` false): `accuracy` is `not measured`, beside
+ *   `answered: 0`, no wrong notes, and every card of the set missed. It stored the model's accuracy for "no
+ *   answers", a 0 (`PromptDrill.result`: `answered > 0 ? correct / answered : 0`), and Progress printed *0%*
+ *   for a set whose sheet says *Not measured* (U96). `missed` stays a number, never 0, so the rung state's
+ *   `done` (`missed === 0` beside an unmeasured accuracy) never reads it as finished.
+ * - **One answer or more**: the model's accuracy, `answered` as the model counts it (cards; taps on a rhythm
+ *   set; attempts on a Simon set, U96a), wrong notes `answered − correct`.
+ *
+ * `missed` is the set's prompts left unanswered, `total − answered`, for every kind whose `answered` counts
+ * the set's prompts and is bounded by `total` (U96a). A rhythm set's `answered` is the onsets hit plus every
+ * extra tap, so that arithmetic stored *missed 0* for eight onsets with six hit and four extra taps, two onsets
+ * never hit; its `missed` is the onsets not hit, `total − correct`, and its extra taps stay the wrong notes
+ * (U104's item at this write, the reviewer's guard: extra taps do not erase missed onsets).
+ */
+export function drillRecordCounts(result: DrillResult, outcome: { judged: boolean }): DrillRecordCounts {
+  if (!outcome.judged) {
+    return {
+      accuracy: NOT_MEASURED,
+      wrongNotes: NOT_MEASURED,
+      missed: NOT_MEASURED,
+      notesHeard: result.detail?.notesPlayed ?? result.answered,
+    };
+  }
+  const missed = Math.max(0, result.total - (result.kind === 'rhythm' ? result.correct : result.answered));
+  if (!setMeasured({ judged: true, answered: result.answered })) {
+    return { accuracy: NOT_MEASURED, wrongNotes: 0, missed, answered: 0 };
+  }
+  return {
+    accuracy: result.accuracy,
+    wrongNotes: Math.max(0, result.answered - result.correct),
+    missed,
+    answered: result.answered,
   };
 }
 
@@ -355,9 +452,72 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   let drill: Drill | null = null;
   let current: DrillPrompt | null = null;
   let strip: KeyboardStrip | null = null;
-  let startedAtMs = Date.now();
+  /**
+   * How long this attempt has been practised: visible time only (X15, Part 20
+   * §4). It was `Date.now()` minus a start, so a phone locked for half an hour
+   * mid-card wrote half an hour of practice into the row. Restarted wherever a
+   * set, a checklist, a placement or the tour begins.
+   */
+  const attemptClock = activeClock(section);
   let disposed = false;
   let finished = false;
+  /**
+   * Today's session activity this drill is, where the runner opened it (X1, `?session=`): opened, started,
+   * finished and visible time are reported through the handle, and the end sheet's closing action becomes
+   * the transition to the next activity. None: an ordinary drill.
+   */
+  const sessionRun = sessionHandle(router.route.session);
+  const stopSessionClock = sessionRun?.startClock();
+  /** Draws the transition on the end sheet on show, again once the finished set is stored and completed. */
+  let redrawSessionNext: (() => void) | null = null;
+
+  /**
+   * The end sheet's closing action becomes the session's next step (X1): a transition block before the sheet's
+   * buttons, drawn from the stored record; *Back to the plan* gives way to it where the record answers.
+   * `drawNow` false where a stored set is still on its way: it is drawn when the completion is written.
+   * `giveWay`: the sheet's own filled boxes, outlined while the transition is drawn, so its *Start* is the
+   * sheet's one filled box (`04` §0 R3; U96, the placement test's *Start here*); filled again where the record
+   * offers nothing and the sheet keeps its own way on.
+   */
+  function sessionNext(
+    buttons: HTMLElement,
+    back: HTMLElement,
+    again: () => void,
+    drawNow: boolean,
+    giveWay: readonly HTMLElement[] = [],
+  ): HTMLElement | null {
+    if (!sessionRun) return null;
+    const handle = sessionRun;
+    const host = el('div.session-next', { id: 'session-next', hidden: true });
+    buttons.before(host);
+    redrawSessionNext = () => {
+      void drawTransition(host, {
+        router,
+        handle,
+        button: (label, onClick, id, primary) => button(label, onClick, { id, variant: primary ? 'primary' : 'secondary' }),
+        tryAgain: again,
+      }).then((kind) => {
+        const drawn = kind !== 'none' && kind !== 'closed';
+        back.hidden = drawn;
+        for (const own of giveWay) {
+          own.classList.toggle('button--primary', !drawn);
+          own.classList.toggle('button--secondary', drawn);
+        }
+      });
+    };
+    if (drawNow) redrawSessionNext();
+    return host;
+  }
+
+  /** A finished set is stored: the activity completes with what it judged, and the transition is drawn (X1). */
+  function completeSession(stored: Promise<unknown>, outcome: Outcome): void {
+    if (!sessionRun) return;
+    const handle = sessionRun;
+    void stored
+      .then(() => handle.completed(outcome))
+      .catch(() => null)
+      .then(() => redrawSessionNext?.());
+  }
   /** What the last finished set came to, so the summary's button can record it. */
   /** The notes of the last improvisation, for `Listen back`; not persisted. */
   let lastRecording: { midi: number; velocity: number; tMs: number }[] = [];
@@ -367,6 +527,69 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     durationMs: number;
   } | null = null;
   let playbackTimers: ReturnType<typeof setTimeout>[] = [];
+  /**
+   * Bumped each time the page hides (X15), so sound whose samples were still
+   * loading when it hid is never scheduled once they arrive.
+   */
+  let suspensions = 0;
+  /**
+   * True from the moment the page hides until it is back (X15; CL05a). The one
+   * flag the input path reads, so a key, a MIDI note or the pedal sent to a
+   * hidden page feeds no card. `suspendDrill` sets it and `resumeDrill` clears
+   * it — not `pageHidden()`, which reads `document.visibilityState` and so
+   * misses a `pagehide` that leaves it `visible`.
+   */
+  let suspended = false;
+  /** When the page hid, on the input timeline: one reading, held until it is back. */
+  let hiddenAtMs = 0;
+  /** Whether the rhythm card's click was sounding when the page hid; it comes back only if it was. */
+  let clickWasSounding = false;
+  /**
+   * Whether the count-in has named the rhythm card's downbeat (T8). Read on
+   * return: a card still counting in counts in again, and one past it does
+   * not — a second count over a downbeat already named would let a stray tap
+   * during it start the pattern.
+   */
+  let countInDownbeatKnown = false;
+  /**
+   * A rhythm card back from a hidden span, held until it can be heard and has
+   * been counted in again (CL05b, the reviewer's required change,
+   * `responses/8764c643.md`); null when no card is held. Kept across a second
+   * hide while it still holds, so the point and the click are the first
+   * hide's, not the hold's.
+   */
+  let rhythmHold: RhythmHold | null = null;
+  /**
+   * The input-timeline moment from which the held rhythm card's taps are
+   * judged again: `+Infinity` while it waits for the sound, the point the page
+   * hid at once its count-in is scheduled, `-Infinity` when nothing is held.
+   * Read by `onNote` for the rhythm card alone.
+   */
+  let rhythmJudgedFromMs = Number.NEGATIVE_INFINITY;
+  /** Stops the held rhythm card's wait for the sound; null when nothing waits. */
+  let stopSoundWatch: (() => void) | null = null;
+  /** Reads the engine's state again for the waiting card; null when nothing waits. */
+  let soundCheck: (() => void) | null = null;
+  /** The line `SOUND_PAUSED` replaced, put back when the pause ends; null when the card is not paused. */
+  let pausedStatusWas: string | null = null;
+  /**
+   * The backing loop, while it runs: the prompt it is playing and when, on the
+   * `performance.now()` clock, it would have started to be where it is now.
+   * The chart reads its place from the same moment.
+   */
+  let loopPrompt: DrillPrompt | null = null;
+  let loopStartedAtMs: number | null = null;
+  /** Where the loop was when the page hid, floored to its bar; resumed from there. */
+  let loopHeld: { prompt: DrillPrompt; fromMs: number } | null = null;
+  /** The dictation card whose ticker the page's hiding stopped. */
+  let dictationHeld: ChordDictationDrill | null = null;
+  /**
+   * A card whose right/wrong pause was running when the page hid. The pause's
+   * timer is gone — letting it run out would move on and sound the next
+   * prompt with nobody there, or on waking — so the card is held until a tap,
+   * the way a miss already is.
+   */
+  let holdAwaitsTap = false;
   /** Which pedal state the lamp shows; the pedal drill is the only reader. */
   let pedalDown = false;
   let lastPedalReport = '';
@@ -527,13 +750,21 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   }
 
   function onNote(event: InputNoteEvent): void {
-    if (!drill || finished || disposed) return;
+    // A hidden page is not practice (X15; CL05a): nothing sent to it — a key,
+    // a MIDI note, the microphone — feeds, scores or moves on any card, of any
+    // kind. The suspension owns the refusal, not each drill.
+    if (!drill || finished || disposed || suspended) return;
+    // A rhythm card back from a hidden page is not judged until it can be
+    // heard and has been counted in again (CL05b): a tap while the sound is
+    // still suspended, or during that count, is neither an onset nor an extra.
+    // The rhythm card's alone — no other kind has a click to find its place by.
+    if (drill.kind === 'rhythm' && event.tMs < rhythmJudgedFromMs) return;
     // A card the learner has said *Done* on is showing its answer and is
     // waiting to go. Playing along with the staff there — which is exactly
     // what a staff invites — must not feed more chords into the progression
     // that has just been judged. Only the manual-advance kinds can be in this
     // state with the drill still accepting input.
-    if (feedbackTimer !== null && MANUAL_ADVANCE.has(drill.kind)) return;
+    if (cardHeld() && MANUAL_ADVANCE.has(drill.kind)) return;
     // Simon's chain is the app's half of the exchange: a key pressed while it
     // is still playing is playing along, not answering (T23). `simonAnswerFromMs`
     // is the same moment the lights go out and the cue reads *Your turn*.
@@ -556,7 +787,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   }
 
   function onControl(cc: number, value: number, tMs: number): void {
-    if (!drill || finished || disposed || cc !== 64) return;
+    // The pedal too, for the same reason as a key (`onNote`).
+    if (!drill || finished || disposed || suspended || cc !== 64) return;
     drill.feed({ kind: 'cc', cc, value, tMs });
     pedalDown = value >= 64;
     if (drill.kind === 'pedal') draw();
@@ -582,6 +814,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // next one refusing keys (T23).
     simonAnswerFromMs = 0;
     stopFormTicker();
+    loopPrompt = null;
+    loopStartedAtMs = null;
     // The play-along staff is part of the chain sounding, not part of the card
     // (`04` §5c-2), so it goes wherever the sound goes. Declared below.
     disposeChainStaff();
@@ -610,9 +844,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     clearPlayback();
     if (notes.length === 0) return;
     const start = notes[0]?.tMs ?? 0;
+    const asked = suspensions;
     void getPiano()
       .then((piano) => {
-        if (disposed) return;
+        if (disposed || asked !== suspensions) return;
         for (const note of notes) {
           playbackTimers.push(
             setTimeout(
@@ -635,13 +870,21 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    * Ear drills are unusable without it, and the audio has to be *the piano* —
    * hearing a sine wave and answering on a piano is a different task from the
    * one the drill is for.
+   *
+   * `fromMs` is where in the prompt to begin, and only the backing loop is
+   * ever begun anywhere but its start: that is how it comes back after the
+   * page was hidden, on the bar it was in (X15).
    */
-  function playPrompt(target: DrillPrompt | null): void {
+  function playPrompt(target: DrillPrompt | null, fromMs = 0): void {
     clearPlayback();
     if (!target?.playback?.length) return;
     // The chart follows the sound, so its clock starts where the sound does
     // and restarts on every `▶ Play again`.
-    if (drill instanceof BackingTrackDrill && drill.chart) startFormTicker(drill);
+    if (drill instanceof BackingTrackDrill) {
+      loopPrompt = target;
+      loopStartedAtMs = performance.now() - fromMs;
+      if (drill.chart) startFormTicker(drill, fromMs);
+    }
     // `05` §11.4: the microphone hears the phone's own speaker, so an ear drill
     // that played its prompt out loud would be listening to itself and marking
     // the learner right for saying nothing.
@@ -655,15 +898,16 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         'Playback is muted while the microphone is listening — use headphones, or send playback to the piano.';
       return;
     }
+    const asked = suspensions;
     void getPiano()
       .then((piano) => {
-        if (disposed) return;
+        if (disposed || asked !== suspensions) return;
         for (const step of target.playback ?? []) {
-          if (step.midi.length === 0) continue;
+          if (step.midi.length === 0 || step.atMs < fromMs) continue;
           playbackTimers.push(
             setTimeout(() => {
               if (!disposed) piano.playChord(step.midi, 0.9);
-            }, step.atMs),
+            }, step.atMs - fromMs),
           );
         }
       })
@@ -973,6 +1217,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // that happens not to have one.
     if (target && drill?.kind === 'simon') cueSimonTurn(target);
     if (target && simonLightsNow()) showChainOnKeys(target);
+    // A card that opens while the page is already hidden — the phone locked
+    // while the drill was loading — is suspended from its first moment, the
+    // same as one the page hid in the middle of. `suspended` as well: a
+    // `pagehide` suspends without making the page read hidden.
+    if (pageHidden() || suspended) suspendDrill();
   }
 
   function stopDictationTicker(): void {
@@ -1013,10 +1262,13 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    *
    * The position is computed from elapsed time by `formPosition`, which is in
    * the engine and tested there — the screen only paints it.
+   *
+   * `fromMs`: how far into the form the loop is starting, which is not zero
+   * only when it comes back from a hidden page (X15).
    */
-  function startFormTicker(target: BackingTrackDrill): void {
+  function startFormTicker(target: BackingTrackDrill, fromMs = 0): void {
     stopFormTicker();
-    formStartedAtMs = performance.now();
+    formStartedAtMs = performance.now() - fromMs;
     const paint = (): void => {
       const { bar, pass } = formPosition(
         performance.now() - formStartedAtMs,
@@ -1065,22 +1317,17 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    */
   function startCountIn(target: RhythmDrill): void {
     stopMetronome();
+    countInDownbeatKnown = false;
+    const asked = suspensions;
     void audioEngine
       .ensureStarted()
       .then((context) => {
-        if (disposed || finished) return;
-        const settings = getSettings();
-        metronome = new Metronome(context, {
-          bpm: target.bpm,
-          beatsPerBar: Math.max(1, target.countInBeats),
-          countInBars: 1,
-          sound: metronomeSoundFor(
-            { micActive, destination: settings.playbackDestination },
-            settings.metronomeSound,
-          ),
-          volume: getMidiSettings().metronomeVolume,
-          ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
-        });
+        // A card that opened behind a locked phone, or one whose audio was
+        // still starting when the page hid, starts no click into the hidden
+        // page: `suspendDrill` has already run, before this resolved. The
+        // return counts it in (X15; CL05a).
+        if (disposed || finished || suspended || asked !== suspensions) return;
+        metronome = newMetronome(context, target);
         // Taken once, before the first click: both clocks drift, and the whole
         // point is that the drill and the metronome share one reading.
         const anchor = captureAudioClockAnchor(context);
@@ -1088,8 +1335,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         // T8: the count-in teaches the tempo, and the learner's first tap then
         // sets the start. Taps before the downbeat is known are strays.
         target.latchOnFirstTap({ awaitCountIn: true });
+        // The drill refuses a stray itself from here, so a card held on its
+        // return from a hidden page is held no longer (CL05b).
+        releaseRhythmHold();
         const beatsPerBar = Math.max(1, target.countInBeats);
-        let downbeatKnown = false;
         stopMetronomeTicks = metronome.onTick((beat) => {
           if (beat.isCountIn) {
             status.textContent = `Count-in — ${String(beat.beatInBar)}`;
@@ -1097,15 +1346,15 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
             // count. Waiting for the downbeat's own tick — scheduled only a
             // tenth of a second ahead — refused an early tap that was inside
             // the tolerance as a stray (T8 review, L1).
-            if (beat.index === beatsPerBar - 1 && !downbeatKnown) {
-              downbeatKnown = true;
+            if (beat.index === beatsPerBar - 1 && !countInDownbeatKnown) {
+              countInDownbeatKnown = true;
               target.startAt(audioTimeToPerformanceMs(anchor, beat.timeSec + 60 / target.bpm));
             }
             return;
           }
           if (beat.bar === 1 && beat.beatInBar === 1) {
-            if (!downbeatKnown) {
-              downbeatKnown = true;
+            if (!countInDownbeatKnown) {
+              countInDownbeatKnown = true;
               target.startAt(audioTimeToPerformanceMs(anchor, beat.timeSec));
             }
             status.textContent = 'Tap the rhythm on any key — your first tap starts it.';
@@ -1121,8 +1370,22 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         // No audio is a reason to lose the click, not the drill. There is no
         // downbeat to wait for, so the first tap starts it (T8).
         target.latchOnFirstTap();
+        if (drill === target) releaseRhythmHold();
         status.textContent = 'No metronome — the count-in is silent on this device. Your first tap starts it.';
       });
+  }
+
+  /** The rhythm card's click: one bar of count-in at the card's tempo, on the master gain. */
+  function newMetronome(context: AudioContext, target: RhythmDrill): Metronome {
+    const settings = getSettings();
+    return new Metronome(context, {
+      bpm: target.bpm,
+      beatsPerBar: Math.max(1, target.countInBeats),
+      countInBars: 1,
+      sound: metronomeSoundFor({ micActive, destination: settings.playbackDestination }, settings.metronomeSound),
+      volume: getMidiSettings().metronomeVolume,
+      ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
+    });
   }
 
   /**
@@ -1142,13 +1405,256 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // A first tap inside the last beat of the count came before the downbeat
     // tick that would have changed this line.
     status.textContent = 'Tap the rhythm on any key.';
+    clickFromBeat(target, context, Math.floor((tap - start) / target.beatMs + 1e-6) + 1);
+  }
+
+  /**
+   * Starts the click on beat `beat` of the card's grid — 0 its downbeat —
+   * accented where that beat falls in the bar, through the latest reading of
+   * both clocks (`clickAnchor`: the count-in's, or the return's).
+   */
+  function clickFromBeat(target: RhythmDrill, context: AudioContext, beat: number): void {
+    const start = target.startedAt;
+    if (!metronome || !clickAnchor || start === null) return;
     const beatsPerBar = Math.max(1, target.countInBeats);
-    const beat = Math.floor((tap - start) / target.beatMs + 1e-6) + 1;
     const heardAtPerfMs = start + beat * target.beatMs;
     const startSec =
       clickAnchor.contextTimeSec + (heardAtPerfMs - clickAnchor.performanceMs) / 1000 - clickAnchor.outputLatencySec;
     metronome.setCountInBars(0);
     metronome.start(Math.max(context.currentTime, startSec), (beat % beatsPerBar) + 1);
+  }
+
+  /**
+   * A rhythm card's first open — the set's first card or *Again*'s — held as
+   * a return is, one edge earlier (X45; the reviewer's ruling,
+   * `responses/1a89de52.md`: no judged rhythm timing against an inaudible or
+   * unestablished pulse). Until `ensureStarted()` answered, the drill's latch
+   * was never armed and a tap was judged against the moment the card opened;
+   * a start answering with the context still suspended began the count on a
+   * standing clock, refusing every tap with nothing said. So no tap is judged
+   * until the sound is actually running (`whenSoundRuns`, paused meanwhile
+   * with the card as the one way back); then the ordinary count-in plays.
+   *
+   * - Held as `top`, nothing played yet to lead back to, so a hide during the
+   *   wait comes back through `resumeRhythmClick` counting in from the top,
+   *   not from `countInDownbeatKnown`, which after *Again* still says the
+   *   last card's count named its downbeat.
+   * - With no Web Audio no sound will ever run to wait for: the card carries
+   *   on at once, silent, as it always has (the reviewer's confirmation,
+   *   `responses/1a89de52.md`, question 1).
+   */
+  function openRhythmCard(target: RhythmDrill): void {
+    if (!audioEngine.supported) {
+      startCountIn(target);
+      return;
+    }
+    rhythmHold = { from: 'top', pointMs: 0, wasSounding: false };
+    rhythmJudgedFromMs = Number.POSITIVE_INFINITY;
+    whenSoundRuns(target, () => startCountIn(target));
+  }
+
+  /**
+   * The rhythm card after a hidden span (X15; CL05a, narrowed by CL05b, the
+   * reviewer's required change, `responses/8764c643.md`). The drill's grid has
+   * already moved past the span (`RhythmDrill.excludeHidden`), but a visible
+   * page is not yet a click the learner can hear, nor a pulse to find their
+   * place by after an interruption. So the card is held, no tap judged, until
+   * the sound is actually running (`whenSoundRuns`); then it is counted in
+   * once — from the top by `startCountIn` when the count had never named the
+   * downbeat, by `countInAgain` otherwise — and judged again only from the
+   * point the page hid at.
+   *
+   * With no Web Audio at all no sound will ever come back to wait for, and the
+   * card has run without a click from its first moment ("No metronome — …"):
+   * it carries on as it did, the way the Score screen's `withSound` acts at
+   * once there.
+   */
+  function resumeRhythmClick(target: RhythmDrill, wasSounding: boolean, visibleAtMs: number): void {
+    if (!audioEngine.supported) {
+      if (!countInDownbeatKnown && target.firstTapAt === null) startCountIn(target);
+      return;
+    }
+    if (!rhythmHold) {
+      const start = target.startedAt;
+      rhythmHold =
+        target.firstTapAt !== null && start !== null
+          ? { from: 'grid', pointMs: visibleAtMs - start, wasSounding }
+          : { from: countInDownbeatKnown ? 'downbeat' : 'top', pointMs: 0, wasSounding };
+    }
+    rhythmJudgedFromMs = Number.POSITIVE_INFINITY;
+    const hold = rhythmHold;
+    whenSoundRuns(target, (context) => {
+      if (hold.from === 'top') startCountIn(target);
+      else countInAgain(target, context, hold);
+    });
+  }
+
+  /** Nothing held: a new card, or a held one whose own count-in has taken over. */
+  function releaseRhythmHold(): void {
+    stopSoundWatch?.();
+    stopSoundWatch = null;
+    rhythmHold = null;
+    rhythmJudgedFromMs = Number.NEGATIVE_INFINITY;
+  }
+
+  /**
+   * Calls `go` with the context once the sound is actually running (CL05b,
+   * point 2), while `target` is still the card and the page still visible.
+   * `ensureStarted()` answers with a context, not a running one, and outside a
+   * gesture a platform may never answer at all (`AudioEngine.ts`), so the
+   * engine's `state` decides — as the Score screen's `withSound` reads it —
+   * at once, when the start answers or fails, at `SOUND_WAIT_MS`, and on every
+   * `statechange` after that, for however long the sound stays away. While it
+   * waits the card is paused (`showSoundPaused`): a tap on it asks again,
+   * inside the tap.
+   */
+  function whenSoundRuns(target: RhythmDrill, go: (context: AudioContext) => void): void {
+    stopSoundWatch?.();
+    const asked = suspensions;
+    let stopped = false;
+    let stopWatching: () => void = () => undefined;
+    let bound: ReturnType<typeof setTimeout> | null = null;
+    const stop = (): void => {
+      stopped = true;
+      stopWatching();
+      if (bound !== null) clearTimeout(bound);
+      if (stopSoundWatch === stop) {
+        stopSoundWatch = null;
+        soundCheck = null;
+        hideSoundPaused();
+      }
+    };
+    const check = (): void => {
+      if (stopped) return;
+      if (disposed || finished || suspended || asked !== suspensions || drill !== target) {
+        stop();
+        return;
+      }
+      const context = audioEngine.contextOrNull;
+      if (audioEngine.state !== 'running' || !context) return;
+      stop();
+      go(context);
+    };
+    stopSoundWatch = stop;
+    check();
+    if (stopped) return;
+    soundCheck = check;
+    showSoundPaused();
+    stopWatching = audioEngine.onStateChange(check);
+    bound = setTimeout(check, SOUND_WAIT_MS);
+    void audioEngine.ensureStarted().then(check, check);
+  }
+
+  /**
+   * The held rhythm card's one way back while its sound is not running
+   * (CL05b, point 3; the reviewer's ruling, `responses/questions-91f683ff.md`).
+   *
+   * - The line says the sound is paused, in place of the card's own line, and
+   *   the card itself becomes a button for as long as that lasts: a tap, a
+   *   click, or Enter or Space once it has the focus. No control is added and
+   *   none stays behind; it is the card, and only while it is paused.
+   * - Its one job is to ask for the sound inside that gesture, the only place
+   *   a platform that suspends audio on a lock honours the ask
+   *   (`AudioEngine.ts`). If the sound still will not run, the card stays
+   *   paused and held. Once it runs, the hold's own watch ends the pause and
+   *   counts in, and the keys are judged again only after the count.
+   * - A key on the strip or the piano is never this: it is the answer the
+   *   learner means next, refused while held (`onNote`), and asks for nothing.
+   */
+  function showSoundPaused(): void {
+    if (pausedStatusWas === null) pausedStatusWas = status.textContent ?? '';
+    status.textContent = SOUND_PAUSED;
+    stage.setAttribute('role', 'button');
+    stage.setAttribute('tabindex', '0');
+    stage.setAttribute('aria-label', SOUND_PAUSED);
+    stage.addEventListener('click', wakeSound);
+    stage.addEventListener('keydown', wakeSoundByKey);
+  }
+
+  /** The pause is over: the card's own line back, and the card no longer a button. */
+  function hideSoundPaused(): void {
+    if (pausedStatusWas === null) return;
+    if (status.textContent === SOUND_PAUSED) status.textContent = pausedStatusWas;
+    pausedStatusWas = null;
+    stage.removeAttribute('role');
+    stage.removeAttribute('tabindex');
+    stage.removeAttribute('aria-label');
+    stage.removeEventListener('click', wakeSound);
+    stage.removeEventListener('keydown', wakeSoundByKey);
+  }
+
+  /** Asks for the sound, inside the gesture that called it, and reads the state again on the answer. */
+  function wakeSound(): void {
+    void audioEngine.ensureStarted().then(
+      () => soundCheck?.(),
+      () => soundCheck?.(),
+    );
+  }
+
+  function wakeSoundByKey(event: KeyboardEvent): void {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    wakeSound();
+  }
+
+  /**
+   * One count-in, then the held grid and its click together (CL05b, point 4).
+   *
+   * - The card's own count-in — one bar of `countInBeats` at its tempo, as
+   *   `startCountIn` plays it — on the grid's own beats, so the click after it
+   *   is the same pulse, accented where the grid's bars fall.
+   * - It leads, a beat after its last click, to the beat the page hid in
+   *   (`floor(pointMs / beatMs)`), or to the downbeat when no tap had landed,
+   *   which it names again (`startAt`) as the card's first count does.
+   * - A running grid moves on by exactly what the hold and the count took,
+   *   through the drill's own `excludeHidden`, so nothing due in them is
+   *   missed and the first tap moves with the grid. The clock reading is
+   *   taken again either way.
+   * - Taps are judged again only from the point the page hid at: nothing
+   *   before it twice, nothing after it skipped, and the count — at least a
+   *   beat earlier — never. Before the first tap the drill refuses a stray
+   *   itself, from the count's last click, as on the card's first count.
+   * - After the count the click goes on if it was going when the page hid;
+   *   before the first tap it goes quiet on the downbeat, as on the first count.
+   */
+  function countInAgain(target: RhythmDrill, context: AudioContext, hold: RhythmHold): void {
+    if (!metronome) metronome = newMetronome(context, target);
+    const metro = metronome;
+    stopMetronomeTicks?.();
+    stopMetronomeTicks = null;
+    const anchor = captureAudioClockAnchor(context);
+    clickAnchor = anchor;
+    const beatsPerBar = Math.max(1, target.countInBeats);
+    const grid = hold.from === 'grid';
+    const beat = grid ? Math.floor(hold.pointMs / target.beatMs + 1e-6) : 0;
+    // `Metronome.start`'s own lead: the first click is never in the past.
+    const firstClickSec = context.currentTime + 0.1;
+    const resumesAtMs = audioTimeToPerformanceMs(anchor, firstClickSec + (beatsPerBar * 60) / target.bpm);
+    const startMs = resumesAtMs - beat * target.beatMs;
+    if (grid) {
+      const held = startMs - (target.startedAt ?? startMs);
+      target.excludeHidden(resumesAtMs - held, resumesAtMs);
+    } else {
+      target.startAt(startMs);
+    }
+    rhythmJudgedFromMs = grid ? startMs + hold.pointMs : resumesAtMs - target.beatMs;
+    stopMetronomeTicks = metro.onTick((tick) => {
+      if (tick.isCountIn) {
+        status.textContent = `Count-in — ${String(tick.beatInBar)}`;
+        return;
+      }
+      stopMetronomeTicks?.();
+      stopMetronomeTicks = null;
+      if (target.firstTapAt === null) {
+        status.textContent = 'Tap the rhythm on any key — your first tap starts it.';
+        metro.stop();
+      } else {
+        status.textContent = 'Tap the rhythm on any key.';
+        if (!hold.wasSounding) metro.stop();
+      }
+    });
+    metro.setCountInBars(1);
+    metro.start(firstClickSec, (((beat % beatsPerBar) + beatsPerBar) % beatsPerBar) + 1);
   }
 
   // --- the loop ------------------------------------------------------------
@@ -1168,6 +1674,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     simonStep = 0;
     disposeChainStaff();
     stopMetronome();
+    releaseRhythmHold();
     stopDictationTicker();
     disposeAnswer();
     disposeReading();
@@ -1183,7 +1690,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // what makes it a going-over rather than a second test, and the drill
     // itself has already forfeited the mark (`review.ts`).
     if (drill instanceof PromptDrill && drill.revealed) showAnswer(current);
-    if (drill instanceof RhythmDrill) startCountIn(drill);
+    if (drill instanceof RhythmDrill) openRhythmCard(drill);
     if (drill instanceof ChordDictationDrill) startDictationTicker(drill);
     playPromptWithHelp(current);
   }
@@ -1210,10 +1717,19 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     drawAnswer(target);
   }
 
+  /**
+   * Is the card in its right/wrong pause — on the pause's timer, or held for a
+   * tap because the page hid while the timer ran (X15)?
+   */
+  function cardHeld(): boolean {
+    return feedbackTimer !== null || holdAwaitsTap;
+  }
+
   /** Drops a pending right/wrong pause and everything that belongs to it. */
   function cancelFeedback(): void {
     if (feedbackTimer !== null) clearTimeout(feedbackTimer);
     feedbackTimer = null;
+    holdAwaitsTap = false;
     stopPauseTaps?.();
     stopPauseTaps = null;
     section.dataset.paused = '';
@@ -1244,7 +1760,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    * end unless a pause is actually pending, and `advance()` clears it.
    */
   function endFeedback(): void {
-    if (feedbackTimer === null || disposed || finished) {
+    if (!cardHeld() || disposed || finished) {
       cancelFeedback();
       return;
     }
@@ -1358,7 +1874,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    */
   function doneWithCard(): void {
     if (!drill) return;
-    const held = feedbackTimer !== null;
+    const held = cardHeld();
     if (held || staffPolicy(drill.kind) !== 'after-answer' || !current) {
       advance();
       return;
@@ -1391,6 +1907,113 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     holdCard(SIMON_REPLAY_NOTICE);
     playPrompt(target);
     showChainOnKeys(target);
+  }
+
+  // --- hidden, and shown again (X15) -------------------------------------------
+
+  /**
+   * The page went hidden: nothing on this card moves on or sounds until it is
+   * back (backlog X15, Part 19; the contract is in `screenLifecycle.ts`).
+   *
+   * - The backing loop and its chart stop, keeping the bar they were in.
+   * - The dictation ticker stops.
+   * - Every scheduled note is cancelled: a prompt, a replay, *Listen back*.
+   * - A right/wrong pause loses its timer and holds the card for a tap, since
+   *   running out would move on and sound the next prompt unasked.
+   * - A Simon chain still sounding is cut off and **not scored**: its window
+   *   is held shut past anything `performance.now()` can reach — never zeroed,
+   *   which is `clearPlayback`'s way and would open it — so a key before
+   *   *▶ Play again* is not an answer; and `advance()` is not called, so
+   *   `SimonDrill.next()` never scores the unanswered chain as broken. The
+   *   line says what happened instead of the stale *Listen* (the reviewer's
+   *   ruling, `responses/questions-e71ef3ad.md` §CL05). *▶ Play again* replays
+   *   from its first note through `playPrompt`, which reopens the window.
+   * - The rhythm card's click stops, with any click scheduled and not yet
+   *   heard (CL05a, the reviewer's required change, `responses/4923be59.md`).
+   * - Input is refused until the page is back (`suspended`, read by `onNote`
+   *   and `onControl`), and the moment it hid is held, once, for the return.
+   */
+  function suspendDrill(): void {
+    if (disposed) return;
+    if (!suspended) {
+      suspended = true;
+      hiddenAtMs = performance.now();
+      clickWasSounding = metronome?.running ?? false;
+    }
+    metronome?.stop();
+    // A rhythm card still held from its last return keeps the point it was
+    // held at, and its click, for the next one; a hold whose count has run
+    // out is over (CL05b).
+    stopSoundWatch?.();
+    if (rhythmHold && !(performance.now() < rhythmJudgedFromMs)) releaseRhythmHold();
+    suspensions += 1;
+    if (loopPrompt && loopStartedAtMs !== null && drill instanceof BackingTrackDrill && !finished) {
+      const into = Math.max(0, performance.now() - loopStartedAtMs);
+      // From the downbeat of the bar it was in: nothing skipped on return, and
+      // nothing counted that was not heard.
+      const fromMs = drill.barMs > 0 ? Math.floor(into / drill.barMs) * drill.barMs : 0;
+      loopHeld = { prompt: loopPrompt, fromMs };
+    }
+    const chainCutOff =
+      drill?.kind === 'simon' && current !== null && !finished && performance.now() < simonAnswerFromMs;
+    for (const timer of playbackTimers) clearTimeout(timer);
+    playbackTimers = [];
+    stopFormTicker();
+    loopPrompt = null;
+    loopStartedAtMs = null;
+    if (dictationTimer !== null && drill instanceof ChordDictationDrill) {
+      stopDictationTicker();
+      dictationHeld = drill;
+    }
+    if (drill?.kind === 'simon') {
+      // The lights, the name and the staff went with the sound they belong to.
+      disposeChainStaff();
+      strip?.setState({ expected: [] });
+      flashNoteName('');
+    }
+    if (chainCutOff) {
+      simonAnswerFromMs = Number.POSITIVE_INFINITY;
+      status.textContent = SIMON_INTERRUPTED;
+    }
+    if (feedbackTimer !== null) {
+      clearTimeout(feedbackTimer);
+      feedbackTimer = null;
+      holdAwaitsTap = true;
+      if (stopPauseTaps === null) {
+        // A plain right-answer beat had no hold of its own: it gets one, and
+        // the sentence that says how to leave it.
+        holdCard(TAP_TO_CONTINUE, section.dataset.feedback === 'wrong' ? 'miss' : 'answer');
+      } else if (heldStatus !== TAP_TO_CONTINUE && status.textContent === heldStatus) {
+        // *Here it is again, on the keys* stopped being true with the replay.
+        heldStatus = TAP_TO_CONTINUE;
+        status.textContent = TAP_TO_CONTINUE;
+      }
+    }
+  }
+
+  /**
+   * The page is back. The card in flight moves past the hidden span, so its
+   * time to answer, a pedal lift or a rhythm's grid counts none of it
+   * (CL05a). The loop resumes on its bar and the dictation ticker starts
+   * again; a rhythm card is held until it can be heard and has been counted
+   * in again (CL05b); a cut-off Simon chain and a held card wait for the
+   * learner.
+   */
+  function resumeDrill(): void {
+    if (disposed) return;
+    const wasSuspended = suspended;
+    suspended = false;
+    const visibleAtMs = performance.now();
+    if (wasSuspended && !finished) drill?.excludeHidden?.(hiddenAtMs, visibleAtMs);
+    const loop = loopHeld;
+    loopHeld = null;
+    if (loop && !finished && current === loop.prompt) playPrompt(loop.prompt, loop.fromMs);
+    const dictation = dictationHeld;
+    dictationHeld = null;
+    if (dictation && !finished && drill === dictation) startDictationTicker(dictation);
+    const wasSounding = clickWasSounding;
+    clickWasSounding = false;
+    if (wasSuspended && !finished && drill instanceof RhythmDrill) resumeRhythmClick(drill, wasSounding, visibleAtMs);
   }
 
   // --- per-kind faces ------------------------------------------------------
@@ -2072,9 +2695,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     }
     status.textContent = 'Played — this one will not count as right.';
     const ordered = current.ordered === true;
+    const asked = suspensions;
     void getPiano()
       .then((piano) => {
-        if (disposed) return;
+        if (disposed || asked !== suspensions) return;
         if (!ordered) {
           piano.playChord(notes, 0.9);
           return;
@@ -2291,10 +2915,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // no history, and the plateau advice silently stopped appearing with no
     // error and nothing on the screen to show for it.
     // Only runs that measured an accuracy: a kept jam's is "not measured"
-    // (C1), and no plateau is made of that.
-    const recent = (await sessionsForItem(current.id, 2).catch(() => [])).flatMap((row) =>
-      typeof row.accuracy === 'number' ? [{ accuracy: row.accuracy, at: row.at }] : [],
-    );
+    // (C1), and no plateau is made of that — nor of a set nobody answered,
+    // whose older rows still carry a 0 (U102, `accuracyReading`).
+    const recent = (await sessionsForItem(current.id, 2).catch(() => [])).flatMap((row) => {
+      const reading = accuracyReading(row);
+      return reading.kind === 'measured' ? [{ accuracy: reading.accuracy, at: row.at }] : [];
+    });
     const coaching: Coaching | null = coach(result.kind, result, recent);
     if (!coaching) return;
     line.replaceChildren(el('span', { text: coaching.text }));
@@ -2336,6 +2962,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     clearPlayback();
     cancelFeedback();
     stopMetronome();
+    releaseRhythmHold();
     stopDictationTicker();
     // The going-over has its own, much smaller ending: it counts nothing, so
     // there is no outcome to judge and nothing to record.
@@ -2356,7 +2983,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       masterTempoPct: 100,
     });
     const outcome = drillOutcome(result, criteria.passAccuracy * 100);
-    const durationMs = Date.now() - startedAtMs;
+    const durationMs = attemptClock.elapsedMs();
     lastResult = { result, outcome, durationMs };
     // What the learner improvised, if this was a kind that keeps it.
     lastRecording = drill instanceof BackingTrackDrill ? [...drill.recording] : [];
@@ -2390,6 +3017,56 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     disposeReading();
     prompt.textContent = '';
     sheet.hidden = false;
+    // In a session the transition's *Start* is the sheet's one filled box (`04` §0 R3), so *Again* is outlined.
+    const backButton = button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' });
+    const buttonsRow = el(
+      'div.row',
+      {},
+      button('Again', () => restart(), { id: 'drill-again', variant: sessionRun ? 'secondary' : 'primary' }),
+      // The three you got wrong are the only three worth playing again, and
+      // until this the sheet's only offer was a fresh set of ten. Outlined
+      // rather than filled: *Again* is what most sheets end with, and `04`
+      // §0 R3 allows one filled box (docs/04 §5c).
+      ...(goOver.length > 0
+        ? [
+            button(
+              goOver.length === 1
+                ? 'Go over the one you missed'
+                : `Go over the ${String(goOver.length)} you missed`,
+              () => startGoingOver(),
+              { id: 'drill-review' },
+            ),
+          ]
+        : []),
+      // Only where there is something to hear. A drill that judges every
+      // answer has nothing to play back that the learner did not just hear.
+      ...(lastRecording.length > 0
+        ? [
+            button('Listen back', () => playRecording(lastRecording), { id: 'drill-listen' }),
+          ]
+        : []),
+      // Only on a set that was stopped. A set that ran to its end has already
+      // been recorded, and a button offering to do it again would be asking a
+      // question that has no answer.
+      ...(how === 'stopped'
+        ? [
+            keepButton,
+          ]
+        : []),
+      backButton,
+    );
+    // A set of a judging kind that ended with no card answered — *End drill* before the first answer, or
+    // *Next*/*Done* with nothing played on a kind closed card by card; a skipped card counts as answered,
+    // wrong (`PromptDrill.next`) — measured nothing (U96): its sheet printed *Not passed yet* over *Accuracy
+    // 0%*, a verdict and a share of nothing. It is headed with T40's *Not measured*, as the Score screen heads a run
+    // it heard nothing of, and says why. The verdict itself (`drillOutcome`) is unchanged: the record and the
+    // session read it, and neither reads this sheet.
+    const unanswered = outcome.judged && result.answered === 0;
+    const note = !outcome.judged
+      ? 'Nothing here is judged, so there is no accuracy and no pass — only what you played.'
+      : unanswered
+        ? SUMMARY_TEXT.notAnswered
+        : null;
     sheet.replaceChildren(
       el(
         'div.row',
@@ -2399,63 +3076,28 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         // passed yet* over a pass nobody could have earned.
         el('h2', {
           id: 'drill-outcome',
-          text: !outcome.judged ? 'Practice' : outcome.passed ? 'Passed' : 'Not passed yet',
+          text: !outcome.judged
+            ? 'Practice'
+            : unanswered
+              ? SUMMARY_TEXT.notMeasuredHeading
+              : outcome.passed
+                ? 'Passed'
+                : 'Not passed yet',
         }),
-        ...(outcome.judged ? [outcome.passed ? badge('passed', 'passed') : badge('keep going')] : []),
+        ...(outcome.judged && !unanswered ? [outcome.passed ? badge('passed', 'passed') : badge('keep going')] : []),
       ),
-      ...(outcome.judged
-        ? []
-        : [
-            el('p.muted', {
-              id: 'drill-outcome-note',
-              text: 'Nothing here is judged, so there is no accuracy and no pass — only what you played.',
-            }),
-          ]),
+      ...(note === null ? [] : [el('p.muted', { id: 'drill-outcome-note', text: note })]),
       statSheet(result, outcome.judged),
       // The one number a Simon run is about, said in words: the stat list can
       // print "longest chain 5" from `detail`, and it cannot say that five is
-      // further than you have ever got.
-      ...(result.kind === 'simon' ? [chainLine(result)] : []),
+      // further than you have ever got. None where nothing was answered: a
+      // chain of nought is not a chain the learner played (U96).
+      ...(result.kind === 'simon' && !unanswered ? [chainLine(result)] : []),
       // The coaching line goes in before the buttons, because it is the thing
       // worth reading and a sentence under a "Back to the plan" button is a
       // sentence nobody sees.
       el('p.drill-coaching', { id: 'drill-coaching', hidden: true }),
-      el(
-        'div.row',
-        {},
-        button('Again', () => restart(), { id: 'drill-again', variant: 'primary' }),
-        // The three you got wrong are the only three worth playing again, and
-        // until this the sheet's only offer was a fresh set of ten. Outlined
-        // rather than filled: *Again* is what most sheets end with, and `04`
-        // §0 R3 allows one filled box (docs/04 §5c).
-        ...(goOver.length > 0
-          ? [
-              button(
-                goOver.length === 1
-                  ? 'Go over the one you missed'
-                  : `Go over the ${String(goOver.length)} you missed`,
-                () => startGoingOver(),
-                { id: 'drill-review' },
-              ),
-            ]
-          : []),
-        // Only where there is something to hear. A drill that judges every
-        // answer has nothing to play back that the learner did not just hear.
-        ...(lastRecording.length > 0
-          ? [
-              button('Listen back', () => playRecording(lastRecording), { id: 'drill-listen' }),
-            ]
-          : []),
-        // Only on a set that was stopped. A set that ran to its end has already
-        // been recorded, and a button offering to do it again would be asking a
-        // question that has no answer.
-        ...(how === 'stopped'
-          ? [
-              keepButton,
-            ]
-          : []),
-        button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' }),
-      ),
+      buttonsRow,
       // Said where the thing that caused it is (`04` §0 R6), not in a status
       // line at the other end of the screen.
       ...(how === 'stopped'
@@ -2486,6 +3128,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // right. Slow down until you are getting them right."
     if (outcome.judged) void showCoaching(result);
 
+    // The session's next step (X1): a set that ran out and is worth keeping completes the activity once it is
+    // stored (`keep`), and the transition is drawn then; a stopped set completes nothing (a stop is not a
+    // finish, `08` §16), so the transition — the way on, never a failure — is drawn from the record now.
+    sessionNext(buttonsRow, backButton, () => restart(), !(how === 'ran-out' && worthRecording(result)));
+
     // A set that ran out records itself; one that was stopped waits to be
     // asked. A set with no cards in it records nothing either way: `worthRecording`
     // says why, and the sentence below is what is owed instead — an empty
@@ -2508,35 +3155,38 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   function keep(): void {
     if (!item || !lastResult) return;
     const { result, outcome, durationMs } = lastResult;
-    // A set nothing judged (a backing track, T41) measured one thing, the
-    // notes played; its accuracy, wrong notes and misses are not measured and
-    // are stored as that (C1, L49). They were written as 0 and "every note
-    // played was wrong", and the Progress history printed the jam as "0%".
-    const judged = outcome.judged;
-    void recordRun({
+    // What the set measured, from the model's counts and the verdict (`drillRecordCounts`): a set nothing
+    // judged (a backing track, T41) measured the notes played, its accuracy, wrong notes and misses not
+    // measured (C1, L49); a set of a judging kind with nothing answered measured nothing, beside `answered: 0`
+    // (U102). Both were written as 0, and the Progress history printed each as "0%".
+    const saved = recordRun({
       itemId: item.id,
       // Which rung judged it — see the Score screen's note on the same field.
       ...(rung === undefined ? {} : { lessonId: rung.id }),
+      // What was played (D4): the row's identity — `none` for a drill made when it opens.
+      ...runFacts(item),
       mode: `drill:${result.kind}`,
       // A drill has no tempo slider: the 100 is a placeholder, stored as a
       // tempo not measured so it is never read as one — it was made the
       // item's best tempo on a pass (L52, C7).
       tempoPct: 100,
       tempoMeasured: false,
-      accuracy: judged ? result.accuracy : NOT_MEASURED,
+      ...drillRecordCounts(result, outcome),
       // A drill's accuracy is measured, not estimated — every answer is
       // either the right pitch set or it is not.
       accuracyEstimated: false,
-      wrongNotes: judged ? Math.max(0, result.answered - result.correct) : NOT_MEASURED,
-      missed: judged ? Math.max(0, result.total - result.answered) : NOT_MEASURED,
-      ...(judged ? {} : { notesHeard: result.detail?.notesPlayed ?? result.answered }),
       durationMs,
       passed: outcome.passed,
       masterEligible: outcome.masterEligible,
-    }).catch((cause: unknown) => {
+    });
+    saved.catch((cause: unknown) => {
       status.textContent = `Could not save this drill: ${String(cause)}`;
       status.classList.add('status--error');
     });
+    // Stored: the session's activity completes with the drill's judged result where it judges, none where
+    // it judges nothing (X1; a backing track drives neither adaptation). A stopped set the learner chose to
+    // count is theirs to count, so it completes too.
+    completeSession(saved, drillOutcomeOf(outcome, result.answered));
   }
 
   /**
@@ -2544,18 +3194,48 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    * answered count, because a drill that asks nothing has neither — only the
    * kind's own measurements from `detail`, which for a backing track is the
    * notes played.
+   *
+   * *Answered N of M* is the drill's own count of the set's cards closed as
+   * answers, over the set's cards (U96a). A skipped card is among them wherever
+   * the drill counts a skip as a wrong answer (`PromptDrill.next`,
+   * `SimonDrill.next`), which is also what the record keeps as not missed
+   * (`keep`: `missed` is `total − answered`). How many were right is
+   * *Accuracy*'s. The row printed `correct` under that word, so four cards
+   * answered with three right read *Answered 3 of 10*. Each kind's `answered`
+   * is bounded by its `total` — one per card, per progression, per pedal change
+   * after the first, per dynamic played, and Simon's card budget (`SimonDrill.next`
+   * stops at the chain's length, retried misses included) — except rhythm's,
+   * which counts taps: the onsets hit and every extra tap
+   * (`RhythmDrill.result`), over the pattern's onsets. A few extra taps would
+   * read *Answered 10 of 8*, two numbers that count different things, so a
+   * rhythm sheet prints no *Answered* row; its *Accuracy* (the onsets hit, over
+   * the pattern) and its own rows say what it measured. The half-pedal result
+   * would be the same case (`answered` is pedal readings), and nothing builds
+   * it (`fromCatalog` `buildPedal` passes no range).
+   *
+   * A judged set with no card answered (U96) prints *Answered 0 of N* and
+   * nothing else — a rhythm set, nothing at all: the accuracy, the time to
+   * answer and the kind's own numbers are each taken over the answers, so with
+   * none they are a share, a mean or a ratio of nothing — *Accuracy 0%*, and on
+   * the dynamics sheet *Loud against soft 0*. The kind's settings in `detail`
+   * (a tempo, a target) go with them: they are what a result would be read
+   * against, and there is none.
    */
   function statSheet(result: DrillResult, judged: boolean): HTMLElement {
-    const rows: [string, string][] = judged
-      ? [
-          ['Accuracy', `${String(Math.round(result.accuracy * 100))}%`],
-          ['Answered', `${String(result.correct)} of ${String(result.total || result.answered)}`],
-        ]
-      : [];
-    if (result.meanReactionMs > 0) {
+    const unanswered = judged && result.answered === 0;
+    const answeredRows: [string, string][] =
+      result.kind === 'rhythm'
+        ? []
+        : [['Answered', `${String(result.answered)} of ${String(result.total || result.answered)}`]];
+    const rows: [string, string][] = !judged
+      ? []
+      : unanswered
+        ? answeredRows
+        : [['Accuracy', `${String(Math.round(result.accuracy * 100))}%`], ...answeredRows];
+    if (result.meanReactionMs > 0 && !unanswered) {
       rows.push(['Average time to answer', `${String(Math.round(result.meanReactionMs))} ms`]);
     }
-    for (const [key, value] of Object.entries(result.detail ?? {})) {
+    for (const [key, value] of unanswered ? [] : Object.entries(result.detail ?? {})) {
       // In words, not the field's own name: this printed *boundary ms*, *soft
       // velocity*, *flat velocity* and *count in beats* at a learner, which is
       // the code's word for the thing (`00-invariants` §1).
@@ -2670,7 +3350,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     cancelFeedback();
     sheet.hidden = true;
     section.dataset.drill = 'running';
-    startedAtMs = Date.now();
+    attemptClock.restart();
     seen = [];
     // A new set of cards, so card 1 of it is not card 1 of the last one.
     runSeq += 1;
@@ -2765,7 +3445,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     const ticked = loadChecklistTicks(target.id, items.length);
     section.dataset.drill = 'running';
     section.dataset.kind = 'checklist';
-    startedAtMs = Date.now();
+    attemptClock.restart();
+    // Started: the session's activity is attempted (X1).
+    sessionRun?.attempted();
     prompt.textContent = 'Go through the list before you play. Come back to it any time.';
     hint.hidden = true;
 
@@ -2794,9 +3476,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       const done = ticked.filter(Boolean).length;
       finished = true;
       section.dataset.drill = 'finished';
-      void recordRun({
+      const saved = recordRun({
         itemId: target.id,
         ...(rung === undefined ? {} : { lessonId: rung.id }),
+        ...runFacts(target),
         mode: 'drill:checklist',
         tempoPct: 100,
         tempoMeasured: false,
@@ -2808,10 +3491,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         accuracyEstimated: false,
         wrongNotes: NOT_MEASURED,
         missed: items.length - done,
-        durationMs: Date.now() - startedAtMs,
+        durationMs: attemptClock.elapsedMs(),
         passed: done === items.length,
         masterEligible: done === items.length,
-      }).catch((cause: unknown) => {
+      });
+      saved.catch((cause: unknown) => {
         status.textContent = `Could not save this checklist: ${String(cause)}`;
         status.classList.add('status--error');
       });
@@ -2819,6 +3503,13 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       stage.replaceChildren();
       prompt.textContent = '';
       sheet.hidden = false;
+      const again = (): void => {
+        finished = false;
+        sheet.hidden = true;
+        runChecklist(target);
+      };
+      const backButton = button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' });
+      const buttonsRow = el('div.row', {}, button('Again', again, { id: 'drill-again', variant: sessionRun ? 'secondary' : 'primary' }), backButton);
       sheet.replaceChildren(
         el(
           'div.row',
@@ -2827,21 +3518,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
           done === items.length ? badge('passed', 'passed') : badge('keep going'),
         ),
         el('p', { text: `${String(done)} of ${String(items.length)} checked off.` }),
-        el(
-          'div.row',
-          {},
-          button(
-            'Again',
-            () => {
-              finished = false;
-              sheet.hidden = true;
-              runChecklist(target);
-            },
-            { id: 'drill-again', variant: 'primary' },
-          ),
-          button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' }),
-        ),
+        buttonsRow,
       );
+      // The session's next step (X1): the ticks are the learner's own check, never a measurement, so the
+      // activity completes with no outcome either adaptation may read.
+      sessionNext(buttonsRow, backButton, again, false);
+      completeSession(saved, 'unknown');
       sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
 
@@ -2886,7 +3568,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     let index = 0;
     section.dataset.drill = 'running';
     section.dataset.kind = 'placement';
-    startedAtMs = Date.now();
+    attemptClock.restart();
+    // Started: the session's activity is attempted (X1).
+    sessionRun?.attempted();
     hint.textContent = 'Be strict — if you are unsure whether you can do it cleanly, call it a fail.';
     hint.hidden = false;
     // The same empty card the walkthrough had, for the same reason: a placement
@@ -2987,9 +3671,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       controls.replaceChildren();
       stage.replaceChildren();
       prompt.textContent = '';
-      void recordRun({
+      const saved = recordRun({
         itemId: target.id,
         ...(rung === undefined ? {} : { lessonId: rung.id }),
+        ...runFacts(target),
         mode: 'drill:placement',
         tempoPct: 100,
         tempoMeasured: false,
@@ -3000,13 +3685,20 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         accuracyEstimated: false,
         wrongNotes: NOT_MEASURED,
         missed: 0,
-        durationMs: Date.now() - startedAtMs,
+        durationMs: attemptClock.elapsedMs(),
         // A placement test is not passed or failed itself — it is completed,
         // and what it produces is a starting point, not a score.
         passed: true,
         masterEligible: false,
-      }).catch(() => undefined);
+      });
+      saved.catch(() => undefined);
       sheet.hidden = false;
+      const again = (): void => {
+        finished = false;
+        sheet.hidden = true;
+        runPlacement(target);
+      };
+      const backButton = button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done', variant: 'quiet' });
       const where = el('p', {
         text: unitId
           ? 'Working out where to start\u2026'
@@ -3020,44 +3712,37 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
             : 'Nothing is locked — you can open any stage yourself.';
         });
       }
+      // *Start here* is the one thing that records the test's answer (`recordPlacement`), so it stays on the
+      // sheet in a session too; there the transition's *Start* is the filled box and it is outlined (U96,
+      // `sessionNext`'s `giveWay`). Outside a session it is the sheet's one filled box, as before.
+      const startHere = unitId
+        ? button(
+            'Start here',
+            () => {
+              void unitExists(unitId).then((real) => {
+                if (!real) {
+                  status.textContent = `${unitId} is not a unit in the plan, so nothing was recorded — this drill's items need correcting.`;
+                  status.classList.add('status--error');
+                  return;
+                }
+                void recordPlacement(unitId).then(() => {
+                  status.textContent = 'Placement recorded. Today will build from here.';
+                });
+              });
+            },
+            { id: 'drill-placement-start', variant: 'primary' },
+          )
+        : null;
       sheet.replaceChildren(
         el('div.row', {}, el('h2', { text: 'Placement result' })),
         where,
-        el(
-          'div.row',
-          {},
-          ...(unitId
-            ? [
-                button(
-                  'Start here',
-                  () => {
-                    void unitExists(unitId).then((real) => {
-                      if (!real) {
-                        status.textContent = `${unitId} is not a unit in the plan, so nothing was recorded — this drill's items need correcting.`;
-                        status.classList.add('status--error');
-                        return;
-                      }
-                      void recordPlacement(unitId).then(() => {
-                        status.textContent = 'Placement recorded. Today will build from here.';
-                      });
-                    });
-                  },
-                  { id: 'drill-placement-start', variant: 'primary' },
-                ),
-              ]
-            : []),
-          button(
-            'Again',
-            () => {
-              finished = false;
-              sheet.hidden = true;
-              runPlacement(target);
-            },
-            { id: 'drill-again' },
-          ),
-          button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done', variant: 'quiet' }),
-        ),
+        el('div.row', {}, ...(startHere ? [startHere] : []), button('Again', again, { id: 'drill-again' }), backButton),
       );
+      // The session's next step (X1): a placement answers questions about the learner and measures no
+      // playing, so the activity completes with no outcome either adaptation may read.
+      const buttonsRow = backButton.parentElement;
+      if (buttonsRow) sessionNext(buttonsRow, backButton, again, false, startHere ? [startHere] : []);
+      completeSession(saved, 'unknown');
       sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
 
@@ -3223,7 +3908,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     let index = loadWalkthroughStep(target.id, steps.length);
     section.dataset.drill = 'running';
     section.dataset.kind = 'walkthrough';
-    startedAtMs = Date.now();
+    attemptClock.restart();
     // Out of the tour, not back into the piece it just came from — the tour is
     // the one drill whose steps leave this screen and come back to it, so the
     // history entry behind it is the Score screen and `history.back()` walked
@@ -3318,6 +4003,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       void recordRun({
         itemId: target.id,
         ...(rung === undefined ? {} : { lessonId: rung.id }),
+        ...runFacts(target),
         mode: 'drill:walkthrough',
         tempoPct: 100,
         tempoMeasured: false,
@@ -3329,7 +4015,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         accuracyEstimated: false,
         wrongNotes: NOT_MEASURED,
         missed: 0,
-        durationMs: Date.now() - startedAtMs,
+        durationMs: attemptClock.elapsedMs(),
         passed: true,
         masterEligible: true,
       }).catch((cause: unknown) => {
@@ -3386,6 +4072,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // rung's, so a tour that lost its rung could never meet it).
     const openedFrom = router.route.drillRung ?? (isWalkthrough(item) ? resumedWalkthroughRung(item.id) : undefined);
     openedRungId = openedFrom;
+    // The session's activity is open (X1). A drill made when it opens has no fixed material, and no drill is a
+    // first contact, so the runner's recheck holds without a read.
+    void sessionRun?.opened({ itemId: item.id });
     void loadCurriculum()
       .then((curriculum) => {
         rung = openedFrom === undefined ? undefined : findLesson(curriculum, openedFrom);
@@ -3466,18 +4155,26 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     void getMidiSettings();
 
     section.dataset.drill = 'running';
-    startedAtMs = Date.now();
+    attemptClock.restart();
+    // The drill started: the session's activity is attempted (X1).
+    sessionRun?.attempted();
     advance();
   })().catch((cause: unknown) => {
     status.textContent = `That drill could not be opened: ${String(cause)}`;
     status.classList.add('status--error');
   });
 
+  onScreenSuspend(section, { onHidden: suspendDrill, onVisible: resumeDrill });
+
   onScreenDispose(section, () => {
     disposed = true;
+    // The session's clock writes what it holds; a drill left before its end sheet leaves the activity active
+    // for *Continue* (X1: interrupted, never completed).
+    stopSessionClock?.();
     clearPlayback();
     cancelFeedback();
     stopMetronome();
+    stopSoundWatch?.();
     stopDictationTicker();
     stopMidiNotes();
     stopKeyNotes();

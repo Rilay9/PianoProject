@@ -1,0 +1,23 @@
+﻿L120d chain checks, one at a time
+content-validate exit=0
+review-check exit=0
+content-tests exit=1
+reports-with-regenerated exit=0
+tsc exit=0
+lint exit=0
+unit exit=1
+build-app exit=0
+e2e spec files missing: 0 
+e2e exit=0
+ M app/src/curriculum/eligibilityCore.ts
+ M app/src/demands/vocabulary.ts
+ M app/tests/unit/copingQuestion.test.ts
+ M content/curriculum/vocabulary/demands.json
+ M content/curriculum/vocabulary/demands.schema.json
+ M docs/02-curriculum.md
+ M docs/08-test-map.md
+ M tools/content/claims.py
+ M tools/content/tests/test_taught_at.py
+ M tools/content/tests/test_untaught_options.py
+ M tools/content/untaught_options.py
+?? docs/prompts/runs/L120d/

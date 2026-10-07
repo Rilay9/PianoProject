@@ -26,6 +26,18 @@ import {
 // roman-numeral drill reads them with. `drills/theory` imports nothing, so
 // there is no cycle back through the drill layer.
 import { anyRomanToChord } from './drills/theory';
+// The phrase's soft qualities and S26's hard constraints (D1): judged there,
+// realised here.
+import {
+  chooseCandidate,
+  hardViolations,
+  phraseModel,
+  scorePhrase,
+  sounded,
+  type HardRules,
+  type PartScores,
+  type PhraseModel,
+} from './sightReadingScore';
 
 export type SightReadingLevel = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -116,7 +128,54 @@ export interface SightReadingOptions {
   leaps?: boolean;
   sixteenths?: boolean;
   leftHand?: LeftHandPattern;
+  /**
+   * Which version of the generator writes the phrase (D1, G21). Absent:
+   * {@link SIGHT_READING_IN_FORCE}. A seed names one phrase *per version*, so
+   * the version is part of a phrase's identity with the row, the recipe and
+   * the seed ({@link SightReadingResult.generator}).
+   */
+  version?: SightReadingVersion;
 }
+
+/**
+ * The generator's versions (D1). A phrase is family + recipe + seed + version
+ * (Part 15 §19, G21): a changed generator must never let an old seed mean
+ * different music while the learner's history treats it as the same encounter.
+ *
+ * - **1**: the walk as T37, C4b and C4d left it — the first draw that keeps
+ *   every promise is the phrase.
+ * - **2** (D1): the hard layer unchanged, and S26 added to it (no melodic
+ *   interval beyond the level's leap cap, so a tie's closing note can no
+ *   longer leap past it; a tie only from a note on the beat where syncopation
+ *   is not taught); then up to {@link CANDIDATES} valid draws scored for their
+ *   shape and arrival (`sightReadingScore.ts`), the best kept. Levels 5–7's
+ *   move to a chord tone on the strong beats, which leapt past the cap, moves
+ *   only within it, and the harmony part scores the agreement at every level
+ *   with a left hand.
+ */
+export type SightReadingVersion = 1 | 2;
+export const SIGHT_READING_VERSIONS: readonly SightReadingVersion[] = [1, 2];
+
+/** The newest version: what D1 built. */
+export const SIGHT_READING_LATEST: SightReadingVersion = 2;
+
+/**
+ * The version a phrase is written in when its options name none: 2, since
+ * D1a.
+ *
+ * D1 kept it at 1 because a run's record kept the row, the recipe, the rung
+ * and the seed and no version, so a phrase version 2 wrote from a seed a
+ * learner had read under version 1 would have been the same encounter to the
+ * history (Entry 94). D1a put the version on the record (`generator` on the
+ * session row, `data/db.ts`): the Score screen writes it with every run of a
+ * generated phrase, the phrase-seen check and the daily read's check compare
+ * it beside the seed, and the evidence job writes a stored run's phrase again
+ * by the version that wrote it — absent meaning 1, which this generator still
+ * writes note for note (`sightReadingUnchanged.test.ts`). And version 2 fails
+ * closed: a phrase it could not check is refused ({@link SightReadingRefusal}),
+ * never handed back.
+ */
+export const SIGHT_READING_IN_FORCE: SightReadingVersion = 2;
 
 /** The left-hand patterns an option can ask for (the table's `none` is `hands: 'R'`). */
 export type LeftHandPattern = 'whole' | 'chord' | 'alberti' | 'broken' | 'walking';
@@ -141,6 +200,49 @@ export interface SightReadingResult {
    * belongs to.
    */
   melody: number[];
+  /**
+   * The phrase's identity beside the row and the recipe, in the shape of the
+   * generated catalogue's `drill.generator` (D0): the family, the version that
+   * wrote it, and the seed. What a run's record keeps so a later reader can
+   * write the same phrase again (D1; kept since D1a, `generator` on the
+   * session row).
+   */
+  generator: { family: 'sight-reading'; version: SightReadingVersion; seed: number };
+}
+
+/**
+ * Version 2 could not write what the options ask from this seed (D1a; the
+ * reviewer's finding 1 on D1): no draw within the redraw budget kept every
+ * promise and the hard layer, so there is no phrase it has checked, and it
+ * hands back none. Thrown by {@link generateSightReading} (and the report)
+ * instead of a result, never in place of one that passed.
+ *
+ * `reasons` are sentences in the shape {@link unrealisable} gives, for the
+ * caller to show: what was asked (the level, the hands, the bars, the metre
+ * and the key), the promises and the level's rules, the draws spent,
+ * what the draws broke, and the generator's own declared reasons where the
+ * options contradict themselves. Version 1 never throws this: it keeps its
+ * last draw, as it always did, so no stored run changes meaning.
+ */
+export class SightReadingRefusal extends Error {
+  readonly reasons: readonly string[];
+  /** Draws made from the seed before refusing: the whole budget. */
+  readonly attempts: number;
+  /** The identity the phrase would have had. */
+  readonly generator: SightReadingResult['generator'];
+  /** The key and the metre the seed chose, which are settled before any draw. */
+  readonly fifths: number;
+  readonly timeSig: TimeSig;
+
+  constructor(reasons: readonly string[], attempts: number, generator: SightReadingResult['generator'], fifths: number, timeSig: TimeSig) {
+    super(reasons.join(' '));
+    this.name = 'SightReadingRefusal';
+    this.reasons = reasons;
+    this.attempts = attempts;
+    this.generator = generator;
+    this.fifths = fifths;
+    this.timeSig = timeSig;
+  }
 }
 
 /**
@@ -454,6 +556,44 @@ function snapToChordTone(
   return best;
 }
 
+/**
+ * The chord tone of `degree` nearest to where the walk put the note, among
+ * those within the level's leap cap of the note before (D1, version 2).
+ *
+ * Version 1's snap took the nearest chord tone to the walk's note whatever the
+ * note before, so the interval into a strong beat could be the cap and one
+ * step more — a sixth at level 5, a third where the melody was held to steps
+ * — which `unrealisable` had to declare (S26's second way past the cap).
+ * Every scale note has a chord tone of any triad within a step, so within the
+ * cap there is almost always one; where none is in range (the bottom of the
+ * range, held to steps) the note stays where the walk put it, and the harmony
+ * part scores it.
+ */
+function chordToneWithin(
+  index: number,
+  degree: number,
+  tonicIndex: number,
+  scaleLength: number,
+  from: number | null,
+  cap: number,
+): number {
+  if (from === null) return snapToChordTone(index, degree, tonicIndex, scaleLength);
+  let best = index;
+  let bestDistance = Infinity;
+  for (let octave = -2; octave <= 2; octave += 1) {
+    for (const tone of chordToneIndices(degree)) {
+      const candidate = tonicIndex + tone + octave * 7;
+      if (candidate < 0 || candidate >= scaleLength || Math.abs(candidate - from) > cap) continue;
+      const distance = Math.abs(candidate - index);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = candidate;
+      }
+    }
+  }
+  return best;
+}
+
 /** Scale degrees of I, IV and V — the only harmonies levels 1–4 use. */
 const CHORD_DEGREES = [0, 3, 4];
 
@@ -606,12 +746,18 @@ function buildRightHand(
   harmony: number[] | undefined,
   timeSig: TimeSig,
   tally: Tally,
+  /** Version 2 (D1): a chord tone on a strong beat only within the leap cap, and a tied pitch held through its tie. */
+  scored = false,
 ): WriterNote[][] {
   const scale = scalePitches(fifths, spec.rhKey.low, spec.rhKey.high);
   if (scale.length === 0) return Array.from({ length: bars }, () => []);
 
   const tonicIndex = tonicIndexIn(scale, fifths);
   let index = tonicIndex;
+  // Version 2: where the note before was placed, and whether it is held into
+  // this one by a tie (a held pitch is not moved to a chord tone).
+  let lastPlaced: number | null = null;
+  let holding = false;
 
   const rhythms = Array.from({ length: bars }, () =>
     spec.metricPlacement
@@ -638,6 +784,8 @@ function buildRightHand(
         const { type, dotted } = durationToType(duration);
         notes.push({ midi: null, duration, type, staff: 1, voice: 1, ...(dotted ? { dotted } : {}) });
         tally.syncopation += 1;
+        // A tie into a rest is dropped (the pass below), so nothing is held.
+        holding = false;
         return;
       }
 
@@ -669,11 +817,17 @@ function buildRightHand(
       // A strong beat lands on a chord tone of the bar's harmony (levels 5+).
       // Done here rather than in the walk because it is a rule about *this*
       // note's position in the bar, not about how far the melody may travel.
+      // Version 2 moves only to a chord tone within the leap cap of the note
+      // before, and never a pitch held by a tie (`chordToneWithin`); the
+      // harmony part scores what is left (`sightReadingScore.ts`).
       const degree = harmony?.[bar];
       if (spec.chordTones && degree !== undefined) {
         const strong = atOffset === 0 || atOffset === divisionsPerBar / 2;
-        if (strong) index = snapToChordTone(index, degree, tonicIndex, scale.length);
+        if (strong && !scored) index = snapToChordTone(index, degree, tonicIndex, scale.length);
+        if (strong && scored && !holding) index = chordToneWithin(index, degree, tonicIndex, scale.length, lastPlaced, spec.maxLeap);
       }
+      holding = false;
+      lastPlaced = index;
 
       // Place at the current degree, *then* choose the next one. Moving first
       // would push the melody off the tonic before the opening note is even
@@ -701,6 +855,15 @@ function buildRightHand(
       if (cell.syncopated === true) tally.syncopation += 1;
 
       if (notesAfterThis <= 0) return;
+      // S26, version 2: a tied note is held, so the walk stays where it is and
+      // the next bar's first note is the tied pitch by construction. Version 1
+      // moved on and then set that note back to the tied pitch (the pass
+      // below), so the note after it was chosen from somewhere else and could
+      // leap a fifth past a level whose cap is a third (seed 71282).
+      if (scored && tieNext) {
+        holding = true;
+        return;
+      }
       // Moves left *after* this one. The melody may wander only as far as it
       // can still walk back from: checking the move it is about to make,
       // rather than the position it is already in, is what keeps "steps only"
@@ -908,6 +1071,8 @@ export interface LevelFacts {
   lengths: readonly number[];
   maxLeap: number;
   allowTies: boolean;
+  /** The level places rests of its own (3–7). */
+  allowRests: boolean;
   maxFifths: number;
   rhRange: { low: number; high: number };
   syncopation: boolean;
@@ -925,6 +1090,7 @@ export function levelFacts(level: number): LevelFacts {
     lengths: spec.rhythms.map((r) => r / DIVISIONS),
     maxLeap: spec.maxLeap,
     allowTies: spec.allowTies,
+    allowRests: spec.allowRests,
     maxFifths: spec.maxFifths,
     rhRange: { ...spec.rhKey },
     syncopation: spec.syncopation === true,
@@ -952,9 +1118,11 @@ function keysAsked(options: SightReadingOptions): number[] {
  * The curriculum–generator contract's "never silent": where an option cannot
  * be honoured — the level has no room for it, two options contradict, or the
  * phrase's metre does not admit it — the generator does not hand back
- * different material and let it pass as the thing asked for. It still writes
- * its best phrase, and this says, in words for a reader of `05` §8, what that
- * phrase will not be. Pure: the options alone decide it, never the seed.
+ * different material and let it pass as the thing asked for. Version 1 still
+ * writes its best phrase, and this says, in words for a reader of `05` §8, what
+ * that phrase will not be; version 2, where no draw can keep a promise these
+ * reasons rule out, refuses with them (D1a, {@link SightReadingRefusal}). Pure:
+ * the options alone decide it, never the seed.
  *
  * `generatorContract.test.ts` holds this to the phrases: every combination the
  * reading curriculum can ask for either keeps its promise on every seed tried,
@@ -1043,7 +1211,10 @@ export function unrealisable(options: SightReadingOptions): string[] {
   if (options.skips === false && options.leaps === true) {
     say('A melody held to steps cannot leap.');
   }
-  if (options.skips === false || options.leaps === false) {
+  // Version 1's two ways past a held cap (S26); version 2 has neither: the walk
+  // holds a tied pitch through its tie, and moves to a chord tone on a strong
+  // beat only within the cap of the note before.
+  if ((options.skips === false || options.leaps === false) && (options.version ?? SIGHT_READING_IN_FORCE) < 2) {
     const what = options.skips === false ? 'a third' : 'a fourth or wider';
     if (tiesAllowed) say(`A tie’s closing note is set to the tied pitch after the melody has moved on, so the note after it can be ${what} away.`);
     if (facts.chordTones) say(`From level 5 the melody moves to a chord tone on the strong beats, which can be ${what} away.`);
@@ -1338,9 +1509,231 @@ function addAccidentals(
  * draw uses the seed itself, so a phrase that already kept its promises is
  * the phrase the seed always wrote, and every redraw is as deterministic as
  * the first: the seed still names one phrase.
+ *
+ * Version 2 (D1) keeps drawing after the first draw that keeps every promise
+ * and the hard constraints, up to {@link CANDIDATES} valid draws or
+ * {@link CANDIDATE_WINDOW} draws past the first, scores each valid one
+ * (`sightReadingScore.ts`) and keeps the best, the earliest on a tie. Still
+ * one phrase per seed.
+ *
+ * And fails closed (D1a): until its first valid draw it keeps drawing within
+ * the redraw budget ({@link PROMISE_ATTEMPTS}), so the window opens wherever
+ * that draw comes; if the whole budget yields none it throws
+ * {@link SightReadingRefusal} with the reason, never the last draw, which it
+ * has not checked. Version 1 keeps its last draw, as it always did.
  */
 export function generateSightReading(options: SightReadingOptions): SightReadingResult {
+  return compose(options, false).result;
+}
+
+/**
+ * The phrase and how it was chosen, for the distribution suite
+ * (`sightReadingDistribution.test.ts`) and anyone reading why a seed wrote what
+ * it wrote: the draws made, the one kept, and every draw that kept the promises
+ * with its score and what it broke of the hard layer. Version 1 scores only the
+ * phrase it kept (it chooses nothing), so the two versions are read alike.
+ */
+export interface SightReadingReport {
+  result: SightReadingResult;
+  /** Draws made from the seed. */
+  attempts: number;
+  /** The draw that became the phrase (draw 0 is the seed itself). */
+  chosen: number;
+  candidates: { attempt: number; valid: boolean; events: number; total?: number; parts?: PartScores; violations: string[] }[];
+  /** The phrase as the scorer reads it. */
+  phrase: PhraseModel;
+}
+
+export function sightReadingReport(options: SightReadingOptions): SightReadingReport {
+  const composed = compose(options, true);
+  if (!composed.phrase) throw new Error('a report always carries its phrase');
+  return { ...composed, phrase: composed.phrase };
+}
+
+/**
+ * A test seam (D1a), never called by the app: the search with a smaller redraw
+ * budget than {@link PROMISE_ATTEMPTS}, or a hard layer held to a tighter leap
+ * cap than the walk draws to. In D1a's sweep (every level, hand and metre, each
+ * control on and off, six seeds each; Entry 97) every phrase found a valid
+ * draw, and no draw of version 2's walk that kept its promises broke the hard
+ * layer, so without this a test reaches the zero-valid-candidate path only
+ * through options that contradict themselves; with it a test can drive that
+ * path on ordinary options: the budget ending before the first valid draw, and
+ * every promise-keeping draw breaking a cap the walk does not respect.
+ */
+export interface SearchSeam {
+  /** The redraw budget, in draws; at most {@link PROMISE_ATTEMPTS}. */
+  attempts?: number;
+  /** The hard layer's leap cap, in scale steps, in place of the one the options give the walk. */
+  maxLeap?: number;
+}
+
+/** {@link sightReadingReport} within a {@link SearchSeam}: tests only. */
+export function sightReadingReportWithin(options: SightReadingOptions, seam: SearchSeam): SightReadingReport {
+  const composed = compose(options, true, seam);
+  if (!composed.phrase) throw new Error('a report always carries its phrase');
+  return { ...composed, phrase: composed.phrase };
+}
+
+/**
+ * How many valid draws version 2 scores before it keeps the best.
+ *
+ * Sixteen, from the distribution (the table in Entry 94): every level's
+ * phrase-ending share reaches its bound with it, and tripling it moved level
+ * 7's contour share from 13 % to 14 % of its own table's four-bar units and
+ * level 6's from 22 % to 26 %, for three times the work — the walk, not the
+ * count, is the ceiling there. A draw is the melody, the left hand and the
+ * promise tally, so a phrase costs about sixteen of version 1's; the
+ * distribution suite carries that in its own budget. Nothing was timed on a
+ * phone.
+ */
+export const CANDIDATES = 16;
+
+/**
+ * How many draws past the first valid one version 2 makes at most while it
+ * looks for the rest. For a recipe whose promises a draw keeps once in
+ * hundreds (C4d's rarest, about once in 370) the sixteenth valid draw would
+ * cost the whole redraw budget; this bounds the search so such a phrase costs
+ * its first valid draw and a window after it, and is scored among the few it
+ * found.
+ */
+export const CANDIDATE_WINDOW = 96;
+
+/**
+ * How close to the best score a candidate must come to count as good as the
+ * best: the earliest such draw is kept.
+ *
+ * Not over-composed (Part 15 §10): where the best-shaped phrases are few, the
+ * strict best is the same few phrases for many seeds. Level 1's space is four
+ * bars of three lengths over five notes, and keeping the strict best, 200
+ * seeds wrote 156 different phrases (version 1: 192); keeping the earliest
+ * within 0.05 of it, 182, with every one still one contour and arriving by
+ * the rule. At the other levels the tolerance moves the shares by a point or
+ * two (the probes in Entry 94).
+ */
+export const SCORE_TOLERANCE = 0.05;
+
+/** What a phrase of these options may never do beyond its promises, and the cap the scorer reads: the level's table as the options leave it. */
+export interface PhraseRules extends HardRules {
+  /** The largest melodic interval, in scale steps. */
+  maxLeap: number;
+  /** The level places rests of its own. */
+  restsAllowed: boolean;
+}
+
+/**
+ * The rules a phrase of these options keeps (D1): its leap cap after the
+ * options (`skips`, `leaps`), whether a tie must start on the beat — wherever
+ * the phrase has no syncopation of its own, neither designed (levels 5–7) nor
+ * promised (`syncopation: true`, rung 4.5), which is "ties leave the beat only
+ * where syncopation is taught" (S26) — and whether the level places rests.
+ */
+export function phraseRules(options: SightReadingOptions): PhraseRules {
   const level = (Math.min(7, Math.max(1, Math.round(options.level))) || 1) as SightReadingLevel;
+  const spec = specFor(level, options);
+  return {
+    maxLeap: spec.maxLeap,
+    tiesOnBeatOnly: spec.syncopation !== true && spec.syncopa !== true,
+    restsAllowed: spec.allowRests,
+  };
+}
+
+/** A promise in words, for a refusal (D1a): what a phrase asked for would have held. */
+const PROMISE_WORDS: Readonly<Record<PhrasePromise | ControlPromise | 'beyond' | 'underTune', string>> = {
+  skips: 'a skip beside a step',
+  eighths: 'an eighth note',
+  syncopation: 'a syncopation',
+  triplets: 'a triplet',
+  accidentals: 'the raised fourth',
+  ties: 'a tie over the bar line',
+  dottedQuarters: 'a dotted quarter',
+  ledger: 'a ledger line beyond middle C',
+  leaps: 'a leap of a fourth or wider',
+  sixteenths: 'a sixteenth note',
+  beyond: 'a melody reaching beyond one five-finger position',
+  underTune: 'a melody note in every bar',
+};
+
+/** A melodic interval of this many scale steps, in words. */
+const INTERVAL_WORDS = ['a unison', 'a step', 'a third', 'a fourth', 'a fifth', 'a sixth', 'a seventh', 'an octave'];
+
+/** `a, b and c`. */
+function listed(items: readonly string[]): string {
+  if (items.length <= 1) return items.join('');
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1] ?? ''}`;
+}
+
+/**
+ * Why version 2 refused (D1a), in sentences a caller can show: what was asked
+ * — the level, the hands, the bars, the metre and the key — then the promises
+ * and the level's rules with the draws spent, then what the draws broke, then
+ * the generator's own reasons where the options contradict themselves
+ * (`unrealisable`, the same sentences it gives a reader of `05` §8). Not the
+ * seed: an identifier is not a reason, and the screen shows these words; the
+ * refusal carries it as data (`generator`).
+ */
+function refusalReasons(asked: {
+  options: SightReadingOptions;
+  level: SightReadingLevel;
+  hands: string;
+  bars: number;
+  timeSig: TimeSig;
+  fifths: number;
+  promised: readonly (PhrasePromise | ControlPromise | 'beyond' | 'underTune')[];
+  rules: PhraseRules;
+  tiesPossible: boolean;
+  attempts: number;
+  keptDraws: number;
+  lastViolations: readonly string[];
+  lastMissing: readonly string[];
+}): string[] {
+  const accidentals = Math.abs(asked.fifths);
+  const key =
+    accidentals === 0 ? 'no sharps or flats' : `${String(accidentals)} ${asked.fifths > 0 ? 'sharp' : 'flat'}${accidentals === 1 ? '' : 's'}`;
+  const wording = (promise: string): string => PROMISE_WORDS[promise as keyof typeof PROMISE_WORDS] ?? promise;
+  const rules = [
+    `no interval wider than ${INTERVAL_WORDS[asked.rules.maxLeap] ?? `${String(asked.rules.maxLeap)} scale steps`}`,
+    ...(asked.rules.tiesOnBeatOnly && asked.tiesPossible ? ['a tie only from a note on the beat'] : []),
+  ].join(', ');
+  const promises = asked.promised.map(wording);
+  const kept =
+    promises.length === 0
+      ? `the level’s rules (${rules})`
+      : `its promise${promises.length === 1 ? '' : 's'} (${listed(promises)}) within the level’s rules (${rules})`;
+  const broke =
+    asked.keptDraws > 0
+      ? `${String(asked.keptDraws)} kept every promise and broke a rule, the last with ${asked.lastViolations[0] ?? 'a rule broken'}.`
+      : `None kept every promise; the last draw lacked ${listed(asked.lastMissing.map(wording))}.`;
+  return [
+    `No phrase could be written for level ${String(asked.level)}, ${asked.hands}, ${String(asked.bars)} bar${asked.bars === 1 ? '' : 's'} of ${String(asked.timeSig.beats)}/${String(asked.timeSig.beatType)} with ${key}.`,
+    `In ${String(asked.attempts)} draws none kept ${kept}.`,
+    broke,
+    ...unrealisable(asked.options),
+  ];
+}
+
+/** One draw that kept every promise, for version 2 to choose among. */
+interface Draw {
+  attempt: number;
+  valid: boolean;
+  /** Notes the melody strikes: the choice keeps the level's density (`chooseCandidate`). */
+  events: number;
+  right: WriterNote[][];
+  left: WriterNote[][];
+  model: PhraseModel;
+  violations: string[];
+}
+
+/** A report, whose phrase is worked out only when one is asked for (`report`), so the app's own calls pay nothing for it. */
+function compose(
+  options: SightReadingOptions,
+  report: boolean,
+  seam: SearchSeam = {},
+): Omit<SightReadingReport, 'phrase'> & { phrase: PhraseModel | undefined } {
+  const level = (Math.min(7, Math.max(1, Math.round(options.level))) || 1) as SightReadingLevel;
+  const budget = Math.max(1, Math.min(PROMISE_ATTEMPTS, Math.floor(seam.attempts ?? PROMISE_ATTEMPTS)));
+  const version: SightReadingVersion = options.version === 2 ? 2 : options.version === 1 ? 1 : SIGHT_READING_IN_FORCE;
+  const scored = version >= 2;
   const seed = options.seed ?? Math.floor(Math.random() * 0xffffffff);
   const choose = makeRng((seed ^ CHOICE_SALT) >>> 0);
   const wantedFifths = chooseOne(choose, options.fifths) ?? 0;
@@ -1356,9 +1749,17 @@ export function generateSightReading(options: SightReadingOptions): SightReading
   // position, which has none, and not for a left hand read alone (see
   // `unrealisable`).
   const ledgered = options.ledger === true && options.position !== true;
-  const spec = ledgered
+  const ranged = ledgered
     ? { ...positioned, rhKey: { low: Math.min(positioned.rhKey.low, 57), high: positioned.rhKey.high } }
     : positioned;
+  // S26, version 2: a tie only from a note on the beat wherever the phrase has
+  // no syncopation of its own. Version 1 set it only where an option asked for
+  // ties or kept syncopation out (C4b), so levels 3-4's own ties could leave the
+  // beat below 4.5.
+  const optionRules = phraseRules(options);
+  // The seam's tighter cap reaches the hard layer and not the walk (tests only).
+  const rules = seam.maxLeap === undefined ? optionRules : { ...optionRules, maxLeap: seam.maxLeap };
+  const spec = scored && rules.tiesOnBeatOnly ? { ...ranged, tieOnBeat: true } : ranged;
   const bars = Math.max(1, Math.min(32, options.bars ?? 4));
   const bpm = options.bpm ?? 72;
   // Divisions are per quarter note, so 6/8 is six eighths = three quarters.
@@ -1378,9 +1779,32 @@ export function generateSightReading(options: SightReadingOptions): SightReading
     : spec;
   const melodyScale = scalePitches(fifths, melodySpec.rhKey.low, melodySpec.rhKey.high);
 
+  // What the scorer reads of one draw: the melody, and the left hand's chords
+  // where a left hand plays under it.
+  const modelOf = (melodyBars: WriterNote[][], left: WriterNote[][]): PhraseModel =>
+    phraseModel({
+      level,
+      fifths,
+      metre: timeSig,
+      melody: melodyBars,
+      left: leftOnlyMelody || !wantsLeft ? null : left,
+      maxLeap: rules.maxLeap,
+      restsAllowed: rules.restsAllowed,
+    });
+
   let rightBars: WriterNote[][] = empty();
   let leftBars: WriterNote[][] = empty();
-  for (let attempt = 0; attempt < PROMISE_ATTEMPTS; attempt += 1) {
+  let attempts = 0;
+  let chosen = 0;
+  let firstValid = -1;
+  let validDraws = 0;
+  const pool: Draw[] = [];
+  // What the last draw missed of the promises, for a refusal's reason (D1a).
+  let lastMissing: readonly string[] = [];
+  for (let attempt = 0; attempt < budget; attempt += 1) {
+    if (scored && firstValid >= 0 && attempt > firstValid + CANDIDATE_WINDOW) break;
+    attempts = attempt + 1;
+    chosen = attempt;
     const rng = makeRng(attemptSeed(seed, attempt));
     const tally = emptyTally();
     // Drawn before either hand, and only where a level asks for it, so levels
@@ -1389,9 +1813,9 @@ export function generateSightReading(options: SightReadingOptions): SightReading
     rightBars =
       options.hands === 'L' && (spec.leftHand !== 'none' || leftOnlyMelody)
         ? empty()
-        : buildRightHand(rng, spec, fifths, bars, divisionsPerBar, harmony, timeSig, tally);
+        : buildRightHand(rng, spec, fifths, bars, divisionsPerBar, harmony, timeSig, tally, scored);
     leftBars = leftOnlyMelody
-      ? buildRightHand(rng, melodySpec, fifths, bars, divisionsPerBar, harmony, timeSig, tally)
+      ? buildRightHand(rng, melodySpec, fifths, bars, divisionsPerBar, harmony, timeSig, tally, scored)
       : wantsLeft
         ? buildLeftHand(rng, spec, fifths, bars, divisionsPerBar, harmony)
         : empty();
@@ -1415,7 +1839,88 @@ export function generateSightReading(options: SightReadingOptions): SightReading
     tally.leaps = intervals.leaps;
     tallyMelody(melodyBars, leftOnlyMelody, timeSig, melodySpec.rhythms.includes(DIVISIONS / 2), tally);
     tally.underTune = melodyBars.every((bar) => bar.some((note) => note.midi !== null && note.chord !== true && note.tie !== 'stop')) ? 1 : 0;
-    if (promised.every((promise) => tally[promise] > 0)) break;
+    const kept = promised.every((promise) => tally[promise] > 0);
+    // Version 1: the first draw that keeps its promises is the phrase.
+    if (!scored) {
+      if (kept) break;
+      continue;
+    }
+    // Version 2: a draw that keeps its promises is a candidate, valid where it
+    // keeps the hard constraints S26 adds too; an invalid one is never scored.
+    if (!kept) {
+      lastMissing = promised.filter((promise) => tally[promise] <= 0);
+      continue;
+    }
+    lastMissing = [];
+    const model = modelOf(melodyBars, leftBars);
+    const violations = hardViolations(model, rules);
+    const valid = violations.length === 0;
+    pool.push({ attempt, valid, events: sounded(model).length, right: rightBars, left: leftBars, model, violations });
+    if (!valid) continue;
+    if (firstValid < 0) firstValid = attempt;
+    validDraws += 1;
+    if (validDraws >= CANDIDATES) break;
+  }
+
+  const candidates: SightReadingReport['candidates'] = [];
+  let phrase: PhraseModel | undefined;
+  if (scored) {
+    const scores = new Map<Draw, { total: number; parts: PartScores }>();
+    const best = chooseCandidate(
+      pool,
+      (draw) => {
+        const scoreOf = scorePhrase(draw.model);
+        scores.set(draw, scoreOf);
+        return scoreOf.total;
+      },
+      SCORE_TOLERANCE,
+    );
+    const kept = best === undefined ? undefined : pool[best];
+    // None valid within the budget: refused (D1a). D1 let the last draw stand,
+    // "as in version 1", and that draw could break a promise the row asked for
+    // or a rule the level sets — a phrase nobody had checked. The search above
+    // already continued through the whole budget before its window opened, so
+    // what is left is to say why, never to hand back what was not checked.
+    if (!kept) {
+      throw new SightReadingRefusal(
+        refusalReasons({
+          options,
+          level,
+          hands: leftOnlyMelody || options.hands === 'L' ? 'left hand' : wantsLeft ? 'both hands' : 'right hand',
+          bars,
+          timeSig,
+          fifths,
+          promised,
+          rules,
+          tiesPossible: spec.allowTies,
+          attempts,
+          keptDraws: pool.length,
+          lastViolations: pool[pool.length - 1]?.violations ?? [],
+          lastMissing,
+        }),
+        attempts,
+        { family: 'sight-reading', version, seed },
+        fifths,
+        timeSig,
+      );
+    }
+    rightBars = kept.right;
+    leftBars = kept.left;
+    chosen = kept.attempt;
+    phrase = kept.model;
+    if (report) {
+      for (const draw of pool) {
+        const scoreOf = scores.get(draw);
+        candidates.push({ attempt: draw.attempt, valid: draw.valid, events: draw.events, ...(scoreOf ? { total: scoreOf.total, parts: scoreOf.parts } : {}), violations: draw.violations });
+      }
+    }
+  } else if (report) {
+    // Version 1 chose nothing; its phrase is scored and checked so the two read alike.
+    const model = modelOf(leftOnlyMelody ? leftBars : rightBars, leftBars);
+    const violations = hardViolations(model, rules);
+    const scoreOf = scorePhrase(model);
+    candidates.push({ attempt: chosen, valid: violations.length === 0, events: sounded(model).length, total: scoreOf.total, parts: scoreOf.parts, violations });
+    phrase = model;
   }
 
   // Beamed by the beat, once the phrase is settled: a dotted quarter in
@@ -1453,7 +1958,7 @@ export function generateSightReading(options: SightReadingOptions): SightReading
     .flat()
     .filter((note) => note.midi !== null && note.tie !== 'stop')
     .map((note) => note.midi as number);
-  return {
+  const result: SightReadingResult = {
     musicXml: writeMusicXml({
       title,
       fifths,
@@ -1471,6 +1976,14 @@ export function generateSightReading(options: SightReadingOptions): SightReading
     bars,
     bpm,
     melody,
+    generator: { family: 'sight-reading', version, seed },
+  };
+  return {
+    result,
+    attempts,
+    chosen,
+    candidates,
+    phrase: phrase ?? (report ? modelOf(leftOnlyMelody ? leftBars : rightBars, leftBars) : undefined),
   };
 }
 

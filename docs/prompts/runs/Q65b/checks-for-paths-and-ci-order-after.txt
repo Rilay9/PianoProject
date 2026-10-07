@@ -1,0 +1,45 @@
+$ (cwd .) python -m unittest tools.content.tests.test_checks_for_paths tools.content.tests.test_ci_order -v
+test_a_docs_path_needs_nothing_and_says_so (tools.content.tests.test_checks_for_paths.OnAFixtureMap.test_a_docs_path_needs_nothing_and_says_so) ... ok
+test_a_glob_expands_against_the_tree (tools.content.tests.test_checks_for_paths.OnAFixtureMap.test_a_glob_expands_against_the_tree) ... ok
+test_a_path_under_no_pattern_takes_the_full_suites_and_is_named (tools.content.tests.test_checks_for_paths.OnAFixtureMap.test_a_path_under_no_pattern_takes_the_full_suites_and_is_named) ... ok
+test_a_pattern_naming_an_unknown_check_is_refused_when_the_map_loads (tools.content.tests.test_checks_for_paths.OnAFixtureMap.test_a_pattern_naming_an_unknown_check_is_refused_when_the_map_loads) ... ok
+test_self_names_the_changed_file (tools.content.tests.test_checks_for_paths.OnAFixtureMap.test_self_names_the_changed_file) ... ok
+test_the_union_is_deduplicated_and_in_the_chain_s_order (tools.content.tests.test_checks_for_paths.OnAFixtureMap.test_the_union_is_deduplicated_and_in_the_chain_s_order) ... ok
+test_the_unmatched_path_is_conspicuous_and_never_a_refusal (tools.content.tests.test_checks_for_paths.OnAFixtureMap.test_the_unmatched_path_is_conspicuous_and_never_a_refusal) ... ok
+test_the_whole_suite_wins_over_named_files (tools.content.tests.test_checks_for_paths.OnAFixtureMap.test_the_whole_suite_wins_over_named_files) ... ok
+test_windows_and_dotted_paths_are_read_as_repository_paths (tools.content.tests.test_checks_for_paths.OnAFixtureMap.test_windows_and_dotted_paths_are_read_as_repository_paths) ... ok
+test_a_docs_only_change_runs_nothing (tools.content.tests.test_checks_for_paths.TheCommittedMap.test_a_docs_only_change_runs_nothing) ... ok
+test_a_lesson_edit_is_covered_and_not_a_fallback (tools.content.tests.test_checks_for_paths.TheCommittedMap.test_a_lesson_edit_is_covered_and_not_a_fallback) ... ok
+test_every_named_file_exists (tools.content.tests.test_checks_for_paths.TheCommittedMap.test_every_named_file_exists) ... ok
+test_every_pattern_carries_a_reason (tools.content.tests.test_checks_for_paths.TheCommittedMap.test_every_pattern_carries_a_reason) ... ok
+test_every_pattern_matches_a_path_in_the_tree (tools.content.tests.test_checks_for_paths.TheCommittedMap.test_every_pattern_matches_a_path_in_the_tree) ... ok
+test_a_frame_helper_names_the_union_of_its_screens_specs (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_frame_helper_names_the_union_of_its_screens_specs) ... ok
+test_a_machine_read_docs_path_runs_its_readers (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_machine_read_docs_path_runs_its_readers) ... ok
+test_a_module_on_every_spec_s_path_is_the_whole_suite (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_module_on_every_spec_s_path_is_the_whole_suite) ... ok
+test_a_prose_docs_path_runs_nothing_and_is_not_unmatched (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_prose_docs_path_runs_nothing_and_is_not_unmatched) ... ok
+test_a_renderer_change_names_the_fit_paths_spec_its_chain_ran (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_renderer_change_names_the_fit_paths_spec_its_chain_ran) ... ok
+test_a_renderer_file_with_a_harness_file_is_the_whole_suite (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_renderer_file_with_a_harness_file_is_the_whole_suite) ... ok
+test_a_score_screen_change_names_its_specs_and_keeps_the_gallery (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_score_screen_change_names_its_specs_and_keeps_the_gallery) ... ok
+test_a_shared_fixture_the_converter_reads_runs_the_converter_s_checks (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_shared_fixture_the_converter_reads_runs_the_converter_s_checks) ... ok
+test_a_test_side_helper_names_every_file_that_reads_it (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_test_side_helper_names_every_file_that_reads_it) ... ok
+test_a_test_side_helper_names_its_importers_not_the_whole_suite (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_test_side_helper_names_its_importers_not_the_whole_suite) ... ok
+test_the_playwright_harness_is_the_whole_suite (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_the_playwright_harness_is_the_whole_suite) ... ok
+test_the_score_model_the_detectors_read_runs_the_content_measurement (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_the_score_model_the_detectors_read_runs_the_content_measurement) ... ok
+test_the_six_blanket_modules_name_their_specs_and_keep_the_cheap_guards (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_the_six_blanket_modules_name_their_specs_and_keep_the_cheap_guards) ... ok
+test_ci_runs_every_check_the_path_map_names (tools.content.tests.test_ci_order.TheWorkflowOrder.test_ci_runs_every_check_the_path_map_names) ... ok
+test_record_and_review_pushes_start_no_run_and_nothing_else_is_ignored (tools.content.tests.test_ci_order.TheWorkflowOrder.test_record_and_review_pushes_start_no_run_and_nothing_else_is_ignored) ... ok
+test_the_build_follows_what_it_needs (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_build_follows_what_it_needs) ... ok
+test_the_content_is_built_before_the_content_tests_read_it (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_content_is_built_before_the_content_tests_read_it) ... ok
+test_the_converter_harness_runs (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_converter_harness_runs) ... ok
+test_the_parity_reference_is_written_before_the_unit_tests_compare_against_it (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_parity_reference_is_written_before_the_unit_tests_compare_against_it) ... ok
+test_the_recordings_are_fetched_before_anything_reads_them (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_recordings_are_fetched_before_anything_reads_them) ... ok
+test_the_render_check_and_the_second_validation_keep_their_places (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_render_check_and_the_second_validation_keep_their_places) ... ok
+test_the_run_in_progress_completes_and_the_newest_tree_waits (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_run_in_progress_completes_and_the_newest_tree_waits) ... ok
+test_the_steps_the_failure_messages_name_exist (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_steps_the_failure_messages_name_exist) ... ok
+test_the_unit_tests_run_after_the_content_build_they_read (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_unit_tests_run_after_the_content_build_they_read) ... ok
+
+----------------------------------------------------------------------
+Ran 38 tests in 0.989s
+
+OK
+exit=0

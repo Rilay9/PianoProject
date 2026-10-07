@@ -1,0 +1,4 @@
+﻿step_reports exit 0
+Step(name='reports', ok=True, detail='546 checkable claims on 1015 options: 314 not established, 7 kept by no option; 784 works, 813 arrangements', skipped=False, warnings=[])
+step_reports (2) exit 0
+step_reports (3) exit 0

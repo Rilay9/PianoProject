@@ -1,0 +1,21 @@
+== content-build  17:00:11
+content-build exit=0
+== content-validate  17:03:51
+content-validate exit=0
+== content-tests-targeted  17:04:02
+content-tests-targeted exit=0
+== tsc  17:06:22
+tsc exit=0
+== vitest-targeted  17:06:31
+vitest-targeted exit=0
+== build-app  17:06:34
+build-app exit=0
+== e2e-probe  17:07:01
+e2e-probe exit=1
+CHAIN DONE 17:07:10
+== e2e-probe  17:08:10
+e2e-probe exit=1
+CHAIN DONE 17:08:12
+== e2e-probe  17:33:55
+e2e-probe exit=0
+CHAIN DONE 17:34:02

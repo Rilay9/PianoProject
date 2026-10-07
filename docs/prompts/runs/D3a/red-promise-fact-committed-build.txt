@@ -1,0 +1,46 @@
+test_every_generated_item_carries_the_promise_its_recipe_matches (tests.test_measured_truth.TestThePromiseFact.test_every_generated_item_carries_the_promise_its_recipe_matches) ... FAIL
+test_music_families_carry_music_and_drills_carry_drill (tests.test_measured_truth.TestThePromiseFact.test_music_families_carry_music_and_drills_carry_drill) ... FAIL
+test_no_runtime_or_notated_item_carries_one (tests.test_measured_truth.TestThePromiseFact.test_no_runtime_or_notated_item_carries_one) ... ok
+test_the_matching_rule_never_the_first_on_a_conditional_family (tests.test_measured_truth.TestThePromiseFact.test_the_matching_rule_never_the_first_on_a_conditional_family) ... FAIL
+
+======================================================================
+FAIL: test_every_generated_item_carries_the_promise_its_recipe_matches (tests.test_measured_truth.TestThePromiseFact.test_every_generated_item_carries_the_promise_its_recipe_matches)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af414581e137851f7\tools\content\tests\test_measured_truth.py", line 253, in test_every_generated_item_carries_the_promise_its_recipe_matches
+    self.assertEqual(faults[:10], [], f"{len(faults)} generated items")
+AssertionError: Lists differ: ["exercise.accompaniment.alberti.a-minor.b[903 chars]ll)"] != []
+
+First list contains 10 additional elements.
+First extra element 0:
+"exercise.accompaniment.alberti.a-minor.both: no promise fact (its recipe's rule says drill)"
+
+Diff is 1045 characters long. Set self.maxDiff to None to see it. : 1200 generated items
+
+======================================================================
+FAIL: test_music_families_carry_music_and_drills_carry_drill (tests.test_measured_truth.TestThePromiseFact.test_music_families_carry_music_and_drills_carry_drill)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af414581e137851f7\tools\content\tests\test_measured_truth.py", line 272, in test_music_families_carry_music_and_drills_carry_drill
+    self.assertEqual(faults[:10], [], f"{len(faults)} generated items")
+AssertionError: Lists differ: ['exercise.accompaniment.alberti.a-minor.b[993 chars]one'] != []
+
+First list contains 10 additional elements.
+First extra element 0:
+'exercise.accompaniment.alberti.a-minor.both: the accompaniment family is a drill, the fact says None'
+
+Diff is 1135 characters long. Set self.maxDiff to None to see it. : 1197 generated items
+
+======================================================================
+FAIL: test_the_matching_rule_never_the_first_on_a_conditional_family (tests.test_measured_truth.TestThePromiseFact.test_the_matching_rule_never_the_first_on_a_conditional_family)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af414581e137851f7\tools\content\tests\test_measured_truth.py", line 287, in test_the_matching_rule_never_the_first_on_a_conditional_family
+    self.assertEqual((five["provenance"]["facts"].get("promise") or {}).get("value"), "drill",
+AssertionError: None != 'drill' : exercise.meter.5-4: the 5/4 walk is a drill by its recipe's rule
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.073s
+
+FAILED (failures=3)
+exit 1

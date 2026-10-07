@@ -51,6 +51,14 @@ const { curriculum } = vi.hoisted(() => {
                     { kind: 'unjudged', rule: 'dynamics-contrast>=1.6', says: 'Loud and soft clearly different.', why: 'not measured' },
                   ],
                 }),
+                // As `loadCurriculum` hands it over once the shelf overlay has run (CL04, L79):
+                // a book piece listed, and its twin recorded.
+                rung('1.3', {
+                  songOptions: [],
+                  paperOptions: ['book.method-book/study-no-3'],
+                  paperTwins: { 'book.method-book/study-no-3': 'import.t' },
+                  requirements: [{ kind: 'runs', from: 'songs', count: 1 }],
+                }),
               ],
             },
           ],
@@ -84,8 +92,9 @@ const { LessonScreen } = await import('../../src/ui/screens/LessonScreen');
 const { recordRun, resetProgressForTest, allProgress } = await import('../../src/data/progressStore');
 const { resetPlanForTest, getPlan } = await import('../../src/data/planStore');
 const { updateSettings, DEFAULT_SETTINGS } = await import('../../src/data/settingsStore');
+const { addBook, addPiece } = await import('../../src/data/booksStore');
 
-let router: { navigate: ReturnType<typeof vi.fn>; navigateLesson: ReturnType<typeof vi.fn> };
+let router: { navigate: ReturnType<typeof vi.fn>; navigateLesson: ReturnType<typeof vi.fn>; navigatePaper: ReturnType<typeof vi.fn> };
 
 async function mount(lessonId: string): Promise<HTMLElement> {
   const section = LessonScreen(router as unknown as Router, lessonId);
@@ -118,7 +127,7 @@ beforeEach(() => {
   useFakeIndexedDb();
   resetProgressForTest();
   resetPlanForTest();
-  router = { navigate: vi.fn(), navigateLesson: vi.fn() };
+  router = { navigate: vi.fn(), navigateLesson: vi.fn(), navigatePaper: vi.fn() };
 });
 
 afterEach(() => {
@@ -154,6 +163,25 @@ describe('the state and the list come from the evidence', () => {
     const lines = [...section.querySelectorAll('#lesson-counts li')].map((li) => li.textContent ?? '');
     expect(lines[1]).toContain('Not judged by the app — the lesson’s rule: Loud and soft clearly different.');
     expect(section.querySelector('#lesson-state')?.textContent).toContain('complete');
+  });
+});
+
+// Added (CL04, L79): a twin's run now counts for the book piece the rung lists,
+// so the *Counted* line can hold a `book.` id; the page's titles came from the
+// catalog alone, where a book piece is not, and it would have printed the id.
+describe('a book piece counted through its twin (L79)', () => {
+  it('the Counted line names the piece by its title, never by its id', async () => {
+    const book = await addBook({ title: 'Method Book' });
+    await addPiece(book.id, { title: 'Study No. 3', lessonIds: ['1.3'], concepts: [], itemId: 'import.t' });
+    await recordRun(run('import.t', '1.3'), new Date('2026-10-01T10:00:00Z'));
+    const section = await mount('1.3');
+    const lines = [...section.querySelectorAll('#lesson-counts li')].map((li) => li.textContent ?? '');
+    expect(lines[0]).toContain('counted: Study No. 3');
+    expect(section.querySelector('#lesson-counts')?.textContent, 'the page printed an internal id').not.toContain('book.');
+    // The piece's *Practise* carries the rung to the paper screen, which hands it to the twin (the door).
+    const practise = [...section.querySelectorAll<HTMLButtonElement>('#lesson-paper [data-paper] button')].find((b) => b.textContent === 'Practise');
+    practise?.click();
+    expect(router.navigatePaper).toHaveBeenCalledWith(book.id, 'study-no-3', { from: '1.3' });
   });
 });
 

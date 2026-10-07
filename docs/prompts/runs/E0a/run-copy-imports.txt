@@ -1,0 +1,5 @@
+kern: copied, 2231 files
+musetrainer: copied, 76 files
+convert cache: copied 3531 entries, 0 already here
+SOURCES.md snapshot written
+exit 0

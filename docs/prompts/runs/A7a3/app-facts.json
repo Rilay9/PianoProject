@@ -1,0 +1,1649 @@
+{
+ "song.blues.st-james-infirmary": {
+  "symbols": 41,
+  "symbolPcs": [
+   {
+    "m": 1,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 1,
+    "at": 2,
+    "text": "B♭7",
+    "pcs": "D-F-Ab-Bb"
+   },
+   {
+    "m": 1,
+    "at": 3,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 2,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 2,
+    "at": 1,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 3,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 3,
+    "at": 2,
+    "text": "B♭7",
+    "pcs": "D-F-Ab-Bb"
+   },
+   {
+    "m": 3,
+    "at": 3,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 4,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 5,
+    "at": 0,
+    "text": "Gm",
+    "pcs": "D-G-Bb"
+   },
+   {
+    "m": 5,
+    "at": 2,
+    "text": "D7",
+    "pcs": "C-D-Gb-A"
+   },
+   {
+    "m": 6,
+    "at": 0,
+    "text": "Gm",
+    "pcs": "D-G-Bb"
+   },
+   {
+    "m": 7,
+    "at": 0,
+    "text": "B♭7",
+    "pcs": "D-F-Ab-Bb"
+   },
+   {
+    "m": 8,
+    "at": 0,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 9,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 9,
+    "at": 2,
+    "text": "B♭7",
+    "pcs": "D-F-Ab-Bb"
+   },
+   {
+    "m": 9,
+    "at": 3,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 10,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 10,
+    "at": 1,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 11,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 11,
+    "at": 2,
+    "text": "B♭7",
+    "pcs": "D-F-Ab-Bb"
+   },
+   {
+    "m": 11,
+    "at": 3,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 12,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 13,
+    "at": 0,
+    "text": "Gm",
+    "pcs": "D-G-Bb"
+   },
+   {
+    "m": 14,
+    "at": 0,
+    "text": "Gm",
+    "pcs": "D-G-Bb"
+   },
+   {
+    "m": 14,
+    "at": 1,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 15,
+    "at": 0,
+    "text": "B♭7",
+    "pcs": "D-F-Ab-Bb"
+   },
+   {
+    "m": 16,
+    "at": 0,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 17,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 17,
+    "at": 2,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 18,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 19,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 19,
+    "at": 2,
+    "text": "B♭7",
+    "pcs": "D-F-Ab-Bb"
+   },
+   {
+    "m": 20,
+    "at": 0,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 21,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 21,
+    "at": 2,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 22,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   },
+   {
+    "m": 22,
+    "at": 2,
+    "text": "F7",
+    "pcs": "C-Eb-F-A"
+   },
+   {
+    "m": 23,
+    "at": 0,
+    "text": "B♭7",
+    "pcs": "D-F-Ab-Bb"
+   },
+   {
+    "m": 23,
+    "at": 2,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 24,
+    "at": 0,
+    "text": "Dm",
+    "pcs": "D-F-A"
+   }
+  ],
+  "measures": 24,
+  "todayBars": 41,
+  "segmentBars": 24,
+  "report": {
+   "merged": 0,
+   "conflicts": 0,
+   "outside": 0,
+   "unplaced": 0
+  },
+  "barsWithMoreThanOneWritten": [
+   1,
+   2,
+   3,
+   5,
+   9,
+   10,
+   11,
+   14,
+   17,
+   19,
+   21,
+   22,
+   23
+  ],
+  "symbolsTodayDrops": 17,
+  "perBar": [
+   {
+    "bar": 1,
+    "today": "Dm",
+    "segments": [
+     "Dm@0",
+     "B♭7@2",
+     "A7@3"
+    ],
+    "written": 3,
+    "dropped": 2
+   },
+   {
+    "bar": 2,
+    "today": "Dm",
+    "segments": [
+     "Dm@0",
+     "A7@1"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 3,
+    "today": "Dm",
+    "segments": [
+     "Dm@0",
+     "B♭7@2",
+     "A7@3"
+    ],
+    "written": 3,
+    "dropped": 2
+   },
+   {
+    "bar": 4,
+    "today": "Dm",
+    "segments": [
+     "Dm@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 5,
+    "today": "Gm",
+    "segments": [
+     "Gm@0",
+     "D7@2"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 6,
+    "today": "Gm",
+    "segments": [
+     "Gm@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 7,
+    "today": "B♭7",
+    "segments": [
+     "B♭7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 8,
+    "today": "A7",
+    "segments": [
+     "A7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 9,
+    "today": "Dm",
+    "segments": [
+     "Dm@0",
+     "B♭7@2",
+     "A7@3"
+    ],
+    "written": 3,
+    "dropped": 2
+   },
+   {
+    "bar": 10,
+    "today": "Dm",
+    "segments": [
+     "Dm@0",
+     "A7@1"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 11,
+    "today": "Dm",
+    "segments": [
+     "Dm@0",
+     "B♭7@2",
+     "A7@3"
+    ],
+    "written": 3,
+    "dropped": 2
+   },
+   {
+    "bar": 12,
+    "today": "Dm",
+    "segments": [
+     "Dm@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 13,
+    "today": "Gm",
+    "segments": [
+     "Gm@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 14,
+    "today": "Gm",
+    "segments": [
+     "Gm@0",
+     "Dm@1"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 15,
+    "today": "B♭7",
+    "segments": [
+     "B♭7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 16,
+    "today": "A7",
+    "segments": [
+     "A7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 17,
+    "today": "Dm",
+    "segments": [
+     "Dm@0",
+     "A7@2"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 18,
+    "today": "Dm",
+    "segments": [
+     "Dm@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 19,
+    "today": "Dm",
+    "segments": [
+     "Dm@0",
+     "B♭7@2"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 20,
+    "today": "A7",
+    "segments": [
+     "A7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 21,
+    "today": "Dm",
+    "segments": [
+     "Dm@0",
+     "A7@2"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 22,
+    "today": "Dm",
+    "segments": [
+     "Dm@0",
+     "F7@2"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 23,
+    "today": "B♭7",
+    "segments": [
+     "B♭7@0",
+     "A7@2"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 24,
+    "today": "Dm",
+    "segments": [
+     "Dm@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   }
+  ],
+  "chordCount": 41,
+  "backingOffered": true,
+  "beatUnit": 1,
+  "defaultTempo": 96
+ },
+ "song.classical.st-louis-blues.pdmx": {
+  "symbols": 23,
+  "symbolPcs": [
+   {
+    "m": 1,
+    "at": 0,
+    "text": "E",
+    "pcs": "E-Ab-B"
+   },
+   {
+    "m": 2,
+    "at": 0,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 3,
+    "at": 0,
+    "text": "E",
+    "pcs": "E-Ab-B"
+   },
+   {
+    "m": 3,
+    "at": 2,
+    "text": "B7",
+    "pcs": "Eb-Gb-A-B"
+   },
+   {
+    "m": 4,
+    "at": 0,
+    "text": "E",
+    "pcs": "E-Ab-B"
+   },
+   {
+    "m": 5,
+    "at": 0,
+    "text": "A7",
+    "pcs": "Db-E-G-A"
+   },
+   {
+    "m": 7,
+    "at": 0,
+    "text": "E",
+    "pcs": "E-Ab-B"
+   },
+   {
+    "m": 7,
+    "at": 2,
+    "text": "B7",
+    "pcs": "Eb-Gb-A-B"
+   },
+   {
+    "m": 8,
+    "at": 0,
+    "text": "E",
+    "pcs": "E-Ab-B"
+   },
+   {
+    "m": 9,
+    "at": 0,
+    "text": "B7",
+    "pcs": "Eb-Gb-A-B"
+   },
+   {
+    "m": 11,
+    "at": 0,
+    "text": "E",
+    "pcs": "E-Ab-B"
+   },
+   {
+    "m": 11,
+    "at": 2,
+    "text": "E/G♯",
+    "pcs": "E-Ab-B"
+   },
+   {
+    "m": 12,
+    "at": 0,
+    "text": "B7",
+    "pcs": "Eb-Gb-A-B"
+   },
+   {
+    "m": 13,
+    "at": 0,
+    "text": "Emi7",
+    "pcs": "D-E-G-B"
+   },
+   {
+    "m": 15,
+    "at": 0,
+    "text": "B7",
+    "pcs": "Eb-Gb-A-B"
+   },
+   {
+    "m": 19,
+    "at": 0,
+    "text": "Emi7",
+    "pcs": "D-E-G-B"
+   },
+   {
+    "m": 19,
+    "at": 2,
+    "text": "F♯mi",
+    "pcs": "Db-Gb-A"
+   },
+   {
+    "m": 20,
+    "at": 0,
+    "text": "B7",
+    "pcs": "Eb-Gb-A-B"
+   },
+   {
+    "m": 21,
+    "at": 0,
+    "text": "Emi7",
+    "pcs": "D-E-G-B"
+   },
+   {
+    "m": 23,
+    "at": 0,
+    "text": "B7",
+    "pcs": "Eb-Gb-A-B"
+   },
+   {
+    "m": 27,
+    "at": 0,
+    "text": "E7",
+    "pcs": "D-E-Ab-B"
+   },
+   {
+    "m": 27,
+    "at": 2,
+    "text": "E/G♯",
+    "pcs": "E-Ab-B"
+   },
+   {
+    "m": 28,
+    "at": 0,
+    "text": "B7",
+    "pcs": "Eb-Gb-A-B"
+   }
+  ],
+  "measures": 28,
+  "todayBars": 28,
+  "segmentBars": 28,
+  "report": {
+   "merged": 0,
+   "conflicts": 0,
+   "outside": 0,
+   "unplaced": 0
+  },
+  "barsWithMoreThanOneWritten": [
+   3,
+   7,
+   11,
+   19,
+   27
+  ],
+  "symbolsTodayDrops": 5,
+  "perBar": [
+   {
+    "bar": 1,
+    "today": "E",
+    "segments": [
+     "E@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 2,
+    "today": "A7",
+    "segments": [
+     "A7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 3,
+    "today": "E",
+    "segments": [
+     "E@0",
+     "B7@2"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 4,
+    "today": "E",
+    "segments": [
+     "E@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 5,
+    "today": "A7",
+    "segments": [
+     "A7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 6,
+    "today": "A7",
+    "segments": [
+     "A7@0(carried)"
+    ],
+    "written": 0,
+    "dropped": 0
+   },
+   {
+    "bar": 7,
+    "today": "E",
+    "segments": [
+     "E@0",
+     "B7@2"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 8,
+    "today": "E",
+    "segments": [
+     "E@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 9,
+    "today": "B7",
+    "segments": [
+     "B7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 10,
+    "today": "B7",
+    "segments": [
+     "B7@0(carried)"
+    ],
+    "written": 0,
+    "dropped": 0
+   },
+   {
+    "bar": 11,
+    "today": "E",
+    "segments": [
+     "E@0",
+     "E/G♯@2"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 12,
+    "today": "B7",
+    "segments": [
+     "B7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 13,
+    "today": "Emi7",
+    "segments": [
+     "Emi7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 14,
+    "today": "Emi7",
+    "segments": [
+     "Emi7@0(carried)"
+    ],
+    "written": 0,
+    "dropped": 0
+   },
+   {
+    "bar": 15,
+    "today": "B7",
+    "segments": [
+     "B7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 16,
+    "today": "B7",
+    "segments": [
+     "B7@0(carried)"
+    ],
+    "written": 0,
+    "dropped": 0
+   },
+   {
+    "bar": 17,
+    "today": "B7",
+    "segments": [
+     "B7@0(carried)"
+    ],
+    "written": 0,
+    "dropped": 0
+   },
+   {
+    "bar": 18,
+    "today": "B7",
+    "segments": [
+     "B7@0(carried)"
+    ],
+    "written": 0,
+    "dropped": 0
+   },
+   {
+    "bar": 19,
+    "today": "Emi7",
+    "segments": [
+     "Emi7@0",
+     "F♯mi@2"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 20,
+    "today": "B7",
+    "segments": [
+     "B7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 21,
+    "today": "Emi7",
+    "segments": [
+     "Emi7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 22,
+    "today": "Emi7",
+    "segments": [
+     "Emi7@0(carried)"
+    ],
+    "written": 0,
+    "dropped": 0
+   },
+   {
+    "bar": 23,
+    "today": "B7",
+    "segments": [
+     "B7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 24,
+    "today": "B7",
+    "segments": [
+     "B7@0(carried)"
+    ],
+    "written": 0,
+    "dropped": 0
+   },
+   {
+    "bar": 25,
+    "today": "B7",
+    "segments": [
+     "B7@0(carried)"
+    ],
+    "written": 0,
+    "dropped": 0
+   },
+   {
+    "bar": 26,
+    "today": "B7",
+    "segments": [
+     "B7@0(carried)"
+    ],
+    "written": 0,
+    "dropped": 0
+   },
+   {
+    "bar": 27,
+    "today": "E7",
+    "segments": [
+     "E7@0",
+     "E/G♯@2"
+    ],
+    "written": 2,
+    "dropped": 1
+   },
+   {
+    "bar": 28,
+    "today": "B7",
+    "segments": [
+     "B7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   }
+  ],
+  "chordCount": 23,
+  "backingOffered": true,
+  "beatUnit": 1,
+  "defaultTempo": 96
+ },
+ "exercise.walking-bass.c.minor-blues": {
+  "symbols": 13,
+  "symbolPcs": [
+   {
+    "m": 1,
+    "at": 0,
+    "text": "Cm7",
+    "pcs": "C-Eb-G-Bb"
+   },
+   {
+    "m": 2,
+    "at": 0,
+    "text": "Cm7",
+    "pcs": "C-Eb-G-Bb"
+   },
+   {
+    "m": 3,
+    "at": 0,
+    "text": "Cm7",
+    "pcs": "C-Eb-G-Bb"
+   },
+   {
+    "m": 4,
+    "at": 0,
+    "text": "Cm7",
+    "pcs": "C-Eb-G-Bb"
+   },
+   {
+    "m": 5,
+    "at": 0,
+    "text": "Fm7",
+    "pcs": "C-Eb-F-Ab"
+   },
+   {
+    "m": 6,
+    "at": 0,
+    "text": "Fm7",
+    "pcs": "C-Eb-F-Ab"
+   },
+   {
+    "m": 7,
+    "at": 0,
+    "text": "Cm7",
+    "pcs": "C-Eb-G-Bb"
+   },
+   {
+    "m": 8,
+    "at": 0,
+    "text": "Cm7",
+    "pcs": "C-Eb-G-Bb"
+   },
+   {
+    "m": 9,
+    "at": 0,
+    "text": "A♭7",
+    "pcs": "C-Eb-Gb-Ab"
+   },
+   {
+    "m": 10,
+    "at": 0,
+    "text": "G7",
+    "pcs": "D-F-G-B"
+   },
+   {
+    "m": 11,
+    "at": 0,
+    "text": "Cm7",
+    "pcs": "C-Eb-G-Bb"
+   },
+   {
+    "m": 12,
+    "at": 0,
+    "text": "G7",
+    "pcs": "D-F-G-B"
+   },
+   {
+    "m": 13,
+    "at": 0,
+    "text": "Cm7",
+    "pcs": "C-Eb-G-Bb"
+   }
+  ],
+  "measures": 13,
+  "todayBars": 13,
+  "segmentBars": 13,
+  "report": {
+   "merged": 0,
+   "conflicts": 0,
+   "outside": 0,
+   "unplaced": 0
+  },
+  "barsWithMoreThanOneWritten": [],
+  "symbolsTodayDrops": 0,
+  "perBar": [
+   {
+    "bar": 1,
+    "today": "Cm7",
+    "segments": [
+     "Cm7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 2,
+    "today": "Cm7",
+    "segments": [
+     "Cm7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 3,
+    "today": "Cm7",
+    "segments": [
+     "Cm7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 4,
+    "today": "Cm7",
+    "segments": [
+     "Cm7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 5,
+    "today": "Fm7",
+    "segments": [
+     "Fm7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 6,
+    "today": "Fm7",
+    "segments": [
+     "Fm7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 7,
+    "today": "Cm7",
+    "segments": [
+     "Cm7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 8,
+    "today": "Cm7",
+    "segments": [
+     "Cm7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 9,
+    "today": "A♭7",
+    "segments": [
+     "A♭7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 10,
+    "today": "G7",
+    "segments": [
+     "G7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 11,
+    "today": "Cm7",
+    "segments": [
+     "Cm7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 12,
+    "today": "G7",
+    "segments": [
+     "G7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 13,
+    "today": "Cm7",
+    "segments": [
+     "Cm7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   }
+  ],
+  "chordCount": 13,
+  "backingOffered": true,
+  "beatUnit": 1,
+  "defaultTempo": 92
+ },
+ "exercise.walking-bass.e-flat.minor-blues": {
+  "symbols": 13,
+  "symbolPcs": [
+   {
+    "m": 1,
+    "at": 0,
+    "text": "E♭m7",
+    "pcs": "Db-Eb-Gb-Bb"
+   },
+   {
+    "m": 2,
+    "at": 0,
+    "text": "E♭m7",
+    "pcs": "Db-Eb-Gb-Bb"
+   },
+   {
+    "m": 3,
+    "at": 0,
+    "text": "E♭m7",
+    "pcs": "Db-Eb-Gb-Bb"
+   },
+   {
+    "m": 4,
+    "at": 0,
+    "text": "E♭m7",
+    "pcs": "Db-Eb-Gb-Bb"
+   },
+   {
+    "m": 5,
+    "at": 0,
+    "text": "A♭m7",
+    "pcs": "Eb-Gb-Ab-B"
+   },
+   {
+    "m": 6,
+    "at": 0,
+    "text": "A♭m7",
+    "pcs": "Eb-Gb-Ab-B"
+   },
+   {
+    "m": 7,
+    "at": 0,
+    "text": "E♭m7",
+    "pcs": "Db-Eb-Gb-Bb"
+   },
+   {
+    "m": 8,
+    "at": 0,
+    "text": "E♭m7",
+    "pcs": "Db-Eb-Gb-Bb"
+   },
+   {
+    "m": 9,
+    "at": 0,
+    "text": "B7",
+    "pcs": "Eb-Gb-A-B"
+   },
+   {
+    "m": 10,
+    "at": 0,
+    "text": "B♭7",
+    "pcs": "D-F-Ab-Bb"
+   },
+   {
+    "m": 11,
+    "at": 0,
+    "text": "E♭m7",
+    "pcs": "Db-Eb-Gb-Bb"
+   },
+   {
+    "m": 12,
+    "at": 0,
+    "text": "B♭7",
+    "pcs": "D-F-Ab-Bb"
+   },
+   {
+    "m": 13,
+    "at": 0,
+    "text": "E♭m7",
+    "pcs": "Db-Eb-Gb-Bb"
+   }
+  ],
+  "measures": 13,
+  "todayBars": 13,
+  "segmentBars": 13,
+  "report": {
+   "merged": 0,
+   "conflicts": 0,
+   "outside": 0,
+   "unplaced": 0
+  },
+  "barsWithMoreThanOneWritten": [],
+  "symbolsTodayDrops": 0,
+  "perBar": [
+   {
+    "bar": 1,
+    "today": "E♭m7",
+    "segments": [
+     "E♭m7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 2,
+    "today": "E♭m7",
+    "segments": [
+     "E♭m7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 3,
+    "today": "E♭m7",
+    "segments": [
+     "E♭m7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 4,
+    "today": "E♭m7",
+    "segments": [
+     "E♭m7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 5,
+    "today": "A♭m7",
+    "segments": [
+     "A♭m7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 6,
+    "today": "A♭m7",
+    "segments": [
+     "A♭m7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 7,
+    "today": "E♭m7",
+    "segments": [
+     "E♭m7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 8,
+    "today": "E♭m7",
+    "segments": [
+     "E♭m7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 9,
+    "today": "B7",
+    "segments": [
+     "B7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 10,
+    "today": "B♭7",
+    "segments": [
+     "B♭7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 11,
+    "today": "E♭m7",
+    "segments": [
+     "E♭m7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 12,
+    "today": "B♭7",
+    "segments": [
+     "B♭7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   },
+   {
+    "bar": 13,
+    "today": "E♭m7",
+    "segments": [
+     "E♭m7@0"
+    ],
+    "written": 1,
+    "dropped": 0
+   }
+  ],
+  "chordCount": 13,
+  "backingOffered": true,
+  "beatUnit": 1,
+  "defaultTempo": 92
+ },
+ "chordMatch": [
+  {
+   "label": "Bb7 root-third-seventh",
+   "symbolPcs": "D-F-Ab-Bb",
+   "played": "Bb-D-Ab",
+   "score": 0.75,
+   "verdict": "yes"
+  },
+  {
+   "label": "Bb7 third-seventh (rootless shell)",
+   "symbolPcs": "D-F-Ab-Bb",
+   "played": "D-Ab",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "Bb7 one bass note (root)",
+   "symbolPcs": "D-F-Ab-Bb",
+   "played": "Bb",
+   "score": 0.25,
+   "verdict": "no"
+  },
+  {
+   "label": "Bb7 root-fifth",
+   "symbolPcs": "D-F-Ab-Bb",
+   "played": "Bb-F",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "A7 root-third-seventh",
+   "symbolPcs": "Db-E-G-A",
+   "played": "A-Db-G",
+   "score": 0.75,
+   "verdict": "yes"
+  },
+  {
+   "label": "A7 third-seventh (rootless shell)",
+   "symbolPcs": "Db-E-G-A",
+   "played": "Db-G",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "A7 one bass note (root)",
+   "symbolPcs": "Db-E-G-A",
+   "played": "A",
+   "score": 0.25,
+   "verdict": "no"
+  },
+  {
+   "label": "A7 root-fifth",
+   "symbolPcs": "Db-E-G-A",
+   "played": "A-E",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "D7 root-third-seventh",
+   "symbolPcs": "C-D-Gb-A",
+   "played": "D-Gb-C",
+   "score": 0.75,
+   "verdict": "yes"
+  },
+  {
+   "label": "D7 third-seventh (rootless shell)",
+   "symbolPcs": "C-D-Gb-A",
+   "played": "Gb-C",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "D7 one bass note (root)",
+   "symbolPcs": "C-D-Gb-A",
+   "played": "D",
+   "score": 0.25,
+   "verdict": "no"
+  },
+  {
+   "label": "D7 root-fifth",
+   "symbolPcs": "C-D-Gb-A",
+   "played": "D-A",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "F7 root-third-seventh",
+   "symbolPcs": "C-Eb-F-A",
+   "played": "F-A-Eb",
+   "score": 0.75,
+   "verdict": "yes"
+  },
+  {
+   "label": "F7 third-seventh (rootless shell)",
+   "symbolPcs": "C-Eb-F-A",
+   "played": "A-Eb",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "F7 one bass note (root)",
+   "symbolPcs": "C-Eb-F-A",
+   "played": "F",
+   "score": 0.25,
+   "verdict": "no"
+  },
+  {
+   "label": "F7 root-fifth",
+   "symbolPcs": "C-Eb-F-A",
+   "played": "F-C",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "Cm7 root-third-seventh",
+   "symbolPcs": "C-Eb-G-Bb",
+   "played": "C-Eb-Bb",
+   "score": 0.75,
+   "verdict": "yes"
+  },
+  {
+   "label": "Cm7 third-seventh (rootless shell)",
+   "symbolPcs": "C-Eb-G-Bb",
+   "played": "Eb-Bb",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "Cm7 one bass note (root)",
+   "symbolPcs": "C-Eb-G-Bb",
+   "played": "C",
+   "score": 0.25,
+   "verdict": "no"
+  },
+  {
+   "label": "Cm7 root-fifth",
+   "symbolPcs": "C-Eb-G-Bb",
+   "played": "C-G",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "Fm7 root-third-seventh",
+   "symbolPcs": "C-Eb-F-Ab",
+   "played": "F-Ab-Eb",
+   "score": 0.75,
+   "verdict": "yes"
+  },
+  {
+   "label": "Fm7 third-seventh (rootless shell)",
+   "symbolPcs": "C-Eb-F-Ab",
+   "played": "Ab-Eb",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "Fm7 one bass note (root)",
+   "symbolPcs": "C-Eb-F-Ab",
+   "played": "F",
+   "score": 0.25,
+   "verdict": "no"
+  },
+  {
+   "label": "Fm7 root-fifth",
+   "symbolPcs": "C-Eb-F-Ab",
+   "played": "F-C",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "Ab7 root-third-seventh",
+   "symbolPcs": "C-Eb-Gb-Ab",
+   "played": "Ab-C-Gb",
+   "score": 0.75,
+   "verdict": "yes"
+  },
+  {
+   "label": "Ab7 third-seventh (rootless shell)",
+   "symbolPcs": "C-Eb-Gb-Ab",
+   "played": "C-Gb",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "Ab7 one bass note (root)",
+   "symbolPcs": "C-Eb-Gb-Ab",
+   "played": "Ab",
+   "score": 0.25,
+   "verdict": "no"
+  },
+  {
+   "label": "Ab7 root-fifth",
+   "symbolPcs": "C-Eb-Gb-Ab",
+   "played": "Ab-Eb",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "G7 root-third-seventh",
+   "symbolPcs": "D-F-G-B",
+   "played": "G-B-F",
+   "score": 0.75,
+   "verdict": "yes"
+  },
+  {
+   "label": "G7 third-seventh (rootless shell)",
+   "symbolPcs": "D-F-G-B",
+   "played": "B-F",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "G7 one bass note (root)",
+   "symbolPcs": "D-F-G-B",
+   "played": "G",
+   "score": 0.25,
+   "verdict": "no"
+  },
+  {
+   "label": "G7 root-fifth",
+   "symbolPcs": "D-F-G-B",
+   "played": "G-D",
+   "score": 0.5,
+   "verdict": "no"
+  },
+  {
+   "label": "Dm triad",
+   "symbolPcs": "D-F-A",
+   "played": "D-F-A",
+   "score": 1,
+   "verdict": "yes"
+  },
+  {
+   "label": "Dm one bass note",
+   "symbolPcs": "D-F-A",
+   "played": "D",
+   "score": 0.333,
+   "verdict": "no"
+  },
+  {
+   "label": "Gm triad",
+   "symbolPcs": "D-G-Bb",
+   "played": "G-Bb-D",
+   "score": 1,
+   "verdict": "yes"
+  },
+  {
+   "label": "Gm one bass note",
+   "symbolPcs": "D-G-Bb",
+   "played": "G",
+   "score": 0.333,
+   "verdict": "no"
+  },
+  {
+   "label": "Ab7 shell (Ab-C-Gb) judged against Cm7",
+   "symbolPcs": "C-Eb-G-Bb",
+   "played": "Ab-C-Gb",
+   "score": 0.25,
+   "verdict": "no"
+  },
+  {
+   "label": "G7 shell (G-B-F) judged against Cm7",
+   "symbolPcs": "C-Eb-G-Bb",
+   "played": "G-B-F",
+   "score": 0.25,
+   "verdict": "no"
+  },
+  {
+   "label": "Fm7 shell (F-Ab-Eb) judged against Cm7",
+   "symbolPcs": "C-Eb-G-Bb",
+   "played": "F-Ab-Eb",
+   "score": 0.25,
+   "verdict": "no"
+  }
+ ]
+}

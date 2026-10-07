@@ -1,0 +1,334 @@
+{
+ "excerpt.classical.beethoven-ode-to-joy.easy.b9-12": {
+  "stage": {
+   "w": 768,
+   "h": 815
+  },
+  "fitBy": "height",
+  "ahead": "none",
+  "why": null,
+  "shown": 2,
+  "asked": 2,
+  "slots": 2,
+  "systems": 2,
+  "zoom": 2,
+  "bars": 4,
+  "priced": {
+   "arrangement": "slots",
+   "candidates": [
+    {
+     "shown": 2,
+     "systems": 2,
+     "staffPx": 93.1
+    },
+    {
+     "shown": 1,
+     "systems": 1,
+     "staffPx": 130.3
+    }
+   ],
+   "shown": 2,
+   "systems": 2,
+   "fit": 1.164,
+   "drawn": 1.164,
+   "base": 1.164,
+   "rows": [
+    {
+     "from": 0,
+     "to": 0,
+     "px": 464
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "px": 433
+    }
+   ]
+  },
+  "staff": 93.1,
+  "ink": {
+   "w": 540,
+   "h": 760,
+   "wShare": 70,
+   "hShare": 93
+  },
+  "rows": [
+   {
+    "bars": "0-0",
+    "inked": [
+     0
+    ],
+    "ahead": false,
+    "left": 115,
+    "right": 655,
+    "top": 11,
+    "bottom": 374,
+    "stretch": "natural"
+   },
+   {
+    "bars": "1-1",
+    "inked": [
+     1
+    ],
+    "ahead": false,
+    "left": 115,
+    "right": 602,
+    "top": 406,
+    "bottom": 771,
+    "stretch": "natural"
+   }
+  ]
+ },
+ "excerpt.blues.wabash-blues.b1-4": {
+  "stage": {
+   "w": 768,
+   "h": 815
+  },
+  "fitBy": "width",
+  "ahead": "none",
+  "why": null,
+  "shown": 2,
+  "asked": 2,
+  "slots": 2,
+  "systems": 2,
+  "zoom": 2,
+  "bars": 4,
+  "priced": {
+   "arrangement": "slots",
+   "candidates": [
+    {
+     "shown": 2,
+     "systems": 2,
+     "staffPx": 83
+    },
+    {
+     "shown": 1,
+     "systems": 1,
+     "staffPx": 83
+    }
+   ],
+   "shown": 2,
+   "systems": 2,
+   "fit": 1.038,
+   "drawn": 1.038,
+   "base": 1.038,
+   "rows": [
+    {
+     "from": 0,
+     "to": 0,
+     "px": 728
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "px": 627
+    }
+   ]
+  },
+  "staff": 83,
+  "ink": {
+   "w": 756,
+   "h": 572,
+   "wShare": 98,
+   "hShare": 70
+  },
+  "rows": [
+   {
+    "bars": "0-0",
+    "inked": [
+     0
+    ],
+    "ahead": false,
+    "left": 7,
+    "right": 763,
+    "top": 7,
+    "bottom": 275,
+    "stretch": "natural"
+   },
+   {
+    "bars": "1-1",
+    "inked": [
+     1
+    ],
+    "ahead": false,
+    "left": 7,
+    "right": 658,
+    "top": 401,
+    "bottom": 579,
+    "stretch": "natural"
+   }
+  ]
+ },
+ "excerpt.classical.i-got-rythm.pdmx.b15-18": {
+  "stage": {
+   "w": 768,
+   "h": 815
+  },
+  "fitBy": "height",
+  "ahead": "none",
+  "why": null,
+  "shown": 2,
+  "asked": 2,
+  "slots": 2,
+  "systems": 2,
+  "zoom": 2,
+  "bars": 4,
+  "priced": {
+   "arrangement": "slots",
+   "candidates": [
+    {
+     "shown": 2,
+     "systems": 2,
+     "staffPx": 82.2
+    },
+    {
+     "shown": 1,
+     "systems": 1,
+     "staffPx": 105.3
+    }
+   ],
+   "shown": 2,
+   "systems": 2,
+   "fit": 1.0269,
+   "drawn": 1.0269,
+   "base": 1.0269,
+   "rows": [
+    {
+     "from": 0,
+     "to": 0,
+     "px": 574
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "px": 550
+    }
+   ]
+  },
+  "staff": 82.2,
+  "ink": {
+   "w": 590,
+   "h": 783,
+   "wShare": 77,
+   "hShare": 96
+  },
+  "rows": [
+   {
+    "bars": "0-0",
+    "inked": [
+     0
+    ],
+    "ahead": false,
+    "left": 7,
+    "right": 597,
+    "top": 7,
+    "bottom": 370,
+    "stretch": "natural"
+   },
+   {
+    "bars": "1-1",
+    "inked": [
+     1
+    ],
+    "ahead": false,
+    "left": 7,
+    "right": 572,
+    "top": 406,
+    "bottom": 790,
+    "stretch": "natural"
+   }
+  ]
+ },
+ "excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28": {
+  "stage": {
+   "w": 768,
+   "h": 815
+  },
+  "fitBy": "width",
+  "ahead": "row",
+  "why": null,
+  "shown": 2,
+  "asked": 2,
+  "slots": 3,
+  "systems": 2,
+  "zoom": 2,
+  "bars": 4,
+  "priced": {
+   "arrangement": "slots",
+   "candidates": [
+    {
+     "shown": 2,
+     "systems": 2,
+     "staffPx": 87.7
+    },
+    {
+     "shown": 1,
+     "systems": 1,
+     "staffPx": 87.7
+    }
+   ],
+   "shown": 2,
+   "systems": 2,
+   "fit": 1.0962,
+   "drawn": 1.0962,
+   "base": 1.0962,
+   "rows": [
+    {
+     "from": 0,
+     "to": 0,
+     "px": 689
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "px": 690
+    }
+   ]
+  },
+  "staff": 87.7,
+  "ink": {
+   "w": 756,
+   "h": 762,
+   "wShare": 98,
+   "hShare": 94
+  },
+  "rows": [
+   {
+    "bars": "0-0",
+    "inked": [
+     0
+    ],
+    "ahead": false,
+    "left": 7,
+    "right": 763,
+    "top": 7,
+    "bottom": 240,
+    "stretch": "natural"
+   },
+   {
+    "bars": "1-1",
+    "inked": [
+     1
+    ],
+    "ahead": false,
+    "left": 7,
+    "right": 662,
+    "top": 288,
+    "bottom": 518,
+    "stretch": "natural"
+   },
+   {
+    "bars": "2-2",
+    "inked": [
+     2
+    ],
+    "ahead": true,
+    "left": 7,
+    "right": 668,
+    "top": 565,
+    "bottom": 770,
+    "stretch": "natural"
+   }
+  ]
+ }
+}

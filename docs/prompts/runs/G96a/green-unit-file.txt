@@ -1,0 +1,11 @@
+$ (cd app) npx vitest run tests/unit/libraryImportWords.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  10:18:14
+   Duration  2.46s (tests 45%, environment 30%, transform 17%, import 8%)
+
+exit=0

@@ -17,9 +17,8 @@ pattern? Where is the melody — in the top of the chords, or above them? What i
 the rhythm of the accompaniment? And where does the texture change, because an
 arrangement that does not change is a loop.
 
-**Steal the intro from the last eight bars.** The oldest arranging trick there
-is: whatever you do at the end, do a thinner version of it at the start, and the
-song sounds designed.
+**Steal the intro from the last eight bars.** Whatever you do at the end, do a
+thinner version of it at the start, and the song sounds designed.
 
 **Learning by ear is part of arranging**, because the arrangement you can hear is
 the one you can copy. The eight-bar ear drill is on this rung for that reason.
@@ -31,7 +30,7 @@ back to back and keep the half of each that worked.
 — which is the point: play it as written once, then work its chords out from
 the notes (none of the six prints chord symbols) and build your own. *Piano Man* and *Falling* are ballads where the
 left hand decides everything; *Mr. Blue Sky* and *Le Festin* are full textures
-to thin out, and the fastest by their printed tempos, where an arrangement has
+to thin out, where an arrangement has
 to leave something out to stay playable; *Rolling Girl* and *Apex of the World*
 complete the six. What you hand in
 is your own version, written down as a chart with your notes on it. All six

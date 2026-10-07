@@ -17,12 +17,22 @@
 //
 // The extractor never renders and never touches the DOM beyond what OSMD's
 // `load()` already did, so it runs in Node under jsdom.
+//
+// Tempo is the one thing it does not take from OSMD (X3d): the tempo map is
+// read from the MusicXML itself (`tempoFromXml.ts`) and placed on the
+// unrolled timeline this walk builds. OSMD reads a metronome mark's number as
+// quarter notes whatever its note, lets it replace the `<sound tempo>` beside
+// it, and opens the piece at the first tempo it finds anywhere — a half note
+// = 60 in cut time played at half its tempo (X3c's probe).
 
+import { tempoEvents, type TempoEvent } from './tempoFromXml';
 import {
   makeNoteId,
   roundBeats,
   WHOLE_NOTE_BEATS,
   withBeatToMs,
+  type DeclaredHand,
+  type HandDeclaration,
   type ScoreModel,
   type ScoreNote,
   type ScoreStep,
@@ -55,7 +65,10 @@ export const OSMD_HALFTONE_TO_MIDI = 12;
  */
 export const ACCENT_ARTICULATIONS = new Set([0, 1]);
 
-/** OSMD's own fallback when a sheet carries no tempo at all. */
+/**
+ * The tempo a piece opens at where its file states none at its opening, in quarter notes a minute (the
+ * number OSMD's own default happens to be). The import sheet names it as the app's choice.
+ */
 export const DEFAULT_BPM = 100;
 
 /**
@@ -67,6 +80,11 @@ export interface OsmdLikeSheet {
   TitleString?: string;
   SourceMeasures: OsmdSourceMeasure[];
   MusicPartManager: { getIterator(): OsmdIterator };
+  /**
+   * Every staff of the sheet, across its instruments (OSMD's `MusicSheet.Staves`): only its length is
+   * read, to tell a one-staff score, the only kind a declared hand applies to (HD1).
+   */
+  Staves: readonly unknown[];
 }
 
 export interface OsmdSourceMeasure {
@@ -82,7 +100,12 @@ export interface OsmdIterator {
   CurrentMeasure?: OsmdSourceMeasure;
   CurrentEnrolledTimestamp: { RealValue: number };
   CurrentSourceTimestamp: { RealValue: number };
-  CurrentBpm: number;
+  /**
+   * Where the current entry stands in its measure, in whole notes: the enrolled timestamp less this is
+   * the measure's own start on the unrolled timeline, where its tempo events are placed (X3d). Optional
+   * for a hand-built iterator, whose first entry in a measure is then taken as the measure's start.
+   */
+  CurrentRelativeInMeasureTimestamp?: { RealValue: number };
   CurrentRepetitionIteration: number;
   CurrentVisibleVoiceEntries(): OsmdVoiceEntry[];
   moveToNextVisibleVoiceEntry(notesOnly: boolean): void;
@@ -120,19 +143,54 @@ export interface OsmdNote {
 }
 
 export interface ExtractOptions {
+  /**
+   * The MusicXML the sheet was loaded from (X3d): the tempo map is read from it (`tempoFromXml`), never
+   * from OSMD's iterator. Required, so no caller can build a model whose tempo quietly falls back to a
+   * second reading; `OsmdView.extractModel` passes the text it loaded.
+   */
+  musicXml: string;
   /** Model id; defaults to the sheet title slug or `'score'`. */
   id?: string;
   /**
-   * Tempo used when the sheet has none. OSMD seeds its own iterator with
-   * `DefaultStartTempoInBpm`, so this only bites on sheets with no tempo
-   * information at all.
+   * The tempo the piece opens at where the file states none at its opening, in quarter notes a minute
+   * (`DEFAULT_BPM` unless asked). A tempo the file writes later is a change where it stands.
    */
   defaultBpm?: number;
+  /**
+   * The hand the item's content object declares for this score, where that declaration is authoritative
+   * (HD1; `curriculum/declaredHand.ts` decides, and every caller with a catalogue item asks it). A
+   * semantic input, never a staff number and never read from the clef: OSMD numbers a lone staff 1
+   * whichever hand plays it, and only the content object knows which.
+   *
+   * Applied to a **one-staff** score declared `left` or `right` alone: every note takes that hand, and
+   * `handsPresent` with it; the physical `staff` stays OSMD's. A score with more than one staff keeps its
+   * voice-home-staff and cross-staff hands whatever is declared. A one-staff score declared `both` is a
+   * mismatch: no second hand is made, the notes keep their reading by staff number, and the model's
+   * `handDeclaration` says so. Absent: CL15's reading, by staff number alone.
+   */
+  declaredHand?: DeclaredHand;
+  /**
+   * Verified hand facts for passages of this score (HD2; `content/sources/verified-facts.json`, read by
+   * `curriculum/verifiedFacts.ts`, which hands over only rows whose file identity is the item's current
+   * one). Explicit score truth where the voice-home reading is established wrong: every note printed in
+   * the row's bars (printed bar numbers, inclusive) on its staff in its voice takes the row's hand, and
+   * `crossStaff` follows that hand against the printed staff. Applied to a **two-staff** score only; a
+   * one-staff score's hand is HD1's declaration. Absent: the voice-home reading everywhere.
+   */
+  verifiedHands?: readonly VerifiedHand[];
   /**
    * Safety valve: a malformed repeat structure can in principle loop forever.
    * The traversal stops and throws past this many steps.
    */
   maxSteps?: number;
+}
+
+/** One verified hand fact as the extractor applies it (HD2): printed bars inclusive, one staff, one voice. */
+export interface VerifiedHand {
+  bars: readonly [number, number];
+  staff: 1 | 2;
+  voice: number;
+  hand: 'R' | 'L';
 }
 
 const DEFAULT_MAX_STEPS = 100_000;
@@ -297,6 +355,17 @@ function parseFingering(note: OsmdNote): number | undefined {
  * staff 1, hand L. A histogram over the whole piece is robust where a
  * per-note rule is not — voice numbering conventions (1–4 upper, 5–8 lower)
  * are a MuseScore/Finale habit, not a MusicXML rule.
+ *
+ * **A compatibility reading, not a solved hand classifier (HD2).** A file that
+ * reuses a voice number across the staves defeats it (*The Crave* bar 40,
+ * *Solace* bars 22, 26, 30, 32: the treble inner line read as the left hand's);
+ * where that is established, a verified hand fact overrides it
+ * (`ExtractOptions.verifiedHands`). The printed-staff rule with local crossings
+ * that would replace it was measured over the whole catalogue and changed 30,662
+ * notes in 325 files, rightly on reused voice numbers and wrongly on single-hand
+ * lines printed across the staves (*Moonlight* I and III, *Clair de Lune*), so it
+ * is held (`docs/prompts/runs/HD2/`), and which hand plays an arbitrary score's
+ * note stays UNKNOWN.
  */
 function voiceHomeStaves(sheet: OsmdLikeSheet, maxSteps: number): Map<number, 1 | 2> {
   const counts = new Map<number, { upper: number; lower: number }>();
@@ -337,23 +406,55 @@ function voiceHomeStaves(sheet: OsmdLikeSheet, maxSteps: number): Map<number, 1 
  */
 export function extractScoreModelFromSheet(
   sheet: OsmdLikeSheet,
-  options: ExtractOptions = {},
+  options: ExtractOptions,
 ): ScoreModel {
   const maxSteps = options.maxSteps ?? DEFAULT_MAX_STEPS;
   const title = sheet.TitleString?.trim() ?? '';
   const homeStaves = voiceHomeStaves(sheet, maxSteps);
   const keyFifths = keyFifthsByMeasure(sheet);
+  const declaration = handDeclarationFor(sheet, options.declaredHand);
+  /** The declared hand every note of a one-staff score takes, or nothing (HD1). */
+  const declaredHand: 'R' | 'L' | undefined =
+    declaration?.outcome === 'applied' ? (declaration.declared === 'left' ? 'L' : 'R') : undefined;
+  /** The verified hand facts that apply: a two-staff score's only (HD2); a one-staff score's hand is HD1's. */
+  const verified = sheet.Staves.length === 2 ? (options.verifiedHands ?? []) : [];
+  /** The verified hand of a note, by its printed bar number, staff and voice, or nothing. */
+  const verifiedHandOf = (sourceMeasureIndex: number, staff: 1 | 2, voice: number): 'R' | 'L' | undefined => {
+    if (verified.length === 0) return undefined;
+    const bar = sheet.SourceMeasures[sourceMeasureIndex]?.MeasureNumber;
+    if (bar === undefined) return undefined;
+    return verified.find((row) => row.staff === staff && row.voice === voice && bar >= row.bars[0] && bar <= row.bars[1])?.hand;
+  };
 
   const steps: ScoreStep[] = [];
   const tempoMap: TempoMapEntry[] = [];
   const timeSigMap: TimeSignatureEntry[] = [];
   const handsPresent = { R: false, L: false };
 
+  // The file's tempo events by printed measure (the reader's measure ordinal is OSMD's source-measure index).
+  const tempoByMeasure = new Map<number, TempoEvent[]>();
+  for (const event of tempoEvents(options.musicXml)) {
+    const here = tempoByMeasure.get(event.measure);
+    if (here) here.push(event);
+    else tempoByMeasure.set(event.measure, [event]);
+  }
+  /**
+   * One tempo at a beat of the unrolled timeline: a later event at the same beat replaces the earlier, and
+   * an entry that changes nothing is not kept, so every entry is a change. Never earlier than the last
+   * entry: the map is in beat order for `beatToMs`.
+   */
+  const placeTempo = (atBeat: number, bpm: number): void => {
+    const last = tempoMap[tempoMap.length - 1];
+    const beat = last ? Math.max(atBeat, last.atBeat) : atBeat;
+    if (last && last.atBeat === beat) tempoMap.pop();
+    if (tempoMap[tempoMap.length - 1]?.bpm !== bpm) tempoMap.push({ atBeat: beat, bpm });
+  };
+
   const it = sheet.MusicPartManager.getIterator();
   let index = 0;
   let measureIndex = -1;
   let previousSourceMeasureIndex = -1;
-  let previousBpm = Number.NaN;
+  let previousInMeasure = 0;
   let previousTimeSig = '';
 
   while (!it.EndReached) {
@@ -387,15 +488,17 @@ export function extractScoreModelFromSheet(
       }
     }
 
-    // Tempo comes from the iterator, not from SourceMeasure.TempoExpressions:
-    // the iterator's bpm already follows the *unrolled* timeline, so a tempo
-    // change inside a repeated section is emitted once per pass, which is what
-    // playback needs. (Expressions carry printed timestamps instead.)
-    const bpm = it.CurrentBpm;
-    if (Number.isFinite(bpm) && bpm > 0 && bpm !== previousBpm) {
-      tempoMap.push({ atBeat: onset, bpm });
-      previousBpm = bpm;
+    // The file's tempo events in this measure, each at the measure's start on the unrolled timeline plus
+    // its own offset, every time the walk enters the measure: a repeat plays a change again where the file
+    // writes it (X3d). The measure's start is this entry's onset less its place in the measure. A bar
+    // repeated on its own is entered again without the printed measure changing: its place goes back.
+    const inMeasure = wholeNotesToBeats(it.CurrentRelativeInMeasureTimestamp?.RealValue ?? 0);
+    if (isMeasureStart || inMeasure < previousInMeasure) {
+      for (const event of tempoByMeasure.get(sourceMeasureIndex) ?? []) {
+        placeTempo(roundBeats(Math.max(0, onset - inMeasure + event.offset)), event.bpm);
+      }
     }
+    previousInMeasure = inMeasure;
 
     const notes: ScoreNote[] = [];
     for (const entry of it.CurrentVisibleVoiceEntries()) {
@@ -409,7 +512,13 @@ export function extractScoreModelFromSheet(
         if (isTieContinuation(note)) continue;
         const staff = staffOf(note);
         const home = homeStaves.get(voice) ?? staff;
-        const hand: 'R' | 'L' = home === 2 ? 'L' : 'R';
+        // Precedence (HD2): a one-staff score's declared hand (HD1: the staff number of a lone staff says
+        // nothing about which hand plays it); else a verified hand fact for this passage of a two-staff
+        // score; else the voice's home staff, the compatibility reading. `crossStaff` follows the hand
+        // the note gets against its printed staff where a fact decides it, and the home staff otherwise.
+        const verifiedHand = declaredHand === undefined ? verifiedHandOf(sourceMeasureIndex, staff, voice) : undefined;
+        const hand: 'R' | 'L' = declaredHand ?? verifiedHand ?? (home === 2 ? 'L' : 'R');
+        const crossStaff = verifiedHand === undefined ? staff !== home : hand !== (staff === 2 ? 'L' : 'R');
         const midi = note.halfTone + OSMD_HALFTONE_TO_MIDI;
         const duration = roundBeats(tieDurationBeats(note));
         const fingering = parseFingering(note);
@@ -430,7 +539,7 @@ export function extractScoreModelFromSheet(
           duration,
           ...(fingering === undefined ? {} : { fingering }),
           ...(isGrace ? { graceNote: true } : {}),
-          ...(staff !== home ? { crossStaff: true } : {}),
+          ...(crossStaff ? { crossStaff: true } : {}),
           ...(tieLength > 1 ? { tieLength } : {}),
           ...(tiedDurations === undefined ? {} : { tiedDurations }),
           ...(tuplet === undefined ? {} : { tuplet }),
@@ -456,8 +565,10 @@ export function extractScoreModelFromSheet(
     index += 1;
   }
 
+  // Nothing stated at the opening: the default until the file's first tempo (kept only where that differs).
   if (tempoMap.length === 0 || (tempoMap[0]?.atBeat ?? 0) > 0) {
     tempoMap.unshift({ atBeat: 0, bpm: options.defaultBpm ?? DEFAULT_BPM });
+    if (tempoMap[1]?.bpm === tempoMap[0]?.bpm) tempoMap.splice(1, 1);
   }
   if (timeSigMap.length === 0) {
     timeSigMap.push({ atMeasure: 0, beats: 4, beatType: 4 });
@@ -474,7 +585,20 @@ export function extractScoreModelFromSheet(
     ...(sheet.SourceMeasures[0]?.ImplicitMeasure === true ? { pickup: true } : {}),
     ...(readKeySignature(sheet) === undefined ? {} : { keySig: readKeySignature(sheet) }),
     handsPresent,
+    ...(declaration === undefined ? {} : { handDeclaration: declaration }),
   });
+}
+
+/**
+ * What a declared hand does to this sheet (HD1): applied to a one-staff score declared one hand; nothing
+ * on a score of more than one staff, whose staves already say whose each note is; a mismatch on a
+ * one-staff score declared both, which cannot hold two hands' notes. Decided by the sheet's staff count,
+ * never by a clef or by which staves sound.
+ */
+function handDeclarationFor(sheet: OsmdLikeSheet, declared: DeclaredHand | undefined): HandDeclaration | undefined {
+  if (declared === undefined) return undefined;
+  if (sheet.Staves.length !== 1) return { declared, outcome: 'not-one-staff' };
+  return { declared, outcome: declared === 'both' ? 'mismatch' : 'applied' };
 }
 
 function slugify(value: string): string | undefined {
@@ -485,10 +609,13 @@ function slugify(value: string): string | undefined {
   return slug.length > 0 ? slug : undefined;
 }
 
-/** Convenience wrapper for an `OpenSheetMusicDisplay` instance. */
+/**
+ * Convenience wrapper for an `OpenSheetMusicDisplay` instance, with the MusicXML it was loaded from
+ * (`options.musicXml`: OSMD keeps no copy of the text, and the tempo map is read from it).
+ */
 export function extractScoreModel(
   osmd: { Sheet?: unknown },
-  options: ExtractOptions = {},
+  options: ExtractOptions,
 ): ScoreModel {
   const sheet = osmd.Sheet as OsmdLikeSheet | undefined;
   if (!sheet?.MusicPartManager) {

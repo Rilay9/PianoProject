@@ -1,0 +1,81 @@
+﻿Copies from the main checkout (read only), robocopy /E /NP /NFL /NDL: the kern and musetrainer datasets, build/cache/convert, the three caches, build/midi-parity. robocopy exit 1 = files copied, 0 = nothing to copy; 8 or more is a failure.
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :       170       170         0         0         0         0
+   Files :      2511      2511         0         0         0         0
+   Bytes :  678.77 m  678.77 m         0         0         0         0
+   Times :   0:00:02   0:00:02                       0:00:00   0:00:00
+
+
+   Speed :           335,096,978 Bytes/sec.
+   Speed :            19,174.402 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 1:06:08 AM
+
+kern exit 1
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        20        20         0         0         0         0
+   Files :       107       107         0         0         0         0
+   Bytes :    2.85 m    2.85 m         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           34,786,627 Bytes/sec.
+   Speed :            1,990.507 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 1:06:08 AM
+
+musetrainer exit 1
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         0         0         0         0
+   Files :      7070      7070         0         0         0         0
+   Bytes :   45.01 m   45.01 m         0         0         0         0
+   Times :   0:00:04   0:00:04                       0:00:00   0:00:00
+
+
+   Speed :           9,934,097 Bytes/sec.
+   Speed :             568.434 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 1:06:13 AM
+
+convert exit 1
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         3         3         0         0         0         0
+   Bytes :   10.40 m   10.40 m         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           1,212,379,333 Bytes/sec.
+   Speed :              69,372.898 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 1:06:13 AM
+
+caches exit 1
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         0         0         0         0
+   Files :        18        18         0         0         0         0
+   Bytes :    1.40 m    1.40 m         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           122,699,750 Bytes/sec.
+   Speed :             7,020.936 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 1:06:13 AM
+
+midi-parity exit 1

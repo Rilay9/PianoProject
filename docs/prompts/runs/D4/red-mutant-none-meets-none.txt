@@ -1,0 +1,43 @@
+mutant none-meets-none: src/curriculum/material.ts
+--- old
+  return knownMaterial(a) && knownMaterial(b) && sameIdentity(a, b);
+--- new
+  return sameIdentity(a, b);
+
+$ npx vitest run tests/unit/contactNovelty.test.ts tests/unit/materialIdentity.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a64cf9b42ff36e1ca/app
+
+ ❯ tests/unit/materialIdentity.test.ts (10 tests | 1 failed) 28ms
+   ❯ equality for contact (2)
+     × none is never equal to anything, itself included: it is no material, and two placeholders are not one 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/materialIdentity.test.ts > equality for contact > none is never equal to anything, itself included: it is no material, and two placeholders are not one
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/materialIdentity.test.ts:85:38
+     83|     const none: Identity = { kind: 'none', why: 'no notation is bundle…
+     84|     expect(knownMaterial(none)).toBe(false);
+     85|     expect(sameMaterial(none, none)).toBe(false);
+       |                                      ^
+     86|     expect(sameMaterial(undefined, undefined)).toBe(false);
+     87|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 20 passed (21)
+   Start at  22:25:22
+   Duration  516ms (transform 69%, import 25%, tests 5%, worker 1%)
+
+
+exit 1

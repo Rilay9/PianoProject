@@ -1,0 +1,359 @@
+mutant same-family-offered: src/curriculum/session.ts
+--- old
+      if (relationship.measured.find((fact) => fact.dimension === 'family')?.differs === false) continue;
+
+--- new
+
+
+$ npx vitest run tests/unit/transferOffer.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a64cf9b42ff36e1ca/app
+
+ ❯ tests/unit/transferOffer.test.ts (18 tests | 1 failed) 38ms
+   ❯ not offered (the adversaries held at the selection layer) (7)
+     × the family that established the skill: a new seed of it is never transfer (adversary 1) 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/transferOffer.test.ts > not offered (the adversaries held at the selection layer) > the family that established the skill: a new seed of it is never transfer (adversary 1)
+AssertionError: expected [ { kind: 'new', minutes: 10, …(3) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "claim": {
++       "contact": {
++         "contact": "unmet",
++         "metById": false,
++       },
++       "kind": "transfer",
++       "relationship": {
++         "declared": {
++           "differs": [
++             "family",
++             "rhythm",
++           ],
++           "from": [
++             "position_shift",
++           ],
++           "notMeasured": [
++             "the thumb passing under rather than the hand lifting",
++           ],
++           "skill": "position-shift",
++         },
++         "differsOn": [
++           "rhythm",
++           "family",
++         ],
++         "measured": [
++           {
++             "candidate": "pentatonic",
++             "differs": false,
++             "dimension": "family",
++             "shownOn": [
++               "pentatonic",
++               "pentatonic",
++             ],
++           },
++           {
++             "candidate": "generated",
++             "differs": false,
++             "dimension": "source",
++             "shownOn": [
++               "generated",
++               "generated",
++             ],
++           },
++           {
++             "candidate": "0",
++             "differs": false,
++             "dimension": "key",
++             "shownOn": [
++               "0",
++               "0",
++             ],
++           },
++           {
++             "candidate": "right",
++             "differs": false,
++             "dimension": "hands",
++             "shownOn": [
++               "right",
++               "right",
++             ],
++           },
++           {
++             "candidate": "none",
++             "differs": false,
++             "dimension": "texture",
++             "shownOn": [
++               "none",
++               "none",
++             ],
++           },
++           {
++             "candidate": "rhythm.eighths, rhythm.shorter-than-quarter",
++             "differs": true,
++             "dimension": "rhythm",
++             "shownOn": [
++               "none",
++               "none",
++             ],
++           },
++         ],
++         "shownOn": [
++           {
++             "itemId": "exercise.pentatonic.c.pentatonic",
++             "material": {
++               "family": "pentatonic",
++               "kind": "generator",
++               "recipe": {
++                 "bars": 4,
++                 "eighths": true,
++                 "fifths": 0,
++                 "hands": "R",
++                 "level": 2,
++                 "skips": true,
++               },
++               "seed": 1,
++               "tempoBpm": 72,
++               "version": 2,
++             },
++           },
++           {
++             "itemId": "exercise.pentatonic.c.pentatonic",
++             "material": {
++               "family": "pentatonic",
++               "kind": "generator",
++               "recipe": {
++                 "bars": 4,
++                 "eighths": true,
++                 "fifths": 0,
++                 "hands": "R",
++                 "level": 2,
++                 "skips": true,
++               },
++               "seed": 2,
++               "tempoBpm": 72,
++               "version": 2,
++             },
++           },
++         ],
++         "skill": "position-shift",
++       },
++       "skill": "position-shift",
++     },
++     "item": {
++       "abrsmGradeApprox": null,
++       "arranger": "PianoPath generator",
++       "composer": null,
++       "concepts": [
++         "blues-scale",
++         "pentatonic",
++         "thumb-under",
++         "scale",
++         "improvisation",
++       ],
++       "demands": [
++         "pitch.ledger",
++         "interval.step",
++         "interval.skip",
++         "rhythm.eighths",
++         "rhythm.shorter-than-quarter",
++         "range.beyond-position",
++       ],
++       "drill": {
++         "generator": {
++           "family": "pentatonic",
++           "seed": null,
++           "version": 1,
++         },
++         "kind": "blues-scale",
++         "params": {
++           "form": "pentatonic",
++           "key": "A",
++         },
++       },
++       "durationSec": null,
++       "file": "scores/generated/exercise.pentatonic.a.pentatonic.mxl",
++       "hands": "right",
++       "id": "exercise.pentatonic.a.pentatonic",
++       "importHint": null,
++       "keySig": "a minor",
++       "level": 2.6,
++       "levelSource": "judged",
++       "measurement": {
++         "bars": 2,
++         "definitions": 3,
++         "detectors": "afebe9f6aa27",
++         "established": [
++           "rhythm.eighths",
++           "rhythm.shorter-than-quarter",
++           "range.beyond-position",
++         ],
++         "located": {
++           "interval.skip": 4,
++           "interval.step": 6,
++           "pitch.ledger": 1,
++           "range.beyond-position": 2,
++           "rhythm.eighths": 11,
++           "rhythm.shorter-than-quarter": 11,
++         },
++         "notes": 11,
++         "status": "measured",
++         "steps": 13,
++       },
++       "media": [],
++       "notation": {
++         "bars": 2,
++         "chordCount": 0,
++         "chords": [],
++         "finalBass": 9,
++         "keys": [
++           {
++             "fifths": 0,
++             "mode": "minor",
++           },
++         ],
++         "staves": 2,
++         "swungMark": false,
++         "times": [
++           "4/4",
++         ],
++       },
++       "provenance": {
++         "facts": {
++           "demands": {
++             "definitions": 3,
++             "detectors": "afebe9f6aa27",
++             "kind": "measured",
++             "via": "app/src/demands/detect.ts",
++           },
++           "hands": {
++             "kind": "authored",
++             "via": "the recipe",
++           },
++           "key": {
++             "kind": "authored",
++             "via": "the recipe",
++           },
++           "level": {
++             "kind": "authored",
++             "via": "judged for this item",
++           },
++           "promise": {
++             "kind": "authored",
++             "value": "drill",
++             "via": "family_contracts.json (the rule matching the recipe)",
++           },
++           "role": {
++             "kind": "authored",
++             "via": "the family contract",
++           },
++           "targetSkills": {
++             "kind": "authored",
++             "via": "the family contract, version 1",
++           },
++           "tempo": {
++             "kind": "authored",
++             "via": "the recipe",
++           },
++           "transferOf": {
++             "kind": "authored",
++             "via": "family_contracts.json (the rule matching the recipe)",
++           },
++         },
++         "generator": {
++           "family": "pentatonic",
++           "name": "tools/content/generate_exercises.py",
++           "seed": null,
++           "version": 1,
++         },
++         "identity": {
++           "family": "pentatonic",
++           "kind": "generator",
++           "recipe": {
++             "form": "pentatonic",
++             "hands": "right",
++             "key": "A",
++           },
++           "seed": null,
++           "tempoBpm": 72,
++           "version": 1,
++         },
++         "review": {
++           "score": null,
++           "teaching": null,
++         },
++         "source": "generated",
++         "transferOf": {
++           "differs": [
++             "family",
++             "rhythm",
++           ],
++           "from": [
++             "position_shift",
++           ],
++           "notMeasured": [
++             "the thumb passing under rather than the hand lifting",
++           ],
++           "skill": "position-shift",
++         },
++       },
++       "role": "transfer",
++       "source": {
++         "checksum": null,
++         "editionNotes": null,
++         "fetchedAt": null,
++         "license": "CC0",
++         "name": "PianoPath generator",
++         "pd_region": "worldwide",
++         "url": null,
++       },
++       "tags": [
++         "generated",
++       ],
++       "targetSkills": [
++         "position-shift",
++       ],
++       "teaching": {
++         "lessonIds": [],
++         "notes": "",
++         "practiceTips": [],
++         "sections": [],
++       },
++       "tempoBpm": 72,
++       "timeSig": "4/4",
++       "title": "A minor pentatonic — one octave, thumb under",
++       "tracks": [
++         "blues-boogie",
++         "rock-metal",
++         "improv-compose",
++         "core",
++       ],
++       "type": "exercise",
++       "variantLabel": null,
++       "variantOf": null,
++     },
++     "kind": "new",
++     "minutes": 10,
++     "reason": "Shifting position: something new, for a skill you have shown — it should feel different",
++   },
++ ]
+
+ ❯ tests/unit/transferOffer.test.ts:247:41
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 17 passed (18)
+   Start at  22:25:23
+   Duration  627ms (transform 67%, import 25%, tests 7%, worker 1%)
+
+
+exit 1

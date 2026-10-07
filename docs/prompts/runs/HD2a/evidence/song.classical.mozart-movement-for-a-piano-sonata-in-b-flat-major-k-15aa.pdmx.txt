@@ -1,0 +1,22 @@
+HD2a evidence: song.classical.mozart-movement-for-a-piano-sonata-in-b-flat-major-k-15aa.pdmx (scores/pdmx/QmdVqUuHxLdEudWTNDqCV5WCyLCkaXML1Z9iNDRhdFwxsx.mxl), identity sha256 4ab3591a8e7ef264a978cc7205789a949d2ff29621f2d803c524bc20b872f3d8
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 45-47 -> R
+  bar 45 (source measure 44) st1 v2: L/x -> R; onsets 4 {'conflict': 4}; second voice(s) [3]; e.g. @88 L [41] + v2 [69]; @88.5 L [41] + v2 [72]
+  bar 45 onset 88 69/st1/v2/L/x:0.5 60/st1/v1/R:0.5 41/st2/v3/L:0.25
+  bar 45 onset 88.25 53/st2/v3/L:0.25
+  bar 45 onset 88.5 72/st1/v2/L/x:0.5 41/st2/v3/L:0.25
+  bar 45 onset 88.75 53/st2/v3/L:0.25
+  bar 45 onset 89 75/st1/v2/L/x:0.5 41/st2/v3/L:0.25
+  bar 45 onset 89.25 53/st2/v3/L:0.25
+  bar 45 onset 89.5 72/st1/v2/L/x:0.5 41/st2/v3/L:0.25
+  bar 45 onset 89.75 53/st2/v3/L:0.25
+  bar 46 (source measure 45) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @90 L [46] + v2 [70]; @91 L [53] + v2 [70]
+  bar 46 onset 90 70/st1/v2/L/x:1 62/st1/v1/R:1 46/st2/v3/L:0.5
+  bar 46 onset 90.5 58/st2/v3/L:0.5
+  bar 46 onset 91 70/st1/v2/L/x:1 62/st1/v1/R:1 53/st2/v3/L:0.5
+  bar 46 onset 91.5 50/st2/v3/L:0.5
+  bar 47 (source measure 46) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @92 L [46] + v2 [70]
+  bar 47 onset 92 70/st1/v2/L/x:1 62/st1/v1/R:1 46/st2/v3/L:1
+

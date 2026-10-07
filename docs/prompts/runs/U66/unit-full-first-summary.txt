@@ -1,0 +1,10 @@
+The first whole-suite run, before the MIDI parity reference was written and build/rung-claims.json copied (both harness artefacts). The full log is not kept: the summary and the failing names only.
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+ FAIL  tests/unit/midiParity.test.ts > the port agrees with the Python converter > has a reference to compare against
+ FAIL  tests/unit/taughtByAncestry.test.ts > the shipped curriculum > the build reads the same ancestry: the rung-claims report’s "untaught here" and the gate read one thing
+ Test Files  3 failed | 319 passed (322)
+      Tests  4 failed | 7423 passed | 1 skipped | 1 todo (7429)
+exit=1

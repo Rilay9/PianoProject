@@ -1,0 +1,170 @@
+SHAPE: PIANO_GRAND_STAFF | parts=2 max_staves=2 meters=4/4 chord-symbols=0 bars=80
+INSTRUMENTS/PARTS: P1:'Grand Piano, Piano':staves=1:prog=0:piano=True; P2:'Grand Piano, Piano':staves=2:prog=0:piano=True
+CID QmcodnT6QU8nyDU29s77ipj1GoRgZCMiuzsLD365sqFnfY
+title: Santo_Santo_Santo_Señor_omnipotente_-_Reginald_Heber | song_name: Holy Holy Holy! Lord God Almighty!
+composer:  | artist: Reginald Heber
+csv: tracks=0-0 bars=80 license=cc-zero
+
+=== part P1 'Grand Piano, Piano' measures=80 ===
+m1 [key fifths=2; time 4/4; clef=G2; tempo=100]  s1v1: A3:q+D4 A3:q+D4 D4:q+F#4 D4:q+F#4
+m2  s1v1: A4:h r:h | s1v2: C#4:q E4:q D4:q+A4 C#4:q+A4
+m3  s1v1: B3:q+B4 C#4:q+B4 D4:q+B4 E4:q+B4
+m4  s1v1: F#4:h+A4 D4:h+F#4
+m5  s1v1: A4:h r:h | s1v2: E4:q r:8 A4:8 F#4:q+A4 E4:q+A4 | s1v3: r:q E4:q r:h
+m6  s1v1: D5:h r:h | s1v2: D4:q E4:q E4:q+C#5 F#4:q+A4
+m7  s1v1: E4:q C#4:q+A4 D4:q.+B4 C#4:8+A4
+m8  s1v1: C#4:w+A4
+m9  s1v1: A3:q+D4 A3:q+D4 D4:q+F#4 D4:q+F#4
+m10  s1v1: A4:h r:h | s1v2: C#4:q E4:q D4:q+A4 C#4:q+A4
+m11  s1v1: B4:h r:h | s1v2: B3:q r:8 B4:8 D4:q+B4 E4:q+B4 | s1v3: r:q C#4:q r:h
+m12  s1v1: F#4:h+A4 D4:h+A4
+m13  s1v1: D4:q+D5 D4:q+D5 D4:q+A4 D4:q+A4
+m14  s1v1: D4:h+B4 D4:q+F#4 C4:q+F#4
+m15  s1v1: B3:q+G4 B3:q+E4 C#4:q.+E4 D4:8
+m16  s1v1: D4:w
+m17  s1v1: A3:q+D4 A3:q+D4 D4:q+F#4 D4:q+F#4
+m18  s1v1: A4:h r:h | s1v2: C#4:q E4:q D4:q+A4 C#4:q+A4
+m19  s1v1: B3:q+B4 C#4:q+B4 D4:q+B4 E4:q+B4
+m20  s1v1: F#4:h+A4 D4:h+F#4
+m21  s1v1: A4:h r:h | s1v2: E4:q r:8 A4:8 F#4:q+A4 E4:q+A4 | s1v3: r:q E4:q r:h
+m22  s1v1: D5:h r:h | s1v2: D4:q E4:q E4:q+C#5 F#4:q+A4
+m23  s1v1: E4:q C#4:q+A4 D4:q.+B4 C#4:8+A4
+m24  s1v1: C#4:w+A4
+m25  s1v1: A3:q+D4 A3:q+D4 D4:q+F#4 D4:q+F#4
+m26  s1v1: A4:h r:h | s1v2: C#4:q E4:q D4:q+A4 C#4:q+A4
+m27  s1v1: B4:h r:h | s1v2: B3:q r:8 B4:8 D4:q+B4 E4:q+B4 | s1v3: r:q C#4:q r:h
+m28  s1v1: F#4:h+A4 D4:h+A4
+m29  s1v1: D4:q+D5 D4:q+D5 D4:q+A4 D4:q+A4
+m30  s1v1: D4:h+B4 D4:q+F#4 C4:q+F#4
+m31  s1v1: B3:q+G4 B3:q+E4 C#4:q.+E4 D4:8
+m32  s1v1: D4:w
+m33  s1v1: A3:q+D4 A3:q+D4 D4:q+F#4 D4:q+F#4
+m34  s1v1: A4:h r:h | s1v2: C#4:q E4:q D4:q+A4 C#4:q+A4
+m35  s1v1: B3:q+B4 C#4:q+B4 D4:q+B4 E4:q+B4
+m36  s1v1: F#4:h+A4 D4:h+F#4
+m37  s1v1: A4:h r:h | s1v2: E4:q r:8 A4:8 F#4:q+A4 E4:q+A4 | s1v3: r:q E4:q r:h
+m38  s1v1: D5:h r:h | s1v2: D4:q E4:q E4:q+C#5 F#4:q+A4
+m39  s1v1: E4:q C#4:q+A4 D4:q.+B4 C#4:8+A4
+m40  s1v1: C#4:w+A4
+m41  s1v1: A3:q+D4 A3:q+D4 D4:q+F#4 D4:q+F#4
+m42  s1v1: A4:h r:h | s1v2: C#4:q E4:q D4:q+A4 C#4:q+A4
+m43  s1v1: B4:h r:h | s1v2: B3:q r:8 B4:8 D4:q+B4 E4:q+B4 | s1v3: r:q C#4:q r:h
+m44  s1v1: F#4:h+A4 D4:h+A4
+m45  s1v1: D4:q+D5 D4:q+D5 D4:q+A4 D4:q+A4
+m46  s1v1: D4:h+B4 D4:q+F#4 C4:q+F#4
+m47  s1v1: B3:q+G4 B3:q+E4 C#4:q.+E4 D4:8
+m48  s1v1: D4:w
+m49  s1v1: A3:q+D4 A3:q+D4 D4:q+F#4 D4:q+F#4
+m50  s1v1: A4:h r:h | s1v2: C#4:q E4:q D4:q+A4 C#4:q+A4
+m51  s1v1: B3:q+B4 C#4:q+B4 D4:q+B4 E4:q+B4
+m52  s1v1: F#4:h+A4 D4:h+F#4
+m53  s1v1: A4:h r:q r:q | s1v2: E4:q r:8 A4:8 F#4:q+A4 E4:q+A4 | s1v3: r:q E4:q r:h
+m54  s1v1: D5:h r:h | s1v2: D4:q E4:q E4:q+C#5 F#4:q+A4
+m55  s1v1: E4:q C#4:q+A4 D4:q.+B4 C#4:8+A4
+m56  s1v1: C#4:w+A4
+m57  s1v1: A3:q+D4 A3:q+D4 D4:q+F#4 D4:q+F#4
+m58  s1v1: A4:h r:h | s1v2: C#4:q E4:q D4:q+A4 C#4:q+A4
+m59  s1v1: B4:h r:h | s1v2: B3:q r:8 B4:8 D4:q+B4 E4:q+B4 | s1v3: r:q C#4:q r:h
+m60  s1v1: F#4:h+A4 D4:h+A4
+m61  s1v1: D4:q+D5 D4:q+D5 D4:q+A4 D4:q+A4
+m62  s1v1: D4:h+B4 D4:q+F#4 C4:q+F#4
+m63  s1v1: B3:q+G4 B3:q+E4 C#4:q.+E4 D4:8
+m64  s1v1: D4:w
+m65  s1v1: A3:q+D4 A3:q+D4 D4:q+F#4 D4:q+F#4
+m66  s1v1: A4:h r:h | s1v2: C#4:q E4:q D4:q+A4 C#4:q+A4
+m67  s1v1: B3:q+B4 C#4:q+B4 D4:q+B4 E4:q+B4
+m68  s1v1: F#4:h+A4 D4:h+F#4
+m69  s1v1: A4:h r:q r:q | s1v2: E4:q r:8 A4:8 F#4:q+A4 E4:q+A4 | s1v3: r:q E4:q r:h
+m70  s1v1: D5:h r:h | s1v2: D4:q E4:q E4:q+C#5 F#4:q+A4
+m71  s1v1: E4:q C#4:q+A4 D4:q.+B4 C#4:8+A4
+m72  s1v1: C#4:w+A4
+m73  s1v1: A3:q+D4 A3:q+D4 D4:q+F#4 D4:q+F#4
+m74  s1v1: A4:h r:h | s1v2: C#4:q E4:q D4:q+A4 C#4:q+A4
+m75  s1v1: B4:h r:h | s1v2: B3:q r:8 B4:8 D4:q+B4 E4:q+B4 | s1v3: r:q C#4:q r:h
+m76  s1v1: F#4:h+A4 D4:h+A4
+m77  s1v1: D4:q+D5 D4:q+D5 D4:q+A4 D4:q+A4
+m78  s1v1: D4:h+B4 D4:q+F#4 C4:q+F#4
+m79  s1v1: B3:q+G4 B3:q+E4 C#4:q.+E4 D4:8
+m80  s1v1: D4:w
+
+=== part P2 'Grand Piano, Piano' measures=80 ===
+m1 [staves=2; key fifths=2; time 4/4; clef1=F4; clef2=F4]  s1v1: F#3:q F#3:q D3:q D3:q | s2v5: D3:q D3:q B2:q B2:q
+m2  s1v1: E3:q G3:q F#3:q A3:q | s2v5: A2:h D3:q D3:q
+m3  s1v1: G3:q A3:q B3:q C#4:q | s2v5: G2:q G2:q G3:q G3:q
+m4  s1v1: D4:q A3:q A3:h | s2v5: D3:h D3:h
+m5  s1v1: A3:q A3:q A3:q A3:q | s2v5: C#3:q C#3:q D3:q C#3:q
+m6  s1v1: F#3:q G#3:q A3:q A3:q | s2v5: B2:h C#3:q D3:q
+m7  s1v1: C#4:q A3:q G#3:q. A3:8 | s2v5: E3:q E3:q E3:q. A2:8
+m8  s1v1: A3:h G3:h | s2v5: A2:w
+m9  s1v1: F#3:q F#3:q D3:q D3:q | s2v5: D3:q D3:q B2:q B2:q
+m10  s1v1: E3:q G3:q F#3:q A3:q | s2v5: A2:h D3:q D3:q
+m11  s1v1: r:q A3:q r:h | s1v2: G3:q r:8 G2:8 B3:q C#4:q | s2v5: G2:h G3:q G3:q
+m12  s1v1: D4:q A3:q F#3:h | s2v5: D3:h D3:h
+m13  s1v1: F#3:q G3:q A3:q C4:q | s2v5: B2:q B2:q F#2:q F#2:q
+m14  s1v1: B3:h A3:q A3:q | s2v5: G2:h D3:q D3:q
+m15  s1v1: G3:q G3:q G3:q. F#3:8 | s2v5: G2:q G2:q A2:q. D3:8
+m16  s1v1: F#3:w | s2v5: D3:w
+m17  s1v1: F#3:q F#3:q D3:q D3:q | s2v5: D3:q D3:q B2:q B2:q
+m18  s1v1: E3:q G3:q F#3:q A3:q | s2v5: A2:h D3:q D3:q
+m19  s1v1: G3:q A3:q B3:q C#4:q | s2v5: G2:q G2:q G3:q G3:q
+m20  s1v1: D4:q A3:q A3:h | s2v5: D3:h D3:h
+m21  s1v1: A3:q A3:q A3:q A3:q | s2v5: C#3:q C#3:q D3:q C#3:q
+m22  s1v1: F#3:q G#3:q A3:q A3:q | s2v5: B2:h C#3:q D3:q
+m23  s1v1: C#4:q A3:q G#3:q. A3:8 | s2v5: E3:q E3:q E3:q. A2:8
+m24  s1v1: A3:h G3:h | s2v5: A2:w
+m25  s1v1: F#3:q F#3:q D3:q D3:q | s2v5: D3:q D3:q B2:q B2:q
+m26  s1v1: E3:q G3:q F#3:q A3:q | s2v5: A2:h D3:q D3:q
+m27  s1v1: r:q A3:q r:h | s1v2: G3:q r:8 G2:8 B3:q C#4:q | s2v5: G2:h G3:q G3:q
+m28  s1v1: D4:q A3:q F#3:h | s2v5: D3:h D3:h
+m29  s1v1: F#3:q G3:q A3:q C4:q | s2v5: B2:q B2:q F#2:q F#2:q
+m30  s1v1: B3:h A3:q A3:q | s2v5: G2:h D3:q D3:q
+m31  s1v1: G3:q G3:q G3:q. F#3:8 | s2v5: G2:q G2:q A2:q. D3:8
+m32  s1v1: F#3:w | s2v5: D3:w
+m33  s1v1: F#3:q F#3:q D3:q D3:q | s2v5: D3:q D3:q B2:q B2:q
+m34  s1v1: E3:q G3:q F#3:q A3:q | s2v5: A2:h D3:q D3:q
+m35  s1v1: G3:q A3:q B3:q C#4:q | s2v5: G2:q G2:q G3:q G3:q
+m36  s1v1: D4:q A3:q A3:h | s2v5: D3:h D3:h
+m37  s1v1: A3:q A3:q A3:q A3:q | s2v5: C#3:q C#3:q D3:q C#3:q
+m38  s1v1: F#3:q G#3:q A3:q A3:q | s2v5: B2:h C#3:q D3:q
+m39  s1v1: C#4:q A3:q G#3:q. A3:8 | s2v5: E3:q E3:q E3:q. A2:8
+m40  s1v1: A3:h G3:h | s2v5: A2:w
+m41  s1v1: F#3:q F#3:q D3:q D3:q | s2v5: D3:q D3:q B2:q B2:q
+m42  s1v1: E3:q G3:q F#3:q A3:q | s2v5: A2:h D3:q D3:q
+m43  s1v1: r:q A3:q r:h | s1v2: G3:q r:8 G2:8 B3:q C#4:q | s2v5: G2:h G3:q G3:q
+m44  s1v1: D4:q A3:q F#3:h | s2v5: D3:h D3:h
+m45  s1v1: F#3:q G3:q A3:q C4:q | s2v5: B2:q B2:q F#2:q F#2:q
+m46  s1v1: B3:h A3:q A3:q | s2v5: G2:h D3:q D3:q
+m47  s1v1: G3:q G3:q G3:q. F#3:8 | s2v5: G2:q G2:q A2:q. D3:8
+m48  s1v1: F#3:w | s2v5: D3:w
+m49  s1v1: F#3:q F#3:q D3:q D3:q | s2v5: D3:q D3:q B2:q B2:q
+m50  s1v1: E3:q G3:q F#3:q A3:q | s2v5: A2:h D3:q D3:q
+m51  s1v1: G3:q A3:q B3:q C#4:q | s2v5: G2:q G2:q G3:q G3:q
+m52  s1v1: D4:q A3:q A3:h | s2v5: D3:h D3:h
+m53  s1v1: A3:q A3:q A3:q A3:q | s2v5: C#3:q C#3:q D3:q C#3:q
+m54  s1v1: F#3:q G#3:q A3:q A3:q | s2v5: B2:h C#3:q D3:q
+m55  s1v1: C#4:q A3:q G#3:q. A3:8 | s2v5: E3:q E3:q E3:q. A2:8
+m56  s1v1: A3:h G3:h | s2v5: A2:w
+m57  s1v1: F#3:q F#3:q D3:q D3:q | s2v5: D3:q D3:q B2:q B2:q
+m58  s1v1: E3:q G3:q F#3:q A3:q | s2v5: A2:h D3:q D3:q
+m59  s1v1: r:q A3:q r:h | s1v2: G3:q r:8 G2:8 B3:q C#4:q | s2v5: G2:h G3:q G3:q
+m60  s1v1: D4:q A3:q F#3:h | s2v5: D3:h D3:h
+m61  s1v1: F#3:q G3:q A3:q C4:q | s2v5: B2:q B2:q F#2:q F#2:q
+m62  s1v1: B3:h A3:q A3:q | s2v5: G2:h D3:q D3:q
+m63  s1v1: G3:q G3:q G3:q. F#3:8 | s2v5: G2:q G2:q A2:q. D3:8
+m64  s1v1: F#3:w | s2v5: D3:w
+m65  s1v1: F#3:q F#3:q D3:q D3:q | s2v5: D3:q D3:q B2:q B2:q
+m66  s1v1: E3:q G3:q F#3:q A3:q | s2v5: A2:h D3:q D3:q
+m67  s1v1: G3:q A3:q B3:q C#4:q | s2v5: G2:q G2:q G3:q G3:q
+m68  s1v1: D4:q A3:q A3:h | s2v5: D3:h D3:h
+m69  s1v1: A3:q A3:q A3:q A3:q | s2v5: C#3:q C#3:q D3:q C#3:q
+m70  s1v1: F#3:q G#3:q A3:q A3:q | s2v5: B2:h C#3:q D3:q
+m71  s1v1: C#4:q A3:q G#3:q. A3:8 | s2v5: E3:q E3:q E3:q. A2:8
+m72  s1v1: A3:h G3:h | s2v5: A2:w
+m73  s1v1: F#3:q F#3:q D3:q D3:q | s2v5: D3:q D3:q B2:q B2:q
+m74  s1v1: E3:q G3:q F#3:q A3:q | s2v5: A2:h D3:q D3:q
+m75  s1v1: r:q A3:q r:h | s1v2: G3:q r:8 G2:8 B3:q C#4:q | s2v5: G2:h G3:q G3:q
+m76  s1v1: D4:q A3:q F#3:h | s2v5: D3:h D3:h
+m77  s1v1: F#3:q G3:q A3:q C4:q | s2v5: B2:q B2:q F#2:q F#2:q
+m78  s1v1: B3:h A3:q A3:q | s2v5: G2:h D3:q D3:q
+m79  s1v1: G3:q G3:q G3:q. F#3:8 | s2v5: G2:q G2:q A2:q. D3:8
+m80  s1v1: F#3:w | s2v5: D3:w

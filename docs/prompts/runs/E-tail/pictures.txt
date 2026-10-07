@@ -1,0 +1,16 @@
+[WebServer] (node:74012) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:64560) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:64772) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\zz-e-tail-pictures.spec.ts:22:5 › E-tail pictures › the Score screen at 342 × 740: i-got-rhythm-cut (2.9s)
+  ok 2 tests\e2e\zz-e-tail-pictures.spec.ts:22:5 › E-tail pictures › the Score screen at 342 × 740: i-got-rhythm-parent (3.3s)
+  ok 3 tests\e2e\zz-e-tail-pictures.spec.ts:22:5 › E-tail pictures › the Score screen at 342 × 740: hark-cut (2.9s)
+  ok 4 tests\e2e\zz-e-tail-pictures.spec.ts:22:5 › E-tail pictures › the Score screen at 342 × 740: minuet-cut (3.0s)
+
+  4 passed (13.9s)
+exit 0

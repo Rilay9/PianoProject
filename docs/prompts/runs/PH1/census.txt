@@ -1,0 +1,261 @@
+# PH1 census: positioned harmony, read by the new reader
+
+Corpus: 2280 distinct MusicXML contents (content/scores, the built bundle, the test fixtures, the PDMX quarry dumps; corpus.ts), 519 with a chord symbol the reader names (quarry-only: 56, read for the music21 witness, not counted below). Read through toMusicXml, readHarmony and chartSegments (one bar per source measure, keyed by the source-measure ordinal, not the written number); census.table.ts.
+
+## Source corpus (content/scores/)
+files with a chord symbol the reader names: 113; symbols: 5958; chart bars: 4109
+bars with two or more written events (split bars): 967 in 93 files
+  of which every event restates one chord (kept, classified): 5 bars; restatement events (a written event equal to the harmony just before it in its bar): 16
+bars with three or more written events: 194 in 44 files; files with a bar of six or more: 1 (most in one bar: 6)
+late first symbols (a bar opening on a carried segment before its first written symbol): 165 bars in 61 files
+symbols off a quarter-note beat: 382 in 44 files
+exact duplicates at one offset merged: 1382 in 30 files; the duplicate stood on: another staff 1381; the same staff 1
+different harmonies at one offset (conflicts, listed below): 31 in 12 files; from: one measure 31
+positions outside the bar (before 0, or at or after its length; listed below): 2 in 1 files
+whole-bar carries whose harmony differs from today's chartBars carry (a bar after a split bar now carries the last chord, not the first): 41 in 18 files
+bar statuses (harmony part, every measure): full 4062; pickup 22; mismatch 20; incomplete 5
+  incomplete and mismatched bars by kind: pickup: short first bar, no implicit (notated length kept) 22; mismatch: short last bar (metre length) 8; mismatch: overfull (notated length kept) 6; mismatch: short inside (metre length) 6; explicit pickup, implicit="yes" (first bar) 4; explicit incomplete, implicit="yes" (inside) 1
+bar numbering of the harmony part: 1..N 101; 0..N-1 (pickup numbered 0) 9; repeated numbers 2; suffixed numbers (e.g. 7X1; the legacy chartBars folds it onto bar 7, the source-keyed bars do not) 1
+bars drawn past the last source measure by chartSegments: 0 (one bar per source measure); symbols whose source measure the harmony part lacks, in no bar: 0
+files where today's chartBars count (ChordChartScreen's max of the distinct measure numbers and the symbol count; the screen, unchanged) exceeds the source measures: 69, drawing 2209 bars past the last measure (recorded, not PH1's)
+files with chord symbols in more than one part: 1; files with more than one part: 1
+metres (files whose harmony part writes each; a file can write several): 4/4 85; 3/4 16; 6/8 6; 2/4 4; 2/2 2; 5/4 1
+files not in 4/4 alone: 29
+
+## Bundle (built app/public/content/scores/)
+files with a chord symbol the reader names: 459; symbols: 7757; chart bars: 5881
+bars with two or more written events (split bars): 1055 in 122 files
+  of which every event restates one chord (kept, classified): 5 bars; restatement events (a written event equal to the harmony just before it in its bar): 16
+bars with three or more written events: 194 in 44 files; files with a bar of six or more: 1 (most in one bar: 6)
+late first symbols (a bar opening on a carried segment before its first written symbol): 165 bars in 61 files
+symbols off a quarter-note beat: 382 in 44 files
+exact duplicates at one offset merged: 1414 in 31 files; the duplicate stood on: another staff 1413; the same staff 1
+different harmonies at one offset (conflicts, listed below): 31 in 12 files; from: one measure 31
+positions outside the bar (before 0, or at or after its length; listed below): 2 in 1 files
+whole-bar carries whose harmony differs from today's chartBars carry (a bar after a split bar now carries the last chord, not the first): 41 in 18 files
+bar statuses (harmony part, every measure): full 5828; pickup 28; mismatch 20; incomplete 5
+  incomplete and mismatched bars by kind: pickup: short first bar, no implicit (notated length kept) 28; mismatch: short last bar (metre length) 8; mismatch: overfull (notated length kept) 6; mismatch: short inside (metre length) 6; explicit pickup, implicit="yes" (first bar) 4; explicit incomplete, implicit="yes" (inside) 1
+bar numbering of the harmony part: 1..N 441; 0..N-1 (pickup numbered 0) 15; repeated numbers 2; suffixed numbers (e.g. 7X1; the legacy chartBars folds it onto bar 7, the source-keyed bars do not) 1
+bars drawn past the last source measure by chartSegments: 0 (one bar per source measure); symbols whose source measure the harmony part lacks, in no bar: 0
+files where today's chartBars count (ChordChartScreen's max of the distinct measure numbers and the symbol count; the screen, unchanged) exceeds the source measures: 99, drawing 2323 bars past the last measure (recorded, not PH1's)
+files with chord symbols in more than one part: 0; files with more than one part: 0
+metres (files whose harmony part writes each; a file can write several): 4/4 415; 3/4 21; 2/4 12; 6/8 8; 2/2 2; 12/8 1; 5/4 1
+files not in 4/4 alone: 45
+
+## The two A7b.1 charts
+QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6: 24 symbols, 1 split bars, outside 0, conflicts 0, merged 0, statuses {"full":32}, numbering 1..N, metres 4/4
+QmemwmomPM2tq51u1sTFEAPqdzPkwrJkuKCsMThnKqpvFW: 24 symbols, 1 split bars, outside 0, conflicts 0, merged 0, statuses {"full":32}, numbering 1..N, metres 4/4
+
+## Files with chord symbols in more than one part
+content/imported/musetrainer/scores/The_Entertainer_-_Scott_Joplin.mxl: parts 0,1 of 2
+quarry/K-metal/fear-of-the-dark-QmXFHNzdRue8ptGgsQgBvoFiseKUSmik3FNZpV5w15fAtv.musicxml: parts 0,5,13 of 17
+
+## Every conflict (different harmonies at one offset), by file
+content/pdmx/QmaqesMCv9LuRp1f68fzscAPp2PLgdyjRwoLn2soprLEW3.mxl = bundle/pdmx/QmaqesMCv9LuRp1f68fzscAPp2PLgdyjRwoLn2soprLEW3.mxl (harmony parts 0 of 1)
+  bar 24 @0: E♭ | A♭7 (one measure)
+content/pdmx/QmdhSAQ416wSsmVmRDFFhsib2QNvAFkHUSYmMHFxGBjgz1.mxl = bundle/pdmx/QmdhSAQ416wSsmVmRDFFhsib2QNvAFkHUSYmMHFxGBjgz1.mxl (harmony parts 0 of 1)
+  bar 6 @0: D+ | Gm (one measure)
+content/pdmx/QmdiT4dpXkr7nZiSGAQPKGBP1KmsqvQTQ6tvsiNtzqaAbb.mxl = bundle/pdmx/QmdiT4dpXkr7nZiSGAQPKGBP1KmsqvQTQ6tvsiNtzqaAbb.mxl (harmony parts 0 of 1)
+  bar 6 @0: Dm | A7 (one measure)
+content/pdmx/QmeZfusZHg4rm2bm4HKxUxF4oML58ivgwis6fR7t6xLG9N.mxl = bundle/pdmx/QmeZfusZHg4rm2bm4HKxUxF4oML58ivgwis6fR7t6xLG9N.mxl (harmony parts 0 of 1)
+  bar 7 @0: Fdim | F (one measure)
+  bar 15 @0: F | C (one measure)
+content/pdmx/Qmf6z3Xw9KtGD5eLovubwUr6PJwEpy2hraHLKwV8injib1.mxl = bundle/pdmx/Qmf6z3Xw9KtGD5eLovubwUr6PJwEpy2hraHLKwV8injib1.mxl (harmony parts 0 of 1)
+  bar 39 @0: E♭ | A♭7 (one measure)
+content/pdmx/QmPwTjLQCR8fxN4eFaKywCUbYwmmwu29FizMECRdLYzDmQ.mxl = bundle/pdmx/QmPwTjLQCR8fxN4eFaKywCUbYwmmwu29FizMECRdLYzDmQ.mxl (harmony parts 0 of 1)
+  bar 47 @0: E♭7 | B♭ (one measure)
+content/pdmx/QmQjvJNRnH4txqUT4ta7FpCqZfeEkquYaoFqXpdM13DWPq.mxl = bundle/pdmx/QmQjvJNRnH4txqUT4ta7FpCqZfeEkquYaoFqXpdM13DWPq.mxl (harmony parts 0 of 1)
+  bar 4 @0: A♭7 | D♭ | A♭ | D♭m (one measure)
+  bar 36 @0: A♭ | A♭7 | D♭ | D♭m (one measure)
+  bar 52 @0: A♭ | A♭7 | D♭ | D♭m (one measure)
+  bar 55 @0: A♭ | A♭7 | D♭ | D♭m (one measure)
+content/pdmx/QmWGjRhu5UsAL8TbmdX8RfLGR2yBicWMaLGm83DePAvvnn.mxl = bundle/pdmx/QmWGjRhu5UsAL8TbmdX8RfLGR2yBicWMaLGm83DePAvvnn.mxl (harmony parts 0 of 1)
+  bar 36 @0: B7 | C7 | D♭7 (one measure)
+  bar 52 @0: D♭7 | C7 | B7 (one measure)
+content/pdmx/QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.mxl = bundle/pdmx/QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.mxl (harmony parts 0 of 1)
+  bar 20 @0: E♭ | Gm (one measure)
+  bar 20 @3: A♭ | A (one measure)
+  bar 36 @0: E♭ | Gm (one measure)
+  bar 36 @3: A♭ | A (one measure)
+content/pdmx/QmWznLxDTLLNUC3UT26G6Mt3pQAfUuVh2Wzp6kroNnZ2eN.mxl = bundle/pdmx/QmWznLxDTLLNUC3UT26G6Mt3pQAfUuVh2Wzp6kroNnZ2eN.mxl (harmony parts 0 of 1)
+  bar 47 @0: B♭ | D7 (one measure)
+content/pdmx/QmYWbAbpvFJDspyT7JcKwGrudQkp7rUXUPYuz1z9UbZ8rp.mxl = bundle/pdmx/QmYWbAbpvFJDspyT7JcKwGrudQkp7rUXUPYuz1z9UbZ8rp.mxl (harmony parts 0 of 1)
+  bar 17 @2: E7 | E♭7 (one measure)
+  bar 27 @2: E7 | E♭7 (one measure)
+content/pdmx/QmZrZjENQBgpUkF1MyN6reMU57uyX5A3fCDuSVGqznw8md.mxl = bundle/pdmx/QmZrZjENQBgpUkF1MyN6reMU57uyX5A3fCDuSVGqznw8md.mxl (harmony parts 0 of 1)
+  bar 2 @0: F | E+ (one measure)
+  bar 4 @0: F♯dim | C7/G (one measure)
+  bar 5 @1.5: B♭ | F/A (one measure)
+  bar 7 @1.5: B♭ | F/A (one measure)
+  bar 11 @0: C/E | D♯dim (one measure)
+  bar 12 @0: C/G | G+ (one measure)
+  bar 17 @0: C | Dm7 (one measure)
+  bar 17 @1.5: Dm7 | C/E (one measure)
+  bar 18 @0: C/E | F (one measure)
+  bar 21 @0: F | B♭/F (one measure)
+  bar 23 @0: F | B♭/F (one measure)
+quarry/K-metal/fear-of-the-dark-QmXFHNzdRue8ptGgsQgBvoFiseKUSmik3FNZpV5w15fAtv.musicxml (harmony parts 0,5,13 of 17)
+  bar 100 @0: G | B♭ (one measure)
+  bar 100 @2: A | C (one measure)
+  bar 101 @0: Bm | Dm (one measure)
+  bar 104 @0: G | B♭ (one measure)
+  bar 104 @2: A | C (one measure)
+  bar 106 @0: Gm | Fm (one measure)
+  bar 108 @0: E | D (one measure)
+  bar 108 @2: F♯ | E (one measure)
+  bar 109 @0: Gm | F♯m (one measure)
+  bar 112 @0: E | D (one measure)
+  bar 112 @2: F♯ | E (one measure)
+  bar 113 @0: Gm | F♯m (one measure)
+
+## Every position outside its bar, by file
+content/pdmx/QmWrMZiUQFGr7ntjiLXRnbyTb6DP7j4BbRrANntqNC4T5o.mxl = bundle/pdmx/QmWrMZiUQFGr7ntjiLXRnbyTb6DP7j4BbRrANntqNC4T5o.mxl
+  bar 6 @-1.002083 (bar length 4): A♭7
+  bar 14 @-1.002083 (bar length 4): B♭7
+quarry/B-jazz/autumn-leaves-QmR8ycCSt3M7NwcgPCqgZ6woPFg7YCbiyoGR79VFM3zh7v.musicxml
+  bar 28 @4 (bar length 4): C9
+quarry/E-latin/tico-tico-QmWbvFZYw6cR7ytP7V2SyZm2u6VMGCD31cBnNuWwMoqFLw.musicxml
+  bar 1 @1.5 (bar length 1.5): A
+
+## Bars of six or more written events, by file
+content/pdmx/QmZrZjENQBgpUkF1MyN6reMU57uyX5A3fCDuSVGqznw8md.mxl = bundle/pdmx/QmZrZjENQBgpUkF1MyN6reMU57uyX5A3fCDuSVGqznw8md.mxl
+  bar 1: 6 events: F E+ F F/C F/D F/E
+  bar 19: 6 events: C7/G F♯dim Fm C/E D♯dim Dm7
+  bar 20: 6 events: C C7 F/C C7 F/C C7
+  bar 22: 6 events: F C7 F/C C7 F/C C7
+  bar 24: 6 events: F/C C7 F/C C7 F/C C7
+  bar 28: 6 events: F C7 F C7 F C7
+quarry/K-metal/hallowed-be-thy-name-QmVEitoYcGGs3WPRCkTdygEEtgdytbP7iSDuAwkAipg9wi.musicxml
+  bar 139: 7 events: E5 D5 E5 G5 E5 D5 E5
+  bar 142: 7 events: E5 D5 E5 G5 E5 D5 E5
+  bar 145: 7 events: E5 D5 E5 G5 E5 D5 E5
+
+## Pickups without implicit, and mismatched bars, by file
+bundle/authored/song.folk.greensleeves.68.mxl
+  ordinal 0 (number 0): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+bundle/authored/song.folk.greensleeves.chords.mxl
+  ordinal 0 (number 0): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+bundle/authored/song.folk.greensleeves.simple.mxl
+  ordinal 0 (number 0): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+bundle/authored/song.folk.greensleeves.waltz.mxl
+  ordinal 0 (number 0): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+bundle/authored/song.folk.happy-birthday.simple.mxl
+  ordinal 0 (number 0): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+bundle/authored/song.folk.when-the-saints.f.mxl
+  ordinal 0 (number 0): walked 3, nominal 4: pickup: short first bar, no implicit (notated length kept)
+bundle/imported/song.folk.bella-ciao.mxl
+  ordinal 0 (number 1): walked 2, nominal 4: pickup: short first bar, no implicit (notated length kept)
+content/imported/musetrainer/scores/Bella_Ciao.mxl
+  ordinal 0 (number 1): walked 2, nominal 4: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmaNWxvJWuwq5M93MVdMDPfEz9csGDQXSzrjKcqh6hMWdJ.mxl = bundle/pdmx/QmaNWxvJWuwq5M93MVdMDPfEz9csGDQXSzrjKcqh6hMWdJ.mxl
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmapX33TknezCSodheCC3At55Bm3AaWTWfznzJZWVycnLr.mxl = bundle/pdmx/QmapX33TknezCSodheCC3At55Bm3AaWTWfznzJZWVycnLr.mxl
+  ordinal 0 (number 0): walked 4, nominal 3: mismatch: overfull (notated length kept)
+content/pdmx/QmaqesMCv9LuRp1f68fzscAPp2PLgdyjRwoLn2soprLEW3.mxl = bundle/pdmx/QmaqesMCv9LuRp1f68fzscAPp2PLgdyjRwoLn2soprLEW3.mxl
+  ordinal 0 (number 1): walked 1.5, nominal 4: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmatNip68G4V2DZB3tpe3L8L8jqhwNxA1yYSDGw5XWR9fT.mxl = bundle/pdmx/QmatNip68G4V2DZB3tpe3L8L8jqhwNxA1yYSDGw5XWR9fT.mxl
+  ordinal 0 (number 1): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+  ordinal 8 (number 9): walked 2, nominal 3: mismatch: short last bar (metre length)
+content/pdmx/QmbH7PjeJoE4sFYy6AmuaWooZinqkEmdmM7CV1Fk8FDrQb.mxl = bundle/pdmx/QmbH7PjeJoE4sFYy6AmuaWooZinqkEmdmM7CV1Fk8FDrQb.mxl
+  ordinal 0 (number 1): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+  ordinal 16 (number 17): walked 2, nominal 3: mismatch: short inside (metre length)
+  ordinal 17 (number 18): walked 1, nominal 3: mismatch: short inside (metre length)
+  ordinal 25 (number 26): walked 2, nominal 3: mismatch: short last bar (metre length)
+content/pdmx/QmdoUTQsV4naWASs8WePirMPDNcRhVnoHKMTQQAyjdW2RU.mxl = bundle/pdmx/QmdoUTQsV4naWASs8WePirMPDNcRhVnoHKMTQQAyjdW2RU.mxl
+  ordinal 0 (number 1): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+  ordinal 8 (number 9): walked 2, nominal 3: mismatch: short inside (metre length)
+  ordinal 16 (number 17): walked 2, nominal 3: mismatch: short last bar (metre length)
+content/pdmx/QmejeAvp7mJcY262v7q7B9VwugC2xJh8jJA2rvj2tbcGHX.mxl = bundle/pdmx/QmejeAvp7mJcY262v7q7B9VwugC2xJh8jJA2rvj2tbcGHX.mxl
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmNhQfHNaHK6EM868G4CUsY5pybjXLszDP3dNn4TzcS5xh.mxl = bundle/pdmx/QmNhQfHNaHK6EM868G4CUsY5pybjXLszDP3dNn4TzcS5xh.mxl
+  ordinal 24 (number 25): walked 0.5, nominal 4: mismatch: short inside (metre length)
+content/pdmx/QmPW1rJCPXC3tNyBWk5o7bqjNVQHUomcaXLty95dCeYh69.mxl = bundle/pdmx/QmPW1rJCPXC3tNyBWk5o7bqjNVQHUomcaXLty95dCeYh69.mxl
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmQFWNx69mfxjRXLGudBLfb9zQptf282aNvqTAPvuKfR6s.mxl = bundle/pdmx/QmQFWNx69mfxjRXLGudBLfb9zQptf282aNvqTAPvuKfR6s.mxl
+  ordinal 0 (number 1): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmQjvJNRnH4txqUT4ta7FpCqZfeEkquYaoFqXpdM13DWPq.mxl = bundle/pdmx/QmQjvJNRnH4txqUT4ta7FpCqZfeEkquYaoFqXpdM13DWPq.mxl
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmR712RQwPDHCCiajMSiK5yUrD5vQSieBC7CnkLt8ATjyj.mxl = bundle/pdmx/QmR712RQwPDHCCiajMSiK5yUrD5vQSieBC7CnkLt8ATjyj.mxl
+  ordinal 0 (number 0): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmREHZRvZn75CCS2D1EHnmXg8cL85WX2CcdtNqHeE914cM.mxl = bundle/pdmx/QmREHZRvZn75CCS2D1EHnmXg8cL85WX2CcdtNqHeE914cM.mxl
+  ordinal 0 (number 0): walked 0.5, nominal 2: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmStQQYDfkCHKZCuRufd2KBh9ssgqdaxN8F5rpVjkU5kLU.mxl = bundle/pdmx/QmStQQYDfkCHKZCuRufd2KBh9ssgqdaxN8F5rpVjkU5kLU.mxl
+  ordinal 0 (number 1): walked 0.5, nominal 3: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmTZhLYDNvTcDy8Gekzw9yXEZzq1ARS1J5XX73nssC472n.mxl = bundle/pdmx/QmTZhLYDNvTcDy8Gekzw9yXEZzq1ARS1J5XX73nssC472n.mxl
+  ordinal 0 (number 1): walked 1.5, nominal 4: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmUx8rFCXn5az3JyawBnRrViiXQGipktKFbj5w8r8NcWaN.mxl = bundle/pdmx/QmUx8rFCXn5az3JyawBnRrViiXQGipktKFbj5w8r8NcWaN.mxl
+  ordinal 0 (number 1): walked 2, nominal 4: pickup: short first bar, no implicit (notated length kept)
+  ordinal 8 (number 9): walked 2, nominal 4: mismatch: short last bar (metre length)
+content/pdmx/QmVK5kNzsxHWu5ffkKcjejk4ySL1uAHXLcarBsuxTpagRR.mxl = bundle/pdmx/QmVK5kNzsxHWu5ffkKcjejk4ySL1uAHXLcarBsuxTpagRR.mxl
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+  ordinal 9 (number 10): walked 3, nominal 4: mismatch: short last bar (metre length)
+content/pdmx/QmVv1x1xhfTcd8EP8LLxZzNgY7qvLNH9BzDwQEvordcrfP.mxl = bundle/pdmx/QmVv1x1xhfTcd8EP8LLxZzNgY7qvLNH9BzDwQEvordcrfP.mxl
+  ordinal 0 (number 0): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmWb1M68oQe5XE1eQpa1x5tGXM9cFvFPs9VxjDCoSsPQxS.mxl = bundle/pdmx/QmWb1M68oQe5XE1eQpa1x5tGXM9cFvFPs9VxjDCoSsPQxS.mxl
+  ordinal 30 (number 31): walked 5, nominal 4: mismatch: overfull (notated length kept)
+content/pdmx/QmWxata9BPTideb9X4qXAKNLXrjgqnDy6dfZSiJ5yg4GKK.mxl = bundle/pdmx/QmWxata9BPTideb9X4qXAKNLXrjgqnDy6dfZSiJ5yg4GKK.mxl
+  ordinal 0 (number 1): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+  ordinal 28 (number 29): walked 6, nominal 3: mismatch: overfull (notated length kept)
+  ordinal 31 (number 32): walked 2, nominal 3: mismatch: short last bar (metre length)
+content/pdmx/QmY2jA7QPcADe3K5wBMjf43RZcmKyMinjLgT1V7o9WkGWg.mxl = bundle/pdmx/QmY2jA7QPcADe3K5wBMjf43RZcmKyMinjLgT1V7o9WkGWg.mxl
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+  ordinal 19 (number 20): walked 3, nominal 4: mismatch: short last bar (metre length)
+content/pdmx/QmYjVpijybWSCAsmbk3kAfY6YeGAGviH3VPts8M9siKjsq.mxl = bundle/pdmx/QmYjVpijybWSCAsmbk3kAfY6YeGAGviH3VPts8M9siKjsq.mxl
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmYkyaLXkj6ySi7rDW7agzH31Y8Yd4RwT25nqo1GgdKzpo.mxl = bundle/pdmx/QmYkyaLXkj6ySi7rDW7agzH31Y8Yd4RwT25nqo1GgdKzpo.mxl
+  ordinal 0 (number 1): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+  ordinal 16 (number 17): walked 2, nominal 3: mismatch: short last bar (metre length)
+content/pdmx/QmYWbAbpvFJDspyT7JcKwGrudQkp7rUXUPYuz1z9UbZ8rp.mxl = bundle/pdmx/QmYWbAbpvFJDspyT7JcKwGrudQkp7rUXUPYuz1z9UbZ8rp.mxl
+  ordinal 0 (number 1): walked 2, nominal 4: pickup: short first bar, no implicit (notated length kept)
+content/pdmx/QmZ71TE67XH7Mot39E8efbNmqK4yvNron44ufpN3Aj1oy1.mxl = bundle/pdmx/QmZ71TE67XH7Mot39E8efbNmqK4yvNron44ufpN3Aj1oy1.mxl
+  ordinal 22 (number 23): walked 6.5, nominal 4: mismatch: overfull (notated length kept)
+  ordinal 23 (number 24): walked 6, nominal 4: mismatch: overfull (notated length kept)
+content/pdmx/QmZ8ocPiXcPPmiXfsHKsygropXKWUhNUeLfUMJLtmdkx3Q.mxl = bundle/pdmx/QmZ8ocPiXcPPmiXfsHKsygropXKWUhNUeLfUMJLtmdkx3Q.mxl
+  ordinal 8 (number 9): walked 4.5, nominal 4: mismatch: overfull (notated length kept)
+content/pdmx/QmZkPRC2P6LWrykPxdQHAoriDBFEtD7aqkHKcvA1eYhs7f.mxl = bundle/pdmx/QmZkPRC2P6LWrykPxdQHAoriDBFEtD7aqkHKcvA1eYhs7f.mxl
+  ordinal 7 (number 8): walked 2.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 8 (number 9): walked 1.5, nominal 4: mismatch: short inside (metre length)
+quarry/B-jazz/autumn-leaves-QmR8ycCSt3M7NwcgPCqgZ6woPFg7YCbiyoGR79VFM3zh7v.musicxml
+  ordinal 0 (number 1): walked 3, nominal 4: pickup: short first bar, no implicit (notated length kept)
+  ordinal 11 (number 12): walked 3.875, nominal 4: mismatch: short inside (metre length)
+  ordinal 17 (number 18): walked 3.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 20 (number 21): walked 3.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 23 (number 24): walked 3.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 29 (number 30): walked 3.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 34 (number 35): walked 3.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 36 (number 37): walked 3.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 37 (number 38): walked 3.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 39 (number 40): walked 3.5, nominal 4: mismatch: short inside (metre length)
+quarry/B-jazz/autumn-leaves-QmYjsj12FbAhMvLKL2fRdok4XLzGrY7MFFPQLP1Gtj4w4i.musicxml
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+  ordinal 8 (number 9): walked 3, nominal 4: mismatch: short inside (metre length)
+  ordinal 9 (number 10): walked 1, nominal 4: mismatch: short inside (metre length)
+  ordinal 17 (number 18): walked 3, nominal 4: mismatch: short last bar (metre length)
+quarry/C-jam/saint-james-infirmary-QmPTYpb73P5ZJzXgwzg1sJAcAUxCosMCjnjRQxZk7d398y.musicxml
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+  ordinal 8 (number 9): walked 3, nominal 4: mismatch: short last bar (metre length)
+quarry/C-jam/st-james-infirmary-QmdiAvFufLNtrhKpF5Zku9sKGyogYaVY51LBpq3NKjAvnQ.musicxml
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+  ordinal 8 (number 9): walked 3, nominal 4: mismatch: short last bar (metre length)
+quarry/E-latin/tico-tico-QmWbvFZYw6cR7ytP7V2SyZm2u6VMGCD31cBnNuWwMoqFLw.musicxml
+  ordinal 0 (number 1): walked 1.5, nominal 4: pickup: short first bar, no implicit (notated length kept)
+  ordinal 16 (number 17): walked 2.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 17 (number 18): walked 1.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 33 (number 34): walked 2.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 34 (number 35): walked 1.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 50 (number 51): walked 2.5, nominal 4: mismatch: short last bar (metre length)
+quarry/F-improv-compose/house-of-the-rising-sun-Qmc3v934xFCPJrgGpH9J8G5qTUhebhrysLwPEFEXhYgStR.musicxml
+  ordinal 0 (number 1): walked 1, nominal 3: pickup: short first bar, no implicit (notated length kept)
+  ordinal 16 (number 17): walked 2, nominal 3: mismatch: short last bar (metre length)
+quarry/F-improv-compose/stephen-foster-oh-susanna-QmchjwvtpXykrxVrMHadPZLP7AHZ4ZgFjEg6qca7xpPFcm.musicxml
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+  ordinal 8 (number 9): walked 3, nominal 4: mismatch: short inside (metre length)
+  ordinal 16 (number 17): walked 3, nominal 4: mismatch: short last bar (metre length)
+quarry/H-ragtime/cosgroves-cakewalk-Qme3vDrh4eg9Gk4FSqeuSag3Ft5LdbrrZzWgsRphr2CuLB.musicxml
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+  ordinal 16 (number 17): walked 3, nominal 4: mismatch: short last bar (metre length)
+quarry/L-artists/aloha-oe-QmZ2XRr489YtJVYSs5HUV8G89nKjqXbMUUh6o9eZhc5n51.musicxml
+  ordinal 0 (number 1): walked 1, nominal 4: pickup: short first bar, no implicit (notated length kept)
+  ordinal 8 (number 9): walked 2.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 9 (number 10): walked 1.5, nominal 4: mismatch: short inside (metre length)
+  ordinal 17 (number 18): walked 3, nominal 4: mismatch: short last bar (metre length)

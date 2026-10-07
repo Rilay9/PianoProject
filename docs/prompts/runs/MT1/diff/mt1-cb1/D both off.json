@@ -1,0 +1,104 @@
+{
+ "bass": 0,
+ "kick": 0,
+ "snare": 0,
+ "hat": 0,
+ "bassHz": [],
+ "clicks": 22,
+ "accents": 6,
+ "starts": [
+  [
+   "accent",
+   0.1
+  ],
+  [
+   "click",
+   0.35
+  ],
+  [
+   "click",
+   0.6
+  ],
+  [
+   "click",
+   0.85
+  ],
+  [
+   "accent",
+   1.1
+  ],
+  [
+   "click",
+   1.35
+  ],
+  [
+   "click",
+   1.6
+  ],
+  [
+   "click",
+   1.85
+  ],
+  [
+   "accent",
+   2.1
+  ],
+  [
+   "click",
+   2.35
+  ],
+  [
+   "click",
+   2.6
+  ],
+  [
+   "click",
+   2.85
+  ],
+  [
+   "accent",
+   3.1
+  ],
+  [
+   "click",
+   3.35
+  ],
+  [
+   "click",
+   3.6
+  ],
+  [
+   "click",
+   3.85
+  ],
+  [
+   "accent",
+   4.1
+  ],
+  [
+   "click",
+   4.35
+  ],
+  [
+   "click",
+   4.6
+  ],
+  [
+   "click",
+   4.85
+  ],
+  [
+   "accent",
+   5.1
+  ],
+  [
+   "click",
+   5.35
+  ]
+ ],
+ "piano": 0,
+ "chips": {
+  "comp": "false",
+  "backing": "false"
+ }
+}

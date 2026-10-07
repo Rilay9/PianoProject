@@ -1,0 +1,147 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a72714772c690261e/app
+
+ ❯ tests/unit/excerptItems.test.ts (17 tests | 1 failed) 78ms
+   ❯ the Library and exploration, whatever the teaching-use bit (E1a) (3)
+     × lists an undecided cut, one with a no and one with a yes, and opens each as a score for exploration; only the yes is admitted to an automatic offer 5ms
+ ❯ tests/unit/eligibility.test.ts (36 tests | 1 failed) 110ms
+   ❯ an excerpt reaches an automatic offer only with a current teaching-use yes on its cut (E1a) (6)
+     × undecided, and with a no or a fix on record, it is refused for a skill, a requirement, a demand its bars establish and an equivalent: teaching-use-not-approved, the bit kept 5ms
+ ❯ tests/unit/gateAtTheConsumers.test.ts (33 tests | 4 failed) 1196ms
+   ❯ a rung-listed excerpt passes the same admission on the card and the swap sheet; an unplaced one reaches neither (E1a) (8)
+     × the admission itself: an excerpt is refused at null and false and admitted at true; with no provenance at all, refused 6ms
+     × the card: a rung listing the cut does not offer it until a yes is on the cut, and no row claims the songs ask for it; with a yes it is the ask’s row 2ms
+     × the swap sheet’s lesson tier: another option of the rung does not offer the cut until a yes is on it; with a yes it does 1ms
+     × the swap sheet’s last resort, an excerpt for an excerpt from the lessons reached: not offered until a yes is on it; then offered 1ms
+
+ Test Files  3 failed (3)
+      Tests  6 failed | 80 passed (86)
+   Start at  20:39:35
+   Duration  2.04s (transform 35%, tests 32%, environment 17%, import 16%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/eligibility.test.ts > an excerpt reaches an automatic offer only with a current teaching-use yes on its cut (E1a) > undecided, and with a no or a fix on record, it is refused for a skill, a requirement, a demand its bars establish and an equivalent: teaching-use-not-approved, the bit kept
+AssertionError: excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32 at false: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/eligibility.test.ts:547:73
+    545|     ] as const;
+    546|     for (const [row, teaching] of rows) {
+    547|       expect(admittedForTeaching(row), `${CUT} at ${String(teaching)}`…
+       |                                                                         ^
+    548|       for (const want of WANTS) {
+    549|         expect(eligibleFor(row, atClassical3, want), `${CUT} at ${Stri…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/excerptItems.test.ts > the Library and exploration, whatever the teaching-use bit (E1a) > lists an undecided cut, one with a no and one with a yes, and opens each as a score for exploration; only the yes is admitted to an automatic offer
+AssertionError: expected [ false, true, true ] to deeply equal [ false, false, true ]
+
+- Expected
++ Received
+
+  [
+    false,
+-   false,
++   true,
+    true,
+  ]
+
+ ❯ tests/unit/excerptItems.test.ts:248:68
+    246|       expect(eligibleFor(row, COPES, { for: 'exploration' }), bit).toE…
+    247|     }
+    248|     expect([EXCERPT, REJECTED, APPROVED].map(admittedForTeaching)).toE…
+       |                                                                    ^
+    249|   });
+    250|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > a rung-listed excerpt passes the same admission on the card and the swap sheet; an unplaced one reaches neither (E1a) > the admission itself: an excerpt is refused at null and false and admitted at true; with no provenance at all, refused
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts:887:58
+    885|   it('the admission itself: an excerpt is refused at null and false an…
+    886|     expect(admittedForTeaching(cut('excerpt.x', null))).toBe(false);
+    887|     expect(admittedForTeaching(cut('excerpt.x', false))).toBe(false);
+       |                                                          ^
+    888|     expect(admittedForTeaching(cut('excerpt.x', true))).toBe(true);
+    889|     const { provenance: _none, ...bare } = cut('excerpt.x', true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > a rung-listed excerpt passes the same admission on the card and the swap sheet; an unplaced one reaches neither (E1a) > the card: a rung listing the cut does not offer it until a yes is on the cut, and no row claims the songs ask for it; with a yes it is the ask’s row
+AssertionError: teaching false: expected [ 'ex.r', 'ex.pre', 'excerpt.x' ] to not include 'excerpt.x'
+ ❯ tests/unit/gateAtTheConsumers.test.ts:898:62
+    896|     for (const teaching of REFUSED) {
+    897|       const slots = card(only, items(teaching));
+    898|       expect(ids(slots), `teaching ${String(teaching)}`).not.toContain…
+       |                                                              ^
+    899|       expect(songsAsk(slots), `teaching ${String(teaching)}`).toBeUnde…
+    900|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > a rung-listed excerpt passes the same admission on the card and the swap sheet; an unplaced one reaches neither (E1a) > the swap sheet’s lesson tier: another option of the rung does not offer the cut until a yes is on it; with a yes it does
+AssertionError: teaching false: expected [ [ 'excerpt.x', 'lesson' ] ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   [
++     "excerpt.x",
++     "lesson",
++   ],
++ ]
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts:931:93
+    929|         COPES,
+    930|       ).map((one) => [one.item.id, one.tier]);
+    931|     for (const teaching of REFUSED) expect(tiers(teaching), `teaching …
+       |                                                                                             ^
+    932|     expect(tiers(true)).toEqual([['excerpt.x', 'lesson']]);
+    933|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > a rung-listed excerpt passes the same admission on the card and the swap sheet; an unplaced one reaches neither (E1a) > the swap sheet’s last resort, an excerpt for an excerpt from the lessons reached: not offered until a yes is on it; then offered
+AssertionError: teaching false: expected [ [ 'excerpt.b', 'kind' ] ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   [
++     "excerpt.b",
++     "kind",
++   ],
++ ]
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts:949:94
+    947|       return swapOptions(slot, [slot], curriculum, indexCatalog(items)…
+    948|     };
+    949|     for (const teaching of REFUSED) expect(kindOf(teaching), `teaching…
+       |                                                                                              ^
+    950|     expect(kindOf(true)).toEqual([['excerpt.b', 'kind']]);
+    951|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+exit 1

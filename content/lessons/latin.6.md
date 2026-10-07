@@ -6,24 +6,45 @@ videos:
   - label: "Tango Piano 101"
     url: "https://www.youtube.com/watch?v=hEF4Aq5Q3tw"
     teacher: "Pianote"
-readingTime: 3
+readingTime: 5
 ---
 
 Two rungs ago the clave was something you clapped. Here the pattern is written
 into the music, and the part that carries it is the left hand.
 
-**The tango's left hand is a pattern, and it does not change.** *Por una
-Cabeza* is the plainest case in the app: sixty-six bars on two staves, and bar
-after bar is the same four events — a bass note on one, a single note on the
-second half of beat two, a chord on three, a bass note on four. The right hand
-does all the singing. Learn the left alone until it is automatic, because it
-never asks you for anything new and it never lets up.
+**Before you play, name each left hand yourself.** Before you play any of the
+three pieces on this rung, *Por Una Cabeza*, *The Crave* and the second part of
+*La Cumparsita*, open it and, before you press anything, look at its left hand
+and decide: does it use the habanera, the tresillo or neither, and if it uses
+one, what is the first bar where it stops? If you worked through *The habanera
+bass, and the tresillo beside it* on Stage 4, you met a passage of the first
+two there; read past those bars this time. Then check yourself: press *Hear
+it*; then loop a few bars (double-tap the first, then the last), choose *Keep
+tempo* and *L*, switch *Rhythm only* on in ⋯ and tap the left hand. Switch
+*Rhythm only* off again before you play the piece: it stays on for the next
+piece you open from this page, and a *Rhythm only* run does not count toward
+this rung. The
+paragraphs below describe each left hand, so read them after you have decided.
+Nobody checks your answer but you, and naming it earns nothing here. If you
+have not met the two cells, or they have blurred, the grid of where their notes
+start is near the top of that Stage 4 page.
 
-**The Crave is the tresillo under a whole piece.** Jelly Roll Morton called
-this the Spanish tinge. In most of its fifty-three bars the left hand plays
-three, three, two — two long notes and a shorter one, filling the bar unevenly
-— under a right hand in chords. It is in D minor. The grouping you met as a
-two-bar exercise is now the accompaniment for the length of a piece.
+**The tango's left hand is a pattern.** *Por una Cabeza* is the plainest
+case in the app: sixty-six bars on two staves, and through its opening, bars 1
+to 14, every bar is the same four events — a bass note on one, a single note on
+the second half of beat two, a chord on three, a bass note on four. Bar 15
+breaks the pattern with two chords, and it returns after that; where it holds
+and where it gives way is yours to find on the page. The right hand does all
+the singing. Learn the left alone until the pattern is automatic, then watch
+for the bars that leave it.
+
+**The Crave puts the tresillo under a real piece.** Jelly Roll Morton called
+this the Spanish tinge. In bars 21 to 26 the left hand plays three, three, two
+in every bar — two long notes and a shorter one, filling the bar unevenly —
+under a right hand in chords; those six bars are the passage this rung
+vouches for, and how much of the rest of the piece keeps the figure is yours to
+read. It is in D minor. The grouping you met as a two-bar exercise is now an
+accompaniment inside a piece.
 
 **La Cumparsita's second part does the other thing.** Its first part is on the
 rung below. This one is sixteen bars, two flats, and the left hand walks rather
@@ -32,10 +53,11 @@ the other two hold a figure, this one descends by half steps, which is as much
 a tango habit as the pattern is. It is also the shortest thing here and the
 place to start.
 
-**The montuno is in the exercises**, because none of these three pieces writes
-one out. The three-note study in D minor is the figure itself: every note is a
-clave stroke, three strokes in one bar and two in the next, and it repeats
-without changing. The tumbao study in G minor is the bass half — nothing on
+**The montuno's rhythm is in the exercises**, because none of these three pieces
+writes a montuno out. The three-note study in D minor is a rhythm-lock drill, not
+the montuno figure itself: it plays a chord on every clave stroke, three strokes
+in one bar and two in the next, and it repeats without changing, so your hands
+learn where the clave falls. The tumbao study in G minor is the bass half — nothing on
 beat one, and the note on four already belongs to the next bar's chord. The
 groove study puts them together, two notes on top of the bass, and neither hand
 is on the beat. Left hand alone first, then the two notes.

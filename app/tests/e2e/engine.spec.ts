@@ -110,15 +110,39 @@ test.describe('Tempo mode end to end', () => {
   });
 
   test('a late run yields the expected timing statistics', async ({ page }) => {
+    // Revised (H0, Q39; test class: revise, the clock only — every assertion
+    // below is the one this case always made). It ran on the page's real timers
+    // and failed three times on CI with `hits` 1. Old assumption: each replayed
+    // note is delivered before the harness's next tick passes its window. A
+    // note is *stamped* on the script's schedule but *delivered* by a timer, and
+    // the harness ticks the engine from a timer and a frame loop of its own; a
+    // page stalled past the window's close runs the tick first, the window
+    // closes as a miss, and the note, still stamped inside it, finds nothing. So
+    // the run is timed on a clock the test holds: Playwright's clock, installed
+    // before the page loads and left running for the load, then paused, and
+    // run forward through the replay so every timer fires in its due order. The
+    // same run on the engine's injected clock, with the statistic asserted
+    // exactly, is in `engineTempo.test.ts` (the harness's late replay).
+    await page.clock.install();
     const dev = await openDevScore(page);
     await dev.load('tempo-change');
+    await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1_000);
     // The piece is 60 bpm for two beats then 144; at 130 % the first two steps
     // are ~769 ms apart. Every note is played ~100 ms after its slot.
     await dev.startRun('tempo', { countInBars: 0, tempoPct: 130, toleranceMs: 150 });
-    await dev.replay([
+    const script = [
       { atMs: 100, midi: 60 },
       { atMs: 869, midi: 62 },
-    ]);
+    ];
+    const replayed = dev.replay(script);
+    // The replay restarts the run as its source connects (`DevScoreScreen`):
+    // the second `started` is the run's zero and the script's.
+    await expect
+      .poll(async () => (await dev.engineEvents()).filter((e) => e.kind === 'started').length)
+      .toBe(2);
+    // To the replay's own end: its last message, then the 250 ms it waits after it.
+    await page.clock.runFor(869 + 250 + 16);
+    await replayed;
     const score = await dev.engineScore();
     expect(score?.hits).toBe(2);
     expect(score?.timing.n).toBe(2);
@@ -129,11 +153,97 @@ test.describe('Tempo mode end to end', () => {
     await dev.stopRun();
   });
 
-  test('a note far outside the tolerance is wrong and its slot is missed', async ({ page }) => {
+  test('a long task across the first note’s window: the note, stamped inside it, is judged in it (U66)', async ({
+    page,
+  }) => {
+    // U66 (B1), on the page's real timers, as H0's `wall-stalled` probe ran
+    // (`runs/H0/red-q39-browser-probe.txt`): the main thread kept busy for
+    // 400 ms from about 90 ms after the replay connects. The first note is due
+    // at 100 and its window closes at 150, so the note waits behind the long
+    // task past its window's close and the harness's own tick, due first,
+    // comes off the queue before it. 400 ms is longer than the note's
+    // remaining tolerance and well short of the stamp-trust bound (a second):
+    // the case the hold is for. The engine without it counted 1 hit, 1 miss and
+    // 1 wrong note here.
+    const dev = await openDevScore(page);
+    await dev.load('tempo-change');
+    await dev.startRun('tempo', { countInBars: 0, tempoPct: 130, toleranceMs: 150 });
+    const run = await page.evaluate(
+      async (script) => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        const marks = { before: 0, after: 0, busyFrom: 0, busyTo: 0 };
+        setTimeout(() => {
+          marks.busyFrom = performance.now();
+          while (performance.now() - marks.busyFrom < 400) {
+            // the long task
+          }
+          marks.busyTo = performance.now();
+        }, 90);
+        // `replay` restarts the run and connects its source before it returns
+        // its promise: the connect lies between these two readings.
+        marks.before = performance.now();
+        const replayed = h.replay(script);
+        marks.after = performance.now();
+        await replayed;
+        // Read at once: the third note's window (bar 2) opens long after the
+        // replay's tail, so this reading holds the first bar's judgement only.
+        const score = h.engineScore() as
+          | (ReturnType<typeof h.engineScore> & {
+              notes: { midi: number; stepIndex: number | null; ok: boolean }[];
+            })
+          | null;
+        return {
+          marks,
+          hits: score?.hits,
+          wrong: score?.wrongNotesTotal,
+          n: score?.timing.n,
+          latePct: score?.timing.latePct,
+          notes: score?.notes.map((n) => [n.midi, n.stepIndex, n.ok]),
+          barOneMisses: (score?.hotSpots ?? []).filter((s) => s.measureIndex === 0).map((s) => s.misses),
+        };
+      },
+      [
+        { atMs: 100, midi: 60 },
+        { atMs: 869, midi: 62 },
+      ],
+    );
+    // The long task began before the first window closed (150 ms after the
+    // connect) and ended after it.
+    expect(run.marks.busyFrom - run.marks.before).toBeLessThan(150);
+    expect(run.marks.busyTo - run.marks.after).toBeGreaterThan(150);
+    expect(run.notes).toEqual([
+      [60, 0, true],
+      [62, 1, true],
+    ]);
+    expect(run.hits).toBe(2);
+    expect(run.wrong).toBe(0);
+    expect(run.barOneMisses.filter((m) => m > 0)).toEqual([]);
+    expect(run.n).toBe(2);
+    expect(run.latePct).toBe(100);
+    await dev.stopRun();
+  });
+
+  // Replaced (CL11a, Entry 219; class: replace): this read "a note far outside the tolerance is wrong"
+  // for the first step's own pitch, played 400 ms after it. A right note at the wrong time costs once,
+  // as the miss, and is not also a wrong key; a key the piece does not ask for is wrong, as it was.
+  test('a right note far outside the tolerance is not a hit: its slot is missed, and it is charged once', async ({ page }) => {
     const dev = await openDevScore(page);
     await dev.load('tempo-change');
     await dev.startRun('tempo', { countInBars: 0, tempoPct: 130, toleranceMs: 100 });
     await dev.replay([{ atMs: 400, midi: 60 }]);
+    const score = await dev.engineScore();
+    expect(score?.hits).toBe(0);
+    expect(score?.wrongNotesTotal).toBe(0);
+    expect(score?.missedTotal).toBeGreaterThanOrEqual(1);
+    await dev.stopRun();
+  });
+
+  test('a key the piece does not ask for, far outside the tolerance, is wrong and its slot is missed', async ({ page }) => {
+    const dev = await openDevScore(page);
+    await dev.load('tempo-change');
+    await dev.startRun('tempo', { countInBars: 0, tempoPct: 130, toleranceMs: 100 });
+    await dev.replay([{ atMs: 400, midi: 61 }]);
     const score = await dev.engineScore();
     expect(score?.wrongNotesTotal).toBeGreaterThanOrEqual(1);
     expect(score?.missedTotal).toBeGreaterThanOrEqual(1);

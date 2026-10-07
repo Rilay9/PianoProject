@@ -88,9 +88,13 @@ const ORDER: string[] = curriculum.stages.flatMap((stage) => stage.units.flatMap
 const CORE: string[] = curriculum.stages.flatMap((stage) =>
   stage.units.filter((unit) => unit.track === 'core').flatMap((unit) => unit.lessons.map((lesson) => lesson.id)),
 );
+/**
+ * Where on the core path a demand is taught: its listed rung on that path (E0b: `taughtAt` is a list,
+ * one rung per path, and this file walks core rungs only). Revised: old assumption one `taughtAt` rung.
+ */
 const taughtIndex = (demand: string): number => {
-  const at = demands.find((d) => d.id === demand)?.taughtAt;
-  return at ? ORDER.indexOf(at) : Number.POSITIVE_INFINITY;
+  const onCore = (demands.find((d) => d.id === demand)?.taughtAt ?? []).filter((rung) => CORE.includes(rung));
+  return onCore.length > 0 ? Math.min(...onCore.map((rung) => ORDER.indexOf(rung))) : Number.POSITIVE_INFINITY;
 };
 const vocabularyIndex = (demand: string): number => demands.findIndex((d) => d.id === demand);
 const byTaughtOrder = (a: string, b: string): number => taughtIndex(a) - taughtIndex(b) || vocabularyIndex(a) - vocabularyIndex(b);
@@ -130,7 +134,10 @@ function groups(): Group[] {
     const offer = readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows: [], today: new Date(2026, 9, 1), purpose: 'daily' });
     if (!offer?.anchored || position?.lesson.id !== rung) continue;
     const hold = offer.lessonId ?? rung;
-    const taught = new Set(demands.filter((d) => d.taughtAt !== null && ORDER.indexOf(d.taughtAt) <= ORDER.indexOf(rung)).map((d) => d.id));
+    // Revised (E0b): `taughtAtRung`, the rung's ancestry. Old assumption: one `taughtAt` rung read in the
+    // file's order, which would credit 4.1–4.4 with the syncopation `latin.3` (stored before them) teaches.
+    const taughtHere = taughtAtRung(curriculum, rung) ?? (() => false);
+    const taught = new Set(demands.filter((d) => taughtHere(d.id)).map((d) => d.id));
     const key = JSON.stringify([offer.item.id, hold, [...taught].sort()]);
     const found = out.find((g) => JSON.stringify([g.item.id, g.hold, [...g.taught].sort()]) === key);
     if (found) {
@@ -144,7 +151,7 @@ function groups(): Group[] {
       rung,
       taught,
       promises: [...offer.item.concepts.flatMap((c) => CLAIMED_BY_CONCEPT[c] ?? []), ...(PROMISED_BY_RUNG[hold] ?? [])],
-      untaught: untaughtChecks(rung, ORDER, demands),
+      untaught: untaughtChecks(rung, ORDER, demands, () => false, (d) => taught.has(d)),
     });
   }
   return out;
@@ -459,13 +466,18 @@ describe('the walk is the reader’s, and covers what the diaries read', () => {
       expect(mine.length, `${rung}: no recipe with two moves or more`).toBeGreaterThan(0);
     }
     const at31 = new Set(judged.filter((j) => j.reached.group.rungs.includes('3.1')).map((j) => recipeKey(j.reached.recipe)));
+    // Revised (F2a, Entry 117). Old assumption: the diary's 3.1 recipes carry `accidentals: true`, the note
+    // outside the key the reader added there while 3.1 taught it by a hand reading of its lesson. 3.1 now
+    // introduces accidentals and 3.3 teaches them (no option on 3.1 has one), so the reader at 3.1 says
+    // the next step waits where it asked for one, and the diary's working recipes there are these.
     for (const moved of [
-      { hands: 'both', dottedQuarters: true, ties: true, fifths: [1, -1], accidentals: true },
-      { hands: 'both', leaps: true, dottedQuarters: true, ties: true, fifths: [1, -1], accidentals: true },
+      { hands: 'both', dottedQuarters: true, ties: true, fifths: [1, -1] },
+      { hands: 'both', leaps: true, dottedQuarters: true, ties: true, fifths: [1, -1] },
     ]) {
       const key = [...at31].find((k) => same(Object.entries(JSON.parse(k) as object).sort(), Object.entries(moved).sort()));
       expect(key, `3.1 did not reach ${JSON.stringify(moved)}`).toBeDefined();
     }
+    expect([...at31].filter((k) => (JSON.parse(k) as { accidentals?: boolean }).accidentals === true), '3.1 asked for a note outside the key, which 3.3 teaches').toEqual([]);
   });
 
   it('it is the reachable set, not every combination: where three controls or more are moved, fewer recipes than the combinations of their values', () => {

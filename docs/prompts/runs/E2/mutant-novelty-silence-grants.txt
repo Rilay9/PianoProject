@@ -1,0 +1,46 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ab0ca07b13a3644b6/app
+
+ ❯ tests/unit/materialLayer.test.ts (36 tests | 1 failed) 1858ms
+   ❯ the thirteen adversaries at the material layer (Part 25, Q8; the reviewer’s thirteenth) (12)
+     × 2. a PDMX excerpt the learner has seen: eligible for practice, refused for first contact (novelty from a fixture contact reading until D4’s lands) 7ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 35 passed (36)
+   Start at  23:11:56
+   Duration  3.41s (tests 57%, environment 23%, transform 13%, import 7%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/materialLayer.test.ts > the thirteen adversaries at the material layer (Part 25, Q8; the reviewer’s thirteenth) > 2. a PDMX excerpt the learner has seen: eligible for practice, refused for first contact (novelty from a fixture contact reading until D4’s lands)
+AssertionError: expected { verdict: 'eligible', …(4) } to deeply equal { verdict: 'exploration-only', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "missing": "novelty: no record of the learner’s contact with it",
+-   "verdict": "exploration-only",
++   "for": "demand",
++   "located": 8,
++   "practises": "key.signature",
++   "untrusted": [
++     "rhythm.eighths",
++     "rhythm.shorter-than-quarter",
++   ],
++   "verdict": "eligible",
+  }
+
+ ❯ tests/unit/materialLayer.test.ts:456:88
+    454|     expect(eligibleForMaterial({ ...practice, novelty: 'first-contact'…
+    455|     // With no contact reading at all the claim waits, and is never gr…
+    456|     expect(eligibleForMaterial({ ...practice, novelty: 'first-contact'…
+       |                                                                                        ^
+    457|       verdict: 'exploration-only',
+    458|       missing: 'novelty: no record of the learner’s contact with it',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit 1

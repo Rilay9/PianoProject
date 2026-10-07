@@ -1,0 +1,17 @@
+$ (cwd .) python tools/docs/checks_for_paths.py packaging/build-apk.sh docs/pending-review.md
+UNMATCHED: packaging/build-apk.sh: no pattern in checks.json names it; the full required suites run. Add a pattern for it.
+# checks for 2 path(s): 1 matched, 1 unmatched
+# UNMATCHED packaging/build-apk.sh: no pattern names it; the full required suites run
+# docs/pending-review.md: docs/**
+converter-harness	.	python -m unittest discover -s tools/midi-cleanup/tests -v
+parity-reference	.	python tools/midi-cleanup/tests/parity_reference.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4
+exit 0

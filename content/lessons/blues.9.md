@@ -23,14 +23,16 @@ sing what you played, it was music; if you cannot, it was fingers.
 bars back a phrase at a time. What it trains is the loop between hearing
 something and finding it, which is the only loop improvising uses.
 
-**What to practise.** One chorus a day, recorded, over your own left hand. Listen
-to it once and then delete it. The app's **Listen back** is on the backing-track
-drills at Stages 4 and 5, and you are past those now — here the left hand is
-yours, so record it on whatever is in your pocket.
+**What to practise.** One chorus a day over your own left hand, with nothing on
+the screen — no chart and no click, the last step of the ladder on the rung
+before — in a key and with a left-hand figure you choose. Record it on whatever
+is in your pocket, listen to it once and then delete it. The app's **Listen
+back** is on the backing-track drills at Stages 4 and 5, and you are past those
+now: here the left hand is yours.
 
 **Repertoire for this rung.** Yours, first — nothing here is required. Then
-three written choruses by people who improvised them before they wrote them, so
-you can read what the thing you are reaching for looks like on paper. *Stumbling*
+three written pieces from the 1920s, none of them a twelve-bar blues, each worth
+reading for how a right hand answers its own phrases. *Stumbling*
 is Zez Confrey in 1922, a three-beat figure laid over four and never once
 losing the bar. *Black Bottom Stomp* is Jelly Roll Morton in 1926, and it is
 the same page the rung below points at; here, read it for how he answers his own

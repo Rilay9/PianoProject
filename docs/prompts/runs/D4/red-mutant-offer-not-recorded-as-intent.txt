@@ -1,0 +1,50 @@
+mutant offer-not-recorded-as-intent: src/curriculum/material.ts
+--- old
+    ...(run.intent === undefined ? {} : { intent: run.intent }),
+
+--- new
+
+
+$ npx vitest run tests/unit/materialIdentity.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a64cf9b42ff36e1ca/app
+
+ ❯ tests/unit/materialIdentity.test.ts (10 tests | 1 failed) 27ms
+   ❯ a run’s facts, as the Score screen writes them (4)
+     × a generated item: the row’s identity and its role; a transfer offer adds the intent and the relationship 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/materialIdentity.test.ts > a run’s facts, as the Score screen writes them > a generated item: the row’s identity and its role; a transfer offer adds the intent and the relationship
+AssertionError: expected { material: { …(6) }, …(2) } to deeply equal { material: { …(6) }, …(3) }
+
+- Expected
++ Received
+
+@@ -1,7 +1,6 @@
+  {
+-   "intent": "transfer",
+    "material": {
+      "family": "pentatonic",
+      "kind": "generator",
+      "recipe": {
+        "form": "pentatonic",
+
+ ❯ tests/unit/materialIdentity.test.ts:101:72
+     99|     expect(runFacts(pentatonic)).toEqual({ material: pentatonic.proven…
+    100|     const relationship = { skill: 'position-shift', shownOn: [], measu…
+    101|     expect(runFacts(pentatonic, { intent: 'transfer', relationship }))…
+       |                                                                        ^
+    102|   });
+    103|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  22:25:44
+   Duration  541ms (transform 67%, import 26%, tests 6%, worker 1%)
+
+
+exit 1

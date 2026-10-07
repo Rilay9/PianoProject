@@ -1,0 +1,206 @@
+MT1 red-first, on the base (15126469): the new and extended unit tests, then the browser spec against a base build.
+Unit (vitest; app/src/score/metre.ts moved aside, so chartMetre.test.ts cannot import it: no per-bar reading exists):
+     × 2/4: the metronome counts [2,4] as 2 beats (red case 2) 9ms
+     × 3/4: the metronome counts [3,4] as 3 beats (red case 2) 5ms
+     × 5/4: the metronome counts [5,4] as 5 beats (red case 2) 4ms
+     × 6/8: the metronome counts [6,8] as 2 beats (red case 2) 4ms
+     × 2/2: the metronome counts [2,2] as 2 beats (red case 2) 4ms
+     × 3/4 at ♩ = 120: the bar advances every three beats, 1.5 s (red case 3) 6ms
+     × 6/8 at ♩ = 120: two dotted-quarter beats of 0.75 s, the bar advancing every 1.5 s (red case 3) 4ms
+     × across a metre change the new bar’s first beat is the accent and carries the new count; the chorus wraps back to 3/4 6ms
+     × suspended mid-bar 3 (4/4) and resumed: a four-beat count-in, then bar 3 from its downbeat 4ms
+     × the comp holds three quarters of each bar: 4/4 exactly as before, 3/4 ending before the next downbeat (red case 5) 12ms
+     × 2/4: Bass + drums is refused, and nothing is scheduled with it pressed (red case 5) 4ms
+     × 3/4: Bass + drums is refused, and nothing is scheduled with it pressed (red case 5) 4ms
+     × 5/4: Bass + drums is refused, and nothing is scheduled with it pressed (red case 5) 3ms
+     × 6/8: Bass + drums is refused, and nothing is scheduled with it pressed (red case 5) 4ms
+     × 12/8: Bass + drums is refused, and nothing is scheduled with it pressed (red case 5) 3ms
+     × 2/2: Bass + drums is refused, and nothing is scheduled with it pressed (red case 5) 3ms
+     × 3/4 specifically: the old unsourced “jazz waltz” comment in backingLoop.ts does not authorise chart backing 5ms
+     × a chart that changes metre refuses it too, and says which metre 3ms
+     × 6/8 at ♩ = 6… opens at 8, labelled “81” 66ms
+     × 6/8, the catalog’s float at ♩ = 6… opens at 8, labelled “80.99999999999999” 59ms
+     × 12/8 at ♩ = 12… opens at 8, labelled “76” 64ms
+     × 2/2 at ♩ = 2… opens at 2, labelled “96” 63ms
+ FAIL  tests/unit/chartMetre.test.ts [ tests/unit/chartMetre.test.ts ]
+Error: Cannot find module '../../src/score/metre' imported from <home>/repos/Piano 
+⎯⎯⎯⎯⎯⎯ Failed Tests 22 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/chordChart.test.ts > the tempo field counts the chart’s beat (MT1) > 6/8 at ♩ = 6… opens at 8, 
+AssertionError: expected '81' to be '54' // Object.is equality
+ FAIL  tests/unit/chordChart.test.ts > the tempo field counts the chart’s beat (MT1) > 6/8, the catalog’s float at ♩ = 
+AssertionError: expected '80.99999999999999' to be '54' // Object.is equality
+ FAIL  tests/unit/chordChart.test.ts > the tempo field counts the chart’s beat (MT1) > 12/8 at ♩ = 12… opens at 8, 
+AssertionError: expected '76' to be '50.667' // Object.is equality
+ FAIL  tests/unit/chordChart.test.ts > the tempo field counts the chart’s beat (MT1) > 2/2 at ♩ = 2… opens at 2, 
+AssertionError: expected '96' to be '48' // Object.is equality
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 2/4: the 
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 6/8: the 
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 2/2: the 
+AssertionError: expected 4 to be 2 // Object.is equality
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 3/4: the 
+AssertionError: expected 4 to be 3 // Object.is equality
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 5/4: the 
+AssertionError: expected 4 to be 5 // Object.is equality
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 3/4 at ♩ = 120: 
+AssertionError: expected 'Bar 1 of 4 · chorus 1' to be 'Bar 2 of 4 · chorus 1' // Object.is equality
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 6/8 at ♩ = 120: 
+AssertionError: expected '120' to be '80' // Object.is equality
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > across a metre 
+AssertionError: expected 'Bar 2 of 4 · chorus 1' to be 'Bar 3 of 4 · chorus 1' // Object.is equality
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > suspended 
+AssertionError: expected 4 to be 3 // Object.is equality
+ Test Files  3 failed (3)
+      Tests  22 failed | 18 passed (40)
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > the comp holds 
+AssertionError: expected [ 1.5, 1.5, 1.5, 1.5 ] to deeply equal [ 1.125, 1.125, 1.5, 1.5 ]
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 2/4: Bass + 
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 3/4: Bass + 
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 5/4: Bass + 
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 6/8: Bass + 
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 12/8: Bass + 
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 2/2: Bass + 
+AssertionError: expected false to be true // Object.is equality
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > 3/4 
+AssertionError: expected [ 4, 4, 4, 4, 4, 4 ] to deeply equal []
+ FAIL  tests/unit/chordChartLifecycle.test.ts > the chart counts each bar in its written metre (MT1) > a chart that 
+AssertionError: expected false to be true // Object.is equality
+
+Browser (chart-metre.spec.ts against the base build, port 4191; soft checks first, then the clicks):
+  x  2 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Skating, 3/4: the click, the tracker, the tempo field and Bass + drums (24.0s)
+  x  1 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Take Five, 5/4: the click, the tracker, the tempo field and Bass + drums (23.0s)
+  x  3 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Row, Row, Row Your Boat, 6/8: the click, the tracker, the tempo field and Bass + drums (32.0s)
+  x  4 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Corcovado, 2/2: the click, the tracker, the tempo field and Bass + drums (32.0s)
+  x  5 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Ah vous dirai-je, 2/4: the click, the tracker, the tempo field and Bass + drums (23.8s)
+  x  6 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Twelve-eight exercise, 12/8: the click, the tracker, the tempo field and Bass + drums (32.2s)
+  x  7 tests\e2e\chart-metre.spec.ts:192:3 › the chord chart counts each bar in its written metre › Skating, 3/4: the unsourced “jazz waltz” comment does not switch on chart backing (12.7s)
+  ok 8 tests\e2e\chart-metre.spec.ts:201:3 › the chord chart counts each bar in its written metre › Bella Ciao, 4/4 with a pickup: today’s four-beat bars, Bass + drums offered and playing (the 4/4 differential) (7.9s)
+  x  9 tests\e2e\chart-metre.spec.ts:224:3 › the chord chart counts each bar in its written metre › Mr Lawrence, 3/4 then 4/4 from bar 17: the first beat of bar 17 is the accent and its bar has four (32.7s)
+    Error: expect(locator).toBeDisabled() failed
+    Expected: disabled
+    Received: enabled
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Expected: "true"
+    Received: ""
+    Error: expect(locator).toHaveText(expected) failed
+    Expected: "Bass + drums plays only in 4/4, and this chart is in 3/4. Count off for the click and turn on Comp for the chords: both follow the 3/4."
+    Error: element(s) not found
+    Error: clicks in the count-in
+    Expected: 3
+    Received: 4
+    Error: expect(locator).toBeDisabled() failed
+    Expected: disabled
+    Received: enabled
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Expected: "true"
+    Received: ""
+    Error: expect(locator).toHaveText(expected) failed
+    Expected: "Bass + drums plays only in 4/4, and this chart is in 5/4. Count off for the click and turn on Comp for the chords: both follow the 5/4."
+    Error: element(s) not found
+    Error: clicks in the count-in
+    Expected: 5
+    Received: 4
+    Error: expect(locator).toHaveValue(expected) failed
+    Expected: "54"
+    Received: "80.99999999999999"
+    Error: expect(locator).toHaveText(expected) failed
+    Expected: "bpm (dotted quarters)"
+    Received: "bpm"
+    Error: expect(locator).toBeDisabled() failed
+    Expected: disabled
+    Received: enabled
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Expected: "true"
+    Received: ""
+    Error: expect(locator).toHaveText(expected) failed
+    Expected: "Bass + drums plays only in 4/4, and this chart is in 6/8. Count off for the click and turn on Comp for the chords: both follow the 6/8."
+    Error: element(s) not found
+    Error: clicks in the count-in
+    Expected: 2
+    Received: 4
+    Error: expect(locator).toHaveValue(expected) failed
+    Expected: "48"
+    Received: "96"
+    Error: expect(locator).toHaveText(expected) failed
+    Expected: "bpm (half notes)"
+    Received: "bpm"
+    Error: expect(locator).toBeDisabled() failed
+    Expected: disabled
+    Received: enabled
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Expected: "true"
+    Received: ""
+    Error: expect(locator).toHaveText(expected) failed
+    Expected: "Bass + drums plays only in 4/4, and this chart is in 2/2. Count off for the click and turn on Comp for the chords: both follow the 2/2."
+    Error: element(s) not found
+    Error: clicks in the count-in
+    Expected: 2
+    Received: 4
+    Error: expect(locator).toBeDisabled() failed
+    Expected: disabled
+    Received: enabled
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Expected: "true"
+    Received: ""
+    Error: expect(locator).toHaveText(expected) failed
+    Expected: "Bass + drums plays only in 4/4, and this chart is in 2/4. Count off for the click and turn on Comp for the chords: both follow the 2/4."
+    Error: element(s) not found
+    Error: clicks in the count-in
+    Expected: 2
+    Received: 4
+    Error: expect(locator).toHaveValue(expected) failed
+    Expected: "50.667"
+    Received: "76"
+    Error: expect(locator).toHaveText(expected) failed
+    Expected: "bpm (dotted quarters)"
+    Received: "bpm"
+    Error: expect(locator).toBeDisabled() failed
+    Expected: disabled
+    Received: enabled
+    Error: expect(locator).toHaveAttribute(expected) failed
+    Expected: "true"
+    Received: ""
+    Error: expect(locator).toHaveText(expected) failed
+    Expected: "Bass + drums plays only in 4/4, and this chart is in 12/8. Count off for the click and turn on Comp for the chords: both follow the 12/8."
+    Error: element(s) not found
+    Error: expect(locator).toBeDisabled() failed
+    Expected: disabled
+    Received: enabled
+    Error: expect(received).toEqual(expected) // deep equality
+    - Expected  -  1
+    + Received  + 44
+    Error: expect(locator).toBeDisabled() failed
+    Expected: disabled
+    Received: enabled
+    Error: expect(locator).toHaveText(expected) failed
+    Expected: "Bass + drums plays only in 4/4, and this chart has bars in 3/4. Count off for the click and turn on Comp for the chords: both follow each bar’s time signature."
+    Error: element(s) not found
+    Error: clicks in the count-in
+    Expected: 3
+    Received: 4
+  8 failed
+  1 passed (2.3m)
+
+MT1 green, the same tests:
+ Test Files  8 passed (8)
+      Tests  223 passed (223)
+ Test Files  1 passed (1)
+      Tests  25 passed (25)
+  ok  2 tests\e2e\chart-backing.spec.ts:165:3 › Blue Bossa chart: Comp and Bass + drums are independent › A: Bass + drums on, Comp on — bass, drums and the piano comp (8.4s)
+  ok  1 tests\e2e\chart-backing.spec.ts:174:3 › Blue Bossa chart: Comp and Bass + drums are independent › B: Bass + drums on, Comp off — the same bass and drums as A, no piano (14.5s)
+  ok  3 tests\e2e\chart-backing.spec.ts:186:3 › Blue Bossa chart: Comp and Bass + drums are independent › C: Comp on, Bass + drums off — the piano comp, no bass, no drums (6.4s)
+  ok  5 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Skating, 3/4: the click, the tracker, the tempo field and Bass + drums (5.1s)
+  ok  4 tests\e2e\chart-backing.spec.ts:192:3 › Blue Bossa chart: Comp and Bass + drums are independent › D: both off — the click alone (6.6s)
+  ok  7 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Row, Row, Row Your Boat, 6/8: the click, the tracker, the tempo field and Bass + drums (4.1s)
+  ok  6 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Take Five, 5/4: the click, the tracker, the tempo field and Bass + drums (6.6s)
+  ok  8 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Corcovado, 2/2: the click, the tracker, the tempo field and Bass + drums (4.1s)
+  ok  9 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Ah vous dirai-je, 2/4: the click, the tracker, the tempo field and Bass + drums (4.1s)
+  ok 10 tests\e2e\chart-metre.spec.ts:170:5 › the chord chart counts each bar in its written metre › Twelve-eight exercise, 12/8: the click, the tracker, the tempo field and Bass + drums (5.6s)
+  ok 11 tests\e2e\chart-metre.spec.ts:192:3 › the chord chart counts each bar in its written metre › Skating, 3/4: the unsourced “jazz waltz” comment does not switch on chart backing (4.6s)
+  ok 12 tests\e2e\chart-metre.spec.ts:201:3 › the chord chart counts each bar in its written metre › Bella Ciao, 4/4 with a pickup: today’s four-beat bars, Bass + drums offered and playing (the 4/4 differential) (7.7s)
+  ok 13 tests\e2e\chart-metre.spec.ts:224:3 › the chord chart counts each bar in its written metre › Mr Lawrence, 3/4 then 4/4 from bar 17: the first beat of bar 17 is the accent and its bar has four (16.3s)
+  13 passed (56.2s)
+
+The chart specs left unedited, on MT1:
+  -   8 tests\e2e\carry-overs.spec.ts:159:3 › the backing loop › stops when the screen is left
+  1 skipped
+  41 passed (24.7s)

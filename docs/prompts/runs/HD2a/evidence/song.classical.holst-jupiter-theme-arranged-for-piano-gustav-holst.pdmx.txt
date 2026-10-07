@@ -1,0 +1,11 @@
+HD2a evidence: song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx (scores/pdmx/Qme2zmL2nofwN5b7xQCS9UjiVLMuaoGt3Mx4tFqdMNQBqJ.mxl), identity sha256 9c21ad59d8630e40a73303a7a216fb3713b6d9c58a96f2892a9a33c40f40534e
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 16-16 -> R
+  bar 16 (source measure 16) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @46 L [47] + v2 [74]
+  bar 16 onset 46 79/st1/v1/R:2 74/st1/v2/L/x:2 47/st2/v3/L:1
+  bar 16 onset 47 45/st2/v3/L:1
+  bar 16 onset 48 64/st1/v1/R:0.5 43/st2/v3/L:1
+  bar 16 onset 48.5 67/st1/v1/R:0.5
+

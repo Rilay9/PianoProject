@@ -1,0 +1,76 @@
+// Check-runner's own read (NOT one of U110's archived scripts), written for the U110a check, item 5.
+// It reads only what the page already exposes (the stage's box, the rows' boxes and ink, the renderer's
+// existing `__pianopath.scoreFit()` read-out, `data-slots` / `data-ahead`) and adds no instrumentation to
+// the renderer. Twinkle at 342 x 740, Bars 3: a fresh load then reloads, each read settled, with the row
+// counts the stage held on its way (the same MutationObserver technique the named Ode case uses).
+import { expect, test, type Page } from '@playwright/test';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { installMidiMock } from '../../tests/e2e/fixtures/midiMock';
+import { readRows } from './u110-read';
+
+const OUT = process.env.U110_OUT ?? 'build/u110/twinkle';
+const PIECE = `/#/score/${process.env.U110_PIECE ?? 'song.folk.twinkle.ht'}`;
+const BARS = Number(process.env.U110_BARS ?? 3);
+const W = Number(process.env.U110_WIDTH ?? 342);
+const H = Number(process.env.U110_HEIGHT ?? 740);
+const LOADS = Number(process.env.U110_LOADS ?? 6);
+
+async function ready(page: Page): Promise<void> {
+  await expect(page.locator('section[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
+  await page.waitForFunction(() => document.querySelector('#score-stage .is-front svg') !== null, undefined, { timeout: 60_000 });
+  await page.waitForFunction(() => document.querySelector('#score-stage')?.getAttribute('data-settled') === 'true', undefined, { timeout: 30_000 }).catch(() => undefined);
+  await page.waitForTimeout(1500);
+}
+
+test('u110 check: twinkle at 342x740 bars 3', async ({ page }) => {
+  test.setTimeout(600_000);
+  mkdirSync(OUT, { recursive: true });
+  await installMidiMock(page, { permission: 'granted' });
+  await page.addInitScript((bars) => {
+    const raw = localStorage.getItem('pianopath.settings');
+    const settings = raw === null ? {} : (JSON.parse(raw) as Record<string, unknown>);
+    localStorage.setItem('pianopath.settings', JSON.stringify({ ...settings, barsPerWindow: bars }));
+    const seen: number[] = [];
+    (window as unknown as { __u110slots: number[] }).__u110slots = seen;
+    new MutationObserver((records) => {
+      for (const r of records) if (r.oldValue !== null) seen.push(Number(r.oldValue));
+    }).observe(document, { attributes: true, attributeOldValue: true, subtree: true, attributeFilter: ['data-slots'] });
+  }, BARS);
+  await page.setViewportSize({ width: W, height: H });
+  const loads: unknown[] = [];
+  await page.goto(PIECE);
+  for (let i = 0; i < LOADS; i += 1) {
+    if (i > 0) await page.reload();
+    await ready(page);
+    const r = await readRows(page);
+    const extra = await page.evaluate(() => {
+      const stage = document.getElementById('score-stage')!;
+      const s = stage.getBoundingClientRect();
+      const fit = (window as unknown as { __pianopath?: { scoreFit?: () => Record<string, unknown> } }).__pianopath?.scoreFit?.() ?? {};
+      return {
+        stage: { top: Math.round(s.top), height: Math.round(s.height * 10) / 10, width: Math.round(s.width * 10) / 10 },
+        dataSlots: stage.getAttribute('data-slots'),
+        dataAhead: stage.getAttribute('data-ahead'),
+        dataSettled: stage.getAttribute('data-settled'),
+        slotHistory: ((window as unknown as { __u110slots?: number[] }).__u110slots ?? []).slice(),
+        fit: {
+          zoom: fit.zoom,
+          rowPx: fit.rowPx,
+          slotCount: fit.slotCount,
+          systemsPerWindow: fit.systemsPerWindow,
+          barsAsked: fit.barsAsked,
+          barsShown: fit.barsShown,
+          aheadState: fit.ahead,
+          readAhead: fit.readAhead,
+          shapeChanges: fit.shapeChanges,
+          priced: fit.priced,
+          piece: fit.piece,
+          frozen: fit.frozen,
+        },
+      };
+    });
+    loads.push({ load: i === 0 ? 'fresh' : `reload ${String(i)}`, rows: r.rows, overlapPx: r.overlapPx, intoNextSlotPx: r.intoNextSlotPx, ...extra });
+    await page.screenshot({ path: `${OUT}/twinkle-${String(W)}x${String(H)}-bars${String(BARS)}-${i === 0 ? 'fresh' : `reload-${String(i)}`}.png` });
+  }
+  writeFileSync(`${OUT}/twinkle-${String(W)}x${String(H)}-bars${String(BARS)}.json`, JSON.stringify(loads, null, 1));
+});

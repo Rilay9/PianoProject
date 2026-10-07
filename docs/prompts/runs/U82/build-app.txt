@@ -1,0 +1,6 @@
+npm run build:app   # final: the committed renderer, after npm ci; the revised tests
+precache  2236 entries (28608.56 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-9c191d2f.js
+exit=0

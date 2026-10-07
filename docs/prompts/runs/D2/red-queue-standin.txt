@@ -1,0 +1,20 @@
+F
+======================================================================
+FAIL: test_then_the_not_judged_families_then_the_unmeasurable_claims (tests.test_review_record.TestTheQueue.test_then_the_not_judged_families_then_the_unmeasurable_claims)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a7d183981b546b17f\tools\content\tests\test_review_record.py", line 297, in test_then_the_not_judged_families_then_the_unmeasurable_claims
+    self.assertEqual(not_judged - music_first, seen, "a not-judged family missing from the second tier")
+AssertionError: Items in the second set but not the first:
+'riff'
+'intro'
+'modal_vamp'
+'stride' : a not-judged family missing from the second tier
+
+----------------------------------------------------------------------
+Ran 1 test in 0.506s
+
+FAILED (failures=1)
+
+exit 1
+review.py restored: True

@@ -1,0 +1,4 @@
+﻿ScoreScreen.ts, the LF form found: false | the CRLF form found: true
+style.css, the LF form found: false | the CRLF form found: true
+exit 0
+git diff --stat on the two files (empty means untouched):

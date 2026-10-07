@@ -1,0 +1,42 @@
+HD2a evidence: song.classical.chopin-etude-op25-12.nifc (scores/imported/song.classical.chopin-etude-op25-12.nifc.mxl), identity sha256 e807b7b17e6dd9a25228c431ed2140cc5845e3dea926904683286ef33750b56e
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 18-18 -> R
+  bar 18 (source measure 17) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @70.5 L [36] + v2 [62]; @71.5 L [36] + v2 [60]
+  bar 18 onset 68 76/st1/v1/R:0.25 60/st2/v3/L:0.25
+  bar 18 onset 68.25 76/st1/v1/R:0.25 60/st2/v3/L:0.25
+  bar 18 onset 68.5 67/st1/v1/R:0.25 55/st2/v3/L:0.25
+  bar 18 onset 68.75 64/st1/v1/R:0.25 48/st2/v3/L:0.25
+  bar 18 onset 69 64/st1/v1/R:0.25 48/st2/v3/L:0.25
+  bar 18 onset 69.25 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+  bar 18 onset 69.5 52/st1/v1/R:0.25 36/st2/v3/L:0.25
+  bar 18 onset 69.75 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+  bar 18 onset 70 50/st1/v1/R:0.25 47/st2/v3/L:0.25
+  bar 18 onset 70.25 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+  bar 18 onset 70.5 62/st1/v1/R:0.25 62/st1/v2/L/x:1 36/st2/v3/L:0.25
+  bar 18 onset 70.75 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+  bar 18 onset 71 48/st1/v1/R:0.25 45/st2/v3/L:0.25
+  bar 18 onset 71.25 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+  bar 18 onset 71.5 60/st1/v1/R:0.25 60/st1/v2/L/x:0.5 36/st2/v3/L:0.25
+  bar 18 onset 71.75 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+
+ROW staff 1 voice 2 bars 74-74 -> R
+  bar 74 (source measure 73) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @294.5 L [36] + v2 [62]; @295.5 L [36] + v2 [60]
+  bar 74 onset 292 76/st1/v1/R:0.25 60/st2/v3/L:0.25
+  bar 74 onset 292.25 76/st1/v1/R:0.25 60/st2/v3/L:0.25
+  bar 74 onset 292.5 67/st1/v1/R:0.25 55/st2/v3/L:0.25
+  bar 74 onset 292.75 64/st1/v1/R:0.25 48/st2/v3/L:0.25
+  bar 74 onset 293 64/st1/v1/R:0.25 48/st2/v3/L:0.25
+  bar 74 onset 293.25 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+  bar 74 onset 293.5 52/st1/v1/R:0.25 36/st2/v3/L:0.25
+  bar 74 onset 293.75 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+  bar 74 onset 294 50/st1/v1/R:0.25 47/st2/v3/L:0.25
+  bar 74 onset 294.25 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+  bar 74 onset 294.5 62/st1/v1/R:0.25 62/st1/v2/L/x:1 36/st2/v3/L:0.25
+  bar 74 onset 294.75 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+  bar 74 onset 295 48/st1/v1/R:0.25 45/st2/v3/L:0.25
+  bar 74 onset 295.25 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+  bar 74 onset 295.5 60/st1/v1/R:0.25 60/st1/v2/L/x:0.5 36/st2/v3/L:0.25
+  bar 74 onset 295.75 55/st1/v1/R:0.25 43/st2/v3/L:0.25
+

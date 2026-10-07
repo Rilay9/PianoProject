@@ -28,6 +28,8 @@ import { EVIDENCE_DEFINITIONS } from '../../src/evidence/evidence';
 import { sightReadingOptionsFor } from '../../src/engine/sightReading';
 import type { CatalogItem, Curriculum, Lesson, Requirement } from '../../src/curriculum/types';
 import type { SessionRow } from '../../src/data/db';
+import { overlayShelf } from '../../src/curriculum/load';
+import type { ShelfPiece } from '../../src/data/booksStore';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { readPhrase } from './helpers/reader';
@@ -219,6 +221,59 @@ describe('a done requirement is the judging rung’s, like the other kinds', () 
   });
 });
 
+// Added (CL04, L79): a shelf twin's run counted only where the twin was itself
+// one of the rung's songs (`poolOf` read the listed ids), so a book piece the
+// rung lists, practised with its score from the rung, met nothing. The twin
+// inherits the rung's listing of its book piece: one run, one item, the rung's
+// judgement, and nothing for a run no rung or another rung judged.
+describe('a shelf twin’s run counts as the book piece the rung lists (L79)', () => {
+  const L = rung('L', {
+    songOptions: ['song.l'],
+    requirements: [{ kind: 'runs', from: 'songs', count: 1 }],
+  });
+  const L2 = rung('L2', {
+    songOptions: ['song.l'],
+    requirements: [{ kind: 'runs', from: 'songs', count: 2 }],
+  });
+  /** Another rung, which does not list the book piece. */
+  const K = rung('K', { songOptions: ['song.k'], requirements: [{ kind: 'runs', from: 'songs', count: 1 }] });
+  const shelfPiece = (twin: string | undefined, lessonIds: string[]): ShelfPiece => ({
+    book: { id: 'book.b', title: 'Method Book', kind: 'method', pieces: [], addedAt: '' },
+    piece: { id: 'p', title: 'Study No. 3', lessonIds, concepts: [], levelSource: 'estimated', ...(twin === undefined ? {} : { itemId: twin }) },
+    itemId: 'book.b/p',
+  });
+  const stateWith = (twin: string, rows: SessionRow[], lessons: Lesson[] = [L, K], on = ['L']): RungStates =>
+    rungState(rows, overlayShelf(curriculumOf(lessons), [shelfPiece(twin, on)]), VOCABULARY_V0, TODAY);
+
+  it('a measured run of the twin judged by the rung meets its songs requirement, as the book piece', () => {
+    const state = stateWith('import.t', [run('import.t', { lessonId: 'L' })]).byRung.get('L');
+    expect(state?.requirements[0]).toMatchObject({ holds: true, have: 1, items: ['book.b/p'] });
+    expect(state?.status).toBe('met');
+  });
+
+  it('judged by no rung, or by a rung that does not list the book piece, it meets nothing', () => {
+    const nowhere = stateWith('import.t', [run('import.t')]);
+    expect(nowhere.byRung.get('L')?.requirements[0]).toMatchObject({ holds: false, have: 0, items: [] });
+    const elsewhere = stateWith('import.t', [run('import.t', { lessonId: 'K' })]);
+    expect(elsewhere.byRung.get('L')?.requirements[0]).toMatchObject({ holds: false, have: 0 });
+    expect(elsewhere.byRung.get('K')?.requirements[0]).toMatchObject({ holds: false, have: 0 });
+  });
+
+  it('a twin that is itself one of the rung’s songs is one item: counted under its own id only', () => {
+    const state = stateWith('song.l', [run('song.l', { lessonId: 'L2' })], [L2], ['L2']).byRung.get('L2');
+    expect(state?.requirements[0]).toMatchObject({ holds: false, have: 1, need: 2, items: ['song.l'] });
+  });
+
+  it('under the rung’s own standard, like any run: 80 % does not meet 90 %', () => {
+    expect(stateWith('import.t', [run('import.t', { lessonId: 'L', accuracy: 0.8 })]).byRung.get('L')?.requirements[0]?.holds).toBe(false);
+  });
+
+  it('the paper run itself, the learner’s own answer, still meets nothing', () => {
+    const paper = run('book.b/p', { lessonId: 'L', mode: 'paper', tempoPct: 1, accuracy: 0, accuracyEstimated: true, selfReport: 'clean' });
+    expect(stateWith('import.t', [paper]).byRung.get('L')?.requirements[0]).toMatchObject({ holds: false, have: 0 });
+  });
+});
+
 describe('a rung the app cannot judge', () => {
   it('is never met by the app, and says so; the learner’s word is kept apart and meets nothing', () => {
     const state = stateOf([run('ex.u', { lessonId: 'U' })]).byRung.get('U');
@@ -321,5 +376,113 @@ describe('skill evidence is the learner’s everywhere; the reads a rung asks fo
     const rows = (await reads('R', [11, 12])).map((row) => ({ ...row, evidenceDefinitions: EVIDENCE_DEFINITIONS - 1 }));
     const state = rungState(rows, curriculum, VOCABULARY_V0, TODAY).byRung.get('R');
     expect(state?.requirements.map((r) => r.holds)).toEqual([false, false]);
+  });
+});
+
+// Added (RG1; FABLE §6; the reviewer's ruling, docs/review/responses/6e7475c1.md §5): a named
+// `runs` requirement checked item, performance and standard and never what the run covered, so a
+// four-bar loop at the pass pair completed a rung whose required item was the whole cut. The Score
+// screen now writes `wholeItem` (`coversWholeItem`, proved in `wholeItemRun.test.ts` and through the
+// screen in `observationsFromRun.test.ts`); here the requirement reads it. `range` alone is no
+// loop flag: every judged run carries one, the whole piece's included.
+describe('a runs requirement, named or unnamed, counts a run of the whole item (RG1, RG1a)', () => {
+  const CUT = 'excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh';
+  const PARENT = 'song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx';
+  const N = rung('N', {
+    exerciseOptions: ['scale.c', 'scale.g', 'drill.ear'],
+    songOptions: [CUT, PARENT, 'song.n'],
+    requirements: [
+      { kind: 'runs', from: 'exercises', items: ['scale.c', 'scale.g'], count: 2 },
+      { kind: 'runs', from: 'songs', items: [CUT], count: 1 },
+      { kind: 'runs', from: 'exercises', items: ['drill.ear'], count: 1 },
+      { kind: 'runs', from: 'songs', count: 1 },
+    ],
+  });
+  const curriculum = curriculumOf([N]);
+  const readingsOf = (rows: SessionRow[]) => rungState(rows, curriculum, VOCABULARY_V0, TODAY).byRung.get('N')?.requirements;
+  /** A Keep tempo run at the pass pair, judged by N, as the Score screen writes it since RG1. */
+  const at = (itemId: string, over: Partial<SessionRow>): SessionRow => run(itemId, { lessonId: 'N', ...over });
+  const whole = { range: { fromMeasure: 0, toMeasure: 3 }, wholeItem: true };
+  const loop = { range: { fromMeasure: 1, toMeasure: 2 }, wholeItem: false };
+
+  it('1. a normal full-item run counts', () => {
+    expect(readingsOf([at('scale.c', whole)])?.[0]).toMatchObject({ have: 1, items: ['scale.c'] });
+  });
+
+  it('2. a passing partial loop does not count toward the whole-item requirement', () => {
+    expect(readingsOf([at('scale.c', loop)])?.[0], 'a loop over bars 2–3 at the pass pair counted').toMatchObject({ have: 0, items: [] });
+    expect(readingsOf([at('scale.c', loop), at('scale.g', loop)])?.[0]?.holds, 'two partial loops met the rung').toBe(false);
+  });
+
+  it('3. a partial loop and a later full run count once', () => {
+    const later = { at: '2026-10-02T10:00:00.000Z' };
+    expect(readingsOf([at('scale.c', loop), at('scale.c', { ...whole, ...later })])?.[0]).toMatchObject({ have: 1, need: 2, items: ['scale.c'] });
+    expect(readingsOf([at('scale.c', loop), at('scale.c', { ...whole, ...later }), at('scale.g', whole)])?.[0]).toMatchObject({
+      holds: true,
+      have: 2,
+      items: ['scale.c', 'scale.g'],
+    });
+  });
+
+  it('4. a loop whose bars take in the whole item counts: the evidence covers the item although Loop was used', () => {
+    // The ladder's loop over every bar (`?ladder=1`): `wholeItem` is true from the step span
+    // (`wholeItemRun.test.ts` case 4), and the requirement counts it like a run without Loop.
+    expect(readingsOf([at('scale.c', whole), at('scale.g', whole)])?.[0]).toMatchObject({ holds: true, items: ['scale.c', 'scale.g'] });
+  });
+
+  it('5. the left-hand Bizet cut counts when its entire cut is covered: the cut is the item, not the parent', () => {
+    const lh = { hands: { played: 'L' as const, appPlayed: 'none' as const } };
+    expect(readingsOf([at(CUT, { ...whole, ...lh })])?.[1], 'the whole cut, left hand').toMatchObject({ holds: true, items: [CUT] });
+    expect(readingsOf([at(CUT, { ...loop, ...lh })])?.[1], 'part of the cut').toMatchObject({ holds: false, have: 0 });
+    // The parent's bars 1–12 played from the parent are a run of the parent, partial there, and
+    // never the cut: excerpt identity is the item id, unchanged.
+    const parentBars = { range: { fromMeasure: 0, toMeasure: 11 }, wholeItem: false };
+    expect(readingsOf([at(PARENT, parentBars)])?.[1], 'the parent’s bars 1–12').toMatchObject({ holds: false, have: 0 });
+    expect(readingsOf([at(PARENT, whole)])?.[1], 'the whole parent').toMatchObject({ holds: false, have: 0 });
+  });
+
+  it('6. drills and the other requirement kinds read nothing of it, as before', () => {
+    // A drill made when it opens has no range and no `wholeItem` (the drill screens write neither).
+    const drill = at('drill.ear', { mode: 'drill:ear', tempoMeasured: false, accuracy: 0.95 });
+    expect(readingsOf([drill])?.[2], 'a named drill').toMatchObject({ holds: true, items: ['drill.ear'] });
+    // (An unnamed pool reads `wholeItem` too since RG1a: case 8.)
+    // `done` and `measure` read their own fields only.
+    const D = rung('D', {
+      exerciseOptions: ['drill.check', 'ex.staccato'],
+      mastery: { minAccuracy: 0, minTempoPct: 0 },
+      requirements: [
+        { kind: 'done', item: 'drill.check' },
+        { kind: 'measure', measure: 'articulation' },
+      ],
+    });
+    const rows = [
+      run('drill.check', { lessonId: 'D', mode: 'drill:checklist', accuracy: 'not measured', tempoMeasured: false, missed: 0, ...loop }),
+      run('ex.staccato', { lessonId: 'D', technique: { kind: 'articulation', result: 'met', judged: 8 }, ...loop }),
+    ];
+    expect(rungState(rows, curriculumOf([D]), VOCABULARY_V0, TODAY).byRung.get('D')?.requirements.map((r) => r.holds)).toEqual([true, true]);
+  });
+
+  it('7. legacy rows, written before the fact, count as they always did', () => {
+    // No `wholeItem`: the row does not say, and the rule it was written under counted it. A
+    // ranged legacy row is not read as partial: `range` was written on whole runs too.
+    expect(readingsOf([at('scale.c', {})])?.[0], 'a row from before C1, no range').toMatchObject({ have: 1, items: ['scale.c'] });
+    expect(readingsOf([at('scale.c', { range: { fromMeasure: 1, toMeasure: 2 } })])?.[0], 'a C1 row with a range').toMatchObject({
+      have: 1,
+      items: ['scale.c'],
+    });
+    expect(readingsOf([at(CUT, { range: { fromMeasure: 0, toMeasure: 11 } })])?.[1]?.holds, 'a legacy run of the cut').toBe(true);
+  });
+
+  it('8. an unnamed songs pool refuses a new partial loop and counts a full run and a legacy row (RG1a)', () => {
+    // The mirror of case 6's old unnamed assertion: 61 shipped rungs ask `from: songs` with no
+    // `items`, and a passing loop of part of one song must not stand for the song (FABLE §6;
+    // `docs/review/responses/bb6289f2.md` §1). The requirement is the fourth of N.
+    const unnamed = (rows: SessionRow[]) => readingsOf(rows)?.[3];
+    expect(unnamed([at('song.n', loop)]), 'an unnamed-song partial loop').toMatchObject({ holds: false, have: 0, items: [] });
+    expect(unnamed([at('song.n', whole)]), 'an unnamed-song full run').toMatchObject({ holds: true, have: 1, items: ['song.n'] });
+    expect(unnamed([at('song.n', loop), at('song.n', { ...whole, at: '2026-10-02T10:00:00.000Z' })]), 'a partial loop, then a full run').toMatchObject({ have: 1, items: ['song.n'] });
+    // A row with no `wholeItem` (legacy, drill, paper) counts as before, ranged or not.
+    expect(unnamed([at('song.n', {})]), 'a legacy unnamed row').toMatchObject({ holds: true, items: ['song.n'] });
+    expect(unnamed([at('song.n', { range: { fromMeasure: 1, toMeasure: 2 } })]), 'a legacy ranged unnamed row').toMatchObject({ holds: true, items: ['song.n'] });
   });
 });

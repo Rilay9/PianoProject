@@ -1,0 +1,151 @@
+# checks for 142 path(s): 142 matched, 0 unmatched
+# app/src/curriculum/eligibility.ts: app/src/**, app/src/curriculum/**
+# app/src/curriculum/session.ts: app/src/**, app/src/curriculum/session.ts, app/src/curriculum/**
+# app/src/data/sessionRun.ts: app/src/**, app/src/data/**, app/src/data/sessionRun.ts
+# app/src/router.ts: app/src/**, app/src/router.ts
+# app/src/style.css: app/src/**, app/src/style.css
+# app/src/ui/help.ts: app/src/**, app/src/ui/*.ts, app/src/ui/help*.ts
+# app/src/ui/screens/DrillScreen.ts: app/src/**, app/src/ui/screens/DrillScreen.*
+# app/src/ui/screens/LessonScreen.ts: app/src/**, app/src/ui/screens/LessonScreen.ts
+# app/src/ui/screens/ScoreScreen.ts: app/src/**, app/src/ui/screens/ScoreScreen.*
+# app/src/ui/screens/TodayScreen.ts: app/src/**, app/src/ui/screens/TodayScreen.ts
+# app/src/ui/sessionRunner.ts: app/src/**, app/src/ui/*.ts, app/src/ui/sessionRunner.ts
+# app/tests/e2e/session-run.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/e2e/today.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/e2e/transfer-offer.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/fallbackOrder.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/lessonPagePicksPassTheAdmission.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/oneGateBoundary.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/parallelStrands.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sessionAdaptation.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sessionClock.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sessionProtocol.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sessionRecheck.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sessionRun.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sessionRunNeverEvidence.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sessionTransition.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sightReadingIsNotAPiece.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/taughtByAncestry.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/todayOpensWithItsRung.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/todaySessionRun.test.ts: app/tests/unit/*.test.ts
+# docs/04-ui-spec.md: docs/04-ui-spec.md, docs/**
+# docs/prompts/checks.json: docs/prompts/checks.json, docs/**
+# docs/prompts/pictures/x1/today-before-start-342x740.png: docs/**
+# docs/prompts/pictures/x1/today-continue-342x740.png: docs/**
+# docs/prompts/pictures/x1/today-continue-768x1024.png: docs/**
+# docs/prompts/pictures/x1/today-finished-342x740.png: docs/**
+# docs/prompts/pictures/x1/today-finished-768x1024.png: docs/**
+# docs/prompts/pictures/x1/transition-after-drill-342x740.png: docs/**
+# docs/prompts/pictures/x1/transition-after-drill-768x1024.png: docs/**
+# docs/prompts/pictures/x1/transition-after-piece-342x740.png: docs/**
+# docs/prompts/pictures/x1/transition-last-342x740.png: docs/**
+# docs/prompts/pictures/x1/transition-repurposed-342x740.png: docs/**
+# docs/prompts/runs/X1/ENTRY.md: docs/**
+# docs/prompts/runs/X1/build-app-1.txt: docs/**
+# docs/prompts/runs/X1/build-app-head.txt: docs/**
+# docs/prompts/runs/X1/checks-for-paths.txt: docs/**
+# docs/prompts/runs/X1/content-build-1-before-copy.txt: docs/**
+# docs/prompts/runs/X1/content-build.txt: docs/**
+# docs/prompts/runs/X1/content-checks-map.txt: docs/**
+# docs/prompts/runs/X1/copy.txt: docs/**
+# docs/prompts/runs/X1/diaries-after.txt: docs/**
+# docs/prompts/runs/X1/diaries-after/ambiguity-a.txt: docs/**
+# docs/prompts/runs/X1/diaries-after/ambiguity-b.txt: docs/**
+# docs/prompts/runs/X1/diaries-after/intermediate.txt: docs/**
+# docs/prompts/runs/X1/diaries-after/musician.txt: docs/**
+# docs/prompts/runs/X1/diaries-after/skip.txt: docs/**
+# docs/prompts/runs/X1/diaries-before.txt: docs/**
+# docs/prompts/runs/X1/diaries-before/ambiguity-a.txt: docs/**
+# docs/prompts/runs/X1/diaries-before/ambiguity-b.txt: docs/**
+# docs/prompts/runs/X1/diaries-before/intermediate.txt: docs/**
+# docs/prompts/runs/X1/diaries-before/musician.txt: docs/**
+# docs/prompts/runs/X1/diaries-before/skip.txt: docs/**
+# docs/prompts/runs/X1/duet-on-head-swap-2.txt: docs/**
+# docs/prompts/runs/X1/duet-on-head-swap.txt: docs/**
+# docs/prompts/runs/X1/e2e-duet-alone-1.txt: docs/**
+# docs/prompts/runs/X1/e2e-duet-alone-2.txt: docs/**
+# docs/prompts/runs/X1/e2e-duet-head-app-x3.txt: docs/**
+# docs/prompts/runs/X1/e2e-duet-head-app.txt: docs/**
+# docs/prompts/runs/X1/e2e-duet-probe-2.txt: docs/**
+# docs/prompts/runs/X1/e2e-duet-probe-3.txt: docs/**
+# docs/prompts/runs/X1/e2e-duet-probe.txt: docs/**
+# docs/prompts/runs/X1/e2e-duet-single.txt: docs/**
+# docs/prompts/runs/X1/e2e-rerun-first-day-duet.txt: docs/**
+# docs/prompts/runs/X1/e2e-session-run-1.txt: docs/**
+# docs/prompts/runs/X1/e2e-session-run-2.txt: docs/**
+# docs/prompts/runs/X1/e2e-targeted-1.txt: docs/**
+# docs/prompts/runs/X1/e2e-union-1-wrong-origin.txt: docs/**
+# docs/prompts/runs/X1/e2e-union-final.txt: docs/**
+# docs/prompts/runs/X1/e2e-union-list.txt: docs/**
+# docs/prompts/runs/X1/lint-final.txt: docs/**
+# docs/prompts/runs/X1/mutant-any-demand-step-is-redundant.txt: docs/**
+# docs/prompts/runs/X1/mutant-drill-opened-without-token.txt: docs/**
+# docs/prompts/runs/X1/mutant-failure-completes.txt: docs/**
+# docs/prompts/runs/X1/mutant-hidden-time-counts.txt: docs/**
+# docs/prompts/runs/X1/mutant-jam-list-order.txt: docs/**
+# docs/prompts/runs/X1/mutant-left-activity-never-returns.txt: docs/**
+# docs/prompts/runs/X1/mutant-no-accrual-cap.txt: docs/**
+# docs/prompts/runs/X1/mutant-no-contact-assumption.txt: docs/**
+# docs/prompts/runs/X1/mutant-no-token-check.txt: docs/**
+# docs/prompts/runs/X1/mutant-offer-opened-unkept.txt: docs/**
+# docs/prompts/runs/X1/mutant-practice-row-first.txt: docs/**
+# docs/prompts/runs/X1/mutant-quick-check-any-drill.txt: docs/**
+# docs/prompts/runs/X1/mutant-recheck-counts-its-own-visit.txt: docs/**
+# docs/prompts/runs/X1/mutant-recheck-invalidates-by-id.txt: docs/**
+# docs/prompts/runs/X1/mutant-repurposing-unsaid.txt: docs/**
+# docs/prompts/runs/X1/mutant-rung-list-ungated.txt: docs/**
+# docs/prompts/runs/X1/mutant-second-attempt-skips-too.txt: docs/**
+# docs/prompts/runs/X1/mutant-session-is-evidence.txt: docs/**
+# docs/prompts/runs/X1/mutant-unknown-skips-too.txt: docs/**
+# docs/prompts/runs/X1/mutants-recheck-invalidates-by-id-no-contact-assumption.txt: docs/**
+# docs/prompts/runs/X1/mutants.txt: docs/**
+# docs/prompts/runs/X1/npm-ci.txt: docs/**
+# docs/prompts/runs/X1/parity-reference.txt: docs/**
+# docs/prompts/runs/X1/probe-head-cards.txt: docs/**
+# docs/prompts/runs/X1/probe-head-refusals.txt: docs/**
+# docs/prompts/runs/X1/probe-head.txt: docs/**
+# docs/prompts/runs/X1/probe-l113-only-cards.txt: docs/**
+# docs/prompts/runs/X1/probe-l113-only-refusals.txt: docs/**
+# docs/prompts/runs/X1/probe-l113-only.txt: docs/**
+# docs/prompts/runs/X1/probe-x1-cards.txt: docs/**
+# docs/prompts/runs/X1/probe-x1-refusals.txt: docs/**
+# docs/prompts/runs/X1/probe-x1.txt: docs/**
+# docs/prompts/runs/X1/red-vitest-head-source-2.txt: docs/**
+# docs/prompts/runs/X1/red-vitest-head-source-3.txt: docs/**
+# docs/prompts/runs/X1/red-vitest-head-source.txt: docs/**
+# docs/prompts/runs/X1/restore-from-head-2.txt: docs/**
+# docs/prompts/runs/X1/restore-from-head-3.txt: docs/**
+# docs/prompts/runs/X1/restore-from-head.txt: docs/**
+# docs/prompts/runs/X1/restore-reports.txt: docs/**
+# docs/prompts/runs/X1/scripts-copy.ps1: docs/**
+# docs/prompts/runs/X1/scripts-duet_on_head.sh: docs/**
+# docs/prompts/runs/X1/scripts-e2e-union.sh: docs/**
+# docs/prompts/runs/X1/scripts-e2e.sh: docs/**
+# docs/prompts/runs/X1/scripts-line_endings.py: docs/**
+# docs/prompts/runs/X1/scripts-mutants.py: docs/**
+# docs/prompts/runs/X1/scripts-playwright.x1-4373-head.config.ts: docs/**
+# docs/prompts/runs/X1/scripts-playwright.x1-4373.config.ts: docs/**
+# docs/prompts/runs/X1/scripts-red_on_head.sh: docs/**
+# docs/prompts/runs/X1/scripts-revise_fixtures.py: docs/**
+# docs/prompts/runs/X1/scripts-router_session.py: docs/**
+# docs/prompts/runs/X1/scripts-splice_checks.py: docs/**
+# docs/prompts/runs/X1/scripts-storageState.x1-4373.json: docs/**
+# docs/prompts/runs/X1/scripts-swap_head.py: docs/**
+# docs/prompts/runs/X1/scripts-zz-duet-probe.spec.ts: docs/**
+# docs/prompts/runs/X1/scripts-zzX1CardProbe.test.ts: docs/**
+# docs/prompts/runs/X1/swap-to-head-2.txt: docs/**
+# docs/prompts/runs/X1/swap-to-head-3.txt: docs/**
+# docs/prompts/runs/X1/swap-to-head.txt: docs/**
+# docs/prompts/runs/X1/tsc-final.txt: docs/**
+# docs/prompts/runs/X1/vitest-expectedNote-alone.txt: docs/**
+# docs/prompts/runs/X1/vitest-full-1.txt: docs/**
+# docs/prompts/runs/X1/vitest-full-2.txt: docs/**
+# docs/prompts/runs/X1/vitest-full-final.txt: docs/**
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_checks_for_paths.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_ci_order.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4
+states	app	npm run states

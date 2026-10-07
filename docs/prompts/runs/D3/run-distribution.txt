@@ -1,0 +1,10 @@
+test_the_grammar_meets_every_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_grammar_meets_every_bound_on_every_recipe) ... ok
+test_the_random_walk_fails_a_shape_bound_on_every_recipe (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_random_walk_fails_a_shape_bound_on_every_recipe)
+The suite is red on the adversary generator: shape, not the hard layer, is what it lacks. ... ok
+test_the_target_is_at_the_contract_s_density_in_every_study (tools.content.tests.test_study_distribution.TestTheDistribution.test_the_target_is_at_the_contract_s_density_in_every_study) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 130.912s
+
+OK
+exit 0

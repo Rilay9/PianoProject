@@ -6,7 +6,7 @@ videos:
   - label: "C. Petzold: Minuet in G Major BWV Anh. 114 | Slow Piano Tutorial | Late Beginner"
     url: "https://www.youtube.com/watch?v=fVbPrKuc2F4"
     teacher: "Classical Piano Made Playable"
-readingTime: 3
+readingTime: 4
 ---
 
 The classical track starts with dances, because a dance has a fixed pulse, short
@@ -26,7 +26,7 @@ its own shape and its own phrasing. Practise it alone, musically, as if it were
 the piece.
 
 **Articulation.** Baroque keyboard music has almost no marks in the original, so
-articulation is your decision. The convention that works: **stepwise notes
+articulation is your decision. One common starting point: **stepwise notes
 legato, leaps detached**, and long notes slightly separated from what follows.
 A little space between phrases is worth more than any dynamic.
 
@@ -43,7 +43,7 @@ written out as eighth notes rather than as a sign, so that you end up with both 
 Magdalena Bach's notebook: Petzold's *Minuet in G*, BWV Anh. 114, and its
 companions in G minor (Anh. 115, here only its first sixteen bars),
 D minor (Anh. 132) and F major (Anh. 113).
-Then the theme of Mozart's K. 331, set here in C major in 3/4, a minuet-length
+Then the theme of Mozart's K. 331, set here in C major in 3/4 (Mozart wrote it in A major, in 6/8), a minuet-length
 tune over the plainest accompaniment; and Beethoven's *Écossaise*, in F
 for the right hand alone — a quick 2/4 with position
 shifts. More at this level under Classical in the Library.

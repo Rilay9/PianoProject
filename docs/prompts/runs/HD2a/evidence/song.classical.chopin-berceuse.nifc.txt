@@ -1,0 +1,77 @@
+HD2a evidence: song.classical.chopin-berceuse.nifc (scores/imported/song.classical.chopin-berceuse.nifc.mxl), identity sha256 68108e89170fd7021984bd13db05459569a9f7763288b1adcdc2427abbcad68f
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 39-39 -> R
+  bar 39 (source measure 38) st1 v2: L/x -> R; onsets 31 {'conflict': 5, 'free': 26}; second voice(s) [3]; e.g. @114 L [37] + v2 [80, 89]; @114.5 L [56] + v2 [82]
+  bar 39 onset 114 89/st1/v2/L/x:0.5 80/st1/v2/L/x:0.5 37/st2/v3/L:0.5
+  bar 39 onset 114.5 82/st1/v2/L/x:0.0833333 56/st2/v3/L:0.5
+  bar 39 onset 114.583 90/st1/v1/R:0.166667 90/st1/v2/L/x:0.0833333
+  bar 39 onset 114.667 82/st1/v2/L/x:0.0833333
+  bar 39 onset 114.75 80/st1/v2/L/x:0.0833333
+  bar 39 onset 114.833 89/st1/v1/R:0.166667 89/st1/v2/L/x:0.0833333
+  bar 39 onset 114.917 80/st1/v2/L/x:0.0833333
+  bar 39 onset 115 82/st1/v2/L/x:0.0833333 65/st2/v3/L:0.5 61/st2/v3/L:0.5
+  bar 39 onset 115.083 90/st1/v1/R:0.166667 90/st1/v2/L/x:0.0833333
+  bar 39 onset 115.167 82/st1/v2/L/x:0.0833333
+  bar 39 onset 115.25 77/st1/v2/L/x:0.0833333
+  bar 39 onset 115.333 85/st1/v1/R:0.166667 85/st1/v2/L/x:0.0833333
+  bar 39 onset 115.417 77/st1/v2/L/x:0.0833333
+  bar 39 onset 115.5 80/st1/v2/L/x:0.0833333 66/st2/v3/L:0.5 60/st2/v3/L:0.5
+  bar 39 onset 115.583 89/st1/v1/R:0.166667 89/st1/v2/L/x:0.0833333
+  bar 39 onset 115.667 80/st1/v2/L/x:0.0833333
+  bar 39 onset 115.75 78/st1/v2/L/x:0.0833333
+  bar 39 onset 115.833 87/st1/v1/R:0.166667 87/st1/v2/L/x:0.0833333
+  bar 39 onset 115.917 78/st1/v2/L/x:0.0833333
+  bar 39 onset 116 80/st1/v2/L/x:0.0833333 56/st2/v3/L:1
+  bar 39 onset 116.083 89/st1/v1/R:0.166667 89/st1/v2/L/x:0.0833333
+  bar 39 onset 116.167 80/st1/v2/L/x:0.0833333
+  bar 39 onset 116.25 75/st1/v2/L/x:0.0833333
+  bar 39 onset 116.333 84/st1/v1/R:0.166667 84/st1/v2/L/x:0.0833333
+  bar 39 onset 116.417 75/st1/v2/L/x:0.0833333
+  bar 39 onset 116.5 78/st1/v2/L/x:0.0833333
+  bar 39 onset 116.583 87/st1/v1/R:0.166667 87/st1/v2/L/x:0.0833333
+  bar 39 onset 116.667 78/st1/v2/L/x:0.0833333
+  bar 39 onset 116.75 77/st1/v2/L/x:0.0833333
+  bar 39 onset 116.833 85/st1/v1/R:0.166667 85/st1/v2/L/x:0.0833333
+  bar 39 onset 116.917 77/st1/v2/L/x:0.0833333
+
+ROW staff 1 voice 2 bars 42-42 -> R
+  bar 42 (source measure 41) st1 v2: L/x -> R; onsets 36 {'conflict': 5, 'free': 31}; second voice(s) [3]; e.g. @123 L [37] + v2 [80]; @123.5 L [56] + v2 [82]
+  bar 42 onset 123 80/st1/v2/L/x:0.0833333 37/st2/v3/L:0.5
+  bar 42 onset 123.083 89/st1/v1/R:0.166667 89/st1/v2/L/x:0.0833333
+  bar 42 onset 123.167 80/st1/v2/L/x:0.0833333
+  bar 42 onset 123.25 81/st1/v2/L/x:0.0833333
+  bar 42 onset 123.333 90/st1/v1/R:0.166667 90/st1/v2/L/x:0.0833333
+  bar 42 onset 123.417 81/st1/v2/L/x:0.0833333
+  bar 42 onset 123.5 82/st1/v2/L/x:0.0833333 56/st2/v3/L:0.5
+  bar 42 onset 123.583 91/st1/v1/R:0.166667 91/st1/v2/L/x:0.0833333
+  bar 42 onset 123.667 82/st1/v2/L/x:0.0833333
+  bar 42 onset 123.75 83/st1/v2/L/x:0.0833333
+  bar 42 onset 123.833 92/st1/v1/R:0.166667 92/st1/v2/L/x:0.0833333
+  bar 42 onset 123.917 83/st1/v2/L/x:0.0833333
+  bar 42 onset 124 84/st1/v2/L/x:0.0833333 65/st2/v3/L:0.5 61/st2/v3/L:0.5
+  bar 42 onset 124.083 93/st1/v1/R:0.166667 93/st1/v2/L/x:0.0833333
+  bar 42 onset 124.167 84/st1/v2/L/x:0.0833333
+  bar 42 onset 124.25 85/st1/v2/L/x:0.0833333
+  bar 42 onset 124.333 94/st1/v1/R:0.166667 94/st1/v2/L/x:0.0833333
+  bar 42 onset 124.417 85/st1/v2/L/x:0.0833333
+  bar 42 onset 124.5 86/st1/v2/L/x:0.0833333 66/st2/v3/L:0.5 60/st2/v3/L:0.5
+  bar 42 onset 124.583 95/st1/v1/R:0.166667 95/st1/v2/L/x:0.0833333
+  bar 42 onset 124.667 86/st1/v2/L/x:0.0833333
+  bar 42 onset 124.75 87/st1/v2/L/x:0.0833333
+  bar 42 onset 124.833 96/st1/v1/R:0.166667 96/st1/v2/L/x:0.0833333
+  bar 42 onset 124.917 87/st1/v2/L/x:0.0833333
+  bar 42 onset 125 88/st1/v2/L/x:0.0833333 56/st2/v3/L:1
+  bar 42 onset 125.083 97/st1/v1/R:0.166667 97/st1/v2/L/x:0.0833333
+  bar 42 onset 125.167 88/st1/v2/L/x:0.0833333
+  bar 42 onset 125.25 89/st1/v2/L/x:0.0833333
+  bar 42 onset 125.333 98/st1/v1/R:0.166667 98/st1/v2/L/x:0.0833333
+  bar 42 onset 125.417 89/st1/v2/L/x:0.0833333
+  bar 42 onset 125.5 90/st1/v2/L/x:0.0833333
+  bar 42 onset 125.583 99/st1/v1/R:0.166667 99/st1/v2/L/x:0.0833333
+  bar 42 onset 125.667 90/st1/v2/L/x:0.0833333
+  bar 42 onset 125.75 91/st1/v2/L/x:0.0833333
+  bar 42 onset 125.833 100/st1/v1/R:0.166667 100/st1/v2/L/x:0.0833333
+  bar 42 onset 125.917 91/st1/v2/L/x:0.0833333
+

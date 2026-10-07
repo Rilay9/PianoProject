@@ -1,0 +1,13 @@
+npm run build:app
+
+> pianopath@0.1.0 build:app
+> node scripts/generate-icons.mjs && tsc -b && vite build
+
+wrote icon-192.png (987 bytes)
+wrote icon-512.png (4963 bytes)
+wrote icon-maskable-192.png (851 bytes)
+wrote icon-maskable-512.png (3982 bytes)
+tests/unit/sessionTransition.test.ts(90,7): error TS2322: Type 'Mock<Procedure | Constructable>' is not assignable to type '() => void'.
+  Type 'MockInstance<Procedure | Constructable> & (new (...args: any[]) => any) & {}' is not assignable to type '() => void'.
+    Type 'MockInstance<Procedure | Constructable> & (new (...args: any[]) => any) & {}' provides no match for the signature '(): void'.
+exit=2

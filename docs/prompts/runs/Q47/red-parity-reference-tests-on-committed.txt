@@ -1,0 +1,79 @@
+$ python -m unittest discover -s tools/midi-cleanup/tests -p test_parity_reference.py -v
+# cwd: /c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693
+# CI=<unset>
+
+test_a_missing_committed_fixture_fails_everywhere (test_parity_reference.TestTheReferenceWriter.test_a_missing_committed_fixture_fails_everywhere) ... ERROR
+test_in_ci_a_missing_recording_fails_after_the_rest_is_written (test_parity_reference.TestTheReferenceWriter.test_in_ci_a_missing_recording_fails_after_the_rest_is_written) ... FAIL
+test_on_a_developer_checkout_a_missing_recording_is_reported_not_failed (test_parity_reference.TestTheReferenceWriter.test_on_a_developer_checkout_a_missing_recording_is_reported_not_failed) ... FAIL
+test_the_one_track_fixture_is_written_with_a_hand_split (test_parity_reference.TestTheReferenceWriter.test_the_one_track_fixture_is_written_with_a_hand_split) ... FAIL
+test_the_writer_refuses_a_fixture_it_expects_split_that_is_not (test_parity_reference.TestTheReferenceWriter.test_the_writer_refuses_a_fixture_it_expects_split_that_is_not) ... ERROR
+
+======================================================================
+ERROR: test_a_missing_committed_fixture_fails_everywhere (test_parity_reference.TestTheReferenceWriter.test_a_missing_committed_fixture_fails_everywhere)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_parity_reference.py", line 95, in test_a_missing_committed_fixture_fails_everywhere
+    code, printed = self.run_main([("tools/midi-cleanup/tests/fixtures/absent.mid", False)],
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_parity_reference.py", line 57, in run_main
+    code = parity_reference.main()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\parity_reference.py", line 211, in main
+    path = APP_FIXTURES_DIR / name
+           ~~~~~~~~~~~~~~~~~^~~~~~
+TypeError: unsupported operand type(s) for /: 'WindowsPath' and 'tuple'
+
+======================================================================
+ERROR: test_the_writer_refuses_a_fixture_it_expects_split_that_is_not (test_parity_reference.TestTheReferenceWriter.test_the_writer_refuses_a_fixture_it_expects_split_that_is_not)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_parity_reference.py", line 76, in test_the_writer_refuses_a_fixture_it_expects_split_that_is_not
+    code, printed = self.run_main([(TWO_TRACKS, True)], ci=None)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_parity_reference.py", line 57, in run_main
+    code = parity_reference.main()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\parity_reference.py", line 211, in main
+    path = APP_FIXTURES_DIR / name
+           ~~~~~~~~~~~~~~~~~^~~~~~
+TypeError: unsupported operand type(s) for /: 'WindowsPath' and 'tuple'
+
+======================================================================
+FAIL: test_in_ci_a_missing_recording_fails_after_the_rest_is_written (test_parity_reference.TestTheReferenceWriter.test_in_ci_a_missing_recording_fails_after_the_rest_is_written)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_parity_reference.py", line 82, in test_in_ci_a_missing_recording_fails_after_the_rest_is_written
+    code, printed = self.run_main([self.entry(ONE_TRACK)], ci="true")
+                                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_parity_reference.py", line 62, in entry
+    self.assertEqual(len(found), 1, f"{relative} is not in APP_FIXTURES once")
+AssertionError: 0 != 1 : tools/midi-cleanup/tests/fixtures/one-track-two-hands.mid is not in APP_FIXTURES once
+
+======================================================================
+FAIL: test_on_a_developer_checkout_a_missing_recording_is_reported_not_failed (test_parity_reference.TestTheReferenceWriter.test_on_a_developer_checkout_a_missing_recording_is_reported_not_failed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_parity_reference.py", line 90, in test_on_a_developer_checkout_a_missing_recording_is_reported_not_failed
+    code, printed = self.run_main([self.entry(ONE_TRACK)], ci=None)
+                                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_parity_reference.py", line 62, in entry
+    self.assertEqual(len(found), 1, f"{relative} is not in APP_FIXTURES once")
+AssertionError: 0 != 1 : tools/midi-cleanup/tests/fixtures/one-track-two-hands.mid is not in APP_FIXTURES once
+
+======================================================================
+FAIL: test_the_one_track_fixture_is_written_with_a_hand_split (test_parity_reference.TestTheReferenceWriter.test_the_one_track_fixture_is_written_with_a_hand_split)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_parity_reference.py", line 66, in test_the_one_track_fixture_is_written_with_a_hand_split
+    code, printed = self.run_main([self.entry(ONE_TRACK)], ci=None)
+                                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\test_parity_reference.py", line 62, in entry
+    self.assertEqual(len(found), 1, f"{relative} is not in APP_FIXTURES once")
+AssertionError: 0 != 1 : tools/midi-cleanup/tests/fixtures/one-track-two-hands.mid is not in APP_FIXTURES once
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.026s
+
+FAILED (failures=3, errors=2)
+
+# exit code: 1

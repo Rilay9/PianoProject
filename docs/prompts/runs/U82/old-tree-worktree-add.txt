@@ -1,0 +1,4 @@
+﻿git worktree add --detach build/u82-old 85bd683
+Preparing worktree (detached HEAD 85bd683a)
+HEAD is now at 85bd683a G1 landed (Entry 112): the worktree merged clean, the chain on the merged tree green but for E2a's contact case, aligned to G1's how and rerun green; the entry and captures recorded, L97, L59, S8, L32 and G63 updated, G71 and U76 recorded, handoff handoffs/b48342f.md with two questions; G1b and G2 wait on its review
+exit=0

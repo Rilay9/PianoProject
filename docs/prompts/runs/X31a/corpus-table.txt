@@ -1,0 +1,37 @@
+scores the built catalogue names with a MusicXML file: 2013 (build probe 2013, app probe 2013); unreadable on either side: 1
+compared: 2012
+the build's opening equals the app's (to a hundredth): as X31 shipped it 2007; after X31a 2011
+differing after X31a: 1
+  late-tempo: 0 — the app opens at its default 100 (a note sounds before the file's first tempo); the build opens at a mark
+  sound-before-mark: 0 — the app opens at a tempo; music21 has a note beginning before the build's first mark, so the build opens at 100 (a <cue/> note music21 reads as a note, or a direction music21 moves by an <offset> that does not sound)
+  mark-over-sound: 0 — a mark and a <sound tempo> at the opening disagree (in one direction, or side by side): music21 keeps the mark, the app the sound
+  dropped-sound: 1 — the app's opening <sound tempo> stands in a direction whose <metronome> music21 cannot read: music21 drops the sound with the mark and takes another tempo at the same place
+  no-number: 0 — music21 reads no tempo at the opening where the app reads one (a number music21 cannot read, or a <sound tempo> music21 drops beside an unreadable <metronome>)
+  other: 0 — not explained by the forms above: read by hand
+the build's opening moved by X31a (X31's != X31a's): 4; of them now equal to the app's: 4; equal before and not after: 0
+scores where a sounding note begins before the build's first readable mark: 4
+scores where counting grace notes as sounding decides it (a grace note alone before the mark): 0
+
+the four late-tempo files X31 named (id, the build as X31 shipped it → after X31a, the app's opening, equal now):
+  Bach, WTC I Prelude 2 (song.classical.bach-wtc1-prelude-2): 145 → 100; app 100; equal; the build's first mark at offset 108.0, first sound at 0.0; the app's first event at bar ordinal 27 +0
+  Carol of the Bells medley (song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx): 152 → 100; app 100; equal; the build's first mark at offset 72.0, first sound at 0.0; the app's first event at bar ordinal 24 +0
+  Le Festin (song.pop.camille-le-festin-piano-arr-kno.pdmx): 150 → 100; app 100; equal; the build's first mark at offset 22.5, first sound at 0.0; the app's first event at bar ordinal 5 +0
+  Fallout 4 trailer (song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx): 144 → 100; app 100; equal; the build's first mark at offset 133.0, first sound at 0.0; the app's first event at bar ordinal 44 +1
+
+every score whose build opening X31a moved (id, X31's → X31a's, the app's, equal now):
+  song.classical.bach-wtc1-prelude-2	145 → 100	app 100	equal
+  song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx	152 → 100	app 100	equal
+  song.pop.camille-le-festin-piano-arr-kno.pdmx	150 → 100	app 100	equal
+  song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx	144 → 100	app 100	equal
+
+X3d's moved openings: 179 listed; found in both probes: 179
+  the build's opening, as the label rounds, equals the app's label after X3d, after X31a: 179
+  the build's opening equals the app's reader to a hundredth, after X31a: 179
+
+== dropped-sound (1): the app's opening <sound tempo> stands in a direction whose <metronome> music21 cannot read: music21 drops the sound with the mark and takes another tempo at the same place
+id	build X31	build X31a	app opening	app from	app mark at the opening	app first event	build first mark offset	build first sound	catalogue tempoBpm	in X3d's 179
+song.classical.satie-gymnopedie-1	76.0002	76.0002	60	sound	quarter = 76 (76 quarters)	bar ordinal 0 +0: 60 (sound)	0.0	0.0	60.0	no
+
+unreadable:
+song.classical.mozart-k545-i.alt	MusicXMLImportException: In part (Piano), measure (18): incorrect accidental 9.0 for pitch F3	
+exit=0

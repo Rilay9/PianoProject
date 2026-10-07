@@ -1,0 +1,31 @@
+﻿$ (cwd .) robocopy "C:\Users\yalir\repos\Piano Stuff\PianoProject\app\public\content" "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ae09419f09a33889c\app\public\content" /E /NFL /NDL /NP
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Tuesday, September 29, 2026 2:08:29 AM
+   Source : C:\Users\yalir\repos\Piano Stuff\PianoProject\app\public\content\
+     Dest : C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ae09419f09a33889c\app\public\content\
+
+    Files : *.*
+	    
+  Options : *.* /NDL /NFL /S /E /DCOPY:DA /COPY:DAT /NP /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        11         4         7         0         0         0
+   Files :      2155      2155         0         0         0         0
+   Bytes :   23.64 m   23.64 m         0         0         0         0
+   Times :   0:00:01   0:00:01                       0:00:00   0:00:00
+
+
+   Speed :           15,060,670 Bytes/sec.
+   Speed :              861.778 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 2:08:31 AM
+
+exit=1

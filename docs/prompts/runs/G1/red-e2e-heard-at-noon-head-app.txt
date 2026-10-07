@@ -1,0 +1,49 @@
+﻿node.exe : [WebServer] (node:68368) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:71064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:64356) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\lab.spec.ts:461:3 › Today's sight-read › heard at noon, left, read in the evening: not a first reading, and the history says so (31.2s)
+
+
+  1) tests\e2e\lab.spec.ts:461:3 › Today's sight-read › heard at noon, left, read in the evening: not a first reading, and the history says so 
+
+    Error: a phrase heard at noon went on the record as a first reading in the evening
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      513 |     const [stored] = await sessions();
+      514 |     expect(String(stored?.seed)).toBe(seed);
+    > 515 |     expect(stored?.unseen, 'a phrase heard at noon went on the record as a first reading in the evening').toBe(false);
+          |                                                                                                           ^
+      516 |     await expect(sheet.locator('#summary-note')).toHaveText(
+      517 |       'Sight-reading counts only on music you have not heard — this run is kept as practice.',
+      518 |     );
+        at <worktree>\app\tests\e2e\lab.spec.ts:515:107
+
+    Error Context: test-results-g1\lab-Today-s-sight-read-hea-1c331-ing-and-the-history-says-so\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-g1\lab-Today-s-sight-read-hea-1c331-ing-and-the-history-says-so\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-g1\lab-Today-s-sight-read-hea-1c331-ing-and-the-history-says-so\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\lab.spec.ts:461:3 › Today's sight-read › heard at noon, left, read in the evening: not a first reading, and the history says so 
+exit 1

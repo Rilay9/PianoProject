@@ -59,8 +59,50 @@ export interface Shot {
   claims: Claim;
   file: string;
   state: StateRecord;
+  /** The folded corner chip, when it is drawn (`chipOverInk`): its lines and the score's ink under it. */
+  chip: ChipRead | null;
   /** Invariants that failed here, by their number in `08` §9. */
   broke: string[];
+}
+
+/** What `chipOverInk` reads while the folded chip is drawn. */
+export interface ChipRead {
+  lines: number;
+  /** The score's drawn marks the chip's box meets, named as the sheet names them. */
+  under: string[];
+}
+
+/**
+ * The folded chip against the score's own ink (U118; the reviewer's ruling, `responses/questions-e9aa51ae.md`).
+ *
+ * Since U122c no chip is drawn anywhere (the header keeps `bar n / m` upright and on a tablet, the top line
+ * sideways), so this reads nothing; it stays as the guard should a chip over the stage come back. Every drawn
+ * mark of the front sheets is judged — the clef, the stave, the notes and the fingerings — not only text,
+ * because a clef is a path.
+ */
+async function chipOverInk(page: Page): Promise<ChipRead | null> {
+  return page.evaluate(() => {
+    const corner = document.querySelector<HTMLElement>('#score-corner');
+    if (!corner || getComputedStyle(corner).display === 'none') return null;
+    const c = corner.getBoundingClientRect();
+    if (c.width <= 0 || c.height <= 0) return null;
+    const range = document.createRange();
+    range.selectNodeContents(corner);
+    const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
+    const under: string[] = [];
+    const marks = '.score-buffer.is-front svg text, .score-buffer.is-front svg path, .score-buffer.is-front svg rect, .score-buffer.is-front svg line, .score-buffer.is-front svg ellipse, .score-buffer.is-front svg polygon';
+    for (const el of document.querySelectorAll(marks)) {
+      if (el.closest('.score-buffer[hidden]') !== null) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width <= 0 && r.height <= 0) continue;
+      if (getComputedStyle(el).visibility === 'hidden') continue;
+      if (r.left < c.right - 1 && r.right > c.left + 1 && r.top < c.bottom - 1 && r.bottom > c.top + 1) {
+        const cls = (el.getAttribute('class') ?? '') || (el.parentElement?.getAttribute('class') ?? '');
+        under.push(`${el.tagName}${cls ? `.${cls.split(' ')[0]}` : ''}${el.tagName === 'text' ? ` "${(el.textContent ?? '').trim()}"` : ''}`);
+      }
+    }
+    return { lines, under };
+  });
 }
 
 const shots: Shot[] = [];
@@ -178,6 +220,8 @@ export async function shoot(
   claims: Claim = {},
 ): Promise<Shot> {
   const state = await probeState(page);
+  // Read with the record, before the picture, so the two describe one frame.
+  const chip = await chipOverInk(page);
   const file = join(STATES_DIR, branch, `${cell}.png`);
   mkdirSync(dirname(file), { recursive: true });
   await page.screenshot({ path: file });
@@ -185,15 +229,15 @@ export async function shoot(
   // off the screen or too small, contrast, a page that scrolls sideways.
   const faults = await auditScreen(page, {
     ignore: [
-      // Drawn *over* the notation on purpose, with a background, and only
-      // while the chrome is folded: covering a chord symbol is the trade.
-      '.score-stage__corner',
-      // The count-in is a modal overlay over the stage: it dims the notation
-      // and puts the beat over it, which is the whole of what it does. What it
-      // must *not* cover is the control bar, because the bar stays usable
-      // during a count-in — stopping a run that has begun counting is exactly
-      // what someone reaches for — and that is guaranteed by its own clearance
-      // in `style.css` and asserted in `score.countin.spec.ts`, not here.
+      // The folded corner chip is no longer here (U118). It was left out as
+      // "drawn over the notation on purpose: covering a chord symbol is the
+      // trade"; the stacked slots now start below the band it owns, so the
+      // sweep judges it like any other text, and `chipOverInk` judges it against
+      // every mark of the score, which the sweep's text-on-text cannot.
+      //
+      // The count-in: large numerals beside ⏸ in the folded row (U122c), not a
+      // control and not prose; that they cover neither ⏸ nor the notation is
+      // asserted in `score.countin.spec.ts` and `score.task-chrome.spec.ts`.
       '.score-countin',
       // The beat dot has no text and is 10 px by design — it is a dot.
       '.score-beat',
@@ -210,6 +254,10 @@ export async function shoot(
       '.key',
     ],
   });
+  const chipFaults =
+    chip && chip.under.length > 0
+      ? [`§4.1 the folded chip over the score's ink: ${chip.under.slice(0, 8).join(', ')}${chip.under.length > 8 ? ', …' : ''}`]
+      : [];
   const shot: Shot = {
     cell,
     branch,
@@ -217,7 +265,8 @@ export async function shoot(
     claims,
     file,
     state,
-    broke: [...checkClaims(state, claims), ...check(state, cell), ...faults],
+    chip,
+    broke: [...checkClaims(state, claims), ...check(state, cell), ...faults, ...chipFaults],
   };
   shots.push(shot);
   return shot;

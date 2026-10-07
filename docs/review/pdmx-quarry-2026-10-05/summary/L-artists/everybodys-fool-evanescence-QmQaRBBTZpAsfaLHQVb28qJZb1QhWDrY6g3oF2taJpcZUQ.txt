@@ -1,0 +1,74 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4 chord-symbols=0 bars=66
+INSTRUMENTS/PARTS: P1:'Batterie':staves=1:prog=0:piano=True
+CID QmQaRBBTZpAsfaLHQVb28qJZb1QhWDrY6g3oF2taJpcZUQ
+title: Everybody's Fool - Evanescence | song_name: everybodys fool
+composer: Amy Lee Ben Moody and David Hodges | artist: Evanescence
+csv: tracks=0 bars=101 license=cc-zero
+
+=== part P1 'Batterie' measures=66 ===
+m1 [key fifths=0; time 4/4; clef=percussion2; tempo=80]  s1v1: r:d4
+m2  s1v1: r:d4
+m3 ["Electronic"; "Play bass drum as cross-sticked floor tom"]  s1v1: r:w | s1v2: x:8. x:16 x:8 x:8 r:8 x:8 x:q
+m4  s1v1: r:w | s1v2: x:8. x:16 x:8 x:8 r:8 x:8 x:16 x:16 x:16 x:16
+m5 ["0:15"]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:16 x:16 x:q
+m6  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:q x:8. x:16 r:16 x:16 x:16 x:16 x:q
+m7  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:16 x:16 x:q
+m8  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:q x:8. x:16 r:16 x:16 x:16 x:16 x:8 x:16 x:16
+m9 ["0:25"; "Verse 1"; repeat-forward]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:16 x:16 r:8 x:8 x:16 x:16 r:q x:q
+m10  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:16 x:16 r:8 x:8 x:16 x:16 r:8. x:16 x:q
+m11  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:16 x:16 r:8 x:8 x:16 x:16 r:q x:q
+m12 [ending1-start; repeat-backward; ending1-stop]  s1v1: x:q x:8 x:8 r:q x:q | s1v2: x:q x:8 x:8 r:8 x:8 x:8 x:16 x:16
+m13 [ending2-start; ending2-discontinue]  s1v1: x:q x:8 x:8 r:8 x:8 r:q | s1v2: x:q x:8 x:16 x:16 r:16 x:16 x:8 x:16 x:16 x:16 x:16
+m14 ["0:45"; "Chorus"]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:16 x:16 x:q
+m15  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:16 x:16 x:q
+m16  
+m17  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:q x:8. x:16 r:8 x:16 x:16 x:8 x:16 x:16
+m18 ["0:56"]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:16 x:16 x:q
+m19  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:8. x:16 x:8. x:16 r:16 x:16 x:16 x:16 x:8 x:16 x:16
+m20  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:8. x:16 x:8. x:16 r:16 x:8 x:16 x:q
+m21  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:8. x:16 x:8 x:16 x:16 r:16 x:8 x:16 x:8 x:16 x:16
+m22 ["1:06"; "Verse 2"; repeat-forward]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:16 x:16 r:8 x:8 x:16 x:16 r:q x:q
+m23  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:16 x:16 r:8 x:8 x:16 x:16 r:8. x:16 x:q
+m24  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:16 x:16 r:8 x:8 x:16 x:16 r:q x:q
+m25 [repeat-backward]  s1v1: x:q x:8 x:8 r:8 x:8 r:q | s1v2: x:16 x:16 r:8 x:8 x:16 x:16 r:8 x:8 x:8 x:16 x:16
+m26  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:8 x:q
+m27  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 r:q | s1v2: x:8. x:16 x:8 x:16 x:16 r:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m28 ["1:31"; "Chorus"]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:16 x:16 x:q
+m29  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:16 x:16 x:q
+m30  
+m31  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:q x:8. x:16 r:16 x:16 x:16 x:16 x:8 x:16 x:16
+m32 ["1:41"]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:16 x:16 x:q
+m33  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 r:q | s1v2: x:8. x:16 x:8 x:16 x:16 r:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m34  s1v1: x:q r:q r:h | s1v2: x:q r:q r:h
+m35  s1v1: r:d4
+m36  s1v1: r:d4
+m37  s1v1: r:d4
+m38  s1v1: r:d4
+m39  s1v1: r:d4
+m40  s1v1: r:d4
+m41  s1v1: r:w | s1v2: r:h r:8 x:8 x:16 x:16 x:16 x:16
+m42 ["2:06"; "Everybody's Fool - Evanescence"; repeat-forward]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:16 x:16 x:16 x:16 x:q
+m43  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8. x:16 x:8. x:16 r:16 x:16 x:16 x:16 x:q
+m44  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:16 x:16 x:16 x:16 x:q
+m45  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8. x:16 x:8. x:16 r:16 x:16 x:16 x:16 x:8 x:16 x:16
+m46  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8. x:16 x:8. x:16 r:16 x:16 x:16 x:16 x:q
+m47  s1v1: x:8 x:8 x:8 x:8 x:q r:q | s1v2: x:8. x:16 x:8. x:16 r:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m48 ["2:21"; "Chorus"]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:8 x:q
+m49  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:16 x:16 x:q
+m50  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:8 x:q
+m51  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:q x:8. x:16 r:16 x:16 x:16 x:16 x:8 x:16 x:16
+m52  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:8 x:q
+m53  s1v1: x:8 x:8 x:8 x:8 r:h | s1v2: x:8. x:16 x:8. x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m54 ["2:37"]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:8 x:q
+m55  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:q x:8. x:16 r:8 x:16 x:16 x:8 x:16 x:16
+m56  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:8 x:q
+m57  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 r:q | s1v2: x:8. x:16 x:8 x:16 x:16 r:16 x:16 x:8 x:16 x:16 x:16 x:16
+m58  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:8 x:q
+m59  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:8. x:16 x:8. x:16 r:8 x:16 x:16 x:8 x:16 x:16
+m60 ["2:52"]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:8 x:8 x:q
+m61  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:q x:8. x:16 r:16 x:16 x:16 x:16 x:q
+m62  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:16 x:16 x:16 x:16 x:q
+m63  s1v1: x:8 x:8 x:8. x:16 r:h | s1v2: x:8. x:16 x:8 x:16 x:16 r:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16
+m64 ["3:02"]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:q x:8. x:16 r:16 x:16 x:16 x:16 x:q
+m65  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:q | s1v2: x:8. x:16 x:8. x:16 r:16 x:16 x:16 x:16 x:8 x:16 x:16
+m66  s1v1: x:8 x:8 x:8. x:16 r:16 x:16 r:8 r:q | s1v2: x:8. x:16 x:16 x:16 x:16 x:16 r:16 x:16 r:8 r:q

@@ -1,0 +1,752 @@
+test_a_canonical_key_the_plan_never_writes_is_refused (cl15_test_family_contracts.TestACanonicalRoleNamesAShippedItem.test_a_canonical_key_the_plan_never_writes_is_refused) ... ok
+test_every_canonical_when_matches_a_planned_item (cl15_test_family_contracts.TestACanonicalRoleNamesAShippedItem.test_every_canonical_when_matches_a_planned_item) ... FAIL
+test_the_power_chord_canonical_item_is_the_a_root (cl15_test_family_contracts.TestACanonicalRoleNamesAShippedItem.test_the_power_chord_canonical_item_is_the_a_root) ... FAIL
+test_no_item_names_a_skill_its_music_holds_no_opportunity_for (cl15_test_family_contracts.TestANameClaimsOnlyWhatTheDetectorsFind.test_no_item_names_a_skill_its_music_holds_no_opportunity_for) ... FAIL
+test_the_check_reads_the_title_and_the_concepts (cl15_test_family_contracts.TestANameClaimsOnlyWhatTheDetectorsFind.test_the_check_reads_the_title_and_the_concepts) ... ok
+test_the_contract_states_the_floor_as_a_count_and_the_file_meets_it (cl15_test_family_contracts.TestTheTieDrillHasDensity.test_the_contract_states_the_floor_as_a_count_and_the_file_meets_it) ... FAIL
+test_the_counter_finds_no_crossing_in_a_figure_inside_the_bar (cl15_test_family_contracts.TestTheTieDrillHasDensity.test_the_counter_finds_no_crossing_in_a_figure_inside_the_bar) ... ok
+test_two_independent_across_bar_ties_in_four_bars (cl15_test_family_contracts.TestTheTieDrillHasDensity.test_two_independent_across_bar_ties_in_four_bars) ... FAIL
+test_a_digest_that_does_not_match_carries_nothing (cl15_test_family_contracts.TestGeneratedIdentityContinuity.test_a_digest_that_does_not_match_carries_nothing) ... ERROR
+test_an_unchanged_item_carries_its_old_identity_and_a_changed_one_none (cl15_test_family_contracts.TestGeneratedIdentityContinuity.test_an_unchanged_item_carries_its_old_identity_and_a_changed_one_none) ... ERROR
+test_the_siblings_the_ruling_names (cl15_test_family_contracts.TestGeneratedIdentityContinuity.test_the_siblings_the_ruling_names) ... ERROR
+test_the_table_records_every_item_of_each_family_at_the_version_left (cl15_test_family_contracts.TestGeneratedIdentityContinuity.test_the_table_records_every_item_of_each_family_at_the_version_left) ... ERROR
+test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree)
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and ... 
+  test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.c.right')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and ... FAIL
+  test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.c.left')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and ... FAIL
+  test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.g.right')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and ... FAIL
+  test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.g.left')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and ... FAIL
+  test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.f.right')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and ... FAIL
+  test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.f.left')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and ... FAIL
+test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree)
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and ... FAIL
+test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root)
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... 
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.c.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.c.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.c.ii-v-i')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.c.ii-v-i.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.f.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.f.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.f.ii-v-i')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.f.ii-v-i.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.b-flat.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.b-flat.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.b-flat.ii-v-i')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.b-flat.ii-v-i.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e-flat.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e-flat.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e-flat.ii-v-i')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e-flat.ii-v-i.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.c.minor-blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.f.minor-blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.b-flat.minor-blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e-flat.minor-blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.a.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.a.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.g.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.g.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.d.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+  test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.d.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as ... FAIL
+test_an_interval_reading_melody_can_start_on_any_degree_of_the_position (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_an_interval_reading_melody_can_start_on_any_degree_of_the_position)
+G7: the first note was a move from a degree that is never written, so it could only be D or E. ... FAIL
+test_every_pentatonic_run_clears_the_five_second_floor (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_every_pentatonic_run_clears_the_five_second_floor)
+docs/03 §3's floor (`render_check.MIN_DURATION_SEC`): an item under it gets no duration ... 
+  test_every_pentatonic_run_clears_the_five_second_floor (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_every_pentatonic_run_clears_the_five_second_floor) (item='exercise.pentatonic.a.pentatonic')
+docs/03 §3's floor (`render_check.MIN_DURATION_SEC`): an item under it gets no duration ... FAIL
+  test_every_pentatonic_run_clears_the_five_second_floor (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_every_pentatonic_run_clears_the_five_second_floor) (item='exercise.pentatonic.e.pentatonic')
+docs/03 §3's floor (`render_check.MIN_DURATION_SEC`): an item under it gets no duration ... FAIL
+  test_every_pentatonic_run_clears_the_five_second_floor (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_every_pentatonic_run_clears_the_five_second_floor) (item='exercise.pentatonic.d.pentatonic')
+docs/03 §3's floor (`render_check.MIN_DURATION_SEC`): an item under it gets no duration ... FAIL
+test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive) ... 
+  test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive) (form='blues') ... FAIL
+  test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive) (form='minor-blues') ... FAIL
+test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive) ... FAIL
+test_the_octave_tremolo_is_untouched (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_the_octave_tremolo_is_untouched) ... ok
+test_the_pentatonic_turns_at_the_bottom_without_striking_the_tonic_twice (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_the_pentatonic_turns_at_the_bottom_without_striking_the_tonic_twice) ... FAIL
+
+======================================================================
+ERROR: test_a_digest_that_does_not_match_carries_nothing (cl15_test_family_contracts.TestGeneratedIdentityContinuity.test_a_digest_that_does_not_match_carries_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_family_contracts.py", line 567, in test_a_digest_that_does_not_match_carries_nothing
+    table = copy.deepcopy(FC.continuity_table())
+                          ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'family_contracts' has no attribute 'continuity_table'
+
+======================================================================
+ERROR: test_an_unchanged_item_carries_its_old_identity_and_a_changed_one_none (cl15_test_family_contracts.TestGeneratedIdentityContinuity.test_an_unchanged_item_carries_its_old_identity_and_a_changed_one_none)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_family_contracts.py", line 533, in test_an_unchanged_item_carries_its_old_identity_and_a_changed_one_none
+    table = FC.continuity_table()["families"]
+            ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'family_contracts' has no attribute 'continuity_table'
+
+======================================================================
+ERROR: test_the_siblings_the_ruling_names (cl15_test_family_contracts.TestGeneratedIdentityContinuity.test_the_siblings_the_ruling_names)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_family_contracts.py", line 556, in test_the_siblings_the_ruling_names
+    carried = {entry["id"] for sc, entry in planned.plan() if FC.former_generator_identities(sc, entry)}
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<worktree>\build\cl15\pending\test_family_contracts.py", line 556, in <setcomp>
+    carried = {entry["id"] for sc, entry in planned.plan() if FC.former_generator_identities(sc, entry)}
+                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'family_contracts' has no attribute 'former_generator_identities'
+
+======================================================================
+ERROR: test_the_table_records_every_item_of_each_family_at_the_version_left (cl15_test_family_contracts.TestGeneratedIdentityContinuity.test_the_table_records_every_item_of_each_family_at_the_version_left)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_family_contracts.py", line 518, in test_the_table_records_every_item_of_each_family_at_the_version_left
+    table = FC.continuity_table()["families"]
+            ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'family_contracts' has no attribute 'continuity_table'
+
+======================================================================
+FAIL: test_every_canonical_when_matches_a_planned_item (cl15_test_family_contracts.TestACanonicalRoleNamesAShippedItem.test_every_canonical_when_matches_a_planned_item)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_family_contracts.py", line 393, in test_every_canonical_when_matches_a_planned_item
+    self.assertEqual(missing, [])
+AssertionError: Lists differ: ["power_chord: canonical when {'key': 'C'} matches no planned item"] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+"power_chord: canonical when {'key': 'C'} matches no planned item"
+
+- ["power_chord: canonical when {'key': 'C'} matches no planned item"]
++ []
+
+======================================================================
+FAIL: test_the_power_chord_canonical_item_is_the_a_root (cl15_test_family_contracts.TestACanonicalRoleNamesAShippedItem.test_the_power_chord_canonical_item_is_the_a_root)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_family_contracts.py", line 404, in test_the_power_chord_canonical_item_is_the_a_root
+    self.assertEqual(roles, {"exercise.power-chord.a": "canonical", "exercise.power-chord.e": "variable",
+AssertionError: {'exe[18 chars]a': 'variable', 'exercise.power-chord.e': 'var[40 chars]ble'} != {'exe[18 chars]a': 'canonical', 'exercise.power-chord.e': 'va[41 chars]ble'}
+- {'exercise.power-chord.a': 'variable',
+?                             ^ ^  - -
+
++ {'exercise.power-chord.a': 'canonical',
+?                             ^ ^^^ +
+
+   'exercise.power-chord.d': 'variable',
+   'exercise.power-chord.e': 'variable'}
+
+======================================================================
+FAIL: test_no_item_names_a_skill_its_music_holds_no_opportunity_for (cl15_test_family_contracts.TestANameClaimsOnlyWhatTheDetectorsFind.test_no_item_names_a_skill_its_music_holds_no_opportunity_for)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_family_contracts.py", line 444, in test_no_item_names_a_skill_its_music_holds_no_opportunity_for
+    self.assertEqual(self.faults([entry for _sc, entry in planned.plan()]), [])
+AssertionError: Lists differ: ["exercise.syncopation.tied-across-bar: na[175 chars]n']"] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+"exercise.syncopation.tied-across-bar: names syncopation, and the detectors find none of ['rhythm.syncopation']"
+
++ []
+- ['exercise.syncopation.tied-across-bar: names syncopation, and the detectors '
+-  "find none of ['rhythm.syncopation']",
+-  'exercise.syncopation.sixteenth: names syncopation, and the detectors find '
+-  "none of ['rhythm.syncopation']"]
+
+======================================================================
+FAIL: test_the_contract_states_the_floor_as_a_count_and_the_file_meets_it (cl15_test_family_contracts.TestTheTieDrillHasDensity.test_the_contract_states_the_floor_as_a_count_and_the_file_meets_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_family_contracts.py", line 495, in test_the_contract_states_the_floor_as_a_count_and_the_file_meets_it
+    self.assertEqual([rule.get("min") for rule in rules], [2])
+AssertionError: Lists differ: [1] != [2]
+
+First differing element 0:
+1
+2
+
+- [1]
++ [2]
+
+======================================================================
+FAIL: test_two_independent_across_bar_ties_in_four_bars (cl15_test_family_contracts.TestTheTieDrillHasDensity.test_two_independent_across_bar_ties_in_four_bars)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_family_contracts.py", line 483, in test_two_independent_across_bar_ties_in_four_bars
+    self.assertGreaterEqual(len(ties), 2, ties)
+AssertionError: 1 not greater than or equal to 2 : [(3.0, 1.5)]
+
+======================================================================
+FAIL: test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.c.right')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1542, in test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree
+    self.assertEqual((low.name, high.name), (names[degree], names[degree + 2]))
+AssertionError: Tuples differ: ('D', 'F#') != ('D', 'F')
+
+First differing element 1:
+'F#'
+'F'
+
+- ('D', 'F#')
+?         -
+
++ ('D', 'F')
+
+======================================================================
+FAIL: test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.c.left')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1542, in test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree
+    self.assertEqual((low.name, high.name), (names[degree], names[degree + 2]))
+AssertionError: Tuples differ: ('D', 'F#') != ('D', 'F')
+
+First differing element 1:
+'F#'
+'F'
+
+- ('D', 'F#')
+?         -
+
++ ('D', 'F')
+
+======================================================================
+FAIL: test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.g.right')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1542, in test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree
+    self.assertEqual((low.name, high.name), (names[degree], names[degree + 2]))
+AssertionError: Tuples differ: ('A', 'C#') != ('A', 'C')
+
+First differing element 1:
+'C#'
+'C'
+
+- ('A', 'C#')
+?         -
+
++ ('A', 'C')
+
+======================================================================
+FAIL: test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.g.left')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1542, in test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree
+    self.assertEqual((low.name, high.name), (names[degree], names[degree + 2]))
+AssertionError: Tuples differ: ('A', 'C#') != ('A', 'C')
+
+First differing element 1:
+'C#'
+'C'
+
+- ('A', 'C#')
+?         -
+
++ ('A', 'C')
+
+======================================================================
+FAIL: test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.f.right')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1542, in test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree
+    self.assertEqual((low.name, high.name), (names[degree], names[degree + 2]))
+AssertionError: Tuples differ: ('G', 'B') != ('G', 'B-')
+
+First differing element 1:
+'B'
+'B-'
+
+- ('G', 'B')
++ ('G', 'B-')
+?         +
+
+
+======================================================================
+FAIL: test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree) (item='exercise.tremolo-third.f.left')
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1542, in test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree
+    self.assertEqual((low.name, high.name), (names[degree], names[degree + 2]))
+AssertionError: Tuples differ: ('G', 'B') != ('G', 'B-')
+
+First differing element 1:
+'B'
+'B-'
+
+- ('G', 'B')
++ ('G', 'B-')
+?         +
+
+
+======================================================================
+FAIL: test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree)
+`TREMOLOS["third"]` was four semitones, so in C the second and third degrees sounded D-F♯ and
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1548, in test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree
+    self.assertEqual(list(zip(heard, upper)), [("C4", "E4"), ("D4", "F4"), ("E4", "G4"), ("F4", "A4")])
+AssertionError: Lists differ: [('C4', 'E4'), ('D4', 'F#4'), ('E4', 'G#4'), ('F4', 'A4')] != [('C4', 'E4'), ('D4', 'F4'), ('E4', 'G4'), ('F4', 'A4')]
+
+First differing element 1:
+('D4', 'F#4')
+('D4', 'F4')
+
+- [('C4', 'E4'), ('D4', 'F#4'), ('E4', 'G#4'), ('F4', 'A4')]
+?                         -              -
+
++ [('C4', 'E4'), ('D4', 'F4'), ('E4', 'G4'), ('F4', 'A4')]
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.c.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 11 != 0 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.c.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 11 != 0 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.c.ii-v-i')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 1 != 0 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.c.ii-v-i.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 1 != 0 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.f.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 4 != 5 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.f.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 4 != 5 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.f.ii-v-i')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 6 != 5 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.f.ii-v-i.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 6 != 5 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.b-flat.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 9 != 10 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.b-flat.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 9 != 10 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.b-flat.ii-v-i')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 11 != 10 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.b-flat.ii-v-i.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 11 != 10 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e-flat.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 2 != 3 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e-flat.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 2 != 3 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e-flat.ii-v-i')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 4 != 3 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e-flat.ii-v-i.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 4 != 3 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.c.minor-blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 11 != 0 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.f.minor-blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 4 != 5 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.b-flat.minor-blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 9 != 10 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e-flat.minor-blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 2 != 3 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 3 != 4 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.e.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 3 != 4 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.a.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 8 != 9 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.a.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 8 != 9 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.g.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 6 != 7 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.g.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 6 != 7 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.d.blues')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 1 != 2 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root) (item='exercise.walking-bass.d.blues.intro')
+The reviewer's ruling (`responses/questions-e71ef3ad.md` §CL15): a finite exercise not marked as
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1613, in test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root
+    self.assertEqual(line[-1].pitches[0].pitchClass, tonic_class, "the line does not end on the tonic")
+AssertionError: 1 != 2 : the line does not end on the tonic
+
+======================================================================
+FAIL: test_an_interval_reading_melody_can_start_on_any_degree_of_the_position (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_an_interval_reading_melody_can_start_on_any_degree_of_the_position)
+G7: the first note was a move from a degree that is never written, so it could only be D or E.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1595, in test_an_interval_reading_melody_can_start_on_any_degree_of_the_position
+    self.assertEqual(firsts, {"right": {1, 2, 3, 4, 5}, "left": {1, 2, 3, 4, 5}})
+AssertionError: {'right': {2, 3}, 'left': {2, 3}} != {'right': {1, 2, 3, 4, 5}, 'left': {1, 2, 3, 4, 5}}
+- {'left': {2, 3}, 'right': {2, 3}}
++ {'left': {1, 2, 3, 4, 5}, 'right': {1, 2, 3, 4, 5}}
+?           +++    ++++++             +++    ++++++
+
+
+======================================================================
+FAIL: test_every_pentatonic_run_clears_the_five_second_floor (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_every_pentatonic_run_clears_the_five_second_floor) (item='exercise.pentatonic.a.pentatonic')
+docs/03 §3's floor (`render_check.MIN_DURATION_SEC`): an item under it gets no duration
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1568, in test_every_pentatonic_run_clears_the_five_second_floor
+    self.assertGreaterEqual(written * 60 / entry["tempoBpm"], MIN_DURATION_SEC)
+AssertionError: 4.583333333333333 not greater than or equal to 5
+
+======================================================================
+FAIL: test_every_pentatonic_run_clears_the_five_second_floor (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_every_pentatonic_run_clears_the_five_second_floor) (item='exercise.pentatonic.e.pentatonic')
+docs/03 §3's floor (`render_check.MIN_DURATION_SEC`): an item under it gets no duration
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1568, in test_every_pentatonic_run_clears_the_five_second_floor
+    self.assertGreaterEqual(written * 60 / entry["tempoBpm"], MIN_DURATION_SEC)
+AssertionError: 4.583333333333333 not greater than or equal to 5
+
+======================================================================
+FAIL: test_every_pentatonic_run_clears_the_five_second_floor (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_every_pentatonic_run_clears_the_five_second_floor) (item='exercise.pentatonic.d.pentatonic')
+docs/03 §3's floor (`render_check.MIN_DURATION_SEC`): an item under it gets no duration
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1568, in test_every_pentatonic_run_clears_the_five_second_floor
+    self.assertGreaterEqual(written * 60 / entry["tempoBpm"], MIN_DURATION_SEC)
+AssertionError: 4.583333333333333 not greater than or equal to 5
+
+======================================================================
+FAIL: test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive) (form='blues')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1626, in test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive
+    self.assertEqual(count_bars(sc), 13)
+AssertionError: 12 != 13
+
+======================================================================
+FAIL: test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive) (form='minor-blues')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1626, in test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive
+    self.assertEqual(count_bars(sc), 13)
+AssertionError: 12 != 13
+
+======================================================================
+FAIL: test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1631, in test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive
+    self.assertEqual(len(staves(sc)["LH"]), 3 * 4 + 1)
+AssertionError: 16 != 13
+
+======================================================================
+FAIL: test_the_pentatonic_turns_at_the_bottom_without_striking_the_tonic_twice (cl15_test_generator_invariants.TestTheRecipesWriteWhatTheySay.test_the_pentatonic_turns_at_the_bottom_without_striking_the_tonic_twice)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\build\cl15\pending\test_generator_invariants.py", line 1574, in test_the_pentatonic_turns_at_the_bottom_without_striking_the_tonic_twice
+    self.assertEqual(names, once + once + ["A4"])
+AssertionError: Lists differ: ['A4'[55 chars] 'A4'] != ['A4'[55 chars] 'A4', 'C5', 'D5', 'E5', 'G5', 'A5', 'G5', 'E5[15 chars]'A4']
+
+Second list contains 10 additional elements.
+First extra element 11:
+'C5'
+
+- ['A4', 'C5', 'D5', 'E5', 'G5', 'A5', 'G5', 'E5', 'D5', 'C5', 'A4']
++ ['A4',
++  'C5',
++  'D5',
++  'E5',
++  'G5',
++  'A5',
++  'G5',
++  'E5',
++  'D5',
++  'C5',
++  'A4',
++  'C5',
++  'D5',
++  'E5',
++  'G5',
++  'A5',
++  'G5',
++  'E5',
++  'D5',
++  'C5',
++  'A4']
+
+----------------------------------------------------------------------
+Ran 19 tests in 370.723s
+
+FAILED (failures=48, errors=4)
+
+RED LINES (the last line of each failure or error):
+- TestACanonicalRoleNamesAShippedItem.test_every_canonical_when_matches_a_planned_item: + []
+- TestACanonicalRoleNamesAShippedItem.test_the_power_chord_canonical_item_is_the_a_root:    'exercise.power-chord.e': 'variable'}
+- TestANameClaimsOnlyWhatTheDetectorsFind.test_no_item_names_a_skill_its_music_holds_no_opportunity_for: -  "none of ['rhythm.syncopation']"]
+- TestTheTieDrillHasDensity.test_the_contract_states_the_floor_as_a_count_and_the_file_meets_it: + [2]
+- TestTheTieDrillHasDensity.test_two_independent_across_bar_ties_in_four_bars: AssertionError: 1 not greater than or equal to 2 : [(3.0, 1.5)]
+- TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (item='exercise.tremolo-third.c.right'): + ('D', 'F')
+- TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (item='exercise.tremolo-third.c.left'): + ('D', 'F')
+- TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (item='exercise.tremolo-third.g.right'): + ('A', 'C')
+- TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (item='exercise.tremolo-third.g.left'): + ('A', 'C')
+- TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (item='exercise.tremolo-third.f.right'): ?         +
+- TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree (item='exercise.tremolo-third.f.left'): ?         +
+- TestTheRecipesWriteWhatTheySay.test_a_tremolo_in_thirds_plays_the_keys_own_third_on_each_degree: + [('C4', 'E4'), ('D4', 'F4'), ('E4', 'G4'), ('F4', 'A4')]
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.c.blues'): AssertionError: 11 != 0 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.c.blues.intro'): AssertionError: 11 != 0 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.c.ii-v-i'): AssertionError: 1 != 0 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.c.ii-v-i.intro'): AssertionError: 1 != 0 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.f.blues'): AssertionError: 4 != 5 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.f.blues.intro'): AssertionError: 4 != 5 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.f.ii-v-i'): AssertionError: 6 != 5 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.f.ii-v-i.intro'): AssertionError: 6 != 5 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.b-flat.blues'): AssertionError: 9 != 10 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.b-flat.blues.intro'): AssertionError: 9 != 10 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.b-flat.ii-v-i'): AssertionError: 11 != 10 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.b-flat.ii-v-i.intro'): AssertionError: 11 != 10 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.e-flat.blues'): AssertionError: 2 != 3 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.e-flat.blues.intro'): AssertionError: 2 != 3 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.e-flat.ii-v-i'): AssertionError: 4 != 3 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.e-flat.ii-v-i.intro'): AssertionError: 4 != 3 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.c.minor-blues'): AssertionError: 11 != 0 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.f.minor-blues'): AssertionError: 4 != 5 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.b-flat.minor-blues'): AssertionError: 9 != 10 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.e-flat.minor-blues'): AssertionError: 2 != 3 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.e.blues'): AssertionError: 3 != 4 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.e.blues.intro'): AssertionError: 3 != 4 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.a.blues'): AssertionError: 8 != 9 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.a.blues.intro'): AssertionError: 8 != 9 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.g.blues'): AssertionError: 6 != 7 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.g.blues.intro'): AssertionError: 6 != 7 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.d.blues'): AssertionError: 1 != 2 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_a_walking_bass_ends_on_the_tonic_and_every_approach_note_leads_to_the_next_written_root (item='exercise.walking-bass.d.blues.intro'): AssertionError: 1 != 2 : the line does not end on the tonic
+- TestTheRecipesWriteWhatTheySay.test_an_interval_reading_melody_can_start_on_any_degree_of_the_position: ?           +++    ++++++             +++    ++++++
+- TestTheRecipesWriteWhatTheySay.test_every_pentatonic_run_clears_the_five_second_floor (item='exercise.pentatonic.a.pentatonic'): AssertionError: 4.583333333333333 not greater than or equal to 5
+- TestTheRecipesWriteWhatTheySay.test_every_pentatonic_run_clears_the_five_second_floor (item='exercise.pentatonic.e.pentatonic'): AssertionError: 4.583333333333333 not greater than or equal to 5
+- TestTheRecipesWriteWhatTheySay.test_every_pentatonic_run_clears_the_five_second_floor (item='exercise.pentatonic.d.pentatonic'): AssertionError: 4.583333333333333 not greater than or equal to 5
+- TestTheRecipesWriteWhatTheySay.test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive (form='blues'): AssertionError: 12 != 13
+- TestTheRecipesWriteWhatTheySay.test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive (form='minor-blues'): AssertionError: 12 != 13
+- TestTheRecipesWriteWhatTheySay.test_the_blues_forms_walk_twelve_unchanged_bars_then_arrive: AssertionError: 16 != 13
+- TestTheRecipesWriteWhatTheySay.test_the_pentatonic_turns_at_the_bottom_without_striking_the_tonic_twice: +  'A4']
+- TestGeneratedIdentityContinuity.test_a_digest_that_does_not_match_carries_nothing: AttributeError: module 'family_contracts' has no attribute 'continuity_table'
+- TestGeneratedIdentityContinuity.test_an_unchanged_item_carries_its_old_identity_and_a_changed_one_none: AttributeError: module 'family_contracts' has no attribute 'continuity_table'
+- TestGeneratedIdentityContinuity.test_the_siblings_the_ruling_names: AttributeError: module 'family_contracts' has no attribute 'former_generator_identities'
+- TestGeneratedIdentityContinuity.test_the_table_records_every_item_of_each_family_at_the_version_left: AttributeError: module 'family_contracts' has no attribute 'continuity_table'
+
+19 run, 48 failed, 4 errors, -33 passed
+exit 0

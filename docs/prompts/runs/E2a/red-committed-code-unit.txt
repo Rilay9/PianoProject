@@ -1,0 +1,139 @@
+﻿
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-aa9e0c26b0f85f0c7/app
+
+ â¯ tests/unit/oneGateBoundary.test.ts (6 tests | 2 failed) 25ms
+   â¯ the card: no row holds an unmeasured candidate the gate is asked about, and every question about one is refused unknown-forbidden (2)
+     Ã— unmeasured in their place, with a score imported before the measurement: no row at any length, and each was asked and refused unknown-forbidden 6ms
+   â¯ the swap sheet: no tier and no last resort holds one, the rungâ€™s own other option included (2)
+     Ã— unmeasured, and a score imported before the measurement assigned to the rung: on no tier, and every question about them refused unknown-forbidden 1ms
+ â¯ tests/unit/materialLayer.test.ts (0 test)
+ â¯ tests/unit/eligibility.test.ts (36 tests | 1 failed) 104ms
+   â¯ Part 23â€™s adversaries, through the gate (7)
+     Ã— 8. demands unmeasured: refused for every automatic want where the learner is not prepared for every demand (unknown-forbidden, E2a), exploration-only with nothing to rule out, eligible for exploration â€” the missing measurement said in each 6ms
+
+âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯ Failed Suites 1 âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯
+
+ FAIL  tests/unit/materialLayer.test.ts [ tests/unit/materialLayer.test.ts ]
+Error: Failed to resolve import "../../src/curriculum/eligibilityCore" from "tests/unit/materialLayer.test.ts". Does the file exist?
+  Plugin: vite:import-analysis
+  File: C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-aa9e0c26b0f85f0c7/app/tests/unit/materialLayer.test.ts:204:50
+  246 |  	*/
+  247 |  	it("keeps every verdict the established questions give, except the one case the reviewerâ€™s rule moves, and moves eve...
+  248 |  		const { establishedQuestions } = await import("../../src/curriculum/eligibilityCore");
+      |                                                  ^
+  249 |  		const constructed = [
+  250 |  			song("song.unread", unmeasured("the app could not load the file")),
+ â¯ TransformPluginContext._formatLog ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-aa9e0c26b0f85f0c7/app/node_modules/vite/dist/node/chunks/node.js:31147:39
+ â¯ TransformPluginContext.error ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-aa9e0c26b0f85f0c7/app/node_modules/vite/dist/node/chunks/node.js:31144:14
+ â¯ normalizeUrl ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-aa9e0c26b0f85f0c7/app/node_modules/vite/dist/node/chunks/node.js:28083:18
+ â¯ ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-aa9e0c26b0f85f0c7/app/node_modules/vite/dist/node/chunks/node.js:28153:30
+ â¯ TransformPluginContext.transform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-aa9e0c26b0f85f0c7/app/node_modules/vite/dist/node/chunks/node.js:28119:4
+ â¯ EnvironmentPluginContainer.transform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-aa9e0c26b0f85f0c7/app/node_modules/vite/dist/node/chunks/node.js:30932:14
+ â¯ loadAndTransform ../../../../../../Piano%20Stuff/PianoProject/.claude/worktrees/agent-aa9e0c26b0f85f0c7/app/node_modules/vite/dist/node/chunks/node.js:20671:26
+
+âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯[1/4]âŽ¯
+
+
+âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯ Failed Tests 3 âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯
+
+ FAIL  tests/unit/eligibility.test.ts > Part 23â€™s adversaries, through the gate > 8. demands unmeasured: refused for every automatic want where the learner is not prepared for every demand (unknown-forbidden, E2a), exploration-only with nothing to rule out, eligible for exploration â€” the missing measurement said in each
+AssertionError: equivalent: expected { verdict: 'exploration-only', â€¦(1) } to deeply equal { verdict: 'ineligible', â€¦(3) }
+
+- Expected
++ Received
+
+  {
+-   "demands": [
+-     "clef.bass",
+-     "pitch.ledger",
+-     "interval.leap",
+-     "rhythm.eighths",
+-     "rhythm.shorter-than-quarter",
+-     "rhythm.sixteenths",
+-     "rhythm.dotted-quarter",
+-     "rhythm.ties",
+-     "rhythm.syncopation",
+-     "rhythm.triplets",
+-     "metre.compound",
+-     "key.signature",
+-     "pitch.chromatic",
+-     "range.beyond-position",
+-     "texture.hands-together",
+-     "texture.left-hand-pattern",
+-     "texture.walking-bass",
+-   ],
+    "missing": "the app could not load the file",
+-   "verdict": "ineligible",
+-   "why": "unknown-forbidden",
++   "verdict": "exploration-only",
+  }
+
+ â¯ tests/unit/eligibility.test.ts:108:71
+    106|     const unprepared = VOCABULARY_V0.demands.map((demand) => demand.idâ€¦
+    107|     for (const want of [{ for: 'equivalent' }, { for: 'demand', demandâ€¦
+    108|       expect(eligibleFor(candidate, STEPS_AND_SKIPS, want), want.for).â€¦
+       |                                                                       ^
+    109|     }
+    110|     expect(eligibleFor(candidate, STEPS_AND_SKIPS, { for: 'explorationâ€¦
+
+âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯[2/4]âŽ¯
+
+ FAIL  tests/unit/oneGateBoundary.test.ts > the card: no row holds an unmeasured candidate the gate is asked about, and every question about one is refused unknown-forbidden > unmeasured in their place, with a score imported before the measurement: no row at any length, and each was asked and refused unknown-forbidden
+AssertionError: 140 automatic questions not refused unknown-forbidden: expected [ â€¦(6) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "exercise.pentatonic.a.pentatonic {\"for\":\"skill\",\"skill\":\"position-shift\"}: {\"verdict\":\"exploration-only\",\"missing\":\"no measurement record\"}",
++   "exercise.pentatonic.a.pentatonic {\"for\":\"skill\",\"skill\":\"position-shift\"}: {\"verdict\":\"exploration-only\",\"missing\":\"no measurement record\"}",
++   "song.e2a.unread {\"for\":\"demand\",\"demand\":\"clef.bass\"}: {\"verdict\":\"exploration-only\",\"missing\":\"no measurement record\"}",
++   "song.e2a.unread {\"for\":\"demand\",\"demand\":\"pitch.ledger\"}: {\"verdict\":\"exploration-only\",\"missing\":\"no measurement record\"}",
++   "song.e2a.unread {\"for\":\"demand\",\"demand\":\"interval.step\"}: {\"verdict\":\"exploration-only\",\"missing\":\"no measurement record\"}",
++   "song.e2a.unread {\"for\":\"demand\",\"demand\":\"interval.skip\"}: {\"verdict\":\"exploration-only\",\"missing\":\"no measurement record\"}",
++ ]
+
+ â¯ tests/unit/oneGateBoundary.test.ts:199:116
+    197|     }
+    198|     const { automatic, otherwise } = asked(UNMEASURED);
+    199|     expect(otherwise.slice(0, 6), `${String(otherwise.length)} automatâ€¦
+       |                                                                                                                    ^
+    200|     // The transfer offer asked about the pentatonic (a skill), the reâ€¦
+    201|     for (const id of UNMEASURED) expect(automatic.some((call) => call.â€¦
+
+âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯[3/4]âŽ¯
+
+ FAIL  tests/unit/oneGateBoundary.test.ts > the swap sheet: no tier and no last resort holds one, the rungâ€™s own other option included > unmeasured, and a score imported before the measurement assigned to the rung: on no tier, and every question about them refused unknown-forbidden
+AssertionError: 14 automatic questions not refused unknown-forbidden: expected [ â€¦(6) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "song.e2a.unread {\"for\":\"equivalent\"}: {\"verdict\":\"exploration-only\",\"missing\":\"no measurement record\"}",
++   "import.e2a.from-before {\"for\":\"equivalent\"}: {\"verdict\":\"exploration-only\",\"missing\":\"imported before the app measured demands\"}",
++   "song.e2a.unread {\"for\":\"skill\",\"skill\":\"interval-reading\"}: {\"verdict\":\"exploration-only\",\"missing\":\"no measurement record\"}",
++   "import.e2a.from-before {\"for\":\"skill\",\"skill\":\"interval-reading\"}: {\"verdict\":\"exploration-only\",\"missing\":\"imported before the app measured demands\"}",
++   "song.e2a.unread {\"for\":\"demand\",\"demand\":\"interval.skip\"}: {\"verdict\":\"exploration-only\",\"missing\":\"no measurement record\"}",
++   "import.e2a.from-before {\"for\":\"demand\",\"demand\":\"interval.skip\"}: {\"verdict\":\"exploration-only\",\"missing\":\"imported before the app measured demands\"}",
++ ]
+
+ â¯ tests/unit/oneGateBoundary.test.ts:233:116
+    231|     expect(offered.filter((one) => UNMEASURED.some((id) => one.startsWâ€¦
+    232|     const { automatic, otherwise } = asked([SONG_UNREAD.id, OLD_IMPORTâ€¦
+    233|     expect(otherwise.slice(0, 6), `${String(otherwise.length)} automatâ€¦
+       |                                                                                                                    ^
+    234|     for (const id of [SONG_UNREAD.id, OLD_IMPORT.id]) expect(automaticâ€¦
+    235|     expect(automatic.find((call) => call.id === OLD_IMPORT.id)?.verdicâ€¦
+
+âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯âŽ¯[4/4]âŽ¯
+
+
+ Test Files  3 failed (3)
+      Tests  3 failed | 39 passed (42)
+   Start at  00:36:07
+   Duration  2.01s (environment 49%, transform 26%, import 21%, tests 4%)
+
+exit 1

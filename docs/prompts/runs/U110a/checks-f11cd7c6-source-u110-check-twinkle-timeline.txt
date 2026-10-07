@@ -1,0 +1,71 @@
+// Check-runner's own read (NOT one of U110's archived scripts), a companion to u110-check-twinkle.spec.ts.
+// Page-level observers only, nothing added to the renderer: from document start, a time-stamped record of
+// every `data-slots` change on the stage, every stage height change, and at each of those the rows then
+// drawn (visible front buffers holding an svg, and how many carry `is-ahead`).
+import { expect, test, type Page } from '@playwright/test';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { installMidiMock } from '../../tests/e2e/fixtures/midiMock';
+
+const OUT = process.env.U110_OUT ?? 'build/u110/twinkle-timeline';
+const PIECE = `/#/score/${process.env.U110_PIECE ?? 'song.folk.twinkle.ht'}`;
+const BARS = Number(process.env.U110_BARS ?? 3);
+const W = Number(process.env.U110_WIDTH ?? 342);
+const H = Number(process.env.U110_HEIGHT ?? 740);
+const LOADS = Number(process.env.U110_LOADS ?? 3);
+
+async function ready(page: Page): Promise<void> {
+  await expect(page.locator('section[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
+  await page.waitForFunction(() => document.querySelector('#score-stage .is-front svg') !== null, undefined, { timeout: 60_000 });
+  await page.waitForFunction(() => document.querySelector('#score-stage')?.getAttribute('data-settled') === 'true', undefined, { timeout: 30_000 }).catch(() => undefined);
+  await page.waitForTimeout(1500);
+}
+
+test('u110 check: twinkle timeline at 342x740 bars 3', async ({ page }) => {
+  test.setTimeout(600_000);
+  mkdirSync(OUT, { recursive: true });
+  await installMidiMock(page, { permission: 'granted' });
+  await page.addInitScript((bars) => {
+    const raw = localStorage.getItem('pianopath.settings');
+    const settings = raw === null ? {} : (JSON.parse(raw) as Record<string, unknown>);
+    localStorage.setItem('pianopath.settings', JSON.stringify({ ...settings, barsPerWindow: bars }));
+    interface Ev { t: number; kind: string; slots: string | null; stageH: number; rowsDrawn: number; aheadDrawn: number; settled: string | null }
+    const events: Ev[] = [];
+    (window as unknown as { __u110tl: Ev[] }).__u110tl = events;
+    const snap = (kind: string): void => {
+      const stage = document.getElementById('score-stage');
+      if (!stage) return;
+      const bufs = [...stage.querySelectorAll<HTMLElement>('.score-buffer.is-front')].filter((w) => !w.hidden && w.querySelector('svg'));
+      events.push({
+        t: Math.round(performance.now()),
+        kind,
+        slots: stage.getAttribute('data-slots'),
+        stageH: Math.round(stage.getBoundingClientRect().height * 10) / 10,
+        rowsDrawn: bufs.length,
+        aheadDrawn: bufs.filter((w) => w.classList.contains('is-ahead')).length,
+        settled: stage.getAttribute('data-settled'),
+      });
+    };
+    new MutationObserver(() => snap('data-slots')).observe(document, { attributes: true, subtree: true, attributeFilter: ['data-slots'] });
+    new MutationObserver(() => snap('data-settled')).observe(document, { attributes: true, subtree: true, attributeFilter: ['data-settled'] });
+    let watched: Element | null = null;
+    const ro = new ResizeObserver(() => snap('stage-size'));
+    new MutationObserver(() => {
+      const stage = document.getElementById('score-stage');
+      if (stage && stage !== watched) {
+        watched = stage;
+        ro.observe(stage);
+        snap('stage-found');
+      }
+    }).observe(document, { childList: true, subtree: true });
+  }, BARS);
+  await page.setViewportSize({ width: W, height: H });
+  const loads: unknown[] = [];
+  await page.goto(PIECE);
+  for (let i = 0; i < LOADS; i += 1) {
+    if (i > 0) await page.reload();
+    await ready(page);
+    const events = await page.evaluate(() => (window as unknown as { __u110tl?: unknown[] }).__u110tl ?? []);
+    loads.push({ load: i === 0 ? 'fresh' : `reload ${String(i)}`, events });
+  }
+  writeFileSync(`${OUT}/twinkle-timeline-${String(W)}x${String(H)}-bars${String(BARS)}.json`, JSON.stringify(loads, null, 1));
+});

@@ -1,0 +1,13 @@
+$ (cd app) npx vitest run tests/unit/drillSheetsSayWhatWasMeasured.test.ts tests/unit/backingTrackSheet.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  19:58:33
+   Duration  5.96s (tests 58%, environment 19%, transform 12%, import 11%)
+
+exit=0

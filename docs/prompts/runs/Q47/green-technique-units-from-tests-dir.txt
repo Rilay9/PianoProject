@@ -1,0 +1,18 @@
+$ python -m unittest test_technique_units -v
+# cwd: /c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693/tools/content/tests
+# CI=<unset>
+
+test_every_rung_says_how_long_it_takes (test_technique_units.TestAgainstTheCurriculumAsItStands.test_every_rung_says_how_long_it_takes) ... ok
+test_every_technique_rung_still_has_its_band_and_its_finder (test_technique_units.TestAgainstTheCurriculumAsItStands.test_every_technique_rung_still_has_its_band_and_its_finder) ... ok
+test_running_it_again_changes_nothing (test_technique_units.TestAgainstTheCurriculumAsItStands.test_running_it_again_changes_nothing) ... ok
+test_the_ladder_is_chained (test_technique_units.TestAgainstTheCurriculumAsItStands.test_the_ladder_is_chained) ... ok
+test_a_field_the_tool_never_writes_survives (test_technique_units.TestMergeKeepsWhatItDoesNotOwn.test_a_field_the_tool_never_writes_survives) ... ok
+test_a_rung_that_already_names_its_exercises_keeps_them (test_technique_units.TestMergeKeepsWhatItDoesNotOwn.test_a_rung_that_already_names_its_exercises_keeps_them) ... ok
+test_a_rung_with_no_exercises_yet_gets_them (test_technique_units.TestMergeKeepsWhatItDoesNotOwn.test_a_rung_with_no_exercises_yet_gets_them) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.061s
+
+OK
+
+# exit code: 0

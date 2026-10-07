@@ -1,0 +1,11 @@
+
+Running 2 tests using 2 workers
+
+U118PICTURE folded-paused-342x740-hcb-text115 {"chip":"bar 1 / 4 · Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.","lines":2,"band":58.96875,"firstTop":59}
+U118LINES folded-paused-342x740-hcb-text115 [{"text":"bar 4 / 4 · Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.","lines":2},{"text":"bar 4 / 4 · Paused — you were away 86400 s. ▶ to carry on, or Start again in ⋯ to go back to the beginning.","lines":3},{"text":"bar 4 / 4 · Playing it to you — your run waits at bar 4. Stop to go back to it.","lines":2},{"text":"bar 4 / 4 · Restarted at bar 4 with the app playing the right hand — ▶ when ready","lines":2},{"text":"bar 4 / 4 · Restarted at bar 4 listening to the microphone — ▶ when ready","lines":2},{"text":"bar 4 / 4 · Restarted at bar 4 judging the notes as well — ▶ when ready","lines":2},{"text":"bar 4 / 4 · Sound did not start — tap Hear it again","lines":1}]
+  ok 1 build\u118\disc\pictures.spec.ts:16:3 › folded-paused-342x740-hcb-text115 (6.3s)
+U118PICTURE folded-paused-1024x768-hcb-4bars {"chip":"bar 1 / 4 · Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.","lines":1,"band":21.34375,"firstTop":22}
+U118LINES folded-paused-1024x768-hcb-4bars [{"text":"bar 4 / 4 · Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.","lines":1},{"text":"bar 4 / 4 · Paused — you were away 86400 s. ▶ to carry on, or Start again in ⋯ to go back to the beginning.","lines":1},{"text":"bar 4 / 4 · Playing it to you — your run waits at bar 4. Stop to go back to it.","lines":1},{"text":"bar 4 / 4 · Restarted at bar 4 with the app playing the right hand — ▶ when ready","lines":1},{"text":"bar 4 / 4 · Restarted at bar 4 listening to the microphone — ▶ when ready","lines":1},{"text":"bar 4 / 4 · Restarted at bar 4 judging the notes as well — ▶ when ready","lines":1},{"text":"bar 4 / 4 · Sound did not start — tap Hear it again","lines":1}]
+  ok 2 build\u118\disc\pictures.spec.ts:16:3 › folded-paused-1024x768-hcb-4bars (6.6s)
+
+  2 passed (11.4s)

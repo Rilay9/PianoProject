@@ -1,0 +1,119 @@
+
+Running 12 tests using 2 workers
+
+  ok  1 tests\e2e\microscope.spec.ts:106:3 › the microscope (D2) › opens a generated item by id: the notation settled, every fact under its hook, Hear it enabled (2.1s)
+  ok  2 tests\e2e\microscope.spec.ts:129:3 › the microscope (D2) › Hear it plays through the app’s piano: each hand alone its own pitches, both hands both (8.5s)
+  ok  3 tests\e2e\microscope.spec.ts:166:3 › the microscope (D2) › a decision is exported as a file review.py --merge accepts, and the learner’s stores do not move (9.4s)
+  ok  4 tests\e2e\microscope.spec.ts:242:3 › the microscope (D2) › the learner’s navigation never shows the route (10.0s)
+  ok  6 tests\e2e\offline.spec.ts:224:3 › offline › every file the catalog names is in the precache manifest (196ms)
+  ok  7 tests\e2e\offline.spec.ts:274:3 › offline › the engraver is not in the entry bundle (P19) (20ms)
+  x   8 tests\e2e\offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) (143ms)
+  x   9 tests\e2e\offline.spec.ts:324:3 › offline › and the builder-only dev/ root is served and never precached (D2a) (6ms)
+  ok 10 tests\e2e\offline.spec.ts:348:3 › the error boundary (docs/04 §8) › an uncaught error shows a banner with copyable details (496ms)
+  ok 11 tests\e2e\offline.spec.ts:377:3 › the error boundary (docs/04 §8) › an unhandled rejection is caught too, and counted (269ms)
+  ok 12 tests\e2e\offline.spec.ts:387:3 › the error boundary (docs/04 §8) › dismissing it leaves the app usable (378ms)
+  x   5 tests\e2e\offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch (1.4m)
+
+
+  1) tests\e2e\offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#diag-offline')
+    Expected substring: "Currently offline"
+    Received string:    "Checking…"
+    Timeout: 30000ms
+
+    Call log:
+      - Expect "toContainText" locator('#diag-offline') with timeout 30000ms
+      - waiting for locator('#diag-offline')
+        62 × locator resolved to <div class="kv-block" id="diag-offline">…</div>
+           - unexpected value "Checking…"
+
+
+      196 |       window.location.hash = '#/settings/diagnostics';
+      197 |     });
+    > 198 |     await expect(page.locator('#diag-offline')).toContainText('Currently offline', {
+          |                                                 ^
+      199 |       timeout: 30_000,
+      200 |     });
+      201 |     // Not `toContainText('Precached')`, which is what stood here and which
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a934668f5f0f08405\app\tests\e2e\offline.spec.ts:198:49
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-the-whole--dac94-off-after-one-online-launch\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-the-whole--dac94-off-after-one-online-launch\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-the-whole--dac94-off-after-one-online-launch\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) 
+
+    Error: 1 file(s) are served but never cached
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "content/review/microscope.json",
+    + ]
+
+      318 |     expect(served.length).toBeGreaterThan(1000);
+      319 |     const uncached = served.filter((file) => !urls.has(file));
+    > 320 |     expect(uncached, `${uncached.length} file(s) are served but never cached`).toEqual([]);
+          |                                                                                ^
+      321 |   });
+      322 |
+      323 |   // eslint-disable-next-line @typescript-eslint/require-await -- Playwright tests are async
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a934668f5f0f08405\app\tests\e2e\offline.spec.ts:320:80
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-and-nothin-4a396-ithout-being-precached-P19-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-and-nothin-4a396-ithout-being-precached-P19-\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-and-nothin-4a396-ithout-being-precached-P19-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests\e2e\offline.spec.ts:324:3 › offline › and the builder-only dev/ root is served and never precached (D2a) 
+
+    Error: the microscope projection is not served under dev/
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected value: "dev/review/microscope.json"
+    Received array: []
+
+      339 |     const dev = join(root, 'dev');
+      340 |     const served = existsSync(dev) ? walk(dev) : [];
+    > 341 |     expect(served, 'the microscope projection is not served under dev/').toContain('dev/review/microscope.json');
+          |                                                                          ^
+      342 |     const cached = urls.filter((url) => url?.startsWith('dev/'));
+      343 |     expect(cached, `${cached.length} file(s) under dev/ are precached`).toEqual([]);
+      344 |   });
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a934668f5f0f08405\app\tests\e2e\offline.spec.ts:341:74
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-and-the-bu-0a7fa-ed-and-never-precached-D2a-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-and-the-bu-0a7fa-ed-and-never-precached-D2a-\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-and-the-bu-0a7fa-ed-and-never-precached-D2a-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    tests\e2e\offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch 
+    tests\e2e\offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) 
+    tests\e2e\offline.spec.ts:324:3 › offline › and the builder-only dev/ root is served and never precached (D2a) 
+  9 passed (1.8m)
+playwright exit 1

@@ -1,0 +1,10 @@
+test_every_generated_item_carries_the_promise_its_recipe_matches (tests.test_measured_truth.TestThePromiseFact.test_every_generated_item_carries_the_promise_its_recipe_matches) ... ok
+test_music_families_carry_music_and_drills_carry_drill (tests.test_measured_truth.TestThePromiseFact.test_music_families_carry_music_and_drills_carry_drill) ... ok
+test_no_runtime_or_notated_item_carries_one (tests.test_measured_truth.TestThePromiseFact.test_no_runtime_or_notated_item_carries_one) ... ok
+test_the_matching_rule_never_the_first_on_a_conditional_family (tests.test_measured_truth.TestThePromiseFact.test_the_matching_rule_never_the_first_on_a_conditional_family) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.081s
+
+OK
+exit 0

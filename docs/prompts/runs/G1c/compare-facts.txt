@@ -1,0 +1,16 @@
+Stage 8 block HTML byte-equal before and after: True
+Stage 8 head before: {'title': 'Stage 8 · Advanced', 'meta': '1 of 4 lessons · 12-18 months', 'badges': [], 'bar': {'fill': '25%', 'carried': False}}
+Stage 8 head after:  {'title': 'Stage 8 · Advanced', 'meta': '1 of 4 lessons · 12-18 months', 'badges': [], 'bar': {'fill': '25%', 'carried': False}}
+Stage 9 head before: meta='1 of 3 lessons · open-ended' badges=[] bar={'fill': '33%', 'carried': False}
+  before row classical.9: 'Choosing one piece and staying with it' | '6 exercises · 6 songs · ~365 days' | badges=['complete']
+  before row chords-pop.9: 'Turning a chord chart into an arrangement' | '6 exercises · no song needed · ~180 days' | badges=[]
+  before row theory.9: 'From a phrase to a form' | '4 exercises · no song needed · ~180 days' | badges=[]
+Stage 9 head after: meta='A project: there is no rung to pass here.' badges=[] bar=None
+  after row classical.9: 'Choosing one piece and staying with it' | '6 exercises · 6 songs · ~365 days' | badges=[]
+  after row chords-pop.9: 'Turning a chord chart into an arrangement' | '6 exercises · no song needed · ~180 days' | badges=[]
+  after row theory.9: 'From a phrase to a form' | '4 exercises · no song needed · ~180 days' | badges=[]
+Stage 9 head row height, before vs after: same (after not lower)
+legend: before=None after=None same=True
+status: before='' after='' same=True
+next: before='Next up · Stage 0Your instrument and your body2 exercises · ~2 days' after='Next up · Stage 0Your instrument and your body2 exercises · ~2 days' same=True
+exit=0

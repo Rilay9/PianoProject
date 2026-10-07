@@ -1,0 +1,7 @@
+python docs/prompts/runs/F2c/candidate_diff.py C:/Users/yalir/AppData/Local/Temp/claude/C--Users-yalir-repos-Piano-Stuff/9b647b56-e651-4563-9f4f-ce3e1e36a4a2/scratchpad/inventory-before.md docs/prompts/inventory.md
+before: 214 lines; table lines at blues.7 or ragtime.9 2; table lines crediting interval.leap through a concept 0 (through leaps 0, through leap 0); shared-detector notes on interval.leap 0, on texture.left-hand-pattern 0
+after: 214 lines; table lines at blues.7 or ragtime.9 2; table lines crediting interval.leap through a concept 0 (through leaps 0, through leap 0); shared-detector notes on interval.leap 0, on texture.left-hand-pattern 0
+as multisets: lines only before 0 (at blues.7 or ragtime.9 0), lines only after 0: []
+  the lines only before that are not at blues.7 or ragtime.9: []
+diff lines: 0
+exit=0

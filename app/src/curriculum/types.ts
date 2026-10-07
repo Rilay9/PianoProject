@@ -7,13 +7,22 @@
  * mistake is a compile error and not an `undefined` two screens later.
  */
 
-// The only import in this file, and it is erased: `import type` compiles to
+// The only imports in this file, and they are erased: `import type` compiles to
 // nothing, so `curriculum/types` still has no runtime dependency on the engine.
 // Declaring the two unions again here was the alternative and it is the
-// "one fact, two places" shape this repository keeps paying for.
+// "one fact, two places" shape this repository keeps paying for. D2's `Identity`
+// is reused the same way (D4): one identity type for a review decision, a
+// catalogue row's material and a run's.
 import type { LabBed, LabLock } from '../engine/sightReading';
+import type { Identity } from '../review/record';
 
-export type ItemType = 'song' | 'exercise' | 'drill';
+/**
+ * `excerpt` (E1): a passage of another item, cut by the build into its own file and measured on
+ * the cut (`excerptOf` names the parent; `provenance.excerpt` is its identity). It is music from a
+ * piece, never an exercise or a drill, and never the piece itself: `curriculum/excerpt.ts` says how
+ * each reader of the type treats one.
+ */
+export type ItemType = 'song' | 'exercise' | 'drill' | 'excerpt';
 export type Hands = 'both' | 'right' | 'left';
 /** Where an item's `level` came from — replan §1.4. */
 export type LevelSource = 'judged' | 'estimated';
@@ -36,6 +45,12 @@ export interface CatalogItem {
   id: string;
   type: ItemType;
   title: string;
+  /**
+   * For an excerpt (E1): the catalogue id of the item the passage was cut from. Display and
+   * attribution only (the Library names the parent); the excerpt's demands, level and identity
+   * are the cut's own, and its `source` is the parent's, whole.
+   */
+  excerptOf?: string;
   level: number;
   /**
    * Whether `level` was judged for this piece or estimated (replan §1.4).
@@ -66,17 +81,35 @@ export interface CatalogItem {
    *
    * Declared, never evidence: a run is evidence of a skill only through a
    * measurement its definition names (design 2026-09-26 §4). Filled on the nine
-   * sight-reading rows only; D writes it per generator family. Nothing in the
-   * app reads it yet — C3's evidence function will.
+   * sight-reading rows (C2) and, since D0, on the generated items whose family
+   * contract names a judged primary skill. Read only through `skillActivation.ts`:
+   * the evidence readers act on the reading rows' alone, and selection acts on a
+   * declared skill only where the one gate (`eligibility.ts`, E0) finds its
+   * opportunity established in the measured notes.
    */
   targetSkills?: string[];
   /**
    * The demands the build measured on the item's file with the app's own
-   * detectors (`demands/detect.ts`). Measured, never declared; absent on a
-   * runtime drill, whose demands belong to each phrase. Nothing writes it yet (E).
+   * detectors (`demands/detect.ts`), in the vocabulary's order (E0,
+   * `build.attach_demands`; the import path for an imported score). Measured,
+   * never declared. `'unmeasured'` where a notated item could not be measured,
+   * with the reason in `measurement.reason` — never an empty list that reads as
+   * "no demands", which is why it is a string the compiler makes every reader
+   * handle. Absent on a runtime drill, whose demands belong to each phrase.
+   *
+   * Read at runtime only through `eligibility.ts`, the one gate (E0).
    */
-  demands?: string[];
-  /** Relative to the primary target skill (design §7). Nothing writes it yet (D). */
+  demands?: string[] | 'unmeasured';
+  /** How the demands are known, with the counts the density judgement reads (E0). */
+  measurement?: Measurement;
+  /** Where the item came from and how each fact about it is known (E0; R35). */
+  provenance?: Provenance;
+  /**
+   * Relative to the primary target skill (design §7). Written on the generated items
+   * from their family contracts since D0. Selection intent, never evidence: since D4 the
+   * session's transfer offer reads `transfer` beside `provenance.transferOf`, and a run
+   * keeps the role it was played under; the ladder's transfer still reads first contact.
+   */
   role?: 'canonical' | 'variable' | 'transfer';
   /** null for an import placeholder and for a drill generated at runtime. */
   file?: string | null;
@@ -131,6 +164,11 @@ export interface CatalogItem {
     chords?: string[];
     /** True when the score carries a `swing` or `shuffle` direction. */
     swungMark?: boolean;
+    /**
+     * The key signatures the file states, in order, as the build measured them (`fifths`: sharps
+     * positive, flats negative). Read by the transfer relationship's key dimension (D4).
+     */
+    keys?: { fifths: number; mode?: string | null }[];
   } | null;
   /**
    * Set on the items synthesised from the `imports` store (docs/04 §4). The
@@ -149,6 +187,161 @@ export interface CatalogItem {
    * options at runtime.
    */
   lessonIds?: string[];
+}
+
+/**
+ * How an item's demands are known (E0; `catalog.schema.json`'s `measurement`).
+ *
+ * - `measured`: the detectors ran on the file. `located` counts the places each
+ *   demand was found (only those found at least once); `established` is what the
+ *   item provides at a useful density (`content/sources/opportunity-density.json`,
+ *   or a generated family's own contract density, `contract`) — the opportunities
+ *   the gate reads, told apart from incidental presence.
+ * - `unmeasured`: a notated item the detectors could not read, and why.
+ * - `runtime`: a drill the app makes when it opens; its demands belong to each phrase.
+ */
+export type Measurement =
+  | {
+      status: 'measured';
+      definitions: number;
+      detectors?: string;
+      located: Record<string, number>;
+      bars: number;
+      steps: number;
+      notes: number;
+      established: string[];
+      contract?: string[];
+      /** Of an excerpt's `established` (E1), the demands only the window rule (`minInWindow`) establishes. */
+      window?: string[];
+      /** Readings known to be wrong on this file (the detectors' clef assumption): kept among the ids, never established. */
+      misread?: { demands: string[]; why: string };
+      /**
+       * Each sounding hand's lowest and highest MIDI over the whole piece, grace notes left out (L120b): the
+       * build's reading of the bridge's per-bar `hands` (`build.attach_demands`). The coping question reads it
+       * to say whether a skip lies inside a taught fixed position (`eligibilityCore.uncoped`). Absent on a row
+       * measured before it, on an import, and where no note sounds: then no position copes with anything.
+       */
+      span?: Partial<Record<'R' | 'L', [number, number]>>;
+    }
+  | { status: 'unmeasured'; reason: string }
+  | { status: 'runtime'; reason: string };
+
+/** How one fact about an item is known (E0): never flattened into one field. */
+export type FactKind = 'measured' | 'inferred' | 'authored' | 'reviewed' | 'unmeasured' | 'runtime';
+
+/**
+ * Where an item came from and how each fact about it is known (E0; R35, R15, R11,
+ * Part 21 §B). Written by `build.attach_provenance` for a bundled item and by the
+ * import path for an imported score. Only the parts the app reads are typed.
+ */
+export interface Provenance {
+  source:
+    | 'authored'
+    | 'pdmx'
+    | 'kern'
+    | 'musetrainer'
+    | 'mutopia'
+    | 'generated'
+    | 'runtime'
+    | 'placeholder'
+    | 'imported-midi'
+    | 'imported-musicxml'
+    | 'imported-pdf'
+    | 'excerpt';
+  edition?: string | null;
+  composition?: string;
+  arrangement?: string;
+  converter?: { name: string; version?: string | number };
+  /**
+   * `value` is what an authored or reviewed fact states: a reviewed decision's `yes`, `no` or `fix`
+   * (D2), and a generated item's `promise` — `music` or `drill`, its family contract's rule for its
+   * recipe (D3a), which the one gate reads with `review.teaching`.
+   */
+  facts: Record<string, { kind: FactKind; via?: string; why?: string; untrusted?: string[]; value?: string }>;
+  /** R42's two decisions, apart: a usable, faithful score; a good teaching use. `null`: no person has decided. */
+  review: { score: boolean | null; teaching: boolean | null };
+  /** A declared large-hand voicing, with what a smaller hand does instead (D0 finding 5). */
+  physical?: { largeHandSpan?: number; prerequisite: string; alternative: string };
+  /**
+   * An excerpt's identity (E1 item 4): the definition it was cut from, the cut version, the
+   * parent's built bytes at cut time and its edition, and `key`, sha256 over them. The cut file's
+   * own sha256 is the identity the review record and a run's `material` carry.
+   */
+  excerpt?: ExcerptProvenance;
+  /**
+   * The material identity (D4 item 1): D2's `Identity` as the build computes it
+   * (`review.current_identity`) — a generated item's generator family, version and seed with its
+   * recipe and tempo; a notated item's built file by its sha256, an excerpt's cut included; `none`
+   * for a drill made when it opens or a placeholder. Written on every bundled row; what a run of the
+   * row stores as its `material`, so the app never recomputes it. Absent on an import and on a
+   * catalogue from before D4.
+   */
+  identity?: Identity;
+  /**
+   * The file identities this row's music had while the converter wrote music21's `<encoding-date>`
+   * (E50a): the recorded historical dated files (`tools/content/former_identities.json`, from the
+   * catalogues able to store a learner's material) whose undated form is this row's file, each re-proved
+   * by the build (`convert.former_identities`: the date put back gives its bytes). Only on a row whose
+   * file the converter wrote without a date; never the row's own identity. A stored learner row that
+   * names one names this row's material (`material.learnerMaterial`); D2's record never reads it.
+   * Since E50, also a reviewed repair's old file (`tools/content/repaired_identities.json`), and since
+   * E50b the Wabash cut's old cut (the one derived repair the build produced).
+   */
+  formerIdentities?: Extract<Identity, { kind: 'file' }>[];
+  /**
+   * CL15: the generator identities this generated row's music had before its family's version moved,
+   * where the item's music did not change (the generated-identity continuity relation:
+   * `tools/content/generator_continuity.json`, written by the generator only where the item's music
+   * digest equals the one recorded at the version the family left, so an item whose notes changed gets
+   * none). Only on a generated row; never the row's own identity. Learner continuity only, the boundary
+   * `formerIdentities` draws for a file: a stored learner row that names one names this row's material
+   * (`material.learnerMaterial`); D2's record, `sameIdentity` and every family-scoped read never read it.
+   */
+  formerGeneratorIdentities?: Extract<Identity, { kind: 'generator' }>[];
+  /**
+   * E50b: the former identities whose file a reviewed repair changed the tempo of (a relation marked
+   * `tempoChanged`): a run stored against one measured its percentage of the old tempo, and a run of
+   * this row's id that stored no material or no written base tempo does not show what its percentage
+   * is of (never guessed), so no tempo-dependent standard reads either's tempo against
+   * this row's (`material.tempoNotComparable`, `rungState.meetsStandard`). Contact, familiarity and
+   * projects read the run as before; the run is never rewritten.
+   */
+  tempoRepairedFrom?: Extract<Identity, { kind: 'file' }>[];
+  /**
+   * A transfer role's relationship as its family contract declares it for the recipe (D4 item 4):
+   * the skill it is transfer material for, the families it was written against, the surface
+   * dimensions declared to differ, and what stays unmeasured. Intent and relationship, never
+   * evidence; absent on every item whose role is not `transfer`.
+   */
+  transferOf?: TransferOf;
+}
+
+/** `provenance.transferOf` (D4; `catalog.schema.json`): a family contract's declaration for one recipe. */
+export interface TransferOf {
+  skill: string;
+  /** The generator families the declaration was written against. */
+  from: string[];
+  /** The surface dimensions declared to differ from those families. */
+  differs: string[];
+  /** What the difference involves that nothing measures. */
+  notMeasured: string[];
+}
+
+/** `provenance.excerpt` (E1; `catalog.schema.json`). */
+export interface ExcerptProvenance {
+  of: string;
+  /** Printed bars, 1-based, the pickup counted as bar 1. */
+  fromBar: number;
+  toBar: number;
+  selection: Hands;
+  cutVersion: number;
+  parentSha256: string;
+  parentEdition?: string | null;
+  key: string;
+  targets?: string[];
+  event?: string | null;
+  /** An approval made on parent bytes the parent no longer has. */
+  stale?: { approvedParentSha256: string; why: string };
 }
 
 /** Generated by tools/content/finder.py into the built curriculum (replan §4.1). */
@@ -238,6 +431,14 @@ export interface RunsRequirement {
   count: number;
   /** Played as a performance: started once, no restart, no loop, nothing played to the learner inside it. */
   performance?: boolean;
+  /**
+   * How the item was played (A7a-hands-both-requirement; `docs/review/responses/a7a-drafts.md` §7). `'both'`: only a
+   * run whose recorded `SessionRow.hands.played` is `both` counts, the learner's own two hands, and a run that
+   * recorded one hand — a Duet run included, which is saved as a Keep tempo run with the app playing the other —
+   * or none does not. Read from that fact alone, never from the run's mode or tool. Absent: the hands are not
+   * asked, as for every requirement before it.
+   */
+  hands?: 'both';
   /** The share of the notes, where this requirement asks more than the rung's `minAccuracy`. */
   accuracy?: number;
 }
@@ -363,6 +564,14 @@ export interface Lesson {
   id: string;
   title: string;
   concepts: string[];
+  /**
+   * Measurable concepts the lesson introduces while no piece on the rung
+   * practises them yet (`docs/02`, F2): the build's field, beside `concepts`.
+   * No teaching claim, requirement or evidence reads it. A rung carried over
+   * from before C5 makes each an exposure, as it does each of its concepts
+   * (`carriedExposures`; CL04, G70). Absent on most rungs.
+   */
+  introduces?: string[];
   textFile: string;
   exerciseOptions: string[];
   songOptions: string[];
@@ -411,6 +620,14 @@ export interface Lesson {
    * phone, and nothing about which books he owns belongs in the repository.
    */
   paperOptions?: string[];
+  /**
+   * Each listed book piece's twin (`BookPiece.itemId`, a catalog id), by the
+   * piece's `book.<book>/<piece>` id: written by the shelf overlay beside
+   * `paperOptions` and, like them, never in the built curriculum. A measured
+   * run of the twin judged by this rung counts toward the rung's `runs`
+   * requirements as the book piece (`rungState`; CL04, L79).
+   */
+  paperTwins?: Record<string, string>;
   /** What it is short of, written by validate.py. */
   needs?: Needs;
   /** `[min, max]` level across this rung's options (replan §1.7). */

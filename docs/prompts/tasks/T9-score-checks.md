@@ -75,3 +75,7 @@ that flags a third of the corpus is a check nobody will read.
 
 The path of `build/score-checks.md`; a table of check → items flagged → false positives you
 judged; the seven known faults and whether each was caught; what is unverified.
+
+## Record
+
+lane: T9 · closes: — · entry: — · role: history

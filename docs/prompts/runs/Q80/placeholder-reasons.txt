@@ -1,0 +1,24 @@
+== app/public/content: 2092 items, 79 without a file
+     71  (no importHint)
+      7  Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add it on the 
+      1  MusicXML cannot express the 2048th-note tuplet in bar 27; import an edition that notates the cadenza differently
+   read as this build's own (a fetch failure): 0
+== build/q80-unfetched/content: 2092 items, 80 without a file
+     71  (no importHint)
+      7  Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add it on the 
+      1  MusicXML cannot express the 2048th-note tuplet in bar 27; import an edition that notates the cadenza differently
+      1  Not bundled in this build: the edition's .ly file was not fetched
+   read as this build's own (a fetch failure): 1
+     song.ragtime.joplin-pine-apple-rag.mutopia: the edition's .ly file was not fetched
+== build/q80-strict-unfetched/content: 2091 items, 307 without a file
+    154  Not bundled in a redistributable build: the composition is unknown
+     71  (no importHint)
+     46  Not bundled in a redistributable build: the Humdrum edition is CC BY-NC-SA
+     21  Not bundled in a redistributable build: the composition is in-copyright
+      7  Buy the MusicXML from a retailer that exports it, or transcribe it in MuseScore and export MusicXML, then add it on the 
+      6  Not bundled in a redistributable build: the composition is still in copyright
+      1  MusicXML cannot express the 2048th-note tuplet in bar 27; import an edition that notates the cadenza differently
+      1  Not bundled in this build: the edition's .ly file was not fetched
+   read as this build's own (a fetch failure): 1
+     song.ragtime.joplin-pine-apple-rag.mutopia: the edition's .ly file was not fetched
+exit 0

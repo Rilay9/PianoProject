@@ -6,7 +6,7 @@ videos:
   - label: "Passing Chords | Gospel Piano Tutorial for Beginners to Advanced"
     url: "https://www.youtube.com/watch?v=D78jyasHY2s"
     teacher: "PrettySimpleMusic"
-readingTime: 3
+readingTime: 4
 ---
 
 Hymn playing is the most efficient harmony training available, because every
@@ -33,18 +33,19 @@ fills the gap. The two simplest devices:
   change. The right hand holds; the bass moves.
 - **Chromatic passing chord.** Slide the whole chord up or down a half step into
   the target chord and release it immediately. A half-step approach from below
-  works nearly everywhere.
+  is a good first one to try.
 
 Both are decorations on a harmony that is already correct. Get the hymn right
 first; add the passing chords afterwards.
 
 **Repertoire.** *Amazing Grace* in four parts is the one to read as SATB; *When
 the Saints* in F gets the melody into your ear first. Then the hymns, two ways:
-*Abide with Me*, *Jesus Loves Me* and *Rock of Ages* — that one in six-four —
-are in four parts with no symbols, while *What a Friend*, *Come
+*Abide with Me* and *Rock of Ages* — that one in six-four — are in four parts
+with no symbols, *Jesus Loves Me* is a tune over a broken-chord left hand, also
+without symbols, while *What a Friend*, *Come
 Thou Fount*, *Just a Closer Walk* and *As the Deer* print the chords above the
 tune, which is where a walk-up goes. The easier settings — *Be Thou My Vision*,
-*Swing Low*, *Joyful, Joyful* — are on the Stage 2 hymns rung and in the
+*Swing Low*, and *Ode to Joy*, the tune of *Joyful, Joyful* — are on the Stage 2 hymns rung and in the
 Library. *Greensleeves* with chords gives you the same job in a minor key. Beyond those, a hymnal is the
 cheapest large book of four-part harmony there is.
 

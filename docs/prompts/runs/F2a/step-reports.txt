@@ -1,0 +1,1 @@
+build.step_reports after the record rewrite exit=0

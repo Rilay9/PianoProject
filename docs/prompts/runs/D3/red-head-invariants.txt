@@ -1,0 +1,25 @@
+# head-invariants: tools\content\tests\test_generator_invariants.py swapped, restored byte for byte after the run
+FF
+======================================================================
+FAIL: test_the_table_names_every_maker_in_the_module (tools.content.tests.test_generator_invariants.TestEveryMakerIsHere.test_the_table_names_every_maker_in_the_module)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_generator_invariants.py", line 561, in test_the_table_names_every_maker_in_the_module
+    self.assertEqual(makers - claimed, set(), "makers with no row in FAMILIES")
+AssertionError: Items in the first set but not the second:
+'make_study' : makers with no row in FAMILIES
+
+======================================================================
+FAIL: test_there_are_as_many_rows_as_makers (tools.content.tests.test_generator_invariants.TestEveryMakerIsHere.test_there_are_as_many_rows_as_makers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_generator_invariants.py", line 567, in test_there_are_as_many_rows_as_makers
+    self.assertEqual(len(FAMILIES), len(makers))
+AssertionError: 56 != 57
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+FAILED (failures=2)
+
+exit 1

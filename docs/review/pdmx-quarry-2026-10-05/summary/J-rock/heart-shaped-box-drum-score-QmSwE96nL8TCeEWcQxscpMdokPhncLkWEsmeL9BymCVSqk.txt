@@ -1,0 +1,71 @@
+SHAPE: PIANO1 | parts=1 max_staves=1 meters=4/4 chord-symbols=0 bars=63
+INSTRUMENTS/PARTS: P1:'Drumset':staves=1:prog=0:piano=True
+CID QmSwE96nL8TCeEWcQxscpMdokPhncLkWEsmeL9BymCVSqk
+title: Heart shaped box - Drum score | song_name: heart shaped box
+composer:  | artist: Nirvana
+csv: tracks=0 bars=77 license=cc-zero
+
+=== part P1 'Drumset' measures=63 ===
+m1 [key fifths=0; time 4/4; clef=percussion2; "Intro - 4 bar rest"; tempo=100]  s1v1: r:d16
+m2 ["Verse"; dyn=mp; repeat-forward]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q x:8 x:8 x:q
+m3  s1v1: x:8 x:8 x:8 x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8 x:q
+m4  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q x:8 x:8 x:q
+m5  s1v1: x:8 x:8 x:8 x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8 x:q
+m6  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q x:8 x:8 x:q
+m7  s1v1: x:8 x:8 x:8 x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8 x:q
+m8  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q x:8 x:8 x:q
+m9 [ending1-start; repeat-backward; ending1-stop]  s1v1: x:8 x:8 x:8 x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8 x:q
+m10  s1v1: x:8[accent]+x x:8+x x:8+x x:8+x x:8+x x:8+x x:8[accent] x:16 x:16[accent] | s1v2: x:8 x:8 x:8 x:8 x:8 x:8
+m11 [dyn=ff]  s1v1: x:8+x x:8+x x:q x:8+x x:8+x x:q | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m12  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:16 x:16 | s1v2: x:8 x:8 x:q x:8 x:8
+m13  s1v1: x:8 x:8 x:8 x:8 r:q x:8 x:8 | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m14  s1v1: x:8 x:8 x:8+x x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8. r:16 x:q x:q
+m15  s1v1: x:8+x x:8+x x:q x:8+x x:8+x x:q | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m16  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 gx:8 x:16 x:16 x:16 r:16 | s1v2: x:8 x:8 x:q x:8 x:8
+m17  s1v1: x:8 x:8 x:8 x:8 r:q x:8 x:8 | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m18  s1v1: x:8 x:8 x:8+x x:8 x:8+x x:8 gx:8 x:8 x:16 x:16 | s1v2: x:8 x:8. r:16 x:q x:8
+m19  s1v1: x:8+x x:8+x x:q x:8+x x:8+x x:q | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m20  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:16 x:16 | s1v2: x:8 x:8 x:q x:8 x:8
+m21  s1v1: x:8 x:8 x:8 x:8 r:q x:8 x:8 | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m22  s1v1: x:8 x:8 x:8+x x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8. r:16 x:q x:q
+m23  s1v1: x:q x:q+x x:q x:q+x | s1v2: x:8 x:8 x:8 x:8
+m24 [dyn=mp]  s1v1: x:8[accent]+x x:8+x x:8+x x:8+x x:8+x x:8+x gx:8 x:8[accent] x:16 x:16 | s1v2: x:8 x:8 x:8 x:8 x:8 x:8
+m25 [dyn=ff]  s1v1: x:q x:q+x x:q x:q+x | s1v2: x:8 x:8 x:8 x:8
+m26 [dyn=mp; "To Coda"]  s1v1: x:8[accent]+x x:8+x x:8+x x:8+x x:8+x x:8+x gx:8 x:8[accent] x:8 | s1v2: x:8 x:8 x:8 x:8 x:8 x:8
+m27 [dyn=f]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m28  s1v1: x:8 x:8 x:8+x x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8. r:16 x:q x:q
+m29  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m30  s1v1: x:8 x:8 x:8+x x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8. r:16 x:q x:q
+m31 [dyn=mf]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q x:8 x:8 x:q
+m32  s1v1: x:8 x:8 x:8 x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8 x:q
+m33  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q x:8 x:8 x:q
+m34  s1v1: x:8 x:8 x:8 x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8 x:q
+m35 ["Verse"; dyn=mp; repeat-forward]  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q x:8 x:8 x:q
+m36  s1v1: x:8 x:8 x:8 x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8 x:q
+m37  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q x:8 x:8 x:q
+m38  s1v1: x:8 x:8 x:8 x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8 x:q
+m39  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q x:8 x:8 x:q
+m40  s1v1: x:8 x:8 x:8 x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8 x:q
+m41  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:8 | s1v2: x:8 x:8 x:q x:8 x:8 x:q
+m42 [ending1-start; repeat-backward; ending1-stop]  s1v1: x:8 x:8 x:8 x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8 x:q
+m43  s1v1: x:8[accent]+x x:8+x x:8+x x:8+x x:8+x x:8+x x:8[accent] x:16 x:16[accent] | s1v2: x:8 x:8 x:8 x:8 x:8 x:8
+m44 [dyn=ff]  s1v1: x:8+x x:8+x x:q x:8+x x:8+x x:q | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m45  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:16 x:16 | s1v2: x:8 x:8 x:q x:8 x:8
+m46  s1v1: x:8 x:8 x:8 x:8 r:q x:8 x:8 | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m47  s1v1: x:8 x:8 x:8+x x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8. r:16 x:q x:q
+m48  s1v1: x:8+x x:8+x x:q x:8+x x:8+x x:q | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m49  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 gx:8 x:16 x:16 x:16 r:16 | s1v2: x:8 x:8 x:q x:8 x:8
+m50  s1v1: x:8 x:8 x:8 x:8 r:q x:8 x:8 | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m51  s1v1: x:8 x:8 x:8+x x:8 x:8+x x:8 gx:8 x:8 x:16 x:16 | s1v2: x:8 x:8. r:16 x:q x:8
+m52  s1v1: x:8+x x:8+x x:q x:8+x x:8+x x:q | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m53  s1v1: x:8 x:8 x:8 x:8 x:8 x:8 x:8 x:16 x:16 | s1v2: x:8 x:8 x:q x:8 x:8
+m54  s1v1: x:8 x:8 x:8 x:8 r:q x:8 x:8 | s1v2: x:8 x:8 x:q[accent] x:8 x:8 x:q[accent]
+m55  s1v1: x:8 x:8 x:8+x x:8 x:8+x x:8 x:8+x x:8 | s1v2: x:8 x:8. r:16 x:q x:q
+m56  s1v1: x:q x:q+x x:q x:q+x | s1v2: x:8 x:8 x:8 x:8
+m57 [dyn=mf]  s1v1: x:8[accent]+x x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 | s1v2: x:q x:q x:q x:q
+m58 [dyn=ff]  s1v1: x:q x:q+x x:q gx:8 x:16 x:16 x:16 r:16 | s1v2: x:8 x:8 x:8 x:8
+m59 [dyn=mf]  s1v1: x:8[accent]+x x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 | s1v2: x:q x:q x:q x:q
+m60 [dyn=ff]  s1v1: x:q x:q+x x:q x:q+x | s1v2: x:8 x:8 x:8 x:8
+m61  s1v1: x:8+x x:16 x:16 gx:8 x:16 x:16 x:8 x:16 x:16 x:8 gx:8 x:16 x:16 gx:8 x:16 r:16 | s1v2: x:8 r:8 r:16
+m62  s1v1: x:q x:q+x x:q x:q+x | s1v2: x:8 x:8 x:8 x:8
+m63  s1v1: gx:8 x:8 x:8 x:8 x:8+x+x r:h

@@ -192,7 +192,11 @@ a different engraving.)
 
 1. A **probe** engraves the whole score into a third `OsmdView` that is never shown, on idle a
    frame after the first paint, capped at the first 48 bars. *(Eagerly, it doubled the longest
-   score's open time — 108 s against a 60 s budget under a fourfold throttle.)*
+   score's open time — 108 s against a 60 s budget under a fourfold throttle.)* For a piece past
+   those 48 bars the idle load comes before any sheet past its first two: the measurement is
+   what prices how many the settled shape needs (U32a, §4.1), so its re-plan brings the window
+   to its settled size, and a sheet that shape is short of follows in a second re-plan that adds
+   the greyed row below it.
 2. Elements are bucketed to their nearest **system** by y; a system's extent is how far its ink
    reaches above the top stave line, the staves' own span, and how far below.
 3. The fit targets the **upper quartile** of those extents, not the maximum. One freak bar — two
@@ -349,7 +353,8 @@ first, looking ahead second, the bar count third*, and the arrangement follows t
   asked, M shown: at 150 % only 2 of 4 fit here*. Splits whose scales tie go to fewer rows.
   **Rows are placed in reading order** by their first bar (`packSlots`), whatever slot the
   round-robin put them in: the window's rows top to bottom, then the look-ahead. **The look-ahead row costs the window nothing:** it is added below only
-  when one more row fits at the window's own scale, and drawn greyed (`is-ahead`). On the
+  when one more row fits at the window's own scale, and drawn greyed (`is-ahead`); a row
+  that does not fit is never drawn into the others (invariant 40, U110). On the
   same row is the sideways chunk's job; upright rows are not extended past the window.
 - **Priced as drawn (T38, 2026-09-25).** Every candidate is priced on its own window — the
   bars the cursor's window holds at that count — each row as its opening once (clef, key, and
@@ -401,7 +406,21 @@ first, looking ahead second, the bar count third*, and the arrangement follows t
   scroll on Linux fonts (T38 follow-up, 2026-09-25); the `N asked, M shown` form the
   window-rule spec parses is kept in both.
 - Exactly one slot holds the cursor and **is never re-drawn while it does**. Each slot is an
-  engraver loaded with the piece, so a piece longer than the probe's cap keeps two. The
+  engraver loaded with the piece, so a piece longer than the probe's cap is first drawn from
+  two; once the probe has measured it, the shape is priced as if every sheet a stage can hold
+  existed (`priceWindowShape`, which touches nothing) and only the sheets that shape needs are
+  made, on idle, one whole-document load at a time (U32a; U32 made all four, before the probe,
+  and a two-system window held two engravers it never drew from). The measurement's re-plan
+  draws what the sheets there are can draw; a sheet it is short of — the greyed next row —
+  lands in a second re-plan that adds the row below a window already at its size. Any fit
+  or step taken while stopped prices the need again, so a change of count, Size, stage or
+  start bar that needs another sheet queues it before the next run — priced on the stage at
+  rest and on the taller stage the last run was played on, where a run's shape is
+  re-planned before its first note. No sheet load starts while a run is on — a key played
+  during one is coloured only when it ends — so a run started before they land keeps the
+  sheets it has, the first run on a stage taller than the one at rest among them. It used to keep two for good: a
+  first-paint cost guard that had become a cap on the look-ahead row (T38's phone-upright
+  Nocturne). The
   shape is chosen at the first fit and held for a run, like the scale, and it may only
   change a bounded number of times for one zoom, stage and asked count — two answers that
   disagree are an engraving loop, and an engraving loop is a browser that stops.
@@ -452,6 +471,26 @@ read-ahead on the screen at every moment.
   repeat, the repeat's first bar; at a first/second-time ending, the ending played on this pass.
 - **The slots pack from the top** when the fit leaves room, with 24 px between them, like a
   page; the spare space is at the bottom. When the music fills its share, the shares stand.
+- **Below the folded chip (U118).** On a phone, while the folded chrome draws the `bar n / m`
+  chip at the stage's top, the stacked slots start below the band the chip owns, never inside
+  it, and stack within what is left of the stage. The band is the chip's tallest legitimate
+  state at this geometry: `bar n / m` joined to every line the run can write while folded, each
+  at its longest for the piece — the seconds away, which have no ceiling, at fourteen of the
+  face's widest digit, the most a span between two `Date` readings has in whole seconds (U118b,
+  `responses/bea2d4e2.md`, `responses/questions-1cadc4dc.md`) — laid out under the chip's own rule (its `top`, padding, type and
+  line height, at the width the stage leaves it) — one line where every sentence fits one, more
+  where any needs more. It is held for the stage's width and the chip's type, so a change of
+  what the chip says never moves the slots or re-prices a run (`ScoreScreen` `cornerTexts` and
+  `foldedCornerReserve`, handed to the renderer as `foldedReserve`). **A run that starts
+  unfolded is not priced for the band**, unlike CHUNK's room below: upright the fold also takes
+  the header away, which gives the stage more height than the band takes, so the fold places
+  the slots (`placeSlots`) and leaves the shape, the engraving and the size the run froze.
+  Priced from the run's start, the band changed six of 112 measured shapes and the drawn size
+  of 28, 27 of them smaller, for room the fold gives back (`runs/U118`; the reviewer's ruling,
+  `responses/questions-e9aa51ae.md`).
+  **A size taken while the chip is already drawn** — a turn while folded — is priced and fitted
+  below the band (`priceWindowShape`, `sheetShift`), so the bottom system stays on the stage.
+  Not on a tablet, where the chip is not drawn.
 - **At the end of a piece the other slots show the bars just played**, not blank — a blank slot
   is half the screen gone black for the last bars of every song. Chosen in playing order too, so
   at a second-time ending it is the bar *before* the ending, not the first ending printed above.
@@ -659,9 +698,9 @@ truth.
 ### 7.1 While my hands are on the keys — the control bar
 
 **One row, in every form factor.** A hard constraint: at 360 px the row's `scrollHeight` equals
-one row. It has broken twice.
+one row. It has broken twice. Sideways the bar's left group (Back, the name, `bar n / m`, the status line) has a minimum: Back and the piece's widest `bar m / m` whole. Where that would not fit beside the controls, Hands and then `Hear it` go behind `⋯`. The name yields first, then the status line, which ends with its own ellipsis. The group's clip is the last fence (U119, U119a).
 
-`▶`/`⏸` · `Hear it` · mode · hands · tempo label · `⋯`. Below 400 px the modes shorten to one
+`▶`/`⏸` · `Hear it` · mode · hands · tempo label · `⋯`. Below 440 px the modes shorten to one
 word and the tempo label drops the percentage. `Start again` is in `⋯` — the test for the bar is
 *do you need this while your hands are on the keys?*
 
@@ -863,8 +902,11 @@ Numbered for citation. Each is falsifiable; most are already testable.
    arrangement is one system**, which upright is the answer to a piece too tall for two (§4.1).
    There the next bar arrives when the window turns, and the size is what was bought with it.
    Since T34 the look-ahead row is lost only when one more row does not fit at the window's
-   own scale (priced at the piece's tallest system), or when every sheet is in use — a piece
-   past the probe's 48 bars gets two sheets, not four (`WindowRenderer.create`). The window's
+   own scale (priced at the piece's tallest system), or when every sheet is in use
+   (`MAX_SLOTS`). A piece past the probe's 48 bars has two sheets until the ones its settled
+   shape needs load after it is measured (U32a, §4.1), and a run started before they land keeps its two for
+   the run: the frozen arrangement outranks the look-ahead once play has begun (the
+   reviewer's order for U32: no distortion, the frozen run, the look-ahead, the count). The window's
    size is never reduced to make room for it. Readability first, looking ahead second — the
    owner's order, 2026-09-23. **Since T38 that is measured, not only granted:** the window's
    scale is fitted to the window's rows alone, and a look-ahead row wider than the stage at
@@ -950,6 +992,58 @@ Numbered for citation. Each is falsifiable; most are already testable.
     at 0.97). The next bars arriving in a slot (`scheduleSettle`) and the spare sheet sideways
     are not the fit and are not part of it. `score.screen` "the fit says when it has settled"
     checks it frame by frame.
+
+**Rows** (U110, `docs/review/responses/9e14839e.md` §3)
+40. **Rows never overlap.** No drawn row's ink, chord symbols and fingering included, reaches
+    into the row below it at the size the window is drawn, at rest or in a run, and a fresh
+    load and a reload draw the same window. Two things broke it together on Ode to Joy at
+    360 × 780 with the piano connected (`docs/review/walks/walk-2026-10-02.md` finding 2): the
+    plan priced the window's rows, and so the room left below them, with the drawn scale of an
+    engraving at the zoom the engraving search had tried before settling, against the piece's
+    measurement at the zoom it settled on, so the rows came out at a little over half their
+    drawn height and a third row was granted on a stage two rows fill; and when the reshape
+    ladder (`mayReshape`, a few changes per zoom, width and count) ran out on such a grant,
+    `settleShape` kept it, and
+    `packSlots` gave three rows even shares of that stage. Whether it ran out on a grant
+    depended on how many engraving searches the settling chrome set off, so one load could be
+    clean and the next not. Now the drawn scale prices a row only at the zoom it was drawn at
+    (`drawnAtZoom`), so a row is granted only on a stage the rows drawn leave room for.
+    **A spent ladder holds the shape that is drawn, a look-ahead row included, unless the rows
+    drawn no longer fit the stage** (U110a, `docs/review/responses/bbbdffb0.md`;
+    `settleShape`). A refusal from the plan is not proof that the rows on the glass overflow
+    the stage, because the plan prices the window's rows at the piece's tallest system while
+    they draw shorter wherever the tallest system is not a window row, and the look-ahead row
+    at its own drawn ink. Twinkle's chrome laying out at 342 × 740 (Bars 3) flips on exactly
+    that: the look-ahead row is granted while it is not drawn and refused once it is, its own
+    ink being the taller, until the ladder runs out. U110 took the row away on that refusal
+    once the ladder had run out, keyed on the row having been measured; it took away read-ahead
+    a stage the drawn rows fit held, and is replaced by the packing test. Once the ladder has
+    run out, the look-ahead row is dropped only when the rows drawn, each at its own drawn
+    height with the gaps between (`rowsFitStage`, `packSlots`' own test, read from the fit that
+    has just drawn them), are no longer under the stage's height. Past that test `packSlots`
+    gives every row an even share and the ink runs into the next row, which a stage shortened
+    by height alone does to rows drawn while it was taller. The exception only ever removes
+    the look-ahead row, so the ladder still ends, and it keeps no state of its own.
+    `score.window-rule` asserts the rule in every cell ((g)) and on the Ode case, fresh, on
+    three reloads and through a Wait run into its sixth bar; `windowRendererStage.test.ts`
+    holds both halves of the exception on the stood-in engraver, and two `score.window-rule`
+    cases (U110b) hold the shortening in a browser.
+    *Read in a browser (U110b, `docs/prompts/runs/U110b/ENTRY.md`):* the state is reachable on a
+    phone upright by real events: Twinkle, three Bars, 342 wide, opened at the height where the
+    stage is just tall enough for the greyed third row, runs the ladder out with the two window
+    rows and the greyed row packed and fitting; the viewport shortened by height alone then
+    makes the three rows over the stage, and the row is dropped by the packing test with the
+    ladder's record untouched and the window rows where they were. What a browser shows of the
+    exception is small: the same shortening without it also ends on two clean rows, because the
+    engraving search the same stage change sets off re-engraves at a smaller zoom, which resets
+    the ladder and lets the drop through; no painted frame in either tree has ink over the next
+    row or past the stage. What the exception buys there is that the window is not re-engraved
+    and does not move (a couple of frames five pixels off, or a window that ends 4 to 5 px from
+    where it was). Where the search stays silent (a shortening too small to move the zoom by
+    its tolerance, or a stage the rows overflow by less than that), the pruned tree would hold
+    the three rows; no such cell was found or measured in a browser.
+    `windowRendererStage.test.ts` holds both halves on the stand-in, whose search did not move
+    the zoom at the heights it shortens to (700, 600 and 560 px).
 
 ---
 

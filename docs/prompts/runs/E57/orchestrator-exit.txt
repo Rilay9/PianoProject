@@ -1,0 +1,31 @@
+== map-tests  20:15:33
+map-tests exit=0
+== map-min  20:15:35
+map-min exit=0
+== content-build  20:15:35
+content-build exit=0
+?? docs/prompts/pictures/c6-A-day-one-342x740-full.png
+?? docs/prompts/pictures/c6-A-day-one-342x740.png
+?? docs/prompts/pictures/c6-B-skill-retention-342x740-full.png
+?? docs/prompts/pictures/c6-B-skill-retention-342x740.png
+?? docs/prompts/pictures/c6-B-swap-sheet-342x740.png
+?? docs/prompts/pictures/c6-C-piece-retention-342x740-full.png
+?? docs/prompts/pictures/c6-C-piece-retention-342x740.png
+?? docs/prompts/pictures/c6-cards.txt
+?? docs/review/handoffs/ca8508ed.content.md
+== content-validate  20:24:45
+content-validate exit=0
+== review-check  20:25:02
+review-check exit=0
+== content-tests  20:25:03
+content-tests exit=1
+== vitest-all  20:33:18
+vitest-all exit=1
+== build-app  20:37:35
+build-app exit=0
+SPECS: tests/e2e/library.spec.ts
+== specs-exist  20:38:15
+specs-exist exit=0
+== e2e-targeted  20:38:15
+e2e-targeted exit=0
+CHAIN DONE 20:38:48

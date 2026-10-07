@@ -1,0 +1,36 @@
+HD2a evidence: song.classical.palmer-days-in-the-sun.pdmx (scores/pdmx/QmR9cwDhSw5RmicGmWVgsL3Wg7wxoJ3rD1eWTNsyt4fKeK.mxl), identity sha256 841f074661dee98214a711593432a381d0df257408b0f7497fef82385e8fcc5b
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 13-13 -> R
+  bar 13 (source measure 12) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @48 L [43] + v2 [67]; @50 L [41] + v2 [69]
+  bar 13 onset 48 74/st1/v1/R:1.5 67/st1/v2/L/x:2 43/st2/v3/L:0.5
+  bar 13 onset 48.5 50/st2/v3/L:0.5
+  bar 13 onset 49 55/st2/v3/L:1
+  bar 13 onset 49.5 72/st1/v1/R:0.5
+  bar 13 onset 50 74/st1/v1/R:1 69/st1/v2/L/x:2 41/st2/v3/L:0.5
+  bar 13 onset 50.5 48/st2/v3/L:0.5
+  bar 13 onset 51 81/st1/v1/R:1 53/st2/v3/L:1
+
+ROW staff 1 voice 2 bars 34-34 -> R
+  bar 34 (source measure 33) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @132 L [50, 53, 57] + v2 [72]
+  bar 34 onset 132 81/st1/v1/R:2 72/st1/v2/L/x:2 57/st2/v3/L:2 53/st2/v3/L:2 50/st2/v3/L:2
+  bar 34 onset 134 50/st2/v3/L:1
+  bar 34 onset 135 89/st1/v1/R:1 62/st2/v3/L:0.5
+  bar 34 onset 135.5 57/st2/v3/L:0.5
+
+ROW staff 1 voice 2 bars 37-38 -> R
+  bar 37 (source measure 36) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @144 L [48] + v2 [75]; @146 L [48, 55] + v2 [75]
+  bar 37 onset 144 79/st1/v1/R:1 75/st1/v2/L/x:2 48/st2/v3/L:1
+  bar 37 onset 145 79/st1/v1/R:0.5 51/st2/v3/L:1 48/st2/v3/L:1
+  bar 37 onset 145.5 82/st1/v1/R:0.5
+  bar 37 onset 146 79/st1/v1/R:1 75/st1/v2/L/x:2 55/st2/v3/L:1 48/st2/v3/L:1
+  bar 37 onset 147 79/st1/v1/R:0.5 60/st2/v3/L:1 51/st2/v3/L:1
+  bar 37 onset 147.5 82/st1/v1/R:0.5
+  bar 38 (source measure 37) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @148 L [53] + v2 [81]
+  bar 38 onset 148 91/st1/v1/R:2 81/st1/v2/L/x:2 53/st2/v3/L:1
+  bar 38 onset 149 57/st2/v3/L:1 53/st2/v3/L:1
+  bar 38 onset 150 91/st1/v1/R:0.5 60/st2/v3/L:1 53/st2/v3/L:1
+  bar 38 onset 150.5 91/st1/v1/R:0.5
+  bar 38 onset 151 81/st1/v1/R:1 65/st2/v3/L:1 57/st2/v3/L:1
+

@@ -1,0 +1,31 @@
+npx vitest run (app/), the whole suite. This is a summary of a capture over the 300 KB limit, which was kept under build/e51/logs/vitest.log and deleted at cleanup.
+
+ Test Files  4 failed | 311 passed (315)
+      Tests  5 failed | 7177 passed | 5 skipped | 1 todo (7188)
+vitest exit 1
+
+Failing cases, whole suite:
+ FAIL  tests/unit/expectedNote.test.ts > the spelling comes from the notation (T41) > every black key in every fixture carries its written spelling
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > what the screen writes > Play it to me writes one hearing and no demonstration
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/simonTurnCue.test.ts > the chain hands over in words, not only by going quiet > does not take a key pressed while the app is still playing as the answer
+
+In the whole-suite capture, the three that are not the lesson pair fail as follows:
+- expectedNote: "Test timed out in 5000ms".
+- firstContactOnTheScore: "expected 1 to be 2", a count of what the screen wrote.
+- simonTurnCue: "expected 'correct' to be ''", a key pressed while the app is still playing, taken as the answer.
+
+The last two are assertions about timing on a playback clock.
+
+The four failing files rerun alone (npx vitest run on the four files):
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 317 passed (319)
+vitest alone exit 1
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > ... > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > ... > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+
+Reading:
+- The two left alone are the recorded line-ending pair in lessonClaimsAboutApp (blues.3, 4.7; Entry 101). X31 and X3d record the same pair, and the reviewer's f972756 response calls them previously documented CRLF-sensitive assertions.
+- The other three pass alone. Passing alone and failing in the suite is the load signature, inferred and not proven here. X31 recorded expectedNote at its timeout under the whole suite in the same way.
+- E51 changes no app file. The only app test that runs excerpts.py is the browser spec excerpts.spec.ts, which is not in this suite.

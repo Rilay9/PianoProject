@@ -1,0 +1,9 @@
+repeat 0: rows when the section showed 0 (2v3 among them: false); once the duet button showed 16 (2v3 among them: true)
+repeat 1: rows when the section showed 0 (2v3 among them: false); once the duet button showed 16 (2v3 among them: true)
+repeat 2: rows when the section showed 0 (2v3 among them: false); once the duet button showed 16 (2v3 among them: true)
+repeat 3: rows when the section showed 0 (2v3 among them: false); once the duet button showed 16 (2v3 among them: true)
+repeat 4: rows when the section showed 0 (2v3 among them: false); once the duet button showed 16 (2v3 among them: true)
+repeat 5: rows when the section showed 0 (2v3 among them: false); once the duet button showed 16 (2v3 among them: true)
+repeat 6: rows when the section showed 0 (2v3 among them: false); once the duet button showed 16 (2v3 among them: true)
+repeat 7: rows when the section showed 0 (2v3 among them: false); once the duet button showed 16 (2v3 among them: true)
+exit 0

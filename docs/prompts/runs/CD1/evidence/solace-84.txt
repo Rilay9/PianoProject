@@ -1,0 +1,17 @@
+pickup=undefined measures=152 printed=88
+bar 84 m131 onset 262 start=true 74/st1/v1/R 70/st1/v2/L/x 65/st2/v3/L 58/st2/v3/L
+bar 84 m131 onset 262.25 start=false 77/st1/v1/R
+bar 84 m131 onset 262.5 start=false 74/st1/v1/R
+bar 84 m131 onset 262.75 start=false 77/st1/v1/R/tie2 68/st1/v2/L/x/tie2 65/st2/v3/L/tie2 59/st2/v3/L/tie2
+bar 84 m131 onset 263 start=false 
+bar 84 m131 onset 263.25 start=false 77/st1/v1/R 68/st1/v2/L/x
+bar 84 m131 onset 263.5 start=false 65/st2/v3/L 59/st2/v3/L
+bar 84 m131 onset 263.75 start=false 74/st1/v1/R
+bar 84 m147 onset 294 start=true 74/st1/v1/R 70/st1/v2/L/x 65/st2/v3/L 58/st2/v3/L
+bar 84 m147 onset 294.25 start=false 77/st1/v1/R
+bar 84 m147 onset 294.5 start=false 74/st1/v1/R
+bar 84 m147 onset 294.75 start=false 77/st1/v1/R/tie2 68/st1/v2/L/x/tie2 65/st2/v3/L/tie2 59/st2/v3/L/tie2
+bar 84 m147 onset 295 start=false 
+bar 84 m147 onset 295.25 start=false 77/st1/v1/R 68/st1/v2/L/x
+bar 84 m147 onset 295.5 start=false 65/st2/v3/L 59/st2/v3/L
+bar 84 m147 onset 295.75 start=false 74/st1/v1/R

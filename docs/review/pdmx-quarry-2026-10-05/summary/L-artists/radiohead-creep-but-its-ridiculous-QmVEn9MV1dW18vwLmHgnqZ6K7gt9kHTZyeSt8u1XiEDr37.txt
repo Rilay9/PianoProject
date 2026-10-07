@@ -1,0 +1,694 @@
+SHAPE: MIXED_WITH_PIANO | parts=8 max_staves=2 meters=6/8 chord-symbols=0 bars=84
+INSTRUMENTS/PARTS: P1:'Stimme':staves=1:prog=87:piano=False; P2:'5-stg. elektrischer Bass':staves=1:prog=33:piano=False; P3:'Schlagzeug':staves=1:prog=0:piano=True; P4:'Bariton':staves=1:prog=53:piano=False; P5:'Alt':staves=1:prog=53:piano=False; P6:'Elektrische Gitarre':staves=1:prog=27:piano=False; P7:'Elektrische Gitarre':staves=1:prog=29:piano=False; P8:'Cembalo':staves=2:prog=0:piano=True
+CID QmVEn9MV1dW18vwLmHgnqZ6K7gt9kHTZyeSt8u1XiEDr37
+title: Radiohead - Creep but it's ridiculous | song_name: creep
+composer:  | artist: Radiohead
+csv: tracks=0-0-27-29-33-53-53-87 bars=84 license=cc-zero
+
+=== part P1 'Stimme' measures=84 ===
+m1 [key fifths=1; time 6/8; clef=G2; tempo=90; "stronger than usual 16th note Swing (70% duh...)"]  s1v1: r:d3
+m2  s1v1: r:q D4:8 A4:16 A4:16 G4:8. F#4:16
+m3  s1v1: G4:h r:q
+m4  s1v1: r:q D4:16 D4:16 A4:8 G4:16 F#4:8 G4:16
+m5  s1v1: F#4:h r:q
+m6  s1v1: r:8 r:8 F#4:8 A4:8. G4:16 F#4:8
+m7  s1v1: G4:q E4:8~ E4:q.~
+m8  s1v1: E4:8 r:8 G4:8 A4:8. G4:16 F#4:8
+m9  s1v1: G4:h.
+m10  s1v1: r:q G4:8 A4:8. G4:16 F#4:8
+m11  s1v1: G4:q D4:q C4:16 B3:8.
+m12  s1v1: r:q G4:16 G4:16 A4:8 A4:16 G4:8.
+m13  s1v1: F#4:q. r:8 r:q
+m14  s1v1: r:q G4:8 G4:8. A4:16 G4:8
+m15  s1v1: B4:q G4:h
+m16  s1v1: r:q G4:8 G4:8. A4:16 G4:8
+m17  s1v1: Bb4:q G4:h
+m18  s1v1: r:q G4:8 G4:q B4:8
+m19  s1v1: B4:h r:q
+m20  s1v1: r:q. G4:q B4:8
+m21  s1v1: B4:q F#4:8~ F#4:8. E4:16 D#4:8~
+m22 ["When you add Swing:"]  s1v1: D#4:8 r:8 B4:16 B4:16 C5:8. B4:16 B4:8
+m23  s1v1: B4:8(2:3) A4:8(2:3) B4:q.
+m24  s1v1: r:q. G4:8 A4:8 G4:8
+m25  s1v1: Bb4:q G4:h
+m26  s1v1: r:q D4:16 D4:16 A4:8. G4:16 F#4:8
+m27  s1v1: G4:h r:q
+m28  s1v1: r:q D4:8 A4:16 A4:16 G4:8 F#4:8
+m29  s1v1: F#4:h r:q
+m30  s1v1: r:q D4:8 A4:16 A4:16 G4:8 F#4:8
+m31  s1v1: G4:q E4:h
+m32  s1v1: r:q. A4:16 A4:16 G4:8 F#4:8
+m33  s1v1: G4:h r:q
+m34  s1v1: r:q D4:16 D4:16 A4:8. G4:16 F#4:8
+m35  s1v1: G4:q D4:q C4:16 B3:8.
+m36  s1v1: r:q G4:8 A4:8. G4:16 F#4:8
+m37  s1v1: F#4:h~ F#4:8 E4:8
+m38  s1v1: D#4:8 r:8 G4:8 G4:8. A4:16 G4:8
+m39  s1v1: B4:q G4:h
+m40  s1v1: r:q G4:8 G4:8. A4:16 G4:8
+m41  s1v1: Bb4:q G4:h
+m42  s1v1: r:q G4:8 G4:q B4:8
+m43  s1v1: B4:h r:q
+m44  s1v1: r:q. G4:q B4:8
+m45  s1v1: B4:q F#4:8~ F#4:8. E4:16 D#4:8~
+m46  s1v1: D#4:8 r:8 B4:16 B4:16 C5:8. B4:16 B4:8
+m47  s1v1: B4:8(2:3) A4:8(2:3) B4:q.
+m48  s1v1: r:q. G4:8 A4:8 G4:8
+m49  s1v1: Bb4:q G4:h
+m50  s1v1: r:d3
+m51  s1v1: G5:h.
+m52  s1v1: A5:q G5:8 F#5:q D5:8
+m53  s1v1: D#5:q F#5:8 B5:q F#5:16 E5:16
+m54  s1v1: D#5:q r:h
+m55  s1v1: G5:h.
+m56  s1v1: A5:q G5:8 G5:q D5:8
+m57  s1v1: Eb5:q. F5:q.
+m58  s1v1: G5:q. A5:q.~
+m59  s1v1: A5:h.
+m60  s1v1: G5:h.
+m61  s1v1: r:d3
+m62  s1v1: r:d3
+m63  s1v1: A5:h.
+m64  s1v1: G5:q. F#5:q.
+m65  s1v1: G5:q. r:8 r:q
+m66  s1v1: r:q D4:8 A4:16 A4:16 G4:8. F#4:16
+m67  s1v1: G4:q. D4:q.
+m68  s1v1: r:q D4:8 A4:16 A4:16 G4:q
+m69  s1v1: F#4:q. r:8 r:q
+m70  s1v1: r:q. G4:8. A4:16 G4:8
+m71  s1v1: B4:q G4:h
+m72  s1v1: r:q G4:8 G4:8. A4:16 G4:8
+m73  s1v1: Bb4:q G4:h
+m74  s1v1: r:q G4:8 G4:q B4:8
+m75  s1v1: B4:h r:q
+m76  s1v1: r:q. G4:q B4:8
+m77  s1v1: B4:q F#4:8~ F#4:8. E4:16 D#4:8~
+m78  s1v1: D#4:8 r:8 B4:16 B4:16 C5:8. B4:16 B4:8
+m79  s1v1: B4:8(2:3) A4:8(2:3) B4:q.
+m80  s1v1: r:q. G4:8 A4:8 G4:8
+m81  s1v1: Bb4:q G4:h
+m82  s1v1: r:q. G4:8 A4:8 G4:8
+m83  s1v1: B4:q G4:h~
+m84  s1v1: G4:h.
+
+=== part P2 '5-stg. elektrischer Bass' measures=84 ===
+m1 [key fifths=1; time 6/8; clef=TAB5]  s1v1: G1:q. D1:q.
+m2  s1v1: G1:q. G1:8[staccato] r:q
+m3  s1v1: G1:q. D1:q.
+m4  s1v1: G1:q. D1:q.
+m5  s1v1: B1:q. F#2:q.
+m6  s1v1: B2:q. F#2:q B1:8
+m7  s1v1: C2:q. G2:q.
+m8  s1v1: C3:q. G2:q B1:8
+m9  s1v1: C2:q. G2:q.
+m10  s1v1: C3:q. D3:q.
+m11  s1v1: G1:q. D1:q.
+m12  s1v1: G1:q. D1:q.
+m13  s1v1: B1:q. F#2:q.
+m14  s1v1: B2:q. F#2:q B1:8
+m15  s1v1: C2:q. G2:q.
+m16  s1v1: C3:q. G2:q B1:8
+m17  s1v1: C2:q. G2:q.
+m18  s1v1: C3:q. D3:q.
+m19  s1v1: G1:q. D1:q.
+m20  s1v1: G1:q. D1:8 F#1:8 G1:8
+m21  s1v1: B1:q. F#2:q.
+m22  s1v1: B2:q. F#2:q~ F#2:16 B1:16
+m23  s1v1: C2:q. G2:q.
+m24  s1v1: C3:q. G2:q~ G2:16 B1:16
+m25  s1v1: C2:q. G2:q.
+m26  s1v1: C3:q. D3:8[staccato] r:q
+m27  s1v1: G1:q. D1:q.
+m28  s1v1: G1:q. D1:q.
+m29  s1v1: B1:q. F#2:q.
+m30  s1v1: B2:q. F#2:q B1:8
+m31  s1v1: C2:q. G2:q.
+m32  s1v1: C3:q. G2:q B1:8
+m33  s1v1: C2:q. G2:q.
+m34  s1v1: C3:q. D3:q.
+m35  s1v1: G1:q. D1:q.
+m36  s1v1: G1:q. D1:q.
+m37  s1v1: B1:q. F#2:q.
+m38  s1v1: B2:q. F#2:q B1:8
+m39  s1v1: C2:q. G2:q.
+m40  s1v1: C3:q. G2:q B1:8
+m41  s1v1: C2:q. G2:q.
+m42  s1v1: C3:q. D3:q.
+m43  s1v1: G1:q. D1:q.
+m44  s1v1: G1:q. D1:8 F#1:8 G1:8
+m45  s1v1: B1:q. F#2:q.
+m46  s1v1: B2:q. F#2:q~ F#2:16 B1:16
+m47  s1v1: C2:q. G2:q.
+m48  s1v1: C3:q. G2:q~ G2:16 B1:16
+m49  s1v1: C2:q. G2:q.
+m50  s1v1: C3:q. D3:q.
+m51  s1v1: G1:q. D1:q.
+m52  s1v1: G1:q. D1:8 F#1:8 G1:8
+m53  s1v1: B1:q. F#2:q.
+m54  s1v1: B2:q. F#2:q~ F#2:16 B1:16
+m55  s1v1: C2:q. G2:q.
+m56  s1v1: C3:q. G2:q~ G2:16 B1:16
+m57  s1v1: C2:q. G2:q.
+m58  s1v1: C3:q. D3:q.
+m59  s1v1: G1:q. D1:q.
+m60  s1v1: G1:q. D1:8 F#1:8 G1:8
+m61  s1v1: B1:q. F#2:q.
+m62  s1v1: B2:q. F#2:q~ F#2:16 B1:16
+m63  s1v1: C2:q. G2:q.
+m64  s1v1: C3:q. G2:q~ G2:16 B1:16
+m65  s1v1: C2:q. G2:q.
+m66  s1v1: C3:q. D3:8[staccato] r:q
+m67  s1v1: G1:q. D1:q.
+m68  s1v1: G1:q. D1:q.
+m69  s1v1: B1:q. F#2:q.
+m70  s1v1: B2:q. F#2:q B1:8
+m71  s1v1: C2:q. G2:q.
+m72  s1v1: C3:q. G2:q B1:8
+m73  s1v1: C2:q. G2:q.
+m74  s1v1: C3:q. D3:q.
+m75  s1v1: G1:q. D1:q.
+m76  s1v1: G1:q. D1:8 F#1:8 G1:8
+m77  s1v1: B1:q. F#2:q.
+m78  s1v1: B2:q. F#2:q B1:8
+m79  s1v1: C2:q. G2:q.
+m80  s1v1: C3:q. G2:q B1:8
+m81  s1v1: C2:q. G2:q.
+m82  s1v1: C3:q. D3:q.
+m83  s1v1: G1:q. D1:q.
+m84  s1v1: G1:h.
+
+=== part P3 'Schlagzeug' measures=84 ===
+m1 [key fifths=0; time 6/8; clef=percussion2]  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m2  s1v1: x:16 x:16 x:16 x:16 x:16(3:2) x:16(3:2) x:16(3:2) x:8 r:q | s1v2: x:8. x:8 x:16 x:8. r:16 r:8
+m3  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m4  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m5  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m6  s1v1: x:8 x:8 x:16 x:16 x:16 x:16 x:16 x:16 x:16(3:2) x:16(3:2) x:16(3:2) | s1v2: x:q. x:q.
+m7  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m8  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m9  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m10  s1v1: x:8 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16(3:2) x:16(3:2) x:16(3:2) | s1v2: x:q. x:8. x:8 x:16
+m11  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m12  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m13  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m14  s1v1: x:8 x:8 x:16 x:16 x:16 x:16 x:16 x:16 x:16(3:2) x:16(3:2) x:16(3:2) | s1v2: x:q. x:q.
+m15  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m16  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m17  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m18  s1v1: x:8 x:16 x:16 x:16 x:16 x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) | s1v2: x:q. x:8 x:8 x:8 | s1v3: x:8 x:8 x:8
+m19  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m20  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m21  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m22  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16(3:2) x:32(3:2) x:32(3:2) x:16(3:2) | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m23  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m24  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m25  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m26  s1v1: x:8 x:8 x:16 x:16 x:8 r:q | s1v2: x:8. x:8 x:16 x:q.
+m27  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m28  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m29  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m30  s1v1: x:8 x:8 x:16 x:16 x:16 x:16 x:16 x:16 x:16(3:2) x:16(3:2) x:16(3:2) | s1v2: x:q. x:q.
+m31  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m32  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m33  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m34  s1v1: x:8 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16(3:2) x:16(3:2) x:16(3:2) | s1v2: x:q. x:8. x:8 x:16
+m35  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m36  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m37  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m38  s1v1: x:8 x:8 x:16 x:16 x:16 x:16 x:16 x:16 x:16(3:2) x:16(3:2) x:16(3:2) | s1v2: x:q. x:q.
+m39  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m40  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m41  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m42  s1v1: x:8 x:16 x:16 x:16 x:16 x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) | s1v2: x:q. x:8 x:8 x:8 | s1v3: x:8 x:8 x:8
+m43  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m44  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m45  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m46  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16(3:2) x:32(3:2) x:32(3:2) x:16(3:2) | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m47  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m48  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m49  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m50  s1v1: x:8 x:8 x:16 x:16 x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) | s1v2: x:8. x:8 x:16 x:8 x:8 x:8 | s1v3: x:8 x:8 x:8
+m51  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m52  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m53  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m54  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16(3:2) x:32(3:2) x:32(3:2) x:16(3:2) | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m55  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m56  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m57  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m58  s1v1: x:8 x:8 x:16 x:16 x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) x:16(9:6) | s1v2: x:8. x:8 x:16 x:8 x:8 x:8 | s1v3: x:8 x:8 x:8
+m59  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m60  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m61  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m62  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16(3:2) x:32(3:2) x:32(3:2) x:16(3:2) | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m63  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m64  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m65  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:8. x:8 x:16 x:8. x:8 x:16
+m66  s1v1: x:8 x:8 x:16 x:16 x:q.[staccato] | s1v2: x:8. x:8 x:16 x:q.
+m67  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m68  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m69  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m70  s1v1: x:8 x:8 x:16 x:16 x:16 x:16 x:16 x:16 x:16(3:2) x:16(3:2) x:16(3:2) | s1v2: x:q. x:q.
+m71  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m72  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m73  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m74  s1v1: x:8 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16(3:2) x:16(3:2) x:16(3:2) | s1v2: x:q. x:8. x:8 x:16
+m75  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m76  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m77  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m78  s1v1: x:8 x:8 x:16 x:16 x:16 x:16 x:16 x:16 x:16(3:2) x:16(3:2) x:16(3:2) | s1v2: x:q. x:q.
+m79  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m80  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m81  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m82  s1v1: x:8 x:8 x:16 x:16 x:8 x:8 x:16 x:16 | s1v2: x:q. x:q.
+m83  s1v1: x:8 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16 x:16(3:2) x:16(3:2) x:16(3:2) | s1v2: x:q. x:8. x:8 x:16
+m84  s1v1: x:h. | s1v2: x:h.
+
+=== part P4 'Bariton' measures=84 ===
+m1 [key fifths=1; time 6/8; clef=F4]  s1v1: r:d3
+m2  s1v1: r:d3
+m3  s1v1: r:d3
+m4  s1v1: r:d3
+m5  s1v1: r:d3
+m6  s1v1: r:d3
+m7  s1v1: r:d3
+m8  s1v1: r:d3
+m9  s1v1: r:d3
+m10  s1v1: r:d3
+m11  s1v1: r:d3
+m12  s1v1: r:d3
+m13  s1v1: r:d3
+m14  s1v1: r:d3
+m15  s1v1: r:d3
+m16  s1v1: r:d3
+m17  s1v1: r:d3
+m18  s1v1: r:q D3:8+G3 D3:q+G3 D3:8+G3
+m19  s1v1: D3:h+G3 r:q
+m20  s1v1: r:q. D3:q+G3 D3:8+G3
+m21  s1v1: D#3:q+F#3 D#3:h+F#3
+m22  s1v1: r:q D#3:8+F#3 D#3:8.+F#3 D#3:8.+F#3
+m23  s1v1: C3:8(2:3)+E3 C3:8(2:3)+E3 C3:q.+E3
+m24  s1v1: r:q. C3:8+E3 C3:8+E3 C3:8+E3
+m25  s1v1: C3:q+Eb3 C3:h+Eb3
+m26  s1v1: r:d3
+m27  s1v1: r:d3
+m28  s1v1: r:d3
+m29  s1v1: r:d3
+m30  s1v1: r:d3
+m31  s1v1: r:d3
+m32  s1v1: r:d3
+m33  s1v1: r:d3
+m34  s1v1: r:d3
+m35  s1v1: r:d3
+m36  s1v1: r:d3
+m37  s1v1: r:d3
+m38  s1v1: r:d3
+m39  s1v1: r:d3
+m40  s1v1: r:d3
+m41  s1v1: r:d3
+m42  s1v1: r:q D3:8+G3 D3:q+G3 D3:8+G3
+m43  s1v1: D3:h+G3 r:q
+m44  s1v1: r:q. D3:q+G3 D3:8+G3
+m45  s1v1: D#3:q+F#3 D#3:h+F#3
+m46  s1v1: r:q D#3:8+F#3 D#3:8.+F#3 D#3:8.+F#3
+m47  s1v1: C3:8(2:3)+E3 C3:8(2:3)+E3 C3:q.+E3
+m48  s1v1: r:q. C3:8+E3 C3:8+E3 C3:8+E3
+m49  s1v1: C3:q+Eb3 C3:h+Eb3
+m50  s1v1: r:d3
+m51  s1v1: B2:h.~+G3
+m52  s1v1: B2:q.+G3 D3:q.+G3
+m53  s1v1: D#3:h.~+B3
+m54  s1v1: D#3:h.+B3
+m55  s1v1: C3:h.~+G3
+m56  s1v1: C3:h.+A3
+m57  s1v1: Eb3:q.+G3 F3:q.+A3
+m58  s1v1: G3:q.+C4 A3:q.~+C4
+m59  s1v1: A3:h.+C4
+m60  s1v1: G3:q+B3 r:8 D3:q+G3 D3:8+B3
+m61  s1v1: F#3:q+B3 F#3:h~+B3
+m62  s1v1: F#3:q+B3 D#3:8+F#3 D#3:q+F#3 D#3:8+F#3
+m63  s1v1: E3:h.~+G3
+m64  s1v1: E3:q+G3 r:8 G3:q+C4 G3:8+C4
+m65  s1v1: G3:q+Bb3 Eb3:h+G3
+m66  s1v1: Eb3:q.+C4 C4:8[staccato]+D4 r:q
+m67  s1v1: r:d3
+m68  s1v1: r:d3
+m69  s1v1: r:d3
+m70  s1v1: r:d3
+m71  s1v1: r:d3
+m72  s1v1: r:d3
+m73  s1v1: r:d3
+m74  s1v1: r:q D3:8+G3 D3:q+G3 D3:8+G3
+m75  s1v1: D3:h+G3 r:q
+m76  s1v1: r:q. D3:q+G3 D3:8+G3
+m77  s1v1: D#3:q+F#3 D#3:h+F#3
+m78  s1v1: r:q D#3:8+F#3 D#3:8.+F#3 D#3:8.+F#3
+m79  s1v1: C3:8(2:3)+E3 C3:8(2:3)+E3 C3:q.+E3
+m80  s1v1: r:q. C3:8+E3 C3:8+E3 C3:8+E3
+m81  s1v1: C3:q+Eb3 C3:h+Eb3
+m82  s1v1: r:q. E3:8+C4 E3:8+C4 E3:8+C4
+m83  s1v1: D3:q+B3 D3:h~+B3
+m84  s1v1: D3:h.+B3
+
+=== part P5 'Alt' measures=84 ===
+m1 [key fifths=1; time 6/8; clef=G2]  s1v1: r:d3
+m2  s1v1: r:d3
+m3  s1v1: r:d3
+m4  s1v1: r:d3
+m5  s1v1: r:d3
+m6  s1v1: r:d3
+m7  s1v1: r:d3
+m8  s1v1: r:d3
+m9  s1v1: r:d3
+m10  s1v1: r:d3
+m11  s1v1: r:d3
+m12  s1v1: r:d3
+m13  s1v1: r:d3
+m14  s1v1: r:d3
+m15  s1v1: r:d3
+m16  s1v1: r:d3
+m17  s1v1: r:d3
+m18  s1v1: r:q D4:8 D4:q D4:8
+m19  s1v1: D4:h r:q
+m20  s1v1: r:q. D4:q D4:8
+m21  s1v1: B3:q B3:h
+m22  s1v1: r:q F#4:8 F#4:8. F#4:8.
+m23  s1v1: G4:8(2:3) G4:8(2:3) G4:q.
+m24  s1v1: r:q. G4:8 G4:8 G4:8
+m25  s1v1: G4:q G4:h
+m26  s1v1: r:d3
+m27  s1v1: r:d3
+m28  s1v1: r:d3
+m29  s1v1: r:d3
+m30  s1v1: r:d3
+m31  s1v1: r:d3
+m32  s1v1: r:d3
+m33  s1v1: r:d3
+m34  s1v1: r:d3
+m35  s1v1: r:d3
+m36  s1v1: r:d3
+m37  s1v1: r:d3
+m38  s1v1: r:d3
+m39  s1v1: r:d3
+m40  s1v1: r:d3
+m41  s1v1: r:d3
+m42  s1v1: r:q D4:8 D4:q D4:8
+m43  s1v1: D4:h r:q
+m44  s1v1: r:q. D4:q D4:8
+m45  s1v1: B3:q B3:h
+m46  s1v1: r:q F#4:8 F#4:8. F#4:8.
+m47  s1v1: G4:8(2:3) G4:8(2:3) G4:q.
+m48  s1v1: r:q. G4:8 G4:8 G4:8
+m49  s1v1: G4:q G4:h
+m50  s1v1: r:d3
+m51  s1v1: B4:h.~
+m52  s1v1: B4:q. F#4:q.
+m53  s1v1: F#4:h.~
+m54  s1v1: F#4:h.
+m55  s1v1: E4:h.~
+m56  s1v1: E4:h.
+m57  s1v1: Eb4:q. F4:q.
+m58  s1v1: G4:q. G4:q B4:8
+m59  s1v1: B4:h.~
+m60  s1v1: B4:q r:8 G4:q G4:8
+m61  s1v1: B4:q F#4:h~
+m62  s1v1: F#4:q B4:8 C5:q B4:8
+m63  s1v1: B4:h.~
+m64  s1v1: B4:q r:8 G4:8 A4:8 G4:8
+m65  s1v1: Bb4:q G4:h
+m66  s1v1: G4:q. F#4:8[staccato] r:q
+m67  s1v1: r:d3
+m68  s1v1: r:d3
+m69  s1v1: r:d3
+m70  s1v1: r:d3
+m71  s1v1: r:d3
+m72  s1v1: r:d3
+m73  s1v1: r:d3
+m74  s1v1: r:q D4:8 D4:q D4:8
+m75  s1v1: D4:h r:q
+m76  s1v1: r:q. D4:q D4:8
+m77  s1v1: B3:q B3:h
+m78  s1v1: r:q F#4:8 F#4:8. F#4:8.
+m79  s1v1: G4:8(2:3) G4:8(2:3) G4:q.
+m80  s1v1: r:q. G4:8 G4:8 G4:8
+m81  s1v1: G4:q G4:h
+m82  s1v1: r:q. G4:8 G4:8 G4:8
+m83  s1v1: G4:q G4:h~
+m84  s1v1: G4:h.
+
+=== part P6 'Elektrische Gitarre' measures=84 ===
+m1 [key fifths=1; time 6/8; clef=TAB5]  s1v1: G3:h.~+B3+G4
+m2  s1v1: G3:h+B3+G4 r:q
+m3  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m4  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m5  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m6  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m7  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m8  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m9  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m10  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m11  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m12  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m13  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m14  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m15  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m16  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m17  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m18  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m19  s1v1: r:d3
+m20  s1v1: r:d3
+m21  s1v1: r:d3
+m22  s1v1: r:d3
+m23  s1v1: r:d3
+m24  s1v1: r:d3
+m25  s1v1: r:d3
+m26  s1v1: r:d3
+m27  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m28  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m29  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m30  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m31  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m32  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m33  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m34  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m35  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m36  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m37  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m38  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m39  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m40  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m41  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m42  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m43  s1v1: r:d3
+m44  s1v1: r:d3
+m45  s1v1: r:d3
+m46  s1v1: r:d3
+m47  s1v1: r:d3
+m48  s1v1: r:d3
+m49  s1v1: r:d3
+m50  s1v1: r:d3
+m51  s1v1: r:d3
+m52  s1v1: r:d3
+m53  s1v1: r:d3
+m54  s1v1: r:d3
+m55  s1v1: r:d3
+m56  s1v1: r:d3
+m57  s1v1: r:d3
+m58  s1v1: r:d3
+m59  s1v1: r:d3
+m60  s1v1: r:d3
+m61  s1v1: r:d3
+m62  s1v1: r:d3
+m63  s1v1: r:d3
+m64  s1v1: r:d3
+m65  s1v1: r:d3
+m66  s1v1: r:d3
+m67  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m68  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m69  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m70  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m71  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m72  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m73  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m74  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m75  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m76  s1v1: G2:16 D3:16 G3:16 D3:16 B3:16 G3:16 D3:16 A2:16 G2:16 D3:16 G3:16 B3:16
+m77  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m78  s1v1: B2:16 F#3:16 B3:16 F#3:16 D#4:16 B3:16 F#3:16 C#3:16 B2:16 F#3:16 B3:16 D#4:16
+m79  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m80  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m81  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m82  s1v1: C3:16 G3:16 C4:16 G3:16 Eb4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 Eb4:16
+m83  s1v1: C3:16 G3:16 C4:16 G3:16 E4:16 C4:16 G3:16 D3:16 C3:16 G3:16 C4:16 E4:16
+m84  s1v1: G3:h.+B3+G4
+
+=== part P7 'Elektrische Gitarre' measures=84 ===
+m1 [key fifths=1; time 6/8; clef=TAB5]  s1v1: r:d3
+m2  s1v1: r:d3
+m3  s1v1: r:d3
+m4  s1v1: r:d3
+m5  s1v1: r:d3
+m6  s1v1: r:d3
+m7  s1v1: r:d3
+m8  s1v1: r:d3
+m9  s1v1: r:d3
+m10  s1v1: r:d3
+m11  s1v1: r:d3
+m12  s1v1: r:d3
+m13  s1v1: r:d3
+m14  s1v1: r:d3
+m15  s1v1: r:d3
+m16  s1v1: r:d3
+m17  s1v1: r:d3
+m18  s1v1: r:d3
+m19  s1v1: G2:h.~+D3+G3
+m20  s1v1: G2:h.+D3+G3
+m21  s1v1: B2:h.~+F#3+B3
+m22  s1v1: B2:h.+F#3+B3
+m23  s1v1: C3:h.~+G3+C4
+m24  s1v1: C3:h.+G3+C4
+m25  s1v1: C3:h.~+G3+C4
+m26  s1v1: C3:q.+G3+C4 r:8 r:q
+m27  s1v1: r:d3
+m28  s1v1: r:d3
+m29  s1v1: r:d3
+m30  s1v1: r:d3
+m31  s1v1: r:d3
+m32  s1v1: r:d3
+m33  s1v1: r:d3
+m34  s1v1: r:d3
+m35  s1v1: r:d3
+m36  s1v1: r:d3
+m37  s1v1: r:d3
+m38  s1v1: r:d3
+m39  s1v1: r:d3
+m40  s1v1: r:d3
+m41  s1v1: r:d3
+m42  s1v1: r:d3
+m43  s1v1: G2:h.~+D3+G3
+m44  s1v1: G2:h.+D3+G3
+m45  s1v1: B2:h.~+F#3+B3
+m46  s1v1: B2:h.+F#3+B3
+m47  s1v1: C3:h.~+G3+C4
+m48  s1v1: C3:h.+G3+C4
+m49  s1v1: C3:h.~+G3+C4
+m50  s1v1: C3:h.+G3+C4
+m51  s1v1: G2:h.~+D3+G3
+m52  s1v1: G2:h.+D3+G3
+m53  s1v1: B2:h.~+F#3+B3
+m54  s1v1: B2:h.+F#3+B3
+m55  s1v1: C3:h.~+G3+C4
+m56  s1v1: C3:h.+G3+C4
+m57  s1v1: C3:h.~+G3+C4
+m58  s1v1: C3:h.+G3+C4
+m59  s1v1: G2:h.~+D3+G3
+m60  s1v1: G2:h.+D3+G3
+m61  s1v1: B2:h.~+F#3+B3
+m62  s1v1: B2:h.+F#3+B3
+m63  s1v1: C3:h.~+G3+C4
+m64  s1v1: C3:h.+G3+C4
+m65  s1v1: C3:h.~+G3+C4
+m66  s1v1: C3:q.+G3+C4 r:8 r:q
+m67  s1v1: r:d3
+m68  s1v1: r:d3
+m69  s1v1: r:d3
+m70  s1v1: r:d3
+m71  s1v1: r:d3
+m72  s1v1: r:d3
+m73  s1v1: r:d3
+m74  s1v1: r:d3
+m75  s1v1: r:d3
+m76  s1v1: r:d3
+m77  s1v1: r:d3
+m78  s1v1: r:d3
+m79  s1v1: r:d3
+m80  s1v1: r:d3
+m81  s1v1: r:d3
+m82  s1v1: r:d3
+m83  s1v1: r:d3
+m84  s1v1: r:d3
+
+=== part P8 'Cembalo' measures=84 ===
+m1 [staves=2; key fifths=1; time 6/8; clef1=G2; clef2=F4]  s1v1: G4:16 D5:16 B4:16 G4:16 A4:16 G4:16 F#4:16 G4:16 D4:16 F#4:16 B4:16 F#4:16 | s2v5: B2:h.~+D3+G3
+m2  s1v1: G4:16 F#4:16 B4:16 F#4:16 D5:16 F#4:16 G4:16 r:16 r:q | s2v5: B2:q+D3+G3 r:h
+m3  s1v1: G4:q.+B4 B4:q.+D5 | s2v5: G2:h.~+D3+G3
+m4  s1v1: D5:q.+F#5 F#5:q.+A5 | s2v5: G2:h.+D3+G3
+m5  s1v1: B4:q.+D#5 D#5:q.+F#5 | s2v5: B2:h.~+F#3+B3
+m6  s1v1: A5:q.+C6 F#5:q.+A5 | s2v5: B2:h.+F#3+B3
+m7  s1v1: C5:q.+E5 E5:q.+G5 | s2v5: C3:h.~+G3+C4
+m8  s1v1: G5:q.+B5 B5:q.+D6 | s2v5: C3:h.+G3+C4
+m9  s1v1: C5:q.+Eb5 Eb5:q.+G5 | s2v5: C3:h.~+G3+C4
+m10  s1v1: Bb5:q.+D6 G5:q.+Bb5 | s2v5: C3:h.+G3+C4
+m11  s1v1: G4:q.+B4 B4:q.+D5 | s2v5: G2:h.~+D3+G3
+m12  s1v1: D5:q.+F#5 F#5:q.+A5 | s2v5: G2:h.+D3+G3
+m13  s1v1: B4:q.+D#5 D#5:q.+F#5 | s2v5: B2:h.~+F#3+B3
+m14  s1v1: A5:q.+C6 F#5:q.+A5 | s2v5: B2:h.+F#3+B3
+m15  s1v1: C5:q.+E5 E5:q.+G5 | s2v5: C3:h.~+G3+C4
+m16  s1v1: G5:q.+B5 B5:q.+D6 | s2v5: C3:h.+G3+C4
+m17  s1v1: C5:q.+Eb5 Eb5:q.+G5 | s2v5: C3:h.~+G3+C4
+m18  s1v1: Bb5:q.+D6 G5:q.+Bb5 | s2v5: C3:h.+G3+C4
+m19  s1v1: B3:h.~ | s2v5: G2:h.~+D3+G3
+m20  s1v1: B3:h. | s2v5: G2:h.+D3+G3
+m21  s1v1: D#4:h.~ | s2v5: B2:h.~+F#3+B3
+m22  s1v1: D#4:h. | s2v5: B2:h.+F#3+B3
+m23  s1v1: E4:h.~ | s2v5: C3:h.~+G3+C4
+m24  s1v1: E4:h. | s2v5: C3:h.+G3+C4
+m25  s1v1: Eb4:h.~ | s2v5: C3:h.~+G3+C4
+m26  s1v1: Eb4:q. r:8 r:q | s2v5: C3:q.+G3+C4 r:8 r:q
+m27  s1v1: G4:q.+B4 B4:q.+D5 | s2v5: G2:h.~+D3+G3
+m28  s1v1: D5:q.+F#5 F#5:q.+A5 | s2v5: G2:h.+D3+G3
+m29  s1v1: B4:q.+D#5 D#5:q.+F#5 | s2v5: B2:h.~+F#3+B3
+m30  s1v1: A5:q.+C6 F#5:q.+A5 | s2v5: B2:h.+F#3+B3
+m31  s1v1: C5:q.+E5 E5:q.+G5 | s2v5: C3:h.~+G3+C4
+m32  s1v1: G5:q.+B5 B5:q.+D6 | s2v5: C3:h.+G3+C4
+m33  s1v1: C5:q.+Eb5 Eb5:q.+G5 | s2v5: C3:h.~+G3+C4
+m34  s1v1: Bb5:q.+D6 G5:q.+Bb5 | s2v5: C3:h.+G3+C4
+m35  s1v1: G4:q.+B4 B4:q.+D5 | s2v5: G2:h.~+D3+G3
+m36  s1v1: D5:q.+F#5 F#5:q.+A5 | s2v5: G2:h.+D3+G3
+m37  s1v1: B4:q.+D#5 D#5:q.+F#5 | s2v5: B2:h.~+F#3+B3
+m38  s1v1: A5:q.+C6 F#5:q.+A5 | s2v5: B2:h.+F#3+B3
+m39  s1v1: C5:q.+E5 E5:q.+G5 | s2v5: C3:h.~+G3+C4
+m40  s1v1: G5:q.+B5 B5:q.+D6 | s2v5: C3:h.+G3+C4
+m41  s1v1: C5:q.+Eb5 Eb5:q.+G5 | s2v5: C3:h.~+G3+C4
+m42  s1v1: Bb5:q.+D6 G5:q.+Bb5 | s2v5: C3:h.+G3+C4
+m43  s1v1: B3:h.~ | s2v5: G2:h.~+D3+G3
+m44  s1v1: B3:h. | s2v5: G2:h.+D3+G3
+m45  s1v1: D#4:h.~ | s2v5: B2:h.~+F#3+B3
+m46  s1v1: D#4:h. | s2v5: B2:h.+F#3+B3
+m47  s1v1: E4:h.~ | s2v5: C3:h.~+G3+C4
+m48  s1v1: E4:h. | s2v5: C3:h.+G3+C4
+m49  s1v1: Eb4:h.~ | s2v5: C3:h.~+G3+C4
+m50  s1v1: Eb4:h. | s2v5: C3:h.+G3+C4
+m51  s1v1: B3:h.~ | s2v5: G2:h.~+D3+G3
+m52  s1v1: B3:h. | s2v5: G2:h.+D3+G3
+m53  s1v1: D#4:h.~ | s2v5: B2:h.~+F#3+B3
+m54  s1v1: D#4:h. | s2v5: B2:h.+F#3+B3
+m55  s1v1: E4:h.~ | s2v5: C3:h.~+G3+C4
+m56  s1v1: E4:h. | s2v5: C3:h.+G3+C4
+m57  s1v1: Eb4:h.~ | s2v5: C3:h.~+G3+C4
+m58  s1v1: Eb4:h. | s2v5: C3:h.+G3+C4
+m59  s1v1: B3:h.~ | s2v5: G2:h.~+D3+G3
+m60  s1v1: B3:h. | s2v5: G2:h.+D3+G3
+m61  s1v1: D#4:h.~ | s2v5: B2:h.~+F#3+B3
+m62  s1v1: D#4:h. | s2v5: B2:h.+F#3+B3
+m63  s1v1: E4:h.~ | s2v5: C3:h.~+G3+C4
+m64  s1v1: E4:h. | s2v5: C3:h.+G3+C4
+m65  s1v1: Eb4:h.~ | s2v5: C3:h.~+G3+C4
+m66  s1v1: Eb4:q. r:8 r:q | s2v5: C3:q.+G3+C4 r:8 r:q
+m67  s1v1: G4:q.+B4 B4:q.+D5 | s2v5: G2:h.~+D3+G3
+m68  s1v1: D5:q.+F#5 F#5:q.+A5 | s2v5: G2:h.+D3+G3
+m69  s1v1: B4:q.+D#5 D#5:q.+F#5 | s2v5: B2:h.~+F#3+B3
+m70  s1v1: A5:q.+C6 F#5:q.+A5 | s2v5: B2:h.+F#3+B3
+m71  s1v1: C5:q.+E5 E5:q.+G5 | s2v5: C3:h.~+G3+C4
+m72  s1v1: G5:q.+B5 B5:q.+D6 | s2v5: C3:h.+G3+C4
+m73  s1v1: C5:q.+Eb5 Eb5:q.+G5 | s2v5: C3:h.~+G3+C4
+m74  s1v1: Bb5:q.+D6 G5:q.+Bb5 | s2v5: C3:h.+G3+C4
+m75  s1v1: G4:q.+B4 B4:q.+D5 | s2v5: G2:h.~+D3+G3
+m76  s1v1: D5:q.+F#5 F#5:q.+A5 | s2v5: G2:h.+D3+G3
+m77  s1v1: B4:q.+D#5 D#5:q.+F#5 | s2v5: B2:h.~+F#3+B3
+m78  s1v1: A5:q.+C6 F#5:q.+A5 | s2v5: B2:h.+F#3+B3
+m79  s1v1: C5:q.+E5 E5:q.+G5 | s2v5: C3:h.~+G3+C4
+m80  s1v1: G5:q.+B5 B5:q.+D6 | s2v5: C3:h.+G3+C4
+m81  s1v1: C5:q.+Eb5 Eb5:q.+G5 | s2v5: C3:h.~+G3+C4
+m82  s1v1: Bb5:q.+D6 G5:q.+Bb5 | s2v5: C3:h.+G3+C4
+m83  s1v1: C5:q.+E5 E5:q.+G5 | s2v5: C3:h.+G3+C4
+m84  s1v1: B3:h.+D4+F#4+A4+C#5 | s2v5: G2:h.+D3+G3

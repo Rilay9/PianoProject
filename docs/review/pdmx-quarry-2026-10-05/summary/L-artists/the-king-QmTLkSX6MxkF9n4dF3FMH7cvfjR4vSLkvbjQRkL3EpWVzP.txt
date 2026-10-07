@@ -1,0 +1,19 @@
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=8 bars=11
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
+CID QmTLkSX6MxkF9n4dF3FMH7cvfjR4vSLkvbjQRkL3EpWVzP
+title: The King | song_name: circle of life
+composer: jc | artist: Elton John
+csv: tracks=0 bars=11 license=cc-zero
+
+=== part P1 'Piano' measures=11 ===
+m1 [staves=2; key fifths=-2; time 4/4; clef1=G2; clef2=F4]  s1v1: Bb4:q C5:q D5:h | s2v5: r:q r:q D3:h+F3+Bb3
+m2  s1v1: Bb4:q Eb5:h Eb5:q | s2v5: r:q D#3:h+G3+Bb3 r:q
+m3  s1v1: D5:q C5:h Bb4:q | s2v5: r:q F3:h+A3+C4 r:q
+m4  s1v1: C5:q D5:q Bb4:q F4:q~ | s2v5: r:q D3:h+G3+Bb3 D3:q~+F3+Bb3
+m5  s1v1: F4:q r:h D4:q~ | s2v5: D3:q+F3+Bb3 r:q r:h
+m6  s1v1: D4:q F4:q Bb4:h | s2v5: r:q r:q D3:h+G3+Bb3
+m7  s1v1: A4:q Bb4:q Bb4:h~ | s2v5: r:d4
+m8  s1v1: Bb4:h C5:q D5:q | s2v5: r:d4
+m9  s1v1: Eb5:q. D5:q Bb4:q C5:8~ | s2v5: D#3:h+G#3+C4 r:h
+m10  s1v1: C5:q. Bb4:q A4:q. | s2v5: r:d4
+m11  s1v1: Bb4:h r:h | s2v5: D3:h+F3+Bb3 r:h

@@ -1,0 +1,76 @@
+Red lines: F2's new and revised content tests on the baseline build, with the committed claims.py and validate.py (tests written first; no F2 code or content yet).
+ERROR: test_a_concept_in_both_lists_fails
+AttributeError: module 'validate' has no attribute 'concept_claim_findings'
+ERROR: test_a_rung_whose_options_nobody_can_measure_is_not_judged
+AttributeError: module 'validate' has no attribute 'concept_claim_findings'
+ERROR: test_an_introduced_concept_an_option_establishes_is_warned_back_to_concepts (tests.test_validate_claims.TestACon
+AttributeError: module 'validate' has no attribute 'concept_claim_findings'
+ERROR: test_kept_by_an_option_it_passes
+AttributeError: module 'validate' has no attribute 'concept_claim_findings'
+ERROR: test_named_in_concepts_it_fails
+AttributeError: module 'validate' has no attribute 'concept_claim_findings'
+ERROR: test_under_introduces_it_passes
+AttributeError: module 'validate' has no attribute 'concept_claim_findings'
+ERROR: test_a_deferral_the_build_no_longer_needs_fails
+AttributeError: module 'validate' has no attribute 'concept_claim_findings'
+ERROR: test_a_deferred_claim_warns_with_its_reason
+AttributeError: module 'validate' has no attribute 'concept_claim_findings'
+FAIL: test_an_unknown_concept_under_introduces_is_refused
+AssertionError: False is not true : []
+FAIL: test_taught_at_may_not_name_a_rung_that_only_introduces_the_demand (tests.test_validate_claims.TestTheListGrantsN
+AssertionError: False is not true : a hand-reading note must not make an introducing rung a teaching rung; got
+Ran 11 tests in 0.004s
+FAILED (failures=2, errors=8)
+exit test_validate_claims.py 1
+FAIL: test_the_rungs_whose_concepts_name_a_demand_one_per_path
+AssertionError: Lists differ: ['blues.5', 'latin', 'jazz.6', 'jam.6'] != ['blues.6', 'jazz.6', 'jam.6']
+FAIL: test_the_walking_bass_is_taught_on_three_paths
+AssertionError: Lists differ: ['blues.5', 'jazz.6', 'jam.6'] != ['blues.6', 'jazz.6', 'jam.6']
+FAIL: test_the_committed_lists_are_the_lessons_readings
+AssertionError: 4 != 2 : ["WARNING (taught at, E0b): demand interval.step is taught at '1.1', whose concepts name none
+FAIL: test_blues_5_introduces_it_and_blues_6_teaches_it
+AssertionError: Lists differ: [] != ['texture.walking-bass']
+Ran 18 tests in 0.128s
+FAILED (failures=4)
+exit test_taught_at.py 1
+ERROR: tests (unittest.loader._FailedTest.tests)
+ERROR: tests (unittest.loader._FailedTest.tests)
+Ran 2 tests in 0.000s
+FAILED (errors=2)
+exit measured_truth 1
+ERROR: test_blues_5_introduces_the_walking_bass_and_claims_it_no_more
+ERROR: test_every_claim_no_option_keeps_is_accounted_for
+AttributeError: module 'validate' has no attribute 'DEFERRED_CONCEPT_CLAIMS'
+FAIL: test_no_rung_lists_a_rock_placeholder_and_the_library_keeps_them
+AssertionError: 'module' unexpectedly found in 'In copyright. PianoPath ships no notation for this song; the entry
+FAIL: test_the_concepts_named_where_taught_and_dropped_where_not
+AssertionError: 'steps' not found in ['C-position', 'quarter-notes', 'treble-clef', '4/4'] : 1.1 names the steps its
+FAIL: test_the_moved_options_left_where_untaught_and_stay_where_taught
+AssertionError: 'exercise.five-finger.c-major.both' unexpectedly found in ['drill.technique.five-finger-rh',
+FAIL: test_the_moved_options_left_where_untaught_and_stay_where_taught
+AssertionError: 'exercise.five-finger.c-major.both' unexpectedly found in ['drill.reading.sight-reading-1-left',
+FAIL: test_the_moved_options_left_where_untaught_and_stay_where_taught
+AssertionError: 'exercise.inversions.c-major.both' unexpectedly found in ['drill.chord.c-f-g',
+FAIL: test_the_moved_options_left_where_untaught_and_stay_where_taught
+AssertionError: 'exercise.cadence.c.voice-led' unexpectedly found in ['drill.chord.c-f-g',
+FAIL: test_the_moved_options_left_where_untaught_and_stay_where_taught
+AssertionError: 'exercise.arpeggio.a-minor.2oct.both' unexpectedly found in
+FAIL: test_the_moved_options_left_where_untaught_and_stay_where_taught
+AssertionError: 'song.folk.10000-reasons-matt-redman.pdmx' unexpectedly found in ['drill.chord.primary-c-g-f',
+FAIL: test_the_moved_options_left_where_untaught_and_stay_where_taught
+AssertionError: 'exercise.hanon.01.both' unexpectedly found in ['exercise.hanon.01.both',
+FAIL: test_the_moved_options_left_where_untaught_and_stay_where_taught
+AssertionError: 'exercise.hanon.01.both' unexpectedly found in ['exercise.hanon.01.both',
+FAIL: test_the_practice_floor_is_what_a_stage_1_hand_plays
+AssertionError: Lists differ: ['exercise.hanon.01.both'] != []
+FAIL: test_the_practice_floor_is_what_a_stage_1_hand_plays
+AssertionError: Lists differ: ['exercise.hanon.01.both', 'exercise.scale.c-major.1oct.similar.both.2'] != []
+FAIL: test_the_practice_floor_is_what_a_stage_1_hand_plays
+AssertionError: 'exercise.hanon.01.both' != 'exercise.five-finger.c-major.right'
+FAIL: test_theory_9_promises_no_walking_bass_and_the_latin_rungs_no_duet
+AssertionError: 'drill.reading.sight-reading-7' unexpectedly found in ['drill.ear.tune-long',
+FAIL: test_a_demand_taught_on_two_paths_is_taught_on_both_and_on_neither_sibling
+AssertionError: 'texture.walking-bass' not found in []
+Ran 8 tests in 0.511s
+FAILED (failures=15, errors=2)
+exit measured_truth (selected) 1

@@ -1,0 +1,15 @@
+test_import_mutopia.py: the placeholder condition inverted: killed (exit 1)
+    FAIL: test_a_bundled_rag_that_was_not_measured_is_not_called_a_placeholder (tools.content.tests.test_runner_log.TestTheStrictCaseNamesTheFetch.test_a_bundled_rag_that_was_not_measured_is_not_called_a_placeholder)
+    FAIL: test_an_unfetched_edition_is_named_with_its_reason (tools.content.tests.test_runner_log.TestTheStrictCaseNamesTheFetch.test_an_unfetched_edition_is_named_with_its_reason)
+    Ran 6 tests in 0.943s
+    FAILED (failures=2)
+test_import_mutopia.py: the reason left out: killed (exit 1)
+    FAIL: test_an_unfetched_edition_is_named_with_its_reason (tools.content.tests.test_runner_log.TestTheStrictCaseNamesTheFetch.test_an_unfetched_edition_is_named_with_its_reason)
+    Ran 6 tests in 1.077s
+    FAILED (failures=1)
+test_import_mutopia.py: the whole hint, not the reason: killed (exit 1)
+    FAIL: test_an_unfetched_edition_is_named_with_its_reason (tools.content.tests.test_runner_log.TestTheStrictCaseNamesTheFetch.test_an_unfetched_edition_is_named_with_its_reason)
+    Ran 6 tests in 0.877s
+    FAILED (failures=1)
+every file restored byte for byte: True; survivors: 0
+exit 0

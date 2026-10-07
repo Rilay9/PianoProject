@@ -9,6 +9,7 @@
 import { systemClock, type Clock, type EngineInput } from '../types';
 import {
   DRILL_DEFAULTS,
+  pastHidden,
   sameSequence,
   sameSet,
   type Drill,
@@ -113,6 +114,11 @@ export class PromptDrill implements Drill {
 
   reveal(): void {
     if (this.current && !this.answeredCurrent) this.revealedCurrent = true;
+  }
+
+  /** The card's time to answer counts from when it was shown, less the hidden span (X15). */
+  excludeHidden(hiddenAtMs: number, visibleAtMs: number): void {
+    this.promptAtMs = pastHidden(this.promptAtMs, hiddenAtMs, visibleAtMs);
   }
 
   private settle(correct: boolean, tMs: number): void {

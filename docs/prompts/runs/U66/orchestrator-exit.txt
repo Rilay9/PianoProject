@@ -1,0 +1,18 @@
+== map-tests  14:15:58
+map-tests exit=0
+== map-min  14:16:00
+map-min exit=0
+== tsc  14:16:01
+tsc exit=0
+== lint  14:16:11
+lint exit=0
+== vitest-all  14:16:58
+vitest-all exit=1
+== build-app  14:20:48
+build-app exit=0
+SPECS: tests/e2e/engine.spec.ts tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/mic.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/modes-rhythm-only.spec.ts tests/e2e/modes-technique-measure.spec.ts tests/e2e/score.countin.spec.ts tests/e2e/score.latch.spec.ts tests/e2e/score.readahead.spec.ts tests/e2e/score.rhythm-ladder.spec.ts tests/e2e/score.run.spec.ts tests/e2e/score.screen.spec.ts
+== specs-exist  14:21:21
+specs-exist exit=0
+== e2e-targeted  14:21:21
+e2e-targeted exit=0
+CHAIN DONE 14:25:10

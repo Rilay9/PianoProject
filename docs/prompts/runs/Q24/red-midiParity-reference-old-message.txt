@@ -1,0 +1,35 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ad4db920a52007e2d/app
+
+ ❯ tests/unit/midiParity.test.ts (42 tests | 1 failed | 4 skipped) 9ms
+   ❯ the parity reference (1)
+     × is made by a script and a CI step the failure above names 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/midiParity.test.ts > the parity reference > is made by a script and a CI step the failure above names
+AssertionError: expected '' to contain 'parity_reference.py'
+
+- Expected
++ Received
+
+- parity_reference.py
+
+ ❯ tests/unit/midiParity.test.ts:234:17
+    232|     // the case above fails instead, and its message has to send the r…
+    233|     // things that exist; test_ci_order.py checks the step's name in c…
+    234|     expect(why).toContain('parity_reference.py');
+       |                 ^
+    235|     expect(why).toContain('"Write the MIDI parity reference"');
+    236|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 37 passed | 4 skipped (42)
+   Start at  05:17:10
+   Duration  243ms (transform 67%, import 24%, tests 7%, worker 3%)
+
+
+vitest exit 1

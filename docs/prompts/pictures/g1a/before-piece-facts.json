@@ -1,0 +1,44 @@
+{
+  "tag": "before",
+  "runs": [
+    {
+      "unseen": true,
+      "firstContact": "absent",
+      "lessonId": "absent",
+      "material": "file",
+      "recipe": false
+    },
+    {
+      "unseen": false,
+      "firstContact": "absent",
+      "lessonId": "1.1",
+      "material": "file",
+      "recipe": false
+    }
+  ],
+  "sheets": [
+    "Mastery run 1 of 2",
+    "Mastery run 1 of 2"
+  ],
+  "history": {
+    "texts": [
+      "100% at 100% · 0 min",
+      "100% at 100% · 0 min"
+    ],
+    "fit": [
+      true,
+      true
+    ]
+  },
+  "totals": "1 day practised · 1 min in total · 0 started · 1 passed · 0 mastered",
+  "rung": {
+    "state": "in progress",
+    "summary": "What the app counts — 1 of 2",
+    "holding": [
+      "One song from this page at 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster. (counted: Hot Cross Buns)"
+    ],
+    "open": [
+      "One exercise from this page at 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster. (not yet)"
+    ]
+  }
+}

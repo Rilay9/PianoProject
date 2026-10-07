@@ -89,6 +89,31 @@ test.describe('opening a lesson', () => {
     });
     await expect(page.locator('h1').first()).toContainText(named ?? '');
   });
+
+  test('Start is an offer: it passes over a listed groove no one has approved for teaching, and says what it opens instead', async ({ page }) => {
+    // `holiday.5` lists the A-minor ostinato over a pedal bass first. It is generated music with no
+    // teaching-use yes on this build, so Start may not offer it (D3c, `04` §3e); its row stays
+    // listed and tappable, because a row is the learner's own choice.
+    await page.goto('/#/lesson/holiday.5');
+    await expect(page.locator('#lesson-start-what')).toContainText('Opens', { timeout: 60_000 });
+    const first = page.locator('#lesson-exercises .list-row[data-item]').first();
+    await expect(first).toHaveAttribute('data-item', 'exercise.ostinato.a.arpeggio');
+    await expect(first.getByRole('button', { name: /^Open / })).toBeVisible();
+    const listedFirst = (await first.locator('.list-row__title').textContent()) ?? '';
+
+    const said = (await page.locator('#lesson-start-what').textContent()) ?? '';
+    const named = /“(.+)”/.exec(said)?.[1] ?? '';
+    expect(named, 'the line does not name what Start opens').toBeTruthy();
+    expect(named, 'Start still opens the unapproved groove the rung lists first').not.toBe(listedFirst);
+    // Not "the first thing on this rung": it is not.
+    expect(said).not.toContain('the first thing on this rung');
+    const titles = await page.locator('#lesson-exercises .list-row__title, #lesson-songs .list-row__title').allTextContents();
+    expect(titles, 'Start names something the rung does not list').toContain(named);
+
+    await page.locator('#lesson-start').click();
+    await expect(page.locator('[data-screen="score"], [data-screen="drill"]')).toHaveCount(1, { timeout: 60_000 });
+    await expect(page.locator('h1').first()).toContainText(named);
+  });
 });
 
 test.describe('starting a mode', () => {

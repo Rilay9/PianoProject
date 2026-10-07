@@ -20,8 +20,10 @@
  * of the renderer instead of a fast one of the route.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { makeModel, note } from './helpers/engineHarness';
+import { BEAT_MS, harness, makeModel, note } from './helpers/engineHarness';
 import { DEFAULT_SETTINGS, updateSettings } from '../../src/data/settingsStore';
+import { scoreOutcome } from '../../src/data/sessionRun';
+import type { RunResult } from '../../src/data/progressStore';
 import type { SessionScore } from '../../src/engine/types';
 import type { ScoreModel } from '../../src/score/types';
 import type { CatalogItem } from '../../src/curriculum/types';
@@ -127,6 +129,7 @@ vi.mock('../../src/score/WindowRenderer', async (importOriginal) => {
       setBarsPerWindow(): void {}
       setLoopRange(): void {}
       setRunning(): void {}
+      placeSlots(): void {}
       fitToStage(): void {}
       refit(): void {}
       dispose(): void {}
@@ -741,5 +744,40 @@ describe('a sight-read opens in the mode docs/05 §8 says', () => {
     updateSettings({ defaultModeWithInput: 'wait', defaultModeWithoutInput: 'wait' });
     const { section } = await open(`#/score/${SONG_ID}`);
     expect(section.dataset.mode).toBe('wait');
+  });
+});
+
+describe('a stopped loop reaches the saved session decision', () => {
+  it('saves the completed lap verdict with the whole practice duration', async () => {
+    const model = makeModel([
+      { onset: 0, notes: [note({ midi: 60 })] },
+      { onset: 1, notes: [note({ midi: 62 })] },
+    ]);
+    modelRef.current = model;
+    await open(`#/score/${SONG_ID}?mode=tempo`);
+    const h = harness(model, {
+      mode: 'tempo',
+      countInBars: 0,
+      loop: { fromStep: 0, toStep: 1 },
+    });
+    h.engine.start();
+    h.play(60);
+    h.release(60, { atMs: 30 });
+    h.advance(2.1 * BEAT_MS);
+    expect(h.engine.state.loops).toBe(1);
+    h.advance(0.2 * BEAT_MS);
+    h.engine.stop();
+    const stopped = h.of('finished').filter((event) => !event.loop).at(-1)!.score;
+    expect(stopped.hits).toBe(1);
+    expect(stopped.missedTotal).toBe(1);
+    // Exercise ScoreScreen's RunResult construction, not a reconstruction of it.
+    onFinishedRef.current?.(stopped, false);
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    const saved = (recordRunSpy.mock.calls as unknown as [RunResult][])[0]![0];
+    expect(saved.durationMs).toBe(h.clock.now());
+    expect(saved.accuracy).toBe(0.5);
+    expect(saved.passed).toBe(false);
+    expect(saved.tempoMeasured).toBe(true);
+    expect(scoreOutcome(saved)).toBe('failed');
   });
 });

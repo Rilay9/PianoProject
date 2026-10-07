@@ -51,6 +51,37 @@ import { needsRecompute, candidatePhrases } from '../../src/data/evidenceJob';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import { BADLY, readRow } from './helpers/skillEvidence';
+import { DIMENSIONS, type Relationship } from '../../src/curriculum/transfer';
+import type { Identity } from '../../src/review/record';
+
+/** A phrase of one of the two rows: the material `recordRun` keeps on the read (G2 reads it). */
+const phraseOf = (seed: number, hands: 'right' | 'both'): Identity => ({ kind: 'generator', family: 'sight-reading', version: 2, seed, recipe: { level: 2, bars: 4, hands, fifths: 0 }, tempoBpm: 72 });
+
+/**
+ * A read with the facts `recordRun` writes on it (G2): its phrase's material, and on a read after
+ * proficiency its relationship to the reads that established the skill — measured to differ in the
+ * hands (the other row is both hands) and in nothing else.
+ */
+function withFacts(row: SessionRow, material: Identity, shownOn?: SessionRow[]): SessionRow {
+  const relationship = (skill: string): Relationship | undefined =>
+    shownOn === undefined
+      ? undefined
+      : {
+          skill,
+          shownOn: shownOn.map((one) => ({ itemId: one.itemId, ...(one.material ? { material: one.material } : {}) })),
+          measured: DIMENSIONS.map((dimension) => ({ dimension, candidate: dimension === 'hands' ? 'both' : 'same', shownOn: shownOn.map(() => (dimension === 'hands' ? 'right' : 'same')), differs: dimension === 'hands' })),
+          differsOn: ['hands'],
+        };
+  return {
+    ...row,
+    material,
+    evidence: row.evidence?.map((result) => {
+      if (result.kind !== 'measured') return result;
+      const facts = relationship(result.skill);
+      return { ...result, context: { ...result.context, material, ...(facts === undefined ? {} : { relationship: facts }) } };
+    }),
+  };
+}
 
 const ROW_A = 'drill.reading.sight-reading-2-right';
 const ROW_B = 'drill.reading.sight-reading-2';
@@ -106,16 +137,29 @@ const MET_1_1: SessionRow = {
  * — mastered — and one run that met 1.1. And one row whose evidence is under
  * an older version than the one in force: a claim the store keeps and the
  * ladder does not read.
+ *
+ * Revised (G2): "shown on first contact with another row" was v0's transfer, a
+ * different item id. The transfer policy reads the facts `recordRun` writes on the
+ * attempt, so the reads carry their phrases' material and the read on the other
+ * row carries its relationship (the hands measured to differ): the same history,
+ * mastered by the policy's reading, is what pruning must keep.
  */
 function established(): SessionRow[] {
   const oldVersion = readRow('2018-12-01T12:00:00.000Z', { lessonId: '1.5', itemId: ROW_A });
   return [
     { ...oldVersion, evidenceDefinitions: EVIDENCE_DEFINITIONS - 1 },
     MET_1_1,
-    readRow('2019-03-01T12:00:00.000Z', { lessonId: '1.5', itemId: ROW_A, seed: 1 }),
-    readRow('2019-03-04T12:00:00.000Z', { lessonId: '1.5', itemId: ROW_A, seed: 2 }),
-    readRow('2019-03-10T12:00:00.000Z', { itemId: ROW_B, seed: 3 }),
-    readRow('2019-04-12T12:00:00.000Z', { lessonId: '1.5', itemId: ROW_A, seed: 4 }),
+    ...(() => {
+      const shown = [
+        withFacts(readRow('2019-03-01T12:00:00.000Z', { lessonId: '1.5', itemId: ROW_A, seed: 1 }), phraseOf(1, 'right')),
+        withFacts(readRow('2019-03-04T12:00:00.000Z', { lessonId: '1.5', itemId: ROW_A, seed: 2 }), phraseOf(2, 'right')),
+      ];
+      return [
+        ...shown,
+        withFacts(readRow('2019-03-10T12:00:00.000Z', { itemId: ROW_B, seed: 3 }), phraseOf(3, 'both'), shown),
+        withFacts(readRow('2019-04-12T12:00:00.000Z', { lessonId: '1.5', itemId: ROW_A, seed: 4 }), phraseOf(4, 'right')),
+      ];
+    })(),
   ];
 }
 

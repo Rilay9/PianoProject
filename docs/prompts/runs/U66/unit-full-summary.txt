@@ -1,0 +1,8 @@
+The whole unit suite, final run (npx vitest run, app/). The full log (909223 bytes) is not kept: the summary and the failing names only.
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+ Test Files  1 failed | 321 passed (322)
+      Tests  2 failed | 7471 passed | 5 skipped | 1 todo (7479)
+exit=1

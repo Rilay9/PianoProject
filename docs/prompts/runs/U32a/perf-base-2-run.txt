@@ -1,0 +1,37 @@
+
+Running 6 tests using 1 worker
+
+2-bar window render, CPU ×4: median 33.1 ms (40.8, 36.5, 30.3, 33.1, 31.3)
+  ok 1 tests\e2e\perf.spec.ts:58:3 › performance budgets (docs/01 §6) › a cold 2-bar window renders inside the first-render budget (3.4s)
+pre-rendered swap, CPU ×4: median 0.40 ms over 19 swaps (0.80, 1.00, 0.50, 0.50, 0.40, 0.40, 0.90, 0.60, 0.30, 0.40, 0.40, 0.50, 0.20, 0.40, 0.30, 0.50, 0.30, 0.30, 0.60)
+  ok 2 tests\e2e\perf.spec.ts:83:3 › performance budgets (docs/01 §6) › a pre-rendered window swap still fits in a frame when throttled (20.7s)
+longest score (780 bars), CPU ×4: first window in 27803 ms
+  ok 3 tests\e2e\perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19) (34.1s)
+render timings, CPU ×4: input.toColourn=9 mean 9.2 ms · max 19.0 msosmd.proben=2 mean 99.6 ms · max 158.7 msosmd.render.backn=1 mean 17.6 ms · max 17.6 msosmd.render.frontn=4 mean 19.3 ms · max 24.8 msosmd.render.proben=2 mean 99.4 ms · max 158.3 mssession.framen=46 mean 1.1 ms · max 26.0 mswindow.swapColdn=4 mean 37.9 ms · max 70.3 ms
+  ok 4 tests\e2e\perf.spec.ts:183:3 › performance budgets (docs/01 §6) › a played note is coloured within the input-to-colour budget (4.9s)
+Library · genre blues-boogie, CPU ×4: first row in 42.2 ms over 60 rows
+Library · genre chords-pop, CPU ×4: first row in 35.8 ms over 60 rows
+Library · genre classical, CPU ×4: first row in 35.0 ms over 60 rows
+Library · genre core, CPU ×4: first row in 30.3 ms over 60 rows
+Library · genre film-game, CPU ×4: first row in 15.0 ms over 7 rows
+Library · genre holiday, CPU ×4: first row in 26.1 ms over 41 rows
+Library · genre hymns-gospel, CPU ×4: first row in 17.5 ms over 32 rows
+Library · genre improv-compose, CPU ×4: first row in 27.5 ms over 60 rows
+Library · genre jam, CPU ×4: first row in 10.4 ms over 10 rows
+Library · genre jazz, CPU ×4: first row in 28.5 ms over 60 rows
+Library · genre latin, CPU ×4: first row in 27.4 ms over 60 rows
+Library · genre ragtime, CPU ×4: first row in 26.7 ms over 60 rows
+Library · genre rock-metal, CPU ×4: first row in 18.3 ms over 34 rows
+Library · genre technique, CPU ×4: first row in 26.5 ms over 60 rows
+Library · genre theory-ear, CPU ×4: first row in 22.4 ms over 60 rows
+Library · search "e", CPU ×4: first row in 36.5 ms over 60 rows
+Library · search "ma", CPU ×4: first row in 29.7 ms over 60 rows
+Library · search "maj", CPU ×4: first row in 65.8 ms over 60 rows
+Library · search "major", CPU ×4: first row in 90.2 ms over 60 rows
+Library · slowest: search "major" at 90.2 ms (gate 600 = the 2-bar first-render budget under ×4)
+  ok 5 tests\e2e\perf.spec.ts:334:3 › the two screens the catalog grew (T26) › the Library answers every genre filter, and the search box, inside the first-paint budget (3.4s)
+lesson · 0.4 (1 options) first option in 33.5 ms; classical.4.shelf (52 options, 52 rows drawn) in 100.4 ms, CPU ×4
+  ok 6 tests\e2e\perf.spec.ts:433:3 › the two screens the catalog grew (T26) › a lesson page with the most options is no slower to its first option than one with the fewest (2.2s)
+
+  6 passed (1.2m)
+exit=0

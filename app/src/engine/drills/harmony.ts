@@ -24,6 +24,7 @@ import {
   type ParsedChord,
 } from './theory';
 import {
+  pastHidden,
   sameSet,
   type Drill,
   type DrillAnswer,
@@ -462,6 +463,19 @@ export class ChordDictationDrill implements Drill {
     if (this.pending.length > 0 && nowMs - this.lastNoteMs >= this.boundaryMs) {
       this.close(this.lastNoteMs);
     }
+  }
+
+  /**
+   * Every moment the card holds moves past the hidden span (X15): the prompt,
+   * each chord heard and the last note. The prompt alone would not do — the
+   * answer's time is the last chord's minus the prompt's, so a progression
+   * finished before the page hid would come back answered in nought.
+   */
+  excludeHidden(hiddenAtMs: number, visibleAtMs: number): void {
+    const past = (tMs: number): number => pastHidden(tMs, hiddenAtMs, visibleAtMs);
+    this.promptAtMs = past(this.promptAtMs);
+    this.lastNoteMs = past(this.lastNoteMs);
+    this.heard = this.heard.map((chord) => ({ pitches: chord.pitches, atMs: past(chord.atMs) }));
   }
 
   /**

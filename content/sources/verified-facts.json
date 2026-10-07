@@ -1,0 +1,192 @@
+{
+  "about": "Verified score facts (HD2; docs/review/responses/hd2-corpus-diff.md): explicit truth about a passage of one catalogue item's current score file, established by a named method and kept only while the file is the one it was established on. One row per fact. `item` the catalogue id; `identity` the score file's identity exactly as the catalogue records it (`provenance.identity`); `bars` printed bar numbers, inclusive; `staff` and `voice` where the fact is per voice (null where not); `kind` (`hand` now; `demand` for the cells seam's verified passages); `fact` (for `hand`: `L` or `R`); `rungs` the rung ids a `demand` fact proves its demand for, so a passage counts only for its exact item and rung (null on a `hand` fact); `proof` the method, the date and the evidence. One file, not a fact system: each `kind` has its own validation, authority and reader, and no consumer reads across kinds. `hand` rows are read only by the score model's override path (`app/src/curriculum/verifiedFacts.ts` for the app, `tools/content/verified_hand.py` for the build's bridge); `demand` rows only by the build's claim path, which defines their validation. A row whose identity no longer matches the item's is stale: its reader derives that and refuses it, so an edition or file change never carries a fact silently. `stale` is never authored here. A one-staff item's declared hand is not here: it stays in the catalogue row's provenance (HD1).",
+  "facts": [
+    {
+      "item": "song.jazz.the-crave",
+      "identity": { "kind": "file", "sha256": "1eb6de4c0ece075772b610cc1211bb5da0d443dc11a21a5b4abe351ed085db73" },
+      "bars": [40, 40],
+      "staff": 1,
+      "voice": 2,
+      "kind": "hand",
+      "fact": "R",
+      "rungs": null,
+      "proof": {
+        "method": "notation: the model dump of the built file shows staff 1 voice 2 as the treble staff's inner F5/A5 line while the left hand's notes are staff 2 voice 3; the voice number is reused from the lower staff in bar 39, which is what the voice-home rule counted. Ruled by the reviewer. Nothing heard.",
+        "date": "2026-10-06",
+        "evidence": "docs/prompts/runs/CD1/evidence/crave-40.txt; docs/review/responses/hd2-corpus-diff.md §2"
+      }
+    },
+    {
+      "item": "song.ragtime.joplin-solace",
+      "identity": { "kind": "file", "sha256": "2f65f6da1116451dc83ac277b21e31ba44a6349d0f1b7c6a5590dd577c6b52ab" },
+      "bars": [22, 22],
+      "staff": 1,
+      "voice": 2,
+      "kind": "hand",
+      "fact": "R",
+      "rungs": null,
+      "proof": {
+        "method": "notation: the model dump of the built file shows staff 1 voice 2 as the treble staff's inner line while the left hand's notes are staff 2 voices 3 and 4. Ruled by the reviewer. Nothing heard.",
+        "date": "2026-10-06",
+        "evidence": "docs/prompts/runs/CD1/evidence/solace-22.txt; docs/review/responses/hd2-corpus-diff.md §2"
+      }
+    },
+    {
+      "item": "song.ragtime.joplin-solace",
+      "identity": { "kind": "file", "sha256": "2f65f6da1116451dc83ac277b21e31ba44a6349d0f1b7c6a5590dd577c6b52ab" },
+      "bars": [26, 26],
+      "staff": 1,
+      "voice": 2,
+      "kind": "hand",
+      "fact": "R",
+      "rungs": null,
+      "proof": {
+        "method": "notation: the model dump of the built file shows staff 1 voice 2 as the treble staff's inner line while the left hand's notes are staff 2 voices 3 and 4. Ruled by the reviewer. Nothing heard.",
+        "date": "2026-10-06",
+        "evidence": "docs/prompts/runs/CD1/evidence/solace-22.txt; docs/review/responses/hd2-corpus-diff.md §2"
+      }
+    },
+    {
+      "item": "song.ragtime.joplin-solace",
+      "identity": { "kind": "file", "sha256": "2f65f6da1116451dc83ac277b21e31ba44a6349d0f1b7c6a5590dd577c6b52ab" },
+      "bars": [30, 30],
+      "staff": 1,
+      "voice": 2,
+      "kind": "hand",
+      "fact": "R",
+      "rungs": null,
+      "proof": {
+        "method": "notation: the model dump of the built file shows staff 1 voice 2 as the treble staff's chords while the left hand's notes are staff 2 voices 3 and 4. Ruled by the reviewer. Nothing heard.",
+        "date": "2026-10-06",
+        "evidence": "docs/prompts/runs/CD1/evidence/solace-22.txt; docs/review/responses/hd2-corpus-diff.md §2"
+      }
+    },
+    {
+      "item": "song.ragtime.joplin-solace",
+      "identity": { "kind": "file", "sha256": "2f65f6da1116451dc83ac277b21e31ba44a6349d0f1b7c6a5590dd577c6b52ab" },
+      "bars": [32, 32],
+      "staff": 1,
+      "voice": 2,
+      "kind": "hand",
+      "fact": "R",
+      "rungs": null,
+      "proof": {
+        "method": "notation: the model dump of the built file shows staff 1 voice 2 as the treble staff's chords while the left hand's notes are staff 2 voices 3 and 4. Ruled by the reviewer. Nothing heard.",
+        "date": "2026-10-06",
+        "evidence": "docs/prompts/runs/CD1/evidence/solace-22.txt; docs/review/responses/hd2-corpus-diff.md §2"
+      }
+    },
+    {
+      "item": "song.jazz.the-crave",
+      "identity": {"kind": "file", "sha256": "1eb6de4c0ece075772b610cc1211bb5da0d443dc11a21a5b4abe351ed085db73"},
+      "bars": [21, 26],
+      "staff": 2,
+      "voice": null,
+      "kind": "demand",
+      "fact": {"demand": "rhythm.tresillo", "hand": "L"},
+      "rungs": ["latin.6"],
+      "proof": {
+        "method": "the app's detector through the bridge and the partitura witness (cells.py), agreeing on every bar",
+        "date": "2026-10-07",
+        "evidence": "docs/chains/A7c.1.yaml (song.jazz.the-crave@bars=21-26); latin.6.md, 'In bars 21 to 26 the left hand plays three, three, two in every bar' (narrowed 2026-10-06 from 'the tresillo under a whole piece', responses/a7c1-reviewed.md section 2)",
+        "verified": {
+          "bars": [21, 26],
+          "staff": 2,
+          "demand": "rhythm.tresillo",
+          "hand": "L",
+          "version": "024b78a351cd+27548bb05f85",
+          "numbers": [21, 22, 23, 24, 25, 26],
+          "app": [21, 22, 23, 24, 25, 26],
+          "witness": [21, 22, 23, 24, 25, 26],
+          "disagree": [],
+          "hands": [{"bars": [40, 40], "staff": 1, "voice": 2, "hand": "R"}],
+          "declaredHand": null
+        }
+      }
+    },
+    {
+      "item": "song.folk.por-una-cabeza-carlos-gardel.pdmx",
+      "identity": {"kind": "file", "sha256": "2d05ab2a12b835dd221bcb97709ce1fa936afa4f22da9c5bb7fe6293829969fb"},
+      "bars": [1, 14],
+      "staff": 2,
+      "voice": null,
+      "kind": "demand",
+      "fact": {"demand": "rhythm.habanera", "hand": "L"},
+      "rungs": [],
+      "proof": {
+        "method": "the app's detector through the bridge and the partitura witness (cells.py), agreeing on every bar",
+        "date": "2026-10-07",
+        "evidence": "docs/chains/A7c.1.yaml (song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14); ABILITY-MAP.md A7c.1's L1 amendment. No rung claims the habanera here until latin.4's placement names one.",
+        "verified": {
+          "bars": [1, 14],
+          "staff": 2,
+          "demand": "rhythm.habanera",
+          "hand": "L",
+          "version": "024b78a351cd+27548bb05f85",
+          "numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+          "app": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+          "witness": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+          "disagree": [],
+          "hands": [],
+          "declaredHand": null
+        }
+      }
+    },
+    {
+      "item": "song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx",
+      "identity": {"kind": "file", "sha256": "cada0fcbce1b12e79d8fe0d1eab9afd5bb986e71c0e55a06e67969a1093a52aa"},
+      "bars": [1, 12],
+      "staff": 2,
+      "voice": null,
+      "kind": "demand",
+      "fact": {"demand": "rhythm.habanera", "hand": "L"},
+      "rungs": [],
+      "proof": {
+        "method": "the app's detector through the bridge and the partitura witness (cells.py), agreeing on every bar",
+        "date": "2026-10-07",
+        "evidence": "docs/chains/A7c.1.yaml (song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx@bars=1-12); Entry 241's H2. No rung claims it until latin.4's placement names one.",
+        "verified": {
+          "bars": [1, 12],
+          "staff": 2,
+          "demand": "rhythm.habanera",
+          "hand": "L",
+          "version": "024b78a351cd+27548bb05f85",
+          "numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "app": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "witness": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "disagree": [],
+          "hands": [],
+          "declaredHand": null
+        }
+      }
+    },
+    {
+      "item": "excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh",
+      "identity": {"kind": "file", "sha256": "a39e76951869aabbf39c1d0b4440e4f433baa86da584d7edec650dfa1e539069"},
+      "bars": [1, 12],
+      "staff": 1,
+      "voice": null,
+      "kind": "demand",
+      "fact": {"demand": "rhythm.habanera", "hand": "L"},
+      "rungs": ["latin.4"],
+      "proof": {
+        "method": "the app's detector through the bridge and the partitura witness (cells.py), agreeing on every bar",
+        "date": "2026-10-07",
+        "evidence": "docs/chains/A7c.1.yaml (the left-hand cut, bars 1-12); one staff declared the left hand (HD1). No rung claims it until latin.4's placement names one.",
+        "verified": {
+          "bars": [1, 12],
+          "staff": 1,
+          "demand": "rhythm.habanera",
+          "hand": "L",
+          "version": "024b78a351cd+27548bb05f85",
+          "numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "app": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "witness": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "disagree": [],
+          "hands": [],
+          "declaredHand": "left"
+        }
+      }
+    }
+  ]
+}

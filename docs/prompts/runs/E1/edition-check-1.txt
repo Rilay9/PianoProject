@@ -1,0 +1,258 @@
+{
+ "target": "interval.step",
+ "rows": [
+  {
+   "of": "song.classical.bach-menuet-bwv-anh-113.pdmx",
+   "title": "Minuet in F major, BWV Anh. 113",
+   "window": [
+    17,
+    24
+   ],
+   "score": 11.6,
+   "phraseStart": "after a long note in the melody in bar 16",
+   "ending": "resolves: a long note over a cadence to the tonic (the bass falls a fifth into bar 24)",
+   "editionStarts": [
+    1,
+    13
+   ],
+   "editionEnds": [
+    12,
+    32
+   ],
+   "startMissesBy": 4,
+   "endMissesBy": 8
+  },
+  {
+   "of": "song.classical.beethoven-fur-elise.easy",
+   "title": "Für Elise (easy)",
+   "window": [
+    16,
+    22
+   ],
+   "score": 10.529,
+   "phraseStart": "the phrase starts inside bar 16 with an upbeat; the bar opens with the end of the one before",
+   "ending": "the piece's last bar",
+   "editionStarts": [
+    1
+   ],
+   "editionEnds": [
+    22
+   ],
+   "startMissesBy": 15,
+   "endMissesBy": 0
+  },
+  {
+   "of": "song.classical.chopin-mazurka-op7-4.nifc",
+   "title": "Mazurka in A-flat major, Op. 7 No. 4",
+   "window": [
+    26,
+    33
+   ],
+   "score": 12.0,
+   "phraseStart": "a repeat sign before bar 26",
+   "ending": "a double bar closes bar 33",
+   "editionStarts": [
+    1,
+    10,
+    26,
+    34,
+    38
+   ],
+   "editionEnds": [
+    9,
+    25,
+    33,
+    37,
+    45
+   ],
+   "startMissesBy": 0,
+   "endMissesBy": 0
+  },
+  {
+   "of": "song.classical.czerny-study-op-139-no-2.pdmx",
+   "title": "Study, Op. 139 No. 2",
+   "window": [
+    9,
+    16
+   ],
+   "score": 12.0,
+   "phraseStart": "a repeat sign before bar 9",
+   "ending": "the piece's last bar",
+   "editionStarts": [
+    1,
+    2,
+    3,
+    6,
+    9,
+    11,
+    15
+   ],
+   "editionEnds": [
+    2,
+    3,
+    4,
+    7,
+    8,
+    12,
+    16
+   ],
+   "startMissesBy": 0,
+   "endMissesBy": 0
+  },
+  {
+   "of": "song.classical.duvernoy-etude-op-176-no-10.pdmx",
+   "title": "Étude, Op. 176 No. 10",
+   "window": [
+    1,
+    8
+   ],
+   "score": 11.6,
+   "phraseStart": "the piece's first bar",
+   "ending": "resolves: a rest over the tonic in the bass",
+   "editionStarts": [
+    1,
+    3,
+    7,
+    15,
+    16,
+    19,
+    23
+   ],
+   "editionEnds": [
+    4,
+    8,
+    16,
+    17,
+    20,
+    24
+   ],
+   "startMissesBy": 0,
+   "endMissesBy": 0
+  },
+  {
+   "of": "song.classical.ode-to-joy.full",
+   "title": "Ode to Joy (full theme)",
+   "window": [
+    1,
+    4
+   ],
+   "score": 11.8,
+   "phraseStart": "the piece's first bar",
+   "ending": "resolves: a long note over the tonic in the bass",
+   "editionStarts": [
+    1
+   ],
+   "editionEnds": [
+    17
+   ],
+   "startMissesBy": 0,
+   "endMissesBy": 13
+  },
+  {
+   "of": "song.classical.satie-gymnopedie-1",
+   "title": "Gymnopédie No. 1",
+   "window": [
+    33,
+    38
+   ],
+   "score": 10.267,
+   "phraseStart": "after a long note in the melody in bar 32",
+   "ending": "leads onward: a long note over the dominant (a half cadence)",
+   "editionStarts": [
+    1,
+    40
+   ],
+   "editionEnds": [
+    39,
+    47
+   ],
+   "startMissesBy": 7,
+   "endMissesBy": 1
+  },
+  {
+   "of": "song.classical.schumann-humming-song-op-68-no-3.pdmx",
+   "title": "Humming Song, Op. 68 No. 3",
+   "window": [
+    1,
+    8
+   ],
+   "score": 12.0,
+   "phraseStart": "the piece's first bar",
+   "ending": "a double bar closes bar 8",
+   "editionStarts": [
+    1,
+    3,
+    5,
+    7,
+    9,
+    11,
+    13,
+    17,
+    19,
+    21,
+    23
+   ],
+   "editionEnds": [
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    15,
+    18,
+    20,
+    22,
+    24
+   ],
+   "startMissesBy": 0,
+   "endMissesBy": 0
+  },
+  {
+   "of": "song.classical.tchaikovsky-swan-lake",
+   "title": "Swan Lake (theme)",
+   "window": [
+    20,
+    27
+   ],
+   "score": 10.6,
+   "phraseStart": "the phrase starts inside bar 20 with an upbeat; the bar opens with the end of the one before",
+   "ending": "resolves: a long note over the tonic in the bass",
+   "editionStarts": [
+    1,
+    3,
+    5
+   ],
+   "editionEnds": [
+    4,
+    6,
+    32
+   ],
+   "startMissesBy": 15,
+   "endMissesBy": 5
+  },
+  {
+   "of": "song.folk.greensleeves.waltz",
+   "title": "Greensleeves (waltz bass)",
+   "window": [
+    9,
+    16
+   ],
+   "score": 10.2,
+   "phraseStart": "the phrase starts inside bar 9 with an upbeat; the bar opens with the end of the one before",
+   "ending": "the piece's last bar",
+   "editionStarts": [
+    1
+   ],
+   "editionEnds": [
+    16
+   ],
+   "startMissesBy": 8,
+   "endMissesBy": 0
+  }
+ ],
+ "startAgrees": 5,
+ "endAgrees": 6,
+ "parents": 10
+}
+exit 0

@@ -1,0 +1,41 @@
+== map-tests  01:34:01
+map-tests exit=0
+== map-min  01:34:03
+map-min exit=0
+== content-build  01:34:03
+content-build exit=0
+== content-validate  01:49:05
+content-validate exit=0
+== review-check  01:49:36
+review-check exit=0
+== content-tests  01:49:37
+content-tests exit=1
+== vitest-all  02:10:47
+== RERUN after the bound-test fix-forward  02:14:12
+== content-tests  02:14:12
+content-tests exit=0
+== vitest-all  02:14:15
+vitest-all exit=1
+== build-app  02:20:54
+vitest-all exit=1
+== build-app  02:21:22
+build-app exit=0
+build-app exit=0
+SPECS: tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts
+== specs-exist  02:21:49
+SPECS: tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts
+== specs-exist  02:21:49
+specs-exist exit=0
+specs-exist exit=0
+== e2e-targeted  02:21:49
+== e2e-targeted  02:21:49
+== vitest-load-rerun  02:21:49
+e2e-targeted exit=1
+CHAIN DONE 02:22:15
+vitest-load-rerun exit=0
+RERUN DONE 02:22:16
+e2e-targeted exit=0
+CHAIN DONE 02:23:06
+== e2e-rerun  02:23:49
+e2e-rerun exit=0
+RERUN DONE 02:25:02

@@ -22,7 +22,14 @@
  *     down it, or (over 100 % Size) the sheets are at the scale Size asked for.
  * (c) **The next bar is in view**, or there is measurably no room for it at
  *     the window's scale — no row's height free below the ink and no bar's
- *     width free right of it — and the cell says so in its annotation.
+ *     width free right of it — and the cell says so in its annotation. A
+ *     window that has every sheet the renderer made in use, with a row's room
+ *     below, is a fault while fewer than `MAX_SLOTS` were made: a long piece
+ *     is given the sheets its settled shape needs (U32a), so a shape with room
+ *     for the next row that has no sheet for it is a sheet the renderer should
+ *     have priced and made (U32; T38 wrote it as a note, on the reading that a
+ *     piece past the probe's reach gets two sheets by design). With all
+ *     `MAX_SLOTS` in use it stays a note, naming that cap.
  * (d) **The count**: the asked bars are inked at the window's first bar, or
  *     the `⋯` sheet's row says in words that fewer are shown.
  * (e) **The floor**: the shortest staff on the glass clears `MIN_STAFF_PX`,
@@ -33,6 +40,9 @@
  *     why: the piece is shorter than both, the row says fewer are shown, or
  *     the music is already bound by the stage (a bigger Size) or the floor (a
  *     smaller one).
+ * (g) **Rows never overlap** (U110, `responses/9e14839e.md` §3): no drawn
+ *     row's ink, chord symbols and fingering included, reaches into the ink
+ *     of the row below it at the size it is drawn.
  *
  * The only literals are the code's own (`MIN_STAFF_PX`) and fractions of a
  * measurement of the same screen (`00-invariants` §2).
@@ -78,6 +88,14 @@ const BARS = [1, 2, 4, 8];
 const MIN_STAFF_PX = 22;
 
 /**
+ * `WindowRenderer.MAX_SLOTS` — the most sheets the renderer makes for any
+ * piece. A short piece has them all from `create`; a long one has two, then
+ * the ones its settled shape needs, priced once it is measured (U32, U32a).
+ * Mirrored for the same reason as `MIN_STAFF_PX`.
+ */
+const MAX_SLOTS = 4;
+
+/**
  * How near an edge counts as touching it: the fit keeps a margin, and a row's
  * ink is a little shorter than the tallest system in the piece that sized it.
  */
@@ -113,7 +131,8 @@ interface Sheet {
   stretch: string;
   classes: string;
   slot: number;
-  ink: { left: number; right: number } | null;
+  /** Every painted mark of the sheet on the glass, text included (chord symbols, fingering). */
+  ink: { left: number; right: number; top: number; bottom: number } | null;
   measures: { id: string; left: number; right: number; span: number }[];
 }
 
@@ -150,7 +169,7 @@ interface Glass {
     ceilingScale: number | null;
     /** The height the renderer reserves for one row (the piece's tallest system, drawn). */
     rowPx: number | null;
-    /** How many sheets the renderer has to draw rows into (a long piece gets two). */
+    /** How many sheets the renderer has to draw rows into (a long piece: two from `create`, the rest after the first window, U32). */
     sheetsAvailable: number | null;
     /** Per slot index, the bars the engraver laid out, with their natural widths. */
     laid: (LaidBar[] | null)[];
@@ -193,7 +212,7 @@ async function readGlass(page: Page): Promise<Glass> {
       stretch: string;
       classes: string;
       slot: number;
-      ink: { left: number; right: number } | null;
+      ink: { left: number; right: number; top: number; bottom: number } | null;
       measures: { id: string; left: number; right: number; span: number }[];
     }[] = [];
     for (const buffer of buffers) {
@@ -227,14 +246,23 @@ async function readGlass(page: Page): Promise<Glass> {
       const host = buffer.style.transform ? buffer : (buffer.querySelector<HTMLElement>('[style*="scale"]') ?? buffer);
       const match = /scale\(([\d.]+)\)/.exec(host.style.transform);
       const holder = buffer.dataset.stretch ? buffer : (buffer.querySelector<HTMLElement>('[data-stretch]') ?? buffer);
-      // The sheet's whole ink across, on the glass, clipped by nothing.
+      // The sheet's whole ink across, on the glass, clipped by nothing; and
+      // down, text included (U110: a row's chord symbols and fingering are
+      // what reached into the row above). Down skips a mark taller than the
+      // stage, which belongs to no row: the engraver's path for a tie across a
+      // system break, drawn from where the note was on the line before.
       let inkLeft = Number.POSITIVE_INFINITY;
       let inkRight = Number.NEGATIVE_INFINITY;
+      let inkTop = Number.POSITIVE_INFINITY;
+      let inkBottom = Number.NEGATIVE_INFINITY;
       for (const node of buffer.querySelectorAll('svg path, svg rect, svg text')) {
         const box = node.getBoundingClientRect();
         if (box.width <= 0 && box.height <= 0) continue;
         inkLeft = Math.min(inkLeft, box.left);
         inkRight = Math.max(inkRight, box.right);
+        if (stage !== null && box.height > stage.height) continue;
+        inkTop = Math.min(inkTop, box.top);
+        inkBottom = Math.max(inkBottom, box.bottom);
       }
       // Each bar's stave: its five lines, the unit of "staff" (`08` §9).
       const measures: { id: string; left: number; right: number; span: number }[] = [];
@@ -258,7 +286,10 @@ async function readGlass(page: Page): Promise<Glass> {
         stretch: holder.dataset.stretch ?? '',
         classes: [...buffer.classList].filter((c) => c.startsWith('is-')).sort().join(' '),
         slot: Number(buffer.dataset.slot),
-        ink: Number.isFinite(inkLeft) ? { left: inkLeft, right: inkRight } : null,
+        ink:
+          Number.isFinite(inkLeft) && Number.isFinite(inkTop)
+            ? { left: inkLeft, right: inkRight, top: inkTop, bottom: inkBottom }
+            : null,
         measures,
       });
     }
@@ -345,6 +376,13 @@ async function readGlass(page: Page): Promise<Glass> {
 /** Waits for the fit to stop moving, the way `score.fill.spec.ts` does. */
 async function settle(page: Page): Promise<void> {
   await page.waitForTimeout(200);
+  // **And for the renderer's own word (U32; Q30's part for this file).** A long
+  // piece's later sheets load on idle after it is measured (U32a), and the
+  // shape holds still while they load, so the poll below can see three equal
+  // readings before the re-plan that brings the next row. `data-settled` is
+  // withheld until they have landed and the re-plan has run. Bounded and never
+  // a failure on its own: the poll still decides.
+  await page.waitForSelector('.score-view[data-settled]', { timeout: 30_000 }).catch(() => undefined);
   await page
     .waitForFunction(
       () => {
@@ -458,11 +496,39 @@ function sentence(words: string, asked: number): { promised: number; held: numbe
     : { promised: asked, held: asked, said: false };
 }
 
+/**
+ * (g) — rows drawn into each other (U110): in reading order, each drawn row's
+ * ink against the ink of the row below it, text included. Half a pixel is
+ * rounding. The 360 x 780 reload that found it ran each row's chord symbols
+ * and fingering most of a staff into the row above.
+ */
+function rowsDrawnIntoEachOther(glass: Glass): string[] {
+  const inked = glass.sheets
+    .filter((s): s is Sheet & { ink: NonNullable<Sheet['ink']> } => s.ink !== null)
+    .sort((a, b) => a.ink.top - b.ink.top);
+  const out: string[] = [];
+  for (let k = 0; k + 1 < inked.length; k += 1) {
+    const upper = inked[k];
+    const lower = inked[k + 1];
+    const into = upper.ink.bottom - lower.ink.top;
+    if (into > 0.5) {
+      out.push(
+        `(g) rows drawn into each other: slot ${String(upper.slot)} (${upper.classes || 'window'}) inks to ${upper.ink.bottom.toFixed(1)}, ` +
+          `${into.toFixed(1)} px into slot ${String(lower.slot)} (${lower.classes || 'window'}) inked from ${lower.ink.top.toFixed(1)}`,
+      );
+    }
+  }
+  return out;
+}
+
 /** One cell's verdict: the fault groups it falls into, named by letter. */
 function faultsOf(glass: Glass, asked: number, words: string, notes: string[]): string[] {
   const out: string[] = [];
   const { stage, stavePx, rows, sheets, barsInk, cursorBar, lastBar } = glass;
   if (stavePx === null || stage === null || rows.length === 0) return ['nothing drawn'];
+
+  // (g) — no row drawn into another.
+  out.push(...rowsDrawnIntoEachOther(glass));
 
   // (a) — no stretch: one scale, and every sheet engraved at natural widths.
   const scales = sheets.map((s) => s.scale).filter((s) => s > 0);
@@ -584,15 +650,32 @@ function faultsOf(glass: Glass, asked: number, words: string, notes: string[]): 
     const sheetsSpent =
       glass.shape.sheetsAvailable !== null && (glass.shape.slots ?? 0) >= glass.shape.sheetsAvailable;
     if (roomBelow && sheetsSpent && glass.shape.readAhead === 'slots') {
-      // A piece longer than the probe's reach is given two sheets, not four
-      // (`WindowRenderer.create`), and a window that fills both has none left
-      // for the next row, whatever room there is to its right as well (T38:
-      // this branch used to be taken only when there was none). Not changed.
-      notes.push(
-        `NOT BUILT, no sheet left for the next row: ${String(glass.shape.slots)} of ${String(
-          glass.shape.sheetsAvailable,
-        )} in use, ${String(Math.round(freeBelow))} px free below`,
-      );
+      if ((glass.shape.sheetsAvailable ?? 0) < MAX_SLOTS) {
+        // **Revised for U32 (class: revise), and for U32a.** T38 read this as
+        // "a piece longer than the probe's reach is given two sheets, not
+        // four, by design" and wrote a note. The two were a first-paint guard,
+        // not a rule about the look-ahead: `create` still makes two for such a
+        // piece, and the sheets its settled shape needs are made once it is
+        // measured (U32a: priced, not every one up to `MAX_SLOTS`). A window
+        // that fills every sheet made, fewer than the renderer can make, with
+        // a row's room below, is a next row the renderer should have priced
+        // and given a sheet — or priced as having no room where this spec's
+        // reserve finds one; either way no next bar with room for it.
+        out.push(
+          `(c) no sheet made for the next row: ${String(glass.shape.slots)} of ${String(
+            glass.shape.sheetsAvailable,
+          )} in use, fewer than the ${String(MAX_SLOTS)} the renderer can make, ${String(Math.round(freeBelow))} px free below`,
+        );
+      } else {
+        // Every sheet the renderer ever makes is in use (`MAX_SLOTS`), and
+        // whatever room is left below, or to the right, has no sheet to draw
+        // the next row into. The cap is the renderer's, not this piece's.
+        notes.push(
+          `NOT BUILT, MAX_SLOTS: all ${String(glass.shape.sheetsAvailable)} sheets in use, ${String(
+            Math.round(freeBelow),
+          )} px free below`,
+        );
+      }
     } else if (!roomBelow && roomRight && glass.shape.readAhead === 'slots') {
       // Rule 2's first branch — the next bar on the same row — exists only in
       // the sideways chunk. Upright rows are not extended past the window
@@ -699,7 +782,7 @@ for (const shape of SHAPES) {
       }
     }
     test.info().annotations.push({ type: 'no room ahead', description: notes.join('\n') || 'none' });
-    const groups = ['(a)', '(b)', '(c)', '(d)', '(e)', '(f)'].map(
+    const groups = ['(a)', '(b)', '(c)', '(d)', '(e)', '(f)', '(g)'].map(
       (g) => `${g} ${String(faults.filter((f) => f.includes(`— ${g}`)).length)}`,
     );
     expect(
@@ -785,11 +868,331 @@ for (const vp of [
 }
 
 /**
+ * Rows the window grants never overlap at the size they are drawn, and a
+ * fresh load and a reload draw the same window (U110, `responses/9e14839e.md`
+ * §3; `docs/review/walks/walk-2026-10-02.md` finding 2).
+ *
+ * The owner's phone upright, the piano connected, Ode to Joy with both hands:
+ * reloads drew three rows at the two-row size, each row's ink running into the
+ * next, so its chord symbols and fingering sat inside the row above. The
+ * mechanism: each engraving search the settling stage set off fitted the
+ * slots at a zoom it tried and then went back to the zoom it kept, and the
+ * chooser read that fit's scale against the piece's measurement at the zoom
+ * kept; the window's rows came out a little over half their drawn height,
+ * and a greyed row was granted on a stage the two rows fill. The next fit
+ * took it back, and each grant and each correction spent a rung of the
+ * reshape ladder. When the ladder ran out on a grant the three rows stayed,
+ * given even shares of that stage. How many searches the stage set off
+ * decided it, which is why one load could be clean and the next not. A
+ * fresh load and three reloads, each read settled and for every row count
+ * the stage held on the way (a row granted and taken back is the mispricing
+ * itself, even when the ladder ends on the correction), then a Wait run into
+ * its sixth bar, the chrome folded, reading the rows at every bar.
+ */
+test('rows the window grants never overlap: Ode to Joy at 360 x 780 with the piano, fresh, on reloads and through a run (U110)', async ({
+  page,
+}) => {
+  test.setTimeout(240_000);
+  const midi = await installMidiMock(page, { permission: 'granted' });
+  // Every row count the stage held while it settled, on every load: a greyed row granted and
+  // taken back again is the mechanism in motion, a row drawn for a few frames and gone. The
+  // observer's records are delivered in batches, so each one's value is read from the record (the
+  // value it replaced), and the current value at the end; the document itself is observed, since
+  // the init script runs before there is a root element.
+  await page.addInitScript(() => {
+    const seen: number[] = [];
+    (window as unknown as { __u110slots: number[] }).__u110slots = seen;
+    new MutationObserver((records) => {
+      for (const r of records) if (r.oldValue !== null) seen.push(Number(r.oldValue));
+    }).observe(document, { attributes: true, attributeOldValue: true, subtree: true, attributeFilter: ['data-slots'] });
+  });
+  await page.setViewportSize({ width: 360, height: 780 });
+  const faults: string[] = [];
+  const shapes: string[] = [];
+  const scales: number[] = [];
+  const told = (g: Glass): string =>
+    `[${String(g.shape.slots)} systems on the stage, ${String(g.shape.systems)} the window, ${String(g.shape.shown)} bars; ` +
+    `rows ${g.sheets.map((s) => `${s.classes || 'window'} ${s.ink ? `${s.ink.top.toFixed(0)}..${s.ink.bottom.toFixed(0)}` : '?'}`).join(', ')}; ` +
+    `stage ${String(g.stage?.top)}+${String(g.stage?.height)}]`;
+  for (let load = 0; load < 4; load += 1) {
+    if (load === 0) await openPiece(page, 'song.classical.ode-to-joy.ht');
+    else {
+      await page.reload();
+      await expect(page.locator('section[data-screen="score"]')).toBeVisible({ timeout: 90_000 });
+      await page.waitForFunction(() => document.querySelector('#score-stage .is-front svg') !== null, undefined, { timeout: 90_000 });
+      await settle(page);
+    }
+    const glass = await readGlass(page);
+    const where = load === 0 ? 'fresh' : `reload ${String(load)}`;
+    for (const fault of rowsDrawnIntoEachOther(glass)) faults.push(`${where} — ${fault} ${told(glass)}`);
+    const counts = await page.evaluate(() => (window as unknown as { __u110slots?: number[] }).__u110slots ?? []);
+    if (glass.shape.slots !== null && counts.some((n) => n > (glass.shape.slots ?? 0))) {
+      faults.push(
+        `${where} — a row granted and taken back while the stage settled: rows ${counts.join(' → ')}, settled at ${String(glass.shape.slots)}`,
+      );
+    }
+    shapes.push(`${String(glass.shape.slots)}/${String(glass.shape.systems)}/${String(glass.shape.shown)}`);
+    scales.push(Math.min(...glass.sheets.map((s) => s.scale).filter((s) => s > 0)));
+  }
+  expect(faults, faults.join('\n')).toEqual([]);
+  // A fresh load and a reload are the same window: the same shape at one size.
+  expect(new Set(shapes).size, `the shape on each load: ${shapes.join(', ')}`).toBe(1);
+  expect((Math.max(...scales) - Math.min(...scales)) / Math.min(...scales), `the size on each load: ${scales.join(', ')}`).toBeLessThan(
+    SAME_SCALE,
+  );
+  // Then the size a run freezes, through the fold, at every bar it enters.
+  type Run = { step: number; bar: number; expected: number[]; pitches: number[] };
+  type Hooked = Window & { __pianopath?: { scoreRun?: () => Run | null } };
+  await page.locator('#score-mode').selectOption('wait');
+  await settle(page);
+  await pressControl(page, '#score-play');
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+  let lastBar = -1;
+  for (let i = 0; i < 40; i += 1) {
+    const run = await page.evaluate(() => (window as Hooked).__pianopath?.scoreRun?.() ?? null);
+    if (!run) break;
+    if (run.bar !== lastBar) {
+      lastBar = run.bar;
+      await frames(page);
+      const glass = await readGlass(page);
+      for (const fault of rowsDrawnIntoEachOther(glass)) faults.push(`run, bar ${String(run.bar + 1)} — ${fault} ${told(glass)}`);
+    }
+    // The walk's picture was taken in the sixth bar.
+    if (run.bar >= 5) break;
+    const notes = run.expected.length > 0 ? run.expected : run.pitches;
+    for (const m of notes) await midi.noteOn(m, 78);
+    await page.waitForTimeout(60);
+    for (const m of notes) await midi.noteOff(m);
+    await page
+      .waitForFunction((was) => (window as Hooked).__pianopath?.scoreRun?.()?.step !== was, run.step, { timeout: 4_000 })
+      .catch(() => undefined);
+  }
+  expect(lastBar, 'the run reached its sixth bar').toBeGreaterThanOrEqual(5);
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 10_000 });
+  await frames(page);
+  const folded = await readGlass(page);
+  for (const fault of rowsDrawnIntoEachOther(folded)) faults.push(`run, folded — ${fault} ${told(folded)}`);
+  expect(faults, faults.join('\n')).toEqual([]);
+});
+
+/** One drawn row as the glass has it: the slot's box (the renderer's own packing) and the row's ink, both in stage pixels. */
+interface PackedRow {
+  bars: string;
+  ahead: boolean;
+  top: number;
+  height: number;
+  inkTop: number;
+  inkBottom: number;
+}
+
+interface Packing {
+  stageHeight: number;
+  rows: PackedRow[];
+  zoom: number | null;
+  slots: number | null;
+  systems: number | null;
+  asked: number | null;
+  /** The reshape ladder's record: how many shape changes this zoom, width and asked count have had. */
+  ladder: { zoom: number; width: number; asked: number; n: number } | null;
+}
+
+/** Every drawn row's box and ink, the stage's height, and the renderer's own account of the shape and the ladder. */
+async function readPacking(page: Page): Promise<Packing> {
+  return page.evaluate(() => {
+    const stage = document.getElementById('score-stage')!;
+    const s = stage.getBoundingClientRect();
+    const rows = [...stage.querySelectorAll<HTMLElement>('.score-buffer.is-front')]
+      .filter((el) => !el.hidden && el.querySelector('svg') && !el.classList.contains('score-probe'))
+      .map((el) => {
+        let top = Number.POSITIVE_INFINITY;
+        let bottom = Number.NEGATIVE_INFINITY;
+        for (const mark of el.querySelectorAll<SVGGraphicsElement>('svg path, svg text, svg rect, svg line, svg polygon, svg polyline, svg ellipse, svg circle')) {
+          const box = mark.getBoundingClientRect();
+          if (!(box.width > 0 || box.height > 0)) continue;
+          if (box.width > s.width * 3 || box.height > s.height * 2) continue;
+          top = Math.min(top, box.top);
+          bottom = Math.max(bottom, box.bottom);
+        }
+        return {
+          bars: el.dataset.bars ?? '?',
+          ahead: el.classList.contains('is-ahead'),
+          top: Number.parseFloat(el.style.top) || 0,
+          height: Number.parseFloat(el.style.height) || 0,
+          inkTop: top - s.top,
+          inkBottom: bottom - s.top,
+        };
+      })
+      .sort((a, b) => a.top - b.top);
+    const fit = (window as unknown as {
+      __pianopath?: {
+        scoreFit?: () => {
+          zoom?: number;
+          slotCount?: number;
+          systemsPerWindow?: number;
+          barsAsked?: number;
+          shapeChanges?: { zoom: number; width: number; asked: number; n: number } | null;
+        } | null;
+      };
+    }).__pianopath?.scoreFit?.();
+    return {
+      stageHeight: s.height,
+      rows,
+      zoom: fit?.zoom ?? null,
+      slots: fit?.slotCount ?? null,
+      systems: fit?.systemsPerWindow ?? null,
+      asked: fit?.barsAsked ?? null,
+      ladder: fit?.shapeChanges ? { ...fit.shapeChanges } : null,
+    };
+  });
+}
+
+/** The ink of each row against the ink of the row below it, and the last row's against the stage's foot. */
+function inkFaults(read: Packing): string[] {
+  const out: string[] = [];
+  for (let k = 0; k + 1 < read.rows.length; k += 1) {
+    const into = read.rows[k].inkBottom - read.rows[k + 1].inkTop;
+    if (into > 0.5) out.push(`row ${read.rows[k].bars} inks ${into.toFixed(1)} px into row ${read.rows[k + 1].bars}`);
+  }
+  const last = read.rows[read.rows.length - 1];
+  if (last && last.inkBottom - read.stageHeight > 0.5) {
+    out.push(`row ${last.bars} inks ${(last.inkBottom - read.stageHeight).toFixed(1)} px past the stage's foot`);
+  }
+  return out;
+}
+
+/**
+ * What a spent reshape ladder does to a look-ahead row when the stage is
+ * shortened by height alone (U110b, `responses/eddd5c95.md`'s required change;
+ * U110a's packing exception, `settleShape`).
+ *
+ * The state, in a real browser on a phone upright, by real events: Twinkle
+ * with three Bars at 342 wide, opened at the height where the stage is just
+ * tall enough for the greyed third row. There the plan's refusal of that row
+ * and the row's own ink flip the shape until the reshape ladder has run out
+ * with the three rows on the glass, packed from the top and fitting the stage
+ * (`rowsFitStage`). The viewport is then made shorter by a phone's browser bar
+ * or more, which is a height change alone: the width, the asked bars and the
+ * engraving zoom are the same, the window rows are drawn at the same size
+ * (they are bound by the width), and the three rows at their own heights with
+ * the gaps are now over the stage — the packing test fails.
+ *
+ * What must happen: the look-ahead row goes, as a drop made by the packing
+ * test alone — the ladder's record untouched, so nothing was counted against
+ * it and nothing re-engraved to reset it — and the two window rows the learner
+ * is reading are where they were, to within a pixel, with no row's ink in the
+ * next row's or past the stage's foot. (The engraving zoom is not asserted:
+ * after the drop the engraving search may try a larger zoom for the two rows
+ * that are left, and whether it keeps it depends on the engraver; it is the
+ * ladder's record and the rows' ink that say the drop was the packing test's.)
+ *
+ * Red without the exception (the pruning of U110 alone, `f11cd7c6`'s code):
+ * the three rows are held through the first fit, and it is the engraving
+ * search the same stage change sets off that re-engraves at a smaller zoom,
+ * which resets the ladder's record to the new zoom and lets the drop through;
+ * the window rows come out a few pixels from where they were. The end picture
+ * is clean there too, and no painted frame differs in either tree: what the
+ * exception buys in a browser is that the window does not move and is not
+ * re-engraved to get there (`runs/U110b/ENTRY.md`).
+ *
+ * The band of heights (862 to 870) and the two shortenings are this machine's
+ * and this font's; the open height is found by opening at each, never assumed,
+ * and a band with none in it fails the case as a premise.
+ */
+for (const shorter of [35, 95]) {
+  test(`a spent ladder drops its look-ahead row when the stage is ${String(shorter)} px shorter by height alone, and the window rows stay where they were: Twinkle, 3 bars, 342 wide (U110b)`, async ({
+    page,
+  }) => {
+    test.setTimeout(300_000);
+    await page.addInitScript(() => {
+      const raw = localStorage.getItem('pianopath.settings');
+      const settings = raw === null ? {} : (JSON.parse(raw) as Record<string, unknown>);
+      localStorage.setItem('pianopath.settings', JSON.stringify({ ...settings, barsPerWindow: 3 }));
+    });
+    // The height the stage is just tall enough at is this machine's and this font's; found by
+    // opening at each in a short band, never assumed. A band with none in it is a failure of
+    // the premise, said as such.
+    const SPENT = MAX_SLOTS + 2;
+    let pre: Packing | null = null;
+    let openedAt = 0;
+    const tried: string[] = [];
+    for (let height = 870; height >= 862 && pre === null; height -= 1) {
+      await page.setViewportSize({ width: 342, height });
+      await page.goto('/#/');
+      await openPiece(page, 'song.folk.twinkle.ht');
+      const read = await readPacking(page);
+      tried.push(`${String(height)}: ${String(read.slots)}/${String(read.systems)}, ladder ${String(read.ladder?.n ?? '-')}`);
+      if (
+        read.slots === 3 &&
+        read.systems === 2 &&
+        read.ladder !== null &&
+        read.ladder.n >= SPENT &&
+        read.ladder.zoom === read.zoom &&
+        read.rows.some((row) => row.ahead)
+      ) {
+        pre = read;
+        openedAt = height;
+      }
+    }
+    expect(pre, `no open in 862..870 px reached "look-ahead row drawn, ladder spent": ${tried.join('; ')}`).not.toBeNull();
+    if (pre === null) return;
+    await test.info().attach('before.png', { body: await page.screenshot(), contentType: 'image/png' });
+
+    // The premise, read off the glass: two window rows and the greyed one, packed from the top, fitting.
+    expect(pre.rows.map((row) => row.ahead), `the rows before: ${JSON.stringify(pre.rows)}`).toEqual([false, false, true]);
+    const gaps = pre.rows.slice(1).map((row, k) => row.top - (pre.rows[k].top + pre.rows[k].height));
+    expect(
+      gaps.every((gap) => gap > 0),
+      `the three rows are packed from the top, a gap between each (a gap of 0 is an even share): ${JSON.stringify(gaps)}`,
+    ).toBe(true);
+    const own = pre.rows.reduce((sum, row) => sum + row.height, 0) + gaps.reduce((sum, gap) => sum + gap, 0);
+    expect(own, `the rows fit the stage before: ${own.toFixed(1)} px of ${pre.stageHeight.toFixed(1)}`).toBeLessThan(pre.stageHeight);
+    expect(inkFaults(pre), `the rows before: ${JSON.stringify(pre.rows)}`).toEqual([]);
+
+    // The shortening: the viewport's height, nothing else.
+    await page.setViewportSize({ width: 342, height: openedAt - shorter });
+    await settle(page);
+    const post = await readPacking(page);
+    await test.info().attach('after.png', { body: await page.screenshot(), contentType: 'image/png' });
+    const said = `before ${JSON.stringify(pre)}; after ${JSON.stringify(post)}`;
+    test.info().annotations.push({ type: 'rows', description: said });
+
+    // The premise held through the shortening: height alone (the width was never touched), the same
+    // asked count, and the three rows that were drawn, at their own heights with the gaps, are over
+    // the stage now — the packing test fails — while the window rows are drawn at the size they were.
+    expect(Math.round(pre.stageHeight - post.stageHeight), `the stage is ${String(shorter)} px shorter. ${said}`).toBe(shorter);
+    expect(post.asked, `the asked bars. ${said}`).toBe(pre.asked);
+    expect(own, `the three rows at their own heights with the gaps are over the shortened stage (${post.stageHeight.toFixed(1)} px). ${said}`).toBeGreaterThan(
+      post.stageHeight,
+    );
+
+    // The outcome: the look-ahead row is gone, by the packing test alone (the ladder's record is as
+    // it was: nothing was counted against it, and no re-engraving reset it), the window's two rows
+    // are where they were, and nothing is in the next row's ink or past the stage's foot.
+    expect(post.slots, `the look-ahead row is dropped. ${said}`).toBe(2);
+    expect(post.rows.some((row) => row.ahead), `no greyed row on the glass. ${said}`).toBe(false);
+    expect(post.rows.length, `two rows drawn. ${said}`).toBe(2);
+    expect.soft(post.ladder, `the ladder's record, untouched. ${said}`).toEqual(pre.ladder);
+    for (const [k, row] of post.rows.entries()) {
+      const was = pre.rows[k];
+      for (const field of ['top', 'height', 'inkTop', 'inkBottom'] as const) {
+        expect.soft(
+          Math.abs(row[field] - was[field]),
+          `the window row ${row.bars} did not move: ${field} ${was[field].toFixed(1)} -> ${row[field].toFixed(1)}. ${said}`,
+        ).toBeLessThanOrEqual(1);
+      }
+    }
+    expect(inkFaults(post), `the rows after. ${said}`).toEqual([]);
+  });
+}
+
+/**
  * The cell that found fault C, mid-run: phone upright, Chopin's Nocturne op. 48
  * no. 1, four bars. A row's page was `bars × stage width`, and when the run's
  * taller stage raised the engraving zoom two dense bars no longer fitted it, so
  * the engraver broke the row onto two systems and justified the first bar
- * across the whole page. (a)'s outcome check reads it bar by bar.
+ * across the whole page. (a)'s outcome check reads it bar by bar. And (c)
+ * (U32): the same cell drew its two window rows on the only two sheets a long
+ * piece had, and the next music had no row below them.
  */
 test('mid-run, every bar on a phone upright Nocturne window is drawn at its natural spacing', async ({ page }) => {
   test.setTimeout(240_000);
@@ -831,6 +1234,26 @@ test('mid-run, every bar on a phone upright Nocturne window is drawn at its natu
   const glass = await readGlass(page);
   const stretched = faultsOf(glass, 4, '', []).filter((f) => f.startsWith('(a)'));
   expect(stretched, `at printed bar ${String(reached + 1)}:\n${stretched.join('\n')}`).toEqual([]);
+  // **(c) mid-run too (U32, class: revise).** The run froze the arrangement it
+  // started with, and a long piece used to start it on two sheets: upright the
+  // window filled both and the next music had no row, with half the stage
+  // empty below. The run here starts after `settle`, so after the sheet its
+  // shape needs has landed (U32a). `faultsOf` reads the window from its first bar, so it is
+  // handed the first bar of the window the cursor is in (`slots.windowAt`, a
+  // pickup read from the engraver's own numbering) and the count the renderer
+  // says it shows, which is what the row would put in words.
+  const shown = glass.shape.shown ?? 4;
+  const pickup = glass.shape.laid.some((bars) => (bars ?? []).some((b) => b.bar === 0 && b.number === 0));
+  const bar = glass.cursorBar ?? 0;
+  const windowStart = pickup ? (bar <= shown ? 0 : Math.floor((bar - 1) / shown) * shown + 1) : Math.floor(bar / shown) * shown;
+  const words = shown < 4 ? `4 asked, ${String(shown)} shown` : '';
+  const aheadFaults = faultsOf({ ...glass, cursorBar: windowStart }, 4, words, []).filter((f) => f.startsWith('(c)'));
+  expect(
+    aheadFaults,
+    `at printed bar ${String(reached + 1)}, the window from bar ${String(windowStart + 1)}, ${String(glass.shape.slots)} of ${String(
+      glass.shape.sheetsAvailable,
+    )} sheets in use:\n${aheadFaults.join('\n')}`,
+  ).toEqual([]);
 });
 
 /**
@@ -926,4 +1349,226 @@ test('mid-run on a phone sideways, the folded chrome leaves the music on the sta
     seen.inkBottom,
     `the music ends ${(seen.inkBottom - seen.stageBottom).toFixed(1)} px past the stage's bottom with the chrome folded`,
   ).toBeLessThanOrEqual(seen.stageBottom + 1);
+});
+
+/**
+ * Upright, the stacked slots keep their place through a run (U122c; replacing U118's folded-chip cases,
+ * class: replace). U118 placed the slots below a `bar n / m` chip drawn over the stage's top while the
+ * chrome was folded, and the fold also took the header away, so the music jumped up at the fold and back
+ * at every reveal (32–63 px at R7's upright and tablet-sized cells, `runs/U122c`). Since U122c no chip is
+ * drawn anywhere and the header keeps its box while the hands are on the keys: at rest, folded (a run
+ * holding for its first note) and paused, the slots' tops, the shape, the engraving and the size are the
+ * same, and nothing of the chrome lies over the score. The per-moment walk on every R7 cell is
+ * `score.task-chrome.spec.ts`; these keep U118's own adversaries: a window sized by the height, a
+ * crossing into the third bar, a turn while folded, a tablet. U118's band cases (what the chip says, the
+ * one-line band, the seconds away priced in the band) went with the chip.
+ */
+type ChipHooked = Window & {
+  __pianopath?: {
+    scoreFit?: () => {
+      zoom: number;
+      frozen: { scale: number } | null;
+      foldedReserve?: number;
+      slotCount?: number;
+      systemsPerWindow?: number;
+      barsShown?: number;
+      slots?: { range: { fromMeasure: number } | null }[];
+    } | null;
+    scoreRun?: () => { step: number; bar: number; expected: number[]; pitches: number[] } | null;
+  };
+};
+
+interface FoldRead {
+  chrome: string | null;
+  /** Any chip over the stage (none since U122c). */
+  chipShown: boolean;
+  band: number;
+  stageTop: number;
+  stageH: number;
+  zoom: number;
+  scale: number;
+  frozen: number | null;
+  shape: string;
+  /** The drawn slots, top to bottom: their `top`, first bar and whether greyed. */
+  placed: { top: number; from: number | null; ahead: boolean }[];
+  firstInkTop: number | null;
+  inkBottom: number | null;
+}
+
+async function readFold(page: Page): Promise<FoldRead> {
+  return page.evaluate(() => {
+    const stage = document.querySelector<HTMLElement>('#score-stage')!;
+    const s = stage.getBoundingClientRect();
+    const oy = s.top + stage.clientTop;
+    const corner = document.querySelector<HTMLElement>('#score-corner, .score-stage__corner');
+    const chipShown = corner !== null && getComputedStyle(corner).display !== 'none';
+    const fit = (window as ChipHooked).__pianopath?.scoreFit?.() ?? null;
+    const front = [...stage.querySelectorAll<HTMLElement>('.score-buffer.is-front:not(.score-probe)')].filter((b) => !b.hidden);
+    const placed = front
+      .map((b) => ({
+        el: b,
+        top: Number.parseFloat(getComputedStyle(b).top),
+        from: fit?.slots?.[Number(b.dataset.buffer ?? -1)]?.range?.fromMeasure ?? null,
+        ahead: b.classList.contains('is-ahead'),
+      }))
+      .sort((a, b) => a.top - b.top);
+    const marks = (root: Element): Element[] =>
+      [...root.querySelectorAll('svg text, svg path, svg rect, svg line, svg ellipse, svg polygon')].filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.width > 0 || r.height > 0;
+      });
+    let firstInkTop: number | null = null;
+    if (placed[0]) {
+      for (const el of marks(placed[0].el)) {
+        const top = el.getBoundingClientRect().top;
+        firstInkTop = firstInkTop === null ? top : Math.min(firstInkTop, top);
+      }
+    }
+    let inkBottom: number | null = null;
+    for (const b of front) {
+      for (const el of marks(b)) {
+        const r = el.getBoundingClientRect();
+        inkBottom = inkBottom === null ? r.bottom - oy : Math.max(inkBottom, r.bottom - oy);
+      }
+    }
+    const cursor = stage.querySelector<HTMLElement>('.score-buffer.is-cursor');
+    return {
+      chrome: document.querySelector<HTMLElement>('section[data-screen="score"]')?.dataset.chrome ?? null,
+      chipShown,
+      band: fit?.foldedReserve ?? 0,
+      stageTop: s.top,
+      stageH: stage.clientHeight,
+      zoom: fit?.zoom ?? 0,
+      scale: cursor ? new DOMMatrixReadOnly(getComputedStyle(cursor).transform).a : 0,
+      frozen: fit?.frozen?.scale ?? null,
+      shape: `${String(fit?.slotCount)}/${String(fit?.systemsPerWindow)}/${String(fit?.barsShown)}`,
+      placed: placed.map(({ top, from, ahead }) => ({ top, from, ahead })),
+      firstInkTop,
+      inkBottom,
+    };
+  });
+}
+
+async function frames(page: Page): Promise<void> {
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve(null)))));
+}
+
+/** A Wait run started and frozen: the hands are on the keys, so the controls fold (read); then paused (read). */
+async function foldThenPause(page: Page): Promise<{ folded: FoldRead; paused: FoldRead }> {
+  await pressControl(page, '#score-play');
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+  await page.waitForFunction(() => ((window as ChipHooked).__pianopath?.scoreFit?.()?.frozen ?? null) !== null, undefined, { timeout: 30_000 });
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 10_000 });
+  await frames(page);
+  await page.waitForTimeout(400);
+  const folded = await readFold(page);
+  await page.locator('#score-play').click({ timeout: 3_000 });
+  await expect(page.locator('#score-play')).toHaveText('▶');
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'open');
+  await frames(page);
+  await page.waitForTimeout(400);
+  return { folded, paused: await readFold(page) };
+}
+
+/** No chip, nothing placed under a band, the slots in reading order, the greyed row below, every mark on the stage. */
+function onTheStage(where: string, read: FoldRead): void {
+  const said = JSON.stringify(read);
+  expect([read.chipShown, read.band], `${where}: no chip over the stage, no band ${said}`).toEqual([false, 0]);
+  const froms = read.placed.map((p) => p.from ?? Number.POSITIVE_INFINITY);
+  expect(froms, `${where}: the slots in first-bar order ${said}`).toEqual([...froms].sort((a, b) => a - b));
+  const firstAhead = read.placed.findIndex((p) => p.ahead);
+  if (firstAhead >= 0) {
+    expect(read.placed.slice(firstAhead).every((p) => p.ahead), `${where}: the greyed row below the window ${said}`).toBe(true);
+  }
+  expect(read.inkBottom ?? Infinity, `${where}: every mark on the stage ${said}`).toBeLessThanOrEqual(read.stageH + 1);
+}
+
+for (const cell of [
+  // U105c's layout: the paused run its pictures showed.
+  { piece: 'song.folk.hot-cross-buns', bars: 2, why: 'U105c’s layout' },
+  // A window whose size the height decides, so a fold that sized it again would show.
+  { piece: 'exercise.five-finger.c-major.right', bars: 4, why: 'sized by the height' },
+]) {
+  test(`upright, the stacked slots keep their place and size from rest through the fold and the pause (${cell.why})`, async ({ page }) => {
+    test.setTimeout(150_000);
+    await page.setViewportSize({ width: 342, height: 740 });
+    await openPiece(page, cell.piece);
+    await setBars(page, cell.bars);
+    await page.locator('#score-mode').selectOption('wait');
+    await settle(page);
+    const rest = await readFold(page);
+    const { folded, paused } = await foldThenPause(page);
+    const said = JSON.stringify({ rest, folded, paused });
+    expect(folded.chrome, 'the first read is folded').toBe('folded');
+    for (const [name, read] of Object.entries({ rest, folded, paused })) onTheStage(name, read);
+    // The stage and its slots do not move: the header keeps its box, the stage its bottom reserve.
+    for (const [name, read] of Object.entries({ folded, paused })) {
+      expect(read.stageTop, `${name}: the stage's top moved ${said}`).toBeCloseTo(rest.stageTop, 0);
+      expect(read.placed.map((p) => p.top), `${name}: the slots moved ${said}`).toEqual(rest.placed.map((p) => p.top));
+      expect(read.scale, `${name}: the drawn size changed ${said}`).toBeCloseTo(rest.scale, 3);
+    }
+    // The fold and the pause price nothing: the shape, the engraving and the size the run froze.
+    expect([paused.shape, paused.zoom, paused.frozen], `the shape, engraving and held size through the pause ${said}`).toEqual([folded.shape, folded.zoom, folded.frozen]);
+  });
+}
+
+test('upright after a crossing into the third bar, folded: no chip, the slots in reading order, every mark on the stage', async ({ page }) => {
+  test.setTimeout(150_000);
+  const midi = await installMidiMock(page, { permission: 'granted' });
+  await page.setViewportSize({ width: 342, height: 740 });
+  await openPiece(page, 'song.folk.hot-cross-buns');
+  await setBars(page, 2);
+  await page.locator('#score-mode').selectOption('wait');
+  await settle(page);
+  await pressControl(page, '#score-play');
+  await page.waitForFunction(() => ((window as ChipHooked).__pianopath?.scoreFit?.()?.frozen ?? null) !== null, undefined, { timeout: 30_000 });
+  for (let i = 0; i < 16; i += 1) {
+    const run = await page.evaluate(() => (window as ChipHooked).__pianopath?.scoreRun?.() ?? null);
+    if (run === null || run.bar >= 2) break;
+    const notes = run.expected.length > 0 ? run.expected : run.pitches;
+    for (const note of notes) await midi.noteOn(note, 78);
+    await page.waitForTimeout(60);
+    for (const note of notes) await midi.noteOff(note);
+    await page.waitForFunction((was) => (window as ChipHooked).__pianopath?.scoreRun?.()?.step !== was, run.step, { timeout: 4_000 }).catch(() => undefined);
+  }
+  expect(await page.evaluate(() => (window as ChipHooked).__pianopath?.scoreRun?.()?.bar ?? -1), 'the run reached the third bar').toBeGreaterThanOrEqual(2);
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded');
+  await frames(page);
+  await page.waitForTimeout(400);
+  onTheStage('after a crossing, folded', await readFold(page));
+});
+
+test('a size taken while folded: turned and turned back with the controls folded, the bottom system stays on the stage', async ({ page }) => {
+  test.setTimeout(150_000);
+  await page.setViewportSize({ width: 342, height: 740 });
+  await openPiece(page, 'exercise.five-finger.c-major.right');
+  await setBars(page, 4);
+  await page.locator('#score-mode').selectOption('wait');
+  await settle(page);
+  await pressControl(page, '#score-play');
+  await page.waitForFunction(() => ((window as ChipHooked).__pianopath?.scoreFit?.()?.frozen ?? null) !== null, undefined, { timeout: 30_000 });
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 10_000 });
+  // A turn lets the run's size go and takes a new one on the stage as it is then, folded.
+  await page.setViewportSize({ width: 740, height: 342 });
+  await page.waitForTimeout(1_500);
+  await page.setViewportSize({ width: 342, height: 740 });
+  await page.waitForFunction(() => ((window as ChipHooked).__pianopath?.scoreFit?.()?.frozen ?? null) !== null, undefined, { timeout: 30_000 });
+  await settle(page);
+  const turned = await readFold(page);
+  expect(turned.chrome, 'still folded after the turns').toBe('folded');
+  onTheStage('turned back, folded', turned);
+});
+
+test('a tablet folds without a chip: no band, the slots at the top, the size kept', async ({ page }) => {
+  test.setTimeout(150_000);
+  await page.setViewportSize({ width: 900, height: 1200 });
+  await openPiece(page, 'song.folk.hot-cross-buns');
+  await page.locator('#score-mode').selectOption('wait');
+  await settle(page);
+  const rest = await readFold(page);
+  const { folded, paused } = await foldThenPause(page);
+  const said = JSON.stringify({ rest, folded, paused });
+  expect([folded.chipShown, folded.band, folded.placed[0]?.top], `a tablet: no chip, no band, the first slot at the top ${said}`).toEqual([false, 0, 0]);
+  expect(folded.scale, `a tablet: the size from rest through the fold ${said}`).toBeCloseTo(rest.scale, 3);
+  expect(paused.scale, `a tablet: the size through the pause ${said}`).toBeCloseTo(rest.scale, 3);
 });

@@ -106,6 +106,24 @@ const FIXTURES: Record<string, Fixture> = {
     },
     outside: { fromStep: 2, toStep: 2 },
   },
+  // Added (SR2): `metre.three-four`'s fixture, built as `metre.compound`'s is: a bar of 3/4, then a bar of 4/4 where
+  // no note is in three-four time.
+  'metre.three-four': {
+    model: {
+      ...phrase({
+        time: '3/4',
+        bars: [
+          [{ at: 0, dur: 1, pitch: 'C4' }, { at: 1, dur: 2, pitch: 'D4' }],
+          [{ at: 0, dur: 4, pitch: 'E4' }],
+        ],
+      }),
+      timeSigMap: [
+        { atMeasure: 0, beats: 3, beatType: 4 },
+        { atMeasure: 1, beats: 4, beatType: 4 },
+      ],
+    },
+    outside: { fromStep: 2, toStep: 2 },
+  },
   'key.signature': { model: one(rh(['G4', 'A4', 'F#4', 'G4']), 'G major'), outside: { fromStep: 0, toStep: 1 } },
   'pitch.chromatic': { model: one(rh(['C4', 'D4', 'F#4', 'G4'])), outside: { fromStep: 0, toStep: 1 } },
   'range.beyond-position': { model: one(rh(['C4', 'D4', 'E4', 'A4'])), outside: { fromStep: 0, toStep: 2 } },
@@ -126,6 +144,26 @@ const FIXTURES: Record<string, Fixture> = {
       ...line(['C3', 'D3', 'E3', 'F3'], 1, 2),
     ]),
     outside: { fromStep: 1, toStep: 1 },
+  },
+  // CD1: the doubled habanera and the tresillo in the left hand in bar 1 (steps 0-3 and 0-2), then a bar of
+  // the right hand alone (the loop that leaves the cell out). Their skill is observable `none`.
+  'rhythm.habanera': {
+    model: phrase({
+      bars: [
+        [{ at: 0, dur: 4, pitch: 'C5' }, { at: 0, dur: 1.5, pitch: 'C3', staff: 2 }, { at: 1.5, dur: 0.5, pitch: 'G3', staff: 2 }, { at: 2, dur: 1, pitch: 'C3', staff: 2 }, { at: 3, dur: 1, pitch: 'G3', staff: 2 }],
+        rh(['C5', 'D5', 'E5', 'F5']),
+      ],
+    }),
+    outside: { fromStep: 4, toStep: 6 },
+  },
+  'rhythm.tresillo': {
+    model: phrase({
+      bars: [
+        [{ at: 0, dur: 4, pitch: 'C5' }, { at: 0, dur: 1.5, pitch: 'C3', staff: 2 }, { at: 1.5, dur: 1.5, pitch: 'G3', staff: 2 }, { at: 3, dur: 1, pitch: 'C3', staff: 2 }],
+        rh(['C5', 'D5', 'E5', 'F5']),
+      ],
+    }),
+    outside: { fromStep: 3, toStep: 5 },
   },
 };
 

@@ -87,3 +87,7 @@ Two questions the owner left to this task, decided here by the same order:
 
 The red counts per group before and after; what changed in the renderer and why, per
 fault group; the sheet's sentence; the specs and exit codes; what is unverified.
+
+## Record
+
+lane: T32 · closes: — · entry: — · role: history

@@ -20,6 +20,14 @@
     "ladder state, or reads at a standard. C2's interim table of `mastery.custom` terms and",
     "the build gate's waivers are gone with the terms: each became a predicate or an",
     "`unjudged` requirement the lesson page prints.",
+    "",
+    "The numbers that decide what counts are here, beside the skills (CL11b, L57): the",
+    "`support` share every skill reads unless it names its own, and the timing `precision`",
+    "of each rhythm skill, with the default the skills whose rhythm is the phrase's fall",
+    "back to. They were Part G's pass share and a table in app/src/evidence/evidence.ts;",
+    "the values did not change when they moved. A note's name on the screen is supported",
+    "practice, never unaided reading (L58): `names-off` stands beside every `guide-off`",
+    "of a full standard.",
     "validate.py checks this file against skills.schema.json and its references."
   ],
   "conditions": [
@@ -42,8 +50,21 @@
       "id": "both-hands",
       "meaning": "The run played both hands, not one with the other left out or played by the app.",
       "recordedBy": "SessionRow.hands.played (C1): 'both'"
+    },
+    {
+      "id": "names-off",
+      "meaning": "No note's name was on the screen (not the ribbon's label on a marked key, not Wait's line naming the note it waits for), so the notes were read from the staff and not from their names.",
+      "recordedBy": "SessionRow.keys.names (C1): false, written with the keys on every run the Score screen records; true where the ribbon labelled a guided key or Wait named the note (Name the note I am waiting for). A row that does not record it is not shown to have had the names off (CL11b, L58)."
     }
   ],
+  "support": {
+    "share": 0.9,
+    "why": "A record supports a skill where this share of its counted steps or more was right (C3). It is the share a rung's pass asks of the notes (Part G's default, 90 %), held here as the skills' own since L57, so a change to the rungs' pass no longer re-reads every skill's history. It is applied when evidence is read (the ladder, the transfer policy, the demand readings, the reader), so a change here re-reads every stored record at once. A skill that needs another share names its own `support`; none does."
+  },
+  "precision": {
+    "quarters": [1, 2],
+    "why": "The error a timing skill is about, in quarter-note beats: the smallest distance between where the written rhythm puts a note and where the likely wrong rhythm puts it. A window as wide as this or wider records the wrong rhythm as hits, so at that step timing measures nothing (reviewer decision 6; CL04, L73). This default is the coarsest error any rhythm has, a note moved by an eighth: a skill whose rhythm is the phrase's (every step, or a texture: sight-reading, hand-independence) takes, step by step, the finest precision of the rhythm demands located at the step, and this where none is. A skill with its own `precision` is a rhythm skill, and its demands are the rhythm demands."
+  },
   "skills": [
     {
       "id": "sight-reading",
@@ -55,7 +76,8 @@
       "unobserved": [
         "Straight through without stopping: stops and hesitations are not measured (continuity is not built, design §3). That part is reading-ahead."
       ],
-      "standards": { "practice": ["keep-tempo", "unseen"], "full": ["keep-tempo", "unseen", "guide-off"] }
+      "standards": { "practice": ["keep-tempo", "unseen"], "full": ["keep-tempo", "unseen", "guide-off", "names-off"] },
+      "transfer": { "dimensions": ["key", "rhythm", "hands", "texture"], "why": "The right notes and the right rhythm of music never seen: another key signature, another rhythmic surface, the other hand's staff, or both staves at once each change what has to be read at sight." }
     },
     {
       "id": "reading-ahead",
@@ -76,7 +98,8 @@
       "kind": "reading",
       "opportunity": ["clef.bass"],
       "observable": ["pitch"],
-      "standards": { "practice": [], "full": ["unseen", "guide-off"] }
+      "standards": { "practice": [], "full": ["unseen", "guide-off", "names-off"] },
+      "transfer": { "dimensions": ["key", "texture"], "why": "Notes on the bass staff read by where they sit: another key puts the reading on other lines and spaces, and the bass staff read while the other hand plays is another texture; pitch only, so rhythm is not this skill's." }
     },
     {
       "id": "ledger-lines",
@@ -85,7 +108,8 @@
       "kind": "reading",
       "opportunity": ["pitch.ledger"],
       "observable": ["pitch"],
-      "standards": { "practice": [], "full": ["unseen", "guide-off"] }
+      "standards": { "practice": [], "full": ["unseen", "guide-off", "names-off"] },
+      "transfer": { "dimensions": ["key", "hands"], "why": "Notes beyond the staff: another key uses and alters other ledger notes, and the right hand's ledger lines above the treble staff are other notes than the left hand's below the bass." }
     },
     {
       "id": "interval-reading",
@@ -94,8 +118,9 @@
       "kind": "reading",
       "opportunity": ["interval.step", "interval.skip", "interval.leap"],
       "observable": ["pitch"],
-      "standards": { "practice": [], "full": ["unseen", "guide-off"] },
-      "note": "Right notes are what a note-namer plays too, in a fixed position with the first finger printed (design §2, the generated-exercise trace Q5). Pitch is the observable; that it shows reading by interval rather than by name rests on the material and the conditions, not on the measurement."
+      "standards": { "practice": [], "full": ["unseen", "guide-off", "names-off"] },
+      "note": "Right notes are what a note-namer plays too, in a fixed position (design §2, the generated-exercise trace Q5, when the first finger was printed; since G30 it is not, and the point holds without it). Pitch is the observable; that it shows reading by interval rather than by name rests on the material and the conditions, not on the measurement.",
+      "transfer": { "dimensions": ["key", "hands", "texture"], "why": "The distance read from its shape: in a fixed C position a note-namer plays the same right notes (the skill's note), so another key or position, the other hand's staff, and both staves at once are what show the shape is read; pitch only, so rhythm is not." }
     },
     {
       "id": "position-shift",
@@ -105,7 +130,8 @@
       "opportunity": ["range.beyond-position"],
       "observable": ["pitch"],
       "unobserved": ["Without a gap in the sound: legato across the shift is not measured."],
-      "standards": { "practice": [], "full": ["keep-tempo", "guide-off"] }
+      "standards": { "practice": [], "full": ["keep-tempo", "guide-off", "names-off"] },
+      "transfer": { "dimensions": ["key", "hands"], "why": "Moving the hand to a new place: in another key the new places fall on other keys, black ones among them, and the other hand moves the other way; how the hand moves (a thumb passing under, a lift) is measured by no dimension, and another family does not stand in for it." }
     },
     {
       "id": "subdivision",
@@ -114,7 +140,9 @@
       "kind": "rhythm",
       "opportunity": ["rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.sixteenths"],
       "observable": ["timing"],
-      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] }
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] },
+      "precision": { "quarters": [1, 6], "why": "Two even eighths against the same pair played long-short as a swing, the second note at 2/3 of the beat: 1/6 of a beat apart." },
+      "transfer": { "dimensions": ["rhythm", "texture"], "why": "Placing the smaller notes evenly inside the beat: other figures and metres around them, or placing them against the other hand, change it; the key and the hand do not change the timing." }
     },
     {
       "id": "dotted-quarter",
@@ -123,7 +151,9 @@
       "kind": "rhythm",
       "opportunity": ["rhythm.dotted-quarter"],
       "observable": ["timing"],
-      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] }
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] },
+      "precision": { "quarters": [1, 2], "why": "The eighth after the dot placed on the beat instead: a displacement of an eighth, half a beat." },
+      "transfer": { "dimensions": ["rhythm", "texture"], "why": "A beat and a half and the eighth after it: the same figure in another rhythmic context, or against the other hand, changes it; the key and the hand do not change the timing." }
     },
     {
       "id": "tie",
@@ -133,7 +163,9 @@
       "opportunity": ["rhythm.ties"],
       "observable": ["timing"],
       "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] },
-      "note": "Timing, for the note after the tie. A tied note played again is an extra key; whether the engine counts it against the run was not checked, so pitch is not claimed."
+      "precision": { "quarters": [1, 2], "why": "The tie cut short by its written part, the next note early: a displacement of an eighth, half a beat." },
+      "note": "Timing, for the note after the tie. A tied note played again is an extra key; whether the engine counts it against the run was not checked, so pitch is not claimed.",
+      "transfer": { "dimensions": ["rhythm", "texture"], "why": "Holding through the tie into the next beat or bar: another rhythmic context, or the other hand moving over the held note, changes it; the key and the hand do not change the timing." }
     },
     {
       "id": "syncopation",
@@ -142,7 +174,9 @@
       "kind": "rhythm",
       "opportunity": ["rhythm.syncopation"],
       "observable": ["timing"],
-      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] }
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] },
+      "precision": { "quarters": [1, 2], "why": "An off-beat note moved onto the beat: a displacement of an eighth, half a beat." },
+      "transfer": { "dimensions": ["rhythm", "texture"], "why": "A note off the beat against a pulse that keeps going: another rhythmic context, or the pulse held in the other hand, changes it; the key and the hand do not change the timing." }
     },
     {
       "id": "triplets",
@@ -152,7 +186,9 @@
       "opportunity": ["rhythm.triplets"],
       "observable": ["timing"],
       "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] },
-      "note": "At the rungs' tempi the engine's ±150 ms window cannot tell even triplets from a rushed sixteenth-sixteenth-eighth (design §4; reviewer decision 6). Timing is the observable; the evidence function (C3) refuses it wherever the window is wider than the difference it has to see."
+      "precision": { "quarters": [1, 12], "why": "Triplet eighths at 0, 1/3 and 2/3 of a beat against the rushed sixteenth-sixteenth-eighth at 0, 1/4 and 1/2 (design §4's case): the second note 1/12 of a beat early, the third 1/6." },
+      "note": "At the rungs' tempi the engine's ±150 ms window cannot tell even triplets from a rushed sixteenth-sixteenth-eighth (design §4; reviewer decision 6). Timing is the observable; the evidence function (C3) refuses it wherever the window is wider than the difference it has to see.",
+      "transfer": { "dimensions": ["rhythm", "texture"], "why": "Three even notes in the space of two: another rhythmic context, or twos in the other hand against them, changes it; the key and the hand do not change the timing." }
     },
     {
       "id": "6/8",
@@ -161,7 +197,21 @@
       "kind": "rhythm",
       "opportunity": ["metre.compound"],
       "observable": ["timing"],
-      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] }
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] },
+      "precision": { "quarters": [1, 4], "why": "The compound lilt, a quarter then an eighth (at 0 and 1 in quarters), evened into two dotted eighths (at 0 and 3/4): a quarter of a beat apart." },
+      "transfer": { "dimensions": ["rhythm", "texture"], "why": "Two beats of three eighths: other figures inside the compound metre, or the metre held against the other hand, change it; the key and the hand do not change the metre." }
+    },
+    {
+      "id": "3/4",
+      "display": "Three-four time",
+      "sentence": "Counting three beats to the bar, and holding a dotted half for all three of them.",
+      "kind": "rhythm",
+      "opportunity": ["metre.three-four"],
+      "observable": ["timing"],
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] },
+      "precision": { "quarters": [1, 1], "why": "A dotted half counted as a half, the next note a whole beat early: the bar of three read as a bar of four, or of two." },
+      "note": "SR2 (the reviewer's ruling on SR1, docs/review/responses/sr1-sightreading-quality.md §1): the copedWithBy of metre.three-four, which 1.4 teaches through its concept 3/4. Added only because the taught-at table needs a coper for it, as tie and dotted-quarter were; no item declares it in targetSkills.",
+      "transfer": { "dimensions": ["rhythm", "texture"], "why": "Three beats to the bar: other figures inside the bar of three, or the bar held against the other hand, change it; the key and the hand do not change the metre." }
     },
     {
       "id": "key-signature",
@@ -170,18 +220,20 @@
       "kind": "reading",
       "opportunity": ["key.signature"],
       "observable": ["pitch"],
-      "standards": { "practice": [], "full": ["unseen", "guide-off"] }
+      "standards": { "practice": [], "full": ["unseen", "guide-off", "names-off"] },
+      "transfer": { "dimensions": ["key", "hands"], "why": "Remembering the signature on every note it alters: another signature alters other notes, and the other staff's notes are other notes to alter." }
     },
     {
       "id": "accidentals",
-      "newId": true,
+      
       "display": "Accidentals",
       "sentence": "Reading a sharp, flat or natural written beside a note, and letting it last to the end of the bar.",
       "kind": "reading",
       "opportunity": ["pitch.chromatic"],
       "observable": ["pitch"],
-      "standards": { "practice": [], "full": ["unseen", "guide-off"] },
-      "note": "New because no concept names it: `sharps` and `flats` are the two signs as 3.1 teaches them (notes and key signatures), `chromatic` is moving by semitones (a technique rung). The level-4 row promises an accidental in the bar, which is this."
+      "standards": { "practice": [], "full": ["unseen", "guide-off", "names-off"] },
+      "note": "Its concept `accidentals` exists since F2a (3.1 introduces it, 3.3 names it); before that no concept named it — `sharps` and `flats` are the two signs as 3.1 teaches them (notes and key signatures), `chromatic` is moving by semitones (a technique rung). The level-4 row promises an accidental in the bar, which is this.",
+      "transfer": { "dimensions": ["key", "hands"], "why": "A sign beside a note, lasting to the bar's end: against another key signature the same sign does another thing (a natural cancelling the signature's sharp), and on the other staff it lands on other notes." }
     },
     {
       "id": "hands-together",
@@ -190,8 +242,9 @@
       "kind": "coordination",
       "opportunity": ["texture.hands-together"],
       "observable": ["pitch"],
-      "standards": { "practice": ["both-hands"], "full": ["both-hands", "keep-tempo", "guide-off"] },
-      "note": "Pitch at the steps where both hands play; the two hands arriving together in time is the full standard's Keep tempo."
+      "standards": { "practice": ["both-hands"], "full": ["both-hands", "keep-tempo", "guide-off", "names-off"] },
+      "note": "Pitch at the steps where both hands play; the two hands arriving together in time is the full standard's Keep tempo.",
+      "transfer": { "dimensions": ["texture", "key"], "why": "Both staves at once: another texture under the melody (a left-hand pattern, a walking bass) and both staves in another key are other reading; the hands are both on every run it can count (its conditions require both), so the hands can never differ for it." }
     },
     {
       "id": "hand-independence",
@@ -200,7 +253,29 @@
       "kind": "coordination",
       "opportunity": ["texture.left-hand-pattern", "texture.walking-bass"],
       "observable": ["pitch", "timing"],
-      "standards": { "practice": ["keep-tempo", "both-hands"], "full": ["keep-tempo", "both-hands", "unseen", "guide-off"] }
+      "standards": { "practice": ["keep-tempo", "both-hands"], "full": ["keep-tempo", "both-hands", "unseen", "guide-off", "names-off"] },
+      "transfer": { "dimensions": ["texture", "rhythm"], "why": "The hands doing different things at once: another left-hand pattern (walking rather than repeating) or another rhythm between the hands changes it; the key does not change the independence." }
+    },
+    {
+      "id": "habanera-and-tresillo",
+      "newId": true,
+      "display": "The habanera and the tresillo",
+      "sentence": "Playing the habanera and the tresillo as the left hand's rhythm, and telling the two cells apart on the page and by ear.",
+      "kind": "rhythm",
+      "opportunity": [
+        "rhythm.habanera",
+        "rhythm.tresillo"
+      ],
+      "observable": "none",
+      "unobserved": [
+        "The cell's identity at tempo: Keep tempo's ±150 ms window cannot separate the habanera from a dotted-pair near-miss at moderate speed, and the evidence refuses timing it cannot resolve (MODE-SHEET.md §2, 'Cannot establish' (ii); ABILITY-MAP.md A7c.1), so no run is evidence that the cell was played as the cell (CD1).",
+        "Telling the two cells apart by ear is self-checked (A7c.1's never_credits): no run observes it, and nobody in this process hears music."
+      ],
+      "standards": {
+        "practice": [],
+        "full": []
+      },
+      "note": "CD1 (docs/prompts/runs/curriculum-review-2026-10-05/briefs/cells-as-measured-demands.md D4): the copedWithBy of rhythm.habanera and rhythm.tresillo, which makes 'no run is evidence of the cell' a vocabulary fact. Not syncopation (the concept would stop naming rhythm.syncopation) and not subdivision (the 4/4 tresillo's dotted quarters would become subdivision opportunities); not two skills, which would turn concepts into abilities a requirement could name."
     }
   ]
 }

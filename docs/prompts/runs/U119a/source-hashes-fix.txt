@@ -1,0 +1,2 @@
+c86b745dc93702f7c5c84fed11f85ffda623a9f5b905a7538de8d4ed3695b800 *<worktree>/app/src/ui/screens/ScoreScreen.ts
+40e1f5d626c8df50e3278f4cc5ca63304c932b2fdd4f8fcf28ae5323aa27d1d7 *<worktree>/app/src/style.css

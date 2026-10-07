@@ -111,13 +111,15 @@ const QUOTED: { where: string; says: RegExp; from: string; holds: RegExp }[] = [
     holds: /ScaleSpec\(k, "major", "both", 4, "similar", 0\.25, 120\)/,
   },
   {
-    // `theory.9` describes the level-7 sight-reading generator by three of its
+    // `theory.9` describes the level-6 sight-reading generator by three of its
     // settings. All three are real, and all three are one edit away from not
     // being — the table is a plain object literal with no test over it.
+    // Revised (F2 item 4): it described level 7 and its walking bass, which
+    // theory.9's path never teaches; the rung now lists level 6 alone.
     where: 'theory.9.md',
-    says: /keys with four accidentals, with triplets and a walking bass/,
+    says: /keys up to four sharps or flats, with triplets and a left hand in broken chords/,
     from: 'src/engine/sightReading.ts',
-    holds: /maxFifths: 4,[\s\S]{0,200}?leftHand: 'walking',[\s\S]{0,120}?triplets: true,/,
+    holds: /6: \{[\s\S]{0,200}?maxFifths: 4,[\s\S]{0,200}?leftHand: 'broken',[\s\S]{0,120}?triplets: true,/,
   },
   {
     // Stated in figures in `0.3` and in words in `practice.3`; the figures were
@@ -237,38 +239,10 @@ describe('every lesson keeps its shape', () => {
     expect(wrong, `reading times that do not match the text: ${wrong.join('; ')}`).toEqual([]);
   });
 
-  it('keeps a lesson to the three minutes `03` §6 asks for', () => {
-    // A reading time, not a word count.
-    //
-    // `03` §6 said 400 words from the first commit of the repository, written
-    // before a single lesson existed, with no reason beside it and nothing
-    // anywhere enforcing it. Seven of the eighty-six had been over it for as
-    // long as they had existed. That is a guess, not a limit.
-    //
-    // What it was evidently reaching for is on the line above it in the same
-    // spec: `readingTime`. A lesson is read once before you play, not studied.
-    // So the rule is three minutes at 200 words a minute, which is the same
-    // intent measured in the unit that carries it — and it takes the exceptions
-    // from seven to two, because the five in between are long paragraphs rather
-    // than long lessons.
-    //
-    // The two that remain cover rungs that are several ideas: a whole rag with
-    // a trio and a key change, and the Romantic miniature rung with
-    // twenty-one pieces on it. The list is named so it cannot grow quietly.
-    const MINUTES = 3;
-    const WPM = 200;
-    const KNOWN_LONG = new Set(['ragtime.6.md', 'classical.6.md']);
-    const over = bodies()
-      .map(({ name, text }) => ({
-        name,
-        minutes: Math.ceil(text.split(/\s+/).filter(Boolean).length / WPM),
-      }))
-      .filter(({ name, minutes }) => minutes > MINUTES && !KNOWN_LONG.has(name))
-      .map(({ name, minutes }) => `${name} reads in ${String(minutes)} min`);
-    expect(over, `lessons over ${String(MINUTES)} minutes and not on the list: ${over.join('; ')}`).toEqual(
-      [],
-    );
-  });
+  // There was a test here that capped every lesson at three minutes of reading (600 words at
+  // 200 a minute, with a named exception list). The owner removed the rule on 2026-10-06: no
+  // word or reading-time limit on a lesson when it costs accuracy or communication. The
+  // `readingTime` number stays computed above; nothing caps it.
 
   // There is deliberately no test that every lesson names a mistake.
   //

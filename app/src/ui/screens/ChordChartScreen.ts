@@ -43,12 +43,22 @@ import { getMidiSettings } from '../../data/midiSettings';
 import { getSettings } from '../../data/settingsStore';
 import { audioEngine, getPiano, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { Metronome, type MetronomeBeat } from '../../audio/Metronome';
+import type { BarShape } from '../../audio/BeatScheduler';
 import { DrumKit, barSchedule } from '../../audio/backingLoop';
 import type { Piano } from '../../audio/Piano';
 import { toMusicXml } from '../../score/mxl';
-import { chartBars, chordMatch, parseHarmony, type ChordSymbol } from '../../score/harmony';
+import { chartBars, chordMatch, readHarmony, type ChordSymbol } from '../../score/harmony';
+import {
+  UNMETRED_COUNT,
+  chartBarCounts,
+  chartTiming,
+  compHoldQuarters,
+  tempoFieldDefault,
+  type BarCount,
+  type ChartTiming,
+} from '../../score/metre';
 import { KeyboardStrip } from '../KeyboardStrip';
-import { onScreenDispose } from '../screenLifecycle';
+import { onScreenDispose, onScreenSuspend, pageHidden } from '../screenLifecycle';
 import { button, chip, el } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
 import { TOOL_HELP } from '../help';
@@ -136,6 +146,12 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   body.append(helpStrip.el, form, controls, stripHost, grid, status);
 
   let bars: (ChordSymbol | null)[] = [];
+  /**
+   * How each bar is counted, in its written metre (MT1; `score/metre.ts`): the click, the tracker and the comp
+   * follow it, the tempo field counts bar 1's beat, and Bass + drums is offered only where every bar is 4/4.
+   * Until a chart loads it is today's four quarters, which is also what a file with no time signature gets.
+   */
+  let timing: ChartTiming = chartTiming([]);
   let bar = 0;
   let chorus = 1;
   /**
@@ -160,6 +176,21 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   let metronome: Metronome | null = null;
   let kit: DrumKit | null = null;
   let running = false;
+  /**
+   * Hidden mid-run (X15): silent, with the bar held. `running` stays true —
+   * the run is not over, and *Stop* still ends it.
+   */
+  let suspended = false;
+  /**
+   * The bar of the run (0-based, from the top) that the metronome's bar 1
+   * lands on: 0 from *Count off ▶*, the held bar after a hidden page.
+   * The metronome numbers from bar 1 on every `start()`.
+   */
+  let barOffset = 0;
+  /** Bumped by every start, stop and suspension, so a slow resume cannot land late. */
+  let resumeSeq = 0;
+  /** The piano the comp plays on, so hiding can silence a chord still ringing. */
+  let compPiano: Piano | null = null;
   const held = new Set<number>();
   let disposed = false;
 
@@ -204,15 +235,35 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
 
   function onBeat(beat: MetronomeBeat): void {
     if (disposed || beat.isCountIn) return;
-    const { bar: nextBar, chorus: nextChorus } = barAt(beat.bar, bars.length);
+    const { bar: nextBar, chorus: nextChorus } = barAt(beat.bar + barOffset, bars.length);
     if (!barStarted || nextBar !== bar || nextChorus !== chorus) {
       barStarted = true;
       bar = nextBar;
       chorus = nextChorus;
       drawForm();
       markMatch();
+      // The two are independent (CB1): the comp voices the chord on the piano,
+      // the bass and drums follow the chart's own bar, so a learner can comp
+      // over the app's rhythm section, or have it without the comp.
       if (comping) compBar();
+      if (backing) scheduleBacking(bars[bar]?.pitchClasses);
     }
+  }
+
+  /** Bar `index`'s count (0-based, in the chart's order); today's four quarters past the end. */
+  function countAt(index: number): BarCount {
+    return timing.counts[index] ?? UNMETRED_COUNT;
+  }
+
+  /**
+   * The metronome's bar `n` as a shape (MT1): `n` is 1-based from the bar this run starts on, and its count-in
+   * asks for bar 1, so a count-in is in the metre of the bar it leads into. The chart bar is the one `onBeat`
+   * draws for it, wrapped round the chorus the same way; each beat's length is relative to bar 1's beat, which is
+   * what the tempo field counts (1 wherever the chart keeps one beat unit, every bundled chart).
+   */
+  function shapeOf(metronomeBar: number): BarShape {
+    const count = countAt(barAt(Math.max(1, metronomeBar) + barOffset, bars.length).bar);
+    return { beats: count.beats, beatScale: count.beatQuarters / timing.beatUnit };
   }
 
   function compBar(): void {
@@ -221,10 +272,13 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     // A plain block voicing in the middle of the keyboard: enough to hear the
     // harmony, quiet enough to play over.
     const midis = symbol.pitchClasses.map((pitchClass) => 48 + pitchClass);
+    // Three quarters of the bar (MT1): 4/4's three beats exactly as before, and in every other metre the chord
+    // ends before the next downbeat (a 3/4 bar's three beats would have rung into it).
+    const hold = (60 / bpm / timing.beatUnit) * compHoldQuarters(countAt(bar));
     void getPiano().then((piano) => {
-      if (!disposed) piano.playChord(midis, (60 / bpm) * 3);
+      compPiano = piano;
+      if (!disposed && !suspended) piano.playChord(midis, hold);
     });
-    scheduleBacking(symbol.pitchClasses);
   }
 
   /**
@@ -235,9 +289,11 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
    * against it — which on a backing track is the one fault nobody can play
    * through.
    */
-  function scheduleBacking(pitchClasses: readonly number[]): void {
+  function scheduleBacking(pitchClasses: readonly number[] | undefined): void {
     const context = audioEngine.contextOrNull;
-    if (!backing || !kit || !context) return;
+    // 4/4 only (MT1): `barSchedule`'s pattern is the one groove with a contract, and it is 4/4's.
+    if (!timing.backingOffered) return;
+    if (!pitchClasses || !backing || !kit || !context) return;
     const secondsPerBeat = 60 / bpm;
     // A hair ahead, so the first event of the bar is scheduled rather than
     // being already in the past by the time this runs.
@@ -253,7 +309,12 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
     });
     metronome.setBpm(bpm);
-    metronome.setBeatsPerBar(4);
+    // Each bar in its own metre (MT1), from the top: the offset first, because the shape reads it as the
+    // metronome starts. The metronome asks for each bar's count itself as the bar before ends, so a late timer
+    // that drops a bar's last click cannot leave the next bar in the old count (`chartMetre.test.ts`).
+    barOffset = 0;
+    metronome.setBeatsPerBar(countAt(0).beats);
+    metronome.setBarShape(shapeOf);
     metronome.setCountInBars(getSettings().countInBars);
     metronome.setVolume(getMidiSettings().metronomeVolume);
     metronome.setSound(getSettings().metronomeSound);
@@ -264,15 +325,59 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     kit.setVolume(getMidiSettings().metronomeVolume);
     metronome.start();
     running = true;
+    suspended = false;
+    resumeSeq += 1;
     bar = 0;
     chorus = 1;
     barStarted = false;
     drawForm();
     section.dataset.running = 'true';
     status.textContent = swing ? 'Swing the eighths.' : '';
+    // The page hid while the audio was starting: held from the top, as if it
+    // had hidden a moment later (X15).
+    if (pageHidden()) suspend();
+  }
+
+  /**
+   * The page went hidden mid-run (X15, Part 19): the click, the bass and drums
+   * and the comp go silent, and the chart keeps the bar that was sounding.
+   * Not `stop()`: that ends the run.
+   */
+  function suspend(): void {
+    if (!running || suspended) return;
+    suspended = true;
+    resumeSeq += 1;
+    // Before the first downbeat the offset already says where it was to begin.
+    if (barStarted) barOffset = (chorus - 1) * Math.max(1, bars.length) + bar;
+    metronome?.stop();
+    kit?.dispose();
+    kit = null;
+    compPiano?.stop();
+  }
+
+  /**
+   * The page is back: count in again, as *Count off ▶* does, and carry on from
+   * the downbeat of the bar that was sounding — not ahead of it, which would
+   * count time nobody heard, and not from bar 1, which is what calling
+   * `start()` here would do (it resets `bar`, `chorus` and `barStarted`).
+   */
+  async function resume(): Promise<void> {
+    if (!suspended || disposed) return;
+    const seq = resumeSeq;
+    // The platform suspends the audio context on a locked phone.
+    const context = await audioEngine.ensureStarted();
+    if (disposed || !suspended || seq !== resumeSeq || pageHidden()) return;
+    suspended = false;
+    kit = new DrumKit(context, audioEngine.masterGain ?? undefined);
+    kit.setVolume(getMidiSettings().metronomeVolume);
+    // So the resumed bar's first beat draws and comps, as bar 1's does.
+    barStarted = false;
+    metronome?.start();
   }
 
   function stop(): void {
+    suspended = false;
+    resumeSeq += 1;
     metronome?.stop();
     // Scheduled drum hits outlive the transport otherwise: everything is
     // queued a bar ahead on the audio clock, so leaving the screen with the
@@ -326,12 +431,6 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       backing = !backing;
       backingChip.setAttribute('aria-pressed', String(backing));
       section.dataset.backing = String(backing);
-      // The chord is what the bass follows, so the comp has to be running for
-      // the loop to know what to play.
-      if (backing && !comping) {
-        comping = true;
-        compChip.setAttribute('aria-pressed', 'true');
-      }
     },
   });
 
@@ -351,13 +450,42 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     controls.append(
       button('Count off ▶', () => void start(), { id: 'chart-start', variant: 'primary' }),
       button('Stop', stop, { id: 'chart-stop' }),
-      el('label', { htmlFor: 'chart-bpm', text: 'bpm' }),
+      // The field counts the chart's beat (MT1): "bpm" in a quarter-note beat, as always; the unit named
+      // otherwise, because "54" alone on a 6/8 chart would read as 54 quarter notes.
+      el('label', { htmlFor: 'chart-bpm', text: timing.tempoLabel }),
       bpmInput,
       swingChip,
       compChip,
       backingChip,
     );
+    if (!timing.backingOffered) refuseBacking();
     showKeys();
+  }
+
+  /**
+   * Bass + drums, refused where the chart is not in 4/4 (MT1; the reviewer's ruling,
+   * `docs/review/responses/ph1-g6a-landing.md` §4): its one pattern is 4/4's, and no cited groove exists for
+   * any other metre, so it is disabled rather than played as a guess. The sentence sits right under the row,
+   * beside the chip it explains, and says what does work here; the status line under the chart is the run's.
+   */
+  function refuseBacking(): void {
+    const metres = timing.refusedBy;
+    const list = metres.length > 1 ? `${metres.slice(0, -1).join(', ')} and ${metres[metres.length - 1] ?? ''}` : (metres[0] ?? '');
+    const oneMetre = metres.length === 1 && timing.counts.every((count) => count.written === metres[0]);
+    const note = el('p.muted', {
+      id: 'chart-backing-note',
+      text: oneMetre
+        ? `Bass + drums plays only in 4/4, and this chart is in ${list}. Count off for the click and turn on Comp for the chords: both follow the ${list}.`
+        : `Bass + drums plays only in 4/4, and this chart has bars in ${list}. Count off for the click and turn on Comp for the chords: both follow each bar’s time signature.`,
+    });
+    backing = false;
+    backingChip.disabled = true;
+    backingChip.setAttribute('aria-disabled', 'true');
+    backingChip.setAttribute('aria-pressed', 'false');
+    backingChip.setAttribute('aria-describedby', 'chart-backing-note');
+    // `.chip` has no disabled look of its own and `style.css` is outside this change: dimmed here, as `.button:disabled` is.
+    backingChip.style.opacity = '0.5';
+    body.insertBefore(note, stripHost);
   }
 
   /**
@@ -506,9 +634,12 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
         return;
       }
 
-      const symbols = parseHarmony(xml);
+      const { symbols, measures } = readHarmony(xml);
       const measureCount = new Set([...xml.matchAll(/<measure\b[^>]*\bnumber="([^"]+)"/g)].map((m) => m[1])).size;
       bars = chartBars(symbols, Math.max(measureCount, symbols.length));
+      // Each bar's count in its written metre (MT1), read from the measure its chord came from.
+      timing = chartTiming(chartBarCounts(measures, bars.length));
+      bpmInput.setAttribute('aria-label', timing.tempoName);
       if (symbols.length === 0) {
         // It used to say the screen could not work and then draw a
         // working-looking one: four empty bars with dashes, a count-off, a
@@ -534,7 +665,9 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
         // what `BeatScheduler` was sized for, and an unclamped value here
         // disagreed with the field's own `min`/`max` the moment the chart
         // loaded, before anyone had touched it.
-        bpm = Math.min(240, Math.max(40, item.tempoBpm));
+        // In the chart's beat (MT1): the catalog's quarter notes a minute over the beat's length in quarters, so
+        // the bar lasts as long as it did; a quarter-note beat gives exactly the old value.
+        bpm = tempoFieldDefault(item.tempoBpm, timing.beatUnit);
         bpmInput.value = String(bpm);
       }
       drawGrid();
@@ -548,6 +681,14 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       status.classList.add('status--error');
     }
   })();
+
+  onScreenSuspend(section, {
+    onHidden: suspend,
+    onVisible: () => {
+      // No audio on return is a reason to stay held, not to throw: *Count off ▶* is still there.
+      void resume().catch(() => undefined);
+    },
+  });
 
   onScreenDispose(section, () => {
     disposed = true;

@@ -1,0 +1,31 @@
+HD2a evidence: song.classical.chopin-mazurka-op7-4.nifc (scores/imported/song.classical.chopin-mazurka-op7-4.nifc.mxl), identity sha256 1dc864dcf7aeda1941017497051baac4b6345f415274efb42e847f0458b91df2
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 26-26 -> R
+  bar 26 (source measure 26) st1 v2: L/x -> R; onsets 3 {'conflict': 3}; second voice(s) [3]; e.g. @75.5 L [49, 58, 63] + v2 [67]; @76.5 L [49, 57, 63] + v2 [66]
+  bar 26 onset 75.5 70/st1/v1/R:0.5 67/st1/v2/L/x:1 63/st2/v3/L:1 58/st2/v3/L:1 49/st2/v3/L:1
+  bar 26 onset 76 75/st1/v1/R:0.5
+  bar 26 onset 76.5 70/st1/v1/R:0.5 66/st1/v2/L/x:1 63/st2/v3/L:1 57/st2/v3/L:1 49/st2/v3/L:1
+  bar 26 onset 77 72/st1/v1/R:0.5
+  bar 26 onset 77.5 68/st1/v1/R:1 66/st1/v2/L/x:1 63/st2/v3/L:1 56/st2/v3/L:1 49/st2/v3/L:1
+
+ROW staff 1 voice 2 bars 30-30 -> R
+  bar 30 (source measure 30) st1 v2: L/x -> R; onsets 3 {'conflict': 3}; second voice(s) [3]; e.g. @87.5 L [49, 58, 63] + v2 [67]; @88.5 L [49, 57, 63] + v2 [66]
+  bar 30 onset 87.5 70/st1/v1/R:0.5 67/st1/v2/L/x:1 63/st2/v3/L:1 58/st2/v3/L:1 49/st2/v3/L:1
+  bar 30 onset 88 75/st1/v1/R:0.5
+  bar 30 onset 88.5 70/st1/v1/R:0.5 66/st1/v2/L/x:1 63/st2/v3/L:1 57/st2/v3/L:1 49/st2/v3/L:1
+  bar 30 onset 89 72/st1/v1/R:0.5
+  bar 30 onset 89.5 68/st1/v1/R:0.5 66/st1/v2/L/x:1 63/st2/v3/L:1 56/st2/v3/L:1 49/st2/v3/L:1
+  bar 30 onset 90 80/st1/v1/R:0.5
+
+ROW staff 1 voice 2 bars 33-34 -> R
+  bar 33 (source measure 33) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @96.5 L [45, 57] + v2 [64]
+  bar 33 onset 96.5 76/st1/v1/R:0.5 73/st1/v1/R:0.5 64/st1/v2/L/x:2 57/st2/v3/L:2 45/st2/v3/L:2
+  bar 33 onset 97 74/st1/v1/R:0.5 71/st1/v1/R:0.5
+  bar 33 onset 97.5 73/st1/v1/R:1 69/st1/v1/R:1
+  bar 33 onset 98.5 78/st1/v1/R:1 69/st1/v1/R:1 66/st1/v1/R:1 57/st2/v3/L:1 50/st2/v3/L:1
+  bar 34 (source measure 34) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @99.5 L [45, 57] + v2 [64]
+  bar 34 onset 99.5 76/st1/v1/R:2 73/st1/v1/R:2 64/st1/v2/L/x:3 57/st2/v3/L:3 45/st2/v3/L:3
+  bar 34 onset 101.5 73/st1/v1/R:1 69/st1/v1/R:1
+

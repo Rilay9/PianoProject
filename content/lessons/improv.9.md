@@ -39,4 +39,4 @@ piece that does not exist yet.
 one finished.
 
 **How you'll know you've got it.** It is written down, it is playable, and you
-are prepared to let someone hear it.
+are prepared to let someone hear it. The app marks this rung met on one run of its exercises; the piece, and the judgement of it, are yours.

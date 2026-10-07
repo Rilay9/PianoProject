@@ -1,0 +1,47 @@
+{
+ "rung": "holiday.5",
+ "minutes": 30,
+ "lesson": "holiday.5",
+ "rows": [
+  {
+   "slot": "technique",
+   "item": "exercise.arpeggio.e-major.2oct.both",
+   "claim": "asked",
+   "title": "E major arpeggio — 2 oct, both",
+   "reason": "Holiday asks for it — not counted yet",
+   "detail": "Warm-up · 5 min · L5.1"
+  },
+  {
+   "slot": "review",
+   "item": "exercise.loop4.d.inversions",
+   "claim": "rung",
+   "title": "I-V-vi-IV in D — with inversions",
+   "reason": "Nothing due for review — more from Chords & pop",
+   "detail": "Review · 5 min · L5.4"
+  },
+  {
+   "slot": "new",
+   "item": "exercise.walkup.c",
+   "claim": "asked",
+   "title": "Walk-ups in C — diatonic, then chromatic",
+   "reason": "Hymns & gospel asks for it — not counted yet",
+   "detail": "New · 10 min · L4.6"
+  },
+  {
+   "slot": "repertoire",
+   "item": "song.classical.bach-wtc1-prelude-1",
+   "claim": "rung",
+   "title": "Prelude No. 1 in C major, BWV 846",
+   "reason": "More music from Classical",
+   "detail": "Repertoire · 7 min · L6.1"
+  },
+  {
+   "slot": "sightreading",
+   "item": "drill.reading.sight-reading-3",
+   "claim": "reader",
+   "title": "Sight-reading generator, level 3",
+   "reason": "Read something you have never seen, once, slowly",
+   "detail": "Sight-reading · 3 min · L4.5"
+  }
+ ]
+}

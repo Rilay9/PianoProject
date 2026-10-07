@@ -18,13 +18,30 @@ import {
   type CatalogIndex,
 } from './selectors';
 import { lockState } from './prerequisites';
+import { SHIPPED_SKILL_ACTIVATION, type SkillActivation } from './skillActivation';
+import { admittedForTeaching, automaticFromList, eligible, eligibleFor, type Eligibility, type Learner, type Want as GateWant } from './eligibility';
 import type { RequirementReading, RungStates } from '../evidence/rungState';
-import type { ReadingMoves, ReadingRecipe, SessionRow } from '../data/db';
-import { dayKey, daysBetween, type LearnedPiece } from '../data/progressStore';
+import { phraseVersionOf, type ReadingMoves, type ReadingRecipe, type SessionRow } from '../data/db';
+import { contactIn, dayKey, daysBetween, type Contact, type ContactHistory, type LearnedPiece } from '../data/progressStore';
+// The stages whose rungs are projects, not rungs to meet (Stage 9: "Nothing here is a rung to pass;
+// they are pieces to live with"): no slot advances into one as "the next lesson", and its asks are
+// offered as a project. The one constant the lesson page and Plan read too (G1c item 1; G84). And one
+// read of the learner's projects (G1d, the reviewer's G82 ruling; G1e, its review's required change and the
+// reviewer's ruling on G1e): `buildSession` looks each piece's project up with `projectIn` over the rows Today
+// hands in (`BuildInput.projects`), once, as the card's one rule for automatic selection
+// (`SlotContext.pausedOrPutAway`), which `usable()` asks for every slot. Nothing here opens the store. The
+// lookup itself is `heldStateOf`, below: the one reading of a project the card and the session runner share
+// (G90), so a pause after *Start session* is read as the composer reads it.
+import { PROJECT_STAGES, projectIn, type ProjectRow, type ProjectTarget } from '../data/projectStore';
+import type { Identity } from '../review/record';
+import { knownMaterial, materialOfItem } from './material';
+import { relationshipOf, shownOnRecords, type Relationship, type ShownOn } from './transfer';
 import { heldToRung, READING_CONTROLS, UNREALISABLE_AT, type ControlPatch } from '../engine/readingControls';
 import {
   dailySeed,
   generateSightReading,
+  SIGHT_READING_IN_FORCE,
+  SightReadingRefusal,
   sightReadingOptionsFor,
   unrealisable,
   type SightReadingOptions,
@@ -32,12 +49,48 @@ import {
 } from '../engine/sightReading';
 import { demandReadings, type DemandReading } from '../evidence/demandReadings';
 import type { MeasuredEvidence } from '../evidence/evidence';
-import { LADDER_STATES, ladderState, RECENT_ATTEMPTS, RETENTION_DAYS, SUPPORT_SHARE, supports, type LadderReading } from '../evidence/ladder';
+import { ladderState, RECENT_ATTEMPTS, RETENTION_DAYS, supports, type LadderReading, type LadderState } from '../evidence/ladder';
 import { readingState, storedEvidence, type SkillState } from '../evidence/readingState';
-import { VOCABULARY_V0, type Vocabulary } from '../evidence/vocabulary';
+import { supportShareOf, VOCABULARY_V0, type Vocabulary } from '../evidence/vocabulary';
 import { readingReason, slotReason } from '../ui/help';
+import { isExcerpt, isExerciseKind, isPieceMaterial } from './excerpt';
 
 export type SlotKind = 'technique' | 'review' | 'new' | 'repertoire' | 'jam' | 'free' | 'sightreading';
+
+/** The two states of a project that withdraw a piece from what the session offers on its own. */
+export type HeldState = 'paused' | 'retired';
+
+/** The learner's word on a piece: the state it was left in, and when (`ProjectRow.since`, ISO date-time). */
+export interface HeldWord {
+  state: HeldState;
+  since: string;
+}
+
+/**
+ * The session's one reading of a learner's project for a piece (G1e; G90; G90a): `paused` or `retired`, and
+ * when, where the piece's project, found as the lesson page and Progress find it — by its material, whatever id
+ * it was made under, else by the id it was made under — says so, and nothing otherwise. Every other state, and
+ * no project, is no word about whether to offer the piece. Pure over the rows it is given: it never opens the
+ * store.
+ *
+ * It is asked by the two places that decide what the session offers automatically: the card's `usable()`
+ * through `buildSession`'s per-card answer (what the composer may choose; `heldStateOf`, which needs only the
+ * state), and the session runner's `settleHeld` (what the running session may offer at a turn the composition
+ * has already fixed), which needs the moment too: a pause or put-away is the learner's *latest* word only against
+ * what they did after it, and a piece they swapped in after pausing it was chosen knowing
+ * (`sessionRun.isWithdrawnBy` orders the two). The G1d review ruled that automatic eligibility has one
+ * interpretation (`responses/d59f2ef8.md`); this is it. (The swap sheet's *Paused* marker, G94, reads the row
+ * itself to badge it; that is a label on the learner's own menu, not an offer.)
+ */
+export function heldWordOf(projects: readonly ProjectRow[], target: ProjectTarget): HeldWord | undefined {
+  const row = projectIn(projects, target);
+  return row?.state === 'paused' || row?.state === 'retired' ? { state: row.state, since: row.since } : undefined;
+}
+
+/** `heldWordOf`, as the card's composer asks it: whether the piece is held, and in which state. */
+export function heldStateOf(projects: readonly ProjectRow[], target: ProjectTarget): HeldState | undefined {
+  return heldWordOf(projects, target)?.state;
+}
 
 export interface SessionSlot {
   kind: SlotKind;
@@ -68,6 +121,15 @@ export interface SessionSlot {
    * item and the recipe stops applying.
    */
   reading?: ReadingOffer;
+  /**
+   * What the slot assumes about the learner's contact with its material, as composed (X1 item 6; Part 27's
+   * session interaction): `first-contact` where the slot's point is that the material is new — the reading
+   * slot's phrase (the reader's premise), the transfer offer (chosen unmet by its exact material) — and
+   * otherwise what G2's one adapter (`contactOf`) answers now: `met`, or `none` where nothing rests on
+   * novelty. The session runner records it with the activity and rechecks a first contact when the activity
+   * starts, through the same adapter; this module computes no second novelty. Absent on the free prompt.
+   */
+  contact?: 'first-contact' | 'met' | 'none';
 }
 
 export interface SessionTemplate {
@@ -157,6 +219,23 @@ export interface BuildInput {
    */
   learned?: readonly LearnedPiece[];
   /**
+   * The learner's projects (G1b's `projects` store), read for one thing: automatic selection (G1d, the
+   * reviewer's G82 ruling; G1e, the G1d review's required change; the reviewer's ruling on G1e,
+   * `responses/questions-ea14b1fe.md`). A piece whose project is `paused` or `retired` is chosen by no slot of
+   * the card — the review's repertoire retention (*Keeping this piece playable* would contradict what the
+   * learner said on the sheet), the repertoire slot's demand-based choice, every step of the fallback ladder,
+   * the exposure rule, the jam slot, the transfer offer, and a rung's own ask (`runs`, `done`, `measure`, this
+   * lesson's or the next's): a rung assigning a piece does not override the learner's later pause. The rung's
+   * other options are chosen; a rung ask whose every candidate is paused or put away revives none, is not
+   * taken as met, and is said once, on the row that brings the rung's other material (`Want.held`). Otherwise
+   * nothing on the card says why. Every other state, `maintaining` and `refreshing` (the learner's own
+   * *Bring it back*) among them, and no project leave every offer as it was. Read once per card, in
+   * `buildSession` (`SlotContext.pausedOrPutAway`), and asked in `usable()`. Absent: nothing withdrawn. Today
+   * loads it (`projectStore.allProjects`); the session never opens the store. Opening a piece by hand, the
+   * Library, the sheet and the history never read it.
+   */
+  projects?: readonly ProjectRow[];
+  /**
    * When each item was last played, by any run (the progress rows'
    * `lastPracticedAt`): what the exposure rule reads. None: nothing played.
    */
@@ -169,6 +248,18 @@ export interface BuildInput {
   rows?: readonly SessionRow[];
   /** The vocabulary the skills and demands are read in (v0 unless given). */
   vocabulary?: Vocabulary;
+  /**
+   * Whose declared target skills the skill requirement and the skill fallback read
+   * (D0; `skillActivation.ts`): the shipped activation unless given. A test that
+   * exercises the skill step on constructed items passes `EVERY_DECLARED_SKILL`.
+   */
+  skillActivation?: SkillActivation;
+  /**
+   * The ladder state at which a skill supports its demands in the one gate
+   * (`eligibility.ts`): `familiar` unless given. `introduced` is the comparison
+   * the E0 brief asked for on the three constructed learners; nothing ships it.
+   */
+  readinessFloor?: LadderState;
   /** Tracks the learner has switched on, in their order (planStore). */
   activeTracks: string[];
   minutes: number;
@@ -196,6 +287,26 @@ export interface BuildInput {
    * a clock; Today says.
    */
   today?: Date;
+  /**
+   * The rest of the learner's contact history beside the runs (G2 item 6; G1's model): the
+   * encounters — viewed, heard, demonstrated — and the durable summaries of runs the retention cap
+   * pruned. `contactOf` reads it with the rows, and it is the session's only contact reader: the
+   * transfer offer asks it, and X's later readers consume it rather than a second novelty. Absent,
+   * the runs alone, as D4 read them. Today loads it (`encounterStore.allEncounters`,
+   * `progressStore.contactSummaries`).
+   */
+  contact?: ContactHistory;
+}
+
+/**
+ * Has this learner met this material, by the session's input (G2 item 6): `progressStore.contactIn`
+ * over the input's runs and its contact field — a piece heard once, or practised and pruned, is `met`
+ * — never a scan of the runs alone. The one contact reader on the session side (the reviewer's seam,
+ * `responses/b48342f.md` question 2): the offer reads it, and whether a hearing counts for a purpose is
+ * that reader's policy, never this function's.
+ */
+export function contactOf(input: Pick<BuildInput, 'rows' | 'readingRows' | 'contact'>, itemId: string, material: Identity | undefined): Contact {
+  return contactIn(input.rows ?? input.readingRows ?? [], itemId, material, input.contact ?? {});
 }
 
 export interface LessonPosition {
@@ -404,8 +515,12 @@ export type SlotClaim =
   | { kind: 'piece-retention'; lastPlayed: string }
   /** A piece whose measured demands the learner's skills support, with one the rung has just taught. */
   | { kind: 'ready'; demand: string }
-  /** The fallback ladder's first step: the rung's own option, and the strand it is on (a track's title; absent for core). */
-  | { kind: 'rung'; rung: Lesson; strand?: string }
+  /**
+   * The fallback ladder's first step: the rung's own option, and the strand it is on (a track's title; absent
+   * for core). `held`: the rung asks for pieces the learner has every one paused or put away (`Want.held`), and
+   * this row, the rung's other material, is the one that says the rung waits (G1e, the reviewer's ruling).
+   */
+  | { kind: 'rung'; rung: Lesson; strand?: string; held?: true }
   /** An item declaring the target skill the rung asks for. */
   | { kind: 'skill'; skill: string; rung: Lesson }
   /** An item carrying a demand of the skill the rung asks for. */
@@ -414,8 +529,19 @@ export type SlotClaim =
   | { kind: 'prerequisite'; rung: Lesson; of: Lesson }
   /** The exposure rule: the family of taught material played least lately (never, first). */
   | { kind: 'exposure'; family: ExposureFamily; lastPlayed?: string }
-  /** Jam: an option of a rung on a jam track the learner has reached. */
-  | { kind: 'jam'; rung: Lesson };
+  /**
+   * Jam: an option of a rung on a jam track the learner has reached. `plain`: none of that rung's usable
+   * options is chord-and-feel material (G61), so the line names the rung and does not promise chords, form
+   * and feel.
+   */
+  | { kind: 'jam'; rung: Lesson; plain?: true }
+  /**
+   * The transfer offer (D4 item 4): material this learner has not met, for a skill the ladder reads
+   * as proficient and not beyond, that differs from what the skill was shown on — offered as
+   * transfer-intended, with the relationship facts and the contact facts it was chosen on. Intent,
+   * never a claim that anything will transfer or has.
+   */
+  | { kind: 'transfer'; skill: string; relationship: Relationship; contact: Contact };
 
 /** A rung in the curriculum's walk on the tracks switched on, as `nextRecommended` walks it. */
 interface Walked {
@@ -423,15 +549,6 @@ interface Walked {
   track: string;
   stage: number;
 }
-
-/**
- * The stages whose rungs are projects, not rungs to meet: Stage 9 says of
- * itself "Nothing here is a rung to pass; they are pieces to live with"
- * (`content/curriculum/stage-9.json`). No slot advances into one as "the next
- * lesson", and its asks are offered as a project. By number, because the
- * curriculum does not mark the stage (a report item for the curriculum).
- */
-const PROJECT_STAGES: ReadonlySet<number> = new Set([9]);
 
 /**
  * One line of study the learner is on (the reviewer's parallel-strand finding,
@@ -471,10 +588,25 @@ interface SlotContext {
   reached: Walked[];
   skills: ReadonlyMap<string, SkillEvidence>;
   learned: ReadonlyMap<string, LearnedPiece>;
+  /**
+   * The session's one reading of the learner's projects (G1e; `BuildInput.projects`): whether the learner
+   * paused this piece or put it away on its project sheet — its project, found by `heldStateOf` as the
+   * lesson page and Progress find it (its material's, whatever id it was made under, else its id's), is
+   * `paused` or `retired`. Built once per card in `buildSession` over `heldStateOf`, the one lookup the
+   * session has, and asked in `usable()`, the one door every slot's choice goes through: no slot chooses
+   * such a piece (the reviewer's ruling on G1e: a rung's own ask included).
+   */
+  pausedOrPutAway: (item: CatalogItem) => boolean;
+  /** The strands whose rung's held ask (`Want.held`) a row on the card already says: said once. */
+  saidHeld: Set<string>;
   lastPlayed: (id: string) => string | undefined;
   today: Date;
   used: Set<string>;
   seed: number;
+  /** The learner at each rung a row was offered from, as the gate reads them (`learnerAt`), worked out once. */
+  learners: Map<string, Learner>;
+  /** `fromList`'s answers, by rung and item, worked out once per card. */
+  listed: Map<string, boolean>;
 }
 
 /** One skill's evidence, as the slots read it. */
@@ -615,12 +747,12 @@ function skillEvidenceOf(rows: readonly SessionRow[], vocabulary: Vocabulary, to
   for (const skill of vocabulary.skills) {
     if (skill.observable === 'none') continue;
     const measured = (bySkill.get(skill.id) ?? []).slice().sort((a, b) => a.at.localeCompare(b.at));
-    const supporting = measured.filter((e) => supports(e));
+    const supporting = measured.filter((e) => supports(e, vocabulary));
     const supportedOn = new Map<string, string>();
     for (const e of supporting) supportedOn.set(e.context.itemId, e.at);
     const last = supporting[supporting.length - 1];
     out.set(skill.id, {
-      reading: ladderState({ evidence: all.get(skill.id) ?? [], today }),
+      reading: ladderState({ evidence: all.get(skill.id) ?? [], today, vocabulary }),
       ...(last ? { lastSupport: last.at } : {}),
       recentSupported: supporting.filter((e) => (daysBetween(dayKey(new Date(e.at)), todayKey) ?? Infinity) < RETENTION_DAYS).length,
       supportedOn,
@@ -649,19 +781,97 @@ function readingsOf(ctx: SlotContext, rung: Lesson): RequirementReading[] {
   }));
 }
 
-/** A slot's eye on an item: playable, not on the card, never a reading row (the reading slot is the reader's, L65). */
+/**
+ * A slot's eye on an item: playable, not on the card, never a reading row (the reading slot is the
+ * reader's, L65), admitted for teaching use (D3b): a generated item whose family promises music is
+ * offered by no slot until a person's `yes` on its teaching use is built (`eligibility.admittedForTeaching`,
+ * the gate's own reading) — and not a piece the learner paused or put away (G1e; `ctx.pausedOrPutAway`).
+ * Every slot chooses only through here: a want's `offer` (`runs`, `done`, `measure`, this lesson's and the
+ * next's), every step of the fallback ladder, the jam slot, the exposure rule, retention, the repertoire
+ * slot's claim and the transfer offer — so a rung listing an item is not a decision to teach it, nor to
+ * override the learner's pause of it (the reviewer's ruling on G1e); where it was a row's only candidate the
+ * row takes the next step that passes, or is dropped.
+ */
 function usable(ctx: SlotContext, item: CatalogItem | undefined, songs: 'any' | 'none' | 'only'): item is CatalogItem {
-  if (!item || !playable(item) || ctx.used.has(item.id) || isReadingRow(item)) return false;
-  if (songs === 'none' && item.type === 'song') return false;
+  return item !== undefined && !ctx.used.has(item.id) && candidate(item, songs) && !ctx.pausedOrPutAway(item);
+}
+
+/**
+ * What `usable` asks of an item before the card and the learner's word: playable, never a reading row,
+ * admitted for teaching use, and of the slot's kind. Asked alone only to tell whether a rung's ask is held by
+ * the learner's pause (`Want.held`), never to choose.
+ */
+function candidate(item: CatalogItem, songs: 'any' | 'none' | 'only'): boolean {
+  if (!playable(item) || isReadingRow(item) || !admittedForTeaching(item)) return false;
+  // A slot that leaves songs out leaves excerpts out (a passage of a piece is not technique); a slot
+  // that wants songs wants the piece — the repertoire lifecycle keeps to songs (E1, adversary 10).
+  if (songs === 'none' && isPieceMaterial(item)) return false;
   if (songs === 'only' && item.type !== 'song') return false;
   return true;
+}
+
+/**
+ * A row taken straight from a rung's list, automatically (L113, X1): the one gate's answer for the listing
+ * (`eligibility.automaticFromList`) for the learner at `rung` — an unmeasured option, an unmeasured assigned
+ * import or a PDF the rung lists is refused as any automatic offer of it is; a measured option keeps its
+ * placement. Asked beside `usable` by the rung's asks, the ladder's rung and prerequisite steps, the jam slot
+ * and the exposure rule; the gate's own logic is never copied here.
+ */
+function fromList(ctx: SlotContext, item: CatalogItem, rung: Lesson): boolean {
+  const key = `${rung.id} ${item.id}`;
+  const known = ctx.listed.get(key);
+  if (known !== undefined) return known;
+  let learner = ctx.learners.get(rung.id);
+  if (learner === undefined) {
+    learner = learnerAt(ctx, rung);
+    ctx.learners.set(rung.id, learner);
+  }
+  const offered = automaticFromList(item, learner, ctx.input.vocabulary ?? VOCABULARY_V0).offered;
+  ctx.listed.set(key, offered);
+  return offered;
+}
+
+/**
+ * The learner as the one gate reads them (E0, `eligibility.ts`): the ladder state
+ * of each skill from every stored run, and what `rung` — the rung judging the
+ * offer — has taught, with what the rungs the learner has reached taught them
+ * (E0a: their own path, `taughtAtRung`'s second reading). `rung` absent: no rung
+ * judges, and only the evidence counts.
+ */
+function learnerAt(ctx: SlotContext, rung: Lesson | undefined): Learner {
+  const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
+  // The taught set and the fixed positions from the same rung and reached set (L120b).
+  const taught =
+    rung === undefined
+      ? {}
+      : taughtForLearner(
+          ctx.input.curriculum,
+          rung.id,
+          vocabulary,
+          ctx.reached.map((walked) => walked.lesson.id),
+        );
+  return {
+    skillState: (skill) => ctx.skills.get(skill)?.reading.state,
+    ...taught,
+    ...(ctx.input.readinessFloor === undefined ? {} : { floor: ctx.input.readinessFloor }),
+  };
+}
+
+/** The gate's answer for one candidate, in the session's vocabulary. */
+function gate(ctx: SlotContext, item: CatalogItem, learner: Learner, want: GateWant): Eligibility {
+  return eligibleFor(item, learner, want, ctx.input.vocabulary ?? VOCABULARY_V0);
 }
 
 /**
  * One unmet requirement of a rung and the items that would serve it: the
  * unit the warm-up and the new slot choose among. `pool` is every item the
  * requirement would count, whether or not it can be offered now; `offer`
- * those that can.
+ * those that can (`usable`: the teaching-use admission included, D3b). Only
+ * `offer` is ever chosen from. A want whose pool is not empty but whose offer is
+ * empty (its candidates on the card already, unplayable, or not admitted) still
+ * says the rung asks something: the slot waits for the fallback ladder rather than
+ * moving on to the next lesson as if this one's ask were met, and `pool` only
+ * orders the new slot's wants (`fresh`'s `served`).
  */
 interface Want {
   rung: Lesson;
@@ -669,6 +879,13 @@ interface Want {
   skill?: string;
   pool: CatalogItem[];
   offer: CatalogItem[];
+  /**
+   * Held by the learner (G1e, the reviewer's ruling): every candidate the rung could offer for this ask but
+   * for the learner's word is a piece they paused or put away, so `offer` is empty and stays empty whatever
+   * the card holds. The ask is not met and not skipped over — the rung still asks — and the card revives
+   * none of them; the row that brings the rung's other material says the rung waits (`fresh`, `fallbackStep`).
+   */
+  held: boolean;
 }
 
 /**
@@ -678,10 +895,15 @@ interface Want {
  * - `runs`: the rung's own options it counts (its exercises, songs, or the
  *   items it names), not yet counted. The warm-up serves only exercises.
  * - `done`: the item. `measure`: the rung's exercises of that kind.
- * - `skill`: the rung's exercises that declare the skill in `targetSkills`,
- *   the skill the evidence has shown least first. A skill no exercise of the
- *   rung declares is the reader's (only reading rows declare skills today):
- *   neither slot claims it.
+ * - `skill`: the rung's exercises the one gate passes for the requirement
+ *   (`eligibility.ts`, E0): an exercise declaring the skill whose runs the evidence
+ *   readers act on (D0's boundary, the reading rows as shipped), with its
+ *   opportunity in the notes and nothing the learner cannot cope with; the skill
+ *   the evidence has shown least first. Only such an exercise's runs can meet the
+ *   requirement, so no other is offered as what the lesson asks for (E0 never
+ *   widens what earns evidence). A skill none of the rung's exercises serves is
+ *   the reader's (as shipped the reading rows are the reader's): neither slot
+ *   claims it.
  * - `reads`: always the reader's.
  */
 function wantsOf(ctx: SlotContext, rung: Lesson, songs: 'any' | 'none'): Want[] {
@@ -706,13 +928,23 @@ function wantsOf(ctx: SlotContext, rung: Lesson, songs: 'any' | 'none'): Want[] 
       pool = own(rung.exerciseOptions).filter((item) => item.drill?.kind === r.measure);
     } else if (r.kind === 'skill') {
       skill = r.skill;
-      pool = own(rung.exerciseOptions).filter((item) => item.type !== 'song' && (item.targetSkills ?? []).includes(r.skill));
+      const learner = learnerAt(ctx, rung);
+      const activation = ctx.input.skillActivation ?? SHIPPED_SKILL_ACTIVATION;
+      pool = own(rung.exerciseOptions).filter(
+        (item) => isExerciseKind(item) && eligible(gate(ctx, item, learner, { for: 'requirement', skill: r.skill, activation })),
+      );
     } else {
       continue;
     }
-    if (songs === 'none') pool = pool.filter((item) => item.type !== 'song');
+    if (songs === 'none') pool = pool.filter((item) => !isPieceMaterial(item));
     if (pool.length === 0) continue;
-    const want: Want = { rung, reading, ...(skill === undefined ? {} : { skill }), pool, offer: pool.filter((item) => usable(ctx, item, songs)) };
+    // Offered only where the rung's listing passes the one gate for an automatic offer (L113, X1); `pool` keeps
+    // every item the requirement would count, so an unmeasured one leaves the ask waiting, never met.
+    const offer = pool.filter((item) => usable(ctx, item, songs) && fromList(ctx, item, rung));
+    // Held (G1e): what the ask could offer but for the learner's word is all paused or put away.
+    const waiting = offer.length > 0 ? [] : pool.filter((item) => candidate(item, songs) && fromList(ctx, item, rung));
+    const held = waiting.length > 0 && waiting.every((item) => ctx.pausedOrPutAway(item));
+    const want: Want = { rung, reading, ...(skill === undefined ? {} : { skill }), pool, offer, held };
     if (skill === undefined) out.push(want);
     else skillWants.push(want);
   }
@@ -839,6 +1071,11 @@ function servedBy(onCard: readonly Choice[], strand: Strand): boolean {
   return onCard.some((choice) => choice.strand === strand.track);
 }
 
+/** Whether the strand's rung asks for pieces the learner has every one paused or put away (`Want.held`; G1e). */
+function heldAt(ctx: SlotContext, strand: Strand): boolean {
+  return wantsOf(ctx, strand.rung, 'any').some((want) => want.held);
+}
+
 function fallbackStep(
   ctx: SlotContext,
   songs: 'any' | 'none' | 'only',
@@ -860,8 +1097,14 @@ function fallbackStep(
       if (item) taught.push(item);
     }
   }
-  const choose = (items: CatalogItem[], claim: (item: CatalogItem) => SlotClaim, lessonId?: (item: CatalogItem) => string | undefined): Choice | undefined => {
-    const offer = order(items.filter((item) => usable(ctx, item, songs)));
+  const choose = (
+    items: CatalogItem[],
+    claim: (item: CatalogItem) => SlotClaim,
+    lessonId?: (item: CatalogItem) => string | undefined,
+    /** The rung whose own list the step draws from (L113, X1): its listing asks the one gate too. */
+    listedOn?: Lesson,
+  ): Choice | undefined => {
+    const offer = order(items.filter((item) => usable(ctx, item, songs) && (listedOn === undefined || fromList(ctx, item, listedOn))));
     const item = pick(offer, ctx.seed);
     if (!item) return undefined;
     const from = lessonId?.(item);
@@ -871,15 +1114,37 @@ function fallbackStep(
     let found: Choice | undefined;
     if (step === 'rung' && rung) {
       const own = [...rung.exerciseOptions, ...rung.songOptions].map((id) => ctx.catalog.byId.get(id)).filter((item): item is CatalogItem => item !== undefined);
-      found = choose(own, () => ({ kind: 'rung', rung, ...(strand?.title === undefined ? {} : { strand: strand.title }) }), () => rung.id);
-    } else if (step === 'skill' && rung && want?.skill !== undefined) {
-      const skill = want.skill;
-      found = choose(taught.filter((item) => (item.targetSkills ?? []).includes(skill)), () => ({ kind: 'skill', skill, rung }), (item) => listingIn(ctx, item));
-    } else if (step === 'demand' && rung && want?.skill !== undefined) {
-      const demands = new Set(vocabulary.demands.filter((d) => d.copedWithBy === want.skill).map((d) => d.id));
+      // The rung's other material; where the rung's piece ask is held by the learner's pause and no row has
+      // said so yet, this row says the rung waits (G1e, the reviewer's ruling) — whichever slot it is, since
+      // the first row that draws on the rung is the one that can say it truthfully.
+      const held = strand !== undefined && !ctx.saidHeld.has(strand.track) && heldAt(ctx, strand);
       found = choose(
-        taught.filter((item) => (item.demands ?? []).some((d) => demands.has(d))),
-        (item) => ({ kind: 'demand', demand: (item.demands ?? []).find((d) => demands.has(d)) as string, rung }),
+        own,
+        () => ({ kind: 'rung', rung, ...(strand?.title === undefined ? {} : { strand: strand.title }), ...(held ? { held: true as const } : {}) }),
+        () => rung.id,
+        rung,
+      );
+    } else if (step === 'skill' && rung && want?.skill !== undefined) {
+      // Practice of the skill the rung asks for, through the one gate (E0): declared, its opportunity in
+      // the notes, nothing the learner cannot cope with. Practice, never credit: the claim says it trains it.
+      const skill = want.skill;
+      const activation = ctx.input.skillActivation ?? SHIPPED_SKILL_ACTIVATION;
+      const learner = learnerAt(ctx, rung);
+      found = choose(
+        taught.filter((item) => eligible(gate(ctx, item, learner, { for: 'skill', skill, activation }))),
+        () => ({ kind: 'skill', skill, rung }),
+        (item) => listingIn(ctx, item),
+      );
+    } else if (step === 'demand' && rung && want?.skill !== undefined) {
+      // An item providing, at a useful density, a demand of the skill the rung asks for (E0): never one
+      // that only contains it, and never one bringing a demand the learner cannot cope with.
+      const demands = vocabulary.demands.filter((d) => d.copedWithBy === want.skill).map((d) => d.id);
+      const learner = learnerAt(ctx, rung);
+      const practised = (item: CatalogItem): string | undefined =>
+        demands.find((demand) => eligible(gate(ctx, item, learner, { for: 'demand', demand })));
+      found = choose(
+        taught.filter((item) => practised(item) !== undefined),
+        (item) => ({ kind: 'demand', demand: practised(item) as string, rung }),
         (item) => listingIn(ctx, item),
       );
     } else if (step === 'prerequisite' && rung) {
@@ -887,7 +1152,8 @@ function fallbackStep(
         const before = ctx.walk.find((walked) => walked.lesson.id === id)?.lesson;
         if (!before) continue;
         const own = [...before.exerciseOptions, ...before.songOptions].map((one) => ctx.catalog.byId.get(one)).filter((item): item is CatalogItem => item !== undefined);
-        found = choose(own, () => ({ kind: 'prerequisite', rung: before, of: rung }), () => before.id);
+        // The prerequisite rung's own list, judged for the learner at their own rung, which builds on it.
+        found = choose(own, () => ({ kind: 'prerequisite', rung: before, of: rung }), () => before.id, rung);
         if (found) break;
       }
     } else if (step === 'exposure') {
@@ -954,7 +1220,10 @@ function exposure(ctx: SlotContext, families: Families): Choice | undefined {
   ctx.reached.forEach((walked, at) => {
     for (const id of [...walked.lesson.exerciseOptions, ...walked.lesson.songOptions]) {
       const item = ctx.catalog.byId.get(id);
-      if (!item || isReadingRow(item) || !playable(item)) continue;
+      // The exposure rule keeps a kind of exercise or an earlier rung's songs warm; an excerpt is
+      // neither (E1: retention keeps to songs), so it is no exposure family's. Taught material is a rung's
+      // own list, so its listing asks the one gate (L113, X1).
+      if (!item || isReadingRow(item) || !playable(item) || isExcerpt(item) || !fromList(ctx, item, walked.lesson)) continue;
       let family: ExposureFamily | undefined;
       if (item.type !== 'song') {
         const kind = item.drill?.kind ?? 'study';
@@ -972,6 +1241,9 @@ function exposure(ctx: SlotContext, families: Families): Choice | undefined {
       found.set(key, entry);
     }
   });
+  // What the rule may offer is what `usable` passes: a piece the learner paused or put away is not (G1e), and
+  // a family holding only such pieces is passed over for the next. When the family was last played still
+  // counts every play of it: what the learner played is history, and the pause withdraws the offer alone.
   const ranked = [...found.values()]
     .filter((entry) => entry.items.some((one) => usable(ctx, one.item, 'any')))
     .filter((entry) => !entry.items.some((one) => ctx.used.has(one.item.id)))
@@ -1026,6 +1298,19 @@ function warmup(ctx: SlotContext, phase: Phase): Choice | undefined {
 }
 
 /**
+ * The tracks that teach how to practise rather than what to play (D8a's How to practise). **A teaching
+ * policy, stated** (X1 item 7; the F2b review, `docs/review/responses/ddba53e9.md`: the ordering is kept or
+ * changed as a decision, never as a by-product of source ranking): the new piece is the learner's own rung's
+ * new material first, and a method track's ask second. D8a's track is how to practise *beside* the core, not
+ * instead of it; until X1 the balance rule — a strand not yet on the card first — gave the new slot to the
+ * newly opened practice rung on every 1.2 card, because the warm-up had already served the spine, and 1.2's
+ * own song ask waited behind it. The method track's row is not lost: the next slot that takes a strand's own
+ * option (the review's fallback, a strand not yet on the card first) takes it, so on the 30-minute card at 1.2
+ * the practice row comes second, after the rung's song.
+ */
+const METHOD_TRACKS: ReadonlySet<string> = new Set(['practice']);
+
+/**
  * New (C6 item 3): a strand's next unmet requirement's item, in the order its
  * lesson states them — a strand the card does not serve yet first, so no one
  * track takes the warm-up, the new piece and the repertoire (the
@@ -1035,7 +1320,11 @@ function warmup(ctx: SlotContext, phase: Phase): Choice | undefined {
  * stage into a project. Otherwise the fallback ladder.
  */
 function fresh(ctx: SlotContext, onCard: readonly Choice[], phase: Phase): Choice | undefined {
-  const strands = [...ctx.strands.filter((one) => !servedBy(onCard, one)), ...ctx.strands.filter((one) => servedBy(onCard, one))];
+  const balanced = [...ctx.strands.filter((one) => !servedBy(onCard, one)), ...ctx.strands.filter((one) => servedBy(onCard, one))];
+  // The practice row's place (X1 item 7, a teaching-policy decision; the F2b review's constraint): How to
+  // practise is taken after every other strand for the new piece, never ahead of the learner's own rung's
+  // new material. See `METHOD_TRACKS`.
+  const strands = [...balanced.filter((one) => !METHOD_TRACKS.has(one.track)), ...balanced.filter((one) => METHOD_TRACKS.has(one.track))];
   if (phase === 'fallback') {
     const first = strands.map((strand) => ({ strand, wants: wantsOf(ctx, strand.rung, 'any') })).find((one) => one.wants.length > 0);
     return fallback(ctx, 'any', first ? { ...(first.wants[0]?.skill === undefined ? {} : { skill: first.wants[0]?.skill }), strand: first.strand } : undefined, (items) => uncountedFirst(ctx, items), onCard);
@@ -1043,10 +1332,22 @@ function fresh(ctx: SlotContext, onCard: readonly Choice[], phase: Phase): Choic
   const served = (want: Want): boolean => onCard.some((choice) => want.pool.some((item) => item.id === choice.item.id));
   for (const strand of strands) {
     const wants = wantsOf(ctx, strand.rung, 'any');
-    for (const want of [...wants.filter((want) => !served(want)), ...wants.filter(served)]) {
+    // A rung whose piece ask the learner holds (G1e, the reviewer's ruling): an ask the card already serves
+    // does not take the new slot again, so the slot falls to the ladder, whose rung step brings the rung's
+    // other material and says the rung waits — never a paused piece revived, never the rung passed over.
+    const held = wants.some((want) => want.held);
+    for (const want of held ? wants.filter((want) => !served(want)) : [...wants.filter((want) => !served(want)), ...wants.filter(served)]) {
       const item = pick(want.offer, ctx.seed);
       if (item) return { item, claim: askedClaim(want, false, strand), lessonId: strand.rung.id, strand: strand.track };
     }
+  }
+  // D4: after the rungs' own new work — only where no strand's rung asks anything this slot serves,
+  // offered or not, so the offer never stands in for an unmet requirement — a skill shown to
+  // proficiency is offered material it has not met. Before the next lesson's first ask, which is a
+  // look ahead and not the learner's rung's requirement.
+  if (strands.every((strand) => wantsOf(ctx, strand.rung, 'any').length === 0)) {
+    const offer = transferOffer(ctx);
+    if (offer) return offer;
   }
   for (const strand of strands) {
     if (!strand.after || wantsOf(ctx, strand.rung, 'any').length > 0) continue;
@@ -1060,6 +1361,72 @@ function fresh(ctx: SlotContext, onCard: readonly Choice[], phase: Phase): Choic
 }
 
 /**
+ * The transfer offer (D4 item 4; Part 26; the reviewer's answers, `responses/612288e.md`): for a skill
+ * the ladder reads as `proficient` — and not beyond: the offer depends on proficiency alone and never
+ * reads v0's `transfer demonstrated` as proof that any relationship was tested — one candidate:
+ *
+ * - **the form**: an item whose role is `transfer` for the skill (`provenance.transferOf.skill`, the
+ *   contract's declaration the build writes) that passes the one gate for the skill; or an excerpt a
+ *   rung the learner has reached lists (placement is F's question, E1: an unplaced excerpt is in no
+ *   search of the whole catalogue) whose measured notes the gate passes for one of the skill's
+ *   demands. Both through `usable` and the gate, which read the one teaching-use admission — a study
+ *   or an excerpt with no current `yes` never reaches here — and nothing else here reads the bit.
+ *   Never a reading row (`usable`): a reading drill is the reader's, in its own slot;
+ * - **unmet** for this learner by its exact material (`contactIn`: `met` and `met-by-id` are never
+ *   offered); a candidate with no material to compare is never offered either;
+ * - **differing** from what the skill was shown on in at least one dimension measured or declared
+ *   (`relationshipOf`), and **never of the family that established it** (a new seed of that family
+ *   may be variable practice elsewhere; it is not transfer).
+ *
+ * At most one a day: one `new` slot a card, and none on a day a stored run already came from an offer.
+ * The gate judges coping with the learner's rung as it does the swap sheet's tiers. Ordered by the
+ * vocabulary's skills, then the nearest level to that rung's band — an order among eligible
+ * candidates, never a filter (the chooser's ranking is E2's) — and Shuffle takes the next.
+ */
+function transferOffer(ctx: SlotContext): Choice | undefined {
+  const rows = ctx.input.rows ?? ctx.input.readingRows ?? [];
+  const today = dayKey(ctx.today);
+  if (rows.some((row) => row.intent === 'transfer' && dayKey(new Date(row.at)) === today)) return undefined;
+  const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
+  const activation = ctx.input.skillActivation ?? SHIPPED_SKILL_ACTIVATION;
+  const rung = ctx.position?.lesson;
+  const learner = learnerAt(ctx, rung);
+  const placed = new Set(ctx.reached.flatMap((walked) => [...walked.lesson.exerciseOptions, ...walked.lesson.songOptions]));
+  const stage = ctx.position?.stageNumber ?? 0;
+  const [low, high] = rung?.levelBand ?? [stage, stage + 0.99];
+  const found: { item: CatalogItem; claim: Extract<SlotClaim, { kind: 'transfer' }>; order: number; distance: number }[] = [];
+  vocabulary.skills.forEach((skill, order) => {
+    if (ctx.skills.get(skill.id)?.reading.state !== 'proficient') return;
+    const demands = skill.opportunity === 'every-step' ? [] : skill.opportunity;
+    let shownOn: ShownOn | undefined;
+    for (const item of ctx.input.items) {
+      if (!usable(ctx, item, 'any')) continue;
+      const declared = item.role === 'transfer' && item.provenance?.transferOf?.skill === skill.id && !isExcerpt(item);
+      const offerable = declared
+        ? eligible(gate(ctx, item, learner, { for: 'skill', skill: skill.id, activation }))
+        : isExcerpt(item) && placed.has(item.id) && demands.some((demand) => eligible(gate(ctx, item, learner, { for: 'demand', demand })));
+      if (!offerable) continue;
+      const material = materialOfItem(item);
+      if (!knownMaterial(material)) continue;
+      // Unmet by any kind of contact (G2 item 6): runs, encounters and pruned runs' summaries.
+      const contact = contactOf(ctx.input, item.id, material);
+      if (contact.contact !== 'unmet') continue;
+      shownOn ??= shownOnRecords(skill.id, rows);
+      const relationship = relationshipOf(skill.id, item, rows, ctx.catalog.byId, shownOn);
+      if (relationship.measured.find((fact) => fact.dimension === 'family')?.differs === false) continue;
+      if (relationship.differsOn.length === 0) continue;
+      const distance = item.level < low ? low - item.level : item.level > high ? item.level - high : 0;
+      found.push({ item, claim: { kind: 'transfer', skill: skill.id, relationship, contact }, order, distance });
+    }
+  });
+  found.sort((a, b) => a.order - b.order || a.distance - b.distance || levelOrder(a.item, b.item));
+  const chosen = pick(found, ctx.seed);
+  if (!chosen) return undefined;
+  const lessonId = listingIn(ctx, chosen.item);
+  return { item: chosen.item, claim: chosen.claim, ...(lessonId === undefined ? {} : { lessonId }) };
+}
+
+/**
  * Review (C6 item 2): two reasons, and the line says which.
  *
  * - **Skill retention**: a skill whose evidence the reads have not shown for
@@ -1070,7 +1437,8 @@ function fresh(ctx: SlotContext, onCard: readonly Choice[], phase: Phase): Choic
  * - **Repertoire retention**: a learned piece (a song passed or mastered) not
  *   played for `REPERTOIRE_WINDOW_DAYS`, however recently its skills were
  *   shown elsewhere. A scale or a drill passed is technique, which the
- *   exposure rule keeps warm, not a piece to keep playable.
+ *   exposure rule keeps warm, not a piece to keep playable. Never a piece
+ *   the learner paused or put away (G1d; `usable`, G1e).
  *
  * Whichever is further past its own span first; Shuffle reaches the rest.
  * Nothing due for either: the fallback ladder — a strand's rung (its counted
@@ -1110,7 +1478,9 @@ function review(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choi
   }
   for (const piece of ctx.learned.values()) {
     const item = ctx.catalog.byId.get(piece.itemId);
-    // A piece: a scale or a drill passed is technique, kept warm by the exposure rule, not "a piece to keep playable".
+    // A piece: a scale or a drill passed is technique, kept warm by the exposure rule, not "a piece to keep
+    // playable". Not one the learner paused or put away on its project sheet (G1d; G82): `usable` asks the
+    // card's one reading of the projects (G1e), and nothing on the card says so — the sheet did.
     if (!usable(ctx, item, 'only')) continue;
     const since = daysSince(piece.lastPlayed, ctx.today);
     if (since === undefined || since < REPERTOIRE_WINDOW_DAYS) continue;
@@ -1124,14 +1494,19 @@ function review(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choi
 }
 
 /**
- * Repertoire (C6 item 4): a piece whose measured demands the learner's skills
- * support (familiar or better) with one the learner's rung teaches — no piece
- * carries measured demands yet (E writes them), so this finds nothing today;
- * then the fallback ladder — a strand's rung song, a prerequisite rung's, a
- * piece not yet counted or learned before one that is — and the exposure rule
- * over the songs taught last. A mastered
- * piece is still "a piece you know" (L18), but it is no longer offered every
- * session (L17): keeping it playable is the review's repertoire retention.
+ * Repertoire (C6 item 4): a piece the one gate passes (E0, `eligibility.ts`) as
+ * practice of a demand a strand's rung teaches — the piece provides it at a useful
+ * density, and the learner's skills support every demand it measures (familiar or
+ * better). No rung judges a piece chosen from the whole catalogue, so what the
+ * lessons have taught does not stand in for the evidence here: "your reads support
+ * them" stays true. Among those, the nearest in level to the rung's band first:
+ * level orders, and rescues nothing. Then the fallback ladder — a strand's rung
+ * song, a prerequisite rung's, a piece not yet counted or learned before one that
+ * is — and the exposure rule over the songs taught last. A mastered piece is still
+ * "a piece you know" (L18), but it is no longer offered every session (L17):
+ * keeping it playable is the review's repertoire retention. A piece the learner
+ * paused or put away is chosen by neither the claim nor any step of the fallback
+ * (G1e and the reviewer's ruling on it; `usable`).
  */
 function repertoire(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choice | undefined {
   if (phase === 'fallback') {
@@ -1147,18 +1522,29 @@ function repertoire(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): 
     );
   }
   const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
-  const rungs = new Set(ctx.strands.map((strand) => strand.rung.id));
-  const supported = (demand: string): boolean => {
-    const skill = vocabulary.demands.find((d) => d.id === demand)?.copedWithBy;
-    const state = skill === undefined ? undefined : ctx.skills.get(skill)?.reading.state;
-    return state !== undefined && LADDER_STATES.indexOf(state) >= LADDER_STATES.indexOf('familiar');
-  };
-  const edge = (demand: string): boolean => rungs.has(vocabulary.demands.find((d) => d.id === demand)?.taughtAt ?? '');
-  const ready = ctx.input.items.filter(
-    (item) => usable(ctx, item, 'only') && (item.demands ?? []).length > 0 && (item.demands ?? []).every(supported) && (item.demands ?? []).some(edge),
-  );
-  const piece = pick(ready, ctx.seed);
-  return piece ? { item: piece, claim: { kind: 'ready', demand: (piece.demands ?? []).find(edge) as string } } : undefined;
+  // The evidence alone: no rung judges a piece chosen from the whole catalogue.
+  const learner: Learner = learnerAt(ctx, undefined);
+  const ready: { item: CatalogItem; demand: string; distance: number }[] = [];
+  for (const strand of ctx.strands) {
+    // What the strand's rung teaches (E0b: `taughtAt` lists every rung that teaches a demand).
+    const edges = vocabulary.demands.filter((d) => d.taughtAt.includes(strand.rung.id)).map((d) => d.id);
+    if (edges.length === 0) continue;
+    const [low, high] = strand.rung.levelBand ?? [strand.stage, strand.stage + 0.99];
+    for (const item of ctx.input.items) {
+      if (!usable(ctx, item, 'only') || ready.some((one) => one.item.id === item.id)) continue;
+      const demand = edges.find((one) => eligible(gate(ctx, item, learner, { for: 'demand', demand: one })));
+      if (demand === undefined) continue;
+      ready.push({ item, demand, distance: item.level < low ? low - item.level : item.level > high ? item.level - high : 0 });
+    }
+  }
+  ready.sort((a, b) => a.distance - b.distance || levelOrder(a.item, b.item));
+  const chosen = pick(ready, ctx.seed);
+  return chosen ? { item: chosen.item, claim: { kind: 'ready', demand: chosen.demand } } : undefined;
+}
+
+/** A judged level before an estimated one, then the catalogue's id order: a stable order among equals. */
+function levelOrder(a: CatalogItem, b: CatalogItem): number {
+  return (a.levelSource === 'estimated' ? 1 : 0) - (b.levelSource === 'estimated' ? 1 : 0) || a.id.localeCompare(b.id);
 }
 
 /** The tracks whose rungs are about playing from chords, form and feel. */
@@ -1168,22 +1554,39 @@ const JAM_TRACKS = new Set(['chords-pop', 'blues-boogie', 'jazz', 'jam']);
  * Jam: an option of a rung on a jam track the learner has reached — the
  * learner's own rung first where it is one — played least lately. It was any
  * item on those tracks at or below the stage number plus one; before any jam
- * rung is reached there is no jam row.
+ * rung is reached there is no jam row. The options pass `usable`, so a groove a
+ * jam rung lists is the jam only once its teaching use is approved (D3b); with
+ * nothing else on the reached jam rungs there is no jam row.
  */
 function jam(ctx: SlotContext, phase: Phase): Choice | undefined {
   if (phase === 'fallback') return undefined;
   const rungs = ctx.reached.filter((walked) => JAM_TRACKS.has(walked.track)).map((walked) => walked.lesson).reverse();
   for (const lesson of rungs) {
+    // Chord-and-feel material first (G61): the slot's own condition, before when each was last played and
+    // the list's order, which is exercises first and put a transposition page or an ear drill under
+    // "Chords, form and feel". Its listing asks the one gate (L113, X1).
     const offer = [...lesson.exerciseOptions, ...lesson.songOptions]
       .map((id) => ctx.catalog.byId.get(id))
-      .filter((item): item is CatalogItem => usable(ctx, item, 'any'))
-      .map((item, at) => ({ item, at }))
-      .sort((a, b) => (ctx.lastPlayed(a.item.id) ?? '').localeCompare(ctx.lastPlayed(b.item.id) ?? '') || a.at - b.at)
+      .filter((item): item is CatalogItem => usable(ctx, item, 'any') && fromList(ctx, item, lesson))
+      .map((item, at) => ({ item, at, feel: chordAndFeel(item) }))
+      .sort((a, b) => Number(b.feel) - Number(a.feel) || (ctx.lastPlayed(a.item.id) ?? '').localeCompare(ctx.lastPlayed(b.item.id) ?? '') || a.at - b.at)
       .map((one) => one.item);
     const item = pick(offer, ctx.seed);
-    if (item) return { item, claim: { kind: 'jam', rung: lesson }, lessonId: lesson.id };
+    // An item that is not chord-and-feel material (the rung has none, or Shuffle reached past them): the line
+    // names the rung and promises nothing more.
+    if (item) return { item, claim: { kind: 'jam', rung: lesson, ...(chordAndFeel(item) ? {} : { plain: true as const }) }, lessonId: lesson.id };
   }
   return undefined;
+}
+
+/**
+ * Chord-and-feel material (G61): what the jam slot's line promises — a score with chord symbols to play from
+ * (measured from the file, `notation.chordCount`, as the chart door reads it) or a groove to play over (a
+ * backing-track drill). Anything else a jam rung lists (a transposition page, an ear or theory drill) is still
+ * offered, after these, and the line then says only where it is from.
+ */
+function chordAndFeel(item: CatalogItem): boolean {
+  return (item.notation?.chordCount ?? 0) > 0 || item.drill?.kind === 'backing-track';
 }
 
 /**
@@ -1206,7 +1609,12 @@ const FALLBACK_FILL_ORDER: readonly SlotKind[] = ['technique', 'new', 'repertoir
  * fallbacks take what is left — and are shown in the template's order. No
  * item is used twice, and a row that finds nothing is dropped.
  */
-export function buildSession(input: BuildInput): { template: SessionTemplate; slots: SessionSlot[] } {
+export function buildSession(input: BuildInput): {
+  template: SessionTemplate;
+  slots: SessionSlot[];
+  /** The rungs the learner has reached (placed on or passed), for the swap sheet's gate (E0a). */
+  reached: string[];
+} {
   const template = templateFor(input.minutes);
   const position = readerPosition(input.curriculum, input.states, input.activeTracks, {
     ...(input.strictPrerequisites ? { strictPrerequisites: true } : {}),
@@ -1220,6 +1628,20 @@ export function buildSession(input: BuildInput): { template: SessionTemplate; sl
     return value === undefined || value === '' ? undefined : value;
   };
   const { strands, reached } = strandsOf({ input, walk, lastPlayed });
+  // The card's one reading of the learner's projects (G1e; the G1d review's required change): each piece's
+  // project looked up once, by the identity the lesson page and Progress use, and the answer kept for the
+  // card. The lookup is `heldStateOf` (G90: the runner asks it too); `usable()` reads the answer, never the rows.
+  const projects = input.projects ?? [];
+  const withdrawn = new Map<string, boolean>();
+  const pausedOrPutAway = (item: CatalogItem): boolean => {
+    if (projects.length === 0) return false;
+    let answer = withdrawn.get(item.id);
+    if (answer === undefined) {
+      answer = heldStateOf(projects, { itemId: item.id, material: materialOfItem(item) }) !== undefined;
+      withdrawn.set(item.id, answer);
+    }
+    return answer;
+  };
   const ctx: SlotContext = {
     input,
     catalog: input.catalog,
@@ -1229,10 +1651,14 @@ export function buildSession(input: BuildInput): { template: SessionTemplate; sl
     reached,
     skills: skillEvidenceOf(input.rows ?? input.readingRows ?? [], input.vocabulary ?? VOCABULARY_V0, today),
     learned: new Map((input.learned ?? []).map((piece) => [piece.itemId, piece])),
+    pausedOrPutAway,
+    saidHeld: new Set<string>(),
     lastPlayed,
     today,
     used: new Set<string>(),
     seed: input.seed ?? 0,
+    learners: new Map(),
+    listed: new Map(),
   };
 
   const filled = new Map<number, { item?: CatalogItem; claim?: SlotClaim; lessonId?: string; reading?: ReadingOffer; phrase?: SessionSlot['phrase']; reason: string }>();
@@ -1255,6 +1681,8 @@ export function buildSession(input: BuildInput): { template: SessionTemplate; sl
   const keep = (slotIndex: number, kind: SlotKind, choice: Choice): void => {
     ctx.used.add(choice.item.id);
     chosen.push(choice);
+    // A row that says a rung waits on the learner's pause says it for the card (G1e).
+    if (choice.claim.kind === 'rung' && choice.claim.held === true && choice.strand !== undefined) ctx.saidHeld.add(choice.strand);
     const known = kind === 'repertoire' && ctx.learned.get(choice.item.id)?.status === 'mastered';
     filled.set(slotIndex, {
       item: choice.item,
@@ -1307,12 +1735,31 @@ export function buildSession(input: BuildInput): { template: SessionTemplate; sl
       ...(one.claim ? { claim: one.claim } : {}),
       ...(one.reading ? { reading: one.reading } : {}),
       ...(one.phrase ? { phrase: one.phrase } : {}),
+      ...(one.item ? { contact: contactAssumption(input, slot.kind, one.item, one.claim) } : {}),
     });
   });
   return {
     template: breakAfter === template.breakAfterSlot ? template : { ...template, ...(breakAfter === undefined ? {} : { breakAfterSlot: breakAfter }) },
     slots,
+    reached: reached.map((walked) => walked.lesson.id),
   };
+}
+
+/**
+ * A slot's contact assumption as composed (X1 item 6; `SessionSlot.contact`): the two slots whose point is
+ * new material assume a first contact — the reading slot (the reader's phrase is one no stored run of the row
+ * carries) and the transfer offer (chosen unmet by its exact material, D4); any other slot is what G2's one
+ * adapter answers for its item now (`contactOf`): met by its material or by its id, `met`; unmet, `none`,
+ * since nothing about the slot rests on its being new.
+ */
+export function contactAssumption(
+  input: Pick<BuildInput, 'rows' | 'readingRows' | 'contact'>,
+  kind: SlotKind,
+  item: CatalogItem,
+  claim: SlotClaim | undefined,
+): 'first-contact' | 'met' | 'none' {
+  if (kind === 'sightreading' || claim?.kind === 'transfer') return 'first-contact';
+  return contactOf(input, item.id, materialOfItem(item)).contact === 'unmet' ? 'none' : 'met';
 }
 
 /**
@@ -1354,56 +1801,75 @@ export interface SwapOption {
 }
 
 /**
- * The demands a reading row may write that the learner's rung has not taught
- * (C4b's control map read, never moved); for any other item its measured
- * `demands` the rung has not taught. What keeps a swap from offering what the
- * lessons have not reached, where a level window used to.
- */
-function untaughtDemands(item: CatalogItem, taught: (demand: string) => boolean, vocabulary: Vocabulary): string[] {
-  if (isReadingRow(item)) {
-    const options = sightReadingOptionsFor(item.drill?.params ?? {}, 1);
-    return vocabulary.demands
-      .filter((demand) => !taught(demand.id))
-      .filter((demand) => READING_CONTROLS[demand.id]?.mayWrite(options) === true)
-      .map((demand) => demand.id);
-  }
-  return (item.demands ?? []).filter((demand) => !taught(demand));
-}
-
-/**
  * What "Swap this" offers for one row (docs/04 §2; C6 item 6).
  *
  * The tiers are `tieredAlternatives`'s — the same lesson, a stand-in the
- * item's author named, an item sharing a target skill, one carrying a measured
- * demand it carries — and each option says which tier it came from, which the
- * sheet prints. Two things a session row knows that a lesson does not: what is
- * already on today's card (never offered twice), and whether a song makes sense
- * in the slot at all. Given the learner's rung, nothing is offered that carries
- * a demand no lesson up to it has taught.
+ * item's author named, an item that also trains the row's target skill, one
+ * that also practises a demand the row exists for — and each option says which
+ * tier it came from, which the sheet prints. Two things a session row knows
+ * that a lesson does not: what is already on today's card (never offered
+ * twice), and whether a song makes sense in the slot at all. Every option goes
+ * through the one gate (E0, `eligibility.ts`) with the learner's rung — what its
+ * ancestry has taught, and what the rungs the learner has reached taught them
+ * (E0a) — and, where the caller has them, the learner's skill states: it
+ * replaced the untaught-demand filter that stood here, which is the gate's
+ * first question.
  *
  * With nothing in any tier, the last resort is no longer "the same type within
  * one level" but the same kind of exercise — or, for a song, a song — from the
- * lessons the learner has reached (`kind`), which the sheet names as such.
+ * lessons the learner has reached (`kind`), which the sheet names as such, and
+ * which passes the same gate as an equivalent.
  */
 export function swapOptions(
   slot: SessionSlot,
   slots: SessionSlot[],
   curriculum: Curriculum,
   catalog: CatalogIndex,
-  options: { excludeSongs?: boolean; items?: CatalogItem[]; rung?: string; activeTracks?: readonly string[]; vocabulary?: Vocabulary } = {},
+  options: {
+    excludeSongs?: boolean;
+    items?: CatalogItem[];
+    rung?: string;
+    activeTracks?: readonly string[];
+    vocabulary?: Vocabulary;
+    /** Whose declared target skills the skill tier reads (D0; `skillActivation.ts`). */
+    skillActivation?: SkillActivation;
+    /** The learner's ladder state per skill, where the caller has the evidence (the gate's first question). */
+    skillState?: (skill: string) => LadderState | undefined;
+    /** Or the stored runs to read it from, as the session does (`rows`, with the morning it is read on). */
+    rows?: readonly SessionRow[];
+    today?: Date;
+    /** The ladder state at which a skill supports its demands (`BuildInput.readinessFloor`). */
+    readinessFloor?: LadderState;
+    /**
+     * The rungs the learner has reached, as the session reads them (`buildSession`'s
+     * `reached`): what they taught counts as taught for this learner (E0a).
+     */
+    reached?: readonly string[];
+  } = {},
 ): SwapOption[] {
   if (!slot.item) return [];
   const source = slot.item;
   const vocabulary = options.vocabulary ?? VOCABULARY_V0;
   const excludeSongs = options.excludeSongs ?? slot.kind === 'technique';
   const exclude = slots.map((other) => other.item?.id).filter((id): id is string => Boolean(id));
-  const taught = options.rung === undefined ? undefined : taughtAtRung(curriculum, options.rung, vocabulary);
-  const fits = (item: CatalogItem): boolean => playable(item) && (taught === undefined || untaughtDemands(item, taught, vocabulary).length === 0);
+  // The taught set and the fixed positions from the same rung and reached set (L120b).
+  const taught = options.rung === undefined ? {} : taughtForLearner(curriculum, options.rung, vocabulary, options.reached);
+  // The learner's skills from their stored runs, the session's own reading (`skillEvidenceOf`), where given.
+  const evidence = options.rows === undefined ? undefined : skillEvidenceOf(options.rows, vocabulary, options.today ?? new Date());
+  const skillState = options.skillState ?? (evidence === undefined ? undefined : (skill: string) => evidence.get(skill)?.reading.state);
+  const learner: Learner = {
+    ...taught,
+    ...(skillState === undefined ? {} : { skillState }),
+    ...(options.readinessFloor === undefined ? {} : { floor: options.readinessFloor }),
+  };
+  const fits = (item: CatalogItem): boolean => playable(item) && eligible(eligibleFor(item, learner, { for: 'equivalent' }, vocabulary));
   const tiered: SwapOption[] = tieredAlternatives(
     { itemId: source.id, ...(slot.lessonId ? { lessonId: slot.lessonId } : {}), excludeSongs, exclude },
     curriculum,
     catalog,
-  ).filter((option) => fits(option.item));
+    options.skillActivation ?? SHIPPED_SKILL_ACTIVATION,
+    learner,
+  ).filter((option) => playable(option.item));
   if (tiered.length > 0) return tiered;
 
   // The last resort: the same kind, from the lessons reached. Without a rung, every rung counts as reached.
@@ -1416,8 +1882,12 @@ export function swapOptions(
     for (const id of [...walked.lesson.exerciseOptions, ...walked.lesson.songOptions]) {
       const item = catalog.byId.get(id);
       if (!item || skip.has(id) || !fits(item) || isReadingRow(item) !== isReadingRow(source)) continue;
-      if (excludeSongs && item.type === 'song') continue;
-      const same = source.type === 'song' ? item.type === 'song' : item.type !== 'song' && (item.drill?.kind ?? 'study') === (source.drill?.kind ?? 'study');
+      if (excludeSongs && isPieceMaterial(item)) continue;
+      // "The same kind": a song for a song, an excerpt for an excerpt, an exercise of the same drill
+      // kind for an exercise — never a passage of a piece for an exercise (E1).
+      const same = isPieceMaterial(source)
+        ? item.type === source.type
+        : isExerciseKind(item) && (item.drill?.kind ?? 'study') === (source.drill?.kind ?? 'study');
       if (!same) continue;
       skip.add(id);
       out.push({ item, tier: 'kind' });
@@ -1429,7 +1899,7 @@ export function swapOptions(
 /**
  * "Play this instead" for an item that is not bundled (docs/04 §2).
  *
- * A rock-module song you have not imported is not a dead row: its
+ * A song you have not imported yet is not a dead row: its
  * `alternatives[]` name the public-domain vehicle that trains the same thing.
  */
 export function playInstead(
@@ -1572,30 +2042,169 @@ function recipeKey(value: ReadingRecipe): string {
   return `${value.row}|${JSON.stringify(normaliseMoves(value.moved))}`;
 }
 
+/**
+ * Every rung in the file's order. Never what a rung has taught (`rungAncestry`
+ * is, E0a): its one reader is the easy move's "newest thing the recipe added"
+ * order among demands the learner's rung has taught, all in that rung's
+ * ancestry — and every prerequisite, and every core rung of an earlier stage, is
+ * stored before the rung it leads to, so on one ancestry the file's order is the
+ * order the rungs are met in.
+ */
 function lessonOrder(curriculum: Curriculum): string[] {
   return curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
 }
 
+/** Worked out once per curriculum object: nothing changes a rung or a prerequisite in a session. */
+const ANCESTRY = new WeakMap<Curriculum, ReadonlyMap<string, ReadonlySet<string>>>();
+
 /**
- * What a rung has taught: a demand whose `taughtAt` rung comes at or before it
- * in the curriculum's order. `undefined` for no rung (a phrase opened from
- * nowhere is the row as it stands) or one the curriculum does not have.
+ * Every rung's ancestry (E0a; the reviewer's finding 1 on E0): the rungs every
+ * learner at it has been through, itself included — what "taught by this rung"
+ * is read from. It was the file's order, and the curriculum is not one line:
+ * `blues.5` is stored before `jazz.5`, so the walking bass read as taught at
+ * `jazz.5` and at every rung stored after it, on every track.
+ *
+ * - **On the core path**, every core rung before it in stage-and-unit order. The
+ *   spine is walked in that order (`nextRecommended`, `strandsOf`), and its
+ *   `prerequisites` do not say all of it: 4.6's, followed back, never reach 3.4
+ *   (3.5 builds on 3.3, 3.4 on 3.1), 4.7 names none, and Stage 0 is nobody's.
+ * - **On a track**, its `prerequisites`, each with its own ancestry, and the core
+ *   path up to the rung's stage: a track opens where the spine has reached its
+ *   stage (`docs/04` §2), so `jazz.5` stands on the whole core path although its
+ *   prerequisites, followed back, leave the core at 3.2. A track's own earlier
+ *   rungs count through its prerequisites, never through the file.
+ *
+ * A prerequisite the curriculum does not have is passed over, as `strandsOf`
+ * passes it; a cycle stops rather than loops. `tools/content/claims.py`'s
+ * `rung_ancestry` is the build's reading of the same thing, for the rung-claims
+ * report's "untaught here".
+ */
+export function rungAncestry(curriculum: Curriculum): ReadonlyMap<string, ReadonlySet<string>> {
+  const known = ANCESTRY.get(curriculum);
+  if (known) return known;
+  const stages = [...curriculum.stages].sort((a, b) => a.number - b.number);
+  const ids = new Set(stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id))));
+  const parents = new Map<string, string[]>();
+  const core: { stage: number; id: string }[] = [];
+  let previous: string | undefined;
+  for (const stage of stages) {
+    // The last core rung of an earlier stage: where the spine is once a track of this stage opens.
+    const spine = [...core].reverse().find((one) => one.stage < stage.number)?.id;
+    for (const unit of stage.units) {
+      for (const lesson of unit.lessons) {
+        const own = (lesson.prerequisites ?? []).filter((id) => ids.has(id) && id !== lesson.id);
+        if (unit.track === 'core') {
+          parents.set(lesson.id, [...(previous === undefined ? [] : [previous]), ...own]);
+          previous = lesson.id;
+          core.push({ stage: stage.number, id: lesson.id });
+        } else {
+          parents.set(lesson.id, [...own, ...(spine === undefined ? [] : [spine])]);
+        }
+      }
+    }
+  }
+  const out = new Map<string, Set<string>>();
+  const visiting = new Set<string>();
+  const of = (id: string): Set<string> => {
+    const done = out.get(id);
+    if (done) return done;
+    const found = new Set<string>([id]);
+    if (visiting.has(id)) return found;
+    visiting.add(id);
+    for (const parent of parents.get(id) ?? []) for (const one of of(parent)) found.add(one);
+    visiting.delete(id);
+    out.set(id, found);
+    return found;
+  };
+  for (const id of parents.keys()) of(id);
+  ANCESTRY.set(curriculum, out);
+  return out;
+}
+
+/**
+ * What a rung has taught (E0a): a demand one of whose `taughtAt` rungs is in the
+ * rung's ancestry (`rungAncestry`) — the rung, what it builds on, and on a track
+ * the core path up to its stage. A demand taught on one track is not taught on its
+ * sibling, whatever the file's order. Since E0b `taughtAt` lists every rung that
+ * teaches the demand, one per path: the walking bass is `blues.5`'s, `jazz.6`'s
+ * and `jam.6`'s, so it is taught at `jazz.8` and not at `theory.9` or
+ * `classical.6`.
+ *
+ * `reached`, where the caller has a learner, is the second reading: the rungs
+ * the learner has been placed on or passed (the session's `reached`: met, set
+ * aside, behind the placement, or a strand's open rung). A demand taught by any
+ * of them is taught for this learner wherever they are judged — a learner who
+ * did the blues track and sits on `jazz.6` has met the walking bass.
+ *
+ * `undefined` for no rung (a phrase opened from nowhere is the row as it stands)
+ * or one the curriculum does not have.
  */
 export function taughtAtRung(
   curriculum: Curriculum,
   rung: string | undefined,
   vocabulary: Vocabulary = VOCABULARY_V0,
+  reached: readonly string[] = [],
 ): ((demand: string) => boolean) | undefined {
+  const taughtBy = rungsBehind(curriculum, rung, reached);
+  if (taughtBy === undefined) return undefined;
+  return (demand) => (vocabulary.demands.find((d) => d.id === demand)?.taughtAt ?? []).some((at) => taughtBy.has(at));
+}
+
+/** The rungs whose teaching counts at `rung`: its ancestry, and each reached rung's (`taughtAtRung`'s two readings). */
+function rungsBehind(curriculum: Curriculum, rung: string | undefined, reached: readonly string[]): ReadonlySet<string> | undefined {
   if (rung === undefined) return undefined;
-  const order = lessonOrder(curriculum);
-  const here = order.indexOf(rung);
-  if (here < 0) return undefined;
-  return (demand) => {
-    const at = vocabulary.demands.find((d) => d.id === demand)?.taughtAt;
-    if (at === null || at === undefined) return false;
-    const index = order.indexOf(at);
-    return index >= 0 && index <= here;
-  };
+  const ancestry = rungAncestry(curriculum);
+  const here = ancestry.get(rung);
+  if (here === undefined) return undefined;
+  const theirs = reached.map((id) => ancestry.get(id)).filter((one): one is ReadonlySet<string> => one !== undefined);
+  return theirs.length === 0 ? here : new Set([...here, ...theirs.flatMap((one) => [...one])]);
+}
+
+/** Worked out once per curriculum object: each rung's own `concepts`. */
+const CONCEPTS = new WeakMap<Curriculum, ReadonlyMap<string, readonly string[]>>();
+
+function conceptsByRung(curriculum: Curriculum): ReadonlyMap<string, readonly string[]> {
+  const known = CONCEPTS.get(curriculum);
+  if (known) return known;
+  const out = new Map<string, readonly string[]>();
+  for (const stage of curriculum.stages) for (const unit of stage.units) for (const lesson of unit.lessons) out.set(lesson.id, lesson.concepts);
+  CONCEPTS.set(curriculum, out);
+  return out;
+}
+
+/**
+ * Whether a fixed position's note reading is taught at a rung (L120b): a lesson among the rungs whose
+ * teaching counts there — the rung's ancestry, and each reached rung's, as `taughtAtRung` reads them —
+ * names the position's concept in its own `concepts`. 1.1 names `C-position` and 1.3 `LH-C-position`,
+ * so right-hand C position is taught from 1.1, the left hand's from 1.3, and on the practice floor, which
+ * stands on 1.1, the right hand's alone. `concepts` only, never `introduces` (`claims.teaching_rungs`'s
+ * rule); the positions themselves are the vocabulary's (`fixedPositions`). `undefined` where
+ * `taughtAtRung` is.
+ */
+export function positionTaughtAtRung(curriculum: Curriculum, rung: string | undefined, reached: readonly string[] = []): ((concept: string) => boolean) | undefined {
+  const behind = rungsBehind(curriculum, rung, reached);
+  if (behind === undefined) return undefined;
+  const concepts = conceptsByRung(curriculum);
+  const named = new Set([...behind].flatMap((id) => [...(concepts.get(id) ?? [])]));
+  return (concept) => named.has(concept);
+}
+
+/**
+ * What the rung judging an offer has taught, as the one gate's learner reads it (L120b): `taught`
+ * (`taughtAtRung`) and, from the same rung, ancestry and reached set, `positionTaught`
+ * (`positionTaughtAtRung`). Every place that builds a learner's taught set from a rung builds it here,
+ * so no learner judged at a rung has one without the other. Neither for no rung or one the curriculum
+ * lacks.
+ */
+export function taughtForLearner(
+  curriculum: Curriculum,
+  rung: string | undefined,
+  vocabulary: Vocabulary = VOCABULARY_V0,
+  reached: readonly string[] = [],
+): Pick<Learner, 'taught' | 'positionTaught'> {
+  const taught = taughtAtRung(curriculum, rung, vocabulary, reached);
+  const positionTaught = positionTaughtAtRung(curriculum, rung, reached);
+  return { ...(taught === undefined ? {} : { taught }), ...(positionTaught === undefined ? {} : { positionTaught }) };
 }
 
 /**
@@ -1624,6 +2233,36 @@ export function readingOptions(
     else held[key] = asked[key];
   }
   return held as unknown as SightReadingOptions;
+}
+
+/**
+ * The options the Score screen writes a generated phrase from (C4c; SR2): the row with the recipe's moves over
+ * it, held to what `hold` has taught where the route names one (Today's unanchored daily read: the learner's own
+ * rung), else to what the judging rung has taught (`?rung=` or `?from=`); opened from nowhere, or with no
+ * curriculum to read, the row as it stands. The one place the screen's hold is decided, so the tests read the
+ * phrase the learner is shown through it, never through a copy.
+ */
+export function phraseOptions(
+  curriculum: Curriculum | undefined,
+  item: CatalogItem,
+  value: { row?: string; moved?: ReadingMoves; easy?: true } | undefined,
+  seed: number | undefined,
+  rungs: { judging?: string; hold?: string },
+  vocabulary: Vocabulary = VOCABULARY_V0,
+): SightReadingOptions {
+  const by = rungs.hold ?? rungs.judging;
+  const taught = curriculum === undefined || by === undefined ? undefined : taughtAtRung(curriculum, by, vocabulary);
+  return readingOptions(item, value, seed, taught);
+}
+
+/**
+ * Whether a phrase of these options asks only what `taught` has taught (SR2's "valid phrase"): no demand the
+ * set lacks — the coping question's `notAsked` cells aside — may be written (`mayWrite`, the predicate
+ * `heldToRung` and the generator contract rest on). `interval.step` may always be written, so before 1.1
+ * teaches steps no phrase is valid.
+ */
+export function asksOnlyTaught(options: SightReadingOptions, taught: (demand: string) => boolean, vocabulary: Vocabulary = VOCABULARY_V0): boolean {
+  return vocabulary.demands.every((d) => d.notAsked !== undefined || taught(d.id) || READING_CONTROLS[d.id]?.mayWrite(options) === false);
 }
 
 /**
@@ -1723,6 +2362,13 @@ export interface ReadingOffer {
   lessonId?: string;
   /** False before any rung that lists a reading row: the easiest row stands in, and the session has no reading slot. */
   anchored: boolean;
+  /**
+   * The rung whose taught set holds the phrase, where it is not the judging rung's (SR2; the reviewer's ruling
+   * on SR1, `docs/review/responses/sr1-sightreading-quality.md` §2): the unanchored daily read is judged by its
+   * row's rung (`TodayScreen.rungForSlot`, 1.5 for the easiest row) and held to what the learner's own rung has
+   * taught. Absent everywhere else: the phrase is held to the judging rung, as before.
+   */
+  hold?: string;
   why: ReadingWhy;
 }
 
@@ -1778,13 +2424,13 @@ function anchorFor(input: ReadingInput, readers: readonly CatalogItem[]): { item
 }
 
 /** A skill whose latest measured records, as many as the policy's step-down count, all went against it. */
-function failing(states: readonly SkillState[], skill: string | undefined, policy: ReaderPolicy): boolean {
+function failing(states: readonly SkillState[], skill: string | undefined, policy: ReaderPolicy, vocabulary: Vocabulary): boolean {
   if (skill === undefined) return false;
   const measured = states
     .find((state) => state.skill.id === skill)
     ?.evidence.filter((e): e is MeasuredEvidence => e.kind === 'measured');
   const latest = (measured ?? []).slice(-policy.stepDownAfter);
-  return latest.length === policy.stepDownAfter && latest.every((e) => !supports(e));
+  return latest.length === policy.stepDownAfter && latest.every((e) => !supports(e, vocabulary));
 }
 
 /**
@@ -1793,14 +2439,14 @@ function failing(states: readonly SkillState[], skill: string | undefined, polic
  * last run of `stepDownAfter` reads against, the latest full-standard read
  * supporting.
  */
-function proficientAt(evidence: readonly MeasuredEvidence[], policy: ReaderPolicy): boolean {
+function proficientAt(evidence: readonly MeasuredEvidence[], policy: ReaderPolicy, vocabulary: Vocabulary): boolean {
   let days = new Set<string>();
   let against = 0;
   let lastFull: MeasuredEvidence | undefined;
   for (const e of evidence) {
     if (e.standard !== 'full') continue;
     lastFull = e;
-    if (supports(e)) {
+    if (supports(e, vocabulary)) {
       against = 0;
       days.add(dayKey(new Date(e.at)));
     } else {
@@ -1808,7 +2454,7 @@ function proficientAt(evidence: readonly MeasuredEvidence[], policy: ReaderPolic
       if (against >= policy.stepDownAfter) days = new Set();
     }
   }
-  return lastFull !== undefined && supports(lastFull) && days.size >= policy.stepUpAfter;
+  return lastFull !== undefined && supports(lastFull, vocabulary) && days.size >= policy.stepUpAfter;
 }
 
 /**
@@ -1817,14 +2463,18 @@ function proficientAt(evidence: readonly MeasuredEvidence[], policy: ReaderPolic
  * phrase read right as a whole is not yet shown at a demand that went wrong in
  * it, and the reader does not add to it until those reads hold at every demand
  * the phrase still asks. A demand the recipe now keeps out does not hold it
- * back.
+ * back. `share` is the reader's skill's support share in the vocabulary (CL11b,
+ * L57), the share its whole reads are supported at. A demand the coping question
+ * never asks (`notAsked`: the habanera and the tresillo, CD1 D5) never holds a
+ * phrase back: the reader asks no more of a phrase than the gate does.
  */
-function heldBack(reads: readonly MeasuredEvidence[], current: SightReadingOptions): string[] {
+function heldBack(reads: readonly MeasuredEvidence[], current: SightReadingOptions, share: number, notAsked: ReadonlySet<string>): string[] {
   const out = new Set<string>();
   for (const read of reads) {
     for (const entry of read.byDemand ?? []) {
-      if (entry.n === 0 || entry.right / entry.n >= SUPPORT_SHARE) continue;
+      if (entry.n === 0 || entry.right / entry.n >= share) continue;
       const demand = SAME_NOTES[entry.demand] ?? entry.demand;
+      if (notAsked.has(demand)) continue;
       if (READING_CONTROLS[demand]?.mayWrite(current) ?? true) out.add(demand);
     }
   }
@@ -1835,17 +2485,21 @@ function heldBack(reads: readonly MeasuredEvidence[], current: SightReadingOptio
  * The demands of sight-reading the reads single out (`pattern` or `isolated`)
  * that the phrase still holds, as findings a reason line may cite: "shorter
  * than a quarter" as the eighths; the lowest share first, a pattern before an
- * isolated case, the latest taught first.
+ * isolated case, the latest taught first. Never a `notAsked` demand (the habanera
+ * and the tresillo, CD1 D5): a reason line naming a cell no lesson on the path
+ * taught is a claim the app cannot support.
  */
 function singledOut(
   readings: readonly DemandReading[],
   current: SightReadingOptions,
   taughtIndex: (demand: string) => number,
+  notAsked: ReadonlySet<string>,
 ): DemandFinding[] {
   const out: DemandFinding[] = [];
   for (const one of readings) {
     if (one.selectivity === 'ambiguous') continue;
     const demand = SAME_NOTES[one.demand] ?? one.demand;
+    if (notAsked.has(demand)) continue;
     if ((READING_CONTROLS[demand]?.mayWrite(current) ?? true) !== true || out.some((found) => found.demand === demand)) continue;
     out.push({ demand, selectivity: one.selectivity, phrases: one.phrases, phrasesBelow: one.phrasesBelow, n: one.n, right: one.right });
   }
@@ -1935,6 +2589,22 @@ export function readingMoves(input: {
 }
 
 /**
+ * The key a phrase of these options is written in, for the line that names it.
+ * The seed chooses the key before any draw, so a phrase the generator refuses
+ * (D1a: no draw kept its promises and the level's rules) still has one, carried
+ * on the refusal; the offer is not lost to it, and the Score screen shows the
+ * refusal when the phrase is opened.
+ */
+function keyOfPhrase(options: SightReadingOptions): number {
+  try {
+    return generateSightReading(options).fifths;
+  } catch (cause: unknown) {
+    if (cause instanceof SightReadingRefusal) return cause.fifths;
+    throw cause;
+  }
+}
+
+/**
  * The next sight-reading phrase for a learner (C4, C4c): Today's daily read and
  * the session's reading slot, from one rule.
  *
@@ -1978,8 +2648,35 @@ export function readingMoves(input: {
  * key the phrase is in.
  *
  * Pure: the same rows, rung and day give the same offer.
+ *
+ * **The unanchored daily read (SR2).** Before any rung that lists a reading row, the easiest row stands in and
+ * is judged by its own rung; its phrase is held to what the learner's rung has taught (`hold`), here, in the
+ * reader's own options, and on the Score screen (`phraseOptions`). Where no phrase of the offer asks only what
+ * that rung has taught (`asksOnlyTaught`: before 1.1 every phrase moves by step), there is no daily read yet:
+ * `null`, Today's no-offer path. The session's slot drops an unanchored offer anyway; every anchored offer is
+ * held to its rung, as before.
  */
 export function readingOffer(input: ReadingInput): ReadingOffer | null {
+  const offer = readingOfferAt(input);
+  if (offer === null || offer.hold === undefined) return offer;
+  const vocabulary = input.vocabulary ?? VOCABULARY_V0;
+  const taught = taughtAtRung(input.curriculum, offer.hold, vocabulary);
+  if (taught === undefined) return offer;
+  return asksOnlyTaught(readingOptions(offer.item, offer.recipe, undefined, taught), taught, vocabulary) ? offer : null;
+}
+
+/**
+ * The options the last read of a row was written from, where the run stored them (`material`, D4: the complete
+ * generator identity, `material.phraseMaterial`), else `undefined`. What step 3 reads to see a phrase held
+ * below its judging rung (SR2), and the evidence job's first candidate.
+ */
+export function writtenOptions(row: Pick<SessionRow, 'material' | 'seed'>): SightReadingOptions | undefined {
+  const material = row.material;
+  if (material?.kind !== 'generator' || material.family !== 'sight-reading') return undefined;
+  return { ...(material.recipe as unknown as SightReadingOptions), ...(row.seed === undefined ? {} : { seed: row.seed }) };
+}
+
+function readingOfferAt(input: ReadingInput): ReadingOffer | null {
   const vocabulary = input.vocabulary ?? VOCABULARY_V0;
   const policy = input.policy ?? READER_POLICY;
   const readers = input.items.filter(isReader);
@@ -1991,13 +2688,33 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
     const stored = row.recipe;
     return stored && byId.has(stored.row) ? recipe(stored.row, stored.moved ?? {}, stored.easy === true) : recipe(row.itemId, {});
   };
-  const base = { item: anchor.item, ...(anchor.lessonId === undefined ? {} : { lessonId: anchor.lessonId }), anchored: anchor.anchored };
+  // SR2: the unanchored daily read is held to the learner's own rung, never to the row's (which judges it).
+  const learnerRung = input.position?.lesson.id;
+  const heldBelow =
+    input.purpose === 'daily' && !anchor.anchored && learnerRung !== undefined && taughtAtRung(input.curriculum, learnerRung, vocabulary) !== undefined
+      ? learnerRung
+      : undefined;
+  const base = {
+    item: anchor.item,
+    ...(anchor.lessonId === undefined ? {} : { lessonId: anchor.lessonId }),
+    anchored: anchor.anchored,
+    ...(heldBelow === undefined ? {} : { hold: heldBelow }),
+  };
 
   // Today's phrase already met: the card shows it as read (or heard), not as a new one.
+  // Today's phrase is the day's seed under the version in force (D1a, G21): a
+  // run of that seed under another version — or with none, version 1's — read
+  // other music, and today's phrase is still to be read.
   const dailyToday = dailySeed(day);
   if (input.purpose === 'daily') {
     const met = input.rows
-      .filter((row) => row.seed === dailyToday && byId.has(row.itemId) && dayKey(new Date(row.at)) === day)
+      .filter(
+        (row) =>
+          row.seed === dailyToday &&
+          phraseVersionOf(row) === SIGHT_READING_IN_FORCE &&
+          byId.has(row.itemId) &&
+          dayKey(new Date(row.at)) === day,
+      )
       .sort((a, b) => a.at.localeCompare(b.at));
     const first = met[0];
     if (first) {
@@ -2029,7 +2746,10 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   const lastEasyAt = here.map((row) => recipeOf(row).easy === true).lastIndexOf(true);
   const sinceEasy = here.length - 1 - lastEasyAt;
 
-  // The seed: one no stored run of the row carries.
+  // The seed: one no stored run of the row carries — under any version (D1a):
+  // the question is which seed may be offered, and a seed read under another
+  // version can write the very notes read then (many seeds write the same
+  // phrase at both), while skipping it costs nothing.
   const onRecord = new Set(input.rows.filter((row) => row.itemId === anchor.item.id && row.seed !== undefined).map((row) => row.seed));
   let seed = dailyToday;
   if (input.purpose === 'slot') {
@@ -2044,10 +2764,11 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   if (!last) return offer(working, { kind: 'rung' });
   const measure: ReadMeasure = { at: last.at, right: last.right, n: last.n };
 
-  // The phrase is held to what the row's rung has taught (as the Score screen holds it); moves are gated by the learner's.
+  // The phrase is held to what the row's rung has taught (as the Score screen holds it), or, for the unanchored
+  // daily read, to what the learner's rung has (SR2); moves are gated by the learner's.
   const rung = input.position?.lesson.id;
-  const taught = taughtAtRung(input.curriculum, rung, vocabulary) ?? ((demand: string) => vocabulary.demands.some((d) => d.id === demand && d.taughtAt !== null));
-  const hold = taughtAtRung(input.curriculum, anchor.lessonId, vocabulary);
+  const taught = taughtAtRung(input.curriculum, rung, vocabulary) ?? ((demand: string) => vocabulary.demands.some((d) => d.id === demand && d.taughtAt.length > 0));
+  const hold = taughtAtRung(input.curriculum, heldBelow ?? anchor.lessonId, vocabulary);
   const ctx: MoveContext = {
     item: anchor.item,
     working,
@@ -2056,11 +2777,19 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   };
   const current = ctx.options(working);
   const order = lessonOrder(input.curriculum);
+  // Where the learner's rung was taught the demand (E0b): its listed rung on the rung's path — one
+  // per path — else, with no rung, the earliest listed. One ancestry, where the file's order is a
+  // linear extension of it (E0a).
+  const onPath = rung === undefined ? undefined : rungAncestry(input.curriculum).get(rung);
   const taughtIndex = (demand: string): number => {
-    const at = vocabulary.demands.find((d) => d.id === demand)?.taughtAt;
-    return at ? order.indexOf(at) : Number.POSITIVE_INFINITY;
+    const listed = vocabulary.demands.find((d) => d.id === demand)?.taughtAt ?? [];
+    const here = onPath === undefined ? [] : listed.filter((at) => onPath.has(at));
+    const at = (here.length > 0 ? here : listed).map((one) => order.indexOf(one));
+    return at.length > 0 ? Math.min(...at) : Number.POSITIVE_INFINITY;
   };
   const vocabularyIndex = (demand: string): number => vocabulary.demands.findIndex((d) => d.id === demand);
+  // CD1 D5: the demands the coping question never asks, which never hold a phrase back nor reach a reason line.
+  const notAsked = new Set(vocabulary.demands.filter((d) => d.notAsked !== undefined).map((d) => d.id));
 
   // 3. The rung holding the row has moved on since the last read, and its phrases may now hold more.
   const thenRung = previous?.opened?.rung;
@@ -2070,6 +2799,18 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
       .filter(([, control]) => control.mayWrite(current) && !control.mayWrite(then))
       .map(([demand]) => demand);
     if (opened.length > 0) return offer(working, { kind: 'lesson', last: measure, demands: opened });
+  } else if (thenRung !== undefined && anchor.lessonId !== undefined && previous !== undefined) {
+    // SR2: the last read was judged by this rung and held below it (the unanchored daily read, held to the
+    // learner's own rung): its stored phrase (`material`) could not hold a demand this rung's hold of the same
+    // recipe can. Only what the run stored is read; a run with no material is read as before.
+    const written = writtenOptions(previous);
+    if (written !== undefined) {
+      const atRung = readingOptions(anchor.item, recipeOf(previous), previous.seed, taughtAtRung(input.curriculum, thenRung, vocabulary));
+      const opened = Object.entries(READING_CONTROLS)
+        .filter(([, control]) => control.mayWrite(current) && control.mayWrite(atRung) && !control.mayWrite(written))
+        .map(([demand]) => demand);
+      if (opened.length > 0) return offer(working, { kind: 'lesson', last: measure, demands: opened });
+    }
   }
 
   const readings = demandReadings(input.rows, vocabulary, input.today).filter((one) => one.skill === READER_SKILL);
@@ -2120,8 +2861,8 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
 
   // 4a. Two reads against the recipe.
   const lastFew = evidence.slice(-policy.stepDownAfter);
-  if (lastFew.length === policy.stepDownAfter && lastFew.every((e) => !supports(e))) {
-    const because = singledOut(readings, current, taughtIndex)[0];
+  if (lastFew.length === policy.stepDownAfter && lastFew.every((e) => !supports(e, vocabulary))) {
+    const because = singledOut(readings, current, taughtIndex, notAsked)[0];
     if (because) {
       const down = moveFor(ctx, because.demand, 'off');
       return down ? offer(down.recipe, { kind: 'back', last: measure, move: down, because }) : offer(working, { kind: 'kept', last: measure, because });
@@ -2131,8 +2872,8 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   }
 
   // 4b. Proficient at the recipe, at every demand the phrase holds: the next taught demand.
-  const proficient = !previousEasy && proficientAt(evidence, policy);
-  const stillWrong = proficient ? heldBack(evidence.slice(-policy.stepUpAfter), current) : [];
+  const proficient = !previousEasy && proficientAt(evidence, policy, vocabulary);
+  const stillWrong = proficient ? heldBack(evidence.slice(-policy.stepUpAfter), current, supportShareOf(READER_SKILL, vocabulary), notAsked) : [];
   const ready = proficient && stillWrong.length === 0;
   if (ready) {
     const shown = (demand: string): boolean =>
@@ -2144,10 +2885,10 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
       .filter(taught)
       .sort((a, b) => taughtIndex(a) - taughtIndex(b) || vocabularyIndex(a) - vocabularyIndex(b));
     for (const demand of candidates) {
-      if (shown(demand) || failing(states, vocabulary.demands.find((d) => d.id === demand)?.copedWithBy, policy)) continue;
+      if (shown(demand) || failing(states, vocabulary.demands.find((d) => d.id === demand)?.copedWithBy, policy, vocabulary)) continue;
       const up = moveFor(ctx, demand, 'on');
       if (!up || !up.brings.every(taught)) continue;
-      const key = demand === 'key.signature' ? generateSightReading(readingOptions(anchor.item, up.recipe, seed, hold)).fifths : undefined;
+      const key = demand === 'key.signature' ? keyOfPhrase(readingOptions(anchor.item, up.recipe, seed, hold)) : undefined;
       return offer(up.recipe, { kind: 'forward', last: measure, move: key === undefined ? up : { ...up, key } });
     }
   }
@@ -2161,10 +2902,10 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   // Right as a whole, and a demand the phrase holds went wrong in the proving reads: held, and the line says
   // what the reads single out, or that the app is not sure yet.
   if (stillWrong.length > 0) {
-    const finding = singledOut(readings, current, taughtIndex).find((one) => stillWrong.includes(one.demand));
+    const finding = singledOut(readings, current, taughtIndex, notAsked).find((one) => stillWrong.includes(one.demand));
     return finding ? offer(working, { kind: 'hold', last: measure, wrong: finding }) : offer(working, { kind: 'unsure', last: measure });
   }
   const keys = current.fifths;
-  const key = Array.isArray(keys) && keys.length > 1 ? generateSightReading(readingOptions(anchor.item, working, seed, hold)).fifths : undefined;
+  const key = Array.isArray(keys) && keys.length > 1 ? keyOfPhrase(readingOptions(anchor.item, working, seed, hold)) : undefined;
   return offer(working, { kind: 'hold', last: measure, ...(key === undefined ? {} : { key }) });
 }

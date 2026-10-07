@@ -1,0 +1,70 @@
+# checks for 61 path(s): 61 matched, 0 unmatched
+# app/src/score/WindowRenderer.ts: app/src/**, app/src/score/**
+# app/tests/e2e/score.window-rule.spec.ts: app/tests/e2e/*.spec.ts
+# docs/04-ui-spec.md: docs/04-ui-spec.md, docs/**
+# docs/08-score-render-states.md: docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/runs/U110/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/U110/after-342x740-reload-at-rest.png: docs/**
+# docs/prompts/runs/U110/after-360x780-fresh-at-rest.png: docs/**
+# docs/prompts/runs/U110/after-360x780-reload-at-rest.png: docs/**
+# docs/prompts/runs/U110/after-360x780-reload-playing-bar6.png: docs/**
+# docs/prompts/runs/U110/before-360x780-fresh-at-rest.png: docs/**
+# docs/prompts/runs/U110/before-360x780-reload-at-rest.png: docs/**
+# docs/prompts/runs/U110/before-360x780-reload-playing-bar6.png: docs/**
+# docs/prompts/runs/U110/e2e-mapped-specs.txt: docs/**
+# docs/prompts/runs/U110/gallery-compare-final-runs.txt: docs/**
+# docs/prompts/runs/U110/gallery-compare-first-final.txt: docs/**
+# docs/prompts/runs/U110/heights-twinkle-bars3-342-wide-guard-removed.json: docs/**
+# docs/prompts/runs/U110/map-min.txt: docs/**
+# docs/prompts/runs/U110/mutant-ladder-guard-only.txt: docs/**
+# docs/prompts/runs/U110/mutant-zoom-gate-only.txt: docs/**
+# docs/prompts/runs/U110/pickup-committed.json: docs/**
+# docs/prompts/runs/U110/pickup-final.json: docs/**
+# docs/prompts/runs/U110/pricing-log-after-reload1.txt: docs/**
+# docs/prompts/runs/U110/pricing-log-before-reload1.txt: docs/**
+# docs/prompts/runs/U110/pricing-log-twinkle-342x740-bars3-after.txt: docs/**
+# docs/prompts/runs/U110/pricing-log-twinkle-342x740-bars3-before.txt: docs/**
+# docs/prompts/runs/U110/probe-load-after.txt: docs/**
+# docs/prompts/runs/U110/probe-load-before.txt: docs/**
+# docs/prompts/runs/U110/probe-load-final.txt: docs/**
+# docs/prompts/runs/U110/probe-run-after.txt: docs/**
+# docs/prompts/runs/U110/probe-run-before.txt: docs/**
+# docs/prompts/runs/U110/red-u110-case-on-the-committed-renderer.txt: docs/**
+# docs/prompts/runs/U110/red-u110-case-on-the-guard-only-variant.txt: docs/**
+# docs/prompts/runs/U110/screenshots-and-fuzz.txt: docs/**
+# docs/prompts/runs/U110/scripts-clean-log.cjs: docs/**
+# docs/prompts/runs/U110/scripts-compare-galleries.cjs: docs/**
+# docs/prompts/runs/U110/scripts-compare-sweeps.cjs: docs/**
+# docs/prompts/runs/U110/scripts-excerpt-log.cjs: docs/**
+# docs/prompts/runs/U110/scripts-gallery-cell.cjs: docs/**
+# docs/prompts/runs/U110/scripts-playwright.u110-5423.config.ts: docs/**
+# docs/prompts/runs/U110/scripts-playwright.u110-states-5423.config.ts: docs/**
+# docs/prompts/runs/U110/scripts-run-chain.ps1: docs/**
+# docs/prompts/runs/U110/scripts-run-e2e.ps1: docs/**
+# docs/prompts/runs/U110/scripts-run-sweep.ps1: docs/**
+# docs/prompts/runs/U110/scripts-scrub.cjs: docs/**
+# docs/prompts/runs/U110/scripts-summarise-run.cjs: docs/**
+# docs/prompts/runs/U110/scripts-summarise-sweep.cjs: docs/**
+# docs/prompts/runs/U110/scripts-summarise.cjs: docs/**
+# docs/prompts/runs/U110/scripts-u110-heights.spec.ts: docs/**
+# docs/prompts/runs/U110/scripts-u110-pickup.spec.ts: docs/**
+# docs/prompts/runs/U110/scripts-u110-probe.spec.ts: docs/**
+# docs/prompts/runs/U110/scripts-u110-read.ts: docs/**
+# docs/prompts/runs/U110/scripts-u110-run.spec.ts: docs/**
+# docs/prompts/runs/U110/scripts-u110-sweep.spec.ts: docs/**
+# docs/prompts/runs/U110/states-gallery-committed.txt: docs/**
+# docs/prompts/runs/U110/states-gallery-final.txt: docs/**
+# docs/prompts/runs/U110/sweep-after.txt: docs/**
+# docs/prompts/runs/U110/sweep-before.txt: docs/**
+# docs/prompts/runs/U110/sweep-compare.txt: docs/**
+# docs/prompts/runs/U110/sweep-zoom-gate-only-360x780.txt: docs/**
+# docs/prompts/runs/U110/unit-all.txt: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/dark-ink.spec.ts tests/e2e/engine.spec.ts tests/e2e/excerpts.spec.ts tests/e2e/microscope.spec.ts tests/e2e/modes-engraving.spec.ts tests/e2e/perf.spec.ts tests/e2e/score-fit-paths.spec.ts tests/e2e/score.arrange-race.spec.ts tests/e2e/score.countin.spec.ts tests/e2e/score.density.spec.ts tests/e2e/score.fill.spec.ts tests/e2e/score.fuzz.spec.ts tests/e2e/score.head-height.spec.ts tests/e2e/score.hearIt.spec.ts tests/e2e/score.hearbar.spec.ts tests/e2e/score.latch.spec.ts tests/e2e/score.layout.spec.ts tests/e2e/score.pickup-numbers.spec.ts tests/e2e/score.readahead.spec.ts tests/e2e/score.renderer.fuzz.spec.ts tests/e2e/score.rotate.spec.ts tests/e2e/score.screen.spec.ts tests/e2e/score.slide.spec.ts tests/e2e/score.slots.spec.ts tests/e2e/score.spec.ts tests/e2e/score.states.spec.ts tests/e2e/score.window-rule.spec.ts tests/e2e/today.spec.ts --workers=4
+states	app	npm run states

@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_m6_a_three_eight_window_is_not_compound_and_a_six_eight_one_is (tests.test_excerpt_proposer.TheGates.test_m6_a_three_eight_window_is_not_compound_and_a_six_eight_one_is)
+M6 (L120b): the proposer predicts what a cut will measure as, so it reads compound time by the
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8cdf3dae958f4a\tools\content\tests\test_excerpt_proposer.py", line 319, in test_m6_a_three_eight_window_is_not_compound_and_a_six_eight_one_is
+    self.assertNotIn("metre.compound", window(ctx, 1, 4, "right").demands, "3/8 is simple triple")
+AssertionError: 'metre.compound' unexpectedly found in ['interval.step', 'metre.compound'] : 3/8 is simple triple
+
+----------------------------------------------------------------------
+Ran 1 test in 0.010s
+
+FAILED (failures=1)

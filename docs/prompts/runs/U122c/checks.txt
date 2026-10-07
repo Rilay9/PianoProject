@@ -1,0 +1,28 @@
+U122c, the checks on the final tree (from app/; machine paths replaced).
+
+npx tsc -b                                   exit 0
+npm run lint (eslint . --max-warnings=0)     exit 0
+npx vitest run                               exit 1: 3 failed | 7630 passed | 1 skipped | 1 todo (7635), 332 files
+
+The three failures, each this worktree's environment, none on a line this lane changed:
+ FAIL  lessonClaimsAboutApp.test.ts > blues.3: the rung carries two tool buttons ...
+       the check reads ScoreScreen.ts raw and looks for "menuRow(\n    'Rhythm only'"; this checkout is CRLF
+       (core.autocrlf), so the raw text holds "\r\n" there. node on the working copy: raw false, LF-normalised true.
+       The lines are not in this lane's diff.
+ FAIL  midiParity.test.ts > has a reference to compare against
+       AssertionError: no reference in <worktree>/build/midi-parity (tools/midi-cleanup/tests/parity_reference.py
+       was not run in this worktree; CI runs it before the unit tests)
+ FAIL  taughtByAncestry.test.ts > the build reads the same ancestry
+       ENOENT <worktree>/build/rung-claims.json (no content build here; the content was copied from the main checkout)
+
+Browser (port 5453, two workers, focused batches; `score-batch-*.txt`, `matrix-run.txt`, `subset-final.txt`):
+  the walk, U122C_MATRIX=full, 96 cells                       96 passed
+  the walk's ordinary-suite subset and suite cases           22 passed
+  the Score specs touched (states, screen, bar-targets, score, fuzz, window-rule, countin, blind, run,
+    layout, head-height, rotate, hearIt, latch, tour-practice-modes)    230 passed (score-batch-3-final.txt)
+  earlier: 57 failed before the tests encoding the old surfaces were revised (score-batch-1-...), 4 after
+    (score-batch-2.txt: the Stop button under the floor, and a hit-test under `pointer-events: none`; both fixed)
+
+The local screenshot comparisons in score.layout.spec.ts and score.spec.ts compare against `-win32.png` baselines
+this lane's own first run wrote (gitignored, eye-only, skipped in CI): they say nothing about the change.
+The tour (tests/tour) was not run (sixteen minutes); its scene 24 reads the top line now.

@@ -1,0 +1,401 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/router.test.ts (59 tests | 2 failed) 25ms
+   ❯ paper and import-for routes are real changes (6)
+     × carries the rung a paper piece was opened from, and reads it back 6ms
+     × treats the same paper piece opened from a rung and from the Shelf as two routes 1ms
+ ❯ tests/unit/evidenceOnlyMeasured.test.ts (16 tests | 2 failed) 31ms
+   ❯ a channel the run did not measure yields no evidence, whatever the notation demands (10)
+     × a row written under observation definitions this build does not know is refused on both channels, never read as version 1 (L70) 8ms
+     × the one writer’s stamp is a version this build knows (L70) 1ms
+ ❯ tests/unit/evidenceAdversarial.test.ts (20 tests | 3 failed) 42ms
+   ❯ 6. a passage containing a demand with no measurable opportunity for it (5)
+     × a misread eighth at the phrase’s full tempo: counted against sight-reading by its pitch; the rhythm demands absent; the rhythm skill refused as today 8ms
+     × a right-pitched eighth at the same tempo is counted right 2ms
+     × two reads alike: the skip is below and not singled out — every misread skip was on an eighth the window could not time 2ms
+ ❯ tests/unit/skillsReadTheLadder.test.ts (7 tests | 2 failed) 15ms
+   ❯ what the Skills screen says a concept is (7)
+     ❯ a carried rung’s introductions are exposures (G70) (3)
+       × blues.5 carried: the walking bass it introduces is in the map, dated the day it was carried 4ms
+       × 3.1 carried and 3.3 not: accidentals read introduced on the ladder and on the Skills list; neither rung is met by it 1ms
+ ❯ tests/unit/shelf.test.ts (13 tests | 1 failed) 23ms
+   ❯ overlayShelf (4)
+     × carries each listed piece’s twin on the rung, and none for a piece without one 4ms
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ ❯ tests/unit/rungStateFromEvidence.test.ts (24 tests | 1 failed) 100ms
+   ❯ a shelf twin’s run counts as the book piece the rung lists (L79) (5)
+     × a measured run of the twin judged by the rung meets its songs requirement, as the book piece 6ms
+ ❯ tests/unit/paperScreenTwin.test.ts (4 tests | 1 failed) 375ms
+   ❯ PaperScreen: the twin opens judged by the rung that opened the paper screen, and by none from the Shelf (2)
+     × opened from a rung (`from`): the button opens the twin with that rung 67ms
+ ❯ tests/unit/lessonPageReadsTheEvidence.test.ts (7 tests | 1 failed) 582ms
+   ❯ a book piece counted through its twin (L79) (1)
+     × the Counted line names the piece by its title, never by its id 65ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 13 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/evidenceAdversarial.test.ts > 6. a passage containing a demand with no measurable opportunity for it > a misread eighth at the phrase’s full tempo: counted against sight-reading by its pitch; the rhythm demands absent; the rhythm skill refused as today
+AssertionError: expected { kind: 'measured', …(8) } to match object { n: 8, right: 7 }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "n": 8,
+-   "right": 7,
++   "n": 6,
++   "right": 6,
+  }
+
+ ❯ tests/unit/evidenceAdversarial.test.ts:282:19
+    280|     const sight = measured(results, 'sight-reading');
+    281|     // Every step counted, step 3 among them and wrong: 7 of 8.
+    282|     expect(sight).toMatchObject({ n: 8, right: 7 });
+       |                   ^
+    283|     expect(counted(sight, 'interval.skip')).toMatchObject({ n: 3, righ…
+    284|     expect(sight.byDemand.map((one) => one.demand)).not.toContain('rhy…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  tests/unit/evidenceAdversarial.test.ts > 6. a passage containing a demand with no measurable opportunity for it > a right-pitched eighth at the same tempo is counted right
+AssertionError: expected { kind: 'measured', …(8) } to match object { n: 8, right: 8 }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "n": 8,
+-   "right": 8,
++   "n": 6,
++   "right": 6,
+  }
+
+ ❯ tests/unit/evidenceAdversarial.test.ts:302:19
+    300|     const results = evidenced(observed(RHYTHMIC, 12, { tempoPct: 100 }…
+    301|     const sight = measured(results, 'sight-reading');
+    302|     expect(sight).toMatchObject({ n: 8, right: 8 });
+       |                   ^
+    303|     expect(counted(sight, 'interval.step')).toMatchObject({ steps: [2,…
+    304|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  tests/unit/evidenceAdversarial.test.ts > 6. a passage containing a demand with no measurable opportunity for it > two reads alike: the skip is below and not singled out — every misread skip was on an eighth the window could not time
+AssertionError: expected { skill: 'sight-reading', …(9) } to match object { below: true, …(2) }
+(9 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "basis": {
+      "alone": {
+-       "of": 2,
++       "of": 0,
+        "wrong": 0,
+      },
+    },
+-   "below": true,
++   "below": false,
+    "selectivity": "ambiguous",
+  }
+
+ ❯ tests/unit/evidenceAdversarial.test.ts:326:18
+    324|     const readings = demandReadings(rows, VOCABULARY_V0, morningAfter(…
+    325|     const skip = readingOf(readings, 'sight-reading', 'interval.skip');
+    326|     expect(skip).toMatchObject({ below: true, selectivity: 'ambiguous'…
+       |                  ^
+    327|     expect(skip.basis.withoutRival.find((one) => one.demand === 'rhyth…
+    328|     expect(named(readings)).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  tests/unit/evidenceOnlyMeasured.test.ts > a channel the run did not measure yields no evidence, whatever the notation demands > a row written under observation definitions this build does not know is refused on both channels, never read as version 1 (L70)
+AssertionError: definitions 2: expected { channel: 'pitch', …(3) } to deeply equal { channel: 'pitch', …(2) }
+
+- Expected
++ Received
+
+  {
++   "at": Map {
++     0 => {
++       "mixed": false,
++       "right": true,
++       "uniform": true,
++     },
++     1 => {
++       "mixed": false,
++       "right": true,
++       "uniform": true,
++     },
++     2 => {
++       "mixed": false,
++       "right": true,
++       "uniform": true,
++     },
++     3 => {
++       "mixed": false,
++       "right": true,
++       "uniform": true,
++     },
++     4 => {
++       "mixed": false,
++       "right": true,
++       "uniform": true,
++     },
++     5 => {
++       "mixed": false,
++       "right": true,
++       "uniform": true,
++     },
++     6 => {
++       "mixed": false,
++       "right": true,
++       "uniform": true,
++     },
++     7 => {
++       "mixed": false,
++       "right": true,
++       "uniform": true,
++     },
++     8 => {
++       "mixed": false,
++       "right": true,
++       "uniform": true,
++     },
++     9 => {
++       "mixed": false,
++       "right": true,
++       "uniform": true,
++     },
++   },
+    "channel": "pitch",
+-   "cites": [
+-     "definitions",
+-   ],
+-   "why": "unknown-definitions",
++   "estimated": false,
++   "toleranceMs": null,
+  }
+
+ ❯ tests/unit/evidenceOnlyMeasured.test.ts:101:68
+     99|       const row = { ...timed, definitions } as Observed;
+    100|       const readings = takeMeasurements(row);
+    101|       expect(readings.pitch, `definitions ${String(definitions)}`).toE…
+       |                                                                    ^
+    102|       expect(readings.timing, `definitions ${String(definitions)}`).to…
+    103|       const results = run(row, ['interval-reading', 'subdivision', 'si…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  tests/unit/evidenceOnlyMeasured.test.ts > a channel the run did not measure yields no evidence, whatever the notation demands > the one writer’s stamp is a version this build knows (L70)
+TypeError: Cannot read properties of undefined (reading 'has')
+ ❯ tests/unit/evidenceOnlyMeasured.test.ts:115:42
+    113|
+    114|   it('the one writer’s stamp is a version this build knows (L70)', () …
+    115|     expect(KNOWN_OBSERVATION_DEFINITIONS.has(OBSERVATION_DEFINITIONS))…
+       |                                          ^
+    116|   });
+    117|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  tests/unit/lessonPageReadsTheEvidence.test.ts > a book piece counted through its twin (L79) > the Counted line names the piece by its title, never by its id
+AssertionError: expected 'One song from this page at 90 % of th…' to contain 'counted: Study No. 3'
+
+Expected: "counted: Study No. 3"
+Received: "One song from this page at 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster. (not yet)"
+
+ ❯ tests/unit/lessonPageReadsTheEvidence.test.ts:179:22
+    177|     const section = await mount('1.3');
+    178|     const lines = [...section.querySelectorAll('#lesson-counts li')].m…
+    179|     expect(lines[0]).toContain('counted: Study No. 3');
+       |                      ^
+    180|     expect(section.querySelector('#lesson-counts')?.textContent, 'the …
+    181|     // The piece's *Practise* carries the rung to the paper screen, wh…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+ FAIL  tests/unit/paperScreenTwin.test.ts > PaperScreen: the twin opens judged by the rung that opened the paper screen, and by none from the Shelf > opened from a rung (`from`): the button opens the twin with that rung
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'import.alive', { from: '3.1' } ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+    "import.alive",
+-   {
+-     "from": "3.1",
+-   },
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/paperScreenTwin.test.ts:125:27
+    123|     section.querySelector<HTMLButtonElement>('#paper-with-score')?.cli…
+    124|     expect(navigateScore).toHaveBeenCalledTimes(1);
+    125|     expect(navigateScore).toHaveBeenCalledWith('import.alive', { from:…
+       |                           ^
+    126|   });
+    127|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/13]⎯
+
+ FAIL  tests/unit/router.test.ts > paper and import-for routes are real changes > carries the rung a paper piece was opened from, and reads it back
+AssertionError: expected { tab: 'library', paper: { …(2) } } to deeply equal { tab: 'library', …(2) }
+
+- Expected
++ Received
+
+  {
+    "paper": {
+      "bookId": "book.b",
+      "pieceId": "p",
+    },
+-   "paperFrom": "3.1",
+    "tab": "library",
+  }
+
+ ❯ tests/unit/router.test.ts:654:52
+    652|   // chart's (one parser, a field each); without it nothing changes.
+    653|   it('carries the rung a paper piece was opened from, and reads it bac…
+    654|     expect(parseHash('#/paper/book.b/p?from=3.1')).toEqual({ tab: 'lib…
+       |                                                    ^
+    655|     expect(routeToHash(parseHash('#/paper/book.b/p?from=3.1'))).toBe('…
+    656|     const { win } = fakeWindow('#/lesson/3.1');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/13]⎯
+
+ FAIL  tests/unit/router.test.ts > paper and import-for routes are real changes > treats the same paper piece opened from a rung and from the Shelf as two routes
+AssertionError: expected [ undefined, undefined ] to deeply equal [ undefined, '3.1', undefined ]
+
+- Expected
++ Received
+
+  [
+    undefined,
+-   "3.1",
+    undefined,
+  ]
+
+ ❯ tests/unit/router.test.ts:675:18
+    673|     router.navigatePaper('book.b', 'p', { from: '3.1' });
+    674|     router.navigatePaper('book.b', 'p');
+    675|     expect(seen).toEqual([undefined, '3.1', undefined]);
+       |                  ^
+    676|   });
+    677|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/13]⎯
+
+ FAIL  tests/unit/rungStateFromEvidence.test.ts > a shelf twin’s run counts as the book piece the rung lists (L79) > a measured run of the twin judged by the rung meets its songs requirement, as the book piece
+AssertionError: expected { requirement: { …(3) }, …(4) } to match object { holds: true, have: 1, …(1) }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "have": 1,
+-   "holds": true,
+-   "items": [
+-     "book.b/p",
+-   ],
++   "have": 0,
++   "holds": false,
++   "items": [],
+  }
+
+ ❯ tests/unit/rungStateFromEvidence.test.ts:250:36
+    248|   it('a measured run of the twin judged by the rung meets its songs re…
+    249|     const state = stateWith('import.t', [run('import.t', { lessonId: '…
+    250|     expect(state?.requirements[0]).toMatchObject({ holds: true, have: …
+       |                                    ^
+    251|     expect(state?.status).toBe('met');
+    252|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/13]⎯
+
+ FAIL  tests/unit/shelf.test.ts > overlayShelf > carries each listed piece’s twin on the rung, and none for a piece without one
+AssertionError: expected undefined to deeply equal { 'book.x/p': 'import.t' }
+
+- Expected:
+{
+  "book.x/p": "import.t",
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/shelf.test.ts:287:29
+    285|     const out = overlayShelf(curriculum([lesson()]), [twinned, plain])…
+    286|     expect(out?.paperOptions).toEqual(['book.x/p', 'book.x/q']);
+    287|     expect(out?.paperTwins).toEqual({ 'book.x/p': 'import.t' });
+       |                             ^
+    288|     // A rung the shelf gives no twin carries no map.
+    289|     expect(overlayShelf(curriculum([lesson()]), [plain]).stages[0]?.un…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/13]⎯
+
+ FAIL  tests/unit/skillsReadTheLadder.test.ts > what the Skills screen says a concept is > a carried rung’s introductions are exposures (G70) > blues.5 carried: the walking bass it introduces is in the map, dated the day it was carried
+AssertionError: expected undefined to deeply equal [ '2026-09-27T08:00:00.000Z' ]
+
+- Expected:
+[
+  "2026-09-27T08:00:00.000Z",
+]
+
++ Received:
+undefined
+
+ ❯ tests/unit/skillsReadTheLadder.test.ts:121:45
+    119|     it('blues.5 carried: the walking bass it introduces is in the map,…
+    120|       const exposures = carriedExposures(of([blues5]), { at: carriedAt…
+    121|       expect(exposures.get('walking-bass')).toEqual([carriedAt]);
+       |                                             ^
+    122|       expect(exposures.get('turnaround')).toEqual([carriedAt]);
+    123|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/13]⎯
+
+ FAIL  tests/unit/skillsReadTheLadder.test.ts > what the Skills screen says a concept is > a carried rung’s introductions are exposures (G70) > 3.1 carried and 3.3 not: accidentals read introduced on the ladder and on the Skills list; neither rung is met by it
+AssertionError: expected undefined to deeply equal [ '2026-09-27T08:00:00.000Z' ]
+
+- Expected:
+[
+  "2026-09-27T08:00:00.000Z",
+]
+
++ Received:
+undefined
+
+ ❯ tests/unit/skillsReadTheLadder.test.ts:128:44
+    126|       const curriculum31 = of([rung31, rung33]);
+    127|       const exposures = carriedExposures(curriculum31, { at: carriedAt…
+    128|       expect(exposures.get('accidentals')).toEqual([carriedAt]);
+       |                                            ^
+    129|       const ladders = skillLadders([], VOCABULARY_V0, now, exposures);
+    130|       expect(ladders.get('accidentals')?.state).toBe('introduced');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/13]⎯
+
+
+ Test Files  8 failed (8)
+      Tests  13 failed | 137 passed (150)
+   Start at  12:22:49
+   Duration  2.56s (transform 33%, environment 28%, import 25%, tests 14%)
+
+  Transform  transforming modules took 2.84s · 33% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

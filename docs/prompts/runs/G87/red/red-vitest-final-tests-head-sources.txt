@@ -1,0 +1,170 @@
+wrote HEAD's app/src/style.css (7e5cdbaaf983)
+wrote HEAD's app/src/ui/screens/LessonScreen.ts (7462f2a92741)
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (284 tests | 2 failed) 547ms
+   ❯ the 2026-09-19 lesson corrections, second-read and under test: the app (80)
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 13ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 3ms
+ ❯ tests/unit/projectSheet.test.ts (9 tests | 1 failed) 1174ms
+   ❯ the date box beside I performed it wears the sheet’s input look (G87; G1b’s follow-up 6) (1)
+     × a rule of the stylesheet reaches the date box and gives it the box, border, radius and type size of the sheet’s text box, and a face 137ms
+ ❯ tests/unit/stage9ProjectsPage.test.ts (8 tests | 3 failed) 1120ms
+   ❯ a Stage 9 unit’s page (6)
+     × its Start line names what Start opens and no more — never “the first thing on this rung” 70ms
+     × a paused project’s badge says Paused with no tick: the neutral style, never the pass style 75ms
+     × no project state wears the tick: each is its words in the neutral style, as not started is 498ms
+
+ Test Files  3 failed (3)
+      Tests  6 failed | 295 passed (301)
+   Start at  18:36:58
+   Duration  15.98s (environment 73%, transform 11%, tests 9%, import 7%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2119:23
+    2117|   for (const [lesson, says, holds] of T12_APP) {
+    2118|     it(`${lesson}: ${says}`, () => {
+    2119|       expect(holds()).toBe(true);
+       |                       ^
+    2120|     });
+    2121|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/projectSheet.test.ts > the date box beside I performed it wears the sheet’s input look (G87; G1b’s follow-up 6) > a rule of the stylesheet reaches the date box and gives it the box, border, radius and type size of the sheet’s text box, and a face
+AssertionError: no rule in style.css reaches the date box: expected [] to not deeply equal []
+
+Compared values have no visual difference.
+
+ ❯ tests/unit/projectSheet.test.ts:270:128
+    268|
+    269|     const dated = declaredFor(date);
+    270|     expect([...dated.keys()].filter((property) => property !== 'box-si…
+       |                                                                                                                                ^
+    271|     const text = declaredFor(document.getElementById('project-goal') a…
+    272|     for (const property of ['min-height', 'padding', 'border', 'border…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/stage9ProjectsPage.test.ts > a Stage 9 unit’s page > its Start line names what Start opens and no more — never “the first thing on this rung”
+AssertionError: expected 'Opens “Title of 9”, the first thing o…' to be 'Opens “Title of 9”.' // Object.is equality
+
+Expected: "Opens “Title of 9”."
+Received: "Opens “Title of 9”, the first thing on this rung."
+
+ ❯ tests/unit/stage9ProjectsPage.test.ts:229:70
+    227|     expect(section.querySelector('#lesson-start'), 'Start is drawn on …
+    228|     // The fixture's first option is the one Start opens, the case tha…
+    229|     expect(section.querySelector('#lesson-start-what')?.textContent).t…
+       |                                                                      ^
+    230|     expect(section.textContent).not.toContain('the first thing on this…
+    231|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/stage9ProjectsPage.test.ts > a Stage 9 unit’s page > a paused project’s badge says Paused with no tick: the neutral style, never the pass style
+AssertionError: expected { word: 'Paused', kind: 'passed' } to deeply equal { word: 'Paused', kind: 'neutral' }
+
+- Expected
++ Received
+
+  {
+-   "kind": "neutral",
++   "kind": "passed",
+    "word": "Paused",
+  }
+
+ ❯ tests/unit/stage9ProjectsPage.test.ts:241:67
+    239|     await applyProjectAction({ itemId: 'song.ballade', material: file(…
+    240|     const mark = songRow(await mount('classical.9'), 'song.ballade').q…
+    241|     expect({ word: mark?.textContent, kind: mark?.dataset.kind }).toEq…
+       |                                                                   ^
+    242|   });
+    243|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/stage9ProjectsPage.test.ts > a Stage 9 unit’s page > no project state wears the tick: each is its words in the neutral style, as not started is
+AssertionError: expected [ { state: 'saved', …(2) }, …(7) ] to deeply equal [ { state: 'saved', …(2) }, …(7) ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "saved",
+      "word": "Saved for later",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "learning",
+      "word": "Learning",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "polishing",
+      "word": "Preparing for performance",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "performance-ready",
+      "word": "Ready to perform",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "maintaining",
+      "word": "Keeping it playable",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "refreshing",
+      "word": "Bringing it back",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "paused",
+      "word": "Paused",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "retired",
+      "word": "Put away",
+    },
+  ]
+
+ ❯ tests/unit/stage9ProjectsPage.test.ts:255:18
+    253|       said.push({ state, word: mark?.textContent, kind: mark?.dataset.…
+    254|     }
+    255|     expect(said).toEqual(Object.entries(PROJECT_TEXT.states).map(([sta…
+       |                  ^
+    256|     const untouched = songRow(await mount('classical.9'), 'song.campan…
+    257|     expect({ word: untouched?.textContent, kind: untouched?.dataset.ki…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+
+vitest exit=1
+restored app/src/style.css: sha256 match (31f5617374af)
+restored app/src/ui/screens/LessonScreen.ts: sha256 match (32614f6e66af)

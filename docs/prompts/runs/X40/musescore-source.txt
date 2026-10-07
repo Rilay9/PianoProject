@@ -1,0 +1,52 @@
+X40 — MuseScore 2.1.0's own source, read for the mechanism behind Maple Leaf's 120 and behind "which sound
+plays" at one position. The MuseTrainer file was written by MuseScore 2.1.0 (lg-209522180.xml:6).
+
+How it was read: through a web fetch of the tagged source on GitHub, whose tool returns the lines it is asked
+for. The lines below are as returned; they were not read in a local checkout, and the MusicXML exporter
+(mscore/exportxml.cpp) was too large for the fetch, so the order in which it writes a segment's tempo texts is
+NOT verified.
+
+1. A tempo text starts at 120 and takes a figure from its words only when they state one
+   https://raw.githubusercontent.com/musescore/MuseScore/v2.1.0/libmscore/tempotext.cpp
+       TempoText::TempoText(Score* s)
+          : Text(s)
+             {
+             _tempo      = 2.0;
+             _followText = false;
+       ...
+       void TempoText::textChanged()
+             {
+             if (!_followText)
+                   return;
+             ... for each note pattern: QRegExp re(QString(pa.pattern)+"\\s*=\\s*(\\d+[.]{0,1}\\d*)\\s*");
+             ... setTempo(...) only when the pattern and a number match
+   _tempo is beats a second: 2.0 is 120 quarter notes a minute (MuseScore's default tempo). "Tempo Di Marcia"
+   and "TRIO" state no "note = number", so a tempo text holding them keeps 2.0 unless its tempo was set by hand.
+   That the exporter writes _tempo x 60 as <sound tempo> is inferred (exportxml.cpp not read).
+
+2. Two tempo texts at one tick: the later one replaces the earlier in MuseScore's own tempo map
+   https://raw.githubusercontent.com/musescore/MuseScore/v2.1.0/libmscore/tempo.cpp
+       void TempoMap::setTempo(int tick, qreal tempo)
+             {
+             auto e = find(tick);
+             if (e != end()) {
+                   e->second.tempo = tempo;
+                   e->second.type |= TempoType::FIX;
+                   }
+             else
+                   insert(std::pair<const int, TEvent> (tick, TEvent(tempo, 0.0, TempoType::FIX)));
+             normalize();
+             }
+   https://raw.githubusercontent.com/musescore/MuseScore/v2.1.0/libmscore/score.cpp (Score::fixTicks)
+       foreach (Element* e, s->annotations()) {
+             if (e->type() == Element::Type::TEMPO_TEXT) {
+                   const TempoText* tt = static_cast<const TempoText*>(e);
+                   setTempo(tt->segment(), tt->tempo());
+                   }
+             }
+   So in MuseScore 2.1.0's playback the last tempo text of a segment (in its annotation order) is the tempo
+   there. If the exporter writes a segment's annotations in that same order (inferred, not verified), MuseScore
+   played Maple Leaf's bar 1 and bar 51 at the printed quarter = 100 (the direction after the 120), where the
+   app's reader keeps the first sound and plays 120.
+
+Not read: MuseScore 1.3's source (Satie's file) and 3.x (the Toccata, the G minor arrangement).

@@ -1,0 +1,298 @@
+exercise.arpeggio7.f-half-diminished7.2oct.both
+   RH bar 1: B4 -> C-5
+   RH bar 1: B5 -> C-6
+   RH bar 2: B5 -> C-6
+   RH bar 2: B4 -> C-5
+   LH bar 1: B3 -> C-4
+   LH bar 1: B4 -> C-5
+   LH bar 2: B4 -> C-5
+   LH bar 2: B3 -> C-4
+exercise.arpeggio7.b-flat-half-diminished7.2oct.both
+   RH bar 1: E5 -> F-5
+   RH bar 1: E6 -> F-6
+   RH bar 2: E6 -> F-6
+   RH bar 2: E5 -> F-5
+   LH bar 1: E4 -> F-4
+   LH bar 1: E5 -> F-5
+   LH bar 2: E5 -> F-5
+   LH bar 2: E4 -> F-4
+exercise.arpeggio7.a-flat-minor7.2oct.both
+   RH bar 1: B4 -> C-5
+   RH bar 1: B5 -> C-6
+   RH bar 2: B5 -> C-6
+   RH bar 2: B4 -> C-5
+   LH bar 1: B3 -> C-4
+   LH bar 1: B4 -> C-5
+   LH bar 2: B4 -> C-5
+   LH bar 2: B3 -> C-4
+exercise.arpeggio7.a-flat-half-diminished7.2oct.both
+   RH bar 1: B4 -> C-5
+   RH bar 1: B5 -> C-6
+   RH bar 2: B5 -> C-6
+   RH bar 2: B4 -> C-5
+   LH bar 1: B3 -> C-4
+   LH bar 1: B4 -> C-5
+   LH bar 2: B4 -> C-5
+   LH bar 2: B3 -> C-4
+exercise.arpeggio7.d-flat-dominant7.2oct.both
+   RH bar 1: B4 -> C-5
+   RH bar 1: B5 -> C-6
+   RH bar 2: B5 -> C-6
+   RH bar 2: B4 -> C-5
+   LH bar 1: B3 -> C-4
+   LH bar 1: B4 -> C-5
+   LH bar 2: B4 -> C-5
+   LH bar 2: B3 -> C-4
+exercise.arpeggio7.d-flat-minor7.2oct.both
+   RH bar 1: E4 -> F-4
+   RH bar 1: B4 -> C-5
+   RH bar 1: E5 -> F-5
+   RH bar 1: B5 -> C-6
+   RH bar 2: B5 -> C-6
+   RH bar 2: E5 -> F-5
+   RH bar 2: B4 -> C-5
+   RH bar 2: E4 -> F-4
+   LH bar 1: E3 -> F-3
+   LH bar 1: B3 -> C-4
+   LH bar 1: E4 -> F-4
+   LH bar 1: B4 -> C-5
+   LH bar 2: B4 -> C-5
+   LH bar 2: E4 -> F-4
+   LH bar 2: B3 -> C-4
+   LH bar 2: E3 -> F-3
+exercise.arpeggio7.d-flat-half-diminished7.2oct.both
+   RH bar 1: E4 -> F-4
+   RH bar 1: B4 -> C-5
+   RH bar 1: E5 -> F-5
+   RH bar 1: B5 -> C-6
+   RH bar 2: B5 -> C-6
+   RH bar 2: E5 -> F-5
+   RH bar 2: B4 -> C-5
+   RH bar 2: E4 -> F-4
+   LH bar 1: E3 -> F-3
+   LH bar 1: B3 -> C-4
+   LH bar 1: E4 -> F-4
+   LH bar 1: B4 -> C-5
+   LH bar 2: B4 -> C-5
+   LH bar 2: E4 -> F-4
+   LH bar 2: B3 -> C-4
+   LH bar 2: E3 -> F-3
+exercise.arpeggio7.g-flat-dominant7.2oct.both
+   RH bar 1: E5 -> F-5
+   RH bar 1: E6 -> F-6
+   RH bar 2: E6 -> F-6
+   RH bar 2: E5 -> F-5
+   LH bar 1: E4 -> F-4
+   LH bar 1: E5 -> F-5
+   LH bar 2: E5 -> F-5
+   LH bar 2: E4 -> F-4
+exercise.arpeggio7.g-flat-minor7.2oct.both
+   RH bar 1: E5 -> F-5
+   RH bar 1: E6 -> F-6
+   RH bar 2: E6 -> F-6
+   RH bar 2: E5 -> F-5
+   LH bar 1: E4 -> F-4
+   LH bar 1: E5 -> F-5
+   LH bar 2: E5 -> F-5
+   LH bar 2: E4 -> F-4
+exercise.arpeggio7.g-flat-half-diminished7.2oct.both
+   RH bar 1: E5 -> F-5
+   RH bar 1: E6 -> F-6
+   RH bar 2: E6 -> F-6
+   RH bar 2: E5 -> F-5
+   LH bar 1: E4 -> F-4
+   LH bar 1: E5 -> F-5
+   LH bar 2: E5 -> F-5
+   LH bar 2: E4 -> F-4
+exercise.arpeggio7.d-diminished7.2oct.both
+   RH bar 1: B4 -> C-5
+   RH bar 1: B5 -> C-6
+   RH bar 2: B5 -> C-6
+   RH bar 2: B4 -> C-5
+   LH bar 1: B3 -> C-4
+   LH bar 1: B4 -> C-5
+   LH bar 2: B4 -> C-5
+   LH bar 2: B3 -> C-4
+exercise.arpeggio7.g-diminished7.2oct.both
+   RH bar 1: E5 -> F-5
+   RH bar 1: E6 -> F-6
+   RH bar 2: E6 -> F-6
+   RH bar 2: E5 -> F-5
+   LH bar 1: E4 -> F-4
+   LH bar 1: E5 -> F-5
+   LH bar 2: E5 -> F-5
+   LH bar 2: E4 -> F-4
+exercise.arpeggio7.f-diminished7.2oct.both
+   RH bar 1: B4 -> C-5
+   RH bar 1: B5 -> C-6
+   RH bar 2: B5 -> C-6
+   RH bar 2: B4 -> C-5
+   LH bar 1: B3 -> C-4
+   LH bar 1: B4 -> C-5
+   LH bar 2: B4 -> C-5
+   LH bar 2: B3 -> C-4
+exercise.arpeggio7.b-flat-diminished7.2oct.both
+   RH bar 1: E5 -> F-5
+   RH bar 1: E6 -> F-6
+   RH bar 2: E6 -> F-6
+   RH bar 2: E5 -> F-5
+   LH bar 1: E4 -> F-4
+   LH bar 1: E5 -> F-5
+   LH bar 2: E5 -> F-5
+   LH bar 2: E4 -> F-4
+exercise.broken7.a-flat-minor7.both
+   RH bar 1: B3 -> C-4
+   RH bar 1: B3 -> C-4
+   RH bar 1: B4 -> C-5
+   RH bar 1: B4 -> C-5
+   RH bar 2: B3 -> C-4
+   RH bar 2: B3 -> C-4
+   RH bar 2: B4 -> C-5
+   RH bar 2: B4 -> C-5
+   LH bar 1: B2 -> C-3
+   LH bar 1: B2 -> C-3
+   LH bar 1: B3 -> C-4
+   LH bar 1: B3 -> C-4
+   LH bar 2: B2 -> C-3
+   LH bar 2: B2 -> C-3
+   LH bar 2: B3 -> C-4
+   LH bar 2: B3 -> C-4
+exercise.broken7.d-flat-dominant7.both
+   RH bar 1: B3 -> C-4
+   RH bar 1: B3 -> C-4
+   RH bar 1: B4 -> C-5
+   RH bar 1: B4 -> C-5
+   RH bar 2: B3 -> C-4
+   RH bar 2: B3 -> C-4
+   RH bar 2: B4 -> C-5
+   RH bar 2: B4 -> C-5
+   LH bar 1: B2 -> C-3
+   LH bar 1: B2 -> C-3
+   LH bar 1: B3 -> C-4
+   LH bar 1: B3 -> C-4
+   LH bar 2: B2 -> C-3
+   LH bar 2: B2 -> C-3
+   LH bar 2: B3 -> C-4
+   LH bar 2: B3 -> C-4
+exercise.broken7.d-flat-minor7.both
+   RH bar 1: E3 -> F-3
+   RH bar 1: B3 -> C-4
+   RH bar 1: B3 -> C-4
+   RH bar 1: E3 -> F-3
+   RH bar 1: E4 -> F-4
+   RH bar 1: B4 -> C-5
+   RH bar 1: B4 -> C-5
+   RH bar 1: E4 -> F-4
+   RH bar 2: E3 -> F-3
+   RH bar 2: B3 -> C-4
+   RH bar 2: B3 -> C-4
+   RH bar 2: E3 -> F-3
+   RH bar 2: E4 -> F-4
+   RH bar 2: B4 -> C-5
+   RH bar 2: B4 -> C-5
+   RH bar 2: E4 -> F-4
+   LH bar 1: E2 -> F-2
+   LH bar 1: B2 -> C-3
+   LH bar 1: B2 -> C-3
+   LH bar 1: E2 -> F-2
+   LH bar 1: E3 -> F-3
+   LH bar 1: B3 -> C-4
+   LH bar 1: B3 -> C-4
+   LH bar 1: E3 -> F-3
+   LH bar 2: E2 -> F-2
+   LH bar 2: B2 -> C-3
+   LH bar 2: B2 -> C-3
+   LH bar 2: E2 -> F-2
+   LH bar 2: E3 -> F-3
+   LH bar 2: B3 -> C-4
+   LH bar 2: B3 -> C-4
+   LH bar 2: E3 -> F-3
+exercise.broken7.g-flat-dominant7.both
+   RH bar 1: E4 -> F-4
+   RH bar 1: E4 -> F-4
+   RH bar 1: E5 -> F-5
+   RH bar 1: E5 -> F-5
+   RH bar 2: E4 -> F-4
+   RH bar 2: E4 -> F-4
+   RH bar 2: E5 -> F-5
+   RH bar 2: E5 -> F-5
+   LH bar 1: E3 -> F-3
+   LH bar 1: E3 -> F-3
+   LH bar 1: E4 -> F-4
+   LH bar 1: E4 -> F-4
+   LH bar 2: E3 -> F-3
+   LH bar 2: E3 -> F-3
+   LH bar 2: E4 -> F-4
+   LH bar 2: E4 -> F-4
+exercise.broken7.g-flat-minor7.both
+   RH bar 1: E4 -> F-4
+   RH bar 1: E4 -> F-4
+   RH bar 1: E5 -> F-5
+   RH bar 1: E5 -> F-5
+   RH bar 2: E4 -> F-4
+   RH bar 2: E4 -> F-4
+   RH bar 2: E5 -> F-5
+   RH bar 2: E5 -> F-5
+   LH bar 1: E3 -> F-3
+   LH bar 1: E3 -> F-3
+   LH bar 1: E4 -> F-4
+   LH bar 1: E4 -> F-4
+   LH bar 2: E3 -> F-3
+   LH bar 2: E3 -> F-3
+   LH bar 2: E4 -> F-4
+   LH bar 2: E4 -> F-4
+exercise.voicing7.f-sharp.close
+   RH bar 2: C#4+F4+G#4+B4 -> C#4+E#4+G#4+B4
+   RH bar 3: F#4+A#4+C#5+F5 -> F#4+A#4+C#5+E#5
+exercise.voicing7.f-sharp.shell
+   RH bar 2: C#4+F4+B4 -> C#4+E#4+B4
+   RH bar 3: F#4+A#4+F5 -> F#4+A#4+E#5
+exercise.voicing7.f-sharp.rootless-a
+   RH bar 2: B4+D#5+F5+G#5 -> B4+D#5+E#5+G#5
+   RH bar 3: A#4+C#5+F5+G#5 -> A#4+C#5+E#5+G#5
+exercise.voicing7.f-sharp.rootless-b
+   RH bar 2: F4+G#4+B4+D#5 -> E#4+G#4+B4+D#5
+   RH bar 3: F4+G#4+A#4+C#5 -> E#4+G#4+A#4+C#5
+exercise.ii-v-i.f-sharp.shells
+   LH bar 3: F#3+F4 -> F#3+E#4
+   LH bar 4: F#3+F4 -> F#3+E#4
+exercise.ii-v-i.f-sharp
+   RH bar 2: F4+B4 -> E#4+B4
+   RH bar 3: F4+A#4 -> E#4+A#4
+   RH bar 4: F4+A#4 -> E#4+A#4
+exercise.ii-v-i.f-sharp.rootless
+   RH bar 2: B4+D#5+F5+G#5 -> B4+D#5+E#5+G#5
+   RH bar 3: A#4+C#5+F5+G#5 -> A#4+C#5+E#5+G#5
+   RH bar 4: A#4+C#5+F5+G#5 -> A#4+C#5+E#5+G#5
+exercise.loop4.f-sharp.root
+   RH bar 2: C#4+F4+G#4 -> C#4+E#4+G#4
+exercise.loop4.f-sharp.inversions
+   RH bar 2: F4+G#4+C#5 -> E#4+G#4+C#5
+exercise.tritone-sub.c
+   RH bar 2: D-4+F4+B4 -> D-4+F4+C-5
+exercise.tritone-sub.f
+   RH bar 2: G-4+B-4+E5 -> G-4+B-4+F-5
+exercise.open-voicing.e-flat.quartal
+   RH bar 2: D-5+G-5+B5 -> D-5+G-5+C-6
+exercise.walking-bass.f.minor-blues
+   RH bar 9: D-4+F4+B4 -> D-4+F4+C-5
+exercise.walking-bass.b-flat.minor-blues
+   RH bar 9: G-4+B-4+E5 -> G-4+B-4+F-5
+exercise.walking-bass.e-flat.minor-blues
+   RH bar 5: A-4+B4+G-5 -> A-4+C-5+G-5
+   RH bar 6: A-4+B4+G-5 -> A-4+C-5+G-5
+   LH bar 5: B2 -> C-3
+   LH bar 6: B2 -> C-3
+exercise.passing-chord.f
+   RH bar 3: D-4+F4+B4 -> D-4+F4+C-5
+
+broken_seventh: 5 of 36 items changed (96 events)
+four_chord_loop: 2 of 24 items changed (2 events)
+ii_v_i: 3 of 36 items changed (8 events)
+open_voicing: 1 of 16 items changed (1 events)
+passing_chord: 1 of 4 items changed (1 events)
+seventh_arpeggio: 14 of 60 items changed (128 events)
+seventh_voicing: 4 of 48 items changed (8 events)
+tritone_sub: 2 of 4 items changed (2 events)
+walking_bass: 3 of 28 items changed (6 events)
+35 of 1176 items changed; 1141 identical; families unchanged: 47 of 56

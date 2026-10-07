@@ -20,10 +20,15 @@ usually the first one changed, and hearing *how* it was changed is the skill.
 different ending, you have half as much to remember. Almost all short music is
 built this way.
 
-**Read something new every day.** The sight-reading generator at level 7 makes
-music you have never seen, in keys with four accidentals, with triplets and a
-walking bass. It is unseen by construction, which is the only way sight-reading
-can be practised at all.
+Three useful form names here are **ABA**, a section, a contrasting one, then the
+first again; the common 32-bar **AABA** song form, with four eight-bar sections
+and a contrasting third section, the *bridge*; and **binary**, AB, two halves,
+each often repeated.
+
+**Read something new every day.** The sight-reading generator at level 6 makes
+music you have never seen, in keys up to four sharps or flats, with triplets and a
+left hand in broken chords. It is unseen by construction, which is the only way
+sight-reading can be practised at all.
 
 **What to practise.** Eight bars a day taken down by ear, and four bars a day
 read at sight. Twenty minutes total.
@@ -32,7 +37,7 @@ read at sight. Twenty minutes total.
 
 **Tools for this rung.** One button, *Simon*, opening the chain game drawn from
 all twelve keys — *Simon — every key around middle C*. It is not one of the
-five exercises listed here, and it is the plainest version of what taking down
+four exercises listed here, and it is the plainest version of what taking down
 eight bars runs on: holding a line you have heard once and nothing else. The
 longest chain you kept is the score. The sight-reading above has no button of
 its own; it is one of the rung's exercises and opens from its own row.
@@ -41,4 +46,6 @@ its own; it is one of the rung's exercises and opens from its own row.
 piece is.
 
 **How you'll know you've got it.** You can hear eight bars three times and write
-them down.
+them down. The tune drill marks what you play back a phrase at a time; the
+writing, and the harmony, are yours to check — play back what you wrote and
+compare it with the drill's tune.

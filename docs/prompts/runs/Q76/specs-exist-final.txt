@@ -1,0 +1,9 @@
+present: tests/e2e/lesson-flow.spec.ts
+present: tests/e2e/lesson-tools.spec.ts
+present: tests/e2e/library.spec.ts
+present: tests/e2e/placement-branches.spec.ts
+present: tests/e2e/plan.spec.ts
+present: tests/e2e/side-panel-prose.spec.ts
+present: tests/e2e/start-and-return.spec.ts
+present: tests/e2e/today.spec.ts
+present: tests/e2e/transfer-offer.spec.ts

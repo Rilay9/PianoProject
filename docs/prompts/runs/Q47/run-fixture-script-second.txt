@@ -1,0 +1,7 @@
+$ python tools/midi-cleanup/tests/fixtures/make-one-track-two-hands-midi.py
+# cwd: /c/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a3f3005a49d448693
+# CI=<unset>
+
+wrote C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f3005a49d448693\tools\midi-cleanup\tests\fixtures\one-track-two-hands.mid (264 bytes, 22 notes in one track)
+
+# exit code: 0

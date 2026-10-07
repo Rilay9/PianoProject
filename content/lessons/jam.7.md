@@ -29,8 +29,7 @@ somebody takes a two-bar break, and at the end a tag or a turnaround to send it
 round again. Read those before you play a note — they are the plan two people
 would otherwise have to agree out loud.
 
-**The keys are not the guitarist's.** Four of these five sit in flat keys,
-because that is where the horns played them in 1920, and the guitarist's keys
+**The keys are not the guitarist's.** Four of these five sit in flat keys, and the guitarist's keys
 are E, A, D and G. One of the five is written with a sharp in the signature and
 changes key partway through. There are two honest answers, and this rung wants
 you to try both: move the chart to a guitar key by numerals, or leave it and let

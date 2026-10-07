@@ -11,7 +11,9 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
+import { extractScoreModel, type ExtractOptions } from '../../../src/score/extractScoreModel';
 import { toMusicXml } from '../../../src/score/mxl';
+import type { ScoreModel } from '../../../src/score/types';
 
 // Anchored to the working directory rather than `import.meta.url`: under the
 // jsdom environment `import.meta.url` is an http:// URL, which `fileURLToPath`
@@ -69,4 +71,12 @@ export async function loadFixture(path: string): Promise<OpenSheetMusicDisplay> 
   const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
   await osmd.load(readMusicXml(path));
   return osmd;
+}
+
+/**
+ * A fixture's score model through the real extraction: OSMD parses the file, and the tempo map is read
+ * from the same text (X3d: `extractScoreModel` takes the MusicXML it was loaded from).
+ */
+export async function fixtureModel(path: string, options: Omit<ExtractOptions, 'musicXml'> = {}): Promise<ScoreModel> {
+  return extractScoreModel(await loadFixture(path), { ...options, musicXml: readMusicXml(path) });
 }

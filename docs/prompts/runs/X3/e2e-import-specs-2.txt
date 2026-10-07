@@ -1,0 +1,27 @@
+﻿node.exe : [WebServer] (node:48268) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:70956) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 1 worker
+
+(node:74068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\converted-import.spec.ts:49:3 › a converted MIDI performance › imports, is listed under the title the converter wrote, and engraves (2.0s)
+  ok 2 tests\e2e\converted-import.spec.ts:66:3 › a converted MIDI performance › walks the same number of steps as the cursor does (559ms)
+  ok 3 tests\e2e\converted-import.spec.ts:87:3 › a converted MIDI performance › keeps both hands and both staves (541ms)
+  ok 4 tests\e2e\import-experience.spec.ts:93:3 › the import experience › import a MIDI file, see what was read and guessed, swap the hands, assign to no rung, find it in the Library with its state, and open it (1.6s)
+  ok 5 tests\e2e\import-experience.spec.ts:166:3 › the import experience › a file shared into the app opens the sheet from the row the Library got back (841ms)
+  ok 6 tests\e2e\midi-import.spec.ts:131:3 › a MIDI file imported from the app › an import stored before the app measured demands shows them on the assign sheet after the next launch (E2; E25) (3.4s)
+  ok 7 tests\e2e\midi-import.spec.ts:163:3 › a MIDI file imported from the app › converts on the device and says what it decided before anything is agreed to (999ms)
+  ok 8 tests\e2e\midi-import.spec.ts:192:3 › a MIDI file imported from the app › is in the Library at once and opens on the Score screen (1.3s)
+  ok 9 tests\e2e\midi-import.spec.ts:209:3 › a MIDI file imported from the app › walks the same number of steps as the cursor does, and keeps both hands (1.3s)
+
+  9 passed (15.9s)
+exit 0

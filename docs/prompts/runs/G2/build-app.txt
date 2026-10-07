@@ -1,0 +1,93 @@
+﻿(cd app) npm run build:app
+
+> pianopath@0.1.0 build:app
+> node scripts/generate-icons.mjs && tsc -b && vite build
+
+wrote icon-192.png (987 bytes)
+wrote icon-512.png (4963 bytes)
+wrote icon-maskable-192.png (851 bytes)
+wrote icon-maskable-512.png (3982 bytes)
+vite v8.2.2 building client environment for production...
+transforming...
+Γ£ô 260 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/assets/loopbackProcessor-D81naZuY.js              0.96 kB
+dist/manifest.webmanifest                              1.14 kB
+dist/assets/folderWalk.worker-CRdej3Tl.js              1.68 kB
+dist/index.html                                        3.30 kB Γöé gzip:   0.88 kB
+dist/assets/pitchProcessor-DR8nSQKv.js                13.39 kB
+dist/assets/pdf.worker.min-Cpi8b8z3.mjs            1,050.95 kB
+dist/assets/ScoreScreen-BxJCtwv2.css                   0.28 kB Γöé gzip:   0.19 kB
+dist/assets/index-B64yxXHk.css                        62.79 kB Γöé gzip:  12.54 kB
+dist/assets/stats-1YMUVmc5.js                          0.39 kB Γöé gzip:   0.27 kB
+dist/assets/types-Do_XH_Wx.js                          0.41 kB Γöé gzip:   0.30 kB
+dist/assets/textGlyphs-B71KmlMp.js                     0.48 kB Γöé gzip:   0.30 kB
+dist/assets/persist-BduWyWm5.js                        0.66 kB Γöé gzip:   0.37 kB
+dist/assets/rolldown-runtime-hePW80VL.js               0.71 kB Γöé gzip:   0.42 kB
+dist/assets/types-C34qHO0-.js                          0.83 kB Γöé gzip:   0.44 kB
+dist/assets/virtual_pwa-register-DORYMSU1.js           1.17 kB Γöé gzip:   0.61 kB
+dist/assets/preload-helper-BvvryuwW.js                 1.20 kB Γöé gzip:   0.68 kB
+dist/assets/cross-staff-Bcseb-Ng.js                    1.66 kB Γöé gzip:   0.54 kB
+dist/assets/pickup-grace-DHnxYflD.js                   1.73 kB Γöé gzip:   0.61 kB
+dist/assets/repeat-endings-22trKdIW.js                 1.78 kB Γöé gzip:   0.60 kB
+dist/assets/tempo-change-Bj-oOOuB.js                   1.86 kB Γöé gzip:   0.59 kB
+dist/assets/fingering-rests-BosCio-g.js                1.90 kB Γöé gzip:   0.59 kB
+dist/assets/two-voices-BnRZDAEb.js                     2.19 kB Γöé gzip:   0.57 kB
+dist/assets/selectors-DSHJ8oxD.js                      2.19 kB Γöé gzip:   1.04 kB
+dist/assets/stripRange-BYPcrZev.js                     2.34 kB Γöé gzip:   1.10 kB
+dist/assets/tuplets-68-B9S7qQD0.js                     2.70 kB Γöé gzip:   0.68 kB
+dist/assets/chords-ties-DzAV7kf4.js                    2.75 kB Γöé gzip:   0.71 kB
+dist/assets/spelling-BVUCJhKM.js                       2.94 kB Γöé gzip:   0.67 kB
+dist/assets/difficulty-jeXy3H89.js                     3.28 kB Γöé gzip:   1.63 kB
+dist/assets/accents-NSaP0NhI.js                        3.84 kB Γöé gzip:   0.91 kB
+dist/assets/settingsStore-DyZNFHgq.js                  3.90 kB Γöé gzip:   1.40 kB
+dist/assets/transfer-Cz9cGaGz.js                       3.92 kB Γöé gzip:   1.67 kB
+dist/assets/OsmdView-ZRIZMQPO.js                       4.38 kB Γöé gzip:   1.84 kB
+dist/assets/extractScoreModel-Bpjwl9CS.js              4.74 kB Γöé gzip:   2.24 kB
+dist/assets/ladder-qZSGX9fJ.js                         4.83 kB Γöé gzip:   2.13 kB
+dist/assets/musicXmlWriter-PqzL-UsH.js                 5.27 kB Γöé gzip:   1.98 kB
+dist/assets/load-wHPwZwim.js                           5.59 kB Γöé gzip:   2.17 kB
+dist/assets/workbox-window.prod.es5-Bd17z0YL.js        5.65 kB Γöé gzip:   2.20 kB
+dist/assets/db-DbM4oTWS.js                             5.80 kB Γöé gzip:   2.25 kB
+dist/assets/mxl-a91ZkhOt.js                            5.96 kB Γöé gzip:   3.06 kB
+dist/assets/detect-Cw37NMEZ.js                         6.32 kB Γöé gzip:   2.44 kB
+dist/assets/demands-CFsM-5y5.js                        6.33 kB Γöé gzip:   2.39 kB
+dist/assets/opportunity-density-Cnu4Hc1e.js            8.02 kB Γöé gzip:   2.90 kB
+dist/assets/evidence-BWlLLLds.js                       8.65 kB Γöé gzip:   3.30 kB
+dist/assets/Scoring-CYrivDuy.js                        9.90 kB Γöé gzip:   3.76 kB
+dist/assets/vocabulary-CN0tRLFB.js                    12.52 kB Γöé gzip:   4.12 kB
+dist/assets/ScoreSession-DFkazFQK.js                  15.33 kB Γöé gzip:   5.08 kB
+dist/assets/SetupScreen-DwTgSj_Y.js                   21.28 kB Γöé gzip:   8.25 kB
+dist/assets/eligibility-BIlnJJgL.js                   21.40 kB Γöé gzip:   7.04 kB
+dist/assets/progressStore-D1ymGwY2.js                 21.48 kB Γöé gzip:   8.09 kB
+dist/assets/PracticeEngine-BWoR6c62.js                21.56 kB Γöé gzip:   5.97 kB
+dist/assets/importStore-BQZDJZuE.js                   36.55 kB Γöé gzip:  14.63 kB
+dist/assets/DevMicroscopeScreen-D7z2XKdk.js           44.32 kB Γöé gzip:  14.72 kB
+dist/assets/sightReading-CEXJz0Vc.js                  45.37 kB Γöé gzip:  16.45 kB
+dist/assets/ScoreScreen-BEqEd5bO.js                   49.89 kB Γöé gzip:  18.28 kB
+dist/assets/WindowRenderer-4UcS8ovB.js                50.15 kB Γöé gzip:  14.91 kB
+dist/assets/measuringFingerprint-B2V5xfAA.js          65.92 kB Γöé gzip:  20.46 kB
+dist/assets/DevScoreScreen-DK06PT-z.js               104.61 kB Γöé gzip:  63.33 kB
+dist/assets/PdfScreen-B7eORPBT.js                    413.33 kB Γöé gzip: 122.13 kB
+dist/assets/index-C5vl04Lp.js                        514.78 kB Γöé gzip: 173.54 kB
+dist/assets/opensheetmusicdisplay.min-BVAvtNEi.js  1,303.91 kB Γöé gzip: 335.26 kB
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+
+Γ£ô built in 1.62s
+
+PWA v1.3.0
+mode      generateSW
+precache  2240 entries (28618.44 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-9c191d2f.js
+exit=0

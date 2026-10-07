@@ -1,0 +1,182 @@
+$ (.) python docs/prompts/runs/U92/scripts-map-all-paths.py
+# 83 path(s):
+#   app/src/style.css
+#   app/src/ui/screens/SkillsScreen.ts
+#   app/tests/e2e/plan.spec.ts
+#   app/playwright.u92-4423.config.ts
+#   app/tests/unit/skillsCountFirst.test.ts
+#   docs/prompts/pictures/u92/after-stack-longest-342x740.png
+#   docs/prompts/pictures/u92/after-stack-shifting-342x740.png
+#   docs/prompts/pictures/u92/after-wide-longest-342x740.png
+#   docs/prompts/pictures/u92/after-wide-shifting-342x740.png
+#   docs/prompts/pictures/u92/after-wide-spec-phone-landscape-skills-740x342.png
+#   docs/prompts/pictures/u92/after-wide-spec-phone-portrait-skills-342x740.png
+#   docs/prompts/pictures/u92/before-stack-longest-342x740.png
+#   docs/prompts/pictures/u92/before-stack-shifting-342x740.png
+#   docs/prompts/pictures/u92/before-wide-longest-342x740.png
+#   docs/prompts/pictures/u92/before-wide-shifting-342x740.png
+#   docs/prompts/pictures/u92/count-first-ellipsis-stack-shifting-342x740.png
+#   docs/prompts/pictures/u92/count-first-ellipsis-wide-shifting-342x740.png
+#   docs/prompts/runs/U92/ENTRY.md
+#   docs/prompts/runs/U92/bella-ciao-in-catalogs.txt
+#   docs/prompts/runs/U92/breakdown-before.txt
+#   docs/prompts/runs/U92/build-app-committed-2.txt
+#   docs/prompts/runs/U92/build-app-committed.txt
+#   docs/prompts/runs/U92/build-app-count-first-ellipsis.txt
+#   docs/prompts/runs/U92/build-app-count-first-wrap-balance.txt
+#   docs/prompts/runs/U92/build-app-count-first-wrap.txt
+#   docs/prompts/runs/U92/build-app-fixed.txt
+#   docs/prompts/runs/U92/checks-for-paths-every-path.txt
+#   docs/prompts/runs/U92/checks-for-paths-without-config-copy.txt
+#   docs/prompts/runs/U92/checks-for-paths.txt
+#   docs/prompts/runs/U92/compare-content.txt
+#   docs/prompts/runs/U92/compare-probe.txt
+#   docs/prompts/runs/U92/content-build-offline.txt
+#   docs/prompts/runs/U92/content-tests.txt
+#   docs/prompts/runs/U92/content-validate.txt
+#   docs/prompts/runs/U92/converter-harness.txt
+#   docs/prompts/runs/U92/e2e-all-fixed.txt
+#   docs/prompts/runs/U92/e2e-plan-fixed.txt
+#   docs/prompts/runs/U92/e2e-skills-readers-fixed.txt
+#   docs/prompts/runs/U92/e2e-wide-phones-fixed.txt
+#   docs/prompts/runs/U92/lint-without-config-copy.txt
+#   docs/prompts/runs/U92/lint.txt
+#   docs/prompts/runs/U92/npm-ci.txt
+#   docs/prompts/runs/U92/parity-reference.txt
+#   docs/prompts/runs/U92/probe-after-stack.json
+#   docs/prompts/runs/U92/probe-after-summary.txt
+#   docs/prompts/runs/U92/probe-after-wide.json
+#   docs/prompts/runs/U92/probe-after.txt
+#   docs/prompts/runs/U92/probe-before-stack.json
+#   docs/prompts/runs/U92/probe-before-summary.txt
+#   docs/prompts/runs/U92/probe-before-wide.json
+#   docs/prompts/runs/U92/probe-before.txt
+#   docs/prompts/runs/U92/probe-count-first-ellipsis-stack.json
+#   docs/prompts/runs/U92/probe-count-first-ellipsis-summary.txt
+#   docs/prompts/runs/U92/probe-count-first-ellipsis-wide.json
+#   docs/prompts/runs/U92/probe-count-first-ellipsis.txt
+#   docs/prompts/runs/U92/probe-count-first-wrap-balance-stack.json
+#   docs/prompts/runs/U92/probe-count-first-wrap-balance-summary.txt
+#   docs/prompts/runs/U92/probe-count-first-wrap-balance-wide.json
+#   docs/prompts/runs/U92/probe-count-first-wrap-balance.txt
+#   docs/prompts/runs/U92/probe-count-first-wrap-summary.txt
+#   docs/prompts/runs/U92/probe-count-first-wrap.txt
+#   docs/prompts/runs/U92/red-f2b-committed-final-spec.txt
+#   docs/prompts/runs/U92/red-f2b-committed.txt
+#   docs/prompts/runs/U92/red-unit-committed.txt
+#   docs/prompts/runs/U92/review-check.txt
+#   docs/prompts/runs/U92/scripts-breakdown-before.py
+#   docs/prompts/runs/U92/scripts-compare-content.py
+#   docs/prompts/runs/U92/scripts-compare-probe.py
+#   docs/prompts/runs/U92/scripts-map-all-paths.py
+#   docs/prompts/runs/U92/scripts-run-e2e.sh
+#   docs/prompts/runs/U92/scripts-run.sh
+#   docs/prompts/runs/U92/scripts-summarise-probe.py
+#   docs/prompts/runs/U92/scripts-triage-suite.py
+#   docs/prompts/runs/U92/scripts-u92-probe.spec.ts
+#   docs/prompts/runs/U92/triage-suite.txt
+#   docs/prompts/runs/U92/tsc-tests-before-change.txt
+#   docs/prompts/runs/U92/tsc.txt
+#   docs/prompts/runs/U92/vitest-all.txt
+#   docs/prompts/runs/U92/vitest-compare.txt
+#   docs/prompts/runs/U92/vitest-failing-files-committed-src.txt
+#   docs/prompts/runs/U92/vitest-failing-names-committed-src.txt
+#   docs/prompts/runs/U92/vitest-failing-names-fixed.txt
+#   docs/prompts/runs/U92/vitest-skills-fixed.txt
+UNMATCHED: app/playwright.u92-4423.config.ts: no pattern in checks.json names it; the full required suites run. Add a pattern for it.
+# checks for 83 path(s): 82 matched, 1 unmatched
+# UNMATCHED app/playwright.u92-4423.config.ts: no pattern names it; the full required suites run
+# app/src/style.css: app/src/**, app/src/style.css
+# app/src/ui/screens/SkillsScreen.ts: app/src/**, app/src/ui/screens/SkillsScreen.ts
+# app/tests/e2e/plan.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/skillsCountFirst.test.ts: app/tests/unit/*.test.ts
+# docs/prompts/pictures/u92/after-stack-longest-342x740.png: docs/**
+# docs/prompts/pictures/u92/after-stack-shifting-342x740.png: docs/**
+# docs/prompts/pictures/u92/after-wide-longest-342x740.png: docs/**
+# docs/prompts/pictures/u92/after-wide-shifting-342x740.png: docs/**
+# docs/prompts/pictures/u92/after-wide-spec-phone-landscape-skills-740x342.png: docs/**
+# docs/prompts/pictures/u92/after-wide-spec-phone-portrait-skills-342x740.png: docs/**
+# docs/prompts/pictures/u92/before-stack-longest-342x740.png: docs/**
+# docs/prompts/pictures/u92/before-stack-shifting-342x740.png: docs/**
+# docs/prompts/pictures/u92/before-wide-longest-342x740.png: docs/**
+# docs/prompts/pictures/u92/before-wide-shifting-342x740.png: docs/**
+# docs/prompts/pictures/u92/count-first-ellipsis-stack-shifting-342x740.png: docs/**
+# docs/prompts/pictures/u92/count-first-ellipsis-wide-shifting-342x740.png: docs/**
+# docs/prompts/runs/U92/ENTRY.md: docs/**
+# docs/prompts/runs/U92/bella-ciao-in-catalogs.txt: docs/**
+# docs/prompts/runs/U92/breakdown-before.txt: docs/**
+# docs/prompts/runs/U92/build-app-committed-2.txt: docs/**
+# docs/prompts/runs/U92/build-app-committed.txt: docs/**
+# docs/prompts/runs/U92/build-app-count-first-ellipsis.txt: docs/**
+# docs/prompts/runs/U92/build-app-count-first-wrap-balance.txt: docs/**
+# docs/prompts/runs/U92/build-app-count-first-wrap.txt: docs/**
+# docs/prompts/runs/U92/build-app-fixed.txt: docs/**
+# docs/prompts/runs/U92/checks-for-paths-every-path.txt: docs/**
+# docs/prompts/runs/U92/checks-for-paths-without-config-copy.txt: docs/**
+# docs/prompts/runs/U92/checks-for-paths.txt: docs/**
+# docs/prompts/runs/U92/compare-content.txt: docs/**
+# docs/prompts/runs/U92/compare-probe.txt: docs/**
+# docs/prompts/runs/U92/content-build-offline.txt: docs/**
+# docs/prompts/runs/U92/content-tests.txt: docs/**
+# docs/prompts/runs/U92/content-validate.txt: docs/**
+# docs/prompts/runs/U92/converter-harness.txt: docs/**
+# docs/prompts/runs/U92/e2e-all-fixed.txt: docs/**
+# docs/prompts/runs/U92/e2e-plan-fixed.txt: docs/**
+# docs/prompts/runs/U92/e2e-skills-readers-fixed.txt: docs/**
+# docs/prompts/runs/U92/e2e-wide-phones-fixed.txt: docs/**
+# docs/prompts/runs/U92/lint-without-config-copy.txt: docs/**
+# docs/prompts/runs/U92/lint.txt: docs/**
+# docs/prompts/runs/U92/npm-ci.txt: docs/**
+# docs/prompts/runs/U92/parity-reference.txt: docs/**
+# docs/prompts/runs/U92/probe-after-stack.json: docs/**
+# docs/prompts/runs/U92/probe-after-summary.txt: docs/**
+# docs/prompts/runs/U92/probe-after-wide.json: docs/**
+# docs/prompts/runs/U92/probe-after.txt: docs/**
+# docs/prompts/runs/U92/probe-before-stack.json: docs/**
+# docs/prompts/runs/U92/probe-before-summary.txt: docs/**
+# docs/prompts/runs/U92/probe-before-wide.json: docs/**
+# docs/prompts/runs/U92/probe-before.txt: docs/**
+# docs/prompts/runs/U92/probe-count-first-ellipsis-stack.json: docs/**
+# docs/prompts/runs/U92/probe-count-first-ellipsis-summary.txt: docs/**
+# docs/prompts/runs/U92/probe-count-first-ellipsis-wide.json: docs/**
+# docs/prompts/runs/U92/probe-count-first-ellipsis.txt: docs/**
+# docs/prompts/runs/U92/probe-count-first-wrap-balance-stack.json: docs/**
+# docs/prompts/runs/U92/probe-count-first-wrap-balance-summary.txt: docs/**
+# docs/prompts/runs/U92/probe-count-first-wrap-balance-wide.json: docs/**
+# docs/prompts/runs/U92/probe-count-first-wrap-balance.txt: docs/**
+# docs/prompts/runs/U92/probe-count-first-wrap-summary.txt: docs/**
+# docs/prompts/runs/U92/probe-count-first-wrap.txt: docs/**
+# docs/prompts/runs/U92/red-f2b-committed-final-spec.txt: docs/**
+# docs/prompts/runs/U92/red-f2b-committed.txt: docs/**
+# docs/prompts/runs/U92/red-unit-committed.txt: docs/**
+# docs/prompts/runs/U92/review-check.txt: docs/**
+# docs/prompts/runs/U92/scripts-breakdown-before.py: docs/**
+# docs/prompts/runs/U92/scripts-compare-content.py: docs/**
+# docs/prompts/runs/U92/scripts-compare-probe.py: docs/**
+# docs/prompts/runs/U92/scripts-map-all-paths.py: docs/**
+# docs/prompts/runs/U92/scripts-run-e2e.sh: docs/**
+# docs/prompts/runs/U92/scripts-run.sh: docs/**
+# docs/prompts/runs/U92/scripts-summarise-probe.py: docs/**
+# docs/prompts/runs/U92/scripts-triage-suite.py: docs/**
+# docs/prompts/runs/U92/scripts-u92-probe.spec.ts: docs/**
+# docs/prompts/runs/U92/triage-suite.txt: docs/**
+# docs/prompts/runs/U92/tsc-tests-before-change.txt: docs/**
+# docs/prompts/runs/U92/tsc.txt: docs/**
+# docs/prompts/runs/U92/vitest-all.txt: docs/**
+# docs/prompts/runs/U92/vitest-compare.txt: docs/**
+# docs/prompts/runs/U92/vitest-failing-files-committed-src.txt: docs/**
+# docs/prompts/runs/U92/vitest-failing-names-committed-src.txt: docs/**
+# docs/prompts/runs/U92/vitest-failing-names-fixed.txt: docs/**
+# docs/prompts/runs/U92/vitest-skills-fixed.txt: docs/**
+converter-harness	.	python -m unittest discover -s tools/midi-cleanup/tests -v
+parity-reference	.	python tools/midi-cleanup/tests/parity_reference.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4
+exit=0

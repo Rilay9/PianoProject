@@ -6,7 +6,7 @@ videos:
   - label: "6 Tips To Accompany A Singer"
     url: "https://www.youtube.com/watch?v=gDP0vQtGdcM"
     teacher: "Piano Lesson with Warren"
-readingTime: 3
+readingTime: 4
 ---
 
 The carol rung below this one is about playing the tunes. This one is about the
@@ -15,9 +15,10 @@ of people who half remember the words, singing at whatever speed they decide,
 while you hold it together.
 
 **The key is theirs, not yours.** A carol written in a comfortable piano key is
-often too high to sing. Untrained voices mostly live between about A below
-middle C and D above it, and if the tune goes higher than that a room will
-quietly stop. Being able to move a tune down a step or two is worth more here
+often too high to sing. Untrained voices are most comfortable between about the
+A below middle C and the D on the fourth line of the treble staff; most can reach
+the E above that for a note or two — *Hark!* and *God Rest Ye* here both touch it —
+but if a tune sits higher than that for long, a room will quietly stop. Being able to move a tune down a step or two is worth more here
 than anything about technique.
 
 **Which is why the exercises are one cadence in three keys.** C, G and F, the
@@ -38,10 +39,12 @@ they know best — when to come in.
 G with block chords already written, so it is the one to read first. *Joy to the
 World*, *The First Noel* and *Angels We Have Heard on High* are in D and are
 lead sheets: tune on top, symbols above. *O Christmas Tree* is the one in F,
-which is the third key the cadences drill. *God Rest Ye Merry, Gentlemen* is the
+which is the third key the cadences drill; one misprint to know about: in bar
+32 the second chord symbol reads C♭, which cannot be right under the B♭ and E the
+tune plays there — play C7. *God Rest Ye Merry, Gentlemen* is the
 one that sounds minor — E minor and B seven under a G key signature — and the
 gentlest of the eight. *O Holy Night* climbs higher than anything else here, to
-an F sharp above the treble staff, which is this whole lesson in one note: move
+an F sharp on the top line of the treble staff, which is this whole lesson in one note: move
 it down before you start, not halfway through. *Hark! The Herald Angels Sing*
 uses the most different chords — nine — and is the one to take slowest.
 
@@ -49,9 +52,10 @@ uses the most different chords — nine — and is the one to take slowest.
 the quickest way to check a transposition — play the shape you think is right
 and see whether the app agrees it is a G.
 
-**Common mistake.** Following the singers. Somebody always drags, and if you
-follow them the whole room slows down until the carol stops. Keep the pulse and
-let them come back to you; they will.
+**Common mistake.** Following the singers. In a room, somebody always drags, and
+if you follow them the whole room slows down until the carol stops. Keep the
+pulse and let them come back to you; they will. One singer on their own is the
+other case: there you follow, and leave room for their breaths.
 
 **How you'll know you've got it.** You can play one of these in its written key
 and then again a step lower without stopping to work it out, and hold a steady

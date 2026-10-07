@@ -1,0 +1,36 @@
+HD2a evidence: song.classical.chopin-prelude-op28-21.nifc (scores/imported/song.classical.chopin-prelude-op28-21.nifc.mxl), identity sha256 563677c9dbf358c04c286cdc6a58fb8fe091b192af8e5bb96466bfa90b312d64
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 50-53 -> R
+  bar 50 (source measure 49) st1 v2: L/x -> R; onsets 4 {'conflict': 2, 'free': 2}; second voice(s) [3]; e.g. @147 L [31] + v2 [62]; @149 L [33, 45] + v2 [63]
+  bar 50 onset 147 67/st1/v1/R:2 62/st1/v2/L/x:1.5 58/st1/v1/R:2 55/st1/v1/R:2 31/st2/v3/L:2
+  bar 50 onset 148.5 60/st1/v2/L/x:0.5
+  bar 50 onset 149 63/st1/v2/L/x:0.5 45/st2/v3/L:1 33/st2/v3/L:1
+  bar 50 onset 149.5 62/st1/v2/L/x:0.5
+  bar 51 (source measure 50) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @150 L [34] + v2 [62]
+  bar 51 onset 150 65/st1/v1/R:2 62/st1/v2/L/x:3 58/st1/v1/R:2 53/st1/v1/R:2 34/st2/v3/L:0.5
+  bar 51 onset 150.5 40/st2/v3/L:0.5
+  bar 51 onset 151 41/st2/v3/L:0.5
+  bar 51 onset 151.5 46/st2/v3/L:0.5
+  bar 51 onset 152 45/st2/v3/L:0.5
+  bar 51 onset 152.5 43/st2/v3/L:0.5
+  bar 52 (source measure 51) st1 v2: L/x -> R; onsets 4 {'conflict': 2, 'free': 2}; second voice(s) [3]; e.g. @153 L [31] + v2 [62]; @155 L [33] + v2 [63]
+  bar 52 onset 153 67/st1/v1/R:2 62/st1/v2/L/x:1.5 58/st1/v1/R:2 55/st1/v1/R:2 31/st2/v3/L:2
+  bar 52 onset 154.5 60/st1/v2/L/x:0.5
+  bar 52 onset 155 63/st1/v2/L/x:0.5 33/st2/v3/L:1
+  bar 52 onset 155.5 62/st1/v2/L/x:0.5
+  bar 53 (source measure 52) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @156 L [34] + v2 [62]
+  bar 53 onset 156 65/st1/v1/R:6 62/st1/v2/L/x:3 58/st1/v1/R:6 53/st1/v1/R:6 34/st2/v3/L:0.5
+  bar 53 onset 156.5 40/st2/v3/L:0.5
+  bar 53 onset 157 41/st2/v3/L:0.5
+  bar 53 onset 157.5 46/st2/v3/L:0.5
+  bar 53 onset 158 45/st2/v3/L:0.5
+  bar 53 onset 158.5 43/st2/v3/L:0.5
+
+ROW staff 1 voice 2 bars 57-58 -> R
+  bar 57 (source measure 56) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @168 L [29, 41] + v2 [60]
+  bar 57 onset 168 65/st1/v1/R:3 63/st1/v1/R:3 60/st1/v2/L/x:3 53/st1/v1/R:3 41/st2/v3/L:3 29/st2/v3/L:3
+  bar 58 (source measure 57) st1 v2: L/x -> R; onsets 1 {'conflict': 1}; second voice(s) [3]; e.g. @171 L [34, 46] + v2 [58]
+  bar 58 onset 171 65/st1/v1/R:3 62/st1/v1/R:3 58/st1/v2/L/x:3 53/st1/v1/R:3 46/st2/v3/L:3 34/st2/v3/L:3
+

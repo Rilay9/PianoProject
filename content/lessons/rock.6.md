@@ -40,7 +40,7 @@ the exercises allow.
 **Repertoire.** Three options, all bundled. Satie's *Gnossienne No. 1* is the
 gentlest and the most useful: a left hand that repeats almost unchanged under a
 right hand that is free. Chopin's *Prelude No. 20* is thirteen bars of block
-chords and is here because it is the clearest example in the library of weight
+chords and is here for weight
 placed rather than struck — play it slowly and loudly and listen to the bottom
 of each chord. *Moonlight*, first movement, is the archetype the other two are
 preparing you for: triplet arpeggios, all the way through, over a bass that

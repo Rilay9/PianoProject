@@ -1,0 +1,7 @@
+﻿python -m unittest discover -s tools/content/tests -t tools/content -p test_excerpts.py
+..........................................................
+----------------------------------------------------------------------
+Ran 58 tests in 6.926s
+
+OK
+exit=0

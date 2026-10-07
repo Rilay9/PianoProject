@@ -1,0 +1,7 @@
+control: unit exit 0; failing none; kern rows exit 0 (3 of 3 rows play every tempo their source states) — green, as it must be
+a: unit exit 1; failing ['test_b_the_march_shape_reaches_its_tempo_di_marcia', 'test_b_the_rondo_shape_keeps_its_two_later_changes', 'test_b_the_waltz_shape_keeps_a_return_to_the_first_tempo', 'test_c_a_different_tempo_in_the_other_spine_at_one_place_survives', 'test_c_a_different_tempo_on_one_staff_at_one_place_survives', 'test_d_a_sound_only_copy_gives_way_to_the_printed_mark', 'test_d_a_tempo_beyond_the_tolerance_is_another_statement']; kern rows exit 1 (0 of 3 rows play every tempo their source states) — caught
+b: unit exit 1; failing ['test_b_the_waltz_shape_keeps_a_return_to_the_first_tempo'] — caught
+c: unit exit 1; failing ['test_c_a_different_tempo_in_the_other_spine_at_one_place_survives', 'test_c_a_different_tempo_on_one_staff_at_one_place_survives', 'test_d_a_tempo_beyond_the_tolerance_is_another_statement'] — caught
+d: unit exit 1; failing ['test_d_a_sound_only_copy_gives_way_to_the_printed_mark'] — caught
+e: unit exit 1; failing ['test_d_a_tempo_beyond_the_tolerance_is_another_statement', 'test_the_tolerance_is_x42s'] — caught
+f: unit exit 1; failing ['test_e57_an_undated_old_file_is_named_by_its_restore_lines_alone'] — caught

@@ -1,0 +1,5 @@
+relations, direct: convert.former_identities on each landed file, E50a's table and 109 committed relations
+   song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx: its relations 1; with them named ['06d3ed364775'] (old 06d3ed364775); with its relation dropped named []: caught
+   song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx: its relations 1; with them named ['356737a36694'] (old 356737a36694); with its relation dropped named []: caught
+   song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx: its relations 1; with them named ['673e6134bb2c'] (old 673e6134bb2c); with its relation dropped named []: caught
+3 of 3 caught

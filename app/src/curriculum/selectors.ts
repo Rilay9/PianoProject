@@ -7,6 +7,9 @@
  */
 import type { MasteryCriteria } from '../engine/Scoring';
 import type { CatalogItem, Curriculum, Lesson } from './types';
+import { SHIPPED_SKILL_ACTIVATION, type SkillActivation } from './skillActivation';
+import { eligible, eligibleFor, targetDemandsFor, targetSkillsFor, type Learner } from './eligibility';
+import { isExcerpt, isPieceMaterial } from './excerpt';
 
 export interface CatalogIndex {
   byId: Map<string, CatalogItem>;
@@ -131,8 +134,20 @@ export function levelConfidence(item: CatalogItem): number {
  * - `alternative`: one of the item's own `alternatives[]` — its author named it
  *   as a stand-in, which is what makes an un-imported song a pointer rather
  *   than a dead row;
- * - `skill`: an item declaring a target skill the item declares;
- * - `demand`: an item carrying a demand the build measured on the item.
+ * - `skill`: an item that declares, as its target, a skill the row targets, and
+ *   whose measured notes provide that skill's opportunity at a useful density —
+ *   or, for the reading rows the activation acts on (D0), declares it;
+ * - `demand`: an item whose measured notes provide, at a useful density, the demand
+ *   the row is on its rung to practise — what that rung teaches (`taughtAt`), which
+ *   the row itself provides — never a demand both merely contain, and never the
+ *   steps every tune has.
+ *
+ * Every tier goes through the one gate (E0, `eligibility.ts`): nothing is offered
+ * that the learner cannot cope with, nothing unmeasured is offered as equivalent
+ * practice, and the same lesson's options and the named stand-ins are no
+ * exception (Part 23: provenance, never immunity). C6 tested overlap by set
+ * intersection and ranked by level; with every piece measured that would offer
+ * anything sharing a step, so the gate is what turns the two lower tiers on.
  *
  * The third tier was "anything within half a level sharing a concept tag", and
  * `repertoire` is a tag on every quarried piece and nothing else, so for a PDMX
@@ -151,52 +166,79 @@ export interface TieredAlternative {
 
 /**
  * What to offer when the learner says "give me something else" (docs/04 §2),
- * each with the tier it came from, in the tiers' order. Within the skill and
- * demand tiers, the nearest level first, so a swap does not quietly raise the
- * difficulty — an order, not a window: nothing is left out for its level
- * (`session.swapOptions` leaves out what the learner's lessons have not
- * taught), and a judged level before an estimated one at the same distance
- * (replan §1.4).
+ * each with the tier it came from, in the tiers' order, every candidate through
+ * the one gate (`eligibility.eligibleFor`, E0). Within the skill and demand
+ * tiers, the nearest level first, so a swap does not quietly raise the
+ * difficulty — an order among eligible candidates, never a window and never a
+ * rescue: a level-close candidate the learner cannot cope with is refused, a
+ * level-far one that is clean is offered (Part 23). A judged level before an
+ * estimated one at the same distance (replan §1.4).
+ *
+ * `learner` is what the gate judges the first question by: the rung judging the
+ * swap (what it has taught) and, where the caller has them, the learner's skill
+ * states. With none, the skill and demand tiers offer nothing — "with the other
+ * demands you have met" cannot be said of a learner nobody described — and the
+ * lesson's options and the named stand-ins keep the authored list's word, still
+ * never unmeasured and never a declared large-hand voicing.
  */
 export function tieredAlternatives(
   query: AlternativesQuery,
   curriculum: Curriculum,
   catalog: CatalogIndex,
+  /** Whose declared target skills the skill tier acts on without a measured opportunity (D0; `skillActivation.ts`). */
+  activation: SkillActivation = SHIPPED_SKILL_ACTIVATION,
+  learner: Learner = {},
 ): TieredAlternative[] {
   const { itemId, lessonId, excludeSongs = false, exclude = [], limit = 12 } = query;
   const skip = new Set<string>([itemId, ...exclude]);
   const source = catalog.byId.get(itemId);
   const out: TieredAlternative[] = [];
 
-  const push = (id: string, tier: AlternativeTier, shared?: string): void => {
+  const push = (item: CatalogItem, tier: AlternativeTier, shared?: string): void => {
+    skip.add(item.id);
+    out.push({ item, tier, ...(shared === undefined ? {} : { shared }) });
+  };
+  /** An authored equivalent (the lesson's options, a named stand-in): through the gate like anything else. */
+  const equivalent = (id: string, tier: AlternativeTier): void => {
     if (skip.has(id)) return;
     const item = catalog.byId.get(id);
-    if (!item) return;
-    if (excludeSongs && item.type === 'song') return;
-    skip.add(id);
-    out.push({ item, tier, ...(shared === undefined ? {} : { shared }) });
+    // Leaving songs out leaves excerpts out: a passage of a piece is music, not an exercise (E1).
+    if (!item || (excludeSongs && isPieceMaterial(item))) return;
+    if (!eligible(eligibleFor(item, learner, { for: 'equivalent' }))) return;
+    push(item, tier);
   };
 
   const lesson = lessonId ? findLesson(curriculum, lessonId) : undefined;
   if (lesson) {
-    for (const id of [...lesson.exerciseOptions, ...lesson.songOptions]) push(id, 'lesson');
+    for (const id of [...lesson.exerciseOptions, ...lesson.songOptions]) equivalent(id, 'lesson');
   }
 
-  for (const id of source?.alternatives ?? []) push(id, 'alternative');
+  for (const id of source?.alternatives ?? []) equivalent(id, 'alternative');
 
   if (source) {
     const nearest = (a: CatalogItem, b: CatalogItem): number =>
       Math.abs(a.level - source.level) - Math.abs(b.level - source.level) || levelConfidence(b) - levelConfidence(a);
-    const sharing = (own: readonly string[] | undefined, theirs: (item: CatalogItem) => readonly string[] | undefined, tier: AlternativeTier): void => {
-      const mine = new Set(own ?? []);
-      if (mine.size === 0) return;
-      const found = [...catalog.byId.values()]
-        .filter((item) => !skip.has(item.id) && (theirs(item) ?? []).some((one) => mine.has(one)))
-        .sort(nearest);
-      for (const item of found) push(item.id, tier, (theirs(item) ?? []).find((one) => mine.has(one)));
+    /**
+     * Every candidate the gate passes for one of `wanted`, each with the first it passes for:
+     * the row's primary skill (or its first demand) before the others, then the nearest level.
+     */
+    const practice = (wanted: readonly string[], ask: (one: string) => Parameters<typeof eligibleFor>[2], tier: AlternativeTier): void => {
+      if (wanted.length === 0) return;
+      const found: { item: CatalogItem; shared: string }[] = [];
+      for (const item of catalog.byId.values()) {
+        // An excerpt reaches a learner through a rung once F lists it, never through a tier
+        // that searches the whole catalogue (E1: unplaced, teaching use undecided).
+        if (skip.has(item.id) || isExcerpt(item) || (excludeSongs && item.type === 'song')) continue;
+        const shared = wanted.find((one) => eligible(eligibleFor(item, learner, ask(one))));
+        if (shared !== undefined) found.push({ item, shared });
+      }
+      found.sort((a, b) => wanted.indexOf(a.shared) - wanted.indexOf(b.shared) || nearest(a.item, b.item));
+      for (const { item, shared } of found) push(item, tier, shared);
     };
-    sharing(source.targetSkills, (item) => item.targetSkills, 'skill');
-    sharing(source.demands, (item) => item.demands, 'demand');
+    practice(targetSkillsFor(source, activation), (skill) => ({ for: 'skill', skill, activation }), 'skill');
+    // The demand the row's rung teaches: the rung it was offered from, or the first listing it.
+    const rungId = lessonId ?? proseRungFor(curriculum, itemId)?.id;
+    practice(targetDemandsFor(source, rungId, activation), (demand) => ({ for: 'demand', demand }), 'demand');
   }
 
   return out.slice(0, limit);
@@ -207,8 +249,10 @@ export function alternativesFor(
   query: AlternativesQuery,
   curriculum: Curriculum,
   catalog: CatalogIndex,
+  activation: SkillActivation = SHIPPED_SKILL_ACTIVATION,
+  learner: Learner = {},
 ): CatalogItem[] {
-  return tieredAlternatives(query, curriculum, catalog).map((one) => one.item);
+  return tieredAlternatives(query, curriculum, catalog, activation, learner).map((one) => one.item);
 }
 
 export function findLesson(curriculum: Curriculum, lessonId: string): Lesson | undefined {

@@ -60,10 +60,63 @@ async function openToday(page: Page): Promise<void> {
   await expect(page.locator('#today-doors')).toBeVisible({ timeout: 60_000 });
 }
 
+/**
+ * A learner placed on `rung` through the backup import (as `today.spec.ts` restores its learners), Today
+ * reloaded on it (SR2: the daily read begins at 1.1).
+ */
+async function placedAt(page: Page, rung: string): Promise<void> {
+  await openToday(page);
+  await page.evaluate(async (unitId) => {
+    const hooks = (window as unknown as { __pianopath?: { importAll: (raw: unknown) => Promise<unknown> } }).__pianopath;
+    if (!hooks) throw new Error('storage hooks not exposed');
+    const at = new Date().toISOString();
+    await hooks.importAll({
+      app: 'pianopath',
+      version: 1,
+      exportedAt: at,
+      stores: { plan: [{ id: 'current', stage: Number(unitId.split('.')[0]), unitId, trackOrder: ['core'], placement: { unitId, at } }] },
+    });
+  }, rung);
+  await page.reload();
+  await expect(page.locator('#today-status')).toHaveAttribute('data-lesson', rung, { timeout: 30_000 });
+  await expect(page.locator('#today-play')).toBeVisible({ timeout: 30_000 });
+}
+
+/**
+ * The Library has drawn its list, or has said why it could not.
+ *
+ * Revised (H0, Q44 with Q34; test class: revise). This waited 60 s for the
+ * first row to be visible, and in the chain over 943b2fd it saw no row at all
+ * for the whole minute and could not say why. The screen publishes two states
+ * a test can read: the count line, "Loading your library…" until `draw` puts
+ * the real count there (the rows are appended in the same call), and the
+ * status line, which says "The library could not be loaded: …" when the read
+ * fails (`LibraryScreen`'s `refresh` and `sayLoadFailed`). No `data-settled`
+ * exists on the list and none is needed: the count line is the list's own
+ * word that it is drawn. So the wait is for either, and a failed load fails
+ * here in the screen's words instead of as a missing row a minute later. The
+ * budget is unchanged. A page slowed 32 times drew the list well inside it
+ * (Entry 87), so slowness alone does not account for the minute; this wait is
+ * what tells the next occurrence apart.
+ */
+async function libraryDrawn(page: Page): Promise<void> {
+  const count = page.locator('#library-count');
+  const status = page.locator('#library-status');
+  const drawnOrFailed = async (): Promise<string> => {
+    const said = (await status.textContent()) ?? '';
+    if (said.startsWith('The library could not be loaded')) return said;
+    return (await count.textContent()) ?? '';
+  };
+  await expect
+    .poll(drawnOrFailed, { timeout: 60_000, message: 'the Library drew its list or said why not' })
+    .toMatch(/^\d+ of \d+ items|^The library could not be loaded/);
+  expect(await drawnOrFailed(), 'the Library could not load its list').toMatch(/^\d+ of \d+ items/);
+}
+
 /** Finds one catalog row in a list of 1,533 without depending on where it sorts. */
 async function findRow(page: Page, id: string, search: string): Promise<void> {
   await page.goto('/#/library');
-  await expect(page.locator('#library-list .list-row').first()).toBeVisible({ timeout: 60_000 });
+  await libraryDrawn(page);
   await page.locator('#library-search').fill(search);
   await expect(page.locator(`#library-list .list-row[data-item="${id}"]`)).toBeVisible({
     timeout: 30_000,
@@ -97,8 +150,12 @@ test.describe("Today's tools", () => {
     await expect(page.locator('#play-strip .keyboard-strip')).toBeVisible();
   });
 
+  // Revised (SR2; the reviewer's ruling on SR1, `docs/review/responses/sr1-sightreading-quality.md` §2): the test
+  // encoded the fault: a learner at 0.1 was offered a phrase. Before: a fresh learner, at 0.1, had the card and the
+  // door, a phrase held at 1.5. After: the learner is placed at 1.1, the first rung with a daily read; the door and
+  // the card still open one phrase.
   test('Sight-read opens the same phrase the daily card offers', async ({ page }) => {
-    await openToday(page);
+    await placedAt(page, '1.1');
     // The card's own seed, which is what makes the day repeatable: a second
     // door that opened a fresh phrase would be a second daily read (`04` §2).
     const card = page.locator('#today-daily .list-row');
@@ -111,6 +168,34 @@ test.describe("Today's tools", () => {
     // where the row is on one, so the seed is one parameter among them.
     await expect(page).toHaveURL(new RegExp(`#/score/${String(item)}\\?(.+&)?seed=${String(seed)}(&|$)`));
     expect(new URL(page.url()).hash).toContain('slot=daily-read');
+    await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
+  });
+
+  // Added (SR2): before 1.1 teaches steps there is no daily read, so a fresh learner sees no card and no door
+  // (`04` §0 R4, no furniture); placed at 1.1, the daily read opens held to 1.1's taught set (`hold=1.1`) and is
+  // still judged by the row's rung (`rung=1.5`).
+  test('a fresh learner at 0.1 has no daily read and no Sight-read door; at 1.1 the read opens held there and judged at 1.5', async ({ page }) => {
+    await openToday(page);
+    await expect(page.locator('#today-status')).toHaveAttribute('data-lesson', '0.1', { timeout: 30_000 });
+    await expect(page.locator('#today-play')).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('#today-daily .list-row')).toHaveCount(0);
+    await expect(page.locator('#today-read')).toHaveCount(0);
+
+    await placedAt(page, '1.1');
+    const card = page.locator('#today-daily .list-row');
+    await expect(card).toBeVisible({ timeout: 30_000 });
+    await expect(card).toHaveAttribute('data-daily', 'drill.reading.sight-reading-1');
+    // Added (SR3; the reviewer's ruling on SR2, `docs/review/responses/sr2-landing.md` §2): the hold is part of the
+    // material offered, so the card says the held level, never the row's L1.5 over a steps-only phrase.
+    await expect(card.locator('.list-row__metatext')).toContainText('L1.1');
+    await expect(card.locator('.list-row__metatext')).not.toContainText('L1.5');
+    await expect(page.locator('#today-read')).toBeVisible();
+    await page.locator('#today-read').click();
+    await expect(page).toHaveURL(/#\/score\/drill\.reading\.sight-reading-1\?/, { timeout: 30_000 });
+    const hash = new URL(page.url()).hash;
+    expect(hash).toContain('rung=1.5');
+    expect(hash).toContain('hold=1.1');
+    expect(hash).toContain('slot=daily-read');
     await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
   });
 
@@ -130,10 +215,13 @@ test.describe("Today's tools", () => {
     await expect(page.locator('[data-screen="lab"]')).toBeVisible();
   });
 
+  // Revised (SR2, Entry 258): the test opened Today as a fresh learner at 0.1 and expected the Sight-read door;
+  // since the daily read is held to the learner's taught set there is no read, and no door, before 1.1 (the test
+  // encoded the fault). Placed at 1.1 the four doors exist, and R3's claim about them is asked as before.
   test('the tools are text, so Start session is still the only filled box (R3)', async ({
     page,
   }) => {
-    await openToday(page);
+    await placedAt(page, '1.1');
     const filled = page.locator('[data-screen="today"] .button--primary');
     await expect(filled).toHaveCount(1);
     await expect(filled).toHaveAttribute('id', 'today-start');

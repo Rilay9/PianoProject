@@ -1,0 +1,28 @@
+# E51a: npx vitest run (app/), the whole unit suite on this worktree's offline build, after the splice. Exit 1.
+# The full capture was not kept; the failing names and the summary are.
+
+ Test Files  2 failed | 315 passed (317)
+      Tests  3 failed | 7294 passed | 5 skipped | 1 todo (7303)
+
+The three failing cases:
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+ FAIL  tests/unit/transferOffer.test.ts > a transfer candidate the learner paused or put away is not offered (G1e) > offered with no project; paused or put away, on no row, and the card is the card without it; every other state leaves the card as it was
+
+Each file rerun alone, once (npx vitest run tests/unit/transferOffer.test.ts tests/unit/lessonClaimsAboutApp.test.ts): exit 1
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+ FAIL  tests/unit/transferOffer.test.ts > a transfer candidate the learner paused or put away is not offered (G1e) > offered with no project; paused or put away, on no row, and the card is the card without it; every other state leaves the card as it was
+AssertionError: expected 'exercise.pentatonic.d.pentatonic' to be 'song.pentatonic-a' // Object.is equality
+ Test Files  2 failed (2)
+      Tests  3 failed | 307 passed (310)
+
+Attribution:
+- lessonClaimsAboutApp.test.ts, blues.3 and 4.7: the recorded line-ending pair (Entry 101's diagnosis), red alone here,
+  as the record has them (green on the runner). Not E51a's.
+- transferOffer.test.ts, "offered with no project; paused or put away ..." (G1e's case, :429-431): red alone, so not
+  load. Expected song.pentatonic-a (the A pentatonic remade as a song) as the offer; received
+  exercise.pentatonic.d.pentatonic. Not E51a's: the test reads app/src and app/public/content/catalog.json; E51a changes
+  no app file, and the catalogue's sha256 is equal before and after the splice (chain.txt), and equal to the main
+  checkout's built catalogue, read-only. A finding for the orchestrator, recorded in the entry.

@@ -1,0 +1,2 @@
+Get-NetTCPConnection -LocalPort 4363 (PowerShell), before the committed-code browser run: no listener ("port 4363 free").
+exit=0

@@ -1,0 +1,71 @@
+
+Running 12 tests using 2 workers
+
+  ok  2 tests\e2e\microscope.spec.ts:129:3 › the microscope (D2) › Hear it plays through the app’s piano: each hand alone its own pitches, both hands both (14.7s)
+  ok  1 tests\e2e\microscope.spec.ts:106:3 › the microscope (D2) › opens a generated item by id: the notation settled, every fact under its hook, Hear it enabled (14.8s)
+  ok  4 tests\e2e\microscope.spec.ts:242:3 › the microscope (D2) › the learner’s navigation never shows the route (15.2s)
+  x   3 tests\e2e\microscope.spec.ts:166:3 › the microscope (D2) › a decision is exported as a file review.py --merge accepts, and the learner’s stores do not move (1.2m)
+  ok  6 tests\e2e\offline.spec.ts:224:3 › offline › every file the catalog names is in the precache manifest (49ms)
+  ok  7 tests\e2e\offline.spec.ts:274:3 › offline › the engraver is not in the entry bundle (P19) (4ms)
+  ok  8 tests\e2e\offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) (26ms)
+  ok  9 tests\e2e\offline.spec.ts:324:3 › offline › and the builder-only dev/ root is served and never precached (D2a) (2ms)
+  ok 10 tests\e2e\offline.spec.ts:348:3 › the error boundary (docs/04 §8) › an uncaught error shows a banner with copyable details (5.6s)
+  ok 11 tests\e2e\offline.spec.ts:377:3 › the error boundary (docs/04 §8) › an unhandled rejection is caught too, and counted (1.6s)
+  ok 12 tests\e2e\offline.spec.ts:387:3 › the error boundary (docs/04 §8) › dismissing it leaves the app usable (1.5s)
+  x   5 tests\e2e\offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch (2.6m)
+
+
+  1) tests\e2e\microscope.spec.ts:166:3 › the microscope (D2) › a decision is exported as a file review.py --merge accepts, and the learner’s stores do not move 
+
+    Test timeout of 30000ms exceeded.
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\microscope-the-microscope--5fefa-earner’s-stores-do-not-move\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\microscope-the-microscope--5fefa-earner’s-stores-do-not-move\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\microscope-the-microscope--5fefa-earner’s-stores-do-not-move\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#diag-offline')
+    Expected substring: "Currently offline"
+    Received string:    "Checking…"
+    Timeout: 30000ms
+
+    Call log:
+      - Expect "toContainText" locator('#diag-offline') with timeout 30000ms
+      - waiting for locator('#diag-offline')
+        62 × locator resolved to <div class="kv-block" id="diag-offline">…</div>
+           - unexpected value "Checking…"
+
+
+      196 |       window.location.hash = '#/settings/diagnostics';
+      197 |     });
+    > 198 |     await expect(page.locator('#diag-offline')).toContainText('Currently offline', {
+          |                                                 ^
+      199 |       timeout: 30_000,
+      200 |     });
+      201 |     // Not `toContainText('Precached')`, which is what stood here and which
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a934668f5f0f08405\app\tests\e2e\offline.spec.ts:198:49
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-the-whole--dac94-off-after-one-online-launch\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-the-whole--dac94-off-after-one-online-launch\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D2a\pw\test-results\offline-offline-the-whole--dac94-off-after-one-online-launch\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\e2e\microscope.spec.ts:166:3 › the microscope (D2) › a decision is exported as a file review.py --merge accepts, and the learner’s stores do not move 
+    tests\e2e\offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch 
+  10 passed (3.3m)
+playwright exit 1

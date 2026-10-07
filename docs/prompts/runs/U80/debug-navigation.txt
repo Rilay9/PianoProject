@@ -1,0 +1,17 @@
+(in app) test -f tests/e2e/zz-u80-debug.spec.ts && echo "specs-exist: ok" && npx playwright test --config=playwright.u80-4313.config.ts --workers=1 --reporter=line tests/e2e/zz-u80-debug.spec.ts
+specs-exist: ok
+
+Running 1 test using 1 worker
+
+[1/1] tests\e2e\zz-u80-debug.spec.ts:6:1 › navigation trace
+tests\e2e\zz-u80-debug.spec.ts:6:1 › navigation trace
+{"piece":"song.folk.hot-cross-buns","urlBefore":"about:blank","urlAfter":"http://localhost:4313/PianoProject/#/score/song.folk.hot-cross-buns","beforeTitle":"(none)","connected":"(none)","count":1,"title":"Hot Cross Buns"}
+
+{"piece":"song.folk.hot-cross-buns","urlBefore":"http://localhost:4313/PianoProject/#/score/song.folk.hot-cross-buns","urlAfter":"http://localhost:4313/PianoProject/#/score/song.folk.hot-cross-buns","beforeTitle":"Hot Cross Buns","connected":"error: Error: elementHandle.evaluate: Execution context was destroyed, most likely because of a navigation","count":1,"title":"Hot Cross Buns"}
+
+{"piece":"song.holiday.jingle-bells.rh","urlBefore":"http://localhost:4313/PianoProject/#/score/song.folk.hot-cross-buns","urlAfter":"http://localhost:4313/PianoProject/#/score/song.holiday.jingle-bells.rh","beforeTitle":"Hot Cross Buns","connected":"error: Error: elementHandle.evaluate: Execution context was destroyed, most likely because of a navigation","count":1,"title":"Jingle Bells (chorus)"}
+
+{"piece":"song.folk.when-the-saints.alternating","urlBefore":"http://localhost:4313/PianoProject/#/score/song.holiday.jingle-bells.rh","urlAfter":"http://localhost:4313/PianoProject/#/score/song.folk.when-the-saints.alternating","beforeTitle":"Jingle Bells (chorus)","connected":"error: Error: elementHandle.evaluate: Execution context was destroyed, most likely because of a navigation","count":1,"title":"Oh When the Saints Go Marching In (hands alternating)"}
+
+  1 passed (10.9s)
+exit=0

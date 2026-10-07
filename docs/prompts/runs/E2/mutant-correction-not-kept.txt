@@ -1,0 +1,62 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ab0ca07b13a3644b6/app
+
+ ❯ tests/unit/importMeasuredTruth.test.ts (12 tests | 2 failed) 129ms
+   ❯ the stored imports measured once on the next launch (E25), through the store (6)
+     × measures a row converted by an older converter once, on the stored score, and it goes on naming the converter that wrote its notes 5ms
+     × keeps a corrected import’s score, its correction provenance and its judged level when it is measured again 2ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 10 passed (12)
+   Start at  23:12:04
+   Duration  1.47s (environment 52%, transform 26%, import 12%, tests 10%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the stored imports measured once on the next launch (E25), through the store > measures a row converted by an older converter once, on the stored score, and it goes on naming the converter that wrote its notes
+AssertionError: expected undefined to deeply equal { …(2) }
+
+- Expected:
+{
+  "name": "app/src/import/midi/convert.ts",
+  "version": 1,
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/importMeasuredTruth.test.ts:270:39
+    268|     expect(measured).toContain('import.midi-measured');
+    269|     const row = (await getImport('import.midi-measured')) as ImportRow;
+    270|     expect(row.provenance?.converter).toEqual({ name: 'app/src/import/…
+       |                                       ^
+    271|     expect(row.provenance?.facts.measuredUnder?.value).toBe(String(nex…
+    272|     measured.length = 0;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the stored imports measured once on the next launch (E25), through the store > keeps a corrected import’s score, its correction provenance and its judged level when it is measured again
+AssertionError: expected undefined to deeply equal { kind: 'authored', …(1) }
+
+- Expected:
+{
+  "kind": "authored",
+  "via": "the learner’s correction, 2026-09-25",
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/importMeasuredTruth.test.ts:284:41
+    282|     expect(row.data).toBe(CORRECTED);
+    283|     expect(row.demands).toEqual(['interval.step']);
+    284|     expect(row.provenance?.facts.hands).toEqual({ kind: 'authored', vi…
+       |                                         ^
+    285|     expect(row.provenance?.facts.demands?.via).toBe('app/src/demands/d…
+    286|     expect([row.level, row.levelSource]).toEqual([3, 'judged']);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+exit 1

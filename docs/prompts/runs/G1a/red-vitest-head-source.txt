@@ -1,0 +1,369 @@
+(cd app) npx vitest run tests/unit/firstContactOnTheScore.test.ts tests/unit/observationsFromRun.test.ts tests/unit/encounterModel.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/observationsFromRun.test.ts (10 tests | 3 failed) 1343ms
+   ❯ what the learner had heard (3)
+     × a sight-read heard before its first run is recorded, flagged unseen: false 146ms
+     × a first reading of a phrase nobody played is unseen: true 139ms
+     × a demonstrated take stores demonstrated: true and no performance flag 125ms
+ ❯ tests/unit/firstContactOnTheScore.test.ts (17 tests | 12 failed) 3020ms
+   ❯ first contact, from the history and the visit (7)
+     × heard, left, returned later, read: not first contact, and the history says so 192ms
+     × viewed on an earlier visit and never played or heard: not first contact, and the sheet says seen 185ms
+     × viewed only on this visit: first contact, and the ladder sees it 127ms
+     × a reload is another visit: the viewing before it is an earlier one 189ms
+     × two tabs: a viewing another tab wrote before this one opened, or after it opened and before the run was stored, is another visit’s 190ms
+     × a notated piece, two tabs: a viewing another tab wrote after this one opened is read before the run is stored (G1a) 124ms
+     × a run of the phrase on record under another row id: not first contact 189ms
+   ❯ a piece, an excerpt and an import carry the fact too (4)
+     × a notated piece: its first run is first contact, the second is not, and both pass 126ms
+     × an excerpt of other bars played before leaves this excerpt a first contact 127ms
+     × the piece played whole before: its excerpt is not a first contact 127ms
+     × an import is its stored bytes: a duplicate under a new id is the same material, met and not first contact 127ms
+   ❯ a consumer of general contact reads firstContact alone (G1a) (1)
+     × over phrase runs, piece runs, a row G1’s app wrote and rows from before G1: the relation where it was written, unknown where it was not 379ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > heard, left, returned later, read: not first contact, and the history says so
+AssertionError: expected { firstContact: undefined, …(1) } to deeply equal { firstContact: false, unseen: false }
+
+- Expected
++ Received
+
+  {
+-   "firstContact": false,
++   "firstContact": undefined,
+    "unseen": false,
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:439:32
+    437|     expect(row.unseen, 'a phrase heard on an earlier visit went on the…
+    438|     // G1a: the relation beside it, the same value (one derivation, tw…
+    439|     expect(contactFields(row)).toEqual({ firstContact: false, unseen: …
+       |                                ^
+    440|     expect(historyDetail(row)).toContain('not first sight');
+    441|     // The evidence the run was judged on: no first contact reaches th…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > viewed on an earlier visit and never played or heard: not first contact, and the sheet says seen
+AssertionError: expected { firstContact: undefined, …(1) } to deeply equal { firstContact: false, unseen: false }
+
+- Expected
++ Received
+
+  {
+-   "firstContact": false,
++   "firstContact": undefined,
+    "unseen": false,
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:458:47
+    456|     await open(PHRASE);
+    457|     playThrough();
+    458|     expect(contactFields(await lastStored())).toEqual({ firstContact: …
+       |                                               ^
+    459|     expect(document.querySelector('#summary-note')?.textContent).toCon…
+    460|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > viewed only on this visit: first contact, and the ladder sees it
+AssertionError: expected { firstContact: undefined, …(1) } to deeply equal { firstContact: true, unseen: true }
+
+- Expected
++ Received
+
+  {
+-   "firstContact": true,
++   "firstContact": undefined,
+    "unseen": true,
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:467:32
+    465|     playThrough();
+    466|     const row = await lastStored();
+    467|     expect(contactFields(row)).toEqual({ firstContact: true, unseen: t…
+       |                                ^
+    468|     expect(row.evidence?.some((one) => one.kind === 'measured' && (one…
+    469|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > a reload is another visit: the viewing before it is an earlier one
+AssertionError: expected { firstContact: undefined, …(1) } to deeply equal { firstContact: false, unseen: false }
+
+- Expected
++ Received
+
+  {
+-   "firstContact": false,
++   "firstContact": undefined,
+    "unseen": false,
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:477:47
+    475|     await open(PHRASE);
+    476|     playThrough();
+    477|     expect(contactFields(await lastStored())).toEqual({ firstContact: …
+       |                                               ^
+    478|     const rows = await storedEncounters();
+    479|     expect(rows).toHaveLength(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > two tabs: a viewing another tab wrote before this one opened, or after it opened and before the run was stored, is another visit’s
+AssertionError: a viewing in another tab before this one opened was not read: expected { firstContact: undefined, …(1) } to deeply equal { firstContact: false, unseen: false }
+
+- Expected
++ Received
+
+  {
+-   "firstContact": false,
++   "firstContact": undefined,
+    "unseen": false,
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:494:111
+    492|     await open(PHRASE);
+    493|     playThrough();
+    494|     expect(contactFields(await lastStored()), 'a viewing in another ta…
+       |                                                                                                               ^
+    495|
+    496|     // (b) the other tab writes while this one is open, after its hist…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > a notated piece, two tabs: a viewing another tab wrote after this one opened is read before the run is stored (G1a)
+AssertionError: a viewing in another tab after this one opened was not read before storing a piece’s run: expected { firstContact: undefined, …(1) } to deeply equal { firstContact: false, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "firstContact": false,
+-   "unseen": "absent",
++   "firstContact": undefined,
++   "unseen": false,
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:516:124
+    514|     playThrough();
+    515|     const row = await lastStored();
+    516|     expect(contactFields(row), 'a viewing in another tab after this on…
+       |                                                                                                                            ^
+    517|     // The fact refuses the piece nothing.
+    518|     await vi.waitFor(async () => expect((await getProgress(SONG_ID)).s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > a run of the phrase on record under another row id: not first contact
+AssertionError: expected { firstContact: undefined, …(1) } to deeply equal { firstContact: false, unseen: false }
+
+- Expected
++ Received
+
+  {
+-   "firstContact": false,
++   "firstContact": undefined,
+    "unseen": false,
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:545:48
+    543|     await open(PHRASE);
+    544|     playThrough();
+    545|     expect(contactFields(await lastStored(2))).toEqual({ firstContact:…
+       |                                                ^
+    546|   });
+    547| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/15]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > a notated piece: its first run is first contact, the second is not, and both pass
+AssertionError: expected { firstContact: undefined, …(1) } to deeply equal { Object (firstContact, unseen) }
+
+- Expected
++ Received
+
+  {
+-   "firstContact": true,
+-   "unseen": "absent",
++   "firstContact": undefined,
++   "unseen": true,
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:555:48
+    553|     await open(`#/score/${SONG_ID}`);
+    554|     playThrough();
+    555|     expect(contactFields(await lastStored(1))).toEqual({ firstContact:…
+       |                                                ^
+    556|     playThrough();
+    557|     const second = await lastStored(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/15]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > an excerpt of other bars played before leaves this excerpt a first contact
+AssertionError: excerpt A played made excerpt B met: expected { firstContact: undefined, …(1) } to deeply equal { Object (firstContact, unseen) }
+
+- Expected
++ Received
+
+  {
+-   "firstContact": true,
+-   "unseen": "absent",
++   "firstContact": undefined,
++   "unseen": true,
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:579:87
+    577|     await open(`#/score/${EXCERPT_B}`);
+    578|     playThrough();
+    579|     expect(contactFields(await lastStored(2)), 'excerpt A played made …
+       |                                                                                       ^
+    580|   });
+    581|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/15]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > the piece played whole before: its excerpt is not a first contact
+AssertionError: the whole piece played left its excerpt a first contact: expected { firstContact: undefined, …(1) } to deeply equal { firstContact: false, …(1) }
+
+- Expected
++ Received
+
+  {
+-   "firstContact": false,
+-   "unseen": "absent",
++   "firstContact": undefined,
++   "unseen": false,
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:586:107
+    584|     await open(`#/score/${EXCERPT_B}`);
+    585|     playThrough();
+    586|     expect(contactFields(await lastStored(2)), 'the whole piece played…
+       |                                                                                                           ^
+    587|   });
+    588|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/15]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > an import is its stored bytes: a duplicate under a new id is the same material, met and not first contact
+AssertionError: expected { firstContact: undefined, …(1) } to deeply equal { Object (firstContact, unseen) }
+
+- Expected
++ Received
+
+  {
+-   "firstContact": true,
+-   "unseen": "absent",
++   "firstContact": undefined,
++   "unseen": true,
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:595:34
+    593|     const first = await lastStored(1);
+    594|     expect(first.material).toEqual(identity);
+    595|     expect(contactFields(first)).toEqual({ firstContact: true, unseen:…
+       |                                  ^
+    596|     leave();
+    597|     expect(await contact(IMPORT_TWO, identity)).toMatchObject({ contac…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/15]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > a consumer of general contact reads firstContact alone (G1a) > over phrase runs, piece runs, a row G1’s app wrote and rows from before G1: the relation where it was written, unknown where it was not
+AssertionError: the relation as a consumer reads it, without asking what kind of run it was: expected [ undefined, undefined, …(5) ] to deeply equal [ undefined, undefined, …(5) ]
+
+- Expected
++ Received
+
+  [
+    undefined,
+    undefined,
+    undefined,
+-   true,
+-   false,
+-   true,
+-   false,
++   undefined,
++   undefined,
++   undefined,
++   undefined,
+  ]
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:643:112
+    641|     const rows = await rungRows();
+    642|     expect(rows.map((row) => row.itemId)).toEqual(['song.before-g1', R…
+    643|     expect(rows.map(contactOf), 'the relation as a consumer reads it, …
+       |                                                                                                                ^
+    644|       undefined, // before G1: nothing manufactured
+    645|       undefined, // a phrase before G1: its `unseen` is sight-reading'…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/15]⎯
+
+ FAIL  tests/unit/observationsFromRun.test.ts > what the learner had heard > a sight-read heard before its first run is recorded, flagged unseen: false
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ tests/unit/observationsFromRun.test.ts:415:30
+    413|     expect(row.unseen).toBe(false);
+    414|     // G1a: the encounter relation beside sight-reading's condition, t…
+    415|     expect(row.firstContact).toBe(false);
+       |                              ^
+    416|     expect(row.demonstrated).toBe(false);
+    417|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/15]⎯
+
+ FAIL  tests/unit/observationsFromRun.test.ts > what the learner had heard > a first reading of a phrase nobody played is unseen: true
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ tests/unit/observationsFromRun.test.ts:427:30
+    425|     const row = await storedRow();
+    426|     expect(row.unseen).toBe(true);
+    427|     expect(row.firstContact).toBe(true);
+       |                              ^
+    428|   });
+    429|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/15]⎯
+
+ FAIL  tests/unit/observationsFromRun.test.ts > what the learner had heard > a demonstrated take stores demonstrated: true and no performance flag
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ tests/unit/observationsFromRun.test.ts:445:30
+    443|     // Revised (G1a): under its own name, `firstContact`; `unseen` is …
+    444|     // generated phrase's field again, and a piece's run carries none.
+    445|     expect(row.firstContact).toBe(false);
+       |                              ^
+    446|     expect('unseen' in row, 'a piece’s run carries sight-reading’s fie…
+    447|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/15]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  15 failed | 48 passed (63)
+   Start at  02:23:56
+   Duration  16.09s (environment 75%, tests 15%, transform 7%, import 3%)
+
+exit=1

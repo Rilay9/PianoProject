@@ -9,7 +9,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { join } from 'node:path';
-import { EDGE_DIR, loadFixture } from './helpers/fixtures';
+import { EDGE_DIR, loadFixture, readMusicXml } from './helpers/fixtures';
 import { extractScoreModel } from '../../src/score/extractScoreModel';
 
 const KNOWN_ISSUES_DIR = join(EDGE_DIR, 'known-issues');
@@ -27,22 +27,24 @@ describe('OSMD 2.1.2: a sixteenth-note grace truncates its measure', () => {
    * repertoire — sixteenth graces are everywhere in classical piano music.
    */
   it('still loses the rest of the bar (remove this test when it starts failing)', async () => {
-    const osmd = await loadFixture(join(KNOWN_ISSUES_DIR, 'grace-sixteenth-truncation.musicxml'));
+    const path = join(KNOWN_ISSUES_DIR, 'grace-sixteenth-truncation.musicxml');
+    const osmd = await loadFixture(path);
 
     const measureDuration = osmd.Sheet.SourceMeasures[0]?.Duration.RealValue;
     // 3/4 should be 0.75 of a whole note; OSMD reports a single quarter.
     expect(measureDuration).toBe(0.25);
 
-    const model = extractScoreModel(osmd);
+    const model = extractScoreModel(osmd, { musicXml: readMusicXml(path) });
     // Only the first quarter survives; E5 and F5 are gone.
     expect(model.steps).toHaveLength(1);
     expect(model.steps[0]?.notes.map((n) => n.midi)).toEqual([72]);
   });
 
   it('parses the same bar correctly when the grace is an eighth', async () => {
-    const osmd = await loadFixture(join(EDGE_DIR, 'pickup-grace.musicxml'));
+    const path = join(EDGE_DIR, 'pickup-grace.musicxml');
+    const osmd = await loadFixture(path);
     expect(osmd.Sheet.SourceMeasures[1]?.Duration.RealValue).toBe(0.75);
-    const model = extractScoreModel(osmd);
+    const model = extractScoreModel(osmd, { musicXml: readMusicXml(path) });
     expect(model.steps).toHaveLength(4);
   });
 });

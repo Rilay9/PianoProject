@@ -1,0 +1,20 @@
+HD2a evidence: song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx (scores/pdmx/QmUeyTNExZVRs7dr55hu3HuvDDLizDUgYBovcAZeRrZ934.mxl), identity sha256 659513bef73ccfc3b4ebe6825900a3d90cfe0a5e96083982ade88a10e25728ee
+The app's current model (dump.probe.ts), first pass of each printed bar: midi/staff/voice/hand[/x cross-staff][/g grace]:duration.
+Per bar-voice, the per-onset reading of signature.py: conflict = the model's hand would strike these notes with its own beyond one hand.
+
+ROW staff 1 voice 2 bars 4-4 -> R
+  bar 4 (source measure 3) st1 v2: L/x -> R; onsets 2 {'conflict': 2}; second voice(s) [3]; e.g. @12 L [43, 50] + v2 [60, 65, 69]; @14 L [43, 53] + v2 [59, 67]
+  bar 4 onset 12 69/st1/v2/L/x:2 65/st1/v2/L/x:2 60/st1/v2/L/x:2 50/st2/v3/L:2 43/st2/v3/L:2
+  bar 4 onset 13 74/st1/v1/R:1
+  bar 4 onset 14 67/st1/v2/L/x:2 64/st1/v1/R:0.5 59/st1/v2/L/x:2 53/st2/v3/L:2 43/st2/v3/L:2
+  bar 4 onset 14.5 63/st1/v1/R:0.5
+  bar 4 onset 15 62/st1/v1/R:1
+
+ROW staff 1 voice 2 bars 29-29 -> R
+  bar 29 (source measure 28) st1 v2: L/x -> R; onsets 3 {'conflict': 1, 'free': 2}; second voice(s) [3]; e.g. @112 L [43, 53] + v2 [64]
+  bar 29 onset 112 67/st1/v1/R:4 64/st1/v2/L/x:1 59/st1/v1/R:4 53/st2/v3/L:2.5 43/st2/v3/L:2.5
+  bar 29 onset 113 63/st1/v2/L/x:1
+  bar 29 onset 114 62/st1/v2/L/x:2
+  bar 29 onset 114.5 49/st2/v3/L:0.5
+  bar 29 onset 115 50/st2/v3/L:1
+

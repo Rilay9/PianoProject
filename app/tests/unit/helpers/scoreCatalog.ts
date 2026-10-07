@@ -7,6 +7,8 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
+import { declaredHandOf } from '../../../src/curriculum/declaredHand';
+import { verifiedHandsOption } from '../../../src/curriculum/verifiedFacts';
 import type { CatalogItem, Curriculum } from '../../../src/curriculum/types';
 import { extractScoreModel } from '../../../src/score/extractScoreModel';
 import { toMusicXml } from '../../../src/score/mxl';
@@ -76,7 +78,10 @@ export function installTextMeasurer(): void {
  * The score model the app builds for this item.
  *
  * `osmd.load` then `extractScoreModel`, exactly as `helpers/fixtures.ts` does
- * it for the golden models — the same two calls the Score screen makes.
+ * it for the golden models — the same two calls the Score screen makes, with
+ * the item's declared hand where the catalogue's is authoritative (HD1,
+ * `curriculum/declaredHand.ts`), and the item's current verified hands (HD2, `curriculum/verifiedFacts.ts`), as
+ * the Score screen passes them.
  */
 export async function modelForItem(item: CatalogItem & { file: string }): Promise<ScoreModel> {
   const bytes = new Uint8Array(readFileSync(resolve(CONTENT_DIR, item.file)));
@@ -84,8 +89,15 @@ export async function modelForItem(item: CatalogItem & { file: string }): Promis
   document.body.appendChild(container);
   try {
     const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
-    await osmd.load(toMusicXml(bytes));
-    return extractScoreModel(osmd, { id: item.id });
+    const musicXml = toMusicXml(bytes);
+    await osmd.load(musicXml);
+    const declaredHand = declaredHandOf(item);
+    return extractScoreModel(osmd, {
+      id: item.id,
+      musicXml,
+      ...(declaredHand === undefined ? {} : { declaredHand }),
+      ...verifiedHandsOption(item),
+    });
   } finally {
     container.remove();
   }

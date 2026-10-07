@@ -1,0 +1,9 @@
+﻿copies from the main checkout (read only): robocopy <main>\<path> <worktree>\<path> for each path below
+robocopy build\positions-cache.json exit=1
+robocopy build\demands-cache.json exit=1
+robocopy build\notation-cache.json exit=1
+robocopy build\cache (/E, without .git) exit=1
+robocopy build\midi-real (/E, without .git) exit=1
+robocopy content\scores\imported\kern (/E, without .git) exit=1
+robocopy content\scores\imported\musetrainer (/E, without .git) exit=1
+robocopy content\scores\imported\mutopia (/E, without .git) exit=1

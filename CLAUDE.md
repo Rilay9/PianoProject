@@ -1,5 +1,44 @@
 # Working in this repository
 
+**Start every session with `docs/prompts/FABLE.md`** (the owner, 2026-10-06): the one operating contract. It says what governs, the order of work, the chain record each learner-facing ability needs, and what done means. Where an older document disagrees, FABLE.md wins. New instructions are edits to FABLE.md, never new governing documents.
+
+**Preflight, before every action** (the owner, 2026-10-03): name the current plan step, the unit of work, the learner problem, the ownership/reuse decision and the finish condition. If you cannot state all five in five short lines, do not act. After finishing, stop: never select another task by momentum. The full checklist behind this is `docs/prompts/anti-drift-checklist.md`. **A finding is not a task:** before any nontrivial change is dispatched, the brief opens with the decision rationale of `operating-procedure.md` §10b (learner problem, solution classes considered, why the chosen one, what would reverse it, real problem or proxy, remaining uncertainty).
+
+**The governing direction is `docs/prompts/charter.md`** (the convergence charter, 2026-10-03). Before any lane touches code, answer its gate: should PianoProject own this responsibility at all?
+
+## Reuse before reinvention: the first rule (the owner, 2026-10-03)
+
+For every new or changed musical, pedagogical, content, analysis, curriculum, assessment
+or generation capability, **do not design custom code first.** Search, and record what you
+found:
+1. an existing usable asset: a score, an exercise, a fingering table, an annotated example;
+2. a public-domain or openly licensed score or corpus: PDMX, Mutopia, OpenScore, IMSLP;
+3. an established library: music21 (already a dependency), Tonal, partitura;
+4. an annotated dataset: ASAP, the DCML corpora, When in Rome, CIPI;
+5. an open-source implementation of the same or a related feature, such as another piano
+   tutor or sight-reading trainer;
+6. a published algorithm, standard, syllabus (RCM, ABRSM) or authoritative text.
+
+For each candidate, say:
+- what it solves;
+- its provenance;
+- its licence;
+- its fit with this project;
+- the adaptation it needs;
+- what it leaves unsolved.
+
+**Preference order:** existing asset → library → dataset or reference implementation with a
+thin adapter → published algorithm → small project-specific code → novel code only when
+nothing above can serve.
+
+Easy-to-write is never a justification. When existing work is rejected, the record says
+why. Never hand-reproduce known musical knowledge a maintained source supplies. Never
+generate a substitute when suitable licensed real material meets the need. Research the
+musical correctness of **only the gap that remains**. The project assembles the best
+existing reliable pieces, adds only what is truly project-specific, and proves the seams.
+
+**Before pushing any content work, check it against `docs/prompts/content-mistakes.md`:** the mistakes already made here, each caught late.
+
 **Read `docs/prompts/operating-procedure.md` before any substantial piece of work, and
 point every agent brief at it.** It is short. It says how work is decided, done and
 reported here, and it is the owner's word as of 2026-09-25. `docs/00-invariants.md`
@@ -40,7 +79,7 @@ cannot be inferred from what is written down. Otherwise choose, say why in a lin
 
 ## Before reporting any piece of work
 
-Four questions, in tier order (`operating-procedure.md` §11). A correction is owed only
+Six questions, in tier order (`operating-procedure.md` §11). A correction is owed only
 where the answer would change what the owner or the next agent does; wording alone never
 earns a turn.
 
@@ -49,9 +88,25 @@ earns a turn.
 2. **Mechanism.** What caused the fault, which test told that cause from the alternatives,
    and did the change act on the mechanism?
 3. **Evidence.** Which claims are observed and which inferred; for every "all", "none" or
-   "both", the scope actually examined and what is unchecked; what has not been heard.
+   "both", the scope actually examined and what is unchecked; for an absence ("not on this
+   machine", "no such file"), the place the record says it lives, looked at, and the item
+   tested directly (`test -e`, the exact path), never read off a listing; output cut by
+   `head` or a limit is a sample, never grounds for "none" or "all"; what has not been heard.
 4. **Consumers and record.** Who else reads what changed; the spec, test map and record
    updated in the same change, with the reason.
+5. **Addressee.** For every request, question or claim: who acts on it, and can they? The
+   owner decides and relays and never listens; the reviewer reads text and cannot hear, run
+   or look; builders and the orchestrator cannot hear. A capability no actor has is stated
+   as *no one in this process can decide this* and the item stays open, never moved to a
+   later actor or phase. A paragraph its addressee does nothing with is cut. An owner
+   correction is applied and confirmed by the change, in one line, without apology.
+6. **Closure.** Is anything I call done, landed, wired, covered or ruled actually there? A decision
+   written down is not the mechanism that enforces it. For every clause of a ruling, brief or claim:
+   the file and line that implements it, the test that pins it, and the path that runs that test
+   (which CI job, which suite), checked on the current HEAD, never read off a builder's report, a
+   handoff or the rulebook. A clause with no implementation is said to be absent, and the item stays
+   open (the owner and the reviewer, 2026-10-07: the preflight's three ruled changes were
+   written into FABLE as if in force while none existed in code or CI).
 
 ## Two mechanical hazards
 
@@ -73,7 +128,7 @@ tracked file, which is the signature of an accidental reformat.
 | How work is decided, done and reported | `docs/prompts/operating-procedure.md` |
 | The product and technical rules, with their stories | `docs/00-invariants.md` |
 | What the app is and why | `docs/00-overview.md` |
-| Screen contracts, `§0` R1–R6 | `docs/04-ui-spec.md` |
+| Screen contracts, `§0` R1–R7 | `docs/04-ui-spec.md` |
 | The curriculum and its tracks | `docs/02-curriculum.md` |
 | Which test proves which state machine; every spec file | `docs/08-test-map.md` |
 | The current plan and its waves | `docs/prompts/plan-2026-09-25.md` |

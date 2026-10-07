@@ -1,0 +1,115 @@
+/**
+ * Where 3/4 and key signatures reach the reading rows, and where they never do
+ * (the sight-reading quality lane's correction, docs/prompts/runs/sightreading-quality
+ * REPORT.md §10; 1(d)'s target table, built as far as the lane's corpus showed it
+ * realisable).
+ *
+ * 1.4 teaches 3/4 (`content/lessons/1.4.md`) and 3.1 teaches the key signature; until
+ * this change no core reading row wrote either. The rows now carry them as lists the
+ * seed chooses from: `-2-right` 4/4 or 3/4; `-2`, `-4` 4/4 or 3/4 in C, G or F; `-3`
+ * 6/8, 4/4 or 3/4 in C, G or F. `-1` stays in 4/4: besides 1.5 it is the unanchored
+ * daily read for a learner at 0.1-1.2, held at 1.5, so a 3/4 there would reach a learner
+ * before 1.4, and no vocabulary demand holds 3/4 back (`heldToRung` cannot).
+ *
+ * Read from the phrase as written (its MusicXML `<time>` and `<fifths>`), through
+ * `readingOptions` held to each rung as the app holds it, over seeds 1-30.
+ */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { describe, expect, it } from 'vitest';
+import { generateSightReading } from '../../src/engine/sightReading';
+import { readingOffer, readingOptions, taughtAtRung, type LessonPosition } from '../../src/curriculum/session';
+import { defaultActiveTracks } from '../../src/curriculum/tracks';
+import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
+
+const curriculum = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'curriculum.json'), 'utf8')) as Curriculum;
+const rows = (JSON.parse(readFileSync(join(process.cwd(), '..', 'content', 'catalog.static.json'), 'utf8')) as CatalogItem[]).filter(
+  (row) => row.drill?.kind === 'sight-reading',
+);
+const lessons: Lesson[] = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons));
+const SEEDS = Array.from({ length: 30 }, (_, i) => i + 1);
+const row = (short: string): CatalogItem => {
+  const found = rows.find((one) => one.id === `drill.reading.sight-reading-${short}`);
+  if (!found) throw new Error(short);
+  return found;
+};
+const listing = (item: CatalogItem): string[] =>
+  lessons.filter((lesson) => lesson.exerciseOptions.includes(item.id) || lesson.songOptions.includes(item.id)).map((lesson) => lesson.id);
+
+interface Written {
+  metre: string;
+  fifths: number;
+}
+
+function written(item: CatalogItem, rung: string | undefined, seed: number): Written {
+  const xml = generateSightReading(readingOptions(item, undefined, seed, rung === undefined ? undefined : taughtAtRung(curriculum, rung))).musicXml;
+  const beats = /<beats>(\d+)<\/beats>/.exec(xml)?.[1];
+  const beatType = /<beat-type>(\d+)<\/beat-type>/.exec(xml)?.[1];
+  const fifths = Number(/<fifths>(-?\d+)<\/fifths>/.exec(xml)?.[1]);
+  return { metre: `${String(beats)}/${String(beatType)}`, fifths };
+}
+
+const keyTaught = (rung: string): boolean => taughtAtRung(curriculum, rung)?.('key.signature') === true;
+const order = lessons.map((lesson) => lesson.id);
+const before = (rung: string, than: string): boolean => order.indexOf(rung) < order.indexOf(than);
+
+describe('3/4 and key signatures on the reading rows (the sight-reading quality lane)', () => {
+  const changed = ['2-right', '2', '3', '4'];
+
+  it.each(changed)('row %s writes some 3/4 at every rung listing it, all of them after 1.4', (short) => {
+    const item = row(short);
+    expect(listing(item).length).toBeGreaterThan(0);
+    for (const rung of listing(item)) {
+      expect(before(rung, '1.4'), rung).toBe(false);
+      const metres = SEEDS.map((seed) => written(item, rung, seed).metre);
+      expect(metres, `${short}@${rung}`).toContain('3/4');
+    }
+  });
+
+  it.each(['2', '3', '4'])('row %s writes a key signature at every rung listing it, each one where 3.1 is taught', (short) => {
+    const item = row(short);
+    for (const rung of listing(item)) {
+      expect(keyTaught(rung), rung).toBe(true);
+      const keys = new Set(SEEDS.map((seed) => written(item, rung, seed).fifths));
+      expect([...keys].some((k) => k !== 0), `${short}@${rung}`).toBe(true);
+      expect([...keys].every((k) => Math.abs(k) <= 1), `${short}@${rung}`).toBe(true);
+    }
+  });
+
+  it('no row writes a key signature at a rung where key.signature is untaught', () => {
+    for (const item of rows) {
+      for (const rung of order.filter((id) => taughtAtRung(curriculum, id) !== undefined && !keyTaught(id))) {
+        if (!listing(item).includes(rung)) continue;
+        for (const seed of SEEDS) expect(written(item, rung, seed).fifths, `${item.id}@${rung}`).toBe(0);
+      }
+    }
+    // and the keyed rows held at a rung before 3.1 write C major only
+    for (const short of ['2', '3', '4']) {
+      for (const seed of SEEDS) expect(written(row(short), '2.5', seed).fifths, `${short}@2.5`).toBe(0);
+    }
+  });
+
+  it('no 3/4 before 1.4: the rows at 1.3, and the daily read of a learner at every rung before 1.4', () => {
+    for (const seed of SEEDS) expect(written(row('1-left'), '1.3', seed).metre).toBe('4/4');
+    for (const lesson of lessons.filter((one) => /^\d/.test(one.id) && before(one.id, '1.4'))) {
+      const offer = readingOffer({
+        curriculum,
+        items: rows,
+        position: { lesson } as LessonPosition,
+        activeTracks: defaultActiveTracks(curriculum),
+        rows: [],
+        today: new Date(2026, 10, 2, 12),
+        purpose: 'daily',
+      });
+      if (!offer) continue;
+      // The rung the daily read is opened at (`TodayScreen` `rungForSlot`): the anchor, else the one rung listing the row.
+      const held = offer.lessonId ?? (listing(offer.item).length === 1 ? listing(offer.item)[0] : undefined);
+      for (const seed of SEEDS) {
+        const xml = generateSightReading(
+          readingOptions(offer.item, offer.recipe, seed, held === undefined ? undefined : taughtAtRung(curriculum, held)),
+        ).musicXml;
+        expect(xml, `${lesson.id} reads ${offer.item.id}`).not.toMatch(/<beats>3<\/beats><beat-type>4<\/beat-type>/);
+      }
+    }
+  });
+});

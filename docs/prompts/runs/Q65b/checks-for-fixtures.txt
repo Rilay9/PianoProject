@@ -1,0 +1,9 @@
+$ (cwd .) python tools/docs/checks_for_paths.py app/tests/fixtures/imports/two-hands.mid
+# checks for 1 path(s): 1 matched, 0 unmatched
+# app/tests/fixtures/imports/two-hands.mid: app/tests/fixtures/**
+converter-harness	.	python -m unittest discover -s tools/midi-cleanup/tests -v
+parity-reference	.	python tools/midi-cleanup/tests/parity_reference.py
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/chart.spec.ts tests/e2e/converted-import.spec.ts tests/e2e/doors.spec.ts tests/e2e/engine.spec.ts tests/e2e/finder.spec.ts tests/e2e/import-experience.spec.ts tests/e2e/library.spec.ts tests/e2e/mic.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/pdf-paper.spec.ts tests/e2e/pdf.spec.ts tests/e2e/perf.spec.ts tests/e2e/score.density.spec.ts tests/e2e/score.renderer.fuzz.spec.ts tests/e2e/score.slide.spec.ts tests/e2e/score.slots.spec.ts tests/e2e/score.spec.ts tests/e2e/shelf.spec.ts tests/e2e/sweeps.spec.ts tests/e2e/wide.spec.ts --workers=4
+exit=0

@@ -8,7 +8,8 @@
 // those to the audio clock with explicit start times (docs/01 §4.4). The timer
 // may fire late; the clicks still land where they should.
 
-import { BeatScheduler, type MetronomeBeat } from './BeatScheduler';
+import { BeatScheduler, type BarShape, type MetronomeBeat } from './BeatScheduler';
+import { countAudioStart } from './audioStarts';
 
 export type MetronomeSound = 'wood' | 'beep' | 'high';
 
@@ -74,6 +75,8 @@ export class Metronome {
   private beatsPerBar: number;
   private countInBars: number;
   private sound: MetronomeSound;
+  /** Each bar's own count, for the next `start()` (`BeatScheduler`'s `barShape`; the chord chart's, MT1). */
+  private barShape: ((bar: number) => BarShape) | null = null;
   private dropped = 0;
   /**
    * Clicks handed to the audio clock and not yet heard. `stop()` used to leave
@@ -121,6 +124,7 @@ export class Metronome {
       countInBars: this.countInBars,
       startTimeSec: begin,
       ...(firstBeatInBar === undefined ? {} : { firstBeatInBar }),
+      ...(this.barShape ? { barShape: this.barShape } : {}),
     });
     this.tick();
     this.timer = setInterval(() => this.tick(), SCHEDULER_INTERVAL_MS);
@@ -178,6 +182,16 @@ export class Metronome {
     this.scheduler?.setBeatsPerBar(beats);
   }
 
+  /**
+   * Bars of differing counts, read from the next `start()` (MT1): `shape(bar)` gives bar `bar`'s beats (1-based
+   * from the first bar after the count-in, which is counted in bar 1's shape) and each beat's length as a
+   * multiple of `60 / bpm`. `null` goes back to the one meter `setBeatsPerBar` sets. Added for the chord chart;
+   * no other screen sets one.
+   */
+  setBarShape(shape: ((bar: number) => BarShape) | null): void {
+    this.barShape = shape;
+  }
+
   setCountInBars(bars: number): void {
     this.countInBars = bars;
   }
@@ -218,6 +232,7 @@ export class Metronome {
   }
 
   private click(whenSec: number, accent: boolean): void {
+    countAudioStart('metronome');
     if (this.sound === 'wood') return this.woodClick(whenSec, accent);
     if (this.sound === 'high') return this.highClick(whenSec, accent);
     return this.beepClick(whenSec, accent);

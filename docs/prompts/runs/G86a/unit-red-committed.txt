@@ -1,0 +1,315 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a0033f8fd2796c83d/app
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts (25 tests | 12 failed) 1613ms
+   ❯ a tap that could not start the sound says so and starts nothing (G86a) (14)
+     × (a) a start that never answers: ▶ busy until the bound, then nothing carries on, ▶ reads ▶ and the line says so; the next tap asks again 69ms
+     × (b) a fresh start the same: no run starts, ▶ reads ▶, the line says so; the next tap starts it 57ms
+     × (b) and Space’s start the same, Space asking again the next time 63ms
+     × (c) ▶ over Hear it, refused: the demonstration goes on, nothing is started, and the line says so over it 64ms
+     × (d) a start that fails: refused the same, with the sentence 61ms
+     × (e) a start that answers with the sound still not running: refused the same 63ms
+     × (f) a start that answers after the bound refused: the sentence goes, and nothing starts by itself 63ms
+     × (f) and the same where the sound starts some other way while the sentence stands 63ms
+     × (g) the sentence reaches the bar’s left end and the stage’s corner, where the header is not drawn 62ms
+     × Hear it with a start that never answers: no demonstration, the line says so, and ▶ is not left dead 60ms
+     × Hear it whose start fails, then answers with the sound still off: no demonstration either time, the line says so 63ms
+     × Hear it answered after the bound: the sentence goes, and the demonstration does not start by itself 62ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (a) a start that never answers: ▶ busy until the bound, then nothing carries on, ▶ reads ▶ and the line says so; the next tap asks again
+AssertionError: the run carried on against a sound that had not started: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array []
+
+
+Number of calls: 1
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:547:94
+    545|     vi.advanceTimersByTime(1);
+    546|     await settle();
+    547|     expect(session().resumes, 'the run carried on against a sound that…
+       |                                                                                              ^
+    548|     expect(session().paused, 'the paused run stays paused').toBe(true);
+    549|     expectPlayAtRest();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (b) a fresh start the same: no run starts, ▶ reads ▶, the line says so; the next tap starts it
+AssertionError: a run started against a sound that had not started: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "countInBars": 1,
+        "hands": "both",
+        "inputLatencyMs": 0,
+        "judging": false,
+        "latchStart": false,
+        "metronome": false,
+        "metronomeSound": "wood",
+        "metronomeVolume": 0.6,
+        "mode": "tempo",
+        "playbackHands": "non-focused",
+        "strict": false,
+        "tempoPct": 70,
+        "toleranceMs": 150,
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:571:88
+    569|     vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    570|     await settle();
+    571|     expect(session().starts, 'a run started against a sound that had n…
+       |                                                                                        ^
+    572|     expect(section.dataset.running).toBe('false');
+    573|     expectPlayAtRest();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (b) and Space’s start the same, Space asking again the next time
+AssertionError: Space started a run against a sound that had not started: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "countInBars": 1,
+        "hands": "both",
+        "inputLatencyMs": 0,
+        "judging": false,
+        "latchStart": false,
+        "metronome": false,
+        "metronomeSound": "wood",
+        "metronomeVolume": 0.6,
+        "mode": "tempo",
+        "playbackHands": "non-focused",
+        "strict": false,
+        "tempoPct": 70,
+        "toleranceMs": 150,
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:591:94
+    589|     vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    590|     await settle();
+    591|     expect(session().starts, 'Space started a run against a sound that…
+       |                                                                                              ^
+    592|     expectPlayAtRest();
+    593|     expect(stateLine()).toBe(PLAY_REFUSED);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (c) ▶ over Hear it, refused: the demonstration goes on, nothing is started, and the line says so over it
+AssertionError: the demonstration ended for a run that could not sound: expected 'false' to be 'true' // Object.is equality
+
+Expected: "true"
+Received: "false"
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:612:95
+    610|     vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    611|     await settle();
+    612|     expect(section.dataset.hearing, 'the demonstration ended for a run…
+       |                                                                                               ^
+    613|     expect(session().starts).toHaveBeenCalledTimes(1);
+    614|     expectPlayAtRest();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (d) a start that fails: refused the same, with the sentence
+AssertionError: a start that failed carried the run on: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array []
+
+
+Number of calls: 1
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:623:77
+    621|     click('score-play');
+    622|     await settle();
+    623|     expect(session().resumes, 'a start that failed carried the run on'…
+       |                                                                             ^
+    624|     expect(session().paused).toBe(true);
+    625|     expectPlayAtRest();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (e) a start that answers with the sound still not running: refused the same
+AssertionError: an answer with the sound still off carried the run on: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array []
+
+
+Number of calls: 1
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:634:92
+    632|     click('score-play');
+    633|     await settle();
+    634|     expect(session().resumes, 'an answer with the sound still off carr…
+       |                                                                                            ^
+    635|     expectPlayAtRest();
+    636|     expect(stateLine()).toBe(PLAY_REFUSED);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (f) a start that answers after the bound refused: the sentence goes, and nothing starts by itself
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array []
+
+
+Number of calls: 1
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:655:35
+    653|     vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    654|     await settle();
+    655|     expect(session().resumes).not.toHaveBeenCalled();
+       |                                   ^
+    656|     expect(stateLine()).toBe(PLAY_REFUSED);
+    657|     answer();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (f) and the same where the sound starts some other way while the sentence stands
+AssertionError: expected 'The count-in clicks, then play along.' to be 'Sound did not start — tap ▶ again' // Object.is equality
+
+Expected: "Sound did not start — tap ▶ again"
+Received: "The count-in clicks, then play along."
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:671:25
+    669|     click('score-play');
+    670|     await settle();
+    671|     expect(stateLine()).toBe(PLAY_REFUSED);
+       |                         ^
+    672|     engineBecomes('running');
+    673|     expect(stateLine()).toBe(STATE_TEXT.paused);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (g) the sentence reaches the bar’s left end and the stage’s corner, where the header is not drawn
+AssertionError: expected '' to be 'Sound did not start — tap ▶ again' // Object.is equality
+
+- Expected
++ Received
+
+- Sound did not start — tap ▶ again
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:682:51
+    680|     click('score-play');
+    681|     await settle();
+    682|     expect(byId('score-status-side').textContent).toBe(PLAY_REFUSED);
+       |                                                   ^
+    683|     expect(byId('score-corner').textContent).toContain(PLAY_REFUSED);
+    684|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > Hear it with a start that never answers: no demonstration, the line says so, and ▶ is not left dead
+AssertionError: nothing said the sound had not started: expected 'The count-in clicks, then play along.' to be 'Sound did not start — tap Hear it aga…' // Object.is equality
+
+Expected: "Sound did not start — tap Hear it again"
+Received: "The count-in clicks, then play along."
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:698:72
+    696|     expect(session().starts).not.toHaveBeenCalled();
+    697|     // Soft, so a red run shows the deadlock below as well as the miss…
+    698|     expect.soft(stateLine(), 'nothing said the sound had not started')…
+       |                                                                        ^
+    699|     expect.soft(byId('score-hear').dataset.soundRefused).toBe('true');
+    700|     expectPlayAtRest();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > Hear it with a start that never answers: no demonstration, the line says so, and ▶ is not left dead
+AssertionError: expected undefined to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+undefined
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:699:58
+    697|     // Soft, so a red run shows the deadlock below as well as the miss…
+    698|     expect.soft(stateLine(), 'nothing said the sound had not started')…
+    699|     expect.soft(byId('score-hear').dataset.soundRefused).toBe('true');
+       |                                                          ^
+    700|     expectPlayAtRest();
+    701|     // ▶ asks the engine again in its own tap, and waits for it: the s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > Hear it with a start that never answers: no demonstration, the line says so, and ▶ is not left dead
+AssertionError: ▶ left dead behind Hear it’s wait: expected "vi.fn()" to be called 2 times, but got 1 times
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:703:71
+    701|     // ▶ asks the engine again in its own tap, and waits for it: the s…
+    702|     click('score-play');
+    703|     expect(engine.ensureStarted, '▶ left dead behind Hear it’s wait').…
+       |                                                                       ^
+    704|     expect(playButton().dataset.startingSound).toBe('true');
+    705|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > Hear it whose start fails, then answers with the sound still off: no demonstration either time, the line says so
+AssertionError: a demonstration moving, silent, after a start that failed: expected 'true' not to be 'true' // Object.is equality
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:724:102
+    722|     click('score-hear');
+    723|     await settle();
+    724|     expect(section.dataset.hearing, 'a demonstration moving, silent, a…
+       |                                                                                                      ^
+    725|     expect(session().starts).not.toHaveBeenCalled();
+    726|     expect(stateLine()).toBe(HEAR_REFUSED);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯
+
+ FAIL  tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > Hear it answered after the bound: the sentence goes, and the demonstration does not start by itself
+AssertionError: expected 'The count-in clicks, then play along.' to be 'Sound did not start — tap Hear it aga…' // Object.is equality
+
+Expected: "Sound did not start — tap Hear it again"
+Received: "The count-in clicks, then play along."
+
+ ❯ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts:752:25
+    750|     vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    751|     await settle();
+    752|     expect(stateLine()).toBe(HEAR_REFUSED);
+       |                         ^
+    753|     answer();
+    754|     await settle();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/14]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  12 failed | 13 passed (25)
+   Start at  22:24:00
+   Duration  3.50s (tests 48%, transform 26%, environment 21%, import 6%)
+

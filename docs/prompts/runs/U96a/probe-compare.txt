@@ -1,0 +1,35 @@
+$ python scripts-compare-probe.py probe-record-committed.json probe-record-changed.json
+1-four-answered-three-right: record identical
+  record: accuracy=0.75 wrongNotes=1 missed=6 passed=False
+  sheet committed: accuracy=75%; answered=3 of 10; heading=Not passed yet; counterTotal=10
+  sheet changed  : accuracy=75%; answered=4 of 10; heading=Not passed yet; counterTotal=10
+2-nothing-answered: record identical
+  record: accuracy=0 wrongNotes=0 missed=10 passed=False
+  sheet committed: answered=0 of 10; heading=Not measured; counterTotal=10
+  sheet changed  : answered=0 of 10; heading=Not measured; counterTotal=10
+3-skip-right-wrong: record identical
+  record: accuracy=0.3333333333333333 wrongNotes=2 missed=7 passed=False
+  sheet committed: accuracy=33%; answered=1 of 10; heading=Not passed yet; counterTotal=10
+  sheet changed  : accuracy=33%; answered=3 of 10; heading=Not passed yet; counterTotal=10
+3b-every-card-skipped: record identical
+  record: accuracy=0 wrongNotes=10 missed=0 passed=False
+  sheet committed: accuracy=0%; answered=0 of 10; heading=Not passed yet; counterTotal=10
+  sheet changed  : accuracy=0%; answered=10 of 10; heading=Not passed yet; counterTotal=10
+rhythm-not-tapped: record identical
+  record: accuracy=0 wrongNotes=0 missed=2 passed=False
+  sheet committed: answered=0 of 2; heading=Not measured; counterTotal=2
+  sheet changed  : heading=Not measured; counterTotal=2
+rhythm-tapped: record identical
+  record: accuracy=0.5 wrongNotes=3 missed=0 passed=False
+  sheet committed: accuracy=50%; answered=1 of 2; taps-too-many=3; average-distance-from-the-beat=0; beats-per-minute=80; count-in-beats=4; heading=Not passed yet; counterTotal=2
+  sheet changed  : accuracy=50%; taps-too-many=3; average-distance-from-the-beat=0; beats-per-minute=80; count-in-beats=4; heading=Not passed yet; counterTotal=2
+simon-one-right-then-skipped: record identical
+  record: accuracy=0.08333333333333333 wrongNotes=1 missed=10 passed=False
+  sheet committed: accuracy=8%; answered=1 of 12; longest-chain=1; heading=Not passed yet; counterTotal=12
+  sheet changed  : accuracy=8%; answered=2 of 12; longest-chain=1; heading=Not passed yet; counterTotal=12
+simon-skipped: record identical
+  record: accuracy=0 wrongNotes=1 missed=11 passed=False
+  sheet committed: accuracy=0%; answered=0 of 12; longest-chain=0; heading=Not passed yet; counterTotal=12
+  sheet changed  : accuracy=0%; answered=1 of 12; longest-chain=0; heading=Not passed yet; counterTotal=12
+records identical for every case
+exit=0

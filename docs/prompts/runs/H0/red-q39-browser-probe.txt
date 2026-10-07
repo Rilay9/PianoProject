@@ -1,0 +1,206 @@
+
+Running 12 tests using 2 workers
+
+(node:44180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:44360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+wall-stalled: {"hits":1,"n":1,"missed":1,"wrong":1,"meanMs":99.86923076327025,"notes":[{"midi":60,"velocity":90,"tMs":688.5,"stepIndex":null,"ok":false},{"midi":62,"velocity":90,"tMs":1457.5,"stepIndex":1,"ok":true,"deltaMs":99.86923076327025}]}
+wall: {"hits":2,"n":2,"missed":0,"wrong":0,"meanMs":99.9846153786549,"notes":[{"midi":60,"velocity":90,"tMs":683.8000000119209,"stepIndex":0,"ok":true,"deltaMs":100.09999999403954},{"midi":62,"velocity":90,"tMs":1452.800000011921,"stepIndex":1,"ok":true,"deltaMs":99.86923076327025}]}
+  ok  2 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall: the committed case's assertions (2.1s)
+clock: {"hits":2,"n":2,"missed":0,"wrong":0,"meanMs":99.88461538461536,"notes":[{"midi":60,"velocity":90,"tMs":1738,"stepIndex":0,"ok":true,"deltaMs":100},{"midi":62,"velocity":90,"tMs":2507,"stepIndex":1,"ok":true,"deltaMs":99.76923076923072}]}
+  ok  3 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock: the committed case's assertions (1.5s)
+  x   1 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall-stalled: the committed case's assertions (3.4s)
+(node:51888) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+clock-stalled: {"hits":1,"n":1,"missed":1,"wrong":1,"meanMs":99.76923076923072,"notes":[{"midi":60,"velocity":90,"tMs":1710,"stepIndex":null,"ok":false},{"midi":62,"velocity":90,"tMs":2479,"stepIndex":1,"ok":true,"deltaMs":99.76923076923072}]}
+wall: {"hits":2,"n":2,"missed":0,"wrong":0,"meanMs":99.9846153786549,"notes":[{"midi":60,"velocity":90,"tMs":559.9000000059605,"stepIndex":0,"ok":true,"deltaMs":100.09999999403954},{"midi":62,"velocity":90,"tMs":1328.9000000059605,"stepIndex":1,"ok":true,"deltaMs":99.86923076327025}]}
+  ok  5 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall: the committed case's assertions (1.7s)
+  x   4 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock-stalled: the committed case's assertions (2.4s)
+(node:51840) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+wall-stalled: {"hits":1,"n":1,"missed":1,"wrong":1,"meanMs":99.86923076327025,"notes":[{"midi":60,"velocity":90,"tMs":546.9000000059605,"stepIndex":null,"ok":false},{"midi":62,"velocity":90,"tMs":1315.9000000059605,"stepIndex":1,"ok":true,"deltaMs":99.86923076327025}]}
+clock: {"hits":2,"n":2,"missed":0,"wrong":0,"meanMs":99.88461538461536,"notes":[{"midi":60,"velocity":90,"tMs":1536,"stepIndex":0,"ok":true,"deltaMs":100},{"midi":62,"velocity":90,"tMs":2305,"stepIndex":1,"ok":true,"deltaMs":99.76923076923072}]}
+  ok  7 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock: the committed case's assertions (1.3s)
+clock-stalled: {"hits":1,"n":1,"missed":1,"wrong":1,"meanMs":99.76923076923072,"notes":[{"midi":60,"velocity":90,"tMs":1696,"stepIndex":null,"ok":false},{"midi":62,"velocity":90,"tMs":2465,"stepIndex":1,"ok":true,"deltaMs":99.76923076923072}]}
+  x   8 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock-stalled: the committed case's assertions (1.5s)
+  x   6 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall-stalled: the committed case's assertions (3.4s)
+(node:51904) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45520) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+wall: {"hits":2,"n":2,"missed":0,"wrong":0,"meanMs":99.9846153786549,"notes":[{"midi":60,"velocity":90,"tMs":535.0999999940395,"stepIndex":0,"ok":true,"deltaMs":100.09999999403954},{"midi":62,"velocity":90,"tMs":1304.0999999940395,"stepIndex":1,"ok":true,"deltaMs":99.86923076327025}]}
+  ok  9 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall: the committed case's assertions (1.7s)
+wall-stalled: {"hits":1,"n":1,"missed":1,"wrong":1,"meanMs":99.96923078711211,"notes":[{"midi":60,"velocity":90,"tMs":535.7000000178814,"stepIndex":null,"ok":false},{"midi":62,"velocity":90,"tMs":1304.7000000178814,"stepIndex":1,"ok":true,"deltaMs":99.96923078711211}]}
+clock: {"hits":2,"n":2,"missed":0,"wrong":0,"meanMs":99.88461538461536,"notes":[{"midi":60,"velocity":90,"tMs":1581,"stepIndex":0,"ok":true,"deltaMs":100},{"midi":62,"velocity":90,"tMs":2350,"stepIndex":1,"ok":true,"deltaMs":99.76923076923072}]}
+  ok 11 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock: the committed case's assertions (1.5s)
+  x  10 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall-stalled: the committed case's assertions (2.5s)
+clock-stalled: {"hits":1,"n":1,"missed":1,"wrong":1,"meanMs":99.76923076923072,"notes":[{"midi":60,"velocity":90,"tMs":1685,"stepIndex":null,"ok":false},{"midi":62,"velocity":90,"tMs":2454,"stepIndex":1,"ok":true,"deltaMs":99.76923076923072}]}
+  x  12 tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock-stalled: the committed case's assertions (2.2s)
+
+
+  1) tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall-stalled: the committed case's assertions 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+      70 |   test(`Q39 probe, ${drive}: the committed case's assertions`, async ({ page }) => {
+      71 |     const score = await lateRun(page, drive);
+    > 72 |     expect(score?.hits).toBe(2);
+         |                         ^
+      73 |     expect(score?.timing.n).toBe(2);
+      74 |     expect(score?.timing.meanMs ?? 0).toBeGreaterThan(30);
+      75 |     expect(score?.timing.latePct).toBe(100);
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8975fbed466f62\app\tests\e2e\h0-probe-q39.spec.ts:72:25
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-wal-8cf49-committed-case-s-assertions\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-wal-8cf49-committed-case-s-assertions\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-wal-8cf49-committed-case-s-assertions\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock-stalled: the committed case's assertions 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+      70 |   test(`Q39 probe, ${drive}: the committed case's assertions`, async ({ page }) => {
+      71 |     const score = await lateRun(page, drive);
+    > 72 |     expect(score?.hits).toBe(2);
+         |                         ^
+      73 |     expect(score?.timing.n).toBe(2);
+      74 |     expect(score?.timing.meanMs ?? 0).toBeGreaterThan(30);
+      75 |     expect(score?.timing.latePct).toBe(100);
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8975fbed466f62\app\tests\e2e\h0-probe-q39.spec.ts:72:25
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-clo-b6d9d-committed-case-s-assertions\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-clo-b6d9d-committed-case-s-assertions\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-clo-b6d9d-committed-case-s-assertions\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall-stalled: the committed case's assertions 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+      70 |   test(`Q39 probe, ${drive}: the committed case's assertions`, async ({ page }) => {
+      71 |     const score = await lateRun(page, drive);
+    > 72 |     expect(score?.hits).toBe(2);
+         |                         ^
+      73 |     expect(score?.timing.n).toBe(2);
+      74 |     expect(score?.timing.meanMs ?? 0).toBeGreaterThan(30);
+      75 |     expect(score?.timing.latePct).toBe(100);
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8975fbed466f62\app\tests\e2e\h0-probe-q39.spec.ts:72:25
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-wal-8cf49-committed-case-s-assertions-repeat1\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-wal-8cf49-committed-case-s-assertions-repeat1\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-wal-8cf49-committed-case-s-assertions-repeat1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock-stalled: the committed case's assertions 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+      70 |   test(`Q39 probe, ${drive}: the committed case's assertions`, async ({ page }) => {
+      71 |     const score = await lateRun(page, drive);
+    > 72 |     expect(score?.hits).toBe(2);
+         |                         ^
+      73 |     expect(score?.timing.n).toBe(2);
+      74 |     expect(score?.timing.meanMs ?? 0).toBeGreaterThan(30);
+      75 |     expect(score?.timing.latePct).toBe(100);
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8975fbed466f62\app\tests\e2e\h0-probe-q39.spec.ts:72:25
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-clo-b6d9d-committed-case-s-assertions-repeat1\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-clo-b6d9d-committed-case-s-assertions-repeat1\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-clo-b6d9d-committed-case-s-assertions-repeat1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall-stalled: the committed case's assertions 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+      70 |   test(`Q39 probe, ${drive}: the committed case's assertions`, async ({ page }) => {
+      71 |     const score = await lateRun(page, drive);
+    > 72 |     expect(score?.hits).toBe(2);
+         |                         ^
+      73 |     expect(score?.timing.n).toBe(2);
+      74 |     expect(score?.timing.meanMs ?? 0).toBeGreaterThan(30);
+      75 |     expect(score?.timing.latePct).toBe(100);
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8975fbed466f62\app\tests\e2e\h0-probe-q39.spec.ts:72:25
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-wal-8cf49-committed-case-s-assertions-repeat2\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-wal-8cf49-committed-case-s-assertions-repeat2\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-wal-8cf49-committed-case-s-assertions-repeat2\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock-stalled: the committed case's assertions 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 2
+    Received: 1
+
+      70 |   test(`Q39 probe, ${drive}: the committed case's assertions`, async ({ page }) => {
+      71 |     const score = await lateRun(page, drive);
+    > 72 |     expect(score?.hits).toBe(2);
+         |                         ^
+      73 |     expect(score?.timing.n).toBe(2);
+      74 |     expect(score?.timing.meanMs ?? 0).toBeGreaterThan(30);
+      75 |     expect(score?.timing.latePct).toBe(100);
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8975fbed466f62\app\tests\e2e\h0-probe-q39.spec.ts:72:25
+
+    Error Context: ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-clo-b6d9d-committed-case-s-assertions-repeat2\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-clo-b6d9d-committed-case-s-assertions-repeat2\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\H0\test-results\h0-probe-q39-Q39-probe-clo-b6d9d-committed-case-s-assertions-repeat2\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6 failed
+    tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall-stalled: the committed case's assertions ─
+    tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock-stalled: the committed case's assertions 
+    tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall-stalled: the committed case's assertions ─
+    tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock-stalled: the committed case's assertions 
+    tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, wall-stalled: the committed case's assertions ─
+    tests\e2e\h0-probe-q39.spec.ts:70:3 › Q39 probe, clock-stalled: the committed case's assertions 
+  6 passed (20.0s)
+exit=1

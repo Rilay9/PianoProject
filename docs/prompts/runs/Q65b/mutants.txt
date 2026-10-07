@@ -1,0 +1,16 @@
+$ (cwd .) python docs/prompts/runs/Q65b/scripts-mutants.py .
+ok  screenFrame's row without tips.spec (only DrillScreen's row names it): caught, the failure names 'DrillScreen.ts'
+ok  subScreen's row without guide.spec (only GuideScreen's row names it): caught, the failure names 'GuideScreen.ts'
+ok  subScreen's row without lesson-tools.spec (only LessonScreen, the transitive importer, names it): caught, the failure names 'LessonScreen.ts'
+ok  screenFrame's row the whole suite again: caught, the failure names 'the row is the whole suite'
+ok  subScreen's row the whole suite again: caught, the failure names 'the row is the whole suite'
+ok  a screen's row gains a spec the helper's row lacks (MetronomeScreen + wide.spec): caught, the failure names 'MetronomeScreen.ts'
+ok  an importer loses its own row (GuideScreen.ts): caught, the failure names 'GuideScreen.ts'
+ok  a new importer the source does not have (ScoreScreen.ts importing screenFrame.ts): caught, the failure names 'ScoreScreen.ts'
+ok  the reason leaves out an importer (SkillsScreen): caught, the failure names 'SkillsScreen'
+ok  control: GuideScreen's row whole and subScreen's row whole: green, as it must be
+ok  control: subScreen's row whole where one importer's row names the whole default suite: green, as it must be
+ok  the map as committed: green, as it must be
+
+all as expected: True
+exit=0

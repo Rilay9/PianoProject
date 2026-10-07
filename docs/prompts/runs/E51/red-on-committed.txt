@@ -1,0 +1,192 @@
+test_a_a_row_with_no_cut_version_is_renewed_by_a_decision_on_the_current_parent (tools.content.tests.test_excerpts.TheRenewal.test_a_a_row_with_no_cut_version_is_renewed_by_a_decision_on_the_current_parent) ... FAIL
+test_b_a_row_approved_on_other_parent_bytes_is_renewed_on_the_current_bytes (tools.content.tests.test_excerpts.TheRenewal.test_b_a_row_approved_on_other_parent_bytes_is_renewed_on_the_current_bytes) ... ERROR
+test_c_a_renewal_naming_the_old_bytes_or_none_is_refused_with_the_reason (tools.content.tests.test_excerpts.TheRenewal.test_c_a_renewal_naming_the_old_bytes_or_none_is_refused_with_the_reason) ... FAIL
+test_d_an_approval_of_a_range_whose_approval_is_current_is_refused_as_before (tools.content.tests.test_excerpts.TheRenewal.test_d_an_approval_of_a_range_whose_approval_is_current_is_refused_as_before) ... ok
+test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before (tools.content.tests.test_excerpts.TheRenewal.test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before) ... 
+  test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before (tools.content.tests.test_excerpts.TheRenewal.test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before) (naming='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa') ... ERROR
+  test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before (tools.content.tests.test_excerpts.TheRenewal.test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before) (naming='bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb') ... ERROR
+  test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before (tools.content.tests.test_excerpts.TheRenewal.test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before) (naming=None) ... ERROR
+test_e_without_the_current_bytes_provenance_fails_closed_and_cut_version_is_judged (tools.content.tests.test_excerpts.TheRenewal.test_e_without_the_current_bytes_provenance_fails_closed_and_cut_version_is_judged) ... FAIL
+test_f_the_old_export_and_the_renewal_merged_again_are_skipped_and_the_file_idempotent (tools.content.tests.test_excerpts.TheRenewal.test_f_the_old_export_and_the_renewal_merged_again_are_skipped_and_the_file_idempotent) ... FAIL
+test_g_a_rejection_of_a_stale_approval_withdraws_it (tools.content.tests.test_excerpts.TheRenewal.test_g_a_rejection_of_a_stale_approval_withdraws_it) ... FAIL
+test_h_a_renewal_of_a_renewal_keeps_both_earlier_rows_in_order (tools.content.tests.test_excerpts.TheRenewal.test_h_a_renewal_of_a_renewal_keeps_both_earlier_rows_in_order) ... ERROR
+test_i_the_validator_reads_a_renewed_file_as_one_current_row (tools.content.tests.test_excerpts.TheRenewal.test_i_the_validator_reads_a_renewed_file_as_one_current_row) ... FAIL
+test_j_the_command_reads_the_parents_current_bytes_from_the_built_content (tools.content.tests.test_excerpts.TheRenewal.test_j_the_command_reads_the_parents_current_bytes_from_the_built_content) ... FAIL
+test_a_line_naming_a_parent_the_catalogue_lacks_or_malformed_is_refused (tools.content.tests.test_excerpts.TheMerge.test_a_line_naming_a_parent_the_catalogue_lacks_or_malformed_is_refused) ... ok
+test_a_rejection_is_kept_with_its_reason_and_needs_one (tools.content.tests.test_excerpts.TheMerge.test_a_rejection_is_kept_with_its_reason_and_needs_one) ... ok
+test_an_approval_becomes_a_row_and_a_rerun_appends_nothing (tools.content.tests.test_excerpts.TheMerge.test_an_approval_becomes_a_row_and_a_rerun_appends_nothing) ... ok
+test_an_approval_of_a_range_already_present_is_refused_with_the_row_named (tools.content.tests.test_excerpts.TheMerge.test_an_approval_of_a_range_already_present_is_refused_with_the_row_named) ... ok
+test_the_committed_file_is_the_merges_own_serialisation (tools.content.tests.test_excerpts.TheMerge.test_the_committed_file_is_the_merges_own_serialisation)
+A round-trip through the merge's one serialiser is byte-identical to the file (no re-serialising hazard). ... ok
+test_the_same_event_with_other_content_is_refused (tools.content.tests.test_excerpts.TheMerge.test_the_same_event_with_other_content_is_refused) ... ok
+test_a_row_with_no_cut_version_was_approved_under_version_1 (tools.content.tests.test_excerpts.TheCutVersion.test_a_row_with_no_cut_version_was_approved_under_version_1) ... ok
+test_an_approval_under_an_older_cutter_is_stale_in_the_provenance (tools.content.tests.test_excerpts.TheCutVersion.test_an_approval_under_an_older_cutter_is_stale_in_the_provenance) ... ok
+test_the_cutter_is_version_2 (tools.content.tests.test_excerpts.TheCutVersion.test_the_cutter_is_version_2) ... ok
+test_the_merge_records_the_cutter_an_approval_was_merged_under_and_an_old_export_still_merges_once (tools.content.tests.test_excerpts.TheCutVersion.test_the_merge_records_the_cutter_an_approval_was_merged_under_and_an_old_export_still_merges_once) ... ok
+
+======================================================================
+ERROR: test_b_a_row_approved_on_other_parent_bytes_is_renewed_on_the_current_bytes (tools.content.tests.test_excerpts.TheRenewal.test_b_a_row_approved_on_other_parent_bytes_is_renewed_on_the_current_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 475, in test_b_a_row_approved_on_other_parent_bytes_is_renewed_on_the_current_bytes
+    renewed = self.merge(self.data(old), self.line(parentSha256=self.NEW), shas={self.PARENT: self.NEW})
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 449, in merge
+    return X.merge_text(data, text, {self.PARENT}, current_shas=shas)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: merge_text() got an unexpected keyword argument 'current_shas'
+
+======================================================================
+ERROR: test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before (tools.content.tests.test_excerpts.TheRenewal.test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before) (naming='aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 514, in test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before
+    twice = self.merge(self.data(current), self.line(parentSha256=naming), shas={self.PARENT: self.OLD})
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 449, in merge
+    return X.merge_text(data, text, {self.PARENT}, current_shas=shas)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: merge_text() got an unexpected keyword argument 'current_shas'
+
+======================================================================
+ERROR: test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before (tools.content.tests.test_excerpts.TheRenewal.test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before) (naming='bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 514, in test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before
+    twice = self.merge(self.data(current), self.line(parentSha256=naming), shas={self.PARENT: self.OLD})
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 449, in merge
+    return X.merge_text(data, text, {self.PARENT}, current_shas=shas)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: merge_text() got an unexpected keyword argument 'current_shas'
+
+======================================================================
+ERROR: test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before (tools.content.tests.test_excerpts.TheRenewal.test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before) (naming=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 514, in test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before
+    twice = self.merge(self.data(current), self.line(parentSha256=naming), shas={self.PARENT: self.OLD})
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 449, in merge
+    return X.merge_text(data, text, {self.PARENT}, current_shas=shas)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: merge_text() got an unexpected keyword argument 'current_shas'
+
+======================================================================
+ERROR: test_h_a_renewal_of_a_renewal_keeps_both_earlier_rows_in_order (tools.content.tests.test_excerpts.TheRenewal.test_h_a_renewal_of_a_renewal_keeps_both_earlier_rows_in_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 569, in test_h_a_renewal_of_a_renewal_keeps_both_earlier_rows_in_order
+    once = self.merge(self.data(first), self.line(), shas={self.PARENT: self.OLD})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 449, in merge
+    return X.merge_text(data, text, {self.PARENT}, current_shas=shas)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: merge_text() got an unexpected keyword argument 'current_shas'
+
+======================================================================
+FAIL: test_a_a_row_with_no_cut_version_is_renewed_by_a_decision_on_the_current_parent (tools.content.tests.test_excerpts.TheRenewal.test_a_a_row_with_no_cut_version_is_renewed_by_a_decision_on_the_current_parent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 459, in test_a_a_row_with_no_cut_version_is_renewed_by_a_decision_on_the_current_parent
+    self.assertEqual(renewed["refused"], [], "a renewal of an approval stale by cut version is a decision the merge takes")
+AssertionError: Lists differ: [(1, 'excerpt.test.parent.b5-8 is already approved (event ex-renew-0001)')] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+(1, 'excerpt.test.parent.b5-8 is already approved (event ex-renew-0001)')
+
+- [(1, 'excerpt.test.parent.b5-8 is already approved (event ex-renew-0001)')]
++ [] : a renewal of an approval stale by cut version is a decision the merge takes
+
+======================================================================
+FAIL: test_c_a_renewal_naming_the_old_bytes_or_none_is_refused_with_the_reason (tools.content.tests.test_excerpts.TheRenewal.test_c_a_renewal_naming_the_old_bytes_or_none_is_refused_with_the_reason)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 487, in test_c_a_renewal_naming_the_old_bytes_or_none_is_refused_with_the_reason
+    self.assertIn("a renewal is a decision on the current parent", bare["refused"][0][1])
+AssertionError: 'a renewal is a decision on the current parent' not found in 'excerpt.test.parent.b5-8 is already approved (event ex-renew-0001)'
+
+======================================================================
+FAIL: test_e_without_the_current_bytes_provenance_fails_closed_and_cut_version_is_judged (tools.content.tests.test_excerpts.TheRenewal.test_e_without_the_current_bytes_provenance_fails_closed_and_cut_version_is_judged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 526, in test_e_without_the_current_bytes_provenance_fails_closed_and_cut_version_is_judged
+    self.assertEqual((by_cut_version["appended"], by_cut_version["refused"]), (["ex-renew-0002"], []))
+AssertionError: Tuples differ: ([], [(1, 'excerpt.test.parent.b5-8 is alre[33 chars])')]) != (['ex-renew-0002'], [])
+
+First differing element 0:
+[]
+['ex-renew-0002']
+
++ (['ex-renew-0002'], [])
+- ([],
+-  [(1, 'excerpt.test.parent.b5-8 is already approved (event ex-renew-0001)')])
+
+======================================================================
+FAIL: test_f_the_old_export_and_the_renewal_merged_again_are_skipped_and_the_file_idempotent (tools.content.tests.test_excerpts.TheRenewal.test_f_the_old_export_and_the_renewal_merged_again_are_skipped_and_the_file_idempotent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 536, in test_f_the_old_export_and_the_renewal_merged_again_are_skipped_and_the_file_idempotent
+    self.assertEqual(renewed["appended"], ["ex-renew-0002"])
+AssertionError: Lists differ: [] != ['ex-renew-0002']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'ex-renew-0002'
+
+- []
++ ['ex-renew-0002']
+
+======================================================================
+FAIL: test_g_a_rejection_of_a_stale_approval_withdraws_it (tools.content.tests.test_excerpts.TheRenewal.test_g_a_rejection_of_a_stale_approval_withdraws_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 557, in test_g_a_rejection_of_a_stale_approval_withdraws_it
+    self.assertEqual(withdrawn["data"]["excerpts"], [], "the build stops cutting it")
+AssertionError: Lists differ: [{'of': 'song.test.parent', 'fromBar': 5, [253 chars]0Z'}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'of': 'song.test.parent', 'fromBar': 5, 'toBar': 8, 'selection': 'both', 'targets': ['interval.leap'], 'label': '', 'note': 'by rule', 'parentSha256': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'event': 'ex-renew-0001', 'by': 'a builder', 'at': '2026-09-28T00:00:00.000Z'}
+
++ []
+- [{'at': '2026-09-28T00:00:00.000Z',
+-   'by': 'a builder',
+-   'event': 'ex-renew-0001',
+-   'fromBar': 5,
+-   'label': '',
+-   'note': 'by rule',
+-   'of': 'song.test.parent',
+-   'parentSha256': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+-   'selection': 'both',
+-   'targets': ['interval.leap'],
+-   'toBar': 8}] : the build stops cutting it
+
+======================================================================
+FAIL: test_i_the_validator_reads_a_renewed_file_as_one_current_row (tools.content.tests.test_excerpts.TheRenewal.test_i_the_validator_reads_a_renewed_file_as_one_current_row)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 602, in test_i_the_validator_reads_a_renewed_file_as_one_current_row
+    self.assertEqual(renewed["refused"], [])
+AssertionError: Lists differ: [(1, 'excerpt.test.parent.b4-5 is already approved (event ex-renew-0001)')] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+(1, 'excerpt.test.parent.b4-5 is already approved (event ex-renew-0001)')
+
+- [(1, 'excerpt.test.parent.b4-5 is already approved (event ex-renew-0001)')]
++ []
+
+======================================================================
+FAIL: test_j_the_command_reads_the_parents_current_bytes_from_the_built_content (tools.content.tests.test_excerpts.TheRenewal.test_j_the_command_reads_the_parents_current_bytes_from_the_built_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4b61b6b1d6ad4896\tools\content\tests\test_excerpts.py", line 631, in test_j_the_command_reads_the_parents_current_bytes_from_the_built_content
+    self.assertIn(f"names the parent's bytes {self.OLD[:12]}", printed)
+AssertionError: "names the parent's bytes aaaaaaaaaaaa" not found in 'Merged C:\\Users\\yalir\\AppData\\Local\\Temp\\excerpt-renewal-main-cofqts7d\\decisions.jsonl: appended 0, already in the file 0, refused 1.\n  line 1: refused: excerpt.test.parent.b5-8 is already approved (event ex-renew-0001)\n'
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.318s
+
+FAILED (failures=7, errors=5)

@@ -1,0 +1,77 @@
+SHAPE: PIANO_GRAND_STAFF | parts=1 max_staves=2 meters=4/4 chord-symbols=0 bars=69
+INSTRUMENTS/PARTS: P1:'Piano':staves=2:prog=0:piano=True
+CID QmaYoHQDWpE1ti5hDEGBxS1UKfn7SCJCpQtgQ6MLqtr7Nd
+title: Linkin Park - Final Masquerade | song_name: final masquerade
+composer: Linkin Park | artist: Linkin Park
+csv: tracks=0 bars=69 license=cc-zero
+
+=== part P1 'Piano' measures=69 ===
+m1 [staves=2; key fifths=-3; time 4/4; clef1=G2; clef2=F4; tempo=82; dyn=p]  s1v1: C4:w+Eb4 | s2v5: C3:w
+m2  s1v1: Bb3:w+Eb4 | s2v5: Eb3:w
+m3  s1v1: C4:w+Eb4 | s2v5: C3:w
+m4  s1v1: Bb3:h+Eb4 Eb4:8 F4:8 Eb4:8 D4:8 | s2v5: Eb3:w
+m5  s1v1: C4:q C4:q Eb4:8 C4:8 Eb4:8 C4:16 Eb4:16 | s2v5: C3:w+Eb3+G3
+m6  s1v1: C4:16 Bb3:8. r:8. C4:16 Eb4:8 F4:8 Eb4:8 D4:8 | s2v5: Eb3:w+G3
+m7  s1v1: C4:q C4:8. C4:16 Eb4:8 C4:8 Eb4:8 F4:16 F4:16 | s2v5: C3:w+Eb3+G3
+m8  s1v1: G4:q r:8. Eb4:16 Ab4:8 Ab4:8 Ab4:8 G4:16 F4:16~ | s2v5: Eb3:w+G3
+m9 [dyn=mp]  s1v1: F4:8 Eb4:8 Eb4:8. C4:16 Eb4:8 C4:8 Eb4:8 F4:16 F4:16 | s2v5: C3:8 C3:8 C3:8 C3:8 C3:8 C3:8 Eb3:8 Eb3:8
+m10  s1v1: G4:q r:8. Eb4:16 Ab4:8 Ab4:8 Ab4:16 G4:8 F4:16~ | s2v5: G3:8 G3:8 G3:8 G3:8 G3:8 G3:8 G3:8 G3:8
+m11  s1v1: F4:8 Eb4:8 Eb4:8. Eb4:16 G4:8 G4:8 G4:8 G4:8 | s2v5: F3:8 F3:8 F3:8 F3:8 F3:8 F3:8 F3:8 F3:8
+m12  s1v1: G4:q~ G4:8. C4:16 Eb4:8 F4:8 Eb4:8 D4:16 C4:16 | s2v5: G3:8 G3:8 G3:8 G3:8 G3:8 G3:8 G3:8 G3:8
+m13  s1v1: C4:q C4:8. C4:16 C4:8 C4:8 Eb4:8 F4:16 G4:16~ | s2v5: Eb3:w+Ab3+C4
+m14  s1v1: G4:q r:8. Eb4:16 G4:8 G4:8 G4:8 G4:16 G4:16 | s2v5: Eb3:w+G3+C4
+m15  s1v1: F4:q F4:8. D4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: F3:w+Bb3+C4
+m16  s1v1: Eb4:q r:8. C4:16 Eb4:8 F4:8 Eb4:8 D4:16 C4:16 | s2v5: Eb3:h+C4 F3:h+Bb3+C4
+m17  s1v1: C4:q C4:8. C4:16 C4:8 C4:8 Eb4:8 F4:16 G4:16~ | s2v5: Eb3:w+Ab3+C4
+m18  s1v1: G4:q r:q G4:8 G4:8 G4:8 G4:16 G4:16 | s2v5: Eb3:w+G3+Bb3
+m19  s1v1: F4:q F4:8. F4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: F3:w+G3+Bb3
+m20  s1v1: Eb4:q r:8. F4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: Eb3:h+C4 Eb3:8 F3:8 Eb3:8 D3:8
+m21 [dyn=f]  s1v1: Eb4:8 C4:8 C4:8 C4:8 C4:8 C4:8 Eb4:8 Eb4:8 | s2v5: C3:q+Eb3+G3 C3:q+Eb3+G3 C3:q+Eb3+G3 C3:q+Eb3+G3
+m22  s1v1: G4:8 G4:8 G4:8 G4:8 G4:8 G4:8 Eb4:8 D4:8 | s2v5: Eb3:q+G3 Eb3:q+G3 Eb3:q+G3 Eb3:q+G3
+m23  s1v1: C4:8 C4:8 C4:8 C4:8 C4:8 C4:8 Eb4:8 Eb4:8 | s2v5: C3:q+Eb3+G3 C3:q+Eb3+G3 C3:q+Eb3+G3 C3:q+Eb3+G3
+m24  s1v1: G4:8 G4:8 G4:8 G4:8 Eb4:8 F4:8 Eb4:8 D4:8 | s2v5: Eb3:q+G3 Eb3:q+G3 Eb3:q+G3 Eb3:q+G3
+m25 [dyn=mp]  s1v1: C4:q C4:8. C4:16 Eb4:8 C4:8 Eb4:8 C4:16 Eb4:16 | s2v5: C3:q+Eb3+G3 C3:q+Eb3+G3 C3:q+Eb3+G3 C3:q+Eb3+G3
+m26  s1v1: C4:16 Bb3:8. r:q Eb4:8 F4:8 Eb4:8 D4:8 | s2v5: Eb3:q+G3 Eb3:q+G3 Eb3:q+G3 Eb3:q+G3
+m27  s1v1: C4:q C4:8. C4:16 Eb4:8 C4:8 Eb4:16 F4:8 G4:16~ | s2v5: C3:q+Eb3+G3 C3:q+Eb3+G3 C3:q+Eb3+G3 C3:q+Eb3+G3
+m28  s1v1: G4:q r:8. G4:16 Ab4:8 Ab4:8 Ab4:8 G4:16 F4:16~ | s2v5: Eb3:q+G3 Eb3:q+G3 Eb3:q+G3 Eb3:q+G3
+m29  s1v1: F4:q Eb4:8. C4:16 Eb4:8 C4:8 Eb4:8 F4:16 G4:16~ | s2v5: C3:q+Eb3+Ab3 C3:q+Eb3+Ab3 C3:q+Eb3+Ab3 C3:q+Eb3+Ab3
+m30  s1v1: G4:q r:8. G4:16 Ab4:8 Ab4:8 Ab4:16 G4:8 Ab4:16~ | s2v5: C3:q+Eb3+G3 C3:q+Eb3+G3 C3:q+Eb3+G3 C3:q+Eb3+G3
+m31  s1v1: Ab4:8 G4:8 G4:8. Eb4:16 G4:8 G4:8 G4:8 G4:8 | s2v5: Eb3:q+F3+Bb3 Eb3:q+F3+Bb3 Eb3:q+F3+Bb3 Eb3:q+F3+Bb3
+m32  s1v1: G4:q~ G4:8. C4:16 Eb4:8 F4:8 Eb4:8 D4:16 C4:16 | s2v5: G3:8 G3:8 G3:8 G3:8 G3:8 G3:8 G3:8 G3:8
+m33 [dyn=f]  s1v1: C4:q C4:8. C4:16 C4:8 C4:8 Eb4:8 F4:16 G4:16~ | s2v5: Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3
+m34  s1v1: G4:q r:8. Eb4:16 G4:8 G4:8 G4:8 G4:16 G4:16 | s2v5: Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3
+m35  s1v1: F4:q F4:8. D4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3
+m36  s1v1: Eb4:q r:8. C4:16 Eb4:8 F4:8 Eb4:8 D4:16 C4:16 | s2v5: Eb3:8+G3+Bb3 Eb3:8+G3+Bb3 Eb3:8+G3+Bb3 Eb3:8+G3+Bb3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3
+m37  s1v1: C4:q C4:8. C4:16 C4:8 C4:8 Eb4:8 F4:16 G4:16 | s2v5: Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3
+m38  s1v1: G4:q r:q G4:8 G4:8 G4:8 G4:16 G4:16 | s2v5: Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3
+m39  s1v1: F4:q F4:8. F4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3
+m40  s1v1: Eb4:q r:8. F4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: Eb3:8+G3+Bb3 Eb3:8+G3+Bb3 Eb3:8+G3+Bb3 Eb3:8+G3+Bb3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3
+m41  s1v1: Eb4:q r:8. F4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3
+m42  s1v1: Eb4:q r:q G4:8 G4:8 G4:8 G4:16 G4:16 | s2v5: Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3
+m43  s1v1: F4:q F4:8. F4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3
+m44  s1v1: Eb4:q r:q r:h | s2v5: C3:8+Eb3+G3 C3:8+Eb3+G3 C3:8+Eb3+G3 C3:8+Eb3+G3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3
+m45  s1v1: C4:q D4:q Eb4:q Bb4:q | s2v5: Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3
+m46  s1v1: G4:h Bb4:q Eb4:q | s2v5: Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3
+m47  s1v1: D4:q Eb4:q F4:q D4:q | s2v5: Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3
+m48  s1v1: Eb4:h Eb4:8 F4:8 Eb4:8 D4:8 | s2v5: C3:8+Eb3+G3 C3:8+Eb3+G3 C3:8+Eb3+G3 C3:8+Eb3+G3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3
+m49 [dyn=mp]  s1v1: C4:q D4:q Eb4:q Bb4:q | s2v5: Ab2:w+Eb3
+m50  s1v1: G4:h Bb4:q Eb4:q | s2v5: Eb3:w+G3
+m51  s1v1: D4:q Eb4:q F4:q D4:q | s2v5: Bb2:w+D3+F3
+m52  s1v1: r:q r:8. C4:16 Eb4:8 F4:8 Eb4:8 D4:16 C4:16 | s2v5: C3:h+Eb3+G3 Bb2:h+D3+F3
+m53  s1v1: C4:q C4:8. C4:16 C4:8 C4:8 Eb4:8 F4:16 G4:16~ | s2v5: Ab2:w+Eb3
+m54  s1v1: G4:q r:8. Eb4:16 G4:8 G4:8 G4:8 G4:16 G4:16 | s2v5: Eb3:w+G3+Bb3
+m55  s1v1: F4:q F4:8. D4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: Bb2:w+C3+F3
+m56  s1v1: Eb4:q r:8. C4:16 Eb4:8 F4:8 Eb4:8 D4:16 C4:16 | s2v5: C3:w
+m57 [dyn=f]  s1v1: C4:q C4:8. C4:16 C4:8 C4:8 Eb4:8 F4:16 G4:16~ | s2v5: Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3
+m58  s1v1: G4:q r:q G4:8 G4:8 G4:8 G4:16 Ab4:16~ | s2v5: Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3
+m59  s1v1: Ab4:8 F4:8 F4:8. F4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3
+m60  s1v1: Eb4:q r:q C4:q D4:q | s2v5: C3:8+Eb3+G3 C3:8+Eb3+G3 C3:8+Eb3+G3 C3:8+Eb3+G3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3
+m61  s1v1: Eb4:q r:q Eb4:q Bb4:q | s2v5: Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3
+m62  s1v1: G4:q r:q G4:8 G4:8 G4:8 G4:16 G4:16 | s2v5: Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3
+m63  s1v1: F4:q F4:8. F4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3
+m64  s1v1: Eb4:q r:q C4:q D4:q | s2v5: C3:8+Eb3+G3 C3:8+Eb3+G3 C3:8+Eb3+G3 C3:8+Eb3+G3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3
+m65  s1v1: Eb4:q r:q Eb4:q Bb4:q | s2v5: Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3 Ab2:8+Eb3
+m66  s1v1: G4:q r:q G4:8 G4:8 G4:8 G4:16 G4:16 | s2v5: Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3 Eb3:8+G3
+m67  s1v1: F4:q F4:8. F4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3 Bb2:8+D3+F3
+m68  s1v1: Eb4:q r:8. F4:16 F4:8 F4:8 G4:8 F4:16 F4:16 | s2v5: C3:8+Eb3+G3 C3:8+Eb3+G3 C3:8+Eb3+G3 C3:8+Eb3+G3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3 Bb2:8+Eb3+F3
+m69  s1v1: Eb4:q r:q r:h | s2v5: Ab2:w+Eb3

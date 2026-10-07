@@ -21,25 +21,25 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 0 | `0.2` *(exempt)* | 2 | 0 | 0.2–0.2 | — |
 | 0 | `0.3` *(exempt)* | 1 | 1 | 0.3–1.1 | Hot Cross Buns (1.1) |
 | 0 | `0.4` *(exempt)* | 1 | 0 | 0.4–0.4 | — |
-| 1 | `1.1` | 7 | 6 | 1.1–2.1 | Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1), Merrily We Roll Along (1.1), Au Clair de la Lune (1.1), Ode to Joy (theme) (1.1), Kum Ba Yah (1.6) |
+| 1 | `1.1` | 6 | 6 | 1.1–1.6 | Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1), Merrily We Roll Along (1.1), Au Clair de la Lune (1.1), Ode to Joy (theme) (1.1), Kum Ba Yah (1.6) |
 | 1 | `1.2` | 4 | 5 | 1.1–1.9 | Lightly Row (1.2), Jingle Bells (chorus) (1.2), Twinkle, Twinkle, Little Star (1.2), Frère Jacques (1.2), Ah! vous dirai-je, Maman (1.9) |
-| 1 | `1.3` | 6 | 3 | 1.1–2.1 | Hot Cross Buns (left hand) (1.3), Mary Had a Little Lamb (left hand) (1.3), Ode to Joy (left hand) (1.3) |
+| 1 | `1.3` | 5 | 3 | 1.1–1.6 | Hot Cross Buns (left hand) (1.3), Mary Had a Little Lamb (left hand) (1.3), Ode to Joy (left hand) (1.3) |
 | 1 | `1.4` | 6 | 3 | 1.2–1.6 | Lightly Row (1.2), Ode to Joy (hands alternating) (1.4), Oh When the Saints Go Marching In (hands alternating) (1.4) |
 | 1 | `1.5` *(song-optional)* | 8 | 4 | 1.1–2.2 | Ode to Joy (theme) (1.1), Lightly Row (1.2), The Water Is Wide (1.9), Old MacDonald Had a Farm (2.2) |
 | 2 | `2.1` | 6 | 5 | 2.1–2.6 | Simple Gifts (2.1), Ode to Joy (hands together) (2.1), Twinkle, Twinkle, Little Star (hands together) (2.1), Jingle Bells (chorus, hands together) (2.1), Mary Had a Little Lamb (hands together) (2.1) |
 | 2 | `2.2` | 6 | 8 | 1.1–2.4 | Merrily We Roll Along (1.1), Michael, Row the Boat Ashore (1.4), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2), Sakura (2.2), Alouette (2.3), … and 2 more |
-| 2 | `2.3` | 4 | 7 | 2.0–4.3 | Was wollen wir trinken (2.0), Happy Birthday to You (2.3), Dark Eyes (2.3), Skip to My Lou (2.5), Auld Lang Syne (2.8), Jingle Bells (chorus, in G major with block chords) (3.2), … and 1 more |
-| 2 | `2.4` | 4 | 6 | 2.2–5.1 | Greensleeves (simple) (2.4), Streets of Laredo (first half, 17 bars) (2.5), Careless Love (2.6), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), Greensleeves (5.1) |
-| 2 | `2.5` *(song-optional)* | 8 | 2 | 2.2–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (easy variation) (4.1) |
+| 2 | `2.3` | 3 | 7 | 2.0–4.1 | Was wollen wir trinken (2.0), Happy Birthday to You (2.3), Dark Eyes (2.3), Skip to My Lou (2.5), Auld Lang Syne (2.8), Jingle Bells (chorus, in G major with block chords) (3.2), … and 1 more |
+| 2 | `2.4` | 4 | 7 | 2.2–5.1 | Greensleeves (simple) (2.4), Streets of Laredo (first half, 17 bars) (2.5), Careless Love (2.6), Cielito Lindo (simple) (3.0), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), … and 1 more |
+| 2 | `2.5` *(song-optional)* | 8 | 3 | 2.2–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (in G major) (3.1), Ode to Joy (easy variation) (4.1) |
 | 3 | `3.1` | 7 | 6 | 1.1–3.2 | Korobeiniki (2.1), Loch Lomond (2.2), Scarborough Fair (2.3), Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), Oh When the Saints Go Marching In (in F major) (3.2) |
 | 3 | `3.2` | 6 | 5 | 2.3–4.3 | Happy Birthday to You (2.3), Jingle Bells (chorus, in G major with block chords) (3.2), Oh When the Saints Go Marching In (in F major) (3.2), Yankee Doodle (4.0), Oh My Darling Clementine (4.3) |
-| 3 | `3.3` | 7 | 3 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
-| 3 | `3.4` | 4 | 3 | 1.5–5.1 | Für Elise (beginner) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
-| 3 | `3.5` | 5 | 3 | 2.5–5.1 | Ode to Joy (full theme) (2.5), Greensleeves (waltz bass) (3.6), Canon in D (easy) (5.1) |
-| 3 | `3.6` *(song-optional)* | 8 | 2 | 3.6–5.1 | Greensleeves (waltz bass) (3.6), Canon in D (easy) (5.1) |
+| 3 | `3.3` | 6 | 3 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
+| 3 | `3.4` | 4 | 3 | 1.5–5.1 | Für Elise (easy) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
+| 3 | `3.5` | 5 | 3 | 2.5–5.0 | Ode to Joy (full theme) (2.5), Greensleeves (waltz bass) (3.6), Album for the Young, Op. 68 No. 4 "Chorale" (5.0) |
+| 3 | `3.6` *(song-optional)* | 8 | 1 | 3.6–5.1 | Greensleeves (waltz bass) (3.6) |
 | 4 | `4.1` | 6 | 3 | 3.1–4.1 | Ode to Joy (in G major) (3.1), Für Elise (easy) (4.1), Ode to Joy (easy variation) (4.1) |
-| 4 | `4.2` | 10 | 3 | 3.1–4.2 | Twinkle, Twinkle, Little Star (in F major) (3.1), Für Elise (beginner) (4.1), Bella Ciao (4.2) |
-| 4 | `4.3` | 17 | 3 | 3.3–5.1 | Greensleeves (with chords) (3.3), Canon in D (easy) (5.1), Greensleeves (5.1) |
+| 4 | `4.2` | 10 | 3 | 3.1–4.2 | Twinkle, Twinkle, Little Star (in F major) (3.1), Für Elise (easy) (4.1), Bella Ciao (4.2) |
+| 4 | `4.3` | 17 | 3 | 3.3–5.1 | Greensleeves (with chords) (3.3), Melody, Op. 68 No. 1 (5.0), Greensleeves (5.1) |
 | 4 | `4.4` | 5 | 3 | 4.1–5.1 | Ode to Joy (easy variation) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
 | 4 | `4.5` | 9 | 4 | 2.2–4.5 | London Bridge Is Falling Down (2.2), When Johnny Comes Marching Home (2.4), Row, Row, Row Your Boat (4.5), Greensleeves (in 6/8) (4.5) |
 | 4 | `4.6` | 4 | 6 | 3.4–5.1 | Für Elise (easy) (4.1), Uti vår hage (4.7), Canon in D (easy) (5.1), Minuet in G major, BWV Anh. 114 (5.1), Carol of the Bells (easy) (5.1), Auld Lang Syne (5.1) |
@@ -51,8 +51,8 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 1 | `practice.1` *(song-optional)* | 3 | 2 | 1.1–4.4 | Hot Cross Buns (1.1), Ode to Joy (theme) (1.1) |
-| 1 | `practice.2` *(song-optional)* | 3 | 1 | 1.1–4.4 | Ode to Joy (theme) (1.1) |
+| 1 | `practice.1` *(song-optional)* | 3 | 2 | 1.1–1.5 | Hot Cross Buns (1.1), Ode to Joy (theme) (1.1) |
+| 1 | `practice.2` *(song-optional)* | 3 | 1 | 1.1–1.5 | Ode to Joy (theme) (1.1) |
 | 1 | `practice.3` *(song-optional)* | 3 | 2 | 0.1–2.2 | Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1) |
 | 1 | `practice.4` *(song-optional)* | 3 | 1 | 1.1–2.1 | Hot Cross Buns (1.1) |
 | 1 | `practice.5` *(song-optional)* | 3 | 1 | 1.1–4.1 | Ode to Joy (theme) (1.1) |
@@ -70,14 +70,14 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 6 | `holiday.6` | 3 | 4 | 6.1–7.3 | Carol of the Bells (Shchedryk) (6.1), O Holy Night (piano solo) (6.8), Silent Night (Ondruš setting) (7.1), Joy to the World (piano solo) (7.3) |
 | 7 | `holiday.7` | 3 | 3 | 6.3–7.3 | Waltz of the Flowers (The Nutcracker) (6.3), Dance of the Sugar Plum Fairy (The Nutcracker) (6.3), Skating (6.8) |
 
-## Hymns & gospel (`hymns-gospel`)
+## Hymns & spirituals (`hymns-gospel`)
 
 5 rung(s), stages 2–6.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 2 | `hymns.2` | 3 | 4 | 1.4–3.2 | Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Swing Low, Sweet Chariot (2.4), Joyful, Joyful, We Adore Thee (2.5) |
-| 3 | `hymns` | 5 | 12 | 2.6–5.7 | What a Friend We Have in Jesus (2.6), Come Thou Fount of Every Blessing (2.7), Just a Closer Walk with Thee (3.1), Oh When the Saints Go Marching In (in F major) (3.2), Greensleeves (with chords) (3.3), Simple Gifts (2-Part Round) (3.9), … and 6 more |
+| 2 | `hymns.2` | 3 | 4 | 1.1–3.2 | Ode to Joy (theme) (1.1), Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Swing Low, Sweet Chariot (2.4) |
+| 3 | `hymns` | 5 | 11 | 2.6–5.4 | What a Friend We Have in Jesus (2.6), Come Thou Fount of Every Blessing (2.7), Just a Closer Walk with Thee (3.1), Oh When the Saints Go Marching In (in F major) (3.2), Greensleeves (with chords) (3.3), Simple Gifts (2-Part Round) (3.9), … and 5 more |
 | 4 | `hymns.4` | 3 | 5 | 3.2–5.7 | Amazing Grace (four parts) (4.6), Rock of Ages (4.9), Abide with Me (5.3), Joyful joyful we adore thee (5.4), O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler (5.7) |
 | 5 | `hymns.5` | 3 | 5 | 2.6–5.4 | What a Friend We Have in Jesus (2.6), This Little Light of Mine (2.7), Down By The Riverside (2.8), Just a Closer Walk with Thee (3.1), As the Deer (4.5) |
 | 6 | `hymns.6` | 3 | 4 | 5.4–7.0 | Holy holy holy Lord God of hosts (Hugg) - Geo. C. Hugg (5.4), 10,000 Reasons (5.7), Amazing Grace (in G major) (6.5), Down by the Riverside (7.0) |
@@ -88,7 +88,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 3 | `blues.3` | 7 | 5 | 2.5–4.5 | St. James Infirmary (2.5), Careless Love (2.6), St. Louis Blues (1914) (3.0), Wabash Blues (3.5), Tishomingo Blues (3.8) |
+| 3 | `blues.3` | 7 | 5 | 2.5–4.5 | St. James Infirmary (2.5), Careless Love (2.6), St. Louis Blues (1914) (3.0), Wabash Blues (3.5), Tishomingo Blues (3.9) |
 | 4 | `blues.4` | 5 | 7 | 2.6–5.2 | Careless Love (2.6), 12 Bar Blues (2.9), St. Louis Blues (1914) (3.0), Hesitating Blues (3.2), Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in F (4.1), … and 1 more |
 | 5 | `blues.5` | 7 | 6 | 3.4–5.2 | Blues My Naughty Sweetie Gives to Me (1919) (3.4), Twelve-bar blues shuffle in C (3.4), The Memphis Blues (1912) (4.0), Twelve-bar blues shuffle in F (4.1), Twelve-bar blues shuffle in G (4.1), Royal Garden Blues (1919) (4.2) |
 | 6 | `blues.6` *(song-optional)* | 5 | 3 | 4.0–7.0 | Boogie-woogie and blues piano exercises (4.0), Boogie (easy, for beginners) (5.0), Pinetop's Boogie Woogie (1928) (7.0) |
@@ -163,7 +163,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 6 | `theory.6` *(song-optional)* | 6 | 0 | 5.0–6.4 | — |
 | 7 | `theory.7` *(song-optional)* | 5 | 0 | 6.4–7.5 | — |
 | 8 | `theory.8` *(song-optional)* | 5 | 0 | 6.5–8.3 | — |
-| 9 | `theory.9` *(song-optional)* | 5 | 0 | 6.5–8.4 | — |
+| 9 | `theory.9` *(song-optional)* | 4 | 0 | 6.5–8.4 | — |
 
 ## Jam with a friend (`jam`)
 
@@ -174,7 +174,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 4 | `jam` | 4 | 5 | 3.4–4.5 | Twelve-bar blues shuffle in C (3.4), Twelve-bar blues shuffle in E (4.1), Twelve-bar blues shuffle in A (4.1), Twelve-bar blues shuffle in G (4.1), Twelve-bar blues shuffle in F (4.1) |
 | 5 | `jam.5` *(song-optional)* | 5 | 0 | 4.1–4.4 | — |
 | 6 | `jam.6` *(song-optional)* | 5 | 0 | 4.1–6.2 | — |
-| 7 | `jam.7` | 5 | 5 | 3.1–6.4 | Weary Blues (3.1), After You've Gone (1918) (3.2), Jazz Me Blues (3.6), Riverside Blues (3.8), Storyville Blues (4.0) |
+| 7 | `jam.7` | 5 | 5 | 3.2–6.4 | After You've Gone (1918) (3.2), Weary Blues (3.3), Jazz Me Blues (3.6), Riverside Blues (3.8), Storyville Blues (4.1) |
 
 ## Technique (`technique`)
 
@@ -195,20 +195,21 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 3 | `jazz.3` | 5 | 4 | 2.2–4.5 | Swing Low, Sweet Chariot (2.4), Bye Bye Blackbird (1926) (2.9), Alexander's Ragtime Band (1911) (3.4), Ole Miss (3.4) |
-| 4 | `jazz.4` | 4 | 3 | 2.7–4.5 | Margie (1920) (2.7), Avalon (1920) (2.7), Whispering (1920) (2.9) |
-| 5 | `jazz.5` | 5 | 4 | 3.0–5.2 | Bill Bailey, Won't You Please Come Home (1902) (3.0), After You've Gone (1918) (3.2), Limehouse Blues (1922) (3.2), Some of These Days (1910) (3.3) |
-| 6 | `jazz.6` *(song-optional)* | 7 | 6 | 2.9–6.4 | Bye Bye Blackbird (1926) (2.9), Darktown Strutters' Ball (1917) (3.2), Limehouse Blues (1922) (3.2), Rose Room (1917) (3.6), Tiger Rag (1917) (4.0), Royal Garden Blues (1919) (4.2) |
+| 4 | `jazz.4` | 4 | 3 | 2.7–4.5 | Avalon (1920) (2.7), Margie (1920) (2.8), Whispering (1920) (2.9) |
+| 5 | `jazz.5` | 5 | 4 | 3.0–5.2 | Bill Bailey, Won't You Please Come Home (1902) (3.0), Limehouse Blues (1922) (3.1), After You've Gone (1918) (3.2), Some of These Days (1910) (3.3) |
+| 6 | `jazz.6` *(song-optional)* | 8 | 8 | 2.3–6.4 | Insensatez (How Insensitive) (2.3), Bye Bye Blackbird (1926) (2.9), Limehouse Blues (1922) (3.1), Darktown Strutters' Ball (1917) (3.2), Blue Bossa (3.4), Rose Room (1917) (3.6), … and 2 more |
 | 7 | `jazz.7` *(song-optional)* | 7 | 6 | 2.7–7.4 | Avalon (1920) (2.7), Tiger Rag (1917) (4.0), Fly Me to the Moon (5.2), I Got Rhythm (5.5), Skating (6.8), Jingle Bells (jazz piano) (7.2) |
 | 8 | `jazz.8` *(song-optional)* | 6 | 3 | 5.5–8.2 | I Got Rhythm (5.5), Stardust (1927) (6.0), Uncle Ben's Cakewalk (7.6) |
 | 9 | `jazz.9` *(song-optional)* | 5 | 6 | 5.2–8.4 | When the Saints Go Marching In (jazz) (5.2), Stardust (1927) (6.0), Take Five (6.0), Lullaby of Birdland (6.1), Ain't Misbehavin' (6.9), Linus and Lucy (7.8) |
 
 ## Latin (`latin`)
 
-4 rung(s), stages 3–7.
+5 rung(s), stages 3–7.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 3 | `latin.3` | 5 | 3 | 2.4–3.6 | Guantanamera (2.4), Só Danço Samba (2.6), Cielito Lindo (2.8) |
+| 4 | `latin.4` | 7 | 4 | 2.7–7.5 | L'amour est un oiseau rebelle, bars 1–12, left hand (2.7), L'amour est un oiseau rebelle (6.2), Por Una Cabeza - Carlos Gardel (6.4), The Crave (7.5) |
 | 5 | `latin` | 12 | 6 | 2.3–6.4 | Insensatez (How Insensitive) (2.3), Guantanamera (2.4), Só Danço Samba (2.6), Cielito Lindo (2.8), Tico-Tico no Fubá (3.7), La Cumparsita (part A) (5.1) |
 | 6 | `latin.6` | 3 | 3 | 5.0–7.5 | Tango La Cumparsita - Piano Solo (Tutorial Parte B) (5.0), Por Una Cabeza - Carlos Gardel (6.4), The Crave (7.5) |
 | 7 | `latin.7` | 3 | 3 | 6.3–9.0 | El Choclo (tango) (7.6), Asturias (8.4), Malagueña (1928) (9.0) |
@@ -222,12 +223,12 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 5 | `ragtime.5` | 4 | 6 | 3.2–7.1 | Greensleeves (waltz bass) (3.6), 12th Street Rag (1914) (4.1), Augustan Club Waltz (6.8), Combination March (6.8), The Rose-bud March (7.0), The Entertainer (7.1) |
 | 6 | `ragtime.6` | 6 | 6 | 3.3–7.1 | School of Ragtime (6.4), Swipesy Cake Walk (6.8), The Easy Winners (7.0), Peacherine Rag (7.0), Sunflower Slow Drag (7.0), The Entertainer (7.1) |
 | 7 | `ragtime.7` | 6 | 6 | 3.2–7.4 | Solace (6.8), Maple Leaf Rag (7.2), Elite Syncopations (7.2), Sugar Cane (7.2), Bethena (7.3), Heliotrope Bouquet (7.4) |
-| 8 | `ragtime.8` | 6 | 6 | 3.3–7.6 | Pine Apple Rag (7.4), Frog Legs Rag (1906) (7.4), Gladiolus Rag (7.6), Magnetic Rag (7.6), The Cascades (7.6), Scott Joplin's New Rag (7.6) |
+| 8 | `ragtime.8` | 6 | 7 | 3.3–7.6 | Pine Apple Rag (7.4), Pine Apple Rag (repeats written out) (7.4), Frog Legs Rag (1906) (7.4), Gladiolus Rag (7.6), Magnetic Rag (7.6), The Cascades (7.6), … and 1 more |
 | 9 | `ragtime.9` | 4 | 4 | 5.6–8.4 | Original Rags (7.2), A Breeze from Alabama (7.2), The Chrysanthemum (7.4), Search-Light Rag (8.0) |
 
 ## Wanted, and not bundled
 
-235 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
+236 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
 
 | id | title | level | why |
 |---|---|---|---|
@@ -311,5 +312,5 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.folk.oh-my-darling-clementine.pdmx` | Oh My Darling Clementine | 4.3 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.por-una-cabeza-carlos-gardel.pdmx` | Por Una Cabeza - Carlos Gardel | 6.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.scarborough-fair-canticle.pdmx` | Scarborough Fair Canticle | 6.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| … | and 155 more | | |
+| … | and 156 more | | |
 

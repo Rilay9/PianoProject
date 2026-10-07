@@ -1,0 +1,52 @@
+[WebServer] (node:49508) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:49720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 2 workers
+
+(node:13344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:69244) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 tests\e2e\converted-import.spec.ts:66:3 › a converted MIDI performance › walks the same number of steps as the cursor does (638ms)
+  ok 3 tests\e2e\converted-import.spec.ts:87:3 › a converted MIDI performance › keeps both hands and both staves (558ms)
+  ok 1 tests\e2e\converted-import.spec.ts:49:3 › a converted MIDI performance › imports, is listed under the title the converter wrote, and engraves (1.5s)
+  ok 5 tests\e2e\midi-import.spec.ts:161:3 › a MIDI file imported from the app › converts on the device and says what it decided before anything is agreed to (1.0s)
+  ok 6 tests\e2e\midi-import.spec.ts:190:3 › a MIDI file imported from the app › is in the Library at once and opens on the Score screen (917ms)
+  ok 7 tests\e2e\midi-import.spec.ts:207:3 › a MIDI file imported from the app › walks the same number of steps as the cursor does, and keeps both hands (1.2s)
+  x  4 tests\e2e\midi-import.spec.ts:131:3 › a MIDI file imported from the app › an import stored before the app measured demands shows them on the assign sheet after the next launch (E2; E25) (1.5m)
+
+
+  1) tests\e2e\midi-import.spec.ts:131:3 › a MIDI file imported from the app › an import stored before the app measured demands shows them on the assign sheet after the next launch (E2; E25) 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('.list-row[data-item="import.two-hands"]').getByRole('button', { name: 'Assign' })
+
+
+      147 |     // And the sheet reads the measured truth off the stored row.
+      148 |     const row = page.locator(`.list-row[data-item="${ITEM}"]`);
+    > 149 |     await row.getByRole('button', { name: 'Assign' }).click();
+          |                                                       ^
+      150 |     const line = page.locator('#assign-demands');
+      151 |     await expect(line).toBeVisible();
+      152 |     await expect(line).toContainText('Measured in the notes:');
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ab0ca07b13a3644b6\app\tests\e2e\midi-import.spec.ts:149:55
+
+    Error Context: test-results-e2\midi-import-a-MIDI-file-im-c07a8-ter-the-next-launch-E2-E25-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-e2\midi-import-a-MIDI-file-im-c07a8-ter-the-next-launch-E2-E25-\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-e2\midi-import-a-MIDI-file-im-c07a8-ter-the-next-launch-E2-E25-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\midi-import.spec.ts:131:3 › a MIDI file imported from the app › an import stored before the app measured demands shows them on the assign sheet after the next launch (E2; E25) 
+  6 passed (1.6m)
+exit 1

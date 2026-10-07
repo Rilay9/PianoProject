@@ -1,0 +1,150 @@
+﻿[2.1] stage 2 — Hands together: the left hand holds
+  level: very easy, beginner, first pieces hands together, C position
+  must: C major; left hand whole notes or half notes; right hand melody; hands together; 8 to 16 bars
+  avoid: chords in the right hand; moving left hand; 6/8; anything over 32 bars
+  before: Ode to Joy (hands together) (Beethoven) and Twinkle, Twinkle, Little Star
+  after:  Ode to Joy (hands together) (Beethoven), Twinkle, Twinkle, Little Star and Minuet in G major, BWV Anh. 114 (Christian Petzold)
+[holiday] stage 2 — Carols you can play this year
+  level: easy, carols, melody first, chords C F and G
+  must: carol or Christmas tune; a melody that fits one hand position or close to it; chord symbols mostly I, IV and V; 8 to 24 bars
+  avoid: orchestral arrangements; four-stave choral scores; keys with four or more sharps
+  before: Jingle Bells (chorus) and Silent Night
+  after:  Jingle Bells (chorus), Silent Night and Minuet in G major, BWV Anh. 114 (Christian Petzold)
+[3.2] stage 3 — Primary chords in G and F, and the dominant seventh
+  level: easy, elementary, primary chords in G and F, dominant seventh
+  must: G major or F major; I IV V7 progression; smooth voice leading between chords; chord symbols printed
+  avoid: seventh chords other than V7; jazz voicings; modulation
+  before: Oh When the Saints Go Marching In (in F major)
+  after:  Oh When the Saints Go Marching In (in F major) and Prelude in E minor, Op. 28 No. 4 (Frédéric Chopin)
+[3.6] stage 3 — Broken chords, Alberti bass and waltz bass
+  level: easy to moderate, elementary, Alberti bass, waltz bass
+  must: Alberti bass or waltz bass in the left hand; melody in the right hand; 3/4 or 4/4; 24 to 64 bars
+  avoid: block chords only; left-hand melody; wide leaps in the left hand
+  before: Greensleeves (waltz bass)
+  after:  Greensleeves (waltz bass) and Piano Sonata in C major, K. 545, first movement (Wolfgang Amadeus Mozart)
+[theory.3] stage 3 — Intervals, key signatures and I-IV-V by ear
+  level: elementary, ear training, intervals, key signatures
+  must: clear intervals between melody notes; one key throughout; I IV V harmony; short and repetitive
+  avoid: chromatic melodies; modulation; dense textures
+  before: Twinkle, Twinkle, Little Star
+  after:  Twinkle, Twinkle, Little Star and Minuet in G major, BWV Anh. 114 (Christian Petzold)
+[improv.3] stage 3 — Playing over a loop
+  level: elementary, improvisation, backing loop, call and response
+  must: a repeating two or four chord loop; space left for a melody; one key throughout; slow to moderate tempo
+  avoid: through-composed pieces; fast changes; written-out solos
+  before: 
+  after:  Invention No. 1 in C major, BWV 772 (Johann Sebastian Bach)
+[hymns] stage 3 — Four-part texture and walk-ups
+  level: moderate, hymn, four-part harmony, SATB on two staves
+  must: four-part hymn texture on two staves; passing chords between the primary chords; a plagal cadence; singable key
+  avoid: organ pedal parts; three-stave scores; gospel runs
+  before: 
+  after:  Prelude in E minor, Op. 28 No. 4 (Frédéric Chopin)
+[latin.3] stage 3 — The clave, and a tune to hear it under
+  level: easy, clave, son, rumba, bossa, latin rhythm, singable melody
+  must: a tune simple enough to sing while clapping; a clear two-bar rhythmic pattern; latin american folk or popular
+  avoid: pieces that are hard to read rather than hard to feel; arrangements in four flats or more
+  before: 
+  after:  The Entertainer (Scott Joplin) and Maple Leaf Rag (Scott Joplin)
+[4.5] stage 4 — Compound time, triplets and syncopation
+  level: moderate, Grade 2 to 3, 6/8 time, triplets, syncopation
+  must: 6/8 or 12/8 time; triplets against a steady beat; syncopated melody; 24 to 64 bars
+  avoid: straight 4/4 throughout; rubato; changing time signatures every bar
+  before: 
+  after:  The Wild Horseman, Op. 68 No. 8 (Robert Schumann), The Entertainer (Scott Joplin) and Maple Leaf Rag (Scott Joplin)
+[classical.4.shelf] stage 4 — A singing melody, and the shelf to aim at
+  level: moderate, calm piano, ambient, melody with accompaniment
+  must: singing melody above a broken-chord accompaniment; pedal markings; slow to moderate tempo; one mood throughout
+  avoid: virtuoso writing; loud dynamics throughout; fast passagework
+  before: 
+  after:  Gymnopédie No. 1 (Erik Satie)
+[technique.4] stage 4 — Scales, arpeggios and the two ways to touch a key
+  level: moderate, Grade 2 to 3, technical exercises, scales and arpeggios
+  must: scales in similar and contrary motion; arpeggios over two octaves; hands together; fingering printed
+  avoid: repertoire pieces; pedal; expressive markings
+  before: The Virtuoso Pianist (Charles-Louis Hanon)
+  after:  The Virtuoso Pianist (Charles-Louis Hanon) and Arabesque, Op. 100 No. 2 (Johann Friedrich Burgmüller)
+[hymns.4] stage 4 — Four voices, two hands, and the inner parts
+  level: intermediate, Grade 2 to 3, hymnal or chorale setting
+  must: four voices written apart on two staves; the melody as the top voice throughout; alto and tenor written as their own lines; 12 to 40 bars
+  avoid: melody with block chords under it; lead sheets with chord symbols only; organ scores with a separate pedal stave
+  before: 
+  after:  Prelude in E minor, Op. 28 No. 4 (Frédéric Chopin)
+[classical.5] stage 5 — Sonatina form and Romantic miniatures
+  level: moderate to advancing, Grade 3 to 4, sonatina, Romantic miniature
+  must: sonatina or short Romantic character piece; Alberti bass hands together; trills or turns; pedal markings
+  avoid: arrangements; single-page fragments; virtuoso writing
+  before: Sonatina in G, Op. 36 No. 2 (Muzio Clementi) and Fur Elise (Beethoven)
+  after:  Sonatina in G, Op. 36 No. 2 (Muzio Clementi), Fur Elise (Beethoven) and Sonatina in C major, Op. 36 No. 1 (Muzio Clementi)
+[ragtime.5] stage 5 — The oom-pah and the syncopated right hand
+  level: moderate, ragtime, easy rag, oom pah bass, not fast
+  must: ragtime or cakewalk; oom-pah left hand; syncopated right hand; marked not fast
+  avoid: stride leaps over a tenth; fast tempos; novelty piano
+  before: The Entertainer (Scott Joplin) and Frog Legs Rag (James Scott)
+  after:  The Entertainer (Scott Joplin), Frog Legs Rag (James Scott) and Maple Leaf Rag (Scott Joplin)
+[latin] stage 5 — Clave, tumbao and montuno
+  level: moderate, Latin piano, salsa, montuno, clave
+  must: son or rumba clave; montuno figure in the right hand; tumbao bass line; syncopation across the bar
+  avoid: straight eighths; swing feel; written-out solos
+  before: 
+  after:  The Entertainer (Scott Joplin) and Maple Leaf Rag (Scott Joplin)
+[technique.5] stage 5 — Repeated notes, two hands at different speeds, and a line that travels
+  level: moderate to advancing, Grade 3 to 4, repeated notes, two against one
+  must: repeated notes with changing fingers; two notes against one between the hands; hands at different dynamics; fingering printed
+  avoid: hands in unison; pedal covering the repetition; expressive rubato
+  before: 
+  after:  The Happy Farmer, Op. 68 No. 10 (Robert Schumann)
+[classical.6] stage 6 — Voicing, rubato and the Romantic miniature
+  level: advancing, Grade 4 to 5, Romantic miniature, voicing the melody
+  must: Romantic character piece; melody and accompaniment in the same hand; pedal markings; rubato marked
+  avoid: Baroque counterpoint; arrangements; virtuoso etudes
+  before: Songs Without Words (Felix Mendelssohn)
+  after:  Songs Without Words (Felix Mendelssohn), Nocturne in E-flat major, Op. 9 No. 2 (Frédéric Chopin) and Gymnopédie No. 1 (Erik Satie)
+[ragtime.6] stage 6 — Multi-strain form and the leaping left hand
+  level: advancing, Grade 4 to 5, classic ragtime, multi-strain, not fast
+  must: classic rag in several strains; a trio in a new key; leaping oom-pah left hand; marked not fast
+  avoid: simplified arrangements; fast tempos; novelty piano
+  before: Maple Leaf Rag (Scott Joplin) and Ragtime Nightingale (Joseph Lamb)
+  after:  Maple Leaf Rag (Scott Joplin), Ragtime Nightingale (Joseph Lamb) and The Entertainer (Scott Joplin)
+[blues.6] stage 6 — Pinetop, the root-and-fifth bass, and a line that walks
+  level: advancing, boogie woogie, walking bass, eight to the bar
+  must: boogie woogie bass line; eight-to-the-bar left hand; twelve-bar form; shuffle feel
+  avoid: straight eighths; modern jazz harmony; arrangements without a left-hand pattern
+  before: 
+  after:  The Happy Farmer, Op. 68 No. 10 (Robert Schumann)
+[chords-pop.6] stage 6 — I–V–vi–IV everywhere, and the bass that walks under it
+  level: advancing, pop piano, four chord loop, voice leading, slash chords
+  must: I V vi IV loop; slash chords making a stepwise bass; inversions rather than root position; chord symbols printed
+  avoid: root position throughout; jazz extensions; written-out solos
+  before: 
+  after:  Prelude in E minor, Op. 28 No. 4 (Frédéric Chopin)
+[ragtime.7] stage 7 — Stride precursors, wider leaps and the slow drag
+  level: advanced, Grade 5 to 6, ragtime, stride bass, wide leaps
+  must: stride or wide oom-pah left hand; leaps of a tenth or more; a trio in a new key; marked not fast
+  avoid: simplified arrangements; fast tempos; close-position left hand
+  before: Euphonic Sounds (Scott Joplin)
+  after:  Euphonic Sounds (Scott Joplin), The Entertainer (Scott Joplin) and Maple Leaf Rag (Scott Joplin)
+[latin.7] stage 7 — The showpiece, and the hand nobody practises
+  level: advanced, Grade 7 to 8, Spanish and Latin American concert piano
+  must: a concert solo, not an accompaniment pattern; two staves; one hand holding a figure for many bars; Spanish or Latin American concert repertoire
+  avoid: lead sheets; short study pieces; the tune doubled in both hands
+  before: 
+  after:  The Happy Farmer, Op. 68 No. 10 (Robert Schumann)
+[classical.8] stage 8 — Etude technique, and pieces that need a plan
+  level: advanced, Grade 6 to 7, concert etude, large form
+  must: etude with one technical problem throughout; sustained fast passagework; a piece over four pages; pedal markings
+  avoid: short character pieces; arrangements; simplified editions
+  before: Etudes, Op. 10 (Frederic Chopin) and School of Velocity, Op. 299 (Carl Czerny)
+  after:  Etudes, Op. 10 (Frederic Chopin), School of Velocity, Op. 299 (Carl Czerny) and The School of Velocity, Op. 299 (Carl Czerny)
+[ragtime.8] stage 8 — The late rags, and where ragtime was going
+  level: advanced, late ragtime, secondary rag, chromatic harmony
+  must: secondary rag figuration; chromatic harmony; stride bass; marked not fast
+  avoid: simplified arrangements; fast tempos; early cakewalks
+  before: Magnetic Rag (Scott Joplin)
+  after:  Magnetic Rag (Scott Joplin), The Entertainer (Scott Joplin), Maple Leaf Rag (Scott Joplin) and Prelude in E minor, Op. 28 No. 4 (Frédéric Chopin)
+[technique.8] stage 8 — Four octaves in sixteenths, and why the metronome comes last
+  level: advanced, Grade 6 to 7, velocity, endurance, four octave scales
+  must: scales over four octaves; continuous sixteenth notes; hands together; fingering printed
+  avoid: short exercises; pedal; expressive markings
+  before: 
+  after:  The School of Velocity, Op. 299 (Carl Czerny)

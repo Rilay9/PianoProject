@@ -8,7 +8,7 @@
 // The service worker only registers on a built, served app, which is what the Playwright
 // webServer already provides (`npm run build && npm run preview`).
 
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';
 import { expect, test } from '@playwright/test';
 
@@ -318,6 +318,29 @@ test.describe('offline', () => {
     expect(served.length).toBeGreaterThan(1000);
     const uncached = served.filter((file) => !urls.has(file));
     expect(uncached, `${uncached.length} file(s) are served but never cached`).toEqual([]);
+  });
+
+  // eslint-disable-next-line @typescript-eslint/require-await -- Playwright tests are async
+  test('and the builder-only dev/ root is served and never precached (D2a)', async () => {
+    // The other half of the case above. What only a builder opens — the microscope's
+    // projection (`#/dev/microscope`, D2), megabytes a learner never needs — lives under
+    // `dev/`, beside `content/` and not in it, so the case above holds without an
+    // exception; `vite.config.ts` leaves `dev/` out of the precache. This says the
+    // projection is still served after the move, and that nothing under `dev/` reaches a
+    // learner's device.
+    const sw = readFileSync(resolve('dist/sw.js'), 'utf8');
+    const urls = [...sw.matchAll(/url:"([^"]+)"/g)].map((match) => match[1]);
+    const root = resolve('dist');
+    const walk = (dir: string): string[] =>
+      readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+        const full = join(dir, entry.name);
+        return entry.isDirectory() ? walk(full) : [relative(root, full).split(sep).join('/')];
+      });
+    const dev = join(root, 'dev');
+    const served = existsSync(dev) ? walk(dev) : [];
+    expect(served, 'the microscope projection is not served under dev/').toContain('dev/review/microscope.json');
+    const cached = urls.filter((url) => url?.startsWith('dev/'));
+    expect(cached, `${cached.length} file(s) under dev/ are precached`).toEqual([]);
   });
 });
 

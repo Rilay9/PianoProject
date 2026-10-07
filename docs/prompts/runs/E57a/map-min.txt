@@ -1,0 +1,76 @@
+# checks for 65 path(s): 65 matched, 0 unmatched
+# app/tests/unit/lessonClaimsAboutMusic.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/lessonShape.test.ts: app/tests/unit/*.test.ts
+# content/lessons/chords-pop.9.md: content/**, content/lessons/**
+# content/lessons/rock.7.md: content/**, content/lessons/**
+# content/scores/pdmx/QmRx7Xqghks9vBikJpNFbaq6QKzkKghiePNRLvkGsUkZy7.mxl: content/**, content/scores/**
+# content/scores/pdmx/QmWpzkuQx23WPUoU1Lvta6hJtK7ccBjeSwL1ATyJ47UUMU.mxl: content/**, content/scores/**
+# content/scores/pdmx/QmXXdTmXQW5jKbHEHgHuZFuW57wNrtApiba8WidW76APCp.mxl: content/**, content/scores/**
+# content/sources/pdmx.json: content/**, content/sources/**
+# docs/03-content-pipeline.md: docs/03-content-pipeline.md, docs/**
+# docs/prompts/runs/E57a/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/E57a/build-after.txt: docs/**
+# docs/prompts/runs/E57a/build-app.txt: docs/**
+# docs/prompts/runs/E57a/build-before.txt: docs/**
+# docs/prompts/runs/E57a/build-diff.txt: docs/**
+# docs/prompts/runs/E57a/build-mutant.txt: docs/**
+# docs/prompts/runs/E57a/checks-for-paths.txt: docs/**
+# docs/prompts/runs/E57a/cleanup.txt: docs/**
+# docs/prompts/runs/E57a/content-items.txt: docs/**
+# docs/prompts/runs/E57a/content-section.md: docs/**
+# docs/prompts/runs/E57a/content-suite.txt: docs/**
+# docs/prompts/runs/E57a/counts.txt: docs/**
+# docs/prompts/runs/E57a/e2e.txt: docs/**
+# docs/prompts/runs/E57a/exit-codes.txt: docs/**
+# docs/prompts/runs/E57a/lesson-check.txt: docs/**
+# docs/prompts/runs/E57a/lesson-items.md: docs/**
+# docs/prompts/runs/E57a/lint.txt: docs/**
+# docs/prompts/runs/E57a/mutants-relations-build.txt: docs/**
+# docs/prompts/runs/E57a/mutants-relations-direct.txt: docs/**
+# docs/prompts/runs/E57a/mutants-rock7.txt: docs/**
+# docs/prompts/runs/E57a/pdmx-count.txt: docs/**
+# docs/prompts/runs/E57a/pdmx-raw.txt: docs/**
+# docs/prompts/runs/E57a/pdmx-reconvert.txt: docs/**
+# docs/prompts/runs/E57a/pdmx-splice-rerun.txt: docs/**
+# docs/prompts/runs/E57a/pdmx-splice.txt: docs/**
+# docs/prompts/runs/E57a/python-relations.txt: docs/**
+# docs/prompts/runs/E57a/record-mirrors.txt: docs/**
+# docs/prompts/runs/E57a/repaired-identities-rerun.txt: docs/**
+# docs/prompts/runs/E57a/repaired-identities.txt: docs/**
+# docs/prompts/runs/E57a/review-check.txt: docs/**
+# docs/prompts/runs/E57a/scripts-build-diff.py: docs/**
+# docs/prompts/runs/E57a/scripts-cleanup.ps1: docs/**
+# docs/prompts/runs/E57a/scripts-collect-logs.py: docs/**
+# docs/prompts/runs/E57a/scripts-content-items.py: docs/**
+# docs/prompts/runs/E57a/scripts-counts.py: docs/**
+# docs/prompts/runs/E57a/scripts-lesson-check.py: docs/**
+# docs/prompts/runs/E57a/scripts-mutants.py: docs/**
+# docs/prompts/runs/E57a/scripts-pdmx-count.py: docs/**
+# docs/prompts/runs/E57a/scripts-pdmx-raw.py: docs/**
+# docs/prompts/runs/E57a/scripts-pdmx-reconvert.py: docs/**
+# docs/prompts/runs/E57a/scripts-pdmx-splice.py: docs/**
+# docs/prompts/runs/E57a/scripts-playwright.e57a.config.ts: docs/**
+# docs/prompts/runs/E57a/scripts-reader-dumps.ps1: docs/**
+# docs/prompts/runs/E57a/scripts-reader.table.ts: docs/**
+# docs/prompts/runs/E57a/scripts-repaired-identities.py: docs/**
+# docs/prompts/runs/E57a/scripts-run-build.ps1: docs/**
+# docs/prompts/runs/E57a/scripts-setup.ps1: docs/**
+# docs/prompts/runs/E57a/scripts-step.ps1: docs/**
+# docs/prompts/runs/E57a/scripts-vitest.reader.config.mts: docs/**
+# docs/prompts/runs/E57a/setup.txt: docs/**
+# docs/prompts/runs/E57a/tsc.txt: docs/**
+# docs/prompts/runs/E57a/validate.txt: docs/**
+# docs/prompts/runs/E57a/vitest-all.txt: docs/**
+# docs/prompts/runs/E57a/vitest-docs.txt: docs/**
+# docs/prompts/runs/E57a/vitest-long.txt: docs/**
+# tools/content/repaired_identities.json: tools/content/*.json
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/library.spec.ts tests/e2e/plan.spec.ts tests/e2e/side-panel-prose.spec.ts tests/e2e/start-and-return.spec.ts --workers=4

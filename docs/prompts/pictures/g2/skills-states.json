@@ -1,0 +1,26 @@
+{
+ "none": {
+  "sight-reading": "proficient",
+  "sight-reading:data-state": "proficient",
+  "interval-reading": "proficient",
+  "interval-reading:data-state": "proficient",
+  "position-shift": null,
+  "position-shift:data-state": null
+ },
+ "another-key-with-facts": {
+  "sight-reading": "shown on different material",
+  "sight-reading:data-state": "transfer-demonstrated",
+  "interval-reading": "shown on different material",
+  "interval-reading:data-state": "transfer-demonstrated",
+  "position-shift": null,
+  "position-shift:data-state": null
+ },
+ "another-row-no-facts": {
+  "sight-reading": "proficient",
+  "sight-reading:data-state": "proficient",
+  "interval-reading": "proficient",
+  "interval-reading:data-state": "proficient",
+  "position-shift": null,
+  "position-shift:data-state": null
+ }
+}

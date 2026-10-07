@@ -67,7 +67,7 @@ import type { InputNoteEvent } from '../../midi/types';
 import { getMidiSettings } from '../../data/midiSettings';
 import { getSettings } from '../../data/settingsStore';
 import { KeyboardStrip } from '../KeyboardStrip';
-import { onScreenDispose } from '../screenLifecycle';
+import { onScreenDispose, onScreenSuspend, pageHidden } from '../screenLifecycle';
 import { button, chip, el, field, numberControl, selectControl } from '../widgets';
 import { barAt } from './ChordChartScreen';
 import { screenFrame, statusLine } from './screenFrame';
@@ -346,6 +346,35 @@ export function LabScreen(router: Router): HTMLElement {
   let running = false;
   let disposed = false;
 
+  // --- hidden mid-jam (X15) --------------------------------------------------
+
+  /**
+   * Hidden mid-jam: silent, with the bar held. `running` stays true — the jam
+   * is not over, and *Stop* and a picker still end it.
+   */
+  let suspended = false;
+  /**
+   * The bar of the run (0-based, from the top) that the metronome's bar 1
+   * lands on: 0 from *Jam it*, the held bar after a hidden page. The
+   * metronome numbers from bar 1 on every `start()`.
+   */
+  let barOffset = 0;
+  /** The bar of the run that is sounding. */
+  let runBar = 0;
+  /** Where that bar's downbeat fell on the input timeline. */
+  let barStartMs = 0;
+  /** How many of this time round's notes were in before that bar began. */
+  let passNotesAtBar = 0;
+  /**
+   * The bar a hidden page cut, by its downbeat on the input timeline, until the
+   * resumed downbeat moves the trade's earlier notes and window along to it.
+   */
+  let heldBar: { fromMs: number } | null = null;
+  /** True from a resume until its first downbeat. */
+  let resuming = false;
+  /** Bumped by every start, stop and suspension, so a slow resume cannot land late. */
+  let resumeSeq = 0;
+
   // --- both ways round (docs/04 §3c, 2026-09-22) ---------------------------
 
   /**
@@ -420,6 +449,8 @@ export function LabScreen(router: Router): HTMLElement {
   /** Both clocks read together, so a beat's audio time converts to input time. */
   let clockAnchor: AudioClockAnchor | null = null;
   let piano: Piano | null = null;
+  /** The call sounding now and the bar of the run it began on, so a hidden page can resume it mid-way. */
+  let callNow: { phrase: readonly CallNote[]; firstBar: number } | null = null;
   const tradeLine = el('p.lab-trade', { id: 'lab-trade', hidden: true });
   const tradeVerdict = el('p.lab-trade__verdict', { id: 'lab-trade-verdict' });
   /** What the last time round was worth, in the same quiet voice as a trade's. */
@@ -576,15 +607,14 @@ export function LabScreen(router: Router): HTMLElement {
       { length: tradeBars },
       (_, offset) => jamChords[(bar + offset) % jamChords.length]?.pitchClasses ?? [],
     );
-    playCall(
-      callPhrase({
-        chords,
-        scale: currentTradeScale(),
-        beatsPerBar: 4,
-        seed: ((absoluteBar + 1) * 2654435761) >>> 0,
-      }),
-      beatTimeSec,
-    );
+    const phrase = callPhrase({
+      chords,
+      scale: currentTradeScale(),
+      beatsPerBar: 4,
+      seed: ((absoluteBar + 1) * 2654435761) >>> 0,
+    });
+    callNow = { phrase, firstBar: absoluteBar };
+    playCall(phrase, beatTimeSec);
     tradeLine.textContent = `Listen — ${String(tradeBars)} bars`;
     tradeLine.dataset.side = 'app';
   }
@@ -650,7 +680,7 @@ export function LabScreen(router: Router): HTMLElement {
 
   function onBeat(beat: MetronomeBeat): void {
     if (disposed || beat.isCountIn) return;
-    const next = barAt(beat.bar, jamChords.length);
+    const next = barAt(beat.bar + barOffset, jamChords.length);
     if (barStarted && next.bar === bar && next.chorus === chorus) return;
     // A time round has ended when the pass number moves, which is the moment
     // the verdict is read: after that the next pass's notes start arriving and
@@ -659,6 +689,11 @@ export function LabScreen(router: Router): HTMLElement {
     barStarted = true;
     bar = next.bar;
     chorus = next.chorus;
+    runBar = beat.bar - 1 + barOffset;
+    const downbeatMs = clockAnchor ? audioTimeToPerformanceMs(clockAnchor, beat.timeSec) : performance.now();
+    if (resuming) resumeOnDownbeat(downbeatMs, beat.timeSec);
+    barStartMs = downbeatMs;
+    passNotesAtBar = passNotes.length;
     drawJamForm();
     showChordOnKeys();
     const chord = jamChords[bar];
@@ -667,7 +702,83 @@ export function LabScreen(router: Router): HTMLElement {
     // T8, case 2: the app leads, so there is no first-note latch anywhere in
     // this mode. The learner's window opens where the bar opens, because
     // coming in on time is the thing being practised.
-    if (trading) onTradeBar(beat.bar - 1, beat.timeSec);
+    if (trading) onTradeBar(runBar, beat.timeSec);
+  }
+
+  /**
+   * The first downbeat after a hidden page: the bar that was cut, from the top.
+   *
+   * The learner's bars are the bars they heard, so the window moves with them
+   * (X15): everything played before the cut bar, and the window's start, move
+   * on by exactly how far that bar's downbeat moved. What was played in the
+   * cut bar itself went with it — the bar is being played again — and so did
+   * anything played over the count-in, which is nobody's bars. A call cut off
+   * goes on from this bar, as the chart and the bed do.
+   */
+  function resumeOnDownbeat(downbeatMs: number, beatTimeSec: number): void {
+    resuming = false;
+    const held = heldBar;
+    heldBar = null;
+    if (!held) return;
+    const shift = downbeatMs - held.fromMs;
+    answerNotes = answerNotes
+      .filter((note) => note.tMs < held.fromMs)
+      .map((note) => ({ ...note, tMs: note.tMs + shift }));
+    passNotes = passNotes.slice(0, passNotesAtBar);
+    if (tradeSide === 'learner') answerStartMs += shift;
+    if (trading && tradeSide === 'app' && callNow) {
+      const intoCall = (runBar - callNow.firstBar) * 4;
+      playCall(
+        callNow.phrase
+          .filter((note) => note.atBeat >= intoCall)
+          .map((note) => ({ ...note, atBeat: note.atBeat - intoCall })),
+        beatTimeSec,
+      );
+    }
+  }
+
+  /**
+   * The page went hidden mid-jam (X15, Part 19): the click, the bed and the
+   * app's call go silent, the bar is held, and nothing played while hidden is
+   * collected. Not `stopJam()`: that ends the jam and clears its verdicts.
+   */
+  function suspendJam(): void {
+    if (!running || suspended) return;
+    suspended = true;
+    resumeSeq += 1;
+    // Before the first downbeat — hidden during a count-in — the offset and any
+    // bar already held still say where it resumes.
+    if (barStarted) {
+      barOffset = runBar;
+      heldBar = { fromMs: barStartMs };
+    }
+    metronome?.stop();
+    kit?.dispose();
+    kit = null;
+    piano?.stop();
+  }
+
+  /**
+   * The page is back: count in again, as *Jam it* does, and carry on from the
+   * downbeat of the bar that was cut — not ahead of it and not from bar 1,
+   * which is what `startJam()` would do (it resets the bar, the pass and the
+   * trade).
+   */
+  async function resumeJam(): Promise<void> {
+    if (!suspended || disposed) return;
+    const seq = resumeSeq;
+    // The platform suspends the audio context on a locked phone.
+    const context = await audioEngine.ensureStarted();
+    if (disposed || !suspended || seq !== resumeSeq || pageHidden()) return;
+    suspended = false;
+    // Read again: the audio clock may have stood still while the page was hidden.
+    clockAnchor = captureAudioClockAnchor(context);
+    kit = new DrumKit(context, audioEngine.masterGain ?? undefined);
+    kit.setVolume(getMidiSettings().metronomeVolume);
+    // So the resumed bar's first beat draws, schedules and plays, as bar 1's does.
+    barStarted = false;
+    resuming = true;
+    metronome?.start();
   }
 
   async function startJam(): Promise<void> {
@@ -711,6 +822,12 @@ export function LabScreen(router: Router): HTMLElement {
     bar = 0;
     chorus = 1;
     barStarted = false;
+    barOffset = 0;
+    runBar = 0;
+    passNotesAtBar = 0;
+    heldBar = null;
+    resuming = false;
+    callNow = null;
     tradeIndex = -1;
     tradeSide = null;
     answerNotes = [];
@@ -801,6 +918,8 @@ export function LabScreen(router: Router): HTMLElement {
     kit.setVolume(getMidiSettings().metronomeVolume);
     metronome.start();
     running = true;
+    suspended = false;
+    resumeSeq += 1;
     section.dataset.jam = 'running';
     section.dataset.trading = String(trading);
     section.dataset.bed = bed;
@@ -811,9 +930,17 @@ export function LabScreen(router: Router): HTMLElement {
         : bed === 'tune'
           ? 'The app has the right hand — comp the chords underneath. Nothing is recorded and nothing can be passed or failed.'
           : 'Nothing is being judged or recorded — play over it.';
+    // The page hid while the audio and the samples were loading: held from the
+    // top, as if it had hidden a moment later (X15).
+    if (pageHidden()) suspendJam();
   }
 
   function stopJam(): void {
+    suspended = false;
+    resuming = false;
+    heldBar = null;
+    callNow = null;
+    resumeSeq += 1;
     metronome?.stop();
     // Everything is queued a bar ahead on the audio clock, so a kit left alive
     // would keep playing into whatever screen came next.
@@ -857,7 +984,8 @@ export function LabScreen(router: Router): HTMLElement {
    * so nothing here outlives the two trades it describes.
    */
   function collectNote(event: InputNoteEvent): void {
-    if (!running || event.kind !== 'noteOn') return;
+    // Nothing played to a hidden page is in anybody's bars (X15).
+    if (!running || suspended || event.kind !== 'noteOn') return;
     if (trading) answerNotes.push({ midi: event.midi, tMs: event.tMs });
     // The bar the loop is on when the key goes down. Coarse on purpose — see
     // `judgeLabPass` — and emptied at the end of every time round, so nothing
@@ -1324,6 +1452,14 @@ export function LabScreen(router: Router): HTMLElement {
   drawSummary();
   section.dataset.jam = 'idle';
   section.dataset.bed = bed;
+
+  onScreenSuspend(section, {
+    onHidden: suspendJam,
+    onVisible: () => {
+      // No audio on return is a reason to stay held, not to throw: *Jam it* is still there.
+      void resumeJam().catch(() => undefined);
+    },
+  });
 
   onScreenDispose(section, () => {
     disposed = true;

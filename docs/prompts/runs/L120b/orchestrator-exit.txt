@@ -1,0 +1,27 @@
+== map-tests  21:29:06
+map-tests exit=0
+== map-min  21:29:08
+map-min exit=0
+== content-build  21:29:08
+content-build exit=0
+ M docs/prompts/inventory.md
+ M docs/prompts/rung-claims.md
+== content-validate  21:38:35
+content-validate exit=0
+== review-check  21:38:51
+review-check exit=0
+== content-tests  21:38:51
+content-tests exit=0
+== vitest-all  21:46:38
+vitest-all exit=1
+== build-app  21:50:21
+build-app exit=0
+SPECS: tests/e2e/competence.spec.ts tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/modes-placement.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.spec.ts tests/e2e/score-fit-paths.spec.ts tests/e2e/score.ladder-route.spec.ts tests/e2e/session-run.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts
+== specs-exist  21:50:49
+specs-exist exit=0
+== e2e-targeted  21:50:49
+e2e-targeted exit=1
+CHAIN DONE 21:53:19
+== e2e-rerun  21:53:48
+e2e-rerun exit=0
+RERUN DONE 21:54:20

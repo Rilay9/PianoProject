@@ -1,0 +1,22 @@
+﻿
+16:30:14 snapshot taken: content\scores\imported\SOURCES.md, docs\prompts\inventory.md, docs\prompts\rung-claims.md
+16:30:21 copied build\cache (robocopy exit 1)
+16:30:21 copied build\midi-real (robocopy exit 1)
+16:30:25 copied content\scores\imported\kern (robocopy exit 1)
+16:30:25 copied content\scores\imported\musetrainer (robocopy exit 1)
+16:30:25 copied content\scores\imported\mutopia (robocopy exit 1)
+16:30:32 parity_reference.py exit 0
+16:31:01 npm ci exit 0
+16:31:01 caches copied from the main checkout
+16:31:01 start build-strict-full (--offline, out=C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ac3ecffe01c1d8440\build\q88-strict\content, strict=1)
+16:37:02 done build-strict-full exit 0
+16:37:02 mutopia files aside: True
+16:37:02 caches copied from the main checkout
+16:37:02 start build-strict-unfetched (--offline, out=C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ac3ecffe01c1d8440\build\q88-strict-unfetched\content, strict=1)
+16:48:13 done build-strict-unfetched exit 0
+16:48:13 mutopia files back: True
+16:48:13 caches copied from the main checkout
+16:48:13 start build-personal (--offline, out=, strict=0)
+16:55:06 done build-personal exit 1
+16:55:06 snapshot restored; git status in restore.txt
+16:55:06 chain finished

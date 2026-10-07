@@ -1,0 +1,10 @@
+$ (cd app) G85A_DIST=<app/dist> npx playwright test -c playwright.g85a-4533.config.ts --workers=2  tests/e2e/zz-g85a-pictures.spec.ts
+exists: tests/e2e/zz-g85a-pictures.spec.ts
+
+Running 2 tests using 1 worker
+
+  ok 1 tests\e2e\zz-g85a-pictures.spec.ts:137:1 › the row, its Details, the sheet from Details, and the row after Pause and Close (3.4s)
+  ok 2 tests\e2e\zz-g85a-pictures.spec.ts:219:1 › item 8: a row reached with a letter jump, acted on through Details, keeps its place (1.9s)
+
+  2 passed (8.2s)
+exit=0

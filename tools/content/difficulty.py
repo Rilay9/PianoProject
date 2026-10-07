@@ -202,6 +202,97 @@ def voice_lines(part) -> list[list]:  # noqa: ANN001 - music21 Part/PartStaff
     ]
 
 
+#: The tempo `features` assumes for a score that states none it can read, in
+#: quarter notes a minute; the score model's `DEFAULT_BPM`
+#: (`app/src/score/extractScoreModel.ts`) is the same number.
+DEFAULT_BPM = 100.0
+
+
+def _quarter_bpm(mark) -> float | None:  # noqa: ANN001 - music21 MetronomeMark
+    """
+    A mark's tempo in quarter notes a minute, or None where the file states none.
+
+    `getQuarterBPM()` is music21's own normalisation: the `<sound tempo>` it
+    kept (`numberSounding`, already in quarters) where there is one, else the
+    number times the referent's length in quarters, dots included — a half
+    note = 60 is 120, a dotted quarter = 80 is 120. A mark whose number music21
+    supplied from a tempo word (`numberImplicit`: "Allegro" is 132 to music21)
+    states no number, and neither does one music21 could not read ("c. 108",
+    a range): neither is a tempo. A metric modulation is not a `MetronomeMark`.
+    """
+    if mark.numberSounding is None and mark.numberImplicit:
+        return None
+    bpm = mark.getQuarterBPM()
+    return float(bpm) if bpm and bpm > 0 else None
+
+
+def opening_quarter_bpm(score) -> float:  # noqa: ANN001 - music21 Score
+    """
+    The tempo the duration feature is computed at: the opening mark in quarter
+    notes a minute, or `DEFAULT_BPM` (X31; X3d's follow-up 1).
+
+    The first tempo is the readable mark at the earliest offset in the score
+    (`getOffsetInHierarchy`), not the first `recurse()` meets: the walk takes
+    each staff whole before the next, so a mark in the upper staff's bar 5 used
+    to come before one in the lower staff's bar 1. Two at one offset go to the
+    first in that walk, which is the first part's.
+
+    **That mark opens the piece only where nothing has sounded before it**
+    (X31a; the app's rule, approved in X3d, `responses/aa16c702.md`). If a note
+    in any part begins strictly before it, the piece opens at `DEFAULT_BPM`
+    and the mark is a later change; after rests only (Beethoven's Fifth's
+    opening eighth rest, a bar of rest) it is the opening. Sounding is what the
+    app counts as sounding: a Note or a Chord, a grace note included (music21
+    places one, with no duration, at the offset of what follows it); a Rest is
+    not, nor a chord symbol (`sounding`). Decided from the parsed score, never
+    from the XML text.
+
+    **One definition, the app's, read through music21 — not a copy of the app's
+    reader.** The app's `app/src/score/tempoFromXml.ts` normalises each
+    `<metronome>` the same way and opens by the same rule, so a marked score's
+    duration feature is computed at the tempo the app computes it at. Where
+    music21 reads the file otherwise the build keeps music21's reading and the
+    gap is named, not closed (`tests/test_difficulty.py`,
+    `TestTheAppsTempoShapes`; X31's and X31a's entries count the bundled
+    scores): music21 drops a `<sound tempo>` from a direction that holds a
+    `<metronome>`, so where the two disagree the mark wins here and the sound
+    in the app; two tempos at one place go to the first in the file here and
+    to the sound in the app; "c. 108" is no number here; a `<cue/>` note (not
+    played; the app leaves it out) is a note to music21; and music21 moves a
+    direction by its `<offset>` even where that offset does not sound (the app
+    reads it where it stands), so the last two can put a note before a mark
+    here that the app opens with.
+    """
+    from music21.sites import SitesException
+
+    best: tuple[float, int] | None = None
+    opening = DEFAULT_BPM
+    for order, mark in enumerate(score.recurse().getElementsByClass("MetronomeMark")):
+        bpm = _quarter_bpm(mark)
+        if bpm is None:
+            continue
+        try:
+            offset = float(mark.getOffsetInHierarchy(score))
+        except SitesException:
+            offset = math.inf
+        if best is None or (offset, order) < best:
+            best = (offset, order)
+            opening = bpm
+    if best is None or best[0] <= 0:
+        return opening
+    # A note that began before the first tempo was played at the default. One
+    # less than a millionth of a quarter note earlier stands at the mark's place
+    # (the app rounds places to a millionth).
+    for element in sounding(score.recurse().notes):
+        try:
+            at = float(element.getOffsetInHierarchy(score))
+        except SitesException:
+            continue
+        if at < best[0] - 1e-6:
+            return DEFAULT_BPM
+    return opening
+
+
 def features(score) -> dict[str, float]:  # noqa: ANN001 - music21 Score
     """
     Every measurable fact `estimate` is allowed to use.
@@ -266,8 +357,7 @@ def features(score) -> dict[str, float]:  # noqa: ANN001 - music21 Score
     }
     shortest = min(durations) if durations else 1.0
 
-    tempos = list(score.recurse().getElementsByClass("MetronomeMark"))
-    bpm = float(tempos[0].number) if tempos and tempos[0].number else 100.0
+    bpm = opening_quarter_bpm(score)
     signatures = list(score.recurse().getElementsByClass("TimeSignature"))
     beats_per_bar = float(signatures[0].numerator) if signatures else 4.0
     seconds = (bars * beats_per_bar * 60.0) / max(1.0, bpm)

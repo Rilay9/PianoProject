@@ -1,0 +1,4 @@
+﻿port 4253 listening before the run: False
+look (F2a state), port 4253 exit=0
+  2 passed
+port 4253 listening after the run: False

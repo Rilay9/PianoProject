@@ -9,7 +9,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 import { playInTime } from './fixtures/playInTime';
-import { setTempoPercent, withScoreMenu } from './scoreControls';
+import { pressControl, setTempoPercent, withScoreMenu } from './scoreControls';
 
 const ITEM = 'song.folk.hot-cross-buns';
 
@@ -78,9 +78,15 @@ test.describe('a whole run', () => {
     // the tempo line saying it is not judged here and where a pass is played.
     await expect(sheet.locator('h2')).toHaveText('Notes ready');
     await expect(sheet).not.toContainText(/Passed|Mastered/);
-    await expect(sheet.locator('[data-stat="tempo"]')).toHaveText(
-      'Not judged in Wait for me — to pass, play it in Keep tempo',
+    // Revised (X46, `responses/9e14839e.md` §2 points 2 and 5; class: replace): the tempo line said
+    // "— to pass, play it in Keep tempo", naming no number and offering no control. The tempo line now says
+    // what was measured; *To pass* names the standard in the lesson page's words, and the control that does
+    // what it says is on the sheet.
+    await expect(sheet.locator('[data-stat="tempo"]')).toHaveText('Not judged in Wait for me');
+    await expect(sheet.locator('[data-stat="to-pass"]')).toHaveText(
+      /^\d+ % of the notes, in Keep tempo at \d+ % of the (written|suggested) tempo or faster$/,
     );
+    await expect(page.locator('#summary-standard')).toHaveText(/^Keep tempo at \d+ %$/);
     // And no timing: Wait keeps none, and "0 ms off the beat" is not a result.
     await expect(sheet.locator('[data-stat="timing"]')).toHaveCount(0);
     // Wait mode with every step completed cleanly is 100 %, and the run had a
@@ -250,11 +256,31 @@ test.describe('stopping, restarting and looping', () => {
     await page.locator('#score-play').click();
     await press(page, 64);
     await press(page, 62);
+    const screen = page.locator('section[data-screen="score"]');
+    const step = (): Promise<number | null> =>
+      page.evaluate(() => {
+        type Hooked = Window & { __pianopath?: { scoreRun?: () => { step: number } | null } };
+        return (window as Hooked).__pianopath?.scoreRun?.()?.step ?? null;
+      });
+    await expect.poll(step).toBe(2);
+    // **Revised 2026-10-01 (U118a, Entry 203; test class: revise).** Mid-run the
+    // chrome is folded: a run folds it to ⏸ the moment it starts (since U122c; 0.7 s after ▶ before),
+    // the stage takes the bar's row and the tap, and a learner's first tap on the
+    // sheet brings the bar back. The test clicked Both straight after two notes,
+    // so it passed only while the click beat that timer. On the runner it lost
+    // on both tries (run 36834528688): the folded stage's sheet took the tap for
+    // the whole timeout, the button visible and still. So it now meets the
+    // screen a learner meets mid-run, folded, and presses the hand the way a
+    // person does (`pressControl`: tap the sheet, then the control).
+    await expect(screen).toHaveAttribute('data-chrome', 'folded');
     // `both`, not `L`: this piece has no left hand, and a Wait run with
     // nothing to wait for is refused rather than started.
-    await page.locator('#score-hands-both').click();
+    await pressControl(page, '#score-hands-both');
     await page.waitForTimeout(500);
-    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+    await expect(page.locator('#score-stage')).toHaveAttribute('data-hands', 'both');
+    await expect(screen).toHaveAttribute('data-running', 'true');
+    // Restarted: back at the first note, not carried on from the third.
+    await expect.poll(step).toBe(0);
     await expect(page.locator('#score-summary')).toBeHidden();
     expect(await recordedRuns(page)).toBe(0);
   });

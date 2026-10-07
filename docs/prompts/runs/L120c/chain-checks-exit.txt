@@ -1,0 +1,31 @@
+﻿L120c chain checks, one at a time
+content-validate exit=0
+review-check exit=0
+content-tests exit=1
+tsc exit=0
+lint exit=0
+unit exit=1
+build-app exit=0
+ M app/src/engine/readingControls.ts
+ M app/tests/unit/lessonClaimsAboutApp.test.ts
+ M app/tests/unit/lessonClaimsAboutMusic.test.ts
+ M content/curriculum/concepts.json
+ M content/curriculum/stage-3.json
+ M content/curriculum/stage-4.json
+ M content/curriculum/stage-5.json
+ M content/curriculum/stage-6.json
+ M content/curriculum/vocabulary/demands.json
+ M content/lessons/3.5.md
+ M content/lessons/4.2.md
+ M content/lessons/4.3.md
+ M content/lessons/4.4.md
+ M docs/generated/ladder.md
+ M tools/content/add_technique_units.py
+ M tools/content/claims.py
+ M tools/content/tests/fixtures/untaught_on_rung.json
+ M tools/content/tests/test_measured_truth.py
+ M tools/content/tests/test_taught_at.py
+ M tools/content/tests/test_untaught_options.py
+ M tools/content/validate.py
+?? docs/prompts/runs/L120c/
+?? tools/content/tests/test_sixteenths_owner.py

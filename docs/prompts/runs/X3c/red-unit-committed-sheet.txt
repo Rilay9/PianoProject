@@ -1,0 +1,119 @@
+npx vitest run tests/unit/importSheet.test.ts (in app)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ac2ac291c6ad0a550/app
+
+ ❯ tests/unit/importSheet.test.ts (28 tests | 6 failed) 1093ms
+   ❯ the learner states the tempo (X3a; E48’s stateImportTempo) (8)
+     × after a statement the field starts at the tempo the stored score opens at, the number the line says, not what was typed; a refused restatement keeps the store’s words and the field as typed 69ms
+   ❯ the file’s own tempo (X3c) (6)
+     × a half-note mark of 60 on a score that opens at 120 quarter notes a minute says both: the mark in its own note and the tempo in quarters 3ms
+     × a mark only in bar 2, on a score that opens at 100, says 100 as the opening and not the bar-2 mark; a tempo written only after the opening is not said as one 2ms
+     × a mark the door read from the file’s text (E32) says the mark as the file printed it and the app’s reading of it 6ms
+     × where the printed mark and the file’s playback tempo disagree, each is said apart, never as a conversion; a mark with no playback tempo is said alone 2ms
+     × a fractional tempo is kept as the file wrote it and said as the score carries it, or “about” the whole beat where the file carries more; a press states the number the line names 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the learner states the tempo (X3a; E48’s stateImportTempo) > after a statement the field starts at the tempo the stored score opens at, the number the line says, not what was typed; a refused restatement keeps the store’s words and the field as typed
+AssertionError: expected 'Tempo · yours — You stated ♩ = 73.' to contain 'You stated ♩ = 72.5.'
+
+Expected: "You stated ♩ = 72.5."
+Received: "Tempo · yours — You stated ♩ = 73."
+
+ ❯ tests/unit/importSheet.test.ts:550:35
+    548|     const stated = (await getImport(imported.id)) as ImportRow;
+    549|     expect(soundTempos(stated.data as string)).toEqual(['72.5']);
+    550|     expect(text('#import-tempo')).toContain('You stated ♩ = 72.5.');
+       |                                   ^
+    551|     expect(text('#import-tempo')).not.toContain('73');
+    552|     expect(field().value).toBe('72.5');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the file’s own tempo (X3c) > a half-note mark of 60 on a score that opens at 120 quarter notes a minute says both: the mark in its own note and the tempo in quarters
+AssertionError: expected 'The file says ♩ = 60.' to be 'The file says 𝅗𝅥 = 60 (120 quarter no…' // Object.is equality
+
+Expected: "The file says 𝅗𝅥 = 60 (120 quarter notes a minute)."
+Received: "The file says ♩ = 60."
+
+ ❯ tests/unit/importSheet.test.ts:600:20
+    598|     openImportSheet(fileRow(twoStaves({ tempo: 60, beatUnit: 'half', s…
+    599|     expect(text('#import-tempo')).toContain('from the file');
+    600|     expect(said()).toBe('The file says \u{1D15E} = 60 (120 quarter not…
+       |                    ^
+    601|     // Never the half note's number as a quarter note's.
+    602|     expect(said()).not.toContain('♩ = 60');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the file’s own tempo (X3c) > a mark only in bar 2, on a score that opens at 100, says 100 as the opening and not the bar-2 mark; a tempo written only after the opening is not said as one
+AssertionError: expected 'The file says ♩ = 132.' to be 'The file says ♩ = 100.' // Object.is equality
+
+Expected: "The file says ♩ = 100."
+Received: "The file says ♩ = 132."
+
+ ❯ tests/unit/importSheet.test.ts:628:20
+    626|   it('a mark only in bar 2, on a score that opens at 100, says 100 as …
+    627|     openImportSheet(fileRow(twoStaves({ tempo: 132, tempoBar: 2, openi…
+    628|     expect(said()).toBe('The file says ♩ = 100.');
+       |                    ^
+    629|     expect(text('#import-tempo')).not.toContain('132');
+    630|     expect(field().value).toBe('100');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the file’s own tempo (X3c) > a mark the door read from the file’s text (E32) says the mark as the file printed it and the app’s reading of it
+AssertionError: expected 'The file says ♩ = 120.' to be 'The file’s mark says “= 60”, with no …' // Object.is equality
+
+Expected: "The file’s mark says “= 60”, with no note; the app reads it as a half note, the metre’s beat: 120 quarter notes a minute."
+Received: "The file says ♩ = 120."
+
+ ❯ tests/unit/importSheet.test.ts:648:20
+    646|     openImportSheet(cut, CURRICULUM);
+    647|     expect(text('#import-tempo')).toContain('from the file');
+    648|     expect(said()).toBe('The file’s mark says “= 60”, with no note; th…
+       |                    ^
+    649|     expect(field().value).toBe('120');
+    650|     document.body.replaceChildren();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the file’s own tempo (X3c) > where the printed mark and the file’s playback tempo disagree, each is said apart, never as a conversion; a mark with no playback tempo is said alone
+AssertionError: expected 'The file says ♩ = 60.' to be 'The file prints 𝅗𝅥 = 60; its playback…' // Object.is equality
+
+Expected: "The file prints 𝅗𝅥 = 60; its playback tempo is 100 quarter notes a minute."
+Received: "The file says ♩ = 60."
+
+ ❯ tests/unit/importSheet.test.ts:661:20
+    659|   it('where the printed mark and the file’s playback tempo disagree, e…
+    660|     openImportSheet(fileRow(twoStaves({ tempo: 60, beatUnit: 'half', s…
+    661|     expect(said()).toBe('The file prints \u{1D15E} = 60; its playback …
+       |                    ^
+    662|     expect(said()).not.toContain('(100 quarter notes a minute)');
+    663|     expect(field().value).toBe('100');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the file’s own tempo (X3c) > a fractional tempo is kept as the file wrote it and said as the score carries it, or “about” the whole beat where the file carries more; a press states the number the line names
+AssertionError: expected 'The file says ♩ = 73.' to be 'The file says ♩ = 72.5.' // Object.is equality
+
+Expected: "The file says ♩ = 72.5."
+Received: "The file says ♩ = 73."
+
+ ❯ tests/unit/importSheet.test.ts:675:20
+    673|     const half = await addImport(fakeFile('seventy-two-and-a-half.musi…
+    674|     openImportSheet(half, CURRICULUM);
+    675|     expect(said()).toBe('The file says ♩ = 72.5.');
+       |                    ^
+    676|     expect(field().value).toBe('72.5');
+    677|     // A press without typing states what the file carries: the score …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 22 passed (28)
+   Start at  05:08:15
+   Duration  3.05s (environment 39%, tests 37%, transform 16%, import 7%)
+
+exit=1

@@ -1,0 +1,86 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ae687936d18ee852c/app
+
+ ❯ tests/unit/sightReadingFailsClosed.test.ts (5 tests | 3 failed) 109ms
+   ❯ version 2 fails closed: a phrase it did not check never comes back (5)
+     × a promise no draw can keep: refused with the reason, and the same refusal every time 45ms
+     × a leap cap the walk does not respect: every draw that keeps the promise breaks it, so the phrase is refused (seam) 3ms
+     × continue, then refuse: a budget that ends one draw before the first valid refuses; one draw more returns that draw (seam) 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/sightReadingFailsClosed.test.ts > version 2 fails closed: a phrase it did not check never comes back > a promise no draw can keep: refused with the reason, and the same refusal every time
+AssertionError: version 2 handed back a phrase it had not checked: expected [ 'promised leaps: none on the page' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "promised leaps: none on the page",
++ ]
+
+ ❯ tests/unit/sightReadingFailsClosed.test.ts:112:135
+    110|     const outcome = attempt(() => generateSightReading(CONTRADICTION));
+    111|     if (outcome.phrase) {
+    112|       expect(brokenOnThePage(outcome.phrase.musicXml, CONTRADICTION, […
+       |                                                                                                                                       ^
+    113|     }
+    114|     expect(outcome.thrown).toBeInstanceOf(SightReadingRefusal);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/sightReadingFailsClosed.test.ts > version 2 fails closed: a phrase it did not check never comes back > a leap cap the walk does not respect: every draw that keeps the promise breaks it, so the phrase is refused (seam)
+AssertionError: version 2 handed back a phrase that broke its hard layer: expected [ …(6) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "a leap of 2 scale steps in bar 1, beyond the cap of 1",
++   "a leap of 2 scale steps in bar 2, beyond the cap of 1",
++   "a leap of 2 scale steps in bar 2, beyond the cap of 1",
++   "a leap of 2 scale steps in bar 4, beyond the cap of 1",
++   "a leap of 2 scale steps in bar 4, beyond the cap of 1",
++   "a leap of 2 scale steps in bar 4, beyond the cap of 1",
++ ]
+
+ ❯ tests/unit/sightReadingFailsClosed.test.ts:138:146
+    136|     const outcome = attempt(() => sightReadingReportWithin(options, { …
+    137|     if (outcome.phrase) {
+    138|       expect(brokenOnThePage(outcome.phrase.result.musicXml, options, …
+       |                                                                                                                                                  ^
+    139|     }
+    140|     expect(outcome.thrown).toBeInstanceOf(SightReadingRefusal);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/sightReadingFailsClosed.test.ts > version 2 fails closed: a phrase it did not check never comes back > continue, then refuse: a budget that ends one draw before the first valid refuses; one draw more returns that draw (seam)
+AssertionError: the budget ran out and its last draw came back: expected [ …(2) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "promised ties: none on the page",
++   "promised accidentals: none on the page",
++ ]
+
+ ❯ tests/unit/sightReadingFailsClosed.test.ts:165:132
+    163|     const short = attempt(() => sightReadingReportWithin(RARE, { attem…
+    164|     if (short.phrase) {
+    165|       expect(brokenOnThePage(short.phrase.result.musicXml, RARE, RARE_…
+       |                                                                                                                                    ^
+    166|     }
+    167|     expect(short.thrown).toBeInstanceOf(SightReadingRefusal);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  19:54:42
+   Duration  1.88s (transform 70%, tests 18%, import 7%, worker 4%)
+

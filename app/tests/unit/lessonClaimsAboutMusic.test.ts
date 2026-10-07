@@ -415,10 +415,12 @@ const COMPARISONS: [string, string, () => boolean][] = [
   ['jazz.4', 'all three songs are from 1920', () =>
     ['song.pop.avalon.pdmx', 'song.pop.whispering.pdmx', 'song.pop.margie.pdmx'].every((id) => (byId.get(id)?.title ?? '').includes('1920'))],
   ['hymns.2', 'Swing Low is the only one of the four with its chords printed', () => {
+    // Wave 1(a) 1a.6 edit 9: the rung's Joyful edition (on D, every F natural) gave its place to
+    // the single-line Ode to Joy, so the four are the rung's four as they now stand.
     const four = [
       'song.folk.when-the-saints.alternating',
+      'song.classical.ode-to-joy.rh',
       'song.folk.be-thou-my-vision.pdmx',
-      'song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx',
       'song.folk.anonymous-swing-low-sweet-chariot.pdmx',
     ];
     const printed = four.filter((id) => (byId.get(id)?.notation?.chordCount ?? 0) > 0);
@@ -1222,16 +1224,24 @@ const T12_MUSIC: [string, string, () => boolean][] = [
 
   [
     'hymns.2',
-    'the Joyful, Joyful on this rung has no key signature, no accidental, more grace notes than notes, and a written tempo of 40',
+    // Wave 1(a) 1a.6 edit 9 replaced the sentence about the Joyful edition (no key signature, every
+    // F natural, grace notes, tempo 40) with one about the Ode to Joy that took its place; the row
+    // follows the sentence. The old edition stays in the Library and is no longer on this rung.
+    'Ode to Joy is its first eight bars, right hand only, in C, the ends of its two phrases two half notes, and on this rung',
     () => {
-      const id = 'song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx';
-      const all = t12Notes(id).filter((note) => !note.rest);
-      const graces = all.filter((note) => note.grace);
+      const id = 'song.classical.ode-to-joy.rh';
+      const halves = (bar: string): boolean => {
+        const notes = t12Bar(id, 1, bar);
+        return notes.length === 2 && notes.every((note) => note.type === 'half' && !note.dotted);
+      };
       return (
+        t12Songs('hymns.2').includes(id) &&
+        !t12Songs('hymns.2').includes('song.classical.beethoven-ludwig-van-beethoven-joyful-joyful-we-adore-thee.pdmx') &&
+        t12Notation(id).bars === 8 &&
+        t12Notation(id).staves === 1 &&
         t12Notation(id).keys.every((key) => key.fifths === 0) &&
-        t12Count(id, /<alter>/g) === 0 &&
-        graces.length > all.length - graces.length &&
-        /<sound[^>]*tempo="40(\.0+)?"/.test(t12Xml(id))
+        halves('4') &&
+        halves('8')
       );
     },
   ],
@@ -1405,19 +1415,19 @@ const T12_MUSIC: [string, string, () => boolean][] = [
     },
   ],
 
+  // Replaced (L120c item 8). Old row: "the easy Canon in D breaks its chords in eighths for twelve bars and then
+  // stops", 4.3's sentence about the Canon. The Canon left 4.3 (its sixteenths, bars 37-44, need 4.4, which teaches
+  // them; 4.6 and 4.7 list it), and the sentence now names Schumann's Melody, which this row holds instead.
   [
     '4.3',
-    'the easy Canon in D breaks its chords in eighths for twelve bars and then stops',
+    'Schumann’s Melody has its left hand running in eighths under the tune in nearly every bar',
     () => {
-      const left = t12Line('song.classical.pachelbel-canon-d.easy', 2);
-      const eighthBars = new Set(
-        left.filter((note) => note.type === 'eighth').map((note) => Number(note.bar)),
-      );
-      return (
-        [...eighthBars].every((bar) => bar <= 12) &&
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].every((bar) => eighthBars.has(bar)) &&
-        left.filter((note) => Number(note.bar) === 13).every((note) => note.type === 'half')
-      );
+      const left = t12Line('song.classical.schumann-melody-op-68-no-1.pdmx', 2);
+      const bars = new Set(left.map((note) => Number(note.bar)));
+      const eighths = (bar: number): number =>
+        left.filter((note) => Number(note.bar) === bar && note.type === 'eighth').length;
+      const full = [...bars].filter((bar) => eighths(bar) === 8);
+      return bars.size === 20 && [...bars].every((bar) => eighths(bar) >= 4) && full.length >= 16;
     },
   ],
 
@@ -1566,14 +1576,19 @@ const T12_MUSIC: [string, string, () => boolean][] = [
 
   [
     'technique.4',
-    'the scale, arpeggio, chromatic and inversion exercises finger every note, and the articulation ones finger none',
+    // Revised by G30 (the old assumption: the inversions print their fingering). Their row's convention is the
+    // generator's own, with no source, so since G30 none is printed; the sourced shapes still print every finger.
+    'the scale, arpeggio and chromatic exercises finger every note, the inversions and the articulation ones finger none',
     () => {
       const options = t12Exercises('technique.4');
-      const named = options.filter((id) => /\.(scale|arpeggio|chromatic|inversions)\./.test(id));
+      const sourced = options.filter((id) => /\.(scale|arpeggio|chromatic)\./.test(id));
+      const inversions = options.filter((id) => id.includes('.inversions.'));
       const articulation = options.filter((id) => id.includes('articulation'));
       return (
-        named.length === 6 &&
-        named.every((id) => t12Sounded(id).every((note) => note.finger !== null)) &&
+        sourced.length === 4 &&
+        sourced.every((id) => t12Sounded(id).every((note) => note.finger !== null)) &&
+        inversions.length === 2 &&
+        inversions.every((id) => t12Sounded(id).length > 0 && t12Sounded(id).every((note) => note.finger === null)) &&
         articulation.length === 4 &&
         articulation.every((id) => t12Sounded(id).every((note) => note.finger === null))
       );
@@ -1581,14 +1596,17 @@ const T12_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'technique.4',
-    'the contrary-motion scale starts the left hand an octave above the right and mirrors its fingering',
+    // Wave 1(a) seam 1a.9 reversed this row's first half: the lesson said the left hand began on the C
+    // above the right hand's and the hands passed through each other; the generator now starts both
+    // thumbs on the same C (core 4.1), and the lesson says so. The fingering mirror is unchanged.
+    'the contrary-motion scale starts both thumbs on the same C and mirrors its fingering',
     () => {
       const id = 'exercise.scale.c-major.2oct.contrary.both.2';
       const right = t12Bar(id, 1, '1');
       const left = t12Bar(id, 2, '1');
       return (
         right[0]?.midi === 60 &&
-        left[0]?.midi === 72 &&
+        left[0]?.midi === 60 &&
         right.map((note) => note.finger ?? '').join(' ') ===
           left.map((note) => note.finger ?? '').join(' ')
       );
@@ -1720,16 +1738,23 @@ const T12_MUSIC: [string, string, () => boolean][] = [
     'blues.5',
     'the walking bass is four quarters a bar, root–third–fifth then an approach note',
     () => {
+      // Revised (CL15; the old assumption: twelve bars, the twelfth ending on an approach note into a
+      // chorus the exercise never writes). The twelve bars of the form are as they were, and the line
+      // now closes on the tonic in a thirteenth bar, the tonic chord walked to its octave, so every
+      // approach note arrives "on the root of the next chord on beat one", the last one included.
       const bars = t12FullBars('exercise.walking-bass.c.blues.intro', 2);
+      const midi = (notes: T12Note[] | undefined, at: number): number => notes?.[at]?.midi ?? 0;
       return (
-        bars.length === 12 &&
+        bars.length === 13 &&
         bars.every(
           (notes) => notes.length === 4 && notes.every((note) => note.type === 'quarter'),
         ) &&
         bars.every((notes) => {
           const root = notes[0]?.midi ?? 0;
           return (notes[1]?.midi ?? 0) - root === 4 && (notes[2]?.midi ?? 0) - root === 7;
-        })
+        }) &&
+        bars.slice(0, 12).every((notes, bar) => midi(notes, 3) + 1 === midi(bars[bar + 1], 0)) &&
+        midi(bars[12], 3) - midi(bars[12], 0) === 12
       );
     },
   ],
@@ -1807,6 +1832,8 @@ describe('the 2026-09-19 lesson corrections, second-read and under test: the mus
 // can append its own without touching anything here. ES modules hoist their
 // imports, so this reads exactly as one at the top of the file would.
 import { mxlToMusicXml } from '../../src/score/mxl';
+// E57a (Entry 195): rock.7's Grieg row reads the tempo the way the app does.
+import { tempoEvents } from '../../src/score/tempoFromXml';
 
 /**
  * T12, second run: the batch-4 and batch-5 corrections second-read on
@@ -2382,16 +2409,22 @@ const T12B_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'technique.7',
-    'the thirds are fingered in the three-group cycle and the sixths are not',
+    // Revised by G30 (the old assumption: the thirds and sixths print the three-group cycle and 1-5/2-5/1-4).
+    // Their row's convention is the generator's own, so none is printed; the lesson gives it in words.
+    'the thirds and sixths print no finger, and the lesson gives their fingering as a common one, a starting point, not a rule',
     () => {
-      const pairs = (id: string): string[] =>
-        t12bGroups(id, id.endsWith('.left') ? 2 : 1)
-          .filter((group) => group.fingers.length === 2)
-          .map((group) => group.fingers.join('-'));
-      const thirds = pairs('exercise.double-third.c.1oct.right').slice(0, 6);
-      const sixths = pairs('exercise.double-sixth.c.1oct.right').slice(0, 4);
+      const ids = ['third', 'sixth'].flatMap((shape) =>
+        ['right', 'left'].map((hand) => `exercise.double-${shape}.c.1oct.${hand}`),
+      );
+      const groups = (id: string): T12bGroup[] => t12bGroups(id, id.endsWith('.left') ? 2 : 1);
+      const text = f0mText('technique.7');
       return (
-        thirds.join(' ') === '1-3 2-4 3-5 1-3 2-4 3-5' && sixths.join(' ') === '1-5 1-5 2-5 1-4'
+        ids.every((id) => t12Exercises('technique.7').includes(id)) &&
+        ids.every((id) => groups(id).some((group) => group.midis.length === 2)) &&
+        ids.every((id) => groups(id).every((group) => group.fingers.every((finger) => finger === null))) &&
+        text.includes('A common fingering: in thirds the three-group cycle, 1-3, 2-4, 3-5') &&
+        text.includes('None is printed: a starting point, not a rule.') &&
+        !text.includes('Both fingers are printed')
       );
     },
   ],
@@ -2553,18 +2586,30 @@ const T12B_MUSIC: [string, string, () => boolean][] = [
       }),
   ],
   [
+    // E57a (Entry 195): E57's converter keeps the upload's later tempo marks, so this copy no longer states one tempo;
+    // the sentence was corrected to say what it writes (docs/review/responses/ca8508ed.md §1, amended by
+    // questions-13e1b1a8.md), and the row reads it through the app's own tempo reader, the one the engine's map is
+    // placed from: the opening, the drop, then a rise that never falls and ends at 200.
     'rock.7',
-    'In the Hall of the Mountain King states one tempo, marks a crescendo in six different bars, and asks nowhere to speed up',
+    'In the Hall of the Mountain King marks a crescendo in six different bars, and this copy opens at quarter = 138, drops to 80, then rises toward 200, which the app follows',
     () => {
       const id = 'song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx';
       const words = t12bWords(id);
       const crescBars = new Set(
         words.filter((word) => /cresc/i.test(word.text)).map((word) => word.bar),
       );
+      const events = tempoEvents(t12Xml(id));
+      const bpms = events.map((event) => event.bpm);
+      const rise = bpms.slice(1);
       return (
-        t12Count(id, /<sound[^>]*tempo="/g) === 1 &&
         crescBars.size === 6 &&
-        !/accel|stretto|piu mosso|più mosso|rit\./i.test(t12Xml(id))
+        events[0]?.measure === 0 &&
+        events[0]?.offset === 0 &&
+        bpms[0] === 138 &&
+        bpms[1] === 80 &&
+        rise.length > 2 &&
+        rise.every((bpm, at) => at === 0 || bpm >= (rise[at - 1] ?? Infinity)) &&
+        rise[rise.length - 1] === 200
       );
     },
   ],
@@ -2684,21 +2729,6 @@ const T12B_MUSIC: [string, string, () => boolean][] = [
     () => {
       const songs = t12Songs('chords-pop.9');
       return songs.length === 6 && songs.every((id) => t12Notation(id).chordCount === 0);
-    },
-  ],
-  [
-    'chords-pop.9',
-    "Mr. Blue Sky and Le Festin carry the rung's two highest printed tempos, and Rolling Girl's is a default rather than a printed one",
-    () => {
-      const rows = t12Songs('chords-pop.9').map((id) => ({ id, ...t12bRow(id) }));
-      const ranked = [...rows].sort((a, b) => (b.tempoBpm ?? 0) - (a.tempoBpm ?? 0));
-      const rolling = rows.find((row) => row.id.includes('rolling-girl'));
-      return (
-        rows.length === 6 &&
-        (ranked[0]?.id ?? '').includes('mr-blue-sky') &&
-        (ranked[1]?.id ?? '').includes('le-festin') &&
-        (rolling?.tags ?? []).includes('tempo-defaulted')
-      );
     },
   ],
 ];
@@ -2826,6 +2856,44 @@ const JAZZ_6_MOVES: [string, number][] = [
   ['song.classical.royal-garden-blues.pdmx', 2],
   ['song.jazz.django-reinhardt-tiger-rag.pdmx', 3],
 ];
+/** The six tunes of 1917-1926 the repertoire paragraph names; Blue Bossa (G6b) is the seventh option. */
+const JAZZ_6_PERIOD = [...JAZZ_6_ONE_KEY, ...JAZZ_6_MOVES.map(([id]) => id)];
+const JAZZ_6_BLUE_BOSSA = 'song.jazz.kenny-dorham-blue-bossa.pdmx';
+/** Insensatez (BB2): an optional jazz.6 song for the decide-then-reveal question on bars 13 to 15. */
+const JAZZ_6_INSENSATEZ = 'song.folk.insensatez-how-insensitive-jobim.pdmx';
+/** The MusicXML 4.0 kind values the reveal names, as semitones above the root (the specification's table). */
+const JAZZ_6_KIND_INTERVALS: Record<string, number[]> = {
+  'half-diminished': [0, 3, 6, 10],
+  dominant: [0, 4, 7, 10],
+  'minor-seventh': [0, 3, 7, 10],
+};
+const JAZZ_6_STEP_PC: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+interface Jazz6Chord {
+  root: number;
+  kind: string;
+  degrees: { value: number; alter: number; type: string }[];
+}
+/** Each bar's <harmony> elements as root pitch class, kind value and degrees, read from the built score. */
+function jazz6Harmony(id: string): Map<string, Jazz6Chord[]> {
+  const out = new Map<string, Jazz6Chord[]>();
+  for (const measure of t12Xml(id).matchAll(/<measure\b[^>]*number="([^"]*)"[^>]*>([\s\S]*?)<\/measure>/g)) {
+    const chords: Jazz6Chord[] = [];
+    for (const found of (measure[2] ?? '').matchAll(/<harmony[\s\S]*?<\/harmony>/g)) {
+      const block = found[0] ?? '';
+      const step = /<root-step[^>]*>([A-G])<\/root-step>/.exec(block)?.[1] ?? '';
+      const alter = Number(/<root-alter>(-?\d+)<\/root-alter>/.exec(block)?.[1] ?? '0');
+      const kind = /<kind[^>]*>([^<]*)<\/kind>/.exec(block)?.[1]?.trim() ?? '';
+      const degrees = [...block.matchAll(/<degree[^>]*>([\s\S]*?)<\/degree>/g)].map((degree) => ({
+        value: Number(/<degree-value>(-?\d+)<\/degree-value>/.exec(degree[1] ?? '')?.[1] ?? Number.NaN),
+        alter: Number(/<degree-alter>(-?\d+)<\/degree-alter>/.exec(degree[1] ?? '')?.[1] ?? Number.NaN),
+        type: /<degree-type[^>]*>(\w+)<\/degree-type>/.exec(degree[1] ?? '')?.[1] ?? '',
+      }));
+      chords.push({ root: (((JAZZ_6_STEP_PC[step] ?? Number.NaN) + alter) % 12 + 12) % 12, kind, degrees });
+    }
+    out.set(measure[1] ?? '', chords);
+  }
+  return out;
+}
 const RAGTIME_8_LAST_DECADE = [
   'song.ragtime.joplin-gladiolus-rag',
   'song.ragtime.joplin-pine-apple-rag',
@@ -2881,13 +2949,15 @@ const T22_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'holiday.3',
-    "O Holy Night is in six-eight and its melody climbs higher than any other option's, to an F sharp above the treble staff",
+    // Wave 1(a) 1a.6 edit 13: the lesson said "above the treble staff"; F sharp 5 sits on the top
+    // line (F5), and the comment below said "a third above" it. Both corrected; the data check is unchanged.
+    "O Holy Night is in six-eight and its melody climbs higher than any other option's, to an F sharp on the top line of the treble staff",
     () => {
       const top = t22Top(HOLIDAY_3_HOLY_NIGHT);
       const others = t12Songs('holiday.3')
         .filter((id) => id !== HOLIDAY_3_HOLY_NIGHT)
         .map(t22Top);
-      // MIDI 78 is F sharp 5, a third above the top line of the treble staff.
+      // MIDI 78 is F sharp 5, on the top line of the treble staff (F5) with its sharp.
       return t12Notation(HOLIDAY_3_HOLY_NIGHT).times.includes('6/8') && top === 78 && others.every((other) => other < top);
     },
   ],
@@ -2906,12 +2976,70 @@ const T22_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'jazz.6',
-    'all six options are a single stave with chords printed above it',
+    // Revised (G6b): seven options, Blue Bossa placed last for A7b.1; the old row asked for six.
+    // Revised (BB2): Insensatez joined as an eighth song (the reviewer's mt1-g6b-pf1-landing.md section 5),
+    // and the lesson now says "every song here" rather than a count, so the row reads every song, not seven.
+    'every song option is a single stave with chords printed above it',
     () => {
       const songs = t12Songs('jazz.6');
       return (
-        songs.length === 6 &&
+        songs.length >= 8 &&
+        songs.includes(JAZZ_6_INSENSATEZ) &&
         songs.every((id) => t12Notation(id).staves === 1 && t12Notation(id).chordCount > 0)
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    // Revised (BB2): the old row pinned seven songs with Blue Bossa seventh; Insensatez now follows it.
+    'six of the songs are the 1917-1926 tunes, and Blue Bossa is in C minor with three flats throughout',
+    () => {
+      const songs = t12Songs('jazz.6');
+      const keys = t12Notation(JAZZ_6_BLUE_BOSSA).keys;
+      return (
+        songs.includes(JAZZ_6_BLUE_BOSSA) &&
+        JAZZ_6_PERIOD.every((id) => songs.includes(id)) &&
+        keys.length === 1 &&
+        keys[0]?.fifths === -3
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    // BB2: the reveal's harmony, read from the built score's own <harmony> elements (root, kind, degrees),
+    // as the intake record's claim checks read it with two independent readers on these identities
+    // (docs/prompts/runs/curriculum-review-2026-10-05/intake/QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6.md,
+    // the Insensatez lines). The shells are each chord's root, third and seventh from the MusicXML kind's
+    // intervals; the "a fifth above" relations are pitch-class arithmetic.
+    'Insensatez bars 13 to 15 print B half-diminished, E dominant seventh with an added flat ninth, and A minor seventh, under no key signature; B is a fifth above E and E a fifth above A; the shells are B-D-A, E-G♯-D and A-C-G',
+    () => {
+      const bars = jazz6Harmony(JAZZ_6_INSENSATEZ);
+      const keys = t12Notation(JAZZ_6_INSENSATEZ).keys;
+      const chords = ['13', '14', '15'].map((bar) => (bars.get(bar) ?? []).filter((one) => one.kind !== 'none'));
+      const [ii, v, i] = chords.map((list) => list[0]);
+      const shell = (one: (typeof chords)[number][number] | undefined): number[] => {
+        const intervals = JAZZ_6_KIND_INTERVALS[one?.kind ?? ''] ?? [];
+        return [intervals[0], intervals[1], intervals[3]].map((step) => ((one?.root ?? 0) + (step ?? 99)) % 12);
+      };
+      return (
+        chords.every((list) => list.length === 1) &&
+        (bars.get('13') ?? []).some((one) => one.kind === 'none') &&
+        ii?.root === 11 &&
+        ii.kind === 'half-diminished' &&
+        ii.degrees.length === 0 &&
+        v?.root === 4 &&
+        v.kind === 'dominant' &&
+        JSON.stringify(v.degrees) === JSON.stringify([{ value: 9, alter: -1, type: 'add' }]) &&
+        i?.root === 9 &&
+        i.kind === 'minor-seventh' &&
+        i.degrees.length === 0 &&
+        (ii.root - v.root + 12) % 12 === 7 &&
+        (v.root - i.root + 12) % 12 === 7 &&
+        JSON.stringify(shell(ii)) === JSON.stringify([11, 2, 9]) &&
+        JSON.stringify(shell(v)) === JSON.stringify([4, 8, 2]) &&
+        JSON.stringify(shell(i)) === JSON.stringify([9, 0, 7]) &&
+        keys.length === 1 &&
+        keys[0]?.fifths === 0
       );
     },
   ],
@@ -2924,9 +3052,14 @@ const T22_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'jazz.6',
-    "Darktown Strutters' Ball is the shortest of the six and Rose Room has the fewest chord symbols",
+    // Revised (G6b): of the six 1917-1926 tunes. Blue Bossa (32 bars, 24 symbols) is shorter and has
+    // fewer symbols than either, so the lesson now says "of the six" and the row reads those six.
+    "Darktown Strutters' Ball is the shortest of the six and Rose Room has the fewest chord symbols of the six",
     () => {
-      const rows = t12Songs('jazz.6').map((id) => ({ id, n: t12Notation(id) }));
+      const rows = t12Songs('jazz.6')
+        .filter((id) => JAZZ_6_PERIOD.includes(id))
+        .map((id) => ({ id, n: t12Notation(id) }));
+      if (rows.length !== 6) return false;
       const shortest = [...rows].sort((a, b) => a.n.bars - b.n.bars)[0];
       const fewest = [...rows].sort((a, b) => a.n.chordCount - b.n.chordCount)[0];
       return (
@@ -3203,39 +3336,41 @@ const F0_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'technique.7',
-    'the octave scale prints thumb and fifth on white keys and thumb and fourth on black keys in both hands, and the lesson calls it a common fingering, not a rule',
+    // Revised by G30 (the old assumption: the octave scale prints thumb and fifth, thumb and fourth). Its row's
+    // convention is the generator's own, so none is printed; the lesson names the fingering without "printed".
+    'the octave scale prints no finger, and the lesson gives thumb and fifth on white keys and thumb and fourth on black as a common fingering, not a rule',
     () => {
       const notes = t12Sounded('exercise.octave-scale.a.1oct.both');
-      const black = (midi: number | null): boolean => [1, 3, 6, 8, 10].includes((midi ?? 0) % 12);
-      const outer = notes.filter((note) => (note.staff === 1 ? note.chord : !note.chord));
-      const thumbs = notes.filter((note) => (note.staff === 1 ? !note.chord : note.chord));
       const text = f0mText('technique.7');
       return (
         t12Exercises('technique.7').includes('exercise.octave-scale.a.1oct.both') &&
-        outer.length > 0 &&
-        outer.some((note) => black(note.midi)) &&
-        outer.every((note) => note.finger === (black(note.midi) ? '4' : '5')) &&
-        thumbs.every((note) => note.finger === '1') &&
-        text.includes('is common, not a rule') &&
+        notes.some((note) => note.chord) &&
+        notes.every((note) => note.finger === null) &&
+        text.includes('The fingering, thumb and fifth on white keys and thumb and fourth on black ones in both hands, is common, not a rule') &&
+        !text.includes('The printed fingering') &&
         !text.includes('will not survive D flat')
       );
     },
   ],
   [
     'technique.5',
-    'the repeated-note exercises print 3-2-1 on this rung and 4-3-2-1 on the next, which is how the lesson now describes them',
+    // Revised by G30's fix-forward (`responses/09ec1337.md` §3; the old assumption: the files print 3-2-1 and
+    // 4-3-2-1 and the lesson says so). The order was the generator's own, so none is printed; the lesson asks for a
+    // change of finger on each strike and leaves the order to the learner.
+    'the repeated-note exercises print no finger, and the lesson asks for a change of finger on each strike in an order the learner chooses',
     () => {
-      const three = t12Line('exercise.repeated-notes.c.3x.left', 2).map((note) => note.finger);
-      const four = t12Line('exercise.repeated-notes.c.4x.left', 2).map((note) => note.finger);
+      const three = t12Line('exercise.repeated-notes.c.3x.left', 2);
+      const four = t12Line('exercise.repeated-notes.c.4x.left', 2);
       const text = f0mText('technique.5');
       return (
         t12Exercises('technique.5').includes('exercise.repeated-notes.c.3x.left') &&
         t12Exercises('technique.6').includes('exercise.repeated-notes.c.4x.left') &&
         three.length > 0 &&
-        three.join('') === '321'.repeat(three.length / 3) &&
         four.length > 0 &&
-        four.join('') === '4321'.repeat(four.length / 4) &&
-        text.includes('3-2-1 for three strikes here, 4-3-2-1 for four on the next technique rung') &&
+        [...three, ...four].every((note) => note.finger === null) &&
+        text.includes('Changing finger on each strike is one way to keep a fast repeated note even') &&
+        text.includes('No fingers are printed, and the order is yours to choose.') &&
+        !text.includes('3-2-1') &&
         !text.includes('always coming towards')
       );
     },
@@ -3415,4 +3550,406 @@ describe('F0a: practice.4 sends pain to a clinician without an invented cutoff',
       'Pain that does not settle, or any numbness or tingling, is a reason to see a doctor or a physiotherapist rather than to keep practising through it.',
     );
   });
+});
+
+// --- F1: the eleven F0 deferrals classed "F's voice rewrite" (2026-09-27) ----
+//
+// Eleven sentences stated as fact what nobody had counted: the most common
+// rhythm error there is, almost every beginner's problem, the first real piece
+// in the plan, the first sonatina most learners meet, no edition, almost every
+// heavy piano part, the most-used gesture in pop piano, the clearest example
+// in the library, most film music since 1960, ten minutes of music, the oldest
+// arranging trick there is. F0 (`docs/prompts/f0-disposition-85.md`, rows 5,
+// 14, 18, 29, 34, 41, 46, 63, 70, 85, 87) classed them as voice rather than
+// contested fact: the advice under each is sound and the absolute was
+// decoration. Each row holds one sentence: the uncounted absolute is gone from
+// the lesson and the rewritten words are there as written. The rewrites put no
+// count in the count's place (no "usually", "constantly" or "most" standing in
+// for "almost every") and turn none of them into a different fact. F0's row 46
+// holds two superlatives in chords-pop.5, so that lesson has two rows here.
+// The layer is a teacher's judgement for every one: nothing here is sourced,
+// and nothing has been heard.
+
+/** `[lesson, what the sentence now says, the absolutes that must be gone, the words that replace them]` */
+const F1_VOICE: [string, string, string[], string][] = [
+  [
+    '1.2',
+    'a rest is easy to let run long, with no ranking of rhythm errors',
+    ['most common rhythm error'],
+    'A rest is not a pause — it is a beat that happens to be silent, and it is easy to let it run long.',
+  ],
+  [
+    '2.2',
+    'when a rhythm goes wrong, check the subdivision first, with no count of beginners',
+    ['almost every rhythm problem', 'almost every fix'],
+    'When a rhythm goes wrong, check the subdivision first: count the "ands" out loud.',
+  ],
+  [
+    '3.4',
+    'the Petzold is named for its right hand above the staff, not ranked as the first real piece in the plan',
+    ['first real piece'],
+    'then the Petzold Minuet in G, whose right hand ranges well above the staff.',
+  ],
+  [
+    'classical.4',
+    'the Attwood is the one to start on, with no survey of what most learners meet',
+    ['most learners meet'],
+    "Attwood's Sonatina in G, the one to start on;",
+  ],
+  [
+    // Revised (F3a, T55): the reviewer's constraint on this paragraph
+    // (`docs/review/responses/a94baee.md` finding 2) asked for spelling to be
+    // told from pitch, and "runs out" read as though the flat names did not
+    // exist; the sentence now says the app's spelling and why, and the next
+    // one (F3A_SENTENCES) says the raised fourth can be written in every key.
+    'blues.4',
+    'the flat spellings get awkward, with no claim about every edition',
+    ['no edition prints'],
+    'The app spells it as a raised fourth, because the flat spelling gets awkward: the flattened fifth of F is C flat, of B flat is F flat, of E flat is B double flat.',
+  ],
+  [
+    'rock.4',
+    'heavy piano parts are built from this texture, with no count of them',
+    ['almost every heavy piano part'],
+    'This is the first rock texture under your hands, and one that heavy piano parts are built from: a shape with no third in it, and a figure that does not change.',
+  ],
+  [
+    'chords-pop.5',
+    'sus4 then the plain triad is a pop-piano gesture, not the most-used one',
+    ['most-used gesture'],
+    'Play sus4 then the plain triad and you have a pop-piano gesture.',
+  ],
+  [
+    'chords-pop.5',
+    'the add9 with the ninth tucked inside is one you will hear in modern ballad writing, not the one in most of it',
+    ['most modern ballad writing'],
+    'closer under the hand, and one you will hear in modern ballad writing.',
+  ],
+  [
+    'rock.6',
+    'the Prelude is here for weight placed rather than struck, with no ranking over the library',
+    ['clearest example'],
+    "Chopin's Prelude No. 20 is thirteen bars of block chords and is here for weight placed rather than struck — play it slowly and loudly and listen to the bottom of each chord.",
+  ],
+  [
+    'jazz.7',
+    'quartal colour turns up in film music, with no share of it and no date',
+    ['most film music', 'since 1960'],
+    'it is modal jazz, and it turns up in film music too.',
+  ],
+  [
+    'classical.9',
+    'minutes of music against months of work, with no single figure for pieces of very different lengths',
+    ['ten minutes'],
+    'These are pieces to live with — minutes of music, several months of work, and a result that keeps changing for years afterwards.',
+  ],
+  [
+    'chords-pop.9',
+    'the intro trick is given as advice, with no claim to be the oldest',
+    ['oldest arranging trick'],
+    'Steal the intro from the last eight bars. Whatever you do at the end, do a thinner version of it at the start, and the song sounds designed.',
+  ],
+];
+
+describe('F1: the voice rewrite — each sentence keeps its advice and drops the uncounted absolute', () => {
+  for (const [lesson, says, gone, now] of F1_VOICE) {
+    it(`${lesson}: ${says}`, () => {
+      const text = f0mText(lesson);
+      for (const phrase of gone) expect.soft(text.toLowerCase()).not.toContain(phrase.toLowerCase());
+      expect.soft(text).toContain(now);
+    });
+  }
+});
+
+// --- F3a: lesson sentences at their truth (Entry 157, 2026-09-29) ------------
+//
+// The backlog rows T34, T36, T37, T42, T44, T45 and T55 named sentences that
+// stated more certainty than their evidence carried: an unsourced causal
+// ranking (flat fingers "the main reason"), practice strategies given as laws
+// (five in a row, three clean then 5 %, "the only way"), an efficacy
+// superlative for interleaving, genre universals and an unsourced history for
+// the blues, Classical performance conventions as rules, an uncounted "most
+// pop piano", and "the oldest way … the one that most reliably" on the
+// ear-tune tip. Each row holds one sentence (or one run of sentences replaced
+// together): the words that stated the certainty are gone and the replacement
+// is there as written. The replacements say what the app does, what the page
+// shows, or a teacher's heuristic said as one ("a common starting point",
+// "one way", "often"); the advice, the activity and the check under each are
+// kept. The record (`docs/prompts/runs/F3a/sentences.md`) gives each one's
+// layer and evidence. The three sentences that contradicted the app (T52) are
+// in `lessonClaimsAboutApp.test.ts`, joined to the app's fact. Nothing here
+// has been heard; the musical ones are unverified as music.
+
+const F3A_TIPS = join(process.cwd(), '..', 'content', 'tips');
+
+/** A tip's body, read the way `f0mText` reads a lesson: front matter and emphasis marks dropped, whitespace flattened. */
+function f3aTip(kind: string): string {
+  return readFileSync(join(F3A_TIPS, `${kind}.md`), 'utf8')
+    .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
+    .replace(/\*/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+/**
+ * `[lesson, what the sentence now says, the words that must be gone, the words that replace them]`
+ * — F1_VOICE's shape. A lesson written `tips/<kind>` is a tip, read through `f3aTip`.
+ */
+const F3A_SENTENCES: [string, string, string[], string][] = [
+  [
+    '0.1',
+    // Wave 1(a) seam 1a.1 edit 4 (2026-10-05): the heuristic that replaced the ranking
+    // ("often makes it easier to play two notes at different volumes") had no source
+    // either, so the mistake is now named as a shape to reset, with no claim about control.
+    'T34: straight or collapsing fingers are a habit to reset, with no unsourced claim about control and no ranking',
+    ['the main reason', 'two notes at different volumes'],
+    'Fingers that lock straight, or a hand that collapses at the knuckles. If that happens, stop, let the hand hang by your side again, and start from that shape.',
+  ],
+  [
+    '1.1',
+    "T34: one finger for each key is C position's own rule, kept by these tunes, not a fact about piano fingering",
+    ['exactly one finger', 'no other finger is allowed'],
+    'C position has a rule of its own, and these tunes keep it: one finger for each key, and no other finger on it.',
+  ],
+  [
+    '1.1',
+    "T34: printed fingering is the edition's advice, and here it is what keeps the hand still",
+    ['it is not a suggestion', 'it is the reason the hand stays still'],
+    "Where fingering is printed above the notes, it is the edition's advice; here, following it is what keeps the hand still.",
+  ],
+  [
+    'practice.1',
+    'T36: several right in a row, with five as one target and a mistake restarting the count, not a recipe of five',
+    ['five times correct in a row', 'wrong at four'],
+    'Then play it again, until it comes out right several times in a row — five is one target to set yourself, with a mistake starting the count again. Not as a punishment: "usually right" is what tends to fall apart at tempo.',
+  ],
+  [
+    'practice.1',
+    'T36: the check is the target the learner set, not five times running',
+    ['five times running'],
+    'You can play the chunk right as many times running as you set out to, starting cold, and join it to the bar on either side.',
+  ],
+  [
+    'practice.2',
+    'T36: about half the speed is a common starting point, not what slow usually is',
+    ['usually about half'],
+    'and notice what you are doing — about half the speed that feels sensible is a common starting point.',
+  ],
+  [
+    'practice.2',
+    'T36: slow practice gives time to be accurate on purpose, not the only tempo that does',
+    ['cannot correct anything', 'the only tempo at which'],
+    'At speed a wrong note is often gone before you know it was wrong. Slowly, there is time to be accurate on purpose rather than by luck, and accuracy is what you want to repeat.',
+  ],
+  [
+    'practice.2',
+    'T36: slow practice makes tension easier to notice, not the only way to',
+    ['the only way to notice tension'],
+    'Slow practice also makes tension easier to notice.',
+  ],
+  [
+    'practice.2',
+    'T36: three clean then a small notch, back after a mistake, is one way to climb, not the rule',
+    ['three clean repetitions, then up one notch', 'one mistake and you go back'],
+    'One way to climb from there: after a few clean repetitions, say three, go up one small notch, around 5 % rather than 20; after a mistake, go back a notch and stay there until it is clean again.',
+  ],
+  [
+    'practice.2',
+    'T36: the ladder avoids grinding at a tempo you cannot hold, with no claim that it is faster than the alternative',
+    ['much faster than the alternative'],
+    'It can feel slow; the point is not to spend a week grinding at a tempo you cannot hold.',
+  ],
+  [
+    'practice.2',
+    'T36: the Tools paragraph points back at the ladder, no longer called a rule, and still says every three',
+    ['the rule above made quicker'],
+    'That is the ladder above made quicker: it moves after every pass rather than every three',
+  ],
+  [
+    'practice.3',
+    'T37: forty minutes on one thing may not be the best use of the time, and some of the climb can be gone by tomorrow',
+    ['least efficient', 'most of that climb is gone'],
+    'Practising one thing for forty minutes feels productive, but it may not be the best use of the time. Within a session, performance on the thing you are drilling can climb steadily — and some of that climb can be gone by tomorrow.',
+  ],
+  [
+    'practice.3',
+    'T37: interleaving can help what is kept and what carries over, with no efficacy superlative and no only timescale',
+    ['markedly better retention', 'the only timescale that matters'],
+    'It can still help what you keep a week later, and what carries over to other music.',
+  ],
+  [
+    'practice.3',
+    'T36: the session is one way to shape one, with a few minutes of warm-up rather than five',
+    ['what a session looks like.', 'warm up — five minutes'],
+    'One way to shape a session. Warm up for a few minutes, slowly, on something you know.',
+  ],
+  [
+    'practice.5',
+    'T36: three causes worth checking, not a plateau almost always one of three',
+    ['almost always one of three'],
+    'A plateau can have more than one cause; three worth checking are below, and the useful response is to work out which one you are in.',
+  ],
+  [
+    'practice.5',
+    'T36: rebuilding can take a while, with no week and no only thing that works',
+    ['it takes a week', 'the only thing that works'],
+    'Rebuilding can take a while, so give it more than one session.',
+  ],
+  [
+    'practice.5',
+    'T36: the diagnosis is a rough guide, not a rule',
+    ['if the mistakes move around, it is one', 'it is usually three'],
+    'Which one is it. A rough guide rather than a test: mistakes that move around suggest one; the same mistake in the same place each time suggests two; no mistakes, and still no faster, suggests three.',
+  ],
+  [
+    'blues.4',
+    'T42: the seventh on the I is colour here, heard as home, with no claim about every other style or a tension that never resolves',
+    ['in every other style', 'the tension never resolves', 'which is the point'],
+    'Here the seventh on the I is part of its colour rather than a pull towards another chord: listen to it as home.',
+  ],
+  [
+    'blues.4',
+    'T55: the raised fourth can be written in every key, a few with a double sharp, and no key is said to lack it',
+    ['runs out', 'a raised fourth works in every key'],
+    'A raised fourth can be written in every key, a few with a double sharp.',
+  ],
+  [
+    'blues.5',
+    'T42: leave the space the call and response asks for, with no claim that the blues is mostly space',
+    ['the blues is mostly space'],
+    'Filling every bar. Leave the space the call and response above asks for.',
+  ],
+  [
+    'blues.6',
+    'T42: the pattern carries Smith’s name, with no recording date and no claim about every boogie bass since',
+    ['every boogie bass since', 'recorded it in 1928'],
+    'the shape is easy and the shift is not. The pattern is named after Clarence "Pinetop" Smith.',
+  ],
+  [
+    'blues.8',
+    'T42: the piece is named with the date its catalogue row carries, not as the record every boogie bass copies',
+    ['every boogie bass since', 'the 1928 original'],
+    "Pinetop's Boogie Woogie (1928) is the same file you met at Stage 6.",
+  ],
+  [
+    'classical.3',
+    'T44: stepwise legato and detached leaps are a common starting point for an articulation the lesson already calls your decision, not the convention that works',
+    ['the convention that works'],
+    'One common starting point: stepwise notes legato, leaps detached, and long notes slightly separated from what follows.',
+  ],
+  [
+    'classical.4.shelf',
+    'T44: the three skills are the ones this lesson picks for these pieces, not what Romantic writing asks for',
+    ['what romantic piano writing asks for'],
+    'The three skills below are the ones this lesson picks out for these pieces, and this stage of the classical ladder is here to start them.',
+  ],
+  [
+    'classical.4.shelf',
+    'T44: pedal where the page marks it or you add it, and a late change blurs, with no constant pedal and no beautiful-or-muddy',
+    ['applied constantly', 'the difference between beautiful and muddy'],
+    "Stage 3's legato pedalling, changed with the harmony, used where the page marks it or where you choose to add it. A change that comes late lets one harmony blur into the next, so listen for it.",
+  ],
+  [
+    'classical.5',
+    'T44: the upper-note start is what a Classical-period trill often does, with its exception, not a rule of the style',
+    ['a trill in classical style starts'],
+    'A trill in Classical-period music often starts on the upper note and finishes on the main one, unless the melody has just come from above.',
+  ],
+  [
+    'classical.5',
+    "T44: a trill in a piece is a sign to work out, with no rule to memorise and no claim that this rung's pieces carry one",
+    ['memorise the rule', 'here the ornaments arrive inside the pieces'],
+    'The written-out drills are on the technique track; in a piece it is a sign, the harder way round — and the reason to settle a starting point now.',
+  ],
+  [
+    'classical.5',
+    'T44: neither score marks pedal, so pedalling them is a choice, not what they want',
+    ['both want the pedal', 'for warmth'],
+    "Neither Schumann's First Loss nor Tchaikovsky's Old French Song marks pedal here, so it is your choice; legato pedalling is the technique.",
+  ],
+  [
+    'classical.6',
+    'T44: the melody often sits on top of the right hand, and singing over a quieter accompaniment is a starting point, not a fixed dynamic',
+    ['usually holds', 'turns to mush'],
+    'In a Romantic miniature the right hand often holds a melody in the top note and an accompaniment underneath it, in the same hand. Played at one volume, the tune can get lost; a common starting point is a melody that sings over a quieter accompaniment.',
+  ],
+  [
+    'classical.6',
+    'T44: the metronome tests the kind of rubato the lesson describes, not every rubato',
+    ['rubato survives a metronome'],
+    'The test for this kind of rubato: play with the metronome on. The accompaniment still lands with the click; with hesitation, it does not.',
+  ],
+  [
+    'technique.6',
+    'T44: the written-out trill is one common Classical way, not the Classical convention',
+    ['the classical convention rather than a house rule'],
+    'That is one common way to play a trill in Classical-period music, not the only one, and having it in the fingers saves working it out over a sonatina later.',
+  ],
+  [
+    'chords-pop.7',
+    'T45: add9 is a sound you will hear in pop piano, not the sound of most of it',
+    ['the sound of most pop piano'],
+    'It is a sound you will hear in pop piano, and it is not a ninth chord',
+  ],
+  [
+    'tips/ear-tune',
+    'T55: working by ear puts the ear first, with no oldest way and no most reliably',
+    ['oldest way to learn music', 'most reliably'],
+    'It puts your ear first: you have to hear a note before you can find it, and that is practice at hearing what you play.',
+  ],
+];
+
+describe('F3a: each audited sentence says what the app does, what the page shows, or a heuristic said as one', () => {
+  for (const [lesson, says, gone, now] of F3A_SENTENCES) {
+    it(`${lesson}: ${says}`, () => {
+      const text = lesson.startsWith('tips/') ? f3aTip(lesson.slice('tips/'.length)) : f0mText(lesson);
+      for (const phrase of gone) expect.soft(text.toLowerCase()).not.toContain(phrase.toLowerCase());
+      expect.soft(text).toContain(now);
+    });
+  }
+});
+
+// --- CL01: lesson truth, T4 and T47 (Entry 189, 2026-09-30) -----------------
+//
+// Two sentences stated a guarantee wider than their evidence. improv.3 said
+// "Nothing you play can be wrong" over a loop whose next paragraphs treat
+// rhythm and silence as things a player can get wrong; what the setup does
+// guarantee is about pitch. Over C, F and G, each of the five C-position notes
+// (C D E F G) is a chord tone or a step from one: fifteen note-and-chord
+// pairs, each worked. ragtime.9 said memory laid down fast "has the errors in
+// it, and those never come out": a practice heuristic stated as permanence.
+// Both replacements are the reviewer's decided text, verbatim
+// (`docs/review/responses/questions-e71ef3ad.md` §CL01). ragtime.9's row holds
+// the heading sentence "Memorising at full tempo." with it, because the advice
+// reads through that heading. improv.8:15 ("Every dominant chord can become
+// the dominant a tritone away") was read and kept: a dominant seventh's third
+// and seventh are the seventh and third of the dominant seventh a tritone
+// away, for all twelve, so the "every" is justified. improv.4:14–17 was read
+// and kept as already hedged (F0's rewrite). The layers: improv.3 is the
+// worked arithmetic plus a teacher's scoping; ragtime.9 is a teacher's
+// heuristic said as one, with no source. Nothing here has been heard.
+
+/** `[lesson, what the sentence now says, the words that must be gone, the words that replace them]` — F1_VOICE's shape. */
+const CL01_SENTENCES: [string, string, string[], string][] = [
+  [
+    'improv.3',
+    'T4, T47: any of the five notes can work for pitch, each a chord tone or a step from one over each chord, with no claim that nothing played can be wrong',
+    ['nothing you play can be wrong', 'all five notes belong to all three chords'],
+    'For pitch, any of these five notes can work here: over each of the three chords, each note is either a chord tone or a step from one.',
+  ],
+  [
+    'ragtime.9',
+    'T4: mistakes memorised at full tempo can be hard to unlearn, with no claim that fast memory holds the errors or that they never come out',
+    ['never come out', 'memory laid down fast has the errors in it'],
+    'Common mistake. Memorising at full tempo. If you memorise mistakes at full tempo, they can be hard to unlearn.',
+  ],
+];
+
+describe('CL01: each sentence keeps its advice and states only what its evidence carries', () => {
+  for (const [lesson, says, gone, now] of CL01_SENTENCES) {
+    it(`${lesson}: ${says}`, () => {
+      const text = f0mText(lesson);
+      for (const phrase of gone) expect.soft(text.toLowerCase()).not.toContain(phrase.toLowerCase());
+      expect.soft(text).toContain(now);
+    });
+  }
 });
