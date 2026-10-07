@@ -1017,14 +1017,12 @@ class TheReviewerClosureGuard(unittest.TestCase):
         problems, _ = self.scan()
         self.assertTrue(any("must remain exactly 1 unique" in message for _path, message in problems), problems)
 
-    def test_the_real_review_stream_has_seven_open_requirements_and_no_guard_failure(self):
+    def test_the_real_review_stream_has_five_open_requirements_and_no_guard_failure(self):
         problems, opened = cc.review_closure_guard.scan(ROOT)
         self.assertEqual(problems, [])
         self.assertEqual(
             {r.ident for r in opened},
             {
-                "PH2-source-measure-direct",
-                "PH2-position-preserving-fallback",
                 "A7a3-minor-blues-source",
                 "A7a1-bluesriff-restaff",
                 "PF1-authored-hand-proof",
