@@ -83,6 +83,17 @@ A green test suite does not rescue a chain that teaches the wrong thing or overc
 
 Use `MODE-SHEET.md` literally for evidence boundaries: Wait, Keep tempo, Hear/Listen, Simon, Lab, Jam, Duet, Free Play, Rhythm only, charts, loops, ladders, etc. have different teaching and measurement semantics. Never turn an available UI mode into evidence it does not provide.
 
+### Audience boundary and acceptance
+
+A learner- or owner-facing artifact is not correct merely because it mirrors the implementation. Review it as the intended person encounters it, without repository or architecture knowledge.
+
+- **Automate objective behavior.** Playwright/unit/content checks establish anything they reasonably can; the owner is not a substitute test harness. A manual device check is only for genuinely device-specific, hardware-dependent or subjective behavior, and must say why automation cannot establish it.
+- **Cold-start human instructions.** Owner walks and learner directions use current UI labels, plain language, one concrete action and one observable result. Repo paths, chain/station ids, unexplained mode shorthand, hidden preconditions, or “read this other internal file first” fail the audience boundary.
+- **Test what the person sees.** User-journey acceptance prefers visible navigation, controls, feedback and state over hidden hooks/internal state. Internal assertions may supplement the user path, never replace it.
+- **Make recovery actionable.** Error/failure/recovery copy must tell the learner or owner the next useful action, not merely name an internal condition.
+- **Check translation drift.** Instructions, lesson copy and tests must use the labels and navigation the current build actually exposes; technically true but stale or mismatched wording is a defect.
+- **Review the acceptance artifact itself.** If the intended person could not perform it cold, block or rewrite it rather than passing interpretation work downstream. An automatable claim may not gate `shipped` behind an owner phone walk.
+
 ## 6. Generated content and musical claims
 
 Generated content is first-class. Real music is not automatically superior. Review by **learner job**:
