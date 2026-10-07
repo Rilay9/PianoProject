@@ -25,6 +25,13 @@ reading is established wrong, with the method, date and evidence (`proof`). It h
 was established on: `identity` is that file's identity as the catalogue records it (`provenance.identity`,
 the sha256 of the built bytes). A row whose identity is not the file's current one is **stale** and refused.
 `stale` is derived, never authored; `rungs` is null on a hand row.
+
+**A row may confirm as well as override (PF5, `PF1-authored-hand-proof`).** The row states what the hand is, not
+that the model got it wrong: where its hand is the one the compatibility reading already gives, it changes no note
+and the build measures nothing differently, and it is the proof that the hand of a two-staff file (an authored
+control's right-hand chords and left-hand bass, say) is a fact rather than a guess that happened to be right. The
+chain preflight's hand-reading class counts a current row for every staff and voice that sounds a note in the bars
+a step plays (`tools/content/preflight_chains.py`, `score_voices`); the printed staves alone are never counted.
 """
 from __future__ import annotations
 

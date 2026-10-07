@@ -187,6 +187,36 @@
           "declaredHand": "left"
         }
       }
+    },
+    {
+      "item": "exercise.blues.twelve-bar-shuffle.c",
+      "identity": { "kind": "file", "sha256": "fe0a75dddbea64cacab84f3d6ecd4072f84351f3cf0ec7f73d7f74cb404df4cf" },
+      "bars": [1, 12],
+      "staff": 1,
+      "voice": 1,
+      "kind": "hand",
+      "fact": "R",
+      "rungs": null,
+      "proof": {
+        "method": "notation: the model dump of the built file (docs/prompts/runs/PF1/evidence/hand-dump-shuffle-c.txt, from hand-dump.probe.ts) reads staff 1 voice 1 as the right hand in every printed bar 1-12, under the compatibility default and with this row applied alike, so the row confirms the default reading rather than overriding it; the builder writes it as the PartStaff \"RH\" (treble clef, the half-note seventh chords) (tools/content/blues_forms.py build_twelve_bar). Ruled by the reviewer (PF1-authored-hand-proof). Nothing heard.",
+        "date": "2026-10-07",
+        "evidence": "docs/prompts/runs/PF1/evidence/hand-dump-shuffle-c.txt; docs/review/responses/a7a-lanes-landing.md §10"
+      }
+    },
+    {
+      "item": "exercise.blues.twelve-bar-shuffle.c",
+      "identity": { "kind": "file", "sha256": "fe0a75dddbea64cacab84f3d6ecd4072f84351f3cf0ec7f73d7f74cb404df4cf" },
+      "bars": [1, 12],
+      "staff": 2,
+      "voice": 2,
+      "kind": "hand",
+      "fact": "L",
+      "rungs": null,
+      "proof": {
+        "method": "notation: the model dump of the built file (docs/prompts/runs/PF1/evidence/hand-dump-shuffle-c.txt, from hand-dump.probe.ts) reads staff 2 voice 2 as the left hand in every printed bar 1-12, under the compatibility default and with this row applied alike, so the row confirms the default reading rather than overriding it; the builder writes it as the PartStaff \"LH\" (bass clef, the eighth-note root-fifth-sixth-fifth figure) (tools/content/blues_forms.py build_twelve_bar). Ruled by the reviewer (PF1-authored-hand-proof). Nothing heard.",
+        "date": "2026-10-07",
+        "evidence": "docs/prompts/runs/PF1/evidence/hand-dump-shuffle-c.txt; docs/review/responses/a7a-lanes-landing.md §10"
+      }
     }
   ]
 }

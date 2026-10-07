@@ -18,6 +18,8 @@
  * catalogue records it (`provenance.identity`, the build's sha256 of the bytes it ships beside the row). A
  * row whose identity is not the item's current one is **stale** and refused, so an edition or file change
  * never carries a hand silently. `stale` is derived here, never authored; `rungs` is null on a hand row.
+ * A row may also confirm: its hand is then the one the compatibility reading already gives, it changes no note
+ * here, and the build's chain preflight counts it as the proof that a two-staff file's hand is a fact (PF5).
  *
  * **Overlaps.** The extractor takes the first row that matches a note, so two current rows that cover the
  * same printed bar on the same staff and voice of one item and disagree would let the file's order choose

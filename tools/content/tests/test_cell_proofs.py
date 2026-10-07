@@ -226,7 +226,7 @@ class TheVerifiedPassageFact(unittest.TestCase):
 
         rows = verified_facts.load()
         hands = verified_hand.read_hand_facts()
-        self.assertEqual(len(hands), 5, "HD2's five hand rows")
+        self.assertEqual(len(hands), 7, "HD2's five hand rows and PF5's two confirming rows for the C shuffle")
         self.assertEqual([r for r in rows if r["kind"] == "hand"], hands)
         self.assertEqual(verified_hand.read_hand_facts(), [r for r in rows if r["kind"] == "hand"],
                          "the hand reader reads no demand row")

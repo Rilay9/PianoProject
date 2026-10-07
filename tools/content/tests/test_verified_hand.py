@@ -43,8 +43,10 @@ def hand_row(**over) -> dict:
 class TestTheHandRules(unittest.TestCase):
     def test_the_committed_store_reads(self) -> None:
         rows = VF.read_hand_facts()
-        self.assertEqual(len(rows), 5)
-        self.assertEqual({r["item"] for r in rows}, {"song.jazz.the-crave", "song.ragtime.joplin-solace"})
+        # HD2's five overriding rows, and PF5's two confirming rows for the C shuffle (the authored control's two lines).
+        self.assertEqual(len(rows), 7)
+        self.assertEqual({r["item"] for r in rows},
+                         {"song.jazz.the-crave", "song.ragtime.joplin-solace", "exercise.blues.twelve-bar-shuffle.c"})
 
     def test_a_malformed_hand_row_is_refused_naming_it(self) -> None:
         bad = {

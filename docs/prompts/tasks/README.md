@@ -352,6 +352,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **HB1** | A runs requirement may declare `hands: both`; rung completion then counts only runs whose recorded hands were both (a Duet run is not special-cased); no stage file carries the field yet; every existing rung reads the same (`HB1-hands-both-requirement.md`) | app + schema + test | landed 2026-10-07 (`HB1-hands-both-requirement.md`); Entry 279
 | **PF4** | The preflight's class 4 reads `hands: both` on a runs requirement and fails a counted step that plays one hand (keyed on the hands played: the app-plays-the-other-hand scaffold, a named hand without both-hands wording, or a one-hand item), and an update claiming a one-hand run counts; every record reads the same (`PF4-preflight-hands.md`) | tooling + test | landed 2026-10-07 (`PF4-preflight-hands.md`); Entry 280
 | **PH2** | The Chord chart's grid, Comp, Bass + drums and live cell read positioned harmony from source measures; every chord shown at its start, a leader line tying each symbol to its place where boxes do not fit, the chart refusing with a stated reason where no positional layout fits the screen; one-chord charts unchanged (`PH2-chart-positioned-harmony.md`) | app + test | landed 2026-10-07 (`PH2-chart-positioned-harmony.md`); Entry 281
+| **PF5** | Class 1 counts a two-staff bar as covered when every sounding staff and voice has a current `hand` row holding it (staves alone never); two confirming rows for the C shuffle bars 1-12; A7a.1's shuffle steps pass (`PF5-authored-hand-proof.md`) | tooling + content facts + test | landed 2026-10-07 (`PF5-authored-hand-proof.md`); Entry 282
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -569,6 +570,7 @@ AID1 · landed · 278
 HB1 · landed · 279
 PF4 · landed · 280
 PH2 · landed · 281
+PF5 · landed · 282
 F0a · closed · —
 L120 · approved · —
 -->

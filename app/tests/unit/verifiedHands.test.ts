@@ -172,7 +172,8 @@ describe('the established passages: the treble inner line is the right hand’s 
 describe('the hand rows themselves', () => {
   it('are current against the shipped catalogue, on two-staff items, and each reaches notes on one printed bar', async () => {
     installTextMeasurer();
-    expect(HAND_FACTS.length).toBe(5);
+    // HD2's five overriding rows, and PF5's two confirming rows for the C shuffle (its two lines, bars 1-12).
+    expect(HAND_FACTS.length).toBe(7);
     for (const fact of HAND_FACTS) {
       const item = row(fact.item);
       expect(handFactsFor(item).every((f) => !f.stale), `${fact.item} bars ${String(fact.bars)}: the file changed; verify the passage again`).toBe(true);

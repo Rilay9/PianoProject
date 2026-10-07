@@ -335,6 +335,183 @@ class Class1HandReading(unittest.TestCase):
         self.assertEqual(verdicts(results, 1)[1], pf.NA)
 
 
+#: PF5 (the reviewer's ruling ``docs/review/responses/a7a-lanes-landing.md`` section 10, ``PF1-authored-hand-proof``):
+#: an authored two-staff control, such as the C shuffle, is not trusted for having two staves. Its hands are proved by
+#: current ``hand`` rows (HD2) that confirm (or override) the model's reading for every staff and voice that sounds a
+#: note in the bars used. The authored file here: four bars, the right hand's whole notes on staff 1 voice 1 and the
+#: left hand's on staff 2 voice 2 (the shape the shuffle's built file has, ``docs/prompts/runs/A7a1/shuffle_read.out``).
+AUTH = "exercise.auth.two"
+AUTH_SHA = "9" * 64
+
+
+def auth_xml(bars: int = 4, lh_voice: int = 2) -> str:
+    body = []
+    for n in range(1, bars + 1):
+        head = ('<attributes><divisions>1</divisions><time><beats>4</beats><beat-type>4</beat-type></time><staves>2</staves>'
+                '<clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef>'
+                '</attributes>') if n == 1 else ""
+        body.append(f'<measure number="{n}">{head}'
+                    '<note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><voice>1</voice>'
+                    '<type>whole</type><staff>1</staff></note><backup><duration>4</duration></backup>'
+                    f'<note><pitch><step>C</step><octave>2</octave></pitch><duration>4</duration><voice>{lh_voice}</voice>'
+                    '<type>whole</type><staff>2</staff></note></measure>')
+    return ('<?xml version="1.0" encoding="UTF-8"?><score-partwise version="3.1"><part-list><score-part id="P1">'
+            '<part-name>Piano</part-name></score-part></part-list><part id="P1">' + "".join(body) + "</part></score-partwise>")
+
+
+def auth_row() -> dict:
+    return {"id": AUTH, "title": "An authored two-staff control", "type": "exercise", "hands": "both",
+            "file": "scores/auth.musicxml", "tempoBpm": 88.0, "notation": {"bars": 4, "staves": 2, "chordCount": 4},
+            "measurement": {"status": "measured", "span": {"R": [60, 60], "L": [36, 36]}},
+            "provenance": {"identity": {"kind": "file", "sha256": AUTH_SHA},
+                           "facts": {"hands": {"kind": "authored", "via": "this repository's score"}}}}
+
+
+def hand_fact(staff: int, voice: int, hand: str, first: int = 1, last: int = 4, *, identity: str = AUTH_SHA,
+              item: str = AUTH) -> dict:
+    return {"item": item, "identity": {"kind": "file", "sha256": identity}, "bars": [first, last], "staff": staff,
+            "voice": voice, "kind": "hand", "fact": hand, "rungs": None,
+            "proof": {"method": "notation: the model dump of the built file", "date": "2026-10-07", "evidence": "e"}}
+
+
+def confirming_pair(first: int = 1, last: int = 4, **kw) -> list[dict]:
+    """The authored mapping stated as facts: the upper line (staff 1, voice 1) as R, the lower (staff 2, voice 2) as L."""
+    return [hand_fact(1, 1, "R", first, last, **kw), hand_fact(2, 2, "L", first, last, **kw)]
+
+
+class Class1AuthoredHandProof(unittest.TestCase):
+    """PF5: class 1 learns authored two-staff controls through current ``hand`` rows, and never through the staves."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.dir = SCRATCH / "class1auth"
+        shutil.rmtree(cls.dir, ignore_errors=True)
+        (cls.dir / "scores").mkdir(parents=True)
+        (cls.dir / "scores" / "auth.musicxml").write_text(auth_xml(), encoding="utf-8")
+
+    def verdict(self, facts: list[dict], action: str = "Plays the left hand of the control.", bars: str = "",
+                content: Path | None = None) -> tuple[str, str]:
+        ctx = context(content=content or self.dir, rows=catalog() + [auth_row()], facts=facts)
+        rec = {"steps": [step("Keep tempo", "piece", AUTH + bars, action)]}
+        (result,) = pf.check_hand_reading(rec, ctx)
+        return result.verdict, " | ".join(result.evidence)
+
+    def test_confirming_facts_for_every_staff_and_voice_pass_the_whole_item(self):
+        verdict, said = self.verdict(confirming_pair())
+        self.assertEqual(verdict, pf.PASS, said)
+        self.assertIn("current hand fact", said)
+        self.assertIn("staff 2 voice 2 read as L on bars 1-4", said)
+
+    def test_the_same_facts_pass_a_passage_inside_their_bars_and_either_hand(self):
+        for hand in ("left", "right"):
+            verdict, said = self.verdict(confirming_pair(), f"Plays the {hand} hand of the control, bars 2 to 3.", "@bars=2-3")
+            self.assertEqual(verdict, pf.PASS, said)
+
+    def test_broken_two_staves_alone_never_pass(self):
+        # The row is authored, both hands, two staves, and the model reads L and R: none of it is a fact.
+        verdict, said = self.verdict([])
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("no current verified fact covers bars 1-4", said)
+        self.assertIn("staff 1 voice 1", said)
+
+    def test_broken_a_stale_fact_for_another_identity_covers_nothing(self):
+        facts = confirming_pair(identity="e" * 64)
+        verdict, said = self.verdict(facts)
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("hand fact", said)
+        self.assertIn("stale: the file identity changed since it was proved", said)
+
+    def test_broken_a_fact_short_of_the_bars_used_fails_on_the_rest(self):
+        verdict, said = self.verdict(confirming_pair(1, 3))
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("no current verified fact covers bars 4", said)
+
+    def test_broken_a_fact_for_other_bars_covers_nothing_here(self):
+        verdict, said = self.verdict(confirming_pair(5, 8))
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("no current verified fact covers bars 1-4", said)
+
+    def test_broken_a_fact_for_a_staff_and_voice_the_file_does_not_sound_covers_nothing(self):
+        facts = [hand_fact(1, 1, "R"), hand_fact(2, 1, "L")]  # the left hand is staff 2 voice 2
+        verdict, said = self.verdict(facts)
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("staff 2 voice 2 has no current hand fact", said)
+
+    def test_broken_a_fact_for_the_right_voice_on_the_wrong_staff_covers_nothing(self):
+        facts = [hand_fact(1, 1, "R"), hand_fact(1, 2, "L")]  # voice 2 is sounded on staff 2, not staff 1
+        verdict, said = self.verdict(facts)
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("staff 2 voice 2 has no current hand fact", said)
+
+    def test_broken_a_fact_for_one_voice_of_a_bar_leaves_the_other_voice_unproved(self):
+        verdict, said = self.verdict([hand_fact(2, 2, "L")])  # a left-hand step, but the right hand's voice is unproved
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("staff 1 voice 1 has no current hand fact", said)
+
+    def test_broken_another_items_facts_cover_nothing(self):
+        verdict, said = self.verdict(confirming_pair(item="exercise.other"))
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("no current verified fact covers bars 1-4", said)
+
+    def test_broken_two_facts_that_disagree_fail_naming_both(self):
+        facts = confirming_pair() + [hand_fact(2, 2, "R", 2, 3)]
+        verdict, said = self.verdict(facts)
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("staff 2 voice 2 bars 2-3 are L in one and R in the other", said)
+
+    def test_broken_a_step_playing_a_hand_the_facts_do_not_establish_fails(self):
+        facts = [hand_fact(1, 1, "L"), hand_fact(2, 2, "L")]  # both lines stated as the left hand
+        verdict, said = self.verdict(facts, "Plays the right hand of the control.")
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("the proofs establish ['L'] only", said)
+
+    def test_broken_a_malformed_hand_row_covers_nothing(self):
+        bad = hand_fact(2, 2, "L")
+        bad["voice"] = None
+        verdict, said = self.verdict([hand_fact(1, 1, "R"), bad])
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("`voice` must be a voice number", said)
+
+    def test_broken_a_file_whose_voices_cannot_be_read_gets_no_coverage(self):
+        verdict, said = self.verdict(confirming_pair(), content=SCRATCH / "class1auth-nowhere")
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("is not there", said)
+
+    def test_a_fact_that_overrides_the_default_reading_counts_the_same_way(self):
+        # HD2's own case (The Crave's inner line): the row says what the hand is, whether or not the model agrees.
+        facts = [hand_fact(1, 1, "R"), hand_fact(2, 2, "L")]
+        self.assertEqual(self.verdict(facts)[0], pf.PASS)
+
+    def test_broken_another_items_passage_proof_does_not_stand_in_for_this_items_bars(self):
+        self.assertEqual(self.verdict(confirming_pair(3, 4) + [demand_row(1, 2)])[0], pf.FAIL)
+
+    def test_a_passage_proof_and_hand_facts_cover_different_bars_of_one_passage(self):
+        proof = {**demand_row(1, 2, identity=AUTH_SHA), "item": AUTH}
+        verdict, said = self.verdict(confirming_pair(3, 4) + [proof], "Plays the right hand of the control.")
+        self.assertEqual(verdict, pf.PASS, said)
+        self.assertIn("current passage proof", said)
+        self.assertIn("current hand fact", said)
+
+    def test_the_reader_names_staff_and_voice_per_printed_bar(self):
+        got, why = pf.score_voices(self.dir / "scores" / "auth.musicxml")
+        self.assertEqual(why, "")
+        self.assertEqual(got, {n: {(1, 1), (2, 2)} for n in (1, 2, 3, 4)})
+
+    def test_the_reader_reads_a_compressed_file_and_refuses_what_it_cannot_read(self):
+        import zipfile
+
+        path = self.dir / "scores" / "auth.mxl"
+        with zipfile.ZipFile(path, "w") as z:
+            z.writestr("META-INF/container.xml", '<container><rootfiles><rootfile full-path="auth.xml"/></rootfiles></container>')
+            z.writestr("auth.xml", auth_xml(2, lh_voice=5))
+        self.assertEqual(pf.score_voices(path), ({1: {(1, 1), (2, 5)}, 2: {(1, 1), (2, 5)}}, ""))
+        two_parts = self.dir / "scores" / "two.musicxml"
+        two_parts.write_text(auth_xml(1).replace("</part></score-partwise>", "</part><part id=\"P2\"/></score-partwise>"),
+                             encoding="utf-8")
+        self.assertIsNone(pf.score_voices(two_parts)[0])
+        self.assertIsNone(pf.score_voices(self.dir / "scores" / "missing.mxl")[0])
+
+
 #: A two-staff parent: 4 bars of 2/4, ♩ = 60 printed over the upper staff (as the Bizet prints it), a p on the lower.
 PARENT_XML = """<?xml version="1.0" encoding="UTF-8"?>
 <score-partwise version="3.1">
@@ -1062,6 +1239,44 @@ class TheRealTree(unittest.TestCase):
         failed = sorted(r.step for r in results if r.cls == 3 and r.verdict == pf.FAIL)
         rhythm_steps = [n for n, s in enumerate(self.rec["steps"], 1) if s["tool"] == "Rhythm only"]
         self.assertEqual(failed, rhythm_steps)
+
+    # PF5 (``PF1-authored-hand-proof``): the C shuffle, A7a.1's authored two-staff control, on the real tree.
+    SHUFFLE = "exercise.blues.twelve-bar-shuffle.c"
+
+    def shuffle_class1(self, facts: list[dict]) -> dict[int, str]:
+        rec = yaml.safe_load((ROOT / "docs/chains/A7a.1.yaml").read_text(encoding="utf-8"))
+        ctx = pf.Context(root=ROOT, catalog=self.ctx.catalog, curriculum=self.ctx.curriculum, demands=self.ctx.demands,
+                         facts=facts, excerpts=self.ctx.excerpts, code=self.ctx.code, content=self.ctx.content,
+                         lesson_text=lambda rung: "", resolver=self.ctx.resolver, version=self.ctx.version())
+        steps = {n: s for n, s in enumerate(rec["steps"], 1)
+                 if (s.get("content") or {}).get("ref") == self.SHUFFLE and pf.norm(s.get("tool")) in pf.SCORE_TOOLS}
+        self.assertTrue(steps, "A7a.1 has no Score-screen step on the C shuffle")
+        found = {r.step: r.verdict for r in pf.check_hand_reading(rec, ctx) if r.step in steps}
+        self.assertEqual(sorted(found), sorted(steps))
+        return found
+
+    def test_the_shuffle_voices_are_read_from_its_built_file(self):
+        voices, why = self.ctx.voices(self.SHUFFLE)
+        self.assertEqual(why, "")
+        self.assertEqual(voices, {n: {(1, 1), (2, 2)} for n in range(1, 13)})
+
+    def test_a7a1_the_shuffle_steps_pass_class_1_on_the_committed_hand_facts(self):
+        self.assertEqual(set(self.shuffle_class1(self.ctx.facts).values()), {pf.PASS})
+
+    def test_broken_a7a1_without_the_shuffles_hand_facts_fails_class_1_on_every_shuffle_step(self):
+        without = [f for f in self.ctx.facts if not (f.get("item") == self.SHUFFLE and f.get("kind") == "hand")]
+        self.assertEqual(set(self.shuffle_class1(without).values()), {pf.FAIL})
+
+    def test_broken_a7a1_with_the_shuffles_hand_facts_on_another_identity_fails_class_1(self):
+        moved = [{**f, "identity": {"kind": "file", "sha256": "0" * 64}} if f.get("item") == self.SHUFFLE else f
+                 for f in self.ctx.facts]
+        self.assertEqual(set(self.shuffle_class1(moved).values()), {pf.FAIL})
+
+    def test_broken_a7a1_with_one_of_the_shuffles_two_lines_unproved_fails_class_1(self):
+        rows = [f for f in self.ctx.facts if f.get("item") == self.SHUFFLE and f.get("kind") == "hand"]
+        self.assertEqual(sorted((f["staff"], f["voice"], f["fact"]) for f in rows), [(1, 1, "R"), (2, 2, "L")])
+        one = [f for f in self.ctx.facts if f not in rows] + [r for r in rows if r["staff"] == 2]
+        self.assertEqual(set(self.shuffle_class1(one).values()), {pf.FAIL})
 
     def test_the_generated_journey_pairs_every_record_step_with_the_hand_written_walk(self):
         spec = ROOT / "app/tests/e2e/a7c1-phone-walk.spec.ts"

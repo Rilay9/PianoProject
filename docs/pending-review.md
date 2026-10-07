@@ -43892,3 +43892,13 @@ Each class has broken records that fail it; 42 tests.
 **At landing.** Blue Bossa's lesson-claim rows (BB2) read the chart's cells through the legacy `chartBars`; they now read `chartSegments`, as the screen does. Checks at landing: `npx tsc -b` clean; the whole unit suite, the one red the standing blues.3; the chart specs and the jazz.6 spec, 46 of 46 in one browser run; the whole content Python suite and the record gate before the commit.
 
 **Open.** The refusal is on the chart screen, not at the Chart door: whether a chart fits depends on the screen's width, which the door's build-time data cannot know (asked of the reviewer). Rose Room, a jazz.6 song, refuses at every size measured except the two largest tablets (1366x1024 and 1024x1366), at its bar 16, so its chart is unavailable on phones and smaller tablets. The census and pictures are not in CI.
+
+### Entry 282 — PF5: the chain preflight accepts current confirming hand facts
+
+**What a learner meets.** Nothing directly. Scoreboard 1/28.
+
+**Done** (`docs/review/responses/a7a-lanes-landing.md`, `PF1-authored-hand-proof`). Class 1 of `tools/content/preflight_chains.py` counts a two-staff bar as covered by a demand proof, as before, or when every staff and voice sounding a note in that bar has a current `hand` row (`content/sources/verified-facts.json`) holding it; the staff and voice are read from the built file (`score_voices`), failing closed on a file it cannot read; two staves alone never cover. A `hand` row may confirm the default reading as well as override it (no new fact kind). Two confirming rows written for `exercise.blues.twelve-bar-shuffle.c` bars 1-12 (staff 1 voice 1 right hand, staff 2 voice 2 left hand), proved by the model dump in `docs/prompts/runs/PF1/evidence/hand-dump-shuffle-c.txt` (the default and applied readings agree in all 12 bars). 19 tests red first (12 failures and 2 errors before); 9 mutants caught. A7a.1's class 1: from 7 FAIL to 3, the remaining three the Blues Riff steps, which RS1's admission resolves.
+
+**Checks.** At landing: the content build passes; the whole content Python suite, 2,086 OK; `npx tsc -b` clean; the whole unit suite, the one red the standing blues.3.
+
+**Open.** The two rows bind the shuffle's built identity; whether CI's Linux build produces the same bytes is shown by the next CI run, and the real-tree test fails there if it does not.

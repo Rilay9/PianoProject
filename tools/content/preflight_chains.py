@@ -14,8 +14,14 @@ The six seed classes, each found by the A7c.1 slice (Entries 241-270 of ``docs/p
     declaration: the model reads the lone staff as the right hand, CL15), which must agree with the row's ``hands``;
     a two-staff file by current verified facts (``content/sources/verified-facts.json``) covering every bar, because
     the voice-home rule is only the compatibility default and which hand plays an arbitrary score's note stays
-    UNKNOWN (Entry 248). A passage proof (a ``demand`` row) establishes the hand of the staff it was proved on, with
-    the file's HD2 hand rows applied; its staleness is ``passages.stale_reasons``, read, never re-derived. Steps on a
+    UNKNOWN (Entry 248), and two staves alone prove nothing, authored or not (PF5, ``PF1-authored-hand-proof``). Two
+    kinds of row cover a bar. A passage proof (a ``demand`` row) establishes the hand of the staff it was proved on,
+    with the file's HD2 hand rows applied; its staleness is ``passages.stale_reasons``, read, never re-derived. A
+    ``hand`` row (HD2), current for the file's identity, establishes the hand of one staff and voice over its bars
+    whether it overrides the model's default reading or only confirms it (the row says what the hand is, not what the
+    model would have guessed); a bar is covered by hand rows when every staff and voice that sounds a note in it
+    (``score_voices``, read from the built file) has one, so a row for other bars, another staff or voice, another
+    file's identity, or only some of a bar's voices, covers nothing, and two rows that disagree refuse the item. Steps on a
     surface that never reads the score's hands (the lesson page, the chord chart, the Lab, a drill) are
     NOT-APPLICABLE.
  2. **Cut tempo and marks** (BZ1, DF2, CUT1). Every excerpt cut a record uses keeps its parent's tempo and source
@@ -213,6 +219,7 @@ class Context:
         self.resolver = resolver
         self._version = version
         self._ancestry = None
+        self._voices_cache: dict[str, tuple[dict[int, set[tuple[int, int]]] | None, str]] = {}
 
     @classmethod
     def from_tree(cls, root: Path = ROOT, content: Path | None = None) -> "Context":
@@ -263,6 +270,17 @@ class Context:
             return ""
         path = self.root / "content" / found[2]["textFile"]
         return path.read_text(encoding="utf-8").replace("\r\n", "\n") if path.is_file() else ""
+
+    def voices(self, item_id: str) -> tuple[dict[int, set[tuple[int, int]]] | None, str]:
+        """``({printed bar: {(staff, voice)}}, why)`` for the item's built file: the (staff, voice) pairs that sound a
+        note in each bar, or ``(None, why)`` where the file cannot be read that way."""
+        if item_id not in self._voices_cache:
+            row = self.by_id[item_id]
+            if not row.get("file"):
+                self._voices_cache[item_id] = (None, "the item has no score file")
+            else:
+                self._voices_cache[item_id] = score_voices(self.content / str(row["file"]))
+        return self._voices_cache[item_id]
 
     def version(self) -> str:
         if self._version is None:
@@ -381,6 +399,57 @@ def rung_options(lesson: dict) -> tuple[list[str], list[str]]:
 # --------------------------------------------------------------------------------------
 
 
+def score_voices(path: Path) -> tuple[dict[int, set[tuple[int, int]]] | None, str]:
+    """
+    ``({printed bar number: {(staff, voice)}}, "")`` for a built MusicXML or compressed (``.mxl``) file of one part:
+    the pairs that sound a note in the bar (rests and bars of rests give an empty set), read from the file's own
+    ``measure number``, ``staff`` and ``voice`` elements, which is how a ``hand`` row names a passage (its ``voice`` is
+    the model's voice id, the file's voice number: the HD2 evidence for The Crave bar 40 shows the model's voices 1 and 2
+    on staff 1 and 3 on staff 2 where the file prints the same numbers). ``(None, why)`` where the file cannot be read
+    that way (missing, unreadable, several parts, a bar number that is not a whole number): a coverage nobody can check
+    is no coverage.
+    """
+    import zipfile
+    import xml.etree.ElementTree as ET
+
+    if not path.is_file():
+        return None, f"the built file {path.name} is not there"
+    try:
+        if path.suffix.lower() == ".mxl":
+            with zipfile.ZipFile(path) as z:
+                names = z.namelist()
+                root_name = None
+                if "META-INF/container.xml" in names:
+                    container = ET.fromstring(z.read("META-INF/container.xml"))
+                    root_name = next((e.get("full-path") for e in container.iter() if e.tag.endswith("rootfile")), None)
+                root_name = root_name or next((n for n in names if n.lower().endswith((".xml", ".musicxml"))
+                                               and not n.startswith("META-INF")), None)
+                if root_name is None:
+                    return None, f"{path.name} holds no MusicXML"
+                root = ET.fromstring(z.read(root_name))
+        else:
+            root = ET.fromstring(path.read_bytes())
+    except (OSError, ET.ParseError, zipfile.BadZipFile, KeyError) as error:
+        return None, f"{path.name} could not be read: {error}"
+    parts = root.findall("part")
+    if len(parts) != 1:
+        return None, f"{path.name} has {len(parts)} parts: voices are read for a one-part file only"
+    out: dict[int, set[tuple[int, int]]] = {}
+    for measure in parts[0].findall("measure"):
+        match = re.match(r"\d+$", (measure.get("number") or "").strip())
+        if match is None:
+            return None, f"{path.name}: measure number {measure.get('number')!r} is not a whole number"
+        here = out.setdefault(int(match.group()), set())
+        for note in measure.findall("note"):
+            if note.find("rest") is not None:
+                continue
+            try:
+                here.add((int((note.findtext("staff") or "1").strip()), int((note.findtext("voice") or "1").strip())))
+            except ValueError:
+                return None, f"{path.name}: bar {measure.get('number')}: a staff or voice that is not a whole number"
+    return out, ""
+
+
 def hands_present(row: dict) -> set[str]:
     """The hands the build's model read notes for (``measurement.span``), else the row's ``hands``."""
     span = ((row.get("measurement") or {}).get("span")) or {}
@@ -444,7 +513,8 @@ def check_hand_reading(rec: dict, ctx: Context) -> list[Result]:
                     evidence.append(f"the step plays hand {want}; the one-staff rule gives only R")
                 out.append(Result(1, n, PASS if ok else FAIL, evidence))
             continue
-        # Two or more staves: a current verified fact must cover every bar used.
+        # Two or more staves: a current verified fact must cover every bar used, by a passage proof (demand row) or by
+        # hand rows for every staff and voice that sounds a note in the bar (PF5).
         covered: dict[int, list[str]] = {}
         proved_hands: set[str] = set()
         stale: list[str] = []
@@ -462,12 +532,65 @@ def check_hand_reading(rec: dict, ctx: Context) -> list[Result]:
                 covered.setdefault(bar, []).append(f"staff {fact_row['staff']} as {hand}")
             evidence.append(f"current passage proof {VF.name_of(fact_row)}: staff {fact_row['staff']} read as {hand} "
                             f"on bars {a}-{b} ({(fact_row.get('proof') or {}).get('date')})")
+        current_hand: list[dict] = []
+        for fact_row in ctx.facts:
+            if fact_row.get("item") != item_id or fact_row.get("kind") != "hand":
+                continue
+            refused = VF.shape_errors(fact_row)
+            if refused:
+                stale.append(f"hand fact {VF.name_of(fact_row)} refused: {'; '.join(refused)}")
+                continue
+            reasons = VF.identity_reasons(fact_row, row)
+            if reasons:
+                stale.append(f"hand fact {VF.name_of(fact_row)} stale: {'; '.join(reasons)}")
+                continue
+            current_hand.append(fact_row)
         corrections = [f"bar {r['bars'][0]}-{r['bars'][1]} staff {r['staff']} voice {r['voice']} -> {r['fact']}"
-                       for r in ctx.facts
-                       if r.get("item") == item_id and r.get("kind") == "hand" and VF.row_identity(r) == VF.identity_of(row)]
+                       for r in current_hand]
         if corrections:
             evidence.append("HD2 hand rows applied to this file: " + "; ".join(corrections))
-        conflicts = VF.hand_conflicts([r for r in ctx.facts if r.get("item") == item_id], {item_id: VF.identity_of(row)})
+        conflicts = VF.hand_conflicts(current_hand, {item_id: VF.identity_of(row)})
+        # The bars no passage proof covers: covered by hand rows only where every (staff, voice) the file sounds there
+        # has a current row whose bars hold the bar. The rows say what each hand is; whether the model's default
+        # reading agrees is not asked (a confirming row and an overriding row are the same row).
+        unproved = [bar for bar in range(first, last + 1) if bar not in covered]
+        if unproved:
+            sounded, why = ctx.voices(item_id)
+            if sounded is None:
+                evidence.append(f"hand rows cannot be matched to the notes of {item_id}: {why}")
+            else:
+                sounding = any(sounded.get(bar) for bar in range(first, last + 1))
+                gaps: dict[tuple[int, int], list[int]] = {}
+                used: dict[int, dict] = {}
+                for bar in unproved:
+                    pairs = sounded.get(bar)
+                    if pairs is None:
+                        evidence.append(f"the file has no printed bar {bar}")
+                        continue
+                    here, lacking = [], []
+                    for staff_no, voice_no in sorted(pairs):
+                        match = [r for r in current_hand if r["staff"] == staff_no and r["voice"] == voice_no
+                                 and r["bars"][0] <= bar <= r["bars"][1]]
+                        if match:
+                            here += match
+                        else:
+                            lacking.append((staff_no, voice_no))
+                    for pair in lacking:
+                        gaps.setdefault(pair, []).append(bar)
+                    if lacking or (not pairs and not sounding):
+                        continue
+                    covered.setdefault(bar, []).append("hand rows" if here else "no note sounds")
+                    for r in here:
+                        used[id(r)] = r
+                        proved_hands.add(r["fact"])
+                for r in used.values():
+                    evidence.append(f"current hand fact {VF.name_of(r)}: staff {r['staff']} voice {r['voice']} read as "
+                                    f"{r['fact']} on bars {r['bars'][0]}-{r['bars'][1]} ({(r.get('proof') or {}).get('date')})")
+                for (staff_no, voice_no), bars_lacking in sorted(gaps.items()):
+                    evidence.append(f"staff {staff_no} voice {voice_no} has no current hand fact on bars "
+                                    f"{compress(bars_lacking)}")
+                if not sounding:
+                    evidence.append(f"no note sounds in bars {first}-{last}: nothing for a hand fact to establish")
         evidence += stale
         missing = [bar for bar in range(first, last + 1) if bar not in covered]
         verdict = PASS
