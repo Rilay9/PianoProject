@@ -35,7 +35,7 @@ CLASS 1: hand reading -- 10 PASS, 0 FAIL, 14 NOT-APPLICABLE
            - content kind generated: not a passage
   step 15  PASS  [Hear it; song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx@bars=1-12]
            - song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx bars 1-12; staves 2; hands 'both'; model span ['L', 'R']
-           - current passage proof song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx@bars=1-12 rhythm.habanera: staff 2 read as L on bars 1-12 (2026-10-06)
+           - current passage proof song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx@bars=1-12 rhythm.habanera: staff 2 read as L on bars 1-12 (2026-10-07)
   step 16  PASS  [Wait for me; excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh]
            - excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh bars 1-12 (the whole item); staves 1; hands 'left'; model span ['L']; the step names hand L
            - one staff: the build's declared hand is left (hands fact {'kind': 'authored', 'via': 'the approved selection (content/sources/excerpts.json)'}); the model reads every note as L (HD1)
@@ -44,23 +44,23 @@ CLASS 1: hand reading -- 10 PASS, 0 FAIL, 14 NOT-APPLICABLE
            - one staff: the build's declared hand is left (hands fact {'kind': 'authored', 'via': 'the approved selection (content/sources/excerpts.json)'}); the model reads every note as L (HD1)
   step 18  PASS  [Keep tempo; song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx@bars=1-12]
            - song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx bars 1-12; staves 2; hands 'both'; model span ['L', 'R']; the step names hand L
-           - current passage proof song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx@bars=1-12 rhythm.habanera: staff 2 read as L on bars 1-12 (2026-10-06)
+           - current passage proof song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx@bars=1-12 rhythm.habanera: staff 2 read as L on bars 1-12 (2026-10-07)
   step 19  PASS  [Hear it; song.jazz.the-crave@bars=21-26]
            - song.jazz.the-crave bars 21-26; staves 2; hands 'both'; model span ['L', 'R']; the step names hand L
-           - current passage proof song.jazz.the-crave@bars=21-26 rhythm.tresillo: staff 2 read as L on bars 21-26 (2026-10-06)
+           - current passage proof song.jazz.the-crave@bars=21-26 rhythm.tresillo: staff 2 read as L on bars 21-26 (2026-10-07)
            - HD2 hand rows applied to this file: bar 40-40 staff 1 voice 2 -> R
   step 20  PASS  [Rhythm only; song.jazz.the-crave@bars=21-22]
            - song.jazz.the-crave bars 21-22; staves 2; hands 'both'; model span ['L', 'R']
-           - current passage proof song.jazz.the-crave@bars=21-26 rhythm.tresillo: staff 2 read as L on bars 21-26 (2026-10-06)
+           - current passage proof song.jazz.the-crave@bars=21-26 rhythm.tresillo: staff 2 read as L on bars 21-26 (2026-10-07)
            - HD2 hand rows applied to this file: bar 40-40 staff 1 voice 2 -> R
   step 21  NOT-APPLICABLE  [lesson; song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14]
            - tool 'lesson' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
   step 22  PASS  [Hear it; song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14]
            - song.folk.por-una-cabeza-carlos-gardel.pdmx bars 1-14; staves 2; hands 'both'; model span ['L', 'R']
-           - current passage proof song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14 rhythm.habanera: staff 2 read as L on bars 1-14 (2026-10-06)
+           - current passage proof song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14 rhythm.habanera: staff 2 read as L on bars 1-14 (2026-10-07)
   step 23  PASS  [Rhythm only; song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14]
            - song.folk.por-una-cabeza-carlos-gardel.pdmx bars 1-14; staves 2; hands 'both'; model span ['L', 'R']; the step names hand L
-           - current passage proof song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14 rhythm.habanera: staff 2 read as L on bars 1-14 (2026-10-06)
+           - current passage proof song.folk.por-una-cabeza-carlos-gardel.pdmx@bars=1-14 rhythm.habanera: staff 2 read as L on bars 1-14 (2026-10-07)
   step 24  NOT-APPLICABLE  [lesson; song.folk.por-una-cabeza-carlos-gardel.pdmx]
            - tool 'lesson' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
 

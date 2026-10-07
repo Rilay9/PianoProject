@@ -25,7 +25,7 @@
  * `chartBars` still counts by) and keys nothing here.
  */
 
-import { attribute, walkMeasures, type WalkMeasure } from './measureWalk';
+import { attribute, walkMeasures, type WalkMeasure, type WalkTime } from './measureWalk';
 
 export interface ChordSymbol {
   /**
@@ -216,6 +216,13 @@ export interface ChartMeasure {
   measure: number;
   /** The time signature's bar in quarter notes, where one is in force. */
   nominal: number | null;
+  /**
+   * The time signature in force over the measure, as written (`beats`, `beatTypes`, and `quarters` as `nominal`
+   * reads it); `null` where none is. MT1 (the reviewer, `docs/review/responses/ph1-g6a-landing.md` §4): 3/4 and
+   * 6/8 are both a three-quarter `nominal`, 2/2 and 4/4 both four, so the chart reads its beat from this, keyed by
+   * `source` like everything else here.
+   */
+  signature: WalkTime | null;
   /** The furthest the shared walk reached in the bar, in quarter notes: its notated length. */
   walked: number;
   /** The bar says `implicit="yes"`. */
@@ -235,7 +242,9 @@ function chartMeasureOf(walked: WalkMeasure): ChartMeasure {
   const nominal = walked.time?.quarters ?? null;
   const implicit = attribute(walked.measureAttributes, 'implicit') === 'yes';
   const length = walked.furthest;
-  const bar = (status: BarStatus, barLength: number): ChartMeasure => ({ source: ordinal, label, measure, nominal, walked: length, implicit, status, length: barLength });
+  const time = walked.time;
+  const signature = time ? { beats: [...time.beats], beatTypes: [...time.beatTypes], quarters: time.quarters } : null;
+  const bar = (status: BarStatus, barLength: number): ChartMeasure => ({ source: ordinal, label, measure, nominal, signature, walked: length, implicit, status, length: barLength });
   if (length <= EPSILON) return bar('empty', nominal ?? 4);
   if (implicit) return bar('incomplete', length);
   if (nominal === null) return bar('unmetred', length);

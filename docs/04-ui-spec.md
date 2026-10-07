@@ -1095,6 +1095,33 @@ the subject and still starts inside the first screenful (R1). The status line st
 the chart, where a message about the chart belongs (R6); with no chart to sit under, the
 dead-end branch still lifts it above the one control it is explaining.
 
+**Each bar counts in its written metre** (MT1, 2026-10-07; the reviewer's ruling,
+`docs/review/responses/ph1-g6a-landing.md` §4). Until then every chart clicked four quarter beats to
+a bar whatever its score wrote, so on a waltz the highlighted bar drifted a beat a bar from the music.
+Now each bar is counted by the app's one reading of a bar's beat (`score/metre.ts`, the demand
+detectors' L120b rule; music21 agrees on every metre in every bundled chart,
+`docs/prompts/runs/MT1/witness.txt`), from the time signature in force over the measure the bar's
+chord came from (`ChartMeasure.signature`, keyed by the source measure):
+
+- **The click and the tracker** count the felt beat: 2/4 two quarters, 3/4 three, 4/4 four, 5/4 five
+  (equal, no 3+2 or 2+3 invented), 6/8 two dotted quarters, 12/8 four, 2/2 two halves; a bar with no
+  time signature in force is counted as today's four. The accent is beat 1 alone. The form moves on
+  each bar's downbeat; across a change (Mr Lawrence, 3/4 to 4/4 at bar 17) the new bar's first beat is
+  the accent and carries the new count. A count-in, and the count-in after a hidden page (X15), is in
+  the metre of the bar it leads into.
+- **The tempo field** counts that beat: the catalog's quarter notes a minute over the beat's length,
+  so a bar lasts as long as it did (Row, Row, Row's 81 opens at 54 dotted quarters, Corcovado's 96 at
+  48 half notes). The label names the unit whenever the beat is not a quarter — *bpm (dotted
+  quarters)*, *bpm (half notes)* — and is *bpm* as before otherwise.
+- **The plain Comp** holds three quarters of the bar: 4/4's three beats exactly as before, and in
+  every other metre the chord ends before the next downbeat.
+- **Bass + drums plays only in 4/4.** Its one pattern is 4/4's and no cited groove exists for any
+  other metre, so on a chart with any bar in another metre the chip is disabled and a sentence sits
+  directly under the row: *Bass + drums plays only in 4/4, and this chart is in 6/8. Count off for the
+  click and turn on Comp for the chords: both follow the 6/8.* (a chart that changes metre: *…this
+  chart has bars in 3/4. … both follow each bar's time signature.*). 4/4 charts are unchanged.
+- **Pickups** still sound a full bar, as every bar did before; PH2 takes the notated pickup length.
+
 ### 3d. Ways to play this — a rung's tools, as controls (added 2026-09-18)
 
 Sixty lessons gained a **Tools for this rung** paragraph in `b4fb15b` and a paragraph

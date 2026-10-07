@@ -43,6 +43,13 @@ interface Probe {
   snare: number;
   hat: number;
   bassHz: number[];
+  /**
+   * The metronome's clicks (MT1's extension: a buffer source through a *bandpass*, `Metronome.ts`'s wood click),
+   * accented at 2400 Hz; and every start in order with its audio-clock `when`, for MT1's 4/4 differential.
+   */
+  clicks: number;
+  accents: number;
+  starts: [string, number][];
 }
 interface Counts extends Probe {
   piano: number;
@@ -54,7 +61,7 @@ test.beforeEach(async ({ page }) => {
     const freqSet = new WeakMap<AudioParam, number>();
     const ramped = new WeakSet<AudioParam>();
     const target = new WeakMap<AudioNode, AudioNode>();
-    const probe: Probe = { bass: 0, kick: 0, snare: 0, hat: 0, bassHz: [] };
+    const probe: Probe = { bass: 0, kick: 0, snare: 0, hat: 0, bassHz: [], clicks: 0, accents: 0, starts: [] };
     (window as unknown as { __probe: Probe }).__probe = probe;
     // The originals are taken off the prototypes to be wrapped and called back
     // with the instance as `this`; `unbound-method` guards the opposite case.
@@ -87,6 +94,7 @@ test.beforeEach(async ({ page }) => {
           probe.bass += 1;
           probe.bassHz.push(Math.round(freqSet.get(f) ?? 0));
         }
+        probe.starts.push([ramped.has(f) ? 'kick' : 'bass', when ?? 0]);
       }
       return oscStart.call(this, when);
     };
@@ -96,6 +104,12 @@ test.beforeEach(async ({ page }) => {
       if (d instanceof BiquadFilterNode && d.type === 'highpass') {
         if (d.frequency.value >= 5000) probe.hat += 1;
         else probe.snare += 1;
+        probe.starts.push([d.frequency.value >= 5000 ? 'hat' : 'snare', when ?? 0]);
+      } else if (d instanceof BiquadFilterNode && d.type === 'bandpass') {
+        const accent = d.frequency.value === 2400;
+        probe.clicks += 1;
+        if (accent) probe.accents += 1;
+        probe.starts.push([accent ? 'accent' : 'click', when ?? 0]);
       }
       return srcStart.call(this, when, offset, duration);
     };

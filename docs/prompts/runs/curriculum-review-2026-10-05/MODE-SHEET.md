@@ -142,7 +142,7 @@ Four things share the screen. Nothing on it writes a practice row except the imp
 
 ## 15. Chord chart (`#/chart/<id>`)
 
-- **Learner does.** Plays from one large chord symbol per bar. **Count off** starts the click for `countInBars` (default 1) in 4/4 and runs the tracker (`ChordChartScreen.ts:287-312`, `getSettings().countInBars`). Tempo field 40-240 (`:350-360`), defaulting to the item's tempo (`:591-598`). Swing, Comp and Bass + drums toggles. **There is no transpose control**: no `transpos*` in the file [O, by grep]. Keys sit under the transport and light what is held, never what is expected (`:20-30`) [O].
+- **Learner does.** Plays from one large chord symbol per bar. **Count off** starts the click for `countInBars` (default 1) in each bar's written metre (MT1) and runs the tracker (`ChordChartScreen.ts:287-312`, `getSettings().countInBars`). Tempo field 40-240 (`:350-360`), defaulting to the item's tempo (`:591-598`). Swing, Comp and Bass + drums toggles. **There is no transpose control**: no `transpos*` in the file [O, by grep]. Keys sit under the transport and light what is held, never what is expected (`:20-30`) [O].
 - **Records.** Nothing. The only judgement is a live bar cell that goes `yes`/`no`/`idle` by `chordMatch >= 0.6`, over what is held at that instant (`:57-58`, `209-215`, `score/harmony.ts:180-185`); extra notes are not penalised [O].
 - **Measures.** Whether the held notes contain at least 60 % of the bar's chord's pitch classes.
 - **Cannot establish.** Voicing, rhythm, time-keeping against the click, form awareness over a chorus, or anything over time; nothing is stored. [I]

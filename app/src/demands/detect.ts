@@ -35,6 +35,7 @@
  */
 import { ACCIDENTAL_SEMITONES, timeSignatureAt, type ScoreModelData, type ScoreNote } from '../score/types';
 import { keySignatureName } from '../score/extractScoreModel';
+import { barLength, beatLength, isCompound } from '../score/metre';
 
 export const DETECTOR_IDS = [
   'bassClef',
@@ -121,28 +122,12 @@ function metreAt(model: ScoreModelData, measure: number): { beats: number; beatT
   return timeSignatureAt(model.timeSigMap, measure) ?? { beats: 4, beatType: 4 };
 }
 
-/**
- * Compound time: more than one beat of three eighths — 6/8, 9/8, 12/8, and the rarer 15/8 and 18/8.
- * 3/8 is one group of three eighths, commonly counted as simple triple, three eighth-note beats, and
- * is read so (L120b; the reviewer's ruling on L120a, `docs/review/responses/0bcd3be0.md`: 3/8 read
- * as compound was this rule's error). The model carries no grouping fact (`TimeSignatureEntry`), so
- * none is read here. The one reading of a bar's beat: `beatLength`, and with it `syncopation` and
- * `dottedQuarters`, read 3/8 by it too. The generator's and the MIDI importer's own copies of the
- * older rule (`sightReading.ts`, `readingControls.ts`, `readMidi.ts`) include 3/8; nothing the app
- * generates is in 3/8.
+/*
+ * Compound time, the felt beat and the bar's length: `isCompound`, `beatLength` and `barLength`, the one reading
+ * of a bar's beat (L120b; the reviewer's ruling on L120a, `docs/review/responses/0bcd3be0.md`: 3/8 is three
+ * eighth beats, not compound). Moved unchanged to `score/metre.ts` (MT1) so the chord chart counts its bars by the
+ * same rule; `syncopation` and `dottedQuarters` below read 3/8 by it too.
  */
-function isCompound(metre: { beats: number; beatType: number }): boolean {
-  return metre.beatType === 8 && metre.beats > 3 && metre.beats % 3 === 0;
-}
-
-/** The felt beat, in quarter-note beats: a dotted quarter in compound time. */
-function beatLength(metre: { beats: number; beatType: number }): number {
-  return isCompound(metre) ? 1.5 : 4 / metre.beatType;
-}
-
-function barLength(metre: { beats: number; beatType: number }): number {
-  return (metre.beats * 4) / metre.beatType;
-}
 
 /**
  * Where each unrolled measure starts, in beats. A pickup bar starts where a

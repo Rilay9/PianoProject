@@ -5,7 +5,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { installMidiMock, type MidiMock } from './fixtures/midiMock';
 import { playInTime } from './fixtures/playInTime';
 
-const RUNG = "jazz.5";
+const RUNG = "jazz.6";
 const screen = (page: Page) => page.locator('section[data-screen="score"]');
 type Run = { step: number; expected: number[]; bar: number; paused: boolean } | null;
 type Hooked = Window & { __pianopath?: { scoreRun?: () => Run } };
@@ -78,17 +78,17 @@ test("A7b.1: the journey derived from the record", async ({ page }) => {
   test.setTimeout(90 * 60_000);
   const midi = await installMidiMock(page, { permission: 'granted' });
   void midi; // the input is attached; no Wait for me step strikes it
-  // Route: Plan -> the tracks sheet -> jazz on -> Stage 5 -> jazz.5.
+  // Route: Plan -> the tracks sheet -> jazz on -> Stage 6 -> jazz.6.
   await page.goto('/#/plan');
   await page.locator('#plan-tracks-open').tap();
   const chip = page.locator("#plan-track-jazz");
   if ((await chip.getAttribute('aria-pressed')) !== 'true') await chip.tap();
   await page.locator('#plan-tracks-sheet-close').tap();
-  const stage = page.locator(".list-row[data-stage=\"5\"]");
+  const stage = page.locator(".list-row[data-stage=\"6\"]");
   if ((await stage.getAttribute('data-open')) !== 'true') await stage.tap();
   await page.locator(`.list-row[data-lesson="${RUNG}"]`).tap();
-  await expect(page.locator('#lesson-exercises .list-row')).toHaveCount(5);
-  await expect(page.locator('#lesson-songs .list-row')).toHaveCount(4);
+  await expect(page.locator('#lesson-exercises .list-row')).toHaveCount(8);
+  await expect(page.locator('#lesson-songs .list-row')).toHaveCount(7);
 
   // record step 1: lesson
   await test.step("step 1", async () => {
@@ -97,7 +97,7 @@ test("A7b.1: the journey derived from the record", async ({ page }) => {
 
   // record step 2: fixme
   await test.step("step 2", async () => {
-    test.fixme(true, "no journey template for the tool 'Free play, standalone' on content/lessons/jazz.5.md (no catalogue item: a Lab build or a lesson file)");
+    test.fixme(true, "no journey template for the tool 'Free play, standalone' on content/lessons/jazz.6.md (no catalogue item: a Lab build or a lesson file)");
   });
 
   // record step 3: fixme; open 'Ear drill — seventh-chord qualities'

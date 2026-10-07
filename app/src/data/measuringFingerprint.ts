@@ -27,6 +27,9 @@ import detect from '../demands/detect.ts?raw';
 import extractScoreModel from '../score/extractScoreModel.ts?raw';
 import scoreTypes from '../score/types.ts?raw';
 import mxl from '../score/mxl.ts?raw';
+import metre from '../score/metre.ts?raw';
+import tempoFromXml from '../score/tempoFromXml.ts?raw';
+import measureWalk from '../score/measureWalk.ts?raw';
 import osmdPackage from 'opensheetmusicdisplay/package.json?raw';
 // The two content files as the app already bundles them (parsed JSON: the dev server and the unit runner
 // serve no raw file from outside `app/`), hashed by their serialised content — what they say, whatever
@@ -40,6 +43,9 @@ export const MEASURING_DEFINITIONS: readonly (readonly [path: string, text: stri
   ['app/src/score/extractScoreModel.ts', extractScoreModel],
   ['app/src/score/types.ts', scoreTypes],
   ['app/src/score/mxl.ts', mxl],
+  ['app/src/score/metre.ts', metre],
+  ['app/src/score/tempoFromXml.ts', tempoFromXml],
+  ['app/src/score/measureWalk.ts', measureWalk],
   ['content/curriculum/vocabulary/demands.json', JSON.stringify(demands)],
   ['content/sources/opportunity-density.json', JSON.stringify(density)],
   ['app/node_modules/opensheetmusicdisplay/package.json', osmdPackage],

@@ -178,7 +178,10 @@ def measure_each(
 #: again; a change anywhere else re-measures nothing.
 DEFINITION_FILES = (
     "app/src/demands/detect.ts",
+    "app/src/score/metre.ts",  # the metre rule detect.ts reads (moved there by MT1)
     "app/src/score/extractScoreModel.ts",
+    "app/src/score/tempoFromXml.ts",  # extractScoreModel reads tempoEvents from it
+    "app/src/score/measureWalk.ts",  # tempoFromXml walks measures with it (PH1)
     "app/src/score/types.ts",
     "app/src/score/mxl.ts",
     "app/tests/unit/demandsOfFiles.test.ts",

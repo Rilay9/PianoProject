@@ -43,10 +43,20 @@ import { getMidiSettings } from '../../data/midiSettings';
 import { getSettings } from '../../data/settingsStore';
 import { audioEngine, getPiano, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { Metronome, type MetronomeBeat } from '../../audio/Metronome';
+import type { BarShape } from '../../audio/BeatScheduler';
 import { DrumKit, barSchedule } from '../../audio/backingLoop';
 import type { Piano } from '../../audio/Piano';
 import { toMusicXml } from '../../score/mxl';
-import { chartBars, chordMatch, parseHarmony, type ChordSymbol } from '../../score/harmony';
+import { chartBars, chordMatch, readHarmony, type ChordSymbol } from '../../score/harmony';
+import {
+  UNMETRED_COUNT,
+  chartBarCounts,
+  chartTiming,
+  compHoldQuarters,
+  tempoFieldDefault,
+  type BarCount,
+  type ChartTiming,
+} from '../../score/metre';
 import { KeyboardStrip } from '../KeyboardStrip';
 import { onScreenDispose, onScreenSuspend, pageHidden } from '../screenLifecycle';
 import { button, chip, el } from '../widgets';
@@ -136,6 +146,12 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   body.append(helpStrip.el, form, controls, stripHost, grid, status);
 
   let bars: (ChordSymbol | null)[] = [];
+  /**
+   * How each bar is counted, in its written metre (MT1; `score/metre.ts`): the click, the tracker and the comp
+   * follow it, the tempo field counts bar 1's beat, and Bass + drums is offered only where every bar is 4/4.
+   * Until a chart loads it is today's four quarters, which is also what a file with no time signature gets.
+   */
+  let timing: ChartTiming = chartTiming([]);
   let bar = 0;
   let chorus = 1;
   /**
@@ -234,15 +250,34 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     }
   }
 
+  /** Bar `index`'s count (0-based, in the chart's order); today's four quarters past the end. */
+  function countAt(index: number): BarCount {
+    return timing.counts[index] ?? UNMETRED_COUNT;
+  }
+
+  /**
+   * The metronome's bar `n` as a shape (MT1): `n` is 1-based from the bar this run starts on, and its count-in
+   * asks for bar 1, so a count-in is in the metre of the bar it leads into. The chart bar is the one `onBeat`
+   * draws for it, wrapped round the chorus the same way; each beat's length is relative to bar 1's beat, which is
+   * what the tempo field counts (1 wherever the chart keeps one beat unit, every bundled chart).
+   */
+  function shapeOf(metronomeBar: number): BarShape {
+    const count = countAt(barAt(Math.max(1, metronomeBar) + barOffset, bars.length).bar);
+    return { beats: count.beats, beatScale: count.beatQuarters / timing.beatUnit };
+  }
+
   function compBar(): void {
     const symbol = bars[bar];
     if (!symbol) return;
     // A plain block voicing in the middle of the keyboard: enough to hear the
     // harmony, quiet enough to play over.
     const midis = symbol.pitchClasses.map((pitchClass) => 48 + pitchClass);
+    // Three quarters of the bar (MT1): 4/4's three beats exactly as before, and in every other metre the chord
+    // ends before the next downbeat (a 3/4 bar's three beats would have rung into it).
+    const hold = (60 / bpm / timing.beatUnit) * compHoldQuarters(countAt(bar));
     void getPiano().then((piano) => {
       compPiano = piano;
-      if (!disposed && !suspended) piano.playChord(midis, (60 / bpm) * 3);
+      if (!disposed && !suspended) piano.playChord(midis, hold);
     });
   }
 
@@ -256,6 +291,8 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
    */
   function scheduleBacking(pitchClasses: readonly number[] | undefined): void {
     const context = audioEngine.contextOrNull;
+    // 4/4 only (MT1): `barSchedule`'s pattern is the one groove with a contract, and it is 4/4's.
+    if (!timing.backingOffered) return;
     if (!pitchClasses || !backing || !kit || !context) return;
     const secondsPerBeat = 60 / bpm;
     // A hair ahead, so the first event of the bar is scheduled rather than
@@ -272,7 +309,12 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
     });
     metronome.setBpm(bpm);
-    metronome.setBeatsPerBar(4);
+    // Each bar in its own metre (MT1), from the top: the offset first, because the shape reads it as the
+    // metronome starts. The metronome asks for each bar's count itself as the bar before ends, so a late timer
+    // that drops a bar's last click cannot leave the next bar in the old count (`chartMetre.test.ts`).
+    barOffset = 0;
+    metronome.setBeatsPerBar(countAt(0).beats);
+    metronome.setBarShape(shapeOf);
     metronome.setCountInBars(getSettings().countInBars);
     metronome.setVolume(getMidiSettings().metronomeVolume);
     metronome.setSound(getSettings().metronomeSound);
@@ -285,7 +327,6 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     running = true;
     suspended = false;
     resumeSeq += 1;
-    barOffset = 0;
     bar = 0;
     chorus = 1;
     barStarted = false;
@@ -409,13 +450,42 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     controls.append(
       button('Count off ▶', () => void start(), { id: 'chart-start', variant: 'primary' }),
       button('Stop', stop, { id: 'chart-stop' }),
-      el('label', { htmlFor: 'chart-bpm', text: 'bpm' }),
+      // The field counts the chart's beat (MT1): "bpm" in a quarter-note beat, as always; the unit named
+      // otherwise, because "54" alone on a 6/8 chart would read as 54 quarter notes.
+      el('label', { htmlFor: 'chart-bpm', text: timing.tempoLabel }),
       bpmInput,
       swingChip,
       compChip,
       backingChip,
     );
+    if (!timing.backingOffered) refuseBacking();
     showKeys();
+  }
+
+  /**
+   * Bass + drums, refused where the chart is not in 4/4 (MT1; the reviewer's ruling,
+   * `docs/review/responses/ph1-g6a-landing.md` §4): its one pattern is 4/4's, and no cited groove exists for
+   * any other metre, so it is disabled rather than played as a guess. The sentence sits right under the row,
+   * beside the chip it explains, and says what does work here; the status line under the chart is the run's.
+   */
+  function refuseBacking(): void {
+    const metres = timing.refusedBy;
+    const list = metres.length > 1 ? `${metres.slice(0, -1).join(', ')} and ${metres[metres.length - 1] ?? ''}` : (metres[0] ?? '');
+    const oneMetre = metres.length === 1 && timing.counts.every((count) => count.written === metres[0]);
+    const note = el('p.muted', {
+      id: 'chart-backing-note',
+      text: oneMetre
+        ? `Bass + drums plays only in 4/4, and this chart is in ${list}. Count off for the click and turn on Comp for the chords: both follow the ${list}.`
+        : `Bass + drums plays only in 4/4, and this chart has bars in ${list}. Count off for the click and turn on Comp for the chords: both follow each bar’s time signature.`,
+    });
+    backing = false;
+    backingChip.disabled = true;
+    backingChip.setAttribute('aria-disabled', 'true');
+    backingChip.setAttribute('aria-pressed', 'false');
+    backingChip.setAttribute('aria-describedby', 'chart-backing-note');
+    // `.chip` has no disabled look of its own and `style.css` is outside this change: dimmed here, as `.button:disabled` is.
+    backingChip.style.opacity = '0.5';
+    body.insertBefore(note, stripHost);
   }
 
   /**
@@ -564,9 +634,12 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
         return;
       }
 
-      const symbols = parseHarmony(xml);
+      const { symbols, measures } = readHarmony(xml);
       const measureCount = new Set([...xml.matchAll(/<measure\b[^>]*\bnumber="([^"]+)"/g)].map((m) => m[1])).size;
       bars = chartBars(symbols, Math.max(measureCount, symbols.length));
+      // Each bar's count in its written metre (MT1), read from the measure its chord came from.
+      timing = chartTiming(chartBarCounts(measures, bars.length));
+      bpmInput.setAttribute('aria-label', timing.tempoName);
       if (symbols.length === 0) {
         // It used to say the screen could not work and then draw a
         // working-looking one: four empty bars with dashes, a count-off, a
@@ -592,7 +665,9 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
         // what `BeatScheduler` was sized for, and an unclamped value here
         // disagreed with the field's own `min`/`max` the moment the chart
         // loaded, before anyone had touched it.
-        bpm = Math.min(240, Math.max(40, item.tempoBpm));
+        // In the chart's beat (MT1): the catalog's quarter notes a minute over the beat's length in quarters, so
+        // the bar lasts as long as it did; a quarter-note beat gives exactly the old value.
+        bpm = tempoFieldDefault(item.tempoBpm, timing.beatUnit);
         bpmInput.value = String(bpm);
       }
       drawGrid();

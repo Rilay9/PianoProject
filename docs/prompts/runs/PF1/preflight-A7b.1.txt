@@ -1,11 +1,11 @@
 PREFLIGHT A7b.1 (draft) from docs/chains/A7b.1.yaml
 built content: app/public/content/catalog.json (2099 rows)
-placed rung: jazz.5 (jazz.5: its lesson file content/lessons/jazz.5.md is step 1's explanation)
+placed rung: jazz.6 (jazz.6: its lesson file content/lessons/jazz.6.md is step 1's explanation; jazz.6: a requirement's items name ['drill.jazz.minor-ii-v-i-shells'])
 
 CLASS 1: hand reading -- 1 PASS, 0 FAIL, 15 NOT-APPLICABLE
-  step 1   NOT-APPLICABLE  [lesson; content/lessons/jazz.5.md]
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/jazz.6.md]
            - content kind explanation: not a passage
-  step 2   NOT-APPLICABLE  [Free play, standalone; content/lessons/jazz.5.md]
+  step 2   NOT-APPLICABLE  [Free play, standalone; content/lessons/jazz.6.md]
            - content kind explanation: not a passage
   step 3   NOT-APPLICABLE  [Ear drills; drill.ear.seventh-qualities]
            - content kind generated: not a passage
@@ -38,9 +38,9 @@ CLASS 1: hand reading -- 1 PASS, 0 FAIL, 15 NOT-APPLICABLE
            - tool 'Chord chart' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
 
 CLASS 2: cut tempo and marks -- 0 PASS, 0 FAIL, 16 NOT-APPLICABLE
-  step 1   NOT-APPLICABLE  [lesson; content/lessons/jazz.5.md]
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/jazz.6.md]
            - content kind explanation: not an excerpt cut
-  step 2   NOT-APPLICABLE  [Free play, standalone; content/lessons/jazz.5.md]
+  step 2   NOT-APPLICABLE  [Free play, standalone; content/lessons/jazz.6.md]
            - content kind explanation: not an excerpt cut
   step 3   NOT-APPLICABLE  [Ear drills; drill.ear.seventh-qualities]
            - content kind generated: not an excerpt cut
@@ -71,7 +71,7 @@ CLASS 2: cut tempo and marks -- 0 PASS, 0 FAIL, 16 NOT-APPLICABLE
   step 16  NOT-APPLICABLE  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx]
            - content kind piece: not an excerpt cut
 
-CLASS 3: control reachable in its mode -- 3 PASS, 8 FAIL, 6 NOT-APPLICABLE (5 routed to class 6)
+CLASS 3: control reachable in its mode -- 4 PASS, 3 FAIL, 10 NOT-APPLICABLE (9 routed to class 6)
   record   PASS
            - app/src/ui/screens/ScoreScreen.ts MODES: {'wait': 'Wait for me', 'tempo': 'Keep tempo', 'listen': 'Play it to me', 'free': 'Free play'}
            - app/src/ui/screens/ScoreScreen.ts opens in settings.defaultModeWithInput with an input; app/src/data/settingsStore.ts defaults it to 'wait'
@@ -82,55 +82,55 @@ CLASS 3: control reachable in its mode -- 3 PASS, 8 FAIL, 6 NOT-APPLICABLE (5 ro
            - app/src/ui/screens/ScoreScreen.ts the double-tap loop handler reads no mode
            - app/src/ui/openItem.ts hasChordSymbols: notation.chordCount > 0
            - app/src/ui/screens/ChordChartScreen.ts chips ['Bass + drums', 'Comp', 'Swing']; Comp and Bass + drums independent (CB1)
-  step 1   NOT-APPLICABLE  [lesson; content/lessons/jazz.5.md]
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/jazz.6.md]
            - the lesson page: no control to reach (MODE-SHEET section 31)
-  step 2   PASS  [Free play, standalone; content/lessons/jazz.5.md]
+  step 2   PASS  [Free play, standalone; content/lessons/jazz.6.md]
            - Free play standalone: the #/play route exists (router.ts)
-  step 3   PASS  [Ear drills; drill.ear.seventh-qualities]
-           - drill.ear.seventh-qualities is an option of the placed rung jazz.5
+  step 3   FAIL  [Ear drills; drill.ear.seventh-qualities]
+           - FAIL: drill.ear.seventh-qualities is an option of ['jazz.5', 'theory.5'], not of the placed rung jazz.6; the step does not say it is opened on a later rung
            - a drill row of kind 'ear-chord' opens on the Drill screen
-  step 4   FAIL  [Reading and theory drills; drill.jazz.minor-ii-v-i-shells]
-           - FAIL: drill.jazz.minor-ii-v-i-shells is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+  step 4   PASS  [Reading and theory drills; drill.jazz.minor-ii-v-i-shells]
+           - drill.jazz.minor-ii-v-i-shells is an option of the placed rung jazz.6
            - a drill row of kind 'chord' opens on the Drill screen
   step 5   NOT-APPLICABLE (routed to class 6)  [Hear it; app/src/engine/sightReading.ts]
-           - the placed rung jazz.5 offers the Lab: [{'kind': 'lab', 'preset': 'jazz-comping'}]
+           - the placed rung jazz.6 offers the Lab: [{'kind': 'lab', 'preset': 'jazz-comping'}]
            - ROUTED: the Lab's pickers, presets, locks and its Read it / Play it to me / Play the tune controls are set inside the Lab screen
   step 6   NOT-APPLICABLE (routed to class 6)  [Read it; app/src/engine/sightReading.ts]
-           - the placed rung jazz.5 offers the Lab: [{'kind': 'lab', 'preset': 'jazz-comping'}]
+           - the placed rung jazz.6 offers the Lab: [{'kind': 'lab', 'preset': 'jazz-comping'}]
            - ROUTED: the Lab's pickers, presets, locks and its Read it / Play it to me / Play the tune controls are set inside the Lab screen
   step 7   NOT-APPLICABLE (routed to class 6)  [Read it; app/src/engine/sightReading.ts]
-           - the placed rung jazz.5 offers the Lab: [{'kind': 'lab', 'preset': 'jazz-comping'}]
+           - the placed rung jazz.6 offers the Lab: [{'kind': 'lab', 'preset': 'jazz-comping'}]
            - ROUTED: the Lab's pickers, presets, locks and its Read it / Play it to me / Play the tune controls are set inside the Lab screen
   step 8   NOT-APPLICABLE (routed to class 6)  [Play the tune; app/src/engine/sightReading.ts]
-           - the placed rung jazz.5 offers the Lab: [{'kind': 'lab', 'preset': 'jazz-comping'}]
+           - the placed rung jazz.6 offers the Lab: [{'kind': 'lab', 'preset': 'jazz-comping'}]
            - ROUTED: the Lab's pickers, presets, locks and its Read it / Play it to me / Play the tune controls are set inside the Lab screen
-  step 9   FAIL  [Keep tempo; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
-           - FAIL: song.jazz.kenny-dorham-blue-bossa.pdmx is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+  step 9   PASS  [Keep tempo; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
+           - song.jazz.kenny-dorham-blue-bossa.pdmx is an option of the placed rung jazz.6
            - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
            - the tool is the mode 'Keep tempo', named by the step's tool field
-  step 10  FAIL  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
-           - FAIL: song.jazz.kenny-dorham-blue-bossa.pdmx is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+  step 10  NOT-APPLICABLE (routed to class 6)  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
+           - song.jazz.kenny-dorham-blue-bossa.pdmx is an option of the placed rung jazz.6
            - the chart door opens: notation.chordCount > 0 (24)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
-  step 11  FAIL  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
-           - FAIL: song.jazz.kenny-dorham-blue-bossa.pdmx is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+  step 11  NOT-APPLICABLE (routed to class 6)  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
+           - song.jazz.kenny-dorham-blue-bossa.pdmx is an option of the placed rung jazz.6
            - the chart door opens: notation.chordCount > 0 (24)
            - Comp and Bass + drums in different states: independent in the code (CB1)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
-  step 12  FAIL  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
-           - FAIL: song.jazz.kenny-dorham-blue-bossa.pdmx is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+  step 12  NOT-APPLICABLE (routed to class 6)  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
+           - song.jazz.kenny-dorham-blue-bossa.pdmx is an option of the placed rung jazz.6
            - the chart door opens: notation.chordCount > 0 (24)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
-  step 13  FAIL  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
-           - FAIL: song.jazz.kenny-dorham-blue-bossa.pdmx is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+  step 13  NOT-APPLICABLE (routed to class 6)  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
+           - song.jazz.kenny-dorham-blue-bossa.pdmx is an option of the placed rung jazz.6
            - the chart door opens: notation.chordCount > 0 (24)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
   step 14  FAIL  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15]
-           - FAIL: song.folk.insensatez-how-insensitive-jobim.pdmx is an option of ['latin'], not of the placed rung jazz.5; the step does not say it is opened on a later rung
+           - FAIL: song.folk.insensatez-how-insensitive-jobim.pdmx is an option of ['latin'], not of the placed rung jazz.6; the step does not say it is opened on a later rung
            - the chart door opens: notation.chordCount > 0 (28)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
   step 15  FAIL  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15]
-           - FAIL: song.folk.insensatez-how-insensitive-jobim.pdmx is an option of ['latin'], not of the placed rung jazz.5; the step does not say it is opened on a later rung
+           - FAIL: song.folk.insensatez-how-insensitive-jobim.pdmx is an option of ['latin'], not of the placed rung jazz.6; the step does not say it is opened on a later rung
            - the chart door opens: notation.chordCount > 0 (28)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
   step 16  NOT-APPLICABLE (routed to class 6)  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx]
@@ -138,68 +138,66 @@ CLASS 3: control reachable in its mode -- 3 PASS, 8 FAIL, 6 NOT-APPLICABLE (5 ro
            - the chart door opens: notation.chordCount > 0 (28)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
 
-CLASS 4: counted items match the claim -- 1 PASS, 3 FAIL, 13 NOT-APPLICABLE
-  record   FAIL
-           - jazz.5: its lesson file content/lessons/jazz.5.md is step 1's explanation
-           - jazz.5 requirements: [{"kind": "runs", "from": "exercises", "count": 1}, {"kind": "runs", "from": "songs", "count": 1}]
-           - FAIL: requirement 1 counts 1 run(s) of any of 5 exercises options; no update names one of them
-           - FAIL: requirement 1 names no items, so any of its exercises options counts, among them ['drill.jazz.ii-v-i-shells'], which the record says never count (the G13 class: name the exact item)
-           - FAIL: requirement 2 counts 1 run(s) of any of 4 songs options; no update names one of them
-           - FAIL: update 1 names drill.jazz.minor-ii-v-i-shells, which no requirement of jazz.5 counts (not an option of jazz.5)
-  step 1   NOT-APPLICABLE  [lesson; content/lessons/jazz.5.md]
-           - tool 'lesson' (never counted (MODE-SHEET R3/R4, section 14, RG1)); content/lessons/jazz.5.md: counted by no requirement of jazz.5
+CLASS 4: counted items match the claim -- 3 PASS, 0 FAIL, 14 NOT-APPLICABLE
+  record   PASS
+           - jazz.6: its lesson file content/lessons/jazz.6.md is step 1's explanation
+           - jazz.6: a requirement's items name ['drill.jazz.minor-ii-v-i-shells']
+           - jazz.6 requirements: [{"kind": "runs", "from": "exercises", "count": 2}, {"kind": "runs", "from": "exercises", "items": ["drill.jazz.minor-ii-v-i-shells"], "count": 1}]
+           - requirement 1 (unnamed pool of exercises): updates name ['drill.jazz.minor-ii-v-i-shells']
+           - requirement 2 counts 1 run(s) of drill.jazz.minor-ii-v-i-shells: update 1 names it
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/jazz.6.md]
+           - tool 'lesson' (never counted (MODE-SHEET R3/R4, section 14, RG1)); content/lessons/jazz.6.md: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
-  step 2   NOT-APPLICABLE  [Free play, standalone; content/lessons/jazz.5.md]
-           - tool 'Free play, standalone' (never counted (MODE-SHEET R3/R4, section 14, RG1)); content/lessons/jazz.5.md: counted by no requirement of jazz.5
+  step 2   NOT-APPLICABLE  [Free play, standalone; content/lessons/jazz.6.md]
+           - tool 'Free play, standalone' (never counted (MODE-SHEET R3/R4, section 14, RG1)); content/lessons/jazz.6.md: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
-  step 3   FAIL  [Ear drills; drill.ear.seventh-qualities]
-           - tool 'Ear drills' (a counting tool); drill.ear.seventh-qualities: requirement 1 (runs from exercises, unnamed: any of its 5 options)
-           - FAIL: the run would count and the step does not say so
-  step 4   FAIL  [Reading and theory drills; drill.jazz.minor-ii-v-i-shells]
-           - tool 'Reading and theory drills' (a counting tool); drill.jazz.minor-ii-v-i-shells: counted by no requirement of jazz.5
+  step 3   NOT-APPLICABLE  [Ear drills; drill.ear.seventh-qualities]
+           - tool 'Ear drills' (a counting tool); drill.ear.seventh-qualities: counted by no requirement of jazz.6
+           - no claim either way, and nothing would count
+  step 4   PASS  [Reading and theory drills; drill.jazz.minor-ii-v-i-shells]
+           - tool 'Reading and theory drills' (a counting tool); drill.jazz.minor-ii-v-i-shells: requirement 1 (runs from exercises, unnamed: any of its 8 options), requirement 2 (runs from exercises, items ['drill.jazz.minor-ii-v-i-shells'])
            - the step says its run counts
-           - FAIL: the step says it counts; the rung would not count it
   step 5   NOT-APPLICABLE  [Hear it; app/src/engine/sightReading.ts]
-           - tool 'Hear it' (never counted (MODE-SHEET R3/R4, section 14, RG1)); app/src/engine/sightReading.ts: counted by no requirement of jazz.5
+           - tool 'Hear it' (never counted (MODE-SHEET R3/R4, section 14, RG1)); app/src/engine/sightReading.ts: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
   step 6   NOT-APPLICABLE  [Read it; app/src/engine/sightReading.ts]
-           - tool 'Read it' (never counted (MODE-SHEET R3/R4, section 14, RG1)); app/src/engine/sightReading.ts: counted by no requirement of jazz.5
+           - tool 'Read it' (never counted (MODE-SHEET R3/R4, section 14, RG1)); app/src/engine/sightReading.ts: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
   step 7   NOT-APPLICABLE  [Read it; app/src/engine/sightReading.ts]
-           - tool 'Read it' (never counted (MODE-SHEET R3/R4, section 14, RG1)); app/src/engine/sightReading.ts: counted by no requirement of jazz.5
+           - tool 'Read it' (never counted (MODE-SHEET R3/R4, section 14, RG1)); app/src/engine/sightReading.ts: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
   step 8   NOT-APPLICABLE  [Play the tune; app/src/engine/sightReading.ts]
-           - tool 'Play the tune' (never counted (MODE-SHEET R3/R4, section 14, RG1)); app/src/engine/sightReading.ts: counted by no requirement of jazz.5
+           - tool 'Play the tune' (never counted (MODE-SHEET R3/R4, section 14, RG1)); app/src/engine/sightReading.ts: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
   step 9   PASS  [Keep tempo; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
-           - tool 'Keep tempo' (a counting tool); song.jazz.kenny-dorham-blue-bossa.pdmx: counted by no requirement of jazz.5
+           - tool 'Keep tempo' (a counting tool); song.jazz.kenny-dorham-blue-bossa.pdmx: counted by no requirement of jazz.6
            - the step says its run counts toward nothing
   step 10  NOT-APPLICABLE  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
-           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.jazz.kenny-dorham-blue-bossa.pdmx: counted by no requirement of jazz.5
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.jazz.kenny-dorham-blue-bossa.pdmx: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
   step 11  NOT-APPLICABLE  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
-           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.jazz.kenny-dorham-blue-bossa.pdmx: counted by no requirement of jazz.5
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.jazz.kenny-dorham-blue-bossa.pdmx: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
   step 12  NOT-APPLICABLE  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
-           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.jazz.kenny-dorham-blue-bossa.pdmx: counted by no requirement of jazz.5
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.jazz.kenny-dorham-blue-bossa.pdmx: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
   step 13  NOT-APPLICABLE  [Chord chart; QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6]
-           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.jazz.kenny-dorham-blue-bossa.pdmx: counted by no requirement of jazz.5
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.jazz.kenny-dorham-blue-bossa.pdmx: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
   step 14  NOT-APPLICABLE  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15]
-           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.folk.insensatez-how-insensitive-jobim.pdmx: counted by no requirement of jazz.5
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.folk.insensatez-how-insensitive-jobim.pdmx: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
   step 15  NOT-APPLICABLE  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15]
-           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.folk.insensatez-how-insensitive-jobim.pdmx: counted by no requirement of jazz.5
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.folk.insensatez-how-insensitive-jobim.pdmx: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
   step 16  NOT-APPLICABLE  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx]
-           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.folk.insensatez-how-insensitive-jobim.pdmx: counted by no requirement of jazz.5
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.folk.insensatez-how-insensitive-jobim.pdmx: counted by no requirement of jazz.6
            - no claim either way, and nothing would count
 
 CLASS 5: taught-set hold -- 0 PASS, 0 FAIL, 16 NOT-APPLICABLE
-  step 1   NOT-APPLICABLE  [lesson; content/lessons/jazz.5.md]
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/jazz.6.md]
            - content kind explanation: not a generated item
-  step 2   NOT-APPLICABLE  [Free play, standalone; content/lessons/jazz.5.md]
+  step 2   NOT-APPLICABLE  [Free play, standalone; content/lessons/jazz.6.md]
            - content kind explanation: not a generated item
   step 3   NOT-APPLICABLE  [Ear drills; drill.ear.seventh-qualities]
            - drill.ear.seventh-qualities: measurement 'runtime' (made when it opens: a runtime drill writes no score the build can measure): no measured demands to hold
@@ -232,11 +230,11 @@ CLASS 5: taught-set hold -- 0 PASS, 0 FAIL, 16 NOT-APPLICABLE
 
 CLASS 6: journey derived from the record -- 2 PASS, 1 FAIL, 14 NOT-APPLICABLE (14 routed to class 6)
   record   FAIL
-           - the record's counted Keep tempo runs give 0 of the 2 requirements jazz.5 counts: the journey cannot assert completion
-  step 1   PASS  [lesson; content/lessons/jazz.5.md]
+           - the record's counted Keep tempo runs give 0 of the 2 requirements jazz.6 counts: the journey cannot assert completion
+  step 1   PASS  [lesson; content/lessons/jazz.6.md]
            - lesson
-  step 2   NOT-APPLICABLE (routed to class 6)  [Free play, standalone; content/lessons/jazz.5.md]
-           - no journey template for the tool 'Free play, standalone' on content/lessons/jazz.5.md (no catalogue item: a Lab build or a lesson file): a test.fixme line in the skeleton
+  step 2   NOT-APPLICABLE (routed to class 6)  [Free play, standalone; content/lessons/jazz.6.md]
+           - no journey template for the tool 'Free play, standalone' on content/lessons/jazz.6.md (no catalogue item: a Lab build or a lesson file): a test.fixme line in the skeleton
   step 3   NOT-APPLICABLE (routed to class 6)  [Ear drills; drill.ear.seventh-qualities]
            - no journey template for the tool 'Ear drills': a test.fixme line in the skeleton
   step 4   NOT-APPLICABLE (routed to class 6)  [Reading and theory drills; drill.jazz.minor-ii-v-i-shells]
@@ -266,4 +264,4 @@ CLASS 6: journey derived from the record -- 2 PASS, 1 FAIL, 14 NOT-APPLICABLE (1
   step 16  NOT-APPLICABLE (routed to class 6)  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx]
            - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
 
-SUMMARY A7b.1: 12 FAIL class 1 0, class 2 0, class 3 8, class 4 3, class 5 0, class 6 1
+SUMMARY A7b.1: 4 FAIL class 1 0, class 2 0, class 3 3, class 4 0, class 5 0, class 6 1
