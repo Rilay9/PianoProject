@@ -26,6 +26,7 @@ For every formal handoff:
 6. Separate what was **read from evidence** from what ChatGPT actually executed. Never imply a test was run if it was only inspected.
 7. Keep independent seams independent. Do not reopen accepted work just because a later seam touches nearby files.
 8. Write the response to the handoff's named `docs/review/responses/...` path when possible.
+9. Before the response lands, use the review-closure ledger enforced by docs-integrity: every unresolved ruling gets one `REVIEW-OPEN: <id> | <requirement>` line; a later response may close it only with `REVIEW-CLOSE: <id> | impl=<current path(s)> | test=<current test path(s)> | <evidence>`. A response with no follow-up uses `REVIEW-NONE`. Do not call a requirement closed from narrative alone.
 
 If a handoff promises an artifact or decision that is not actually present, say so and **do not invent the missing decision**.
 
