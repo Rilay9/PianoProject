@@ -36179,6 +36179,92 @@
         "decision": "keep",
         "note": "Lead sheet: one part, one staff, the melody with 24 chord symbols and no left hand; C minor (three flats), 4/4, 32 bars, no tempo mark (the converter's 96), no lyrics; bars 29-32 print two-note dyads. Admitted by the A7b.1 probe through the intake gate (docs/prompts/runs/curriculum-review-2026-10-05/intake/QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6.md) as the chain's chord-chart MODEL and MUSIC candidate; the shortlist's licence-conflict gate set aside (rights out of scope, owner 2026-10-05). Curriculum admission CANDIDATE. Nothing heard."
       }
+    },
+    {
+      "id": "song.blues.blues-riff-in-c.pdmx",
+      "cid": "Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi",
+      "file": "Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.restaff.mxl",
+      "title": "Blues Riff in C",
+      "composer": null,
+      "artist": "Lessons - Blues",
+      "rawSha256": "69d5bb7ee0e3cd6ff1aed15863a4d6340538a50b0108661b7657bd0d1b877481",
+      "convertedSha256": "888da99d60de0af55b58398ad8e9f66d3257765e17913d46b086c56a8f0e6d5d",
+      "musescoreId": "2170136",
+      "license": "publicdomain",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "classical",
+      "band": "6",
+      "bars": 12,
+      "notes": 64,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": false,
+      "hands": "both",
+      "features": {
+        "bars": 12.0,
+        "notesPerBar": 5.75,
+        "notesPerSecond": 2.3,
+        "maxSimultaneousRight": 2.0,
+        "maxSimultaneousLeft": 1.0,
+        "maxSpanRight": 12.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 15.0,
+        "maxLeapLeft": 7.0,
+        "rangeRight": 24.0,
+        "rangeLeft": 7.0,
+        "blackKeyRatio": 0.14492753623188406,
+        "keyAccidentals": 0.0,
+        "shortestValue": 0.0625,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.18840579710144928,
+        "distinctRhythms": 9.0
+      },
+      "level": 3.98,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "bars",
+          -0.535
+        ],
+        [
+          "rangeLeft",
+          -0.467
+        ],
+        [
+          "notesPerSecond",
+          -0.348
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Re-staffed teaching edition (A7a1-bluesriff-restaff): the source is an ensemble (Piano on two staves, rootless voicings over whole-note roots; a one-staff Riff; an unpitched Drumset); this file keeps the Riff on the upper staff and the Piano's lower-staff roots on the lower, omits the voicings and the drums, every kept event unchanged (the 18 written B naturals as printed), by tools/content/pdmx/restaff.py before the unchanged converter. Checked event for event against the raw member's frozen events (tools/content/tests/test_restaff.py). 12 bars of 4/4, C, no tempo mark (the converter's 96; the upload's title says 120 bpm, which is metadata, not a marking); the work title is the file's own. Who wrote the riff is not stated (the credit names a course), so no composer. Intake record: docs/prompts/runs/curriculum-review-2026-10-05/intake/Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.md. Curriculum admission CANDIDATE. Nothing heard."
+      },
+      "genre": [
+        "blues"
+      ],
+      "tracks": [
+        "blues-boogie"
+      ],
+      "derivation": {
+        "kind": "restaff",
+        "sourceSha256": "69d5bb7ee0e3cd6ff1aed15863a4d6340538a50b0108661b7657bd0d1b877481",
+        "keep": [
+          "Riff",
+          "P1-Staff2"
+        ],
+        "omit": [
+          "P1-Staff1",
+          "Drumset"
+        ],
+        "tool": "tools/content/pdmx/restaff.py",
+        "fixture": "tools/content/tests/fixtures/restaff/Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.source-events.json"
+      }
     }
   ]
 }

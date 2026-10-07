@@ -1,0 +1,5 @@
+edition Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.restaff.mxl: sha256 888da99d60de0af55b58398ad8e9f66d3257765e17913d46b086c56a8f0e6d5d
+  converter notes: ['no tempo in source; added 96 bpm']
+  bars 12, notes 64, staves 2, tempo 96 (defaulted: True)
+fixture Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.source-events.json: 57 upper, 12 lower, 6 upper rests
+verify: PASS

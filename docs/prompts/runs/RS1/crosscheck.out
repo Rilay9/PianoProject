@@ -1,0 +1,11 @@
+1 fixture = probe table: True True True True True
+2 fixture = music21 on raw: True True True
+3 music21 on the edition, parts: ['1', '2'] staff 1 = upper: True staff 2 = lower: True rests staff 1 = source rests: True rests staff 2: 0
+4 partitura by staff: [1, 2] staff 1 = upper: True staff 2 = lower: True
+5 the converter's merged file: FAIL 180 failures: {'an unpitched head': 144, 'an omitted source event': 36}
+6 H2 round_trip_ok(selected source as ['Riff', 'P1-Staff2'], edition): (True, '')
+6 H2 round_trip_ok(selected source as ['P1-Staff2', 'Riff'], edition): (False, 'round trip lost 69 note(s) and gained 69')
+6 H2 round_trip_ok(raw, edition): (False, 'round trip lost 90 note(s) and gained 54')
+6 structure_failure: (None, {'tempo_defaulted': True, 'single_line': False})
+6 pitched range MIDI 36 84
+6 truncation findings: []

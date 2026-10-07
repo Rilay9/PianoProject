@@ -76,6 +76,14 @@
 #  - HYPOTHESIS, Hear it on the re-staffed Blues Riff sounds the riff and the roots only (the drums dropped). Refuted by
 #    the converted file. 2026-10-07: the converter keeps the drums (above); the re-staffed edition omits them by
 #    construction (scratch, one reader); stays HYPOTHESIS until the edition is built and rendered.
+#  - VERIFIED, 2026-10-07 (RS1, A7a1-bluesriff-restaff, docs/review/responses/a7a-lanes-landing.md sections 12-14): the
+#    re-staffed edition is built and in the personal library as song.blues.blues-riff-in-c.pdmx (content/scores/pdmx/
+#    Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.restaff.mxl, sha256 888da99d...; its pdmx.json row carries the CID, so
+#    steps 7-9's refs resolve). Staff 1 is the source's Riff, staff 2 its whole-note roots, every event unchanged (the 18
+#    B4s as written), no voicing and no unpitched head: three readers (the raw walk against the frozen source events in
+#    tools/content/tests/test_restaff.py, music21, partitura; docs/prompts/runs/RS1/). It renders 58 of 58 cursor steps
+#    on the lane's port. So the edition holds no drum part; what Hear it sounds stays unheard (unverified as music).
+#    Tempo 96, defaulted (the score prints none; "120 bpm" is the upload's title). Placement on blues.8 is not done.
 #  - VERIFIED, 2026-10-07 by reading, the click on the Score screen (steps 2-5): the screen's Metronome row is Off by
 #    default (ScoreScreen.ts:760); it starts the session's Metronome, the one click constructed in ScoreScreen.ts,
 #    score/ and PracticeEngine.ts (grep), which sounds the count-in as well (ScoreSession.ts:575, 903-915); the

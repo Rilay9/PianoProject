@@ -1361,15 +1361,17 @@ class AuthoredIdResolution(unittest.TestCase):
         self.assertFalse(RESOLVER.resolve("exercise.blues.twelve-bar-shuffle.c.x", "chart")[0])
         self.assertFalse(RESOLVER.resolve("Exercise.Blues.Twelve-Bar-Shuffle.C", "chart")[0])
 
-    def test_the_real_a7a1_draft_lists_only_its_three_blues_riff_refs(self):
+    def test_the_real_a7a1_draft_lists_no_unresolved_ref(self):
+        # Revised by RS1 (2026-10-07), was "lists only its three Blues Riff refs": the Blues Riff CID was the one ref
+        # left once the shuffle resolved here, and it now resolves through the re-staffed edition's pdmx.json row
+        # (A7a1-bluesriff-restaff). The shuffle still resolves by this rule, never by that row.
         rec = yaml.safe_load((ROOT / "docs/chains/A7a.1.yaml").read_text(encoding="utf-8"))
         failures, listed = cc.check_record(rec, "docs/chains/A7a.1.yaml", RESOLVER, TOOLS, ROOT)
         self.assertEqual(failures, [])
-        self.assertEqual(len(listed), 3, [u.line() for u in listed])
-        refs = {u.ref for u in listed}
-        self.assertEqual(len(refs), 1)
-        self.assertTrue(next(iter(refs)).startswith("Qm"))  # the Blues Riff CID is not admitted
-        self.assertNotIn(AuthoredIdResolution.SHUFFLE, refs)
+        self.assertEqual(listed, [], [u.line() for u in listed])
+        cid = "Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi"
+        self.assertEqual(RESOLVER.pdmx_by_cid[cid]["id"], "song.blues.blues-riff-in-c.pdmx")
+        self.assertIn(AuthoredIdResolution.SHUFFLE, RESOLVER.authored_ids)
 
 
 class TheClauseMap(unittest.TestCase):

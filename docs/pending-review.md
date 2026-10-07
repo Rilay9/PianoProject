@@ -43902,3 +43902,13 @@ Each class has broken records that fail it; 42 tests.
 **Checks.** At landing: the content build passes; the whole content Python suite, 2,086 OK; `npx tsc -b` clean; the whole unit suite, the one red the standing blues.3.
 
 **Open.** The two rows bind the shuffle's built identity; whether CI's Linux build produces the same bytes is shown by the next CI run, and the real-tree test fails there if it does not.
+
+### Entry 283 — RS1: the Blues Riff in C two-staff teaching edition
+
+**What a learner meets.** Nothing yet: the edition is in the personal library, on no rung. Nothing heard; the builder looked at the render of bars 1-2 (the riff on the treble staff over whole-note roots, no voicings, no drums).
+
+**Done** (`docs/review/responses/a7a-lanes-landing.md`, `A7a1-bluesriff-restaff`). `tools/content/pdmx/restaff.py` keeps the source's Riff part and its root staff by part id and converts them unchanged; `tools/content/pdmx/restaff_verify.py`, a raw MusicXML reader independent of music21 and the converter, checks the edition against `tools/content/tests/fixtures/restaff/Qmb7….source-events.json`, frozen from the raw bytes (sha256 69d5bb7e…) and bound to them. The edition `content/scores/pdmx/Qmb7….restaff.mxl` (sha256 888da99d…, the same bytes on three runs) is admitted as `song.blues.blues-riff-in-c.pdmx` by a guarded splice into `content/sources/pdmx.json`, with a derivation block `import_pdmx.validate_derivation` checks on every build; title "Blues Riff in C" (no 120 in it), composer unknown, tempo 96 defaulted. Nine mutants of the edition each fail naming bar and event; the converter's own merged file fails with 180 lines (drums and voicings). The render check: 58 of 58 cursor steps. A7a.1's three Blues Riff refs now resolve; one checker pin that asserted they did not was revised.
+
+**Checks.** At landing: the content build passes (the standing excerpt staleness warnings only); the whole content Python suite, 2,104 OK; the whole unit suite, the one red the standing blues.3.
+
+**Open.** The build's provenance record does not carry the derivation block (`build.py` `attach_provenance`); the claim checks' `readers.py` was not rerun on the one-part edition (three other readers stand in).
