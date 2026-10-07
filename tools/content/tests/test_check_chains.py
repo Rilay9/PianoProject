@@ -918,6 +918,121 @@ class TheOwnerWorkGuard(unittest.TestCase):
 
 
 
+class TheReviewerClosureGuard(unittest.TestCase):
+    """The outside reviewer cannot let required rulings disappear into prose."""
+
+    def setUp(self):
+        self.tree = Tree()
+        self.addCleanup(self.tree.cleanup)
+        self.tree.write("docs/review/responses/old.md", "# Historical response\n")
+        self.tree.write(
+            cc.review_closure_guard.BASELINE_REL.as_posix(),
+            json.dumps({"files": ["old.md"]}) + "\n",
+        )
+
+    def scan(self):
+        return cc.review_closure_guard.scan(self.tree.root, expected_baseline_count=1)
+
+    def write_response(self, name: str, body: str) -> None:
+        self.tree.write(f"docs/review/responses/{name}", body)
+
+    def test_a_new_response_without_the_ledger_marker_fails(self):
+        self.write_response("new.md", "# Response\n\nREVIEW-NONE\n")
+        problems, _ = self.scan()
+        self.assertTrue(any("exactly one" in message and "reviewer-closure-v1" in message for _path, message in problems), problems)
+
+    def test_a_marked_response_must_classify_its_followups(self):
+        self.write_response("new.md", "# Response\n\n<!-- reviewer-closure-v1 -->\n")
+        problems, _ = self.scan()
+        self.assertTrue(any("no REVIEW-OPEN, REVIEW-CLOSE or REVIEW-NONE" in message for _path, message in problems), problems)
+
+    def test_review_none_is_the_clean_no_followup_shape(self):
+        self.write_response("new.md", "# Response\n\n<!-- reviewer-closure-v1 -->\nREVIEW-NONE\n")
+        problems, opened = self.scan()
+        self.assertEqual(problems, [])
+        self.assertEqual(opened, [])
+
+    def test_an_open_requirement_stays_machine_visible(self):
+        self.write_response(
+            "new.md",
+            "# Response\n\n<!-- reviewer-closure-v1 -->\n"
+            "REVIEW-OPEN: PF1-drill | PF1 needs the counted drill journey.\n",
+        )
+        problems, opened = self.scan()
+        self.assertEqual(problems, [])
+        self.assertEqual([(r.ident, r.source) for r in opened], [("PF1-drill", "docs/review/responses/new.md")])
+
+    def test_a_close_needs_a_known_open_and_current_impl_and_test_paths(self):
+        self.write_response(
+            "new.md",
+            "# Response\n\n<!-- reviewer-closure-v1 -->\n"
+            "REVIEW-CLOSE: never-opened | impl=app/src/x.ts | test=app/tests/unit/x.test.ts | done\n",
+        )
+        problems, _ = self.scan()
+        messages = [message for _path, message in problems]
+        self.assertTrue(any("has no REVIEW-OPEN" in message for message in messages), messages)
+        self.assertTrue(any("missing path 'app/src/x.ts'" in message for message in messages), messages)
+        self.assertTrue(any("missing path 'app/tests/unit/x.test.ts'" in message for message in messages), messages)
+
+    def test_a_real_close_clears_only_the_named_requirement(self):
+        self.write_response(
+            "open.md",
+            "# Response\n\n<!-- reviewer-closure-v1 -->\n"
+            "REVIEW-OPEN: PF1-drill | PF1 needs the counted drill journey.\n"
+            "REVIEW-OPEN: PF1-strict | PF1 strict belongs in CI.\n",
+        )
+        self.tree.write("tools/content/pf.py", "# implementation\n")
+        self.tree.write("tools/content/tests/test_pf.py", "# test\n")
+        self.write_response(
+            "close.md",
+            "# Response\n\n<!-- reviewer-closure-v1 -->\n"
+            "REVIEW-CLOSE: PF1-drill | impl=tools/content/pf.py | test=tools/content/tests/test_pf.py | verified on current HEAD\n",
+        )
+        problems, opened = self.scan()
+        self.assertEqual(problems, [])
+        self.assertEqual([r.ident for r in opened], ["PF1-strict"])
+
+    def test_a_close_cannot_point_at_non_test_prose_as_its_test(self):
+        self.write_response(
+            "open.md",
+            "# Response\n\n<!-- reviewer-closure-v1 -->\n"
+            "REVIEW-OPEN: PF1-drill | PF1 needs the counted drill journey.\n",
+        )
+        self.tree.write("tools/content/pf.py", "# implementation\n")
+        self.tree.write("docs/proof.md", "# not a test\n")
+        self.write_response(
+            "close.md",
+            "# Response\n\n<!-- reviewer-closure-v1 -->\n"
+            "REVIEW-CLOSE: PF1-drill | impl=tools/content/pf.py | test=docs/proof.md | no\n",
+        )
+        problems, _ = self.scan()
+        self.assertTrue(any("not a recognized test source" in message for _path, message in problems), problems)
+
+    def test_the_frozen_baseline_cannot_quietly_grow(self):
+        self.tree.write("docs/review/responses/another-old.md", "# Historical\n")
+        self.tree.write(
+            cc.review_closure_guard.BASELINE_REL.as_posix(),
+            json.dumps({"files": ["old.md", "another-old.md"]}) + "\n",
+        )
+        problems, _ = self.scan()
+        self.assertTrue(any("must remain exactly 1 unique" in message for _path, message in problems), problems)
+
+    def test_the_real_review_stream_has_six_open_requirements_and_no_guard_failure(self):
+        problems, opened = cc.review_closure_guard.scan(ROOT)
+        self.assertEqual(problems, [])
+        self.assertEqual(
+            {r.ident for r in opened},
+            {
+                "PH2-source-measure-direct",
+                "PF1-strict-reviewed-shipped",
+                "PF1-earlier-rung-review",
+                "A7b1-insensatez-jazz6",
+                "PF1-counted-drill-journey",
+                "A7b1-zero-preflight-before-reviewed",
+            },
+        )
+
+
 class TheCommandLine(unittest.TestCase):
     def setUp(self):
         self.tree = Governing()
