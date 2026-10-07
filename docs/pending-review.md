@@ -43764,3 +43764,22 @@ No picture was taken; the browser case asserts the text. Nothing heard; unverifi
 **Checks.** The builder: `npx tsc -b`, lint, the full unit suite (the standing blues.3 red and the local parity reference). At landing: typecheck and lint clean; the five harmony, chart and tempo test files 69 of 69.
 
 **Open.** Measures with no `number` attribute still contribute no symbol, as before; the screen's own `chartBars` still draws past the end until PH2.
+
+### Entry 272 — PF1: the chain preflight
+
+**What a learner meets.** Nothing directly: a check that runs on every chain record before anything is built, so a problem class one slice found is never rediscovered by hand (the owner, 2026-10-07, FABLE §2 item 5). Scoreboard 1/28.
+
+**Done.** `tools/content/preflight_chains.py` gives every record and step PASS, FAIL or NOT-APPLICABLE per class, with evidence, written to `docs/prompts/runs/PF1/preflight-<ability>.txt`; report mode exits 0, `--strict` exits 1 on any FAIL and is not yet wired into CI.
+1. **Hand reading:** one-staff files by the build's declared hand; two-staff passages only by current verified facts covering every bar used.
+2. **Cut tempo and marks:** parent and cut read with music21: tempo in force, marks, key and time signatures, kept-staff dynamics, the catalogue tempo and its defaulted flag.
+3. **Control reachable in its mode:** prerequisites parsed from the code (the modes, when Rhythm only, Ladder and Duet appear, the loop, the chart's controls, whether the item is an option of the placed rung); the Lab's internals routed to class 6.
+4. **Counted items match the claim:** requirements read from the stage files and matched to `evidence.updates` by exact id.
+5. **Taught-set hold:** the build's untaught-demand reading at the placed rung.
+6. **Journey derived from the record:** a Playwright skeleton generated from the steps; `--compare` lists differences against a hand-written spec (A7c.1: all 24 steps pair with the phone walk; the differences in `journey-compare-A7c.1.txt`).
+Each class has broken records that fail it; 42 tests.
+
+**Findings.** A7c.1: one FAIL, class 4: the Bizet left-hand update named its item in words, not by id; fixed at landing (the id added to `evidence.updates`), now 0 FAIL. A7b.1: 12 FAIL, read against jazz.5 because its placement on jazz.6 is G6b's lane: the minor drill and Blue Bossa are options of no rung; Insensatez's later-rung steps do not say so; jazz.5's unnamed exercise pool would count the major drill and an ear-drill run; no template for a counted drill run in the generated journey. Rerun after G6b.
+
+**Checks.** At landing: the preflight's 42 tests, the chain checker and paths tests OK; the chain checker 0 failures.
+
+**Open.** The generated spec is neither typechecked nor run (HYPOTHESIS that it compiles); hairpins and dropped-staff dynamics are not judged; a seventh class for one chord per bar is proposed, not built.

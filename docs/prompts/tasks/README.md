@@ -342,6 +342,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **G6a** | The minor shell drill `drill.jazz.minor-ii-v-i-shells`: nine cases in C, A and G minor (Cm6, Am7, Gm7 tonics), each prompt naming its symbol; CK-6 against music21 with every must-fail case red; every other drill row byte-identical on three seeds; placed on no rung (`G6a-minor-shell-drill.md`) | content + app + test | landed 2026-10-06 (`G6a-minor-shell-drill.md`); Entry 269
 | **A7SH** | A7c.1 shipped: `app/tests/e2e/a7c1-phone-walk.spec.ts` walks latin.4 on an emulated upright phone, both counted runs played, the rung complete on Plan; scoreboard 1/28 (`A7SH-a7c1-shipped.md`) | record + test | landed 2026-10-07 (`A7SH-a7c1-shipped.md`); Entry 270
 | **PH1a** | Source-measure identity in positioned harmony: `ChordSymbol` and chart bars carry the source ordinal and the printed label; one bar per source measure in source order; repeated and suffixed numbers no longer fold; conflicts 43 to 31 (`PH1a-source-measure-identity.md`) | app model + test | landed 2026-10-07 (`PH1a-source-measure-identity.md`); Entry 271
+| **PF1** | The chain preflight `tools/content/preflight_chains.py`: six classes seeded from the Bizet slice (hand reading, cut tempo and marks, control reachable in its mode, counted items match the claim, taught-set hold, journey derived from the record), each with broken records; A7c.1 0 FAIL after one id fix, A7b.1 12 FAIL before placement (`PF1-chain-preflight.md`) | tooling + test | landed 2026-10-07 (`PF1-chain-preflight.md`); Entry 272
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -549,6 +550,7 @@ PH1 · landed · 268
 G6a · landed · 269
 A7SH · landed · 270
 PH1a · landed · 271
+PF1 · landed · 272
 F0a · closed · —
 L120 · approved · —
 -->

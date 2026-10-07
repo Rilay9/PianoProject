@@ -279,7 +279,7 @@ independence_test: "Without the original scaffold, the learner looks at a left h
 evidence:
   updates:
     - "One Keep tempo run of the 2/4 tresillo control, exercise.bass-cell.tresillo.c (the exact 2/4, quarter = 60 counterpart of the habanera drill in C), meeting the pass pair (90 % accuracy at 80 % tempo), opened from latin.4; the exercises requirement names this item alone, so a run of the habanera drill or of a 4/4 tresillo exercise does not meet it (the ruling, docs/review/responses/g13-habanera-control.md section 2)."
-    - "One Keep tempo run of the Bizet left-hand cut meeting the pass pair, opened from latin.4; a left-hand-only run counts because the required item is itself the left-hand excerpt."
+    - "One Keep tempo run of the Bizet left-hand cut, excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh, meeting the pass pair, opened from latin.4; a left-hand-only run counts because the required item is itself the left-hand excerpt."
   self_checked:
     - "Naming and counting the cells."
     - "The contrast between the two cells."
