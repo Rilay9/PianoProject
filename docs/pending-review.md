@@ -43748,3 +43748,5 @@ No picture was taken; the browser case asserts the text. Nothing heard; unverifi
 - **One finding.** Step 7a works only with Keep tempo chosen before Rhythm only, because the drill opens in Wait for me; the lesson's wording follows that order, the superseded walk table did not.
 
 **Limits.** An emulated phone in Chromium, not the physical phone; the MIDI mock played the written notes; nothing heard.
+
+**Open, after shipping.** (1) Rhythm only was played with the written notes; the matcher is pitch-free and per step (`PracticeEngine.ts` `findRhythmSlot`), so one tapped key should count: read, not tested. (2) Only the upright phone was walked; sideways and tablet were not. (3) Today offered neither counted item to the walk's new profile; whether Today offers latin.4's work at its stage is untested. (4) Whether the screen explains that Rhythm only appears only after Keep tempo is unchecked.
