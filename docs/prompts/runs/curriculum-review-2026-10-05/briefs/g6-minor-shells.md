@@ -185,7 +185,7 @@ From the record: without the original scaffold, the learner looks at a chart no 
 - `app/tests/unit/lessonClaimsAboutApp.test.ts`: a jazz.6 claim per app fact the new section states (the drill's nine cases, symbol-named, three notes, no fifth; the requirement naming the item).
 - `docs/08-test-map.md` if a new test file is added.
 
-**The requirement (recommended; OPEN to the reviewer at G6b's handoff).**
+**The requirement (SETTLED, `responses/g6-ph-briefs-cb1.md` §5: generic count 2 plus the items row; it does not guarantee comping specifically).**
 
 ```json
 "requirements": [
@@ -206,7 +206,7 @@ Everything else in `jazz.6.md` is unchanged unless a sentence becomes false; nam
 
 **Tests, red first where a fact is new.**
 1. The built jazz.6 lists the item in `exerciseOptions` and in the `items` requirement; jazz.5 and chords-pop.5 unchanged (byte-compare their lesson blocks before and after).
-2. `rungState` on constructed rows: a passing run of the minor drill alone does not meet jazz.6 under the recommended counts (or does, if the reviewer keeps 1; the test states which); a passing major-drill run never meets the `items` row; a generic jazz.6 exercise run never meets it.
+2. `rungState` on constructed rows: a passing run of the minor drill alone does not meet jazz.6 under the settled counts (generic 2, items 1); a passing major-drill run never meets the `items` row; a generic jazz.6 exercise run never meets it.
 3. The lesson claims (`lessonClaimsAboutApp.test.ts`), each red against the pre-G6b catalogue.
 4. The content build passes, including the level-band and placement checks for Blue Bossa on jazz.6.
 5. R3 end to end: the drill opened from jazz.6's option row writes `lessonId: "jazz.6"` (a browser case on the lane's port, or the nearest existing spec that already opens a drill from a rung, extended).
