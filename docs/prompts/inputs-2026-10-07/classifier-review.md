@@ -124,6 +124,18 @@ Extend `characteristics.yaml`. Do not write a new document. Each characteristic 
 
 ## 9. Order of work (bounded, so value comes before research)
 
+**The point is the owner's question: what can code decide, and what can it not?** Step 1's output is that answer. Step 2 proves the answer's "can" column on real files instead of trusting it. The matrix's first "4 rungs code can decide today" turned out to be an overclaim.
+
+Step 1's deliverable is the can/can't map, read three ways:
+- **per characteristic:** the §8 fields;
+- **per place** (rung, track, stage, ability): for each of questions A, B and C, one of three states:
+  - **decidable by code now**: implemented and witnessed;
+  - **decidable with named missing work**: the extractor parameter, or the definition to source;
+  - **not decidable by code**: the reason, and what decides it instead (a curated record, a generator spec, or `UNKNOWN`);
+- **in total:** the counts of each.
+
+"Decidable now" may be written only after step 2 has run it on real items.
+
 1. **Extend the schema** (§8) and fix the concept mapping:
    - check the 70 not-a-property rows and the 21 ambiguous rows against each rung's lesson text, not the concept names;
    - rename the ambiguous concept ids: "octaves" as keyboard geography versus playing octaves, and the classical versus jazz meanings of "voicing".
