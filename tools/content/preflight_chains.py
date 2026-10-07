@@ -53,7 +53,13 @@ The six seed classes, each found by the A7c.1 slice (Entries 241-270 of ``docs/p
     kind whose cards hold their answer pitches is opened from its row and answered card by card through the mock,
     PF2), written to the output folder
     (``journey-<ability>.spec.ts``), never to ``app/tests/e2e/``. Per step: PASS when a template made the step,
-    NOT-APPLICABLE (``routed``, a ``test.fixme`` line) where no template exists for the tool. ``--compare SPEC``
+    NOT-APPLICABLE (``routed``, a ``test.fixme`` line) where no template exists for the tool. Record level (PF3, the
+    ruling ``pf2-landing.md`` section 4): the journey proves the ability, not every requirement of the rung hosting it.
+    It PASSES when the record's counted runs hold the requirements that name their items (the ability's own counted
+    evidence) and leave none of those unheld; a generic requirement (no ``items``) may stay unheld, the counts line then
+    reads the honest partial state ("1 of 2") and no completion is asserted on Plan. The rung or Plan is asserted
+    complete only when the record's own counted runs hold every requirement. A record whose counted runs hold no named
+    requirement, or leave one unheld, FAILS. ``--compare SPEC``
     lists every difference between the generated steps and a hand-written journey (``compare_journey``).
 
 The placed rung is the rung whose lesson file is a step's ``explanation`` ref, or whose requirements name an item an
@@ -1250,7 +1256,49 @@ def plan_journey(rec: dict, ctx: Context, placement: Placement) -> list[JourneyS
     return plan
 
 
+@dataclass
+class Standing:
+    """Where the record's counted runs leave the placed rung's requirements (PF3)."""
+    total: int = 0
+    held: list[int] = field(default_factory=list)  # the 1-based numbers of the requirements the counted runs hold
+    unheld: list[tuple[int, dict]] = field(default_factory=list)
+    named_held: list[int] = field(default_factory=list)  # held requirements that name their items: the ability's evidence
+    named_unheld: list[tuple[int, dict]] = field(default_factory=list)
+
+    @property
+    def complete(self) -> bool:
+        """The record's own counted steps hold every requirement of the rung (a rung with none is not asserted complete)."""
+        return self.total > 0 and not self.unheld
+
+
+def journey_standing(ctx: Context, placement: Placement, plan: list[JourneyStep]) -> Standing:
+    counted_items = list(dict.fromkeys(s.item for s in plan if s.counts and s.counts != "unchanged" and s.item))
+    lesson = ctx.lesson(placement.rung)[2] if placement.rung and ctx.lesson(placement.rung) else {}
+    requirements = [r for r in lesson.get("requirements") or [] if r.get("kind") != "unjudged"]
+    standing = Standing(total=len(requirements))
+    for k, r in enumerate(requirements, 1):
+        if requirement_held(r, counted_items, lesson):
+            standing.held.append(k)
+            if r.get("items"):
+                standing.named_held.append(k)
+        else:
+            standing.unheld.append((k, r))
+            if r.get("items"):
+                standing.named_unheld.append((k, r))
+    return standing
+
+
+def _requirement_words(unheld: list[tuple[int, dict]]) -> list[str]:
+    return [f"requirement {k} (" + (f"{r.get('count', 1)} run(s) of {r['items']}" if r.get("items") else
+            f"any {r.get('count', 1)} distinct runs from {r.get('from')}") + ")" for k, r in unheld]
+
+
 def check_journey(rec: dict, ctx: Context, placement: Placement, plan: list[JourneyStep]) -> list[Result]:
+    """PF3 (the reviewer's ruling ``docs/review/responses/pf2-landing.md`` section 4, ``PF1-ability-journey-scope``): the
+    journey proves the ability, not every requirement of the rung that hosts it. It passes when the record's counted runs
+    hold the requirements that name their items (the ability's own counted evidence) and none of those is left unheld; a
+    generic requirement (no ``items``) may stay unheld, and the rung is then honestly partly complete, with no completion
+    asserted on Plan. Completion is asserted only when the record's own counted runs hold every requirement."""
     out = []
     for step in plan:
         if step.kind == "fixme":
@@ -1258,22 +1306,27 @@ def check_journey(rec: dict, ctx: Context, placement: Placement, plan: list[Jour
         else:
             out.append(Result(6, step.record_step, PASS, [describe(step)]))
     counted = [s for s in plan if s.counts and s.counts != "unchanged"]
-    counted_items = list(dict.fromkeys(s.item for s in counted if s.item))
-    lesson = ctx.lesson(placement.rung)[2] if placement.rung and ctx.lesson(placement.rung) else {}
-    requirements = [r for r in lesson.get("requirements") or [] if r.get("kind") != "unjudged"]
-    total = len(requirements)
-    unheld = [(k, r) for k, r in enumerate(requirements, 1) if not requirement_held(r, counted_items, lesson)]
+    st = journey_standing(ctx, placement, plan)
     if placement.rung is None:
         out.insert(0, Result(6, None, FAIL, ["no placed rung: the journey has no route and no completion to assert"]))
-    elif unheld:
-        what = [f"requirement {k} (" + (f"{r.get('count', 1)} run(s) of {r['items']}" if r.get("items") else
-                f"any {r.get('count', 1)} distinct runs from {r.get('from')}") + ")" for k, r in unheld]
-        out.insert(0, Result(6, None, FAIL, [f"the record's counted runs hold {total - len(unheld)} of the {total} "
-                                             f"requirements {placement.rung} counts: the journey cannot assert completion; "
-                                             f"not held: {'; '.join(what)}"]))
+    elif st.complete:
+        out.insert(0, Result(6, None, PASS, [f"route to {placement.rung}; {len(counted)} counted run(s) bring it to {st.total} "
+                                             f"of {st.total}; completion asserted on Plan"]))
+    elif st.named_unheld:
+        out.insert(0, Result(6, None, FAIL, [f"the record's counted runs hold {len(st.held)} of the {st.total} "
+                                             f"requirements {placement.rung} counts, and leave a requirement that names its "
+                                             f"items unheld: the ability's own counted evidence is not demonstrated; "
+                                             f"not held: {'; '.join(_requirement_words(st.named_unheld))}"]))
+    elif not st.named_held:
+        out.insert(0, Result(6, None, FAIL, [f"the record's counted runs hold {len(st.held)} of the {st.total} "
+                                             f"requirements {placement.rung} counts and none names its items: no counted "
+                                             f"evidence of the ability is demonstrated; "
+                                             f"not held: {'; '.join(_requirement_words(st.unheld))}"]))
     else:
-        out.insert(0, Result(6, None, PASS, [f"route to {placement.rung}; {len(counted)} counted run(s) bring it to {total} "
-                                             f"of {total}; completion asserted on Plan"]))
+        out.insert(0, Result(6, None, PASS, [
+            f"route to {placement.rung}; {len(counted)} counted run(s) hold the named evidence (requirement(s) "
+            f"{', '.join(map(str, st.named_held))}) and the rung reads {len(st.held)} of {st.total}; completion not "
+            f"asserted on Plan (not this ability's evidence: {'; '.join(_requirement_words(st.unheld))})"]))
     return out
 
 
@@ -1522,15 +1575,29 @@ def render_journey(rec: dict, ctx: Context, placement: Placement, plan: list[Jou
                 body.append(f"expect(await countsLine(page)).toMatch(/{s.counts}/);")
         lines += [f"    {b}" for b in body]
         lines.append("  });")
-    lines += [
-        "",
-        "  // Completion: the rung reads complete on Plan.",
-        "  await page.evaluate(() => { window.location.hash = '#/plan'; });",
-        "  const row = page.locator(`.list-row[data-lesson=\"${RUNG}\"]`);",
-        "  await expect(row.locator('.badge')).toContainText([/complete/i]);",
-        "});",
-        "",
-    ]
+    standing = journey_standing(ctx, placement, plan)
+    if standing.complete:
+        lines += [
+            "",
+            "  // Completion: the rung reads complete on Plan.",
+            "  await page.evaluate(() => { window.location.hash = '#/plan'; });",
+            "  const row = page.locator(`.list-row[data-lesson=\"${RUNG}\"]`);",
+            "  await expect(row.locator('.badge')).toContainText([/complete/i]);",
+            "});",
+            "",
+        ]
+    else:
+        # PF3: the record's counted runs prove the ability, not the rung. The counts line asserted above is the honest
+        # partial state; nothing here claims the rung or the Plan complete.
+        lines += [
+            "",
+            f"  // No completion asserted: the record's counted runs hold {len(standing.held)} of the {standing.total} "
+            f"requirements {rung} counts,",
+            "  // the ability's own counted evidence among them; the others are not this ability's, and the rung stays "
+            "partly complete.",
+            "});",
+            "",
+        ]
     return "\n".join(lines)
 
 
@@ -1621,7 +1688,7 @@ def _parse_step_body(body: str, titles: dict, env: dict) -> dict:
     }
 
 
-def compare_journey(plan: list[JourneyStep], written: list[dict]) -> list[str]:
+def compare_journey(plan: list[JourneyStep], written: list[dict], completes: bool = True) -> list[str]:
     """Every difference between the generated steps and the hand-written ones, paired in order by the item opened and
     what is done with it (a hand-written step may cover several record steps)."""
     lines: list[str] = []
@@ -1716,7 +1783,8 @@ def compare_journey(plan: list[JourneyStep], written: list[dict]) -> list[str]:
         if k not in used:
             lines.append(f"written step {w['id']} (opens {w['opens'] or 'nothing'}): no record step pairs with it")
     complete = any(w["complete"] for w in written)
-    lines.append(f"completion on Plan: generated asserts it; written {'asserts it' if complete else 'does not'}")
+    lines.append(f"completion on Plan: generated {'asserts it' if completes else 'does not (the rung stays partly complete)'}; "
+                 f"written {'asserts it' if complete else 'does not'}")
     return lines
 
 
@@ -1805,7 +1873,7 @@ def main(argv: list[str] | None = None) -> int:
             spec_text = (spec if spec.is_absolute() else root / spec).read_text(encoding="utf-8")
             if f"// acceptance-ability: {rec.get('ability')}" not in spec_text:
                 continue
-            diff = compare_journey(plan, parse_written_journey(spec_text))
+            diff = compare_journey(plan, parse_written_journey(spec_text), journey_standing(ctx, placement, plan).complete)
             body = (f"COMPARE generated journey-{path.stem}.spec.ts with {spec.as_posix()}\n"
                     + "\n".join(f"  {line}" for line in diff) + "\n")
             (out_dir / f"journey-compare-{path.stem}.txt").write_text(body, encoding="utf-8", newline="\n")

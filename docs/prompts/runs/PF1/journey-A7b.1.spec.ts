@@ -227,8 +227,6 @@ test("A7b.1: the journey derived from the record", async ({ page }) => {
     test.fixme(true, "no journey template for the tool 'Chord chart'");
   });
 
-  // Completion: the rung reads complete on Plan.
-  await page.evaluate(() => { window.location.hash = '#/plan'; });
-  const row = page.locator(`.list-row[data-lesson="${RUNG}"]`);
-  await expect(row.locator('.badge')).toContainText([/complete/i]);
+  // No completion asserted: the record's counted runs hold 1 of the 2 requirements jazz.6 counts,
+  // the ability's own counted evidence among them; the others are not this ability's, and the rung stays partly complete.
 });

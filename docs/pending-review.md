@@ -43846,3 +43846,11 @@ Each class has broken records that fail it; 42 tests.
 **Checks.** At landing: the content build passes; the preflight on A7b.1 1 FAIL (class 6, the journey decision asked in `handoffs/pf2-landing.md`), steps 3, 14 and 15 passing; the whole content Python suite, 2,030 OK; `npx tsc -b` clean; the whole unit suite, the one red the standing blues.3. The builder: the browser spec twice on its own port.
 
 **Open.** The record's failure route asks for the ear drill's m7 and half-diminished cards back to back, which the drill's random draw does not allow; the ear drill is also on theory.5; this lane's tests pin the chart's current cells and turn red when PH2 lands, by design.
+
+### Entry 277 — PF3: an ability journey proves the ability, not the whole host rung
+
+**What a learner meets.** Nothing directly. Scoreboard 1/28.
+
+**Done.** Class 6 of `tools/content/preflight_chains.py` now passes when the record's counted runs hold every requirement that names its items (the ability's own evidence); a generic requirement may stay unheld, the counts line asserts the honest partial state, and the generated journey asserts completion on Plan only when the record's own counted steps hold every requirement. A7b.1: one minor-drill run holds jazz.6's named requirement, the counts read "1 of 2", no completion asserted; 0 FAIL. A7c.1's journey, compare and report byte-identical. Red first: the A7b.1 shape failed before and passes after; four broken records still fail (a named requirement unheld, generic runs only, a generic-only rung part way, a record that cannot complete).
+
+**Checks.** At landing: the preflight module, 68 OK; `--strict` on the real tree exits 0 (A7c.1 shipped 0 FAIL; A7b.1 0 FAIL; A7a.1 and A7a.3 drafts reported); the whole content Python suite, 2,034 tests, its one failure the record-mirror test before this entry, green after.

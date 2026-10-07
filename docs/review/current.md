@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/bb2-pf3-landing.md` — **response required**: BB2 (Insensatez on jazz.6, the ear drill as jazz.5 review, the lesson text) and PF3 (the ability-journey scope), with the clause map for `A7b1-insensatez-jazz6`, `PF1-ability-journey-scope` and `A7b1-zero-preflight-before-reviewed`.
 - `handoffs/pf2-landing.md` — **response required**: PF2's three ruled changes with their clause map; strict mode in `ci.yml` rather than docs-integrity; A7b.1's journey asserting its own requirement or the whole rung.
 - `handoffs/a7a-drafts.md` — **response required** before the St James and Blues Riff probes: the A7a.3 and A7a.1 drafts, their ids, eight design decisions, and an app-wide gap (rung requirements never read which hands a run played).
 - `handoffs/mt1-g6b-pf1-landing.md` — **answered** in `responses/mt1-g6b-pf1-landing.md` (MT1, G6b, PH1a and PF1 approved; PF1 `--strict` blocks reviewed and shipped records; step 3 stays on jazz.5 as explicit review; Insensatez joins jazz.6 as optional transfer repertoire with no credit; PF1 gets a counted-drill journey template; PH2 may dispatch, consuming source measures directly).

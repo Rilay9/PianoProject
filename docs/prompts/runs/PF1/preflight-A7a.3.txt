@@ -229,7 +229,7 @@ CLASS 5: taught-set hold -- 7 PASS, 0 FAIL, 7 NOT-APPLICABLE
 
 CLASS 6: journey derived from the record -- 6 PASS, 1 FAIL, 8 NOT-APPLICABLE (8 routed to class 6)
   record   FAIL
-           - the record's counted runs hold 0 of the 1 requirements blues.6 counts: the journey cannot assert completion; not held: requirement 1 (any 1 distinct runs from exercises)
+           - the record's counted runs hold 0 of the 1 requirements blues.6 counts and none names its items: no counted evidence of the ability is demonstrated; not held: requirement 1 (any 1 distinct runs from exercises)
   step 1   PASS  [lesson; content/lessons/blues.6.md]
            - lesson
   step 2   PASS  [Hear it; exercise.walking-bass.c.blues]

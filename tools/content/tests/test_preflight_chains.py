@@ -215,15 +215,15 @@ def review_record(action: str) -> dict:
     return rec
 
 
-def with_counted_drill(ctx: pf.Context, *, kind: str = "chord", generic: bool = False) -> pf.Context:
+def with_counted_drill(ctx: pf.Context, *, kind: str = "chord", generic: bool = False, songs: bool = True) -> pf.Context:
     """The constructed tree plus a drill t.2 lists and a requirement that names it (and, for A7b.1's shape, the generic
-    requirement of any two distinct exercises)."""
+    requirement of any two distinct exercises; ``songs=False`` drops the songs requirement, leaving exactly A7b.1's two)."""
     ctx.catalog.append({"id": "drill.counted", "title": "A counted drill", "type": "drill", "file": None,
                         "drill": {"kind": kind}, "measurement": {"status": "runtime", "reason": "made when it opens"}})
     ctx.by_id["drill.counted"] = ctx.catalog[-1]
     lesson = ctx.lesson("t.2")[2]
     lesson["exerciseOptions"] = lesson["exerciseOptions"] + ["drill.counted"]
-    lesson["requirements"] = [r for r in lesson["requirements"] if r["from"] == "songs"] + (
+    lesson["requirements"] = [r for r in lesson["requirements"] if r["from"] == "songs" and songs] + (
         [{"kind": "runs", "from": "exercises", "count": 2}] if generic else
         [{"kind": "runs", "from": "exercises", "items": ["exercise.cell.c"], "count": 1}]
     ) + [{"kind": "runs", "from": "exercises", "items": ["drill.counted"], "count": 1}]
@@ -246,6 +246,21 @@ def drill_record(*, counted: bool = True, second_exercise: bool = False) -> dict
         "One run of drill.counted at the pass accuracy, opened from t.2."]
     if second_exercise:
         rec["evidence"]["updates"].append("One Keep tempo run of exercise.cell.c at the pass pair, opened from t.2.")
+    return rec
+
+
+def a7b_record(*, counted: bool = True, cells: int = 0) -> dict:
+    """A7b.1's shape: the rung lesson, one named drill, and (optionally) counted runs of the two cells. Nothing else is
+    counted; no step is added to hold the rung's generic requirement."""
+    rec = record()
+    rec["steps"] = [rec["steps"][0]]
+    said = "Plays the drill's cards. This is the counted run." if counted else "Plays the drill's cards."
+    recorded = ("A drill row that counts toward the requirement whose items name this drill." if counted
+                else "A drill row; not counted: nothing requires it.")
+    rec["steps"].append(step("Reading and theory drills", "generated", "drill.counted", said, recorded, ["app plays it"]))
+    for cell in ("exercise.cell.c", "exercise.cell.f")[:cells]:
+        rec["steps"].append(step("Keep tempo", "generated", cell, "Plays the cell. This is the counted run.",
+                                 "A session row that counts toward the exercises requirement."))
     return rec
 
 
@@ -605,6 +620,7 @@ class Class6Journey(unittest.TestCase):
         text = pf.render_journey(rec, ctx, placement, plan)
         self.assertIn('await openRow(page, "Cell in C");', text)
         self.assertIn("toMatch(/2 of 2/)", text)
+        self.assertIn("toContainText([/complete/i])", text)  # every requirement held by the record's own runs: completion asserted
         self.assertIn("await setToggle(page, 'score-rhythm', false);", text)  # the remembered Rhythm only, switched off
         self.assertNotIn("// acceptance-ability:", text)  # a skeleton never claims to be an acceptance journey
 
@@ -690,15 +706,61 @@ class Class6CountedDrill(unittest.TestCase):
         self.assertEqual(verdicts(results, 6)[len(rec["steps"])], pf.NA)
         self.assertIn("test.fixme(true", pf.render_journey(rec, ctx, placement, plan))
 
-    def test_broken_a_counted_drill_alone_cannot_complete_a_rung_that_also_asks_two_distinct_exercises(self):
-        # A7b.1's shape: the named drill, and any two distinct exercise runs. One drill run holds the first and gives the
-        # second one of its two, so the journey cannot assert completion until a second exercise run is in the record.
-        ctx = with_counted_drill(context(), generic=True)
-        rec = drill_record()
-        results, _placement, plan = self.plan(rec, ctx)
-        self.assertEqual(verdicts(results, 6)[None], pf.FAIL)
-        self.assertIn("requirement", evidence(results, 6, None))
+    def test_a_counted_drill_holding_its_named_requirement_passes_while_the_generic_one_stays_unheld(self):
+        # PF3, A7b.1's shape (PF1-ability-journey-scope): the named drill, and any two distinct exercise runs. One drill
+        # run holds the named requirement and gives the generic one 1 of its 2: the ability is demonstrated, the rung is
+        # honestly partly complete ("1 of 2"), and no Plan completion is asserted. No second exercise run is added.
+        ctx = with_counted_drill(context(), generic=True, songs=False)
+        rec = a7b_record()
+        results, placement, plan = self.plan(rec, ctx)
+        self.assertEqual(verdicts(results, 6)[None], pf.PASS, evidence(results, 6, None))
+        self.assertEqual([s.counts for s in plan if s.counts and s.counts != "unchanged"], ["1 of 2"])
+        self.assertIn("completion not asserted on Plan", evidence(results, 6, None))
         self.assertIn("any 2 distinct runs from exercises", evidence(results, 6, None))
+        text = pf.render_journey(rec, ctx, placement, plan)
+        self.assertIn("toMatch(/1 of 2/)", text)
+        self.assertNotIn("toContainText([/complete/i])", text)
+        self.assertNotIn(".badge", text)  # the Plan row's complete badge is never read
+        self.assertIn("No completion asserted", text)
+
+    def test_broken_a_record_whose_counted_runs_hold_no_named_requirement_still_fails(self):
+        # The drill is played but the step does not count it: nothing named is held, so the ability is not demonstrated.
+        ctx = with_counted_drill(context(), generic=True, songs=False)
+        results, _placement, _plan = self.plan(a7b_record(counted=False), ctx)
+        self.assertEqual(verdicts(results, 6)[None], pf.FAIL)
+        self.assertIn("leave a requirement that names its items unheld", evidence(results, 6, None))
+
+    def test_broken_generic_runs_alone_do_not_demonstrate_a_named_requirement(self):
+        # One counted cell run is 1 of the generic requirement's 2, so no requirement is held ("0 of 2"), and the named
+        # drill requirement is left unheld.
+        ctx = with_counted_drill(context(), generic=True, songs=False)
+        rec = a7b_record(counted=False, cells=1)
+        results, _placement, plan = self.plan(rec, ctx)
+        self.assertEqual([s.counts for s in plan if s.counts and s.counts != "unchanged"], ["0 of 2"])
+        self.assertEqual(verdicts(results, 6)[None], pf.FAIL)
+        self.assertIn("leave a requirement that names its items unheld", evidence(results, 6, None))
+        self.assertIn("drill.counted", evidence(results, 6, None))
+
+    def test_the_chains_own_counted_steps_holding_the_whole_rung_may_assert_completion(self):
+        # The complementary case (A7c.1's): the named drill and two exercise runs hold every requirement of the rung.
+        ctx = with_counted_drill(context(), generic=True, songs=False)
+        rec = a7b_record(cells=2)
+        results, placement, plan = self.plan(rec, ctx)
+        self.assertEqual(verdicts(results, 6)[None], pf.PASS, evidence(results, 6, None))
+        self.assertIn("completion asserted on Plan", evidence(results, 6, None))
+        text = pf.render_journey(rec, ctx, placement, plan)
+        self.assertIn("toContainText([/complete/i])", text)
+        self.assertNotIn("No completion asserted", text)
+
+    def test_broken_a_generic_only_rung_held_part_way_names_no_evidence(self):
+        # A rung whose only requirement is the generic "any two exercises", with one counted run: nothing names its items,
+        # so there is no counted evidence of the ability to demonstrate.
+        ctx = context()
+        ctx.lesson("t.2")[2]["requirements"] = [{"kind": "runs", "from": "exercises", "count": 2}]
+        rec = a7b_record(counted=False, cells=1)
+        results, _placement, _plan = self.plan(rec, ctx)
+        self.assertEqual(verdicts(results, 6)[None], pf.FAIL)
+        self.assertIn("none names its items", evidence(results, 6, None))
 
     def test_the_second_exercise_run_completes_it(self):
         ctx = with_counted_drill(context(), generic=True)

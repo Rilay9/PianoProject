@@ -226,7 +226,7 @@ CLASS 5: taught-set hold -- 0 PASS, 0 FAIL, 15 NOT-APPLICABLE
 
 CLASS 6: journey derived from the record -- 4 PASS, 1 FAIL, 11 NOT-APPLICABLE (11 routed to class 6)
   record   FAIL
-           - the record's counted runs hold 0 of the 1 requirements blues.8 counts: the journey cannot assert completion; not held: requirement 1 (any 1 distinct runs from exercises)
+           - the record's counted runs hold 0 of the 1 requirements blues.8 counts and none names its items: no counted evidence of the ability is demonstrated; not held: requirement 1 (any 1 distinct runs from exercises)
   step 1   PASS  [lesson; content/lessons/blues.8.md]
            - lesson
   step 2   NOT-APPLICABLE (routed to class 6)  [Duet; exercise.blues.twelve-bar-shuffle.c]
