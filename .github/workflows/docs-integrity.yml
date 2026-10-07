@@ -44,8 +44,8 @@ jobs:
       # or its record); the production run below only shows the real records pass.
       - name: The chain checker goes red on each broken record
         run: python3 -m unittest tools.content.tests.test_check_chains -v
-      # FABLE.md section 3: the chain records in docs/chains/ obey the checker's rules, and a brief that
-      # carries an `ability: <id>` line has the three headings and a passing record. A push touching only
-      # those files starts no ci.yml run, so this is the runner that sees it.
-      - name: The chain records and the briefs that carry an ability marker
-        run: python3 tools/content/check_chains.py --lint-briefs
+      # FABLE.md sections 3 and 10: chain records obey the checker, marked briefs have the three
+      # headings and a passing record, and a live reviewer handoff cannot assign QA to the owner.
+      # A push touching only these files starts no ci.yml run, so this is the runner that sees it.
+      - name: The chain records, marked briefs, and live reviewer handoffs
+        run: python3 tools/content/check_chains.py --lint-briefs --lint-handoffs
