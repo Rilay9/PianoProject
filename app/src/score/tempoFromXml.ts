@@ -58,7 +58,13 @@
  * **Not read:** `<sound time-only>` (which passes of a repeat a sound applies to; every pass hears it), a
  * tempo in a `<note>`'s `<play>`, and tempo marks printed only as text (E32's door reads those and writes a
  * `<sound tempo>` beside them, which this reads).
+ *
+ * **The position walk is shared** (PH1): `measureWalk.ts` holds it, and the chord-symbol reader (`harmony.ts`)
+ * stands on the same walk, so a tempo and a chord symbol are placed by one set of rules. What a tempo is, and the
+ * direction offset rule above, stay this reader's own.
  */
+
+import { attribute, walkMeasures } from './measureWalk';
 
 /** A `<beat-unit>`'s length in quarter notes: MusicXML's note-type values. */
 export const BEAT_UNIT_QUARTERS: Readonly<Record<string, number>> = {
@@ -124,28 +130,12 @@ interface Raw {
   mark?: TempoMark;
 }
 
-/** Tags that start with these names but are other elements: `<measure-style>`, `<direction-type>`. */
-const PART = /<part(?=[\s>])[^>]*>([\s\S]*?)<\/part>/g;
-const MEASURE = /<measure(?=[\s>])[^>]*>([\s\S]*?)<\/measure>/g;
-/** The measure's children that move the position or state a tempo, in page order. */
-const CHILD = /<(note|backup|forward|direction|attributes|sound)(?=[\s/>])([^>]*?)(?:\/>|>([\s\S]*?)<\/\1>)/g;
-
-function attribute(attributes: string, name: string): string | undefined {
-  return new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)')`).exec(attributes)?.slice(1).find((value) => value !== undefined);
-}
-
 /** A tempo attribute's value, when it is a positive number. */
 function soundTempo(attributes: string): number | undefined {
   const raw = attribute(attributes, 'tempo');
   if (raw === undefined || raw.trim() === '') return undefined;
   const bpm = Number(raw);
   return Number.isFinite(bpm) && bpm > 0 ? bpm : undefined;
-}
-
-function childNumber(body: string, tag: string): number | undefined {
-  const raw = new RegExp(`<${tag}(?=[\\s>])[^>]*>\\s*(-?[\\d.]+)\\s*</${tag}>`).exec(body)?.[1];
-  const value = Number(raw);
-  return raw !== undefined && Number.isFinite(value) ? value : undefined;
 }
 
 /** A direction's `<metronome>`, when it states a tempo (see the module note for what is skipped). */
@@ -174,54 +164,43 @@ interface Place {
 }
 const before = (a: Place, b: Place): boolean => a.measure < b.measure || (a.measure === b.measure && a.offset < b.offset);
 
-/** Every tempo statement in the file, unresolved, in score order, and where the first note sounds. */
+/**
+ * Every tempo statement in the file, unresolved, in score order, and where the first note sounds. The positions
+ * are the shared walk's (`measureWalk.ts`: parts around measures, `<divisions>` carried, chords, graces, `<backup>`
+ * and `<forward>`); what a tempo is, and that a direction's `<offset>` moves it only where it sounds, is this
+ * reader's own policy.
+ */
 function rawEvents(xml: string): { raw: Raw[]; firstSound: Place | undefined } {
-  const text = xml.replace(/<!--[\s\S]*?-->/g, '');
   const raw: Raw[] = [];
   let order = 0;
   let firstSound: Place | undefined;
-  for (const [, part = ''] of text.matchAll(PART)) {
-    let divisions = 1;
-    let measure = 0;
-    for (const [, body = ''] of part.matchAll(MEASURE)) {
-      let position = 0;
+  walkMeasures(xml, {
+    child: ({ tag, attributes, inner, measure, position, divisions }) => {
       const at = (): number => Math.max(0, Math.round((position / divisions) * 1e6) / 1e6);
-      for (const [, tag, attributes = '', inner = ''] of body.matchAll(CHILD)) {
-        if (tag === 'attributes') {
-          const set = childNumber(inner, 'divisions');
-          if (set !== undefined && set > 0) divisions = set;
-        } else if (tag === 'note') {
-          // A chord's first note has already sounded at this place; a cue note is not played.
-          const chord = /<chord\s*\/>|<chord\s*>/.test(inner);
-          if (!chord && !/<rest(?=[\s/>])/.test(inner) && !/<cue\s*\/>/.test(inner)) {
-            const here = { measure, offset: at() };
-            if (!firstSound || before(here, firstSound)) firstSound = here;
-          }
-          if (chord || /<grace(?=[\s/>])/.test(inner)) continue;
-          position += childNumber(inner, 'duration') ?? 0;
-        } else if (tag === 'backup') {
-          position -= childNumber(inner, 'duration') ?? 0;
-        } else if (tag === 'forward') {
-          position += childNumber(inner, 'duration') ?? 0;
-        } else if (tag === 'sound') {
-          const bpm = soundTempo(attributes);
-          if (bpm !== undefined) raw.push({ measure, offset: at(), order: order++, sound: bpm });
-        } else {
-          // A direction: its mark and its sound, at its position (moved by an offset that sounds).
-          const offsetMatch = /<offset(?=[\s>])([^>]*)>\s*(-?[\d.]+)\s*<\/offset>/.exec(inner);
-          const shift = offsetMatch && attribute(offsetMatch[1] ?? '', 'sound') === 'yes' ? Number(offsetMatch[2]) : 0;
-          const offset = Math.max(0, Math.round(((position + (Number.isFinite(shift) ? shift : 0)) / divisions) * 1e6) / 1e6);
-          const soundTag = /<sound(?=[\s/>])([^>]*)>/.exec(inner);
-          const sound = soundTag ? soundTempo(soundTag[1] ?? '') : undefined;
-          const mark = metronomeOf(inner);
-          if (sound !== undefined || mark !== undefined) {
-            raw.push({ measure, offset, order: order++, ...(sound === undefined ? {} : { sound }), ...(mark === undefined ? {} : { mark }) });
-          }
+      if (tag === 'note') {
+        // A chord's first note has already sounded at this place; a cue note is not played.
+        const chord = /<chord\s*\/>|<chord\s*>/.test(inner);
+        if (!chord && !/<rest(?=[\s/>])/.test(inner) && !/<cue\s*\/>/.test(inner)) {
+          const here = { measure, offset: at() };
+          if (!firstSound || before(here, firstSound)) firstSound = here;
+        }
+      } else if (tag === 'sound') {
+        const bpm = soundTempo(attributes);
+        if (bpm !== undefined) raw.push({ measure, offset: at(), order: order++, sound: bpm });
+      } else if (tag === 'direction') {
+        // A direction: its mark and its sound, at its position (moved by an offset that sounds).
+        const offsetMatch = /<offset(?=[\s>])([^>]*)>\s*(-?[\d.]+)\s*<\/offset>/.exec(inner);
+        const shift = offsetMatch && attribute(offsetMatch[1] ?? '', 'sound') === 'yes' ? Number(offsetMatch[2]) : 0;
+        const offset = Math.max(0, Math.round(((position + (Number.isFinite(shift) ? shift : 0)) / divisions) * 1e6) / 1e6);
+        const soundTag = /<sound(?=[\s/>])([^>]*)>/.exec(inner);
+        const sound = soundTag ? soundTempo(soundTag[1] ?? '') : undefined;
+        const mark = metronomeOf(inner);
+        if (sound !== undefined || mark !== undefined) {
+          raw.push({ measure, offset, order: order++, ...(sound === undefined ? {} : { sound }), ...(mark === undefined ? {} : { mark }) });
         }
       }
-      measure += 1;
-    }
-  }
+    },
+  });
   return { raw, firstSound };
 }
 

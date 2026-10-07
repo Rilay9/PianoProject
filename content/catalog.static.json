@@ -2356,6 +2356,94 @@
     }
   },
   {
+    "id": "drill.jazz.minor-ii-v-i-shells",
+    "type": "drill",
+    "title": "Minor ii-V-i with shell voicings",
+    "composer": null,
+    "arranger": "PianoPath",
+    "tracks": [
+      "jazz"
+    ],
+    "level": 6.1,
+    "levelSource": "judged",
+    "abrsmGradeApprox": null,
+    "concepts": [
+      "shell-voicings",
+      "ii-V-I",
+      "guide-tones"
+    ],
+    "hands": "both",
+    "durationSec": null,
+    "tempoBpm": null,
+    "keySig": null,
+    "timeSig": null,
+    "file": null,
+    "variantOf": null,
+    "variantLabel": null,
+    "drill": {
+      "kind": "chord",
+      "params": {
+        "cases": [
+          {
+            "key": "C minor",
+            "numeral": "iiø7",
+            "symbol": "Dm7b5"
+          },
+          {
+            "key": "C minor",
+            "numeral": "V7",
+            "symbol": "G7"
+          },
+          {
+            "key": "C minor",
+            "numeral": "i",
+            "symbol": "Cm6"
+          },
+          {
+            "key": "A minor",
+            "numeral": "iiø7",
+            "symbol": "Bm7b5"
+          },
+          {
+            "key": "A minor",
+            "numeral": "V7",
+            "symbol": "E7"
+          },
+          {
+            "key": "A minor",
+            "numeral": "i",
+            "symbol": "Am7"
+          },
+          {
+            "key": "G minor",
+            "numeral": "iiø7",
+            "symbol": "Am7b5"
+          },
+          {
+            "key": "G minor",
+            "numeral": "V7",
+            "symbol": "D7"
+          },
+          {
+            "key": "G minor",
+            "numeral": "i",
+            "symbol": "Gm7"
+          }
+        ],
+        "voicing": "shell"
+      }
+    },
+    "source": {
+      "name": "PianoPath generator",
+      "url": null,
+      "license": "CC0-1.0",
+      "pd_region": "worldwide",
+      "fetchedAt": null,
+      "checksum": null,
+      "editionNotes": "Generated at runtime by the app; nothing is bundled."
+    }
+  },
+  {
     "id": "drill.jam.form-tracker",
     "type": "drill",
     "title": "Play the form with the chart",

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  PH1's position fixture (docs/prompts/runs/curriculum-review-2026-10-05/briefs/seam-chart-positioned-harmony.md,
+  test 5). Hand-written; every expected position is stated beside it in quarter notes from the bar's start.
+  Bar 1: voice 1 a whole note, <backup> of a whole note, voice 2 two half notes with a harmony between them (2.0).
+    A reader that ignores <backup> puts it at 6.0; one that resets on a voice change but ignores durations, at 0.
+  Bar 2: a quarter, a <chord/> note and a grace note before harmony A (1.0: neither moves it), then a <forward>
+    of a half before harmony B (3.0: the forward moves it). The grace note carries a <duration>, which MusicXML
+    does not allow and some writers emit anyway, so a reader that advanced on a grace note would show it (2.0).
+  Bar 3: <divisions> changes to 2; a quarter (2 divisions) before harmony C (1.0), then harmony D with an
+    <offset> of 2 divisions and no sound attribute (2.0: a harmony's offset always moves it).
+-->
+<score-partwise version="4.0">
+  <part-list>
+    <score-part id="P1"><part-name>Piano</part-name></score-part>
+  </part-list>
+  <part id="P1">
+    <measure number="1">
+      <attributes>
+        <divisions>1</divisions>
+        <time><beats>4</beats><beat-type>4</beat-type></time>
+      </attributes>
+      <note><pitch><step>C</step><octave>5</octave></pitch><duration>4</duration><voice>1</voice><type>whole</type></note>
+      <backup><duration>4</duration></backup>
+      <note><pitch><step>C</step><octave>4</octave></pitch><duration>2</duration><voice>2</voice><type>half</type></note>
+      <harmony><root><root-step>G</root-step></root><kind>dominant</kind></harmony>
+      <note><pitch><step>B</step><octave>3</octave></pitch><duration>2</duration><voice>2</voice><type>half</type></note>
+    </measure>
+    <measure number="2">
+      <note><pitch><step>C</step><octave>4</octave></pitch><duration>1</duration><voice>1</voice><type>quarter</type></note>
+      <note><chord/><pitch><step>E</step><octave>4</octave></pitch><duration>1</duration><voice>1</voice><type>quarter</type></note>
+      <note><grace/><pitch><step>D</step><octave>4</octave></pitch><duration>1</duration><voice>1</voice><type>eighth</type></note>
+      <harmony><root><root-step>A</root-step></root><kind>minor</kind></harmony>
+      <forward><duration>2</duration></forward>
+      <harmony><root><root-step>D</root-step></root><kind>minor</kind></harmony>
+      <note><pitch><step>D</step><octave>4</octave></pitch><duration>1</duration><voice>1</voice><type>quarter</type></note>
+    </measure>
+    <measure number="3">
+      <attributes>
+        <divisions>2</divisions>
+      </attributes>
+      <note><pitch><step>E</step><octave>4</octave></pitch><duration>2</duration><voice>1</voice><type>quarter</type></note>
+      <harmony><root><root-step>F</root-step></root><kind>major</kind></harmony>
+      <harmony><root><root-step>C</root-step></root><kind>major</kind><offset>2</offset></harmony>
+      <note><pitch><step>C</step><octave>4</octave></pitch><duration>6</duration><voice>1</voice><type>half</type><dot/></note>
+    </measure>
+  </part>
+</score-partwise>

@@ -1,0 +1,53 @@
+# PH1: music21 as the independent witness to the new reader
+
+files read: 519; music21 could not parse: 0
+symbols (reader): 10410; agree (same bar, root, offset within 0.0001): 10409
+offset disagreements (same bar and root, different offset): 0
+explained, not disagreements: music21's copies of a staffless harmony into the other staves of its part: 1016; symbols in a measure whose number is not a number, paired by root and offset: 1
+unexplained: read by the reader only 0; by music21 only 0
+music21 NoChord symbols (no root; the reader skips a rootless symbol, as before PH1): 287
+bars (reader's harmony part, every staff): notated length agrees 8751, differs 0
+pickup reading (reader pickup / first-bar incomplete against music21 paddingLeft > 0): agrees 8739; differs, explained (music21's carried short-bar rule, replayed on the reader's lengths) 12; differs, unexplained 0
+
+## music21 could not parse
+
+## Offset disagreements
+
+## Read by the reader only (unexplained)
+
+## Read by music21 only (unexplained)
+
+## Symbols in a measure whose number is not a number
+quarry/E-latin/so-danco-samba-QmbmC9BRdBLb6XUbyf5TqSy1P1oYdNDYTJoSpd4nXByPMD.musicxml
+  G7 @0: the reader's measure number is not a number (music21 numbers it 7)
+
+## Notated bar length disagreements
+
+## Pickup reading disagreements (unexplained)
+
+## Pickup reading disagreements explained by music21's carried short-bar rule
+content/pdmx/QmbH7PjeJoE4sFYy6AmuaWooZinqkEmdmM7CV1Fk8FDrQb.mxl = bundle/pdmx/QmbH7PjeJoE4sFYy6AmuaWooZinqkEmdmM7CV1Fk8FDrQb.mxl
+  ordinal 17 (number 18): reader mismatch (walked 1 of 3), music21 paddingLeft 2: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+content/pdmx/QmdoUTQsV4naWASs8WePirMPDNcRhVnoHKMTQQAyjdW2RU.mxl = bundle/pdmx/QmdoUTQsV4naWASs8WePirMPDNcRhVnoHKMTQQAyjdW2RU.mxl
+  ordinal 16 (number 17): reader mismatch (walked 2 of 3), music21 paddingLeft 1: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+content/pdmx/QmZkPRC2P6LWrykPxdQHAoriDBFEtD7aqkHKcvA1eYhs7f.mxl = bundle/pdmx/QmZkPRC2P6LWrykPxdQHAoriDBFEtD7aqkHKcvA1eYhs7f.mxl
+  ordinal 8 (number 9): reader mismatch (walked 1.5 of 4), music21 paddingLeft 2.5: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+quarry/B-jazz/autumn-leaves-QmR8ycCSt3M7NwcgPCqgZ6woPFg7YCbiyoGR79VFM3zh7v.musicxml
+  ordinal 17 (number 18): reader mismatch (walked 3.5 of 4), music21 paddingLeft 0.5: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+  ordinal 23 (number 24): reader mismatch (walked 3.5 of 4), music21 paddingLeft 0.5: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+  ordinal 34 (number 35): reader mismatch (walked 3.5 of 4), music21 paddingLeft 0.5: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+  ordinal 37 (number 38): reader mismatch (walked 3.5 of 4), music21 paddingLeft 0.5: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+quarry/B-jazz/autumn-leaves-QmYjsj12FbAhMvLKL2fRdok4XLzGrY7MFFPQLP1Gtj4w4i.musicxml
+  ordinal 9 (number 10): reader mismatch (walked 1 of 4), music21 paddingLeft 3: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+quarry/E-latin/tico-tico-QmWbvFZYw6cR7ytP7V2SyZm2u6VMGCD31cBnNuWwMoqFLw.musicxml
+  ordinal 17 (number 18): reader mismatch (walked 1.5 of 4), music21 paddingLeft 2.5: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+  ordinal 34 (number 35): reader mismatch (walked 1.5 of 4), music21 paddingLeft 2.5: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+quarry/F-improv-compose/stephen-foster-oh-susanna-QmchjwvtpXykrxVrMHadPZLP7AHZ4ZgFjEg6qca7xpPFcm.musicxml
+  ordinal 16 (number 17): reader mismatch (walked 3 of 4), music21 paddingLeft 1: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+quarry/L-artists/aloha-oe-QmZ2XRr489YtJVYSs5HUV8G89nKjqXbMUUh6o9eZhc5n51.musicxml
+  ordinal 9 (number 10): reader mismatch (walked 1.5 of 4), music21 paddingLeft 2.5: music21's carried short-bar rule (a short bar after an earlier unpadded short bar is padded as an anacrusis)
+
+## The A7b.1 charts (the committed files and the raw quarry dumps): 3 files
+  content/pdmx/QmemwmomPM2tq51u1sTFEAPqdzPkwrJkuKCsMThnKqpvFW.mxl = bundle/pdmx/QmemwmomPM2tq51u1sTFEAPqdzPkwrJkuKCsMThnKqpvFW.mxl: symbols 24, agree 24, offset disagreements 0, reader only 0, music21 only 0, music21 copies 0, bars agree 32, differ 0
+  content/pdmx/QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6.mxl = bundle/pdmx/QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6.mxl: symbols 24, agree 24, offset disagreements 0, reader only 0, music21 only 0, music21 copies 0, bars agree 32, differ 0
+  quarry/B-jazz/blue-bossa-QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6.musicxml: symbols 24, agree 24, offset disagreements 0, reader only 0, music21 only 0, music21 copies 0, bars agree 32, differ 0

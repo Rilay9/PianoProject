@@ -11,18 +11,21 @@
 # status: draft. Refs, by when they resolve:
 #  - resolve now: content/lessons/jazz.5.md (the lesson that teaches the major shells and holds the shell drill today;
 #    the minor section's home, jazz.5 by R28 or jazz.6 by GENERATOR-ADDENDUM G6 and the map's MUSIC line, is the
-#    placement seam's decision, and this ref moves with it); drill.jazz.ii-v-i-shells and drill.ear.seventh-qualities
-#    (content/catalog.static.json); app/src/engine/sightReading.ts (the Lab's progression exercise and tune);
+#    placement seam's decision, and this ref moves with it); drill.jazz.minor-ii-v-i-shells (G6a, unplaced; G6b puts
+#    it on jazz.6) and drill.ear.seventh-qualities (content/catalog.static.json); app/src/engine/sightReading.ts (the
+#    Lab's progression exercise and tune);
 #    song.folk.insensatez-how-insensitive-jobim.pdmx (content/sources/pdmx.json, 32 bars); the Markdown anchors and the
 #    test files named under `generated`.
 #  - the first lane commits: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6, Blue Bossa (Kenny Dorham), the quarry's
 #    lead sheet: admitted by the probe (briefs/probe-bluebossa.md, Station 1) with the guarded text splice as
 #    song.jazz.kenny-dorham-blue-bossa.pdmx (raw b2ef95b8..., converted b2a12ede...; intake/QmTj....md, personal
 #    library ADMITTED, curriculum CANDIDATE), so its five refs resolve and the checker lists none for this record.
-# Not built, so steps 4 and 11-13 cannot be played as written yet: the drill's minor form (G6: shellChord counts degrees
-# on the major scale, app/src/engine/drills/theory.ts:353-380, so a minor i comes out as a major-seventh shell; CK-6 is
-# not written); the placement (rung, lesson section, the requirement naming the drill). The record stays draft until
-# both land and the reviewer reads it. A third capability, named by the reviewer's design ruling
+# Built by G6a: the minor drill as its own item, drill.jazz.minor-ii-v-i-shells (nine cases as row data, each prompt
+# naming its symbol, the shell taken from the symbol's own chord by shellFromSymbol in theory.ts; the major row and its
+# shellChord path unchanged), held to music21 by CK-6 (tools/content/tests/test_ck6_minor_shells.py and
+# app/tests/unit/minorShellDrill.test.ts). Not built, so step 4 cannot be counted as written yet: the placement (G6b:
+# jazz.6's exerciseOptions, the requirement naming the drill, the lesson section). The record stays draft until it
+# lands and the reviewer reads it. A third capability, named by the reviewer's design ruling
 # (docs/review/responses/a7b1-bluebossa-design.md section 4): the Chord chart cannot supply the rhythm section without
 # its own chord comp (ChordChartScreen.ts: Bass + drums on forces comping on, and the backing is scheduled from
 # compBar, which runs only while comping is on), so step 11 (Comp off, Bass + drums on) is blocked on an app seam that
@@ -75,9 +78,9 @@ steps:
     removes: [notation, chord symbols, key named, numerals named, held chord named]
 
   - action: "Plays iiø7, V7 and the tonic as shells on demand, in C minor first, then in the drill's other minor keys. This is the counted run."
-    content: {kind: generated, ref: drill.jazz.ii-v-i-shells}
+    content: {kind: generated, ref: drill.jazz.minor-ii-v-i-shells}
     tool: Reading and theory drills
-    scaffold: [numerals named, key named]
+    scaffold: [numerals named, key named, chord symbols]
     feedback: "Right or wrong per card; a shown or played answer costs the card (MODE-SHEET section 25)."
     recorded: "A drill row, share right (MODE-SHEET section 25, section 0 R5); a drill passes on accuracy alone (R4) and counts for a rung only when opened from that rung (R3), here toward the requirement whose items name this drill (RECONCILIATION R28)."
     cannot_establish: "Recognition by ear or eye in context; use in music (MODE-SHEET section 25). That the learner knows the shell cannot show the flat fifth: the shell is the same set for iiø7 and iim7."
@@ -217,7 +220,7 @@ independence_test: "Without the original scaffold, the learner looks at a chart 
 
 evidence:
   updates:
-    - "One run of the minor ii-V-i shell drill (the minor form of drill.jazz.ii-v-i-shells, once G6 builds it) meeting its accuracy standard, opened from the placed rung, the requirement's items naming that drill (RECONCILIATION R28; a drill row passes on accuracy alone, MODE-SHEET section 0 R4). A run of the major shell drill, of any other exercise or of any song does not meet it."
+    - "One run of the minor ii-V-i shell drill, drill.jazz.minor-ii-v-i-shells (its own item, built by G6a; placed by G6b), meeting its accuracy standard, opened from the placed rung, the requirement's items naming that drill (RECONCILIATION R28; a drill row passes on accuracy alone, MODE-SHEET section 0 R4). A run of the major shell drill (drill.jazz.ii-v-i-shells), of any other exercise or of any song does not meet it."
   self_checked:
     - "Naming the chord qualities by ear (the ear drill echoes the chord; the spoken name is not stored)."
     - "Knowing what the shell leaves out, and choosing the tonic shell the symbol asks for."
@@ -236,15 +239,19 @@ evidence:
     - "That Blue Bossa contains the progression: playing the tune is not the ability (ORCHESTRATION-CONTRACT section 8)."
 
 generated:
-  - family: drill.jazz.ii-v-i-shells
+  - family: drill.jazz.minor-ii-v-i-shells
     job: CONTROL
     presented_as: drill
-    contract: "docs/prompts/runs/curriculum-review-2026-10-05/GENERATOR-ADDENDUM.md#generator-rows-16"
-    checker: "docs/prompts/runs/curriculum-review-2026-10-05/ABILITY-MAP.md#52-checkers"
+    contract: "docs/prompts/runs/curriculum-review-2026-10-05/briefs/g6-minor-shells.md#generated-content"
+    checker: tools/content/tests/test_ck6_minor_shells.py
     musical_properties:
-      chord pitch-class sets of iiø7, V7 and the tonic per minor key: "CK-6, not yet written (the G6 seam): music21 RomanNumeral(fig, key.Key(t)) pitch classes for every figure and key, compared with the drill's expected sets. At 5783f22d the drill has no minor form: shellChord counts degrees on the major scale (app/src/engine/drills/theory.ts:353-380)."
-      the half-diminished quality in a root-3-7 shell: "Not shown by construction: the iiø7 shell and the iim7 shell are the same pitch classes (GENERATOR-ADDENDUM G6, the musical fact for the lesson); the G6 contract either adds the fifth or says so."
-      the tonic quality (im7, im6 or im(maj7)): "Chosen by the G6 seam from the primary source (ABILITY-MAP A7b.1); Blue Bossa prints Cm6, one reader's read, verified at the probe's Station 2."
+      each symbol's full pitch-class set, root and quality: "CK-6: music21 harmony.ChordSymbol for each of the nine configured symbols (Dm7b5, G7, Cm6; Bm7b5, E7, Am7; Am7b5, D7, Gm7), committed as tools/content/tests/fixtures/ck6_minor_shells.json; the Python half fails if the fixture differs from music21's reading of the settled table, and if the catalogue row's cases differ from that table."
+      each numeral in its key agrees with its symbol: "CK-6: music21 roman.RomanNumeral(fig, key.Key(tonic)); iiø7 and V7 have exactly the symbol's pitch classes and root; the tonic i has the symbol's root and minor third and lies inside the symbol (music21 reads i6 as a first-inversion triad, so the sixth of Cm6 is the symbol's fact, not the numeral's)."
+      each prompt asks the configured shell and never the fifth: "CK-6, app half (app/tests/unit/minorShellDrill.test.ts): the built row's prompts have three notes whose pitch classes equal music21's getChordStep(1, 3, 7), or (1, 3, 6) for Cm6, and none is the chord's fifth."
+      the answer staff spells each member as music21 does: "CK-6, app half: the Show me staff (sheetForPrompt) writes each shell member with music21's step and alter (E-flat in Cm6, G-sharp in E7, F-sharp in D7, B-flat in Gm7)."
+      the label names the symbol: "CK-6, app half: every prompt's label carries the symbol as the lesson writes it (Dm7♭5), the numeral and the key."
+      all nine asked in an ordinary run: "CK-6, app half: ten prompts, 1-9 the nine cases in order, 10 case 1 again; the same labels for the default seed and two others (buildChord cycles the row's list; the seed does not reorder it)."
+      the half-diminished quality in a root-3-7 shell: "Not shown by construction, and expected: Am7b5's shell equals Am7's (CK-6's boundary case, green in both halves); the omitted flat fifth is a lesson sentence (G6b), not a drill claim."
   - family: drill.ear.seventh-qualities
     job: CONTROL
     presented_as: drill

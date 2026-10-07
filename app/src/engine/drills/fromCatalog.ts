@@ -56,6 +56,7 @@ import {
   parseTimeSignature,
   romanToChord,
   shellChord,
+  shellFromSymbol,
   type ParsedChord,
 } from './theory';
 import { noteLabel, type Drill, type DrillKind, type DrillPrompt } from './types';
@@ -292,8 +293,51 @@ function buildCallResponse(p: Params, base: Required<BuildOptions>, count: numbe
   });
 }
 
+/** `"Dm7b5"` as a lead sheet prints it: `"Dm7♭5"`. The catalogue writes music21's `-` and ASCII. */
+function displayChordSymbol(symbol: string): string {
+  const match = /^([A-G])([#-]?)(.*)$/.exec(symbol.trim());
+  if (!match) return symbol.trim();
+  const accidental = match[2] === '-' ? '♭' : match[2] === '#' ? '♯' : '';
+  const quality = (match[3] ?? '').replace(/b(?=\d)/g, '♭').replace(/#(?=\d)/g, '♯');
+  return `${match[1] as string}${accidental}${quality}`;
+}
+
+/**
+ * Per-key cases, each naming its key, its numeral and the chord symbol to play.
+ *
+ * `drill.jazz.minor-ii-v-i-shells` (A7b.1): a minor ii–V–i's tonic is whatever the chart
+ * prints (Cm6 in Blue Bossa, Am7 in Insensatez), not a rule of the minor scale, so the chord is
+ * data per case, and the symbol is the source of the notes
+ * (`shellFromSymbol` under `voicing: "shell"`). The numeral and the key ride along for the
+ * label; CK-6 checks that each case's numeral and symbol state the same chord. The order is
+ * the row's, never the seed's, so every run asks every case.
+ *
+ * A case the reader cannot build is dropped rather than guessed; CK-6's population test is
+ * what notices a drill with fewer cases than its row.
+ */
+function chordsFromCases(value: unknown, shells: boolean): ParsedChord[] {
+  if (!Array.isArray(value)) return [];
+  const out: ParsedChord[] = [];
+  for (const entry of value as unknown[]) {
+    if (!entry || typeof entry !== 'object') continue;
+    const { key, numeral, symbol } = entry as Record<string, unknown>;
+    if (typeof key !== 'string' || typeof numeral !== 'string' || typeof symbol !== 'string') continue;
+    const chord = shells ? shellFromSymbol(symbol) : parseChordSymbol(symbol);
+    if (!chord) continue;
+    const keyName = key.trim().replace(/^([A-G])-/, '$1♭').replace(/^([A-G])#/, '$1♯');
+    out.push({ ...chord, label: `${displayChordSymbol(symbol)} — ${numeral.trim()} in ${keyName}` });
+  }
+  return out;
+}
+
 /** Chord symbols, or roman numerals in a set of keys, or the defaults. */
 function chordsFromParams(p: Params, rng: () => number): ParsedChord[] {
+  // Only a row that carries `cases` reaches this; no other chord row has the key.
+  if (p.cases !== undefined) {
+    const shellCases = typeof p.voicing === 'string' && p.voicing.trim().toLowerCase() === 'shell';
+    const cases = chordsFromCases(p.cases, shellCases);
+    if (cases.length > 0) return cases;
+  }
   const symbols = strings(p.chords)
     .map((symbol) => parseChordSymbol(symbol))
     .filter((chord): chord is ParsedChord => chord !== null);

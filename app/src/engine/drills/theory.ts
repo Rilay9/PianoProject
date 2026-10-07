@@ -55,6 +55,8 @@ export const CHORD_QUALITIES: Record<string, number[]> = {
   sus4: [0, 5, 7],
   sus2: [0, 2, 7],
   '6': [0, 4, 7, 9],
+  // The minor sixth chord: Blue Bossa's tonic is printed Cm6 (A7b.1's minor shell drill).
+  m6: [0, 3, 7, 9],
   '7': [0, 4, 7, 10],
   maj7: [0, 4, 7, 11],
   M7: [0, 4, 7, 11],
@@ -377,6 +379,28 @@ export function shellChord(
     return pitch;
   });
   return { label: roman.trim(), root, pitches };
+}
+
+/**
+ * The shell of a named four-note chord: its root, third and top note, the fifth left out.
+ *
+ * `shellChord` above builds a shell from a numeral and the key's major scale, which is right
+ * for jazz.5's major ii–V–I and wrong for a minor tonic (it gives C–E–B in C minor). A chord
+ * symbol already says which third and which seventh or sixth it has, so this takes them from
+ * the symbol itself: `Dm7b5` → D–F–C, `G7` → G–B–F, `Cm6` → C–E♭–A (root, third, sixth).
+ * Written for `drill.jazz.minor-ii-v-i-shells`, whose nine cases are data on the catalogue row
+ * and are checked against music21 (CK-6).
+ *
+ * Only a four-note chord whose third member is a fifth (diminished, perfect or augmented) and
+ * whose top member is a sixth or a seventh has a shell in this sense; anything else is null,
+ * so a symbol the rule does not cover is never drilled as something it is not.
+ */
+export function shellFromSymbol(symbol: string, octaveRoot = 60): ParsedChord | null {
+  const chord = parseChordSymbol(symbol, octaveRoot);
+  if (!chord || chord.pitches.length !== 4) return null;
+  const [root, third, fifth, top] = chord.pitches as [number, number, number, number];
+  if (![6, 7, 8].includes(fifth - root) || ![9, 10, 11].includes(top - root)) return null;
+  return { ...chord, pitches: [root, third, top] };
 }
 
 /**

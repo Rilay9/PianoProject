@@ -338,6 +338,8 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **SK1** | The latin-cluster chain skeleton extracted from A7c.1: step pattern, fades, failure routes, evidence and generated-content shapes, the facts before placement, the acceptance path, the experience question per step with Blue Bossa's and St James's departures, a brief-writer checklist (`SK1-latin-cluster-skeleton.md`) | reference | landed 2026-10-06 (`SK1-latin-cluster-skeleton.md`); Entry 265
 | **BB1** | The Blue Bossa probe: the edition admitted (QmTj, 32 bars, C minor, symbols only, 24 symbols kept), the harmony facts verified by two readers in the intake record's claim checks, G6's tonic fault confirmed in five minor keys, the chart's backing/comp coupling reproduced with its seam drafted, the chart's one-chord-per-bar and Free play's shell naming found; stopped at placement (`BB1-bluebossa-probe.md`) | content + record | landed 2026-10-06 (`BB1-bluebossa-probe.md`); Entry 266
 | **CB1** | The Chord chart's backing independent of its comp: `onBeat` schedules the bar's bass and drums whenever Bass + drums is on, the comp voices the chord only, the forced Comp deleted; four-case browser spec, only case B changed (`CB1-chart-backing.md`) | app + test | landed 2026-10-06 (`CB1-chart-backing.md`); Entry 267
+| **PH1** | Positioned harmony: one shared measure walk (`measureWalk.ts`) for the tempo reader and the harmony reader; `ChordSymbol.offset`; `readHarmony` and `chartSegments` with carried, merged and conflicting events reported; the six cases red then green; tempo and chart differentials null over 2,090 files; music21 agrees on every offset (`PH1-positioned-harmony.md`) | app model + test | landed 2026-10-06 (`PH1-positioned-harmony.md`); Entry 268
+| **G6a** | The minor shell drill `drill.jazz.minor-ii-v-i-shells`: nine cases in C, A and G minor (Cm6, Am7, Gm7 tonics), each prompt naming its symbol; CK-6 against music21 with every must-fail case red; every other drill row byte-identical on three seeds; placed on no rung (`G6a-minor-shell-drill.md`) | content + app + test | landed 2026-10-06 (`G6a-minor-shell-drill.md`); Entry 269
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -541,6 +543,8 @@ SR4 · landed · 264
 SK1 · landed · 265
 BB1 · landed · 266
 CB1 · landed · 267
+PH1 · landed · 268
+G6a · landed · 269
 F0a · closed · —
 L120 · approved · —
 -->
