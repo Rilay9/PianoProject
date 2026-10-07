@@ -4,6 +4,18 @@ Lane MT1. An app seam, no ability marker. Drafted 2026-10-06 at HEAD `fb89c810` 
 
 Binding ruling: `docs/review/responses/g6-ph-briefs-cb1.md` §7 (P1 within the Chord chart; not an A7b.1 blocker; handle at least 2/4, 3/4, 4/4, 5/4, 6/8 and 2/2 honestly, never "N quarter-note clicks" by guess; decide before PH2 whether this lands first or folds into PH2). Governing text: `docs/prompts/FABLE.md` §7 (libraries; choices recorded below), §10 (narrow-seam rule), §6 and §9 (acceptance is automated through the visible path; nothing is assigned to the owner). Harness: `docs/prompts/operating-procedure.md` §14, cited and not restated; lane additions at the end. Report: operating-procedure §11 and §12, plus the report list at the end. Never name an AI model in any file.
 
+## The reviewer's ruling (binding; it overrides any line below that disagrees)
+
+`docs/review/responses/ph1-g6a-landing.md` §4 approved MT1 before PH2, with these changes:
+
+- **Bass + drums is off in every metre except 4/4.** 4/4 keeps today's behaviour exactly. In 2/4, 3/4, 2/2, 5/4, 6/8 and 12/8 the chip is disabled with a visible reason, unless an existing cited musical contract already establishes that exact pattern in that metre; `barSchedule` accepting two or three beats is not such a contract. The table's 2/4, 3/4 and 2/2 backing cells below are therefore superseded: those metres are refused like 5/4.
+- **The click, the bar tracker and the plain chord Comp do not wait for groove work:** they follow the metre table below in every metre.
+- **5/4** is five equal quarter clicks, the downbeat alone accented.
+- **The tempo field** shows beats a minute in the beat's unit and makes the unit visible whenever the beat is not a quarter; the number alone is not enough.
+- **`ChartMeasure` gains the written signature in force**, keyed on PH1a's source-measure identity (lane PH1a lands first); no second measure-key scheme. MT1's base is the commit after PH1a's landing.
+- **Pickups** stay outside MT1, but PH2 must consume PH1's notated pickup length.
+- **Acceptance additions:** the browser cases for non-4/4 Bass + drums expect a disabled chip with its reason; a 3/4 case proves the old unsourced "jazz waltz" comment in `backingLoop.ts` does not authorise chart backing; Blue Bossa and a 4/4 chart with a pickup stay in the byte and time differential; across a metre change, the first beat of the new bar is the accent and carries the new beat count.
+
 **Not a narrow seam under FABLE §10.** MT1 adds product rules (what the click counts in compound and cut time, the tempo field's unit, Bass + drums refused where no pattern fits). So this brief is reviewed before dispatch, and the artefacts are reviewed before landing.
 
 ---
