@@ -43836,3 +43836,13 @@ Each class has broken records that fail it; 42 tests.
 **Checks.** At landing: the preflight, CI-order, paths and checker tests OK; `--strict` on the real tree exits 0 (A7c.1 shipped, 0 FAIL; the three drafts' FAILs reported, not blocking). The step itself runs on CI for the first time on this push.
 
 **Open.** A7b.1's journey cannot show jazz.6 completing: the rung asks two distinct exercise runs plus the minor drill, and the record has one counted step (asked of the reviewer). Generated journeys lack the first-sight setup the shipped specs make in a `beforeEach`; the acceptance-journey builder adds it.
+
+### Entry 276 — BB2: A7b.1's remaining placement
+
+**What a learner meets.** On jazz.6: a new paragraph routing to the ear drill on Stage 5's jazz rung as review (it counts toward nothing here); Insensatez among the songs, with a paragraph asking the learner to read bars 13 to 15 on its chart and decide the progression and key before listening, then to listen with Comp on and voice the three shells with Comp off; the answer as the lesson's last paragraph (Bm7♭5, E7, Am7, a minor ii-V-i in A minor; E7's flat ninth noted; the shells B-D-A, E-G♯-D, A-C-G). "The last song" and the song count are gone from the repertoire wording. Nothing heard; the builder looked at the chart in the browser.
+
+**Done.** `content/curriculum/stage-6.json`: Insensatez last among the songs, no song requirement, the level band widened to 2.32-6.4 so it spans the new option. `content/lessons/jazz.6.md` as above. `docs/chains/A7b.1.yaml` steps 3, 14 and 15. Tests red first: six lesson-claim rows (the chart door, Comp and Bass + drums off until Count off, the chart's cells 13-15, the answer last, the Plan route, the ear drill's four qualities), a harmony row read from the score, the completion test (Insensatez and ear-drill runs count for nothing), and a browser test opening Insensatez's chart from its row.
+
+**Checks.** At landing: the content build passes; the preflight on A7b.1 1 FAIL (class 6, the journey decision asked in `handoffs/pf2-landing.md`), steps 3, 14 and 15 passing; the whole content Python suite, 2,030 OK; `npx tsc -b` clean; the whole unit suite, the one red the standing blues.3. The builder: the browser spec twice on its own port.
+
+**Open.** The record's failure route asks for the ear drill's m7 and half-diminished cards back to back, which the drill's random draw does not allow; the ear drill is also on theory.5; this lane's tests pin the chart's current cells and turn red when PH2 lands, by design.

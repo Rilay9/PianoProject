@@ -346,6 +346,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **G6b** | The minor shell drill on jazz.6 (two exercise runs plus the minor drill by id), the answer staff in the card's named key with CK-6 pinning signatures and accidentals, Blue Bossa on jazz.6, five lesson paragraphs and the repertoire paragraph (`G6b-minor-drill-on-jazz6.md`) | content + app + test | landed 2026-10-07 (`G6b-minor-drill-on-jazz6.md`); Entry 273
 | **MT1** | The Chord chart in each bar's metre: the click, tracker and comp follow the felt beat, the tempo field names its unit, Bass + drums only in 4/4 with a visible reason elsewhere; 4/4 unchanged; the measurement fingerprint completed (metre, tempo reader, measure walk) and a facts-currency test (`MT1-chart-metre.md`) | app + test + tooling | landed 2026-10-07 (`MT1-chart-metre.md`); Entry 274
 | **PF2** | The preflight accepts a named earlier-rung review, generates a counted-drill journey, and blocks reviewed and shipped records in CI (`ci.yml`, after the content build) (`PF2-preflight-strict.md`) | tooling + CI + test | landed 2026-10-07 (`PF2-preflight-strict.md`); Entry 275
+| **BB2** | A7b.1 placement: step 3 opens the ear drill from jazz.5 as review (not a jazz.6 option); Insensatez on jazz.6 as optional repertoire earning no credit, the lesson asking the bars 13-15 decision before the answer at the page's end; preflight 1 FAIL (the journey decision) (`BB2-a7b1-placement.md`) | content + record + test | landed 2026-10-07 (`BB2-a7b1-placement.md`); Entry 276
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -557,6 +558,7 @@ PF1 · landed · 272
 G6b · landed · 273
 MT1 · landed · 274
 PF2 · landed · 275
+BB2 · landed · 276
 F0a · closed · —
 L120 · approved · —
 -->

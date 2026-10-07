@@ -3612,6 +3612,7 @@ import { CHORD_BOUNDARY_MS, chordScaleDrill } from '../../src/engine/drills/harm
 import { harness as f0Harness, makeModel as f0Model, note as f0Note } from './helpers/engineHarness';
 import { mxlToMusicXml } from '../../src/score/mxl';
 import { tempoEvents } from '../../src/score/tempoFromXml';
+import { chartBars, readHarmony } from '../../src/score/harmony';
 
 const F0_LESSONS = resolve('..', 'content', 'lessons');
 
@@ -4127,16 +4128,20 @@ const G6B_APP: [string, string, () => boolean][] = [
   ],
   [
     'jazz.6',
-    'Blue Bossa is the last song on the page, and a run of it counts toward nothing on this rung',
+    // Revised (BB2): Insensatez joined the songs after Blue Bossa (the reviewer's
+    // docs/review/responses/mt1-g6b-pf1-landing.md section 5), so Blue Bossa is no longer the last song
+    // and the lesson no longer places it by position. The old row pinned "the last song on this page"
+    // and seven songs.
+    'Blue Bossa is one of the page’s songs, and a run of it counts toward nothing on this rung',
     () => {
       const songs = rung('jazz.6').songOptions;
       const reqs = rung('jazz.6').requirements ?? [];
       const text = g6bText();
       return (
-        songs[songs.length - 1] === 'song.jazz.kenny-dorham-blue-bossa.pdmx' &&
-        songs.length === 7 &&
+        songs.includes('song.jazz.kenny-dorham-blue-bossa.pdmx') &&
         reqs.every((r) => r.kind === 'runs' && r.from === 'exercises') &&
-        text.includes('Blue Bossa, the last song on this page') &&
+        text.includes('Blue Bossa, one of the songs on this page') &&
+        !text.includes('the last song on this page') &&
         text.includes('A run of the tune itself counts toward nothing on this rung')
       );
     },
@@ -4145,6 +4150,205 @@ const G6B_APP: [string, string, () => boolean][] = [
 
 describe('G6b: jazz.6’s minor ii-V-i section says only what the app does', () => {
   for (const [lesson, says, holds] of G6B_APP) {
+    it(`${lesson}: ${says}`, () => {
+      expect(holds()).toBe(true);
+    });
+  }
+});
+
+// --- BB2: jazz.6's Insensatez question and the ear drill's review route --------------------------
+//
+// The reviewer's docs/review/responses/mt1-g6b-pf1-landing.md section 5, carried by lane BB2 (the chain
+// record docs/chains/A7b.1.yaml, steps 3, 14 and 15). Step 3: the seventh-quality ear drill stays on
+// jazz.5 and the jazz.6 lesson sends the learner there by the visible route, as review that counts for
+// nothing on jazz.6. Steps 14-15: Insensatez is an optional jazz.6 song that earns no rung credit; the
+// lesson has the learner decide what bars 13 to 15 print, from the chart, before playback with Comp
+// off, and gives the answer only at the page's end. One row per app fact the new text states; each row
+// also reads the lesson's own sentence, so neither side can move alone. Red before BB2: Insensatez was
+// no jazz.6 option and the lesson said none of this. Nothing here was heard.
+
+const BB2_INSENSATEZ = 'song.folk.insensatez-how-insensitive-jobim.pdmx';
+const BB2_BLUE_BOSSA = 'song.jazz.kenny-dorham-blue-bossa.pdmx';
+const BB2_EAR = 'drill.ear.seventh-qualities';
+
+/**
+ * The chart's cells for a built score, as `ChordChartScreen.ts` computes them today (its load: `readHarmony`,
+ * then `chartBars` over the larger of the printed-measure count and the symbol count). PH2 replaces that
+ * load with source measures; the cells this row reads (one per bar, its first symbol's text) are the
+ * lesson's claim, so a change there turns this red rather than leaving the sentence stale.
+ */
+function bb2ChartCells(id: string): (string | null)[] {
+  const xml = mxlToMusicXml(new Uint8Array(readFileSync(join(CONTENT, item(id).file ?? ''))));
+  const { symbols } = readHarmony(xml);
+  const measureCount = new Set([...xml.matchAll(/<measure\b[^>]*\bnumber="([^"]+)"/g)].map((m) => m[1])).size;
+  return chartBars(symbols, Math.max(measureCount, symbols.length)).map((symbol) => symbol?.text ?? null);
+}
+
+/** Where a rung sits: its stage's number and its unit's track, from the built curriculum. */
+function bb2Where(id: string): { stage: number; track: string } | undefined {
+  for (const stage of curriculum.stages) {
+    for (const unit of stage.units) {
+      if (unit.lessons.some((lesson) => lesson.id === id)) return { stage: stage.number, track: unit.track };
+    }
+  }
+  return undefined;
+}
+
+const BB2_APP: [string, string, () => boolean][] = [
+  [
+    'jazz.6',
+    'Insensatez is one of the page’s songs with a Chart door beside it, and no song run is asked for, so a run of it earns nothing here',
+    () => {
+      const lesson = rung('jazz.6');
+      const reqs = lesson.requirements ?? [];
+      const text = g6bText();
+      return (
+        lesson.songOptions.includes(BB2_INSENSATEZ) &&
+        written('jazz.6').songOptions.includes(BB2_INSENSATEZ) &&
+        lesson.songOptional === true &&
+        reqs.length > 0 &&
+        reqs.every((r) => r.kind === 'runs' && r.from === 'exercises') &&
+        !lesson.exerciseOptions.includes(BB2_INSENSATEZ) &&
+        hasChordSymbols(item(BB2_INSENSATEZ)) &&
+        item(BB2_INSENSATEZ).title === 'Insensatez (How Insensitive)' &&
+        source('ui/screens/LessonScreen.ts').includes(
+          "button('Chart', () => { router.navigateChart(item.id, { from: lessonId }); }",
+        ) &&
+        text.includes('Tap Chart beside it') &&
+        text.includes('Like Blue Bossa, a run of it counts toward nothing on this rung')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'the chart opens with Comp and Bass + drums off and does not start until Count off ▶; the lesson has the learner decide before pressing it, then hear it with Comp, then play with Comp off',
+    () => {
+      const chart = source('ui/screens/ChordChartScreen.ts');
+      const text = g6bText();
+      return (
+        chart.includes('let comping = false;') &&
+        chart.includes('let backing = false;') &&
+        chart.includes("chip('Comp', {") &&
+        chart.includes("chip('Bass + drums', {") &&
+        chart.includes("button('Count off ▶', () => void start(), { id: 'chart-start', variant: 'primary' })") &&
+        chart.includes("button('Stop', stop, { id: 'chart-stop' })") &&
+        text.includes(
+          'Comp and Bass + drums start off, and the chart does not start until you press Count off ▶, so leave it for now',
+        ) &&
+        text.includes('decide which progression they are, and in which key') &&
+        text.includes('Then turn Comp on, press Count off ▶ and listen through those bars') &&
+        text.includes('press Stop, turn Comp off, press Count off ▶ again')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'each chart cell is one bar from bar 1: Insensatez has 32 cells and the 13th to 15th print Bmi7b5, E7 and Ami7; Blue Bossa’s chart prints Dmi7b5 and Cmi6',
+    () => {
+      const ins = bb2ChartCells(BB2_INSENSATEZ);
+      const bb = bb2ChartCells(BB2_BLUE_BOSSA);
+      const text = g6bText();
+      return (
+        ins.length === 32 &&
+        ins[12] === 'Bmi7b5' &&
+        ins[13] === 'E7' &&
+        ins[14] === 'Ami7' &&
+        bb[4] === 'Dmi7b5' &&
+        bb[6] === 'Cmi6' &&
+        ins[20] === 'Fma7' &&
+        text.includes('mi for minor and ma for major, with a b after the number for a flat') &&
+        text.includes(
+          'Each cell of the chart is one bar, from bar 1, left to right and row by row: bars 13 to 15 are the thirteenth to fifteenth cells',
+        ) &&
+        text.includes("Blue Bossa's chart, for instance, writes its Dm7♭5 as Dmi7b5 and its Cm6 as Cmi6") &&
+        text.includes('Bmi7b5, E7 and Ami7 on the chart, that is Bm7♭5, E7 and Am7')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'the answer is the page’s last paragraph, and nothing between the question and it names the progression, the key or the chords',
+    () => {
+      const raw = readFileSync(join(F0_LESSONS, 'jazz.6.md'), 'utf8').replace(/\r\n/g, '\n').trimEnd();
+      const paragraphs = raw.split(/\n\s*\n/);
+      const last = paragraphs[paragraphs.length - 1] ?? '';
+      const text = g6bText();
+      const asked = text.indexOf('Insensatez (How Insensitive)');
+      const answered = text.indexOf('The answer for Insensatez.');
+      const between = text.slice(asked, answered);
+      return (
+        last.startsWith('**The answer for Insensatez.**') &&
+        asked > 0 &&
+        answered > asked &&
+        text.includes('This page gives the answer at its very end') &&
+        ['A minor', 'Bm7♭5', 'Bmi7b5', 'Ami7', 'Am7', 'E7', 'ii–V–i'].every((giveaway) => !between.includes(giveaway))
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'the seventh-quality ear drill is on Stage 5’s jazz rung, not this page: Plan, Stage 5, Swing, shell voicings and ii-V-I under Jazz, Ear drill — seventh-chord qualities',
+    () => {
+      const where = bb2Where('jazz.5');
+      const track = curriculum.tracks.find((one) => one.id === where?.track);
+      const plan = source('ui/screens/PlanScreen.ts');
+      const shell = source('ui/AppShell.ts');
+      const text = g6bText();
+      return (
+        rung('jazz.5').exerciseOptions.includes(BB2_EAR) &&
+        !rung('jazz.6').exerciseOptions.includes(BB2_EAR) &&
+        (rung('jazz.6').prerequisites ?? []).includes('jazz.5') &&
+        where?.stage === 5 &&
+        track?.title === 'Jazz' &&
+        rung('jazz.5').title === 'Swing, shell voicings and ii-V-I' &&
+        item(BB2_EAR).title === 'Ear drill — seventh-chord qualities' &&
+        shell.includes("plan: 'Plan',") &&
+        plan.includes('title: `Stage ${String(stage.number)} · ${stage.title}`,') &&
+        plan.includes("el('span.plan-track__name', { text: track?.title ?? group.track })") &&
+        plan.includes('title: lesson.title,') &&
+        text.includes("The ear drill for seventh chords is on Stage 5's jazz rung, not on this page") &&
+        text.includes(
+          'On Plan, open Stage 5, then Swing, shell voicings and ii-V-I under Jazz, and open Ear drill — seventh-chord qualities from its exercises',
+        )
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'the ear drill plays one of the four seventh qualities and asks for the notes back in any octave, never the name; a run of it counts toward nothing on jazz.6',
+    () => {
+      const drill = drillFromCatalog(item(BB2_EAR), { seed: 3 });
+      const first = drill?.next() ?? null;
+      // Line endings flattened: a Windows checkout writes CRLF, and the pin below spans a line break.
+      const screen = source('ui/screens/DrillScreen.ts').replace(/\r\n/g, '\n');
+      const reqs = rung('jazz.6').requirements ?? [];
+      const text = g6bText();
+      return (
+        JSON.stringify(params(BB2_EAR).qualities) === JSON.stringify(['maj7', '7', 'm7', 'm7b5']) &&
+        first !== null &&
+        first.expected.length === 4 &&
+        (first.playback ?? []).length > 0 &&
+        screen.includes("case 'ear-chord':\n        return 'Play back the chord';") &&
+        screen.includes('// Deliberately blank: naming it on screen would answer the question.') &&
+        source('engine/drills/fromCatalog.ts').includes(
+          "return new PromptDrill({ kind: 'ear-chord', prompts, anyOctave: true, clock: base.clock });",
+        ) &&
+        reqs.every((r) => r.kind === 'runs' && r.from === 'exercises') &&
+        !rung('jazz.6').exerciseOptions.includes(BB2_EAR) &&
+        text.includes(
+          'Each card plays one seventh chord, a major seventh, a dominant seventh, a minor seventh or a half-diminished seventh, and waits for you to play it back, in any octave',
+        ) &&
+        text.includes(
+          'It never asks for the name, so say the quality aloud before you play: the app checks only the notes you play back',
+        ) &&
+        text.includes('A run of it counts toward nothing on this page')
+      );
+    },
+  ],
+];
+
+describe('BB2: jazz.6’s Insensatez question and the ear drill’s review route say only what the app does', () => {
+  for (const [lesson, says, holds] of BB2_APP) {
     it(`${lesson}: ${says}`, () => {
       expect(holds()).toBe(true);
     });

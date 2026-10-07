@@ -31,6 +31,10 @@ const RUNG = 'jazz.6';
 const MINOR = 'drill.jazz.minor-ii-v-i-shells';
 const MAJOR = 'drill.jazz.ii-v-i-shells';
 const BLUE_BOSSA = 'song.jazz.kenny-dorham-blue-bossa.pdmx';
+/** BB2: optional transfer repertoire on jazz.6, earning no rung credit. */
+const INSENSATEZ = 'song.folk.insensatez-how-insensitive-jobim.pdmx';
+/** BB2: the seventh-quality ear drill, opened from jazz.5 as review; never a jazz.6 option. */
+const EAR = 'drill.ear.seventh-qualities';
 /** jazz.6's exercises before G6b, in their order: the generic pool the minor drill joins. */
 const OLD_EXERCISES = [
   'exercise.comping.c.charleston',
@@ -92,12 +96,16 @@ function status(rows: SessionRow[], id = RUNG): string | undefined {
 }
 
 describe('jazz.6 as the build wrote it (G6b test 1)', () => {
-  it('lists the minor drill last among its exercises and Blue Bossa last among its songs, the rest as before', () => {
+  // Revised (BB2): Insensatez joined after Blue Bossa (the reviewer's mt1-g6b-pf1-landing.md section 5), so Blue
+  // Bossa is second to last and Insensatez last; the old row pinned Blue Bossa last. The ear drill stays off the
+  // exercises (the same ruling: on jazz.6 it could be the second counted exercise).
+  it('lists the minor drill last among its exercises and Blue Bossa then Insensatez last among its songs, the rest as before', () => {
     const rung = find(curriculum, RUNG);
     expect(rung, 'jazz.6 is not in the built curriculum').toBeDefined();
     expect(rung?.exerciseOptions).toEqual([...OLD_EXERCISES, MINOR]);
-    expect(rung?.songOptions.at(-1)).toBe(BLUE_BOSSA);
-    expect(rung?.songOptions.slice(0, -1)).toEqual([
+    expect(rung?.exerciseOptions).not.toContain(EAR);
+    expect(rung?.songOptions.slice(-2)).toEqual([BLUE_BOSSA, INSENSATEZ]);
+    expect(rung?.songOptions.slice(0, -2)).toEqual([
       'song.pop.ray-henderson-bye-bye-blackbird.pdmx',
       'song.jazz.django-reinhardt-limehouse-blues.pdmx',
       'song.jazz.django-reinhardt-tiger-rag.pdmx',
@@ -156,6 +164,17 @@ describe('what meets jazz.6 (G6b test 2)', () => {
   it('a run of Blue Bossa counts toward nothing here: the songs are optional and no requirement reads them', () => {
     const song = exercise(BLUE_BOSSA, { at: '2026-10-01T11:00:00.000Z' });
     expect(status([drill(MINOR), song])).not.toBe('met');
+  });
+
+  it('a run of Insensatez counts toward nothing here either (BB2: transfer repertoire, no rung credit)', () => {
+    const song = exercise(INSENSATEZ, { at: '2026-10-01T11:00:00.000Z' });
+    expect(status([drill(MINOR), song])).not.toBe('met');
+  });
+
+  it('an ear-drill run is no jazz.6 exercise, whether jazz.5 judged it or a row says jazz.6 (BB2)', () => {
+    const ear = (lessonId: string) => drill(EAR, { mode: 'drill:ear-chord', lessonId, at: '2026-10-01T11:00:00.000Z' });
+    expect(status([drill(MINOR), ear('jazz.5')])).not.toBe('met');
+    expect(status([drill(MINOR), ear(RUNG)])).not.toBe('met');
   });
 });
 

@@ -2859,6 +2859,41 @@ const JAZZ_6_MOVES: [string, number][] = [
 /** The six tunes of 1917-1926 the repertoire paragraph names; Blue Bossa (G6b) is the seventh option. */
 const JAZZ_6_PERIOD = [...JAZZ_6_ONE_KEY, ...JAZZ_6_MOVES.map(([id]) => id)];
 const JAZZ_6_BLUE_BOSSA = 'song.jazz.kenny-dorham-blue-bossa.pdmx';
+/** Insensatez (BB2): an optional jazz.6 song for the decide-then-reveal question on bars 13 to 15. */
+const JAZZ_6_INSENSATEZ = 'song.folk.insensatez-how-insensitive-jobim.pdmx';
+/** The MusicXML 4.0 kind values the reveal names, as semitones above the root (the specification's table). */
+const JAZZ_6_KIND_INTERVALS: Record<string, number[]> = {
+  'half-diminished': [0, 3, 6, 10],
+  dominant: [0, 4, 7, 10],
+  'minor-seventh': [0, 3, 7, 10],
+};
+const JAZZ_6_STEP_PC: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+interface Jazz6Chord {
+  root: number;
+  kind: string;
+  degrees: { value: number; alter: number; type: string }[];
+}
+/** Each bar's <harmony> elements as root pitch class, kind value and degrees, read from the built score. */
+function jazz6Harmony(id: string): Map<string, Jazz6Chord[]> {
+  const out = new Map<string, Jazz6Chord[]>();
+  for (const measure of t12Xml(id).matchAll(/<measure\b[^>]*number="([^"]*)"[^>]*>([\s\S]*?)<\/measure>/g)) {
+    const chords: Jazz6Chord[] = [];
+    for (const found of (measure[2] ?? '').matchAll(/<harmony[\s\S]*?<\/harmony>/g)) {
+      const block = found[0] ?? '';
+      const step = /<root-step[^>]*>([A-G])<\/root-step>/.exec(block)?.[1] ?? '';
+      const alter = Number(/<root-alter>(-?\d+)<\/root-alter>/.exec(block)?.[1] ?? '0');
+      const kind = /<kind[^>]*>([^<]*)<\/kind>/.exec(block)?.[1]?.trim() ?? '';
+      const degrees = [...block.matchAll(/<degree[^>]*>([\s\S]*?)<\/degree>/g)].map((degree) => ({
+        value: Number(/<degree-value>(-?\d+)<\/degree-value>/.exec(degree[1] ?? '')?.[1] ?? Number.NaN),
+        alter: Number(/<degree-alter>(-?\d+)<\/degree-alter>/.exec(degree[1] ?? '')?.[1] ?? Number.NaN),
+        type: /<degree-type[^>]*>(\w+)<\/degree-type>/.exec(degree[1] ?? '')?.[1] ?? '',
+      }));
+      chords.push({ root: (((JAZZ_6_STEP_PC[step] ?? Number.NaN) + alter) % 12 + 12) % 12, kind, degrees });
+    }
+    out.set(measure[1] ?? '', chords);
+  }
+  return out;
+}
 const RAGTIME_8_LAST_DECADE = [
   'song.ragtime.joplin-gladiolus-rag',
   'song.ragtime.joplin-pine-apple-rag',
@@ -2942,27 +2977,69 @@ const T22_MUSIC: [string, string, () => boolean][] = [
   [
     'jazz.6',
     // Revised (G6b): seven options, Blue Bossa placed last for A7b.1; the old row asked for six.
-    'all seven options are a single stave with chords printed above it',
+    // Revised (BB2): Insensatez joined as an eighth song (the reviewer's mt1-g6b-pf1-landing.md section 5),
+    // and the lesson now says "every song here" rather than a count, so the row reads every song, not seven.
+    'every song option is a single stave with chords printed above it',
     () => {
       const songs = t12Songs('jazz.6');
       return (
-        songs.length === 7 &&
+        songs.length >= 8 &&
+        songs.includes(JAZZ_6_INSENSATEZ) &&
         songs.every((id) => t12Notation(id).staves === 1 && t12Notation(id).chordCount > 0)
       );
     },
   ],
   [
     'jazz.6',
-    'six of the seven are the 1917-1926 tunes, and the seventh is Blue Bossa, in C minor with three flats throughout',
+    // Revised (BB2): the old row pinned seven songs with Blue Bossa seventh; Insensatez now follows it.
+    'six of the songs are the 1917-1926 tunes, and Blue Bossa is in C minor with three flats throughout',
     () => {
       const songs = t12Songs('jazz.6');
       const keys = t12Notation(JAZZ_6_BLUE_BOSSA).keys;
       return (
-        songs.length === 7 &&
-        songs[6] === JAZZ_6_BLUE_BOSSA &&
+        songs.includes(JAZZ_6_BLUE_BOSSA) &&
         JAZZ_6_PERIOD.every((id) => songs.includes(id)) &&
         keys.length === 1 &&
         keys[0]?.fifths === -3
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    // BB2: the reveal's harmony, read from the built score's own <harmony> elements (root, kind, degrees),
+    // as the intake record's claim checks read it with two independent readers on these identities
+    // (docs/prompts/runs/curriculum-review-2026-10-05/intake/QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6.md,
+    // the Insensatez lines). The shells are each chord's root, third and seventh from the MusicXML kind's
+    // intervals; the "a fifth above" relations are pitch-class arithmetic.
+    'Insensatez bars 13 to 15 print B half-diminished, E dominant seventh with an added flat ninth, and A minor seventh, under no key signature; B is a fifth above E and E a fifth above A; the shells are B-D-A, E-G♯-D and A-C-G',
+    () => {
+      const bars = jazz6Harmony(JAZZ_6_INSENSATEZ);
+      const keys = t12Notation(JAZZ_6_INSENSATEZ).keys;
+      const chords = ['13', '14', '15'].map((bar) => (bars.get(bar) ?? []).filter((one) => one.kind !== 'none'));
+      const [ii, v, i] = chords.map((list) => list[0]);
+      const shell = (one: (typeof chords)[number][number] | undefined): number[] => {
+        const intervals = JAZZ_6_KIND_INTERVALS[one?.kind ?? ''] ?? [];
+        return [intervals[0], intervals[1], intervals[3]].map((step) => ((one?.root ?? 0) + (step ?? 99)) % 12);
+      };
+      return (
+        chords.every((list) => list.length === 1) &&
+        (bars.get('13') ?? []).some((one) => one.kind === 'none') &&
+        ii?.root === 11 &&
+        ii.kind === 'half-diminished' &&
+        ii.degrees.length === 0 &&
+        v?.root === 4 &&
+        v.kind === 'dominant' &&
+        JSON.stringify(v.degrees) === JSON.stringify([{ value: 9, alter: -1, type: 'add' }]) &&
+        i?.root === 9 &&
+        i.kind === 'minor-seventh' &&
+        i.degrees.length === 0 &&
+        (ii.root - v.root + 12) % 12 === 7 &&
+        (v.root - i.root + 12) % 12 === 7 &&
+        JSON.stringify(shell(ii)) === JSON.stringify([11, 2, 9]) &&
+        JSON.stringify(shell(v)) === JSON.stringify([4, 8, 2]) &&
+        JSON.stringify(shell(i)) === JSON.stringify([9, 0, 7]) &&
+        keys.length === 1 &&
+        keys[0]?.fifths === 0
       );
     },
   ],

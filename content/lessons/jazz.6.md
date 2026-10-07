@@ -6,7 +6,7 @@ videos:
   - label: "How to Play Left Hand Jazz Piano Walking Bass Techniques"
     url: "https://www.youtube.com/watch?v=9QtvnbuGjUs"
     teacher: "Sweetwater"
-readingTime: 8
+readingTime: 10
 ---
 
 Stage 5 gave you the shells and the ii–V–I. This rung is about what the two
@@ -18,7 +18,7 @@ minor it is **Dm7♭5 – G7 – Cm**. The ii is half-diminished, written m7♭5
 The V is a dominant seventh, as it is in major: G, B, D and F. C minor's key
 signature has three flats, B flat among them, so the B of G7 is written with
 a natural. The i is a minor chord, and charts write it more than one way.
-*Blue Bossa*, the last song on this page, writes **Cm6**: C, E♭, G and A, a
+*Blue Bossa*, one of the songs on this page, writes **Cm6**: C, E♭, G and A, a
 minor triad with a major sixth added above the root. Other tunes write a
 minor seventh; in A minor that is **Am7**: A, C, E and G.
 
@@ -35,6 +35,16 @@ of the fifth in each, and both times you are holding D, F and C, which
 iim7, because the flat fifth that makes the chord half-diminished is the
 note the shell leaves out. On a chart, the chord symbol tells you which one
 it is.
+
+**Hearing the four qualities, as review.** The ear drill for seventh chords
+is on Stage 5's jazz rung, not on this page. On *Plan*, open *Stage 5*, then
+*Swing, shell voicings and ii-V-I* under *Jazz*, and open
+*Ear drill — seventh-chord qualities* from its exercises. Each card plays one
+seventh chord, a major seventh, a dominant seventh, a minor seventh or a
+half-diminished seventh, and waits for you to play it back, in any octave.
+It never asks for the name, so say the quality aloud before you play: the app
+checks only the notes you play back, not the name you said. A run of it
+counts toward nothing on this page.
 
 **The minor drill.** *Minor ii-V-i with shell voicings*, among this page's
 exercises, asks for nine shells, one card at a time: iiø7, V7 and i in C
@@ -88,7 +98,7 @@ Here it is for hearing the changes of a tune go past.
 automatic, then the same pattern in a second key. A walking line over the blues
 in C, hands separately, then together with shells on top.
 
-**Repertoire for this rung.** Seven options, every one a single stave with its
+**Repertoire for this rung.** Every song here is a single stave with its
 chords printed above it, which is what comping is read from. Six are tunes
 from 1917 to 1926. Three of those stay in one key from end to end — *Bye Bye
 Blackbird* (1926) in C, *Darktown Strutters' Ball* (1917), the shortest chorus
@@ -98,7 +108,7 @@ fill. The other three move: *Limehouse Blues* (1922) and
 is where a walking line stops being automatic. Comp one pattern through a whole
 chorus, then walk a line under it.
 
-The seventh is *Blue Bossa*, by Kenny Dorham, in C minor, with three flats.
+*Blue Bossa*, by Kenny Dorham, is in C minor, with three flats.
 It is where the minor ii–V–i above lives in a tune: bars 5 to 7, and again
 bars 13 to 15, are Dm7♭5, G7 and Cm6. The G7 in bars 6 and 14 is an altered
 one, with a raised fifth and a raised ninth added; its root, third and
@@ -107,6 +117,23 @@ G7 follows Dm7♭5 halfway through the bar and leads back to Cm6 in bar 17.
 Not all of it is in C minor: bars 9 to 11 are a ii–V–I in D♭ major, the
 major kind from Stage 5. Comp its chords in shells, the tonic as the Cm6 the
 chart asks for. A run of the tune itself counts toward nothing on this rung.
+
+*Insensatez* (How Insensitive), by Antônio Carlos Jobim, is here for one
+question, and you answer it from the chart before you hear a note. Tap
+*Chart* beside it. *Comp* and *Bass + drums* start off, and the chart does
+not start until you press *Count off ▶*, so leave it for now. Each cell of
+the chart is one bar, from bar 1, left to right and row by row: bars 13 to 15
+are the thirteenth to fifteenth cells. The chart writes the symbols as this
+edition prints them, *mi* for minor and *ma* for major, with a *b* after the
+number for a flat; Blue Bossa's chart, for instance, writes its Dm7♭5 as
+Dmi7b5 and its Cm6 as Cmi6. Read the three symbols in bars 13 to 15 and decide which progression
+they are, and in which key. Then turn *Comp* on, press *Count off ▶* and
+listen through those bars. After that, press *Stop*, turn *Comp* off, press
+*Count off ▶* again and play the three chords as shells when bars 13 to 15
+come round, lowering the tempo if the changes come too fast. The bar's cell
+marks what you hold against its chord: it reads your notes, not the
+progression you decided on. This page gives the answer at its very end. Like
+Blue Bossa, a run of it counts toward nothing on this rung.
 
 **Common mistake.** Comping on every beat by default. The gaps are what make it
 comping; four to the bar is the one pattern without them, and it only works
@@ -125,3 +152,15 @@ this time one that is written down.
 
 **How you'll know you've got it.** A twelve-bar blues comped in one pattern with
 a walking line underneath, at a tempo where neither hand has to think.
+
+**The answer for Insensatez.** Bars 13 to 15 are a minor ii–V–i in A minor:
+Bmi7b5, E7 and Ami7 on the chart, that is Bm7♭5, E7 and Am7, the chords of
+the minor drill's A minor cards. Bm7♭5 is the half-diminished ii: its root,
+B, is a fifth above the root of the dominant, E, and the E7 then goes to the
+A minor chord, which names the key. The score also adds a flat ninth, F, to
+that E7, which the chart's symbol does not show; its root, third and seventh
+are still E, G♯ and D, so its shell is the drill's. The three shells are B, D
+and A; E, G♯ and D; A, C and G. A dominant seventh going to a minor chord is
+not enough on its own: the minor ii–V–i this page teaches has, before the
+dominant, the half-diminished chord whose root is a fifth above the
+dominant's root.

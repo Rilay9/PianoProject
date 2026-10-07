@@ -321,7 +321,8 @@
                 "song.pop.benny-goodman-louis-prima-rose-room.pdmx",
                 "song.pop.darktown-strutter-s-ball.pdmx",
                 "song.classical.royal-garden-blues.pdmx",
-                "song.jazz.kenny-dorham-blue-bossa.pdmx"
+                "song.jazz.kenny-dorham-blue-bossa.pdmx",
+                "song.folk.insensatez-how-insensitive-jobim.pdmx"
               ],
               "songOptional": true,
               "mastery": {
@@ -357,7 +358,7 @@
                 }
               ],
               "levelBand": [
-                2.92,
+                2.32,
                 6.4
               ],
               "finder": {

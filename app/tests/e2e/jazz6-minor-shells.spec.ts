@@ -125,10 +125,11 @@ test('jazz.6: the minor shell drill opens from the page, a passing run counts th
   test.setTimeout(180_000);
   const midi = await installMidiMock(page, { permission: 'granted' });
 
-  // The page as the learner opens it: the new section, the drill among eight exercises, Blue Bossa among seven songs.
+  // The page as the learner opens it: the new section, the drill among eight exercises, Blue Bossa and
+  // Insensatez among eight songs (BB2 added Insensatez; it was seven).
   await page.goto(`/#/lesson/${RUNG}`);
   await expect(page.locator('#lesson-exercises .list-row')).toHaveCount(8);
-  await expect(page.locator('#lesson-songs .list-row')).toHaveCount(7);
+  await expect(page.locator('#lesson-songs .list-row')).toHaveCount(8);
   await expect(page.getByText('What the shell leaves out.', { exact: false })).toBeVisible();
   await expect(page.getByText('A root–3–7 shell cannot itself tell iiø7 from', { exact: false })).toBeVisible();
   expect(await countsLine(page)).toBe('What the app counts — 0 of 2');
@@ -180,4 +181,36 @@ test('jazz.6: the minor shell drill opens from the page, a passing run counts th
   );
   expect(holds.map((h) => h.holds)).toEqual(['false', 'true']);
   expect(holds[1]?.text ?? '').toContain(TITLE);
+});
+
+/**
+ * BB2 (the chain record's step 14; the reviewer's mt1-g6b-pf1-landing.md section 5): Insensatez is one of
+ * jazz.6's songs, and the lesson has the learner open its chart from that row and decide what bars 13 to 15
+ * print before anything plays. This walks that door: the chart opens on the piece, silent (not running),
+ * with Comp and Bass + drums off, one cell per bar, and the 13th to 15th cells printing the three symbols
+ * the answer names. Nothing heard; the decision itself is the learner's and is not checked.
+ */
+test('jazz.6: Insensatez opens as a chord chart from its row, silent with Comp and Bass + drums off, bars 13 to 15 in cells 13 to 15', async ({ page }) => {
+  test.setTimeout(120_000);
+  const INSENSATEZ = 'song.folk.insensatez-how-insensitive-jobim.pdmx';
+  await page.goto(`/#/lesson/${RUNG}`);
+  await expect(page.getByText('This page gives the answer at its very end', { exact: false })).toBeVisible({ timeout: 15_000 });
+  const row = page.locator(`#lesson-songs .list-row[data-item="${INSENSATEZ}"]`);
+  await expect(row).toBeVisible();
+  await row.getByRole('button', { name: 'Open the chord chart for Insensatez (How Insensitive)', exact: true }).click();
+  const chart = page.locator('section[data-screen="chart"]');
+  await expect(chart).toBeVisible({ timeout: 60_000 });
+  expect(new URL(page.url()).hash).toContain(encodeURIComponent(INSENSATEZ));
+  await expect(page.locator('#chart-start')).toBeVisible({ timeout: 30_000 });
+  await expect(chart).not.toHaveAttribute('data-running', 'true');
+  await expect(page.locator('#chart-comp')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('#chart-backing')).toHaveAttribute('aria-pressed', 'false');
+  const cells = page.locator('.chart-cell');
+  await expect(cells).toHaveCount(32);
+  expect(await cells.evaluateAll((all) => all.slice(12, 15).map((cell) => (cell.textContent ?? '').trim()))).toEqual([
+    'Bmi7b5',
+    'E7',
+    'Ami7',
+  ]);
+  await page.screenshot({ path: test.info().outputPath('insensatez-chart.png') });
 });

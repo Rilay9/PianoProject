@@ -24,13 +24,23 @@
 # naming its symbol, the shell taken from the symbol's own chord by shellFromSymbol in theory.ts; the major row and its
 # shellChord path unchanged), held to music21 by CK-6 (tools/content/tests/test_ck6_minor_shells.py and
 # app/tests/unit/minorShellDrill.test.ts). Placed by G6b (2026-10-07): jazz.6 lists the drill last among its
-# exerciseOptions and Blue Bossa last among its songOptions; its requirements are two distinct exercise runs plus one
+# exerciseOptions and Blue Bossa among its songOptions (last until BB2 put Insensatez after it); its requirements are two distinct exercise runs plus one
 # run whose items name the drill (the reviewer's ruling, docs/review/responses/g6-ph-briefs-cb1.md section 5; pinned by
 # app/tests/unit/jazz6MinorShellCompletion.test.ts); the jazz.6 lesson carries steps 1, 2 and 4 with the omitted-fifth
 # sentence and the truth sentence (its app facts pinned in app/tests/unit/lessonClaimsAboutApp.test.ts, G6B_APP); and the
 # drill's answer staff is written in the key each card names (the reviewer's ph1-g6a-landing.md section 3). R3 in the
 # browser: app/tests/e2e/jazz6-minor-shells.spec.ts. The record stays draft until the reviewer reads the lesson and the
 # chart seams land.
+# Placed by BB2 (2026-10-07, the reviewer's docs/review/responses/mt1-g6b-pf1-landing.md section 5): step 3's ear drill
+# stays on jazz.5 and is opened from there as review (adding it to jazz.6's exerciseOptions would let it be jazz.6's
+# second counted exercise); the jazz.6 lesson gives the visible route (Plan, Stage 5, the jazz rung, the drill's row).
+# Insensatez joined jazz.6's songOptions after Blue Bossa as optional transfer repertoire that earns no rung credit
+# (songOptional true; no requirement reads songs); its Latin placement stays. jazz.6's levelBand low end moved from
+# 2.92 to 2.32, Insensatez's estimated level, because validate.py requires the band to span the options. The lesson
+# carries steps 14-15: the decision on bars 13-15 from the chart before playback with Comp off, the check with Comp,
+# and the answer as the page's last paragraph; its app facts are pinned in lessonClaimsAboutApp.test.ts (BB2_APP), the
+# harmony in lessonClaimsAboutMusic.test.ts (the Insensatez bars 13-15 row), the chart door in the browser by
+# jazz6-minor-shells.spec.ts's second test.
 # Sources the lesson's minor ii-V-i lines rest on (steps 1-2): the chords of the minor form and the half-diminished ii,
 # Wikipedia "ii-V-I progression" (C minor: Dm7b5-G7-Cm); the minor sixth chord as a minor triad plus a major sixth (C,
 # E-flat, G, A), Wikipedia "Sixth chord"; the shell as root, third and seventh, or sixth in the seventh's place, and an
@@ -80,12 +90,12 @@ steps:
     cannot_establish: "Anything about the learner; whether the held chord was the intended one (MODE-SHEET section 5); anything about the shells, which the namer does not name."
     removes: [written definition]
 
-  - action: "Hears a seventh chord, says its quality aloud (major seventh, dominant seventh, minor seventh or half-diminished) before playing it back."
+  - action: "Review, opened from jazz.5, an earlier rung and jazz.6's prerequisite, where the drill is an option (it is not a jazz.6 option, so it can never be jazz.6's second counted exercise; the jazz.6 lesson gives the route: Plan, Stage 5, the jazz rung, the drill's row): hears a seventh chord, says its quality aloud (major seventh, dominant seventh, minor seventh or half-diminished) before playing it back."
     content: {kind: generated, ref: drill.ear.seventh-qualities}
     tool: Ear drills
     scaffold: [app plays it, free replays]
     feedback: "Right or wrong per card; Hear it plays the answer and forfeits the card (MODE-SHEET section 19)."
-    recorded: "A drill row: accuracy as the share right, wrong notes, missed, answered; per-card answers shown on the sheet only (MODE-SHEET section 0 R5, section 19). The spoken quality is not stored."
+    recorded: "A drill row: accuracy as the share right, wrong notes, missed, answered; per-card answers shown on the sheet only (MODE-SHEET section 0 R5, section 19). The spoken quality is not stored. Opened from jazz.5, the row is jazz.5's (R3) and counts for neither jazz.6 nor A7b.1."
     cannot_establish: "Quality identification as a concept: no name is asked or compared; octave placement; a learner who finds the notes by trial within the free replays can pass (MODE-SHEET section 19). The spoken quality is self-checked."
     removes: [notation, chord symbols, key named, numerals named, held chord named]
 
@@ -182,7 +192,7 @@ steps:
     removes: []
     no_removal_reason: "An optional A7c.3 application on the same chart: the hands swap jobs (the learner supplies the bass, the app the chords), so help is exchanged rather than withdrawn; whether Comp sounds with Bass + drums off is read before this step is offered."
 
-  - action: "Decides from Insensatez's chart, opened before playback with Comp off, which progression bars 13 to 15 print and in which key. The lesson names the bars and withholds the answer; the progression and the key stay unnamed until the reveal (the reviewer's 4b: the chart is the surface the learner acts on)."
+  - action: "Decides from Insensatez's chart, opened from its row among jazz.6's songs (optional transfer repertoire that earns no rung credit: jazz.6 asks for no song run) before playback with Comp off, which progression bars 13 to 15 print and in which key. The lesson names the bars and withholds the answer; the progression and the key stay unnamed until the reveal, the lesson's last paragraph (the reviewer's 4b: the chart is the surface the learner acts on)."
     content: {kind: piece, ref: "song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15"}
     tool: Chord chart
     scaffold: [chord symbols, bars named in the lesson]
@@ -191,7 +201,7 @@ steps:
     cannot_establish: "The identification: self-checked; nothing is stored."
     removes: [count-in, app comps]
 
-  - action: "Checks the decision on Insensatez's chart with Comp on, voices bars 13 to 15 in shells in A minor, then reads the answer printed at the end of the lesson."
+  - action: "Checks the decision on Insensatez's chart, opened from the same jazz.6 song row: listens through bars 13 to 15 with Comp on, then with Comp off voices those bars in shells from the chart's symbols (A minor's iiø7, V7 and i, which the lesson does not name until the reveal), then reads the answer printed at the end of the lesson."
     content: {kind: piece, ref: "song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15"}
     tool: Chord chart
     scaffold: [chord symbols, count-in, app comps, bars named in the lesson, answer reveal]
