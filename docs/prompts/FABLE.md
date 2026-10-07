@@ -81,7 +81,7 @@ status: draft|reviewed|shipped
 - the last step's scaffold is a strict subset of the first step's;
 - `never_credits` is not empty;
 - every generated family has its job, contract and checker, and every generated step's family is listed; SIGHT-READING, MUSICAL and NAMED-PATTERN with `presented_as: music` list their musical properties, each with how it is established or UNKNOWN (§5); a mechanical CONTROL lists none;
-- `status: shipped` requires an acceptance-test path that exists.
+- `status: shipped` requires an automated acceptance-test source path that exists and matches the repository's test conventions; Markdown/manual walks are not acceptance tests.
 
 A brief that names a learner-facing ability without a record that passes is not dispatchable.
 
@@ -194,5 +194,5 @@ The outside reviewer reviews it. The corrections become chain records or briefs.
 - **Builders** work on disjoint files. Each landing is reviewed against its chain record and the scoreboard.
 - **The reviewer's verdicts** become record or status edits. They do not trigger new planning rounds.
 - **Review before building for a design decision; a narrow seam may land before its artefact review** only when all hold (the owner and the reviewer, 2026-10-06): its design decision and semantic boundary were already reviewed; it adds no product rule, schema meaning or inference; red-first tests pin the exact defect; its blast radius is declared in advance; a before-and-after differential proves no unrelated behaviour changed; an unexpected change is a stop, never explained after landing. New inference rules, schemas, authority or broad migrations are reviewed before building.
-- **Every handoff** opens with the scoreboard and PACKET-TRACE's PARTIAL and MISSING counts, then what shipped, then what is blocked and on what; before asking the owner for anything, apply `CLAUDE.md`'s addressee rule and remove work the builders/tests/reviewer can do.
+- **Every reviewer handoff** opens with the scoreboard and PACKET-TRACE's PARTIAL and MISSING counts, then what shipped, then what is blocked and on what, and carries the whole line `owner_action: none`; owner decisions are asked directly outside reviewer handoffs. The docs-integrity checker rejects a live handoff without the line or with a phone walk.
 - **An app capability gap becomes app work** when two chains need it or it is plainly app-wide; otherwise it stays recorded (the owner, 2026-10-06).
