@@ -19,8 +19,9 @@ nothing else:
      (``presented_as: drill``) lists none and none is required;
  R8  ``status: shipped`` requires an acceptance-test path that exists.
  R9  ``status: shipped`` requires ``acceptance_journey``: an existing browser spec under
-     ``app/tests/e2e/`` (``*.spec.ts``) that drives the visible path. It enforces FABLE sections 1
-     and 9 (objective acceptance is automated, never assigned to the owner; the owner, 2026-10-06).
+     ``app/tests/e2e/`` (``*.spec.ts``) that drives the visible path and contains the exact line
+     ``// acceptance-ability: <ability id>``. It enforces FABLE sections 1 and 9 (objective acceptance
+     is automated, never assigned to the owner; the owner, 2026-10-06).
 
 ``--lint-briefs`` also reads ``docs/prompts/runs/*/briefs/*.md``. A major curriculum brief declares
 itself with one line, ``ability: <id>`` (the id in ABILITY-MAP.md's form, FABLE.md section 3). Every
@@ -662,6 +663,18 @@ def check_record(rec, file: str, resolver: Resolver, tools: dict[str, str] | Non
             fail("acceptance_journey", f"{journey!r} is not a browser spec under app/tests/e2e/")
         elif not (resolver.root / str(journey)).exists():
             fail("acceptance_journey", f"{journey!r} does not exist")
+        else:
+            ability = str(rec.get("ability") or "").strip()
+            marker = f"// acceptance-ability: {ability}"
+            try:
+                journey_lines = (resolver.root / str(journey)).read_text(encoding="utf-8").splitlines()
+            except OSError:
+                journey_lines = []
+            if marker not in [line.strip() for line in journey_lines]:
+                fail(
+                    "acceptance_journey",
+                    f"{journey!r} does not declare this chain with the exact line {marker!r}",
+                )
     return failures, unresolved
 
 
