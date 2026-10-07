@@ -12,59 +12,23 @@ verification asks are.
 """
 from __future__ import annotations
 
-import json
-import re
 import unittest
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
-HANDOFFS = ROOT / "docs" / "review" / "handoffs"
-BASELINE = Path(__file__).with_name("owner_ask_baseline.json")
+from tools.content import owner_asks as guard
 
-ASKS = [
-    re.compile(r"\b(your|the owner'?s)\s+(phone[\s-]?walk|walk[\s-]?through|walk|confirmation|sign[\s-]?off)\b", re.I),
-    re.compile(r"\b(waits?|waiting|blocked|gated?)\s+(only\s+)?(on|for)\s+(you\b|your\b|the owner)", re.I),
-    re.compile(r"\b(you|the owner)\s+(should\s+|could\s+|can\s+|need\s+to\s+|must\s+|will\s+)?(check|confirm|verify|tick|walk|test|try\s+it)\b", re.I),
-    re.compile(r"\bon\s+(your|the owner'?s)\s+(phone|tablet|device)\b", re.I),
-    re.compile(r"\b(owner|you)\s+(plays?|opens?)\b[^.\n]{0,60}\b(and|to)\s+(checks?|confirms?|see\s+whether|verif(y|ies))\b", re.I),
-]
-NON_AUTOMATABLE = re.compile(r"^\s*Non-automatable:\s*\S.{3,}\s+-\s+\S.{5,}\s*$", re.I)
-
-
-def owner_asks(text: str) -> list[str]:
-    """Owner-verification lines not covered by one immediately preceding non-automatable declaration."""
-    found = []
-    permit_next_ask = False
-    for line in text.splitlines():
-        if line.lstrip().startswith(">"):
-            continue
-        if NON_AUTOMATABLE.match(line):
-            permit_next_ask = True
-            continue
-        if not line.strip():
-            continue
-        is_ask = any(p.search(line) for p in ASKS)
-        if is_ask and permit_next_ask:
-            permit_next_ask = False
-            continue
-        if is_ask:
-            found.append(line.strip()[:160])
-        permit_next_ask = False
-    return found
+ROOT = guard.ROOT
+HANDOFFS = ROOT / guard.HANDOFFS_REL
+BASELINE = ROOT / guard.BASELINE_REL
+owner_asks = guard.owner_asks
 
 
 class NoNewHandoffMakesTheOwnerATestHarness(unittest.TestCase):
     def test_every_new_handoff_is_free_of_owner_verification_asks(self):
-        baseline = set(json.loads(BASELINE.read_text(encoding="utf-8"))["files"])
-        offenders = {}
-        for path in sorted(HANDOFFS.glob("*.md")):
-            if path.name in baseline:
-                continue
-            asks = owner_asks(path.read_text(encoding="utf-8"))
-            if asks:
-                offenders[path.name] = asks
-        self.assertEqual(offenders, {}, "a handoff asks the owner to check what a test could; automate it, "
-                         "or add 'Non-automatable: <property> - <why no test can>'")
+        self.assertEqual(
+            guard.problems(ROOT),
+            [],
+            "a handoff asks the owner to check what another actor/test should establish; automate it or use one scoped Non-automatable declaration",
+        )
 
 
 class TheMatcherItself(unittest.TestCase):
@@ -110,10 +74,7 @@ class TheMatcherItself(unittest.TestCase):
         self.assertEqual(len(owner_asks(text)), 1)
 
     def test_the_frozen_baseline_cannot_quietly_grow(self):
-        rows = json.loads(BASELINE.read_text(encoding="utf-8"))["files"]
-        self.assertEqual(len(rows), 222)
-        self.assertEqual(len(rows), len(set(rows)))
-        self.assertTrue(set(rows) <= {p.name for p in HANDOFFS.glob("*.md")})
+        self.assertEqual(guard.problems(ROOT), [])
 
 
 if __name__ == "__main__":
