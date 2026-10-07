@@ -57,6 +57,7 @@
 # The bossa bass itself (G14's pattern, its Rhythm only and Keep tempo steps) is A7c.3's CONTROL and belongs to A7c.3's
 # record; this record carries only A7c.3's L7 step, where the map makes Blue Bossa the bass's MUSIC (step 13, optional,
 # offered once A7c.3's pattern is on the learner's path). G14 waits for A7c.3 (responses/a3a8771d.md).
+# Acceptance journey (the owner, 2026-10-07): when this record is ready for `shipped`, a Sonnet builder writes the browser walk on the phone held sideways (landscape), starting from the preflight's generated journey (docs/prompts/runs/PF1/journey-A7b.1.spec.ts); A7c.1's walk covered the upright phone.
 ability: A7b.1
 learner_cannot: "Voice the minor ii-V-i (iiø7, V7, i) in shells in two or three minor keys, know that a root-3-7 shell cannot show the half-diminished chord's flat fifth, or recognise the progression in a tune. No jazz lesson teaches it (ABILITY-MAP A7b.1, Evidence); jazz.5's shell drill is major only and cannot express a minor key (G6); no admitted score prints the progression: the shipped Fly Me to the Moon prints a tritone-substituted setting, and Blue Bossa, which prints it, is not yet in the catalogue."
 independent_target: "Looks at a chart no lesson has explained, finds its minor ii-V-i and says its key, and voices each one in shells from the symbols, the tonic shell the symbol asks for, in a key not practised."
