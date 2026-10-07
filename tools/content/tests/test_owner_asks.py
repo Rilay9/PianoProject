@@ -5,9 +5,10 @@ walk was stupid terrible and useless". FABLE sections 1, 9 and 10 and the audien
 behaviour is automated; an owner/device check exists only for a property automation cannot establish,
 named with why, in cold-start plain language. This test reads every handoff under docs/review/handoffs/
 that is not in the frozen baseline (the 222 written before the rule) and fails on a verification ask,
-unless the handoff carries a line beginning "Non-automatable:" naming the property and the reason.
-Quoted lines (starting with ">") are skipped. Decisions asked of the owner ("the owner decides") are not
-matched; verification asks are.
+unless the immediately preceding declaration is `Non-automatable: <property> - <why no test can>`.
+That declaration exempts exactly one following owner-check line, never the whole handoff. Quoted lines
+(starting with ">") are skipped. Decisions asked of the owner ("the owner decides") are not matched;
+verification asks are.
 """
 from __future__ import annotations
 
@@ -27,19 +28,28 @@ ASKS = [
     re.compile(r"\bon\s+(your|the owner'?s)\s+(phone|tablet|device)\b", re.I),
     re.compile(r"\b(owner|you)\s+(plays?|opens?)\b[^.\n]{0,60}\b(and|to)\s+(checks?|confirms?|see\s+whether|verif(y|ies))\b", re.I),
 ]
-ESCAPE = re.compile(r"^\s*Non-automatable:\s*\S.{10,}", re.M)
+NON_AUTOMATABLE = re.compile(r"^\s*Non-automatable:\s*\S.{3,}\s+-\s+\S.{5,}\s*$", re.I)
 
 
 def owner_asks(text: str) -> list[str]:
-    """The lines of ``text`` that ask the owner to check something, or [] when it names why one must."""
-    if ESCAPE.search(text):
-        return []
+    """Owner-verification lines not covered by one immediately preceding non-automatable declaration."""
     found = []
+    permit_next_ask = False
     for line in text.splitlines():
         if line.lstrip().startswith(">"):
             continue
-        if any(p.search(line) for p in ASKS):
+        if NON_AUTOMATABLE.match(line):
+            permit_next_ask = True
+            continue
+        if not line.strip():
+            continue
+        is_ask = any(p.search(line) for p in ASKS)
+        if is_ask and permit_next_ask:
+            permit_next_ask = False
+            continue
+        if is_ask:
             found.append(line.strip()[:160])
+        permit_next_ask = False
     return found
 
 
@@ -80,10 +90,30 @@ class TheMatcherItself(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertEqual(owner_asks(text), [])
 
-    def test_a_named_non_automatable_property_lets_a_device_check_through(self):
+    def test_a_named_non_automatable_property_lets_exactly_the_next_device_check_through(self):
         text = ("Non-automatable: whether the phone's speaker carries the bass - no test can hear a speaker.\n"
                 "Open Blue Bossa's chord chart on your phone and confirm you hear the bass.")
         self.assertEqual(owner_asks(text), [])
+
+    def test_one_non_automatable_declaration_does_not_exempt_an_unrelated_owner_check(self):
+        text = ("Non-automatable: whether the phone's speaker carries the bass - no test can hear a speaker.\n"
+                "Open Blue Bossa's chord chart on your phone and confirm you hear the bass.\n"
+                "Then you should check whether Plan updated.")
+        asks = owner_asks(text)
+        self.assertEqual(len(asks), 1)
+        self.assertIn("Plan updated", asks[0])
+
+    def test_a_non_automatable_declaration_expires_if_it_does_not_immediately_govern_an_ask(self):
+        text = ("Non-automatable: whether the phone's speaker carries the bass - no test can hear a speaker.\n"
+                "This paragraph discusses the deployment first.\n"
+                "Open Blue Bossa's chord chart on your phone and confirm you hear the bass.")
+        self.assertEqual(len(owner_asks(text)), 1)
+
+    def test_the_frozen_baseline_cannot_quietly_grow(self):
+        rows = json.loads(BASELINE.read_text(encoding="utf-8"))["files"]
+        self.assertEqual(len(rows), 222)
+        self.assertEqual(len(rows), len(set(rows)))
+        self.assertTrue(set(rows) <= {p.name for p in HANDOFFS.glob("*.md")})
 
 
 if __name__ == "__main__":
