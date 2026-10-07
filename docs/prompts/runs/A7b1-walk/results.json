@@ -1,0 +1,313 @@
+{
+  "record": [
+    {
+      "step": "route",
+      "did": "Plan → the tracks sheet → Jazz on → Stage 6 → Comping, walking bass, and hearing the changes",
+      "expected": "the lesson page lists eight exercise rows and eight song rows; What the app counts reads 0 of 2",
+      "observed": [
+        "Plan Stage 6 row: \"Comping, walking bass, and hearing the changes 8 exercises · no song needed · ~90 days\"",
+        "lesson page: 8 exercise rows, 8 song rows; \"What the app counts — 0 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/route.png"
+      ]
+    },
+    {
+      "step": "1",
+      "did": "Reads the jazz.6 lesson: the minor ii-V-i, its chords, the shell, what the shell leaves out, Blue Bossa's Cm6",
+      "expected": "the page names Dm7♭5 – G7 – Cm, the shell as root, third and seventh, the omitted flat fifth, and Cm6 with its sixth in the seventh's place",
+      "observed": [
+        "the lesson text carries the minor ii–V–i line, the shell line, the sixth-chord shell line and the omitted-fifth sentence",
+        "the page's last paragraph begins \"The answer for Insensatez. Bars 13 to 15 are a minor ii–V–i in A minor\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/01.png"
+      ]
+    },
+    {
+      "step": "2",
+      "did": "Today → Free play: holds D-F-A♭-C, then D-F-A-C, then lifts the fifth to D-F-C; also G-B-F, C-E♭-B♭ and C-E♭-A",
+      "expected": "the four-note chords are named (half-diminished 7th, minor 7th); D-F-C gets no name",
+      "observed": [
+        "Free play at 780 x 360: #play-chord top 57 bottom 86 (viewport 360); #play-notes top 86 bottom 111 (viewport 360); #play-strip top 144 bottom 254 (viewport 360)",
+        "D-F-A♭-C held: notes \"D4 · F4 · G#4 · C5\", chord line \"D half-diminished 7th\"",
+        "A♭ raised to A: D-F-A-C held: notes \"D4 · F4 · A4 · C5\", chord line \"D minor 7th\"",
+        "fifth lifted: D-F-C held, notes \"D4 · F4 · C5\", chord line \"\"",
+        "G7 shell G-B-F: notes \"G3 · B3 · F4\", chord line \"\"",
+        "Cm7 shell C-E♭-B♭: notes \"C4 · D#4 · A#4\", chord line \"\"",
+        "Cm6 shell C-E♭-A: notes \"C4 · D#4 · A4\", chord line \"A diminished / C\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/02-half-diminished.png",
+        "docs/prompts/runs/A7b1-walk/02-minor-seventh.png",
+        "docs/prompts/runs/A7b1-walk/02-shell.png"
+      ]
+    },
+    {
+      "step": "3",
+      "did": "Plan → Stage 5 → Swing, shell voicings and ii-V-I → the ear drill for seventh chords; plays each echo back",
+      "expected": "right or wrong per card; the stored row is jazz.5's; jazz.6's counts do not move",
+      "observed": [
+        "Plan Stage 5 row: \"Swing, shell voicings and ii-V-I 5 exercises · 4 songs · ~90 days\"",
+        "opened Ear drill — seventh-chord qualities from jazz.5 (#/drill/drill.ear.seventh-qualities?rung=jazz.5)",
+        "drill kind \"ear-chord\"; Hear it again button present",
+        "first card expects 4 notes",
+        "10 cards answered through the mock (the spoken quality is not stored and not asserted)",
+        "stored ear-drill rows: [{\"itemId\":\"drill.ear.seventh-qualities\",\"lessonId\":\"jazz.5\",\"accuracy\":1,\"mode\":\"drill:ear-chord\"}]",
+        "jazz.6 counts after the ear run: \"What the app counts — 0 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/03-card.png",
+        "docs/prompts/runs/A7b1-walk/03-summary.png"
+      ]
+    },
+    {
+      "step": "4",
+      "did": "jazz.6 → Minor ii-V-i with shell voicings: the ten cards, each answered with its shell; back on the page",
+      "expected": "the staff in the key the card names; the stored row is jazz.6's; What the app counts reads 1 of 2",
+      "observed": [
+        "opened Minor ii-V-i with shell voicings from jazz.6 (#/drill/drill.jazz.minor-ii-v-i-shells?rung=jazz.6)",
+        "10 cards: Dm7♭5 — iiø7 in C minor / G7 — V7 in C minor / Cm6 — i in C minor / Bm7♭5 — iiø7 in A minor / E7 — V7 in A minor / Am7 — i in A minor / Am7♭5 — iiø7 in G minor / D7 — V7 in G minor / Gm7 — i in G minor / Dm7♭5 — iiø7 in C minor",
+        "stored rows: [{\"itemId\":\"drill.jazz.minor-ii-v-i-shells\",\"lessonId\":\"jazz.6\",\"accuracy\":1,\"mode\":\"drill:chord\"}]",
+        "What the app counts: \"What the app counts — 1 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/04-card-3-answered.png",
+        "docs/prompts/runs/A7b1-walk/04-card-4-answered.png",
+        "docs/prompts/runs/A7b1-walk/04-summary.png",
+        "docs/prompts/runs/A7b1-walk/04-counts.png"
+      ]
+    },
+    {
+      "step": "5",
+      "did": "jazz.6 → Accompaniment lab → ii–V–I in C minor → Read it, then Play it to me",
+      "expected": "the lab names the ii–V–I in C minor; Read it opens the score; Play it to me runs and the app schedules piano notes",
+      "observed": [
+        "Accompaniment lab opened from the lesson (#/lab?preset=jazz-comping)",
+        "preset: \"Jazz — two five oneThe turn every standard is built from. Comp it, do not read it.\"",
+        "Lab set: \"ii–V–I in C minor · walking + chord tones · 8 bars at 100\"",
+        "Read it opened Lab: ii–V–I in C minor · walking + chord tones · 8 bars at 100",
+        "mode listen",
+        "Play it to me: running, piano notes scheduled 0 → 2"
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/05-lab.png",
+        "docs/prompts/runs/A7b1-walk/05-listen.png"
+      ]
+    },
+    {
+      "step": "6",
+      "did": "Read it in C minor, Keep tempo, played in time on the Score screen",
+      "expected": "a summary with accuracy; jazz.6's counts unchanged",
+      "observed": [
+        "Accompaniment lab opened from the lesson (#/lab?preset=jazz-comping)",
+        "Lab set: \"ii–V–I in C minor · walking + chord tones · 8 bars at 100\"",
+        "mode tempo",
+        "played in time through the MIDI mock: 64 notes struck",
+        "summary: \"Run finished Accuracy 100% Tempo 70% of written To pass 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster Wrong notes 0 Missed 0 Timing 10 ms off the beat on average, 0% of them early Keep tempo at 80 % Again Slower (−10%) Faster (+10%) What next with this piece? Done\"",
+        "What the app counts: \"What the app counts — 1 of 2\" → \"What the app counts — 1 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/06.png"
+      ]
+    },
+    {
+      "step": "7",
+      "did": "The same progression in A minor and in G minor (the keys the lesson names), at a lower tempo (70), Read it, Keep tempo",
+      "expected": "each plays to a summary; jazz.6's counts unchanged",
+      "observed": [
+        "Accompaniment lab opened from the lesson (#/lab?preset=jazz-comping)",
+        "Lab set: \"ii–V–I in A minor · walking + chord tones · 8 bars at 70\"",
+        "mode tempo",
+        "played in time through the MIDI mock: 64 notes struck",
+        "summary: \"Run finished Accuracy 100% Tempo 70% of written To pass 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster Wrong notes 0 Missed 0 Timing 10 ms off the beat on average, 0% of them early Keep tempo at 80 % Again Slower (−10%) Faster (+10%) What next with this piece? Done\"",
+        "← Back went to #/library; the lesson page reopened by address",
+        "Accompaniment lab opened from the lesson (#/lab?preset=jazz-comping)",
+        "Lab set: \"ii–V–I in G minor · walking + chord tones · 8 bars at 70\"",
+        "mode tempo",
+        "played in time through the MIDI mock: 64 notes struck",
+        "summary: \"Run finished Accuracy 100% Tempo 70% of written To pass 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster Wrong notes 0 Missed 0 Timing 10 ms off the beat on average, 2% of them early Keep tempo at 80 % Again Slower (−10%) Faster (+10%) What next with this piece? Done\"",
+        "What the app counts: \"What the app counts — 1 of 2\" → \"What the app counts — 1 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/07-a-minor.png",
+        "docs/prompts/runs/A7b1-walk/07-g-minor.png"
+      ]
+    },
+    {
+      "step": "8",
+      "did": "Lab → C minor → Jam it with Play the tune: the learner comps shells for iiø7 and V7 and the C minor triad as the bars go by",
+      "expected": "the bars are shown with the bed running; the lab counts the chord tones per time round, stores nothing",
+      "observed": [
+        "Accompaniment lab opened from the lesson (#/lab?preset=jazz-comping)",
+        "Lab set: \"ii–V–I in C minor · walking + chord tones · 8 bars at 100\"",
+        "Play the tune chip aria-pressed true",
+        "the jam grid: iiø7 Dø7 / V7 G7 / i Cm / i Cm / iiø7 Dø7 / V7 G7 / i Cm / i Cm",
+        "struck: bar 1 iiø7, bar 2 V7, bar 3 i, bar 4 i, bar 5 iiø7, bar 6 V7, bar 7 i, bar 8 i",
+        "the lab's one-line count: \"Time round 1 · 24 of 24 on the bar’s chord\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/08-jam.png",
+        "docs/prompts/runs/A7b1-walk/08-verdict.png"
+      ]
+    },
+    {
+      "step": "9",
+      "did": "Optional: Blue Bossa ▶ → Keep tempo, played in time",
+      "expected": "a summary; jazz.6's counts unchanged",
+      "observed": [
+        "opened Blue Bossa (#/score/song.jazz.kenny-dorham-blue-bossa.pdmx?from=jazz.6)",
+        "mode tempo",
+        "played in time through the MIDI mock: 85 notes struck",
+        "summary: \"Run finished Accuracy 100% Tempo 70% of the suggested tempo To pass 90 % of the notes, in Keep tempo at 85 % of the suggested tempo or faster Wrong notes 0 Missed 0 Timing 10 ms off the beat on average, 0% of them early Keep tempo at 85 % Again Slower (−10%) Faster (+10%) What next with this piece? Done\"",
+        "What the app counts: \"What the app counts — 1 of 2\" → \"What the app counts — 1 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/09.png"
+      ]
+    },
+    {
+      "step": "10",
+      "did": "Blue Bossa → Chart; Comp on, Bass + drums on, Count off; follows bars 5 to 7 (and 13 to 15) as the app plays them",
+      "expected": "the chart plays; the sounding bar moves; the app schedules piano, bass and drums; bars 5-7 print Dmi7b5, G7, Cmi6",
+      "observed": [
+        "opened Blue Bossa's chord chart from its row (#/chart/song.jazz.kenny-dorham-blue-bossa.pdmx?from=jazz.6)",
+        "32 cells: 1 Cmi6 ; 2 Cmi6 ; 3 Fmi9 ; 4 Fmi9 ; 5 Dmi7b5 ; 6 G7 ; 7 Cmi6 ; 8 Cmi6 ; 9 E♭mi9 ; 10 A♭13 ; 11 D♭ma7 ; 12 D♭ma7 ; 13 Dmi7b5 ; 14 G7 ; 15 Cmi6 ; 16 Dmi7b5 | G7 ; 17 Cmi6 ; 18 Cmi6 ; 19 Fmi9 ; 20 Fmi9 ; 21 Dmi7b5 ; 22 G7 ; 23 Cmi6 ; 24 Cmi6 ; 25 E♭mi9 ; 26 A♭13 ; 27 D♭ma7 ; 28 D♭ma7 ; 29 Dmi7b5 ; 30 G7 ; 31 Cmi6 ; 32 Cmi6",
+        "Comp: off → on",
+        "Bass + drums: off → on",
+        "bars seen: 1,2,3,4,5,6,7,8; piano notes scheduled 40 → 75; bass 18 → 34, kick 18 → 34, snare 18 → 34, hat 72 → 136",
+        "the sounding cell on screen at its downbeat, bars seen: 1 yes, 2 yes, 3 yes, 4 yes, 5 yes, 6 yes, 7 yes, 8 yes"
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/10-chart.png",
+        "docs/prompts/runs/A7b1-walk/10-bar-6.png"
+      ]
+    },
+    {
+      "step": "11",
+      "did": "Blue Bossa chart, Comp off and Bass + drums on: every bar voiced in shells from the printed symbol (bars 5-7 and 13-17 named, bar 16 split)",
+      "expected": "a live cell yes for each bar; the rhythm section sounds with no app comp",
+      "observed": [
+        "opened Blue Bossa's chord chart from its row (#/chart/song.jazz.kenny-dorham-blue-bossa.pdmx?from=jazz.6)",
+        "Comp: off → off",
+        "Bass + drums: off → on",
+        "bass 34 → 100, kick 34 → 100 with Comp off",
+        "log: 1 Cmi6 yes; 2 Cmi6 yes; 3 Fmi9 yes; 4 Fmi9 yes; 5 Dmi7b5 yes; 6 G7 yes; 7 Cmi6 yes; 8 Cmi6 yes; 9 E♭mi9 yes; 10 A♭13 no; 11 D♭ma7 yes; 12 D♭ma7 yes; 13 Dmi7b5 yes; 14 G7 yes; 15 Cmi6 yes; 16 Dmi7b5 yes; 16.1 G7 yes; 17 Cmi6 yes; 18 Cmi6 yes; 19 Fmi9 yes; 20 Fmi9 yes; 21 Dmi7b5 yes; 22 G7 yes; 23 Cmi6 yes; 24 Cmi6 yes; 25 E♭mi9 yes; 26 A♭13 no; 27 D♭ma7 yes; 28 D♭ma7 yes; 29 Dmi7b5 yes; 30 G7 yes; 31 Cmi6 yes; 32 Cmi6 yes",
+        "bar 16 segments struck: Dmi7b5 (yes) then G7 (yes)",
+        "cells not reading yes: 10:0 A♭13 no, 26:0 A♭13 no",
+        "the sounding bar's cell wholly inside the 780 x 360 window at its downbeat, with no scrolling: bars 1,2,3,4,5,6,7,8; not on screen: bars 9 to 32 (24 of 32)"
+      ],
+      "verdict": "STOP",
+      "cause": "the chorus cannot be comped from the chart on this phone: bar 10 A♭13: the cell read no under the shell 56-60-66 | bar 26 A♭13: the cell read no under the shell 56-60-66 | 24 bars were off the screen at their downbeat (9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32) / expect(received).toBe(expected) // Object.is equality / Expected: 0 / Received: 3",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/11-end.png",
+        "docs/prompts/runs/A7b1-walk/11-stop.png"
+      ]
+    },
+    {
+      "step": "12",
+      "did": "Blue Bossa chart, Comp off and Bass + drums off: the whole chorus in shells, nothing from the app but the click",
+      "expected": "a live cell yes for each bar; the app schedules no bass and no drums",
+      "observed": [
+        "opened Blue Bossa's chord chart from its row (#/chart/song.jazz.kenny-dorham-blue-bossa.pdmx?from=jazz.6)",
+        "Comp: off → off",
+        "Bass + drums: off → off",
+        "bass 100 → 100, kick 100 → 100, snare 100 → 100, hat 400 → 400",
+        "33 chords struck over the chorus; cells not reading yes: 10:0 A♭13 no, 26:0 A♭13 no",
+        "the sounding bar's cell wholly inside the 780 x 360 window at its downbeat, with no scrolling: bars 1,2,3,4,5,6,7,8; not on screen: bars 9 to 32 (24 of 32)"
+      ],
+      "verdict": "STOP",
+      "cause": "the chorus cannot be comped from the chart on this phone: bar 10 A♭13: the cell read no under the shell 56-60-66 | bar 26 A♭13: the cell read no under the shell 56-60-66 | 24 bars were off the screen at their downbeat (9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32) / expect(received).toBe(expected) // Object.is equality / Expected: 0 / Received: 3",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/12-end.png",
+        "docs/prompts/runs/A7b1-walk/12-stop.png"
+      ]
+    },
+    {
+      "step": "13",
+      "did": "Optional (A7c.3 L7): Blue Bossa with the left hand on the bossa bass, root and fifth, while the app comps",
+      "expected": "the step is offered once A7c.3's bossa bass is on the learner's path, and the lesson says to ignore the cell for the bass",
+      "observed": [
+        "opened Blue Bossa's chord chart from its row (#/chart/song.jazz.kenny-dorham-blue-bossa.pdmx?from=jazz.6)",
+        "Comp: off → on",
+        "Bass + drums: off → off",
+        "Comp on, Bass + drums off: piano notes scheduled 75 → 79 (the app comps with no rhythm section)",
+        "jazz.6's lesson mentions a bossa bass, a root-and-fifth bass, or ignoring the cell: no"
+      ],
+      "verdict": "STOP",
+      "cause": "jazz.6 offers the optional bossa-bass step and tells the learner to ignore the cell for the bass / expect(received).toBe(expected) // Object.is equality / Expected: true / Received: false",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/13-comp-only.png",
+        "docs/prompts/runs/A7b1-walk/13-stop.png"
+      ]
+    },
+    {
+      "step": "14",
+      "did": "jazz.6 → Insensatez row → Chart: the decision on bars 13 to 15 before playback with Comp off, before the lesson's answer",
+      "expected": "the chart is open and silent, Comp and Bass + drums off, bars 13-15 printed; the answer is on the lesson page's last paragraph, not on the chart",
+      "observed": [
+        "the lesson says it gives the answer at its very end",
+        "opened Insensatez (How Insensitive)'s chord chart from its row (#/chart/song.folk.insensatez-how-insensitive-jobim.pdmx?from=jazz.6)",
+        "32 cells: 1 Ami9 ; 2 Ami9 ; 3 G♯7 ; 4 G♯7 ; 5 Gmi6 ; 6 Gmi6 ; 7 D7/F♯ ; 8 D7/F♯ ; 9 Fma7 ; 10 Fma7 ; 11 B♭ma7 ; 12 B♭ma7 ; 13 Bmi7b5 ; 14 E7 ; 15 Ami7 ; 16 A♭7 ; 17 Gmi9 ; 18 Gmi9 ; 19 F♯7 ; 20 F♯7 ; 21 Fma7 ; 22 Bmi7b5 | E7 ; 23 Ami7 ; 24 Ami7 | A♭7 ; 25 Gmi9 ; 26 C7 ; 27 F♯mi7 ; 28 B7 ; 29 Fma7 ; 30 E7 ; 31 Ami7 ; 32 Ami7",
+        "the chart screen's own words name the progression or the key: no",
+        "live cells reading before playback: none (idle)"
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/14.png"
+      ]
+    },
+    {
+      "step": "15",
+      "did": "Insensatez chart: Comp on, Count off, listens through bars 13 to 15; Stop; Comp off, Count off, voices them as shells; back to the lesson for the answer",
+      "expected": "the app comps through 13-15; the shells read yes in 13-15; the answer is the lesson's last paragraph",
+      "observed": [
+        "opened Insensatez (How Insensitive)'s chord chart from its row (#/chart/song.folk.insensatez-how-insensitive-jobim.pdmx?from=jazz.6)",
+        "Comp: off → on",
+        "listened: bars 13-15 seen 13 yes, 14 yes, 15 yes; piano notes scheduled 79 → 133 at bar 13 → 146 by bar 16",
+        "Comp: on → off",
+        "with bars 9-16 scrolled into view: #chart-start on screen; #chart-stop on screen",
+        "shells struck: 13 Bmi7b5 [59,62,69] yes; 14 E7 [52,56,62] yes; 15 Ami7 [57,60,67] yes",
+        "the sounding bar's cell wholly inside the 780 x 360 window at its downbeat, with no scrolling: bars 13,14,15; not on screen: none",
+        "the lesson's last paragraph: \"The answer for Insensatez. Bars 13 to 15 are a minor ii–V–i in A minor: Bmi7b5, E7 and Ami7 on the chart, that is Bm7♭5, E7 and Am7, the chords of the minor dri...\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/15-shells.png",
+        "docs/prompts/runs/A7b1-walk/15-answer.png"
+      ]
+    },
+    {
+      "step": "16",
+      "did": "Independence (a later rung, no lesson naming it): Insensatez whole, finds the minor ii-V-i at bars 13-15 and 22-23 and voices each in shells; then the A10.1 standard on jazz.9",
+      "expected": "bars 22 (split) and 23 print Bmi7b5 | E7 and Ami7 and read yes under shells; the A10.1 standard is on jazz.9",
+      "observed": [
+        "opened Insensatez (How Insensitive)'s chord chart from its row (#/chart/song.folk.insensatez-how-insensitive-jobim.pdmx?from=jazz.6)",
+        "bars 13-15: Bmi7b5 ; E7 ; Ami7; bars 22-23: Bmi7b5 | E7 ; Ami7; look-alike bars 29-31: Fma7 ; E7 ; Ami7",
+        "Comp: off → off",
+        "Bass + drums: off → off",
+        "the sounding bar's cell wholly inside the 780 x 360 window at its downbeat, with no scrolling: bars 22,23; not on screen: none",
+        "shells struck: 22.0 Bmi7b5 [59,62,69] yes; 22.1 E7 [52,56,62] yes; 23.0 Ami7 [57,60,67] yes",
+        "jazz.9's songs: song.jazz.the-dave-brubeck-quartet-take-five.pdmx, song.jazz.fats-waller-ain-t-misbehavin.pdmx, song.jazz.george-shearing-lullaby-of-birdland.pdmx, song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx, song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx, song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx",
+        "docs/chains/A10.1.yaml (the record that would name the standard): absent"
+      ],
+      "verdict": "STOP",
+      "cause": "the A10.1 standard is named and admitted on jazz.9 (docs/chains/A10.1.yaml) / expect(received).toBe(expected) // Object.is equality / Expected: true / Received: false",
+      "shots": [
+        "docs/prompts/runs/A7b1-walk/16.png",
+        "docs/prompts/runs/A7b1-walk/16-stop.png"
+      ]
+    }
+  ]
+}
