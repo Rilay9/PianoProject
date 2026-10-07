@@ -883,6 +883,41 @@ class TheBriefLint(unittest.TestCase):
         self.assertTrue(any("probe-latin4-bizet.md (A7c.1)" in n for n in notes), notes)
 
 
+class TheOwnerWorkGuard(unittest.TestCase):
+    """The docs-integrity suite pins the matcher that its production scan relies on."""
+
+    def test_owner_verification_asks_are_caught(self):
+        for text in (
+            "A7c.1's only gate is the owner's phone walk.",
+            "Shipping waits on the owner.",
+            "Open the lesson on your phone and confirm the loop works.",
+            "Then you should check whether Plan updated.",
+        ):
+            with self.subTest(text=text):
+                self.assertTrue(cc.owner_work.owner_asks(text))
+
+    def test_one_non_automatable_declaration_exempts_only_the_immediately_following_check(self):
+        text = (
+            "Non-automatable: whether the phone's speaker carries the bass - no test can hear a speaker.\n"
+            "Open Blue Bossa on your phone and confirm you hear the bass.\n"
+            "Then you should check whether Plan updated."
+        )
+        asks = cc.owner_work.owner_asks(text)
+        self.assertEqual(len(asks), 1)
+        self.assertIn("Plan updated", asks[0])
+
+    def test_decisions_quotes_and_test_actors_are_not_owner_verification_asks(self):
+        for text in (
+            "The owner decides the rung; say which.",
+            "> The owner said: the phone walk was useless.",
+            "The browser spec opens the chart and checks the bass events.",
+            "The reviewer checks the notation.",
+        ):
+            with self.subTest(text=text):
+                self.assertEqual(cc.owner_work.owner_asks(text), [])
+
+
+
 class TheCommandLine(unittest.TestCase):
     def setUp(self):
         self.tree = Governing()
