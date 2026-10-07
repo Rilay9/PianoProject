@@ -17,7 +17,7 @@ nothing else:
      (see below); SIGHT-READING, MUSICAL and NAMED-PATTERN with ``presented_as: music`` list their
      musical properties, each with how it is established or UNKNOWN; a mechanical CONTROL
      (``presented_as: drill``) lists none and none is required;
- R8  ``status: shipped`` requires an acceptance-test path that exists.
+ R8  ``status: shipped`` requires an automated acceptance-test source path that exists; documentation and manual walks are not acceptance tests.
 
 ``--lint-briefs`` also reads ``docs/prompts/runs/*/briefs/*.md``. A major curriculum brief declares
 itself with one line, ``ability: <id>`` (the id in ABILITY-MAP.md's form, FABLE.md section 3). Every
@@ -25,6 +25,10 @@ brief that carries the line must have the headings Instructional chain, Failure 
 test, and a record ``docs/chains/<id>.yaml`` that passes (a ``draft`` passes, its unresolved refs
 listed with every record's). A brief without the line is not linted; the run says how many were
 skipped.
+
+``--lint-handoffs`` reads the live response-required reviewer handoffs named by ``docs/review/current.md``.
+A live handoff must carry the whole line ``owner_action: none``; a phone walk is rejected. Owner
+decisions are asked directly outside reviewer handoffs rather than hidden in review/QA work.
 
 ``--tools`` prints the tool vocabulary.
 
@@ -74,7 +78,7 @@ Decisions the brief took (briefs/chain-record-checker.md, "Decisions taken here"
 
 Fields this script adds to FABLE section 3's shape, because a rule needs somewhere to read:
  * ``steps[].no_removal_reason`` (optional): the one-line reason of R4.
- * ``acceptance_test`` (top level, optional): the acceptance-test path R8 reads.
+ * ``acceptance_test`` (top level, optional): the automated acceptance-test source path R8 reads.
  * ``content`` is one mapping and ``tool`` one string per step; a row with two items or two tools is
    written as two steps.
 
@@ -171,6 +175,23 @@ SCAFFOLD_NOTE = (
     "not proof that pedagogical support faded"
 )
 BRIEF_HEADINGS = ("Instructional chain", "Failure route", "Independence test")
+CURRENT_REVIEW = "docs/review/current.md"
+HANDOFF_POINTER_RE = re.compile(r"^\s*-\s+`(?P<path>handoffs/[^`]+\.md)`\s+—\s+(?P<body>.*)$")
+CLOSED_HANDOFF_MARKERS = ("**answered**", "**closed**", "**withdrawn**", "**no response required**", "**parked")
+OWNER_ACTION_NONE_RE = re.compile(r"^owner_action:\s*none\s*$", re.IGNORECASE)
+PHONE_WALK_RE = re.compile(r"\bphone[- ]walk\b", re.IGNORECASE)
+AUTOMATED_ACCEPTANCE_PATTERNS = (
+    re.compile(r"\.(?:test|spec)\.(?:[cm]?[jt]sx?)$", re.IGNORECASE),
+    re.compile(r"(?:^|/)test_[^/]+\.py$", re.IGNORECASE),
+    re.compile(r"(?:^|/)[^/]+_test\.py$", re.IGNORECASE),
+)
+
+
+def automated_acceptance_path(path: str) -> bool:
+    """True only for repository test-source naming conventions. Documentation/manual walks never qualify."""
+    shown = str(path).replace("\\", "/")
+    return any(pattern.search(shown) for pattern in AUTOMATED_ACCEPTANCE_PATTERNS)
+
 
 
 # --------------------------------------------------------------------------------------
@@ -637,13 +658,18 @@ def check_record(rec, file: str, resolver: Resolver, tools: dict[str, str] | Non
         else:
             unresolved.append(Unresolved(file, field, ref, why))
 
-    # R8 -- shipped needs an acceptance-test path that exists --------------------------
+    # R8 -- shipped needs an automated acceptance-test source that exists ---------------
     if status == "shipped":
         path = rec.get("acceptance_test")
         if _blank(path):
-            fail("acceptance_test", "status is shipped: name the acceptance-test path")
+            fail("acceptance_test", "status is shipped: name the automated acceptance-test source path")
         elif not (resolver.root / str(path)).exists():
             fail("acceptance_test", f"{path!r} does not exist")
+        elif not automated_acceptance_path(str(path)):
+            fail(
+                "acceptance_test",
+                f"{path!r} is not an automated test source; Markdown, prose checklists and manual/phone walks cannot gate shipped",
+            )
     return failures, unresolved
 
 
@@ -720,6 +746,71 @@ def lint_briefs(
 
 
 # --------------------------------------------------------------------------------------
+# the live reviewer-handoff lint
+# --------------------------------------------------------------------------------------
+
+
+def lint_handoffs(root: Path = ROOT) -> tuple[list[Failure], list[str]]:
+    """Lint only the live response-required handoffs in docs/review/current.md.
+
+    Answered/closed/withdrawn/history rows are not reinterpreted. A live reviewer handoff is for the
+    reviewer, not a place to assign QA to the owner, so it must carry exactly ``owner_action: none``.
+    The exact failure that triggered this guard -- a phone walk as a shipping gate -- is rejected even
+    when the marker is present.
+    """
+    failures: list[Failure] = []
+    current = root / CURRENT_REVIEW
+    if not current.is_file():
+        return [Failure(CURRENT_REVIEW, "(file)", "current reviewer pointer is missing")], ["handoffs: 0 live reviewer handoff(s) linted"]
+
+    live: list[str] = []
+    inside = False
+    for line in current.read_text(encoding="utf-8").splitlines():
+        if line.strip() == "## Response-required handoffs":
+            inside = True
+            continue
+        if inside and line.startswith("## "):
+            break
+        if not inside:
+            continue
+        match = HANDOFF_POINTER_RE.match(line)
+        if not match:
+            continue
+        body = match.group("body").casefold()
+        if any(marker.casefold() in body for marker in CLOSED_HANDOFF_MARKERS):
+            continue
+
+        rel = match.group("path")
+        shown = f"docs/review/{rel}"
+        live.append(shown)
+        path = root / "docs" / "review" / rel
+        if not path.is_file():
+            failures.append(Failure(CURRENT_REVIEW, rel, f"live reviewer handoff {shown} does not exist"))
+            continue
+
+        text = path.read_text(encoding="utf-8")
+        if not any(OWNER_ACTION_NONE_RE.match(row) for row in text.splitlines()):
+            failures.append(
+                Failure(
+                    shown,
+                    "owner_action",
+                    "live reviewer handoff must carry the whole line `owner_action: none`; owner decisions are asked directly outside reviewer handoffs",
+                )
+            )
+        if PHONE_WALK_RE.search(text):
+            failures.append(
+                Failure(
+                    shown,
+                    "owner_action",
+                    "live reviewer handoff contains a phone walk; objective/device verification must stay with automated/build actors, not the owner",
+                )
+            )
+
+    notes = [f"handoffs: {len(live)} live reviewer handoff(s) linted"]
+    notes += [f"  linted {entry}" for entry in live]
+    return failures, notes
+
+# --------------------------------------------------------------------------------------
 # command line
 # --------------------------------------------------------------------------------------
 
@@ -728,6 +819,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Check the chain records in docs/chains/ (FABLE.md section 3).")
     parser.add_argument("--root", type=Path, default=ROOT, help="the tree to read (default: this repository)")
     parser.add_argument("--lint-briefs", action="store_true", help="also lint docs/prompts/runs/*/briefs/*.md")
+    parser.add_argument("--lint-handoffs", action="store_true", help="also lint live response-required reviewer handoffs from docs/review/current.md")
     parser.add_argument("--tools", action="store_true", help="print the tool vocabulary and exit")
     args = parser.parse_args(argv)
     root = args.root
@@ -753,8 +845,13 @@ def main(argv: list[str] | None = None) -> int:
         unresolved += got_unresolved
         statuses.append(f"{path.stem} ({status})")
     if args.lint_briefs:
-        got_failures, notes = lint_briefs(root, resolver, tools)
+        got_failures, got_notes = lint_briefs(root, resolver, tools)
         failures += got_failures
+        notes += got_notes
+    if args.lint_handoffs:
+        got_failures, got_notes = lint_handoffs(root)
+        failures += got_failures
+        notes += got_notes
 
     for failure in failures:
         print(failure.line())
@@ -764,7 +861,11 @@ def main(argv: list[str] | None = None) -> int:
         print(note)
     summary = f"{len(paths)} chain record(s): {', '.join(statuses) or 'none'}; {len(failures)} failure(s), {len(unresolved)} unresolved ref(s) in drafts"
     if args.lint_briefs:
-        summary += "; " + notes[0].replace("briefs: ", "briefs ", 1)
+        brief_note = next(note for note in notes if note.startswith("briefs: "))
+        summary += "; " + brief_note.replace("briefs: ", "briefs ", 1)
+    if args.lint_handoffs:
+        handoff_note = next(note for note in notes if note.startswith("handoffs: "))
+        summary += "; " + handoff_note.replace("handoffs: ", "handoffs ", 1)
     print(summary)
     print(SCAFFOLD_NOTE)
     return 1 if failures else 0
