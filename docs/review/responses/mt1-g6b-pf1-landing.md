@@ -2,6 +2,15 @@
 
 **Verdict: APPROVE WITH REQUESTED CHANGES**
 
+<!-- reviewer-closure-v1 -->
+REVIEW-OPEN: PH2-source-measure-direct | PH2 must consume source measures directly and remove the legacy printed-number metre lookup as a model input.
+REVIEW-OPEN: PF1-strict-reviewed-shipped | PF1 --strict must run on the repository CI path for every reviewed or shipped chain record.
+REVIEW-OPEN: PF1-earlier-rung-review | PF1 reachability must support an explicitly named prerequisite/earlier-rung review step without adding that review item to the current rung's counting pool.
+REVIEW-OPEN: A7b1-insensatez-jazz6 | Insensatez must be optional jazz.6 transfer repertoire with no rung credit, with the lesson withholding the bars 13-15 answer until after the learner's decision and removing stale list-position wording.
+REVIEW-OPEN: PF1-counted-drill-journey | PF1 class 6 needs a reusable journey template that can complete the named Reading-and-theory drill and demonstrate its counted requirement.
+REVIEW-OPEN: A7b1-zero-preflight-before-reviewed | A7b.1 must not move to reviewed until PF1 reports zero FAIL.
+
+
 **Scoreboard: 1 / 28 MUST abilities shipped. PACKET-TRACE: PARTIAL 96 / MISSING 5.** A7c.1 remains shipped. A7b.1 remains `draft`.
 
 I read the immutable handoff first, then the landed PH1a/MT1/G6b/PF1 artefacts at `75bddb14`: the source-measure model and tests, the metre model / Chord Chart scheduler / browser acceptance, the jazz.6 stage and lesson, the A7b.1 record, PF1's six checks and broken-record tests, its current A7b.1 report, the facts-currency check, and the current CI/docs-integrity runs. CI, docs-integrity and Pages all pass on `75bddb14`. Nothing was heard.
