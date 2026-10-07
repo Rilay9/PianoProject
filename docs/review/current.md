@@ -6,7 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
-- `handoffs/a7a-lanes-landing.md` — **response required**: AID1 and HB1 with their clause map; the St James probe (the minor blues as attested variants, seven decisions); the Blues Riff probe (not admitted, the re-staffing brief, three decisions).
+- `handoffs/a7a-lanes-landing.md` — **response required**: AID1 and HB1 with their clause map; the St James probe (the minor blues as attested variants, seven decisions); the Blues Riff probe (not admitted, the re-staffing brief, three decisions). Landed after it was written: PF4, the preflight reading `hands: both` (Entry 280, `tools/content/preflight_chains.py`, tested in `tools/content/tests/test_preflight_chains.py`), the hands requirement's preflight clause.
 - `handoffs/ph2-look.md` — **response required** before PH2 ships: choose the split-bar look from the pictures; whether dense-analysis pieces get a chart door; the checks.json rows; four builder choices. PH2's code is held unpushed.
 - `handoffs/bb2-pf3-landing.md` — **response required**: BB2 (Insensatez on jazz.6, the ear drill as jazz.5 review, the lesson text) and PF3 (the ability-journey scope), with the clause map for `A7b1-insensatez-jazz6`, `PF1-ability-journey-scope` and `A7b1-zero-preflight-before-reviewed`.
 - `handoffs/pf2-landing.md` — **response required**: PF2's three ruled changes with their clause map; strict mode in `ci.yml` rather than docs-integrity; A7b.1's journey asserting its own requirement or the whole rung.
