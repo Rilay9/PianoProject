@@ -50,7 +50,7 @@ def _fields(tail: str) -> dict[str, str]:
     return out
 
 
-def scan(root: Path = ROOT) -> tuple[list[tuple[str, str]], list[Requirement]]:
+def scan(root: Path = ROOT, expected_baseline_count: int = EXPECTED_BASELINE_COUNT) -> tuple[list[tuple[str, str]], list[Requirement]]:
     """Return (problems, still-open requirements) for the current repository tree."""
     problems: list[tuple[str, str]] = []
     responses = root / RESPONSES_REL
@@ -70,10 +70,10 @@ def scan(root: Path = ROOT) -> tuple[list[tuple[str, str]], list[Requirement]]:
     if not isinstance(baseline_rows, list):
         return [(BASELINE_REL.as_posix(), "review-closure baseline files must be a list")], []
     baseline = [str(x) for x in baseline_rows]
-    if len(baseline) != EXPECTED_BASELINE_COUNT or len(set(baseline)) != EXPECTED_BASELINE_COUNT:
+    if len(baseline) != expected_baseline_count or len(set(baseline)) != expected_baseline_count:
         problems.append((
             BASELINE_REL.as_posix(),
-            f"frozen review-closure baseline must remain exactly {EXPECTED_BASELINE_COUNT} unique response files",
+            f"frozen review-closure baseline must remain exactly {expected_baseline_count} unique response files",
         ))
 
     actual = {p.name for p in responses.glob("*.md") if p.name != "README.md"}
