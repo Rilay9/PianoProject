@@ -9,10 +9,10 @@ Generated; every count below was checked against its source list by the script.
 | --- | --- | --- | --- | --- |
 | CODE-EXACT | 42 | 26 | 31 | 99 |
 | CODE-RULE | 7 | 13 | 37 | 57 |
-| CODE-INFERENCE | 2 | 12 | 10 | 24 |
+| CODE-INFERENCE | 1 | 13 | 10 | 24 |
 | EXTERNAL | 3 | 2 | 1 | 6 |
 | JUDGMENT | 0 | 0 | 7 | 7 |
-| total | 54 | 53 | 86 | 193 |
+| total | 53 | 54 | 86 | 193 |
 
 - By pipeline: both 162, pdmx 18, generated 13.
 - By placement question: cope 82, exercises 86, material 25.

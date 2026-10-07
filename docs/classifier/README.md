@@ -32,7 +32,7 @@ EXISTS is written only where the named code has run on real catalogue items (the
 ## Two pipelines
 
 - **Generated.** The generator's declared spec is the intent (`generated.spec-declared`). The generated MusicXML is still read by the same independent analysers as PDMX (`generated.spec-vs-actual`): today the app's detectors check the demand vocabulary against the family contract; range, phrase structure and harmonic plan are neither declared nor checked for most families.
-- **PDMX.** Nothing is declared. Integrity checks run first (`integrity.*`; six of them run in the build today). Every extracted value carries its provenance: *exact*, *two witnesses*, *one witness*, *inferred* (with confidence), or *metadata only*. Two witnesses that disagree give UNKNOWN for that item, listed.
+- **PDMX.** Nothing is declared. Integrity checks run first (`integrity.*`; five of them run in the build today; the music21 key analysis is skipped there). Every extracted value carries its provenance: *exact*, *two witnesses*, *one witness*, *inferred* (with confidence), or *metadata only*. Two witnesses that disagree give UNKNOWN for that item, listed.
 
 ## The three placement questions
 

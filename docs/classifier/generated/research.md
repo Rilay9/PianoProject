@@ -72,7 +72,7 @@ Find the published definition the matcher will quote; sourced examples and near-
 For each: the library or model, how a confidence is produced, what the ambiguous case does (UNKNOWN, never a guess).
 
 - `prereq.hand-assignment`: which hand plays which notes (one-staff files, cross-staff) (PARTLY; a one-staff file takes the catalogue's declared hand; no inference from register or stems; confirming facts are hand-written rows)
-- `key.tonic-mode`: the key as sounded (vs the signature); major or minor (PARTLY; music21 key analysis runs for the integrity check only; no partitura second witness; no confidence on the row)
+- `key.tonic-mode`: the key as sounded (vs the signature); major or minor (PARTLY; music21 key analysis exists but the build skips it (--no-analysis); runs only by hand; no partitura second witness; no confidence on the row)
 - `key.change`: modulation, trio key change (PARTLY; signature changes are exact; unmarked modulation needs windowed key finding (music21 floatingKey) with confidence)
 - `harmony.roman`: function (Roman numerals) per chord (PARTLY; from symbols with a key it is near-exact (music21 romanNumeralFromChord); from notes it needs confidence; nothing runs on PDMX)
 - `harmony.cadence`: cadence types at phrase ends (PARTLY; needs form.phrase on PDMX; the evaluator knows its phrases by construction)
@@ -88,7 +88,7 @@ For each: the library or model, how a confidence is produced, what the ambiguous
 - `difficulty.level`: one overall level inside a rung's band (PARTLY; fitted on levels set inside this project (645 items estimated); no outside calibration; collapses the vector to one number)
 - `target.interaction`: the target combined with another demand at the same onset (MISSING; as coordination.interaction)
 - `item.continuity`: recovery points: rests, phrase ends, repeats (PARTLY; needs form.phrase)
-- `integrity.key-consistency`: signature agrees with the notes (EXISTS; one key finder; add partitura as the second)
+- `integrity.key-consistency`: signature agrees with the notes (PARTLY; the signature-vs-notes rule runs in the build; its music21 key analysis does not (build.py:185 passes --no-analysis), so the inference half runs only by hand; add partitura as the second witness)
 - `integrity.truncation`: the file is not cut short (EXISTS; archive bar counts are the witness where present)
 - `integrity.duplicate-version`: several uploads of one work; containment of one in another (PARTLY; bar fingerprints and title identity exist; no version cluster written per work)
 - `integrity.notation-sanity`: spelling, beaming, voices, accidental churn as engraved (MISSING; partitura estimate_spelling vs the file's spelling; beaming vs metre; FABLE §5 names these checks for generated items too)

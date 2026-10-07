@@ -68,7 +68,7 @@ only where the named code has run on real catalogue items. Nothing here is a rul
 
 | CHARACTERISTIC | NEEDED FOR | GEN/PDMX/BOTH | CLASS | CURRENT CODE | STATUS | GAP |
 | --- | --- | --- | --- | --- | --- | --- |
-| `key.tonic-mode` | cope: the key as sounded (vs the signature); major or minor; 10 rungs (3.3, 4.2, 4.4, …); abilities A2.1, A7a.3, A7b.1 | both | CODE-INFERENCE | tools/content/score_checks.py:1496 analyse_key; :452 check_key_consistency; tools/content/candidates.py:69 sounds_minor | PARTLY | music21 key analysis runs for the integrity check only; no partitura second witness; no confidence on the row |
+| `key.tonic-mode` | cope: the key as sounded (vs the signature); major or minor; 10 rungs (3.3, 4.2, 4.4, …); abilities A2.1, A7a.3, A7b.1 | both | CODE-INFERENCE | tools/content/score_checks.py:1496 analyse_key; :452 check_key_consistency; tools/content/candidates.py:69 sounds_minor | PARTLY | music21 key analysis exists but the build skips it (--no-analysis); runs only by hand; no partitura second witness; no confidence on the row |
 | `key.minor-form` | exercises: harmonic or melodic minor in use; 2 rungs (3.3, 4.2) | both | CODE-RULE | none | MISSING | raised 6th/7th degree counts in a minor key |
 | `key.change` | cope: modulation, trio key change; 6 rungs (improv.8, jazz.8, ragtime.6, …) | both | CODE-INFERENCE | tools/content/build.py:389 attach_notation (keys list) | PARTLY | signature changes are exact; unmarked modulation needs windowed key finding (music21 floatingKey) with confidence |
 | `key.set-membership` | material: tonic in a stated list (guitar keys, singable keys); 4 rungs (jam, jam.5, jam.6, …); tracks jam; abilities A7g.1 | both | CODE-EXACT | none | MISSING | trivial once key.tonic-mode has a value |
@@ -234,7 +234,7 @@ only where the named code has run on real catalogue items. Nothing here is a rul
 
 | CHARACTERISTIC | NEEDED FOR | GEN/PDMX/BOTH | CLASS | CURRENT CODE | STATUS | GAP |
 | --- | --- | --- | --- | --- | --- | --- |
-| `integrity.key-consistency` | cope: signature agrees with the notes | pdmx | CODE-INFERENCE | tools/content/score_checks.py:452 check_key_consistency | EXISTS | one key finder; add partitura as the second |
+| `integrity.key-consistency` | cope: signature agrees with the notes | pdmx | CODE-INFERENCE | tools/content/score_checks.py:452 check_key_consistency | PARTLY | the signature-vs-notes rule runs in the build; its music21 key analysis does not (build.py:185 passes --no-analysis), so the inference half runs only by hand; add partitura as the second witness |
 | `integrity.bar-duration` | cope: bars add up to the metre | pdmx | CODE-EXACT | tools/content/score_checks.py:974 check_bar_duration | EXISTS | none |
 | `integrity.truncation` | cope: the file is not cut short | pdmx | CODE-INFERENCE | tools/content/score_checks.py:804 check_truncation; :770 final_bar_incomplete; tools/content/truncation_scan.py | EXISTS | archive bar counts are the witness where present |
 | `integrity.repeat-structure` | cope: repeats and endings are well formed | pdmx | CODE-EXACT | tools/content/score_checks.py:1338 check_repeat_structure | EXISTS | none |

@@ -1354,7 +1354,7 @@
    "cls": "CODE-INFERENCE",
    "code": "tools/content/score_checks.py:1496 analyse_key; :452 check_key_consistency; tools/content/candidates.py:69 sounds_minor",
    "status": "PARTLY",
-   "gap": "music21 key analysis runs for the integrity check only; no partitura second witness; no confidence on the row",
+   "gap": "music21 key analysis exists but the build skips it (--no-analysis); runs only by hand; no partitura second witness; no confidence on the row",
    "w2": "partitura estimate_key",
    "src": "Krumhansl-Schmuckler profiles as each library implements them",
    "uses": {
@@ -4165,8 +4165,8 @@
    "pipe": "pdmx",
    "cls": "CODE-INFERENCE",
    "code": "tools/content/score_checks.py:452 check_key_consistency",
-   "status": "EXISTS",
-   "gap": "one key finder; add partitura as the second",
+   "status": "PARTLY",
+   "gap": "the signature-vs-notes rule runs in the build; its music21 key analysis does not (build.py:185 passes --no-analysis), so the inference half runs only by hand; add partitura as the second witness",
    "w2": "partitura estimate_key",
    "uses": {
     "concepts": [],

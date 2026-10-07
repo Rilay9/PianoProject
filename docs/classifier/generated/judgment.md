@@ -16,7 +16,7 @@ residual question only, never the whole score with an open question.
 
 ## `integrity.arrangement-fidelity`: the upload represents the real piece
 
-- measurable first: `integrity.duplicate-version` (CODE-INFERENCE, PARTLY), `integrity.truncation` (CODE-INFERENCE, EXISTS), `integrity.key-consistency` (CODE-INFERENCE, EXISTS), `integrity.title-structure` (CODE-RULE, EXISTS)
+- measurable first: `integrity.duplicate-version` (CODE-INFERENCE, PARTLY), `integrity.truncation` (CODE-INFERENCE, EXISTS), `integrity.key-consistency` (CODE-INFERENCE, PARTLY), `integrity.title-structure` (CODE-RULE, EXISTS)
 - residual: where uploads of the same work disagree, or only one exists, whether this one is a faithful arrangement (EXTERNAL where a reference edition or recording can be compared; judgment otherwise)
 
 ## `style.good-example`: a good teaching example of style X
