@@ -5,7 +5,8 @@
    "need": "cope",
    "dec": "nothing the rung's ancestry has not taught",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/claims.py:474 untaught_on; :205 rung_ancestry",
    "status": "EXISTS",
    "gap": "covers the 22 demands only; every CODE-RULE row below widens it",
@@ -22,7 +23,8 @@
    "need": "cope",
    "dec": "a generated item uses only its family's allowed vocabulary",
    "pipe": "generated",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/family_contracts.py:249 pedagogical_faults (requires/forbids); tools/content/preflight_chains.py class 5",
    "status": "EXISTS",
    "gap": "forbids are per demand id; range, rhythm vocabulary and harmonic plan are not declared for most families (generated.spec-complete)",
@@ -38,7 +40,12 @@
    "need": "cope",
    "dec": "which hand plays which notes (one-staff files, cross-staff)",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "notation.staves",
+    "hands.per-bar-range"
+   ],
    "code": "app/src/score/extractScoreModel.ts declaredHand; tools/content/verified_hand.py:103 verified_hands (facts)",
    "status": "PARTLY",
    "gap": "a one-staff file takes the catalogue's declared hand; no inference from register or stems; confirming facts are hand-written rows",
@@ -55,7 +62,8 @@
    "need": "cope",
    "dec": "reading",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "count only (music21 clef.TrebleClef)",
@@ -77,7 +85,8 @@
    "need": "cope",
    "dec": "reading",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:360 bassClef",
    "status": "EXISTS",
    "gap": "none",
@@ -100,7 +109,8 @@
    "need": "cope",
    "dec": "reading",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:368 ledgerLines",
    "status": "EXISTS",
    "gap": "none",
@@ -123,7 +133,8 @@
    "need": "cope",
    "dec": "key signature(s) and their changes",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/build.py:389 attach_notation",
    "status": "EXISTS",
    "gap": "none",
@@ -154,7 +165,8 @@
    "need": "cope",
    "dec": "metre(s) and their changes",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/build.py:389 attach_notation",
    "status": "EXISTS",
    "gap": "none",
@@ -178,7 +190,8 @@
    "need": "cope",
    "dec": "one staff or two (lead sheet vs piano score)",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/build.py:389 attach_notation",
    "status": "EXISTS",
    "gap": "none",
@@ -200,7 +213,8 @@
    "need": "cope",
    "dec": "length",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/build.py:389 attach_notation",
    "status": "EXISTS",
    "gap": "none",
@@ -218,7 +232,8 @@
    "need": "exercises",
    "dec": "a chart or lead sheet to play from",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/build.py:389 attach_notation (chords, chordCount)",
    "status": "EXISTS",
    "gap": "names only; per-bar positions are PH1's harmony.ts for the chart screen, not on the catalogue row",
@@ -286,7 +301,8 @@
    "need": "exercises",
    "dec": "swing feel declared",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/build.py:389 attach_notation (swungMark)",
    "status": "EXISTS",
    "gap": "none",
@@ -315,7 +331,8 @@
    "need": "cope",
    "dec": "printed dynamics to read",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "count and per-bar positions (music21 dynamics.Dynamic)",
@@ -343,7 +360,8 @@
    "need": "cope",
    "dec": "crescendo and diminuendo",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "music21 dynamics.Crescendo / Diminuendo",
@@ -375,7 +393,8 @@
    "need": "cope",
    "dec": "staccato, accent, tenuto",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "music21 articulations",
@@ -407,7 +426,8 @@
    "need": "cope",
    "dec": "slurs (printed legato)",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "music21 spanner.Slur",
@@ -446,7 +466,8 @@
    "need": "cope",
    "dec": "pedal marks",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "raw MusicXML <pedal>; music21 10.5 has no pedal class",
@@ -482,7 +503,8 @@
    "need": "cope",
    "dec": "trills, mordents, turns, grace notes",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (ornaments count)",
    "status": "PARTLY",
    "gap": "one count; no kind or position",
@@ -518,7 +540,8 @@
    "need": "cope",
    "dec": "tremolo",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "music21 expressions.Tremolo",
@@ -543,7 +566,8 @@
    "need": "cope",
    "dec": "8va reading",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "music21 spanner.Ottava",
@@ -565,7 +589,8 @@
    "need": "cope",
    "dec": "fermatas",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "music21 expressions.Fermata",
@@ -583,7 +608,8 @@
    "need": "cope",
    "dec": "repeats, endings, navigation",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/score_checks.py:1237 repeat_faults",
    "status": "PARTLY",
    "gap": "read for integrity, not written as a characteristic",
@@ -603,7 +629,8 @@
    "need": "cope",
    "dec": "printed fingering",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/extract_fingering.py",
    "status": "PARTLY",
    "gap": "extracts for one source table; not a per-item count",
@@ -627,7 +654,8 @@
    "need": "cope",
    "dec": "pickup bar",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/excerpt_proposer.py:368 is_pickup_bar",
    "status": "PARTLY",
    "gap": "used when cutting excerpts, not written as a characteristic",
@@ -649,7 +677,8 @@
    "need": "cope",
    "dec": "written tempo and its provenance",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/score/tempoFromXml.ts:254 tempoEvents; :280 writesTempo",
    "status": "EXISTS",
    "gap": "174 items carry a defaulted tempo (tag tempo-defaulted): their tempo-dependent values are untrusted and say so",
@@ -682,7 +711,8 @@
    "need": "cope",
    "dec": "the rhythmic vocabulary used, rests included",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (shortestValue, distinctRhythms)",
    "status": "PARTLY",
    "gap": "two summaries; no histogram of values or rests",
@@ -712,7 +742,8 @@
    "need": "exercises",
    "dec": "target",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:391 eighths",
    "status": "EXISTS",
    "gap": "none",
@@ -739,7 +770,8 @@
    "need": "cope",
    "dec": "subdivision",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:395 shorterThanQuarter",
    "status": "EXISTS",
    "gap": "none",
@@ -758,7 +790,8 @@
    "need": "exercises",
    "dec": "target",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:399 sixteenths",
    "status": "EXISTS",
    "gap": "none",
@@ -788,7 +821,8 @@
    "need": "exercises",
    "dec": "target",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:406 dottedQuarters",
    "status": "EXISTS",
    "gap": "none",
@@ -811,7 +845,8 @@
    "need": "exercises",
    "dec": "target",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:420 ties",
    "status": "EXISTS",
    "gap": "none",
@@ -836,7 +871,8 @@
    "need": "exercises",
    "dec": "target",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "app/src/demands/detect.ts:428 syncopation",
    "status": "EXISTS",
    "gap": "the rule is in code; its published definition is not quoted",
@@ -874,7 +910,8 @@
    "need": "exercises",
    "dec": "target",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:458 triplets",
    "status": "EXISTS",
    "gap": "none",
@@ -897,7 +934,8 @@
    "need": "cope",
    "dec": "6/8 and kin",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:465 compoundMetre; app/src/score/metre.ts:37",
    "status": "EXISTS",
    "gap": "none",
@@ -920,7 +958,8 @@
    "need": "cope",
    "dec": "3/4",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:481 threeFour",
    "status": "EXISTS",
    "gap": "none",
@@ -946,7 +985,8 @@
    "need": "cope",
    "dec": "5/4, 7/8",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/build.py:389 attach_notation (times)",
    "status": "EXISTS",
    "gap": "the list exists; no flag derived from it",
@@ -971,7 +1011,8 @@
    "need": "exercises",
    "dec": "repeated-note technique",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "consecutive equal pitches per voice",
@@ -997,7 +1038,8 @@
    "need": "exercises",
    "dec": "the habanera cell",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "app/src/demands/detect.ts:628 habaneraCell; :319 cellBars",
    "status": "EXISTS",
    "gap": "sourced near-miss fixtures exist (CD1); re-check the quoted source",
@@ -1025,7 +1067,8 @@
    "need": "exercises",
    "dec": "the tresillo cell",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "app/src/demands/detect.ts:635 tresilloCell; :319 cellBars",
    "status": "EXISTS",
    "gap": "as habanera",
@@ -1054,7 +1097,8 @@
    "need": "exercises",
    "dec": "three-over-four ragtime figure",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "a cell matcher like cellBars, definition to quote",
@@ -1078,7 +1122,8 @@
    "need": "exercises",
    "dec": "shuffle / swung long-short feel",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "notated triplet-eighth or dotted figure, or a swing mark; definition to quote",
@@ -1109,7 +1154,8 @@
    "need": "exercises",
    "dec": "target",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:382 steps",
    "status": "EXISTS",
    "gap": "none",
@@ -1136,7 +1182,8 @@
    "need": "exercises",
    "dec": "target",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:385 skips",
    "status": "EXISTS",
    "gap": "none",
@@ -1160,7 +1207,8 @@
    "need": "exercises",
    "dec": "target",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:388 leaps",
    "status": "EXISTS",
    "gap": "none",
@@ -1188,7 +1236,8 @@
    "need": "cope",
    "dec": "reading in a key",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:495 keySignature",
    "status": "EXISTS",
    "gap": "none",
@@ -1217,7 +1266,8 @@
    "need": "cope",
    "dec": "accidentals",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:515 chromatic",
    "status": "EXISTS",
    "gap": "none",
@@ -1243,7 +1293,8 @@
    "need": "cope",
    "dec": "leaves a five-finger position",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "app/src/demands/detect.ts:534 beyondPosition",
    "status": "EXISTS",
    "gap": "rule in code; definition of a position not quoted",
@@ -1262,7 +1313,8 @@
    "need": "cope",
    "dec": "range and register per hand per bar",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/demands.py positions (hands); app/src/demands/detect.ts:242 range",
    "status": "EXISTS",
    "gap": "kept in build/positions-cache.json, not on the catalogue row",
@@ -1297,7 +1349,8 @@
    "need": "cope",
    "dec": "notes, voices and accidentals per bar on the page",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (notesPerBar, voicesPerStaff, ledgerRatio)",
    "status": "PARTLY",
    "gap": "no accidental count per bar; no per-system density",
@@ -1315,7 +1368,8 @@
    "need": "cope",
    "dec": "accidentals that cancel and return within a bar",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "per-bar accidental events vs key (FABLE §5 names it)",
@@ -1333,7 +1387,8 @@
    "need": "cope",
    "dec": "cross-staff beams, cue notes, nested tuplets, clef changes mid-bar",
    "pipe": "pdmx",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "count the constructs from the raw XML",
@@ -1351,7 +1406,13 @@
    "need": "cope",
    "dec": "the key as sounded (vs the signature); major or minor",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "notation.keys",
+    "pitch.chromatic",
+    "scale.collection"
+   ],
    "code": "tools/content/score_checks.py:1496 analyse_key; :452 check_key_consistency; tools/content/candidates.py:69 sounds_minor",
    "status": "PARTLY",
    "gap": "music21 key analysis exists but the build skips it (--no-analysis); runs only by hand; no partitura second witness; no confidence on the row",
@@ -1392,7 +1453,11 @@
    "need": "exercises",
    "dec": "harmonic or melodic minor in use",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "key.tonic-mode"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "raised 6th/7th degree counts in a minor key",
@@ -1416,7 +1481,12 @@
    "need": "cope",
    "dec": "modulation, trio key change",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "notation.keys",
+    "key.tonic-mode"
+   ],
    "code": "tools/content/build.py:389 attach_notation (keys list)",
    "status": "PARTLY",
    "gap": "signature changes are exact; unmarked modulation needs windowed key finding (music21 floatingKey) with confidence",
@@ -1445,7 +1515,11 @@
    "need": "material",
    "dec": "tonic in a stated list (guitar keys, singable keys)",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "INFERRED",
+   "decision": "DIRECT",
+   "from": [
+    "key.tonic-mode"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "trivial once key.tonic-mode has a value",
@@ -1474,7 +1548,8 @@
    "need": "exercises",
    "dec": "pentatonic, blues scale, mode in use",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "pitch-class set per passage vs music21 scale classes; which passage is the open part",
@@ -1517,7 +1592,8 @@
    "need": "exercises",
    "dec": "triads, 7ths, extensions, sus in use",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/build.py:389 attach_notation (chord names)",
    "status": "PARTLY",
    "gap": "names are kept; qualities not parsed (music21 harmony.ChordSymbol); from the notes only by chordify, weak on broken textures",
@@ -1568,7 +1644,8 @@
    "need": "cope",
    "dec": "chord changes per bar (harmonic load)",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/build.py:389 attach_notation (chordCount, bars)",
    "status": "PARTLY",
    "gap": "a ratio exists in parts; per-bar distribution is PH1's chart model, not a characteristic",
@@ -1586,7 +1663,8 @@
    "need": "exercises",
    "dec": "inversions and slash chords",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "slash symbols parse exactly; from notes, bass vs root per chordal beat",
@@ -1614,7 +1692,12 @@
    "need": "exercises",
    "dec": "function (Roman numerals) per chord",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "notation.chord-symbols",
+    "key.tonic-mode"
+   ],
    "code": "tools/content/musical_evaluator.py:230 harmony_from_left_hand (generated phrases)",
    "status": "PARTLY",
    "gap": "from symbols with a key it is near-exact (music21 romanNumeralFromChord); from notes it needs confidence; nothing runs on PDMX",
@@ -1643,7 +1726,11 @@
    "need": "exercises",
    "dec": "I-IV-V, ii-V-I, four-chord loops, rhythm changes",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "harmony.roman"
+   ],
    "code": "tools/content/blues_forms.py builds the twelve-bar; nothing detects a progression",
    "status": "MISSING",
    "gap": "sequence rules over harmony.roman, each progression quoted from a source",
@@ -1693,7 +1780,11 @@
    "need": "exercises",
    "dec": "secondary dominants, tritone subs, passing and pivot chords",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "harmony.roman"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "rules over harmony.roman",
@@ -1729,7 +1820,12 @@
    "need": "exercises",
    "dec": "cadence types at phrase ends",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "harmony.roman",
+    "form.phrase"
+   ],
    "code": "tools/content/musical_evaluator.py:748 harmonic_cadence (generated phrases)",
    "status": "PARTLY",
    "gap": "needs form.phrase on PDMX; the evaluator knows its phrases by construction",
@@ -1757,7 +1853,11 @@
    "need": "cope",
    "dec": "share of non-diatonic chords",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "INFERRED",
+   "decision": "DIRECT",
+   "from": [
+    "harmony.roman"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "from harmony.roman once it exists",
@@ -1779,7 +1879,12 @@
    "need": "exercises",
    "dec": "shell, rootless, quartal, open, close voicings",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "notation.chord-symbols",
+    "texture.block-chords"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "chord notes vs symbol root per chordal beat; each voicing type quoted",
@@ -1834,7 +1939,8 @@
    "need": "exercises",
    "dec": "four-part voice leading (parallels, motion)",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "music21 voiceLeading.VoiceLeadingQuartet on four-voice textures",
@@ -1864,7 +1970,12 @@
    "need": "exercises",
    "dec": "modal collection vs tonic",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "scale.collection",
+    "key.tonic-mode"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "pitch-class profile with confidence; tonic ambiguity is the hard part",
@@ -1893,7 +2004,12 @@
    "need": "exercises",
    "dec": "root motion, pedal, walking, anticipated bass",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "harmony.roman",
+    "hands.per-bar-range"
+   ],
    "code": "app/src/demands/detect.ts:607 walkingBass (one case)",
    "status": "PARTLY",
    "gap": "walking bass exists; root-on-beat, pedal point and anticipation do not",
@@ -1912,7 +2028,11 @@
    "need": "exercises",
    "dec": "chord tones on strong beats, approach notes, guide tones, blue notes, anticipations",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "harmony.roman"
+   ],
    "code": "tools/content/musical_evaluator.py:642 harmony (agreement score, generated)",
    "status": "PARTLY",
    "gap": "a score for generated phrases; no per-note classification; needs harmony per beat on PDMX",
@@ -1950,7 +2070,8 @@
    "need": "material",
    "dec": "motif reuse and variation",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "tools/content/musical_evaluator.py:546 motif_facts; :570 motif (generated)",
    "status": "PARTLY",
    "gap": "runs on generated phrases only; the repetition rule is in code, not quoted",
@@ -1974,7 +2095,8 @@
    "need": "cope",
    "dec": "both hands sound at once",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "app/src/demands/detect.ts:574 handsTogether",
    "status": "EXISTS",
    "gap": "none",
@@ -2005,7 +2127,8 @@
    "need": "exercises",
    "dec": "a repeating LH figure under a melody",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "app/src/demands/detect.ts:588 leftHandPattern",
    "status": "EXISTS",
    "gap": "an every-bar rule; which figure it is (Alberti, waltz, oom-pah) is not named: the rows below",
@@ -2030,7 +2153,8 @@
    "need": "exercises",
    "dec": "walking bass",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "app/src/demands/detect.ts:607 walkingBass",
    "status": "EXISTS",
    "gap": "every-bar rule; definition to quote",
@@ -2059,7 +2183,8 @@
    "need": "exercises",
    "dec": "chords struck together",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (maxSimultaneousRight/Left)",
    "status": "PARTLY",
    "gap": "a maximum, not a count or positions",
@@ -2088,7 +2213,8 @@
    "need": "exercises",
    "dec": "broken-chord figures",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "successive notes of one chord within a beat group",
@@ -2120,7 +2246,8 @@
    "need": "exercises",
    "dec": "Alberti bass",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "low-high-middle-high broken triad in even values; quote the definition and test near-misses",
@@ -2151,7 +2278,8 @@
    "need": "exercises",
    "dec": "arpeggiated texture",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "chord tones across more than an octave in one direction",
@@ -2177,7 +2305,8 @@
    "need": "exercises",
    "dec": "bass-chord-chord in 3/4",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "quote and match",
@@ -2200,7 +2329,8 @@
    "need": "exercises",
    "dec": "duple bass-chord",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "quote and match",
@@ -2229,7 +2359,8 @@
    "need": "exercises",
    "dec": "stride left hand",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "oom-pah with a wide bass-to-chord distance; quote",
@@ -2260,7 +2391,8 @@
    "need": "exercises",
    "dec": "boogie left hand",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "repeated eighth figure on each chord root over the form",
@@ -2291,7 +2423,8 @@
    "need": "exercises",
    "dec": "riff, vamp, ostinato",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "a figure repeated unchanged N bars (music21 search)",
@@ -2324,7 +2457,8 @@
    "need": "exercises",
    "dec": "pedal bass",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "bass pitch held or repeated under changing harmony",
@@ -2349,7 +2483,8 @@
    "need": "exercises",
    "dec": "held note or chord while others move",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "overlapping durations per hand from the note array",
@@ -2376,7 +2511,8 @@
    "need": "exercises",
    "dec": "chords held a bar or more",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "durations per chord",
@@ -2399,7 +2535,8 @@
    "need": "exercises",
    "dec": "comp on every beat",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "chords on each beat in 4/4",
@@ -2431,7 +2568,8 @@
    "need": "exercises",
    "dec": "the Charleston comp rhythm",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "an onset cell like habanera (cellBars)",
@@ -2464,7 +2602,8 @@
    "need": "exercises",
    "dec": "montuno",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "syncopated repeated figure aligned to a clave; quote",
@@ -2491,7 +2630,8 @@
    "need": "exercises",
    "dec": "tumbao",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "anticipated bass cell; quote",
@@ -2519,7 +2659,8 @@
    "need": "exercises",
    "dec": "son or rumba clave",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "onset sets, 3-2 and 2-3; quote",
@@ -2547,7 +2688,8 @@
    "need": "exercises",
    "dec": "bossa accompaniment",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "bass cell plus comp cell; quote (G14 contract names it)",
@@ -2573,7 +2715,8 @@
    "need": "exercises",
    "dec": "tango accompaniment",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "marcato in four, 3-3-2, arrastre (A7c.4); quote",
@@ -2600,7 +2743,8 @@
    "need": "exercises",
    "dec": "mazurka rhythm",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "quote and match",
@@ -2622,7 +2766,8 @@
    "need": "exercises",
    "dec": "stop-time bars",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "a hit on 1 then silence",
@@ -2644,7 +2789,8 @@
    "need": "exercises",
    "dec": "octaves, melody in octaves, broken octaves",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "simultaneous or alternating octave per hand",
@@ -2680,7 +2826,8 @@
    "need": "exercises",
    "dec": "moving 3rds and 6ths in one hand",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "simultaneous intervals per hand per onset",
@@ -2708,7 +2855,8 @@
    "need": "exercises",
    "dec": "root-fifth chords",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "chord content per onset; or a symbol with 5",
@@ -2734,7 +2882,11 @@
    "need": "cope",
    "dec": "two independent voices",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "difficulty.features"
+   ],
    "code": "tools/content/difficulty.py:296 features (voicesPerStaff)",
    "status": "PARTLY",
    "gap": "written voices are exact; real voice independence needs partitura estimate_voices with confidence",
@@ -2756,7 +2908,13 @@
    "need": "cope",
    "dec": "contrapuntal texture",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "texture.two-voice",
+    "texture.motion",
+    "coordination.rhythmic-independence"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "contour and rhythm independence between voices, with confidence",
@@ -2778,7 +2936,8 @@
    "need": "exercises",
    "dec": "contrary, similar, parallel motion between hands",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "sign of interval change per hand per onset pair",
@@ -2803,7 +2962,8 @@
    "need": "exercises",
    "dec": "hands in turn",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "no shared onsets",
@@ -2825,7 +2985,8 @@
    "need": "exercises",
    "dec": "2:3, 3:2, 3:1 between hands",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "tuplet in one hand against plain values in the other",
@@ -2852,7 +3013,8 @@
    "need": "exercises",
    "dec": "blues tremolo in thirds",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "alternating notes a third apart, or a tremolo mark",
@@ -2874,7 +3036,8 @@
    "need": "exercises",
    "dec": "blues crushed note",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "grace a semitone below a chord tone",
@@ -2898,7 +3061,13 @@
    "need": "exercises",
    "dec": "half-time feel",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "mark.articulation",
+    "harmony.bass-behaviour",
+    "rhythm.syncopation"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "backbeat placement inferred from accents and bass; low confidence from a score",
@@ -2920,7 +3089,13 @@
    "need": "exercises",
    "dec": "answering phrases",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "form.phrase",
+    "hands.per-bar-range",
+    "texture.alternating-hands"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "needs form.phrase and register or hand alternation; confidence",
@@ -2947,7 +3122,11 @@
    "need": "exercises",
    "dec": "melody as the top voice of chords",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "texture.block-chords"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "top note of each chord forms the melody line",
@@ -2985,7 +3164,12 @@
    "need": "exercises",
    "dec": "rising density and dynamics across a section",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "mark.dynamics",
+    "reading.visual-density"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "density and dynamic trend per section",
@@ -3008,7 +3192,8 @@
    "need": "exercises",
    "dec": "stepwise bass into the next root",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "two to four stepwise bass notes into a chord root",
@@ -3033,7 +3218,12 @@
    "need": "cope",
    "dec": "different rhythms per hand",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
+   "from": [
+    "coordination.synchrony-share",
+    "coordination.rhythmic-independence"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "onset relationship between hands: shared, offset, independent (the measurable proxy)",
@@ -3053,12 +3243,184 @@
     "abilities": []
    }
   },
+  "coordination.synchrony-share": {
+   "area": "coordination",
+   "need": "cope",
+   "dec": "share of onsets both hands strike together, offset, or alone",
+   "pipe": "both",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
+   "code": "none",
+   "status": "MISSING",
+   "gap": "per onset pair from the note array; the statistic every coordination model reads",
+   "w2": "partitura onsets",
+   "src": "notation",
+   "uses": {
+    "concepts": [],
+    "rungs": [],
+    "tracks": [],
+    "abilities": []
+   }
+  },
+  "coordination.rhythmic-independence": {
+   "area": "coordination",
+   "need": "cope",
+   "dec": "the hands' rhythm patterns differ per bar",
+   "pipe": "both",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
+   "code": "none",
+   "status": "MISSING",
+   "gap": "rhythm string per hand per bar, equal or not; count of bars that differ",
+   "w2": "partitura onsets",
+   "src": "notation",
+   "uses": {
+    "concepts": [],
+    "rungs": [],
+    "tracks": [],
+    "abilities": []
+   }
+  },
+  "coordination.unequal-rates": {
+   "area": "coordination",
+   "need": "cope",
+   "dec": "one hand moves faster than the other (ratio of note rates per bar)",
+   "pipe": "both",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
+   "code": "none",
+   "status": "MISSING",
+   "gap": "notes per bar per hand, the ratio and where it changes",
+   "w2": "partitura onsets",
+   "src": "notation",
+   "uses": {
+    "concepts": [],
+    "rungs": [],
+    "tracks": [],
+    "abilities": []
+   }
+  },
+  "coordination.articulation-conflict": {
+   "area": "coordination",
+   "need": "cope",
+   "dec": "different articulations at the same time (legato against staccato, accents in one hand)",
+   "pipe": "both",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
+   "code": "none",
+   "status": "MISSING",
+   "gap": "mark.articulation and mark.slur per hand per onset",
+   "w2": "raw MusicXML <articulations> per staff",
+   "src": "notation",
+   "uses": {
+    "concepts": [],
+    "rungs": [],
+    "tracks": [],
+    "abilities": []
+   }
+  },
+  "coordination.dynamic-balance": {
+   "area": "coordination",
+   "need": "cope",
+   "dec": "melody to be brought out over accompaniment (voicing between hands)",
+   "pipe": "both",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "hands.per-bar-range",
+    "reading.visual-density",
+    "mark.dynamics"
+   ],
+   "code": "none",
+   "status": "MISSING",
+   "gap": "which staff carries the melody (detect.ts:217 melodyStaff) against the other's density and marked dynamics; the balance rule to quote",
+   "w2": "none",
+   "src": "NEEDED",
+   "uses": {
+    "concepts": [],
+    "rungs": [],
+    "tracks": [],
+    "abilities": []
+   }
+  },
+  "coordination.register-overlap": {
+   "area": "coordination",
+   "need": "cope",
+   "dec": "hands in the same register or crossing",
+   "pipe": "both",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
+   "from": [
+    "hands.per-bar-range",
+    "technique.hand-crossing"
+   ],
+   "code": "tools/content/difficulty.py:296 features (handCrossings)",
+   "status": "PARTLY",
+   "gap": "crossings are counted; overlap of the hands' per-bar ranges is not",
+   "w2": "hands.per-bar-range",
+   "src": "notation",
+   "uses": {
+    "concepts": [],
+    "rungs": [],
+    "tracks": [],
+    "abilities": []
+   }
+  },
+  "coordination.pedal-with-hands": {
+   "area": "coordination",
+   "need": "cope",
+   "dec": "pedal changes against hand motion (legato pedalling)",
+   "pipe": "both",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "mark.pedal",
+    "harmony.rhythm",
+    "texture.held-under-moving"
+   ],
+   "code": "none",
+   "status": "MISSING",
+   "gap": "mark.pedal positions against harmony.rhythm and texture.held-under-moving; the pedalling rule to quote",
+   "w2": "none",
+   "src": "NEEDED",
+   "uses": {
+    "concepts": [],
+    "rungs": [],
+    "tracks": [],
+    "abilities": []
+   }
+  },
+  "coordination.sustain-vs-move": {
+   "area": "coordination",
+   "need": "cope",
+   "dec": "one hand holds while the other moves",
+   "pipe": "both",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
+   "code": "none",
+   "status": "MISSING",
+   "gap": "the cross-hand case of texture.held-under-moving, counted separately",
+   "w2": "partitura durations",
+   "src": "notation",
+   "uses": {
+    "concepts": [],
+    "rungs": [],
+    "tracks": [],
+    "abilities": []
+   }
+  },
   "coordination.interaction": {
    "area": "coordination",
    "need": "cope",
    "dec": "easy parts that are hard together",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "EXACT",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "target.isolation",
+    "coordination.synchrony-share",
+    "coordination.unequal-rates"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "co-occurrence of per-hand demands at the same onsets, scored with confidence; no oracle for 'hard together' without a fingering or motor model",
@@ -3076,7 +3438,8 @@
    "need": "exercises",
    "dec": "scale passages, incl. in 3rds/6ths, chromatic",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "N stepwise notes one direction per hand; N to quote",
@@ -3119,7 +3482,8 @@
    "need": "exercises",
    "dec": "arpeggio passages",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "chord tones across two or more octaves",
@@ -3148,7 +3512,11 @@
    "need": "cope",
    "dec": "stays in a five-finger position",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "hands.per-bar-range"
+   ],
    "code": "app/src/demands/detect.ts:534 beyondPosition (its negation)",
    "status": "PARTLY",
    "gap": "derived, not written",
@@ -3174,7 +3542,11 @@
    "need": "cope",
    "dec": "lateral travel between positions",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "hands.per-bar-range"
+   ],
    "code": "tools/content/demands.py positions (hands per bar)",
    "status": "PARTLY",
    "gap": "per-bar ranges exist; shifts between bars not computed",
@@ -3196,7 +3568,11 @@
    "need": "exercises",
    "dec": "runs needing thumb-under",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "technique.scale-run"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "a fingering estimator (pianoplayer: not installed, unchecked) or a run-length proxy",
@@ -3218,7 +3594,8 @@
    "need": "cope",
    "dec": "notes per second at the written tempo",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (notesPerSecond)",
    "status": "EXISTS",
    "gap": "untrusted where the tempo is defaulted (mark.tempo-text)",
@@ -3246,7 +3623,12 @@
    "need": "cope",
    "dec": "duration at tempo times density",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "form.length",
+    "technique.velocity"
+   ],
    "code": "tools/content/build.py durationSec (1,283 items)",
    "status": "PARTLY",
    "gap": "duration exists where rendered; no density-weighted value",
@@ -3269,7 +3651,8 @@
    "need": "exercises",
    "dec": "held note plus moving notes in one hand",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "none",
    "status": "MISSING",
    "gap": "overlap within a hand",
@@ -3291,7 +3674,8 @@
    "need": "cope",
    "dec": "largest simultaneous reach per hand",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (maxSpanRight/Left)",
    "status": "EXISTS",
    "gap": "a maximum; no count of wide chords or positions",
@@ -3309,7 +3693,8 @@
    "need": "cope",
    "dec": "largest and typical leaps per hand",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (maxLeapRight/Left)",
    "status": "EXISTS",
    "gap": "a maximum; no distribution",
@@ -3327,7 +3712,8 @@
    "need": "cope",
    "dec": "hand crossings",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (handCrossings)",
    "status": "EXISTS",
    "gap": "none",
@@ -3345,7 +3731,13 @@
    "need": "cope",
    "dec": "fingering difficulty: substitutions, stretches, awkward sequences",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "mark.fingering",
+    "technique.span",
+    "technique.leap-size"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "a fingering solver plus a hand model; printed fingering (mark.fingering) is a partial witness",
@@ -3363,7 +3755,13 @@
    "need": "material",
    "dec": "physically playable as written (span, overlap, range)",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "technique.span",
+    "integrity.piano-range",
+    "texture.held-under-moving"
+   ],
    "code": "tools/content/family_contracts.py:323 hands_of; app/src/score/mxl.ts (range)",
    "status": "PARTLY",
    "gap": "span and keyboard range are checkable now; a stated playability rule (max span per level, no impossible overlaps) is not written",
@@ -3381,7 +3779,8 @@
    "need": "cope",
    "dec": "bars and duration",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/build.py:389 attach_notation (bars); durationSec",
    "status": "EXISTS",
    "gap": "none",
@@ -3406,7 +3805,8 @@
    "need": "cope",
    "dec": "sections from repeats, double bars, key changes, rehearsal marks",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/score_checks.py:1174 structure_sections",
    "status": "PARTLY",
    "gap": "used by the title-structure check; not written as a characteristic",
@@ -3424,7 +3824,14 @@
    "need": "exercises",
    "dec": "phrase boundaries (recovery points, cadences, shaping)",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "rhythm.values",
+    "melody.motif-repetition",
+    "mark.repeat",
+    "harmony.roman"
+   ],
    "code": "tools/content/excerpt_proposer.py:416 phrase_start; :475 ending; tools/content/musical_evaluator.py Phrase (by construction)",
    "status": "PARTLY",
    "gap": "rest, long-note and cadence evidence exist in the proposer; no phrase segmentation with confidence on PDMX",
@@ -3455,7 +3862,12 @@
    "need": "exercises",
    "dec": "twelve-bar blues and its variants",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "harmony.roman",
+    "harmony.bass-behaviour"
+   ],
    "code": "tools/content/blues_forms.py (builds; detects nothing)",
    "status": "MISSING",
    "gap": "per-bar roots over 12 bars vs sourced variants (standard, quick IV, minor)",
@@ -3495,7 +3907,11 @@
    "need": "exercises",
    "dec": "turnaround",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "harmony.roman"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "last two bars of a chorus back to I",
@@ -3523,7 +3939,12 @@
    "need": "exercises",
    "dec": "rag strains and trio",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "form.sections",
+    "key.change"
+   ],
    "code": "tools/content/score_checks.py:1174 structure_sections",
    "status": "PARTLY",
    "gap": "sections exist; the 16-bar-strain-with-trio rule does not",
@@ -3550,7 +3971,12 @@
    "need": "exercises",
    "dec": "AABA standards",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "form.sections",
+    "melody.motif-repetition"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "8-bar section similarity",
@@ -3575,7 +4001,12 @@
    "need": "cope",
    "dec": "AB / ABA",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "form.sections",
+    "mark.repeat"
+   ],
    "code": "tools/content/score_checks.py:1237 repeat_faults",
    "status": "PARTLY",
    "gap": "repeat structure is read; the AB/ABA label is not derived",
@@ -3602,7 +4033,8 @@
    "need": "cope",
    "dec": "sonata or sonatina form",
    "pipe": "pdmx",
-   "cls": "JUDGMENT",
+   "evidence": "INFERRED",
+   "decision": "JUDGMENT",
    "code": "none",
    "status": "MISSING",
    "gap": "no reliable automatic method known to us",
@@ -3639,7 +4071,8 @@
    "need": "cope",
    "dec": "the 19 raw features",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features",
    "status": "EXISTS",
    "gap": "no published basis for the feature choice",
@@ -3664,7 +4097,13 @@
    "need": "cope",
    "dec": "reading load component",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "difficulty.features",
+    "reading.visual-density",
+    "reading.accidental-churn"
+   ],
    "code": "tools/content/difficulty.py:296 (ledgerRatio, keyAccidentals, voicesPerStaff, notesPerBar)",
    "status": "PARTLY",
    "gap": "the inputs exist; no component value is computed or stored",
@@ -3682,7 +4121,13 @@
    "need": "cope",
    "dec": "rhythmic load component",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "rhythm.values",
+    "rhythm.syncopation",
+    "rhythm.triplets"
+   ],
    "code": "tools/content/difficulty.py:296 (shortestValue, distinctRhythms); detect.ts syncopation, triplets",
    "status": "PARTLY",
    "gap": "as difficulty.reading",
@@ -3700,7 +4145,13 @@
    "need": "cope",
    "dec": "range, leaps, shifts, black keys",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "hands.per-bar-range",
+    "technique.leap-size",
+    "technique.position-shift"
+   ],
    "code": "tools/content/difficulty.py:296 (rangeRight/Left, maxLeap, blackKeyRatio)",
    "status": "PARTLY",
    "gap": "as difficulty.reading; position shifts not computed",
@@ -3718,7 +4169,15 @@
    "need": "cope",
    "dec": "hands-together load",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "coordination.synchrony-share",
+    "coordination.rhythmic-independence",
+    "coordination.unequal-rates",
+    "texture.polyrhythm",
+    "texture.motion"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "needs texture.hand-independence",
@@ -3736,7 +4195,15 @@
    "need": "cope",
    "dec": "spans, simultaneous notes, crossings, ornaments, repeated notes",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "technique.span",
+    "texture.block-chords",
+    "technique.hand-crossing",
+    "mark.ornament",
+    "rhythm.repeated-notes"
+   ],
    "code": "tools/content/difficulty.py:296 (maxSpan, maxSimultaneous, handCrossings, ornaments)",
    "status": "PARTLY",
    "gap": "no component value; repeated notes missing",
@@ -3754,7 +4221,12 @@
    "need": "cope",
    "dec": "chord changes per bar, chromatic share",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "harmony.rhythm",
+    "harmony.chromatic-share"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "needs harmony.rhythm and harmony.chromatic-share",
@@ -3772,7 +4244,12 @@
    "need": "cope",
    "dec": "speed demand",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "technique.velocity",
+    "mark.tempo-text"
+   ],
    "code": "tools/content/difficulty.py:296 (notesPerSecond)",
    "status": "EXISTS",
    "gap": "untrusted on defaulted tempos",
@@ -3790,7 +4267,12 @@
    "need": "cope",
    "dec": "length at tempo",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "form.length",
+    "technique.velocity"
+   ],
    "code": "durationSec",
    "status": "PARTLY",
    "gap": "as technique.endurance",
@@ -3808,7 +4290,15 @@
    "need": "cope",
    "dec": "control demanded by printed marks",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "mark.dynamics",
+    "mark.hairpin",
+    "mark.articulation",
+    "mark.pedal",
+    "coordination.articulation-conflict"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "counts and change rate of mark.* rows",
@@ -3826,7 +4316,12 @@
    "need": "cope",
    "dec": "visual density, unusual engraving, rhythmic ambiguity",
    "pipe": "pdmx",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "reading.visual-density",
+    "reading.unusual-notation"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "needs reading.visual-density and reading.unusual-notation plus a rule",
@@ -3844,7 +4339,11 @@
    "need": "cope",
    "dec": "one overall level inside a rung's band",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "difficulty.features"
+   ],
    "code": "tools/content/difficulty.py:454 estimate; content/sources/level-model.json; tools/content/fit_level_model.py",
    "status": "PARTLY",
    "gap": "fitted on levels set inside this project (645 items estimated); no outside calibration; collapses the vector to one number",
@@ -3871,7 +4370,11 @@
    "need": "cope",
    "dec": "the level tied to a published grade",
    "pipe": "both",
-   "cls": "EXTERNAL",
+   "evidence": "EXTERNAL",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "difficulty.level"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "a graded reference set (CIPI, PSyllabus: not downloaded, unchecked); stages 0-2 all sit below Grade 1 and need a method-book order instead",
@@ -3889,7 +4392,8 @@
    "need": "exercises",
    "dec": "how many opportunities of the target",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/build.py:523 established_by_density; :687 attach_demands (measurement.located)",
    "status": "EXISTS",
    "gap": "for the 22 demands; thresholds (opportunity-density.json) are ours, unsourced",
@@ -3908,7 +4412,8 @@
    "need": "exercises",
    "dec": "clustered in one bar or spread through the item",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/demands.py positions (per demand per printed bar); tools/content/excerpt_proposer.py:545 window_counts",
    "status": "PARTLY",
    "gap": "positions are cached for the excerpt proposer; no spread value on the row",
@@ -3926,7 +4431,11 @@
    "need": "exercises",
    "dec": "too much of the target in one place",
    "pipe": "generated",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "target.distribution"
+   ],
    "code": "tools/content/family_contracts.py:249 pedagogical_faults (overconcentration)",
    "status": "PARTLY",
    "gap": "generated families only; the threshold is ours",
@@ -3944,7 +4453,13 @@
    "need": "exercises",
    "dec": "the target is perceivable: in the melody staff, on strong beats, not buried in a chord",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "target.prevalence",
+    "hands.per-bar-range",
+    "texture.block-chords"
+   ],
    "code": "app/src/demands/detect.ts:217 melodyStaff (which staff carries the melody)",
    "status": "PARTLY",
    "gap": "a salience rule over staff, beat strength and chord membership of each located place",
@@ -3962,7 +4477,8 @@
    "need": "exercises",
    "dec": "what other demands occur in the same bars as the target",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/demands.py positions (all demands per bar)",
    "status": "PARTLY",
    "gap": "a co-occurrence table per bar is derivable from the cache; not computed",
@@ -3980,7 +4496,12 @@
    "need": "exercises",
    "dec": "the target combined with another demand at the same onset",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "EXACT",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "target.isolation",
+    "coordination.synchrony-share"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "as coordination.interaction",
@@ -3998,7 +4519,13 @@
    "need": "exercises",
    "dec": "recovery points: rests, phrase ends, repeats",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "form.phrase",
+    "rhythm.values",
+    "mark.repeat"
+   ],
    "code": "tools/content/excerpt_proposer.py:312 ends_on_rest; :318 ends_long",
    "status": "PARTLY",
    "gap": "needs form.phrase",
@@ -4016,7 +4543,12 @@
    "need": "exercises",
    "dec": "starts simple and adds demands",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "target.distribution",
+    "target.isolation"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "demand density per quarter of the item from positions",
@@ -4034,7 +4566,8 @@
    "need": "material",
    "dec": "a normal example of the thing taught, not an edge case",
    "pipe": "both",
-   "cls": "JUDGMENT",
+   "evidence": "EXACT",
+   "decision": "JUDGMENT",
    "code": "none",
    "status": "MISSING",
    "gap": "no code",
@@ -4060,7 +4593,13 @@
    "need": "material",
    "dec": "controlled instance vs authentic occurrence",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "generated.spec-declared",
+    "target.prevalence",
+    "target.isolation"
+   ],
    "code": "tools/content/family_contracts.py:143 role_of (canonical/variable/transfer); catalogue role and tags",
    "status": "PARTLY",
    "gap": "generated vs real is exact; distance between a drill's pattern and a piece's instance is not measured",
@@ -4078,7 +4617,14 @@
    "need": "material",
    "dec": "introduction, repetition, fluency or transfer",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "target.prevalence",
+    "target.isolation",
+    "transfer.distance",
+    "item.progression"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "a rule over prevalence, isolation and transfer.distance; the rule to source",
@@ -4096,7 +4642,8 @@
    "need": "exercises",
    "dec": "the generator's parameters (key, pattern, progression, hands, metre)",
    "pipe": "generated",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "catalogue drill.params and drill.generator; tools/content/family_contracts.py:96 recipe_of",
    "status": "EXISTS",
    "gap": "none",
@@ -4112,7 +4659,8 @@
    "need": "exercises",
    "dec": "the spec states target, prerequisite vocabulary, opportunity range, prohibited material, hands, range, phrase structure, harmonic plan and role",
    "pipe": "generated",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "content/sources/family-contracts (requires, forbids, density, role) via family_contracts.py:81",
    "status": "PARTLY",
    "gap": "range, phrase structure and harmonic plan are not declared fields for most families; opportunity ranges exist as density rules",
@@ -4129,7 +4677,8 @@
    "need": "exercises",
    "dec": "the file holds what the spec claims",
    "pipe": "generated",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/family_contracts.py:249 pedagogical_faults on measurement from the app's detectors (build.py:687)",
    "status": "PARTLY",
    "gap": "checks the demand vocabulary through the app's detectors (independent of the generator); range, phrase and harmony claims are not checked; music21 as a second reader is not run",
@@ -4147,7 +4696,8 @@
    "need": "cope",
    "dec": "the same recipe gives the same bytes",
    "pipe": "generated",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/family_contracts.py:151 identity; :165 music_digest",
    "status": "EXISTS",
    "gap": "none",
@@ -4163,11 +4713,17 @@
    "need": "cope",
    "dec": "signature agrees with the notes",
    "pipe": "pdmx",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "notation.keys",
+    "key.tonic-mode"
+   ],
    "code": "tools/content/score_checks.py:452 check_key_consistency",
    "status": "PARTLY",
    "gap": "the signature-vs-notes rule runs in the build; its music21 key analysis does not (build.py:185 passes --no-analysis), so the inference half runs only by hand; add partitura as the second witness",
    "w2": "partitura estimate_key",
+   "src": "the rule as written in the cited code; its basis to quote (NEEDED)",
    "uses": {
     "concepts": [],
     "rungs": [],
@@ -4180,7 +4736,8 @@
    "need": "cope",
    "dec": "bars add up to the metre",
    "pipe": "pdmx",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/score_checks.py:974 check_bar_duration",
    "status": "EXISTS",
    "gap": "none",
@@ -4196,10 +4753,16 @@
    "need": "cope",
    "dec": "the file is not cut short",
    "pipe": "pdmx",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "notation.bars",
+    "form.sections"
+   ],
    "code": "tools/content/score_checks.py:804 check_truncation; :770 final_bar_incomplete; tools/content/truncation_scan.py",
    "status": "EXISTS",
    "gap": "archive bar counts are the witness where present",
+   "src": "the rule as written in the cited code; its basis to quote (NEEDED)",
    "uses": {
     "concepts": [],
     "rungs": [],
@@ -4212,7 +4775,8 @@
    "need": "cope",
    "dec": "repeats and endings are well formed",
    "pipe": "pdmx",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/score_checks.py:1338 check_repeat_structure",
    "status": "EXISTS",
    "gap": "none",
@@ -4228,10 +4792,16 @@
    "need": "cope",
    "dec": "the title's claimed form matches the sections",
    "pipe": "pdmx",
-   "cls": "CODE-RULE",
+   "evidence": "EXTERNAL",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "meta.title",
+    "form.sections"
+   ],
    "code": "tools/content/score_checks.py:1197 check_title_structure",
    "status": "EXISTS",
    "gap": "none",
+   "src": "the rule as written in the cited code; its basis to quote (NEEDED)",
    "uses": {
     "concepts": [],
     "rungs": [],
@@ -4244,10 +4814,15 @@
    "need": "cope",
    "dec": "grace notes the renderer mishandles",
    "pipe": "pdmx",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "mark.ornament"
+   ],
    "code": "tools/content/score_checks.py:610 check_grace_density",
    "status": "EXISTS",
    "gap": "none",
+   "src": "the rule as written in the cited code; its basis to quote (NEEDED)",
    "uses": {
     "concepts": [],
     "rungs": [],
@@ -4260,7 +4835,8 @@
    "need": "cope",
    "dec": "the app renders every bar",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/render_check.py; .github/workflows/ci.yml:474",
    "status": "EXISTS",
    "gap": "none",
@@ -4276,11 +4852,17 @@
    "need": "material",
    "dec": "several uploads of one work; containment of one in another",
    "pipe": "pdmx",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "meta.title",
+    "notation.bars"
+   ],
    "code": "tools/content/score_checks.py:1059 containment_flags; :1000 bar_fingerprints; tools/content/pdmx/quarry_core.py:95 identity",
    "status": "PARTLY",
    "gap": "bar fingerprints and title identity exist; no version cluster written per work",
    "w2": "none",
+   "src": "the rule as written in the cited code; its basis to quote (NEEDED)",
    "uses": {
     "concepts": [],
     "rungs": [],
@@ -4293,7 +4875,8 @@
    "need": "cope",
    "dec": "drums, other instruments, more than two staves",
    "pipe": "pdmx",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "tools/content/pdmx/quarry_core.py:207 analyse (csv programs, parts); tools/content/pdmx/restaff.py",
    "status": "PARTLY",
    "gap": "read at quarry time; not a catalogue characteristic; restaff handles one case by hand",
@@ -4309,7 +4892,8 @@
    "need": "cope",
    "dec": "melody plus symbols, no written left hand",
    "pipe": "pdmx",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "notation.staves and notation.chord-symbols",
    "status": "PARTLY",
    "gap": "derivable; not derived",
@@ -4325,7 +4909,8 @@
    "need": "cope",
    "dec": "every note on the 88 keys",
    "pipe": "both",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "none",
    "status": "MISSING",
    "gap": "min and max MIDI vs 21-108",
@@ -4342,7 +4927,11 @@
    "need": "cope",
    "dec": "no chord beyond a stated span",
    "pipe": "both",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "technique.span"
+   ],
    "code": "tools/content/difficulty.py:296 (maxSpan)",
    "status": "PARTLY",
    "gap": "the value exists; the span rule per level is not written",
@@ -4360,11 +4949,17 @@
    "need": "cope",
    "dec": "spelling, beaming, voices, accidental churn as engraved",
    "pipe": "pdmx",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "reading.accidental-churn",
+    "texture.two-voice"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "partitura estimate_spelling vs the file's spelling; beaming vs metre; FABLE §5 names these checks for generated items too",
    "w2": "partitura estimate_spelling, estimate_voices",
+   "src": "the rule as written in the cited code; its basis to quote (NEEDED)",
    "uses": {
     "concepts": [],
     "rungs": [],
@@ -4377,10 +4972,17 @@
    "need": "material",
    "dec": "composer, title and tags are uploader text",
    "pipe": "pdmx",
-   "cls": "EXTERNAL",
+   "evidence": "EXTERNAL",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "meta.composer-era",
+    "meta.title",
+    "meta.genre-tags"
+   ],
    "code": "tools/content/pdmx/quarry_core.py:95 identity; content/sources/composers.json; tools/content/licensing.py",
    "status": "PARTLY",
    "gap": "composer matched against a table; title and tags carry no trust value on the row",
+   "src": "the rule as written in the cited code; its basis to quote (NEEDED)",
    "uses": {
     "concepts": [],
     "rungs": [],
@@ -4393,7 +4995,8 @@
    "need": "material",
    "dec": "the upload represents the real piece",
    "pipe": "pdmx",
-   "cls": "JUDGMENT",
+   "evidence": "EXTERNAL",
+   "decision": "JUDGMENT",
    "code": "none",
    "status": "MISSING",
    "gap": "cannot be proved from the file alone",
@@ -4419,7 +5022,16 @@
    "need": "material",
    "dec": "the stylistic signals: swing, cells, bass behaviour, chord vocabulary, harmonic rhythm, form, syncopation",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "notation.swing-mark",
+    "harmony.chord-quality",
+    "harmony.rhythm",
+    "harmony.bass-behaviour",
+    "rhythm.syncopation",
+    "form.sections"
+   ],
    "code": "tools/content/candidates.py (narrows by notation facts); tools/content/pdmx/quarry_core.py:355 melody_signals",
    "status": "PARTLY",
    "gap": "no vector of style signals with confidence on the row; each signal is a row above (texture.*, rhythm.*, harmony.*)",
@@ -4437,7 +5049,13 @@
    "need": "material",
    "dec": "a genre or track label",
    "pipe": "both",
-   "cls": "CODE-INFERENCE",
+   "evidence": "EXTERNAL",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "style.evidence",
+    "meta.genre-tags",
+    "meta.composer-era"
+   ],
    "code": "catalogue genre (814 items, from source tags) and tracks",
    "status": "PARTLY",
    "gap": "metadata only today; code can combine style.evidence with provenance into a label with confidence, never a proof",
@@ -4455,7 +5073,8 @@
    "need": "material",
    "dec": "a good teaching example of style X",
    "pipe": "both",
-   "cls": "JUDGMENT",
+   "evidence": "INFERRED",
+   "decision": "JUDGMENT",
    "code": "none",
    "status": "MISSING",
    "gap": "judgment after code evidence",
@@ -4482,7 +5101,8 @@
    "need": "material",
    "dec": "a beginning and an arrival",
    "pipe": "generated",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "tools/content/musical_evaluator.py:312 beginning; :369 arrival; :757 phrase_arrival",
    "status": "PARTLY",
    "gap": "runs on generated phrases (one definition shared with app/src/engine/sightReadingScore.ts); nothing on PDMX; rules in code, not quoted",
@@ -4500,7 +5120,8 @@
    "need": "material",
    "dec": "contour shape, reversals, oscillation",
    "pipe": "generated",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "tools/content/musical_evaluator.py:449 contour_shapes; :508 contour",
    "status": "PARTLY",
    "gap": "as quality.phrase-shape",
@@ -4518,7 +5139,8 @@
    "need": "material",
    "dec": "rests placed musically",
    "pipe": "generated",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "tools/content/musical_evaluator.py:635 rests",
    "status": "PARTLY",
    "gap": "as quality.phrase-shape",
@@ -4536,7 +5158,8 @@
    "need": "material",
    "dec": "leaps resolved by step",
    "pipe": "generated",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "tools/content/musical_evaluator.py:664 leaps",
    "status": "PARTLY",
    "gap": "as quality.phrase-shape",
@@ -4554,7 +5177,8 @@
    "need": "material",
    "dec": "phrase ends on a stable degree with a cadence",
    "pipe": "generated",
-   "cls": "CODE-RULE",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
    "code": "tools/content/musical_evaluator.py:739 cadence_close; :804 wrong_cadences",
    "status": "PARTLY",
    "gap": "as quality.phrase-shape",
@@ -4572,7 +5196,13 @@
    "need": "material",
    "dec": "within the real-music reference for its level on the FABLE §5 features",
    "pipe": "generated",
-   "cls": "CODE-INFERENCE",
+   "evidence": "INFERRED",
+   "decision": "CALIBRATED_MODEL",
+   "from": [
+    "difficulty.features",
+    "melody.motif-repetition",
+    "quality.contour"
+   ],
    "code": "none",
    "status": "MISSING",
    "gap": "the reference set per level and the feature run (music21 or partitura, never the generator's read-back) are not built",
@@ -4590,7 +5220,8 @@
    "need": "material",
    "dec": "the item hangs together as music",
    "pipe": "both",
-   "cls": "JUDGMENT",
+   "evidence": "INFERRED",
+   "decision": "JUDGMENT",
    "code": "none",
    "status": "MISSING",
    "gap": "no code",
@@ -4618,7 +5249,8 @@
    "need": "material",
    "dec": "idiomatic for the instrument and style",
    "pipe": "both",
-   "cls": "JUDGMENT",
+   "evidence": "INFERRED",
+   "decision": "JUDGMENT",
    "code": "none",
    "status": "MISSING",
    "gap": "no code",
@@ -4644,7 +5276,8 @@
    "need": "material",
    "dec": "a good introduction, consolidation or transfer item for this rung",
    "pipe": "both",
-   "cls": "JUDGMENT",
+   "evidence": "INFERRED",
+   "decision": "JUDGMENT",
    "code": "none",
    "status": "MISSING",
    "gap": "code narrows heavily",
@@ -4673,7 +5306,8 @@
    "need": "material",
    "dec": "era from the composer's dates",
    "pipe": "pdmx",
-   "cls": "EXTERNAL",
+   "evidence": "EXTERNAL",
+   "decision": "SOURCED_RULE",
    "code": "content/sources/composers.json; tools/content/licensing.py",
    "status": "EXISTS",
    "gap": "matched names only; 22,111 of 36,150 PDMX rows have no composer",
@@ -4703,7 +5337,8 @@
    "need": "material",
    "dec": "uploader or collection tags",
    "pipe": "pdmx",
-   "cls": "EXTERNAL",
+   "evidence": "EXTERNAL",
+   "decision": "DIRECT",
    "code": "catalogue tags and genre",
    "status": "EXISTS",
    "gap": "no trust value",
@@ -4735,7 +5370,8 @@
    "need": "material",
    "dec": "title words (carol, minuet, etude, rag)",
    "pipe": "pdmx",
-   "cls": "EXTERNAL",
+   "evidence": "EXTERNAL",
+   "decision": "DIRECT",
    "code": "tools/content/score_checks.py:406 title_key; :664 normalise_title",
    "status": "PARTLY",
    "gap": "title parsing exists for keys and structure; no genre words",
@@ -4771,7 +5407,8 @@
    "need": "material",
    "dec": "the source collection (Hanon, Czerny, Joplin, MuseTrainer)",
    "pipe": "both",
-   "cls": "EXTERNAL",
+   "evidence": "EXTERNAL",
+   "decision": "DIRECT",
    "code": "catalogue source and tags",
    "status": "EXISTS",
    "gap": "none",
@@ -4798,7 +5435,8 @@
    "need": "exercises",
    "dec": "a drill's parameters",
    "pipe": "generated",
-   "cls": "CODE-EXACT",
+   "evidence": "EXACT",
+   "decision": "DIRECT",
    "code": "catalogue drill.params",
    "status": "EXISTS",
    "gap": "none",
@@ -6704,11 +7342,13 @@
     {
      "concept": "finger-numbers",
      "characteristic": "mark.fingering",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [],
    "ambiguous": []
   },
@@ -6753,11 +7393,13 @@
     {
      "concept": "octaves",
      "characteristic": "texture.octaves",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [
     "texture.octaves"
    ],
@@ -6791,7 +7433,8 @@
     ]
    },
    "rows": [],
-   "hardest_class": null,
+   "hardest_decision": null,
+   "weakest_evidence": null,
    "missing": [],
    "ambiguous": []
   },
@@ -6820,7 +7463,8 @@
     ]
    },
    "rows": [],
-   "hardest_class": null,
+   "hardest_decision": null,
+   "weakest_evidence": null,
    "missing": [],
    "ambiguous": []
   },
@@ -6867,41 +7511,48 @@
     {
      "concept": "C-position",
      "characteristic": "technique.five-finger",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "C-position",
      "characteristic": "hands.per-bar-range",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "quarter-notes",
      "characteristic": "rhythm.values",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "treble-clef",
      "characteristic": "clef.treble",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "4/4",
      "characteristic": "notation.times",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "steps",
      "characteristic": "interval.step",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "clef.treble"
    ],
@@ -6953,23 +7604,27 @@
     {
      "concept": "half-notes",
      "characteristic": "rhythm.values",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "whole-notes",
      "characteristic": "rhythm.values",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "rests",
      "characteristic": "rhythm.values",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [],
    "ambiguous": []
   },
@@ -7023,23 +7678,27 @@
     {
      "concept": "bass-clef",
      "characteristic": "clef.bass",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "LH-C-position",
      "characteristic": "technique.five-finger",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "LH-C-position",
      "characteristic": "hands.per-bar-range",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [],
    "ambiguous": []
   },
@@ -7088,29 +7747,34 @@
     {
      "concept": "grand-staff",
      "characteristic": "notation.staves",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "alternating-hands",
      "characteristic": "texture.alternating-hands",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "3/4",
      "characteristic": "metre.three-four",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "anacrusis",
      "characteristic": "mark.anacrusis",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [
     "texture.alternating-hands"
    ],
@@ -7168,35 +7832,41 @@
     {
      "concept": "steps",
      "characteristic": "interval.step",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "skips",
      "characteristic": "interval.skip",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "interval-reading",
      "characteristic": "interval.step",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "interval-reading",
      "characteristic": "interval.skip",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "interval-reading",
      "characteristic": "interval.leap",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [],
    "ambiguous": []
   },
@@ -7241,7 +7911,8 @@
     ]
    },
    "rows": [],
-   "hardest_class": null,
+   "hardest_decision": null,
+   "weakest_evidence": null,
    "missing": [],
    "ambiguous": []
   },
@@ -7288,7 +7959,8 @@
     ]
    },
    "rows": [],
-   "hardest_class": null,
+   "hardest_decision": null,
+   "weakest_evidence": null,
    "missing": [],
    "ambiguous": []
   },
@@ -7332,7 +8004,8 @@
     ]
    },
    "rows": [],
-   "hardest_class": null,
+   "hardest_decision": null,
+   "weakest_evidence": null,
    "missing": [],
    "ambiguous": []
   },
@@ -7384,11 +8057,13 @@
     {
      "concept": "endurance",
      "characteristic": "technique.endurance",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "EXACT",
    "missing": [],
    "ambiguous": []
   },
@@ -7431,7 +8106,8 @@
     ]
    },
    "rows": [],
-   "hardest_class": null,
+   "hardest_decision": null,
+   "weakest_evidence": null,
    "missing": [],
    "ambiguous": []
   },
@@ -7479,29 +8155,34 @@
     {
      "concept": "hands-together",
      "characteristic": "texture.hands-together",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "held-LH",
      "characteristic": "texture.held-under-moving",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "vertical-alignment",
      "characteristic": "texture.hands-together",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "leap",
      "characteristic": "interval.leap",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [
     "texture.held-under-moving"
    ],
@@ -7556,29 +8237,34 @@
     {
      "concept": "eighth-notes",
      "characteristic": "rhythm.eighths",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "beams",
      "characteristic": "rhythm.eighths",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "subdivision",
      "characteristic": "rhythm.eighths",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "subdivision",
      "characteristic": "rhythm.sixteenths",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [],
    "ambiguous": []
   },
@@ -7640,35 +8326,41 @@
     {
      "concept": "triads",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "triads",
      "characteristic": "texture.block-chords",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "chord-symbols",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "I-IV-V",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "block-chords",
      "characteristic": "texture.block-chords",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.progression"
    ],
@@ -7724,29 +8416,34 @@
     {
      "concept": "tie",
      "characteristic": "rhythm.ties",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "slur",
      "characteristic": "mark.slur",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "dotted-quarter",
      "characteristic": "rhythm.dotted-quarter",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "dynamics",
      "characteristic": "mark.dynamics",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [
     "mark.dynamics",
     "mark.slur"
@@ -7811,29 +8508,34 @@
     {
      "concept": "position-shift",
      "characteristic": "technique.position-shift",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "thumb-under",
      "characteristic": "technique.thumb-under",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "C-major-scale",
      "characteristic": "technique.scale-run",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "C-major-scale",
      "characteristic": "notation.keys",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "technique.scale-run",
     "technique.thumb-under"
@@ -7882,29 +8584,34 @@
     {
      "concept": "carols",
      "characteristic": "meta.title",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "carols",
      "characteristic": "meta.genre-tags",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "hands-together",
      "characteristic": "texture.hands-together",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "chord-symbols",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "EXTERNAL",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXTERNAL",
    "missing": [],
    "ambiguous": []
   },
@@ -7946,17 +8653,20 @@
     {
      "concept": "chord-symbols",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "four-chord-loop",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.progression"
    ],
@@ -8007,35 +8717,41 @@
     {
      "concept": "sharps",
      "characteristic": "key.signature",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "sharps",
      "characteristic": "notation.keys",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "flats",
      "characteristic": "key.signature",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "flats",
      "characteristic": "notation.keys",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "key-signature",
      "characteristic": "key.signature",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [],
    "ambiguous": []
   },
@@ -8083,23 +8799,27 @@
     {
      "concept": "I-IV-V7",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "I-IV-V7",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "voice-leading",
      "characteristic": "harmony.voice-leading",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.progression",
     "harmony.voice-leading"
@@ -8150,47 +8870,55 @@
     {
      "concept": "relative-minor",
      "characteristic": "key.tonic-mode",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "relative-minor",
      "characteristic": "key.signature",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "harmonic-minor",
      "characteristic": "key.minor-form",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "minor-triads",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "E7",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "E7",
      "characteristic": "harmony.roman",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "accidentals",
      "characteristic": "pitch.chromatic",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "key.minor-form"
    ],
@@ -8247,17 +8975,20 @@
     {
      "concept": "ledger-lines",
      "characteristic": "pitch.ledger",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "8va",
      "characteristic": "mark.ottava",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [
     "mark.ottava"
    ],
@@ -8311,23 +9042,27 @@
     {
      "concept": "damper-pedal",
      "characteristic": "mark.pedal",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "legato-pedalling",
      "characteristic": "mark.pedal",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "CC64",
      "characteristic": "mark.pedal",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [
     "mark.pedal"
    ],
@@ -8373,29 +9108,34 @@
     {
      "concept": "broken-chords",
      "characteristic": "texture.broken-chord",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "alberti-bass",
      "characteristic": "texture.alberti",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "waltz-bass",
      "characteristic": "texture.waltz-bass",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "broken-chord-accompaniment",
      "characteristic": "texture.broken-chord",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "texture.alberti",
     "texture.broken-chord",
@@ -8447,41 +9187,48 @@
     {
      "concept": "baroque-dance",
      "characteristic": "meta.title",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "baroque-dance",
      "characteristic": "meta.composer-era",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "baroque-dance",
      "characteristic": "form.binary-ternary",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "articulation",
      "characteristic": "mark.articulation",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "articulation",
      "characteristic": "mark.slur",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "two-voice-texture",
      "characteristic": "texture.two-voice",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "EXTERNAL",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "EXTERNAL",
    "missing": [
     "mark.articulation",
     "mark.slur"
@@ -8532,17 +9279,20 @@
     {
      "concept": "chord-symbols",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "I-IV-V",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.progression"
    ],
@@ -8593,47 +9343,55 @@
     {
      "concept": "blues-scale",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "chord-symbols",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "twelve-bar-blues",
      "characteristic": "form.twelve-bar",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "shuffle",
      "characteristic": "rhythm.shuffle",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "blue-note",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "blue-note",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "crushed-note",
      "characteristic": "texture.crushed-note",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.twelve-bar",
     "rhythm.shuffle",
@@ -8682,7 +9440,8 @@
     ]
    },
    "rows": [],
-   "hardest_class": null,
+   "hardest_decision": null,
+   "weakest_evidence": null,
    "missing": [],
    "ambiguous": [
     "key-signatures"
@@ -8731,11 +9490,13 @@
     {
      "concept": "call-and-response",
      "characteristic": "texture.call-response",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "texture.call-response"
    ],
@@ -8786,53 +9547,62 @@
     {
      "concept": "four-part-harmony",
      "characteristic": "harmony.voice-leading",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "four-part-harmony",
      "characteristic": "difficulty.features",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "passing-chords",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "plagal-cadence",
      "characteristic": "harmony.cadence",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "slash-chord",
      "characteristic": "harmony.inversion",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "slash-chord",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "voice-leading",
      "characteristic": "harmony.voice-leading",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "bass-walk-up",
      "characteristic": "texture.bass-walk-up",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.applied",
     "harmony.inversion",
@@ -8879,7 +9649,8 @@
     ]
    },
    "rows": [],
-   "hardest_class": null,
+   "hardest_decision": null,
+   "weakest_evidence": null,
    "missing": [],
    "ambiguous": []
   },
@@ -8922,23 +9693,27 @@
     {
      "concept": "clave",
      "characteristic": "texture.clave",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "syncopation",
      "characteristic": "rhythm.syncopation",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "tresillo",
      "characteristic": "rhythm.tresillo",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "texture.clave"
    ],
@@ -8987,23 +9762,27 @@
     {
      "concept": "carols",
      "characteristic": "meta.title",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "carols",
      "characteristic": "meta.genre-tags",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "chord-symbols",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "EXTERNAL",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXTERNAL",
    "missing": [],
    "ambiguous": []
   },
@@ -9048,23 +9827,27 @@
     {
      "concept": "swing-eighths",
      "characteristic": "notation.swing-mark",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "call-and-response",
      "characteristic": "texture.call-response",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "chord-symbols",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "texture.call-response"
    ],
@@ -9126,23 +9909,27 @@
     {
      "concept": "scales-HT",
      "characteristic": "technique.scale-run",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "scales-HT",
      "characteristic": "texture.hands-together",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "contrary-motion",
      "characteristic": "texture.motion",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "technique.scale-run",
     "texture.motion"
@@ -9193,53 +9980,62 @@
     {
      "concept": "F-major",
      "characteristic": "notation.keys",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "F-major",
      "characteristic": "key.tonic-mode",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "B-flat-major",
      "characteristic": "notation.keys",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "B-flat-major",
      "characteristic": "key.tonic-mode",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "E-flat-major",
      "characteristic": "notation.keys",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "E-flat-major",
      "characteristic": "key.tonic-mode",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "harmonic-minor",
      "characteristic": "key.minor-form",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "melodic-minor",
      "characteristic": "key.minor-form",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "key.minor-form"
    ],
@@ -9301,35 +10097,41 @@
     {
      "concept": "inversions",
      "characteristic": "harmony.inversion",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "slash-chords",
      "characteristic": "harmony.inversion",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "slash-chords",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "arpeggio-fingering",
      "characteristic": "technique.arpeggio-run",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "arpeggio-fingering",
      "characteristic": "mark.fingering",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "harmony.inversion",
     "technique.arpeggio-run"
@@ -9398,17 +10200,20 @@
     {
      "concept": "hanon",
      "characteristic": "meta.collection",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "sixteenth-notes",
      "characteristic": "rhythm.sixteenths",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "EXTERNAL",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXTERNAL",
    "missing": [],
    "ambiguous": []
   },
@@ -9465,35 +10270,41 @@
     {
      "concept": "6/8",
      "characteristic": "metre.compound",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "triplets",
      "characteristic": "rhythm.triplets",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "swing",
      "characteristic": "notation.swing-mark",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "swing",
      "characteristic": "rhythm.shuffle",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "syncopation",
      "characteristic": "rhythm.syncopation",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "rhythm.shuffle"
    ],
@@ -9551,7 +10362,8 @@
     ]
    },
    "rows": [],
-   "hardest_class": null,
+   "hardest_decision": null,
+   "weakest_evidence": null,
    "missing": [],
    "ambiguous": []
   },
@@ -9598,7 +10410,8 @@
     ]
    },
    "rows": [],
-   "hardest_class": null,
+   "hardest_decision": null,
+   "weakest_evidence": null,
    "missing": [],
    "ambiguous": []
   },
@@ -9644,23 +10457,27 @@
     {
      "concept": "staccato",
      "characteristic": "mark.articulation",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "legato",
      "characteristic": "mark.slur",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "ornaments",
      "characteristic": "mark.ornament",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [
     "mark.articulation",
     "mark.slur"
@@ -9714,23 +10531,27 @@
     {
      "concept": "voicing",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voicing",
      "characteristic": "texture.melody-in-chords",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "pedalling",
      "characteristic": "mark.pedal",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "harmony.voicing",
     "mark.pedal",
@@ -9782,29 +10603,34 @@
     {
      "concept": "inversions",
      "characteristic": "harmony.inversion",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "four-chord-progression",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "slash-chords",
      "characteristic": "harmony.inversion",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "slash-chords",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.inversion",
     "harmony.progression"
@@ -9858,47 +10684,55 @@
     {
      "concept": "twelve-bar-blues",
      "characteristic": "form.twelve-bar",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "shuffle",
      "characteristic": "rhythm.shuffle",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "boogie-bass",
      "characteristic": "texture.boogie-bass",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "blues-scale",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "blue-note",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "blue-note",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "crushed-note",
      "characteristic": "texture.crushed-note",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.twelve-bar",
     "rhythm.shuffle",
@@ -9955,47 +10789,55 @@
     {
      "concept": "swing-eighths",
      "characteristic": "notation.swing-mark",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "charleston",
      "characteristic": "texture.charleston",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "four-to-the-bar",
      "characteristic": "texture.four-to-the-bar",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "chord-symbols",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "triads",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "triads",
      "characteristic": "texture.block-chords",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "syncopation",
      "characteristic": "rhythm.syncopation",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "texture.charleston",
     "texture.four-to-the-bar"
@@ -10051,41 +10893,48 @@
     {
      "concept": "carols",
      "characteristic": "meta.title",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "carols",
      "characteristic": "meta.genre-tags",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "register",
      "characteristic": "hands.per-bar-range",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "broken-chords",
      "characteristic": "texture.broken-chord",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "block-chords",
      "characteristic": "texture.block-chords",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "octaves",
      "characteristic": "texture.octaves",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "EXTERNAL",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXTERNAL",
    "missing": [
     "texture.broken-chord",
     "texture.octaves"
@@ -10141,11 +10990,13 @@
     {
      "concept": "cadences",
      "characteristic": "harmony.cadence",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [],
    "ambiguous": []
   },
@@ -10194,17 +11045,20 @@
     {
      "concept": "pentatonic-scale",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "call-and-response",
      "characteristic": "texture.call-response",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "scale.collection",
     "texture.call-response"
@@ -10256,11 +11110,13 @@
     {
      "concept": "guitar-keys",
      "characteristic": "key.set-membership",
-     "cls": "CODE-EXACT",
+     "evidence": "INFERRED",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "key.set-membership"
    ],
@@ -10314,101 +11170,118 @@
     {
      "concept": "scale",
      "characteristic": "technique.scale-run",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "arpeggio",
      "characteristic": "technique.arpeggio-run",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "five-finger",
      "characteristic": "technique.five-finger",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "similar",
      "characteristic": "texture.motion",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "contrary",
      "characteristic": "texture.motion",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "chromatic",
      "characteristic": "technique.scale-run",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "chromatic",
      "characteristic": "pitch.chromatic",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "semitones",
      "characteristic": "pitch.chromatic",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "semitones",
      "characteristic": "interval.step",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "finger-independence",
      "characteristic": "technique.finger-independence",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "inversions",
      "characteristic": "harmony.inversion",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "articulation",
      "characteristic": "mark.articulation",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "articulation",
      "characteristic": "mark.slur",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "staccato",
      "characteristic": "mark.articulation",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "legato",
      "characteristic": "mark.slur",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "note-length",
      "characteristic": "rhythm.values",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "harmony.inversion",
     "mark.articulation",
@@ -10465,65 +11338,76 @@
     {
      "concept": "ostinato",
      "characteristic": "texture.ostinato",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "eighth-note-ostinato",
      "characteristic": "texture.ostinato",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "eighth-note-ostinato",
      "characteristic": "rhythm.eighths",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "pedal-bass",
      "characteristic": "texture.pedal-point",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "modal-minor",
      "characteristic": "harmony.modal",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "modal-minor",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "open-voicings",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "power-chord",
      "characteristic": "texture.power-chord",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "riff",
      "characteristic": "texture.ostinato",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "vamp",
      "characteristic": "texture.ostinato",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.modal",
     "harmony.voicing",
@@ -10576,29 +11460,34 @@
     {
      "concept": "four-part-harmony",
      "characteristic": "harmony.voice-leading",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "four-part-harmony",
      "characteristic": "difficulty.features",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "voice-leading",
      "characteristic": "harmony.voice-leading",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "legato",
      "characteristic": "mark.slur",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [
     "harmony.voice-leading",
     "mark.slur"
@@ -10654,17 +11543,20 @@
     {
      "concept": "habanera",
      "characteristic": "rhythm.habanera",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "tresillo",
      "characteristic": "rhythm.tresillo",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [],
    "ambiguous": []
   },
@@ -10711,35 +11603,41 @@
     {
      "concept": "sonatina-form",
      "characteristic": "form.sonata",
-     "cls": "JUDGMENT",
+     "evidence": "INFERRED",
+     "decision": "JUDGMENT",
      "status": "MISSING"
     },
     {
      "concept": "alberti-bass-HT",
      "characteristic": "texture.alberti",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "alberti-bass-HT",
      "characteristic": "texture.hands-together",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "trills",
      "characteristic": "mark.ornament",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "pedal",
      "characteristic": "mark.pedal",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "JUDGMENT",
+   "hardest_decision": "JUDGMENT",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.sonata",
     "mark.pedal",
@@ -10791,35 +11689,41 @@
     {
      "concept": "maj7",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "min7",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "dom7",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "sus",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "add9",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-EXACT",
+   "hardest_decision": "DIRECT",
+   "weakest_evidence": "EXACT",
    "missing": [],
    "ambiguous": [
     "sus"
@@ -10869,41 +11773,48 @@
     {
      "concept": "turnaround",
      "characteristic": "form.turnaround",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "tremolo-thirds",
      "characteristic": "texture.tremolo-thirds",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "blue-note",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "blue-note",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "crushed-note",
      "characteristic": "texture.crushed-note",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "call-and-response",
      "characteristic": "texture.call-response",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.turnaround",
     "scale.collection",
@@ -10959,29 +11870,34 @@
     {
      "concept": "swing-eighths",
      "characteristic": "notation.swing-mark",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "shell-voicings",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "ii-V-I",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "charleston",
      "characteristic": "texture.charleston",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.progression",
     "harmony.voicing",
@@ -11036,23 +11952,27 @@
     {
      "concept": "carols",
      "characteristic": "meta.title",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "carols",
      "characteristic": "meta.genre-tags",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "ostinato",
      "characteristic": "texture.ostinato",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "EXTERNAL",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXTERNAL",
    "missing": [
     "texture.ostinato"
    ],
@@ -11101,29 +12021,34 @@
     {
      "concept": "oom-pah-bass",
      "characteristic": "texture.oom-pah",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "syncopation",
      "characteristic": "rhythm.syncopation",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "not-fast",
      "characteristic": "mark.tempo-text",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "sixteenth-notes",
      "characteristic": "rhythm.sixteenths",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "texture.oom-pah"
    ],
@@ -11177,23 +12102,27 @@
     {
      "concept": "modes",
      "characteristic": "harmony.modal",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "modes",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "vamp",
      "characteristic": "texture.ostinato",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.modal",
     "scale.collection",
@@ -11247,23 +12176,27 @@
     {
      "concept": "blues-scale",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "blue-note",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "blue-note",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "scale.collection"
    ],
@@ -11317,41 +12250,48 @@
     {
      "concept": "clave",
      "characteristic": "texture.clave",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "tumbao",
      "characteristic": "texture.tumbao",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "montuno",
      "characteristic": "texture.montuno",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "syncopation",
      "characteristic": "rhythm.syncopation",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "bossa-nova",
      "characteristic": "texture.bossa",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "tango",
      "characteristic": "texture.tango",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "texture.bossa",
     "texture.clave",
@@ -11416,95 +12356,111 @@
     {
      "concept": "repeated-notes",
      "characteristic": "rhythm.repeated-notes",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "hand-independence",
      "characteristic": "texture.hand-independence",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "polyrhythm-2:1",
      "characteristic": "texture.polyrhythm",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "dynamics",
      "characteristic": "mark.dynamics",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "crescendo",
      "characteristic": "mark.hairpin",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "diminuendo",
      "characteristic": "mark.hairpin",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "rhythm",
      "characteristic": "rhythm.values",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "rhythm",
      "characteristic": "rhythm.syncopation",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "tied-across-bar",
      "characteristic": "rhythm.ties",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "odd-meter",
      "characteristic": "metre.odd",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "meter-5-4",
      "characteristic": "metre.odd",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "mordent",
      "characteristic": "mark.ornament",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "ornamentation",
      "characteristic": "mark.ornament",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "hanon",
      "characteristic": "meta.collection",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "two-hand-independence",
      "characteristic": "texture.hand-independence",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "EXTERNAL",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXTERNAL",
    "missing": [
     "mark.dynamics",
     "mark.hairpin",
@@ -11552,17 +12508,20 @@
     {
      "concept": "open-voicings",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "sustained-chords",
      "characteristic": "texture.sustained",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "harmony.voicing",
     "texture.sustained"
@@ -11609,29 +12568,34 @@
     {
      "concept": "guitar-keys",
      "characteristic": "key.set-membership",
-     "cls": "CODE-EXACT",
+     "evidence": "INFERRED",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "charleston",
      "characteristic": "texture.charleston",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "anticipation",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "anticipation",
      "characteristic": "rhythm.syncopation",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "key.set-membership",
     "texture.charleston"
@@ -11680,23 +12644,27 @@
     {
      "concept": "bass-walk-up",
      "characteristic": "texture.bass-walk-up",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "passing-chords",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "secondary-dominants",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.applied",
     "texture.bass-walk-up"
@@ -11750,29 +12718,34 @@
     {
      "concept": "voicing-melody",
      "characteristic": "texture.melody-in-chords",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "pedalling",
      "characteristic": "mark.pedal",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "romantic-miniature",
      "characteristic": "meta.composer-era",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "romantic-miniature",
      "characteristic": "form.length",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "EXTERNAL",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXTERNAL",
    "missing": [
     "mark.pedal",
     "texture.melody-in-chords"
@@ -11823,41 +12796,48 @@
     {
      "concept": "oom-pah-bass",
      "characteristic": "texture.oom-pah",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "syncopation",
      "characteristic": "rhythm.syncopation",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "multi-strain-form",
      "characteristic": "form.multi-strain",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "trio-key-change",
      "characteristic": "key.change",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "trio-key-change",
      "characteristic": "form.multi-strain",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "not-fast",
      "characteristic": "mark.tempo-text",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "texture.oom-pah"
    ],
@@ -11916,83 +12896,97 @@
     {
      "concept": "seventh-chord",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "broken-chord",
      "characteristic": "texture.broken-chord",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "alberti",
      "characteristic": "texture.alberti",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "trill",
      "characteristic": "mark.ornament",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "voicing",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voicing",
      "characteristic": "texture.melody-in-chords",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "sustain-pedal",
      "characteristic": "mark.pedal",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "held-melody",
      "characteristic": "texture.held-under-moving",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "CC64",
      "characteristic": "mark.pedal",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "legato-pedalling",
      "characteristic": "mark.pedal",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "polyrhythm-3:1",
      "characteristic": "texture.polyrhythm",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "meter-7-8",
      "characteristic": "metre.odd",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "sixteenth-notes",
      "characteristic": "rhythm.sixteenths",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "harmony.voicing",
     "mark.pedal",
@@ -12065,47 +13059,55 @@
     {
      "concept": "walking-bass",
      "characteristic": "texture.walking-bass",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "shell-voicings",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "swing-eighths",
      "characteristic": "notation.swing-mark",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "ii-V-I",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "charleston",
      "characteristic": "texture.charleston",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "four-to-the-bar",
      "characteristic": "texture.four-to-the-bar",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "approach-note",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.progression",
     "harmony.voicing",
@@ -12164,29 +13166,34 @@
     {
      "concept": "carols",
      "characteristic": "meta.title",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "carols",
      "characteristic": "meta.genre-tags",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "voicing-melody",
      "characteristic": "texture.melody-in-chords",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "held-melody",
      "characteristic": "texture.held-under-moving",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "EXTERNAL",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXTERNAL",
    "missing": [
     "texture.held-under-moving",
     "texture.melody-in-chords"
@@ -12250,59 +13257,69 @@
     {
      "concept": "boogie",
      "characteristic": "texture.boogie-bass",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "boogie",
      "characteristic": "form.twelve-bar",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "shuffle",
      "characteristic": "rhythm.shuffle",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "walking-bass",
      "characteristic": "texture.walking-bass",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "left-hand",
      "characteristic": "texture.left-hand-pattern",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "left-hand",
      "characteristic": "hands.per-bar-range",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "turnaround",
      "characteristic": "form.turnaround",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "twelve-bar",
      "characteristic": "form.twelve-bar",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "approach-note",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.turnaround",
     "form.twelve-bar",
@@ -12358,35 +13375,41 @@
     {
      "concept": "four-chord-loop",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voice-leading",
      "characteristic": "harmony.voice-leading",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "slash-chord",
      "characteristic": "harmony.inversion",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "slash-chord",
      "characteristic": "notation.chord-symbols",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "inversions",
      "characteristic": "harmony.inversion",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.inversion",
     "harmony.progression",
@@ -12440,23 +13463,27 @@
     {
      "concept": "modes",
      "characteristic": "harmony.modal",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "modes",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "chord-progression",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.modal",
     "harmony.progression",
@@ -12512,47 +13539,55 @@
     {
      "concept": "modes",
      "characteristic": "harmony.modal",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "modes",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "ii-V-I",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "guide-tones",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "guide-tones",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "chord-scale",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "chord-scale",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.modal",
     "harmony.progression",
@@ -12604,29 +13639,34 @@
     {
      "concept": "arpeggio-texture",
      "characteristic": "texture.arpeggio",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "pedal-bass",
      "characteristic": "texture.pedal-point",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "half-time-feel",
      "characteristic": "texture.half-time",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "sustained-chords",
      "characteristic": "texture.sustained",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "texture.arpeggio",
     "texture.half-time",
@@ -12672,29 +13712,34 @@
     {
      "concept": "walking-bass",
      "characteristic": "texture.walking-bass",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "guitar-keys",
      "characteristic": "key.set-membership",
-     "cls": "CODE-EXACT",
+     "evidence": "INFERRED",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "twelve-bar",
      "characteristic": "form.twelve-bar",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "approach-note",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.twelve-bar",
     "key.set-membership"
@@ -12748,11 +13793,13 @@
     {
      "concept": "voicing-melody",
      "characteristic": "texture.melody-in-chords",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "texture.melody-in-chords"
    ],
@@ -12801,29 +13848,34 @@
     {
      "concept": "tango",
      "characteristic": "texture.tango",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "tumbao",
      "characteristic": "texture.tumbao",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "montuno",
      "characteristic": "texture.montuno",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "tresillo",
      "characteristic": "rhythm.tresillo",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "texture.montuno",
     "texture.tango",
@@ -12878,29 +13930,34 @@
     {
      "concept": "counterpoint",
      "characteristic": "texture.counterpoint",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "sonata-form",
      "characteristic": "form.sonata",
-     "cls": "JUDGMENT",
+     "evidence": "INFERRED",
+     "decision": "JUDGMENT",
      "status": "MISSING"
     },
     {
      "concept": "ornamented-melody",
      "characteristic": "mark.ornament",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "mazurka-rhythm",
      "characteristic": "texture.mazurka",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "JUDGMENT",
+   "hardest_decision": "JUDGMENT",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.sonata",
     "texture.counterpoint",
@@ -12953,47 +14010,55 @@
     {
      "concept": "oom-pah-bass",
      "characteristic": "texture.oom-pah",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "stride-bass",
      "characteristic": "texture.stride",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "syncopation",
      "characteristic": "rhythm.syncopation",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "trio-key-change",
      "characteristic": "key.change",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "trio-key-change",
      "characteristic": "form.multi-strain",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "not-fast",
      "characteristic": "mark.tempo-text",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "habanera",
      "characteristic": "rhythm.habanera",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "texture.oom-pah",
     "texture.stride"
@@ -13048,83 +14113,97 @@
     {
      "concept": "double-notes",
      "characteristic": "texture.double-notes",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "scale-in-3rds",
      "characteristic": "technique.scale-run",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "scale-in-3rds",
      "characteristic": "texture.double-notes",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "scale-in-6ths",
      "characteristic": "technique.scale-run",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "scale-in-6ths",
      "characteristic": "texture.double-notes",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "octaves",
      "characteristic": "texture.octaves",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "octave-scale",
      "characteristic": "texture.octaves",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "octave-scale",
      "characteristic": "technique.scale-run",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "broken-octaves",
      "characteristic": "texture.octaves",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "tremolo",
      "characteristic": "mark.tremolo",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "polyrhythm-2:3",
      "characteristic": "texture.polyrhythm",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "polyrhythm-3:2",
      "characteristic": "texture.polyrhythm",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "melody-in-octaves",
      "characteristic": "texture.octaves",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "mark.tremolo",
     "technique.scale-run",
@@ -13178,77 +14257,90 @@
     {
      "concept": "rootless-voicings",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "quartal",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "tritone-substitution",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "stride",
      "characteristic": "texture.stride",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "chord-scale",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "chord-scale",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voicing",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voicing",
      "characteristic": "texture.melody-in-chords",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "rhythm-changes",
      "characteristic": "form.thirty-two-bar",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "rhythm-changes",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.thirty-two-bar",
     "harmony.applied",
@@ -13310,29 +14402,34 @@
     {
      "concept": "left-hand",
      "characteristic": "texture.left-hand-pattern",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "left-hand",
      "characteristic": "hands.per-bar-range",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "stride",
      "characteristic": "texture.stride",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "repeated-notes",
      "characteristic": "rhythm.repeated-notes",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "rhythm.repeated-notes",
     "texture.stride"
@@ -13381,47 +14478,55 @@
     {
      "concept": "stride",
      "characteristic": "texture.stride",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "turnaround",
      "characteristic": "form.turnaround",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "boogie",
      "characteristic": "texture.boogie-bass",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "boogie",
      "characteristic": "form.twelve-bar",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "shuffle",
      "characteristic": "rhythm.shuffle",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "shell-voicings",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "leaps",
      "characteristic": "interval.leap",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.turnaround",
     "form.twelve-bar",
@@ -13472,65 +14577,76 @@
     {
      "concept": "open-voicing",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "sus-chords",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "add9",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voicing",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voicing",
      "characteristic": "texture.melody-in-chords",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "texture",
      "characteristic": "texture.block-chords",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "texture",
      "characteristic": "texture.broken-chord",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "texture",
      "characteristic": "texture.arpeggio",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "harmony.voicing",
     "texture.arpeggio",
@@ -13585,41 +14701,48 @@
     {
      "concept": "secondary-dominants",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "tonicisation",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "modes",
      "characteristic": "harmony.modal",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "modes",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "chord-scale",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "chord-scale",
      "characteristic": "melody.chord-relation",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.applied",
     "harmony.modal",
@@ -13675,65 +14798,76 @@
     {
      "concept": "quartal",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "modes",
      "characteristic": "harmony.modal",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "modes",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voicing",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voicing",
      "characteristic": "texture.melody-in-chords",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "texture",
      "characteristic": "texture.block-chords",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "texture",
      "characteristic": "texture.broken-chord",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "texture",
      "characteristic": "texture.arpeggio",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.modal",
     "harmony.voicing",
@@ -13788,35 +14922,41 @@
     {
      "concept": "dynamic-build",
      "characteristic": "texture.build",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "dynamic-build",
      "characteristic": "mark.hairpin",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "build-and-release",
      "characteristic": "texture.build",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "build-and-release",
      "characteristic": "mark.hairpin",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "register",
      "characteristic": "hands.per-bar-range",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "mark.hairpin",
     "texture.build"
@@ -13869,35 +15009,41 @@
     {
      "concept": "left-hand",
      "characteristic": "texture.left-hand-pattern",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "left-hand",
      "characteristic": "hands.per-bar-range",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "ostinato",
      "characteristic": "texture.ostinato",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "octaves",
      "characteristic": "texture.octaves",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "repeated-notes",
      "characteristic": "rhythm.repeated-notes",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "rhythm.repeated-notes",
     "texture.octaves",
@@ -13953,17 +15099,20 @@
     {
      "concept": "turnaround",
      "characteristic": "form.turnaround",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "guitar-keys",
      "characteristic": "key.set-membership",
-     "cls": "CODE-EXACT",
+     "evidence": "INFERRED",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.turnaround",
     "key.set-membership"
@@ -14016,53 +15165,62 @@
     {
      "concept": "etude",
      "characteristic": "meta.title",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "etude",
      "characteristic": "meta.collection",
-     "cls": "EXTERNAL",
+     "evidence": "EXTERNAL",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "etude",
      "characteristic": "technique.velocity",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "velocity",
      "characteristic": "technique.velocity",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "voicing-melody",
      "characteristic": "texture.melody-in-chords",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "large-form",
      "characteristic": "form.length",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "large-form",
      "characteristic": "form.sonata",
-     "cls": "JUDGMENT",
+     "evidence": "INFERRED",
+     "decision": "JUDGMENT",
      "status": "MISSING"
     },
     {
      "concept": "pedalling",
      "characteristic": "mark.pedal",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "JUDGMENT",
+   "hardest_decision": "JUDGMENT",
+   "weakest_evidence": "EXTERNAL",
    "missing": [
     "form.sonata",
     "mark.pedal",
@@ -14115,41 +15273,48 @@
     {
      "concept": "syncopation",
      "characteristic": "rhythm.syncopation",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "secondary-rag",
      "characteristic": "rhythm.secondary-rag",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "stride-bass",
      "characteristic": "texture.stride",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "chromatic-harmony",
      "characteristic": "harmony.chromatic-share",
-     "cls": "CODE-EXACT",
+     "evidence": "INFERRED",
+     "decision": "DIRECT",
      "status": "MISSING"
     },
     {
      "concept": "not-fast",
      "characteristic": "mark.tempo-text",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "stop-time",
      "characteristic": "texture.stop-time",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.chromatic-share",
     "rhythm.secondary-rag",
@@ -14195,23 +15360,27 @@
     {
      "concept": "scale",
      "characteristic": "technique.scale-run",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "velocity",
      "characteristic": "technique.velocity",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "endurance",
      "characteristic": "technique.endurance",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "EXACT",
    "missing": [
     "technique.scale-run"
    ],
@@ -14259,47 +15428,55 @@
     {
      "concept": "extended-chords",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "modulation",
      "characteristic": "key.change",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "rootless-voicings",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "tritone-substitution",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "modes",
      "characteristic": "harmony.modal",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "modes",
      "characteristic": "scale.collection",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.applied",
     "harmony.modal",
@@ -14357,47 +15534,55 @@
     {
      "concept": "twelve-bar",
      "characteristic": "form.twelve-bar",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "boogie",
      "characteristic": "texture.boogie-bass",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "boogie",
      "characteristic": "form.twelve-bar",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "walking-bass",
      "characteristic": "texture.walking-bass",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "four-to-the-bar",
      "characteristic": "texture.four-to-the-bar",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.twelve-bar",
     "harmony.voicing",
@@ -14452,23 +15637,27 @@
     {
      "concept": "secondary-dominants",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "four-chord-loop",
      "characteristic": "harmony.progression",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "seventh-chord",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.applied",
     "harmony.progression"
@@ -14519,35 +15708,41 @@
     {
      "concept": "modulation",
      "characteristic": "key.change",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "pivot-chord",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "pivot-chord",
      "characteristic": "key.change",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.applied",
     "harmony.voicing"
@@ -14602,41 +15797,48 @@
     {
      "concept": "tritone-substitution",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "secondary-dominants",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "modulation",
      "characteristic": "key.change",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.chord-quality",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "extended-chords",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "turnaround",
      "characteristic": "form.turnaround",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.turnaround",
     "harmony.applied",
@@ -14689,29 +15891,34 @@
     {
      "concept": "large-form",
      "characteristic": "form.length",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     },
     {
      "concept": "large-form",
      "characteristic": "form.sonata",
-     "cls": "JUDGMENT",
+     "evidence": "INFERRED",
+     "decision": "JUDGMENT",
      "status": "MISSING"
     },
     {
      "concept": "virtuoso-technique",
      "characteristic": "difficulty.level",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "virtuoso-technique",
      "characteristic": "technique.velocity",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "JUDGMENT",
+   "hardest_decision": "JUDGMENT",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.sonata"
    ],
@@ -14759,23 +15966,27 @@
     {
      "concept": "walking-bass",
      "characteristic": "texture.walking-bass",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "EXISTS"
     },
     {
      "concept": "stride",
      "characteristic": "texture.stride",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "secondary-dominants",
      "characteristic": "harmony.applied",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.applied",
     "texture.stride"
@@ -14824,35 +16035,41 @@
     {
      "concept": "twelve-bar",
      "characteristic": "form.twelve-bar",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "call-response",
      "characteristic": "texture.call-response",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "MISSING"
     },
     {
      "concept": "boogie",
      "characteristic": "texture.boogie-bass",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "boogie",
      "characteristic": "form.twelve-bar",
-     "cls": "CODE-RULE",
+     "evidence": "INFERRED",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "stride",
      "characteristic": "texture.stride",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "form.twelve-bar",
     "texture.boogie-bass",
@@ -14905,41 +16122,48 @@
     {
      "concept": "texture",
      "characteristic": "texture.block-chords",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "PARTLY"
     },
     {
      "concept": "texture",
      "characteristic": "texture.broken-chord",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "texture",
      "characteristic": "texture.arpeggio",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voicing",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voicing",
      "characteristic": "texture.melody-in-chords",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "open-voicing",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "harmony.voicing",
     "texture.arpeggio",
@@ -14996,23 +16220,27 @@
     {
      "concept": "form",
      "characteristic": "form.binary-ternary",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "form",
      "characteristic": "form.phrase",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "modulation",
      "characteristic": "key.change",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [],
    "ambiguous": [
     "form"
@@ -15066,29 +16294,34 @@
     {
      "concept": "form",
      "characteristic": "form.binary-ternary",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "form",
      "characteristic": "form.phrase",
-     "cls": "CODE-INFERENCE",
+     "evidence": "INFERRED",
+     "decision": "CALIBRATED_MODEL",
      "status": "PARTLY"
     },
     {
      "concept": "voicing",
      "characteristic": "harmony.voicing",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "voicing",
      "characteristic": "texture.melody-in-chords",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     }
    ],
-   "hardest_class": "CODE-INFERENCE",
+   "hardest_decision": "CALIBRATED_MODEL",
+   "weakest_evidence": "INFERRED",
    "missing": [
     "harmony.voicing",
     "texture.melody-in-chords"
@@ -15145,23 +16378,27 @@
     {
      "concept": "multi-strain-form",
      "characteristic": "form.multi-strain",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "PARTLY"
     },
     {
      "concept": "secondary-rag",
      "characteristic": "rhythm.secondary-rag",
-     "cls": "CODE-RULE",
+     "evidence": "EXACT",
+     "decision": "SOURCED_RULE",
      "status": "MISSING"
     },
     {
      "concept": "leaps",
      "characteristic": "interval.leap",
-     "cls": "CODE-EXACT",
+     "evidence": "EXACT",
+     "decision": "DIRECT",
      "status": "EXISTS"
     }
    ],
-   "hardest_class": "CODE-RULE",
+   "hardest_decision": "SOURCED_RULE",
+   "weakest_evidence": "EXACT",
    "missing": [
     "rhythm.secondary-rag"
    ],
@@ -15748,7 +16985,7 @@
  "counts": {
   "rungs": 110,
   "concepts": 286,
-  "characteristics": 193,
+  "characteristics": 201,
   "tracks": 15,
   "stages": 10,
   "abilities": 28
