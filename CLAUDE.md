@@ -79,7 +79,7 @@ cannot be inferred from what is written down. Otherwise choose, say why in a lin
 
 ## Before reporting any piece of work
 
-Five questions, in tier order (`operating-procedure.md` §11). A correction is owed only
+Six questions, in tier order (`operating-procedure.md` §11). A correction is owed only
 where the answer would change what the owner or the next agent does; wording alone never
 earns a turn.
 
@@ -100,6 +100,13 @@ earns a turn.
    as *no one in this process can decide this* and the item stays open, never moved to a
    later actor or phase. A paragraph its addressee does nothing with is cut. An owner
    correction is applied and confirmed by the change, in one line, without apology.
+6. **Closure.** Is anything I call done, landed, wired, covered or ruled actually there? A decision
+   written down is not the mechanism that enforces it. For every clause of a ruling, brief or claim:
+   the file and line that implements it, the test that pins it, and the path that runs that test
+   (which CI job, which suite), checked on the current HEAD, never read off a builder's report, a
+   handoff or the rulebook. A clause with no implementation is said to be absent, and the item stays
+   open (the owner and the reviewer, 2026-10-07: the preflight's three ruled changes were
+   written into FABLE as if in force while none existed in code or CI).
 
 ## Two mechanical hazards
 

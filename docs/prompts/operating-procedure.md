@@ -198,7 +198,7 @@ Roles under this gate: the drafting and implementing agents write briefs and cod
 
 ## 11. Before reporting
 
-Five questions, in tier order. A correction is owed only where the answer would change
+Six questions, in tier order. A correction is owed only where the answer would change
 what the owner or the next agent does; wording alone never earns a turn.
 
 1. **Product.** Did I look at the result the way a learner meets it (the screen, the
@@ -296,6 +296,13 @@ a builder already works on the change; it is not a reason to delay the dispatch.
 **The post-action gate is mandatory** (the reviewer's addendum §5, `docs/review/path-forward-2026-09-30-addendum.md`): a green test, a completed tool call or a landed commit is not by itself success; after each meaningful action or seam, seven checks — (1) read back the destination or result, an external mutation not successful until the actual destination is verified; (2) compare with the original intent: the problem that justified the action solved, not merely the prescribed mechanics completed; (3) check the project context again: no owner/reviewer decision or the personal-first product purpose contradicted or silently overridden; (4) check semantic side effects on learner truth, evidence, material identity, curriculum, device behaviour or another contract outside the intended boundary; (5) check for unnecessary new work: a discovered imperfection does not automatically become a backlog obligation; (6) re-evaluate the next step: queued work the landing closed, merged, invalidated or reprioritised is updated or collapsed before it is dispatched; (7) report verification honestly, VERIFIED, NOT YET VERIFIED and HYPOTHESIS kept distinct, absence of evidence never a causal explanation. It binds the resident hot-file workflow too: familiarity with a file area gives a builder context, not permanent scope or decision authority, and after each landing residency is re-checked for whether it still saves work. The gate is answered in one paragraph of the handoff, never a new document or review round.
 
 **Plan precedence** (the reviewer's addendum §11, `docs/review/path-forward-2026-09-30-addendum.md`): never by document type alone — the latest explicit ruling that actually owns the boundary, with explicit supersession statements honoured: (1) current owner decisions and explicit owner corrections; (2) the latest explicit correction or supersession for the affected boundary, the addendum's own included; (3) the latest reviewer response that owns the boundary and has not been superseded; (4) the latest convergence map and current dispositions; (5) the main path-forward document, for strategic rationale; (6) older wave plans and audit rows, for provenance only. Two current-looking instructions that still conflict after that stop the specific decision until the contradiction is resolved, never settled by whichever file is newer or more convenient. Under it the addendum supersedes the 70/30 familiar-to-exploratory target of `responses/questions-53670d2a.md` (§7: an adaptive objective, no fixed percentage until learner use gives a reason; backlog I3) and the strict-primary H2 split of `responses/questions-b96a36c8.md` §4 (§2: the personal build is the primary product and H2 environment, the strict build a focused delta and release gate; `responses/questions-b96a36c8-i5-correction.md` records the same correction).
+6. **Closure.** Is anything I call done, landed, wired, covered or ruled actually there? A decision
+   written down is not the mechanism that enforces it. For every clause of a ruling, brief or claim:
+   the file and line that implements it, the test that pins it, and the path that runs that test
+   (which CI job, which suite), checked on the current HEAD, never read off a builder's report, a
+   handoff or the rulebook. A clause with no implementation is said to be absent, and the item stays
+   open (the owner and the reviewer, 2026-10-07: the preflight's three ruled changes were
+   written into FABLE as if in force while none existed in code or CI).
 
 ## 12. The report
 
