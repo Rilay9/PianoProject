@@ -3,7 +3,7 @@
 `tools/content/check_chains.py` reads `docs/chains/*.yaml`. The first record is A7c.1, the Bizet
 habanera chain, a `draft` whose unresolved refs the checker lists. Each rule is shown on a copy of that
 record broken in that one way, and fails naming the field; the copy is checked in memory, never written
-into `docs/chains/`. The brief lint is shown on a small tree of briefs under the repository's gitignored
+into `docs/chains/`. The brief lint and live-handoff lint are shown on small trees under the repository's gitignored
 `build/`, and on the probe brief itself. Reference resolution is exact: a prefix of a real id, and a
 `path#anchor` whose anchor is not a heading slug or a literal anchor, do not resolve.
 
@@ -583,12 +583,22 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
         self.assertEqual(len(acceptance), 1)
         self.assertIn("does not exist", acceptance[0].message)
 
-    def test_r8_shipped_with_a_path_that_exists_passes_that_rule(self):
+    def test_r8_shipped_with_an_existing_automated_test_source_passes_that_rule(self):
         rec = load()
         rec["status"] = "shipped"
         rec["acceptance_test"] = "tools/content/tests/test_check_chains.py"
         failures, _ = check(rec)
         self.assertNotIn("acceptance_test", fields(failures))
+
+    def test_r8_shipped_with_existing_markdown_is_not_an_acceptance_test(self):
+        rec = load()
+        rec["status"] = "shipped"
+        rec["acceptance_test"] = "docs/prompts/FABLE.md"
+        failures, _ = check(rec)
+        acceptance = [f for f in failures if f.field == "acceptance_test"]
+        self.assertEqual(len(acceptance), 1)
+        self.assertIn("not an automated test source", acceptance[0].message)
+        self.assertIn("manual/phone walks cannot gate shipped", acceptance[0].message)
 
     def test_a_draft_needs_no_acceptance_path(self):
         rec = load()
@@ -829,6 +839,52 @@ class TheBriefLint(unittest.TestCase):
         self.assertEqual([f.line() for f in failures], [])
         self.assertTrue(any("probe-latin4-bizet.md (A7c.1)" in n for n in notes), notes)
 
+class TheLiveHandoffLint(unittest.TestCase):
+    def setUp(self):
+        self.tree = Tree()
+        self.addCleanup(self.tree.cleanup)
+
+    def pointer(self, body: str) -> None:
+        self.tree.write(
+            cc.CURRENT_REVIEW,
+            "# Reviewer handoff (current)\n\n## Response-required handoffs\n\n" + body,
+        )
+
+    def test_a_live_handoff_without_owner_action_none_fails(self):
+        self.pointer("- `handoffs/open.md` — response required before dispatch.\n")
+        self.tree.write("docs/review/handoffs/open.md", "# Open\n\nReview this.\n")
+        failures, notes = cc.lint_handoffs(self.tree.root)
+        self.assertEqual([f.field for f in failures], ["owner_action"])
+        self.assertIn("owner_action: none", failures[0].message)
+        self.assertEqual(notes[0], "handoffs: 1 live reviewer handoff(s) linted")
+
+    def test_a_live_handoff_with_owner_action_none_passes(self):
+        self.pointer("- `handoffs/open.md` — response required before dispatch.\n")
+        self.tree.write("docs/review/handoffs/open.md", "# Open\n\nowner_action: none\n\nReview this.\n")
+        failures, notes = cc.lint_handoffs(self.tree.root)
+        self.assertEqual(failures, [])
+        self.assertEqual(notes[0], "handoffs: 1 live reviewer handoff(s) linted")
+
+    def test_a_phone_walk_is_rejected_even_with_the_none_marker(self):
+        self.pointer("- `handoffs/open.md` — response required before dispatch.\n")
+        self.tree.write(
+            "docs/review/handoffs/open.md",
+            "# Open\n\nowner_action: none\n\nThe owner phone walk is the final shipping gate.\n",
+        )
+        failures, _ = cc.lint_handoffs(self.tree.root)
+        self.assertEqual([f.field for f in failures], ["owner_action"])
+        self.assertIn("phone walk", failures[0].message)
+
+    def test_answered_handoffs_are_history_not_live_owner_work(self):
+        self.pointer("- `handoffs/old.md` — **answered** in `responses/old.md`.\n")
+        self.tree.write("docs/review/handoffs/old.md", "# Old\n\nThe owner phone walk was once mentioned here.\n")
+        failures, notes = cc.lint_handoffs(self.tree.root)
+        self.assertEqual(failures, [])
+        self.assertEqual(notes[0], "handoffs: 0 live reviewer handoff(s) linted")
+
+    def test_the_real_current_pointer_has_no_invalid_live_handoff(self):
+        failures, _ = cc.lint_handoffs(ROOT)
+        self.assertEqual([f.line() for f in failures], [])
 
 class TheCommandLine(unittest.TestCase):
     def setUp(self):
@@ -877,6 +933,22 @@ class TheCommandLine(unittest.TestCase):
         self.assertIn("1 linted (carry an ability marker), 1 skipped (no ability marker)", out)
         code, _ = run_main("--root", str(self.tree.root))
         self.assertEqual(code, 0)  # without the flag the briefs are not read
+
+    def test_lint_handoffs_flag_fails_on_live_handoff_that_assigns_owner_work(self):
+        self.tree.write(
+            cc.CURRENT_REVIEW,
+            "# Reviewer handoff (current)\n\n## Response-required handoffs\n\n"
+            "- `handoffs/open.md` — response required before dispatch.\n",
+        )
+        self.tree.write(
+            "docs/review/handoffs/open.md",
+            "# Open\n\nowner_action: none\n\nThe owner phone walk is the final gate.\n",
+        )
+        code, out = run_main("--root", str(self.tree.root), "--lint-handoffs")
+        self.assertEqual(code, 1, out)
+        self.assertIn("phone walk", out)
+        code, _ = run_main("--root", str(self.tree.root))
+        self.assertEqual(code, 0)  # without the flag reviewer handoffs are not read
 
 
 class BuiltGeneratedIds(unittest.TestCase):
