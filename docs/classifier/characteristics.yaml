@@ -1,165 +1,253 @@
-# Characteristics an item can be measured for, and how each is measured.
-# One entry per characteristic. Read by tools/classifier/build_matrix.py, which fails if a
-# concept (concepts.yaml) or a place rule (places.yaml) names an id that is not here.
+# The gap-analysis table (docs/prompts/inputs-2026-10-07/classifier-review.md): every characteristic
+# placement needs, how verifiable it is, what code exists, and the gap. tools/classifier/build_matrix.py
+# validates every row and renders generated/table.md from it. Rules are not here (no design yet).
 #
-# method:
-#   existing  - code in this repo measures it today (impl names the file)
-#   library   - a library call measures it; our code only counts what it returns
-#   matcher   - a short rule of ours over library output; needs a published definition
-#               (src) and tests on sourced examples and near-misses before it is trusted
-#   research  - no reliable method known to us; an agent researches a method or source
-#   metadata  - not in the notes; read from the source record (title, composer, tags)
-# w2: the second, independent witness; where two witnesses exist they must agree, and a
-#     disagreement is reported for that item, never passed.
-# src: the published definition the rule quotes. NEEDED = not yet found (listed in research.md).
-#      verify = the code may already cite one; check it before relying on it.
-#      notation = a printed symbol; reading the file is the definition.
-# Facts checked on 2026-10-07 against .venv: music21 10.5.0 (92 feature extractors;
-# Ottava, Trill, Mordent, Tremolo, Fermata, Crescendo, Fingering, Repeat, RepeatBracket,
-# VoiceLeadingQuartet, floatingKey present; no pedal-mark class), partitura 1.9.0
-# (estimate_key, estimate_spelling, estimate_time, estimate_tonaltension, estimate_voices).
+# Fields, one row per characteristic:
+#   area    notation | rhythm | reading | harmony | texture | form | technique | coordination | expression |
+#           style | integrity | quality | pedagogy | difficulty | prereq | generated | meta
+#   need    the placement question the row serves: cope (can the learner cope: prerequisites, nothing
+#           untaught, difficulty) | exercises (does it exercise the target: how much, where, how
+#           concentrated, what else at once) | material (is it good material for the job)
+#   dec     the decision it feeds, in a few words
+#   pipe    generated | pdmx | both   (generated: the generator's declared spec is the intent, and the
+#           file is still read by the same analysers; pdmx: nothing declared, every value carries its
+#           provenance: exact, two-witnesses, one-witness, inferred, metadata-only)
+#   cls     CODE-EXACT | CODE-RULE | CODE-INFERENCE | EXTERNAL | JUDGMENT  (the five classes)
+#   code    file:line of the code that measures it today, or none
+#   status  EXISTS (that code has run on real catalogue items: the build measured 2,020 items on
+#           2026-10-07) | PARTLY | MISSING
+#   gap     what is missing, in one line
+#   w2      the second, independent witness where one exists (a disagreement is reported, never passed)
+#   src     for CODE-RULE: the published definition still to be quoted (NEEDED), or where it is;
+#           notation = a printed symbol, reading the file is the definition
+#   split   JUDGMENT rows only: {measurable: [row ids code can establish first], residual: "the smaller
+#           question left to the agent"}  (every JUDGMENT row is challenged this way)
+#   onedef  where a fact the app also uses must live: app/src/demands/detect.ts (one definition per fact)
+#
+# Facts checked on 2026-10-07 against .venv: music21 10.5.0 (92 feature extractors; Ottava, Trill,
+# Mordent, Tremolo, Fermata, Crescendo, Fingering, Repeat, RepeatBracket, VoiceLeadingQuartet,
+# floatingKey present; no pedal-mark class), partitura 1.9.0 (estimate_key, estimate_spelling,
+# estimate_time, estimate_tonaltension, estimate_voices). Nothing else installed or checked.
 
-# --- Existing: the 22 demand detectors (app/src/demands/detect.ts, run by tools/content/demands.py)
-clef.treble:                 {method: library, impl: "music21 clef.TrebleClef", w2: "raw MusicXML <clef> G2", src: notation}
-clef.bass:                   {method: existing, impl: detect.ts, w2: "music21 clef.BassClef count", src: notation}
-pitch.ledger:                {method: existing, impl: detect.ts, w2: "music21 pitch vs staff lines", src: notation}
-interval.step:               {method: existing, impl: detect.ts, w2: "music21 interval per voice", src: notation}
-interval.skip:               {method: existing, impl: detect.ts, w2: "music21 interval per voice", src: notation}
-interval.leap:               {method: existing, impl: detect.ts, w2: "music21 interval per voice", src: notation}
-rhythm.eighths:              {method: existing, impl: detect.ts, w2: "music21 duration types", src: notation}
-rhythm.shorter-than-quarter: {method: existing, impl: detect.ts, w2: "music21 duration types", src: notation}
-rhythm.sixteenths:           {method: existing, impl: detect.ts, w2: "music21 duration types", src: notation}
-rhythm.dotted-quarter:       {method: existing, impl: detect.ts, w2: "music21 duration dots", src: notation}
-rhythm.ties:                 {method: existing, impl: detect.ts, w2: "music21 note.tie", src: notation}
-rhythm.syncopation:          {method: existing, impl: detect.ts, w2: "music21 beat strength of onsets", src: NEEDED}
-rhythm.triplets:             {method: existing, impl: detect.ts, w2: "music21 duration.tuplets", src: notation}
-metre.compound:              {method: existing, impl: detect.ts, w2: "music21 TimeSignature.beatDivisionCount", src: notation}
-metre.three-four:            {method: existing, impl: detect.ts, w2: "music21 TimeSignature", src: notation}
-key.signature:               {method: existing, impl: detect.ts, w2: "music21 KeySignature", src: notation}
-pitch.chromatic:             {method: existing, impl: detect.ts, w2: "music21 pitch vs key", src: notation}
-range.beyond-position:       {method: existing, impl: detect.ts, w2: "partitura note array, span per hand per bar", src: NEEDED}
-texture.hands-together:      {method: existing, impl: detect.ts, w2: "partitura onsets per staff", src: notation}
-texture.left-hand-pattern:   {method: existing, impl: detect.ts, w2: "matcher on music21 LH figures", src: verify}
-texture.walking-bass:        {method: existing, impl: detect.ts, w2: "matcher on music21 LH quarters vs chord", src: verify}
-rhythm.habanera:             {method: existing, impl: detect.ts, w2: "sourced near-miss fixtures", src: verify}
-rhythm.tresillo:             {method: existing, impl: detect.ts, w2: "sourced near-miss fixtures", src: verify}
+# ===================================================================== prereq: can the learner cope
+prereq.untaught-demands:    {area: prereq, need: cope, dec: "nothing the rung's ancestry has not taught", pipe: both, cls: CODE-EXACT, code: "tools/content/claims.py:474 untaught_on; :205 rung_ancestry", status: EXISTS, gap: "covers the 22 demands only; every CODE-RULE row below widens it", onedef: detect.ts}
+prereq.taught-set-generated: {area: prereq, need: cope, dec: "a generated item uses only its family's allowed vocabulary", pipe: generated, cls: CODE-EXACT, code: "tools/content/family_contracts.py:249 pedagogical_faults (requires/forbids); tools/content/preflight_chains.py class 5", status: EXISTS, gap: "forbids are per demand id; range, rhythm vocabulary and harmonic plan are not declared for most families (generated.spec-complete)"}
+prereq.hand-assignment:     {area: prereq, need: cope, dec: "which hand plays which notes (one-staff files, cross-staff)", pipe: both, cls: CODE-INFERENCE, code: "app/src/score/extractScoreModel.ts declaredHand; tools/content/verified_hand.py:103 verified_hands (facts)", status: PARTLY, gap: "a one-staff file takes the catalogue's declared hand; no inference from register or stems; confirming facts are hand-written rows", w2: "partitura note array staff field"}
 
-# --- Existing: difficulty and the notation summary
-difficulty.features:    {method: existing, impl: "tools/content/difficulty.py (19 features)", w2: "music21.features (92 extractors)", src: NEEDED}
-difficulty.level:       {method: existing, impl: "difficulty.py estimate + content/sources/level-model.json (fitted on levels set inside this project)", w2: "a model fitted on an outside graded set (CIPI / PSyllabus: research)", src: NEEDED}
-notation.keys:          {method: existing, impl: "build.py attach_notation", w2: "music21 KeySignature", src: notation}
-notation.times:         {method: existing, impl: "build.py attach_notation", w2: "music21 TimeSignature", src: notation}
-notation.staves:        {method: existing, impl: "build.py attach_notation", w2: "raw MusicXML <staves>", src: notation}
-notation.bars:          {method: existing, impl: "build.py attach_notation", w2: "music21 measure count", src: notation}
-notation.chord-symbols: {method: existing, impl: "build.py attach_notation (chords, chordCount)", w2: "music21 harmony.ChordSymbol", src: notation}
-notation.swing-mark:    {method: existing, impl: "build.py attach_notation (swungMark)", w2: "raw MusicXML <swing> or text", src: notation}
-hands.per-bar-range:    {method: existing, impl: "demands.py positions (each hand's lowest and highest pitch per printed bar)", w2: "partitura note array", src: notation}
+# ===================================================================== notation: exact from the file
+clef.treble:                 {area: notation, need: cope, dec: reading, pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "count only (music21 clef.TrebleClef)", w2: "raw MusicXML <clef> G2", src: notation}
+clef.bass:                   {area: notation, need: cope, dec: reading, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:360 bassClef", status: EXISTS, gap: none, w2: "music21 clef.BassClef count", src: notation, onedef: detect.ts}
+pitch.ledger:                {area: notation, need: cope, dec: reading, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:368 ledgerLines", status: EXISTS, gap: none, w2: "music21 pitch vs staff lines", src: notation, onedef: detect.ts}
+notation.keys:               {area: notation, need: cope, dec: "key signature(s) and their changes", pipe: both, cls: CODE-EXACT, code: "tools/content/build.py:389 attach_notation", status: EXISTS, gap: none, w2: "music21 KeySignature", src: notation}
+notation.times:              {area: notation, need: cope, dec: "metre(s) and their changes", pipe: both, cls: CODE-EXACT, code: "tools/content/build.py:389 attach_notation", status: EXISTS, gap: none, w2: "music21 TimeSignature", src: notation}
+notation.staves:             {area: notation, need: cope, dec: "one staff or two (lead sheet vs piano score)", pipe: both, cls: CODE-EXACT, code: "tools/content/build.py:389 attach_notation", status: EXISTS, gap: none, w2: "raw MusicXML <staves>", src: notation}
+notation.bars:               {area: notation, need: cope, dec: length, pipe: both, cls: CODE-EXACT, code: "tools/content/build.py:389 attach_notation", status: EXISTS, gap: none, w2: "music21 measure count", src: notation}
+notation.chord-symbols:      {area: notation, need: exercises, dec: "a chart or lead sheet to play from", pipe: both, cls: CODE-EXACT, code: "tools/content/build.py:389 attach_notation (chords, chordCount)", status: EXISTS, gap: "names only; per-bar positions are PH1's harmony.ts for the chart screen, not on the catalogue row", w2: "music21 harmony.ChordSymbol", src: notation}
+notation.swing-mark:         {area: notation, need: exercises, dec: "swing feel declared", pipe: both, cls: CODE-EXACT, code: "tools/content/build.py:389 attach_notation (swungMark)", status: EXISTS, gap: none, w2: "raw MusicXML <swing> or text", src: notation}
+mark.dynamics:               {area: expression, need: cope, dec: "printed dynamics to read", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "count and per-bar positions (music21 dynamics.Dynamic)", w2: "raw MusicXML <dynamics>", src: notation}
+mark.hairpin:                {area: expression, need: cope, dec: "crescendo and diminuendo", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "music21 dynamics.Crescendo / Diminuendo", w2: "raw MusicXML <wedge>", src: notation}
+mark.articulation:           {area: expression, need: cope, dec: "staccato, accent, tenuto", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "music21 articulations", w2: "raw MusicXML <articulations>", src: notation}
+mark.slur:                   {area: expression, need: cope, dec: "slurs (printed legato)", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "music21 spanner.Slur", w2: "raw MusicXML <slur>", src: notation}
+mark.pedal:                  {area: expression, need: cope, dec: "pedal marks", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "raw MusicXML <pedal>; music21 10.5 has no pedal class", w2: none, src: notation}
+mark.ornament:               {area: expression, need: cope, dec: "trills, mordents, turns, grace notes", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 features (ornaments count)", status: PARTLY, gap: "one count; no kind or position", w2: "raw MusicXML <ornaments>, <grace>", src: notation}
+mark.tremolo:                {area: expression, need: cope, dec: tremolo, pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "music21 expressions.Tremolo", w2: "raw MusicXML <tremolo>", src: notation}
+mark.ottava:                 {area: notation, need: cope, dec: "8va reading", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "music21 spanner.Ottava", w2: "raw MusicXML <octave-shift>", src: notation}
+mark.fermata:                {area: expression, need: cope, dec: fermatas, pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "music21 expressions.Fermata", w2: "raw MusicXML <fermata>", src: notation}
+mark.repeat:                 {area: form, need: cope, dec: "repeats, endings, navigation", pipe: both, cls: CODE-EXACT, code: "tools/content/score_checks.py:1237 repeat_faults", status: PARTLY, gap: "read for integrity, not written as a characteristic", w2: "music21 bar.Repeat, spanner.RepeatBracket", src: notation}
+mark.fingering:              {area: technique, need: cope, dec: "printed fingering", pipe: both, cls: CODE-EXACT, code: "tools/content/extract_fingering.py", status: PARTLY, gap: "extracts for one source table; not a per-item count", w2: "raw MusicXML <fingering>", src: notation}
+mark.anacrusis:              {area: rhythm, need: cope, dec: "pickup bar", pipe: both, cls: CODE-EXACT, code: "tools/content/excerpt_proposer.py:368 is_pickup_bar", status: PARTLY, gap: "used when cutting excerpts, not written as a characteristic", w2: "raw MusicXML implicit=yes", src: notation}
+mark.tempo-text:             {area: expression, need: cope, dec: "written tempo and its provenance", pipe: both, cls: CODE-EXACT, code: "app/src/score/tempoFromXml.ts:254 tempoEvents; :280 writesTempo", status: EXISTS, gap: "174 items carry a defaulted tempo (tag tempo-defaulted): their tempo-dependent values are untrusted and say so", w2: "music21 tempo.MetronomeMark", src: notation}
 
-# --- Library: printed marks and values (counted, nothing inferred)
-mark.dynamics:      {method: library, impl: "music21 dynamics.Dynamic", w2: "raw MusicXML <dynamics>", src: notation}
-mark.hairpin:       {method: library, impl: "music21 dynamics.Crescendo / Diminuendo", w2: "raw MusicXML <wedge>", src: notation}
-mark.articulation:  {method: library, impl: "music21 articulations (Staccato, Accent, Tenuto)", w2: "raw MusicXML <articulations>", src: notation}
-mark.slur:          {method: library, impl: "music21 spanner.Slur", w2: "raw MusicXML <slur>", src: notation}
-mark.pedal:         {method: library, impl: "raw MusicXML <pedal> (music21 10.5 has no pedal class)", w2: none, src: notation}
-mark.ornament:      {method: library, impl: "music21 expressions.Trill / Mordent / Turn; grace notes", w2: "raw MusicXML <ornaments>, <grace>", src: notation}
-mark.tremolo:       {method: library, impl: "music21 expressions.Tremolo", w2: "raw MusicXML <tremolo>", src: notation}
-mark.ottava:        {method: library, impl: "music21 spanner.Ottava", w2: "raw MusicXML <octave-shift>", src: notation}
-mark.fermata:       {method: library, impl: "music21 expressions.Fermata", w2: "raw MusicXML <fermata>", src: notation}
-mark.repeat:        {method: library, impl: "music21 bar.Repeat, spanner.RepeatBracket", w2: "raw MusicXML <repeat>, <ending>", src: notation}
-mark.fingering:     {method: library, impl: "music21 articulations.Fingering", w2: "raw MusicXML <fingering>", src: notation}
-mark.anacrusis:     {method: library, impl: "music21 first measure shorter than its metre", w2: "raw MusicXML implicit=yes", src: notation}
-mark.tempo-text:    {method: library, impl: "music21 tempo.MetronomeMark / TempoText", w2: "raw MusicXML <words>, <metronome>", src: notation}
-rhythm.values:      {method: library, impl: "music21 duration types, rests included", w2: "raw MusicXML <type>", src: notation}
-rhythm.repeated-notes: {method: library, impl: "music21 consecutive equal pitches per voice", w2: "partitura note array", src: notation}
+# ===================================================================== rhythm
+rhythm.values:               {area: rhythm, need: cope, dec: "the rhythmic vocabulary used, rests included", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 features (shortestValue, distinctRhythms)", status: PARTLY, gap: "two summaries; no histogram of values or rests", w2: "raw MusicXML <type>", src: notation}
+rhythm.eighths:              {area: rhythm, need: exercises, dec: target, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:391 eighths", status: EXISTS, gap: none, w2: "music21 duration types", src: notation, onedef: detect.ts}
+rhythm.shorter-than-quarter: {area: rhythm, need: cope, dec: subdivision, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:395 shorterThanQuarter", status: EXISTS, gap: none, w2: "music21 duration types", src: notation, onedef: detect.ts}
+rhythm.sixteenths:           {area: rhythm, need: exercises, dec: target, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:399 sixteenths", status: EXISTS, gap: none, w2: "music21 duration types", src: notation, onedef: detect.ts}
+rhythm.dotted-quarter:       {area: rhythm, need: exercises, dec: target, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:406 dottedQuarters", status: EXISTS, gap: none, w2: "music21 duration dots", src: notation, onedef: detect.ts}
+rhythm.ties:                 {area: rhythm, need: exercises, dec: target, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:420 ties", status: EXISTS, gap: none, w2: "music21 note.tie", src: notation, onedef: detect.ts}
+rhythm.syncopation:          {area: rhythm, need: exercises, dec: target, pipe: both, cls: CODE-RULE, code: "app/src/demands/detect.ts:428 syncopation", status: EXISTS, gap: "the rule is in code; its published definition is not quoted", w2: "music21 beat strength of onsets", src: NEEDED, onedef: detect.ts}
+rhythm.triplets:             {area: rhythm, need: exercises, dec: target, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:458 triplets", status: EXISTS, gap: none, w2: "music21 duration.tuplets", src: notation, onedef: detect.ts}
+metre.compound:              {area: rhythm, need: cope, dec: "6/8 and kin", pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:465 compoundMetre; app/src/score/metre.ts:37", status: EXISTS, gap: none, w2: "music21 TimeSignature.beatDivisionCount", src: notation, onedef: detect.ts}
+metre.three-four:            {area: rhythm, need: cope, dec: "3/4", pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:481 threeFour", status: EXISTS, gap: none, w2: "music21 TimeSignature", src: notation, onedef: detect.ts}
+metre.odd:                   {area: rhythm, need: cope, dec: "5/4, 7/8", pipe: both, cls: CODE-EXACT, code: "tools/content/build.py:389 attach_notation (times)", status: EXISTS, gap: "the list exists; no flag derived from it", w2: "music21 TimeSignature", src: notation}
+rhythm.repeated-notes:       {area: technique, need: exercises, dec: "repeated-note technique", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "consecutive equal pitches per voice", w2: "partitura note array", src: notation}
+rhythm.habanera:             {area: rhythm, need: exercises, dec: "the habanera cell", pipe: both, cls: CODE-RULE, code: "app/src/demands/detect.ts:628 habaneraCell; :319 cellBars", status: EXISTS, gap: "sourced near-miss fixtures exist (CD1); re-check the quoted source", w2: "sourced near-miss fixtures", src: verify, onedef: detect.ts}
+rhythm.tresillo:             {area: rhythm, need: exercises, dec: "the tresillo cell", pipe: both, cls: CODE-RULE, code: "app/src/demands/detect.ts:635 tresilloCell; :319 cellBars", status: EXISTS, gap: "as habanera", w2: "sourced near-miss fixtures", src: verify, onedef: detect.ts}
+rhythm.secondary-rag:        {area: rhythm, need: exercises, dec: "three-over-four ragtime figure", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "a cell matcher like cellBars, definition to quote", w2: none, src: NEEDED, onedef: detect.ts}
+rhythm.shuffle:              {area: rhythm, need: exercises, dec: "shuffle / swung long-short feel", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "notated triplet-eighth or dotted figure, or a swing mark; definition to quote", w2: notation.swing-mark, src: NEEDED}
 
-# --- Keys and metres
-key.tonic-mode:     {method: library, impl: "music21 analyze key", w2: "partitura estimate_key", src: "Krumhansl-Schmuckler key profiles as each library implements them"}
-key.minor-form:     {method: matcher, impl: "raised 6th and 7th degrees in a minor key (harmonic, melodic)", w2: "music21 HarmonicMinorScale / MelodicMinorScale membership", src: NEEDED}
-key.change:         {method: library, impl: "notation.keys > 1, plus music21 analysis.floatingKey windows", w2: "partitura estimate_key per section", src: NEEDED}
-key.set-membership: {method: matcher, impl: "tonic in a stated key list (guitar keys)", w2: none, src: NEEDED}
-metre.odd:          {method: library, impl: "notation.times numerator 5 or 7", w2: "music21 TimeSignature", src: notation}
+# ===================================================================== reading and pitch navigation
+interval.step:               {area: reading, need: exercises, dec: target, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:382 steps", status: EXISTS, gap: none, w2: "music21 interval per voice", src: notation, onedef: detect.ts}
+interval.skip:               {area: reading, need: exercises, dec: target, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:385 skips", status: EXISTS, gap: none, w2: "music21 interval per voice", src: notation, onedef: detect.ts}
+interval.leap:               {area: reading, need: exercises, dec: target, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:388 leaps", status: EXISTS, gap: none, w2: "music21 interval per voice", src: notation, onedef: detect.ts}
+key.signature:               {area: reading, need: cope, dec: "reading in a key", pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:495 keySignature", status: EXISTS, gap: none, w2: "music21 KeySignature", src: notation, onedef: detect.ts}
+pitch.chromatic:             {area: reading, need: cope, dec: accidentals, pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:515 chromatic", status: EXISTS, gap: none, w2: "music21 pitch vs key", src: notation, onedef: detect.ts}
+range.beyond-position:       {area: reading, need: cope, dec: "leaves a five-finger position", pipe: both, cls: CODE-RULE, code: "app/src/demands/detect.ts:534 beyondPosition", status: EXISTS, gap: "rule in code; definition of a position not quoted", w2: "partitura note array, span per hand per bar", src: NEEDED, onedef: detect.ts}
+hands.per-bar-range:         {area: reading, need: cope, dec: "range and register per hand per bar", pipe: both, cls: CODE-EXACT, code: "tools/content/demands.py positions (hands); app/src/demands/detect.ts:242 range", status: EXISTS, gap: "kept in build/positions-cache.json, not on the catalogue row", w2: "partitura note array", src: notation}
+reading.visual-density:      {area: reading, need: cope, dec: "notes, voices and accidentals per bar on the page", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 features (notesPerBar, voicesPerStaff, ledgerRatio)", status: PARTLY, gap: "no accidental count per bar; no per-system density", w2: "music21.features", src: notation}
+reading.accidental-churn:    {area: reading, need: cope, dec: "accidentals that cancel and return within a bar", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "per-bar accidental events vs key (FABLE §5 names it)", w2: "partitura estimate_spelling", src: notation}
+reading.unusual-notation:    {area: reading, need: cope, dec: "cross-staff beams, cue notes, nested tuplets, clef changes mid-bar", pipe: pdmx, cls: CODE-EXACT, code: none, status: MISSING, gap: "count the constructs from the raw XML", w2: none, src: notation}
+key.tonic-mode:              {area: harmony, need: cope, dec: "the key as sounded (vs the signature); major or minor", pipe: both, cls: CODE-INFERENCE, code: "tools/content/score_checks.py:1496 analyse_key; :452 check_key_consistency; tools/content/candidates.py:69 sounds_minor", status: PARTLY, gap: "music21 key analysis runs for the integrity check only; no partitura second witness; no confidence on the row", w2: "partitura estimate_key", src: "Krumhansl-Schmuckler profiles as each library implements them"}
+key.minor-form:              {area: harmony, need: exercises, dec: "harmonic or melodic minor in use", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "raised 6th/7th degree counts in a minor key", w2: "music21 scale membership", src: NEEDED}
+key.change:                  {area: harmony, need: cope, dec: "modulation, trio key change", pipe: both, cls: CODE-INFERENCE, code: "tools/content/build.py:389 attach_notation (keys list)", status: PARTLY, gap: "signature changes are exact; unmarked modulation needs windowed key finding (music21 floatingKey) with confidence", w2: "partitura estimate_key per section", src: NEEDED}
+key.set-membership:          {area: harmony, need: material, dec: "tonic in a stated list (guitar keys, singable keys)", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "trivial once key.tonic-mode has a value", w2: none, src: NEEDED}
+scale.collection:            {area: harmony, need: exercises, dec: "pentatonic, blues scale, mode in use", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "pitch-class set per passage vs music21 scale classes; which passage is the open part", w2: none, src: NEEDED}
 
-# --- Harmony
-harmony.chord-quality:   {method: library, impl: "music21 harmony.ChordSymbol on the printed symbols", w2: "music21 chordify + chord quality on the notes (weak on broken textures)", src: notation}
-harmony.inversion:       {method: library, impl: "music21 chord.inversion on chordal beats; slash symbols", w2: "bass note vs symbol root", src: notation}
-harmony.roman:           {method: library, impl: "music21 roman.romanNumeralFromChord (symbol or chordified beat, key)", w2: "AugmentedNet or another Roman-numeral model (research)", src: NEEDED}
-harmony.progression:     {method: matcher, impl: "sequence rules over harmony.roman (I-IV-V, ii-V-I major and minor, four-chord loops, rhythm changes)", w2: "symbol-derived vs note-derived Roman numerals agree", src: NEEDED}
-harmony.applied:         {method: matcher, impl: "secondary dominants, tritone substitutes, passing and pivot chords, tonicisation, over harmony.roman", w2: "as harmony.progression", src: NEEDED}
-harmony.cadence:         {method: matcher, impl: "chord pair at phrase ends (V-I, IV-I, ending on V)", w2: "needs form.phrase (research)", src: NEEDED}
-harmony.chromatic-share: {method: library, impl: "share of non-diatonic chords from harmony.roman", w2: "pitch.chromatic density", src: NEEDED}
-harmony.voicing:         {method: matcher, impl: "a chord's notes vs its symbol root: shell, rootless, quartal, open, close", w2: "symbol-free reading from chordify", src: NEEDED}
-harmony.voice-leading:   {method: library, impl: "music21 voiceLeading.VoiceLeadingQuartet on four-voice textures", w2: "voices per staff (difficulty voicesPerStaff)", src: NEEDED}
-harmony.modal:           {method: research, impl: "pitch-class collection vs tonic (dorian, mixolydian, modal minor)", w2: none, src: NEEDED}
+# ===================================================================== harmony
+harmony.chord-quality:       {area: harmony, need: exercises, dec: "triads, 7ths, extensions, sus in use", pipe: both, cls: CODE-EXACT, code: "tools/content/build.py:389 attach_notation (chord names)", status: PARTLY, gap: "names are kept; qualities not parsed (music21 harmony.ChordSymbol); from the notes only by chordify, weak on broken textures", w2: "music21 chordify + chord quality on the notes", src: notation}
+harmony.rhythm:              {area: harmony, need: cope, dec: "chord changes per bar (harmonic load)", pipe: both, cls: CODE-EXACT, code: "tools/content/build.py:389 attach_notation (chordCount, bars)", status: PARTLY, gap: "a ratio exists in parts; per-bar distribution is PH1's chart model, not a characteristic", w2: "music21 chordify change points", src: notation}
+harmony.inversion:           {area: harmony, need: exercises, dec: "inversions and slash chords", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "slash symbols parse exactly; from notes, bass vs root per chordal beat", w2: "bass note vs symbol root", src: notation}
+harmony.roman:               {area: harmony, need: exercises, dec: "function (Roman numerals) per chord", pipe: both, cls: CODE-INFERENCE, code: "tools/content/musical_evaluator.py:230 harmony_from_left_hand (generated phrases)", status: PARTLY, gap: "from symbols with a key it is near-exact (music21 romanNumeralFromChord); from notes it needs confidence; nothing runs on PDMX", w2: "a Roman-numeral model (AugmentedNet: not installed, unchecked)", src: NEEDED}
+harmony.progression:         {area: harmony, need: exercises, dec: "I-IV-V, ii-V-I, four-chord loops, rhythm changes", pipe: both, cls: CODE-RULE, code: "tools/content/blues_forms.py builds the twelve-bar; nothing detects a progression", status: MISSING, gap: "sequence rules over harmony.roman, each progression quoted from a source", w2: "symbol-derived vs note-derived numerals agree", src: NEEDED}
+harmony.applied:             {area: harmony, need: exercises, dec: "secondary dominants, tritone subs, passing and pivot chords", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "rules over harmony.roman", w2: "as harmony.progression", src: NEEDED}
+harmony.cadence:             {area: harmony, need: exercises, dec: "cadence types at phrase ends", pipe: both, cls: CODE-INFERENCE, code: "tools/content/musical_evaluator.py:748 harmonic_cadence (generated phrases)", status: PARTLY, gap: "needs form.phrase on PDMX; the evaluator knows its phrases by construction", w2: none, src: NEEDED}
+harmony.chromatic-share:     {area: harmony, need: cope, dec: "share of non-diatonic chords", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "from harmony.roman once it exists", w2: pitch.chromatic, src: NEEDED}
+harmony.voicing:             {area: harmony, need: exercises, dec: "shell, rootless, quartal, open, close voicings", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "chord notes vs symbol root per chordal beat; each voicing type quoted", w2: "symbol-free reading from chordify", src: NEEDED}
+harmony.voice-leading:       {area: harmony, need: exercises, dec: "four-part voice leading (parallels, motion)", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "music21 voiceLeading.VoiceLeadingQuartet on four-voice textures", w2: "voices per staff", src: NEEDED}
+harmony.modal:               {area: harmony, need: exercises, dec: "modal collection vs tonic", pipe: both, cls: CODE-INFERENCE, code: none, status: MISSING, gap: "pitch-class profile with confidence; tonic ambiguity is the hard part", w2: none, src: NEEDED}
+harmony.bass-behaviour:      {area: harmony, need: exercises, dec: "root motion, pedal, walking, anticipated bass", pipe: both, cls: CODE-RULE, code: "app/src/demands/detect.ts:607 walkingBass (one case)", status: PARTLY, gap: "walking bass exists; root-on-beat, pedal point and anticipation do not", w2: none, src: NEEDED, onedef: detect.ts}
+melody.chord-relation:       {area: harmony, need: exercises, dec: "chord tones on strong beats, approach notes, guide tones, blue notes, anticipations", pipe: both, cls: CODE-RULE, code: "tools/content/musical_evaluator.py:642 harmony (agreement score, generated)", status: PARTLY, gap: "a score for generated phrases; no per-note classification; needs harmony per beat on PDMX", w2: "harmony from notes vs from symbols", src: NEEDED}
+melody.motif-repetition:     {area: quality, need: material, dec: "motif reuse and variation", pipe: both, cls: CODE-RULE, code: "tools/content/musical_evaluator.py:546 motif_facts; :570 motif (generated)", status: PARTLY, gap: "runs on generated phrases only; the repetition rule is in code, not quoted", w2: "music21 search", src: NEEDED}
 
-# --- Melody against harmony
-melody.chord-relation:   {method: matcher, impl: "melody notes vs current chord: chord tones on strong beats, approach notes, guide tones, blue notes, anticipations", w2: "harmony from notes vs from symbols", src: NEEDED}
-scale.collection:        {method: matcher, impl: "pitch-class set vs music21 scale classes (pentatonic, blues scale, modes)", w2: none, src: NEEDED}
-melody.motif-repetition: {method: matcher, impl: "repeated interval and rhythm sequences (FABLE section 5 method 2 feature)", w2: "music21 search", src: NEEDED}
+# ===================================================================== texture
+texture.hands-together:      {area: texture, need: cope, dec: "both hands sound at once", pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:574 handsTogether", status: EXISTS, gap: none, w2: "partitura onsets per staff", src: notation, onedef: detect.ts}
+texture.left-hand-pattern:   {area: texture, need: exercises, dec: "a repeating LH figure under a melody", pipe: both, cls: CODE-RULE, code: "app/src/demands/detect.ts:588 leftHandPattern", status: EXISTS, gap: "an every-bar rule; which figure it is (Alberti, waltz, oom-pah) is not named: the rows below", w2: none, src: verify, onedef: detect.ts}
+texture.walking-bass:        {area: texture, need: exercises, dec: "walking bass", pipe: both, cls: CODE-RULE, code: "app/src/demands/detect.ts:607 walkingBass", status: EXISTS, gap: "every-bar rule; definition to quote", w2: none, src: verify, onedef: detect.ts}
+texture.block-chords:        {area: texture, need: exercises, dec: "chords struck together", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 features (maxSimultaneousRight/Left)", status: PARTLY, gap: "a maximum, not a count or positions", w2: "partitura onsets", src: notation}
+texture.broken-chord:        {area: texture, need: exercises, dec: "broken-chord figures", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "successive notes of one chord within a beat group", w2: "chordify per beat", src: NEEDED}
+texture.alberti:             {area: texture, need: exercises, dec: "Alberti bass", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "low-high-middle-high broken triad in even values; quote the definition and test near-misses", w2: none, src: NEEDED, onedef: detect.ts}
+texture.arpeggio:            {area: texture, need: exercises, dec: "arpeggiated texture", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "chord tones across more than an octave in one direction", w2: none, src: NEEDED}
+texture.waltz-bass:          {area: texture, need: exercises, dec: "bass-chord-chord in 3/4", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "quote and match", w2: none, src: NEEDED, onedef: detect.ts}
+texture.oom-pah:             {area: texture, need: exercises, dec: "duple bass-chord", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "quote and match", w2: none, src: NEEDED, onedef: detect.ts}
+texture.stride:              {area: texture, need: exercises, dec: "stride left hand", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "oom-pah with a wide bass-to-chord distance; quote", w2: none, src: NEEDED}
+texture.boogie-bass:         {area: texture, need: exercises, dec: "boogie left hand", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "repeated eighth figure on each chord root over the form", w2: none, src: NEEDED}
+texture.ostinato:            {area: texture, need: exercises, dec: "riff, vamp, ostinato", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "a figure repeated unchanged N bars (music21 search)", w2: none, src: NEEDED}
+texture.pedal-point:         {area: texture, need: exercises, dec: "pedal bass", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "bass pitch held or repeated under changing harmony", w2: none, src: NEEDED}
+texture.held-under-moving:   {area: texture, need: exercises, dec: "held note or chord while others move", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "overlapping durations per hand from the note array", w2: "partitura durations", src: notation}
+texture.sustained:           {area: texture, need: exercises, dec: "chords held a bar or more", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "durations per chord", w2: "partitura durations", src: notation}
+texture.four-to-the-bar:     {area: texture, need: exercises, dec: "comp on every beat", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "chords on each beat in 4/4", w2: none, src: NEEDED}
+texture.charleston:          {area: texture, need: exercises, dec: "the Charleston comp rhythm", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "an onset cell like habanera (cellBars)", w2: none, src: NEEDED, onedef: detect.ts}
+texture.montuno:             {area: texture, need: exercises, dec: montuno, pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "syncopated repeated figure aligned to a clave; quote", w2: none, src: NEEDED}
+texture.tumbao:              {area: texture, need: exercises, dec: tumbao, pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "anticipated bass cell; quote", w2: none, src: NEEDED, onedef: detect.ts}
+texture.clave:               {area: texture, need: exercises, dec: "son or rumba clave", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "onset sets, 3-2 and 2-3; quote", w2: none, src: NEEDED, onedef: detect.ts}
+texture.bossa:               {area: texture, need: exercises, dec: "bossa accompaniment", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "bass cell plus comp cell; quote (G14 contract names it)", w2: none, src: NEEDED}
+texture.tango:               {area: texture, need: exercises, dec: "tango accompaniment", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "marcato in four, 3-3-2, arrastre (A7c.4); quote", w2: none, src: NEEDED}
+texture.mazurka:             {area: texture, need: exercises, dec: "mazurka rhythm", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "quote and match", w2: none, src: NEEDED}
+texture.stop-time:           {area: texture, need: exercises, dec: "stop-time bars", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "a hit on 1 then silence", w2: none, src: NEEDED}
+texture.octaves:             {area: technique, need: exercises, dec: "octaves, melody in octaves, broken octaves", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "simultaneous or alternating octave per hand", w2: none, src: notation}
+texture.double-notes:        {area: technique, need: exercises, dec: "moving 3rds and 6ths in one hand", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "simultaneous intervals per hand per onset", w2: none, src: notation}
+texture.power-chord:         {area: texture, need: exercises, dec: "root-fifth chords", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "chord content per onset; or a symbol with 5", w2: "chord symbol with 5", src: notation}
+texture.two-voice:           {area: texture, need: cope, dec: "two independent voices", pipe: both, cls: CODE-INFERENCE, code: "tools/content/difficulty.py:296 features (voicesPerStaff)", status: PARTLY, gap: "written voices are exact; real voice independence needs partitura estimate_voices with confidence", w2: "partitura estimate_voices", src: NEEDED}
+texture.counterpoint:        {area: texture, need: cope, dec: "contrapuntal texture", pipe: both, cls: CODE-INFERENCE, code: none, status: MISSING, gap: "contour and rhythm independence between voices, with confidence", w2: none, src: NEEDED}
+texture.motion:              {area: coordination, need: exercises, dec: "contrary, similar, parallel motion between hands", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "sign of interval change per hand per onset pair", w2: none, src: notation}
+texture.alternating-hands:   {area: coordination, need: exercises, dec: "hands in turn", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "no shared onsets", w2: none, src: notation}
+texture.polyrhythm:          {area: coordination, need: exercises, dec: "2:3, 3:2, 3:1 between hands", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "tuplet in one hand against plain values in the other", w2: none, src: notation}
+texture.tremolo-thirds:      {area: texture, need: exercises, dec: "blues tremolo in thirds", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "alternating notes a third apart, or a tremolo mark", w2: mark.tremolo, src: NEEDED}
+texture.crushed-note:        {area: texture, need: exercises, dec: "blues crushed note", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "grace a semitone below a chord tone", w2: "mark.ornament grace", src: NEEDED}
+texture.half-time:           {area: texture, need: exercises, dec: "half-time feel", pipe: both, cls: CODE-INFERENCE, code: none, status: MISSING, gap: "backbeat placement inferred from accents and bass; low confidence from a score", w2: none, src: NEEDED}
+texture.call-response:       {area: form, need: exercises, dec: "answering phrases", pipe: both, cls: CODE-INFERENCE, code: none, status: MISSING, gap: "needs form.phrase and register or hand alternation; confidence", w2: none, src: NEEDED}
+texture.melody-in-chords:    {area: texture, need: exercises, dec: "melody as the top voice of chords", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "top note of each chord forms the melody line", w2: none, src: NEEDED}
+texture.build:               {area: expression, need: exercises, dec: "rising density and dynamics across a section", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "density and dynamic trend per section", w2: mark.dynamics, src: NEEDED}
+texture.bass-walk-up:        {area: harmony, need: exercises, dec: "stepwise bass into the next root", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "two to four stepwise bass notes into a chord root", w2: none, src: NEEDED}
+texture.hand-independence:   {area: coordination, need: cope, dec: "different rhythms per hand", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "onset relationship between hands: shared, offset, independent (the measurable proxy)", w2: "partitura onsets", src: NEEDED}
+coordination.interaction:    {area: coordination, need: cope, dec: "easy parts that are hard together", pipe: both, cls: CODE-INFERENCE, code: none, status: MISSING, gap: "co-occurrence of per-hand demands at the same onsets, scored with confidence; no oracle for 'hard together' without a fingering or motor model", w2: none, src: NEEDED}
 
-# --- Texture and style patterns (each needs a quoted definition and near-miss tests)
-texture.alberti:          {method: matcher, impl: "low-high-middle-high broken triad in even values", w2: none, src: NEEDED}
-texture.broken-chord:     {method: matcher, impl: "successive notes of one chord within a beat group", w2: "chordify per beat", src: NEEDED}
-texture.arpeggio:         {method: matcher, impl: "chord tones across more than an octave in one direction", w2: none, src: NEEDED}
-texture.block-chords:     {method: library, impl: "simultaneities of 3+ notes in one hand (difficulty maxSimultaneous)", w2: "partitura onsets", src: notation}
-texture.waltz-bass:       {method: matcher, impl: "3/4 with bass on 1 and chord on 2 and 3", w2: none, src: NEEDED}
-texture.oom-pah:          {method: matcher, impl: "duple with bass on strong beats and chord on weak", w2: none, src: NEEDED}
-texture.stride:           {method: matcher, impl: "oom-pah with the bass an octave or tenth below a mid-register chord", w2: none, src: NEEDED}
-texture.boogie-bass:      {method: matcher, impl: "repeated eighth-note left-hand figure on each chord root of the form", w2: none, src: NEEDED}
-texture.shuffle:          {method: matcher, impl: "long-short left-hand figure, notated or under a swing mark", w2: "notation.swing-mark", src: NEEDED}
-texture.held-under-moving: {method: matcher, impl: "a held note or chord while the same or other hand moves", w2: "partitura durations", src: NEEDED}
-texture.ostinato:         {method: matcher, impl: "a figure repeated unchanged for N bars (riff, vamp, ostinato)", w2: "music21 search", src: NEEDED}
-texture.pedal-point:      {method: matcher, impl: "bass pitch held or repeated under changing harmony", w2: none, src: NEEDED}
-texture.four-to-the-bar:  {method: matcher, impl: "chords on every beat in 4/4", w2: none, src: NEEDED}
-texture.charleston:       {method: matcher, impl: "comp on beat 1 and the and of 2", w2: none, src: NEEDED}
-texture.montuno:          {method: matcher, impl: "syncopated repeated piano figure aligned to the clave", w2: none, src: NEEDED}
-texture.tumbao:           {method: matcher, impl: "anticipated bass (and of 2, beat 4)", w2: none, src: NEEDED}
-texture.clave:            {method: matcher, impl: "son or rumba clave onset sets, 3-2 or 2-3", w2: none, src: NEEDED}
-texture.bossa:            {method: matcher, impl: "bossa bass (root-fifth, dotted) with syncopated comp", w2: none, src: NEEDED}
-texture.tango:            {method: matcher, impl: "marcato in four, 3-3-2, arrastre (named in A7c.4)", w2: none, src: NEEDED}
-texture.mazurka:          {method: matcher, impl: "3/4 with accent on 2 or 3 and a dotted first beat", w2: none, src: NEEDED}
-texture.stop-time:        {method: matcher, impl: "bars with a single hit on 1 and silence after", w2: none, src: NEEDED}
-texture.octaves:          {method: matcher, impl: "simultaneous octave in one hand; melody in octaves; broken octaves", w2: none, src: notation}
-texture.double-notes:     {method: matcher, impl: "simultaneous 3rds or 6ths moving in one hand", w2: none, src: notation}
-texture.power-chord:      {method: matcher, impl: "root and fifth (and octave) in one hand", w2: "chord symbol with 5", src: NEEDED}
-texture.two-voice:        {method: library, impl: "two moving voices, in one staff or one per hand", w2: "partitura estimate_voices", src: NEEDED}
-texture.counterpoint:     {method: research, impl: "independent contour and rhythm between voices", w2: none, src: NEEDED}
-texture.motion:           {method: matcher, impl: "contrary, similar or parallel motion between the hands", w2: none, src: notation}
-texture.hand-independence: {method: matcher, impl: "share of onsets in one hand only; different rhythms per hand", w2: "partitura onsets", src: NEEDED}
-texture.alternating-hands: {method: matcher, impl: "hands sound in turn, never together", w2: none, src: notation}
-texture.polyrhythm:       {method: matcher, impl: "a tuplet in one hand against plain values in the other (2:3, 3:2, 3:1)", w2: none, src: notation}
-texture.tremolo-thirds:   {method: matcher, impl: "alternating notes a third apart (blues tremolo)", w2: "mark.tremolo", src: NEEDED}
-texture.crushed-note:     {method: matcher, impl: "grace note a semitone below a chord tone (blues)", w2: "mark.ornament grace", src: NEEDED}
-texture.half-time:        {method: research, impl: "backbeat on 3 in a piano reduction", w2: none, src: NEEDED}
-texture.call-response:    {method: research, impl: "phrases that answer each other", w2: none, src: NEEDED}
-texture.melody-in-chords: {method: matcher, impl: "melody as the top voice of one hand's chords", w2: none, src: NEEDED}
-texture.build:            {method: matcher, impl: "rising density and dynamics across a section", w2: "mark.dynamics", src: NEEDED}
-texture.bass-walk-up:     {method: matcher, impl: "two to four stepwise bass notes leading into the next chord root", w2: none, src: NEEDED}
-rhythm.secondary-rag:     {method: matcher, impl: "a three-note figure repeated across a duple bar (three over four)", w2: none, src: NEEDED}
-texture.sustained:        {method: matcher, impl: "chords held a bar or more (pads)", w2: "partitura durations", src: NEEDED}
+# ===================================================================== technique and physical demand
+technique.scale-run:         {area: technique, need: exercises, dec: "scale passages, incl. in 3rds/6ths, chromatic", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "N stepwise notes one direction per hand; N to quote", w2: none, src: NEEDED}
+technique.arpeggio-run:      {area: technique, need: exercises, dec: "arpeggio passages", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "chord tones across two or more octaves", w2: none, src: NEEDED}
+technique.five-finger:       {area: technique, need: cope, dec: "stays in a five-finger position", pipe: both, cls: CODE-EXACT, code: "app/src/demands/detect.ts:534 beyondPosition (its negation)", status: PARTLY, gap: "derived, not written", w2: none, src: NEEDED}
+technique.position-shift:    {area: technique, need: cope, dec: "lateral travel between positions", pipe: both, cls: CODE-EXACT, code: "tools/content/demands.py positions (hands per bar)", status: PARTLY, gap: "per-bar ranges exist; shifts between bars not computed", w2: none, src: NEEDED}
+technique.thumb-under:       {area: technique, need: exercises, dec: "runs needing thumb-under", pipe: both, cls: CODE-INFERENCE, code: none, status: MISSING, gap: "a fingering estimator (pianoplayer: not installed, unchecked) or a run-length proxy", w2: none, src: NEEDED}
+technique.velocity:          {area: difficulty, need: cope, dec: "notes per second at the written tempo", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 features (notesPerSecond)", status: EXISTS, gap: "untrusted where the tempo is defaulted (mark.tempo-text)", w2: "music21.features", src: notation}
+technique.endurance:         {area: difficulty, need: cope, dec: "duration at tempo times density", pipe: both, cls: CODE-EXACT, code: "tools/content/build.py durationSec (1,283 items)", status: PARTLY, gap: "duration exists where rendered; no density-weighted value", w2: none, src: NEEDED}
+technique.finger-independence: {area: technique, need: exercises, dec: "held note plus moving notes in one hand", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "overlap within a hand", w2: none, src: NEEDED}
+technique.span:              {area: technique, need: cope, dec: "largest simultaneous reach per hand", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 features (maxSpanRight/Left)", status: EXISTS, gap: "a maximum; no count of wide chords or positions", w2: "partitura note array", src: notation}
+technique.leap-size:         {area: technique, need: cope, dec: "largest and typical leaps per hand", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 features (maxLeapRight/Left)", status: EXISTS, gap: "a maximum; no distribution", w2: "music21 interval per voice", src: notation}
+technique.hand-crossing:     {area: technique, need: cope, dec: "hand crossings", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 features (handCrossings)", status: EXISTS, gap: none, w2: none, src: notation}
+technique.fingering-demand:  {area: technique, need: cope, dec: "fingering difficulty: substitutions, stretches, awkward sequences", pipe: both, cls: CODE-INFERENCE, code: none, status: MISSING, gap: "a fingering solver plus a hand model; printed fingering (mark.fingering) is a partial witness", w2: mark.fingering, src: NEEDED}
+technique.playability:       {area: technique, need: material, dec: "physically playable as written (span, overlap, range)", pipe: both, cls: CODE-RULE, code: "tools/content/family_contracts.py:323 hands_of; app/src/score/mxl.ts (range)", status: PARTLY, gap: "span and keyboard range are checkable now; a stated playability rule (max span per level, no impossible overlaps) is not written", w2: none, src: NEEDED}
 
-# --- Technique figures
-technique.scale-run:      {method: matcher, impl: "N or more stepwise notes one direction in one hand (incl. in 3rds/6ths, chromatic)", w2: none, src: NEEDED}
-technique.arpeggio-run:   {method: matcher, impl: "arpeggio across two or more octaves in one hand", w2: none, src: NEEDED}
-technique.five-finger:    {method: library, impl: "hands.per-bar-range within five keys", w2: "range.beyond-position absent", src: NEEDED}
-technique.thumb-under:    {method: matcher, impl: "one-hand stepwise run longer than five notes", w2: "a fingering estimator such as pianoplayer (not installed)", src: NEEDED}
-technique.position-shift: {method: library, impl: "hands.per-bar-range moves between bars", w2: none, src: NEEDED}
-technique.velocity:       {method: library, impl: "difficulty notesPerSecond at the written tempo", w2: "music21.features", src: NEEDED}
-technique.endurance:      {method: library, impl: "duration at written tempo times density", w2: none, src: NEEDED}
-technique.finger-independence: {method: matcher, impl: "held note plus moving notes in the same hand", w2: none, src: NEEDED}
+# ===================================================================== form
+form.length:                 {area: form, need: cope, dec: "bars and duration", pipe: both, cls: CODE-EXACT, code: "tools/content/build.py:389 attach_notation (bars); durationSec", status: EXISTS, gap: none, w2: none, src: notation}
+form.sections:               {area: form, need: cope, dec: "sections from repeats, double bars, key changes, rehearsal marks", pipe: both, cls: CODE-EXACT, code: "tools/content/score_checks.py:1174 structure_sections", status: PARTLY, gap: "used by the title-structure check; not written as a characteristic", w2: "music21 repeat expansion", src: notation}
+form.phrase:                 {area: form, need: exercises, dec: "phrase boundaries (recovery points, cadences, shaping)", pipe: both, cls: CODE-INFERENCE, code: "tools/content/excerpt_proposer.py:416 phrase_start; :475 ending; tools/content/musical_evaluator.py Phrase (by construction)", status: PARTLY, gap: "rest, long-note and cadence evidence exist in the proposer; no phrase segmentation with confidence on PDMX", w2: none, src: NEEDED}
+form.twelve-bar:             {area: form, need: exercises, dec: "twelve-bar blues and its variants", pipe: both, cls: CODE-RULE, code: "tools/content/blues_forms.py (builds; detects nothing)", status: MISSING, gap: "per-bar roots over 12 bars vs sourced variants (standard, quick IV, minor)", w2: "symbol roots vs note-derived roots", src: NEEDED}
+form.turnaround:             {area: form, need: exercises, dec: turnaround, pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "last two bars of a chorus back to I", w2: none, src: NEEDED}
+form.multi-strain:           {area: form, need: exercises, dec: "rag strains and trio", pipe: both, cls: CODE-RULE, code: "tools/content/score_checks.py:1174 structure_sections", status: PARTLY, gap: "sections exist; the 16-bar-strain-with-trio rule does not", w2: "mark.repeat + key.change", src: NEEDED}
+form.thirty-two-bar:         {area: form, need: exercises, dec: "AABA standards", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "8-bar section similarity", w2: none, src: NEEDED}
+form.binary-ternary:         {area: form, need: cope, dec: "AB / ABA", pipe: both, cls: CODE-EXACT, code: "tools/content/score_checks.py:1237 repeat_faults", status: PARTLY, gap: "repeat structure is read; the AB/ABA label is not derived", w2: mark.repeat, src: notation}
+form.sonata:                 {area: form, need: cope, dec: "sonata or sonatina form", pipe: pdmx, cls: JUDGMENT, code: none, status: MISSING, gap: "no reliable automatic method known to us", w2: none, src: NEEDED, split: {measurable: [key.change, form.sections, melody.motif-repetition], residual: "whether the key plan and thematic returns the code finds amount to sonata form"}}
 
-# --- Form
-form.twelve-bar:     {method: matcher, impl: "per-bar roots over 12 bars: standard, quick IV, minor (sourced variants); blues_forms.py builds the form, nothing detects it", w2: "symbol roots vs note-derived roots", src: NEEDED}
-form.turnaround:     {method: matcher, impl: "last two bars of a chorus moving back to I", w2: none, src: NEEDED}
-form.multi-strain:   {method: matcher, impl: "16-bar strains with repeats and a trio key change", w2: "mark.repeat + key.change", src: NEEDED}
-form.thirty-two-bar: {method: matcher, impl: "AABA in 8-bar sections (rhythm changes)", w2: none, src: NEEDED}
-form.binary-ternary: {method: matcher, impl: "repeat structure AB or ABA", w2: "mark.repeat", src: NEEDED}
-form.sonata:         {method: research, impl: "exposition, development, recapitulation; no reliable automatic method known to us", w2: none, src: NEEDED}
-form.phrase:         {method: research, impl: "phrase boundaries (cadences and phrase-shaping need them)", w2: none, src: NEEDED}
-form.length:         {method: existing, impl: "notation.bars and duration at written tempo", w2: none, src: notation}
+# ===================================================================== difficulty, by component (a vector, then a level)
+difficulty.features:         {area: difficulty, need: cope, dec: "the 19 raw features", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 features", status: EXISTS, gap: "no published basis for the feature choice", w2: "music21.features (92 extractors)", src: NEEDED}
+difficulty.reading:          {area: difficulty, need: cope, dec: "reading load component", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 (ledgerRatio, keyAccidentals, voicesPerStaff, notesPerBar)", status: PARTLY, gap: "the inputs exist; no component value is computed or stored", w2: none, src: NEEDED}
+difficulty.rhythm:           {area: difficulty, need: cope, dec: "rhythmic load component", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 (shortestValue, distinctRhythms); detect.ts syncopation, triplets", status: PARTLY, gap: "as difficulty.reading", w2: none, src: NEEDED}
+difficulty.pitch-navigation: {area: difficulty, need: cope, dec: "range, leaps, shifts, black keys", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 (rangeRight/Left, maxLeap, blackKeyRatio)", status: PARTLY, gap: "as difficulty.reading; position shifts not computed", w2: none, src: NEEDED}
+difficulty.coordination:     {area: difficulty, need: cope, dec: "hands-together load", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "needs texture.hand-independence", w2: none, src: NEEDED}
+difficulty.technique:        {area: difficulty, need: cope, dec: "spans, simultaneous notes, crossings, ornaments, repeated notes", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 (maxSpan, maxSimultaneous, handCrossings, ornaments)", status: PARTLY, gap: "no component value; repeated notes missing", w2: none, src: NEEDED}
+difficulty.harmonic-load:    {area: difficulty, need: cope, dec: "chord changes per bar, chromatic share", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "needs harmony.rhythm and harmony.chromatic-share", w2: none, src: NEEDED}
+difficulty.tempo:            {area: difficulty, need: cope, dec: "speed demand", pipe: both, cls: CODE-EXACT, code: "tools/content/difficulty.py:296 (notesPerSecond)", status: EXISTS, gap: "untrusted on defaulted tempos", w2: none, src: NEEDED}
+difficulty.endurance:        {area: difficulty, need: cope, dec: "length at tempo", pipe: both, cls: CODE-EXACT, code: "durationSec", status: PARTLY, gap: "as technique.endurance", w2: none, src: NEEDED}
+difficulty.expressive:       {area: difficulty, need: cope, dec: "control demanded by printed marks", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "counts and change rate of mark.* rows", w2: none, src: NEEDED}
+difficulty.perceptual:       {area: difficulty, need: cope, dec: "visual density, unusual engraving, rhythmic ambiguity", pipe: pdmx, cls: CODE-RULE, code: none, status: MISSING, gap: "needs reading.visual-density and reading.unusual-notation plus a rule", w2: none, src: NEEDED}
+difficulty.level:            {area: difficulty, need: cope, dec: "one overall level inside a rung's band", pipe: both, cls: CODE-INFERENCE, code: "tools/content/difficulty.py:454 estimate; content/sources/level-model.json; tools/content/fit_level_model.py", status: PARTLY, gap: "fitted on levels set inside this project (645 items estimated); no outside calibration; collapses the vector to one number", w2: "a model fitted on an outside graded set", src: NEEDED}
+difficulty.grade-calibration: {area: difficulty, need: cope, dec: "the level tied to a published grade", pipe: both, cls: EXTERNAL, code: none, status: MISSING, gap: "a graded reference set (CIPI, PSyllabus: not downloaded, unchecked); stages 0-2 all sit below Grade 1 and need a method-book order instead", w2: none, src: NEEDED}
 
-# --- Not in the notes
-meta.composer-era:     {method: metadata, impl: "content/sources/composers.json death year, era bands", w2: none, src: NEEDED}
-meta.genre-tags:       {method: metadata, impl: "PDMX tags, source collection", w2: none, src: notation}
-meta.title:            {method: metadata, impl: "title words (carol, minuet, etude, rag)", w2: none, src: notation}
-meta.collection:       {method: metadata, impl: "source collection (Hanon, Czerny, Joplin)", w2: none, src: notation}
-meta.generator-params: {method: existing, impl: "catalogue drill.params and generator family; the file checked against them by the family checker", w2: "tools/content/family_contracts.py", src: "the family contract"}
+# ===================================================================== pedagogy: does it exercise the target (the second question)
+target.prevalence:           {area: pedagogy, need: exercises, dec: "how many opportunities of the target", pipe: both, cls: CODE-EXACT, code: "tools/content/build.py:523 established_by_density; :687 attach_demands (measurement.located)", status: EXISTS, gap: "for the 22 demands; thresholds (opportunity-density.json) are ours, unsourced", w2: none, src: NEEDED, onedef: detect.ts}
+target.distribution:         {area: pedagogy, need: exercises, dec: "clustered in one bar or spread through the item", pipe: both, cls: CODE-EXACT, code: "tools/content/demands.py positions (per demand per printed bar); tools/content/excerpt_proposer.py:545 window_counts", status: PARTLY, gap: "positions are cached for the excerpt proposer; no spread value on the row", w2: none, src: NEEDED}
+target.concentration:        {area: pedagogy, need: exercises, dec: "too much of the target in one place", pipe: generated, cls: CODE-RULE, code: "tools/content/family_contracts.py:249 pedagogical_faults (overconcentration)", status: PARTLY, gap: "generated families only; the threshold is ours", w2: none, src: NEEDED}
+target.salience:             {area: pedagogy, need: exercises, dec: "the target is perceivable: in the melody staff, on strong beats, not buried in a chord", pipe: both, cls: CODE-RULE, code: "app/src/demands/detect.ts:217 melodyStaff (which staff carries the melody)", status: PARTLY, gap: "a salience rule over staff, beat strength and chord membership of each located place", w2: none, src: NEEDED}
+target.isolation:            {area: pedagogy, need: exercises, dec: "what other demands occur in the same bars as the target", pipe: both, cls: CODE-EXACT, code: "tools/content/demands.py positions (all demands per bar)", status: PARTLY, gap: "a co-occurrence table per bar is derivable from the cache; not computed", w2: none, src: NEEDED}
+target.interaction:          {area: pedagogy, need: exercises, dec: "the target combined with another demand at the same onset", pipe: both, cls: CODE-INFERENCE, code: none, status: MISSING, gap: "as coordination.interaction", w2: none, src: NEEDED}
+item.continuity:             {area: pedagogy, need: exercises, dec: "recovery points: rests, phrase ends, repeats", pipe: both, cls: CODE-INFERENCE, code: "tools/content/excerpt_proposer.py:312 ends_on_rest; :318 ends_long", status: PARTLY, gap: "needs form.phrase", w2: none, src: NEEDED}
+item.progression:            {area: pedagogy, need: exercises, dec: "starts simple and adds demands", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "demand density per quarter of the item from positions", w2: none, src: NEEDED}
+target.representativeness:   {area: pedagogy, need: material, dec: "a normal example of the thing taught, not an edge case", pipe: both, cls: JUDGMENT, code: none, status: MISSING, gap: "no code", w2: none, src: NEEDED, split: {measurable: [target.prevalence, target.salience, target.isolation], residual: "whether the located instances are the typical form of the pattern (the matcher's own definition is the first witness; near-miss fixtures the second)"}}
+transfer.distance:           {area: pedagogy, need: material, dec: "controlled instance vs authentic occurrence", pipe: both, cls: CODE-EXACT, code: "tools/content/family_contracts.py:143 role_of (canonical/variable/transfer); catalogue role and tags", status: PARTLY, gap: "generated vs real is exact; distance between a drill's pattern and a piece's instance is not measured", w2: none, src: NEEDED}
+role.suitability:            {area: pedagogy, need: material, dec: "introduction, repetition, fluency or transfer", pipe: both, cls: CODE-RULE, code: none, status: MISSING, gap: "a rule over prevalence, isolation and transfer.distance; the rule to source", w2: none, src: NEEDED}
+
+# ===================================================================== generated: the declared spec and its check
+generated.spec-declared:     {area: generated, need: exercises, dec: "the generator's parameters (key, pattern, progression, hands, metre)", pipe: generated, cls: CODE-EXACT, code: "catalogue drill.params and drill.generator; tools/content/family_contracts.py:96 recipe_of", status: EXISTS, gap: none}
+generated.spec-complete:     {area: generated, need: exercises, dec: "the spec states target, prerequisite vocabulary, opportunity range, prohibited material, hands, range, phrase structure, harmonic plan and role", pipe: generated, cls: CODE-EXACT, code: "content/sources/family-contracts (requires, forbids, density, role) via family_contracts.py:81", status: PARTLY, gap: "range, phrase structure and harmonic plan are not declared fields for most families; opportunity ranges exist as density rules", w2: none}
+generated.spec-vs-actual:    {area: generated, need: exercises, dec: "the file holds what the spec claims", pipe: generated, cls: CODE-EXACT, code: "tools/content/family_contracts.py:249 pedagogical_faults on measurement from the app's detectors (build.py:687)", status: PARTLY, gap: "checks the demand vocabulary through the app's detectors (independent of the generator); range, phrase and harmony claims are not checked; music21 as a second reader is not run", w2: "music21 or partitura read of the generated file", onedef: detect.ts}
+generated.identity:          {area: generated, need: cope, dec: "the same recipe gives the same bytes", pipe: generated, cls: CODE-EXACT, code: "tools/content/family_contracts.py:151 identity; :165 music_digest", status: EXISTS, gap: none}
+
+# ===================================================================== integrity: is the file what it seems (pdmx above all)
+integrity.key-consistency:   {area: integrity, need: cope, dec: "signature agrees with the notes", pipe: pdmx, cls: CODE-INFERENCE, code: "tools/content/score_checks.py:452 check_key_consistency", status: EXISTS, gap: "one key finder; add partitura as the second", w2: "partitura estimate_key"}
+integrity.bar-duration:      {area: integrity, need: cope, dec: "bars add up to the metre", pipe: pdmx, cls: CODE-EXACT, code: "tools/content/score_checks.py:974 check_bar_duration", status: EXISTS, gap: none}
+integrity.truncation:        {area: integrity, need: cope, dec: "the file is not cut short", pipe: pdmx, cls: CODE-INFERENCE, code: "tools/content/score_checks.py:804 check_truncation; :770 final_bar_incomplete; tools/content/truncation_scan.py", status: EXISTS, gap: "archive bar counts are the witness where present"}
+integrity.repeat-structure:  {area: integrity, need: cope, dec: "repeats and endings are well formed", pipe: pdmx, cls: CODE-EXACT, code: "tools/content/score_checks.py:1338 check_repeat_structure", status: EXISTS, gap: none}
+integrity.title-structure:   {area: integrity, need: cope, dec: "the title's claimed form matches the sections", pipe: pdmx, cls: CODE-RULE, code: "tools/content/score_checks.py:1197 check_title_structure", status: EXISTS, gap: none}
+integrity.grace-density:     {area: integrity, need: cope, dec: "grace notes the renderer mishandles", pipe: pdmx, cls: CODE-EXACT, code: "tools/content/score_checks.py:610 check_grace_density", status: EXISTS, gap: none}
+integrity.render:            {area: integrity, need: cope, dec: "the app renders every bar", pipe: both, cls: CODE-EXACT, code: "tools/content/render_check.py; .github/workflows/ci.yml:474", status: EXISTS, gap: none}
+integrity.duplicate-version: {area: integrity, need: material, dec: "several uploads of one work; containment of one in another", pipe: pdmx, cls: CODE-INFERENCE, code: "tools/content/score_checks.py:1059 containment_flags; :1000 bar_fingerprints; tools/content/pdmx/quarry_core.py:95 identity", status: PARTLY, gap: "bar fingerprints and title identity exist; no version cluster written per work", w2: none}
+integrity.extra-parts:       {area: integrity, need: cope, dec: "drums, other instruments, more than two staves", pipe: pdmx, cls: CODE-EXACT, code: "tools/content/pdmx/quarry_core.py:207 analyse (csv programs, parts); tools/content/pdmx/restaff.py", status: PARTLY, gap: "read at quarry time; not a catalogue characteristic; restaff handles one case by hand"}
+integrity.lead-sheet-shape:  {area: integrity, need: cope, dec: "melody plus symbols, no written left hand", pipe: pdmx, cls: CODE-EXACT, code: "notation.staves and notation.chord-symbols", status: PARTLY, gap: "derivable; not derived"}
+integrity.piano-range:       {area: integrity, need: cope, dec: "every note on the 88 keys", pipe: both, cls: CODE-EXACT, code: none, status: MISSING, gap: "min and max MIDI vs 21-108", w2: "partitura note array"}
+integrity.hand-span:         {area: integrity, need: cope, dec: "no chord beyond a stated span", pipe: both, cls: CODE-RULE, code: "tools/content/difficulty.py:296 (maxSpan)", status: PARTLY, gap: "the value exists; the span rule per level is not written", w2: none, src: NEEDED}
+integrity.notation-sanity:   {area: integrity, need: cope, dec: "spelling, beaming, voices, accidental churn as engraved", pipe: pdmx, cls: CODE-INFERENCE, code: none, status: MISSING, gap: "partitura estimate_spelling vs the file's spelling; beaming vs metre; FABLE §5 names these checks for generated items too", w2: "partitura estimate_spelling, estimate_voices"}
+integrity.metadata-trust:    {area: integrity, need: material, dec: "composer, title and tags are uploader text", pipe: pdmx, cls: EXTERNAL, code: "tools/content/pdmx/quarry_core.py:95 identity; content/sources/composers.json; tools/content/licensing.py", status: PARTLY, gap: "composer matched against a table; title and tags carry no trust value on the row"}
+integrity.arrangement-fidelity: {area: integrity, need: material, dec: "the upload represents the real piece", pipe: pdmx, cls: JUDGMENT, code: none, status: MISSING, gap: "cannot be proved from the file alone", w2: none, split: {measurable: [integrity.duplicate-version, integrity.truncation, integrity.key-consistency, integrity.title-structure], residual: "where uploads of the same work disagree, or only one exists, whether this one is a faithful arrangement (EXTERNAL where a reference edition or recording can be compared; judgment otherwise)"}}
+
+# ===================================================================== style and genre: evidence, never proof
+style.evidence:              {area: style, need: material, dec: "the stylistic signals: swing, cells, bass behaviour, chord vocabulary, harmonic rhythm, form, syncopation", pipe: both, cls: CODE-INFERENCE, code: "tools/content/candidates.py (narrows by notation facts); tools/content/pdmx/quarry_core.py:355 melody_signals", status: PARTLY, gap: "no vector of style signals with confidence on the row; each signal is a row above (texture.*, rhythm.*, harmony.*)", w2: none, src: NEEDED}
+style.genre-label:           {area: style, need: material, dec: "a genre or track label", pipe: both, cls: CODE-INFERENCE, code: "catalogue genre (814 items, from source tags) and tracks", status: PARTLY, gap: "metadata only today; code can combine style.evidence with provenance into a label with confidence, never a proof", w2: meta.genre-tags, src: NEEDED}
+style.good-example:          {area: style, need: material, dec: "a good teaching example of style X", pipe: both, cls: JUDGMENT, code: none, status: MISSING, gap: "judgment after code evidence", w2: none, split: {measurable: [style.evidence, harmony.voicing, harmony.rhythm, hands.per-bar-range, target.prevalence], residual: "whether what the code found is idiomatic for the style (the agent gets the measured voicings, attack rhythm, register and spacing, and answers only that)"}}
+
+# ===================================================================== musical quality: is it good material (the third question)
+quality.phrase-shape:        {area: quality, need: material, dec: "a beginning and an arrival", pipe: generated, cls: CODE-RULE, code: "tools/content/musical_evaluator.py:312 beginning; :369 arrival; :757 phrase_arrival", status: PARTLY, gap: "runs on generated phrases (one definition shared with app/src/engine/sightReadingScore.ts); nothing on PDMX; rules in code, not quoted", w2: none, src: NEEDED}
+quality.contour:             {area: quality, need: material, dec: "contour shape, reversals, oscillation", pipe: generated, cls: CODE-RULE, code: "tools/content/musical_evaluator.py:449 contour_shapes; :508 contour", status: PARTLY, gap: "as quality.phrase-shape", w2: none, src: NEEDED}
+quality.rests:               {area: quality, need: material, dec: "rests placed musically", pipe: generated, cls: CODE-RULE, code: "tools/content/musical_evaluator.py:635 rests", status: PARTLY, gap: "as quality.phrase-shape", w2: none, src: NEEDED}
+quality.leap-recovery:       {area: quality, need: material, dec: "leaps resolved by step", pipe: generated, cls: CODE-RULE, code: "tools/content/musical_evaluator.py:664 leaps", status: PARTLY, gap: "as quality.phrase-shape", w2: none, src: NEEDED}
+quality.cadence-close:       {area: quality, need: material, dec: "phrase ends on a stable degree with a cadence", pipe: generated, cls: CODE-RULE, code: "tools/content/musical_evaluator.py:739 cadence_close; :804 wrong_cadences", status: PARTLY, gap: "as quality.phrase-shape", w2: none, src: NEEDED}
+quality.reference-distribution: {area: quality, need: material, dec: "within the real-music reference for its level on the FABLE §5 features", pipe: generated, cls: CODE-INFERENCE, code: none, status: MISSING, gap: "the reference set per level and the feature run (music21 or partitura, never the generator's read-back) are not built", w2: none, src: "FABLE §5 method 2"}
+quality.coherence:           {area: quality, need: material, dec: "the item hangs together as music", pipe: both, cls: JUDGMENT, code: none, status: MISSING, gap: "no code", w2: none, split: {measurable: [quality.phrase-shape, quality.contour, melody.motif-repetition, quality.cadence-close, harmony.cadence, quality.reference-distribution], residual: "whether the measured phrase, motif and cadence facts add up to music worth playing; stated as 'unverified as music', never heard"}}
+quality.idiomatic:           {area: quality, need: material, dec: "idiomatic for the instrument and style", pipe: both, cls: JUDGMENT, code: none, status: MISSING, gap: "no code", w2: none, split: {measurable: [technique.playability, technique.span, hands.per-bar-range, style.evidence], residual: "whether a playable, in-style passage is how a pianist would write it"}}
+quality.pedagogical-fit:     {area: quality, need: material, dec: "a good introduction, consolidation or transfer item for this rung", pipe: both, cls: JUDGMENT, code: none, status: MISSING, gap: "code narrows heavily", w2: none, split: {measurable: [prereq.untaught-demands, difficulty.level, target.prevalence, target.salience, target.isolation, item.continuity, role.suitability], residual: "given every measured fact inside the rung's rule, whether this item is the one to teach with; the agent sees the facts and the open fields only"}}
+
+# ===================================================================== meta: not in the notes
+meta.composer-era:           {area: meta, need: material, dec: "era from the composer's dates", pipe: pdmx, cls: EXTERNAL, code: "content/sources/composers.json; tools/content/licensing.py", status: EXISTS, gap: "matched names only; 22,111 of 36,150 PDMX rows have no composer", w2: none, src: NEEDED}
+meta.genre-tags:             {area: meta, need: material, dec: "uploader or collection tags", pipe: pdmx, cls: EXTERNAL, code: "catalogue tags and genre", status: EXISTS, gap: "no trust value", w2: none, src: notation}
+meta.title:                  {area: meta, need: material, dec: "title words (carol, minuet, etude, rag)", pipe: pdmx, cls: EXTERNAL, code: "tools/content/score_checks.py:406 title_key; :664 normalise_title", status: PARTLY, gap: "title parsing exists for keys and structure; no genre words", w2: none, src: notation}
+meta.collection:             {area: meta, need: material, dec: "the source collection (Hanon, Czerny, Joplin, MuseTrainer)", pipe: both, cls: EXTERNAL, code: "catalogue source and tags", status: EXISTS, gap: none, w2: none, src: notation}
+meta.generator-params:       {area: meta, need: exercises, dec: "a drill's parameters", pipe: generated, cls: CODE-EXACT, code: "catalogue drill.params", status: EXISTS, gap: none, w2: "tools/content/family_contracts.py", src: "the family contract"}

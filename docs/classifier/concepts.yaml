@@ -243,7 +243,7 @@ concepts:
   shaping:                    {k: played, ch: [mark.hairpin, mark.slur], instead: played}
   sharps:                     {k: notes, ch: [key.signature, notation.keys]}
   shell-voicings:             {k: notes, ch: [harmony.voicing]}
-  shuffle:                    {k: notes, ch: [texture.shuffle]}
+  shuffle:                    {k: notes, ch: [rhythm.shuffle]}
   sight-reading:              {k: drill, ch: [meta.generator-params], instead: drill}
   similar:                    {k: notes, ch: [texture.motion]}
   sixteenth-notes:            {k: notes, ch: [rhythm.sixteenths]}
@@ -264,7 +264,7 @@ concepts:
   sus-chords:                 {k: notes, ch: [harmony.chord-quality]}
   sustain-pedal:              {k: notes, ch: [mark.pedal]}
   sustained-chords:           {k: notes, ch: [texture.sustained]}
-  swing:                      {k: notes, ch: [notation.swing-mark, texture.shuffle]}
+  swing:                      {k: notes, ch: [notation.swing-mark, rhythm.shuffle]}
   swing-eighths:              {k: notes, ch: [notation.swing-mark]}
   syncopation:                {k: notes, ch: [rhythm.syncopation]}
   tango:                      {k: notes, ch: [texture.tango]}

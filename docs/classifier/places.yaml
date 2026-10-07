@@ -17,7 +17,7 @@ tracks:   # source list: content/curriculum/00-tracks.json
   core:          {decided_by: not-item, rule: "stages 0-4 by difficulty and taught set; no signature of its own", ch: [difficulty.level], src: NEEDED}
   classical:     {decided_by: evidence, rule: "composer era from composers.json, or a classical form or dance; unknown composer stays UNKNOWN", ch: [meta.composer-era, form.binary-ternary, form.sonata, meta.title], src: NEEDED}
   chords-pop:    {decided_by: notes, rule: "played from chord symbols: symbols present, or a written part that reduces to a chord-symbol accompaniment", ch: [notation.chord-symbols, harmony.chord-quality, harmony.progression], src: NEEDED}
-  blues-boogie:  {decided_by: notes, rule: "twelve-bar form, with shuffle or boogie left hand", ch: [form.twelve-bar, texture.shuffle, texture.boogie-bass, scale.collection], src: NEEDED}
+  blues-boogie:  {decided_by: notes, rule: "twelve-bar form, with shuffle or boogie left hand", ch: [form.twelve-bar, rhythm.shuffle, texture.boogie-bass, scale.collection], src: NEEDED}
   jazz:          {decided_by: evidence, rule: "swing mark or swung figures, seventh-chord harmony, ii-V motion; sevenths alone are not jazz", ch: [notation.swing-mark, harmony.chord-quality, harmony.progression, harmony.voicing, texture.walking-bass], src: NEEDED}
   ragtime:       {decided_by: notes, rule: "duple oom-pah or stride left hand under a syncopated right hand; multi-strain form for full rags", ch: [texture.oom-pah, texture.stride, rhythm.syncopation, form.multi-strain], src: NEEDED}
   theory-ear:    {decided_by: not-item, rule: "drills and short texts; items are generated drills chosen by their parameters", ch: [meta.generator-params], src: NEEDED}
@@ -58,7 +58,7 @@ abilities:   # source list: docs/prompts/runs/curriculum-review-2026-10-05/ABILI
   A5.1:  {decided_by: notes, material: [harmony.roman, harmony.progression, harmony.cadence], not_in_notes: "finding it is the learner's act; the item must contain the taught harmony, measured"}
   A6.1:  {decided_by: not-item, material: [], not_in_notes: "the learner's own melody"}
   A6.2:  {decided_by: not-item, material: [], not_in_notes: "the learner's own music, written down"}
-  A7a.1: {decided_by: notes, material: [form.twelve-bar, texture.boogie-bass, texture.shuffle, scale.collection], not_in_notes: "the improvised right hand"}
+  A7a.1: {decided_by: notes, material: [form.twelve-bar, texture.boogie-bass, rhythm.shuffle, scale.collection], not_in_notes: "the improvised right hand"}
   A7a.2: {decided_by: notes, material: [form.twelve-bar, form.turnaround], not_in_notes: "beginning and ending a chorus is played"}
   A7a.3: {decided_by: notes, material: [form.twelve-bar, key.tonic-mode], not_in_notes: none}
   A7b.1: {decided_by: notes, material: [harmony.progression, harmony.voicing, key.tonic-mode], not_in_notes: none}

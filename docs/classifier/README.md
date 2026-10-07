@@ -1,64 +1,60 @@
-# Placement classifier and verifier: the architecture (the owner, 2026-10-07)
+# Placement classifier and verifier: the gap analysis (the owner, 2026-10-07)
 
-The owner's direction: rules first, then code. Write the rule for every place an item can go (rung, track, stage, ability), the characteristic each rule reads, and how each characteristic is measured; libraries before our code; whatever code cannot decide goes on a research list. This folder is that. **It places nothing yet.** It is the specification the classifier and verifier will be built from, and its counts are proved by a script, not asserted.
+**The goal** (`docs/prompts/inputs-2026-10-07/classifier-review.md`): minimise what agents have to judge when generated exercises and noisy PDMX scores are classified and placed in the curriculum. Code establishes everything it reliably can; an agent judges only the residue, with the code's evidence in front of it; no human is a gate (FABLE §5). Rules first, then code. This folder is the gap analysis. **It places nothing and designs nothing.**
 
 ## The files
 
 | File | What | Written by |
 | --- | --- | --- |
-| `characteristics.yaml` | 125 characteristics: how each is measured (existing code, library call, our matcher, research, metadata), its second witness, its source | hand |
-| `concepts.yaml` | all 286 concepts the rungs name, each mapped to characteristics, or marked as not an item property with the rule used instead | hand |
-| `places.yaml` | the rules for 15 tracks, 10 stages and 28 abilities | hand |
-| `generated/rungs.md` | one row per rung (110): what decides it, what is missing | `tools/classifier/build_matrix.py` |
-| `generated/research.md` | every task no code can do yet | the same |
+| `characteristics.yaml` | the table's source: every characteristic placement needs, with its area, the placement question it serves, pipeline, verifiability class, current code (file:line), EXISTS / PARTLY / MISSING, gap; JUDGMENT rows carry their split | hand |
+| `concepts.yaml` | the 286 concept names the rungs use, each mapped onto the characteristics it reads, or marked as not an item property; a name is not a detector | hand |
+| `places.yaml` | what today's definitions of the 15 tracks, 10 stages and 28 abilities read; current claims, none sourced | hand |
+| `generated/table.md` | **the deliverable**: CHARACTERISTIC \| NEEDED FOR \| GEN/PDMX/BOTH \| CLASS \| CURRENT CODE \| STATUS \| GAP | `tools/classifier/build_matrix.py` |
+| `generated/judgment.md` | every JUDGMENT row split into measurable evidence and the residual question | the same |
+| `generated/rungs.md` | per rung, which characteristics its concepts read, by class and status | the same |
+| `generated/research.md` | what no code can decide yet: definitions to quote, inference methods, outside sources, residuals, ambiguous names | the same |
 | `generated/summary.md` | the counts | the same |
-| `generated/matrix.json` | everything above, for the classifier to read | the same |
 
-`build_matrix.py` fails if any rung concept, track, stage or ability is missing or extra against its source list (the stage files, `00-tracks.json`, `ABILITY-MAP.md`), or if any rule names a characteristic that is not defined. `--check` fails if `generated/` is stale. It is not in CI yet.
+`build_matrix.py` fails on any rung concept, track, stage or ability missing or extra against its source list; on a row with a missing or illegal field; on EXISTS without code; on a JUDGMENT row without a split or whose split names another JUDGMENT row. `--check` fails when `generated/` is stale. It is not in CI (a workflow change goes to the reviewer first).
 
-## The pipeline
+## The five classes and the three statuses
 
-**A. Intake.** Two kinds of item, two checks.
-- *Generated* (1,216 of 2,100 catalogue items, measured 2026-10-07): the generator's parameters say what the item is. The check is that the file matches its parameters (the family checkers exist).
-- *Imported, PDMX above all*: nothing is known in advance and the files are noisy. Integrity checks run first: extra instruments or drums, lead sheets without a left hand, a key signature the notes disagree with (two key finders), broken or overfull bars, notes off the keyboard, chords one hand cannot span, defaulted tempos, duplicate uploads. A failing file is held, not classified.
+| Class | Meaning |
+| --- | --- |
+| CODE-EXACT | deterministically available or derivable from the MusicXML or the generator's state |
+| CODE-RULE | reliably detectable once a musical rule or pattern is defined; `src` names the definition still to quote |
+| CODE-INFERENCE | code estimates it, with a confidence and an ambiguity path (UNKNOWN, never a guess) |
+| EXTERNAL | established only with another source: an edition, a graded list, a recording, a composer table |
+| JUDGMENT | not reliably establishable from the symbolic score; split into measurable evidence plus a residual |
 
-**B. Extract.** One table, one row per catalogue item; the script asserts the row count equals the catalogue count. Each characteristic is measured by its method in `characteristics.yaml`, with the second witness where one exists. A value is a count or density with bar positions, or `UNKNOWN` with the reason. Where the two witnesses disagree, the value is `UNKNOWN` for that item and the disagreement is listed.
+EXISTS is written only where the named code has run on real catalogue items (the build measured 2,020 of 2,100 items on 2026-10-07). PARTLY: code exists for part of it or for one pipeline. MISSING: no code.
 
-**C. Classify.** For every item and every place, one of three answers, each with the clause that decided it:
-- `FITS`: every clause holds;
-- `DOES NOT FIT`: the named clause fails;
-- `UNKNOWN`: a clause reads an `UNKNOWN` value or an unsourced rule. **An UNKNOWN never becomes FITS.**
+## Two pipelines
 
-A rung rule is per requirement slot, not per item: a rung asks that its exercise options and song options, slot by slot, show the rung's concepts at the stated density, sit inside its difficulty band, and contain nothing its earlier rungs have not taught (`claims.py untaught_on` exists). A track or ability rule is its `places.yaml` entry.
+- **Generated.** The generator's declared spec is the intent (`generated.spec-declared`). The generated MusicXML is still read by the same independent analysers as PDMX (`generated.spec-vs-actual`): today the app's detectors check the demand vocabulary against the family contract; range, phrase structure and harmonic plan are neither declared nor checked for most families.
+- **PDMX.** Nothing is declared. Integrity checks run first (`integrity.*`; six of them run in the build today). Every extracted value carries its provenance: *exact*, *two witnesses*, *one witness*, *inferred* (with confidence), or *metadata only*. Two witnesses that disagree give UNKNOWN for that item, listed.
 
-**D. Verify.** Six checks, none of them a person's opinion:
-1. **Completeness:** rows equal items; every place has a rule; every clause names a defined characteristic.
-2. **Two witnesses agree** wherever two exist.
-3. **Matcher fixtures:** each matcher is tested on examples quoted from its source and on near-misses, red before it is green.
-4. **Outside oracles:** difficulty against a published graded set (CIPI or PSyllabus if they hold up: research); pattern matchers against published example lists.
-5. **Differential:** the classifier's answer against today's placement, every disagreement listed with its clause.
-6. **No FITS from UNKNOWN** (a test over the output).
+## The three placement questions
 
-**E. Move.** The differential becomes placement changes, itemised where/what/before/after/why, reviewed, then applied in batches.
+Every row serves one: **cope** (can the learner cope: prerequisites, nothing untaught, difficulty by component), **exercises** (does it exercise the target: how much, where, how concentrated, how salient, what else at the same time), or **material** (is it good material for the job: quality, representativeness, playability, fit). The existing machinery serves the first; the second is largely derivable from a cache the build already writes (`build/positions-cache.json`) but not computed; the third is where the JUDGMENT rows live.
 
-## What the matrix shows today
+## The agent's packet
 
-From `generated/summary.md`:
-- Of 125 characteristics, 33 are measured by code already, 30 need a library call, 4 come from metadata, 52 need a matcher of ours (each with a quoted definition), and 6 have no reliable method we know.
-- Of 286 rung concepts, 211 are in the notes and 5 in metadata; 70 are not item properties (19 played, 30 activities, 13 drills, 8 app modes) and use the rule in `instead_rules`.
-- Of 110 rungs, 4 can be decided by code today, 14 need only library calls, 63 need matchers, 19 need research, 10 are not decided by the notes at all.
-- Tracks: 5 decided by the notes, 5 where the notes are evidence only, 5 not item properties. Abilities: 15, 4 and 9.
-- **No rule has a quoted source yet.** Every rule is today's claim until `research.md` section 5 closes.
+An agent never receives a whole score and an open question. It receives the code-established rows for that item, with their provenance, and the named unresolved fields, and judges only those. `generated/judgment.md` is the list of what those fields can be.
 
-## Order of building
+## One definition per fact
 
-1. **The item table with what exists** (existing, library, metadata: 67 characteristics). No new detection, so it can be built and checked now.
-2. **One pilot track end to end**: research its sources, write its matchers, classify, verify. The pilot is chosen by measurement: the first track whose items overlap an outside list (a published graded set or a published example list), so check 4 has an oracle. Measuring that overlap is the first task.
-3. Then the remaining tracks, each closing its part of `research.md`.
+A characteristic the app also uses lives in `app/src/demands/detect.ts` with a library witness, as the rhythm cells do (`onedef: detect.ts` in the yaml). Never a second definition in Python.
 
-## Who does what
+## How the table is used, in order
 
-- **Scripts** extract, classify and verify. No agent decides a placement.
-- **Research agents** close `research.md` lines: each answer quotes its source, and the reviewer checks the quote against the source.
-- **The reviewer** reviews this architecture before any classifier code, and each matcher's definition and fixtures before it is trusted.
-- **What no one in this process can decide:** whether an arrangement is faithful to the real song, and anything that needs listening. These stay open, marked.
+1. The reviewer reads it for omissions and challenges every JUDGMENT row again.
+2. Code is built from it, by class: CODE-EXACT, then CODE-RULE as each definition is quoted, then CODE-INFERENCE with confidence. Not before the review.
+3. The extraction table: one row per catalogue item, every value with its provenance, row count asserted equal to the item count.
+4. Rung rules, written after the curriculum review says what each rung is trying to accomplish (`research.md` §7); a rule reads rows of this table and nothing else, and quotes its source.
+5. Classify every item against every place: FITS, DOES NOT FIT with the failing clause, or UNKNOWN. An UNKNOWN never becomes FITS.
+6. The differential against today's placement, itemised where/what/before/after/why, becomes the moves.
+
+## What no one in this process can decide
+
+Whether an arrangement is faithful to the real piece where no reference exists, and anything that needs listening. Those rows stay JUDGMENT with their residual stated, marked "unverified as music".
