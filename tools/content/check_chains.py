@@ -28,9 +28,9 @@ itself with one line, ``ability: <id>`` (the id in ABILITY-MAP.md's form, FABLE.
 brief that carries the line must have the headings Instructional chain, Failure route and Independence
 test, and a record ``docs/chains/<id>.yaml`` that passes (a ``draft`` passes, its unresolved refs
 listed with every record's). A brief without the line is not linted; the run says how many were
-skipped. The same flag also runs the fail-closed owner-work guard on post-baseline immutable reviewer
-handoffs, because full CI deliberately ignores ``docs/review/**`` and docs-integrity is the runner
-that sees a handoff-only push.
+skipped. The same flag also runs the fail-closed owner-work guard and clause-map check on post-baseline immutable reviewer
+handoffs, plus the outside-review closure ledger on post-baseline reviewer responses. docs-integrity is the runner
+that sees a handoff/response-only push.
 
 ``--tools`` prints the tool vocabulary.
 
@@ -114,6 +114,7 @@ import yaml
 
 import owner_asks as owner_work  # noqa: E402
 import clause_map  # noqa: E402
+import review_closure as review_closure_guard  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 CHAINS_GLOB = "docs/chains/*.yaml"
@@ -796,6 +797,13 @@ def main(argv: list[str] | None = None) -> int:
             Failure(path, "clause map", message)
             for path, message in clause_map.problems(root)
         ]
+        review_problems, open_requirements = review_closure_guard.scan(root)
+        failures += [
+            Failure(path, "review closure", message)
+            for path, message in review_problems
+        ]
+        notes += [f"review closure: {len(open_requirements)} open requirement(s)"]
+        notes += [f"  OPEN {req.ident} from {req.source}: {req.text}" for req in open_requirements]
 
     for failure in failures:
         print(failure.line())
