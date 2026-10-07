@@ -71,7 +71,7 @@ CLASS 2: cut tempo and marks -- 0 PASS, 0 FAIL, 16 NOT-APPLICABLE
   step 16  NOT-APPLICABLE  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx]
            - content kind piece: not an excerpt cut
 
-CLASS 3: control reachable in its mode -- 4 PASS, 3 FAIL, 10 NOT-APPLICABLE (9 routed to class 6)
+CLASS 3: control reachable in its mode -- 5 PASS, 0 FAIL, 12 NOT-APPLICABLE (11 routed to class 6)
   record   PASS
            - app/src/ui/screens/ScoreScreen.ts MODES: {'wait': 'Wait for me', 'tempo': 'Keep tempo', 'listen': 'Play it to me', 'free': 'Free play'}
            - app/src/ui/screens/ScoreScreen.ts opens in settings.defaultModeWithInput with an input; app/src/data/settingsStore.ts defaults it to 'wait'
@@ -86,8 +86,8 @@ CLASS 3: control reachable in its mode -- 4 PASS, 3 FAIL, 10 NOT-APPLICABLE (9 r
            - the lesson page: no control to reach (MODE-SHEET section 31)
   step 2   PASS  [Free play, standalone; content/lessons/jazz.6.md]
            - Free play standalone: the #/play route exists (router.ts)
-  step 3   FAIL  [Ear drills; drill.ear.seventh-qualities]
-           - FAIL: drill.ear.seventh-qualities is an option of ['jazz.5', 'theory.5'], not of the placed rung jazz.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+  step 3   PASS  [Ear drills; drill.ear.seventh-qualities]
+           - an earlier-rung review: the step names jazz.5 ("Review, opened from jazz.5, an earlier rung and jazz.6's prerequisite, where the drill is an option (it is not a jazz.6 option, so it can never be jazz.6's seco"), which lists drill.ear.seventh-qualities and is in jazz.6's ancestry
            - a drill row of kind 'ear-chord' opens on the Drill screen
   step 4   PASS  [Reading and theory drills; drill.jazz.minor-ii-v-i-shells]
            - drill.jazz.minor-ii-v-i-shells is an option of the placed rung jazz.6
@@ -125,16 +125,16 @@ CLASS 3: control reachable in its mode -- 4 PASS, 3 FAIL, 10 NOT-APPLICABLE (9 r
            - song.jazz.kenny-dorham-blue-bossa.pdmx is an option of the placed rung jazz.6
            - the chart door opens: notation.chordCount > 0 (24)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
-  step 14  FAIL  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15]
-           - FAIL: song.folk.insensatez-how-insensitive-jobim.pdmx is an option of ['latin'], not of the placed rung jazz.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+  step 14  NOT-APPLICABLE (routed to class 6)  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15]
+           - song.folk.insensatez-how-insensitive-jobim.pdmx is an option of the placed rung jazz.6
            - the chart door opens: notation.chordCount > 0 (28)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
-  step 15  FAIL  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15]
-           - FAIL: song.folk.insensatez-how-insensitive-jobim.pdmx is an option of ['latin'], not of the placed rung jazz.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+  step 15  NOT-APPLICABLE (routed to class 6)  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15]
+           - song.folk.insensatez-how-insensitive-jobim.pdmx is an option of the placed rung jazz.6
            - the chart door opens: notation.chordCount > 0 (28)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
   step 16  NOT-APPLICABLE (routed to class 6)  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx]
-           - a later-rung step: song.folk.insensatez-how-insensitive-jobim.pdmx is an option of ['latin']
+           - song.folk.insensatez-how-insensitive-jobim.pdmx is an option of the placed rung jazz.6
            - the chart door opens: notation.chordCount > 0 (28)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
 
@@ -264,4 +264,4 @@ CLASS 6: journey derived from the record -- 3 PASS, 1 FAIL, 13 NOT-APPLICABLE (1
   step 16  NOT-APPLICABLE (routed to class 6)  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx]
            - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
 
-SUMMARY A7b.1: 4 FAIL class 1 0, class 2 0, class 3 3, class 4 0, class 5 0, class 6 1
+SUMMARY A7b.1: 1 FAIL class 1 0, class 2 0, class 3 0, class 4 0, class 5 0, class 6 1

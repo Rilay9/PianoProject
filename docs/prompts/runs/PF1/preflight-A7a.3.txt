@@ -1,0 +1,262 @@
+PREFLIGHT A7a.3 (draft) from docs/chains/A7a.3.yaml
+built content: app/public/content/catalog.json (2099 rows)
+placed rung: blues.6 (blues.6: its lesson file content/lessons/blues.6.md is step 1's explanation)
+
+CLASS 1: hand reading -- 1 PASS, 0 FAIL, 13 NOT-APPLICABLE
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/blues.6.md]
+           - content kind explanation: not a passage
+  step 2   NOT-APPLICABLE  [Hear it; exercise.walking-bass.c.blues]
+           - content kind generated: not a passage
+  step 3   NOT-APPLICABLE  [Hear it; exercise.walking-bass.c.minor-blues]
+           - content kind generated: not a passage
+  step 4   NOT-APPLICABLE  [Duet; exercise.walking-bass.c.minor-blues]
+           - content kind generated: not a passage
+  step 5   NOT-APPLICABLE  [Keep tempo; exercise.walking-bass.c.minor-blues]
+           - content kind generated: not a passage
+  step 6   NOT-APPLICABLE  [Keep tempo; exercise.walking-bass.f.minor-blues]
+           - content kind generated: not a passage
+  step 7   NOT-APPLICABLE  [Chord chart; exercise.walking-bass.c.minor-blues]
+           - content kind generated: not a passage
+  step 8   PASS  [Hear it; song.blues.st-james-infirmary]
+           - song.blues.st-james-infirmary bars 1-24 (the whole item); staves 1; hands 'right'; model span ['R']
+           - one staff: the build's declared hand is right (hands fact {'kind': 'authored', 'via': "the edition's staves"}); the model reads every note as R (HD1)
+  step 9   NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - tool 'Chord chart' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
+  step 10  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - tool 'Chord chart' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
+  step 11  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - tool 'Chord chart' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
+  step 12  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - tool 'Chord chart' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
+  step 13  NOT-APPLICABLE  [Chord chart; song.classical.st-louis-blues.pdmx@bars=1-4]
+           - tool 'Chord chart' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
+  step 14  NOT-APPLICABLE  [Chord chart; exercise.walking-bass.e-flat.minor-blues]
+           - content kind generated: not a passage
+
+CLASS 2: cut tempo and marks -- 0 PASS, 0 FAIL, 14 NOT-APPLICABLE
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/blues.6.md]
+           - content kind explanation: not an excerpt cut
+  step 2   NOT-APPLICABLE  [Hear it; exercise.walking-bass.c.blues]
+           - content kind generated: not an excerpt cut
+  step 3   NOT-APPLICABLE  [Hear it; exercise.walking-bass.c.minor-blues]
+           - content kind generated: not an excerpt cut
+  step 4   NOT-APPLICABLE  [Duet; exercise.walking-bass.c.minor-blues]
+           - content kind generated: not an excerpt cut
+  step 5   NOT-APPLICABLE  [Keep tempo; exercise.walking-bass.c.minor-blues]
+           - content kind generated: not an excerpt cut
+  step 6   NOT-APPLICABLE  [Keep tempo; exercise.walking-bass.f.minor-blues]
+           - content kind generated: not an excerpt cut
+  step 7   NOT-APPLICABLE  [Chord chart; exercise.walking-bass.c.minor-blues]
+           - content kind generated: not an excerpt cut
+  step 8   NOT-APPLICABLE  [Hear it; song.blues.st-james-infirmary]
+           - content kind piece: not an excerpt cut
+  step 9   NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - content kind piece: not an excerpt cut
+  step 10  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - content kind piece: not an excerpt cut
+  step 11  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - content kind piece: not an excerpt cut
+  step 12  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - content kind piece: not an excerpt cut
+  step 13  NOT-APPLICABLE  [Chord chart; song.classical.st-louis-blues.pdmx@bars=1-4]
+           - content kind piece: not an excerpt cut
+  step 14  NOT-APPLICABLE  [Chord chart; exercise.walking-bass.e-flat.minor-blues]
+           - content kind generated: not an excerpt cut
+
+CLASS 3: control reachable in its mode -- 2 PASS, 12 FAIL, 1 NOT-APPLICABLE
+  record   PASS
+           - app/src/ui/screens/ScoreScreen.ts MODES: {'wait': 'Wait for me', 'tempo': 'Keep tempo', 'listen': 'Play it to me', 'free': 'Free play'}
+           - app/src/ui/screens/ScoreScreen.ts opens in settings.defaultModeWithInput with an input; app/src/data/settingsStore.ts defaults it to 'wait'
+           - app/src/ui/screens/ScoreScreen.ts rhythmAvailable = mode === 'tempo' && !blind && !performanceRun
+           - app/src/ui/screens/ScoreScreen.ts let rhythmOnly = settings.rhythmOnly (a remembered setting)
+           - app/src/ui/screens/ScoreScreen.ts ladderApplies = mode === 'tempo' && loopBars !== null && !performanceRun
+           - app/src/ui/screens/ScoreScreen.ts Duet shown when hands !== 'both' && model?.handsPresent[other] === true
+           - app/src/ui/screens/ScoreScreen.ts the double-tap loop handler reads no mode
+           - app/src/ui/openItem.ts hasChordSymbols: notation.chordCount > 0
+           - app/src/ui/screens/ChordChartScreen.ts chips ['Bass + drums', 'Comp', 'Swing']; Comp and Bass + drums independent (CB1)
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/blues.6.md]
+           - the lesson page: no control to reach (MODE-SHEET section 31)
+  step 2   PASS  [Hear it; exercise.walking-bass.c.blues]
+           - exercise.walking-bass.c.blues is an option of the placed rung blues.6
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - Hear it is a bar button in every mode (code)
+  step 3   FAIL  [Hear it; exercise.walking-bass.c.minor-blues]
+           - FAIL: exercise.walking-bass.c.minor-blues is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - Hear it is a bar button in every mode (code)
+  step 4   FAIL  [Duet; exercise.walking-bass.c.minor-blues]
+           - FAIL: exercise.walking-bass.c.minor-blues is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - Duet: hand L chosen, the other hand present (['L', 'R']): hands !== 'both' && model?.handsPresent[other] === true
+  step 5   FAIL  [Keep tempo; exercise.walking-bass.c.minor-blues]
+           - FAIL: exercise.walking-bass.c.minor-blues is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - the tool is the mode 'Keep tempo', named by the step's tool field
+  step 6   FAIL  [Keep tempo; exercise.walking-bass.f.minor-blues]
+           - FAIL: exercise.walking-bass.f.minor-blues is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - the tool is the mode 'Keep tempo', named by the step's tool field
+  step 7   FAIL  [Chord chart; exercise.walking-bass.c.minor-blues]
+           - FAIL: exercise.walking-bass.c.minor-blues is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+           - the chart door opens: notation.chordCount > 0 (13)
+           - Comp and Bass + drums in different states: independent in the code (CB1)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+  step 8   FAIL  [Hear it; song.blues.st-james-infirmary]
+           - FAIL: song.blues.st-james-infirmary is an option of ['blues.3'], not of the placed rung blues.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - Hear it is a bar button in every mode (code)
+  step 9   FAIL  [Chord chart; song.blues.st-james-infirmary]
+           - FAIL: song.blues.st-james-infirmary is an option of ['blues.3'], not of the placed rung blues.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - the chart door opens: notation.chordCount > 0 (41)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+  step 10  FAIL  [Chord chart; song.blues.st-james-infirmary]
+           - FAIL: song.blues.st-james-infirmary is an option of ['blues.3'], not of the placed rung blues.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - the chart door opens: notation.chordCount > 0 (41)
+           - Comp and Bass + drums in different states: independent in the code (CB1)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+  step 11  FAIL  [Chord chart; song.blues.st-james-infirmary]
+           - FAIL: song.blues.st-james-infirmary is an option of ['blues.3'], not of the placed rung blues.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - the chart door opens: notation.chordCount > 0 (41)
+           - Comp and Bass + drums in different states: independent in the code (CB1)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+  step 12  FAIL  [Chord chart; song.blues.st-james-infirmary]
+           - FAIL: song.blues.st-james-infirmary is an option of ['blues.3'], not of the placed rung blues.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - the chart door opens: notation.chordCount > 0 (41)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+  step 13  FAIL  [Chord chart; song.classical.st-louis-blues.pdmx@bars=1-4]
+           - FAIL: song.classical.st-louis-blues.pdmx is an option of ['blues.3', 'blues.4'], not of the placed rung blues.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - the chart door opens: notation.chordCount > 0 (23)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+  step 14  FAIL  [Chord chart; exercise.walking-bass.e-flat.minor-blues]
+           - FAIL: exercise.walking-bass.e-flat.minor-blues is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section 31), so the learner meets it only by finding it in the Library
+           - the chart door opens: notation.chordCount > 0 (13)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+
+CLASS 4: counted items match the claim -- 1 PASS, 2 FAIL, 12 NOT-APPLICABLE
+  record   FAIL
+           - blues.6: its lesson file content/lessons/blues.6.md is step 1's explanation
+           - blues.6 requirements: [{"kind": "runs", "from": "exercises", "count": 1}]
+           - FAIL: requirement 1 counts 1 run(s) of any of 5 exercises options; no update names one of them
+           - FAIL: requirement 1 names no items, so any of its exercises options counts, among them ['exercise.walking-bass.c.blues'], which the record says never count (the G13 class: name the exact item)
+           - FAIL: update 1 names exercise.walking-bass.c.minor-blues, which no requirement of blues.6 counts (not an option of blues.6)
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/blues.6.md]
+           - tool 'lesson' (never counted (MODE-SHEET R3/R4, section 14, RG1)); content/lessons/blues.6.md: counted by no requirement of blues.6
+           - no claim either way, and nothing would count
+  step 2   NOT-APPLICABLE  [Hear it; exercise.walking-bass.c.blues]
+           - tool 'Hear it' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.walking-bass.c.blues: requirement 1 (runs from exercises, unnamed: any of its 5 options)
+           - no claim either way, and nothing would count
+  step 3   NOT-APPLICABLE  [Hear it; exercise.walking-bass.c.minor-blues]
+           - tool 'Hear it' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.walking-bass.c.minor-blues: counted by no requirement of blues.6
+           - no claim either way, and nothing would count
+  step 4   NOT-APPLICABLE  [Duet; exercise.walking-bass.c.minor-blues]
+           - tool 'Duet' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.walking-bass.c.minor-blues: counted by no requirement of blues.6
+           - no claim either way, and nothing would count
+  step 5   FAIL  [Keep tempo; exercise.walking-bass.c.minor-blues]
+           - tool 'Keep tempo' (a counting tool); exercise.walking-bass.c.minor-blues: counted by no requirement of blues.6
+           - the step says its run counts
+           - FAIL: the step says it counts; the rung would not count it
+  step 6   PASS  [Keep tempo; exercise.walking-bass.f.minor-blues]
+           - tool 'Keep tempo' (a counting tool); exercise.walking-bass.f.minor-blues: counted by no requirement of blues.6
+           - the step says its run counts toward nothing
+  step 7   NOT-APPLICABLE  [Chord chart; exercise.walking-bass.c.minor-blues]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.walking-bass.c.minor-blues: counted by no requirement of blues.6
+           - no claim either way, and nothing would count
+  step 8   NOT-APPLICABLE  [Hear it; song.blues.st-james-infirmary]
+           - tool 'Hear it' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.blues.st-james-infirmary: counted by no requirement of blues.6
+           - no claim either way, and nothing would count
+  step 9   NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.blues.st-james-infirmary: counted by no requirement of blues.6
+           - no claim either way, and nothing would count
+  step 10  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.blues.st-james-infirmary: counted by no requirement of blues.6
+           - no claim either way, and nothing would count
+  step 11  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.blues.st-james-infirmary: counted by no requirement of blues.6
+           - no claim either way, and nothing would count
+  step 12  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.blues.st-james-infirmary: counted by no requirement of blues.6
+           - no claim either way, and nothing would count
+  step 13  NOT-APPLICABLE  [Chord chart; song.classical.st-louis-blues.pdmx@bars=1-4]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); song.classical.st-louis-blues.pdmx: counted by no requirement of blues.6
+           - no claim either way, and nothing would count
+  step 14  NOT-APPLICABLE  [Chord chart; exercise.walking-bass.e-flat.minor-blues]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.walking-bass.e-flat.minor-blues: counted by no requirement of blues.6
+           - no claim either way, and nothing would count
+
+CLASS 5: taught-set hold -- 7 PASS, 0 FAIL, 7 NOT-APPLICABLE
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/blues.6.md]
+           - content kind explanation: not a generated item
+  step 2   PASS  [Hear it; exercise.walking-bass.c.blues]
+           - exercise.walking-bass.c.blues at blues.6: asks ['clef.bass', 'pitch.ledger', 'interval.step', 'interval.skip', 'interval.leap', 'pitch.chromatic', 'range.beyond-position', 'texture.hands-together', 'texture.left-hand-pattern']
+           - the gate before the coping question: teaching-use-not-approved
+           - every asked demand is taught on blues.6's path
+  step 3   PASS  [Hear it; exercise.walking-bass.c.minor-blues]
+           - exercise.walking-bass.c.minor-blues at blues.6: asks ['clef.bass', 'pitch.ledger', 'interval.step', 'interval.skip', 'interval.leap', 'key.signature', 'pitch.chromatic', 'range.beyond-position', 'texture.hands-together', 'texture.left-hand-pattern', 'texture.walking-bass']
+           - the gate before the coping question: teaching-use-not-approved
+           - every asked demand is taught on blues.6's path
+  step 4   PASS  [Duet; exercise.walking-bass.c.minor-blues]
+           - exercise.walking-bass.c.minor-blues at blues.6: asks ['clef.bass', 'pitch.ledger', 'interval.step', 'interval.skip', 'interval.leap', 'key.signature', 'pitch.chromatic', 'range.beyond-position', 'texture.hands-together', 'texture.left-hand-pattern', 'texture.walking-bass']
+           - the gate before the coping question: teaching-use-not-approved
+           - every asked demand is taught on blues.6's path
+  step 5   PASS  [Keep tempo; exercise.walking-bass.c.minor-blues]
+           - exercise.walking-bass.c.minor-blues at blues.6: asks ['clef.bass', 'pitch.ledger', 'interval.step', 'interval.skip', 'interval.leap', 'key.signature', 'pitch.chromatic', 'range.beyond-position', 'texture.hands-together', 'texture.left-hand-pattern', 'texture.walking-bass']
+           - the gate before the coping question: teaching-use-not-approved
+           - every asked demand is taught on blues.6's path
+  step 6   PASS  [Keep tempo; exercise.walking-bass.f.minor-blues]
+           - exercise.walking-bass.f.minor-blues at blues.6: asks ['clef.bass', 'pitch.ledger', 'interval.step', 'interval.skip', 'interval.leap', 'key.signature', 'pitch.chromatic', 'range.beyond-position', 'texture.hands-together', 'texture.left-hand-pattern']
+           - the gate before the coping question: teaching-use-not-approved
+           - every asked demand is taught on blues.6's path
+  step 7   PASS  [Chord chart; exercise.walking-bass.c.minor-blues]
+           - exercise.walking-bass.c.minor-blues at blues.6: asks ['clef.bass', 'pitch.ledger', 'interval.step', 'interval.skip', 'interval.leap', 'key.signature', 'pitch.chromatic', 'range.beyond-position', 'texture.hands-together', 'texture.left-hand-pattern', 'texture.walking-bass']
+           - the gate before the coping question: teaching-use-not-approved
+           - every asked demand is taught on blues.6's path
+  step 8   NOT-APPLICABLE  [Hear it; song.blues.st-james-infirmary]
+           - content kind piece: not a generated item
+  step 9   NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - content kind piece: not a generated item
+  step 10  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - content kind piece: not a generated item
+  step 11  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - content kind piece: not a generated item
+  step 12  NOT-APPLICABLE  [Chord chart; song.blues.st-james-infirmary]
+           - content kind piece: not a generated item
+  step 13  NOT-APPLICABLE  [Chord chart; song.classical.st-louis-blues.pdmx@bars=1-4]
+           - content kind piece: not a generated item
+  step 14  PASS  [Chord chart; exercise.walking-bass.e-flat.minor-blues]
+           - exercise.walking-bass.e-flat.minor-blues at blues.6: asks ['clef.bass', 'pitch.ledger', 'interval.step', 'interval.skip', 'interval.leap', 'key.signature', 'pitch.chromatic', 'range.beyond-position', 'texture.hands-together', 'texture.left-hand-pattern', 'texture.walking-bass']
+           - the gate before the coping question: teaching-use-not-approved
+           - every asked demand is taught on blues.6's path
+
+CLASS 6: journey derived from the record -- 6 PASS, 1 FAIL, 8 NOT-APPLICABLE (8 routed to class 6)
+  record   FAIL
+           - the record's counted runs hold 0 of the 1 requirements blues.6 counts: the journey cannot assert completion; not held: requirement 1 (any 1 distinct runs from exercises)
+  step 1   PASS  [lesson; content/lessons/blues.6.md]
+           - lesson
+  step 2   PASS  [Hear it; exercise.walking-bass.c.blues]
+           - hear; open 'Walking bass over a 12-bar blues in C'; counts unchanged
+  step 3   PASS  [Hear it; exercise.walking-bass.c.minor-blues]
+           - hear; open 'Walking bass over a minor 12-bar blues in C minor'; counts unchanged
+  step 4   NOT-APPLICABLE (routed to class 6)  [Duet; exercise.walking-bass.c.minor-blues]
+           - no journey template for the tool 'Duet': a test.fixme line in the skeleton
+  step 5   PASS  [Keep tempo; exercise.walking-bass.c.minor-blues]
+           - tempo; open 'Walking bass over a minor 12-bar blues in C minor'; mode tempo; counts unchanged
+  step 6   PASS  [Keep tempo; exercise.walking-bass.f.minor-blues]
+           - tempo; open 'Walking bass over a minor 12-bar blues in F minor'; mode tempo; counts unchanged
+  step 7   NOT-APPLICABLE (routed to class 6)  [Chord chart; exercise.walking-bass.c.minor-blues]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+  step 8   PASS  [Hear it; song.blues.st-james-infirmary]
+           - hear; open 'St. James Infirmary'; counts unchanged
+  step 9   NOT-APPLICABLE (routed to class 6)  [Chord chart; song.blues.st-james-infirmary]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+  step 10  NOT-APPLICABLE (routed to class 6)  [Chord chart; song.blues.st-james-infirmary]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+  step 11  NOT-APPLICABLE (routed to class 6)  [Chord chart; song.blues.st-james-infirmary]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+  step 12  NOT-APPLICABLE (routed to class 6)  [Chord chart; song.blues.st-james-infirmary]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+  step 13  NOT-APPLICABLE (routed to class 6)  [Chord chart; song.classical.st-louis-blues.pdmx@bars=1-4]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+  step 14  NOT-APPLICABLE (routed to class 6)  [Chord chart; exercise.walking-bass.e-flat.minor-blues]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+
+SUMMARY A7a.3: 15 FAIL class 1 0, class 2 0, class 3 12, class 4 2, class 5 0, class 6 1

@@ -1,0 +1,261 @@
+PREFLIGHT A7a.1 (draft) from docs/chains/A7a.1.yaml
+built content: app/public/content/catalog.json (2099 rows)
+placed rung: blues.8 (blues.8: its lesson file content/lessons/blues.8.md is step 1's explanation)
+
+CLASS 1: hand reading -- 0 PASS, 7 FAIL, 8 NOT-APPLICABLE
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/blues.8.md]
+           - content kind explanation: not a passage
+  step 2   FAIL  [Duet; exercise.blues.twelve-bar-shuffle.c]
+           - exercise.blues.twelve-bar-shuffle.c bars 1-12 (the whole item); staves 2; hands 'both'; model span ['L', 'R']; the step names hand L
+           - no current verified fact covers bars 1-12 of the 12 used: there the hand is the voice-home compatibility default, UNKNOWN as a fact (Entry 248)
+  step 3   FAIL  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - exercise.blues.twelve-bar-shuffle.c bars 1-12 (the whole item); staves 2; hands 'both'; model span ['L', 'R']; the step names hand L
+           - no current verified fact covers bars 1-12 of the 12 used: there the hand is the voice-home compatibility default, UNKNOWN as a fact (Entry 248)
+  step 4   FAIL  [Blind; exercise.blues.twelve-bar-shuffle.c]
+           - exercise.blues.twelve-bar-shuffle.c bars 1-12 (the whole item); staves 2; hands 'both'; model span ['L', 'R']; the step names hand L
+           - no current verified fact covers bars 1-12 of the 12 used: there the hand is the voice-home compatibility default, UNKNOWN as a fact (Entry 248)
+  step 5   FAIL  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - exercise.blues.twelve-bar-shuffle.c bars 1-12 (the whole item); staves 2; hands 'both'; model span ['L', 'R']
+           - no current verified fact covers bars 1-12 of the 12 used: there the hand is the voice-home compatibility default, UNKNOWN as a fact (Entry 248)
+  step 6   NOT-APPLICABLE  [Hold the chords; app/src/engine/sightReading.ts]
+           - content kind generated: not a passage
+  step 7   FAIL  [Hear it; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - 'Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi' is not in the built catalogue
+  step 8   FAIL  [Duet; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - 'Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi' is not in the built catalogue
+  step 9   FAIL  [Keep tempo; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - 'Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi' is not in the built catalogue
+  step 10  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Chord chart' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
+  step 11  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Chord chart' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
+  step 12  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Chord chart' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
+  step 13  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Chord chart' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
+  step 14  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Chord chart' does not read the score's hands (only the Score screen's modes do; the lesson page, the chart, the Lab and the drills never read a note's hand)
+  step 15  NOT-APPLICABLE  [lesson; content/lessons/blues.8.md]
+           - content kind explanation: not a passage
+
+CLASS 2: cut tempo and marks -- 0 PASS, 0 FAIL, 15 NOT-APPLICABLE
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/blues.8.md]
+           - content kind explanation: not an excerpt cut
+  step 2   NOT-APPLICABLE  [Duet; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not an excerpt cut
+  step 3   NOT-APPLICABLE  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not an excerpt cut
+  step 4   NOT-APPLICABLE  [Blind; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not an excerpt cut
+  step 5   NOT-APPLICABLE  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not an excerpt cut
+  step 6   NOT-APPLICABLE  [Hold the chords; app/src/engine/sightReading.ts]
+           - content kind generated: not an excerpt cut
+  step 7   NOT-APPLICABLE  [Hear it; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - content kind piece: not an excerpt cut
+  step 8   NOT-APPLICABLE  [Duet; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - content kind piece: not an excerpt cut
+  step 9   NOT-APPLICABLE  [Keep tempo; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - content kind piece: not an excerpt cut
+  step 10  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not an excerpt cut
+  step 11  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not an excerpt cut
+  step 12  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not an excerpt cut
+  step 13  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not an excerpt cut
+  step 14  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not an excerpt cut
+  step 15  NOT-APPLICABLE  [lesson; content/lessons/blues.8.md]
+           - content kind explanation: not an excerpt cut
+
+CLASS 3: control reachable in its mode -- 1 PASS, 12 FAIL, 3 NOT-APPLICABLE (1 routed to class 6)
+  record   PASS
+           - app/src/ui/screens/ScoreScreen.ts MODES: {'wait': 'Wait for me', 'tempo': 'Keep tempo', 'listen': 'Play it to me', 'free': 'Free play'}
+           - app/src/ui/screens/ScoreScreen.ts opens in settings.defaultModeWithInput with an input; app/src/data/settingsStore.ts defaults it to 'wait'
+           - app/src/ui/screens/ScoreScreen.ts rhythmAvailable = mode === 'tempo' && !blind && !performanceRun
+           - app/src/ui/screens/ScoreScreen.ts let rhythmOnly = settings.rhythmOnly (a remembered setting)
+           - app/src/ui/screens/ScoreScreen.ts ladderApplies = mode === 'tempo' && loopBars !== null && !performanceRun
+           - app/src/ui/screens/ScoreScreen.ts Duet shown when hands !== 'both' && model?.handsPresent[other] === true
+           - app/src/ui/screens/ScoreScreen.ts the double-tap loop handler reads no mode
+           - app/src/ui/openItem.ts hasChordSymbols: notation.chordCount > 0
+           - app/src/ui/screens/ChordChartScreen.ts chips ['Bass + drums', 'Comp', 'Swing']; Comp and Bass + drums independent (CB1)
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/blues.8.md]
+           - the lesson page: no control to reach (MODE-SHEET section 31)
+  step 2   FAIL  [Duet; exercise.blues.twelve-bar-shuffle.c]
+           - FAIL: exercise.blues.twelve-bar-shuffle.c is an option of ['blues.4', 'jam', 'blues.5', 'improv.5'], not of the placed rung blues.8; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - Duet: hand L chosen, the other hand present (['L', 'R']): hands !== 'both' && model?.handsPresent[other] === true
+  step 3   FAIL  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - FAIL: exercise.blues.twelve-bar-shuffle.c is an option of ['blues.4', 'jam', 'blues.5', 'improv.5'], not of the placed rung blues.8; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - the tool is the mode 'Keep tempo', named by the step's tool field
+           - Duet: hand L chosen, the other hand present (['L', 'R']): hands !== 'both' && model?.handsPresent[other] === true
+  step 4   FAIL  [Blind; exercise.blues.twelve-bar-shuffle.c]
+           - FAIL: exercise.blues.twelve-bar-shuffle.c is an option of ['blues.4', 'jam', 'blues.5', 'improv.5'], not of the placed rung blues.8; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - Duet: hand L chosen, the other hand present (['L', 'R']): hands !== 'both' && model?.handsPresent[other] === true
+  step 5   FAIL  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - FAIL: exercise.blues.twelve-bar-shuffle.c is an option of ['blues.4', 'jam', 'blues.5', 'improv.5'], not of the placed rung blues.8; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - the tool is the mode 'Keep tempo', named by the step's tool field
+  step 6   NOT-APPLICABLE (routed to class 6)  [Hold the chords; app/src/engine/sightReading.ts]
+           - the placed rung blues.8 offers the Lab: [{'kind': 'lab', 'preset': 'blues-shuffle'}]
+           - ROUTED: the Lab's pickers, presets, locks and its Read it / Play it to me / Play the tune controls are set inside the Lab screen
+  step 7   FAIL  [Hear it; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - FAIL: 'Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi' names no item in the built catalogue
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - Hear it is a bar button in every mode (code)
+  step 8   FAIL  [Duet; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - FAIL: 'Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi' names no item in the built catalogue
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - FAIL: Duet needs the other hand present; None has []
+  step 9   FAIL  [Keep tempo; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - FAIL: 'Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi' names no item in the built catalogue
+           - opened from the lesson page with an input attached, the Score screen starts in 'wait' (code); a Today ?rung= opening starts where it can count instead
+           - the tool is the mode 'Keep tempo', named by the step's tool field
+  step 10  FAIL  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - FAIL: exercise.blues.twelve-bar-shuffle.c is an option of ['blues.4', 'jam', 'blues.5', 'improv.5'], not of the placed rung blues.8; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - the chart door opens: notation.chordCount > 0 (12)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+  step 11  FAIL  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - FAIL: exercise.blues.twelve-bar-shuffle.c is an option of ['blues.4', 'jam', 'blues.5', 'improv.5'], not of the placed rung blues.8; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - the chart door opens: notation.chordCount > 0 (12)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+  step 12  FAIL  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - FAIL: exercise.blues.twelve-bar-shuffle.c is an option of ['blues.4', 'jam', 'blues.5', 'improv.5'], not of the placed rung blues.8; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - the chart door opens: notation.chordCount > 0 (12)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+  step 13  FAIL  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - FAIL: exercise.blues.twelve-bar-shuffle.c is an option of ['blues.4', 'jam', 'blues.5', 'improv.5'], not of the placed rung blues.8; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - the chart door opens: notation.chordCount > 0 (12)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+  step 14  FAIL  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - FAIL: exercise.blues.twelve-bar-shuffle.c is an option of ['blues.4', 'jam', 'blues.5', 'improv.5'], not of the placed rung blues.8; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
+           - the chart door opens: notation.chordCount > 0 (12)
+           - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
+  step 15  NOT-APPLICABLE  [lesson; content/lessons/blues.8.md]
+           - the lesson page: no control to reach (MODE-SHEET section 31)
+
+CLASS 4: counted items match the claim -- 1 PASS, 2 FAIL, 13 NOT-APPLICABLE
+  record   FAIL
+           - blues.8: its lesson file content/lessons/blues.8.md is step 1's explanation
+           - blues.8 requirements: [{"kind": "runs", "from": "exercises", "count": 1}, {"kind": "unjudged", "rule": "chorus-over-own-left-hand", "says": "A chorus of your own right hand over your own left-hand groove, with no chart and no click.", "why": "Improvised notes are not a run the app judges, and the chord chart stores nothing."}]
+           - FAIL: requirement 1 counts 1 run(s) of any of 5 exercises options; no update names one of them
+           - requirement 2 unjudged: shown, never counted (MODE-SHEET claim 7)
+           - FAIL: update 1 names exercise.blues.twelve-bar-shuffle.c, which no requirement of blues.8 counts (not an option of blues.8)
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/blues.8.md]
+           - tool 'lesson' (never counted (MODE-SHEET R3/R4, section 14, RG1)); content/lessons/blues.8.md: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 2   NOT-APPLICABLE  [Duet; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Duet' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.blues.twelve-bar-shuffle.c: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 3   NOT-APPLICABLE  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Keep tempo' (a counting tool); exercise.blues.twelve-bar-shuffle.c: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 4   NOT-APPLICABLE  [Blind; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Blind' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.blues.twelve-bar-shuffle.c: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 5   FAIL  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Keep tempo' (a counting tool); exercise.blues.twelve-bar-shuffle.c: counted by no requirement of blues.8
+           - the step says its run counts
+           - FAIL: the step says it counts; the rung would not count it
+  step 6   NOT-APPLICABLE  [Hold the chords; app/src/engine/sightReading.ts]
+           - tool 'Hold the chords' (never counted (MODE-SHEET R3/R4, section 14, RG1)); app/src/engine/sightReading.ts: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 7   NOT-APPLICABLE  [Hear it; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - tool 'Hear it' (never counted (MODE-SHEET R3/R4, section 14, RG1)); Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 8   NOT-APPLICABLE  [Duet; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - tool 'Duet' (never counted (MODE-SHEET R3/R4, section 14, RG1)); Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 9   PASS  [Keep tempo; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - tool 'Keep tempo' (a counting tool); Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi: counted by no requirement of blues.8
+           - the step says its run counts toward nothing
+  step 10  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.blues.twelve-bar-shuffle.c: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 11  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.blues.twelve-bar-shuffle.c: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 12  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.blues.twelve-bar-shuffle.c: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 13  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.blues.twelve-bar-shuffle.c: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 14  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - tool 'Chord chart' (never counted (MODE-SHEET R3/R4, section 14, RG1)); exercise.blues.twelve-bar-shuffle.c: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+  step 15  NOT-APPLICABLE  [lesson; content/lessons/blues.8.md]
+           - tool 'lesson' (never counted (MODE-SHEET R3/R4, section 14, RG1)); content/lessons/blues.8.md: counted by no requirement of blues.8
+           - no claim either way, and nothing would count
+
+CLASS 5: taught-set hold -- 0 PASS, 0 FAIL, 15 NOT-APPLICABLE
+  step 1   NOT-APPLICABLE  [lesson; content/lessons/blues.8.md]
+           - content kind explanation: not a generated item
+  step 2   NOT-APPLICABLE  [Duet; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not a generated item
+  step 3   NOT-APPLICABLE  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not a generated item
+  step 4   NOT-APPLICABLE  [Blind; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not a generated item
+  step 5   NOT-APPLICABLE  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not a generated item
+  step 6   NOT-APPLICABLE  [Hold the chords; app/src/engine/sightReading.ts]
+           - 'app/src/engine/sightReading.ts' is not a catalogue item (a runtime writer such as the Lab's): the build measures no score for it, so what it asks cannot be read here
+  step 7   NOT-APPLICABLE  [Hear it; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - content kind piece: not a generated item
+  step 8   NOT-APPLICABLE  [Duet; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - content kind piece: not a generated item
+  step 9   NOT-APPLICABLE  [Keep tempo; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - content kind piece: not a generated item
+  step 10  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not a generated item
+  step 11  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not a generated item
+  step 12  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not a generated item
+  step 13  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not a generated item
+  step 14  NOT-APPLICABLE  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - content kind piece: not a generated item
+  step 15  NOT-APPLICABLE  [lesson; content/lessons/blues.8.md]
+           - content kind explanation: not a generated item
+
+CLASS 6: journey derived from the record -- 4 PASS, 1 FAIL, 11 NOT-APPLICABLE (11 routed to class 6)
+  record   FAIL
+           - the record's counted runs hold 0 of the 1 requirements blues.8 counts: the journey cannot assert completion; not held: requirement 1 (any 1 distinct runs from exercises)
+  step 1   PASS  [lesson; content/lessons/blues.8.md]
+           - lesson
+  step 2   NOT-APPLICABLE (routed to class 6)  [Duet; exercise.blues.twelve-bar-shuffle.c]
+           - no journey template for the tool 'Duet': a test.fixme line in the skeleton
+  step 3   PASS  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - tempo; open 'Twelve-bar blues shuffle in C'; mode tempo; hand L; Duet on; counts unchanged
+  step 4   NOT-APPLICABLE (routed to class 6)  [Blind; exercise.blues.twelve-bar-shuffle.c]
+           - no journey template for the tool 'Blind': a test.fixme line in the skeleton
+  step 5   PASS  [Keep tempo; exercise.blues.twelve-bar-shuffle.c]
+           - tempo; open 'Twelve-bar blues shuffle in C'; mode tempo; counts unchanged
+  step 6   NOT-APPLICABLE (routed to class 6)  [Hold the chords; app/src/engine/sightReading.ts]
+           - no journey template for the tool 'Hold the chords' on app/src/engine/sightReading.ts (no catalogue item: a Lab build or a lesson file): a test.fixme line in the skeleton
+  step 7   NOT-APPLICABLE (routed to class 6)  [Hear it; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - no journey template for the tool 'Hear it' on Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi (no catalogue item: a Lab build or a lesson file): a test.fixme line in the skeleton
+  step 8   NOT-APPLICABLE (routed to class 6)  [Duet; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - no journey template for the tool 'Duet' on Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi (no catalogue item: a Lab build or a lesson file): a test.fixme line in the skeleton
+  step 9   NOT-APPLICABLE (routed to class 6)  [Keep tempo; Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi]
+           - no journey template for the tool 'Keep tempo' on Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi (no catalogue item: a Lab build or a lesson file): a test.fixme line in the skeleton
+  step 10  NOT-APPLICABLE (routed to class 6)  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+  step 11  NOT-APPLICABLE (routed to class 6)  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+  step 12  NOT-APPLICABLE (routed to class 6)  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+  step 13  NOT-APPLICABLE (routed to class 6)  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+  step 14  NOT-APPLICABLE (routed to class 6)  [Chord chart; exercise.blues.twelve-bar-shuffle.c]
+           - no journey template for the tool 'Chord chart': a test.fixme line in the skeleton
+  step 15  PASS  [lesson; content/lessons/blues.8.md]
+           - lesson
+
+SUMMARY A7a.1: 22 FAIL class 1 7, class 2 0, class 3 12, class 4 2, class 5 0, class 6 1
