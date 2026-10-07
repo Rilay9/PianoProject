@@ -81,7 +81,7 @@ status: draft|reviewed|shipped
 - the last step's scaffold is a strict subset of the first step's;
 - `never_credits` is not empty;
 - every generated family has its job, contract and checker, and every generated step's family is listed; SIGHT-READING, MUSICAL and NAMED-PATTERN with `presented_as: music` list their musical properties, each with how it is established or UNKNOWN (§5); a mechanical CONTROL lists none;
-- `status: shipped` requires an acceptance-test path that exists, and an `acceptance_journey` browser spec under `app/tests/e2e/`.
+- `status: shipped` requires an acceptance-test path that exists, and an `acceptance_journey` browser spec under `app/tests/e2e/` carrying the exact line `// acceptance-ability: <ability id>`.
 
 A brief that names a learner-facing ability without a record that passes is not dispatchable.
 
