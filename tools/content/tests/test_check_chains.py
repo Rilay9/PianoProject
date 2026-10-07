@@ -1095,5 +1095,44 @@ class BuiltGeneratedIds(unittest.TestCase):
             self.assertNotIn(f"UNRESOLVED {record}", out)
 
 
+
+class TheClauseMap(unittest.TestCase):
+    """CLAUDE.md question 6 and FABLE section 10 (the owner, 2026-10-07): a new handoff maps each closed clause to an
+    existing implementation, test and workflow, or says no ruling closes in it."""
+
+    HEAD = "# Handoff\n\nText.\n\n## Clause map\n\n"
+    TABLE = "| Clause | Implementation | Test | CI path |\n| --- | --- | --- | --- |\n"
+
+    def problems(self, body: str) -> list[str]:
+        return cc.clause_map.check_text(self.HEAD + body, ROOT)
+
+    def test_a_handoff_without_the_section_fails(self):
+        self.assertTrue(cc.clause_map.check_text("# Handoff\n\nLanded everything.\n", ROOT))
+
+    def test_the_explicit_none_line_passes(self):
+        self.assertEqual(self.problems("No ruling closes in this handoff.\n"), [])
+
+    def test_a_row_citing_existing_files_and_a_real_workflow_passes(self):
+        row = "| strict mode | `tools/content/check_chains.py` | `tools/content/tests/test_check_chains.py` | docs-integrity.yml |\n"
+        self.assertEqual(self.problems(self.TABLE + row), [])
+
+    def test_a_cited_file_that_does_not_exist_fails(self):
+        row = "| strict mode | `tools/content/no_such_file.py` | `tools/content/tests/test_check_chains.py` | ci.yml |\n"
+        self.assertTrue(any("Implementation" in p for p in self.problems(self.TABLE + row)))
+
+    def test_a_ci_path_naming_no_workflow_fails(self):
+        row = "| strict mode | `tools/content/check_chains.py` | `tools/content/tests/test_check_chains.py` | the builder ran it |\n"
+        self.assertTrue(any("workflow" in p for p in self.problems(self.TABLE + row)))
+
+    def test_prose_instead_of_a_table_fails(self):
+        self.assertTrue(self.problems("All three clauses are done.\n"))
+
+    def test_an_empty_cell_fails(self):
+        row = "| strict mode | `tools/content/check_chains.py` |  | ci.yml |\n"
+        self.assertTrue(self.problems(self.TABLE + row))
+
+    def test_the_real_tree_passes_and_the_baseline_is_frozen(self):
+        self.assertEqual(cc.clause_map.problems(ROOT), [])
+
 if __name__ == "__main__":
     unittest.main()

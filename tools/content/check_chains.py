@@ -112,7 +112,8 @@ from pathlib import Path
 
 import yaml
 
-import owner_asks as owner_work
+import owner_asks as owner_work  # noqa: E402
+import clause_map  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 CHAINS_GLOB = "docs/chains/*.yaml"
@@ -790,6 +791,10 @@ def main(argv: list[str] | None = None) -> int:
         failures += [
             Failure(path, "owner work", message)
             for path, message in owner_work.problems(root)
+        ]
+        failures += [
+            Failure(path, "clause map", message)
+            for path, message in clause_map.problems(root)
         ]
 
     for failure in failures:
