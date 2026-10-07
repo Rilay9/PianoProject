@@ -25,13 +25,23 @@
 #    R26 (docs/review/responses/6e7475c1.md:29: "keep it only under the narrower minor-key/family-tune role"). So the
 #    record never presents it as the minor twelve-bar; the minor-form MODEL is SOURCE-NEEDED (no real score chosen) and
 #    the generated items carry the form.
-#  - VERIFIED (one reader), St James's harmony, by music21 converter.parse of the committed
-#    content/scores/pdmx/Qmdyj1mGLEBPPF13XMNXh6Z3ntb3vSMRK3hrbmSw3Bk6gs.mxl and harmony.ChordSymbol per measure with
-#    offsets (2026-10-07): 24 bars of 4/4, one flat, a start repeat at bar 17; chords Dm, Gm, B♭7, A7, D7 (bar 5 beat
-#    3), F7 (bar 22 beat 3); bars 7-8 and 15-16 are B♭7 | A7; 13 of 24 bars carry two or three symbols (bars 1, 3, 9
-#    and 11 carry Dm, B♭7 at beat 3 and A7 at beat 4). The catalogue row agrees on 24 bars, one staff, hands right,
-#    41 symbols, chords A7 Bb7 D7 Dm F7 Gm, tempo 96 tempo-defaulted, 4/4 (app/public/content/catalog.json, read
-#    2026-10-07). A second independent reader is the probe's Station 2; until then the bar claims are one reader's.
+#  - VERIFIED (two readers, both identities; the A7a.3 probe, 2026-10-07), St James's harmony: a raw MusicXML walk
+#    (ElementTree, offsets from divisions, backup, forward and <offset>) and music21 (converter.parse,
+#    harmony.ChordSymbol) agree on all 41 symbols, bar, offset, root, kind and pitch classes, on the raw archive member
+#    (sha256 cffce954..., = pdmx.json rawSha256) and on the committed file (9eceb857..., = convertedSha256); raw and
+#    committed agree symbol for symbol (docs/prompts/runs/A7a3/harmony-stj-raw.json, harmony-stj-committed.json).
+#    24 bars of 4/4, one flat; chords Dm, Gm, B♭7, A7, D7 (bar 5 beat 3), F7 (bar 22 beat 3); bars 7-8 and 15-16 are
+#    B♭7 | A7, and B♭7 goes to A7 also inside bars 1, 3, 9, 11 (beats 3-4), 19-20 and 23 (beats 1-3); 13 of 24 bars
+#    carry two or three symbols (1, 2, 3, 5, 9, 10, 11, 14, 17, 19, 21, 22, 23), every offset as written before. The
+#    catalogue row agrees on 24 bars, one staff, hands right, 41 symbols, chords A7 Bb7 D7 Dm F7 Gm, tempo 96
+#    tempo-defaulted, 4/4.
+#  - CORRECTED by the probe (two readers, form-stj-*.json): the form is a 16-bar verse and an 8-bar refrain, not
+#    "three eight-bar phrases" of one kind. Bars 1-8 and 9-16 are the verse (the melody of 9-16 restates 1-8 except
+#    at bars 13 and 16; the harmony of 9-12 and 15-16 restates 1-4 and 7-8); bars 17-24 are the refrain, whose first
+#    lyric line names the infirmary and which carries three lyric lines; the eight other PDMX St James editions print
+#    only an 8-bar refrain with a pickup (9 bars). The "repeat (17-24)" is a start-repeat barline at bar 17 with no
+#    end repeat (bar 24 ends light-heavy); music21's expandRepeats refuses it as badly formed, and the app's render of
+#    the former identity (2026-09-18) counted 32 measures, i.e. 17-24 played twice. Still not a twelve-bar.
 #  - VERIFIED, the generated minor form is i7 i7 i7 i7 | iv7 iv7 i7 i7 | ♭VI7 V7 i7 V7 (TWELVE_BAR_MINOR,
 #    tools/content/generate_exercises.py:3963-3965), plus a closing tonic bar (make_walking_bass, :4018 onward, the
 #    "closing" comment); four keys are built, C, F, B♭ and E♭ (narrow list, :6364; the loop at :6403), so there is no
@@ -40,6 +50,13 @@
 #    2230) writes V7 at bar 9 and iv7 at bar 10. Two places state the minor twelve-bar differently; no lesson states
 #    it. St James's own B♭7 | A7 matches the generator's bars 9-10, which is why this record uses the generated items
 #    and keeps the Lab out of A7a.3 until a sourced definition decides the form.
+#  - SOURCED by the probe (docs/prompts/runs/A7a3/SOURCES.md; requirement A7a3-minor-blues-source still open): no
+#    single canonical bars 9-10. Wikipedia "Twelve-bar blues", Minor blues, prints i7 i7 i7 i7 | iv7 iv7 i7 i7 |
+#    ♭VI7 V7 i7 i7 (the generator's 9-10, but i7 in bar 12); PianoGroove and LearnJazzStandards give ♭VI7 to V7;
+#    guitar-chord.org's "simple" minor blues is V7 then iv7 (the Lab's), with a ♭VI7-V7 bar as a variant; Premier
+#    Guitar (2013) calls V7 in bar 9 "a very common version" and gives ♭VI7-V7 as the next figure; Open Music Theory
+#    2e (Gotham et al.) says a minor blues "typically replaces" V-IV-I with ii-V-I. Both disputed forms are attested
+#    variants; a lesson names the one the item plays as a variant, never as the form.
 #  - VERIFIED, the walking line: root, third, fifth, then a semitone below the next root, four quarters a bar
 #    (make_walking_bass's docstring and loop, generate_exercises.py:4018-4100); jam.6's lesson says the approach is
 #    "one step above or below the new root" (content/lessons/jam.6.md:23-24), so the lesson for this record says what
@@ -63,20 +80,36 @@
 #  - VERIFIED, the chart shows one chord per bar until PH2: Entry 268 ("the chord chart still draws, comps and judges
 #    from today's one-chord-per-bar reduction"); PH2 may dispatch (docs/review/responses/mt1-g6b-pf1-landing.md
 #    section 1). So every St James chart step (steps 9-12) and bar 3 of the St. Louis step (13) are BLOCKED on PH2: on
-#    today's chart the bar shows, sounds and judges only its first chord, in 13 of St James's 24 bars.
-#  - VERIFIED, St. Louis Blues bar 2 is A7 in E (four sharps), IV7, with E in bars 1, 3 and 4 and B7 at beat 3 of bar 3
-#    (music21 on content/scores/pdmx/QmYutJi8H9KmexPTGDuRXTzQNkqnu1Jk8ERW1gZiMs33ZG.mxl, one reader, 2026-10-07).
-#  - HYPOTHESIS, the walking rule on a bar of two or three chords (St James bars 1, 2, 3, 5, 9-11, 14, 17, 19, 21-23):
-#    one note per beat, the chord's root on the beat its symbol starts. No source in the tree states it; SOURCE-NEEDED
-#    before any lesson states it (never teach wrong). Refuted if the cited source gives another rule.
-#  - HYPOTHESIS, the chart's live cell on a three-note comp of a four-note symbol (B♭7, A7, D7, F7) says yes (3 of 4 =
-#    0.75 against 0.6, MODE-SHEET section 15) and on a single bass note says no. Refuted by harmony.ts chordMatch, run.
-#  - HYPOTHESIS, the chart's cell stays live with no Count off pressed (step 14 removes the count-in and tracker).
-#    Refuted by ChordChartScreen.ts, read or run.
-#  - HYPOTHESIS, the four minor-blues walking items read, by an independent reader, as the contract says (four
-#    quarters, root on each downbeat, minor thirds on i7 and iv7, the semitone approach); test_harmony_families.py
-#    TestWalkingBass reads the major blues and the ii-V-I only. CO-3 (the notation read of boogie and walking_bass) has
-#    not run (docs/prompts/PACKET-TRACE.md:118).
+#    today's chart the bar shows, sounds and judges only its first chord, in 13 of St James's 24 bars (17 symbols not
+#    shown). VERIFIED by the probe (chartBars against chartSegments, run, app-facts.json), and more: today's grid for
+#    St James has 41 cells, not 24 (ChordChartScreen.ts:639 counts the larger of 24 measures and 41 symbols), cells
+#    25-41 all Dm past the end of the file; recorded for PH2 already (docs/pending-review.md:43721, item 3).
+#  - VERIFIED (two readers, both identities; raw d3e5a851... and committed e41004fe..., the pdmx.json hashes), St.
+#    Louis Blues bar 2 is A7 in E (four sharps, no mode element), IV7, with E in bars 1, 3 and 4 and B7 at beat 3 of
+#    bar 3; 23/23 symbols agree. Bars 1-12, under a repeat, are a whole twelve-bar with the quick IV: E | A7 | E, B7 |
+#    E | A7 | (A7) | E, B7 | E | B7 | (B7) | E, E/G♯ | B7 (bar 10 is V, not IV). Bars 13-28 are a 16-bar minor strain
+#    (Em7 ... B7), then "D.C. al Fine" with no Fine mark written.
+#  - SOURCED by the probe (teaching sites, not a published text; SOURCES.md), the walking rule on a bar of two or
+#    three chords (St James bars 1, 2, 3, 5, 9-11, 14, 17, 19, 21-23): LearnJazzStandards puts the root "on the first
+#    beat the chord is introduced" and, with several chords a bar, leaves room only for the root and the linking
+#    tone; the last beat before a change is a half step below or above the next root, or its fifth; JazzGuitar.be and
+#    Become A Bassist say the same for two chords a bar. On St James's three-chord bars (Dm two beats, B♭7 one, A7
+#    one) that leaves the root alone on beats 3 and 4: a reading of the rule, not a source's example (HYPOTHESIS).
+#  - VERIFIED (chordMatch run, app-facts.json): root, third and seventh of B♭7, A7, D7, F7, Cm7, Fm7, A♭7 and G7 each
+#    0.75, yes; the Dm and Gm triads 1.0, yes; one held bass note 0.25 (0.33 on a triad), no; a rootless third-and-
+#    seventh shell 0.5, no; root and fifth 0.5, no.
+#  - CORRECTED (ChordChartScreen.ts:155, 220-231, 236-244, 547-556, read): with no Count off pressed the cell is live
+#    (every note event calls markMatch) but the bar never advances (only onBeat moves it), so it judges every held
+#    chord against bar 1's symbol: on the E♭ minor item a comp of bars 2-13 is scored against E♭m7 (an A♭7 shell
+#    against Cm7 scores 0.25, no). Step 14's "live bar cell" is therefore feedback for bar 1 only.
+#  - VERIFIED (an independent reader, docs/prompts/runs/A7a3/walk-read.json): the four minor-blues walking items and
+#    exercise.walking-bass.c.blues as built (main checkout, 2026-10-07 07:59, generator unchanged since f8fb9779), read
+#    by a raw MusicXML walk with music21 ChordSymbol as the theory oracle: 13 bars each, every bar root-third-fifth-
+#    approach in four quarters, minor thirds on every m7 bar, major on every 7 bar, each approach a semitone below the
+#    next bar's first note, the closing bar root-third-fifth-octave, the right hand one root-third-seventh chord held
+#    four beats, the symbols TWELVE_BAR_MINOR plus a closing i7; 0 breaks in 65 bars. Adversaries go red (a major
+#    third on i7 or iv7, a whole-step approach, the major sibling against the minor form). The E♭ minor item spells
+#    bar 9's ♭VI7 as B7 (B-D♯-F♯-A, approach A♯2); CO-3 as a whole has not run.
 # The quick IV has no generated control (blues_forms.py leaves it out, ABILITY-MAP.md:346) and no Lab form; its MODEL
 # is St. Louis Blues bars 1-4 on the chart, and its INDEPENDENCE is a choice inside A7a.1's own chorus
 # (ABILITY-MAP.md:352-353, MUSIC SHARED and INDEPENDENCE NO-SEPARATE-ARTIFACT), so this record carries one quick-IV step and cites A7a.1 for the rest.

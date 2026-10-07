@@ -1,0 +1,835 @@
+[
+ {
+  "A": {
+   "measure": "1",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "printed": null,
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    4,
+    8,
+    11
+   ]
+  },
+  "B": {
+   "measure": "1",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "figure": "E",
+   "mods": [],
+   "pcs": [
+    4,
+    8,
+    11
+   ],
+   "nochord": false,
+   "roman": "I",
+   "bass": "E"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "2",
+   "offset": "0",
+   "root": "A",
+   "rootPc": 9,
+   "kind": "dominant",
+   "printed": "7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    1,
+    4,
+    7,
+    9
+   ]
+  },
+  "B": {
+   "measure": "2",
+   "offset": "0",
+   "root": "A",
+   "rootPc": 9,
+   "kind": "dominant-seventh",
+   "figure": "A7",
+   "mods": [],
+   "pcs": [
+    1,
+    4,
+    7,
+    9
+   ],
+   "nochord": false,
+   "roman": "IVb753",
+   "bass": "A"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "3",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "printed": null,
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    4,
+    8,
+    11
+   ]
+  },
+  "B": {
+   "measure": "3",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "figure": "E",
+   "mods": [],
+   "pcs": [
+    4,
+    8,
+    11
+   ],
+   "nochord": false,
+   "roman": "I",
+   "bass": "E"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "3",
+   "offset": "2",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant",
+   "printed": "7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ]
+  },
+  "B": {
+   "measure": "3",
+   "offset": "2",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant-seventh",
+   "figure": "B7",
+   "mods": [],
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ],
+   "nochord": false,
+   "roman": "V7",
+   "bass": "B"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "4",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "printed": null,
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    4,
+    8,
+    11
+   ]
+  },
+  "B": {
+   "measure": "4",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "figure": "E",
+   "mods": [],
+   "pcs": [
+    4,
+    8,
+    11
+   ],
+   "nochord": false,
+   "roman": "I",
+   "bass": "E"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "5",
+   "offset": "0",
+   "root": "A",
+   "rootPc": 9,
+   "kind": "dominant",
+   "printed": "7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    1,
+    4,
+    7,
+    9
+   ]
+  },
+  "B": {
+   "measure": "5",
+   "offset": "0",
+   "root": "A",
+   "rootPc": 9,
+   "kind": "dominant-seventh",
+   "figure": "A7",
+   "mods": [],
+   "pcs": [
+    1,
+    4,
+    7,
+    9
+   ],
+   "nochord": false,
+   "roman": "IVb753",
+   "bass": "A"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "7",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "printed": null,
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    4,
+    8,
+    11
+   ]
+  },
+  "B": {
+   "measure": "7",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "figure": "E",
+   "mods": [],
+   "pcs": [
+    4,
+    8,
+    11
+   ],
+   "nochord": false,
+   "roman": "I",
+   "bass": "E"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "7",
+   "offset": "2",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant",
+   "printed": "7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ]
+  },
+  "B": {
+   "measure": "7",
+   "offset": "2",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant-seventh",
+   "figure": "B7",
+   "mods": [],
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ],
+   "nochord": false,
+   "roman": "V7",
+   "bass": "B"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "8",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "printed": null,
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    4,
+    8,
+    11
+   ]
+  },
+  "B": {
+   "measure": "8",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "figure": "E",
+   "mods": [],
+   "pcs": [
+    4,
+    8,
+    11
+   ],
+   "nochord": false,
+   "roman": "I",
+   "bass": "E"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "9",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant",
+   "printed": "7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ]
+  },
+  "B": {
+   "measure": "9",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant-seventh",
+   "figure": "B7",
+   "mods": [],
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ],
+   "nochord": false,
+   "roman": "V7",
+   "bass": "B"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "11",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "printed": null,
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    4,
+    8,
+    11
+   ]
+  },
+  "B": {
+   "measure": "11",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "figure": "E",
+   "mods": [],
+   "pcs": [
+    4,
+    8,
+    11
+   ],
+   "nochord": false,
+   "roman": "I",
+   "bass": "E"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "11",
+   "offset": "2",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "printed": null,
+   "degrees": [],
+   "bass": "Ab",
+   "pcs": [
+    4,
+    8,
+    11
+   ]
+  },
+  "B": {
+   "measure": "11",
+   "offset": "2",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "figure": "E/G#",
+   "mods": [],
+   "pcs": [
+    4,
+    8,
+    11
+   ],
+   "nochord": false,
+   "roman": "I6",
+   "bass": "G#"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "12",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant",
+   "printed": "7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ]
+  },
+  "B": {
+   "measure": "12",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant-seventh",
+   "figure": "B7",
+   "mods": [],
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ],
+   "nochord": false,
+   "roman": "V7",
+   "bass": "B"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "13",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "minor-seventh",
+   "printed": "mi7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    2,
+    4,
+    7,
+    11
+   ]
+  },
+  "B": {
+   "measure": "13",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "minor-seventh",
+   "figure": "Em7",
+   "mods": [],
+   "pcs": [
+    2,
+    4,
+    7,
+    11
+   ],
+   "nochord": false,
+   "roman": "i7",
+   "bass": "E"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "15",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant",
+   "printed": "7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ]
+  },
+  "B": {
+   "measure": "15",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant-seventh",
+   "figure": "B7",
+   "mods": [],
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ],
+   "nochord": false,
+   "roman": "V7",
+   "bass": "B"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "19",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "minor-seventh",
+   "printed": "mi7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    2,
+    4,
+    7,
+    11
+   ]
+  },
+  "B": {
+   "measure": "19",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "minor-seventh",
+   "figure": "Em7",
+   "mods": [],
+   "pcs": [
+    2,
+    4,
+    7,
+    11
+   ],
+   "nochord": false,
+   "roman": "i7",
+   "bass": "E"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "19",
+   "offset": "2",
+   "root": "Gb",
+   "rootPc": 6,
+   "kind": "minor",
+   "printed": "mi",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    1,
+    6,
+    9
+   ]
+  },
+  "B": {
+   "measure": "19",
+   "offset": "2",
+   "root": "F#",
+   "rootPc": 6,
+   "kind": "minor",
+   "figure": "F#m",
+   "mods": [],
+   "pcs": [
+    1,
+    6,
+    9
+   ],
+   "nochord": false,
+   "roman": "ii",
+   "bass": "F#"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "20",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant",
+   "printed": "7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ]
+  },
+  "B": {
+   "measure": "20",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant-seventh",
+   "figure": "B7",
+   "mods": [],
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ],
+   "nochord": false,
+   "roman": "V7",
+   "bass": "B"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "21",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "minor-seventh",
+   "printed": "mi7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    2,
+    4,
+    7,
+    11
+   ]
+  },
+  "B": {
+   "measure": "21",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "minor-seventh",
+   "figure": "Em7",
+   "mods": [],
+   "pcs": [
+    2,
+    4,
+    7,
+    11
+   ],
+   "nochord": false,
+   "roman": "i7",
+   "bass": "E"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "23",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant",
+   "printed": "7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ]
+  },
+  "B": {
+   "measure": "23",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant-seventh",
+   "figure": "B7",
+   "mods": [],
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ],
+   "nochord": false,
+   "roman": "V7",
+   "bass": "B"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "27",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "dominant",
+   "printed": "7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    2,
+    4,
+    8,
+    11
+   ]
+  },
+  "B": {
+   "measure": "27",
+   "offset": "0",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "dominant-seventh",
+   "figure": "E7",
+   "mods": [],
+   "pcs": [
+    2,
+    4,
+    8,
+    11
+   ],
+   "nochord": false,
+   "roman": "Ib753",
+   "bass": "E"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "27",
+   "offset": "2",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "printed": null,
+   "degrees": [],
+   "bass": "Ab",
+   "pcs": [
+    4,
+    8,
+    11
+   ]
+  },
+  "B": {
+   "measure": "27",
+   "offset": "2",
+   "root": "E",
+   "rootPc": 4,
+   "kind": "major",
+   "figure": "E/G#",
+   "mods": [],
+   "pcs": [
+    4,
+    8,
+    11
+   ],
+   "nochord": false,
+   "roman": "I6",
+   "bass": "G#"
+  },
+  "agree": true
+ },
+ {
+  "A": {
+   "measure": "28",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant",
+   "printed": "7",
+   "degrees": [],
+   "bass": null,
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ]
+  },
+  "B": {
+   "measure": "28",
+   "offset": "0",
+   "root": "B",
+   "rootPc": 11,
+   "kind": "dominant-seventh",
+   "figure": "B7",
+   "mods": [],
+   "pcs": [
+    3,
+    6,
+    9,
+    11
+   ],
+   "nochord": false,
+   "roman": "V7",
+   "bass": "B"
+  },
+  "agree": true
+ }
+]
