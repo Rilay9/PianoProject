@@ -43750,3 +43750,17 @@ No picture was taken; the browser case asserts the text. Nothing heard; unverifi
 **Limits.** An emulated phone in Chromium, not the physical phone; the MIDI mock played the written notes; nothing heard.
 
 **Open, after shipping.** (1) Rhythm only was played with the written notes; the matcher is pitch-free and per step (`PracticeEngine.ts` `findRhythmSlot`), so one tapped key should count: read, not tested. (2) Only the upright phone was walked; sideways and tablet were not. (3) Today offered neither counted item to the walk's new profile; whether Today offers latin.4's work at its stage is untested. (4) Whether the screen explains that Rhythm only appears only after Keep tempo is unchecked.
+
+### Entry 271 — PH1a: positioned harmony keeps each source measure's identity
+
+**What a learner meets.** Nothing yet: the chord chart still draws from the old reduction. Nothing heard. Scoreboard 1/28.
+
+**Done.** The reviewer's required change before PH2 (`responses/ph1-g6a-landing.md` §2).
+- `ChordSymbol`, `ChartMeasure` and chart bars carry `source` (the walk's measure ordinal) and `label` (the number as printed); `chartSegments` draws one bar per source measure in source order and groups by source; `measure` stays for the old `chartBars` only; symbols whose source measure the harmony part lacks are reported, none in the census.
+- Red first: repeated numbers 1,2,2,3 merged two measures into a false conflict; a suffixed `1X1` folded onto bar 1; numbers 3,1,2 drew in numeric order; all green after (17 of 17). Two new mutants (gather and order by printed number) killed, 17 of 17 in all.
+- **Census, source scores, before and after:** conflicts 43 to 31, all within one source measure; chart bars 6,318 to 4,109, the 2,209 bars drawn past the last measure gone (ruling 3); whole-bar carries that differ from today's chart 543 to 41. The 543 was mostly the fabricated trailing bars: the real carry change is about 40 bars in 18 files, not 543.
+- **Differentials null** over 2,091 files: tempo events, and today's `chartBars`.
+
+**Checks.** The builder: `npx tsc -b`, lint, the full unit suite (the standing blues.3 red and the local parity reference). At landing: typecheck and lint clean; the five harmony, chart and tempo test files 69 of 69.
+
+**Open.** Measures with no `number` attribute still contribute no symbol, as before; the screen's own `chartBars` still draws past the end until PH2.

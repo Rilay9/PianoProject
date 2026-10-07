@@ -98,18 +98,32 @@ const mutants = [
     from: '  let sounding: { symbol: ChordSymbol | null; conflict?: ChordSymbol[] } = { symbol: null };',
     to: '  let sounding: { symbol: ChordSymbol | null; conflict?: ChordSymbol[] } = { symbol: symbols[symbols.length - 1] ?? null };',
   },
+  {
+    name: 'a bar’s symbols gathered by the written number, not the source measure (PH1a)',
+    file: 'src/score/harmony.ts',
+    from: 'for (const symbol of bySource.get(info.source) ?? []) {',
+    to: 'for (const symbol of symbols.filter((s) => s.measure === info.measure)) {',
+  },
+  {
+    name: 'bars ordered by the written number, not the source order (PH1a)',
+    file: 'src/score/harmony.ts',
+    from: '  for (const info of measures) {',
+    to: '  for (const info of [...measures].sort((a, b) => a.measure - b.measure)) {',
+  },
 ];
 
 const lines = [];
 for (const mutant of mutants) {
   const path = join(app, mutant.file);
   const original = readFileSync(path, 'utf8');
-  const count = original.split(mutant.from).length - 1;
+  // A working copy with CRLF line endings (a Windows checkout) holds a multi-line `from` with \r\n.
+  const eol = (text) => (original.includes('\r\n') ? text.replace(/\n/g, '\r\n') : text);
+  const count = original.split(eol(mutant.from)).length - 1;
   if (count !== 1) {
     lines.push(`NOT APPLIED (${String(count)} matches): ${mutant.name}`);
     continue;
   }
-  writeFileSync(path, original.replace(mutant.from, mutant.to));
+  writeFileSync(path, original.replace(eol(mutant.from), eol(mutant.to)));
   let result;
   try {
     execSync(`npx vitest run ${TESTS}`, { cwd: app, stdio: 'pipe' });

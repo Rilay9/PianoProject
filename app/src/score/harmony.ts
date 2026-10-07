@@ -17,12 +17,28 @@
  * duplicate at one offset merges; a conflict at one offset is reported, never
  * settled by part order; a bar's length is its time signature's, a pickup's its
  * notated length, an unexplained mismatch reported.
+ *
+ * **Which bar a symbol is in (the reviewer, `docs/review/responses/ph1-g6a-landing.md` §2).** By the source
+ * measure's ordinal in its part (`source`, the walk's own `measure`), never by the written number: two successive
+ * measures can print the same number, and a suffixed or lettered label (`7X1`, `A`) is not the integer it starts
+ * with. The written number survives as display metadata (`label` as printed, `measure` as the integer the legacy
+ * `chartBars` still counts by) and keys nothing here.
  */
 
 import { attribute, walkMeasures, type WalkMeasure } from './measureWalk';
 
 export interface ChordSymbol {
-  /** 1-based measure number as written in the file. */
+  /**
+   * The source measure's ordinal in its part, from 0: the stable identity of the bar the symbol stands in (the
+   * walk's `measure`). Parts of a score are aligned by it. This, not `measure`, says which bar.
+   */
+  source: number;
+  /** The measure's `number` attribute as printed ("7", "7X1", "A"): display metadata, never an identity. */
+  label: string;
+  /**
+   * The written number read as an integer (`Number.parseInt`, so "7X1" is 7 and "A" is `NaN`): what the legacy
+   * `chartBars` still counts by. Display metadata only: two measures can share it and a label can fold onto it.
+   */
   measure: number;
   /**
    * Quarter notes from the measure's start: the shared walk's position at the
@@ -135,7 +151,7 @@ function stepToPc(step: string, alter: number): number | null {
 }
 
 /** A `<harmony>` block's chord, where it names one (a root step it can read); `null` otherwise. */
-function chordOf(block: string, measure: number, offset: number): ChordSymbol | null {
+function chordOf(block: string, source: number, label: string, offset: number): ChordSymbol | null {
   const step = /<root-step>([A-Ga-g])<\/root-step>/.exec(block)?.[1];
   if (!step) return null;
   const alter = Number(/<root-alter>(-?\d+)<\/root-alter>/.exec(block)?.[1] ?? '0');
@@ -159,7 +175,9 @@ function chordOf(block: string, measure: number, offset: number): ChordSymbol | 
   const bassName = bassStep ? `/${bassStep.toUpperCase()}${alterSymbol(bassAlter)}` : '';
 
   return {
-    measure,
+    source,
+    label,
+    measure: Number.parseInt(label, 10),
     offset,
     text: `${rootName}${suffix}${bassName}`,
     pitchClasses: degreed.intervals.map((interval) => (root + interval) % 12),
@@ -190,7 +208,11 @@ export type BarStatus = 'full' | 'incomplete' | 'pickup' | 'empty' | 'mismatch' 
 
 /** A bar of the part the chord symbols stand in. */
 export interface ChartMeasure {
-  /** The written number, as `ChordSymbol.measure` reads it (`NaN` where none parses). */
+  /** The source measure's ordinal in its part, from 0: the bar's identity (`ChordSymbol.source`). */
+  source: number;
+  /** The measure's `number` attribute as printed; `undefined` where it has none. Display metadata only. */
+  label: string | undefined;
+  /** The written number read as an integer, as `ChordSymbol.measure` reads it (`NaN` where none parses). Display metadata only. */
   measure: number;
   /** The time signature's bar in quarter notes, where one is in force. */
   nominal: number | null;
@@ -206,12 +228,14 @@ export interface ChartMeasure {
 const EPSILON = 1e-6;
 const round6 = (value: number): number => Math.round(value * 1e6) / 1e6;
 
-function chartMeasureOf(walked: WalkMeasure, ordinal: number): ChartMeasure {
-  const measure = Number.parseInt(/\bnumber="([^"]+)"/.exec(walked.measureAttributes)?.[1] ?? '', 10);
+function chartMeasureOf(walked: WalkMeasure): ChartMeasure {
+  const ordinal = walked.measure;
+  const label = /\bnumber="([^"]+)"/.exec(walked.measureAttributes)?.[1];
+  const measure = Number.parseInt(label ?? '', 10);
   const nominal = walked.time?.quarters ?? null;
   const implicit = attribute(walked.measureAttributes, 'implicit') === 'yes';
   const length = walked.furthest;
-  const bar = (status: BarStatus, barLength: number): ChartMeasure => ({ measure, nominal, walked: length, implicit, status, length: barLength });
+  const bar = (status: BarStatus, barLength: number): ChartMeasure => ({ source: ordinal, label, measure, nominal, walked: length, implicit, status, length: barLength });
   if (length <= EPSILON) return bar('empty', nominal ?? 4);
   if (implicit) return bar('incomplete', length);
   if (nominal === null) return bar('unmetred', length);
@@ -226,22 +250,23 @@ function chartMeasureOf(walked: WalkMeasure, ordinal: number): ChartMeasure {
  * part the symbols stand in (the first part holding one, else the first part),
  * one per measure in that part's order.
  *
- * A measure without a `number` attribute contributes no symbol, as before PH1.
+ * A measure without a `number` attribute contributes no symbol, as before PH1 (the legacy `chartBars` input
+ * must not move; recorded in the PH1 census as an adjacent question, not settled here).
  */
 export function readHarmony(xml: string): { symbols: ChordSymbol[]; measures: ChartMeasure[] } {
   const symbols: ChordSymbol[] = [];
   const parts: WalkMeasure[][] = [];
   let harmonyPart: number | undefined;
   walkMeasures(xml, {
-    child: ({ tag, inner, part, measureAttributes, position, divisions }) => {
+    child: ({ tag, inner, part, measure, measureAttributes, position, divisions }) => {
       if (tag !== 'harmony') return;
-      const number = /\bnumber="([^"]+)"/.exec(measureAttributes)?.[1];
-      if (number === undefined) return;
+      const label = /\bnumber="([^"]+)"/.exec(measureAttributes)?.[1];
+      if (label === undefined) return;
       // A harmony's offset moves it whatever its sound attribute (the reviewer, §2): a harmony has no
       // <sound> or <listening> of its own for `sound="no"` to leave behind.
       const shift = Number(/<offset(?=[\s>])[^>]*>\s*(-?[\d.]+)\s*<\/offset>/.exec(inner)?.[1] ?? '0');
       const offset = round6((position + (Number.isFinite(shift) ? shift : 0)) / divisions);
-      const symbol = chordOf(inner, Number.parseInt(number, 10), offset);
+      const symbol = chordOf(inner, measure, label, offset);
       if (!symbol) return;
       harmonyPart ??= part;
       symbols.push(symbol);
@@ -250,7 +275,7 @@ export function readHarmony(xml: string): { symbols: ChordSymbol[]; measures: Ch
       (parts[measure.part] ??= []).push(measure);
     },
   });
-  const measures = (parts[harmonyPart ?? 0] ?? []).map((measure, ordinal) => chartMeasureOf(measure, ordinal));
+  const measures = (parts[harmonyPart ?? 0] ?? []).map((measure) => chartMeasureOf(measure));
   return { symbols, measures };
 }
 
@@ -275,11 +300,14 @@ export interface ChartSegment {
 
 /** One bar of the chart: its length and its segments in order. */
 export interface ChartBar {
-  /** The written bar number (1-based), as `chartBars` counts. */
+  /** The source measure's ordinal in its part, from 0: the bar's identity and its place in the chart's order. */
+  source: number;
+  /** The measure's `number` attribute as printed; `undefined` where it has none. Display metadata only. */
+  label: string | undefined;
+  /** The written number read as an integer (`NaN` where none parses). Display metadata only. */
   measure: number;
   length: number;
-  /** `absent` where the part has no measure with this number. */
-  status: BarStatus | 'absent';
+  status: BarStatus;
   segments: ChartSegment[];
 }
 
@@ -288,17 +316,19 @@ export interface ChartReport {
   /** Exact duplicates (same root, pitch classes, bass and printed text at one place) folded into the first. */
   merged: ChordSymbol[];
   /** Different harmonies at one place. */
-  conflicts: { measure: number; offset: number; symbols: ChordSymbol[] }[];
+  conflicts: { source: number; label: string | undefined; measure: number; offset: number; symbols: ChordSymbol[] }[];
   /** Symbols before 0 or at or after the bar's end. */
   outside: { symbol: ChordSymbol; length: number }[];
+  /** Symbols whose source measure the part the bars come from does not have (another part with more measures): in no bar. */
+  unplaced: ChordSymbol[];
 }
 
 const sameChord = (a: ChordSymbol, b: ChordSymbol): boolean =>
   a.text === b.text && a.root === b.root && a.bass === b.bass && [...a.pitchClasses].sort((x, y) => x - y).join() === [...b.pitchClasses].sort((x, y) => x - y).join();
 
 /**
- * The bars 1..`measureCount` (the chart's bar identity, as `chartBars`), each
- * an ordered list of segments in quarter notes:
+ * One bar per source measure of the part the symbols stand in, in source order (never the written numbers'
+ * order, count or uniqueness), each an ordered list of segments in quarter notes:
  *
  * - a symbol at 0 opens the bar; otherwise a `carried` segment holding the
  *   harmony sounding at the end of the bar before (nothing, in bar 1: the chart
@@ -315,29 +345,29 @@ const sameChord = (a: ChordSymbol, b: ChordSymbol): boolean =>
  *   barline, so it is what the next bar carries until its first symbol; both
  *   are reported in `outside`.
  *
- * A bar's length is `measures`' (by written number, the first measure with the
- * number), else the bar before's (4 for a first bar with none).
+ * A bar's length is its measure's. A symbol is placed by its `source` ordinal alone, so a repeated, suffixed
+ * or non-numeric written number never merges, folds or loses a bar; a symbol whose source measure the part has
+ * not is reported in `unplaced`, never drawn on a bar of its own.
  */
-export function chartSegments(
-  symbols: readonly ChordSymbol[],
-  measures: readonly ChartMeasure[],
-  measureCount: number,
-): { bars: ChartBar[]; report: ChartReport } {
-  const byNumber = new Map<number, ChartMeasure>();
-  for (const measure of measures) if (!byNumber.has(measure.measure)) byNumber.set(measure.measure, measure);
-  const report: ChartReport = { merged: [], conflicts: [], outside: [] };
+export function chartSegments(symbols: readonly ChordSymbol[], measures: readonly ChartMeasure[]): { bars: ChartBar[]; report: ChartReport } {
+  const report: ChartReport = { merged: [], conflicts: [], outside: [], unplaced: [] };
   const bars: ChartBar[] = [];
+  const bySource = new Map<number, ChordSymbol[]>();
+  for (const symbol of symbols) {
+    const here = bySource.get(symbol.source);
+    if (here) here.push(symbol);
+    else bySource.set(symbol.source, [symbol]);
+  }
+  const known = new Set(measures.map((measure) => measure.source));
+  for (const symbol of symbols) if (!known.has(symbol.source)) report.unplaced.push(symbol);
   let sounding: { symbol: ChordSymbol | null; conflict?: ChordSymbol[] } = { symbol: null };
-  let length = 4;
-  for (let number = 1; number <= measureCount; number += 1) {
-    const info = byNumber.get(number);
-    length = info?.length ?? length;
+  for (const info of measures) {
+    const length = info.length;
     // One event per place: exact duplicates merged, different harmonies a conflict.
     const places = new Map<number, ChordSymbol[]>();
     let before: ChordSymbol | undefined;
     let after: ChordSymbol | undefined;
-    for (const symbol of symbols) {
-      if (symbol.measure !== number) continue;
+    for (const symbol of bySource.get(info.source) ?? []) {
       if (symbol.offset < -EPSILON) {
         // Sounds before this barline: the latest such symbol is what this bar opens on until its own first symbol.
         report.outside.push({ symbol, length });
@@ -364,7 +394,7 @@ export function chartSegments(
           if (distinct.some((kept) => sameChord(kept, symbol))) report.merged.push(symbol);
           else distinct.push(symbol);
         }
-        if (distinct.length > 1) report.conflicts.push({ measure: number, offset: start, symbols: distinct });
+        if (distinct.length > 1) report.conflicts.push({ source: info.source, label: info.label, measure: info.measure, offset: start, symbols: distinct });
         return { start, harmony: distinct.length > 1 ? { symbol: null, conflict: distinct } : { symbol: distinct[0] ?? null } };
       });
     const segments: ChartSegment[] = [];
@@ -376,7 +406,7 @@ export function chartSegments(
     });
     const last = segments[segments.length - 1];
     sounding = after ? { symbol: after } : last ? { symbol: last.symbol, ...(last.conflict ? { conflict: last.conflict } : {}) } : sounding;
-    bars.push({ measure: number, length, status: info?.status ?? 'absent', segments });
+    bars.push({ source: info.source, label: info.label, measure: info.measure, length, status: info.status, segments });
   }
   return { bars, report };
 }

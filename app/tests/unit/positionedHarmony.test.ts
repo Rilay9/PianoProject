@@ -15,6 +15,10 @@
  * is kept, identical restatements included; only exact duplicates at one offset merge (counted); two different
  * harmonies at one offset are a reported conflict, never resolved by part order; an ordinary bar is the time
  * signature's length, an explicit pickup (`implicit="yes"`) its notated length, an unexplained mismatch reported.
+ *
+ * And the source-measure identity (PH1a, `docs/review/responses/ph1-g6a-landing.md` §2): a bar is a source measure,
+ * keyed by its ordinal in its part; the printed number is a label. A repeated, suffixed or lettered number never
+ * merges, folds or loses a bar, and the bars come in source order.
  */
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
@@ -35,19 +39,18 @@ const sha256 = (bytes: Uint8Array | string): string => createHash('sha256').upda
 const brief = (bar: ChartBar | undefined): [string | null, number, number, boolean][] =>
   (bar?.segments ?? []).map((s) => [s.symbol?.text ?? null, s.start, s.duration, s.carried]);
 
-/** The chart's view of a file: its symbols, measures and segments, with the chart's own bar count. */
+/** The chart's view of a file: its symbols, measures and segments, one bar per source measure. */
 function chartOf(xml: string) {
   const { symbols, measures } = readHarmony(xml);
-  const measureCount = Math.max(new Set([...xml.matchAll(/<measure\b[^>]*\bnumber="([^"]+)"/g)].map((m) => m[1])).size, symbols.length);
-  return { symbols, measures, measureCount, ...chartSegments(symbols, measures, measureCount) };
+  return { symbols, measures, ...chartSegments(symbols, measures) };
 }
 
 /** One part, divisions 1; `bars[i]` is the content of bar i + 1. */
-function score(bars: string[], { beats = 4, beatType = 4, implicitFirst = false } = {}): string {
+function score(bars: string[], { beats = 4, beatType = 4, implicitFirst = false, numbers }: { beats?: number; beatType?: number; implicitFirst?: boolean; numbers?: string[] } = {}): string {
   const measures = bars.map((body, i) => {
     const attributes = i === 0 ? `<attributes><divisions>1</divisions><time><beats>${String(beats)}</beats><beat-type>${String(beatType)}</beat-type></time></attributes>` : '';
-    const number = implicitFirst ? i : i + 1;
-    return `<measure number="${String(number)}"${implicitFirst && i === 0 ? ' implicit="yes"' : ''}>${attributes}${body}</measure>`;
+    const number = numbers?.[i] ?? String(implicitFirst ? i : i + 1);
+    return `<measure number="${number}"${implicitFirst && i === 0 ? ' implicit="yes"' : ''}>${attributes}${body}</measure>`;
   });
   return `<score-partwise><part-list><score-part id="P1"/></part-list><part id="P1">${measures.join('')}</part></score-partwise>`;
 }
@@ -135,7 +138,8 @@ describe('the reviewer’s six cases', () => {
       [3, 'F', 1],
       [3, 'C', 2],
     ]);
-    // The fixture's three bars (the chart's own count is at least the symbol count, so it draws two more).
+    // The fixture's three source measures: the chart draws exactly those, no more.
+    expect(chart.bars).toHaveLength(3);
     expect(chart.bars.slice(0, 3).map(brief)).toEqual([
       [
         [null, 0, 2, true],
@@ -178,15 +182,22 @@ describe('the reviewer’s six cases', () => {
         const chart = chartOf(xml);
         if (chart.symbols.length === 0) continue;
         withHarmony += 1;
-        const today = chartBars(chart.symbols, chart.measureCount);
-        chart.bars.forEach((bar, i) => {
+        // Today's chart, as the screen builds it: bars 1..max(distinct written numbers, symbol count), by written number.
+        const numbers = [...xml.matchAll(/<measure\b[^>]*\bnumber="([^"]+)"/g)].map((m) => m[1] ?? '');
+        const today = chartBars(chart.symbols, Math.max(new Set(numbers).size, chart.symbols.length));
+        const printed = new Map<string, number>();
+        for (const measure of chart.measures) printed.set(measure.label ?? '', (printed.get(measure.label ?? '') ?? 0) + 1);
+        chart.bars.forEach((bar) => {
           const [only, ...rest] = bar.segments;
           // A conflict (two different harmonies at 0) is not a one-chord bar: the census lists each.
           if (!only || rest.length > 0 || only.carried || only.start !== 0 || only.conflict) return;
+          // The legacy chartBars counts by the written integer: comparable only where a bar's label is a plain
+          // positive integer no other measure prints (a repeated or suffixed label is the very case it cannot tell apart).
+          if (bar.label === undefined || String(bar.measure) !== bar.label || bar.measure < 1 || printed.get(bar.label) !== 1) return;
           oneChordBars += 1;
-          const was = today[i];
+          const was = today[bar.measure - 1];
           const same = was && only.symbol && was.text === only.symbol.text && was.root === only.symbol.root && was.bass === only.symbol.bass && was.pitchClasses.join() === only.symbol.pitchClasses.join();
-          if (!same) changed.push(`${path} bar ${String(i + 1)}: ${String(was?.text)} -> ${String(only.symbol?.text)}`);
+          if (!same) changed.push(`${path} bar ${bar.label}: ${String(was?.text)} -> ${String(only.symbol?.text)}`);
         });
       }
       expect(changed).toEqual([]);
@@ -281,5 +292,53 @@ describe('the rulings', () => {
     ]);
     expect(late.report.outside.map((o) => [o.symbol.text, o.symbol.offset, o.length])).toEqual([['F', 4, 4]]);
     expect(early.report.outside.map((o) => [o.symbol.text, o.symbol.offset, o.length])).toEqual([['G7', -1, 4]]);
+  });
+});
+
+describe('source-measure identity (the reviewer, ph1-g6a-landing §2): the written number is a label, never the key', () => {
+  const bars = (chart: ReturnType<typeof chartOf>): [string | null, number, number, boolean][][] => chart.bars.map(brief);
+  const one = (root: string, kind = 'major'): string => `${chord(root, kind)}${note(4)}`;
+
+  it('two successive source measures sharing a printed number stay two chart bars, with no conflict', () => {
+    const chart = chartOf(score([one('C'), one('G', 'dominant'), one('A', 'minor'), one('F')], { numbers: ['1', '2', '2', '3'] }));
+    expect(bars(chart)).toEqual([[['C', 0, 4, false]], [['G7', 0, 4, false]], [['Am', 0, 4, false]], [['F', 0, 4, false]]]);
+    expect(chart.report.conflicts).toEqual([]);
+    expect(chart.report.merged).toEqual([]);
+    expect(chart.bars.map((bar) => [bar.source, bar.label])).toEqual([[0, '1'], [1, '2'], [2, '2'], [3, '3']]);
+    expect(chart.symbols.map((symbol) => [symbol.source, symbol.label])).toEqual([[0, '1'], [1, '2'], [2, '2'], [3, '3']]);
+    expect(chart.measures.map((measure) => [measure.source, measure.label])).toEqual([[0, '1'], [1, '2'], [2, '2'], [3, '3']]);
+  });
+
+  it('the same chord in two measures sharing a number is two events in two bars, not a merged duplicate', () => {
+    const chart = chartOf(score([one('C'), one('C')], { numbers: ['5', '5'] }));
+    expect(bars(chart)).toEqual([[['C', 0, 4, false]], [['C', 0, 4, false]]]);
+    expect(chart.report.merged).toEqual([]);
+    expect(chart.report.conflicts).toEqual([]);
+  });
+
+  it('a suffixed printed number (1X1) does not fold onto bar 1; a non-numeric label (A) is not lost', () => {
+    const suffixed = chartOf(score([one('C'), one('G', 'dominant'), one('F')], { numbers: ['1', '1X1', '2'] }));
+    expect(bars(suffixed)).toEqual([[['C', 0, 4, false]], [['G7', 0, 4, false]], [['F', 0, 4, false]]]);
+    expect(suffixed.report.conflicts).toEqual([]);
+    expect(suffixed.bars.map((bar) => bar.label)).toEqual(['1', '1X1', '2']);
+    const lettered = chartOf(score([one('C'), one('G', 'dominant'), one('F')], { numbers: ['1', 'A', '3'] }));
+    expect(bars(lettered)).toEqual([[['C', 0, 4, false]], [['G7', 0, 4, false]], [['F', 0, 4, false]]]);
+    expect(lettered.bars.map((bar) => bar.label)).toEqual(['1', 'A', '3']);
+  });
+
+  it('bars come in source order, whatever the written numbers say', () => {
+    const chart = chartOf(score([one('C'), one('G', 'dominant'), one('F')], { numbers: ['3', '1', '2'] }));
+    expect(bars(chart)).toEqual([[['C', 0, 4, false]], [['G7', 0, 4, false]], [['F', 0, 4, false]]]);
+    expect(chart.bars.map((bar) => bar.label)).toEqual(['3', '1', '2']);
+  });
+
+  it('a carried chord follows source order across a repeated number', () => {
+    const chart = chartOf(score([one('C'), note(4), note(4), one('G')], { numbers: ['1', '2', '2', '3'] }));
+    expect(bars(chart)).toEqual([[['C', 0, 4, false]], [['C', 0, 4, true]], [['C', 0, 4, true]], [['G', 0, 4, false]]]);
+  });
+
+  it('the screen’s legacy input keeps the parsed written number: `measure` is unchanged for chartBars', () => {
+    const { symbols } = readHarmony(score([one('C'), one('G', 'dominant'), one('F')], { numbers: ['1', '1X1', '2'] }));
+    expect(symbols.map((symbol) => symbol.measure)).toEqual([1, 1, 2]);
   });
 });

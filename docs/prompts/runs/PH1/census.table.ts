@@ -1,7 +1,8 @@
 /**
  * PH1's census (brief test 9), re-run with the new reader: every file in the corpus (`corpus.ts`) with a chord
- * symbol, read through the app's unzip, `readHarmony` and `chartSegments` exactly as the chart counts its bars, and
- * the shared walk (`measureWalk.ts`) for which part each symbol stands in. Nothing here places a symbol itself.
+ * symbol, read through the app's unzip, `readHarmony` and `chartSegments` (one bar per source measure, by the
+ * source-measure ordinal; PH1a, the reviewer's `ph1-g6a-landing.md` §2), and the shared walk (`measureWalk.ts`)
+ * for which part each symbol stands in. Nothing here places a symbol itself.
  *
  * Writes PIANOPATH_PH1_OUT (the per-file rows the music21 comparison reads, kept under build/) and
  * PIANOPATH_PH1_SUMMARY (the census, committed). Totals are given twice: over the source corpus (files under
@@ -34,13 +35,18 @@ interface FileRow {
   metres: string[];
   numbering: string;
   bars: number;
+  /** Today's `chartBars` count (the screen's: the distinct written numbers or the symbol count, the larger). */
+  legacyBars: number;
+  /** Symbols whose source measure the harmony part does not have: in no bar. */
+  unplaced: number;
   splitBars: number;
   restatementOnlyBars: number;
   restatementEvents: number;
   merged: number;
   mergedKinds: string[];
-  conflicts: { bar: number; offset: number; texts: string[]; kind: string }[];
-  outside: { bar: number; offset: number; length: number; text: string }[];
+  /** `bar` is the printed label, `source` the ordinal that is the bar's identity. */
+  conflicts: { bar: string; source: number; offset: number; texts: string[]; kind: string }[];
+  outside: { bar: string; source: number; offset: number; length: number; text: string }[];
   lateFirst: number;
   offBeat: number;
   threePlus: number;
@@ -56,7 +62,7 @@ function numberingOf(numbers: string[]): string {
   if (numbers.every((n, i) => n === String(i))) return '0..N-1 (pickup numbered 0)';
   const parsed = numbers.map((n) => Number.parseInt(n, 10));
   if (parsed.some((n) => !Number.isFinite(n))) return 'non-numeric numbers';
-  if (numbers.some((n) => String(Number.parseInt(n, 10)) !== n)) return 'suffixed numbers (e.g. 7X1, folded onto bar 7 by the chart)';
+  if (numbers.some((n) => String(Number.parseInt(n, 10)) !== n)) return 'suffixed numbers (e.g. 7X1; the legacy chartBars folds it onto bar 7, the source-keyed bars do not)';
   if (new Set(numbers).size < numbers.length) return 'repeated numbers';
   return 'gaps or other';
 }
@@ -64,8 +70,7 @@ function numberingOf(numbers: string[]): string {
 function rowOf(sha256: string, paths: string[], xml: string): FileRow | undefined {
   const { symbols, measures } = readHarmony(xml);
   if (symbols.length === 0) return undefined;
-  const measureCount = chartMeasureCount(xml, symbols.length);
-  const { bars, report } = chartSegments(symbols, measures, measureCount);
+  const { bars, report } = chartSegments(symbols, measures);
 
   // Which parts hold a harmony, the metres in force, and each part's measure count: the shared walk. The symbols'
   // staff, part and measure ordinal, in readHarmony's own order and filter (a named root in a numbered measure).
@@ -90,15 +95,15 @@ function rowOf(sha256: string, paths: string[], xml: string): FileRow | undefine
   const at = (symbol: ChordSymbol) => where[symbols.indexOf(symbol)];
   // A merged duplicate: the same chord at one place, on another staff, in another part, or on the same staff.
   const mergedKinds = report.merged.map((symbol) => {
-    const kept = symbols.find((s) => s !== symbol && same(s, symbol) && s.measure === symbol.measure && Math.max(0, s.offset) === Math.max(0, symbol.offset) && symbols.indexOf(s) < symbols.indexOf(symbol));
+    const kept = symbols.find((s) => s !== symbol && same(s, symbol) && s.source === symbol.source && Math.max(0, s.offset) === Math.max(0, symbol.offset) && symbols.indexOf(s) < symbols.indexOf(symbol));
     const a = kept ? at(kept) : undefined;
     const b = at(symbol);
     if (!a || !b) return 'unpaired';
     if (a.part !== b.part) return 'another part';
-    if (a.measure !== b.measure) return 'another measure with the same number';
+    if (a.measure !== b.measure) return 'another measure (cannot occur: merging is by source measure)';
     return a.staff !== b.staff ? 'another staff' : 'the same staff';
   });
-  // A conflict: from one measure, or from several measures folded onto one chart bar by their number.
+  // A conflict: from one source measure, or (a check that must now read zero) from several measures folded onto one bar.
   const conflictKinds = report.conflicts.map((c) => (new Set(c.symbols.map((s) => at(s)?.measure)).size > 1 ? 'measures sharing one bar number' : 'one measure'));
 
   const events = (bar: ChartBar) => bar.segments.filter((s) => !s.carried);
@@ -109,14 +114,14 @@ function rowOf(sha256: string, paths: string[], xml: string): FileRow | undefine
   let threePlus = 0;
   let maxEvents = 0;
   let carriedDiffers = 0;
-  const densest: FileRow['densest'] = [];
+  const densest: { bar: string; events: number; texts: string[] }[] = [];
   let previousFirst: ChordSymbol | null = null;
   for (const bar of bars) {
     const written = events(bar);
     if (written.length >= 2) splitBars += 1;
     if (written.length >= 3) threePlus += 1;
     maxEvents = Math.max(maxEvents, written.length);
-    if (written.length >= 6) densest.push({ bar: bar.measure, events: written.length, texts: written.map((s) => s.symbol?.text ?? `conflict(${(s.conflict ?? []).map((c) => c.text).join('|')})`) });
+    if (written.length >= 6) densest.push({ bar: bar.label ?? '', events: written.length, texts: written.map((s) => s.symbol?.text ?? `conflict(${(s.conflict ?? []).map((c) => c.text).join('|')})`) });
     if (written.length >= 1 && bar.segments[0]?.carried) lateFirst += 1;
     // A restatement: a written event whose chord is the one already sounding just before it in the bar.
     bar.segments.forEach((segment, i) => {
@@ -126,7 +131,7 @@ function rowOf(sha256: string, paths: string[], xml: string): FileRow | undefine
     // Today's chart carries the first symbol of the last bar with one; the segments carry what was sounding.
     const first = bar.segments[0];
     if (first?.carried && bar.segments.length === 1 && previousFirst && first.symbol && !same(first.symbol, previousFirst)) carriedDiffers += 1;
-    const here = symbols.find((s) => s.measure === bar.measure);
+    const here = symbols.find((s) => s.source === bar.source);
     if (here) previousFirst = here;
   }
   const offBeat = symbols.filter((s) => Math.abs(s.offset - Math.round(s.offset)) > 1e-6).length;
@@ -160,13 +165,15 @@ function rowOf(sha256: string, paths: string[], xml: string): FileRow | undefine
     metres: [...metres],
     numbering: numberingOf(numbers),
     bars: bars.length,
+    legacyBars: chartMeasureCount(xml, symbols.length),
+    unplaced: report.unplaced.length,
     splitBars,
     restatementOnlyBars,
     restatementEvents,
     merged: report.merged.length,
     mergedKinds,
-    conflicts: report.conflicts.map((c, i) => ({ bar: c.measure, offset: c.offset, texts: c.symbols.map((s) => s.text), kind: conflictKinds[i] ?? '' })),
-    outside: report.outside.map((o) => ({ bar: o.symbol.measure, offset: o.symbol.offset, length: o.length, text: o.symbol.text })),
+    conflicts: report.conflicts.map((c, i) => ({ bar: c.label ?? '', source: c.source, offset: c.offset, texts: c.symbols.map((s) => s.text), kind: conflictKinds[i] ?? '' })),
+    outside: report.outside.map((o) => ({ bar: o.symbol.label, source: o.symbol.source, offset: o.symbol.offset, length: o.length, text: o.symbol.text })),
     lateFirst,
     offBeat,
     threePlus,
@@ -204,7 +211,8 @@ function summarise(label: string, rows: FileRow[]): string[] {
     `bar statuses (harmony part, every measure): ${Object.entries(statusTotals).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${String(v)}`).join('; ')}`,
     `  incomplete and mismatched bars by kind: ${tally(mismatchKinds) || 'none'}`,
     `bar numbering of the harmony part: ${tally(rows.map((r) => r.numbering))}`,
-    `files where the chart's bar count (ChordChartScreen's max of the distinct measure numbers and the symbol count) exceeds the measures: ${String(count((r) => r.bars > new Set(r.measures.map((m) => m[1])).size))}, drawing ${String(sum((r) => Math.max(0, r.bars - new Set(r.measures.map((m) => m[1])).size)))} bars past the last measure (today's chart, before PH1; recorded, not PH1's)`,
+    `bars drawn past the last source measure by chartSegments: ${String(sum((r) => Math.max(0, r.bars - r.measures.length)))} (one bar per source measure); symbols whose source measure the harmony part lacks, in no bar: ${String(sum((r) => r.unplaced))}`,
+    `files where today's chartBars count (ChordChartScreen's max of the distinct measure numbers and the symbol count; the screen, unchanged) exceeds the source measures: ${String(count((r) => r.legacyBars > r.measures.length))}, drawing ${String(sum((r) => Math.max(0, r.legacyBars - r.measures.length)))} bars past the last measure (recorded, not PH1's)`,
     `files with chord symbols in more than one part: ${String(count((r) => r.harmonyParts.length > 1))}; files with more than one part: ${String(count((r) => r.partCount > 1))}`,
     `metres (files whose harmony part writes each; a file can write several): ${tally(rows.flatMap((r) => r.metres))}`,
     `files not in 4/4 alone: ${String(count((r) => !(r.metres.length === 1 && r.metres[0] === '4/4')))}`,
@@ -231,7 +239,7 @@ it('writes the census', () => {
   const lines = [
     '# PH1 census: positioned harmony, read by the new reader',
     '',
-    `Corpus: ${String(files.length)} distinct MusicXML contents (content/scores, the built bundle, the test fixtures, the PDMX quarry dumps; corpus.ts), ${String(rows.length)} with a chord symbol the reader names (quarry-only: ${String(rows.filter((r) => r.paths.every((p) => p.startsWith('quarry/'))).length)}, read for the music21 witness, not counted below). Read through toMusicXml, readHarmony and chartSegments with the chart's own bar count; census.table.ts.`,
+    `Corpus: ${String(files.length)} distinct MusicXML contents (content/scores, the built bundle, the test fixtures, the PDMX quarry dumps; corpus.ts), ${String(rows.length)} with a chord symbol the reader names (quarry-only: ${String(rows.filter((r) => r.paths.every((p) => p.startsWith('quarry/'))).length)}, read for the music21 witness, not counted below). Read through toMusicXml, readHarmony and chartSegments (one bar per source measure, keyed by the source-measure ordinal, not the written number); census.table.ts.`,
     '',
     ...summarise('Source corpus (content/scores/)', content),
     ...summarise('Bundle (built app/public/content/scores/)', bundle),
