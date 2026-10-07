@@ -16,7 +16,7 @@ FABLE §2 step 5 names jobs, not ids. "Jam comping and walking bass" matches onl
 
 ## 3. One app-wide gap, verified at the code
 
-`app/src/evidence/rungState.ts` never reads which hands a run played (`meetsStandard`, `measured`, lines 220-254; the word does not occur in the file), while the skill evidence does (`app/src/evidence/evidence.ts:307`). So a one-hand Duet run of a two-hand item meets a run requirement, against both drafts' `never_credits` and any rung whose item means both hands. It is app-wide, so app work under FABLE §10. Proposed: a requirement may say `hands: both`, read from `SessionRow.hands.played`; and a preflight class that fails a counted step whose tool can play one hand when the requirement does not say which. Rule on the shape.
+`app/src/evidence/rungState.ts` never reads which hands a run played (`meetsStandard`, `measured`, lines 220-254; the word does not occur in the file), while the skill evidence does (`app/src/evidence/evidence.ts:307`). Duet is a row on the Score screen's own runs (`app/src/ui/screens/ScoreScreen.ts:2025-2030`), so its run is saved with its mode (Keep tempo), and `meetsStandard` passes a Keep tempo row on accuracy and tempo alone (`rungState.ts:243-256`); no step before it drops one-hand rows (searched `rungState.ts` and `app/src/curriculum/`). So a one-hand Duet run of a two-hand item meets a run requirement, against both drafts' `never_credits` and any rung whose item means both hands. It is app-wide, so app work under FABLE §10. Proposed: a requirement may say `hands: both`, read from `SessionRow.hands.played`; and a preflight class that fails a counted step whose tool can play one hand when the requirement does not say which. Rule on the shape.
 
 ## 4. Decisions before the probes
 
