@@ -613,11 +613,35 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
         self.assertEqual(len(journey), 1)
         self.assertIn("does not exist", journey[0].message)
 
-    def test_r9_an_existing_browser_spec_passes_that_rule(self):
+    def test_r9_an_unrelated_existing_browser_spec_does_not_count_for_this_ability(self):
         rec = load()
         rec["status"] = "shipped"
         rec["acceptance_journey"] = "app/tests/e2e/chart-backing.spec.ts"
-        self.assertNotIn("acceptance_journey", fields(check(rec)[0]))
+        journey = [f for f in check(rec)[0] if f.field == "acceptance_journey"]
+        self.assertEqual(len(journey), 1)
+        self.assertIn("does not declare this chain", journey[0].message)
+
+    def test_r9_a_browser_spec_marked_for_this_ability_passes_that_rule(self):
+        tree = Tree()
+        self.addCleanup(tree.cleanup)
+        tree.write("app/tests/e2e/a7c1-acceptance.spec.ts", "// acceptance-ability: A7c.1\n")
+        rec = load()
+        rec["status"] = "shipped"
+        rec["acceptance_journey"] = "app/tests/e2e/a7c1-acceptance.spec.ts"
+        failures, _ = cc.check_record(rec, "copy.yaml", cc.Resolver(tree.root), TOOLS, tree.root)
+        self.assertNotIn("acceptance_journey", fields(failures))
+
+    def test_r9_a_browser_spec_marked_for_another_ability_does_not_count(self):
+        tree = Tree()
+        self.addCleanup(tree.cleanup)
+        tree.write("app/tests/e2e/a7c1-acceptance.spec.ts", "// acceptance-ability: B9\n")
+        rec = load()
+        rec["status"] = "shipped"
+        rec["acceptance_journey"] = "app/tests/e2e/a7c1-acceptance.spec.ts"
+        failures, _ = cc.check_record(rec, "copy.yaml", cc.Resolver(tree.root), TOOLS, tree.root)
+        journey = [f for f in failures if f.field == "acceptance_journey"]
+        self.assertEqual(len(journey), 1)
+        self.assertIn("// acceptance-ability: A7c.1", journey[0].message)
 
     def test_a_draft_needs_no_acceptance_path(self):
         rec = load()
