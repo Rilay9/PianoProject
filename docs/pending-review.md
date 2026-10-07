@@ -43822,3 +43822,17 @@ Each class has broken records that fail it; 42 tests.
 **Checks.** At landing: the facts re-proved (four, every bar) before the build; the content build passes; the preflight A7c.1 0 FAIL, A7b.1 4 FAIL (the three placement steps and the journey template); the whole content Python suite, 1,991 tests OK; the whole unit suite, one red beyond the standing blues.3, the app's fingerprint test, which named `metre.ts` missing from the app's own list (`app/src/data/measuringFingerprint.ts`); `metre.ts`, `tempoFromXml.ts` and `measureWalk.ts` added there, 29 of 29; `npx tsc -b` clean. Stored imports re-measure once on the next launch, as a definitions change intends. The builder: the browser specs red on the base and green after; lint clean.
 
 **Open.** The kit leads the click by about 50-70 ms in 4/4 too (existing); the help strip's Bass + drums line does not mention 4/4; the disabled chip is dimmed inline because `.chip` has no disabled style; at 568 × 320 the longer tempo label wraps; the screen still maps its old grid to source measures by printed number until PH2.
+
+### Entry 275 — PF2: the preflight's three ruled changes
+
+**What a learner meets.** Nothing directly. Scoreboard 1/28.
+
+**Done.**
+- **Earlier-rung review (class 3).** A step's item passes when the step names, by id and in the same clause as "review" or "prerequisite", a rung that lists the item and is in the placed rung's ancestry (`claims.rung_ancestry`). Six broken records fail (no rung named, no review word, different clauses, a rung that does not list the item, a rung that is not earlier, a partial id).
+- **The counted-drill journey (class 6).** A Reading-and-theory drill whose cards hold their answer pitches gets a template: opened from the rung's exercise row, every card played through the MIDI mock, the counts line polled. Requirements are simulated by distinct items per pool. The A7c.1 journey is byte-identical. The generated A7b.1 journey typechecks against the app's e2e config (a control with an injected type error failed); one throwaway browser run on its own port took jazz.6 from 0 of 2 to 1 of 2.
+- **Strict mode in CI.** `--strict` fails on any FAIL in a record that is not a draft, and exits 2 when no record ran. The ruling named docs-integrity; that workflow builds no content and the preflight needs the built catalogue, so the step sits in `ci.yml`'s content job after the content build, asserting the preflight and the catalogue exist.
+- 22 tests added red first (13 red before the change), 85 OK after.
+
+**Checks.** At landing: the preflight, CI-order, paths and checker tests OK; `--strict` on the real tree exits 0 (A7c.1 shipped, 0 FAIL; the three drafts' FAILs reported, not blocking). The step itself runs on CI for the first time on this push.
+
+**Open.** A7b.1's journey cannot show jazz.6 completing: the rung asks two distinct exercise runs plus the minor drill, and the record has one counted step (asked of the reviewer). Generated journeys lack the first-sight setup the shipped specs make in a `beforeEach`; the acceptance-journey builder adds it.

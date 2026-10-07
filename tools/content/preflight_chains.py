@@ -34,8 +34,9 @@ The six seed classes, each found by the A7c.1 slice (Entries 241-270 of ``docs/p
     loop's handler, the chord chart's door (``hasChordSymbols``) and whether its Comp and Bass + drums are independent
     (CB1), the standalone Free play route. A control whose mode is not the opening mode passes when the step or the
     rung's lesson names the mode with the control; a remembered Rhythm only before a Keep tempo step passes when the
-    step or the lesson says to switch it off. The item must be openable: an option of the placed rung, or of the rung
-    a "later rung" step names. What cannot be read statically (inside the Lab, whether a bar is on the page at rest)
+    step or the lesson says to switch it off. The item must be openable: an option of the placed rung, of the rung
+    a "later rung" step names, or of an earlier rung the step names by id in a clause that says review or prerequisite
+    (PF2: the rung must list the item and be in the placed rung's ancestry; an unnamed or unlisted rung fails). What cannot be read statically (inside the Lab, whether a bar is on the page at rest)
     is said and routed to class 6 (NOT-APPLICABLE, ``routed``).
  4. **Counted items match the claim** (G13, Entry 256). What the placed rung's requirements (``content/curriculum/
     stage-*.json``) count matches ``evidence.updates``: every named requirement item is named by id in an update, every
@@ -48,7 +49,9 @@ The six seed classes, each found by the A7c.1 slice (Entries 241-270 of ``docs/p
     A runtime item (built when it opens) writes no score the build can measure: NOT-APPLICABLE, said.
  6. **Journey derived from the record** (A7SH, Entry 270). A Playwright journey skeleton is generated from the
     record's steps (the route to the placed rung, each step's item opened with its mode, hand, toggles and loop, the
-    counted runs played through ``fixtures/midiMock.ts``, the rung's completion asserted), written to the output folder
+    counted runs played through ``fixtures/midiMock.ts``, the rung's completion asserted; a Reading-and-theory drill of a
+    kind whose cards hold their answer pitches is opened from its row and answered card by card through the mock,
+    PF2), written to the output folder
     (``journey-<ability>.spec.ts``), never to ``app/tests/e2e/``. Per step: PASS when a template made the step,
     NOT-APPLICABLE (``routed``, a ``test.fixme`` line) where no template exists for the tool. ``--compare SPEC``
     lists every difference between the generated steps and a hand-written journey (``compare_journey``).
@@ -63,8 +66,10 @@ the content build writes (``--content`` points elsewhere). Without the built cat
 a preflight that cannot read its inputs reports nothing.
 
 Output: one text file per record, ``preflight-<ability>.txt``, under ``--out`` (default
-``docs/prompts/runs/PF1``), the same text on stdout, and the generated journey. Report mode exits 0 with findings;
-``--strict`` exits 1 on any FAIL (blocking once the reviewer has read it; not wired into CI).
+``docs/prompts/runs/PF1``), the same text on stdout, and the generated journey. Report mode exits 0 with findings.
+``--strict`` (PF2; the reviewer's ruling, ``docs/review/responses/mt1-g6b-pf1-landing.md`` section 4) exits 1 on any FAIL
+in a record whose status is not ``draft`` (``reviewed``, ``shipped``), prints a draft's FAILs without blocking on them,
+and exits 2 when no record was run. ``ci.yml`` runs it after the content build.
 
 Reuse (CLAUDE.md, reuse before reinvention): the record reader and ref resolver are ``check_chains``'s; the hand rules
 are ``build.declared_hand`` and the verified-facts readers; the cut's marks are read by music21 against the cutter's
@@ -141,6 +146,12 @@ CLAIMS_NOT_COUNTED = re.compile(
     re.I)
 NUMBER_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8}
 LATER_RUNG = re.compile(r"\b(?:on a later rung|a new task line on)\b", re.I)
+#: A clause that says an item is met again as review of earlier learning (class 3, PF2): it must also name the rung.
+REVIEW_WORD = re.compile(r"\b(?:review|prerequisite)\b", re.I)
+#: The drill kinds whose cards each hold the pitches that answer them (``data-expects`` on the Drill screen), the ones a
+#: MIDI mock can play: the kinds feedback.ts's REVEALABLE_KINDS names ("a single set of keys to light").
+MIDI_DRILL_KINDS = {"chord", "inversion", "note-flash", "find-key", "mode", "chord-scale", "extended-chord",
+                    "roman-numeral"}
 
 
 # --------------------------------------------------------------------------------------
@@ -724,20 +735,51 @@ def lesson_says_off(text: str, control: str) -> str | None:
     return None
 
 
-def item_reach(item_id: str, rung: str | None, step: dict, ctx: Context) -> tuple[str, list[str]]:
-    """Where the step's item can be opened: an option of the placed rung, or of the rung a 'later rung' step names."""
-    listing = []
+def listing_rungs(item_id: str, ctx: Context) -> list[str]:
+    """Every rung whose exercise or song options list the item."""
+    found = []
     for _s, _u, lesson in ctx.lessons():
         ex, songs = rung_options(lesson)
         if item_id in ex or item_id in songs:
-            listing.append(lesson["id"])
+            found.append(lesson["id"])
+    return found
+
+
+def named_review_rung(item_id: str, rung: str | None, step: dict, ctx: Context) -> tuple[str, str] | None:
+    """The earlier rung a step names as the place the item is met again: a rung id written in a clause that says review
+    or prerequisite, that rung listing the item, and the rung being in the placed rung's ancestry (a rung every learner
+    at the placed rung has been through). (rung, clause), or None: an unnamed rung, a rung that does not list the item,
+    and a rung that is not earlier all leave the step failing."""
+    if not rung:
+        return None
+    earlier = ctx.ancestry().get(rung, set()) - {rung}
+    listing = listing_rungs(item_id, ctx)
+    sentences_of_step = [c for part in (step.get("action"), step.get("no_removal_reason")) for c in clauses(str(part or ""))]
+    for clause in sentences_of_step:
+        # An item id is not a word of the sentence (drill.review is not a review).
+        if not REVIEW_WORD.search(ID_RE.sub(" ", clause)):
+            continue
+        for named in listing:
+            if named in earlier and re.search(rf"(?<![\w.-]){re.escape(named)}(?![\w-]|\.\w)", clause):
+                return named, clause.strip()[:160]
+    return None
+
+
+def item_reach(item_id: str, rung: str | None, step: dict, ctx: Context) -> tuple[str, list[str]]:
+    """Where the step's item can be opened: an option of the placed rung, of the rung a 'later rung' step names, or of
+    an earlier rung the step names, by id, as review or prerequisite."""
+    listing = listing_rungs(item_id, ctx)
     if rung and rung in listing:
         return PASS, [f"{item_id} is an option of the placed rung {rung}"]
     if listing and LATER_RUNG.search(step_text(step)):
         return PASS, [f"a later-rung step: {item_id} is an option of {listing}"]
+    review = named_review_rung(item_id, rung, step, ctx)
+    if review:
+        return PASS, [f"an earlier-rung review: the step names {review[0]} (\"{review[1]}\"), which lists {item_id} and is "
+                      f"in {rung}'s ancestry"]
     if listing:
         return FAIL, [f"{item_id} is an option of {listing}, not of the placed rung {rung}; the step does not say it is "
-                      f"opened on a later rung"]
+                      f"opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite"]
     return FAIL, [f"{item_id} is an option of no rung: a lesson page opens items only by its rows (MODE-SHEET section "
                   f"31), so the learner meets it only by finding it in the Library"]
 
@@ -1105,7 +1147,7 @@ def check_taught(rec: dict, ctx: Context, placement: Placement) -> list[Result]:
 @dataclass
 class JourneyStep:
     record_step: int
-    kind: str  # 'lesson' | 'hear' | 'rhythm' | 'wait' | 'tempo' | 'later-rung' | 'fixme'
+    kind: str  # 'lesson' | 'hear' | 'rhythm' | 'wait' | 'tempo' | 'drill' | 'later-rung' | 'fixme'
     item: str | None = None
     title: str | None = None
     rung: str | None = None
@@ -1119,15 +1161,34 @@ class JourneyStep:
     note: str = ""
 
 
+def requirement_pool(req: dict, lesson: dict) -> list[str]:
+    """The items a runs requirement counts: those it names, else its pool of the rung's own options."""
+    ex, songs = rung_options(lesson)
+    return list(req.get("items") or {"exercises": ex, "songs": songs}.get(req.get("from"), ex + songs))
+
+
+def requirement_held(req: dict, counted_items: list[str], lesson: dict) -> bool:
+    """A runs requirement holds when ``count`` distinct items of its pool have a counted run (types.ts: "counted as
+    distinct items"). Any other kind of requirement is not simulated and is never held here."""
+    if req.get("kind") != "runs":
+        return False
+    pool = requirement_pool(req, lesson)
+    return len({i for i in counted_items if i in pool}) >= int(req.get("count") or 1)
+
+
+def requirements_held(counted_items: list[str], lesson: dict) -> int:
+    return sum(1 for r in lesson.get("requirements") or [] if r.get("kind") != "unjudged"
+               and requirement_held(r, counted_items, lesson))
+
+
 def plan_journey(rec: dict, ctx: Context, placement: Placement) -> list[JourneyStep]:
     rung = placement.rung
     lesson = ctx.lesson(rung)[2] if rung and ctx.lesson(rung) else {}
     requirements = [r for r in lesson.get("requirements") or [] if r.get("kind") != "unjudged"]
-    named = [i for r in requirements for i in r.get("items") or []]
     total = len(requirements)
     mastery = lesson.get("mastery") or {}
     tempo_floor = int(round(100 * float(mastery.get("minTempoPct") or 0.8)))
-    done = 0
+    counted_items: list[str] = []  # the distinct items the record's counted runs have played so far
     rhythm_on = False
     plan: list[JourneyStep] = []
     for n, step in enumerate(rec.get("steps") or [], 1):
@@ -1160,15 +1221,28 @@ def plan_journey(rec: dict, ctx: Context, placement: Placement) -> list[JourneyS
             plan.append(JourneyStep(n, "wait", item_id, title, rung=rung, mode="wait", hand=hand, loop=loop,
                                     counts="unchanged"))
         elif tool == "keep tempo" and item_id:
-            counted = item_id in named and bool(CLAIMS_COUNTED.search(said)) and not CLAIMS_NOT_COUNTED.search(said) and loop is None
-            if counted:
-                done += 1
+            counted = (bool(counted_by(item_id, lesson)) and bool(CLAIMS_COUNTED.search(said))
+                       and not CLAIMS_NOT_COUNTED.search(said) and loop is None)
+            if counted and item_id not in counted_items:
+                counted_items.append(item_id)
             plan.append(JourneyStep(n, "tempo", item_id, title, rung=rung, mode="tempo", hand=hand,
                                     rhythm=False if rhythm_on else None,
                                     duet=scaffold_has(step, "app plays the other hand"), loop=loop,
                                     tempo=max(tempo_floor + 10, 90) if counted else None,
-                                    counts=f"{done} of {total}" if counted else "unchanged"))
+                                    counts=f"{requirements_held(counted_items, lesson)} of {total}" if counted else "unchanged"))
             rhythm_on = False
+        elif tool == "reading and theory drills" and item_id and ((row or {}).get("drill") or {}).get("kind") in MIDI_DRILL_KINDS:
+            # A drill the MIDI mock can answer card by card. Opened from the placed rung's row it counts there when the
+            # step says so; opened from an earlier rung as review it counts there, and the placed rung's line holds still.
+            ex, songs = rung_options(lesson)
+            review = named_review_rung(item_id, rung, step, ctx)
+            opened = rung if item_id in ex + songs else (review[0] if review else (listing_rungs(item_id, ctx) or [None])[0])
+            counted = (opened == rung and bool(counted_by(item_id, lesson)) and bool(CLAIMS_COUNTED.search(said))
+                       and not CLAIMS_NOT_COUNTED.search(said))
+            if counted and item_id not in counted_items:
+                counted_items.append(item_id)
+            plan.append(JourneyStep(n, "drill", item_id, title, rung=opened,
+                                    counts=f"{requirements_held(counted_items, lesson)} of {total}" if counted else "unchanged"))
         else:
             on = "" if item_id else f" on {content.get('ref')} (no catalogue item: a Lab build or a lesson file)"
             plan.append(JourneyStep(n, "fixme", item_id, title, rung=rung,
@@ -1184,16 +1258,22 @@ def check_journey(rec: dict, ctx: Context, placement: Placement, plan: list[Jour
         else:
             out.append(Result(6, step.record_step, PASS, [describe(step)]))
     counted = [s for s in plan if s.counts and s.counts != "unchanged"]
+    counted_items = list(dict.fromkeys(s.item for s in counted if s.item))
     lesson = ctx.lesson(placement.rung)[2] if placement.rung and ctx.lesson(placement.rung) else {}
-    total = len([r for r in lesson.get("requirements") or [] if r.get("kind") != "unjudged"])
+    requirements = [r for r in lesson.get("requirements") or [] if r.get("kind") != "unjudged"]
+    total = len(requirements)
+    unheld = [(k, r) for k, r in enumerate(requirements, 1) if not requirement_held(r, counted_items, lesson)]
     if placement.rung is None:
         out.insert(0, Result(6, None, FAIL, ["no placed rung: the journey has no route and no completion to assert"]))
-    elif len(counted) != total:
-        out.insert(0, Result(6, None, FAIL, [f"the record's counted Keep tempo runs give {len(counted)} of the {total} "
-                                             f"requirements {placement.rung} counts: the journey cannot assert completion"]))
+    elif unheld:
+        what = [f"requirement {k} (" + (f"{r.get('count', 1)} run(s) of {r['items']}" if r.get("items") else
+                f"any {r.get('count', 1)} distinct runs from {r.get('from')}") + ")" for k, r in unheld]
+        out.insert(0, Result(6, None, FAIL, [f"the record's counted runs hold {total - len(unheld)} of the {total} "
+                                             f"requirements {placement.rung} counts: the journey cannot assert completion; "
+                                             f"not held: {'; '.join(what)}"]))
     else:
-        out.insert(0, Result(6, None, PASS, [f"route to {placement.rung}; {total} counted run(s) bring it to {total} of "
-                                             f"{total}; completion asserted on Plan"]))
+        out.insert(0, Result(6, None, PASS, [f"route to {placement.rung}; {len(counted)} counted run(s) bring it to {total} "
+                                             f"of {total}; completion asserted on Plan"]))
     return out
 
 
@@ -1222,6 +1302,64 @@ def describe(step: JourneyStep) -> str:
 
 def _ts(value) -> str:
     return json.dumps(value, ensure_ascii=False)
+
+
+#: The skeleton's helpers for a drill step, copied from the shipped ``app/tests/e2e/jazz6-minor-shells.spec.ts`` (the
+#: row's ``Open <title>`` button, the card's ``data-expects`` pitches struck through the MIDI mock, a tap on a held card,
+#: the stored set read from IndexedDB). Emitted only when the plan has a drill step.
+DRILL_HELPERS = [
+    "async function openDrillRow(page: Page, title: string, rung = RUNG): Promise<void> {",
+    "  await toLesson(page, rung);",
+    "  await page.locator('#lesson-exercises').getByRole('button', { name: `Open ${title}`, exact: true }).tap();",
+    "  await expect(page).toHaveURL(/#\\/drill\\//, { timeout: 30_000 });",
+    "  await expect(page.locator('[data-screen=\"drill\"]')).toHaveAttribute('data-drill', 'running', { timeout: 30_000 });",
+    "}",
+    "async function storedDrillRuns(page: Page, itemId: string): Promise<number> {",
+    "  return page.evaluate(",
+    "    (id) =>",
+    "      new Promise<number>((done, fail) => {",
+    "        const open = indexedDB.open('pianopath');",
+    "        open.onerror = () => fail(new Error(String(open.error)));",
+    "        open.onsuccess = () => {",
+    "          const db = open.result;",
+    "          const read = db.transaction('sessions', 'readonly').objectStore('sessions').getAll();",
+    "          read.onerror = () => fail(new Error(String(read.error)));",
+    "          read.onsuccess = () => {",
+    "            db.close();",
+    "            done((read.result as { itemId: string; mode: string }[]).filter((r) => r.itemId === id && r.mode.startsWith('drill:')).length);",
+    "          };",
+    "        };",
+    "      }),",
+    "    itemId,",
+    "  );",
+    "}",
+    "async function playDrillToFinish(page: Page, midi: MidiMock, itemId: string): Promise<void> {",
+    "  // Every card holds the pitches that answer it (data-expects). Play them, wait for the counter to move, and leave a",
+    "  // held card with a tap on the card, as the learner does. Nothing here decides what the right answer is.",
+    "  const screen = page.locator('[data-screen=\"drill\"]');",
+    "  const had = await storedDrillRuns(page, itemId);",
+    "  for (let card = 0; card < 200 && (await screen.getAttribute('data-drill')) !== 'finished'; card += 1) {",
+    "    if (await screen.getAttribute('data-paused')) {",
+    "      await page.locator('#drill-counter').tap();",
+    "      await expect.poll(async () => !(await screen.getAttribute('data-paused')) || (await screen.getAttribute('data-drill')) === 'finished').toBe(true);",
+    "      continue;",
+    "    }",
+    "    const want = ((await screen.getAttribute('data-expects')) ?? '').split(',').filter(Boolean).map(Number);",
+    "    if (want.length === 0) {",
+    "      await page.waitForTimeout(100);",
+    "      continue;",
+    "    }",
+    "    const before = (await page.locator('#drill-counter').textContent()) ?? '';",
+    "    for (const pitch of want) await midi.noteOn(pitch, 90);",
+    "    for (const pitch of want) await midi.noteOff(pitch);",
+    "    await expect",
+    "      .poll(async () => (await screen.getAttribute('data-drill')) === 'finished' || ((await page.locator('#drill-counter').textContent()) ?? '') !== before, { timeout: 15_000 })",
+    "      .toBe(true);",
+    "  }",
+    "  await expect(screen).toHaveAttribute('data-drill', 'finished', { timeout: 30_000 });",
+    "  await expect.poll(() => storedDrillRuns(page, itemId), { timeout: 15_000 }).toBeGreaterThan(had);",
+    "}",
+]
 
 
 def render_journey(rec: dict, ctx: Context, placement: Placement, plan: list[JourneyStep]) -> str:
@@ -1263,6 +1401,7 @@ def render_journey(rec: dict, ctx: Context, placement: Placement, plan: list[Jou
         "  await expect(page).toHaveURL(/#\\/score\\//, { timeout: 30_000 });",
         "  await expect(page.locator('#score-stage')).toHaveAttribute('data-settled', 'true', { timeout: 60_000 });",
         "}",
+        *(DRILL_HELPERS if any(s.kind == "drill" for s in plan) else []),
         "async function menu(page: Page, open: boolean): Promise<void> {",
         "  const sheet = page.locator('#score-more-sheet');",
         "  if ((await sheet.isVisible()) === open) return;",
@@ -1314,7 +1453,7 @@ def render_journey(rec: dict, ctx: Context, placement: Placement, plan: list[Jou
         f"test({_ts(f'{ability}: the journey derived from the record')}, async ({{ page }}) => {{",
         "  test.setTimeout(90 * 60_000);",
         "  const midi = await installMidiMock(page, { permission: 'granted' });",
-        *([] if any(s.kind == "wait" for s in plan) else ["  void midi; // the input is attached; no Wait for me step strikes it"]),
+        *([] if any(s.kind in ("wait", "drill") for s in plan) else ["  void midi; // the input is attached; no step strikes it"]),
         f"  // Route: Plan -> the tracks sheet -> {track} on -> Stage {stage} -> {rung}.",
         "  await page.goto('/#/plan');",
         "  await page.locator('#plan-tracks-open').tap();",
@@ -1341,6 +1480,17 @@ def render_journey(rec: dict, ctx: Context, placement: Placement, plan: list[Jou
             body.append("// The decision is the learner's: nothing is pressed and nothing is recorded.")
         elif s.kind == "later-rung":
             body.append(f"await openRow(page, {_ts(s.title)}, {_ts(s.rung)});")
+        elif s.kind == "drill":
+            if s.counts == "unchanged":
+                body.append("const before = await countsLine(page);")
+            body.append(f"await openDrillRow(page, {_ts(s.title)}" + ("" if s.rung == placement.rung else f", {_ts(s.rung)}") + ");")
+            if s.counts != "unchanged":
+                body.append("expect(page.url()).toContain(`rung=${RUNG}`);")
+            body.append(f"await playDrillToFinish(page, midi, {_ts(s.item)});")
+            if s.counts == "unchanged":
+                body.append("expect(await countsLine(page)).toBe(before);")
+            else:
+                body.append(f"await expect.poll(() => countsLine(page), {{ timeout: 15_000 }}).toMatch(/{s.counts}/);")
         else:
             if s.counts == "unchanged":
                 body.append("const before = await countsLine(page);")
@@ -1614,7 +1764,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--content", type=Path, default=None, help="the built content folder (default app/public/content)")
     parser.add_argument("--out", type=Path, default=None, help=f"where the reports go (default {DEFAULT_OUT})")
-    parser.add_argument("--strict", action="store_true", help="exit 1 on any FAIL")
+    parser.add_argument("--strict", action="store_true",
+                        help="exit 1 on any FAIL in a record whose status is not draft (reviewed, shipped); a draft's "
+                             "FAILs are reported and never block; exit 2 when no record was run")
     parser.add_argument("--compare", type=Path, action="append", default=[],
                         help="a hand-written journey spec to compare with the generated one of the record it declares")
     args = parser.parse_args(argv)
@@ -1629,7 +1781,12 @@ def main(argv: list[str] | None = None) -> int:
     paths = sorted(root.glob(CC.CHAINS_GLOB))
     if args.abilities:
         paths = [p for p in paths if p.stem in args.abilities]
+    if args.strict and not paths:
+        print(f"preflight --strict: no record found under {CC.CHAINS_GLOB}"
+              + (f" for {args.abilities}" if args.abilities else "") + ": a run of nothing must not pass", file=sys.stderr)
+        return 2
     failed = 0
+    blocking = 0
     for path in paths:
         rec = yaml.safe_load(path.read_text(encoding="utf-8"))
         shown = path.relative_to(root).as_posix()
@@ -1654,9 +1811,19 @@ def main(argv: list[str] | None = None) -> int:
             (out_dir / f"journey-compare-{path.stem}.txt").write_text(body, encoding="utf-8", newline="\n")
             text += "\n" + body
         sys.stdout.write(text + "\n")
-        failed += sum(1 for r in results if r.verdict == FAIL)
-    print(f"{len(paths)} record(s); {failed} FAIL in all; report mode" + (" (--strict: blocking)" if args.strict else ""))
-    return 1 if (args.strict and failed) else 0
+        mine = sum(1 for r in results if r.verdict == FAIL)
+        failed += mine
+        # A draft is what builders dispatch: its FAILs are reported. Anything else (reviewed, shipped, and a status the
+        # checker does not know) blocks, so only the one exempt status needs naming.
+        status = rec.get("status")
+        if args.strict:
+            exempt = status == "draft"
+            blocking += 0 if exempt else mine
+            print(f"strict: {path.stem} is {status}: {mine} FAIL, {'not blocking' if exempt else 'blocking'}")
+    print(f"{len(paths)} record(s); {failed} FAIL in all"
+          + (f", {blocking} blocking; --strict: a reviewed or shipped record's FAIL blocks, a draft's is reported"
+             if args.strict else "; report mode"))
+    return 1 if (args.strict and blocking) else 0
 
 
 if __name__ == "__main__":

@@ -87,7 +87,7 @@ CLASS 3: control reachable in its mode -- 4 PASS, 3 FAIL, 10 NOT-APPLICABLE (9 r
   step 2   PASS  [Free play, standalone; content/lessons/jazz.6.md]
            - Free play standalone: the #/play route exists (router.ts)
   step 3   FAIL  [Ear drills; drill.ear.seventh-qualities]
-           - FAIL: drill.ear.seventh-qualities is an option of ['jazz.5', 'theory.5'], not of the placed rung jazz.6; the step does not say it is opened on a later rung
+           - FAIL: drill.ear.seventh-qualities is an option of ['jazz.5', 'theory.5'], not of the placed rung jazz.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
            - a drill row of kind 'ear-chord' opens on the Drill screen
   step 4   PASS  [Reading and theory drills; drill.jazz.minor-ii-v-i-shells]
            - drill.jazz.minor-ii-v-i-shells is an option of the placed rung jazz.6
@@ -126,11 +126,11 @@ CLASS 3: control reachable in its mode -- 4 PASS, 3 FAIL, 10 NOT-APPLICABLE (9 r
            - the chart door opens: notation.chordCount > 0 (24)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
   step 14  FAIL  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15]
-           - FAIL: song.folk.insensatez-how-insensitive-jobim.pdmx is an option of ['latin'], not of the placed rung jazz.6; the step does not say it is opened on a later rung
+           - FAIL: song.folk.insensatez-how-insensitive-jobim.pdmx is an option of ['latin'], not of the placed rung jazz.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
            - the chart door opens: notation.chordCount > 0 (28)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
   step 15  FAIL  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx@bars=13-15]
-           - FAIL: song.folk.insensatez-how-insensitive-jobim.pdmx is an option of ['latin'], not of the placed rung jazz.6; the step does not say it is opened on a later rung
+           - FAIL: song.folk.insensatez-how-insensitive-jobim.pdmx is an option of ['latin'], not of the placed rung jazz.6; the step does not say it is opened on a later rung, nor name an earlier one of those rungs by id as review or prerequisite
            - the chart door opens: notation.chordCount > 0 (28)
            - ROUTED: what the chart shows in the step's bars (one symbol per bar, or a split bar's second chord) is read only when the chart is drawn
   step 16  NOT-APPLICABLE (routed to class 6)  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx]
@@ -228,17 +228,17 @@ CLASS 5: taught-set hold -- 0 PASS, 0 FAIL, 16 NOT-APPLICABLE
   step 16  NOT-APPLICABLE  [Chord chart; song.folk.insensatez-how-insensitive-jobim.pdmx]
            - content kind piece: not a generated item
 
-CLASS 6: journey derived from the record -- 2 PASS, 1 FAIL, 14 NOT-APPLICABLE (14 routed to class 6)
+CLASS 6: journey derived from the record -- 3 PASS, 1 FAIL, 13 NOT-APPLICABLE (13 routed to class 6)
   record   FAIL
-           - the record's counted Keep tempo runs give 0 of the 2 requirements jazz.6 counts: the journey cannot assert completion
+           - the record's counted runs hold 1 of the 2 requirements jazz.6 counts: the journey cannot assert completion; not held: requirement 1 (any 2 distinct runs from exercises)
   step 1   PASS  [lesson; content/lessons/jazz.6.md]
            - lesson
   step 2   NOT-APPLICABLE (routed to class 6)  [Free play, standalone; content/lessons/jazz.6.md]
            - no journey template for the tool 'Free play, standalone' on content/lessons/jazz.6.md (no catalogue item: a Lab build or a lesson file): a test.fixme line in the skeleton
   step 3   NOT-APPLICABLE (routed to class 6)  [Ear drills; drill.ear.seventh-qualities]
            - no journey template for the tool 'Ear drills': a test.fixme line in the skeleton
-  step 4   NOT-APPLICABLE (routed to class 6)  [Reading and theory drills; drill.jazz.minor-ii-v-i-shells]
-           - no journey template for the tool 'Reading and theory drills': a test.fixme line in the skeleton
+  step 4   PASS  [Reading and theory drills; drill.jazz.minor-ii-v-i-shells]
+           - drill; open 'Minor ii-V-i with shell voicings'; counts 1 of 2
   step 5   NOT-APPLICABLE (routed to class 6)  [Hear it; app/src/engine/sightReading.ts]
            - no journey template for the tool 'Hear it' on app/src/engine/sightReading.ts (no catalogue item: a Lab build or a lesson file): a test.fixme line in the skeleton
   step 6   NOT-APPLICABLE (routed to class 6)  [Read it; app/src/engine/sightReading.ts]

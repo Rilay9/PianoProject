@@ -26,6 +26,57 @@ async function openRow(page: Page, title: string, rung = RUNG): Promise<void> {
   await expect(page).toHaveURL(/#\/score\//, { timeout: 30_000 });
   await expect(page.locator('#score-stage')).toHaveAttribute('data-settled', 'true', { timeout: 60_000 });
 }
+async function openDrillRow(page: Page, title: string, rung = RUNG): Promise<void> {
+  await toLesson(page, rung);
+  await page.locator('#lesson-exercises').getByRole('button', { name: `Open ${title}`, exact: true }).tap();
+  await expect(page).toHaveURL(/#\/drill\//, { timeout: 30_000 });
+  await expect(page.locator('[data-screen="drill"]')).toHaveAttribute('data-drill', 'running', { timeout: 30_000 });
+}
+async function storedDrillRuns(page: Page, itemId: string): Promise<number> {
+  return page.evaluate(
+    (id) =>
+      new Promise<number>((done, fail) => {
+        const open = indexedDB.open('pianopath');
+        open.onerror = () => fail(new Error(String(open.error)));
+        open.onsuccess = () => {
+          const db = open.result;
+          const read = db.transaction('sessions', 'readonly').objectStore('sessions').getAll();
+          read.onerror = () => fail(new Error(String(read.error)));
+          read.onsuccess = () => {
+            db.close();
+            done((read.result as { itemId: string; mode: string }[]).filter((r) => r.itemId === id && r.mode.startsWith('drill:')).length);
+          };
+        };
+      }),
+    itemId,
+  );
+}
+async function playDrillToFinish(page: Page, midi: MidiMock, itemId: string): Promise<void> {
+  // Every card holds the pitches that answer it (data-expects). Play them, wait for the counter to move, and leave a
+  // held card with a tap on the card, as the learner does. Nothing here decides what the right answer is.
+  const screen = page.locator('[data-screen="drill"]');
+  const had = await storedDrillRuns(page, itemId);
+  for (let card = 0; card < 200 && (await screen.getAttribute('data-drill')) !== 'finished'; card += 1) {
+    if (await screen.getAttribute('data-paused')) {
+      await page.locator('#drill-counter').tap();
+      await expect.poll(async () => !(await screen.getAttribute('data-paused')) || (await screen.getAttribute('data-drill')) === 'finished').toBe(true);
+      continue;
+    }
+    const want = ((await screen.getAttribute('data-expects')) ?? '').split(',').filter(Boolean).map(Number);
+    if (want.length === 0) {
+      await page.waitForTimeout(100);
+      continue;
+    }
+    const before = (await page.locator('#drill-counter').textContent()) ?? '';
+    for (const pitch of want) await midi.noteOn(pitch, 90);
+    for (const pitch of want) await midi.noteOff(pitch);
+    await expect
+      .poll(async () => (await screen.getAttribute('data-drill')) === 'finished' || ((await page.locator('#drill-counter').textContent()) ?? '') !== before, { timeout: 15_000 })
+      .toBe(true);
+  }
+  await expect(screen).toHaveAttribute('data-drill', 'finished', { timeout: 30_000 });
+  await expect.poll(() => storedDrillRuns(page, itemId), { timeout: 15_000 }).toBeGreaterThan(had);
+}
 async function menu(page: Page, open: boolean): Promise<void> {
   const sheet = page.locator('#score-more-sheet');
   if ((await sheet.isVisible()) === open) return;
@@ -77,7 +128,6 @@ async function waitToSummary(page: Page, midi: MidiMock): Promise<void> {
 test("A7b.1: the journey derived from the record", async ({ page }) => {
   test.setTimeout(90 * 60_000);
   const midi = await installMidiMock(page, { permission: 'granted' });
-  void midi; // the input is attached; no Wait for me step strikes it
   // Route: Plan -> the tracks sheet -> jazz on -> Stage 6 -> jazz.6.
   await page.goto('/#/plan');
   await page.locator('#plan-tracks-open').tap();
@@ -105,9 +155,12 @@ test("A7b.1: the journey derived from the record", async ({ page }) => {
     test.fixme(true, "no journey template for the tool 'Ear drills'");
   });
 
-  // record step 4: fixme; open 'Minor ii-V-i with shell voicings'
+  // record step 4: drill; open 'Minor ii-V-i with shell voicings'; counts 1 of 2
   await test.step("step 4", async () => {
-    test.fixme(true, "no journey template for the tool 'Reading and theory drills'");
+    await openDrillRow(page, "Minor ii-V-i with shell voicings");
+    expect(page.url()).toContain(`rung=${RUNG}`);
+    await playDrillToFinish(page, midi, "drill.jazz.minor-ii-v-i-shells");
+    await expect.poll(() => countsLine(page), { timeout: 15_000 }).toMatch(/1 of 2/);
   });
 
   // record step 5: fixme

@@ -124,6 +124,20 @@ jobs:
         # skipping; tools/content/tests/test_ci_order.py holds this order.
         run: python3 -m unittest discover -s tools/content/tests -t tools/content -v
 
+      # The chain preflight in strict mode (PF2, 2026-10-07; the reviewer's ruling, responses/
+      # mt1-g6b-pf1-landing.md section 4). It lives here, not in docs-integrity.yml: it reads the built
+      # catalogue and exits 2 without one, and that workflow installs PyYAML alone and builds no content.
+      # `--strict` fails the step on any FAIL in a record whose status is reviewed or shipped (or any status
+      # but draft); a draft record's FAILs are printed and never fail it. The two `test -f` lines make a missing
+      # preflight or a missing catalogue fail here by name; the script itself exits 2 when no record was run.
+      # Reports go to build/preflight, never over the committed docs/prompts/runs/PF1.
+      - name: Chain preflight, strict
+        run: |
+          set -euo pipefail
+          test -f tools/content/preflight_chains.py
+          test -f app/public/content/catalog.json
+          python3 tools/content/preflight_chains.py --strict --out build/preflight
+
       # The three MAESTRO performances the converter harness's real-recording
       # class and the parity reference read (Q47; the owner's decision of
       # 2026-09-28). MAESTRO v3.0.0, MIDI only, from

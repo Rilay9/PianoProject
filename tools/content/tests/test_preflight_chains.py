@@ -7,6 +7,10 @@ one way that class exists to catch, which fails naming the evidence. The constru
 cases on the real tree (the shipped A7c.1 record, its lesson, the app's own code) run only where the built catalogue is
 present (`app/public/content/catalog.json`, written by `tools/content/build.py`), and say so when skipped.
 
+PF2 (2026-10-07) added three things, each with its broken records below: `--strict` fails only a record whose status is
+`reviewed` or `shipped` (a draft's FAILs are reported), and CI runs it that way after the content build; class 3 accepts
+an earlier rung named by id as review or prerequisite; class 6 has a template for a counted Reading-and-theory drill.
+
 Temporary files go under the repository's gitignored `build/test_preflight_chains/`.
 
 Run: `py -3.11 -m unittest tools.content.tests.test_preflight_chains`
@@ -193,6 +197,56 @@ def record() -> dict:
                         f"One Keep tempo run of the cut, {CUT}, at the pass pair, opened from t.2."],
             "self_checked": ["x"], "never_credits": ["A run of exercise.cell.f standing for the counted run."]},
     }
+
+
+def with_review_drill(ctx: pf.Context) -> pf.Context:
+    """The constructed tree plus a drill that only rung 1.1 lists (the placed rung t.2 has 1.1 in its ancestry)."""
+    ctx.catalog.append({"id": "drill.review", "title": "A review drill", "type": "drill", "file": None,
+                        "drill": {"kind": "chord"}, "measurement": {"status": "runtime", "reason": "made when it opens"}})
+    ctx.by_id["drill.review"] = ctx.catalog[-1]
+    ctx.lesson("1.1")[2]["exerciseOptions"] = ["drill.review"]
+    return ctx
+
+
+def review_record(action: str) -> dict:
+    rec = record()
+    rec["steps"].append(step("Reading and theory drills", "generated", "drill.review", action, "A drill row.",
+                             ["app plays it"]))
+    return rec
+
+
+def with_counted_drill(ctx: pf.Context, *, kind: str = "chord", generic: bool = False) -> pf.Context:
+    """The constructed tree plus a drill t.2 lists and a requirement that names it (and, for A7b.1's shape, the generic
+    requirement of any two distinct exercises)."""
+    ctx.catalog.append({"id": "drill.counted", "title": "A counted drill", "type": "drill", "file": None,
+                        "drill": {"kind": kind}, "measurement": {"status": "runtime", "reason": "made when it opens"}})
+    ctx.by_id["drill.counted"] = ctx.catalog[-1]
+    lesson = ctx.lesson("t.2")[2]
+    lesson["exerciseOptions"] = lesson["exerciseOptions"] + ["drill.counted"]
+    lesson["requirements"] = [r for r in lesson["requirements"] if r["from"] == "songs"] + (
+        [{"kind": "runs", "from": "exercises", "count": 2}] if generic else
+        [{"kind": "runs", "from": "exercises", "items": ["exercise.cell.c"], "count": 1}]
+    ) + [{"kind": "runs", "from": "exercises", "items": ["drill.counted"], "count": 1}]
+    return ctx
+
+
+def drill_record(*, counted: bool = True, second_exercise: bool = False) -> dict:
+    """The good record with a drill step: the songs requirement's cut run, the drill, and (optionally) the cell run."""
+    said = ("Plays the drill's cards. This is the counted run." if counted else "Plays the drill's cards.")
+    recorded = ("A drill row that counts toward the requirement whose items name this drill." if counted
+                else "A drill row; not counted: nothing requires it.")
+    rec = record()
+    rec["steps"] = [s for s in rec["steps"] if not (s["tool"] == "Keep tempo" and s["content"]["ref"] == "exercise.cell.c")]
+    rec["steps"].append(step("Reading and theory drills", "generated", "drill.counted", said, recorded, ["app plays it"]))
+    if second_exercise:
+        rec["steps"].append(step("Keep tempo", "generated", "exercise.cell.c", "Plays the cell in C. This is the counted run.",
+                                 "A session row that counts toward the exercises requirement."))
+    rec["evidence"]["updates"] = [
+        f"One Keep tempo run of the cut, {CUT}, at the pass pair, opened from t.2.",
+        "One run of drill.counted at the pass accuracy, opened from t.2."]
+    if second_exercise:
+        rec["evidence"]["updates"].append("One Keep tempo run of exercise.cell.c at the pass pair, opened from t.2.")
+    return rec
 
 
 def verdicts(results: list[pf.Result], cls: int) -> dict:
@@ -432,6 +486,56 @@ class Class3ControlReachable(unittest.TestCase):
         self.assertEqual(verdicts(run(rec, context()), 3)[7], pf.FAIL)
 
 
+class Class3EarlierRungReview(unittest.TestCase):
+    """PF2: a step may open an item that only an earlier rung lists, when it names that rung by id and says review or
+    prerequisite (A7b.1's step 3 opens the seventh-quality ear drill on jazz.5 as review)."""
+
+    def reach(self, action: str, ctx: pf.Context | None = None):
+        results = run(review_record(action), ctx or with_review_drill(context()))
+        return verdicts(results, 3)[len(review_record(action)["steps"])], evidence(results, 3, len(review_record(action)["steps"]))
+
+    def test_an_earlier_rung_named_by_id_as_review_passes(self):
+        verdict, text = self.reach("Opens drill.review on 1.1 as review of the earlier rung.")
+        self.assertEqual(verdict, pf.PASS, text)
+        self.assertIn("an earlier-rung review: the step names 1.1", text)
+
+    def test_the_word_prerequisite_passes_too(self):
+        self.assertEqual(self.reach("Opens drill.review from the prerequisite rung 1.1.")[0], pf.PASS)
+
+    def test_broken_a_step_that_names_no_rung(self):
+        verdict, text = self.reach("Opens drill.review as review of what came before.")
+        self.assertEqual(verdict, pf.FAIL)
+        self.assertIn("nor name an earlier one of those rungs by id as review or prerequisite", text)
+
+    def test_broken_a_rung_named_without_saying_review_or_prerequisite(self):
+        self.assertEqual(self.reach("Opens drill.review on 1.1.")[0], pf.FAIL)
+
+    def test_broken_a_rung_named_in_one_clause_and_review_said_in_another(self):
+        self.assertEqual(self.reach("Opens drill.review on 1.1; this is review.")[0], pf.FAIL)
+
+    def test_broken_a_named_rung_that_does_not_list_the_item(self):
+        # t.2 is the placed rung and does not list it; 1.1 is not what the step names.
+        self.assertEqual(self.reach("Opens drill.review on t.2 as review.")[0], pf.FAIL)
+
+    def test_broken_a_named_rung_that_is_not_earlier(self):
+        ctx = with_review_drill(context())
+        later = {"id": "t.3", "concepts": [], "textFile": "lessons/t.3.md", "prerequisites": ["t.2"],
+                 "exerciseOptions": ["drill.review"], "songOptions": []}
+        ctx.curriculum["stages"][1]["units"][0]["lessons"].append(later)
+        ctx._ancestry = None
+        verdict, text = self.reach("Opens drill.review on t.3 as review.", ctx)
+        self.assertEqual(verdict, pf.FAIL, text)
+
+    def test_broken_a_rung_id_that_is_only_part_of_a_longer_id(self):
+        self.assertEqual(self.reach("Opens drill.review on 1.1.2 as review.")[0], pf.FAIL)
+
+    def test_the_placed_rung_and_the_later_rung_cases_are_unchanged(self):
+        self.assertEqual(verdicts(run(record(), context()), 3)[3], pf.PASS)
+        rec = record()
+        rec["steps"][7]["content"]["ref"] = "song.nowhere"
+        self.assertEqual(verdicts(run(rec, context()), 3)[8], pf.FAIL)
+
+
 class Class4CountedItems(unittest.TestCase):
     def test_the_named_requirements_match_the_updates(self):
         results = run(record(), context())
@@ -537,6 +641,81 @@ test('walk', async ({ page }) => {
         self.assertTrue(any(line.startswith("record step 5 (") and "no hand-written step" in line for line in lines))
 
 
+class Class6CountedDrill(unittest.TestCase):
+    """PF2: a counted Reading-and-theory drill run has a journey template (A7b.1's counted minor drill)."""
+
+    def plan(self, rec: dict, ctx: pf.Context):
+        results, placement, plan = pf.run_record(rec, ctx)
+        return results, placement, plan
+
+    def test_a_counted_drill_opens_from_the_rungs_row_plays_its_cards_and_moves_the_counts_line(self):
+        ctx = with_counted_drill(context())
+        rec = drill_record()
+        results, placement, plan = self.plan(rec, ctx)
+        drill = [s for s in plan if s.kind == "drill"]
+        self.assertEqual([s.record_step for s in drill], [len(rec["steps"])])
+        self.assertEqual(drill[0].counts, "2 of 3")  # the cut run first (1 of 3), then the drill
+        self.assertEqual(verdicts(results, 6)[len(rec["steps"])], pf.PASS)
+        text = pf.render_journey(rec, ctx, placement, plan)
+        self.assertIn('await openDrillRow(page, "A counted drill");', text)
+        self.assertIn('await playDrillToFinish(page, midi, "drill.counted");', text)
+        self.assertIn("expect(page.url()).toContain(`rung=${RUNG}`);", text)
+        self.assertIn("toMatch(/2 of 3/)", text)
+        self.assertNotIn("test.fixme(true, \"no journey template for the tool 'Reading and theory drills'", text)
+        self.assertIn("installMidiMock", text)
+
+    def test_the_drill_helper_reads_what_the_card_expects_and_leaves_no_card_unanswered(self):
+        ctx = with_counted_drill(context())
+        rec = drill_record()
+        _results, placement, plan = self.plan(rec, ctx)
+        text = pf.render_journey(rec, ctx, placement, plan)
+        self.assertIn("data-expects", text)
+        self.assertIn("'data-drill', 'finished'", text)
+        self.assertIn("midi.noteOn(pitch, 90)", text)
+
+    def test_a_drill_the_step_does_not_count_leaves_the_counts_line_where_it_was(self):
+        ctx = with_counted_drill(context())
+        rec = drill_record(counted=False)
+        _results, placement, plan = self.plan(rec, ctx)
+        drill = [s for s in plan if s.kind == "drill"][0]
+        self.assertEqual(drill.counts, "unchanged")
+        text = pf.render_journey(rec, ctx, placement, plan)
+        self.assertIn("const before = await countsLine(page);", text)
+
+    def test_broken_a_drill_kind_no_midi_answer_can_play_stays_a_fixme_line(self):
+        ctx = with_counted_drill(context(), kind="rhythm")
+        rec = drill_record()
+        results, placement, plan = self.plan(rec, ctx)
+        self.assertEqual([s.kind for s in plan][-1], "fixme")
+        self.assertEqual(verdicts(results, 6)[len(rec["steps"])], pf.NA)
+        self.assertIn("test.fixme(true", pf.render_journey(rec, ctx, placement, plan))
+
+    def test_broken_a_counted_drill_alone_cannot_complete_a_rung_that_also_asks_two_distinct_exercises(self):
+        # A7b.1's shape: the named drill, and any two distinct exercise runs. One drill run holds the first and gives the
+        # second one of its two, so the journey cannot assert completion until a second exercise run is in the record.
+        ctx = with_counted_drill(context(), generic=True)
+        rec = drill_record()
+        results, _placement, plan = self.plan(rec, ctx)
+        self.assertEqual(verdicts(results, 6)[None], pf.FAIL)
+        self.assertIn("requirement", evidence(results, 6, None))
+        self.assertIn("any 2 distinct runs from exercises", evidence(results, 6, None))
+
+    def test_the_second_exercise_run_completes_it(self):
+        ctx = with_counted_drill(context(), generic=True)
+        rec = drill_record(second_exercise=True)
+        results, _placement, plan = self.plan(rec, ctx)
+        self.assertEqual(verdicts(results, 6)[None], pf.PASS, evidence(results, 6, None))
+        self.assertEqual([s.counts for s in plan if s.counts and s.counts != "unchanged"][-1], "3 of 3")
+
+    def test_the_ear_drill_row_still_has_no_template(self):
+        # The step that opens an ear drill is self-checked ("says its quality aloud"); only Reading and theory drills
+        # are templated.
+        ctx = with_counted_drill(context(), kind="ear-chord")
+        rec = drill_record()
+        rec["steps"][-1]["tool"] = "Ear drills"
+        self.assertEqual([s.kind for s in self.plan(rec, ctx)[2]][-1], "fixme")
+
+
 class TheCommandLine(unittest.TestCase):
     def test_report_mode_exits_0_and_strict_exits_1_on_a_fail(self):
         from unittest import mock
@@ -553,6 +732,61 @@ class TheCommandLine(unittest.TestCase):
         self.assertIn("a constructed failure", text)
         self.assertTrue((out / "journey-A7c.1.spec.ts").is_file())
 
+    def chains_root(self, name: str, **statuses: str) -> Path:
+        """A root holding one record per ``ability=status`` (the abilities are the file names)."""
+        root = SCRATCH / name
+        shutil.rmtree(root, ignore_errors=True)
+        (root / "docs" / "chains").mkdir(parents=True)
+        for ability, status in statuses.items():
+            (root / "docs" / "chains" / f"{ability}.yaml").write_text(
+                yaml.safe_dump({"ability": ability, "status": status, "steps": []}), encoding="utf-8")
+        return root
+
+    def run_main(self, root: Path, *args: str) -> tuple[int, str]:
+        import contextlib
+        import io
+        from unittest import mock
+
+        failing = ([pf.Result(4, None, pf.FAIL, ["a constructed failure"])], pf.Placement("t.2", []), [])
+        out = io.StringIO()
+        with mock.patch.object(pf.Context, "from_tree", lambda root, content=None: context()), \
+                mock.patch.object(pf, "run_record", lambda rec, ctx: failing), contextlib.redirect_stdout(out), \
+                contextlib.redirect_stderr(out):
+            code = pf.main(["--root", str(root), "--out", str(root / "out"), *args])
+        return code, out.getvalue()
+
+    def test_strict_blocks_a_reviewed_or_shipped_record_and_only_reports_a_drafts_fails(self):
+        draft = self.chains_root("strict-draft", **{"D.1": "draft"})
+        code, shown = self.run_main(draft, "--strict")
+        self.assertEqual(code, 0, "a draft's FAILs are reported, not blocking")
+        self.assertIn("1 FAIL in all", shown)
+        self.assertIn("draft: 1 FAIL, not blocking", shown)
+        for status in ("reviewed", "shipped"):
+            with self.subTest(status=status):
+                code, shown = self.run_main(self.chains_root(f"strict-{status}", **{"R.1": status}), "--strict")
+                self.assertEqual(code, 1)
+                self.assertIn(f"{status}: 1 FAIL, blocking", shown)
+
+    def test_strict_with_a_draft_and_a_reviewed_record_blocks_on_the_reviewed_one_alone(self):
+        root = self.chains_root("strict-mixed", **{"D.1": "draft", "R.1": "reviewed"})
+        code, shown = self.run_main(root, "--strict")
+        self.assertEqual(code, 1)
+        self.assertIn("2 FAIL in all, 1 blocking", shown)
+        # without --strict nothing blocks, whatever the status
+        self.assertEqual(self.run_main(root)[0], 0)
+
+    def test_strict_refuses_to_pass_having_run_no_record(self):
+        # A path that matches nothing must not read as a pass.
+        root = self.chains_root("strict-none")
+        code, shown = self.run_main(root, "--strict")
+        self.assertEqual(code, 2)
+        self.assertIn("no record", shown)
+
+    def test_a_record_without_a_known_status_blocks_under_strict(self):
+        # Fail closed: only a draft is exempt.
+        code, _shown = self.run_main(self.chains_root("strict-odd", **{"O.1": "approved"}), "--strict")
+        self.assertEqual(code, 1)
+
     def test_no_built_catalogue_stops_the_run_with_exit_2(self):
         with self.assertRaises(pf.InputsMissing) as stop:
             pf.Context.from_tree(ROOT, SCRATCH / "no-such-content")
@@ -561,6 +795,41 @@ class TheCommandLine(unittest.TestCase):
 
         with mock.patch("sys.stderr"):
             self.assertEqual(pf.main(["--content", str(SCRATCH / "no-such-content"), "--out", str(SCRATCH / "cli2")]), 2)
+
+
+class TheWorkflowStep(unittest.TestCase):
+    """The strict preflight runs in ci.yml's content job, after the content build whose catalogue it reads (docs-integrity
+    installs PyYAML alone and builds no content, so the preflight, which exits 2 without the catalogue, cannot run there)."""
+
+    WORKFLOW = ROOT / ".github" / "workflows" / "ci.yml"
+
+    def steps(self) -> list[tuple[str, str]]:
+        text = self.WORKFLOW.read_text(encoding="utf-8")
+        job = text.split("\n  content-and-unit:\n", 1)[1].split("\n  e2e:\n", 1)[0]
+        parts = re.split(r"\n      - (?=name:|uses:)", "\n" + job.split("    steps:\n", 1)[1])
+        found = []
+        for part in (x for x in parts if x.strip()):
+            name = re.match(r"name: (.+)", part)
+            found.append((name.group(1).strip() if name else part.splitlines()[0], part))
+        return found
+
+    def test_the_step_runs_strict_after_the_content_build_and_asserts_its_own_file(self):
+        steps = self.steps()
+        names = [n for n, _ in steps]
+        at = next(i for i, (_n, body) in enumerate(steps) if "tools/content/preflight_chains.py --strict" in body)
+        self.assertGreater(at, names.index("Build content"), "the catalogue is built before the preflight reads it")
+        body = steps[at][1]
+        self.assertRegex(body, r"test -f tools/content/preflight_chains\.py", "a missing preflight must not pass silently")
+        self.assertRegex(body, r"test -f app/public/content/catalog\.json")
+        self.assertIn("--out build/preflight", body)  # never the committed docs/prompts/runs/PF1 reports
+        self.assertNotIn("continue-on-error", body)
+        self.assertEqual(sum("preflight_chains.py" in b for _n, b in steps), 1)
+
+    def test_docs_integrity_does_not_run_it(self):
+        # It builds nothing, so the preflight would exit 2 there; the reason is written where the step is.
+        text = (ROOT / ".github" / "workflows" / "docs-integrity.yml").read_text(encoding="utf-8")
+        self.assertNotIn("preflight_chains.py", text)
+        self.assertIn("preflight_chains.py", self.WORKFLOW.read_text(encoding="utf-8"))
 
 
 # ------------------------------------------------------------------------------------------------
