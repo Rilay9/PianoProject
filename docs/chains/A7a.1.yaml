@@ -36,6 +36,13 @@
 #    (docs/review/pdmx-quarry-2026-10-05/summary/A-blues/blues-riff-in-c-120-bpm-Qmb7mkEf....txt). It is not in
 #    content/sources/pdmx.json or the catalogue (check_chains Resolver: the CID does not resolve, 2026-10-07): intake
 #    IM-9 has not run.
+#  - VERIFIED (two readers) and CORRECTED, 2026-10-07, the A7a.1 probe (docs/prompts/runs/A7a1/; intake record
+#    docs/prompts/runs/curriculum-review-2026-10-05/intake/Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.md): the line
+#    above holds on raw sha256 69d5bb7e... (a raw MusicXML walk and music21 agree on all 249 heads and 54 rests): 18
+#    riff B4s (bars 3-4, 7-8, 12) over the voicing's Bb3; the riff's Bb5 in bar 9 sits over the G7 voicing's B4.
+#    Correction: bar 10 has one double-dotted sixteenth (F4+F5), not "dotted sixteenths". The drums are unpitched
+#    (144 heads). IM-9 has now run: NOT ADMITTED (quarry gate 2 FAIL by staff relabelling, an unpitched part, the
+#    ensemble shape); the catalogue still cannot resolve the CID, so steps 7-9 stay unresolved until the edition lands.
 #  - VERIFIED, its role is narrowed: the B natural is structural, never silently changed to B♭; TRANSFER material with a
 #    harmony and note-choice caveat, not the canonical C7 blues-note MODEL (ABILITY-MAP.md:316;
 #    docs/review/pdmx-quarry-2026-10-05/PARALLEL-UNBLOCKS-2026-10-05.md:121-122). So no step uses it to teach which notes
@@ -45,6 +52,11 @@
 #    staves (INTAKE-GATE.md:23, inferred from its docstring, not run). Refuted if convert puts the riff and the voicings
 #    on one staff, or keeps the drums. The re-staffing is a build (CK-7 extended, ABILITY-MAP.md:315); steps 7-10 are
 #    blocked on it and on intake.
+#  - VERIFIED, 2026-10-07 (the probe, converter-report.json): the hypothesis above holds: convert_file writes riff (57
+#    heads), voicings (36) and drums (144 unpitched heads) on staff 1 and the roots (12) on staff 2, losing nothing.
+#    The ruling's re-staffed edition (docs/review/responses/a7a-drafts.md section 8, A7a1-bluesriff-restaff) is drafted
+#    as docs/prompts/runs/A7a1/brief-bluesriff-restaff.md: keeping the parts Riff and P1-Staff2 before the unchanged
+#    convert.normalise gave, in scratch, the 57 riff and 12 root heads alone, no unpitched head (one reader).
 #  - VERIFIED, a one-hand run counts like a both-hands run: meetsStandard and measured (app/src/evidence/rungState.ts:220-254)
 #    read accuracy, mode, tempo and rhythmOnly and never the row's hands (no `hands` token in the file, grep 2026-10-07);
 #    MODE-SHEET section 13 says no requirement reads hands.appPlayed. So a requirement naming the C shuffle would also be
@@ -57,11 +69,23 @@
 #  - VERIFIED, the Lab's Blues preset (sightReading.ts:2433 onward): progression, left hand and bars locked, key free,
 #    bed `hold`; Jam it plays a root-and-fifth bass with the bar's chord on the backbeat and counts notes in the blues
 #    scale per time round, keeping none (content/lessons/jam.6.md:44-50; MODE-SHEET section 7b).
-#  - HYPOTHESIS, Hold the chords counts a major third over a dominant chord (E over C7, the slide blues.8 itself
-#    suggests at blues.8.md:43) as outside the blues scale. Refuted by the scale LabScreen.ts / sightReading.ts uses for
-#    the blues progression, read.
+#  - VERIFIED, 2026-10-07 by reading (was HYPOTHESIS): Hold the chords counts against the blues scale for the blues
+#    progression (LabScreen.ts:563-567 currentTradeScale; tradingFours.ts:209-223 tradeScale; drills/factories.ts:292,
+#    offsets 0 3 5 6 7 10), in C: C Eb F Gb G Bb. So E over C7 (blues.8.md:43) counts as outside, as do A and B; the
+#    riff's B naturals would too.
 #  - HYPOTHESIS, Hear it on the re-staffed Blues Riff sounds the riff and the roots only (the drums dropped). Refuted by
-#    the converted file.
+#    the converted file. 2026-10-07: the converter keeps the drums (above); the re-staffed edition omits them by
+#    construction (scratch, one reader); stays HYPOTHESIS until the edition is built and rendered.
+#  - VERIFIED, 2026-10-07 by reading, the click on the Score screen (steps 2-5): the screen's Metronome row is Off by
+#    default (ScoreScreen.ts:760); it starts the session's Metronome, the one click constructed in ScoreScreen.ts,
+#    score/ and PracticeEngine.ts (grep), which sounds the count-in as well (ScoreSession.ts:575, 903-915); the
+#    count-in is otherwise drawn as dots (ScoreScreen.ts:3197-3208); Metronome volume 0 sets its gain to 0 (Metronome.ts:199-200)
+#    and is stripped from the engine's options (ScoreSession.ts:536), so the clock, cursor and measurement are
+#    unchanged. Steps 2 and 5 list "click" as a scaffold the learner must switch on; step 3 needs only the row Off.
+#    The same Settings value is the volume of the Lab's bed and the chart's backing: every bed event (bass, chord,
+#    drums) plays through DrumKit, whose gain is set from it (backingLoop.ts:198-232; LabScreen.ts:777, 918;
+#    ChordChartScreen.ts:319-325), so a learner who leaves it at 0 after step 3 meets a silent bed at step 6 (by
+#    reading, not run). The placement lane decides the step-3 wording (the Score screen's row Off is the narrower one).
 # Not used, and why: B2's Morton and Pinetop-Parham candidates (ABILITY-MAP.md:314) are the MODEL before the graded task
 # but are not admitted (IM-7, IM-8) and their bars are unchosen; FABLE section 2 names Blues Riff alone as this
 # ability's chosen music. They join this record after their own intake.

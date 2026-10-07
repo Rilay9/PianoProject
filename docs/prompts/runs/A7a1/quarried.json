@@ -1,0 +1,48 @@
+{
+  "header": {
+    "pdmxDir": "<home>\\repos\\Piano Stuff",
+    "layout": "mxl.tar.gz",
+    "note": "one-row shortlist for the A7a.1 probe (single-CID workaround): the Qmb7 CSV row run through shortlist.select() over a one-row CSV; extract.py --cid and quarry.py read only candidates.json or index.json",
+    "csvSha256": "66d82911c027e08bff869df6f16a379570d742ca5ca4d7712da262bf74bcb1f7",
+    "csvBytes": 209574867,
+    "csvRows": 254077,
+    "rejectionRates": {
+      "6": {
+        "offered": 1,
+        "passed": 0,
+        "reasons": {
+          "round-trip": 1
+        },
+        "rejectionRate": 1.0
+      }
+    }
+  },
+  "rows": [
+    {
+      "cid": "Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi",
+      "ok": false,
+      "reason": "round trip lost 57 note(s) and gained 57",
+      "gate": "round-trip",
+      "title": "Blues Riff in C (120 bpm)",
+      "composer": "Daniels Elizabeth Calvin",
+      "converted": "converted/Qmb7mkEfKzmNvK5EJKb5Ntph7797QwEeS4anHT8q8wdgKi.mxl",
+      "raw_sha256": "69d5bb7ee0e3cd6ff1aed15863a4d6340538a50b0108661b7657bd0d1b877481",
+      "converted_sha256": "de329f149bc9f50c5ec3a04922707f2c743a747c18bb0a392d2fc099ab874d12",
+      "measures": 12,
+      "notes": 196,
+      "staves": 2,
+      "tempo_bpm": 96.0,
+      "tempo_defaulted": false,
+      "single_line": false,
+      "lyrics_stripped": 0,
+      "features": {},
+      "level": 0.0,
+      "level_source": "",
+      "level_drivers": [],
+      "duplicate_of": null,
+      "render_steps": 0,
+      "render_cursor_steps": 0,
+      "render_ms": 0.0
+    }
+  ]
+}

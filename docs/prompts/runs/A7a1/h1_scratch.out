@@ -1,0 +1,10 @@
+parts: ['P1-Staff1', 'P1-Staff2', 'Riff', 'Drumset']
+kept: ['P1-Staff2', 'Riff']
+normalise notes: ['no tempo in source; added 96 bpm']
+scratch sha256: 888da99d60de0af55b58398ad8e9f66d3257765e17913d46b086c56a8f0e6d5d
+edition sounding heads 69 source riff+roots 69
+only in edition: []
+only in source: []
+unpitched in edition: 0
+rests in edition: [('1', 2, '15/4', '1/4', ''), ('1', 6, '15/4', '1/4', ''), ('1', 10, '13/4', '1/4', ''), ('1', 10, '5/4', '1/4', ''), ('1', 10, '9/4', '1/4', ''), ('1', 11, '3', '1', '')]
+staves: ['2'] parts: 1 clefs: ['G2', 'F4']
