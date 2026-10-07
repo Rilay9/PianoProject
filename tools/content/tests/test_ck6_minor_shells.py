@@ -12,10 +12,13 @@ check, after the evaluator-twins precedent:
 - `reading(CASES)` is music21's reading of every case: the symbol's root, pitch classes and
   spelled pitches (`harmony.ChordSymbol`), the numeral's root, third and pitch classes in its key
   (`roman.RomanNumeral(fig, key.Key(tonic))`), and the shell members drawn from the symbol's own
-  chord by `getChordStep`.
+  chord by `getChordStep`; and the named key's signature (`key.Key(tonic).sharps`) with the
+  accidental each shell member takes against it (G6b: the answer staff is written in the key the
+  prompt names, so G7's B in C minor carries a natural and E7's G sharp in A minor a sharp).
 - `fixtures/ck6_minor_shells.json` is that reading, committed. The app half
   (`app/tests/unit/minorShellDrill.test.ts`) holds the built row's prompts to it: pitch classes,
-  three notes, no fifth, the label naming the symbol, the answer staff's steps and alters.
+  three notes, no fifth, the label naming the symbol, the answer staff's steps and alters, its key
+  signature and the accidentals it implies.
 
 Here: the committed fixture must equal music21's reading of the settled table; the catalogue row
 must carry exactly the settled table; the numeral and the symbol must agree (one fact stated
@@ -74,12 +77,25 @@ def _spelled(pitch) -> dict:
     }
 
 
+_ACCIDENTAL = {-1: "flat", 0: "natural", 1: "sharp"}
+
+
+def _accidental_against(k: key.Key, member: dict | None) -> str | None:
+    """The accidental `member` is written with under `k`'s signature; None when the signature gives it."""
+    if member is None:
+        return None
+    by_signature = k.accidentalByStep(member["step"])
+    in_key = int(by_signature.alter) if by_signature is not None else 0
+    return None if member["alter"] == in_key else _ACCIDENTAL[member["alter"]]
+
+
 def reading(cases: list[dict]) -> list[dict]:
     """music21's reading of each case: what the symbol is, what the numeral is, what the shell keeps."""
     out = []
     for case in cases:
         symbol = harmony.ChordSymbol(case["symbol"])
-        numeral = roman.RomanNumeral(case["numeral"], _music21_key(case["key"]))
+        named_key = _music21_key(case["key"])
+        numeral = roman.RomanNumeral(case["numeral"], named_key)
         members = []
         for step in case["shell"]:
             member = symbol.getChordStep(step)
@@ -100,6 +116,8 @@ def reading(cases: list[dict]) -> list[dict]:
                 "numeral_pcs": sorted({_pc(p) for p in numeral.pitches}),
                 "shell": members,
                 "shell_pcs": sorted({m["pc"] for m in members if m is not None}),
+                "key_sharps": named_key.sharps,
+                "shell_accidentals": [_accidental_against(named_key, m) for m in members],
             }
         )
     return out
@@ -259,6 +277,20 @@ class EveryAdversaryGoesRed(unittest.TestCase):
             pc = fixture[index]["shell"][member]["pc"]
             fixture[index]["shell"][member] = {"name": {3: "D#", 10: "A#"}[pc], "step": {3: "D", 10: "A"}[pc], "alter": 1, "pc": pc}
             self.assertTrue(disagreements(fixture, reading(CASES)), f"case {index + 1}")
+
+    def test_signature_chosen_from_the_notes(self):
+        # The answer staff before G6b: the major signature nearest the shell's notes (two flats
+        # for Cm6, three sharps for E7, one sharp for D7) rather than the key the prompt names.
+        for index, sharps in ((2, -2), (4, 3), (7, 1)):
+            fixture = copy.deepcopy(self.fixture)
+            fixture[index]["key_sharps"] = sharps
+            self.assertTrue(disagreements(fixture, reading(CASES)), f"case {index + 1}")
+
+    def test_chromatic_member_without_its_accidental(self):
+        # G7's B in C minor written as if the signature's B flat held: the natural dropped.
+        fixture = copy.deepcopy(self.fixture)
+        fixture[1]["shell_accidentals"] = [None, None, None]
+        self.assertTrue(disagreements(fixture, reading(CASES)))
 
     def test_eight_cases(self):
         read = reading(CASES[:5] + CASES[6:])

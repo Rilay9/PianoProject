@@ -101,6 +101,12 @@
         0,
         2,
         5
+      ],
+      "key_sharps": -3,
+      "shell_accidentals": [
+        null,
+        null,
+        null
       ]
     },
     {
@@ -198,6 +204,12 @@
         5,
         7,
         11
+      ],
+      "key_sharps": -3,
+      "shell_accidentals": [
+        null,
+        "natural",
+        null
       ]
     },
     {
@@ -294,6 +306,12 @@
         0,
         3,
         9
+      ],
+      "key_sharps": -3,
+      "shell_accidentals": [
+        null,
+        null,
+        "natural"
       ]
     },
     {
@@ -391,6 +409,12 @@
         2,
         9,
         11
+      ],
+      "key_sharps": 0,
+      "shell_accidentals": [
+        null,
+        null,
+        null
       ]
     },
     {
@@ -488,6 +512,12 @@
         2,
         4,
         8
+      ],
+      "key_sharps": 0,
+      "shell_accidentals": [
+        null,
+        "sharp",
+        null
       ]
     },
     {
@@ -584,6 +614,12 @@
         0,
         7,
         9
+      ],
+      "key_sharps": 0,
+      "shell_accidentals": [
+        null,
+        null,
+        null
       ]
     },
     {
@@ -681,6 +717,12 @@
         0,
         7,
         9
+      ],
+      "key_sharps": -2,
+      "shell_accidentals": [
+        null,
+        null,
+        null
       ]
     },
     {
@@ -778,6 +820,12 @@
         0,
         2,
         6
+      ],
+      "key_sharps": -2,
+      "shell_accidentals": [
+        null,
+        "sharp",
+        null
       ]
     },
     {
@@ -874,6 +922,12 @@
         5,
         7,
         10
+      ],
+      "key_sharps": -2,
+      "shell_accidentals": [
+        null,
+        null,
+        null
       ]
     }
   ]

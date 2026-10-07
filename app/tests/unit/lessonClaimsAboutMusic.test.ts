@@ -2856,6 +2856,9 @@ const JAZZ_6_MOVES: [string, number][] = [
   ['song.classical.royal-garden-blues.pdmx', 2],
   ['song.jazz.django-reinhardt-tiger-rag.pdmx', 3],
 ];
+/** The six tunes of 1917-1926 the repertoire paragraph names; Blue Bossa (G6b) is the seventh option. */
+const JAZZ_6_PERIOD = [...JAZZ_6_ONE_KEY, ...JAZZ_6_MOVES.map(([id]) => id)];
+const JAZZ_6_BLUE_BOSSA = 'song.jazz.kenny-dorham-blue-bossa.pdmx';
 const RAGTIME_8_LAST_DECADE = [
   'song.ragtime.joplin-gladiolus-rag',
   'song.ragtime.joplin-pine-apple-rag',
@@ -2938,12 +2941,28 @@ const T22_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'jazz.6',
-    'all six options are a single stave with chords printed above it',
+    // Revised (G6b): seven options, Blue Bossa placed last for A7b.1; the old row asked for six.
+    'all seven options are a single stave with chords printed above it',
     () => {
       const songs = t12Songs('jazz.6');
       return (
-        songs.length === 6 &&
+        songs.length === 7 &&
         songs.every((id) => t12Notation(id).staves === 1 && t12Notation(id).chordCount > 0)
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'six of the seven are the 1917-1926 tunes, and the seventh is Blue Bossa, in C minor with three flats throughout',
+    () => {
+      const songs = t12Songs('jazz.6');
+      const keys = t12Notation(JAZZ_6_BLUE_BOSSA).keys;
+      return (
+        songs.length === 7 &&
+        songs[6] === JAZZ_6_BLUE_BOSSA &&
+        JAZZ_6_PERIOD.every((id) => songs.includes(id)) &&
+        keys.length === 1 &&
+        keys[0]?.fifths === -3
       );
     },
   ],
@@ -2956,9 +2975,14 @@ const T22_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'jazz.6',
-    "Darktown Strutters' Ball is the shortest of the six and Rose Room has the fewest chord symbols",
+    // Revised (G6b): of the six 1917-1926 tunes. Blue Bossa (32 bars, 24 symbols) is shorter and has
+    // fewer symbols than either, so the lesson now says "of the six" and the row reads those six.
+    "Darktown Strutters' Ball is the shortest of the six and Rose Room has the fewest chord symbols of the six",
     () => {
-      const rows = t12Songs('jazz.6').map((id) => ({ id, n: t12Notation(id) }));
+      const rows = t12Songs('jazz.6')
+        .filter((id) => JAZZ_6_PERIOD.includes(id))
+        .map((id) => ({ id, n: t12Notation(id) }));
+      if (rows.length !== 6) return false;
       const shortest = [...rows].sort((a, b) => a.n.bars - b.n.bars)[0];
       const fewest = [...rows].sort((a, b) => a.n.chordCount - b.n.chordCount)[0];
       return (

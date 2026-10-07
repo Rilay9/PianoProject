@@ -2917,7 +2917,7 @@ import {
 import { LAB_KEYS, labKey, romanToLabChord } from '../../src/engine/sightReading';
 import { CHORD_SCALES, chordScaleFor, nameHeldChord, romanToChord } from '../../src/engine/drills/theory';
 import { simonForStage } from '../../src/engine/drills/simon';
-import { fifthsFor } from '../../src/engine/drills/answerSheet';
+import { fifthsFor, sheetForPrompt } from '../../src/engine/drills/answerSheet';
 import { barSchedule } from '../../src/audio/backingLoop';
 import { appPitches } from '../../src/score/ScoreSession';
 
@@ -3035,7 +3035,10 @@ const T19_APP: [string, string, () => boolean][] = [
       // lives on the Library's line of doors. `0.3` is the third: its tour of
       // the app names the lab and says in the same sentence that it is under
       // Library (Entry 55 found it as the one lesson still calling it *Lab*).
-      const allowed = new Set(['1.5:simon', '3.6:lab', '0.3:lab']);
+      // `jazz.6` is the fourth (G6b): its minor ii-V-i section sends the learner
+      // to *Free play* for the four-note comparison and says in the same
+      // sentence that it is on Today (the `G6B_APP` row pins Today's button).
+      const allowed = new Set(['1.5:simon', '3.6:lab', '0.3:lab', 'jazz.6:play']);
       const wrong: string[] = [];
       for (const lesson of t19Rungs()) {
         const kinds = new Set<string>((lesson.tools ?? []).map((tool) => tool.kind));
@@ -3902,6 +3905,246 @@ const F0_APP: [string, string, () => boolean][] = [
 
 describe('F0: the corrected lessons say only what the app does', () => {
   for (const [lesson, says, holds] of F0_APP) {
+    it(`${lesson}: ${says}`, () => {
+      expect(holds()).toBe(true);
+    });
+  }
+});
+
+// --- G6b: jazz.6's minor ii-V-i section ----------------------------------------------------------
+//
+// The section added to `jazz.6.md` by G6b (the brief `docs/prompts/runs/curriculum-review-2026-10-05/
+// briefs/g6-minor-shells.md`, lane G6b; the chain record `docs/chains/A7b.1.yaml`, steps 1, 2 and 4).
+// One row per app fact the section states: what the drill asks and how it judges, what the staff
+// behind it draws, what Free play names, and what the rung counts. Each row also reads the lesson's
+// own sentence, so neither side can move alone. Red against the catalogue and curriculum before G6b
+// (no minor drill on jazz.6, a generic count of 1, and an answer staff that chose its own key).
+
+function g6bText(): string {
+  return readFileSync(join(F0_LESSONS, 'jazz.6.md'), 'utf8')
+    .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
+    .replace(/\*/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+const G6B_DRILL = 'drill.jazz.minor-ii-v-i-shells';
+
+/** Every card of one run of the minor drill, at a seed. */
+function g6bCards(seed?: number): DrillPromptShape[] {
+  const drill = drillFromCatalog(item(G6B_DRILL), seed === undefined ? {} : { seed });
+  const out: DrillPromptShape[] = [];
+  for (let prompt = drill?.next() ?? null; prompt; prompt = drill?.next() ?? null) out.push(prompt);
+  return out;
+}
+type DrillPromptShape = NonNullable<ReturnType<NonNullable<ReturnType<typeof drillFromCatalog>>['next']>>;
+
+/** The signature a staff writes and the accidental each written pitch needs under it, as `G7 B natural`. */
+function g6bStaff(card: DrillPromptShape): { fifths: number; marked: string[] } {
+  const xml = sheetForPrompt(card) ?? '';
+  const fifths = Number(/<fifths>(-?\d+)<\/fifths>/.exec(xml)?.[1] ?? Number.NaN);
+  const inKey = (step: string): number =>
+    fifths > 0 ? ('FCGDAEB'.slice(0, fifths).includes(step) ? 1 : 0) : fifths < 0 ? ('BEADGCF'.slice(0, -fifths).includes(step) ? -1 : 0) : 0;
+  const marked: string[] = [];
+  for (const m of xml.matchAll(/<step>([A-G])<\/step>\s*(?:<alter>(-?\d+)<\/alter>\s*)?<octave>/g)) {
+    const step = m[1] as string;
+    const alter = Number(m[2] ?? 0);
+    if (alter !== inKey(step)) marked.push(`${step} ${alter < 0 ? 'flat' : alter > 0 ? 'sharp' : 'natural'}`);
+  }
+  return { fifths, marked };
+}
+
+const G6B_APP: [string, string, () => boolean][] = [
+  [
+    'jazz.6',
+    'the minor drill is among the page’s exercises, and what counts is two exercises, one of them the minor drill',
+    () => {
+      const text = g6bText();
+      const reqs = rung('jazz.6').requirements ?? [];
+      return (
+        rung('jazz.6').exerciseOptions.includes(G6B_DRILL) &&
+        item(G6B_DRILL).title === 'Minor ii-V-i with shell voicings' &&
+        JSON.stringify(reqs) ===
+          JSON.stringify([
+            { kind: 'runs', from: 'exercises', count: 2 },
+            { kind: 'runs', from: 'exercises', items: [G6B_DRILL], count: 1 },
+          ]) &&
+        JSON.stringify(written('jazz.6').requirements) === JSON.stringify(reqs) &&
+        !rung('jazz.6').exerciseOptions.includes('drill.jazz.ii-v-i-shells') &&
+        text.includes("Minor ii-V-i with shell voicings, among this page's exercises") &&
+        text.includes('Two exercise runs, each opened from this page') &&
+        text.includes('the major ii–V–I drill from Stage 5 does not stand in for the minor one')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'a passing run is 90 % right, and a written exercise is also played in Keep tempo at 85 % of its tempo or more; the drill passes at nine of ten',
+    () => {
+      const criteria = masteryCriteriaFor(rung('jazz.6'), DEFAULT_MASTERY);
+      const evidence = readFileSync(resolve('src', 'evidence', 'rungState.ts'), 'utf8');
+      const text = g6bText();
+      return (
+        criteria.passAccuracy === 0.9 &&
+        criteria.passTempoPct === 85 &&
+        evidence.includes("if (row.mode.startsWith('drill:')) return true;") &&
+        evidence.includes("if (row.mode === 'wait') return criteria.passTempoPct <= 0;") &&
+        g6bCards().length === 10 &&
+        text.includes('with at least nine of its ten cards right') &&
+        text.includes('A passing run is 90 % right; for a written exercise it is also played in Keep tempo, from the first bar to the last, at 85 % of its written tempo or more')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'the drill asks nine shells, iiø7, V7 and i in C, A and G minor, each card naming symbol, numeral and key; ten cards, the first again last, the same every time',
+    () => {
+      const want = [
+        'Dm7♭5 — iiø7 in C minor',
+        'G7 — V7 in C minor',
+        'Cm6 — i in C minor',
+        'Bm7♭5 — iiø7 in A minor',
+        'E7 — V7 in A minor',
+        'Am7 — i in A minor',
+        'Am7♭5 — iiø7 in G minor',
+        'D7 — V7 in G minor',
+        'Gm7 — i in G minor',
+        'Dm7♭5 — iiø7 in C minor',
+      ];
+      const labels = (seed?: number) => g6bCards(seed).map((card) => card.label);
+      const text = g6bText();
+      return (
+        JSON.stringify(labels()) === JSON.stringify(want) &&
+        JSON.stringify(labels(7)) === JSON.stringify(want) &&
+        text.includes('iiø7, V7 and i in C minor (Dm7♭5, G7, Cm6), in A minor (Bm7♭5, E7, Am7) and in G minor (Am7♭5, D7, Gm7)') &&
+        text.includes('"Cm6 — i in C minor"') &&
+        text.includes('A run is ten cards: the nine in that order, then the first again, the same ten every time')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'each card asks the three notes of the shell, any octave, any order, no fifth; it is judged as soon as three different notes are down',
+    () => {
+      const promptDrill = readFileSync(resolve('src', 'engine', 'drills', 'PromptDrill.ts'), 'utf8');
+      const fromCatalog = readFileSync(resolve('src', 'engine', 'drills', 'fromCatalog.ts'), 'utf8');
+      // Each symbol's fifth, the member a shell leaves out (A flat, D, G, F, B, E, E flat, A, D).
+      const fifths: Record<string, number> = {
+        'Dm7♭5': 8,
+        G7: 2,
+        Cm6: 7,
+        'Bm7♭5': 5,
+        E7: 11,
+        Am7: 4,
+        'Am7♭5': 3,
+        D7: 9,
+        Gm7: 2,
+      };
+      const text = g6bText();
+      return (
+        g6bCards().every((card) => {
+          const symbol = card.label.split(' — ')[0] ?? '';
+          const pcs = new Set(card.expected.map((m) => ((m % 12) + 12) % 12));
+          return card.expected.length === 3 && pcs.size === 3 && !pcs.has(fifths[symbol] ?? -1);
+        }) &&
+        fromCatalog.includes("return new PromptDrill({ kind: 'chord', prompts, anyOctave: true, clock: base.clock });") &&
+        promptDrill.includes('if (distinct >= prompt.expected.length) this.settle(false, input.tMs);') &&
+        text.includes('asks for the three notes of the shell, in any octave and in any order') &&
+        text.includes('The card is judged as soon as three different notes are down')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'Show me and Hear it give the answer away, and a card they were used on does not count as right',
+    () => {
+      const promptDrill = readFileSync(resolve('src', 'engine', 'drills', 'PromptDrill.ts'), 'utf8');
+      return (
+        REVEALABLE_KINDS.has('chord') &&
+        promptDrill.includes('const correct = this.answers.filter((a) => a.correct && a.revealed !== true).length;') &&
+        g6bText().includes('Show me and Hear it give the answer away, and a card they were used on does not count as right')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'once a card is answered its shell is drawn in the key the card names, the chromatic notes marked: G7’s B and Cm6’s A natural, E7’s G♯ and D7’s F♯ sharp',
+    () => {
+      const staffs = g6bCards()
+        .slice(0, 9)
+        .map((card) => g6bStaff(card));
+      const want = [
+        [-3, []],
+        [-3, ['B natural']],
+        [-3, ['A natural']],
+        [0, []],
+        [0, ['G sharp']],
+        [0, []],
+        [-2, []],
+        [-2, ['F sharp']],
+        [-2, []],
+      ];
+      return (
+        STAFF_POLICY.chord === 'after-answer' &&
+        JSON.stringify(staffs.map((s) => [s.fifths, s.marked])) === JSON.stringify(want) &&
+        g6bText().includes(
+          "Once a card is answered, the shell is drawn on a staff in the key the card names: three flats for C minor, none for A minor, two flats for G minor. There G7's B and Cm6's A carry a natural, and E7's G♯ and D7's F♯ a sharp",
+        )
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'Am7♭5 in G minor and Am7 in A minor ask for the same three notes, A, C and G',
+    () => {
+      const cards = g6bCards();
+      const pcs = (i: number) => JSON.stringify([...new Set((cards[i]?.expected ?? []).map((m) => m % 12))].sort((a, b) => a - b));
+      return (
+        (cards[6]?.label ?? '').startsWith('Am7♭5') &&
+        (cards[5]?.label ?? '').startsWith('Am7 ') &&
+        pcs(6) === pcs(5) &&
+        pcs(5) === JSON.stringify([0, 7, 9]) &&
+        g6bText().includes('Am7♭5 in G minor and Am7 in A minor ask for the same three notes, A, C and G')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'Free play is on Today and names D-F-A♭-C D half-diminished 7th, D-F-A-C D minor 7th, and D-F-C nothing',
+    () => {
+      const today = readFileSync(resolve('src', 'ui', 'screens', 'TodayScreen.ts'), 'utf8');
+      const freePlay = readFileSync(resolve('src', 'ui', 'screens', 'FreePlayScreen.ts'), 'utf8');
+      const text = g6bText();
+      return (
+        today.includes("button('Free play', () => router.navigatePlay()") &&
+        freePlay.includes("chordLine.textContent = chord?.label ?? '';") &&
+        nameHeldChord([62, 65, 68, 72])?.label === 'D half-diminished 7th' &&
+        nameHeldChord([62, 65, 69, 72])?.label === 'D minor 7th' &&
+        nameHeldChord([62, 65, 72]) === null &&
+        text.includes('Open Free play, on Today, and hold D, F, A♭ and C: the app names it D half-diminished 7th. Raise the A♭ to A and it says D minor 7th') &&
+        text.includes('both times you are holding D, F and C, which Free play does not name')
+      );
+    },
+  ],
+  [
+    'jazz.6',
+    'Blue Bossa is the last song on the page, and a run of it counts toward nothing on this rung',
+    () => {
+      const songs = rung('jazz.6').songOptions;
+      const reqs = rung('jazz.6').requirements ?? [];
+      const text = g6bText();
+      return (
+        songs[songs.length - 1] === 'song.jazz.kenny-dorham-blue-bossa.pdmx' &&
+        songs.length === 7 &&
+        reqs.every((r) => r.kind === 'runs' && r.from === 'exercises') &&
+        text.includes('Blue Bossa, the last song on this page') &&
+        text.includes('A run of the tune itself counts toward nothing on this rung')
+      );
+    },
+  ],
+];
+
+describe('G6b: jazz.6’s minor ii-V-i section says only what the app does', () => {
+  for (const [lesson, says, holds] of G6B_APP) {
     it(`${lesson}: ${says}`, () => {
       expect(holds()).toBe(true);
     });

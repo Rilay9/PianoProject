@@ -9,23 +9,34 @@
 # root-fifth bass as no); ORCHESTRATION-CONTRACT.md section 8's minor ii-V-i chain; the reviewer's ruling that A7b.1 /
 # Blue Bossa with the G6 control is the first post-Bizet brief (docs/review/responses/a3a8771d.md).
 # status: draft. Refs, by when they resolve:
-#  - resolve now: content/lessons/jazz.5.md (the lesson that teaches the major shells and holds the shell drill today;
-#    the minor section's home, jazz.5 by R28 or jazz.6 by GENERATOR-ADDENDUM G6 and the map's MUSIC line, is the
-#    placement seam's decision, and this ref moves with it); drill.jazz.minor-ii-v-i-shells (G6a, unplaced; G6b puts
-#    it on jazz.6) and drill.ear.seventh-qualities (content/catalog.static.json); app/src/engine/sightReading.ts (the
-#    Lab's progression exercise and tune);
+#  - resolve now: content/lessons/jazz.6.md (the minor section's home, placed by G6b on 2026-10-07 under the reviewer's
+#    placement ruling, docs/review/responses/bb1-bluebossa-probe.md section 4; steps 1 and 2 point at it);
+#    drill.jazz.minor-ii-v-i-shells (G6a's item, placed on jazz.6 by G6b) and drill.ear.seventh-qualities
+#    (content/catalog.static.json); app/src/engine/sightReading.ts (the Lab's progression exercise and tune);
 #    song.folk.insensatez-how-insensitive-jobim.pdmx (content/sources/pdmx.json, 32 bars); the Markdown anchors and the
 #    test files named under `generated`.
 #  - the first lane commits: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6, Blue Bossa (Kenny Dorham), the quarry's
 #    lead sheet: admitted by the probe (briefs/probe-bluebossa.md, Station 1) with the guarded text splice as
 #    song.jazz.kenny-dorham-blue-bossa.pdmx (raw b2ef95b8..., converted b2a12ede...; intake/QmTj....md, personal
-#    library ADMITTED, curriculum CANDIDATE), so its five refs resolve and the checker lists none for this record.
+#    library ADMITTED, curriculum ADMITTED on jazz.6 by G6b, 2026-10-07), so its five refs resolve and the checker
+#    lists none for this record.
 # Built by G6a: the minor drill as its own item, drill.jazz.minor-ii-v-i-shells (nine cases as row data, each prompt
 # naming its symbol, the shell taken from the symbol's own chord by shellFromSymbol in theory.ts; the major row and its
 # shellChord path unchanged), held to music21 by CK-6 (tools/content/tests/test_ck6_minor_shells.py and
-# app/tests/unit/minorShellDrill.test.ts). Not built, so step 4 cannot be counted as written yet: the placement (G6b:
-# jazz.6's exerciseOptions, the requirement naming the drill, the lesson section). The record stays draft until it
-# lands and the reviewer reads it. A third capability, named by the reviewer's design ruling
+# app/tests/unit/minorShellDrill.test.ts). Placed by G6b (2026-10-07): jazz.6 lists the drill last among its
+# exerciseOptions and Blue Bossa last among its songOptions; its requirements are two distinct exercise runs plus one
+# run whose items name the drill (the reviewer's ruling, docs/review/responses/g6-ph-briefs-cb1.md section 5; pinned by
+# app/tests/unit/jazz6MinorShellCompletion.test.ts); the jazz.6 lesson carries steps 1, 2 and 4 with the omitted-fifth
+# sentence and the truth sentence (its app facts pinned in app/tests/unit/lessonClaimsAboutApp.test.ts, G6B_APP); and the
+# drill's answer staff is written in the key each card names (the reviewer's ph1-g6a-landing.md section 3). R3 in the
+# browser: app/tests/e2e/jazz6-minor-shells.spec.ts. The record stays draft until the reviewer reads the lesson and the
+# chart seams land.
+# Sources the lesson's minor ii-V-i lines rest on (steps 1-2): the chords of the minor form and the half-diminished ii,
+# Wikipedia "ii-V-I progression" (C minor: Dm7b5-G7-Cm); the minor sixth chord as a minor triad plus a major sixth (C,
+# E-flat, G, A), Wikipedia "Sixth chord"; the shell as root, third and seventh, or sixth in the seventh's place, and an
+# m7b5 shell carrying no flat fifth, Jens Larsen, "Jazz Chord Essentials - Shell voicings" (jenslarsen.nl, 2014);
+# every symbol's members, numeral and spelling, music21 through CK-6's fixture; Blue Bossa's bars, the intake record's
+# Claim checks. Read 2026-10-07; none of it heard. A third capability, named by the reviewer's design ruling
 # (docs/review/responses/a7b1-bluebossa-design.md section 4): the Chord chart cannot supply the rhythm section without
 # its own chord comp (ChordChartScreen.ts: Bass + drums on forces comping on, and the backing is scheduled from
 # compBar, which runs only while comping is on), so step 11 (Comp off, Bass + drums on) is blocked on an app seam that
@@ -51,7 +62,7 @@ learner_cannot: "Voice the minor ii-V-i (iiø7, V7, i) in shells in two or three
 independent_target: "Looks at a chart no lesson has explained, finds its minor ii-V-i and says its key, and voices each one in shells from the symbols, the tonic shell the symbol asks for, in a key not practised."
 steps:
   - action: "Reads the minor ii-V-i and counts its chords: iiø7 (root, minor third, flat fifth, minor seventh), V7, and the tonic chord; the shell as root, third and seventh; that the iiø7 shell and the iim7 shell are the same three notes, because the flat fifth is the note the shell leaves out; and that Blue Bossa prints its tonic as a minor sixth chord (Cm6), whose shell takes the sixth in place of the seventh (the lesson states this spelling only from a cited source)."
-    content: {kind: explanation, ref: content/lessons/jazz.5.md}
+    content: {kind: explanation, ref: content/lessons/jazz.6.md}
     tool: lesson
     scaffold: [written definition, notation, chord symbols, key named, numerals named]
     feedback: "None."
@@ -60,7 +71,7 @@ steps:
     removes: []
 
   - action: "Builds the four-note iiø7 (D-F-A-flat-C) and the four-note iim7 (D-F-A-C) on the keys and reads the name the app gives each, then lifts the fifth to leave the shell D-F-C, the same three notes for both (the app names no three-note shell; BB1 Station 4)."
-    content: {kind: explanation, ref: content/lessons/jazz.5.md}
+    content: {kind: explanation, ref: content/lessons/jazz.6.md}
     tool: "Free play, standalone"
     scaffold: [notation, chord symbols, key named, numerals named, held chord named]
     feedback: "The keys held light and are named; each four-note chord gets a chord name, a readout of what is held, not a verdict; the three-note shells D-F-C, G-B-F and C-E-flat-B-flat get no name, and C-E-flat-A is named A diminished over C, so the step asks the app to name only the four-note chords (BB1 Station 4)."
@@ -249,6 +260,7 @@ generated:
       each numeral in its key agrees with its symbol: "CK-6: music21 roman.RomanNumeral(fig, key.Key(tonic)); iiø7 and V7 have exactly the symbol's pitch classes and root; the tonic i has the symbol's root and minor third and lies inside the symbol (music21 reads i6 as a first-inversion triad, so the sixth of Cm6 is the symbol's fact, not the numeral's)."
       each prompt asks the configured shell and never the fifth: "CK-6, app half (app/tests/unit/minorShellDrill.test.ts): the built row's prompts have three notes whose pitch classes equal music21's getChordStep(1, 3, 7), or (1, 3, 6) for Cm6, and none is the chord's fifth."
       the answer staff spells each member as music21 does: "CK-6, app half: the Show me staff (sheetForPrompt) writes each shell member with music21's step and alter (E-flat in Cm6, G-sharp in E7, F-sharp in D7, B-flat in Gm7)."
+      the answer staff is in the key the card names: "CK-6, both halves (G6b; the reviewer's ph1-g6a-landing.md section 3): the staff's signature equals music21's key.Key(tonic).sharps for the card's key (C minor three flats, A minor none, G minor two flats), and the accidental each member takes against it equals music21's reading (G7's B natural and Cm6's A natural in C minor, E7's G-sharp in A minor, D7's F-sharp in G minor, none elsewhere); pinned as literals in the app half too. Read from the row's data (an answerSpelling on the case prompt), never from the label; every other drill row's prompts and staffs byte-identical on three seeds (G6b's differential)."
       the label names the symbol: "CK-6, app half: every prompt's label carries the symbol as the lesson writes it (Dm7♭5), the numeral and the key."
       all nine asked in an ordinary run: "CK-6, app half: ten prompts, 1-9 the nine cases in order, 10 case 1 again; the same labels for the default seed and two others (buildChord cycles the row's list; the seed does not reorder it)."
       the half-diminished quality in a root-3-7 shell: "Not shown by construction, and expected: Am7b5's shell equals Am7's (CK-6's boundary case, green in both halves); the omitted flat fifth is a lesson sentence (G6b), not a drill claim."

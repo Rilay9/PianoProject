@@ -41,6 +41,10 @@ interface FixtureCase {
   fifth: Spelled | null;
   shell: Spelled[];
   shell_pcs: number[];
+  /** music21's `key.Key(tonic).sharps` for the key the prompt names (G6b). */
+  key_sharps: number;
+  /** The accidental each shell member is written with against that signature; null when it gives it. */
+  shell_accidentals: ('flat' | 'natural' | 'sharp' | null)[];
 }
 
 const fixture = JSON.parse(
@@ -94,6 +98,25 @@ function staffPitches(xml: string): { step: string; alter: number; pc: number }[
   return out;
 }
 
+/** The staff's `<fifths>`, or null when it writes none. */
+function staffFifths(xml: string): number | null {
+  const match = /<fifths>(-?\d+)<\/fifths>/.exec(xml);
+  return match ? Number(match[1]) : null;
+}
+
+/** What a key signature of `fifths` does to each letter: −1, 0 or +1. */
+function signatureAlter(fifths: number, step: string): number {
+  if (fifths > 0) return 'FCGDAEB'.slice(0, fifths).includes(step) ? 1 : 0;
+  if (fifths < 0) return 'BEADGCF'.slice(0, -fifths).includes(step) ? -1 : 0;
+  return 0;
+}
+
+/** The accidental a written pitch needs under the signature, as engraving reads it; null when none. */
+function impliedAccidental(fifths: number, pitch: { step: string; alter: number }): 'flat' | 'natural' | 'sharp' | null {
+  if (pitch.alter === signatureAlter(fifths, pitch.step)) return null;
+  return pitch.alter < 0 ? 'flat' : pitch.alter > 0 ? 'sharp' : 'natural';
+}
+
 type Sheet = (prompt: DrillPrompt) => string | null;
 const realSheet: Sheet = (prompt) => sheetForPrompt(prompt);
 
@@ -117,6 +140,17 @@ function caseFaults(prompt: DrillPrompt, fc: FixtureCase, sheet: Sheet = realShe
     out.push(`${name}: no answer staff`);
   } else {
     const written = staffPitches(xml);
+    const fifths = staffFifths(xml);
+    if (fifths !== fc.key_sharps) {
+      out.push(`${name}: the staff's signature is ${String(fifths)} fifths, ${fc.key} is ${fc.key_sharps}`);
+    }
+    fc.shell.forEach((member, at) => {
+      const want = fc.shell_accidentals[at] ?? null;
+      for (const pitch of written.filter((p) => p.pc === member.pc)) {
+        const got = fifths === null ? null : impliedAccidental(fifths, pitch);
+        if (got !== want) out.push(`${name}: ${display(member.name)} is written with ${String(got)}, music21 says ${String(want)}`);
+      }
+    });
     for (const member of fc.shell) {
       const on = written.filter((pitch) => pitch.pc === member.pc);
       if (on.length === 0) out.push(`${name}: ${display(member.name)} is not on the answer staff`);
@@ -177,6 +211,36 @@ describe('CK-6: the built row asks music21’s nine shells', () => {
     expect(runFaults(promptsOf(builtRow()), fixture.cases)).toEqual([]);
   });
 
+  it('the answer staff is written in the key the prompt names (G6b; the reviewer’s ph1-g6a-landing §3)', () => {
+    // Pinned as literals as well as against the fixture: three flats for C minor, none for A
+    // minor, two flats for G minor; the chromatic members carry their accidentals against that
+    // signature (G7's B natural, Cm6's A natural, E7's G sharp, D7's F sharp) and nothing else does.
+    const want: [string, number, string[]][] = [
+      ['Dm7♭5 — iiø7 in C minor', -3, []],
+      ['G7 — V7 in C minor', -3, ['B natural']],
+      ['Cm6 — i in C minor', -3, ['A natural']],
+      ['Bm7♭5 — iiø7 in A minor', 0, []],
+      ['E7 — V7 in A minor', 0, ['G sharp']],
+      ['Am7 — i in A minor', 0, []],
+      ['Am7♭5 — iiø7 in G minor', -2, []],
+      ['D7 — V7 in G minor', -2, ['F sharp']],
+      ['Gm7 — i in G minor', -2, []],
+    ];
+    const got = promptsOf(builtRow())
+      .slice(0, 9)
+      .map((prompt): [string, number, string[]] => {
+        const xml = sheetForPrompt(prompt) ?? '';
+        const fifths = staffFifths(xml) ?? Number.NaN;
+        const marked = staffPitches(xml)
+          .map((pitch) => [pitch.step, impliedAccidental(fifths, pitch)] as const)
+          .filter(([, accidental]) => accidental !== null)
+          .map(([step, accidental]) => `${step} ${String(accidental)}`);
+        return [prompt.label, fifths, marked];
+      });
+    expect(got).toEqual(want);
+    expect(fixture.cases.map((fc) => fc.key_sharps)).toEqual(want.map(([, fifths]) => fifths));
+  });
+
   it('boundary, expected green: Am7♭5’s shell is Am7’s (the ♭5 is the omitted member)', () => {
     const prompts = promptsOf(builtRow());
     const pcs = (index: number) => [...new Set((prompts[index] as DrillPrompt).expected.map(pcOf))].sort((a, b) => a - b);
@@ -201,11 +265,13 @@ describe('population and count (the completion rule in the design ruling §1 rea
   });
 });
 
-describe('placed nowhere (G6b places it)', () => {
-  it('no stage file lists the item', () => {
+// Revised (G6b): G6a's test pinned the item to no stage file until G6b placed it; it is on jazz.6 now and on
+// no other stage file. The rung's options and requirement are `jazz6MinorShellCompletion.test.ts`'s.
+describe('placed on jazz.6 alone (G6b)', () => {
+  it('stage-6.json lists the item and no other stage file does', () => {
     const dir = resolve('..', 'content', 'curriculum');
     for (const file of readdirSync(dir).filter((name) => /^stage-.*\.json$/.test(name))) {
-      expect(readFileSync(join(dir, file), 'utf8').includes(ID), `${file} lists ${ID}`).toBe(false);
+      expect(readFileSync(join(dir, file), 'utf8').includes(ID), `${file} and ${ID}`).toBe(file === 'stage-6.json');
     }
   });
 });
@@ -240,6 +306,28 @@ describe('every adversary goes red', () => {
       const faults = caseFaults(prompts[index] as DrillPrompt, fixture.cases[index] as FixtureCase, sharpSheet);
       expect(faults.some((fault) => fault.includes('the staff writes')), `case ${index + 1}`).toBe(true);
     }
+  });
+
+  it('the signature chosen from the notes (the staff before G6b): Cm6 under two flats, E7 under three sharps, D7 under one sharp', () => {
+    const nearestSheet: Sheet = (prompt) => answerSheet({ title: prompt.label, notes: prompt.expected, ordered: false });
+    const prompts = promptsOf(builtRow());
+    for (const index of [2, 4, 7]) {
+      const faults = caseFaults(prompts[index] as DrillPrompt, fixture.cases[index] as FixtureCase, nearestSheet);
+      expect(faults.some((fault) => fault.includes('signature')), `case ${index + 1}`).toBe(true);
+    }
+    // D7 in G minor under two flats with no spelling of its own: the black key follows the flat
+    // signature and F sharp comes out G flat.
+    const flatSide: Sheet = (prompt) =>
+      answerSheet({ title: prompt.label, notes: prompt.expected, ordered: false, spelling: { fifths: -2 } });
+    const faults = caseFaults(prompts[7] as DrillPrompt, fixture.cases[7] as FixtureCase, flatSide);
+    expect(faults.some((fault) => fault.includes('the staff writes G♭')), faults.join('; ')).toBe(true);
+  });
+
+  it('the accidental check bites: G7 in C minor held to “no accidental” fails on its B natural', () => {
+    const prompts = promptsOf(builtRow());
+    const noNatural = { ...(fixture.cases[1] as FixtureCase), shell_accidentals: [null, null, null] };
+    const faults = caseFaults(prompts[1] as DrillPrompt, noNatural);
+    expect(faults.some((fault) => fault.includes('B is written with natural')), faults.join('; ')).toBe(true);
   });
 
   it('a root spelled as its enharmonic sharp on the label', () => {

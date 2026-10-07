@@ -43783,3 +43783,23 @@ Each class has broken records that fail it; 42 tests.
 **Checks.** At landing: the preflight's 42 tests, the chain checker and paths tests OK; the chain checker 0 failures.
 
 **Open.** The generated spec is neither typechecked nor run (HYPOTHESIS that it compiles); hairpins and dropped-staff dynamics are not judged; a seventh class for one chord per bar is proposed, not built.
+
+### Entry 273 — G6b: the minor shell drill on jazz.6, its answer staff in the named key, the lesson
+
+**What a learner meets.** jazz.6 now lists *Minor ii-V-i with shell voicings* and *Blue Bossa*, and its counts read "0 of 2": one passing run of the minor drill and one passing run of any other jazz.6 exercise. Each card names the chord, the numeral and the key ("Cm6 — i in C minor"); once answered, the shell is drawn in that key, C minor with three flats and the chord's outside notes as accidentals. The lesson gains five paragraphs on the minor ii-V-i, its shells, what the shell leaves out, the drill and what the app counts, and a paragraph placing Blue Bossa. Looked at in the browser by the builder at three sizes; nothing heard. Scoreboard 1/28.
+
+**Done.**
+- **Answer staff in the card's key (the reviewer's required change, `responses/ph1-g6a-landing.md` §3).** An optional `answerSpelling` on case prompts, read from the row's key and symbol, never the label; every other drill row's prompts and answer staffs byte-identical on three seeds (1,275 of 1,276 rows). CK-6 pins the signature and accidentals against music21: C minor −3 (G7's B natural, Cm6's A natural), A minor 0 (E7's G sharp), G minor −2 (D7's F sharp); two new must-fail cases red.
+- **Placement on jazz.6** (`content/curriculum/stage-6.json`): the drill last among the exercises, Blue Bossa last among the songs; requirements: two exercise runs, and one run of the minor drill by id (the reviewer's §5 of `responses/g6-ph-briefs-cb1.md`). jazz.5 untouched.
+- **The lesson** (`content/lessons/jazz.6.md`): the five paragraphs and the repertoire paragraph, sourced (Wikipedia's ii-V-I and sixth-chord articles, a published shell-voicing lesson, music21 through CK-6, the intake record's claim checks, the app's code for every app claim). Three repertoire sentences that Blue Bossa's arrival made false were rewritten.
+- **The record.** A7b.1 steps 1 and 2 point at jazz.6's lesson; the intake record admits Blue Bossa to the curriculum on jazz.6.
+- **Tests.** `jazz6MinorShellCompletion.test.ts` (ten cases: the minor drill plus one other meets the rung; the minor drill alone or twice, the major drill, a jazz.5-opened run, a run at 0.8, or a Blue Bossa run do not), red first; nine lesson-claim rows, red first; `jazz6-minor-shells.spec.ts` opens jazz.6, plays all ten cards through the MIDI mock, checks the signature on cards 1 to 9, the stored row's `lessonId` jazz.6, and the counts reading "1 of 2".
+
+**Checks.** At landing: the content build passes (the standing excerpt staleness warnings only); the whole content Python suite, 1,990 tests OK; `npx tsc -b` and lint clean; the whole unit suite, 8,138 passed, the one red the standing blues.3 (CRLF). The builder: the browser spec, one passed, on a separate port with nothing on 4173.
+
+**Open.**
+- **The preflight on A7b.1 after placement:** class 4 3 PASS, 0 FAIL; class 3 three FAILs. The ear drill of step 3 is an option of jazz.5 and theory.5, not jazz.6; Insensatez (steps 14 and 15) is on a Latin rung and the steps do not say they open on a later rung. Class 6 has no template for a counted drill run.
+- **The page's counts line** describes the generic requirement as "in Keep tempo at 85 %" even for drills, which pass on accuracy alone; the lesson states the rule correctly; the app's line is unchanged.
+- **The chart and the lesson:** the lesson says bar 16 has a plain G7 in its second half, which is true of the score; today's chart shows one chord per bar until PH2.
+- **Narrow layout:** at 568 × 320 the card label wraps between "C" and "minor".
+- **The reviewer has not read the lesson.**

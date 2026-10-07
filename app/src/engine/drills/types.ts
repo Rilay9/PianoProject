@@ -182,6 +182,26 @@ export interface DrillPrompt {
    * score; the screen renders this when it is set.
    */
   musicXml?: string;
+  /**
+   * The key signature and the spelling the answer staff behind *Show me* is
+   * written with, when the prompt names its key. Absent, the staff chooses
+   * the signature that fits the notes (`answerSheet.ts` `fifthsFor`), which
+   * is what every drill but one does.
+   *
+   * The one is the minor ii–V–i shell drill (G6b; the reviewer's
+   * `ph1-g6a-landing.md` §3): its card says "Cm6 — i in C minor", and a staff
+   * under the two flats that happen to fit C-E♭-A shows a different key from
+   * the one the card names. Under C minor's three flats the A carries a
+   * natural, which is the point: the tonic and the dominant hold notes the
+   * natural minor signature does not.
+   */
+  answerSpelling?: AnswerSpelling;
+}
+
+/** A signature in fifths (flats negative) and each pitch class's written name. */
+export interface AnswerSpelling {
+  fifths: number;
+  names: Partial<Record<number, { step: string; alter: number }>>;
 }
 
 export interface DrillAnswer {

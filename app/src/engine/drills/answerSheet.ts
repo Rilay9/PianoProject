@@ -20,6 +20,7 @@ import {
   type WriterMeasure,
   type WriterNote,
 } from '../musicXmlWriter';
+import type { AnswerSpelling } from './types';
 
 /** Pitch classes of the major scale whose key signature has `fifths`. */
 function majorPitchClasses(fifths: number): Set<number> {
@@ -81,8 +82,16 @@ export interface AnswerSheetOptions {
    * notes. A chain seeded from a genre's scale knows its key and how it names
    * each black key, and a guess from six pitch classes knows neither: C blues
    * was guessed as B flat major, whose flats would write its F sharp as G flat.
+   *
+   * `names` spells every pitch class it lists outright, a white key included:
+   * a prompt that names its key (`DrillPrompt.answerSpelling`) writes G7's B in
+   * C minor as B, which the three-flat signature then marks with a natural.
    */
-  spelling?: { fifths: number; blackKeys: Partial<Record<number, 'flat' | 'sharp'>> };
+  spelling?: {
+    fifths: number;
+    blackKeys?: Partial<Record<number, 'flat' | 'sharp'>>;
+    names?: Partial<Record<number, { step: string; alter: number }>>;
+  };
 }
 
 /** MusicXML for the answer, or null when there is nothing to draw. */
@@ -144,6 +153,7 @@ export function answerSheet(options: AnswerSheetOptions): string | null {
     staves: 1,
     clef,
     ...(options.spelling ? { blackKeys: options.spelling.blackKeys } : {}),
+    ...(options.spelling?.names ? { spelling: options.spelling.names } : {}),
     measures,
   });
 }
@@ -268,6 +278,7 @@ export interface SheetPrompt {
   expected: readonly number[];
   ordered?: boolean;
   playback?: { midi: number[]; atMs: number }[];
+  answerSpelling?: AnswerSpelling;
 }
 
 /**
@@ -330,7 +341,16 @@ export function sheetForPrompt(prompt: SheetPrompt, title = prompt.label): strin
       ...(progression.labels.length > 0 ? { labels: progression.labels } : {}),
     });
   }
-  return answerSheet({ title, notes: prompt.expected, ordered: prompt.ordered === true });
+  return answerSheet({
+    title,
+    notes: prompt.expected,
+    ordered: prompt.ordered === true,
+    // Only a prompt that names its key carries this; every other answer staff
+    // is drawn exactly as before (G6b's differential).
+    ...(prompt.answerSpelling
+      ? { spelling: { fifths: prompt.answerSpelling.fifths, names: prompt.answerSpelling.names } }
+      : {}),
+  });
 }
 
 /** Rests that fill `duration` divisions, largest first. */

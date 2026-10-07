@@ -197,7 +197,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 3 | `jazz.3` | 5 | 4 | 2.2–4.5 | Swing Low, Sweet Chariot (2.4), Bye Bye Blackbird (1926) (2.9), Alexander's Ragtime Band (1911) (3.4), Ole Miss (3.4) |
 | 4 | `jazz.4` | 4 | 3 | 2.7–4.5 | Avalon (1920) (2.7), Margie (1920) (2.8), Whispering (1920) (2.9) |
 | 5 | `jazz.5` | 5 | 4 | 3.0–5.2 | Bill Bailey, Won't You Please Come Home (1902) (3.0), Limehouse Blues (1922) (3.1), After You've Gone (1918) (3.2), Some of These Days (1910) (3.3) |
-| 6 | `jazz.6` *(song-optional)* | 7 | 6 | 2.9–6.4 | Bye Bye Blackbird (1926) (2.9), Limehouse Blues (1922) (3.1), Darktown Strutters' Ball (1917) (3.2), Rose Room (1917) (3.6), Tiger Rag (1917) (4.0), Royal Garden Blues (1919) (4.2) |
+| 6 | `jazz.6` *(song-optional)* | 8 | 7 | 2.9–6.4 | Bye Bye Blackbird (1926) (2.9), Limehouse Blues (1922) (3.1), Darktown Strutters' Ball (1917) (3.2), Blue Bossa (3.4), Rose Room (1917) (3.6), Tiger Rag (1917) (4.0), … and 1 more |
 | 7 | `jazz.7` *(song-optional)* | 7 | 6 | 2.7–7.4 | Avalon (1920) (2.7), Tiger Rag (1917) (4.0), Fly Me to the Moon (5.2), I Got Rhythm (5.5), Skating (6.8), Jingle Bells (jazz piano) (7.2) |
 | 8 | `jazz.8` *(song-optional)* | 6 | 3 | 5.5–8.2 | I Got Rhythm (5.5), Stardust (1927) (6.0), Uncle Ben's Cakewalk (7.6) |
 | 9 | `jazz.9` *(song-optional)* | 5 | 6 | 5.2–8.4 | When the Saints Go Marching In (jazz) (5.2), Stardust (1927) (6.0), Take Five (6.0), Lullaby of Birdland (6.1), Ain't Misbehavin' (6.9), Linus and Lucy (7.8) |
