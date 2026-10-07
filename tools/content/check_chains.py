@@ -29,8 +29,8 @@ brief that carries the line must have the headings Instructional chain, Failure 
 test, and a record ``docs/chains/<id>.yaml`` that passes (a ``draft`` passes, its unresolved refs
 listed with every record's). A brief without the line is not linted; the run says how many were
 skipped. The same flag also runs the fail-closed owner-work guard on post-baseline immutable reviewer
-handoffs, because full CI deliberately ignores ``docs/review/**`` and docs-integrity is the runner
-that sees a handoff-only push.
+handoffs and the outside-review closure ledger on post-baseline reviewer responses, because full CI deliberately
+ignores ``docs/review/**`` and docs-integrity is the runner that sees a handoff/response-only push.
 
 ``--tools`` prints the tool vocabulary.
 
