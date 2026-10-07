@@ -71,7 +71,13 @@ Decisions the brief took (briefs/chain-record-checker.md, "Decisions taken here"
    ``docs/review/responses/g13-habanera-control.md`` section 3: a built id resolves whether or not
    its family's version ever moved); ``family_contracts.json`` declares no item pattern, so an
    exercise id resolves by exact match only, and ``exercise.tresillo.zz`` or
-   ``exercise.tresillo`` does not; (5) an excerpt
+   ``exercise.tresillo`` does not; (4b) an authored exercise id: the literal string of ``"id"`` in a module-level
+   ``PIANOPATH = {...}`` of a ``*.py`` under ``content/scores/authored/``, read by ``ast.parse`` and never by
+   importing or running the module (A7a-authored-id-resolution, the reviewer's ruling in
+   ``docs/review/responses/a7a-drafts.md``); exact match; an id computed rather than literal (concatenation,
+   f-string, name, call, ``**`` spread), a ``PIANOPATH`` bound twice or mutated, or a syntax error is not
+   guessed and resolves nothing; an id two modules declare resolves for neither and fails the run, naming both
+   files; (5) an excerpt
    id derived from a row of ``content/sources/excerpts.json`` by ``excerpts.excerpt_id``'s own rule;
    (6) a family id in ``tools/content/family_contracts.json``; (7) a well-formed http(s) URL when
    the content kind is ``external`` (never fetched: CI has no network, so a URL is only a pointer).
@@ -104,6 +110,7 @@ SIGHT-READING and MUSICAL always list at least one. A CONTROL requires none; a C
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 import re
 import sys
@@ -124,6 +131,10 @@ FABLE = "docs/prompts/FABLE.md"
 #: Rule (4)'s two sources for an exercise id, in the order they are read.
 GENERATED_IDS = "tools/content/generated_ids.json"
 GENERATOR_CONTINUITY = "tools/content/generator_continuity.json"
+#: Rule (4b): where authored score modules live; their literal ``PIANOPATH`` id is read by parsing, never by running.
+AUTHORED_DIR = "content/scores/authored"
+#: Methods that change a dict in place; a module calling one on ``PIANOPATH`` is not read as literal.
+PIANOPATH_MUTATORS = frozenset({"update", "setdefault", "pop", "popitem", "clear", "__setitem__", "__delitem__", "__ior__"})
 
 STATUSES = ("draft", "reviewed", "shipped")
 KINDS = ("generated", "excerpt", "piece", "chart", "external", "explanation")
@@ -352,6 +363,72 @@ def markdown_anchors(path: Path) -> set[str]:
     return anchors
 
 
+def authored_module_id(source: str) -> str | None:
+    """The literal ``PIANOPATH["id"]`` of an authored score module, read from its syntax tree; None when the module does
+    not declare it as a literal. The source is parsed with ``ast.parse`` and never compiled, imported or run (the
+    reviewer's A7a-authored-id-resolution: ``author.load_module`` executes the module, the checker must not).
+
+    Accepted only when ``PIANOPATH`` is bound exactly once in the whole module, by a top-level ``PIANOPATH = {...}`` (or
+    annotated) assignment of a dict display; every key of that display is a string constant (no ``**`` spread);
+    ``"id"`` appears once and its value is a non-empty string constant with no surrounding whitespace; and nothing in
+    the module deletes it, indexes into it for writing, or calls an in-place mutator on it. Anything else (an id built
+    by concatenation, an f-string, a name, ``dict(id=...)``, two assignments, a mutation) is not guessed: None.
+    """
+    try:
+        tree = ast.parse(source)
+    except (SyntaxError, ValueError, RecursionError):
+        return None
+    bindings = 0
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name) and node.id == "PIANOPATH" and isinstance(node.ctx, (ast.Store, ast.Del)):
+            bindings += 1
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node.name == "PIANOPATH":
+            bindings += 1
+        elif isinstance(node, ast.alias) and (node.asname or node.name.split(".")[0]) == "PIANOPATH":
+            bindings += 1
+        elif isinstance(node, (ast.Global, ast.Nonlocal)) and "PIANOPATH" in node.names:
+            return None
+        elif (
+            isinstance(node, ast.Subscript)
+            and isinstance(node.value, ast.Name)
+            and node.value.id == "PIANOPATH"
+            and isinstance(node.ctx, (ast.Store, ast.Del))
+        ):
+            return None
+        elif (
+            isinstance(node, ast.Attribute)
+            and isinstance(node.value, ast.Name)
+            and node.value.id == "PIANOPATH"
+            and node.attr in PIANOPATH_MUTATORS
+        ):
+            return None
+    if bindings != 1:
+        return None
+    assigned = None
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and len(node.targets) == 1:
+            target, value = node.targets[0], node.value
+        elif isinstance(node, ast.AnnAssign) and node.value is not None:
+            target, value = node.target, node.value
+        else:
+            continue
+        if isinstance(target, ast.Name) and target.id == "PIANOPATH":
+            assigned = value
+    if not isinstance(assigned, ast.Dict):
+        return None
+    found: list[str] = []
+    for key, value in zip(assigned.keys, assigned.values):
+        if not (isinstance(key, ast.Constant) and isinstance(key.value, str)):
+            return None  # a ``**`` spread (key None) or a computed key could set or override the id
+        if key.value == "id":
+            if not (isinstance(value, ast.Constant) and isinstance(value.value, str)):
+                return None
+            found.append(value.value)
+    if len(found) != 1 or not found[0] or found[0] != found[0].strip():
+        return None
+    return found[0]
+
+
 class Resolver:
     """What a ref can name, read once from the committed sources under ``root``."""
 
@@ -382,6 +459,29 @@ class Resolver:
         )
         self.exercise_ids = set(self.exercise_family)
         self.families = set((_load_json(root / "tools/content/family_contracts.json") or {}).get("families", {}))
+        # Rule (4b): an authored module's literal PIANOPATH id, read statically. An id declared by two modules is
+        # ambiguous: it resolves for neither and ``authored_problems`` names both files (main() fails on them).
+        self.authored_ids: dict[str, str] = {}
+        self.authored_problems: list[tuple[str, str]] = []
+        declared: dict[str, list[str]] = {}
+        authored_dir = root / AUTHORED_DIR
+        for path in sorted(authored_dir.glob("*.py")) if authored_dir.is_dir() else []:
+            if path.name == "__init__.py":
+                continue
+            try:
+                ident = authored_module_id(path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeDecodeError):
+                continue
+            if ident is not None:
+                declared.setdefault(ident, []).append(f"{AUTHORED_DIR}/{path.name}")
+        for ident, files in declared.items():
+            if len(files) == 1:
+                self.authored_ids[ident] = files[0]
+            else:
+                for rel in files:
+                    self.authored_problems.append(
+                        (rel, f"authored id {ident} is declared by {len(files)} modules ({', '.join(files)}); it resolves for none")
+                    )
         self.excerpt_ids = set()
         for row in (_load_json(root / "content/sources/excerpts.json") or {}).get("excerpts", []):
             try:
@@ -456,6 +556,8 @@ class Resolver:
         if text in self.catalog_ids:
             return True, ""
         if text in self.exercise_ids:
+            return True, ""
+        if text in self.authored_ids:
             return True, ""
         if text in self.excerpt_ids:
             return True, ""
@@ -779,6 +881,7 @@ def main(argv: list[str] | None = None) -> int:
     unresolved: list[Unresolved] = []
     notes: list[str] = []
     resolver = Resolver(root)
+    failures += [Failure(path, "authored id", message) for path, message in resolver.authored_problems]
     paths = sorted(root.glob(CHAINS_GLOB))
     statuses: list[str] = []
     for path in paths:

@@ -43854,3 +43854,11 @@ Each class has broken records that fail it; 42 tests.
 **Done.** Class 6 of `tools/content/preflight_chains.py` now passes when the record's counted runs hold every requirement that names its items (the ability's own evidence); a generic requirement may stay unheld, the counts line asserts the honest partial state, and the generated journey asserts completion on Plan only when the record's own counted steps hold every requirement. A7b.1: one minor-drill run holds jazz.6's named requirement, the counts read "1 of 2", no completion asserted; 0 FAIL. A7c.1's journey, compare and report byte-identical. Red first: the A7b.1 shape failed before and passes after; four broken records still fail (a named requirement unheld, generic runs only, a generic-only rung part way, a record that cannot complete).
 
 **Checks.** At landing: the preflight module, 68 OK; `--strict` on the real tree exits 0 (A7c.1 shipped 0 FAIL; A7b.1 0 FAIL; A7a.1 and A7a.3 drafts reported); the whole content Python suite, 2,034 tests, its one failure the record-mirror test before this entry, green after.
+
+### Entry 278 — AID1: authored exercise ids resolve from their committed source
+
+**What a learner meets.** Nothing directly. Scoreboard 1/28.
+
+**Done** (`docs/review/responses/a7a-drafts.md`, `A7a-authored-id-resolution`). `tools/content/check_chains.py` reads the literal `PIANOPATH["id"]` of each authored score module in `content/scores/authored/` with `ast.parse`, never importing or running it. An id resolves only when `PIANOPATH` is bound once at top level by a dict of string keys, with one non-empty literal `"id"` and no later mutation; anything computed resolves nothing; two modules declaring one id resolve for neither and fail the run, naming both files. 11 tests, red first (10 errors and A7a.1 listing 12 unresolved refs before), including a source that would write a marker file if run and is proved never run. `.abc` authored sources are not read (the ruling named the Python modules).
+
+**Checks.** At landing: `check_chains.py` lists A7a.1's three Blues Riff refs as its only unresolved refs (its nine shuffle refs resolve); the whole content Python suite, 2,045 tests, its only errors the two record-mirror tests before this entry, green after.

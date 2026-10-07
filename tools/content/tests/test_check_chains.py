@@ -1211,6 +1211,168 @@ class BuiltGeneratedIds(unittest.TestCase):
 
 
 
+class AuthoredIdResolution(unittest.TestCase):
+    """A7a-authored-id-resolution (the reviewer's ruling in docs/review/responses/a7a-drafts.md): rule (4b). An authored
+    exercise id resolves from the literal `PIANOPATH["id"]` of a module under content/scores/authored/, read by parsing the
+    source (`ast`), never by running it. Exact match only; two modules declaring one id fail loudly; an id the module
+    computes is not guessed. Each case builds a small tree under the gitignored build/ holding authored modules."""
+
+    SHUFFLE = "exercise.blues.twelve-bar-shuffle.c"
+    LITERAL = 'PIANOPATH = {"id": "exercise.t.one", "level": 1.0}\n\ndef build():\n    return None\n'
+
+    def setUp(self):
+        self.tree = Tree()
+        self.addCleanup(self.tree.cleanup)
+
+    def module(self, name: str, text: str) -> None:
+        self.tree.write(f"{cc.AUTHORED_DIR}/{name}.py", text)
+
+    def resolver(self) -> cc.Resolver:
+        return cc.Resolver(self.tree.root)
+
+    def test_a_literal_id_resolves_exactly(self):
+        self.module("one", self.LITERAL)
+        resolver = self.resolver()
+        self.assertEqual(resolver.resolve("exercise.t.one", "chart"), (True, ""))
+        self.assertEqual(resolver.authored_ids, {"exercise.t.one": f"{cc.AUTHORED_DIR}/one.py"})
+        self.assertEqual(resolver.authored_problems, [])
+
+    def test_an_id_no_authored_source_declares_stays_unresolved(self):
+        self.module("one", self.LITERAL)
+        resolver = self.resolver()
+        for bad in ("exercise.t.two", "exercise.t.on", "exercise.t.o", "exercise.t.one.c", "exercise.t", "Exercise.t.one",
+                    "EXERCISE.T.ONE", "xexercise.t.one", "exercise.t.one@bars=1-2"):
+            with self.subTest(bad=bad):
+                self.assertFalse(resolver.resolve(bad, "chart")[0])
+
+    def test_no_authored_directory_resolves_nothing_and_does_not_fail(self):
+        resolver = self.resolver()
+        self.assertEqual((resolver.authored_ids, resolver.authored_problems), ({}, []))
+        self.assertFalse(resolver.resolve("exercise.t.one", "chart")[0])
+
+    def test_an_id_the_module_computes_is_not_guessed(self):
+        computed = {
+            "concat": 'PIANOPATH = {"id": "exercise.t." + "one"}\n',
+            "fstring": 'N = "one"\nPIANOPATH = {"id": f"exercise.t.{N}"}\n',
+            "name": 'ID = "exercise.t.one"\nPIANOPATH = {"id": ID}\n',
+            "call": 'PIANOPATH = dict(id="exercise.t.one")\n',
+            "call_result": 'PIANOPATH = {"id": "EXERCISE.T.ONE".lower()}\n',
+            "spread": 'BASE = {"id": "exercise.t.one"}\nPIANOPATH = {**BASE}\n',
+            "computed_key": 'K = "id"\nPIANOPATH = {K: "exercise.t.one"}\n',
+            "id_twice": 'PIANOPATH = {"id": "exercise.t.one", "id": "exercise.t.two"}\n',
+            "no_id": 'PIANOPATH = {"title": "exercise.t.one"}\n',
+            "not_a_dict": 'PIANOPATH = ["exercise.t.one"]\n',
+            "bytes": 'PIANOPATH = {"id": b"exercise.t.one"}\n',
+            "padded": 'PIANOPATH = {"id": " exercise.t.one"}\n',
+            "empty": 'PIANOPATH = {"id": ""}\n',
+            "absent": "X = 1\n",
+            "syntax_error": 'PIANOPATH = {"id": "exercise.t.one"\n',
+            "assigned_twice": 'PIANOPATH = {"id": "exercise.t.one"}\nPIANOPATH = {"id": "exercise.t.two"}\n',
+            "item_assigned": 'PIANOPATH = {"id": "exercise.t.one"}\nPIANOPATH["id"] = "exercise.t.two"\n',
+            "updated": 'PIANOPATH = {"id": "exercise.t.one"}\nPIANOPATH.update(id="exercise.t.two")\n',
+            "augmented": 'PIANOPATH = {"id": "exercise.t.one"}\nPIANOPATH |= {"id": "exercise.t.two"}\n',
+            "nested_only": 'def f():\n    PIANOPATH = {"id": "exercise.t.one"}\n',
+            "deleted": 'PIANOPATH = {"id": "exercise.t.one"}\ndel PIANOPATH\n',
+        }
+        for name, text in computed.items():
+            self.module(name, text)
+        resolver = self.resolver()
+        self.assertEqual(resolver.authored_ids, {}, resolver.authored_ids)
+        self.assertEqual(resolver.authored_problems, [])
+        for ref in ("exercise.t.one", "exercise.t.two"):
+            self.assertFalse(resolver.resolve(ref, "chart")[0], ref)
+
+    def test_a_source_is_never_executed(self):
+        marker = self.tree.root / "ran.txt"
+        self.module(
+            "booby",
+            "import definitely_not_a_module_anywhere\n"
+            f"open({str(marker)!r}, 'w').write('ran')\n"
+            "raise SystemExit('the checker executed this module')\n"
+            'PIANOPATH = {"id": "exercise.t.booby"}\n',
+        )
+        resolver = self.resolver()
+        self.assertEqual(resolver.resolve("exercise.t.booby", "chart"), (True, ""))
+        self.assertFalse(marker.exists())
+        # control: author.py's loader (importlib exec_module) fails on this source at its first line, so the id
+        # could not have come from running it
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("booby_control", self.tree.root / cc.AUTHORED_DIR / "booby.py")
+        module = importlib.util.module_from_spec(spec)
+        with self.assertRaises(ImportError):
+            spec.loader.exec_module(module)
+        self.assertFalse(marker.exists())
+
+    def test_two_modules_declaring_one_id_fail_loudly_and_resolve_for_neither(self):
+        self.module("a", self.LITERAL)
+        self.module("b", self.LITERAL)
+        self.module("c", 'PIANOPATH = {"id": "exercise.t.other"}\n')
+        resolver = self.resolver()
+        self.assertFalse(resolver.resolve("exercise.t.one", "chart")[0])
+        self.assertEqual(resolver.resolve("exercise.t.other", "chart"), (True, ""))
+        self.assertEqual(sorted(path for path, _ in resolver.authored_problems),
+                         [f"{cc.AUTHORED_DIR}/a.py", f"{cc.AUTHORED_DIR}/b.py"])
+        self.assertTrue(all("exercise.t.one" in why and "declared by 2 modules" in why
+                            for _, why in resolver.authored_problems))
+
+    def test_main_exits_one_naming_both_files_on_a_duplicate_id(self):
+        tree = Governing()
+        self.addCleanup(tree.cleanup)
+        for name in ("a", "b"):
+            tree.write(f"{cc.AUTHORED_DIR}/{name}.py", self.LITERAL)
+        code, out = run_main("--root", str(tree.root))
+        self.assertEqual(code, 1, out)
+        fails = [line for line in out.splitlines() if line.startswith("FAIL ")]
+        self.assertEqual(len(fails), 2, out)
+        self.assertTrue(any(f"{cc.AUTHORED_DIR}/a.py: authored id:" in line for line in fails))
+        self.assertTrue(any(f"{cc.AUTHORED_DIR}/b.py: authored id:" in line for line in fails))
+
+    def test_main_is_clean_on_distinct_authored_ids(self):
+        tree = Governing()
+        self.addCleanup(tree.cleanup)
+        tree.write(f"{cc.AUTHORED_DIR}/a.py", self.LITERAL)
+        tree.write(f"{cc.AUTHORED_DIR}/b.py", 'PIANOPATH = {"id": "exercise.t.two"}\n')
+        code, out = run_main("--root", str(tree.root))
+        self.assertEqual(code, 0, out)
+
+    def test_an_authored_ref_in_a_reviewed_record_resolves_and_a_variant_fails(self):
+        self.module("one", self.LITERAL)
+        rec = load()
+        rec["status"] = "reviewed"
+        rec["steps"][1]["content"]["ref"] = "exercise.t.one"
+        failures, _ = cc.check_record(rec, "r.yaml", self.resolver(), TOOLS, ROOT)
+        self.assertNotIn("steps[2].content.ref", fields(failures))
+        rec["steps"][1]["content"]["ref"] = "exercise.t.on"
+        failures, _ = cc.check_record(rec, "r.yaml", self.resolver(), TOOLS, ROOT)
+        self.assertIn("steps[2].content.ref", fields(failures))
+
+    def test_the_real_tree_resolves_the_six_shuffle_ids_from_its_literal_sources(self):
+        authored = ROOT / cc.AUTHORED_DIR
+        modules = sorted(p for p in authored.glob("*.py") if p.name != "__init__.py")
+        expected = {f"exercise.blues.twelve-bar-shuffle.{key}": f"{cc.AUTHORED_DIR}/blues-12-bar-{key}.py" for key in "acdefg"}
+        self.assertEqual(RESOLVER.authored_ids, expected)
+        self.assertEqual(RESOLVER.authored_problems, [])
+        # every real authored module declares its id as a literal the checker can read (a new module computing its id
+        # would fail here, not silently drop out of resolution)
+        self.assertEqual(len(RESOLVER.authored_ids), len(modules))
+        for ident in expected:
+            self.assertEqual(RESOLVER.resolve(ident, "chart"), (True, ""))
+        self.assertFalse(RESOLVER.resolve("exercise.blues.twelve-bar-shuffle", "chart")[0])
+        self.assertFalse(RESOLVER.resolve("exercise.blues.twelve-bar-shuffle.h", "chart")[0])
+        self.assertFalse(RESOLVER.resolve("exercise.blues.twelve-bar-shuffle.c.x", "chart")[0])
+        self.assertFalse(RESOLVER.resolve("Exercise.Blues.Twelve-Bar-Shuffle.C", "chart")[0])
+
+    def test_the_real_a7a1_draft_lists_only_its_three_blues_riff_refs(self):
+        rec = yaml.safe_load((ROOT / "docs/chains/A7a.1.yaml").read_text(encoding="utf-8"))
+        failures, listed = cc.check_record(rec, "docs/chains/A7a.1.yaml", RESOLVER, TOOLS, ROOT)
+        self.assertEqual(failures, [])
+        self.assertEqual(len(listed), 3, [u.line() for u in listed])
+        refs = {u.ref for u in listed}
+        self.assertEqual(len(refs), 1)
+        self.assertTrue(next(iter(refs)).startswith("Qm"))  # the Blues Riff CID is not admitted
+        self.assertNotIn(AuthoredIdResolution.SHUFFLE, refs)
+
+
 class TheClauseMap(unittest.TestCase):
     """CLAUDE.md question 6 and FABLE section 10 (the owner, 2026-10-07): a new handoff maps each closed clause to an
     existing implementation, test and workflow, or says no ruling closes in it."""
