@@ -1,3 +1,5 @@
+**Superseded (the owner, 2026-10-06, `inputs-2026-10-06/owner-audience-acceptance.md`; FABLE §1, §9): this walk failed the audience boundary and asked the owner to confirm automatable facts. A7c.1's acceptance is an automated pass through the visible path; this file is kept only as a record of the failure.**
+
 # The owner's phone walk of latin.4 (A7c.1): the last condition before `shipped`
 
 Read with `steps.md` (which control reaches each record step) and the reviewer's gate (`docs/review/responses/a7c1-shipped.md` §3). Tick each line on the phone build once the deploy carrying Entry 263 (the loop fix) is up. A line that cannot be done as written is a stop: say which and what happened. Nothing here is a musical judgement; it is whether each step is playable as the lesson says.

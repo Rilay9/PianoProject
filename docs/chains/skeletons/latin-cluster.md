@@ -67,7 +67,7 @@ Carried by A7c.1 for continuity, not part of the pattern: the 4/4 tresillo items
 
 - One unit file (A7c.1: `app/tests/unit/latin4Completion.test.ts`, 28 cases, E252, E256, E261): the rung met by exactly the counted runs and refused for each near-substitute (either alone, Wait, Rhythm only, a partial lap, a sibling item or another song in place of a named one, another rung, below the tempo floor); every self-checked step that leaves a row stored as its permitted row with no skill evidence and nothing naming the target outside the item's identity; red-first by mutants where the base already behaves (E261: M1, M2).
 - The per-step reachability table: record step, lesson step, tool, item, the control that reaches it, reached or not (`runs/A7S/steps.md`, E261), read from code; a "no" is a stop for `shipped`.
-- The owner's phone walk (`runs/A7S/phone-walk.md`): lesson step, do, expect; preceded by the acceptance test and the checker re-run on the final head and the deploy (E263).
+- Learner-facing acceptance that proves every automatable step through the visible path on the deployed build (FABLE §1, §9, the audience boundary, the owner 2026-10-06); an owner/device check only for a property automation cannot establish, named with the reason, in cold-start plain language. E263's manual phone walk (`runs/A7S/phone-walk.md`) is superseded.
 
 ## 8. What A7c.1 did as the first slice, and the next slice should not repeat
 
@@ -124,5 +124,5 @@ St James Infirmary (`song.blues.st-james-infirmary`: one staff, 24 bars, 41 symb
 - [ ] `generated`: per family, job, `presented_as`, contract, checker, fixed and varied, the witness, the near-misses, the UNKNOWNs (§5).
 - [ ] `steps[].content.ref`: the intake record, the verified passage fact on current identity (Blue Bossa's iiø7-V7-i bars first), the teaching-use decision, the contract proof (§6 items 1-4); whether R3 resolves a catalog drill id (A7c.1 used none) checked first.
 - [ ] Placement (outside the record, it feeds `steps[].content.ref`): prerequisites cover the demands; candidate-rungs lists the rung (§6 items 5-6).
-- [ ] `acceptance_test`: the one unit file of §7, then the reachability table and the phone walk before `status: shipped`.
+- [ ] `acceptance_test`: the one unit file of §7, then the reachability table and the automated learner-facing acceptance before `status: shipped`.
 - [ ] `status`: `draft` until every ref resolves and the reviewer's read; `reviewed`; `shipped` only after §7 is complete.
