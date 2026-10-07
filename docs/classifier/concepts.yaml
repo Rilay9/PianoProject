@@ -1,0 +1,313 @@
+# Every concept a rung names (content/curriculum/stage-*.json `concepts`), mapped to how an
+# item is placed by it. tools/classifier/build_matrix.py fails if a rung concept is missing
+# here or a concept here is on no rung.
+#
+# k (kind):
+#   notes        - decided from the notes: the item must show the listed characteristics (ch)
+#   meta         - decided from the source record, not the notes (ch are meta.* ids)
+#   drill        - a generated drill; its parameters say what it holds (meta.generator-params)
+#   played       - how it is played, not what is printed; ch are the printed signs used to choose items
+#   activity     - the learner makes or does something; the item is input, not the skill
+#   app          - an app mode or screen; no item property
+# ch: characteristic ids (characteristics.yaml)
+# instead: for played / activity / app, the rule used to choose items (keys below)
+# amb: the concept name means different things on different rungs, or duplicates another
+#      name; the rule must be written per rung (listed in research.md)
+# The mapping is my reading of each concept name and the rungs that use it; the rungs are
+# listed in generated/rungs.md for a second reader to check each row.
+
+instead_rules:
+  level-only: "Not an item property. Any item inside the rung's difficulty band and taught set serves."
+  lead-sheet: "The learner makes the part. Items are lead sheets or charts with chord symbols (notation.chord-symbols), melody inside the rung's band."
+  drill: "A generated drill; its parameters say what it holds and the family checker confirms the file."
+  app: "An app mode or screen; reached through the app, never chosen by placement."
+  played: "How it is played. Items are chosen by the listed printed or textural signs; the item cannot show the learner did it."
+  by-ear: "The input is a recording or a heard phrase. Items are chosen by what the recording holds (research: sourcing recordings with known content)."
+
+concepts:
+  "3/4":                      {k: notes, ch: [metre.three-four]}
+  "4/4":                      {k: notes, ch: [notation.times]}
+  "6/8":                      {k: notes, ch: [metre.compound]}
+  8va:                        {k: notes, ch: [mark.ottava]}
+  B-flat-major:               {k: notes, ch: [notation.keys, key.tonic-mode]}
+  C-major-scale:              {k: notes, ch: [technique.scale-run, notation.keys]}
+  C-position:                 {k: notes, ch: [technique.five-finger, hands.per-bar-range]}
+  CC64:                       {k: notes, ch: [mark.pedal], amb: "CC64 is the sustain pedal's MIDI controller; duplicates damper-pedal, sustain-pedal, pedal, pedalling"}
+  E-flat-major:               {k: notes, ch: [notation.keys, key.tonic-mode]}
+  E7:                         {k: notes, ch: [harmony.chord-quality, harmony.roman]}
+  F-major:                    {k: notes, ch: [notation.keys, key.tonic-mode]}
+  I-IV-V:                     {k: notes, ch: [harmony.progression]}
+  I-IV-V7:                    {k: notes, ch: [harmony.progression, harmony.chord-quality]}
+  LH-C-position:              {k: notes, ch: [technique.five-finger, hands.per-bar-range]}
+  accidentals:                {k: notes, ch: [pitch.chromatic]}
+  add9:                       {k: notes, ch: [harmony.chord-quality]}
+  alberti:                    {k: notes, ch: [texture.alberti], amb: "duplicates alberti-bass"}
+  alberti-bass:               {k: notes, ch: [texture.alberti]}
+  alberti-bass-HT:            {k: notes, ch: [texture.alberti, texture.hands-together]}
+  alternating-hands:          {k: notes, ch: [texture.alternating-hands]}
+  anacrusis:                  {k: notes, ch: [mark.anacrusis]}
+  anticipation:               {k: notes, ch: [melody.chord-relation, rhythm.syncopation]}
+  approach-note:              {k: notes, ch: [melody.chord-relation]}
+  arpeggio:                   {k: notes, ch: [technique.arpeggio-run]}
+  arpeggio-fingering:         {k: notes, ch: [technique.arpeggio-run, mark.fingering]}
+  arpeggio-texture:           {k: notes, ch: [texture.arpeggio]}
+  arranging:                  {k: activity, instead: lead-sheet}
+  articulation:               {k: notes, ch: [mark.articulation, mark.slur]}
+  balance:                    {k: played, ch: [texture.melody-in-chords, texture.held-under-moving], instead: played}
+  baroque-dance:              {k: meta, ch: [meta.title, meta.composer-era, form.binary-ternary]}
+  bass-clef:                  {k: notes, ch: [clef.bass]}
+  bass-walk-up:               {k: notes, ch: [texture.bass-walk-up]}
+  beams:                      {k: notes, ch: [rhythm.eighths]}
+  black-key-groups:           {k: activity, ch: [difficulty.features], instead: level-only}
+  block-chords:               {k: notes, ch: [texture.block-chords]}
+  blue-note:                  {k: notes, ch: [melody.chord-relation, scale.collection]}
+  blues-scale:                {k: notes, ch: [scale.collection]}
+  boogie:                     {k: notes, ch: [texture.boogie-bass, form.twelve-bar]}
+  boogie-bass:                {k: notes, ch: [texture.boogie-bass]}
+  bossa-nova:                 {k: notes, ch: [texture.bossa]}
+  broken-chord:               {k: notes, ch: [texture.broken-chord], amb: "duplicates broken-chords"}
+  broken-chord-accompaniment: {k: notes, ch: [texture.broken-chord]}
+  broken-chords:              {k: notes, ch: [texture.broken-chord]}
+  broken-octaves:             {k: notes, ch: [texture.octaves]}
+  build-and-release:          {k: notes, ch: [texture.build, mark.hairpin]}
+  cadences:                   {k: notes, ch: [harmony.cadence]}
+  call-and-response:          {k: notes, ch: [texture.call-response]}
+  call-response:              {k: notes, ch: [texture.call-response], amb: "duplicates call-and-response"}
+  cantabile:                  {k: played, ch: [mark.slur, texture.melody-in-chords, mark.tempo-text], instead: played}
+  carols:                     {k: meta, ch: [meta.title, meta.genre-tags]}
+  charleston:                 {k: notes, ch: [texture.charleston]}
+  chord-charts:               {k: activity, ch: [notation.chord-symbols], instead: lead-sheet}
+  chord-identification:       {k: drill, ch: [meta.generator-params], instead: drill}
+  chord-progression:          {k: notes, ch: [harmony.progression]}
+  chord-scale:                {k: notes, ch: [scale.collection, melody.chord-relation]}
+  chord-symbols:              {k: notes, ch: [notation.chord-symbols]}
+  chromatic:                  {k: notes, ch: [technique.scale-run, pitch.chromatic]}
+  chromatic-harmony:          {k: notes, ch: [harmony.chromatic-share]}
+  chunking:                   {k: activity, instead: level-only}
+  circle-of-fifths:           {k: drill, ch: [meta.generator-params], instead: drill}
+  clave:                      {k: notes, ch: [texture.clave]}
+  comping:                    {k: activity, ch: [notation.chord-symbols, texture.four-to-the-bar, texture.charleston, harmony.voicing], instead: lead-sheet}
+  composition:                {k: activity, instead: level-only}
+  contrary:                   {k: notes, ch: [texture.motion], amb: "duplicates contrary-motion"}
+  contrary-motion:            {k: notes, ch: [texture.motion]}
+  coordination:               {k: played, ch: [texture.hands-together, texture.hand-independence], instead: played}
+  counterpoint:               {k: notes, ch: [texture.counterpoint]}
+  crescendo:                  {k: notes, ch: [mark.hairpin]}
+  crushed-note:               {k: notes, ch: [texture.crushed-note]}
+  damper-pedal:               {k: notes, ch: [mark.pedal]}
+  diminuendo:                 {k: notes, ch: [mark.hairpin]}
+  dom7:                       {k: notes, ch: [harmony.chord-quality]}
+  dotted-quarter:             {k: notes, ch: [rhythm.dotted-quarter]}
+  double-notes:               {k: notes, ch: [texture.double-notes]}
+  dramatic-contrast:          {k: played, ch: [mark.dynamics, mark.hairpin], instead: played}
+  dynamic-build:              {k: notes, ch: [texture.build, mark.hairpin]}
+  dynamics:                   {k: notes, ch: [mark.dynamics]}
+  ear-training:               {k: drill, ch: [meta.generator-params], instead: by-ear}
+  eighth-note-ostinato:       {k: notes, ch: [texture.ostinato, rhythm.eighths]}
+  eighth-notes:               {k: notes, ch: [rhythm.eighths]}
+  endurance:                  {k: notes, ch: [technique.endurance]}
+  etude:                      {k: meta, ch: [meta.title, meta.collection, technique.velocity]}
+  evenness:                   {k: played, ch: [technique.scale-run, rhythm.sixteenths], instead: played}
+  extended-chords:            {k: notes, ch: [harmony.chord-quality, harmony.voicing]}
+  finger-independence:        {k: notes, ch: [technique.finger-independence]}
+  finger-numbers:             {k: notes, ch: [mark.fingering]}
+  five-finger:                {k: notes, ch: [technique.five-finger]}
+  flats:                      {k: notes, ch: [key.signature, notation.keys]}
+  forearm:                    {k: played, ch: [texture.octaves], instead: played}
+  form:                       {k: notes, ch: [form.binary-ternary, form.phrase], amb: "generic on theory.9 and improv.9; the form meant is not named"}
+  four-chord-loop:            {k: notes, ch: [harmony.progression]}
+  four-chord-progression:     {k: notes, ch: [harmony.progression], amb: "duplicates four-chord-loop"}
+  four-part-harmony:          {k: notes, ch: [harmony.voice-leading, difficulty.features]}
+  four-to-the-bar:            {k: notes, ch: [texture.four-to-the-bar]}
+  grand-staff:                {k: notes, ch: [notation.staves]}
+  guide-tones:                {k: notes, ch: [melody.chord-relation, harmony.voicing]}
+  guitar-keys:                {k: notes, ch: [key.set-membership]}
+  habanera:                   {k: notes, ch: [rhythm.habanera]}
+  half-notes:                 {k: notes, ch: [rhythm.values]}
+  half-pedal:                 {k: played, ch: [mark.pedal], instead: played}
+  half-time-feel:             {k: notes, ch: [texture.half-time]}
+  hand-independence:          {k: notes, ch: [texture.hand-independence]}
+  hand-shape:                 {k: played, instead: level-only}
+  hands-together:             {k: notes, ch: [texture.hands-together]}
+  hanon:                      {k: meta, ch: [meta.collection]}
+  harmonic-dictation:         {k: drill, ch: [meta.generator-params], instead: by-ear}
+  harmonic-minor:             {k: notes, ch: [key.minor-form]}
+  head-and-chorus:            {k: activity, ch: [notation.chord-symbols], instead: lead-sheet}
+  held-LH:                    {k: notes, ch: [texture.held-under-moving]}
+  held-melody:                {k: notes, ch: [texture.held-under-moving]}
+  ii-V-I:                     {k: notes, ch: [harmony.progression]}
+  improvisation:              {k: activity, ch: [notation.chord-symbols], instead: lead-sheet}
+  injury:                     {k: activity, instead: level-only}
+  interleaving:               {k: activity, instead: level-only}
+  interpretation:             {k: played, ch: [mark.dynamics, mark.tempo-text, mark.articulation], instead: played}
+  interval-reading:           {k: notes, ch: [interval.step, interval.skip, interval.leap]}
+  intervals:                  {k: drill, ch: [meta.generator-params], instead: drill}
+  inversions:                 {k: notes, ch: [harmony.inversion]}
+  inversions-by-ear:          {k: drill, ch: [meta.generator-params], instead: by-ear}
+  key-signature:              {k: notes, ch: [key.signature]}
+  key-signatures:             {k: drill, ch: [meta.generator-params], instead: drill, amb: "theory.3 drill vs key-signature on 3.1 (reading)"}
+  landmark-notes:             {k: activity, ch: [hands.per-bar-range], instead: level-only}
+  large-form:                 {k: notes, ch: [form.length, form.sonata]}
+  leap:                       {k: notes, ch: [interval.leap], amb: "duplicates leaps"}
+  leaps:                      {k: notes, ch: [interval.leap]}
+  ledger-lines:               {k: notes, ch: [pitch.ledger]}
+  left-hand:                  {k: notes, ch: [texture.left-hand-pattern, hands.per-bar-range], amb: "on blues.6, holiday.7 and latin.7 the left-hand skill meant is not named"}
+  legato:                     {k: notes, ch: [mark.slur], amb: "printed slurs are measurable; legato touch is played"}
+  legato-pedalling:           {k: notes, ch: [mark.pedal]}
+  letter-names:               {k: drill, ch: [meta.generator-params], instead: drill}
+  looping:                    {k: app, instead: app}
+  maj7:                       {k: notes, ch: [harmony.chord-quality]}
+  major-scale-formula:        {k: drill, ch: [meta.generator-params, technique.scale-run], instead: drill}
+  mazurka-rhythm:             {k: notes, ch: [texture.mazurka]}
+  melodic-minor:              {k: notes, ch: [key.minor-form]}
+  melody-in-octaves:          {k: notes, ch: [texture.octaves]}
+  melody-projection:          {k: played, ch: [texture.melody-in-chords, texture.held-under-moving], instead: played}
+  melody-writing:             {k: activity, instead: level-only}
+  memorising:                 {k: activity, instead: level-only}
+  meter-5-4:                  {k: notes, ch: [metre.odd]}
+  meter-7-8:                  {k: notes, ch: [metre.odd]}
+  middle-C:                   {k: activity, ch: [hands.per-bar-range], instead: level-only}
+  min7:                       {k: notes, ch: [harmony.chord-quality]}
+  minor-triads:               {k: notes, ch: [harmony.chord-quality]}
+  modal-minor:                {k: notes, ch: [harmony.modal, scale.collection]}
+  modes:                      {k: notes, ch: [harmony.modal, scale.collection]}
+  modulation:                 {k: notes, ch: [key.change]}
+  montuno:                    {k: notes, ch: [texture.montuno]}
+  mordent:                    {k: notes, ch: [mark.ornament]}
+  motif:                      {k: activity, ch: [melody.motif-repetition], instead: level-only}
+  motif-development:          {k: activity, ch: [melody.motif-repetition], instead: level-only}
+  motivation:                 {k: activity, instead: level-only}
+  multi-strain-form:          {k: notes, ch: [form.multi-strain]}
+  not-fast:                   {k: notes, ch: [mark.tempo-text]}
+  note-length:                {k: notes, ch: [rhythm.values]}
+  octave-scale:               {k: notes, ch: [texture.octaves, technique.scale-run]}
+  octaves:                    {k: notes, ch: [texture.octaves], amb: "on 0.2 the octave is keyboard geography; elsewhere playing octaves"}
+  odd-meter:                  {k: notes, ch: [metre.odd]}
+  oom-pah-bass:               {k: notes, ch: [texture.oom-pah]}
+  open-voicing:               {k: notes, ch: [harmony.voicing], amb: "duplicates open-voicings"}
+  open-voicings:              {k: notes, ch: [harmony.voicing]}
+  ornamentation:              {k: notes, ch: [mark.ornament]}
+  ornamented-melody:          {k: notes, ch: [mark.ornament]}
+  ornaments:                  {k: notes, ch: [mark.ornament]}
+  ostinato:                   {k: notes, ch: [texture.ostinato]}
+  passing-chords:             {k: notes, ch: [harmony.applied]}
+  pedal:                      {k: notes, ch: [mark.pedal]}
+  pedal-bass:                 {k: notes, ch: [texture.pedal-point]}
+  pedalling:                  {k: notes, ch: [mark.pedal]}
+  pentatonic-scale:           {k: notes, ch: [scale.collection]}
+  performance-mode:           {k: app, instead: app}
+  phrase-shaping:             {k: played, ch: [mark.slur, mark.hairpin, form.phrase], instead: played}
+  phrasing:                   {k: played, ch: [mark.slur, form.phrase], instead: played}
+  pivot-chord:                {k: notes, ch: [harmony.applied, key.change]}
+  placement:                  {k: app, instead: app}
+  plagal-cadence:             {k: notes, ch: [harmony.cadence]}
+  plateau:                    {k: activity, instead: level-only}
+  playing-by-ear:             {k: activity, instead: by-ear}
+  "polyrhythm-2:1":           {k: notes, ch: [texture.polyrhythm]}
+  "polyrhythm-2:3":           {k: notes, ch: [texture.polyrhythm]}
+  "polyrhythm-3:1":           {k: notes, ch: [texture.polyrhythm]}
+  "polyrhythm-3:2":           {k: notes, ch: [texture.polyrhythm]}
+  position-shift:             {k: notes, ch: [technique.position-shift]}
+  posture:                    {k: played, instead: level-only}
+  power-chord:                {k: notes, ch: [texture.power-chord]}
+  progressions-by-ear:        {k: drill, ch: [meta.generator-params], instead: by-ear}
+  quartal:                    {k: notes, ch: [harmony.voicing]}
+  quarter-notes:              {k: notes, ch: [rhythm.values]}
+  reading-ahead:              {k: activity, instead: level-only}
+  reduction:                  {k: activity, ch: [meta.genre-tags], instead: by-ear}
+  register:                   {k: notes, ch: [hands.per-bar-range]}
+  reharmonisation:            {k: activity, ch: [harmony.progression], instead: lead-sheet}
+  relative-minor:             {k: notes, ch: [key.tonic-mode, key.signature]}
+  repeated-notes:             {k: notes, ch: [rhythm.repeated-notes]}
+  rests:                      {k: notes, ch: [rhythm.values]}
+  review-queue:               {k: app, instead: app}
+  rhythm:                     {k: notes, ch: [rhythm.values, rhythm.syncopation], amb: "generic on technique.5; the rhythm skill meant is not named"}
+  rhythm-changes:             {k: notes, ch: [form.thirty-two-bar, harmony.progression]}
+  riff:                       {k: notes, ch: [texture.ostinato]}
+  roman-numerals:             {k: drill, ch: [harmony.roman], instead: drill}
+  romantic-miniature:         {k: meta, ch: [meta.composer-era, form.length]}
+  rootless-voicings:          {k: notes, ch: [harmony.voicing]}
+  rotation:                   {k: played, ch: [texture.broken-chord, texture.alberti, mark.tremolo], instead: played}
+  rubato:                     {k: played, ch: [meta.composer-era, mark.tempo-text], instead: played}
+  scale:                      {k: notes, ch: [technique.scale-run]}
+  scale-in-3rds:              {k: notes, ch: [technique.scale-run, texture.double-notes]}
+  scale-in-6ths:              {k: notes, ch: [technique.scale-run, texture.double-notes]}
+  scales-HT:                  {k: notes, ch: [technique.scale-run, texture.hands-together]}
+  secondary-dominants:        {k: notes, ch: [harmony.applied]}
+  secondary-rag:              {k: notes, ch: [rhythm.secondary-rag]}
+  self-assessment:            {k: app, instead: app}
+  semitones:                  {k: notes, ch: [pitch.chromatic, interval.step]}
+  session-planning:           {k: activity, instead: level-only}
+  seventh-chord:              {k: notes, ch: [harmony.chord-quality]}
+  seventh-qualities:          {k: drill, ch: [meta.generator-params, harmony.chord-quality], instead: drill}
+  shaping:                    {k: played, ch: [mark.hairpin, mark.slur], instead: played}
+  sharps:                     {k: notes, ch: [key.signature, notation.keys]}
+  shell-voicings:             {k: notes, ch: [harmony.voicing]}
+  shuffle:                    {k: notes, ch: [texture.shuffle]}
+  sight-reading:              {k: drill, ch: [meta.generator-params], instead: drill}
+  similar:                    {k: notes, ch: [texture.motion]}
+  sixteenth-notes:            {k: notes, ch: [rhythm.sixteenths]}
+  skips:                      {k: notes, ch: [interval.skip]}
+  slash-chord:                {k: notes, ch: [harmony.inversion, notation.chord-symbols], amb: "duplicates slash-chords"}
+  slash-chords:               {k: notes, ch: [harmony.inversion, notation.chord-symbols]}
+  slow-practice:              {k: activity, instead: level-only}
+  slur:                       {k: notes, ch: [mark.slur]}
+  sonata-form:                {k: notes, ch: [form.sonata]}
+  sonatina-form:              {k: notes, ch: [form.sonata]}
+  staccato:                   {k: notes, ch: [mark.articulation]}
+  steps:                      {k: notes, ch: [interval.step]}
+  stop-time:                  {k: notes, ch: [texture.stop-time]}
+  stride:                     {k: notes, ch: [texture.stride]}
+  stride-bass:                {k: notes, ch: [texture.stride]}
+  subdivision:                {k: notes, ch: [rhythm.eighths, rhythm.sixteenths]}
+  sus:                        {k: notes, ch: [harmony.chord-quality], amb: "duplicates sus-chords"}
+  sus-chords:                 {k: notes, ch: [harmony.chord-quality]}
+  sustain-pedal:              {k: notes, ch: [mark.pedal]}
+  sustained-chords:           {k: notes, ch: [texture.sustained]}
+  swing:                      {k: notes, ch: [notation.swing-mark, texture.shuffle]}
+  swing-eighths:              {k: notes, ch: [notation.swing-mark]}
+  syncopation:                {k: notes, ch: [rhythm.syncopation]}
+  tango:                      {k: notes, ch: [texture.tango]}
+  tempo-ladder:               {k: app, instead: app}
+  tempo-mode:                 {k: app, instead: app}
+  tension:                    {k: played, instead: level-only}
+  texture:                    {k: notes, ch: [texture.block-chords, texture.broken-chord, texture.arpeggio], amb: "generic on chords-pop.7, improv.7, chords-pop.9; the textures meant are not named"}
+  thumb-under:                {k: notes, ch: [technique.thumb-under]}
+  tie:                        {k: notes, ch: [rhythm.ties]}
+  tied-across-bar:            {k: notes, ch: [rhythm.ties]}
+  tone:                       {k: played, ch: [texture.melody-in-chords], instead: played}
+  tonicisation:               {k: notes, ch: [harmony.applied]}
+  trading-fours:              {k: activity, ch: [notation.chord-symbols], instead: lead-sheet}
+  transposing:                {k: activity, ch: [notation.chord-symbols, key.tonic-mode], instead: lead-sheet}
+  transposing-for-singers:    {k: activity, ch: [notation.chord-symbols, key.tonic-mode], instead: lead-sheet}
+  transposition:              {k: activity, ch: [key.tonic-mode], instead: lead-sheet}
+  treble-clef:                {k: notes, ch: [clef.treble]}
+  tremolo:                    {k: notes, ch: [mark.tremolo]}
+  tremolo-thirds:             {k: notes, ch: [texture.tremolo-thirds]}
+  tresillo:                   {k: notes, ch: [rhythm.tresillo]}
+  triads:                     {k: notes, ch: [harmony.chord-quality, texture.block-chords]}
+  trill:                      {k: notes, ch: [mark.ornament], amb: "duplicates trills"}
+  trills:                     {k: notes, ch: [mark.ornament]}
+  trio-key-change:            {k: notes, ch: [key.change, form.multi-strain]}
+  triplets:                   {k: notes, ch: [rhythm.triplets]}
+  tritone-substitution:       {k: notes, ch: [harmony.applied]}
+  tumbao:                     {k: notes, ch: [texture.tumbao]}
+  turnaround:                 {k: notes, ch: [form.turnaround]}
+  twelve-bar:                 {k: notes, ch: [form.twelve-bar], amb: "duplicates twelve-bar-blues"}
+  twelve-bar-blues:           {k: notes, ch: [form.twelve-bar]}
+  twelve-bar-improv:          {k: activity, ch: [form.twelve-bar], instead: lead-sheet}
+  two-hand-independence:      {k: notes, ch: [texture.hand-independence], amb: "duplicates hand-independence"}
+  two-voice-texture:          {k: notes, ch: [texture.two-voice]}
+  vamp:                       {k: notes, ch: [texture.ostinato]}
+  velocity:                   {k: notes, ch: [technique.velocity]}
+  vertical-alignment:         {k: notes, ch: [texture.hands-together]}
+  virtuoso-technique:         {k: notes, ch: [difficulty.level, technique.velocity]}
+  voice-leading:              {k: notes, ch: [harmony.voice-leading]}
+  voicing:                    {k: notes, ch: [harmony.voicing, texture.melody-in-chords], amb: "on classical.4.shelf and technique.6 voicing means bringing out a voice (played); on jazz and chords-pop rungs it means chord voicing (notes)"}
+  voicing-melody:             {k: notes, ch: [texture.melody-in-chords]}
+  wait-mode:                  {k: app, instead: app}
+  walking-bass:               {k: notes, ch: [texture.walking-bass]}
+  waltz-bass:                 {k: notes, ch: [texture.waltz-bass]}
+  warm-up:                    {k: activity, instead: level-only}
+  whole-notes:                {k: notes, ch: [rhythm.values]}
+  wrist:                      {k: played, ch: [texture.octaves, mark.articulation], instead: played}

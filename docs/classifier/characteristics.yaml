@@ -1,0 +1,165 @@
+# Characteristics an item can be measured for, and how each is measured.
+# One entry per characteristic. Read by tools/classifier/build_matrix.py, which fails if a
+# concept (concepts.yaml) or a place rule (places.yaml) names an id that is not here.
+#
+# method:
+#   existing  - code in this repo measures it today (impl names the file)
+#   library   - a library call measures it; our code only counts what it returns
+#   matcher   - a short rule of ours over library output; needs a published definition
+#               (src) and tests on sourced examples and near-misses before it is trusted
+#   research  - no reliable method known to us; an agent researches a method or source
+#   metadata  - not in the notes; read from the source record (title, composer, tags)
+# w2: the second, independent witness; where two witnesses exist they must agree, and a
+#     disagreement is reported for that item, never passed.
+# src: the published definition the rule quotes. NEEDED = not yet found (listed in research.md).
+#      verify = the code may already cite one; check it before relying on it.
+#      notation = a printed symbol; reading the file is the definition.
+# Facts checked on 2026-10-07 against .venv: music21 10.5.0 (92 feature extractors;
+# Ottava, Trill, Mordent, Tremolo, Fermata, Crescendo, Fingering, Repeat, RepeatBracket,
+# VoiceLeadingQuartet, floatingKey present; no pedal-mark class), partitura 1.9.0
+# (estimate_key, estimate_spelling, estimate_time, estimate_tonaltension, estimate_voices).
+
+# --- Existing: the 22 demand detectors (app/src/demands/detect.ts, run by tools/content/demands.py)
+clef.treble:                 {method: library, impl: "music21 clef.TrebleClef", w2: "raw MusicXML <clef> G2", src: notation}
+clef.bass:                   {method: existing, impl: detect.ts, w2: "music21 clef.BassClef count", src: notation}
+pitch.ledger:                {method: existing, impl: detect.ts, w2: "music21 pitch vs staff lines", src: notation}
+interval.step:               {method: existing, impl: detect.ts, w2: "music21 interval per voice", src: notation}
+interval.skip:               {method: existing, impl: detect.ts, w2: "music21 interval per voice", src: notation}
+interval.leap:               {method: existing, impl: detect.ts, w2: "music21 interval per voice", src: notation}
+rhythm.eighths:              {method: existing, impl: detect.ts, w2: "music21 duration types", src: notation}
+rhythm.shorter-than-quarter: {method: existing, impl: detect.ts, w2: "music21 duration types", src: notation}
+rhythm.sixteenths:           {method: existing, impl: detect.ts, w2: "music21 duration types", src: notation}
+rhythm.dotted-quarter:       {method: existing, impl: detect.ts, w2: "music21 duration dots", src: notation}
+rhythm.ties:                 {method: existing, impl: detect.ts, w2: "music21 note.tie", src: notation}
+rhythm.syncopation:          {method: existing, impl: detect.ts, w2: "music21 beat strength of onsets", src: NEEDED}
+rhythm.triplets:             {method: existing, impl: detect.ts, w2: "music21 duration.tuplets", src: notation}
+metre.compound:              {method: existing, impl: detect.ts, w2: "music21 TimeSignature.beatDivisionCount", src: notation}
+metre.three-four:            {method: existing, impl: detect.ts, w2: "music21 TimeSignature", src: notation}
+key.signature:               {method: existing, impl: detect.ts, w2: "music21 KeySignature", src: notation}
+pitch.chromatic:             {method: existing, impl: detect.ts, w2: "music21 pitch vs key", src: notation}
+range.beyond-position:       {method: existing, impl: detect.ts, w2: "partitura note array, span per hand per bar", src: NEEDED}
+texture.hands-together:      {method: existing, impl: detect.ts, w2: "partitura onsets per staff", src: notation}
+texture.left-hand-pattern:   {method: existing, impl: detect.ts, w2: "matcher on music21 LH figures", src: verify}
+texture.walking-bass:        {method: existing, impl: detect.ts, w2: "matcher on music21 LH quarters vs chord", src: verify}
+rhythm.habanera:             {method: existing, impl: detect.ts, w2: "sourced near-miss fixtures", src: verify}
+rhythm.tresillo:             {method: existing, impl: detect.ts, w2: "sourced near-miss fixtures", src: verify}
+
+# --- Existing: difficulty and the notation summary
+difficulty.features:    {method: existing, impl: "tools/content/difficulty.py (19 features)", w2: "music21.features (92 extractors)", src: NEEDED}
+difficulty.level:       {method: existing, impl: "difficulty.py estimate + content/sources/level-model.json (fitted on levels set inside this project)", w2: "a model fitted on an outside graded set (CIPI / PSyllabus: research)", src: NEEDED}
+notation.keys:          {method: existing, impl: "build.py attach_notation", w2: "music21 KeySignature", src: notation}
+notation.times:         {method: existing, impl: "build.py attach_notation", w2: "music21 TimeSignature", src: notation}
+notation.staves:        {method: existing, impl: "build.py attach_notation", w2: "raw MusicXML <staves>", src: notation}
+notation.bars:          {method: existing, impl: "build.py attach_notation", w2: "music21 measure count", src: notation}
+notation.chord-symbols: {method: existing, impl: "build.py attach_notation (chords, chordCount)", w2: "music21 harmony.ChordSymbol", src: notation}
+notation.swing-mark:    {method: existing, impl: "build.py attach_notation (swungMark)", w2: "raw MusicXML <swing> or text", src: notation}
+hands.per-bar-range:    {method: existing, impl: "demands.py positions (each hand's lowest and highest pitch per printed bar)", w2: "partitura note array", src: notation}
+
+# --- Library: printed marks and values (counted, nothing inferred)
+mark.dynamics:      {method: library, impl: "music21 dynamics.Dynamic", w2: "raw MusicXML <dynamics>", src: notation}
+mark.hairpin:       {method: library, impl: "music21 dynamics.Crescendo / Diminuendo", w2: "raw MusicXML <wedge>", src: notation}
+mark.articulation:  {method: library, impl: "music21 articulations (Staccato, Accent, Tenuto)", w2: "raw MusicXML <articulations>", src: notation}
+mark.slur:          {method: library, impl: "music21 spanner.Slur", w2: "raw MusicXML <slur>", src: notation}
+mark.pedal:         {method: library, impl: "raw MusicXML <pedal> (music21 10.5 has no pedal class)", w2: none, src: notation}
+mark.ornament:      {method: library, impl: "music21 expressions.Trill / Mordent / Turn; grace notes", w2: "raw MusicXML <ornaments>, <grace>", src: notation}
+mark.tremolo:       {method: library, impl: "music21 expressions.Tremolo", w2: "raw MusicXML <tremolo>", src: notation}
+mark.ottava:        {method: library, impl: "music21 spanner.Ottava", w2: "raw MusicXML <octave-shift>", src: notation}
+mark.fermata:       {method: library, impl: "music21 expressions.Fermata", w2: "raw MusicXML <fermata>", src: notation}
+mark.repeat:        {method: library, impl: "music21 bar.Repeat, spanner.RepeatBracket", w2: "raw MusicXML <repeat>, <ending>", src: notation}
+mark.fingering:     {method: library, impl: "music21 articulations.Fingering", w2: "raw MusicXML <fingering>", src: notation}
+mark.anacrusis:     {method: library, impl: "music21 first measure shorter than its metre", w2: "raw MusicXML implicit=yes", src: notation}
+mark.tempo-text:    {method: library, impl: "music21 tempo.MetronomeMark / TempoText", w2: "raw MusicXML <words>, <metronome>", src: notation}
+rhythm.values:      {method: library, impl: "music21 duration types, rests included", w2: "raw MusicXML <type>", src: notation}
+rhythm.repeated-notes: {method: library, impl: "music21 consecutive equal pitches per voice", w2: "partitura note array", src: notation}
+
+# --- Keys and metres
+key.tonic-mode:     {method: library, impl: "music21 analyze key", w2: "partitura estimate_key", src: "Krumhansl-Schmuckler key profiles as each library implements them"}
+key.minor-form:     {method: matcher, impl: "raised 6th and 7th degrees in a minor key (harmonic, melodic)", w2: "music21 HarmonicMinorScale / MelodicMinorScale membership", src: NEEDED}
+key.change:         {method: library, impl: "notation.keys > 1, plus music21 analysis.floatingKey windows", w2: "partitura estimate_key per section", src: NEEDED}
+key.set-membership: {method: matcher, impl: "tonic in a stated key list (guitar keys)", w2: none, src: NEEDED}
+metre.odd:          {method: library, impl: "notation.times numerator 5 or 7", w2: "music21 TimeSignature", src: notation}
+
+# --- Harmony
+harmony.chord-quality:   {method: library, impl: "music21 harmony.ChordSymbol on the printed symbols", w2: "music21 chordify + chord quality on the notes (weak on broken textures)", src: notation}
+harmony.inversion:       {method: library, impl: "music21 chord.inversion on chordal beats; slash symbols", w2: "bass note vs symbol root", src: notation}
+harmony.roman:           {method: library, impl: "music21 roman.romanNumeralFromChord (symbol or chordified beat, key)", w2: "AugmentedNet or another Roman-numeral model (research)", src: NEEDED}
+harmony.progression:     {method: matcher, impl: "sequence rules over harmony.roman (I-IV-V, ii-V-I major and minor, four-chord loops, rhythm changes)", w2: "symbol-derived vs note-derived Roman numerals agree", src: NEEDED}
+harmony.applied:         {method: matcher, impl: "secondary dominants, tritone substitutes, passing and pivot chords, tonicisation, over harmony.roman", w2: "as harmony.progression", src: NEEDED}
+harmony.cadence:         {method: matcher, impl: "chord pair at phrase ends (V-I, IV-I, ending on V)", w2: "needs form.phrase (research)", src: NEEDED}
+harmony.chromatic-share: {method: library, impl: "share of non-diatonic chords from harmony.roman", w2: "pitch.chromatic density", src: NEEDED}
+harmony.voicing:         {method: matcher, impl: "a chord's notes vs its symbol root: shell, rootless, quartal, open, close", w2: "symbol-free reading from chordify", src: NEEDED}
+harmony.voice-leading:   {method: library, impl: "music21 voiceLeading.VoiceLeadingQuartet on four-voice textures", w2: "voices per staff (difficulty voicesPerStaff)", src: NEEDED}
+harmony.modal:           {method: research, impl: "pitch-class collection vs tonic (dorian, mixolydian, modal minor)", w2: none, src: NEEDED}
+
+# --- Melody against harmony
+melody.chord-relation:   {method: matcher, impl: "melody notes vs current chord: chord tones on strong beats, approach notes, guide tones, blue notes, anticipations", w2: "harmony from notes vs from symbols", src: NEEDED}
+scale.collection:        {method: matcher, impl: "pitch-class set vs music21 scale classes (pentatonic, blues scale, modes)", w2: none, src: NEEDED}
+melody.motif-repetition: {method: matcher, impl: "repeated interval and rhythm sequences (FABLE section 5 method 2 feature)", w2: "music21 search", src: NEEDED}
+
+# --- Texture and style patterns (each needs a quoted definition and near-miss tests)
+texture.alberti:          {method: matcher, impl: "low-high-middle-high broken triad in even values", w2: none, src: NEEDED}
+texture.broken-chord:     {method: matcher, impl: "successive notes of one chord within a beat group", w2: "chordify per beat", src: NEEDED}
+texture.arpeggio:         {method: matcher, impl: "chord tones across more than an octave in one direction", w2: none, src: NEEDED}
+texture.block-chords:     {method: library, impl: "simultaneities of 3+ notes in one hand (difficulty maxSimultaneous)", w2: "partitura onsets", src: notation}
+texture.waltz-bass:       {method: matcher, impl: "3/4 with bass on 1 and chord on 2 and 3", w2: none, src: NEEDED}
+texture.oom-pah:          {method: matcher, impl: "duple with bass on strong beats and chord on weak", w2: none, src: NEEDED}
+texture.stride:           {method: matcher, impl: "oom-pah with the bass an octave or tenth below a mid-register chord", w2: none, src: NEEDED}
+texture.boogie-bass:      {method: matcher, impl: "repeated eighth-note left-hand figure on each chord root of the form", w2: none, src: NEEDED}
+texture.shuffle:          {method: matcher, impl: "long-short left-hand figure, notated or under a swing mark", w2: "notation.swing-mark", src: NEEDED}
+texture.held-under-moving: {method: matcher, impl: "a held note or chord while the same or other hand moves", w2: "partitura durations", src: NEEDED}
+texture.ostinato:         {method: matcher, impl: "a figure repeated unchanged for N bars (riff, vamp, ostinato)", w2: "music21 search", src: NEEDED}
+texture.pedal-point:      {method: matcher, impl: "bass pitch held or repeated under changing harmony", w2: none, src: NEEDED}
+texture.four-to-the-bar:  {method: matcher, impl: "chords on every beat in 4/4", w2: none, src: NEEDED}
+texture.charleston:       {method: matcher, impl: "comp on beat 1 and the and of 2", w2: none, src: NEEDED}
+texture.montuno:          {method: matcher, impl: "syncopated repeated piano figure aligned to the clave", w2: none, src: NEEDED}
+texture.tumbao:           {method: matcher, impl: "anticipated bass (and of 2, beat 4)", w2: none, src: NEEDED}
+texture.clave:            {method: matcher, impl: "son or rumba clave onset sets, 3-2 or 2-3", w2: none, src: NEEDED}
+texture.bossa:            {method: matcher, impl: "bossa bass (root-fifth, dotted) with syncopated comp", w2: none, src: NEEDED}
+texture.tango:            {method: matcher, impl: "marcato in four, 3-3-2, arrastre (named in A7c.4)", w2: none, src: NEEDED}
+texture.mazurka:          {method: matcher, impl: "3/4 with accent on 2 or 3 and a dotted first beat", w2: none, src: NEEDED}
+texture.stop-time:        {method: matcher, impl: "bars with a single hit on 1 and silence after", w2: none, src: NEEDED}
+texture.octaves:          {method: matcher, impl: "simultaneous octave in one hand; melody in octaves; broken octaves", w2: none, src: notation}
+texture.double-notes:     {method: matcher, impl: "simultaneous 3rds or 6ths moving in one hand", w2: none, src: notation}
+texture.power-chord:      {method: matcher, impl: "root and fifth (and octave) in one hand", w2: "chord symbol with 5", src: NEEDED}
+texture.two-voice:        {method: library, impl: "two moving voices, in one staff or one per hand", w2: "partitura estimate_voices", src: NEEDED}
+texture.counterpoint:     {method: research, impl: "independent contour and rhythm between voices", w2: none, src: NEEDED}
+texture.motion:           {method: matcher, impl: "contrary, similar or parallel motion between the hands", w2: none, src: notation}
+texture.hand-independence: {method: matcher, impl: "share of onsets in one hand only; different rhythms per hand", w2: "partitura onsets", src: NEEDED}
+texture.alternating-hands: {method: matcher, impl: "hands sound in turn, never together", w2: none, src: notation}
+texture.polyrhythm:       {method: matcher, impl: "a tuplet in one hand against plain values in the other (2:3, 3:2, 3:1)", w2: none, src: notation}
+texture.tremolo-thirds:   {method: matcher, impl: "alternating notes a third apart (blues tremolo)", w2: "mark.tremolo", src: NEEDED}
+texture.crushed-note:     {method: matcher, impl: "grace note a semitone below a chord tone (blues)", w2: "mark.ornament grace", src: NEEDED}
+texture.half-time:        {method: research, impl: "backbeat on 3 in a piano reduction", w2: none, src: NEEDED}
+texture.call-response:    {method: research, impl: "phrases that answer each other", w2: none, src: NEEDED}
+texture.melody-in-chords: {method: matcher, impl: "melody as the top voice of one hand's chords", w2: none, src: NEEDED}
+texture.build:            {method: matcher, impl: "rising density and dynamics across a section", w2: "mark.dynamics", src: NEEDED}
+texture.bass-walk-up:     {method: matcher, impl: "two to four stepwise bass notes leading into the next chord root", w2: none, src: NEEDED}
+rhythm.secondary-rag:     {method: matcher, impl: "a three-note figure repeated across a duple bar (three over four)", w2: none, src: NEEDED}
+texture.sustained:        {method: matcher, impl: "chords held a bar or more (pads)", w2: "partitura durations", src: NEEDED}
+
+# --- Technique figures
+technique.scale-run:      {method: matcher, impl: "N or more stepwise notes one direction in one hand (incl. in 3rds/6ths, chromatic)", w2: none, src: NEEDED}
+technique.arpeggio-run:   {method: matcher, impl: "arpeggio across two or more octaves in one hand", w2: none, src: NEEDED}
+technique.five-finger:    {method: library, impl: "hands.per-bar-range within five keys", w2: "range.beyond-position absent", src: NEEDED}
+technique.thumb-under:    {method: matcher, impl: "one-hand stepwise run longer than five notes", w2: "a fingering estimator such as pianoplayer (not installed)", src: NEEDED}
+technique.position-shift: {method: library, impl: "hands.per-bar-range moves between bars", w2: none, src: NEEDED}
+technique.velocity:       {method: library, impl: "difficulty notesPerSecond at the written tempo", w2: "music21.features", src: NEEDED}
+technique.endurance:      {method: library, impl: "duration at written tempo times density", w2: none, src: NEEDED}
+technique.finger-independence: {method: matcher, impl: "held note plus moving notes in the same hand", w2: none, src: NEEDED}
+
+# --- Form
+form.twelve-bar:     {method: matcher, impl: "per-bar roots over 12 bars: standard, quick IV, minor (sourced variants); blues_forms.py builds the form, nothing detects it", w2: "symbol roots vs note-derived roots", src: NEEDED}
+form.turnaround:     {method: matcher, impl: "last two bars of a chorus moving back to I", w2: none, src: NEEDED}
+form.multi-strain:   {method: matcher, impl: "16-bar strains with repeats and a trio key change", w2: "mark.repeat + key.change", src: NEEDED}
+form.thirty-two-bar: {method: matcher, impl: "AABA in 8-bar sections (rhythm changes)", w2: none, src: NEEDED}
+form.binary-ternary: {method: matcher, impl: "repeat structure AB or ABA", w2: "mark.repeat", src: NEEDED}
+form.sonata:         {method: research, impl: "exposition, development, recapitulation; no reliable automatic method known to us", w2: none, src: NEEDED}
+form.phrase:         {method: research, impl: "phrase boundaries (cadences and phrase-shaping need them)", w2: none, src: NEEDED}
+form.length:         {method: existing, impl: "notation.bars and duration at written tempo", w2: none, src: notation}
+
+# --- Not in the notes
+meta.composer-era:     {method: metadata, impl: "content/sources/composers.json death year, era bands", w2: none, src: NEEDED}
+meta.genre-tags:       {method: metadata, impl: "PDMX tags, source collection", w2: none, src: notation}
+meta.title:            {method: metadata, impl: "title words (carol, minuet, etude, rag)", w2: none, src: notation}
+meta.collection:       {method: metadata, impl: "source collection (Hanon, Czerny, Joplin)", w2: none, src: notation}
+meta.generator-params: {method: existing, impl: "catalogue drill.params and generator family; the file checked against them by the family checker", w2: "tools/content/family_contracts.py", src: "the family contract"}

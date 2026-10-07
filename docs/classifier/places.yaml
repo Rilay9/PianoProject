@@ -1,0 +1,79 @@
+# The rules for every place an item can go, other than rungs. Rung rules are generated from
+# the curriculum (content/curriculum/stage-*.json) and concepts.yaml by
+# tools/classifier/build_matrix.py, so no rung can be skipped. The script fails if a track,
+# stage or ability below is missing or extra against its source list.
+#
+# Every rule here is a current claim, not yet a sourced rule: `src: NEEDED` until a
+# published source is quoted for it (research.md lists each). The rules state what would
+# decide a placement; they do not decide it until each named characteristic's method is
+# built and tested (characteristics.yaml).
+#
+# decided_by:
+#   notes     - the track or ability is defined by patterns in the notes (code can decide)
+#   evidence  - the notes give evidence, not a decision; the rule says what else decides
+#   not-item  - not a property of an item; the rule says how items are chosen instead
+
+tracks:   # source list: content/curriculum/00-tracks.json
+  core:          {decided_by: not-item, rule: "stages 0-4 by difficulty and taught set; no signature of its own", ch: [difficulty.level], src: NEEDED}
+  classical:     {decided_by: evidence, rule: "composer era from composers.json, or a classical form or dance; unknown composer stays UNKNOWN", ch: [meta.composer-era, form.binary-ternary, form.sonata, meta.title], src: NEEDED}
+  chords-pop:    {decided_by: notes, rule: "played from chord symbols: symbols present, or a written part that reduces to a chord-symbol accompaniment", ch: [notation.chord-symbols, harmony.chord-quality, harmony.progression], src: NEEDED}
+  blues-boogie:  {decided_by: notes, rule: "twelve-bar form, with shuffle or boogie left hand", ch: [form.twelve-bar, texture.shuffle, texture.boogie-bass, scale.collection], src: NEEDED}
+  jazz:          {decided_by: evidence, rule: "swing mark or swung figures, seventh-chord harmony, ii-V motion; sevenths alone are not jazz", ch: [notation.swing-mark, harmony.chord-quality, harmony.progression, harmony.voicing, texture.walking-bass], src: NEEDED}
+  ragtime:       {decided_by: notes, rule: "duple oom-pah or stride left hand under a syncopated right hand; multi-strain form for full rags", ch: [texture.oom-pah, texture.stride, rhythm.syncopation, form.multi-strain], src: NEEDED}
+  theory-ear:    {decided_by: not-item, rule: "drills and short texts; items are generated drills chosen by their parameters", ch: [meta.generator-params], src: NEEDED}
+  improv-compose: {decided_by: not-item, rule: "the learner makes the music; items are lead sheets, grooves and forms to improvise over", ch: [notation.chord-symbols, form.twelve-bar], src: NEEDED}
+  hymns-gospel:  {decided_by: evidence, rule: "four-part chorale texture or a hymn tune with symbols; 'is a hymn' is metadata", ch: [harmony.voice-leading, harmony.cadence, meta.title, meta.genre-tags], src: NEEDED}
+  holiday:       {decided_by: not-item, rule: "an occasion: carol titles and tags only", ch: [meta.title, meta.genre-tags], src: NEEDED}
+  latin:         {decided_by: notes, rule: "a named Latin cell or accompaniment: habanera, tresillo, clave, tumbao, montuno, bossa, tango", ch: [rhythm.habanera, rhythm.tresillo, texture.clave, texture.tumbao, texture.montuno, texture.bossa, texture.tango], src: NEEDED}
+  rock-metal:    {decided_by: evidence, rule: "power chords, octave or pedal bass, riffs; the track's job is reducing a band song, which is metadata", ch: [texture.power-chord, texture.pedal-point, texture.ostinato, meta.genre-tags], src: NEEDED}
+  jam:           {decided_by: evidence, rule: "guitar keys and a lead-sheet form; playing with a guitarist is the activity", ch: [key.set-membership, notation.chord-symbols], src: NEEDED}
+  technique:     {decided_by: notes, rule: "a technical figure is the content: scale, arpeggio, double notes, octaves, trill, repeated notes", ch: [technique.scale-run, technique.arpeggio-run, texture.double-notes, texture.octaves, mark.ornament, rhythm.repeated-notes], src: NEEDED}
+  practice:      {decided_by: not-item, rule: "lessons on method; any item at the learner's level", ch: [difficulty.level], src: NEEDED}
+
+stages:   # source list: content/curriculum/stage-*.json; grade is that file's abrsmGradeApprox
+  "0": {grade: "pre-grade", calibration: "no published grade separates stages 0-2; needs a method-book order or a beginner syllabus as reference (research)", src: NEEDED}
+  "1": {grade: "pre-grade", calibration: "as stage 0", src: NEEDED}
+  "2": {grade: "pre-grade / initial", calibration: "as stage 0; initial is ABRSM's grade below Grade 1", src: NEEDED}
+  "3": {grade: "initial / grade 1", calibration: "difficulty.level fitted on an outside graded set (CIPI, PSyllabus: research)", src: NEEDED}
+  "4": {grade: "grade 1", calibration: "as stage 3", src: NEEDED}
+  "5": {grade: "grade 2-3", calibration: "as stage 3", src: NEEDED}
+  "6": {grade: "grade 4-5", calibration: "as stage 3", src: NEEDED}
+  "7": {grade: "grade 6", calibration: "as stage 3", src: NEEDED}
+  "8": {grade: "grade 7-8", calibration: "as stage 3", src: NEEDED}
+  "9": {grade: "diploma", calibration: "as stage 3; few graded sets reach diploma (research)", src: NEEDED}
+
+# Roles code can check, for every ability:
+#   CONTROL      - only the allowed demands appear (the untaught-demand gate exists: claims.py)
+#   TRANSFER     - the ability's material appears in a different piece or key from the model
+#   SIGHT-READING - unseen material: generated, with its parameters
+#   MODEL        - an item showing the material clearly (density rule, src NEEDED)
+#   INDEPENDENCE - a task, not an item; never decided by placement
+abilities:   # source list: docs/prompts/runs/curriculum-review-2026-10-05/ABILITY-MAP.md, the #### A headings
+  A1.1:  {decided_by: notes, material: [mark.dynamics, mark.articulation, mark.slur, mark.pedal, mark.repeat, mark.ornament], not_in_notes: "reading them aloud or obeying them is played"}
+  A1.2:  {decided_by: notes, material: [key.signature, metre.three-four, notation.keys], not_in_notes: none}
+  A2.1:  {decided_by: evidence, material: [harmony.progression, key.tonic-mode], not_in_notes: "transposing is the learner's act; items are short tunes and a I-IV-V7 in a known key"}
+  A3.1:  {decided_by: not-item, material: [], not_in_notes: "input is a recording; sourcing recordings with known content is research"}
+  A4.1:  {decided_by: not-item, material: [form.phrase, difficulty.level], not_in_notes: "performing and recovering; any piece at level with landmarks (form.phrase is research)"}
+  A4.2:  {decided_by: not-item, material: [notation.chord-symbols, form.twelve-bar, form.thirty-two-bar], not_in_notes: "playing together; items are forms with a backing"}
+  A5.1:  {decided_by: notes, material: [harmony.roman, harmony.progression, harmony.cadence], not_in_notes: "finding it is the learner's act; the item must contain the taught harmony, measured"}
+  A6.1:  {decided_by: not-item, material: [], not_in_notes: "the learner's own melody"}
+  A6.2:  {decided_by: not-item, material: [], not_in_notes: "the learner's own music, written down"}
+  A7a.1: {decided_by: notes, material: [form.twelve-bar, texture.boogie-bass, texture.shuffle, scale.collection], not_in_notes: "the improvised right hand"}
+  A7a.2: {decided_by: notes, material: [form.twelve-bar, form.turnaround], not_in_notes: "beginning and ending a chorus is played"}
+  A7a.3: {decided_by: notes, material: [form.twelve-bar, key.tonic-mode], not_in_notes: none}
+  A7b.1: {decided_by: notes, material: [harmony.progression, harmony.voicing, key.tonic-mode], not_in_notes: none}
+  A7b.2: {decided_by: notes, material: [melody.chord-relation, notation.chord-symbols], not_in_notes: "the solo is the learner's"}
+  A7c.1: {decided_by: notes, material: [rhythm.habanera, rhythm.tresillo], not_in_notes: none}
+  A7c.2: {decided_by: notes, material: [texture.tumbao, texture.montuno, texture.clave], not_in_notes: none}
+  A7c.3: {decided_by: notes, material: [texture.bossa, notation.chord-symbols], not_in_notes: none}
+  A7c.4: {decided_by: notes, material: [texture.tango, texture.ostinato, mark.articulation], not_in_notes: none}
+  A7d.1: {decided_by: notes, material: [texture.oom-pah, rhythm.syncopation], not_in_notes: none}
+  A7e.1: {decided_by: not-item, material: [texture.power-chord, texture.ostinato], not_in_notes: "reducing a band texture; input is a band song or recording"}
+  A7f.1: {decided_by: notes, material: [technique.scale-run, technique.arpeggio-run, texture.alberti, texture.octaves, meta.composer-era], not_in_notes: "using a technique station inside a piece; the item must hold the figure, measured"}
+  A7f.2: {decided_by: evidence, material: [technique.velocity, mark.tempo-text, meta.title, meta.collection], not_in_notes: "reaching the written tempo is played"}
+  A7g.1: {decided_by: not-item, material: [notation.chord-symbols, key.set-membership], not_in_notes: "accompanying a singer; items are songs with symbols in singable keys (source NEEDED)"}
+  A7g.2: {decided_by: evidence, material: [harmony.voice-leading, harmony.applied, texture.bass-walk-up], not_in_notes: "the decoration is the learner's"}
+  A8.1:  {decided_by: not-item, material: [metre.three-four, notation.times], not_in_notes: "pulse and echo are played and heard"}
+  A9.1:  {decided_by: notes, material: [technique.scale-run, technique.arpeggio-run, texture.double-notes, texture.octaves, mark.ornament], not_in_notes: "instruction and stop condition are lesson text"}
+  A10.1: {decided_by: evidence, material: [notation.chord-symbols, form.thirty-two-bar, harmony.progression], not_in_notes: "taking a standard through every role is the learner's"}
+  A10.2: {decided_by: not-item, material: [notation.chord-symbols], not_in_notes: "arranging; inputs are a chart, an arrangement or a recording"}
