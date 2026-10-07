@@ -228,7 +228,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 ## Wanted, and not bundled
 
-235 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
+236 song(s) may not be shipped: the curriculum names them and the public build carries no file for them. Each carries an `importHint` saying what to do instead.
 
 | id | title | level | why |
 |---|---|---|---|
@@ -312,5 +312,5 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | `song.folk.oh-my-darling-clementine.pdmx` | Oh My Darling Clementine | 4.3 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.por-una-cabeza-carlos-gardel.pdmx` | Por Una Cabeza - Carlos Gardel | 6.4 | The composition is unknown; the owner's own build carries it (`00` D23). |
 | `song.folk.scarborough-fair-canticle.pdmx` | Scarborough Fair Canticle | 6.1 | The composition is unknown; the owner's own build carries it (`00` D23). |
-| … | and 155 more | | |
+| … | and 156 more | | |
 

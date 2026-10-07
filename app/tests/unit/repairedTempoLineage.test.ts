@@ -316,8 +316,16 @@ describe('the relation: each of the seven repaired files names its old identity,
         expect(e59.filter((other) => other.id === one.id).map((other) => other.undated === true).sort()).toEqual([false, true]);
       }
     }
-    expect(e59.filter((one) => rows.has(one.id)).map((one) => one.id).sort())
-      .toEqual([...rows.values()].filter((row) => row.tempoDefaulted).map((row) => row.id).sort());
+    // Every defaulted row the historical table records had an old file, so each has its relation. A row admitted
+    // after E59 has no old file and no relation (Blue Bossa, BB1 Entry 266, is the first): it is a new identity,
+    // not a moved one, and none of its runs predates it.
+    const recorded = new Set(historical.map((entry) => entry.file));
+    const defaulted = [...rows.values()].filter((row) => row.tempoDefaulted);
+    const moved = defaulted.filter((row) => recorded.has(`scores/pdmx/${row.cid}.mxl`));
+    expect(e59.filter((one) => rows.has(one.id)).map((one) => one.id).sort()).toEqual(moved.map((row) => row.id).sort());
+    for (const row of defaulted.filter((one) => !moved.includes(one))) {
+      expect(repairs.filter((one) => one.id === row.id), row.id).toHaveLength(0);
+    }
     const e59Cuts = cuts.filter((one) => one.id !== CUT);
     expect(e59Cuts.length).toBeGreaterThan(0);
     for (const cut of e59Cuts) {

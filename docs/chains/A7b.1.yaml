@@ -16,8 +16,9 @@
 #    song.folk.insensatez-how-insensitive-jobim.pdmx (content/sources/pdmx.json, 32 bars); the Markdown anchors and the
 #    test files named under `generated`.
 #  - the first lane commits: QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6, Blue Bossa (Kenny Dorham), the quarry's
-#    lead sheet: not in content/sources/pdmx.json at 5783f22d, so the checker lists it as unresolved; it resolves once
-#    the probe (briefs/probe-bluebossa.md, Station 1) admits it with the guarded text splice.
+#    lead sheet: admitted by the probe (briefs/probe-bluebossa.md, Station 1) with the guarded text splice as
+#    song.jazz.kenny-dorham-blue-bossa.pdmx (raw b2ef95b8..., converted b2a12ede...; intake/QmTj....md, personal
+#    library ADMITTED, curriculum CANDIDATE), so its five refs resolve and the checker lists none for this record.
 # Not built, so steps 4 and 11-13 cannot be played as written yet: the drill's minor form (G6: shellChord counts degrees
 # on the major scale, app/src/engine/drills/theory.ts:353-380, so a minor i comes out as a major-seventh shell; CK-6 is
 # not written); the placement (rung, lesson section, the requirement naming the drill). The record stays draft until
@@ -29,9 +30,16 @@
 # reproduces the coupling (Station 4) and drafts the seam.
 # The harmony this record cites (Blue Bossa: Dm7b5 | G7(#5, add #9) | Cm6 at bars 5-7, 13-15, 21-23, 29-31, and
 # Dm7b5-G7 in bar 16 into Cm6 at 17; Insensatez: Bm7b5 | E7(add b9) | Am7 at bars 13-15 and Bm7b5-E7(add b9) in bar 22
-# into Am7 at 23) is one reader's: the drafter's raw walk of <harmony> on 2026-10-06, Blue Bossa in the quarry dump
-# (docs/review/pdmx-quarry-2026-10-05/xml/B-jazz/), Insensatez in its committed .mxl. It is a claim until the probe's
-# Station 2 verifies it with independent readers.
+# into Am7 at 23) was one reader's: the drafter's raw walk of <harmony> on 2026-10-06, Blue Bossa in the quarry dump
+# (docs/review/pdmx-quarry-2026-10-05/xml/B-jazz/), Insensatez in its committed .mxl. The probe's Station 2 verified
+# it with two independent readers (a raw XML walk and music21) on both files' raw and committed identities, every
+# symbol agreeing (the intake record's Claim checks, bound to those identities); two corrections: bar 16's G7 is a
+# plain dominant (no alterations), and Insensatez 29-31 (Fmaj7 | E7(add b9) | Am7) is the look-alike, bVI-V-i.
+# Premises the probe found wrong at the code (each its own seam, nothing here changed): the Chord chart's grid and
+# comp take only a bar's first symbol (score/harmony.ts chartBars), so bar 16's G7 and Insensatez bar 22's E7 never
+# show or sound and a correct shell there reads no; the chart prints the file's kind text, so the altered G7 shows
+# as "G7"; Free play names none of D-F-C, G-B-F, C-E-flat-B-flat and calls C-E-flat-A "A diminished / C" (step 2's
+# readout); the Lab's Read it score carries no chord symbols (the labels are on the Lab screen, not the page).
 # The bossa bass itself (G14's pattern, its Rhythm only and Keep tempo steps) is A7c.3's CONTROL and belongs to A7c.3's
 # record; this record carries only A7c.3's L7 step, where the map makes Blue Bossa the bass's MUSIC (step 13, optional,
 # offered once A7c.3's pattern is on the learner's path). G14 waits for A7c.3 (responses/a3a8771d.md).
@@ -48,13 +56,13 @@ steps:
     cannot_establish: "That the learner read, understood or can do what the page says (MODE-SHEET section 31)."
     removes: []
 
-  - action: "Builds the three shells in C minor on the keys (D-F-C, G-B-F, C-E-flat-A), then the four-note iiø7 (D-F-A-flat-C), and reads the name the app gives each held chord."
+  - action: "Builds the four-note iiø7 (D-F-A-flat-C) and the four-note iim7 (D-F-A-C) on the keys and reads the name the app gives each, then lifts the fifth to leave the shell D-F-C, the same three notes for both (the app names no three-note shell; BB1 Station 4)."
     content: {kind: explanation, ref: content/lessons/jazz.5.md}
     tool: "Free play, standalone"
     scaffold: [notation, chord symbols, key named, numerals named, held chord named]
-    feedback: "The keys held light and are named, and three or more pitch classes get a chord name: a readout of what is held, not a verdict."
+    feedback: "The keys held light and are named; each four-note chord gets a chord name, a readout of what is held, not a verdict; the three-note shells D-F-C, G-B-F and C-E-flat-B-flat get no name, and C-E-flat-A is named A diminished over C, so the step asks the app to name only the four-note chords (BB1 Station 4)."
     recorded: "Nothing: the screen writes no row and keeps no state beyond the held set (MODE-SHEET section 5)."
-    cannot_establish: "Anything about the learner; whether the held chord was the intended one (MODE-SHEET section 5). Whether the namer names the three-note iiø7 shell, which has no fifth, as half-diminished is not checked."
+    cannot_establish: "Anything about the learner; whether the held chord was the intended one (MODE-SHEET section 5); anything about the shells, which the namer does not name."
     removes: [written definition]
 
   - action: "Hears a seventh chord, says its quality aloud (major seventh, dominant seventh, minor seventh or half-diminished) before playing it back."
@@ -88,22 +96,23 @@ steps:
   - action: "Plays the Lab's written ii-V-I in C minor on the Score screen in Keep tempo."
     content: {kind: generated, ref: app/src/engine/sightReading.ts}
     tool: Read it
-    scaffold: [notation, chord symbols, numerals named, key named, cursor, click, count-in, fixed key]
+    scaffold: [notation, numerals named, key named, cursor, click, count-in, fixed key]
     feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars (MODE-SHEET section 2)."
     recorded: "Whatever the Score screen records for an import (R1); the Lab sets no lessonId and no rung lists the import, so no rung counts the run; no skill evidence (MODE-SHEET section 7a)."
     cannot_establish: "Playing without the page; the written part is the generator's, so it says nothing about choosing a voicing (MODE-SHEET section 7a)."
-    removes: [app plays it]
+    removes: [app plays it, chord symbols]
+    # chord symbols go: the Score page Read it writes prints none; the labels stay on the Lab grid (LabScreen.ts, BB1 Station 4).
 
   - action: "Builds and plays the same progression in two more minor keys, named by the lesson, at a lower tempo first."
     content: {kind: generated, ref: app/src/engine/sightReading.ts}
     tool: Read it
-    scaffold: [notation, chord symbols, numerals named, key named, cursor, click, count-in]
+    scaffold: [notation, numerals named, key named, cursor, click, count-in]
     feedback: "As the step before, in a new key."
     recorded: "As the step before: an import's row that no rung counts (MODE-SHEET section 7a)."
     cannot_establish: "As the step before; that the learner can voice the progression in a key without the Lab writing it."
     removes: [fixed key]
 
-  - action: "Comps the ii-V-I in C minor in shells under the Lab's own tune, with the bass and drums running, from the chart and no notation."
+  - action: "Comps the ii-V-I in C minor under the Lab's own tune, with the bass and drums running, from the chart and no notation: shells for iiø7 and V7, and the tonic as the Lab writes it, a C minor triad (the Lab's i has no sixth or seventh, so a B-flat or A there counts as no chord tone; BB1 Station 4)."
     content: {kind: generated, ref: app/src/engine/sightReading.ts}
     tool: Play the tune
     scaffold: [chord symbols, numerals named, key named, click, chord tones lit, bass and drums supplied, app plays the tune]

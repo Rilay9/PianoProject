@@ -36113,6 +36113,72 @@
         "decision": "keep",
         "note": "D, 4/4, 2 staves, 40 bars with a left hand, 56 chord symbols over 22 distinct chords; every bar counted - a full chord on all four quarters in 16 of 40 and a single oom-pah bar, bar 1 reading B3+D4+F#4 struck four times | latin.8 (modern tango) | fits, and it is the only Piazzolla on this page that converted: 6.85 is inside 6.5-8.0 and the left hand is the marcato four. compositionStatus unknown - a 1974 composition under an uploader's cc-zero, which 00 D23 admits to the personal build as a label"
       }
+    },
+    {
+      "id": "song.jazz.kenny-dorham-blue-bossa.pdmx",
+      "cid": "QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6",
+      "file": "QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6.mxl",
+      "title": "Blue Bossa",
+      "composer": "Kenny Dorham",
+      "artist": "Kenny Dorham",
+      "rawSha256": "b2ef95b8b721186fea1bc2d8b04c2ac83e0ce2281cc0abae6598b1acec842d1f",
+      "convertedSha256": "b2a12ede629b50ecb134e55e321a0539bdf961fbba9c29a3e3065c0f1857b777",
+      "musescoreId": "2541016",
+      "license": "cc-zero",
+      "compositionStatus": "unknown",
+      "compositionReason": "composer not in composers.json",
+      "traditional": false,
+      "bucket": "jazz-latin",
+      "band": "1-2",
+      "bars": 32,
+      "notes": 120,
+      "tempoBpm": 96.0,
+      "tempoDefaulted": true,
+      "singleLine": true,
+      "hands": "right",
+      "features": {
+        "bars": 32.0,
+        "notesPerBar": 3.375,
+        "notesPerSecond": 1.35,
+        "maxSimultaneousRight": 2.0,
+        "maxSimultaneousLeft": 0.0,
+        "maxSpanRight": 5.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 12.0,
+        "maxLeapLeft": 0.0,
+        "rangeRight": 17.0,
+        "rangeLeft": 0.0,
+        "blackKeyRatio": 0.5277777777777778,
+        "keyAccidentals": 3.0,
+        "shortestValue": 0.5,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 6.0
+      },
+      "level": 3.41,
+      "levelSource": "estimated",
+      "levelFrom": "model",
+      "levelDrivers": [
+        [
+          "rangeLeft",
+          -1.336
+        ],
+        [
+          "notesPerSecond",
+          -0.498
+        ],
+        [
+          "notesPerBar",
+          -0.368
+        ]
+      ],
+      "duplicateOf": null,
+      "review": {
+        "decision": "keep",
+        "note": "Lead sheet: one part, one staff, the melody with 24 chord symbols and no left hand; C minor (three flats), 4/4, 32 bars, no tempo mark (the converter's 96), no lyrics; bars 29-32 print two-note dyads. Admitted by the A7b.1 probe through the intake gate (docs/prompts/runs/curriculum-review-2026-10-05/intake/QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6.md) as the chain's chord-chart MODEL and MUSIC candidate; the shortlist's licence-conflict gate set aside (rights out of scope, owner 2026-10-05). Curriculum admission CANDIDATE. Nothing heard."
+      }
     }
   ]
 }
