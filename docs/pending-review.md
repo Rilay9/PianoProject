@@ -43736,3 +43736,15 @@ No picture was taken; the browser case asserts the text. Nothing heard; unverifi
 **Checks.** The builder: `npx tsc -b`, lint, the full unit suite (the standing blues.3 red and one local reference file), the full content Python suite (one failure, the checks.json row above). At the landing of both: the content build passes (generated ids current); the whole content Python suite, 1,938 tests, its only errors the two record-mirror tests before these entries, rerun green after; the whole unit suite, 8,109 passed, the one red the standing blues.3 (CRLF); the chain checker 0 failures, 0 unresolved.
 
 **Open, for the reviewer.** The answer staff picks the nearest major-key signature holding the chord's notes (`answerSheet.ts` `fifthsFor`), existing behaviour for every chord drill. Under "in C minor" it shows two flats for Cm6, and three sharps for E7 under "in A minor". The notes are spelled right; whether the signature misleads a learner about the key is a decision before G6b places the drill.
+
+### Entry 270 — A7SH: A7c.1 shipped, its acceptance journey automated
+
+**What a learner meets.** latin.4, the habanera bass and the tresillo, is the first shipped MUST ability. Scoreboard 1/28. Nothing heard.
+
+**Done.**
+- **The journey.** `app/tests/e2e/a7c1-phone-walk.spec.ts`, written in the owner's session, walks latin.4 in order on an emulated upright phone: the route in, every lesson step, the two counted runs (the 2/4 tresillo drill and the Bizet left hand) played through the MIDI mock, "1 of 2" then "2 of 2", latin.4 complete on Plan, the latin.6 and latin.7 openings, the reveal last. A step recorded STOP fails the test. It passed every step at c6c4ab6a (`docs/prompts/runs/A7S/phone-walk-playwright.md`, with a screenshot per step).
+- **Not rerun at this head.** The commits after c6c4ab6a touch the chord chart, the harmony model (tempo events proven byte-identical over 2,090 files, Entry 268) and an unplaced drill; none is on latin.4's path. CI runs the spec on this push.
+- **The record.** `acceptance_journey` names the spec, which carries `// acceptance-ability: A7c.1` (the checker's R9); `status: shipped`. The manual walk (`runs/A7S/phone-walk.md`) is superseded.
+- **One finding.** Step 7a works only with Keep tempo chosen before Rhythm only, because the drill opens in Wait for me; the lesson's wording follows that order, the superseded walk table did not.
+
+**Limits.** An emulated phone in Chromium, not the physical phone; the MIDI mock played the written notes; nothing heard.

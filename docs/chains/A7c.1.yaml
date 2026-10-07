@@ -322,5 +322,6 @@ generated:
       the feel and sound: UNKNOWN
 
 acceptance_test: app/tests/unit/latin4Completion.test.ts
+acceptance_journey: app/tests/e2e/a7c1-phone-walk.spec.ts
 
-status: reviewed
+status: shipped

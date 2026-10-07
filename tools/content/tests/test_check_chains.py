@@ -73,7 +73,7 @@ class TheRealRecord(unittest.TestCase):
     def test_passes_as_a_draft_and_lists_exactly_its_unresolved_refs(self):
         failures, unresolved, status = cc.check_file(RECORD, RESOLVER, TOOLS, ROOT)
         self.assertEqual([f.line() for f in failures], [])
-        self.assertEqual(status, "reviewed")  # since Entry 260 (2026-10-06); every ref resolves
+        self.assertEqual(status, "shipped")  # since Entry 270 (2026-10-07); reviewed since Entry 260
         listed = {u.ref for u in unresolved}
         # what is not yet committed: the lesson file of the new rung, and the excerpt cut the intake adds.
         # Each is expected unresolved exactly while the thing it names is absent.
@@ -114,7 +114,7 @@ class TheRealRecord(unittest.TestCase):
     def test_the_cli_exits_zero_on_the_real_tree_and_names_the_draft(self):
         code, out = run_main("--lint-briefs")
         self.assertEqual(code, 0, out)
-        self.assertIn("A7c.1 (reviewed)", out)
+        self.assertIn("A7c.1 (shipped)", out)
         self.assertIn("0 failure(s)", out)
         self.assertNotIn("EXEMPT", out)
         self.assertRegex(out, r"[1-9]\d* linted \(carry an ability marker\)")  # at least the Bizet probe brief; the count grows with each ability brief

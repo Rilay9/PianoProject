@@ -1,0 +1,492 @@
+{
+  "record": [
+    {
+      "step": "route",
+      "did": "Plan → the tracks sheet → Latin on → Stage 4 → The habanera bass, and the tresillo beside it",
+      "expected": "the lesson page lists seven exercise rows and four song rows",
+      "observed": [
+        "Plan Stage 4 row: \"The habanera bass, and the tresillo beside it 7 exercises · 4 songs · ~14 days\"",
+        "lesson page: 7 exercise rows, 4 song rows"
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/route.png"
+      ]
+    },
+    {
+      "step": "1",
+      "did": "Read the grid at the top of the page",
+      "expected": "the two counting lines, habanera and tresillo",
+      "observed": [
+        "code lines: \"count 1 e & a 2 e & a\"; \"habanera X . . X X . X .\"; \"tresillo X . . X . . X .\"",
+        "What the app counts: \"What the app counts — 0 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/01.png"
+      ]
+    },
+    {
+      "step": "2",
+      "did": "Tresillo bass in C — three, three, two ▶ → Hear it",
+      "expected": "the app plays it; nothing counted",
+      "observed": [
+        "opened Tresillo bass in C — three, three, two (#/score/exercise.tresillo.c?from=latin.4)",
+        "counting line printed: \"1 . . 2 . . 3 .\" yes",
+        "Hear it: data-hearing true; piano notes scheduled 0 → 48; counter showed bars 1,2,3,4,5,6,7,8",
+        "What the app counts: \"What the app counts — 0 of 2\" → \"What the app counts — 0 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/02.png"
+      ]
+    },
+    {
+      "step": "3",
+      "did": "L'amour est un oiseau rebelle, bars 1–12, left hand ▶ → Hear it",
+      "expected": "the bass alone, twelve bars",
+      "observed": [
+        "opened L'amour est un oiseau rebelle, bars 1–12, left hand (#/score/excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh?from=latin.4)",
+        "Hear it: data-hearing true; piano notes scheduled 48 → 96; counter showed bars 1,2,3,4,5,6,7,8,9,10,11,12",
+        "hands of every note drawn while it played: L"
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/03.png"
+      ]
+    },
+    {
+      "step": "4",
+      "did": "Tresillo bass in C — three, three, two ▶ → Keep tempo, L → ⋯ Rhythm only on → ▶, tap the rhythm",
+      "expected": "hits and early/late in the summary; \"not counted\"",
+      "observed": [
+        "opened Tresillo bass in C — three, three, two (#/score/exercise.tresillo.c?from=latin.4)",
+        "mode tempo",
+        "hand L selected",
+        "Rhythm only: Off → On",
+        "played in time through the MIDI mock: 24 notes struck",
+        "summary: \"Rhythm run Judged Rhythm only — the notes were not, so this does not count as playing the piece Accuracy 100% Tempo 70% of written Wrong notes 0 Missed 0 Timing 9 ms off the beat on average, 0% of them early Again Slower (−10%) Faster (+10%) Done\"",
+        "What the app counts: \"What the app counts — 0 of 2\" → \"What the app counts — 0 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/04.png"
+      ]
+    },
+    {
+      "step": "5",
+      "did": "L'amour est un oiseau rebelle, bars 1–12, left hand ▶ → Keep tempo, L, Rhythm only still on → ▶",
+      "expected": "same: hits and early/late in the summary; not counted",
+      "observed": [
+        "opened L'amour est un oiseau rebelle, bars 1–12, left hand (#/score/excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh?from=latin.4)",
+        "mode tempo",
+        "hand L selected",
+        "Rhythm only on opening: On",
+        "played in time through the MIDI mock: 48 notes struck",
+        "summary: \"Rhythm run Judged Rhythm only — the notes were not, so this does not count as playing the piece Accuracy 100% Tempo 70% of written Wrong notes 0 Missed 0 Timing 10 ms off the beat on average, 2% of them early Again Slower (−10%) Faster (+10%) Done\"",
+        "What the app counts: \"What the app counts — 0 of 2\" → \"What the app counts — 0 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/05.png"
+      ]
+    },
+    {
+      "step": "6",
+      "did": "Tresillo bass in C, in 2/4 ▶ → Keep tempo, L, Rhythm only on → ▶, tap",
+      "expected": "the counting line printed with the music: \"1 . . a . . & .\"",
+      "observed": [
+        "opened Tresillo bass in C, in 2/4 (#/score/exercise.bass-cell.tresillo.c?from=latin.4)",
+        "mode tempo",
+        "hand L selected",
+        "Rhythm only on opening: On",
+        "drawn text with the count: \"Count: 1 . . a . . & .\"; \"Count: 1 . . a . . & .\"",
+        "played in time through the MIDI mock: 24 notes struck",
+        "summary: \"Rhythm run Judged Rhythm only — the notes were not, so this does not count as playing the piece Accuracy 100% Tempo 70% of written Wrong notes 0 Missed 0 Timing 10 ms off the beat on average, 0% of them early Again Slower (−10%) Faster (+10%) Done\"",
+        "What the app counts: \"What the app counts — 0 of 2\" → \"What the app counts — 0 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/06.png"
+      ]
+    },
+    {
+      "step": "7",
+      "did": "Habanera bass in C, in 2/4 ▶ → Keep tempo, L, Rhythm only on → ▶, tap",
+      "expected": "the counting line printed with the music: \"1 . . a 2 . & .\"",
+      "observed": [
+        "opened Habanera bass in C, in 2/4 (#/score/exercise.bass-cell.habanera.c?from=latin.4)",
+        "mode tempo",
+        "hand L selected",
+        "Rhythm only on opening: On",
+        "drawn text with the count: \"Count: 1 . . a 2 . & .\"; \"Count: 1 . . a 2 . & .\"",
+        "played in time through the MIDI mock: 32 notes struck",
+        "summary: \"Rhythm run Judged Rhythm only — the notes were not, so this does not count as playing the piece Accuracy 100% Tempo 70% of written Wrong notes 0 Missed 0 Timing 12 ms off the beat on average, 0% of them early Again Slower (−10%) Faster (+10%) Done\"",
+        "What the app counts: \"What the app counts — 0 of 2\" → \"What the app counts — 0 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/07.png"
+      ]
+    },
+    {
+      "step": "7a",
+      "did": "Habanera bass in C, in 2/4 ▶ → Rhythm only off → Keep tempo, L, ⋯ Duet on → ▶, play the notes",
+      "expected": "plays; \"does not count\"",
+      "observed": [
+        "opened Habanera bass in C, in 2/4 (#/score/exercise.bass-cell.habanera.c?from=latin.4)",
+        "Rhythm only is not in ⋯ in mode wait; Keep tempo chosen first",
+        "mode tempo",
+        "Rhythm only: On → Off",
+        "mode tempo",
+        "hand L selected",
+        "Duet: On → On",
+        "Duet row: \"Duet: the app plays the right handTurn it off to practise against silence.On\"",
+        "played in time through the MIDI mock: 32 notes struck",
+        "summary: \"Run finished Accuracy 100% Tempo 70% of written To pass 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster Wrong notes 0 Missed 0 Timing 11 ms off the beat on average, 0% of them early Keep tempo at 80 % Again Slower (−10%) Faster (+10%) Done\"",
+        "piano notes scheduled during the run: 168 → 192",
+        "What the app counts: \"What the app counts — 0 of 2\" → \"What the app counts — 0 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/07a.png"
+      ]
+    },
+    {
+      "step": "7b",
+      "did": "Habanera bass in F, in 2/4, then Habanera bass in G, in 2/4 ▶ → Keep tempo → ▶",
+      "expected": "one flat, one sharp; not counted",
+      "observed": [
+        "opened Habanera bass in F, in 2/4 (#/score/exercise.bass-cell.habanera.f?from=latin.4)",
+        "mode tempo",
+        "Habanera bass in F, in 2/4: key signature glyphs [flat] (ink rows 2,2,2,2,2,2,2,2,2,2,2,2,10,15,11,8,9,8,7,8,7,6,5,3)",
+        "hands selected: score-hands-both",
+        "played in time through the MIDI mock: 56 notes struck",
+        "summary: \"Run finished Accuracy 100% Tempo 70% of written To pass 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster Wrong notes 0 Missed 0 Timing 11 ms off the beat on average, 0% of them early Keep tempo at 80 % Again Slower (−10%) Faster (+10%) Done\"",
+        "opened Habanera bass in G, in 2/4 (#/score/exercise.bass-cell.habanera.g?from=latin.4)",
+        "mode tempo",
+        "Habanera bass in G, in 2/4: key signature glyphs [sharp] (ink rows 2,4,4,4,4,4,8,15,16,11,4,4,4,4,10,16,15,8,4,4,4,4,4,2)",
+        "hands selected: score-hands-both",
+        "played in time through the MIDI mock: 56 notes struck",
+        "summary: \"Run finished Accuracy 100% Tempo 70% of written To pass 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster Wrong notes 0 Missed 0 Timing 10 ms off the beat on average, 2% of them early Keep tempo at 80 % Again Slower (−10%) Faster (+10%) Done\"",
+        "What the app counts: \"What the app counts — 0 of 2\" → \"What the app counts — 0 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/07b-f.png",
+        "docs/prompts/runs/A7S/phone-walk-playwright/07b-g.png"
+      ]
+    },
+    {
+      "step": "7c",
+      "did": "Tresillo bass in C, in 2/4 ▶ → Keep tempo, L, speed 90 % → ▶, all eight bars, Rhythm only off",
+      "expected": "counted: \"What the app counts\" on the lesson page moves to 1 of 2",
+      "observed": [
+        "opened Tresillo bass in C, in 2/4 (#/score/exercise.bass-cell.tresillo.c?from=latin.4)",
+        "mode tempo",
+        "hand L selected",
+        "Rhythm only: Off",
+        "speed slider 70 % → 90 %; the bar reads \"54 bpm\"",
+        "played in time through the MIDI mock: 24 notes struck",
+        "summary: \"Passed Accuracy 100% Tempo 90% of written Wrong notes 0 Missed 0 Timing 9 ms off the beat on average, 0% of them early Again Slower (−10%) Faster (+10%) Done\"",
+        "counter bars during the run: 1,2,3,4,5,6,7,8",
+        "What the app counts: \"What the app counts — 0 of 2\" → \"What the app counts — 1 of 2\"",
+        "its list: \"Tresillo bass in C, in 2/4 at 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster. (counted: Tresillo bass in C, in 2/4)\"; \"L'amour est un oiseau rebelle, bars 1–12, left hand at 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster. (not yet)\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/07c.png",
+        "docs/prompts/runs/A7S/phone-walk-playwright/07c-lesson.png"
+      ]
+    },
+    {
+      "step": "8",
+      "did": "Tresillo bass in C — three, three, two ▶ → Keep tempo, L → ▶, play",
+      "expected": "plays; not counted",
+      "observed": [
+        "opened Tresillo bass in C — three, three, two (#/score/exercise.tresillo.c?from=latin.4)",
+        "mode tempo",
+        "hand L selected",
+        "played in time through the MIDI mock: 24 notes struck",
+        "summary: \"Run finished Accuracy 100% Tempo 70% of written To pass 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster Wrong notes 0 Missed 0 Timing 9 ms off the beat on average, 0% of them early Keep tempo at 80 % Again Slower (−10%) Faster (+10%) Done\"",
+        "What the app counts: \"What the app counts — 1 of 2\" → \"What the app counts — 1 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/08.png"
+      ]
+    },
+    {
+      "step": "9",
+      "did": "Tresillo bass in F — three, three, two ▶ → Keep tempo, L → ▶, play",
+      "expected": "plays; not counted",
+      "observed": [
+        "opened Tresillo bass in F — three, three, two (#/score/exercise.tresillo.f?from=latin.4)",
+        "mode tempo",
+        "hand L selected",
+        "played in time through the MIDI mock: 24 notes struck",
+        "summary: \"Run finished Accuracy 100% Tempo 70% of written To pass 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster Wrong notes 0 Missed 0 Timing 8 ms off the beat on average, 0% of them early Keep tempo at 80 % Again Slower (−10%) Faster (+10%) Done\"",
+        "What the app counts: \"What the app counts — 1 of 2\" → \"What the app counts — 1 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/09.png"
+      ]
+    },
+    {
+      "step": "10",
+      "did": "Tresillo bass in G — three, three, two ▶ → Keep tempo, L → ▶, play",
+      "expected": "plays; not counted",
+      "observed": [
+        "opened Tresillo bass in G — three, three, two (#/score/exercise.tresillo.g?from=latin.4)",
+        "mode tempo",
+        "hand L selected",
+        "played in time through the MIDI mock: 24 notes struck",
+        "summary: \"Run finished Accuracy 100% Tempo 70% of written To pass 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster Wrong notes 0 Missed 0 Timing 8 ms off the beat on average, 0% of them early Keep tempo at 80 % Again Slower (−10%) Faster (+10%) Done\"",
+        "What the app counts: \"What the app counts — 1 of 2\" → \"What the app counts — 1 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/10.png"
+      ]
+    },
+    {
+      "step": "11",
+      "did": "L'amour est un oiseau rebelle (the whole piece) ▶ → loop bars 1–12 by double-tap → Hear it",
+      "expected": "the bass alone for three bars, the tune enters in bar 4",
+      "observed": [
+        "opened L'amour est un oiseau rebelle (#/score/song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx?from=latin.4)",
+        "bar 1 is on the page at rest (index 0)",
+        "double-tap (two touch taps) on bar 1 (white): status \"Loop start: bar 1. Double-tap the last bar.\", data-loop \"\"",
+        "played on in Wait for me to bar 12 and paused; the start stayed marked",
+        "double-tap (two touch taps) on bar 12 (note): status \"\", data-loop \"1-12\"",
+        "loop set: data-loop \"1-12\", Loop control \"Bars 1–12 ✕\"",
+        "Hear it tapped again to stop the demonstration",
+        "Hear it: data-hearing true; piano notes scheduled 288 → 378; counter showed bars 1,2,3,4,5,6,7,8,9,10,11,12,1",
+        "hands drawn by bar: bar 1: L; bar 2: L; bar 3: L; bar 4: L+R; bar 5: L+R"
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/11-loop.png",
+        "docs/prompts/runs/A7S/phone-walk-playwright/11.png"
+      ]
+    },
+    {
+      "step": "12",
+      "did": "L'amour est un oiseau rebelle, bars 1–12, left hand ▶ → Wait for me → ▶",
+      "expected": "the page waits for each right key",
+      "observed": [
+        "opened L'amour est un oiseau rebelle, bars 1–12, left hand (#/score/excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh?from=latin.4)",
+        "mode wait",
+        "step 0 (38): held 2 s with no key, held on wrong key 39, moved on the right key",
+        "step 1 (45): held 2 s with no key, held on wrong key 46, moved on the right key",
+        "step 2 (53): held 2 s with no key, held on wrong key 54, moved on the right key",
+        "step 3 (45): held 2 s with no key, held on wrong key 46, moved on the right key",
+        "summary: \"Notes ready Accuracy 92% Tempo Not judged in Wait for me To pass 90 % of the notes, in Keep tempo at 80 % of the written tempo or faster Wrong notes 4 Missed 0 Weakest bars 1 Keep tempo at 80 % Again Slower (−10%) Faster (+10%) Loop the weak bars Done\"",
+        "What the app counts: \"What the app counts — 1 of 2\" → \"What the app counts — 1 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/12.png"
+      ]
+    },
+    {
+      "step": "13",
+      "did": "L'amour est un oiseau rebelle, bars 1–12, left hand ▶ → Keep tempo, L, Rhythm only off, speed 90 % → ▶, all twelve bars, no loop",
+      "expected": "counted: \"What the app counts\" reads 2 of 2; latin.4 shows complete on Plan",
+      "observed": [
+        "opened L'amour est un oiseau rebelle, bars 1–12, left hand (#/score/excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh?from=latin.4)",
+        "mode tempo",
+        "hand L selected",
+        "Rhythm only: Off",
+        "speed slider 70 % → 90 %; the bar reads \"54 bpm\"",
+        "played in time through the MIDI mock: 48 notes struck",
+        "summary: \"Passed Accuracy 100% Tempo 90% of written Wrong notes 0 Missed 0 Timing 10 ms off the beat on average, 0% of them early Again Slower (−10%) Faster (+10%) Done\"",
+        "counter bars during the run: 1,2,3,4,5,6,7,8,9,10,11,12",
+        "What the app counts: \"What the app counts — 1 of 2\" → \"What the app counts — 2 of 2\"",
+        "Plan row: \"The habanera bass, and the tresillo beside it 7 exercises · 4 songs · ~14 days complete\"; badges: [\"complete\"]"
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/13.png",
+        "docs/prompts/runs/A7S/phone-walk-playwright/13-lesson.png",
+        "docs/prompts/runs/A7S/phone-walk-playwright/13-plan.png"
+      ]
+    },
+    {
+      "step": "14",
+      "did": "L'amour est un oiseau rebelle ▶ → L, ⋯ Duet on → loop bars 1–12 → Keep tempo → ▶, play the bass under the tune",
+      "expected": "the app plays the right hand; your bass under it; not counted",
+      "observed": [
+        "opened L'amour est un oiseau rebelle (#/score/song.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx?from=latin.4)",
+        "hand L selected",
+        "Duet: On → On",
+        "Duet row: \"Duet: the app plays the right handTurn it off to practise against silence.On\"",
+        "loop on opening: \"\"",
+        "bar 1 is on the page at rest (index 0)",
+        "double-tap (two touch taps) on bar 1 (white): status \"Loop start: bar 1. Double-tap the last bar.\", data-loop \"\"",
+        "played on in Wait for me to bar 12 and paused; the start stayed marked",
+        "double-tap (two touch taps) on bar 12 (note): status \"\", data-loop \"1-12\"",
+        "loop set: data-loop \"1-12\", Loop control \"Bars 1–12 ✕\"",
+        "mode tempo",
+        "loop after choosing Keep tempo: \"1-12\"",
+        "played in time through the MIDI mock for one lap's budget: 59 notes struck; counter bars 1,2,3,4,5,6,7,8,9,10,11,12,1,2,3",
+        "paused with ▶",
+        "tempo \"42 bpm\"; piano notes scheduled during the run 378 → 420",
+        "What the app counts: \"What the app counts — 2 of 2\" → \"What the app counts — 2 of 2\" (already 2 of 2: not a discriminating check)"
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/14-set.png",
+        "docs/prompts/runs/A7S/phone-walk-playwright/14.png"
+      ]
+    },
+    {
+      "step": "15",
+      "did": "The Crave ▶ → loop bars 21–26 by double-tap → Hear it",
+      "expected": "three, three, two in the left hand; lower the speed if needed",
+      "observed": [
+        "opened The Crave (#/score/song.jazz.the-crave?from=latin.4)",
+        "played in Wait for me to bar 21 and paused",
+        "double-tap (two touch taps) on bar 21 (white): status \"Loop start: bar 21. Double-tap the last bar.\", data-loop \"\"",
+        "played on in Wait for me to bar 26 and paused; the start stayed marked",
+        "double-tap (two touch taps) on bar 26 (note): status \"\", data-loop \"21-26\"",
+        "loop set: data-loop \"21-26\", Loop control \"Bars 21–26 ✕\"",
+        "Hear it tapped again to stop the demonstration",
+        "Hear it: data-hearing true; piano notes scheduled 420 → 557; counter showed bars 21,22,23,24,25,26,21",
+        "\"three, three, two\" is a musical reading of the bars: not asserted here (nothing heard)"
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/15-loop.png",
+        "docs/prompts/runs/A7S/phone-walk-playwright/15.png"
+      ]
+    },
+    {
+      "step": "16",
+      "did": "The Crave ▶ → loop bars 21–22 → Keep tempo, L, Rhythm only on → ▶, tap",
+      "expected": "three taps a bar; not counted",
+      "observed": [
+        "opened The Crave (#/score/song.jazz.the-crave?from=latin.4)",
+        "loop on opening: \"\"",
+        "played in Wait for me to bar 21 and paused",
+        "double-tap (two touch taps) on bar 21 (white): status \"Loop start: bar 21. Double-tap the last bar.\", data-loop \"\"",
+        "double-tap (two touch taps) on bar 22 (note): status \"\", data-loop \"21-22\"",
+        "loop set: data-loop \"21-22\", Loop control \"Bars 21–22 ✕\"",
+        "mode tempo",
+        "hand L selected",
+        "Rhythm only: Off → On",
+        "played in time through the MIDI mock for one lap's budget: 32 notes struck; counter bars 21,22,21,22,21",
+        "paused with ▶",
+        "tempo \"111 bpm\"; run steps seen by bar index, every lap, every voice: [[20,31],[21,16]]",
+        "distinct left-hand steps by bar index (index 20 is bar 21): [[20,3],[21,3]]; notes per step [3,3,2,3,3,2]",
+        "What the app counts: \"What the app counts — 2 of 2\" → \"What the app counts — 2 of 2\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/16-set.png",
+        "docs/prompts/runs/A7S/phone-walk-playwright/16.png"
+      ]
+    },
+    {
+      "step": "17",
+      "did": "Por Una Cabeza - Carlos Gardel ▶; read the left hand of bars 1–14 before pressing anything",
+      "expected": "your decision; the page does not say until its end",
+      "observed": [
+        "lesson paragraphs: 31; the answer paragraph is number 31",
+        "paragraphs before it naming Por Una Cabeza's cell: 0",
+        "opened Por Una Cabeza - Carlos Gardel (#/score/song.folk.por-una-cabeza-carlos-gardel.pdmx?from=latin.4)",
+        "the Score screen names a cell: no; counter \"bar 0 / 65\""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/17.png"
+      ]
+    },
+    {
+      "step": "18",
+      "did": "loop bars 1–14 → Hear it",
+      "expected": "plays",
+      "observed": [
+        "bar 1 is on the page at rest (index 1)",
+        "double-tap (two touch taps) on bar 1 (white): status \"Loop start: bar 1. Double-tap the last bar.\", data-loop \"\"",
+        "played on in Wait for me to bar 14 and paused; the start stayed marked",
+        "double-tap (two touch taps) on bar 14 (note): status \"\", data-loop \"1-14\"",
+        "loop set: data-loop \"1-14\", Loop control \"Bars 1–14 ✕\"",
+        "Hear it tapped again to stop the demonstration",
+        "Hear it: data-hearing true; piano notes scheduled 615 → 784; counter showed bars 1,2,3,4,5,6,7,8,9,10,11,12,13,14,1"
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/18-loop.png",
+        "docs/prompts/runs/A7S/phone-walk-playwright/18.png"
+      ]
+    },
+    {
+      "step": "19",
+      "did": "loop still on → Keep tempo, L, Rhythm only on → ▶, tap; then read the answer at the end of the lesson",
+      "expected": "the reveal is the last paragraph",
+      "observed": [
+        "loop: \"1-14\"",
+        "mode tempo",
+        "hand L selected",
+        "Rhythm only on opening: On",
+        "played in time through the MIDI mock for one lap's budget: 80 notes struck; counter bars 1,2,3,4,5,6,7,8,9,10,11,12,13,14,1,2",
+        "paused with ▶",
+        "the lesson's last paragraph begins: \"The answer for Por Una Cabeza. It is the habanera, with its note values doubled to fill a 4/4 bar: notes start on 1, on \""
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/19.png",
+        "docs/prompts/runs/A7S/phone-walk-playwright/19-lesson.png"
+      ]
+    },
+    {
+      "step": "20",
+      "did": "Plan → Stage 6 → latin.6; and Stage 7 → latin.7; each piece’s row ▶",
+      "expected": "latin.6 opens with \"Before you play, name each left hand yourself\", latin.7 with \"Before you play El Choclo…\"; each piece’s row opens it",
+      "observed": [
+        "latin.6: paragraph 2 of 10 begins \"Before you play, name each left hand yourself\"; paragraph 1 begins \"Two rungs ago the clave was something you clapped. Here the \"",
+        "latin.6: the row of Por Una Cabeza - Carlos Gardel opened #/score/song.folk.por-una-cabeza-carlos-gardel.pdmx?from=latin.6",
+        "latin.6: the row of The Crave opened #/score/song.jazz.the-crave?from=latin.6",
+        "latin.6: the row of Tango La Cumparsita - Piano Solo (Tutorial Parte B) opened #/score/song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx?from=latin.6",
+        "latin.7: paragraph 2 of 10 begins \"Before you play El Choclo\"; paragraph 1 begins \"Three concert pieces, each written to be played through in f\"",
+        "latin.7: the row of El Choclo (tango) opened #/score/song.classical.el-choclo-piano.pdmx?from=latin.7"
+      ],
+      "verdict": "PASS",
+      "shots": [
+        "docs/prompts/runs/A7S/phone-walk-playwright/20-latin6.png",
+        "docs/prompts/runs/A7S/phone-walk-playwright/20-latin7.png"
+      ]
+    }
+  ],
+  "alsoLookAt": [
+    {
+      "when": "after step 7c",
+      "what": "Today: were the counted items offered",
+      "observed": [
+        "todayCard slots: {\"token\":\"muxfz5tb1u2lynv\",\"slots\":[{\"kind\":\"technique\",\"itemId\":\"drill.technique.finger-numbers\",\"claim\":{\"kind\":\"asked\",\"rung\":{\"id\":\"0.1\",\"title\":\"Your instrument and your body\",\"concepts\":[\"posture\",\"hand-shape\",\"finger-numbers\"],\"textFile\":\"lessons/0.1.md\",\"exerciseOptions\":[\"drill.setup.posture-checklist\",\"drill.technique.finger-numbers\"],\"songOptions\":[],\"mastery\":{\"minAccuracy\":0,\"minTempoPct\":0},\"requirements\":[{\"kind\":\"runs\",\"from\":\"exercises\",\"items\":[\"drill.technique.finger-numbers\"],\"count\":1},{\"kind\":\"done\",\"item\":\"drill.setup.posture-checklist\"}],\"estimatedDays\":2,\"optionsExempt\":true,\"levelBand\":[0.1,0.1]},\"next\":false,\"requirement\":{\"kind\":\"runs\",\"from\":\"exercises\",\"items\":[\"drill.technique.finger-numbers\"],\"count\":1},\"have\":0,\"need\":1}},{\"kind\":\"new\",\"itemId\":\"drill.setup.posture-checklist\",\"claim\":{\"kind\":\"asked\",\"rung\":{\"id\":\"0.1\",\"title\":\"Your instrument and your body\",\"concepts\":[\"posture\",\"hand-shape\",\"finger-numbers\"],\"textFile\":\"lessons/0.1.md\",\"exerciseOptions\":[\"drill.setup.posture-checklist\",\"drill.technique.finger-numbers\"],\"songOptions\":[],\"mastery\":{\"minAccuracy\":0,\"minTempoPct\":0},\"requirements\":[{\"kind\":\"runs\",\"from\":\"exercises\",\"items\":[\"drill.technique.finger-numbers\"],\"count\":1},{\"kind\":\"done\",\"item\":\"drill.setup.posture-checklist\"}],\"estimatedDays\":2,\"optionsExempt\":true,\"levelBand\":[0.1,0.1]},\"next\":false,\"requirement\":{\"kind\":\"done\",\"item\":\"drill.setup.posture-checklist\"},\"have\":0,\"need\":1}}]}",
+        "Today reads: \"Today 🎹 MIDI 4 / 150 min this week · 1 day 15 min 30 min 60 min 120 min Start session Finger-number tap drill This lesson asks for it — not counted yet Warm-up · 5 min · L0.1 Swap ▶ Posture and hand-shape checklist This lesson asks for it — finished, nothing left undone New · 10 min · L0.1 Swap ▶ Working on Stage 0 · Your instrument and your body Shuffle options · Jump to… Metronome · Free play · Simon · Accompaniment lab\"",
+        "screenshot: docs/prompts/runs/A7S/phone-walk-playwright/today-after-07c.png"
+      ]
+    },
+    {
+      "when": "after step 13",
+      "what": "Plan: latin.4’s badge wording",
+      "observed": [
+        "row \"The habanera bass, and the tresillo beside it 7 exercises · 4 songs · ~14 days complete\"",
+        "badges [\"complete\"]",
+        "badge classes [\"badge\"]"
+      ]
+    },
+    {
+      "when": "after step 13",
+      "what": "Today: were the counted items offered",
+      "observed": [
+        "todayCard slots: {\"token\":\"muxg3n6a27pf5hj\",\"slots\":[{\"kind\":\"technique\",\"itemId\":\"drill.technique.finger-numbers\",\"claim\":{\"kind\":\"asked\",\"rung\":{\"id\":\"0.1\",\"title\":\"Your instrument and your body\",\"concepts\":[\"posture\",\"hand-shape\",\"finger-numbers\"],\"textFile\":\"lessons/0.1.md\",\"exerciseOptions\":[\"drill.setup.posture-checklist\",\"drill.technique.finger-numbers\"],\"songOptions\":[],\"mastery\":{\"minAccuracy\":0,\"minTempoPct\":0},\"requirements\":[{\"kind\":\"runs\",\"from\":\"exercises\",\"items\":[\"drill.technique.finger-numbers\"],\"count\":1},{\"kind\":\"done\",\"item\":\"drill.setup.posture-checklist\"}],\"estimatedDays\":2,\"optionsExempt\":true,\"levelBand\":[0.1,0.1]},\"next\":false,\"requirement\":{\"kind\":\"runs\",\"from\":\"exercises\",\"items\":[\"drill.technique.finger-numbers\"],\"count\":1},\"have\":0,\"need\":1}},{\"kind\":\"new\",\"itemId\":\"drill.setup.posture-checklist\",\"claim\":{\"kind\":\"asked\",\"rung\":{\"id\":\"0.1\",\"title\":\"Your instrument and your body\",\"concepts\":[\"posture\",\"hand-shape\",\"finger-numbers\"],\"textFile\":\"lessons/0.1.md\",\"exerciseOptions\":[\"drill.setup.posture-checklist\",\"drill.technique.finger-numbers\"],\"songOptions\":[],\"mastery\":{\"minAccuracy\":0,\"minTempoPct\":0},\"requirements\":[{\"kind\":\"runs\",\"from\":\"exercises\",\"items\":[\"drill.technique.finger-numbers\"],\"count\":1},{\"kind\":\"done\",\"item\":\"drill.setup.posture-checklist\"}],\"estimatedDays\":2,\"optionsExempt\":true,\"levelBand\":[0.1,0.1]},\"next\":false,\"requirement\":{\"kind\":\"done\",\"item\":\"drill.setup.posture-checklist\"},\"have\":0,\"need\":1}}]}",
+        "Today reads: \"Today 🎹 MIDI 6 / 150 min this week · 1 day 15 min 30 min 60 min 120 min Start session Finger-number tap drill This lesson asks for it — not counted yet Warm-up · 5 min · L0.1 Swap ▶ Posture and hand-shape checklist This lesson asks for it — finished, nothing left undone New · 10 min · L0.1 Swap ▶ Working on Stage 0 · Your instrument and your body Shuffle options · Jump to… Metronome · Free play · Simon · Accompaniment lab\"",
+        "screenshot: docs/prompts/runs/A7S/phone-walk-playwright/today-after-13.png"
+      ]
+    }
+  ]
+}

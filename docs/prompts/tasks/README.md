@@ -340,6 +340,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **CB1** | The Chord chart's backing independent of its comp: `onBeat` schedules the bar's bass and drums whenever Bass + drums is on, the comp voices the chord only, the forced Comp deleted; four-case browser spec, only case B changed (`CB1-chart-backing.md`) | app + test | landed 2026-10-06 (`CB1-chart-backing.md`); Entry 267
 | **PH1** | Positioned harmony: one shared measure walk (`measureWalk.ts`) for the tempo reader and the harmony reader; `ChordSymbol.offset`; `readHarmony` and `chartSegments` with carried, merged and conflicting events reported; the six cases red then green; tempo and chart differentials null over 2,090 files; music21 agrees on every offset (`PH1-positioned-harmony.md`) | app model + test | landed 2026-10-06 (`PH1-positioned-harmony.md`); Entry 268
 | **G6a** | The minor shell drill `drill.jazz.minor-ii-v-i-shells`: nine cases in C, A and G minor (Cm6, Am7, Gm7 tonics), each prompt naming its symbol; CK-6 against music21 with every must-fail case red; every other drill row byte-identical on three seeds; placed on no rung (`G6a-minor-shell-drill.md`) | content + app + test | landed 2026-10-06 (`G6a-minor-shell-drill.md`); Entry 269
+| **A7SH** | A7c.1 shipped: `app/tests/e2e/a7c1-phone-walk.spec.ts` walks latin.4 on an emulated upright phone, both counted runs played, the rung complete on Plan; scoreboard 1/28 (`A7SH-a7c1-shipped.md`) | record + test | landed 2026-10-07 (`A7SH-a7c1-shipped.md`); Entry 270
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -545,6 +546,7 @@ BB1 · landed · 266
 CB1 · landed · 267
 PH1 · landed · 268
 G6a · landed · 269
+A7SH · landed · 270
 F0a · closed · —
 L120 · approved · —
 -->
