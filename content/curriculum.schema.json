@@ -319,6 +319,10 @@
                                 "performance": {
                                   "type": "boolean"
                                 },
+                                "hands": {
+                                  "description": "How the item was played: both = only a run whose recorded SessionRow.hands.played is both counts (a one-hand run, a Duet run included, does not). Absent: the hands are not asked.",
+                                  "const": "both"
+                                },
                                 "accuracy": {
                                   "type": "number",
                                   "exclusiveMinimum": 0,

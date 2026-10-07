@@ -95,6 +95,54 @@ CATALOG = [{"id": "drill.read", "targetSkills": ["reading"]}, {"id": "ex.1"}]
 UNJUDGED_PEDAL = {"kind": "unjudged", "rule": "pedal-clean>=0.9", "says": "Change the pedal cleanly.", "why": "pedalling is not judged"}
 
 
+class TestARunsRequirementThatSaysHands(unittest.TestCase):
+    """`hands: both` on a runs requirement (A7a-hands-both-requirement; `docs/review/responses/a7a-drafts.md` §7)."""
+
+    RECORDED = {
+        "conditions": SKILLS["conditions"] + [{"id": "both-hands", "meaning": "both hands", "recordedBy": "SessionRow.hands.played"}],
+        "skills": SKILLS["skills"],
+    }
+
+    def gate(self, requirement: dict, skills: dict) -> list[str]:
+        errors, _ = evidence_gate(curriculum(rung("9.9", [], [requirement])), skills, CATALOG)
+        return errors
+
+    def test_hands_both_is_accepted_where_a_run_records_the_hands(self) -> None:
+        self.assertEqual(self.gate({"kind": "runs", "from": "exercises", "count": 1, "hands": "both"}, self.RECORDED), [])
+
+    def test_a_requirement_without_hands_is_unchanged(self) -> None:
+        self.assertEqual(self.gate({"kind": "runs", "from": "exercises", "count": 1}, SKILLS), [])
+
+    def test_hands_both_is_refused_where_no_run_records_the_hands(self) -> None:
+        errors = self.gate({"kind": "runs", "from": "exercises", "count": 1, "hands": "both"}, SKILLS)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("both-hands", errors[0])
+
+    def test_any_other_hands_value_is_refused(self) -> None:
+        for value in ("left", "R", "one", ""):
+            errors = self.gate({"kind": "runs", "from": "exercises", "count": 1, "hands": value}, self.RECORDED)
+            self.assertEqual(len(errors), 1, value)
+            self.assertIn("only 'both'", errors[0])
+
+    def test_the_schema_admits_hands_both_and_nothing_else(self) -> None:
+        import jsonschema
+
+        schema = json.loads((CONTENT / "curriculum.schema.json").read_text(encoding="utf8"))
+        runs = next(
+            branch
+            for branch in schema["properties"]["stages"]["items"]["properties"]["units"]["items"]["properties"]["lessons"]["items"][
+                "properties"
+            ]["requirements"]["items"]["oneOf"]
+            if branch["properties"]["kind"].get("const") == "runs"
+        )
+        validator = jsonschema.Draft202012Validator(runs)
+        base = {"kind": "runs", "from": "exercises", "count": 1}
+        self.assertEqual(list(validator.iter_errors(base)), [])
+        self.assertEqual(list(validator.iter_errors({**base, "hands": "both"})), [])
+        for value in ("left", "R", "right", "one", "", True, None):
+            self.assertNotEqual(list(validator.iter_errors({**base, "hands": value})), [], repr(value))
+
+
 class TestTheGate(unittest.TestCase):
     def test_a_rung_requiring_a_skill_no_run_can_measure_is_refused(self) -> None:
         errors, _ = evidence_gate(

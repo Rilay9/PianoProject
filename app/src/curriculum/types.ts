@@ -431,6 +431,14 @@ export interface RunsRequirement {
   count: number;
   /** Played as a performance: started once, no restart, no loop, nothing played to the learner inside it. */
   performance?: boolean;
+  /**
+   * How the item was played (A7a-hands-both-requirement; `docs/review/responses/a7a-drafts.md` §7). `'both'`: only a
+   * run whose recorded `SessionRow.hands.played` is `both` counts, the learner's own two hands, and a run that
+   * recorded one hand — a Duet run included, which is saved as a Keep tempo run with the app playing the other —
+   * or none does not. Read from that fact alone, never from the run's mode or tool. Absent: the hands are not
+   * asked, as for every requirement before it.
+   */
+  hands?: 'both';
   /** The share of the notes, where this requirement asks more than the rung's `minAccuracy`. */
   accuracy?: number;
 }

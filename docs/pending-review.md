@@ -43862,3 +43862,13 @@ Each class has broken records that fail it; 42 tests.
 **Done** (`docs/review/responses/a7a-drafts.md`, `A7a-authored-id-resolution`). `tools/content/check_chains.py` reads the literal `PIANOPATH["id"]` of each authored score module in `content/scores/authored/` with `ast.parse`, never importing or running it. An id resolves only when `PIANOPATH` is bound once at top level by a dict of string keys, with one non-empty literal `"id"` and no later mutation; anything computed resolves nothing; two modules declaring one id resolve for neither and fail the run, naming both files. 11 tests, red first (10 errors and A7a.1 listing 12 unresolved refs before), including a source that would write a marker file if run and is proved never run. `.abc` authored sources are not read (the ruling named the Python modules).
 
 **Checks.** At landing: `check_chains.py` lists A7a.1's three Blues Riff refs as its only unresolved refs (its nine shuffle refs resolve); the whole content Python suite, 2,045 tests, its only errors the two record-mirror tests before this entry, green after.
+
+### Entry 279 — HB1: a runs requirement can say hands: both
+
+**What a learner meets.** Nothing yet: no rung carries the field. When A7a.1 and A7a.3 place it, a one-hand run of their counted item (a Duet run included) will not meet the requirement; the learner-facing line saying why (a both-hands slot text in `help.ts` beside "played with Perform on") is that placement's work. Scoreboard 1/28.
+
+**Done.** `app/src/curriculum/types.ts` gains `RunsRequirement.hands?: 'both'`; `app/src/evidence/rungState.ts` skips a row whose `hands.played` is not both when the requirement says both (beside the Perform check, never replacing the standard; a row with no recorded hands does not count); `content/curriculum.schema.json` admits `hands: "both"` alone; `tools/content/validate.py` refuses another value and refuses the field when no run records the both-hands condition. Red first: 6 of 12 cases failed before (left only, right only, a Duet row saved as Keep tempo, no recorded hands, Perform plus one hand, the rung's status). A differential of the old and new rung reading over 110 rungs, every option, 20 hand and mode conditions (2,200 readings, 1,050 met) was identical; a permanent test pins that no stage file carries `hands` and every rung reads the same under every hand condition.
+
+**Checks.** At landing: the content build passes; the whole content Python suite, 2,050 OK; `npx tsc -b` and lint clean; the whole unit suite, the one red the standing blues.3.
+
+**Open.** The preflight's class 4 learning the field (lane PF4, building); the learner-facing line, with the first placement.

@@ -453,6 +453,7 @@ function read(
         const item = pool.has(row.itemId) ? row.itemId : twins.get(row.itemId);
         if (item === undefined) continue;
         if (requirement.performance === true && row.performance !== true) continue;
+        if (requirement.hands === 'both' && row.hands?.played !== 'both') continue;
         if (!coveredWholeItem(row)) continue;
         if (meetsStandard(row, criteria, requirement.accuracy)) counted.add(item);
       }

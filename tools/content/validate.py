@@ -1784,6 +1784,14 @@ def evidence_gate(curriculum: dict, skills_file: dict, catalog: list) -> tuple[l
                         f"the evidence is not reachable from the rung's page"
                     )
             elif kind == "runs":
+                # A hand condition reads `SessionRow.hands.played`, which only the vocabulary's `both-hands`
+                # condition says a run records (A7a-hands-both-requirement): a value no run records is a promise
+                # the app cannot keep.
+                if "hands" in requirement:
+                    if requirement["hands"] != "both":
+                        errors.append(f"{rung_id}: its runs requirement says hands {requirement['hands']!r}; only 'both' is read")
+                    elif not recorded.get("both-hands", False):
+                        errors.append(f"{rung_id}: its runs requirement says hands both, and no run records the both-hands condition")
                 source = requirement.get("from")
                 pool = exercises if source == "exercises" else songs if source == "songs" else options
                 named = requirement.get("items")
