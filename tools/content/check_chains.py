@@ -177,7 +177,7 @@ SCAFFOLD_NOTE = (
 BRIEF_HEADINGS = ("Instructional chain", "Failure route", "Independence test")
 CURRENT_REVIEW = "docs/review/current.md"
 HANDOFF_POINTER_RE = re.compile(r"^\s*-\s+`(?P<path>handoffs/[^`]+\.md)`\s+—\s+(?P<body>.*)$")
-CLOSED_HANDOFF_MARKERS = ("**answered**", "**closed**", "**withdrawn**", "**no response required**", "**parked")
+CLOSED_HANDOFF_RE = re.compile(r"^\s*\*\*(?:answered\b[^*]*|closed\b[^*]*|withdrawn\b[^*]*|no response required\b[^*]*)\*\*", re.IGNORECASE)
 OWNER_ACTION_NONE_RE = re.compile(r"^owner_action:\s*none\s*$", re.IGNORECASE)
 PHONE_WALK_RE = re.compile(r"\bphone[- ]walk\b", re.IGNORECASE)
 AUTOMATED_ACCEPTANCE_PATTERNS = (
@@ -776,8 +776,8 @@ def lint_handoffs(root: Path = ROOT) -> tuple[list[Failure], list[str]]:
         match = HANDOFF_POINTER_RE.match(line)
         if not match:
             continue
-        body = match.group("body").casefold()
-        if any(marker.casefold() in body for marker in CLOSED_HANDOFF_MARKERS):
+        body = match.group("body")
+        if CLOSED_HANDOFF_RE.match(body):
             continue
 
         rel = match.group("path")
