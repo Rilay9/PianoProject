@@ -876,11 +876,18 @@ class TheLiveHandoffLint(unittest.TestCase):
         self.assertIn("phone walk", failures[0].message)
 
     def test_answered_handoffs_are_history_not_live_owner_work(self):
-        self.pointer("- `handoffs/old.md` — **answered** in `responses/old.md`.\n")
+        self.pointer("- `handoffs/old.md` — **answered / U125 closed** in `responses/old.md`.\n")
         self.tree.write("docs/review/handoffs/old.md", "# Old\n\nThe owner phone walk was once mentioned here.\n")
         failures, notes = cc.lint_handoffs(self.tree.root)
         self.assertEqual(failures, [])
         self.assertEqual(notes[0], "handoffs: 0 live reviewer handoff(s) linted")
+
+    def test_answered_word_later_in_a_live_status_does_not_hide_it(self):
+        self.pointer("- `handoffs/open.md` — response required; an older question was answered elsewhere.\n")
+        self.tree.write("docs/review/handoffs/open.md", "# Open\n\nReview this.\n")
+        failures, notes = cc.lint_handoffs(self.tree.root)
+        self.assertEqual([f.field for f in failures], ["owner_action"])
+        self.assertEqual(notes[0], "handoffs: 1 live reviewer handoff(s) linted")
 
     def test_the_real_current_pointer_has_no_invalid_live_handoff(self):
         failures, _ = cc.lint_handoffs(ROOT)
