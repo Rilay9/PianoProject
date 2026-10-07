@@ -27,8 +27,8 @@ The packet asks for a teaching system, not placed content:
 
 **Scoreboard:** of the MUST abilities in `ABILITY-MAP.md`, how many are **SHIPPED**? SHIPPED means three things:
 - its chain record (§3) passes the checker;
-- every learner-facing step is reachable/playable in the deployed build, proved automatically where reasonably possible;
-- the acceptance path passed; an owner/device check is only for behavior automation genuinely cannot establish.
+- every learner-facing step is reachable/playable in the deployed phone build; objective acceptance is automated rather than assigned to the owner;
+- the acceptance path passed; this does not turn the owner into a test harness (the owner's phone use is feedback, never a gate, §5).
 
 Report this number in every handoff, as *shipped / total MUST*. Planning documents, briefs and research do not move it; only shipped chains do.
 
@@ -147,7 +147,7 @@ Never "musically good". The owner playing an item on their phone is welcome feed
 
 ## 6. Evidence and the learner model
 
-Every chain says, in `evidence`, what updates the learner state, what is self-checked, and what never earns credit (§3). No ability goes green before the learner has done its independence test, and the summary and Progress never present a green rung as the ability where the independence test is self-checked (the owner, 2026-10-06). A Wait run, a lit chord tone, a looped section or a Lab bed never certifies the target ability (`MODE-SHEET.md`). Where the app cannot observe the target, the task is honest self-check, or the requirement changes. The app never pretends. A reviewer may decide teaching use and placement from verified content facts and the chain's stated role; this is not a musical-quality claim, and reviewer identity alone is never evidence. No word or reading-time limit on a lesson (the owner, 2026-10-06): length never outranks accuracy and communication. **Audience boundary:** learner- and owner-facing instructions must be self-contained for that audience, use current UI language, and say what to do and what observable result to expect; internal ids, repo references, hidden preconditions or technically true but unusable wording fail review.
+Every chain says, in `evidence`, what updates the learner state, what is self-checked, and what never earns credit (§3). No ability goes green before the learner has done its independence test, and the summary and Progress never present a green rung as the ability where the independence test is self-checked (the owner, 2026-10-06). A Wait run, a lit chord tone, a looped section or a Lab bed never certifies the target ability (`MODE-SHEET.md`). Where the app cannot observe the target, the task is honest self-check, or the requirement changes. The app never pretends. A reviewer may decide teaching use and placement from verified content facts and the chain's stated role; this is not a musical-quality claim, and reviewer identity alone is never evidence. No word or reading-time limit on a lesson (the owner, 2026-10-06): length never outranks accuracy and communication. **Enforcement of the existing addressee rule:** do not assign the owner objective validation work; learner/owner instructions use current UI language and must be actionable by their actual addressee.
 
 ## 7. Libraries, before custom code
 
@@ -170,7 +170,7 @@ The outside reviewer reviews it. The corrections become chain records or briefs.
 ## 9. Done
 
 - **An ability is development-done** when its chain record is `shipped`, its independence task is present in the app and its learner-facing acceptance path has been exercised: a measurable independence test has its evidence behaviour tested; a self-checked one has the app expose and record only the permitted self-check and award no unsupported skill evidence. An unobservable musical ability is never required to "pass in the app".
-- **A slice is done** when learner-facing acceptance proves every automatable step on the deployed/build-equivalent app; any remaining owner/device check is self-contained and limited to a genuinely device-specific, hardware-dependent or subjective property.
+- **A slice is done** when learner-facing acceptance proves the steps on the deployed/build-equivalent app; “phone build” never means an owner manual-QA gate.
 - **The curriculum work is done** when three things hold:
   - every MUST ability is shipped;
   - every operative PACKET-TRACE row is SATISFIED or explicitly DEFERRED (by the packet or the owner); PARTIAL is an in-progress state, never a final one (the owner, 2026-10-06);
@@ -194,5 +194,5 @@ The outside reviewer reviews it. The corrections become chain records or briefs.
 - **Builders** work on disjoint files. Each landing is reviewed against its chain record and the scoreboard.
 - **The reviewer's verdicts** become record or status edits. They do not trigger new planning rounds.
 - **Review before building for a design decision; a narrow seam may land before its artefact review** only when all hold (the owner and the reviewer, 2026-10-06): its design decision and semantic boundary were already reviewed; it adds no product rule, schema meaning or inference; red-first tests pin the exact defect; its blast radius is declared in advance; a before-and-after differential proves no unrelated behaviour changed; an unexpected change is a stop, never explained after landing. New inference rules, schemas, authority or broad migrations are reviewed before building.
-- **Every handoff** opens with the scoreboard and PACKET-TRACE's PARTIAL and MISSING counts, then what shipped, then what is blocked and on what; any requested owner check names the non-automatable property and gives a cold-start plain-language action/result.
+- **Every handoff** opens with the scoreboard and PACKET-TRACE's PARTIAL and MISSING counts, then what shipped, then what is blocked and on what; before asking the owner for anything, apply `CLAUDE.md`'s addressee rule and remove work the builders/tests/reviewer can do.
 - **An app capability gap becomes app work** when two chains need it or it is plainly app-wide; otherwise it stays recorded (the owner, 2026-10-06).

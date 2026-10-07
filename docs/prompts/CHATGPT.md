@@ -83,16 +83,15 @@ A green test suite does not rescue a chain that teaches the wrong thing or overc
 
 Use `MODE-SHEET.md` literally for evidence boundaries: Wait, Keep tempo, Hear/Listen, Simon, Lab, Jam, Duet, Free Play, Rhythm only, charts, loops, ladders, etc. have different teaching and measurement semantics. Never turn an available UI mode into evidence it does not provide.
 
-### Audience boundary and acceptance
+### Enforce the existing addressee and owner-work rules
 
-A learner- or owner-facing artifact is not correct merely because it mirrors the implementation. Review it as the intended person encounters it, without repository or architecture knowledge.
+This is **not a new product rule**. Enforce the rules already above this contract: FABLE says the owner's phone use is welcome feedback, never a gate; `CLAUDE.md` says to ask the owner only for a product/pedagogy/architecture choice that cannot be inferred, and its addressee check asks who can actually act.
 
-- **Automate objective behavior.** Playwright/unit/content checks establish anything they reasonably can; the owner is not a substitute test harness. A manual device check is only for genuinely device-specific, hardware-dependent or subjective behavior, and must say why automation cannot establish it.
-- **Cold-start human instructions.** Owner walks and learner directions use current UI labels, plain language, one concrete action and one observable result. Repo paths, chain/station ids, unexplained mode shorthand, hidden preconditions, or “read this other internal file first” fail the audience boundary.
-- **Test what the person sees.** User-journey acceptance prefers visible navigation, controls, feedback and state over hidden hooks/internal state. Internal assertions may supplement the user path, never replace it.
-- **Make recovery actionable.** Error/failure/recovery copy must tell the learner or owner the next useful action, not merely name an internal condition.
-- **Check translation drift.** Instructions, lesson copy and tests must use the labels and navigation the current build actually exposes; technically true but stale or mismatched wording is a defect.
-- **Review the acceptance artifact itself.** If the intended person could not perform it cold, block or rewrite it rather than passing interpretation work downstream. An automatable claim may not gate `shipped` behind an owner phone walk.
+- **Do not assign validation to the owner.** Objective behavior belongs in Playwright/unit/content checks. A manual device check is justified only by a genuinely device-specific, hardware-dependent or subjective property that automation cannot establish.
+- **Check the addressee, not just the artifact.** Owner/learner instructions must be self-contained in current UI language, with a concrete action and observable result. Repo paths, chain/station ids, hidden preconditions or companion internal docs are evidence that the wrong actor was assigned the work.
+- **Test the visible consequence.** Hidden state/tests may supplement but do not replace the navigation, controls, feedback and recovery the learner actually sees.
+- **Treat unusable truth as a defect.** Stale labels, non-actionable recovery text, or technically true instructions that the intended person cannot follow fail review.
+- **When a downstream artifact contradicts governance, stop it.** Do not add another policy layer first; identify the violated existing rule, correct the artifact/process, and add only the smallest enforcement hook needed to prevent recurrence.
 
 ## 6. Generated content and musical claims
 
