@@ -157,15 +157,44 @@ test.describe('the backing loop', () => {
   });
 
   test('stops when the screen is left', async ({ page }) => {
-    await page.goto('/#/chart/song.jazz.autumn-leaves');
-    if (!(await page.locator('#chart-backing').count())) test.skip();
+    // Repaired with PH2 (the reviewer, `docs/review/responses/g6-ph-briefs-cb1.md` §1): it opened
+    // `song.jazz.autumn-leaves`, which the catalogue does not hold, found no Bass + drums chip and skipped on
+    // every run. Blue Bossa is a 4/4 chart the build holds, with a bar of two chords (16). Every audio source the
+    // page starts is counted, so "stopped" is what the audio clock is given after the screen goes, not a label.
+    await page.addInitScript(() => {
+      const counter = { starts: 0 };
+      (window as unknown as { __starts: typeof counter }).__starts = counter;
+      /* eslint-disable @typescript-eslint/unbound-method */
+      const start = AudioScheduledSourceNode.prototype.start;
+      AudioScheduledSourceNode.prototype.start = function (when?: number) {
+        counter.starts += 1;
+        return start.call(this, when);
+      };
+      const bufferStart = AudioBufferSourceNode.prototype.start;
+      AudioBufferSourceNode.prototype.start = function (when?: number, offset?: number, duration?: number) {
+        counter.starts += 1;
+        return bufferStart.call(this, when, offset, duration);
+      };
+      /* eslint-enable @typescript-eslint/unbound-method */
+    });
+    const starts = () => page.evaluate(() => (window as unknown as { __starts: { starts: number } }).__starts.starts);
+    await page.goto('/#/chart/song.jazz.kenny-dorham-blue-bossa.pdmx');
+    await expect(page.locator('.chart-cell[data-bar="1"]')).toBeVisible({ timeout: 20_000 });
     await page.locator('#chart-backing').click();
+    await expect(page.locator('#chart-backing')).toHaveAttribute('aria-pressed', 'true');
+    await page.locator('#chart-comp').click();
+    await expect(page.locator('#chart-comp')).toHaveAttribute('aria-pressed', 'true');
     await page.locator('#chart-start').click();
     await expect(page.locator('[data-screen="chart"]')).toHaveAttribute('data-running', 'true');
+    await expect(page.locator('#chart-form')).toContainText('Bar 2 of', { timeout: 30_000 });
+    expect(await starts(), 'the run scheduled nothing to stop').toBeGreaterThan(0);
     await page.goto('/#/today');
     // Everything is queued a bar ahead on the audio clock, so leaving with the
     // loop running would play into whatever came next.
     await expect(page.locator('[data-screen="chart"]')).toHaveCount(0);
+    const left = await starts();
+    await page.waitForTimeout(2_000);
+    expect((await starts()) - left, 'the click, the comp or the bass and drums went on after the chart was left').toBe(0);
   });
 });
 

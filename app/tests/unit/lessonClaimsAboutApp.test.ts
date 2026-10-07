@@ -3612,7 +3612,7 @@ import { CHORD_BOUNDARY_MS, chordScaleDrill } from '../../src/engine/drills/harm
 import { harness as f0Harness, makeModel as f0Model, note as f0Note } from './helpers/engineHarness';
 import { mxlToMusicXml } from '../../src/score/mxl';
 import { tempoEvents } from '../../src/score/tempoFromXml';
-import { chartBars, readHarmony } from '../../src/score/harmony';
+import { chartSegments, readHarmony } from '../../src/score/harmony';
 
 const F0_LESSONS = resolve('..', 'content', 'lessons');
 
@@ -4172,19 +4172,17 @@ const BB2_BLUE_BOSSA = 'song.jazz.kenny-dorham-blue-bossa.pdmx';
 const BB2_EAR = 'drill.ear.seventh-qualities';
 
 /**
- * The chart's cells for a built score, as `ChordChartScreen.ts` computes them today (its load: `readHarmony`,
- * then `chartBars` over the larger of the printed-measure count and the symbol count). PH2 replaces that
- * load with source measures; the cells this row reads (one per bar, its first symbol's text) are the
- * lesson's claim, so a change there turns this red rather than leaving the sentence stale.
+ * The chart's cells for a built score, as `ChordChartScreen.ts` computes them since PH2: `readHarmony`, then
+ * `chartSegments` over the source measures (one cell per source measure, in source order). Each cell's text is
+ * its first segment's symbol, the one a one-chord bar shows; a change there turns this red rather than
+ * leaving the lesson's sentence stale.
  */
 function bb2ChartCells(id: string): (string | null)[] {
   const xml = mxlToMusicXml(new Uint8Array(readFileSync(join(CONTENT, item(id).file ?? ''))));
-  const { symbols } = readHarmony(xml);
-  const measureCount = new Set([...xml.matchAll(/<measure\b[^>]*\bnumber="([^"]+)"/g)].map((m) => m[1])).size;
-  return chartBars(symbols, Math.max(measureCount, symbols.length)).map((symbol) => symbol?.text ?? null);
+  const { symbols, measures } = readHarmony(xml);
+  return chartSegments(symbols, measures).bars.map((bar) => bar.segments[0]?.symbol?.text ?? null);
 }
 
-/** Where a rung sits: its stage's number and its unit's track, from the built curriculum. */
 function bb2Where(id: string): { stage: number; track: string } | undefined {
   for (const stage of curriculum.stages) {
     for (const unit of stage.units) {

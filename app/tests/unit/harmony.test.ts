@@ -4,8 +4,11 @@
  * The chart view is only as good as this: a bar that reads `G7` when the file
  * says `Gm7` is worse than a blank bar, because it is confidently wrong.
  */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { chartBars, chordMatch, parseHarmony } from '../../src/score/harmony';
+import { chartBars, chartSegments, chordMatch, parseHarmony, readHarmony, segmentAt } from '../../src/score/harmony';
+import { toMusicXml } from '../../src/score/mxl';
 
 function score(measures: string): string {
   return `<score-partwise><part id="P1">${measures}</part></score-partwise>`;
@@ -166,5 +169,51 @@ describe('chordMatch', () => {
   it('is 0 for silence, and for no chord at all', () => {
     expect(chordMatch(c ?? null, [])).toBe(0);
     expect(chordMatch(null, [60])).toBe(0);
+  });
+});
+
+/**
+ * The harmony sounding at a place in a bar (PH2, brief test 1): what the Chord chart's comp, bass and live cell
+ * ask of the segment model (`chartSegments`) at an instant. The last segment starting at or before the place; the
+ * change instant itself belongs to the new segment; a bar opening on a carried segment sounds the carried harmony
+ * until its first written change.
+ */
+describe('segmentAt: the harmony sounding at a place in a bar (PH2)', () => {
+  const BLUE_BOSSA = join(process.cwd(), '..', 'content', 'scores', 'pdmx', 'QmTjGkyTi49tTTBrqFYXcTzdGaMMGrmViuc46mN7qmmGo6.mxl');
+
+  function barsOf(xml: string) {
+    const { symbols, measures } = readHarmony(xml);
+    return chartSegments(symbols, measures).bars;
+  }
+
+  it('Blue Bossa bar 16: Dmi7b5 up to beat 3, G7 from the instant of beat 3 to the barline', () => {
+    const bar = barsOf(toMusicXml(new Uint8Array(readFileSync(BLUE_BOSSA))))[15];
+    expect(bar).toBeDefined();
+    if (!bar) return;
+    const at = (position: number): string | null => bar.segments[segmentAt(bar, position)]?.symbol?.text ?? null;
+    expect([at(0), at(1), at(1.999), at(2), at(2.001), at(3.99)]).toEqual(['Dmi7b5', 'Dmi7b5', 'Dmi7b5', 'G7', 'G7', 'G7']);
+    // Outside the bar it never invents a segment: before 0 is the first, past the end the last.
+    expect([segmentAt(bar, -0.5), segmentAt(bar, 4), segmentAt(bar, 9)]).toEqual([0, 1, 1]);
+  });
+
+  it('a bar opening on a carried segment sounds the carried chord until its first written change', () => {
+    const bars = barsOf(
+      score(
+        `<measure number="1"><attributes><divisions>1</divisions><time><beats>4</beats><beat-type>4</beat-type></time></attributes>${CHORD('C', 'major')}<note><rest/><duration>4</duration></note></measure>` +
+          `<measure number="2"><note><rest/><duration>1</duration></note>${CHORD('G', 'dominant')}<note><rest/><duration>3</duration></note></measure>` +
+          '<measure number="3"><note><rest/><duration>4</duration></note></measure>',
+      ),
+    );
+    const texts = (index: number, positions: number[]): (string | null)[] =>
+      positions.map((p) => {
+        const bar = bars[index];
+        return bar ? (bar.segments[segmentAt(bar, p)]?.symbol?.text ?? null) : null;
+      });
+    // Bar 2: C carried from 0, G7 from beat 2 exactly.
+    expect(texts(1, [0, 0.99, 1, 3.5])).toEqual(['C', 'C', 'G7', 'G7']);
+    const second = bars[1];
+    expect(second ? second.segments[segmentAt(second, 0)]?.carried : undefined).toBe(true);
+    // Bar 3, no symbol: one carried segment, G7, wherever it is asked.
+    expect(texts(2, [0, 2, 3.99])).toEqual(['G7', 'G7', 'G7']);
   });
 });

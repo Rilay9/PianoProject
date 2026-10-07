@@ -7,8 +7,9 @@
  * playing *from chords*, which is a different skill from reading and gets a
  * different screen rather than a mode on the Score screen.
  *
- * The input chip still works: whatever you play is compared with the bar's
- * chord and the cell goes amber when they disagree. That is the only judgement
+ * The input chip still works: whatever you play is compared with the chord
+ * sounding as you play it (the bar's, or since PH2 the segment's, where a bar
+ * holds more than one) and the cell goes amber when they disagree. That is the only judgement
  * this screen makes — there is no accuracy score, because a chart says what
  * harmony to play and nothing at all about which notes.
  *
@@ -44,15 +45,15 @@ import { getSettings } from '../../data/settingsStore';
 import { audioEngine, getPiano, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { Metronome, type MetronomeBeat } from '../../audio/Metronome';
 import type { BarShape } from '../../audio/BeatScheduler';
-import { DrumKit, barSchedule } from '../../audio/backingLoop';
+import { DrumKit, barSchedule, type BackingEvent } from '../../audio/backingLoop';
 import type { Piano } from '../../audio/Piano';
 import { toMusicXml } from '../../score/mxl';
-import { chartBars, chordMatch, readHarmony, type ChordSymbol } from '../../score/harmony';
+import { chartSegments, chordMatch, readHarmony, segmentAt, type ChartBar, type ChartSegment, type ChordSymbol } from '../../score/harmony';
 import {
   UNMETRED_COUNT,
-  chartBarCounts,
   chartTiming,
   compHoldQuarters,
+  countOf,
   tempoFieldDefault,
   type BarCount,
   type ChartTiming,
@@ -63,9 +64,71 @@ import { button, chip, el } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
 import { TOOL_HELP } from '../help';
 import { createHelpStrip } from '../helpStrip';
+import './ChordChartScreen.css';
 
 /** How much of the chord has to be heard before the bar counts as matched. */
 const MATCH_THRESHOLD = 0.6;
+
+/** A hair of clock, so a place computed two ways is not a different place. */
+const EPSILON = 1e-6;
+
+/**
+ * A split bar's symbols step down inside their boxes to this size and no further (PH2; from the pictures in
+ * `docs/prompts/runs/PH2/`): smaller, the bar is drawn with each symbol placed over its beat instead, which can
+ * set it at this size because it is not held to its own box's width. So a symbol in a box is never smaller than
+ * the placed one would be.
+ */
+const MIN_BOX_TEXT_PX = 16;
+/** The placed symbols' largest size, and the smallest they go to when a bar needs more than three lines of them. */
+const PLACED_TEXT_PX = 16;
+const MIN_SEGMENT_TEXT_PX = 12;
+
+/**
+ * The bar's one harmony when it has exactly one, written or carried, with no conflict: such a bar is drawn,
+ * comped, bassed and judged exactly as before PH2 (the reviewer's rule: one-segment bars unchanged).
+ */
+export function singleSegment(chartBar: ChartBar | undefined): ChartSegment | null {
+  const only = chartBar?.segments.length === 1 ? chartBar.segments[0] : undefined;
+  return only && !only.conflict ? only : null;
+}
+
+/**
+ * The chord a segment sounds, or `null` where it sounds none the app can use: nothing written yet (bar 1 before
+ * its first symbol), or two different harmonies written at one place, which the chart shows and never chooses
+ * between (the reviewer, `docs/review/responses/ph1-g6a-landing.md` §2 decision 4: no Comp chord, no bass root
+ * from a guess, no live verdict while it lasts).
+ */
+function chordOf(segment: ChartSegment | undefined): ChordSymbol | null {
+  return segment && !segment.conflict ? segment.symbol : null;
+}
+
+/**
+ * One bar of bass and drums for a bar of several harmonies (PH2): the drums exactly as `barSchedule` plays them,
+ * and each bass note `barSchedule`'s own for the harmony sounding at its beat. `lead` is the quarter notes of the
+ * counted bar before the bar's notated music (a pickup's); a beat in it has no harmony, so no bass. A beat whose
+ * harmony is none (nothing written yet, or a conflict) has no bass either; the drums play the bar wherever the
+ * bar holds a harmony at all, as a one-chord bar's do. 4/4 only, like the one-chord bar (MT1).
+ *
+ * Exported for testing; `barSchedule` itself is unchanged for every caller.
+ */
+export function positionedBacking(chartBar: ChartBar, lead: number, swing: boolean): BackingEvent[] {
+  if (!chartBar.segments.some((segment) => segment.symbol !== null || segment.conflict)) return [];
+  const drums = barSchedule({ pitchClasses: [], beatsPerBar: 4, swing });
+  const bassBeats = barSchedule({ pitchClasses: [0, 4, 7], beatsPerBar: 4, swing })
+    .filter((event) => event.kind === 'bass')
+    .map((event) => event.atBeat);
+  const bass: BackingEvent[] = [];
+  for (const beat of bassBeats) {
+    const place = beat - lead;
+    if (place < -EPSILON) continue;
+    const harmony = chordOf(chartBar.segments[segmentAt(chartBar, place)]);
+    if (!harmony) continue;
+    const own = barSchedule({ pitchClasses: harmony.pitchClasses, beatsPerBar: 4, swing }).find((event) => event.kind === 'bass' && event.atBeat === beat);
+    if (own) bass.push(own);
+  }
+  // Bass first at a shared beat, then sorted by beat (a stable sort), as `barSchedule` orders a bar.
+  return [...bass, ...drums].sort((a, b) => a.atBeat - b.atBeat);
+}
 
 /**
  * The bar and chorus a beat lands on.
@@ -145,7 +208,40 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   const helpStrip = createHelpStrip({ id: 'chart', entry: TOOL_HELP.chart, hideWhat: true });
   body.append(helpStrip.el, form, controls, stripHost, grid, status);
 
-  let bars: (ChordSymbol | null)[] = [];
+  /**
+   * The chart: one bar per measure of the score, in the score's order (PH2; the reviewer, `docs/review/responses/
+   * ph1-g6a-landing.md` §2 decision 3 and `mt1-g6b-pf1-landing.md` §1), each an ordered list of the harmonies
+   * written in it (`chartSegments`). The printed bar number is never the key: no bar is drawn past the last
+   * measure, and a pickup is bar 1.
+   */
+  let bars: ChartBar[] = [];
+  /** The current bar's segment sounding now: its mark on the grid, and what a note is judged against when the run is not going. */
+  let seg = 0;
+  /** The audio clock the run's events are placed on (`audioEngine.ensureStarted()`'s). */
+  let clock: { readonly currentTime: number } | null = null;
+  /**
+   * The current bar's positioned timeline (PH2), for a bar of several harmonies or a pickup:
+   *
+   * - `shift`: how far ahead of its click the bar's accompaniment runs. The beat callback comes a look-ahead
+   *   before the click, and the bar's first comp and its bass and drums are placed from that moment (as they
+   *   always were); every later change in the bar is placed the same distance ahead of its own beat, so the
+   *   bar's chords keep their written places relative to each other and to its first.
+   * - `lead`: quarter notes of the counted bar before its notated music: a pickup's notated length sounds at
+   *   the end of its counted bar, so it leads into bar 2's downbeat (`leadOf`).
+   * - `changes[i]`: segment i's start on the audio clock, once its beat has come round.
+   */
+  interface BarClock {
+    bar: number;
+    shift: number;
+    lead: number;
+    changes: (number | undefined)[];
+    timers: ReturnType<typeof setTimeout>[];
+  }
+  let barClock: BarClock | null = null;
+  /** Comp strikes placed ahead on the audio clock, each with its own stop, so a Stop, a hidden page or Comp off cancels them. */
+  let pendingComp: { at: number; stop: () => void }[] = [];
+  /** Refits the split bars when the grid's width changes (`fitSplitCells`). */
+  let gridObserver: ResizeObserver | null = null;
   /**
    * How each bar is counted, in its written metre (MT1; `score/metre.ts`): the click, the tracker and the comp
    * follow it, the tempo field counts bar 1's beat, and Bass + drums is offered only where every bar is 4/4.
@@ -193,19 +289,309 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   let compPiano: Piano | null = null;
   const held = new Set<number>();
   let disposed = false;
+  /** The piece's title, once found: what a refusal names. */
+  let title = 'This piece';
 
   // --- grid ---------------------------------------------------------------
 
   function drawGrid(): void {
     grid.replaceChildren();
-    bars.forEach((symbol, index) => {
-      const cell = el('div.chart-cell', {
-        'data-bar': index + 1,
-        'data-current': index === bar,
-        text: symbol?.text ?? '—',
-      });
-      grid.append(cell);
+    bars.forEach((chartBar, index) => {
+      const only = singleSegment(chartBar);
+      if (only) {
+        // One harmony from the bar's start: the cell it always was, its text and nothing inside.
+        grid.append(
+          el('div.chart-cell', {
+            'data-bar': index + 1,
+            'data-current': index === bar,
+            text: only.symbol?.text ?? '—',
+          }),
+        );
+        return;
+      }
+      grid.append(splitCell(chartBar, index));
     });
+    fitSplitCells();
+  }
+
+  /**
+   * A bar of several harmonies (PH2; the reviewer, `docs/review/responses/g6-ph-briefs-cb1.md` §3): one box per
+   * segment, in order, each as wide as its share of the bar (its duration over the bar's length), a thin line at
+   * each change. Each box holds its chord symbol; a conflict (two harmonies written at one place) holds every one
+   * of them, stacked, and the chart chooses none. `fitSplitCells` sizes the symbols to their boxes, or, where a
+   * box is too narrow for its symbol at a legible size, sets each symbol over the place its chord starts and
+   * shrinks the boxes to a rule that still shows how long each chord lasts.
+   */
+  function splitCell(chartBar: ChartBar, index: number): HTMLElement {
+    const boxes = el('div.chart-segs');
+    const line = el('div.chart-seq');
+    chartBar.segments.forEach((segment, i) => {
+      const box = el('div.chart-seg', {
+        'data-seg': i,
+        'data-start': segment.start,
+        'data-duration': segment.duration,
+        'data-carried': segment.carried,
+        'data-conflict': segment.conflict ? true : undefined,
+        'data-sounding': index === bar && i === seg,
+      });
+      box.style.flexGrow = String(segment.duration);
+      box.append(segmentLabel(segment, i, index === bar && i === seg));
+      boxes.append(box);
+    });
+    return el(
+      'div.chart-cell',
+      { 'data-bar': index + 1, 'data-current': index === bar, 'data-split': true, 'data-layout': 'fit' },
+      boxes,
+      line,
+    );
+  }
+
+  /** A segment's chord symbol, whole; for a conflict, each of them, stacked. */
+  function segmentLabel(segment: ChartSegment, i: number, sounding: boolean): HTMLElement {
+    const label = el('span.chart-seg-label', { 'data-seg': i, 'data-sounding': sounding, 'data-conflict': segment.conflict ? true : undefined });
+    for (const symbol of segment.conflict ?? [segment.symbol]) label.append(el('span.chart-chord', { text: symbol?.text ?? '—' }));
+    return label;
+  }
+
+  /**
+   * Sizes each split bar's symbols to their boxes (PH2): the cell's own size where every symbol fits its box,
+   * else a pixel smaller at a time, the whole bar at one size, down to `MIN_BOX_TEXT_PX`. A bar whose symbols do
+   * not fit their boxes even then has each symbol placed over its beat (`placeLabels`): no symbol is ever cut,
+   * shortened, wrapped or clipped. Measured, so it runs once the grid is laid out, again when the web font
+   * arrives, and again whenever the grid's width changes; where nothing is laid out (no width to measure) the
+   * bars keep the proportional boxes.
+   */
+  function fitSplitCells(): void {
+    const refit = (): void => {
+      if (disposed || grid.clientWidth === 0 || grid.hidden) return;
+      for (const cell of grid.querySelectorAll<HTMLElement>('.chart-cell[data-split="true"]')) {
+        if (!fitCell(cell)) {
+          tooDense(Number(cell.dataset.bar));
+          return;
+        }
+      }
+    };
+    if (typeof ResizeObserver !== 'undefined' && !gridObserver) {
+      let width = -1;
+      gridObserver = new ResizeObserver(() => {
+        if (grid.clientWidth === width) return;
+        width = grid.clientWidth;
+        refit();
+      });
+      gridObserver.observe(grid);
+      // The symbols' widths change when the web font arrives: measured again then.
+      if ('fonts' in document) void document.fonts.ready.then(refit);
+    }
+    refit();
+  }
+
+  /** Lays one split bar out; `false` where no layout can show where each of its chords starts. */
+  function fitCell(cell: HTMLElement): boolean {
+    const boxes = [...cell.querySelectorAll<HTMLElement>('.chart-seg')];
+    const labels = [...cell.querySelectorAll<HTMLElement>('.chart-seg-label')].sort((a, b) => Number(a.dataset.seg) - Number(b.dataset.seg));
+    const line = cell.querySelector<HTMLElement>('.chart-seq');
+    // One symbol in each box, at the cell's own size.
+    const toBoxes = (): void => {
+      cell.dataset.layout = 'fit';
+      cell.style.removeProperty('--chart-seg-size');
+      line?.style.removeProperty('height');
+      for (const leaders of cell.querySelectorAll('.chart-leaders')) leaders.remove();
+      labels.forEach((label, i) => {
+        label.style.removeProperty('left');
+        label.style.removeProperty('top');
+        boxes[i]?.append(label);
+      });
+    };
+    toBoxes();
+    const full = Number.parseFloat(getComputedStyle(cell).fontSize);
+    if (!Number.isFinite(full) || cell.clientWidth === 0 || !line) return true;
+    const boxesFit = (from: number, to: number): boolean => {
+      for (let size = from; size >= to; size -= 1) {
+        cell.style.setProperty('--chart-seg-size', `${String(size)}px`);
+        const fits = labels.every((label, i) => {
+          const box = boxes[i];
+          return !!box && label.scrollWidth <= box.clientWidth + 0.5 && label.offsetHeight <= box.clientHeight + 0.5;
+        });
+        if (fits) return true;
+      }
+      return false;
+    };
+    // Every tier keeps each chord's place (`PH2-position-preserving-fallback`): boxes at the cell's size down to
+    // 16px; symbols on stems on one or two lines; boxes at 15px down to the smallest; symbols on stems on more
+    // lines; and where none of them can be drawn, `false`.
+    if (boxesFit(Math.floor(full), MIN_BOX_TEXT_PX)) return true;
+    if (placeLabels(cell, boxes, labels, line, 'few')) return true;
+    toBoxes();
+    if (boxesFit(MIN_BOX_TEXT_PX - 1, MIN_SEGMENT_TEXT_PX)) return true;
+    return placeLabels(cell, boxes, labels, line, 'many');
+  }
+
+  /**
+   * Too dense for the boxes at a legible size (PH2; the reviewer's `PH2-position-preserving-fallback`,
+   * `docs/review/responses/ph2-look.md` §2: every layout keeps when each symbol begins). The boxes become a rule
+   * beneath, still in proportion, and each symbol has a leader, a hairline from its foot to the rule at the exact
+   * place its chord starts (`data-layout="placed"`): straight down where the symbol stands over its start, at a
+   * slant where the cell's edges or its neighbours put it to one side. The symbols take lines in turn from the
+   * top (first, second, ..., first again) where that works, else the first line that does, and no arrangement is
+   * accepted in which the symbols do not start left to right in the order their chords come, two symbols on a
+   * line touch, a leader passes through another symbol, or two leaders cross. `depth` 'few': one line down to 14px, then two down to
+   * 13px; 'many' (after the boxes' own last sizes, `fitCell`): three or more down to `MIN_SEGMENT_TEXT_PX`, a
+   * staircase of one symbol a line at most; the largest size within each line count. `false` where none can be
+   * drawn.
+   */
+  function placeLabels(cell: HTMLElement, boxes: HTMLElement[], labels: HTMLElement[], line: HTMLElement, depth: 'few' | 'many'): boolean {
+    cell.dataset.layout = 'placed';
+    for (const label of labels) line.append(label);
+    const length = boxes.reduce((sum, box) => sum + Number(box.dataset.duration), 0) || 1;
+    const inset = 6;
+    const inner = Math.max(1, line.clientWidth - 2 * inset);
+    /** Where each chord starts on the rule, in the line's own pixels (the rule shares its inset). */
+    const stems = labels.map((_, i) => inset + (inner * Number(boxes[i]?.dataset.start ?? 0)) / length);
+    // The verdict's ✓ or ✗ is drawn in the segment's block of the rule here, not after the symbol, so a symbol
+    // needs no room beyond its own width.
+    interface Placed {
+      label: HTMLElement;
+      left: number;
+      right: number;
+      row: number;
+      /** Where the leader leaves the symbol (the foot of its line) and where it meets the rule (the chord's start). */
+      ax: number;
+      ay: number;
+      sx: number;
+    }
+    const arrange = (lines: number, height: number, free: boolean): Placed[] | null => {
+      const ruleTop = lines * height + 4;
+      const widths = labels.map((label) => label.getBoundingClientRect().width);
+      // A conflict's stacked symbols make its line taller than a single symbol: each leader leaves its own foot.
+      const heights = labels.map((label) => label.getBoundingClientRect().height);
+      // A symbol wider than the cell cannot be drawn at this size.
+      if (widths.some((width) => width > inner + 0.5)) return null;
+      /**
+       * Where a symbol may stand on its line: beginning at its chord's start, or ending there, or as near it as
+       * the cell's edges allow; then at either edge of the cell, its leader running at a slant to the start. The
+       * leader drops straight down wherever the start lies under the symbol.
+       */
+      const candidates = (i: number): number[] => {
+        const width = widths[i] ?? 0;
+        const stem = stems[i] ?? inset;
+        const lo = inset;
+        const hi = inset + inner - width;
+        const fit = (x: number): number => Math.max(lo, Math.min(hi, x));
+        return [...new Set([fit(stem), fit(stem - width), lo, hi].map((x) => Math.round(x * 100) / 100))];
+      };
+      const footOf = (left: number, width: number, stem: number): number => Math.max(left, Math.min(left + width, stem));
+      /** The leader's x at height y, on its straight line from the symbol's foot to the rule. */
+      const xAt = (p: Placed, y: number): number => p.ax + ((p.sx - p.ax) * (y - p.ay)) / (ruleTop - p.ay);
+      const covers = (p: Placed, q: Placed): boolean => {
+        // Does p's leader pass through q's symbol? Only lines below p's own are crossed on the way down.
+        if (q.row <= p.row) return false;
+        const top = q.row * height;
+        const bottom = top + height;
+        const x1 = xAt(p, Math.max(top, p.ay));
+        const x2 = xAt(p, bottom);
+        return Math.max(x1, x2) > q.left - 2 && Math.min(x1, x2) < q.right + 2;
+      };
+      const leadersCross = (p: Placed, q: Placed): boolean => {
+        // Two leaders crossing make two places ambiguous: compared over the heights both span.
+        const top = Math.max(p.ay, q.ay);
+        if (top >= ruleTop) return false;
+        const d1 = xAt(p, top) - xAt(q, top);
+        const d2 = p.sx - q.sx;
+        return d1 * d2 < 0;
+      };
+      const placed: Placed[] = [];
+      let budget = 20_000;
+      const fits = (p: Placed): boolean =>
+        // Left to right is the order the chords come in, whatever line each is on: each symbol starts visibly to
+        // the right of every symbol before it, and so does its leader's foot.
+        placed.every((q) => q.left + 3 <= p.left && q.ax <= p.ax) &&
+        placed.every((q) => {
+          if (q.row === p.row && p.left < q.right + 3 && q.left < p.right + 3) return false;
+          return !covers(p, q) && !covers(q, p) && !leadersCross(p, q);
+        });
+      const place = (i: number): boolean => {
+        if (i === labels.length) return true;
+        if ((budget -= 1) < 0) return false;
+        const label = labels[i];
+        const width = widths[i] ?? 0;
+        const stem = stems[i] ?? inset;
+        if (!label) return false;
+        // In turn (first, second, ...) unless `free`, when any line will do.
+        const order = free ? [i % lines, ...Array.from({ length: lines }, (_, r) => r).filter((r) => r !== i % lines)] : [i % lines];
+        for (const row of order) {
+          for (const left of candidates(i)) {
+            const p: Placed = { label, left, right: left + width, row, ax: footOf(left, width, stem), ay: row * height + (heights[i] ?? height), sx: stem };
+            if (!fits(p)) continue;
+            placed.push(p);
+            if (place(i + 1)) return true;
+            placed.pop();
+          }
+        }
+        return false;
+      };
+      return place(0) ? placed : null;
+    };
+    // Each line count is tried with the lines taken strictly in turn first, at every size, and only then freely.
+    const tries: [number, number, boolean][] = [];
+    const sizes = (from: number, to: number): number[] => Array.from({ length: from - to + 1 }, (_, i) => from - i);
+    const counts = depth === 'few' ? [1, 2] : Array.from({ length: Math.max(0, labels.length - 2) }, (_, i) => i + 3);
+    for (const count of counts) {
+      const from = count === 1 ? PLACED_TEXT_PX : count === 2 ? PLACED_TEXT_PX : 14;
+      const to = count === 1 ? 14 : count === 2 ? 13 : MIN_SEGMENT_TEXT_PX;
+      for (const free of count === 1 ? [false] : [false, true]) for (const size of sizes(from, to)) tries.push([count, size, free]);
+    }
+    for (const [count, size, free] of tries) {
+      if (count > labels.length) continue;
+      cell.style.setProperty('--chart-seg-size', `${String(size)}px`);
+      const height = Math.ceil(Math.max(...labels.map((label) => label.getBoundingClientRect().height)));
+      const chosen = arrange(count, height, free);
+      if (!chosen) continue;
+      line.style.height = `${String(count * height)}px`;
+      // The leaders: one hairline per symbol, from its foot to the rule at the place its chord starts.
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.classList.add('chart-leaders');
+      svg.setAttribute('aria-hidden', 'true');
+      chosen.forEach(({ label, left, row, ax, ay, sx }, i) => {
+        label.style.left = `${String(left)}px`;
+        label.style.top = `${String(row * height)}px`;
+        const leader = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        leader.classList.add('chart-stem');
+        leader.setAttribute('data-seg', String(i));
+        leader.setAttribute('x1', String(ax));
+        leader.setAttribute('y1', String(ay));
+        leader.setAttribute('x2', String(sx));
+        leader.setAttribute('y2', String(count * height + 4));
+        svg.append(leader);
+      });
+      line.append(svg);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * A bar this screen cannot draw with each chord at its place (PH2, `PH2-position-preserving-fallback`): the chart
+   * fails closed for this piece at this width rather than showing chords whose places in the bar cannot be read.
+   * The reason is the bar itself, measured on this screen; no count of chords decides it. The way on is the
+   * Score screen, where the same music is written out.
+   */
+  function tooDense(barNumber: number): void {
+    if (disposed || grid.hidden) return;
+    if (running) stop();
+    deadEnd(
+      `${title} has more chord changes in bar ${String(barNumber)} than this screen is wide enough to show at their places in the bar.`,
+      'Open on the Score screen',
+      () => {
+        if (fromRung === undefined) router.navigateScore(itemId);
+        else router.navigateScore(itemId, { from: fromRung });
+      },
+      'chart-open-score',
+    );
+    body.querySelector('#chart-backing-note')?.remove();
+    strip?.destroy();
+    strip = null;
+    stripHost.replaceChildren();
+    section.dataset.refused = 'too-dense';
   }
 
   function drawForm(): void {
@@ -214,6 +600,15 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       if (cell instanceof HTMLElement) {
         cell.dataset.current = String(Number(cell.dataset.bar) === bar + 1);
       }
+    }
+    drawSegmentMarks();
+  }
+
+  /** The sounding segment's mark (PH2): on the current bar's segment `seg`, and on no other. */
+  function drawSegmentMarks(): void {
+    for (const node of grid.querySelectorAll<HTMLElement>('.chart-seg, .chart-seg-label')) {
+      const cell = node.closest<HTMLElement>('.chart-cell');
+      node.dataset.sounding = String(Number(cell?.dataset.bar) === bar + 1 && Number(node.dataset.seg) === seg);
     }
   }
 
@@ -225,10 +620,166 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     strip?.setState({ pressed: [...held] });
     const cell = grid.children[bar];
     if (!(cell instanceof HTMLElement)) return;
-    const score = chordMatch(bars[bar] ?? null, [...held]);
-    // Amber when what is played disagrees with the chart; nothing at all when
-    // no keys are down, because silence is not a mistake.
-    cell.dataset.match = held.size === 0 ? 'idle' : score >= MATCH_THRESHOLD ? 'yes' : 'no';
+    const chartBar = bars[bar];
+    const only = singleSegment(chartBar);
+    if (only) {
+      const score = chordMatch(only.symbol, [...held]);
+      // Amber when what is played disagrees with the chart; nothing at all when
+      // no keys are down, because silence is not a mistake.
+      cell.dataset.match = held.size === 0 ? 'idle' : score >= MATCH_THRESHOLD ? 'yes' : 'no';
+      return;
+    }
+    // Several harmonies (PH2): judged against the one sounding at this instant on the audio clock, and the
+    // verdict belongs to that segment. A conflict has none: the chart does not know which chord it is.
+    followClock();
+    const segment = chartBar?.segments[seg];
+    const verdict =
+      held.size === 0 || segment?.conflict ? 'idle' : chordMatch(segment?.symbol ?? null, [...held]) >= MATCH_THRESHOLD ? 'yes' : 'no';
+    for (const node of cell.querySelectorAll<HTMLElement>(`.chart-seg[data-seg="${String(seg)}"], .chart-seg-label[data-seg="${String(seg)}"]`)) {
+      node.dataset.match = verdict;
+    }
+    // The bar's own verdict is its sounding segment's, so "the sounding bar answers what is played" holds for
+    // every bar alike.
+    cell.dataset.match = verdict;
+  }
+
+  // --- the bar's positioned timeline (PH2) ---------------------------------------------------------------------
+
+  /** Quarter notes of bar `index`'s counted length before its notated music: a pickup's lead into bar 2. */
+  function leadOf(index: number): number {
+    const chartBar = bars[index];
+    if (index !== 0 || !chartBar || (chartBar.status !== 'pickup' && chartBar.status !== 'incomplete')) return 0;
+    return Math.max(0, countAt(index).barQuarters - chartBar.length);
+  }
+
+  /** A bar the old one-chord path cannot play: several harmonies, a conflict, or a pickup's notated length. */
+  function positioned(index: number): boolean {
+    return !singleSegment(bars[index]) || leadOf(index) > 0;
+  }
+
+  /** Seconds in a quarter note at the field's tempo (the field counts the chart's beat, MT1). */
+  function secondsPerQuarter(): number {
+    return 60 / bpm / timing.beatUnit;
+  }
+
+  /** A new bar: its first segment sounds, and the last bar's changes still to come are dropped with it. */
+  function beginBar(beat: MetronomeBeat): void {
+    clearChanges();
+    seg = 0;
+    const now = clock?.currentTime ?? beat.timeSec;
+    barClock = { bar, shift: Math.max(0, beat.timeSec - now), lead: leadOf(bar), changes: [now], timers: [] };
+  }
+
+  function clearChanges(): void {
+    for (const timer of barClock?.timers ?? []) clearTimeout(timer);
+    barClock = null;
+  }
+
+  /** Cancels every comp strike placed ahead that has not sounded yet. */
+  function cancelPendingComp(): void {
+    const now = clock?.currentTime ?? 0;
+    for (const strike of pendingComp) if (strike.at > now) strike.stop();
+    pendingComp = [];
+  }
+
+  /**
+   * At each beat of a positioned bar, the changes that fall inside it (PH2): each one's start on the audio clock
+   * (the beat's own time, less the bar's `shift`, plus its distance past the beat at the tempo the beat was
+   * counted at, so a tempo changed mid-bar places what follows by the new tempo), a timer for its mark and its
+   * re-judgement, and, with Comp on, its strike. A change whose beat never came (a stalled timer dropped it) is
+   * marked when the next beat comes, and not struck late. A change at or past the counted bar's end (an overfull
+   * bar, longer than its time signature) is never reached.
+   */
+  function scheduleBeat(beat: MetronomeBeat): void {
+    const timeline = barClock;
+    const chartBar = bars[bar];
+    if (!timeline || !chartBar || suspended || !running) return;
+    const count = countAt(bar);
+    const from = (beat.beatInBar - 1) * count.beatQuarters;
+    const to = Math.min(from + count.beatQuarters, count.barQuarters);
+    const perQuarter = secondsPerQuarter();
+    const now = clock?.currentTime ?? beat.timeSec;
+    chartBar.segments.forEach((segment, i) => {
+      const at = timeline.lead + segment.start;
+      // A later beat's, or past the counted bar.
+      if (at >= to - EPSILON) return;
+      if (i === 0) {
+        // Its mark came with the bar, and so did its strike, except a pickup's: struck on the beat it falls in.
+        if (timeline.lead > 0 && at >= from - EPSILON && comping) strike(segment, beat.timeSec - timeline.shift + (at - from) * perQuarter, perQuarter);
+        return;
+      }
+      if (timeline.changes[i] !== undefined) return;
+      const late = at < from - EPSILON;
+      const t = late ? now : beat.timeSec - timeline.shift + (at - from) * perQuarter;
+      timeline.changes[i] = t;
+      armChange(timeline, t);
+      if (comping && !late) strike(segment, t, perQuarter);
+    });
+  }
+
+  /** The bar's first segment, struck as its bar begins (or where its pickup begins), when Comp is on. */
+  function compFirst(): void {
+    const timeline = barClock;
+    const segment = bars[bar]?.segments[0];
+    if (!timeline || !segment || timeline.lead > 0) return;
+    strike(segment, timeline.changes[0] ?? 0, secondsPerQuarter());
+  }
+
+  /** At `t` the next segment sounds: its mark moves, and what is held is judged against it. */
+  function armChange(timeline: BarClock, t: number): void {
+    const fire = (): void => {
+      if (barClock !== timeline || !running || suspended) return;
+      const now = clock?.currentTime ?? t;
+      // A timer can wake a little before the audio clock gets there: wait the rest.
+      if (now + EPSILON < t) {
+        timeline.timers.push(setTimeout(fire, Math.max(1, (t - now) * 1000)));
+        return;
+      }
+      const before = seg;
+      followClock();
+      if (seg !== before) markMatch();
+    };
+    timeline.timers.push(setTimeout(fire, Math.max(0, (t - (clock?.currentTime ?? t)) * 1000)));
+  }
+
+  /** Moves the mark to the segment sounding now on the audio clock, if the clock has passed a change. */
+  function followClock(): void {
+    const timeline = barClock;
+    const now = clock?.currentTime;
+    if (!running || suspended || !timeline || timeline.bar !== bar || now === undefined) return;
+    let next = seg;
+    timeline.changes.forEach((t, i) => {
+      if (t !== undefined && t <= now + EPSILON && i > next) next = i;
+    });
+    if (next !== seg) {
+      seg = next;
+      drawSegmentMarks();
+    }
+  }
+
+  /**
+   * A segment's chord on the piano at `t` (PH2): the comp's block voicing, held three quarters of the segment so
+   * it ends before the next change (a one-chord bar holds three quarters of its bar, MT1). None for a segment
+   * with no chord to strike. At or before now it sounds at once, as the one-chord comp does; later it is placed
+   * on the audio clock with its own stop.
+   */
+  function strike(segment: ChartSegment, t: number, perQuarter: number): void {
+    const symbol = chordOf(segment);
+    if (!symbol) return;
+    const midis = symbol.pitchClasses.map((pitchClass) => 48 + pitchClass);
+    const hold = 0.75 * segment.duration * perQuarter;
+    const seq = resumeSeq;
+    void getPiano().then((piano) => {
+      compPiano = piano;
+      if (disposed || suspended || !running || seq !== resumeSeq || !comping) return;
+      const now = clock?.currentTime ?? t;
+      if (t <= now + EPSILON) {
+        piano.playChord(midis, hold);
+        return;
+      }
+      pendingComp = pendingComp.filter((pending) => pending.at > now - 1);
+      for (const midi of midis) pendingComp.push({ at: t, stop: piano.start({ midi, velocity: 90, timeSec: t, durationSec: hold }) });
+    });
   }
 
   // --- transport ----------------------------------------------------------
@@ -240,14 +791,19 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       barStarted = true;
       bar = nextBar;
       chorus = nextChorus;
+      beginBar(beat);
       drawForm();
       markMatch();
       // The two are independent (CB1): the comp voices the chord on the piano,
       // the bass and drums follow the chart's own bar, so a learner can comp
       // over the app's rhythm section, or have it without the comp.
-      if (comping) compBar();
-      if (backing) scheduleBacking(bars[bar]?.pitchClasses);
+      if (comping) {
+        if (positioned(bar)) compFirst();
+        else compBar();
+      }
+      if (backing) scheduleBacking();
     }
+    if (positioned(bar)) scheduleBeat(beat);
   }
 
   /** Bar `index`'s count (0-based, in the chart's order); today's four quarters past the end. */
@@ -266,8 +822,9 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     return { beats: count.beats, beatScale: count.beatQuarters / timing.beatUnit };
   }
 
+  /** A one-chord bar's comp, exactly as before PH2. */
   function compBar(): void {
-    const symbol = bars[bar];
+    const symbol = singleSegment(bars[bar])?.symbol;
     if (!symbol) return;
     // A plain block voicing in the middle of the keyboard: enough to hear the
     // harmony, quiet enough to play over.
@@ -289,22 +846,34 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
    * against it — which on a backing track is the one fault nobody can play
    * through.
    */
-  function scheduleBacking(pitchClasses: readonly number[] | undefined): void {
+  function scheduleBacking(): void {
     const context = audioEngine.contextOrNull;
     // 4/4 only (MT1): `barSchedule`'s pattern is the one groove with a contract, and it is 4/4's.
     if (!timing.backingOffered) return;
-    if (!pitchClasses || !backing || !kit || !context) return;
+    const chartBar = bars[bar];
+    if (!chartBar || !backing || !kit || !context) return;
     const secondsPerBeat = 60 / bpm;
     // A hair ahead, so the first event of the bar is scheduled rather than
     // being already in the past by the time this runs.
     const barStart = context.currentTime + 0.02;
-    for (const event of barSchedule({ pitchClasses, beatsPerBar: 4, swing })) {
+    // One chord from the bar's start: the bar it always was. Several (PH2): each bass note takes the harmony
+    // sounding at its beat, the drums unchanged.
+    const only = positioned(bar) ? null : singleSegment(chartBar);
+    const pitchClasses = only?.symbol?.pitchClasses;
+    if (only && !pitchClasses) return;
+    const events = pitchClasses ? barSchedule({ pitchClasses, beatsPerBar: 4, swing }) : positionedBacking(chartBar, leadOf(bar), swing);
+    for (const event of events) {
       kit.play(event, barStart + event.atBeat * secondsPerBeat);
     }
   }
 
   async function start(): Promise<void> {
     const context = await audioEngine.ensureStarted();
+    clock = context;
+    // A new run: nothing of the last one's bar is still to come.
+    cancelPendingComp();
+    clearChanges();
+    seg = 0;
     metronome ??= new Metronome(context, {
       ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
     });
@@ -352,6 +921,9 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     metronome?.stop();
     kit?.dispose();
     kit = null;
+    // The changes still to come in this bar (PH2): not struck, not marked. The bar restarts from its first on return.
+    cancelPendingComp();
+    clearChanges();
     compPiano?.stop();
   }
 
@@ -378,6 +950,9 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   function stop(): void {
     suspended = false;
     resumeSeq += 1;
+    // A change placed ahead in the bar (PH2) is not struck after Stop, and its mark does not move.
+    cancelPendingComp();
+    clearChanges();
     metronome?.stop();
     // Scheduled drum hits outlive the transport otherwise: everything is
     // queued a bar ahead on the audio clock, so leaving the screen with the
@@ -422,6 +997,8 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
     onClick: () => {
       comping = !comping;
       compChip.setAttribute('aria-pressed', String(comping));
+      // Off: a chord placed ahead in this bar (PH2) is not struck after all.
+      if (!comping) cancelPendingComp();
     },
   });
 
@@ -614,6 +1191,7 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
         return;
       }
       (header.querySelector('h1') as HTMLElement).textContent = item.title;
+      title = item.title;
 
       let xml: string;
       if (item.imported) {
@@ -635,10 +1213,10 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
       }
 
       const { symbols, measures } = readHarmony(xml);
-      const measureCount = new Set([...xml.matchAll(/<measure\b[^>]*\bnumber="([^"]+)"/g)].map((m) => m[1])).size;
-      bars = chartBars(symbols, Math.max(measureCount, symbols.length));
-      // Each bar's count in its written metre (MT1), read from the measure its chord came from.
-      timing = chartTiming(chartBarCounts(measures, bars.length));
+      // One bar per measure, in the score's order, each its segments (PH2), and each counted in the time signature
+      // in force over that measure (MT1). The printed number keys nothing: MT1's lookup by it is gone.
+      bars = chartSegments(symbols, measures).bars;
+      timing = chartTiming(measures.map((measure) => countOf(measure.signature)));
       bpmInput.setAttribute('aria-label', timing.tempoName);
       if (symbols.length === 0) {
         // It used to say the screen could not work and then draw a
@@ -671,6 +1249,9 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
         bpmInput.value = String(bpm);
       }
       drawGrid();
+      // Laid out at once where the screen is already on the page: a bar that cannot show its chords' places has
+      // refused the chart, and a refused chart offers no transport (`tooDense`).
+      if (section.dataset.refused) return;
       drawForm();
       showTransport();
     } catch (cause) {
@@ -693,6 +1274,7 @@ export function ChordChartScreen(router: Router, itemId: string): HTMLElement {
   onScreenDispose(section, () => {
     disposed = true;
     if (running) stop();
+    gridObserver?.disconnect();
     metronome?.dispose();
     stopMidi();
     stopKeys();

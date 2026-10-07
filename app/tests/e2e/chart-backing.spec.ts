@@ -36,6 +36,11 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 const ITEM = 'song.jazz.kenny-dorham-blue-bossa.pdmx';
+/**
+ * A chart with one chord symbol in every bar, 4/4 throughout, no pickup, and as many source measures as the old
+ * grid drew bars (`docs/prompts/runs/PH2/charts.txt`): PH2's one-chord differential runs the four cases on it.
+ */
+const ONE_CHORD = 'exercise.blues.twelve-bar-shuffle.c';
 
 interface Probe {
   bass: number;
@@ -54,6 +59,7 @@ interface Probe {
 interface Counts extends Probe {
   piano: number;
   chips: { comp: string | null; backing: string | null };
+  grid: string;
 }
 
 test.beforeEach(async ({ page }) => {
@@ -110,6 +116,9 @@ test.beforeEach(async ({ page }) => {
         probe.clicks += 1;
         if (accent) probe.accents += 1;
         probe.starts.push([accent ? 'accent' : 'click', when ?? 0]);
+      } else {
+        // Neither a drum nor the click (PH2's extension): a piano sample, with its audio-clock time.
+        probe.starts.push(['piano', when ?? 0]);
       }
       return srcStart.call(this, when, offset, duration);
     };
@@ -124,12 +133,18 @@ async function setChip(page: Page, id: string, wanted: boolean): Promise<void> {
   await expect(chip).toHaveAttribute('aria-pressed', String(wanted));
 }
 
-async function run(page: Page, label: string, comp: boolean, backing: boolean): Promise<Counts> {
+async function run(
+  page: Page,
+  label: string,
+  comp: boolean,
+  backing: boolean,
+  { item = ITEM, ready = /Dmi7b5/, stopAt = 'Bar 5 of 32' }: { item?: string; ready?: RegExp; stopAt?: string } = {},
+): Promise<Counts> {
   // A blank page first: a second hash route on the same document would keep
   // the first run's counters and its screen.
   await page.goto('about:blank');
-  await page.goto(`/#/chart/${ITEM}`);
-  await expect(page.locator('.chart-cell[data-bar="5"]')).toHaveText(/Dmi7b5/, { timeout: 20_000 });
+  await page.goto(`/#/chart/${item}`);
+  await expect(page.locator('.chart-cell[data-bar="5"]')).toHaveText(ready, { timeout: 20_000 });
   const bpm = page.locator('#chart-bpm');
   await bpm.fill('240');
   await bpm.dispatchEvent('change');
@@ -138,7 +153,7 @@ async function run(page: Page, label: string, comp: boolean, backing: boolean): 
   await setChip(page, '#chart-comp', comp);
   await page.locator('#chart-start').click();
   // Bars 1-4 sound in full; the run is stopped as bar 5 begins.
-  await expect(page.locator('#chart-form')).toContainText('Bar 5 of 32', { timeout: 30_000 });
+  await expect(page.locator('#chart-form')).toContainText(stopAt, { timeout: 60_000 });
   await page.locator('#chart-stop').click();
   await page.waitForTimeout(300);
   const read = await page.evaluate(() => ({
@@ -148,8 +163,10 @@ async function run(page: Page, label: string, comp: boolean, backing: boolean): 
       comp: document.querySelector('#chart-comp')?.getAttribute('aria-pressed') ?? null,
       backing: document.querySelector('#chart-backing')?.getAttribute('aria-pressed') ?? null,
     },
+    // The grid as drawn (PH2's differential compares it before and after; the current mark moves with the run).
+    grid: document.querySelector('#chart-grid')?.outerHTML.replace(/ data-current="(true|false)"/g, '') ?? '',
   }));
-  const counts: Counts = { ...read.probe, piano: read.piano, chips: read.chips };
+  const counts: Counts = { ...read.probe, piano: read.piano, chips: read.chips, grid: read.grid };
   // Only when asked: the before-and-after differential of CB1 compares these.
   const out = process.env.CB1_OUT;
   if (out) {
@@ -193,5 +210,44 @@ test.describe('Blue Bossa chart: Comp and Bass + drums are independent', () => {
     const d = await run(page, 'D both off', false, false);
     expect(d.piano, 'the piano sounded with Comp off').toBe(0);
     expect(d.bass + d.kick + d.snare + d.hat, 'the rhythm section played with Bass + drums off').toBe(0);
+  });
+});
+
+/**
+ * PH2's one-chord differential (brief test 6): the same four cases on a chart with one chord in every bar. The
+ * counts, the start times and the grid are written to CB1_OUT and compared before and after PH2 outside the spec
+ * (`docs/prompts/runs/PH2/`); here each case keeps CB1's own claim.
+ */
+test.describe('a chart with one chord in every bar: the four cases (PH2 differential)', () => {
+  const one = { item: ONE_CHORD, ready: /\S/, stopAt: 'Bar 5 of 12' };
+  test('A to D on the twelve-bar shuffle in C', async ({ page }) => {
+    test.setTimeout(120_000);
+    const a = await run(page, 'one-chord A', true, true, one);
+    const b = await run(page, 'one-chord B', false, true, one);
+    const c = await run(page, 'one-chord C', true, false, one);
+    const d = await run(page, 'one-chord D', false, false, one);
+    expect(a.piano).toBeGreaterThan(0);
+    expect(rhythmSection(b)).toEqual(rhythmSection(a));
+    expect(b.piano).toBe(0);
+    expect(c.bass + c.kick + c.snare + c.hat).toBe(0);
+    expect(c.piano).toBeGreaterThan(0);
+    expect(d.piano + d.bass + d.kick + d.snare + d.hat).toBe(0);
+    // One chord in every bar: no bar is drawn split.
+    expect(a.grid).not.toContain('data-split');
+  });
+});
+
+/**
+ * The bass follows the harmony sounding at its beat (PH2, brief test 4): Blue Bossa bar 16 is Dmi7b5 for two beats
+ * and G7 for two (`docs/pending-review.md` Entry 266). The bass plays two notes a bar, beat 1 and beat 3, so bar
+ * 16's are the 31st and 32nd; beat 3's belongs to G7 (its fifth, D: 73 Hz) and not to Dmi7b5 (A♭: 104 Hz).
+ * Every other bar's bass is the bar's one chord, as before. Nothing is heard: these are scheduled frequencies.
+ */
+test.describe('Blue Bossa bar 16: the bass on beat 3 is G7’s', () => {
+  test('E: Bass + drums on, Comp off, run to bar 17', async ({ page }) => {
+    test.setTimeout(120_000);
+    const e = await run(page, 'E backing on, to bar 17', false, true, { stopAt: 'Bar 17 of 32' });
+    expect(e.bassHz.length, 'sixteen bars of bass were not scheduled').toBeGreaterThanOrEqual(32);
+    expect(e.bassHz.slice(30, 32), 'bar 16: D for Dmi7b5 on beat 1, D for G7 on beat 3').toEqual([73, 73]);
   });
 });

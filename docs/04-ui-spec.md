@@ -1100,8 +1100,9 @@ dead-end branch still lifts it above the one control it is explaining.
 a bar whatever its score wrote, so on a waltz the highlighted bar drifted a beat a bar from the music.
 Now each bar is counted by the app's one reading of a bar's beat (`score/metre.ts`, the demand
 detectors' L120b rule; music21 agrees on every metre in every bundled chart,
-`docs/prompts/runs/MT1/witness.txt`), from the time signature in force over the measure the bar's
-chord came from (`ChartMeasure.signature`, keyed by the source measure):
+`docs/prompts/runs/MT1/witness.txt`), from the time signature in force over the bar's own measure
+(`ChartMeasure.signature`, keyed by the source measure; since PH2 the chart's bars are the score's
+measures, so the printed-number lookup MT1 used until then is gone):
 
 - **The click and the tracker** count the felt beat: 2/4 two quarters, 3/4 three, 4/4 four, 5/4 five
   (equal, no 3+2 or 2+3 invented), 6/8 two dotted quarters, 12/8 four, 2/2 two halves; a bar with no
@@ -1120,7 +1121,85 @@ chord came from (`ChartMeasure.signature`, keyed by the source measure):
   directly under the row: *Bass + drums plays only in 4/4, and this chart is in 6/8. Count off for the
   click and turn on Comp for the chords: both follow the 6/8.* (a chart that changes metre: *…this
   chart has bars in 3/4. … both follow each bar's time signature.*). 4/4 charts are unchanged.
-- **Pickups** still sound a full bar, as every bar did before; PH2 takes the notated pickup length.
+- **Pickups** are counted as a full bar, and since PH2 their music sounds its notated length at the
+  end of it (below).
+
+**More than one chord in a bar** (PH2, 2026-10-07; the reviewer's rulings,
+`docs/review/responses/g6-ph-briefs-cb1.md` §3, `ph1-g6a-landing.md` §2 and §4,
+`mt1-g6b-pf1-landing.md` §1). Until then the chart kept each bar's first chord symbol and dropped the
+rest, so Blue Bossa's bar-16 G7 and Insensatez's bar-22 E7 were never shown, sounded or judged. The
+chart now reads `chartSegments` (`score/harmony.ts`): one bar per measure of the score, in the score's
+order (no bar past the last measure; a pickup is bar 1; the printed number is never the key), each an
+ordered list of the harmonies written in it.
+
+- **The grid** draws a bar of one chord, written or carried from the bar before, exactly as before:
+  one cell, its symbol. A bar of several draws every one, each in a box as wide as its share of the
+  bar (its duration over the bar's length), a hairline at each change. **Every look keeps when each
+  chord begins** (the reviewer's `PH2-position-preserving-fallback`, `responses/ph2-look.md` §2). The
+  symbols keep the cell's size where they fit their boxes, stepping down a pixel at a time to 16px.
+  Below that the boxes become a rule beneath the symbols, still in proportion, and each symbol has a
+  leader, a hairline from its foot to the rule at the exact place its chord starts: straight down
+  where the symbol stands over its start (as a lead sheet writes a chord over its beat), at a slant
+  where the cell's edge or a neighbour puts it to one side. The symbols start left to right in the
+  order their chords come, on one line (16px to 14px) or alternating between two (to 13px); then the
+  boxes again at 15px to 12px; then three or more lines, a staircase at most (14px to 12px). No
+  arrangement is drawn in which two symbols touch, a leader passes through another symbol, or two
+  leaders cross. No symbol is cut, shortened, wrapped or clipped; the row keeps its four bars (eight
+  from 700px), a dense bar's row growing taller instead. The verdict's ✓ or ✗ sits in the judged
+  segment's block of the rule there, so a symbol needs no room past its own width. Measured on the
+  device (the web font included), again whenever the grid's width changes.
+- **A chart this screen cannot draw that way refuses** rather than show chords whose places cannot be
+  read. Where any bar has no such arrangement at the smallest size, the chart becomes the dead end:
+  *‹Title› has more chord changes in bar ‹n› than this screen is wide enough to show at their places
+  in the bar.* and the one control, *Open on the Score screen* (the same control the no-chords dead
+  end offers, carrying the rung on). The reason is the bar itself, measured at this width; no count of
+  chords decides it, and a wider screen can draw the same chart. The Chart doors (a rung's song row,
+  the Score screen's `⋯` row) still open such a chart; the screen refuses.
+- **A conflict** (two different harmonies written at one place in one measure, which the model
+  reports and never resolves by part order) shows every symbol, stacked, in a dashed box. While it
+  sounds the Comp strikes nothing, the bass plays no root, and the live cell gives no verdict; the
+  click and the drums go on. A bar with no symbol after it carries the conflict, as it carries any
+  harmony.
+- **The sounding segment** is marked inside the current bar (a tint in its box; its symbol in the
+  accent colour and its block of the rule filled where the boxes are a rule). It moves at the instant
+  of the change on the audio clock, not at the next beat callback.
+- **The Comp** strikes each segment's chord at its written place on the audio clock (391 symbols in
+  the corpus stand between beats), held three quarters of the segment so it ends before the next
+  change; a one-chord bar's comp is exactly as before. Each beat places the changes inside it, so a
+  tempo changed mid-bar places what follows by the new tempo. Stop, a hidden page and Comp turned off
+  cancel a strike still to come; Comp turned on mid-bar strikes the changes still to come.
+- **Bass + drums** (4/4 only, MT1): each bass note takes the harmony sounding at its beat, so in
+  Blue Bossa's bar 16 the beat-3 bass is G7's fifth and not Dø7's; the drums and every one-chord bar
+  are exactly as before.
+- **The live cell** judges a note against the harmony sounding at the instant it is struck, and
+  re-judges what is held at each change, as a new bar always did. The verdict (✓, ✗) belongs to the
+  segment it was judged against; the bar's own `data-match` is its sounding segment's.
+- **A pickup** sounds its notated length at the end of its counted bar, leading into bar 2's
+  downbeat: its chord is struck where its music starts, and the bass has no harmony before it. The
+  count-in and the click are MT1's, unchanged. (Counting the pickup as a short bar on the metronome
+  would put the accent on its first note and count in a one-beat bar; it needs the metronome changed,
+  which this did not.)
+
+The three looks (R7), from the pictures in `docs/prompts/runs/PH2/pictures/` and the census of every
+split or conflicted bar of every bundled chart that has one, 128 charts, at each of the eight widths,
+each drawn bar's positions checked in the rendered geometry (`docs/prompts/runs/PH2/legibility.txt`;
+no bar at any width fails the check):
+
+- **Phone upright** (342 and 360 wide, four bars a row, a cell about 73px): the hard case. Blue
+  Bossa's bar 16 and Insensatez's bar 22 set `Dmi7b5` and `Bmi7b5` over the bar's start and `G7` and
+  `E7` on a second line over its middle, at 16px, each with its leader. At 342, 120 charts are drawn
+  (587 bars in boxes, 182 placed on one line, 216 on two, 29 on three or more) and 8 refuse: Aunt
+  Hagar's Blues (bar 25), Czerny's Op. 299 No. 8, 9 and 10, Por Toda Minha Vida (bar 9), Rose Room (bar
+  16), The Memphis Blues (bar 4) and The Entertainer (bar 88). At 360, 7 refuse (No. 8 is drawn).
+- **Phone sideways** (568 × 320, four a row with wide cells; 780 × 360, eight a row with narrow ones):
+  568 is the roomiest phone look, only Rose Room refusing; 780 matches the upright 342 (the same 8
+  refuse). The short height is not changed by this (transport, keys and grid keep their order).
+- **Tablet** (1024 × 768, 768 × 1024, 1366 × 1024, 1024 × 1366; eight a row): boxes at the cell's size
+  wherever they fit (956 bars at 1024 × 768), leaders where they do not. Nothing refuses at 1366 ×
+  1024 or 1024 × 1366; Rose Room at 1024 × 768; Czerny No. 10, Por Toda Minha Vida and Rose Room at
+  768 × 1024.
+
+Nothing in any look is heard.
 
 ### 3d. Ways to play this — a rung's tools, as controls (added 2026-09-18)
 

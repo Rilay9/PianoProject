@@ -421,10 +421,30 @@ export function chartSegments(symbols: readonly ChordSymbol[], measures: readonl
 }
 
 /**
+ * Which of a bar's segments sounds `position` quarter notes into it (PH2): the last one starting at or before the
+ * place, so the instant of a change belongs to the new harmony. Before 0 it is the first, at or past the bar's
+ * end the last: a place outside the bar never invents a segment. The index into `bar.segments`.
+ *
+ * What the Chord chart asks at an instant: which chord its comp strikes, which root its bass takes, and which
+ * segment a note struck now is judged against (the reviewer, `docs/review/responses/g6-ph-briefs-cb1.md` §3).
+ */
+export function segmentAt(bar: Pick<ChartBar, 'segments'>, position: number): number {
+  let index = 0;
+  bar.segments.forEach((segment, i) => {
+    if (segment.start <= position + EPSILON) index = i;
+  });
+  return index;
+}
+
+/**
  * One entry per bar, so the chart is a grid and not a ragged list.
  *
  * A bar with no `<harmony>` of its own repeats the last one — which is what
  * the printed page means by leaving it blank.
+ *
+ * **No app consumer since PH2**: the Chord chart draws `chartSegments`' bars, one per source measure. Kept as
+ * the legacy reading the one-chord differentials compare against (`positionedHarmony.test.ts` test 6,
+ * `chartMetre.test.ts`'s bundled-chart census); a new consumer reads `chartSegments`.
  */
 export function chartBars(symbols: ChordSymbol[], measureCount: number): (ChordSymbol | null)[] {
   const bars: (ChordSymbol | null)[] = [];
