@@ -182,6 +182,50 @@ class TestBothBuildsAgree(unittest.TestCase):
         self.assertEqual(modern["levelSource"], "judged")
 
 
+class TestTheConvertersTempoIsTagged(unittest.TestCase):
+    """
+    A file with no tempo of its own plays the converter's default; the row says so (tempo provenance, 2026-10-07).
+
+    "No tempo of its own" sends the file through `convert`, which writes `DEFAULT_TEMPO_BPM` as a `<sound tempo>`
+    and says so (`added_tempo`). This step read the default back from the written file as the row's `tempoBpm`
+    and dropped the converter's answer, so six rows played 96 untagged and the build called it the edition's.
+    The discriminating pair: the same file with and without a tempo of its own.
+    """
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        library = self.root / "library"
+        mxl(library / "bare.mxl")
+        stated = library / "stated.mxl"
+        stated.parent.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(stated, "w") as archive:
+            archive.writestr("META-INF/container.xml",
+                             '<container><rootfiles><rootfile full-path="score.xml"/></rootfiles></container>')
+            archive.writestr("score.xml", MUSICXML.replace(
+                "      <note>", '      <direction><direction-type><metronome><beat-unit>quarter</beat-unit>'
+                               '<per-minute>72</per-minute></metronome></direction-type><sound tempo="72"/></direction>\n'
+                               "      <note>", 1))
+        table = {"items": {"bare.mxl": spec("song.classical.bare"), "stated.mxl": spec("song.classical.stated")}}
+        table_path = self.root / "musetrainer.json"
+        table_path.write_text(json.dumps(table), encoding="utf-8")
+        self._saved = (import_musetrainer.TABLE_PATH, import_musetrainer.LIBRARY_DIR)
+        import_musetrainer.TABLE_PATH, import_musetrainer.LIBRARY_DIR = table_path, library
+
+    def tearDown(self) -> None:
+        import_musetrainer.TABLE_PATH, import_musetrainer.LIBRARY_DIR = self._saved
+        self.tmp.cleanup()
+
+    def test_only_the_file_with_no_tempo_of_its_own_is_tagged(self) -> None:
+        catalog = self.root / "catalog.json"
+        import_musetrainer.import_library(self.root / "out", catalog, personal=True)
+        rows = {item["id"]: item for item in json.loads(catalog.read_text(encoding="utf-8"))}
+        self.assertIn("tempo-defaulted", rows["song.classical.bare"]["tags"])
+        self.assertEqual(rows["song.classical.bare"]["tempoBpm"], 96.0, "the default the file plays")
+        self.assertNotIn("tempo-defaulted", rows["song.classical.stated"]["tags"])
+        self.assertEqual(rows["song.classical.stated"]["tempoBpm"], 72.0)
+
+
 def not_fetched(filename: str) -> str:
     """Q82: the reason the step gives for a file the library lacks, as `validate.UNFETCHED_REASONS` reads it."""
     return f"{filename} was not fetched: the MuseTrainer library is not on this build"

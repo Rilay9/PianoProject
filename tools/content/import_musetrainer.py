@@ -36,6 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import (  # noqa: E402
     CONTENT_SRC,
     IMPORTED_DIR,
+    TEMPO_DEFAULTED_TAG,
     SourceBlock,
     catalog_item,
     ledger_fetched_at,
@@ -296,7 +297,7 @@ def import_library(
             from convert import cached_convert  # imported late: music21 is slow to load
 
             try:
-                cached_convert(
+                result = cached_convert(
                     source_path,
                     dest,
                     title=spec["title"],
@@ -314,6 +315,11 @@ def import_library(
             else:
                 report.normalised.append((filename, "; ".join(reasons)))
                 facts = measure_facts(read_main_xml(dest))
+                # "no tempo of its own": the converter wrote its default as a `<sound tempo>`, and `facts` read it
+                # back as the row's tempo. The converter's own answer says whose tempo it is (tempo provenance,
+                # 2026-10-07: six rows played 96 labelled "authored via the edition").
+                if result.added_tempo:
+                    tags.append(TEMPO_DEFAULTED_TAG)
         else:
             shutil.copy2(source_path, dest)
             facts = measure_facts(xml)

@@ -30,6 +30,10 @@ This module owns the table's reading and the gates:
   a defect. A study's pedagogical gate adds one rule of its own, read on the written notes:
   a bar repeated exactly beyond the grammar's restatement (`repetition_faults`).
 
+It also holds what each row's `key` parameter means (`parameters.key`: a tonic, a starting note or a
+chord root, `KEY_MEANINGS`), refuses a recipe whose `key` its row gives no meaning (`stamp`), and reads a
+written file against the declared meaning (`key_faults`, with its own MusicXML reader; 2026-10-07).
+
 Nothing here decides a demand. A demand has one definition and it is the app's
 (`app/src/demands/detect.ts`, `docs/03` "A demand has one definition").
 
@@ -229,6 +233,7 @@ def stamp(entry: dict, family: str) -> dict:
     """Writes the contract's facts onto a catalog row: target skills, role, identity."""
     row = contract(family)
     recipe = recipe_of(entry)
+    key_meaning(row, recipe)  # raises for a `key` the row gives no meaning (2026-10-07)
     skills = target_skills(row, recipe)
     if skills:
         entry["targetSkills"] = skills
@@ -598,3 +603,179 @@ def written_repetition_faults(row: dict, score, entry: dict) -> list[str]:
     bars = [" ".join(f"{n.midi}:{n.duration:g}" for n in bar if not n.chord) for bar in ME.lines_of(score, 0)]
     restated = set(((entry.get("drill") or {}).get("study") or {}).get("restated") or [])
     return repetition_faults(bars, restated, rule["maxUndeclaredExactRepeats"])
+
+
+# --------------------------------------------------------------------------------------
+# what a recipe's `key` means, and the written file against it (2026-10-07)
+# --------------------------------------------------------------------------------------
+
+#: The meanings a family's `key` parameter can have (`parameters.key.means` on its row). The proving run
+#: (docs/classifier/proving/2026-10-07) read `key` as a tonic on every item and found 100 of 1,134 files
+#: disagreeing: the chromatic scale and the seventh-chord families use it for a starting note and a chord
+#: root, written with no key signature. Each row now says which, and `key_faults` holds the file to it.
+KEY_MEANINGS = {
+    "tonic": "the tonic of the file's key signature, in the mode the row's `mode` rules give for the recipe",
+    "starting-note": "the pitch class of the first note that sounds (every note struck at that instant)",
+    "chord-root": "a root of the first chord, read by pitch class: the first instant three or more pitch "
+                  "classes are struck together, or, broken, the pitch classes struck from the first note up to "
+                  "the first one heard again; a root is a pitch class on which those pitch classes form one of "
+                  "`TERTIAN`'s chords",
+}
+
+#: The tertian chords a `chord-root` reading recognises, as pitch-class sets from the root (the triads and
+#: the five seventh qualities the generator writes, `generate_exercises.SEVENTH_SPELLING`). By pitch class,
+#: not by spelling: the generator respells a double flat as its enharmonic (`_readable`), so C diminished
+#: 7th prints A for B double flat, and a spelled reading of those notes names A.
+TERTIAN = {
+    "major": frozenset({0, 4, 7}), "minor": frozenset({0, 3, 7}), "diminished": frozenset({0, 3, 6}),
+    "augmented": frozenset({0, 4, 8}), "dominant7": frozenset({0, 4, 7, 10}), "major7": frozenset({0, 4, 7, 11}),
+    "minor7": frozenset({0, 3, 7, 10}), "half-diminished7": frozenset({0, 3, 6, 10}),
+    "diminished7": frozenset({0, 3, 6, 9}),
+}
+
+_STEPS = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
+_MAJOR_BY_FIFTHS = ("C-", "G-", "D-", "A-", "E-", "B-", "F", "C", "G", "D", "A", "E", "B", "F#", "C#")
+_MINOR_BY_FIFTHS = ("A-", "E-", "B-", "F", "C", "G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#")
+
+
+def key_meaning(row: dict, recipe: dict) -> dict | None:
+    """
+    What this recipe's `key` means, from the row: `{"means": ..., "mode": ...}` (mode for a tonic only), or None
+    for a recipe with no `key`. A recipe with a `key` its row does not declare raises: the generator refuses to
+    write an item whose parameter nobody has said the meaning of (`stamp`).
+    """
+    if "key" not in recipe:
+        return None
+    declared = (row.get("parameters") or {}).get("key")
+    if not declared or declared.get("means") not in KEY_MEANINGS:
+        raise KeyError(f"{row.get('maker')}: the recipe has a key and the row declares no meaning for it "
+                       f"(parameters.key.means, one of {sorted(KEY_MEANINGS)})")
+    out = {"means": declared["means"]}
+    if declared["means"] == "tonic":
+        out["mode"] = next(rule["mode"] for rule in declared["mode"] if matches(rule.get("when"), recipe))
+    return out
+
+
+def pitch_class(name: str) -> int:
+    """`C`, `F#`, `B-` (music21's spelling, the recipes'), `Bb`: the pitch class."""
+    pc = _STEPS[name[0].upper()]
+    for accidental in name[1:]:
+        pc += {"#": 1, "-": -1, "b": -1}.get(accidental, 0)
+    return pc % 12
+
+
+def _spelled(name: str) -> str:
+    """A note name in music21's spelling, upper-case letter: `bb` and `B-` are the same name."""
+    return name[0].upper() + name[1:].replace("b", "-")
+
+
+def written_key_facts(path: Path) -> dict:
+    """
+    The written file's key signature, first sounding notes and first chord, read from the MusicXML itself
+    (`zipfile` and `ElementTree`): an event reader independent of the generator and of music21.
+
+    Returns `signature` (tonic in music21's spelling, mode) or None; `first` (every pitch struck at the first
+    instant a pitch sounds, as names with octaves); `chord` (the first chord's pitches, struck or broken, as
+    `KEY_MEANINGS["chord-root"]` defines it) or None. A tied continuation is not a strike.
+    """
+    import zipfile
+
+    if path.suffix == ".mxl":
+        with zipfile.ZipFile(path) as archive:
+            name = next(n for n in archive.namelist() if not n.startswith("META-INF") and n.endswith((".xml", ".musicxml")))
+            return written_key_facts_from_text(archive.read(name))
+    return written_key_facts_from_text(path.read_bytes())
+
+
+def written_key_facts_from_text(text: str | bytes) -> dict:
+    """`written_key_facts` on the MusicXML text itself."""
+    import xml.etree.ElementTree as ET
+
+    root = ET.fromstring(text)
+    out: dict = {"signature": None, "first": [], "chord": None}
+    signature = root.find("part/measure/attributes/key")
+    if signature is not None and signature.findtext("fifths") is not None:
+        fifths, mode = int(signature.findtext("fifths")), (signature.findtext("mode") or "major").strip()
+        out["signature"] = ((_MINOR_BY_FIFTHS if mode == "minor" else _MAJOR_BY_FIFTHS)[fifths + 7], mode)
+    strikes: list[tuple[float, str, int]] = []
+    for part in root.findall("part"):
+        start, divisions = 0.0, 1
+        for measure in part.findall("measure"):
+            pos = longest = last = 0.0
+            for el in measure:
+                if el.tag == "attributes" and el.findtext("divisions"):
+                    divisions = int(el.findtext("divisions"))
+                elif el.tag in ("backup", "forward"):
+                    pos += (-1 if el.tag == "backup" else 1) * int(el.findtext("duration")) / divisions
+                    longest = max(longest, pos)
+                elif el.tag == "note":
+                    onset = last if el.find("chord") is not None else pos
+                    if el.find("chord") is None:
+                        last = pos
+                        if el.find("grace") is None:
+                            pos += int(el.findtext("duration") or 0) / divisions
+                        longest = max(longest, pos)
+                    pitch = el.find("pitch")
+                    ties = {tie.get("type") for tie in el.findall("tie")}
+                    if pitch is None or "stop" in ties:
+                        continue
+                    step, alter = pitch.findtext("step"), int(float(pitch.findtext("alter") or 0))
+                    spelled = step + ("#" * alter if alter > 0 else "-" * -alter)
+                    strikes.append((start + onset, f"{spelled}{pitch.findtext('octave')}", (_STEPS[step] + alter) % 12))
+            start += longest
+    if not strikes:
+        return out
+    by_onset: dict[float, list[tuple[str, int]]] = {}
+    for onset, name, pc in sorted(strikes, key=lambda s: s[0]):
+        by_onset.setdefault(onset, []).append((name, pc))
+    instants = sorted(by_onset)
+    out["first"] = [name for name, _pc in by_onset[instants[0]]]
+    struck = next((by_onset[t] for t in instants if len({pc for _n, pc in by_onset[t]}) >= 3), None)
+    if struck is None:  # broken: from the first note up to the first pitch class heard again
+        heard: set[int] = set()
+        struck = []
+        for t in instants:
+            pcs = {pc for _n, pc in by_onset[t]}
+            if pcs & heard:
+                break
+            heard |= pcs
+            struck.extend(by_onset[t])
+        if len(heard) < 3:
+            struck = None
+    out["chord"] = [name for name, _pc in struck] if struck else None
+    return out
+
+
+def chord_roots(names: list[str]) -> set[int]:
+    """The pitch classes on which these pitches form one of `TERTIAN`'s chords (a diminished 7th has four)."""
+    pcs = {pitch_class(name.rstrip("0123456789")) for name in names}
+    return {root for root in pcs if frozenset((pc - root) % 12 for pc in pcs) in TERTIAN.values()}
+
+
+def key_faults(row: dict, entry: dict, path: Path) -> list[str]:
+    """
+    The written file against the meaning the row declares for the recipe's `key` (`KEY_MEANINGS`): a tonic is
+    the signature's tonic, spelled the same, in the declared mode; a starting note is the pitch class of every
+    note struck first; a chord root is a root of the first chord. [] for a recipe with no key.
+    """
+    recipe = recipe_of(entry)
+    meaning = key_meaning(row, recipe)
+    if meaning is None:
+        return []
+    declared = str(recipe["key"])
+    facts = written_key_facts(path)
+    if meaning["means"] == "tonic":
+        wanted = (_spelled(declared), meaning["mode"])
+        if facts["signature"] != wanted:
+            return [f"key: the recipe's tonic is {wanted[0]} {wanted[1]} and the file's signature is "
+                    f"{' '.join(facts['signature']) if facts['signature'] else 'absent'}"]
+        return []
+    if meaning["means"] == "starting-note":
+        first = {pitch_class(name.rstrip("0123456789")) for name in facts["first"]}
+        if first != {pitch_class(declared)}:
+            return [f"key: the recipe's starting note is {declared} and the file starts on {', '.join(facts['first']) or 'nothing'}"]
+        return []
+    if facts["chord"] is None or pitch_class(declared) not in chord_roots(facts["chord"]):
+        return [f"key: the recipe's chord root is {declared} and the file's first chord is "
+                f"{', '.join(facts['chord'] or []) or 'absent'}"]
+    return []

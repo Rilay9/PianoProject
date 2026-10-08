@@ -35,6 +35,28 @@
       "maker": "make_scale",
       "version": 2,
       "name": "a major or minor scale, similar or contrary motion, one to four octaves",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "when": {
+                "mode": [
+                  "harmonic",
+                  "melodic",
+                  "natural"
+                ]
+              },
+              "mode": "minor",
+              "why": "the three minor forms are written under the minor key's signature"
+            },
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -169,6 +191,24 @@
       "maker": "make_arpeggio",
       "version": 1,
       "name": "a triad arpeggio, two or four octaves",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "when": {
+                "quality": "minor"
+              },
+              "mode": "minor",
+              "why": "a minor quality is written under its minor key's signature"
+            },
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -279,6 +319,24 @@
       "maker": "make_triad_inversions",
       "version": 3,
       "name": "a triad in root position and its two inversions, blocked",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "when": {
+                "quality": "minor"
+              },
+              "mode": "minor",
+              "why": "a minor quality is written under its minor key's signature"
+            },
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -376,6 +434,24 @@
       "maker": "make_five_finger",
       "version": 3,
       "name": "a five-finger pattern, up and back in quarters",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "when": {
+                "quality": "minor"
+              },
+              "mode": "minor",
+              "why": "a minor quality is written under its minor key's signature"
+            },
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -479,6 +555,17 @@
       "maker": "make_hanon",
       "version": 1,
       "name": "a Hanon exercise, Nos. 1-20, as the Mutopia edition prints it",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -583,6 +670,12 @@
       "maker": "make_chromatic",
       "version": 1,
       "name": "the chromatic scale from C, D, E or G",
+      "parameters": {
+        "key": {
+          "means": "starting-note",
+          "why": "the chromatic scale has no key: `key` is the note it starts and ends on, written with no key signature (make_chromatic, no_signature)"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -692,6 +785,12 @@
       "maker": "make_seventh_arpeggio",
       "version": 2,
       "name": "a four-note seventh arpeggio, two octaves",
+      "parameters": {
+        "key": {
+          "means": "chord-root",
+          "why": "a seventh chord's arpeggio has no key: `key` is the chord's root, written with no key signature and the chord spelled in accidentals (make_seventh_arpeggio, no_signature)"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -797,6 +896,17 @@
       "maker": "make_double_scale",
       "version": 2,
       "name": "a major scale in parallel diatonic thirds or sixths",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -896,6 +1006,17 @@
       "maker": "make_octave_scale",
       "version": 2,
       "name": "a scale in octaves, solid or broken",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -996,6 +1117,12 @@
       "maker": "make_broken_seventh",
       "version": 2,
       "name": "a seventh chord broken up to the octave and back, two octaves, twice",
+      "parameters": {
+        "key": {
+          "means": "chord-root",
+          "why": "a broken seventh chord has no key: `key` is the chord's root, written with no key signature and the chord spelled in accidentals (make_broken_seventh, no_signature)"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -1426,6 +1553,17 @@
       "maker": "make_coordination",
       "version": 2,
       "name": "a right-hand five-finger walk over a left hand that holds or changes",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -1524,6 +1662,17 @@
       "maker": "make_interval_reading",
       "version": 3,
       "name": "a four-bar melody of seconds and thirds in C position",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -1647,6 +1796,17 @@
       "maker": "make_position_shift",
       "version": 2,
       "name": "four bars with one marked hand shift up a fifth",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -1854,6 +2014,17 @@
       "maker": "make_meter",
       "version": 2,
       "name": "a counting drill in 5/4 or 7/8, and a twelve-bar blues in 12/8",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -1977,6 +2148,17 @@
       "maker": "make_hand_independence",
       "version": 1,
       "name": "two hands at different subdivisions of one beat (2:1, 3:1, 2:3, 3:2)",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -2089,6 +2271,17 @@
       "maker": "make_cadence",
       "version": 2,
       "name": "I-IV-V7-I in root position or voice-led, and the plagal I-IV-I, as left-hand chords",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -2180,6 +2373,24 @@
       "maker": "make_accompaniment",
       "version": 2,
       "name": "a broken-chord, Alberti or waltz bass over I-IV-V-I, alone or under a scale",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "when": {
+                "quality": "minor"
+              },
+              "mode": "minor",
+              "why": "a minor quality is written under its minor key's signature"
+            },
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -2304,6 +2515,17 @@
       "maker": "make_oompah",
       "version": 2,
       "name": "an oom-pah bass (bass on the beat, chord off it) over I-IV-V-I in 2/4, left hand alone",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -2405,6 +2627,17 @@
       "maker": "make_pedal",
       "version": 2,
       "name": "I-IV-V7-I with a pedal change on each chord",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -2497,6 +2730,17 @@
       "maker": "make_repeated_notes",
       "version": 2,
       "name": "one note struck three or four times, the fingers changing",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -2598,6 +2842,17 @@
       "maker": "make_trill",
       "version": 2,
       "name": "a measured trill (4 to the beat) or mordent (2 to the beat), the count written",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -2700,6 +2955,17 @@
       "maker": "make_tremolo_octaves",
       "version": 3,
       "name": "an octave tremolo, or a tremolo in the key's own thirds moved by step",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -2799,6 +3065,17 @@
       "maker": "make_rotation",
       "version": 2,
       "name": "Alberti figuration in sixteenths",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -2901,6 +3178,17 @@
       "maker": "make_articulation",
       "version": 1,
       "name": "the same four-bar phrase, staccato or legato",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -3000,6 +3288,17 @@
       "maker": "make_shaping",
       "version": 1,
       "name": "a two-octave scale with a crescendo or a diminuendo across it",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -3103,6 +3402,17 @@
       "maker": "make_voicing",
       "version": 2,
       "name": "four-note chords whose top note must sing",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -3198,6 +3508,17 @@
       "maker": "make_pedal_variant",
       "version": 2,
       "name": "a melody held over changing harmony, and the half pedal",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -3295,6 +3616,17 @@
       "maker": "make_seventh_voicing",
       "version": 3,
       "name": "a ii-V-I in one seventh voicing (close, shell, rootless A or B)",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -3387,6 +3719,17 @@
       "maker": "make_four_chord_loop",
       "version": 3,
       "name": "a I-V-vi-IV loop, root position or inverted",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -3480,6 +3823,17 @@
       "maker": "make_slash_bass",
       "version": 2,
       "name": "a stepwise bass descending under held chords, written as slash chords",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -3573,6 +3927,17 @@
       "maker": "make_turnaround",
       "version": 2,
       "name": "a I-vi-ii-V or iii-VI-ii-V turnaround, two bars",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -3666,6 +4031,17 @@
       "maker": "make_ii_v_i",
       "version": 3,
       "name": "a ii-V-I in shells, guide tones or rootless voicings",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -3758,6 +4134,17 @@
       "maker": "make_tritone_sub",
       "version": 3,
       "name": "a ii-subV-I with the tonic held",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -3851,6 +4238,24 @@
       "maker": "make_open_voicing",
       "version": 4,
       "name": "stacked fourths (a minor eleventh) and sus2, sus4 and add9 voicings over the root in the bass",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "when": {
+                "flavour": "quartal"
+              },
+              "mode": "minor",
+              "why": "the quartal voicing is the minor (dorian) colour, written under the minor key's signature"
+            },
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -3952,6 +4357,17 @@
       "maker": "make_walkup",
       "version": 2,
       "name": "a bass walking up into the IV, diatonic and then chromatic",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -4044,6 +4460,17 @@
       "maker": "make_passing_chord",
       "version": 3,
       "name": "the chord a semitone above the target, played first",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -4137,6 +4564,17 @@
       "maker": "make_power_chord",
       "version": 2,
       "name": "root-fifth-octave over i-bVII-bVI-bVII, the left hand in eighths",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "minor"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -4231,6 +4669,24 @@
       "maker": "make_walking_bass",
       "version": 4,
       "name": "a root-third-fifth-approach bass line in quarters over a blues or a ii-V-I",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "when": {
+                "form": "minor-blues"
+              },
+              "mode": "minor",
+              "why": "the minor blues is written under its minor key's signature"
+            },
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -4352,6 +4808,24 @@
       "maker": "make_comping",
       "version": 2,
       "name": "a ii-V-I (or a two-bar minor vamp for the bossa) comped in one rhythm",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "when": {
+                "form": "latin-vamp"
+              },
+              "mode": "minor",
+              "why": "the bossa vamp is a minor vamp, written under its minor key's signature"
+            },
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -4470,6 +4944,17 @@
       "maker": "make_stride",
       "version": 2,
       "name": "a stride left hand (bass, chord, tenth, chord) under a right-hand chord",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -4580,6 +5065,24 @@
       "maker": "make_boogie",
       "version": 2,
       "name": "an eight-to-the-bar left-hand figure over four bars of the tonic seventh, a shell above",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "when": {
+                "form": "minor-blues"
+              },
+              "mode": "minor",
+              "why": "the minor blues is written under its minor key's signature"
+            },
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -4682,6 +5185,17 @@
       "maker": "make_blues_scale",
       "version": 1,
       "name": "the blues scale up and back, one octave",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -4878,6 +5392,17 @@
       "maker": "make_tumbao",
       "version": 2,
       "name": "a tumbao bass pattern over a two-bar minor vamp, left hand alone",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "minor"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -4988,6 +5513,17 @@
       "maker": "make_montuno",
       "version": 2,
       "name": "a right-hand montuno of chord tones on the clave's strokes",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "minor"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -5084,6 +5620,17 @@
       "maker": "make_latin_groove",
       "version": 2,
       "name": "the tumbao and a two-note montuno together, eight bars",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "minor"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -5197,6 +5744,17 @@
       "maker": "make_secondary_rag",
       "version": 2,
       "name": "a short-long sixteenth cell that crosses the beat, over an oom-pah bass",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -5295,6 +5853,17 @@
       "maker": "make_intro",
       "version": 2,
       "name": "a four-bar vamp over I-V-vi-IV, the last bar blocked",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -5387,6 +5956,24 @@
       "maker": "make_riff",
       "version": 2,
       "name": "a two-bar figure in one five-finger position, repeated for eight bars",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "when": {
+                "key": "A"
+              },
+              "mode": "minor",
+              "why": "the A riffs are in A minor; the C riffs in C major"
+            },
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -5486,6 +6073,17 @@
       "maker": "make_pentatonic",
       "version": 3,
       "name": "the minor pentatonic (or with the raised fourth) over one octave, thumb under",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "minor"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -5589,6 +6187,17 @@
       "maker": "make_tresillo",
       "version": 2,
       "name": "the tresillo (3+3+2) in dotted quarters in the left hand, chords above",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -5703,6 +6312,17 @@
       "maker": "make_bass_cell",
       "version": 1,
       "name": "one left-hand onset cell, the habanera or the tresillo, in 2/4 on the tonic root, the tonic triad held above",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -5829,6 +6449,17 @@
       "maker": "make_swing_pair",
       "version": 2,
       "name": "four bars of straight eighths, a silent bar, the same four bars marked swing",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "drill",
@@ -5928,6 +6559,17 @@
       "maker": "make_modal_vamp",
       "version": 2,
       "name": "an i-bVII-bVI-bVII vamp, open fifths under the chords",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "minor"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -6017,6 +6659,17 @@
       "maker": "make_ostinato",
       "version": 2,
       "name": "one eighth-note figure repeated over a held bass",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "mode": "minor"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",
@@ -6118,6 +6771,24 @@
       "maker": "make_study",
       "version": 1,
       "name": "an 8-, 12- or 16-bar study in four-bar phrases around one target: a melody over a progression from a small grammar, a cadence closing each phrase, the left hand an accompaniment texture (a held root, blocked or broken chords, an Alberti or a waltz bass)",
+      "parameters": {
+        "key": {
+          "means": "tonic",
+          "mode": [
+            {
+              "when": {
+                "quality": "minor"
+              },
+              "mode": "minor",
+              "why": "a minor quality is written under its minor key's signature"
+            },
+            {
+              "mode": "major"
+            }
+          ],
+          "why": "the key the item is written in: the tonic of its key signature"
+        }
+      },
       "promise": [
         {
           "promise": "music",

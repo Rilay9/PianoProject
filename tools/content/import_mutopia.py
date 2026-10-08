@@ -68,6 +68,7 @@ from common import (  # noqa: E402
     BUILD_DIR,
     CONTENT_SRC,
     IMPORTED_DIR,
+    TEMPO_DEFAULTED_TAG,
     LedgerRow,
     SourceBlock,
     catalog_item,
@@ -529,6 +530,10 @@ def build_entry(row: dict, table: dict, *, sources_dir: Path, scores_out: Path, 
     estimate = difficulty.estimate(difficulty.features(converter.parse(str(dest))))
     report.imported.append(row["id"])
     source = table["source"]
+    # The tempo is the published MIDI's. Where the .ly states no `\tempo … = N`, that is LilyPond's own default,
+    # a converter's tempo the edition never states, and the row is tagged as every other step tags one (2026-10-07).
+    tempo_from_edition = bool(re.search(r"^\s*\\tempo[^\n]*=\s*\d+", text, re.M))
+    tags = ["mutopia"] if tempo_from_edition and not result.added_tempo else ["mutopia", TEMPO_DEFAULTED_TAG]
     entry = catalog_item(
         item_id=row["id"], item_type="song", title=row["title"], level=estimate.level, level_source="estimated",
         hands="both", tracks=row["tracks"], concepts=row["concepts"],
@@ -540,7 +545,7 @@ def build_entry(row: dict, table: dict, *, sources_dir: Path, scores_out: Path, 
         composer=row["composer"], genre=["ragtime"] if "ragtime" in row["tracks"] else ["classical"],
         file=f"scores/imported/{row['id']}.mxl", variantOf=row.get("variantOf"), variantLabel=row.get("variantLabel"),
         tempoBpm=round(float(result.tempo_bpm), 2) if result.tempo_bpm else None,
-        keySig=row["key"], timeSig=row["timeSig"], tags=["mutopia"],
+        keySig=row["key"], timeSig=row["timeSig"], tags=tags,
     )
     # Read by build.attach_provenance and taken off the row there (the schema has no place for it on a row).
     entry["_mutopia"] = {
@@ -551,7 +556,7 @@ def build_entry(row: dict, table: dict, *, sources_dir: Path, scores_out: Path, 
                      "url": source["lyBase"] + row["ly"]["path"], "sha256": row["ly"]["sha256"]},
         "converter": {"name": conversion["converter"]["name"], "version": conversion["converter"]["version"],
                       "then": f"tools/content/import_mutopia.py v{IMPORT_VERSION} (spelling and key changes from the edition)"},
-        "tempoFromEdition": bool(re.search(r"^\s*\\tempo[^\n]*=\s*\d+", text, re.M)),
+        "tempoFromEdition": tempo_from_edition,
     }
     return entry
 
