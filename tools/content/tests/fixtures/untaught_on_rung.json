@@ -141,17 +141,6 @@
     },
     {
       "family": "clave",
-      "rung": "4.5",
-      "demand": "texture.walking-bass",
-      "taughtAt": [
-        "jazz.6",
-        "blues.6",
-        "jam.6"
-      ],
-      "items": 1
-    },
-    {
-      "family": "clave",
       "rung": "latin.3",
       "demand": "pitch.ledger",
       "taughtAt": [
@@ -165,17 +154,6 @@
       "demand": "texture.left-hand-pattern",
       "taughtAt": [
         "3.6"
-      ],
-      "items": 1
-    },
-    {
-      "family": "clave",
-      "rung": "latin.3",
-      "demand": "texture.walking-bass",
-      "taughtAt": [
-        "jazz.6",
-        "blues.6",
-        "jam.6"
       ],
       "items": 1
     },
@@ -488,28 +466,6 @@
       "demand": "texture.left-hand-pattern",
       "taughtAt": [
         "3.6"
-      ],
-      "items": 1
-    },
-    {
-      "family": "stride",
-      "rung": "holiday.7",
-      "demand": "texture.walking-bass",
-      "taughtAt": [
-        "jazz.6",
-        "blues.6",
-        "jam.6"
-      ],
-      "items": 1
-    },
-    {
-      "family": "stride",
-      "rung": "ragtime.9",
-      "demand": "texture.walking-bass",
-      "taughtAt": [
-        "jazz.6",
-        "blues.6",
-        "jam.6"
       ],
       "items": 1
     },

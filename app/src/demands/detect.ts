@@ -349,6 +349,16 @@ const LEAP_FROM = 3;
 /** A five-finger position spans a fifth: seven semitones from thumb to fifth finger. */
 const POSITION_SPAN = 7;
 
+/** A step in a walking line: a semitone (a chromatic run or approach) or a whole tone (a scale tone). */
+const STEP_SEMITONES = 2;
+
+/**
+ * The least share of a walking line's moves that are steps (`walkingBass`). Operational: the catalogue's
+ * walking lines measure a fifth to a quarter (2026-10-07), a repeated broken chord none; an eighth leaves
+ * room for a walk that arpeggiates more than these do.
+ */
+const WALK_STEP_SHARE = 1 / 8;
+
 /** Staff positions of the lines a ledger line starts beyond (middle C is 28). */
 const TREBLE_LEDGER_BELOW = 27; // B3 and lower; middle C left out
 const TREBLE_LEDGER_ABOVE = 40; // A5 and higher
@@ -420,10 +430,31 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
   ties: (m) => found('ties', placed(m).filter((p) => (p.note.tieLength ?? 1) > 1).map(locate)),
 
   /**
-   * Syncopation, as T37 defined it for the generator: a note written a quarter
-   * or longer that starts off the beat; a tie that starts off the beat; a bar
-   * whose melody opens on a rest and then plays (located at the note that
-   * enters). A bar the melody rests through is a rest, not syncopation.
+   * Syncopation: "a momentary contradiction of the prevailing meter or pulse" (The Harvard Dictionary
+   * of Music, ed. Randel, "Syncopation"), made operational by Longuet-Higgins and Lee's rule ("The
+   * rhythmic interpretation of monophonic music", Music Perception 1, 1984): a syncopation is a note
+   * at a weaker metrical position followed by no new note — a rest, or the note's own continuation —
+   * at the stronger position after it. Both are taken from secondary statements of them (the papers on
+   * measuring syncopation that quote the dictionary and restate the rule, e.g. Sioros and Guedes,
+   * "Syncopation as transformation", 2014); neither original was read here. T37's three clauses, for
+   * the generator, are that rule's cases at the beat and at the bar line:
+   *
+   * - a note written a quarter or longer that starts off the beat: it is still sounding on the beat;
+   * - a tie that starts off the beat: its continuation is;
+   * - a bar whose melody opens on a rest and then plays, **after a bar in which the melody sounded**:
+   *   the silent downbeat follows that note (located at the note that enters).
+   *
+   * **The silence must follow a note (the owner's and the reviewer's ruling of 2026-10-07: "a pickup is
+   * not automatically syncopation; its rhythmic relationship to the established meter matters").** A
+   * downbeat rest with no melody in the bar before is not the downbeat a note was bound to: the
+   * opening of a pickup bar (the model pads it to a full bar, `barStarts`, so it opens on a "rest"
+   * nobody wrote), a first bar that opens on a written rest, and a bar after one the melody rests
+   * through are a late entry, not a contradiction of the metre. Inside a pickup the first two clauses
+   * still apply, read against the beats the pickup is counted on: a pickup note held across a beat, or
+   * tied into the downbeat, contradicts the metre the notation gives. Validated on the catalogue
+   * (2026-10-07 proving run, `docs/classifier/proving/2026-10-07/`): of 83 items where only this
+   * detector found syncopation, 82 had it in a pickup bar, where the padding made the third clause fire.
+   * A bar the melody rests through is a rest, not syncopation.
    */
   syncopation: (m) => {
     const starts = barStarts(m);
@@ -445,7 +476,13 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
       const first = notes[0];
       if (first === undefined || first.note.onset <= start + EPSILON) continue;
       const heldAcross = melody.some((p) => p.note.onset < start - EPSILON && p.note.onset + p.note.duration > start + EPSILON);
-      if (!heldAcross) at.push(locate(first));
+      if (heldAcross) continue;
+      // The silent downbeat must follow a note: the melody sounds somewhere in the bar before. None
+      // before a pickup or a first bar; none after a bar the melody rests through.
+      const before = starts.get(bar - 1);
+      const soundedBefore =
+        before !== undefined && melody.some((p) => p.note.onset < start - EPSILON && p.note.onset + p.note.duration > before + EPSILON);
+      if (soundedBefore) at.push(locate(first));
     }
     const seen = new Set<string>();
     return found(
@@ -596,13 +633,34 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
   },
 
   /**
-   * A line that walks: a quarter on every beat of every bar in the left hand
-   * (staff 2), a quarter per beat in 4/4 and three in 3/4, that never turns
-   * back in the bar to a pitch it has left, under a right hand that plays too.
-   * A broken chord in quarters (root, fifth, third, fifth) circles back to its
-   * fifth and is a pattern, not a walk; a walk that stalls on a repeated note
-   * still walks; the same quarters with nothing over them are a bass line read
-   * alone.
+   * A walking bass: "unsyncopated notes of equal value, usually quarter notes", using "a mixture of
+   * scale tones, arpeggios, chromatic runs, and passing tones to outline the chord progression", which
+   * "creates a feeling of regular quarter note movement, akin to the regular alternation of feet while
+   * walking" (Friedland, Building Walking Bass Lines, 1995, pp. 4 and 44, as Wikipedia's "Walking bass"
+   * cites it; the book was not read here). Read in the left hand (staff 2), one note per onset (the
+   * lowest), under a right hand that plays too, in every bar:
+   *
+   * - **Equal values:** a quarter on every beat of the bar, four in 4/4 and three in 3/4.
+   * - **Movement (the 2026-10-07 ruling: "walking bass should not accept stationary pulses merely
+   *   because they meet a note-duration pattern"):** the line changes pitch on more than half of the
+   *   bar's beat-to-beat moves, so a walk may stall once in 4/4 and never in 3/4. A pulse on one pitch
+   *   (the clave pulse exercises, B4 on every beat), a stride or oom-pah left hand (a root, then one
+   *   chord note repeated: C2 E3 E3 E3, or C2 E3 E3 in 3/4) and a line that moves every two beats are
+   *   not walks.
+   * - **Never back in the bar to a pitch it has left:** a broken chord in quarters (root, fifth, third,
+   *   fifth) circles and is a pattern, not a walk.
+   * - **It walks by step somewhere:** of the whole line's moves (across bar lines too), at least one in
+   *   `WALK_STEP_SHARE` is a step of one or two semitones — the scale tones, chromatic runs and passing
+   *   tones of the definition. A line of arpeggios alone is a broken-chord accompaniment: the same
+   *   rising triad in every bar (Scarborough Fair's E3 G3 B3; Duvernoy's op. 176 no. 18, refused as a
+   *   walk in `content/sources/excerpts.json`) never moves by step.
+   *
+   * The thresholds are operational and were validated on the built catalogue (2026-10-07), not quoted:
+   * the generated walking lines and the I Got Rhythm passage change pitch on at least two of three moves
+   * in every bar and move by step on a fifth to just over a quarter of their moves; every over-match
+   * found (the proving run's ten detector-only items, and the five waltz accompaniments its witness
+   * shared the fault on) repeats one pitch on two thirds of a bar or more. The same quarters with
+   * nothing over them are a bass line read alone.
    */
   walkingBass: (m) => {
     const notes = placed(m);
@@ -610,15 +668,21 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
     const walks = (bar: number): boolean => {
       const inBar = left.filter((p) => p.note.measureIndex === bar);
       const quarters = inBar.filter((p) => same(parts(p.note)[0] ?? 0, 1));
+      const pitches = quarters.map((p) => p.note.midi);
+      const moves = pitches.slice(1).filter((pitch, i) => pitch !== pitches[i]).length;
       return (
         quarters.length === inBar.length &&
         quarters.length === barLength(metreAt(m, bar)) &&
-        !turnsBack(quarters.map((p) => p.note.midi))
+        moves * 2 > pitches.length - 1 &&
+        !turnsBack(pitches)
       );
     };
     const tune = (bar: number): boolean => notes.some((p) => p.note.staff === 1 && p.note.measureIndex === bar);
     const everyBar = m.measureCount > 0 && Array.from({ length: m.measureCount }, (_, bar) => walks(bar) && tune(bar)).every(Boolean);
-    return found('walkingBass', everyBar ? left.map(locate) : []);
+    const moves = left.slice(1).map((p, i) => Math.abs(p.note.midi - (left[i] as Placed).note.midi)).filter((size) => size > 0);
+    const steps = moves.filter((size) => size <= STEP_SEMITONES).length;
+    const stepwise = moves.length > 0 && steps >= moves.length * WALK_STEP_SHARE;
+    return found('walkingBass', everyBar && stepwise ? left.map(locate) : []);
   },
 
   /**

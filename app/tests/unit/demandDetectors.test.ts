@@ -155,8 +155,8 @@ describe('rhythm.ties — a tied note', () => {
 describe('rhythm.syncopation — a note of a beat or more off the beat, a rest on the downbeat, a tie off the beat', () => {
   it('present: eighth, quarter, eighth — the quarter on the "and"', () =>
     expect(present('syncopation', [[{ at: 0, dur: 0.5, pitch: 'C4' }, { at: 0.5, dur: 1, pitch: 'D4' }, { at: 1.5, dur: 0.5, pitch: 'E4' }, { at: 2, dur: 2, pitch: 'F4' }]])).toBe(true));
-  it('present: a bar that opens on a rest and then plays', () =>
-    expect(present('syncopation', [[{ at: 0.5, dur: 0.5, pitch: 'C4' }, { at: 1, dur: 3, pitch: 'D4' }]])).toBe(true));
+  it('present: a bar that opens on a rest and then plays, after a bar the melody sounded in', () =>
+    expect(present('syncopation', [line(['C4', 'D4', 'E4', 'F4']), [{ at: 0.5, dur: 0.5, pitch: 'C4' }, { at: 1, dur: 3, pitch: 'D4' }]])).toBe(true));
   it('present: a tie that starts off the beat', () =>
     expect(present('syncopation', [[{ at: 0, dur: 1.5, pitch: 'C4' }, { at: 1.5, pitch: 'D4', tie: [0.5, 2] }]])).toBe(true));
   it('absent: every note where its length belongs', () =>
@@ -169,6 +169,46 @@ describe('rhythm.syncopation — a note of a beat or more off the beat, a rest o
   it('boundary: in 6/8 the beat is a dotted quarter — a quarter from the second eighth is off it', () => {
     expect(present('syncopation', [[{ at: 0, dur: 0.5, pitch: 'C4' }, { at: 0.5, dur: 1, pitch: 'D4' }, { at: 1.5, dur: 1.5, pitch: 'E4' }]], '6/8')).toBe(true);
     expect(present('syncopation', [[{ at: 0, dur: 1, pitch: 'C4' }, { at: 1, dur: 0.5, pitch: 'D4' }, { at: 1.5, dur: 1.5, pitch: 'E4' }]], '6/8')).toBe(false);
+  });
+});
+
+describe('rhythm.syncopation and the pickup — the silence must follow a note (the 2026-10-07 ruling)', () => {
+  const sync = (bars: HandNote[][], pickup?: number, time?: string) =>
+    detect(phrase({ bars, ...(pickup === undefined ? {} : { pickup }), ...(time ? { time } : {}) }), 'syncopation');
+  const plain = [line(['C5', 'D5', 'E5', 'F5']), line(['G5', 'F5', 'E5', 'D5'])];
+  it('a quarter-note pickup into on-beat bars is not syncopation', () =>
+    expect(sync([[{ at: 0, dur: 1, pitch: 'G4' }], ...plain], 1).present).toBe(false));
+  it('an eighth-note pickup into on-beat bars is not syncopation', () =>
+    expect(sync([[{ at: 0, dur: 0.5, pitch: 'G4' }], ...plain], 0.5).present).toBe(false));
+  it('a three-eighth pickup in 3/4 is not syncopation', () =>
+    expect(
+      sync([[{ at: 0, dur: 0.5, pitch: 'E4' }, { at: 0.5, dur: 0.5, pitch: 'F4' }, { at: 1, dur: 0.5, pitch: 'G4' }], line(['C5', 'D5', 'E5']), line(['F5', 'E5', 'D5'])], 1.5, '3/4').present,
+    ).toBe(false));
+  it('a first bar that opens on a written rest is a late entry, not syncopation: nothing sounded before it', () =>
+    expect(sync([[{ at: 1, dur: 1, pitch: 'C5' }, { at: 2, dur: 1, pitch: 'D5' }, { at: 3, dur: 1, pitch: 'E5' }], line(['F5', 'E5', 'D5', 'C5'])]).present).toBe(false));
+  it('a bar opening on a rest after a bar the melody rested through is not syncopation: the silence goes on', () =>
+    expect(
+      sync([line(['C5', 'D5', 'E5', 'F5']), [{ at: 0, dur: 4, pitch: 'C3', staff: 2 }], [{ at: 1, dur: 1, pitch: 'G5' }, { at: 2, dur: 2, pitch: 'F5' }]]).present,
+    ).toBe(false));
+  it('a pickup followed by real syncopation is syncopation, located in the bar after the pickup and never at the pickup', () => {
+    const found = sync([[{ at: 0, dur: 1, pitch: 'G4' }], [{ at: 0, dur: 0.5, pitch: 'C5' }, { at: 0.5, dur: 1, pitch: 'D5' }, { at: 1.5, dur: 0.5, pitch: 'E5' }, { at: 2, dur: 2, pitch: 'F5' }], line(['G5', 'F5', 'E5', 'D5'])], 1);
+    expect(found.present).toBe(true);
+    expect(found.at.map((a) => a.measure)).toEqual([1]);
+  });
+  it('the bar after a pickup opening on a rest is syncopation: the pickup sounded before the silent downbeat', () => {
+    const found = sync([[{ at: 0, dur: 1, pitch: 'G4' }], [{ at: 0.5, dur: 0.5, pitch: 'C5' }, { at: 1, dur: 3, pitch: 'D5' }], line(['G5', 'F5', 'E5', 'D5'])], 1);
+    expect(found.present).toBe(true);
+    expect(found.at.map((a) => a.measure)).toEqual([1]);
+  });
+  it('syncopation inside the pickup still counts: a quarter on the "and" held across the beat, located at that note alone', () => {
+    const model = phrase({
+      bars: [[{ at: 0, dur: 0.5, pitch: 'E4' }, { at: 0.5, dur: 1, pitch: 'F4' }, { at: 1.5, dur: 0.5, pitch: 'G4' }], ...plain],
+      pickup: 2,
+    });
+    const found = detect(model, 'syncopation');
+    const f4 = model.steps.flatMap((s) => s.notes).find((n) => n.midi === 65 && n.measureIndex === 0);
+    expect(found.present).toBe(true);
+    expect(found.at.map((a) => a.noteId)).toEqual([f4?.id]);
   });
 });
 
@@ -397,7 +437,7 @@ describe('texture.walking-bass — a quarter on every beat in the left hand', ()
   const rh = line(['C5'], 4);
   it('present', () => expect(present('walkingBass', [[...rh, ...line(['C3', 'D3', 'E3', 'G3'], 1, 2)], [...rh, ...line(['F2', 'G2', 'A2', 'C3'], 1, 2)]])).toBe(true));
   it('boundary: a walk that stalls on its top note still walks; it never turns back to a note it left', () =>
-    expect(present('walkingBass', [[...rh, ...line(['C3', 'E3', 'G3', 'G3'], 1, 2)]])).toBe(true));
+    expect(present('walkingBass', [[...rh, ...line(['C3', 'D3', 'E3', 'E3'], 1, 2)], [...rh, ...line(['F3', 'G3', 'A3', 'B3'], 1, 2)]])).toBe(true));
   it('absent: halves', () => expect(present('walkingBass', [[...rh, ...line(['C3', 'G3'], 2, 2)]])).toBe(false));
   it('boundary: in 3/4 it is three quarters; one bar short of it is not a walking bass', () => {
     expect(present('walkingBass', [[{ at: 0, dur: 3, pitch: 'C5' }, ...line(['C3', 'D3', 'E3'], 1, 2)]], '3/4')).toBe(true);
@@ -410,6 +450,28 @@ describe('texture.walking-bass — a quarter on every beat in the left hand', ()
   });
   it('boundary: quarters in the left hand with nothing over them are a bass line read alone, not the texture', () =>
     expect(present('walkingBass', [line(['C3', 'D3', 'E3', 'G3'], 1, 2), line(['F2', 'G2', 'A2', 'C3'], 1, 2)])).toBe(false));
+});
+
+describe('texture.walking-bass — a stationary pulse is not a walk (the 2026-10-07 ruling)', () => {
+  const rh = line(['C5'], 4);
+  const rh3 = [{ at: 0, dur: 3, pitch: 'C5' }];
+  const bars = (lines: string[][], top = rh) => lines.map((pitches) => [...top, ...line(pitches, 1, 2)]);
+  it('a real walk: scale tones, a chord tone and a chromatic approach, a new note on every beat', () =>
+    expect(present('walkingBass', bars([['C3', 'D3', 'E3', 'G3'], ['A3', 'G3', 'F3', 'E3'], ['D3', 'F3', 'A3', 'Ab3'], ['G3', 'F3', 'E3', 'D3']]))).toBe(true));
+  it('a walk that stalls once on a repeated note still walks', () =>
+    expect(present('walkingBass', bars([['C3', 'D3', 'E3', 'E3'], ['F3', 'G3', 'A3', 'Bb3'], ['A3', 'G3', 'F3', 'E3']]))).toBe(true));
+  it('a stationary pulse, one pitch on every beat of every bar, is not a walk (the clave pulse exercises)', () =>
+    expect(present('walkingBass', bars([['B4', 'B4', 'B4', 'B4'], ['B4', 'B4', 'B4', 'B4']]))).toBe(false));
+  it('a pulse that changes pitch only at the bar line is not a walk (the Outer Wilds theme)', () =>
+    expect(present('walkingBass', bars([['C2', 'C2', 'C2', 'C2'], ['D2', 'D2', 'D2', 'D2'], ['E2', 'E2', 'E2', 'E2']]))).toBe(false));
+  it('a stride left hand, a root then one chord note three times, is not a walk', () =>
+    expect(present('walkingBass', bars([['C2', 'E3', 'E3', 'E3'], ['G2', 'B3', 'B3', 'B3'], ['C2', 'E3', 'E3', 'E3'], ['F2', 'A3', 'A3', 'A3']]))).toBe(false));
+  it('an oom-pah-pah in 3/4, a root then the same chord note twice, is not a walk', () =>
+    expect(present('walkingBass', bars([['C2', 'E3', 'E3'], ['G1', 'D3', 'D3'], ['C2', 'E3', 'E3']], rh3), '3/4')).toBe(false));
+  it('a pulse that moves every two beats is not a walk: the line changes on fewer than half its beats', () =>
+    expect(present('walkingBass', bars([['C3', 'C3', 'D3', 'D3'], ['E3', 'E3', 'F3', 'F3'], ['G3', 'G3', 'A3', 'A3']]))).toBe(false));
+  it('the same rising triad in every bar of 3/4 is a broken chord, not a walk: it never moves by step (Scarborough Fair)', () =>
+    expect(present('walkingBass', bars([['E3', 'G3', 'B3'], ['E3', 'G3', 'B3'], ['D3', 'F#3', 'A3'], ['E3', 'G3', 'B3']], rh3), '3/4')).toBe(false));
 });
 
 describe('rhythm.habanera and rhythm.tresillo — the left hand’s onsets are exactly the cell (CD1)', () => {
