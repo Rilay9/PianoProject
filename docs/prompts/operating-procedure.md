@@ -64,7 +64,7 @@ What was done, what was not, what is unverified beside what passes, and what nee
 
 ## 13. What a brief carries
 
-The goal in the owner's words and the writer's, and which is which; what is decided and what is the agent's judgement; the files owned and the files not to touch; the hypothesis and the test that would refute it; when to deviate (a premise found wrong is said, and the better path taken); every item done or an explicit not-done line.
+Only the fields the task needs: the goal in the owner's words and the writer's, and which is which; what is decided and what is the agent's judgement; the files it may change; for a build or a fix, the hypothesis and the test that would refute it; for research, the sources and what counts as covered; when to deviate (a premise found wrong is said, and the better path taken); every assigned item done or an explicit not-done line.
 
 ## 14. The builder's harness
 

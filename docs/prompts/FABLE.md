@@ -34,6 +34,6 @@ Each phase finishes, by the rule in section 3, before the next starts.
 - **Nothing moves to a new step without the owner's say-so** (the owner, 2026-10-08: "Dont jump from things to another without my say so unless I say so and we have a clear plan and protocol for you to do (like while I'm sleeping)"). Unattended work happens only under a plan and protocol the owner has approved for it.
 - **Nothing is trusted unchecked:** a builder's or checker's report, a premise in a brief, a count, a test result and a library's claimed behaviour are verified before they are stated as fact; each claim is labelled as measured (by what) or as a reading.
 - **Inputs final before dispatch:** a check or build starts only when nothing running will change what it reads.
-- **Agents:** never Fable agents. Opus drafts and checks; Sonnet gathers.
+- **Agents:** never Fable agents (the owner). Otherwise the cheapest capable method: existing results and scripts first, then an agent of the strength the task needs.
 - **Tokens:** careful with tokens, never at the cost of quality.
 - **Libraries before custom code**, for every musical fact (music21, partitura and others); custom code only where no library serves, with the reason.

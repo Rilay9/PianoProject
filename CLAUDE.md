@@ -30,8 +30,9 @@ thin adapter → published algorithm → small project-specific code → novel c
 nothing above can serve.
 
 Easy-to-write is never a justification. When existing work is rejected, the record says
-why. Never hand-reproduce known musical knowledge a maintained source supplies. Never
-generate a substitute when suitable licensed real material meets the need. For the current rules-first objective, research the **full necessary set of abilities and characteristics**, not only the next implementation gap. Reuse research and libraries before custom rules; do not make a separate exhaustive search report for each trivial fact. The project assembles the best
+why. Never hand-reproduce known musical knowledge a maintained source supplies. Choose real or
+generated material by its teaching purpose: generated material is first-class when its
+required properties are verified, and real material when authentic transfer is the job. For the current rules-first objective, research the **full necessary set of abilities and characteristics**, not only the next implementation gap. Reuse research and libraries before custom rules; do not make a separate exhaustive search report for each trivial fact. The project assembles the best
 existing reliable pieces, adds only what is truly project-specific, and proves the seams.
 
 **Before pushing any content work, check it against `docs/prompts/content-mistakes.md`:** the mistakes already made here, each caught late.
@@ -56,7 +57,7 @@ everything else.
 
 ## The two technical rules broken most often
 
-1. **Never assert a number measured on this machine.** Express the relationship instead.
+1. **Never present a number measured on this machine (a timing, a size) as general.** Say where it was measured, or express the relationship instead.
 2. **For musical classification, validated specifications govern implementation.** If code exposes a flaw in a rule, correct and revalidate the rule before treating the changed code as authoritative. For unrelated engineering details, keep specifications and code consistent without unnecessary paperwork.
 
 ## Before reporting any piece of work
@@ -74,20 +75,19 @@ earns a turn.
    machine", "no such file"), the place the record says it lives, looked at, and the item
    tested directly (`test -e`, the exact path), never read off a listing; output cut by
    `head` or a limit is a sample, never grounds for "none" or "all"; what has not been heard.
-4. **Consumers and record.** Who else reads what changed; the spec, test map and record
-   updated in the same change, with the reason.
+4. **Consumers and record.** Who else reads what changed; the consumers and records
+   actually affected by it updated in the same change, with the reason.
 5. **Addressee.** For every request, question or claim: who acts on it, and can they? The
    owner decides and relays and never listens; the reviewer may inspect artifacts and run available checks but must not claim checks it did not run or hearing it did not perform; builders and the orchestrator must not claim to have heard music without actual audio evidence. A capability no actor has is stated
    as *no one in this process can decide this* and the item stays open, never moved to a
    later actor or phase. A paragraph its addressee does nothing with is cut. An owner
    correction is applied and confirmed by the change, in one line, without apology.
-6. **Closure.** Is anything I call done, landed, wired, covered or ruled actually there? A decision
-   written down is not the mechanism that enforces it. For every clause of a ruling, brief or claim:
-   the file and line that implements it, the test that pins it, and the path that runs that test
-   (which CI job, which suite), checked on the current HEAD, never read off a builder's report, a
-   handoff or the rulebook. A clause with no implementation is said to be absent, and the item stays
-   open (the owner and the reviewer, 2026-10-07: the preflight's three ruled changes were
-   written into FABLE as if in force while none existed in code or CI).
+6. **Closure.** Is anything I call done, landed, wired, covered or ruled actually there? For a claim
+   of implemented behaviour: the file and line that implements it, the test that pins it and the
+   path that runs that test, checked on the current HEAD, never read off a report or the rulebook.
+   For a research or specification claim (an ability, a characteristic, a rule not yet built): its
+   source and its validation evidence; it is never called implemented. A clause with neither is
+   said to be absent, and the item stays open.
 7. **Sense in context.** Before reporting, inspect the actual current work state: every running task, committed/queued task, and task started this turn. Distinguish parked possibilities from approved work. State the owner's current goal and whether each active or committed task serves it now; stop or flag any that does not. Do not use a one-line 'nothing found' exit without checking actual state. For everything I started, triggered, dispatched or proposed this
    turn: state the owner's current goal in one line, in the owner's words, not mine. Then
    ask: does this serve that goal now? Is it what the owner asked for, or my extension of

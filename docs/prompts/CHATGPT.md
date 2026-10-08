@@ -115,7 +115,7 @@ Use `MODE-SHEET.md` literally for evidence boundaries: Wait, Keep tempo, Hear/Li
 
 ### Enforce the existing addressee and owner-work rules
 
-This is **not a new product rule**. Enforce the rules already above this contract: FABLE says the owner's phone use is welcome feedback, never a gate; `CLAUDE.md` says to ask the owner only for a product/pedagogy/architecture choice that cannot be inferred, and its addressee check asks who can actually act.
+This is **not a new product rule**. Enforce the rules already above this contract: the owner's phone use is welcome feedback, never a gate; `CLAUDE.md` says to ask the owner only for a product/pedagogy/architecture choice that cannot be inferred, and its addressee check asks who can actually act.
 
 - **Do not assign validation to the owner.** Objective behavior belongs in Playwright/unit/content checks. A manual device check is justified only by a genuinely device-specific, hardware-dependent or subjective property that automation cannot establish.
 - **Check the addressee, not just the artifact.** Owner/learner instructions must be self-contained in current UI language, with a concrete action and observable result. Repo paths, chain/station ids, hidden preconditions or companion internal docs are evidence that the wrong actor was assigned the work.
