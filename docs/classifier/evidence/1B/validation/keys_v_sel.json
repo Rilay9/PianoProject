@@ -1,0 +1,327 @@
+{
+"exercise.accompaniment.broken.a-minor.left": {
+"p": "generated",
+"fam": "accompaniment",
+"ref": [
+9,
+"minor",
+"recipe"
+],
+"old": [
+0,
+"major",
+0.9
+],
+"new": [
+9,
+"minor",
+0.9
+],
+"info": {
+"ending": [
+9,
+"minor"
+],
+"src": "bar",
+"tri": [
+9,
+"m",
+false
+],
+"opening": [
+9,
+"minor"
+],
+"ks": [
+0,
+"major"
+],
+"fifths": 0
+},
+"flags": [],
+"bb": [
+5,
+"major"
+],
+"ae": [
+9,
+"minor"
+]
+},
+"exercise.accompaniment.broken.d-minor.left": {
+"p": "generated",
+"fam": "accompaniment",
+"ref": [
+2,
+"minor",
+"recipe"
+],
+"old": [
+5,
+"major",
+0.9
+],
+"new": [
+2,
+"minor",
+0.9
+],
+"info": {
+"ending": [
+2,
+"minor"
+],
+"src": "bar",
+"tri": [
+2,
+"m",
+false
+],
+"opening": [
+2,
+"minor"
+],
+"ks": [
+5,
+"major"
+],
+"fifths": -1
+},
+"flags": [],
+"bb": [
+10,
+"major"
+],
+"ae": [
+2,
+"minor"
+]
+},
+"exercise.blues.twelve-bar-shuffle.c": {
+"p": "authored",
+"fam": null,
+"ref": null,
+"old": [
+0,
+"major",
+0.8
+],
+"new": [
+0,
+"major",
+0.95
+],
+"info": {
+"ending": [
+0,
+"major"
+],
+"src": "chord",
+"tri": [
+7,
+"M",
+true
+],
+"opening": [
+0,
+"major"
+],
+"ks": [
+0,
+"major"
+],
+"fifths": 0
+},
+"flags": [
+"f"
+]
+},
+"exercise.hanon.13.right": {
+"p": "generated",
+"fam": "hanon",
+"ref": [
+0,
+"major",
+"recipe"
+],
+"old": [
+9,
+"minor",
+0.9
+],
+"new": [
+9,
+"minor",
+0.9
+],
+"info": {
+"ending": [
+9,
+"minor"
+],
+"src": "lowest",
+"tri": null,
+"opening": [
+0,
+"major"
+],
+"ks": [
+9,
+"minor"
+],
+"fifths": 0
+},
+"flags": [
+"c"
+],
+"bb": [
+0,
+"major"
+],
+"ae": [
+9,
+"minor"
+]
+},
+"exercise.turnaround.c.iii-vi-ii-v": {
+"p": "generated",
+"fam": "turnaround",
+"ref": [
+0,
+"major",
+"recipe"
+],
+"old": [
+7,
+"major",
+0.7
+],
+"new": [
+0,
+"major",
+0.7
+],
+"info": {
+"ending": [
+0,
+"major"
+],
+"src": "chord",
+"tri": [
+7,
+"M",
+true
+],
+"opening": [
+4,
+"minor"
+],
+"ks": [
+7,
+"major"
+],
+"fifths": 0
+},
+"flags": [
+"f"
+],
+"bb": [
+0,
+"major"
+],
+"ae": [
+2,
+"minor"
+]
+},
+"exercise.turnaround.f.iii-vi-ii-v": {
+"p": "generated",
+"fam": "turnaround",
+"ref": [
+5,
+"major",
+"recipe"
+],
+"old": [
+0,
+"major",
+0.7
+],
+"new": [
+5,
+"major",
+0.7
+],
+"info": {
+"ending": [
+5,
+"major"
+],
+"src": "chord",
+"tri": [
+0,
+"M",
+true
+],
+"opening": [
+9,
+"minor"
+],
+"ks": [
+0,
+"major"
+],
+"fifths": -1
+},
+"flags": [
+"f"
+],
+"bb": [
+5,
+"major"
+],
+"ae": [
+7,
+"minor"
+]
+},
+"song.folk.happy-birthday-piano.pdmx": {
+"p": "pdmx",
+"fam": null,
+"ref": null,
+"old": [
+0,
+"major",
+0.95
+],
+"new": [
+0,
+"major",
+0.8
+],
+"info": {
+"ending": [
+7,
+"major"
+],
+"src": "beat",
+"tri": [
+7,
+"M",
+false
+],
+"opening": [
+0,
+"major"
+],
+"ks": [
+0,
+"major"
+],
+"fifths": 0
+},
+"flags": [
+"d"
+]
+}
+}

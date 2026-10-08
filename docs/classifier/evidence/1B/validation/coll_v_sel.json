@@ -1,0 +1,408 @@
+{
+"exercise.blues-scale.c.1oct.right": {
+"p": "generated",
+"fam": "blues_scale",
+"home": [
+0,
+"major"
+],
+"item": [
+"blues scale on C",
+"named"
+],
+"n_item": 6,
+"hands": {
+"R": [
+"blues scale on C",
+"named"
+]
+},
+"runs": [
+{
+"h": "R",
+"bar": 0,
+"n": 7,
+"npc": 6,
+"dir": 1,
+"lk": [
+0,
+"major"
+],
+"name": "blues scale set on C (mode to the agent)",
+"how": "parent set",
+"form": null,
+"pcs": [
+0,
+3,
+5,
+6,
+7,
+10
+]
+},
+{
+"h": "R",
+"bar": 0,
+"n": 7,
+"npc": 6,
+"dir": -1,
+"lk": [
+0,
+"major"
+],
+"name": "blues scale set on C (mode to the agent)",
+"how": "parent set",
+"form": null,
+"pcs": [
+0,
+3,
+5,
+6,
+7,
+10
+]
+}
+]
+},
+"exercise.chromatic.c.1oct.right": {
+"p": "generated",
+"fam": "chromatic",
+"home": [
+0,
+"major"
+],
+"item": [
+"all twelve pitch classes",
+"twelve"
+],
+"n_item": 12,
+"hands": {
+"R": [
+"all twelve pitch classes",
+"twelve"
+]
+},
+"runs": [
+{
+"h": "R",
+"bar": 0,
+"n": 13,
+"npc": 12,
+"dir": 1,
+"lk": [
+0,
+"major"
+],
+"name": "chromatic",
+"how": "set",
+"form": null,
+"pcs": [
+0,
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11
+]
+},
+{
+"h": "R",
+"bar": 1,
+"n": 13,
+"npc": 12,
+"dir": -1,
+"lk": [
+0,
+"major"
+],
+"name": "chromatic",
+"how": "set",
+"form": null,
+"pcs": [
+0,
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11
+]
+}
+]
+},
+"exercise.five-finger.c-major.right": {
+"p": "generated",
+"fam": "five_finger",
+"home": [
+0,
+"major"
+],
+"item": [
+"set only (5)",
+"set only"
+],
+"n_item": 5,
+"hands": {
+"R": [
+"set only (5)",
+"set only"
+]
+},
+"runs": []
+},
+"exercise.modal-vamp.a": {
+"p": "generated",
+"fam": "modal_vamp",
+"home": [
+9,
+"minor"
+],
+"item": [
+"aeolian (natural minor) on A",
+"named"
+],
+"n_item": 7,
+"hands": {
+"L": [
+"set only (6)",
+"set only"
+],
+"R": [
+"aeolian (natural minor) on A",
+"named"
+]
+},
+"runs": []
+},
+"exercise.pentatonic.a.pentatonic": {
+"p": "generated",
+"fam": "pentatonic",
+"home": [
+9,
+"minor"
+],
+"item": [
+"minor pentatonic on A",
+"named"
+],
+"n_item": 5,
+"hands": {
+"R": [
+"minor pentatonic on A",
+"named"
+]
+},
+"runs": [
+{
+"h": "R",
+"bar": 0,
+"n": 6,
+"npc": 5,
+"dir": 1,
+"lk": [
+9,
+"minor"
+],
+"name": "pentatonic set on C (mode to the agent)",
+"how": "parent set",
+"form": "undetermined (one variable degree 10)",
+"pcs": [
+0,
+2,
+4,
+7,
+9
+]
+},
+{
+"h": "R",
+"bar": 0,
+"n": 6,
+"npc": 5,
+"dir": -1,
+"lk": [
+9,
+"minor"
+],
+"name": "pentatonic set on C (mode to the agent)",
+"how": "parent set",
+"form": "undetermined (one variable degree 10)",
+"pcs": [
+0,
+2,
+4,
+7,
+9
+]
+},
+{
+"h": "R",
+"bar": 1,
+"n": 6,
+"npc": 5,
+"dir": 1,
+"lk": [
+9,
+"minor"
+],
+"name": "pentatonic set on C (mode to the agent)",
+"how": "parent set",
+"form": "undetermined (one variable degree 10)",
+"pcs": [
+0,
+2,
+4,
+7,
+9
+]
+},
+{
+"h": "R",
+"bar": 1,
+"n": 6,
+"npc": 5,
+"dir": -1,
+"lk": [
+9,
+"minor"
+],
+"name": "pentatonic set on C (mode to the agent)",
+"how": "parent set",
+"form": "undetermined (one variable degree 10)",
+"pcs": [
+0,
+2,
+4,
+7,
+9
+]
+}
+]
+},
+"exercise.scale.a-melodic-minor.1oct.similar.right.2": {
+"p": "generated",
+"fam": "scale",
+"home": [
+9,
+"minor"
+],
+"item": [
+"set only (9) contained in melodic minor, both directions",
+"set only"
+],
+"n_item": 9,
+"hands": {
+"R": [
+"set only (9) contained in melodic minor, both directions",
+"set only"
+]
+},
+"runs": [
+{
+"h": "R",
+"bar": 0,
+"n": 8,
+"npc": 7,
+"dir": 1,
+"lk": [
+9,
+"minor"
+],
+"name": "A melodic minor (ascending) (local key)",
+"how": "local key",
+"form": "melodic minor, ascending form",
+"pcs": [
+0,
+2,
+4,
+6,
+8,
+9,
+11
+],
+"direction_test": "melodic minor, both directions"
+},
+{
+"h": "R",
+"bar": 0,
+"n": 8,
+"npc": 7,
+"dir": -1,
+"lk": [
+9,
+"minor"
+],
+"name": "A natural minor scale (local key)",
+"how": "local key",
+"form": "natural minor",
+"pcs": [
+0,
+2,
+4,
+5,
+7,
+9,
+11
+],
+"direction_test": "melodic minor, both directions"
+}
+]
+},
+"song.folk.el-condor-pasa-if-i-could.pdmx": {
+"p": "pdmx",
+"fam": null,
+"home": [
+4,
+"minor"
+],
+"item": [
+"set only (8) contained in major bebop, melodic minor, both directions",
+"set only"
+],
+"n_item": 8,
+"hands": {
+"L": [
+"set only (6)",
+"set only"
+],
+"R": [
+"set only (7)",
+"set only"
+]
+},
+"runs": [
+{
+"h": "R",
+"bar": 40,
+"n": 6,
+"npc": 5,
+"dir": -1,
+"lk": [
+4,
+"minor"
+],
+"name": "pentatonic set on G (mode to the agent)",
+"how": "parent set",
+"form": "undetermined (one variable degree 10)",
+"pcs": [
+2,
+4,
+7,
+9,
+11
+]
+}
+]
+}
+}

@@ -1,0 +1,50 @@
+﻿rep song.beautiful.hungarian-sonata | 1:4/4x28 B 29:2/4x1 30:4/4x2 B 32:2/4x1 B 33:4/4x14 47:2/4x1 48:4/4x2 B
+rep song.beautiful.mariage-damour | 1:4/4x2 B 3:5/4x1 4:4/4x3 7:5/4x1 8:4/4x2 10:3/4x1 11:4/4x10 21:5/4x1 22:4/4x3 25:5/4x1 26:4/4x19 45:5/4x2 47:4/4x3 50:5/4x1 51:4/4x7 58:3/8x1 ...
+rep song.beautiful.mariage-damour.alt | 1:4/4x2 B 3:5/4x1 4:4/4x3 7:5/4x1 8:4/4x2 10:3/4x1 11:4/4x10 B 21:5/4x1 B 22:4/4x3 25:5/4x1 26:4/4x21 B 47:5/4x1 B 48:4/4x3 51:5/4x1 52:4/4x7 59:3/8x1 ...
+rep song.beautiful.mariage-damour.alt2 | 1:4/4x2 B 3:5/4x1 4:4/4x3 7:5/4x1 8:4/4x2 10:3/4x1 11:4/4x10 21:5/4x1 22:4/4x3 25:5/4x1 26:4/4x19 45:5/4x2 47:4/4x3 50:5/4x1 51:4/4x7 58:3/8x1 ...
+rep song.beautiful.merry-christmas-mr-lawrence | 1:3/4x16 B 17:4/4x59 B
+pdmx song.classical.beethoven-bagatelle-in-d-major-op-119-no-3.pdmx | 0:3/8x8 B 8:1/4x1 B 9:1/8x1 B 10:3/8x17 B 27:1/8x1 B 28:3/8x7 35:1/4x1 B 36:1/8x1 B 37:3/8x23 60:1/4x1 B
+rep song.classical.chopin-ballade-1 | 1:4/4x7 B 8:6/4x200 B 208:2/2x55 B
+rep song.classical.chopin-bolero.nifc | 1:3/8x87 B 88:3/4x173 B
+pdmx song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx | 1:2/2x40 B 41:4/4x98 B
+rep song.classical.chopin-nocturne-20 | 1:4/4x31 B 32:2/4x1 33:3/4x12 45:4/4x21 B
+rep song.classical.chopin-nocturne-20.alt | 1:4/4x31 B 32:2/4x1 33:3/4x12 45:4/4x21 B
+rep song.classical.chopin-nocturne-op9-2 | 0:12/8x33 B 33:6/4x2(len 3) CAD 35:2/4x1 36:12/8x2 B
+rep song.classical.chopin-rondo-op16.nifc | 0:4/4x52 B 52:2/4x417 B
+rep song.classical.chopin-variations-op12.nifc | 1:4/4x32 B 33:6/8x198 B
+rep song.classical.debussy-arabesque-1 | 1:4/4x93 B 94:2/4x1 95:4/4x13 B
+pdmx song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx | 1:4/4x93 B 94:2/4x1 B 95:4/4x13 B
+pdmx song.classical.debussy-reverie.pdmx | 1:4/4x74 B 75:3/4x1 B 76:4/4x26 B
+pdmx song.classical.haydn-sonata-in-g-major-hob-xvi-8.pdmx | 1:2/4x46 B 1:3/4x16 B 1:4/4x11 B 1:3/8x24 B
+pdmx song.classical.het-wilhelmus.pdmx | 1:4/4x2(len 1) B 3:2/4x1 4:4/4x3 7:2/4x1 8:4/4x2 10:3/4x10 B
+pdmx song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx | 1:4/4x15 B 16:6/4x1 B
+pdmx song.classical.kohler-sonatina-op-300-no-1.pdmx | 1:4/4x37 B 38:3/4x24 B 62:2/4x52 B
+pdmx song.classical.mozart-andante-in-c-major-k-1a.pdmx | 1:3/4x4 B 5:2/4x6 B
+rep song.classical.mozart-twinkle-variations-k265 | 1:2/4x289 B 290:3/4x36 B
+pdmx song.classical.mozart-w-a-mozart-minuet-in-c-major-k1f.pdmx | 1:3/4x8 B 9:2/4x1 B 10:3/4x9 B
+pdmx song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx | 1:3/4x8 B 9:2/4x1 B 10:3/4x8 B 18:2/4x1 B 19:3/4x8 B 27:2/4x1 B 28:3/4x9 B
+pdmx song.classical.radetzky-march-for-easy-piano.pdmx | 1:4/4x71 B 72:1/4x1 73:4/4x16 B
+pdmx song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx | 1:3/4x3 B 4:12/4x1 5:3/4x3 B 8:2/4x132 B 140:3/4x33 B 173:8/4x1 174:3/4x25 199:4/4x4 B 203:3/4x16 B 219:2/4x59 B 278:4/4x27 B 305:11/8x1 306:4/4x3 309:33/16x1 310:4/4x30 B
+pdmx song.classical.schumann-schumann-album-for-the-young-op-68-no-11-sicilienne.pdmx | 0:6/8x27 B 25:2/4x12 B
+pdmx song.classical.zimmer-maestro-the-holiday.pdmx | 1:3/4x34 B 35:4/4x4 B 39:3/4x4 B
+pdmx song.folk.10000-reasons-matt-redman.pdmx | 0:4/4x14 B 14:2/4x1 15:4/4x47 B
+pdmx song.folk.3-variations-on-happy-birthday.pdmx | 0:3/4x9 B 8X1:4/4x38 B 1:2/4x36 B 37:3/8x83 119:3/4x83 B
+pdmx song.folk.scarborough-fair-piano-solo.pdmx | 1:3/4x101 B 102:4/4x1 103:3/4x35 B
+pdmx song.folk.this-country-of-mine-extended-mix-of-negaraku-malaysia-s-national-anthem-featuring-britain-japan-singapore-and-brunei.pdmx | 1:4/4x25 B 26:3/4x7 33:4/4x45 B 78:3/4x13 B 91:4/4x26 B
+pdmx song.folk.wake-me-up-avicii.pdmx | 1:4/4x19 B 20:3/4x1 B 21:4/4x8 B 29:2/4x33 B 62:4/4x15 77:3/4x1 B 78:4/4x10 B 88:3/4x1 89:4/4x20 B
+rep song.jazz.chevy-chase | 1:4/4x69 B 70:2/2x38 B
+pdmx song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx | 1:4/4x20 B 21:6/4x3 24:4/4x53 B
+pdmx song.pop.alexandre-desplat-the-danish-girl-theme.pdmx | 1:4/4x4 B 5:3/4x8 13:6/8x50 B
+pdmx song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx | 1:4/4x2 B CAD 3:3/4x271 B
+pdmx song.pop.camille-le-festin-piano-arr-kno.pdmx | 1:9/8x5 B 6:3/4x154 B
+pdmx song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx | 1:4/4x32 B 33:5/4x1 B 34:4/4x48 B CAD
+pdmx song.pop.misc-cartoons-les-mysterieuses-cites-d-or-generique.pdmx | 1:4/4x10 B 11:2/4x1 12:4/4x23 B
+pdmx song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx | 1:4/4x90 B CAD 91:2/4x1 B
+pdmx song.pop.misc-computer-games-a-brotherhood-of-heroes-call-of-duty-wwii-theme-song.pdmx | 1:4/4x23 B 24:2/4x1 25:4/4x8 B
+pdmx song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx | 1:6/8x44 B 45:4/4x24 B
+pdmx song.pop.misc-computer-games-never-forget-by-martin-o-donnell.pdmx | 1:4/4x12 B 13:3/4x26 B 39:4/4x25 B
+pdmx song.pop.misc-soundtrack-westworld-sweetwater.pdmx | 1:4/4x20 B 21:2/4x1 22:4/4x7 B
+pdmx song.pop.misc-television-the-lonely-man-theme.pdmx | 1:4/4x3 B 4:5/4x1 5:4/4x24 B
+pdmx song.pop.sonatina-in-g.pdmx | 0:4/4x27 B 27:3/4x1 B
+rep song.ragtime.joplin-harmony-club-waltz | 1:4/4x8 B 9:3/4x154 B
+items with a change: 49
