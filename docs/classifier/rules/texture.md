@@ -1,6 +1,6 @@
 # Accompaniment textures and technique figures: the rules
 
-Code: `tools/classifier/rules/texture.py` (the `texture.*` ids) and `tools/classifier/rules/technique.py` (the `technique.*` ids), registered with `score.measures`, reading notes only through `score.load`. Tests: `tools/classifier/tests/test_rules_texture.py`. Each id's meaning is its row in `docs/classifier/characteristics.yaml` (`dec`, `gap`); this file defends how the code decides it.
+Code: `tools/classifier/rules/texture.py` (the `texture.*` ids) and `tools/classifier/rules/technique.py` (the `technique.*` ids), registered with `score.measures`, reading notes only through `score.load`. Tests: `tools/classifier/tests/test_rules_texture.py`. Each id's meaning is its row in `docs/classifier/characteristics.yaml` (`dec`, `lacks`); this file defends how the code decides it.
 
 ## What every rule shares
 

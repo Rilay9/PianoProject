@@ -1,5 +1,5 @@
-# The gap-analysis table (docs/prompts/inputs-2026-10-07/classifier-review.md): every characteristic
-# placement needs, how verifiable it is, what code exists, and the gap. tools/classifier/build_matrix.py
+# The characteristics table (docs/prompts/inputs-2026-10-07/classifier-review.md): every characteristic
+# placement needs, how verifiable it is, what code exists, and what it lacks. tools/classifier/build_matrix.py
 # validates every row and renders generated/table.md from it. Rules are not here (no design yet).
 #
 # Fields, one row per characteristic:
