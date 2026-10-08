@@ -28,6 +28,13 @@ const registered = (event, script, matcher) =>
   );
 if (!registered('Stop', 'stop-checklist.js')) fails.push('Stop checklist not registered');
 if (!registered('PreToolUse', 'commit-gate.js', 'Bash')) fails.push('rules commit gate not registered');
+// The independent brief auditor (an agent hook) must carry the repo's current prompt.
+try {
+  const want = fs.readFileSync(path.join(__dirname, 'brief-auditor-prompt.md'), 'utf8').replace(/\r/g, '');
+  const ok = (hooks.PreToolUse || []).some((h) => /Agent/.test(h.matcher || '') &&
+    (h.hooks || []).some((x) => x.type === 'agent' && String(x.prompt || '').replace(/\r/g, '') === want));
+  if (!ok) fails.push('brief auditor not registered with the current prompt (run .claude/hooks/install_hooks.py)');
+} catch (e) { fails.push('brief auditor prompt file missing'); }
 if (!registered('PreToolUse', 'brief-check.js', 'Agent') || !registered('PreToolUse', 'brief-check.js', 'SendMessage'))
   fails.push('brief check not registered for Agent and SendMessage');
 

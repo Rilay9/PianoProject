@@ -21,7 +21,8 @@ Binding requirements (CLAUDE.md "Reuse before reinvention"; docs/classifier/rule
 3. Hunt counterexamples on real catalogue items: the commonest learner case, the project's
    own drills, and plausible look-alikes (another style, another instrument).
 4. Run `python tools/classifier/check_rules.py docs/classifier/rules/area-<area>.md` and
-   report its output.
+   report its output. Any claim of validation written in free text (outside a **Validated:**
+   line) is checked the same way: its evidence file is opened, or the claim is WRONG material.
 5. One line per characteristic: OK / WRONG material / WRONG minor / UNSURE, the correction,
    and the evidence (measured: what you ran / reading).
 <!-- binding:end -->

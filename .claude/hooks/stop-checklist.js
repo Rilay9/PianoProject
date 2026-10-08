@@ -32,7 +32,9 @@ process.stdin.on('end', () => {
   let payload = {};
   try { payload = JSON.parse(input); } catch { /* no payload: still run */ }
   if (payload.stop_hook_active) process.exit(0);
-  const turn = lastTurn(payload.transcript_path);
+  // On SubagentStop, read the subagent's own transcript where the payload gives it (the process
+  // review of 2026-10-08 found it read the main session's).
+  const turn = lastTurn(payload.agent_transcript_path || payload.transcript_path);
   if (!turn.substantive) process.exit(0);
 
   // The repository is two levels above this file. Not CLAUDE_PROJECT_DIR: sessions are
