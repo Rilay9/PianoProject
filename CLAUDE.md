@@ -103,6 +103,33 @@ earns a turn.
    abilities list kept finding more because each checker read new sources)? If it does not converge,
    name the end condition or stop.
 
+## Before sending any brief
+
+The brief-check hook prints this section and the eight questions above before any agent
+brief or brief change goes out; the brief carries a line starting "Brief check:" saying what
+the pass changed. Each question below is a mistake already made here (the owner, 2026-10-08).
+
+1. **Reuse first.** Does the brief make the agent search existing libraries, trained models
+   and annotated datasets before writing anything custom, and give a reuse line for every
+   rule or detector it writes (what it used, or what it searched and why nothing serves)?
+   Hand-written detectors without that search failed on real scores in chunk 1.
+2. **This step only.** Does it do the step the owner named, in the owner's words, and nothing
+   from a later step (assignment inside a list, rules inside a survey)?
+3. **Bounded and ending.** Are the sources it may read named, its output sized to the goal,
+   and its end stated? No open-ended search, no catalogue dumps, no fixed number of passes.
+4. **Pilot before fan-out.** Is one small run tried and looked at before the same brief goes
+   to several agents at once?
+5. **Run, not asserted.** Does it demand every example be run through the rule, real
+   positives and plausible counterexamples (another style, another instrument, an ordinary
+   look-alike), each claim labelled measured (by what) or reading, and corrections re-run
+   in the same step?
+6. **Inputs fixed.** Is its base commit named, and is nothing running that changes what it
+   reads?
+7. **Common sense for a learner.** Would a piano learner need what it produces? Does a rule it
+   adds come from the owner or the task, not from me?
+8. **Cost.** Is this the cheapest capable way (the model's strength, how many agents, whether
+   they run at once), given the usage the owner has left?
+
 ## Proportional verification and token cost
 
 Choose verification by what could actually break. For a documentation-only or narrow non-behavioral change, inspect the diff and run the relevant lightweight integrity check if one exists; **do not automatically run E2E, the full suite, or a build**. For a focused rule change, use source validation, representative positive/negative/near-miss score checks and targeted tests. For a learner-facing flow or integration change, use the relevant browser/E2E tests; broad suites are for broad changes, shared foundations, release gates or credible cross-cutting risk. Batch expensive runs when safe, never skip an essential check just to save tokens. Record what was and was not run without padding the report.

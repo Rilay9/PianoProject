@@ -21,14 +21,18 @@ process.stdin.on('end', () => {
   if (/^\s*Brief check:/m.test(text)) process.exit(0);
 
   const root = path.resolve(__dirname, '..', '..');
-  let checklist = '(CLAUDE.md could not be read: run its "Before reporting any piece of work" questions)';
+  // Both sections of CLAUDE.md: the brief questions (mistakes made in briefs, the owner,
+  // 2026-10-08) first, then the eight reporting questions.
+  const section = (md, heading) => {
+    const start = md.indexOf(heading);
+    if (start === -1) return '(CLAUDE.md has no "' + heading.slice(3) + '" section)';
+    const next = md.indexOf('\n## ', start + 5);
+    return md.slice(start, next === -1 ? undefined : next).trim();
+  };
+  let checklist = '(CLAUDE.md could not be read: run its "Before sending any brief" and "Before reporting any piece of work" questions)';
   try {
     const md = fs.readFileSync(path.join(root, 'CLAUDE.md'), 'utf8');
-    const start = md.indexOf('## Before reporting any piece of work');
-    if (start !== -1) {
-      const next = md.indexOf('\n## ', start + 5);
-      checklist = md.slice(start, next === -1 ? undefined : next).trim();
-    }
+    checklist = section(md, '## Before sending any brief') + '\n\n' + section(md, '## Before reporting any piece of work');
   } catch (e) { /* keep the fallback */ }
 
   process.stderr.write(

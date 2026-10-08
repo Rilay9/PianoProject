@@ -29,6 +29,7 @@ const run = (script, payload) =>
   spawnSync(process.execPath, [path.join(__dirname, script)], { input: JSON.stringify(payload), encoding: 'utf8' });
 const bare = run('brief-check.js', { tool_input: { prompt: 'do x' } });
 if (bare.status !== 2 || !/Before reporting any piece of work/.test(bare.stderr || '')) fails.push('brief check does not block a brief without its check line');
+if (!/Before sending any brief/.test(bare.stderr || '') || !/Reuse first/.test(bare.stderr || '')) fails.push('brief check does not print the brief questions');
 const checked = run('brief-check.js', { tool_input: { prompt: 'Brief check: nothing found\ndo x' } });
 if (checked.status !== 0) fails.push('brief check blocks a brief that has its check line');
 const stop = run('stop-checklist.js', {});
