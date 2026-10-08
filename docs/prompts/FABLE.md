@@ -4,7 +4,7 @@
 
 The previous contract (ability chains, the shipped-ability scoreboard, the order of work before 2026-10-08) is archived whole at `docs/prompts/archive/FABLE-2026-10-07.md`, reference only; its section 3 still defines the chain records `tools/content/check_chains.py` checks. The convergence charter is retired (`docs/prompts/archive/charter-2026-10-03.md`; the owner, 2026-10-08: "discard the charter if necessary").
 
-## 1. The objective (the owner, 2026-10-08; spelling corrected in the quotes, verbatim in `inputs-2026-10-08/owner-rules-plan.md`)
+## 1. The objective (edited-for-spelling excerpts of the owner's 2026-10-08 words; exact original wording in `inputs-2026-10-08/owner-rules-plan.md`)
 
 > "Right now we need to figure out EXACTLY and comprehensively what the rules should be for EVERY characteristic and ability that we'll be using for placement and verification. This'd be actual counts, detections, library stuff, etc for the rules for code, and for gaps for agents it'd be instructions that'd be used for it to determine based on the other coded stuff, research online, and its own reading of the music xml. We need this full breakdown and before that, a full list of all the necessary abilities and characteristics (found by syllabus and other research), to be perfect before anything else, as we'll be building the rules and prompts from the list of rules and gaps, and the code from the rules and prompts."
 
@@ -27,7 +27,7 @@ Each phase finishes, by the rule in section 3, before the next starts.
 
 - Each check is done by independent agents that did not write what they check, fresh for each pass (the owner: "Use independent agents for each iteration, and I'll use chatgpt for a review after").
 - A check gives every row a recorded verdict, and challenges it with real scores, counterexamples, published definitions and missing items; agreeing with the table is not a check.
-- A list or rule set is done when two consecutive independent passes find nothing that would change it materially (the owner, 2026-10-08, asked whether this is the bar: "I guess"). Then the owner reviews it with ChatGPT.
+- Two consecutive independent passes without a material finding are a provisional review stopping signal, **not proof of completeness or correctness**. The owner tentatively accepted this bar ("I guess") and reviews with ChatGPT afterward; do not represent it as a firm perfection guarantee.
 
 ## 4. How work runs
 
