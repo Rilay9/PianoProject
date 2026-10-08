@@ -1,5 +1,7 @@
 # Gap plan: what decides each gap, and how the results place items
 
+**To decide in Phase 2 (2026-10-08):** this file counts every row not EXISTS as a gap, including rows code can verify once built. The owner's meaning of a gap is what code cannot verify ("gaps mean that its not possible to verify by code"); Phase 2 sorts the rows and corrects the wording.
+
 **Version 1: the gaps known after table iteration 1 (base 4cd63cc8), not a complete list.** Later check passes will find more missing characteristics and wrong rules; each finding adds or changes a line here. The placement design below does not depend on every gap being known.
 
 Bounded by FABLE §2 item 7 (the owner and the reviewer, 2026-10-07): for every characteristic that is not EXISTS, and every open decision, the route that decides it, and how those results decide rung placement. It ends when each gap has its route; it is not a research programme. Rules before code: nothing here is implemented, and no row below is built until its rule has passed the table checks.
