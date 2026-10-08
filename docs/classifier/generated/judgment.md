@@ -1,10 +1,10 @@
 # JUDGMENT rows, each split
 
-Generated; do not edit. The 7 rows whose decision is JUDGMENT, each split into the evidence code
+Generated; do not edit. The 8 rows whose decision is JUDGMENT, each split into the evidence code
 establishes first and the smaller question left to an agent. The agent's packet is the measured rows and
 the residual question only, never the whole score with an open question.
 
-**7 is not a ceiling** (the reviewer, 2026-10-07). These are the named terminal judgments of this
+**8 is not a ceiling** (the reviewer, 2026-10-07). These are the named terminal judgments of this
 ontology. A SOURCED_RULE or CALIBRATED_MODEL row may keep ambiguity after it is built (harmony from the notes,
 phrase segmentation, voice independence, style, fingering demand, form); it then answers UNKNOWN for that
 item, with its confidence, and an UNKNOWN never becomes FITS. Nothing here claims the rest settles objectively.
@@ -26,7 +26,7 @@ item, with its confidence, and an UNKNOWN never becomes FITS. Nothing here claim
 
 ## `style.good-example`: a good teaching example of style X
 
-- measurable first: `style.evidence` (INFERRED/CALIBRATED_MODEL, PARTLY), `harmony.voicing` (EXACT/SOURCED_RULE, MISSING), `harmony.rhythm` (EXACT/DIRECT, PARTLY), `hands.per-bar-range` (EXACT/DIRECT, EXISTS), `target.prevalence` (EXACT/DIRECT, EXISTS)
+- measurable first: `style.evidence` (INFERRED/CALIBRATED_MODEL, PARTLY), `harmony.voicing` (EXACT/SOURCED_RULE, PARTLY), `harmony.rhythm` (EXACT/DIRECT, PARTLY), `hands.per-bar-range` (EXACT/DIRECT, EXISTS), `target.prevalence` (EXACT/DIRECT, EXISTS)
 - residual: whether what the code found is idiomatic for the style (the agent gets the measured voicings, attack rhythm, register and spacing, and answers only that)
 
 ## `quality.coherence`: the item hangs together as music
@@ -43,4 +43,9 @@ item, with its confidence, and an UNKNOWN never becomes FITS. Nothing here claim
 
 - measurable first: `prereq.untaught-demands` (EXACT/DIRECT, EXISTS), `difficulty.level` (INFERRED/CALIBRATED_MODEL, PARTLY), `target.prevalence` (EXACT/DIRECT, EXISTS), `target.salience` (EXACT/SOURCED_RULE, PARTLY), `target.isolation` (EXACT/DIRECT, PARTLY), `item.continuity` (INFERRED/SOURCED_RULE, PARTLY), `role.suitability` (EXACT/SOURCED_RULE, MISSING)
 - residual: given every measured fact inside the rung's rule, whether this item is the one to teach with; the agent sees the facts and the open fields only
+
+## `meta.familiarity`: the tune is widely known (Ode to Joy, Twinkle), so the learner can play it without the page
+
+- measurable first: `meta.title` (EXTERNAL/DIRECT, PARTLY), `integrity.duplicate-version` (INFERRED/SOURCED_RULE, PARTLY)
+- residual: whether the tune is widely known to the learner, given its title and how many uploads of it exist; no sourced list of familiar tunes
 
