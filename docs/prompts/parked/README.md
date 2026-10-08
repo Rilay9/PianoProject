@@ -42,3 +42,7 @@ The cause is in `app/src/score/extractScoreModel.ts` / `types.ts`, which the app
 
 - `tools/classifier/score.py` fails to load 4 scores (Bach Invention 1, Chopin Ballade 1, Puccini O mio babbino caro, Sakamoto): three inside partitura's importer (music21 loads them), the Chopin one in score.py's own pickup line.
 - The CIPI difficulty dataset needs an access request (academic, non-profit only); not requested.
+
+## Possibly duplicated chord symbols in served PDMX files (recorded 2026-10-08)
+
+The code-or-agent review (`docs/classifier/audits/code-or-agent-review/rows.md`, S2) counted 33 of the 110 served PDMX files with chord symbols carrying each symbol twice at the same time, a music21 re-export artefact. Whether the app draws them twice is unchecked. To check: render one of those files in the score screen.
