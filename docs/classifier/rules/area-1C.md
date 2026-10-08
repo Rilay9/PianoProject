@@ -2,6 +2,8 @@
 
 **What this is.** FABLE.md section 2, item 3 ("Rules for code"), for the 30 characteristics of `docs/classifier/characteristics-list.md` section 1.C, in that order. Every one of the 30 is marked code or code + agent in at least one pipeline, so every one has a rule here; none is agent-only or a gap. For each: the input, the library call or the custom algorithm, each threshold with its source or its validation on the catalogue, the output and its provenance, when it answers UNKNOWN, what differs by pipeline, the agent's residual where there is one (the residual only; the instruction is Phase 3), and real items from the catalogue. Worktree cut from origin at 75862593. Nothing in the repository's code, tables or other rules pages was changed. Checked by an independent agent (worktree at 92d1be20) and corrected once on origin c53b659b, 2026-10-08: the check is `docs/classifier/audits/rules-1C/rows.md` and what was done with each finding is `docs/classifier/audits/rules-1C/applied.md`.
 
+**Validated once, 2026-10-08** (worktree cut from origin at 485f2be2; `docs/classifier/audits/rules-1C/validation.md`): every rule re-run on its named examples, on every case the check showed failing and on plausible counterexamples, by independent scripts in `build/v1c/` (not committed). Each section now opens with its **Validation status**: validated 20, uncertain 6, failing 4 (`notation.times`, `rhythm.syncopation`, `rhythm.tuplets-other`, `rhythm.cadenza`). Each threshold's basis is relabelled in the table at the end. Two premises below are false as measured: the held PDMX "originals" are byte-identical to the app's files, and the app's files keep cue size (section 0 and finding 12 are annotated). Nothing was heard.
+
 **Status: checked and corrected; the orchestrator's judgement is still to come.** Phase 2's done condition (FABLE.md section 2, item 3) needs this page argued against by another agent, the findings applied and the orchestrator's judgement. The first two have happened: the checker's 30 verdicts are in `rows.md` (counts by script at the end of this page) and every WRONG verdict was applied once, as `applied.md` records line by line. The third has not. **Attribution.** A measurement tagged [check: ...] is the checker's, from its scripts under `build/a1c/` in its worktree (not committed, not re-run by the applier of its findings); a measurement tagged [measured, ...] without "check" is the writer's, from `build/r1c/`. Nothing here was heard; where a musical question cannot be answered from the notation it is marked *unverified as music*. Where the check gave no concrete correction, the rule was written so that it no longer gives the wrong answer found, and the section says how.
 
 ## 0. What every rule here shares
@@ -14,7 +16,7 @@
 
 **The input.** Unless a section says otherwise a rule reads the item's file through `score.load` (partitura 1.9.0 `load_musicxml`, `note_array(include_staff, include_time_signature, include_metrical_position, include_key_signature, include_pitch_spelling)`): tie chains merged into one note (partitura's `notes_tied`), grace notes with zero duration and left out, the hand by score.py's rule (staff 1 right, staff 2 left; two one-staff parts: part 0 right; one staff: the catalogue's `hands`). What partitura drops is read by the raw reader: `<time symbol>`, composite `<beats>`, `<metronome>` with its beat unit and dots, `<swing>`, `<multiple-rest>`, `<cue>`, `<time-modification>` ratios, beams, `print-object`. Rhythm reads sounding time, so the octave shift question (displayed against sounding pitch) does not arise in this area except where a section names a pitch (`rhythm.repeated-notes` compares MIDI pitches, the same under either reading).
 
-**The felt beat** (one table for the whole area, from `metre.class` below): simple metres beat on the denominator (2/4, 3/4, 4/4: quarter; 2/2, 3/2: half; 2/8, 3/8: eighth); compound metres (numerator 6, 9, 12, 15 or 18, any denominator: 6/8, 9/8, 12/8, 6/4, 12/4, 6/16) beat on three of the denominator's value (dotted quarter in 6/8, dotted half in 6/4); irregular metres beat on the denominator unless `metre.grouping` gives the groups. The beat's division: three in compound metres, two otherwise. Strong beats: the downbeat, and in a four-beat bar also beat 3 (music21's `TimeSignature.getAccentWeight` gives 0.5 there and less elsewhere). **Beat weights** (used by the beat-level kind of `rhythm.syncopation` and by `rhythm.ties`): downbeat 1, beat 3 of a four-beat bar 0.5, every other beat 0.25 [operational reading of `getAccentWeight`, not re-derived]. A 6/4 bar's felt beat comes from `metre.grouping` where beams or words give one, and from the class (two dotted-half beats) only otherwise (`metre.class`).
+**The felt beat** (one table for the whole area, from `metre.class` below): simple metres beat on the denominator (2/4, 3/4, 4/4: quarter; 2/2, 3/2: half; 2/8, 3/8: eighth); compound metres (numerator 6, 9, 12, 15 or 18, any denominator: 6/8, 9/8, 12/8, 6/4, 12/4, 6/16) beat on three of the denominator's value (dotted quarter in 6/8, dotted half in 6/4); irregular metres beat on the denominator unless `metre.grouping` gives the groups. The beat's division: three in compound metres, two otherwise. Strong beats: the downbeat, and in a four-beat bar also beat 3 (music21's `TimeSignature.getAccentWeight` gives 0.5 there and less elsewhere). **Beat weights** (used by the beat-level kind of `rhythm.syncopation` and by `rhythm.ties`): downbeat 1, beat 3 of a four-beat bar 0.5, every other beat 0.25 [operational reading of `getAccentWeight`, not re-derived; validation 2026-10-08, music21 10.5 measured on 12 metres: the numbers are not music21's (it gives 0.5, not 0.25, to beat 2 of 2/4 and 6/8, beats 2 and 3 of 3/4, 9/8 and 3/2, and every non-downbeat beat of 5/4 and 7/8, so "less elsewhere" below is wrong for those bars), but the order of the beats is the same in every metre measured, and the rules only compare weights, so their outcomes are music21's]. A 6/4 bar's felt beat comes from `metre.grouping` where beams or words give one, and from the class (two dotted-half beats) only otherwise (`metre.class`).
 
 **Readable bars.** As `rules/rhythm.py`'s `Bars`: a bar whose notated length equals its signature's; a pickup bar is read right-aligned to the bar line that ends it (its notes keep their beat positions within the metre); any other short or long bar is not read by a per-beat rule, and is counted.
 
@@ -22,13 +24,15 @@
 
 **Output.** Each rule returns a `score.Result`: a value (present or absent, counts per kind, per hand or staff), `where` (0-based bar indices; printed bar numbers are these plus one, a pickup counted as bar 0 here), provenance (`exact` for a deterministic reading of the notation; `two-witnesses` where a second reader was run and agreed; `one-witness` for a value the file states but does not print; `metadata` for a catalogue fact), or UNKNOWN with its reason. Every rule also answers UNKNOWN `no notes` and `the file does not load` (the 4 items above).
 
-**The original uploads.** `content/scores/pdmx` in the main checkout holds 556 PDMX source files, mapped to the catalogue by `content/sources/pdmx.json` [check: measured, `pdmxsrc.py`, `cuemap.py`]. The app's file is music21's re-export of the piano staves: it keeps the piano staves only and makes cue-size notes full size (finding N1 below). A rule that needs what the re-export loses (cue size, omitted parts) reads the source file by that mapping, and answers UNKNOWN (`source not held`) for an item with no mapped source (this UNKNOWN is the applier's, written so the rule does not guess). This is the one statement for the whole page (`rhythm.cadenza`, `rhythm.silence`, `rhythm.values`).
+**The original uploads.** [validation 2026-10-08, measured by `build/v1c/same_all.py` and `cue.py`: **this paragraph is wrong.** All 544 mapped files under `content/scores/pdmx` match their `convertedSha256` in `pdmx.json`, none their `rawSha256`, and all 544 are byte-identical to the app's file for the same id: the originals are not held. The app's files keep cue size as `<type size="cue">` (14 PDMX and 12 rep files), so a rule that wants cue size reads the item's own file in every pipeline, and the omitted parts are not available anywhere. The text below is kept as written.] `content/scores/pdmx` in the main checkout holds 556 PDMX source files, mapped to the catalogue by `content/sources/pdmx.json` [check: measured, `pdmxsrc.py`, `cuemap.py`]. The app's file is music21's re-export of the piano staves: it keeps the piano staves only and makes cue-size notes full size (finding N1 below). A rule that needs what the re-export loses (cue size, omitted parts) reads the source file by that mapping, and answers UNKNOWN (`source not held`) for an item with no mapped source (this UNKNOWN is the applier's, written so the rule does not guess). This is the one statement for the whole page (`rhythm.cadenza`, `rhythm.silence`, `rhythm.values`).
 
 **The hand on PDMX** (1.M): where a rule reports what one hand plays, code flags the passages where the staff may not be the hand (a voice split inside a bar across staves, a voice-number collision, hand words such as "m.g." or "l.h.", a staff chord beyond one hand's reach) and an agent reads only those, once per item, shared by every row. Rules defined per staff (what is printed on a staff) do not inherit it. This is not repeated in each section; a section says only which of the two its rule is.
 
 ---
 
 ## notation.times
+
+**Validation status (2026-10-08): failing.** The pair clause is right on the Bagatelle (idx 8-9, 26-27, 35-36) and on Mozart's Minuets K. 1e (three 2/4 bars, each followed by a one-beat bar: 2 + 1 = 3/4) and K. 1f; the final-bar clause on the Bagatelle idx 60; the words clause on Op. 9 No. 2. **Wrong:** "a one-bar signature longer than the bars around it" turns measured one-bar changes into cadenza bars and drops them from the changes of metre: *Mariage d'amour* idx 2 (5/4 of running sixteenths, and four more 5/4 bars), *Scarborough Fair* piano solo idx 101 (4/4 of quarters and eighths in 3/4), *The Lonely Man* idx 3 (5/4), *Holy, Holy, Holy* idx 15 (the final 6/4 chord). **Undecidable by code:** "a one-bar pickup to a new section" has no test; Radetzky's 1/4 bar has no barline, repeat, key change or words anywhere in idx 60-80 (the check's open point, measured), and *Rêverie* idx 74 and *Wake Me Up* idx 19 are single short bars at boundaries that are not pickups. The bar after a device (the return to 3/8) is literally "a bar whose signature differs from the one before". [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** The raw reader's `<time>` elements of part 0, each with its measure index, `symbol` attribute, composite `<beats>` ("3+2") and `<senza-misura>`; witnesses: music21 `meter.TimeSignature` per measure and partitura's `ts_beats`/`ts_beat_type` per note.
 
@@ -46,6 +50,8 @@
 **Examples.** Positives: `song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx` (changes of signature), `song.beautiful.hungarian-sonata` (changes). Near-misses: `song.classical.beethoven-bagatelle-in-d-major-op-119-no-3.pdmx` (two short bars that sum to a 3/8 bar, and a final short bar that completes the pickup: partial-bar devices, not changes of metre); `song.classical.radetzky-march-for-easy-piano.pdmx` (a one-bar pickup to the next section); `song.classical.chopin-nocturne-op9-2` (signature changes inside "Senza tempo": cadenza bars, not changes of metre); `song.classical.beethoven-moonlight-i` (prints ¢ with numbers 4/4).
 
 ## metre.class
+
+**Validation status (2026-10-08): uncertain.** The table classes the named items as stated (7/8, 12/8, 6/8, 3/8 apart, ¢ over 4/4). Open: T49 never fires: `metre.grouping` reads beams only with denominator 8 or 16 and none of the 11 files with 6/4 has counting words, so every 6/4 bar falls to compound duple, Debussy's *Cathédrale* included, which this section reads in three halves. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** Each signature from `notation.times` (numerator summed over composite parts), with its symbol.
 
@@ -69,6 +75,8 @@
 
 ## mark.anacrusis
 
+**Validation status (2026-10-08): validated.** Re-run on the named items: *Away in a Manger* first bar one quarter of 3/4, *Alexander's Ragtime Band* two of four, Für Elise one eighth of 3/8; *Oh! Susanna* and *Clair de lune* (beginner) full first bars, the late-entry near-misses. The hidden-rest guard (T51) has no case to run on. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** The raw reader: the first bar's notated length (the furthest point any part, staff or voice reaches in it, from `<duration>`, `<backup>` and `<forward>`, rests included) and its signature; witness: `score.load`'s `pickup` (partitura's measure lengths).
 
 **Rule.** An anacrusis is present when the first bar is shorter than its signature's bar. Its length in beats is the first bar's length over the felt beat. Not an anacrusis: a full first bar that opens with rests (reported as `late_entry`, the offset of its first note in beats, which `rhythm.silence` uses); a pickup written as its own short signature (none found in the catalogue: 0 files whose first signature is shorter than the second and lasts one bar, measured). **Guard** (from the check; no case in the catalogue now): a full first bar whose leading rests are all `print-object="no"` looks like a pickup to the learner, so it is read as an anacrusis, its length being the bar's less the hidden rests' (the length is this page's reading). `implicit="yes"` is not required: it is a witness only.
@@ -82,6 +90,8 @@
 **Examples.** Positives: `song.classical.away-in-a-manger.pdmx`, `song.classical.alexander-s-ragtime-band.pdmx`, `song.classical.beethoven-fur-elise` (one-eighth pickup). Near-misses: `song.classical.foster-oh-susanna.pdmx` and `song.classical.debussy-clair-de-lune-beginner-version.pdmx` (full first bar led by rests: late entry, not anacrusis); every generated item.
 
 ## rhythm.values
+
+**Validation status (2026-10-08): validated.** Counts re-run: 512ths 29 in 4 files, 256ths 15 in 3, 128ths 11 in 4 (the check's); the writer's five files are the union of the 512th and 256th files. Every sub-128th value sits in a bar that also carries a quantisation ratio (Prelude No. 15 no. 4-5 and 23-24, *Ain't Misbehavin'* 12-13 and 23-24, *O mio babbino caro* 50-52, *Malagueña* 61 and 69, Ballade No. 4 156-157), none in a rep or generated file. **The text below is wrong in two places:** Ballade No. 4's three 512ths are a 512th rest at a 5:4 ratio at no. 156-157, not the bar-50 fioritura; and the app's file keeps cue size (`<type size="cue">`), so nothing was "made full size" (section 0). *O mio babbino caro* has 7 512ths and 2 256ths. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** The raw reader's `<type>` on every note and rest (chord members counted once, grace notes apart), with `<dot>` and `<time-modification>`; witness: music21 `duration.Duration.type` and partitura's `symbolic_duration["type"]`.
 
@@ -99,6 +109,8 @@
 
 ## rhythm.dotted-quarter
 
+**Validation status (2026-10-08): validated.** Re-run: 4 dotted-quarter-eighth pairs in the drill, 12 dotted-eighth-16th pairs in Für Elise; the 6/8 drill's dotted quarters all sit in 6/8 bars (the beat, excluded by the metre); the 6/8 long-short drill has no dot. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** partitura's untied notes (`part.notes`) with `symbolic_duration` (`type`, `dots`), grouped by staff and voice and ordered by onset; witness: the raw reader's `<dot>` counts.
 
 **Rule.** Each dotted note is counted by kind: dotted half, dotted quarter, dotted eighth, dotted 16th, and double-dotted values apart. For each, the note that follows it in the same staff and voice and starts where it ends is recorded, so the pair kinds a syllabus names are counted: dotted quarter followed by an eighth, dotted eighth followed by a 16th. In a compound metre a dotted quarter (6/8) or dotted half (6/4) is the beat and is counted as `beat-length dotted value`, not as a dotted rhythm (the app's `dottedQuarters` already leaves compound bars out). A dotted value made by a tie (quarter tied to an eighth) is not a written dotted note and is not counted (as the app).
@@ -113,6 +125,8 @@
 
 ## rhythm.ties
 
+**Validation status (2026-10-08): uncertain.** Re-run as corrected: `exercise.syncopation.tied-across-bar` 2 chains from a weak beat; the tumbao 7; Waltz Op. 69 No. 2 23; *Cielito lindo* 12; *Alexander's Ragtime Band* 9 from off the beat; `exercise.ii-v-i.a` 0 (chords tied from the downbeat). The inner-chain choice holds on the items read (Bach's Prelude in C: the held inner E; *I Got Rhythm*: inner chord members under a top note found anyway; Mazurka Op. 68 No. 4: inner suspensions); a melody in an inner voice was not looked for. Open: a final note from a weak beat tied into the last bar counts (Ode to Joy easy, *Sakura*), as in `rhythm.syncopation`. The counts under the corrected rule replace the first definition's below (Output). [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** partitura's untied notes with `tie_next`/`tie_prev` (each chain from its head), positioned in readable bars; witness: the raw reader's `<tie type="start">`.
 
 **Rule.** Count tie chains (a chain of three notes is one tie for a learner's purpose, and its links are also counted). For each chain: within a bar or across a bar line (the chain ends in a later bar); and **syncopating** when its head is weaker than some beat the chain sounds through and its line has no new onset there (Longuet-Higgins and Lee at the beat level, as the `beat-level held` and `held` kinds of `rhythm.syncopation`, reported here too). Two parts are reported apart:
@@ -123,13 +137,15 @@ The first version required the head to start off the felt beat, so a weak-beat n
 
 **Why the count ratio was 0.5.** The proving run's "count ratio median 0.5 against the witness, unexplained" is the unit, confirmed by the check [check: reading, arithmetic]: the witness counts every written note at either end of a tie (`prove_exists.py` line 243, `tie_start or tie_stop`, so k per k-note chain); the app's model merges a tie chain into one note and `detect.ts` `ties` locates it once (`tieLength > 1`), and the ratio is stored over the witness (line 452), which gives 1/k: 0.5 for two-note chains, p10 0.424 for some longer ones. Not re-run as a count comparison. The rule above counts chains, and reports links apart, so both units are named.
 
-**Output.** Chains, links, within-bar, across-bar, syncopating (from a weak beat and from off the beat apart), with bars. Measured under the **first** definition (syncopating from off the beat only; not re-run for the new one): generated 219 chains, 217 across the bar, 11 syncopating (11 items); PDMX 9,647 chains, 6,616 across, 4,835 syncopating in 187 files. Under the new definition both syncopating counts are larger by the weak-beat chains, which have not been counted. Provenance `exact`. **UNKNOWN**: never beyond the shared reasons.
+**Output.** Chains, links, within-bar, across-bar, syncopating (from a weak beat and from off the beat apart), with bars. Measured under the **first** definition (syncopating from off the beat only; not re-run for the new one): generated 219 chains, 217 across the bar, 11 syncopating (11 items); PDMX 9,647 chains, 6,616 across, 4,835 syncopating in 187 files. Under the new definition both syncopating counts are larger by the weak-beat chains, which have not been counted. [validation 2026-10-08, measured under the corrected rule by `build/v1c/sync.py --all` (generated / PDMX, here the ids ending `.pdmx` or holding `.pdmx.`, 524 files / rep): chains 219 / 9,696 / 10,107; across the bar 217 / 6,653 / 4,962; syncopating from a weak beat 72 / 1,020 / 671; from off the beat 11 / 3,128 / 2,616; inner chains, not counted as syncopating, 72 / 3,521 / 4,849 (of them from off the beat through the next beat 0 / 1,623 / 2,837, which is most of the difference from the first definition's 4,835).] Provenance `exact`. **UNKNOWN**: never beyond the shared reasons.
 
 **Pipelines.** As the rule. PDMX ties are exact on the held file (the proving run: 1 of 524 disagree).
 
 **Examples.** Positives: `song.classical.alexander-s-ragtime-band.pdmx` (9 chains, all syncopating; the check counted the same 9 tie starts [check: measured, `raw.py ties`]), `exercise.secondary-rag.c.4bar` (syncopating ties), `exercise.syncopation.tied-across-bar` (an F on beat 4 tied into bar 2 and an E half note from beat 3 over bar 3: two chains from a weak beat, and a generated syncopation drill that the first definition gave 0 syncopating ties [check: measured, `raw.py dump`]), `exercise.latin-groove.a.son-3-2` (the tumbao's beat-4 bass tied over every bar line: the tumbao's anticipation, syncopating from a weak beat; its 7 across-bar chains were the first version's near-miss, and the file prints "Neither hand is on the beat" [check: measured]). Near-miss: `exercise.ii-v-i.a` (chords tied across the bar line from the downbeat: across-bar, not syncopating; 217 across-bar chains in the generated files). A second near-miss was not read by the check or by the applier, and none is named.
 
 ## rhythm.syncopation
+
+**Validation status (2026-10-08): failing.** **Right:** every case the check showed failing is now found: tied-across-bar (beat-level held, beat 4 into the bar and beat 3 over the bar), sixteenth (held at the subdivision), *Åse's Death* idx 7 (`song.classical.grieg-ase-s-tod.pdmx`), the Vivaldi *Spring* simple arrangement idx 14 (`song.classical.vivaldi-vivaldi-spring-simple-arrangement.pdmx`), *Let It Snow* idx 2 (`song.pop.frank-sinatra-let-it-snow-leadsheet.pdmx`), Waltz Op. 69 No. 2 (`song.classical.chopin-waltz-op69-2.nifc`, 23), *Cielito lindo* (`song.folk.cielito-lindo.simple` and `song.folk.exercise-cielito-lindo.pdmx`, 12 each), the tumbao. The recipe cross-check passes: all 44 generated items whose concepts name syncopation, and both `syncopation`-family drills, are present. Rejected: `ii-v-i`, Alberti, stride, oom-pah, scales, Hanon, arpeggios, boogie, walking bass (0 present in those families); Bach's Prelude in C, BWV 999, `broken7` (silent-beat report only); the triplet quarters, *Joyful, Joyful*, the Handel Sarabande (none). Of 1,165 generated items whose recipe declares no syncopation, 73 are present, each by a figure the definition names (comping off-beats 46, the 4:3 waltz 5, the tresillo bass cell 1, half or dotted half on beat 2 in riffs and studies 11, a final note anticipated off the beat in the shaping drills 10). **Wrong:** (1) `song.classical.satie-gnossienne-1` has no `<time>`; partitura's default metre gives it 14 beat-level events: the rule needs UNKNOWN `unmetred`. (2) The bass-then-held-chord test splits one figure: the Tarantella's left hand (bass on 1, chord on 2 tied over the bar) gives 4 such events and 22 beat-level held ones, the 22 having an octave bass, not "a single note"; and it fires in a right-hand melody (Mazurka Op. 68 No. 4 idx 32, 34). It is right on the PDMX *Gnossienne* No. 1 left hand (30). (3) "Present" includes off-beat attack and bass-then-held-chord, so 67 generated items and Mazurka Op. 68 No. 4 are present by an accompaniment figure alone. **Open:** a final note started on a weak beat and tied into the last bar decides presence in 3 items (*Kum ba yah*, this section's near-miss, now present; Ode to Joy easy; *Sakura*); the accent kind counts an accent on beat 3 of 3/4 and not on beat 2 (Mazurka Op. 17 No. 4, 15). The sf/sfz/fz reading was run: partitura reads them as `ImpulsiveLoudnessDirection` (Moonlight III 49, *Hall of the Mountain King* 39, equal to the raw counts); sf on beat 4 (Moonlight III) and beats 2 and 4 (Mountain King) are found, the Tarantella's 15 fz on downbeats are not. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** partitura's tied notes (`part.notes_tied`, so a tie chain is one note held to its end) per hand, with pitch, `symbolic_duration` (tuplet `actual_notes`, written `type`) and `articulations`; the felt beat and strong beats (section 0); readable bars, a pickup right-aligned.
 
@@ -156,13 +172,15 @@ Left out: notes inside a tuplet whose written value is a beat or longer (quarter
 - Quarter-note triplets (`exercise.rhythm.triplet-quarters.4bar`) were held syncopations before the tuplet exclusion.
 - Against the app's stored detector (`detect.ts` `syncopation`, the catalogue copied 2026-10-08), per item present or absent: generated 1,175 of 1,211 agree; the 36 others are 30 the rule finds and the detector does not (the Charleston and anticipated comps, `exercise.comping.*.charleston` and `*.anticipated`, chords off the beat that the detector's quarter-or-longer clause misses; the 4:3 waltz items of `texture.polyrhythm`; `exercise.bass-cell.tresillo.c`) and 6 the detector finds and the rule does not (`exercise.trill.*.4pb`, one location each; the rule reports only the silent-beat-after-a-run kind there; not looked at as scores). PDMX: 371 of 516 agree; of the 145 others, 61 are the detector's pickup padding in files with a pickup (the defect `detect.ts` records as fixed on 2026-10-07, still in the catalogue's stored values), 13 its quarter-or-longer clause in metres whose beat is longer than a quarter (2/2, 3/2, 6/8: a quarter off the half-note beat ends on the next beat and crosses nothing; `song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx` 91 locations, the Handel Sarabande, `song.classical.clementi-sonatina-no-1-muzio-clementi.pdmx`), 63 other detector-only (by their kinds, a hand resting on the downbeat while the other hand plays, or an inner voice held over the beat: read from the per-hand kind counts of 5 of them and 2 rep items (Asturias, Invention No. 8, BWV 999, the Anh. 5 Sonatina, Rosemary's Waltz; Chopin Op. 10 No. 1, *Rhythm and Boogie*), not looked at as scores), 8 rule-only (not looked at). So the proving run's 58 "unexplained" PDMX disagreements were 56 pickups (measured, `sync_split.py`: 56 of 58 stored-only, count 1, in files whose first bar is short) [check: plausible, not proved: `sync_split.py` checks only that the file has a short first bar and a stored count of 1, not that the location is in the pickup bar; `detect.ts`'s own record (82 of 83 in pickup bars, the 2026-10-07 fix) supports it; the "63 other detector-only" were judged from the kind counts of 5 items, not read as scores]. The agreement counts above are partly between two readers with the same blind spot: `detect.ts` also starts every clause from an off-beat note (lines 459-468) and has no beat-level kind either [check: reading].
 
-**Output.** Per line and kind: count and bars; present. Measured under the first version's kinds (items with the kind): generated held 35, off-beat attack 76, rest 6; PDMX held 222, off-beat attack 51, accent 53, rest 46; the beat-level kind, the corrected presence list and the wider accent kind have not been counted over the catalogue except as the check's 336 items above. Provenance `exact`. **UNKNOWN**: no readable bar and no pickup.
+**Output.** Per line and kind: count and bars; present. Measured under the first version's kinds (items with the kind): generated held 35, off-beat attack 76, rest 6; PDMX held 222, off-beat attack 51, accent 53, rest 46; the beat-level kind, the corrected presence list and the wider accent kind have not been counted over the catalogue except as the check's 336 items above. [validation 2026-10-08, measured under the corrected rule by `build/v1c/sync.py --all`, items with the kind (generated / PDMX 524 / rep 285, 4 not loading): beat-level held 22 / 188 / 118; held 35 / 225 / 146; held at the subdivision 7 / 57 / 69; off-beat attack 76 / 53 / 37; accent 0 / 101 / 127; rest 6 / 47 / 22; bass-then-held-chord 6 / 40 / 35; present by the list above 119 / 329 / 211, and without off-beat attack and bass-then-held-chord 52 / 327 / 208. The beat-level kind is the only syncopation (other than off-beat attack and bass-then-held-chord) in 71 items.] Provenance `exact`. **UNKNOWN**: no readable bar and no pickup [validation 2026-10-08: also needed, `unmetred` (no `<time>` in the file): `song.classical.satie-gnossienne-1` is read in partitura's default metre and gets 14 beat-level events].
 
 **Pipelines.** Generated: code; the recipe declares syncopation in the syncopation studies and rhythm drills (cross-check). PDMX: code (the 1.M marking "to be validated" is answered by the split above: the disagreements are the detector's, explained); the line is chosen per staff, so the hand residual applies only where a melody crosses staves (flagged passages).
 
 **Examples.** Positives: `exercise.rhythm.syncopated.4bar` (held, 12 in 4 bars), `exercise.syncopation.tied-across-bar` (beat-level held: weak-beat notes tied over the beat and the bar line), `exercise.syncopation.sixteenth` (held at the subdivision), `song.ragtime.joplin-entertainer` (held 51, right hand), `exercise.clave.son-3-2` (off-beat attack), `exercise.comping.b-flat.off-beats` (off-beat attack, 15). Near-misses: `song.classical.bach-wtc1-prelude-1` (figuration across the hands: none), `song.classical.beethoven-joyful-joyful-we-adore-thee.pdmx` (2/2 quarters on the weak half: none here, 91 for the detector), `song.classical.anon-kum-ba-yah.pdmx` (a pickup: none), `exercise.rhythm.triplet-quarters.4bar` (a cross-rhythm), `exercise.broken7.a-dominant7.both` (a run ending before a rest: reported as silent beat only).
 
 ## rhythm.triplets
+
+**Validation status (2026-10-08): uncertain.** Re-run: `exercise.independence.c.3v2` 48 notes at 3:2; Black Bottom Stomp 372 with rests (the page's 320 not reconciled); no tuplet in the 6/8 drill. Open (T52): delimiting groups by bracket was not run; 576 closed brackets in the catalogue hold fewer notes than their actual-notes because they hold long-short pairs or rests, so a group cannot be required to hold three notes. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** The raw reader's `<time-modification>` with `actual-notes` 3 and `normal-notes` 2 on each note (chord members once), with its `<type>` and staff; witness: music21 `duration.Tuplet` (`numberNotesActual`, `numberNotesNormal`).
 
@@ -177,6 +195,8 @@ Left out: notes inside a tuplet whose written value is a beat or longer (quarter
 **Examples.** Positives: `exercise.independence.c.3v2` (eighth triplets in one hand), `song.blues.black-bottom-stomp` (320 triplet notes). Near-misses: `exercise.rhythm.six-eight-eighths.4bar` (three eighths to the beat, no tuplet); `song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx`'s 6:4 sextuplets (another tuplet).
 
 ## rhythm.tuplets-other
+
+**Validation status (2026-10-08): failing.** Kept, right: Polonaise Op. 53 29:20, Ballade No. 1 39:32, 28:16, 21:16, 29:16. Within 5 per cent of 1 only artefact ratios (23:24, 40:39, 160:159, 80:79, 320:319, 48:47, 96:95, 160:157) and ratio 1 (8:8, 2:2 in the Ständchen); no printed ratio lies inside the bound. **Wrong:** the bound leaves as tuplets 12 more artefact ratios of *Malagueña* (160:107, 80:53, 120:67, 48:43, 320:179, 320:301, 60:53, 640:321, 320:161, 15:14, 20:17, 480:371), 320:239 and 160:119 (*O mio babbino caro*), 24:17 and 40:37 (*Ain't Misbehavin'*), 12:11 (*Silent Night* trombone duet), and the irregular kind (11 or more actual notes) then hands the three-digit ones to `rhythm.cadenza`; the fewer-notes test misses the named 480:371 (a single half rest with no bracket, no. 61) and flags 576 real brackets (Black Bottom Stomp's sixteenth-eighth triplets, Prelude Op. 28 No. 1's figures with rests, Op. 15 No. 2's 5:4). [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** As `rhythm.triplets`, every ratio other than 3:2; nesting from the raw reader (a note with more than one `<tuplet>` notation, or music21 `len(duration.tuplets) > 1`).
 
@@ -193,6 +213,8 @@ Left out: notes inside a tuplet whose written value is a beat or longer (quarter
 **Examples.** Positives: `song.classical.beethoven-moonlight-iii` (5:4, 6:4, 7:4), `song.classical.debussy-clair-de-lune` (2:3 duplets, 46 notes), `song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx` (5:4, 199 notes), `song.classical.chopin-polonaise-op53.nifc` (29:20, bars 46, 78, 168: irregular figuration, kept), `song.classical.chopin-ballade-1` (39:32, bar 247). Near-misses: `song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx`'s 480:371 and the like (noise, not tuplets); `exercise.independence.c.3v2` (triplets only).
 
 ## rhythm.cadenza
+
+**Validation status (2026-10-08): failing.** Found as stated: Ballade No. 4 PDMX no. 50 (14 cue notes; also no. 120, 135-136), Op. 9 No. 2's "Senza tempo", the Berceuse (9 grace notes, 11:8), Polonaise Op. 53 29:20, Op. 9 No. 1 11:6, Prelude No. 18 11:8; also Liebestraum No. 3 cue runs no. 25 and 60, *Malagueña* no. 61-69 beside "a piacere" no. 70, Moonlight III (alt) 30 grace notes no. 188. **Wrong:** the cue route reads a "source" that is the app's own file (section 0) and answers UNKNOWN where no source is mapped (the applier's choice), which is every rep item, though 12 rep files carry cue notes in their own file (Liebestraum No. 3 368, *La Campanella* 388); the named positive Fantaisie-Impromptu no. 5 is a cue half and quarter in the left hand, and the cue route gives 40 candidate runs in that piece, which has no cadenza (a near-miss for the agent, not a positive); the irregular route receives the artefact ratios `rhythm.tuplets-other` fails to remove. The word list finds 9 items, one a pedalling instruction ("Pedal Freely"). [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** The raw reader: runs of consecutive grace notes in one staff and voice before one principal note; runs of cue-size notes, **read from the PDMX source file** (section 0: `content/scores/pdmx`, mapped by `content/sources/pdmx.json`), because the app's re-export makes them full size; tuplets of irregular ratio (`rhythm.tuplets-other`); `<words>` matching cadenza or free-time terms.
 
@@ -215,6 +237,8 @@ Left out: notes inside a tuplet whose written value is a beat or longer (quarter
 
 ## rhythm.repeated-notes
 
+**Validation status (2026-10-08): validated.** Re-run: Asturias right hand longest run 96; Prelude No. 15 left hand 56; `exercise.repeated-notes.c.4x.right` 4; the Alberti left hand 0 pairs. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** `score.load`'s note array, grouped by hand, staff and voice (partitura's `voice`), onsets in order; MIDI pitch. Witness: music21 `RepeatedNotesFeature` (jSymbolic M-9, whole-item share; checked to exist).
 
 **Rule.** In one voice, consecutive onsets that are each a single note of the same MIDI pitch are a repetition (a tie chain is one note, so a tied note is not a repetition). Report per hand: the number of repeated pairs, the longest run (notes), and the inter-onset interval at which they repeat (as a written value). Repeated chords are `texture.repeated-chords`, not this row. One-line percussion staves (the rhythm and clave items) are left out: every note there is the same pitch by construction.
@@ -230,6 +254,8 @@ Left out: notes inside a tuplet whose written value is a beat or longer (quarter
 **Examples.** Positives: `song.classical.albeniz-asturias.pdmx` (right hand, runs to 96 at the eighth), `song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx` (the repeated A-flat, runs to 56 in the left hand), `exercise.repeated-notes.c.4x.right`. Near-misses: `exercise.rhythm.sixteenths.4bar` (one pitch on a percussion line: left out), an Alberti bass (alternation, never two equal pitches in a row: `exercise.accompaniment.alberti.c-major.both`, 0 pairs).
 
 ## rhythm.equal-stream
+
+**Validation status (2026-10-08): validated.** Re-run: Hanon 20 241 sixteenths; Prelude No. 2 384 and 408; Étude Op. 10 No. 1 75 from bar 41; Ode to Joy 3; Prelude in C 15 per hand, 529 merged. T16 stays open. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** `score.load`, per hand: the distinct onsets (chords and voices merged) with the longest note starting at each.
 
@@ -247,6 +273,8 @@ Left out: notes inside a tuplet whose written value is a beat or longer (quarter
 
 ## rhythm.habanera
 
+**Validation status (2026-10-08): validated.** Re-run (cells as a pattern): right hand *Chrysanthemum* 14, *Cleopha* 11, *Country Club* 4, *Die wilden Hühner* 21, Bizet 26; left hand Bizet 85, *Carioca* 22, *El Choclo* 9 (`song.classical.el-choclo-piano.pdmx`), *Solace* 49 (`song.ragtime.joplin-solace`), *La Cumparsita* 7, `exercise.bass-cell.habanera.c` 8; *Auld Lang Syne* doubled right hand 9 and left hand 0 (not 12); `exercise.tresillo.c` none. Code names a habanera only for the declared generated cells; every other occurrence goes to the agent, so no near-miss reaches a habanera claim. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** `rules/rhythm.py`'s `Bars` (the shared conventions of `rules/rhythm.md`); the cell from `tools/content/cells.py` `HABANERA` = {0, 3/8, 1/2, 3/4} of the bar.
 
 **Rule.** For each hand, the readable bars in 2/4, 4/4 or 2/2 whose distinct onsets are exactly the cell; present when they are a pattern. Two kinds reported apart: **2/4**, the published form, and **doubled** (4/4, 2/2: dotted quarter, eighth, quarter, quarter). The app's `detect.ts` `cellBars` reads the left hand only (line 323); the rule reads each hand and reports both. **What code reports is "the habanera onset cell", never "a habanera":** that a bar holding the cell is a habanera is a question of style (the style residual below), in the 2/4 kind as well as the doubled kind.
@@ -263,6 +291,8 @@ A habanera written as two cells in one 4/4 bar is found by neither kind; the onl
 
 ## rhythm.tresillo
 
+**Validation status (2026-10-08): validated.** Re-run: `exercise.tresillo.c` left hand 8 (doubled), `exercise.clave.son-3-2` right hand 4, `exercise.tumbao.c` and `exercise.bass-cell.habanera.c` none. **Example wrong:** `song.classical.rodriguez-la-cumparsita.pdmx` holds the habanera cell (left hand 7 bars) and no tresillo bar. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input and rule.** As `rhythm.habanera`, with `TRESILLO` = {0, 3/8, 3/4}, both hands, the 2/4 and doubled kinds apart. Exact equality: the habanera (one onset more) is not a tresillo.
 
 **What the proving run's 10 generated disagreements are.** The latin-groove son 3-2 (5) and tumbao (5) items: the stored reader reads the left hand, and the right hand of latin-groove holds the son clave's three-side, which *is* the tresillo (measured: `exercise.latin-groove.*.son-3-2` and every son and bossa clave item have the tresillo in the right hand in every other bar, `cells_hands.py`), while the tumbao's left hand sounds only the tresillo's last two strokes (`rules/rhythm.md`, texture.tumbao), which is not the cell. Resolution: per hand, the rule finds the right-hand tresillo and not the tumbao's; a definitional difference with `detect.ts`, which reads the left hand only, closed by this rule.
@@ -272,6 +302,8 @@ A habanera written as two cells in one 4/4 bar is found by neither kind; the onl
 **Examples.** Positives: `exercise.tresillo.c`, `exercise.clave.son-3-2` (right hand, the three-side), `song.classical.rodriguez-la-cumparsita.pdmx`. Near-misses: `exercise.tumbao.c` (two strokes of three), `exercise.bass-cell.habanera.c` (the habanera).
 
 ## rhythm.cinquillo
+
+**Validation status (2026-10-08): validated.** Re-run: *The Entertainer* right hand 7 (idx 58, 66, 75 ...), *Cascades* 11 (the page says 10), *Chicken Reel* 4 (idx 74-75, 78-79), *Chrysanthemum* 2 scattered, the study 1 bar. Naming goes to the agent. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** As `rhythm.habanera`; the cell {0, 1/4, 3/8, 5/8, 3/4} of a 2/4 bar (or its doubled form in 4/4 or 2/2), either hand.
 
@@ -291,6 +323,8 @@ A habanera written as two cells in one 4/4 bar is found by neither kind; the onl
 
 ## rhythm.secondary-rag
 
+**Validation status (2026-10-08): validated.** `rules/rhythm.py` `secondary_rag` re-run: 12th Street Rag 10 bars in both editions, *Memphis Blues* 6; `exercise.secondary-rag.c.4bar`, Moonlight I, the Prelude in C and *Elite Syncopations* 0 (S8 stays open). [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Rule.** `docs/classifier/rules/rhythm.md` § rhythm.secondary-rag, unchanged, and its code `tools/classifier/rules/rhythm.py` `secondary_rag` (Berlin's definition; period-three pitches over even beat divisions in the right hand's top line, nine notes, twelve at four to the beat). Its positives, near-misses, UNKNOWN and catalogue counts (6 present of 1,488 read) are that page's.
 
 **Validation item that page leaves open (S8).** Joplin's *Elite Syncopations* and *Pine Apple Rag* carry the concept and the rule finds none. The top line holds no period-three stretch of seven notes or more (`rules/rhythm.md`, `build/period3.py`); whether the figure sits in an inner voice is what the agent reads on PDMX. Not re-run here.
@@ -301,6 +335,8 @@ A habanera written as two cells in one 4/4 bar is found by neither kind; the onl
 
 ## rhythm.shuffle
 
+**Validation status (2026-10-08): uncertain.** `rules/rhythm.py` `shuffle` re-run; the style field is the catalogue's `tracks`. Black Bottom Stomp: 29 triplet bars, track blues-boogie, a shuffle; Op. 55 No. 2 (`song.classical.chopin-nocturne-op55-2.nifc`): 21 bars of 12/8 pairs, track classical, no claim. **The examples contradict the rule:** *Ain't Misbehavin'* has 14 marked bars and no notated long-short pair, so it is no shuffle positive here; `exercise.meter.12-8` has tracks blues-boogie and jazz and concepts shuffle, slow-blues and twelve-bar-blues, so the rule asserts a shuffle for it. Whether a 12/8 slow-blues drill should be called a shuffle no one in this process can hear. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Rule.** `docs/classifier/rules/rhythm.md` § rhythm.shuffle and its code, with two corrections. (1) The list's: even eighths under a Swing direction are **not** this row (they are `notation.swing-mark`); the rule's "marked" kind is moved to `notation.swing-mark` and this row keeps the notated long-short figures only (triplet quarter-eighth, 12/8 quarter-eighth, and the dotted kind with its UNKNOWN). (2) The check's: the carried rule calls any 12/8 quarter-eighth (and any triplet long-short) a shuffle "whatever the style" (`rules/rhythm.md`: "A 12/8 Chopin nocturne (Op. 55 No. 2) is found"), which would teach a shuffle from a Chopin nocturne, the mistake this page refuses for the habanera [check: reading]. **What code reports is "notated long-short pairs"** (kind: triplet, 12/8, dotted). "A shuffle" (a swing-style feel) is asserted only for blues, jazz, boogie or rock items (from the catalogue's genre or style field and the generated families `exercise.boogie.*` and the shuffle rhythm families; the exact field was not looked up and is for the build), or when the agent confirms it. The code change, and the correction of `rules/rhythm.py`'s `SIMPLE` (line 432), which holds (6, 4) and so reads 6/4 in quarter beats against `metre.class`, are Phase 5.
 
 **Output and UNKNOWN.** As that page (21 present, 12 UNKNOWN dotted-only, measured 2026-10-07 under the **old** rule, which called every 12/8 quarter-eighth a shuffle: not recounted for the corrected rule). After the corrections, `exercise.swing-pair.*` and *Lullaby of Birdland* leave this row (their eighths are even, under a direction), and `exercise.meter.12-8` and the Chopin nocturnes are notated long-short pairs without a shuffle claim.
@@ -310,6 +346,8 @@ A habanera written as two cells in one 4/4 bar is found by neither kind; the onl
 **Agent residual (PDMX).** The hand, on flagged passages; whether the item is in a shuffle style where the catalogue's field does not say; the dotted-only UNKNOWN stays UNKNOWN (no reader can tell a dotted shuffle from a dotted rhythm from the page: *unverified as music* for every such item).
 
 ## notation.swing-mark
+
+**Validation status (2026-10-08): validated.** Re-run: `exercise.swing-pair.c` "Straight" then "Swing: long, then late"; the shuffle-eighths drill; *Lullaby of Birdland* "Med-Swing" (matched); `exercise.boogie.a.pinetop` no words. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** The raw reader: `<swing>` (in `<sound>` or a direction); every `<words>` text with its bar; text holding a note glyph (Unicode U+2669 to U+266C, SMuFL U+E1D0 to U+E1EF and U+ECA0 to U+ECBF) for the triplet-equivalence sign.
 
@@ -329,6 +367,8 @@ A habanera written as two cells in one 4/4 bar is found by neither kind; the onl
 
 ## rhythm.backbeat
 
+**Validation status (2026-10-08): validated.** Code part re-run: accents kind *I'm Blue* 6 bars; onsets kind *Light the World* left hand 26 bars (one bass note on 2 and 4 under a held right hand: the agent's question, as the Examples say); *Blinding Lights* right hand 4, *Arabesque* left hand 4, *Tiger Rag* right hand 11, *Rêverie* left hand 3 and the Fantaisie-Impromptu's accents (4 bars) go to the residual; `exercise.stride.c` none. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** `Bars` per hand; accent marks (`accent`, `strong-accent`) from partitura's `notes_tied` articulations; readable bars in 4/4 and 12/8.
 
 **Rule.** A bar is a backbeat bar when either: a hand's onsets are exactly beats 2 and 4 ({1/4, 3/4} of the bar) (**onsets** kind); or the bar's accent marks fall only on beats 2 and 4 (**accents** kind). Present when the bars of a kind are a pattern, per kind and hand. A hand with single notes on 1 and 3 and chords on 2 and 4 (the oom-pah and stride left hand) is **not** this row: it is counted apart as `afterbeat chords` and belongs to `texture.oom-pah` and `texture.stride`.
@@ -344,6 +384,8 @@ A habanera written as two cells in one 4/4 bar is found by neither kind; the onl
 **Examples.** Positives: `song.pop.eiffel-65-i-m-blue.pdmx` (accents kind), `song.pop.misc-soundtrack-light-the-world.pdmx` (onsets kind, left hand; the check dumped it with the others and raised no objection to it, and it did not judge it a backbeat either: the agent's question). Near-misses: `song.pop.the-weeknd-the-weekend-blinding-lights-easy-piano.pdmx` (the onsets cell in a syncopated right-hand melody: **taken off the positives** [check]), `song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx` (left hand, an accompaniment in a classical piece), `exercise.stride.c` (afterbeat chords: oom-pah), `song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx` (accents on 2 and 4 in an étude: the agent's residual).
 
 ## rhythm.hemiola
+
+**Validation status (2026-10-08): uncertain.** Re-run: two-bar kind Boléro idx 197 and *La plus que lente* idx 115, 117; 6/8 as 3/4 *Song of Storms* left hand 12 bars; cross-grouped 3/4 bars *Carol of the Bells* medley right hand 45, *Scarborough Fair* left hand 4; the Sarabande none. Open: "alternate" is not defined (read as a cross-grouped bar beside a bar of the metre's own grouping, 2 in each piece), and present-at-one-occurrence (T26) has no basis. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** `Bars` per hand.
 
@@ -366,6 +408,8 @@ Present at one occurrence (a cadential hemiola is one event), labelled *neither*
 
 ## texture.polyrhythm
 
+**Validation status (2026-10-08): validated.** Re-run: 3v2 3:2, 2v3 2:3, *Arabesque* 3:2 and 2:3, Fantaisie-Impromptu 4:3, the waltz accompaniment 4:3 (generator defect), Alberti none. Wording: "a span inside one already found is skipped" should read "containing"; read literally it counts the pair and bar spans too (28 in 3v2 against 16 beats). [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** `Bars` per hand; the raw reader's tuplets per staff as a witness of the tuplet-written kind.
 
 **Rule.** For each readable bar, test spans in order: each felt beat, each pair of beats (in a bar of an even number of beats), the whole bar; a span inside one already found is skipped. In a span, each hand's onsets as fractions of the span are an **even division into p** when they are exactly {0, 1/p, ..., (p-1)/p}. The span is a polyrhythm p:q (right hand p, left hand q) when both hands divide evenly, p differs from q and neither divides the other. Report the ratio reduced (6:4 is 3:2), the span level, the bars. Kinds: 2:3, 3:2, 3:4, 4:3, other. Written without tuplets is found the same way (two dotted quarters against three quarters in a 6/8 bar is 2:3 at the bar).
@@ -382,6 +426,8 @@ Present at one occurrence (a cadential hemiola is one event), labelled *neither*
 
 ## rhythm.beat-onset-share
 
+**Validation status (2026-10-08): validated.** Re-run: Hanon 61 of 62 beats, Für Elise 304 of 312, `exercise.ii-v-i.a` 3 of 16, *Hesitating Blues* 80 of 192. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** `Bars`; all hands' distinct onsets merged.
 
 **Rule.** Over the readable bars: the share of felt beats on which some note starts (`beats_on / beats`), and the share of downbeats on which some note starts. A beat held through (a whole note in 4/4) has no onset on beats 2 to 4: the pulse is not audible there, which is what the row asks.
@@ -395,6 +441,8 @@ Present at one occurrence (a cadential hemiola is one event), labelled *neither*
 **Examples.** Positives (a high share, audible pulse): `exercise.hanon.20.right` (61 of 62 beats), `song.classical.beethoven-fur-elise` (304 of 312). Near-misses: `exercise.ii-v-i.a` (3 of 16), `song.blues.hesitating-blues` (80 of 192: the pulse held, not struck).
 
 ## mark.tempo-text
+
+**Validation status (2026-10-08): validated.** Re-run: Op. 10 No. 1 quarter = 176, *Scarborough Fair* 165, Asturias no metronome (sound tempo 144), the 6/8 drill quarter = 80, the 12/8 drill quarter = 76. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** The raw reader: every `<metronome>` (`beat-unit`, `beat-unit-dot`, `per-minute`, and two beat units for a metric equation) with its bar and part; every `<sound tempo>`; every `<words>` text; partitura's `ConstantTempoDirection` as a witness only. The catalogue's `tempo-defaulted` tag.
 
@@ -416,6 +464,8 @@ Present at one occurrence (a cadential hemiola is one event), labelled *neither*
 **Examples.** Positives: `song.classical.chopin-etude-op10-1.nifc` (quarter = 176), `song.folk.scarborough-fair-piano-solo.pdmx` (quarter = 165), a dotted-quarter mark in 6/8 among the 20 PDMX files above. Near-misses: `song.classical.albeniz-asturias.pdmx` (no printed mark: its catalogue 144 is a playback tempo), `exercise.rhythm.six-eight-eighths.4bar` (a quarter-note mark in 6/8: read literally).
 
 ## mark.tempo-change
+
+**Validation status (2026-10-08): validated.** Re-run on the named words: Op. 9 No. 2 ("poco rit.", "a tempo", "poco rubato", "Senza tempo" at MusicXML numbers 10, 11, 26, 33: the page's bar numbers are one higher), *Malagueña*, *Clair de lune*; *La plus que lente*'s French words unclassified (the file has "Animez un peu", not "Tempo animé"). T32 open. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** As `mark.tempo-text`: every `<words>` with its bar after the opening, every later `<metronome>`, and two-beat-unit metronomes (metric equations).
 
@@ -439,6 +489,8 @@ Words are matched with the abbreviation's dot optional and punctuation normalise
 
 ## technique.velocity
 
+**Validation status (2026-10-08): validated.** Re-run: Hanon 20 3.89 a second at quarter = 60; Op. 10 No. 1 right hand 11.32 and left 0.69 at 176; the 6/8 drill 2.67 at quarter = 80; Asturias no printed tempo. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** `score.load` per hand; the tempo from `mark.tempo-text` (quarter BPM at the start, and the changes from `mark.tempo-change` where a later printed mark sets a number).
 
 **Rule.** Per hand: onsets per second (a chord is one action) and notes per second (each pitch), over the item and at the peak. Seconds come from quarters × 60 / quarter BPM, piecewise between printed marks. **Peak**: the readable bar with the most onsets per quarter, at that bar's tempo. **Sustained speed**: the fastest equal stream (`rhythm.equal-stream`) of 8 notes or more, as onsets per second. Repeats are not unrolled (the rate does not change by repeating). Tempo-free figures are always reported (onsets per quarter, peak onsets per quarter), so the row has an answer where no tempo is printed.
@@ -455,6 +507,8 @@ Words are matched with the abbreviation's dot optional and punctuation normalise
 
 ## technique.endurance
 
+**Validation status (2026-10-08): validated.** Re-run: Hanon 241 onsets over 62 quarters; Prelude No. 2 384 (96 quarters) and 408; the Prelude in C short spans; the 12/8 drill's right hand 1 onset. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** `score.load` per hand; the tempo as `technique.velocity`.
 
 **Rule.** Per hand, the longest **active span**: consecutive onsets of the hand with no rest between them (each onset at or before the end of the hand's sounding notes) and no gap between consecutive onsets longer than one felt beat. Report its length in onsets, quarters, bars and seconds at the tempo, and onsets per second over it.
@@ -468,6 +522,8 @@ Words are matched with the abbreviation's dot optional and punctuation normalise
 **Examples.** Positives: `exercise.hanon.20.right` (241 onsets, 62 seconds at quarter = 60), `song.classical.bach-wtc1-prelude-2` (384 onsets right hand, 96 quarters). Near-misses: `song.classical.bach-wtc1-prelude-1` per hand (short spans: the figure alternates hands), `exercise.meter.12-8`'s right hand (one onset: held chords).
 
 ## metre.grouping
+
+**Validation status (2026-10-08): validated.** Re-run: 7/8 beams 2+2+3 and "Count 2 + 2 + 3"; 5/4 "Count 3 + 2"; the 6/8 drill beams 3+3; *Take Five* has no counting words (UNKNOWN by code). The 12/8 drill's beams were not re-read. T37's consequence for 6/4 is under `metre.class`. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** The raw reader: composite `<beats>` ("2+2+3"); top-level beams (`<beam number="1">` begin, continue, end) per bar of part 0; `<words>`; music21 `TimeSignature.beatSequence` and `beamSequence` for a signature's default grouping (checked: 2+2+3/8 gives three beats; 7/8 defaults to a 2+2+3 beam sequence, 5/8 to 2+3).
 
@@ -491,6 +547,8 @@ For the generator owner [check: measured, `raw.py dump`]: `exercise.meter.5-4`'s
 
 ## rhythm.silence
 
+**Validation status (2026-10-08): validated.** Re-run: swing-pair 4 beats at idx 4; *Weary Blues* 7.5 beats at idx 2; Scherzo No. 2 up to 9; the clave's gaps 1 to 1.5; *Doctor Gradus* 167.5 (the integrity case). The "original upload" is not held (section 0), so the other-parts question answers UNKNOWN for every item by the rule's own fallback. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** `score.load`: every note's onset and offset, all hands; the raw reader's `<multiple-rest>`, whole-bar rests and `print-object="no"`. Other parts: the original upload, which is held (556 PDMX source files under `content/scores/pdmx`, mapped by `content/sources/pdmx.json`; section 0, the one statement for this page) where the app's file was re-staffed, since the app's file keeps the piano staves only (catalogue `editionNotes`: "kept ... omitted P1-Staff1, Drumset").
 
 **Rule.** The union of all sounding notes; a silence is a gap between one note's end (the latest sounding) and the next onset, lasting at least one felt beat at that point. Report: count, each one's start, length in beats and bars, the bar of the re-entry; multi-bar rests (`<multiple-rest>`) apart; the leading silence before the first note (`late_entry`, from `mark.anacrusis`). Whether other parts sound during a silence is read from the original upload's other parts where they exist, and is otherwise UNKNOWN (`other parts not held`: the item has no mapped source, or the source has no other parts).
@@ -507,6 +565,8 @@ For the generator owner [check: measured, `raw.py dump`]: `exercise.meter.5-4`'s
 
 ## rhythm.bar-patterns
 
+**Validation status (2026-10-08): validated.** Re-run: the Prelude in C top share 0.91 of 34 bars, 7/8 1.0, Für Elise 16 distinct (0.37), the clave 0.5. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
+
 **Input.** `Bars` per staff: each readable bar's distinct onsets with the longest note from each, clipped to the bar.
 
 **Rule.** The rhythm string of a bar on a staff is the ordered list of (onset, duration) pairs in quarters (chords and voices merged; rests implicit as the gaps). Report per staff: the distinct strings with count and bars, the share of bars using the most common one, and the same per beat (the string of each felt beat). A dotted-quarter-eighth bar and an eighth-dotted-quarter bar differ. Defined per staff, as printed (no hand residual, 1.M).
@@ -518,6 +578,8 @@ For the generator owner [check: measured, `raw.py dump`]: `exercise.meter.5-4`'s
 **Examples.** Positives (one dominant pattern): `song.classical.bach-wtc1-prelude-1` (0.91 of 34 bars), `exercise.meter.7-8` (1.0). Near-misses: `song.classical.beethoven-fur-elise` (16 distinct right-hand patterns, top share 0.37), `exercise.clave.son-3-2` (two patterns alternating: the two-bar cycle, 0.5 each).
 
 ## rhythm.clave-alignment
+
+**Validation status (2026-10-08): uncertain.** The scoring re-implemented and re-run: `exercise.clave.son-2-3` 2-3 in 4 of 4 cycles, `son-3-2` 3-2, the montuno 3-2, the `.pulse` left hand and `exercise.tumbao.c` neutral, *Recado* 21 2-3 and 3 3-2 (as stated). No repertoire item in the catalogue declares a direction (ids searched for clave, son, salsa, mambo, bossa, samba, rumba, montuno), and Mauleón is unread: repertoire stays unverified. [validation: `build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`]
 
 **Input.** `Bars` per hand; `rules/rhythm.py`'s `_cycles` (the 16-pulse cycle on sixteenths, one 4/4 bar, or on eighths, two 4/4 bars) and `CLAVES` (son, rumba, bossa, 3-2).
 
@@ -552,73 +614,77 @@ Each finding carries its status after the check (`docs/classifier/audits/rules-1
 9. **The tie-count unit** (rhythm.ties): **confirmed.** The proving run's 0.5 is chains against tied notes (1/k for a k-note chain), not a defect of either reader.
 10. **The habanera left to an agent in 4/4 and 2/2** (rhythm.habanera): agreed, and extended by the check to the 2/4 kind in a melody (done on this page).
 11. **The syncopation redefinition** (top and bottom lines, four kinds; rhythm.syncopation): partly agreed. Reading lines rather than merged hands is right; the redefinition lacked a beat-level kind, and "held at the subdivision" was missing from "present" (corrected on this page).
-12. **From the check, N1: the app's PDMX re-export makes cue-size notes full size.** 14 of the 556 source files have cue-size notes (the Fantaisie-Impromptu, 76 bars; the Ballade No. 4 fiorituras; *O mio babbino caro*; *Malagueña*; the Nocturne Op. 15 No. 2 and 9 more), and every rule reading the app's file counts them as played notes of ordinary size. Whether each is a playback helper or a printed small note is for whoever owns the re-export [check: measured, `pdmxsrc.py`]. Integrity question, not a rule on this page.
+12. [validation 2026-10-08: **false as measured.** The app's files carry `<type size="cue">` on the same notes (Ballade No. 4 PDMX 118, the Fantaisie-Impromptu PDMX 256, *Malagueña* 107, *O mio babbino caro* 144 ...), and the held "source" files are byte-identical to the app's files (`build/v1c/cue.py`, `same.py`, `same_all.py`). `lessons-chunk1.md` item 6 repeats this finding.] **From the check, N1: the app's PDMX re-export makes cue-size notes full size.** 14 of the 556 source files have cue-size notes (the Fantaisie-Impromptu, 76 bars; the Ballade No. 4 fiorituras; *O mio babbino caro*; *Malagueña*; the Nocturne Op. 15 No. 2 and 9 more), and every rule reading the app's file counts them as played notes of ordinary size. Whether each is a playback helper or a printed small note is for whoever owns the re-export [check: measured, `pdmxsrc.py`]. Integrity question, not a rule on this page.
 13. **From the check, N2: the two generated syncopation-family items were absent under the first rule** (`exercise.syncopation.tied-across-bar`, `exercise.syncopation.sixteenth`). The rule is corrected; the cross-check "the recipe declares syncopation" is to be run on it.
 14. **From the check, for the generator owner:** `exercise.meter.5-4`'s left hand holds a whole note tied to a quarter, which hides the 3+2 its words ask for; a dotted half and a half would show it (metre.grouping).
 15. **Where this page differs from the list, for the list's owner:** (a) `rhythm.habanera` carries a style residual beyond the hand, and `rhythm.cinquillo`, which the list marks code on both pipelines, carries a style residual; (b) `rhythm.shuffle` asserts "shuffle" only for blues, jazz, boogie or rock items or on the agent's confirmation; (c) `rhythm.backbeat` drops the "chords" part of the list's definition ("accents, chords or the only onsets of a hand on those beats"); (d) the list's `technique.velocity` cells are corrected in this change (the code defect, not the beat unit). The list was not otherwise edited.
 
 ## Counts (by script over this file)
 
-**Every threshold or defining choice on this page, with its label** (sourced: a published definition read; validated: run on catalogue items, by the writer in `build/r1c/` or by the check in `build/a1c/`, and reported above; neither: operational, to be sourced or validated, which includes every wording written when the check's findings were applied and not re-run):
+**Every threshold or defining choice on this page, with its label** (sourced: a published definition read; validated: run on catalogue items, by the writer in `build/r1c/` or by the check in `build/a1c/`, and reported above; neither: operational, to be sourced or validated, which includes every wording written when the check's findings were applied and not re-run). **Relabelled by the validation of 2026-10-08** (`build/v1c/`, `docs/classifier/audits/rules-1C/validation.md`), each label with its basis: sourced (a published definition, or a library measured: music21's beat order); validated (run on catalogue items showing the positives and the plausible counterexamples separated, by the writer, the check or this pass; "re-run" where this pass reproduced it); open (no source found and no run that settles it; the uncertainty stated); failing (run and shown to give wrong answers on the items named). No threshold was tuned. Before this pass: sourced 12, validated 19, neither 21.
 
 | # | characteristic | threshold or choice | label |
 | --- | --- | --- | --- |
-| T1 | notation.times | one or two short bars at a repeat, volta or section boundary whose lengths sum to the surrounding bar's, a final short bar completing the pickup, or a one-bar section pickup, is a partial-bar device | neither |
-| T2 | notation.times | a signature change inside a `rhythm.cadenza` words passage, or a one-bar signature longer than the bars around it, is a cadenza bar | neither |
+| T1 | notation.times | one or two short bars at a repeat, volta or section boundary whose lengths sum to the surrounding bar's, a final short bar completing the pickup, or a one-bar section pickup, is a partial-bar device | open: the pair and final clauses validated (Bagatelle, Mozart K. 1e, K. 1f); the section-pickup clause has no code test (Radetzky unmarked; *Rêverie*, *Wake Me Up*) |
+| T2 | notation.times | a signature change inside a `rhythm.cadenza` words passage, or a one-bar signature longer than the bars around it, is a cadenza bar | failing: measured one-bar changes called cadenza bars (*Mariage d'amour*, *Scarborough Fair*, *The Lonely Man*, *Holy, Holy, Holy*); the words clause right on Op. 9 No. 2 |
 | T3 | metre.class | compound = numerator 6, 9, 12 (15, 18), any denominator | sourced |
 | T4 | metre.class | 3/8 simple triple, named apart; 2/2 and ¢ named apart | sourced |
 | T5 | mark.anacrusis | first bar shorter than its signature; `implicit` not required | sourced |
-| T6 | rhythm.values | values shorter than a 128th are not counted as played values; 128ths are counted | neither |
-| T7 | rhythm.syncopation | the felt beat and strong beats (downbeat; beat 3 of four) | sourced |
-| T8 | rhythm.syncopation | lines read: right hand's top, left hand's bottom; inner voices out | validated |
-| T9 | rhythm.syncopation | the rest kind needs the whole texture silent on the strong beat | validated |
-| T10 | rhythm.syncopation | tuplet notes of a beat's value or longer left out | validated |
-| T11 | rhythm.syncopation | an off-beat attack needs no earlier onset of the line in its beat | validated |
-| T12 | rhythm.tuplets-other | a ratio within 5 per cent of 1, or a bracket holding fewer notes than its actual-notes, is noise; normal-notes above 16 is a flag for review only | neither |
-| T13 | rhythm.tuplets-other | irregular: 11 or more notes, or 9 or more at over double density, not 12, 16, 24, 32 | validated |
-| T14 | rhythm.cadenza | 6 or more grace notes before one principal note | validated |
-| T15 | rhythm.cadenza | the free-time word list | neither |
-| T16 | rhythm.equal-stream | interval an eighth or shorter | neither |
-| T17 | rhythm.equal-stream | a stream counted from 8 notes | validated |
+| T6 | rhythm.values | values shorter than a 128th are not counted as played values; 128ths are counted | validated: every sub-128th value sits in a bar with a quantisation ratio, in 5 PDMX files; none in rep or generated files |
+| T7 | rhythm.syncopation | the felt beat and strong beats (downbeat; beat 3 of four) | sourced, as an order of beats (music21 `getAccentWeight` measured on 12 metres; it gives 0.5, not less, to the other beats of two-, three-, five- and seven-beat bars) |
+| T8 | rhythm.syncopation | lines read: right hand's top, left hand's bottom; inner voices out | validated (re-run) |
+| T9 | rhythm.syncopation | the rest kind needs the whole texture silent on the strong beat | validated (re-run) |
+| T10 | rhythm.syncopation | tuplet notes of a beat's value or longer left out | validated (re-run) |
+| T11 | rhythm.syncopation | an off-beat attack needs no earlier onset of the line in its beat | validated (re-run) |
+| T12 | rhythm.tuplets-other | a ratio within 5 per cent of 1, or a bracket holding fewer notes than its actual-notes, is noise; normal-notes above 16 is a flag for review only | failing: 17 artefact ratios outside 5 per cent stay tuplets (*Malagueña*, *O mio babbino caro*, *Ain't Misbehavin'*, *Silent Night*); the fewer-notes test misses 480:371 and flags 576 real brackets |
+| T13 | rhythm.tuplets-other | irregular: 11 or more notes, or 9 or more at over double density, not 12, 16, 24, 32 | validated (re-run; downstream of T12) |
+| T14 | rhythm.cadenza | 6 or more grace notes before one principal note | validated (re-run: runs of 6 or more only in Chopin's NIFC fioriture and Moonlight III (alt) no. 188) |
+| T15 | rhythm.cadenza | the free-time word list | open: no published list read; 9 items found, one a pedalling instruction |
+| T16 | rhythm.equal-stream | interval an eighth or shorter | open: no source; a written-value bound, not a speed |
+| T17 | rhythm.equal-stream | a stream counted from 8 notes | validated (re-run) |
 | T18 | rhythm.habanera | the cell {0, 3/8, 1/2, 3/4} and its doubled form | sourced |
-| T19 | rhythm.habanera | code reports the onset cell; "a habanera" (both kinds, every right-hand occurrence, a left-hand occurrence outside a declared generated cell) needs the agent | validated |
+| T19 | rhythm.habanera | code reports the onset cell; "a habanera" (both kinds, every right-hand occurrence, a left-hand occurrence outside a declared generated cell) needs the agent | validated (re-run) |
 | T20 | rhythm.tresillo | the cell {0, 3/8, 3/4} | sourced |
 | T21 | rhythm.cinquillo | the cell {0, 1/4, 3/8, 5/8, 3/4} | sourced |
 | T22 | rhythm.habanera, tresillo, cinquillo, backbeat | a pattern: two consecutive bars or four anywhere | validated |
 | T23 | rhythm.backbeat | beats 2 and 4 of a four-beat bar | sourced |
-| T24 | rhythm.backbeat | afterbeat chords (oom-pah) excluded | validated |
+| T24 | rhythm.backbeat | afterbeat chords (oom-pah) excluded | validated (re-run: `exercise.stride.c` none) |
 | T25 | rhythm.hemiola | three two-beat units in two triple bars (and the 6/8, 3/4 kinds) | sourced |
-| T26 | rhythm.hemiola | present at one occurrence | neither |
-| T27 | texture.polyrhythm | even divisions, neither dividing the other | validated |
+| T26 | rhythm.hemiola | present at one occurrence | open: no source and no counterexample test |
+| T27 | texture.polyrhythm | even divisions, neither dividing the other | validated (re-run) |
 | T28 | mark.tempo-text | the Italian basic tempo terms | sourced |
 | T29 | mark.tempo-text | quarter BPM = number × beat unit with dots | sourced |
-| T30 | mark.tempo-text | a `<sound tempo>` without a printed mark is not the printed tempo | validated |
+| T30 | mark.tempo-text | a `<sound tempo>` without a printed mark is not the printed tempo | validated (re-run) |
 | T31 | mark.tempo-change | the change terms | sourced |
-| T32 | mark.tempo-change | the abbreviations and spellings added | neither |
-| T33 | technique.velocity | the peak window is one bar | neither |
-| T34 | technique.velocity | seconds from the bar's length in quarters, not the numerator | validated |
-| T35 | technique.endurance | a gap of more than one beat between onsets ends a span | validated |
-| T36 | rhythm.silence | a silence lasts at least one felt beat | neither |
-| T37 | metre.grouping | beams show grouping only with denominator 8 or 16 | neither |
-| T38 | metre.grouping | counting words `\d(\s*\+\s*\d)+` | validated |
-| T39 | notation.swing-mark | the swing and straight word lists | validated |
-| T40 | rhythm.clave-alignment | in-phase cycles, best-fitting notation, matches minus extras | validated |
-| T41 | rhythm.syncopation | the beat-level held kind: an onset on a beat held through a stronger beat with no line onset there | neither |
-| T42 | rhythm.syncopation, rhythm.ties | beat weights: downbeat 1, beat 3 of four 0.5, other beats 0.25 | neither |
-| T43 | rhythm.syncopation | the accent kind at any position weaker than the next beat, with `sf`, `sfz`, `fz` | neither |
-| T44 | rhythm.syncopation | bass-then-held-chord reported apart from the held kinds | neither |
-| T45 | rhythm.ties | syncopating from a weak beat, reported apart from off the beat | neither |
-| T46 | rhythm.cinquillo | code reports the onset cell; "a cinquillo" needs the agent | validated |
-| T47 | rhythm.hemiola | one bar of two dotted quarters in 3/4 is a cross-grouped bar; sesquialtera only when such bars alternate | neither |
-| T48 | rhythm.shuffle | code reports notated long-short pairs; "shuffle" only for blues, jazz, boogie or rock items or on the agent's confirmation | neither |
-| T49 | metre.class | a 6/4 bar's felt beat comes from `metre.grouping` where given, else the class | neither |
-| T50 | rhythm.cadenza | cue-size runs read from the PDMX source file by the `pdmx.json` mapping | validated |
-| T51 | mark.anacrusis | a full first bar led only by hidden rests is read as an anacrusis | neither |
-| T52 | rhythm.triplets | a group is delimited by the `<tuplet>` start and stop bracket, the duration sum only as the fallback | neither |
+| T32 | mark.tempo-change | the abbreviations and spellings added | open: the named abbreviations match; no search for a non-tempo word caught |
+| T33 | technique.velocity | the peak window is one bar | open: no source or test |
+| T34 | technique.velocity | seconds from the bar's length in quarters, not the numerator | validated (re-run) |
+| T35 | technique.endurance | a gap of more than one beat between onsets ends a span | validated (re-run) |
+| T36 | rhythm.silence | a silence lasts at least one felt beat | open: no source; the clave's own rests count as silences |
+| T37 | metre.grouping | beams show grouping only with denominator 8 or 16 | open: a reading; its consequence measured: no 6/4 grouping is reachable (T49) |
+| T38 | metre.grouping | counting words `\d(\s*\+\s*\d)+` | validated (re-run) |
+| T39 | notation.swing-mark | the swing and straight word lists | validated (re-run) |
+| T40 | rhythm.clave-alignment | in-phase cycles, best-fitting notation, matches minus extras | validated on generated items only (re-run); repertoire open |
+| T41 | rhythm.syncopation | the beat-level held kind: an onset on a beat held through a stronger beat with no line onset there | validated: finds every case the check showed failing; rejects strong-beat ties, equal-weight holds and the generated families that write no syncopation; final held notes open |
+| T42 | rhythm.syncopation, rhythm.ties | beat weights: downbeat 1, beat 3 of four 0.5, other beats 0.25 | sourced, as an order of beats (music21 measured on 12 metres; the comparisons use only the order) |
+| T43 | rhythm.syncopation | the accent kind at any position weaker than the next beat, with `sf`, `sfz`, `fz` | open: sf/sfz/fz read and run; an accent on beat 3 of 3/4 counts and on beat 2 does not (mazurka accents), unverified as music |
+| T44 | rhythm.syncopation | bass-then-held-chord reported apart from the held kinds | failing: splits one figure by an octave bass (Tarantella) and fires in a right-hand melody (Mazurka Op. 68 No. 4) |
+| T45 | rhythm.ties | syncopating from a weak beat, reported apart from off the beat | validated (re-run) |
+| T46 | rhythm.cinquillo | code reports the onset cell; "a cinquillo" needs the agent | validated (re-run) |
+| T47 | rhythm.hemiola | one bar of two dotted quarters in 3/4 is a cross-grouped bar; sesquialtera only when such bars alternate | open: "alternate" is not defined |
+| T48 | rhythm.shuffle | code reports notated long-short pairs; "shuffle" only for blues, jazz, boogie or rock items or on the agent's confirmation | open: the field is `tracks`; under it `exercise.meter.12-8` is a shuffle, against this page's example |
+| T49 | metre.class | a 6/4 bar's felt beat comes from `metre.grouping` where given, else the class | open: no route gives a grouping in any of the 11 files with 6/4 |
+| T50 | rhythm.cadenza | cue-size runs read from the PDMX source file by the `pdmx.json` mapping | failing: the mapped file is the app's own file; rep items with cue notes would answer UNKNOWN |
+| T51 | mark.anacrusis | a full first bar led only by hidden rests is read as an anacrusis | open: no case in the catalogue |
+| T52 | rhythm.triplets | a group is delimited by the `<tuplet>` start and stop bracket, the duration sum only as the fallback | open: not run; brackets holding rests and long-short pairs are common (576) |
 
 Counts by script (`build/a1c-apply/counts.py` over this file and over the list's section 1.C, 2026-10-08): 30 sections, one per row of section 1.C, in its order (30 of 30, 0 missing, 0 extra, 0 duplicated; 0 rows are agent-only or gaps, so no one-line entries); rules written 30, of which 2 carry `rules/rhythm.md` over (`rhythm.secondary-rag` unchanged, `rhythm.shuffle` with the list's and the check's corrections); thresholds and defining choices 52: sourced 12, validated 19, neither 21 (the labels are this page's own, in the table above; T1 to T40 are the writer's, some relabelled by the check's findings, and T41 to T52 were added when the findings were applied; "validated" now includes the check's own measurements, tagged in the text). Agent residuals stated: 17 sections under an **Agent residual** heading, plus `rhythm.tresillo`, which inherits `rhythm.habanera`'s hand residual: 18 sections against the 17 rows the list marks code + agent on PDMX, the difference being `rhythm.cinquillo`, which the list marks code (finding 15). The shared hand residual is stated once in section 0; `rhythm.syncopation`, marked "code (to be validated)" on PDMX, stays code. Every section names positives and near-misses under **Examples**; by a script count of backticked ids, `rhythm.ties` names one near-miss and `notation.swing-mark` one near-miss item beside a family wildcard (`exercise.boogie.*`), so those two are short of two near-misses. Check verdicts (`build/a1c-apply/part_f.py` over `rows.md` section 1): 30 rows, OK 18, WRONG material 7, WRONG minor 4, UNSURE 1.
 
+Validation counts (`build/v1c/count_page.py` over this file after the validation of 2026-10-08): 30 sections, each with one **Validation status** line: validated 20, uncertain 6, failing 4. Threshold rows 52, each id once: sourced 13, validated 21, open 14, failing 4 (failing: T2, T12, T44, T50; open: T1, T15, T16, T26, T32, T33, T36, T37, T43, T47, T48, T49, T51, T52).
+
 ## Not done
+
+- **Resolved by the validation of 2026-10-08** (so the bullets below that say otherwise are superseded for these points): the corrected wording was re-run (the beat-level kind and its counts, the bass-then-held-chord test, the sf/sfz/fz reading through partitura's `ImpulsiveLoudnessDirection`, the 5 per cent and fewer-notes rules, the cue-size reading, the new tie definition, the hemiola, shuffle and habanera wording); the recipe cross-check was run (all 46 generated items that declare syncopation are present); every rule's named examples were re-run, including the eight the check judged by reading; the titled pieces' ids were looked up (in the status lines); the writer's five-file list is the union of the 512th and 256th files. What stays open is in the status lines, the threshold table and `validation.md` section 6.
 
 - The rules are written, not built: no code in `tools/classifier` implements the rules above except where a section names existing code (`rules/rhythm.py` for the cells, shuffle and secondary rag). The build scripts under `build/r1c/` are measurements, not the rules' code.
 - The checker's findings were applied by editing the rules' text only, once: nothing in the corrected wording was re-run on the catalogue (the beat-level syncopation kind and its counts, the bass-then-held-chord test, the sf/sfz/fz reading, the 5 per cent and fewer-notes noise rules, the cue-size reading from the source files, the new tie definition, the hemiola, shuffle and habanera wording). The cross-check "the recipe declares syncopation" is to be run on the corrected syncopation rule. The orchestrator's judgement (Phase 2's done condition) has not been given; nothing here was heard.
