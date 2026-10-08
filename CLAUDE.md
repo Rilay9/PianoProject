@@ -31,8 +31,7 @@ nothing above can serve.
 
 Easy-to-write is never a justification. When existing work is rejected, the record says
 why. Never hand-reproduce known musical knowledge a maintained source supplies. Never
-generate a substitute when suitable licensed real material meets the need. Research the
-musical correctness of **only the gap that remains**. The project assembles the best
+generate a substitute when suitable licensed real material meets the need. For the current rules-first objective, research the **full necessary set of abilities and characteristics**, not only the next implementation gap. Reuse research and libraries before custom rules; do not make a separate exhaustive search report for each trivial fact. The project assembles the best
 existing reliable pieces, adds only what is truly project-specific, and proves the seams.
 
 **Before pushing any content work, check it against `docs/prompts/content-mistakes.md`:** the mistakes already made here, each caught late.
@@ -58,8 +57,7 @@ everything else.
 ## The two technical rules broken most often
 
 1. **Never assert a number measured on this machine.** Express the relationship instead.
-2. **The specs serve the code.** When the implementation makes more sense, change the
-   spec in the same commit, with the reason beside it.
+2. **For musical classification, validated specifications govern implementation.** If code exposes a flaw in a rule, correct and revalidate the rule before treating the changed code as authoritative. For unrelated engineering details, keep specifications and code consistent without unnecessary paperwork.
 
 ## Before reporting any piece of work
 
@@ -79,8 +77,7 @@ earns a turn.
 4. **Consumers and record.** Who else reads what changed; the spec, test map and record
    updated in the same change, with the reason.
 5. **Addressee.** For every request, question or claim: who acts on it, and can they? The
-   owner decides and relays and never listens; the reviewer reads text and cannot hear, run
-   or look; builders and the orchestrator cannot hear. A capability no actor has is stated
+   owner decides and relays and never listens; the reviewer may inspect artifacts and run available checks but must not claim checks it did not run or hearing it did not perform; builders and the orchestrator must not claim to have heard music without actual audio evidence. A capability no actor has is stated
    as *no one in this process can decide this* and the item stays open, never moved to a
    later actor or phase. A paragraph its addressee does nothing with is cut. An owner
    correction is applied and confirmed by the change, in one line, without apology.
@@ -91,7 +88,7 @@ earns a turn.
    handoff or the rulebook. A clause with no implementation is said to be absent, and the item stays
    open (the owner and the reviewer, 2026-10-07: the preflight's three ruled changes were
    written into FABLE as if in force while none existed in code or CI).
-7. **Sense in context.** For everything I started, triggered, dispatched or proposed this
+7. **Sense in context.** Before reporting, inspect the actual current work state: every running task, committed/queued task, and task started this turn. Distinguish parked possibilities from approved work. State the owner's current goal and whether each active or committed task serves it now; stop or flag any that does not. Do not use a one-line 'nothing found' exit without checking actual state. For everything I started, triggered, dispatched or proposed this
    turn: state the owner's current goal in one line, in the owner's words, not mine. Then
    ask: does this serve that goal now? Is it what the owner asked for, or my extension of
    it? Does it build on something not yet checked (code on unchecked rules), or read
@@ -100,6 +97,10 @@ earns a turn.
    Would the owner, seeing it, call it pointless or out of order? If so, stop or undo it
    and say so in one line (the owner, 2026-10-07, after implementations were built before
    their rules were checked and checkers were launched on moving tables).
+
+## Proportional verification and token cost
+
+Choose verification by what could actually break. For a documentation-only or narrow non-behavioral change, inspect the diff and run the relevant lightweight integrity check if one exists; **do not automatically run E2E, the full suite, or a build**. For a focused rule change, use source validation, representative positive/negative/near-miss score checks and targeted tests. For a learner-facing flow or integration change, use the relevant browser/E2E tests; broad suites are for broad changes, shared foundations, release gates or credible cross-cutting risk. Batch expensive runs when safe, never skip an essential check just to save tokens. Record what was and was not run without padding the report.
 
 ## Two mechanical hazards
 
