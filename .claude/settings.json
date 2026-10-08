@@ -47,6 +47,17 @@
             "statusMessage": "Brief check"
           }
         ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/commit-gate.js\"",
+            "timeout": 60,
+            "statusMessage": "Rules gate"
+          }
+        ]
       }
     ],
     "SessionStart": [

@@ -22,6 +22,7 @@ const registered = (event, script, matcher) =>
       (h.hooks || []).some((x) => String(x.command || '').includes(script))
   );
 if (!registered('Stop', 'stop-checklist.js')) fails.push('Stop checklist not registered');
+if (!registered('PreToolUse', 'commit-gate.js', 'Bash')) fails.push('rules commit gate not registered');
 if (!registered('PreToolUse', 'brief-check.js', 'Agent') || !registered('PreToolUse', 'brief-check.js', 'SendMessage'))
   fails.push('brief check not registered for Agent and SendMessage');
 
@@ -32,6 +33,8 @@ if (bare.status !== 2 || !/Before reporting any piece of work/.test(bare.stderr 
 if (!/Before sending any brief/.test(bare.stderr || '') || !/Reuse first/.test(bare.stderr || '')) fails.push('brief check does not print the brief questions');
 const checked = run('brief-check.js', { tool_input: { prompt: 'Brief check: nothing found\ndo x' } });
 if (checked.status !== 0) fails.push('brief check blocks a brief that has its check line');
+const rulesBare = run('brief-check.js', { tool_input: { prompt: 'Brief check: nothing found\nwrite docs/classifier/rules/area-2D.md' } });
+if (rulesBare.status !== 2) fails.push('brief check lets a rules brief through without a template binding block');
 const stop = run('stop-checklist.js', {});
 if (!/"decision":"block"/.test(stop.stdout || '')) fails.push('stop checklist does not block');
 

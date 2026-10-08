@@ -18,9 +18,34 @@ process.stdin.on('end', () => {
   } catch (e) {
     process.exit(0);
   }
-  if (/^\s*Brief check:/m.test(text)) process.exit(0);
-
   const root = path.resolve(__dirname, '..', '..');
+
+  if (/^\s*Brief check:/m.test(text)) {
+    // A brief that writes, checks or applies Phase 2 rules must carry one template's binding
+    // block word for word (the owner, 2026-10-08: chunk 1's briefs narrowed the library-first
+    // rule and the agents never searched outside the repo).
+    if (!/docs\/classifier\/rules\/area-/.test(text)) process.exit(0);
+    const norm = (s) => s.replace(/\s+/g, ' ').trim();
+    const block = (s) => {
+      const m = s.match(/<!-- binding:start -->([\s\S]*?)<!-- binding:end -->/);
+      return m ? norm(m[1]) : null;
+    };
+    const sent = block(text);
+    const dir = path.join(root, 'docs', 'prompts', 'briefs');
+    let known = [];
+    try {
+      known = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
+        .map((f) => block(fs.readFileSync(path.join(dir, f), 'utf8'))).filter(Boolean);
+    } catch (e) { /* no templates: block below */ }
+    if (sent && known.includes(sent)) process.exit(0);
+    process.stderr.write(
+      'Brief not sent: a rules brief must carry the binding block of one template in ' +
+      'docs/prompts/briefs/ (rules-writer, rules-checker or rules-apply) word for word, ' +
+      'between its <!-- binding:start --> and <!-- binding:end --> markers. ' +
+      (sent ? 'The block sent differs from every template.' : 'No binding block was found.') + '\n'
+    );
+    process.exit(2);
+  }
   // Both sections of CLAUDE.md: the brief questions (mistakes made in briefs, the owner,
   // 2026-10-08) first, then the eight reporting questions.
   const section = (md, heading) => {
