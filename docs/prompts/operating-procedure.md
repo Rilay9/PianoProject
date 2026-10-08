@@ -4,7 +4,7 @@ How work is done and reported here, for the orchestrating session and every agen
 
 ## 1. The five rules
 
-1. **Solve the actual problem, not the literal request.** Restate the goal without the requester's words and check the plan against it. Examples in a request are examples, not limits.
+1. **Solve the owner's actual objective, not a substituted goal.** Identify the newest instruction and its scope. Restating it in your own words must not change it. Examples are not necessarily exhaustive.
 2. **Understand the existing system before changing it:** what owns it, what it assumes, who depends on the assumption.
 3. **Form and test a causal model rather than patching a symptom:** the mechanism, the alternative, the minimal test that tells them apart; then fix the mechanism.
 4. **Verify the real result, not the implementation:** the score, the screen, the sentence. Green tests and valid XML are not the result.
@@ -48,7 +48,11 @@ Use a standard, a published source or an established library (music21, partitura
 
 ## 10. Tokens and actors
 
-Careful with tokens, never at the cost of quality. Each kind of work goes to the cheapest actor that can do it: scripts for counts and shape checks, Sonnet for gathering, Opus for drafting, building and checking; never Fable agents. Nothing already run by a builder or a script is run again to reassure; its output is read.
+Careful with tokens, never at the cost of quality. Use scripts for mechanical counts and shape checks and appropriately capable agents for research, drafting and independent checking; never Fable agents. Do not duplicate expensive work just for reassurance, but independently validate consequential claims. Match verification to risk: docs-only diff/integrity; narrow logic targeted tests and score adversaries; learner-facing flows relevant E2E; broad/shared/release changes broader suites. Batch expensive tests when safe.
+
+## 10A. Objective-locked change gate
+
+Before proposing a new task, deliverable, dependency or completion criterion: identify the owner's current objective; state the demonstrated deficiency and evidence; check whether existing abilities, characteristics, rules, agents and downstream derivations already cover it; choose the smallest correction. If no consequential deficiency remains, add nothing. Do not turn derived prerequisites, teaching uses, exclusions, placement or verification into new foundational workstreams.
 
 ## 11. Before reporting
 
