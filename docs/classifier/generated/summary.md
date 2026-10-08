@@ -28,6 +28,6 @@ Only the DIRECT column is settled by the observations alone; every other column 
 - By placement question: cope 107, exercises 100, material 30.
 - By area: prereq 3, notation 12, rhythm 20, reading 16, harmony 22, texture 34, coordination 14, technique 19, form 14, expression 15, difficulty 16, pedagogy 11, generated 5, integrity 16, style 3, quality 10, meta 7.
 - Rungs whose hardest decision is JUDGMENT: 2; rungs reading no characteristic at all: 16.
-- SOURCED_RULE rows with a written definition (src names a page or source): 53; still NEEDED: 28. A written definition is not a checked one: none has passed an independent check yet.
+- SOURCED_RULE rows with a written definition (src names a page or source): 46; still NEEDED: 35. A written definition is not a checked one: none has passed an independent check yet.
 - Models calibrated against an outside set: 0. No rung is decidable today. The JUDGMENT count is not a ceiling (judgment.md).
 
