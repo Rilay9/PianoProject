@@ -142,7 +142,7 @@ A set of pitch classes "fits a chord" when it is contained in one triad (major, 
 
 ## texture.melody-in-chords
 
-**Definition.** The melody carried as the top voice of chords in one hand (the row's `dec` and `gap`: the top note of each chord forms the melody line).
+**Definition.** The melody carried as the top voice of chords in one hand (the row's `dec` and `lacks`: the top note of each chord forms the melody line).
 
 **Operational.** In one hand, four consecutive events whose top notes are the highest sounding notes at their onsets (no other hand above them), of which at least three are chords (two pitch classes or more) and at least two have three notes or more (two-note events alone are double notes, `texture.double-notes`, or two voices in one hand, `texture.two-voice`), whose top note changes at least twice, and which span no more than a bar and a half (a chord a bar or slower is a held harmony under nothing, not a melody).
 

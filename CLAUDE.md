@@ -121,7 +121,7 @@ tracked file, which is the signature of an accidental reformat.
 | --- | --- |
 | The objective, its phases and how work runs | `docs/prompts/FABLE.md` |
 | How work is done and reported | `docs/prompts/operating-procedure.md` |
-| The classifier tables, rules pages and gap plan | `docs/classifier/` |
+| The classifier tables, rules pages and route plan | `docs/classifier/` |
 | Work set aside for later | `docs/prompts/parked/README.md` |
 | The product and technical rules, with their stories | `docs/00-invariants.md` |
 | What the app is and why | `docs/00-overview.md` |

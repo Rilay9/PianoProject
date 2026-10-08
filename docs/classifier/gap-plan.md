@@ -1,10 +1,10 @@
-# Gap plan: what decides each gap, and how the results place items
+# Route plan: what decides each characteristic not yet built, and how the results place items
 
-**To decide in Phase 2 (2026-10-08):** this file counts every row not EXISTS as a gap, including rows code can verify once built. The owner's meaning of a gap is what code cannot verify ("gaps mean that its not possible to verify by code"); Phase 2 sorts the rows and corrects the wording.
+**Wording (2026-10-08):** a gap means what code cannot verify (the owner: "gaps mean that its not possible to verify by code"). This file lists every characteristic not yet built (not EXISTS), most of which code can verify once built; which are gaps in that sense is sorted in Phase 2. The file name is kept so older links resolve.
 
-**Version 1: the gaps known after table iteration 1 (base 4cd63cc8), not a complete list.** Later check passes will find more missing characteristics and wrong rules; each finding adds or changes a line here. The placement design below does not depend on every gap being known.
+**Version 1: the characteristics not yet built, known after table iteration 1 (base 4cd63cc8), not a complete list.** Later check passes will find more missing characteristics and wrong rules; each finding adds or changes a line here. The placement design below does not depend on every such characteristic being known.
 
-Bounded by FABLE §2 item 7 (the owner and the reviewer, 2026-10-07): for every characteristic that is not EXISTS, and every open decision, the route that decides it, and how those results decide rung placement. It ends when each gap has its route; it is not a research programme. Rules before code: nothing here is implemented, and no row below is built until its rule has passed the table checks.
+Bounded by FABLE §2 item 7 (the owner and the reviewer, 2026-10-07): for every characteristic that is not EXISTS, and every open decision, the route that decides it, and how those results decide rung placement. It ends when each has its route; it is not a research programme. Rules before code: nothing here is implemented, and no row below is built until its rule has passed the table checks.
 
 Base: origin at `4cd63cc8`. Rows: `characteristics.yaml`, 237 rows, 45 EXISTS, **192 not EXISTS** (99 PARTLY, 93 MISSING), each with one line below.
 

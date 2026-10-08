@@ -1,4 +1,4 @@
-# Placement classifier and verifier: the gap analysis (the owner, 2026-10-07)
+# Placement classifier and verifier: the characteristics analysis (the owner, 2026-10-07)
 
 **The goal** (`docs/prompts/inputs-2026-10-07/classifier-review.md`): minimise what agents have to judge when generated exercises and noisy PDMX scores are classified and placed in the curriculum. Code establishes everything it reliably can; an agent judges only the residue, with the code's evidence in front of it; no human is a gate (FABLE §5). Rules first, then code. This folder is the gap analysis. **It places nothing and designs nothing.**
 
@@ -9,7 +9,7 @@
 | `characteristics.yaml` | the table's source: every characteristic placement needs, with its area, the placement question it serves, pipeline, evidence class, decision method, dependency chain, current code (file:line), EXISTS / PARTLY / MISSING, gap; JUDGMENT rows carry their split | hand |
 | `concepts.yaml` | the 286 concept names the rungs use, each mapped onto the characteristics it reads, or marked as not an item property; a name is not a detector | hand |
 | `places.yaml` | what today's definitions of the 15 tracks, 10 stages and 28 abilities read; current claims, none sourced | hand |
-| `generated/table.md` | **the deliverable**: CHARACTERISTIC \| NEEDED FOR \| GEN/PDMX/BOTH \| EVIDENCE \| DECISION \| CHAIN \| CURRENT CODE \| STATUS \| GAP | `tools/classifier/build_matrix.py` |
+| `generated/table.md` | **the deliverable**: CHARACTERISTIC \| NEEDED FOR \| GEN/PDMX/BOTH \| EVIDENCE \| DECISION \| CHAIN \| CURRENT CODE \| STATUS \| CODE LACKS | `tools/classifier/build_matrix.py` |
 | `generated/judgment.md` | every JUDGMENT row split into measurable evidence and the residual question | the same |
 | `generated/rungs.md` | per rung, which characteristics its concepts read, by class and status | the same |
 | `generated/research.md` | what no code can decide yet: definitions to quote, inference methods, outside sources, residuals, ambiguous names | the same |

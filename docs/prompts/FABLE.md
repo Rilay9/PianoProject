@@ -21,7 +21,7 @@ Each phase finishes, by the rule in section 3, before the next starts.
 5. **4. Checks on the rules and instructions** against real scores and counterexamples.
 6. **5. Build:** code from the rules, prompts from the instructions; then the curriculum is designed around what they establish.
 
-**Inputs already made, not discarded, each to be checked against the phases above:** `docs/classifier/` (the characteristics table, the concept map, the rules pages for 44 characteristics and their code, the gap plan version 1, the iteration-1 audits). **Parked work:** `docs/prompts/parked/README.md`.
+**Inputs already made, not discarded, each to be checked against the phases above:** `docs/classifier/` (the characteristics table, the concept map, the rules pages for 44 characteristics and their code, the route plan version 1 (`gap-plan.md`), the iteration-1 audits). **Parked work:** `docs/prompts/parked/README.md`.
 
 ## 3. When a list or a rule set is done
 
