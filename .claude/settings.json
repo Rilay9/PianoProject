@@ -35,6 +35,19 @@
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Agent|SendMessage",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/brief-check.js\"",
+            "timeout": 10,
+            "statusMessage": "Brief check"
+          }
+        ]
+      }
     ]
   }
 }
