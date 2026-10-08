@@ -53,6 +53,6 @@ if (!/"decision":"block"/.test(stop.stdout || '')) fails.push('stop checklist do
 process.stdout.write(
   fails.length
     ? 'Hook self-test FAILED: ' + fails.join('; ') + '. Tell the owner before any brief goes out.\n'
-    : 'Hook self-test OK: stop checklist and brief check registered and behaving.\n'
+    : 'Hook self-test OK: stop checklist, brief check, brief auditor and rules commit gate registered; the command hooks behave.\n'
 );
 process.exit(0);
