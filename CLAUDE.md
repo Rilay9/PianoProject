@@ -62,7 +62,7 @@ everything else.
 
 ## Before reporting any piece of work
 
-Seven questions. A correction is owed only
+Eight questions. A correction is owed only
 where the answer would change what the owner or the next agent does; wording alone never
 earns a turn.
 
@@ -97,6 +97,11 @@ earns a turn.
    Would the owner, seeing it, call it pointless or out of order? If so, stop or undo it
    and say so in one line (the owner, 2026-10-07, after implementations were built before
    their rules were checked and checkers were launched on moving tables).
+8. **Convergence.** Does this help the app converge towards a polished, finished state, or does it
+   leave things open and head down the route to a vibe-coding death loop: another pass, another
+   finding, another rule, with no end condition (the owner, 2026-10-08, after check passes on the
+   abilities list kept finding more because each checker read new sources)? If it does not converge,
+   name the end condition or stop.
 
 ## Proportional verification and token cost
 
