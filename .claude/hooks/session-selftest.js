@@ -10,11 +10,16 @@ const { spawnSync } = require('child_process');
 const root = path.resolve(__dirname, '..', '..');
 const fails = [];
 
-let hooks = {};
-try {
-  hooks = JSON.parse(fs.readFileSync(path.join(root, '.claude', 'settings.json'), 'utf8')).hooks || {};
-} catch (e) {
-  fails.push('settings.json unreadable');
+// The settings the session actually loads: the session's project folder (CLAUDE_PROJECT_DIR,
+// often the parent "Piano Stuff" folder), settings.json and settings.local.json, plus the repo's
+// own (the process review of 2026-10-08 found the hooks registered only where no session read them).
+const proj = process.env.CLAUDE_PROJECT_DIR || root;
+const hooks = {};
+for (const f of [path.join(proj, '.claude', 'settings.json'), path.join(proj, '.claude', 'settings.local.json')]) {
+  try {
+    const h = JSON.parse(fs.readFileSync(f, 'utf8')).hooks || {};
+    for (const k of Object.keys(h)) hooks[k] = (hooks[k] || []).concat(h[k]);
+  } catch (e) { /* absent file */ }
 }
 const registered = (event, script, matcher) =>
   (hooks[event] || []).some(

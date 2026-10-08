@@ -8,10 +8,12 @@ from being accepted (the owner: enforce it where the work is accepted, not by re
 
 For every characteristic section (a heading naming a dotted id):
   - a line starting **Reuse:** must exist;
-  - "**Reuse:** custom ..." needs the tools survey's section for that id to say "nothing found";
-  - otherwise the tool it names (the text before the first "(" or em dash) must appear in the
-    survey's section for that id;
-  - every **Validated:** line must name "evidence: <path>" to a file that exists in the repo;
+  - "**Reuse:** custom ..." needs the survey's own row for that id to say "nothing found";
+  - otherwise the tool it names (the text before the first "(", comma or em dash) must be among
+    that row's candidates;
+  - an id the survey has no row for may only be a "direct read (<music21 / partitura / MusicXML>)";
+  - every **Validated:** line must name "evidence: <path>" to a file under docs/classifier/evidence/;
+(revised after the process review of 2026-10-08 found it read whole survey sections)
   - a "Status: validated" section needs at least one **Validated:** line.
 It checks that evidence exists and points the right way; whether the research was good is
 the checker's job.
@@ -39,12 +41,16 @@ def sections(text):
     return out
 
 
-def survey_sections(cid):
+def survey_row(cid):
+    """(status, tools) from the survey's own row for this id, or None if it has no row."""
     if not os.path.exists(SURVEY):
-        return None
+        return "missing"
     text = open(SURVEY, encoding="utf-8").read()
-    parts = re.split(r"(?m)^(?=#{1,4}\s)", text)
-    return [p for p in parts if re.search(r"`" + re.escape(cid) + r"`", p)]
+    m = re.search(r"^\|\s*`" + re.escape(cid) + r"`\s*\|\s*([^|]*)\|\s*([^|]*)\|", text, re.M)
+    return (m.group(1).strip().lower(), m.group(2).strip().lower()) if m else None
+
+
+DIRECT = ("music21", "partitura", "musicxml", "raw xml")
 
 
 def check(path):
@@ -56,32 +62,35 @@ def check(path):
     for cid, body in secs:
         where = f"{os.path.basename(path)} {cid}"
         reuse = re.search(r"^\*\*Reuse:\*\*\s*(.+)$", body, re.M)
-        surv = survey_sections(cid)
-        if not reuse:
-            errs.append(f"{where}: no **Reuse:** line")
-        elif surv is None:
+        row = survey_row(cid)
+        if row == "missing":
             errs.append(f"{where}: docs/classifier/tools-survey.md is missing")
-        elif not surv:
-            errs.append(f"{where}: the tools survey has no section listing `{cid}`")
+        elif not reuse:
+            errs.append(f"{where}: no **Reuse:** line")
         else:
             val = reuse.group(1).strip()
-            joined = "\n".join(surv).lower()
-            if val.lower().startswith("custom"):
-                if "nothing found" not in joined:
-                    errs.append(f"{where}: custom detector, but the survey's section for it does not say nothing found")
+            low = val.lower()
+            if row is None:
+                # Not surveyed: allowed only as a direct read of notation by a named reader.
+                if not (low.startswith("direct read") and any(d in low for d in DIRECT)):
+                    errs.append(f"{where}: not in the tools survey, so its reuse line must be 'direct read (<music21 / partitura / MusicXML field>)'; otherwise add it to the survey")
+            elif low.startswith("custom"):
+                if not row[0].startswith("nothing found"):
+                    errs.append(f"{where}: custom detector, but the survey row for `{cid}` names candidates: {row[1][:80]}")
             else:
-                tool = re.split(r"\(|—|;", val)[0].strip().strip("`").lower()
-                if not tool or tool not in joined:
-                    errs.append(f"{where}: reuse names '{tool}', which is not in the survey's section for `{cid}`")
+                tool = re.split(r"\(|—|;|,", val)[0].strip().strip("`").lower()
+                if len(tool) < 3 or tool not in row[1]:
+                    errs.append(f"{where}: reuse names '{tool}', which is not among the survey row's candidates for `{cid}`")
         vals = re.findall(r"^\*\*Validated:\*\*.*$", body, re.M)
         for v in vals:
             m = re.search(r"evidence:\s*`?([^\s`]+)`?", v)
-            if not m:
+            ev = m.group(1).replace("\\", "/") if m else None
+            if not ev:
                 errs.append(f"{where}: a **Validated:** line names no evidence file")
-            elif not os.path.exists(os.path.join(ROOT, m.group(1))):
-                errs.append(f"{where}: evidence file {m.group(1)} does not exist")
+            elif not ev.startswith("docs/classifier/evidence/") or not os.path.isfile(os.path.join(ROOT, ev)):
+                errs.append(f"{where}: evidence {ev} is not a file under docs/classifier/evidence/")
         if re.search(r"status:\s*validated", body, re.I) and not vals:
-            errs.append(f"{where}: says validated but has no **Validated:** line")
+            errs.append(f"{where}: says validated but has no **Validated:** line with evidence")
     return errs
 
 

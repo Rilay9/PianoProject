@@ -24,7 +24,8 @@ process.stdin.on('end', () => {
     // A brief that writes, checks or applies Phase 2 rules must carry one template's binding
     // block word for word (the owner, 2026-10-08: chunk 1's briefs narrowed the library-first
     // rule and the agents never searched outside the repo).
-    if (!/docs\/classifier\/rules\/area-/.test(text)) process.exit(0);
+    // Any brief that writes, checks or applies rules (path written either way, or named in words).
+    if (!/rules[\\/]area-|phase 2 rules|rules pages?|rules for (one |an )?area/i.test(text)) process.exit(0);
     const norm = (s) => s.replace(/\s+/g, ' ').trim();
     const block = (s) => {
       const m = s.match(/<!-- binding:start -->([\s\S]*?)<!-- binding:end -->/);
