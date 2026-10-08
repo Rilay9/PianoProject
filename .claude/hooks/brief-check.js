@@ -18,7 +18,17 @@ process.stdin.on('end', () => {
   } catch (e) {
     process.exit(0);
   }
-  if (/^\s*Brief check:/m.test(text)) process.exit(0);
+  // The line must answer each of the eight questions by number, not claim the pass in a
+  // sentence (the owner, 2026-10-08: "you're still not running the checklist", after
+  // briefs carried a one-line claim that the checklist was run).
+  const at = text.search(/^\s*Brief check:/m);
+  if (at !== -1) {
+    const seg = text.slice(at, at + 2500);
+    const missing = [1, 2, 3, 4, 5, 6, 7, 8].filter((n) => !new RegExp('(^|[\\s;,(])' + n + '[ .:)]').test(seg));
+    if (missing.length === 0) process.exit(0);
+    process.stderr.write('Brief not sent: the Brief check line does not answer question(s) ' + missing.join(', ') + ' by number.\n');
+    process.exit(2);
+  }
 
   const root = path.resolve(__dirname, '..', '..');
   let checklist = '(CLAUDE.md could not be read: run its "Before reporting any piece of work" questions)';
@@ -35,7 +45,7 @@ process.stdin.on('end', () => {
     'Brief not sent. Run every question below against this brief, as if the brief were the report: ' +
     'its goal against the owner\'s words, its scope, its inputs, its end condition, its rules. ' +
     'Fix the brief where a question finds a fault, then add a line starting "Brief check:" ' +
-    'saying what the pass changed (or "nothing found"), and send again.\n\n' + checklist + '\n'
+    'answering each question by number (1 to 8: what it found, or OK), and send again.\n\n' + checklist + '\n'
   );
   process.exit(2);
 });
