@@ -5325,8 +5325,8 @@
       "requires": [
         {
           "demand": "rhythm.syncopation",
-          "min": 4,
-          "why": "the detectors locate the strokes of a quarter or longer off the beat: four in eight bars, once a clave; the eighth-length strokes are outside T37's definition"
+          "min": 3,
+          "why": "the detectors locate the strokes of a quarter or longer off the beat: three in eight bars. Four until the syncopation correction of 2026-10-07 (DC1): the fourth was the 2-3 clave's opening silence, which follows no note and is not syncopation by the definition the detector now cites (Longuet-Higgins and Lee 1984); the 3-2 claves keep four. The eighth-length strokes are outside T37's definition"
         }
       ],
       "overconcentration": [],

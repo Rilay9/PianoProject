@@ -31,6 +31,12 @@ export interface HandPhrase {
   /** The model's `keySig` name, e.g. `G major`; absent means none. */
   key?: string;
   bars: HandNote[][];
+  /**
+   * The first bar is a pickup this many beats long (`model.pickup`, as the extractor marks an
+   * implicit first measure): its notes' `at` counts from the pickup's own start, as the engraver
+   * places them, and bar 1 starts where the pickup ends.
+   */
+  pickup?: number;
 }
 
 const STEP: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
@@ -58,7 +64,8 @@ export function phrase(spec: HandPhrase): ScoreModelData {
   const byOnset = new Map<number, { bar: number; notes: ScoreNote[] }>();
   const handsPresent = { R: false, L: false };
   spec.bars.forEach((bar, measureIndex) => {
-    const barStart = measureIndex * barLength;
+    const barStart =
+      spec.pickup === undefined || measureIndex === 0 ? measureIndex * barLength : spec.pickup + (measureIndex - 1) * barLength;
     if (!byOnset.has(barStart)) byOnset.set(barStart, { bar: measureIndex, notes: [] });
     for (const n of bar) {
       const staff = n.staff ?? 1;
@@ -115,6 +122,7 @@ export function phrase(spec: HandPhrase): ScoreModelData {
     measureCount: spec.bars.length,
     sourceMeasureCount: spec.bars.length,
     ...(spec.key === undefined ? {} : { keySig: spec.key }),
+    ...(spec.pickup === undefined ? {} : { pickup: true }),
     handsPresent,
   };
 }
