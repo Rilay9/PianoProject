@@ -46,3 +46,21 @@ The cause is in `app/src/score/extractScoreModel.ts` / `types.ts`, which the app
 ## Possibly duplicated chord symbols in served PDMX files (recorded 2026-10-08)
 
 The code-or-agent review (`docs/classifier/audits/code-or-agent-review/rows.md`, S2) counted 33 of the 110 served PDMX files with chord symbols carrying each symbol twice at the same time, a music21 re-export artefact. Whether the app draws them twice is unchecked. To check: render one of those files in the score screen.
+
+## Found while writing the Phase 2 rules, chunk 1 (recorded 2026-10-08; not fixed)
+
+Content that teaches something wrong now:
+- Six Chopin catalogue titles name the wrong key (op. 10 no. 11, op. 67 no. 4, op. 68 nos. 2 and 4, the G minor and G-sharp minor polonaises), confirmed against a published list: `docs/classifier/audits/rules-1B/rows.md`.
+- `exercise.arpeggio7.a-flat-half-diminished7.2oct.both` spells the chord with D instead of E double-flat: `rules-1B/rows.md`.
+- Generated blues-scale and tritone items in flat keys missing a restored flat (8 reported, 1 confirmed: `exercise.blues-scale.b-flat.1oct.right`): `rules-1A/rows.md`.
+- Catalogue items written for other instruments but labelled Piano (a Kreutzer violin etude, a Bach violin gavotte, a trombone solo), their fingerings read as piano fingerings: `rules-1A/rows.md`.
+- 154 generated scales, arpeggios and Hanon items run to 13 ledger lines with no clef change or 8va: `rules-1A/rows.md`.
+- Five generated waltz accompaniments write a 4:3 cross-rhythm; compound-metre items print quarter-note metronome marks: `rules-1C/rows.md`.
+- Hanon 13 and 20 and four turnaround items end where their recipe key does not (unresolved): `rules-1B/rows.md`.
+
+Code defects (the rules pages say what is right):
+- `tools/content/difficulty.py` lines 362-363 take the time signature's numerator as quarter notes per bar (tempo/velocity).
+- `detect.ts` reads staff 2 as bass clef and places ledger lines by sounding pitch; its syncopation clause over-counts in 2/2, 3/2, 6/8.
+- 6/4 and 12/4 read as simple (`isCompound`; `tools/classifier/rules/rhythm.py` `SIMPLE`).
+- `tools/classifier/score.py` line 109 fails on multi-part files.
+- The PDMX re-export loses cue-size notes (14 files) and leaves some tuplet brackets unclosed.
