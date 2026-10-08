@@ -680,8 +680,8 @@
    "evidence": "EXACT",
    "decision": "DIRECT",
    "code": "app/src/score/tempoFromXml.ts:254 tempoEvents; :280 writesTempo",
-   "status": "EXISTS",
-   "gap": "174 items carry a defaulted tempo (tag tempo-defaulted): their tempo-dependent values are untrusted and say so",
+   "status": "PARTLY",
+   "gap": "60 notated items whose file writes a tempo carry no tempoBpm; 174 items tagged tempo-defaulted have the converter's default written into the file, so the file cannot witness them and the tag is the only record of it (proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)); 1,786 of the 1,846 testable items agree",
    "w2": "music21 tempo.MetronomeMark",
    "src": "notation",
    "uses": {
@@ -875,7 +875,7 @@
    "decision": "SOURCED_RULE",
    "code": "app/src/demands/detect.ts:428 syncopation",
    "status": "EXISTS",
-   "gap": "the rule is in code; its published definition is not quoted",
+   "gap": "pickup evidence, not a certified defect (proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)): of the 83 items where the detector finds syncopation and the raw-score witness does not, 82 have it located in printed bar 1 and open with a pickup bar, and in 81 that pickup is the only place found; one (bars 80-82, no pickup) is unexplained. Whether an anacrusis counts is the definition to quote; the rule in code is T37's, written for generated phrases",
    "w2": "music21 beat strength of onsets",
    "src": "NEEDED",
    "onedef": "detect.ts",
@@ -2157,7 +2157,7 @@
    "decision": "SOURCED_RULE",
    "code": "app/src/demands/detect.ts:607 walkingBass",
    "status": "EXISTS",
-   "gap": "every-bar rule; definition to quote",
+   "gap": "over-match evidence, not a certified defect (proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)): the detector accepts a single repeated pitch (the five clave pulse exercises; the Outer Wilds theme, a repeated low C) and a root followed by a repeated chord note (the four stride exercises). A published definition (Friedland, Building Walking Bass Lines, 1995, as cited by Wikipedia; the book not read): unsyncopated equal values, usually quarters, a mixture of scale tones, arpeggios, chromatic runs and passing tones outlining the harmony. Near-miss fixtures needed before any change; Scarborough Fair's rising triad in 3/4 is unresolved",
    "w2": "none",
    "src": "verify",
    "onedef": "detect.ts",
@@ -3597,8 +3597,8 @@
    "evidence": "EXACT",
    "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (notesPerSecond)",
-   "status": "EXISTS",
-   "gap": "untrusted where the tempo is defaulted (mark.tempo-text)",
+   "status": "PARTLY",
+   "gap": "the implementation exists and the build never stores its output: 0 of 2,020 catalogue items (proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)); build.py has no call site, excerpts.py runs it for the 6 excerpts' level only. Where it was run, its meaning disagreed with the raw-score witness on a share of items (span 167, leap 540, rate 151 of 2,019): which line through chords, and which hand for a one-staff file, are unspecified",
    "w2": "music21.features",
    "src": "notation",
    "uses": {
@@ -3677,8 +3677,8 @@
    "evidence": "EXACT",
    "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (maxSpanRight/Left)",
-   "status": "EXISTS",
-   "gap": "a maximum; no count of wide chords or positions",
+   "status": "PARTLY",
+   "gap": "the implementation exists and the build never stores its output: 0 of 2,020 catalogue items (proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)); build.py has no call site, excerpts.py runs it for the 6 excerpts' level only. Where it was run, its meaning disagreed with the raw-score witness on a share of items (span 167, leap 540, rate 151 of 2,019): which line through chords, and which hand for a one-staff file, are unspecified",
    "w2": "partitura note array",
    "src": "notation",
    "uses": {
@@ -3696,8 +3696,8 @@
    "evidence": "EXACT",
    "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (maxLeapRight/Left)",
-   "status": "EXISTS",
-   "gap": "a maximum; no distribution",
+   "status": "PARTLY",
+   "gap": "the implementation exists and the build never stores its output: 0 of 2,020 catalogue items (proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)); build.py has no call site, excerpts.py runs it for the 6 excerpts' level only. Where it was run, its meaning disagreed with the raw-score witness on a share of items (span 167, leap 540, rate 151 of 2,019): which line through chords, and which hand for a one-staff file, are unspecified",
    "w2": "music21 interval per voice",
    "src": "notation",
    "uses": {
@@ -3715,8 +3715,8 @@
    "evidence": "EXACT",
    "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features (handCrossings)",
-   "status": "EXISTS",
-   "gap": "none",
+   "status": "PARTLY",
+   "gap": "the implementation exists and the build never stores its output: 0 of 2,020 catalogue items (proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)); build.py has no call site, excerpts.py runs it for the 6 excerpts' level only. Where it was run, its meaning disagreed with the raw-score witness on a share of items (span 167, leap 540, rate 151 of 2,019): which line through chords, and which hand for a one-staff file, are unspecified",
    "w2": "none",
    "src": "notation",
    "uses": {
@@ -4074,8 +4074,8 @@
    "evidence": "EXACT",
    "decision": "DIRECT",
    "code": "tools/content/difficulty.py:296 features",
-   "status": "EXISTS",
-   "gap": "no published basis for the feature choice",
+   "status": "PARTLY",
+   "gap": "the implementation exists and the build never stores its output: 0 of 2,020 catalogue items (proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)); build.py has no call site, excerpts.py runs it for the 6 excerpts' level only. Where it was run, its meaning disagreed with the raw-score witness on a share of items (span 167, leap 540, rate 151 of 2,019): which line through chords, and which hand for a one-staff file, are unspecified",
    "w2": "music21.features (92 extractors)",
    "src": "NEEDED",
    "uses": {
@@ -4251,8 +4251,8 @@
     "mark.tempo-text"
    ],
    "code": "tools/content/difficulty.py:296 (notesPerSecond)",
-   "status": "EXISTS",
-   "gap": "untrusted on defaulted tempos",
+   "status": "PARTLY",
+   "gap": "the implementation exists and the build never stores its output: 0 of 2,020 catalogue items (proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)); build.py has no call site, excerpts.py runs it for the 6 excerpts' level only. Where it was run, its meaning disagreed with the raw-score witness on a share of items (span 167, leap 540, rate 151 of 2,019): which line through chords, and which hand for a one-staff file, are unspecified",
    "w2": "none",
    "src": "NEEDED",
    "uses": {
@@ -4646,7 +4646,28 @@
    "decision": "DIRECT",
    "code": "catalogue drill.params and drill.generator; tools/content/family_contracts.py:96 recipe_of",
    "status": "EXISTS",
-   "gap": "none",
+   "gap": "the raw parameters are declared and carried; the parameter named key is a tonic in most families and a starting note or chord root in the chromatic-scale and seventh-arpeggio families, written with no key signature (100 of 1,134 files, proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)). The raw parameter is kept as it is; its musical meaning is the row generated.spec-interpreted",
+   "uses": {
+    "concepts": [],
+    "rungs": [],
+    "tracks": [],
+    "abilities": []
+   }
+  },
+  "generated.spec-interpreted": {
+   "area": "generated",
+   "need": "exercises",
+   "dec": "each raw parameter's musical meaning per family (key as tonic, as starting note, as chord root)",
+   "pipe": "generated",
+   "evidence": "EXACT",
+   "decision": "SOURCED_RULE",
+   "from": [
+    "generated.spec-declared"
+   ],
+   "code": "none",
+   "status": "MISSING",
+   "gap": "no per-family statement of what each parameter means; the proving run found key used three ways",
+   "src": "the family contract (to state per family)",
    "uses": {
     "concepts": [],
     "rungs": [],
@@ -4838,8 +4859,8 @@
    "evidence": "EXACT",
    "decision": "DIRECT",
    "code": "tools/content/render_check.py; .github/workflows/ci.yml:474",
-   "status": "EXISTS",
-   "gap": "none",
+   "status": "PARTLY",
+   "gap": "CI runs it on every push (ci.yml:474), but the last completed CI run (cc9c5629, 2026-10-07) failed before the render step and later runs were cancelled; the local report (2026-09-18) lacks 59 of today's 2,020 notated items (6 excerpts, 28 generated, 25 songs added since) and holds 14 that left the catalogue. Established again only when a CI run's render step passes on the current catalogue",
    "uses": {
     "concepts": [],
     "rungs": [],
@@ -5439,7 +5460,7 @@
    "decision": "DIRECT",
    "code": "catalogue drill.params",
    "status": "EXISTS",
-   "gap": "none",
+   "gap": "as generated.spec-declared: raw parameters, not their musical meaning",
    "w2": "tools/content/family_contracts.py",
    "src": "the family contract",
    "uses": {
@@ -9556,7 +9577,7 @@
      "characteristic": "difficulty.features",
      "evidence": "EXACT",
      "decision": "DIRECT",
-     "status": "EXISTS"
+     "status": "PARTLY"
     },
     {
      "concept": "passing-chords",
@@ -11469,7 +11490,7 @@
      "characteristic": "difficulty.features",
      "evidence": "EXACT",
      "decision": "DIRECT",
-     "status": "EXISTS"
+     "status": "PARTLY"
     },
     {
      "concept": "voice-leading",
@@ -12037,7 +12058,7 @@
      "characteristic": "mark.tempo-text",
      "evidence": "EXACT",
      "decision": "DIRECT",
-     "status": "EXISTS"
+     "status": "PARTLY"
     },
     {
      "concept": "sixteenth-notes",
@@ -12833,7 +12854,7 @@
      "characteristic": "mark.tempo-text",
      "evidence": "EXACT",
      "decision": "DIRECT",
-     "status": "EXISTS"
+     "status": "PARTLY"
     }
    ],
    "hardest_decision": "CALIBRATED_MODEL",
@@ -14047,7 +14068,7 @@
      "characteristic": "mark.tempo-text",
      "evidence": "EXACT",
      "decision": "DIRECT",
-     "status": "EXISTS"
+     "status": "PARTLY"
     },
     {
      "concept": "habanera",
@@ -15181,14 +15202,14 @@
      "characteristic": "technique.velocity",
      "evidence": "EXACT",
      "decision": "DIRECT",
-     "status": "EXISTS"
+     "status": "PARTLY"
     },
     {
      "concept": "velocity",
      "characteristic": "technique.velocity",
      "evidence": "EXACT",
      "decision": "DIRECT",
-     "status": "EXISTS"
+     "status": "PARTLY"
     },
     {
      "concept": "voicing-melody",
@@ -15303,7 +15324,7 @@
      "characteristic": "mark.tempo-text",
      "evidence": "EXACT",
      "decision": "DIRECT",
-     "status": "EXISTS"
+     "status": "PARTLY"
     },
     {
      "concept": "stop-time",
@@ -15369,7 +15390,7 @@
      "characteristic": "technique.velocity",
      "evidence": "EXACT",
      "decision": "DIRECT",
-     "status": "EXISTS"
+     "status": "PARTLY"
     },
     {
      "concept": "endurance",
@@ -15914,7 +15935,7 @@
      "characteristic": "technique.velocity",
      "evidence": "EXACT",
      "decision": "DIRECT",
-     "status": "EXISTS"
+     "status": "PARTLY"
     }
    ],
    "hardest_decision": "JUDGMENT",
@@ -16985,7 +17006,7 @@
  "counts": {
   "rungs": 110,
   "concepts": 286,
-  "characteristics": 201,
+  "characteristics": 202,
   "tracks": 15,
   "stages": 10,
   "abilities": 28

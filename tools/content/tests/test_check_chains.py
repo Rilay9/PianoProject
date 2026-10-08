@@ -1017,7 +1017,7 @@ class TheReviewerClosureGuard(unittest.TestCase):
         problems, _ = self.scan()
         self.assertTrue(any("must remain exactly 1 unique" in message for _path, message in problems), problems)
 
-    def test_the_real_review_stream_has_five_open_requirements_and_no_guard_failure(self):
+    def test_the_real_review_stream_has_the_ruled_open_requirements_and_no_guard_failure(self):
         problems, opened = cc.review_closure_guard.scan(ROOT)
         self.assertEqual(problems, [])
         self.assertEqual(
@@ -1028,6 +1028,21 @@ class TheReviewerClosureGuard(unittest.TestCase):
                 "PF1-authored-hand-proof",
                 "A7a3-stj-form-truth",
                 "A7a3-static-chart-feedback",
+                "CGT-evidence-decision-split",
+                "CGT-coordination-pass",
+                "CGT-judgment-not-ceiling",
+                "CGT-no-extractors-yet",
+                "CGT2-proving-three-proofs",
+                "CGT2-proving-read-only",
+                "CGT2-counts-no-authority",
+                "CGT2-rule-definitions-fit",
+                "CGT2-calibration-ground-truth",
+                "CPR-six-feature-rows-partly",
+                "CPR-generated-key-semantics",
+                "CPR-tempo-partial",
+                "CPR-walking-bass-adjudicate",
+                "CPR-syncopation-adjudicate",
+                "CPR-render-gap",
             },
         )
 

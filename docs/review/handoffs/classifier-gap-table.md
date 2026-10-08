@@ -17,10 +17,16 @@ Your four additions are in: two pipelines (`generated.*` and `integrity.*` rows,
 3. **Class and status.** Any row whose class is too optimistic (CODE-EXACT that is really a rule or an inference), or whose EXISTS you doubt: the code cited is where to look.
 4. **The pedagogy rows** (`target.*`, `item.*`, `role.suitability`, `transfer.distance`): these are my reading of your prevalence / distribution / salience / isolation / interaction / continuity / progression / representativeness / transfer-distance list. Say what is missing or misnamed.
 
-## Clause map
+## What is enforced, and what is not
+
+Nothing here closes a ruling; these are the mechanisms as they stand on HEAD.
 
 | Clause | Implementation | Test | CI path |
 | --- | --- | --- | --- |
 | Every rung concept, track, stage and ability covered, none extra | `tools/classifier/build_matrix.py` (`same`) | the script's exit code; `--check` for staleness | none: not in CI (absent) |
 | Every row complete and legal; EXISTS needs code; JUDGMENT needs a split that names no JUDGMENT row | `build_matrix.py` (row validation) | the same | none (absent) |
 | An UNKNOWN never becomes FITS; two witnesses must agree; the agent packet | not built: no classifier exists | none | none (absent) |
+
+## Clause map
+
+No ruling closes in this handoff.

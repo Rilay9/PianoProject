@@ -55,9 +55,15 @@ Respond in `responses/classifier-proving-run.md`. Nothing heard. Your ruling: `r
 2. The syncopation and walking-bass disagreements: confirm them as detector over-matches to record, or name what would decide them.
 3. Whether the untested meanings (§8) need witnesses before the 42 direct rows are built, or after.
 
-## Clause map
+## What is enforced, and what is not
+
+Nothing here closes a ruling; these are the mechanisms as they stand on HEAD.
 
 | Clause | Implementation | Test | CI path |
 | --- | --- | --- | --- |
 | Three proofs per EXISTS row | `tools/classifier/prove_exists.py` (`report`) | its output, `docs/classifier/proving/2026-10-07/` | none: run by hand (absent from CI) |
 | Read-only on the ontology | `prove_exists.py` (hash before and after; fails on change) | the run's exit code | none (absent) |
+
+## Clause map
+
+No ruling closes in this handoff.

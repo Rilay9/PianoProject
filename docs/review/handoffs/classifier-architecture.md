@@ -15,7 +15,9 @@ Rules first, then code, as the owner asked: for every place an item can go (110 
 3. **The method column** (`characteristics.yaml`): is any characteristic marked `existing` or `library` that is not really measured that way, or any `matcher` a library already does? The library facts were checked against the installed music21 10.5.0 and partitura 1.9.0; nothing else was installed or checked.
 4. **The pilot.** I propose choosing the pilot track by measurement: the first track whose items overlap an outside list (a graded set or a published example list). Say whether that is the right criterion, or name a better one.
 
-## Clause map
+## What is enforced, and what is not
+
+Nothing here closes a ruling; these are the mechanisms as they stand on HEAD.
 
 | Clause | Implementation | Test | CI path |
 | --- | --- | --- | --- |
@@ -23,3 +25,7 @@ Rules first, then code, as the owner asked: for every place an item can go (110 
 | Every rule names a defined characteristic | `build_matrix.py` (reference loop) | the same | none (absent) |
 | An UNKNOWN never becomes FITS | not built: no classifier exists | none | none (absent) |
 | Two witnesses agree | not built | none | none (absent) |
+
+## Clause map
+
+No ruling closes in this handoff.

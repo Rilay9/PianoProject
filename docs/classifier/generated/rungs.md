@@ -55,7 +55,7 @@ with no code at all. No rung is decidable today: no rule has a quoted source and
 | blues.3 | blues-boogie | 2.4-4.5 | SOURCED_RULE | INFERRED | scale.collection (E/S, M), notation.chord-symbols (E/D, E), form.twelve-bar (I/S, M), rhythm.shuffle (E/S, M), melody.chord-relation (I/S, P), texture.crushed-note (E/S, M) | - | 4 | - |
 | theory.3 | theory-ear | 2-3.3 | - | - | - | intervals (drill), key-signatures (drill), chord-identification (drill) | 0 | key-signatures |
 | improv.3 | improv-compose | 3.1-3.2 | CALIBRATED_MODEL | INFERRED | texture.call-response (I/C, M) | improvisation (activity), motif (activity) | 1 | - |
-| hymns | hymns-gospel | 2.6-5.7 | SOURCED_RULE | INFERRED | harmony.voice-leading (E/D, M), difficulty.features (E/D, E), harmony.applied (I/S, M), harmony.cadence (I/S, P), harmony.inversion (E/D, M), notation.chord-symbols (E/D, E), texture.bass-walk-up (E/S, M) | - | 4 | slash-chord |
+| hymns | hymns-gospel | 2.6-5.7 | SOURCED_RULE | INFERRED | harmony.voice-leading (E/D, M), difficulty.features (E/D, P), harmony.applied (I/S, M), harmony.cadence (I/S, P), harmony.inversion (E/D, M), notation.chord-symbols (E/D, E), texture.bass-walk-up (E/S, M) | - | 4 | slash-chord |
 | rock.overview | rock-metal | 2.3-5.1 | - | - | - | reduction (activity) | 0 | - |
 | latin.3 | latin | 1.9-3.6 | SOURCED_RULE | EXACT | texture.clave (E/S, M), rhythm.syncopation (E/S, E), rhythm.tresillo (E/S, E) | - | 1 | - |
 | holiday.3 | holiday | 2.44-3.49 | DIRECT | EXTERNAL | meta.title (E/D, P), meta.genre-tags (E/D, E), notation.chord-symbols (E/D, E) | transposing-for-singers (activity) | 0 | - |
@@ -83,7 +83,7 @@ with no code at all. No rung is decidable today: no rule has a quoted source and
 | jam | jam | 3.4-4.5 | DIRECT | INFERRED | key.set-membership (I/D, M) | head-and-chorus (activity), comping (activity), trading-fours (activity) | 1 | - |
 | technique.4 | technique | 4.1-5.1 | SOURCED_RULE | EXACT | technique.scale-run (E/S, M), technique.arpeggio-run (E/S, M), technique.five-finger (E/S, P), texture.motion (E/D, M), pitch.chromatic (E/D, E), interval.step (E/D, E), technique.finger-independence (E/S, M), harmony.inversion (E/D, M), mark.articulation (E/D, M), mark.slur (E/D, M), rhythm.values (E/D, P) | coordination (played) | 7 | contrary, legato |
 | rock.4 | rock-metal | 2.6-3.4 | CALIBRATED_MODEL | INFERRED | texture.ostinato (E/S, M), rhythm.eighths (E/D, E), texture.pedal-point (E/S, M), harmony.modal (I/C, M), scale.collection (E/S, M), harmony.voicing (E/S, M), texture.power-chord (E/D, M) | - | 6 | - |
-| hymns.4 | hymns-gospel | 3.2-5.69 | DIRECT | EXACT | harmony.voice-leading (E/D, M), difficulty.features (E/D, E), mark.slur (E/D, M) | - | 2 | legato |
+| hymns.4 | hymns-gospel | 3.2-5.69 | DIRECT | EXACT | harmony.voice-leading (E/D, M), difficulty.features (E/D, P), mark.slur (E/D, M) | - | 2 | legato |
 | latin.4 | latin | 2.67-7.46 | SOURCED_RULE | EXACT | rhythm.habanera (E/S, E), rhythm.tresillo (E/S, E) | - | 0 | - |
 
 ## Stage 5
@@ -95,7 +95,7 @@ with no code at all. No rung is decidable today: no rule has a quoted source and
 | blues.5 | blues-boogie | 3.37-5.2 | CALIBRATED_MODEL | INFERRED | form.turnaround (I/S, M), texture.tremolo-thirds (E/S, M), melody.chord-relation (I/S, P), scale.collection (E/S, M), texture.crushed-note (E/S, M), texture.call-response (I/C, M) | - | 5 | - |
 | jazz.5 | jazz | 2.97-5.2 | SOURCED_RULE | INFERRED | notation.swing-mark (E/D, E), harmony.voicing (E/S, M), harmony.progression (I/S, M), texture.charleston (E/S, M) | comping (activity) | 3 | - |
 | holiday.5 | holiday | 3.4-5.91 | SOURCED_RULE | EXTERNAL | meta.title (E/D, P), meta.genre-tags (E/D, E), texture.ostinato (E/S, M) | looping (app), tempo-ladder (app) | 1 | - |
-| ragtime.5 | ragtime | 3.2-7.1 | SOURCED_RULE | EXACT | texture.oom-pah (E/S, M), rhythm.syncopation (E/S, E), mark.tempo-text (E/D, E), rhythm.sixteenths (E/D, E) | - | 1 | - |
+| ragtime.5 | ragtime | 3.2-7.1 | SOURCED_RULE | EXACT | texture.oom-pah (E/S, M), rhythm.syncopation (E/S, E), mark.tempo-text (E/D, P), rhythm.sixteenths (E/D, E) | - | 1 | - |
 | theory.5 | theory-ear | 4.4-5.1 | CALIBRATED_MODEL | INFERRED | harmony.modal (I/C, M), scale.collection (E/S, M), texture.ostinato (E/S, M) | seventh-qualities (drill), progressions-by-ear (drill) | 3 | - |
 | improv.5 | improv-compose | 3.4-5.1 | SOURCED_RULE | INFERRED | scale.collection (E/S, M), melody.chord-relation (I/S, P) | twelve-bar-improv (activity), melody-writing (activity) | 1 | - |
 | latin | latin | 1.9-6.4 | SOURCED_RULE | EXACT | texture.clave (E/S, M), texture.tumbao (E/S, M), texture.montuno (E/S, M), rhythm.syncopation (E/S, E), texture.bossa (E/S, M), texture.tango (E/S, M) | comping (activity) | 5 | - |
@@ -109,7 +109,7 @@ with no code at all. No rung is decidable today: no rule has a quoted source and
 | Rung | Track | Band | Hardest decision | Weakest evidence | Characteristics read (evidence/decision, status) | Not by the notes | MISSING | Ambiguous |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | classical.6 | classical | 3.2-6.4 | SOURCED_RULE | EXTERNAL | texture.melody-in-chords (E/S, M), mark.pedal (E/D, M), meta.composer-era (E/S, E), form.length (E/D, E) | rubato (played) | 2 | - |
-| ragtime.6 | ragtime | 3.3-7.1 | CALIBRATED_MODEL | INFERRED | texture.oom-pah (E/S, M), rhythm.syncopation (E/S, E), form.multi-strain (E/S, P), key.change (I/C, P), mark.tempo-text (E/D, E) | - | 1 | - |
+| ragtime.6 | ragtime | 3.3-7.1 | CALIBRATED_MODEL | INFERRED | texture.oom-pah (E/S, M), rhythm.syncopation (E/S, E), form.multi-strain (E/S, P), key.change (I/C, P), mark.tempo-text (E/D, P) | - | 1 | - |
 | technique.6 | technique | 6-6.4 | SOURCED_RULE | EXACT | harmony.chord-quality (E/D, P), texture.broken-chord (E/S, M), texture.alberti (E/S, M), mark.ornament (E/D, P), harmony.voicing (E/S, M), texture.melody-in-chords (E/S, M), mark.pedal (E/D, M), texture.held-under-moving (E/D, M), texture.polyrhythm (E/D, M), metre.odd (E/D, E), rhythm.sixteenths (E/D, E) | rotation (played), wrist (played), melody-projection (played), balance (played), tone (played) | 7 | broken-chord, alberti, trill, voicing, CC64 |
 | jazz.6 | jazz | 2.32-6.4 | SOURCED_RULE | INFERRED | texture.walking-bass (E/S, E), harmony.voicing (E/S, M), notation.swing-mark (E/D, E), harmony.progression (I/S, M), texture.charleston (E/S, M), texture.four-to-the-bar (E/S, M), melody.chord-relation (I/S, P) | comping (activity), harmonic-dictation (drill) | 4 | - |
 | holiday.6 | holiday | 6.1-7.3 | SOURCED_RULE | EXTERNAL | meta.title (E/D, P), meta.genre-tags (E/D, E), texture.melody-in-chords (E/S, M), texture.held-under-moving (E/D, M) | memorising (activity), performance-mode (app) | 2 | - |
@@ -127,7 +127,7 @@ with no code at all. No rung is decidable today: no rule has a quoted source and
 | Rung | Track | Band | Hardest decision | Weakest evidence | Characteristics read (evidence/decision, status) | Not by the notes | MISSING | Ambiguous |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | classical.7 | classical | 4.2-7.2 | JUDGMENT | INFERRED | texture.counterpoint (I/C, M), form.sonata (I/J, M), mark.ornament (E/D, P), texture.mazurka (E/S, M) | cantabile (played), rubato (played) | 3 | - |
-| ragtime.7 | ragtime | 3.2-7.4 | CALIBRATED_MODEL | INFERRED | texture.oom-pah (E/S, M), texture.stride (E/S, M), rhythm.syncopation (E/S, E), key.change (I/C, P), form.multi-strain (E/S, P), mark.tempo-text (E/D, E), rhythm.habanera (E/S, E) | - | 2 | - |
+| ragtime.7 | ragtime | 3.2-7.4 | CALIBRATED_MODEL | INFERRED | texture.oom-pah (E/S, M), texture.stride (E/S, M), rhythm.syncopation (E/S, E), key.change (I/C, P), form.multi-strain (E/S, P), mark.tempo-text (E/D, P), rhythm.habanera (E/S, E) | - | 2 | - |
 | technique.7 | technique | 6.29-7.4 | SOURCED_RULE | EXACT | texture.double-notes (E/D, M), technique.scale-run (E/S, M), texture.octaves (E/D, M), mark.tremolo (E/D, M), texture.polyrhythm (E/D, M) | forearm (played), half-pedal (played) | 5 | octaves |
 | jazz.7 | jazz | 2.7-7.4 | SOURCED_RULE | INFERRED | harmony.voicing (E/S, M), harmony.applied (I/S, M), texture.stride (E/S, M), scale.collection (E/S, M), melody.chord-relation (I/S, P), harmony.chord-quality (E/D, P), texture.melody-in-chords (E/S, M), form.thirty-two-bar (I/S, M), harmony.progression (I/S, M) | - | 7 | voicing |
 | holiday.7 | holiday | 6.3-7.32 | SOURCED_RULE | EXACT | texture.left-hand-pattern (E/S, E), hands.per-bar-range (E/D, E), texture.stride (E/S, M), rhythm.repeated-notes (E/D, M) | rotation (played), performance-mode (app) | 2 | left-hand |
@@ -143,9 +143,9 @@ with no code at all. No rung is decidable today: no rule has a quoted source and
 
 | Rung | Track | Band | Hardest decision | Weakest evidence | Characteristics read (evidence/decision, status) | Not by the notes | MISSING | Ambiguous |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| classical.8 | classical | 4.3-8.4 | JUDGMENT | EXTERNAL | meta.title (E/D, P), meta.collection (E/D, E), technique.velocity (E/D, E), texture.melody-in-chords (E/S, M), form.length (E/D, E), form.sonata (I/J, M), mark.pedal (E/D, M) | - | 3 | - |
-| ragtime.8 | ragtime | 3.3-7.9 | SOURCED_RULE | INFERRED | rhythm.syncopation (E/S, E), rhythm.secondary-rag (E/S, M), texture.stride (E/S, M), harmony.chromatic-share (I/D, M), mark.tempo-text (E/D, E), texture.stop-time (E/S, M) | - | 4 | - |
-| technique.8 | technique | 8.1-8.1 | CALIBRATED_MODEL | EXACT | technique.scale-run (E/S, M), technique.velocity (E/D, E), technique.endurance (E/C, P) | - | 1 | - |
+| classical.8 | classical | 4.3-8.4 | JUDGMENT | EXTERNAL | meta.title (E/D, P), meta.collection (E/D, E), technique.velocity (E/D, P), texture.melody-in-chords (E/S, M), form.length (E/D, E), form.sonata (I/J, M), mark.pedal (E/D, M) | - | 3 | - |
+| ragtime.8 | ragtime | 3.3-7.9 | SOURCED_RULE | INFERRED | rhythm.syncopation (E/S, E), rhythm.secondary-rag (E/S, M), texture.stride (E/S, M), harmony.chromatic-share (I/D, M), mark.tempo-text (E/D, P), texture.stop-time (E/S, M) | - | 4 | - |
+| technique.8 | technique | 8.1-8.1 | CALIBRATED_MODEL | EXACT | technique.scale-run (E/S, M), technique.velocity (E/D, P), technique.endurance (E/C, P) | - | 1 | - |
 | jazz.8 | jazz | 5.5-8.2 | CALIBRATED_MODEL | INFERRED | harmony.chord-quality (E/D, P), harmony.voicing (E/S, M), key.change (I/C, P), harmony.applied (I/S, M), harmony.modal (I/C, M), scale.collection (E/S, M) | harmonic-dictation (drill) | 4 | - |
 | blues.8 | blues-boogie | 6.2-8.7 | SOURCED_RULE | INFERRED | form.twelve-bar (I/S, M), texture.boogie-bass (E/S, M), texture.walking-bass (E/S, E), harmony.chord-quality (E/D, P), harmony.voicing (E/S, M), texture.four-to-the-bar (E/S, M) | comping (activity), transposition (activity) | 4 | twelve-bar |
 | chords-pop.8 | chords-pop | 5.4-8.3 | SOURCED_RULE | INFERRED | harmony.applied (I/S, M), harmony.progression (I/S, M), harmony.chord-quality (E/D, P) | transposition (activity), roman-numerals (drill), sight-reading (drill) | 2 | - |
@@ -156,7 +156,7 @@ with no code at all. No rung is decidable today: no rule has a quoted source and
 
 | Rung | Track | Band | Hardest decision | Weakest evidence | Characteristics read (evidence/decision, status) | Not by the notes | MISSING | Ambiguous |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| classical.9 | classical | 4.3-9.4 | JUDGMENT | INFERRED | form.length (E/D, E), form.sonata (I/J, M), difficulty.level (I/C, P), technique.velocity (E/D, E) | dramatic-contrast (played), interpretation (played) | 1 | - |
+| classical.9 | classical | 4.3-9.4 | JUDGMENT | INFERRED | form.length (E/D, E), form.sonata (I/J, M), difficulty.level (I/C, P), technique.velocity (E/D, P) | dramatic-contrast (played), interpretation (played) | 1 | - |
 | jazz.9 | jazz | 5.1-8.4 | SOURCED_RULE | INFERRED | texture.walking-bass (E/S, E), texture.stride (E/S, M), harmony.applied (I/S, M) | comping (activity), improvisation (activity), playing-by-ear (activity) | 2 | - |
 | blues.9 | blues-boogie | 6.2-8.8 | CALIBRATED_MODEL | INFERRED | form.twelve-bar (I/S, M), texture.call-response (I/C, M), texture.boogie-bass (E/S, M), texture.stride (E/S, M) | improvisation (activity), playing-by-ear (activity) | 4 | twelve-bar, call-response |
 | chords-pop.9 | chords-pop | 5.3-8.4 | SOURCED_RULE | EXACT | texture.block-chords (E/D, P), texture.broken-chord (E/S, M), texture.arpeggio (E/S, M), harmony.voicing (E/S, M), texture.melody-in-chords (E/S, M) | arranging (activity), comping (activity), playing-by-ear (activity) | 4 | texture, voicing, open-voicing |

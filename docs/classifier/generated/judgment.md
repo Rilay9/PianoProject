@@ -36,7 +36,7 @@ item, with its confidence, and an UNKNOWN never becomes FITS. Nothing here claim
 
 ## `quality.idiomatic`: idiomatic for the instrument and style
 
-- measurable first: `technique.playability` (EXACT/SOURCED_RULE, PARTLY), `technique.span` (EXACT/DIRECT, EXISTS), `hands.per-bar-range` (EXACT/DIRECT, EXISTS), `style.evidence` (INFERRED/CALIBRATED_MODEL, PARTLY)
+- measurable first: `technique.playability` (EXACT/SOURCED_RULE, PARTLY), `technique.span` (EXACT/DIRECT, PARTLY), `hands.per-bar-range` (EXACT/DIRECT, EXISTS), `style.evidence` (INFERRED/CALIBRATED_MODEL, PARTLY)
 - residual: whether a playable, in-style passage is how a pianist would write it
 
 ## `quality.pedagogical-fit`: a good introduction, consolidation or transfer item for this rung

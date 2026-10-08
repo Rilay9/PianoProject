@@ -17,10 +17,16 @@ Respond in `responses/classifier-gap-table-2.md`. Nothing heard. Your ruling is 
 2. Whether the coordination area now covers your list, and what is still missing.
 3. Whether the research list's new section 4 (rules over INFERRED inputs) is the right place for the "may retain ambiguity" rows, or they need a field of their own.
 
-## Clause map
+## What is enforced, and what is not
+
+Nothing here closes a ruling; these are the mechanisms as they stand on HEAD.
 
 | Clause | Implementation | Test | CI path |
 | --- | --- | --- | --- |
 | Every row has evidence and decision; CALIBRATED_MODEL has `from`; SOURCED_RULE has `src`; no circular chain | `tools/classifier/build_matrix.py` (row validation, `reaches`) | the script's exit code; `--check` for staleness | none: not in CI (absent) |
 | Coverage against the curriculum, both ways | `build_matrix.py` (`same`) | the same | none (absent) |
 | An UNKNOWN never becomes FITS; the agent packet | not built: no classifier exists | none | none (absent) |
+
+## Clause map
+
+No ruling closes in this handoff.

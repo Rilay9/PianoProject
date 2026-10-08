@@ -7,7 +7,7 @@ written into the source yaml: a quoted definition, a method with its confidence,
 
 Find the published definition the rule will quote; sourced examples and near-misses become its fixtures.
 
-- `rhythm.syncopation`: target (EXISTS; the rule is in code; its published definition is not quoted)
+- `rhythm.syncopation`: target (EXISTS; pickup evidence, not a certified defect (proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)): of the 83 items where the detector finds syncopation and the raw-score witness does not, 82 have it located in printed bar 1 and open with a pickup bar, and in 81 that pickup is the only place found; one (bars 80-82, no pickup) is unexplained. Whether an anacrusis counts is the definition to quote; the rule in code is T37's, written for generated phrases)
 - `rhythm.secondary-rag`: three-over-four ragtime figure (MISSING; a cell matcher like cellBars, definition to quote)
 - `rhythm.shuffle`: shuffle / swung long-short feel (MISSING; notated triplet-eighth or dotted figure, or a swing mark; definition to quote)
 - `range.beyond-position`: leaves a five-finger position (EXISTS; rule in code; definition of a position not quoted)
@@ -101,7 +101,7 @@ For each: the library or model, what it is calibrated against, how a confidence 
 - `difficulty.coordination`: hands-together load (from coordination.synchrony-share, coordination.rhythmic-independence, coordination.unequal-rates, texture.polyrhythm, texture.motion; MISSING; needs texture.hand-independence)
 - `difficulty.technique`: spans, simultaneous notes, crossings, ornaments, repeated notes (from technique.span, texture.block-chords, technique.hand-crossing, mark.ornament, rhythm.repeated-notes; PARTLY; no component value; repeated notes missing)
 - `difficulty.harmonic-load`: chord changes per bar, chromatic share (from harmony.rhythm, harmony.chromatic-share; MISSING; needs harmony.rhythm and harmony.chromatic-share)
-- `difficulty.tempo`: speed demand (from technique.velocity, mark.tempo-text; EXISTS; untrusted on defaulted tempos)
+- `difficulty.tempo`: speed demand (from technique.velocity, mark.tempo-text; PARTLY; the implementation exists and the build never stores its output: 0 of 2,020 catalogue items (proving run 2026-10-07 (docs/classifier/proving/2026-10-07/)); build.py has no call site, excerpts.py runs it for the 6 excerpts' level only. Where it was run, its meaning disagreed with the raw-score witness on a share of items (span 167, leap 540, rate 151 of 2,019): which line through chords, and which hand for a one-staff file, are unspecified)
 - `difficulty.endurance`: length at tempo (from form.length, technique.velocity; PARTLY; as technique.endurance)
 - `difficulty.expressive`: control demanded by printed marks (from mark.dynamics, mark.hairpin, mark.articulation, mark.pedal, coordination.articulation-conflict; MISSING; counts and change rate of mark.* rows)
 - `difficulty.level`: one overall level inside a rung's band (from difficulty.features; PARTLY; fitted on levels set inside this project (645 items estimated); no outside calibration; collapses the vector to one number)
