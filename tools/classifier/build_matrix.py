@@ -371,7 +371,7 @@ def render(matrix: dict) -> dict[str, str]:
               "- By placement question: " + ", ".join(f"{k} {need[k]}" for k in ("cope", "exercises", "material")) + ".",
               "- By area: " + ", ".join(f"{a} {area[a]}" for a in AREAS if area[a]) + ".",
               f"- Rungs whose hardest decision is JUDGMENT: {sum(1 for r in matrix['rungs'] if r['hardest_decision'] == 'JUDGMENT')}; rungs reading no characteristic at all: {sum(1 for r in matrix['rungs'] if not r['rows'])}.",
-              f"- SOURCED_RULE rows with a written definition (src names a page or source): {sum(1 for v in chars.values() if v['decision'] == 'SOURCED_RULE' and str(v.get('src')) not in ('NEEDED', 'verify', 'None', 'none'))}; still NEEDED: {sum(1 for v in chars.values() if v['decision'] == 'SOURCED_RULE' and str(v.get('src')) == 'NEEDED')}. A written definition is not a checked one: none has passed an independent check yet.",
+              f"- SOURCED_RULE rows with a written definition (src names a page or source): {sum(1 for v in chars.values() if v['decision'] == 'SOURCED_RULE' and 'NEEDED' not in str(v.get('src')) and str(v.get('src')) not in ('verify', 'None', 'none'))}; still NEEDED: {sum(1 for v in chars.values() if v['decision'] == 'SOURCED_RULE' and 'NEEDED' in str(v.get('src')))}. A written definition is not a checked one: none has passed an independent check yet.",
               "- Models calibrated against an outside set: 0. No rung is decidable today. The JUDGMENT count is not a ceiling (judgment.md).", ""]
     out["summary.md"] = "\n".join(lines)
     out["matrix.json"] = json.dumps(matrix, indent=1, ensure_ascii=False, default=str)
