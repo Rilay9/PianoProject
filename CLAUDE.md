@@ -2,7 +2,7 @@
 
 **Start every session with `docs/prompts/FABLE.md`** (the owner, 2026-10-06): the one operating contract. It holds the objective (the rules plan, 2026-10-08), its phases, when a list or rule set is done, and how work runs. Where an older document disagrees, FABLE.md wins. New instructions are edits to FABLE.md, never new governing documents.
 
-**Preflight, before every action** (the owner, 2026-10-03): name the current plan step, the unit of work, the learner problem, the ownership/reuse decision and the finish condition. If you cannot state all five in five short lines, do not act. After finishing, stop: never select another task by momentum. The full checklist behind this is `docs/prompts/anti-drift-checklist.md`. **A finding is not a task:** before any nontrivial change is dispatched, the brief opens with the decision rationale of `operating-procedure.md` §10b (learner problem, solution classes considered, why the chosen one, what would reverse it, real problem or proxy, remaining uncertainty).
+**Preflight, before every action:** name the current plan step (FABLE section 2), the unit of work and the finish condition. If you cannot, do not act. After finishing, stop: never select another task by momentum, and nothing moves to a new step without the owner's say-so (FABLE section 4).
 
 ## Reuse before reinvention: the first rule (the owner, 2026-10-03)
 
@@ -38,16 +38,8 @@ existing reliable pieces, adds only what is truly project-specific, and proves t
 **Before pushing any content work, check it against `docs/prompts/content-mistakes.md`:** the mistakes already made here, each caught late.
 
 **Read `docs/prompts/operating-procedure.md` before any substantial piece of work, and
-point every agent brief at it.** It is short. It says how work is decided, done and
-reported here, and it is the owner's word as of 2026-09-25. `docs/00-invariants.md`
-holds the product and technical rules with their stories; `docs/prompts/working-rules.md`
-holds the failure stories behind the evidence rules.
-
-## The north star
-
-The work is complete when the learner experience is substantially better, not when the
-architecture is correct. The master backlog (`docs/prompts/backlog-2026-09-25.md`) holds
-every problem the audit named; a wave closes rows, it does not lose them.
+point every agent brief at it.** It is short: the common-sense rules for doing and
+reporting work here (swept 2026-10-08).
 
 ## The five rules
 
@@ -58,15 +50,10 @@ every problem the audit named; a wave closes rows, it does not lose them.
 4. Verify the user-visible result, not the implementation.
 5. Be precise about evidence without letting verification replace judgement.
 
-## The hierarchy
+## Never teach anything wrong
 
-Product truth (readable, undistorted music with the next music in view; the intended
-skill actually trained; an appropriate next experience; nothing taught wrong) outranks
-technical correctness, which outranks evidence discipline, which outranks process
-hygiene. A lower tier never interrupts a higher one.
-
-Ask the owner only when a choice changes product behaviour, pedagogy or architecture and
-cannot be inferred from what is written down. Otherwise choose, say why in a line, go on.
+No wrong note name, invented concept or false "this teaches X"; correctness outranks
+everything else.
 
 ## The two technical rules broken most often
 
@@ -76,7 +63,7 @@ cannot be inferred from what is written down. Otherwise choose, say why in a lin
 
 ## Before reporting any piece of work
 
-Seven questions, in tier order (`operating-procedure.md` §11). A correction is owed only
+Seven questions. A correction is owed only
 where the answer would change what the owner or the next agent does; wording alone never
 earns a turn.
 
@@ -131,14 +118,15 @@ tracked file, which is the signature of an accidental reformat.
 
 | What | Where |
 | --- | --- |
-| How work is decided, done and reported | `docs/prompts/operating-procedure.md` |
+| The objective, its phases and how work runs | `docs/prompts/FABLE.md` |
+| How work is done and reported | `docs/prompts/operating-procedure.md` |
+| The classifier tables, rules pages and gap plan | `docs/classifier/` |
+| Work set aside for later | `docs/prompts/parked/README.md` |
 | The product and technical rules, with their stories | `docs/00-invariants.md` |
 | What the app is and why | `docs/00-overview.md` |
 | Screen contracts, `§0` R1–R7 | `docs/04-ui-spec.md` |
 | The curriculum and its tracks | `docs/02-curriculum.md` |
 | Which test proves which state machine; every spec file | `docs/08-test-map.md` |
-| The current plan and its waves | `docs/prompts/plan-2026-09-25.md` |
-| Every problem the audit named, with its decision, wave and verification | `docs/prompts/backlog-2026-09-25.md` |
 | The running record, newest entry last | `docs/pending-review.md` |
 
 ## Commands
