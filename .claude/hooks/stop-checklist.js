@@ -51,12 +51,10 @@ process.stdin.on('end', () => {
   process.stdout.write(JSON.stringify({
     decision: 'block',
     reason:
-      'Before this turn ends, run every question below against what you just reported and against ' +
-      'the actual work state (running agents, pushes, files). Answer each by number, 1 to 8, in a ' +
-      'few words: what you checked and what it found. A one-line "nothing found" without the eight ' +
-      'answers is not a pass (the owner, 2026-10-08: "The stop hooks are supposed to make you run ' +
-      'the checklist!"). Fix a fault only if it would change what the owner or the next agent does, ' +
-      'and say what it caught. Wording alone earns nothing. Do not restate the report.\n\n' + checklist,
+      'Before this turn ends, run the questions below against what you just reported. ' +
+      'Fix a fault only if it would change what the owner or the next agent does, and say in ' +
+      'one line what it caught. Wording alone earns nothing. If nothing would change, reply ' +
+      'with the single line "Checklist: nothing found." Do not restate the report.\n\n' + checklist,
   }));
 });
 
