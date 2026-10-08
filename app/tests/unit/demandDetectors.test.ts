@@ -431,6 +431,20 @@ describe('texture.left-hand-pattern — the left hand moves in every bar', () =>
   });
   it('boundary: a melody in the left hand alone is reading the bass clef, not a pattern under a tune', () =>
     expect(present('leftHandPattern', [line(['C3', 'D3', 'E3', 'D3'], 1, 2), line(['E3', 'F3', 'G3', 'E3'], 1, 2)])).toBe(false));
+  // DC2: the tune is the right hand sounding in the bar, which a note tied over the bar line does.
+  it('present: a right-hand note tied over the bar line plays in the bar it is held into', () =>
+    expect(
+      present('leftHandPattern', [[{ at: 0, pitch: 'C5', tie: [4, 4] }, ...line(['C3', 'G3', 'E3', 'G3'], 1, 2)], line(['B2', 'G3'], 2, 2)]),
+    ).toBe(true));
+  it('boundary: a right-hand note that ends at the bar line leaves the next bar to the left hand alone', () =>
+    expect(present('leftHandPattern', [[...rh, ...line(['C3', 'G3', 'E3', 'G3'], 1, 2)], line(['B2', 'G3'], 2, 2)])).toBe(false));
+  it('boundary: a left-hand note tied into the bar is no new note there (one struck note is no pattern)', () =>
+    expect(
+      present('leftHandPattern', [
+        [...rh, ...line(['C3', 'G3', 'E3'], 1, 2), { at: 3, pitch: 'G3', staff: 2, tie: [1, 2] }],
+        [...rh, { at: 2, dur: 2, pitch: 'C3', staff: 2 }],
+      ]),
+    ).toBe(false));
 });
 
 describe('texture.walking-bass — a quarter on every beat in the left hand', () => {

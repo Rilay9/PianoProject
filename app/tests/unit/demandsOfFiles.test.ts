@@ -106,20 +106,28 @@ const printedKey = (note: ScoreNote): string =>
  * One printed bar of the model alone, on its first pass: its steps as bar 0 of a one-bar model,
  * with the time signature in force there. The every-bar detectors read their per-bar condition
  * from exactly this (a bar's own notes, its metre, the tune above it), so asking the detector of
- * the slice is asking it of the bar; nothing here restates a condition.
+ * the slice is asking it of the bar; nothing here restates a condition. The notes struck before the
+ * bar and still sounding at its start (a tie over the bar line) come too, as a step of their own bar
+ * (-1), because what sounds in the bar is part of it (DC2: the left-hand pattern's tune is a right
+ * hand struck in the bar or held into it); a detector that counts the bar's own notes never sees them
+ * as the bar's.
  */
 function barSlice(model: ScoreModelData, printedIndex: number): ScoreModelData | undefined {
   const first = model.steps.find((step) => step.sourceMeasureIndex === printedIndex);
   if (first === undefined) return undefined;
   const unrolled = first.measureIndex;
-  const steps = model.steps
-    .filter((step) => step.measureIndex === unrolled)
-    .map((step, index) => ({
-      ...step,
-      index,
-      measureIndex: 0,
-      notes: step.notes.map((note) => ({ ...note, measureIndex: 0 })),
-    }));
+  const start = model.steps.find((step) => step.measureIndex === unrolled)?.onset ?? first.onset;
+  const held = model.steps
+    .filter((step) => step.onset < start)
+    .flatMap((step) => step.notes.filter((note) => note.onset + note.duration > start + 1e-6))
+    .map((note) => ({ ...note, measureIndex: -1 }));
+  const own = model.steps.filter((step) => step.measureIndex === unrolled);
+  const steps = [
+    ...(held.length > 0 && own[0] !== undefined
+      ? [{ ...own[0], onset: start, sourceOnset: start, measureIndex: -1, isMeasureStart: false, notes: held }]
+      : []),
+    ...own.map((step) => ({ ...step, measureIndex: 0, notes: step.notes.map((note) => ({ ...note, measureIndex: 0 })) })),
+  ].map((step, index) => ({ ...step, index }));
   const metre = timeSignatureAt(model.timeSigMap, unrolled);
   return {
     id: model.id,

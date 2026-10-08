@@ -621,12 +621,27 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
    * The left hand (staff 2) plays more than one note in every bar, under a
    * right hand that plays too: a pattern under a tune. A melody in the left
    * hand alone is reading the bass clef, not this.
+   *
+   * **The right hand plays in a bar it holds a note into (DC2, 2026-10-07).** The tune is a staff-1 note
+   * struck in the bar or still sounding at its start, tied over the bar line: a melody note held across
+   * the bar line while the left hand keeps its pattern is the texture named here, not a left hand alone.
+   * Before, a bar the right hand only held into failed (the model merges a tie chain into its first note,
+   * so the bar had no right-hand note of its own); the 2026-10-07 proving run found five items whose one
+   * failing bar was such a bar (Boogie en sol bar 3, Scarborough Fair bar 18, Wake Me Up bar 29,
+   * Sunflower Slow Drag bar 30, Swipesy bar 27, printed). The left hand is still counted where it
+   * strikes: a chord tied through the bar is one note and no pattern (the 5/4 metre exercise's fifth).
    */
   leftHandPattern: (m) => {
     const notes = placed(m);
+    const starts = barStarts(m);
     const left = notes.filter((p) => p.note.staff === 2);
     const onsets = (bar: number): number => new Set(left.filter((p) => p.note.measureIndex === bar).map((p) => p.note.onset)).size;
-    const tune = (bar: number): boolean => notes.some((p) => p.note.staff === 1 && p.note.measureIndex === bar);
+    const heldInto = (note: ScoreNote, bar: number): boolean => {
+      const start = starts.get(bar);
+      return start !== undefined && note.onset < start - EPSILON && note.onset + note.duration > start + EPSILON;
+    };
+    const tune = (bar: number): boolean =>
+      notes.some((p) => p.note.staff === 1 && (p.note.measureIndex === bar || heldInto(p.note, bar)));
     const everyBar =
       m.measureCount > 0 && Array.from({ length: m.measureCount }, (_, bar) => onsets(bar) > 1 && tune(bar)).every(Boolean);
     return found('leftHandPattern', everyBar ? left.map(locate) : []);

@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 /**
- * The two detector corrections of 2026-10-07, held to real catalogue items (the owner's and the
- * reviewer's rulings on the proving run, `docs/review/handoffs/classifier-discrepancies.md`):
+ * The detector corrections of 2026-10-07, held to real catalogue items (the owner's and the
+ * reviewer's rulings on the proving run, `docs/review/handoffs/classifier-discrepancies.md`, and the
+ * adjudication of its remaining disagreements against the scores):
  *
  * - "A pickup is not automatically syncopation; its rhythmic relationship to the established meter
  *   matters." The items whose only syncopation was the padded pickup bar lose it; items with a pickup
@@ -9,6 +10,11 @@
  * - "Walking bass should not accept stationary pulses merely because they meet a note-duration
  *   pattern." The pulse, stride and waltz exercises and the Outer Wilds theme lose it; the generated
  *   walking lines and the approved I Got Rhythm passage keep it.
+ *
+ * - (DC2, the adjudication of the proving run's remaining disagreements) "A pattern under a tune": a
+ *   right hand that holds a note tied over the bar line is still playing in that bar. The five items
+ *   whose only failing bar was such a held bar gain the left-hand pattern; a left hand that holds one
+ *   tied chord through the bar (the 5/4 metre exercise) still has no pattern.
  *
  * Each item's left hand or pickup was read from the built score's model (the lowest left-hand note per
  * onset; the hand-made cases in `demandDetectors.test.ts` hold the same shapes bar by bar). Reads the built
@@ -113,5 +119,41 @@ describe('walking bass on real scores: a stationary pulse is not a walk', () => 
     });
     const without = { ...m, steps: moved, measureCount: kept.length };
     expect(detect(without, 'walkingBass').present).toBe(false);
+  });
+});
+
+describe('left-hand pattern on real scores: a right hand held over the bar line still plays', () => {
+  // Each item's one failing bar under the old rule was a bar the right hand enters on a note tied over
+  // from the bar before, with no new right-hand note in it, while the left hand keeps its pattern
+  // (printed bar, 1-based): Boogie en sol bar 3 (a C-D-F♯ chord), Scarborough Fair bar 18 (E4), Wake
+  // Me Up bar 29 (D4), Sunflower Slow Drag bar 30 (an F-D-F chord), Swipesy bar 27 (F♯-A).
+  const held = [
+    'song.blues.boogie-en-sol',
+    'song.pop.scarborough-fair.pdmx',
+    'song.folk.wake-me-up-avicii.pdmx',
+    'song.ragtime.joplin-sunflower-slow-drag',
+    'song.ragtime.joplin-swipesy-cakewalk',
+  ];
+  for (const id of held) {
+    it(`${id}: the bars the right hand only holds into are bars it plays in`, async () => {
+      const m = await model(id);
+      const notes = m.steps.flatMap((s) => s.notes).filter((n) => n.graceNote !== true);
+      const start = new Map<number, number>();
+      for (const s of m.steps) if (s.isMeasureStart && !start.has(s.measureIndex)) start.set(s.measureIndex, s.onset);
+      const struck = new Set(notes.filter((n) => n.staff === 1).map((n) => n.measureIndex));
+      const unstruck = Array.from({ length: m.measureCount }, (_, bar) => bar).filter((bar) => !struck.has(bar));
+      // The premise: such bars exist, and in each a right-hand note sounds across the bar line.
+      expect(unstruck.length).toBeGreaterThan(0);
+      for (const bar of unstruck) {
+        const at = start.get(bar) ?? 0;
+        expect(notes.some((n) => n.staff === 1 && n.onset < at && n.onset + n.duration > at), `bar ${String(bar)}`).toBe(true);
+      }
+      expect(detect(m, 'leftHandPattern').present).toBe(true);
+    });
+  }
+
+  it('exercise.meter.5-4: a left hand holding one tied fifth through each bar is no pattern', async () => {
+    const m = await model('exercise.meter.5-4');
+    expect(detect(m, 'leftHandPattern').present).toBe(false);
   });
 });

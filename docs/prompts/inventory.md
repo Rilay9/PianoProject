@@ -32,11 +32,11 @@ Where the songs are, and whether a band is all one texture (Part 12 §15: look f
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 19 | 17 | 17 | 0 | 0 | 5 |
 | 2 | 73 | 72 | 63 | 10 | 0 | 64 |
-| 3 | 68 | 67 | 36 | 31 | 3 | 61 |
+| 3 | 68 | 67 | 36 | 31 | 4 | 61 |
 | 4 | 74 | 73 | 9 | 65 | 8 | 66 |
-| 5 | 153 | 151 | 1 | 148 | 18 | 140 |
-| 6 | 157 | 155 | 0 | 156 | 19 | 128 |
-| 7 | 165 | 164 | 0 | 165 | 14 | 122 |
+| 5 | 153 | 151 | 1 | 148 | 19 | 140 |
+| 6 | 157 | 155 | 0 | 156 | 20 | 128 |
+| 7 | 165 | 164 | 0 | 165 | 16 | 122 |
 | 8 | 61 | 61 | 0 | 61 | 3 | 26 |
 | 9 | 33 | 31 | 0 | 33 | 2 | 26 |
 
@@ -48,7 +48,7 @@ Where the songs are, and whether a band is all one texture (Part 12 §15: look f
 | one hand only (left) | 3 |
 | both hands | 677 |
 | hands together (established) | 669 |
-| a left-hand pattern in every bar | 67 |
+| a left-hand pattern in every bar | 72 |
 | a walking bass (E22: readings unverified) | 0 |
 | single staff (notation.staves 1) | 126 |
 
@@ -138,7 +138,7 @@ Which demands each rung's options establish, and for the demands the rung teache
 | 4.7 | 6 | — | interval.leap 6, range.beyond-position 6, clef.bass 5, pitch.ledger 5, interval.step 5, rhythm.eighths 4, rhythm.shorter-than-quarter 4, key.signature 4, texture.hands-together 4, interval.skip 4, pitch.chromatic 3, texture.left-hand-pattern 1, rhythm.sixteenths 1 |
 | classical.4 | 8 | — | clef.bass 7, pitch.ledger 7, interval.step 7, range.beyond-position 7, texture.hands-together 7, rhythm.shorter-than-quarter 6, interval.leap 6, interval.skip 5, pitch.chromatic 5, rhythm.sixteenths 4, rhythm.eighths 4, key.signature 3, rhythm.syncopation 1 |
 | classical.4.shelf | 52 | — | range.beyond-position 50, texture.hands-together 50, interval.leap 49, rhythm.shorter-than-quarter 47, clef.bass 45, pitch.ledger 45, interval.skip 45, rhythm.eighths 43, interval.step 41, pitch.chromatic 41, key.signature 35, rhythm.sixteenths 22, rhythm.ties 19, rhythm.dotted-quarter 14, rhythm.syncopation 14, rhythm.triplets 10, metre.compound 4 |
-| chords-pop.4 | 11 | — | range.beyond-position 10, interval.skip 9, interval.leap 9, clef.bass 7, texture.hands-together 7, pitch.ledger 6, interval.step 6, rhythm.dotted-quarter 4, pitch.chromatic 4, rhythm.shorter-than-quarter 3, rhythm.ties 3, texture.left-hand-pattern 2, rhythm.eighths 2, metre.compound 1, rhythm.sixteenths 1, rhythm.syncopation 1 |
+| chords-pop.4 | 11 | — | range.beyond-position 10, interval.skip 9, interval.leap 9, clef.bass 7, texture.hands-together 7, pitch.ledger 6, interval.step 6, rhythm.dotted-quarter 4, pitch.chromatic 4, texture.left-hand-pattern 3, rhythm.shorter-than-quarter 3, rhythm.ties 3, rhythm.eighths 2, metre.compound 1, rhythm.sixteenths 1, rhythm.syncopation 1 |
 | blues.4 | 12 | — | rhythm.eighths 11, rhythm.shorter-than-quarter 11, range.beyond-position 9, interval.step 8, pitch.chromatic 8, interval.leap 7, pitch.ledger 6, interval.skip 5, clef.bass 4, texture.hands-together 4, rhythm.syncopation 3, texture.left-hand-pattern 3, rhythm.dotted-quarter 3, key.signature 2, rhythm.ties 1 |
 | jazz.4 | 7 | rhythm.syncopation 1 | interval.leap 4, rhythm.eighths 4, rhythm.shorter-than-quarter 4, range.beyond-position 3, texture.hands-together 2, interval.step 2, pitch.chromatic 2, rhythm.syncopation 1, rhythm.ties 1, key.signature 1, interval.skip 1 |
 | holiday.4 | 7 | — | clef.bass 7, range.beyond-position 7, texture.hands-together 6, interval.step 5, interval.skip 5, interval.leap 5, pitch.ledger 4, texture.left-hand-pattern 3, rhythm.dotted-quarter 3, rhythm.eighths 3, rhythm.shorter-than-quarter 3, key.signature 2 |
@@ -163,7 +163,7 @@ Which demands each rung's options establish, and for the demands the rung teache
 | jam.5 | 5 | — | interval.leap 4, rhythm.eighths 4, rhythm.shorter-than-quarter 4, texture.hands-together 3, key.signature 2, range.beyond-position 2, rhythm.syncopation 1 |
 | hymns.5 | 8 | — | range.beyond-position 7, interval.leap 5, texture.hands-together 5, clef.bass 4, interval.step 4, interval.skip 4, rhythm.eighths 4, rhythm.shorter-than-quarter 4, pitch.ledger 3, key.signature 3, rhythm.dotted-quarter 3, pitch.chromatic 2, texture.left-hand-pattern 2, rhythm.ties 2, rhythm.syncopation 1 |
 | classical.6 | 15 | — | range.beyond-position 14, clef.bass 13, pitch.ledger 12, texture.hands-together 12, rhythm.shorter-than-quarter 11, interval.leap 9, interval.step 8, interval.skip 8, key.signature 7, rhythm.sixteenths 6, rhythm.eighths 6, pitch.chromatic 6, texture.left-hand-pattern 3, rhythm.syncopation 2, rhythm.ties 1, rhythm.triplets 1 |
-| ragtime.6 | 12 | — | rhythm.shorter-than-quarter 10, clef.bass 10, interval.step 10, range.beyond-position 10, texture.hands-together 10, pitch.ledger 9, rhythm.sixteenths 8, rhythm.eighths 8, interval.skip 7, interval.leap 7, rhythm.ties 7, key.signature 6, rhythm.syncopation 6, pitch.chromatic 6, texture.left-hand-pattern 2 |
+| ragtime.6 | 12 | — | rhythm.shorter-than-quarter 10, clef.bass 10, interval.step 10, range.beyond-position 10, texture.hands-together 10, pitch.ledger 9, rhythm.sixteenths 8, rhythm.eighths 8, interval.skip 7, interval.leap 7, rhythm.ties 7, key.signature 6, rhythm.syncopation 6, pitch.chromatic 6, texture.left-hand-pattern 4 |
 | technique.6 | 18 | — | clef.bass 17, pitch.ledger 16, rhythm.shorter-than-quarter 16, range.beyond-position 15, texture.hands-together 15, interval.step 12, rhythm.eighths 10, interval.skip 9, interval.leap 8, rhythm.sixteenths 7, pitch.chromatic 6, key.signature 3, rhythm.triplets 2, texture.left-hand-pattern 2, rhythm.syncopation 2, rhythm.ties 1, metre.compound 1 |
 | jazz.6 | 16 | texture.walking-bass 0 | range.beyond-position 13, interval.leap 10, rhythm.eighths 9, rhythm.shorter-than-quarter 9, rhythm.syncopation 8, pitch.chromatic 8, rhythm.ties 8, interval.step 7, key.signature 6, interval.skip 5, texture.hands-together 4, pitch.ledger 4, rhythm.dotted-quarter 3, clef.bass 2, texture.left-hand-pattern 2, rhythm.triplets 1 |
 | holiday.6 | 7 | — | range.beyond-position 7, texture.hands-together 7, interval.skip 5, interval.leap 5, rhythm.eighths 5, rhythm.shorter-than-quarter 5, clef.bass 4, interval.step 4, key.signature 4, pitch.ledger 3, rhythm.dotted-quarter 2, rhythm.sixteenths 2, rhythm.ties 2, pitch.chromatic 1, rhythm.syncopation 1, rhythm.triplets 1, metre.compound 1 |
@@ -180,8 +180,8 @@ Which demands each rung's options establish, and for the demands the rung teache
 | technique.7 | 16 | — | rhythm.shorter-than-quarter 15, range.beyond-position 14, pitch.ledger 13, clef.bass 12, interval.step 12, interval.leap 10, rhythm.eighths 10, texture.hands-together 9, rhythm.sixteenths 8, interval.skip 7, pitch.chromatic 5, texture.left-hand-pattern 5, key.signature 4, rhythm.ties 3, rhythm.triplets 2, metre.compound 1 |
 | jazz.7 | 13 | — | range.beyond-position 11, texture.hands-together 9, interval.leap 8, rhythm.ties 5, interval.skip 5, pitch.chromatic 5, pitch.ledger 4, interval.step 4, rhythm.eighths 4, rhythm.shorter-than-quarter 4, rhythm.syncopation 4, key.signature 3, clef.bass 3, rhythm.dotted-quarter 3, texture.left-hand-pattern 2, rhythm.triplets 1, rhythm.sixteenths 1 |
 | holiday.7 | 6 | — | range.beyond-position 6, interval.leap 5, rhythm.shorter-than-quarter 5, clef.bass 4, pitch.ledger 4, interval.skip 4, rhythm.sixteenths 4, texture.hands-together 4, interval.step 3, rhythm.eighths 3, pitch.chromatic 3, texture.left-hand-pattern 2, rhythm.ties 2, rhythm.triplets 2, key.signature 2, rhythm.syncopation 2, rhythm.dotted-quarter 1 |
-| blues.7 | 8 | — | range.beyond-position 8, texture.hands-together 8, interval.leap 7, clef.bass 5, pitch.ledger 5, pitch.chromatic 5, texture.left-hand-pattern 4, interval.step 4, interval.skip 4, rhythm.eighths 4, rhythm.shorter-than-quarter 4, key.signature 4, rhythm.syncopation 3, rhythm.ties 1 |
-| chords-pop.7 | 12 | — | range.beyond-position 11, texture.hands-together 11, interval.leap 10, pitch.ledger 7, clef.bass 6, rhythm.eighths 6, rhythm.shorter-than-quarter 6, rhythm.ties 6, interval.skip 5, interval.step 4, rhythm.sixteenths 4, rhythm.dotted-quarter 4, key.signature 4, rhythm.syncopation 4, pitch.chromatic 2, rhythm.triplets 1 |
+| blues.7 | 8 | — | range.beyond-position 8, texture.hands-together 8, interval.leap 7, clef.bass 5, pitch.ledger 5, texture.left-hand-pattern 5, pitch.chromatic 5, interval.step 4, interval.skip 4, rhythm.eighths 4, rhythm.shorter-than-quarter 4, key.signature 4, rhythm.syncopation 3, rhythm.ties 1 |
+| chords-pop.7 | 12 | — | range.beyond-position 11, texture.hands-together 11, interval.leap 10, pitch.ledger 7, clef.bass 6, rhythm.eighths 6, rhythm.shorter-than-quarter 6, rhythm.ties 6, interval.skip 5, interval.step 4, rhythm.sixteenths 4, rhythm.dotted-quarter 4, key.signature 4, rhythm.syncopation 4, pitch.chromatic 2, rhythm.triplets 1, texture.left-hand-pattern 1 |
 | theory.7 | 5 | — | — |
 | improv.7 | 5 | — | pitch.ledger 2, interval.leap 2, key.signature 2, range.beyond-position 2, texture.hands-together 2 |
 | rock.7 | 7 | — | interval.step 7, rhythm.eighths 7, rhythm.shorter-than-quarter 7, range.beyond-position 7, key.signature 6, pitch.ledger 5, texture.hands-together 4, interval.skip 3, interval.leap 3, pitch.chromatic 3, clef.bass 2, rhythm.sixteenths 2, rhythm.ties 2, rhythm.syncopation 2, texture.left-hand-pattern 1 |
