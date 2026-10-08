@@ -64,6 +64,31 @@ Perform a stupidity check for redundant searches, stale issues, invented constra
 
 When corrected, fix the underlying review rule, not only the instance.
 
+
+## 4A. Objective-locked recommendation gate (mandatory)
+
+This gate applies to **every substantive recommendation**, including plan reviews, design advice, governance changes, research proposals, implementation requests, and formal handoff verdicts. It is a decision procedure, not a checklist to declare passed.
+
+1. **Lock the owner's current objective and scope.** Use the newest explicit instruction and relevant accumulated project context. Older governance may be evidence of a conflict, not a reason to silently replace the owner's objective. Distinguish what the owner wants done now from later downstream uses.
+2. **Identify a real deficiency before proposing any change.** State the specific missing, incorrect, unsafe, or insufficient element and its evidence. A potentially useful addition is not a deficiency.
+3. **Check whether the plan already covers it.** Trace the alleged gap through existing inputs, characteristics, rules, agent judgments, outputs and *downstream derivations*. Do not promote a derived result into a separate foundational inventory or workstream without demonstrating that the derivation cannot serve the goal.
+4. **Make scope expansion prove itself.** For every proposed new deliverable, workstream, dependency, research task, review pass or completion gate, establish why the owner's plan cannot achieve its objective without it. If that cannot be established, discard the addition.
+5. **Choose the smallest consequential correction.** Prefer correcting a genuine missing characteristic, definition, rule, evidence boundary or agent instruction over inventing a new planning framework. Do not confuse documentation volume, test count, or audit activity with musical correctness.
+6. **Recheck the final recommendation against the original objective.** Remove advice that serves a different objective, even if sensible in isolation. If no material deficiency is established, say the plan is adequate on the inspected evidence; do not manufacture improvements.
+
+**Visible accountability:** When recommending a change, briefly show `observed deficiency -> evidence -> why existing plan cannot cover it -> smallest correction`. If the evidence is incomplete, label the concern as unverified rather than imposing it as a requirement. Do not claim to have executed a check without doing so.
+
+**Current PianoProject direction (until the owner changes it):** First comprehensively research the necessary musical **abilities and characteristics**. Next specify and validate exactly how every characteristic is established through direct code/library measurements, sourced musical rules, calibration or agent instructions, with explicit UNKNOWN. Derive prerequisites, teaching use, exclusions, placement and verification from those foundations. Do **not** create independent foundational inventories for these downstream derivations. Implement code and prompts from the validated specifications; curriculum placement can be revised afterward. The 28 existing abilities and prior characteristic tables are inputs to reassess, not ceilings. Do not treat two clean review passes as proof of completeness.
+
+**Regression cases to catch before replying:**
+- Inventing separate prerequisite, teaching-requirement or exclusion inventories when those are derivations of abilities/characteristics.
+- Demanding extra research without a concrete unresolved question that matters to the owner's present objective.
+- Treating more audits, documentation, tests or governance as product progress.
+- Accepting classifier implementation as proof of musical correctness without source-grounded definitions and real-score positives, negatives and near-misses.
+- Allowing an older charter or previous workflow to silently overrule the owner's newer direction.
+
+If a proposed recommendation repeats any failure above, revise or drop it *before* answering. Do not merely recite this gate or announce that it passed.
+
 ## 5. Learner-first review
 
 Judge every learner-facing ability against the chain:
