@@ -1,6 +1,6 @@
 # Area 1.A, the item and its score: the rules for code (Phase 2)
 
-**What this is.** The Phase 2 rules (FABLE.md section 2, item 3) for the 26 characteristics of `docs/classifier/characteristics-list.md` section 1.A, in the list's order. Every one of the 26 is read by code in at least one pipeline (code, or code + agent), so every one has a rule here; none is agent-only or a gap. Written 2026-10-08 in a worktree cut from origin at 75862593; no code or table was changed (rules before code). Argued against once by an independent checker (`docs/classifier/audits/rules-1A/rows.md`: one verdict per characteristic, verdicts on the writer's findings, new findings); its corrections are applied here, one line each in `docs/classifier/audits/rules-1A/applied.md` (applied in a worktree cut at 7553c400). Claims marked [measured by the check: script] are the checker's measurements, not re-run by the agent that applied them. Not yet judged by the orchestrator.
+**What this is.** The Phase 2 rules (FABLE.md section 2, item 3) for the 26 characteristics of `docs/classifier/characteristics-list.md` section 1.A, in the list's order. Every one of the 26 is read by code in at least one pipeline (code, or code + agent), so every one has a rule here; none is agent-only or a gap. Written 2026-10-08 in a worktree cut from origin at 75862593; no code or table was changed (rules before code). Argued against once by an independent checker (`docs/classifier/audits/rules-1A/rows.md`: one verdict per characteristic, verdicts on the writer's findings, new findings); its corrections are applied here, one line each in `docs/classifier/audits/rules-1A/applied.md` (applied in a worktree cut at 7553c400). Claims marked [measured by the check: script] are the checker's measurements, not re-run by the agent that applied them. Validated once after the corrections (2026-10-08, worktree cut at 485f2be2): every rule was re-run on its examples, the cases the check showed failing and plausible counterexamples, and carries a **Status** line under its heading (validated, uncertain or failing, with the evidence); one line per rule and per threshold in `docs/classifier/audits/rules-1A/validation.md`, whose scripts are under `build/val/` (not committed). Claims marked [measured: build/val/...] are that pass's. Not yet judged by the orchestrator.
 
 **The standard each section meets.** Input; the library call or the custom algorithm; each threshold with its source or its validation on real scores; the output, its provenance and when it answers UNKNOWN; the pipelines where they differ; for code + agent, the exact residual handed to an agent (the agent's instruction itself is Phase 3); and real examples by catalogue id. Every claim is labelled **[measured: script]** or **[reading]**. Nothing here has been heard.
 
@@ -29,6 +29,8 @@
 ---
 
 ## 1. item.format
+
+**Status (validation, 2026-10-08): failing.** Re-run on the 15 named items and the catalogue [measured: build/val/r_format.py, survey_format.py, survey_lead.py, survey_last.py, corpus_lyr.py]. Right on every named example (So Danço Samba is now a lead sheet; Joyful and Holy, Holy, Holy are 4(b) candidates; Kreutzer, the violin gavotte and the trombone solo are flagged; bwv66.6 fires rule 2's chorale bullet). Wrong: `song.jazz.kenny-dorham-blue-bossa.pdmx`, a lead sheet whose last four bars harmonise the melody (11.8% two-note onsets), comes out *piano score (one-hand part)* because of the under-10% chord-onset share; the UNKNOWN-layout rule (lower staff silent in half the bars) fires on 27 generated items (the rootless ii-V-I and montuno families), where a generated layout must be code's. Passed on as candidates: Duvernoy op. 176 no. 11 meets both parts of 4(b) (one onset per quarter in every quarter), and the title word "Flute" flags `song.folk.the-flute-tune-soulpride-remix.pdmx`. Thresholds' bases are in `docs/classifier/audits/rules-1A/validation.md` section 2. One line in `docs/classifier/audits/rules-1A/validation.md`.
 
 **Marking.** Generated code; PDMX code + agent.
 
@@ -72,6 +74,8 @@
 
 ## 2. notation.staves
 
+**Status (validation, 2026-10-08): validated.** Re-run on the 6 named items and the catalogue [measured: build/val/r_format.py, survey_a.py]: every answer as stated, the two clave items unpitched. One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Code in both pipelines.
 
 **Input.** The raw walk: the number of `<part>` elements, the largest `<staves>` value per part (1 when absent), and the unpitched staves (S5).
@@ -89,6 +93,8 @@
 ---
 
 ## 3. prereq.hand-assignment
+
+**Status (validation, 2026-10-08): uncertain.** Re-run on the 9 named items and the catalogue [measured: build/val/r_format.py, survey_a.py]: every named positive and near-miss as stated, and the flag counts reproduce (cross-staff 29 and 18, collisions 4 and 4, hand words 10 and 2, reach 43 and 59; generated none, widest one-staff chord 14). What remains: flag 1 over-flags on PDMX and its refinement is not run; no bracketed hand word exists in the catalogue, so that branch is untested. One line in `docs/classifier/audits/rules-1A/validation.md`.
 
 **Marking.** Generated code; PDMX code + agent.
 
@@ -119,6 +125,8 @@
 
 ## 4. texture.melody-location
 
+**Status (validation, 2026-10-08): failing.** Re-run with the guard over score.py and texture.py's per-hand bar sets on the named items and 60 random two-staff PDMX files [measured: build/val/r_melody.py]. The guard turns the Fantaisie-Impromptu bar 4 and Mariage d'amour bars 1 and 2 into UNKNOWN, and the named positives and near-misses come out as stated. Wrong: the Fantaisie-Impromptu bar 1 (held G♯ octaves) and bar 3 (the left-hand arpeggio, whose first onset is an octave, so `texture.broken-chord` does not fire) are still named a left-hand melody by rule 1: the guard works only where a pattern rule fires. Coverage now: 619 of 3,447 sampled bars (18.0%). One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Generated code; PDMX code + agent.
 
 **Input.** score.load's notes per hand (S6); the texture rules' answers (`tools/classifier/rules/texture.py`); lyrics and chord symbols; for generated items the recipe's family.
@@ -144,6 +152,8 @@ For generated items the family states the roles (study: a line over accompanimen
 
 ## 5. notation.clefs
 
+**Status (validation, 2026-10-08): validated.** Re-run on the 6 named items and the catalogue [measured: build/val/r_format.py, survey_a.py]: treble on staff 2 and bass on a one-staff part flagged, the soprano clef flagged, the percussion staff not read as bass. One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Code in both pipelines.
 
 **Input.** The raw walk's `<clef>` elements (`number` = staff, `sign`, `line`, `clef-octave-change`) with their times; the notes.
@@ -164,6 +174,8 @@ For generated items the family states the roles (study: a line over accompanimen
 
 ## 6. notation.clef-change
 
+**Status (validation, 2026-10-08): validated.** Re-run on the 4 named items [measured: build/val/r_format.py]: Asturias inside bars, Beethoven Anh. 5 no. 2 at bar lines only, Ballade 4 130 changes; the counterexample, a same-clef restatement, occurs in 50 catalogue files (Asturias 2) and none is counted [measured: survey_a.py]. One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Code in both pipelines.
 
 **Input and library.** As `notation.clefs`; music21 clef objects with their offsets as second witness.
@@ -181,6 +193,8 @@ For generated items the family states the roles (study: a line over accompanimen
 ---
 
 ## 7. pitch.ledger
+
+**Status (validation, 2026-10-08): uncertain.** Re-run on the 7 named items [measured: build/val/r_ledger.py]: the geometry reproduces every example, and El Choclo and the 4-octave C scale fall beyond the limit. What remains: the limit of 6 lines is open, because 97 real items (many NIFC Chopin files, none of the 116 NIFC files carrying an `<octave-shift>`) reach 6 or more lines as well as the 154 generated ones [measured: survey_ledger.py, nifc_oct.py]. One line in `docs/classifier/audits/rules-1A/validation.md`.
 
 **Marking.** Code in both pipelines.
 
@@ -201,6 +215,8 @@ For generated items the family states the roles (study: a line over accompanimen
 ---
 
 ## 8. mark.ottava
+
+**Status (validation, 2026-10-08): uncertain.** Re-run on the 6 named items [measured: build/val/r_ledger.py]: kinds, closed, unclosed and empty spans and ottava words as stated; S4 against music21 on all 93 files with a shift: 81 agree with the exclusive stop, 21 with an inclusive one [measured: ottava_m21.py]. What remains: the extent agrees with a second reader, never with a printed page. One line in `docs/classifier/audits/rules-1A/validation.md`.
 
 **Marking.** Generated code; PDMX code + agent.
 
@@ -224,6 +240,8 @@ For generated items the family states the roles (study: a line over accompanimen
 
 ## 9. notation.keys
 
+**Status (validation, 2026-10-08): validated.** Re-run on the 4 named items and the catalogue [measured: build/val/r_format.py, survey_a.py]: first signatures and changes as stated; the per-staff and non-traditional branches have no instance. One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Code in both pipelines.
 
 **Input.** The raw walk's `<key>` (`<fifths>`, `<mode>`, `number` for a per-staff key, non-traditional keys without `<fifths>`).
@@ -243,6 +261,8 @@ For generated items the family states the roles (study: a line over accompanimen
 ---
 
 ## 10. key.signature-exercised
+
+**Status (validation, 2026-10-08): uncertain.** Re-run on the 4 named items [measured: build/val/r_acc.py]: Ballade 4 now 2,393 exercised and 158 restated (2,551 together, the old count); the D minor arpeggio and Itsy Bitsy Spider never exercised. Never exercised, recounted: 100 generated, 4 PDMX, 2 other [measured: survey_acc.py]. What remains: "accidental shown" comes from section 12's model, which fails against the render, so a signature-restating accidental that OSMD draws can be counted as exercised. One line in `docs/classifier/audits/rules-1A/validation.md`.
 
 **Marking.** Code in both pipelines.
 
@@ -264,6 +284,8 @@ For generated items the family states the roles (study: a line over accompanimen
 
 ## 11. pitch.chromatic
 
+**Status (validation, 2026-10-08): validated.** Re-run by spelling on 10 items with the existing key helper [measured: build/val/r_chrom.py]: Asturias 80 chromatic and 106 minor-raised (the G♭ and F♭ now chromatic), Ballade 4 1,086 and 490, Bach Aria 0 and 18; harmonic and melodic minor scales give minor-raised only; blue notes count chromatic. It depends on `key.tonic-mode` (area 1.B). One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Generated code; PDMX code + agent (inherits `key.tonic-mode`).
 
 **Input.** The written letter and alter of each note, so the spelling is kept (unpitched staves out); the key (tonic and mode) from `key.tonic-mode` (area 1.B), and until that rule exists the key helper of `tools/classifier/rules/harmony.py` (`infer_key`, documented in `docs/classifier/rules/harmony.md`, "The key").
@@ -284,11 +306,13 @@ For generated items the family states the roles (study: a line over accompanimen
 
 ## 12. reading.accidental-kinds
 
+**Status (validation, 2026-10-08): failing.** Rendered with OSMD 2.1.2 under jsdom and compared note by note [measured: build/val/osmd_acc.cjs, osmd_compare.py]. The named items agree, including the check's blues-scale example. Wrong: on a random 30 items, 147 notes in 8 files that the rule calls "in the file, not shown" are drawn (76 are not), for example `exercise.chromatic.d.1oct.right` bar 2, the second C♯5. In 2.1.2 a file accidental on a note equal to the in-bar record is printed unless the position is in OSMD's list of positions altered against the key, and each check removes the position from that list; an emulation of that logic matched the render on every matched note of 28 of the 30 files [measured: osmd_emul.py]. Catalogue by the emulation: of the accidentals the rule calls not shown, OSMD draws 839 of 1,054 PDMX, 290 of 954 generated, 8,868 of 15,484 other [measured: survey_osmd.py]. One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Code in both pipelines.
 
 **Input.** The raw walk: written step, alter, octave, staff, bar, ties and the `<accidental>` element with `cautionary`, `parentheses` and `editorial`; the signature in force. Grace notes included (they are printed).
 
-**What the learner sees.** The app renders with OpenSheetMusicDisplay 2.1.2, whose accidental calculator (read in `app/node_modules/opensheetmusicdisplay/build/opensheetmusicdisplay.min.js`, `checkAccidental`) keeps a per-bar record of alterations keyed by letter plus octave, preloaded with every signature letter in every octave, prints an accidental wherever a note's alteration differs from the record, skips a tie's continuation, and prints the file's own `<accidental>` only where the position has no in-bar record yet (the source branch is `else e.AccidentalXml && Transpose===0 && !a`). Where the position already holds the same alteration (a repeated A♭ in one bar, or an F♯ in G major) the file's accidental is not printed [reading by the check of the 2.1.2 minified source: `checkAccidental`, `doCalculationsAtEndOfMeasure`, `reactOnKeyInstructionChange`]. The first version of this rule said the file's accidental was printed wherever the record needed none, which over-counts. The rule models the corrected reading, so it counts what the page shows rather than what the file lists. Nobody rendered a page to confirm it.
+**What the learner sees.** The app renders with OpenSheetMusicDisplay 2.1.2, whose accidental calculator (read in `app/node_modules/opensheetmusicdisplay/build/opensheetmusicdisplay.min.js`, `checkAccidental`) keeps a per-bar record of alterations keyed by letter plus octave, preloaded with every signature letter in every octave, prints an accidental wherever a note's alteration differs from the record, skips a tie's continuation, and prints the file's own `<accidental>` only where the position has no in-bar record yet (the source branch is `else e.AccidentalXml && Transpose===0 && !a`). Where the position already holds the same alteration (a repeated A♭ in one bar, or an F♯ in G major) the file's accidental is not printed [reading by the check of the 2.1.2 minified source: `checkAccidental`, `doCalculationsAtEndOfMeasure`, `reactOnKeyInstructionChange`]. The first version of this rule said the file's accidental was printed wherever the record needed none, which over-counts. The rule models the corrected reading, so it counts what the page shows rather than what the file lists. Nobody rendered a page to confirm it. [Validation: rendering with OSMD 2.1.2 contradicts part of this reading; see the Status line above.]
 
 **Algorithm.** The bar rule: "Accidentals apply to subsequent notes on the same staff position for the remainder of the measure where they occur ... Once a barline is passed, the effect of the accidental ends, except when a note affected by an accidental is tied to the same note across a barline" (Wikipedia, "Accidental (music)", https://en.wikipedia.org/wiki/Accidental_(music)). Per part, staff and bar, in time order, the state of each staff position (letter and octave) starts at the signature's alteration. For each note: a tie continuation shows nothing; otherwise if its alter differs from the state, a *required* accidental of its kind (sharp, flat, natural, double sharp, double flat) is shown and the state updated (the position now has a record); if it equals the state but differs from the signature it is *carried* (within the bar; across a tie when a continuation). Independently, a note that is not required and whose file has an `<accidental>`: the accidental is a *courtesy* shown only where the position has no record yet in the bar and the letter is not a signature letter, *marked* when `cautionary`, `parentheses` or `editorial` is set; in every other case (a repeat on a position that already holds the alteration, or a signature letter) the file's accidental is counted apart as *in the file, not shown*. A required accidental the file omits is counted apart (it goes to `integrity.notation-sanity`).
 
@@ -303,6 +327,8 @@ For generated items the family states the roles (study: a line over accompanimen
 ---
 
 ## 13. reading.accidental-churn
+
+**Status (validation, 2026-10-08): validated.** Re-run on the 6 items [measured: build/val/r_acc.py]: the chromatic scale, Muse (24), Ballade 4 (44) and Nocturne op. 9 no. 2 (29) give events; the single cancellation of the A blues scale and Silent Night give none. One line in `docs/classifier/audits/rules-1A/validation.md`.
 
 **Marking.** Code in both pipelines.
 
@@ -319,6 +345,8 @@ For generated items the family states the roles (study: a line over accompanimen
 ---
 
 ## 14. reading.visual-density
+
+**Status (validation, 2026-10-08): uncertain.** Re-run on the 4 named items [measured: build/val/r_acc.py]: dense and sparse as stated. What remains: its accidental count inherits section 12's failing model, its ledger count the open limit. One line in `docs/classifier/audits/rules-1A/validation.md`.
 
 **Marking.** Code in both pipelines (PDMX: what is printed, hidden objects excluded).
 
@@ -338,6 +366,8 @@ For generated items the family states the roles (study: a line over accompanimen
 
 ## 15. reading.unusual-notation
 
+**Status (validation, 2026-10-08): uncertain.** Re-run on the 7 named items and the catalogue [measured: build/val/r_misc.py, nested.py, survey_misc.py]: cue notes, cross-staff beams, slash noteheads and the three unclosed brackets as stated. What remains: the number test splits the old 13 files into 10 unclosed and 3 nested (`song.classical.chopin-ballade-1` bar 179, the Fantaisie-Impromptu PDMX bar 72, `song.classical.debussy-clair-de-lune` bars 19 and 23), so "none" below does not hold, and whether they are true nesting is unverified; the time-modification test is undefined among the catalogue's 77 ratios. One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Code in both pipelines.
 
 **Input.** The raw walk.
@@ -346,7 +376,7 @@ For generated items the family states the roles (study: a line over accompanimen
 
 **Thresholds.** None.
 
-**Validation.** Cue notes: 5 other items, 0 PDMX (the re-export keeps none). Cross-staff beams: 17 PDMX, 26 other. The earlier nested-tuplet test (a start while another is open) flagged 13 files, 9 PDMX (Brahms op. 118 no. 2, Chopin's Ballade no. 4, the Fantaisie-Impromptu ...) and 4 other. The check found that in all 13 the second start carries the same `number` ("1") as the open one and the first start is never stopped: unclosed tuplet brackets, a re-export or encoding defect, not nesting. Examples: `song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx` (a triplet started at quarter 222 in bar 75 and never stopped, then new triplets at 224 and 225), the Debussy Arabesque no. 1 (a bracket open from quarter 100 to 120; the check gives no id: the PDMX copy `song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx` is the likely one) and Mozart K. 15m (`song.classical.mozart-minuet-in-f-major-k-15m.pdmx`, a bracket open from bar 15 to bar 17) [measured by the check: c3.py, c4.py, c5.py]. The earlier test would also have flagged any true nested case, so the corrected rule finds none in the catalogue files (inferred from the check's finding about the 13; not re-run). Noteheads: PDMX slash 46 (2 items); other x 4; `none` 85 in other files, now reported as `hidden`; generated none of the list [measured: analyze.py]. The prototype grouped beams by staff; grouping by part and voice (as above) is needed, or a cross-staff beam is cut in two (seen in Chopin op. 10 no. 6, bar 8) [measured: probe3.py].
+**Validation.** Cue notes: 5 other items, 0 PDMX (the re-export keeps none). Cross-staff beams: 17 PDMX, 26 other. The earlier nested-tuplet test (a start while another is open) flagged 13 files, 9 PDMX (Brahms op. 118 no. 2, Chopin's Ballade no. 4, the Fantaisie-Impromptu ...) and 4 other. The check found that in all 13 the second start carries the same `number` ("1") as the open one and the first start is never stopped: unclosed tuplet brackets, a re-export or encoding defect, not nesting. Examples: `song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx` (a triplet started at quarter 222 in bar 75 and never stopped, then new triplets at 224 and 225), the Debussy Arabesque no. 1 (a bracket open from quarter 100 to 120; the check gives no id: the PDMX copy `song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx` is the likely one) and Mozart K. 15m (`song.classical.mozart-minuet-in-f-major-k-15m.pdmx`, a bracket open from bar 15 to bar 17) [measured by the check: c3.py, c4.py, c5.py]. The earlier test would also have flagged any true nested case, so the corrected rule finds none in the catalogue files (inferred from the check's finding about the 13; not re-run). [Validation: re-run, the number test finds 3 files with a start whose number differs from the open one's, and 10 unclosed; see the Status line above.] Noteheads: PDMX slash 46 (2 items); other x 4; `none` 85 in other files, now reported as `hidden`; generated none of the list [measured: analyze.py]. The prototype grouped beams by staff; grouping by part and voice (as above) is needed, or a cross-staff beam is cut in two (seen in Chopin op. 10 no. 6, bar 8) [measured: probe3.py].
 
 **Output.** `{cue, cross_staff_notes, cross_staff_beams, nested_tuplets, unclosed_tuplets, noteheads: {value: n}, hidden}`, provenance `exact`.
 
@@ -355,6 +385,8 @@ For generated items the family states the roles (study: a line over accompanimen
 ---
 
 ## 16. reading.pitch-entropy
+
+**Status (validation, 2026-10-08): validated.** Re-run by an independent implementation on 5 items [measured: build/val/r_misc.py]: the page's values reproduce (5.42, 5.46, 1.0, 1.66, 1.19). One line in `docs/classifier/audits/rules-1A/validation.md`.
 
 **Marking.** Code in both pipelines (per staff, as printed).
 
@@ -376,6 +408,8 @@ For generated items the family states the roles (study: a line over accompanimen
 
 ## 17. reading.redundancy
 
+**Status (validation, 2026-10-08): validated.** Re-run by an independent LZ76 on 4 items [measured: build/val/r_misc.py]: the page's shares reproduce (0.013, 0.047, 0.53, 0.54). One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Code in both pipelines (per staff, as printed).
 
 **Input.** Per staff, the sequence of pitch sets struck at each onset (the set of MIDI pitches struck together; tie continuations and grace notes out), each set a symbol.
@@ -394,6 +428,8 @@ For generated items the family states the roles (study: a line over accompanimen
 
 ## 18. notation.turn-opportunity
 
+**Status (validation, 2026-10-08): uncertain.** Re-run on the 4 named items [measured: build/val/r_misc.py]: the rest spans are as stated (a whole bar in BWV 924 and the Inno; none in the Cello Suite and Away in a Manger). What remains: no "long enough" answer, its threshold open. One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Generated code; PDMX code + agent (inherits the hand).
 
 **Input.** Per staff (the hand by S6): onsets, durations and rests; the tempo (the first metronome mark, `mark.tempo-text`; the catalogue's `tempoBpm` in the validation) and the beat unit.
@@ -411,6 +447,8 @@ For generated items the family states the roles (study: a line over accompanimen
 ---
 
 ## 19. mark.fingering
+
+**Status (validation, 2026-10-08): validated.** Re-run on 6 items and the catalogue [measured: build/val/r_misc.py, survey_misc.py]: printed digits, substitutions, stacked chord fingerings, digit words as candidates and Kreutzer's item-level UNKNOWN as stated; fingering `0` occurs in no other catalogue file. Its title-word input (item.format rule 6) carries one false flag (the Flute Tune). One line in `docs/classifier/audits/rules-1A/validation.md`.
 
 **Marking.** Generated code; PDMX code + agent.
 
@@ -441,6 +479,8 @@ Digits typed as `<words>` or `<lyric>` on a note are listed apart as candidates.
 
 ## 20. notation.lyrics
 
+**Status (validation, 2026-10-08): uncertain.** Run on music21's corpus and three synthetic streams [measured: build/val/corpus_lyr.py]: the two lead sheets class as words. What remains: no real lyric held; and a synthetic counting stream "1 e & a" whose "a" falls on an A and "e" on an E classes as words once the alignment step moves them (counting 6 of 8, under 80%). One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Code in both pipelines.
 
 **Input.** The raw walk's `<lyric>` (`number`, `<text>`, `<syllabic>`) per note, with its part and staff.
@@ -462,6 +502,8 @@ Digits typed as `<words>` or `<lyric>` on a note are listed apart as candidates.
 ---
 
 ## 21. notation.chord-symbols
+
+**Status (validation, 2026-10-08): failing.** Re-run on 8 items and the catalogue [measured: build/val/r_misc.py, r_melody.py, survey_misc.py]: de-duplication, slash chords, N.C. and text candidates as stated. Wrong: step 3 on its own example `exercise.montuno.a.2note.son-3-2`: `texture.melody-location` rule 1 settles the montuno's only sounding staff as the melody, no texture pattern fires, and the family contract (`tools/content/family_contracts.json`, "a right-hand montuno of chord tones on the clave's strokes") states no role, so all four symbols come out *over a melody line*. One line in `docs/classifier/audits/rules-1A/validation.md`.
 
 **Marking.** Generated code; PDMX code + agent.
 
@@ -489,6 +531,8 @@ Digits typed as `<words>` or `<lyric>` on a note are listed apart as candidates.
 
 ## 22. harmony.figured-bass
 
+**Status (validation, 2026-10-08): uncertain.** Re-run on the 2 named items and the catalogue [measured: build/val/r_misc.py, survey_misc.py]: no `<figured-bass>`; candidates in 18 items, every one seen a number that is not a figure, all to the agent. What remains: no positive held. One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Generated code; PDMX code + agent.
 
 **Input.** Raw `<figured-bass>` elements (music21's reader skips them: `'figured-bass': None` in its measure dispatch, the list); `<words>` and `<lyric>` on the lowest staff.
@@ -509,6 +553,8 @@ Digits typed as `<words>` or `<lyric>` on a note are listed apart as candidates.
 
 ## 23. mark.repeat
 
+**Status (validation, 2026-10-08): failing.** The unroller was written to the specification and run [measured: build/val/r_repeat.py, survey_repeat.py]: the Romance 80 (music21 64), the Haydn 194 (music21 956). Wrong: the Beethoven bagatelle op. 119 no. 3 comes out 133; by its structure it plays 115, music21's count, because the jump list has no rule for two coda signs without "To Coda" words (the first sign is the jump point). With that convention added it gives 115, and `song.folk.down-by-the-riverside.pdmx.2` 78, as music21. One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Generated code; PDMX code + agent.
 
 **Input.** Raw `<barline><repeat direction times>`, `<ending number type>`, `<segno>`, `<coda>`, `<sound>` jump attributes, `<words>`.
@@ -520,7 +566,7 @@ Digits typed as `<words>` or `<lyric>` on a note are listed apart as candidates.
 2. Bars played: computed by a custom unroller from that raw structure (repeat bar lines, endings, the closed jump list, segno, coda, Fine). The convention, stated: repeats are not taken after a D.C. or D.S. unless the score says otherwise; it matches music21's `repeatAfterJump=False` default (source: that default [reading by the check]; no published engraving text was read for it). Witness: music21 `Expander(part0).process()` when `isExpandable()` and it recognised every jump word the raw walk found; partitura only where there are no jump words. Unroller and witness agree: `two-witnesses`. They disagree, or an expansion more than four times the printed bars: UNKNOWN "repeat expansion disputed", with the counts.
 3. Where jump words are present and a witness did not take the jump, the answer is never `two-witnesses`: it is the unroller's count alone, `one-witness`, with the jump flagged to the agent ("jump unconfirmed by a second reader"). A disagreement with a witness that cannot take that jump is not a dispute.
 
-**Thresholds.** The closed jump list (the standard Italian terms; MXL-segno, MXL-coda), the no-repeat-after-a-jump convention above, and the four-times plausibility bound (operational, from the case below). The unroller is a rule here, not yet run: its first tests are the two files below (the Romance by hand 80; the Beethoven bagatelle, where music21's 115 is to be confirmed).
+**Thresholds.** The closed jump list (the standard Italian terms; MXL-segno, MXL-coda), the no-repeat-after-a-jump convention above, and the four-times plausibility bound (operational, from the case below). The unroller is a rule here, not yet run: its first tests are the two files below (the Romance by hand 80; the Beethoven bagatelle, where music21's 115 is to be confirmed). [Validation: run; the Romance 80, the bagatelle 133 against 115 by its structure; see the Status line above.]
 
 **Validation.** Files with any repeat structure: 211 PDMX, 120 other, 0 generated. music21 expands 186 of the 211 PDMX files and 104 of the 120 other; music21 and partitura agree on the bars played in 156 of 186 PDMX and 84 of 104 other. Those figures compare two readers one of which cannot see jumps: the 30 PDMX disagreements, 26 of which involve segno, coda or jump words, are built in on jump files, and agreement can be wrong (the Romance below). Of the 4 disagreements without jump words, `song.classical.haydn-sonata-in-g-major-hob-xvi-8.pdmx` expands to 956 bars from 97 in music21 (partitura 194), an over-expansion. music21 recognises a jump expression in 37 of the 42 PDMX files with jump words [measured: expand_check.py]. Repeat bar lines: 189 PDMX items; endings 52; segno 9; coda 6; jump words 42; `<sound>` jumps none [measured: analyze.py].
 
@@ -533,6 +579,8 @@ Digits typed as `<words>` or `<lyric>` on a note are listed apart as candidates.
 ---
 
 ## 24. notation.reading-aids
+
+**Status (validation, 2026-10-08): uncertain.** Re-run on the 5 named items and the catalogue [measured: build/val/r_misc.py, survey_misc.py, fing_share.py]: rule 2 fires on the Chopin waltz (0.954) and on nothing else; rule 4 on the easy Twinkle. What remains: the 0.9 finger share splits sibling arrangements (Ode to Joy 0.893 and 0.895 below, 0.916 above); counting, notehead text and shape notes have no instance. One line in `docs/classifier/audits/rules-1A/validation.md`.
 
 **Marking.** Generated code (absent by the family list); PDMX code + agent.
 
@@ -559,6 +607,8 @@ Digits typed as `<words>` or `<lyric>` on a note are listed apart as candidates.
 
 ## 25. notation.slash-rhythm
 
+**Status (validation, 2026-10-08): validated.** Re-run on the 4 named items [measured: build/val/r_misc.py]: beat slashes in So Danço Samba (bars 1 to 7) and Blues Riff in C, none in the near-misses; the rhythmic-slash branch has no instance. One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Code in both pipelines.
 
 **Input.** Raw `<notehead>slash</notehead>` with `<stem>`, and `<measure-style><slash use-stems>` / `<beat-repeat>`.
@@ -579,6 +629,8 @@ Digits typed as `<words>` or `<lyric>` on a note are listed apart as candidates.
 
 ## 26. integrity.notation-sanity
 
+**Status (validation, 2026-10-08): failing.** Re-run on 9 items [measured: build/val/r_sanity.py, survey_acc.py, nested.py, survey_ledger.py]: kinds 1, 2, 3 and 5 as stated on their examples (OSMD draws the blues scale's missing flat itself); kind 4 holds 10 files, not 13. Wrong: test 2b flags correct spellings: every harmonic-minor scale's augmented second (`exercise.scale.a-harmonic-minor.1oct.similar.both.2`, F–G♯), the chromatic scale's augmented unisons (`exercise.chromatic.d.1oct.right`, 10), and the E–D♭ augmented second of F minor in Bach's Invention 9. One line in `docs/classifier/audits/rules-1A/validation.md`.
+
 **Marking.** Generated code; PDMX code + agent.
 
 **Input.** score.load's note array with spelling and key signature; the raw walk's beams and time signatures; `reading.accidental-kinds`' missing accidentals.
@@ -587,7 +639,7 @@ Digits typed as `<words>` or `<lyric>` on a note are listed apart as candidates.
 
 **Algorithm.** Five candidate kinds (kind 2 has two tests), each with its bar and staff.
 1. **A required accidental the file omits** (from `reading.accidental-kinds`): definite; the file's `<accidental>` list contradicts its own pitches. The app's renderer computes accidentals itself (section 12, "What the learner sees"), so the page may still be right; other readers of the file (an export, another program) are not.
-2. **Spelling**: a note whose written spelling differs from PS13's estimate *and* whose estimate is diatonic to the signature in force while the written spelling is not (A sharp written where B flat is wanted in F major). Not applied to items with no key signature whose spelling follows a chord root (the arpeggio7 and broken7 families): there the intended spelling is by interval from the recipe's root, and a deviation from it is the candidate (generated only). **Recall limit:** this filter is safe but narrow. It catches only misspellings whose estimate is diatonic and whose written spelling is not, and misses chromatic misspellings where neither spelling is diatonic (a chromatic scale spelt D♯ going down). **Second test (2b), added by the check and not yet run:** for consecutive notes of one voice, a written spelling that makes an augmented or diminished melodic interval where the enharmonic respelling of one note makes a perfect, major or minor interval is a candidate. The rule's own example fits it: `song.classical.bach-invention-no-9-in-f-minor-bwv-780.pdmx`, G♯4 to F5 in bar 5 and G♯3 to F3 in bar 9 (a diminished seventh and a diminished third), likely misspelt A♭ (the source edition was not seen).
+2. **Spelling**: a note whose written spelling differs from PS13's estimate *and* whose estimate is diatonic to the signature in force while the written spelling is not (A sharp written where B flat is wanted in F major). Not applied to items with no key signature whose spelling follows a chord root (the arpeggio7 and broken7 families): there the intended spelling is by interval from the recipe's root, and a deviation from it is the candidate (generated only). **Recall limit:** this filter is safe but narrow. It catches only misspellings whose estimate is diatonic and whose written spelling is not, and misses chromatic misspellings where neither spelling is diatonic (a chromatic scale spelt D♯ going down). **Second test (2b), added by the check and not yet run:** for consecutive notes of one voice, a written spelling that makes an augmented or diminished melodic interval where the enharmonic respelling of one note makes a perfect, major or minor interval is a candidate. The rule's own example fits it: `song.classical.bach-invention-no-9-in-f-minor-bwv-780.pdmx`, G♯4 to F5 in bar 5 and G♯3 to F3 in bar 9 (a diminished seventh and a diminished third), likely misspelt A♭ (the source edition was not seen). [Validation: run; 2b also flags correct spellings, such as a harmonic-minor scale's augmented second; see the Status line above.]
 3. **Beaming**: a beam group (beam number 1, grouped by part and voice) that crosses a beaming-unit boundary of its bar. Compound metres (6, 9 or 12 over 8, 16 or 4): the dotted beat, as music21's `beamSequence` (3/8+3/8 for 6/8); this matches the library [measured by the check: api2.py]. Simple metres, the writer's table, unsourced: 2/4, 3/4, 3/8 and 2/8: the whole bar; 4/4, 2/2, 3/2 and 4/8: the half bar (3/2: each half note). music21's `beamSequence` gives quarter-note groups for 4/4 and 3/4, not the table's half bar and whole bar [measured by the check: api2.py], so the table is the looser convention and a trigger for candidates only until it is sourced. Pickup bars are right-aligned. Other metres (5/x, 7/x ...) are not checked here; their grouping is `metre.grouping`'s. A beam across a bar line is a candidate of its own.
 4. **Unclosed tuplet bracket** (from `reading.unusual-notation`): a `<tuplet type="start">` while another with the same `number` is open, the earlier one never stopped: 13 files (9 PDMX, 4 other), for example `song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx` [measured by the check: c4.py, c5.py]. A defect candidate.
 5. **Beyond the ledger limit** (from `pitch.ledger`): a note with 6 or more ledger lines (provisional) and no clef change or ottava in force: 154 generated items (4-octave and 3-octave scales and arpeggios, Hanon, 2-octave arpeggio7), and real-score encoding defects such as `song.classical.el-choclo-piano.pdmx` bars 32 and 33 [measured by the check: c12.py, c13.py]. On generated items it is a generator engraving defect to report, not a reading demand; on real scores the agent decides.
@@ -615,11 +667,17 @@ Written by `build/apply/counts.py` (not committed) over this page when the check
   - sourced (9): the staff geometry for ledger lines (WP-Ledger_line, MXL-clef); the bar rule for accidentals (Wikipedia, "Accidental (music)", fetched); pitch entropy's formula (RubricNet, fetched; re-fetched by the check); LZ76 (Kaspar and Schuster 1987, cited unfetched; RubricNet's description fetched); the minor key's scale sets (harmony.md); the SMuFL substitution signs (fetched); the General MIDI keyboard program ranges, 1 to 8 and 17 to 21 (not fetched); the compound-metre beaming units (music21 `beamSequence`, measured by the check); no repeats taken after a D.C. or D.S. (music21's `repeatAfterJump=False` default; no engraving text read).
   - validated on real scores (14): the exclusive octave-shift stop (81 of 93 files agree with music21, a second reader, not the printed page); the reach flag over 16 semitones (also sourced in part, the stride tenth); the anchored hand words; the hymn two-voice share (test a); the hymn four-note half share (test a); the lead-sheet symbol density (symbols after de-duplication); the lead-sheet chord-onset share (both run, not reviewed item by item); the purpose words (as candidates only); the chord-symbol de-duplication; the text chord-symbol parse; the figured-bass pattern (validated as finding nothing real); the jump-word list; the letter and counting half share (on three items); the spelling filter (recall limit stated).
   - neither (14): the partial-accompaniment half (format UNKNOWN); the open-score chorale voice names (written after one failure, not re-run); the run of four for Nashville and Roman text; the four-times expansion bound; the turn span (2 seconds or one bar; a candidate, no verdict reported); the lyric stream 80% share; the finger-on-every-note 0.9 share; the 2-note floor for entropy; the 8-onset floor for redundancy; the chord-chart share, under about 10% of symbol bars carrying a pitched note (the check's figure, to be validated); the hymn test (b): four-note onsets about 0.8 with a hymn-like rhythm (read off two files and two counterweights); the ledger-line limit, provisionally 6 (taken from the check, to be sourced); the simple-metre beaming table (Gould cited, not read; music21 differs); the other-instrument title words (a list built from three files).
+- **Thresholds after validation (2026-10-08)**, recounted from the list above (9 + 14 + 14 = 37) and given the basis the validation found; one line each, with its evidence, in `docs/classifier/audits/rules-1A/validation.md` section 2:
+  - sourced (9): unchanged; the no-repeat-after-a-jump convention rests on a library default only, and the General MIDI ranges were not fetched.
+  - validated, re-run (8): the reach flag; the anchored hand words; the hymn two-voice share and four-note half share (test a); the purpose words (as candidates); the chord-symbol de-duplication; the letter half share (rule 2 of reading aids; counting has no instance); the spelling filter (on its examples).
+  - witness only (2): the exclusive octave-shift stop (music21, not the printed page); the text chord-symbol parse (it fires on real symbols and letter-name aids alike).
+  - failing (3): the lead-sheet chord-onset share under 10% (rejects Blue Bossa, a lead sheet); the jump-word list (no rule for a pair of coda signs: the Beethoven bagatelle 133 for 115); the partial-accompaniment half (UNKNOWN on 27 generated items).
+  - open (15): the lead-sheet symbol density (nothing held for it to reject); the figured-bass pattern (no positive); the open-score chorale voice names; the run of four; the four-times expansion bound (decides nothing measured); the turn span; the lyric 80%; the finger 0.9 share (splits Ode to Joy's sibling arrangements, 0.893 and 0.895 against 0.916); the entropy two-note floor (a reporting choice); the redundancy eight-onset floor; the chord-chart 10%; hymn test (b) (Chopin op. 25 no. 8 at 0.785, and the rhythm condition does not reject Duvernoy op. 176 no. 11); the ledger limit of 6 (97 real items reach it too); the simple-metre beaming table; the other-instrument title words (one false flag in five).
 - **Examples given:** 21 of 26 sections name at least two positives and two near-misses by catalogue id. 116 distinct catalogue ids are named on the page; 116 are present in `catalog.json`. Sections below two and two: notation.clef-change (2 positives, 1 near-misses by catalogue id); reading.pitch-entropy (1 positives, 2 near-misses by catalogue id); reading.redundancy (2 positives, 1 near-misses by catalogue id); notation.lyrics (0 positives, 1 near-misses by catalogue id); harmony.figured-bass (0 positives, 2 near-misses by catalogue id). Family patterns in prose are not counted. The corpus examples of `notation.lyrics` (music21's bundled corpus) are not catalogue ids.
 
 ## Not done
 
-- Argued against once by an independent checker, whose corrections are applied (`docs/classifier/audits/rules-1A/applied.md`); not judged by the orchestrator (FABLE.md section 2, item 3). The applied corrections were not re-run on the catalogue.
+- Argued against once by an independent checker, whose corrections are applied (`docs/classifier/audits/rules-1A/applied.md`); not judged by the orchestrator (FABLE.md section 2, item 3). The applied corrections were re-run once (`docs/classifier/audits/rules-1A/validation.md`): 10 rules validated, 10 uncertain, 6 failing (`item.format`, `texture.melody-location`, `reading.accidental-kinds`, `notation.chord-symbols`, `mark.repeat`, `integrity.notation-sanity`). The failing rules are not corrected here; each Status line names what they get wrong on which items. Some notes below ("not run") are superseded by those Status lines: the repeat unroller, test 2b and the 10% and 4(b) tests of section 1 have now been run.
 - The open-score chorale rule (section 1) and the per-voice beam grouping (sections 15 and 26) were written after a prototype failed and were not re-run.
 - The lead-sheet thresholds were run, not reviewed item by item (63 PDMX items classified, 4 titles read).
 - The turn threshold has no source and no validation against the ability it serves (AB-229): Phase 4.
