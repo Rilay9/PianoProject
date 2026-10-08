@@ -1138,12 +1138,12 @@ Read by the orchestrator against each row on the owner's instruction ("read ALL 
 | AB-027 3/8 | changed: 3/8 counted in three, or felt in one at a quick tempo (3/8 is simple triple time by definition; the row stays in simple time) |
 | AB-034 cadenza | changed: also played freely where the accompaniment stops |
 | AB-035 syncopation | changed: off-beat entries held across the beat, off-beat accents, rests on strong beats |
-| AB-037 swing | changed: the long-short ratio eases toward even at fast tempos |
+| AB-037 swing | changed: the long-short ratio eases toward even at fast tempos (no source cited yet) |
 | AB-050 slur | changed: the lift at the end of a short slur; a long slur shapes the phrase |
 | AB-052 accent | changed: emphasis, usually louder by a firmer attack, as the mark and style ask |
 | AB-055 tempo words | changed: each word a range of speeds shaped by the style |
 | AB-057 pedal held through | kept: beginners hold the pedal through a piece or section (Faber Primer, Alfred 1B); changing the pedal with the harmony is AB-058 |
-| AB-083 melodic minor | changed: in jazz, the melodic minor the same ascending and descending |
+| AB-083 melodic minor | changed: in jazz, the melodic minor the same ascending and descending (no source cited yet) |
 | AB-094, AB-103 swung | changed: swung or straight as the style asks (AB-094); swung where the jazz syllabus asks (AB-103) |
 | AB-162 guide tones | kept, wording sharpened: the claim is correct. In a major II-V-I (Dm7-G7-Cmaj7) the 7th of II (C) falls a half step to the 3rd of V (B), and the 7th of V (F) falls a half step to the 3rd of I (E). The title now says each chord's 7th falls to the next chord's 3rd |
 | AB-183 rag rhythm exact | kept: the row follows Joplin's School of Ragtime ("by scrupulously observing the ties"); interpretation is AB-072 and AB-226 |
