@@ -56,6 +56,7 @@ from common import (  # noqa: E402
     CONTENT_SRC,
     DEFAULT_OUT,
     REPO_ROOT,
+    TEMPO_DEFAULTED_TAG,
     ContentBusy,
     Step,
     content_lock,
@@ -1080,18 +1081,24 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
         else:
             facts["demands"] = {"kind": "runtime", "why": measurement.get("reason")}
 
-        if kind in ("generated", "authored"):
-            facts["tempo"] = {"kind": "authored", "via": "the recipe" if kind == "generated" else "this repository's score"}
+        # The tag is the import step's record of its converter's own answer (`common.TEMPO_DEFAULTED_TAG`), so a
+        # defaulted tempo is inferred whatever `tempoBpm` holds: a MuseTrainer row reads its `tempoBpm` back from
+        # the converted file, where the default stands (2026-10-07: six rows said "authored via the edition").
+        defaulted = TEMPO_DEFAULTED_TAG in (entry.get("tags") or [])
+        if kind == "generated":
+            facts["tempo"] = {"kind": "authored", "via": "the recipe"}
+        elif kind == "authored":
+            facts["tempo"] = ({"kind": "inferred", "via": "convert.py's default (the score states no tempo of its own)"}
+                              if defaulted else {"kind": "authored", "via": "this repository's score"})
         elif kind == "pdmx":
-            defaulted = "tempo-defaulted" in (entry.get("tags") or [])
             facts["tempo"] = ({"kind": "inferred", "via": "convert.py's default (the upload has no tempo of its own)"}
                               if defaulted else {"kind": "authored", "via": "the upload"})
         elif kind in ("kern", "musetrainer"):
-            facts["tempo"] = ({"kind": "authored", "via": "the edition"} if entry.get("tempoBpm")
+            facts["tempo"] = ({"kind": "authored", "via": "the edition"} if entry.get("tempoBpm") and not defaulted
                               else {"kind": "inferred", "via": "convert.py's default (the edition has no tempo of its own)"})
         elif kind == "mutopia":
             facts["tempo"] = ({"kind": "authored", "via": "the edition's tempo mark, as its published MIDI carries it"}
-                              if (mutopia or {}).get("tempoFromEdition")
+                              if (mutopia or {}).get("tempoFromEdition") and not defaulted
                               else {"kind": "inferred", "via": "the published MIDI's tempo, LilyPond's default where the edition states none"})
         if facts.get("tempo", {}).get("kind") == "inferred" and isinstance(entry.get("demands"), list):
             untrusted = [d for d in entry["demands"] if d in tempo_sensitive]

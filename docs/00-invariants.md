@@ -172,9 +172,6 @@ drifted is worse than none: it makes every later reader argue from something unt
 
 **Update the spec, the test map and the guides with the change**, not afterwards.
 
-**Never name an AI model anywhere** — commit message, comment, document, or a
-`Co-Authored-By` trailer.
-
 ---
 
 ## 5. Working in this repository

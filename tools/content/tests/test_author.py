@@ -166,5 +166,31 @@ class TestMetadataErrors(unittest.TestCase):
             )
 
 
+class TestTheConvertersTempoIsTagged(unittest.TestCase):
+    """
+    A tune that states no tempo plays the converter's default; the row says so (tempo provenance, 2026-10-07).
+
+    `added_tempo` is true for a forced `tempoBpm=` too, so the three cases: a `Q:` line, a `tempoBpm=` field, and
+    neither. Only the last plays a tempo nobody wrote.
+    """
+
+    HEAD = "X:1\nT:Tune\nL:1/4\n%%pianopath id=song.test.tempo level=1 tracks=core traditional=yes{extra}\n{q}K:C\nV:1\nC D E F |]\n"
+
+    def compile_text(self, *, q: str = "", extra: str = "") -> dict:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "tune.abc"
+            path.write_text(self.HEAD.format(q=q, extra=extra), encoding="utf-8")
+            return compile_abc(path, Path(tmp) / "out")
+
+    def test_a_tune_with_no_tempo_is_tagged(self) -> None:
+        self.assertIn("tempo-defaulted", self.compile_text()["tags"])
+
+    def test_a_q_line_is_the_tunes_own_tempo(self) -> None:
+        self.assertNotIn("tempo-defaulted", self.compile_text(q="Q:1/4=72\n")["tags"])
+
+    def test_a_forced_tempo_is_this_repositorys_statement(self) -> None:
+        self.assertNotIn("tempo-defaulted", self.compile_text(extra=" tempoBpm=72")["tags"])
+
+
 if __name__ == "__main__":
     unittest.main()

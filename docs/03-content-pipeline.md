@@ -760,6 +760,15 @@ imported score (`importStore.importProvenance`):
   (`tempoDefaulted: false`), so their tempo fact is authored, via the upload. One rule, two
   definitions (the door's TypeScript, the converter's Python); one shared definition is the later
   ingestion seam.
+- **A converter's tempo is tagged where it is written** (2026-10-07): every import step writes
+  `tempo-defaulted` (`common.TEMPO_DEFAULTED_TAG`) from its converter's own answer — `convert`'s
+  `added_tempo` in `import_kern`, `import_musetrainer` and `author` (an unforced one: a `tempoBpm=` the
+  repository states is not the converter's), PDMX's committed `tempoDefaulted`, and in `import_mutopia`
+  an edition whose `.ly` states no `\tempo … = N`, where the published MIDI plays LilyPond's default.
+  `facts.tempo` is inferred exactly where the row is tagged. Before it, `import_kern` and
+  `import_musetrainer` dropped the answer: 60 NIFC first editions and six MuseTrainer rows played the
+  converter's 96 untagged, and the app read it as the written tempo. A kern row's `tempoBpm` stays the
+  source's `*MM`, none where it states none (`test_tempo_provenance.py`).
 - **`facts.promise`** (D3a, 2026-09-28): on every generated item, its family's promise for its
   recipe — `{kind: "authored", via: "family_contracts.json (the rule matching the recipe)",
   value: "music" | "drill"}` — resolved by `review.promise_of`, the microscope's reading: the

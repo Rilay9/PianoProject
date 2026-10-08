@@ -45,14 +45,15 @@ NC_LICENSE = (
 
 #: A two-staff rag of two bars. Humdrum is tab-separated and music21 is strict
 #: about it, so the columns are joined explicitly rather than typed as spaces.
-def kern_source(*, year: str = "1902", licence: str | None = "CC BY-NC-SA 4.0", copyright_only: bool = False) -> str:
+def kern_source(*, year: str = "1902", licence: str | None = "CC BY-NC-SA 4.0", copyright_only: bool = False,
+                tempo: bool = True) -> str:
     rows = [
         ["**kern", "**kern"],
         ["*staff2", "*staff1"],
         ["*clefF4", "*clefG2"],
         ["*k[b-e-]", "*k[b-e-]"],
         ["*M2/4", "*M2/4"],
-        ["*MM88", "*MM88"],
+        *([["*MM88", "*MM88"]] if tempo else []),
         ["=1", "=1"],
         ["4BB-", "4d"],
         ["4F", "4f"],
@@ -152,6 +153,42 @@ class TestNonCommercialEditions(KernImportCase):
         self.assertNotIn("nc-personal-build", item["tags"])
         self.assertIn("--allow-nc", item["importHint"])
         self.assertFalse((self.out / "scores" / "imported" / "song.ragtime.test-rag.mxl").exists())
+
+
+class TestTheConvertersTempoIsTagged(KernImportCase):
+    """
+    A source with no `*MM` plays the converter's default; the row says so (tempo provenance, 2026-10-07).
+
+    The 60 NIFC first editions state no `*MM`. `convert.normalise` wrote `DEFAULT_TEMPO_BPM` into each file as a
+    `<sound tempo>` and said so (`added_tempo`), and this step dropped the answer: no `tempo-defaulted` tag, so the
+    app read the default as the score's written tempo. The discriminating pair: the same source with and
+    without its `*MM`.
+    """
+
+    def test_a_source_with_no_tempo_is_tagged_and_keeps_no_tempo_of_its_own(self) -> None:
+        make_repo(self.kern_dir, "joplin", licence_text=NC_LICENSE, tempo=False)
+        _, catalog = self.run_with(table_for("joplin"), allow_nc=True)
+        item = catalog[0]
+        written = zipped_xml(self.out / item["file"])
+        self.assertIn('<sound tempo="96"', written, "the converter's default is in the file")
+        self.assertNotIn("<metronome", written, "and is not printed")
+        self.assertIn("tempo-defaulted", item["tags"])
+        self.assertIsNone(item.get("tempoBpm"), "the catalogue's tempo is the source's statement, and it makes none")
+
+    def test_a_source_that_states_its_tempo_is_not_tagged(self) -> None:
+        make_repo(self.kern_dir, "joplin", licence_text=NC_LICENSE)
+        _, catalog = self.run_with(table_for("joplin"), allow_nc=True)
+        item = catalog[0]
+        self.assertNotIn("tempo-defaulted", item["tags"])
+        self.assertEqual(item["tempoBpm"], 88.0)
+
+
+def zipped_xml(path: Path) -> str:
+    import zipfile
+
+    with zipfile.ZipFile(path) as archive:
+        name = next(n for n in archive.namelist() if not n.startswith("META-INF"))
+        return archive.read(name).decode("utf-8")
 
 
 #: Q82: the reason the step gives for `table_for`'s row when its file is not on this build, as

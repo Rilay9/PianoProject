@@ -33,7 +33,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from abc_tools import parse_metadata  # noqa: E402
-from common import AUTHORED_DIR, SourceBlock, catalog_item, sha256_file, utc_now, write_json  # noqa: E402
+from common import AUTHORED_DIR, TEMPO_DEFAULTED_TAG, SourceBlock, catalog_item, sha256_file, utc_now, write_json  # noqa: E402
 
 #: Metadata keys every authored item must declare. Everything else has a
 #: default, but these three decide where the item shows up and cannot be
@@ -214,7 +214,20 @@ def compile_abc(path: Path, out_root: Path) -> dict:
     )
     entry.setdefault("keySig", key_name(meta.key))
     entry.setdefault("timeSig", meta.meter)
+    mark_defaulted_tempo(entry, result, stated=bool(fields.get("tempoBpm")))
     return entry
+
+
+def mark_defaulted_tempo(entry: dict, result, *, stated: bool) -> None:
+    """
+    Tag a row whose tempo the converter supplied (`common.TEMPO_DEFAULTED_TAG`), as every import step does.
+
+    `added_tempo` is true both for the default and for a tempo this repository's metadata forced (`tempoBpm=`),
+    so only an unforced one is the converter's: a tune with no `Q:` and no `tempoBpm` plays
+    `convert.DEFAULT_TEMPO_BPM`, which nobody wrote (2026-10-07).
+    """
+    if result.added_tempo and not stated and TEMPO_DEFAULTED_TAG not in entry["tags"]:
+        entry["tags"].append(TEMPO_DEFAULTED_TAG)
 
 
 def load_module(path: Path):
@@ -244,7 +257,7 @@ def compile_python(path: Path, out_root: Path) -> dict:
     )
     dest = out_root / "scores" / "authored" / f"{meta['id']}.mxl"
     write_mxl(normalised, dest)
-    return entry_from_metadata(
+    entry = entry_from_metadata(
         meta,
         dest=dest,
         out_root=out_root,
@@ -252,6 +265,8 @@ def compile_python(path: Path, out_root: Path) -> dict:
         composer=result.composer,
         tempo_bpm=result.tempo_bpm,
     )
+    mark_defaulted_tempo(entry, result, stated=bool(meta.get("tempoBpm")))
+    return entry
 
 
 def author_all(out_root: Path, catalog_path: Path, source_dir: Path = AUTHORED_DIR) -> AuthorReport:

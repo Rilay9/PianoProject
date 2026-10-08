@@ -49,6 +49,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import (  # noqa: E402
     CONTENT_SRC,
     IMPORTED_DIR,
+    TEMPO_DEFAULTED_TAG,
     SourceBlock,
     catalog_item,
     ledger_fetched_at,
@@ -680,7 +681,7 @@ def build_entry(
         from convert import cached_convert  # imported late: music21 is slow to load
 
         try:
-            cached_convert(
+            result = cached_convert(
                 source_path,
                 dest,
                 title=spec["title"],
@@ -691,6 +692,13 @@ def build_entry(
             return None
         if stated_license.upper().startswith("CC BY-NC"):
             tags.append(NC_PERSONAL_TAG)
+        # A source with no `*MM` gets the converter's tempo in its file (`convert.DEFAULT_TEMPO_BPM`, a
+        # `<sound tempo>` the edition never states). The converter says so (`added_tempo`); the row says it with
+        # the tag every other step writes, which the build's tempo fact and the app's tempo readings read
+        # (tempo provenance, 2026-10-07: 60 NIFC first editions played 96 with no tag). `tempoBpm` stays the
+        # source's own statement, None here: the default is the converter's, never the edition's.
+        if result.added_tempo:
+            tags.append(TEMPO_DEFAULTED_TAG)
         file_ref = f"scores/imported/{spec['id']}.mxl"
         checksum = sha256_file(dest)
         import_hint = None

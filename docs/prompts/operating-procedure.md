@@ -198,7 +198,7 @@ Roles under this gate: the drafting and implementing agents write briefs and cod
 
 ## 11. Before reporting
 
-Six questions, in tier order. A correction is owed only where the answer would change
+Seven questions, in tier order. A correction is owed only where the answer would change
 what the owner or the next agent does; wording alone never earns a turn.
 
 1. **Product.** Did I look at the result the way a learner meets it (the screen, the
@@ -227,6 +227,16 @@ what the owner or the next agent does; wording alone never earns a turn.
    corrects something, the correction is applied and confirmed by the change itself, in one
    line, with no explanation and no apology unless asked; the owner's tokens are not spent on
    agreement.
+6. **Closure.** Is anything called done, landed, wired, covered or ruled actually there? For
+   every clause: the file and line that implements it, the test that pins it and the path
+   that runs that test, checked on the current HEAD, never read off a report or the rulebook.
+   A clause with no implementation is said to be absent and the item stays open.
+7. **Sense in context.** For everything started, triggered, dispatched or proposed: the
+   owner's current goal in one line, in the owner's words. Does this serve it now? Is it
+   what the owner asked for, or an extension of it? Does it build on something not yet
+   checked, or read something still changing? Is it paperwork standing in for progress? Is
+   a rule being followed really the owner's? Would the owner call it pointless or out of
+   order? If so, stop or undo it and say so in one line (the owner, 2026-10-07).
 
 A green suite is not evidence when its assertions encode the model being replaced: a wave
 that changes behaviour deletes or replaces the tests that asserted the old behaviour, in
@@ -234,7 +244,7 @@ the same change, with the reason and the class from the test inventory
 (`backlog-2026-09-25.md` area 11), and adds the test for the learner-facing result.
 
 The technical rules that still bite every week: never assert a number measured on this
-machine; never name an AI model anywhere; the specs serve the code; one Playwright suite
+machine; the specs serve the code; one Playwright suite
 at a time on port 4173; `npx tsc -b`, not `tsc --noEmit -p`; commit named paths only, and
 agents never commit; before re-serialising JSON compare a round-trip against the raw bytes
 and splice text if it differs.

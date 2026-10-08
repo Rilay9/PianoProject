@@ -70,16 +70,15 @@ hygiene. A lower tier never interrupts a higher one.
 Ask the owner only when a choice changes product behaviour, pedagogy or architecture and
 cannot be inferred from what is written down. Otherwise choose, say why in a line, go on.
 
-## The three technical rules broken most often
+## The two technical rules broken most often
 
 1. **Never assert a number measured on this machine.** Express the relationship instead.
-2. **Never name an AI model anywhere**, including a `Co-Authored-By` trailer.
-3. **The specs serve the code.** When the implementation makes more sense, change the
+2. **The specs serve the code.** When the implementation makes more sense, change the
    spec in the same commit, with the reason beside it.
 
 ## Before reporting any piece of work
 
-Six questions, in tier order (`operating-procedure.md` §11). A correction is owed only
+Seven questions, in tier order (`operating-procedure.md` §11). A correction is owed only
 where the answer would change what the owner or the next agent does; wording alone never
 earns a turn.
 
@@ -107,6 +106,15 @@ earns a turn.
    handoff or the rulebook. A clause with no implementation is said to be absent, and the item stays
    open (the owner and the reviewer, 2026-10-07: the preflight's three ruled changes were
    written into FABLE as if in force while none existed in code or CI).
+7. **Sense in context.** For everything I started, triggered, dispatched or proposed this
+   turn: state the owner's current goal in one line, in the owner's words, not mine. Then
+   ask: does this serve that goal now? Is it what the owner asked for, or my extension of
+   it? Does it build on something not yet checked (code on unchecked rules), or read
+   something still changing (checks on tables builders are editing)? Is it paperwork
+   standing in for progress? Is a rule I am following really the owner's, or one I wrote?
+   Would the owner, seeing it, call it pointless or out of order? If so, stop or undo it
+   and say so in one line (the owner, 2026-10-07, after implementations were built before
+   their rules were checked and checkers were launched on moving tables).
 
 ## Two mechanical hazards
 

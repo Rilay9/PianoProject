@@ -48,6 +48,12 @@ SOURCES_MD = IMPORTED_DIR / "SOURCES.md"
 BUILD_DIR = REPO_ROOT / "build"
 DEFAULT_OUT = REPO_ROOT / "app" / "public" / "content"
 
+#: The tag on a row whose file plays a tempo a converter supplied and its source never states
+#: (`convert.ConversionResult.added_tempo`, LilyPond's MIDI default for Mutopia). Every import step writes
+#: it from its converter's own answer; the build's `facts.tempo` and the app's tempo readings
+#: (`ScoreScreen`'s `defaulted` source) read it.
+TEMPO_DEFAULTED_TAG = "tempo-defaulted"
+
 #: The one source of truth for the track list (replan §1.8).
 TRACKS_FILE = CONTENT_SRC / "curriculum" / "00-tracks.json"
 
