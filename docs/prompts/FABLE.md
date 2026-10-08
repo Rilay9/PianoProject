@@ -26,6 +26,7 @@ Each phase finishes, by the rule in section 3, before the next starts.
 ## 3. When a list or a rule set is done
 
 - Each check is done by independent agents that did not write what they check, fresh for each pass (the owner: "Use independent agents for each iteration, and I'll use chatgpt for a review after").
+- Checkers judge by common sense for what a learner needs to progress at the piano (the owner, 2026-10-08), not by an exam's or a source's categories, and do not reopen decisions already recorded here (scope, the owner's rulings); a disagreement with one is a finding with its reason, never a silent change.
 - A check gives every row a recorded verdict, and challenges it with real scores, counterexamples, published definitions and missing items; agreeing with the table is not a check.
 - Two consecutive independent passes without a material finding are a provisional review stopping signal, **not proof of completeness or correctness**. The owner tentatively accepted this bar ("I guess") and reviews with ChatGPT afterward; do not represent it as a firm perfection guarantee.
 

@@ -6,3 +6,4 @@
 4. "You can search the rest for similar common-sense process rules!"
 5. "Don't worry about away from the keyboard stuff" (on whether written theory and analysis count as abilities).
 6. "Oh come on, use common sense for what someone who wants to learn the piano would need or want to include to progress. Dont be mindless" (on the borderline and away-from-the-keyboard rows).
+7. "Ok, the iteration agents should also keep this in mind obviously or well go in circles"
