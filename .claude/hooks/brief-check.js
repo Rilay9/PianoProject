@@ -1,29 +1,41 @@
-// PreToolUse on Agent and SendMessage: a brief does not go out until it has been checked
-// against the owner's goal (the owner, 2026-10-08: "why aren't you running the checklist on
-// all this stuff", after briefs went out that did the next step's work and opened
-// open-ended searches). The stop checklist runs only after a reply, too late for a brief.
-// The brief must carry a line starting "Brief check:" answering the questions below.
-let input = "";
-process.stdin.on("data", (d) => (input += d));
-process.stdin.on("end", () => {
-  let text = "";
+// PreToolUse on Agent and SendMessage: a brief does not go out until the full checklist
+// (CLAUDE.md, "Before reporting any piece of work", the same copy the stop hook reads) has
+// been run against it (the owner, 2026-10-08: "each brief should be run by the full
+// checklist that we have", after briefs went out that did the next step's work and opened
+// open-ended searches; the stop checklist runs only after a reply, too late for a brief).
+// The brief must carry a line starting "Brief check:" saying the checklist was run on it and
+// what it changed.
+const fs = require('fs');
+const path = require('path');
+
+let input = '';
+process.stdin.on('data', (d) => (input += d));
+process.stdin.on('end', () => {
+  let text = '';
   try {
-    const j = JSON.parse(input);
-    const t = j.tool_input || {};
-    text = String(t.prompt || t.message || "");
+    const t = JSON.parse(input).tool_input || {};
+    text = String(t.prompt || t.message || '');
   } catch (e) {
     process.exit(0);
   }
   if (/^\s*Brief check:/m.test(text)) process.exit(0);
+
+  const root = path.resolve(__dirname, '..', '..');
+  let checklist = '(CLAUDE.md could not be read: run its "Before reporting any piece of work" questions)';
+  try {
+    const md = fs.readFileSync(path.join(root, 'CLAUDE.md'), 'utf8');
+    const start = md.indexOf('## Before reporting any piece of work');
+    if (start !== -1) {
+      const next = md.indexOf('\n## ', start + 5);
+      checklist = md.slice(start, next === -1 ? undefined : next).trim();
+    }
+  } catch (e) { /* keep the fallback */ }
+
   process.stderr.write(
-    [
-      "Brief not sent: it has no 'Brief check:' line. Before any brief or brief change goes to an agent, answer in that line:",
-      "1. The owner's goal for this step, in the owner's words. Does the brief do that step and nothing more (no later step's work, nothing the owner put after it)?",
-      "2. Is the output sized to that goal, with a named end condition (no open-ended search, no catalogue dumps, no loop)?",
-      "3. Are its inputs final (nothing running that changes what it reads)?",
-      "4. Is every rule in it the owner's or required by the task, not one I invented?",
-      "Fix the brief where an answer is no, add the line, and send again.",
-    ].join("\n")
+    'Brief not sent. Run every question below against this brief, as if the brief were the report: ' +
+    'its goal against the owner\'s words, its scope, its inputs, its end condition, its rules. ' +
+    'Fix the brief where a question finds a fault, then add a line starting "Brief check:" ' +
+    'saying what the pass changed (or "nothing found"), and send again.\n\n' + checklist + '\n'
   );
   process.exit(2);
 });
