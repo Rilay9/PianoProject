@@ -1,0 +1,1790 @@
+diff --git a/app/src/engine/sightReading.ts b/app/src/engine/sightReading.ts
+index 38688e74..92bd19df 100644
+--- a/app/src/engine/sightReading.ts
++++ b/app/src/engine/sightReading.ts
+@@ -2223,6 +2223,12 @@ const BLUES_MAJOR = [
+   'V7', 'IV7', 'I7', 'V7',
+ ] as const;
+ 
++/**
++ * A minor twelve-bar with V7 then iv7 in bars 9 and 10: one attested variant, not the minor blues (A7a.3; the
++ * sources, `docs/prompts/runs/A7a3/SOURCES.md` §1; the reviewer's `docs/review/responses/a7a-lanes-landing.md` §3).
++ * The generated walking items play another, ♭VI7 then V7 (`TWELVE_BAR_MINOR`, `tools/content/generate_exercises.py`);
++ * blues.6's lesson names both as variants, and `blues6MinorBluesLesson.test.ts` pins each against what it plays.
++ */
+ const BLUES_MINOR = [
+   'i7', 'i7', 'i7', 'i7',
+   'iv7', 'iv7', 'i7', 'i7',
+diff --git a/app/src/ui/help.ts b/app/src/ui/help.ts
+index 785bb0cc..a4cc45bc 100644
+--- a/app/src/ui/help.ts
++++ b/app/src/ui/help.ts
+@@ -788,6 +788,11 @@ export const RUNG_TEXT = {
+   unjudged: 'Not judged by the app — the lesson’s rule:',
+   counted: 'counted',
+   notYet: 'not yet',
++  /**
++   * After a requirement that says hands both (HB1; the first placement A7a.3, blues.6): only a run of both hands
++   * counts, so a learner playing one hand, or the app playing the other in a duet, is told it does not.
++   */
++  oneHandNotCounted: 'a run of one hand, Duet included, does not count',
+   /** Plan's stage line and legend: the rungs the evidence met, beside those done before. */
+   countedSince: 'counted since',
+   byWord: 'by your word',
+@@ -956,12 +961,15 @@ export function requirementWords(
+       let what: string;
+       if (r.items !== undefined) {
+         const titles = r.items.map(context.titleOf);
++        // Some of several named (A7a.3, blues.6: one of its five exercises): titles carry commas of their own
++        // ("Boogie — pinetop in C, both hands"), so the choices are parted by semicolons, the last by "or", and a
++        // comma closes the list before the standard.
+         what =
+           r.items.length === 1
+             ? (titles[0] as string)
+             : r.count === r.items.length
+               ? `All of ${titles.join(', ')}`
+-              : `${countWord(r.count)} of ${titles.join(', ')}`;
++              : `${countWord(r.count)} of ${titles.slice(0, -1).join('; ')}; or ${titles[titles.length - 1] as string},`;
+       } else {
+         const noun = r.from === 'exercises' ? 'exercise' : r.from === 'songs' ? 'song' : 'piece';
+         what = `${countWord(r.count)} ${noun}${r.count === 1 ? '' : 's'} from this page`;
+@@ -969,7 +977,8 @@ export function requirementWords(
+       const share = `at ${percent(r.accuracy ?? context.accuracy)} of the notes`;
+       const tempo = context.tempoPct > 0 && !context.drillsOnly(pool) ? `, ${keepTempoAt(context.tempoPct)}` : '';
+       const perform = r.performance === true ? ', played with Perform on' : '';
+-      return `${what} ${share}${tempo}${perform}.`;
++      const hands = r.hands === 'both' ? `, ${SLOT_TEXT.bothHands}: ${RUNG_TEXT.oneHandNotCounted}` : '';
++      return `${what} ${share}${tempo}${perform}${hands}.`;
+     }
+     case 'reads':
+       return `${countWord(r.count)} new phrases of this rung’s sight-reading, read at sight in Keep tempo${
+@@ -1166,6 +1175,8 @@ export const SLOT_TEXT = {
+   notCounted: 'not counted yet',
+   /** A `runs` requirement that asks for a performance (`04` §5e). */
+   performed: 'played with Perform on',
++  /** A `runs` requirement that says hands both (HB1; first placed by A7a.3 on blues.6): a one-hand run does not count. */
++  bothHands: 'played with both hands',
+   counted: 'counted',
+   /** New, when what is left on the learner's rung is its reads (the reader's): the next lesson, said as such. */
+   nextUp: 'Next lesson',
+@@ -1433,14 +1444,17 @@ function askedWords(claim: Extract<SlotClaim, { kind: 'asked' }>): string {
+   const r = claim.requirement;
+   // A performance is what counts where the lesson asks for one: said, or a learner playing it daily never learns why nothing counts.
+   const perform = r.kind === 'runs' && r.performance === true ? `, ${SLOT_TEXT.performed}` : '';
+-  if (claim.need > 1) return `${who}: ${String(claim.have)} of ${String(claim.need)} ${SLOT_TEXT.counted}${perform}`;
++  // Both hands, where the lesson asks for them (HB1, A7a.3): a learner playing one hand, or a duet, learns why
++  // nothing counts.
++  const hands = r.kind === 'runs' && r.hands === 'both' ? `, ${SLOT_TEXT.bothHands}` : '';
++  if (claim.need > 1) return `${who}: ${String(claim.have)} of ${String(claim.need)} ${SLOT_TEXT.counted}${perform}${hands}`;
+   switch (r.kind) {
+     case 'done':
+       return `${who} ${SLOT_TEXT.asksFor} it — finished, nothing left undone`;
+     case 'measure':
+       return `${who} ${SLOT_TEXT.asksFor} it — its ${r.measure} measure met`;
+     default:
+-      return `${who} ${SLOT_TEXT.asksFor} it${perform} — ${SLOT_TEXT.notCounted}`;
++      return `${who} ${SLOT_TEXT.asksFor} it${perform}${hands} — ${SLOT_TEXT.notCounted}`;
+   }
+ }
+ 
+diff --git a/app/tests/unit/accompanimentLab.test.ts b/app/tests/unit/accompanimentLab.test.ts
+index 29f4ce2c..54cbe6ab 100644
+--- a/app/tests/unit/accompanimentLab.test.ts
++++ b/app/tests/unit/accompanimentLab.test.ts
+@@ -188,8 +188,13 @@ describe('the twelve-bar blues', () => {
+     const chords = chordsOf('blues', 'a-minor', 12);
+     expect(chords[0]?.label).toBe('Am7');
+     expect(chords[4]?.label).toBe('Dm7');
+-    // The dominant stays major: that is the note that says the chorus is over.
++    // Bars 9 and 10 are V7 then iv7: one of the minor blues' attested variants, not the minor blues (A7a.3; the
++    // reviewer's `docs/review/responses/a7a-lanes-landing.md` §3; the sources, `docs/prompts/runs/A7a3/SOURCES.md`
++    // §1). The generated walking items play the other, ♭VI7 then V7, and blues.6's lesson names both as variants
++    // (`blues6MinorBluesLesson.test.ts`). The old comment called the major dominant "the note that says the chorus
++    // is over", a claim about the form no source here makes.
+     expect(chords[8]?.label).toBe('E7');
++    expect(chords[9]?.label).toBe('Dm7');
+   });
+ });
+ 
+diff --git a/app/tests/unit/chordChart.test.ts b/app/tests/unit/chordChart.test.ts
+index 6e9845e8..a1aa4235 100644
+--- a/app/tests/unit/chordChart.test.ts
++++ b/app/tests/unit/chordChart.test.ts
+@@ -680,3 +680,58 @@ describe('positioned harmony on the chart (PH2)', () => {
+     expect(kitPlays.filter((p) => p.kind === 'bass').map((p) => p.midi)).toEqual([41, 36]);
+   });
+ });
++
++/**
++ * A7a.3's last step (`docs/chains/A7a.3.yaml` step 14; the reviewer's `A7a3-static-chart-feedback`,
++ * `docs/review/responses/a7a-lanes-landing.md` §9): the learner opens the B♭ minor walking item's chart and plays the
++ * form with nothing pressed, no *Count off ▶*, so no click, no count-in and no tracker. The cell still reads every
++ * note, but only `onBeat` moves the bar, so without the clock the chart stays on bar 1 and judges what is held
++ * against bar 1's chord all the way through: a right chord in bar 5 reads no, and bar 5's own cell never answers.
++ * The blues.6 lesson therefore tells the learner to ignore the cell in that task (`lessonClaimsAboutApp`, A7A3_APP).
++ * Read on the built item, as the learner meets it.
++ */
++describe('a chart that was never started judges bar 1 only (A7a.3 step 14)', () => {
++  const BUILT = join(process.cwd(), 'public', 'content', 'scores', 'generated', 'exercise.walking-bass.b-flat.minor-blues.mxl');
++  /** B♭m7's root, third and seventh (B♭ D♭ A♭), and E♭m7's (E♭ G♭ D♭), the shells the item's right hand writes. */
++  const B_FLAT_MINOR_SHELL = [58, 61, 68];
++  const E_FLAT_MINOR_SHELL = [63, 66, 73];
++
++  beforeEach(() => {
++    metronomeState.listeners = [];
++    keys.listeners = [];
++    playChordSpy.mockClear();
++  });
++
++  afterEach(() => {
++    document.body.replaceChildren();
++  });
++
++  function press(midis: number[], kind: 'noteOn' | 'noteOff' = 'noteOn'): void {
++    for (const midi of midis) for (const listener of [...keys.listeners]) listener({ kind, midi });
++  }
++
++  it('bar 5’s chord reads no in bar 1’s cell, bar 1’s reads yes there, and no other cell answers', async () => {
++    currentXml = toMusicXml(new Uint8Array(readFileSync(BUILT)));
++    const section = ChordChartScreen(router, 'demo');
++    document.body.replaceChildren(section);
++    await vi.waitFor(() => {
++      expect(section.querySelector('.chart-cell[data-bar="13"]')).toBeTruthy();
++    });
++    const cells = [...section.querySelectorAll<HTMLElement>('.chart-cell')];
++    expect(cells).toHaveLength(13);
++    // Nothing pressed: no metronome is listened to, so nothing can move the bar.
++    expect(metronomeState.listeners).toHaveLength(0);
++    expect(section.querySelector('#chart-form')?.textContent).toBe('Bar 1 of 13 · chorus 1');
++    // Bar 5 is E♭m7 (the iv7); held now, it is judged against bar 1's B♭m7.
++    press(E_FLAT_MINOR_SHELL);
++    expect(cells[0]?.dataset.match).toBe('no');
++    expect(cells[4]?.dataset.match).toBeUndefined();
++    press(E_FLAT_MINOR_SHELL, 'noteOff');
++    expect(cells[0]?.dataset.match).toBe('idle');
++    press(B_FLAT_MINOR_SHELL);
++    expect(cells[0]?.dataset.match).toBe('yes');
++    expect(cells.slice(1).every((cell) => cell.dataset.match === undefined)).toBe(true);
++    expect(section.querySelector('#chart-form')?.textContent).toBe('Bar 1 of 13 · chorus 1');
++    expect(playChordSpy).not.toHaveBeenCalled();
++  });
++});
+diff --git a/app/tests/unit/gateAtTheConsumers.test.ts b/app/tests/unit/gateAtTheConsumers.test.ts
+index 67af08ba..80ad42bd 100644
+--- a/app/tests/unit/gateAtTheConsumers.test.ts
++++ b/app/tests/unit/gateAtTheConsumers.test.ts
+@@ -242,10 +242,22 @@ describe('the swap sheet on the built catalogue offers no music-promising genera
+    * role in A7c.1, decided by the outside reviewer from their contract and witness facts
+    * (`responses/lp1-latin4-placement.md` section 1; `content/review/decisions.jsonl`). They are the only approved
+    * music-promising generated items; every other study and groove is still undecided and refused.
++   *
++   * Revised (A7a.3, lane A7a3P): the four minor-blues walking items carry a teaching-use yes for A7a.3's walking-bass
++   * practice, the reviewer's `responses/a7a-lanes-landing.md` section 5, recorded in `content/review/decisions.jsonl`
++   * on their current generator identity. The old row named the three tresillo exercises alone.
+    */
+-  const APPROVED = ['exercise.tresillo.c', 'exercise.tresillo.f', 'exercise.tresillo.g'];
++  const APPROVED = [
++    'exercise.tresillo.c',
++    'exercise.tresillo.f',
++    'exercise.tresillo.g',
++    'exercise.walking-bass.b-flat.minor-blues',
++    'exercise.walking-bass.c.minor-blues',
++    'exercise.walking-bass.e-flat.minor-blues',
++    'exercise.walking-bass.f.minor-blues',
++  ].sort();
+ 
+-  it('the built catalogue has studies and grooves to refuse; the three tresillo exercises are the only ones approved', () => {
++  it('the built catalogue has studies and grooves to refuse; the tresillo exercises and the minor walking items are the only ones approved', () => {
+     const music = catalog.filter(promisesMusic);
+     expect(music.filter((item) => familyOf(item) === 'study').length, 'no study in the built catalogue').toBeGreaterThan(0);
+     expect(music.filter((item) => familyOf(item) !== 'study').length, 'no groove in the built catalogue').toBeGreaterThan(0);
+diff --git a/app/tests/unit/lessonClaimsAboutApp.test.ts b/app/tests/unit/lessonClaimsAboutApp.test.ts
+index 67fcd0ae..dd3dc173 100644
+--- a/app/tests/unit/lessonClaimsAboutApp.test.ts
++++ b/app/tests/unit/lessonClaimsAboutApp.test.ts
+@@ -2403,8 +2403,10 @@ const T12B_APP: [string, string, () => boolean][] = [
+       const others = options
+         .filter((id) => id !== 'song.folk.boogie-woogie.pdmx')
+         .map((id) => t12bFields(id).level ?? 0);
++      // Revised (A7a.3): twelve other options since the three minor walking items (6.4) and St. James Infirmary
++      // and St. Louis Blues joined the rung; the old row counted seven. Pinetop (7.04) is still above every one.
+       return (
+-        others.length === 7 &&
++        others.length === 12 &&
+         others.every((level) => level < pinetop) &&
+         band !== undefined &&
+         pinetop >= band[0] &&
+diff --git a/app/tests/unit/runsRequirementHands.test.ts b/app/tests/unit/runsRequirementHands.test.ts
+index f0ca7077..d0a2aba0 100644
+--- a/app/tests/unit/runsRequirementHands.test.ts
++++ b/app/tests/unit/runsRequirementHands.test.ts
+@@ -141,7 +141,11 @@ describe('a runs requirement with no hands field reads exactly as before (A7a-ha
+   });
+ });
+ 
+-describe('no authored requirement carries hands yet (the differential)', () => {
++// Revised (A7a.3): HB1 pinned that no stage file carried `hands` and that every rung read the same under every hand
++// condition, the differential for a seam that changed nothing yet. A7a.3 places the first one, on blues.6, as the
++// reviewer ruled (`docs/review/responses/a7a-lanes-landing.md` section 4): so the rows now say exactly which
++// requirement carries it, and that every other rung, and blues.6's other requirement, still read alike.
++describe('only blues.6 carries hands, on its named minor walking requirement (the differential)', () => {
+   const dir = join(process.cwd(), '..', 'content', 'curriculum');
+ 
+   /** Every requirement of every rung of every stage file, found by shape, not by the file's nesting. */
+@@ -155,12 +159,14 @@ describe('no authored requirement carries hands yet (the differential)', () => {
+     return out;
+   }
+ 
+-  it('the stage files hold runs requirements, and none states hands', () => {
++  it('the stage files hold runs requirements, and one states hands: blues.6 naming the C minor walking item', () => {
+     const files = readdirSync(dir).filter((name) => /^stage-.*\.json$/.test(name));
+     expect(files.length).toBeGreaterThan(5);
+     const all = files.flatMap((name) => requirementsIn(JSON.parse(readFileSync(join(dir, name), 'utf8'))));
+     expect(all.filter((r) => r.kind === 'runs').length).toBeGreaterThan(100);
+-    expect(all.filter((r) => 'hands' in r)).toEqual([]);
++    expect(all.filter((r) => 'hands' in r)).toEqual([
++      { kind: 'runs', from: 'exercises', items: ['exercise.walking-bass.c.minor-blues'], count: 1, hands: 'both' },
++    ]);
+   });
+ 
+   it('every shipped rung reads the same from rows of every hand condition', () => {
+@@ -180,10 +186,22 @@ describe('no authored requirement carries hands yet (the differential)', () => {
+       const out = rungState(rows, built, VOCABULARY_V0, TODAY);
+       return [...out.byRung].map(([id, s]) => [id, s.status, s.requirements.map((q) => [q.holds, q.have, q.need, q.items])]);
+     };
+-    const reference = states(undefined);
+-    expect(states(BOTH)).toEqual(reference);
+-    expect(states(LEFT)).toEqual(reference);
+-    expect(states(RIGHT)).toEqual(reference);
+-    expect(states(DUET)).toEqual(reference);
++    // blues.6's named requirement is the one place a hand condition decides: with both hands it holds, with one
++    // hand or none it does not, and the rung's status follows it. Everything else reads the same.
++    type State = ReturnType<typeof states>[number];
++    const apart = (all: State[]) => all.filter(([id]) => id !== 'blues.6');
++    const blues6 = (all: State[]) => all.find(([id]) => id === 'blues.6');
++    const reference = states(BOTH);
++    for (const hands of [undefined, LEFT, RIGHT, DUET]) {
++      const other = states(hands);
++      expect(apart(other)).toEqual(apart(reference));
++      const [, status, reqs] = blues6(other) as [string, string, unknown[][]];
++      const [, refStatus, refReqs] = blues6(reference) as [string, string, unknown[][]];
++      expect(refStatus).toBe('met');
++      expect(status).toBe('in progress');
++      expect(reqs[0]).toEqual(refReqs[0]);
++      expect(refReqs[1]?.[0]).toBe(true);
++      expect(reqs[1]).toEqual([false, 0, 1, []]);
++    }
+   });
+ });
+diff --git a/app/tests/unit/slotsFromEvidence.test.ts b/app/tests/unit/slotsFromEvidence.test.ts
+index 97c3c1a0..0c0b40c3 100644
+--- a/app/tests/unit/slotsFromEvidence.test.ts
++++ b/app/tests/unit/slotsFromEvidence.test.ts
+@@ -474,6 +474,18 @@ describe('the asked line says what the requirement asks and what has counted', (
+     expect(asked({ kind: 'runs', from: 'songs', count: 2, performance: true }, 0, 2)).toBe('This lesson: 0 of 2 counted, played with Perform on');
+     expect(asked({ kind: 'runs', from: 'songs', count: 1, performance: true }, 0, 1)).toBe('This lesson asks for it, played with Perform on — not counted yet');
+   });
++
++  // A7a.3 (HB1 left the line to the first placement, Entry 279): a requirement that says hands both is met only
++  // by a run of both hands, so a learner playing one hand, or a duet, is told what counts.
++  it('both hands, where the lesson asks for them', () => {
++    expect(asked({ kind: 'runs', from: 'exercises', count: 1, items: ['a'], hands: 'both' }, 0, 1)).toBe(
++      'This lesson asks for it, played with both hands — not counted yet',
++    );
++    expect(asked({ kind: 'runs', from: 'exercises', count: 2, hands: 'both' }, 1, 2)).toBe('This lesson: 1 of 2 counted, played with both hands');
++    expect(asked({ kind: 'runs', from: 'songs', count: 1, performance: true, hands: 'both' }, 0, 1)).toBe(
++      'This lesson asks for it, played with Perform on, played with both hands — not counted yet',
++    );
++  });
+ });
+ 
+ describe('the exposure line keeps a family’s own name', () => {
+diff --git a/content/curriculum/stage-6.json b/content/curriculum/stage-6.json
+index 6f9e757b..84fa6800 100644
+--- a/content/curriculum/stage-6.json
++++ b/content/curriculum/stage-6.json
+@@ -488,12 +488,17 @@
+                 "exercise.boogie.f.walking-eighths",
+                 "exercise.walking-bass.c.blues",
+                 "exercise.turnaround.c.i-vi-ii-v",
+-                "exercise.boogie.c.root-fifth"
++                "exercise.boogie.c.root-fifth",
++                "exercise.walking-bass.c.minor-blues",
++                "exercise.walking-bass.f.minor-blues",
++                "exercise.walking-bass.b-flat.minor-blues"
+               ],
+               "songOptions": [
+                 "song.pop.boogie-easy-for-beginners.pdmx",
+                 "song.pop.louisf365-boogie-woogie-and-blues-piano-exersices.pdmx",
+-                "song.folk.boogie-woogie.pdmx"
++                "song.folk.boogie-woogie.pdmx",
++                "song.blues.st-james-infirmary",
++                "song.classical.st-louis-blues.pdmx"
+               ],
+               "songOptional": true,
+               "mastery": {
+@@ -504,7 +509,23 @@
+                 {
+                   "kind": "runs",
+                   "from": "exercises",
++                  "items": [
++                    "exercise.boogie.c.pinetop",
++                    "exercise.boogie.f.walking-eighths",
++                    "exercise.walking-bass.c.blues",
++                    "exercise.turnaround.c.i-vi-ii-v",
++                    "exercise.boogie.c.root-fifth"
++                  ],
+                   "count": 1
++                },
++                {
++                  "kind": "runs",
++                  "from": "exercises",
++                  "items": [
++                    "exercise.walking-bass.c.minor-blues"
++                  ],
++                  "count": 1,
++                  "hands": "both"
+                 }
+               ],
+               "prerequisites": [
+@@ -521,7 +542,7 @@
+                 }
+               ],
+               "levelBand": [
+-                3.5,
++                2.52,
+                 7.5
+               ],
+               "finder": {
+diff --git a/content/lessons/blues.6.md b/content/lessons/blues.6.md
+index 0aa96514..51470b6e 100644
+--- a/content/lessons/blues.6.md
++++ b/content/lessons/blues.6.md
+@@ -6,7 +6,7 @@ videos:
+   - label: "Secret Key To Pinetop's Boogie Woogie (Right Hand Boogie Pattern)"
+     url: "https://www.youtube.com/watch?v=z6Ytf2EdOQM"
+     teacher: "Brendan Kavanagh"
+-readingTime: 3
++readingTime: 10
+ ---
+ 
+ The twelve-bar form is settled. What changes now is the left hand, which stops
+@@ -33,9 +33,11 @@ with no rest, and the left arm will tell you when it is doing this with the
+ fingers instead of the arm. Slow, loose, and stop before it hurts.
+ 
+ **The walking bass** is the other way to fill the same bars, and it is the one
+-that leads somewhere: root, third, fifth, then a semitone below the next bar's
+-root. Learn both; use the boogie when you want weight and the walk when you want
+-motion.
++that leads somewhere: one note to a beat, each bar heading for the next chord.
++Every walking exercise on this page uses the same practice pattern: root, third,
++fifth, then a semitone below the next bar's root. That is a pattern for
++practising, not the only way a walking bass can go. Learn both; use the boogie
++when you want weight and the walk when you want motion.
+ 
+ **What to practise.** The boogie exercises give each pattern four bars on one
+ chord — Pinetop and root-and-fifth in C, walking eighths in F. Take one through
+@@ -48,7 +50,91 @@ twelve-bar example from bar 19; and the
+ real thing: Clarence "Pinetop" Smith's own *Pinetop's Boogie Woogie* (1928),
+ which is levelled above everything else on this rung and is here to be
+ read and listened to. Its left hand in this edition is not the climb above: from
+-bar 7 it is two-note chords over the root in a dotted rhythm.
++bar 7 it is two-note chords over the root in a dotted rhythm. *St. James
++Infirmary* and *St. Louis Blues*, tunes to play on an earlier blues rung, are
++here again for their chords, in the minor-blues and quick-IV work below.
++
++**The minor blues.** A minor blues is the twelve-bar played in a minor key.
++*Walking bass over a minor 12-bar blues in C minor*, among this page's
++exercises, plays it one chord to a bar:
++
++- bars 1 to 4: Cm7, Cm7, Cm7, Cm7, that is i7 four times;
++- bars 5 to 8: Fm7, Fm7, Cm7, Cm7, that is iv7, iv7, i7, i7;
++- bars 9 to 12: A♭7, G7, Cm7, G7, that is ♭VI7, V7, i7, V7;
++
++and then a thirteenth bar of Cm7 to finish on. Bars 1 to 8, 11 and 12 follow
++the major blues of *Walking bass over a 12-bar blues in C* chord for chord,
++with the tonic and the IV as minor sevenths, i7 and iv7: Cm7 is C, E♭, G and
++B♭, and Fm7 is F, A♭, C and E♭. G7, the V7, is a dominant seventh in both,
++with B natural, a semitone below C. Bars 9 and 10 are where the two differ.
++
++**Bars 9 and 10 have more than one version.** This walking-bass exercise uses
++♭VI7 to V7 in bars 9 and 10: A♭7, then G7. Minor-blues changes vary; the
++Lab's minor blues uses V7 to iv7 there instead: G7, then Fm7. Both are in use,
++and neither one is the minor blues; when this page means one, it names it. In
++D minor, ♭VI7 to V7 is B♭7 to A7, which you will meet again in *St. James
++Infirmary*.
++
++**The walking line in minor.** The left hand plays the same practice pattern,
++root, third, fifth and a semitone below the next root, so it takes each
++chord's own third: E♭ over Cm7 and A♭ over Fm7, but C over A♭7 and B over G7.
++The last bar is root, third, fifth and the root an octave up. The right hand
++holds one chord a bar: its root, third and seventh, Cm7 as C, E♭ and B♭.
++
++**Step by step, in C minor.**
++
++1. Open *Walking bass over a 12-bar blues in C* and press *Hear it*; then *Walking bass over a minor 12-bar blues in C minor*, and *Hear it* again. Listen for the minor chords, and for bars 9 and 10.
++2. In the C minor exercise choose *Keep tempo* and press **L** on the control bar: you play the left hand, and the app plays the right hand's chords while *Duet*, in the ⋯ controls, is on, as it is unless you have turned it off. This run does not count (below); it is for the left hand alone.
++3. Then **Both**, in *Keep tempo*: the walking line under the written chords. This is the run this page counts.
++4. The same with *Walking bass over a minor 12-bar blues in F minor*, both hands, at a lower tempo first.
++5. Tap *Chart* beside the C minor exercise. Turn *Bass + drums* on, leave *Comp* off, press *Count off ▶* and play the right hand's chords as the exercise writes them, root, third and seventh, over the app's bass and drums, your left hand resting. The cell of the bar that is sounding marks what you hold against that bar's chord: the exercise's three notes read as a match; the third and the seventh alone, two notes of four, do not.
++
++**St. James Infirmary: a minor tune to walk and comp.** *St. James
++Infirmary* is in D minor, and it is not a twelve-bar blues. Its 24 bars are a
++16-bar verse, bars 1 to 16, and an 8-bar refrain, bars 17 to 24. Its chords are
++Dm, Gm, B♭7 and A7, with one D7 in bar 5 and one F7 in bar 22. Bars 7 and 8 are
++B♭7 then A7, the ♭VI7 to V7 of D minor. Many bars hold two or three chords:
++bar 1 is Dm for two beats, then B♭7 for one and A7 for one. On the chart each
++chord stands where it starts in its bar.
++
++1. Open *St. James Infirmary* from this page and press *Hear it*.
++2. Tap *Chart* beside it, turn *Comp* and *Bass + drums* on, press *Count off ▶* and follow the 24 bars while the app plays the chords.
++3. Turn *Bass + drums* off and keep *Comp* on: walk a bass line in your left hand under the app's chords, one note to a beat, each chord's root on the beat it starts. A beat left before a change can lead into the next root by a semitone, as in the exercises. Ignore the cell in this step: it checks for a chord, and one bass note is never enough for it to say yes.
++4. Then *Comp* off and *Bass + drums* on: the chords in your right hand over the app's bass and drums, the left hand resting. Here the cell is worth watching.
++5. Last, both off: the walking line in the left hand and the chords in the right, through the 24 bars.
++
++**The quick IV.** Tap *Chart* beside *St. Louis Blues*. Its first twelve bars
++are a twelve-bar blues in E, and bar 2 is A7, the IV7: where the twelve-bar
++you have played so far stays on the I for four bars, this one goes to the IV in
++bar 2 and back to E in bar 3. An IV that early is called the quick IV, or the
++quick change, because it comes in bar 2 rather than bar 5. With *Comp* and
++*Bass + drums* off, press *Count off ▶*, play the roots in the left hand and
++the chords in the right through bars 1 to 12, then press *Stop*. When you come
++to play choruses of your own, on a later blues rung, the quick IV in bar 2 is a
++choice you can make; nothing in the app checks it.
++
++**On your own.** Tap *Chart* beside *Walking bass over a minor 12-bar blues in
++B♭ minor*, a key you have not practised. Leave *Comp* and *Bass + drums* off,
++and do not press *Count off ▶*: no click, no count-in and no bar moving along.
++Count yourself in, and play the twelve bars and the last one with the walking
++line in your left hand and the chords in your right, reading only the chord
++symbols. Without *Count off ▶* the chart does not move with you: it stays on
++bar 1 and checks whatever you hold against bar 1's chord, so its cell says
++nothing about this task. Ignore it. The app gives no verdict here; whether the
++walk, the chords and the form were right is yours to check.
++
++**What the app counts here.** Two exercise runs, each opened from this page.
++One passing run of any of the five exercises above the minor ones: the two
++boogies in C, the walking eighths in F, the walking bass over the major blues
++or the turnaround. And one passing run of *Walking bass over a minor 12-bar
++blues in C minor* with both hands: a run of the left hand with the app playing
++the right, or of either hand alone, does not count. A passing run is 90 %
++right, played in *Keep tempo*, from the first bar to the last, at 85 % of its
++written tempo or more. The F minor and B♭ minor walking exercises, *St. James
++Infirmary* and *St. Louis Blues* count toward neither. The app measures the run
++in C minor. The chart work, walking and comping *St. James Infirmary*, the
++quick IV and the B♭ minor task are yours to check: they do not become checked
++by the app because the rung is met.
+ 
+ **Common mistake.** Speeding up when the left hand gets comfortable. A boogie
+ that accelerates is a boogie nobody can play over.
+@@ -60,7 +146,9 @@ the right hand yours and the app keeping the left, so the bass stays at one
+ speed while you find out which hand was drifting; swap, and the bass is yours
+ against a right hand that will not wait for it. *Accompaniment lab* opens
+ *Blues — twelve bars* on *Hold the chords*, in whatever key you set, when what
+-you want is the form under you and nothing marked.
++you want is the form under you and nothing marked. Set a minor key there and
++its bars 9 and 10 are V7 then iv7, the Lab's version named above: in C minor,
++G7 then Fm7.
+ 
+ **How you'll know you've got it.** Twelve bars of Pinetop's bass in two keys,
+ even, at a tempo you could hold for three choruses.
+diff --git a/content/review/decisions.jsonl b/content/review/decisions.jsonl
+index 3ba937d3..e45f196f 100644
+--- a/content/review/decisions.jsonl
++++ b/content/review/decisions.jsonl
+@@ -7,3 +7,7 @@
+ {"v": 1, "event": "ev-914c9aa6-9d42-4cf2-ab31-abe5897fcb57", "item": "exercise.tresillo.f", "identity": {"kind": "generator", "family": "tresillo", "version": 2, "seed": null, "recipe": {"key": "F", "hands": "both"}, "tempoBpm": 84}, "dimension": "goodTeachingUse", "value": "yes", "basis": "inspected", "category": "role", "reason": "The current generated item is established by its family contract with the independent cell witness agreeing bar by bar; it is suitable as controlled written tresillo practice in A7c.1.", "note": "CONTROL role only. This is not a style, feel or musical-quality judgement; nothing was heard.", "by": "outside reviewer (relayed by the owner; docs/review/responses/lp1-latin4-placement.md section 1)", "at": "2026-10-06T17:50:21.288Z"}
+ {"v": 1, "event": "ev-c1c04895-f3a5-48b4-b1bd-8252875757b4", "item": "exercise.tresillo.g", "identity": {"kind": "generator", "family": "tresillo", "version": 2, "seed": null, "recipe": {"key": "G", "hands": "both"}, "tempoBpm": 84}, "dimension": "goodTeachingUse", "value": "yes", "basis": "inspected", "category": "role", "reason": "The current generated item is established by its family contract with the independent cell witness agreeing bar by bar; it is suitable as controlled written tresillo practice in A7c.1.", "note": "CONTROL role only. This is not a style, feel or musical-quality judgement; nothing was heard.", "by": "outside reviewer (relayed by the owner; docs/review/responses/lp1-latin4-placement.md section 1)", "at": "2026-10-06T17:50:21.289Z"}
+ {"v": 1, "event": "ev-81831a32-8e7e-4351-a18b-780f65b6c7c3", "item": "excerpt.classical.bizet-l-amour-est-un-oiseau-rebelle.pdmx.b1-12.lh", "identity": {"kind": "file", "sha256": "a39e76951869aabbf39c1d0b4440e4f433baa86da584d7edec650dfa1e539069"}, "dimension": "goodTeachingUse", "value": "yes", "basis": "inspected", "category": "role", "reason": "Current verified bars 1-12 are a left-hand-only 2/4 passage at the printed quarter=60 whose onset cell is established as habanera in every bar; this makes the cut suitable as A7c.1's authentic MODEL after the controlled cell work.", "note": "Teaching-use decision only. It does not claim feel, style quality or musical quality; nothing was heard. Re-issued on the cut's current identity after the cutter pinned the archive's creating system (Entry 255): the inner MusicXML and container entries are byte-identical to the superseded event's file; the reviewer's ruling in docs/review/responses/g13-landing.md section 2.", "by": "outside reviewer (relayed by the owner; docs/review/responses/lp1-latin4-placement.md section 1; re-issue: g13-landing.md section 2)", "at": "2026-10-06T20:00:26.989Z", "supersedes": "ev-3d00146d-6dca-43b7-acd7-11ac95bd16ce"}
++{"v": 1, "event": "ev-c5e08168-6a9d-4984-bdcc-bc200d4166b6", "item": "exercise.walking-bass.c.minor-blues", "identity": {"kind": "generator", "family": "walking_bass", "version": 4, "seed": null, "recipe": {"key": "C", "form": "minor-blues", "notesPerBar": 4, "tier": "standard", "hands": "both"}, "tempoBpm": 92}, "dimension": "goodTeachingUse", "value": "yes", "basis": "inspected", "category": "role", "reason": "The current generated item meets its declared minor-blues walking_bass contract, read by an independent reader with the wrong-third, whole-step-approach and major-sibling adversaries red; it is suitable as A7a.3's NAMED-PATTERN walking-bass practice over a minor twelve-bar.", "note": "Teaching-use decision only, under the reviewer's ruling (docs/review/responses/a7a-lanes-landing.md section 5): root, third, fifth and approach is taught as the practice pattern these exercises use, never as the definition of a walking bass; bars 9-10 (flat VI7 to V7) are one variant, not the minor blues. No claim about feel or musical quality; nothing was heard. Evidence: docs/prompts/runs/A7a3/walk-read.json, walk-adversary.out.", "by": "outside reviewer (docs/review/responses/a7a-lanes-landing.md section 5)", "at": "2026-10-07T18:52:57.330Z"}
++{"v": 1, "event": "ev-6005cdac-e305-409f-97cb-63535b212fc4", "item": "exercise.walking-bass.f.minor-blues", "identity": {"kind": "generator", "family": "walking_bass", "version": 4, "seed": null, "recipe": {"key": "F", "form": "minor-blues", "notesPerBar": 4, "tier": "standard", "hands": "both"}, "tempoBpm": 92}, "dimension": "goodTeachingUse", "value": "yes", "basis": "inspected", "category": "role", "reason": "The current generated item meets its declared minor-blues walking_bass contract, read by an independent reader with the wrong-third, whole-step-approach and major-sibling adversaries red; it is suitable as A7a.3's NAMED-PATTERN walking-bass practice over a minor twelve-bar.", "note": "Teaching-use decision only, under the reviewer's ruling (docs/review/responses/a7a-lanes-landing.md section 5): root, third, fifth and approach is taught as the practice pattern these exercises use, never as the definition of a walking bass; bars 9-10 (flat VI7 to V7) are one variant, not the minor blues. No claim about feel or musical quality; nothing was heard. Evidence: docs/prompts/runs/A7a3/walk-read.json, walk-adversary.out.", "by": "outside reviewer (docs/review/responses/a7a-lanes-landing.md section 5)", "at": "2026-10-07T18:52:57.331Z"}
++{"v": 1, "event": "ev-4b507c49-4ec8-4267-82d1-6a1b8ecebc33", "item": "exercise.walking-bass.b-flat.minor-blues", "identity": {"kind": "generator", "family": "walking_bass", "version": 4, "seed": null, "recipe": {"key": "B-", "form": "minor-blues", "notesPerBar": 4, "tier": "standard", "hands": "both"}, "tempoBpm": 92}, "dimension": "goodTeachingUse", "value": "yes", "basis": "inspected", "category": "role", "reason": "The current generated item meets its declared minor-blues walking_bass contract, read by an independent reader with the wrong-third, whole-step-approach and major-sibling adversaries red; it is suitable as A7a.3's NAMED-PATTERN walking-bass practice over a minor twelve-bar.", "note": "Teaching-use decision only, under the reviewer's ruling (docs/review/responses/a7a-lanes-landing.md section 5): root, third, fifth and approach is taught as the practice pattern these exercises use, never as the definition of a walking bass; bars 9-10 (flat VI7 to V7) are one variant, not the minor blues. No claim about feel or musical quality; nothing was heard. Evidence: docs/prompts/runs/A7a3/walk-read.json, walk-adversary.out.", "by": "outside reviewer (docs/review/responses/a7a-lanes-landing.md section 5)", "at": "2026-10-07T18:52:57.332Z"}
++{"v": 1, "event": "ev-510b9ec4-00c7-43e6-bc69-ac6b943d565b", "item": "exercise.walking-bass.e-flat.minor-blues", "identity": {"kind": "generator", "family": "walking_bass", "version": 4, "seed": null, "recipe": {"key": "E-", "form": "minor-blues", "notesPerBar": 4, "tier": "standard", "hands": "both"}, "tempoBpm": 92}, "dimension": "goodTeachingUse", "value": "yes", "basis": "inspected", "category": "role", "reason": "The current generated item meets its declared minor-blues walking_bass contract, read by an independent reader with the wrong-third, whole-step-approach and major-sibling adversaries red; it is suitable as A7a.3's NAMED-PATTERN walking-bass practice over a minor twelve-bar.", "note": "Teaching-use decision only, under the reviewer's ruling (docs/review/responses/a7a-lanes-landing.md section 5): root, third, fifth and approach is taught as the practice pattern these exercises use, never as the definition of a walking bass; bars 9-10 (flat VI7 to V7) are one variant, not the minor blues. No claim about feel or musical quality; nothing was heard. Evidence: docs/prompts/runs/A7a3/walk-read.json, walk-adversary.out.", "by": "outside reviewer (docs/review/responses/a7a-lanes-landing.md section 5)", "at": "2026-10-07T18:52:57.333Z"}
+diff --git a/docs/02-curriculum.md b/docs/02-curriculum.md
+index d66739c7..fc04ce3d 100644
+--- a/docs/02-curriculum.md
++++ b/docs/02-curriculum.md
+@@ -1193,7 +1193,7 @@ names a source, which in this table is the `contrary` scales alone; the others p
+ | `shuffle` | 4.5, blues track | 4 | Straight eighths written, swung played; the notation carries the "shuffle" instruction. |
+ | `contrary` 2-octave, minors | 4.1, 4.2 | 4 | Contrary motion exists at one octave in majors only. |
+ | the **guitar keys** for `boogie`, `blues-scale`, `walking-bass`, `comping` | D3 blues, and the whole `jam` module | 4–6 | `JAM_KEYS` is E, A, G and D, the keys the `jam` lesson names for its band, and the default harmony set is C, F, B♭, E♭. So `jam`, whose lesson asks for "a boogie bass in E", offered a boogie in C. Four families in four keys, not `--full`'s four hundred items. |
+-| `walking-bass` and `boogie` over a **minor blues** | D3 Stage 6's "minor blues" | 6 | `TWELVE_BAR_MINOR`: minor sevenths on the i and the iv, and the ♭VI7–V7 at bars nine and ten. A band above the major form, because that pair is the only place the form leaves the key. The boogie figure's third flattens; its sixth stays major over the minor chord (a Dorian colour), and which sixth a given minor blues uses is the lessons' to say (F, G). |
++| `walking-bass` and `boogie` over a **minor blues** | D3 Stage 6's "minor blues" | 6 | `TWELVE_BAR_MINOR`: minor sevenths on the i and the iv, and ♭VI7–V7 at bars nine and ten, one attested variant of those bars and not the minor blues: the Lab's minor blues plays V7–iv7 there, and blues.6's lesson names both as variants (A7a.3; `docs/prompts/runs/A7a3/SOURCES.md` §1, the reviewer's `docs/review/responses/a7a-lanes-landing.md` §3). A band above the major form, because in this table the ♭VI7 is the one chord built outside the tonic's major scale (revised by A7a.3: this said the pair is "the only place the form leaves the key", a claim about every minor blues). The boogie figure's third flattens; its sixth stays major over the minor chord (a Dorian colour), and which sixth a given minor blues uses is the lessons' to say (F, G). |
+ | `meter` in **12/8** | D3 Stage 6's "slow blues 12/8" | 6 | `ODD_METERS` held 5/4 and 7/8. 12/8 is compound rather than odd and is in that table because it is the same problem — a bar `make_rhythm` cannot write — so the row carries its own concepts and is not filed under "odd meter". It is a **blues**, not a scale in a new signature: twelve bars of `TWELVE_BAR`, the bass long-short in the left hand (two eighths of each beat and then one, written in the metre), the shell twice a bar in the right. A learner sent to "slow blues 12/8" and handed a C major walk has been told something untrue by the catalog. |
+ | `oompah` | D5 ragtime, on every one of its rungs | 4–5 | Bass on 1 and 3, chord on 2 and 4, I–IV–V–I in 2/4. Two spans: the chord an octave above the bass, and a tenth above it. The span is the whole difficulty. Ragtime had **no generated family at all** — its rung's four exercises were borrowed accompaniment and syncopation rows. |
+ | `secondary-rag` | `ragtime.8`; the `secondary-rag` concept id | 6 | A three-sixteenth cell — short, long — over a beat of four, tied across the barline, with an oom-pah underneath so the beat it slips against is audible. Levelled with `syncopation`'s sixteenth variant: three-against-four at the sixteenth is the hardest rhythm the generator writes, and a level that puts an item on rungs it cannot be played on is worse than none. `concepts.json` has carried the id since it was written with nothing behind it. |
+@@ -1301,7 +1301,7 @@ marked a `full` LH (broken chords/waltz/Alberti). Stage tag gives the *simple* v
+ | Memphis Blues | Handy 1912 | F | 5 (blues) | |
+ | Trouble in Mind | Jones 1924 | C/F | 5 (blues) | |
+ | Pinetop's Boogie Woogie | Smith 1928 | C | 6 (blues) | |
+-| St. James Infirmary | US trad. | — | 3.5 | `[PDMX]` quarried 2026-09-17; on `blues.3` — the minor blues that rung's lesson names |
++| St. James Infirmary | US trad. | — | 3.5 | `[PDMX]` quarried 2026-09-17; on `blues.3` — the minor-key tune that rung's lesson names; a 16-bar verse and an 8-bar refrain, not a twelve-bar (A7a.3, which also places it on `blues.6` as optional transfer for walking and comping; revised: this called it "the minor blues") |
+ | Hesitating Blues | Handy 1915 | — | 3.6 | `[PDMX]` quarried 2026-09-17; Library |
+ | Boogie and Blues Bass Lines | uploader, undated | — | 3.7 | `[PDMX]` quarried 2026-09-17; Library — bass-line studies, not a piece |
+ | Ole Miss | Handy 1916 | — | 3.8 | `[PDMX]` quarried 2026-09-17; Library |
+diff --git a/docs/04-ui-spec.md b/docs/04-ui-spec.md
+index 93bd3a0a..d1113cda 100644
+--- a/docs/04-ui-spec.md
++++ b/docs/04-ui-spec.md
+@@ -334,6 +334,7 @@ The line is the session row's second line and takes up to two compact lines at t
+ | the next lesson's | The next lesson asks for it — not counted yet |
+ | a track asked | Classical asks for it — not counted yet |
+ | a performance is asked | This lesson asks for it, played with Perform on — not counted yet |
++| both hands are asked (`hands: both`; first placed by A7a.3 on blues.6) | This lesson asks for it, played with both hands — not counted yet |
+ | an exercise training an asked skill | Trains subdivision, for this lesson |
+ | new, the rung waiting on its reads | Next lesson — this one waits for your reads |
+ | a project (Stage 9) | Classical: a piece to live with |
+@@ -867,7 +868,9 @@ guide off, 90 % right and in time. (2 of 5)*; *Reading by interval: familiar or
+ what your reads show wherever you read. (tried, not yet shown)*; and, for a rule
+ no run can show, *Not judged by the app — the lesson's rule: Loud and soft clearly different.*
+ The last line, always: *A run counts for this rung when you open it from this page, or from
+-Today's card for this rung.* The words are `RUNG_TEXT` and `requirementWords` in `ui/help.ts`
++Today's card for this rung.* A requirement that says hands both (A7a.3, blues.6) ends *…, played with both hands: a
++run of one hand, Duet included, does not count.*; one that names some of several items lists them parted by
++semicolons, the last after *or*, since titles carry commas of their own. The words are `RUNG_TEXT` and `requirementWords` in `ui/help.ts`
+ (`help.test.ts` holds this section to them):
+ 
+ | key | the words |
+@@ -883,6 +886,7 @@ Today's card for this rung.* The words are `RUNG_TEXT` and `requirementWords` in
+ | wordLine | Your word is kept apart from your runs: it moves the plan on and counts as none of them. |
+ | unjudged | Not judged by the app — the lesson’s rule: |
+ | counted / notYet | counted · not yet |
++| oneHandNotCounted | a run of one hand, Duet included, does not count |
+ | countedSince / byWord | counted since · by your word |
+ 
+ The state badge beside *I already know this* is the same word Plan uses (`rungBadge`): the
+diff --git a/docs/08-test-map.md b/docs/08-test-map.md
+index 29d13363..eed72f4c 100644
+--- a/docs/08-test-map.md
++++ b/docs/08-test-map.md
+@@ -145,6 +145,7 @@ A test named here is the reproduction: every failure prints the seed and the act
+ | **The minor ii-V-i shell drill against music21** (CK-6, A7b.1, G6a: `drill.jazz.minor-ii-v-i-shells`, its nine `cases` read by `chordsFromCases`, `shellFromSymbol`, the `m6` quality) | the C minor tonic asked as C-E-B (the major-scale `shellChord` construction); a natural-minor v7 where V7 is printed; an m7 shell where the chart prints Cm6; a sharp on the answer staff where the flat side wants a flat; the answer staff in the major signature nearest the notes rather than the key the card names (Cm6 under two flats, E7 under three sharps, D7 under one sharp, G6b), or a chromatic member written without its accidental against that key; a label that does not name the symbol; a case dropped, so an ordinary run no longer asks all nine; the seed reordering the cases; the item placed on a rung before G6b | `tools/content/tests/test_ck6_minor_shells.py` (music21's reading of the settled nine committed as `fixtures/ck6_minor_shells.json`; `CK6_WRITE=1` rewrites it; the catalogue row equal to the table; numeral and symbol agreeing; since G6b the named key's signature, `key.Key(tonic).sharps`, and each member's accidental against it; every adversary red) and `app/tests/unit/minorShellDrill.test.ts` (the built row's prompts against that fixture: members, three notes, no fifth, the label, the `Show me` staff's steps and alters, and since G6b its signature and the accidentals it implies, pinned as literals too (three flats, none, two flats; G7's B and Cm6's A natural, E7's G sharp and D7's F sharp); ten prompts, nine cases in order, the tenth case 1, the same for three seeds; every adversary red, today's machinery included; the G6a test that it is on no stage file was replaced by G6b's placement) | built (G6a); the staff in the card's key and placed on jazz.6 (G6b); unheard |
+ | **jazz.6 holds the minor shell drill and keeps its own meaning** (G6b, A7b.1; the reviewer's ruling `docs/review/responses/g6-ph-briefs-cb1.md` §5: two distinct exercises, one of them named) | the minor drill alone meeting jazz.6 (a generic count left at 1); two other exercises meeting it without the drill; a major-drill run, a minor run another rung judged or one below 0.9 standing for it; a Blue Bossa or Insensatez run counting; the seventh-quality ear drill becoming a jazz.6 option or an ear-drill row counting there (BB2, the reviewer's `mt1-g6b-pf1-landing.md` §5); the drill opened from jazz.6 stored without `lessonId: "jazz.6"` (R3); the lesson's minor section, its ear-drill review route or its Insensatez question and answer saying anything the app or the score does not | `app/tests/unit/jazz6MinorShellCompletion.test.ts` (the built rung's options and requirements, jazz.5 and chords-pop.5 untouched, `rungState` on constructed rows), `app/tests/unit/lessonClaimsAboutApp.test.ts` (`G6B_APP`, one row per app fact the section states, each red against the pre-G6b lesson; `BB2_APP`, the same for the ear-drill route, the Insensatez chart door, the chart's cells 13 to 15 and the answer as the page's last paragraph, each red against the pre-BB2 lesson), `app/tests/unit/lessonClaimsAboutMusic.test.ts` (the repertoire rows: every song one stave with chords, the six named tunes, Insensatez's bars 13 to 15 read from its score) and `app/tests/e2e/jazz6-minor-shells.spec.ts` (the page with eight songs, the drill from its row, one passing run through the MIDI mock, the staff's signature per card, the stored set's `lessonId`, *What the app counts* 0 of 2 to 1 of 2; Insensatez's chart from its row, not running, Comp and Bass + drums off, cells 13 to 15) | built (G6b, BB2); the lesson unread by the reviewer; unheard |
+ | **The re-staffed Blues Riff in C against its frozen source events** (CK-7 extended to a re-staffing; `A7a1-bluesriff-restaff`, the ruling `docs/review/responses/a7a-lanes-landing.md` sections 12-14: `tools/content/pdmx/restaff.py`, the source-side part selection before the unchanged converter; `tools/content/pdmx/restaff_verify.py`, a raw MusicXML walk with no music21; the frozen fixture `tools/content/tests/fixtures/restaff/<cid>.source-events.json`, bound to the raw sha256 69d5bb7e…; `import_pdmx.validate_derivation`, the row's `derivation` block) | a riff or root event changed, added or lost in the edition (a pitch, a spelling such as B4 written B-flat 4, an onset, a duration, a bar); a rootless voicing or a drum head left on either staff; the staves swapped; the oracle regenerated from the edition under test instead of the raw member; a derived row whose derivation names another source identity, an absent tool or fixture, or a fixture bound to another raw file; the catalogue calling a derived file the converter's plain output | `tools/content/tests/test_restaff.py` (the committed edition equal to the fixture event for event and rest for rest, no added rest; the fixture's counts the A7a.1 probe's two-reader table: riff 57 heads and 6 rests, roots 12, 18 B4s, voicings 36, drum heads 144; nine mutants written by script from the committed edition, each red naming its bar and event: B4 to B-flat 4 in bar 3, bar 10's sixty-fourth C4 deleted, bar 9's C6 a sixteenth early, bar 10's double-dotted sixteenth shortened, a voicing E4 added, a drum head added, bar 5's root an octave up, bar 12's root G2, the staves swapped; the derivation block's refusals; `restaff.select` refusing a missing, extra or duplicate part and a raw file with another sha256). Run in `ci.yml`'s content pipeline tests (`unittest discover -s tools/content/tests`) | built (RS1); in the personal library, on no rung; nothing heard, unverified as music |
++| **blues.6 holds A7a.3's counted run and keeps its own meaning** (A7a.3, lane A7a3P; the reviewer's `docs/review/responses/a7a-lanes-landing.md` §3-§9 and `a7a-drafts.md` §5: option b, the existing one-exercise requirement kept beside a named one with `hands: both`) | one minor-walking run meeting both requirements (the existing one left over every option) and so the rung; a one-hand, Duet, hands-less, Wait, slow or other-rung run of the C minor item counting; the F or B♭ minor item, the major walking item, St. James Infirmary or St. Louis Blues standing for it; the page's sentence not saying that one hand does not count; the lesson teaching one bars-9-10 form as the minor blues, the walking pattern as the definition of a walking bass, a repeat count or "three eight-bar phrases" for St. James, or the no-Count-off chart's cell as a verdict | `app/tests/unit/blues6MinorBluesCompletion.test.ts` (the built rung's options, requirements and band source, `rungState` on constructed rows, `requirementWords` on the built requirements), `app/tests/unit/blues6MinorBluesLesson.test.ts` (one row per fact the new lesson text states, read beside the built scores, `app/src` and the built content: the items' and the Lab's bars 9-10, the walking pattern bar by bar on the three placed items, St. James's 24 bars and repeat sign, St. Louis Blues bars 1-12, the chart's cell, the counted run), `app/tests/unit/chordChart.test.ts` (a chart never started judges bar 1 only, on the built B♭ minor item), `app/tests/unit/runsRequirementHands.test.ts` (only blues.6 carries `hands`) and `app/tests/unit/slotsFromEvidence.test.ts` (Today's line says both hands) | built (A7a3P); the lesson unread by the reviewer; unheard |
+ | **A perfect performance through every catalog item, and the expected answer through every drill** (T24) | the engine and the score disagreeing where no reader can see it: a run that never reaches its own last bar, a step the cursor stops on with nothing under it, a pitch off the end of the keyboard, a note the judge cannot match; a drill whose expected answer cannot be given; and `SessionScore.correctSteps`, which said "Tempo: every expected pitch hit in time" and was nought on every Tempo run ever recorded | `tests/unit/perfectPerformance.test.ts` and `perfectPerformance.1..7.test.ts` — one test per catalog row with a score file, the model built by `osmd.load` + `extractScoreModel` as the goldens are, then `prepareSession` and the real engine in Keep tempo **and** Wait for me, every expected note fed at its own `tMs`; `tests/unit/perfectDrills.test.ts` — every `drill.*` row answered exactly as its own prompt asked. Sharded across files because a runner worker is per file | done (T24, 2026-09-22). **A green run says the engine can follow the file, not that the file is music**: it plays the model's own notes at the model's own times, so `helpers/perfectRun.ts` `modelFaults` asks the questions a run cannot |
+ | **The documents against the code** (`docs/03` sections cited from the pipeline, `*.py` names in `03`, the router's sub-screens in `04`) | a section renumbered and forty citations pointing at the old number; a module renamed and the doc naming the old one for months; a screen the router knows that the spec never describes | `tests/unit/docsConsistency.test.ts` — every `docs/03 §N` in `tools/content/**/*.py` is a heading `03` has; every `*.py` named in `03` exists under `tools/content`; every `SUB_IDS` entry has a `##`/`###` heading in `04` naming it. Relationships only, no counts | done (2026-09-16) |
+ | **The chain record: the teaching design as data the build checks** (FABLE.md §2 step 2 and §3; `docs/chains/<ability>.yaml`, `tools/content/check_chains.py`) | a builder forgetting the instructional chain, the failure route or the independence test, because a prose rule is followed only while it is the last thing read; a tool neither a MODE-SHEET section nor FABLE's `tool` field line names (the checker holds no tool table of its own: `lesson` is read from section 31 of the sheet and from the field line); a ref that resolves by resemblance (a prefix of a real exercise id, an anchor that is not a heading) instead of exactly; a ref that resolves to nothing in a `reviewed` or `shipped` record; a step that withdraws no help and says why not nowhere; a last step that keeps help the first did not have; an empty `never_credits`; a generated family with no job, `presented_as`, contract or checker, or a musical property filled with neither a method nor UNKNOWN; a generated step whose family has no `generated` entry; a NAMED-PATTERN presented as music that lists no musical properties; `shipped` with no acceptance path or with no browser journey explicitly marked for that ability; a major curriculum brief (one carrying a line `ability: <id>`) that lacks the three headings or whose record is missing or fails (a brief without the marker is not linted; the old record-naming heuristic is gone) | `tools/content/tests/test_check_chains.py` — the real A7c.1 record passes as a draft and lists exactly its unresolved refs (none since A7F: `BuiltGeneratedIds.test_the_real_record_reports_no_unresolved_ref` holds `0 unresolved ref(s)`); for each rule a copy of the record broken in that one way fails naming the field (a missing field, a tool the sheet does not name, an unresolved ref under `reviewed`, a prefix of a real exercise id, a `path#missing-anchor`, a step removing nothing with no reason, a last scaffold not a strict subset of the first, an empty `never_credits`, a family without job or contract or checker, a MUSICAL property neither established nor UNKNOWN, `shipped` without an existing acceptance path; R9 with no browser journey, a unit/nonexistent journey, an unrelated existing spec, a spec marked for another ability, and an exact `// acceptance-ability: <id>` control that passes; and the two CH1b fixtures: `test_r7_a_generated_step_whose_family_has_no_entry_fails_naming_the_step_ref` (the record with its `generated` list emptied fails on each generated step's `content.ref`, naming the family) and `test_r7_a_named_pattern_presented_as_music_lists_its_musical_properties` (the tresillo entry with `musical_properties` empty or absent fails on `generated[1].musical_properties`); beside them a missing or out-of-set `presented_as` fails on `generated[1].presented_as`, a NAMED-PATTERN presented as a drill and a mechanical CONTROL with `presented_as: drill` and no properties pass, and a SIGHT-READING or MUSICAL family still lists properties); the ref kinds, all exact (path; path and anchor, which resolves only for a Markdown file and an anchor equal to a heading's slug or a literal anchor, so `FABLE.md#3` and a table row do not; song id; CID with bars; exercise id exact, first against `tools/content/generated_ids.json`, the manifest of built generated ids, then against the continuity record for historical ids, no family contract declaring an item pattern (A7F, the reviewer's H7: `BuiltGeneratedIds` shows the four `exercise.bass-cell.*` ids unresolved in a tree without the manifest and resolved with it, `exercise.bass-cell.zz` and prefixes still unresolved and failing a `reviewed` copy, a historical id resolved by the continuity record with or without the manifest, and `build.step_generated_ids` failing a full build on a missing or stale manifest with one line and rewriting it, skipped on a partial or broken build); an authored exercise id (rule 4b, `A7a-authored-id-resolution`: the literal `PIANOPATH["id"]` of a `content/scores/authored/*.py` module, read by `ast.parse` and never by running the module; `AuthoredIdResolution` shows a literal id resolving exactly, a prefix, a case variant, a suffix and an undeclared id unresolved, twenty-one computed or mutated or malformed declarations (concatenation, f-string, name, call, `**` spread, a second assignment, a write or `.update` on `PIANOPATH`, a syntax error) resolving nothing, a source that would raise and write a marker file if run resolving without either happening, two modules declaring one id failing the run naming both files, the six real shuffle ids resolving from the real tree with every real module readable, and the real A7a.1 draft listing no unresolved ref since RS1 (its Blues Riff CID resolves through the re-staffed edition's row; before RS1 it listed only those three refs)); derived excerpt id; family id; URL only under `external`); the tool vocabulary held to the sheet's headings and FABLE's `tool` field line; the brief lint on marked briefs only (a missing heading, a missing record, a failing record, a draft record accepted, an unmarked brief skipped and counted, the probe brief accepted); the summary's line that the scaffold-subset rule is structural, not proof; the command line's exit codes. Run on every push by `docs-integrity.yml`: the pinned PyYAML is installed once, then `python3 -m unittest tools.content.tests.test_check_chains -v` (the broken records are the evidence each guard goes red) and `check_chains.py --lint-briefs` (the record pushes `ci.yml` ignores included); both steps are proved only by the docs run on the push, and the workflow change goes to the reviewer before it is relied on | done as a draft (the first record, A7c.1); no record is `reviewed` or `shipped`; a generated step links to its `generated` entry by its `ref` (a family id, or an exercise id's family, the manifest's row first, else the continuity record's), and a ref that identifies no family is left to the ref rule, listed in a draft; `presented_as: drill\|music` decides whether a NAMED-PATTERN lists musical properties (the checker infers nothing from a tool or a step's wording) |
+@@ -274,6 +275,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
+ - `app-shell.spec.ts` — lands on Today, the five tabs, each tab's screen and hash.
+ - `audio.spec.ts` — the bundled soundfont is served and under budget; a gesture starts the AudioContext and notes schedule without throwing.
+ - `bisect-render.spec.ts` — batch worker for `tools/content/bisect_render.py`; skipped unless `CONTENT_BISECT_PLAN` is set.
++- `blues6-minor-blues.spec.ts` — blues.6 with A7a.3 placed (A7a3P): the page's eight exercise and five song rows with the three minor walking items, St. James Infirmary and St. Louis Blues, and *What the app counts* at 0 of 2 with the second line naming the C minor item and saying a run of one hand, Duet included, does not count; the B♭ minor item's chart from its row, not running, *Comp* and *Bass + drums* off, thirteen cells, and with no *Count off ▶* a bar-5 chord (E♭m7) held through the MIDI mock reads no in bar 1's cell while bar 5's cell stays silent, then B♭m7 reads yes there and the bar is still 1 (the lesson's "ignore it"); St. James Infirmary's chart from its row, 24 cells, bar 1 drawn as three chords.
+ - `carry-overs.spec.ts` — the six P18 carry-overs on screen: the control exists, the gesture works, the layout changes at the breakpoint. Its "stops when the screen is left" case, which opened an item the catalogue does not hold and skipped on every run, was repaired with PH2 (`responses/g6-ph-briefs-cb1.md` §1): Blue Bossa with Comp and Bass + drums running, left for Today, and no audio source started in the two seconds after.
+ - `chart-backing.spec.ts` — the chord chart's bass and drums do not need its comp (CB1; Entry 266, Station 4): Blue Bossa's first four bars at 240 bpm in the four settings of *Comp* and *Bass + drums*, counting what is scheduled on the audio clock (bass, kick, snare, hat by how the kit builds them; piano starts from the app's counter). Bass + drums on with Comp on, the same bass and drums with Comp off and no piano, Comp on alone the piano and no rhythm section, both off the click only; each chip set by reading `aria-pressed`, so the cases hold on code with or without the old forced comp. Since PH2 the same four cases on a chart with one chord in every bar (the twelve-bar shuffle in C), the grid and every piano sample's start written with `CB1_OUT` for the one-chord differential (`docs/prompts/runs/PH2/diff/`), and case E: Blue Bossa run to bar 17 with Bass + drums, bar 16's beat-3 bass G7's fifth (73 Hz), not Dmi7b5's A♭ (104 Hz, red on the code before PH2). Counts of what is scheduled, nothing heard.
+ - `chart-metre.spec.ts` — the chord chart counts each bar in its written metre (MT1; `responses/ph1-g6a-landing.md` §4): Skating 3/4, Take Five 5/4, Row, Row, Row 6/8, Corcovado 2/2, Ah vous dirai-je 2/4 and the 12/8 exercise counted off at 240, the clicks between accents equal to the bar's felt beats (the count-in too), `60 / field` apart on the audio clock, the form moving on the accent and nowhere else, the tempo field's opening value and unit, Bass + drums disabled with its sentence and nothing scheduled; Skating with the chip attempted (the old "jazz waltz" comment authorises nothing); Mr Lawrence's change from 3/4 to 4/4 at bar 17 (the accent and four beats there); Bella Ciao, 4/4 with a pickup, unchanged with Bass + drums playing. CB1's instrument extended to clicks; with `MT1_OUT` set each run's counts and starts are written for the before-and-after differential. Counts of what is scheduled, nothing heard.
+@@ -473,7 +475,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
+ - `RingBuffer.test.ts` — oldest-first under capacity, oldest overwritten when full.
+ - `WebMidiSource.test.ts` — the cable pulled and put back, against a fake that models a disconnect in place.
+ - `accents.test.ts` — `<accent>` and `<strong-accent>` read onto `ScoreNote`, carried to `PreparedStep.accents`, and judged against the run's own unaccented mean rather than a MIDI number.
+-- `accompanimentLab.test.ts` — the lab's harmony as pitch classes in every key, the fixed-harmony builder through OSMD, the day's seed.
++- `accompanimentLab.test.ts` — the lab's harmony as pitch classes in every key, the fixed-harmony builder through OSMD, the day's seed. The minor blues' bars 9 and 10 pinned as V7 then iv7, the Lab's variant (A7a.3).
+ - `alphaRail.test.ts` — which letter a title files under, and what the rail does with a list.
+ - `answerSheet.test.ts` — the staff behind *Show me*: the answer as notation with a key signature that fits, a run drawn again as it grows without re-engraving what is already on it, and a chord progression written one chord to the bar with its numeral over it.
+ - `drillStaffPolicy.test.ts` — when each drill kind draws a staff, and why each is in the bucket it is in (`04` §5c).
+@@ -499,7 +501,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
+ - `boot.test.ts` — the shell's mount sequenced against `hydratePersisted()`, so the tab bar survives an update.
+ - `chartDoor.test.ts` — the chord chart has a way in (`04` §3b): a *Chart* action on the rows whose file the build measured chord symbols in, and none on the rest — unknown is not yes.
+ - `chartMetre.test.ts` — the chart's per-bar metre (MT1): the reading per signature against music21's values (3/8 pinned to the app's L120b ruling), `ChartMeasure.signature` keyed by source measure, the legacy grid's bars taking their chord's measure's count, the tempo field's unit and default, the comp's hold, Bass + drums in 4/4 only; the brief's scheduler hypothesis refuted on a faked clock (a listener-side `setBeatsPerBar` misplaces the accent when a stall drops a bar's last beat) and `BeatScheduler`'s additive `barShape` holding through the same stall; over every bundled chart, the 4/4 ones unchanged and (with `MT1_CENSUS` set) the census and the per-measure reading `docs/prompts/runs/MT1/witness.py` compares with music21; the fixtures' catalog tempos read as quarter notes a minute. Reads the built content.
+-- `chordChart.test.ts` — the chart's beat handler: the first bar of every run drawn; the tempo field in the chart's beat, its unit named (MT1); and the chart's Back, which names where it goes. Since PH2, on hand-fired beats with their audio-clock times: Blue Bossa bar 16's comp (Dmi7b5 at the bar's start, G7 scheduled for beat 3's click, each held three quarters of its half) and a one-chord bar's comp as before; an off-beat change placed between beats; the live cell judging the instant a note is struck (G-B-F no against Dmi7b5 just before beat 3, yes against G7 just after) and re-judging D-F-C held across the change; the beat-3 bass G7's and the drums unchanged; comp, bass and the live cell changing together at beat 3 on the bar's one clock (`responses/ph2-look.md` §6); a pickup sounding its notated length at the end of its counted bar; and the state machine: Stop and a hidden page mid-bar cancelling the change still to come, the resumed bar restarting from its first segment, the chorus wrapping to a bar 1 that carries nothing, a tempo changed mid-bar, Comp and Bass + drums toggled mid-bar.
++- `chordChart.test.ts` — the chart's beat handler: the first bar of every run drawn; the tempo field in the chart's beat, its unit named (MT1); and the chart's Back, which names where it goes. Since PH2, on hand-fired beats with their audio-clock times: Blue Bossa bar 16's comp (Dmi7b5 at the bar's start, G7 scheduled for beat 3's click, each held three quarters of its half) and a one-chord bar's comp as before; an off-beat change placed between beats; the live cell judging the instant a note is struck (G-B-F no against Dmi7b5 just before beat 3, yes against G7 just after) and re-judging D-F-C held across the change; the beat-3 bass G7's and the drums unchanged; comp, bass and the live cell changing together at beat 3 on the bar's one clock (`responses/ph2-look.md` §6); a pickup sounding its notated length at the end of its counted bar; and the state machine: Stop and a hidden page mid-bar cancelling the change still to come, the resumed bar restarting from its first segment, the chorus wrapping to a bar 1 that carries nothing, a tempo changed mid-bar, Comp and Bass + drums toggled mid-bar. Since A7a.3, a chart never started (no *Count off ▶*) on the built B♭ minor walking item: the bar stays at 1, bar 5's E♭m7 shell reads no in bar 1's cell, B♭m7's reads yes there, and no other cell answers (the blues.6 lesson's "ignore the cell").
+ - `chordChartLifecycle.test.ts` — the chart while the page is hidden (X15): silent and held, back on the bar it left after a count-in; and each bar in its written metre on a faked clock (MT1): the metronome's count per metre, the tracker in 3/4, 6/8 and across a 3/4-to-4/4 change and the chorus wrap, a resume counted in in the held bar's metre, the comp's hold, Bass + drums refused outside 4/4.
+ - `coaching.test.ts` — five coaching rules and one silence, the silence tested first.
+ - `composedContract.test.ts` — the curriculum–generator contract over the composed recipes the reader can reach (C4d; S29): the reader's step ups in the taught-at order with its passes-over, one step down and the step ups after it, the easy reads; every promised demand in every phrase, nothing untaught, nothing undeclared; a move the generator declares it cannot make never offered.
+@@ -608,6 +610,8 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
+ - `inputPolicy.test.ts` — the microphone's effect on playback, metronome and scoring.
+ - `inputSources.test.ts` — `ScreenKeyboardSource` and `ReplaySource`, and the replay script parser.
+ - `jazz6MinorShellCompletion.test.ts` — jazz.6 with the minor shell drill placed (G6b, A7b.1): the built options and the settled requirement (two distinct exercises, one named), jazz.5 and chords-pop.5 keeping the major drill, and `rungState` on constructed rows: the minor drill and one other exercise meet it; the drill alone, two runs of it, two other exercises, a major-drill run, a minor run judged elsewhere or below 0.9, and a Blue Bossa run do not.
++- `blues6MinorBluesCompletion.test.ts` — blues.6 with A7a.3 placed (A7a3P; `docs/review/responses/a7a-lanes-landing.md` §4): the built options (the C, F and B♭ minor walking items after the five exercises, St. James Infirmary and St. Louis Blues after the songs), the two requirements (the existing one held to the five exercises it always counted, and the C minor item with `hands: both`), the authored file equal to the build, `rungState` on constructed rows (the minor run alone leaves the rung in progress; one hand, a Duet row, no recorded hands, Wait, a slow run or another rung's run does not count; the other minor items and the songs count for nothing) and the page's sentence for each requirement through `requirementWords`.
++- `blues6MinorBluesLesson.test.ts` — what blues.6's minor-blues, St. James Infirmary and quick-IV text says, row by row against the built scores, the built content and `app/src` (A7a.3; the reviewer's `A7a3-minor-blues-source`, `A7a3-stj-form-truth` and `A7a3-static-chart-feedback`): the C minor item's thirteen symbols and numerals, ♭VI7 then V7 in bars 9-10 of all three placed items, the Lab's `Blues — twelve bars` in C minor playing G7 then Fm7 there with its key free, no "standard" or frequency word; the walking line root, third, fifth, a semitone below the next root in every bar of the three items and the right hand's root-third-seventh chord, taught as the exercises' practice pattern; the counted run and its words; the Score screen's L, Both, Duet and Hear it; the Chart door, Comp and Bass + drums off at the start, Count off ▶ and Stop; the cell's 0.6 match; St. James's 24 bars, one forward repeat at bar 17 and no repeat count, its chords and bar 1's three; St. Louis Blues in E, A7 in bar 2 under the bars 1-12 repeat; the B♭ minor task naming no bar or chord and saying to ignore the cell.
+ - `labBothWays.test.ts` — the lab's chord voice added to `barSchedule` without moving one other event of the bed, and the app's right hand read back out of the notation the same settings write.
+ - `labHelp.test.ts` — the join between `LAB_HELP` and `04` §3c's table, in three directions, so the screen and the spec cannot drift.
+ - `labPresets.test.ts` — `validate.py` and the lab agree about which presets exist, and what each one locks.
+@@ -710,7 +714,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
+ - `reviewRecord.test.ts` — the human review record's contract through `review/record.ts` (D2), on the cases `test_review_record.py` reads too: one dimension per event, current values per item and dimension, time order, stale and triage events filling nothing, malformed lines by number, the merge idempotent; and its resolution equal to the build's bits on every built item.
+ - `repertoireRetention.test.ts` — review's second reason (C6): a learned piece back after the repertoire window though its skill was shown yesterday, in the piece's words; the window a hypothesis apart from the ladder's; what counts as learned; neither reason dropped.
+ - `rungStateFromEvidence.test.ts` — the one derivation from evidence to rung state: three states, met by evidence and never by a count, two rungs listing one item, the two scopes, a `done` requirement the judging rung's like the other kinds (C5); a shelf twin's run as the book piece, once, only from the rung (CL04, L79); a named `runs` requirement counting a run only where it covered the whole item, the seven cases (RG1).
+-- `runsRequirementHands.test.ts` — a `runs` requirement's optional `hands: both` (A7a-hands-both-requirement; `docs/review/responses/a7a-drafts.md` §7): counts a run only where `SessionRow.hands.played` is `both`; left-only, right-only, a Duet row (one hand, the app the other, saved as Keep tempo) and a row with no recorded hands do not; added to the standard, `performance` and whole-item, never instead; a requirement with no `hands` reads as before, and no authored stage file carries the field (the differential: every shipped rung's reading is identical under every hand condition). The build gate's side, `tools/content/tests/test_evidence_gate.py` (`TestARunsRequirementThatSaysHands`: accepted where `both-hands` is recorded, refused where it is not, any other value refused, the schema admits `both` alone).
++- `runsRequirementHands.test.ts` — a `runs` requirement's optional `hands: both` (A7a-hands-both-requirement; `docs/review/responses/a7a-drafts.md` §7): counts a run only where `SessionRow.hands.played` is `both`; left-only, right-only, a Duet row (one hand, the app the other, saved as Keep tempo) and a row with no recorded hands do not; added to the standard, `performance` and whole-item, never instead; a requirement with no `hands` reads as before, and since A7a.3 one authored requirement carries it, blues.6's named C minor walking requirement (the differential: every other shipped rung, and blues.6's other requirement, read identically under every hand condition; blues.6's named one holds with both hands and with nothing else). The build gate's side, `tools/content/tests/test_evidence_gate.py` (`TestARunsRequirementThatSaysHands`: accepted where `both-hands` is recorded, refused where it is not, any other value refused, the schema admits `both` alone).
+ - `rustyIsNotACalendar.test.ts` — "rusty" is the ladder's *not shown recently*, through the real Skills screen (C7, L16): a skill shown yesterday is not rusty at day 31 since the store last wrote it; one whose last support is `RETENTION_DAYS` old is, and keeps its state; a day inside the span is not; a concept the store wrote a month ago and nothing has shown since is not.
+ - `requirementsCanBeShown.test.ts` — every skill requirement a rung states can be shown from its own page (C5).
+ - `scoreMidRunSettings.test.ts` — what a control does to a run that is already going (T23, `04` §5): the Metronome row starts the click on the engine's own grid instead of throwing the run away and counting in again, stops it the same way, and is still what the next run is started with; the tempo slider re-times the run once the finger comes off rather than on every step of a drag; the sentence after the phone locks names a control that is on the screen; and a Free play run says *End of the piece.*, because nothing else on the screen does.
+@@ -745,7 +749,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
+ - `sessionRunNeverEvidence.test.ts` — no evidence, rung-state or progress reader reads the session record, and a whole session changes nothing they read (X1).
+ - `sessionTransition.test.ts` — the transition on a finished activity's sheet (X1).
+ - `skillActivationBoundary.test.ts` — the target skills D0 writes on the generated families are acted on only through the one boundary: since E0 every skill-tier offer on the built catalog declares the skill, establishes its opportunity and carries nothing its rung has not taught, the evidence readers still act on the reading rows alone, no runtime file reads `targetSkills` except `skillActivation.ts`, and `declaredSkills` is read by `eligibility.ts` alone.
+-- `slotsFromEvidence.test.ts` — every slot from the evidence or the rung (C6): four constructed learners on 2.2, the warm-up's skill claim (activated explicitly since D0), the balance across the cards, the words.
++- `slotsFromEvidence.test.ts` — every slot from the evidence or the rung (C6): four constructed learners on 2.2, the warm-up's skill claim (activated explicitly since D0), the balance across the cards, the words. Since A7a.3, the asked line for a requirement that says hands both: "played with both hands".
+ - `sightReadingIsNotAPiece.test.ts` — a generated phrase is never passed, mastered, reviewed or repertoire; the daily done-day stays; "A piece you know" only of one (C5, S8, L18).
+ - `sessionRetention.test.ts` — the `sessions` store does not grow without limit, and since C1 does not throw evidence away: the cap held to five years at ten runs a day and to its budget against a measured row, rows past the window compacted to per-bar tallies, a recorded run tidying the store by itself. Since C7 the prune is given the day it runs, never reaches into the observation window, and never deletes a run that bears evidence or names its rung (`competenceSurvivesPruning.test.ts`). Since CL23 a measured record's per-demand step indexes folded to counts once it is outside its item's newest five reads of its skill under its stamp — the six-read, two-item and stale-stamp learners with `demandReadings` identical before and after, the copied filters, the fold a new run of the item starts; the budget case's evidence-bearing fixture (the largest real sight-read), which holds the fold and not the at-cap budget (L51).
+ - `settingsDownload.test.ts` — "Download everything now": progress, Stop, and where its message appears.
+diff --git a/docs/chains/A7a.3.yaml b/docs/chains/A7a.3.yaml
+index d496a7b7..c5416867 100644
+--- a/docs/chains/A7a.3.yaml
++++ b/docs/chains/A7a.3.yaml
+@@ -3,7 +3,7 @@
+ # Infirmary (jam comping and walking bass)"). Cut the way docs/chains/A7b.1.yaml was cut: field meanings from
+ # ORCHESTRATION-CONTRACT.md section 1; every `recorded` and `cannot_establish` copied from MODE-SHEET.md for the step's
+ # tool, never inferred; structure only from docs/chains/skeletons/latin-cluster.md (sections 2-4, and section 9's
+-# St James lines). status: draft. Drafted 2026-10-07 at HEAD 75bddb14.
++# St James lines). status: draft. Drafted 2026-10-07 at HEAD 75bddb14; placed by A7a3P (below).
+ #
+ # Why this id (the map makes it a choice, not a lookup):
+ #  - VERIFIED, ABILITY-MAP.md:350-351: A7a.3's CONTROL is "4 exercise.walking-bass.*.minor-blues" (with 12 boogie
+@@ -46,11 +46,11 @@
+ #    tools/content/generate_exercises.py:3963-3965), plus a closing tonic bar (make_walking_bass, :4018 onward, the
+ #    "closing" comment); four keys are built, C, F, B♭ and E♭ (narrow list, :6364; the loop at :6403), so there is no
+ #    D minor item; the ids resolve in tools/content/generated_ids.json (check_chains Resolver, 2026-10-07).
+-#  - VERIFIED, a conflicting statement of the same fact: the Lab's BLUES_MINOR (app/src/engine/sightReading.ts:2226-
++#  - SUPERSEDED by the placement (the lesson names both as variants), was VERIFIED, a conflicting statement of the same fact: the Lab's BLUES_MINOR (app/src/engine/sightReading.ts:2226-
+ #    2230) writes V7 at bar 9 and iv7 at bar 10. Two places state the minor twelve-bar differently; no lesson states
+ #    it. St James's own B♭7 | A7 matches the generator's bars 9-10, which is why this record uses the generated items
+ #    and keeps the Lab out of A7a.3 until a sourced definition decides the form.
+-#  - SOURCED by the probe (docs/prompts/runs/A7a3/SOURCES.md; requirement A7a3-minor-blues-source still open): no
++#  - SOURCED by the probe (docs/prompts/runs/A7a3/SOURCES.md; A7a3-minor-blues-source carried by the placement below): no
+ #    single canonical bars 9-10. Wikipedia "Twelve-bar blues", Minor blues, prints i7 i7 i7 i7 | iv7 iv7 i7 i7 |
+ #    ♭VI7 V7 i7 i7 (the generator's 9-10, but i7 in bar 12); PianoGroove and LearnJazzStandards give ♭VI7 to V7;
+ #    guitar-chord.org's "simple" minor blues is V7 then iv7 (the Lab's), with a ♭VI7-V7 bar as a variant; Premier
+@@ -61,12 +61,12 @@
+ #    (make_walking_bass's docstring and loop, generate_exercises.py:4018-4100); jam.6's lesson says the approach is
+ #    "one step above or below the new root" (content/lessons/jam.6.md:23-24), so the lesson for this record says what
+ #    the generated line does and nothing wider.
+-#  - VERIFIED, placement today: no exercise.walking-bass.*.minor-blues id is in any stage file; St James is a
++#  - SUPERSEDED by the placement below, was VERIFIED, placement before A7a3P: no exercise.walking-bass.*.minor-blues id is in any stage file; St James is a
+ #    songOption of blues.3 only (content/curriculum/stage-3.json:736); St. Louis Blues of blues.3 and blues.4; blues.6
+ #    counts one run of any of its five exercises (stage-6.json:473 onward), none of them minor (grep of the stage
+ #    files, 2026-10-07). No lesson teaches the minor blues or the quick IV (grep of content/lessons/blues.*.md for
+ #    "minor" and "quick", 2026-10-07).
+-#  - VERIFIED, a one-hand run counts like a both-hands run: meetsStandard and measured (app/src/evidence/rungState.ts:220-254)
++#  - SUPERSEDED by HB1 (Entry 279) and PF4 (Entry 280), was VERIFIED, a one-hand run counts like a both-hands run: meetsStandard and measured (app/src/evidence/rungState.ts:220-254)
+ #    read accuracy, mode, tempo and rhythmOnly and never the row's hands (no `hands` token in the file, grep 2026-10-07);
+ #    MODE-SHEET section 13 says no requirement reads hands.appPlayed. So a requirement naming the C minor walking item would also be
+ #    met by step 4's Duet run of one hand at the pass pair, against this record's never_credits line. Enforcing
+@@ -77,7 +77,7 @@
+ #    267: case B, Bass + drums on and Comp off, bass and drums with no piano; case C, Comp on and Bass + drums off,
+ #    piano with no rhythm section); Bass + drums is offered only on 4/4 charts since MT1 (Entry 274); St James, St.
+ #    Louis Blues and the generated items are 4/4.
+-#  - VERIFIED, the chart shows one chord per bar until PH2: Entry 268 ("the chord chart still draws, comps and judges
++#  - SUPERSEDED by PH2 (Entry 281), was VERIFIED, the chart shows one chord per bar until PH2: Entry 268 ("the chord chart still draws, comps and judges
+ #    from today's one-chord-per-bar reduction"); PH2 may dispatch (docs/review/responses/mt1-g6b-pf1-landing.md
+ #    section 1). So every St James chart step (steps 9-12) and bar 3 of the St. Louis step (13) are BLOCKED on PH2: on
+ #    today's chart the bar shows, sounds and judges only its first chord, in 13 of St James's 24 bars (17 symbols not
+@@ -111,14 +111,43 @@
+ #    third on i7 or iv7, a whole-step approach, the major sibling against the minor form). The E♭ minor item spells
+ #    bar 9's ♭VI7 as B7 (B-D♯-F♯-A, approach A♯2); CO-3 as a whole has not run.
+ # The quick IV has no generated control (blues_forms.py leaves it out, ABILITY-MAP.md:346) and no Lab form; its MODEL
+-# is St. Louis Blues bars 1-4 on the chart, and its INDEPENDENCE is a choice inside A7a.1's own chorus
+-# (ABILITY-MAP.md:352-353, MUSIC SHARED and INDEPENDENCE NO-SEPARATE-ARTIFACT), so this record carries one quick-IV step and cites A7a.1 for the rest.
++# is St. Louis Blues bars 1-12 on the chart, bar 2 the focus (the reviewer's a7a-lanes-landing.md section 7), and its
++# INDEPENDENCE is a choice inside A7a.1's own chorus (ABILITY-MAP.md:352-353, MUSIC SHARED and INDEPENDENCE
++# NO-SEPARATE-ARTIFACT), so this record carries one quick-IV step and cites A7a.1 for the rest.
+ # The 12 exercise.boogie.*.minor-blues items of P2 are not used here; whether P2 places them is P2's own decision.
++#
++# PLACED by lane A7a3P (2026-10-07, on origin 36d87c77), under the reviewer's docs/review/responses/a7a-lanes-landing.md
++# sections 3-9 and a7a-drafts.md sections 3-5. Each premise above marked SUPERSEDED is history; what holds now:
++#  - blues.6 (content/curriculum/stage-6.json) lists exercise.walking-bass.c.minor-blues, f.minor-blues and
++#    b-flat.minor-blues after its five exercises, and St. James Infirmary and St. Louis Blues after its songs
++#    (songOptional; requirements read exercises only, so the songs earn no credit; still on blues.3 and blues.4 as
++#    before). levelBand widened from 3.5 to 2.52, St. James's level, as BB2 widened jazz.6 for Insensatez.
++#  - Requirements (option b, section 4): the existing one-exercise requirement is kept and held to the five exercises
++#    it always counted (`items`), so a minor run cannot stand in for it ("Do not let two runs of the minor item stand
++#    in for two different requirements"; "Whole-rung completion still needs both"); a second names
++#    exercise.walking-bass.c.minor-blues, count 1, hands both (HB1, Entry 279). Pinned by
++#    app/tests/unit/blues6MinorBluesCompletion.test.ts. The preflight reads a requirement with `items` as the ability's
++#    named evidence (PF3), so it reports the first one as this ability's and unheld; that is a model gap the lane
++#    cannot clear, listed in the lane's report.
++#  - The four minor walking items are approved for teaching use (section 5): content/review/decisions.jsonl, four
++#    goodTeachingUse lines on their current generator identity, basis inspected, nothing heard.
++#  - The minor form (A7a3-minor-blues-source): the lesson teaches bars 9-10 as variants, the items' ♭VI7-V7 and the
++#    Lab's V7-iv7, with no frequency claim; the generator's and the Lab's comments, docs/02-curriculum.md and the
++#    harmony-families test say "variant", never "the standard one"; app/tests/unit/blues6MinorBluesLesson.test.ts pins
++#    each against what it plays.
++#  - St James's form (A7a3-stj-form-truth): a 16-bar verse and an 8-bar refrain; no repeat count; no "three eight-bar
++#    phrases" (the same test).
++#  - The independence step (A7a3-static-chart-feedback): the B♭ minor item (section 6), no Count off, no app verdict;
++#    the lesson says the chart stays on bar 1 and judges what is held against bar 1's chord, and to ignore the cell
++#    (app/tests/unit/chordChart.test.ts, "a chart that was never started judges bar 1 only").
++#  - PH2 landed (Entry 281, cc9c5629): the chart draws, comps and judges each chord at its start; St James's 24 bars
++#    and St. Louis Blues are drawn at every census size (docs/prompts/runs/PH2/legibility.txt lists neither among the
++#    refusals). PH2's artefact review is the reviewer's; steps 9-13 rely on it.
+ ability: A7a.3
+-learner_cannot: "Play the twelve-bar blues in minor, walk a bass line through it, or comp it; play the quick IV in bar 2 of a major blues; or carry the minor walk and comp into a real minor-key tune. The generated minor-blues walking items exist on no rung, no lesson teaches the minor form or the quick change (ABILITY-MAP A7a.3, Evidence), and St. James Infirmary sits on blues.3 as a melody to play, its chords never walked or comped."
++learner_cannot: "Play the twelve-bar blues in minor, walk a bass line through it, or comp it; play the quick IV in bar 2 of a major blues; or carry the minor walk and comp into a real minor-key tune. Before this placement the generated minor-blues walking items were on no rung, no lesson taught the minor form or the quick change (ABILITY-MAP A7a.3, Evidence), and St. James Infirmary sat on blues.3 as a melody to play, its chords never walked or comped."
+ independent_target: "Opens the chart of a minor twelve-bar in a key not practised and, with no bars named and nothing supplied, walks the bass and comps the chords through the form; and plays the quick IV in bar 2 of their own major chorus when they choose that variant."
+ steps:
+-  - action: "Reads the minor twelve-bar as the generated items write it (i7 i7 i7 i7, iv7 iv7 i7 i7, ♭VI7 V7 i7 V7, a closing tonic bar), the walking line those items play (root, third, fifth, then a semitone below the next root), the quick IV (IV7 in bar 2 of a major blues), and St. James Infirmary as a minor-key tune of three eight-bar phrases, not a twelve-bar, whose B♭7 to A7 is the same pair as the minor blues' bars 9 and 10. The lesson states the minor form only from a cited source."
++  - action: "Reads the minor twelve-bar as the generated items write it (i7 i7 i7 i7, iv7 iv7 i7 i7, ♭VI7 V7 i7 V7, a closing tonic bar), bars 9-10 named as one variant beside the Lab's V7 to iv7 with no claim that either is the minor blues; the walking line those items play (root, third, fifth, then a semitone below the next root) as this exercise's practice pattern, never the definition of a walking bass; the quick IV (IV7 in bar 2 of a major blues); and St. James Infirmary as a minor-key tune of a 16-bar verse and an 8-bar refrain, not a twelve-bar, whose B♭7 to A7 is the ♭VI7 to V7 of D minor. Sources: docs/prompts/runs/A7a3/SOURCES.md."
+     content: {kind: explanation, ref: content/lessons/blues.6.md}
+     tool: lesson
+     scaffold: [written definition, notation, chord symbols, numerals named, key named, bars named in the lesson]
+@@ -136,7 +165,7 @@ steps:
+     cannot_establish: "Anything about the learner (MODE-SHEET section 3)."
+     removes: [written definition, numerals named, bars named in the lesson]
+ 
+-  - action: "Hears the minor-blues walking bass in C straight after it, exercise.walking-bass.c.minor-blues, listening for the minor third in bars 1 to 8 and the two bars that leave the key."
++  - action: "Hears the minor-blues walking bass in C straight after it, exercise.walking-bass.c.minor-blues, listening for the minor chords and for bars 9 and 10."
+     content: {kind: generated, ref: exercise.walking-bass.c.minor-blues}
+     tool: Hear it
+     scaffold: [app plays it, notation, chord symbols, cursor, key named, fixed key]
+@@ -151,16 +180,16 @@ steps:
+     tool: Duet
+     scaffold: [notation, chord symbols, cursor, click, count-in, key named, fixed key, app plays the other hand]
+     feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars, for the chosen hand (MODE-SHEET section 2, section 13)."
+-    recorded: "An R1 row with hands.appPlayed; no requirement reads it; the evidence condition both-hands reads hands.played only (MODE-SHEET section 13)."
++    recorded: "An R1 row with hands.played L and hands.appPlayed; blues.6's named requirement says hands both and reads hands.played, so this run is not counted (HB1, Entry 279; MODE-SHEET section 13)."
+     cannot_establish: "Hands-together skill (the other hand is the app's); independence (MODE-SHEET section 13)."
+     removes: [app plays it]
+ 
+-  - action: "Plays exercise.walking-bass.c.minor-blues with both hands in Keep tempo, the walking line under the written shells. This is the counted run, proposed: named by the placed rung's requirement once P2 places the item."
++  - action: "Plays exercise.walking-bass.c.minor-blues with both hands in Keep tempo, the walking line under the written shells. This is the counted run: blues.6's second requirement names the item with hands both."
+     content: {kind: generated, ref: exercise.walking-bass.c.minor-blues}
+     tool: Keep tempo
+     scaffold: [notation, chord symbols, cursor, click, count-in, key named, fixed key]
+     feedback: "Accuracy, wrong and missed notes, early or late bias, hot-spot bars (MODE-SHEET section 2)."
+-    recorded: "An R1 row with tempoMeasured true, accuracy and timing; a rung counts it only when opened from that rung (MODE-SHEET section 2, section 0 R3)."
++    recorded: "An R1 row with tempoMeasured true, accuracy, timing and hands.played both; a rung counts it only when opened from that rung (MODE-SHEET section 2, section 0 R3)."
+     cannot_establish: "That the learner holds a steady pulse unaided (the clock is the app's); fine rhythm below the 150 ms window (MODE-SHEET section 2); walking without the page."
+     removes: [app plays the other hand]
+ 
+@@ -169,15 +198,15 @@ steps:
+     tool: Keep tempo
+     scaffold: [notation, chord symbols, cursor, click, count-in, key named]
+     feedback: "As the step before, in a new key (MODE-SHEET section 2)."
+-    recorded: "An R1 row with tempoMeasured true, accuracy and timing; counted by nothing, because the proposed requirement names the C item alone (MODE-SHEET section 2, section 0 R3)."
++    recorded: "An R1 row with tempoMeasured true, accuracy and timing; counted by nothing, because blues.6's first requirement names its five older exercises and the second names the C item alone (MODE-SHEET section 2, section 0 R3)."
+     cannot_establish: "As the step before; a second key written out is a variable realisation of the same contract, not transfer (family_contracts.json walking_bass roles)."
+     removes: [fixed key]
+ 
+-  - action: "Opens exercise.walking-bass.c.minor-blues as a Chord chart with Comp off and Bass + drums on, and comps the right hand's shells through the form over the app's bass and drums, the left hand resting."
++  - action: "Opens exercise.walking-bass.c.minor-blues as a Chord chart with Comp off and Bass + drums on, and comps the right hand's root-third-seventh shells, as the item writes them, through the form over the app's bass and drums, the left hand resting."
+     content: {kind: generated, ref: exercise.walking-bass.c.minor-blues}
+     tool: Chord chart
+     scaffold: [chord symbols, click, count-in, bar tracker, bass and drums supplied]
+-    feedback: "A live bar cell, yes, no or idle, by whether the held notes contain at least 60 % of the bar's chord's pitch classes; extra notes are not penalised (MODE-SHEET section 15)."
++    feedback: "A live bar cell, yes, no or idle, by whether the held notes contain at least 60 % of the bar's chord's pitch classes; extra notes are not penalised (MODE-SHEET section 15). The item's root-third-seventh shell reads yes; a rootless third and seventh reads no."
+     recorded: "Nothing; the only judgement is the live cell over what is held at that instant (MODE-SHEET section 15)."
+     cannot_establish: "Voicing, rhythm, time-keeping against the click, form awareness over a chorus, or anything over time; nothing is stored (MODE-SHEET section 15)."
+     removes: [notation, cursor, key named]
+@@ -191,16 +220,16 @@ steps:
+     cannot_establish: "Anything about the learner (MODE-SHEET section 3)."
+     removes: [click, count-in, bar tracker, bass and drums supplied]
+ 
+-  - action: "Opens St. James Infirmary's chord chart with Comp and Bass + drums on and follows the 24 bars while the app plays the changes; the lesson names its chords (Dm, Gm, B♭7, A7) and bars 7 and 8, B♭7 to A7. Blocked on PH2: today's chart shows and sounds only the first chord of 13 of its bars."
++  - action: "Opens St. James Infirmary's chord chart with Comp and Bass + drums on and follows the 24 bars while the app plays the changes; the lesson names its chords (Dm, Gm, B♭7, A7, one D7, one F7), bars 7 and 8, B♭7 to A7, and bar 1's three chords. Since PH2 (Entry 281) each chord is drawn, comped and judged at its start."
+     content: {kind: piece, ref: song.blues.st-james-infirmary}
+     tool: Chord chart
+     scaffold: [chord symbols, count-in, bar tracker, app comps, bass and drums supplied, bars named in the lesson, progression named in the lesson]
+-    feedback: "The learner's own listening; the chart marks the sounding bar."
++    feedback: "The learner's own listening; the chart marks the sounding bar and chord."
+     recorded: "Nothing (MODE-SHEET section 15)."
+     cannot_establish: "Anything about the learner; nothing is stored (MODE-SHEET section 15)."
+     removes: [app plays it, notation, cursor]
+ 
+-  - action: "Walks a bass line under St. James Infirmary's chart with Comp on and Bass + drums off, one note a beat, the root on the beat each symbol starts, in the left hand alone; the lesson tells the learner to ignore the cell, which reads one held bass note as no. Blocked on PH2 and on a sourced walking rule for bars of two or three chords."
++  - action: "Walks a bass line under St. James Infirmary's chart with Comp on and Bass + drums off, one note a beat, each chord's root on the beat it starts, a leftover beat leading into the next root by a semitone, in the left hand alone; the lesson tells the learner to ignore the cell, which reads one held bass note as no. The rule is the sourced one (SOURCES.md section 2: the root on the beat a chord is introduced, the approach a half step away); no source read works a three-chord bar, so the lesson says only what the rule gives (HYPOTHESIS for those bars)."
+     content: {kind: piece, ref: song.blues.st-james-infirmary}
+     tool: Chord chart
+     scaffold: [chord symbols, count-in, bar tracker, app comps, bars named in the lesson]
+@@ -209,16 +238,16 @@ steps:
+     cannot_establish: "The bass line's notes, rhythm or approach; voicing, time-keeping, form awareness; nothing is stored (MODE-SHEET section 15). Whether the line walks well: unverified as music."
+     removes: [bass and drums supplied, progression named in the lesson]
+ 
+-  - action: "Comps St. James Infirmary's chart in the right hand with Comp off and Bass + drums on, over the app's bass and drums, the left hand resting. Blocked on PH2."
++  - action: "Comps St. James Infirmary's chart in the right hand with Comp off and Bass + drums on, over the app's bass and drums, the left hand resting."
+     content: {kind: piece, ref: song.blues.st-james-infirmary}
+     tool: Chord chart
+     scaffold: [chord symbols, count-in, bar tracker, bass and drums supplied]
+-    feedback: "The live bar cell, yes, no or idle, by whether the held notes contain at least 60 % of the bar's chord's pitch classes (MODE-SHEET section 15)."
++    feedback: "The live bar cell, yes, no or idle, by whether the held notes contain at least 60 % of the sounding chord's pitch classes (MODE-SHEET section 15; per chord since PH2)."
+     recorded: "Nothing (MODE-SHEET section 15)."
+     cannot_establish: "Voicing, rhythm, time-keeping against the click, form awareness over a chorus, or anything over time; nothing is stored (MODE-SHEET section 15)."
+     removes: [app comps, bars named in the lesson]
+ 
+-  - action: "Plays St. James Infirmary from its chart with both hands, Comp off and Bass + drums off: the walking bass in the left hand and the comp in the right, through the 24 bars and the repeat. Blocked on PH2."
++  - action: "Plays St. James Infirmary from its chart with both hands, Comp off and Bass + drums off: the walking bass in the left hand and the comp in the right, through the 24 bars."
+     content: {kind: piece, ref: song.blues.st-james-infirmary}
+     tool: Chord chart
+     scaffold: [chord symbols, count-in, bar tracker]
+@@ -227,8 +256,8 @@ steps:
+     cannot_establish: "As the step before; hands together over time and the bass line are self-checked."
+     removes: [bass and drums supplied]
+ 
+-  - action: "Plays bars 1 to 4 of St. Louis Blues from its chart, Comp off and Bass + drums off, the left hand on the roots and the right on the chords: E, A7 in bar 2 (the quick IV), E, E; the lesson names bar 2 and why it is called quick. Bar 3's B7 at beat 3 shows only after PH2."
+-    content: {kind: piece, ref: "song.classical.st-louis-blues.pdmx@bars=1-4"}
++  - action: "Plays bars 1 to 12 of St. Louis Blues from its chart, Comp off and Bass + drums off, the left hand on the roots and the right on the chords, then presses Stop; bar 2 is the focus: E, then A7 in bar 2 (the quick IV), back to E in bar 3. The lesson names bar 2 and why it is called quick."
++    content: {kind: piece, ref: "song.classical.st-louis-blues.pdmx@bars=1-12"}
+     tool: Chord chart
+     scaffold: [chord symbols, count-in, bar tracker, bars named in the lesson, progression named in the lesson]
+     feedback: "The live bar cell (MODE-SHEET section 15)."
+@@ -237,11 +266,11 @@ steps:
+     removes: []
+     no_removal_reason: "The second variant, the quick IV, under named bars as its first meeting; the names go at the independence step."
+ 
+-  - action: "Opens the chart of exercise.walking-bass.e-flat.minor-blues, a key not practised, with Comp off, Bass + drums off and no Count off pressed, counts in alone, and walks the bass and comps the chords through the minor twelve-bar with no bars named. In their own major chorus (A7a.1's last step) they play the quick IV when they choose that variant."
+-    content: {kind: generated, ref: exercise.walking-bass.e-flat.minor-blues}
++  - action: "Opens the chart of exercise.walking-bass.b-flat.minor-blues, a key not practised, with Comp off, Bass + drums off and no Count off pressed, counts in alone, and walks the bass and comps the chords through the minor twelve-bar and its closing bar with no bars named. In their own major chorus (A7a.1's last step) they play the quick IV when they choose that variant."
++    content: {kind: generated, ref: exercise.walking-bass.b-flat.minor-blues}
+     tool: Chord chart
+     scaffold: [chord symbols]
+-    feedback: "None from the lesson; the live bar cell only (MODE-SHEET section 15)."
++    feedback: "None: the app gives no verdict. With no Count off the chart never leaves bar 1, so its cell judges whatever is held against bar 1's chord (ChordChartScreen.ts markMatch; app/tests/unit/chordChart.test.ts); the lesson says so and tells the learner to ignore it."
+     recorded: "Nothing (MODE-SHEET section 15)."
+     cannot_establish: "The walk, the comp, the form and the choice of variant: self-checked. Whether it sounds like a minor blues: unverified as music."
+     removes: [count-in, bar tracker, bars named in the lesson, progression named in the lesson]
+@@ -258,29 +287,29 @@ failure_routes:
+   - observed: "The walk falls apart on St. James Infirmary's bars of two or three chords."
+     next: "Back to step 10 with Comp on at a lower tempo, the lesson's split-bar rule read again; the generated chart (one chord a bar) once more first."
+   - observed: "The quick IV is missed: the left hand stays on I in bar 2."
+-    next: "St. Louis Blues bars 1 to 4 with Comp on to hear the change, then Comp off again; then A7a.1's chart with the quick IV named."
++    next: "St. Louis Blues bars 1 to 12 with Comp on to hear the change, then Comp off again; then A7a.1's chart with the quick IV named."
+   - observed: "The learner cannot hear a minor blues from a major one."
+     next: "No app tool checks hearing: the hearing pair again and the lesson's named bars; hearing it stays self-checked (unverified as music)."
+ 
+-independence_test: "Without the original scaffold, the learner opens the chart of a minor twelve-bar in a key not practised (exercise.walking-bass.e-flat.minor-blues), counts in alone with nothing supplied and no bars named, and walks the bass and comps the chords through the form; and plays the quick IV in bar 2 of their own major chorus when they choose that variant (A7a.1's last step). The app observes only the chart's live cell, unstored, which cannot judge a single bass note; the walk, the comp, the form and the choice of variant are self-checked."
++independence_test: "Without the original scaffold, the learner opens the chart of a minor twelve-bar in a key not practised (exercise.walking-bass.b-flat.minor-blues), counts in alone with nothing supplied and no bars named, and walks the bass and comps the chords through the form; and plays the quick IV in bar 2 of their own major chorus when they choose that variant (A7a.1's last step). The app gives no verdict: with no Count off the chart's cell stays on bar 1 and judges against bar 1's chord, so the lesson says to ignore it; the walk, the comp, the form and the choice of variant are self-checked."
+ 
+ evidence:
+   updates:
+-    - "Proposed, a reviewer decision with P2's placement: one Keep tempo run of exercise.walking-bass.c.minor-blues, both hands, at the pass pair, opened from the placed rung (blues.6 in the map), the requirement's items naming it. Today the item is on no rung and blues.6 counts one run of any of its five exercises, none minor, so nothing measures this ability's CONTROL. Today such a requirement would also accept step 4's one-hand Duet run (rungState reads no hands; header)."
++    - "One Keep tempo run of exercise.walking-bass.c.minor-blues with both hands, whole, at blues.6's pass pair (90 % right, 85 % of its written tempo), opened from blues.6: blues.6's second requirement names this item with hands both (content/curriculum/stage-6.json). A one-hand run, Duet included, does not count (HB1, Entry 279). blues.6's first requirement, one run of any of its five older exercises, is the rung's own and not this ability's; this record's journey leaves it unheld and the rung reads 1 of 2 (PF3)."
+   self_checked:
+     - "Hearing the minor form against the major one."
+     - "The minor walk and comp in a second key and on the chart with the app's bass and drums."
+     - "Walking and comping St. James Infirmary from its chart."
+-    - "The quick IV in St. Louis Blues bars 1 to 4, and choosing it in the learner's own chorus."
+-    - "The independence test."
++    - "The quick IV in St. Louis Blues bars 1 to 12, and choosing it in the learner's own chorus."
++    - "The independence test, which the app gives no verdict on."
+   never_credits:
+     - "The Chord chart's live cell, yes or no, in any bar."
+     - "Any Hear it encounter."
+     - "A Duet run of the left hand alone standing for both hands."
+     - "A run of exercise.walking-bass.c.blues (the major form) or of any boogie item standing for the minor walking item."
+-    - "A Keep tempo run of the F minor item standing for the named C minor item."
++    - "A Keep tempo run of the F minor or B♭ minor item standing for the named C minor item."
+     - "Any Keep tempo run of St. James Infirmary's melody, or of St. Louis Blues: playing the tune is not the ability."
+-    - "That St. James Infirmary is a minor twelve-bar blues: it is three eight-bar phrases (RECONCILIATION A7a.3 row A)."
++    - "That St. James Infirmary is a minor twelve-bar blues: it is a 16-bar verse and an 8-bar refrain (RECONCILIATION A7a.3 row A; the probe's form read, docs/prompts/runs/A7a3/form-stj-committed.json)."
+ 
+ generated:
+   - family: walking_bass
+@@ -289,11 +318,11 @@ generated:
+     contract: tools/content/family_contracts.json
+     checker: tools/content/tests/test_harmony_families.py
+     musical_properties:
+-      the minor form's harmonic skeleton: "By construction, TWELVE_BAR_MINOR (generate_exercises.py:3963-3965) plus a closing tonic bar; against a sourced definition of the minor twelve-bar: UNKNOWN (no source cited, and the Lab's BLUES_MINOR at sightReading.ts:2226-2230 states another bar 9 and 10)."
+-      four quarters a bar, root on each downbeat, root-third-fifth then a semitone below the next root: "By construction (make_walking_bass); test_harmony_families.py TestWalkingBass reads four notes a bar for the ii-V-I and the semitone approach for the major blues in C; for the four minor-blues items: UNKNOWN until an independent reader (music21 or partitura, never the generator's read-back) reads them (the probe's Station 3)."
+-      a minor third on every m7 bar: "By construction (triad(quality)[1] in make_walking_bass); UNKNOWN by an independent reader until the probe's Station 3."
++      the minor form's harmonic skeleton: "By construction, TWELVE_BAR_MINOR (generate_exercises.py) plus a closing tonic bar; against the sources: one attested variant of a minor twelve-bar's bars 9-10 (♭VI7-V7), not the only one, the Lab's V7-iv7 another (docs/prompts/runs/A7a3/SOURCES.md section 1; the reviewer's a7a-lanes-landing.md section 3). Pinned on the built items by app/tests/unit/blues6MinorBluesLesson.test.ts."
++      four quarters a bar, root on each downbeat, root-third-fifth then a semitone below the next root: "By construction (make_walking_bass); read by an independent reader on the four minor items (music21 ChordSymbol as the theory oracle, docs/prompts/runs/A7a3/walk-read.json: 0 breaks in 65 bars; adversaries red, walk-adversary.out); pinned on the three placed items by blues6MinorBluesLesson.test.ts. Taught as this exercise's practice pattern, never as the definition of a walking bass (a7a-lanes-landing.md section 5)."
++      a minor third on every m7 bar: "Established by the same independent reader (walk-read.json) and pinned by the same test."
++      the sourced walking-bass definition and the sibling near-miss (FABLE section 5): "Sourced in part: one note a beat, the root on a chord change, a chromatic approach into the next root (SOURCES.md section 2); the near-miss, the major sibling read against the minor contract, goes red (walk-adversary.out). What a walking bass is in general beyond those properties: UNKNOWN, and not claimed."
+       register and hand span: "The family's physical contract (family_contracts.json walking_bass physical: maxSpan 12, leaps max 18) and validate.notes_off_the_keyboard at build; the notation read CO-3 has not run: UNKNOWN beyond the build checks."
+-      the sourced definition of a walking bass and its sibling near-miss (FABLE section 5): UNKNOWN
+       the line's feel and sound: UNKNOWN
+ 
+ status: draft
+diff --git a/docs/prompts/checks.json b/docs/prompts/checks.json
+index 6f9916e6..7063787a 100644
+--- a/docs/prompts/checks.json
++++ b/docs/prompts/checks.json
+@@ -110,7 +110,7 @@
+     {"pattern": "app/tests/e2e/fixtures/**", "checks": {"tsc": true, "lint": true}, "reason": "the Playwright fixtures folder: typecheck and lint for any file in it; each file has its own pattern below for what reads it, and a new one is read only by the spec that adds it, which runs itself"},
+     {"pattern": "app/tests/e2e/fixtures/chromium.ts", "checks": {"tsc": true, "lint": true, "build-app": true, "e2e": "*"}, "reason": "on every spec's path: playwright.config.ts imports it for every spec's browser (the tour, corpus and state configurations and mic.spec import it too)"},
+     {"pattern": "app/tests/e2e/fixtures/storageState.json", "checks": {"build-app": true, "e2e": "*"}, "reason": "on every spec's path: playwright.config.ts starts every spec from it (the tour skipped, the first-sight cards seen)"},
+-    {"pattern": "app/tests/e2e/fixtures/midiMock.ts", "checks": {"tsc": true, "lint": true, "build-app": true, "e2e": ["tests/e2e/a7c1-phone-walk.spec.ts", "tests/e2e/audio.spec.ts", "tests/e2e/doors.spec.ts", "tests/e2e/drills-harmony.spec.ts", "tests/e2e/drills-review.spec.ts", "tests/e2e/drills.spec.ts", "tests/e2e/feedback-placement.spec.ts", "tests/e2e/first-day.spec.ts", "tests/e2e/keyboard-strip.spec.ts", "tests/e2e/keys-guide.spec.ts", "tests/e2e/mic.spec.ts", "tests/e2e/midi.spec.ts", "tests/e2e/midi.unplug.spec.ts", "tests/e2e/modes-chart-from-a-lesson.spec.ts", "tests/e2e/modes-free-play.spec.ts", "tests/e2e/perf.spec.ts", "tests/e2e/score.fuzz.spec.ts", "tests/e2e/score.head-height.spec.ts", "tests/e2e/score.layout.spec.ts", "tests/e2e/score.rotate.spec.ts", "tests/e2e/score.screen.spec.ts", "tests/e2e/score.states.spec.ts", "tests/e2e/score.window-rule.spec.ts", "tests/e2e/setup-layout.spec.ts", "tests/e2e/setup.spec.ts", "tests/e2e/wide.spec.ts", "tests/e2e/score.task-chrome.spec.ts", "tests/e2e/score.declared-hand.spec.ts", "tests/e2e/score.verified-hand.spec.ts", "tests/e2e/score.loop-by-bar.spec.ts", "tests/e2e/jazz6-minor-shells.spec.ts"]}, "reason": "the Web MIDI mock: the spec files that import it in the default configuration (guide-shots also imports it and skips unless GUIDE_SHOTS=1; jazz6-minor-shells added by G6b). test_checks_for_paths.py fails when a spec that imports it is not named here"},
++    {"pattern": "app/tests/e2e/fixtures/midiMock.ts", "checks": {"tsc": true, "lint": true, "build-app": true, "e2e": ["tests/e2e/a7c1-phone-walk.spec.ts", "tests/e2e/audio.spec.ts", "tests/e2e/doors.spec.ts", "tests/e2e/drills-harmony.spec.ts", "tests/e2e/drills-review.spec.ts", "tests/e2e/drills.spec.ts", "tests/e2e/feedback-placement.spec.ts", "tests/e2e/first-day.spec.ts", "tests/e2e/keyboard-strip.spec.ts", "tests/e2e/keys-guide.spec.ts", "tests/e2e/mic.spec.ts", "tests/e2e/midi.spec.ts", "tests/e2e/midi.unplug.spec.ts", "tests/e2e/modes-chart-from-a-lesson.spec.ts", "tests/e2e/modes-free-play.spec.ts", "tests/e2e/perf.spec.ts", "tests/e2e/score.fuzz.spec.ts", "tests/e2e/score.head-height.spec.ts", "tests/e2e/score.layout.spec.ts", "tests/e2e/score.rotate.spec.ts", "tests/e2e/score.screen.spec.ts", "tests/e2e/score.states.spec.ts", "tests/e2e/score.window-rule.spec.ts", "tests/e2e/setup-layout.spec.ts", "tests/e2e/setup.spec.ts", "tests/e2e/wide.spec.ts", "tests/e2e/score.task-chrome.spec.ts", "tests/e2e/score.declared-hand.spec.ts", "tests/e2e/score.verified-hand.spec.ts", "tests/e2e/score.loop-by-bar.spec.ts", "tests/e2e/jazz6-minor-shells.spec.ts", "tests/e2e/blues6-minor-blues.spec.ts"]}, "reason": "the Web MIDI mock: the spec files that import it in the default configuration (guide-shots also imports it and skips unless GUIDE_SHOTS=1; jazz6-minor-shells added by G6b; blues6-minor-blues by A7a3P). test_checks_for_paths.py fails when a spec that imports it is not named here"},
+     {"pattern": "app/tests/e2e/fixtures/playInTime.ts", "checks": {"tsc": true, "lint": true, "build-app": true, "e2e": ["tests/e2e/a7c1-phone-walk.spec.ts", "tests/e2e/first-day.spec.ts", "tests/e2e/lab.spec.ts", "tests/e2e/lesson-flow.spec.ts", "tests/e2e/score.run.spec.ts", "tests/e2e/session-run.spec.ts", "tests/e2e/projects.spec.ts", "tests/e2e/session-held-piece.spec.ts", "tests/e2e/score.task-chrome.spec.ts", "tests/e2e/session-held-skip.spec.ts"]}, "reason": "a Keep tempo run played in time from inside the page (T37): the four spec files that import it; held to its importers by test_checks_for_paths.py"},
+     {"pattern": "app/tests/e2e/fixtures/devScore.ts", "checks": {"tsc": true, "lint": true, "build-app": true, "e2e": ["tests/e2e/converted-import.spec.ts", "tests/e2e/engine.spec.ts", "tests/e2e/import-experience.spec.ts", "tests/e2e/mic.spec.ts", "tests/e2e/midi-import.spec.ts", "tests/e2e/perf.spec.ts", "tests/e2e/score.density.spec.ts", "tests/e2e/score.renderer.fuzz.spec.ts", "tests/e2e/score.slide.spec.ts", "tests/e2e/score.slots.spec.ts", "tests/e2e/score.spec.ts", "tests/e2e/score.declared-hand.spec.ts"]}, "reason": "the dev harness's handle: the spec files that import it in the default configuration (content-render and bisect-render import it and skip unless their variables are set); held to its importers by test_checks_for_paths.py"},
+     {"pattern": "app/tests/e2e/fixtures/reader-learners.json", "checks": {"unit": ["tests/unit/readerMovesTheDemand.test.ts"], "e2e": ["tests/e2e/today.spec.ts"]}, "reason": "the two constructed reader learners: readerMovesTheDemand.test.ts makes them by the real path and holds the file equal to it; today.spec reads them (C4c)"},
+diff --git a/docs/prompts/inventory.md b/docs/prompts/inventory.md
+index 93a49674..6b80d1ee 100644
+--- a/docs/prompts/inventory.md
++++ b/docs/prompts/inventory.md
+@@ -7,7 +7,7 @@ Generated by `tools/content/build.py` from the built catalogue (E0 item 6; R39,
+ - **2100 catalogue items**: 2020 measured by the app's detectors, 8 unmeasured (each with its reason, below), 72 made by the app when they open (no score to measure).
+ - **788 distinct works and 817 distinct arrangements** (a work is `work_key` of title and composer, or an authored `variantOf` tune; a PDMX duplicate edition shares its arrangement). Generated exercises and runtime drills are not works.
+ - **Excerpts as their own objects: 6** (E1); 22 items carry named practice sections, which are loops over a whole piece, not excerpts.
+-- **Human review: 3 items with a score review, 4 with a teaching-use review.** The 544 PDMX quarry keeps are a source-level decision and are neither.
++- **Human review: 3 items with a score review, 8 with a teaching-use review.** The 544 PDMX quarry keeps are a source-level decision and are neither.
+ - 234 items play at a tempo the converter supplied; their tempo-sensitive demands are marked untrusted in the provenance.
+ 
+ ## By source
+@@ -167,7 +167,7 @@ Which demands each rung's options establish, and for the demands the rung teache
+ | technique.6 | 18 | — | clef.bass 17, pitch.ledger 16, rhythm.shorter-than-quarter 16, range.beyond-position 15, texture.hands-together 15, interval.step 12, rhythm.eighths 10, interval.skip 9, interval.leap 8, rhythm.sixteenths 7, pitch.chromatic 6, key.signature 3, rhythm.triplets 2, texture.left-hand-pattern 2, rhythm.syncopation 2, rhythm.ties 1, metre.compound 1 |
+ | jazz.6 | 16 | texture.walking-bass 0 | range.beyond-position 13, interval.leap 10, rhythm.eighths 9, rhythm.shorter-than-quarter 9, rhythm.syncopation 8, pitch.chromatic 8, rhythm.ties 8, interval.step 7, key.signature 6, interval.skip 5, texture.hands-together 4, pitch.ledger 4, rhythm.dotted-quarter 3, clef.bass 2, texture.left-hand-pattern 2, rhythm.triplets 1 |
+ | holiday.6 | 7 | — | range.beyond-position 7, texture.hands-together 7, interval.skip 5, interval.leap 5, rhythm.eighths 5, rhythm.shorter-than-quarter 5, clef.bass 4, interval.step 4, key.signature 4, pitch.ledger 3, rhythm.dotted-quarter 2, rhythm.sixteenths 2, rhythm.ties 2, pitch.chromatic 1, rhythm.syncopation 1, rhythm.triplets 1, metre.compound 1 |
+-| blues.6 | 8 | texture.walking-bass 0 | pitch.chromatic 7, range.beyond-position 7, texture.hands-together 7, clef.bass 6, rhythm.eighths 6, rhythm.shorter-than-quarter 6, interval.leap 6, pitch.ledger 5, interval.step 5, interval.skip 5, texture.left-hand-pattern 5, rhythm.syncopation 2, rhythm.ties 1, rhythm.sixteenths 1, key.signature 1 |
++| blues.6 | 13 | texture.walking-bass 1 | range.beyond-position 12, pitch.chromatic 11, interval.leap 11, interval.skip 10, texture.hands-together 10, clef.bass 9, pitch.ledger 9, interval.step 9, rhythm.eighths 8, rhythm.shorter-than-quarter 8, texture.left-hand-pattern 8, key.signature 5, rhythm.syncopation 4, rhythm.sixteenths 2, rhythm.dotted-quarter 2, texture.walking-bass 1, rhythm.ties 1 |
+ | chords-pop.6 | 11 | — | range.beyond-position 10, texture.hands-together 10, clef.bass 7, interval.leap 7, key.signature 6, pitch.ledger 6, interval.step 6, interval.skip 5, rhythm.eighths 5, rhythm.shorter-than-quarter 5, rhythm.syncopation 3, rhythm.ties 3, rhythm.dotted-quarter 2, pitch.chromatic 2, texture.left-hand-pattern 1, rhythm.sixteenths 1, metre.compound 1 |
+ | theory.6 | 6 | — | — |
+ | improv.6 | 5 | — | texture.hands-together 3, interval.leap 2, range.beyond-position 2, rhythm.eighths 1, rhythm.shorter-than-quarter 1 |
+diff --git a/docs/prompts/rung-claims.md b/docs/prompts/rung-claims.md
+index 427570f8..60812e45 100644
+--- a/docs/prompts/rung-claims.md
++++ b/docs/prompts/rung-claims.md
+@@ -6,12 +6,12 @@ Generated by `tools/content/build.py` from the built catalogue and curriculum (E
+ 
+ ## Summary
+ 
+-- 110 rungs, 1031 rung options, 655 option-claim pairs, of which 565 can be checked against notation; unmeasured on this build: 0 (an option the build did not measure — a strict build's licence placeholder, a file the app could not load — establishes nothing and refutes nothing, so it is counted apart from the checked, Q75).
+-- **253 established, 312 not established** (incidental 49, absent 263); the reading rows' own claims 7, other runtime drills 83.
+-- **4 rung claims that no option of the rung establishes** (listed below: the promises the notes do not keep).
++- 110 rungs, 1036 rung options, 660 option-claim pairs, of which 570 can be checked against notation; unmeasured on this build: 0 (an option the build did not measure — a strict build's licence placeholder, a file the app could not load — establishes nothing and refutes nothing, so it is counted apart from the checked, Q75).
++- **254 established, 316 not established** (incidental 49, absent 267); the reading rows' own claims 7, other runtime drills 83.
++- **3 rung claims that no option of the rung establishes** (listed below: the promises the notes do not keep).
+ - 3 concepts a rung introduces under `introduces` (F2): named by its lesson and practised by no piece there yet, so no claim, never a teaching rung, never `taughtAt`, never a requirement met.
+-- 139 measured options establish none of their rung's measurable claims.
+-- 480 concept claims across the rungs name something no detector measures; 6 options carry a human teaching-use review.
++- 143 measured options establish none of their rung's measurable claims.
++- 480 concept claims across the rungs name something no detector measures; 9 options carry a human teaching-use review.
+ - 75 catalogue scores write their upper staff in the bass clef somewhere; their bass-staff and ledger-line readings are the clef assumption's and are marked, never established.
+ - The generated items' untaught-on-rung combinations: 58 (D0's record holds 58; the same).
+ 
+@@ -236,7 +236,6 @@ Claims no detector can establish (a person's judgement; review bit: none on any
+ | Rung | Claim | From | Options checked (and unmeasured here, where any) |
+ | --- | --- | --- | --- |
+ | jazz.6 — Comping, walking bass, and hearing the changes | a walking bass (texture.walking-bass) | taughtAt | 14 |
+-| blues.6 — Pinetop, the root-and-fifth bass, and a line that walks | a walking bass (texture.walking-bass) | taughtAt | 8 |
+ | jam.6 — Walking bass, when there is no bass player | a walking bass (texture.walking-bass) | taughtAt | 5 |
+ | ragtime.7 — Stride precursors, wider leaps and the slow drag | the habanera rhythm in the left hand (rhythm.habanera) | concept habanera | 11 |
+ 
+@@ -331,7 +330,7 @@ How many of the rung's options establish each measurable claim, and the concepts
+ | technique.6 | 18 | sixteenth notes (rhythm.sixteenths) 7/18 | seventh-chord, broken-chord, rotation, alberti, wrist, trill, voicing, melody-projection, balance, tone, sustain-pedal, held-melody, CC64, legato-pedalling, polyrhythm-3:1, meter-7-8 |
+ | jazz.6 | 16 | a walking bass (texture.walking-bass) 0/14 | comping, walking-bass, shell-voicings, swing-eighths, harmonic-dictation, ii-V-I, charleston, four-to-the-bar, approach-note |
+ | holiday.6 | 7 | — | carols, performance-mode, voicing-melody, held-melody, memorising |
+-| blues.6 | 8 | a walking bass (texture.walking-bass) 0/8 | boogie, shuffle, walking-bass, left-hand, turnaround, twelve-bar, approach-note |
++| blues.6 | 13 | a walking bass (texture.walking-bass) 1/13 | boogie, shuffle, walking-bass, left-hand, turnaround, twelve-bar, approach-note |
+ | chords-pop.6 | 11 | — | four-chord-loop, voice-leading, slash-chord, roman-numerals, inversions, transposition |
+ | theory.6 | 6 | — | roman-numerals, harmonic-dictation, modes, transposition, ear-training, chord-progression |
+ | improv.6 | 5 | — | improvisation, modes, ii-V-I, guide-tones, comping, chord-scale |
+@@ -486,9 +485,13 @@ How many of the rung's options establish each measurable claim, and the concepts
+ - exercise.walking-bass.c.blues on blues.6
+ - exercise.turnaround.c.i-vi-ii-v on blues.6
+ - exercise.boogie.c.root-fifth on blues.6
++- exercise.walking-bass.f.minor-blues on blues.6
++- exercise.walking-bass.b-flat.minor-blues on blues.6
+ - song.pop.boogie-easy-for-beginners.pdmx on blues.6
+ - song.pop.louisf365-boogie-woogie-and-blues-piano-exersices.pdmx on blues.6
+ - song.folk.boogie-woogie.pdmx on blues.6
++- song.blues.st-james-infirmary on blues.6
++- song.classical.st-louis-blues.pdmx on blues.6
+ - exercise.walking-bass.e.blues.intro on jam.6
+ - exercise.walking-bass.a.blues.intro on jam.6
+ - exercise.walking-bass.d.blues.intro on jam.6
+diff --git a/tools/content/generate_exercises.py b/tools/content/generate_exercises.py
+index 478d2a1d..1c1e59a5 100644
+--- a/tools/content/generate_exercises.py
++++ b/tools/content/generate_exercises.py
+@@ -3710,8 +3710,8 @@ def _transpose_name(tonic: str, semitones: int) -> str:
+ 
+     The key is the major scale on `tonic`, for the minor-key makers too: a
+     degree it lacks is chromatic here, and its chord borrowed. That is what the
+-    minor blues' table says of its flat VI7 ("the only place a minor blues
+-    leaves the key"), and in E flat minor the flat VI7 is therefore B7, not
++    minor-blues table (`TWELVE_BAR_MINOR`, one variant of a minor blues) says of
++    its flat VI7, and in E flat minor the flat VI7 is therefore B7, not
+     C flat 7. That also keeps its right hand a semitone above the V7 it slides
+     into: the makers place a root by its written octave (`root_name + "4"`),
+     and C flat 4 sounds B3, so C flat 7 would drop the bar an octave (D0a:
+@@ -3951,15 +3951,23 @@ TWELVE_BAR = ((0, "7"), (0, "7"), (0, "7"), (0, "7"),
+               (5, "7"), (5, "7"), (0, "7"), (0, "7"),
+               (7, "7"), (5, "7"), (0, "7"), (7, "7"))
+ 
+-#: The minor twelve-bar, the same way.
++#: A minor twelve-bar, the same way.
+ #:
+ #: `02` Part D3 names "minor blues" at stage 6 and `TWELVE_BAR` is dominant in
+-#: every bar, so the line that asked for it had nothing to play. The shape is
+-#: the standard one: the i and the iv are minor sevenths, and bars nine and ten
+-#: are the ♭VI7–V7 pair. That pair is the only place a minor blues leaves the
+-#: key and it is what makes it sound like a minor blues rather than a blues with
+-#: a flat third in it, so it is written out here rather than derived from
+-#: `TWELVE_BAR` by lowering thirds.
++#: every bar, so the line that asked for it had nothing to play. The i and the
++#: iv are minor sevenths, and bars nine and ten are the ♭VI7–V7 pair. That pair
++#: is one attested variant of a minor blues's bars nine and ten, not the minor
++#: blues: the sources read for A7a.3 attest ♭VI7–V7, V7–iv7 and iiø7–V7 there
++#: and make none of them canonical (`docs/prompts/runs/A7a3/SOURCES.md` §1; the
++#: reviewer's `docs/review/responses/a7a-lanes-landing.md` §3), and the app's
++#: Lab writes V7–iv7 (`BLUES_MINOR`, `app/src/engine/sightReading.ts`). The
++#: blues.6 lesson names both as variants, and a test pins each against what it
++#: plays (`app/tests/unit/blues6MinorBluesLesson.test.ts`). Revised (A7a.3): this
++#: comment called the shape "the standard one" and said the pair is what makes a
++#: minor blues sound like one, which no source read supports. In this table the
++#: ♭VI7 is the one chord built on a degree outside the tonic's major scale, which
++#: is why it is written out here rather than derived from `TWELVE_BAR` by
++#: lowering thirds.
+ TWELVE_BAR_MINOR = ((0, "m7"), (0, "m7"), (0, "m7"), (0, "m7"),
+                     (5, "m7"), (5, "m7"), (0, "m7"), (0, "m7"),
+                     (8, "7"),  (7, "7"),  (0, "m7"), (7, "7"))
+diff --git a/tools/content/tests/test_harmony_families.py b/tools/content/tests/test_harmony_families.py
+index fffd59c8..21d99fda 100644
+--- a/tools/content/tests/test_harmony_families.py
++++ b/tools/content/tests/test_harmony_families.py
+@@ -785,15 +785,20 @@ class TestTheMinorBlues(HarmonyFamilyCase):
+ 
+     `TWELVE_BAR` is a dominant seventh in all twelve bars, so a learner who
+     reached that line of the syllabus had a name for something the app could not
+-    play. The test that matters is not that a minor form exists — it is that it
+-    is the *standard* one, because a twelve-bar shape a learner half-knows is
+-    worse than one they do not know at all.
++    play. These tests pin the variant the generated items play, ♭VI7 then V7 in
++    bars nine and ten, exactly as the blues.6 lesson names it. Revised (A7a.3):
++    this said the form is "the *standard* one"; the sources read attest more
++    than one bars-nine-and-ten form and make none canonical
++    (`docs/prompts/runs/A7a3/SOURCES.md` §1; the reviewer's
++    `docs/review/responses/a7a-lanes-landing.md` §3), and the app's Lab plays
++    another, V7 then iv7. The lesson teaches both as variants
++    (`app/tests/unit/blues6MinorBluesLesson.test.ts` pins each).
+     """
+ 
+     def test_the_form_is_minor_where_the_major_one_is_dominant(self) -> None:
+         self.assertEqual(len(TWELVE_BAR_MINOR), len(TWELVE_BAR))
+-        # The i and the iv are minor sevenths; bars nine and ten are the pair
+-        # that leaves the key.
++        # The i and the iv are minor sevenths; bars nine and ten are the ♭VI7-V7
++        # variant the lesson names for these items.
+         self.assertEqual([quality for _d, quality in TWELVE_BAR_MINOR[:8]], ["m7"] * 8)
+         self.assertEqual(TWELVE_BAR_MINOR[8], (8, "7"))
+         self.assertEqual(TWELVE_BAR_MINOR[9], (7, "7"))
+diff --git a/tools/content/tests/test_measured_truth.py b/tools/content/tests/test_measured_truth.py
+index ad2a1266..a2f5bdbf 100644
+--- a/tools/content/tests/test_measured_truth.py
++++ b/tools/content/tests/test_measured_truth.py
+@@ -1133,7 +1133,10 @@ class TestPlacementReconciled(Built):
+         # by no option is the broad demand the hand-set `taughtAt` lists for the walking bass at jazz.6, blues.6 and
+         # jam.6: not a named-style claim, `detect.ts`'s `walkingBass` reading with E22's recorded misreads, left as
+         # it was (the gate reads it) and recorded as dependency D2 of CQ1.
+-        taught_at_unkept = {(rung, "texture.walking-bass") for rung in ("jazz.6", "blues.6", "jam.6")}
++        # Revised (A7a.3, lane A7a3P): blues.6 now lists the minor-blues walking items, carrying a teaching-use yes
++        # (content/review/decisions.jsonl), and the C minor one establishes the walking bass there, so blues.6's claim
++        # is kept by an option and leaves this set; the old line held blues.6 among the unkept.
++        taught_at_unkept = {(rung, "texture.walking-bass") for rung in ("jazz.6", "jam.6")}
+         self.assertEqual(kept_by_none, deferred | self.HAND_READINGS | taught_at_unkept,
+                          "a rung claim no option keeps must be introduced or deferred with its reason")
+         errors, warnings = self.validate.concept_claim_findings(self.catalog, self.curriculum)
+diff --git a/app/tests/e2e/blues6-minor-blues.spec.ts b/app/tests/e2e/blues6-minor-blues.spec.ts
+new file mode 100644
+index 00000000..96d10f04
+--- /dev/null
++++ b/app/tests/e2e/blues6-minor-blues.spec.ts
+@@ -0,0 +1,102 @@
++/**
++ * blues.6's minor-blues placement as a learner meets it (A7a.3, lane A7a3P; the chain record `docs/chains/A7a.3.yaml`;
++ * the reviewer's `docs/review/responses/a7a-lanes-landing.md` §4, §8 and §9).
++ *
++ * 1. The page: the three minor walking items among eight exercises, St. James Infirmary and St. Louis Blues among five
++ *    songs, and *What the app counts* listing two requirements, the second naming the C minor item and saying that a
++ *    one-hand run does not count (the both-hands line HB1 left to this placement).
++ * 2. The last task's door (step 14, `A7a3-static-chart-feedback`): the B♭ minor item's chart from its row, not running,
++ *    *Comp* and *Bass + drums* off, thirteen cells; with no *Count off ▶* the bar stays at 1, and a chord held for bar
++ *    5 (E♭m7) is judged in bar 1's cell against B♭m7, while bar 5's own cell never answers. That is why the lesson says
++ *    to ignore the cell.
++ * 3. St. James Infirmary's chart from its row (steps 9-12, after PH2): 24 cells, not 41, and bar 1 drawn as its three
++ *    chords at their starts.
++ *
++ * Reads the built content (run the content build first). Nothing heard: the screen's facts, not a judgement of the music.
++ */
++import { expect, test, type Page } from '@playwright/test';
++import { installMidiMock } from './fixtures/midiMock';
++
++const RUNG = 'blues.6';
++const C_MINOR = 'exercise.walking-bass.c.minor-blues';
++const B_FLAT_MINOR = 'exercise.walking-bass.b-flat.minor-blues';
++const ST_JAMES = 'song.blues.st-james-infirmary';
++
++test.beforeEach(async ({ page }) => {
++  await page.addInitScript(() => {
++    if (sessionStorage.getItem('e2e-fresh') === null) {
++      sessionStorage.setItem('e2e-fresh', '1');
++      indexedDB.deleteDatabase('pianopath');
++      localStorage.clear();
++      localStorage.setItem('pianopath.setup', JSON.stringify({ status: 'skipped', at: '2026-09-09T00:00:00.000Z', version: 1 }));
++      localStorage.setItem('pianopath.firstSight', '["*"]');
++    }
++  });
++});
++
++async function openChartFromRow(page: Page, list: '#lesson-exercises' | '#lesson-songs', id: string, title: string): Promise<void> {
++  await page.goto(`/#/lesson/${RUNG}`);
++  const row = page.locator(`${list} .list-row[data-item="${id}"]`);
++  await expect(row).toBeVisible({ timeout: 15_000 });
++  await row.getByRole('button', { name: `Open the chord chart for ${title}`, exact: true }).click();
++  await expect(page.locator('section[data-screen="chart"]')).toBeVisible({ timeout: 60_000 });
++  expect(new URL(page.url()).hash).toContain(encodeURIComponent(id));
++  await expect(page.locator('#chart-start')).toBeVisible({ timeout: 30_000 });
++}
++
++test('blues.6: the minor items and the two songs are on the page, and what counts names the C minor item with both hands', async ({ page }) => {
++  test.setTimeout(90_000);
++  await page.goto(`/#/lesson/${RUNG}`);
++  await expect(page.locator('#lesson-exercises .list-row')).toHaveCount(8, { timeout: 15_000 });
++  await expect(page.locator('#lesson-songs .list-row')).toHaveCount(5);
++  for (const id of [C_MINOR, 'exercise.walking-bass.f.minor-blues', B_FLAT_MINOR]) {
++    await expect(page.locator(`#lesson-exercises .list-row[data-item="${id}"]`)).toBeVisible();
++  }
++  for (const id of [ST_JAMES, 'song.classical.st-louis-blues.pdmx']) {
++    await expect(page.locator(`#lesson-songs .list-row[data-item="${id}"]`)).toBeVisible();
++  }
++  await expect(page.getByText('Bars 9 and 10 have more than one version.', { exact: false })).toBeVisible();
++  const summary = page.locator('#lesson-counts summary');
++  await expect(summary).toBeVisible({ timeout: 15_000 });
++  expect(((await summary.textContent()) ?? '').replace(/\s+/g, ' ').trim()).toBe('What the app counts — 0 of 2');
++  const lines = await page.locator('#lesson-counts li').evaluateAll((items) => items.map((li) => (li.textContent ?? '').replace(/\s+/g, ' ').trim()));
++  expect(lines).toHaveLength(2);
++  expect(lines[0]).toContain('One of Boogie — pinetop in C, both hands; ');
++  expect(lines[1]).toContain(
++    'Walking bass over a minor 12-bar blues in C minor at 90 % of the notes, in Keep tempo at 85 % of the written tempo or faster, played with both hands: a run of one hand, Duet included, does not count.',
++  );
++  await page.locator('#lesson-counts summary').click();
++  await page.locator('#lesson-counts').screenshot({ path: test.info().outputPath('counts.png') });
++});
++
++test('blues.6: the B♭ minor chart, never started, stays on bar 1 and judges a bar-5 chord against bar 1', async ({ page }) => {
++  test.setTimeout(120_000);
++  const midi = await installMidiMock(page, { permission: 'granted' });
++  await openChartFromRow(page, '#lesson-exercises', B_FLAT_MINOR, 'Walking bass over a minor 12-bar blues in B♭ minor');
++  const chart = page.locator('section[data-screen="chart"]');
++  await expect(chart).not.toHaveAttribute('data-running', 'true');
++  await expect(page.locator('#chart-comp')).toHaveAttribute('aria-pressed', 'false');
++  await expect(page.locator('#chart-backing')).toHaveAttribute('aria-pressed', 'false');
++  const cells = page.locator('.chart-cell');
++  await expect(cells).toHaveCount(13);
++  await expect(page.locator('#chart-form')).toHaveText('Bar 1 of 13 · chorus 1');
++  // Bar 5's chord, E♭m7 as E♭, G♭ and D♭, held with nothing pressed: judged in bar 1's cell, against B♭m7.
++  for (const pitch of [63, 66, 73]) await midi.noteOn(pitch, 90);
++  await expect(cells.nth(0)).toHaveAttribute('data-match', 'no', { timeout: 10_000 });
++  expect(await cells.nth(4).getAttribute('data-match')).toBeNull();
++  await page.screenshot({ path: test.info().outputPath('b-flat-minor-static.png') });
++  for (const pitch of [63, 66, 73]) await midi.noteOff(pitch);
++  // Bar 1's own chord reads yes there; the bar has not moved.
++  for (const pitch of [58, 61, 68]) await midi.noteOn(pitch, 90);
++  await expect(cells.nth(0)).toHaveAttribute('data-match', 'yes', { timeout: 10_000 });
++  await expect(page.locator('#chart-form')).toHaveText('Bar 1 of 13 · chorus 1');
++});
++
++test('blues.6: St. James Infirmary opens as a chart of 24 bars from its row, bar 1 holding its three chords', async ({ page }) => {
++  test.setTimeout(120_000);
++  await openChartFromRow(page, '#lesson-songs', ST_JAMES, 'St. James Infirmary');
++  await expect(page.locator('.chart-cell')).toHaveCount(24);
++  const first = page.locator('.chart-cell[data-bar="1"] .chart-seg');
++  await expect(first).toHaveCount(3);
++  await page.screenshot({ path: test.info().outputPath('st-james-chart.png') });
++});
+diff --git a/app/tests/unit/blues6MinorBluesCompletion.test.ts b/app/tests/unit/blues6MinorBluesCompletion.test.ts
+new file mode 100644
+index 00000000..7bb93d63
+--- /dev/null
++++ b/app/tests/unit/blues6MinorBluesCompletion.test.ts
+@@ -0,0 +1,201 @@
++// @vitest-environment node
++/**
++ * blues.6 holds A7a.3's one counted run and keeps its own meaning (A7a.3; the reviewer's rulings
++ * `docs/review/responses/a7a-drafts.md` §5 and `docs/review/responses/a7a-lanes-landing.md` §4; the chain record
++ * `docs/chains/A7a.3.yaml`, `evidence.updates`).
++ *
++ * The requirement as ruled (option b): the rung's existing one-exercise requirement stays, and a second one names
++ * `exercise.walking-bass.c.minor-blues` with `hands: both`. Requirements count independently (`rungState.ts`), so
++ * the existing one is held to the five exercises it always counted (`items`): left over every option, one run of the
++ * minor item would hold both rows and blues.6 would go green with none of its boogie or major-blues work, which the
++ * ruling forbids ("Do not let two runs of the minor item stand in for two different requirements"; "Whole-rung
++ * completion still needs both"). The F minor and B♭ minor walking items are on the page for the chain's later steps
++ * and count toward neither row; St. James Infirmary and St. Louis Blues are optional songs that count for nothing.
++ *
++ * Read from the **built** curriculum through `rungState`, the one path from stored rows to "this rung is met".
++ * Nothing here was heard.
++ */
++import { readFileSync } from 'node:fs';
++import { join, resolve } from 'node:path';
++import { describe, expect, it } from 'vitest';
++import { rungState } from '../../src/evidence/rungState';
++import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
++import { requirementWords } from '../../src/ui/help';
++import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
++import type { SessionRow } from '../../src/data/db';
++
++const CONTENT = join(process.cwd(), 'public', 'content');
++const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
++const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
++const titleOf = (id: string): string => catalog.find((row) => row.id === id)?.title ?? id;
++
++const RUNG = 'blues.6';
++const C_MINOR = 'exercise.walking-bass.c.minor-blues';
++const F_MINOR = 'exercise.walking-bass.f.minor-blues';
++const B_FLAT_MINOR = 'exercise.walking-bass.b-flat.minor-blues';
++const E_FLAT_MINOR = 'exercise.walking-bass.e-flat.minor-blues';
++const ST_JAMES = 'song.blues.st-james-infirmary';
++const ST_LOUIS = 'song.classical.st-louis-blues.pdmx';
++/** blues.6's exercises before A7a.3, in their order: what its one-exercise requirement always counted. */
++const OLD_EXERCISES = [
++  'exercise.boogie.c.pinetop',
++  'exercise.boogie.f.walking-eighths',
++  'exercise.walking-bass.c.blues',
++  'exercise.turnaround.c.i-vi-ii-v',
++  'exercise.boogie.c.root-fifth',
++];
++const OLD_SONGS = [
++  'song.pop.boogie-easy-for-beginners.pdmx',
++  'song.pop.louisf365-boogie-woogie-and-blues-piano-exersices.pdmx',
++  'song.folk.boogie-woogie.pdmx',
++];
++const TODAY = new Date('2026-10-10T12:00:00Z');
++const BOTH = { played: 'both' as const, appPlayed: 'none' as const };
++/** What a Duet run records: the learner's one hand, the app playing the other. */
++const DUET_LEFT = { played: 'L' as const, appPlayed: 'other hand' as const };
++
++function find(where: Curriculum, id: string): Lesson | undefined {
++  for (const stage of where.stages) {
++    for (const unit of stage.units) for (const one of unit.lessons) if (one.id === id) return one;
++  }
++  return undefined;
++}
++
++/** A passing Keep tempo run of a written exercise, whole, both hands, judged by blues.6. */
++function run(itemId: string, over: Partial<SessionRow> = {}): SessionRow {
++  return {
++    itemId,
++    mode: 'tempo',
++    tempoPct: 100,
++    tempoMeasured: true,
++    accuracy: 0.95,
++    accuracyEstimated: false,
++    wrongNotes: 0,
++    missed: 0,
++    durationMs: 60_000,
++    at: '2026-10-01T10:05:00.000Z',
++    lessonId: RUNG,
++    wholeItem: true,
++    hands: BOTH,
++    ...over,
++  };
++}
++
++function reading(rows: SessionRow[]) {
++  return rungState(rows, curriculum, VOCABULARY_V0, TODAY).byRung.get(RUNG);
++}
++
++/** [the old requirement holds, the named minor requirement holds, the rung's status]. */
++function state(rows: SessionRow[]): [unknown, unknown, string | undefined] {
++  const r = reading(rows);
++  return [r?.requirements[0]?.holds, r?.requirements[1]?.holds, r?.status];
++}
++
++describe('blues.6 as the build wrote it (A7a.3)', () => {
++  it('lists the three minor walking items after its five exercises, and St. James Infirmary and St. Louis Blues after its songs', () => {
++    const rung = find(curriculum, RUNG);
++    expect(rung, 'blues.6 is not in the built curriculum').toBeDefined();
++    expect(rung?.exerciseOptions).toEqual([...OLD_EXERCISES, C_MINOR, F_MINOR, B_FLAT_MINOR]);
++    // The E♭ minor item stays in the family and off this rung (a7a-lanes-landing.md §6).
++    expect(rung?.exerciseOptions).not.toContain(E_FLAT_MINOR);
++    expect(rung?.songOptions).toEqual([...OLD_SONGS, ST_JAMES, ST_LOUIS]);
++    expect(rung?.songOptional).toBe(true);
++  });
++
++  it('keeps its one-exercise requirement over its five exercises and adds one naming the C minor item, both hands', () => {
++    expect(find(curriculum, RUNG)?.requirements).toEqual([
++      { kind: 'runs', from: 'exercises', items: OLD_EXERCISES, count: 1 },
++      { kind: 'runs', from: 'exercises', items: [C_MINOR], count: 1, hands: 'both' },
++    ]);
++  });
++
++  it('leaves St. James Infirmary on blues.3 and St. Louis Blues on blues.3 and blues.4, where they were', () => {
++    expect(find(curriculum, 'blues.3')?.songOptions).toEqual(expect.arrayContaining([ST_JAMES, ST_LOUIS]));
++    expect(find(curriculum, 'blues.4')?.songOptions).toContain(ST_LOUIS);
++  });
++
++  it('stage-6.json writes the same blues.6 options and requirements the build carries', () => {
++    const authored = JSON.parse(readFileSync(resolve('..', 'content', 'curriculum', 'stage-6.json'), 'utf8')) as Curriculum;
++    const written = find(authored, RUNG);
++    const built = find(curriculum, RUNG);
++    expect(written?.requirements).toEqual(built?.requirements);
++    expect(written?.exerciseOptions).toEqual(built?.exerciseOptions);
++    expect(written?.songOptions).toEqual(built?.songOptions);
++  });
++});
++
++describe('what meets blues.6 (A7a.3)', () => {
++  it('nothing meets nothing', () => {
++    expect(state([])).toEqual([false, false, 'not started']);
++  });
++
++  it('a both-hands run of the C minor item holds the named row and leaves the old one unheld: the rung is not met', () => {
++    expect(state([run(C_MINOR)])).toEqual([false, true, 'in progress']);
++  });
++
++  it('the C minor item and any one of the five old exercises meet it', () => {
++    for (const old of OLD_EXERCISES) {
++      expect(state([run(C_MINOR), run(old, { at: '2026-10-01T11:00:00.000Z' })])).toEqual([true, true, 'met']);
++    }
++  });
++
++  it('an old exercise alone holds the old row only', () => {
++    expect(state([run('exercise.boogie.c.pinetop')])).toEqual([true, false, 'in progress']);
++  });
++
++  it('a run of the C minor item with one hand, right or left, or a Duet run, does not hold the named row', () => {
++    const pinetop = run('exercise.boogie.c.pinetop', { at: '2026-10-01T11:00:00.000Z' });
++    for (const hands of [
++      { played: 'R' as const, appPlayed: 'none' as const },
++      { played: 'L' as const, appPlayed: 'none' as const },
++      DUET_LEFT,
++    ]) {
++      expect(state([run(C_MINOR, { hands }), pinetop])).toEqual([true, false, 'in progress']);
++    }
++    // A row with no recorded hands cannot prove both.
++    const { hands: _dropped, ...noHands } = run(C_MINOR);
++    expect(state([noHands as SessionRow, pinetop])).toEqual([true, false, 'in progress']);
++  });
++
++  it('the F minor and B♭ minor items count toward neither row; nor does the major walking item toward the minor one', () => {
++    expect(state([run(F_MINOR), run(B_FLAT_MINOR, { at: '2026-10-01T11:00:00.000Z' })])).toEqual([false, false, 'in progress']);
++    expect(state([run('exercise.walking-bass.c.blues')])).toEqual([true, false, 'in progress']);
++  });
++
++  it('a run of St. James Infirmary or St. Louis Blues counts for nothing here', () => {
++    expect(state([run(ST_JAMES), run(ST_LOUIS, { at: '2026-10-01T11:00:00.000Z' })])).toEqual([false, false, 'in progress']);
++  });
++
++  it('a C minor run judged by another rung, in Wait for me, or below the tempo does not count', () => {
++    const pinetop = run('exercise.boogie.c.pinetop', { at: '2026-10-01T11:00:00.000Z' });
++    expect(state([run(C_MINOR, { lessonId: 'blues.5' }), pinetop])).toEqual([true, false, 'in progress']);
++    expect(state([run(C_MINOR, { mode: 'wait', tempoMeasured: false }), pinetop])).toEqual([true, false, 'in progress']);
++    expect(state([run(C_MINOR, { tempoPct: 80 }), pinetop])).toEqual([true, false, 'in progress']);
++  });
++});
++
++describe('what the page says the rung counts (A7a.3; the both-hands line HB1 left to this placement)', () => {
++  const rung = find(curriculum, RUNG) as Lesson;
++  const context = {
++    accuracy: 0.9,
++    tempoPct: 85,
++    titleOf,
++    drillsOnly: () => false,
++    skillName: (id: string) => id,
++    exercises: rung.exerciseOptions,
++    songs: rung.songOptions,
++  };
++  const words = (rows: SessionRow[]) => (reading(rows)?.requirements ?? []).map((one) => requirementWords(one, context));
++
++  it('names the five old exercises as one choice, and the C minor item with both hands, saying a one-hand run does not count', () => {
++    const [old, minor] = words([]);
++    expect(old).toBe(
++      'One of Boogie — pinetop in C, both hands; Boogie — walking eighths in F, both hands; Walking bass over a 12-bar blues in C; ' +
++        'Turnaround in C — I-vi-ii-V; or Boogie — root fifth in C, both hands, at 90 % of the notes, in Keep tempo at 85 % of the written tempo or faster.',
++    );
++    expect(minor).toBe(
++      'Walking bass over a minor 12-bar blues in C minor at 90 % of the notes, in Keep tempo at 85 % of the written tempo or faster, ' +
++        'played with both hands: a run of one hand, Duet included, does not count.',
++    );
++  });
++});
+diff --git a/app/tests/unit/blues6MinorBluesLesson.test.ts b/app/tests/unit/blues6MinorBluesLesson.test.ts
+new file mode 100644
+index 00000000..d4efea2d
+--- /dev/null
++++ b/app/tests/unit/blues6MinorBluesLesson.test.ts
+@@ -0,0 +1,403 @@
++// @vitest-environment node
++/**
++ * blues.6's minor-blues, St. James Infirmary and quick-IV sections say only what the app and the scores do (A7a.3;
++ * the chain record `docs/chains/A7a.3.yaml`; the reviewer's rulings `docs/review/responses/a7a-drafts.md` §3 and
++ * `docs/review/responses/a7a-lanes-landing.md` §3-§9).
++ *
++ * One row per fact the new text states. Each row reads the lesson's own sentence beside the fact, so neither side
++ * can move alone: the app's facts from the built content and `app/src` (`lessonClaimsAboutApp`'s three sources),
++ * the music from the built score files the learner opens. The three requirements the reviewer left open on this
++ * placement each have rows here:
++ *
++ * - `A7a3-minor-blues-source`: bars 9 and 10 taught as two variants, the generated items' ♭VI7-V7 and the Lab's
++ *   V7-iv7, each pinned against what that source actually plays, with no "standard" or "usually" claim;
++ * - `A7a3-stj-form-truth`: St. James Infirmary as a 16-bar verse and an 8-bar refrain, no repeat count and no
++ *   "three eight-bar phrases";
++ * - `A7a3-static-chart-feedback`: the last task with no Count off says the cell judges bar 1 only and is to be
++ *   ignored (the behaviour itself: `chordChart.test.ts`, "a chart that was never started judges bar 1 only").
++ *
++ * The walking pattern is pinned as this exercise's practice pattern, never as what a walking bass is. Nothing here
++ * was heard.
++ */
++import { readFileSync } from 'node:fs';
++import { join, resolve } from 'node:path';
++import { describe, expect, it } from 'vitest';
++import { chartSegments, chordMatch, readHarmony, type ChordSymbol } from '../../src/score/harmony';
++import { chartBarCounts, chartTiming } from '../../src/score/metre';
++import { toMusicXml } from '../../src/score/mxl';
++import { LAB_KEYS, chordsForProgression, labKey, labPreset, labProgression, romansForProgression } from '../../src/engine/sightReading';
++import { masteryCriteriaFor } from '../../src/curriculum/selectors';
++import { DEFAULT_MASTERY } from '../../src/engine/Scoring';
++import { hasChordSymbols } from '../../src/ui/openItem';
++import { SLOT_TEXT } from '../../src/ui/help';
++import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
++
++const CONTENT = join(process.cwd(), 'public', 'content');
++const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
++const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
++const byId = new Map(catalog.map((row) => [row.id, row]));
++
++const C_MINOR = 'exercise.walking-bass.c.minor-blues';
++const F_MINOR = 'exercise.walking-bass.f.minor-blues';
++const B_FLAT_MINOR = 'exercise.walking-bass.b-flat.minor-blues';
++const C_MAJOR_BLUES = 'exercise.walking-bass.c.blues';
++const ST_JAMES = 'song.blues.st-james-infirmary';
++const ST_LOUIS = 'song.classical.st-louis-blues.pdmx';
++const OLD_EXERCISES = [
++  'exercise.boogie.c.pinetop',
++  'exercise.boogie.f.walking-eighths',
++  C_MAJOR_BLUES,
++  'exercise.turnaround.c.i-vi-ii-v',
++  'exercise.boogie.c.root-fifth',
++];
++
++function rung(id: string): Lesson {
++  for (const stage of curriculum.stages) {
++    for (const unit of stage.units) for (const one of unit.lessons) if (one.id === id) return one;
++  }
++  throw new Error(`no rung ${id}`);
++}
++
++function item(id: string): CatalogItem {
++  const row = byId.get(id);
++  if (!row) throw new Error(`no catalog row ${id}`);
++  return row;
++}
++
++function source(path: string): string {
++  return readFileSync(resolve('src', path), 'utf8').replace(/\r\n/g, '\n');
++}
++
++/** The lesson's text with its front matter, italics and line breaks gone, as the other lesson rows read it. */
++function text(): string {
++  return readFileSync(resolve('..', 'content', 'lessons', 'blues.6.md'), 'utf8')
++    .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
++    .replace(/\*/g, '')
++    .replace(/\s+/g, ' ');
++}
++
++function xmlOf(id: string): string {
++  return toMusicXml(new Uint8Array(readFileSync(join(CONTENT, item(id).file ?? ''))));
++}
++
++/** The chart's bars as the screen builds them (PH2): each bar's segments, as `[symbol text, start in quarters]`. */
++function bars(id: string): [string | null, number][][] {
++  const { symbols, measures } = readHarmony(xmlOf(id));
++  return chartSegments(symbols, measures).bars.map((bar) =>
++    bar.segments.filter((segment) => !segment.carried).map((segment) => [segment.symbol?.text ?? null, segment.start]),
++  );
++}
++
++/** Each bar's first symbol, read from the score as the chart reads it. */
++function firstSymbols(id: string): ChordSymbol[] {
++  const { symbols, measures } = readHarmony(xmlOf(id));
++  return chartSegments(symbols, measures).bars.map((bar) => bar.segments[0]?.symbol as ChordSymbol);
++}
++
++const STEPS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
++const STEP_PC = [0, 2, 4, 5, 7, 9, 11];
++/** The notes of one staff, bar by bar, as MIDI numbers, chords as one group: a reader of the file, not of the generator. */
++function staffBars(id: string, staff: 1 | 2): number[][][] {
++  const xml = xmlOf(id);
++  const out: number[][][] = [];
++  for (const measure of xml.matchAll(/<measure(?:\s[^>]*)?>([\s\S]*?)<\/measure>/g)) {
++    const groups: number[][] = [];
++    for (const note of (measure[1] as string).matchAll(/<note(?:\s[^>]*)?>([\s\S]*?)<\/note>/g)) {
++      const body = note[1] as string;
++      if (!body.includes(`<staff>${String(staff)}</staff>`) || body.includes('<rest')) continue;
++      const step = /<step>([A-G])<\/step>/.exec(body)?.[1] as string;
++      const alter = Number(/<alter>(-?\d+)<\/alter>/.exec(body)?.[1] ?? 0);
++      const octave = Number(/<octave>(-?\d+)<\/octave>/.exec(body)?.[1]);
++      const midi = 12 * (octave + 1) + (STEP_PC[STEPS.indexOf(step)] as number) + alter;
++      if (body.includes('<chord')) (groups[groups.length - 1] as number[]).push(midi);
++      else groups.push([midi]);
++    }
++    out.push(groups);
++  }
++  return out;
++}
++
++const pc = (midi: number): number => ((midi % 12) + 12) % 12;
++const third = (symbol: ChordSymbol): number => (symbol.text.includes('m') ? 3 : 4);
++
++/** The numeral a symbol stands for in a minor key on `tonic`, by its root's distance and its quality. */
++function numeral(symbol: ChordSymbol, tonic: number): string {
++  const distance = (symbol.root - tonic + 12) % 12;
++  const minor = third(symbol) === 3;
++  const names: Record<number, string> = { 0: 'i', 5: 'iv', 7: 'v', 8: '♭vi' };
++  const name = names[distance] ?? '?';
++  return `${minor ? name : name.toUpperCase().replace('♭VI', '♭VI')}7`;
++}
++
++describe('A7a.3: the minor blues as the exercises write it, and its two bars-9-10 variants (A7a3-minor-blues-source)', () => {
++  it('the C minor exercise is i7 four bars, iv7 iv7 i7 i7, ♭VI7 V7 i7 V7, then a bar of i7: Cm7, Fm7, A♭7 and G7, and the lesson lists exactly that', () => {
++    const symbols = firstSymbols(C_MINOR);
++    expect(symbols.map((s) => s.text)).toEqual(['Cm7', 'Cm7', 'Cm7', 'Cm7', 'Fm7', 'Fm7', 'Cm7', 'Cm7', 'A♭7', 'G7', 'Cm7', 'G7', 'Cm7']);
++    expect(symbols.map((s) => numeral(s, 0))).toEqual(['i7', 'i7', 'i7', 'i7', 'iv7', 'iv7', 'i7', 'i7', '♭VI7', 'V7', 'i7', 'V7', 'i7']);
++    const t = text();
++    expect(t).toContain('bars 1 to 4: Cm7, Cm7, Cm7, Cm7, that is i7 four times;');
++    expect(t).toContain('bars 5 to 8: Fm7, Fm7, Cm7, Cm7, that is iv7, iv7, i7, i7;');
++    expect(t).toContain('bars 9 to 12: A♭7, G7, Cm7, G7, that is ♭VI7, V7, i7, V7;');
++    expect(t).toContain('and then a thirteenth bar of Cm7 to finish on');
++  });
++
++  it('every minor walking item on the page plays ♭VI7 then V7 in bars 9 and 10: A♭7 G7 in C, D♭7 C7 in F, G♭7 F7 in B♭', () => {
++    const nine10 = (id: string) => firstSymbols(id).slice(8, 10).map((s) => s.text);
++    expect(nine10(C_MINOR)).toEqual(['A♭7', 'G7']);
++    expect(nine10(F_MINOR)).toEqual(['D♭7', 'C7']);
++    expect(nine10(B_FLAT_MINOR)).toEqual(['G♭7', 'F7']);
++    for (const [id, tonic] of [[C_MINOR, 0], [F_MINOR, 5], [B_FLAT_MINOR, 10]] as const) {
++      expect(firstSymbols(id).slice(8, 10).map((s) => numeral(s, tonic))).toEqual(['♭VI7', 'V7']);
++    }
++    expect(text()).toContain('This walking-bass exercise uses ♭VI7 to V7 in bars 9 and 10: A♭7, then G7.');
++  });
++
++  it('the Lab’s Blues — twelve bars in a minor key plays V7 then iv7 in bars 9 and 10, G7 then Fm7 in C minor; its key is the learner’s to set', () => {
++    const preset = labPreset('blues-shuffle');
++    expect(preset?.label).toBe('Blues — twelve bars');
++    expect(preset?.progressionId).toBe('blues');
++    expect(preset?.locks).not.toContain('key');
++    expect(LAB_KEYS.some((key) => key.id === 'c-minor' && key.mode === 'minor')).toBe(true);
++    const key = labKey('c-minor');
++    const chords = chordsForProgression(romansForProgression(labProgression('blues'), key.mode, 12), key);
++    expect(chords.map((chord) => chord?.label)).toEqual(['Cm7', 'Cm7', 'Cm7', 'Cm7', 'Fm7', 'Fm7', 'Cm7', 'Cm7', 'G7', 'Fm7', 'Cm7', 'G7']);
++    expect(rung('blues.6').tools).toEqual(expect.arrayContaining([{ kind: 'lab', preset: 'blues-shuffle' }]));
++    const t = text();
++    expect(t).toContain("Minor-blues changes vary; the Lab's minor blues uses V7 to iv7 there instead: G7, then Fm7.");
++    expect(t).toContain('Set a minor key there and its bars 9 and 10 are V7 then iv7, the Lab\'s version named above: in C minor, G7 then Fm7.');
++  });
++
++  it('the lesson names both as variants and claims no standard, no frequency and no single minor-blues form', () => {
++    const t = text();
++    expect(t).toContain('Both are in use, and neither one is the minor blues; when this page means one, it names it.');
++    for (const overclaim of ['standard', 'usually', 'canonical', 'most common', 'typical', 'the minor-blues form', 'the minor blues form', 'the real minor blues']) {
++      expect.soft(t.toLowerCase(), overclaim).not.toContain(overclaim);
++    }
++  });
++
++  it('bars 1 to 8, 11 and 12 follow the major walking blues chord for chord, with i7 and iv7 for I7 and IV7; bars 9 and 10 differ', () => {
++    const major = firstSymbols(C_MAJOR_BLUES).map((s) => [s.root, third(s)]);
++    const minor = firstSymbols(C_MINOR).map((s) => [s.root, third(s)]);
++    for (const bar of [0, 1, 2, 3, 4, 5, 6, 7, 10, 11]) {
++      expect(minor[bar]?.[0], `bar ${String(bar + 1)}`).toBe(major[bar]?.[0]);
++    }
++    expect(major.slice(0, 4).every(([root]) => root === 0)).toBe(true);
++    expect(minor[8]?.[0]).not.toBe(major[8]?.[0]);
++    expect(minor[9]?.[0]).not.toBe(major[9]?.[0]);
++    // G7 is a dominant seventh in both, B natural in it.
++    expect(firstSymbols(C_MINOR)[9]?.pitchClasses.sort((a, b) => a - b)).toEqual([2, 5, 7, 11]);
++    expect(firstSymbols(C_MINOR)[0]?.pitchClasses.sort((a, b) => a - b)).toEqual([0, 3, 7, 10]);
++    expect(firstSymbols(C_MINOR)[4]?.pitchClasses.sort((a, b) => a - b)).toEqual([0, 3, 5, 8]);
++    const t = text();
++    expect(t).toContain('Bars 1 to 8, 11 and 12 follow the major blues of Walking bass over a 12-bar blues in C chord for chord');
++    expect(t).toContain('Cm7 is C, E♭, G and B♭, and Fm7 is F, A♭, C and E♭');
++    expect(t).toContain('G7, the V7, is a dominant seventh in both, with B natural, a semitone below C. Bars 9 and 10 are where the two differ.');
++  });
++});
++
++describe('A7a.3: the walking line is this exercise’s practice pattern, not a definition', () => {
++  it('in all three placed items every bar walks root, third, fifth and a semitone below the next root; the last bar root, third, fifth, octave', () => {
++    for (const id of [C_MINOR, F_MINOR, B_FLAT_MINOR]) {
++      const symbols = firstSymbols(id);
++      const left = staffBars(id, 2);
++      expect(left).toHaveLength(13);
++      left.forEach((groups, bar) => {
++        const notes = groups.map((g) => g[0] as number);
++        const symbol = symbols[bar] as ChordSymbol;
++        expect(notes, `${id} bar ${String(bar + 1)}`).toHaveLength(4);
++        expect(pc(notes[0] as number), `${id} bar ${String(bar + 1)} root`).toBe(symbol.root);
++        expect((notes[1] as number) - (notes[0] as number), `${id} bar ${String(bar + 1)} third`).toBe(third(symbol));
++        expect((notes[2] as number) - (notes[0] as number), `${id} bar ${String(bar + 1)} fifth`).toBe(7);
++        if (bar < 12) {
++          const next = left[bar + 1]?.[0]?.[0] as number;
++          expect(next - (notes[3] as number), `${id} bar ${String(bar + 1)} approach`).toBe(1);
++        } else {
++          expect((notes[3] as number) - (notes[0] as number), `${id} last bar octave`).toBe(12);
++        }
++      });
++    }
++    const t = text();
++    expect(t).toContain(
++      'Every walking exercise on this page uses the same practice pattern: root, third, fifth, then a semitone below the next bar\'s root. That is a pattern for practising, not the only way a walking bass can go.',
++    );
++    expect(t).toContain("E♭ over Cm7 and A♭ over Fm7, but C over A♭7 and B over G7");
++    expect(t).toContain('The last bar is root, third, fifth and the root an octave up.');
++    expect(t).not.toContain('it is the one that leads somewhere: root, third, fifth, then a semitone below the next bar');
++  });
++
++  it('the right hand holds one chord a bar, root, third and seventh: Cm7 as C, E♭ and B♭', () => {
++    const symbols = firstSymbols(C_MINOR);
++    staffBars(C_MINOR, 1).forEach((groups, bar) => {
++      const symbol = symbols[bar] as ChordSymbol;
++      expect(groups, `bar ${String(bar + 1)}`).toHaveLength(1);
++      const intervals = (groups[0] as number[]).map((m) => (pc(m) - symbol.root + 12) % 12).sort((a, b) => a - b);
++      expect(intervals, `bar ${String(bar + 1)}`).toEqual([0, third(symbol), 10]);
++    });
++    expect(text()).toContain('The right hand holds one chord a bar: its root, third and seventh, Cm7 as C, E♭ and B♭.');
++  });
++});
++
++describe('A7a.3: the page, the counted run and the steps say only what the app does', () => {
++  it('the three minor walking items follow the five old exercises; St. James Infirmary and St. Louis Blues are songs here', () => {
++    const lesson = rung('blues.6');
++    expect(lesson.exerciseOptions).toEqual([...OLD_EXERCISES, C_MINOR, F_MINOR, B_FLAT_MINOR]);
++    expect(lesson.songOptions.slice(-2)).toEqual([ST_JAMES, ST_LOUIS]);
++    expect(item(C_MINOR).title).toBe('Walking bass over a minor 12-bar blues in C minor');
++    expect(item(F_MINOR).title).toBe('Walking bass over a minor 12-bar blues in F minor');
++    expect(item(B_FLAT_MINOR).title).toBe('Walking bass over a minor 12-bar blues in B♭ minor');
++    expect(item(C_MAJOR_BLUES).title).toBe('Walking bass over a 12-bar blues in C');
++    expect(rung('blues.3').songOptions).toEqual(expect.arrayContaining([ST_JAMES, ST_LOUIS]));
++    expect(rung('blues.6').prerequisites).toContain('blues.5');
++    const t = text();
++    expect(t).toContain("Walking bass over a minor 12-bar blues in C minor, among this page's exercises");
++    expect(t).toContain('St. James Infirmary and St. Louis Blues, tunes to play on an earlier blues rung, are here again for their chords');
++  });
++
++  it('what counts: one of the five old exercises and one both-hands run of the C minor item; nothing else counts', () => {
++    const reqs = rung('blues.6').requirements ?? [];
++    expect(reqs).toEqual([
++      { kind: 'runs', from: 'exercises', items: OLD_EXERCISES, count: 1 },
++      { kind: 'runs', from: 'exercises', items: [C_MINOR], count: 1, hands: 'both' },
++    ]);
++    const criteria = masteryCriteriaFor(rung('blues.6'), DEFAULT_MASTERY);
++    expect(criteria.passAccuracy).toBe(0.9);
++    expect(criteria.passTempoPct).toBe(85);
++    const evidence = source('evidence/rungState.ts');
++    expect(evidence).toContain("if (requirement.hands === 'both' && row.hands?.played !== 'both') continue;");
++    expect(evidence).toContain('return row.wholeItem !== false;');
++    expect(SLOT_TEXT.bothHands).toBe('played with both hands');
++    const t = text();
++    expect(t).toContain('Two exercise runs, each opened from this page.');
++    expect(t).toContain(
++      'One passing run of any of the five exercises above the minor ones: the two boogies in C, the walking eighths in F, the walking bass over the major blues or the turnaround.',
++    );
++    expect(t).toContain(
++      'And one passing run of Walking bass over a minor 12-bar blues in C minor with both hands: a run of the left hand with the app playing the right, or of either hand alone, does not count.',
++    );
++    expect(t).toContain('A passing run is 90 % right, played in Keep tempo, from the first bar to the last, at 85 % of its written tempo or more.');
++    expect(t).toContain('The F minor and B♭ minor walking exercises, St. James Infirmary and St. Louis Blues count toward neither.');
++    expect(t).toContain('they do not become checked by the app because the rung is met');
++  });
++
++  it('L on the control bar, the app playing the other hand while Duet is on, as it starts; Both; Keep tempo; Hear it', () => {
++    const score = source('ui/screens/ScoreScreen.ts');
++    expect(score).toContain("{ id: 'L', label: 'L', spoken: 'Left hand' }");
++    expect(score).toContain("{ id: 'both', label: 'Both', spoken: 'Both hands' }");
++    expect(score).toMatch(/menuRow\(\s*'Duet',/);
++    expect(score).toContain("{ id: 'tempo', label: 'Keep tempo' }");
++    expect(score).toContain("const HEAR_TAP: SoundTap = { id: 'score-hear', control: 'Hear it' };");
++    expect(source('data/settingsStore.ts')).toContain("playbackHands: 'non-focused',");
++    const t = text();
++    expect(t).toContain(
++      "press L on the control bar: you play the left hand, and the app plays the right hand's chords while Duet, in the ⋯ controls, is on, as it is unless you have turned it off. This run does not count (below)",
++    );
++    expect(t).toContain('Then Both, in Keep tempo: the walking line under the written chords. This is the run this page counts.');
++    expect(t).toContain('Open Walking bass over a 12-bar blues in C and press Hear it');
++  });
++
++  it('a Chart door beside the minor items and both songs; Comp and Bass + drums start off, Bass + drums offered on all of them; Count off ▶ and Stop', () => {
++    for (const id of [C_MINOR, F_MINOR, B_FLAT_MINOR, ST_JAMES, ST_LOUIS]) {
++      expect(hasChordSymbols(item(id)), id).toBe(true);
++      const { measures } = readHarmony(xmlOf(id));
++      expect(chartTiming(chartBarCounts(measures, measures.length)).backingOffered, id).toBe(true);
++    }
++    expect(source('ui/screens/LessonScreen.ts')).toContain("button('Chart', () => { router.navigateChart(item.id, { from: lessonId }); }");
++    const chart = source('ui/screens/ChordChartScreen.ts');
++    expect(chart).toContain('let comping = false;');
++    expect(chart).toContain('let backing = false;');
++    expect(chart).toContain("button('Count off ▶', () => void start(), { id: 'chart-start', variant: 'primary' })");
++    expect(chart).toContain("button('Stop', stop, { id: 'chart-stop' })");
++    const t = text();
++    expect(t).toContain('Tap Chart beside the C minor exercise. Turn Bass + drums on, leave Comp off, press Count off ▶');
++    expect(t).toContain('Tap Chart beside it, turn Comp and Bass + drums on, press Count off ▶ and follow the 24 bars');
++    expect(t).toContain('through bars 1 to 12, then press Stop');
++  });
++
++  it('the cell: the exercise’s three notes match Cm7, its third and seventh alone do not, nor does one bass note under Dm', () => {
++    const cm7 = firstSymbols(C_MINOR)[0] as ChordSymbol;
++    const dm = firstSymbols(ST_JAMES)[0] as ChordSymbol;
++    expect(dm.text).toBe('Dm');
++    expect(source('ui/screens/ChordChartScreen.ts')).toContain('const MATCH_THRESHOLD = 0.6;');
++    expect(chordMatch(cm7, [48, 51, 58])).toBeGreaterThanOrEqual(0.6);
++    expect(chordMatch(cm7, [51, 58])).toBeLessThan(0.6);
++    expect(chordMatch(cm7, [36])).toBeLessThan(0.6);
++    expect(chordMatch(dm, [38])).toBeLessThan(0.6);
++    const t = text();
++    expect(t).toContain('the exercise\'s three notes read as a match; the third and the seventh alone, two notes of four, do not');
++    expect(t).toContain('Ignore the cell in this step: it checks for a chord, and one bass note is never enough for it to say yes.');
++  });
++});
++
++describe('A7a.3: St. James Infirmary, its form and its chords (A7a3-stj-form-truth)', () => {
++  it('24 bars, a 16-bar verse and an 8-bar refrain, the refrain opening at the score’s repeat sign in bar 17; no repeat count and no three phrases', () => {
++    const xml = xmlOf(ST_JAMES);
++    const measures = [...xml.matchAll(/<measure(?:\s[^>]*)?>([\s\S]*?)<\/measure>/g)].map((m) => m[1] as string);
++    expect(measures).toHaveLength(24);
++    expect(bars(ST_JAMES)).toHaveLength(24);
++    expect(measures[16]).toMatch(/<repeat direction="forward"/);
++    expect(measures.filter((m) => /<repeat\b/.test(m))).toHaveLength(1);
++    const t = text();
++    expect(t).toContain(
++      'St. James Infirmary is in D minor, and it is not a twelve-bar blues. Its 24 bars are a 16-bar verse, bars 1 to 16, and an 8-bar refrain, bars 17 to 24.',
++    );
++    for (const gone of ['three eight-bar', 'eight-bar phrases', 'the repeat', 'twice', 'three times', 'repeated']) {
++      expect.soft(t, gone).not.toContain(gone);
++    }
++  });
++
++  it('D minor, one flat; Dm, Gm, B♭7 and A7, one D7 in bar 5 and one F7 in bar 22; bars 7 and 8 B♭7 then A7; bar 1 Dm two beats, B♭7 one, A7 one', () => {
++    const xml = xmlOf(ST_JAMES);
++    expect(/<fifths>(-?\d+)<\/fifths>/.exec(xml)?.[1]).toBe('-1');
++    const chart = bars(ST_JAMES);
++    const texts = new Set(chart.flat().map(([symbol]) => symbol));
++    expect([...texts].sort()).toEqual(['A7', 'B♭7', 'D7', 'Dm', 'F7', 'Gm']);
++    const barsWith = (symbol: string) => chart.flatMap((bar, i) => (bar.some(([s]) => s === symbol) ? [i + 1] : []));
++    expect(barsWith('D7')).toEqual([5]);
++    expect(barsWith('F7')).toEqual([22]);
++    expect(chart[6]).toEqual([['B♭7', 0]]);
++    expect(chart[7]).toEqual([['A7', 0]]);
++    expect(chart[0]).toEqual([['Dm', 0], ['B♭7', 2], ['A7', 3]]);
++    expect(chart.filter((bar) => bar.length > 1).length).toBeGreaterThan(10);
++    const t = text();
++    expect(t).toContain('Its chords are Dm, Gm, B♭7 and A7, with one D7 in bar 5 and one F7 in bar 22.');
++    expect(t).toContain('Bars 7 and 8 are B♭7 then A7, the ♭VI7 to V7 of D minor.');
++    expect(t).toContain('In D minor, ♭VI7 to V7 is B♭7 to A7');
++    expect(t).toContain('bar 1 is Dm for two beats, then B♭7 for one and A7 for one. On the chart each chord stands where it starts in its bar.');
++  });
++});
++
++describe('A7a.3: the quick IV in St. Louis Blues bars 1 to 12', () => {
++  it('E major, four sharps; bars 1 to 12 a twelve-bar under one repeat, A7 in bar 2 and E again in bar 3', () => {
++    const xml = xmlOf(ST_LOUIS);
++    expect(/<fifths>(-?\d+)<\/fifths>/.exec(xml)?.[1]).toBe('4');
++    const measures = [...xml.matchAll(/<measure(?:\s[^>]*)?>([\s\S]*?)<\/measure>/g)].map((m) => m[1] as string);
++    expect(measures[0]).toMatch(/<repeat direction="forward"/);
++    expect(measures[11]).toMatch(/<repeat direction="backward"/);
++    const first = bars(ST_LOUIS).map((bar) => bar[0]?.[0] ?? null);
++    expect(first.slice(0, 12)).toEqual(['E', 'A7', 'E', 'E', 'A7', null, 'E', 'E', 'B7', null, 'E', 'B7']);
++    // The twelve-bar the learner has played stays on the I for four bars: the major walking item's bars 1 to 4.
++    expect(firstSymbols(C_MAJOR_BLUES).slice(0, 5).map((s) => s.text)).toEqual(['C7', 'C7', 'C7', 'C7', 'F7']);
++    const t = text();
++    expect(t).toContain('Its first twelve bars are a twelve-bar blues in E, and bar 2 is A7, the IV7');
++    expect(t).toContain('this one goes to the IV in bar 2 and back to E in bar 3');
++    expect(t).toContain('An IV that early is called the quick IV, or the quick change, because it comes in bar 2 rather than bar 5.');
++  });
++});
++
++describe('A7a.3: on your own, with no app verdict (A7a3-static-chart-feedback)', () => {
++  it('the B♭ minor item is the page’s only item in B♭ minor; the task presses no Count off ▶, says the cell judges bar 1 only, and to ignore it', () => {
++    const lesson = rung('blues.6');
++    const inBFlatMinor = [...lesson.exerciseOptions, ...lesson.songOptions].filter((id) => item(id).title.includes('B♭ minor'));
++    expect(inBFlatMinor).toEqual([B_FLAT_MINOR]);
++    expect(firstSymbols(B_FLAT_MINOR)).toHaveLength(13);
++    const t = text();
++    expect(t).toContain('Tap Chart beside Walking bass over a minor 12-bar blues in B♭ minor, a key you have not practised.');
++    expect(t).toContain('Leave Comp and Bass + drums off, and do not press Count off ▶: no click, no count-in and no bar moving along.');
++    expect(t).toContain(
++      "Without Count off ▶ the chart does not move with you: it stays on bar 1 and checks whatever you hold against bar 1's chord, so its cell says nothing about this task. Ignore it. The app gives no verdict here;",
++    );
++    // The independence task names no bar and no chord of the B♭ minor item.
++    const onYourOwn = t.slice(t.indexOf('On your own.'), t.indexOf('What the app counts here.'));
++    for (const giveaway of ['G♭7', 'F7', 'B♭m7', 'E♭m7', 'bars 9 and 10']) expect.soft(onYourOwn, giveaway).not.toContain(giveaway);
++  });
++});

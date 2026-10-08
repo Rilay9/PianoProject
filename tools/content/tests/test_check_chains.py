@@ -270,7 +270,7 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
                 step["content"]["kind"] = "generated"
             # Revised (A7F): the bass_cell exercise ids resolve through the manifest of built generated ids, so they
             # stay as the record writes them (G13 had replaced them with the family id while H7 was open).
-        rec["generated"][0]["contract"] = "docs/prompts/FABLE.md"
+        rec["generated"][0]["contract"] = "docs/prompts/archive/FABLE-2026-10-07.md"
         rec["generated"][0]["checker"] = "tools/content/check_chains.py"
         rec["status"] = "reviewed"
         failures, listed = check(rec)
@@ -279,9 +279,9 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
 
     def test_r3_the_kinds_of_ref(self):
         good = [
-            ("docs/prompts/FABLE.md", None),
-            ("docs/prompts/FABLE.md#3-the-chain-record-the-teaching-design-as-data-the-build-checks", None),
-            ("docs/prompts/FABLE.md#1-the-target-and-the-one-number-that-shows-progress", None),
+            ("docs/prompts/archive/FABLE-2026-10-07.md", None),
+            ("docs/prompts/archive/FABLE-2026-10-07.md#3-the-chain-record-the-teaching-design-as-data-the-build-checks", None),
+            ("docs/prompts/archive/FABLE-2026-10-07.md#1-the-target-and-the-one-number-that-shows-progress", None),
             ("song.jazz.the-crave", None),
             ("QmNswaWYXpxK1XegKbJVDULwZMjKN6cETGTVfXQKYsYrzs@bars=1-14", "excerpt"),
             ("tresillo", "generated"),
@@ -289,10 +289,10 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
         ]
         bad = [
             ("docs/prompts/NOPE.md", None),
-            ("docs/prompts/FABLE.md#Nowhere-Such-Heading", None),
-            ("docs/prompts/FABLE.md#3", None),  # a section number is not a slug
-            ("docs/prompts/FABLE.md#3-the-chain-record", None),  # a prefix of a slug is not the slug
-            ("docs/prompts/FABLE.md#missing-anchor", None),
+            ("docs/prompts/archive/FABLE-2026-10-07.md#Nowhere-Such-Heading", None),
+            ("docs/prompts/archive/FABLE-2026-10-07.md#3", None),  # a section number is not a slug
+            ("docs/prompts/archive/FABLE-2026-10-07.md#3-the-chain-record", None),  # a prefix of a slug is not the slug
+            ("docs/prompts/archive/FABLE-2026-10-07.md#missing-anchor", None),
             ("tools/content/check_chains.py#resolve", None),  # an anchor is read only in a Markdown file
             ("docs/prompts#anything", None),  # nor in a directory
             ("song.jazz.the-crave@bars=21-900", None),
@@ -337,10 +337,10 @@ class EachRuleFailsOnItsOwn(unittest.TestCase):
 
     def test_r3_a_path_with_a_missing_anchor_is_unresolved_and_named_in_a_draft_and_fails_a_reviewed_record(self):
         rec = load()
-        rec["steps"][1]["content"] = {"kind": "explanation", "ref": "docs/prompts/FABLE.md#missing-anchor"}
+        rec["steps"][1]["content"] = {"kind": "explanation", "ref": "docs/prompts/archive/FABLE-2026-10-07.md#missing-anchor"}
         failures, listed = check(rec)
         self.assertEqual(failures, [])
-        mine = [u for u in listed if u.ref == "docs/prompts/FABLE.md#missing-anchor"]
+        mine = [u for u in listed if u.ref == "docs/prompts/archive/FABLE-2026-10-07.md#missing-anchor"]
         self.assertEqual([u.field for u in mine], ["steps[2].content.ref"])
         self.assertIn("#missing-anchor", mine[0].why)
         rec["status"] = "reviewed"

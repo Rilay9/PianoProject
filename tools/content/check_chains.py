@@ -127,7 +127,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CHAINS_GLOB = "docs/chains/*.yaml"
 BRIEFS_GLOB = "docs/prompts/runs/*/briefs/*.md"
 MODE_SHEET = "docs/prompts/runs/curriculum-review-2026-10-05/MODE-SHEET.md"
-FABLE = "docs/prompts/FABLE.md"
+FABLE = "docs/prompts/archive/FABLE-2026-10-07.md"  # the chain-record contract (section 3), archived 2026-10-08 when FABLE.md became the rules plan
 #: Rule (4)'s two sources for an exercise id, in the order they are read.
 GENERATED_IDS = "tools/content/generated_ids.json"
 GENERATOR_CONTINUITY = "tools/content/generator_continuity.json"
