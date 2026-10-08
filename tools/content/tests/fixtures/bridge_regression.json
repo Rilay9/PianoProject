@@ -6,10 +6,11 @@
     "from the content build's output directly with the detectors. Both are held to these ids, so the build's way",
     "in returns exactly what app/src/demands/detect.ts produces, and nothing else decides a demand.",
     "Ids are in the vocabulary's order (measuredDemands). `read` says what the page holds that decides them.",
-    "Two items pin a detector's reading that is not a musical fact, on purpose: the clave's quarter-note pulse,",
-    "written on the second, one-line staff, is read as the bass staff (clef.bass, pitch.ledger) and as a walking",
-    "bass; the stride left hand (bass, chord, tenth, chord, the tenth the chord's own bottom note) is read as a",
-    "walking bass. Those are findings for E, whose detectors they are; a regression pins what the detectors say."
+    "One item pins a detector's reading that is not a musical fact, on purpose: the clave's quarter-note pulse,",
+    "written on the second, one-line staff, is read as the bass staff (clef.bass, pitch.ledger). That is a finding",
+    "for E, whose detectors they are; a regression pins what the detectors say. Since the 2026-10-07 walking-bass",
+    "correction neither the clave's pulse nor the stride left hand is read as a walking bass: a line that repeats",
+    "one pitch on most of a bar's beats is a pulse, not a walk (detect.ts, walkingBass)."
   ],
   "items": [
     {
@@ -54,13 +55,13 @@
     },
     {
       "id": "exercise.clave.son-3-2.pulse",
-      "demands": ["clef.bass", "pitch.ledger", "rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.syncopation", "texture.hands-together", "texture.left-hand-pattern", "texture.walking-bass"],
-      "read": "The son clave in eighths on one line over a quarter-note pulse on a second line (both B4); every second bar opens on a rest. The pulse staff is staff 2, so the detectors read it as the bass staff and its quarters as a walking bass (see the comment)."
+      "demands": ["clef.bass", "pitch.ledger", "rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.syncopation", "texture.hands-together", "texture.left-hand-pattern"],
+      "read": "The son clave in eighths on one line over a quarter-note pulse on a second line (both B4); every second bar opens on a rest. The pulse staff is staff 2, so the detectors read it as the bass staff (see the comment); its quarters, B4 on every beat, are a pulse, not a walking bass."
     },
     {
       "id": "exercise.stride.c",
-      "demands": ["clef.bass", "pitch.ledger", "interval.leap", "range.beyond-position", "texture.hands-together", "texture.left-hand-pattern", "texture.walking-bass"],
-      "read": "LH C2, E3-G3, E3, E3-G3 (and on G, C, F) under RH whole-note chords; C2 below and F4 above the bass staff; no steps in either line. The left hand's lowest notes never turn back within a bar, so walkingBass reads a walk (see the comment)."
+      "demands": ["clef.bass", "pitch.ledger", "interval.leap", "range.beyond-position", "texture.hands-together", "texture.left-hand-pattern"],
+      "read": "LH C2, E3-G3, E3, E3-G3 (and on G, C, F) under RH whole-note chords; C2 below and F4 above the bass staff; no steps in either line. The left hand's lowest notes are the root and then E3 three times: a stride left hand, not a walking bass (see the comment)."
     },
     {
       "id": "exercise.study.interval-reading.c-major.4-4.8bar.sustained.01",

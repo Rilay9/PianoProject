@@ -67,7 +67,11 @@ BUILT = REPO / "app" / "public" / "content"
 #: Re-run 2026-10-06 at the SR2 landing (the 3/4 demand `metre.three-four`, taught at 1.4): 294 lines, 221 `untaught`. One line
 #: added from CUT1's pin and none other: `1.2 exercise.rhythm.waltz-quarters.4bar` untaught for `metre.three-four`, a placement
 #: finding (1.2 lists a 3/4 waltz two rungs before 1.4 teaches 3/4), recorded, not fixed.
-PROBE = REPO / "docs" / "prompts" / "runs" / "SR2" / "probe-refusals.txt"
+#: Re-run 2026-10-07 at the detector corrections (DC1: a pickup or a bar opening the piece on a rest is not syncopation;
+#: a stationary pulse or a stride left hand is not a walking bass): 203 `untaught`. Eighteen rung-own options at 2.2-4.3
+#: (Danny Boy, Happy Birthday, the Greensleeves arrangements, Rock of Ages among them) were refused only for the false
+#: syncopation and are no longer refused; no new refusal.
+PROBE = REPO / "docs" / "prompts" / "runs" / "DC1" / "probe-refusals.txt"
 
 #: Where the tool's lines on the shipped curriculum differ from the probe, and why. Keyed by
 #: (rung, item); `side` says which reading has the line. Nothing else may differ. Since L120b's snapshot
@@ -125,7 +129,7 @@ class TheShippedCurriculum(unittest.TestCase):
         # 218 after the latin.4 placement (LP1): its three context options, untaught for triplets there.
         # 220 after the admissions and the cut's pin (CUT1): latin.4's three tresillo lines gone, tresillo.c refused at 3.6 and latin.3.
         # 221 after SR2: the 1.2 waltz untaught for the new 3/4 demand.
-        self.assertEqual(len(self.probe), 221, "the SR2 probe recorded 221 `untaught` rung-own options (CUT1's 220 plus the 1.2 waltz for metre.three-four)")
+        self.assertEqual(len(self.probe), 203, "the DC1 probe records 203 `untaught` rung-own options (SR2's 221 less the eighteen refused only for a false syncopation)")
 
     def test_the_lines_equal_the_probe_but_for_the_recorded_differences(self) -> None:
         only_probe = {key for key in self.probe if key not in self.mine}
