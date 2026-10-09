@@ -1,0 +1,124 @@
+{
+ "song.classical.c418-minecraft-nether.pdmx": {
+  "validator_ps13_differs": 65,
+  "mine_ps13_differs": 65,
+  "validator_kind2": 30,
+  "mine_kind2": 30,
+  "validator_2b": 60,
+  "mine_2b": 60,
+  "mine_2b_after_fix": 58,
+  "row_states": {
+   "ps13_differs": 65,
+   "kind2": 30
+  },
+  "same": true
+ },
+ "song.classical.bach-invention-no-9-in-f-minor-bwv-780.pdmx": {
+  "validator_ps13_differs": 4,
+  "mine_ps13_differs": 4,
+  "validator_kind2": 4,
+  "mine_kind2": 4,
+  "validator_2b": 13,
+  "mine_2b": 13,
+  "mine_2b_after_fix": 9,
+  "row_states": {
+   "kind2": 4,
+   "t2b": 13
+  },
+  "same": true
+ },
+ "exercise.scale.a-harmonic-minor.1oct.similar.both.2": {
+  "validator_ps13_differs": 0,
+  "mine_ps13_differs": 0,
+  "validator_kind2": 0,
+  "mine_kind2": 0,
+  "validator_2b": 4,
+  "mine_2b": 4,
+  "mine_2b_after_fix": 0,
+  "row_states": {
+   "t2b": 4
+  },
+  "same": true
+ },
+ "exercise.chromatic.d.1oct.right": {
+  "validator_ps13_differs": 0,
+  "mine_ps13_differs": 0,
+  "validator_kind2": 0,
+  "mine_kind2": 0,
+  "validator_2b": 10,
+  "mine_2b": 10,
+  "mine_2b_after_fix": 3,
+  "row_states": {
+   "t2b": 10
+  },
+  "same": true
+ },
+ "exercise.arpeggio7.a-flat-minor7.2oct.both": {
+  "validator_ps13_differs": 34,
+  "mine_ps13_differs": 34,
+  "validator_kind2": 8,
+  "mine_kind2": 8,
+  "validator_2b": 0,
+  "mine_2b": 0,
+  "mine_2b_after_fix": 0,
+  "row_states": {
+   "kind2": 8
+  },
+  "same": true
+ },
+ "exercise.scale.g-sharp-harmonic-minor.1oct.similar.both.2": {
+  "validator_ps13_differs": 0,
+  "mine_ps13_differs": 0,
+  "validator_kind2": 0,
+  "mine_kind2": 0,
+  "validator_2b": 4,
+  "mine_2b": 4,
+  "mine_2b_after_fix": 0,
+  "row_states": null,
+  "same": true
+ },
+ "exercise.blues-scale.b-flat.1oct.right": {
+  "validator_ps13_differs": 2,
+  "mine_ps13_differs": 2,
+  "validator_kind2": 0,
+  "mine_kind2": 0,
+  "validator_2b": 2,
+  "mine_2b": 2,
+  "mine_2b_after_fix": 0,
+  "row_states": null,
+  "same": true
+ },
+ "song.classical.chopin-nocturne-in-e-flat-major-op-9-no-2.pdmx": {
+  "validator_ps13_differs": 89,
+  "mine_ps13_differs": 89,
+  "validator_kind2": 50,
+  "mine_kind2": 50,
+  "validator_2b": 55,
+  "mine_2b": 55,
+  "mine_2b_after_fix": 39,
+  "row_states": null,
+  "same": true
+ },
+ "exercise.hanon.01.both": {
+  "validator_ps13_differs": 0,
+  "mine_ps13_differs": 0,
+  "validator_kind2": 0,
+  "mine_kind2": 0,
+  "validator_2b": 0,
+  "mine_2b": 0,
+  "mine_2b_after_fix": 0,
+  "row_states": null,
+  "same": true
+ },
+ "exercise.arpeggio7.a-flat-half-diminished7.2oct.both": {
+  "validator_ps13_differs": 26,
+  "mine_ps13_differs": 26,
+  "validator_kind2": 8,
+  "mine_kind2": 8,
+  "validator_2b": 16,
+  "mine_2b": 16,
+  "mine_2b_after_fix": 16,
+  "row_states": null,
+  "same": true
+ }
+}

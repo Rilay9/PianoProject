@@ -1,0 +1,161 @@
+{
+ "published": {
+  "wir": {
+   "files": 81,
+   "notes": 123825,
+   "individual": 0,
+   "contextual": 2,
+   "any_error": 2,
+   "not_applicable_multipart": 4,
+   "crashed": 0,
+   "errors": 4,
+   "errors_per_1000_notes": 0.032
+  },
+  "m21ch": {
+   "files": 380,
+   "notes": 94959,
+   "individual": 1,
+   "contextual": 0,
+   "any_error": 1,
+   "not_applicable_multipart": 379,
+   "crashed": 0,
+   "errors": 4,
+   "errors_per_1000_notes": 0.042
+  },
+  "m21kb": {
+   "files": 9,
+   "notes": 6890,
+   "individual": 1,
+   "contextual": 0,
+   "any_error": 1,
+   "not_applicable_multipart": 1,
+   "crashed": 0,
+   "errors": 39,
+   "errors_per_1000_notes": 5.66
+  }
+ },
+ "catalogue": {
+  "cat_gen": {
+   "files": 1211,
+   "notes": 58832,
+   "individual": 0,
+   "contextual": 0,
+   "any_error": 0,
+   "not_applicable_multipart": 0,
+   "crashed": 0,
+   "errors": 0,
+   "errors_per_1000_notes": 0.0
+  },
+  "cat_pdmx": {
+   "files": 524,
+   "notes": 278443,
+   "individual": 13,
+   "contextual": 44,
+   "any_error": 54,
+   "not_applicable_multipart": 0,
+   "crashed": 8,
+   "errors": 581,
+   "errors_per_1000_notes": 2.087
+  },
+  "cat_other": {
+   "files": 285,
+   "notes": 396769,
+   "individual": 25,
+   "contextual": 35,
+   "any_error": 56,
+   "not_applicable_multipart": 0,
+   "crashed": 0,
+   "errors": 1183,
+   "errors_per_1000_notes": 2.982
+  }
+ },
+ "unclosed_tuplet_files": [
+  {
+   "item": "song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx",
+   "individual": false,
+   "contextual": true,
+   "multipart": false,
+   "crashed": false
+  },
+  {
+   "item": "song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx",
+   "individual": true,
+   "contextual": false,
+   "multipart": false,
+   "crashed": false
+  },
+  {
+   "item": "song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx",
+   "individual": true,
+   "contextual": false,
+   "multipart": false,
+   "crashed": false
+  },
+  {
+   "item": "song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx",
+   "individual": false,
+   "contextual": false,
+   "multipart": true,
+   "crashed": false
+  },
+  {
+   "item": "song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx",
+   "individual": true,
+   "contextual": false,
+   "multipart": false,
+   "crashed": false
+  },
+  {
+   "item": "song.classical.mozart-minuet-in-f-major-k-15m.pdmx",
+   "individual": false,
+   "contextual": true,
+   "multipart": false,
+   "crashed": false
+  },
+  {
+   "item": "song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx",
+   "individual": true,
+   "contextual": false,
+   "multipart": false,
+   "crashed": false
+  },
+  {
+   "item": "song.jazz.fats-waller-ain-t-misbehavin.pdmx",
+   "individual": true,
+   "contextual": false,
+   "multipart": false,
+   "crashed": false
+  },
+  {
+   "item": "song.classical.chopin-rondo-mazur.nifc",
+   "individual": false,
+   "contextual": false,
+   "multipart": true,
+   "crashed": false
+  },
+  {
+   "item": "song.classical.chopin-rondo-op16.nifc",
+   "individual": true,
+   "contextual": false,
+   "multipart": false,
+   "crashed": false
+  }
+ ],
+ "messages_top": {
+  "ctx: TransitionError: cannot process token Note(duratio": 329,
+  "ind: Actual and theoretical durations differ: 869 != 25": 174,
+  "ctx: TransitionError: cannot process token Rest(duratio": 160,
+  "ind: Actual and theoretical durations differ: 69 != 480": 80,
+  "ind: Actual and theoretical durations differ: 1113 != 1": 67,
+  "ctx: TransitionError: cannot process token ChordStart(d": 64,
+  "ind: Actual and theoretical durations differ: 1449 != 1": 44,
+  "ind: Actual and theoretical durations differ: 130 != 14": 44,
+  "ind: Actual and theoretical durations differ: 1145 != 1": 44,
+  "ind: Actual and theoretical durations differ: 1833 != 2": 44,
+  "ind: Actual and theoretical durations differ: 916 != 10": 44,
+  "ind: Actual and theoretical durations differ: 91 != 640": 42,
+  "ind: Actual and theoretical durations differ: 98 != 128": 39,
+  "ind: Actual and theoretical durations differ: 53 != 160": 36,
+  "ind: Actual and theoretical durations differ: 27 != 192": 35
+ }
+}

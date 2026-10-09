@@ -1,0 +1,1108 @@
+{
+ "wir": {
+  "pieces": 81,
+  "notes": 123825,
+  "rows": {
+   "kind2": {
+    "flags": 31,
+    "per1000": 0.25,
+    "pieces_flagged": 12,
+    "share_pieces": 14.8
+   },
+   "t2b": {
+    "flags": 2242,
+    "per1000": 18.11,
+    "pieces_flagged": 80,
+    "share_pieces": 98.8
+   },
+   "cur": {
+    "flags": 2273,
+    "per1000": 18.36,
+    "pieces_flagged": 80,
+    "share_pieces": 98.8
+   },
+   "curfix": {
+    "flags": 1046,
+    "per1000": 8.45,
+    "pieces_flagged": 79,
+    "share_pieces": 97.5
+   },
+   "ps13": {
+    "flags": 2258,
+    "per1000": 18.24,
+    "pieces_flagged": 69,
+    "share_pieces": 85.2
+   },
+   "pks": {
+    "flags": 1823,
+    "per1000": 14.72,
+    "pieces_flagged": 64,
+    "share_pieces": 79.0
+   },
+   "pksg": {
+    "flags": 103,
+    "per1000": 0.83,
+    "pieces_flagged": 14,
+    "share_pieces": 17.3
+   },
+   "both": {
+    "flags": 290,
+    "per1000": 2.34,
+    "pieces_flagged": 54,
+    "share_pieces": 66.7
+   },
+   "bothg": {
+    "flags": 31,
+    "per1000": 0.25,
+    "pieces_flagged": 12,
+    "share_pieces": 14.8
+   },
+   "curfix2": {
+    "flags": 833,
+    "per1000": 6.73,
+    "pieces_flagged": 77,
+    "share_pieces": 95.1
+   },
+   "pksg_fix": {
+    "flags": 1118,
+    "per1000": 9.03,
+    "pieces_flagged": 79,
+    "share_pieces": 97.5
+   },
+   "pksg_fix2": {
+    "flags": 905,
+    "per1000": 7.31,
+    "pieces_flagged": 77,
+    "share_pieces": 95.1
+   }
+  }
+ },
+ "m21ch": {
+  "pieces": 380,
+  "notes": 94959,
+  "rows": {
+   "kind2": {
+    "flags": 0,
+    "per1000": 0.0,
+    "pieces_flagged": 0,
+    "share_pieces": 0.0
+   },
+   "t2b": {
+    "flags": 685,
+    "per1000": 7.21,
+    "pieces_flagged": 273,
+    "share_pieces": 71.8
+   },
+   "cur": {
+    "flags": 685,
+    "per1000": 7.21,
+    "pieces_flagged": 273,
+    "share_pieces": 71.8
+   },
+   "curfix": {
+    "flags": 161,
+    "per1000": 1.7,
+    "pieces_flagged": 115,
+    "share_pieces": 30.3
+   },
+   "ps13": {
+    "flags": 776,
+    "per1000": 8.17,
+    "pieces_flagged": 102,
+    "share_pieces": 26.8
+   },
+   "pks": {
+    "flags": 30,
+    "per1000": 0.32,
+    "pieces_flagged": 25,
+    "share_pieces": 6.6
+   },
+   "pksg": {
+    "flags": 0,
+    "per1000": 0.0,
+    "pieces_flagged": 0,
+    "share_pieces": 0.0
+   },
+   "both": {
+    "flags": 12,
+    "per1000": 0.13,
+    "pieces_flagged": 10,
+    "share_pieces": 2.6
+   },
+   "bothg": {
+    "flags": 0,
+    "per1000": 0.0,
+    "pieces_flagged": 0,
+    "share_pieces": 0.0
+   },
+   "curfix2": {
+    "flags": 76,
+    "per1000": 0.8,
+    "pieces_flagged": 58,
+    "share_pieces": 15.3
+   },
+   "pksg_fix": {
+    "flags": 161,
+    "per1000": 1.7,
+    "pieces_flagged": 115,
+    "share_pieces": 30.3
+   },
+   "pksg_fix2": {
+    "flags": 76,
+    "per1000": 0.8,
+    "pieces_flagged": 58,
+    "share_pieces": 15.3
+   }
+  }
+ },
+ "m21kb": {
+  "pieces": 9,
+  "notes": 6890,
+  "rows": {
+   "kind2": {
+    "flags": 8,
+    "per1000": 1.16,
+    "pieces_flagged": 2,
+    "share_pieces": 22.2
+   },
+   "t2b": {
+    "flags": 132,
+    "per1000": 19.16,
+    "pieces_flagged": 8,
+    "share_pieces": 88.9
+   },
+   "cur": {
+    "flags": 140,
+    "per1000": 20.32,
+    "pieces_flagged": 8,
+    "share_pieces": 88.9
+   },
+   "curfix": {
+    "flags": 58,
+    "per1000": 8.42,
+    "pieces_flagged": 8,
+    "share_pieces": 88.9
+   },
+   "ps13": {
+    "flags": 70,
+    "per1000": 10.16,
+    "pieces_flagged": 6,
+    "share_pieces": 66.7
+   },
+   "pks": {
+    "flags": 159,
+    "per1000": 23.08,
+    "pieces_flagged": 8,
+    "share_pieces": 88.9
+   },
+   "pksg": {
+    "flags": 5,
+    "per1000": 0.73,
+    "pieces_flagged": 2,
+    "share_pieces": 22.2
+   },
+   "both": {
+    "flags": 41,
+    "per1000": 5.95,
+    "pieces_flagged": 6,
+    "share_pieces": 66.7
+   },
+   "bothg": {
+    "flags": 5,
+    "per1000": 0.73,
+    "pieces_flagged": 2,
+    "share_pieces": 22.2
+   },
+   "curfix2": {
+    "flags": 43,
+    "per1000": 6.24,
+    "pieces_flagged": 8,
+    "share_pieces": 88.9
+   },
+   "pksg_fix": {
+    "flags": 55,
+    "per1000": 7.98,
+    "pieces_flagged": 8,
+    "share_pieces": 88.9
+   },
+   "pksg_fix2": {
+    "flags": 40,
+    "per1000": 5.81,
+    "pieces_flagged": 8,
+    "share_pieces": 88.9
+   }
+  }
+ },
+ "wir_asap": {
+  "pieces": 21,
+  "notes": 23066,
+  "rows": {
+   "kind2": {
+    "flags": 7,
+    "per1000": 0.3,
+    "pieces_flagged": 2,
+    "share_pieces": 9.5
+   },
+   "t2b": {
+    "flags": 356,
+    "per1000": 15.43,
+    "pieces_flagged": 20,
+    "share_pieces": 95.2
+   },
+   "cur": {
+    "flags": 363,
+    "per1000": 15.74,
+    "pieces_flagged": 20,
+    "share_pieces": 95.2
+   },
+   "curfix": {
+    "flags": 211,
+    "per1000": 9.15,
+    "pieces_flagged": 20,
+    "share_pieces": 95.2
+   },
+   "ps13": {
+    "flags": 1130,
+    "per1000": 48.99,
+    "pieces_flagged": 14,
+    "share_pieces": 66.7
+   },
+   "pks": {
+    "flags": 1425,
+    "per1000": 61.78,
+    "pieces_flagged": 13,
+    "share_pieces": 61.9
+   },
+   "pksg": {
+    "flags": 77,
+    "per1000": 3.34,
+    "pieces_flagged": 3,
+    "share_pieces": 14.3
+   },
+   "both": {
+    "flags": 72,
+    "per1000": 3.12,
+    "pieces_flagged": 9,
+    "share_pieces": 42.9
+   },
+   "bothg": {
+    "flags": 7,
+    "per1000": 0.3,
+    "pieces_flagged": 2,
+    "share_pieces": 9.5
+   },
+   "curfix2": {
+    "flags": 175,
+    "per1000": 7.59,
+    "pieces_flagged": 18,
+    "share_pieces": 85.7
+   },
+   "pksg_fix": {
+    "flags": 281,
+    "per1000": 12.18,
+    "pieces_flagged": 20,
+    "share_pieces": 95.2
+   },
+   "pksg_fix2": {
+    "flags": 245,
+    "per1000": 10.62,
+    "pieces_flagged": 18,
+    "share_pieces": 85.7
+   }
+  }
+ },
+ "wir_not_asap": {
+  "pieces": 60,
+  "notes": 100759,
+  "rows": {
+   "kind2": {
+    "flags": 24,
+    "per1000": 0.24,
+    "pieces_flagged": 10,
+    "share_pieces": 16.7
+   },
+   "t2b": {
+    "flags": 1886,
+    "per1000": 18.72,
+    "pieces_flagged": 60,
+    "share_pieces": 100.0
+   },
+   "cur": {
+    "flags": 1910,
+    "per1000": 18.96,
+    "pieces_flagged": 60,
+    "share_pieces": 100.0
+   },
+   "curfix": {
+    "flags": 835,
+    "per1000": 8.29,
+    "pieces_flagged": 59,
+    "share_pieces": 98.3
+   },
+   "ps13": {
+    "flags": 1128,
+    "per1000": 11.2,
+    "pieces_flagged": 55,
+    "share_pieces": 91.7
+   },
+   "pks": {
+    "flags": 398,
+    "per1000": 3.95,
+    "pieces_flagged": 51,
+    "share_pieces": 85.0
+   },
+   "pksg": {
+    "flags": 26,
+    "per1000": 0.26,
+    "pieces_flagged": 11,
+    "share_pieces": 18.3
+   },
+   "both": {
+    "flags": 218,
+    "per1000": 2.16,
+    "pieces_flagged": 45,
+    "share_pieces": 75.0
+   },
+   "bothg": {
+    "flags": 24,
+    "per1000": 0.24,
+    "pieces_flagged": 10,
+    "share_pieces": 16.7
+   },
+   "curfix2": {
+    "flags": 658,
+    "per1000": 6.53,
+    "pieces_flagged": 59,
+    "share_pieces": 98.3
+   },
+   "pksg_fix": {
+    "flags": 837,
+    "per1000": 8.31,
+    "pieces_flagged": 59,
+    "share_pieces": 98.3
+   },
+   "pksg_fix2": {
+    "flags": 660,
+    "per1000": 6.55,
+    "pieces_flagged": 59,
+    "share_pieces": 98.3
+   }
+  }
+ },
+ "published_all": {
+  "pieces": 470,
+  "notes": 225674,
+  "rows": {
+   "kind2": {
+    "flags": 39,
+    "per1000": 0.17,
+    "pieces_flagged": 14,
+    "share_pieces": 3.0
+   },
+   "t2b": {
+    "flags": 3059,
+    "per1000": 13.55,
+    "pieces_flagged": 361,
+    "share_pieces": 76.8
+   },
+   "cur": {
+    "flags": 3098,
+    "per1000": 13.73,
+    "pieces_flagged": 361,
+    "share_pieces": 76.8
+   },
+   "curfix": {
+    "flags": 1265,
+    "per1000": 5.61,
+    "pieces_flagged": 202,
+    "share_pieces": 43.0
+   },
+   "ps13": {
+    "flags": 3104,
+    "per1000": 13.75,
+    "pieces_flagged": 177,
+    "share_pieces": 37.7
+   },
+   "pks": {
+    "flags": 2012,
+    "per1000": 8.92,
+    "pieces_flagged": 97,
+    "share_pieces": 20.6
+   },
+   "pksg": {
+    "flags": 108,
+    "per1000": 0.48,
+    "pieces_flagged": 16,
+    "share_pieces": 3.4
+   },
+   "both": {
+    "flags": 343,
+    "per1000": 1.52,
+    "pieces_flagged": 70,
+    "share_pieces": 14.9
+   },
+   "bothg": {
+    "flags": 36,
+    "per1000": 0.16,
+    "pieces_flagged": 14,
+    "share_pieces": 3.0
+   },
+   "curfix2": {
+    "flags": 952,
+    "per1000": 4.22,
+    "pieces_flagged": 143,
+    "share_pieces": 30.4
+   },
+   "pksg_fix": {
+    "flags": 1334,
+    "per1000": 5.91,
+    "pieces_flagged": 202,
+    "share_pieces": 43.0
+   },
+   "pksg_fix2": {
+    "flags": 1021,
+    "per1000": 4.52,
+    "pieces_flagged": 143,
+    "share_pieces": 30.4
+   }
+  }
+ },
+ "published_not_asap": {
+  "pieces": 449,
+  "notes": 202608,
+  "rows": {
+   "kind2": {
+    "flags": 32,
+    "per1000": 0.16,
+    "pieces_flagged": 12,
+    "share_pieces": 2.7
+   },
+   "t2b": {
+    "flags": 2703,
+    "per1000": 13.34,
+    "pieces_flagged": 341,
+    "share_pieces": 75.9
+   },
+   "cur": {
+    "flags": 2735,
+    "per1000": 13.5,
+    "pieces_flagged": 341,
+    "share_pieces": 75.9
+   },
+   "curfix": {
+    "flags": 1054,
+    "per1000": 5.2,
+    "pieces_flagged": 182,
+    "share_pieces": 40.5
+   },
+   "ps13": {
+    "flags": 1974,
+    "per1000": 9.74,
+    "pieces_flagged": 163,
+    "share_pieces": 36.3
+   },
+   "pks": {
+    "flags": 587,
+    "per1000": 2.9,
+    "pieces_flagged": 84,
+    "share_pieces": 18.7
+   },
+   "pksg": {
+    "flags": 31,
+    "per1000": 0.15,
+    "pieces_flagged": 13,
+    "share_pieces": 2.9
+   },
+   "both": {
+    "flags": 271,
+    "per1000": 1.34,
+    "pieces_flagged": 61,
+    "share_pieces": 13.6
+   },
+   "bothg": {
+    "flags": 29,
+    "per1000": 0.14,
+    "pieces_flagged": 12,
+    "share_pieces": 2.7
+   },
+   "curfix2": {
+    "flags": 777,
+    "per1000": 3.83,
+    "pieces_flagged": 125,
+    "share_pieces": 27.8
+   },
+   "pksg_fix": {
+    "flags": 1053,
+    "per1000": 5.2,
+    "pieces_flagged": 182,
+    "share_pieces": 40.5
+   },
+   "pksg_fix2": {
+    "flags": 776,
+    "per1000": 3.83,
+    "pieces_flagged": 125,
+    "share_pieces": 27.8
+   }
+  }
+ },
+ "cat_gen": {
+  "pieces": 1211,
+  "notes": 58832,
+  "rows": {
+   "kind2": {
+    "flags": 218,
+    "per1000": 3.71,
+    "pieces_flagged": 24,
+    "share_pieces": 2.0
+   },
+   "t2b": {
+    "flags": 997,
+    "per1000": 16.95,
+    "pieces_flagged": 140,
+    "share_pieces": 11.6
+   },
+   "cur": {
+    "flags": 1215,
+    "per1000": 20.65,
+    "pieces_flagged": 148,
+    "share_pieces": 12.2
+   },
+   "curfix": {
+    "flags": 540,
+    "per1000": 9.18,
+    "pieces_flagged": 55,
+    "share_pieces": 4.5
+   },
+   "ps13": {
+    "flags": 3605,
+    "per1000": 61.28,
+    "pieces_flagged": 145,
+    "share_pieces": 12.0
+   },
+   "pks": {
+    "flags": 1591,
+    "per1000": 27.04,
+    "pieces_flagged": 137,
+    "share_pieces": 11.3
+   },
+   "pksg": {
+    "flags": 230,
+    "per1000": 3.91,
+    "pieces_flagged": 26,
+    "share_pieces": 2.1
+   },
+   "both": {
+    "flags": 1091,
+    "per1000": 18.54,
+    "pieces_flagged": 92,
+    "share_pieces": 7.6
+   },
+   "bothg": {
+    "flags": 218,
+    "per1000": 3.71,
+    "pieces_flagged": 24,
+    "share_pieces": 2.0
+   },
+   "curfix2": {
+    "flags": 426,
+    "per1000": 7.24,
+    "pieces_flagged": 36,
+    "share_pieces": 3.0
+   },
+   "pksg_fix": {
+    "flags": 552,
+    "per1000": 9.38,
+    "pieces_flagged": 57,
+    "share_pieces": 4.7
+   },
+   "pksg_fix2": {
+    "flags": 438,
+    "per1000": 7.44,
+    "pieces_flagged": 38,
+    "share_pieces": 3.1
+   }
+  }
+ },
+ "cat_pdmx": {
+  "pieces": 521,
+  "notes": 278443,
+  "rows": {
+   "kind2": {
+    "flags": 324,
+    "per1000": 1.16,
+    "pieces_flagged": 32,
+    "share_pieces": 6.1
+   },
+   "t2b": {
+    "flags": 4160,
+    "per1000": 14.94,
+    "pieces_flagged": 313,
+    "share_pieces": 60.1
+   },
+   "cur": {
+    "flags": 4484,
+    "per1000": 16.1,
+    "pieces_flagged": 314,
+    "share_pieces": 60.3
+   },
+   "curfix": {
+    "flags": 2704,
+    "per1000": 9.71,
+    "pieces_flagged": 216,
+    "share_pieces": 41.5
+   },
+   "ps13": {
+    "flags": 23476,
+    "per1000": 84.31,
+    "pieces_flagged": 248,
+    "share_pieces": 47.6
+   },
+   "pks": {
+    "flags": 9252,
+    "per1000": 33.23,
+    "pieces_flagged": 183,
+    "share_pieces": 35.1
+   },
+   "pksg": {
+    "flags": 329,
+    "per1000": 1.18,
+    "pieces_flagged": 36,
+    "share_pieces": 6.9
+   },
+   "both": {
+    "flags": 6206,
+    "per1000": 22.29,
+    "pieces_flagged": 150,
+    "share_pieces": 28.8
+   },
+   "bothg": {
+    "flags": 285,
+    "per1000": 1.02,
+    "pieces_flagged": 30,
+    "share_pieces": 5.8
+   },
+   "curfix2": {
+    "flags": 2116,
+    "per1000": 7.6,
+    "pieces_flagged": 183,
+    "share_pieces": 35.1
+   },
+   "pksg_fix": {
+    "flags": 2709,
+    "per1000": 9.73,
+    "pieces_flagged": 216,
+    "share_pieces": 41.5
+   },
+   "pksg_fix2": {
+    "flags": 2121,
+    "per1000": 7.62,
+    "pieces_flagged": 183,
+    "share_pieces": 35.1
+   }
+  }
+ },
+ "cat_other": {
+  "pieces": 285,
+  "notes": 396769,
+  "rows": {
+   "kind2": {
+    "flags": 2301,
+    "per1000": 5.8,
+    "pieces_flagged": 93,
+    "share_pieces": 32.6
+   },
+   "t2b": {
+    "flags": 11231,
+    "per1000": 28.31,
+    "pieces_flagged": 233,
+    "share_pieces": 81.8
+   },
+   "cur": {
+    "flags": 13532,
+    "per1000": 34.11,
+    "pieces_flagged": 233,
+    "share_pieces": 81.8
+   },
+   "curfix": {
+    "flags": 8253,
+    "per1000": 20.8,
+    "pieces_flagged": 222,
+    "share_pieces": 77.9
+   },
+   "ps13": {
+    "flags": 48831,
+    "per1000": 123.07,
+    "pieces_flagged": 229,
+    "share_pieces": 80.4
+   },
+   "pks": {
+    "flags": 20285,
+    "per1000": 51.13,
+    "pieces_flagged": 214,
+    "share_pieces": 75.1
+   },
+   "pksg": {
+    "flags": 2335,
+    "per1000": 5.89,
+    "pieces_flagged": 100,
+    "share_pieces": 35.1
+   },
+   "both": {
+    "flags": 9986,
+    "per1000": 25.17,
+    "pieces_flagged": 199,
+    "share_pieces": 69.8
+   },
+   "bothg": {
+    "flags": 1589,
+    "per1000": 4.0,
+    "pieces_flagged": 92,
+    "share_pieces": 32.3
+   },
+   "curfix2": {
+    "flags": 6318,
+    "per1000": 15.92,
+    "pieces_flagged": 214,
+    "share_pieces": 75.1
+   },
+   "pksg_fix": {
+    "flags": 8287,
+    "per1000": 20.89,
+    "pieces_flagged": 223,
+    "share_pieces": 78.2
+   },
+   "pksg_fix2": {
+    "flags": 6352,
+    "per1000": 16.01,
+    "pieces_flagged": 215,
+    "share_pieces": 75.4
+   }
+  }
+ },
+ "whole_piece": {
+  "wir": {
+   "ps13": [
+    "Corpus/Keyboard_Other/Bach,_Johann_Sebastian/The_Well-Tempered_Clavier_I/17"
+   ],
+   "pks": [
+    "Corpus/Keyboard_Other/Bach,_Johann_Sebastian/The_Well-Tempered_Clavier_I/03",
+    "Corpus/Keyboard_Other/Bach,_Johann_Sebastian/The_Well-Tempered_Clavier_I/13"
+   ]
+  },
+  "m21ch": {
+   "ps13": [
+    "bach/bwv177.5.mxl",
+    "bach/bwv244.10.mxl",
+    "bach/bwv244.46.mxl",
+    "bach/bwv393.mxl"
+   ],
+   "pks": []
+  },
+  "m21kb": {
+   "ps13": [],
+   "pks": []
+  },
+  "cat_gen": {
+   "ps13": [
+    "exercise.arpeggio.a-flat-major.2oct.both",
+    "exercise.arpeggio.a-flat-major.4oct.both",
+    "exercise.arpeggio.d-flat-major.2oct.both",
+    "exercise.arpeggio.d-flat-major.4oct.both",
+    "exercise.arpeggio.g-flat-major.2oct.both",
+    "exercise.arpeggio.g-flat-major.4oct.both",
+    "exercise.arpeggio7.a-diminished7.2oct.both",
+    "exercise.arpeggio7.a-flat-dominant7.2oct.both",
+    "exercise.arpeggio7.a-flat-half-diminished7.2oct.both",
+    "exercise.arpeggio7.a-flat-major7.2oct.both",
+    "exercise.arpeggio7.a-flat-minor7.2oct.both",
+    "exercise.arpeggio7.b-diminished7.2oct.both",
+    "exercise.arpeggio7.b-flat-diminished7.2oct.both",
+    "exercise.arpeggio7.c-diminished7.2oct.both",
+    "exercise.arpeggio7.c-sharp-diminished7.2oct.both",
+    "exercise.arpeggio7.d-diminished7.2oct.both",
+    "exercise.arpeggio7.d-flat-dominant7.2oct.both",
+    "exercise.arpeggio7.d-flat-half-diminished7.2oct.both",
+    "exercise.arpeggio7.d-flat-major7.2oct.both",
+    "exercise.arpeggio7.d-flat-minor7.2oct.both",
+    "exercise.arpeggio7.e-diminished7.2oct.both",
+    "exercise.arpeggio7.e-flat-half-diminished7.2oct.both",
+    "exercise.arpeggio7.f-diminished7.2oct.both",
+    "exercise.arpeggio7.f-sharp-diminished7.2oct.both",
+    "exercise.arpeggio7.g-diminished7.2oct.both",
+    "exercise.arpeggio7.g-flat-dominant7.2oct.both",
+    "exercise.arpeggio7.g-flat-half-diminished7.2oct.both",
+    "exercise.arpeggio7.g-flat-major7.2oct.both",
+    "exercise.arpeggio7.g-flat-minor7.2oct.both",
+    "exercise.arpeggio7.g-sharp-diminished7.2oct.both",
+    "exercise.broken7.a-flat-dominant7.both",
+    "exercise.broken7.a-flat-major7.both",
+    "exercise.broken7.a-flat-minor7.both",
+    "exercise.broken7.d-flat-dominant7.both",
+    "exercise.broken7.d-flat-major7.both",
+    "exercise.broken7.d-flat-minor7.both",
+    "exercise.broken7.g-flat-dominant7.both",
+    "exercise.broken7.g-flat-major7.both",
+    "exercise.broken7.g-flat-minor7.both",
+    "exercise.cadence.a-flat.plagal",
+    "exercise.cadence.a-flat.root",
+    "exercise.cadence.a-flat.voice-led",
+    "exercise.cadence.d-flat.plagal",
+    "exercise.cadence.d-flat.root",
+    "exercise.cadence.d-flat.voice-led",
+    "exercise.cadence.g-flat.plagal",
+    "exercise.cadence.g-flat.root",
+    "exercise.cadence.g-flat.voice-led",
+    "exercise.five-finger.a-flat-major.both",
+    "exercise.five-finger.a-flat-major.left",
+    "exercise.five-finger.a-flat-major.right",
+    "exercise.five-finger.d-flat-major.both",
+    "exercise.five-finger.d-flat-major.left",
+    "exercise.five-finger.d-flat-major.right",
+    "exercise.five-finger.g-flat-major.both",
+    "exercise.five-finger.g-flat-major.left",
+    "exercise.five-finger.g-flat-major.right",
+    "exercise.ii-v-i.a-flat.rootless",
+    "exercise.ii-v-i.d-flat.rootless",
+    "exercise.ii-v-i.e-flat.rootless",
+    "exercise.inversions.a-flat-major.both",
+    "exercise.inversions.d-flat-major.both",
+    "exercise.inversions.g-flat-major.both",
+    "exercise.latin-groove.f.son-3-2",
+    "exercise.loop4.a-flat.inversions",
+    "exercise.loop4.a-flat.root",
+    "exercise.loop4.d-flat.inversions",
+    "exercise.loop4.d-flat.root",
+    "exercise.montuno.f.2note.bossa",
+    "exercise.montuno.f.2note.son-3-2",
+    "exercise.montuno.f.3note.son-3-2",
+    "exercise.passing-chord.b-flat",
+    "exercise.passing-chord.e-flat",
+    "exercise.scale.a-flat-major.1oct.contrary.both.2",
+    "exercise.scale.a-flat-major.1oct.similar.both.2",
+    "exercise.scale.a-flat-major.1oct.similar.left.2",
+    "exercise.scale.a-flat-major.1oct.similar.right.2",
+    "exercise.scale.a-flat-major.2oct.contrary.both.2",
+    "exercise.scale.a-flat-major.2oct.similar.both.2",
+    "exercise.scale.a-flat-major.3oct.similar.both.2",
+    "exercise.scale.a-flat-major.4oct.similar.both.1",
+    "exercise.scale.a-flat-major.4oct.similar.both.2",
+    "exercise.scale.d-flat-major.1oct.contrary.both.2",
+    "exercise.scale.d-flat-major.1oct.similar.both.2",
+    "exercise.scale.d-flat-major.1oct.similar.left.2",
+    "exercise.scale.d-flat-major.1oct.similar.right.2",
+    "exercise.scale.d-flat-major.2oct.contrary.both.2",
+    "exercise.scale.d-flat-major.2oct.similar.both.2",
+    "exercise.scale.d-flat-major.3oct.similar.both.2",
+    "exercise.scale.d-flat-major.4oct.similar.both.1",
+    "exercise.scale.d-flat-major.4oct.similar.both.2",
+    "exercise.scale.g-flat-major.1oct.contrary.both.2",
+    "exercise.scale.g-flat-major.1oct.similar.both.2",
+    "exercise.scale.g-flat-major.1oct.similar.left.2",
+    "exercise.scale.g-flat-major.1oct.similar.right.2",
+    "exercise.scale.g-flat-major.2oct.contrary.both.2",
+    "exercise.scale.g-flat-major.2oct.similar.both.2",
+    "exercise.scale.g-flat-major.3oct.similar.both.2",
+    "exercise.scale.g-flat-major.4oct.similar.both.1",
+    "exercise.scale.g-flat-major.4oct.similar.both.2",
+    "exercise.tritone-sub.c",
+    "exercise.tritone-sub.f"
+   ],
+   "pks": [
+    "exercise.arpeggio.g-flat-major.2oct.both",
+    "exercise.arpeggio.g-flat-major.4oct.both",
+    "exercise.arpeggio7.a-diminished7.2oct.both",
+    "exercise.arpeggio7.a-flat-half-diminished7.2oct.both",
+    "exercise.arpeggio7.a-flat-minor7.2oct.both",
+    "exercise.arpeggio7.b-diminished7.2oct.both",
+    "exercise.arpeggio7.b-flat-diminished7.2oct.both",
+    "exercise.arpeggio7.b-flat-half-diminished7.2oct.both",
+    "exercise.arpeggio7.c-diminished7.2oct.both",
+    "exercise.arpeggio7.d-diminished7.2oct.both",
+    "exercise.arpeggio7.d-flat-dominant7.2oct.both",
+    "exercise.arpeggio7.d-flat-half-diminished7.2oct.both",
+    "exercise.arpeggio7.d-flat-minor7.2oct.both",
+    "exercise.arpeggio7.e-diminished7.2oct.both",
+    "exercise.arpeggio7.e-flat-diminished7.2oct.both",
+    "exercise.arpeggio7.e-flat-half-diminished7.2oct.both",
+    "exercise.arpeggio7.f-diminished7.2oct.both",
+    "exercise.arpeggio7.f-sharp-diminished7.2oct.both",
+    "exercise.arpeggio7.g-diminished7.2oct.both",
+    "exercise.arpeggio7.g-flat-dominant7.2oct.both",
+    "exercise.arpeggio7.g-flat-half-diminished7.2oct.both",
+    "exercise.arpeggio7.g-flat-minor7.2oct.both",
+    "exercise.blues-scale.e-flat.1oct.both",
+    "exercise.blues-scale.e-flat.1oct.right",
+    "exercise.broken7.a-flat-minor7.both",
+    "exercise.broken7.b-major7.both",
+    "exercise.broken7.d-flat-dominant7.both",
+    "exercise.broken7.d-flat-minor7.both",
+    "exercise.broken7.g-flat-dominant7.both",
+    "exercise.broken7.g-flat-minor7.both",
+    "exercise.cadence.g-flat.plagal",
+    "exercise.cadence.g-flat.root",
+    "exercise.cadence.g-flat.voice-led",
+    "exercise.chromatic.e.1oct.both",
+    "exercise.chromatic.g.1oct.both",
+    "exercise.chromatic.g.2oct.both",
+    "exercise.five-finger.d-flat-major.both",
+    "exercise.five-finger.d-flat-major.left",
+    "exercise.five-finger.d-flat-major.right",
+    "exercise.five-finger.g-flat-major.both",
+    "exercise.five-finger.g-flat-major.left",
+    "exercise.five-finger.g-flat-major.right",
+    "exercise.five-finger.g-sharp-minor.both",
+    "exercise.ii-v-i.f-sharp",
+    "exercise.ii-v-i.f-sharp.rootless",
+    "exercise.open-voicing.e-flat.quartal",
+    "exercise.passing-chord.b-flat",
+    "exercise.passing-chord.e-flat",
+    "exercise.scale.d-flat-major.1oct.similar.both.2",
+    "exercise.scale.e-flat-harmonic-minor.1oct.similar.left.2",
+    "exercise.scale.e-flat-harmonic-minor.1oct.similar.right.2",
+    "exercise.scale.g-flat-major.1oct.contrary.both.2",
+    "exercise.scale.g-flat-major.1oct.similar.both.2",
+    "exercise.scale.g-flat-major.1oct.similar.left.2",
+    "exercise.scale.g-flat-major.1oct.similar.right.2",
+    "exercise.scale.g-flat-major.2oct.contrary.both.2",
+    "exercise.scale.g-flat-major.2oct.similar.both.2",
+    "exercise.scale.g-flat-major.3oct.similar.both.2",
+    "exercise.scale.g-flat-major.4oct.similar.both.1",
+    "exercise.scale.g-flat-major.4oct.similar.both.2",
+    "exercise.scale.g-sharp-harmonic-minor.1oct.contrary.both.2",
+    "exercise.scale.g-sharp-harmonic-minor.1oct.similar.both.2",
+    "exercise.scale.g-sharp-harmonic-minor.1oct.similar.left.2",
+    "exercise.scale.g-sharp-harmonic-minor.1oct.similar.right.2",
+    "exercise.scale.g-sharp-harmonic-minor.2oct.similar.both.2",
+    "exercise.scale.g-sharp-harmonic-minor.3oct.similar.both.2",
+    "exercise.scale.g-sharp-melodic-minor.1oct.similar.both.2",
+    "exercise.scale.g-sharp-melodic-minor.1oct.similar.left.2",
+    "exercise.scale.g-sharp-melodic-minor.1oct.similar.right.2",
+    "exercise.scale.g-sharp-melodic-minor.2oct.similar.both.2",
+    "exercise.voicing7.f-sharp.rootless-a"
+   ]
+  },
+  "cat_pdmx": {
+   "ps13": [
+    "song.classical.alexander-s-ragtime-band.pdmx",
+    "song.classical.chopin-etude-in-e-flat-minor-op-10-no-6.pdmx",
+    "song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx",
+    "song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx",
+    "song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx",
+    "song.classical.debussy-debussy-claude-la-plus-que-lente.pdmx",
+    "song.classical.debussy-debussy-la-fille-aux-cheveux-de-lin.pdmx",
+    "song.classical.el-choclo-piano.pdmx",
+    "song.classical.lemoine-etude-op-37-no-44.pdmx",
+    "song.classical.nazareth-carioca-1913.pdmx",
+    "song.classical.ondrus-silent-night.pdmx",
+    "song.classical.schumann-carnaval-op-9-no-12-chopin.pdmx",
+    "song.classical.scott-frog-legs-rag.pdmx",
+    "song.folk.3-variations-on-happy-birthday.pdmx",
+    "song.folk.i-give-you-my-heart.pdmx",
+    "song.folk.muskrat-ramble.pdmx",
+    "song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx",
+    "song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx",
+    "song.pop.blonde-redhead-for-the-damaged-coda-blonde-redhead.pdmx",
+    "song.pop.ellie-goulding-ellie-goulding-s-love-me-like-you-do-cover.pdmx",
+    "song.pop.jay-chou-a-a-jay-chou-with-ca-aca1-2aea2-waiting-for-youa.pdmx",
+    "song.pop.league-of-legends-phoenix-league-of-legends.pdmx",
+    "song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx",
+    "song.pop.misc-cartoons-resonance-soul-eater-opening-1.pdmx",
+    "song.pop.misc-computer-games-never-forget-by-martin-o-donnell.pdmx",
+    "song.pop.the-weeknd-the-weeknd-call-out-my-name.pdmx",
+    "song.pop.yugo-kanno-yoshikage-kira-s-theme-piano.pdmx"
+   ],
+   "pks": [
+    "song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx",
+    "song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx",
+    "song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx",
+    "song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx",
+    "song.classical.debussy-debussy-claude-la-plus-que-lente.pdmx",
+    "song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx",
+    "song.pop.league-of-legends-phoenix-league-of-legends.pdmx",
+    "song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx",
+    "song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx",
+    "song.pop.misc-computer-games-never-forget-by-martin-o-donnell.pdmx",
+    "song.pop.yugo-kanno-yoshikage-kira-s-theme-piano.pdmx"
+   ]
+  },
+  "cat_other": {
+   "ps13": [
+    "excerpt.blues.wabash-blues.b1-4",
+    "song.beautiful.hungarian-sonata",
+    "song.beautiful.merry-christmas-mr-lawrence",
+    "song.blues.long-gone",
+    "song.blues.storyville-blues",
+    "song.classical.beethoven-pathetique-ii",
+    "song.classical.chopin-ballade-3.nifc",
+    "song.classical.chopin-berceuse.nifc",
+    "song.classical.chopin-ecossaise-op72-3.nifc",
+    "song.classical.chopin-etude-op10-5.nifc",
+    "song.classical.chopin-etude-op25-8.nifc",
+    "song.classical.chopin-etude-op25-9.nifc",
+    "song.classical.chopin-fantaisie-impromptu.nifc",
+    "song.classical.chopin-mazurka-op17-3.nifc",
+    "song.classical.chopin-mazurka-op24-3.nifc",
+    "song.classical.chopin-mazurka-op30-3.nifc",
+    "song.classical.chopin-mazurka-op59-2.nifc",
+    "song.classical.chopin-mazurka-op63-3.nifc",
+    "song.classical.chopin-nocturne-op27-2.nifc",
+    "song.classical.chopin-polonaise-fantaisie.nifc",
+    "song.classical.chopin-polonaise-op26-2.nifc",
+    "song.classical.chopin-polonaise-op53.nifc",
+    "song.classical.chopin-prelude-op28-17.nifc",
+    "song.classical.chopin-rondo-op1.nifc",
+    "song.classical.chopin-scherzo-2.nifc",
+    "song.classical.chopin-sonata-2-1.nifc",
+    "song.classical.chopin-sonata-2-2.nifc",
+    "song.classical.chopin-waltz-op64-1.nifc",
+    "song.classical.chopin-waltz-op70-1.nifc",
+    "song.classical.liszt-la-campanella",
+    "song.classical.liszt-liebestraum-3"
+   ],
+   "pks": [
+    "excerpt.blues.wabash-blues.b1-4",
+    "song.classical.chopin-fantaisie-impromptu.nifc",
+    "song.classical.chopin-mazurka-op30-3.nifc",
+    "song.classical.chopin-mazurka-op63-3.nifc",
+    "song.classical.chopin-polonaise-fantaisie.nifc",
+    "song.classical.chopin-polonaise-op26-2.nifc",
+    "song.classical.chopin-prelude-op28-11.nifc",
+    "song.classical.chopin-prelude-op28-14.nifc",
+    "song.classical.chopin-prelude-op28-17.nifc",
+    "song.classical.chopin-prelude-op28-8.nifc",
+    "song.classical.chopin-rondo-op1.nifc",
+    "song.classical.chopin-sonata-2-2.nifc"
+   ]
+  }
+ },
+ "runtime_lines": [
+  "| step | published scores (pieces, notes median) | seconds per piece: mean / median / max | our catalogue | seconds per item: mean / median / max |",
+  "| --- | --- | --- | --- | --- |",
+  "| read the file into the note table (project reader, partitura) | 470 | 1.037 / 0.578 / 19.820 | 2017 | 0.357 / 0.086 / 11.857 |",
+  "| ps13 estimate_spelling | 470 | 0.452 / 0.011 / 31.569 | 2017 | 0.032 / 0.002 / 0.762 |",
+  "| PKSpell model call (CPU, 2 threads, after one-off import and load) | 470 | 0.069 / 0.039 / 0.490 | 2017 | 0.078 / 0.013 / 2.180 |",
+  "| raw MusicXML walk (first reading; needed by test 2b) | 470 | 0.110 / 0.067 / 1.219 | 2020 | 0.087 / 0.010 / 1.541 |",
+  "| test 2b over the walk | 470 | 0.049 / 0.012 / 0.618 | 2020 | 0.033 / 0.002 / 0.920 |",
+  "| notes per piece (mean / median / max) | | 480 / 239 / 4434 | | 364 / 58 / 7499 |"
+ ],
+ "reader_fallback": {
+  "wir": 4,
+  "m21ch": 380,
+  "m21kb": 1,
+  "cat_gen": 0,
+  "cat_pdmx": 0,
+  "cat_other": 1
+ },
+ "note_table_failed": {
+  "wir": [],
+  "m21ch": [],
+  "m21kb": [],
+  "cat_gen": [],
+  "cat_pdmx": [
+   "song.classical.bach-invention-no-1-in-c-major-bwv-772.pdmx",
+   "song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx",
+   "song.classical.sakamoto-shining-boy-and-little-randy-ryuichi-sakamoto.pdmx"
+  ],
+  "cat_other": []
+ }
+}
