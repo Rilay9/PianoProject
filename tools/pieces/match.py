@@ -58,12 +58,30 @@ STRONG = ("bwv", "hwv", "k", "z", "hob", "woo", "d")
 MOVEMENTS = ("allemande", "courante", "sarabande", "gavotte", "minuet", "menuet", "gigue", "bourree", "polonaise",
              "prelude", "fugue", "aria", "air", "march", "rondo", "scherzo", "trio", "musette", "passepied",
              "loure", "anglaise", "variation", "andante", "adagio", "allegro", "presto", "largo")
-KEY_RE = re.compile(r"\b([a-g])(?:\s*|-)(flat|sharp|b|#)?\s*(major|minor|maj|min)\b")
+KEY_RE = re.compile(r"\b(?:in\s+([a-g])(?:\s*|-)(flat|sharp|b|#)?(?:\s+(major|minor|maj|min))?|([a-g])(?:\s*|-)(flat|sharp|b|#)?\s*(major|minor|maj|min))\b")
 
 
 def fold(s):
     s = unicodedata.normalize("NFKD", s or "")
     return "".join(c for c in s if not unicodedata.combining(c)).lower()
+
+
+def surname(name):
+    """The surname of a composer string: 'Hook J.' / 'Hook, James' -> hook; 'James Hook' -> hook; '' if none."""
+    n = re.sub(r"\(.*?\)", " ", fold(name)).strip()
+    n = re.split(r"\s*(?:&|/|;|\band\b|\barr\.?)\s*", n)[0].strip()
+    if not n or n in ("na", "unknown", "anon", "anonymous", "trad", "traditional"):
+        return ""
+    if "," in n:
+        tok = n.split(",")[0].strip().split()
+    else:
+        toks = [t for t in re.split(r"[^a-z.\-']+", n) if t]
+        if len(toks) >= 2 and re.fullmatch(r"([a-z]\.)+|[a-z]", toks[-1]):
+            tok = toks[:1]                      # 'Hook J.' style
+        else:
+            tok = toks[-1:]                     # 'James Hook' style
+    t = re.sub(r"[^a-z]", "", tok[-1] if tok else "")
+    return ALIASES.get(t, t) if len(t) > 2 else ""
 
 
 def surname_keys(name):
@@ -89,8 +107,11 @@ def catalogue(title):
         out["mvt"] = {m.replace("menuet", "minuet") for m in mv}
     km = KEY_RE.search(fold(title).replace("-flat", " flat").replace("-sharp", " sharp"))
     if km:
-        acc = {"flat": "b", "b": "b", "sharp": "#", "#": "#"}.get(km.group(2) or "", "")
-        out["key"] = {km.group(1) + acc + (" minor" if km.group(3).startswith("min") else " major")}
+        root, accw, mode = (km.group(1), km.group(2), km.group(3)) if km.group(1) else (km.group(4), km.group(5), km.group(6))
+        acc = {"flat": "b", "b": "b", "sharp": "#", "#": "#"}.get(accw or "", "")
+        out["key"] = {root + acc}
+        if mode:
+            out["mode"] = {"minor" if mode.startswith("min") else "major"}
     return out
 
 
@@ -108,7 +129,7 @@ def cat_compare(want, have):
     either side); 'partial' when the opus agrees but one side lacks the number; 'none' otherwise."""
     def differ(kind):
         return kind in want and kind in have and not (want[kind] & have[kind])
-    if any(differ(k) for k in STRONG + ("op", "key", "mvt")):
+    if any(differ(k) for k in STRONG + ("op", "key", "mode", "mvt")):
         return "conflict"
     same_op = "op" in want and "op" in have
     if (same_op or ("op" not in want and "op" not in have)) and differ("no"):
@@ -132,7 +153,7 @@ def main():
     pieces = {}
     for r in csv.DictReader(open(wanted_p, encoding="utf-8")):
         keys = surname_keys(r["composer"])
-        sk = (sorted(keys)[0] if len(keys) == 1 else max(keys, key=len)) if keys else ""  # "" = no composer: title-only
+        sk = surname(r["composer"])  # "" = no composer: title-only
         ct = clean_title(r["title"], keys)
         pk = (sk, re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", fold(r["title"]))).strip())  # merge only identical titles
         p = pieces.setdefault(pk, {"surname": sk, "composer": r["composer"], "title": r["title"], "clean": ct,
@@ -147,8 +168,13 @@ def main():
     n = 0
     for a in csv.DictReader(open(avail_p, encoding="utf-8")):
         n += 1
-        hay = " ".join([a["composer"], a.get("subtitle", ""), a["title"]])
-        keys = surname_keys(a["composer"]) | (surname_keys(hay) & wanted_surnames)
+        own = surname(a["composer"])
+        # the file's composer field decides; only when it names nobody are surname words in the title used
+        keys = {own} if own else (surname_keys(a.get("subtitle", "") + " " + a["title"]) & wanted_surnames)
+        if own and own not in wanted_surnames:  # 'Händel Georg Friedrich': surname written first, no comma
+            first = re.sub(r"[^a-z]", "", (fold(a["composer"]).split() or [""])[0])
+            if ALIASES.get(first, first) in wanted_surnames:
+                keys = {ALIASES.get(first, first)}
         hit = keys & wanted_surnames
         if title_only:
             tk = clean_title(a["title"])
