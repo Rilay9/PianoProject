@@ -1,0 +1,54 @@
+{
+ "built": {
+  "V1": {
+   "n": 71,
+   "cur_present": 67,
+   "cur_flag": 69,
+   "cur_st1": 69,
+   "m21": {
+    "oracle": 71,
+    "self": 71,
+    "first12": 71
+   },
+   "hist_found": 71,
+   "hist_right": 70,
+   "hist_timeout": 0
+  },
+  "V2": {
+   "n": 12,
+   "cur_present": 0,
+   "cur_flag": 12,
+   "cur_st1": 0,
+   "m21": {
+    "oracle": 0,
+    "self": 0,
+    "first12": 0
+   },
+   "hist_found": 0,
+   "hist_right": 0,
+   "hist_timeout": 0
+  },
+  "V3": {
+   "n": 12,
+   "cur_present": 0,
+   "cur_flag": 0,
+   "cur_st1": 0,
+   "m21": {
+    "oracle": 5,
+    "self": 0,
+    "first12": 0
+   },
+   "hist_found": 5,
+   "hist_right": 5,
+   "hist_timeout": 0
+  }
+ },
+ "n_flagged": 68,
+ "catalogue_false": {
+  "self": 47,
+  "first12": 13,
+  "hist": 0,
+  "hist_finished": 68,
+  "hist_timeout": 0
+ }
+}

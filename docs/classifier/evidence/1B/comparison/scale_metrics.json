@@ -1,0 +1,1639 @@
+{
+ "gen_tot": {
+  "cur_T": {
+   "exact": 278,
+   "correct_none": 96
+  },
+  "cur_ref": {
+   "exact": 278,
+   "correct_none": 96
+  },
+  "m21nat_T": {
+   "missed": 10,
+   "exact": 265,
+   "false_name": 48,
+   "wrong": 3,
+   "correct_none": 48
+  },
+  "m21eq_T": {
+   "missed": 13,
+   "exact": 265,
+   "correct_none": 96
+  },
+  "m21eq_ref": {
+   "missed": 13,
+   "exact": 265,
+   "correct_none": 96
+  },
+  "m21eq_sharp_T": {
+   "exact": 269,
+   "missed": 9,
+   "correct_none": 96
+  },
+  "tonal_T": {
+   "exact": 278,
+   "correct_none": 96
+  },
+  "tonal_ref": {
+   "exact": 278,
+   "correct_none": 96
+  },
+  "tonal_T7": {
+   "exact": 278,
+   "correct_none": 96
+  },
+  "tonal_none": {
+   "right_among_several": 262,
+   "exact": 16,
+   "correct_none": 48,
+   "false_name": 48
+  }
+ },
+ "n_gen": 374,
+ "real_exp": {
+  "cur_T": {
+   "no name expected": {
+    "correct_none": 77
+   },
+   "name expected": {
+    "exact": 149
+   }
+  },
+  "m21nat_T": {
+   "no name expected": {
+    "correct_none": 75,
+    "false_name": 2
+   },
+   "name expected": {
+    "exact": 149
+   }
+  },
+  "m21eq_T": {
+   "no name expected": {
+    "correct_none": 77
+   },
+   "name expected": {
+    "exact": 149
+   }
+  },
+  "m21eq_sharp_T": {
+   "no name expected": {
+    "correct_none": 77
+   },
+   "name expected": {
+    "exact": 149
+   }
+  },
+  "tonal_T": {
+   "no name expected": {
+    "correct_none": 69,
+    "false_name": 8
+   },
+   "name expected": {
+    "exact": 149
+   }
+  },
+  "tonal_T7": {
+   "no name expected": {
+    "correct_none": 77
+   },
+   "name expected": {
+    "exact": 149
+   }
+  },
+  "tonal_none": {
+   "no name expected": {
+    "false_name": 15,
+    "correct_none": 62
+   },
+   "name expected": {
+    "exact": 145,
+    "right_among_several": 4
+   }
+  }
+ },
+ "n_titled": 226,
+ "n_exp_name": 149,
+ "n_exp_none": 77,
+ "passage": {
+  "cur": {
+   "exact": 942
+  },
+  "m21nat": {
+   "missed": 28,
+   "exact": 902,
+   "wrong": 12
+  },
+  "m21eq": {
+   "missed": 40,
+   "exact": 902
+  },
+  "tonal": {
+   "exact": 942
+  }
+ },
+ "n_runs": 942,
+ "n_run_mismatch": 0,
+ "modal_rows": [
+  {
+   "id": "song.classical.zimmer-time-hans-zimmer-inception.pdmx",
+   "home": [
+    9,
+    "minor"
+   ],
+   "S": [
+    0,
+    2,
+    4,
+    6,
+    7,
+    9,
+    11
+   ],
+   "cur_T": [
+    [
+     "dorian",
+     9
+    ]
+   ],
+   "m21nat_T": [
+    [
+     "dorian",
+     9
+    ]
+   ],
+   "m21eq_T": [
+    [
+     "dorian",
+     9
+    ]
+   ],
+   "m21eq_sharp_T": [
+    [
+     "dorian",
+     9
+    ]
+   ],
+   "tonal_T": [
+    [
+     "dorian",
+     9
+    ]
+   ],
+   "tonal_T7": [
+    [
+     "dorian",
+     9
+    ]
+   ],
+   "tonal_none": [
+    [
+     "lydian",
+     0
+    ],
+    [
+     "mixolydian",
+     2
+    ],
+    [
+     "aeolian (natural minor)",
+     4
+    ],
+    [
+     "locrian",
+     6
+    ],
+    [
+     "ionian (major)",
+     7
+    ],
+    [
+     "dorian",
+     9
+    ],
+    [
+     "phrygian",
+     11
+    ]
+   ]
+  },
+  {
+   "id": "song.folk.anonymous-swing-low-sweet-chariot.pdmx",
+   "home": [
+    7,
+    "major"
+   ],
+   "S": [
+    2,
+    4,
+    7,
+    9,
+    11
+   ],
+   "cur_T": [
+    [
+     "major pentatonic",
+     7
+    ]
+   ],
+   "m21nat_T": [
+    [
+     "ionian (major)",
+     7
+    ],
+    [
+     "lydian",
+     7
+    ],
+    [
+     "mixolydian",
+     7
+    ]
+   ],
+   "m21eq_T": [],
+   "m21eq_sharp_T": [],
+   "tonal_T": [
+    [
+     "major pentatonic",
+     7
+    ]
+   ],
+   "tonal_T7": [
+    [
+     "major pentatonic",
+     7
+    ]
+   ],
+   "tonal_none": [
+    [
+     "pentatonic set (tonic not its own)",
+     2
+    ],
+    [
+     "minor pentatonic",
+     4
+    ],
+    [
+     "major pentatonic",
+     7
+    ],
+    [
+     "pentatonic set (tonic not its own)",
+     9
+    ],
+    [
+     "pentatonic set (tonic not its own)",
+     11
+    ]
+   ]
+  },
+  {
+   "id": "song.folk.old-macdonald",
+   "home": [
+    0,
+    "major"
+   ],
+   "S": [
+    0,
+    2,
+    4,
+    7,
+    9
+   ],
+   "cur_T": [
+    [
+     "major pentatonic",
+     0
+    ]
+   ],
+   "m21nat_T": [
+    [
+     "ionian (major)",
+     0
+    ],
+    [
+     "lydian",
+     0
+    ],
+    [
+     "mixolydian",
+     0
+    ]
+   ],
+   "m21eq_T": [],
+   "m21eq_sharp_T": [],
+   "tonal_T": [
+    [
+     "major pentatonic",
+     0
+    ]
+   ],
+   "tonal_T7": [
+    [
+     "major pentatonic",
+     0
+    ]
+   ],
+   "tonal_none": [
+    [
+     "major pentatonic",
+     0
+    ],
+    [
+     "pentatonic set (tonic not its own)",
+     2
+    ],
+    [
+     "pentatonic set (tonic not its own)",
+     4
+    ],
+    [
+     "pentatonic set (tonic not its own)",
+     7
+    ],
+    [
+     "minor pentatonic",
+     9
+    ]
+   ]
+  },
+  {
+   "id": "song.folk.scarborough-fair-canticle.pdmx",
+   "home": [
+    4,
+    "minor"
+   ],
+   "S": [
+    1,
+    2,
+    4,
+    6,
+    7,
+    9,
+    11
+   ],
+   "cur_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "m21nat_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "m21eq_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "m21eq_sharp_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "tonal_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "tonal_T7": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "tonal_none": [
+    [
+     "locrian",
+     1
+    ],
+    [
+     "ionian (major)",
+     2
+    ],
+    [
+     "dorian",
+     4
+    ],
+    [
+     "phrygian",
+     6
+    ],
+    [
+     "lydian",
+     7
+    ],
+    [
+     "mixolydian",
+     9
+    ],
+    [
+     "aeolian (natural minor)",
+     11
+    ]
+   ]
+  },
+  {
+   "id": "song.folk.scarborough-fair.pdmx",
+   "home": [
+    4,
+    "minor"
+   ],
+   "S": [
+    1,
+    2,
+    4,
+    6,
+    7,
+    9,
+    11
+   ],
+   "cur_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "m21nat_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "m21eq_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "m21eq_sharp_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "tonal_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "tonal_T7": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "tonal_none": [
+    [
+     "locrian",
+     1
+    ],
+    [
+     "ionian (major)",
+     2
+    ],
+    [
+     "dorian",
+     4
+    ],
+    [
+     "phrygian",
+     6
+    ],
+    [
+     "lydian",
+     7
+    ],
+    [
+     "mixolydian",
+     9
+    ],
+    [
+     "aeolian (natural minor)",
+     11
+    ]
+   ]
+  },
+  {
+   "id": "song.folk.this-little-light-of-mine.pdmx",
+   "home": [
+    10,
+    "major"
+   ],
+   "S": [
+    0,
+    2,
+    5,
+    7,
+    10
+   ],
+   "cur_T": [
+    [
+     "major pentatonic",
+     10
+    ]
+   ],
+   "m21nat_T": [
+    [
+     "ionian (major)",
+     10
+    ],
+    [
+     "lydian",
+     10
+    ],
+    [
+     "mixolydian",
+     10
+    ]
+   ],
+   "m21eq_T": [],
+   "m21eq_sharp_T": [],
+   "tonal_T": [
+    [
+     "major pentatonic",
+     10
+    ]
+   ],
+   "tonal_T7": [
+    [
+     "major pentatonic",
+     10
+    ]
+   ],
+   "tonal_none": [
+    [
+     "pentatonic set (tonic not its own)",
+     0
+    ],
+    [
+     "pentatonic set (tonic not its own)",
+     2
+    ],
+    [
+     "pentatonic set (tonic not its own)",
+     5
+    ],
+    [
+     "minor pentatonic",
+     7
+    ],
+    [
+     "major pentatonic",
+     10
+    ]
+   ]
+  },
+  {
+   "id": "song.pop.guantanamera.pdmx",
+   "home": [
+    9,
+    "major"
+   ],
+   "S": [
+    1,
+    2,
+    4,
+    6,
+    7,
+    9,
+    11
+   ],
+   "cur_T": [
+    [
+     "mixolydian",
+     9
+    ]
+   ],
+   "m21nat_T": [
+    [
+     "mixolydian",
+     9
+    ]
+   ],
+   "m21eq_T": [
+    [
+     "mixolydian",
+     9
+    ]
+   ],
+   "m21eq_sharp_T": [
+    [
+     "mixolydian",
+     9
+    ]
+   ],
+   "tonal_T": [
+    [
+     "mixolydian",
+     9
+    ]
+   ],
+   "tonal_T7": [
+    [
+     "mixolydian",
+     9
+    ]
+   ],
+   "tonal_none": [
+    [
+     "locrian",
+     1
+    ],
+    [
+     "ionian (major)",
+     2
+    ],
+    [
+     "dorian",
+     4
+    ],
+    [
+     "phrygian",
+     6
+    ],
+    [
+     "lydian",
+     7
+    ],
+    [
+     "mixolydian",
+     9
+    ],
+    [
+     "aeolian (natural minor)",
+     11
+    ]
+   ]
+  },
+  {
+   "id": "song.pop.scarborough-fair.pdmx",
+   "home": [
+    4,
+    "minor"
+   ],
+   "S": [
+    1,
+    2,
+    4,
+    6,
+    7,
+    9,
+    11
+   ],
+   "cur_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "m21nat_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "m21eq_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "m21eq_sharp_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "tonal_T": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "tonal_T7": [
+    [
+     "dorian",
+     4
+    ]
+   ],
+   "tonal_none": [
+    [
+     "locrian",
+     1
+    ],
+    [
+     "ionian (major)",
+     2
+    ],
+    [
+     "dorian",
+     4
+    ],
+    [
+     "phrygian",
+     6
+    ],
+    [
+     "lydian",
+     7
+    ],
+    [
+     "mixolydian",
+     9
+    ],
+    [
+     "aeolian (natural minor)",
+     11
+    ]
+   ]
+  }
+ ],
+ "wrongs_gen": {
+  "cur_T": [],
+  "cur_ref": [],
+  "m21nat_T": [
+   [
+    "exercise.blues-scale.a.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.a.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.b-flat.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.b-flat.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.c.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.c.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.d.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.d.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.five-finger.a-flat-major.both",
+    "none",
+    [
+     [
+      "ionian (major)",
+      8
+     ],
+     [
+      "mixolydian",
+      8
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.a-flat-major.left",
+    "none",
+    [
+     [
+      "ionian (major)",
+      8
+     ],
+     [
+      "mixolydian",
+      8
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.a-flat-major.right",
+    "none",
+    [
+     [
+      "ionian (major)",
+      8
+     ],
+     [
+      "mixolydian",
+      8
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.a-major.both",
+    "none",
+    [
+     [
+      "ionian (major)",
+      9
+     ],
+     [
+      "mixolydian",
+      9
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.a-major.left",
+    "none",
+    [
+     [
+      "ionian (major)",
+      9
+     ],
+     [
+      "mixolydian",
+      9
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.a-major.right",
+    "none",
+    [
+     [
+      "ionian (major)",
+      9
+     ],
+     [
+      "mixolydian",
+      9
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.a-minor.both",
+    "none",
+    [
+     [
+      "aeolian (natural minor)",
+      9
+     ],
+     [
+      "harmonic minor",
+      9
+     ],
+     [
+      "melodic minor (ascending)",
+      9
+     ],
+     [
+      "dorian",
+      9
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.b-flat-major.both",
+    "none",
+    [
+     [
+      "ionian (major)",
+      10
+     ],
+     [
+      "mixolydian",
+      10
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.b-flat-major.left",
+    "none",
+    [
+     [
+      "ionian (major)",
+      10
+     ],
+     [
+      "mixolydian",
+      10
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.b-flat-major.right",
+    "none",
+    [
+     [
+      "ionian (major)",
+      10
+     ],
+     [
+      "mixolydian",
+      10
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.b-flat-minor.both",
+    "none",
+    [
+     [
+      "aeolian (natural minor)",
+      10
+     ],
+     [
+      "harmonic minor",
+      10
+     ],
+     [
+      "melodic minor (ascending)",
+      10
+     ],
+     [
+      "dorian",
+      10
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.b-major.both",
+    "none",
+    [
+     [
+      "ionian (major)",
+      11
+     ],
+     [
+      "mixolydian",
+      11
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.b-major.left",
+    "none",
+    [
+     [
+      "ionian (major)",
+      11
+     ],
+     [
+      "mixolydian",
+      11
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.b-major.right",
+    "none",
+    [
+     [
+      "ionian (major)",
+      11
+     ],
+     [
+      "mixolydian",
+      11
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.b-minor.both",
+    "none",
+    [
+     [
+      "aeolian (natural minor)",
+      11
+     ],
+     [
+      "harmonic minor",
+      11
+     ],
+     [
+      "melodic minor (ascending)",
+      11
+     ],
+     [
+      "dorian",
+      11
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.c-major.both",
+    "none",
+    [
+     [
+      "ionian (major)",
+      0
+     ],
+     [
+      "mixolydian",
+      0
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.c-major.left",
+    "none",
+    [
+     [
+      "ionian (major)",
+      0
+     ],
+     [
+      "mixolydian",
+      0
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.c-major.right",
+    "none",
+    [
+     [
+      "ionian (major)",
+      0
+     ],
+     [
+      "mixolydian",
+      0
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.c-minor.both",
+    "none",
+    [
+     [
+      "aeolian (natural minor)",
+      0
+     ],
+     [
+      "harmonic minor",
+      0
+     ],
+     [
+      "melodic minor (ascending)",
+      0
+     ],
+     [
+      "dorian",
+      0
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.c-sharp-minor.both",
+    "none",
+    [
+     [
+      "aeolian (natural minor)",
+      1
+     ],
+     [
+      "harmonic minor",
+      1
+     ],
+     [
+      "melodic minor (ascending)",
+      1
+     ],
+     [
+      "dorian",
+      1
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.d-flat-major.both",
+    "none",
+    [
+     [
+      "ionian (major)",
+      1
+     ],
+     [
+      "mixolydian",
+      1
+     ]
+    ]
+   ],
+   [
+    "exercise.five-finger.d-flat-major.left",
+    "none",
+    [
+     [
+      "ionian (major)",
+      1
+     ],
+     [
+      "mixolydian",
+      1
+     ]
+    ]
+   ]
+  ],
+  "m21eq_T": [
+   [
+    "exercise.blues-scale.a.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.a.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.b-flat.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.b-flat.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.c.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.c.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.d.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.d.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.pentatonic.a.blues",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.pentatonic.a.pentatonic",
+    "minor pentatonic",
+    []
+   ],
+   [
+    "exercise.pentatonic.d.pentatonic",
+    "minor pentatonic",
+    []
+   ],
+   [
+    "exercise.pentatonic.e.blues",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.pentatonic.e.pentatonic",
+    "minor pentatonic",
+    []
+   ]
+  ],
+  "m21eq_ref": [
+   [
+    "exercise.blues-scale.a.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.a.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.b-flat.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.b-flat.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.c.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.c.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.d.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.d.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.pentatonic.a.blues",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.pentatonic.a.pentatonic",
+    "minor pentatonic",
+    []
+   ],
+   [
+    "exercise.pentatonic.d.pentatonic",
+    "minor pentatonic",
+    []
+   ],
+   [
+    "exercise.pentatonic.e.blues",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.pentatonic.e.pentatonic",
+    "minor pentatonic",
+    []
+   ]
+  ],
+  "m21eq_sharp_T": [
+   [
+    "exercise.blues-scale.d.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.d.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.e-flat.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.e-flat.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.f.1oct.both",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.blues-scale.f.1oct.right",
+    "blues scale",
+    []
+   ],
+   [
+    "exercise.pentatonic.a.pentatonic",
+    "minor pentatonic",
+    []
+   ],
+   [
+    "exercise.pentatonic.d.pentatonic",
+    "minor pentatonic",
+    []
+   ],
+   [
+    "exercise.pentatonic.e.pentatonic",
+    "minor pentatonic",
+    []
+   ]
+  ],
+  "tonal_T": [],
+  "tonal_ref": [],
+  "tonal_T7": [],
+  "tonal_none": [
+   [
+    "exercise.scale.a-melodic-minor.1oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      2
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.a-melodic-minor.1oct.similar.left.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      2
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.a-melodic-minor.1oct.similar.right.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      2
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.a-melodic-minor.2oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      2
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.b-flat-melodic-minor.1oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      3
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.b-flat-melodic-minor.1oct.similar.left.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      3
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.b-flat-melodic-minor.1oct.similar.right.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      3
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.b-flat-melodic-minor.2oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      3
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.b-melodic-minor.1oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      4
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.b-melodic-minor.1oct.similar.left.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      4
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.b-melodic-minor.1oct.similar.right.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      4
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.b-melodic-minor.2oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      4
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.c-melodic-minor.1oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      5
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.c-melodic-minor.1oct.similar.left.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      5
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.c-melodic-minor.1oct.similar.right.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      5
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.c-melodic-minor.2oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      5
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.c-sharp-melodic-minor.1oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      6
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.c-sharp-melodic-minor.1oct.similar.left.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      6
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.c-sharp-melodic-minor.1oct.similar.right.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      6
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.c-sharp-melodic-minor.2oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      6
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.d-melodic-minor.1oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      7
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.d-melodic-minor.1oct.similar.left.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      7
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.d-melodic-minor.1oct.similar.right.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      7
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.d-melodic-minor.2oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      7
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.e-flat-melodic-minor.1oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      8
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.e-flat-melodic-minor.1oct.similar.left.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      8
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.e-flat-melodic-minor.1oct.similar.right.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      8
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.e-flat-melodic-minor.2oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      8
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.e-melodic-minor.1oct.similar.both.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      9
+     ]
+    ]
+   ],
+   [
+    "exercise.scale.e-melodic-minor.1oct.similar.left.2",
+    "none",
+    [
+     [
+      "other (composite blues)",
+      9
+     ]
+    ]
+   ]
+  ]
+ }
+}
