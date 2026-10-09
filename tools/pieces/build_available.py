@@ -6,6 +6,8 @@ Sources:
   musetrainer content/scores/imported/musetrainer/scores/*.mxl  (title from the file name)
   mutopia    content/scores/imported/mutopia/**/*.ly  (\\header title/composer/opus)
 
+  catalogues docs/sources/catalogues/*.csv  (online libraries listed by URL, Mutopia and OpenScore; their formats go in "genres")
+
 Columns: source, file, composer, title, subtitle, catalogue, bars, tracks, rating, n_ratings, licence, genres, quarried_before
 Nothing here judges level or identity; it only lists what exists.
 
