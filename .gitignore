@@ -47,3 +47,7 @@ app/tests/**/*-win32.png
 app/tests/**/*-darwin.png
 # Isolated builder worktrees the harness creates beside the checkout
 .claude/worktrees/
+
+# Local LAN-serving certificate and key (old branch packaging/.gitignore; left on disk after the switch).
+packaging/lan/
+packaging/__pycache__/
