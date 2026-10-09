@@ -25,7 +25,7 @@ Each step is finished, checked by the owner's ChatGPT review, and given the owne
 
 **Current step: 1, Curriculum: outline written and reviewed (`curriculum.md` at 44d4ac91 plus the step-2 notes; ChatGPT: approve with required clarifications, applied). Step 2 starts on the owner's go.**
 
-**Step 2, Rungs: written (`rungs.md`, 120 rungs, 2026-10-09); waiting for the owner's ChatGPT review and the owner's go before step 3.** Working choices for this step:
+**Step 2, Rungs: written and revised after the rung-by-rung review (`rungs.md`, 122 rungs, 2026-10-09); waiting for the owner's ChatGPT review and the owner's go before step 3.** Working choices for this step:
 - Sources: Faber Piano Adventures and Alfred's Basic Piano Library (the publishers' scope-and-sequence material) for the beginner levels; the RCM, ABRSM and Trinity piano syllabuses for the graded spine; publishers' level-correlation charts for aligning levels.
 - Top level: ABRSM/Trinity Grade 8, RCM Level 10. Diplomas are out.
 - Styles: a style line stays only where a published syllabus or progression for it is found, and goes only as high as that source has substance.
