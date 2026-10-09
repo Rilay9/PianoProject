@@ -33,3 +33,18 @@ Agreement now counts only between canonical uploads (PDMX's deduplicated copies)
 | Bach, BWV 514; Haydn, Hob. IX:22 No. 3 | Not confirmed: a single upload each |
 
 **What this shows:** independent uploads of the same piece are rare, so this check can confirm few pieces. Most pieces rest on the catalogue-number match and the facts check, until the owner plays them.
+
+## Reference-PDF check (2026-10-09, on the owner's suggestion)
+
+**Method:**
+1. Find an engraved or printed PDF of the piece outside PDMX and MuseScore (a web search).
+2. Render its first page.
+3. Read bars 1–8, both hands, and compare them with each MusicXML candidate's bars 1–8 as printed by music21.
+
+The comparison is the orchestrator reading a notation image.
+
+| Piece | Reference | Result |
+|---|---|---|
+| Mozart, Minuet in F K. 2 | Pianocoda engraving (pianocoda.com/?p=1612, PDF on Google Drive; editor and source not stated) | **Confirmed, bars 1–8:** "W. A. Mozart Minuet in F Major K2." (canonical) matches exactly. **Error found:** "Mozart: Minuet in F Major (K2) (easy)" (canonical) has a rest before the bar-7 triplet that the reference does not. "Minuet in F" is a different piece |
+
+**Cost:** one search, one page fetch, one PDF download, one image read; a few minutes per piece.
