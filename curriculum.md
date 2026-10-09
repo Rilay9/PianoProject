@@ -43,6 +43,8 @@ The app's levels, and which level of each source they correspond to.
 
 Faber's chart is dated May 2017 and predates the second-edition books (methods.md, caveat under "Level correlation"). Alfred publishes no exam correlation (methods.md); its column follows Faber's chart.
 
+**How the alignment is used.** The rows up to Grade 4 rest on Faber's published chart. From Grade 5 up they are approximate reference points, my reading of the technical content, not equivalences. So nothing is converted through this table: a skill or a piece keeps the level its own source gives it (an RCM Level 7 piece stays RCM Level 7; an ABRSM Grade 6 requirement stays ABRSM Grade 6), and prerequisites in step 2 are taken from those source levels, not inferred from the row a source sits in here.
+
 ---
 
 ## Level P: first steps (F Primer, Al 1A)
@@ -156,32 +158,61 @@ Faber's chart is dated May 2017 and predates the second-edition books (methods.m
 
 ## Style lines
 
-A style line stays where a published syllabus gives it substance, and only as high as that syllabus goes.
+The owner's styles (2026-10-09): **pop, rock/metal, ragtime, blues, jazz**. Whether a style gets its own line is judged by its distinct playing skills, not by whether an exam board covers it. A graded syllabus is used where one exists and a published method book where not (`docs/sources/style-methods.md`, tags B1, B2, R1, K1, K2). Jazz and pop/rock are full lines. Blues, ragtime and metal are lighter strands, fitted into the levels where they fit. Latin, gospel/hymns and holiday music are pieces only (step 3).
 
-### Jazz (with blues): Grades 1–8
+### Jazz: Grades 1–8
 
 - **G1–5 (J Practical Grades).** Three tunes per grade from lists Blues, Standards, Contemporary Jazz, each with a notated head and at least one improvised solo; feel straight 8s or swing. Scales from memory in straight or swing: Dorian and Mixolydian (G1), blues scale (G2), Lydian (G3); minor and major pentatonics throughout. Broken chords on 7th chords (C7, G7, Am7, Gm7 at G4; D7, F7, B♭7, Em7, Bm7, Dm7 at G5). Quick study: improvise a two-bar (G1–2) then four-bar (G3–5) continuation over chord symbols. Aural: improvised answering phrases over a groove; identify swing, rock or Latin grooves (G4–5).
-- **G6–8 (J Performance Grades).** Standards from lead sheets: head, improvised solo over the changes "using suitable jazz vocabulary and comping voicing", head; with a bass-and-drums backing; solos of 16 to 100 bars.
-- **Voicings and modes alongside (RK).** 7th-chord voicings (G2) up to 9ths (G4), 11ths (G5), 13ths (G6), altered dominants (G7–8); Dorian and Mixolydian (G4), Lydian and Phrygian (G5), Lydian dominant and Locrian (G6), altered (G7), diminished (G8).
-- **Blues inside this line.** Blues scales J G2–5, RK G2, AZ G4 (minor blues); 12-bar blues (F 3B); blues tunes on every J list to G5; boogie bass from F 2A, a boogie-woogie improvising style at TR G7. No separate blues syllabus was found.
+- **G6–8 (J Performance Grades).** Standards from lead sheets: head, improvised solo over the changes "using suitable jazz vocabulary and comping voicing", head; with a bass-and-drums backing; solos of 16 to 100 bars. The pianist creates the harmonic texture, comps and solos over the changes (J Performance p. 4, p. 7).
+- **The two ABRSM routes are not the same kind of syllabus.** The Practical Grades (G1–5) test technical work, quick study and aural as well as tunes; the Performance Grades test performance only, with no scales, aural or quick study (J Performance p. 3). So for G6–8 the Performance Grades give the repertoire and performance progression, and the musicianship goals continue from other sources:
+  - **Harmony and voicings (RK G6–8):** 13th and altered-dominant voicings; voice leading between voicings (RK G8); which modes fit which chord types (RK G6).
+  - **Scales and modes (RK G6–8):** Lydian dominant, Locrian, altered, Phrygian dominant, diminished.
+  - **Ear (RK G6–8):** harmonic recall of diatonic progressions with 7th chords; melodic recall.
+  - **Improvising (RK G6–8; TR G7–8):** melody and comping over 16–24-bar progressions; jazz, boogie-woogie and hybrid styles with 9ths, diminished and augmented chords.
+- **Voicings and modes alongside, all grades (RK).** 7th-chord voicings (G2) up to 9ths (G4), 11ths (G5), 13ths (G6), altered dominants (G7–8); Dorian and Mixolydian (G4), Lydian and Phrygian (G5), Lydian dominant and Locrian (G6), altered (G7), diminished (G8).
+- Blues tunes are on every J list to G5; the blues strand below carries the blues-specific skills.
 
-### Popular keyboard (chords, pop, rock): Initial/Debut–Grade 8
+### Pop and rock (with chord playing): Initial/Debut–Grade 8
 
 - **Chord symbols and lead sheets** start in the beginner levels: first lead sheet (F 2A), chords for both hands from p. 18 of the adult course (Al Adult Level 1).
 - **RSL Keys.** Chord voicings every grade (triads at Debut–G1, 7ths at G2, the harmonised scale at G3, extended and altered chords above); pentatonics from Debut; C blues scale at G2; swung feel from G3; harmonic recall of I, IV, V from G4. Improvising over a chord progression and backing track every grade: single-note melodies (Debut–G3), right-hand melody over left-hand chords (G4–5), melody and comping freely (G6–8).
 - **Trinity Rock & Pop.** Improvising over a looped chord chart, with a set style per grade: simple rock and pop over I, IV, V (Initial); ballad, heavy rock (G1); country (G2); swung blues with 7th chords (G3); reggae, R&B with maj7 and m7 (G4); funk, shuffle, disco with sus4 (G5); Latin, metal with power, added-6th and slash chords (G6); jazz, boogie-woogie with 9ths, diminished and augmented chords (G7); any common or hybrid style (G8). Improvised solos and fills inside the songs from G4.
 - **ANZCA.** Accompaniment from chord symbols (G2–3), melodic embellishment of a lead sheet (G4–8), a lead-sheet solo at the Associate diploma.
+- **Rock keyboard method (K1 Harrison, *Beginning Rock Keyboard*, beginning level), in the book's order:** left-hand quarter- and eighth-note patterns; shuffle feel; I–IV–V; triad inversions and voice leading; right-hand rhythm patterns; the blues/rock left-hand pattern; shuffle comping; power chords (pp. 6–13). Then right-hand arpeggios in eighths and sixteenths; four-part chords and inversions; triad-over-root and alternating-triad voicings; ballad comping; sus chords; unison riffs on the minor pentatonic and blues scales (pp. 14–26). Then soloing with major and minor pentatonic and blues scales, with drone notes (pp. 40–44).
+- **Rock styles (K2 Miller, *Rock Keyboard*, beginning to advanced).** One chapter per style, each comping then soloing: classic rock, pop rock, blues rock, Southern rock, hard rock, progressive rock, alternative rock, heavy metal (contents; p. 2).
+- **Where rock sits.** Simple rock over I, IV, V from Initial and heavy rock at G1 (TR); K1's material from about Grade 1 up (my reading of its "beginning" level).
+
+### Metal: a strand inside pop and rock
+
+- Power chords (root and fifth, right hand doubled by the thumb) with a driving eighth-note right hand, "commonly used in harder rock and metal styles" (K1 p. 13).
+- Metal keyboard tools: dissonant pads and clusters, unusual progressions, sixteenth-note punches, minor riffs; modal (Dorian) bass over a pedal, the flat 5th from the blues scale (K2 ch. 8, p. 49).
+- Metal as an improvising style with power, added-6th and slash chords at TR G6.
+- Where it sits: from about Grade 4 to 6 (my reading: K2 places it last among rock styles; TR sets it at G6). No metal-only keyboard method was found.
+
+### Blues (with boogie-woogie): a strand from Level B to about Grade 5, pieces beyond
+
+- **In the spine already:** boogie and ostinato bass (F 2A, Level B); the 12-bar blues (F 3B, about Grade 2); the blues scale at J G2 and RK G2; minor blues scale at AZ G4.
+- **Method sequence (B1 Wierzyk, *Boogie & Blues Piano*, Schott, "intermediate"; contents lines):** blue notes and the 12-bar scheme; first boogies (two-handed groove); melody in thirds and syncopated thirds; the blues scale (Boogie 3a); the first blue note; denser accompaniment patterns and two-handed accompaniment variants; seventh chords and the extended blues scale; triplet-eighth melody and the second blue note as a triplet lick; improvising in C minor and A minor; transposing licks; a system of boogie accompaniment patterns; crushed notes; listen-and-play boogies; walking bass and blues/jazz comping; sixths; ornaments; clusters; the "Amen" formula; intros and endings.
+- **Second method (B2 Harrison, *Blues Piano*, Hal Leonard), in its order:** major scales and modes, pentatonic and blues scales, triads and seventh chords, Mixolydian and blues scales over dominant chords (pp. 6–13); the 12-bar blues and four groups of left-hand patterns (intervals, three-note chords, single notes, anticipations), walking bass (pp. 15–23); voicings and comping (triads, dominant 7th and 9th, "seven-three" voicings), endings and turnarounds (pp. 25–37); right-hand techniques: grace-note phrases, parallel 3rds and 6ths, drone notes, combining blues scales, octave runs, crossover licks, tremolos, clusters (pp. 40–55).
+- **Above Grade 5:** blues continues as pieces (AZ Blues and Boogie categories to G8) and as a boogie-woogie improvising style (TR G7).
+
+### Ragtime: a strand of patterns and pieces, Grade 1 up
+
+- **What ragtime asks (R1 Valerio, *Stride & Swing Piano*, ch. 1 Classic Ragtime, pp. 4–17):** a syncopated right hand from the cakewalk over a steady "oom-pah" left hand from the march (p. 4); multi-strain form such as AABBCCDD with a trio in the subdominant; right-hand rhythm groups that cut across the left-hand pulse; chromatic chords toward each cadence; a moderate, even tempo, not swung (p. 12).
+- **In the spine already:** the ragtime left-hand pattern (F 3A, about Grade 1); syncopation (F 3B; AB G5 SR).
+- **Joplin's own *School of Ragtime*** (1908, six exercises, public domain): exists, but was not readable here (open point).
+- **Beyond ragtime:** stride follows it in R1 (chs. 4–5: left-hand bass and chord alternation, sixth and seventh chords, four-note voicings, p. 44).
+- **Where it sits:** ragtime pieces from G1 (AZ Ragtime category); classic rags are "intermediate–advanced" (Schott *20 Ragtimes*, per style-methods.md R2). No stand-alone ragtime method with readable contents was found, so this strand is mostly pieces and the patterns above.
 
 ### Improvisation: a strand through every level, not a separate line
 
 It is in the method books from the first lessons (F Primer–5), in Trinity's improvisation option from Initial to Grade 8 (stylistic, motivic, harmonic), in RCM's improvised answer phrase from Level 5, and in every grade of the jazz and popular lines above.
 
-### Not kept as lines
+### Pieces only
 
-- **Ragtime:** no graded syllabus found. Ragtime pieces exist as a repertoire category (AZ, from G1), and the ragtime bass is a pattern at F 3A. Placed as pieces in step 3.
-- **Latin:** no dedicated syllabus. It appears as a repertoire category (AZ, from G3), an improvising style (TR G6) and Latin Real Book tunes (J G6–8). Placed as pieces in step 3.
-- **Gospel and hymns:** no graded syllabus found (styles-found.md).
-- **Rock and metal, holiday, jam:** rock and metal sit inside Popular keyboard. Holiday is a kind of piece, not a line. Jam (playing over a backing track) is an app mode, decided in step 4.
+- **Latin:** a repertoire category (AZ, from G3), an improvising style (TR G6) and Latin Real Book tunes (J G6–8). Pieces in step 3.
+- **Gospel and hymns, holiday:** pieces in step 3 if wanted.
+- **Jam** (playing over a backing track) is an app mode, decided in step 4.
 
 ---
 
@@ -203,23 +234,24 @@ Old structure: stages 0–9 and 15 tracks (`reference/old-curriculum.md`, Part B
 | Stage 9 Open repertoire | drop as a level | Beyond Grade 8, the top of this curriculum. Free practice with the library is an app mode (step 4). |
 | Track core | keep | The level spine above. |
 | Track practice (how to practise) | keep, moves | No syllabus teaches practice method; method books carry it inside lessons (F "Technique Secrets"). Lesson content (step 5). |
-| Track holiday | drop | No syllabus. Holiday pieces can still be chosen as repertoire. |
-| Track hymns-gospel | drop | No graded syllabus found. |
+| Track holiday | pieces only | Not one of the owner's styles; holiday pieces can still be chosen. |
+| Track hymns-gospel | pieces only | Not one of the owner's styles. |
 | Track classical | keep | The spine's repertoire lists (AB A/B/C, R A/B/C to D/E, T groups). |
-| Track chords-pop | keep | Popular keyboard line (RK, TR, AZ). |
-| Track blues-boogie | fix | Folded into the jazz and popular lines (blues scales, 12-bar blues, boogie bass, blues tune lists). |
+| Track chords-pop | keep | Pop and rock line (RK, TR, AZ, K1). |
+| Track blues-boogie | keep, as a strand | Blues strand from Level B to about G5 (B1, B2, J, RK, AZ); pieces beyond. |
 | Track theory-ear | fix | Becomes the aural strand and the "at the keyboard" lines of each level; written theory is out. |
 | Track improv-compose | fix | Improvisation becomes a strand through every level. Composing stays as an occasional activity (F composing tasks; T own-composition option). |
-| Track rock-metal | fix | Inside Popular keyboard (TR styles heavy rock G1, metal G6). |
-| Track latin | drop as a line | Repertoire category and improvising style only (see above). |
+| Track rock-metal | keep, inside pop and rock | Rock in the pop and rock line (K1, K2, TR); metal as a strand from about G4–6 (K1 p. 13, K2 ch. 8, TR G6). |
+| Track latin | pieces only | Not one of the owner's styles. |
 | Track jazz | keep | Jazz line (J G1–8, RK). |
 | Track jam | moves | An app mode (step 4), as the J G6–8 backing-track context shows. |
 | Track technique | keep | The technique lines of each level (scales, arpeggios, chords per grade). |
-| Track ragtime | drop as a line | No syllabus; ragtime pieces placed in step 3. |
+| Track ragtime | keep, as a strand | Patterns and pieces from G1 (R1, F 3A, AZ); mostly pieces, since no stand-alone method was readable. |
 
 ## Open points
 
 - **Alignment above Grade 4.** The RCM–ABRSM correspondence for Grades 5–8 is my reading of the technical content; no published chart covering those levels was read.
 - **Faber chart.** It is from 2017, before the second editions; page-level contents for Faber 3A–5 and Alfred 3–6 are not public (methods.md), so those levels rest on concept lists and sample pages.
-- **Agent extracts.** Each extract was written by an agent from the official documents. Checked by the orchestrator against the PDFs: RCM pp. 19, 20, 26 (Level 1–2 technique, sight playing, intervals); Trinity pp. 80–81 (sight-reading level); ABRSM p. 16 (sight-reading parameters); Faber chart (3A = Grade 1); RSL Keys p. 44 (Grade 2 blues scale); ABRSM Jazz pp. 33–35. The rest is the agents' reading, cited page by page for checking.
+- **Joplin's *School of Ragtime*** was not readable (IMSLP bot check); reading it would fill out the ragtime strand.
+- **Agent extracts.** Each extract was written by an agent from the official documents. Checked by the orchestrator against the PDFs: RCM pp. 19, 20, 26 (Level 1–2 technique, sight playing, intervals); Trinity pp. 80–81 (sight-reading level); ABRSM p. 16 (sight-reading parameters); Faber chart (3A = Grade 1); RSL Keys p. 44 (Grade 2 blues scale); ABRSM Jazz pp. 33–35; Schott *Boogie & Blues Piano* contents and level (B1). The rest is the agents' reading, cited page by page for checking.
 - **Aural singing.** Several aural tests ask the learner to sing; whether the app can use them is a step 4 question.
