@@ -5,7 +5,9 @@ Each piece goes in at its lowest app level; pieces with no level on the app's sp
 12 items, one level each (small adjacent levels share a batch). Item ids are <level>.<nn>.
 
 Output: build/pieces/batches/batch-<n>.md and build/pieces/batches/items.csv (id, level, composer, title, file, url).
-Usage: python tools/pieces/ref_batches.py
+Usage: python tools/pieces/ref_batches.py [--new]
+  --new: leave out (candidate file, reference page) pairs already judged in docs/pieces/review/reference-verdicts.csv
+  (except NOT READ rows); batches are then written as new-<n>.md.
 """
 import csv, os, sys
 
@@ -22,6 +24,12 @@ MAX = 12
 def main():
     rows = [r for r in csv.DictReader(open(os.path.join(ROOT, "docs", "pieces", "review", "pianocoda-matches.csv"),
                                            encoding="utf-8")) if r["png"].endswith(".png")]
+    new = "--new" in sys.argv
+    if new:
+        vp = os.path.join(ROOT, "docs", "pieces", "review", "reference-verdicts.csv")
+        done = {(v["candidate_file"], v["pianocoda_url"]) for v in csv.DictReader(open(vp, encoding="utf-8"))
+                if v["verdict"] != "NOT READ"}
+        rows = [r for r in rows if (r["candidate_file"], r["pianocoda_url"]) not in done]
     by_level = {}
     for r in rows:
         lv = [x for x in r["levels"].split() if x in S.ORDER]
@@ -45,7 +53,7 @@ def main():
     for n, batch in enumerate(batches, 1):
         lines = [f"# Reference reading, batch {n}", ""]
         for lvl, i, r in batch:
-            iid = f"{lvl}.{i:02d}"
+            iid = f"{'n' if new else ''}{lvl}.{i:02d}"
             f = r["candidate_file"]
             path = os.path.join(FILES, os.path.basename(f)) if f.startswith("./mxl") else os.path.join(ROOT, f)
             lines += [f"## {iid} {r['composer']}: {r['title']}", "",
@@ -60,9 +68,9 @@ def main():
             lines.append("")
             items.append({"id": iid, "batch": n, "level": lvl, "composer": r["composer"], "title": r["title"],
                           "candidate_file": f, "candidate_title": r["candidate_title"], "pianocoda_url": r["pianocoda_url"]})
-        open(os.path.join(OUT, f"batch-{n}.md"), "w", encoding="utf-8", newline="\n").write("\n".join(lines))
+        open(os.path.join(OUT, f"{'new' if new else 'batch'}-{n}.md"), "w", encoding="utf-8", newline="\n").write("\n".join(lines))
         print(f"batch {n}: {len(batch)} items, levels {sorted({b[0] for b in batch}, key=S.ORDER.index)}")
-    with open(os.path.join(OUT, "items.csv"), "w", encoding="utf-8", newline="") as fh:
+    with open(os.path.join(OUT, "new-items.csv" if new else "items.csv"), "w", encoding="utf-8", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(items[0].keys()))
         w.writeheader()
         w.writerows(items)
