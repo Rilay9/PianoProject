@@ -1,0 +1,632 @@
+{
+ "totals": {
+  "items": 49,
+  "raw signature changes (times.classify)": 187,
+  "music21 plain read changes": 187,
+  "partitura plain read changes": 187,
+  "current:change": 116,
+  "current:device?": 25,
+  "fix:change": 148,
+  "fix:device?": 25,
+  "items where music21 changes == raw": 49,
+  "items where partitura changes == raw": 49,
+  "items where music21 signature per bar == raw": 49,
+  "items where partitura signature per bar == raw": 49,
+  "items with equal bar count (music21)": 49,
+  "items with equal bar count (partitura)": 49,
+  "current:cadenza-longer": 32,
+  "current:device": 9,
+  "fix:device": 9,
+  "current:cadenza-words": 5,
+  "fix:cadenza-words": 5
+ },
+ "items_differing": 30,
+ "items_fix_changes": 8,
+ "named": {
+  "song.beautiful.mariage-damour": {
+   "expected_class": "change",
+   "expected_changes_of_metre": 22,
+   "n_sig_changes": 22,
+   "current": {
+    "changes_of_metre": 15,
+    "named_bars": {
+     "2": "cadenza-longer"
+    },
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "fix": {
+    "changes_of_metre": 22,
+    "named_bars": {
+     "2": "change"
+    },
+    "named_bars_right": true,
+    "item_right": true
+   },
+   "music21": {
+    "changes_of_metre": 22,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": true,
+    "item_right": true
+   },
+   "partitura": {
+    "changes_of_metre": 22,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": true,
+    "item_right": true
+   }
+  },
+  "song.folk.scarborough-fair-piano-solo.pdmx": {
+   "expected_class": "change",
+   "expected_changes_of_metre": 2,
+   "n_sig_changes": 2,
+   "current": {
+    "changes_of_metre": 1,
+    "named_bars": {
+     "101": "cadenza-longer"
+    },
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "fix": {
+    "changes_of_metre": 2,
+    "named_bars": {
+     "101": "change"
+    },
+    "named_bars_right": true,
+    "item_right": true
+   },
+   "music21": {
+    "changes_of_metre": 2,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": true,
+    "item_right": true
+   },
+   "partitura": {
+    "changes_of_metre": 2,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": true,
+    "item_right": true
+   }
+  },
+  "song.pop.misc-television-the-lonely-man-theme.pdmx": {
+   "expected_class": "change",
+   "expected_changes_of_metre": 2,
+   "n_sig_changes": 2,
+   "current": {
+    "changes_of_metre": 1,
+    "named_bars": {
+     "3": "cadenza-longer"
+    },
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "fix": {
+    "changes_of_metre": 2,
+    "named_bars": {
+     "3": "change"
+    },
+    "named_bars_right": true,
+    "item_right": true
+   },
+   "music21": {
+    "changes_of_metre": 2,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": true,
+    "item_right": true
+   },
+   "partitura": {
+    "changes_of_metre": 2,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": true,
+    "item_right": true
+   }
+  },
+  "song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx": {
+   "expected_class": "change",
+   "expected_changes_of_metre": 1,
+   "n_sig_changes": 1,
+   "current": {
+    "changes_of_metre": 0,
+    "named_bars": {
+     "15": "cadenza-longer"
+    },
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "fix": {
+    "changes_of_metre": 1,
+    "named_bars": {
+     "15": "change"
+    },
+    "named_bars_right": true,
+    "item_right": true
+   },
+   "music21": {
+    "changes_of_metre": 1,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": true,
+    "item_right": true
+   },
+   "partitura": {
+    "changes_of_metre": 1,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": true,
+    "item_right": true
+   }
+  },
+  "song.classical.radetzky-march-for-easy-piano.pdmx": {
+   "expected_class": "device",
+   "expected_changes_of_metre": 0,
+   "n_sig_changes": 2,
+   "current": {
+    "changes_of_metre": 2,
+    "named_bars": {
+     "71": "change"
+    },
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "fix": {
+    "changes_of_metre": 2,
+    "named_bars": {
+     "71": "change"
+    },
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "music21": {
+    "changes_of_metre": 2,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "partitura": {
+    "changes_of_metre": 2,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": false,
+    "item_right": false
+   }
+  },
+  "song.classical.beethoven-bagatelle-in-d-major-op-119-no-3.pdmx": {
+   "expected_class": "device",
+   "expected_changes_of_metre": 0,
+   "n_sig_changes": 9,
+   "current": {
+    "changes_of_metre": 3,
+    "named_bars": {
+     "8": "device",
+     "9": "device",
+     "26": "(no signature change)",
+     "27": "device?",
+     "35": "device",
+     "36": "device",
+     "60": "device"
+    },
+    "named_bars_right": true,
+    "item_right": false
+   },
+   "fix": {
+    "changes_of_metre": 3,
+    "named_bars": {
+     "8": "device",
+     "9": "device",
+     "26": "(no signature change)",
+     "27": "device?",
+     "35": "device",
+     "36": "device",
+     "60": "device"
+    },
+    "named_bars_right": true,
+    "item_right": false
+   },
+   "music21": {
+    "changes_of_metre": 9,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "partitura": {
+    "changes_of_metre": 9,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": false,
+    "item_right": false
+   }
+  },
+  "song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx": {
+   "expected_class": "device",
+   "expected_changes_of_metre": 0,
+   "n_sig_changes": 6,
+   "current": {
+    "changes_of_metre": 3,
+    "named_bars": {
+     "8": "device?",
+     "9": "change",
+     "17": "device?",
+     "18": "change",
+     "26": "device?",
+     "27": "change"
+    },
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "fix": {
+    "changes_of_metre": 3,
+    "named_bars": {
+     "8": "device?",
+     "9": "change",
+     "17": "device?",
+     "18": "change",
+     "26": "device?",
+     "27": "change"
+    },
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "music21": {
+    "changes_of_metre": 6,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "partitura": {
+    "changes_of_metre": 6,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": false,
+    "item_right": false
+   }
+  },
+  "song.classical.mozart-w-a-mozart-minuet-in-c-major-k1f.pdmx": {
+   "expected_class": "device",
+   "expected_changes_of_metre": 0,
+   "n_sig_changes": 2,
+   "current": {
+    "changes_of_metre": 1,
+    "named_bars": {
+     "8": "device?",
+     "9": "change"
+    },
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "fix": {
+    "changes_of_metre": 1,
+    "named_bars": {
+     "8": "device?",
+     "9": "change"
+    },
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "music21": {
+    "changes_of_metre": 2,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "partitura": {
+    "changes_of_metre": 2,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": false,
+    "item_right": false
+   }
+  },
+  "song.classical.chopin-nocturne-op9-2": {
+   "expected_class": "cadenza",
+   "expected_changes_of_metre": 0,
+   "n_sig_changes": 3,
+   "current": {
+    "changes_of_metre": 0,
+    "named_bars": {
+     "33": "cadenza-words",
+     "35": "cadenza-words",
+     "36": "cadenza-words"
+    },
+    "named_bars_right": true,
+    "item_right": true
+   },
+   "fix": {
+    "changes_of_metre": 0,
+    "named_bars": {
+     "33": "cadenza-words",
+     "35": "cadenza-words",
+     "36": "cadenza-words"
+    },
+    "named_bars_right": true,
+    "item_right": true
+   },
+   "music21": {
+    "changes_of_metre": 3,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": false,
+    "item_right": false
+   },
+   "partitura": {
+    "changes_of_metre": 3,
+    "reads_the_named_signature_changes": true,
+    "named_bars_right": false,
+    "item_right": false
+   }
+  }
+ },
+ "named_summary": {
+  "current": {
+   "named_bars_right": 2,
+   "item_changes_of_metre_right": 1,
+   "of": 9
+  },
+  "fix": {
+   "named_bars_right": 6,
+   "item_changes_of_metre_right": 5,
+   "of": 9
+  },
+  "music21": {
+   "named_bars_right": 4,
+   "item_changes_of_metre_right": 4,
+   "of": 9
+  },
+  "partitura": {
+   "named_bars_right": 4,
+   "item_changes_of_metre_right": 4,
+   "of": 9
+  }
+ },
+ "clause_firings": [
+  {
+   "id": "song.beautiful.mariage-damour",
+   "idx": 2,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour",
+   "idx": 6,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour",
+   "idx": 20,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour",
+   "idx": 24,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour",
+   "idx": 49,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour",
+   "idx": 72,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour",
+   "idx": 76,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt",
+   "idx": 2,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt",
+   "idx": 6,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt",
+   "idx": 20,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt",
+   "idx": 24,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt",
+   "idx": 46,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt",
+   "idx": 50,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt",
+   "idx": 73,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt",
+   "idx": 77,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt",
+   "idx": 80,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "6/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt",
+   "idx": 81,
+   "sig": "6/4",
+   "prev": "5/4",
+   "next": "4/4",
+   "bars_in_file": 84
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt2",
+   "idx": 2,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 83
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt2",
+   "idx": 6,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 83
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt2",
+   "idx": 20,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 83
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt2",
+   "idx": 24,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 83
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt2",
+   "idx": 49,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 83
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt2",
+   "idx": 72,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 83
+  },
+  {
+   "id": "song.beautiful.mariage-damour.alt2",
+   "idx": 76,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 83
+  },
+  {
+   "id": "song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx",
+   "idx": 15,
+   "sig": "6/4",
+   "prev": "4/4",
+   "next": null,
+   "bars_in_file": 16
+  },
+  {
+   "id": "song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx",
+   "idx": 3,
+   "sig": "12/4",
+   "prev": "3/4",
+   "next": "3/4",
+   "bars_in_file": 339
+  },
+  {
+   "id": "song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx",
+   "idx": 172,
+   "sig": "8/4",
+   "prev": "3/4",
+   "next": "3/4",
+   "bars_in_file": 339
+  },
+  {
+   "id": "song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx",
+   "idx": 304,
+   "sig": "11/8",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 339
+  },
+  {
+   "id": "song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx",
+   "idx": 308,
+   "sig": "33/16",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 339
+  },
+  {
+   "id": "song.folk.scarborough-fair-piano-solo.pdmx",
+   "idx": 101,
+   "sig": "4/4",
+   "prev": "3/4",
+   "next": "3/4",
+   "bars_in_file": 137
+  },
+  {
+   "id": "song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx",
+   "idx": 32,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 81
+  },
+  {
+   "id": "song.pop.misc-television-the-lonely-man-theme.pdmx",
+   "idx": 3,
+   "sig": "5/4",
+   "prev": "4/4",
+   "next": "4/4",
+   "bars_in_file": 28
+  }
+ ]
+}

@@ -1,0 +1,3584 @@
+{
+ "song.beautiful.hungarian-sonata": {
+  "pipeline": "other",
+  "title": "Hungarian Sonata",
+  "printed": 49,
+  "jump_words": [
+   [
+    14,
+    "To Coda"
+   ],
+   [
+    31,
+    "D.S. al Coda"
+   ]
+  ],
+  "structure": "10[SEGNO] 14[TOCODA] 31[JUMP:DS/coda] 32[CODA]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.beautiful.merry-christmas-mr-lawrence": {
+  "pipeline": "other",
+  "title": "Merry Christmas Mr. Lawrence",
+  "printed": 75,
+  "jump_words": [
+   [
+    57,
+    "D.S."
+   ],
+   [
+    57,
+    "D.S."
+   ]
+  ],
+  "structure": "16[:|] 17[|: SEGNO] 24[V1 :| v-end] 25[V2 v-end] 57[JUMP:DS/None] 58[CODA]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.blues.aunt-hagars-blues": {
+  "pipeline": "other",
+  "title": "Aunt Hagar's Blues",
+  "printed": 52,
+  "jump_words": [],
+  "structure": "41[|:]",
+  "n_fwd": 1,
+  "n_bwd": 0
+ },
+ "song.blues.boogie-and-blues-bass-lines": {
+  "pipeline": "other",
+  "title": "Boogie and Blues Bass Lines",
+  "printed": 54,
+  "jump_words": [],
+  "structure": "1[|:] 12[:|] 14[|:] 26[:|] 27[|:] 38[:|] 39[|: :|] 40[|: :|] 41[|: :|] 42[|: :|] 43[|: :|] 44[|: :|] 45[|: :|] 46[|: :|] 47[|: :|] 48[|: :|] 49[|: :|] 50[|: :|] 51[|: :|] 52[|: :|] 53[|: :|] 54[|: :|]",
+  "n_fwd": 19,
+  "n_bwd": 19
+ },
+ "song.blues.boogie-en-sol": {
+  "pipeline": "other",
+  "title": "Boogie-Boogie en Sol",
+  "printed": 21,
+  "jump_words": [],
+  "structure": "21[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.blues.hesitating-blues": {
+  "pipeline": "other",
+  "title": "Hesitating Blues",
+  "printed": 48,
+  "jump_words": [],
+  "structure": "1[|:] 24[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.blues.jazz-me-blues": {
+  "pipeline": "other",
+  "title": "Jazz Me Blues",
+  "printed": 41,
+  "jump_words": [],
+  "structure": "21[|:]",
+  "n_fwd": 1,
+  "n_bwd": 0
+ },
+ "song.blues.livery-stable-blues": {
+  "pipeline": "other",
+  "title": "Livery Stable Blues",
+  "printed": 37,
+  "jump_words": [],
+  "structure": "37[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.blues.long-gone": {
+  "pipeline": "other",
+  "title": "Long Gone",
+  "printed": 41,
+  "jump_words": [],
+  "structure": "26[|:] 41[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.blues.ole-miss": {
+  "pipeline": "other",
+  "title": "Ole Miss",
+  "printed": 64,
+  "jump_words": [],
+  "structure": "49[|:] 64[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.blues.riverside-blues": {
+  "pipeline": "other",
+  "title": "Riverside Blues",
+  "printed": 41,
+  "jump_words": [],
+  "structure": "16[V1 :| v-end] 17[V2 v-end] 18[|:] 29[:|] 41[:|]",
+  "n_fwd": 1,
+  "n_bwd": 3
+ },
+ "song.blues.satanic-blues": {
+  "pipeline": "other",
+  "title": "Satanic Blues",
+  "printed": 47,
+  "jump_words": [],
+  "structure": "6[|:] 17[:|] 18[|:] 28[V1] 29[:| v-end] 30[V2] 31[v-end]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.blues.singin-the-blues": {
+  "pipeline": "other",
+  "title": "Singin' the Blues",
+  "printed": 35,
+  "jump_words": [],
+  "structure": "5[|:] 35[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.blues.st-james-infirmary": {
+  "pipeline": "other",
+  "title": "St. James Infirmary",
+  "printed": 24,
+  "jump_words": [],
+  "structure": "17[|:]",
+  "n_fwd": 1,
+  "n_bwd": 0
+ },
+ "song.blues.weary-blues": {
+  "pipeline": "other",
+  "title": "Weary Blues",
+  "printed": 43,
+  "jump_words": [
+   [
+    25,
+    "D.C. al Coda"
+   ]
+  ],
+  "structure": "1[|:] 11[CODA] 12[:|] 13[|:] 24[V1 :| v-end] 25[V2 JUMP:DC/coda v-end] 26[CODA] 28[|:]",
+  "n_fwd": 3,
+  "n_bwd": 2
+ },
+ "song.classical.12-bar-blues.pdmx": {
+  "pipeline": "pdmx",
+  "title": "12 Bar Blues",
+  "printed": 11,
+  "jump_words": [],
+  "structure": "2[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.1919-blues-my-naughty-sweetie-gives-to-me.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Blues My Naughty Sweetie Gives to Me (1919)",
+  "printed": 48,
+  "jump_words": [],
+  "structure": "17[|:] 48[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.ah-vous-dirais-je-maman.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Ah! vous dirai-je, Maman",
+  "printed": 16,
+  "jump_words": [
+   [
+    16,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "16[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.anonymous-romance-anonimo-romanza.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Romance Anonimo (Romanza)",
+  "printed": 33,
+  "jump_words": [
+   [
+    16,
+    "Fine"
+   ],
+   [
+    16,
+    "Fine"
+   ],
+   [
+    33,
+    "<font size=\"11\"></font>D.C. al Fine"
+   ],
+   [
+    33,
+    "<font size=\"11\"></font>D.C. al Fine"
+   ]
+  ],
+  "structure": "16[FINE :|] 17[|:] 32[V1 :| v-end] 33[V2 JUMP:DC/fine v-end]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.bach-air-on-g-string": {
+  "pipeline": "other",
+  "title": "Air on the G String (from BWV 1068)",
+  "printed": 37,
+  "jump_words": [],
+  "structure": "12[V1 :| v-end] 13[V2 v-end] 14[|:] 37[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.bach-gavotte-en-rondo-from-partita-e-major-for-violin-bach.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Gavotte en Rondo from Partita E major for Violin - Bach",
+  "printed": 102,
+  "jump_words": [],
+  "structure": "9[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.bach-little-prelude-in-c-major-bwv-933.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Little Prelude in C major, BWV 933",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.bach-little-prelude-in-c-minor-bwv-934.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Little Prelude in C minor, BWV 934",
+  "printed": 40,
+  "jump_words": [],
+  "structure": "20[:|] 21[|:] 40[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.bach-little-prelude-in-d-major-bwv-936.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Little Prelude in D major, BWV 936",
+  "printed": 48,
+  "jump_words": [],
+  "structure": "20[:|] 21[|:] 48[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.bach-little-prelude-in-d-minor-bwv-935.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Little Prelude in D minor, BWV 935",
+  "printed": 48,
+  "jump_words": [],
+  "structure": "24[:|] 25[|:] 48[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.bach-march-in-d-major.pdmx": {
+  "pipeline": "pdmx",
+  "title": "March in D major, BWV Anh. 122",
+  "printed": 24,
+  "jump_words": [],
+  "structure": "10[:|] 11[|:] 24[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.bach-menuet-bwv-anh-113.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in F major, BWV Anh. 113",
+  "printed": 32,
+  "jump_words": [],
+  "structure": "12[:|] 13[|:] 32[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.bach-menuet-in-d-minor-bwv-anh-132.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in D minor, BWV Anh. 132",
+  "printed": 18,
+  "jump_words": [],
+  "structure": "8[V1 :| v-end] 9[V2 v-end] 10[|:] 17[V1 :| v-end] 18[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.bach-solo-per-il-cembalo-bwv-anh-129.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Solo per il cembalo, BWV Anh. 129",
+  "printed": 64,
+  "jump_words": [],
+  "structure": "21[:|] 22[|:] 64[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.beethoven-bagatelle-in-d-major-op-119-no-3.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Bagatelle in D major, Op. 119 No. 3",
+  "printed": 61,
+  "jump_words": [
+   [
+    36,
+    "D.C. al Coda"
+   ],
+   [
+    36,
+    "D.C. al Coda"
+   ]
+  ],
+  "structure": "9[:|] 10[|:] 18[CODA :|] 19[|:] 27[:|] 28[|:] 36[JUMP:DC/coda :|] 37[CODA]",
+  "n_fwd": 3,
+  "n_bwd": 4
+ },
+ "song.classical.beethoven-ecossaise.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Écossaise",
+  "printed": 18,
+  "jump_words": [
+   [
+    9,
+    "Fine"
+   ],
+   [
+    18,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "9[FINE] 10[|:] 18[JUMP:DC/fine :|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.beethoven-fur-elise": {
+  "pipeline": "other",
+  "title": "Für Elise, WoO 59",
+  "printed": 106,
+  "jump_words": [],
+  "structure": "9[V1 :| v-end] 10[V2] 11[|:] 24[V1 :| v-end] 25[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.beethoven-fur-elise.beginner": {
+  "pipeline": "other",
+  "title": "Für Elise (beginner)",
+  "printed": 24,
+  "jump_words": [],
+  "structure": "9[V1 :| v-end] 10[V2 v-end]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.beethoven-moonlight-iii": {
+  "pipeline": "other",
+  "title": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+  "printed": 201,
+  "jump_words": [],
+  "structure": "2[|:] 65[V1 :| v-end] 66[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.beethoven-moonlight-iii.alt": {
+  "pipeline": "other",
+  "title": "Moonlight Sonata, III. Presto agitato (alternative edition)",
+  "printed": 201,
+  "jump_words": [],
+  "structure": "2[|:] 65[V1 :| v-end] 66[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.beethoven-sonatina-in-g-major-ahn-5.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Sonatina in G major, Anh. 5 No. 1",
+  "printed": 34,
+  "jump_words": [],
+  "structure": "9[|:] 24[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.bertini-etude-in-b-flat-major-op-29-no-4.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude in B-flat major, Op. 29 No. 4",
+  "printed": 35,
+  "jump_words": [],
+  "structure": "8[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.beyer-exercise-no-38.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Exercise No. 38",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Overture to Carmen for piano solo (By Georges Bizet)",
+  "printed": 120,
+  "jump_words": [],
+  "structure": "16[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.brahms-hungarian-dance-5": {
+  "pipeline": "other",
+  "title": "Hungarian Dance No. 5 in G minor",
+  "printed": 102,
+  "jump_words": [],
+  "structure": "33[|:] 48[:|] 61[|:] 68[:|] 85[|:] 100[:|]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Intermezzo in A major, Op. 118 No. 2",
+  "printed": 117,
+  "jump_words": [],
+  "structure": "50[|:] 57[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.burgmuller-burgmuller-arabesque-op-100-no-2.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Arabesque, Op. 100 No. 2",
+  "printed": 33,
+  "jump_words": [],
+  "structure": "3[|:] 10[V1 :| v-end] 11[V2 v-end] 12[|:] 27[V1 :| v-end] 28[V2 v-end]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.burgmuller-le-courant-limpide-the-crystal-clear-stream.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Le courant limpide, Op. 100 No. 7",
+  "printed": 16,
+  "jump_words": [
+   [
+    8,
+    "Fine"
+   ],
+   [
+    8,
+    "Fine"
+   ],
+   [
+    16,
+    "D.C. al Fine"
+   ],
+   [
+    16,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "8[FINE] 16[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.burgmuller-pastorale-op-100-no-3.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Pastorale, Op. 100 No. 3",
+  "printed": 29,
+  "jump_words": [],
+  "structure": "3[|:] 10[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-chopin-waltz-in-a-minor-piano-solo.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Chopin - Waltz in A Minor (Piano Solo)",
+  "printed": 25,
+  "jump_words": [],
+  "structure": "18[|:] 25[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-ecossaise-op72-1.nifc": {
+  "pipeline": "other",
+  "title": "Écossaise No. 1 in D major, Op. 72 No. 3",
+  "printed": 27,
+  "jump_words": [],
+  "structure": "2[|:] 9[:|] 11[|:] 18[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.chopin-ecossaise-op72-2.nifc": {
+  "pipeline": "other",
+  "title": "Écossaise No. 2 in G major, Op. 72 No. 3",
+  "printed": 19,
+  "jump_words": [],
+  "structure": "2[|:] 9[:|] 11[|:] 18[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.chopin-ecossaise-op72-3.nifc": {
+  "pipeline": "other",
+  "title": "Écossaise No. 3 in D-flat major, Op. 72 No. 3",
+  "printed": 18,
+  "jump_words": [],
+  "structure": "2[|:] 17[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-mazurka-op17-3.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in A-flat major, Op. 17 No. 3",
+  "printed": 86,
+  "jump_words": [],
+  "structure": "18[|:] 42[:|] 60[|:] 84[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.chopin-mazurka-op24-1.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in G minor, Op. 24 No. 1",
+  "printed": 66,
+  "jump_words": [],
+  "structure": "2[|:] 33[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-mazurka-op24-3.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in A-flat major, Op. 24 No. 3",
+  "printed": 46,
+  "jump_words": [],
+  "structure": "2[|:] 15[|:] 38[:|]",
+  "n_fwd": 2,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-mazurka-op24-4.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in B-flat minor, Op. 24 No. 4",
+  "printed": 149,
+  "jump_words": [],
+  "structure": "22[|:] 53[:|] 55[|:] 62[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.chopin-mazurka-op30-3.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in D-flat major, Op. 30 No. 3",
+  "printed": 95,
+  "jump_words": [],
+  "structure": "9[|:] 24[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-mazurka-op33-3.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in C major, Op. 33 No. 3",
+  "printed": 35,
+  "jump_words": [],
+  "structure": "10[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-mazurka-op50-2.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in A-flat major, Op. 50 No. 2",
+  "printed": 103,
+  "jump_words": [],
+  "structure": "60[|:] 67[:|] 68[|:] 83[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.chopin-mazurka-op56-2.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in C major, Op. 56 No. 2",
+  "printed": 84,
+  "jump_words": [],
+  "structure": "29[|:] 36[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-mazurka-op6-1.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in F-sharp minor, Op. 6 No. 1",
+  "printed": 75,
+  "jump_words": [],
+  "structure": "16[:|] 18[|:] 41[:|] 43[|:]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.chopin-mazurka-op6-2.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in C-sharp minor, Op. 6 No. 2",
+  "printed": 75,
+  "jump_words": [],
+  "structure": "9[|:] 17[:|] 18[|:] 34[:|] 35[|:]",
+  "n_fwd": 3,
+  "n_bwd": 2
+ },
+ "song.classical.chopin-mazurka-op67-4.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in C major, Op. 67 No. 4",
+  "printed": 83,
+  "jump_words": [],
+  "structure": "18[|:] 33[:|] 35[|:] 50[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.chopin-mazurka-op68-1.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in C major, Op. 68 No. 1",
+  "printed": 73,
+  "jump_words": [],
+  "structure": "21[|:] 32[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-mazurka-op68-2.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in C major, Op. 68 No. 2",
+  "printed": 66,
+  "jump_words": [],
+  "structure": "18[|:] 29[:|] 31[|:] 37[:|] 38[:|]",
+  "n_fwd": 2,
+  "n_bwd": 3
+ },
+ "song.classical.chopin-mazurka-op7-1.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in B-flat major, Op. 7 No. 1",
+  "printed": 67,
+  "jump_words": [],
+  "structure": "25[|:] 45[:|] 46[|:] 66[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.chopin-mazurka-op7-2.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in A minor, Op. 7 No. 2",
+  "printed": 60,
+  "jump_words": [],
+  "structure": "17[:|] 18[|:] 34[:|] 59[:|]",
+  "n_fwd": 1,
+  "n_bwd": 3
+ },
+ "song.classical.chopin-mazurka-op7-4.nifc": {
+  "pipeline": "other",
+  "title": "Mazurka in A-flat major, Op. 7 No. 4",
+  "printed": 45,
+  "jump_words": [],
+  "structure": "10[|:] 25[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-polonaise-g-minor.nifc": {
+  "pipeline": "other",
+  "title": "Polonaise in B-flat major, B. 1 (Op. posth.)",
+  "printed": 38,
+  "jump_words": [],
+  "structure": "12[:|] 13[|:] 22[:|] 30[:|] 31[|:] 38[:|]",
+  "n_fwd": 2,
+  "n_bwd": 4
+ },
+ "song.classical.chopin-polonaise-g-sharp-minor.nifc": {
+  "pipeline": "other",
+  "title": "Polonaise in B major, B. 6 (Op. posth.)",
+  "printed": 61,
+  "jump_words": [],
+  "structure": "12[:|] 13[|:] 27[:|] 39[:|] 40[|:] 61[:|]",
+  "n_fwd": 2,
+  "n_bwd": 4
+ },
+ "song.classical.chopin-polonaise-op26-2.nifc": {
+  "pipeline": "other",
+  "title": "Polonaise in E-flat minor, Op. 26 No. 2",
+  "printed": 175,
+  "jump_words": [],
+  "structure": "20[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-polonaise-op40-1.nifc": {
+  "pipeline": "other",
+  "title": "Polonaise in A major, Op. 40 No. 1 (“Military”)",
+  "printed": 104,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 24[:|] 57[|:] 80[:|]",
+  "n_fwd": 2,
+  "n_bwd": 3
+ },
+ "song.classical.chopin-polonaise-op40-2.nifc": {
+  "pipeline": "other",
+  "title": "Polonaise in C minor, Op. 40 No. 2",
+  "printed": 133,
+  "jump_words": [],
+  "structure": "35[|:] 71[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-sonata-2-1.nifc": {
+  "pipeline": "other",
+  "title": "Piano Sonata No. 2 in B-flat minor, Op. 35 — mvt 1 (B-flat minor)",
+  "printed": 242,
+  "jump_words": [],
+  "structure": "5[|:] 104[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-sonata-2-2.nifc": {
+  "pipeline": "other",
+  "title": "Piano Sonata No. 2, Op. 35 — mvt 2 in E-flat minor",
+  "printed": 291,
+  "jump_words": [],
+  "structure": "146[|:] 186[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-sonata-2-3.nifc": {
+  "pipeline": "other",
+  "title": "Piano Sonata No. 2, Op. 35 — Marche funèbre",
+  "printed": 85,
+  "jump_words": [],
+  "structure": "31[|:] 38[:|] 39[|:] 54[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.chopin-waltz-a-minor": {
+  "pipeline": "other",
+  "title": "Waltz in A minor, B. 150",
+  "printed": 57,
+  "jump_words": [],
+  "structure": "18[|:] 25[:|] 26[|:] 41[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.chopin-waltz-e-minor.nifc": {
+  "pipeline": "other",
+  "title": "Waltz in E minor, Op. posth. (B. 56)",
+  "printed": 173,
+  "jump_words": [],
+  "structure": "26[|:] 57[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-waltz-op18.nifc": {
+  "pipeline": "other",
+  "title": "Grande valse brillante in E-flat major, Op. 18",
+  "printed": 310,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 70[|:] 85[:|] 119[|:] 134[:|] 136[|:] 167[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.classical.chopin-waltz-op34-1.nifc": {
+  "pipeline": "other",
+  "title": "Waltz in A-flat major, Op. 34 No. 1",
+  "printed": 306,
+  "jump_words": [],
+  "structure": "17[|:] 48[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.chopin-waltz-op64-1.nifc": {
+  "pipeline": "other",
+  "title": "Waltz in D-flat major, Op. 64 No. 1",
+  "printed": 126,
+  "jump_words": [],
+  "structure": "21[|:] 36[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.crue-home-sweet-home-motley-crue.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Home Sweet Home - Motley Crue",
+  "printed": 30,
+  "jump_words": [],
+  "structure": "5[|:] 8[V12 :|x3 v-end] 9[V3] 10[v-end] 11[|:] 14[V1 :| v-end] 15[V2 v-end] 17[|:] 20[:|] 21[|:] 23[V1] 24[:| v-end] 25[V2 v-end]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.classical.czerny-a-study-in-double-notes-thirds-by-carl-czerny.pdmx": {
+  "pipeline": "pdmx",
+  "title": "A Study in Double Notes (Thirds) by Carl Czerny",
+  "printed": 32,
+  "jump_words": [],
+  "structure": "16[:|] 17[|:] 32[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.czerny-carl-czerny-waltz-op-32-no-1.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Waltz, Op. 32 No. 1",
+  "printed": 18,
+  "jump_words": [],
+  "structure": "9[:|] 10[|:] 18[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.czerny-czerny-air-napolitain-santa-lucia.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Santa Lucia (Air napolitain)",
+  "printed": 25,
+  "jump_words": [],
+  "structure": "8[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.czerny-etude-op-335.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 335",
+  "printed": 24,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 24[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.czerny-march-in-d-minor.pdmx": {
+  "pipeline": "pdmx",
+  "title": "March in D minor",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "1[|:] 8[:|] 9[|:] 16[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.czerny-study-op-139-no-1.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Study, Op. 139 No. 1",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.czerny-study-op-139-no-2.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Study, Op. 139 No. 2",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.czerny-study-op-599-no-63.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Study, Op. 599 No. 63",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.czerny-the-school-of-velocity-op-299-no-22.pdmx": {
+  "pipeline": "pdmx",
+  "title": "The School of Velocity, Op. 299 No. 22",
+  "printed": 8,
+  "jump_words": [],
+  "structure": "8[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx": {
+  "pipeline": "pdmx",
+  "title": "The School of Velocity, Op. 299 No. 8",
+  "printed": 55,
+  "jump_words": [],
+  "structure": "55[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.czerny-waltz-op-32-no-2.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Waltz, Op. 32 No. 2",
+  "printed": 18,
+  "jump_words": [],
+  "structure": "9[:|] 10[|:] 18[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.diabelli-diabelli-sonatina-in-f-major-op-168-no-1-1st-movement.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Sonatina in F major, Op. 168 No. 1 (first movement)",
+  "printed": 40,
+  "jump_words": [],
+  "structure": "13[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.duvernoy-etude-op-176-no-8.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 176 No. 8",
+  "printed": 24,
+  "jump_words": [
+   [
+    16,
+    "Fine"
+   ],
+   [
+    16,
+    "Fine"
+   ],
+   [
+    24,
+    "D.C. al Fine"
+   ],
+   [
+    24,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "16[FINE] 24[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.einaudi-questa-notte.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Questa Notte",
+  "printed": 127,
+  "jump_words": [],
+  "structure": "4[:|] 21[|:] 24[:|] 41[|:] 42[:|] 43[|:] 46[V1 :| v-end] 47[V2 v-end] 57[|:] 60[:|] 77[|:] 78[:|] 79[|:] 82[V1 :| v-end] 83[V2 v-end]",
+  "n_fwd": 6,
+  "n_bwd": 7
+ },
+ "song.classical.el-choclo-piano.pdmx": {
+  "pipeline": "pdmx",
+  "title": "El Choclo (tango)",
+  "printed": 49,
+  "jump_words": [],
+  "structure": "9[SEGNO] 25[|:] 32[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.fikrimin-ince-gulu-piyano-notlara.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Fikrimin ince gülü - piyano notları",
+  "printed": 28,
+  "jump_words": [],
+  "structure": "4[:|] 9[|:] 12[:|] 13[|:] 20[:|] 21[|:] 28[:|]",
+  "n_fwd": 3,
+  "n_bwd": 4
+ },
+ "song.classical.foster-stephen-foster-camptown-races.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Camptown Races",
+  "printed": 17,
+  "jump_words": [],
+  "structure": "1[|:] 9[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.grieg-album-leaf-op-47-no-2.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Album Leaf, Op. 47 No. 2",
+  "printed": 126,
+  "jump_words": [],
+  "structure": "20[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Grieg Anitra's Dance (Piano solo)",
+  "printed": 108,
+  "jump_words": [],
+  "structure": "39[|:] 104[V1 :| v-end] 105[V2] 108[v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.gurlitt-cornelius-gurlitt-op-82.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Study, Op. 82",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.handel-handel-g-f-menuet-hwv-434-4.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in G minor, HWV 434",
+  "printed": 38,
+  "jump_words": [
+   [
+    16,
+    "Fine"
+   ],
+   [
+    16,
+    "Fine"
+   ],
+   [
+    38,
+    "D.C. al Fine"
+   ],
+   [
+    38,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "16[FINE :|] 17[|:] 38[JUMP:DC/fine :|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.haydn-haydn-sonata-in-e-minor-hob-xvi-34-movement-i.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Haydn - Sonata in E minor Hob XVI/34 Movement I",
+  "printed": 127,
+  "jump_words": [],
+  "structure": "45[:|] 46[|:] 127[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.haydn-sonata-in-g-major-hob-xvi-8.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Sonata in G major, Hob. XVI:8",
+  "printed": 97,
+  "jump_words": [],
+  "structure": "17[:|] 18[|:] 46[:|] 54[:|] 55[|:] 62[:|] 67[:|] 68[|:] 73[:|] 81[:|] 82[|:] 97[:|]",
+  "n_fwd": 4,
+  "n_bwd": 8
+ },
+ "song.classical.hisaishi-totoro-path-of-the-wind.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Totoro: Path of the Wind",
+  "printed": 34,
+  "jump_words": [],
+  "structure": "2[|:] 9[V1 :| v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.hurwitz-the-armstrongs-first-man.pdmx": {
+  "pipeline": "pdmx",
+  "title": "The Armstrongs - First Man",
+  "printed": 49,
+  "jump_words": [],
+  "structure": "1[|:] 40[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.i-got-rythm.pdmx": {
+  "pipeline": "pdmx",
+  "title": "I Got Rhythm",
+  "printed": 28,
+  "jump_words": [],
+  "structure": "2[|:] 9[V1 :| v-end] 10[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.joplin-search-light-rag.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Search-Light Rag",
+  "printed": 90,
+  "jump_words": [],
+  "structure": "5[|:] 20[V1 :| v-end] 21[V2 v-end] 22[|:] 36[V1] 37[:| v-end] 38[V2] 39[v-end] 56[|:] 70[V1] 71[:| v-end] 72[V2] 73[v-end] 74[|:] 89[V1 :| v-end] 90[V2 v-end]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.classical.kohler-sonatina-op-300-no-1.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Sonatina, Op. 300 No. 1",
+  "printed": 113,
+  "jump_words": [],
+  "structure": "77[:|] 93[:|]",
+  "n_fwd": 0,
+  "n_bwd": 2
+ },
+ "song.classical.kuhlau-sonatina-in-c-major-op-20-no-1-allegro.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Sonatina in C major, Op. 20 No. 1, Allegro",
+  "printed": 80,
+  "jump_words": [],
+  "structure": "31[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.lemoine-etude-op-37-no-14.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 14",
+  "printed": 32,
+  "jump_words": [
+   [
+    16,
+    "Fine"
+   ],
+   [
+    16,
+    "Fine"
+   ],
+   [
+    32,
+    "D.C. al Fine"
+   ],
+   [
+    32,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "16[FINE] 32[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.lemoine-etude-op-37-no-17.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 17",
+  "printed": 27,
+  "jump_words": [
+   [
+    18,
+    "Fine"
+   ],
+   [
+    18,
+    "Fine"
+   ],
+   [
+    27,
+    "D.C. al Fine"
+   ],
+   [
+    27,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "9[:|] 10[|:] 18[FINE :|] 19[|:] 27[JUMP:DC/fine]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.lemoine-etude-op-37-no-18.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 18",
+  "printed": 52,
+  "jump_words": [
+   [
+    16,
+    "Fine"
+   ],
+   [
+    16,
+    "Fine"
+   ],
+   [
+    52,
+    "D.C. al Fine"
+   ],
+   [
+    52,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "16[FINE] 52[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.lemoine-etude-op-37-no-21.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 21",
+  "printed": 36,
+  "jump_words": [
+   [
+    18,
+    "Fine"
+   ],
+   [
+    18,
+    "Fine"
+   ],
+   [
+    36,
+    "D.C. al Fine"
+   ],
+   [
+    36,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "10[|:] 18[FINE :|] 19[|:] 27[:|] 28[|:] 36[JUMP:DC/fine :|]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.classical.lemoine-etude-op-37-no-25.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 25",
+  "printed": 72,
+  "jump_words": [
+   [
+    38,
+    "Fine"
+   ],
+   [
+    38,
+    "Fine"
+   ],
+   [
+    72,
+    "D.S. al Fine"
+   ],
+   [
+    72,
+    "D.S. al Fine"
+   ]
+  ],
+  "structure": "5[SEGNO] 38[FINE] 39[|:] 55[:|] 56[|:] 72[JUMP:DS/fine]",
+  "n_fwd": 2,
+  "n_bwd": 1
+ },
+ "song.classical.lemoine-etude-op-37-no-26.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 26",
+  "printed": 50,
+  "jump_words": [
+   [
+    17,
+    "Fine"
+   ],
+   [
+    17,
+    "Fine"
+   ],
+   [
+    50,
+    "D.S. al Fine"
+   ],
+   [
+    50,
+    "D.S. al Fine"
+   ]
+  ],
+  "structure": "2[SEGNO] 17[FINE] 50[JUMP:DS/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.lemoine-etude-op-37-no-27.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 27",
+  "printed": 36,
+  "jump_words": [
+   [
+    18,
+    "Fine"
+   ],
+   [
+    18,
+    "Fine"
+   ],
+   [
+    36,
+    "D.C. al Fine"
+   ],
+   [
+    36,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "9[:|] 10[|:] 18[FINE :|] 19[|:] 27[:|] 36[JUMP:DC/fine]",
+  "n_fwd": 2,
+  "n_bwd": 3
+ },
+ "song.classical.lemoine-etude-op-37-no-29.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 29",
+  "printed": 48,
+  "jump_words": [
+   [
+    24,
+    "Fine"
+   ],
+   [
+    24,
+    "Fine"
+   ],
+   [
+    48,
+    "D.C. al Fine"
+   ],
+   [
+    48,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "8[:|] 24[FINE] 25[|:] 32[:|] 48[JUMP:DC/fine]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.lemoine-etude-op-37-no-32.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 32",
+  "printed": 32,
+  "jump_words": [
+   [
+    16,
+    "Fine"
+   ],
+   [
+    16,
+    "Fine"
+   ],
+   [
+    32,
+    "D.C. al Fine"
+   ],
+   [
+    32,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "16[FINE :|] 32[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.lemoine-etude-op-37-no-33.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 33",
+  "printed": 16,
+  "jump_words": [
+   [
+    8,
+    "Fine"
+   ],
+   [
+    8,
+    "Fine"
+   ],
+   [
+    16,
+    "D.C. al Fine"
+   ],
+   [
+    16,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "8[FINE] 16[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.lemoine-etude-op-37-no-35.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 35",
+  "printed": 16,
+  "jump_words": [
+   [
+    8,
+    "Fine"
+   ],
+   [
+    8,
+    "Fine"
+   ],
+   [
+    16,
+    "D.C. al Fine"
+   ],
+   [
+    16,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "8[FINE] 16[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.lemoine-etude-op-37-no-36.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 36",
+  "printed": 34,
+  "jump_words": [
+   [
+    17,
+    "Fine"
+   ],
+   [
+    17,
+    "Fine"
+   ],
+   [
+    34,
+    "D.S. al Fine"
+   ],
+   [
+    34,
+    "D.S. al Fine"
+   ]
+  ],
+  "structure": "2[SEGNO] 17[FINE] 34[JUMP:DS/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.lemoine-etude-op-37-no-39.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 39",
+  "printed": 32,
+  "jump_words": [
+   [
+    8,
+    "Fine"
+   ],
+   [
+    8,
+    "Fine"
+   ],
+   [
+    32,
+    "D.C. al Fine"
+   ],
+   [
+    32,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "8[FINE] 32[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.lemoine-etude-op-37-no-40.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 40",
+  "printed": 27,
+  "jump_words": [
+   [
+    8,
+    "Fine"
+   ],
+   [
+    8,
+    "Fine"
+   ],
+   [
+    27,
+    "D.C. al Fine"
+   ],
+   [
+    27,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "8[FINE] 27[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.lemoine-etude-op-37-no-42.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 42",
+  "printed": 40,
+  "jump_words": [
+   [
+    16,
+    "Fine"
+   ],
+   [
+    16,
+    "Fine"
+   ],
+   [
+    40,
+    "D.C. al Fine"
+   ],
+   [
+    40,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "16[FINE] 40[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.lemoine-etude-op-37-no-44.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 44",
+  "printed": 28,
+  "jump_words": [
+   [
+    8,
+    "Fine"
+   ],
+   [
+    8,
+    "Fine"
+   ],
+   [
+    28,
+    "D.C. al Fine"
+   ],
+   [
+    28,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "8[FINE] 28[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.lemoine-etude-op-37-no-45.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 45",
+  "printed": 20,
+  "jump_words": [
+   [
+    8,
+    "Fine"
+   ],
+   [
+    8,
+    "Fine"
+   ],
+   [
+    20,
+    "D.C. al Fine"
+   ],
+   [
+    20,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "8[FINE] 20[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.lemoine-etude-op-37-no-49.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 49",
+  "printed": 24,
+  "jump_words": [],
+  "structure": "8[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.lemoine-etude-op-37-no-6.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Étude, Op. 37 No. 6",
+  "printed": 40,
+  "jump_words": [
+   [
+    16,
+    "Fine"
+   ],
+   [
+    16,
+    "Fine"
+   ],
+   [
+    40,
+    "D.C. al Fine"
+   ],
+   [
+    40,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "8[:|] 16[FINE] 17[|:] 24[:|] 40[JUMP:DC/fine]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Hark! The Herald Angels Sing (jazz lead sheet)",
+  "printed": 80,
+  "jump_words": [],
+  "structure": "29[|:] 49[V1 v-end] 52[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.mendelssohn-hunting-song-op-19-no-3.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Hunting Song, Op. 19 No. 3",
+  "printed": 102,
+  "jump_words": [],
+  "structure": "6[|:] 30[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.mendelssohn-song-without-words-op-19-no-1.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Song Without Words, Op. 19 No. 1",
+  "printed": 50,
+  "jump_words": [],
+  "structure": "3[|:] 15[V1 :| v-end] 16[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.mendelssohn-song-without-words-op-30-no-1.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Song Without Words, Op. 30 No. 1",
+  "printed": 41,
+  "jump_words": [],
+  "structure": "2[|:] 12[V1 :| v-end] 13[V2 v-end] 14[|:] 31[V1 :| v-end] 32[V2 v-end]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-allegro-in-f-major-k-1c.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Allegro in F major, K. 1c",
+  "printed": 14,
+  "jump_words": [],
+  "structure": "5[:|] 6[|:] 14[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-andante-in-b-flat-major-k-15ii.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Andante in B-flat major, K. 15ii",
+  "printed": 43,
+  "jump_words": [],
+  "structure": "17[:|] 18[|:] 43[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-andante-in-d-major-k-15o.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Andante in D major, K. 15o",
+  "printed": 24,
+  "jump_words": [],
+  "structure": "14[:|] 15[|:] 24[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-andante-in-g-minor-k-15r.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Andante in G minor, K. 15r",
+  "printed": 75,
+  "jump_words": [],
+  "structure": "36[:|] 37[|:] 75[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-andantino-in-c-major-k-15b.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Andantino in C major, K. 15b",
+  "printed": 24,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 24[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-contredanse-in-a-major-k-15l.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Contredanse in A major, K. 15l",
+  "printed": 32,
+  "jump_words": [
+   [
+    16,
+    "Fine"
+   ],
+   [
+    16,
+    "Fine"
+   ],
+   [
+    32,
+    "D.C. al Fine"
+   ],
+   [
+    32,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "16[FINE :|] 17[|:] 24[:|] 25[|:] 32[JUMP:DC/fine :|]",
+  "n_fwd": 2,
+  "n_bwd": 3
+ },
+ "song.classical.mozart-contredanse-in-f-major-k-15h.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Contredanse in F major, K. 15h",
+  "printed": 24,
+  "jump_words": [
+   [
+    12,
+    "Fine"
+   ],
+   [
+    12,
+    "Fine"
+   ],
+   [
+    24,
+    "D.C. al Fine"
+   ],
+   [
+    24,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "12[FINE :|] 13[|:] 24[JUMP:DC/fine :|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-contredanse-in-g-major-k-15e.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Contredanse in G major, K. 15e",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-german-dance-in-f-major-k-15oo.pdmx": {
+  "pipeline": "pdmx",
+  "title": "German Dance in F major, K. 15oo",
+  "printed": 20,
+  "jump_words": [],
+  "structure": "9[:|] 10[|:] 20[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-k545-i": {
+  "pipeline": "other",
+  "title": "Piano Sonata No. 16 in C, K. 545, I. Allegro",
+  "printed": 73,
+  "jump_words": [],
+  "structure": "1[|:] 28[:|] 29[|:] 73[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-k545-i.alt": {
+  "pipeline": "other",
+  "title": "Piano Sonata No. 16 in C, K. 545, I. Allegro (alternative edition)",
+  "printed": 73,
+  "jump_words": [],
+  "structure": "28[:|] 29[|:] 73[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-minore-in-a-minor-k-15k.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minore in A minor, K. 15k",
+  "printed": 18,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 18[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-minuet-in-a-flat-major-k-15ff.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in A-flat major, K. 15ff",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-minuet-in-a-major-k-15i.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in A major, K. 15i",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-minuet-in-c-major-fragment-k-15rr.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in C major (fragment), K. 15rr",
+  "printed": 13,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.mozart-minuet-in-e-flat-major-k-15ee.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in E-flat major, K. 15ee",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-minuet-in-f-major-k-15m.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in F major, K. 15m",
+  "printed": 20,
+  "jump_words": [],
+  "structure": "10[:|] 11[|:] 20[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-minuet-in-f-major-k-1d.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in F major, K. 1d",
+  "printed": 20,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 20[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-minuet-in-f-major-k-4.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in F major, K. 4",
+  "printed": 24,
+  "jump_words": [],
+  "structure": "10[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.mozart-minuet-in-g-major-k-15c.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in G major, K. 15c",
+  "printed": 20,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 20[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-movement-for-a-piano-sonata-in-b-flat-major-k-15aa.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Movement for a Piano Sonata in B-flat major, K. 15aa",
+  "printed": 47,
+  "jump_words": [],
+  "structure": "26[:|] 27[|:] 47[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-mozart-minuet-in-f-major-k2-easy.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Mozart: Minuet in F Major (K2) (easy)",
+  "printed": 24,
+  "jump_words": [],
+  "structure": "8[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.mozart-polonaise-w-a-mozart.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Polonaise W.A. Mozart",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-rondo-alla-turca": {
+  "pipeline": "other",
+  "title": "Piano Sonata No. 11, K. 331, III. Rondo alla Turca",
+  "printed": 137,
+  "jump_words": [],
+  "structure": "9[:|] 10[|:] 26[:|] 27[|:] 35[:|] 36[|:] 44[:|] 45[|:] 61[:|] 62[|:] 70[:|] 71[|:] 79[:|] 80[|:] 96[:|] 97[|:] 105[V1 :| v-end] 106[V2 v-end]",
+  "n_fwd": 8,
+  "n_bwd": 9
+ },
+ "song.classical.mozart-rondo-alla-turca.fingered": {
+  "pipeline": "other",
+  "title": "Rondo alla Turca (with fingering)",
+  "printed": 137,
+  "jump_words": [],
+  "structure": "1[|:] 9[:|] 10[|:] 26[:|] 27[|:] 35[:|] 36[|:] 44[:|] 45[|:] 61[:|] 62[|:] 70[:|] 71[|:] 79[:|] 80[|:] 96[:|] 97[|:] 105[V1 :| v-end] 106[V2 v-end]",
+  "n_fwd": 9,
+  "n_bwd": 9
+ },
+ "song.classical.mozart-rondo-in-f-major-k-15hh.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Rondo in F major, K. 15hh",
+  "printed": 62,
+  "jump_words": [
+   [
+    16,
+    "Fine"
+   ],
+   [
+    16,
+    "Fine"
+   ],
+   [
+    62,
+    "<font size=\"11\"></font>Da capo <i>al Fine</i>"
+   ],
+   [
+    62,
+    "<font size=\"11\"></font>Da capo <i>al Fine</i>"
+   ]
+  ],
+  "structure": "16[FINE] 62[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.mozart-twinkle-variations-k265": {
+  "pipeline": "other",
+  "title": "Twelve Variations on “Ah vous dirai-je, Maman”, K. 265",
+  "printed": 325,
+  "jump_words": [],
+  "structure": "1[|:] 8[:|] 9[|:] 24[:|] 25[|:] 32[V1 :| v-end] 33[V2 v-end] 34[|:] 49[:|] 50[|:] 57[:|] 58[|:] 73[:|] 74[|:] 81[:|] 82[|:] 97[:|] 98[|:] 105[:|] 106[|:] 121[:|] 122[|:] 129[:|] 130[|:] 145[:|] 146[|:] 153[:|] 154[|:] 169[:|] 170[|:] 177[:|] 178[|:] 193[:|] 194[|:] 201[:|] 202[|:] 217[:|] 218[|:] 225[:|] 226[|:] 241[:|] 242[|:] 249[:|] 250[|:] 265[:|] 266[|:] 273[:|] 274[|:] 289[:|] 290[|:] 297[:|] 298[|:] 313[V1 :| v-end] 314[V2 v-end]",
+  "n_fwd": 26,
+  "n_bwd": 26
+ },
+ "song.classical.mozart-w-a-mozart-allegro-in-ba-major-k3.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Allegro in B-flat major, K. 3",
+  "printed": 32,
+  "jump_words": [],
+  "structure": "13[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.mozart-w-a-mozart-minuet-in-c-major-k1f.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in C major, K. 1f",
+  "printed": 18,
+  "jump_words": [],
+  "structure": "9[:|] 10[|:] 18[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.mozart-w-a-mozart-minuet-in-f-major-k5.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in F major, K. 5",
+  "printed": 22,
+  "jump_words": [],
+  "structure": "10[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuets in G major and C major, K. 1e and K. 1f",
+  "printed": 36,
+  "jump_words": [
+   [
+    18,
+    "Fine"
+   ],
+   [
+    18,
+    "Fine"
+   ],
+   [
+    36,
+    "<b>Menuetto da Capo al Fine.</b>"
+   ],
+   [
+    36,
+    "<b>Menuetto da Capo al Fine.</b>"
+   ]
+  ],
+  "structure": "9[:|] 10[|:] 18[FINE] 27[:|] 28[|:] 36[JUMP:DC/fine :|]",
+  "n_fwd": 2,
+  "n_bwd": 3
+ },
+ "song.classical.nazareth-carioca-1913.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Carioca (1913)",
+  "printed": 78,
+  "jump_words": [
+   [
+    18,
+    "Fine"
+   ],
+   [
+    18,
+    "Fine."
+   ],
+   [
+    18,
+    "Fine"
+   ],
+   [
+    51,
+    "D.S. al Coda"
+   ],
+   [
+    51,
+    "D.S. al Coda"
+   ],
+   [
+    78,
+    "D.C. al"
+   ]
+  ],
+  "structure": "2[|: SEGNO] 16[CODA] 17[V13 :| v-end] 18[V2 FINE v-end] 19[|:] 50[V1 :| v-end] 51[V2 JUMP:DS/coda v-end] 53[CODA] 54[|:] 69[V1 :| v-end] 70[V2 v-end] 78[JUMP:DC/None]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.classical.offenbach-cancan-offenbach.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Cancan - Offenbach",
+  "printed": 129,
+  "jump_words": [],
+  "structure": "17[|:] 23[V1] 24[:| v-end] 25[V2 v-end] 27[|:] 34[V1 :| v-end] 35[V2 v-end] 42[|:] 57[V1 :| v-end] 58[V2 v-end] 81[|:] 96[V1 :| v-end] 97[V2 v-end]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.classical.pachelbel-canon-d.easy": {
+  "pipeline": "other",
+  "title": "Canon in D (easy)",
+  "printed": 49,
+  "jump_words": [],
+  "structure": "45[|:] 48[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.pachelbel-pachelbel-chaconne-in-f-minor.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Pachelbel Chaconne in F Minor",
+  "printed": 185,
+  "jump_words": [
+   [
+    177,
+    "Thema da capo"
+   ]
+  ],
+  "structure": "177[JUMP:DC/None]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.petzold-minuet-g-bwv-anh114": {
+  "pipeline": "other",
+  "title": "Minuet in G major, BWV Anh. 114",
+  "printed": 32,
+  "jump_words": [],
+  "structure": "16[:|] 17[|:] 32[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.petzold-minuet-g-bwv-anh114.alt": {
+  "pipeline": "other",
+  "title": "Minuet in G major, BWV Anh. 114 (alternative edition)",
+  "printed": 32,
+  "jump_words": [],
+  "structure": "16[:|] 17[|:] 32[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.petzold-minuet-in-g-minor-bwv-anh-115.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in G minor, BWV Anh. 115",
+  "printed": 32,
+  "jump_words": [],
+  "structure": "16[:|] 17[|:] 32[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.radetzky-march-for-easy-piano.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Radetzky March for easy piano",
+  "printed": 88,
+  "jump_words": [
+   [
+    88,
+    "D.C. al Fine"
+   ],
+   [
+    88,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "88[JUMP:DC/fine]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.royal-garden-blues.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Royal Garden Blues (1919)",
+  "printed": 44,
+  "jump_words": [],
+  "structure": "5[|:] 16[:|] 17[|:] 28[:|] 33[|:] 44[:|]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.classical.sakamoto-andata.pdmx": {
+  "pipeline": "pdmx",
+  "title": "andata",
+  "printed": 65,
+  "jump_words": [],
+  "structure": "23[|:] 41[V1] 44[:| v-end] 45[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.satie-erik-satie-gnossienne-n1.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Gnossienne No. 1",
+  "printed": 31,
+  "jump_words": [],
+  "structure": "1[|:] 9[:|] 10[|:] 13[:|] 14[|:] 19[:|] 20[|:] 23[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.classical.satie-gymnopedie-1": {
+  "pipeline": "other",
+  "title": "Gymnopédie No. 1",
+  "printed": 47,
+  "jump_words": [],
+  "structure": "32[V1] 39[:| v-end] 40[V2] 47[v-end]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.scarlatti-d-scarlatti-sonata-a-major-k-323.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Sonata in A major, K. 323",
+  "printed": 64,
+  "jump_words": [],
+  "structure": "33[:|] 34[|:] 64[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.scarlatti-d-scarlatti-sonata-d-major-k-346.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Sonata in D major, K. 346",
+  "printed": 98,
+  "jump_words": [],
+  "structure": "51[:|] 52[|:] 98[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.scarlatti-sonata-in-d-minor-k-32.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Sonata in D minor, K. 32",
+  "printed": 24,
+  "jump_words": [],
+  "structure": "8[:|] 9[|:] 24[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.schubert-ave-maria": {
+  "pipeline": "other",
+  "title": "Ave Maria, D. 839 (solo piano arrangement)",
+  "printed": 17,
+  "jump_words": [],
+  "structure": "3[|:] 15[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.schubert-deutscher-tanz-no-2-in-a-major.pdmx": {
+  "pipeline": "pdmx",
+  "title": "German Dance No. 2 in A major",
+  "printed": 18,
+  "jump_words": [],
+  "structure": "9[:|] 10[|:] 18[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.schubert-german-dance-in-a-flat-major.pdmx": {
+  "pipeline": "pdmx",
+  "title": "German Dance in A-flat major",
+  "printed": 19,
+  "jump_words": [],
+  "structure": "9[:|] 10[|:] 18[V1 :| v-end] 19[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.schubert-german-dance-no-1-d-841.pdmx": {
+  "pipeline": "pdmx",
+  "title": "German Dance No. 1, D. 841",
+  "printed": 18,
+  "jump_words": [],
+  "structure": "9[:|] 10[|:] 18[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.schumann-a-little-study-op-68-no-14.pdmx": {
+  "pipeline": "pdmx",
+  "title": "A Little Study, Op. 68 No. 14",
+  "printed": 64,
+  "jump_words": [],
+  "structure": "32[:|] 33[|:] 64[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.schumann-carnaval-op-9-no-12-chopin.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Carnaval, Op. 9 No. 12 \"Chopin\"",
+  "printed": 15,
+  "jump_words": [],
+  "structure": "2[|:] 14[V1 :| v-end] 15[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.schumann-hunting-song-op-68-no-7.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Hunting Song, Op. 68 No. 7",
+  "printed": 30,
+  "jump_words": [],
+  "structure": "9[:|] 10[|:] 30[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.schumann-knecht-ruprecht-op-68-no-12.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Knecht Ruprecht, Op. 68 No. 12",
+  "printed": 72,
+  "jump_words": [],
+  "structure": "9[|:] 24[:|] 25[|:] 32[:|] 33[|:] 48[:|]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.classical.schumann-little-morning-wanderer-op-68-no-17.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Little Morning Wanderer, Op. 68 No. 17",
+  "printed": 32,
+  "jump_words": [],
+  "structure": "10[|:] 22[V1 :| v-end] 23[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.schumann-melody-op-68-no-1.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Melody, Op. 68 No. 1",
+  "printed": 20,
+  "jump_words": [],
+  "structure": "4[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.classical.schumann-schumann-album-for-the-young-op-68-no-11-sicilienne.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Album for the Young, Op. 68 No. 11 \"Sicilienne\"",
+  "printed": 39,
+  "jump_words": [],
+  "structure": "9[:|] 10[|:] 18[V1 :| v-end] 19[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.schumann-schumann-album-for-the-young-op-68-no-16-first-grief.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Album for the Young, Op. 68 No. 16 \"First Loss\"",
+  "printed": 34,
+  "jump_words": [],
+  "structure": "18[|:] 34[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.schumann-schumann-album-for-the-young-op-68-no-18-the-little-reaper-s-song.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Album for the Young, Op. 68 No. 18 \"The Reaper's Song\"",
+  "printed": 37,
+  "jump_words": [],
+  "structure": "4[:|] 5[|:] 8[:|]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.classical.schumann-soldiers-march-op-68-no-2.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Soldier's March, Op. 68 No. 2",
+  "printed": 32,
+  "jump_words": [],
+  "structure": "17[|:] 32[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.scott-frog-legs-rag.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Frog Legs Rag (1906)",
+  "printed": 89,
+  "jump_words": [],
+  "structure": "2[|:] 17[V1 :| v-end] 18[V2 v-end] 19[|:] 34[V1 :| v-end] 35[V2 v-end] 56[|:] 71[V1 :| v-end] 72[V2 v-end] 73[|:] 88[V1 :| v-end] 89[V2 v-end]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.classical.st-louis-blues.pdmx": {
+  "pipeline": "pdmx",
+  "title": "St. Louis Blues (1914)",
+  "printed": 28,
+  "jump_words": [
+   [
+    28,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "1[|:] 12[:|] 28[JUMP:DC/fine]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.streabbog-la-violette.pdmx": {
+  "pipeline": "pdmx",
+  "title": "La Violette",
+  "printed": 52,
+  "jump_words": [
+   [
+    32,
+    "Fine"
+   ],
+   [
+    32,
+    "Fine"
+   ],
+   [
+    52,
+    "D.C. al Fine"
+   ],
+   [
+    52,
+    "D.C. al Fine"
+   ]
+  ],
+  "structure": "16[:|] 17[|:] 32[FINE :|] 37[|:] 52[JUMP:DC/fine :|]",
+  "n_fwd": 2,
+  "n_bwd": 3
+ },
+ "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx": {
+  "pipeline": "pdmx",
+  "title": "La Cumparsita (part A)",
+  "printed": 15,
+  "jump_words": [
+   [
+    15,
+    "Fine"
+   ]
+  ],
+  "structure": "15[FINE]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.classical.tchaikovsky-waltz-flowers": {
+  "pipeline": "other",
+  "title": "Waltz of the Flowers (The Nutcracker)",
+  "printed": 80,
+  "jump_words": [],
+  "structure": "37[|:] 49[V1] 52[:| v-end] 53[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.uematsu-at-zanarkand-ffx-hd-remaster.pdmx": {
+  "pipeline": "pdmx",
+  "title": "At Zanarkand (FFX HD Remaster)",
+  "printed": 46,
+  "jump_words": [],
+  "structure": "13[|:] 46[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.classical.vivaldi-spring-vivaldi.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Spring Vivaldi",
+  "printed": 37,
+  "jump_words": [],
+  "structure": "2[|:] 27[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.folk.bella-ciao": {
+  "pipeline": "other",
+  "title": "Bella Ciao",
+  "printed": 38,
+  "jump_words": [],
+  "structure": "2[|:] 9[V1 :| v-end] 10[V2 v-end] 12[|:] 19[V1 :| v-end] 20[V2 v-end] 22[|:] 29[V1 :| v-end] 30[V2 v-end]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.folk.carioquinha.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Carioquinha",
+  "printed": 77,
+  "jump_words": [
+   [
+    72,
+    "D.S. al Coda"
+   ]
+  ],
+  "structure": "7[|: SEGNO] 36[CODA] 37[V1 v-end] 38[:|] 39[V2 v-end] 72[JUMP:DS/coda] 73[CODA]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.folk.chicken-reel.pdmx": {
+  "pipeline": "pdmx",
+  "title": "CHICKEN REEL",
+  "printed": 117,
+  "jump_words": [],
+  "structure": "38[|:] 53[V1 :| v-end] 54[V2 v-end] 75[|:] 90[V1 :| v-end] 91[V2 v-end]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.folk.dark-eyes.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Dark Eyes",
+  "printed": 17,
+  "jump_words": [],
+  "structure": "2[|:]",
+  "n_fwd": 1,
+  "n_bwd": 0
+ },
+ "song.folk.down-by-the-riverside.pdmx.2": {
+  "pipeline": "pdmx",
+  "title": "Down by the Riverside",
+  "printed": 66,
+  "jump_words": [
+   [
+    60,
+    "D.S. al Coda"
+   ],
+   [
+    60,
+    "D.S. al Coda"
+   ]
+  ],
+  "structure": "5[SEGNO] 16[CODA] 60[JUMP:DS/coda] 61[CODA]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.folk.el-gordo-triste-piazzolla-ferrer.pdmx": {
+  "pipeline": "pdmx",
+  "title": "El gordo triste (Piazzolla-Ferrer)",
+  "printed": 41,
+  "jump_words": [],
+  "structure": "33[V1] 34[:| v-end] 35[V2 v-end]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Ga je mee op zoek naar het Koningskind",
+  "printed": 32,
+  "jump_words": [],
+  "structure": "12[V1] 13[:| v-end] 14[V2 v-end] 24[CODA]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.folk.i-remember-you.pdmx": {
+  "pipeline": "pdmx",
+  "title": "I Remember You",
+  "printed": 46,
+  "jump_words": [],
+  "structure": "11[|:] 17[V1 :| v-end] 18[V2 v-end] 38[V1 v-end] 39[:|] 40[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.folk.in-the-summertime.pdmx": {
+  "pipeline": "pdmx",
+  "title": "In the summertime",
+  "printed": 13,
+  "jump_words": [],
+  "structure": "13[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.folk.je-te-laisserai-des-mots-patrick-watson.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Je te laisserai des mots - Patrick Watson",
+  "printed": 47,
+  "jump_words": [],
+  "structure": "47[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.folk.john-denver-annie-s-song.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Annie's Song",
+  "printed": 57,
+  "jump_words": [],
+  "structure": "2[|:] 13[V1] 17[:| v-end] 18[V2] 19[v-end] 23[|:] 51[V1] 54[:| v-end] 55[V2 v-end]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.folk.kum-ba-yah.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Kum Ba Yah",
+  "printed": 8,
+  "jump_words": [],
+  "structure": "8[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.folk.margaritaville-keyboard-part.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Margaritaville Keyboard Part",
+  "printed": 100,
+  "jump_words": [
+   [
+    38,
+    "D.S. al Coda"
+   ],
+   [
+    38,
+    "D.S. al Coda"
+   ],
+   [
+    100,
+    "Fine"
+   ],
+   [
+    100,
+    "Fine"
+   ]
+  ],
+  "structure": "7[SEGNO] 33[CODA] 38[JUMP:DS/coda] 39[CODA] 100[FINE]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.folk.nnin-katyusha.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Katyusha",
+  "printed": 44,
+  "jump_words": [],
+  "structure": "19[|:] 27[V1] 34[:| v-end] 35[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.folk.o-holy-night-piano-solo.pdmx": {
+  "pipeline": "pdmx",
+  "title": "O Holy Night (piano solo)",
+  "printed": 96,
+  "jump_words": [],
+  "structure": "23[|:] 50[V1] 62[:| v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.folk.octobre-francis-cabrel.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Octobre - Francis Cabrel",
+  "printed": 94,
+  "jump_words": [],
+  "structure": "1[|:] 68[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.folk.skip-to-my-lou.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Skip to My Lou",
+  "printed": 8,
+  "jump_words": [],
+  "structure": "8[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.folk.so-danco-samba.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Só Danço Samba",
+  "printed": 34,
+  "jump_words": [],
+  "structure": "9[|:] 15[V1 v-end] 16[:|] 17[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.folk.the-flute-tune-soulpride-remix.pdmx": {
+  "pipeline": "pdmx",
+  "title": "The Flute Tune Soulpride Remix",
+  "printed": 10,
+  "jump_words": [],
+  "structure": "1[|:] 7[V1] 8[:| v-end] 9[V2] 10[:| v-end]",
+  "n_fwd": 1,
+  "n_bwd": 2
+ },
+ "song.folk.the-water-is-wide.pdmx": {
+  "pipeline": "pdmx",
+  "title": "The Water Is Wide",
+  "printed": 11,
+  "jump_words": [],
+  "structure": "11[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.folk.uti-var-hage-swedish-traditional-song.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Uti vår hage",
+  "printed": 18,
+  "jump_words": [],
+  "structure": "18[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.folk.wake-me-up-avicii.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Wake Me Up",
+  "printed": 108,
+  "jump_words": [],
+  "structure": "21[|:] 29[:|] 30[|:] 56[:|] 78[|:] 85[V1 :| v-end] 86[V2 v-end]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.folk.was-wollen-wir-trinken.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Was wollen wir trinken",
+  "printed": 13,
+  "jump_words": [],
+  "structure": "2[|:] 5[V1 :| v-end] 6[V2 v-end] 7[|:] 12[V1 :| v-end] 13[V2 v-end]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.holiday.carol-of-the-bells": {
+  "pipeline": "other",
+  "title": "Carol of the Bells (Shchedryk)",
+  "printed": 65,
+  "jump_words": [],
+  "structure": "5[|:] 24[:|] 25[|:] 60[V1 :| v-end] 61[V2 v-end]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.jazz.bart-howard-fly-me-to-the-moon.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Fly Me to the Moon",
+  "printed": 22,
+  "jump_words": [],
+  "structure": "11[V1] 16[:| v-end]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.jazz.chevy-chase": {
+  "pipeline": "other",
+  "title": "The Chevy Chase",
+  "printed": 107,
+  "jump_words": [],
+  "structure": "5[|:] 20[V1 :| v-end] 21[V2 v-end] 74[|:] 104[V1] 105[:| v-end] 106[V2 v-end]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.jazz.django-reinhardt-limehouse-blues.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Limehouse Blues (1922)",
+  "printed": 64,
+  "jump_words": [],
+  "structure": "33[|:] 64[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.jazz.django-reinhardt-tiger-rag.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Tiger Rag (1917)",
+  "printed": 81,
+  "jump_words": [],
+  "structure": "1[|:] 8[V1 :| v-end] 9[V2 v-end] 50[|:] 81[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.jazz.george-shearing-lullaby-of-birdland.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Lullaby of Birdland",
+  "printed": 26,
+  "jump_words": [],
+  "structure": "1[|:] 7[V1] 8[:| v-end] 9[V2] 10[v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.jazz.the-crave": {
+  "pipeline": "other",
+  "title": "The Crave",
+  "printed": 53,
+  "jump_words": [
+   [
+    52,
+    "D.S. al Coda"
+   ],
+   [
+    52,
+    "D.S. al Coda"
+   ]
+  ],
+  "structure": "52[JUMP:DS/coda]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.jazz.the-dave-brubeck-quartet-take-five.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Take Five",
+  "printed": 25,
+  "jump_words": [],
+  "structure": "2[|:] 17[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Uncle Ben's Cakewalk",
+  "printed": 111,
+  "jump_words": [],
+  "structure": "5[|:] 20[V1 :| v-end] 21[V2 v-end] 22[|:] 37[V1 :| v-end] 38[V2 v-end] 59[|:] 74[V1 :| v-end] 75[V2 v-end]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.jazz.twelfth-street-rag": {
+  "pipeline": "other",
+  "title": "12th Street Rag",
+  "printed": 74,
+  "jump_words": [],
+  "structure": "9[|:] 10[:|] 42[|:] 72[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.jazz.vince-guaraldi-skating.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Skating",
+  "printed": 137,
+  "jump_words": [
+   [
+    106,
+    "D.S. al Coda"
+   ],
+   [
+    106,
+    "D.S. al Coda"
+   ]
+  ],
+  "structure": "2[|:] 5[:|x4] 38[SEGNO] 57[CODA] 58[|:] 61[V1 :| v-end] 62[V2 v-end] 93[|:] 96[:|x3] 106[JUMP:DS/coda] 107[|: CODA] 110[V1 :| v-end] 111[V2 v-end] 127[|:] 130[:|x7]",
+  "n_fwd": 5,
+  "n_bwd": 5
+ },
+ "song.pop.12th-street-rag.pdmx": {
+  "pipeline": "pdmx",
+  "title": "12th Street Rag (1914)",
+  "printed": 40,
+  "jump_words": [],
+  "structure": "1[|:] 36[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.abba-dancing-queen.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Dancing Queen",
+  "printed": 42,
+  "jump_words": [],
+  "structure": "17[|:] 42[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.after-you-ve-gone.pdmx": {
+  "pipeline": "pdmx",
+  "title": "After You've Gone (1918)",
+  "printed": 36,
+  "jump_words": [],
+  "structure": "17[|:]",
+  "n_fwd": 1,
+  "n_bwd": 0
+ },
+ "song.pop.andrew-prahlow-solanum-s-theme-outer-wilds.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Solanum's Theme (Outer Wilds)",
+  "printed": 8,
+  "jump_words": [],
+  "structure": "1[|:] 8[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.avalon.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Avalon (1920)",
+  "printed": 33,
+  "jump_words": [],
+  "structure": "2[|:]",
+  "n_fwd": 1,
+  "n_bwd": 0
+ },
+ "song.pop.benny-goodman-louis-prima-rose-room.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Rose Room (1917)",
+  "printed": 49,
+  "jump_words": [],
+  "structure": "18[|:] 49[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.blonde-redhead-for-the-damaged-coda-blonde-redhead.pdmx": {
+  "pipeline": "pdmx",
+  "title": "For the Damaged Coda",
+  "printed": 33,
+  "jump_words": [],
+  "structure": "12[|:] 18[:|] 19[|:] 20[:|] 21[|:] 22[:|]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.pop.chancho-en-piedra-mandinga.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Mandinga",
+  "printed": 83,
+  "jump_words": [],
+  "structure": "37[|:] 44[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.coldplay-clocks-coldplay.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Clocks",
+  "printed": 22,
+  "jump_words": [
+   [
+    8,
+    "D.C."
+   ],
+   [
+    8,
+    "D.C."
+   ]
+  ],
+  "structure": "4[:|] 5[|:] 8[JUMP:DC/None :|] 9[|:] 11[:|] 12[|:] 15[:|] 16[|:] 19[V1 :| v-end] 20[V2 v-end]",
+  "n_fwd": 4,
+  "n_bwd": 5
+ },
+ "song.pop.coldplay-fix-you-coldplay.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Fix You",
+  "printed": 53,
+  "jump_words": [],
+  "structure": "13[|:] 27[V1] 30[:| v-end] 31[|: V2 v-end] 38[:|] 39[|:] 46[:|]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.pop.darktown-strutter-s-ball.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Darktown Strutters' Ball (1917)",
+  "printed": 36,
+  "jump_words": [],
+  "structure": "17[|:] 36[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.darlene-love-baby-won-t-you-please-come-home.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Baby, Won't You Please Come Home (1919)",
+  "printed": 32,
+  "jump_words": [],
+  "structure": "17[|:] 32[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.duo-dinamico-resistire-duo-dinamico.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Resistiré (Dúo Dinámico)",
+  "printed": 64,
+  "jump_words": [],
+  "structure": "64[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.pop.eiffel-65-i-m-blue.pdmx": {
+  "pipeline": "pdmx",
+  "title": "I' m blue",
+  "printed": 61,
+  "jump_words": [],
+  "structure": "2[|:] 3[:|x3] 6[|:] 7[:|x3] 10[|:] 11[:|x3] 30[|:] 31[:|x3] 34[|:] 35[:|x3] 50[|:] 51[:|x3] 54[|:] 55[:|x3] 58[|:] 59[:|x3]",
+  "n_fwd": 8,
+  "n_bwd": 8
+ },
+ "song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Mr. Blue Sky",
+  "printed": 132,
+  "jump_words": [],
+  "structure": "9[|:] 41[V1 v-end] 42[V1 v-end] 43[V1 v-end] 44[V1 v-end] 45[V1 v-end] 46[V1 v-end] 47[V1 v-end] 48[V1 v-end] 49[V1 v-end] 50[V1 :| v-end] 51[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.ellie-goulding-ellie-goulding-s-love-me-like-you-do-cover.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Ellie Goulding's Love me like you do-cover",
+  "printed": 78,
+  "jump_words": [],
+  "structure": "9[|:] 15[V1 :| v-end] 16[V2 v-end] 40[|:] 46[V1 v-end] 47[:|] 48[V2 v-end] 63[|:] 70[V1 :| v-end] 71[V2 v-end]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.pop.guantanamera.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Guantanamera",
+  "printed": 21,
+  "jump_words": [],
+  "structure": "21[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.pop.hans-otto-borgmann-tango-notturno.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Tango Notturno",
+  "printed": 54,
+  "jump_words": [],
+  "structure": "6[|:] 54[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.harry-styles-falling-by-harry-styles.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Falling",
+  "printed": 89,
+  "jump_words": [],
+  "structure": "9[|:] 16[V1 :| v-end] 17[V2 v-end] 76[|:] 82[V1] 83[:| v-end]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.pop.jay-chou-a-a-jay-chou-with-ca-aca1-2aea2-waiting-for-youa.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Waiting For You — Jay Chou",
+  "printed": 81,
+  "jump_words": [],
+  "structure": "13[SEGNO]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.pop.john-legend-all-of-me-john-legend-easy-piano.pdmx": {
+  "pipeline": "pdmx",
+  "title": "All of Me (easy)",
+  "printed": 56,
+  "jump_words": [],
+  "structure": "5[|:] 12[V1 :| v-end] 13[V2 v-end] 22[|:] 29[V1 :| v-end] 30[V2 v-end]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.pop.kerry-mills-at-a-georgia-camp-meeting-mills-1897-kerry-mills.pdmx": {
+  "pipeline": "pdmx",
+  "title": "At a Georgia camp meeting Mills 1897 Kerry Mills",
+  "printed": 92,
+  "jump_words": [],
+  "structure": "6[|:] 21[V1 :| v-end] 22[V2 v-end] 23[|:] 38[V1 :| v-end] 39[V2 v-end] 56[|:] 71[:|] 76[|:] 91[V1 :| v-end] 92[V2 v-end]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.pop.kevin-sherwood-damned.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Damned",
+  "printed": 26,
+  "jump_words": [],
+  "structure": "5[|:] 8[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.koji-kondo-song-of-storms-easy.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Song of Storms (Easy)",
+  "printed": 24,
+  "jump_words": [],
+  "structure": "9[|:] 24[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.laura-shigihara-loonboon.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Loonboon",
+  "printed": 48,
+  "jump_words": [],
+  "structure": "2[|:] 17[V1 :| v-end] 18[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.louisf365-boogie-woogie-and-blues-piano-exersices.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Boogie-woogie and blues piano exercises",
+  "printed": 31,
+  "jump_words": [],
+  "structure": "1[|:] 4[V1 :| v-end] 5[V2 v-end] 6[|:] 9[:|] 10[|:] 16[V1] 17[:| v-end] 18[V2 v-end]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.pop.margie.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Margie (1920)",
+  "printed": 48,
+  "jump_words": [],
+  "structure": "17[|:]",
+  "n_fwd": 1,
+  "n_bwd": 0
+ },
+ "song.pop.marr11317-recado-bossa-nova.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Recado Bossa Nova",
+  "printed": 46,
+  "jump_words": [],
+  "structure": "2[|:] 13[V1] 17[:| v-end] 18[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.mederic-niot-summer-road-s-cakewalk.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Summer Road's Cakewalk",
+  "printed": 61,
+  "jump_words": [],
+  "structure": "11[|:] 14[:|] 51[|:] 54[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.pop.michael-row-the-boat-ashore.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Michael, Row the Boat Ashore",
+  "printed": 9,
+  "jump_words": [],
+  "structure": "9[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.pop.minuet-in-g-minor-bach-piano.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minuet in G minor, BWV Anh. 115 (first 16 bars)",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "16[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.pop.misc-christmas-good-king-wenceslas.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Good King Wenceslas",
+  "printed": 13,
+  "jump_words": [],
+  "structure": "1[|:] 4[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.misc-christmas-mary-did-you-know.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Mary Did You Know?",
+  "printed": 62,
+  "jump_words": [],
+  "structure": "10[|:] 25[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.misc-christmas-traditional-music-up-on-the-housetop-gw.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Up on the Housetop",
+  "printed": 16,
+  "jump_words": [],
+  "structure": "16[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.pop.misc-computer-games-coconut-mall-trombone-solo.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Coconut Mall Trombone Solo",
+  "printed": 36,
+  "jump_words": [],
+  "structure": "5[|:] 36[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.misc-computer-games-minecraft-calm.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Minecraft Calm",
+  "printed": 114,
+  "jump_words": [],
+  "structure": "1[|:] 3[V1 v-end] 4[V1 :| v-end] 5[V2 v-end] 6[V2 v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.misc-soundtrack-how-to-train-your-dragon-flying-theme.pdmx": {
+  "pipeline": "pdmx",
+  "title": "How to Train Your Dragon: Flying Theme",
+  "printed": 52,
+  "jump_words": [],
+  "structure": "32[|:] 33[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.misc-soundtrack-lavender-s-blue.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Lavender's Blue",
+  "printed": 20,
+  "jump_words": [],
+  "structure": "9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.misc-soundtrack-westworld-sweetwater.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Westworld - Sweetwater",
+  "printed": 28,
+  "jump_words": [],
+  "structure": "4[|:] 27[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.misc-television-lowenzahn-thema-piano.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Löwenzahn Thema (Piano)",
+  "printed": 22,
+  "jump_words": [],
+  "structure": "13[|:] 19[V1] 20[:| v-end] 21[V2] 22[v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.misc-tunes-tico-tico-no-fub-a.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Tico-Tico no Fubá",
+  "printed": 45,
+  "jump_words": [],
+  "structure": "1[|:] 8[V1] 9[:| v-end] 10[V2] 11[v-end] 12[|:] 28[:|] 29[|:] 45[:|]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.pop.scarborough-fair.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Scarborough Fair",
+  "printed": 18,
+  "jump_words": [],
+  "structure": "18[:|]",
+  "n_fwd": 0,
+  "n_bwd": 1
+ },
+ "song.pop.the-memphis-blues.pdmx": {
+  "pipeline": "pdmx",
+  "title": "The Memphis Blues (1912)",
+  "printed": 33,
+  "jump_words": [],
+  "structure": "22[|:] 33[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.the-weeknd-the-weeknd-call-out-my-name.pdmx": {
+  "pipeline": "pdmx",
+  "title": "The Weeknd - Call Out My Name.",
+  "printed": 74,
+  "jump_words": [],
+  "structure": "69[|:] 72[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.toby-fox-fallen-down-reprise-undertale-easy.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Fallen Down (Reprise), from Undertale (easy)",
+  "printed": 60,
+  "jump_words": [],
+  "structure": "33[|:] 40[:|] 41[|:] 48[:|]",
+  "n_fwd": 2,
+  "n_bwd": 2
+ },
+ "song.pop.toby-fox-sans-from-undertale-for-piano.pdmx": {
+  "pipeline": "pdmx",
+  "title": "sans. (from Undertale for piano)",
+  "printed": 12,
+  "jump_words": [
+   [
+    12,
+    "<b><font face=\"Comic Sans MS\"></font>D.C.</b>"
+   ],
+   [
+    12,
+    "<b><font face=\"Comic Sans MS\"></font>D.C.</b>"
+   ]
+  ],
+  "structure": "12[JUMP:DC/None]",
+  "n_fwd": 0,
+  "n_bwd": 0
+ },
+ "song.pop.toby-fox-undertale-undertale-piano.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Undertale, from Undertale",
+  "printed": 115,
+  "jump_words": [],
+  "structure": "4[:|] 13[|:] 20[V1 :| v-end] 21[V2 v-end] 86[|:] 93[:|] 94[|:] 101[:|] 102[|:] 109[:|] 110[|:] 113[V1 :| v-end] 114[V2 v-end]",
+  "n_fwd": 5,
+  "n_bwd": 6
+ },
+ "song.pop.wowaka-vocaloid-rolling-girl-aa1-4aaa3aa1-4a.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Rolling Girl",
+  "printed": 144,
+  "jump_words": [],
+  "structure": "9[|:] 16[:|]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.pop.yojiro-noda-fireworks-festival-weathering-with-you.pdmx": {
+  "pipeline": "pdmx",
+  "title": "Fireworks Festival - (Weathering With You)",
+  "printed": 73,
+  "jump_words": [],
+  "structure": "52[|:] 58[V1] 59[:| v-end] 60[V2] 61[v-end]",
+  "n_fwd": 1,
+  "n_bwd": 1
+ },
+ "song.ragtime.joplin-antoinette": {
+  "pipeline": "other",
+  "title": "Antoinette",
+  "printed": 92,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 55[|:] 90[:|]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.ragtime.joplin-augustan-club-waltz": {
+  "pipeline": "other",
+  "title": "Augustan Club Waltz",
+  "printed": 148,
+  "jump_words": [],
+  "structure": "5[|:] 36[:|] 39[|:] 70[:|] 73[|:] 104[:|] 107[|:] 138[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-bethena": {
+  "pipeline": "other",
+  "title": "Bethena",
+  "printed": 164,
+  "jump_words": [],
+  "structure": "29[|:] 44[:|] 77[|:] 92[:|] 102[|:] 117[:|] 119[|:] 134[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-binks-waltz": {
+  "pipeline": "other",
+  "title": "Binks's Waltz",
+  "printed": 143,
+  "jump_words": [],
+  "structure": "5[|:] 36[:|] 39[|:] 54[:|] 88[|:] 103[:|]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.ragtime.joplin-breeze-from-alabama": {
+  "pipeline": "other",
+  "title": "A Breeze from Alabama",
+  "printed": 101,
+  "jump_words": [],
+  "structure": "6[|:] 21[:|] 26[|:] 41[:|] 43[|:] 58[:|] 64[|:] 79[:|] 85[|:] 100[:|]",
+  "n_fwd": 5,
+  "n_bwd": 5
+ },
+ "song.ragtime.joplin-cascades": {
+  "pipeline": "other",
+  "title": "The Cascades",
+  "printed": 76,
+  "jump_words": [],
+  "structure": "5[|:] 21[|:] 22[|:] 37[:|] 43[|:] 58[:|] 60[|:] 75[:|]",
+  "n_fwd": 5,
+  "n_bwd": 3
+ },
+ "song.ragtime.joplin-chrysanthemum": {
+  "pipeline": "other",
+  "title": "The Chrysanthemum",
+  "printed": 104,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 37[:|] 55[|:] 70[:|] 72[|:] 87[:|]",
+  "n_fwd": 3,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-cleopha": {
+  "pipeline": "other",
+  "title": "Cleopha",
+  "printed": 90,
+  "jump_words": [],
+  "structure": "6[|:] 21[:|] 23[|:] 38[:|] 57[|:] 72[:|] 74[|:] 89[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-combination-march": {
+  "pipeline": "other",
+  "title": "Combination March",
+  "printed": 85,
+  "jump_words": [],
+  "structure": "6[|:] 21[:|] 31[|:] 46[:|] 52[|:] 67[:|] 69[|:] 84[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-country-club": {
+  "pipeline": "other",
+  "title": "Country Club",
+  "printed": 91,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 58[|:] 73[:|] 75[|:] 90[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-crush-collision-march": {
+  "pipeline": "other",
+  "title": "The Crush Collision March",
+  "printed": 107,
+  "jump_words": [],
+  "structure": "6[|:] 21[:|] 23[|:] 38[:|] 41[|:] 56[:|] 73[:|] 75[|:] 106[:|]",
+  "n_fwd": 4,
+  "n_bwd": 5
+ },
+ "song.ragtime.joplin-easy-winners": {
+  "pipeline": "other",
+  "title": "The Easy Winners",
+  "printed": 94,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 59[|:] 74[:|] 77[|:] 92[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-elite-syncopations": {
+  "pipeline": "other",
+  "title": "Elite Syncopations",
+  "printed": 88,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 37[:|] 70[:|] 72[|:]",
+  "n_fwd": 2,
+  "n_bwd": 3
+ },
+ "song.ragtime.joplin-entertainer": {
+  "pipeline": "other",
+  "title": "The Entertainer",
+  "printed": 92,
+  "jump_words": [],
+  "structure": "5[|:] 20[V1 :| v-end] 21[V2 v-end] 22[|:] 37[V1 :| v-end] 38[V2 v-end] 55[|:] 70[V1 :| v-end] 71[V2 v-end] 76[|:] 91[V1 :| v-end] 92[V2 v-end]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-entertainer.alt": {
+  "pipeline": "other",
+  "title": "The Entertainer (alternative edition)",
+  "printed": 92,
+  "jump_words": [],
+  "structure": "5[|:] 20[V1 :| v-end] 21[V2 v-end] 22[|:] 37[V1 :| v-end] 38[V2 v-end] 55[|:] 70[V1 :| v-end] 71[V2 v-end] 76[|:] 91[V1 :| v-end] 92[V2 v-end]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-entertainer.kern": {
+  "pipeline": "other",
+  "title": "The Entertainer",
+  "printed": 92,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 55[|:] 70[:|] 76[|:] 91[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-eugenia": {
+  "pipeline": "other",
+  "title": "Eugenia",
+  "printed": 103,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 55[|:] 71[|:] 102[:|]",
+  "n_fwd": 4,
+  "n_bwd": 3
+ },
+ "song.ragtime.joplin-felicity-rag": {
+  "pipeline": "other",
+  "title": "Felicity Rag",
+  "printed": 77,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 39[|:] 54[:|] 61[|:] 76[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-fig-leaf-rag": {
+  "pipeline": "other",
+  "title": "Fig Leaf Rag",
+  "printed": 88,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 55[|:] 70[:|] 72[|:] 87[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-gladiolus-rag": {
+  "pipeline": "other",
+  "title": "Gladiolus Rag",
+  "printed": 86,
+  "jump_words": [],
+  "structure": "2[|:] 17[:|] 19[|:] 34[:|] 53[|:] 68[:|] 70[|:] 85[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-harmony-club-waltz": {
+  "pipeline": "other",
+  "title": "Harmony Club Waltz",
+  "printed": 162,
+  "jump_words": [],
+  "structure": "9[|:] 24[:|] 25[|:] 56[:|] 58[|:] 73[:|] 76[|:] 107[:|] 110[|:] 125[:|] 127[|:] 142[:|] 145[|:] 160[:|]",
+  "n_fwd": 7,
+  "n_bwd": 7
+ },
+ "song.ragtime.joplin-heliotrope-bouquet": {
+  "pipeline": "other",
+  "title": "Heliotrope Bouquet",
+  "printed": 87,
+  "jump_words": [],
+  "structure": "21[|:] 36[:|] 54[|:] 69[:|] 71[|:] 86[:|]",
+  "n_fwd": 3,
+  "n_bwd": 3
+ },
+ "song.ragtime.joplin-leola": {
+  "pipeline": "other",
+  "title": "Leola",
+  "printed": 85,
+  "jump_words": [],
+  "structure": "2[|:] 17[:|] 19[|:] 34[:|] 67[:|] 84[:|]",
+  "n_fwd": 2,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-lily-queen": {
+  "pipeline": "other",
+  "title": "Lily Queen, Ragtime Two-Step",
+  "printed": 92,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 23[|:] 38[:|] 57[|:] 72[:|] 75[|:] 90[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-magnetic-rag": {
+  "pipeline": "other",
+  "title": "Magnetic Rag",
+  "printed": 109,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 23[|:] 38[:|] 40[|:] 63[:|] 67[|:] 82[:|] 85[|:] 100[:|]",
+  "n_fwd": 5,
+  "n_bwd": 5
+ },
+ "song.ragtime.joplin-maple-leaf-rag": {
+  "pipeline": "other",
+  "title": "Maple Leaf Rag",
+  "printed": 85,
+  "jump_words": [],
+  "structure": "2[|:] 17[V1 :| v-end] 19[|:] 34[V1 :| v-end] 35[V2 v-end] 52[|:] 67[V1 :| v-end] 68[V2 v-end] 69[|:] 84[V1 :| v-end] 85[V2 v-end]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-maple-leaf-rag.kern": {
+  "pipeline": "other",
+  "title": "Maple Leaf Rag",
+  "printed": 85,
+  "jump_words": [],
+  "structure": "2[|:] 17[:|] 19[|:] 34[:|] 52[|:] 67[:|] 84[:|]",
+  "n_fwd": 3,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-march-majestic": {
+  "pipeline": "other",
+  "title": "March Majestic",
+  "printed": 89,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 36[:|] 37[:|] 55[:|] 57[|:] 88[:|]",
+  "n_fwd": 3,
+  "n_bwd": 5
+ },
+ "song.ragtime.joplin-new-rag": {
+  "pipeline": "other",
+  "title": "Scott Joplin's New Rag",
+  "printed": 111,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 37[:|] 55[|:] 70[:|]",
+  "n_fwd": 2,
+  "n_bwd": 3
+ },
+ "song.ragtime.joplin-nonpareil": {
+  "pipeline": "other",
+  "title": "The Nonpareil",
+  "printed": 72,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 54[:|] 56[|:] 71[:|]",
+  "n_fwd": 3,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-original-rags": {
+  "pipeline": "other",
+  "title": "Original Rags",
+  "printed": 109,
+  "jump_words": [],
+  "structure": "9[|:] 24[:|] 26[|:] 41[:|] 42[|:] 57[:|] 78[|:] 93[:|] 94[|:] 109[:|]",
+  "n_fwd": 5,
+  "n_bwd": 5
+ },
+ "song.ragtime.joplin-palm-leaf-rag": {
+  "pipeline": "other",
+  "title": "Palm Leaf Rag",
+  "printed": 77,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 40[|:] 55[:|] 61[|:] 76[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-paragon-rag": {
+  "pipeline": "other",
+  "title": "The Paragon Rag",
+  "printed": 89,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 56[|:] 71[:|] 73[|:] 88[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-peacherine-rag": {
+  "pipeline": "other",
+  "title": "Peacherine Rag",
+  "printed": 89,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 55[|:] 70[:|] 73[|:] 88[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-pine-apple-rag": {
+  "pipeline": "other",
+  "title": "Pine Apple Rag",
+  "printed": 89,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 23[|:] 38[:|] 56[|:] 71[:|] 73[|:] 88[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-pleasant-moments": {
+  "pipeline": "other",
+  "title": "Pleasant Moments",
+  "printed": 98,
+  "jump_words": [],
+  "structure": "35[:|] 36[:|] 70[:|]",
+  "n_fwd": 0,
+  "n_bwd": 3
+ },
+ "song.ragtime.joplin-reflection-rag": {
+  "pipeline": "other",
+  "title": "Reflection Rag",
+  "printed": 90,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 23[|:] 38[:|] 40[|:] 55[:|] 57[|:] 72[:|] 74[|:] 89[:|]",
+  "n_fwd": 5,
+  "n_bwd": 5
+ },
+ "song.ragtime.joplin-rose-bud-march": {
+  "pipeline": "other",
+  "title": "The Rose-bud March",
+  "printed": 94,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 71[:|] 78[|:] 93[:|]",
+  "n_fwd": 3,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-rose-leaf-rag": {
+  "pipeline": "other",
+  "title": "Rose Leaf Rag",
+  "printed": 88,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 55[|:] 70[:|] 72[|:]",
+  "n_fwd": 4,
+  "n_bwd": 3
+ },
+ "song.ragtime.joplin-school-of-ragtime": {
+  "pipeline": "other",
+  "title": "School of Ragtime",
+  "printed": 33,
+  "jump_words": [],
+  "structure": "5[:|] 9[:|] 13[:|] 17[:|] 25[:|] 33[:|]",
+  "n_fwd": 0,
+  "n_bwd": 6
+ },
+ "song.ragtime.joplin-solace": {
+  "pipeline": "other",
+  "title": "Solace",
+  "printed": 88,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 55[|:] 70[:|] 72[|:] 87[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-something-doing": {
+  "pipeline": "other",
+  "title": "Something Doing",
+  "printed": 88,
+  "jump_words": [],
+  "structure": "6[|:] 21[:|] 23[|:] 38[:|] 56[|:] 71[:|] 72[|:] 87[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-stoptime-rag": {
+  "pipeline": "other",
+  "title": "Stoptime Rag",
+  "printed": 87,
+  "jump_words": [],
+  "structure": "8[:|] 10[|:] 17[:|] 27[|:] 42[:|] 44[|:] 51[:|] 54[|:] 61[:|] 63[|:] 70[:|] 71[|:] 79[|:] 86[:|]",
+  "n_fwd": 7,
+  "n_bwd": 7
+ },
+ "song.ragtime.joplin-sugar-cane": {
+  "pipeline": "other",
+  "title": "Sugar Cane",
+  "printed": 87,
+  "jump_words": [],
+  "structure": "2[|:] 17[:|] 20[|:] 35[:|] 53[|:] 68[:|] 71[|:] 86[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-sunflower-slow-drag": {
+  "pipeline": "other",
+  "title": "Sunflower Slow Drag",
+  "printed": 93,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 23[|:] 38[:|] 60[|:] 75[:|] 77[|:] 92[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-swipesy-cakewalk": {
+  "pipeline": "other",
+  "title": "Swipesy Cake Walk",
+  "printed": 88,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 70[:|] 87[:|]",
+  "n_fwd": 2,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-the-favorite": {
+  "pipeline": "other",
+  "title": "The Favorite",
+  "printed": 88,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 55[|:] 70[:|] 72[|:] 87[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-wall-street-rag": {
+  "pipeline": "other",
+  "title": "Wall Street Rag",
+  "printed": 72,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 39[|:] 54[:|] 56[|:] 71[:|]",
+  "n_fwd": 4,
+  "n_bwd": 4
+ },
+ "song.ragtime.joplin-weeping-willow": {
+  "pipeline": "other",
+  "title": "Weeping Willow",
+  "printed": 88,
+  "jump_words": [],
+  "structure": "5[|:] 20[:|] 22[|:] 37[:|] 70[:|] 72[|:] 87[:|]",
+  "n_fwd": 3,
+  "n_bwd": 4
+ }
+}

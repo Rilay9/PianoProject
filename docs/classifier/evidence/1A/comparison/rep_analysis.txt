@@ -1,0 +1,81 @@
+﻿== readers: ran / errors / could not (None) over 329 files
+  unroller: gave a count 329, error 0, none (not expandable) 0
+  unroller_cp: gave a count 329, error 0, none (not expandable) 0
+  music21: gave a count 290, error 1, none (not expandable) 38
+     errors: [('song.classical.mozart-k545-i.alt', "ERR MusicXMLImportException('incorrect accidental 9.0 for pitch F3')")]
+  pt_max: gave a count 323, error 6, none (not expandable) 0
+     errors: [('song.folk.carioquinha.pdmx', "ERR IndexError('list index out of range')"), ('song.folk.i-remember-you.pdmx', "ERR IndexError('list index out of range')"), ('song.folk.so-danco-samba.pdmx', "ERR IndexError('list index out of range')"), ('song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx', "ERR IndexError('list index out of range')"), ('song.pop.ellie-goulding-ellie-goulding-s-love-me-like-you-do-cover.pdmx', "ERR IndexError('list index out of range')")]
+  pt_max_noleap: gave a count 323, error 6, none (not expandable) 0
+     errors: [('song.folk.carioquinha.pdmx', "ERR IndexError('list index out of range')"), ('song.folk.i-remember-you.pdmx', "ERR IndexError('list index out of range')"), ('song.folk.so-danco-samba.pdmx', "ERR IndexError('list index out of range')"), ('song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx', "ERR IndexError('list index out of range')"), ('song.pop.ellie-goulding-ellie-goulding-s-love-me-like-you-do-cover.pdmx', "ERR IndexError('list index out of range')")]
+  pt_min: gave a count 322, error 7, none (not expandable) 0
+     errors: [('song.beautiful.hungarian-sonata', "ERR IndexError('list index out of range')"), ('song.folk.carioquinha.pdmx', "ERR IndexError('list index out of range')"), ('song.folk.i-remember-you.pdmx', "ERR IndexError('list index out of range')"), ('song.folk.so-danco-samba.pdmx', "ERR IndexError('list index out of range')"), ('song.pop.electric-light-orchestra-elo-mr-blue-sky-hard-piano.pdmx', "ERR IndexError('list index out of range')")]
+
+== files by group
+   ('other', 'jump words') 4
+   ('other', 'no jump words') 114
+   ('pdmx', 'jump words') 41
+   ('pdmx', 'no jump words') 170
+
+== agreement: unroller vs music21
+   ('other', 'jump words') {'agree': 1, 'cannot (one reader gave no count)': 3}
+   ('other', 'no jump words') {'cannot (one reader gave no count)': 12, 'agree': 83, 'disagree': 19}
+   ('pdmx', 'jump words') {'cannot (one reader gave no count)': 12, 'disagree': 6, 'agree': 23}
+   ('pdmx', 'no jump words') {'agree': 151, 'disagree': 7, 'cannot (one reader gave no count)': 12}
+   all: {'agree': 258, 'cannot (one reader gave no count)': 39, 'disagree': 32}
+
+== agreement: unroller vs pt_max_noleap
+   ('other', 'jump words') {'disagree': 4}
+   ('other', 'no jump words') {'disagree': 12, 'agree': 102}
+   ('pdmx', 'jump words') {'disagree': 39, 'agree': 1, 'cannot (one reader gave no count)': 1}
+   ('pdmx', 'no jump words') {'agree': 154, 'disagree': 11, 'cannot (one reader gave no count)': 5}
+   all: {'disagree': 66, 'agree': 257, 'cannot (one reader gave no count)': 6}
+
+== agreement: unroller vs pt_max
+   ('other', 'jump words') {'disagree': 4}
+   ('other', 'no jump words') {'disagree': 12, 'agree': 102}
+   ('pdmx', 'jump words') {'disagree': 39, 'agree': 1, 'cannot (one reader gave no count)': 1}
+   ('pdmx', 'no jump words') {'agree': 154, 'disagree': 11, 'cannot (one reader gave no count)': 5}
+   all: {'disagree': 66, 'agree': 257, 'cannot (one reader gave no count)': 6}
+
+== agreement: unroller vs pt_min
+   ('other', 'jump words') {'cannot (one reader gave no count)': 1, 'disagree': 3}
+   ('other', 'no jump words') {'agree': 3, 'disagree': 111}
+   ('pdmx', 'jump words') {'disagree': 39, 'agree': 1, 'cannot (one reader gave no count)': 1}
+   ('pdmx', 'no jump words') {'disagree': 160, 'agree': 5, 'cannot (one reader gave no count)': 5}
+   all: {'cannot (one reader gave no count)': 7, 'disagree': 313, 'agree': 9}
+
+== agreement: music21 vs pt_max_noleap
+   ('other', 'jump words') {'disagree': 1, 'cannot (one reader gave no count)': 3}
+   ('other', 'no jump words') {'cannot (one reader gave no count)': 12, 'agree': 84, 'disagree': 18}
+   ('pdmx', 'jump words') {'cannot (one reader gave no count)': 12, 'agree': 2, 'disagree': 27}
+   ('pdmx', 'no jump words') {'agree': 154, 'disagree': 4, 'cannot (one reader gave no count)': 12}
+   all: {'disagree': 50, 'cannot (one reader gave no count)': 39, 'agree': 240}
+
+== agreement: unroller_cp vs music21
+   ('other', 'jump words') {'agree': 1, 'cannot (one reader gave no count)': 3}
+   ('other', 'no jump words') {'cannot (one reader gave no count)': 12, 'agree': 83, 'disagree': 19}
+   ('pdmx', 'jump words') {'cannot (one reader gave no count)': 12, 'disagree': 4, 'agree': 25}
+   ('pdmx', 'no jump words') {'agree': 151, 'disagree': 7, 'cannot (one reader gave no count)': 12}
+   all: {'agree': 260, 'cannot (one reader gave no count)': 39, 'disagree': 30}
+
+== agreement: unroller_cp vs pt_max_noleap
+   ('other', 'jump words') {'disagree': 4}
+   ('other', 'no jump words') {'disagree': 12, 'agree': 102}
+   ('pdmx', 'jump words') {'disagree': 39, 'agree': 1, 'cannot (one reader gave no count)': 1}
+   ('pdmx', 'no jump words') {'agree': 154, 'disagree': 11, 'cannot (one reader gave no count)': 5}
+   all: {'disagree': 66, 'agree': 257, 'cannot (one reader gave no count)': 6}
+
+== all three readers (unroller_cp, music21, pt_max_noleap) give the same count, on files where all three gave one
+   {'not all equal': 57, 'a reader gave no count': 39, 'all three equal': 233}
+  with the unroller as it is (no coda-pair fix): {'not all equal': 57, 'a reader gave no count': 39, 'all three equal': 233}
+
+== files where the coda-pair fix changes the unroller's count: 7
+   ('song.blues.weary-blues', 90, 77, None)
+   ('song.classical.beethoven-bagatelle-in-d-major-op-119-no-3.pdmx', 133, 115, 115)
+   ('song.classical.nazareth-carioca-1913.pdmx', 169, 136, None)
+   ('song.folk.carioquinha.pdmx', 172, 137, None)
+   ('song.folk.down-by-the-riverside.pdmx.2', 122, 78, 78)
+   ('song.folk.margaritaville-keyboard-part.pdmx', 132, 127, None)
+   ('song.jazz.vince-guaraldi-skating.pdmx', 227, 179, 209)
+
+== files where the four readers (unroller, unroller_cp, music21, pt_max_noleap) are not all equal or one gave no count: 96 -> rep_disagreements.json

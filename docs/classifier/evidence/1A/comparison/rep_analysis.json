@@ -1,0 +1,266 @@
+{
+ "ran": {
+  "unroller": {
+   "count": 329,
+   "error": 0,
+   "none": 0
+  },
+  "unroller_cp": {
+   "count": 329,
+   "error": 0,
+   "none": 0
+  },
+  "music21": {
+   "count": 290,
+   "error": 1,
+   "none": 38
+  },
+  "pt_max": {
+   "count": 323,
+   "error": 6,
+   "none": 0
+  },
+  "pt_max_noleap": {
+   "count": 323,
+   "error": 6,
+   "none": 0
+  },
+  "pt_min": {
+   "count": 322,
+   "error": 7,
+   "none": 0
+  }
+ },
+ "pairs": {
+  "unroller~music21": {
+   "other|jump words": {
+    "agree": 1,
+    "cannot (one reader gave no count)": 3
+   },
+   "other|no jump words": {
+    "cannot (one reader gave no count)": 12,
+    "agree": 83,
+    "disagree": 19
+   },
+   "pdmx|no jump words": {
+    "agree": 151,
+    "disagree": 7,
+    "cannot (one reader gave no count)": 12
+   },
+   "pdmx|jump words": {
+    "cannot (one reader gave no count)": 12,
+    "disagree": 6,
+    "agree": 23
+   },
+   "all": {
+    "agree": 258,
+    "cannot (one reader gave no count)": 39,
+    "disagree": 32
+   }
+  },
+  "unroller~pt_max_noleap": {
+   "other|jump words": {
+    "disagree": 4
+   },
+   "other|no jump words": {
+    "disagree": 12,
+    "agree": 102
+   },
+   "pdmx|no jump words": {
+    "agree": 154,
+    "disagree": 11,
+    "cannot (one reader gave no count)": 5
+   },
+   "pdmx|jump words": {
+    "disagree": 39,
+    "agree": 1,
+    "cannot (one reader gave no count)": 1
+   },
+   "all": {
+    "disagree": 66,
+    "agree": 257,
+    "cannot (one reader gave no count)": 6
+   }
+  },
+  "unroller~pt_max": {
+   "other|jump words": {
+    "disagree": 4
+   },
+   "other|no jump words": {
+    "disagree": 12,
+    "agree": 102
+   },
+   "pdmx|no jump words": {
+    "agree": 154,
+    "disagree": 11,
+    "cannot (one reader gave no count)": 5
+   },
+   "pdmx|jump words": {
+    "disagree": 39,
+    "agree": 1,
+    "cannot (one reader gave no count)": 1
+   },
+   "all": {
+    "disagree": 66,
+    "agree": 257,
+    "cannot (one reader gave no count)": 6
+   }
+  },
+  "unroller~pt_min": {
+   "other|jump words": {
+    "cannot (one reader gave no count)": 1,
+    "disagree": 3
+   },
+   "other|no jump words": {
+    "agree": 3,
+    "disagree": 111
+   },
+   "pdmx|no jump words": {
+    "disagree": 160,
+    "agree": 5,
+    "cannot (one reader gave no count)": 5
+   },
+   "pdmx|jump words": {
+    "disagree": 39,
+    "agree": 1,
+    "cannot (one reader gave no count)": 1
+   },
+   "all": {
+    "cannot (one reader gave no count)": 7,
+    "disagree": 313,
+    "agree": 9
+   }
+  },
+  "music21~pt_max_noleap": {
+   "other|jump words": {
+    "disagree": 1,
+    "cannot (one reader gave no count)": 3
+   },
+   "other|no jump words": {
+    "cannot (one reader gave no count)": 12,
+    "agree": 84,
+    "disagree": 18
+   },
+   "pdmx|no jump words": {
+    "agree": 154,
+    "disagree": 4,
+    "cannot (one reader gave no count)": 12
+   },
+   "pdmx|jump words": {
+    "cannot (one reader gave no count)": 12,
+    "agree": 2,
+    "disagree": 27
+   },
+   "all": {
+    "disagree": 50,
+    "cannot (one reader gave no count)": 39,
+    "agree": 240
+   }
+  },
+  "unroller_cp~music21": {
+   "other|jump words": {
+    "agree": 1,
+    "cannot (one reader gave no count)": 3
+   },
+   "other|no jump words": {
+    "cannot (one reader gave no count)": 12,
+    "agree": 83,
+    "disagree": 19
+   },
+   "pdmx|no jump words": {
+    "agree": 151,
+    "disagree": 7,
+    "cannot (one reader gave no count)": 12
+   },
+   "pdmx|jump words": {
+    "cannot (one reader gave no count)": 12,
+    "disagree": 4,
+    "agree": 25
+   },
+   "all": {
+    "agree": 260,
+    "cannot (one reader gave no count)": 39,
+    "disagree": 30
+   }
+  },
+  "unroller_cp~pt_max_noleap": {
+   "other|jump words": {
+    "disagree": 4
+   },
+   "other|no jump words": {
+    "disagree": 12,
+    "agree": 102
+   },
+   "pdmx|no jump words": {
+    "agree": 154,
+    "disagree": 11,
+    "cannot (one reader gave no count)": 5
+   },
+   "pdmx|jump words": {
+    "disagree": 39,
+    "agree": 1,
+    "cannot (one reader gave no count)": 1
+   },
+   "all": {
+    "disagree": 66,
+    "agree": 257,
+    "cannot (one reader gave no count)": 6
+   }
+  }
+ },
+ "three_way_cp": {
+  "not all equal": 57,
+  "a reader gave no count": 39,
+  "all three equal": 233
+ },
+ "three_way": {
+  "not all equal": 57,
+  "a reader gave no count": 39,
+  "all three equal": 233
+ },
+ "cp_changes": [
+  [
+   "song.blues.weary-blues",
+   90,
+   77,
+   null
+  ],
+  [
+   "song.classical.beethoven-bagatelle-in-d-major-op-119-no-3.pdmx",
+   133,
+   115,
+   115
+  ],
+  [
+   "song.classical.nazareth-carioca-1913.pdmx",
+   169,
+   136,
+   null
+  ],
+  [
+   "song.folk.carioquinha.pdmx",
+   172,
+   137,
+   null
+  ],
+  [
+   "song.folk.down-by-the-riverside.pdmx.2",
+   122,
+   78,
+   78
+  ],
+  [
+   "song.folk.margaritaville-keyboard-part.pdmx",
+   132,
+   127,
+   null
+  ],
+  [
+   "song.jazz.vince-guaraldi-skating.pdmx",
+   227,
+   179,
+   209
+  ]
+ ],
+ "n_disagree_any": 96
+}
