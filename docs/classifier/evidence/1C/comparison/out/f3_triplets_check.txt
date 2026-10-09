@@ -1,0 +1,3 @@
+﻿3:2 groups: 231 | with a closed bracket: 231 | with a bracket of 2+ notes: 230
+  3:2 group without a 2+ note bracket: song.pop.misc-christmas-silent-night-trombone-duet.pdmx notes 1 closed brackets 1
+all groups: 413 | items: 249 | notes: 48345

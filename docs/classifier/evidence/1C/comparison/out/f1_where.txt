@@ -1,0 +1,2 @@
+﻿song.jazz.kenny-dorham-blue-bossa.pdmx onsets 76 two-or-more-note onsets 9 bars (1-based): {29: 4, 30: 4, 31: 1} of 32 bars; symbols 24
+song.folk.the-flute-tune-soulpride-remix.pdmx onsets 51 two-or-more-note onsets 14 bars (1-based): {3: 8, 4: 2, 10: 4} of 10 bars; symbols 10

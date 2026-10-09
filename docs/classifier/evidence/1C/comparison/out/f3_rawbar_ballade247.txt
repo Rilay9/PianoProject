@@ -1,0 +1,46 @@
+﻿CUE G5 16th dur 98 st1 v1 tm 39:32 start 
+CUE F15 16th dur 98 st1 v1 tm 39:32  
+CUE A5 16th dur 98 st1 v1 tm 39:32  
+CUE G5 16th dur 98 st1 v1 tm 39:32  
+CUE F15 16th dur 98 st1 v1 tm 39:32  
+CUE E-15 16th dur 98 st1 v1 tm 39:32  
+CUE D5 16th dur 98 st1 v1 tm 39:32  
+CUE E-15 16th dur 98 st1 v1 tm 39:32  
+CUE D5 16th dur 98 st1 v1 tm 39:32  
+CUE F5 16th dur 98 st1 v1 tm 39:32  
+CUE E-15 16th dur 98 st1 v1 tm 39:32  
+CUE D5 16th dur 98 st1 v1 tm 39:32  
+CUE C5 16th dur 98 st1 v1 tm 39:32  
+CUE B4 16th dur 98 st1 v1 tm 39:32  
+CUE D5 16th dur 98 st1 v1 tm 39:32  
+CUE C5 16th dur 98 st1 v1 tm 39:32  
+CUE B-14 16th dur 98 st1 v1 tm 39:32  
+CUE A4 16th dur 98 st1 v1 tm 39:32  
+CUE G4 16th dur 98 st1 v1 tm 39:32  
+CUE F14 16th dur 98 st1 v1 tm 39:32  
+CUE E-14 16th dur 98 st1 v1 tm 39:32  
+CUE D4 16th dur 98 st1 v1 tm 39:32  
+CUE C4 16th dur 98 st2 v1 tm 39:32  
+CUE B-13 16th dur 98 st2 v1 tm 39:32  
+CUE A3 16th dur 98 st2 v1 tm 39:32  
+CUE G3 16th dur 98 st2 v1 tm 39:32  
+CUE F13 16th dur 98 st2 v1 tm 39:32  
+CUE E-13 16th dur 98 st2 v1 tm 39:32  
+CUE D3 16th dur 98 st2 v1 tm 39:32  
+CUE C3 16th dur 98 st2 v1 tm 39:32  
+CUE B-12 16th dur 98 st2 v1 tm 39:32  
+CUE A2 16th dur 98 st2 v1 tm 39:32  
+CUE G2 16th dur 98 st2 v1 tm 39:32  
+CUE F12 16th dur 98 st2 v1 tm 39:32  
+CUE E-12 16th dur 98 st2 v1 tm 39:32  
+CUE D2 16th dur 98 st2 v1 tm 39:32  
+CUE C2 16th dur 98 st2 v1 tm 39:32  
+CUE B-11 16th dur 98 st2 v1 tm 39:32  
+CUE A1 16th dur 98 st2 v1 tm 39:32 stop 
+<backup> 3840
+D3 whole dur 1920 st2 v5 tm :  tie:stop
+chord A3 whole dur 1920 st2 v5 tm :  tie:stop
+chord C4 whole dur 1920 st2 v5 tm :  tie:stop
+chord F14 whole dur 1920 st2 v5 tm :  
+REST   dur 3840 st2 v5 tm :  
+<backup> 1920

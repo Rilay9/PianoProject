@@ -1,0 +1,31 @@
+﻿groups of ratios other than 3:2: 182 | D keeps 135 | D drops 47 (notes 160 )
+  unnamed, other: 19 groups, 81 notes; current rules: kept 16, noise 3
+       12:7 song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx notes 1 closed brackets 0 current: tuplet
+       7:4 song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx notes 6 closed brackets 0 current: tuplet
+       20:11 song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx notes 1 closed brackets 0 current: tuplet
+       5:4 song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx notes 3 closed brackets 2 current: noise
+       7:2 song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx notes 12 closed brackets 0 current: tuplet
+       20:11 song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx notes 2 closed brackets 0 current: tuplet
+       12:27 song.classical.debussy-clair-de-lune notes 2 closed brackets 2 current: noise
+       12:7 song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx notes 3 closed brackets 0 current: tuplet
+       6:5 song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx notes 3 closed brackets 0 current: tuplet
+       6:5 song.classical.debussy-reverie.pdmx notes 1 closed brackets 0 current: tuplet
+       2:1 song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx notes 1 closed brackets 1 current: noise
+       6:5 song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx notes 2 closed brackets 0 current: tuplet
+       20:11 song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx notes 2 closed brackets 0 current: tuplet
+       12:7 song.classical.mendelssohn-song-without-words-op-30-no-1.pdmx notes 3 closed brackets 0 current: tuplet
+       7:4 song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx notes 12 closed brackets 0 current: tuplet
+       20:11 song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx notes 2 closed brackets 0 current: tuplet
+       2:1 song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx notes 14 closed brackets 0 current: tuplet
+       11:8 song.jazz.fats-waller-ain-t-misbehavin.pdmx notes 10 closed brackets 0 current: tuplet
+       5:3 song.jazz.fats-waller-ain-t-misbehavin.pdmx notes 1 closed brackets 0 current: tuplet
+  unnamed, ratio within 5% of 1: 5 groups, 5 notes; current rules: kept 0, noise 5
+       40:39 song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx notes 1 closed brackets 1 current: noise
+       320:319 song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx notes 1 closed brackets 0 current: noise
+       48:47 song.jazz.fats-waller-ain-t-misbehavin.pdmx notes 1 closed brackets 1 current: noise
+       96:95 song.jazz.fats-waller-ain-t-misbehavin.pdmx notes 1 closed brackets 1 current: noise
+       160:157 song.jazz.fats-waller-ain-t-misbehavin.pdmx notes 1 closed brackets 1 current: noise
+  named artefact: 21 groups, 56 notes; current rules: kept 13, noise 8
+  ratio 1 (a = b): 2 groups, 18 notes; current rules: kept 0, noise 2
+       8:8 song.classical.schubert-liszt-standchen notes 16 closed brackets 2 current: noise
+       2:2 song.classical.schubert-liszt-standchen notes 2 closed brackets 1 current: noise

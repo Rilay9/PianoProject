@@ -1,0 +1,21 @@
+﻿
+=== named: 5 files (5 single-part files compared, 0 multi-part skipped, 0 errors)
+  model    : all matched notes 516, disagree with the render 2 (0.388%) | notes WITH a file accidental 94: disagree 2 (2.1%) [reader shows, render does not 0; render draws, reader does not 2] | notes without one 422: disagree 0
+  emulation: all matched notes 516, disagree with the render 0 (0.000%) | notes WITH a file accidental 94: disagree 0 (0.0%) [reader shows, render does not 0; render draws, reader does not 0] | notes without one 422: disagree 0
+  model    : files with zero disagreement 4/5; by pipeline {'generated': '2/3', 'pdmx': '2/2', 'other': '0/0'}
+  emulation: files with zero disagreement 5/5; by pipeline {'generated': '3/3', 'pdmx': '2/2', 'other': '0/0'}
+  emulation: files with 20+ emulation notes that found no partner in the render (alignment failures): []
+
+=== sample7: 30 files (30 single-part files compared, 0 multi-part skipped, 0 errors)
+  model    : all matched notes 12017, disagree with the render 167 (1.390%) | notes WITH a file accidental 1145: disagree 156 (13.6%) [reader shows, render does not 8; render draws, reader does not 148] | notes without one 10872: disagree 11
+  emulation: all matched notes 12017, disagree with the render 26 (0.216%) | notes WITH a file accidental 1153: disagree 18 (1.6%) [reader shows, render does not 11; render draws, reader does not 7] | notes without one 10864: disagree 8
+  model    : files with zero disagreement 22/30; by pipeline {'generated': '11/12', 'pdmx': '8/12', 'other': '3/6'}
+  emulation: files with zero disagreement 28/30; by pipeline {'generated': '12/12', 'pdmx': '12/12', 'other': '4/6'}
+  emulation: files with 20+ emulation notes that found no partner in the render (alignment failures): ['song.classical.chopin-nocturne-op55-2.nifc', 'song.classical.chopin-scherzo-2.nifc']
+
+=== sample11: 30 files (30 single-part files compared, 0 multi-part skipped, 0 errors)
+  model    : all matched notes 14077, disagree with the render 142 (1.009%) | notes WITH a file accidental 1907: disagree 132 (6.9%) [reader shows, render does not 5; render draws, reader does not 127] | notes without one 12170: disagree 10
+  emulation: all matched notes 14077, disagree with the render 26 (0.185%) | notes WITH a file accidental 1928: disagree 18 (0.9%) [reader shows, render does not 10; render draws, reader does not 8] | notes without one 12149: disagree 8
+  model    : files with zero disagreement 19/30; by pipeline {'generated': '10/12', 'pdmx': '8/12', 'other': '1/6'}
+  emulation: files with zero disagreement 29/30; by pipeline {'generated': '12/12', 'pdmx': '12/12', 'other': '5/6'}
+  emulation: files with 20+ emulation notes that found no partner in the render (alignment failures): ['song.classical.chopin-mazurka-op7-3.nifc']

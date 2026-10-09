@@ -1,0 +1,3 @@
+﻿pdmx {('in_file_not_shown', 'drawn'): 839, ('in_file_not_shown', 'not drawn'): 215, ('courtesy', 'drawn'): 1109, ('carried_tie', 'not drawn'): 31, ('courtesy', 'not drawn'): 2, ('plain_tie', 'not drawn'): 12, ('courtesy_marked', 'drawn'): 82, ('carried_tie', 'drawn'): 1} {'in_file_not_shown but drawn': 132}
+generated {('courtesy', 'drawn'): 259, ('in_file_not_shown', 'not drawn'): 664, ('in_file_not_shown', 'drawn'): 290} {'in_file_not_shown but drawn': 87}
+other {('in_file_not_shown', 'drawn'): 8868, ('in_file_not_shown', 'not drawn'): 6616, ('courtesy', 'drawn'): 5226, ('carried_tie', 'not drawn'): 153, ('courtesy', 'not drawn'): 58, ('plain_tie', 'not drawn'): 26, ('courtesy_marked', 'drawn'): 20} {'in_file_not_shown but drawn': 194}

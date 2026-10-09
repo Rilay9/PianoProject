@@ -1,0 +1,6 @@
+﻿exercise.blues-scale.b-flat.1oct.right 16.0 s {"agree": 13, "mine_only": 0, "osmd_only": 0, "shown_agree": 6, "ex": []}
+exercise.chromatic.d.1oct.right 0.9 s {"agree": 25, "mine_only": 0, "osmd_only": 0, "shown_agree": 20, "ex": []}
+exercise.scale.g-sharp-harmonic-minor.1oct.similar.both.2 0.9 s {"agree": 30, "mine_only": 0, "osmd_only": 0, "shown_agree": 4, "ex": []}
+song.classical.debussy-children-s-corner-the-little-shepherd.pdmx 1.2 s {"agree": 401, "mine_only": 0, "osmd_only": 4, "shown_agree": 61, "ex": []}
+song.classical.1818-franz-xaver-gruber-silent-night.pdmx 0.9 s {"agree": 47, "mine_only": 0, "osmd_only": 0, "shown_agree": 0, "ex": []}
+done 5 files in 20 s

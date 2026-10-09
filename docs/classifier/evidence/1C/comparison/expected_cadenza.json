@@ -1,0 +1,29 @@
+{
+  "_note": "Expected answers for rhythm.cadenza, written BEFORE any run of this comparison (reading: the 1C validation row and rhythm.cadenza on the area page). 'flag' = the item must carry a code candidate on the named route; 'must not' = the route must not raise a candidate from a re-export artefact.",
+  "positives_to_flag": {
+    "song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx": "cue run (bar 50, also 120, 135-136)",
+    "song.classical.chopin-nocturne-op9-2": "words: Senza tempo (bar 33 in the validators' numbering)",
+    "song.classical.chopin-berceuse.nifc": "grace run of 9 (bar 44) and irregular 11:8 (bar 43)",
+    "song.classical.chopin-polonaise-op53.nifc": "irregular 29:20 (bars 46, 78, 168)",
+    "song.classical.chopin-nocturne-op9-1": "irregular 11:6 (bar 3)",
+    "song.classical.chopin-prelude-op28-18.nifc": "irregular 11:8",
+    "song.classical.liszt-liebestraum-3": "cue runs (rep item: the page's rule answers UNKNOWN for the cue route, the file carries them)",
+    "song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx": "cue runs (bars 61-69) and words: a piacere (bar 70)",
+    "song.classical.beethoven-moonlight-iii.alt": "grace run of 30 (bar 188)"
+  },
+  "near_miss_for_the_agent": {
+    "song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx": "cue half and quarter in the left hand: the cue route lists many candidate runs in a piece with no cadenza (agent rejects)",
+    "song.classical.schubert-liszt-standchen": "9:8 runs: not irregular, no candidate"
+  },
+  "must_not_flag_from_artefacts": {
+    "song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx": "no irregular-tuplet candidate from 160:107, 320:179, 480:371 ... (re-export ratios)",
+    "song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx": "no irregular-tuplet candidate from 320:239, 160:119",
+    "song.jazz.fats-waller-ain-t-misbehavin.pdmx": "no irregular-tuplet candidate from 24:17, 40:37 (11:8 here is unverified)",
+    "song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx": "no irregular-tuplet candidate from 160:159, 80:79, 40:39 (10:4 here unverified)"
+  },
+  "predictions": [
+    "page's cue route: UNKNOWN for every rep item and every unmapped PDMX item, including Liebestraum No. 3 and La Campanella",
+    "own-file cue route (the validators' cadenza.py): a candidate for the same 26 files with cue markings, regardless of source mapping",
+    "irregular route after the printed-bracket fix: the artefact ratios of Malagueña, O mio babbino and Ain't Misbehavin' disappear; every named real positive stays"
+  ]
+}

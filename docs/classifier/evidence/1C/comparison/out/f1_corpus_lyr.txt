@@ -1,0 +1,9 @@
+﻿leadSheet/fosterBrownHair.mxl parts [''] voice-named: False
+   stream (0, 1) 91 syllables -> words {'word': 88, 'letter': 1, 'count': 2} first: ['I', 'dream', 'of', 'Jean', 'nie', 'with']
+   stream (0, 2) 81 syllables -> words {'word': 78, 'count': 3} first: ['long', 'for', 'Jean', 'nie', 'with', 'the']
+leadSheet/berlinAlexandersRagtime.mxl parts ['Electric Piano'] voice-named: False
+   stream (0, 1) 130 syllables -> words {'word': 118, 'count': 12} first: ['Come', 'on', 'and', 'hear', 'come', 'on']
+bach/bwv66.6.mxl parts ['Soprano', 'Alto', 'Tenor', 'Bass'] voice-named: True
+synthetic 'la' x8 over C D E A G A F E -> ('words', Counter({'word': 6, 'letter': 2}))
+synthetic 'la' x8 all on A -> ('letter names', Counter({'letter': 8}))
+synthetic counting 1 e & a over C C D A E E F G -> ('words', Counter({'count': 6, 'letter': 2}))

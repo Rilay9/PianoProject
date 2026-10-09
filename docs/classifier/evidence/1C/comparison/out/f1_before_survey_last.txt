@@ -1,0 +1,97 @@
+﻿purpose: [(('other', 'piece'), 267), (('other', 'technical exercise (candidate)'), 18), (('pdmx', 'duet part (candidate)'), 1), (('pdmx', 'piece'), 448), (('pdmx', 'technical exercise (candidate)'), 75)]
+technical-exercise candidate titles (real): 93
+    Étude in B-flat major, Op. 29 No. 4
+    Étude in C major, Op. 29 No. 1
+    Étude in G minor, Op. 29 No. 3
+    Exercise No. 38
+    Étude in E-flat minor, Op. 10 No. 6
+    Étude in C major, Op. 10 No. 1
+    Étude in A-flat major, Op. 10 No. 10
+    Étude in C minor, Op. 10 No. 11
+    Étude in C minor, Op. 10 No. 12
+    Étude in A minor, Op. 10 No. 2
+    Étude in C-sharp minor, Op. 10 No. 4
+    Étude in G-flat major, Op. 10 No. 5
+    Étude in C major, Op. 10 No. 7
+    Étude in F minor, Op. 10 No. 9
+    Étude in A-flat major, Op. 25 No. 1
+    Étude in A minor, Op. 25 No. 11
+    Étude in C minor, Op. 25 No. 12
+    Étude in F minor, Op. 25 No. 2
+    Étude in A minor, Op. 25 No. 4
+    Étude in G-sharp minor, Op. 25 No. 6
+    Étude in D-flat major, Op. 25 No. 8
+    Étude in G-flat major, Op. 25 No. 9
+    Rodolphe Kreutzer - Étude No. 2
+    A Study in Double Notes (Thirds) by Carl Czerny
+    Étude, Op. 335
+    Study, Op. 139 No. 1
+    Study, Op. 139 No. 2
+    Study, Op. 599 No. 63
+    The School of Velocity, Op. 299 No. 1
+    The School of Velocity, Op. 299 No. 10
+    The School of Velocity, Op. 299 No. 2
+    The School of Velocity, Op. 299 No. 22
+    The School of Velocity, Op. 299 No. 3
+    The School of Velocity, Op. 299 No. 4
+    The School of Velocity, Op. 299 No. 5
+    The School of Velocity, Op. 299 No. 6
+    The School of Velocity, Op. 299 No. 7
+    The School of Velocity, Op. 299 No. 8
+    The School of Velocity, Op. 299 No. 9
+    Étude, Op. 176 No. 1
+    Étude, Op. 176 No. 10
+    Étude, Op. 176 No. 11
+    Étude, Op. 176 No. 13
+    Étude, Op. 176 No. 15
+    Étude, Op. 176 No. 16
+    Étude, Op. 176 No. 18
+    Étude, Op. 176 No. 19
+    Étude, Op. 176 No. 2
+    Étude, Op. 176 No. 3
+    Étude, Op. 176 No. 4
+    Étude, Op. 176 No. 5
+    Étude, Op. 176 No. 6
+    Étude, Op. 176 No. 7
+    Étude, Op. 176 No. 8
+    Étude, Op. 176 No. 9
+    Study, Op. 82
+    Étude, Op. 37 No. 1
+    Étude, Op. 37 No. 12
+    Étude, Op. 37 No. 14
+    Étude, Op. 37 No. 15
+    Étude, Op. 37 No. 16
+    Étude, Op. 37 No. 17
+    Étude, Op. 37 No. 18
+    Étude, Op. 37 No. 19
+    Étude, Op. 37 No. 2
+    Étude, Op. 37 No. 21
+    Étude, Op. 37 No. 22
+    Étude, Op. 37 No. 25
+    Étude, Op. 37 No. 26
+    Étude, Op. 37 No. 27
+    Étude, Op. 37 No. 28
+    Étude, Op. 37 No. 29
+    Étude, Op. 37 No. 30
+    Étude, Op. 37 No. 32
+    Étude, Op. 37 No. 33
+    Étude, Op. 37 No. 35
+    Étude, Op. 37 No. 36
+    Étude, Op. 37 No. 38
+    Étude, Op. 37 No. 39
+    Étude, Op. 37 No. 4
+    Étude, Op. 37 No. 40
+    Étude, Op. 37 No. 42
+    Étude, Op. 37 No. 43
+    Étude, Op. 37 No. 44
+    Étude, Op. 37 No. 45
+    Étude, Op. 37 No. 49
+    Étude, Op. 37 No. 5
+    Étude, Op. 37 No. 50
+    Étude, Op. 37 No. 6
+    Étude, Op. 37 No. 7
+    La Campanella (Grandes études de Paganini No. 3)
+    A Little Study, Op. 68 No. 14
+    Boogie-woogie and blues piano exercises
+one-part two-staff with symbols and the lower staff silent in at least half the bars: [('exercise.ii-v-i.a-flat.rootless', 4, 0), ('exercise.ii-v-i.a.rootless', 4, 0), ('exercise.ii-v-i.b-flat.rootless', 4, 0), ('exercise.ii-v-i.b.rootless', 4, 0), ('exercise.ii-v-i.c.rootless', 4, 0), ('exercise.ii-v-i.d-flat.rootless', 4, 0), ('exercise.ii-v-i.d.rootless', 4, 0), ('exercise.ii-v-i.e-flat.rootless', 4, 0), ('exercise.ii-v-i.e.rootless', 4, 0), ('exercise.ii-v-i.f-sharp.rootless', 4, 0), ('exercise.ii-v-i.f.rootless', 4, 0), ('exercise.ii-v-i.g.rootless', 4, 0), ('exercise.montuno.a.2note.bossa', 4, 0), ('exercise.montuno.a.2note.son-3-2', 4, 0), ('exercise.montuno.a.3note.son-3-2', 4, 0), ('exercise.montuno.c.2note.bossa', 4, 0), ('exercise.montuno.c.2note.son-3-2', 4, 0), ('exercise.montuno.c.3note.son-3-2', 4, 0), ('exercise.montuno.d.2note.bossa', 4, 0), ('exercise.montuno.d.2note.son-3-2', 4, 0), ('exercise.montuno.d.3note.son-3-2', 4, 0), ('exercise.montuno.f.2note.bossa', 4, 0), ('exercise.montuno.f.2note.son-3-2', 4, 0), ('exercise.montuno.f.3note.son-3-2', 4, 0), ('exercise.montuno.g.2note.bossa', 4, 0), ('exercise.montuno.g.2note.son-3-2', 4, 0), ('exercise.montuno.g.3note.son-3-2', 4, 0), ('song.folk.muskrat-ramble.pdmx', 32, 0)]
+unroller played/printed, top 5: [(2.54, 'song.classical.streabbog-la-violette.pdmx'), (2.5, 'song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx'), (2.5, 'song.classical.mozart-contredanse-in-f-major-k-15h.pdmx'), (2.5, 'song.classical.mozart-contredanse-in-a-major-k-15l.pdmx'), (2.43, 'song.classical.st-louis-blues.pdmx')]

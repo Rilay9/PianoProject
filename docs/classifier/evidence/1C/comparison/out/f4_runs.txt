@@ -1,0 +1,30 @@
+﻿items with cue runs >= a beat: 19 | runs in all: 100
+   40 runs  pdmx  page-before: candidate  song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx
+    9 runs  pdmx  page-before: candidate  song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+    7 runs  pdmx  page-before: candidate  song.folk.this-country-of-mine-extended-mix-of-negaraku-malaysia-s-national-anthem-featuring-britain-japan-singapore-and-brunei.pdmx
+    7 runs  pdmx  page-before: candidate  song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx
+    6 runs  rep   page-before: UNKNOWN    song.classical.chopin-ballade-1
+    5 runs  rep   page-before: UNKNOWN    song.classical.beethoven-moonlight-iii
+    4 runs  rep   page-before: UNKNOWN    song.classical.liszt-liebestraum-3
+    4 runs  rep   page-before: UNKNOWN    song.classical.liszt-la-campanella
+    3 runs  pdmx  page-before: candidate  song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx
+    3 runs  pdmx  page-before: candidate  song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx
+    2 runs  rep   page-before: UNKNOWN    song.classical.debussy-clair-de-lune
+    2 runs  pdmx  page-before: candidate  song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx
+    2 runs  pdmx  page-before: candidate  song.classical.bach-fugue-in-g-minor-bwv-542-piano-transcription.pdmx
+    1 runs  pdmx  page-before: candidate  song.folk.ga-je-mee-op-zoek-naar-het-koningskind.pdmx
+    1 runs  rep   page-before: UNKNOWN    song.classical.petzold-minuet-g-bwv-anh114.alt
+    1 runs  rep   page-before: UNKNOWN    song.classical.beethoven-symphony-5-i-piano
+    1 runs  rep   page-before: UNKNOWN    song.classical.bach-wtc1-prelude-2
+    1 runs  rep   page-before: UNKNOWN    song.classical.bach-toccata-fugue-bwv565
+    1 runs  pdmx  page-before: candidate  song.classical.bach-little-prelude-in-c-minor-bwv-934.pdmx
+items with a grace run of 6+: 12 | items with a cadenza word: 9
+   words: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx [['1', 'Freely, with expression']]
+   words: song.classical.chopin-nocturne-op9-2 [['33', 'Senza tempo']]
+   words: song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx [['70', 'a piacere']]
+   words: song.classical.offenbach-cancan-offenbach.pdmx [['1', 'liberamente, lasciare suonare']]
+   words: song.classical.palmer-days-in-the-sun.pdmx [['67', 'arpeggios ad. lib']]
+   words: song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx [['1', '(Ad lib)']]
+   words: song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx [['1', 'Freely']]
+   words: song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx [['64', '(freely)'], ['65', 'Slower, freely']]
+   words: song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx [['1', 'Pedal Freely']]

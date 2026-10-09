@@ -1,0 +1,24 @@
+{
+  "_note": "Expected answers for rhythm.tuplets-other, written BEFORE any run of this comparison (reading: the 1C validation row and rhythm.tuplets-other on the area page). real = a tuplet a learner sees printed; artefact = a time-modification of the re-export that is no printed tuplet.",
+  "real": {
+    "song.classical.chopin-polonaise-op53.nifc": ["29:20"],
+    "song.classical.chopin-ballade-1": ["39:32", "28:16", "21:16", "29:16"],
+    "song.classical.beethoven-moonlight-iii": ["5:4", "6:4", "7:4"],
+    "song.classical.debussy-clair-de-lune": ["2:3"],
+    "song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx": ["5:4"],
+    "song.blues.black-bottom-stomp": ["5:4 or 3:2 sixteenth-eighth groups with rests (printed brackets)"]
+  },
+  "artefact": {
+    "song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx": ["160:107", "80:53", "120:67", "48:43", "320:179", "320:301", "60:53", "640:321", "320:161", "15:14", "20:17", "480:371"],
+    "O mio babbino caro (PDMX)": ["320:239", "160:119"],
+    "song.jazz.fats-waller-ain-t-misbehavin.pdmx": ["24:17", "40:37", "23:24"],
+    "song.pop.misc-christmas-silent-night-trombone-duet.pdmx": ["12:11"],
+    "song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx": ["40:39", "160:159", "80:79"]
+  },
+  "predictions": [
+    "reading only printed <tuplet> brackets drops every named artefact ratio (they have no bracket) and keeps every named real one",
+    "the fewer-notes test is gone, so the 576 'short' brackets are no longer flagged (they are real, printed)",
+    "cost to measure: notes carrying a time-modification but no <tuplet> element in the file, by ratio (real tuplets this source would lose); expected small for 3:2, to be measured",
+    "any artefact ratio that DOES carry a printed bracket would stay: to be listed"
+  ]
+}

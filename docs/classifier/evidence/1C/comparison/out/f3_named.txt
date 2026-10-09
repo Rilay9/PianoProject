@@ -1,0 +1,44 @@
+﻿classical.chopin-polonaise-op53.nifc             29:20    real     notes 174  closed 6 drawn 6 | kept: yes | yes | yes | yes | yes | yes | yes
+classical.chopin-ballade-1                       39:32    real     notes 39   closed 1 drawn 0 | kept: yes | yes | NO  | yes | yes | yes | yes
+classical.chopin-ballade-1                       28:16    real     notes 56   closed 2 drawn 0 | kept: yes | yes | NO  | yes | yes | yes | yes
+classical.chopin-ballade-1                       21:16    real     notes 42   closed 2 drawn 0 | kept: yes | yes | NO  | yes | yes | yes | yes
+classical.chopin-ballade-1                       29:16    real     notes 29   closed 1 drawn 0 | kept: yes | yes | NO  | yes | yes | yes | yes
+classical.beethoven-moonlight-iii                5:4      real     notes 10   closed 2 drawn 2 | kept: yes | yes | yes | yes | yes | yes | yes
+classical.beethoven-moonlight-iii                6:4      real     notes 12   closed 2 drawn 2 | kept: yes | yes | yes | yes | yes | yes | yes
+classical.beethoven-moonlight-iii                7:4      real     notes 24   closed 4 drawn 0 | kept: NO  | yes | NO  | yes | NO  | yes | yes
+classical.debussy-clair-de-lune                  2:3      real     notes 50   closed 25 drawn 18 | kept: yes | yes | yes | yes | yes | yes | yes
+classical.chopin-nocturne-in-f-sharp-major-op-15 5:4      real     notes 266  closed 67 drawn 4 | kept: yes | yes | yes | yes | yes | yes | yes
+classical.chopin-prelude-op28-18.nifc            11:8     real     notes 44   closed 4 drawn 4 | kept: yes | yes | yes | yes | yes | yes | yes
+classical.chopin-berceuse.nifc                   11:8     real     notes 22   closed 2 drawn 2 | kept: yes | yes | yes | yes | NO  | yes | yes
+classical.schubert-liszt-standchen               9:8      real     notes 18   closed 2 drawn 2 | kept: yes | yes | yes | yes | yes | yes | yes
+classical.chopin-nocturne-op9-1                  11:6     real     notes 22   closed 2 drawn 2 | kept: yes | yes | yes | yes | yes | yes | yes
+classical.lecuona-malaguena-by-ernesto-lecuona.p 160:107  artefact notes 2    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.lecuona-malaguena-by-ernesto-lecuona.p 80:53    artefact notes 2    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.lecuona-malaguena-by-ernesto-lecuona.p 120:67   artefact notes 2    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.lecuona-malaguena-by-ernesto-lecuona.p 48:43    artefact notes 2    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.lecuona-malaguena-by-ernesto-lecuona.p 320:179  artefact notes 2    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.lecuona-malaguena-by-ernesto-lecuona.p 320:301  artefact notes 2    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.lecuona-malaguena-by-ernesto-lecuona.p 60:53    artefact notes 1    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.lecuona-malaguena-by-ernesto-lecuona.p 640:321  artefact notes 1    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.lecuona-malaguena-by-ernesto-lecuona.p 320:161  artefact notes 1    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.lecuona-malaguena-by-ernesto-lecuona.p 15:14    artefact notes 1    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.lecuona-malaguena-by-ernesto-lecuona.p 20:17    artefact notes 1    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.lecuona-malaguena-by-ernesto-lecuona.p 480:371  artefact notes 2    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+classical.puccini-o-mio-babbino-caro-for-solo-pi 320:239  artefact notes 1    closed 1 drawn 1 | kept: NO  | yes | yes | yes | NO  | NO  | NO 
+classical.puccini-o-mio-babbino-caro-for-solo-pi 160:119  artefact notes 1    closed 1 drawn 1 | kept: NO  | yes | yes | yes | NO  | NO  | NO 
+jazz.fats-waller-ain-t-misbehavin.pdmx           24:17    artefact notes 1    closed 0 drawn 0 | kept: yes | NO  | NO  | NO  | NO  | NO  | NO 
+jazz.fats-waller-ain-t-misbehavin.pdmx           40:37    artefact notes 1    closed 1 drawn 1 | kept: NO  | yes | yes | yes | NO  | NO  | NO 
+jazz.fats-waller-ain-t-misbehavin.pdmx           23:24    artefact notes 22   closed 0 drawn 0 | kept: NO  | NO  | NO  | NO  | NO  | NO  | NO 
+pop.misc-christmas-silent-night-trombone-duet.pd 12:11    artefact notes 1    closed 1 drawn 1 | kept: NO  | yes | yes | yes | NO  | NO  | NO 
+classical.chopin-prelude-no-15-in-d-flat-major-o 40:39    artefact notes 3    closed 3 drawn 3 | kept: NO  | yes | yes | NO  | NO  | NO  | NO 
+classical.chopin-prelude-no-15-in-d-flat-major-o 160:159  artefact notes 4    closed 4 drawn 4 | kept: NO  | yes | yes | NO  | NO  | NO  | NO 
+classical.chopin-prelude-no-15-in-d-flat-major-o 80:79    artefact notes 3    closed 3 drawn 3 | kept: NO  | yes | yes | NO  | NO  | NO  | NO 
+
+NAMED: 14 real, 21 artefact (item, ratio) cases
+  current (5% bound)           right: real kept 13/14, artefact dropped 8/21  | wrong: real dropped 1, artefact kept 13
+  A closed <tuplet> bracket    right: real kept 14/14, artefact dropped 14/21  | wrong: real dropped 0, artefact kept 7
+  B bracket drawn              right: real kept 9/14, artefact dropped 14/21  | wrong: real dropped 5, artefact kept 7
+  A + 5% bound                 right: real kept 14/14, artefact dropped 17/21  | wrong: real dropped 0, artefact kept 4
+  A + 5% + sum test            right: real kept 12/14, artefact dropped 21/21  | wrong: real dropped 2, artefact kept 0
+  C: A + 5% + bracket of 2+ notes right: real kept 14/14, artefact dropped 21/21  | wrong: real dropped 0, artefact kept 0
+  D: bracket of 2+ notes, a != b right: real kept 14/14, artefact dropped 21/21  | wrong: real dropped 0, artefact kept 0

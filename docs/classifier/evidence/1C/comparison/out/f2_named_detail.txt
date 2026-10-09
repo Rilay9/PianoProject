@@ -1,0 +1,20 @@
+﻿exercise.blues-scale.b-flat.1oct.right
+   model vs render (validators' compare): agree 13 disagree 0 unmatched 0 by {'required/agree': 5, 'in_file_not_shown/agree': 1, 'missing/agree': 1} examples []
+   emulation vs render (validators' run): agree 13 mine_only 0 osmd_only 0
+   uniform table (reader|has file accidental|reader shows|render draws):  {'model|file_acc|True|True': 5, 'model|file_acc|False|False': 1, 'emulation|file_acc|True|True': 5, 'emulation|file_acc|False|False': 1}
+exercise.chromatic.d.1oct.right
+   model vs render (validators' compare): agree 23 disagree 2 unmatched 0 by {'required/agree': 14, 'courtesy/agree': 4, 'in_file_not_shown/osmd_shows': 2} examples [[1, 1, 6.5, 'C5', 'in_file_not_shown'], [1, 1, 7.5, 'B4', 'in_file_not_shown']]
+   emulation vs render (validators' run): agree 25 mine_only 0 osmd_only 0
+   uniform table (reader|has file accidental|reader shows|render draws):  {'model|file_acc|True|True': 18, 'model|file_acc|False|True': 2, 'emulation|file_acc|True|True': 20}
+exercise.scale.g-sharp-harmonic-minor.1oct.similar.both.2
+   model vs render (validators' compare): agree 30 disagree 0 unmatched 0 by {'required/agree': 4} examples []
+   emulation vs render (validators' run): agree 30 mine_only 0 osmd_only 0
+   uniform table (reader|has file accidental|reader shows|render draws):  {'model|file_acc|True|True': 4, 'emulation|file_acc|True|True': 4}
+song.classical.debussy-children-s-corner-the-little-shepherd.pdmx
+   model vs render (validators' compare): agree 401 disagree 0 unmatched 0 by {'required/agree': 58, 'courtesy_marked/agree': 1, 'in_file_not_shown/agree': 2, 'courtesy/agree': 2} examples []
+   emulation vs render (validators' run): agree 401 mine_only 0 osmd_only 4
+   uniform table (reader|has file accidental|reader shows|render draws):  {'model|file_acc|True|True': 61, 'model|file_acc|False|False': 3, 'emulation|file_acc|True|True': 61, 'emulation|file_acc|False|False': 3}
+song.classical.1818-franz-xaver-gruber-silent-night.pdmx
+   model vs render (validators' compare): agree 47 disagree 0 unmatched 0 by {} examples []
+   emulation vs render (validators' run): agree 47 mine_only 0 osmd_only 0
+   uniform table (reader|has file accidental|reader shows|render draws):  {}

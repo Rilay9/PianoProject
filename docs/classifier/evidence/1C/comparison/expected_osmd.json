@@ -1,0 +1,11 @@
+{
+  "_note": "Expected answers for reading.accidental-kinds, written BEFORE any run of this comparison (reading: the validation row and the area page). Truth = what OSMD 2.1.2 draws (the render).",
+  "exercise.blues-scale.b-flat.1oct.right": "model = render: the second A-flat5 of bar 1 is not drawn (named example, agrees)",
+  "exercise.chromatic.d.1oct.right": "model WRONG on bar 2, the second C#5 (model: in file, not shown; render: drawn); emulation = render",
+  "exercise.scale.g-sharp-harmonic-minor.1oct.similar.both.2": "required double sharps drawn by all three readers",
+  "song.classical.debussy-children-s-corner-the-little-shepherd.pdmx": "parenthesised courtesy accidentals drawn by all three readers",
+  "song.classical.1818-franz-xaver-gruber-silent-night.pdmx": "no file accidental on any note: nothing contested, all three agree",
+  "sample7 (the validators' 30 files, seed 7)": "model disagrees with the render on about 8 files / 147 notes; emulation equals the render on 28 of 30 files (2 NIFC files unaligned)",
+  "sample11 (30 NEW files, seed 11, not seen by the emulation's author)": "emulation equals the render on at least 26 of 30 files, model on at most 22; the emulation is not worse than the model on any stratum",
+  "NIFC unalignment": "reading, to be tested: the walk's bar index differs from OSMD's measure index in the two files (implicit/pickup or split measures), so key (bar, staff, onset) does not pair"
+}

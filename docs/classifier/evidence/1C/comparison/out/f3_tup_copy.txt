@@ -1,0 +1,139 @@
+ratio | gen/pdmx/rep notes | items | within 5% | example items
+3:2 | 588/11639/30267 | 231 |  | exercise.independence.c.2v3, exercise.independence.c.3v1, exercise.independence.c.3v2
+6:4 | 0/1807/594 | 17 |  | song.classical.beethoven-moonlight-iii, song.classical.beethoven-moonlight-iii.alt, song.classical.chopin-ballade-1
+5:4 | 0/701/765 | 40 |  | song.blues.black-bottom-stomp, song.classical.bach-invention-no-2-in-c-minor-bwv-773.pdmx, song.classical.bach-little-prelude-in-c-major-bwv-933.pdmx
+7:4 | 0/52/185 | 16 |  | song.classical.beethoven-moonlight-iii, song.classical.chopin-ballade-4.nifc, song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx
+29:20 | 0/0/174 | 1 |  | song.classical.chopin-polonaise-op53.nifc
+9:8 | 0/61/81 | 6 |  | song.classical.chopin-bolero.nifc, song.classical.chopin-nocturne-20.alt, song.classical.chopin-nocturne-op48-1.nifc
+12:8 | 0/130/0 | 2 |  | song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx, song.jazz.fats-waller-ain-t-misbehavin.pdmx
+11:8 | 0/10/110 | 4 |  | song.classical.chopin-berceuse.nifc, song.classical.chopin-prelude-op28-18.nifc, song.classical.chopin-rondo-op16.nifc
+2:3 | 0/22/92 | 4 |  | song.classical.debussy-clair-de-lune, song.classical.debussy-clair-de-lune-easy.pdmx, song.classical.debussy-clair-de-lune.alt
+6:9 | 0/0/91 | 2 |  | song.classical.debussy-clair-de-lune, song.classical.debussy-clair-de-lune.alt
+28:16 | 0/0/56 | 1 |  | song.classical.chopin-ballade-1
+13:8 | 0/0/53 | 2 |  | song.classical.chopin-polonaise-op44.nifc, song.classical.chopin-rondo-op16.nifc
+11:10 | 0/0/44 | 1 |  | song.classical.chopin-polonaise-op53.nifc
+21:16 | 0/0/42 | 1 |  | song.classical.chopin-ballade-1
+2:1 | 0/35/6 | 7 |  | song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx, song.classical.chopin-nocturne-20, song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx
+5:3 | 0/26/15 | 4 |  | song.classical.chopin-ballade-1, song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx, song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx
+8:6 | 0/16/24 | 3 |  | song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx, song.classical.chopin-nocturne-op9-2, song.classical.chopin-waltz-op64-2
+40:4 | 0/40/0 | 1 |  | song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx
+39:32 | 0/0/39 | 1 |  | song.classical.chopin-ballade-1
+35:8 | 0/0/35 | 1 |  | song.classical.chopin-nocturne-20
+35:4 | 0/0/35 | 1 |  | song.classical.chopin-nocturne-20.alt
+17:16 | 0/0/34 | 1 |  | song.classical.chopin-prelude-op28-18.nifc
+30:4 | 0/30/0 | 1 |  | song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx
+29:16 | 0/0/29 | 1 |  | song.classical.chopin-ballade-1
+15:8 | 0/0/28 | 1 |  | song.classical.beethoven-moonlight-iii
+9:6 | 0/27/0 | 1 |  | song.classical.mozart-minuet-in-f-major-k-15m.pdmx
+13:4 | 0/0/26 | 2 |  | song.classical.chopin-nocturne-20, song.classical.chopin-nocturne-20.alt
+4:3 | 0/0/24 | 2 |  | song.classical.chopin-ballade-1, song.classical.chopin-nocturne-op9-2
+11:6 | 0/0/22 | 1 |  | song.classical.chopin-nocturne-op9-1
+22:12 | 0/0/22 | 1 |  | song.classical.chopin-nocturne-op9-1
+23:24 | 0/22/0 | 1 | NOISE | song.jazz.fats-waller-ain-t-misbehavin.pdmx
+20:6 | 0/0/20 | 1 |  | song.classical.chopin-nocturne-op9-1
+19:10 | 0/0/19 | 1 |  | song.classical.chopin-prelude-op28-18.nifc
+18:8 | 0/0/18 | 1 |  | song.classical.chopin-nocturne-20
+8:8 | 0/0/16 | 1 | NOISE | song.classical.schubert-liszt-standchen
+7:6 | 0/0/14 | 2 |  | song.classical.chopin-nocturne-op9-1, song.classical.debussy-clair-de-lune
+7:2 | 0/12/0 | 1 |  | song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx
+11:4 | 0/0/11 | 1 |  | song.classical.chopin-nocturne-20
+11:2 | 0/0/11 | 1 |  | song.classical.chopin-nocturne-20.alt
+10:4 | 0/10/0 | 1 |  | song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx
+5:6 | 0/0/10 | 1 |  | song.classical.liszt-la-campanella
+7:5 | 0/0/8 | 1 |  | song.classical.chopin-ballade-3.nifc
+4:2 | 0/0/8 | 1 |  | song.classical.chopin-nocturne-20
+8:1 | 0/8/0 | 1 |  | song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx
+12:7 | 0/7/0 | 3 |  | song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx, song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx, song.classical.mendelssohn-song-without-words-op-30-no-1.pdmx
+20:11 | 0/7/0 | 4 |  | song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx, song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx, song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+7:1 | 0/7/0 | 1 |  | song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx
+9:4 | 0/6/0 | 1 |  | song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx
+6:5 | 0/6/0 | 3 |  | song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx, song.classical.debussy-reverie.pdmx, song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+40:39 | 0/4/0 | 2 | NOISE | song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx, song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx
+160:159 | 0/4/0 | 1 | NOISE | song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx
+12:6 | 0/0/3 | 1 |  | song.classical.chopin-ballade-1
+80:79 | 0/3/0 | 1 | NOISE | song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx
+8:2 | 0/0/2 | 1 |  | song.classical.chopin-nocturne-20
+12:27 | 0/0/2 | 1 |  | song.classical.debussy-clair-de-lune
+480:371 | 0/2/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+160:107 | 0/2/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+80:53 | 0/2/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+120:67 | 0/2/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+48:43 | 0/2/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+320:179 | 0/2/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+320:301 | 0/2/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+2:2 | 0/0/2 | 1 | NOISE | song.classical.schubert-liszt-standchen
+60:53 | 0/1/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+640:321 | 0/1/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+15:14 | 0/1/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+320:161 | 0/1/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+20:17 | 0/1/0 | 1 |  | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+320:319 | 0/1/0 | 1 | NOISE | song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx
+320:239 | 0/1/0 | 1 |  | song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx
+160:119 | 0/1/0 | 1 |  | song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx
+24:17 | 0/1/0 | 1 |  | song.jazz.fats-waller-ain-t-misbehavin.pdmx
+48:47 | 0/1/0 | 1 | NOISE | song.jazz.fats-waller-ain-t-misbehavin.pdmx
+96:95 | 0/1/0 | 1 | NOISE | song.jazz.fats-waller-ain-t-misbehavin.pdmx
+40:37 | 0/1/0 | 1 |  | song.jazz.fats-waller-ain-t-misbehavin.pdmx
+160:157 | 0/1/0 | 1 | NOISE | song.jazz.fats-waller-ain-t-misbehavin.pdmx
+12:11 | 0/1/0 | 1 |  | song.pop.misc-christmas-silent-night-trombone-duet.pdmx
+brackets closed: {'gen': 196, 'rep': 10463, 'pdmx': 4495}; brackets holding fewer notes than actual-notes: 576
+  short: song.blues.black-bottom-stomp 3:2 x75 measures ['4', '18', '25', '27', '29', '36', '37', '41']
+  short: song.classical.tchaikovsky-october-autumn-song-from-tchaikovsky-s-the-seasons.pdmx 3:2 x52 measures ['8', '13', '14', '16', '17', '18', '19', '20']
+  short: song.classical.chopin-berceuse.nifc 3:2 x46 measures ['39', '40', '41', '42']
+  short: song.pop.camille-le-festin-piano-arr-kno.pdmx 3:2 x46 measures ['8', '12', '16', '17', '20', '29', '30', '51']
+  short: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx 5:4 x44 measures ['25', '26', '27', '28', '29', '30', '31', '32']
+  short: song.classical.chopin-prelude-no-1-in-c-major-op-28.pdmx 3:2 x32 measures ['1', '2', '3', '4', '5', '6', '7', '8']
+  short: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx 3:2 x30 measures ['33', '34', '35', '36', '37', '38', '39', '40']
+  short: song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx 6:4 x28 measures ['33', '34', '35', '37', '38', '39', '40', '41']
+  short: song.classical.chopin-prelude-no-1-in-c-major-op-28.pdmx 6:4 x28 measures ['1', '2', '3', '4', '5', '6', '7', '8']
+  short: song.classical.chopin-polonaise-op71-1.nifc 3:2 x24 measures ['82', '83', '84', '85', '86', '87', '88', '89']
+  short: song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx 3:2 x19 measures ['27', '28', '29', '30', '31', '32', '33', '35']
+  short: song.pop.ri-jeong-hyeok-ri-jeong-hyeok-s-piano.pdmx 3:2 x18 measures ['32', '34', '35', '36', '38', '40', '42', '46']
+  short: song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx 5:4 x14 measures ['4', '5', '23', '24']
+  short: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx 3:2 x8 measures ['178', '179', '215', '217']
+  short: song.classical.chopin-rondo-op16.nifc 3:2 x5 measures ['99', '103', '251']
+  short: song.classical.chopin-sonata-2-1.nifc 3:2 x5 measures ['126', '127', '134', '135', '136']
+  short: song.pop.yanni-one-man-s-dream-by-yanni.pdmx 3:2 x5 measures ['28', '33', '55', '65', '66']
+  short: song.classical.beethoven-moonlight-iii 7:4 x4 measures ['30', '32', '126', '128']
+  short: song.classical.chopin-ballade-1 3:2 x4 measures ['85', '89', '183', '187']
+  short: song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx 160:159 x4 measures ['4', '23']
+  short: song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx 5:4 x4 measures ['50', '51', '52']
+  short: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx 6:4 x3 measures ['178', '179']
+  short: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx 6:4 x3 measures ['53', '65', '77']
+  short: song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx 40:39 x3 measures ['4', '23']
+  short: song.classical.chopin-prelude-no-15-in-d-flat-major-op-28.pdmx 80:79 x3 measures ['4', '23']
+  short: song.classical.debussy-clair-de-lune 6:9 x3 measures ['21', '23']
+  short: song.classical.mendelssohn-song-without-words-op-30-no-1.pdmx 3:2 x3 measures ['21', '26']
+  short: song.jazz.fats-waller-ain-t-misbehavin.pdmx 3:2 x3 measures ['12', '13']
+  short: song.jazz.fats-waller-ain-t-misbehavin.pdmx 5:4 x3 measures ['23', '24']
+  short: song.classical.beethoven-moonlight-i 3:2 x2 measures ['37']
+  short: song.classical.beethoven-moonlight-iii 15:8 x2 measures ['36', '132']
+  short: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx 5:4 x2 measures ['156', '157']
+  short: song.classical.chopin-bolero.nifc 3:2 x2 measures ['158', '236']
+  short: song.classical.chopin-bolero.nifc 5:4 x2 measures ['161']
+  short: song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx 9:4 x2 measures ['72']
+  short: song.classical.debussy-clair-de-lune 12:27 x2 measures ['23']
+  short: song.classical.debussy-clair-de-lune.alt 6:9 x2 measures ['21', '23']
+  short: song.classical.liszt-liebestraum-3 3:2 x2 measures ['2', '3']
+  short: song.folk.down-by-the-riverside.pdmx.2 3:2 x2 measures ['59']
+  short: song.pop.misc-christmas-silent-night-trombone-duet.pdmx 6:4 x2 measures ['16']
+  short: song.pop.yanni-one-man-s-dream-by-yanni.pdmx 5:4 x2 measures ['22', '67']
+  short: song.blues.black-bottom-stomp 5:4 x1 measures ['17']
+  short: song.blues.handful-of-keys 3:2 x1 measures ['155']
+  short: song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx 3:2 x1 measures ['124']
+  short: song.classical.chopin-ballade-1 12:6 x1 measures ['179']
+  short: song.classical.chopin-ballade-1 4:3 x1 measures ['179']
+  short: song.classical.chopin-ballade-1 21:16 x1 measures ['249']
+  short: song.classical.chopin-ballade-4.nifc 3:2 x1 measures ['175']
+  short: song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx 40:39 x1 measures ['156']
+  short: song.classical.chopin-etude-op25-2.nifc 3:2 x1 measures ['67']
+  short: song.classical.chopin-nocturne-20 8:2 x1 measures ['5']
+  short: song.classical.chopin-nocturne-20 3:2 x1 measures ['45']
+  short: song.classical.chopin-nocturne-op48-1.nifc 3:2 x1 measures ['58']
+  short: song.classical.chopin-nocturne-op55-1.nifc 7:4 x1 measures ['44']
+  short: song.classical.chopin-polonaise-fantaisie.nifc 3:2 x1 measures ['106']
+  short: song.classical.chopin-polonaise-op44.nifc 13:8 x1 measures ['315']
+  short: song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx 2:1 x1 measures ['39']
+  short: song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx 5:4 x1 measures ['119']
+  short: song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx 320:239 x1 measures ['50']
+  short: song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx 160:119 x1 measures ['51']
