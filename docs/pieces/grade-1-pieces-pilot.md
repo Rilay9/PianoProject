@@ -13,6 +13,8 @@ Six Grade 1 pieces were picked from the MusicXML pieces whose facts fit (`docs/p
 | Bach (attrib.), Chorale BWV 514 | ABRSM 1, RCM 1 | 5 | **Unconfirmed**: one file is BWV 514; the other four are different chorales |
 | Haydn, German Dance Hob. IX:22 No. 3 | RCM 1 | 2 | **Unconfirmed**: the two files are different pieces; the one labelled Hob. IX/22 No. 3 has no second source |
 
+**Caveat on "agree":** the uploads were not checked for independence. PDMX contains re-uploads and copies; two Op. 107 No. 3 files share the same title. Copies agreeing prove nothing, so an "agree" here counts only once independence is shown (different uploaders, or PDMX's deduplication fields).
+
 **Not yet done:**
 - **Printed-score comparison:** IMSLP shows a disclaimer to accept before giving a score; that waits for the owner.
 - **Whole-piece checks:** bars after 8 are not compared.
