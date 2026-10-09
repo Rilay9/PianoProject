@@ -42,11 +42,12 @@ def facts(path):
     """Plain notation facts from one score file (runs in a worker process)."""
     out = {"parsed": "", "parts": "", "instruments": "", "staves": "", "keysig": "", "time": "", "bars": "", "error": ""}
     try:
-        if os.path.getsize(path) > 1_500_000:
+        path, _, tune = path.partition("#")  # ABC tunes: file#X
+        if os.path.getsize(path) > 1_500_000 and not tune:
             out["error"] = "large, not parsed"
             return out
         import music21
-        s = music21.converter.parse(path)
+        s = music21.converter.parse(path, number=int(tune)) if tune else music21.converter.parse(path)
         parts = list(s.parts)
         names = []
         for p in parts:
@@ -120,10 +121,10 @@ def main():
     def local(r):
         if r["a_source"] == "pdmx":
             return os.path.join(FILES, os.path.basename(r["a_file"]))
-        if r["a_source"] in ("kern", "musetrainer", "mutopia"):
-            return os.path.join(ROOT, r["a_file"])
-        return ""
-    paths = sorted({local(r) for r in rows if local(r) and os.path.exists(local(r))})
+        if r["a_source"] == "Mutopia":
+            return ""
+        return os.path.join(ROOT, r["a_file"])  # kern, musetrainer, on-disk Mutopia, downloaded datasets (ABC: file#X)
+    paths = sorted({local(r) for r in rows if local(r) and os.path.exists(local(r).partition("#")[0])})
     print("parsing", len(paths), "files with 3 workers")
     with ProcessPoolExecutor(max_workers=3) as ex:
         fmap = dict(zip(paths, ex.map(facts, paths, chunksize=8)))

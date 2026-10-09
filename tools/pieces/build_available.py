@@ -96,6 +96,72 @@ def mutopia_rows():
                    "licence": field("license"), "genres": "", "quarried_before": ""}
 
 
+def dataset_rows():
+    """Any other dataset folder under content/scores/imported/ (downloaded on the owner's go): read by format.
+    MusicXML: work-title / movement-title / creator[@type=composer]; Humdrum: !!!COM / !!!OTL; ABC: one row per tune
+    (T: title, C: composer), file given as path#X."""
+    import zipfile
+    import xml.etree.ElementTree as ET
+    skip = {"kern", "musetrainer", "mutopia"}
+    for name in sorted(os.listdir(IMP)) if os.path.isdir(IMP) else []:
+        base = os.path.join(IMP, name)
+        if name in skip or not os.path.isdir(base):
+            continue
+        for dp, _, fs in os.walk(base):
+            for fn in fs:
+                p = os.path.join(dp, fn)
+                rel = os.path.relpath(p, ROOT).replace("\\", "/")
+                low = fn.lower()
+                row = {"source": name, "file": rel, "composer": "", "title": "", "subtitle": "", "catalogue": "",
+                       "bars": "", "tracks": "", "rating": "", "n_ratings": "", "licence": "see SOURCES.md",
+                       "genres": "", "quarried_before": ""}
+                try:
+                    if low.endswith((".xml", ".musicxml", ".mxl")):
+                        if low.endswith(".mxl"):
+                            with zipfile.ZipFile(p) as z:
+                                inner = next((n for n in z.namelist() if n.endswith((".xml", ".musicxml"))
+                                              and not n.startswith("META-INF")), None)
+                                if not inner:
+                                    continue
+                                root = ET.fromstring(z.read(inner))
+                        else:
+                            root = ET.parse(p).getroot()
+                        if not root.tag.startswith("score-"):
+                            continue
+                        wt = root.findtext("work/work-title") or ""
+                        mt = root.findtext("movement-title") or ""
+                        comp = next((c.text or "" for c in root.iter("creator") if c.get("type") == "composer"), "")
+                        row.update({"title": " ".join(x for x in [wt, mt] if x) or os.path.splitext(fn)[0],
+                                    "composer": comp, "tracks": str(len(root.findall("part-list/score-part")))})
+                        yield row
+                    elif low.endswith(".krn"):
+                        h = {}
+                        with open(p, encoding="utf-8", errors="replace") as f:
+                            for line in f:
+                                m = re.match(r"!!!(COM|OTL|OPS|ONM|SCT)[^:]*:\s*(.*)", line)
+                                if m and m.group(1) not in h:
+                                    h[m.group(1)] = m.group(2).strip()
+                        row.update({"composer": h.get("COM", ""), "title": h.get("OTL", "") or fn[:-4],
+                                    "catalogue": " ".join(x for x in [h.get("SCT", ""), h.get("OPS", ""), h.get("ONM", "")] if x)})
+                        yield row
+                    elif low.endswith(".abc"):
+                        tune = None
+                        with open(p, encoding="utf-8", errors="replace") as f:
+                            for line in f:
+                                if line.startswith("X:"):
+                                    if tune and tune["title"]:
+                                        yield tune
+                                    tune = dict(row, file=f"{rel}#{line[2:].strip()}")
+                                elif tune is not None and line.startswith("T:") and not tune["title"]:
+                                    tune["title"] = line[2:].strip()
+                                elif tune is not None and line.startswith("C:") and not tune["composer"]:
+                                    tune["composer"] = line[2:].strip()
+                        if tune and tune["title"]:
+                            yield tune
+                except Exception:
+                    continue
+
+
 def catalogue_rows():
     """Online libraries catalogued in docs/sources/catalogues/*.csv (Mutopia, OpenScore): listed, not yet on disk."""
     import glob
@@ -114,7 +180,8 @@ def main():
     with open(OUT, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=COLS)
         w.writeheader()
-        for gen in (pdmx_rows(quarried_cids()), kern_rows(), musetrainer_rows(), mutopia_rows(), catalogue_rows()):
+        for gen in (pdmx_rows(quarried_cids()), kern_rows(), musetrainer_rows(), mutopia_rows(), dataset_rows(),
+                    catalogue_rows()):
             for r in gen:
                 w.writerow(r)
                 counts[r["source"]] = counts.get(r["source"], 0) + 1
