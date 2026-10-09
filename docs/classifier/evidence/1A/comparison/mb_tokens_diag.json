@@ -1,0 +1,171 @@
+{
+ "theirs_first_rows": [
+  [
+   "Bar New",
+   "Position 2/16",
+   "Pitch 42",
+   "Velocity 70",
+   "Duration 25",
+   "Tempo 113"
+  ],
+  [
+   "Bar Continue",
+   "Position 2/16",
+   "Pitch 54",
+   "Velocity 76",
+   "Duration 25",
+   "Tempo 113"
+  ],
+  [
+   "Bar Continue",
+   "Position 2/16",
+   "Pitch 58",
+   "Velocity 76",
+   "Duration 25",
+   "Tempo 113"
+  ],
+  [
+   "Bar Continue",
+   "Position 2/16",
+   "Pitch 61",
+   "Velocity 88",
+   "Duration 27",
+   "Tempo 113"
+  ],
+  [
+   "Bar Continue",
+   "Position 2/16",
+   "Pitch 66",
+   "Velocity 78",
+   "Duration 25",
+   "Tempo 113"
+  ],
+  [
+   "Bar Continue",
+   "Position 8/16",
+   "Pitch 73",
+   "Velocity 114",
+   "Duration 3",
+   "Tempo 113"
+  ]
+ ],
+ "mine_first_rows": [
+  [
+   "Bar New",
+   "Position 1/16",
+   "Pitch 51",
+   "Velocity 96",
+   "Duration 17",
+   "Tempo 65"
+  ],
+  [
+   "Bar Continue",
+   "Position 1/16",
+   "Pitch 63",
+   "Velocity 62",
+   "Duration 5",
+   "Tempo 65"
+  ],
+  [
+   "Bar Continue",
+   "Position 1/16",
+   "Pitch 67",
+   "Velocity 38",
+   "Duration 7",
+   "Tempo 65"
+  ],
+  [
+   "Bar Continue",
+   "Position 3/16",
+   "Pitch 58",
+   "Velocity 76",
+   "Duration 9",
+   "Tempo 65"
+  ],
+  [
+   "Bar Continue",
+   "Position 5/16",
+   "Pitch 63",
+   "Velocity 94",
+   "Duration 1",
+   "Tempo 65"
+  ],
+  [
+   "Bar Continue",
+   "Position 7/16",
+   "Pitch 63",
+   "Velocity 82",
+   "Duration 13",
+   "Tempo 65"
+  ]
+ ],
+ "duration_token_top_theirs_first_10_sequences": [
+  [
+   3,
+   1293
+  ],
+  [
+   1,
+   1075
+  ],
+  [
+   5,
+   574
+  ],
+  [
+   7,
+   536
+  ],
+  [
+   11,
+   309
+  ],
+  [
+   9,
+   229
+  ],
+  [
+   13,
+   165
+  ],
+  [
+   15,
+   118
+  ]
+ ],
+ "duration_token_top_mine_song_011": [
+  [
+   1,
+   667
+  ],
+  [
+   3,
+   380
+  ],
+  [
+   5,
+   316
+  ],
+  [
+   7,
+   145
+  ],
+  [
+   11,
+   94
+  ],
+  [
+   9,
+   89
+  ],
+  [
+   13,
+   75
+  ],
+  [
+   17,
+   18
+  ]
+ ],
+ "note": "Duration token i means (i+1)*60 ticks at 480 ticks per quarter."
+}

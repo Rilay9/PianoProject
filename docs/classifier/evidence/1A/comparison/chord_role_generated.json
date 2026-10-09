@@ -1,0 +1,4637 @@
+{
+ "exercise.blues.twelve-bar-shuffle.a": {
+  "family": null,
+  "symbols": 12,
+  "current": {
+   "over a melody line": 12
+  },
+  "fix": {
+   "over a melody line": 12
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 12
+  }
+ },
+ "exercise.blues.twelve-bar-shuffle.c": {
+  "family": null,
+  "symbols": 12,
+  "current": {
+   "over a melody line": 12
+  },
+  "fix": {
+   "over a melody line": 12
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 12
+  }
+ },
+ "exercise.blues.twelve-bar-shuffle.d": {
+  "family": null,
+  "symbols": 12,
+  "current": {
+   "over a melody line": 12
+  },
+  "fix": {
+   "over a melody line": 12
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 12
+  }
+ },
+ "exercise.blues.twelve-bar-shuffle.e": {
+  "family": null,
+  "symbols": 12,
+  "current": {
+   "over a melody line": 12
+  },
+  "fix": {
+   "over a melody line": 12
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 12
+  }
+ },
+ "exercise.blues.twelve-bar-shuffle.f": {
+  "family": null,
+  "symbols": 12,
+  "current": {
+   "over a melody line": 12
+  },
+  "fix": {
+   "over a melody line": 12
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 12
+  }
+ },
+ "exercise.blues.twelve-bar-shuffle.g": {
+  "family": null,
+  "symbols": 12,
+  "current": {
+   "over a melody line": 12
+  },
+  "fix": {
+   "over a melody line": 12
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 12
+  }
+ },
+ "exercise.boogie.a.pinetop": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.a.root-fifth": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.a.walking-eighths": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.b-flat.pinetop": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.b-flat.pinetop.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.b-flat.root-fifth": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.b-flat.root-fifth.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.b-flat.walking-eighths": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.b-flat.walking-eighths.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.c.pinetop": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.c.pinetop.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.c.root-fifth": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.c.root-fifth.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.c.walking-eighths": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.c.walking-eighths.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.d.pinetop": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.d.root-fifth": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.d.walking-eighths": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.e-flat.pinetop": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.e-flat.pinetop.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.e-flat.root-fifth": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.e-flat.root-fifth.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.e-flat.walking-eighths": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.e-flat.walking-eighths.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.e.pinetop": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.e.root-fifth": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.e.walking-eighths": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.f.pinetop": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.f.pinetop.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.f.root-fifth": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.f.root-fifth.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.f.walking-eighths": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.f.walking-eighths.minor-blues": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.g.pinetop": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.g.root-fifth": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.boogie.g.walking-eighths": {
+  "family": "boogie",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.a.anticipated.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.a.bossa": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.a.bossa.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.a.charleston.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.a.four-on-the-floor.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.a.off-beats.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.b-flat.anticipated": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.b-flat.anticipated.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.b-flat.charleston": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.b-flat.charleston.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.b-flat.four-on-the-floor": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.b-flat.four-on-the-floor.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.b-flat.off-beats": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.b-flat.off-beats.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.c.anticipated": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.c.anticipated.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.c.bossa": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.c.bossa.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.c.charleston": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.c.charleston.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.c.four-on-the-floor": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.c.four-on-the-floor.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.c.off-beats": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.c.off-beats.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.d.anticipated.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.d.bossa": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.d.bossa.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.d.charleston.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.d.four-on-the-floor.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.d.off-beats.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.e-flat.anticipated": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.e-flat.anticipated.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.e-flat.charleston": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.e-flat.charleston.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.e-flat.four-on-the-floor": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.e-flat.four-on-the-floor.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.e-flat.off-beats": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.e-flat.off-beats.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.e.anticipated.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.e.charleston.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.e.four-on-the-floor.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.e.off-beats.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.f.anticipated": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.f.anticipated.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.f.bossa": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.f.bossa.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.f.charleston": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.f.charleston.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.f.four-on-the-floor": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.f.four-on-the-floor.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.f.off-beats": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.f.off-beats.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.g.anticipated.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.g.bossa": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.g.bossa.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.g.charleston.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.comping.g.four-on-the-floor.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.comping.g.off-beats.intro": {
+  "family": "comping",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.ii-v-i.a": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.a-flat": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.a-flat.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.a-flat.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.a.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.a.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.b": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.b-flat": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.b-flat.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.b-flat.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.b.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.b.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.c": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.c.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.c.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.d": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.d-flat": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.d-flat.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.d-flat.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.d.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.d.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.e": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.e-flat": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.e-flat.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.e-flat.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.e.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.e.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.f": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.f-sharp": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.f-sharp.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.f-sharp.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.f.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.f.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.g": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.ii-v-i.g.rootless": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.ii-v-i.g.shells": {
+  "family": "ii_v_i",
+  "symbols": 3,
+  "current": {
+   "over a melody line": 3
+  },
+  "fix": {
+   "over a melody line": 3
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 3
+  }
+ },
+ "exercise.intro.a.4bar": {
+  "family": "intro",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 3,
+   "UNKNOWN role of the notes": 1
+  },
+  "fix": {
+   "over a melody line": 3,
+   "UNKNOWN role of the notes": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 3,
+   "None": 1
+  }
+ },
+ "exercise.intro.c.4bar": {
+  "family": "intro",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 3,
+   "UNKNOWN role of the notes": 1
+  },
+  "fix": {
+   "over a melody line": 3,
+   "UNKNOWN role of the notes": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 3,
+   "None": 1
+  }
+ },
+ "exercise.intro.d.4bar": {
+  "family": "intro",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 3,
+   "UNKNOWN role of the notes": 1
+  },
+  "fix": {
+   "over a melody line": 3,
+   "UNKNOWN role of the notes": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 3,
+   "None": 1
+  }
+ },
+ "exercise.intro.f.4bar": {
+  "family": "intro",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 3,
+   "UNKNOWN role of the notes": 1
+  },
+  "fix": {
+   "over a melody line": 3,
+   "UNKNOWN role of the notes": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 3,
+   "None": 1
+  }
+ },
+ "exercise.intro.g.4bar": {
+  "family": "intro",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 3,
+   "UNKNOWN role of the notes": 1
+  },
+  "fix": {
+   "over a melody line": 3,
+   "UNKNOWN role of the notes": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 3,
+   "None": 1
+  }
+ },
+ "exercise.latin-groove.a.son-3-2": {
+  "family": "latin_groove",
+  "symbols": 8,
+  "current": {
+   "UNKNOWN role of the notes": 8
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 8
+  }
+ },
+ "exercise.latin-groove.c.son-3-2": {
+  "family": "latin_groove",
+  "symbols": 8,
+  "current": {
+   "UNKNOWN role of the notes": 8
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 8
+  }
+ },
+ "exercise.latin-groove.d.son-3-2": {
+  "family": "latin_groove",
+  "symbols": 8,
+  "current": {
+   "UNKNOWN role of the notes": 8
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 8
+  }
+ },
+ "exercise.latin-groove.f.son-3-2": {
+  "family": "latin_groove",
+  "symbols": 8,
+  "current": {
+   "UNKNOWN role of the notes": 8
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 8
+  }
+ },
+ "exercise.latin-groove.g.son-3-2": {
+  "family": "latin_groove",
+  "symbols": 8,
+  "current": {
+   "UNKNOWN role of the notes": 8
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 8
+  }
+ },
+ "exercise.loop4.a-flat.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.a-flat.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.a.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.a.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.b-flat.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.b-flat.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.b.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.b.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.c.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.c.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.d-flat.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.d-flat.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.d.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.d.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.e-flat.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.e-flat.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.e.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.e.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.f-sharp.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.f-sharp.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.f.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.f.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.g.inversions": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.loop4.g.root": {
+  "family": "four_chord_loop",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.meter.12-8": {
+  "family": "meter",
+  "symbols": 12,
+  "current": {
+   "over a melody line": 12
+  },
+  "fix": {
+   "over a melody line": 12
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 12
+  }
+ },
+ "exercise.montuno.a.2note.bossa": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.a.2note.son-3-2": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.a.3note.son-3-2": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.c.2note.bossa": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.c.2note.son-3-2": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.c.3note.son-3-2": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.d.2note.bossa": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.d.2note.son-3-2": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.d.3note.son-3-2": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.f.2note.bossa": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.f.2note.son-3-2": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.f.3note.son-3-2": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.g.2note.bossa": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.g.2note.son-3-2": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.montuno.g.3note.son-3-2": {
+  "family": "montuno",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over written accompaniment": 4
+  },
+  "one_staff_all_chords": true,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.oompah.b-flat.octave": {
+  "family": "oompah",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.oompah.b-flat.tenth": {
+  "family": "oompah",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.oompah.c.octave": {
+  "family": "oompah",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.oompah.c.tenth": {
+  "family": "oompah",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.oompah.e-flat.octave": {
+  "family": "oompah",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.oompah.e-flat.tenth": {
+  "family": "oompah",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.oompah.f.octave": {
+  "family": "oompah",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.oompah.f.tenth": {
+  "family": "oompah",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.open-voicing.b-flat.add9": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.b-flat.quartal": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.b-flat.sus2": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.b-flat.sus4": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.c.add9": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.c.quartal": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.c.sus2": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.c.sus4": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.e-flat.add9": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.e-flat.quartal": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.e-flat.sus2": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.e-flat.sus4": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.f.add9": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.f.quartal": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.f.sus2": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.open-voicing.f.sus4": {
+  "family": "open_voicing",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.passing-chord.b-flat": {
+  "family": "passing_chord",
+  "symbols": 6,
+  "current": {
+   "UNKNOWN role of the notes": 6
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 6
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 6
+  }
+ },
+ "exercise.passing-chord.c": {
+  "family": "passing_chord",
+  "symbols": 6,
+  "current": {
+   "UNKNOWN role of the notes": 6
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 6
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 6
+  }
+ },
+ "exercise.passing-chord.e-flat": {
+  "family": "passing_chord",
+  "symbols": 6,
+  "current": {
+   "UNKNOWN role of the notes": 6
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 6
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 6
+  }
+ },
+ "exercise.passing-chord.f": {
+  "family": "passing_chord",
+  "symbols": 6,
+  "current": {
+   "UNKNOWN role of the notes": 6
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 6
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 6
+  }
+ },
+ "exercise.power-chord.a": {
+  "family": "power_chord",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.power-chord.d": {
+  "family": "power_chord",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.power-chord.e": {
+  "family": "power_chord",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.secondary-rag.c.4bar": {
+  "family": "secondary_rag",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule2": 4
+  }
+ },
+ "exercise.slash-bass.b-flat": {
+  "family": "slash_bass",
+  "symbols": 8,
+  "current": {
+   "UNKNOWN role of the notes": 8
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 8
+  }
+ },
+ "exercise.slash-bass.c": {
+  "family": "slash_bass",
+  "symbols": 8,
+  "current": {
+   "UNKNOWN role of the notes": 8
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 8
+  }
+ },
+ "exercise.slash-bass.e-flat": {
+  "family": "slash_bass",
+  "symbols": 8,
+  "current": {
+   "UNKNOWN role of the notes": 8
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 8
+  }
+ },
+ "exercise.slash-bass.f": {
+  "family": "slash_bass",
+  "symbols": 8,
+  "current": {
+   "UNKNOWN role of the notes": 8
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 8
+  }
+ },
+ "exercise.stride.b-flat": {
+  "family": "stride",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.stride.c": {
+  "family": "stride",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.stride.e-flat": {
+  "family": "stride",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.stride.f": {
+  "family": "stride",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.tritone-sub.b-flat": {
+  "family": "tritone_sub",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.tritone-sub.c": {
+  "family": "tritone_sub",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.tritone-sub.e-flat": {
+  "family": "tritone_sub",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.tritone-sub.f": {
+  "family": "tritone_sub",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.tumbao.a": {
+  "family": "tumbao",
+  "symbols": 8,
+  "current": {
+   "over a melody line": 8
+  },
+  "fix": {
+   "over a melody line": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 8
+  }
+ },
+ "exercise.tumbao.c": {
+  "family": "tumbao",
+  "symbols": 8,
+  "current": {
+   "over a melody line": 8
+  },
+  "fix": {
+   "over a melody line": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 8
+  }
+ },
+ "exercise.tumbao.d": {
+  "family": "tumbao",
+  "symbols": 8,
+  "current": {
+   "over a melody line": 8
+  },
+  "fix": {
+   "over a melody line": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 8
+  }
+ },
+ "exercise.tumbao.f": {
+  "family": "tumbao",
+  "symbols": 8,
+  "current": {
+   "over a melody line": 8
+  },
+  "fix": {
+   "over a melody line": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 8
+  }
+ },
+ "exercise.tumbao.g": {
+  "family": "tumbao",
+  "symbols": 8,
+  "current": {
+   "over a melody line": 8
+  },
+  "fix": {
+   "over a melody line": 8
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 8
+  }
+ },
+ "exercise.turnaround.b-flat.i-vi-ii-v": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.turnaround.b-flat.i-vi-ii-v.intro": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.turnaround.b-flat.iii-vi-ii-v": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.turnaround.c.i-vi-ii-v": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.turnaround.c.i-vi-ii-v.intro": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.turnaround.c.iii-vi-ii-v": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.turnaround.e-flat.i-vi-ii-v": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.turnaround.e-flat.i-vi-ii-v.intro": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.turnaround.e-flat.iii-vi-ii-v": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.turnaround.f.i-vi-ii-v": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.turnaround.f.i-vi-ii-v.intro": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.turnaround.f.iii-vi-ii-v": {
+  "family": "turnaround",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.voicing7.a-flat.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.a-flat.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.a-flat.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.a-flat.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.a.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.a.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.a.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.a.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.b-flat.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.b-flat.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.b-flat.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.b-flat.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.b.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.b.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.b.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.b.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.c.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.c.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.c.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.c.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.d-flat.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.d-flat.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.d-flat.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.d-flat.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.d.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.d.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.d.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.d.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.e-flat.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.e-flat.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.e-flat.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.e-flat.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.e.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.e.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.e.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.e.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.f-sharp.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.f-sharp.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.f-sharp.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.f-sharp.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.f.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.f.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.f.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.f.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.g.close": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.g.rootless-a": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.g.rootless-b": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.voicing7.g.shell": {
+  "family": "seventh_voicing",
+  "symbols": 3,
+  "current": {
+   "UNKNOWN role of the notes": 3
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3
+  }
+ },
+ "exercise.walking-bass.a.blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 12,
+   "rule2": 1
+  }
+ },
+ "exercise.walking-bass.a.blues.intro": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "over a melody line": 13
+  },
+  "fix": {
+   "over a melody line": 13
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 13
+  }
+ },
+ "exercise.walking-bass.b-flat.blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 12,
+   "rule2": 1
+  }
+ },
+ "exercise.walking-bass.b-flat.blues.intro": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "over a melody line": 13
+  },
+  "fix": {
+   "over a melody line": 13
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 13
+  }
+ },
+ "exercise.walking-bass.b-flat.ii-v-i": {
+  "family": "walking_bass",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 3,
+   "over a melody line": 1
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3,
+   "over a melody line": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3,
+   "rule2": 1
+  }
+ },
+ "exercise.walking-bass.b-flat.ii-v-i.intro": {
+  "family": "walking_bass",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.walking-bass.b-flat.minor-blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 11,
+   "over a melody line": 2
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 11,
+   "over a melody line": 2
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 11,
+   "rule2": 2
+  }
+ },
+ "exercise.walking-bass.c.blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 12,
+   "rule2": 1
+  }
+ },
+ "exercise.walking-bass.c.blues.intro": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "over a melody line": 13
+  },
+  "fix": {
+   "over a melody line": 13
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 13
+  }
+ },
+ "exercise.walking-bass.c.ii-v-i": {
+  "family": "walking_bass",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.walking-bass.c.ii-v-i.intro": {
+  "family": "walking_bass",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.walking-bass.c.minor-blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 12,
+   "rule2": 1
+  }
+ },
+ "exercise.walking-bass.d.blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 12,
+   "rule2": 1
+  }
+ },
+ "exercise.walking-bass.d.blues.intro": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "over a melody line": 13
+  },
+  "fix": {
+   "over a melody line": 13
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 13
+  }
+ },
+ "exercise.walking-bass.e-flat.blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 12,
+   "rule2": 1
+  }
+ },
+ "exercise.walking-bass.e-flat.blues.intro": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "over a melody line": 13
+  },
+  "fix": {
+   "over a melody line": 13
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 13
+  }
+ },
+ "exercise.walking-bass.e-flat.ii-v-i": {
+  "family": "walking_bass",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.walking-bass.e-flat.ii-v-i.intro": {
+  "family": "walking_bass",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.walking-bass.e-flat.minor-blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 12,
+   "rule2": 1
+  }
+ },
+ "exercise.walking-bass.e.blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 12,
+   "rule2": 1
+  }
+ },
+ "exercise.walking-bass.e.blues.intro": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "over a melody line": 13
+  },
+  "fix": {
+   "over a melody line": 13
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 13
+  }
+ },
+ "exercise.walking-bass.f.blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 11,
+   "over a melody line": 2
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 11,
+   "over a melody line": 2
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 11,
+   "rule2": 2
+  }
+ },
+ "exercise.walking-bass.f.blues.intro": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "over a melody line": 13
+  },
+  "fix": {
+   "over a melody line": 13
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 13
+  }
+ },
+ "exercise.walking-bass.f.ii-v-i": {
+  "family": "walking_bass",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 3,
+   "over a melody line": 1
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 3,
+   "over a melody line": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 3,
+   "rule2": 1
+  }
+ },
+ "exercise.walking-bass.f.ii-v-i.intro": {
+  "family": "walking_bass",
+  "symbols": 4,
+  "current": {
+   "over a melody line": 4
+  },
+  "fix": {
+   "over a melody line": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 4
+  }
+ },
+ "exercise.walking-bass.f.minor-blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 11,
+   "over a melody line": 2
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 11,
+   "over a melody line": 2
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 11,
+   "rule2": 2
+  }
+ },
+ "exercise.walking-bass.g.blues": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 12,
+   "over a melody line": 1
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 12,
+   "rule2": 1
+  }
+ },
+ "exercise.walking-bass.g.blues.intro": {
+  "family": "walking_bass",
+  "symbols": 13,
+  "current": {
+   "over a melody line": 13
+  },
+  "fix": {
+   "over a melody line": 13
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "rule3": 13
+  }
+ },
+ "exercise.walkup.b-flat": {
+  "family": "walkup",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.walkup.c": {
+  "family": "walkup",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.walkup.e-flat": {
+  "family": "walkup",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ },
+ "exercise.walkup.f": {
+  "family": "walkup",
+  "symbols": 4,
+  "current": {
+   "UNKNOWN role of the notes": 4
+  },
+  "fix": {
+   "UNKNOWN role of the notes": 4
+  },
+  "one_staff_all_chords": false,
+  "melody_rules": {
+   "None": 4
+  }
+ }
+}

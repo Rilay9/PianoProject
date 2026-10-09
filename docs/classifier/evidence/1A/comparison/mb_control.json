@@ -1,0 +1,60 @@
+{
+ "sequences": 320,
+ "notes": 142577,
+ "label_values": [
+  1,
+  2
+ ],
+ "pred_values": [
+  1,
+  2,
+  3
+ ],
+ "pred_counts": {
+  "1": 29295,
+  "2": 22277,
+  "3": 91005
+ },
+ "as_checkpoint_class1_only_is_melody": {
+  "tp": 29186,
+  "fp": 109,
+  "fn": 22641,
+  "tn": 90641,
+  "accuracy": 0.8404370971475063,
+  "precision": 0.996279228537293,
+  "recall": 0.5631427634244699,
+  "f1": 0.7195581962969355
+ },
+ "classes_1_and_2_are_melody_class3_accompaniment (3-class model: melody, bridge, accompaniment)": {
+  "tp": 50851,
+  "fp": 721,
+  "fn": 976,
+  "tn": 90029,
+  "accuracy": 0.9880976595102997,
+  "precision": 0.9860195454898006,
+  "recall": 0.9811681170046501,
+  "f1": 0.9835878490120794
+ },
+ "within_position_order_by_pitch_ascending__classes_1_or_2": {
+  "tp": 50576,
+  "fp": 994,
+  "fn": 1251,
+  "tn": 89756,
+  "accuracy": 0.9842541223338968,
+  "precision": 0.9807252278456466,
+  "recall": 0.9758620024311653,
+  "f1": 0.9782875712061279
+ },
+ "within_position_order_by_pitch_ascending__class_1_only_vs_M_or_B_truth": {
+  "tp": 28854,
+  "fp": 147,
+  "fn": 22973,
+  "tn": 90603,
+  "accuracy": 0.8378420081780371,
+  "precision": 0.9949312092686459,
+  "recall": 0.5567368360121172,
+  "f1": 0.7139605087345969
+ },
+ "checkpoint_epoch": 10,
+ "checkpoint_valid_acc": 0.9638
+}

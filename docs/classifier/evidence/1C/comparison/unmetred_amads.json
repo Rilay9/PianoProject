@@ -1,0 +1,18 @@
+{
+ "song.classical.satie-gnossienne-1": {
+  "wnbd_score": 0.06212664277180406
+ },
+ "song.classical.satie-erik-satie-gnossienne-n1.pdmx": {
+  "wnbd_score": 0.072
+ },
+ "song.classical.satie-erik-satie-gnossienne-no-3.pdmx": {
+  "wnbd_score": 0.3466666666666667
+ },
+ "exercise.syncopation.tied-across-bar": {
+  "wnbd_score": 0.08333333333333333
+ },
+ "control.notime": {
+  "wnbd_score": 0.08333333333333333
+ },
+ "gnossienne_partitura_time_signatures": []
+}
